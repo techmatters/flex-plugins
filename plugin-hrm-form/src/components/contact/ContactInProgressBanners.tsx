@@ -28,7 +28,7 @@ import {
   Flex,
   HeaderCloseButton,
   HiddenText,
-  SaveAndEndButton,
+  DestructiveButton,
 } from '../../styles';
 import getCanEditInProgressContact from '../../permissions/canEditInProgressContact';
 import { newSubmitAndFinalizeContactFromOutsideTaskContextAsyncAction } from '../../states/contacts/saveContact';
@@ -132,9 +132,9 @@ const ContactInProgressBanners: React.FC<ContactBannersProps> = ({ contactId }) 
             </BannerText>
             {enableInProgressContacts && canEditContact() && (
               <BannerAction alignRight={true} onClick={handleSaveAndEnd}>
-                <SaveAndEndButton>
+                <DestructiveButton>
                   <Template code="BottomBar-SaveAndEnd" />
-                </SaveAndEndButton>
+                </DestructiveButton>
               </BannerAction>
             )}
           </Flex>

@@ -231,6 +231,6 @@ locals {
 
     // THIS SHOULD BE REMOVED Serverless
     ui_editable = true
-
+    get_profile_flags_for_identifier_base_url = "https://hrm-production.tl.techmatters.org/lambda/twilio/account-scoped"
   }
 }

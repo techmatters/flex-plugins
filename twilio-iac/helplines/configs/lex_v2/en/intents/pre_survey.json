@@ -1,6 +1,6 @@
 {
     "intentName": "pre_survey",
-    "description": "Survey intent",
+    "description": "Example configs/lex_v2/en_US/bots Pre Survey bot",
     "sampleUtterances": [
         {
             "utterance": "trigger_pre_survey"
@@ -38,15 +38,15 @@
     },
     "slotPriorities": [
         {
-            "priority": 3,
-            "slotName": "age"
-        },
-        {
             "priority": 1,
-            "slotName": "about_self"
+            "slotName": "aboutSelf"
         },
         {
             "priority": 2,
+            "slotName": "age"
+        },
+        {
+            "priority": 3,
             "slotName": "gender"
         }
     ],
@@ -77,7 +77,7 @@
                 {
                     "message": {
                         "plainTextMessage": {
-                            "value": "Welcome. To help us better serve you, please answer the following questions."
+                            "value": "Welcome to the helpline. Please answer the following questions."
                         }
                     }
                 }
@@ -98,7 +98,7 @@
                 "successNextStep": {
                     "dialogAction": {
                         "type": "ElicitSlot",
-                        "slotToElicit": "about_self"
+                        "slotToElicit": "aboutSelf"
                     },
                     "intent": {}
                 },

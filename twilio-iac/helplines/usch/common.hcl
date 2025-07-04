@@ -13,26 +13,41 @@ locals {
     task_language              = "en-US"
     enable_post_survey         = false
     enable_external_recordings = false
-    permission_config          = "demo"
+    permission_config          = "usch"
+    enable_lex_v2              = true
+    
+    channel_attributes = {
+      webchat                         = "/app/twilio-iac/helplines/usch/templates/channel-attributes/webchat.tftpl",
+      voice                           = "/app/twilio-iac/helplines/usch/templates/channel-attributes/voice.tftpl",
+      sms_courage_first-conversations = "/app/twilio-iac/helplines/usch/templates/channel-attributes/sms_courage_first-conversations.tftpl",
+      sms_childhelp-conversations     = "/app/twilio-iac/helplines/usch/templates/channel-attributes/sms_childhelp-conversations.tftpl",
+      default                         = "/app/twilio-iac/helplines/templates/channel-attributes/default.tftpl",
+      default-conversations           = "/app/twilio-iac/helplines/templates/channel-attributes/default-conversations.tftpl"
+    }
     workflows = {
       master : {
         friendly_name = "Master Workflow"
-        templatefile = "/app/twilio-iac/helplines/usch/templates/workflows/master.tftpl"
+        templatefile  = "/app/twilio-iac/helplines/usch/templates/workflows/master.tftpl"
+        task_reservation_timeout = 30
       },
       //NOTE: MAKE SURE TO ADD THIS IF THE ACCOUNT USES A CONVERSATION CHANNEL
       queue_transfers : {
         friendly_name = "Queue Transfers Workflow"
-        templatefile = "/app/twilio-iac/helplines/templates/workflows/queue-transfers.tftpl"
+        templatefile  = "/app/twilio-iac/helplines/templates/workflows/queue-transfers.tftpl"
       },
       survey : {
         friendly_name = "Survey Workflow"
-        templatefile = "/app/twilio-iac/helplines/templates/workflows/lex.tftpl"
+        templatefile  = "/app/twilio-iac/helplines/templates/workflows/lex.tftpl"
       }
     }
     task_queues = {
       master : {
         "target_workers" = "routing.skills HAS 'ChildHelp'",
         "friendly_name"  = "ChildHelp"
+      },
+      childhelp_spanish : {
+        "target_workers" = "routing.skills HAS 'ChildHelp'",
+        "friendly_name"  = "ChildHelp Spanish"
       },
       courage_first : {
         "target_workers" = "routing.skills HAS 'CourageFirst'",
@@ -47,27 +62,12 @@ locals {
         "friendly_name"  = "E2E Test Queue"
       }
     }
-    #Channels
-    channels = {
-      webchat : {
-        channel_type     = "web"
-        contact_identity = ""
-        templatefile     = "/app/twilio-iac/helplines/templates/studio-flows/webchat-basic.tftpl"
-        channel_flow_vars = {}
-        chatbot_unique_names = []
-      },
-      voice : {
-        channel_type     = "voice"
-        contact_identity = ""
-        templatefile     = "/app/twilio-iac/helplines/templates/studio-flows/voice-basic.tftpl"
-        channel_flow_vars = {
-          voice_ivr_greeting_message = "Hello, welcome to Childhelp. Please wait for a counsellor."
-          voice_ivr_language         = "en-US"
-          voice_ivr_blocked_message  = "Apologies, your number has been blocked."
 
-        }
-        chatbot_unique_names = []
-      }
+    lex_bot_languages = {
+      en_USCH : []
+    }
+    lex_v2_bot_languages = {
+       en_USCH : ["pre_survey"]
     }
     
   }

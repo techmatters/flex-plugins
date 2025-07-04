@@ -1,0 +1,415 @@
+{
+    "slotTypeName": "yes_no",
+    "slotTypeValues": [
+        {
+            "sampleValue": {
+                "value": "Yes"
+            },
+            "synonyms": [
+                {
+                    "value": "1"
+                },
+                {
+                    "value": "Yah"
+                },
+                {
+                    "value": "Y"
+                },
+                {
+                    "value": "Yeah"
+                },
+                {
+                    "value": "Ya"
+                },
+                {
+                    "value": "Yup"
+                },
+                {
+                    "value": "Yea"
+                },
+                {
+                    "value": "Yeaah"
+                },
+                {
+                    "value": "Iva"
+                },
+                {
+                    "value": "Għaliex la"
+                },
+                {
+                    "value": "Igen"
+                },
+                {
+                    "value": "Iva grazzi"
+                },
+                {
+                    "value": "Iva jekk jogħġbok"
+                },
+                {
+                    "value": "Minflok Le"
+                },
+                {
+                    "value": "Korreċċa"
+                },
+                {
+                    "value": "Id-dritt"
+                },
+                {
+                    "value": "Jiena nemmen"
+                },
+                {
+                    "value": "Qed nipprova"
+                },
+                {
+                    "value": "Iva jiena għadni qed"
+                },
+                {
+                    "value": "Jiena ma nifhemx pero"
+                },
+                {
+                    "value": "Aħseb xi darba"
+                },
+                {
+                    "value": "Jekk jogħġbok Iva"
+                },
+                {
+                    "value": "Jekk jogħġbok Għaliex le"
+                },
+                {
+                    "value": "Jekk jogħġbok Għaliex mhux"
+                },
+                {
+                    "value": "Jekk jogħġbok Hux"
+                },
+                {
+                    "value": "Nixtieq ngħid Iva"
+                },
+                {
+                    "value": "Так,"
+                },
+                {
+                    "value": "Так дякую,"
+                },
+                {
+                    "value": "Звісно,"
+                },
+                {
+                    "value": "Да,"
+                },
+                {
+                    "value": "Конечно,"
+                },
+                {
+                    "value": "Так будь ласка,"
+                },
+                {
+                    "value": "Так звичайно,"
+                },
+                {
+                    "value": "Так готовий,"
+                },
+                {
+                    "value": "Я за,"
+                },
+                {
+                    "value": "З Таким згоден,"
+                },
+                {
+                    "value": "З Таким згодна,"
+                },
+                {
+                    "value": "Так я радий,"
+                },
+                {
+                    "value": "Так з задоволенням,"
+                },
+                {
+                    "value": "Так я згоден,"
+                },
+                {
+                    "value": "Так я погоджуюсь,"
+                },
+                {
+                    "value": "Йоу,"
+                },
+                {
+                    "value": "Так із задоволенням,"
+                },
+                {
+                    "value": "Так із задоволенням,"
+                },
+                {
+                    "value": "Так із задоволенням,"
+                },
+                {
+                    "value": "Так маєте право,"
+                },
+                {
+                    "value": "Так можна,"
+                },
+                {
+                    "value": "Так вперед,"
+                },
+                {
+                    "value": "Так давайте,"
+                },
+                {
+                    "value": "Так велике дякую,"
+                },
+                {
+                    "value": "Так дуже дякую,"
+                },
+                {
+                    "value": "Так радий допомогти,"
+                },
+                {
+                    "value": "Так це правда"
+                }
+            ]
+        },
+        {
+            "sampleValue": {
+                "value": "No"
+            },
+            "synonyms": [
+                {
+                    "value": "2"
+                },
+                {
+                    "value": "Na"
+                },
+                {
+                    "value": "Nah"
+                },
+                {
+                    "value": "Noo"
+                },
+                {
+                    "value": "N"
+                },
+                {
+                    "value": "Le"
+                },
+                {
+                    "value": "Ie"
+                },
+                {
+                    "value": "Le grazzi"
+                },
+                {
+                    "value": "Le jekk jogħġbok"
+                },
+                {
+                    "value": "Ejja grazzi"
+                },
+                {
+                    "value": "Minflok Iva"
+                },
+                {
+                    "value": "Inkorrezzit"
+                },
+                {
+                    "value": "L-aħħar"
+                },
+                {
+                    "value": "Għandni l-impressjoni"
+                },
+                {
+                    "value": "Għandni dubju"
+                },
+                {
+                    "value": "Għandni qed nistaqsi"
+                },
+                {
+                    "value": "Le għandni xogħol"
+                },
+                {
+                    "value": "Ma nifhemx pero"
+                },
+                {
+                    "value": "Għandni bżonn iktar informazzjoni"
+                },
+                {
+                    "value": "Għandni bzonn iktar ħin"
+                },
+                {
+                    "value": "Le jekk jogħġbok"
+                },
+                {
+                    "value": "Le jiena nistax"
+                },
+                {
+                    "value": "Le jiena qed nitfa' l-kwistjonijiet"
+                },
+                {
+                    "value": "Le m'hemmx bżonn"
+                },
+                {
+                    "value": "Le ħa nara l-isptar"
+                },
+                {
+                    "value": "Le xorta jiena qed"
+                },
+                {
+                    "value": "Le nara baxx"
+                },
+                {
+                    "value": "Le grazzi li tajt il-kura"
+                },
+                {
+                    "value": "Ні"
+                },
+                {
+                    "value": "Ні дякую"
+                },
+                {
+                    "value": "Не"
+                },
+                {
+                    "value": "Ні будь ласка"
+                },
+                {
+                    "value": "Не можу"
+                },
+                {
+                    "value": "Не бажаю"
+                },
+                {
+                    "value": "Не хочу"
+                },
+                {
+                    "value": "Не треба"
+                },
+                {
+                    "value": "Ні дякую я забираю"
+                },
+                {
+                    "value": "Ні я відмовляюсь"
+                },
+                {
+                    "value": "Відмовляюсь"
+                },
+                {
+                    "value": "Не погоджуюсь"
+                },
+                {
+                    "value": "Не хотів би"
+                },
+                {
+                    "value": "Не хотіла б"
+                },
+                {
+                    "value": "Ні вибачте"
+                },
+                {
+                    "value": "Ні вибачте але ні"
+                },
+                {
+                    "value": "Ні вибачте не можу"
+                },
+                {
+                    "value": "Ні я не готовий"
+                },
+                {
+                    "value": "Ні я не готова"
+                },
+                {
+                    "value": "Не готовий"
+                },
+                {
+                    "value": "Не готова"
+                },
+                {
+                    "value": "Ні я не згоден"
+                },
+                {
+                    "value": "Ні я не згодна"
+                },
+                {
+                    "value": "Ні я не погоджуюсь"
+                },
+                {
+                    "value": "Ні звичайно ж ні"
+                },
+                {
+                    "value": "Ні ніколи"
+                },
+                {
+                    "value": "Не хочу дякую"
+                },
+                {
+                    "value": "Не потрібно дякую"
+                },
+                {
+                    "value": "Ні мені не потрібно"
+                },
+                {
+                    "value": "Ні мені не треба"
+                },
+                {
+                    "value": "Ні мені не треба допомоги"
+                },
+                {
+                    "value": "Ні мені не потрібна допомога"
+                },
+                {
+                    "value": "Ні не цього разу"
+                },
+                {
+                    "value": "Ні на жаль"
+                },
+                {
+                    "value": "Ні вибачте не можу зараз"
+                },
+                {
+                    "value": "Ні вибачте не можу допомогти"
+                },
+                {
+                    "value": "Ні вибачте не маю можливості"
+                },
+                {
+                    "value": "Ні на жаль я зайнятий"
+                },
+                {
+                    "value": "Ні я зараз не впевнений"
+                },
+                {
+                    "value": "Ні я вже відповів"
+                },
+                {
+                    "value": "Ні я вже зробив вибір"
+                },
+                {
+                    "value": "Ні вже обрав"
+                },
+                {
+                    "value": "Ні я вже думав"
+                },
+                {
+                    "value": "Ні не дякую"
+                },
+                {
+                    "value": "Ні не треба дякую"
+                },
+                {
+                    "value": "Ні я вже розібрався"
+                },
+                {
+                    "value": "Ні мені все зрозуміло"
+                },
+                {
+                    "value": "Ні я не потребую допомоги"
+                },
+                {
+                    "value": "Ні мені не потрібна ваша допомога"
+                },
+                {
+                    "value": "Ні дякую я вже знайшов рішення"
+                }
+            ]
+        }
+    ],
+    "valueSelectionSetting": {
+        "resolutionStrategy": "TopResolution"
+    }
+}

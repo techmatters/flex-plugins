@@ -1,6 +1,6 @@
 [
   {
-    "name": "firstName",
+    "name": "friendlyName",
     "label": "First Name",
     "type": "input",
     "required": {
@@ -110,6 +110,10 @@
       {
         "value": "Prefer to self-define",
         "label": "Prefer to self-define"
+      },
+      {
+        "value": "Prefer not to say",
+        "label": "Prefer not to say"
       }
     ],
     "required": {
@@ -162,7 +166,11 @@
         "value": "I identify in a different way",
         "label": "I identify in a different way"
       }
-    ]
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
   },
   {
     "name": "isGenderSameAsSexAtBirth",
@@ -185,7 +193,11 @@
         "value": "Prefer not to say",
         "label": "Prefer not to say"
       }
-    ]
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
   },
   {
     "name": "contactIdentifier",
@@ -1081,7 +1093,11 @@
         "value": "Prefer not to say",
         "label": "Prefer not to say"
       }
-    ]
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
   },
   {
     "name": "employmentStatus",
@@ -1148,16 +1164,108 @@
     "type": "listbox-multiselect",
     "options": [
       {
-        "value": "Mental Health",
-        "label": "Mental Health"
+        "label": "A general chat",
+        "value": "A general chat"
       },
       {
-        "value": "School",
-        "label": "School"
+        "label": "Learning disabilities (including autism and ADHD)",
+        "value": "Learning disabilities (including autism and ADHD)"
       },
       {
-        "value": "Relationships",
-        "label": "Relationships"
+        "label": "Anger management",
+        "value": "Anger management"
+      },
+      {
+        "label": "Anxiety",
+        "value": "Anxiety"
+      },
+      {
+        "label": "Money and finance",
+        "value": "Money and finance"
+      },
+      {
+        "label": "Bereavement, Death, Loss & Grief",
+        "value": "Bereavement, Death, Loss & Grief"
+      },
+      {
+        "label": "Body image",
+        "value": "Body image"
+      },
+      {
+        "label": "Family relationships",
+        "value": "Family relationships"
+      },
+      {
+        "label": "Romantic relationships",
+        "value": "Romantic relationships"
+      },
+      {
+        "label": "Bullying",
+        "value": "Bullying"
+      },
+      {
+        "label": "Work",
+        "value": "Work"
+      },
+      {
+        "label": "School, university and education",
+        "value": "School, university and education"
+      },
+      {
+        "label": "LGBTQIA+ & sexual orientation",
+        "value": "LGBTQIA+ & sexual orientation"
+      },
+      {
+        "label": "Depression/low mood",
+        "value": "Depression/low mood"
+      },
+      {
+        "label": "Difficulty sleeping/insomnia",
+        "value": "Difficulty sleeping/insomnia"
+      },
+      {
+        "label": "Disability",
+        "value": "Disability"
+      },
+      {
+        "label": "Drugs or alcohol (not addiction)",
+        "value": "Drugs or alcohol (not addiction)"
+      },
+      {
+        "label": "Gambling (not addiction)",
+        "value": "Gambling (not addiction)"
+      },
+      {
+        "label": "Gender identity, gender dysphoria and transitioning",
+        "value": "Gender identity, gender dysphoria and transitioning"
+      },
+      {
+        "label": "Housing and homelessness",
+        "value": "Housing and homelessness"
+      },
+      {
+        "label": "Loneliness/isolation",
+        "value": "Loneliness/isolation"
+      },
+      {
+        "label": "Managing emotions",
+        "value": "Managing emotions"
+      },
+      {
+        "label": "Self esteem",
+        "value": "Self esteem"
+      },
+      {
+        "label": "Sex or sexual health",
+        "value": "Sex or sexual health"
+      },
+      {
+        "label": "Stress",
+        "value": "Stress"
+      },
+      {
+        "label": "Other",
+        "value": "Other"
       }
     ],
     "rows": 5
@@ -1225,23 +1333,23 @@
       },
       {
         "value": "01",
-        "label": "1"
+        "label": "☹️ 1"
       },
       {
         "value": "02",
-        "label": "2"
+        "label": "🙁 2"
       },
       {
         "value": "03",
-        "label": "3"
+        "label": "😐 3"
       },
       {
         "value": "04",
-        "label": "4"
+        "label": "🙂 4"
       },
       {
         "value": "05",
-        "label": "5"
+        "label": "😀 5"
       }
     ]
   },
@@ -1319,6 +1427,16 @@
   {
     "name": "consentForResearchevaluation",
     "label": "Consent for Research/Evaluation",
+    "type": "checkbox"
+  },
+  {
+    "name": "dataProcessingAndStorage",
+    "label": "Consent for Data being stored and processed",
+    "type": "checkbox"
+  },
+  {
+    "name": "termsAndConditions",
+    "label": "Agreed to Privacy Policy",
     "type": "checkbox"
   },
   {

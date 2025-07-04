@@ -28,9 +28,9 @@ locals {
         contact_identity = ""
         templatefile     = "/app/twilio-iac/helplines/templates/studio-flows/messaging-no-chatbot-operating-hours-blocking.tftpl"
         channel_flow_vars = {
-          chat_greeting_message = "Hello! Tinkle Friend is engaged with other children at the moment. Please hold on for a while and we will attend to you as soon as we can. Thank you for your patience!\nWhile waiting, you can check out our BUZZ magazine at https://www.tinklefriend.sg/buzz-magazine/. Alternatively, you can email us at tinklefriend@childrensociety.org.sg and we will respond to you in 3 working days.\nHowever, if you are facing a crisis and thinking about suicide, you can WhatsApp our friends from Samaritans of Singapore (SOS) at 9151 1767. If you are in immediate danger, please call the Police at 999."
+          chat_greeting_message = "Hello, Tinkle Friend is engaged with other children at the moment. Please hold on for a while and we will attend to you as soon as we can. Thank you for your patience!.\nWhile waiting, you can check out our BUZZ magazine at http://www.tinklefriend.sg/buzz-magazine/. Alternatively, you can email us at tinklefriend@childrensociety.org.sg and we will respond to you in 3 working days.\nIf you are experiencing mental health issues and need immediate support please call National Mindline 1771. In the event that you are facing a crisis and thinking about suicide, you can Whatsapp our friends from Samaritans of Singapore (SOS) at 9151 1767. If you are in immediate danger, please call the Police at 999."
           widget_from           = "Tinkle Friend"
-          chat_blocked_message  = "Hello! Tinkle Friend is engaged with other children at the moment. Please hold on for a while and we will attend to you as soon as we can. Thank you for your patience!\nWhile waiting, you can check out our BUZZ magazine at https://www.tinklefriend.sg/buzz-magazine/. Alternatively, you can email us at tinklefriend@childrensociety.org.sg and we will respond to you in 3 working days.\nHowever, if you are facing a crisis and thinking about suicide, you can WhatsApp our friends from Samaritans of Singapore (SOS) at 9151 1767. If you are in immediate danger, please call the Police at 999."
+          chat_blocked_message  = "Hello, Tinkle Friend is engaged with other children at the moment. Please hold on for a while and we will attend to you as soon as we can. Thank you for your patience!.\nWhile waiting, you can check out our BUZZ magazine at http://www.tinklefriend.sg/buzz-magazine/. Alternatively, you can email us at tinklefriend@childrensociety.org.sg and we will respond to you in 3 working days.\nIf you are experiencing mental health issues and need immediate support please call National Mindline 1771. In the event that you are facing a crisis and thinking about suicide, you can Whatsapp our friends from Samaritans of Singapore (SOS) at 9151 1767. If you are in immediate danger, please call the Police at 999."
         }
         chatbot_unique_names = []
       },
@@ -52,6 +52,7 @@ locals {
         chatbot_unique_names = []
       }
     }
+    get_profile_flags_for_identifier_base_url = "https://hrm-production-eu.tl.techmatters.org/lambda/twilio/account-scoped"
   }
 
 }

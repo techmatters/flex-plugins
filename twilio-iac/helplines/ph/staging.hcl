@@ -7,7 +7,7 @@ locals {
 
   local_config = {
 
-
+    enable_lex_v2 = true
     flow_vars = {
       service_sid                           = "ZS45d1a256ef1c4fa2112f7accc40306c5"
       environment_sid                       = "ZE730f552b9429ca7a2105c822ef7faae4"
@@ -28,6 +28,6 @@ locals {
         chatbot_unique_names = []
       }
     }
-
+    get_profile_flags_for_identifier_base_url = "https://hrm-staging.tl.techmatters.org/lambda/twilio/account-scoped"
   }
 }

@@ -5,7 +5,7 @@ locals {
 
   local_config = {
     custom_task_routing_filter_expression = "isContactlessTask==true OR channelType=='web' OR to=='+14244147346' OR twilioNumber=='whatsapp:+18767287042' OR twilioNumber=='instagram:17841453865951519'"
-    enable_lex_v2                         = false
+    enable_lex_v2                         = true
     #Studio flow
     flow_vars = {
       service_sid                           = "ZS9dbe7c77fe5f0a6ed3c392c63bba9c90"
@@ -47,7 +47,7 @@ locals {
 
     ui_editable = false
     #Chatbots
-
+    get_profile_flags_for_identifier_base_url = "https://hrm-staging.tl.techmatters.org/lambda/twilio/account-scoped"
 
   }
 }

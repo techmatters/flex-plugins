@@ -410,7 +410,7 @@
       "message": "RequiredFieldError"
     }
   },
-  {
+   {
     "name": "language",
     "label": "Language",
     "type": "select",
@@ -421,15 +421,15 @@
         "label": ""
       },
       {
-        "value": "English",
+        "value": "en-MT",
         "label": "English"
       },
       {
-        "value": "Maltese",
+        "value": "mt-MT",
         "label": "Maltese"
       },
       {
-        "value": "Ukrainian",
+        "value": "ukr-MT",
         "label": "Ukrainian"
       },
       {

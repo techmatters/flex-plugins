@@ -73,7 +73,7 @@
   },
   {
     "name": "callerName",
-    "label": "callerNamee",
+    "label": "callerName",
     "type": "input",
     "required": {
       "value": true,
