@@ -59,13 +59,13 @@ jobs:
       - name: Set GITHUB_ACTIONS_SLACK_BOT_TOKEN
         uses: "marvinpinto/action-inject-ssm-secrets@latest"
         with:
-          ssm_parameter: "GITHUB_ACTIONS_SLACK_BOT_TOKEN"
+          ssm_parameter: "/slack/bot/token/github-actions"
           env_variable_name: "GITHUB_ACTIONS_SLACK_BOT_TOKEN"
       - name: Set ASELO_DEPLOYS_CHANNEL_ID
         uses: "marvinpinto/action-inject-ssm-secrets@latest"
         with:
-          ssm_parameter: "ASELO_DEPLOYS_CHANNEL_ID"
-          env_variable_name: "ASELO_DEPLOYS_CHANNEL_ID"
+          ssm_parameter: "/slack/channel/aselo-release-deploy/id"
+          env_variable_name: "ASELO_RELEASE_DEPLOY_CHANNEL_ID"
       - name: Slack Aselo channel
         id: slack
         uses: slackapi/slack-github-action@v2.1.0
@@ -73,5 +73,5 @@ jobs:
           method: chat.postMessage
           token: ${{ env.GITHUB_ACTIONS_SLACK_BOT_TOKEN }}
           payload: |
-            channel: ${{ env.ASELO_DEPLOYS_CHANNEL_ID }}
+            channel: ${{ env.ASELO_RELEASE_DEPLOY_CHANNEL_ID }}
             text: '`[RC branches]` PR ${{ env.PR_URL }} ${{ env.NEW_PR && 'raised' || 'updated' }} using workflow `${{ github.workflow }}`:rocket: because `${{ github.triggering_actor }}` merged changes to ${{ github.ref_name }} and these need to be merged to master. PLEASE MERGE THIS IMMEDIATELY'
