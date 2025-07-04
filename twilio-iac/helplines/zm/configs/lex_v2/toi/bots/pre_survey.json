@@ -7,6 +7,11 @@
     "type": "Bot",
     "intents": {
       "pre_survey": {
+        "utterances": [
+          {
+            "utterance": "trigger_pre_survey"
+          }
+        ],
         "initial_response": {
           "message": "Welcome to the helpline. Please answer the following questions.",
           "slot_to_elicit": "about_self"
