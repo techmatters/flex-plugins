@@ -14,14 +14,14 @@
         ],
         "initial_response": {
           "message": "Welcome to the helpline. Please answer the following questions.",
-          "slot_to_elicit": "about_self"
+          "slot_to_elicit": "aboutSelf"
         },
         "closing_response": {
           "message": "Chuna kuitemesha ahembeleliku chanti kundi ankhong'u."
         },
         "slot_priorities": {
           "1": {
-            "slot_name": "about_self",
+            "slot_name": "aboutSelf",
             "slot_type_name": "yes_no",
             "slot_question": "Muna kuchumina enu aweni ndi? Mwakuli Eng'a hela Inehi.",
             "failure_response": "We are having trouble understanding your response"
