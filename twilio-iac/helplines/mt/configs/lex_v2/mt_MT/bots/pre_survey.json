@@ -1,0 +1,58 @@
+{
+  "pre_survey": {
+    "description": "Specific configs/lex_v2/mt_MT/bots/pre_survey",
+    "locale": "en_US",
+    "child_directed": true,
+    "idle_session_ttl_in_seconds": "600",
+    "staging_bot_alias_id":"OOZKOMPVYC",
+    "type": "Bot",
+    "intents": {
+      "pre_survey_intent": {
+        "utterances": [
+          {
+            "utterance": "trigger_pre_survey"
+          },
+          {
+            "utterance": "Bongu"
+          },
+          {
+            "utterance": "Ħelow"
+          }
+        ],
+        "initial_response": {
+          "message": "Wasalt għand Kellimni.",
+          "slot_to_elicit": "aboutSelf"
+        },
+        "closing_response": {
+          "message": "Grazzi talli kkuntatjajtna. Bħalissa qed ngħinu klijenti oħra, iżda aħna se nagħmlu l-almu tagħna biex nirrisponduk fl-iqsar ħin possibli. Jekk jogħġbok stenna għall-assistenza. Jekk din hija emerġenza, ikkuntattja lill-112, sakemm inkunu f'pożizzjoni li ngħinuk."
+        },
+        "slot_priorities": {
+          "1": {
+            "slot_name": "aboutSelf",
+            "slot_type_name": "yes_no",
+            "slot_question": "Qed iċċempel dwarek innifsek? Jekk jogħġbok wieġeb Iva jew Le",
+            "failure_response": "Sorry, mhux nista' ngħin f'dan iż-żmien."
+          },
+          "2": {
+            "slot_name": "age",
+            "slot_type_name": "age",
+            "slot_question": "Kemm għandek żmien?",
+            "failure_response": "Sorry, mhux nista' ngħin f'dan iż-żmien."
+          },
+          "3": {
+            "slot_name": "gender",
+            "slot_type_name": "gender",
+            "slot_question": "WX'inhu s-sess tiegħek? \n 1. Mara \n 2. Raġel \n 3. Oħrajn \n 4. Ma nixtieqx naghti risposta",
+            "failure_response": "Sorry, mhux nista' ngħin f'dan iż-żmien."
+          },
+          "4": {
+            "slot_name": "feeling",
+            "slot_type_name": "feeling",
+            "slot_question": "Kif qed tħossok?  Tista' tikteb in-numru jew il-kelma li tapplika għalik. \n 1. Ferħan \n 2. Konfuż \n 3. Rrabjat \n 4. Ixxukkjat \n 5. Begħzan \n 6. Inċert ",
+            "failure_response": "Sorry, mhux nista' ngħin f'dan iż-żmien."
+          }
+        }
+      }
+    }
+  }
+}

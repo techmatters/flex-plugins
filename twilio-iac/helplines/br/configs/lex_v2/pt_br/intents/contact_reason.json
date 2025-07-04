@@ -1,9 +1,9 @@
 {
     "intentName": "contact_reason",
-    "description": "Survey intent",
+    "description": "Specific configs/lex_v2/pt_BR/bots Contact Reason bot",
     "sampleUtterances": [
         {
-            "utterance": "trigger_pre_survey"
+            "utterance": "trigger_contact_reason"
         },
         {
             "utterance": "Incoming webchat contact"
@@ -39,7 +39,7 @@
     "slotPriorities": [
         {
             "priority": 1,
-            "slotName": "contact_options"
+            "slotName": "contactReason"
         }
     ],
     "intentClosingSetting": {
@@ -48,7 +48,7 @@
                 {
                     "message": {
                         "plainTextMessage": {
-                            "value": "Vamos transferir você. Por favor, aguarde até ser atendido."
+                            "value": "Obrigada."
                         }
                     }
                 }
@@ -61,6 +61,52 @@
                 "type": "EndConversation"
             },
             "intent": {}
+        }
+    },
+    "initialResponseSetting": {
+        "initialResponse": {
+            "messageGroups": [
+                {
+                    "message": {
+                        "plainTextMessage": {
+                            "value": "Obrigada por nos contactar."
+                        }
+                    }
+                }
+            ],
+            "allowInterrupt": true
+        },
+        "active": true,
+        "nextStep": {
+            "dialogAction": {
+                "type": "InvokeDialogCodeHook"
+            },
+            "intent": {}
+        },
+        "codeHook": {
+            "enableCodeHookInvocation": true,
+            "active": true,
+            "postCodeHookSpecification": {
+                "successNextStep": {
+                    "dialogAction": {
+                        "type": "ElicitSlot",
+                        "slotToElicit": "contactReason"
+                    },
+                    "intent": {}
+                },
+                "failureNextStep": {
+                    "dialogAction": {
+                        "type": "EndConversation"
+                    },
+                    "intent": {}
+                },
+                "timeoutNextStep": {
+                    "dialogAction": {
+                        "type": "EndConversation"
+                    },
+                    "intent": {}
+                }
+            }
         }
     }
 }

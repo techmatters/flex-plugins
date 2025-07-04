@@ -1,0 +1,65 @@
+{
+  "slotTypeName": "language",
+  "slotTypeValues": [
+    {
+      "sampleValue": {
+        "value": "ukr-MT"
+      },
+      "synonyms": [
+        {
+          "value": "ukranian"
+        },
+        {
+          "value": "ukr"
+        },
+        {
+          "value": "uk"
+        },
+        {
+          "value": "3"
+        }
+      ]
+    },
+    {
+      "sampleValue": {
+        "value": "en-MT"
+      },
+      "synonyms": [
+        {
+          "value": "english"
+        },
+        {
+          "value": "eng"
+        },
+        {
+          "value": "en"
+        },
+        {
+          "value": "1"
+        }
+      ]
+    },
+    {
+      "sampleValue": {
+        "value": "mt-MT"
+      },
+      "synonyms": [
+        {
+          "value": "maltese"
+        },
+        {
+          "value": "mt"
+        },
+        {
+          "value": "mal"
+        },
+        {
+          "value": "2"
+        }
+      ]
+    }
+  ],
+  "valueSelectionSetting": {
+    "resolutionStrategy": "TopResolution"
+  }
+}

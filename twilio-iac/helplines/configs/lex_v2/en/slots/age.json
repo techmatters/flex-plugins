@@ -2,7 +2,7 @@
     "slotName": "age",
     "slotTypeName": "age",
     "intentName": "pre_survey",
-    "description": "age of the caller",
+    "description": "Slot age for intent pre_survey",
     "valueElicitationSetting": {
         "slotConstraint": "Required",
         "promptSpecification": {
@@ -12,12 +12,19 @@
                         "plainTextMessage": {
                             "value": "How old are you?"
                         }
-                    }
+                    },
+                    "variations": [
+                        {
+                            "plainTextMessage": {
+                                "value": "You can answer with a number like: 12. How old are you?"
+                            }
+                        }
+                    ]
                 }
             ],
             "maxRetries": 1,
             "allowInterrupt": true,
-            "messageSelectionStrategy": "Random",
+            "messageSelectionStrategy": "Ordered",
             "promptAttemptsSpecification": {
                 "Initial": {
                     "allowInterrupt": true,
@@ -75,20 +82,27 @@
                 },
                 "intent": {}
             },
+            "failureResponse": {
+                "messageGroups": [
+                    {
+                        "message": {
+                            "plainTextMessage": {
+                                "value": "We are having trouble understanding your response. But nothing to worry, we will transfer you to a counsellor."
+                            }
+                        }
+                    }
+                ],
+                "allowInterrupt": true
+            },
             "failureNextStep": {
                 "dialogAction": {
-                    "type": "StartIntent"
+                    "type": "CloseIntent"
                 },
-                "intent": {
-                    "name": "FallbackIntent"
-                }
+                "intent": {}
             },
             "elicitationCodeHook": {
                 "enableCodeHookInvocation": true
             }
         }
-    },
-    "obfuscationSetting": {
-        "obfuscationSettingType": "None"
     }
 }
