@@ -1,5 +1,5 @@
 {
-  "counselling": {
+  "counsel_check": {
     "description": "Specific configs/lex_v2/en_NZ/counsel_check",
     "locale": "en_US",
     "child_directed": true,
