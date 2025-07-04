@@ -32,7 +32,7 @@
     "slotPriorities": [
         {
             "priority": 1,
-            "slotName": "about_self"
+            "slotName": "aboutSelf"
         },
         {
             "priority": 2,
@@ -95,7 +95,7 @@
                 "successNextStep": {
                     "dialogAction": {
                         "type": "ElicitSlot",
-                        "slotToElicit": "about_self"
+                        "slotToElicit": "aboutSelf"
                     },
                     "intent": {}
                 },

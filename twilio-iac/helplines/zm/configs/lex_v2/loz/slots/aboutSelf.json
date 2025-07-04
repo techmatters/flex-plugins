@@ -1,5 +1,5 @@
 {
-    "slotName": "about_self",
+    "slotName": "aboutSelf",
     "slotTypeName": "yes_no",
     "intentName": "pre_survey",
     "description": "Slot about_self for intent pre_survey",
@@ -10,7 +10,7 @@
                 {
                     "message": {
                         "plainTextMessage": {
-                            "value": "Kodi mukutuma lamya pa inu nokha? Yankhani inde olo iyayi!"
+                            "value": "Kiwena ya liza kapa cwani? Alaba eni kapa batili."
                         }
                     }
                 }
