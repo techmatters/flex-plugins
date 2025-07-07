@@ -44,6 +44,8 @@ jobs:
   raise_pr:
     runs-on: ubuntu-22.04
     needs: find_target_branches
+    env:
+      MERGE_BRANCH_NAME: ${{ github.ref_name }}-merge-${{ matrix.target-branch }}
     strategy:
       matrix:
         target-branch: ${{ fromJSON(needs.find_target_branches.outputs.found_branches) }}
@@ -53,20 +55,27 @@ jobs:
           sparse-checkout-cone-mode: false
           sparse-checkout: |
             .github/actions
+      - name: Create Merge Branch
+        run: |
+          git checkout -b ${{ env.MERGE_BRANCH_NAME }} origin/${{ matrix.target-branch }}
+          git push origin ${{ env.MERGE_BRANCH_NAME }}
       - name: Find existing PR
         id: list_prs
         run: |
-          pr_url=$(gh pr ls -S 'base:${{ matrix.target-branch }}' -H ${{ github.ref_name }} --json url | jq .[0].url)
+          pr_url=$(gh pr ls -S 'base:${{ matrix.target-branch }}' -H ${{ env.MERGE_BRANCH_NAME }} --json url | jq .[0].url)
           echo "EXISTING_PR_URL=$pr_url" >> $GITHUB_ENV
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Create PR
         if: env.EXISTING_PR_URL == 'null'
-        run: echo "NEW_PR_URL=$(gh pr create -B ${{ matrix.target-branch }} -H ${{ github.ref_name }} --title 'Merge ${{ github.ref_name }} into ${{ matrix.target-branch }}' --body 'Created by Github action')" >> $GITHUB_ENV
+        run: echo "NEW_PR_URL=$(gh pr create -B ${{ matrix.target-branch }} -H ${{ env.MERGE_BRANCH_NAME }} --title 'Merge ${{ github.ref_name }} into ${{ matrix.target-branch }}' --body 'Using staging branch ${{ env.MERGE_BRANCH_NAME }} Created by Github action')" >> $GITHUB_ENV
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Comment PR
-        run: gh pr comment ${{ env.PR_URL }} -b '${{ github.triggering_actor }} merged changes to ${{ github.ref_name }}'
+        run: |
+          pr_url=${{ env.NEW_PR_URL || env.EXISTING_PR_URL }}
+          gh pr comment $pr_url -b '${{ github.triggering_actor }} merged changes to ${{ github.ref_name }}'
+          echo "PR_URL=$pr_url" >> $GITHUB_ENV
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PR_URL: ${{ env.NEW_PR_URL || env.EXISTING_PR_URL }}
@@ -94,4 +103,4 @@ jobs:
           token: ${{ env.GITHUB_ACTIONS_SLACK_BOT_TOKEN }}
           payload: |
             channel: ${{ env.ASELO_RELEASE_DEPLOY_CHANNEL_ID }}
-            text: '`[RC branches]` PR ${{ env.PR_URL }} ${{ env.NEW_PR && 'raised' || 'updated' }} using workflow `${{ github.workflow }}`:rocket: because `${{ github.triggering_actor }}` merged changes to ${{ github.ref_name }} and these need to be merged to master. PLEASE MERGE THIS IMMEDIATELY'
+            text: '`[RC branches]` PR ${{ env.PR_URL }} ${{ env.NEW_PR_URL && 'raised' || 'updated' }} using workflow `${{ github.workflow }}`:rocket: because `${{ github.triggering_actor }}` merged changes to ${{ github.ref_name }} and these need to be merged to master. PLEASE MERGE THIS IMMEDIATELY'
