@@ -21,8 +21,27 @@ on:
       - 'v[0-9]+.[0-9]+-rc'
 
 jobs:
+  find_target_branches:
+    runs-on: ubuntu-22.04
+    outputs:
+      found_branches: ${{steps.find_branches.outputs.found-branches}}
+    steps:
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22.x'
+      - name: Find later RC branches
+        id: find_branches
+        uses: ./.github/actions/find-later-rc-branches
+        with:
+          rc-branch-name: ${{ github.ref_name }}
+
   raise_pr:
     runs-on: ubuntu-22.04
+    needs: find_target_branches
+    strategy:
+      matrix:
+        target-branch: ${{ fromJSON(needs.find_target_branches.outputs.found_branches) }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -32,7 +51,7 @@ jobs:
       - name: Find existing PR
         id: list_prs
         run: |
-          pr_url=$(gh pr ls -S 'base:master' -H ${{ github.ref_name }} --json url | jq .[0].url)
+          pr_url=$(gh pr ls -S 'base:${{ matrix.target-branch }}' -H ${{ github.ref_name }} --json url | jq .[0].url)
           echo "PR_URL=$pr_url" >> $GITHUB_ENV
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -43,7 +62,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Create PR
         if: env.PR_URL == 'null'
-        run: PR_URL=$(gh pr create -B master -H ${{ github.ref_name }} --title 'Merge ${{ github.ref_name }} into master' --body 'Created by Github action') >> $GITHUB_ENV
+        run: PR_URL=$(gh pr create -B ${{ matrix.target-branch }} -H ${{ github.ref_name }} --title 'Merge ${{ github.ref_name }} into ${{ matrix.target-branch }}' --body 'Created by Github action') >> $GITHUB_ENV
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Comment PR
