@@ -34,11 +34,11 @@ runs:
       with:
         node-version: '22.x'
 
-    # Generate next tag
-    - name: Generate next tag
+    - name: Find later RC branches (and trunk)
       run: npm run find-later-rc-branches
       env:
         RC_BRANCH_TO_CHECK: ${{ inputs.rc-branch-name }}
         TRUNK_NAME: ${{ inputs.trunk-name }}
       shell: bash
       id: find_later_rc_branches
+      working-directory: ${{ github.action_path }}
