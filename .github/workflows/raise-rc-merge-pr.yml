@@ -57,7 +57,7 @@ jobs:
             .github/actions
       - name: Create Merge Branch
         run: |
-          git checkout -b ${{ env.MERGE_BRANCH_NAME }} ${{ matrix.target-branch }}
+          git branch ${{ env.MERGE_BRANCH_NAME }} ${{ matrix.target-branch }}
           git push origin ${{ env.MERGE_BRANCH_NAME }}
       - name: Find existing PR
         id: list_prs
