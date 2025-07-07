@@ -63,13 +63,13 @@ jobs:
       - name: Find existing PR
         id: list_prs
         run: |
-          pr_url=$(gh pr ls -S 'base:${{ matrix.target-branch }}' -H ${{ env.MERGE_BRANCH_NAME }} --json url | jq .[0].url)
+          pr_url=$(gh pr ls -S 'base:${{ env.MERGE_BRANCH_NAME }}' -H ${{ github.ref_name }} --json url | jq .[0].url)
           echo "EXISTING_PR_URL=$pr_url" >> $GITHUB_ENV
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Create PR
         if: env.EXISTING_PR_URL == 'null'
-        run: echo "NEW_PR_URL=$(gh pr create -B ${{ matrix.target-branch }} -H ${{ env.MERGE_BRANCH_NAME }} --title 'Merge ${{ github.ref_name }} into ${{ matrix.target-branch }}' --body 'Using staging branch ${{ env.MERGE_BRANCH_NAME }} Created by Github action')" >> $GITHUB_ENV
+        run: echo "NEW_PR_URL=$(gh pr create -B ${{ env.MERGE_BRANCH_NAME }} -H ${{ github.ref_name }} --title 'Merge ${{ github.ref_name }} into ${{ matrix.target-branch }}' --body 'Using staging branch ${{ env.MERGE_BRANCH_NAME }} Created by Github action')" >> $GITHUB_ENV
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Comment PR
