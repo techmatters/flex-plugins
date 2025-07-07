@@ -33,7 +33,7 @@ import {
   Container,
   ColumnarBlock,
   BottomButtonBar,
-  StyledNextStepButton,
+  PrimaryButton,
   FontOpenSans,
   Bold,
   DateRangeSpacer,
@@ -210,18 +210,12 @@ export const GeneralizedSearchForm: React.FC<OwnProps> = ({
         <BottomButtonBar
           style={{ position: 'fixed', bottom: '0', width: containerWidth + 40, borderTop: '1px solid #e1e3ea' }}
         >
-          <SearchFormClearButton
-            type="button"
-            secondary="true"
-            roundCorners={true}
-            onClick={clearForm}
-            disabled={formInvalid}
-          >
+          <SearchFormClearButton type="button" roundCorners={true} onClick={clearForm} disabled={formInvalid}>
             <Template code="Search-ClearFormButton" />
           </SearchFormClearButton>
-          <StyledNextStepButton type="submit" roundCorners={true} disabled={formInvalid}>
+          <PrimaryButton type="submit" roundCorners={true} disabled={formInvalid}>
             <Template code="SearchForm-Button" />
-          </StyledNextStepButton>
+          </PrimaryButton>
         </BottomButtonBar>
       </form>
     </FormProvider>

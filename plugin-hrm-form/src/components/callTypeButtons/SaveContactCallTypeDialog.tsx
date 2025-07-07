@@ -18,14 +18,8 @@ import React from 'react';
 import { Template } from '@twilio/flex-ui';
 
 import { Box, Row, HiddenText } from '../../styles';
-import {
-  CloseTaskDialog,
-  CloseTaskDialogText,
-  NonDataCallTypeDialogContainer,
-  ConfirmButton,
-  CancelButton,
-  CloseButton,
-} from './styles';
+import { CloseTaskDialog, CloseTaskDialogText, NonDataCallTypeDialogContainer } from './styles';
+import { ConfirmButton, CancelButton, CloseButton } from '../../styles/buttons';
 import TabPressWrapper from '../TabPressWrapper';
 
 type OwnProps = {
@@ -62,6 +56,7 @@ const SaveContactCallTypeDialog: React.FC<Props> = ({
         <Box marginBottom="32px">
           <Row>
             <ConfirmButton
+              id="Task-EndCallOrChat-Button"
               disabled={!isEnabled}
               data-fs-id="Task-EndCallOrChat-Button"
               autoFocus

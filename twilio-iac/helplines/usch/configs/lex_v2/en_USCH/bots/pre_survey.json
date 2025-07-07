@@ -1,0 +1,55 @@
+{
+  "pre_survey": {
+    "description": "Example specific usch/configs/lex_v2/en_USCH/bots Pre Survey bot",
+    "locale": "en_US",
+    "child_directed": true,
+    "idle_session_ttl_in_seconds": "600",
+    "type": "Bot",
+    "intents": {
+      "pre_survey": {
+        "utterances": [
+          {
+            "utterance": "trigger_pre_survey"
+          },
+          {
+            "utterance": "Incoming webchat contact"
+          }
+        ],
+        "initial_response": {
+          "message": "To help us better serve you, please answer the next four short questions. You will then be connected to a counselor. You can type '0' for any question.",
+          "slot_to_elicit": "aboutSelf"
+        },
+        "closing_response": {
+          "message": "Thank you for reaching out to our hotline! We will be with you shortly. Please note: A false report is a crime governed by federal and state laws, involving a person who, with intent to deceive, knowingly makes a false statement to a mandated reporter or law enforcement official that results in unwarranted government action. Childhelp's National Child Abuse Hotline is comprised of mandated reporters who will refer malicious or false reports to law enforcement for prosecution."
+        },
+        "slot_priorities": {
+          "1": {
+            "slot_name": "aboutSelf",
+            "slot_type_name": "yes_no",
+            "slot_question": "If you are texting about yourself press 1. If you are texting about someone else press 2.",
+            "failure_response": "We are having trouble understanding your response."
+          },
+          "2": {
+            "slot_name": "genderInput",
+            "slot_type_name": "genderInput",
+            "slot_question": "What is your gender identity?",
+            "variations" : ["In one or two words. What is your gender identity?","In just words. What is your gender identity?"],
+            "failure_response": "We are having trouble understanding your response."
+          },
+          "3": {
+            "slot_name": "childAge",
+            "slot_type_name": "age",
+            "slot_question": "How old are you?",
+            "failure_response": "We are having trouble understanding your response."
+          },
+          "4": {
+            "slot_name": "stateInput",
+            "slot_type_name": "AMAZON.State",
+            "slot_question": "What state are you texting from?",
+            "failure_response": "We are having trouble understanding your response."
+          }
+        }
+      }
+    }
+  }
+}

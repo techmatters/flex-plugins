@@ -17,7 +17,7 @@
             ],
             "maxRetries": 1,
             "allowInterrupt": true,
-            "messageSelectionStrategy": "Random",
+            "messageSelectionStrategy": "Ordered",
             "promptAttemptsSpecification": {
                 "Initial": {
                     "allowInterrupt": true,
@@ -65,6 +65,35 @@
                         "startTimeoutMs": 30000
                     }
                 }
+            }
+        },
+        "slotCaptureSetting": {
+            "captureNextStep": {
+                "dialogAction": {
+                    "type": "FulfillIntent"
+                },
+                "intent": {}
+            },
+            "failureResponse": {
+                "messageGroups": [
+                    {
+                        "message": {
+                            "plainTextMessage": {
+                                "value": "Desculpe, não posso ajudar neste momento."
+                            }
+                        }
+                    }
+                ],
+                "allowInterrupt": true
+            },
+            "failureNextStep": {
+                "dialogAction": {
+                    "type": "CloseIntent"
+                },
+                "intent": {}
+            },
+            "elicitationCodeHook": {
+                "enableCodeHookInvocation": true
             }
         }
     }

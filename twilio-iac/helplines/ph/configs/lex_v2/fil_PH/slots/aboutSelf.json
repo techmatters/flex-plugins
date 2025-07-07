@@ -1,8 +1,8 @@
 {
-    "slotName": "contact_options",
-    "slotTypeName": "contact_reason",
-    "intentName": "contact_reason",
-    "description": "Reason for contacting",
+    "slotName": "aboutSelf",
+    "slotTypeName": "yes_no",
+    "intentName": "pre_survey",
+    "description": "Slot aboutSelf for intent pre_survey",
     "valueElicitationSetting": {
         "slotConstraint": "Required",
         "promptSpecification": {
@@ -10,14 +10,14 @@
                 {
                     "message": {
                         "plainTextMessage": {
-                            "value": "Obrigada por nos contactar, escolha uma das opções abaixo antes de falar conosco:  1 - Você quer denunciar um conteúdo na Internet?  2 - Você precisa de ajuda para alguma violência que sofreu na Internet?  3 - Você é jornalista ou pesquisador e quer entrevista/dados da SaferNet?  4 -Nenhuma das opções acima"
+                            "value": "Ikaw ba ay nagrereport tungkol sa iyong sarili? Oo o Hindi"
                         }
                     }
                 }
             ],
             "maxRetries": 1,
             "allowInterrupt": true,
-            "messageSelectionStrategy": "Random",
+            "messageSelectionStrategy": "Ordered",
             "promptAttemptsSpecification": {
                 "Initial": {
                     "allowInterrupt": true,
@@ -65,6 +65,36 @@
                         "startTimeoutMs": 30000
                     }
                 }
+            }
+        },
+        "slotCaptureSetting": {
+            "captureNextStep": {
+                "dialogAction": {
+                    "type": "ElicitSlot",
+                    "slotToElicit": "csam"
+                },
+                "intent": {}
+            },
+            "failureResponse": {
+                "messageGroups": [
+                    {
+                        "message": {
+                            "plainTextMessage": {
+                                "value": "Pasensya na, nahihirapan akong umintindi. Ililipat ka na namin ngayon. Pakiantay lamang para sa isang kabataang responder"
+                            }
+                        }
+                    }
+                ],
+                "allowInterrupt": true
+            },
+            "failureNextStep": {
+                "dialogAction": {
+                    "type": "CloseIntent"
+                },
+                "intent": {}
+            },
+            "elicitationCodeHook": {
+                "enableCodeHookInvocation": true
             }
         }
     }
