@@ -4,7 +4,11 @@
     "type": "file-upload",
     "label": "Documento",
     "description": "Formatos de arquivos aceitos: Word, PDFs, or JPGs.\nArquivo não deve exceder 5MB",
-    "required": { "value": true, "message": "RequiredFieldError" }
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    },
+    "isPII": true
   },
   {
     "name": "comments",
@@ -12,6 +16,7 @@
     "type": "textarea",
     "placeholder": "",
     "rows": 20,
-    "width": 289
+    "width": 289,
+    "isPII": true
   }
 ]

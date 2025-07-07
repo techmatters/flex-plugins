@@ -13,7 +13,8 @@
         "value": "High",
         "label": "High"
       }
-    ]
+    ],
+    "isPII": false
   },
   {
     "name": "dispatchIncident",

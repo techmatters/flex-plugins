@@ -2,12 +2,14 @@
   {
     "name": "firstName",
     "label": "Keresztnév",
-    "type": "input"
+    "type": "input",
+    "isPII": true
   },
   {
     "name": "lastName",
     "label": "Vezetéknév",
-    "type": "input"
+    "type": "input",
+    "isPII": true
   },
   {
     "name": "relationshipToChild",
@@ -59,27 +61,32 @@
     "required": {
       "value": true,
       "message": "RequiredFieldError"
-    }
+    },
+    "isPII": false
   },
   {
     "name": "streetAddress",
     "label": "Utca, házszám",
-    "type": "input"
+    "type": "input",
+    "isPII": true
   },
   {
     "name": "city",
     "label": "Város",
-    "type": "input"
+    "type": "input",
+    "isPII": true
   },
   {
     "name": "postalCode",
     "label": "Irányítószám",
-    "type": "input"
+    "type": "input",
+    "isPII": true
   },
   {
     "name": "phone1",
     "label": "Telefonszám",
-    "type": "input"
+    "type": "input",
+    "isPII": true
   },
   {
     "name": "gender",
@@ -103,7 +110,8 @@
         "value": "Nem bináris",
         "label": "Nem bináris"
       }
-    ]
+    ],
+    "isPII": false
   },
   {
     "name": "age",
@@ -231,7 +239,8 @@
     "required": {
       "value": true,
       "message": "RequiredFieldError"
-    }
+    },
+    "isPII": false
   },
   {
     "name": "language",
@@ -259,6 +268,7 @@
         "value": "Egyéb",
         "label": "Egyéb"
       }
-    ]
+    ],
+    "isPII": false
   }
 ]

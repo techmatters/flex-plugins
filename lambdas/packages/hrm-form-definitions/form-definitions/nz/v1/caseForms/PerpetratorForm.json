@@ -16,13 +16,15 @@
     "required": {
       "value": true,
       "message": "RequiredFieldError"
-    }
+    },
+    "isPII": false
   },
   {
     "name": "riskDetails",
     "label": "Details for any additional people at risk",
     "type": "textarea",
-    "placeholder": ""
+    "placeholder": "",
+    "isPII": true
   },
   {
     "name": "relationshipToChild",
@@ -57,13 +59,15 @@
     "required": {
       "value": true,
       "message": "RequiredFieldError"
-    }
+    },
+    "isPII": false
   },
   {
     "name": "typeOfHarmDetails",
     "label": "Details of current harm - where possible use the person's direct words",
     "type": "textarea",
-    "placeholder": ""
+    "placeholder": "",
+    "isPII": true
   },
   {
     "name": "age",
@@ -162,7 +166,8 @@
     "required": {
       "value": true,
       "message": "RequiredFieldError"
-    }
+    },
+    "isPII": false
   },
   {
     "name": "gender",
@@ -202,13 +207,15 @@
     "required": {
       "value": true,
       "message": "RequiredFieldError"
-    }
+    },
+    "isPII": false
   },
   {
     "name": "relationshipDetails",
     "label": "Details of relationship",
     "type": "textarea",
-    "placeholder": "If multiple people are at risk, list all of their details and not just the person you spoke with."
+    "placeholder": "If multiple people are at risk, list all of their details and not just the person you spoke with.",
+    "isPII": true
   },
   {
     "name": "immediateDanger",
@@ -222,13 +229,15 @@
     "required": {
       "value": true,
       "message": "RequiredFieldError"
-    }
+    },
+    "isPII": false
   },
   {
     "name": "immediateDangerDetails",
     "label": "Details of immediate danger",
     "type": "textarea",
-    "placeholder": ""
+    "placeholder": "",
+    "isPII": true
   },
   {
     "name": "continuedAccess",
@@ -242,13 +251,15 @@
     "required": {
       "value": true,
       "message": "RequiredFieldError"
-    }
+    },
+    "isPII": false
   },
   {
     "name": "continuedAccessDetails",
     "label": "Details of access",
     "type": "textarea",
-    "placeholder": "If multiple people are at risk, list all of their details and not just the person you spoke with."
+    "placeholder": "If multiple people are at risk, list all of their details and not just the person you spoke with.",
+    "isPII": true
   },
   {
     "name": "expressedConcern",
@@ -262,19 +273,22 @@
     "required": {
       "value": true,
       "message": "RequiredFieldError"
-    }
+    },
+    "isPII": false
   },
   {
     "name": "riskLocation",
     "label": "Where is the location that the risk occurs?",
     "type": "textarea",
-    "placeholder": "If you have specific information like addresses, list it here."
+    "placeholder": "If you have specific information like addresses, list it here.",
+    "isPII": true
   },
   {
     "name": "pastInstances",
     "label": "How long ago and how often were any past instances of the risk?",
     "type": "textarea",
-    "placeholder": ""
+    "placeholder": "",
+    "isPII": true
   },
   {
     "name": "policeInvolved",
@@ -288,13 +302,15 @@
     "required": {
       "value": true,
       "message": "RequiredFieldError"
-    }
+    },
+    "isPII": false
   },
   {
     "name": "involnvolvementDetails",
     "label": "Details of involvement",
     "type": "textarea",
-    "placeholder": "Include which services and approximately when they were involved."
+    "placeholder": "Include which services and approximately when they were involved.",
+    "isPII": true
   },
   {
     "name": "anyoneAware",
@@ -308,12 +324,14 @@
     "required": {
       "value": true,
       "message": "RequiredFieldError"
-    }
+    },
+    "isPII": false
   },
   {
     "name": "personDetails",
     "label": "Details of person aware and actions taken",
     "type": "textarea",
-    "placeholder": ""
+    "placeholder": "",
+    "isPII": true
   }
 ]

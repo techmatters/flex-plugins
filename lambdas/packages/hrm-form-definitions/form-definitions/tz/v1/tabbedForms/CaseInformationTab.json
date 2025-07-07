@@ -6,7 +6,8 @@
     "required": {
       "value": true,
       "message": "RequiredFieldError"
-    }
+    },
+    "isPII": true
   },
   {
     "name": "signPosting",
@@ -17,27 +18,28 @@
         "value": "",
         "label": ""
       },
-    {
-      "value": "Social Welfare Officer",
-      "label": "Social Welfare Officer"
-    },
-    {
-      "value": "Police - Gender & Children's Desk",
-      "label": "Police - Gender & Children's Desk"
-    },
-    {
-      "value": "Local Government Authorities",
-      "label": "Local Government Authorities"
-    },
-    {
-      "value": "Other",
-      "label": "Other"
-    },
-    {
-      "value": "No Signposting Made",
-      "label": "No Signposting Made"
-    }
-    ]
+      {
+        "value": "Social Welfare Officer",
+        "label": "Social Welfare Officer"
+      },
+      {
+        "value": "Police - Gender & Children's Desk",
+        "label": "Police - Gender & Children's Desk"
+      },
+      {
+        "value": "Local Government Authorities",
+        "label": "Local Government Authorities"
+      },
+      {
+        "value": "Other",
+        "label": "Other"
+      },
+      {
+        "value": "No Signposting Made",
+        "label": "No Signposting Made"
+      }
+    ],
+    "isPII": false
   },
   {
     "name": "urgencyLevel",
@@ -48,18 +50,19 @@
         "value": "",
         "label": ""
       },
-    {
-      "value": "Level 1",
-      "label": "Level 1"
-    },
-    {
-      "value": "Level 2",
-      "label": "Level 2"
-    },
-    {
-      "value": "Level 3",
-      "label": "Level 3"
-    }
-    ]
+      {
+        "value": "Level 1",
+        "label": "Level 1"
+      },
+      {
+        "value": "Level 2",
+        "label": "Level 2"
+      },
+      {
+        "value": "Level 3",
+        "label": "Level 3"
+      }
+    ],
+    "isPII": false
   }
 ]

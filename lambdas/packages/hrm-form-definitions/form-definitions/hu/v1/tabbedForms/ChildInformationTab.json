@@ -2,12 +2,14 @@
   {
     "name": "firstName",
     "label": "Keresztnév",
-    "type": "input"
+    "type": "input",
+    "isPII": true
   },
   {
     "name": "lastName",
     "label": "Vezetéknév",
-    "type": "input"
+    "type": "input",
+    "isPII": true
   },
   {
     "name": "gender",
@@ -39,7 +41,8 @@
     "required": {
       "value": true,
       "message": "RequiredFieldError"
-    }
+    },
+    "isPII": false
   },
   {
     "name": "age",
@@ -167,22 +170,26 @@
     "required": {
       "value": true,
       "message": "RequiredFieldError"
-    }
+    },
+    "isPII": false
   },
   {
     "name": "streetAddress",
     "label": "Utca, házszám",
-    "type": "input"
+    "type": "input",
+    "isPII": true
   },
   {
     "name": "city",
     "label": "Város",
-    "type": "input"
+    "type": "input",
+    "isPII": true
   },
   {
     "name": "postalCode",
     "label": "Irányítószám",
-    "type": "input"
+    "type": "input",
+    "isPII": true
   },
   {
     "name": "language",
@@ -206,7 +213,8 @@
         "value": "Magyar",
         "label": "Magyar"
       }
-    ]
+    ],
+    "isPII": false
   },
   {
     "name": "nationality",
@@ -234,22 +242,26 @@
         "value": "Egyéb",
         "label": "Egyéb"
       }
-    ]
+    ],
+    "isPII": false
   },
   {
     "name": "schoolName",
     "label": "Iskola neve",
-    "type": "input"
+    "type": "input",
+    "isPII": true
   },
   {
     "name": "gradeLevel",
     "label": "Osztály",
-    "type": "input"
+    "type": "input",
+    "isPII": true
   },
   {
     "name": "professionalName",
     "label": "Segítő szakember neve, elérhetősége",
-    "type": "input"
+    "type": "input",
+    "isPII": true
   },
   {
     "name": "vulnerableGroups",
@@ -280,6 +292,7 @@
         "value": "LGBTQI+",
         "label": "LGBTQI+"
       }
-    ]
+    ],
+    "isPII": false
   }
 ]

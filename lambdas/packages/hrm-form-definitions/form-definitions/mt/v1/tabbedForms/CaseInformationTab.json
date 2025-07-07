@@ -6,11 +6,13 @@
     "required": {
       "value": true,
       "message": "RequiredFieldError"
-    }
+    },
+    "isPII": true
   },
   {
     "name": "repeatCaller",
     "label": "Repeat Caller?",
-    "type": "checkbox"
+    "type": "checkbox",
+    "isPII": false
   }
 ]
