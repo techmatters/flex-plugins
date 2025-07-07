@@ -104,4 +104,4 @@ jobs:
           token: ${{ env.GITHUB_ACTIONS_SLACK_BOT_TOKEN }}
           payload: |
             channel: ${{ env.ASELO_RELEASE_DEPLOY_CHANNEL_ID }}
-            text: '`[RC branches]` PR ${{ env.PR_URL }} ${{ env.NEW_PR_URL && 'raised' || 'updated' }} using workflow `${{ github.workflow }}`:rocket: because `${{ github.triggering_actor }}` merged changes to ${{ github.ref_name }} and these need to be merged to master. PLEASE MERGE THIS IMMEDIATELY'
+            text: '`[RC branches]` PR ${{ env.PR_URL }} ${{ env.NEW_PR_URL && 'raised' || 'updated' }} using workflow `${{ github.workflow }}`:rocket: because `${{ github.triggering_actor }}` merged changes to ${{ github.ref_name }} and these need to be merged to master. PLEASE MERGE THIS IMMEDIATELY.'
