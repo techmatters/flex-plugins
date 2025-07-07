@@ -69,7 +69,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Create PR
         if: env.EXISTING_PR_URL == 'null'
-        run: echo "NEW_PR_URL=$(gh pr create -B ${{ env.MERGE_BRANCH_NAME }} -H ${{ github.ref_name }} --title 'Merge ${{ github.ref_name }} into ${{ matrix.target-branch }}' --body 'Using staging branch ${{ env.MERGE_BRANCH_NAME }} Created by Github action')" >> $GITHUB_ENV
+        run: echo "NEW_PR_URL=$(gh pr create -B ${{ env.MERGE_BRANCH_NAME }} -H ${{ github.ref_name }} --title 'Merge ${{ github.ref_name }} into ${{ matrix.target-branch }}' --body 'Using staging branch ${{ env.MERGE_BRANCH_NAME }}.')" >> $GITHUB_ENV
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Comment PR
