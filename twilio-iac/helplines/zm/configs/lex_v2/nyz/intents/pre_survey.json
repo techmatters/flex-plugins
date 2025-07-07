@@ -1,7 +1,11 @@
 {
     "intentName": "pre_survey",
     "description": "Specific configs/lex_v2/ZM/bots Pre Survey bot",
-    "sampleUtterances": [],
+    "sampleUtterances": [
+        {
+            "utterance": "trigger_pre_survey"
+        }
+    ],
     "dialogCodeHook": {
         "enabled": false
     },
