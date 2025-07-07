@@ -57,23 +57,19 @@ jobs:
         id: list_prs
         run: |
           pr_url=$(gh pr ls -S 'base:${{ matrix.target-branch }}' -H ${{ github.ref_name }} --json url | jq .[0].url)
-          echo "PR_URL=$pr_url" >> $GITHUB_ENV
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: Set New PR variable
-        if: env.PR_URL == 'null'
-        run: NEW_PR_URL=true >> $GITHUB_ENV
+          echo "EXISTING_PR_URL=$pr_url" >> $GITHUB_ENV
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Create PR
-        if: env.PR_URL == 'null'
-        run: PR_URL=$(gh pr create -B ${{ matrix.target-branch }} -H ${{ github.ref_name }} --title 'Merge ${{ github.ref_name }} into ${{ matrix.target-branch }}' --body 'Created by Github action') >> $GITHUB_ENV
+        if: env.EXISTING_PR_URL == 'null'
+        run: NEW_PR_URL=$(gh pr create -B ${{ matrix.target-branch }} -H ${{ github.ref_name }} --title 'Merge ${{ github.ref_name }} into ${{ matrix.target-branch }}' --body 'Created by Github action') >> $GITHUB_ENV
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Comment PR
         run: gh pr comment ${{ env.PR_URL }} -b '${{ github.triggering_actor }} merged changes to ${{ github.ref_name }}'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_URL: ${{ env.NEW_PR_URL || env.EXISTING_PR_URL }}
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
