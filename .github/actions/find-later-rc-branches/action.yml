@@ -29,11 +29,17 @@ outputs:
 runs:
   using: "composite"
   steps:
+
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+        sparse-checkout-cone-mode: false
+        sparse-checkout: |
+          .github/actions
     - name: Use Node.js
       uses: actions/setup-node@v1
       with:
         node-version: '22.x'
-
     - name: Find later RC branches (and trunk)
       run: npm run find-later-rc-branches
       env:
