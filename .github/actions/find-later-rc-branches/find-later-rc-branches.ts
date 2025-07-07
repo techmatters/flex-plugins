@@ -19,7 +19,7 @@ import * as fs from "node:fs";
 
 
 async function findLaterBranches(): Promise<string[]> {
-  const patternToExtractVersions = /(?:origin\/)?v(?<majorString>[0-9]+)\.(?<minorString>[0-9]+)-rc$/
+  const patternToExtractVersions = /^(?:origin\/)?v(?<majorString>[0-9]+)\.(?<minorString>[0-9]+)-rc$/
   const rcBranchToCheck = process.env.RC_BRANCH_TO_CHECK;
   const { majorString, minorString } = rcBranchToCheck.match(patternToExtractVersions).groups
   const majorVersion = parseInt(majorString);
