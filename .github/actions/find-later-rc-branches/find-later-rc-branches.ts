@@ -25,9 +25,11 @@ async function findLaterBranches(): Promise<string[]> {
   const majorVersion = parseInt(majorString);
   const minorVersion = parseInt(minorString);
   console.debug(`Current major version: ${majorVersion}, minor: ${minorVersion}`);
+  const allBranches = await git.listBranches({ fs, remote: 'origin', dir: '../../../' });
+  console.debug('Branches being checked:', allBranches);
   return [
     process.env.TRUNK_NAME,
-    ...(await git.listBranches({ fs, remote: 'origin', dir: '../../../' })).filter(branchToTest => {
+    ...allBranches.filter(branchToTest => {
       const { majorString: majorStringToTest, minorString: minorStringToTest } = branchToTest.match(patternToExtractVersions)?.groups ?? {};
       if (!minorStringToTest || !majorStringToTest) return false;
       const majorVersionToTest = parseInt(majorStringToTest);
