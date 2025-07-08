@@ -1,10 +1,10 @@
 {
   "pre_survey": {
-    "description": "Helpline Specific ph/configs/lex_v2/en_PH/bots Pre Survey Intent Survey intentPre Survey bot",
+    "description": "Helpline Specific ph/configs/lex_v2/fil_PH/bots Pre Survey bot",
     "locale": "en_US",
     "child_directed": true,
     "idle_session_ttl_in_seconds": "600",
-    "staging_bot_alias_id": "R8H90HTJRE",
+    "staging_bot_alias_id": "TSTALIASID",
     "type": "Bot",
     "intents": {
       "pre_survey": {
@@ -17,32 +17,32 @@
           }
         ],
         "closing_response": {
-          "message": "We'll transfer you now. Please hold for a counsellor."
+          "message": "Pakiantay lamang para sa isang kabataang responder"
         },
         "slot_priorities": {
           "1": {
             "slot_name": "aboutSelf",
             "slot_type_name": "yes_no",
-            "slot_question": "Are you reporting about yourself? Please answer Yes or No.",
-            "failure_response": "Sorry, I'm having trouble understanding. We'll transfer you now. Please hold for a youth responder."
+            "slot_question": "Ikaw ba ay nagrereport tungkol sa iyong sarili? Oo o Hindi",
+            "failure_response": "Pasensya na, nahihirapan akong umintindi. Ililipat ka na namin ngayon. Pakiantay lamang para sa isang kabataang responder"
           },
           "2": {
             "slot_name": "csam",
             "slot_type_name": "yes_no",
-            "slot_question": "Are you reporting a child sexual abuse material (CSAM) or Incident of Sexual Exploitation? Respond 1 to report and 2 if you are not reporting.",
-            "failure_response": "Sorry, I'm having trouble understanding. We'll transfer you now. Please hold for a youth responder."
+            "slot_question": "Nais mo bang mag report ng Child Sexual Abuse Material (CSAM) o insidente ng Sexual Exploitation? Mangyaring tumugon 1 para sa pag-uulat ng CSAM, 2 kung hindi ka nag-uulat.",
+            "failure_response": "Pasensya na, nahihirapan akong umintindi. Ililipat ka na namin ngayon. Pakiantay lamang para sa isang kabataang responder"
           },
           "3": {
             "slot_name": "age",
             "slot_type_name": "age",
-            "slot_question": "How old are you?",
-            "failure_response": "Sorry, I'm having trouble understanding. We'll transfer you now. Please hold for a youth responder."
+            "slot_question": "Ilan taon ka na?",
+            "failure_response": "Pasensya na, nahihirapan akong umintindi. Ililipat ka na namin ngayon. Pakiantay lamang para sa isang kabataang responder"
           },
           "4": {
             "slot_name": "gender",
             "slot_type_name": "gender",
-            "slot_question": "What is your gender? Please enter 1.Male, 2.Female, 3.LGBTQ+",
-            "failure_response": "Sorry, I'm having trouble understanding. We'll transfer you now. Please hold for a youth responder."
+            "slot_question": "Gender: 1.Babae, 2.Lalaki, 3.LGBTQ+",
+            "failure_response": "Pasensya na, nahihirapan akong umintindi. Ililipat ka na namin ngayon. Pakiantay lamang para sa isang kabataang responder"
           }
         }
       }
