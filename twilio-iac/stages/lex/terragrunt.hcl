@@ -111,7 +111,7 @@ locals {
       ]...
     )
   })
- /*
+/*
   lex_v2_bots = local.enable_lex_v2 ? tomap({
     for language, bots in local.lex_v2_bot_languages :
     language => merge([
@@ -128,35 +128,24 @@ locals {
         )
       )
     ]...)
-  }) : {}
-*/
-lex_v2_bots = {}
-    debug_lex_v2_raw = {
+  }) : {}*/
+    lex_v2_bots = local.enable_lex_v2 ? tomap({
     for language, bots in local.lex_v2_bot_languages :
-    language => [
+    language => merge([
       for bot in bots :
-      {
-        name   = bot
-        result = try(
-          jsondecode(
-            file(
-              fileexists("/app/twilio-iac/helplines/${local.short_helpline}/configs/lex_v2/${language}/bots/${bot}.json") ?
-              "/app/twilio-iac/helplines/${local.short_helpline}/configs/lex_v2/${language}/bots/${bot}.json" :
-              fileexists("/app/twilio-iac/helplines/${local.short_helpline}/configs/lex_v2/common/bots/${bot}.json") ?
-              "/app/twilio-iac/helplines/${local.short_helpline}/configs/lex_v2/common/bots/${bot}.json" :
-              fileexists("/app/twilio-iac/helplines/configs/lex_v2/${language}/bots/${bot}.json") ?
-              "/app/twilio-iac/helplines/configs/lex_v2/${language}/bots/${bot}.json" :
-              "/app/twilio-iac/helplines/configs/lex_v2/${substr(language, 0, 2)}/bots/${bot}.json"
-            )
-          ),
-          "FAILED TO PARSE"
+      jsondecode(
+        file(
+    
+          "/app/twilio-iac/helplines/${local.short_helpline}/configs/lex_v2/${language}/bots/${bot}.json" 
+     
         )
-      }
-    ]
-  }
+      )
+    ]...)
+  }) : {}
+
 
   //leaving for debugging purposes
-  //print2 = run_cmd("echo", jsonencode(local.lex_v2_bots))
+  print2 = run_cmd("echo", jsonencode(local.lex_v2_bots))
   /*
   lex_v2_slot_types_names = local.enable_lex_v2 ? tomap({
     for language, bots in local.lex_v2_bot_languages :
@@ -321,7 +310,6 @@ lex_v2_slot_names = local.enable_lex_v2 ? tomap({
       }
     ]
   }) : {}
-  
 
   //leaving for debugging purposes
   //print9 = run_cmd("echo", jsonencode(local.lex_v2_slots))
@@ -351,6 +339,3 @@ terraform {
   source = "../../terraform-modules//stages/${include.root.locals.stage}"
 }
 
-output "debug_lex_v2_raw" {
-  value = local.debug_lex_v2_raw
-}
