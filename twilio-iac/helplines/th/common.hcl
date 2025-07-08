@@ -20,7 +20,7 @@ locals {
       master : {
         friendly_name            = "Master Workflow"
         templatefile             = "/app/twilio-iac/helplines/templates/workflows/master.tftpl"
-        task_reservation_timeout = 10
+        task_reservation_timeout = 30
       },
       queue_transfers : {
         friendly_name = "Queue Transfers Workflow"

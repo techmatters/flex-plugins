@@ -158,8 +158,8 @@
     }
   },
   {
-    "name": "location",
-    "label": "Location",
+    "name": "area",
+    "label": "Area",
     "type": "select",
     "defaultOption": {
       "value": "",

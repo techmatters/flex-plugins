@@ -2,6 +2,10 @@ variable "environment" {
   description = "The environment for the helpline."
   type        = string
 }
+variable helpline_region {
+  type        = string
+  description = "The region for the helpline."
+}
 
 variable "short_helpline" {
   description = "The short code for the helpline."
@@ -26,6 +30,8 @@ variable "lex_v2_bots" {
     child_directed              = optional(bool, true)
     idle_session_ttl_in_seconds = optional(number, 300)
     type                        = optional(string, "Bot")
+    production_bot_alias_id     = optional(string, "TSTALIASID")
+    staging_bot_alias_id        = optional(string, "TSTALIASID")
   }))
   default = null
   }
@@ -39,7 +45,11 @@ variable "lex_v2_slot_types" {
         slotTypeName = string,
         valueSelectionSetting = object({
           resolutionStrategy = string
+          regexFilter = optional(object({
+            pattern = string
+          }))
         })
+        parentSlotTypeSignature = optional(string)
         slotTypeValues = list( object({
           sampleValue = object({
             value    = string
@@ -177,6 +187,11 @@ variable "lex_v2_slots" {
                 value = string
               })
             })
+             variations = optional(list(object({
+                plainTextMessage = object({
+                  value = string
+                })
+              })), [])
           }))
           maxRetries                 = number
           allowInterrupt             = bool
@@ -207,12 +222,10 @@ variable "lex_v2_slots" {
         }))
         slotCaptureSetting = optional(object({
           captureNextStep = object({
-            dialogAction = object({
-              type = string
-            })
+            dialogAction = map(any)
             intent = optional(map(string))
           })
-          failureResponse = object({
+          failureResponse = optional(object({
             messageGroups = list(object({
               message = object({
                 plainTextMessage = object({
@@ -221,12 +234,9 @@ variable "lex_v2_slots" {
               })
             }))
             allowInterrupt = bool
-          })
+          }))
           failureNextStep = object({
-            dialogAction = object({
-              type         = string
-              slotToElicit = optional(string)
-            })
+            dialogAction = map(any)
             intent = optional(map(string)) 
           })
           elicitationCodeHook = optional(object({

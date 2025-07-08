@@ -15,13 +15,13 @@
  */
 
 import React from 'react';
-import { Button, ButtonBase, Collapse, FormControlLabel, Paper, Switch, withStyles } from '@material-ui/core';
+import { Collapse, FormControlLabel, Paper, Switch, withStyles } from '@material-ui/core';
 import { styled, Tabs, TabsProps } from '@twilio/flex-ui';
 import ChevronLeft from '@material-ui/icons/ChevronLeft';
 import { ButtonProps } from '@material-ui/core/Button';
 import { TransitionProps } from '@material-ui/core/transitions/transition';
 
-import { Flex, FontOpenSans, Row, StyledNextStepButton } from '../../styles';
+import { Flex, FontOpenSans, Row, SecondaryButton, TertiaryButton } from '../../styles';
 import HrmTheme from '../../styles/HrmTheme';
 import { BannerContainerProps, colors } from '../../styles/banners';
 
@@ -55,7 +55,7 @@ type StyledLinkProps = ButtonProps & { underline?: boolean };
 
 const UnstyledLinkButton = React.forwardRef<HTMLButtonElement, StyledLinkProps>(
   ({ onClick, underline, ...rest }, ref) => (
-    <Button
+    <TertiaryButton
       size="small"
       onClick={onClick}
       disableFocusRipple={underline}
@@ -108,7 +108,7 @@ export const ConfirmText = styled(PopoverText)`
   margin-bottom: 20px;
 `;
 
-export const CancelButton = styled(Button)`
+export const CancelButton = styled(SecondaryButton)`
   &:focus {
     background-color: rgba(34, 34, 34, 0.08);
   }
@@ -217,7 +217,7 @@ export const SectionTitleContainer = styled(Row)<ColorProps>`
 `;
 SectionTitleContainer.displayName = 'SectionTitleContainer';
 
-export const SectionTitleButton = styled(ButtonBase)`
+export const SectionTitleButton = styled(TertiaryButton)`
   width: 100%;
   padding: 0;
   &:focus {
@@ -225,30 +225,6 @@ export const SectionTitleButton = styled(ButtonBase)`
   }
 `;
 SectionTitleButton.displayName = 'SectionTitleButton';
-
-type SectionActionButton = {
-  padding?: string;
-};
-
-export const SectionActionButton = styled('button')<SectionActionButton>`
-  display: flex;
-  border: none;
-  background-color: transparent;
-  font-size: 13px;
-  font-weight: 600;
-  color: #1976d2;
-  padding: ${props => (props.padding ? props.padding : '0 6px')};
-  font-family: 'Open Sans';
-  cursor: pointer;
-  white-space: nowrap;
-  align-items: center;
-
-  :focus {
-    outline: auto;
-    outline-color: black;
-  }
-`;
-SectionActionButton.displayName = 'SectionActionButton';
 
 type CollapseProps = {
   expanded: boolean;
@@ -372,11 +348,6 @@ export const SwitchLabel = styled(SummaryText)`
   margin-right: 5px;
 `;
 SwitchLabel.displayName = 'SwitchLabel';
-
-export const PreviewActionButton = styled(StyledNextStepButton)`
-  padding: 5px 17px 5px 12px;
-`;
-PreviewActionButton.displayName = 'PreviewActionButton';
 
 export const SearchResultWarningContainer = styled('div')`
   width: 100%;

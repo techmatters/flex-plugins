@@ -15,12 +15,12 @@
  */
 
 import React from 'react';
-import { styled, Button, IconButton } from '@twilio/flex-ui';
-import { withStyles, MenuItem, MenuList, Paper, ButtonBase } from '@material-ui/core';
+import { styled, IconButton } from '@twilio/flex-ui';
+import { withStyles, MenuItem, MenuList, Paper } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 import BlockOutlinedIcon from '@material-ui/icons/BlockOutlined';
 
-import { FontOpenSans, ChipBase } from '../../styles';
+import { FontOpenSans, ChipBase, SecondaryButton } from '../../styles';
 import HrmTheme from '../../styles/HrmTheme';
 
 export const DetailsWrapper = styled(FontOpenSans)`
@@ -215,12 +215,10 @@ type ButtonProps = {
   onClick: () => void;
 };
 
-export const ProfileSectionEditButton = styled(Button)<ButtonProps>`
+export const ProfileSectionEditButton = styled(SecondaryButton)<ButtonProps>`
   width: 40px;
   height: 30px;
   border-radius: 4px;
-  color: ${HrmTheme.colors.categoryTextColor};
-  background-color: ${HrmTheme.colors.secondaryButtonColor};
   font-size: 14px;
   box-shadow: none;
   border: none;

@@ -20,8 +20,9 @@ import FolderIcon from '@material-ui/icons/CreateNewFolderOutlined';
 import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 
-import { getAseloConfigFlags } from '../hrmConfig';
-import { StyledNextStepButton, StyledAddNewCaseDropdown, StyledAddNewCaseDropdownList } from '../styles/buttons';
+import { getAseloConfigFlags } from '../../hrmConfig';
+import { SecondaryButton } from '../../styles/buttons';
+import { StyledAddNewCaseDropdown, StyledAddNewCaseDropdownList } from './styles';
 
 type OwnProps = {
   handleNewCaseType: () => void;
@@ -49,7 +50,7 @@ const AddCaseButton: React.FC<Props> = ({ handleNewCaseType, handleExistingCaseT
   };
 
   return (
-    <StyledNextStepButton
+    <SecondaryButton
       onBlurCapture={event => {
         if (!event.currentTarget.contains(event.relatedTarget)) {
           setDropdown(false);
@@ -57,11 +58,11 @@ const AddCaseButton: React.FC<Props> = ({ handleNewCaseType, handleExistingCaseT
       }}
       type="button"
       roundCorners
-      secondary="true"
       onClick={handleDropdown}
       data-fs-id="Contact-SaveAndAddToCase-Button"
       data-testid="BottomBar-SaveAndAddToCase-Button"
       disabled={!enabled}
+      style={{ padding: '4px 8px' }}
     >
       <StyledAddNewCaseDropdown position={position} dropdown={dropdown}>
         {hideAddToNewCaseButton ? null : (
@@ -92,7 +93,7 @@ const AddCaseButton: React.FC<Props> = ({ handleNewCaseType, handleExistingCaseT
       {!dropdown && (
         <KeyboardArrowDownIcon style={{ fontSize: '20px', marginLeft: '10px', width: '24px', height: '24px' }} />
       )}
-    </StyledNextStepButton>
+    </SecondaryButton>
   );
 };
 

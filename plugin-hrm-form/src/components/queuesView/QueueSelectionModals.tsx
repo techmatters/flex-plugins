@@ -19,8 +19,8 @@ import { Modal } from '@material-ui/core';
 import { SwitchboardSyncState } from 'hrm-types';
 import { Template, Manager } from '@twilio/flex-ui';
 
-import { Box, SaveAndEndButton, StyledNextStepButton, TertiaryButton } from '../../styles';
-import { CloseButton, NonDataCallTypeDialogContainer, CloseTaskDialog } from '../callTypeButtons/styles';
+import { DestructiveButton, PrimaryButton, TertiaryButton, CloseButton } from '../../styles';
+import { NonDataCallTypeDialogContainer, CloseTaskDialog } from '../callTypeButtons/styles';
 import TabPressWrapper from '../TabPressWrapper';
 import {
   ModalPaper,
@@ -114,7 +114,7 @@ export const SelectQueueModal: React.FC<SelectQueueModalProps> = ({ isOpen, onCl
           <TertiaryButton type="button" onClick={onClose}>
             <Template code="BottomBar-Cancel" />
           </TertiaryButton>
-          <StyledNextStepButton
+          <PrimaryButton
             onClick={() => {
               const currentQueue = selectedQueue;
               if (currentQueue) {
@@ -126,7 +126,7 @@ export const SelectQueueModal: React.FC<SelectQueueModalProps> = ({ isOpen, onCl
             }}
           >
             <Template code="Switchboard-ActivateSwitchboarding" />
-          </StyledNextStepButton>
+          </PrimaryButton>
         </ButtonGroup>
       </ModalPaper>
     </Modal>
@@ -167,9 +167,9 @@ export const TurnOffSwitchboardDialog: React.FC<TurnOffSwitchboardDialogProps> =
             <TertiaryButton type="button" onClick={onClose}>
               <Template code="BottomBar-Cancel" />
             </TertiaryButton>
-            <SaveAndEndButton onClick={onConfirm}>
+            <DestructiveButton onClick={onConfirm}>
               <Template code="Switchboard-ButtonTurnOffSwitchboard" />
-            </SaveAndEndButton>
+            </DestructiveButton>
           </ButtonGroup>
         </NonDataCallTypeDialogContainer>
       </TabPressWrapper>

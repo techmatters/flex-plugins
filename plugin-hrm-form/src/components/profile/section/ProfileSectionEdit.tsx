@@ -25,7 +25,7 @@ import type { ProfileSectionEditRoute } from '../../../states/routing/types';
 import { ProfileSection } from '../../../types/types';
 import NavigableContainer from '../../NavigableContainer';
 import { Flex, Container, Box, ColumnarBlock, ColumnarContent, FormTextArea } from '../../../styles';
-import { StyledNextStepButton } from '../../../styles/buttons';
+import { PrimaryButton } from '../../../styles/buttons';
 import { useEditProfileSection } from '../../../states/profile/hooks';
 import useProfileSectionTypes from '../../../states/configuration/hooks/useProfileSectionTypes';
 import { ProfileCommonProps } from '../types';
@@ -87,9 +87,9 @@ const ProfileSectionEdit = ({ task, profileId, sectionType, closeModal }: Props)
         </Box>
       </Container>
       <Flex justifyContent="flex-end" flexDirection="row">
-        <StyledNextStepButton roundCorners onClick={handleEdit}>
+        <PrimaryButton roundCorners onClick={handleEdit}>
           Save
-        </StyledNextStepButton>
+        </PrimaryButton>
       </Flex>
     </NavigableContainer>
   );
