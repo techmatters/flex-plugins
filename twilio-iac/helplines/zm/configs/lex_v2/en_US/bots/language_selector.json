@@ -1,5 +1,5 @@
 {
-  "pre_survey": {
+  "language_selector": {
     "description": "Specific configs/lex_v2/ZM/bots Pre Survey bot",
     "locale": "en_US",
     "child_directed": true,
