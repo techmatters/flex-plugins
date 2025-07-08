@@ -18,6 +18,7 @@ import { styled } from '@twilio/flex-ui';
 
 import { Flex } from './layout';
 import HrmTheme from './HrmTheme';
+import { PrimaryButton, SecondaryButton, TertiaryButton } from './buttons';
 
 export const FiltersContainer = styled(Flex)`
   align-items: center;
@@ -37,7 +38,7 @@ export const MainTitle = styled('h1')`
 `;
 MainTitle.displayName = 'MainTitle';
 
-export const FiltersResetAll = styled('button')`
+export const FiltersResetAll = styled(TertiaryButton)`
   background-color: transparent;
   color: #1876d1;
   border: none;
@@ -244,31 +245,15 @@ export const FiltersBottomButtons = styled(Flex)`
 `;
 FiltersBottomButtons.displayName = 'FiltersBottomButtons';
 
-export const FiltersApplyButton = styled('button')`
+export const FiltersApplyButton = styled(PrimaryButton)`
   padding: 5px 19px;
-  background-color: #192b33;
-  color: white;
-  font-family: 'Open Sans';
   font-size: 13px;
   font-weight: 600;
   border-radius: 4px;
-  border: none;
-  cursor: pointer;
-
-  &:hover {
-    background-color: rgba(25, 43, 51, 0.8);
-  }
-
-  &:disabled {
-    background-color: ${HrmTheme.colors.disabledColor};
-    &:hover {
-      cursor: not-allowed;
-    }
-  }
 `;
 FiltersApplyButton.displayName = 'FiltersApplyButton';
 
-export const FiltersClearButton = styled(FiltersApplyButton)`
+export const FiltersClearButton = styled(SecondaryButton)`
   background-color: transparent;
   color: #192b33;
 

@@ -25,7 +25,7 @@ import { Edit } from '@material-ui/icons';
 import { Grid } from '@material-ui/core';
 
 import { useProfile } from '../../states/profile/hooks';
-import { Box, Flex } from '../../styles';
+import { Box, Flex, TertiaryButton } from '../../styles';
 import {
   Contact,
   ContactRawJson,
@@ -36,7 +36,7 @@ import {
   RouterTask,
   StandaloneITask,
 } from '../../types/types';
-import { ContactAddedFont, ContactDetailsIcon, SectionActionButton } from '../search/styles';
+import { ContactAddedFont, ContactDetailsIcon } from '../search/styles';
 import ContactDetailsSection from './ContactDetailsSection';
 import { SectionEntry, SectionEntryValue } from '../common/forms/SectionEntry';
 import { channelTypes, isChatChannel, isVoiceChannel } from '../../states/DomainConstants';
@@ -58,7 +58,7 @@ import ContactRemovedFromCaseBanner from '../caseMergingBanners/ContactRemovedFr
 import { selectCaseMergingBanners } from '../../states/case/caseBanners';
 import { isSmsChannelType } from '../../utils/groupedChannels';
 import getCanEditContact from '../../permissions/canEditContact';
-import AddCaseButton from '../AddCaseButton';
+import AddCaseButton from '../tabbedForms/AddCaseButton';
 import openNewCase from '../case/openNewCase';
 import { formatCsamReport, formatResourceReferral } from './helpers';
 import ContactInProgressBanners from './ContactInProgressBanners';
@@ -215,12 +215,12 @@ const ContactDetailsHome: React.FC<Props> = function ({
   const EditIcon = ContactDetailsIcon(Edit);
 
   const externalReportButton = () => (
-    <SectionActionButton padding="0" type="button" onClick={() => createDraftCsamReport()}>
+    <TertiaryButton type="button" onClick={() => createDraftCsamReport()}>
       <EditIcon style={{ fontSize: '14px', padding: '-1px 6px 0 6px', marginRight: '6px' }} />
       <Grid item xs={12}>
         <Template code="ContactDetails-GeneralDetails-externalReport" />
       </Grid>
-    </SectionActionButton>
+    </TertiaryButton>
   );
 
   const loadConversationIntoOverlay = async () => {
@@ -269,10 +269,10 @@ const ContactDetailsHome: React.FC<Props> = function ({
   };
 
   const profileLink = featureFlags.enable_client_profiles && !isProfileRoute && savedContact.profileId && canView && (
-    <SectionActionButton padding="0" type="button" onClick={() => openProfileModal(savedContact.profileId)}>
+    <TertiaryButton type="button" onClick={() => openProfileModal(savedContact.profileId)}>
       <Icon icon="DefaultAvatar" />
       <Template code="Profile-ViewClient" />
-    </SectionActionButton>
+    </TertiaryButton>
   );
 
   const addedToCaseBanner = () => <ContactAddedToCaseBanner taskId={task.taskSid} contactId={savedContact.id} />;

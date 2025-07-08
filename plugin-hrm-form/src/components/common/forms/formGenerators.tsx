@@ -47,6 +47,7 @@ import {
 } from '../../../styles';
 import type { HTMLElementRef } from './types';
 import UploadFileInput from './UploadFileInput';
+import { getTemplateStrings } from '../../../hrmConfig';
 
 const ConnectForm: React.FC<{
   children: <P extends ReturnType<typeof useFormContext>>(args: P) => JSX.Element;

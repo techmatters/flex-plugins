@@ -46,7 +46,7 @@ locals {
         messaging_mode       = "conversations"
         channel_type         = "messenger"
         contact_identity     = "messenger:325981127456443"
-        templatefile         = "/app/twilio-iac/helplines/mt/templates/studio-flows/messaging-lex-conv.tftpl"
+        templatefile         = "/app/twilio-iac/helplines/mt/templates/studio-flows/messaging-lex-conv-lambda.tftpl"
         channel_flow_vars    = {}
         chatbot_unique_names = []
         enable_datadog_monitor = true
@@ -62,7 +62,7 @@ locals {
         messaging_mode       = "conversations"
         channel_type         = "whatsapp"
         contact_identity     = "whatsapp:+15077097720"
-        templatefile         = "/app/twilio-iac/helplines/mt/templates/studio-flows/messaging-whatsapp-lex-conv.tftpl"
+        templatefile         = "/app/twilio-iac/helplines/mt/templates/studio-flows/messaging-whatsapp-lex-conv-lambda.tftpl"
         channel_flow_vars    = {
            regex_allowed_test_numbers = "whatsapp:\\+(<SHORT_CODE_HERE>)\\d{6,20}"
         }
@@ -72,7 +72,7 @@ locals {
         messaging_mode       = "conversations"
         channel_type         = "custom"
         contact_identity     = "instagram"
-        templatefile         = "/app/twilio-iac/helplines/mt/templates/studio-flows/messaging-lex-conv.tftpl"
+        templatefile         = "/app/twilio-iac/helplines/mt/templates/studio-flows/messaging-lex-conv-lambda.tftpl"
         channel_flow_vars    = {}
         chatbot_unique_names = []
         enable_datadog_monitor = true
@@ -85,5 +85,6 @@ locals {
         }
       }
     }
+    get_profile_flags_for_identifier_base_url = "https://hrm-production-eu.tl.techmatters.org/lambda/twilio/account-scoped"
   }
 }

@@ -19,8 +19,8 @@ import { Template } from '@twilio/flex-ui';
 import { useDispatch, useSelector } from 'react-redux';
 import { DefinitionVersion } from 'hrm-form-definitions';
 
-import { CaseContainer, CaseDetailsBorder, ViewButton } from './styles';
-import { BottomButtonBar, Box, SaveAndEndButton } from '../../styles';
+import { CaseContainer, CaseDetailsBorder } from './styles';
+import { BottomButtonBar, Box, DestructiveButton, TertiaryButton } from '../../styles';
 import CaseOverviewHeader from './caseOverview/CaseOverviewHeader';
 import CaseOverview from './caseOverview';
 import Timeline from './timeline/Timeline';
@@ -164,9 +164,9 @@ const CaseHome: React.FC<CaseHomeProps> = ({ task, handlePrintCase, handleClose,
               titleCode={hasMoreActivities ? 'Case-Timeline-RecentTitle' : 'Case-Timeline-Title'}
             />
             {hasMoreActivities && (
-              <ViewButton style={{ marginTop: '10px' }} withDivider={false} onClick={onViewFullTimelineClick}>
+              <TertiaryButton style={{ marginTop: '10px' }} onClick={onViewFullTimelineClick}>
                 <Template code="Case-Timeline-OpenFullTimelineButton" />
-              </ViewButton>
+              </TertiaryButton>
             )}
           </CaseDetailsBorder>
         </Box>
@@ -184,9 +184,9 @@ const CaseHome: React.FC<CaseHomeProps> = ({ task, handlePrintCase, handleClose,
       </CaseContainer>
       {isNewContact && (
         <BottomButtonBar>
-          <SaveAndEndButton roundCorners onClick={handleSaveAndEnd} data-testid="BottomBar-SaveCaseAndEnd">
+          <DestructiveButton roundCorners onClick={handleSaveAndEnd} data-testid="BottomBar-SaveCaseAndEnd">
             <Template code="BottomBar-SaveAndEnd" />
-          </SaveAndEndButton>
+          </DestructiveButton>
         </BottomButtonBar>
       )}
     </NavigableContainer>

@@ -29,6 +29,7 @@ locals {
   services_flex_chat_service_sid        = local.provision_config.services_flex_chat_service_sid
   task_router_workflow_sids             = local.provision_config.task_router_workflow_sids
   task_router_task_channel_sids         = local.provision_config.task_router_task_channel_sids
+  task_router_task_queue_sids           = local.provision_config.task_router_task_queue_sids
 
 
   stage = "configure"
@@ -132,6 +133,21 @@ resource "aws_ssm_parameter" "hrm_static_api_key_v2" {
   tags = {
     Environment = lower(var.environment)
     Name        = "/${lower(var.environment)}/twilio/${local.secrets.twilio_account_sid}/static_key"
+    Terraform   = true
+  }
+}
+
+
+resource "aws_ssm_parameter" "twilio_switchboard_queue_sid" {
+  count       = contains(keys(local.task_router_task_queue_sids), "switchboard") ? 1 : 0
+  name        = "/${lower(var.environment)}/twilio/${nonsensitive(local.secrets.twilio_account_sid)}/switchboard_queue_sid"
+  type        = "SecureString"
+  value       = local.task_router_task_queue_sids["switchboard"]
+  description = "Twilio account - Switchboard Queue SID"
+
+  tags = {
+    Environment = lower(var.environment)
+    Name        = "/${lower(var.environment)}/twilio/${nonsensitive(local.secrets.twilio_account_sid)}/switchboard_queue_sid"
     Terraform   = true
   }
 }

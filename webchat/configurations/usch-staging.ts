@@ -43,7 +43,7 @@ const preEngagementConfig: PreEngagementFormDefinition = {
     {
       label: 'How old are you?',
       type: 'select',
-      name: 'age',
+      name: 'childAge',
       required: true,
       defaultValue: '',
       options: [
@@ -429,7 +429,8 @@ const preEngagementConfig: PreEngagementFormDefinition = {
     {
       label: 'Are you reaching out on behalf of yourself or another person?',
       type: 'select',
-      name: 'callingAboutSelf',
+      defaultValue: 'Yes',
+      name: 'aboutSelf',
       options: [
         {
           "value": "Yes",
@@ -444,14 +445,15 @@ const preEngagementConfig: PreEngagementFormDefinition = {
     {
       label: 'What is your preferred language?',
       type: 'select',
+      defaultValue: 'en-US',
       name: 'language',
       options: [
         {
-          "value": "English",
+          "value": "en-US",
           "label": "English"
         },
         {
-          "value": "Other",
+          "value": "en",
           "label": "Other"
         }
       ],
@@ -460,7 +462,7 @@ const preEngagementConfig: PreEngagementFormDefinition = {
       type: 'checkbox',
       name: 'termsAndConditions',
       label:
-        'I\'ve read and accept the <a href="https://en.wikipedia.org/wiki/Terms_of_service">Terms and Conditions</a>',
+        'I\'ve read and accept the <a href="https://www.childhelphotline.org/terms-of-service/">Terms and Conditions</a>',
       required: {
         value: true,
         message: "Sorry, if you don't accept our terms and conditions we can't provide counseling to you.",
@@ -471,6 +473,18 @@ const preEngagementConfig: PreEngagementFormDefinition = {
 
 const translations: Translations = {
   'en-US': {
+    WelcomeMessage: 'Welcome to ChildHelp',
+    PreEngagementConfigDescription : 'To best serve you, answer 4 short questions and you will then be connected to a counselor. You can select "Prefer not to answer" for any question.',
+    MessageCanvasTrayContent: '',
+    MessageInputDisabledReasonHold:
+      "Thank you very much for this information. We'll transfer you now. Please hold for a counselor.",
+    AutoFirstMessage: 'Incoming webchat contact from',
+    TypingIndicator: 'Counselor is typing',
+    StartChat: 'Start Chat!',
+    MessageCanvasTrayButton: 'Start New Chat',
+    Nickname: 'Nickname',
+  },
+  'Other': {
     WelcomeMessage: 'Welcome to ChildHelp',
     PreEngagementConfigDescription : 'To best serve you, answer 4 short questions and you will then be connected to a counselor. You can select "Prefer not to answer" for any question.',
     MessageCanvasTrayContent: '',

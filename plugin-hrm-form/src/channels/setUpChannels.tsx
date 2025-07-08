@@ -156,7 +156,7 @@ export const setupInstagramChatChannel = () => {
     task => task.channelType === 'instagram' || task.attributes.customChannelType === 'instagram',
   );
 
-  const icon = <InstagramIcon width="24px" height="24px" color="white" />;
+  const icon = <InstagramIcon width="24px" height="24px" />;
   InstagramChatChannel.icons = generateIcons(icon);
 
   maskChannelStringsWithIdentifiers(InstagramChatChannel);

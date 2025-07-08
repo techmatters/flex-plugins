@@ -1,6 +1,6 @@
 {
   "survey":{
-    "ChildInformationTab":[],
+    "ChildInformationTab":["age", "gender"],
     "CallerInformationTab":[]
   },
   "preEngagement":{
