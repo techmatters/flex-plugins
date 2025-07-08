@@ -5,6 +5,7 @@
     "child_directed": true,
     "idle_session_ttl_in_seconds": "600",
     "staging_bot_alias_id":"CPV1X4E6ZN",
+    "production_bot_alias_id":"5IBQGCUKQI",
     "type": "Bot",
     "intents": {
       "pre_survey": {
