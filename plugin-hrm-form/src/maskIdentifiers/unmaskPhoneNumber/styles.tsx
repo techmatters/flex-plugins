@@ -16,7 +16,7 @@
 
 import { styled } from '@twilio/flex-ui';
 
-import { TransferStyledButton } from '../../styles/buttons';
+import { TransferButton } from '../../styles/buttons';
 
 export const PhoneNumberPopperText = styled('p')`
   font-size: 15px;
@@ -25,9 +25,8 @@ export const PhoneNumberPopperText = styled('p')`
 `;
 PhoneNumberPopperText.displayName = 'PhoneNumberPopperText';
 
-export const UnmaskStyledButton = styled(TransferStyledButton)`
+export const UnmaskStyledButton = styled(TransferButton)`
   padding: 0px 4px;
-  background: ${props => (props.background ? props.background : '#ECEDF1')};
   &:hover:not([disabled]) {
     padding: 0 3px;
   }

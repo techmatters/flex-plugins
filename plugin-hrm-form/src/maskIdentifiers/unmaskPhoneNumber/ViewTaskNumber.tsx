@@ -21,8 +21,7 @@ import { getFormattedNumberFromTask } from '../../utils/task';
 import EyeOpenIcon from './EyeOpenIcon';
 import EyeCloseIcon from './EyeCloseIcon';
 import { PhoneNumberPopperText, UnmaskStyledButton } from './styles';
-import { Box, HiddenText } from '../../styles';
-import { CloseButton } from '../../components/callTypeButtons/styles';
+import { Box, HiddenText, CloseButton } from '../../styles';
 
 type Props = ThemeProps & { task?: ITask; isPositionModified?: boolean };
 

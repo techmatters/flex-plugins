@@ -21,12 +21,13 @@ import { DataCallTypes } from 'hrm-types';
 
 import {
   ContactDetailsIcon,
-  SectionActionButton,
+  // SectionActionButton,
   SectionCollapse,
   SectionTitleButton,
   SectionTitleContainer,
   SectionTitleText,
 } from '../search/styles';
+import { TertiaryButton } from '../../styles';
 
 const ArrowDownIcon = ContactDetailsIcon(ArrowDropDownTwoTone);
 const ArrowRightIcon = ContactDetailsIcon(ArrowRightTwoTone);
@@ -87,20 +88,20 @@ const ContactDetailsSection: React.FC<Props> = ({
         </SectionTitleButton>
 
         {showActionIcons && showCopyButton && (
-          <SectionActionButton
+          <TertiaryButton
             onClick={e => {
               handleOpenConnectDialog(e, callType);
             }}
           >
             <LinkIcon style={{ fontSize: '18px', padding: '-1px 6px 0 6px', marginRight: '6px' }} />
             <Template code="ContactCopyButton" />
-          </SectionActionButton>
+          </TertiaryButton>
         )}
         {showEditButton && (
-          <SectionActionButton type="button" onClick={handleEditClick}>
+          <TertiaryButton type="button" onClick={handleEditClick}>
             <EditIcon style={{ fontSize: '14px', padding: '-1px 6px 0 6px', marginRight: '6px' }} />
             <Template code="EditButton" />
-          </SectionActionButton>
+          </TertiaryButton>
         )}
         {extraActionButton}
       </SectionTitleContainer>

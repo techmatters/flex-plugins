@@ -9,6 +9,7 @@ terraform {
 
 locals {
   name_prefix = "${var.environment}_${var.short_helpline}_${var.language}"
+  ssm_variable_name_prefix = "/${var.environment}/serverless/bots/${lower(var.short_helpline)}_${lower(var.language)}"
   intent_slot_pairs = flatten([
     for intent in var.lex_v2_intents : [
       for slot in intent.config.slotPriorities : {
@@ -39,6 +40,7 @@ data "aws_iam_role" "role-lex-v2-bot" {
 }
 
 resource "aws_lexv2models_bot" "this" {
+  provider    = aws.hl-region
   for_each = var.lex_v2_bots
   name     = replace("${local.name_prefix}_${each.key}", "2", "")
   description = each.value.description
@@ -72,6 +74,7 @@ resource "aws_lexv2models_bot_version" "this" {
 }
 */
 resource "aws_lexv2models_bot_locale" "this" {
+  provider    = aws.hl-region
   for_each                         = var.lex_v2_bots
   bot_id                           = aws_lexv2models_bot.this["${each.key}"].id
   bot_version                      = "DRAFT"
@@ -81,10 +84,13 @@ resource "aws_lexv2models_bot_locale" "this" {
 }
 
 resource "aws_lexv2models_slot_type" "this" {
+  provider    = aws.hl-region
   for_each = {
     for idx, slot_type in var.lex_v2_slot_types :
     "${slot_type.bot_name}_${slot_type.config.slotTypeName}" => slot_type
+    if !startswith(slot_type.config.slotTypeName, "AMAZON")
   }
+
   bot_id                           = aws_lexv2models_bot.this["${each.value.bot_name}"].id
   bot_version                      = aws_lexv2models_bot_locale.this["${each.value.bot_name}"].bot_version
   name                             = "${each.value.config.slotTypeName}"
@@ -92,7 +98,18 @@ resource "aws_lexv2models_slot_type" "this" {
 
   value_selection_setting {
     resolution_strategy = each.value.config.valueSelectionSetting.resolutionStrategy
+    dynamic "regex_filter" {
+      for_each = each.value.config.valueSelectionSetting.regexFilter != null ? [each.value.config.valueSelectionSetting.regexFilter] : []
+      content {
+        pattern = regex_filter.value.pattern
+      }
+    }
   }
+  parent_slot_type_signature = (
+    each.value.config.parentSlotTypeSignature != null && each.value.config.parentSlotTypeSignature != ""
+    ? each.value.config.parentSlotTypeSignature
+    : null
+  )
 
   dynamic "slot_type_values" {
     for_each = each.value.config.slotTypeValues
@@ -127,6 +144,7 @@ Intents are pretty buggy, nothing is actually added to the intent when the resou
 */
 
 resource "aws_lexv2models_intent" "this" {
+  provider    = aws.hl-region
   for_each = {
     for idx, intent in var.lex_v2_intents :
     "${intent.bot_name}_${intent.config.intentName}" => intent
@@ -225,6 +243,7 @@ resource "aws_lexv2models_intent" "this" {
 }
 
 resource "aws_lexv2models_slot" "this" {
+  provider    = aws.hl-region
   for_each = {
     for idx, slot in var.lex_v2_slots :
     "${slot.config.intentName}_${slot.config.slotName}" => slot
@@ -235,7 +254,7 @@ resource "aws_lexv2models_slot" "this" {
   intent_id   = split(":", aws_lexv2models_intent.this["${each.value.bot_name}_${each.value.config.intentName}"].id)[0] 
   locale_id   = aws_lexv2models_bot_locale.this["${each.value.bot_name}"].locale_id
   name        = each.value.config.slotName
-  slot_type_id = split(",", aws_lexv2models_slot_type.this["${each.value.bot_name}_${each.value.config.slotTypeName}"].id)[3]
+  slot_type_id = startswith(each.value.config.slotTypeName, "AMAZON") ? each.value.config.slotTypeName : split(",", aws_lexv2models_slot_type.this["${each.value.bot_name}_${each.value.config.slotTypeName}"].id)[3]
   description  = each.value.config.description
 
   value_elicitation_setting {
@@ -375,6 +394,40 @@ Based on what is writen on the intent resource. This will actually add all the s
 This is not ideal, but it works.
  */
 
+resource "null_resource" "update_slots" {
+
+    triggers = {
+        always_run = timestamp()
+    }
+    for_each = {
+      for idx, slot in var.lex_v2_slots :
+      "${slot.config.intentName}_${slot.config.slotName}" => slot
+    }
+
+    provisioner "local-exec" {
+        environment = {
+          AWS_REGION = var.helpline_region
+        }
+        command = <<EOT
+        aws lexv2-models update-slot \
+        --bot-id ${aws_lexv2models_bot.this[each.value.bot_name].id} \
+        --bot-version ${aws_lexv2models_bot_locale.this[each.value.bot_name].bot_version} \
+        --locale-id ${aws_lexv2models_bot_locale.this[each.value.bot_name].locale_id} \
+        --intent-id ${split(":", aws_lexv2models_intent.this["${each.value.bot_name}_${each.value.config.intentName}"].id)[0]} \
+        --slot-id ${split(",", aws_lexv2models_slot.this["${each.value.config.intentName}_${each.value.config.slotName}"].id)[4]}  \
+        --slot-name ${each.value.config.slotName} \
+        --slot-type-id ${startswith(each.value.config.slotTypeName, "AMAZON") ? each.value.config.slotTypeName : split(",", aws_lexv2models_slot_type.this["${each.value.bot_name}_${each.value.config.slotTypeName}"].id)[3]} \
+        --value-elicitation-setting '${replace(jsonencode(each.value.config.valueElicitationSetting), "'", "'\\''")}'
+        EOT
+    }
+    
+}
+resource "time_sleep" "wait_10_seconds" {
+  create_duration = "10s"
+
+  depends_on = [null_resource.update_slots]
+}
+
 resource "null_resource" "update_intent_settings" {
     triggers = {
         always_run = timestamp()
@@ -385,6 +438,9 @@ resource "null_resource" "update_intent_settings" {
     }
 
     provisioner "local-exec" {
+        environment = {
+          AWS_REGION = var.helpline_region
+        }
         command = <<EOT
         aws lexv2-models update-intent \
         --bot-id ${aws_lexv2models_bot.this[each.value.bot_name].id} \
@@ -392,17 +448,26 @@ resource "null_resource" "update_intent_settings" {
         --locale-id ${aws_lexv2models_bot_locale.this[each.value.bot_name].locale_id} \
         --intent-id ${split(":", aws_lexv2models_intent.this["${each.value.bot_name}_${each.value.config.intentName}"].id)[0]} \
         --intent-name ${each.value.config.intentName} \
-        ${each.value.config.intentClosingSetting != null ? "--intent-closing-setting '${jsonencode(each.value.config.intentClosingSetting)}'" : ""} \
-        ${each.value.config.initialResponseSetting != null ? "--initial-response-setting '${jsonencode(each.value.config.initialResponseSetting)}'" : ""} \
-        ${each.value.config.fulfillmentCodeHook != null ? "--fulfillment-code-hook '${jsonencode(each.value.config.fulfillmentCodeHook)}'" : ""} \
-        ${each.value.config.sampleUtterances != null ? "--sample-utterances '${jsonencode(each.value.config.sampleUtterances)}'" : ""} \
+        ${each.value.config.intentClosingSetting != null ? "--intent-closing-setting '${replace(jsonencode(each.value.config.intentClosingSetting), "'", "'\\''")}'" : ""} \
+        ${each.value.config.initialResponseSetting != null ? "--initial-response-setting '${replace(jsonencode(each.value.config.initialResponseSetting), "'", "'\\''")}'" : ""} \
+        ${each.value.config.fulfillmentCodeHook != null ? "--fulfillment-code-hook '${replace(jsonencode(each.value.config.fulfillmentCodeHook), "'", "'\\''")}'" : ""} \
+        ${each.value.config.sampleUtterances != null ? "--sample-utterances '${replace(jsonencode(each.value.config.sampleUtterances), "'", "'\\''")}'" : ""} \
         ${lookup(local.grouped_intent_slots, each.key, null) != null ? "--slot-priorities '${local.grouped_intent_slots[each.key].slot_priorities}'"  : ""} \
         EOT
     }
-   /* depends_on = [
-    time_sleep.wait_10_seconds,
-    null_resource.update_intent_slots
-  ]*/
+   depends_on = [
+    time_sleep.wait_10_seconds
+  ]
 }
 
 
+resource "aws_ssm_parameter" "bot_config" {
+  for_each = var.lex_v2_bots
+  name  = "${replace("${local.ssm_variable_name_prefix}_${each.key}", "2", "")}"
+  type  = "SecureString"
+  value = jsonencode({
+    botId      = "${aws_lexv2models_bot.this["${each.key}"].id}"
+    botAliasId =  var.environment == "staging" ? "${each.value.staging_bot_alias_id}" : "${each.value.production_bot_alias_id}"
+    localeId   = "${each.value.locale}"
+  })
+}

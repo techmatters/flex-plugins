@@ -2,23 +2,27 @@
   {
     "name": "status",
     "label": "Case Status",
-    "type": "select"
+    "type": "select",
+    "isPII": false
   },
   {
     "name": "childIsAtRisk",
     "label": "Child is at risk",
-    "type": "checkbox"
+    "type": "checkbox",
+    "isPII": false
   },
   {
     "name": "followUpDate",
     "label": "Follow Up Date",
-    "type": "date-input"
+    "type": "date-input",
+    "isPII": false
   },
 
   {
     "name": "reportDate",
     "label": "Date of Report",
-    "type": "date-input"
+    "type": "date-input",
+    "isPII": false
   },
   {
     "name": "summary",
@@ -42,7 +46,8 @@
       { "value": "Pacific", "label": "Pacific" },
       { "value": "South LA", "label": "South LA" },
       { "value": "Valley", "label": "Valley" }
-   ]
+   ],
+    "isPII": false
   },
   {
     "name": "priority",
@@ -53,6 +58,7 @@
       { "value": "High", "label": "High" },
       { "value": "Medium", "label": "Medium" },
       { "value": "Low", "label": "Low" }
-    ]
+    ],
+    "isPII": false
   }
 ]

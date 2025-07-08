@@ -4,7 +4,6 @@
         "resources_base_url": "",
         "logo_url" : "",
         "feature_flags": {
-            "enable_hierarchical_translations": true
         }
     }
 }

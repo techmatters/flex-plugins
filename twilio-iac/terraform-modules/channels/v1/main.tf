@@ -17,7 +17,7 @@ locals {
   custom_lambda_channels = {for key, val in var.channels:
   key => val if val.lambda_channel == true}
   lambda_twilio_account_scoped_url = nonsensitive("https://hrm-${var.environment}.tl.techmatters.org/lambda/twilio/account-scoped/${var.twilio_account_sid}")
-  get_profile_flags_for_identifier_base_url = var.get_profile_flags_for_identifier_base_url == "" ? var.serverless_url : var.get_profile_flags_for_identifier_base_url
+  get_profile_flags_for_identifier_base_url = nonsensitive(var.get_profile_flags_for_identifier_base_url == "" ? var.serverless_url : var.get_profile_flags_for_identifier_base_url)
 }
 
 #I'm not sure about this resource, the idea is to have 1 studio flow json template and also as few as possible

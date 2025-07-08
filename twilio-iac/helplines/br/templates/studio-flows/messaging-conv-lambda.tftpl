@@ -51,7 +51,7 @@ ${
         },
         "method": "POST",
         "content_type": "application/json;charset=utf-8",
-        "body": "{ \"trigger\": {{trigger | to_json}}, \"channelType\": \"${channel_name}\"}",
+        "body": "{ \"trigger\": {{trigger | to_json}}, \"channelType\": \"{% if trigger.conversation.ChannelAttributes.channel_type %}{{trigger.conversation.ChannelAttributes.channel_type}}{% else %}{{trigger.conversation.Source | downcase}}{% endif %}\"}",
         "url": "${get_profile_flags_for_identifier_base_url}/getProfileFlagsForIdentifier"
       }
     },
@@ -521,7 +521,7 @@ ${
         "method": "POST",
         "content_type": "application/json;charset=utf-8",
         "add_twilio_auth": false,
-        "body": "{\"channelSid\": \"{{flow.channel.address}}\", \"conversationSid\": \"{{flow.channel.address}}\", \"message\": \"trigger_contact_reason\", \"studioFlowSid\": \"{{flow.flow_sid}}\", \"language\": \"pt_br\", \"botSuffix\": \"contact_reason\", \"triggerType\": \"withUserMessage\", \"releaseType\": \"triggerStudioFlow\", \"releaseFlag\": \"contactReasonComplete\", \"memoryAttribute\": \"contactReasonMemory\", \"channelType\": \"{{trigger.conversation.ChannelAttributes.channel_type | downcase}}\", \"isConversation\": \"true\"}",
+        "body": "{\"channelSid\": \"{{flow.channel.address}}\", \"conversationSid\": \"{{flow.channel.address}}\", \"message\": \"trigger_contact_reason\", \"studioFlowSid\": \"{{flow.flow_sid}}\", \"language\": \"pt_br\", \"botSuffix\": \"contact_reason\", \"triggerType\": \"withUserMessage\", \"releaseType\": \"triggerStudioFlow\", \"releaseFlag\": \"contactReasonComplete\", \"memoryAttribute\": \"contactReasonMemory\", \"channelType\": \"{% if trigger.conversation.ChannelAttributes.channel_type %}{{trigger.conversation.ChannelAttributes.channel_type}}{% else %}{{trigger.conversation.Source | downcase}}{% endif %}\", \"isConversation\": \"true\"}",
         "url": "${lambda_twilio_account_scoped_url}/channelCapture/captureChannelWithBot"
       }
     },
