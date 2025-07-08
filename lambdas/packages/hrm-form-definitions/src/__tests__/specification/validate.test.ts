@@ -140,7 +140,7 @@ describe('validateCategoriesDefinition', () => {
   type TestCase = {
     description: string;
     specification: DefinitionSpecification;
-    definition: CategoriesDefinition;
+    definition: CategoriesDefinition['categories'];
     expectedResult: ReturnType<typeof validateCategoriesDefinition>;
   };
 
@@ -203,14 +203,14 @@ describe('validateCategoriesDefinition', () => {
       },
     },
     {
-      description: 'Validation is succesful if criteria is met',
+      description: 'Validation is successful if criteria is met',
       specification: {
         required: true,
       },
       definition: {
         category1: {
           color: '',
-          subcategories: ['subcategory1'],
+          subcategories: [{ label: 'subcategory1' }],
         },
       },
       expectedResult: {
@@ -221,7 +221,7 @@ describe('validateCategoriesDefinition', () => {
   ];
 
   each(testCases).test('$description', async ({ specification, definition, expectedResult }) => {
-    const result = validateCategoriesDefinition(specification, definition);
+    const result = validateCategoriesDefinition(specification, { categories: definition });
 
     expect(result).toMatchObject(expectedResult);
   });
