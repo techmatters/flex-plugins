@@ -42,6 +42,12 @@
             "slot_type_name": "gender",
             "slot_question": "Gender: 1.Babae, 2.Lalaki, 3.LGBTQ+",
             "failure_response": "Pasensya na, nahihirapan akong umintindi. Ililipat ka na namin ngayon. Pakiantay lamang para sa isang kabataang responder"
+          },
+          "5": {
+            "slot_name": "counsellorGenderPreference",
+            "slot_type_name": "counsellorGenderPreference",
+            "slot_question": "Do you have a counselor preference? 1. Male counselor 2. Female counselor 3. Non-binary 4. No preference",
+            "failure_response": "Sorry, I'm having trouble understanding. We'll transfer you now. Please hold for a youth responder."
           }
         }
       }
