@@ -43,12 +43,6 @@
             "slot_type_name": "gender",
             "slot_question": "What is your gender? Please enter 1.Male, 2.Female, 3.LGBTQ+",
             "failure_response": "Sorry, I'm having trouble understanding. We'll transfer you now. Please hold for a youth responder."
-          },
-          "5": {
-            "slot_name": "counsellorGenderPreference",
-            "slot_type_name": "counsellorGenderPreference",
-            "slot_question": "Do you have a counselor preference? 1. Male counselor 2. Female counselor 3. Non-binary 4. No preference",
-            "failure_response": "Sorry, I'm having trouble understanding. We'll transfer you now. Please hold for a youth responder."
           }
         }
       }
