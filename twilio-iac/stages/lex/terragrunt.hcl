@@ -301,7 +301,7 @@ lex_v2_slot_names = local.enable_lex_v2 ? tomap({
     )
   }) : {}
 
-  lex_v2_slots = local.enable_lex_v2 ? tomap({
+  /*lex_v2_slots = local.enable_lex_v2 ? tomap({
     for language, bots in local.lex_v2_bot_languages :
     language => [
       for slot in local.lex_v2_slot_names[language] : {
@@ -320,6 +320,8 @@ lex_v2_slot_names = local.enable_lex_v2 ? tomap({
       }
     ]
   }) : {}
+*/
+lex_v2_slots = {}
 
   //leaving for debugging purposes
   //print9 = run_cmd("echo", jsonencode(local.lex_v2_slots))
