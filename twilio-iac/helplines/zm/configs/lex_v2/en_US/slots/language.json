@@ -1,7 +1,7 @@
 {
     "slotName": "language",
     "slotTypeName": "language",
-    "intentName": "language_selector",
+    "intentName": "language_selector_intent",
     "description": "Slot language for intent language_selector",
     "valueElicitationSetting": {
         "slotConstraint": "Required",
