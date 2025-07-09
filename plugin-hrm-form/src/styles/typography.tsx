@@ -119,11 +119,12 @@ type ChipTextProps = {
 export const ChipText = styled(FontOpenSans)<ChipTextProps>`
   display: inline-block;
   font-size: 12px;
-  font-weight: 400;
   line-height: 14px;
   opacity: 1;
   color: ${props => (props.color ? props.color : '#2f3e44')};
   font-weight: ${props => (props.bold ? 600 : 400)};
+  text-overflow: ellipsis;
+  overflow: hidden;
 `;
 ChipText.displayName = 'ChipText';
 
@@ -133,9 +134,14 @@ type ColorProps = {
 
 export const CategoryChip = styled(ChipBase)<ColorProps>`
   border-radius: 2px;
-  margin-right: 6px;
+  margin: 1px 6px 1px 0px;
   padding: 5px 12px;
   background-color: ${props => (props.color ? `${props.color}1a` : '#d8d8d8')};
+  text-overflow: ellipsis;
+  max-width: 140px;
+  .expanded & {
+    max-width: none;
+  }
 `;
 CategoryChip.displayName = 'CategoryChip';
 
