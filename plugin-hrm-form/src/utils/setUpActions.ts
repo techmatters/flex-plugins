@@ -28,21 +28,13 @@ import { CustomITask, FeatureFlags, isTwilioTask } from '../types/types';
 import { getAseloFeatureFlags, getHrmConfig } from '../hrmConfig';
 import { subscribeAlertOnConversationJoined } from '../notifications/newMessage';
 import type { RootState } from '../states';
-import { getNumberFromTask, getTaskLanguage } from './task';
+import { getTaskLanguage } from './task';
 import selectContactByTaskSid from '../states/contacts/selectContactByTaskSid';
-import { newContact } from '../states/contacts/contactState';
 import asyncDispatch from '../states/asyncDispatch';
-import {
-  createContactAsyncAction,
-  newFinalizeContactAsyncAction,
-  newLoadContactFromHrmForTaskAsyncAction,
-} from '../states/contacts/saveContact';
+import { newFinalizeContactAsyncAction, newLoadContactFromHrmForTaskAsyncAction } from '../states/contacts/saveContact';
 import { handleTransferredTask } from '../transfer/setUpTransferActions';
-import { prepopulateForm } from './prepopulateForm';
-import { namespace } from '../states/storeNamespaces';
 import { recordEvent } from '../fullStory';
 import { completeConversationTask, wrapupConversationTask } from '../services/twilioTaskService';
-import { adjustChatCapacity } from '../services/twilioWorkerService';
 import selectContactStateByContactId from '../states/contacts/selectContactStateByContactId';
 import { WorkerSID } from '../types/twilio';
 
@@ -68,20 +60,6 @@ const saveEndMillis = async (payload: ActionPayload) => {
 const fromActionFunction = (fun: ActionFunction) => async (payload: ActionPayload, original: ActionFunction) => {
   await fun(payload);
   await original(payload);
-};
-
-/**
- * Initializes an empty form (in redux store) for the task within payload
- */
-const initializeContactForm = async ({ task }: ActionPayload) => {
-  const { currentDefinitionVersion } = (Manager.getInstance().store.getState() as RootState)[namespace].configuration;
-  const contact = {
-    ...newContact(currentDefinitionVersion, task),
-    number: getNumberFromTask(task),
-  };
-  const { workerSid } = getHrmConfig();
-
-  await asyncDispatch(Manager.getInstance().store.dispatch)(createContactAsyncAction(contact, workerSid, task));
 };
 
 const sendMessageOfKey = (messageKey: string) => (
@@ -177,7 +155,7 @@ export const afterAcceptTask = (featureFlags: FeatureFlags, setupObject: SetupOb
         stateContact.savedContact?.taskId !== task.taskSid
       ) {
         asyncDispatch(store.dispatch)(
-          newLoadContactFromHrmForTaskAsyncAction(task, task.workerSid as WorkerSID, `${task.taskSid}-active`),
+          newLoadContactFromHrmForTaskAsyncAction(task, `${task.taskSid}-active`),
         );
       }
     }
@@ -190,14 +168,9 @@ export const afterAcceptTask = (featureFlags: FeatureFlags, setupObject: SetupOb
   if (TaskHelper.isChatBasedTask(task) && !TransferHelpers.hasTransferStarted(task)) {
     sendWelcomeMessageOnConversationJoined(setupObject, getMessage, payload);
   }
-  const { enable_backend_hrm_contact_creation: enableBackendHrmContactCreation } = featureFlags;
-  if (!enableBackendHrmContactCreation) {
-    await initializeContactForm(payload);
-  }
+
   if (TransferHelpers.hasTransferStarted(task)) {
     await handleTransferredTask(task);
-  } else if (!enableBackendHrmContactCreation) {
-    await prepopulateForm(task);
   }
 };
 
@@ -247,21 +220,6 @@ export const recordCallState = ({ task }) => {
       taskAllAttributes: JSON.stringify(task.attributes),
     });
   }
-};
-const decreaseChatCapacity = (featureFlags: FeatureFlags): ActionFunction => async (
-  payload: ActionPayload,
-): Promise<void> => {
-  const { task } = payload;
-  if (
-    featureFlags.enable_manual_pulling &&
-    !featureFlags.enable_backend_manual_pulling &&
-    task.taskChannelUniqueName === 'chat'
-  )
-    await adjustChatCapacity('decrease');
-};
-
-export const beforeCompleteTask = (featureFlags: FeatureFlags) => async (payload: ActionPayload): Promise<void> => {
-  await decreaseChatCapacity(featureFlags)(payload);
 };
 
 /**
