@@ -229,8 +229,6 @@ export type FeatureFlags = {
   backend_handled_chat_janitor: boolean; // [Temporary flag until all accounts are migrated] Enables handling the janitor from taskrouter event listeners
   enable_active_contact_header: boolean; // Enables Active Contact Header
   enable_aselo_messaging_ui: boolean; // Enables Aselo Messaging UI iinstead of the default Twilio one - reduced functionality for low spec clients.
-  enable_backend_hrm_contact_creation: boolean; // If this is enabled, HRM contact creation is initiated from a task router handler rather than from the Flex plugin
-  enable_backend_manual_pulling: boolean; // Enables Backend Manual Pulling
   enable_canned_responses: boolean; // Enables Canned Responses
   enable_client_profiles: boolean; // Enables Client Profiles
   enable_conferencing: boolean; // Enables Conferencing UI and replaces default Twilio components and behavior  

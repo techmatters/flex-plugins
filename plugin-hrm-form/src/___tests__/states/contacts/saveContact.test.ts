@@ -125,7 +125,6 @@ describe('actions', () => {
       const actionPromiseResult = (dispatch(
         newLoadContactFromHrmForTaskAsyncAction(
           { taskSid: 'WT-load-me', attributes: {} } as CustomITask,
-          'WK',
           'mock-ref',
         ),
       ) as unknown) as Promise<void>;
