@@ -1,5 +1,5 @@
 {
-  "intentName": "language_selector_intent",
+  "intentName": "language_selector",
   "description": "Specific configs/lex_v2/zm/bots/language_selector",
   "sampleUtterances": [
       {
