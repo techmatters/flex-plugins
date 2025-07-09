@@ -173,20 +173,7 @@ describe('handleEvent', () => {
     );
   });
 
-  test('enable_backend_hrm_contact_creation not set - does nothing', async () => {
-    twilioClient = setConfigurationAttributes(twilioClient, {
-      feature_flags: {
-        enable_backend_hrm_contact_creation: false,
-      },
-    });
-    const eventFields = newEventFields({});
-    setTaskReturnedByFetch(eventFields);
-    await handleEvent(eventFields, TEST_ACCOUNT_SID, twilioClient);
-    expect(mockFetch).not.toHaveBeenCalled();
-    expect(mockUpdateTask).not.toHaveBeenCalled();
-  });
-
-  test('enable_backend_hrm_contact_creation set, not a transfer or offline contact - creates contact and updates task attributes with contact ID', async () => {
+  test('not a transfer or offline contact - creates contact and updates task attributes with contact ID', async () => {
     const eventFields = newEventFields({});
     setTaskReturnedByFetch(eventFields);
     await handleEvent(eventFields, TEST_ACCOUNT_SID, twilioClient);

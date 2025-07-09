@@ -9,7 +9,6 @@
             "enableUnmaskingCalls": true
         },
         "feature_flags": {
-            "enable_backend_manual_pulling": true,
             "enable_counselor_toolkits": true,
             "enable_csam_clc_report": true,
             "enable_csam_report": true,
@@ -22,7 +21,6 @@
             "enable_save_insights": true,
             "enable_teams_view_enhancements2": true,
             "enable_voice_recordings": false,
-            "enable_backend_hrm_contact_creation": true,
             "enable_lambda_post_survey_processing": true,
             "enable_lex_v2": true,
             "enable_hang_up_by_hrm_saving": true

@@ -21,14 +21,7 @@ import { isNonDataCallType } from '../states/validationRules';
 import { getQueryParams } from './PaginationParams';
 import { fetchHrmApi } from './fetchHrmApi';
 import { getDefinitionVersions, getHrmConfig } from '../hrmConfig';
-import {
-  Contact,
-  ConversationMedia,
-  CustomITask,
-  isInMyBehalfITask,
-  isOfflineContactTask,
-  isTwilioTask,
-} from '../types/types';
+import { Contact, ConversationMedia, isOfflineContactTask, isTwilioTask, OfflineContactTask } from '../types/types';
 import { saveContactToExternalBackend } from '../dualWrite';
 import { getNumberFromTask } from '../utils/task';
 import {
@@ -182,15 +175,12 @@ export const handleTwilioTask = async (
   return returnData;
 };
 
-export const createContact = async (
+export const createOfflineContact = async (
   contact: Contact,
   twilioWorkerId: WorkerSID,
-  task: CustomITask,
+  task: OfflineContactTask,
 ): Promise<Contact> => {
-  const taskSid =
-    isOfflineContactTask(task) || isInMyBehalfITask(task)
-      ? task.taskSid
-      : task.attributes?.transferMeta?.originalTask ?? task.taskSid;
+  const { taskSid } = task;
 
   const number = getNumberFromTask(task);
 
