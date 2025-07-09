@@ -1,62 +1,112 @@
 [
-    {
-      "name": "date",
-      "type": "date-input",
-      "label": "Date of Incident"
+  {
+    "name": "date",
+    "type": "date-input",
+    "label": "Date of Incident",
+    "isPII": false
+  },
+  {
+    "name": "duration",
+    "label": "Duration",
+    "type": "select",
+    "options": [
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "Ongoing",
+        "label": "Ongoing"
+      },
+      {
+        "value": "Once Off",
+        "label": "Once Off"
+      },
+      {
+        "value": "Other",
+        "label": "Other"
+      }
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
     },
-    {
-      "name": "duration",
-      "label": "Duration",
-      "type": "select",
-      "options": [
-        { "value": "", "label": "" },
-        { "value": "Ongoing", "label": "Ongoing" },
-        { "value": "Once Off", "label": "Once Off" },
-        { "value": "Other", "label": "Other" }
-      ],
-      "required": { "value": true, "message": "RequiredFieldError" }
+    "isPII": false
+  },
+  {
+    "name": "location",
+    "label": "Location",
+    "type": "select",
+    "options": [
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "Home (own)",
+        "label": "Home (own)"
+      },
+      {
+        "value": "Home (other)",
+        "label": "Home (other)"
+      },
+      {
+        "value": "Educational Establishment",
+        "label": "Educational Establishment"
+      },
+      {
+        "value": "Institution",
+        "label": "Institution"
+      },
+      {
+        "value": "Online",
+        "label": "Online"
+      },
+      {
+        "value": "Public place",
+        "label": "Public place"
+      },
+      {
+        "value": "Other",
+        "label": "Other"
+      }
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
     },
-    {
-      "name": "location",
-      "label": "Location",
-      "type": "select",
-      "options": [
-        { "value": "", "label": "" },
-        { "value": "Home (own)", "label": "Home (own)" },
-        { "value": "Home (other)", "label": "Home (other)" },
-        { "value": "Educational Establishment", "label": "Educational Establishment" },
-        { "value": "Institution", "label": "Institution" },
-        { "value": "Online", "label": "Online" },
-        { "value": "Public place", "label": "Public place" },
-        { "value": "Other", "label": "Other" }
-      ],
-      "required": { "value": true, "message": "RequiredFieldError" }
-    },
-    {
-        "name": "detailsOfIncident",
-        "label": "Details of incident",
-        "type": "textarea",
-        "rows": 25,
-        "width": 300
-    },
-    {
-      "name": "isCaregiverAware",
-      "label": "Is caregiver aware?",
-      "type": "mixed-checkbox"
-    },
-    {
-      "name": "incidentWitnessed",
-      "label": "Was the incident witnessed by anyone?",
-      "type": "mixed-checkbox"
-    },
-    {
-      "name": "abuseReportedElsewhere",
-      "label": "Has abuse been reported elsewhere?",
-      "type": "mixed-checkbox"
-    },
-    {
-      "name": "whereElseBeenReported",
-      "label": "Where else the incident has been reported?",
-      "type": "input"
-    }
-  ]
+    "isPII": false
+  },
+  {
+    "name": "detailsOfIncident",
+    "label": "Details of incident",
+    "type": "textarea",
+    "rows": 25,
+    "width": 300,
+    "isPII": true
+  },
+  {
+    "name": "isCaregiverAware",
+    "label": "Is caregiver aware?",
+    "type": "mixed-checkbox",
+    "isPII": false
+  },
+  {
+    "name": "incidentWitnessed",
+    "label": "Was the incident witnessed by anyone?",
+    "type": "mixed-checkbox",
+    "isPII": false
+  },
+  {
+    "name": "abuseReportedElsewhere",
+    "label": "Has abuse been reported elsewhere?",
+    "type": "mixed-checkbox",
+    "isPII": false
+  },
+  {
+    "name": "whereElseBeenReported",
+    "label": "Where else the incident has been reported?",
+    "type": "input",
+    "isPII": true
+  }
+]

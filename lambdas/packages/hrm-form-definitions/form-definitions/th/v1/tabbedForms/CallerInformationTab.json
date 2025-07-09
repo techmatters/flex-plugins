@@ -2,12 +2,14 @@
   {
     "name": "firstName",
     "label": "First Name",
-    "type": "input"
+    "type": "input",
+    "isPII": true
   },
   {
     "name": "lastName",
     "label": "Last Name",
-    "type": "input"
+    "type": "input",
+    "isPII": true
   },
   {
     "name": "relationshipToChild",
@@ -67,17 +69,20 @@
     "required": {
       "value": true,
       "message": "RequiredFieldError"
-    }
+    },
+    "isPII": false
   },
   {
     "name": "streetAddress",
     "label": "Street Address",
-    "type": "input"
+    "type": "input",
+    "isPII": true
   },
   {
     "name": "city",
     "label": "City",
-    "type": "input"
+    "type": "input",
+    "isPII": true
   },
   {
     "name": "area",
@@ -87,7 +92,8 @@
       "value": "unknown",
       "label": ""
     },
-    "optionsReferenceKey": "areaOptions"
+    "optionsReferenceKey": "areaOptions",
+    "isPII": false
   },
   {
     "name": "province",
@@ -98,27 +104,32 @@
       "value": "unknown",
       "label": ""
     },
-    "optionsReferenceKey": "provinceOptions"
+    "optionsReferenceKey": "provinceOptions",
+    "isPII": false
   },
   {
     "name": "postalCode",
     "label": "Postal Code",
-    "type": "input"
+    "type": "input",
+    "isPII": true
   },
   {
     "name": "phone1",
     "label": "Phone #1",
-    "type": "input"
+    "type": "input",
+    "isPII": true
   },
   {
     "name": "phone2",
     "label": "Phone #2",
-    "type": "input"
+    "type": "input",
+    "isPII": true
   },
   {
     "name": "emergencyContact",
     "label": "Emergency contact",
-    "type": "input"
+    "type": "input",
+    "isPII": true
   },
   {
     "name": "gender",
@@ -128,7 +139,8 @@
       "value": "unknown",
       "label": ""
     },
-    "optionsReferenceKey": "genderOptions"
+    "optionsReferenceKey": "genderOptions",
+    "isPII": false
   },
   {
     "name": "age",
@@ -138,16 +150,19 @@
       "value": "unknown",
       "label": ""
     },
-    "optionsReferenceKey": "ageOptions"
+    "optionsReferenceKey": "ageOptions",
+    "isPII": false
   },
   {
     "name": "nationality",
     "label": "Nationality",
-    "type": "input"
+    "type": "input",
+    "isPII": true
   },
   {
     "name": "ethnicity-input",
     "label": "Ethnicity",
-    "type": "input"
+    "type": "input",
+    "isPII": true
   }
 ]

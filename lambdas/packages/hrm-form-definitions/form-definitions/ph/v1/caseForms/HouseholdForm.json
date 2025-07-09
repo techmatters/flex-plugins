@@ -2,12 +2,14 @@
   {
     "name": "firstName",
     "label": "First Name",
-    "type": "input"
+    "type": "input",
+    "isPII": true
   },
   {
     "name": "lastName",
     "label": "Last Name",
-    "type": "input"
+    "type": "input",
+    "isPII": true
   },
   {
     "name": "relationshipToChild",
@@ -62,7 +64,8 @@
         "value": "Unknown",
         "label": "Unknown"
       }
-    ]
+    ],
+    "isPII": false
   },
   {
     "name": "province",
@@ -72,7 +75,8 @@
       "value": "",
       "label": ""
     },
-    "optionsReferenceKey": "provinceOptions"
+    "optionsReferenceKey": "provinceOptions",
+    "isPII": false
   },
   {
     "name": "municipality",
@@ -83,7 +87,8 @@
       "value": "",
       "label": ""
     },
-    "optionsReferenceKey":"municipalityOptions"
+    "optionsReferenceKey": "municipalityOptions",
+    "isPII": false
   },
   {
     "name": "district",
@@ -94,7 +99,8 @@
       "value": "",
       "label": ""
     },
-    "optionsReferenceKey":"districtOptions"
+    "optionsReferenceKey": "districtOptions",
+    "isPII": false
   },
   {
     "name": "perpetratorType",
@@ -121,13 +127,15 @@
     "required": {
       "value": true,
       "message": "RequiredFieldError"
-    }
+    },
+    "isPII": false
   },
   {
     "name": "copyToPerpetrator",
     "label": "This household member is also a perpetrator/facilitator",
     "type": "copy-to",
-    "target": "perpetrator"
+    "target": "perpetrator",
+    "isPII": false
   },
   {
     "name": "gender",
@@ -158,7 +166,8 @@
     "required": {
       "value": true,
       "message": "RequiredFieldError"
-    }
+    },
+    "isPII": false
   },
   {
     "name": "age",
@@ -429,11 +438,13 @@
     "required": {
       "value": true,
       "message": "RequiredFieldError"
-    }
+    },
+    "isPII": false
   },
   {
     "name": "phone1",
     "label": "Phone #1",
-    "type": "input"
+    "type": "input",
+    "isPII": true
   }
 ]

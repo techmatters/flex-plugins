@@ -2,17 +2,20 @@
   {
     "name": "friendlyName",
     "label": "Nickname",
-    "type": "input"
+    "type": "input",
+    "isPII": true
   },
   {
     "name": "firstName",
     "label": "Nombre",
-    "type": "input"
+    "type": "input",
+    "isPII": true
   },
   {
     "name": "lastName",
     "label": "Apellidos",
-    "type": "input"
+    "type": "input",
+    "isPII": true
   },
   {
     "name": "gender",
@@ -52,7 +55,8 @@
     "required": {
       "value": true,
       "message": "RequiredFieldError"
-    }
+    },
+    "isPII": false
   },
   {
     "name": "age",
@@ -176,12 +180,14 @@
     "required": {
       "value": true,
       "message": "RequiredFieldError"
-    }
+    },
+    "isPII": false
   },
   {
     "name": "streetAddress",
     "label": "Dirección Exacta",
-    "type": "input"
+    "type": "input",
+    "isPII": true
   },
   {
     "name": "province",
@@ -256,7 +262,8 @@
         "value": "Metropolitana de Santiago",
         "label": "Metropolitana de Santiago"
       }
-    ]
+    ],
+    "isPII": false
   },
   {
     "name": "district",
@@ -1684,7 +1691,8 @@
           "label": "Peñaflor"
         }
       ]
-    }
+    },
+    "isPII": false
   },
   {
     "name": "contactIdentifier",
@@ -1693,22 +1701,26 @@
     "required": {
       "value": true,
       "message": "RequiredFieldError"
-    }
+    },
+    "isPII": true
   },
   {
     "name": "phone1",
     "label": "Nr de Teléfono",
-    "type": "input"
+    "type": "input",
+    "isPII": true
   },
   {
     "name": "phone2",
     "label": "Nr de Teléfono de Adulto/a Significativo",
-    "type": "input"
+    "type": "input",
+    "isPII": true
   },
   {
     "name": "schoolName",
     "label": "Nombre del Colegio",
-    "type": "input"
+    "type": "input",
+    "isPII": true
   },
   {
     "name": "gradeLevel",
@@ -1776,7 +1788,8 @@
         "value": "4to",
         "label": "4to"
       }
-    ]
+    ],
+    "isPII": false
   },
   {
     "name": "livingSituation",
@@ -1812,7 +1825,8 @@
         "value": "Otro",
         "label": "Otro"
       }
-    ]
+    ],
+    "isPII": false
   },
   {
     "name": "vulnerableGroups",
@@ -1851,11 +1865,13 @@
         "value": "Pertenece a la comunidad LGTBIQA+",
         "label": "Pertenece a la comunidad LGTBIQA+"
       }
-    ]
+    ],
+    "isPII": false
   },
   {
     "name": "ip",
     "label": "IP",
-    "type": "input"
+    "type": "input",
+    "isPII": true
   }
 ]

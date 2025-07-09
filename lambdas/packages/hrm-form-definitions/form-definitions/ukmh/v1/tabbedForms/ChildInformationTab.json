@@ -6,7 +6,8 @@
     "required": {
       "value": true,
       "message": "RequiredFieldError"
-    }
+    },
+    "isPII": true
   },
   {
     "name": "lastName",
@@ -15,7 +16,8 @@
     "required": {
       "value": true,
       "message": "RequiredFieldError"
-    }
+    },
+    "isPII": true
   },
   {
     "name": "age",
@@ -83,7 +85,8 @@
     "required": {
       "value": true,
       "message": "RequiredFieldError"
-    }
+    },
+    "isPII": false
   },
   {
     "name": "gender",
@@ -119,7 +122,8 @@
     "required": {
       "value": true,
       "message": "RequiredFieldError"
-    }
+    },
+    "isPII": false
   },
   {
     "name": "sexuality",
@@ -170,7 +174,8 @@
     "required": {
       "value": true,
       "message": "RequiredFieldError"
-    }
+    },
+    "isPII": false
   },
   {
     "name": "isGenderSameAsSexAtBirth",
@@ -197,7 +202,8 @@
     "required": {
       "value": true,
       "message": "RequiredFieldError"
-    }
+    },
+    "isPII": false
   },
   {
     "name": "contactIdentifier",
@@ -206,12 +212,14 @@
     "required": {
       "value": true,
       "message": "RequiredFieldError"
-    }
+    },
+    "isPII": true
   },
   {
     "name": "phone1",
     "label": "Phone Number",
-    "type": "input"
+    "type": "input",
+    "isPII": true
   },
   {
     "name": "region",
@@ -291,7 +299,8 @@
         "value": "Not specified",
         "label": "Not specified"
       }
-    ]
+    ],
+    "isPII": false
   },
   {
     "name": "county",
@@ -1054,7 +1063,8 @@
         "value": "Not specified",
         "label": "Not specified"
       }
-    ]
+    ],
+    "isPII": false
   },
   {
     "name": "ethnicity",
@@ -1097,7 +1107,8 @@
     "required": {
       "value": true,
       "message": "RequiredFieldError"
-    }
+    },
+    "isPII": false
   },
   {
     "name": "employmentStatus",
@@ -1156,7 +1167,8 @@
         "value": "Not specified",
         "label": "Not specified"
       }
-    ]
+    ],
+    "isPII": false
   },
   {
     "name": "appointmentTopic",
@@ -1268,7 +1280,8 @@
         "value": "Other"
       }
     ],
-    "rows": 5
+    "rows": 5,
+    "isPII": false
   },
   {
     "name": "anxietyScale",
@@ -1320,7 +1333,8 @@
         "value": "10",
         "label": "10"
       }
-    ]
+    ],
+    "isPII": false
   },
   {
     "name": "moodhappinessBefore",
@@ -1351,7 +1365,8 @@
         "value": "05",
         "label": "😀 5"
       }
-    ]
+    ],
+    "isPII": false
   },
   {
     "name": "preexistingConditionsdifficulties",
@@ -1422,26 +1437,31 @@
         "value": "Prefer not to say",
         "label": "Prefer not to say"
       }
-    ]
+    ],
+    "isPII": false
   },
   {
     "name": "consentForResearchevaluation",
     "label": "Consent for Research/Evaluation",
-    "type": "checkbox"
+    "type": "checkbox",
+    "isPII": false
   },
   {
     "name": "dataProcessingAndStorage",
     "label": "Consent for Data being stored and processed",
-    "type": "checkbox"
+    "type": "checkbox",
+    "isPII": false
   },
   {
     "name": "termsAndConditions",
     "label": "Agreed to Privacy Policy",
-    "type": "checkbox"
+    "type": "checkbox",
+    "isPII": false
   },
   {
     "name": "ip",
     "label": "IP Address",
-    "type": "input"
+    "type": "input",
+    "isPII": true
   }
 ]

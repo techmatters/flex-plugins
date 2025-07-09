@@ -6,12 +6,14 @@
     "required": {
       "value": true,
       "message": "RequiredFieldError"
-    }
+    },
+    "isPII": true
   },
   {
     "name": "repeatCaller",
     "label": "Repeat Caller?",
-    "type": "mixed-checkbox"
+    "type": "mixed-checkbox",
+    "isPII": false
   },
   {
     "name": "actionTaken",
@@ -54,12 +56,14 @@
     "required": {
       "value": true,
       "message": "RequiredFieldError"
-    }
+    },
+    "isPII": false
   },
   {
     "name": "OtherAction",
     "label": "Other action",
-    "type": "input"
+    "type": "input",
+    "isPII": true
   },
   {
     "name": "service",
@@ -74,12 +78,14 @@
         "value": "Other",
         "label": "Other"
       }
-    ]
+    ],
+    "isPII": false
   },
   {
     "name": "serviceOther",
     "label": "Specify Other",
-    "type": "input"
+    "type": "input",
+    "isPII": true
   },
   {
     "name": "nrAccountsReportedToPlatform",
@@ -494,7 +500,8 @@
         "value": "100",
         "label": "100"
       }
-    ]
+    ],
+    "isPII": false
   },
   {
     "name": "accountsTakenDown",
@@ -909,7 +916,8 @@
         "value": "100",
         "label": "100"
       }
-    ]
+    ],
+    "isPII": false
   },
   {
     "name": "accountsRecoveredByTrustline",
@@ -1324,7 +1332,8 @@
         "value": "100",
         "label": "100"
       }
-    ]
+    ],
+    "isPII": false
   },
   {
     "name": "cybercrimeReportsFiled",
@@ -1739,7 +1748,8 @@
         "value": "100",
         "label": "100"
       }
-    ]
+    ],
+    "isPII": false
   },
   {
     "name": "counsellingProvided",
@@ -1762,7 +1772,8 @@
         "value": "na",
         "label": "NA"
       }
-    ]
+    ],
+    "isPII": false
   },
   {
     "name": "howDidYouKnowAboutOurLine",
@@ -1813,7 +1824,8 @@
         "value": "Others",
         "label": "Others"
       }
-    ]
+    ],
+    "isPII": false
   },
   {
     "name": "okForCaseWorkerToCall",
@@ -1840,11 +1852,13 @@
     "required": {
       "value": true,
       "message": "RequiredFieldError"
-    }
+    },
+    "isPII": false
   },
   {
     "name": "didTheChildFeelWeSolvedTheirProblem",
     "label": "Did the caller feel satisfied with the response to the call?",
-    "type": "mixed-checkbox"
+    "type": "mixed-checkbox",
+    "isPII": false
   }
 ]

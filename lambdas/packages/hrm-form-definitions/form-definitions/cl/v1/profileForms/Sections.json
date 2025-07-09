@@ -6,7 +6,8 @@
     "type": "textarea",
     "rows": 20,
     "width": 500,
-    "placeholder": "Ingrese un resumen del cliente"
+    "placeholder": "Ingrese un resumen del cliente",
+    "isPII": true
   },
   {
     "name": "blockReasons",
@@ -15,7 +16,8 @@
     "type": "textarea",
     "rows": 20,
     "width": 500,
-    "placeholder": "Ingrese un motivo del bloqueo"
+    "placeholder": "Ingrese un motivo del bloqueo",
+    "isPII": true
   },
   {
     "name": "lastAgreement",
@@ -24,6 +26,7 @@
     "type": "textarea",
     "rows": 20,
     "width": 500,
-    "placeholder": "Ingrese un último acuerdo"
+    "placeholder": "Ingrese un último acuerdo",
+    "isPII": true
   }
 ]

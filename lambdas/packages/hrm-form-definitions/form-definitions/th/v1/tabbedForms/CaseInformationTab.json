@@ -17,12 +17,14 @@
     "required": {
       "value": true,
       "message": "RequiredFieldError"
-    }
+    },
+    "isPII": false
   },
   {
     "name": "caseNumber",
     "label": "เลขที่เคส",
-    "type": "input"
+    "type": "input",
+    "isPII": true
   },
   {
     "name": "callSummary",
@@ -31,7 +33,8 @@
     "required": {
       "value": true,
       "message": "RequiredFieldError"
-    }
+    },
+    "isPII": true
   },
   {
     "name": "actionTaken",
@@ -62,7 +65,8 @@
         "value": "Other",
         "label": "Other"
       }
-    ]
+    ],
+    "isPII": false
   },
   {
     "name": "howDidYouKnowAboutOurLine",
@@ -70,7 +74,7 @@
     "type": "select",
     "unknownOption": "Unknown",
     "options": [
-       {
+      {
         "value": "Unknown",
         "label": ""
       },
@@ -118,44 +122,52 @@
         "value": "อื่นๆ",
         "label": "อื่นๆ"
       }
-    ]
+    ],
+    "isPII": false
   },
   {
     "name": "repeatCaller",
     "label": "ผู้ติดต่อซ้ำ?",
-    "type": "checkbox"
+    "type": "checkbox",
+    "isPII": false
   },
   {
     "name": "keepConfidential",
     "label": "Keep confidential?",
-    "type": "checkbox"
+    "type": "checkbox",
+    "isPII": false
   },
   {
     "name": "mustCallBack",
     "label": "Is it necessary for a case worker to call back?",
-    "type": "checkbox"
+    "type": "checkbox",
+    "isPII": false
   },
   {
     "name": "okForCaseWorkerToCall",
     "label": "Is it okay for case worker to call?",
-    "type": "checkbox"
+    "type": "checkbox",
+    "isPII": false
   },
   {
     "name": "didYouDiscussRightsWithTheChild",
     "label": "Did you discuss rights with the child?",
-    "type": "checkbox"
+    "type": "checkbox",
+    "isPII": false
   },
   {
     "name": "didTheChildFeelWeSolvedTheirProblem",
     "label": "Did the child feel we solved their problem?",
-    "type": "checkbox"
+    "type": "checkbox",
+    "isPII": false
   },
   {
     "name": "wouldTheChildRecommendUsToAFriend",
     "label": "Would the child recommend us to a friend?",
-    "type": "checkbox"
+    "type": "checkbox",
+    "isPII": false
   },
-    { 
+  {
     "name": "nightHubFood",
     "label": "ไนท์ฮับ – อาหาร",
     "type": "select",
@@ -172,21 +184,22 @@
         "value": "2",
         "label": "2"
       },
-        {
+      {
         "value": "3",
         "label": "3"
       },
-        {
+      {
         "value": "4",
         "label": "4"
       },
-        {
+      {
         "value": "5",
         "label": "5"
       }
-    ]
+    ],
+    "isPII": false
   },
-    { 
+  {
     "name": "nightHubToilet",
     "label": "ไนท์ฮับ – ห้องสุขา",
     "type": "select",
@@ -203,21 +216,22 @@
         "value": "2",
         "label": "2"
       },
-        {
+      {
         "value": "3",
         "label": "3"
       },
-        {
+      {
         "value": "4",
         "label": "4"
       },
-        {
+      {
         "value": "5",
         "label": "5"
       }
-    ]
+    ],
+    "isPII": false
   },
-    { 
+  {
     "name": "nightHubShelter",
     "label": "ไนท์ฮับ – ที่พักค้างคืน",
     "type": "select",
@@ -234,21 +248,22 @@
         "value": "2",
         "label": "2"
       },
-        {
+      {
         "value": "3",
         "label": "3"
       },
-        {
+      {
         "value": "4",
         "label": "4"
       },
-        {
+      {
         "value": "5",
         "label": "5"
       }
-    ]
+    ],
+    "isPII": false
   },
-    { 
+  {
     "name": "nightHubCounselling",
     "label": "ไนท์ฮับ – ให้คำปรึกษา",
     "type": "select",
@@ -265,21 +280,22 @@
         "value": "2",
         "label": "2"
       },
-        {
+      {
         "value": "3",
         "label": "3"
       },
-        {
+      {
         "value": "4",
         "label": "4"
       },
-        {
+      {
         "value": "5",
         "label": "5"
       }
-    ]
+    ],
+    "isPII": false
   },
-    { 
+  {
     "name": "nightHubEmergency",
     "label": "ไนท์ฮับ - การช่วยเหลือฉุกเฉิน",
     "type": "select",
@@ -296,21 +312,22 @@
         "value": "2",
         "label": "2"
       },
-        {
+      {
         "value": "3",
         "label": "3"
       },
-        {
+      {
         "value": "4",
         "label": "4"
       },
-        {
+      {
         "value": "5",
         "label": "5"
       }
-    ]
+    ],
+    "isPII": false
   },
-  { 
+  {
     "name": "basicServices",
     "label": "บริการพื้นฐานปัจจัย 4",
     "type": "select",
@@ -319,7 +336,7 @@
       {
         "value": "",
         "label": ""
-      },    
+      },
       {
         "value": "1",
         "label": "1"
@@ -328,41 +345,42 @@
         "value": "2",
         "label": "2"
       },
-        {
+      {
         "value": "3",
         "label": "3"
       },
-        {
+      {
         "value": "4",
         "label": "4"
       },
-        {
+      {
         "value": "5",
         "label": "5"
       },
-        {
+      {
         "value": "6",
         "label": "6"
       },
-        {
+      {
         "value": "7",
         "label": "7"
       },
-        {
+      {
         "value": "8",
         "label": "8"
       },
-        {
+      {
         "value": "9",
         "label": "9"
       },
-        {
+      {
         "value": "10",
         "label": "10"
       }
-    ]
+    ],
+    "isPII": false
   },
-  { 
+  {
     "name": "identificationService",
     "label": "บริการเอกสารประจำตัว",
     "type": "select",
@@ -380,21 +398,22 @@
         "value": "2",
         "label": "2"
       },
-        {
+      {
         "value": "3",
         "label": "3"
       },
-        {
+      {
         "value": "4",
         "label": "4"
       },
-        {
+      {
         "value": "5",
         "label": "5"
       }
-    ]
+    ],
+    "isPII": false
   },
-  { 
+  {
     "name": "physicalHealthServices",
     "label": "บริการด้านสุขภาพกาย",
     "type": "select",
@@ -403,7 +422,7 @@
       {
         "value": "",
         "label": ""
-      },      
+      },
       {
         "value": "1",
         "label": "1"
@@ -412,11 +431,11 @@
         "value": "2",
         "label": "2"
       },
-        {
+      {
         "value": "3",
         "label": "3"
       },
-        {
+      {
         "value": "4",
         "label": "4"
       },
@@ -424,18 +443,19 @@
         "value": "5",
         "label": "5"
       }
-    ]
+    ],
+    "isPII": false
   },
-  { 
+  {
     "name": "mentalHealthServices",
-    "label":  "บริการด้านสุขภาพจิต",
+    "label": "บริการด้านสุขภาพจิต",
     "type": "select",
     "unknownOption": "Unknown",
     "options": [
       {
         "value": "",
         "label": ""
-      },      
+      },
       {
         "value": "1",
         "label": "1"
@@ -444,11 +464,11 @@
         "value": "2",
         "label": "2"
       },
-        {
+      {
         "value": "3",
         "label": "3"
       },
-        {
+      {
         "value": "4",
         "label": "4"
       },
@@ -456,9 +476,10 @@
         "value": "5",
         "label": "5"
       }
-    ]
+    ],
+    "isPII": false
   },
-  { 
+  {
     "name": "numberofConsultations",
     "label": "ให้คำปรึกษา (ออนไลน์)",
     "type": "select",
@@ -475,21 +496,22 @@
         "value": "2",
         "label": "2"
       },
-        {
+      {
         "value": "3",
         "label": "3"
       },
-        {
+      {
         "value": "4",
         "label": "4"
       },
-        {
+      {
         "value": "5",
         "label": "5"
       }
-    ]
+    ],
+    "isPII": false
   },
-  { 
+  {
     "name": "numberofOneOnOneCounselling",
     "label": "ให้คำปรึกษา (ตัวต่อตัว)",
     "type": "select",
@@ -498,7 +520,7 @@
       {
         "value": "",
         "label": ""
-      },      
+      },
       {
         "value": "1",
         "label": "1"
@@ -507,21 +529,22 @@
         "value": "2",
         "label": "2"
       },
-        {
+      {
         "value": "3",
         "label": "3"
       },
-        {
+      {
         "value": "4",
         "label": "4"
       },
-        {
+      {
         "value": "5",
         "label": "5"
       }
-    ]
+    ],
+    "isPII": false
   },
-  { 
+  {
     "name": "lifeSkillsServices",
     "label": "กิจกรรมพัฒนาทักษะชีวิต",
     "type": "select",
@@ -530,7 +553,7 @@
       {
         "value": "",
         "label": ""
-      },    
+      },
       {
         "value": "1",
         "label": "1"
@@ -539,21 +562,22 @@
         "value": "2",
         "label": "2"
       },
-        {
+      {
         "value": "3",
         "label": "3"
       },
-        {
+      {
         "value": "4",
         "label": "4"
       },
-        {
+      {
         "value": "5",
         "label": "5"
       }
-    ]
+    ],
+    "isPII": false
   },
- { 
+  {
     "name": "educationalServices",
     "label": "บริการด้านการศึกษาา",
     "type": "select",
@@ -562,7 +586,7 @@
       {
         "value": "",
         "label": ""
-      },    
+      },
       {
         "value": "1",
         "label": "1"
@@ -571,21 +595,22 @@
         "value": "2",
         "label": "2"
       },
-        {
+      {
         "value": "3",
         "label": "3"
       },
-        {
+      {
         "value": "4",
         "label": "4"
       },
-        {
+      {
         "value": "5",
         "label": "5"
       }
-    ]
+    ],
+    "isPII": false
   },
-  { 
+  {
     "name": "caseFollowUps",
     "label": "ติดตํามผลเคส",
     "type": "select",
@@ -594,7 +619,7 @@
       {
         "value": "",
         "label": ""
-      },    
+      },
       {
         "value": "1",
         "label": "1"
@@ -603,11 +628,11 @@
         "value": "2",
         "label": "2"
       },
-        {
+      {
         "value": "3",
         "label": "3"
       },
-        {
+      {
         "value": "4",
         "label": "4"
       },
@@ -615,9 +640,10 @@
         "value": "5",
         "label": "5"
       }
-    ]
+    ],
+    "isPII": false
   },
-  { 
+  {
     "name": "careerServices",
     "label": "พัฒนาทักษะอาชีพ / ทดลองงาน",
     "type": "select",
@@ -626,7 +652,7 @@
       {
         "value": "",
         "label": ""
-      },    
+      },
       {
         "value": "1",
         "label": "1"
@@ -635,21 +661,22 @@
         "value": "2",
         "label": "2"
       },
-        {
+      {
         "value": "3",
         "label": "3"
       },
-        {
+      {
         "value": "4",
         "label": "4"
       },
-        {
+      {
         "value": "5",
         "label": "5"
       }
-    ]
+    ],
+    "isPII": false
   },
-  { 
+  {
     "name": "maternalServices",
     "label": "บริการช่วยเหลือแม่และเด็ก",
     "type": "select",
@@ -658,7 +685,7 @@
       {
         "value": "",
         "label": ""
-      },    
+      },
       {
         "value": "1",
         "label": "1"
@@ -667,18 +694,19 @@
         "value": "2",
         "label": "2"
       },
-        {
+      {
         "value": "3",
         "label": "3"
       },
-        {
+      {
         "value": "4",
         "label": "4"
       },
-        {
+      {
         "value": "5",
         "label": "5"
       }
-    ]
+    ],
+    "isPII": false
   }
 ]

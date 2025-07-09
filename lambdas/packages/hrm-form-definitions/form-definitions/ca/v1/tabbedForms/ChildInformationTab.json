@@ -2,7 +2,8 @@
   {
     "name": "nickname",
     "label": "Nickname",
-    "type": "input"
+    "type": "input",
+    "isPII": true
   },
   {
     "name": "age",
@@ -125,7 +126,8 @@
     "required": {
       "value": true,
       "message": "RequiredFieldError"
-    }
+    },
+    "isPII": false
   },
   {
     "name": "gender",
@@ -172,12 +174,14 @@
     "required": {
       "value": true,
       "message": "RequiredFieldError"
-    }
+    },
+    "isPII": false
   },
   {
     "name": "otherGender",
     "label": "ifOtherGenderPleaseSpecify",
-    "type": "input"
+    "type": "input",
+    "isPII": true
   },
   {
     "name": "sexualOrientation",
@@ -220,12 +224,14 @@
     "required": {
       "value": true,
       "message": "RequiredFieldError"
-    }
+    },
+    "isPII": false
   },
   {
     "name": "otherSexualOrientation",
     "label": "ifOtherSexualOrientationPleaseSpecify",
-    "type": "input"
+    "type": "input",
+    "isPII": true
   },
   {
     "name": "province",
@@ -312,143 +318,148 @@
     "required": {
       "value": true,
       "message": "RequiredFieldError"
-    }
+    },
+    "isPII": false
   },
   {
     "name": "ethnicity",
     "label": "Race/Ethnicity",
     "type": "listbox-multiselect",
     "options": [
-        {
-          "value": "Black",
-          "label": "Black (e.g., African, Afro-Caribbean, African Canadian descent)"
-        },
-        {
-          "value": "East Asian",
-          "label": "East Asian (e.g., East Asian descent; Korean, Chinese, Japanese, etc.)"
-        },
-        {
-          "value": "Indigenous",
-          "label": "Indigenous (To North America)"
-        },
-        {
-          "value": "First Nations",
-          "label": "First Nations [sub-category of Indigenous (To North America)]"
-        },
-        {
-          "value": "Métis",
-          "label": "Métis [sub-category of Indigenous (To North America)]"
-        },
-        {
-          "value": "Inuit",
-          "label": "Inuit [sub-category of Indigenous (To North America)]"
-        },
-        {
-          "value": "Indigenous (non-specified)",
-          "label": "Indigenous (non-specified) [sub-category of Indigenous (To North America)]"
-        },
-        {
-          "value": "Indigenous (Not to North America)",
-          "label": "Indigenous (Not to North America)"
-        },
-        {
-          "value": "Latin American",
-          "label": "Latin American (e.g., Latin American, Hispanic descent)"
-        },
-        {
-          "value": "Middle Eastern",
-          "label": "Middle Eastern (e.g., Arab, Persian, West Asian descent; Egyptian, Iranian, Lebanese, Turkish, etc.)"
-        },
-        {
-          "value": "Southeast Asian",
-          "label": "Southeast Asian (e.g., Southeast Asian descent; Cambodian, Filipino, Indonesian, Laotian, Vietnamese, etc.)"
-        },
-        {
-          "value": "South Asian",
-          "label": "South Asian (e.g., South Asian descent; East Indian, Afghan, Pakistani, Sri Lankan, etc.)"
-        },
-        {
-          "value": "White",
-          "label": "White (e.g., European descent)"
-        },
-        {
-          "value": "Other",
-          "label": "Other"
-        },
-        {
-          "value": "Unknown",
-          "label": "Unknown/Did not disclose/Did not ask"
-        }
-      ],
-      "required": {
-        "value": true,
-        "message": "RequiredFieldError"
+      {
+        "value": "Black",
+        "label": "Black (e.g., African, Afro-Caribbean, African Canadian descent)"
+      },
+      {
+        "value": "East Asian",
+        "label": "East Asian (e.g., East Asian descent; Korean, Chinese, Japanese, etc.)"
+      },
+      {
+        "value": "Indigenous",
+        "label": "Indigenous (To North America)"
+      },
+      {
+        "value": "First Nations",
+        "label": "First Nations [sub-category of Indigenous (To North America)]"
+      },
+      {
+        "value": "Métis",
+        "label": "Métis [sub-category of Indigenous (To North America)]"
+      },
+      {
+        "value": "Inuit",
+        "label": "Inuit [sub-category of Indigenous (To North America)]"
+      },
+      {
+        "value": "Indigenous (non-specified)",
+        "label": "Indigenous (non-specified) [sub-category of Indigenous (To North America)]"
+      },
+      {
+        "value": "Indigenous (Not to North America)",
+        "label": "Indigenous (Not to North America)"
+      },
+      {
+        "value": "Latin American",
+        "label": "Latin American (e.g., Latin American, Hispanic descent)"
+      },
+      {
+        "value": "Middle Eastern",
+        "label": "Middle Eastern (e.g., Arab, Persian, West Asian descent; Egyptian, Iranian, Lebanese, Turkish, etc.)"
+      },
+      {
+        "value": "Southeast Asian",
+        "label": "Southeast Asian (e.g., Southeast Asian descent; Cambodian, Filipino, Indonesian, Laotian, Vietnamese, etc.)"
+      },
+      {
+        "value": "South Asian",
+        "label": "South Asian (e.g., South Asian descent; East Indian, Afghan, Pakistani, Sri Lankan, etc.)"
+      },
+      {
+        "value": "White",
+        "label": "White (e.g., European descent)"
+      },
+      {
+        "value": "Other",
+        "label": "Other"
+      },
+      {
+        "value": "Unknown",
+        "label": "Unknown/Did not disclose/Did not ask"
       }
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    },
+    "isPII": false
   },
   {
     "name": "otherEthnicity",
     "label": "ifOtherRacePleaseSpecify",
-    "type": "input"
+    "type": "input",
+    "isPII": true
   },
   {
     "name": "school",
     "label": "School",
     "type": "select",
     "options": [
-        {
-          "value": "",
-          "label": ""
-        },
-        {
-          "value": "Elementary School",
-          "label": "Elementary School"
-        },
-        {
-          "value": "Middle school/Junior High",
-          "label": "Middle school/Junior High"
-        },
-        {
-          "value": "High School",
-          "label": "High School"
-        },
-        {
-          "value": "Alternative Education School/Program",
-          "label": "Alternative Education School/Program"
-        },
-        {
-          "value": "College",
-          "label": "College"
-        },
-        {
-          "value": "University",
-          "label": "University"
-        },
-        {
-            "value": "Home School",
-            "label": "Home School"
-        },
-        {
-            "value": "Other",
-            "label": "Other"
-        },
-        {
-          "value": "Not a student",
-          "label": "Not a student"
-        },
-        {
-          "value": "Unknown",
-          "label": "Did not disclose/Did not ask"
-        }
-      ],
-      "required": {
-        "value": true,
-        "message": "RequiredFieldError"
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "Elementary School",
+        "label": "Elementary School"
+      },
+      {
+        "value": "Middle school/Junior High",
+        "label": "Middle school/Junior High"
+      },
+      {
+        "value": "High School",
+        "label": "High School"
+      },
+      {
+        "value": "Alternative Education School/Program",
+        "label": "Alternative Education School/Program"
+      },
+      {
+        "value": "College",
+        "label": "College"
+      },
+      {
+        "value": "University",
+        "label": "University"
+      },
+      {
+        "value": "Home School",
+        "label": "Home School"
+      },
+      {
+        "value": "Other",
+        "label": "Other"
+      },
+      {
+        "value": "Not a student",
+        "label": "Not a student"
+      },
+      {
+        "value": "Unknown",
+        "label": "Did not disclose/Did not ask"
       }
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    },
+    "isPII": false
   },
   {
     "name": "otherSchool",
     "label": "ifOtherSchoolPleaseSpecify",
-    "type": "input"
+    "type": "input",
+    "isPII": true
   },
   {
     "name": "livingSituation",
@@ -509,14 +520,16 @@
       }
     ],
     "required": {
-        "value": true,
-        "message": "RequiredFieldError"
-      }
+      "value": true,
+      "message": "RequiredFieldError"
+    },
+    "isPII": false
   },
   {
     "name": "otherResidence",
     "label": "ifOtherResidencePleaseSpecify",
-    "type": "input"
+    "type": "input",
+    "isPII": true
   },
   {
     "name": "region",
@@ -557,57 +570,60 @@
       }
     ],
     "required": {
-        "value": true,
-        "message": "RequiredFieldError"
-      }
+      "value": true,
+      "message": "RequiredFieldError"
+    },
+    "isPII": false
   },
   {
     "name": "otherPopulation",
     "label": "ifOtherPopulationPleaseSpecify",
-    "type": "input"
+    "type": "input",
+    "isPII": true
   },
   {
     "name": "upset",
     "label": "Upset",
     "type": "select",
     "options": [
-        {
-          "value": "N/A - Call",
-          "label": ""
-        },
-        {
-          "value": "1",
-          "label": "1 - Not Very"
-        },
-        {
-          "value": "2",
-          "label": "2"
-        },
-        {
-          "value": "3",
-          "label": "3"
-        },
-        {
-          "value": "4",
-          "label": "4"
-        },
-        {
-          "value": "5",
-          "label": "5"
-        },
-        {
-          "value": "6",
-          "label": "6"
-        },
-        {
-          "value": "7",
-          "label": "7 - Very"
-        },
-        {
-          "value": "Unknown",
-          "label": "Did not disclose/Did not ask"
-        }
-      ]
+      {
+        "value": "N/A - Call",
+        "label": ""
+      },
+      {
+        "value": "1",
+        "label": "1 - Not Very"
+      },
+      {
+        "value": "2",
+        "label": "2"
+      },
+      {
+        "value": "3",
+        "label": "3"
+      },
+      {
+        "value": "4",
+        "label": "4"
+      },
+      {
+        "value": "5",
+        "label": "5"
+      },
+      {
+        "value": "6",
+        "label": "6"
+      },
+      {
+        "value": "7",
+        "label": "7 - Very"
+      },
+      {
+        "value": "Unknown",
+        "label": "Did not disclose/Did not ask"
+      }
+    ],
+    "isPII": false
   },
   {
     "name": "supportType",
@@ -638,38 +654,41 @@
         "value": "Unknown",
         "label": "Unknown/Did not disclose/Did not ask"
       }
-    ]
+    ],
+    "isPII": false
   },
   {
     "name": "suicidalThoughts",
     "label": "suicidalThoughts",
     "type": "select",
     "options": [
-        {
-          "value": "N/A - Call",
-          "label": ""
-        },
-        {
-          "value": "Yes",
-          "label": "Yes"
-        },
-        {
-          "value": "No",
-          "label": "No"
-        },
-        {
-          "value": "Maybe",
-          "label": "Maybe"
-        },
-        {
-          "value": "Unknown",
-          "label": "Did not disclose"
-        }
-      ]
+      {
+        "value": "N/A - Call",
+        "label": ""
+      },
+      {
+        "value": "Yes",
+        "label": "Yes"
+      },
+      {
+        "value": "No",
+        "label": "No"
+      },
+      {
+        "value": "Maybe",
+        "label": "Maybe"
+      },
+      {
+        "value": "Unknown",
+        "label": "Did not disclose"
+      }
+    ],
+    "isPII": false
   },
   {
     "name": "Newcomer",
     "label": "Newcomer",
-    "type": "checkbox"
+    "type": "checkbox",
+    "isPII": false
   }
 ]

@@ -3,7 +3,10 @@
     "name": "callSummary",
     "label": "Contact Summary",
     "type": "textarea",
-    "required": { "value": true, "message": "RequiredFieldError" },
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    },
     "isPII": true,
     "width": "270px",
     "rows": "40",
@@ -26,13 +29,26 @@
     "label": "[For AI Summary only] How accurate was the summary written by AI?",
     "type": "select",
     "options": [
-      { "value": "Unknown", "label": "" },
-      { "value": "Very accurate", "label": "Very accurate" },
-      { "value": "Somewhat accurate", "label": "Somewhat accurate" },
-      { "value": "Not accurate", "label": "Not accurate" }
-    ]
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "Very accurate",
+        "label": "Very accurate"
+      },
+      {
+        "value": "Somewhat accurate",
+        "label": "Somewhat accurate"
+      },
+      {
+        "value": "Not accurate",
+        "label": "Not accurate"
+      }
+    ],
+    "isPII": false
   },
-    {
+  {
     "name": "summaryFeedback",
     "label": "[For AI Summary only] Tell us more about your answer above.",
     "type": "textarea",
@@ -44,99 +60,214 @@
     "label": "Location of Issue",
     "type": "select",
     "options": [
-      { "value": "Unknown", "label": "" },
-      { "value": "Home (own)", "label": "Home (own)" },
-      { "value": "Home (other)", "label": "Home (other)" },
-      { "value": "Educational Establishment", "label": "Educational Establishment" },
-      { "value": "Institution", "label": "Institution" },
-      { "value": "Online", "label": "Online" },
-      { "value": "Public place", "label": "Public place" },
-      { "value": "Other", "label": "Other" }
-    ]
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "Home (own)",
+        "label": "Home (own)"
+      },
+      {
+        "value": "Home (other)",
+        "label": "Home (other)"
+      },
+      {
+        "value": "Educational Establishment",
+        "label": "Educational Establishment"
+      },
+      {
+        "value": "Institution",
+        "label": "Institution"
+      },
+      {
+        "value": "Online",
+        "label": "Online"
+      },
+      {
+        "value": "Public place",
+        "label": "Public place"
+      },
+      {
+        "value": "Other",
+        "label": "Other"
+      }
+    ],
+    "isPII": false
   },
   {
     "name": "otherLocation",
     "label": "If Other, please specify.",
-    "type": "input"
+    "type": "input",
+    "isPII": true
   },
   {
     "name": "actionTaken",
     "label": "Action Taken",
     "type": "select",
     "options": [
-      { "value": "", "label": "" },
-      { "value": "Direct interventions by the child helpline", "label": "Direct interventions by the child helpline" },
-      { "value": "Provision of information about SafeSpot", "label": "Provision of information about SafeSpot" },
-      { "value": "Recommendations of resources", "label": "Recommendations of resources" },
-      { "value": "Recommendation that young person contact SafeSpot", "label": "Recommendation that young person contact SafeSpot" },
-      { "value": "Referrals to child protection agencies", "label": "Referrals to child protection agencies" },
-      { "value": "Referrals to law enforcement agencies", "label": "Referrals to law enforcement agencies" },
-      { "value": "Referrals to general healthcare professionals", "label": "Referrals to general healthcare services" },
-      { "value": "Referrals to mental health services", "label": "Referrals to mental health services" },
-      { "value": "Referrals to other organisations", "label": "Referrals to other organisations" },
-      { "value": "Referrals to school counsellors", "label": "Referrals to school counsellors" },
-      { "value": "Reports to Child Sexual Abuse Material", "label": "Reports to Child Sexual Abuse Material" }
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "Direct interventions by the child helpline",
+        "label": "Direct interventions by the child helpline"
+      },
+      {
+        "value": "Provision of information about SafeSpot",
+        "label": "Provision of information about SafeSpot"
+      },
+      {
+        "value": "Recommendations of resources",
+        "label": "Recommendations of resources"
+      },
+      {
+        "value": "Recommendation that young person contact SafeSpot",
+        "label": "Recommendation that young person contact SafeSpot"
+      },
+      {
+        "value": "Referrals to child protection agencies",
+        "label": "Referrals to child protection agencies"
+      },
+      {
+        "value": "Referrals to law enforcement agencies",
+        "label": "Referrals to law enforcement agencies"
+      },
+      {
+        "value": "Referrals to general healthcare professionals",
+        "label": "Referrals to general healthcare services"
+      },
+      {
+        "value": "Referrals to mental health services",
+        "label": "Referrals to mental health services"
+      },
+      {
+        "value": "Referrals to other organisations",
+        "label": "Referrals to other organisations"
+      },
+      {
+        "value": "Referrals to school counsellors",
+        "label": "Referrals to school counsellors"
+      },
+      {
+        "value": "Reports to Child Sexual Abuse Material",
+        "label": "Reports to Child Sexual Abuse Material"
+      }
     ],
-    "required": { "value": true, "message": "RequiredFieldError" }
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    },
+    "isPII": false
   },
   {
     "name": "outcomeOfContact",
     "label": "Outcome of Contact",
     "type": "select",
     "options": [
-      { "value": "", "label": "" },
-      { "value": "Resolved", "label": "Resolved" },
-      { "value": "Follow up by next shift", "label": "Follow up by next shift" },    
-      { "value": "Follow up with external entity", "label": "Follow up with external entity" }
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "Resolved",
+        "label": "Resolved"
+      },
+      {
+        "value": "Follow up by next shift",
+        "label": "Follow up by next shift"
+      },
+      {
+        "value": "Follow up with external entity",
+        "label": "Follow up with external entity"
+      }
     ],
-    "required": { "value": true, "message": "RequiredFieldError" }
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    },
+    "isPII": false
   },
   {
     "name": "howDidYouKnowAboutOurLine",
     "label": "How did the child hear about us?",
     "type": "select",
     "options": [
-      { "value": "", "label": "" },
-      { "value": "AI", "label": "AI" },
-      { "value": "Advertisement", "label": "Advertisement" },
-      { "value": "Social media", "label": "Social media" },
-      { "value": "SMS/Text Message", "label": "SMS/Text Message" },      
-      { "value": "Traditional Media", "label": "Traditional Media (TV, Radio, Local News Outlet, Newspaper, etc.)" },
-      { "value": "Word of Mouth", "label": "Word of Mouth" },
-      { "value": "Unknown", "label": "Unknown" }
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "AI",
+        "label": "AI"
+      },
+      {
+        "value": "Advertisement",
+        "label": "Advertisement"
+      },
+      {
+        "value": "Social media",
+        "label": "Social media"
+      },
+      {
+        "value": "SMS/Text Message",
+        "label": "SMS/Text Message"
+      },
+      {
+        "value": "Traditional Media",
+        "label": "Traditional Media (TV, Radio, Local News Outlet, Newspaper, etc.)"
+      },
+      {
+        "value": "Word of Mouth",
+        "label": "Word of Mouth"
+      },
+      {
+        "value": "Unknown",
+        "label": "Unknown"
+      }
     ],
-    "required": { "value": true, "message": "RequiredFieldError" }
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    },
+    "isPII": false
   },
   {
     "name": "repeatCaller",
     "label": "Repeat Caller?",
-    "type": "mixed-checkbox"
+    "type": "mixed-checkbox",
+    "isPII": false
   },
   {
     "name": "keepConfidential",
     "label": "Keep confidential?",
     "type": "checkbox",
-    "initialChecked": true
+    "initialChecked": true,
+    "isPII": false
   },
   {
     "name": "okForCaseWorkerToCall",
     "label": "Ok for case worker to call?",
-    "type": "mixed-checkbox"
+    "type": "mixed-checkbox",
+    "isPII": false
   },
   {
     "name": "didTheChildFeelWeSolvedTheirProblem",
     "label": "Did the child feel we solved their problem?",
-    "type": "mixed-checkbox"
+    "type": "mixed-checkbox",
+    "isPII": false
   },
   {
     "name": "wouldTheChildRecommendUsToAFriend",
     "label": "Would the child recommend us to a friend?",
-    "type": "mixed-checkbox"
+    "type": "mixed-checkbox",
+    "isPII": false
   },
   {
     "name": "didYouDiscussRightsWithTheChild",
     "label": "Did you discuss rights with the child as well as Safeguarding Children and Confidentiality Policy?",
-    "type": "mixed-checkbox"
+    "type": "mixed-checkbox",
+    "isPII": false
   }
-  
 ]
