@@ -50,7 +50,6 @@ locals {
     }
     get_profile_flags_for_identifier_base_url = "https://hrm-staging.tl.techmatters.org/lambda/twilio/account-scoped"
     ui_editable = true
-    enable_lex_v2                     = true
     #Chatbots
   }
 }
