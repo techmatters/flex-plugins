@@ -1,0 +1,13 @@
+{
+  "preEngagement":{
+    "contactIdentifier": "ChildInformationTab.contactIdentifier",
+    "friendlyName": "ChildInformationTab.friendlyName",
+    "phone1": "ChildInformationTab.phone1",
+    "ip": "ChildInformationTab.ip",
+    "anxietyScale": "ChildInformationTab.anxietyScale",
+    "moodhappinessBefore": "ChildInformationTab.moodhappinessBefore",
+    "consentForResearchevaluation": "ChildInformationTab.consentForResearchevaluation",
+    "dataProcessingAndStorage": "ChildInformationTab.dataProcessingAndStorage",
+    "termsAndConditions": "ChildInformationTab.termsAndConditions"
+  }
+}
