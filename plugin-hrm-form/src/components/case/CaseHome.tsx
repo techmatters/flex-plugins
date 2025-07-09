@@ -20,7 +20,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { DefinitionVersion } from 'hrm-form-definitions';
 
 import { CaseContainer, CaseDetailsBorder } from './styles';
-import { BottomButtonBar, Box, DestructiveButton, TertiaryButton } from '../../styles';
+import { BottomButtonBar, Box, DestructiveButton, Flex, TertiaryButton } from '../../styles';
 import CaseOverviewHeader from './caseOverview/CaseOverviewHeader';
 import CaseOverview from './caseOverview';
 import Timeline from './timeline/Timeline';
@@ -164,9 +164,11 @@ const CaseHome: React.FC<CaseHomeProps> = ({ task, handlePrintCase, handleClose,
               titleCode={hasMoreActivities ? 'Case-Timeline-RecentTitle' : 'Case-Timeline-Title'}
             />
             {hasMoreActivities && (
-              <TertiaryButton style={{ marginTop: '10px' }} onClick={onViewFullTimelineClick}>
-                <Template code="Case-Timeline-OpenFullTimelineButton" />
-              </TertiaryButton>
+              <Flex flexDirection="column" width="100%">
+                <TertiaryButton style={{ marginTop: '10px' }} onClick={onViewFullTimelineClick}>
+                  <Template code="Case-Timeline-OpenFullTimelineButton" />
+                </TertiaryButton>
+              </Flex>
             )}
           </CaseDetailsBorder>
         </Box>
