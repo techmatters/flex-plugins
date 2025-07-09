@@ -37,7 +37,7 @@ export const baseMockConfig = {
   definitionVersion: 'v1',
   permissionConfig: 'zm',
   strings: {
-    'Error-CategoryRequired': 'Required 1 category minimum, 3 categories maximum',
+    'Error-CategoryRequired': 'Required #{{minSelections}} category minimum, #{{maxSelections}} categories maximum',
     'ContactDetails-GeneralDetails': 'General Details',
     'TabbedForms-AddCallerInfoTab': 'Caller Information',
     'TabbedForms-AddChildInfoTab': 'Child Information',

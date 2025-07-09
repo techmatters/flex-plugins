@@ -2,18 +2,21 @@
   {
     "name": "beaconIncidentId",
     "type": "input",
-    "label": "Beacon Incident ID"
+    "label": "Beacon Incident ID",
+    "isPII": true
   },
   {
     "name": "incidentNumber",
     "type": "input",
-    "label": "Beacon Incident Number"
+    "label": "Beacon Incident Number",
+    "isPII": true
   },
-   {
+  {
     "name": "incidentCreationTimestamp",
     "type": "time-input",
-    "label": "Incident Creation Timestamp"
-  }, 
+    "label": "Incident Creation Timestamp",
+    "isPII": true
+  },
   {
     "name": "incidentType",
     "label": "Incident Type",
@@ -56,9 +59,10 @@
         "value": "Mental Health Crisis",
         "label": "Mental Health Crisis"
       }
-    ]
+    ],
+    "isPII": false
   },
-    {
+  {
     "name": "tags",
     "label": "Incident Tags",
     "type": "listbox-multiselect",
@@ -123,73 +127,87 @@
         "value": "Valley",
         "label": "Valley"
       }
-    ]
+    ],
+    "isPII": false
   },
   {
     "name": "comments",
     "label": "Comments",
     "type": "textarea",
     "rows": 20,
-    "width": 289
+    "width": 289,
+    "isPII": true
   },
   {
     "name": "latitude",
     "type": "input",
-    "label": "Location: Latitude"
+    "label": "Location: Latitude",
+    "isPII": true
   },
   {
     "name": "longitude",
     "type": "input",
-    "label": "Location: Longitude"
+    "label": "Location: Longitude",
+    "isPII": true
   },
   {
     "name": "locationAddress",
     "type": "input",
-    "label": "Location: Physical Address"
+    "label": "Location: Physical Address",
+    "isPII": true
   },
   {
     "name": "transportDestination",
     "type": "input",
-    "label": "Transport Destination"
+    "label": "Transport Destination",
+    "isPII": true
   },
   {
     "name": "numberOfClientsTransported",
     "type": "numeric-input",
-    "label": "# of Clients Transported"
+    "label": "# of Clients Transported",
+    "isPII": false
   },
   {
     "name": "incidentActivationInterval",
     "type": "numeric-input",
-    "label": "Incident Activation Interval"
-  },  
+    "label": "Incident Activation Interval",
+    "isPII": false
+  },
   {
     "name": "enrouteInterval",
     "type": "numeric-input",
-    "label": "En Route Interval"
+    "label": "En Route Interval",
+    "isPII": false
   },
   {
     "name": "sceneArrivalInterval",
     "type": "numeric-input",
-    "label": "Scene Arrival Interval"
+    "label": "Scene Arrival Interval",
+    "isPII": false
   },
   {
     "name": "triageInterval",
     "type": "numeric-input",
-    "label": "Triage Interval"
+    "label": "Triage Interval",
+    "isPII": false
   },
   {
     "name": "totalSceneInterval",
     "type": "numeric-input",
-    "label": "Total Scene Interval"
+    "label": "Total Scene Interval",
+    "isPII": false
   },
   {
     "name": "transportInterval",
     "type": "numeric-input",
-    "label": "Transport Interval"
+    "label": "Transport Interval",
+    "isPII": false
   },
   {
     "name": "totalIncidentTime",
     "type": "numeric-input",
-    "label": "Total Incident Time"
+    "label": "Total Incident Time",
+    "isPII": false
   }
 ]

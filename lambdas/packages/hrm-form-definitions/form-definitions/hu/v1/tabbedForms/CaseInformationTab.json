@@ -6,7 +6,8 @@
     "required": {
       "value": true,
       "message": "RequiredFieldError"
-    }
+    },
+    "isPII": true
   },
   {
     "name": "actionTaken",
@@ -45,7 +46,8 @@
         "value": "Egyéb",
         "label": "Egyéb"
       }
-    ]
+    ],
+    "isPII": false
   },
   {
     "name": "howDidYouKnowAboutOurLine",
@@ -77,12 +79,14 @@
         "value": "Egyéb",
         "label": "Egyéb"
       }
-    ]
+    ],
+    "isPII": false
   },
   {
     "name": "keepConfidential",
     "label": "Anonim szeretne maradni",
     "type": "mixed-checkbox",
-    "initialChecked": true
+    "initialChecked": true,
+    "isPII": false
   }
 ]

@@ -16,7 +16,8 @@
     "required": {
       "value": true,
       "message": "RequiredFieldError"
-    }
+    },
+    "isPII": false
   },
   {
     "name": "typeOfHarm",
@@ -47,7 +48,8 @@
     "required": {
       "value": true,
       "message": "RequiredFieldError"
-    }
+    },
+    "isPII": false
   },
   {
     "name": "alreadyActed",
@@ -61,13 +63,15 @@
     "required": {
       "value": true,
       "message": "RequiredFieldError"
-    }
+    },
+    "isPII": false
   },
   {
     "name": "harmDetails",
     "label": "Details of harm",
     "type": "textarea",
-    "placeholder": ""
+    "placeholder": "",
+    "isPII": true
   },
   {
     "name": "expressedThoughts",
@@ -81,13 +85,15 @@
     "required": {
       "value": true,
       "message": "RequiredFieldError"
-    }
+    },
+    "isPII": false
   },
   {
     "name": "thoughtsDetails",
     "label": "Details of thoughts or feelings",
     "type": "textarea",
-    "placeholder": ""
+    "placeholder": "",
+    "isPII": true
   },
   {
     "name": "expressedIntent",
@@ -101,13 +107,15 @@
     "required": {
       "value": true,
       "message": "RequiredFieldError"
-    }
+    },
+    "isPII": false
   },
   {
     "name": "intentDetails",
     "label": "Details of any intent",
     "type": "textarea",
-    "placeholder": ""
+    "placeholder": "",
+    "isPII": true
   },
   {
     "name": "describedMethod",
@@ -121,13 +129,15 @@
     "required": {
       "value": true,
       "message": "RequiredFieldError"
-    }
+    },
+    "isPII": false
   },
   {
     "name": "methodDetails",
     "label": "Details of means",
     "type": "textarea",
-    "placeholder": ""
+    "placeholder": "",
+    "isPII": true
   },
   {
     "name": "timeframe",
@@ -141,12 +151,14 @@
     "required": {
       "value": true,
       "message": "RequiredFieldError"
-    }
+    },
+    "isPII": false
   },
   {
     "name": "timeframeDetails",
     "label": "Details of timeframe",
     "type": "textarea",
-    "placeholder": ""
+    "placeholder": "",
+    "isPII": true
   }
 ]

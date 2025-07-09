@@ -6,7 +6,8 @@
     "required": {
       "value": true,
       "message": "RequiredFieldError"
-    }
+    },
+    "isPII": false
   },
   {
     "name": "location",
@@ -54,7 +55,8 @@
     "required": {
       "value": true,
       "message": "RequiredFieldError"
-    }
+    },
+    "isPII": false
   },
   {
     "name": "duration",
@@ -90,7 +92,8 @@
     "required": {
       "value": true,
       "message": "RequiredFieldError"
-    }
+    },
+    "isPII": false
   },
   {
     "name": "frequency",
@@ -126,27 +129,32 @@
     "required": {
       "value": true,
       "message": "RequiredFieldError"
-    }
+    },
+    "isPII": false
   },
   {
     "name": "isCaregiverAware",
     "label": "Is caregiver aware?",
-    "type": "mixed-checkbox"
+    "type": "mixed-checkbox",
+    "isPII": false
   },
   {
     "name": "wasTheIncidentWitnessedByAnyone",
     "label": "Was the incident witnessed by anyone?",
-    "type": "mixed-checkbox"
+    "type": "mixed-checkbox",
+    "isPII": false
   },
   {
     "name": "hasAbuseBeenReportedElsewhere",
     "label": "Has abuse been reported elsewhere?",
-    "type": "mixed-checkbox"
+    "type": "mixed-checkbox",
+    "isPII": false
   },
   {
     "name": "whereElseTheIncidentHasBeenReported",
     "label": "Where else the incident has been reported?",
-    "type": "input"
+    "type": "input",
+    "isPII": true
   },
   {
     "name": "detailsOfIncident",
@@ -157,6 +165,7 @@
     "required": {
       "value": true,
       "message": "RequiredFieldError"
-    }
+    },
+    "isPII": true
   }
 ]

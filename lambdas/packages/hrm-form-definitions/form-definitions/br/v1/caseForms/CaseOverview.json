@@ -2,17 +2,20 @@
   {
     "name": "status",
     "label": "Status do caso",
-    "type": "select"
+    "type": "select",
+    "isPII": false
   },
   {
     "name": "childIsAtRisk",
     "label": "Criança está em risco",
-    "type": "checkbox"
+    "type": "checkbox",
+    "isPII": false
   },
   {
     "name": "followUpDate",
     "label": "Resumo do Caso",
-    "type": "date-input"
+    "type": "date-input",
+    "isPII": false
   },
   {
     "name": "summary",

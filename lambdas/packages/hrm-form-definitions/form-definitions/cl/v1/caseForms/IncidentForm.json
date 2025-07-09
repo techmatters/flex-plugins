@@ -6,7 +6,8 @@
     "required": {
       "value": true,
       "message": "RequiredFieldError"
-    }
+    },
+    "isPII": false
   },
   {
     "name": "duration",
@@ -34,7 +35,8 @@
     "required": {
       "value": true,
       "message": "RequiredFieldError"
-    }
+    },
+    "isPII": false
   },
   {
     "name": "location",
@@ -114,7 +116,8 @@
     "required": {
       "value": true,
       "message": "RequiredFieldError"
-    }
+    },
+    "isPII": false
   },
   {
     "name": "incidentType",
@@ -134,26 +137,31 @@
         "value": "Comportamiento suicida",
         "label": "Comportamiento suicida"
       }
-    ]
+    ],
+    "isPII": false
   },
   {
     "name": "isCaregiverAware",
     "label": "¿Está la persona responsable al tanto?",
-    "type": "mixed-checkbox"
+    "type": "mixed-checkbox",
+    "isPII": false
   },
   {
     "name": "incidentWitnessed",
     "label": "¿Fue el incidente presenciado por alguien?",
-    "type": "mixed-checkbox"
+    "type": "mixed-checkbox",
+    "isPII": false
   },
   {
     "name": "abuseReportedElsewhere",
     "label": "¿Ha sido el incidente reportado en alguna parte?",
-    "type": "mixed-checkbox"
+    "type": "mixed-checkbox",
+    "isPII": false
   },
   {
     "name": "whereElseBeenReported",
     "label": "¿En dónde ha sido reportado el incidente?",
-    "type": "input"
+    "type": "input",
+    "isPII": true
   }
 ]

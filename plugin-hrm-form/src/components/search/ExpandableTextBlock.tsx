@@ -14,7 +14,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import React from 'react';
+import React, { CSSProperties } from 'react';
 import type { StyledProps } from '@material-ui/core';
 import { Template } from '@twilio/flex-ui';
 
@@ -24,6 +24,7 @@ import { StyledLink } from './styles';
 export type ExpandableTextBlockProps = {
   expandLinkText: string;
   collapseLinkText: string;
+  style?: CSSProperties;
 };
 
 const ExpandableTextBlock: React.FC<ExpandableTextBlockProps & Partial<StyledProps>> = ({
@@ -31,6 +32,7 @@ const ExpandableTextBlock: React.FC<ExpandableTextBlockProps & Partial<StyledPro
   expandLinkText,
   collapseLinkText,
   className,
+  style = {},
 }) => {
   const {
     collapseButtonElementRef,
@@ -41,16 +43,22 @@ const ExpandableTextBlock: React.FC<ExpandableTextBlockProps & Partial<StyledPro
     isOverflowing,
     overflowingRef,
   } = useExpandableOnOverflow({});
-
+  const classes = [];
+  if (className) {
+    classes.push(className);
+  }
+  if (isExpanded) {
+    classes.push('expanded');
+  }
   return (
     <div
-      className={className}
-      style={{ display: 'flex', flexFlow: 'row', justifyContent: 'stretch' }}
+      className={`${classes.join(' ')}`}
+      style={{ display: 'flex', flexFlow: 'row', justifyContent: 'stretch', textOverflow: 'ellipsis', ...style }}
       ref={overflowingRef}
     >
       <div
         style={{
-          textOverflow: 'ellipsis',
+          textOverflow: 'inherit',
           whiteSpace: isOverflowing && !isExpanded ? 'nowrap' : 'inherit',
           overflow: isOverflowing && !isExpanded ? 'hidden' : 'inherit',
           height: isExpanded ? 'inherit' : '1.5em',

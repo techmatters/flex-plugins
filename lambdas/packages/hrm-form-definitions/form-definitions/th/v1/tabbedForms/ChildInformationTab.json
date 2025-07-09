@@ -2,17 +2,20 @@
   {
     "name": "nickname",
     "label": "Nickname",
-    "type": "input"
+    "type": "input",
+    "isPII": true
   },
   {
     "name": "firstName",
     "label": "First Name",
-    "type": "input"
+    "type": "input",
+    "isPII": true
   },
   {
     "name": "lastName",
     "label": "Last Name",
-    "type": "input"
+    "type": "input",
+    "isPII": true
   },
   {
     "name": "gender",
@@ -26,7 +29,8 @@
     "required": {
       "value": true,
       "message": "RequiredFieldError"
-    }
+    },
+    "isPII": false
   },
   {
     "name": "age",
@@ -40,17 +44,20 @@
     "required": {
       "value": true,
       "message": "RequiredFieldError"
-    }
+    },
+    "isPII": false
   },
   {
     "name": "streetAddress",
     "label": "Street Address",
-    "type": "input"
+    "type": "input",
+    "isPII": true
   },
   {
     "name": "city",
     "label": "City",
-    "type": "input"
+    "type": "input",
+    "isPII": true
   },
   {
     "name": "area",
@@ -60,7 +67,8 @@
       "value": "unknown",
       "label": ""
     },
-    "optionsReferenceKey": "areaOptions"
+    "optionsReferenceKey": "areaOptions",
+    "isPII": false
   },
   {
     "name": "province",
@@ -71,22 +79,26 @@
       "value": "unknown",
       "label": ""
     },
-    "optionsReferenceKey": "provinceOptions"
+    "optionsReferenceKey": "provinceOptions",
+    "isPII": false
   },
   {
     "name": "postalCode",
     "label": "Postal Code",
-    "type": "input"
+    "type": "input",
+    "isPII": true
   },
   {
     "name": "phone1",
     "label": "Phone #1",
-    "type": "input"
+    "type": "input",
+    "isPII": true
   },
   {
     "name": "phone2",
     "label": "Phone #2",
-    "type": "input"
+    "type": "input",
+    "isPII": true
   },
   {
     "name": "contactChannel",
@@ -142,7 +154,8 @@
         "value": "Media Monitoring",
         "label": "Media Monitoring"
       }
-    ]
+    ],
+    "isPII": false
   },
   {
     "name": "language",
@@ -152,22 +165,26 @@
       "value": "unknown",
       "label": ""
     },
-    "optionsReferenceKey": "languageOptions"
+    "optionsReferenceKey": "languageOptions",
+    "isPII": false
   },
   {
     "name": "nationality",
     "label": "Nationality",
-    "type": "input"
+    "type": "input",
+    "isPII": true
   },
   {
     "name": "ethnicity-input",
     "label": "Ethnicity",
-    "type": "input"
+    "type": "input",
+    "isPII": true
   },
   {
     "name": "schoolName",
     "label": "School Name",
-    "type": "input"
+    "type": "input",
+    "isPII": true
   },
   {
     "name": "gradeLevel",
@@ -215,12 +232,14 @@
         "value": "ไม่ได้อยู่ในระบบการศึกษา",
         "label": "ไม่ได้อยู่ในระบบการศึกษา"
       }
-    ]
+    ],
+    "isPII": false
   },
   {
     "name": "birthdate",
     "type": "date-input",
-    "label": "Birthdate"
+    "label": "Birthdate",
+    "isPII": false
   },
   {
     "name": "livingSituation",
@@ -264,14 +283,15 @@
         "value": "ไม่ทราบ",
         "label": "ไม่ทราบ"
       }
-    ]
+    ],
+    "isPII": false
   },
   {
     "name": "vulnerableGroups",
     "label": "Vulnerable Groups",
     "type": "listbox-multiselect",
     "options": [
-        {
+      {
         "value": "HIV+",
         "label": "HIV+"
       },
@@ -307,6 +327,7 @@
         "value": "LGBTQI+/SOGIESC",
         "label": "LGBTQI+/SOGIESC"
       }
-    ]
+    ],
+    "isPII": false
   }
 ]

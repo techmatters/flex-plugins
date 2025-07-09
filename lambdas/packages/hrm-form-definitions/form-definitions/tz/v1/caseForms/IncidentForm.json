@@ -6,7 +6,8 @@
     "required": {
       "value": true,
       "message": "RequiredFieldError"
-    }
+    },
+    "isPII": false
   },
   {
     "name": "duration",
@@ -33,7 +34,8 @@
     "required": {
       "value": true,
       "message": "RequiredFieldError"
-    }
+    },
+    "isPII": false
   },
   {
     "name": "location",
@@ -76,28 +78,33 @@
     "required": {
       "value": true,
       "message": "RequiredFieldError"
-    }
+    },
+    "isPII": false
   },
   {
     "name": "isCaregiverAware",
     "label": "Is caregiver aware?",
-    "type": "mixed-checkbox"
+    "type": "mixed-checkbox",
+    "isPII": false
   },
   {
     "name": "incidentWitnessed",
     "label": "Was the incident witnessed by anyone?",
-    "type": "mixed-checkbox"
+    "type": "mixed-checkbox",
+    "isPII": false
   },
   {
     "name": "abuseReportedElsewhere",
     "label": "Has abuse been reported elsewhere?",
-    "type": "mixed-checkbox"
+    "type": "mixed-checkbox",
+    "isPII": false
   },
   {
     "name": "incidentSummary",
     "label": "Summary of the incident",
     "type": "textarea",
     "rows": 5,
-    "width": 300
+    "width": 300,
+    "isPII": true
   }
 ]

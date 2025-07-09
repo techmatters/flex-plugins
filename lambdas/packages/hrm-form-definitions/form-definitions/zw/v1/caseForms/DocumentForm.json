@@ -4,22 +4,29 @@
     "type": "file-upload",
     "label": "Document",
     "description": "For Drop in centre visits, upload Genograms and Stories here.",
-    "required": { "value": true, "message": "RequiredFieldError" }
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    },
+    "isPII": true
   },
   {
     "name": "placeOfInterview",
     "label": "Place of Interview",
-    "type": "input"
+    "type": "input",
+    "isPII": true
   },
   {
     "name": "visitStart",
     "label": "Visit Start Time",
-    "type": "time-input"
+    "type": "time-input",
+    "isPII": true
   },
   {
     "name": "visitLength",
     "label": "Length of Visit",
-    "type": "input"
+    "type": "input",
+    "isPII": true
   },
   {
     "name": "comments",
@@ -27,6 +34,7 @@
     "type": "textarea",
     "placeholder": "",
     "rows": 20,
-    "width": 289
+    "width": 289,
+    "isPII": true
   }
 ]

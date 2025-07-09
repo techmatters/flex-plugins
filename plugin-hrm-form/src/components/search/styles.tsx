@@ -187,7 +187,6 @@ export const TagsWrapper = styled(Flex)`
     p {
       overflow: hidden;
       white-space: nowrap;
-      text-overflow: ellipsis;
     }
   }
 `;

@@ -31,7 +31,6 @@ import * as ConfigActions from '../../states/configuration/actions';
 import { ContactDetailsSectionFormApi, contactDetailsSectionFormApi } from './contactDetailsSectionFormApi';
 import ContactDetailsSectionForm from './ContactDetailsSectionForm';
 import IssueCategorizationSectionForm from './IssueCategorizationSectionForm';
-import { forExistingContact } from '../../states/contacts/issueCategorizationStateApi';
 import { loadContactFromHrmByIdAsyncAction } from '../../states/contacts/saveContact';
 import {
   clearDraft,
@@ -261,7 +260,7 @@ const ContactDetails: React.FC<Props> = ({
           {formPath === 'categories' ? (
             <IssueCategorizationSectionForm
               definition={definitionVersion.tabbedForms.IssueCategorizationTab(unsavedContact.helpline)}
-              stateApi={forExistingContact(contactId)}
+              contactId={contactId}
               display={true}
               autoFocus={true}
             />

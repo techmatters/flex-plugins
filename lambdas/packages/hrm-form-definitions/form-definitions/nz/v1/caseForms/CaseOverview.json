@@ -2,7 +2,8 @@
   {
     "name": "status",
     "label": "Case Status",
-    "type": "select"
+    "type": "select",
+    "isPII": false
   },
   {
     "name": "summary",
@@ -12,13 +13,13 @@
     "width": 300,
     "isPII": true
   },
-   {
+  {
     "name": "riskScale",
     "label": "Risk Scale",
     "defaultOption": {
-        "value": "Unknown",
-        "label": ""
-      },
+      "value": "Unknown",
+      "label": ""
+    },
     "type": "select",
     "isPII": false,
     "options": [

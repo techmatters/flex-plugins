@@ -6,7 +6,8 @@
     "required": {
       "value": true,
       "message": "RequiredFieldError"
-    }
+    },
+    "isPII": true
   },
   {
     "name": "lastName",
@@ -15,31 +16,70 @@
     "required": {
       "value": true,
       "message": "RequiredFieldError"
-    }
+    },
+    "isPII": true
   },
   {
     "name": "relationshipToChild",
     "label": "relationshipToPerson",
     "type": "select",
     "options": [
-      { "value": "Unknown", "label": "" },
-      { "value": "Caregiver", "label": "Caregiver" },
-      { "value": "Friend", "label": "Friend" },
-      { "value": "Grandparent", "label": "Grandparent" },
-      { "value": "Neighbour", "label": "Neighbour" },
-      { "value": "Parent", "label": "Parent" },
-      { "value": "Partner", "label": "Partner" },
-      { "value": "Person in a position of responsibility", "label": "Person in a position of responsibility" },
-      { "value": "Sibling", "label": "Sibling" },
-      { "value": "Stranger", "label": "Stranger" },
-      { "value": "Other", "label": "Other" }
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "Caregiver",
+        "label": "Caregiver"
+      },
+      {
+        "value": "Friend",
+        "label": "Friend"
+      },
+      {
+        "value": "Grandparent",
+        "label": "Grandparent"
+      },
+      {
+        "value": "Neighbour",
+        "label": "Neighbour"
+      },
+      {
+        "value": "Parent",
+        "label": "Parent"
+      },
+      {
+        "value": "Partner",
+        "label": "Partner"
+      },
+      {
+        "value": "Person in a position of responsibility",
+        "label": "Person in a position of responsibility"
+      },
+      {
+        "value": "Sibling",
+        "label": "Sibling"
+      },
+      {
+        "value": "Stranger",
+        "label": "Stranger"
+      },
+      {
+        "value": "Other",
+        "label": "Other"
+      }
     ],
-    "required": { "value": true, "message": "RequiredFieldError" }
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    },
+    "isPII": false
   },
   {
     "name": "otherMinorAtRisk",
     "label": "otherMinorAtRisk",
-    "type": "checkbox"
+    "type": "checkbox",
+    "isPII": false
   },
   {
     "name": "phone",
@@ -48,6 +88,7 @@
     "required": {
       "value": true,
       "message": "RequiredFieldError"
-    }
+    },
+    "isPII": true
   }
 ]
