@@ -15,7 +15,7 @@ locals {
     enable_post_survey                = false
     helpline_region                   = "eu-west-1"
     permission_config                 = "mt"
-    enable_lex_v2              = true
+    enable_lex_v2                     = true
 
 
 
@@ -68,7 +68,7 @@ locals {
       mt_MT : ["pre_survey", "terms_conditions_acceptance"],
       uk : ["pre_survey", "terms_conditions_acceptance"]
     }
-     lex_v2_bot_languages = {
+    lex_v2_bot_languages = {
       en_MT : ["pre_survey", "language_selector", "terms_conditions_acceptance"],
       mt_MT : ["pre_survey", "terms_conditions_acceptance"],
       uk : ["pre_survey", "terms_conditions_acceptance"]
