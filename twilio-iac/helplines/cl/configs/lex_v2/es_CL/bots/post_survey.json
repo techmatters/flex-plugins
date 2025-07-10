@@ -4,6 +4,8 @@
       "locale": "en_US",
       "child_directed": true,
       "idle_session_ttl_in_seconds": "600",
+      "staging_bot_alias_id": "TSTALIASID",
+      "production_bot_alias_id": "4UUM6LO4MG",
       "type": "Bot",
       "intents": {
         "post_survey_yes": {
@@ -14,17 +16,20 @@
             "1": {
               "slot_name": "was_helpful",
               "slot_type_name": "four_level_assessment",
-              "slot_question": "¿La atención recibida me ayudó a encontrar estrategias o planes de acción para abordar el malestar por el cual consulté? Escriba el número que corresponda: \n 1 - No me ayudó nada \n2 - Me ayudó poco \n3 - Me ayudó \n4 - Me ayudó mucho"
+              "slot_question": "¿La atención recibida me ayudó a encontrar estrategias o planes de acción para abordar el malestar por el cual consulté? Escriba el número que corresponda: \n 1 - No me ayudó nada \n2 - Me ayudó poco \n3 - Me ayudó \n4 - Me ayudó mucho",
+              "failure_response": "Perdón, no entendí tu respuesta."
             },
             "2": {
               "slot_name": "felt_supported",
               "slot_type_name": "four_level_assessment",
-              "slot_question": "¿Te sentiste escuchado/a y apoyado/a por la/el psicólogo que te atendió?  Escriba el número que corresponda:\n1 - No me sentí escuchad@ \n2 - Me sentí  poco escuchad@ \n3 - Me sentí escuchad@ \n4 - Me sentí muy escuchad@"
+              "slot_question": "¿Te sentiste escuchado/a y apoyado/a por la/el psicólogo que te atendió?  Escriba el número que corresponda:\n1 - No me sentí escuchad@ \n2 - Me sentí  poco escuchad@ \n3 - Me sentí escuchad@ \n4 - Me sentí muy escuchad@",
+              "failure_response": "Perdón, no entendí tu respuesta."
             },
             "3": {
               "slot_name": "would_recommend",
               "slot_type_name": "yes_no",
-              "slot_question": "¿Recomendarías el servicio de chat de Línea Libre a otras personas? Escriba el número que corresponda:\n1 - Sí \n2 - No"
+              "slot_question": "¿Recomendarías el servicio de chat de Línea Libre a otras personas? Escriba el número que corresponda:\n1 - Sí \n2 - No",
+              "failure_response": "Perdón, no entendí tu respuesta."
             }
                   }
         },
