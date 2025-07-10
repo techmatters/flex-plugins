@@ -1,354 +1,615 @@
 [
-    {
-      "name": "date",
-      "type": "date-input",
-      "label": "Date of Incident"
+  {
+    "name": "date",
+    "type": "date-input",
+    "label": "Date of Incident",
+    "isPII": false
+  },
+  {
+    "name": "duration",
+    "label": "Duration",
+    "type": "select",
+    "options": [
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "Ongoing",
+        "label": "Ongoing"
+      },
+      {
+        "value": "One Off",
+        "label": "One Off"
+      },
+      {
+        "value": "Repeated",
+        "label": "Repeated"
+      },
+      {
+        "value": "Other",
+        "label": "Other"
+      }
+    ],
+    "isPII": false
+  },
+  {
+    "name": "locationType",
+    "label": "Location Type",
+    "type": "select",
+    "options": [
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "Online",
+        "label": "Online"
+      },
+      {
+        "value": "Offline",
+        "label": "Offline"
+      }
+    ],
+    "isPII": false
+  },
+  {
+    "name": "location",
+    "label": "Location",
+    "type": "dependent-select",
+    "dependsOn": "locationType",
+    "defaultOption": {
+      "value": "",
+      "label": ""
     },
-    {
-      "name": "duration",
-      "label": "Duration",
-      "type": "select",
-      "options": [
-        { "value": "", "label": "" },
-        { "value": "Ongoing", "label": "Ongoing" },
-        { "value": "One Off", "label": "One Off" },
-        { "value": "Repeated", "label": "Repeated" },
-        { "value": "Other", "label": "Other" }
-      ]
-    },
-    {
-      "name": "locationType",
-      "label": "Location Type",
-      "type": "select",
-      "options": [
-        { "value": "", "label": "" },
-        { "value": "Online", "label": "Online" },
-        { "value": "Offline", "label": "Offline" }
-      ]
-    },
-    {
-      "name": "location",
-      "label": "Location",
-      "type": "dependent-select",
-      "dependsOn": "locationType",
-      "defaultOption": { "value": "", "label": "" },
-      "options": {
-          "Online": [
-             { "value": "Website", "label": "Website" },
-             { "value": "Whatsapp", "label": "Whatsapp" },
-             { "value": "Facebook", "label": "Facebook" },
-             { "value": "Instagram", "label": "Instagram" },
-             { "value": "Snapchat", "label": "Snapchat" },
-             { "value": "Discord", "label": "Discord" },
-             { "value": "Youtube", "label": "Youtube" },
-             { "value": "Telegram", "label": "Telegram" },
-             { "value": "Twitter/X", "label": "Twitter/X" },
-             { "value": "Other", "label": "Other" }
-            ],
-         "Offline": [
-             { "value": "Client's Home", "label": "Client's Home" },
-             { "value": "Educational Institution", "label": "Educational Institution" },
-             { "value": "Neighbourhood", "label": "Neighbourhood" },
-             { "value": "Perpetrator's Home", "label": "Perpetrator's Home" },
-             { "value": "CCIs/OH", "label": "CCIs/OH" },
-             { "value": "Hotel/Lodge", "label": "Hotel/Lodge" },
-             { "value": "Other", "label": "Other" }
-            ]
+    "options": {
+      "Online": [
+        {
+          "value": "Website",
+          "label": "Website"
+        },
+        {
+          "value": "Whatsapp",
+          "label": "Whatsapp"
+        },
+        {
+          "value": "Facebook",
+          "label": "Facebook"
+        },
+        {
+          "value": "Instagram",
+          "label": "Instagram"
+        },
+        {
+          "value": "Snapchat",
+          "label": "Snapchat"
+        },
+        {
+          "value": "Discord",
+          "label": "Discord"
+        },
+        {
+          "value": "Youtube",
+          "label": "Youtube"
+        },
+        {
+          "value": "Telegram",
+          "label": "Telegram"
+        },
+        {
+          "value": "Twitter/X",
+          "label": "Twitter/X"
+        },
+        {
+          "value": "Other",
+          "label": "Other"
         }
-    },
-    {
-      "name": "otherPlatform",
-      "label": "If Other, please specify",
-      "type": "input"
-    },
-    {
-      "name": "incidentShared",
-      "label": "Has the incident been shared with anyone?",
-      "type": "select",
-      "options": [
-        { "value": "Unknown", "label": "" },
-        { "value": "Yes", "label": "Yes" },
-        { "value": "No", "label": "No" },
-        { "value": "DontKnow", "label": "Don't Know" }
+      ],
+      "Offline": [
+        {
+          "value": "Client's Home",
+          "label": "Client's Home"
+        },
+        {
+          "value": "Educational Institution",
+          "label": "Educational Institution"
+        },
+        {
+          "value": "Neighbourhood",
+          "label": "Neighbourhood"
+        },
+        {
+          "value": "Perpetrator's Home",
+          "label": "Perpetrator's Home"
+        },
+        {
+          "value": "CCIs/OH",
+          "label": "CCIs/OH"
+        },
+        {
+          "value": "Hotel/Lodge",
+          "label": "Hotel/Lodge"
+        },
+        {
+          "value": "Other",
+          "label": "Other"
+        }
       ]
     },
-    {
-      "name": "sharedWith",
-      "label": "If yes, who has it been shared with?",
-      "type": "input"
-    },
-    {
-      "name": "firRegistered",
-      "label": "Has the FIR been registered in the case?",
-      "type": "select",
-      "options": [
-        { "value": "Unknown", "label": "" },
-        { "value": "Yes", "label": "Yes" },
-        { "value": "No", "label": "No" },
-        { "value": "DontKnow", "label": "Don't Know" }
-      ]
-    },
-    {
-      "name": "firNo",
-      "label": "FIR NO",
-      "type": "input"
-    },
-    {
-      "name": "policeStation",
-      "label": "Police Station",
-      "type": "input"
-    },
-    {
-      "name": "ioName",
-      "label": "Name of Investigating Officer",
-      "type": "input"
-    },
-    {
-      "name": "ioContact",
-      "label": "Contact number of IO",
-      "type": "input"
-    },
-    {
-      "name": "act",
-      "label": "Act",
-      "type": "input"
-    },
-    {
-      "name": "sectionsBooked",
-      "label": "Sections under which offence is booked",
-      "type": "input"
-    },
-    {
-      "name": "complainantName",
-      "label": "Name of Complainant",
-      "type": "input"
-    },
-    {
-      "name": "complainantRelationship",
-      "label": "Relationship between Complainant & Client",
-      "type": "input"
-    },
-    {
-      "name": "cwcProduced",
-      "label": "Client produced in front of CWC?",
-      "type": "select",
-      "options": [
-        { "value": "Unknown", "label": "" },
-        { "value": "Yes", "label": "Yes" },
-        { "value": "No", "label": "No" },
-        { "value": "DontKnow", "label": "Don't Know" }
-      ]
-    },
-    {
-      "name": "cwcOrder",
-      "label": "CWC Orders",
-      "type": "input"
-    },
-    {
-      "name": "supportPerson",
-      "label": "Support person appointed?",
-      "type": "select",
-      "options": [
-        { "value": "Unknown", "label": "" },
-        { "value": "Yes", "label": "Yes" },
-        { "value": "No", "label": "No" },
-        { "value": "DontKnow", "label": "Don't Know" }
-      ]
-    },
-    {
-      "name": "crpcStmntDate",
-      "label": "164 CrPC Statement Date",
-      "type": "date-input"
-    },
-    {
-      "name": "medicalExamDate",
-      "label": "Date of Medical Examination",
-      "type": "date-input"
-    },
-    {
-      "name": "hospitalName",
-      "label": "Hospital Name",
-      "type": "input"
-    },
-    {
-      "name": "chargeSheet",
-      "label": "Charge sheet filed?",
-      "type": "select",
-      "options": [
-        { "value": "Unknown", "label": "" },
-        { "value": "Yes", "label": "Yes" },
-        { "value": "No", "label": "No" },
-        { "value": "DontKnow", "label": "Don't Know" }
-      ]
-    },
-    {
-      "name": "chargeSheetDate",
-      "label": "Date filed",
-      "type": "date-input"
-    },
-    {
-      "name": "bail",
-      "label": "Applied for bail?",
-      "type": "select",
-      "options": [
-        { "value": "Unknown", "label": "" },
-        { "value": "Yes", "label": "Yes" },
-        { "value": "No", "label": "No" },
-        { "value": "DontKnow", "label": "Don't Know" }
-      ]
-    },
-    {
-      "name": "bailStatus",
-      "label": "Bail Status",
-      "type": "select",
-      "options": [
-        { "value": "Unknown", "label": "" },
-        { "value": "Granted", "label": "Granted" },
-        { "value": "Rejected", "label": "Rejected" }
-      ]
-    },
-    {
-      "name": "reason",
-      "label": "Reason",
-      "type": "input"
-    },
-    {
-      "name": "cancelledBail",
-      "label": "Cancellation of Bail",
-      "type": "input"
-    },
-    {
-      "name": "courtJurisdisction",
-      "label": "Court Jurisdiction",
-      "type": "input"
-    },
-    {
-      "name": "courtRoom",
-      "label": "Court Room No.",
-      "type": "input"
-    },
-    {
-      "name": "caseNumber",
-      "label": "Case Number",
-      "type": "input"
-    },
-    {
-      "name": "judgeName",
-      "label": "Name of Judge",
-      "type": "input"
-    },
-    {
-      "name": "prosecutorName",
-      "label": "Prosecutor Name",
-      "type": "input"
-    },
-    {
-      "name": "prosecutorNumber",
-      "label": "Prosecutor Contact Number",
-      "type": "input"
-    },
-    {
-      "name": "karkoonName",
-      "label": "Court Karkoon Name",
-      "type": "input"
-    },
-    {
-      "name": "karkoonNumber",
-      "label": "Court Karkoon Contact Number",
-      "type": "input"
-    },
-    {
-      "name": "defenseLawyer",
-      "label": "Defense Lawyer",
-      "type": "select",
-      "options": [
-        { "value": "Unknown", "label": "" },
-        { "value": "Private", "label": "Private" },
-        { "value": "Legal Aid", "label": "Legal Aid" }
-      ]
-    },
-    {
-      "name": "stateCompensation",
-      "label": "State Compensation",
-      "type": "select",
-      "options": [
-        { "value": "Unknown", "label": "" },
-        { "value": "Yes", "label": "Yes" },
-        { "value": "No", "label": "No" },
-        { "value": "DontKnow", "label": "Don't Know" }
-      ]
-    },
-    {
-      "name": "stateAmount",
-      "label": "State Amount",
-      "type": "input"
-    },
-    {
-      "name": "courtCompensation",
-      "label": "Court Compensation",
-      "type": "select",
-      "options": [
-        { "value": "Unknown", "label": "" },
-        { "value": "Yes", "label": "Yes" },
-        { "value": "No", "label": "No" },
-        { "value": "DontKnow", "label": "Don't Know" }
-      ]
-    },
-    {
-      "name": "interimAmount",
-      "label": "Interim Amount",
-      "type": "input"
-    },
-    {
-      "name": "finalAmount",
-      "label": "Final Amount",
-      "type": "input"
-    },
-    {
-      "name": "otherAmount",
-      "label": "Other Compensation Amount",
-      "type": "input"
-    },
-    {
-      "name": "judgementtDate",
-      "label": "Judgement Date",
-      "type": "date-input"
-    },
-    {
-      "name": "judgement",
-      "label": "Judgement Outcome",
-      "type": "select",
-      "options": [
-        { "value": "Unknown", "label": "" },
-        { "value": "Conviction", "label": "Conviction" },
-        { "value": "Acquittal", "label": "Acquittal" }
-      ]
-    },
-    {
-      "name": "sentence",
-      "label": "Convicted Sentence",
-      "type": "input"
-    },
-    {
-      "name": "sections",
-      "label": "Conviction Sections",
-      "type": "input"
-    },
-    {
-      "name": "fine",
-      "label": "Conviction Fine",
-      "type": "input"
-    },
-    {
-      "name": "appeal",
-      "label": "Appeal",
-      "type": "select",
-      "options": [
-        { "value": "Unknown", "label": "" },
-        { "value": "Yes", "label": "Yes" },
-        { "value": "No", "label": "No" },
-        { "value": "DontKnow", "label": "Don't Know" }
-      ]
-    }
-  ]
-  
+    "isPII": false
+  },
+  {
+    "name": "otherPlatform",
+    "label": "If Other, please specify",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "incidentShared",
+    "label": "Has the incident been shared with anyone?",
+    "type": "select",
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "Yes",
+        "label": "Yes"
+      },
+      {
+        "value": "No",
+        "label": "No"
+      },
+      {
+        "value": "DontKnow",
+        "label": "Don't Know"
+      }
+    ],
+    "isPII": false
+  },
+  {
+    "name": "sharedWith",
+    "label": "If yes, who has it been shared with?",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "firRegistered",
+    "label": "Has the FIR been registered in the case?",
+    "type": "select",
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "Yes",
+        "label": "Yes"
+      },
+      {
+        "value": "No",
+        "label": "No"
+      },
+      {
+        "value": "DontKnow",
+        "label": "Don't Know"
+      }
+    ],
+    "isPII": false
+  },
+  {
+    "name": "firNo",
+    "label": "FIR NO",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "policeStation",
+    "label": "Police Station",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "ioName",
+    "label": "Name of Investigating Officer",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "ioContact",
+    "label": "Contact number of IO",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "act",
+    "label": "Act",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "sectionsBooked",
+    "label": "Sections under which offence is booked",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "complainantName",
+    "label": "Name of Complainant",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "complainantRelationship",
+    "label": "Relationship between Complainant & Client",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "cwcProduced",
+    "label": "Client produced in front of CWC?",
+    "type": "select",
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "Yes",
+        "label": "Yes"
+      },
+      {
+        "value": "No",
+        "label": "No"
+      },
+      {
+        "value": "DontKnow",
+        "label": "Don't Know"
+      }
+    ],
+    "isPII": false
+  },
+  {
+    "name": "cwcOrder",
+    "label": "CWC Orders",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "supportPerson",
+    "label": "Support person appointed?",
+    "type": "select",
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "Yes",
+        "label": "Yes"
+      },
+      {
+        "value": "No",
+        "label": "No"
+      },
+      {
+        "value": "DontKnow",
+        "label": "Don't Know"
+      }
+    ],
+    "isPII": false
+  },
+  {
+    "name": "crpcStmntDate",
+    "label": "164 CrPC Statement Date",
+    "type": "date-input",
+    "isPII": false
+  },
+  {
+    "name": "medicalExamDate",
+    "label": "Date of Medical Examination",
+    "type": "date-input",
+    "isPII": false
+  },
+  {
+    "name": "hospitalName",
+    "label": "Hospital Name",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "chargeSheet",
+    "label": "Charge sheet filed?",
+    "type": "select",
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "Yes",
+        "label": "Yes"
+      },
+      {
+        "value": "No",
+        "label": "No"
+      },
+      {
+        "value": "DontKnow",
+        "label": "Don't Know"
+      }
+    ],
+    "isPII": false
+  },
+  {
+    "name": "chargeSheetDate",
+    "label": "Date filed",
+    "type": "date-input",
+    "isPII": false
+  },
+  {
+    "name": "bail",
+    "label": "Applied for bail?",
+    "type": "select",
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "Yes",
+        "label": "Yes"
+      },
+      {
+        "value": "No",
+        "label": "No"
+      },
+      {
+        "value": "DontKnow",
+        "label": "Don't Know"
+      }
+    ],
+    "isPII": false
+  },
+  {
+    "name": "bailStatus",
+    "label": "Bail Status",
+    "type": "select",
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "Granted",
+        "label": "Granted"
+      },
+      {
+        "value": "Rejected",
+        "label": "Rejected"
+      }
+    ],
+    "isPII": false
+  },
+  {
+    "name": "reason",
+    "label": "Reason",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "cancelledBail",
+    "label": "Cancellation of Bail",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "courtJurisdisction",
+    "label": "Court Jurisdiction",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "courtRoom",
+    "label": "Court Room No.",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "caseNumber",
+    "label": "Case Number",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "judgeName",
+    "label": "Name of Judge",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "prosecutorName",
+    "label": "Prosecutor Name",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "prosecutorNumber",
+    "label": "Prosecutor Contact Number",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "karkoonName",
+    "label": "Court Karkoon Name",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "karkoonNumber",
+    "label": "Court Karkoon Contact Number",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "defenseLawyer",
+    "label": "Defense Lawyer",
+    "type": "select",
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "Private",
+        "label": "Private"
+      },
+      {
+        "value": "Legal Aid",
+        "label": "Legal Aid"
+      }
+    ],
+    "isPII": false
+  },
+  {
+    "name": "stateCompensation",
+    "label": "State Compensation",
+    "type": "select",
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "Yes",
+        "label": "Yes"
+      },
+      {
+        "value": "No",
+        "label": "No"
+      },
+      {
+        "value": "DontKnow",
+        "label": "Don't Know"
+      }
+    ],
+    "isPII": false
+  },
+  {
+    "name": "stateAmount",
+    "label": "State Amount",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "courtCompensation",
+    "label": "Court Compensation",
+    "type": "select",
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "Yes",
+        "label": "Yes"
+      },
+      {
+        "value": "No",
+        "label": "No"
+      },
+      {
+        "value": "DontKnow",
+        "label": "Don't Know"
+      }
+    ],
+    "isPII": false
+  },
+  {
+    "name": "interimAmount",
+    "label": "Interim Amount",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "finalAmount",
+    "label": "Final Amount",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "otherAmount",
+    "label": "Other Compensation Amount",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "judgementtDate",
+    "label": "Judgement Date",
+    "type": "date-input",
+    "isPII": false
+  },
+  {
+    "name": "judgement",
+    "label": "Judgement Outcome",
+    "type": "select",
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "Conviction",
+        "label": "Conviction"
+      },
+      {
+        "value": "Acquittal",
+        "label": "Acquittal"
+      }
+    ],
+    "isPII": false
+  },
+  {
+    "name": "sentence",
+    "label": "Convicted Sentence",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "sections",
+    "label": "Conviction Sections",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "fine",
+    "label": "Conviction Fine",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "appeal",
+    "label": "Appeal",
+    "type": "select",
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "Yes",
+        "label": "Yes"
+      },
+      {
+        "value": "No",
+        "label": "No"
+      },
+      {
+        "value": "DontKnow",
+        "label": "Don't Know"
+      }
+    ],
+    "isPII": false
+  }
+]

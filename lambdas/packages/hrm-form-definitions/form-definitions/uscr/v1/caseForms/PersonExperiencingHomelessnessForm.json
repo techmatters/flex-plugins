@@ -2,17 +2,20 @@
   {
     "name": "firstName",
     "label": "First Name",
-    "type": "input"
+    "type": "input",
+    "isPII": true
   },
   {
     "name": "lastName",
     "label": "Last Name",
-    "type": "input"
+    "type": "input",
+    "isPII": true
   },
   {
     "name": "nickname",
     "label": "Nickname",
-    "type": "input"
+    "type": "input",
+    "isPII": true
   },
   {
     "name": "gender",
@@ -36,12 +39,14 @@
         "value": "Other",
         "label": "Other"
       }
-    ]
+    ],
+    "isPII": false
   },
   {
     "name": "dateOfBirth",
     "label": "Date of Birth",
-    "type": "date-input"
+    "type": "date-input",
+    "isPII": false
   },
   {
     "name": "language",
@@ -85,7 +90,8 @@
         "value": "Other",
         "label": "Other"
       }
-    ]
+    ],
+    "isPII": false
   },
   {
     "name": "race",
@@ -100,8 +106,8 @@
       {
         "value": "Asian",
         "label": "Asian"
-      },     
-        {
+      },
+      {
         "value": "Black",
         "label": "Black"
       },
@@ -113,26 +119,27 @@
         "value": "Indigenous American",
         "label": "Indigenous American"
       },
-        {
+      {
         "value": "Middle Eastern",
         "label": "Middle Eastern"
       },
-        {
+      {
         "value": "Multi-Ethnic",
         "label": "Multi-Ethnic"
       },
-        {
+      {
         "value": "Native Hawaiian or other Pacific Islander",
         "label": "Native Hawaiian or other Pacific Islander"
       },
-        {
+      {
         "value": "White",
         "label": "White"
       },
-        {
+      {
         "value": "Other",
         "label": "Other"
       }
-    ]
+    ],
+    "isPII": false
   }
 ]

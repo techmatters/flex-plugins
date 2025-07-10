@@ -6,6 +6,7 @@
     "type": "textarea",
     "rows": 20,
     "width": 500,
-    "placeholder": "General Assessment of Case and Plan"
+    "placeholder": "General Assessment of Case and Plan",
+    "isPII": true
   }
 ]

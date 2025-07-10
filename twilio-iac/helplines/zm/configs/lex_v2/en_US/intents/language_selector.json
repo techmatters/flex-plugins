@@ -1,0 +1,109 @@
+{
+  "intentName": "language_selector",
+  "description": "Specific configs/lex_v2/zm/bots/language_selector",
+  "sampleUtterances": [
+      {
+          "utterance": "trigger_language_selector"
+      }
+  ],
+  "dialogCodeHook": {
+      "enabled": false
+  },
+  "fulfillmentCodeHook": {
+      "enabled": false,
+      "active": true,
+      "postFulfillmentStatusSpecification": {
+          "successNextStep": {
+              "dialogAction": {
+                  "type": "CloseIntent"
+              },
+              "intent": {}
+          },
+          "failureNextStep": {
+              "dialogAction": {
+                  "type": "CloseIntent"
+              },
+              "intent": {}
+          },
+          "timeoutNextStep": {
+              "dialogAction": {
+                  "type": "CloseIntent"
+              },
+              "intent": {}
+          }
+      }
+  },
+  "slotPriorities": [
+      {
+          "priority": 1,
+          "slotName": "language"
+      }
+  ],
+  "intentClosingSetting": {
+      "closingResponse": {
+          "messageGroups": [
+              {
+                  "message": {
+                      "plainTextMessage": {
+                          "value": "Thank you."
+                      }
+                  }
+              }
+          ],
+          "allowInterrupt": true
+      },
+      "active": true,
+      "nextStep": {
+          "dialogAction": {
+              "type": "EndConversation"
+          },
+          "intent": {}
+      }
+  },
+  "initialResponseSetting": {
+      "initialResponse": {
+          "messageGroups": [
+              {
+                  "message": {
+                      "plainTextMessage": {
+                          "value": "What language do you speak? "
+                      }
+                  }
+              }
+          ],
+          "allowInterrupt": true
+      },
+      "active": true,
+      "nextStep": {
+          "dialogAction": {
+              "type": "InvokeDialogCodeHook"
+          },
+          "intent": {}
+      },
+      "codeHook": {
+          "enableCodeHookInvocation": true,
+          "active": true,
+          "postCodeHookSpecification": {
+              "successNextStep": {
+                  "dialogAction": {
+                      "type": "ElicitSlot",
+                      "slotToElicit": "language"
+                  },
+                  "intent": {}
+              },
+              "failureNextStep": {
+                  "dialogAction": {
+                      "type": "EndConversation"
+                  },
+                  "intent": {}
+              },
+              "timeoutNextStep": {
+                  "dialogAction": {
+                      "type": "EndConversation"
+                  },
+                  "intent": {}
+              }
+          }
+      }
+  }
+}

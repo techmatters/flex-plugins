@@ -1,0 +1,159 @@
+{
+    "slotTypeName": "language",
+    "slotTypeValues": [
+        {
+            "sampleValue": {
+                "value": "en-US"
+            },
+            "synonyms": [
+                {
+                    "value": "1english"
+                },
+                {
+                    "value": "eng"
+                },
+                {
+                    "value": "english"
+                },
+                {
+                    "value": "en-US"
+                },
+                {
+                    "value": "1"
+                }
+            ]
+        },
+        {
+            "sampleValue": {
+                "value": "Bemba"
+            },
+            "synonyms": [
+                {
+                    "value": "b"
+                },
+                {
+                    "value": "bem"
+                },
+                {
+                    "value": "bemb"
+                },
+                {
+                    "value": "2bemba"
+                },
+                {
+                    "value": "Bemba"
+                },
+                {
+                    "value": "2"
+                }
+            ]
+        },
+        {
+            "sampleValue": {
+                "value": "Tonga"
+            },
+            "synonyms": [
+                {
+                    "value": "3tonga"
+                },
+                {
+                    "value": "t"
+                },
+                {
+                    "value": "ton"
+                },
+                {
+                    "value": "tonga"
+                },
+                {
+                    "value": "3"
+                }
+            ]
+        },
+        {
+            "sampleValue": {
+                "value": "Lunda"
+            },
+            "synonyms": [
+                {
+                    "value": "4lunda"
+                },
+                {
+                    "value": "lun"
+                },
+                {
+                    "value": "lunda"
+                },
+                {
+                    "value": "4"
+                }
+            ]
+        },
+        {
+            "sampleValue": {
+                "value": "Nyanja"
+            },
+            "synonyms": [
+                {
+                    "value": "n"
+                },
+                {
+                    "value": "nya"
+                },
+                {
+                    "value": "5nyanja"
+                },
+                {
+                    "value": "nyanja"
+                },
+                {
+                    "value": "5"
+                }
+            ]
+        },
+        {
+            "sampleValue": {
+                "value": "Kaonde"
+            },
+            "synonyms": [
+                {
+                    "value": "6kaonde"
+                },
+                {
+                    "value": "kao"
+                },
+                {
+                    "value": "k"
+                },
+                {
+                    "value": "kaonde"
+                },
+                {
+                    "value": "6"
+                }
+            ]
+        },
+        {
+            "sampleValue": {
+                "value": "Lozi"
+            },
+            "synonyms": [
+                {
+                    "value": "7lozi"
+                },
+                {
+                    "value": "lo"
+                },
+                {
+                    "value": "lozi"
+                },
+                {
+                    "value": "7"
+                }
+            ]
+        }
+    ],
+    "valueSelectionSetting": {
+        "resolutionStrategy": "TopResolution"
+    }
+}

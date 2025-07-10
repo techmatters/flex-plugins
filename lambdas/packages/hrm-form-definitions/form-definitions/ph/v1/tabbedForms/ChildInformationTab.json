@@ -6,7 +6,8 @@
     "required": {
       "value": true,
       "message": "RequiredFieldError"
-    }
+    },
+    "isPII": true
   },
   {
     "name": "lastName",
@@ -15,42 +16,50 @@
     "required": {
       "value": true,
       "message": "RequiredFieldError"
-    }
+    },
+    "isPII": true
   },
   {
     "name": "anonymousReport",
     "label": "Anonymous Report",
-    "type": "checkbox"
+    "type": "checkbox",
+    "isPII": false
   },
   {
     "name": "multipleVictims",
     "label": "Multiple Victims",
-    "type": "checkbox"
+    "type": "checkbox",
+    "isPII": false
   },
   {
     "name": "numberOfVictims",
     "label": "No. of Victims",
-    "type": "input"
+    "type": "input",
+    "isPII": true
   },
   {
     "name": "numberOfMaleVictims",
     "label": "No. of Male Victims",
-    "type": "input"
+    "type": "input",
+    "isPII": true
   },
   {
     "name": "numberOfFemaleVictims",
     "label": "No. of Female Victims",
-    "type": "input"
+    "type": "input",
+    "isPII": true
   },
   {
     "name": "numberOfNBVictims",
     "label": "No. of Non-binary Victims",
-    "type": "input"
+    "type": "input",
+    "isPII": true
   },
   {
     "name": "ageRangeVictims",
     "label": "Age Range of Victims",
-    "type": "input"
+    "type": "input",
+    "isPII": true
   },
   {
     "name": "age",
@@ -185,7 +194,8 @@
     "required": {
       "value": true,
       "message": "RequiredFieldError"
-    }
+    },
+    "isPII": false
   },
   {
     "name": "gender",
@@ -216,12 +226,14 @@
     "required": {
       "value": true,
       "message": "RequiredFieldError"
-    }
+    },
+    "isPII": false
   },
   {
     "name": "streetAddress",
     "label": "Street Address",
-    "type": "input"
+    "type": "input",
+    "isPII": true
   },
   {
     "name": "province",
@@ -231,7 +243,8 @@
       "value": "",
       "label": ""
     },
-    "optionsReferenceKey": "provinceOptions"
+    "optionsReferenceKey": "provinceOptions",
+    "isPII": false
   },
   {
     "name": "municipality",
@@ -242,7 +255,8 @@
       "value": "",
       "label": ""
     },
-    "optionsReferenceKey":"municipalityOptions"
+    "optionsReferenceKey": "municipalityOptions",
+    "isPII": false
   },
   {
     "name": "district",
@@ -253,12 +267,14 @@
       "value": "",
       "label": ""
     },
-    "optionsReferenceKey":"districtOptions"
+    "optionsReferenceKey": "districtOptions",
+    "isPII": false
   },
   {
     "name": "schoolName",
     "label": "School Name",
-    "type": "input"
+    "type": "input",
+    "isPII": true
   },
   {
     "name": "gradeLevel",
@@ -293,7 +309,8 @@
         "value": "Out of school",
         "label": "Out of school"
       }
-    ]
+    ],
+    "isPII": false
   },
   {
     "name": "livingSituation",
@@ -336,7 +353,8 @@
         "value": "Other",
         "label": "Other"
       }
-    ]
+    ],
+    "isPII": false
   },
   {
     "name": "vulnerableGroups",
@@ -383,6 +401,7 @@
         "value": "Other",
         "label": "Other"
       }
-    ]
+    ],
+    "isPII": false
   }
 ]

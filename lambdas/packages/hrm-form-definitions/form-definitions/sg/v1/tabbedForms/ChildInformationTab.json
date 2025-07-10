@@ -6,7 +6,8 @@
     "required": {
       "value": true,
       "message": "RequiredFieldError"
-    }
+    },
+    "isPII": true
   },
   {
     "name": "gender",
@@ -38,7 +39,8 @@
     "required": {
       "value": true,
       "message": "RequiredFieldError"
-    }
+    },
+    "isPII": false
   },
   {
     "name": "age",
@@ -118,26 +120,30 @@
         "value": ">20",
         "label": "21 and above"
       }
-     ],
+    ],
     "required": {
       "value": true,
       "message": "RequiredFieldError"
-    }
+    },
+    "isPII": false
   },
   {
     "name": "contactNumber",
     "label": "Contact Number",
-    "type": "input"
+    "type": "input",
+    "isPII": true
   },
   {
     "name": "emailAddress",
     "label": "Email Address",
-    "type": "input"
+    "type": "input",
+    "isPII": true
   },
   {
     "name": "postalCode",
     "label": "Postal Code",
-    "type": "input"
+    "type": "input",
+    "isPII": true
   },
   {
     "name": "reason",
@@ -185,7 +191,8 @@
     "required": {
       "value": true,
       "message": "RequiredFieldError"
-    }
+    },
+    "isPII": false
   },
   {
     "name": "howDidYouHearAboutUs",
@@ -225,7 +232,8 @@
     "required": {
       "value": true,
       "message": "RequiredFieldError"
-    }
+    },
+    "isPII": false
   },
   {
     "name": "ethnicity",
@@ -257,12 +265,14 @@
         "value": "Unknown",
         "label": "Unknown"
       }
-    ]
+    ],
+    "isPII": false
   },
   {
     "name": "schoolName",
     "label": "School Name",
-    "type": "input"
+    "type": "input",
+    "isPII": true
   },
   {
     "name": "schoolLevel",
@@ -314,12 +324,14 @@
     "required": {
       "value": true,
       "message": "RequiredFieldError"
-    }
+    },
+    "isPII": false
   },
   {
     "name": "class",
     "label": "Class",
-    "type": "input"
+    "type": "input",
+    "isPII": true
   },
   {
     "name": "livingSituation",
@@ -363,6 +375,7 @@
         "value": "Unknown",
         "label": "Unknown"
       }
-    ]
+    ],
+    "isPII": false
   }
 ]

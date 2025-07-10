@@ -36,7 +36,8 @@
         "value": "Session not delivered due to technical issues",
         "label": "Session not delivered due to technical issues"
       }
-    ]
+    ],
+    "isPII": false
   },
   {
     "name": "howDidYouHearOfTheMixPeerSupportService",
@@ -83,7 +84,8 @@
         "value": "Other (please specify):",
         "label": "Other (please specify):"
       }
-    ]
+    ],
+    "isPII": false
   },
   {
     "name": "whichOtherTheMixServicesUsed",
@@ -110,12 +112,14 @@
         "value": "Social media ",
         "label": "Social media "
       }
-    ]
+    ],
+    "isPII": false
   },
   {
     "name": "groundingOrBreathingTechniquesUsed",
     "label": "Were Grounding or breathing techniques used?",
-    "type": "checkbox"
+    "type": "checkbox",
+    "isPII": false
   },
   {
     "name": "howDoTheyPreferHelp",
@@ -158,7 +162,8 @@
         "value": "Other",
         "label": "Other"
       }
-    ]
+    ],
+    "isPII": false
   },
   {
     "name": "wereSignpostsOffered",
@@ -177,7 +182,8 @@
         "value": "No",
         "label": "No"
       }
-    ]
+    ],
+    "isPII": false
   },
   {
     "name": "internalSignpostsOffered",
@@ -220,14 +226,16 @@
         "value": "None",
         "label": "None"
       }
-    ]
+    ],
+    "isPII": false
   },
   {
     "name": "signpostsOfferedOther",
     "label": "Signposts offered - other",
     "type": "textarea",
     "rows": 8,
-    "width": 250
+    "width": 250,
+    "isPII": true
   },
   {
     "name": "currentCopingStrategies",
@@ -278,14 +286,16 @@
         "value": "None",
         "label": "None"
       }
-    ]
+    ],
+    "isPII": false
   },
   {
     "name": "otherCurrentCopingStrategies",
     "label": "Other current coping strategies",
     "type": "textarea",
     "rows": 8,
-    "width": 250
+    "width": 250,
+    "isPII": true
   },
   {
     "name": "recommendedCopingStrategies",
@@ -336,25 +346,29 @@
         "value": "None",
         "label": "None"
       }
-    ]
+    ],
+    "isPII": false
   },
   {
     "name": "otherRecommendedCopingStrategies",
     "label": "Other recommended coping strategies",
     "type": "textarea",
     "rows": 8,
-    "width": 250
+    "width": 250,
+    "isPII": true
   },
   {
     "name": "nextSteps",
     "label": "Next Steps",
     "type": "textarea",
     "rows": 8,
-    "width": 250
+    "width": 250,
+    "isPII": true
   },
   {
     "name": "isChatCompleted",
     "label": "Have you finished the chat with YP?",
-    "type": "checkbox"
+    "type": "checkbox",
+    "isPII": false
   }
 ]

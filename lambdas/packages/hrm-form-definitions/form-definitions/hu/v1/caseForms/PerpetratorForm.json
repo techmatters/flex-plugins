@@ -29,7 +29,8 @@
     "required": {
       "value": true,
       "message": "RequiredFieldError"
-    }
+    },
+    "isPII": false
   },
   {
     "name": "age",
@@ -156,7 +157,8 @@
     "required": {
       "value": true,
       "message": "RequiredFieldError"
-    }
+    },
+    "isPII": false
   },
   {
     "name": "relationshipToChild",
@@ -204,6 +206,7 @@
         "value": "Egyéb",
         "label": "Egyéb"
       }
-    ]
+    ],
+    "isPII": false
   }
 ]

@@ -6,7 +6,8 @@
     "required": {
       "value": true,
       "message": "RequiredFieldError"
-    }
+    },
+    "isPII": true
   },
   {
     "name": "identifier911",
@@ -15,7 +16,8 @@
     "required": {
       "value": true,
       "message": "RequiredFieldError"
-    }
+    },
+    "isPII": true
   },
   {
     "name": "reportingDistrict",
@@ -2407,7 +2409,8 @@
     "required": {
       "value": true,
       "message": "RequiredFieldError"
-    }
+    },
+    "isPII": false
   },
   {
     "name": "officeDepartmentBid",
@@ -2482,47 +2485,54 @@
       {
         "value": "BID",
         "label": "BID"
-
       },
       {
         "value": "Other",
         "label": "Other"
       }
-    ]
+    ],
+    "isPII": false
   },
   {
     "name": "otherBID",
     "label": "If BID/Other, please specify:",
-    "type": "input"
+    "type": "input",
+    "isPII": true
   },
   {
     "name": "officerRequest",
     "label": "Request from Officer?",
-    "type": "checkbox"
+    "type": "checkbox",
+    "isPII": false
   },
   {
     "name": "officerStandby",
     "label": "If request from officer, is officer on standby?",
-    "type": "checkbox"
+    "type": "checkbox",
+    "isPII": false
   },
   {
     "name": "friendlyName",
     "label": "Name of Person Reporting",
-    "type": "input"
+    "type": "input",
+    "isPII": true
   },
   {
     "name": "contactIdentifier",
     "label": "Email of Person Reporting",
-    "type": "input"
+    "type": "input",
+    "isPII": true
   },
   {
     "name": "phone",
     "label": "Phone of Person Reporting",
-    "type": "input"
+    "type": "input",
+    "isPII": true
   },
   {
     "name": "callbackRequested",
     "label": "Does requestor want a call back?",
-    "type": "checkbox"
+    "type": "checkbox",
+    "isPII": false
   }
 ]

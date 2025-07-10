@@ -1,9 +1,12 @@
 [
-    {
+  {
     "name": "callSummary",
     "label": "Contact Summary",
     "type": "textarea",
-    "required": { "value": true, "message": "RequiredFieldError" },
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    },
     "isPII": true,
     "width": "250px",
     "rows": "40",
@@ -19,12 +22,13 @@
           "item": "callSummary"
         }
       }
-      ]
+    ]
   },
   {
     "name": "repeatCaller",
     "label": "Suspected Repeat Client",
-    "type": "checkbox"
+    "type": "checkbox",
+    "isPII": false
   },
   {
     "name": "actionTaken",
@@ -75,7 +79,8 @@
         "value": "I've talked to OSS about this contact",
         "label": "I've talked to OSS about this contact"
       }
-    ]
+    ],
+    "isPII": false
   },
   {
     "name": "referredTo",
@@ -247,7 +252,8 @@
         "value": "Other referral not listed here",
         "label": "Other referral not listed here"
       }
-    ]
+    ],
+    "isPII": false
   },
   {
     "name": "howDidYouKnowAboutOurLine",
@@ -319,11 +325,13 @@
         "value": "Unknown",
         "label": "Unknown"
       }
-    ]
+    ],
+    "isPII": false
   },
   {
     "name": "didYouDiscussRightsWithTheChild",
     "label": "Did you discuss confidentiality and limits of confidentiality with the client?",
-    "type": "mixed-checkbox"
+    "type": "mixed-checkbox",
+    "isPII": false
   }
 ]

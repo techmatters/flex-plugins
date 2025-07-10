@@ -103,13 +103,6 @@ const ResourcePreview: React.FC<Props> = ({ resourceResult, onClickViewResource 
             </Box>
           </ResourceAttributesColumn>
         </PreviewRow>
-        {/* <ResourceCategoriesContainer>
-          {(ServiceCategories as Category[]).map(c => (
-            <Box key={`category-tag-${c.value}`} marginRight="8px" marginBottom="8px">
-              <CategoryWithTooltip category={c.value} color={c.color} fitTag={false} />
-            </Box>
-          ))}
-        </ResourceCategoriesContainer> */}
       </ResourcePreviewWrapper>
     </Flex>
   );

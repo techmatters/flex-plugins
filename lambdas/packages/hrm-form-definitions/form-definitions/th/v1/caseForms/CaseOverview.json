@@ -2,17 +2,20 @@
   {
     "name": "status",
     "label": "สถานะเคส",
-    "type": "select"
+    "type": "select",
+    "isPII": false
   },
   {
     "name": "childIsAtRisk",
     "label": "เด็กอยู่ในภาวะเสี่ยง",
-    "type": "checkbox"
+    "type": "checkbox",
+    "isPII": false
   },
   {
     "name": "followUpDate",
     "label": "กำหนดติดตาม",
-    "type": "date-input"
+    "type": "date-input",
+    "isPII": false
   },
   {
     "name": "summary",

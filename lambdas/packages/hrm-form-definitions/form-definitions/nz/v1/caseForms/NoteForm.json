@@ -3,12 +3,14 @@
     "name": "note",
     "label": "Additional information",
     "type": "textarea",
-    "placeholder": ""
+    "placeholder": "",
+    "isPII": true
   },
   {
     "name": "stepsNeeded",
     "label": "Any next steps that you feel may need to be considered?",
     "type": "textarea",
-    "placeholder": ""
+    "placeholder": "",
+    "isPII": true
   }
 ]
