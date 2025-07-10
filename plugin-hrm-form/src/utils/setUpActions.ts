@@ -36,7 +36,6 @@ import { handleTransferredTask } from '../transfer/setUpTransferActions';
 import { recordEvent } from '../fullStory';
 import { completeConversationTask, wrapupConversationTask } from '../services/twilioTaskService';
 import selectContactStateByContactId from '../states/contacts/selectContactStateByContactId';
-import { WorkerSID } from '../types/twilio';
 
 type SetupObject = ReturnType<typeof getHrmConfig>;
 type GetMessage = (key: string) => (key: string) => Promise<string>;
@@ -154,9 +153,7 @@ export const afterAcceptTask = (featureFlags: FeatureFlags, setupObject: SetupOb
         stateContact.savedContact?.twilioWorkerId !== task.workerSid ||
         stateContact.savedContact?.taskId !== task.taskSid
       ) {
-        asyncDispatch(store.dispatch)(
-          newLoadContactFromHrmForTaskAsyncAction(task, `${task.taskSid}-active`),
-        );
+        asyncDispatch(store.dispatch)(newLoadContactFromHrmForTaskAsyncAction(task, `${task.taskSid}-active`));
       }
     }
   });
