@@ -92,13 +92,3 @@ export const mapAge = (ageOptions: string[]) => (age: string) => {
 
   return 'Unknown';
 };
-
-export const mapGenericOption = (options: string[]) => (value: string) => {
-  const validOption = options.find(e => e.toLowerCase() === value.toLowerCase());
-
-  if (!validOption) {
-    return 'Unknown';
-  }
-
-  return validOption;
-};
