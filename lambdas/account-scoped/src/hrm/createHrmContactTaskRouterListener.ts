@@ -110,9 +110,7 @@ export const handleEvent = async (
     form_definitions_version_url: configFormDefinitionsVersionUrl,
     assets_bucket_url: assetsBucketUrl,
     helpline_code: helplineCode,
-    feature_flags: {
-      use_prepopulate_mappings: usePrepopulateMappings,
-    },
+    feature_flags: { use_prepopulate_mappings: usePrepopulateMappings },
   } = serviceConfig.attributes;
 
   const hrmAccountId = inferHrmAccountId(accountSid, workerName);
