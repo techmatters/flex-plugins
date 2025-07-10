@@ -1,18 +1,20 @@
 [
-    {
-      "name": "natureOfCrisis",
-      "label": "Nature of Crisis - Details",
-      "type": "textarea",
-      "placeholder": "",
-      "rows": 10,
-      "width": 250
-    },
-    {
-      "name": "safetyPlan",
-      "label": "Safety Plan",
-      "type": "textarea",
-      "placeholder": "",
-      "rows": 10,
-      "width": 250
-    }
+  {
+    "name": "natureOfCrisis",
+    "label": "Nature of Crisis - Details",
+    "type": "textarea",
+    "placeholder": "",
+    "rows": 10,
+    "width": 250,
+    "isPII": true
+  },
+  {
+    "name": "safetyPlan",
+    "label": "Safety Plan",
+    "type": "textarea",
+    "placeholder": "",
+    "rows": 10,
+    "width": 250,
+    "isPII": true
+  }
 ]

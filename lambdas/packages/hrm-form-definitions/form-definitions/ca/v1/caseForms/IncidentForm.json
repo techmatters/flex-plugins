@@ -1,138 +1,183 @@
 [
-    {
-      "name": "offenderName",
-      "label": "offenderName",
-      "type": "input"
-    },
-    {
-      "name": "relationshipToChild",
-      "label": "relationshipToPerson",
-        "type": "select",
-        "options": [
-          { "value": "Unknown", "label": "" },
-          { "value": "Caregiver", "label": "Caregiver" },
-          { "value": "Friend", "label": "Friend" },
-          { "value": "Grandparent", "label": "Grandparent" },
-          { "value": "Neighbour", "label": "Neighbour" },
-          { "value": "Parent", "label": "Parent" },
-          { "value": "Partner", "label": "Partner" },
-          { "value": "Person in a position of responsibility", "label": "Person in a position of responsibility" },
-          { "value": "Sibling", "label": "Sibling" },
-          { "value": "Stranger", "label": "Stranger" },
-          { "value": "Other", "label": "Other" }
-        ],
-    "required": { "value": true, "message": "RequiredFieldError" }
-    },
-    {
-      "name": "isChildHurt",
-      "label": "isChildHurt",
-      "type": "select",
-      "options": [
-        {
-          "value": "",
-          "label": ""
-        },
-        {
-          "value": "Yes",
-          "label": "Yes"
-        },
-        {
-          "value": "No",
-          "label": "No"
-        }
-      ],
-      "required": {
-        "value": true,
-        "message": "RequiredFieldError"
+  {
+    "name": "offenderName",
+    "label": "offenderName",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "relationshipToChild",
+    "label": "relationshipToPerson",
+    "type": "select",
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "Caregiver",
+        "label": "Caregiver"
+      },
+      {
+        "value": "Friend",
+        "label": "Friend"
+      },
+      {
+        "value": "Grandparent",
+        "label": "Grandparent"
+      },
+      {
+        "value": "Neighbour",
+        "label": "Neighbour"
+      },
+      {
+        "value": "Parent",
+        "label": "Parent"
+      },
+      {
+        "value": "Partner",
+        "label": "Partner"
+      },
+      {
+        "value": "Person in a position of responsibility",
+        "label": "Person in a position of responsibility"
+      },
+      {
+        "value": "Sibling",
+        "label": "Sibling"
+      },
+      {
+        "value": "Stranger",
+        "label": "Stranger"
+      },
+      {
+        "value": "Other",
+        "label": "Other"
       }
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
     },
-    {
-        "name": "isChildInImmediateDanger",
-        "label": "isChildInImmediateDanger",
-        "type": "select",
-        "options": [
-          {
-            "value": "",
-            "label": ""
-          },
-          {
-            "value": "Yes",
-            "label": "Yes"
-          },
-          {
-            "value": "No",
-            "label": "No"
-          }
-        ],
-        "required": {
-          "value": true,
-          "message": "RequiredFieldError"
-        }
-    },
-    {
-      "name": "date",
-      "label": "incidentDate",
-      "type": "date-input"
-    },
-    {
-      "name": "location",
-      "label": "incidentLocation",
-      "type": "input"
-    },
-    {
-      "name": "incidentType",
-      "label": "incidentType",
-      "type": "listbox-multiselect",
-      "options": [
-        {
-          "value": "Not applicable",
-          "label": "Not applicable"
-        },
-        {
-          "value": "Physical",
-          "label": "Physical"
-        },
-        {
-          "value": "Emotional",
-          "label": "Emotional"
-        },
-        {
-            "value": "Sexual",
-            "label": "Sexual"
-        },
-        {
-            "value": "Neglect",
-            "label": "Neglect"
-        },
-        {
-            "value": "Suicidal Ideation",
-            "label": "Suicidal Ideation"
-        },
-        {
-            "value": "Self-Injury",
-            "label": "Self-Injury"
-        },
-        {
-            "value": "Other",
-            "label": "Other - please provide details below"
-        }
-      ],
-      "required": {
-        "value": true,
-        "message": "RequiredFieldError"
+    "isPII": false
+  },
+  {
+    "name": "isChildHurt",
+    "label": "isChildHurt",
+    "type": "select",
+    "options": [
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "Yes",
+        "label": "Yes"
+      },
+      {
+        "value": "No",
+        "label": "No"
       }
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
     },
-    {
-      "name": "otherAbuse",
-      "label": "ifOtherAbuse",
-      "type": "input"
+    "isPII": false
+  },
+  {
+    "name": "isChildInImmediateDanger",
+    "label": "isChildInImmediateDanger",
+    "type": "select",
+    "options": [
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "Yes",
+        "label": "Yes"
+      },
+      {
+        "value": "No",
+        "label": "No"
+      }
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
     },
-    {
-      "name": "safetyPlan",
-      "label": "safetyPlan",
-      "type": "textarea",
-      "placeholder": "",
-      "rows": 10,
-      "width": 250
-    }
-  ]
+    "isPII": false
+  },
+  {
+    "name": "date",
+    "label": "incidentDate",
+    "type": "date-input",
+    "isPII": false
+  },
+  {
+    "name": "location",
+    "label": "incidentLocation",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "incidentType",
+    "label": "incidentType",
+    "type": "listbox-multiselect",
+    "options": [
+      {
+        "value": "Not applicable",
+        "label": "Not applicable"
+      },
+      {
+        "value": "Physical",
+        "label": "Physical"
+      },
+      {
+        "value": "Emotional",
+        "label": "Emotional"
+      },
+      {
+        "value": "Sexual",
+        "label": "Sexual"
+      },
+      {
+        "value": "Neglect",
+        "label": "Neglect"
+      },
+      {
+        "value": "Suicidal Ideation",
+        "label": "Suicidal Ideation"
+      },
+      {
+        "value": "Self-Injury",
+        "label": "Self-Injury"
+      },
+      {
+        "value": "Other",
+        "label": "Other - please provide details below"
+      }
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    },
+    "isPII": false
+  },
+  {
+    "name": "otherAbuse",
+    "label": "ifOtherAbuse",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "safetyPlan",
+    "label": "safetyPlan",
+    "type": "textarea",
+    "placeholder": "",
+    "rows": 10,
+    "width": 250,
+    "isPII": true
+  }
+]

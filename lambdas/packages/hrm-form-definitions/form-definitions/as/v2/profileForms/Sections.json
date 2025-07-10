@@ -6,7 +6,8 @@
     "type": "textarea",
     "rows": 20,
     "width": 500,
-    "placeholder": "Enter a summary of the client"
+    "placeholder": "Enter a summary of the client",
+    "isPII": true
   },
   {
     "name": "recommendedApproach",
@@ -15,7 +16,8 @@
     "type": "textarea",
     "rows": 20,
     "width": 500,
-    "placeholder": "Enter recommended approach"
+    "placeholder": "Enter recommended approach",
+    "isPII": true
   },
   {
     "name": "details",

@@ -6,7 +6,8 @@
     "required": {
       "value": true,
       "message": "RequiredFieldError"
-    }
+    },
+    "isPII": true
   },
   {
     "name": "lastName",
@@ -15,7 +16,8 @@
     "required": {
       "value": true,
       "message": "RequiredFieldError"
-    }
+    },
+    "isPII": true
   },
   {
     "name": "relationshipToChild",
@@ -75,22 +77,26 @@
     "required": {
       "value": true,
       "message": "RequiredFieldError"
-    }
+    },
+    "isPII": false
   },
   {
     "name": "postalCode",
     "label": "Postal Code",
-    "type": "input"
+    "type": "input",
+    "isPII": true
   },
   {
     "name": "unitNumber",
     "label": "Unit Number",
-    "type": "input"
+    "type": "input",
+    "isPII": true
   },
   {
     "name": "contactNumber",
     "label": "Contact Number",
-    "type": "input"
+    "type": "input",
+    "isPII": true
   },
   {
     "name": "gender",
@@ -118,12 +124,14 @@
         "value": "Unknown",
         "label": "Unknown"
       }
-    ]
+    ],
+    "isPII": false
   },
   {
     "name": "age",
     "label": "Age",
-    "type": "input"
+    "type": "input",
+    "isPII": true
   },
   {
     "name": "language",
@@ -163,7 +171,8 @@
     "required": {
       "value": true,
       "message": "RequiredFieldError"
-    }
+    },
+    "isPII": false
   },
   {
     "name": "ethnicity",
@@ -195,12 +204,14 @@
         "value": "Unknown",
         "label": "Unknown"
       }
-    ]
+    ],
+    "isPII": false
   },
   {
     "name": "copyToPerpetrator",
     "label": "This household member is also a perpetrator/facilitator",
     "type": "copy-to",
-    "target": "perpetrator"
+    "target": "perpetrator",
+    "isPII": false
   }
 ]

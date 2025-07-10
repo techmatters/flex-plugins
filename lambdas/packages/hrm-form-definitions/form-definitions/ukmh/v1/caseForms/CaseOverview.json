@@ -2,17 +2,20 @@
   {
     "name": "status",
     "label": "Case Status",
-    "type": "select"
+    "type": "select",
+    "isPII": false
   },
   {
     "name": "safeguardingConcernsRaised",
     "label": "Safeguarding concerns raised",
-    "type": "checkbox"
+    "type": "checkbox",
+    "isPII": false
   },
   {
     "name": "followUpDate",
     "label": "Follow Up Date",
-    "type": "date-input"
+    "type": "date-input",
+    "isPII": false
   },
   {
     "name": "summary",

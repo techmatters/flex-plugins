@@ -1,0 +1,39 @@
+{
+  "language_selector": {
+    "description": "Specific configs/lex_v2/ZM/bots Pre Survey bot",
+    "locale": "en_US",
+    "child_directed": true,
+    "idle_session_ttl_in_seconds": "600",
+    "type": "Bot",
+    "intents": {
+      "language_selector": {
+        "utterances": [
+          {
+            "utterance": "trigger_language_selector"
+          },
+          {
+            "utterance": "Hello"
+          },
+          {
+            "utterance": "Hi"
+          }
+        ],
+        "initial_response": {
+          "message": "What language do you speak?",
+          "slot_to_elicit": "language"
+        },
+        "closing_response": {
+          "message": "Ok, hank you."
+        },
+        "slot_priorities": {
+          "1": {
+            "slot_name": "language",
+            "slot_type_name": "language",
+            "slot_question": "What language do you speak? Please select from the below supported languages: \n 1. English \n 2. Bemba \n 3. Tonga \n 4. Lunda \n 5. Nyanja \n 6. Kaonde \n 7. Lozi",
+            "failure_response": "We are having trouble understanding your response"
+          }
+        }
+      }
+    }
+  }
+}

@@ -9,17 +9,20 @@
     },
     "metadata": {
       "eventTimestampSource": true
-    }
+    },
+    "isPII": false
   },
   {
     "name": "followUpDate",
     "type": "date-input",
-    "label": "Follow Up Date"
+    "label": "Follow Up Date",
+    "isPII": false
   },
   {
     "name": "responseDate",
     "type": "date-input",
-    "label": "Response Date"
+    "label": "Response Date",
+    "isPII": false
   },
   {
     "name": "referredTo",
@@ -51,11 +54,13 @@
     "required": {
       "value": true,
       "message": "RequiredFieldError"
-    }
+    },
+    "isPII": false
   },
   {
     "name": "comments",
     "label": "Comments",
-    "type": "textarea"
+    "type": "textarea",
+    "isPII": true
   }
 ]

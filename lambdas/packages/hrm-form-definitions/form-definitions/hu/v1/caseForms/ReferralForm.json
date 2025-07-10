@@ -1,23 +1,29 @@
 [
-    {
-      "name": "date",
-      "type": "date-input",
-      "label": "Dátum",
-      "required": { "value": true, "message": "RequiredFieldError" },
-      "metadata": {
-        "eventTimestampSource": true
-      }
+  {
+    "name": "date",
+    "type": "date-input",
+    "label": "Dátum",
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
     },
-    {
-      "name": "referredTo",
-      "label": "Továbbítva",
-      "type": "input"
+    "metadata": {
+      "eventTimestampSource": true
     },
-    {
-      "name": "comments",
-      "label": "Megjegyzés",
-      "type": "textarea",
-      "rows": 25,
-      "width": 300
-    }
-  ]
+    "isPII": false
+  },
+  {
+    "name": "referredTo",
+    "label": "Továbbítva",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "comments",
+    "label": "Megjegyzés",
+    "type": "textarea",
+    "rows": 25,
+    "width": 300,
+    "isPII": true
+  }
+]
