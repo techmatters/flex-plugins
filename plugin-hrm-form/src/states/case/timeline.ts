@@ -81,6 +81,7 @@ export const loadTimelineIntoRedux = (
   if (timeline.length !== timelineResult.count) {
     timeline = [];
     timeline.length = timelineResult.count;
+    timeline.fill(null, 0, timelineResult.count);
   }
   timelineResult.activities.forEach((timelineActivity, index) => {
     if (isCaseSectionTimelineActivity(timelineActivity)) {
@@ -146,6 +147,7 @@ export const selectTimeline = (
   const timelineWindow = timeline.slice(offset, offset + limit);
   return timelineWindow
     .map(timelineActivity => {
+      if (!timelineActivity) return timelineActivity;
       if (isCaseSectionIdentifierTimelineActivity(timelineActivity)) {
         const { activity } = timelineActivity;
         const section = sections?.[activity.sectionType]?.[activity.sectionId];
