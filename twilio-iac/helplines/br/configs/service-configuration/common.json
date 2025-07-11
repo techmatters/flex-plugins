@@ -4,7 +4,8 @@
         "definitionVersion": "br-v1",
         "feature_flags": {
             "enable_dual_write": true,
-            "enable_lex": true       
+            "enable_lex": true,
+            "enable_lex_v2": true       
         },
         "helplineLanguage": "pt-BR",
         "multipleOfficeSupport": true,
