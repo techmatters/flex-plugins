@@ -1,104 +1,103 @@
 {
-  "Kids Help Phone":{
-    "categories": {
-      "Suicide/Suicidality": {
+  "Kids Help Phone": {
+    "Suicide/Suicidality": {
+      "color": "#0095C8",
+      "subcategories": [
+        {"label": "Suicide/Suicidality", "toolkitUrl": "https://kidshelpphone.sharepoint.com/:w:/r/sites/KMSKnowledgeMobilizationSystem/_layouts/15/Doc.aspx?sourcedoc=%7B1003818A-56DC-4770-B1AE-62AC92FD43CE%7D&file=Suicide.docx&action=default&mobileredirect=true"}
+      ]
+    },
+    "Self-Injury": {
+      "color": "#0095C8",
+      "subcategories": [
+        {"label": "Self-Injury", "toolkitUrl": "https://kidshelpphone.sharepoint.com/:w:/r/sites/KMSKnowledgeMobilizationSystem/_layouts/15/Doc.aspx?sourcedoc=%7B94545CB1-6271-4470-88D7-6AC7EC45490D%7D&file=Self-Injury.docx&action=default&mobileredirect=true"}
+      ]
+    },
+    "Harming Others": {
+      "color": "#0095C8",
+      "subcategories": [
+        {"label": "Harming Others"}
+      ]
+    },
+    "Homicide": {
+      "color": "#0095C8",
+      "subcategories": [
+        {"label": "Homicide", "toolkitUrl": "https://kidshelpphone.sharepoint.com/:w:/r/sites/KMSKnowledgeMobilizationSystem/_layouts/15/Doc.aspx?sourcedoc=%7B6D1A25FF-D548-43F8-AC08-69A0DE956E07%7D&file=Homicidal%20Ideation.docx&action=default&mobileredirect=true"}
+      ]
+    },
+    "Abuse": {
+      "color": "#0095C8",
+      "subcategories": [
+        {"label": "Emotional/Verbal (By a parent/caregiver/family member)", "toolkitUrl": "https://kidshelpphone.sharepoint.com/:w:/r/sites/KMSKnowledgeMobilizationSystem/_layouts/15/Doc.aspx?sourcedoc=%7BBB6D8A62-591A-4F0E-B141-8DB20847DA27%7D&file=Family%20Abuse%20and%20Neglect.docx&action=default&mobileredirect=true"},
+        {"label": "Emotional/Verbal (By an intimate partner/spouse)", "toolkitUrl": "https://kidshelpphone.sharepoint.com/:w:/r/sites/KMSKnowledgeMobilizationSystem/_layouts/15/Doc.aspx?sourcedoc=%7BCB56E148-0058-4F00-886D-E5BC0340AD31%7D&file=Intimate%20Partner%20Violence.docx&action=default&mobileredirect=true"},
+        {"label": "Emotional/Verbal (Other/Unspecified)"},
+        {"label": "Physical (By a parent/caregiver/family member)", "toolkitUrl": "https://kidshelpphone.sharepoint.com/:w:/r/sites/KMSKnowledgeMobilizationSystem/_layouts/15/Doc.aspx?sourcedoc=%7BBB6D8A62-591A-4F0E-B141-8DB20847DA27%7D&file=Family%20Abuse%20and%20Neglect.docx&action=default&mobileredirect=true"},
+        {"label": "Physical (By an intimate partner/spouse)", "toolkitUrl": "https://kidshelpphone.sharepoint.com/:w:/r/sites/KMSKnowledgeMobilizationSystem/_layouts/15/Doc.aspx?sourcedoc=%7BCB56E148-0058-4F00-886D-E5BC0340AD31%7D&file=Intimate%20Partner%20Violence.docx&action=default&mobileredirect=true"},
+        {"label": "Physical (Other/Unspecified)"},
+        {"label": "Sexual (By a parent/caregiver/family member)", "toolkitUrl": "https://kidshelpphone.sharepoint.com/:w:/r/sites/KMSKnowledgeMobilizationSystem/_layouts/15/Doc.aspx?sourcedoc=%7BD12CA993-3F02-47B0-86BD-5284327BCC90%7D&file=Sexual%20Abuse.docx&action=default&mobileredirect=true"},
+        {"label": "Sexual (By an intimate partner/spouse)", "toolkitUrl": "https://kidshelpphone.sharepoint.com/:w:/r/sites/KMSKnowledgeMobilizationSystem/_layouts/15/Doc.aspx?sourcedoc=%7BD12CA993-3F02-47B0-86BD-5284327BCC90%7D&file=Sexual%20Abuse.docx&action=default&mobileredirect=true"},
+        {"label": "Sexual (Other/Unspecified)", "toolkitUrl": "https://kidshelpphone.sharepoint.com/:w:/r/sites/KMSKnowledgeMobilizationSystem/_layouts/15/Doc.aspx?sourcedoc=%7BD12CA993-3F02-47B0-86BD-5284327BCC90%7D&file=Sexual%20Abuse.docx&action=default&mobileredirect=true"},
+        {"label": "Neglect", "toolkitUrl": "https://kidshelpphone.sharepoint.com/:w:/r/sites/KMSKnowledgeMobilizationSystem/_layouts/15/Doc.aspx?sourcedoc=%7BBB6D8A62-591A-4F0E-B141-8DB20847DA27%7D&file=Family%20Abuse%20and%20Neglect.docx&action=default&mobileredirect=true"}
+      ]     
+    },
+    "Assault": {
+      "color": "#0095C8",
+      "subcategories": [
+        {"label": "Physical Assault"},
+        {"label": "Sexual Assault", "toolkitUrl": "https://kidshelpphone.sharepoint.com/:w:/r/sites/KMSKnowledgeMobilizationSystem/_layouts/15/Doc.aspx?sourcedoc=%7B56BDE0DA-AC7C-4C89-A4AA-C144E488A201%7D&file=Sexual%20Assault.docx&action=default&mobileredirect=true"},
+        {"label": "Unspecified/Other"}
+      ]
+    },
+    "Body Image": {
+      "color": "#0095C8",
+      "subcategories": [
+        {"label": "Body Image", "toolkitUrl": "https://kidshelpphone.sharepoint.com/:w:/r/sites/KMSKnowledgeMobilizationSystem/_layouts/15/Doc.aspx?sourcedoc=%7B2DF7CED3-BA9E-437D-BB8E-C4E95821B2BE%7D&file=Body%20Image.docx&action=default&mobileredirect=true"}
+      ]
+    },
+    "Bullying/Harassment": {
+      "color": "#0095C8",
+      "subcategories": [
+        {"label": "In person bullying/harassment", "toolkitUrl": "https://kidshelpphone.sharepoint.com/:w:/r/sites/KMSKnowledgeMobilizationSystem/_layouts/15/Doc.aspx?sourcedoc=%7B61785900-D42C-4653-8D8D-FCB176001326%7D&file=Bullying.docx&action=default&mobileredirect=true"},
+        {"label": "Online bullying/harassment", "toolkitUrl": "https://kidshelpphone.sharepoint.com/:w:/r/sites/KMSKnowledgeMobilizationSystem/_layouts/15/Doc.aspx?sourcedoc=%7BA2A8F731-883C-44DD-9DED-B3F6EF54A3B7%7D&file=Cyberbullying.docx&action=default&mobileredirect=true"}
+      ]
+    },
+    "Extortion/Exploitation": {
+      "color": "#0095C8",
+      "subcategories": [
+        {"label": "In person extortion/exploitation", "toolkitUrl": "https://kidshelpphone.sharepoint.com/:w:/r/sites/KMSKnowledgeMobilizationSystem/_layouts/15/Doc.aspx?sourcedoc=%7B2DA0AA30-ADD3-4166-B673-4A942CE4D350%7D&file=Human%20Trafficking%20and%20Sexual%20Exploitation.docx&action=default&mobileredirect=true"},
+        {"label": "Online extortion/exploitation", "toolkitUrl": "https://kidshelpphone.sharepoint.com/:w:/r/sites/KMSKnowledgeMobilizationSystem/_layouts/15/Doc.aspx?sourcedoc=%7B2DA0AA30-ADD3-4166-B673-4A942CE4D350%7D&file=Human%20Trafficking%20and%20Sexual%20Exploitation.docx&action=default&mobileredirect=true"}
+      ]
+    },
+    "Current or Past Events": {
+      "color": "#0095C8",
+      "subcategories": [
+        {"label": "Climate change"},
+        {"label": "Global/national crisis"},
+        {"label": "Historical events"},
+        {"label": "News headline"},
+        {"label": "Societal unrest/demonstrations/protests"}
+      ]
+    },
+    "Disability/Ability": {
+      "color": "#0095C8",
+      "subcategories": [
+        {"label": "Intellectual", "toolkitUrl": "https://kidshelpphone.sharepoint.com/:w:/r/sites/KMSKnowledgeMobilizationSystem/_layouts/15/Doc.aspx?sourcedoc=%7BC066D4FF-5DAA-4217-B7B8-4CF74A37F7E4%7D&file=Learning%20Disabilities%20and%20Giftedness.docx&action=default&mobileredirect=true"},
+        {"label": "Learning", "toolkitUrl": "https://kidshelpphone.sharepoint.com/:w:/r/sites/KMSKnowledgeMobilizationSystem/_layouts/15/Doc.aspx?sourcedoc=%7BC066D4FF-5DAA-4217-B7B8-4CF74A37F7E4%7D&file=Learning%20Disabilities%20and%20Giftedness.docx&action=default&mobileredirect=true"},
+        {"label": "Bodily", "toolkitUrl": "https://kidshelpphone.sharepoint.com/:w:/r/sites/KMSKnowledgeMobilizationSystem/_layouts/15/Doc.aspx?sourcedoc=%7B69E77B37-3083-4656-95EB-C712680E1224%7D&file=Disability%20and%20Accommodation.docx&action=default&mobileredirect=true"},
+        {"label": "Hearing"},
+        {"label": "Vision"},
+        {"label": "Other Disability/Ability"}
+      ]
+    },
+    "Financial Concerns": {
         "color": "#0095C8",
         "subcategories": [
-          {"label": "Suicide/Suicidality", "toolkitUrl": "http://kms2013.kidshelp.ca/wiki/Wiki%20Pages/Suicide%20-%20Counsellor%20Tipsheet.aspx"}
-        ]
-      },
-      "Self-Injury": {
-        "color": "#0095C8",
-        "subcategories": [
-          {"label": "Self-Injury", "toolkitUrl": "http://kms2013.kidshelp.ca/wiki/Wiki%20Pages/Self%20Injury%20-%20Counsellor%20Tipsheet.aspx"}
-        ]
-      },
-      "Harming Others": {
-        "color": "#0095C8",
-        "subcategories": [
-          {"label": "Harming Others"}
-        ]
-      },
-      "Homicide": {
-        "color": "#0095C8",
-        "subcategories": [
-          {"label": "Homicide", "toolkitUrl": "http://kms2013.kidshelp.ca/Pages/Homicidal-Ideation.aspx"}
-        ]
-      },
-      "Abuse": {
-        "color": "#0095C8",
-        "subcategories": [
-          {"label": "Emotional/Verbal (By a parent/caregiver/family member)", "toolkitUrl": "http://kms2013.kidshelp.ca/wiki/Wiki%20Pages/Family%20violence%20-%20Counsellor%20Tipsheet.aspx"},
-          {"label": "Emotional/Verbal (By an intimate partner/spouse)", "toolkitUrl": "http://kms2013.kidshelp.ca/Pages/Intimate-Partner-Violence.aspx"},
-          {"label": "Emotional/Verbal (Other/Unspecified)"},
-          {"label": "Physical (By a parent/caregiver/family member)", "toolkitUrl": "http://kms2013.kidshelp.ca/wiki/Wiki%20Pages/Family%20violence%20-%20Counsellor%20Tipsheet.aspx"},
-          {"label": "Physical (By an intimate partner/spouse)", "toolkitUrl": "http://kms2013.kidshelp.ca/Pages/Intimate-Partner-Violence.aspx"},
-          {"label": "Physical (Other/Unspecified)"},
-          {"label": "Sexual (By a parent/caregiver/family member)", "toolkitUrl": "http://kms2013.kidshelp.ca/wiki/Wiki%20Pages/Sexual%20Abuse%20-%20Counsellor%20Tipsheet.aspx"},
-          {"label": "Sexual (By an intimate partner/spouse)", "toolkitUrl": "http://kms2013.kidshelp.ca/wiki/Wiki%20Pages/Sexual%20Abuse%20-%20Counsellor%20Tipsheet.aspx"},
-          {"label": "Sexual (Other/Unspecified)", "toolkitUrl": "http://kms2013.kidshelp.ca/wiki/Wiki%20Pages/Sexual%20Abuse%20-%20Counsellor%20Tipsheet.aspx"},
-          {"label": "Neglect", "toolkitUrl": "http://kms2013.kidshelp.ca/wiki/Wiki%20Pages/Family%20violence%20-%20Counsellor%20Tipsheet.aspx"}
-        ]
-      },
-      "Assault": {
-        "color": "#0095C8",
-        "subcategories": [
-          {"label": "Physical Assault"},
-          {"label": "Sexual Assault", "toolkitUrl": "http://kms2013.kidshelp.ca/wiki/Wiki%20Pages/Sexual%20Assault%20-%20Counsellor%20Tipsheet.aspx"},
-          {"label": "Unspecified/Other"}
-        ]
-      },
-      "Body Image": {
-        "color": "#0095C8",
-        "subcategories": [
-          {"label": "Body Image", "toolkitUrl": "http://kms2013.kidshelp.ca/wiki/Wiki%20Pages/Body%20Image%20-%20Counsellor%20Tipsheet.aspx"}
-        ]
-      },
-      "Bullying/Harassment": {
-        "color": "#0095C8",
-        "subcategories": [
-          {"label": "In person bullying/harassment", "toolkitUrl": "http://kms2013.kidshelp.ca/wiki/Wiki%20Pages/Bullying%20-%20Counsellor%20Tipsheet.aspx"},
-          {"label": "Online bullying/harassment", "toolkitUrl": "http://kms2013.kidshelp.ca/wiki/Wiki%20Pages/Cyberbullying%20-%20Counsellor%20Tipsheet.aspx"}
-        ]
-      },
-      "Extortion/Exploitation": {
-        "color": "#0095C8",
-        "subcategories": [
-          {"label": "In person extortion/exploitation", "toolkitUrl": "http://kms2013.kidshelp.ca/wiki/Wiki%20Pages/Child%20Exploitation%20-%20Counsellor%20Tipsheet.aspx"},
-          {"label": "Online extortion/exploitation", "toolkitUrl": "http://kms2013.kidshelp.ca/wiki/Wiki%20Pages/Child%20Exploitation%20-%20Counsellor%20Tipsheet.aspx"}
-        ]
-      },
-      "Current or Past Events": {
-        "color": "#0095C8",
-        "subcategories": [
-          {"label": "Climate change"},
-          {"label": "Global/national crisis"},
-          {"label": "Historical events"},
-          {"label": "News headline"},
-          {"label": "Societal unrest/demonstrations/protests"}
-        ]
-      },
-      "Disability/Ability": {
-        "color": "#0095C8",
-        "subcategories": [
-          {"label": "Intellectual", "toolkitUrl": "http://kms2013.kidshelp.ca/wiki/Wiki%20Pages/Exceptionalities%20-%20Counsellor%20Tipsheet.aspx"},
-          {"label": "Learning", "toolkitUrl": "http://kms2013.kidshelp.ca/wiki/Wiki%20Pages/Exceptionalities%20-%20Counsellor%20Tipsheet.aspx"},
-          {"label": "Bodily", "toolkitUrl": "http://kms2013.kidshelp.ca/Pages/Disability-and-Accomodation.aspx"},
-          {"label": "Hearing"},
-          {"label": "Vision"},
-          {"label": "Other Disability/Ability"}
-        ]
-      },
-      "Financial Concerns": {
-        "color": "#0095C8",
-        "subcategories": [
-          {"label": "Financial Concerns", "toolkitUrl": "http://kms2013.kidshelp.ca/wiki/Wiki%20Pages/Financial%20Need%20and%20Youth%20Employment%20Trends%20-%20Counsellor%20Tipsheet.aspx"}
+          {"label": "Financial Concerns", "toolkitUrl": "https://kidshelpphone.sharepoint.com/:w:/r/sites/KMSKnowledgeMobilizationSystem/_layouts/15/Doc.aspx?sourcedoc=%7BDE913BA5-E941-4DE4-8D24-2E3B2186E090%7D&file=Financial%20Need%20&%20Youth%20Employment%20Trends.docx=&action=default&mobileredirect=true"}
         ]
       },
       "Health": {
         "color": "#0095C8",
         "subcategories": [
-          {"label": "Physical Illness", "toolkitUrl": "http://kms2013.kidshelp.ca/wiki/Wiki%20Pages/Physical%20Illness%20-%20Counsellor%20Tipsheet.aspx"},
+          {"label": "Physical Illness", "toolkitUrl": "https://kidshelpphone.sharepoint.com/:w:/r/sites/KMSKnowledgeMobilizationSystem/_layouts/15/Doc.aspx?sourcedoc=%7BD437016A-411A-479D-B57C-6850B046765E%7D&file=Physical%20Illness.docx&action=default&mobileredirect=true"},
           {"label": "Chronic Illness"}
         ]
       },
@@ -109,7 +108,7 @@
           {"label": "Self-expression"},
           {"label": "Cultural/ethnic"},
           {"label": "Religious - Identity"},
-          {"label": "Neurodivergence", "toolkitUrl": "http://kms2013.kidshelp.ca/Pages/Autism.aspx"},
+          {"label": "Neurodivergence", "toolkitUrl": "https://kidshelpphone.sharepoint.com/:w:/r/sites/KMSKnowledgeMobilizationSystem/_layouts/15/Doc.aspx?sourcedoc=%7BF0DBE9B5-FF80-4E5F-B0AA-D2966C4E6300%7D&file=Autism%20Spectrum%20Disorder%20(ASD).docx&action=default&mobileredirect=true"},
           {"label": "Other - Identity"}
         ]
       },
@@ -128,22 +127,22 @@
       "Mental Health & Wellbeing (Symptoms and Behaviours)": {
         "color": "#0095C8",
         "subcategories": [
-          {"label": "Anger/Hostility/Violence", "toolkitUrl": "http://kms2013.kidshelp.ca/wiki/Wiki%20Pages/Anger%20-%20Counsellor%20Tipsheet.aspx"},
-          {"label": "Anxiety/Stress/Panic/Fear/Worry", "toolkitUrl": "http://kms2013.kidshelp.ca/wiki/Wiki%20Pages/Anxiety%20-%20Counsellor%20Tipsheet.aspx"},
-          {"label": "Sleeping Habits/Difficulties", "toolkitUrl": "http://kms2013.kidshelp.ca/wiki/Wiki%20Pages/Sleep%20-%20Counsellor%20Tipsheet.aspx"},
-          {"label": "Attention Difficulties", "toolkitUrl": "http://kms2013.kidshelp.ca/wiki/Wiki%20Pages/Attention%20Deficit%20Hyperactivity%20Disorder%20(ADHD)%20-%20Counsellor%20Tipsheet.aspx"},
-          {"label": "Sadness/Depression/Hopelessness", "toolkitUrl": "http://kms2013.kidshelp.ca/wiki/Wiki%20Pages/Sadness%20-%20Counsellor%20Tipsheet.aspx"},
+          {"label": "Anger/Hostility/Violence", "toolkitUrl": "https://kidshelpphone.sharepoint.com/:w:/r/sites/KMSKnowledgeMobilizationSystem/_layouts/15/Doc.aspx?sourcedoc=%7B71D23AB3-4BCA-4E09-87D2-616181737B36%7D&file=Anger.docx&action=default&mobileredirect=true"},
+          {"label": "Anxiety/Stress/Panic/Fear/Worry", "toolkitUrl": "https://kidshelpphone.sharepoint.com/:w:/r/sites/KMSKnowledgeMobilizationSystem/_layouts/15/Doc.aspx?sourcedoc=%7B732276C0-3D38-43E1-9629-D35CCAD9D528%7D&file=Anxiety.docx&action=default&mobileredirect=true"},
+          {"label": "Sleeping Habits/Difficulties", "toolkitUrl": "https://kidshelpphone.sharepoint.com/:w:/r/sites/KMSKnowledgeMobilizationSystem/_layouts/15/Doc.aspx?sourcedoc=%7BDBA5507F-03E0-4370-ADAD-29217FA4BA49%7D&file=Sleep.docx&action=default&mobileredirect=true"},
+          {"label": "Attention Difficulties", "toolkitUrl": "https://kidshelpphone.sharepoint.com/:w:/r/sites/KMSKnowledgeMobilizationSystem/_layouts/15/Doc.aspx?sourcedoc=%7B7FFE098B-EB3B-49A0-901A-D78342EE2600%7D&file=Attention%20Deficit%20Hyperactivity%20Disorder%20(ADHD).docx&action=default&mobileredirect=true"},
+          {"label": "Sadness/Depression/Hopelessness", "toolkitUrl": "https://kidshelpphone.sharepoint.com/:w:/r/sites/KMSKnowledgeMobilizationSystem/_layouts/15/Doc.aspx?sourcedoc=%7B90423F47-C1B6-47CD-B570-24ED1FC88B03%7D&file=Sadness.docx&action=default&mobileredirect=true"},
           {"label": "Paranoia/Hallucinations/Dissociation"},
           {"label": "Extreme Mood Swings/Changes in Mood"},
           {"label": "Guilt"},
-          {"label": "Loneliness/Social Isolation/Withdrawal", "toolkitUrl": "http://kms2013.kidshelp.ca/wiki/Wiki%20Pages/Loneliness%20-%20Counsellor%20Tipsheet.aspx"},
-          {"label": "Grief/Loss", "toolkitUrl": "http://kms2013.kidshelp.ca/Pages/Grief-and-Loss.aspx"},
-          {"label": "Difficulty Coping", "toolkitUrl": "http://kms2013.kidshelp.ca/Pages/125-Coping-Strategies.aspx"},
-          {"label": "Disordered Eating", "toolkitUrl": "http://kms2013.kidshelp.ca/wiki/Wiki%20Pages/Eating%20Disorders%20-%20Counsellor%20Tipsheet.aspx"},
+          {"label": "Loneliness/Social Isolation/Withdrawal", "toolkitUrl": "https://kidshelpphone.sharepoint.com/:w:/r/sites/KMSKnowledgeMobilizationSystem/_layouts/15/Doc.aspx?sourcedoc=%7B0018C6A0-EA70-4FDA-BAF9-8196F964950B%7D&file=Loneliness.docx&action=default&mobileredirect=true"},
+          {"label": "Grief/Loss", "toolkitUrl": "https://kidshelpphone.sharepoint.com/:w:/r/sites/KMSKnowledgeMobilizationSystem/_layouts/15/Doc.aspx?sourcedoc=%7B87E59F43-85EA-409D-9BE6-F7C4143FDAE3%7D&file=Grief%20and%20Loss.docx&action=default&mobileredirect=true"},
+          {"label": "Difficulty Coping", "toolkitUrl": "https://kidshelpphone.sharepoint.com/:w:/r/sites/KMSKnowledgeMobilizationSystem/_layouts/15/Doc.aspx?sourcedoc=%7B8C7F780B-B0C0-4444-BD07-7EF9F02DE945%7D&file=125%20Coping%20Strategies.docx&action=default&mobileredirect=true"},
+          {"label": "Disordered Eating", "toolkitUrl": "https://kidshelpphone.sharepoint.com/:w:/r/sites/KMSKnowledgeMobilizationSystem/_layouts/15/Doc.aspx?sourcedoc=%7B417A5D33-D9F2-43D0-A8E1-A988252819B7%7D&file=Eating%20Disorders.docx&action=default&mobileredirect=true"},
           {"label": "Sex Drive Changes/Habits"},
-          {"label": "Substance Use", "toolkitUrl": "http://kms2013.kidshelp.ca/Pages/Substance-Use-.aspx"},
+          {"label": "Substance Use", "toolkitUrl": "https://kidshelpphone.sharepoint.com/:w:/r/sites/KMSKnowledgeMobilizationSystem/_layouts/15/Doc.aspx?sourcedoc=%7B173306FB-A2CF-43A3-81EF-500DA5440CBE%7D&file=Substances%20%25u2013%20Alcohol%20&%20Drugs.docx=&action=default&mobileredirect=true"},
           {"label": "Addictions"},
-          {"label": "Trauma Response", "toolkitUrl": "http://kms2013.kidshelp.ca/wiki/Wiki%20Pages/Trauma%20-%20Counsellor%20Tipsheet.aspx"},
+          {"label": "Trauma Response", "toolkitUrl": "https://kidshelpphone.sharepoint.com/:w:/r/sites/KMSKnowledgeMobilizationSystem/_layouts/15/Doc.aspx?sourcedoc=%7BB86EB695-8C0C-4A7B-AA29-5A27726ED79E%7D&file=Trauma.docx&action=default&mobileredirect=true"},
           {"label": "Trouble understanding/relating to others"},
           {"label": "Lack of Motivation"},
           {"label": "Formal diagnosis mentioned/discussed"}
@@ -152,7 +151,7 @@
       "Parenting": {
         "color": "#0095C8",
         "subcategories": [
-          {"label": "Parenting", "toolkitUrl": "http://kms2013.kidshelp.ca/wiki/Wiki%20Pages/Parenting%20Links.aspx"}
+          {"label": "Parenting", "toolkitUrl": "https://kidshelpphone.sharepoint.com/:w:/r/sites/KMSKnowledgeMobilizationSystem/_layouts/15/Doc.aspx?sourcedoc=%7BDCF18E7D-4214-483E-A904-661F65E954BB%7D&file=Parenting%20as%20a%20Post-Secondary%20Student.docx&action=default&mobileredirect=true"}
         ]
       },  
       "Prejudice/Discrimination/Microaggresion/Oppression": {
@@ -161,7 +160,7 @@
           {"label": "Ableism"},
           {"label": "Homophobia"},
           {"label": "Transphobia"},
-          {"label": "Racism", "toolkitUrl": "http://kms2013.kidshelp.ca/wiki/Wiki%20Pages/Racism%20and%20Acculturation%20-%20Best%20Practices%20Overview.aspx"},
+          {"label": "Racism", "toolkitUrl": "https://kidshelpphone.sharepoint.com/:w:/r/sites/KMSKnowledgeMobilizationSystem/_layouts/15/Doc.aspx?sourcedoc=%7BAEA264B5-4788-41B7-AA8D-C48D4EAC1022%7D&file=Racism%20and%20Acculturation.docx&action=default&mobileredirect=true"},
           {"label": "Religious"},
           {"label": "Systemic"},
           {"label": "Sexism"},
@@ -173,22 +172,22 @@
       "Relationships": {
         "color": "#0095C8",
         "subcategories": [
-          {"label": "With family member(s)", "toolkitUrl": "http://kms2013.kidshelp.ca/wiki/Wiki%20Pages/Family%20-%20Counsellor%20Tipsheet.aspx"},
-          {"label": "With friend(s)/peer(s)", "toolkitUrl": "http://kms2013.kidshelp.ca/wiki/Wiki%20Pages/Friendship%20-%20Counsellor%20Tipsheet.aspx"},
-          {"label": "With partner(s)", "toolkitUrl": "http://kms2013.kidshelp.ca/wiki/Wiki%20Pages/Dating%20-%20Counsellor%20Tipsheet.aspx"},
+          {"label": "With family member(s)", "toolkitUrl": "https://kidshelpphone.sharepoint.com/:w:/r/sites/KMSKnowledgeMobilizationSystem/_layouts/15/Doc.aspx?sourcedoc=%7B37092E19-B894-42FF-BC21-210063A10A59%7D&file=Family.docx&action=default&mobileredirect=true"},
+          {"label": "With friend(s)/peer(s)", "toolkitUrl": "https://kidshelpphone.sharepoint.com/:w:/r/sites/KMSKnowledgeMobilizationSystem/_layouts/15/Doc.aspx?sourcedoc=%7BC8CEC86C-57F1-400E-9B39-EDD1FBF0116E%7D&file=Friendship.docx&action=default&mobileredirect=true"},
+          {"label": "With partner(s)", "toolkitUrl": "https://kidshelpphone.sharepoint.com/:w:/r/sites/KMSKnowledgeMobilizationSystem/_layouts/15/Doc.aspx?sourcedoc=%7B985CC7AD-B002-49DB-820B-691D4D18CDEB%7D&file=Dating.docx&action=default&mobileredirect=true"},
           {"label": "Other relationship(s)"}
         ]
       },
       "Substance Use/Experimentation": {
         "color": "#0095C8",
         "subcategories": [
-          {"label": "Substance Use/Experimentation", "toolkitUrl": "http://kms2013.kidshelp.ca/Pages/Substance-Use-.aspx"}
+          {"label": "Substance Use/Experimentation", "toolkitUrl": "https://kidshelpphone.sharepoint.com/:w:/r/sites/KMSKnowledgeMobilizationSystem/_layouts/15/Doc.aspx?sourcedoc=%7B173306FB-A2CF-43A3-81EF-500DA5440CBE%7D&file=Substances%20%25u2013%20Alcohol%20&%20Drugs.docx=&action=default&mobileredirect=true"}
         ]
       },
       "Sex/Sexual Health/Pregnancy": {
         "color": "#0095C8",
         "subcategories": [
-          {"label": "Sex/Sexual Health/Pregnancy", "toolkitUrl": "http://kms2013.kidshelp.ca/wiki/Wiki%20Pages/Sexual%20Health%20-%20Counsellor%20Tipsheet.aspx"}
+          {"label": "Sex/Sexual Health/Pregnancy", "toolkitUrl": "https://kidshelpphone.sharepoint.com/:w:/r/sites/KMSKnowledgeMobilizationSystem/_layouts/15/Doc.aspx?sourcedoc=%7B83C27A10-E8D2-4129-A38D-3695E7CF13F8%7D&file=Sexual%20Health.docx&action=default&mobileredirect=true"}
         ]
       },
       "School and Work": {
@@ -213,5 +212,4 @@
         ]
       }
     }
-  }
 }
