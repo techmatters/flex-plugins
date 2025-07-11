@@ -163,8 +163,7 @@ export const caseList = (page: Page) => {
 
   async function verifyCategoryTooltipIsVisible() {
     const categoryTooltip = selectors.categoryTooltip;
-    await categoryTooltip.waitFor({ state: 'visible' });
-    await expect(categoryTooltip).toBeVisible();
+    await expect(categoryTooltip).toBeVisible({ timeout: 10000 });
   }
 
   async function verifyCaseIdsAreInListInOrder(ids: string[]) {

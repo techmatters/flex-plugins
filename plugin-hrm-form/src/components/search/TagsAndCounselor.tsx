@@ -80,7 +80,7 @@ const TagsAndCounselor: React.FC<Props> = props => {
     <Flex
       style={{
         justifyContent: 'space-between',
-        minHeight: '26px',
+        minHeight: '30px',
         marginTop: '10px',
         padding: '0 20px 0px 20px',
         display: 'flex', // Not sure why but display is set to 'block' without this
