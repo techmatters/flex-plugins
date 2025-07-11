@@ -62,7 +62,7 @@ const AddCaseButton: React.FC<Props> = ({ handleNewCaseType, handleExistingCaseT
       data-fs-id="Contact-SaveAndAddToCase-Button"
       data-testid="BottomBar-SaveAndAddToCase-Button"
       disabled={!enabled}
-      style={{ padding: '4px 8px' }}
+      style={{ padding: '2px 8px' }}
     >
       <StyledAddNewCaseDropdown position={position} dropdown={dropdown}>
         {hideAddToNewCaseButton ? null : (
