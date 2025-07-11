@@ -54,7 +54,7 @@ const FormSelect: React.FC<FormSelectProps> = ({
   );
   // ====== //
 
-  const defaultValue = initialValue.toString();
+  const defaultValue = (initialValue ?? '').toString();
   const disabled = !isEnabled;
 
   return (

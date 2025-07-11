@@ -88,7 +88,7 @@ const TagsAndCounselor: React.FC<Props> = props => {
       }}
     >
       {leftTags()}
-      <Flex style={{ minWidth: 'fit-content' }}>
+      <Flex style={{ minWidth: 'fit-content', marginTop: '2px' }}>
         <SubtitleLabel>
           <Template code="CallSummary-Counselor" />
         </SubtitleLabel>
