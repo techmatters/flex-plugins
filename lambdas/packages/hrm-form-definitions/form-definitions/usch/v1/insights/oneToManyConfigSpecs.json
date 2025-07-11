@@ -1,13 +1,5 @@
 [
   {
-    "attributeName": "area",
-    "insightsObject": "customers",
-    "paths": [
-      "contactForm.childInformation.province",
-      "contactForm.childInformation.district"
-    ]
-  },
-  {
     "attributeName": "customer_attribute_3",
     "insightsObject": "customers",
     "paths": [
