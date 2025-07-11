@@ -60,23 +60,30 @@ export function logPageTelemetry(
     );
   });
   page.on('requestfinished', async (request) => {
-    const response = await request.response();
-    if (response && (config.level === PageTelemetryLevel.ALL || response.status() >= 400)) {
-      let bytes = 'unknown',
-        body: Buffer | null = null;
-      if (response.status() < 300) {
-        try {
-          body = await response!.body();
-          bytes = body.length.toString();
-        } catch (e) {
-          console.warn('Failed to read response body', e);
+    try {
+      const response = await request.response();
+      if (response && (config.level === PageTelemetryLevel.ALL || response.status() >= 400)) {
+        let bytes = 'unknown',
+          body: Buffer | null = null;
+        if (response.status() < 300) {
+          try {
+            body = await response!.body();
+            bytes = body.length.toString();
+          } catch (e) {
+            console.warn(
+              `[BROWSER: ${page.url()} (REQUEST)] ${request.method()} ${request.url()} ${response.status()}: Failed to read response body (status: ${response.status()})`,
+              e,
+            );
+          }
         }
+        console.debug(
+          `[BROWSER: ${page.url()} (REQUEST)] ${request.method()} ${request.url()} ${response.status()}: ${response.statusText()} [${bytes} bytes] ${
+            config.logResponseBody && body ? body.toString() : ''
+          }`,
+        );
       }
-      console.log(
-        `[BROWSER: ${page.url()} (REQUEST)] ${request.method()} ${request.url()} ${response.status()}: ${response.statusText()} [${bytes} bytes] ${
-          config.logResponseBody && body ? body.toString() : ''
-        }`,
-      );
+    } catch (error) {
+      console.warn('Error logging request', error);
     }
   });
 }
