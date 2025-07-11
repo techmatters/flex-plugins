@@ -1,5 +1,6 @@
 {
   "Kids Help Phone": {
+    "categories": {
     "Suicide/Suicidality": {
       "color": "#0095C8",
       "subcategories": [
@@ -212,4 +213,5 @@
         ]
       }
     }
+  }
 }
