@@ -69,7 +69,7 @@ const DependentFormSelect: React.FC<DependentFormSelectProps> = ({
   );
   // ====== //
 
-  const defaultValue = initialValue.toString();
+  const defaultValue = (initialValue ?? '').toString();
   // mutable value to avoid reseting the state in the first render. This preserves the "intialValue" provided
   const prevDependeeValue = React.useRef(undefined); // mutable value to store previous dependeeValue
 

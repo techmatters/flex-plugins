@@ -134,7 +134,7 @@ type ColorProps = {
 
 export const CategoryChip = styled(ChipBase)<ColorProps>`
   border-radius: 2px;
-  margin: 1px 6px 1px 0px;
+  margin: 0 6px 6px 0;
   padding: 5px 12px;
   background-color: ${props => (props.color ? `${props.color}1a` : '#d8d8d8')};
   text-overflow: ellipsis;
