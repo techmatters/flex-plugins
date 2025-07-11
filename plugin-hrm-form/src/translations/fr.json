@@ -671,5 +671,11 @@
 "Switchboard-ModalTitleTurnOffSwitchboard": "Êtes-vous sûr de vouloir désactiver la commutation?",
 "Switchboard-ButtonTurnOffSwitchboard": "Désactiver",
 "Switchboard-ActivateSwitchboarding": "Activer la commutation",
-"Switchboard-PleaseSelectQueue": "Veuillez d'abord sélectionner une file d'attente"
+"Switchboard-PleaseSelectQueue": "Veuillez d'abord sélectionner une file d'attente",
+
+"Conference-Wrapping-HangupBy/Agent": "Appel Terminé par le Conseiller",
+"Conference-Wrapping-HangupBy/Customer": "Appel Terminé par l'Utilisateur du Service",
+"Conference-Wrapping-HangupBy/Consult": "Appel Terminé par le Conseiller Consultant",
+"Conference-Wrapping-HangupBy/Cold Transfer": "Appel Terminé par Transfert",
+"Conference-Wrapping-HangupBy/Warm Transfer": "Appel Terminé par Transfert"
 }
