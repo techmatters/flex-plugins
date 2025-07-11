@@ -136,9 +136,7 @@ const mapStateToProps = (state: RootState) => {
 const mapDispatchToProps = (dispatch: Dispatch<any>) => {
   return {
     loadDraftOfflineContact: () =>
-      asyncDispatch(dispatch)(
-        newLoadContactFromHrmForTaskAsyncAction(getOfflineContactTask(), getHrmConfig().workerSid),
-      ),
+      asyncDispatch(dispatch)(newLoadContactFromHrmForTaskAsyncAction(getOfflineContactTask())),
     populateCounselorList: (listPayload: Awaited<ReturnType<typeof populateCounselors>>) =>
       dispatch(populateCounselorsState(listPayload)),
   };

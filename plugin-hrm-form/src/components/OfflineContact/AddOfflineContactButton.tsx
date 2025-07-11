@@ -26,7 +26,7 @@ import { getOfflineContactTask, getOfflineContactTaskSid } from '../../states/co
 import { getHrmConfig, getTemplateStrings } from '../../hrmConfig';
 import { newContact } from '../../states/contacts/contactState';
 import asyncDispatch from '../../states/asyncDispatch';
-import { createContactAsyncAction } from '../../states/contacts/saveContact';
+import { createOfflineContactAsyncAction } from '../../states/contacts/saveContact';
 import { namespace } from '../../states/storeNamespaces';
 import selectContactByTaskSid from '../../states/contacts/selectContactByTaskSid';
 import selectCurrentOfflineContact from '../../states/contacts/selectCurrentOfflineContact';
@@ -102,7 +102,7 @@ const mapDispatchToProps = dispatch => {
   const asyncDispatcher = asyncDispatch(dispatch);
   return {
     createContactState: (contact: Contact) =>
-      asyncDispatcher(createContactAsyncAction(contact, getHrmConfig().workerSid, getOfflineContactTask())),
+      asyncDispatcher(createOfflineContactAsyncAction(contact, getHrmConfig().workerSid, getOfflineContactTask())),
   };
 };
 
