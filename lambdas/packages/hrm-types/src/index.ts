@@ -13,13 +13,21 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
-
 import type { CallType } from './callType';
 
 export * from './callType';
 export * from './switchboarding';
 
 type TaskSID = `WT${string}` | `offline-contact-task${string}` | 'standalone-task-sid';
+
+export type HangUpBy =
+  | 'Agent'
+  | 'Customer'
+  | 'Consult'
+  | 'Cold Transfer'
+  | 'Warm Transfer'
+  | 'External Cold Transfer'
+  | 'External Warm Transfer';
 
 export type ChannelTypes =
   | 'voice'
@@ -36,14 +44,7 @@ export type ChannelTypes =
 export type HrmContactRawJson = {
   definitionVersion?: string;
   callType: CallType | undefined;
-  hangUpBy?:
-    | 'Agent'
-    | 'Customer'
-    | 'Consult'
-    | 'Cold Transfer'
-    | 'Warm Transfer'
-    | 'External Cold Transfer'
-    | 'External Warm Transfer';
+  hangUpBy?: HangUpBy;
   childInformation: Record<string, FormValue>;
   callerInformation: Record<string, FormValue>;
   caseInformation: Record<string, FormValue>;
