@@ -43,7 +43,7 @@ const preEngagementConfig: PreEngagementFormDefinition = {
     {
       label: 'How old are you?',
       type: 'select',
-      name: 'childAge',
+      name: 'age',
       required: true,
       defaultValue: '',
       options: [
@@ -87,7 +87,7 @@ const preEngagementConfig: PreEngagementFormDefinition = {
     {
       label: 'What state are you chatting from?',
       type: 'select',
-      name: 'childState',
+      name: 'state',
       required: true,
       defaultValue: '',
       options: [

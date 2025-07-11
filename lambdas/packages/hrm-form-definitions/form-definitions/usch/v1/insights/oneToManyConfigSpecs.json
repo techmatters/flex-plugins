@@ -8,11 +8,24 @@
     ]
   },
   {
-    "attributeName": "conversation_attribute_10",
-    "insightsObject": "conversations",
+    "attributeName": "customer_attribute_3",
+    "insightsObject": "customers",
     "paths": [
       "savedContact.id"
     ],
     "saveForNonDataContacts": true
+  },
+  {
+    "attributeName": "productive",
+    "insightsObject": "conversations",
+    "paths": [
+      "contactForm.childInformation.q1",
+      "contactForm.childInformation.q2",
+      "contactForm.childInformation.q3",
+      "contactForm.childInformation.q4",
+      "contactForm.childInformation.q5",
+      "contactForm.childInformation.q6",
+      "contactForm.childInformation.q7"
+    ]
   }
 ]

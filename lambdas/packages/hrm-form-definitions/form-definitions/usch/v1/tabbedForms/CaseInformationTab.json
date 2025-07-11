@@ -4,15 +4,7 @@
     "label": "Campaign",
     "type": "select",
     "isPII": false,
-    "defaultOption": {
-      "value": "",
-      "label": ""
-    },
     "options": [
-      {
-        "value": "",
-        "label": ""
-      },
       {
         "value": "Courage First",
         "label": "Courage First"
@@ -22,105 +14,6 @@
         "label": "Childhelp Hotline"
       }
     ],
-    "required": {
-      "value": true,
-      "message": "RequiredFieldError"
-    }
-  },
-  {
-    "name": "typeOfSport",
-    "label": "Type of Sport",
-    "type": "dependent-select",
-    "isPII": false,
-    "dependsOn": "campaign",
-    "defaultOption": {
-      "value": "",
-      "label": ""
-    },
-    "options": {
-      "Courage First": [
-        {
-          "value": "Baseball",
-          "label": "Baseball"
-        },
-        {
-          "value": "Basketball",
-          "label": "Basketball"
-        },
-        {
-          "value": "Cricket",
-          "label": "Cricket"
-        },
-        {
-          "value": "Dance",
-          "label": "Dance"
-        },
-        {
-          "value": "Figure Skating",
-          "label": "Figure Skating"
-        },
-        {
-          "value": "Football",
-          "label": "Football"
-        },
-        {
-          "value": "Golf",
-          "label": "Golf"
-        },
-        {
-          "value": "Gymnastics",
-          "label": "Gymnastics"
-        },
-        {
-          "value": "Hockey",
-          "label": "Hockey"
-        },
-        {
-          "value": "Karate",
-          "label": "Karate"
-        },
-        {
-          "value": "Lacrosse",
-          "label": "Lacrosse"
-        },
-        {
-          "value": "Rugby",
-          "label": "Rugby"
-        },
-        {
-          "value": "Skiing",
-          "label": "Skiing"
-        },
-        {
-          "value": "Soccer",
-          "label": "Soccer"
-        },
-        {
-          "value": "Softball",
-          "label": "Softball"
-        },
-        {
-          "value": "Swim",
-          "label": "Swim"
-        },
-        {
-          "value": "Tennis",
-          "label": "Tennis"
-        },
-        {
-          "value": "Track and Field",
-          "label": "Track and Field"
-        },
-        {
-          "value": "Volleyball",
-          "label": "Volleyball"
-        },
-        {
-          "value": "Wrestling",
-          "label": "Wrestling"
-        }
-      ]
-    },
     "required": {
       "value": true,
       "message": "RequiredFieldError"
