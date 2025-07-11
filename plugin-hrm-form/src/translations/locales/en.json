@@ -589,5 +589,15 @@
   "Switchboard-StatusInactive": "Switchboarding: Off",
   "Switchboard-ConfirmTurnOffSwitchboard": "Are you sure you want to turn off switchboarding?",
   "Switchboard-ActivateSwitchboarding": "Activate switchboarding",
-  "Switchboard-PleaseSelectQueue": "Please select a queue first"
+  "Switchboard-ModalTitleTurnOffSwitchboard": "Turn Off Switchboarding",
+  "Switchboard-ButtonTurnOffSwitchboard": "Turn Off",
+  "Switchboard-PleaseSelectQueue": "Please select a queue first",
+
+  "Conference-Wrapping-HangupBy/Agent": "Call Ended by Counsellor",
+  "Conference-Wrapping-HangupBy/Customer": "Call Ended by Service User",
+  "Conference-Wrapping-HangupBy/Consult": "Call Ended by Consulting Counsellor",
+  "Conference-Wrapping-HangupBy/Cold Transfer": "Call Ended by Transfer",
+  "Conference-Wrapping-HangupBy/Warm Transfer": "Call Ended by Transfer",
+
+  "ContactForms-TextArea-GenerateSummary": "Generate Summary"
 }
