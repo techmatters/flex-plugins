@@ -23,7 +23,34 @@
       }
     ],
     "childInformation": [
-   
+      {
+        "name": "childIs",
+        "insights": ["customers", "customer_attribute_2"]
+      },
+      {
+        "name": "state",
+        "insights": ["customers", "city"]
+      },
+      {
+        "name": "country",
+        "insights": ["customers", "zip"]
+      },
+      {
+        "name": "safetyConcern",
+        "insights": ["conversations", "initiative"]
+      },
+      {
+        "name": "riskLevel",
+        "insights": ["conversations", "conversation_attribute_5"]
+      },
+      {
+        "name": "cfSportLevel",
+        "insights": ["customers", "organization"]
+      },
+      {
+        "name": "cfSportPlayed",
+        "insights": ["customers", "category"]
+      }
     ],
     "caseInformation": [
     ]
