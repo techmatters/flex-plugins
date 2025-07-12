@@ -23,41 +23,13 @@ import { RootState } from '../../states';
 import { isAnyChatPending } from '../queuesStatus/helpers';
 import AddTaskButton from '../common/AddTaskButton';
 import { configurationBase, namespace, queuesStatusBase } from '../../states/storeNamespaces';
-import { adjustChatCapacity, pullNextTask } from '../../services/twilioWorkerService';
-import { getAseloFeatureFlags } from '../../hrmConfig';
-
-type OwnProps = {
-  workerClient: import('@twilio/flex-ui').Manager['workerClient'];
-};
+import { pullNextTask } from '../../services/twilioWorkerService';
 
 // eslint-disable-next-line no-use-before-define
-type Props = OwnProps & ReturnType<typeof mapStateToProps>;
+type Props = ReturnType<typeof mapStateToProps>;
 
-const ManualPullButton: React.FC<Props> = ({ queuesStatusState, chatChannelCapacity, worker, workerClient }) => {
-  const { enable_backend_manual_pulling: enableBackendManualPulling } = getAseloFeatureFlags();
+const ManualPullButton: React.FC<Props> = ({ queuesStatusState, chatChannelCapacity, worker }) => {
   const [isWaitingNewTask, setWaitingNewTask] = useState(false);
-
-  // Increase chat capacity, if no reservation is created within 5 seconds, capacity is decreased and shows a notification.
-  const increaseChatCapacity = async () => {
-    setWaitingNewTask(true);
-    let alertTimeout = null;
-
-    const cancelTimeout = () => {
-      setWaitingNewTask(false);
-      clearTimeout(alertTimeout);
-    };
-
-    alertTimeout = setTimeout(async () => {
-      setWaitingNewTask(false);
-      workerClient.removeListener('reservationCreated', cancelTimeout);
-      Notifications.showNotification('NoTaskAssignableNotification');
-      await adjustChatCapacity('decrease');
-    }, 5000);
-
-    workerClient.once('reservationCreated', cancelTimeout);
-
-    await adjustChatCapacity('increase');
-  };
 
   const pullTask = async () => {
     setWaitingNewTask(true);
@@ -86,7 +58,7 @@ const ManualPullButton: React.FC<Props> = ({ queuesStatusState, chatChannelCapac
   return (
     <AddTaskButton
       id="ManualPullButton"
-      onClick={enableBackendManualPulling ? pullTask : increaseChatCapacity}
+      onClick={pullTask}
       disabled={disabled}
       isLoading={isWaitingNewTask}
       label="ManualPullButtonText"

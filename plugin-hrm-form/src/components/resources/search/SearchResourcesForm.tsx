@@ -411,14 +411,12 @@ const SearchResourcesForm: React.FC<Props> = ({
             setGeneralSearchTermBoxText('');
             resetSearch();
           }}
-          style={{
-            opacity: hasValidSearchSettings() ? 1 : 0.3,
-          }}
+          disabled={!hasValidSearchSettings()}
         >
           <Template code="Search-ClearFormButton" />
         </SearchFormClearButton>
         <PrimaryButton
-          style={{ opacity: hasValidSearchSettings() ? 1 : 0.3 }}
+          disabled={!hasValidSearchSettings()}
           type="button"
           roundCorners={true}
           onClick={() => submitSearchIfValid()}

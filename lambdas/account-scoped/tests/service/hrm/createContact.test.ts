@@ -63,9 +63,7 @@ beforeEach(async () => {
     account_sid: TEST_ACCOUNT_SID,
     attributes: {
       ...DEFAULT_CONFIGURATION_ATTRIBUTES,
-      feature_flags: {
-        enable_backend_hrm_contact_creation: true,
-      },
+      feature_flags: {},
     },
   });
 });

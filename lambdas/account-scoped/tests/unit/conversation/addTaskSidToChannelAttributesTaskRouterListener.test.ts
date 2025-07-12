@@ -32,7 +32,6 @@ import {
   ConversationContext,
   ConversationInstance,
 } from 'twilio/lib/rest/conversations/v1/conversation';
-import { setConfigurationAttributes } from '../mockServiceConfiguration';
 import { EventFields } from '../../../src/taskrouter';
 import each from 'jest-each';
 import { ChannelContext, ChannelInstance } from 'twilio/lib/rest/chat/v2/service/channel';
@@ -201,9 +200,6 @@ describe('addTaskSidToChannelAttributes', () => {
         setTaskReturnedByFetch(TEST_TASK_SID, false, isConversation);
         setConversationReturnedByFetch(TEST_CONVERSATION_SID);
         setChannelReturnedByFetch(TEST_CHANNEL_SID);
-        twilioClient = setConfigurationAttributes(twilioClient, {
-          feature_flags: { lambda_task_created_handler: true },
-        });
       });
       test('Twilio task, no taskSids already set, chat task channel - adds taskSid to attributes', async () => {
         // Act
@@ -218,21 +214,7 @@ describe('addTaskSidToChannelAttributes', () => {
           attributes: JSON.stringify({ tasksSids: [TEST_TASK_SID] }),
         });
       });
-      test('Flag not set - noop', async () => {
-        //Arrange
-        twilioClient = setConfigurationAttributes(twilioClient, {
-          feature_flags: { lambda_task_created_handler: false },
-        });
-        // Act
-        await addTaskSidToChannelAttributes(
-          newEventFields('chat', false, isConversation),
-          TEST_ACCOUNT_SID,
-          twilioClient,
-        );
 
-        // Assert
-        expect(mockUpdate).not.toHaveBeenCalled();
-      });
       test('survey task - noop', async () => {
         // Act
         await addTaskSidToChannelAttributes(

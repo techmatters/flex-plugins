@@ -20,7 +20,6 @@ import {
 } from '../taskrouter/taskrouterEventHandler';
 import { AccountSID, TaskSID } from '../twilioTypes';
 import { Twilio } from 'twilio';
-import { retrieveFeatureFlags } from '../configuration/aseloConfiguration';
 import { TASK_CREATED } from '../taskrouter/eventTypes';
 import { getChatServiceSid, getWorkspaceSid } from '../configuration/twilioConfiguration';
 
@@ -32,7 +31,6 @@ const isTaskThatNeedsToBeAddedToChannelAttributes = async (
   taskSid: TaskSID,
   taskChannelUniqueName: string,
   { isContactlessTask }: RelevantTaskAttributes,
-  client: Twilio,
 ): Promise<boolean> => {
   if (isContactlessTask || taskChannelUniqueName !== 'chat') {
     console.debug(
@@ -41,14 +39,6 @@ const isTaskThatNeedsToBeAddedToChannelAttributes = async (
     return false;
   }
 
-  const { lambda_task_created_handler: lambdaTaskCreatedHandler } =
-    await retrieveFeatureFlags(client);
-  if (!lambdaTaskCreatedHandler) {
-    console.debug(
-      `Feature flag lambda_task_created_handler is enabled. Skipping addTaskSidToChannelAttributes for ${taskSid}, it will be handled in Twilio Serverless.`,
-    );
-    return false;
-  }
   return true;
 };
 
@@ -72,7 +62,6 @@ export const addTaskSidToChannelAttributes: TaskRouterEventHandler = async (
       taskSid,
       taskChannelUniqueName,
       eventTaskAttributes,
-      client,
     ))
   ) {
     return;
