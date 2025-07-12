@@ -1232,10 +1232,6 @@
           "label": "Zimbabwe"
         }
       ]
-    },
-    "required": {
-      "value": true,
-      "message": "RequiredFieldError"
     }
   }
 ]
