@@ -1400,10 +1400,6 @@
         "label": "High risk – Suicidal ideation with a plan and intent"
       }
       ]
-    },
-    "required": {
-      "value": true,
-      "message": "RequiredFieldError"
     }
   },
   {
