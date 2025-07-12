@@ -6,12 +6,12 @@
     "isPII": false,
     "options": [
       {
-        "value": "Courage First",
-        "label": "Courage First"
-      },
-      {
         "value": "Childhelp Hotline",
         "label": "Childhelp Hotline"
+      },
+      {
+        "value": "Courage First",
+        "label": "Courage First"
       }
     ],
     "required": {
