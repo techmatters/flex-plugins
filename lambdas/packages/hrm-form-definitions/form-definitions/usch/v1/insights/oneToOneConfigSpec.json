@@ -1,8 +1,8 @@
 {
   "contactForm": {
     "callerInformation": [
-      {
-        "name": "relationshipToChild",
+     {
+        "name": "helpseekerIs",
         "insights": ["conversations", "initiated_by"]
       },
       {
@@ -12,65 +12,20 @@
       {
         "name": "age",
         "insights": ["conversations", "conversation_attribute_3"]
-      }
-    ],
-    "childInformation": [
-      {
-        "name": "city",
-        "insights": ["customers", "city"]
       },
       {
-        "name": "postalCode",
-        "insights": ["customers", "zip"]
+        "name": "state",
+        "insights": ["customers", "area"]
       },
       {
-        "name": "ethnicity",
-        "insights": ["customers", "customer_attribute_2"]
-      },
-      {
-        "name": "gradeLevel",
-        "insights": ["customers", "acquisition_date"]
-      },
-      {
-        "name": "livingSituation",
-        "insights": ["customers", "customer_attribute_1"]
-      },
-      {
-        "name": "vulnerableGroups",
-        "insights": [
-          "customers", 
-          "email"
-        ]
-      },
-      {
-        "name": "region",
+        "name": "country",
         "insights": ["customers", "region"]
       }
     ],
+    "childInformation": [
+   
+    ],
     "caseInformation": [
-      {
-        "name": "repeatCaller",
-        "insights": ["conversations", "conversation_attribute_7"],
-        "type": "mixed-checkbox"
-      },
-      {
-        "name": "actionTaken",
-        "insights": ["conversations", "initiative"]
-      },
-      {
-        "name": "howDidYouKnowAboutOurLine",
-        "insights": ["conversations", "conversation_attribute_5"]
-      },
-      {
-        "name": "didTheChildFeelWeSolvedTheirProblem",
-        "insights": ["conversations", "productive"],
-        "type": "mixed-checkbox"
-      },
-      {
-        "name": "wouldTheChildRecommendUsToAFriend",
-        "insights": ["conversations", "conversation_attribute_6"],
-        "type": "mixed-checkbox"
-      }
     ]
   },
   "caseForm": {
@@ -79,36 +34,7 @@
         "name": "id",
         "insights": ["conversations", "case"]
       }
-    ],
-    "perpetrator": [
-      {
-        "name": "relationshipToChild",
-        "insights": ["customers", "organization"]
-      },
-      {
-        "name": "gender",
-        "insights": ["conversations", "followed_by"]
-      },
-      {
-        "name": "age",
-        "insights": ["conversations", "preceded_by"]
-      }
-    ],
-    "incident": [
-      {
-        "name": "duration",
-        "insights": ["conversations", "in_business_hours"]
-      },
-      {
-        "name": "location",
-        "insights": ["customers", "market_segment"]
-      }
-    ],
-    "referral": [
-      {
-        "name": "referredTo",
-        "insights": ["customers", "customer_manager"]
-      }
+    
     ]
   }
 }
