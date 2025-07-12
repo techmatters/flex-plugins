@@ -4,6 +4,11 @@
     "label": "Helpseeker is",
     "type": "select",
     "isPII": false,
+    "defaultOption": {
+      "value": "",
+      "label": ""
+    },
+    "unknownOption": "",
     "options": [
       {
         "value": "",
@@ -120,16 +125,21 @@
     }
   },
   {
-    "name": "genderInput",
+    "name": "helpseekerGenderInput",
     "label": "Helpseeker Gender (Input from Webchat Form)",
     "type": "input",
     "isPII": false
   },
   {
-    "name": "gender",
+    "name": "helpseekerGender",
     "label": "Helpseeker Gender",
     "type": "select",
     "isPII": false,
+    "defaultOption": {
+      "value": "",
+      "label": ""
+    },
+    "unknownOption": "",
     "options": [
       {
         "value": "",
@@ -158,10 +168,15 @@
     }
   },
   {
-    "name": "age",
+    "name": "helpseekerAge",
     "label": "Helpseeker Age",
     "type": "select",
     "isPII": false,
+    "defaultOption": {
+      "value": "",
+      "label": ""
+    },
+    "unknownOption": "",
     "options": [
       {
         "value": "",
@@ -196,15 +211,15 @@
       "value": true,
       "message": "RequiredFieldError"
     }
-  },
+  }, 
   {
-    "name": "stateInput",
+    "name": "helpseekerStateInput",
     "label": "Helpseeker State (Input from SMS Chatbot)",
     "type": "input",
     "isPII": false
   },
   {
-    "name": "state",
+    "name": "helpseekerState",
     "label": "Helpseeker State",
     "type": "select",
     "isPII": false,
@@ -440,7 +455,7 @@
     }
   },
   {
-    "name": "country",
+    "name": "helpseekerCountry",
     "label": "Helpseeker Country",
     "type": "dependent-select",
     "isPII": false,
