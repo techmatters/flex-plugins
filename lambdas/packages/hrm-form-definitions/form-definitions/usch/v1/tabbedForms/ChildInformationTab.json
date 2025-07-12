@@ -380,7 +380,7 @@
     "label": "Child Country",
     "type": "dependent-select",
     "isPII": false,
-    "dependsOn": "childState",
+    "dependsOn": "state",
     "defaultOption": {
       "value": "Unknown",
       "label": ""

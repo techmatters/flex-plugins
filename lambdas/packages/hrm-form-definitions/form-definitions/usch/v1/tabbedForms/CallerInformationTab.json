@@ -444,7 +444,7 @@
     "label": "Helpseeker Country",
     "type": "dependent-select",
     "isPII": false,
-    "dependsOn": "helpseekerState",
+    "dependsOn": "state",
     "defaultOption": {
       "value": "",
       "label": ""
