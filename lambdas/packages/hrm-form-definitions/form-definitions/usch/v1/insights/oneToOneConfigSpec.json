@@ -97,12 +97,6 @@
         "name": "id",
         "insights": ["conversations", "case"]
       }
-    ],
-    "externalNotification": [
-      {
-        "name": "agencyContacted",
-        "insights": ["conversations", "conversation_attribute_7"]
-      }
     ]
   }
 }
