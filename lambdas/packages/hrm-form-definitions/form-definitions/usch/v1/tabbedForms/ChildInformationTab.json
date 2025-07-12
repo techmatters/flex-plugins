@@ -70,7 +70,7 @@
     }
   },
   {
-    "name": "age",
+    "name": "childAge",
     "label": "Child Age",
     "type": "select",
     "isPII": false,
@@ -144,7 +144,7 @@
     "isPII": false
   },
   {
-    "name": "state",
+    "name": "childState",
     "label": "Child State",
     "type": "select",
     "isPII": false,
@@ -376,7 +376,7 @@
     ]
   },
   {
-    "name": "country",
+    "name": "childCountry",
     "label": "Child Country",
     "type": "dependent-select",
     "isPII": false,
