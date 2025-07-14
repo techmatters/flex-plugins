@@ -3,8 +3,7 @@
     "feature_flags": {
       "enable_manual_pulling": false,
       "enable_voice_recordings": true,
-      "enable_client_profiles": true,
-      "enable_lex_v2": true
+      "enable_client_profiles": true
     },
     "pdfImagesSource": "https://tl-public-chat-jm-stg.s3.amazonaws.com",
     "previous_ui_version": {

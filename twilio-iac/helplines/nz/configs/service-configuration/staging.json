@@ -2,7 +2,6 @@
     "attributes": {
         "definitionVersion": "nz-v1",
         "feature_flags": {
-            "enable_lex_v2": true
         },
         "logo_url" : "https://aselo-logo.s3.amazonaws.com/200+transparent+background+no+TM+staging.png"
     }
