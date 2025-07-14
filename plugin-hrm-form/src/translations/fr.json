@@ -662,6 +662,8 @@
 "UnholdCustomerTooltip": "Décoller",
 "HoldAgentTooltip": "Mettre en attente",
 "CallCanvasWorkerOnHold": "En attente",
+"CallParticipantStatusLive": "En direct",
+"CallParticipantStatusOnHold": "En attente",
 "UnholdAgentTooltip": "Décoller",
 "NewChatMessageNotificationTitle": "Nouveau message de {{lastMessage.authorName}}",
 
