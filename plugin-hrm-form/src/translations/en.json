@@ -599,5 +599,7 @@
   "Switchboard-ButtonTurnOffSwitchboard": "Turn Off",
   "Switchboard-PleaseSelectQueue": "Please select a queue first",
 
-  "ContactForms-TextArea-GenerateSummary": "Generate Summary"
+  "ContactForms-TextArea-GenerateSummary": "Generate Summary",
+  "ContactForms-TextArea-LoadingSummary": "Loading"
+  
 }
