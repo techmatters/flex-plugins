@@ -638,6 +638,7 @@
 "Conference-EnterPhoneNumber": "Entrez le numéro de téléphone",
 "Conference-DialButton": "Appel",
 "Conference": "Conférence",
+"Add": "Ajouter",
 "Gender": "Sexe",
 "Age": "Âge",
 "Silent": "Silence",
@@ -660,6 +661,9 @@
 "HoldCustomerTooltip": "Mettre en attente",
 "UnholdCustomerTooltip": "Décoller",
 "HoldAgentTooltip": "Mettre en attente",
+"CallCanvasWorkerOnHold": "En attente",
+"CallParticipantStatusLive": "En direct",
+"CallParticipantStatusOnHold": "En attente",
 "UnholdAgentTooltip": "Décoller",
 "NewChatMessageNotificationTitle": "Nouveau message de {{lastMessage.authorName}}",
 
