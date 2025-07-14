@@ -71,8 +71,7 @@ test.describe.serial('Case List', () => {
     caseListPage = caseList(page);
   });
 
-  test('Case list loads items', async () => {
-    await page.waitForTimeout(10000);
+  test.only('Case list loads items', async () => {
     await caseList(page).verifyCaseIdsAreInListInOrder(
       cases
         .getMockCases()
