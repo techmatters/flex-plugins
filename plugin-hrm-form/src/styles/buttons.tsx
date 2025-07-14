@@ -43,6 +43,7 @@ export const AseloBaseButton = styled(Button)<AseloBaseButtonProps>`
   font-weight: 600;
   cursor: ${({ disabled }) => (disabled ? 'not-allowed' : 'pointer')};
   transition: background-color 0.2s ease;
+  opacity: 1 !important;
 
   &:focus {
     outline: 2px solid #22a3fa;

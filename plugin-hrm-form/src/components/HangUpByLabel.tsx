@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2021-2023 Technology Matters
+ * Copyright (C) 2021-2025 Technology Matters
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
  * by the Free Software Foundation, either version 3 of the License, or
@@ -14,26 +14,20 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-/* eslint-disable react/prop-types */
 import React from 'react';
-import { Template, SideLink, SideNavChildrenProps } from '@twilio/flex-ui';
+import { Template } from '@twilio/flex-ui';
 
-type Props = SideNavChildrenProps & { showLabel: boolean; onClick: () => void };
+import { ParticipantLabelContainer, ParticipantLabelText } from './Conference/ParticipantLabel/styles';
+import { newHangUpByStateManager } from '../hangUpByState';
 
-const SettingsSideLink: React.FC<Props> = ({ showLabel, activeView, onClick }) => {
-  return (
-    <SideLink
-      showLabel={showLabel}
-      icon="Settings"
-      iconActive="SettingsBold"
-      isActive={activeView === 'settings'}
-      onClick={onClick}
-    >
-      <Template code="SideNavSettings" />
-    </SideLink>
-  );
-};
+const HangUpByLabel: React.FC<TaskContextProps> = ({ task }) => (
+  <ParticipantLabelContainer>
+    <ParticipantLabelText className="ParticipantCanvas-Name">
+      <Template code={`Conference-Wrapping-HangupBy/${newHangUpByStateManager().getForTask(task) ?? 'Customer'}`} />
+    </ParticipantLabelText>
+  </ParticipantLabelContainer>
+);
 
-SettingsSideLink.displayName = 'SettingsSideLink';
+HangUpByLabel.displayName = 'HangUpByLabel';
 
-export default SettingsSideLink;
+export default HangUpByLabel;

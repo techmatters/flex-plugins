@@ -145,7 +145,6 @@ const setUpActions = (
 
   // bind setupObject to the functions that requires some initialization
   const wrapupOverride = ActionFunctions.wrapupTask(setupObject, getMessage);
-  const beforeCompleteAction = ActionFunctions.beforeCompleteTask(featureFlags);
 
   Flex.Actions.addListener('afterAcceptTask', ActionFunctions.afterAcceptTask(featureFlags, setupObject, getMessage));
 
@@ -160,8 +159,6 @@ const setUpActions = (
   Flex.Actions.replaceAction('WrapupTask', wrapupOverride);
 
   Flex.Actions.replaceAction('CompleteTask', ActionFunctions.completeTaskOverride);
-
-  Flex.Actions.addListener('beforeCompleteTask', beforeCompleteAction);
 
   Flex.Actions.addListener('afterCompleteTask', ActionFunctions.afterCompleteTask);
 

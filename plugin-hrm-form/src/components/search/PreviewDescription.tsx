@@ -21,11 +21,11 @@ import ExpandableTextBlock, { ExpandableTextBlockProps } from './ExpandableTextB
 export const PreviewDescription = styled(ExpandableTextBlock)<ExpandableTextBlockProps>`
   font-size: 13px;
   font-weight: 400;
-  line-height: 16px;
+  line-height: 1.5em;
   color: #000000;
   font-family: Open Sans, serif;
   text-align: left;
-  padding-top: 5px;
+  padding-top: 6px;
   width: 100%;
 `;
 

@@ -62,6 +62,7 @@ const ExpandableTextBlock: React.FC<ExpandableTextBlockProps & Partial<StyledPro
           whiteSpace: isOverflowing && !isExpanded ? 'nowrap' : 'inherit',
           overflow: isOverflowing && !isExpanded ? 'hidden' : 'inherit',
           height: isExpanded ? 'inherit' : '1.5em',
+          lineHeight: '1.5em',
           wordBreak: isExpanded ? 'break-word' : 'inherit',
         }}
       >
@@ -71,13 +72,20 @@ const ExpandableTextBlock: React.FC<ExpandableTextBlockProps & Partial<StyledPro
           type="button"
           onClick={handleCollapse}
           ref={collapseButtonElementRef}
-          style={{ display: isExpanded ? 'inline' : 'none', marginTop: -3.5 }}
+          style={{ display: isExpanded ? 'inline' : 'none', lineHeight: '1.5em', fontSize: '13px' }}
         >
           <Template code={collapseLinkText} />
         </StyledLink>
       </div>
-      <div style={{ whiteSpace: 'nowrap', display: isOverflowing && !isExpanded ? 'inherit' : 'none' }}>
-        <StyledLink underline={true} onClick={handleExpand} ref={expandButtonElementRef} style={{ marginTop: -3.5 }}>
+      <div
+        style={{
+          whiteSpace: 'nowrap',
+          display: isOverflowing && !isExpanded ? 'inherit' : 'none',
+          height: '1.5em',
+          lineHeight: '1.5em',
+        }}
+      >
+        <StyledLink underline={true} onClick={handleExpand} ref={expandButtonElementRef} style={{ fontSize: '13px' }}>
           <Template code={expandLinkText} />
         </StyledLink>
       </div>

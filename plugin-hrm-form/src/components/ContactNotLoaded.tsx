@@ -52,7 +52,7 @@ const ContactNotLoaded: React.FC<Props> = ({ onReload, onFinish }: Props) => {
         >
           <Template code="TabbedForms-ContactNotLoaded-Retry" />
         </StyledLink>
-        &nbsp;
+        &nbsp; | &nbsp;
         <StyledLink
           disabled={finishDisabled}
           onClick={async () => {
