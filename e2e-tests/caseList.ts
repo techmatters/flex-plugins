@@ -48,24 +48,6 @@ export const caseList = (page: Page) => {
     openFirstCaseButton: caseListPage
       .locator(`//button[@data-testid='CaseList-CaseID-Button']`)
       .first(),
-
-    //Case Home view
-    addSectionButton: (sectionTypeId: string) =>
-      caseListPage.locator(`//button[@data-testid='Case-${sectionTypeId}-AddButton']`),
-    caseSummaryText: caseListPage.locator(`//textarea[@data-testid='Case-CaseSummary-TextArea']`),
-    caseSummaryTextArea: caseListPage.locator(`//textarea[@data-testid='summary']`),
-    casePrintButton: caseListPage.locator(`//button[@data-testid='CasePrint-Button']`),
-    modalCloseButton: caseListPage.locator(
-      `//button[@data-testid='NavigableContainer-CloseCross']`,
-    ),
-    updateCaseButton: caseListPage.locator(`//button[@data-testid='Case-EditCaseScreen-SaveItem']`),
-    caseEditButton: caseListPage.locator(`//button[@data-testid='Case-EditButton']`),
-
-    //Case Section view
-    saveCaseItemButton: caseListPage.locator(
-      `//button[@data-testid='Case-AddEditItemScreen-SaveItem']`,
-    ),
-    categoryTooltip: caseListPage.locator(`//div[@data-testid='CaseDetails-CategoryTooltip']`),
   };
 
   async function openFilter(filter: Filter): Promise<void> {
@@ -102,8 +84,7 @@ export const caseList = (page: Page) => {
       rows.map(async (row) => {
         const button = row.locator('[data-testid="CaseList-CaseID-Button"]');
         const buttonText = (await button.textContent())?.trim() || '';
-        const caseId = buttonText.replace(/OpenCase/, '').trim(); //extract case id
-        return caseId;
+        return buttonText.replace(/OpenCase/, '').trim(); //extract case id
       }),
     );
 

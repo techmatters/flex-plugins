@@ -16,15 +16,6 @@
 
 import { Page, request, test } from '@playwright/test';
 import { caseList } from '../caseList';
-import {
-  viewClosePrintView,
-  clickEditCase,
-  verifyCaseSummaryUpdated,
-  verifyCasePrintButtonIsVisible,
-  verifyCategoryTooltipIsVisible,
-  closeModal,
-  updateCaseSummary,
-} from '../case';
 import { skipTestIfNotTargeted, skipTestIfDataUpdateDisabled } from '../skipTest';
 import { notificationBar } from '../notificationBar';
 import { setupContextAndPage, closePage } from '../browser';
@@ -82,7 +73,7 @@ test.describe.serial('Open and Edit a Case in Case List page', () => {
     // Open notifications cover up the print icon :facepalm
     await notificationBar(pluginPage).dismissAllNotifications();
 
-    await viewClosePrintView(pluginPage);
+    await caseHomePage.viewClosePrintView();
 
     await caseHomePage.addCaseSection({
       sectionTypeId: 'note',
@@ -104,16 +95,16 @@ test.describe.serial('Open and Edit a Case in Case List page', () => {
       },
     });
 
-    await clickEditCase(pluginPage);
+    await caseHomePage.clickEditCase();
 
-    await updateCaseSummary(pluginPage);
+    await caseHomePage.updateCaseSummary();
 
-    await verifyCaseSummaryUpdated(pluginPage);
+    await caseHomePage.verifyCaseSummaryUpdated();
 
-    await verifyCasePrintButtonIsVisible(pluginPage);
-    await verifyCategoryTooltipIsVisible(pluginPage);
+    await caseHomePage.verifyCasePrintButtonIsVisible();
+    await caseHomePage.verifyCategoryTooltipIsVisible();
 
-    await closeModal(pluginPage);
-    console.log('Closed Case');
+    await caseHomePage.closeModal();
+    console.debug('Closed Case');
   });
 });

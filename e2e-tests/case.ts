@@ -32,8 +32,18 @@ export const caseHome = (page: Page) => {
     formSelect: (itemId: string) => page.locator(`select#${itemId}`),
     formTextarea: (itemId: string) => page.locator(`textarea#${itemId}`),
     saveCaseItemButton: page.locator(`//button[@data-testid='Case-AddEditItemScreen-SaveItem']`),
+    saveCaseOverviewButton: page.locator('//button[@data-testid="Case-EditCaseScreen-SaveItem"]'),
     saveCaseAndEndButton: page.locator(`//button[@data-testid='BottomBar-SaveCaseAndEnd']`),
     getNewCaseId: page.locator(`//p[@data-testid='Case-DetailsHeaderCaseId']`),
+    printButton: page.locator('[data-testid="CasePrint-Button"]'),
+    modalCloseButton: page.locator('[data-testid="NavigableContainer-CloseCross"]'),
+
+    caseSummaryText: page.locator(`//textarea[@data-testid='Case-summary-TextArea']`),
+    caseSummaryTextArea: page.locator(`//textarea[@data-testid='summary']`),
+    updateCaseButton: page.locator(`//button[@data-testid='Case-EditCaseScreen-SaveItem']`),
+    caseEditButton: page.locator(`//button[@data-testid='Case-EditButton']`),
+    //Case Section view
+    categoryTooltip: page.locator(`//div[@data-testid='CaseDetails-CategoryTooltip']`),
   };
 
   async function fillSectionForm({ items }: CaseSectionForm) {
@@ -52,7 +62,7 @@ export const caseHome = (page: Page) => {
 
   async function addCaseSection(section: CaseSectionForm) {
     const newSectionButton = selectors.addSectionButton(section.sectionTypeId);
-    await newSectionButton.waitFor({ state: 'visible' });
+    await expect(newSectionButton).toBeEnabled();
     await newSectionButton.click();
     await fillSectionForm(section);
 
@@ -74,60 +84,57 @@ export const caseHome = (page: Page) => {
 
   const { getNewCaseId } = selectors;
 
+  // Add utility functions moved from caseList.ts
+  async function viewClosePrintView() {
+    await expect(selectors.printButton).toBeVisible();
+    await selectors.printButton.click();
+    console.debug('Opened Case Print');
+    await expect(selectors.modalCloseButton).toBeVisible();
+    await selectors.modalCloseButton.click();
+    console.debug('Close Case Print');
+  }
+
+  async function clickEditCase() {
+    await expect(selectors.caseEditButton).toBeVisible();
+    await selectors.caseEditButton.click();
+  }
+
+  async function updateCaseSummary() {
+    const summaryInput = selectors.formTextarea('summary');
+    await expect(summaryInput).toBeVisible();
+    await summaryInput.fill('Updated summary');
+    await expect(selectors.saveCaseOverviewButton).toBeVisible();
+    await selectors.saveCaseOverviewButton.click();
+  }
+
+  async function verifyCaseSummaryUpdated() {
+    await expect(selectors.caseSummaryText).toBeVisible();
+    await expect(selectors.caseSummaryText).toContainText('Updated summary');
+  }
+
+  async function verifyCasePrintButtonIsVisible() {
+    await expect(selectors.printButton).toBeVisible();
+  }
+
+  async function verifyCategoryTooltipIsVisible() {
+    await expect(selectors.categoryTooltip).toBeVisible({ timeout: 10000 });
+  }
+
+  async function closeModal() {
+    await expect(selectors.modalCloseButton).toBeVisible();
+    await selectors.modalCloseButton.click();
+  }
+
   return {
     getNewCaseId,
     addCaseSection,
     saveCaseAndEnd,
+    viewClosePrintView,
+    clickEditCase,
+    updateCaseSummary,
+    verifyCaseSummaryUpdated,
+    verifyCasePrintButtonIsVisible,
+    verifyCategoryTooltipIsVisible,
+    closeModal,
   };
 };
-
-// Add utility functions moved from caseList.ts
-export async function viewClosePrintView(page: Page) {
-  const openPrintButton = page.locator('[data-testid="CasePrint-Button"]');
-  await openPrintButton.waitFor({ state: 'visible' });
-  await openPrintButton.click();
-  console.log('Opened Case Print');
-  const closePrintButton = page.locator('[data-testid="NavigableContainer-CloseCross"]');
-  await closePrintButton.waitFor({ state: 'visible' });
-  await closePrintButton.click();
-  console.log('Close Case Print');
-}
-
-export async function clickEditCase(page: Page) {
-  const editButton = page.locator('[data-testid="Case-EditButton"]');
-  await editButton.waitFor({ state: 'visible' });
-  await editButton.click();
-}
-
-export async function updateCaseSummary(page: Page) {
-  const summaryInput = page.locator('[data-testid="CaseSummary-Input"]');
-  await summaryInput.waitFor({ state: 'visible' });
-  await summaryInput.fill('Updated summary');
-  const saveButton = page.locator('[data-testid="CaseSummary-SaveButton"]');
-  await saveButton.waitFor({ state: 'visible' });
-  await saveButton.click();
-}
-
-export async function verifyCaseSummaryUpdated(page: Page) {
-  const summaryContent = page.locator('[data-testid="CaseSummary-Content"]');
-  await summaryContent.waitFor({ state: 'visible' });
-  expect(await summaryContent.textContent()).toContain('Updated summary');
-}
-
-export async function verifyCasePrintButtonIsVisible(page: Page) {
-  const printButton = page.locator('[data-testid="CasePrint-Button"]');
-  await printButton.waitFor({ state: 'visible' });
-  expect(await printButton.isVisible()).toBe(true);
-}
-
-export async function verifyCategoryTooltipIsVisible(page: Page) {
-  const tooltip = page.locator('[data-testid="Category-Tooltip"]');
-  await tooltip.waitFor({ state: 'visible' });
-  expect(await tooltip.isVisible()).toBe(true);
-}
-
-export async function closeModal(page: Page) {
-  const closeCaseButton = page.locator('[data-testid="NavigableContainer-CloseCross"]');
-  await closeCaseButton.waitFor({ state: 'visible' });
-  await closeCaseButton.click();
-}
