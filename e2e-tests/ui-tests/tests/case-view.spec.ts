@@ -20,9 +20,9 @@ import '../flex-in-a-box/local-resources';
 import hrmCases from '../aselo-service-mocks/hrm/cases';
 import hrmPermissions from '../aselo-service-mocks/hrm/permissions';
 import { caseList } from '../../caseList';
-import { clickEditCase, closeModal } from '../../case';
 import AxeBuilder from '@axe-core/playwright';
 import { aseloPage } from '../aselo-service-mocks/aselo-page';
+import { caseHome } from '../../case';
 
 test.describe.serial('Case View', () => {
   let page: Page;
@@ -59,6 +59,8 @@ test.describe.serial('Case View', () => {
   });
 
   test('Case view page is accessible and has case information and overview elements', async () => {
+    const caseHomePage = caseHome(page);
+
     const checkElementAccessibility = async (testId: string, attributeName: string) => {
       await expect(page.getByTestId(testId)).toBeVisible();
       const element = page.getByTestId(testId);
@@ -89,11 +91,12 @@ test.describe.serial('Case View', () => {
       .analyze();
     expect(caseViewScanResults.violations).toEqual([]);
 
-    await closeModal(page);
+    await caseHomePage.closeModal();
   });
 
   test('Case overview edit form opens and supports keyboard navigation', async () => {
-    await clickEditCase(page);
+    const caseHomePage = caseHome(page);
+    await caseHomePage.clickEditCase();
     await page.waitForSelector('[data-testid="Case-EditCaseOverview"]', {
       state: 'visible',
       timeout: 10000,
@@ -140,11 +143,12 @@ test.describe.serial('Case View', () => {
       expect(focusedElement).toBe(expectedId);
     }
 
-    await closeModal(page);
+    await caseHomePage.closeModal();
   });
 
   test('Case overview edit form meets accessibility requirements for screen reader', async () => {
-    await clickEditCase(page);
+    const caseHomePage = caseHome(page);
+    await caseHomePage.clickEditCase();
     await page.waitForSelector('[data-testid="Case-EditCaseOverview"]', {
       state: 'visible',
       timeout: 10000,
@@ -155,7 +159,7 @@ test.describe.serial('Case View', () => {
       .include('div[data-testid="Case-EditCaseOverview"]')
       .analyze();
     expect(caseEditScanResults.violations).toEqual([]);
-    await closeModal(page);
+    await caseHomePage.closeModal();
     await expect(page.getByTestId('Case-EditCaseOverview')).not.toBeVisible();
     await expect(page.getByTestId('CaseHome-CaseDetailsComponent')).toBeVisible();
   });
