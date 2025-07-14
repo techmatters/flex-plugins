@@ -98,7 +98,7 @@ jobs:
           env_variable_name: "ASELO_RELEASE_DEPLOY_CHANNEL_ID"
       - name: Slack Aselo channel
         id: slack
-        uses: slackapi/slack-github-action@v2.1.0
+        uses: slackapi/slack-github-action@v2.1.1
         with:
           method: chat.postMessage
           token: ${{ env.GITHUB_ACTIONS_SLACK_BOT_TOKEN }}
