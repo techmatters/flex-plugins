@@ -6,7 +6,8 @@
     "required": {
       "value": true,
       "message": "RequiredFieldError"
-    }
+    },
+    "isPII": true
   },
   {
     "name": "lastName",
@@ -15,7 +16,8 @@
     "required": {
       "value": true,
       "message": "RequiredFieldError"
-    }
+    },
+    "isPII": true
   },
   {
     "name": "relationshipToChild",
@@ -66,12 +68,14 @@
         "value": "Other",
         "label": "Other"
       }
-    ]
+    ],
+    "isPII": false
   },
   {
     "name": "streetAddress",
     "label": "Street Address",
-    "type": "input"
+    "type": "input",
+    "isPII": true
   },
   {
     "name": "province",
@@ -94,7 +98,8 @@
     "required": {
       "value": true,
       "message": "RequiredFieldError"
-    }
+    },
+    "isPII": false
   },
   {
     "name": "district",
@@ -130,7 +135,8 @@
     "required": {
       "value": true,
       "message": "RequiredFieldError"
-    }
+    },
+    "isPII": false
   },
   {
     "name": "phone1",
@@ -139,7 +145,8 @@
     "required": {
       "value": true,
       "message": "RequiredFieldError"
-    }
+    },
+    "isPII": true
   },
   {
     "name": "gender",
@@ -162,7 +169,8 @@
         "value": "Non-Binary",
         "label": "Non-Binary"
       }
-    ]
+    ],
+    "isPII": false
   },
   {
     "name": "age",
@@ -213,7 +221,8 @@
         "value": "25",
         "label": "25"
       }
-    ]
+    ],
+    "isPII": false
   },
   {
     "name": "language",
@@ -228,11 +237,13 @@
         "value": "language1",
         "label": "language1"
       }
-    ]
+    ],
+    "isPII": false
   },
   {
     "name": "ethnicity",
     "label": "Ethnicity",
-    "type": "input"
+    "type": "input",
+    "isPII": true
   }
 ]

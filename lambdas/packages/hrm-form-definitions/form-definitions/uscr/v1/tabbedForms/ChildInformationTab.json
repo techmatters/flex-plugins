@@ -1,5 +1,5 @@
 [
-    {
+  {
     "name": "incidentSummary",
     "label": "Incident or Person Description",
     "type": "textarea",
@@ -8,31 +8,36 @@
     "required": {
       "value": true,
       "message": "RequiredFieldError"
-    }
+    },
+    "isPII": true
   },
- {
+  {
     "name": "specificLocation",
     "label": "Specific Location",
     "type": "input",
     "required": {
       "value": true,
       "message": "RequiredFieldError"
-    }
+    },
+    "isPII": true
   },
   {
     "name": "firstName",
     "label": "First Name",
-    "type": "input"
+    "type": "input",
+    "isPII": true
   },
   {
     "name": "lastName",
     "label": "Last Name",
-    "type": "input"
+    "type": "input",
+    "isPII": true
   },
   {
     "name": "nickname",
     "label": "Nickname",
-    "type": "input"
+    "type": "input",
+    "isPII": true
   },
   {
     "name": "age",
@@ -68,7 +73,8 @@
         "value": "60+",
         "label": "60+"
       }
-    ]
+    ],
+    "isPII": false
   },
   {
     "name": "gender",
@@ -87,12 +93,12 @@
       {
         "value": "Female",
         "label": "Female"
-      },      
-        {
+      },
+      {
         "value": "Agender",
         "label": "Agender"
       },
-        {
+      {
         "value": "Non-Binary",
         "label": "Non-Binary"
       },
@@ -100,7 +106,8 @@
         "value": "Other",
         "label": "Other"
       }
-    ]
+    ],
+    "isPII": false
   },
   {
     "name": "race",
@@ -115,8 +122,8 @@
       {
         "value": "Asian",
         "label": "Asian"
-      },     
-        {
+      },
+      {
         "value": "Black",
         "label": "Black"
       },
@@ -128,26 +135,27 @@
         "value": "Indigenous American",
         "label": "Indigenous American"
       },
-        {
+      {
         "value": "Middle Eastern",
         "label": "Middle Eastern"
       },
-        {
+      {
         "value": "Multi-Ethnic",
         "label": "Multi-Ethnic"
       },
-        {
+      {
         "value": "Native Hawaiian or other Pacific Islander",
         "label": "Native Hawaiian or other Pacific Islander"
       },
-        {
+      {
         "value": "White",
         "label": "White"
       },
-        {
+      {
         "value": "Other",
         "label": "Other"
       }
-    ]
+    ],
+    "isPII": false
   }
 ]

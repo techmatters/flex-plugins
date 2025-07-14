@@ -20,7 +20,7 @@ import { format } from 'date-fns';
 import { submitContactForm } from '../../services/formSubmissionHelpers';
 import {
   connectToCase,
-  createContact,
+  createOfflineContact,
   finalizeContact,
   getContactById,
   getContactByTaskSid,
@@ -33,8 +33,8 @@ import {
   Contact,
   CustomITask,
   isOfflineContact,
-  isOfflineContactTask,
   isTwilioTask,
+  OfflineContactTask,
   RouterTask,
 } from '../../types/types';
 import {
@@ -67,50 +67,31 @@ import {
   rollbackSavingStateInRedux,
   contactReduxUpdates,
 } from './contactReduxUpdates';
-import { getAseloFeatureFlags } from '../../hrmConfig';
 
-export const createContactAsyncAction = createAsyncAction(
+export const createOfflineContactAsyncAction = createAsyncAction(
   CREATE_CONTACT_ACTION,
-  async (contactToCreate: Contact, workerSid: WorkerSID, task: CustomITask) => {
+  async (contactToCreate: Contact, workerSid: WorkerSID, task: OfflineContactTask) => {
     let contact: Contact;
     const { taskSid } = task;
-    if (isOfflineContactTask(task)) {
-      contact = await createContact(contactToCreate, workerSid, task);
-      if (!contact.rawJson.contactlessTask.createdOnBehalfOf) {
-        const now = new Date();
-        const time = format(now, 'HH:mm');
-        const date = format(now, 'yyyy-MM-dd');
-        contact = await updateContactInHrm(contact.id, {
-          ...BLANK_CONTACT_CHANGES,
-          timeOfContact: now.toISOString(),
-          rawJson: {
-            ...BLANK_CONTACT_CHANGES.rawJson,
-            contactlessTask: {
-              channel: null,
-              createdOnBehalfOf: workerSid,
-              date,
-              time,
-            },
+    contact = await createOfflineContact(contactToCreate, workerSid, task);
+    if (!contact.rawJson.contactlessTask.createdOnBehalfOf) {
+      const now = new Date();
+      const time = format(now, 'HH:mm');
+      const date = format(now, 'yyyy-MM-dd');
+      contact = await updateContactInHrm(contact.id, {
+        ...BLANK_CONTACT_CHANGES,
+        timeOfContact: now.toISOString(),
+        rawJson: {
+          ...BLANK_CONTACT_CHANGES.rawJson,
+          contactlessTask: {
+            channel: null,
+            createdOnBehalfOf: workerSid,
+            date,
+            time,
           },
-          channel: 'default',
-        });
-      }
-    } else {
-      const attributes = task.attributes ?? {};
-      const { contactId } = attributes;
-      if (contactId) {
-        // Setting the task id and worker id on the contact will be a noop in most cases, but when receiving a transfer it will move the contact to the new worker & task
-        contact = await updateContactInHrm(contactId, { taskId: taskSid, twilioWorkerId: workerSid }, false);
-      } else {
-        contact = await createContact(contactToCreate, workerSid, task);
-        await task.setAttributes({ ...attributes, contactId: contact.id });
-      }
-      if (
-        !getAseloFeatureFlags().enable_backend_hrm_contact_creation &&
-        TransferHelpers.isColdTransfer(task) &&
-        !TransferHelpers.hasTaskControl(task)
-      )
-        await TransferHelpers.takeTaskControl(task);
+        },
+        channel: 'default',
+      });
     }
     let contactCase: Case | undefined;
     if (contact.caseId) {
@@ -279,8 +260,7 @@ export const newSubmitAndFinalizeContactFromOutsideTaskContextAsyncAction = crea
 
 export const newLoadContactFromHrmForTaskAsyncAction = createAsyncAction(
   LOAD_CONTACT_FROM_HRM_FOR_TASK_ACTION,
-  async (task: CustomITask, workerSid: WorkerSID, reference: string = task.taskSid) => {
-    const { taskSid } = task;
+  async (task: CustomITask, reference: string = task.taskSid) => {
     const contactId = isTwilioTask(task) ? task.attributes?.contactId : undefined;
     let contact: Contact;
     if (contactId) {
@@ -288,13 +268,7 @@ export const newLoadContactFromHrmForTaskAsyncAction = createAsyncAction(
     } else {
       contact = await getContactByTaskSid(task.taskSid);
     }
-    if (
-      !getAseloFeatureFlags().enable_backend_hrm_contact_creation &&
-      (contact.taskId !== task.taskSid || contact.twilioWorkerId !== workerSid)
-    ) {
-      // If the contact is being transferred from a client that doesn't set the contactId on the task, we need to update the contact with the task id and worker id
-      contact = await updateContactInHrm(contact.id, { taskId: taskSid, twilioWorkerId: workerSid }, false);
-    }
+
     if (isTwilioTask(task) && TransferHelpers.isColdTransfer(task) && !TransferHelpers.hasTaskControl(task))
       await TransferHelpers.takeTaskControl(task);
     let contactCase: Case | undefined;
@@ -307,7 +281,7 @@ export const newLoadContactFromHrmForTaskAsyncAction = createAsyncAction(
       reference,
     };
   },
-  (task: CustomITask, workerSid: WorkerSID, reference: string = task.taskSid) => ({
+  (task: CustomITask, reference: string = task.taskSid) => ({
     taskSid: task.taskSid,
     contactId: isTwilioTask(task) && task.attributes?.contactId,
     reference,
@@ -356,17 +330,17 @@ export const saveContactReducer = (initialState: ContactsState) =>
       },
     ),
     handleAction(
-      createContactAsyncAction.pending as typeof createContactAsyncAction,
+      createOfflineContactAsyncAction.pending as typeof createOfflineContactAsyncAction,
       (state, { meta: { taskSid } }): ContactsState => markContactAsCreatingInRedux(state, taskSid),
     ),
     handleAction(
-      createContactAsyncAction.fulfilled,
+      createOfflineContactAsyncAction.fulfilled,
       (state, { payload: { contact, reference } }): ContactsState => {
         return loadContactIntoRedux(state, contact, reference, newContactMetaData({ createdAt: contact?.createdAt }));
       },
     ),
     handleAction(
-      createContactAsyncAction.rejected,
+      createOfflineContactAsyncAction.rejected,
       (state, { meta: { taskSid } }: any): ContactsState => markContactAsNotCreatingInRedux(state, taskSid),
     ),
     handleAction(

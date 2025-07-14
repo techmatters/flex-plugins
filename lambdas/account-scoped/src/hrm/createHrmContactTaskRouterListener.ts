@@ -110,18 +110,9 @@ export const handleEvent = async (
     form_definitions_version_url: configFormDefinitionsVersionUrl,
     assets_bucket_url: assetsBucketUrl,
     helpline_code: helplineCode,
-    feature_flags: {
-      enable_backend_hrm_contact_creation: enableBackendHrmContactCreation,
-      use_prepopulate_mappings: usePrepopulateMappings,
-    },
+    feature_flags: { use_prepopulate_mappings: usePrepopulateMappings },
   } = serviceConfig.attributes;
 
-  if (!enableBackendHrmContactCreation) {
-    console.debug(
-      `enable_backend_hrm_contact_creation is not set, the contact associated with task ${taskSid} will be created from Flex.`,
-    );
-    return;
-  }
   const hrmAccountId = inferHrmAccountId(accountSid, workerName);
 
   if (contactId) {
@@ -179,12 +170,6 @@ export const handleEvent = async (
   const formDefinitionsVersionUrl = new URL(
     `${formDefinitionsBaseUrl}${helplineCode}/v1`,
   );
-  if (!enableBackendHrmContactCreation) {
-    console.debug(
-      `enable_backend_hrm_contact_creation is not set, the contact associated with task ${taskSid} will be created from Flex.`,
-    );
-    return;
-  }
 
   const twilioWorkspaceSid = await getWorkspaceSid(accountSid);
 

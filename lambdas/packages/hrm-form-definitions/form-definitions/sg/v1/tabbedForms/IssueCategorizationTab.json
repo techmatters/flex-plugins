@@ -1,241 +1,243 @@
 {
   "Tinkle Friend": {
-    "Boredom": {
-      "color": "#f79d8f",
-      "subcategories": [
-        {
-          "label": "Boredom"
-        }
-      ]
-    },
-    "Bullying": {
-      "color": "#355c7d",
-      "subcategories": [
-        {
-          "label": "Cyberbullying"
-        },
-        {
-          "label": "Physical bullying"
-        },
-        {
-          "label": "Relational bullying"
-        },
-        {
-          "label": "Verbal bullying"
-        },
-        {
-          "label": "Witness to bullying"
-        }
-      ]
-    },
-    "Child Protection Concerns": {
-      "color": "#db7a34",
-      "subcategories": [
-        {
-          "label": "Emotional abuse"
-        },
-        {
-          "label": "Physical abuse"
-        },
-        {
-          "label": "Neglect"
-        },
-        {
-          "label": "Sexual abuse and/or exploitation"
-        },
-        {
-          "label": "Witness of family violence"
-        }
-      ]
-    },
-    "Contact on Behalf": {
-      "color": "#e8e9eb",
-      "subcategories": [
-        {
-          "label": "Contact from another child"
-        },
-        {
-          "label": "Contact from members of public"
-        },
-        {
-          "label": "Contact from other family members"
-        },        
-        {
-          "label": "Contact from parents"
-        },
-        {
-          "label": "Contact from teachers"
-        }
-      ]
-    },
-    "Family Relationships": {
-      "color": "#c99f7d",
-      "subcategories": [
-        {
-          "label": "Adoption, fostering and extended family placement or alternative placement"
-        },
-        {
-          "label": "Family health and wellbeing"
-        },
-        {
-          "label": "Relationships to caregiver"
-        },
-        {
-          "label": "Relationships with sibling(s)"
-        }
-      ]
-    },
-    "Mental Health": {
-      "color": "#fac05e",
-      "subcategories": [
-        {
-          "label": "Addictive behaviours and substance use"
-        },
-        {
-          "label": "Concerns about self"
-        },
-        {
-          "label": "Emotional distress - Anger "
-        },
-        {
-          "label": "Emotional distress - Fear & Anxiety"
-        },
-        {
-          "label": "Emotional distress - Mood problems"
-        },
-        {
-          "label": "Loneliness"
-        },
-        {
-          "label": "Neurodevelopmental concerns"
-        },
-        {
-          "label": "Problems with eating behaviour"
-        },
-        {
-          "label": "Sleep issues"
-        },
-        {
-          "label": "Traumatic distress"
-        }
-      ]
-    },
-    "Non-counselling Contacts": {
-      "color": "#54494b",
-      "subcategories": [
-        {
-          "label": "Attempt to contact"
-        },
-        {
-          "label": "Chit-chat"
-        },
-        {
-          "label": "Complaints about Tinkle Friend"
-        },
-        {
-          "label": "Nuisance/ Abusive"
-        },
-        {
-          "label": "Positive Feedback about Tinkle Friend"
-        },
-        {
-          "label": "Silent"
-        },
-        {
-          "label": "Wrong Contact/ Others"
-        }
-      ]
-    },
-    "Online-related": {
-      "color": "#a47fbc",
-      "subcategories": [
-        {
-          "label": "Cyber wellness"
-        }
-      ]
-    },
-    "Peer Relationships": {
-      "color": "#db7a34",
-      "subcategories": [
-        {
-          "label": "Friends and Friendships"
-        },
-        {
-          "label": "Heterosexual intimate partner relationships"
-        }
-      ]
-    },
-    "Physical Health": {
-      "color": "#f79d8f",
-      "subcategories": [
-        {
-          "label": "General medical or lifestyle concerns"
-        },
-        {
-          "label": "Nutrition"
-        },
-        {
-          "label": "Sexual and reproductive health"
-        }
-      ]
-    },
-    "School-related": {
-      "color": "#6c5b7b",
-      "subcategories": [
-        {
-          "label": "Academic issues"
-        },
-        {
-          "label": "Extra-curricular activities"
-        },
-        {
-          "label": "Teacher and school problems"
-        },
-        {
-          "label": "Transitional stress"
-        }
-      ]
-    },
-    "Self-Harm": {
-      "color": "#f8b595",
-      "subcategories": [
-        {
-          "label": "Self-harm behaviour"
-        },
-        {
-          "label": "Self-harm ideation"
-        }
-      ]
-    },
-    "Sexuality-related": {
-      "color": "#a7416a",
-      "subcategories": [
-        {
-          "label": "Gender identity or expression and Sexual orientation"
-        },
-        {
-          "label": "LGBTQ relationships"
-        }
-      ]
-    },
-    "Sexualised Behaviours": {
-      "color": "#8b5b6e",
-      "subcategories": [
-        {
-          "label": "Sexual behaviours"
-        },
-        {
-          "label": "Pornography"
-        }
-      ]
-    },
-    "Suicide Risk": {
-      "color": "#cc0000",
-      "subcategories": [
-        {
-          "label": "Suicidal thoughts and suicide attempts"
-        }
-      ]
+    "categories": {
+      "Boredom": {
+        "color": "#f79d8f",
+        "subcategories": [
+          {
+            "label": "Boredom"
+          }
+        ]
+      },
+      "Bullying": {
+        "color": "#355c7d",
+        "subcategories": [
+          {
+            "label": "Cyberbullying"
+          },
+          {
+            "label": "Physical bullying"
+          },
+          {
+            "label": "Relational bullying"
+          },
+          {
+            "label": "Verbal bullying"
+          },
+          {
+            "label": "Witness to bullying"
+          }
+        ]
+      },
+      "Child Protection Concerns": {
+        "color": "#db7a34",
+        "subcategories": [
+          {
+            "label": "Emotional abuse"
+          },
+          {
+            "label": "Physical abuse"
+          },
+          {
+            "label": "Neglect"
+          },
+          {
+            "label": "Sexual abuse and/or exploitation"
+          },
+          {
+            "label": "Witness of family violence"
+          }
+        ]
+      },
+      "Contact on Behalf": {
+        "color": "#e8e9eb",
+        "subcategories": [
+          {
+            "label": "Contact from another child"
+          },
+          {
+            "label": "Contact from members of public"
+          },
+          {
+            "label": "Contact from other family members"
+          },
+          {
+            "label": "Contact from parents"
+          },
+          {
+            "label": "Contact from teachers"
+          }
+        ]
+      },
+      "Family Relationships": {
+        "color": "#c99f7d",
+        "subcategories": [
+          {
+            "label": "Adoption, fostering and extended family placement or alternative placement"
+          },
+          {
+            "label": "Family health and wellbeing"
+          },
+          {
+            "label": "Relationships to caregiver"
+          },
+          {
+            "label": "Relationships with sibling(s)"
+          }
+        ]
+      },
+      "Mental Health": {
+        "color": "#fac05e",
+        "subcategories": [
+          {
+            "label": "Addictive behaviours and substance use"
+          },
+          {
+            "label": "Concerns about self"
+          },
+          {
+            "label": "Emotional distress - Anger "
+          },
+          {
+            "label": "Emotional distress - Fear & Anxiety"
+          },
+          {
+            "label": "Emotional distress - Mood problems"
+          },
+          {
+            "label": "Loneliness"
+          },
+          {
+            "label": "Neurodevelopmental concerns"
+          },
+          {
+            "label": "Problems with eating behaviour"
+          },
+          {
+            "label": "Sleep issues"
+          },
+          {
+            "label": "Traumatic distress"
+          }
+        ]
+      },
+      "Non-counselling Contacts": {
+        "color": "#54494b",
+        "subcategories": [
+          {
+            "label": "Attempt to contact"
+          },
+          {
+            "label": "Chit-chat"
+          },
+          {
+            "label": "Complaints about Tinkle Friend"
+          },
+          {
+            "label": "Nuisance/ Abusive"
+          },
+          {
+            "label": "Positive Feedback about Tinkle Friend"
+          },
+          {
+            "label": "Silent"
+          },
+          {
+            "label": "Wrong Contact/ Others"
+          }
+        ]
+      },
+      "Online-related": {
+        "color": "#a47fbc",
+        "subcategories": [
+          {
+            "label": "Cyber wellness"
+          }
+        ]
+      },
+      "Peer Relationships": {
+        "color": "#db7a34",
+        "subcategories": [
+          {
+            "label": "Friends and Friendships"
+          },
+          {
+            "label": "Heterosexual intimate partner relationships"
+          }
+        ]
+      },
+      "Physical Health": {
+        "color": "#f79d8f",
+        "subcategories": [
+          {
+            "label": "General medical or lifestyle concerns"
+          },
+          {
+            "label": "Nutrition"
+          },
+          {
+            "label": "Sexual and reproductive health"
+          }
+        ]
+      },
+      "School-related": {
+        "color": "#6c5b7b",
+        "subcategories": [
+          {
+            "label": "Academic issues"
+          },
+          {
+            "label": "Extra-curricular activities"
+          },
+          {
+            "label": "Teacher and school problems"
+          },
+          {
+            "label": "Transitional stress"
+          }
+        ]
+      },
+      "Self-Harm": {
+        "color": "#f8b595",
+        "subcategories": [
+          {
+            "label": "Self-harm behaviour"
+          },
+          {
+            "label": "Self-harm ideation"
+          }
+        ]
+      },
+      "Sexuality-related": {
+        "color": "#a7416a",
+        "subcategories": [
+          {
+            "label": "Gender identity or expression and Sexual orientation"
+          },
+          {
+            "label": "LGBTQ relationships"
+          }
+        ]
+      },
+      "Sexualised Behaviours": {
+        "color": "#8b5b6e",
+        "subcategories": [
+          {
+            "label": "Sexual behaviours"
+          },
+          {
+            "label": "Pornography"
+          }
+        ]
+      },
+      "Suicide Risk": {
+        "color": "#cc0000",
+        "subcategories": [
+          {
+            "label": "Suicidal thoughts and suicide attempts"
+          }
+        ]
+      }
     }
   }
 }

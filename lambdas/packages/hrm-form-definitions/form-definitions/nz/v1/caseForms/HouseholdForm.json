@@ -16,7 +16,8 @@
     "required": {
       "value": true,
       "message": "RequiredFieldError"
-    }
+    },
+    "isPII": false
   },
   {
     "name": "gender",
@@ -30,13 +31,15 @@
     "required": {
       "value": true,
       "message": "RequiredFieldError"
-    }
+    },
+    "isPII": false
   },
   {
     "name": "actionDetails",
     "label": "Details of any actions they have already taken",
     "type": "textarea",
-    "placeholder": ""
+    "placeholder": "",
+    "isPII": true
   },
   {
     "name": "relationshipToChild",
@@ -50,13 +53,15 @@
     "required": {
       "value": true,
       "message": "RequiredFieldError"
-    }
+    },
+    "isPII": false
   },
   {
     "name": "feelingDetails",
     "label": "Details of any thoughts or feelings",
     "type": "textarea",
-    "placeholder": ""
+    "placeholder": "",
+    "isPII": true
   },
   {
     "name": "age",
@@ -70,13 +75,15 @@
     "required": {
       "value": true,
       "message": "RequiredFieldError"
-    }
+    },
+    "isPII": false
   },
   {
     "name": "planDetails",
     "label": "Details of any plan",
     "type": "textarea",
-    "placeholder": ""
+    "placeholder": "",
+    "isPII": true
   },
   {
     "name": "previouslyActed",
@@ -90,13 +97,15 @@
     "required": {
       "value": true,
       "message": "RequiredFieldError"
-    }
+    },
+    "isPII": false
   },
   {
     "name": "previousActionsDetails",
     "label": "Details of previous actions",
     "type": "textarea",
-    "placeholder": ""
+    "placeholder": "",
+    "isPII": true
   },
   {
     "name": "accessToMeans",
@@ -110,13 +119,15 @@
     "required": {
       "value": true,
       "message": "RequiredFieldError"
-    }
+    },
+    "isPII": false
   },
   {
     "name": "accessToMeansDetails",
     "label": "Details of means",
     "type": "textarea",
-    "placeholder": ""
+    "placeholder": "",
+    "isPII": true
   },
   {
     "name": "timeframe",
@@ -130,13 +141,15 @@
     "required": {
       "value": true,
       "message": "RequiredFieldError"
-    }
+    },
+    "isPII": false
   },
   {
     "name": "timeframeDetails",
     "label": "Details of timeframe",
     "type": "textarea",
-    "placeholder": ""
+    "placeholder": "",
+    "isPII": true
   },
   {
     "name": "recentlySelfHarmed",
@@ -150,13 +163,15 @@
     "required": {
       "value": true,
       "message": "RequiredFieldError"
-    }
+    },
+    "isPII": false
   },
   {
     "name": "selfHarmDetails",
     "label": "Details of self-harm",
     "type": "textarea",
-    "placeholder": ""
+    "placeholder": "",
+    "isPII": true
   },
   {
     "name": "medicalAttentionRequired",
@@ -170,13 +185,15 @@
     "required": {
       "value": true,
       "message": "RequiredFieldError"
-    }
+    },
+    "isPII": false
   },
   {
     "name": "medicalAttentionDetails",
     "label": "Details of medical attention",
     "type": "textarea",
-    "placeholder": ""
+    "placeholder": "",
+    "isPII": true
   },
   {
     "name": "selfHarmThoughts",
@@ -190,13 +207,15 @@
     "required": {
       "value": true,
       "message": "RequiredFieldError"
-    }
+    },
+    "isPII": false
   },
   {
     "name": "selfHarmFeelingsDetails",
     "label": "Details of any thoughts or feelings",
     "type": "textarea",
-    "placeholder": ""
+    "placeholder": "",
+    "isPII": true
   },
   {
     "name": "selfHarmPlan",
@@ -210,13 +229,15 @@
     "required": {
       "value": true,
       "message": "RequiredFieldError"
-    }
+    },
+    "isPII": false
   },
   {
     "name": "selfHarmPlanDetails",
     "label": "Details of any plan",
     "type": "textarea",
-    "placeholder": ""
+    "placeholder": "",
+    "isPII": true
   },
   {
     "name": "accessToSelfHarm",
@@ -230,13 +251,15 @@
     "required": {
       "value": true,
       "message": "RequiredFieldError"
-    }
+    },
+    "isPII": false
   },
   {
     "name": "accessToSelfHarmDetails",
     "label": "Details of means",
     "type": "textarea",
-    "placeholder": ""
+    "placeholder": "",
+    "isPII": true
   },
   {
     "name": "selfHarmTimeframe",
@@ -250,12 +273,14 @@
     "required": {
       "value": true,
       "message": "RequiredFieldError"
-    }
+    },
+    "isPII": false
   },
   {
     "name": "selfHarmTimeframeDetails",
     "label": "Details of timeframe",
     "type": "textarea",
-    "placeholder": ""
+    "placeholder": "",
+    "isPII": true
   }
 ]

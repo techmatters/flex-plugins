@@ -107,7 +107,7 @@ export const BASE_FORM_DEFINITION: DefinitionVersion = {
       },
     ],
     ContactlessTaskTab: {},
-    IssueCategorizationTab: () => ({}),
+    IssueCategorizationTab: () => ({ categories: {} }),
   },
   prepopulateKeys: {
     preEngagement: {

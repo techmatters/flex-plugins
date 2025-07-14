@@ -229,8 +229,6 @@ export type FeatureFlags = {
   backend_handled_chat_janitor: boolean; // [Temporary flag until all accounts are migrated] Enables handling the janitor from taskrouter event listeners
   enable_active_contact_header: boolean; // Enables Active Contact Header
   enable_aselo_messaging_ui: boolean; // Enables Aselo Messaging UI iinstead of the default Twilio one - reduced functionality for low spec clients.
-  enable_backend_hrm_contact_creation: boolean; // If this is enabled, HRM contact creation is initiated from a task router handler rather than from the Flex plugin
-  enable_backend_manual_pulling: boolean; // Enables Backend Manual Pulling
   enable_canned_responses: boolean; // Enables Canned Responses
   enable_client_profiles: boolean; // Enables Client Profiles
   enable_conferencing: boolean; // Enables Conferencing UI and replaces default Twilio components and behavior  
@@ -262,6 +260,7 @@ export type FeatureFlags = {
   use_prepopulate_mappings: boolean; // Use PrepopulateMappings.json instead of PrepopulateKeys.json
   enable_language_selector: boolean // Enables the language of the UI to be changed by the user via a dropdown menu
   use_twilio_lambda_for_conference_functions: boolean; // Use PrepopulateMappings.json instead of PrepopulateKeys.json
+  enable_configurable_max_categories: boolean;
 };
 /* eslint-enable camelcase */
 

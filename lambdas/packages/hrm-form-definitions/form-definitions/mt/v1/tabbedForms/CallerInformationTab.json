@@ -2,17 +2,20 @@
   {
     "name": "nickname",
     "label": "Nickname",
-    "type": "input"
+    "type": "input",
+    "isPII": true
   },
   {
     "name": "firstName",
     "label": "First Name",
-    "type": "input"
+    "type": "input",
+    "isPII": true
   },
   {
     "name": "lastName",
     "label": "Last Name",
-    "type": "input"
+    "type": "input",
+    "isPII": true
   },
   {
     "name": "gender",
@@ -44,7 +47,8 @@
     "required": {
       "value": true,
       "message": "RequiredFieldError"
-    }
+    },
+    "isPII": false
   },
   {
     "name": "age",
@@ -352,7 +356,8 @@
     "required": {
       "value": true,
       "message": "RequiredFieldError"
-    }
+    },
+    "isPII": false
   },
   {
     "name": "relationshipToChild",
@@ -408,9 +413,10 @@
     "required": {
       "value": true,
       "message": "RequiredFieldError"
-    }
+    },
+    "isPII": false
   },
-  {
+   {
     "name": "language",
     "label": "Language",
     "type": "select",
@@ -421,37 +427,41 @@
         "label": ""
       },
       {
-        "value": "English",
+        "value": "en-MT",
         "label": "English"
       },
       {
-        "value": "Maltese",
+        "value": "mt-MT",
         "label": "Maltese"
       },
       {
-        "value": "Ukrainian",
+        "value": "ukr-MT",
         "label": "Ukrainian"
       },
       {
         "value": "Other",
         "label": "Other"
       }
-    ]
+    ],
+    "isPII": false
   },
   {
     "name": "ethnicity-input",
     "label": "Ethnicity",
-    "type": "input"
+    "type": "input",
+    "isPII": true
   },
   {
     "name": "phone1",
     "label": "Phone Number",
-    "type": "input"
+    "type": "input",
+    "isPII": true
   },
   {
     "name": "streetAddress",
     "label": "Street Address",
-    "type": "input"
+    "type": "input",
+    "isPII": true
   },
   {
     "name": "region",
@@ -474,7 +484,8 @@
         "value": "Gozo",
         "label": "Gozo"
       }
-    ]
+    ],
+    "isPII": false
   },
   {
     "name": "locality",
@@ -778,6 +789,7 @@
           "label": "Marsalforn"
         }
       ]
-    }
+    },
+    "isPII": false
   }
 ]

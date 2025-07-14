@@ -1,0 +1,107 @@
+# Copyright (C) 2021-2023 Technology Matters
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Affero General Public License as published
+# by the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Affero General Public License for more details.
+#
+# You should have received a copy of the GNU Affero General Public License
+# along with this program.  If not, see https://www.gnu.org/licenses/.
+
+name: Raise PR to merge RC branch changes to master
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - 'v[0-9]+.[0-9]+-rc'
+
+jobs:
+  find_target_branches:
+    runs-on: ubuntu-22.04
+    outputs:
+      found_branches: ${{steps.find_branches.outputs.found-branches}}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            .github/actions
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22.x'
+      - name: Find later RC branches
+        id: find_branches
+        uses: ./.github/actions/find-later-rc-branches
+        with:
+          rc-branch-name: ${{ github.ref_name }}
+
+  raise_pr:
+    runs-on: ubuntu-22.04
+    needs: find_target_branches
+    env:
+      MERGE_BRANCH_NAME: ${{ github.ref_name }}-merge-${{ matrix.target-branch }}
+    strategy:
+      matrix:
+        target-branch: ${{ fromJSON(needs.find_target_branches.outputs.found_branches) }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            .github/actions
+      - name: Create Merge Branch
+        run: |
+          git fetch
+          git branch ${{ env.MERGE_BRANCH_NAME }} origin/${{ github.ref_name }}
+          git push origin ${{ env.MERGE_BRANCH_NAME }}
+      - name: Find existing PR
+        id: list_prs
+        run: |
+          pr_url=$(gh pr ls -S 'base:${{ matrix.target-branch }}' -H ${{ env.MERGE_BRANCH_NAME }} --json url | jq .[0].url)
+          echo "EXISTING_PR_URL=$pr_url" >> $GITHUB_ENV
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Create PR
+        if: env.EXISTING_PR_URL == 'null'
+        run: echo "NEW_PR_URL=$(gh pr create -B ${{ matrix.target-branch }} -H ${{ env.MERGE_BRANCH_NAME }} --title 'Merge ${{ github.ref_name }} into ${{ matrix.target-branch }}' --body 'Using staging branch ${{ env.MERGE_BRANCH_NAME }}.')" >> $GITHUB_ENV
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Comment PR
+        run: |
+          pr_url=${{ env.NEW_PR_URL || env.EXISTING_PR_URL }}
+          gh pr comment $pr_url -b '${{ github.triggering_actor }} merged changes to ${{ github.ref_name }}'
+          echo "PR_URL=$pr_url" >> $GITHUB_ENV
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_URL: ${{ env.NEW_PR_URL || env.EXISTING_PR_URL }}
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+      - name: Set GITHUB_ACTIONS_SLACK_BOT_TOKEN
+        uses: "marvinpinto/action-inject-ssm-secrets@latest"
+        with:
+          ssm_parameter: "/slack/bot/token/github-actions"
+          env_variable_name: "GITHUB_ACTIONS_SLACK_BOT_TOKEN"
+      - name: Set ASELO_DEPLOYS_CHANNEL_ID
+        uses: "marvinpinto/action-inject-ssm-secrets@latest"
+        with:
+          ssm_parameter: "/slack/channel/aselo-release-deploy/id"
+          env_variable_name: "ASELO_RELEASE_DEPLOY_CHANNEL_ID"
+      - name: Slack Aselo channel
+        id: slack
+        uses: slackapi/slack-github-action@v2.1.0
+        with:
+          method: chat.postMessage
+          token: ${{ env.GITHUB_ACTIONS_SLACK_BOT_TOKEN }}
+          payload: |
+            channel: ${{ env.ASELO_RELEASE_DEPLOY_CHANNEL_ID }}
+            text: '`[Flex RC branches]` PR ${{ env.PR_URL }} ${{ env.NEW_PR_URL && 'raised' || 'updated' }} using workflow `${{ github.workflow }}`:rocket: because `${{ github.triggering_actor }}` merged changes to ${{ github.ref_name }} and these need to be merged to master. PLEASE MERGE THIS IMMEDIATELY'

@@ -6,12 +6,14 @@
     "required": {
       "value": true,
       "message": "RequiredFieldError"
-    }
+    },
+    "isPII": true
   },
   {
     "name": "lastName",
     "label": "Surname",
-    "type": "input"
+    "type": "input",
+    "isPII": true
   },
   {
     "name": "gender",
@@ -35,7 +37,8 @@
     "required": {
       "value": true,
       "message": "RequiredFieldError"
-    }
+    },
+    "isPII": false
   },
   {
     "name": "age",
@@ -155,11 +158,12 @@
     "required": {
       "value": true,
       "message": "RequiredFieldError"
-    }
+    },
+    "isPII": false
   },
   {
-    "name": "location",
-    "label": "Location",
+    "name": "area",
+    "label": "Area",
     "type": "select",
     "defaultOption": {
       "value": "",
@@ -182,7 +186,8 @@
     "required": {
       "value": true,
       "message": "RequiredFieldError"
-    }
+    },
+    "isPII": false
   },
   {
     "name": "region",
@@ -197,7 +202,8 @@
     "required": {
       "value": true,
       "message": "RequiredFieldError"
-    }
+    },
+    "isPII": false
   },
   {
     "name": "district",
@@ -212,7 +218,8 @@
     "required": {
       "value": true,
       "message": "RequiredFieldError"
-    }
+    },
+    "isPII": false
   },
   {
     "name": "ward",
@@ -227,12 +234,14 @@
     "required": {
       "value": true,
       "message": "RequiredFieldError"
-    }
+    },
+    "isPII": false
   },
   {
     "name": "schoolName",
     "label": "School Name",
-    "type": "input"
+    "type": "input",
+    "isPII": true
   },
   {
     "name": "gradeLevel",
@@ -259,7 +268,8 @@
     "required": {
       "value": true,
       "message": "RequiredFieldError"
-    }
+    },
+    "isPII": false
   },
   {
     "name": "grade",
@@ -335,7 +345,8 @@
           "label": "Form 6"
         }
       ]
-    }
+    },
+    "isPII": false
   },
   {
     "name": "livingSituation",
@@ -379,7 +390,8 @@
         "value": "Other",
         "label": "Other"
       }
-    ]
+    ],
+    "isPII": false
   },
   {
     "name": "vulnerableGroups",
@@ -427,7 +439,8 @@
         "value": "Other",
         "label": "Other"
       }
-    ]
+    ],
+    "isPII": false
   },
   {
     "name": "livingEnvironment",
@@ -451,6 +464,7 @@
         "value": "Towns & semi-dense areas",
         "label": "Towns & semi-dense areas"
       }
-    ]
+    ],
+    "isPII": false
   }
 ]

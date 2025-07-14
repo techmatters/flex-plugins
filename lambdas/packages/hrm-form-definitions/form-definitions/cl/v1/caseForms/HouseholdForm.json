@@ -2,12 +2,14 @@
   {
     "name": "firstName",
     "label": "Nombre",
-    "type": "input"
+    "type": "input",
+    "isPII": true
   },
   {
     "name": "lastName",
     "label": "Apellidos",
-    "type": "input"
+    "type": "input",
+    "isPII": true
   },
   {
     "name": "age",
@@ -335,7 +337,8 @@
     "required": {
       "value": true,
       "message": "RequiredFieldError"
-    }
+    },
+    "isPII": false
   },
   {
     "name": "gender",
@@ -375,7 +378,8 @@
     "required": {
       "value": true,
       "message": "RequiredFieldError"
-    }
+    },
+    "isPII": false
   },
   {
     "name": "relationshipToChild",
@@ -419,21 +423,25 @@
         "value": "Otro",
         "label": "Otro"
       }
-    ]
+    ],
+    "isPII": false
   },
   {
     "name": "streetAddress",
     "label": "Dirección Exacta",
-    "type": "input"
+    "type": "input",
+    "isPII": true
   },
   {
     "name": "email",
     "label": "Email",
-    "type": "input"
+    "type": "input",
+    "isPII": true
   },
   {
     "name": "phone1",
     "label": "Teléfono",
-    "type": "input"
+    "type": "input",
+    "isPII": true
   }
 ]

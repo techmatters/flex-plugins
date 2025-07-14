@@ -2,12 +2,14 @@
   {
     "name": "firstName",
     "label": "Nombre",
-    "type": "input"
+    "type": "input",
+    "isPII": true
   },
   {
     "name": "lastName",
     "label": "Apellidos",
-    "type": "input"
+    "type": "input",
+    "isPII": true
   },
   {
     "name": "age",
@@ -331,7 +333,8 @@
         "value": ">80",
         "label": ">80"
       }
-    ]
+    ],
+    "isPII": false
   },
   {
     "name": "gender",
@@ -367,7 +370,8 @@
         "value": "Desconocido",
         "label": "Desconocido"
       }
-    ]
+    ],
+    "isPII": false
   },
   {
     "name": "relationshipToChild",
@@ -411,7 +415,8 @@
         "value": "Otro",
         "label": "Otro"
       }
-    ]
+    ],
+    "isPII": false
   },
   {
     "name": "ageAtTheTimeOfAgression",
@@ -435,6 +440,7 @@
         "value": "Mayor de 18 años",
         "label": "Mayor de 18 años"
       }
-    ]
+    ],
+    "isPII": false
   }
 ]

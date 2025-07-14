@@ -1,68 +1,158 @@
 {
   "Meri Trustline": {
-    "Intimate Content Shared without Consent": {
-      "color": "#BBE3FF",
-      "subcategories": [
-        {"label": "Partial Nudity"},
-        {"label": "Erotic Posing"},
-        {"label": "Solo Sexual Activity"},
-        {"label": "Content featuring Non-penetrative sexual activity "},
-        {"label": "Content featuring Penetrative sexual activity"},
-        {"label": "Violent Sexual Content"},
-        {"label": "Intimate Content Without Nudity"},
-        {"label": "Adult Pornographic Content"},
-        {"label": "Sextortion & Blackmail"},
-        {"label": "Digitally Manipulated Imagery/Deepfakes"},
-        {"label": "Livestreaming Imagery"},
-        {"label": "Unspecified/Other"}
-      ]
-    },
-    "Sexual Offences": {
-      "color": "#F5A623",
-      "subcategories": [
-        {"label": "Penetrative Sexual Assualt"},
-        {"label": "Aggravated Penetrative Sexual Assualt"}, 
-        {"label": "Sexual Assualt"},
-        {"label": "Aggravated Sexual Assault"}, 
-        {"label": "Sexual Harassment"},
-        {"label": "Unspecified/Other"}
-      ]
-    },
-    "Cyberbullying": {
-      "color": "#F8E900",
-      "subcategories": [
-        {"label": "Account Hacked"},
-        {"label": "Threats of Onground Consequences/Violence"},
-        {"label": "Threats of Online Consequences/Violence"},
-        {"label": "Denigration/Damaging Reputation"},
-        {"label": "Doxing or Outing"},
-        {"label": "Exclusion"},
-        {"label": "Sexually Explicit Remarks"},
-        {"label": "Impersonation"},
-        {"label": "Grooming for Sexual Purposes"},
-        {"label": "Harrasment through Sexually Explicit Content"},
-        {"label": "Harrasment through Non-sexual Content"},
-        {"label": "Repeated Harrasment/Cyberstalking"},
-        {"label": "Financial Fraud"},
-        {"label": "Unspecified/Other"}
-      ]
-    },
-    "Mental Health Status": {
-      "color": "#E86B6B",
-      "subcategories": [
-        {"label": "Addictive behaviours and substance use"},
-        {"label": "Behavioural problems"},
-        {"label": "Concerns about the self"},
-        {"label": "Emotional distress – anger problems"},
-        {"label": "Emotional distress – fear and anxiety problems"},
-        {"label": "Emotional distress – mood problems"},
-        {"label": "Neurodevelopmental concerns"},
-        {"label": "Problems with eating behaviour"},
-        {"label": "Self-harming behaviour"},
-        {"label": "Suicidal thoughts and suicide attempts"},
-        {"label": "Traumatic distress"},
-        {"label": "Unspecified/Other"}
-      ]
+    "categories": {
+      "Intimate Content Shared without Consent": {
+        "color": "#BBE3FF",
+        "subcategories": [
+          {
+            "label": "Partial Nudity"
+          },
+          {
+            "label": "Erotic Posing"
+          },
+          {
+            "label": "Solo Sexual Activity"
+          },
+          {
+            "label": "Content featuring Non-penetrative sexual activity "
+          },
+          {
+            "label": "Content featuring Penetrative sexual activity"
+          },
+          {
+            "label": "Violent Sexual Content"
+          },
+          {
+            "label": "Intimate Content Without Nudity"
+          },
+          {
+            "label": "Adult Pornographic Content"
+          },
+          {
+            "label": "Sextortion & Blackmail"
+          },
+          {
+            "label": "Digitally Manipulated Imagery/Deepfakes"
+          },
+          {
+            "label": "Livestreaming Imagery"
+          },
+          {
+            "label": "Unspecified/Other"
+          }
+        ]
+      },
+      "Sexual Offences": {
+        "color": "#F5A623",
+        "subcategories": [
+          {
+            "label": "Penetrative Sexual Assualt"
+          },
+          {
+            "label": "Aggravated Penetrative Sexual Assualt"
+          },
+          {
+            "label": "Sexual Assualt"
+          },
+          {
+            "label": "Aggravated Sexual Assault"
+          },
+          {
+            "label": "Sexual Harassment"
+          },
+          {
+            "label": "Unspecified/Other"
+          }
+        ]
+      },
+      "Cyberbullying": {
+        "color": "#F8E900",
+        "subcategories": [
+          {
+            "label": "Account Hacked"
+          },
+          {
+            "label": "Threats of Onground Consequences/Violence"
+          },
+          {
+            "label": "Threats of Online Consequences/Violence"
+          },
+          {
+            "label": "Denigration/Damaging Reputation"
+          },
+          {
+            "label": "Doxing or Outing"
+          },
+          {
+            "label": "Exclusion"
+          },
+          {
+            "label": "Sexually Explicit Remarks"
+          },
+          {
+            "label": "Impersonation"
+          },
+          {
+            "label": "Grooming for Sexual Purposes"
+          },
+          {
+            "label": "Harrasment through Sexually Explicit Content"
+          },
+          {
+            "label": "Harrasment through Non-sexual Content"
+          },
+          {
+            "label": "Repeated Harrasment/Cyberstalking"
+          },
+          {
+            "label": "Financial Fraud"
+          },
+          {
+            "label": "Unspecified/Other"
+          }
+        ]
+      },
+      "Mental Health Status": {
+        "color": "#E86B6B",
+        "subcategories": [
+          {
+            "label": "Addictive behaviours and substance use"
+          },
+          {
+            "label": "Behavioural problems"
+          },
+          {
+            "label": "Concerns about the self"
+          },
+          {
+            "label": "Emotional distress – anger problems"
+          },
+          {
+            "label": "Emotional distress – fear and anxiety problems"
+          },
+          {
+            "label": "Emotional distress – mood problems"
+          },
+          {
+            "label": "Neurodevelopmental concerns"
+          },
+          {
+            "label": "Problems with eating behaviour"
+          },
+          {
+            "label": "Self-harming behaviour"
+          },
+          {
+            "label": "Suicidal thoughts and suicide attempts"
+          },
+          {
+            "label": "Traumatic distress"
+          },
+          {
+            "label": "Unspecified/Other"
+          }
+        ]
+      }
     }
   }
 }

@@ -2,17 +2,20 @@
   {
     "name": "status",
     "label": "Estado",
-    "type": "select"
+    "type": "select",
+    "isPII": false
   },
   {
     "name": "childIsAtRisk",
     "label": "El adolescente está en riesgo",
-    "type": "checkbox"
+    "type": "checkbox",
+    "isPII": false
   },
   {
     "name": "followUpDate",
     "label": "Fecha de Seguimiento",
-    "type": "date-input"
+    "type": "date-input",
+    "isPII": false
   },
   {
     "name": "summary",

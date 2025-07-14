@@ -1,0 +1,109 @@
+{
+    "intentName": "terms_conditions_acceptance",
+    "description": "Specific configs/lex_v2/en/bots/terms_conditions_acceptance",
+    "sampleUtterances": [
+        {
+            "utterance": "trigger_terms_conditions_acceptance"
+        }
+    ],
+    "dialogCodeHook": {
+        "enabled": false
+    },
+    "fulfillmentCodeHook": {
+        "enabled": false,
+        "active": true,
+        "postFulfillmentStatusSpecification": {
+            "successNextStep": {
+                "dialogAction": {
+                    "type": "CloseIntent"
+                },
+                "intent": {}
+            },
+            "failureNextStep": {
+                "dialogAction": {
+                    "type": "CloseIntent"
+                },
+                "intent": {}
+            },
+            "timeoutNextStep": {
+                "dialogAction": {
+                    "type": "CloseIntent"
+                },
+                "intent": {}
+            }
+        }
+    },
+    "slotPriorities": [
+        {
+            "priority": 1,
+            "slotName": "terms_conditions_response"
+        }
+    ],
+    "intentClosingSetting": {
+        "closingResponse": {
+            "messageGroups": [
+                {
+                    "message": {
+                        "plainTextMessage": {
+                            "value": "Grazzi."
+                        }
+                    }
+                }
+            ],
+            "allowInterrupt": true
+        },
+        "active": true,
+        "nextStep": {
+            "dialogAction": {
+                "type": "EndConversation"
+            },
+            "intent": {}
+        }
+    },
+    "initialResponseSetting": {
+        "initialResponse": {
+            "messageGroups": [
+                {
+                    "message": {
+                        "plainTextMessage": {
+                            "value": "Inti taċċetta t-Termini u l-Kundizzjonijiet tagħna? https://kellimni.com/chat-terms/ ."
+                        }
+                    }
+                }
+            ],
+            "allowInterrupt": true
+        },
+        "active": true,
+        "nextStep": {
+            "dialogAction": {
+                "type": "InvokeDialogCodeHook"
+            },
+            "intent": {}
+        },
+        "codeHook": {
+            "enableCodeHookInvocation": true,
+            "active": true,
+            "postCodeHookSpecification": {
+                "successNextStep": {
+                    "dialogAction": {
+                        "type": "ElicitSlot",
+                        "slotToElicit": "terms_conditions_response"
+                    },
+                    "intent": {}
+                },
+                "failureNextStep": {
+                    "dialogAction": {
+                        "type": "EndConversation"
+                    },
+                    "intent": {}
+                },
+                "timeoutNextStep": {
+                    "dialogAction": {
+                        "type": "EndConversation"
+                    },
+                    "intent": {}
+                }
+            }
+        }
+    }
+}

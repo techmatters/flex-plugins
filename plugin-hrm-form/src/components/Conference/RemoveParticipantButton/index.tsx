@@ -15,11 +15,13 @@
  */
 
 import React from 'react';
-import { IconButton, Manager, Notifications, TaskHelper } from '@twilio/flex-ui';
+import { IconButton, Notifications, TaskHelper } from '@twilio/flex-ui';
 import type { ParticipantCanvasChildrenProps } from '@twilio/flex-ui/src/components/canvas/ParticipantCanvas/ParticipantCanvas.definitions';
+import '../../../types/types';
 
 import { ConferenceNotifications } from '../../../conference/setUpConferenceActions';
 import * as conferenceApi from '../../../services/conferenceService';
+import { newHangUpByStateManager } from '../../../hangUpByState';
 
 type Props = Partial<ParticipantCanvasChildrenProps>;
 
@@ -45,9 +47,7 @@ const RemoveParticipantButton: React.FC<Props> = ({ participant, task }) => {
         setIsLoading(false);
       }
       // Have to set hang_up_by in localStorage, setting the task attribute won't work because hangUpBy plugin overwrites it
-      const hangUpByStorageKey = `hang_up_by_${Manager.getInstance().serviceConfiguration.flex_service_instance_sid}`;
-      const currentState = JSON.parse(localStorage.getItem(hangUpByStorageKey) ?? '{}');
-      localStorage.setItem(hangUpByStorageKey, JSON.stringify({ ...currentState, [task.sid]: 'Agent' }));
+      newHangUpByStateManager().setForTask(task as ITask, 'Agent');
     } catch (err) {
       console.error('Setting hang_up_by attribute failed', err);
     }

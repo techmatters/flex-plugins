@@ -8,14 +8,16 @@
     "required": {
       "value": true,
       "message": "RequiredFieldError"
-    }
+    },
+    "isPII": true
   },
   {
     "name": "repeatCaller",
     "label": "Repeat Caller?",
-    "type": "checkbox"
+    "type": "checkbox",
+    "isPII": false
   },
-  { 
+  {
     "name": "actionTaken",
     "label": "Action Taken by TF",
     "type": "listbox-multiselect",
@@ -64,6 +66,7 @@
     "required": {
       "value": true,
       "message": "RequiredFieldError"
-    }
+    },
+    "isPII": false
   }
 ]
