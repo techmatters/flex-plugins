@@ -6,6 +6,7 @@ provider "registry.terraform.io/datadog/datadog" {
   constraints = "3.46.0"
   hashes = [
     "h1:GlDTNVDDyxHICBwJnabjIRe4Yts1SJMQ7NV467KaRr4=",
+    "h1:bxNXUEL9ZMQiiB4be/BE3r/+iHVPkm7rtW2mNkri924=",
     "zh:14d7b6f2641107111c7b7c021c55db320c44acfb6bf6857359ec4780e2e70870",
     "zh:192ebc32b08a38657d7acfff0fb6cbd0e8d8066e207c3f08929966b7e37fd3a4",
     "zh:1b51b6ceb80ec90dc4830c7f0c4d7ec5d4315345942d498104bbb01ef7af0392",
@@ -28,6 +29,7 @@ provider "registry.terraform.io/hashicorp/aws" {
   constraints = ">= 4.63.0"
   hashes = [
     "h1:OyEBhYcTPChBb0gooSlLIcrxakh72qAN+Sd8Oo12uoc=",
+    "h1:euyha7/tuEI2q8/KQP7fB3EGA4KydEB26b/I1SxJ8xI=",
     "zh:2913af44f9b584f756e5548d5ddc5a251c6d68a7fcd7c41d1418a800a94ef113",
     "zh:31d2bfa84608b74ff5896f41b09e5927d7c37d18875277a51dcd75a1fea3f909",
     "zh:8538ff18e3b4822178e793f06764efdbb84c62227c1051af7d2409ab7be37bfc",
@@ -50,6 +52,7 @@ provider "registry.terraform.io/hashicorp/external" {
   version     = "2.3.4"
   constraints = ">= 1.0.0"
   hashes = [
+    "h1:8mByRL3zDm50yiEXMrKtWC2FaLwuvvyjKI+eWuD1dn0=",
     "h1:XWkRZOLKMjci9/JAtE8X8fWOt7A4u+9mgXSUjc4Wuyo=",
     "zh:037fd82cd86227359bc010672cd174235e2d337601d4686f526d0f53c87447cb",
     "zh:0ea1db63d6173d01f2fa8eb8989f0809a55135a0d8d424b08ba5dabad73095fa",
@@ -70,6 +73,7 @@ provider "registry.terraform.io/hashicorp/local" {
   version     = "2.5.2"
   constraints = ">= 1.0.0"
   hashes = [
+    "h1:6XyefmvbkprppmYbGmMcQW5NB4w6C363SSShzuhF4R0=",
     "h1:JlMZD6nYqJ8sSrFfEAH0Vk/SL8WLZRmFaMUF9PJK5wM=",
     "zh:136299545178ce281c56f36965bf91c35407c11897f7082b3b983d86cb79b511",
     "zh:3b4486858aa9cb8163378722b642c57c529b6c64bfbfc9461d940a84cd66ebea",
@@ -90,6 +94,7 @@ provider "registry.terraform.io/hashicorp/null" {
   version     = "3.2.2"
   constraints = ">= 2.0.0"
   hashes = [
+    "h1:Gef5VGfobY5uokA5nV/zFvWeMNR2Pmq79DH94QnNZPM=",
     "h1:zT1ZbegaAYHwQa+QwIFugArWikRJI9dqohj8xb0GY88=",
     "zh:3248aae6a2198f3ec8394218d05bd5e42be59f43a3a7c0b71c66ec0df08b69e7",
     "zh:32b1aaa1c3013d33c245493f4a65465eab9436b454d250102729321a44c8ab9a",
@@ -111,6 +116,7 @@ provider "registry.terraform.io/twilio/twilio" {
   constraints = "0.17.0"
   hashes = [
     "h1:6bIJ9HISlNoRo35KeXc1Jp0QKjWo1dOd1YDpRSlUt6s=",
+    "h1:EZONIN61sfhOpVXPtji4gjolORFYL+hT3/bgbV4LX3I=",
     "zh:181fb8392e8f07eac2c265311a00a75167ffbd8bbb518bef470ba4f20069e81d",
     "zh:20cc435ffbadb1c94a8b529d79d119d25481672e176dab31934dcb2efb94ed6e",
     "zh:34c937aba896a017456063849c5c4995b633a0ad6a4cd42ca87e4d272fee56f7",

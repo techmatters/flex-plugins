@@ -1,0 +1,18 @@
+locals {
+  common_config_hcl = read_terragrunt_config("common.hcl")
+  common_config     = local.common_config_hcl.locals.config
+  config            = merge(local.common_config, local.local_config)
+
+
+  local_config = {
+
+    custom_task_routing_filter_expression = "isContactlessTask==true or twilioNumber=='whatsapp:+18122896374'"
+
+
+    flow_vars = {}
+    
+
+    channels = {}
+    get_profile_flags_for_identifier_base_url = "https://hrm-staging.tl.techmatters.org/lambda/twilio/account-scoped"
+  }
+}
