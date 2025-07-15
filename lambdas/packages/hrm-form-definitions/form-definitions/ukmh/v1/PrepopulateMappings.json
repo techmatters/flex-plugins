@@ -9,5 +9,6 @@
     "consentForResearchevaluation": "ChildInformationTab.consentForResearchevaluation",
     "dataProcessingAndStorage": "ChildInformationTab.dataProcessingAndStorage",
     "termsAndConditions": "ChildInformationTab.termsAndConditions"
-  }
+  },
+  "survey":{}
 }
