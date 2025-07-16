@@ -595,5 +595,9 @@
   "Switchboard-StatusInactive": "Switchboarding: Off",
   "Switchboard-ConfirmTurnOffSwitchboard": "Are you sure you want to turn off switchboarding?",
   "Switchboard-ActivateSwitchboarding": "Activate switchboarding",
-  "Switchboard-PleaseSelectQueue": "Please select a queue first"
+  "Switchboard-PleaseSelectQueue": "Please select a queue first",
+
+  "LlmAssistant-Notifications-SummaryGenerationError": "There was an error generating the summary: {{errorMessage}}",
+  "ContactForms-TextArea-GenerateSummary": "Summarize",
+  "ContactForms-TextArea-LoadingSummary": "Loading"
 }
