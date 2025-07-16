@@ -93,11 +93,6 @@ export const StyledLink = styled(UnstyledLinkButton)<StyledLinkProps>`
   }
 `;
 
-const Tag = styled('div')`
-  border-radius: 6px;
-  padding: 5px 15px;
-`;
-
 const PopoverText = styled(FontOpenSans)`
   font-size: 20px;
   font-weight: 600;
@@ -180,7 +175,7 @@ export const TagsWrapper = styled(Flex)`
   min-width: 0;
   margin-right: 5px;
   overflow: hidden;
-
+  height: 1.6em;
   div:last-child {
     min-width: 0;
 

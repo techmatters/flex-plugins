@@ -61,7 +61,7 @@ const ExpandableTextBlock: React.FC<ExpandableTextBlockProps & Partial<StyledPro
           textOverflow: 'inherit',
           whiteSpace: isOverflowing && !isExpanded ? 'nowrap' : 'inherit',
           overflow: isOverflowing && !isExpanded ? 'hidden' : 'inherit',
-          height: isExpanded ? 'inherit' : '1.5em',
+          height: isExpanded ? 'inherit' : '1.6em',
           lineHeight: '1.5em',
           wordBreak: isExpanded ? 'break-word' : 'inherit',
         }}
@@ -83,6 +83,7 @@ const ExpandableTextBlock: React.FC<ExpandableTextBlockProps & Partial<StyledPro
           display: isOverflowing && !isExpanded ? 'inherit' : 'none',
           height: '1.5em',
           lineHeight: '1.5em',
+          marginLeft: '5px',
         }}
       >
         <StyledLink underline={true} onClick={handleExpand} ref={expandButtonElementRef} style={{ fontSize: '13px' }}>
