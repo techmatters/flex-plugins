@@ -58,7 +58,8 @@ jobs:
       - name: Create Merge Branch
         run: |
           git fetch
-          git branch ${{ env.MERGE_BRANCH_NAME }} origin/${{ github.ref_name }}
+          git checkout -b ${{ env.MERGE_BRANCH_NAME }} origin/${{ github.ref_name }}
+          git pull
           git push origin ${{ env.MERGE_BRANCH_NAME }}
       - name: Find existing PR
         id: list_prs
@@ -73,6 +74,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Comment PR
+        if: env.PR_URL != 'null'
         run: |
           pr_url=${{ env.NEW_PR_URL || env.EXISTING_PR_URL }}
           gh pr comment $pr_url -b '${{ github.triggering_actor }} merged changes to ${{ github.ref_name }}'
