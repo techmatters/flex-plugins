@@ -66,8 +66,7 @@ jobs:
           echo '${{ env.MERGE_BRANCH_NAME }} does not exist, creating it'
           git fetch
           git checkout -b ${{ env.MERGE_BRANCH_NAME }} origin/${{ github.ref_name }}
-          git push -u origin ${{ env.MERGE_BRANCH_NAME }}; 
-          git push origin ${{ env.MERGE_BRANCH_NAME }}
+          git push -u origin ${{ env.MERGE_BRANCH_NAME }}
 
       - name: Merge new changes into merge branch
         if: steps.check-branch-exists.outputs.exists == 'true'
@@ -76,6 +75,7 @@ jobs:
           git fetch
           git checkout -b ${{ env.MERGE_BRANCH_NAME }} origin/${{ env.MERGE_BRANCH_NAME }}
           git pull --ff-only
+          git status
           git pull --ff-only origin ${{ github.ref_name }}
           git push
 
