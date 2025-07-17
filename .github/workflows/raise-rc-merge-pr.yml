@@ -60,7 +60,7 @@ jobs:
           git fetch
           git checkout -b ${{ env.MERGE_BRANCH_NAME }} origin/${{ github.ref_name }}
           git pull
-          git merge origin/${{ env.MERGE_BRANCH_NAME }}
+          git pull origin ${{ env.MERGE_BRANCH_NAME }} --allow-unrelated-histories
           git push origin ${{ env.MERGE_BRANCH_NAME }}
       - name: Find existing PR
         id: list_prs
