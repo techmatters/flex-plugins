@@ -57,7 +57,7 @@ jobs:
             .github/actions
       - name: Create Merge Branch
         run: |
-          git config pull.rebase false
+          git config pull.ff only
           git fetch
           git checkout -b ${{ env.MERGE_BRANCH_NAME }} origin/${{ github.ref_name }}
           git pull
