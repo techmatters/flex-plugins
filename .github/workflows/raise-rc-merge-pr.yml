@@ -59,6 +59,7 @@ jobs:
         run: |
           git fetch
           git branch ${{ env.MERGE_BRANCH_NAME }} origin/${{ github.ref_name }}
+          git push -u origin ${{ env.MERGE_BRANCH_NAME }}
           git push origin ${{ env.MERGE_BRANCH_NAME }}
       - name: Find existing PR
         id: list_prs
