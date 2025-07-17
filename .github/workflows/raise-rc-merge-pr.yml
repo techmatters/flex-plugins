@@ -44,18 +44,19 @@ jobs:
   raise_pr:
     runs-on: ubuntu-22.04
     needs: find_target_branches
-    env:
-      MERGE_BRANCH_NAME: _${{ github.ref_name }}-merge-${{ matrix.target-branch }}
     strategy:
       matrix:
         target-branch: ${{ fromJSON(needs.find_target_branches.outputs.found_branches) }}
     steps:
       - uses: actions/checkout@v4
+      - name: Set merge branch name
+        run: |
+          github_sha_hash=${{ github.sha }}  
+          echo "MERGE_BRANCH_NAME=merge-${{ github.ref_name }}-${{ matrix.target-branch }}-${github_sha_hash:0:7}" >> $GITHUB_ENV
       - id: check-branch-exists
         uses: GuillaumeFalourd/branch-exists@v1.1
         with:
           branch: ${{ env.MERGE_BRANCH_NAME }}
-
       - name: Create Merge Branch
         if: steps.check-branch-exists.outputs.exists == 'false'
         run: |
@@ -65,18 +66,10 @@ jobs:
           git push -u origin ${{ env.MERGE_BRANCH_NAME }}; 
           git push origin ${{ env.MERGE_BRANCH_NAME }}
 
-      - name: Merge new changes into merge branch
+      - name: Merge branch already exists for this commit
         if: steps.check-branch-exists.outputs.exists == 'true'
         run: |
-          echo '${{ env.MERGE_BRANCH_NAME }} Branch exists, merging RC branch changes onto it'
-          git fetch 
-          git branch temp_local origin/${{ github.ref_name }}
-          git checkout -b ${{ env.MERGE_BRANCH_NAME }} origin/${{ env.MERGE_BRANCH_NAME }}
-          echo $(git status)
-          echo 'local commmits missing from rc branch'
-          echo $(git log temp_local..${{ env.MERGE_BRANCH_NAME }})
-          git merge --ff-only temp_local
-          git push
+          echo '${{ env.MERGE_BRANCH_NAME }} Branch already exists'
 
       - name: Find existing PR
         id: list_prs
