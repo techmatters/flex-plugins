@@ -55,13 +55,29 @@ jobs:
           sparse-checkout-cone-mode: false
           sparse-checkout: |
             .github/actions
+      - id: check-branch-exists
+        uses: GuillaumeFalourd/branch-exists@v1.1
+        with:
+          branch: ${{ env.MERGE_BRANCH_NAME }}
+
       - name: Create Merge Branch
+        if: steps.check-branch-exists.outputs.exists == 'false'
         run: |
+          echo '${{ env.MERGE_BRANCH_NAME }} does not exist, creating it'
           git fetch
           git checkout -b ${{ env.MERGE_BRANCH_NAME }} origin/${{ github.ref_name }}
-          git pull --ff-only
           git push -u origin ${{ env.MERGE_BRANCH_NAME }}; git branch --set-upstream-to=origin/${{ env.MERGE_BRANCH_NAME }} ${{ env.MERGE_BRANCH_NAME }}; git pull --ff-only
           git push origin ${{ env.MERGE_BRANCH_NAME }}
+
+      - name: Merge new changes into merge branch
+        if: steps.check-branch-exists.outputs.exists == 'true'
+        run: |
+          echo '${{ env.MERGE_BRANCH_NAME }} Branch exists, merging RC branch changes onto it'
+          git fetch
+          git checkout -b ${{ env.MERGE_BRANCH_NAME }}
+          git pull --ff-only origin ${{ github.ref_name }}
+          git push
+
       - name: Find existing PR
         id: list_prs
         run: |
