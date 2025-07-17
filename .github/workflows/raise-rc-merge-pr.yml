@@ -74,8 +74,7 @@ jobs:
         run: |
           echo '${{ env.MERGE_BRANCH_NAME }} Branch exists, merging RC branch changes onto it'
           git fetch
-          git checkout -b ${{ env.MERGE_BRANCH_NAME }}
-          git branch --set-upstream-to=origin/${{ env.MERGE_BRANCH_NAME }}
+          git checkout -b ${{ env.MERGE_BRANCH_NAME }} origin/${{ env.MERGE_BRANCH_NAME }}
           git pull --ff-only origin ${{ github.ref_name }}
           git push
 
