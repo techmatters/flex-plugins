@@ -44,8 +44,6 @@ jobs:
   raise_pr:
     runs-on: ubuntu-22.04
     needs: find_target_branches
-    env:
-      MERGE_BRANCH_NAME: _${{ github.ref_name }}-merge-${{ matrix.target-branch }}
     strategy:
       matrix:
         target-branch: ${{ fromJSON(needs.find_target_branches.outputs.found_branches) }}
