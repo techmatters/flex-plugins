@@ -75,7 +75,7 @@ jobs:
           echo '${{ env.MERGE_BRANCH_NAME }} Branch exists, merging RC branch changes onto it'
           git fetch
           git checkout -b ${{ env.MERGE_BRANCH_NAME }} origin/${{ env.MERGE_BRANCH_NAME }}
-          git status
+          echo $(git status)
           git pull --ff-only origin ${{ github.ref_name }}
           git push
 
