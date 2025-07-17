@@ -51,10 +51,6 @@ jobs:
         target-branch: ${{ fromJSON(needs.find_target_branches.outputs.found_branches) }}
     steps:
       - uses: actions/checkout@v4
-        with:
-          sparse-checkout-cone-mode: false
-          sparse-checkout: |
-            .github/actions
       - id: check-branch-exists
         uses: GuillaumeFalourd/branch-exists@v1.1
         with:
@@ -74,7 +70,6 @@ jobs:
         run: |
           echo '${{ env.MERGE_BRANCH_NAME }} Branch exists, merging RC branch changes onto it'
           git fetch
-          git branch ${{ github.ref_name }} origin/${{ github.ref_name }}
           git checkout -b ${{ env.MERGE_BRANCH_NAME }} origin/${{ env.MERGE_BRANCH_NAME }}
           echo $(git status)
           echo 'local commmits missing from rc branch'
