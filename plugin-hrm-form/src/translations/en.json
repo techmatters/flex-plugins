@@ -600,6 +600,7 @@
   "Switchboard-PleaseSelectQueue": "Please select a queue first",
 
   "ContactForms-TextArea-GenerateSummary": "Generate Summary",
-  "ContactForms-TextArea-LoadingSummary": "Loading"
-  
+  "ContactForms-TextArea-LoadingSummary": "Loading",
+
+  "LlmAssistant-Notifications-SummaryGenerationError": "There was an error generating the summary: {{errorMessage}}"
 }
