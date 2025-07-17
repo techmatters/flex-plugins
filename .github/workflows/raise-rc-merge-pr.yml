@@ -60,8 +60,7 @@ jobs:
           git fetch
           git checkout -b ${{ env.MERGE_BRANCH_NAME }} origin/${{ github.ref_name }}
           git pull --ff-only
-          git branch --set-upstream-to=origin/${{ env.MERGE_BRANCH_NAME }} ${{ env.MERGE_BRANCH_NAME }}
-          git pull --ff-only
+          git push -u origin ${{ env.MERGE_BRANCH_NAME }}; git branch --set-upstream-to=origin/${{ env.MERGE_BRANCH_NAME }} ${{ env.MERGE_BRANCH_NAME }}; git pull --ff-only
           git push origin ${{ env.MERGE_BRANCH_NAME }}
       - name: Find existing PR
         id: list_prs
