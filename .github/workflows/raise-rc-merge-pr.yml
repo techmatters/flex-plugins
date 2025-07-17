@@ -45,7 +45,7 @@ jobs:
     runs-on: ubuntu-22.04
     needs: find_target_branches
     env:
-      MERGE_BRANCH_NAME: ${{ github.ref_name }}-merge-${{ matrix.target-branch }}
+      MERGE_BRANCH_NAME: _${{ github.ref_name }}-merge-${{ matrix.target-branch }}
     strategy:
       matrix:
         target-branch: ${{ fromJSON(needs.find_target_branches.outputs.found_branches) }}
@@ -73,11 +73,9 @@ jobs:
         if: steps.check-branch-exists.outputs.exists == 'true'
         run: |
           echo '${{ env.MERGE_BRANCH_NAME }} Branch exists, merging RC branch changes onto it'
-          git config user.email "github-actions@techmatters.org"
-          git config user.name "Github Actions"
           git fetch
           git checkout -b ${{ env.MERGE_BRANCH_NAME }} origin/${{ env.MERGE_BRANCH_NAME }}
-          git pull --no-ff --allow-unrelated-histories origin ${{ github.ref_name }}
+          git pull --ff-only origin ${{ github.ref_name }}
           git push
 
       - name: Find existing PR
