@@ -66,7 +66,7 @@ const GenerateSummaryButton: React.FC<Props> = ({ contactId, form, item }) => {
     !savedContact.channelSid ||
     savedContact.finalizedAt
   ) {
-    // return null;
+    return null;
   }
   const assistantWorking = metadata?.llmAssistant.status === LlmAssistantStatus.WORKING;
   const llmSupportedEntries =
