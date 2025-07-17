@@ -138,7 +138,7 @@
   "BottomBar-SaveAndEnd": "Save and End",
   "CaseSection-BottomBar-SaveAndAddAnother/note": "Save and Add Another Note",
   "CaseSection-BottomBar-Save/note": "Save Note",
-  "BottomBar-SaveAndAddAnotherReferral": "Save and Add Another Referral",
+  "CaseSection-BottomBar-SaveAndAddAnother/referral": "Save and Add Another Referral",
   "CaseSection-BottomBar-Save/referral": "Save Referral",
   "CaseSection-BottomBar-SaveAndAddAnother/perpetrator": "Save and Add Another Perpetrator",
   "CaseSection-BottomBar-Save/perpetrator": "Save Perpetrator",
@@ -595,9 +595,12 @@
   "Switchboard-StatusInactive": "Switchboarding: Off",
   "Switchboard-ConfirmTurnOffSwitchboard": "Are you sure you want to turn off switchboarding?",
   "Switchboard-ActivateSwitchboarding": "Activate switchboarding",
+  "Switchboard-ModalTitleTurnOffSwitchboard": "Turn Off Switchboarding",
+  "Switchboard-ButtonTurnOffSwitchboard": "Turn Off",
   "Switchboard-PleaseSelectQueue": "Please select a queue first",
 
-  "LlmAssistant-Notifications-SummaryGenerationError": "There was an error generating the summary: {{errorMessage}}",
-  "ContactForms-TextArea-GenerateSummary": "Summarize",
-  "ContactForms-TextArea-LoadingSummary": "Loading"
+  "ContactForms-TextArea-GenerateSummary": "Generate Summary",
+  "ContactForms-TextArea-LoadingSummary": "Loading",
+
+  "LlmAssistant-Notifications-SummaryGenerationError": "There was an error generating the summary: {{errorMessage}}"
 }
