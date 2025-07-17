@@ -75,7 +75,7 @@ jobs:
           echo '${{ env.MERGE_BRANCH_NAME }} Branch exists, merging RC branch changes onto it'
           git fetch
           git checkout -b ${{ env.MERGE_BRANCH_NAME }} origin/${{ env.MERGE_BRANCH_NAME }}
-          git pull --rebase origin ${{ github.ref_name }}
+          git pull --no_ff origin ${{ github.ref_name }}
           git push
 
       - name: Find existing PR
