@@ -73,6 +73,8 @@ jobs:
         if: steps.check-branch-exists.outputs.exists == 'true'
         run: |
           echo '${{ env.MERGE_BRANCH_NAME }} Branch exists, merging RC branch changes onto it'
+          git config user.email "github-actions@techmatters.org"
+          git config user.name "Github Actions"
           git fetch
           git checkout -b ${{ env.MERGE_BRANCH_NAME }} origin/${{ env.MERGE_BRANCH_NAME }}
           git pull --no-ff --allow-unrelated-histories origin ${{ github.ref_name }}
