@@ -73,7 +73,7 @@ jobs:
           git checkout -b ${{ env.MERGE_BRANCH_NAME }} origin/${{ env.MERGE_BRANCH_NAME }}
           echo $(git status)
           echo 'local commmits missing from rc branch'
-          echo $(git log origin/${{ github.ref_name }}..${{ env.MERGE_BRANCH_NAME }}`)
+          echo $(git log origin/${{ github.ref_name }}..${{ env.MERGE_BRANCH_NAME }})
           git merge --ff-only ${{ github.ref_name }}
           git push
 
