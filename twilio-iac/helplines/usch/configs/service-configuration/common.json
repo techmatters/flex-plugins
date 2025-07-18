@@ -15,7 +15,9 @@
             "enable_hierarchical_translations": true,
             "enable_lex_v2": true,
             "enable_llm_summary": false,
-            "enable_configurable_max_categories": true
+            "enable_configurable_max_categories": true,
+            "enable_post_survey": true,
+            "enable_lambda_post_survey_processing": true
 
         },
         "definitionVersion": "usch-v1",
