@@ -4,11 +4,6 @@
     "label": "Helpseeker is",
     "type": "select",
     "isPII": false,
-    "defaultOption": {
-      "value": "",
-      "label": ""
-    },
-    "unknownOption": "",
     "options": [
       {
         "value": "",
@@ -125,21 +120,16 @@
     }
   },
   {
-    "name": "helpseekerGenderInput",
+    "name": "genderInput",
     "label": "Helpseeker Gender (Input from Webchat Form)",
     "type": "input",
     "isPII": false
   },
   {
-    "name": "helpseekerGender",
+    "name": "gender",
     "label": "Helpseeker Gender",
     "type": "select",
     "isPII": false,
-    "defaultOption": {
-      "value": "",
-      "label": ""
-    },
-    "unknownOption": "",
     "options": [
       {
         "value": "",
@@ -168,15 +158,10 @@
     }
   },
   {
-    "name": "helpseekerAge",
+    "name": "age",
     "label": "Helpseeker Age",
     "type": "select",
     "isPII": false,
-    "defaultOption": {
-      "value": "",
-      "label": ""
-    },
-    "unknownOption": "",
     "options": [
       {
         "value": "",
@@ -211,15 +196,15 @@
       "value": true,
       "message": "RequiredFieldError"
     }
-  }, 
+  },
   {
-    "name": "helpseekerStateInput",
+    "name": "stateInput",
     "label": "Helpseeker State (Input from SMS Chatbot)",
     "type": "input",
     "isPII": false
   },
   {
-    "name": "helpseekerState",
+    "name": "state",
     "label": "Helpseeker State",
     "type": "select",
     "isPII": false,
@@ -455,11 +440,11 @@
     }
   },
   {
-    "name": "helpseekerCountry",
+    "name": "country",
     "label": "Helpseeker Country",
     "type": "dependent-select",
     "isPII": false,
-    "dependsOn": "helpseekerState",
+    "dependsOn": "state",
     "defaultOption": {
       "value": "",
       "label": ""
@@ -1247,10 +1232,6 @@
           "label": "Zimbabwe"
         }
       ]
-    },
-    "required": {
-      "value": true,
-      "message": "RequiredFieldError"
     }
   }
 ]

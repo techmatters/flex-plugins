@@ -1,8 +1,8 @@
 {
   "contactForm": {
     "callerInformation": [
-      {
-        "name": "relationshipToChild",
+     {
+        "name": "helpseekerIs",
         "insights": ["conversations", "initiated_by"]
       },
       {
@@ -12,64 +12,82 @@
       {
         "name": "age",
         "insights": ["conversations", "conversation_attribute_3"]
+      },
+      {
+        "name": "state",
+        "insights": ["customers", "area"]
+      },
+      {
+        "name": "country",
+        "insights": ["customers", "region"]
       }
     ],
     "childInformation": [
       {
-        "name": "city",
-        "insights": ["customers", "city"]
-      },
-      {
-        "name": "postalCode",
-        "insights": ["customers", "zip"]
-      },
-      {
-        "name": "ethnicity",
+        "name": "childIs",
         "insights": ["customers", "customer_attribute_2"]
       },
       {
-        "name": "gradeLevel",
-        "insights": ["customers", "acquisition_date"]
+        "name": "state",
+        "insights": ["customers", "city"]
       },
       {
-        "name": "livingSituation",
-        "insights": ["customers", "customer_attribute_1"]
+        "name": "country",
+        "insights": ["customers", "zip"]
       },
       {
-        "name": "vulnerableGroups",
-        "insights": [
-          "customers", 
-          "email"
-        ]
+        "name": "safetyConcern",
+        "insights": ["conversations", "initiative"]
       },
       {
-        "name": "region",
-        "insights": ["customers", "region"]
+        "name": "riskLevel",
+        "insights": ["conversations", "conversation_attribute_5"]
+      },
+      {
+        "name": "cfSportLevel",
+        "insights": ["customers", "organization"]
+      },
+      {
+        "name": "cfSportPlayed",
+        "insights": ["customers", "category"]
       }
     ],
     "caseInformation": [
       {
-        "name": "repeatCaller",
-        "insights": ["conversations", "conversation_attribute_7"],
-        "type": "mixed-checkbox"
+        "name": "campaign",
+        "insights": ["customers", "market_segment"]
       },
       {
-        "name": "actionTaken",
-        "insights": ["conversations", "initiative"]
+        "name": "languageLineUsed",
+        "insights": ["conversations", "followed_by"]
       },
       {
-        "name": "howDidYouKnowAboutOurLine",
-        "insights": ["conversations", "conversation_attribute_5"]
+        "name": "counselorSpokeForeignLanguage",
+        "insights": ["customers", "customer_attribute_1"]
       },
       {
-        "name": "didTheChildFeelWeSolvedTheirProblem",
-        "insights": ["conversations", "productive"],
-        "type": "mixed-checkbox"
+        "name": "howTheHelpseekerHeardAboutUs",
+        "insights": ["customers", "customer_attribute_2"]
       },
       {
-        "name": "wouldTheChildRecommendUsToAFriend",
-        "insights": ["conversations", "conversation_attribute_6"],
-        "type": "mixed-checkbox"
+        "name": "interactionWithHelpseeker",
+        "insights": ["conversations", "preceded_by"]
+      },
+      {
+        "name": "actionPlanDeveloped",
+        "insights": ["conversations", "in_business_hours"]
+      },
+      {
+        "name": "helpseekerReaction",
+        "insights": ["conversations", "conversation_attribute_7"]
+      },
+      {
+        "name": "wasASafetyPlanCreated",
+        "insights": ["customers", "acquisition_date"]
+      },
+      {
+        "name": "componentsOfSafetyPlan",
+        "insights": ["conversations", "conversation_attribute_6"]
       }
     ]
   },
@@ -79,36 +97,7 @@
         "name": "id",
         "insights": ["conversations", "case"]
       }
-    ],
-    "perpetrator": [
-      {
-        "name": "relationshipToChild",
-        "insights": ["customers", "organization"]
-      },
-      {
-        "name": "gender",
-        "insights": ["conversations", "followed_by"]
-      },
-      {
-        "name": "age",
-        "insights": ["conversations", "preceded_by"]
-      }
-    ],
-    "incident": [
-      {
-        "name": "duration",
-        "insights": ["conversations", "in_business_hours"]
-      },
-      {
-        "name": "location",
-        "insights": ["customers", "market_segment"]
-      }
-    ],
-    "referral": [
-      {
-        "name": "referredTo",
-        "insights": ["customers", "customer_manager"]
-      }
+    
     ]
   }
 }
