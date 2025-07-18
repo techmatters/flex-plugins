@@ -10,7 +10,7 @@
                 {
                     "message": {
                         "plainTextMessage": {
-                            "value": "2 - Did you feel supported and respected by the counselor? \nReply with: \n1 = Yes, 2 = No"
+                            "value": "Did you feel supported and respected by the counselor? \nReply with: \n1 = Yes, 2 = No"
                         }
                     }
                 }

@@ -28,19 +28,19 @@
           "1": {
             "slot_name": "experience_rating",
             "slot_type_name": "four_level_assessment",
-            "slot_question": "1 - How was your experience today? \nReply with: \n1 = Very Good, 2 = Good, 3 = Fair, 4 = Poor.",
+            "slot_question": "How was your experience today? \nReply with: \n 🙂= Good, 😐 = Fair, 😕 = Unsure, 🙁 = Poor.",
             "failure_response": "Thank you for reaching out. Please contact us again if you need more help."
           },
           "2":  {
             "slot_name": "feel_supported",
             "slot_type_name": "yes_no",
-            "slot_question": "2 - Did you feel supported and respected by the counselor? \nReply with: \n1 = Yes, 2 = No",
+            "slot_question": "Did you feel supported and respected by the counselor? \nReply with: \n1 = Yes, 2 = No",
             "failure_response": "Thank you for reaching out. Please contact us again if you need more help."
           },
           "3":  {
             "slot_name": "better_prepared",
             "slot_type_name": "yes_no",
-            "slot_question": "3 - Do you feel better prepared to deal with your situation after this conversation? \nReply with: \n1 = Yes, 2 = No",
+            "slot_question": "Do you feel better prepared to deal with your situation after this conversation? \nReply with: \n1 = Yes, 2 = No",
             "failure_response": "Thank you for reaching out. Please contact us again if you need more help."
           }
                 }

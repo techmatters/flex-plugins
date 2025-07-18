@@ -10,7 +10,7 @@
                 {
                     "message": {
                         "plainTextMessage": {
-                            "value": "3 - Do you feel better prepared to deal with your situation after this conversation? \nReply with: \n1 = Yes, 2 = No"
+                            "value": "Do you feel better prepared to deal with your situation after this conversation? \nReply with: \n1 = Yes, 2 = No"
                         }
                     }
                 }
