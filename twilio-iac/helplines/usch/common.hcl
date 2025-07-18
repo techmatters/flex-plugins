@@ -11,7 +11,7 @@ locals {
   local_config = {
     helpline                   = "Childhelp"
     task_language              = "en-US"
-    enable_post_survey         = false
+    enable_post_survey         = true
     enable_external_recordings = false
     permission_config          = "usch"
     enable_lex_v2              = true
@@ -67,7 +67,7 @@ locals {
       en_USCH : []
     }
     lex_v2_bot_languages = {
-       en_USCH : ["pre_survey"]
+       en_USCH : ["pre_survey", "post_survey"]
     }
     
   }
