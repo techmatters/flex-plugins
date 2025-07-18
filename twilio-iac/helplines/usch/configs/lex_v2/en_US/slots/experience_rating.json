@@ -10,7 +10,7 @@
                 {
                     "message": {
                         "plainTextMessage": {
-                            "value": "How was your experience today? \nReply with: \n 🙂= Good, 😐 = Fair, 😕 = Unsure, 🙁 = Poor."
+                            "value": "How was your experience today? \nReply with: \n 🙂= Good, 😐= Fair, 😕= Unsure, 🙁= Poor."
                         }
                     }
                 }
