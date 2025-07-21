@@ -11,7 +11,7 @@ ${
             "event": "incomingMessage"
           },
           {
-            "next": "getProfileFlagsForIdentifier",
+            "next": "country_check",
             "event": "incomingCall"
           },
           {
@@ -272,7 +272,38 @@ ${
           "play": channel_flow_vars["busy_message_url"],
           "language": channel_flow_vars["voice_ivr_language"]
         }
+      },
+    {
+      "name": "country_check",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "getProfileFlagsForIdentifier",
+          "event": "noMatch"
+        },
+        {
+          "next": "blocked",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value does_not_start_with +65",
+              "arguments": [
+                "{{trigger.call.From}}"
+              ],
+              "type": "does_not_start_with",
+              "value": "+65"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{trigger.call.From}}",
+        "offset": {
+          "x": 500,
+          "y": 180
+        }
       }
+    }
     ],
     "initial_state": "Trigger",
     "flags": {
