@@ -2,8 +2,8 @@
   "label": "Helpline",
   "helplines": [
     {
-      "label": "MissingChildren",
-      "value": "MissingChildrenEurope",
+      "label": "Missing Children Europe",
+      "value": "Missing Children Europe",
       "default": true,
       "manager": {
         "name": " Alyona Samar",
