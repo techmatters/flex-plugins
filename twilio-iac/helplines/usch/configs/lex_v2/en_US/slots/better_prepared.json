@@ -1,8 +1,8 @@
 {
-    "slotName": "genderInput",
-    "slotTypeName": "genderInput",
-    "intentName": "pre_survey",
-    "description": "Slot genderInput for intent pre_survey",
+    "slotName": "better_prepared",
+    "slotTypeName": "yes_no",
+    "intentName": "post_survey_yes",
+    "description": "Slot better_prepared for intent post_survey_yes",
     "valueElicitationSetting": {
         "slotConstraint": "Required",
         "promptSpecification": {
@@ -10,21 +10,9 @@
                 {
                     "message": {
                         "plainTextMessage": {
-                            "value": "What is your gender identity?"
+                            "value": "Do you feel better prepared to deal with your situation after this conversation? \nReply with: \n1 = Yes, 2 = No"
                         }
-                    },
-                    "variations": [
-                        {
-                            "plainTextMessage": {
-                                "value": "In one or two words. What is your gender identity?"
-                            }
-                        },
-                        {
-                            "plainTextMessage": {
-                                "value": "In just words. What is your gender identity?"
-                            }
-                        }
-                    ]
+                    }
                 }
             ],
             "maxRetries": 1,
@@ -82,8 +70,7 @@
         "slotCaptureSetting": {
             "captureNextStep": {
                 "dialogAction": {
-                    "type": "ElicitSlot",
-                    "slotToElicit": "childAge"
+                    "type": "FulfillIntent"
                 },
                 "intent": {}
             },
@@ -92,7 +79,7 @@
                     {
                         "message": {
                             "plainTextMessage": {
-                                "value": "We are having trouble understanding your response."
+                                "value": "Thank you for reaching out. Please contact us again if you need more help."
                             }
                         }
                     }
