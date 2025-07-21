@@ -1,5 +1,6 @@
 {
   "Childhelp": {
+    "maxSelections": 100,
     "categories": {
       "Missing children": {
         "color": "#085f63",

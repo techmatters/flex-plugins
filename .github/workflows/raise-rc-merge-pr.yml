@@ -44,22 +44,33 @@ jobs:
   raise_pr:
     runs-on: ubuntu-22.04
     needs: find_target_branches
-    env:
-      MERGE_BRANCH_NAME: ${{ github.ref_name }}-merge-${{ matrix.target-branch }}
     strategy:
       matrix:
         target-branch: ${{ fromJSON(needs.find_target_branches.outputs.found_branches) }}
     steps:
       - uses: actions/checkout@v4
-        with:
-          sparse-checkout-cone-mode: false
-          sparse-checkout: |
-            .github/actions
-      - name: Create Merge Branch
+      - name: Set merge branch name
         run: |
+          github_sha_hash=${{ github.sha }}  
+          echo "MERGE_BRANCH_NAME=merge-${{ github.ref_name }}-${{ matrix.target-branch }}-${github_sha_hash:0:7}" >> $GITHUB_ENV
+      - id: check-branch-exists
+        uses: GuillaumeFalourd/branch-exists@v1.1
+        with:
+          branch: ${{ env.MERGE_BRANCH_NAME }}
+      - name: Create Merge Branch
+        if: steps.check-branch-exists.outputs.exists == 'false'
+        run: |
+          echo '${{ env.MERGE_BRANCH_NAME }} does not exist, creating it'
           git fetch
-          git branch ${{ env.MERGE_BRANCH_NAME }} origin/${{ github.ref_name }}
+          git checkout -b ${{ env.MERGE_BRANCH_NAME }} origin/${{ github.ref_name }}
+          git push -u origin ${{ env.MERGE_BRANCH_NAME }}; 
           git push origin ${{ env.MERGE_BRANCH_NAME }}
+
+      - name: Merge branch already exists for this commit
+        if: steps.check-branch-exists.outputs.exists == 'true'
+        run: |
+          echo '${{ env.MERGE_BRANCH_NAME }} Branch already exists'
+
       - name: Find existing PR
         id: list_prs
         run: |
@@ -73,6 +84,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Comment PR
+        if: env.PR_URL != 'null'
         run: |
           pr_url=${{ env.NEW_PR_URL || env.EXISTING_PR_URL }}
           gh pr comment $pr_url -b '${{ github.triggering_actor }} merged changes to ${{ github.ref_name }}'
