@@ -46,7 +46,7 @@ locals {
       webchat : {
         channel_type     = "web"
         contact_identity = ""
-        templatefile     = "/app/twilio-iac/helplines/usch/templates/studio-flows/webchat-no-chatbot.tftpl"
+        templatefile     = "/app/twilio-iac/helplines/usch/templates/studio-flows/webchat-no-chatbot-no-operating-hours.tftpl"
         channel_flow_vars = {
           courage_first_url = "https://assets-staging.tl.techmatters.org/webchat/usch/usch_courage_first.html"
           childhelp_url     = "https://assets-staging.tl.techmatters.org/webchat/usch/usch_childhelp_hotline.html"
