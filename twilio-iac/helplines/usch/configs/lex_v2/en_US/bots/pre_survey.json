@@ -16,11 +16,11 @@
           }
         ],
         "initial_response": {
-          "message": "To help us better serve you, please answer the next four short questions. You will then be connected to a counselor. You can type '0' for any question.",
+          "message": "If this is a life-threatening emergency, please contact 911. To help us better serve you, please answer the next five short questions. You will then be connected to a counselor. You can type X if you prefer not to answer any question.",
           "slot_to_elicit": "aboutSelf"
         },
         "closing_response": {
-          "message": "Thank you for reaching out to our hotline! We will be with you shortly. Please note: A false report is a crime governed by federal and state laws, involving a person who, with intent to deceive, knowingly makes a false statement to a mandated reporter or law enforcement official that results in unwarranted government action. Childhelp's National Child Abuse Hotline is comprised of mandated reporters who will refer malicious or false reports to law enforcement for prosecution."
+          "message": "Thank you, a counselor will be with you shortly. Para hablar con un consejero en Español, llame al 800-422-4453. Please note: A false report is a crime governed by federal and state laws, involving a person who, with intent to deceive, knowingly makes a false statement to a mandated reporter or law enforcement official that results in unwarranted government action. Childhelp’s National Child Abuse Hotline is comprised of mandated reporters who will refer malicious or false reports to law enforcement for prosecution."
         },
         "slot_priorities": {
           "1": {

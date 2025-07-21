@@ -23,6 +23,6 @@
         "definitionVersion": "usch-v1",
         "external_recordings_enabled": false,
         "helplineLanguage": "en-USCH",
-        "permissionConfig": "demo"
+        "permissionConfig": "usch"
     }
 }
