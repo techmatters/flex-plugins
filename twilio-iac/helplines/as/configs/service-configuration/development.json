@@ -20,7 +20,6 @@
             "enable_post_survey": true,
             "enable_save_in_progress_contacts": true,
             "enable_save_insights": true,
-            "enable_teams_view_enhancements2": true,
             "enable_voice_recordings": false,
             "enable_lambda_post_survey_processing": true,
             "enable_lex_v2": true,

@@ -46,13 +46,8 @@
             "enableUnmaskingCalls": false
         },
         "feature_flags": {
-            "backend_handled_chat_janitor": true,
             "enable_active_contact_header": true,
-            "enable_aselo_messaging_ui": false,
-            "enable_backend_hrm_contact_creation": true,
-            "enable_backend_manual_pulling": true,
             "enable_canned_responses": true,
-            "enable_case_merging": true,
             "enable_client_profiles": true,
             "enable_conferencing": false,
             "enable_confirm_on_browser_close": true,
@@ -63,7 +58,6 @@
             "enable_dual_write": false,
             "enable_emoji_picker": true,
             "enable_external_transcripts": true,
-            "enable_filter_cases": true,
             "enable_fullstory_monitoring": true,
             "enable_generalized_search": true,
             "enable_last_case_status_update_info": true,
@@ -76,15 +70,11 @@
             "enable_previous_contacts": true,
             "enable_save_in_progress_contacts": true,
             "enable_save_insights": true,
-            "enable_separate_timeline_view": true,
-            "enable_sort_cases": true,
-            "enable_task_router_event_delegation": true,
             "enable_teams_view_enhancements2": true,
             "enable_transfers": true,
             "enable_twilio_transcripts": false,
             "enable_upload_documents": true,
-            "enable_voice_recordings": false,
-            "lambda_task_created_handler": true
+            "enable_voice_recordings": false
         },
         "multipleOfficeSupport": false,
         "WARNING": "These attributes are set using a tool in the twilio-iac repo. If you are seeing this message anywhere else, please stop and use the process described here: https://github.com/techmatters/flex-plugins/blob/master/twilio-iac/docs/service_configuration.md"
