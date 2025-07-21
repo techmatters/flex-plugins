@@ -125,9 +125,7 @@ export const setUpQueuesStatus = (setupObject: SetupObject) => {
 const setUpManualPulling = () => {
   const manager = Flex.Manager.getInstance();
 
-  const [, chatChannel] = Object.entries(manager.workerClient.channels).find(
-    c => c[1].taskChannelUniqueName === 'chat',
-  );
+  const [, chatChannel] = Array.from(manager.workerClient.channels).find(c => c[1].taskChannelUniqueName === 'chat');
 
   manager.store.dispatch(chatCapacityUpdated(chatChannel.capacity));
   (chatChannel as any).on('capacityUpdated', channel => {
