@@ -112,8 +112,8 @@
     "isPII": false,
     "options": [
       {
-        "value": "Unknown",
-        "label": ""
+        "value": "00",
+        "label": "0"
       },
       {
         "value": "01",
