@@ -59,7 +59,7 @@ ${
       }
     },
     {
-      "name": "send_couragefirst_welcome_voice_message",
+      "name": "send_courage_first_voice_welcome_message",
       "type": "say-play",
       "transitions": [
         {
@@ -74,7 +74,7 @@ ${
           "y": 230
         },
         "loop": 1,
-        "say": "${flow_vars.couragefirst_welcome_voice_message}",
+        "say": "${flow_vars.courage_first_voice_welcome_message}",
         "language": "en-US"
       }
     },
@@ -486,11 +486,11 @@ ${
       "type": "split-based-on",
       "transitions": [
         {
-          "next": "send_couragefirst_welcome_voice_message",
+          "next": "send_courage_first_voice_welcome_message",
           "event": "noMatch"
         },
         {
-          "next": "send_couragefirst_welcome_voice_message",
+          "next": "send_courage_first_voice_welcome_message",
           "event": "match",
           "conditions": [
             {

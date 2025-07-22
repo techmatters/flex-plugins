@@ -16,6 +16,7 @@ locals {
       usch_functions_serverless_environement_id    = "ZEbcc21f22160cba1e3fdb1bff6ae24295"
       is_skilled_worker_available_function_sid     = "ZHa1e94f59f90924f9e2ab41714d848471"
       worspace_sid                                 = "WS3320dfd12f64cb39784075ef93c8babf"
+      serverless_usch_functions_url                = "https://usch-functions-6913.twil.io"
       #Common - Webchat
       webchat_blocked_client_message                       = "blocked_client_message"
       #Child Help -  Webchat
@@ -31,14 +32,16 @@ locals {
       # Courage First -  SMS
       courage_first_sms_closed_message = "Thank you for contacting the Courage First Athlete Helpline. If this is a life-threatening emergency, please contact 911."
       courage_first_sms_redirect_message = "You have reached us outside of our normal operating hours of Monday through Friday, 12pm to 8pm, PST. If you would like to text right now with a Crisis Counselor who can provide immediate emotional support and resources, please text 800-422-4453 to reach the Childhelp National Child Abuse Hotline"
+      # ChildHelp -  SMS
       
+      # Courage First -  Voice
+      courage_first_voice_welcome_message           = "Welcome to the Courage First athlete helpline. If this is an emergency hang up and dial 911. For terms of service you can visit athletehelpline.org and click on the terms of service link. You will now be connected to the next Courage First counselor. Calls may be monitored for quality assurance."
       
+      # ChildHelp -  Voice
+      childhelp_voice_welcome_message              = "You have reached the Childhelp National Child Abuse Hotline."
       
       
       chat_blocked_message                         = "chat_blocked_message"
-      serverless_usch_functions_url                = "https://usch-functions-6913.twil.io"
-      childhelp_welcome_voice_message              = "You have reached the Childhelp National Child Abuse Hotline."
-      courage_first_welcome_voice_message           = "Welcome to the Courage First athlete helpline. If this is an emergency hang up and dial 911. For terms of service you can visit athletehelpline.org and click on the terms of service link. You will now be connected to the next Courage First counselor. Calls may be monitored for quality assurance."
       courage_first_prequeue_eng_message            = "Thank you, a counselor will be with you shortly. Para hablar con un consejero en Español, llame al 800-422-4453. Please note: A false report is a crime governed by federal and state laws, involving a person who, with intent to deceive, knowingly makes a false statement to a mandated reporter or law enforcement official that results in unwarranted government action. Childhelp’s National Child Abuse Hotline is comprised of mandated reporters who will refer malicious or false reports to law enforcement for prosecution."
       spanish_option_voice_message                 = "Para español presione 2"
       no_spanish_counselor_prequeue_voice_message  = "no spanish counselor prequeue voice message"
