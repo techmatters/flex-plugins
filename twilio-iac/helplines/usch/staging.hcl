@@ -18,7 +18,7 @@ locals {
       worspace_sid                                 = "WS3320dfd12f64cb39784075ef93c8babf"
       other_language_childhelp_message             = "Currently, our chat platform only works in English. For assistance in other languages, please call our hotline at 1-800-422-4453."
       other_language_courage_first_message         = "Currently, our chat platform only works in English. For assistance in other languages, please call our hotline at 1-888-279-1026."
-      //courage_first_closed_message                 = "courage_first_closed_message"
+      courage_first_closed_message                 = "Thank you for contacting the Courage First Athlete Helpline. If this is a life-threatening emergency, please contact 911"
       blocked_client_message                       = "blocked_client_message"
       childhelp_welcome_message                    = "Thank you for reaching out to our hotline! We will be with you shortly.\nPlease note: A false report is a crime governed by federal and state laws, involving a person who, with intent to deceive, knowingly makes a false statement to a mandated reporter or law enforcement official that results in unwarranted government action. Childhelp's National Child Abuse Hotline is comprised of mandated reporters who will refer malicious or false reports to law enforcement for prosecution."
       couragefirst_welcome_message                 = "Please go to the following link for the full terms of service: Terms of Service - The Courage First Athlete Helpline https://www.athletehelpline.org/terms/ "
@@ -30,13 +30,13 @@ locals {
       spanish_option_voice_message                 = "Para español presione 2"
       no_spanish_counselor_prequeue_voice_message  = "no spanish counselor prequeue voice message"
       english_options_voice_message                = "If this is a life-threatening emergency, hang up and call 911. For terms of service or more information about the hotline, visit childhelphotline.org. Please listen to all options before making a selection. To speak with a crisis counselor, press one.  Please hold for the next available counselor. Calls may be monitored for quality assurance."
-      //childhelp_prequeue_spanish_voice_message     = "La Línea Directa Nacional de Abuso Infantil de Childhelp se dedica a la prevención del abuso infantil. La línea directa está abierta las 24 horas del día, los 7 días de la semana, con consejeros profesionales en situaciones de crisis. La línea directa ofrece intervención en situaciones de crisis, información y referencias a miles de recursos de emergencia, servicios sociales y apoyo. Todas las llamadas son confidenciales. Si se trata de una emergencia en donde una vida corre peligro, cuelgue y llame al 911. Las llamadas pueden ser monitoreadas para asegurar la calidad. Si un consejero de habla hispana no está disponible, se le conectará con un consejero que puede acceder a un intérprete. Por favor, espere al próximo consejero disponible."
-      //childhelp_prequeue_english_voice_message     = "Childhelp National Child Abuse Hotline is dedicated to the prevention of child abuse.  The hotline is staffed 24 hours a day, 7 days a week, with professional crisis counselors. The hotline offers crisis intervention, information, and referrals to thousands of emergency, social service, and support resources.  All calls are confidential. You can also text the hotline at 1800-422-4453 or chat with a counselor at childhelphotline.org. If you are calling to make a report, please contact your local Child Protective Services. You can access our interactive map at childhelp.org for the appropriate number.  Thank you for continuing to hold.  If there is immediate danger, please dial 911. The next available counselor will be with you as soon as possible."
+      childhelp_prequeue_spanish_voice_message     = "La Línea Directa Nacional de Abuso Infantil de Childhelp se dedica a la prevención del abuso infantil. La línea directa está abierta las 24 horas del día, los 7 días de la semana, con consejeros profesionales en situaciones de crisis. La línea directa ofrece intervención en situaciones de crisis, información y referencias a miles de recursos de emergencia, servicios sociales y apoyo. Todas las llamadas son confidenciales. Si se trata de una emergencia en donde una vida corre peligro, cuelgue y llame al 911. Las llamadas pueden ser monitoreadas para asegurar la calidad. Si un consejero de habla hispana no está disponible, se le conectará con un consejero que puede acceder a un intérprete. Por favor, espere al próximo consejero disponible."
+      childhelp_prequeue_english_voice_message     = "Childhelp National Child Abuse Hotline is dedicated to the prevention of child abuse.  The hotline is staffed 24 hours a day, 7 days a week, with professional crisis counselors. The hotline offers crisis intervention, information, and referrals to thousands of emergency, social service, and support resources.  All calls are confidential. You can also text the hotline at 1800-422-4453 or chat with a counselor at childhelphotline.org. If you are calling to make a report, please contact your local Child Protective Services. You can access our interactive map at childhelp.org for the appropriate number.  Thank you for continuing to hold.  If there is immediate danger, please dial 911. The next available counselor will be with you as soon as possible."
       childhelp_prequeue_spanish_voice_message = "This will be the pre queue spanish message"
       childhelp_prequeue_english_voice_message = "This will be the pre queue english message"
-      //courage_first_prequeue_spanish_voice_message = "This will be the pre queue spanish message"
-      //courage_first_prequeue_english_voice_message = "This will be the pre queue english message"
-      //redirect_childhelp_voice_message             = "redirect childhelp message"
+      courage_first_prequeue_spanish_voice_message = "This will be the pre queue spanish message"
+      courage_first_prequeue_english_voice_message = "This will be the pre queue english message"
+      redirect_childhelp_voice_message             = "redirect childhelp message"
       system_error_eng_language_message             = "Sorry, there was a system error. Please try contacting us again."
     }
     //Serverless -- to allow enabling the operating hours check on this staging account.
@@ -46,7 +46,7 @@ locals {
       webchat : {
         channel_type     = "web"
         contact_identity = ""
-        templatefile     = "/app/twilio-iac/helplines/usch/templates/studio-flows/webchat-no-chatbot-no-operating-hours.tftpl"
+        templatefile     = "/app/twilio-iac/helplines/usch/templates/studio-flows/webchat-no-chatbot.tftpl"
         channel_flow_vars = {
           courage_first_url = "https://assets-staging.tl.techmatters.org/webchat/usch/usch_courage_first.html"
           childhelp_url     = "https://assets-staging.tl.techmatters.org/webchat/usch/usch_childhelp_hotline.html"
