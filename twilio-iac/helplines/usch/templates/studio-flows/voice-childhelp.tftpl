@@ -59,7 +59,7 @@ ${
       }
     },
     {
-      "name": "send_childhelp_welcome_voice_message",
+      "name": "send_childhelp_voice_welcome_message",
       "type": "say-play",
       "transitions": [
         {
@@ -74,7 +74,7 @@ ${
           "y": 230
         },
         "loop": 1,
-        "say": "${flow_vars.childhelp_welcome_voice_message}",
+        "say": "${flow_vars.childhelp_voice_welcome_message}",
         "language": "en-US"
       }
     },
@@ -474,7 +474,7 @@ ${
       "type": "split-based-on",
       "transitions": [
         {
-          "next": "send_childhelp_welcome_voice_message",
+          "next": "send_childhelp_voice_welcome_message",
           "event": "noMatch"
         },
         {
