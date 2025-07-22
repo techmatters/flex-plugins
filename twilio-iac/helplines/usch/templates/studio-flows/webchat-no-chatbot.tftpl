@@ -200,7 +200,7 @@ ${
           ]
         },
         {
-          "next": "send_other_language_courage_first_message",
+          "next": "send_courage_first_webchat_other_language_message",
           "event": "match",
           "conditions": [
             {
@@ -214,7 +214,7 @@ ${
           ]
         },
         {
-          "next": "send_other_language_courage_first_message",
+          "next": "send_courage_first_webchat_other_language_message",
           "event": "match",
           "conditions": [
             {
@@ -237,7 +237,7 @@ ${
       }
     },
     {
-      "name": "send_other_language_courage_first_message",
+      "name": "send_courage_first_webchat_other_language_message",
       "type": "send-message",
       "transitions": [
         {
@@ -257,7 +257,7 @@ ${
         "from": "Bot",
         "message_type": "custom",
         "to": "{{contact.channel.address}}",
-        "body": "${flow_vars.other_language_courage_first_message}"
+        "body": "${flow_vars.courage_first_webchat_other_language_message}"
       }
     },
     {
@@ -283,7 +283,7 @@ ${
           ]
         },
         {
-          "next": "send_other_language_childhelp_message",
+          "next": "send_childhelp_webchat_other_language_message",
           "event": "match",
           "conditions": [
             {
@@ -297,7 +297,7 @@ ${
           ]
         },
         {
-          "next": "send_other_language_childhelp_message",
+          "next": "send_childhelp_webchat_other_language_message",
           "event": "match",
           "conditions": [
             {
@@ -320,7 +320,7 @@ ${
       }
     },
     {
-      "name": "send_other_language_childhelp_message",
+      "name": "send_childhelp_webchat_other_language_message",
       "type": "send-message",
       "transitions": [
         {
@@ -340,7 +340,7 @@ ${
         "from": "Bot",
         "message_type": "custom",
         "to": "{{contact.channel.address}}",
-        "body": "${flow_vars.other_language_childhelp_message}"
+        "body": "${flow_vars.childhelp_webchat_other_language_message}"
       }
     },
     {
@@ -414,7 +414,7 @@ ${
           "event": "noMatch"
         },
         {
-          "next": "send_courage_first_closed_message",
+          "next": "send_courage_first_webchat_closed_message",
           "event": "match",
           "conditions": [
             {
@@ -451,7 +451,7 @@ ${
       }
     },
     {
-      "name": "send_courage_first_closed_message",
+      "name": "send_courage_first_webchat_closed_message",
       "type": "send-message",
       "transitions": [
         {
@@ -472,11 +472,11 @@ ${
         "from": "Bot",
         "message_type": "custom",
         "to": "{{contact.channel.address}}",
-        "body": "${flow_vars.courage_first_closed_message}"
+        "body": "${flow_vars.courage_first_webchat_closed_message}"
       }
     },
     {
-      "name": "send_blocked_client_message",
+      "name": "send_webchat_blocked_client_message",
       "type": "send-message",
       "transitions": [
         {
@@ -496,7 +496,7 @@ ${
         "from": "Bot",
         "message_type": "custom",
         "to": "{{contact.channel.address}}",
-        "body": "${flow_vars.blocked_client_message}"
+        "body": "${flow_vars.webchat_blocked_client_message}"
       }
     },
     {
@@ -508,7 +508,7 @@ ${
           "event": "noMatch"
         },
         {
-          "next": "send_blocked_client_message",
+          "next": "send_webchat_blocked_client_message",
           "event": "match",
           "conditions": [
             {
@@ -531,7 +531,7 @@ ${
       }
     },
     {
-      "name": "send_childhelp_welcome_message",
+      "name": "send_childhelp_webchat_welcome_message",
       "type": "send-message",
       "transitions": [
         {
@@ -553,7 +553,7 @@ ${
         "from": "Bot",
         "message_type": "custom",
         "to": "{{contact.channel.address}}",
-        "body": "${flow_vars.childhelp_welcome_message}"
+        "body": "${flow_vars.childhelp_webchat_welcome_message}"
       }
     },
     {
@@ -564,7 +564,7 @@ ${
           "event": "noMatch"
         },
         {
-          "next": "send_couragefirst_welcome_message",
+          "next": "send_courage_first_webchat_welcome_message",
           "event": "match",
           "conditions": [
             {
@@ -578,7 +578,7 @@ ${
           ]
         },
         {
-          "next": "send_childhelp_welcome_message",
+          "next": "send_childhelp_webchat_welcome_message",
           "event": "match",
           "conditions": [
             {
@@ -601,7 +601,7 @@ ${
       }
     },
     {
-      "name": "send_couragefirst_welcome_message",
+      "name": "send_courage_first_webchat_welcome_message",
       "type": "send-message",
       "transitions": [
         {
@@ -623,7 +623,7 @@ ${
         "from": "Bot",
         "message_type": "custom",
         "to": "{{contact.channel.address}}",
-        "body": "${flow_vars.couragefirst_welcome_message}"
+        "body": "${flow_vars.courage_first_webchat_welcome_message}"
       }
     },
     {

@@ -282,7 +282,7 @@ ${
           ]
         },
         {
-          "next": "send_other_language_childhelp_message",
+          "next": "send_childhelp_webchat_other_language_message",
           "event": "match",
           "conditions": [
             {
@@ -296,7 +296,7 @@ ${
           ]
         },
         {
-          "next": "send_other_language_childhelp_message",
+          "next": "send_childhelp_webchat_other_language_message",
           "event": "match",
           "conditions": [
             {
@@ -319,7 +319,7 @@ ${
       }
     },
     {
-      "name": "send_other_language_childhelp_message",
+      "name": "send_childhelp_webchat_other_language_message",
       "type": "send-message",
       "transitions": [
         {
@@ -339,7 +339,7 @@ ${
         "from": "Bot",
         "message_type": "custom",
         "to": "{{contact.channel.address}}",
-        "body": "${flow_vars.other_language_childhelp_message}"
+        "body": "${flow_vars.childhelp_webchat_other_language_message}"
       }
     },
     {
