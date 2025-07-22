@@ -16,15 +16,22 @@ locals {
       usch_functions_serverless_environement_id    = "ZEbcc21f22160cba1e3fdb1bff6ae24295"
       is_skilled_worker_available_function_sid     = "ZHa1e94f59f90924f9e2ab41714d848471"
       worspace_sid                                 = "WS3320dfd12f64cb39784075ef93c8babf"
+      #Common - Webchat
+      webchat_blocked_client_message                       = "blocked_client_message"
+      #Child Help -  Webchat
       childhelp_webchat_other_language_message             = "Currently, our chat platform only works in English. For assistance in other languages, please call our hotline at 1-800-422-4453."
       childhelp_webchat_welcome_message                    = "Thank you for reaching out to our hotline! We will be with you shortly.\nPlease note: A false report is a crime governed by federal and state laws, involving a person who, with intent to deceive, knowingly makes a false statement to a mandated reporter or law enforcement official that results in unwarranted government action. Childhelp's National Child Abuse Hotline is comprised of mandated reporters who will refer malicious or false reports to law enforcement for prosecution."
       
-
+      # Courage First -  Webchat
       courage_first_webchat_other_language_message         = "Currently, our chat platform only works in English. For assistance in other languages, please call our hotline at 1-888-279-1026."
       courage_first_webchat_closed_message                 = "Thank you for contacting the Courage First Athlete Helpline. If this is a life-threatening emergency, please contact 911. You have reached us outside of our normal operating hours of Monday through Friday, 12pm to 8pm, PST.   If you would like to chat right now with a Crisis Counselor at the Childhelp National Child Abuse Hotline who can provide immediate emotional support and resources, please call or text 800-422-4453 or visit www.childhelphotline.org "
       courage_first_webchat_welcome_message                 = "Please go to the following link for the full terms of service: Terms of Service - The Courage First Athlete Helpline https://www.athletehelpline.org/terms/ "
       
-      webchat_blocked_client_message                       = "blocked_client_message"
+      # Courage First -  SMS
+      courage_first_sms_closed_message = "Thank you for contacting the Courage First Athlete Helpline. If this is a life-threatening emergency, please contact 911."
+      courage_first_sms_redirect_message = "You have reached us outside of our normal operating hours of Monday through Friday, 12pm to 8pm, PST. If you would like to text right now with a Crisis Counselor who can provide immediate emotional support and resources, please text 800-422-4453 to reach the Childhelp National Child Abuse Hotline"
+      
+      
       
       
       chat_blocked_message                         = "chat_blocked_message"
@@ -92,8 +99,8 @@ locals {
         contact_identity = "+16066032348"
         templatefile     = "/app/twilio-iac/helplines/usch/templates/studio-flows/sms-courage-first-chatbot.tftpl"
         channel_flow_vars = {
-          //language_message                   = "Thank you for texting the Courage Help Hotline. For English, press 1.\nFor any other language, please press 2."
-          //courage_first_other_message        = "Currently, our text messaging platform only works in English. For assistance in other languages, please call our hotline at 1-888-279-1026."
+          language_message                   = "Thank you for texting the Courage Help Hotline. For English, press 1.\nFor any other language, please press 2."
+          courage_first_other_message        = "Currently, our text messaging platform only works in English. For assistance in other languages, please call our hotline at 1-888-279-1026."
           courage_first_eng_language_message = "Thank you for texting the Courage First Athlete Helpline. Standard msg rates may apply. Terms of service can be found at https://www.athletehelpline.org/terms/. By continuing, you agree to our terms of service."
         }
         chatbot_unique_names = []

@@ -148,7 +148,7 @@ ${
           "event": "noMatch"
         },
         {
-          "next": "send_courage_first_closed_message",
+          "next": "send_courage_first_sms_closed_message",
           "event": "match",
           "conditions": [
             {
@@ -185,7 +185,7 @@ ${
       }
     },
     {
-      "name": "send_courage_first_closed_message",
+      "name": "send_courage_first_sms_closed_message",
       "type": "send-message",
       "transitions": [
         {
@@ -206,7 +206,7 @@ ${
         "from": "Bot",
         "message_type": "custom",
         "to": "{{contact.channel.address}}",
-        "body": "courage_first_closed_message"
+        "body": "courage_first_sms_closed_message"
       }
     },
     {
