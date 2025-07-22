@@ -24,8 +24,11 @@ export const selectCurrentDefinitionVersion = (state: RootState) =>
   state[namespace].configuration.currentDefinitionVersion;
 
 export const selectDefinitionVersionForCase = ({ [namespace]: { configuration } }: RootState, connectedCase: Case) =>
+  configuration.definitionVersions[connectedCase?.definitionVersion ?? ''] ??
   configuration.definitionVersions[connectedCase?.info?.definitionVersion ?? ''] ??
   configuration.currentDefinitionVersion;
 
 export const selectDefinitionVersionForContact = ({ [namespace]: { configuration } }: RootState, contact: Contact) =>
-  configuration.definitionVersions[contact?.rawJson?.definitionVersion ?? ''] ?? configuration.currentDefinitionVersion;
+  configuration.definitionVersions[contact?.definitionVersion ?? ''] ??
+  configuration.definitionVersions[contact?.rawJson?.definitionVersion ?? ''] ??
+  configuration.currentDefinitionVersion;
