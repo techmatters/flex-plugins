@@ -104,7 +104,7 @@ ${
       }
     },
     {
-      "name": "blocked_client_message",
+      "name": "sms_blocked_client_message",
       "type": "send-message",
       "transitions": [
         {
@@ -124,7 +124,7 @@ ${
         "from": "Bot",
         "message_type": "custom",
         "to": "{{contact.channel.address}}",
-        "body": "${flow_vars.blocked_client_message}"
+        "body": "${flow_vars.sms_blocked_client_message}"
       }
     },
     {
@@ -136,7 +136,7 @@ ${
           "event": "noMatch"
         },
         {
-          "next": "blocked_client_message",
+          "next": "sms_blocked_client_message",
           "event": "match",
           "conditions": [
             {
