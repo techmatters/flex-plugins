@@ -241,10 +241,6 @@
           "label": "Unknown"
         }
       ]
-    },
-    "required": {
-      "value": true,
-      "message": "RequiredFieldError"
     }
   },
   {
