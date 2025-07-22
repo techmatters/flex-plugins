@@ -1,5 +1,7 @@
 {
-  "Example Helpline": {
+  "Missing Children Europe": {
+
+  "categories": {
     "Missing children": {
       "color": "#BBE3FF",
       "subcategories": [
@@ -247,9 +249,6 @@
       "color": "#506BA5",
       "subcategories": [
         {
-          "label": "Sexual orientation and gender identity"
-        },
-        {
           "label": "Sexual behaviours"
         },
         {
@@ -281,4 +280,5 @@
       ]
     }
   }
+}
 }

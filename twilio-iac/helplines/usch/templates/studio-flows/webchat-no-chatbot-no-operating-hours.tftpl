@@ -137,11 +137,6 @@ ${
             "type": "string",
             "value": "CourageFirst",
             "key": "service"
-          },
-          {
-            "type": "string",
-            "value": "en-CF",
-            "key": "language"
           }
         ],
         "offset": {
@@ -163,8 +158,8 @@ ${
         "variables": [
           {
             "type": "string",
-            "value": "en-CH",
-            "key": "language"
+            "value": "ChildHelp",
+            "key": "service"
           }
         ],
         "offset": {
@@ -178,11 +173,11 @@ ${
       "type": "split-based-on",
       "transitions": [
         {
-          "next": "operatingHours",
+          "next": "split_welcome_message",
           "event": "noMatch"
         },
         {
-          "next": "operatingHours",
+          "next": "split_welcome_message",
           "event": "match",
           "conditions": [
             {
@@ -365,113 +360,6 @@ ${
       }
     },
     {
-      "name": "operatingHours",
-      "type": "run-function",
-      "transitions": [
-        {
-          "next": "split_status",
-          "event": "success"
-        },
-        {
-          "next": "split_welcome_message",
-          "event": "fail"
-        }
-      ],
-      "properties": {
-        "service_sid": "${serverless_service_sid}",
-        "environment_sid": "${serverless_environment_sid}",
-        "offset": {
-          "x": -150,
-          "y": 1490
-        },
-        "function_sid": "${flow_vars.operating_hours_function_sid}",
-        "parameters": [
-          {
-            "value": "webchat",
-            "key": "channel"
-          },
-          {
-            "value": "true",
-            "key": "includeMessageTextInResponse"
-          },
-          {
-            "value": "en-USCH",
-            "key": "language"
-          }
-        ],
-        "url": "${serverless_url}/operatingHours"
-      }
-    },
-    {
-      "name": "split_status",
-      "type": "split-based-on",
-      "transitions": [
-        {
-          "event": "noMatch"
-        },
-        {
-          "next": "send_courage_first_closed_message",
-          "event": "match",
-          "conditions": [
-            {
-              "friendly_name": "If value matches_any_of closed,holiday",
-              "arguments": [
-                "{{widgets.operatingHours.parsed.status}}"
-              ],
-              "type": "matches_any_of",
-              "value": "closed,holiday"
-            }
-          ]
-        },
-        {
-          "next": "split_welcome_message",
-          "event": "match",
-          "conditions": [
-            {
-              "friendly_name": "If value equal_to open",
-              "arguments": [
-                "{{widgets.operatingHours.parsed.status}}"
-              ],
-              "type": "equal_to",
-              "value": "open"
-            }
-          ]
-        }
-      ],
-      "properties": {
-        "input": "{{widgets.operatingHours.parsed.status}}",
-        "offset": {
-          "x": -460,
-          "y": 1740
-        }
-      }
-    },
-    {
-      "name": "send_courage_first_closed_message",
-      "type": "send-message",
-      "transitions": [
-        {
-          "event": "sent",
-          "next": "reset_childhelp_variable"
-        },
-        {
-          "event": "failed"
-        }
-      ],
-      "properties": {
-        "offset": {
-          "x": -560,
-          "y": 2050
-        },
-        "service": "{{trigger.message.InstanceSid}}",
-        "channel": "{{trigger.message.ChannelSid}}",
-        "from": "Bot",
-        "message_type": "custom",
-        "to": "{{contact.channel.address}}",
-        "body": "${flow_vars.courage_first_closed_message}"
-      }
-    },
-    {
       "name": "send_blocked_client_message",
       "type": "send-message",
       "transitions": [
@@ -620,29 +508,6 @@ ${
         "message_type": "custom",
         "to": "{{contact.channel.address}}",
         "body": "${flow_vars.couragefirst_welcome_message}"
-      }
-    },
-    {
-      "name": "reset_childhelp_variable",
-      "type": "set-variables",
-      "transitions": [
-        {
-          "next": "attributes",
-          "event": "next"
-        }
-      ],
-      "properties": {
-        "variables": [
-          {
-            "type": "string",
-            "value": "ChildHelp",
-            "key": "service"
-          }
-        ],
-        "offset": {
-          "x": -500,
-          "y": 2410
-        }
       }
     }
   ],

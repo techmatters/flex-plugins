@@ -6,6 +6,8 @@
         "value": "0-5"
       },
       "synonyms": [
+        { "value": "0" },
+        { "value": "zero" },
         { "value": "1" },
         { "value": "one" },
         { "value": "2" },
@@ -239,8 +241,7 @@
         { "value": "Rather not say" },
         { "value": "prefer not to" },
         { "value": "X" },
-        { "value": "Prefer not to answer" },
-        { "value": "0" }
+        { "value": "Prefer not to answer" }
       ]
     }
   ],

@@ -4,8 +4,8 @@
     "CallerInformationTab":["age", "genderInput", "stateInput"]
   },
   "preEngagement":{
-    "ChildInformationTab":["age", "genderInput", "state"],
-    "CallerInformationTab":["age", "genderInput","state"],
+    "ChildInformationTab":["age", "genderInput", "childState"],
+    "CallerInformationTab":["age", "genderInput","childState"],
     "CaseInformationTab":["howTheHelpseekerHeardAboutUs"]
   }
 }
