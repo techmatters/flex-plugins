@@ -25,7 +25,8 @@ locals {
       courage_first_webchat_other_language_message         = "Currently, our chat platform only works in English. For assistance in other languages, please call our hotline at 1-888-279-1026."
       courage_first_webchat_closed_message                 = "Thank you for contacting the Courage First Athlete Helpline. If this is a life-threatening emergency, please contact 911. You have reached us outside of our normal operating hours of Monday through Friday, 12pm to 8pm, PST.   If you would like to chat right now with a Crisis Counselor at the Childhelp National Child Abuse Hotline who can provide immediate emotional support and resources, please call or text 800-422-4453 or visit www.childhelphotline.org "
       courage_first_webchat_welcome_message                 = "Please go to the following link for the full terms of service: Terms of Service - The Courage First Athlete Helpline https://www.athletehelpline.org/terms/ "
-      #Common - Webchat
+      
+      #Common - SMS
       sms_blocked_client_message                       = "blocked_client_message"
       # Courage First -  SMS
       courage_first_sms_closed_message = "Thank you for contacting the Courage First Athlete Helpline. If this is a life-threatening emergency, please contact 911."
@@ -76,7 +77,7 @@ locals {
       voice_courage_first : {
         channel_type     = "voice"
         contact_identity = ""
-        templatefile     = "/app/twilio-iac/helplines/usch/templates/studio-flows/voice-courage-first-no-operating-hours.tftpl"
+        templatefile     = "/app/twilio-iac/helplines/usch/templates/studio-flows/voice-courage-first-operating-hours.tftpl"
         channel_flow_vars = {
         }
         chatbot_unique_names = []
