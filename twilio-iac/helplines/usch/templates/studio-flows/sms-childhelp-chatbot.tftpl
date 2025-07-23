@@ -223,7 +223,7 @@ ${
           "event": "incomingMessage"
         },
         {
-          "next": "send_childhelp_sms_no_response_language_message",
+          "next": "split_escape_retry",
           "event": "timeout"
         },
         {
@@ -460,6 +460,60 @@ ${
         "message_type": "custom",
         "to": "{{contact.channel.address}}",
         "body": "${flow_vars.childhelp_sms_failure_message}"
+      }
+    },
+    {
+      "name": "set_escape_retry",
+      "type": "set-variables",
+      "transitions": [
+        {
+          "next": "get_childhelp_sms_language_message",
+          "event": "next"
+        }
+      ],
+      "properties": {
+        "variables": [
+          {
+            "type": "string",
+            "value": "true",
+            "key": "escape_retry"
+          }
+        ],
+        "offset": {
+          "x": -30,
+          "y": 580
+        }
+      }
+    },
+    {
+      "name": "split_escape_retry",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "set_escape_retry",
+          "event": "noMatch"
+        },
+        {
+          "next": "send_childhelp_sms_no_response_language_message",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to true",
+              "arguments": [
+                "{{flow.variables.escape_retry}}"
+              ],
+              "type": "equal_to",
+              "value": "true"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{flow.variables.escape_retry}}",
+        "offset": {
+          "x": -320,
+          "y": 810
+        }
       }
     }
   ],

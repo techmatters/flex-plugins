@@ -145,7 +145,8 @@ ${
       "type": "split-based-on",
       "transitions": [
         {
-          "event": "noMatch"
+          "event": "noMatch",
+          "next": "send_courage_first_sms_welcome_message"
         },
         {
           "next": "send_courage_first_sms_closed_message",
@@ -205,7 +206,7 @@ ${
         "from": "Bot",
         "message_type": "custom",
         "to": "{{contact.channel.address}}",
-        "body": "courage_first_sms_closed_message"
+        "body": "${flow_vars.courage_first_sms_closed_message}"
       }
     },
     {
@@ -426,7 +427,8 @@ ${
           "event": "sent"
         },
         {
-          "event": "failed"
+          "event": "failed",
+          "next": "attributes"
         }
       ],
       "properties": {
