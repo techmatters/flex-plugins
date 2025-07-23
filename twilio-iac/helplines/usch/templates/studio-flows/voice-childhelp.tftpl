@@ -54,7 +54,7 @@ ${
         },
         "workflow": "${workflow_sids.master}",
         "channel": "${task_channel_sids.voice}",
-        "attributes": "{\n \"type\": \"inbound\",\n \"name\": \"{{trigger.call.From}}\",\n \"ignoreAgent\": \"\",\n \"service\":\"ChildHelp\",\n \"language\":\"en-USCH\",\n\"counselingLanguage\": \"Spanish\",\n \"transferTargetType\": \"\",\n \"channelType\": \"voice\",\n \"conversations\": {\n   \"ivr_path\": \"ChildHelp Spanish\",\n   \"hang_up_by\": \"Customer\"\n }\n}",
+        "attributes": "{\n \"type\": \"inbound\",\n \"name\": \"{{trigger.call.From}}\",\n \"ignoreAgent\": \"\",\n \"service\":\"ChildHelp\",\n \"language\":\"en-CH\",\n\"counselingLanguage\": \"Spanish\",\n \"transferTargetType\": \"\",\n \"channelType\": \"voice\",\n \"conversations\": {\n   \"ivr_path\": \"ChildHelp Spanish\",\n   \"hang_up_by\": \"Customer\"\n }\n}",
         "waitUrlMethod": "GET"
       }
     },
@@ -63,7 +63,7 @@ ${
       "type": "say-play",
       "transitions": [
         {
-          "next": "send_spanish_option_voice_message",
+          "next": "send_childhelp_voice_spanish_option_message",
           "event": "audioComplete"
         }
       ],
@@ -102,7 +102,7 @@ ${
       }
     },
     {
-      "name": "send_spanish_option_voice_message",
+      "name": "send_childhelp_voice_spanish_option_message",
       "type": "gather-input-on-call",
       "transitions": [
         {
@@ -113,7 +113,7 @@ ${
           "event": "speech"
         },
         {
-          "next": "send_english_options_voice_message",
+          "next": "send_childhelp_voice_english_options_message",
           "event": "timeout"
         }
       ],
@@ -124,7 +124,7 @@ ${
           "y": 470
         },
         "finish_on_key": "#",
-        "say": "${flow_vars.spanish_option_voice_message}",
+        "say": "${flow_vars.childhelp_voice_spanish_option_message
         "language": "es-MX",
         "stop_gather": false,
         "speech_model": "default",
@@ -141,7 +141,7 @@ ${
       "type": "split-based-on",
       "transitions": [
         {
-          "next": "send_english_options_voice_message",
+          "next": "send_childhelp_voice_english_options_message",
           "event": "noMatch"
         },
         {
@@ -151,7 +151,7 @@ ${
             {
               "friendly_name": "If value equal_to 2",
               "arguments": [
-                "{{widgets.send_spanish_option_voice_message.Digits}}"
+                "{{widgets.send_childhelp_voice_spanish_option_message.Digits}}"
               ],
               "type": "equal_to",
               "value": "2"
@@ -160,7 +160,7 @@ ${
         }
       ],
       "properties": {
-        "input": "{{widgets.send_spanish_option_voice_message.Digits}}",
+        "input": "{{widgets.send_childhelp_voice_spanish_option_message.Digits}}",
         "offset": {
           "x": -180,
           "y": 720
@@ -168,7 +168,7 @@ ${
       }
     },
     {
-      "name": "send_childhelp_prequeue_spanish_voice_message",
+      "name": "send_childhelp_voice_prequeue_spanish_message",
       "type": "say-play",
       "transitions": [
         {
@@ -183,12 +183,12 @@ ${
           "y": 1800
         },
         "loop": 1,
-        "say": "${flow_vars.childhelp_prequeue_spanish_voice_message}",
+        "say": "${flow_vars.childhelp_voice_prequeue_spanish_message}",
         "language": "es-MX"
       }
     },
     {
-      "name": "send_english_options_voice_message",
+      "name": "send_childhelp_voice_english_options_message",
       "type": "gather-input-on-call",
       "transitions": [
         {
@@ -213,7 +213,7 @@ ${
         },
         "loop": 1,
         "finish_on_key": "#",
-        "say": "${flow_vars.english_options_voice_message}",
+        "say": "${flow_vars.childhelp_voice_english_options_message}",
         "language": "en-US",
         "stop_gather": false,
         "gather_language": "en",
@@ -226,17 +226,17 @@ ${
       "type": "split-based-on",
       "transitions": [
         {
-          "next": "send_childhelp_prequeue_english_voice_message",
+          "next": "send_childhelp_voice_prequeue_eng_message",
           "event": "noMatch"
         },
         {
-          "next": "send_childhelp_prequeue_english_voice_message",
+          "next": "send_childhelp_voice_prequeue_eng_message",
           "event": "match",
           "conditions": [
             {
               "friendly_name": "If value equal_to 1",
               "arguments": [
-                "{{widgets.send_english_options_voice_message.Digits}}"
+                "{{widgets.send_childhelp_voice_english_options_message.Digits}}"
               ],
               "type": "equal_to",
               "value": "1"
@@ -250,7 +250,7 @@ ${
             {
               "friendly_name": "If value equal_to 2",
               "arguments": [
-                "{{widgets.send_english_options_voice_message.Digits}}"
+                "{{widgets.send_childhelp_voice_english_options_message.Digits}}"
               ],
               "type": "equal_to",
               "value": "2"
@@ -259,7 +259,7 @@ ${
         }
       ],
       "properties": {
-        "input": "{{widgets.send_english_options_voice_message.Digits}}",
+        "input": "{{widgets.send_childhelp_voice_english_options_message.Digits}}",
         "offset": {
           "x": 310,
           "y": 1300
@@ -267,7 +267,7 @@ ${
       }
     },
     {
-      "name": "send_childhelp_prequeue_english_voice_message",
+      "name": "send_childhelp_voice_prequeue_eng_message",
       "type": "say-play",
       "transitions": [
         {
@@ -282,7 +282,7 @@ ${
           "y": 1740
         },
         "loop": 1,
-        "say": "${flow_vars.childhelp_prequeue_english_voice_message}",
+        "say": "${flow_vars.childhelp_voice_prequeue_eng_message}",
         "language": "en-US"
       }
     },
@@ -308,7 +308,7 @@ ${
         "function_sid": "${flow_vars.is_skilled_worker_available_function_sid}",
         "parameters": [
           {
-            "value": "${flow_vars.worspace_sid}",
+            "value": "${flow_vars.workspace_sid}",
             "key": "workspaceSid"
           },
           {
@@ -328,11 +328,11 @@ ${
       "type": "split-based-on",
       "transitions": [
         {
-          "next": "send_no_spanish_counselor_prequeue_voice_message",
+          "next": "send_childhelp_voice_no_spanish_counselor_prequeue_message",
           "event": "noMatch"
         },
         {
-          "next": "send_no_spanish_counselor_prequeue_voice_message",
+          "next": "send_childhelp_voice_no_spanish_counselor_prequeue_message",
           "event": "match",
           "conditions": [
             {
@@ -346,7 +346,7 @@ ${
           ]
         },
         {
-          "next": "send_childhelp_prequeue_spanish_voice_message",
+          "next": "send_childhelp_voice_prequeue_spanish_message",
           "event": "match",
           "conditions": [
             {
@@ -369,7 +369,7 @@ ${
       }
     },
     {
-      "name": "send_no_spanish_counselor_prequeue_voice_message",
+      "name": "send_childhelp_voice_no_spanish_counselor_prequeue_message",
       "type": "say-play",
       "transitions": [
         {
@@ -384,7 +384,7 @@ ${
           "y": 1810
         },
         "loop": 1,
-        "say": "${flow_vars.no_spanish_counselor_prequeue_voice_message}",
+        "say": "${flow_vars.childhelp_voice_no_spanish_counselor_prequeue_message}",
         "language": "es-MX"
       }
     },
@@ -412,7 +412,7 @@ ${
         },
         "workflow": "${workflow_sids.master}",
         "channel": "${task_channel_sids.voice}",
-        "attributes": "{\n \"type\": \"inbound\",\n \"name\": \"{{trigger.call.From}}\",\n \"ignoreAgent\": \"\",\n \"language\":\"en-USCH\", \n \"service\":\"ChildHelp\",\n\"counselingLanguage\": \"Spanish\",\n \"transferTargetType\": \"\",\n \"channelType\": \"voice\",\n \"conversations\": {\n   \"ivr_path\": \"ChildHelp No Spanish\",\n   \"hang_up_by\": \"Customer\"\n }\n}",
+        "attributes": "{\n \"type\": \"inbound\",\n \"name\": \"{{trigger.call.From}}\",\n \"ignoreAgent\": \"\",\n \"language\":\"en-CH\", \n \"service\":\"ChildHelp\",\n\"counselingLanguage\": \"Spanish\",\n \"transferTargetType\": \"\",\n \"channelType\": \"voice\",\n \"conversations\": {\n   \"ivr_path\": \"ChildHelp No Spanish\",\n   \"hang_up_by\": \"Customer\"\n }\n}",
         "waitUrlMethod": "GET"
       }
     },
@@ -440,7 +440,7 @@ ${
         },
         "workflow": "${workflow_sids.master}",
         "channel": "${task_channel_sids.voice}",
-        "attributes": "{\n  \"type\": \"inbound\",\n  \"name\": \"{{trigger.call.From}}\",\n  \"ignoreAgent\": \"\",\n \"language\":\"en-USCH\", \n  \"service\":\"ChildHelp\",\n  \"transferTargetType\": \"\",\n  \"channelType\": \"voice\",\n  \"conversations\": {\n    \"ivr_path\": \"ChildHelp English\",\n    \"hang_up_by\": \"Customer\"\n  }\n}",
+        "attributes": "{\n  \"type\": \"inbound\",\n  \"name\": \"{{trigger.call.From}}\",\n  \"ignoreAgent\": \"\",\n \"language\":\"en-CH\", \n  \"service\":\"ChildHelp\",\n  \"transferTargetType\": \"\",\n  \"channelType\": \"voice\",\n  \"conversations\": {\n    \"ivr_path\": \"ChildHelp English\",\n    \"hang_up_by\": \"Customer\"\n  }\n}",
         "waitUrlMethod": "GET"
       }
     },

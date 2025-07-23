@@ -226,11 +226,11 @@ ${
       "type": "split-based-on",
       "transitions": [
         {
-          "next": "send_courage_first_prequeue_english_voice_message",
+          "next": "send_courage_first_voice_prequeue_eng_message",
           "event": "noMatch"
         },
         {
-          "next": "send_courage_first_prequeue_english_voice_message",
+          "next": "send_courage_first_voice_prequeue_eng_message",
           "event": "match",
           "conditions": [
             {
@@ -267,7 +267,7 @@ ${
       }
     },
     {
-      "name": "send_courage_first_prequeue_english_voice_message",
+      "name": "send_courage_first_voice_prequeue_eng_message",
       "type": "say-play",
       "transitions": [
         {
@@ -282,7 +282,7 @@ ${
           "y": 1740
         },
         "loop": 1,
-        "say": "${flow_vars.courage_first_prequeue_english_voice_message}",
+        "say": "${flow_vars.courage_first_voice_prequeue_eng_message}",
         "language": "es-US"
       }
     },
@@ -308,7 +308,7 @@ ${
         "function_sid": "${flow_vars.is_skilled_worker_available_function_sid}",
         "parameters": [
           {
-            "value": "${flow_vars.worspace_sid}",
+            "value": "${flow_vars.workspace_sid}",
             "key": "workspaceSid"
           },
           {
@@ -504,7 +504,7 @@ ${
           ]
         },
         {
-          "next": "send_redirect_childhelp_voice_message",
+          "next": "send_courage_first_voice_redirect_childhelp_message",
           "event": "match",
           "conditions": [
             {
@@ -582,7 +582,7 @@ ${
       }
     },
     {
-      "name": "send_redirect_childhelp_voice_message",
+      "name": "send_courage_first_voice_redirect_childhelp_message",
       "type": "say-play",
       "transitions": [
         {
@@ -597,7 +597,7 @@ ${
           "y": 220
         },
         "loop": 1,
-        "say": "${flow_vars.redirect_childhelp_voice_message}",
+        "say": "${flow_vars.courage_first_voice_redirect_childhelp_message}",
         "language": "en-US"
       }
     },
