@@ -190,10 +190,13 @@ ${
       "type": "send-message",
       "transitions": [
         {
-          "event": "sent"
+          "event": "sent",
+          "next": "send_courage_first_sms_redirect_message"
+
         },
         {
-          "event": "failed"
+          "event": "failed",
+          "next": "send_courage_first_sms_redirect_message"
         }
       ],
       "properties": {
@@ -442,6 +445,30 @@ ${
         "message_type": "custom",
         "to": "{{contact.channel.address}}",
         "body": "${flow_vars.courage_first_sms_prequeue_message}"
+      }
+    },
+    {
+      "name": "send_courage_first_sms_redirect_message",
+      "type": "send-message",
+      "transitions": [
+        {
+          "event": "sent"
+        },
+        {
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 20,
+          "y": 1690
+        },
+        "service": "{{trigger.message.InstanceSid}}",
+        "channel": "{{trigger.message.ChannelSid}}",
+        "from": "Bot",
+        "message_type": "custom",
+        "to": "{{contact.channel.address}}",
+        "body": "${flow_vars.courage_first_sms_redirect_message}"
       }
     }
   ],
