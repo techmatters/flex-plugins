@@ -2,7 +2,9 @@
   "preEngagement":{
     "contactIdentifier": "ChildInformationTab.contactIdentifier",
     "friendlyName": "ChildInformationTab.friendlyName",
+    "lastName": "ChildInformationTab.lastName",
     "phone1": "ChildInformationTab.phone1",
+    "anxietyScale": "ChildInformationTab.anxietyScale",
     "ip": "ChildInformationTab.ip"
   },
   "survey":{}
