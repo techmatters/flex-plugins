@@ -32,7 +32,14 @@ locals {
       # Courage First -  SMS
       courage_first_sms_closed_message = "Thank you for contacting the Courage First Athlete Helpline. If this is a life-threatening emergency, please contact 911."
       courage_first_sms_redirect_message = "You have reached us outside of our normal operating hours of Monday through Friday, 12pm to 8pm, PST. If you would like to text right now with a Crisis Counselor who can provide immediate emotional support and resources, please text 800-422-4453 to reach the Childhelp National Child Abuse Hotline"
+      courage_first_sms_welcome_message = "Thank you for texting the Courage First Athlete Helpline. Standard msg rates may apply. Terms of service can be found at https://www.athletehelpline.org/terms/. By continuing, you agree to our terms of service."
+      courage_first_sms_failure_message = "We are sorry, we had a technical issue. Please trying texting again or call."
+      courage_first_sms_prequeue_message = "Para hablar con un consejero en Espanol, llame al 800-422-4453. Please note: A false report is a crime governed by federal and state laws, involving a person who, with intent to deceive, knowingly makes a false statement to a mandated reporter or law enforcement official that results in unwarranted government action. Childhelp’s National Child Abuse Hotline is comprised of mandated reporters who will refer malicious or false reports to law enforcement for prosecution."
+      
       # ChildHelp -  SMS
+      childhelp_sms_language_message = "Currently, our text messaging platform only works in English. For assistance in other languages, please call our hotline at 1-800-422-4453."
+      childhelp_sms_eng_language_message = "Thanks for texting. For emergencies contact 911. Standard msg rates may apply. Terms of service can be found here: https://www.childhelphotline.org/terms-of-service . By continuing, you agree to our terms of service. If you cannot access the terms of service, you can also access help by calling the hotline at 800-422-4453."
+      childhelp_sms_other_message = "Thanks for texting. For emergencies contact 911. Standard msg rates may apply. Terms of service can be found here: https://www.childhelphotline.org/terms-of-service . By continuing, you agree to our terms of service. If you cannot access the terms of service, you can also access help by calling the hotline at 800-422-4453."
       
       # Courage First -  Voice
       courage_first_voice_welcome_message           = "Welcome to the Courage First athlete helpline. If this is an emergency hang up and dial 911. For terms of service you can visit athletehelpline.org and click on the terms of service link. You will now be connected to the next Courage First counselor. Calls may be monitored for quality assurance."
@@ -40,7 +47,7 @@ locals {
       # ChildHelp -  Voice
       childhelp_voice_welcome_message              = "You have reached the Childhelp National Child Abuse Hotline."
       
-      
+
       chat_blocked_message                         = "chat_blocked_message"
       courage_first_prequeue_eng_message            = "Thank you, a counselor will be with you shortly. Para hablar con un consejero en Español, llame al 800-422-4453. Please note: A false report is a crime governed by federal and state laws, involving a person who, with intent to deceive, knowingly makes a false statement to a mandated reporter or law enforcement official that results in unwarranted government action. Childhelp’s National Child Abuse Hotline is comprised of mandated reporters who will refer malicious or false reports to law enforcement for prosecution."
       spanish_option_voice_message                 = "Para español presione 2"
