@@ -45,9 +45,8 @@ locals {
       
       
       # Courage First -  Voice
-      courage_first_voice_welcome_message           = "Welcome to the Courage First athlete helpline."
-      courage_first_voice_prequeue_eng_message =  "If this is an emergency hang up and dial 911. For terms of service you can visit athletehelpline.org and click on the terms of service link. You will now be connected to the next Courage First counselor. Calls may be monitored for quality assurance."
-      courage_first_voice_closed_message = "You have reached the courage first athlete helpline outside of normal operating hours. You can press 1 now to speak with a crisis counselor on the childhelp national child abuse hotline or you are welcome to call back during the operating hours of monday through friday 12pm-8pm Pacific standard time."
+      courage_first_voice_welcome_message           = "Welcome to the Courage First athlete helpline. If this is an emergency hang up and dial 911. For terms of service you can visit athletehelpline.org and click on the terms of service link. You will now be connected to the next Courage First counselor. Calls may be monitored for quality assurance."
+      courage_first_voice_redirect_option_message = "You have reached the courage first athlete helpline outside of normal operating hours. You can press 1 now to speak with a crisis counselor on the childhelp national child abuse hotline or you are welcome to call back during the operating hours of monday through friday 12pm-8pm Pacific standard time."
       courage_first_voice_redirect_childhelp_message = "You will now be transferred to the childhelp national child abuse hotline."
       # ChildHelp -  Voice
       childhelp_voice_welcome_message              = "You have reached the Childhelp National Child Abuse Hotline."
@@ -56,18 +55,7 @@ locals {
       childhelp_voice_prequeue_eng_message     = "Childhelp National Child Abuse Hotline is dedicated to the prevention of child abuse.  The hotline is staffed 24 hours a day, 7 days a week, with professional crisis counselors. The hotline offers crisis intervention, information, and referrals to thousands of emergency, social service, and support resources.  All calls are confidential. You can also text the hotline at 1800-422-4453 or chat with a counselor at childhelphotline.org. If you are calling to make a report, please contact your local Child Protective Services. You can access our interactive map at childhelp.org for the appropriate number.  Thank you for continuing to hold.  If there is immediate danger, please dial 911. The next available counselor will be with you as soon as possible."
       childhelp_voice_prequeue_spanish_message     = "La Línea Directa Nacional de Abuso Infantil de Childhelp se dedica a la prevención del abuso infantil. La línea directa está abierta las 24 horas del día, los 7 días de la semana, con consejeros profesionales en situaciones de crisis. La línea directa ofrece intervención en situaciones de crisis, información y referencias a miles de recursos de emergencia, servicios sociales y apoyo. Todas las llamadas son confidenciales. Si se trata de una emergencia en donde una vida corre peligro, cuelgue y llame al 911. Las llamadas pueden ser monitoreadas para asegurar la calidad. Si un consejero de habla hispana no está disponible, se le conectará con un consejero que puede acceder a un intérprete. Por favor, espere al próximo consejero disponible."
       childhelp_voice_no_spanish_counselor_prequeue_message  = "no spanish counselor prequeue voice message"
-  
-      
-      courage_first_prequeue_eng_message            = "Thank you, a counselor will be with you shortly. Para hablar con un consejero en Español, llame al 800-422-4453. Please note: A false report is a crime governed by federal and state laws, involving a person who, with intent to deceive, knowingly makes a false statement to a mandated reporter or law enforcement official that results in unwarranted government action. Childhelp's National Child Abuse Hotline is comprised of mandated reporters who will refer malicious or false reports to law enforcement for prosecution."
-      
 
-     
-      
-      
-      courage_first_prequeue_spanish_voice_message = "This will be the pre queue spanish message"
-      courage_first_prequeue_english_voice_message = "This will be the pre queue english message"
-      redirect_childhelp_voice_message             = "redirect childhelp message"
-      system_error_eng_language_message             = "Sorry, there was a system error. Please try contacting us again."
     }
     //Serverless -- to allow enabling the operating hours check on this staging account.
     ui_editable = true
