@@ -227,7 +227,7 @@ ${
           "event": "timeout"
         },
         {
-          "next": "send_childhelp_eng_language_message",
+          "next": "send_childhelp_sms_eng_language_message",
           "event": "deliveryFailure"
         }
       ],
@@ -249,11 +249,11 @@ ${
       "type": "split-based-on",
       "transitions": [
         {
-          "next": "send_childhelp_eng_language_message",
+          "next": "send_childhelp_sms_eng_language_message",
           "event": "noMatch"
         },
         {
-          "next": "send_childhelp_eng_language_message",
+          "next": "send_childhelp_sms_eng_language_message",
           "event": "match",
           "conditions": [
             {
