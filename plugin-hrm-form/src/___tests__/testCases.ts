@@ -21,7 +21,7 @@ export const VALID_EMPTY_CASE: Case = {
   id: '1',
   accountSid: 'AC',
   info: {
-    definitionVersion: 'v1',
+    definitionVersion: 'as-v1',
   },
   updatedAt: new Date(2000, 0, 1).toISOString(),
   createdAt: new Date(2000, 0, 1).toISOString(),

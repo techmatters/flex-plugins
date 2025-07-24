@@ -31,7 +31,7 @@ beforeEach(() => {
             connectedCase: {
               helpline: 'Fakeline',
               info: {
-                definitionVersion: 'demo-v1',
+                definitionVersion: 'as-v1',
               },
             },
           },
@@ -39,7 +39,7 @@ beforeEach(() => {
       },
       configuration: {
         definitionVersions: {
-          'demo-v1': {
+          'as-v1': {
             helplineInformation: {
               helplines: [
                 {
@@ -77,7 +77,7 @@ test('Case with ID exists in redux, and it has no definitionVersion set, but a h
 });
 
 test("Case with ID exists in redux, and it has a definitionVersion set that isn't defined in configuration, but a helpline that exists in the current definition - returns helpline entry from current definition", () => {
-  state[namespace].connectedCase.cases[CASE_ID].connectedCase.info.definitionVersion = 'v1';
+  state[namespace].connectedCase.cases[CASE_ID].connectedCase.info.definitionVersion = 'as-v1';
   expect(selectCaseHelplineData(state, '1234').label).toBe('Default Fake Helpline');
 });
 

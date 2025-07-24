@@ -87,7 +87,7 @@ const mockedCases: Record<string, CaseStateEntry> = {
       updatedAt: '2020-07-07T19:20:33.339Z',
       status: 'open',
       info: {
-        definitionVersion: 'v1',
+        definitionVersion: 'as-v1',
       },
       helpline: '',
     },
@@ -108,7 +108,7 @@ const mockedCases: Record<string, CaseStateEntry> = {
       updatedAt: '2020-07-07T19:20:33.339Z',
       status: 'closed',
       info: {
-        definitionVersion: 'v1',
+        definitionVersion: 'as-v1',
       },
       helpline: '',
     },
@@ -151,11 +151,11 @@ beforeEach(() => {
 });
 
 beforeAll(async () => {
-  const formDefinitionsBaseUrl = buildBaseURL('v1');
+  const formDefinitionsBaseUrl = buildBaseURL('as-v1');
   await mockFetchImplementation(formDefinitionsBaseUrl);
 
   mockV1 = await loadDefinition(formDefinitionsBaseUrl);
-  mockGetDefinitionsResponse(getDefinitionVersions, 'v1', mockV1);
+  mockGetDefinitionsResponse(getDefinitionVersions, 'as-v1', mockV1);
 });
 
 test('Should dispatch fetchList actions', async () => {

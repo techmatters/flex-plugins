@@ -47,7 +47,7 @@ const mockUpdateStatus = updateCaseStatus as jest.Mock<
 
 const mockGetCase = getCase as jest.Mock<ReturnType<typeof getCase>, Parameters<typeof getCase>>;
 const workerSid = 'Worker-Sid';
-const definitionVersion: string = 'demo-v1';
+const definitionVersion: string = 'as-v1';
 const partialState: RecursivePartial<HrmState> = {
   connectedCase: {
     cases: {},
@@ -354,7 +354,7 @@ describe('updateCaseOverviewAsyncAction', () => {
           connectedCase: {
             ...VALID_EMPTY_CASE,
             id: 'ANOTHER_CASE',
-            info: { ...overview, definitionVersion: 'v1' },
+            info: { ...overview, definitionVersion: 'as-v1' },
           },
           references: new Set(),
           availableStatusTransitions: [],
@@ -406,7 +406,7 @@ describe('updateCaseOverviewAsyncAction', () => {
           operatingArea: 'Area 51',
           summary: 'updated summary',
           followUpDate: null,
-          definitionVersion: 'v1',
+          definitionVersion: 'as-v1',
         },
       });
     });

@@ -31,7 +31,7 @@ describe('test reducer', () => {
   let mockV1;
 
   beforeAll(async () => {
-    const formDefinitionsBaseUrl = buildBaseURL('v1');
+    const formDefinitionsBaseUrl = buildBaseURL('as-v1');
     await mockFetchImplementation(formDefinitionsBaseUrl);
     mockV1 = await loadDefinition(formDefinitionsBaseUrl);
   });
@@ -95,7 +95,7 @@ describe('test reducer', () => {
   test('should handle UPDATE_DEFINITION_VERSION', async () => {
     const expected = { ...state, definitionVersions: { v1: mockV1 } };
 
-    const result = reduce(state, actions.updateDefinitionVersion('v1', mockV1));
+    const result = reduce(state, actions.updateDefinitionVersion('as-v1', mockV1));
     expect(result).toStrictEqual(expected);
 
     state = result;

@@ -56,11 +56,11 @@ beforeEach(() => {
 
 describe('Search Results', () => {
   beforeAll(async () => {
-    const formDefinitionsBaseUrl = buildBaseURL('v1');
+    const formDefinitionsBaseUrl = buildBaseURL('as-v1');
     await mockFetchImplementation(formDefinitionsBaseUrl);
 
     mockV1 = await loadDefinition(formDefinitionsBaseUrl);
-    mockGetDefinitionsResponse(getDefinitionVersions, 'v1', mockV1);
+    mockGetDefinitionsResponse(getDefinitionVersions, 'as-v1', mockV1);
 
     state1 = {
       [namespace]: {
@@ -193,7 +193,7 @@ describe('Search Results', () => {
           number: 'Anonymous',
           rawJson: {
             callType: 'Child calling about self',
-            definitionVersion: 'v1',
+            definitionVersion: 'as-v1',
             childInformation: {
               firstName: 'Jill',
               lastName: 'Smith',
@@ -277,7 +277,7 @@ describe('Search Results', () => {
           number: 'Anonymous',
           rawJson: {
             callType: 'Child calling about self',
-            definitionVersion: 'v1',
+            definitionVersion: 'as-v1',
             childInformation: {
               firstName: 'Jill',
               lastName: 'Smith',
@@ -295,7 +295,7 @@ describe('Search Results', () => {
           number: 'Anonymous',
           rawJson: {
             callType: 'Child calling about self',
-            definitionVersion: 'v1',
+            definitionVersion: 'as-v1',
             childInformation: {
               firstName: 'Sarah',
               lastName: 'Park',
