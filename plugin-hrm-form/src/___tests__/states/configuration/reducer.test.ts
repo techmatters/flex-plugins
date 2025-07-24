@@ -93,7 +93,7 @@ describe('test reducer', () => {
   });
 
   test('should handle UPDATE_DEFINITION_VERSION', async () => {
-    const expected = { ...state, definitionVersions: { v1: mockV1 } };
+    const expected = { ...state, definitionVersions: { 'as-v1': mockV1 } };
 
     const result = reduce(state, actions.updateDefinitionVersion('as-v1', mockV1));
     expect(result).toStrictEqual(expected);

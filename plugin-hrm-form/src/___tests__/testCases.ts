@@ -28,6 +28,7 @@ export const VALID_EMPTY_CASE: Case = {
   helpline: '',
   twilioWorkerId: 'WK',
   status: '',
+  definitionVersion: 'as-v1',
 };
 
 export const VALID_EMPTY_CASE_STATE_ENTRY: CaseStateEntry = {

@@ -165,7 +165,7 @@ test('Should dispatch fetchList actions', async () => {
         list: [],
         hash: { worker1: 'worker1 name' },
       },
-      definitionVersions: { v1: mockV1 },
+      definitionVersions: { 'as-v1': mockV1 },
       currentDefinitionVersion: mockV1,
     },
     caseList: blankCaseListState,
@@ -216,7 +216,7 @@ test('Should render list if it is populated', async () => {
         list: [],
         hash: { worker1: 'worker1 name' },
       },
-      definitionVersions: { v1: mockV1 },
+      definitionVersions: { 'as-v1': mockV1 },
       currentDefinitionVersion: mockV1,
     },
     connectedCase: {
@@ -304,7 +304,7 @@ test('Should render no cases and show No Cases Found row', async () => {
         list: [],
         hash: { worker1: 'worker1 name' },
       },
-      definitionVersions: { v1: mockV1 },
+      definitionVersions: { 'as-v1': mockV1 },
       currentDefinitionVersion: mockV1,
     },
     caseList: {
@@ -350,7 +350,7 @@ test('Should render error page if fetchError set in store', async () => {
         list: [],
         hash: { worker1: 'worker1 name' },
       },
-      definitionVersions: { v1: mockV1 },
+      definitionVersions: { 'as-v1': mockV1 },
       currentDefinitionVersion: mockV1,
     },
     caseList: {
@@ -388,7 +388,7 @@ test('Should render loading page if listLoading set in store', async () => {
         list: [],
         hash: { worker1: 'worker1 name' },
       },
-      definitionVersions: { v1: mockV1 },
+      definitionVersions: { 'as-v1': mockV1 },
       currentDefinitionVersion: mockV1,
     },
     caseList: {
@@ -423,7 +423,7 @@ test('a11y', async () => {
         list: [],
         hash: { worker1: 'worker1 name' },
       },
-      definitionVersions: { v1: mockV1 },
+      definitionVersions: { 'as-v1': mockV1 },
       currentDefinitionVersion: mockV1,
     },
     caseList: blankCaseListState,

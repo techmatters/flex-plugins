@@ -76,7 +76,7 @@ test('<ContactPreview> should mount', async () => {
     [namespace]: {
       [configurationBase]: {
         definitionVersions: {
-          v1: defaultDef,
+          'as-v1': defaultDef,
         },
         counselors: {
           hash: counselorsHash,

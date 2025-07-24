@@ -98,6 +98,7 @@ describe('createCase()', () => {
         info: {
           definitionVersion: 'as-v1',
         },
+        definitionVersion: 'as-v1',
       }),
     };
     expect(fetchHrmApi).toHaveBeenCalledWith(expectedUrl, expectedOptions);
@@ -108,6 +109,7 @@ describe('createCase()', () => {
     const mockedResponse = {
       ...baselineResponse,
       info: { definitionVersion: 'as-v1', offlineContactCreator: 'creating worker' },
+      definitionVersion: 'as-v1',
       twilioWorkerId: 'WK-owning worker',
     };
 
@@ -137,6 +139,7 @@ describe('createCase()', () => {
           definitionVersion: 'as-v1',
           offlineContactCreator: 'creating worker',
         },
+        definitionVersion: 'as-v1',
       }),
     };
     expect(fetchHrmApi).toHaveBeenCalledWith(expectedUrl, expectedOptions);

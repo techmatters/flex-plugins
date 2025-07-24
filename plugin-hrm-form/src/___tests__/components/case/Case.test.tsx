@@ -163,7 +163,7 @@ describe('useState mocked', () => {
           list: [],
           hash: { [WORKER_SID]: 'worker1 name' },
         },
-        definitionVersions: { v1: mockV1 },
+        definitionVersions: { 'as-v1': mockV1 },
         currentDefinitionVersion: mockV1,
       },
       activeContacts: {

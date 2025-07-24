@@ -69,7 +69,7 @@ describe('Search Results', () => {
             list: [],
             hash: { worker1: 'worker1 name' },
           },
-          definitionVersions: { v1: mockV1 },
+          definitionVersions: { 'as-v1': mockV1 },
           currentDefinitionVersion: mockV1,
         },
         activeContacts: {
