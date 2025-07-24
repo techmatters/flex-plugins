@@ -455,8 +455,7 @@ ${
       "type": "send-message",
       "transitions": [
         {
-          "event": "sent",
-          "next": "reset_childhelp_variable"
+          "event": "sent"
         },
         {
           "event": "failed"
@@ -624,34 +623,6 @@ ${
         "message_type": "custom",
         "to": "{{contact.channel.address}}",
         "body": "${flow_vars.courage_first_webchat_welcome_message}"
-      }
-    },
-    {
-      "name": "reset_childhelp_variable",
-      "type": "set-variables",
-      "transitions": [
-        {
-          "next": "attributes",
-          "event": "next"
-        }
-      ],
-      "properties": {
-        "variables": [
-          {
-            "type": "string",
-            "value": "ChildHelp",
-            "key": "service"
-          },
-          {
-            "type": "string",
-            "value": "en-CH",
-            "key": "language"
-          }
-        ],
-        "offset": {
-          "x": -500,
-          "y": 2410
-        }
       }
     }
   ],
