@@ -312,7 +312,7 @@ describe('handleGetProfileFlagsForIdentifier', () => {
         expect(result.data).toEqual({ flags: ['fish in microwave', 'too cheerful'] });
         expect(mockGetFromInternalHrmEndpoint).toHaveBeenCalledWith(
           TEST_ACCOUNT_SID,
-          'as-v1',
+          'v1',
           `profiles/identifier/${expectedIdentifier}/flags`,
         );
       },
