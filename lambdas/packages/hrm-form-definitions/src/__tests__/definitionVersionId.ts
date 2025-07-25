@@ -16,7 +16,9 @@
 
 export enum DefinitionVersionId {
   demoV1 = 'demo-v1', // Demo v1
+  asV1 = 'as-v1', // Demo v1
   v1 = 'v1', // Zambia V1
+  zmv1 = 'zm-v1', // Zambia V1
   brV1 = 'br-v1', // Safernet Brasil v1
   etV1 = 'et-v1', // Ethiopia v1
   inV1 = 'in-v1', // Aarambh Trustline v1

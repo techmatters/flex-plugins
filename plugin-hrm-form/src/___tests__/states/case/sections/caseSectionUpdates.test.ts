@@ -60,7 +60,7 @@ const testStore = (stateChanges: Partial<HrmState> = {}) =>
   });
 
 beforeAll(async () => {
-  const formDefinitionsBaseUrl = buildBaseURL('demo-v1');
+  const formDefinitionsBaseUrl = buildBaseURL('as-v1');
   await mockFetchImplementation(formDefinitionsBaseUrl);
 
   definitionVersion = await loadDefinition(formDefinitionsBaseUrl);

@@ -68,7 +68,7 @@ function createDefinition(statuses: StatusInfo[]): DefinitionVersion {
 describe('getAvailableCaseStatusTransitions', () => {
   beforeEach(async () => {
     mockReset();
-    const formDefinitionsBaseUrl = buildBaseURL('v1');
+    const formDefinitionsBaseUrl = buildBaseURL('as-v1');
     await mockFetchImplementation(formDefinitionsBaseUrl);
 
     mockV1 = await loadDefinition(formDefinitionsBaseUrl);

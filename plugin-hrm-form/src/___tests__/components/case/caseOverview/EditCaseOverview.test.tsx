@@ -118,11 +118,11 @@ describe('Test EditCaseOverview', () => {
   const exitRoute: CaseRoute = { route: 'case', subroute: 'home', caseId: 'case1' };
 
   beforeAll(async () => {
-    const formDefinitionsBaseUrl = buildBaseURL('v1');
+    const formDefinitionsBaseUrl = buildBaseURL('as-v1');
     await mockFetchImplementation(formDefinitionsBaseUrl);
 
     mockV1 = await loadDefinition(formDefinitionsBaseUrl);
-    mockGetDefinitionsResponse(getDefinitionVersions, 'v1', mockV1);
+    mockGetDefinitionsResponse(getDefinitionVersions, 'as-v1', mockV1);
   });
 
   beforeEach(() => {

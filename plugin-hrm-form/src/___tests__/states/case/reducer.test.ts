@@ -46,7 +46,7 @@ describe('test reducer', () => {
     status: 'open',
     twilioWorkerId: 'WK123',
     info: {
-      definitionVersion: 'v1',
+      definitionVersion: 'as-v1',
     },
     createdAt: '2020-07-31T20:39:37.408Z',
     updatedAt: '2020-07-31T20:39:37.408Z',
@@ -54,7 +54,7 @@ describe('test reducer', () => {
   };
 
   beforeAll(async () => {
-    const formDefinitionsBaseUrl = buildBaseURL('v1');
+    const formDefinitionsBaseUrl = buildBaseURL('as-v1');
     await mockFetchImplementation(formDefinitionsBaseUrl);
 
     mockV1 = await loadDefinition(formDefinitionsBaseUrl);

@@ -108,11 +108,11 @@ describe('useState mocked', () => {
   };
 
   beforeAll(async () => {
-    const formDefinitionsBaseUrl = buildBaseURL('demo-v1');
+    const formDefinitionsBaseUrl = buildBaseURL('as-v1');
     await mockFetchImplementation(formDefinitionsBaseUrl);
 
     mockV1 = await loadDefinition(formDefinitionsBaseUrl);
-    mockGetDefinitionsResponse(getDefinitionVersions, 'demo-v1', mockV1);
+    mockGetDefinitionsResponse(getDefinitionVersions, 'as-v1', mockV1);
     mockPartialConfiguration({ workerSid: CURRENT_WORKER_SID });
   });
 
@@ -143,7 +143,7 @@ describe('useState mocked', () => {
       updatedAt: BASELINE_DATE.toISOString(),
       twilioWorkerId: WORKER_SID,
       status: 'open',
-      info: { definitionVersion: 'v1' },
+      info: { definitionVersion: 'as-v1' },
       accountSid: 'AC-accountSid',
       helpline: 'helpline',
     },
@@ -153,6 +153,7 @@ describe('useState mocked', () => {
     sections: {},
     timelines: {},
     outstandingUpdateCount: 0,
+    definitionVersion: 'as-v1',
   };
 
   beforeEach(() => {
@@ -162,7 +163,7 @@ describe('useState mocked', () => {
           list: [],
           hash: { [WORKER_SID]: 'worker1 name' },
         },
-        definitionVersions: { v1: mockV1 },
+        definitionVersions: { 'as-v1': mockV1 },
         currentDefinitionVersion: mockV1,
       },
       activeContacts: {

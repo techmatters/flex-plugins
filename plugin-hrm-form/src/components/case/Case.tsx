@@ -104,7 +104,7 @@ const Case: React.FC<Props> = ({
     }
   });
 
-  const version = connectedCase?.info.definitionVersion;
+  const version = connectedCase?.definitionVersion ?? connectedCase?.info.definitionVersion;
   const { updateDefinitionVersion, definitionVersions } = props;
 
   /**
@@ -247,7 +247,12 @@ const mapStateToProps = (state: RootState, { task }: OwnProps) => {
 const mapDispatchToProps = (dispatch, { task }: OwnProps) => {
   const caseAsyncDispatch = asyncDispatch<AnyAction>(dispatch);
   const updateCaseDefinition = (connectedCase: CaseType, taskSid: string, definition) => {
-    dispatch(ConfigActions.updateDefinitionVersion(connectedCase.info.definitionVersion, definition));
+    dispatch(
+      ConfigActions.updateDefinitionVersion(
+        connectedCase.definitionVersion ?? connectedCase.info.definitionVersion,
+        definition,
+      ),
+    );
   };
   return {
     redirectToNewCase: (caseId: string) =>

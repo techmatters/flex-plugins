@@ -47,14 +47,14 @@ const mockUpdateStatus = updateCaseStatus as jest.Mock<
 
 const mockGetCase = getCase as jest.Mock<ReturnType<typeof getCase>, Parameters<typeof getCase>>;
 const workerSid = 'Worker-Sid';
-const definitionVersion: string = 'demo-v1';
+const definitionVersion: string = 'as-v1';
 const partialState: RecursivePartial<HrmState> = {
   connectedCase: {
     cases: {},
   },
   configuration: {
     definitionVersions: {
-      [definitionVersion]: {},
+      [definitionVersion]: { caseStatus: {} },
     },
   },
 };
@@ -92,6 +92,7 @@ const mockPayload: Omit<Case, 'sections' | 'label'> = {
   info: {},
   createdAt: '12-05-2023',
   updatedAt: '12-05-2023',
+  definitionVersion,
 };
 
 const testStore = (stateChanges: Partial<HrmState> = {}) =>
@@ -119,6 +120,7 @@ const nonInitialPartialState: RecursivePartial<HrmState> = {
           info: {},
           createdAt: '12-05-2023',
           updatedAt: '12-05-2023',
+          definitionVersion,
         },
         caseWorkingCopy: {
           sections: {},
@@ -354,7 +356,7 @@ describe('updateCaseOverviewAsyncAction', () => {
           connectedCase: {
             ...VALID_EMPTY_CASE,
             id: 'ANOTHER_CASE',
-            info: { ...overview, definitionVersion: 'v1' },
+            info: { ...overview, definitionVersion },
           },
           references: new Set(),
           availableStatusTransitions: [],
@@ -406,8 +408,9 @@ describe('updateCaseOverviewAsyncAction', () => {
           operatingArea: 'Area 51',
           summary: 'updated summary',
           followUpDate: null,
-          definitionVersion: 'v1',
+          definitionVersion,
         },
+        definitionVersion,
       });
     });
 
