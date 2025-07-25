@@ -21,7 +21,6 @@ export const caseListBase = 'caseList';
 export const connectedCaseBase = 'connectedCase';
 export const queuesStatusBase = 'queuesStatusState';
 export const configurationBase = 'configuration';
-export const conversationsBase = 'conversations';
 export const routingBase = 'routing';
 export const csamReportBase = 'csam-report';
 export const dualWriteBase = 'dualWrite';
