@@ -83,7 +83,7 @@ const addingNewHouseholdCaseState: CaseState = {
               province: '',
               relationshipToChild: '',
               streetAddress: '',
-              village: '',
+              copyToPerpetrator: false,
             },
             existing: {},
           },
@@ -198,16 +198,6 @@ const routing3: RootState[typeof namespace]['routing'] = {
     [TASK_SID]: [{ route: 'case', subroute: 'household', action: CaseItemAction.Add }],
   },
 };
-
-const state3 = {
-  [namespace]: {
-    ...state1[namespace],
-    [connectedCaseBase]: addingNewHouseholdCaseState,
-    routing: routing3,
-  },
-};
-const store3 = mockStore(state3);
-store3.dispatch = jest.fn();
 
 const themeConf: ThemeConfigProps = {};
 
