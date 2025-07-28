@@ -195,9 +195,9 @@ export const handleEndChat: AccountScopedHandler = async (
         }),
       );
     } else {
-      const { members, attributes } = await client.chat.v2
-        .services(await getChatServiceSid(accountSid))
-        .channels(channelSid!)
+      const { members, attributes } = await client.chat.v2.services
+        .get(await getChatServiceSid(accountSid))
+        .channels.get(channelSid!)
         .fetch();
       // Use the channelSid to fetch task that needs to be closed
       const channelAttributes = JSON.parse(attributes);
