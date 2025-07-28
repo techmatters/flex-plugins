@@ -18,7 +18,7 @@ import { Manager } from '@twilio/flex-webchat-ui';
 
 import { Configuration, OperatingHoursResponse } from '../types';
 import { setFormDefinition } from './pre-engagement-form/state';
-import { config } from "./config";
+import { config } from './config';
 
 const getOperatingHours = async (language: string): Promise<OperatingHoursResponse> => {
   const body = {

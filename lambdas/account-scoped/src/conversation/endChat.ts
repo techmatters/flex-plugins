@@ -173,7 +173,7 @@ export const handleEndChat: AccountScopedHandler = async (
       });
     }
 
-    let channelCleanupRequired = false;
+    let channelCleanupRequired;
 
     if (conversationSid) {
       const { attributes, participants } = await client.conversations.v1.conversations
