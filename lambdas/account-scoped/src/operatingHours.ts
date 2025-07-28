@@ -143,7 +143,14 @@ const getClosedMessage = async (
   }[messageKey];
 };
 
-const flagIsTrue = (s?: string) => s?.toLowerCase() === 'true';
+const newOpenResult = () => {
+  const response = {
+    status: 'open',
+    message: undefined,
+  };
+
+  return newOk(response);
+};
 
 export const handleOperatingHours: AccountScopedHandler = async (
   { body },
@@ -152,19 +159,10 @@ export const handleOperatingHours: AccountScopedHandler = async (
   try {
     const operatingInfoKey = await getOperatingInfoKey(accountSid);
 
-    const { channel, office, language, includeMessageTextInResponse } = body;
+    const { channel, office, language } = body;
 
-    if (await areOperatingHoursEnforced(accountSid)) {
-      if (!flagIsTrue(includeMessageTextInResponse)) {
-        return newOk('open');
-      }
-
-      const response = {
-        status: 'open',
-        message: undefined,
-      };
-
-      return newOk(response);
+    if (!(await areOperatingHoursEnforced(accountSid))) {
+      return newOpenResult();
     }
 
     if (channel === undefined) {
@@ -173,20 +171,16 @@ export const handleOperatingHours: AccountScopedHandler = async (
         error: { statusCode: 400 },
       });
     }
-
-    const operatingInfo: OperatingInfo = JSON.parse(
-      Runtime.getAssets()[`/operatingInfo/${operatingInfoKey}.json`].open(),
-    );
+    let operatingInfo: OperatingInfo;
+    try {
+      operatingInfo = JSON.parse(require(`./operatingInfo/${operatingInfoKey}.json`));
+    } catch {
+      return newOpenResult();
+    }
 
     const status = getOperatingStatus(operatingInfo, channel, office);
 
-    // Support legacy function to avoid braking changes
-    // TODO: remove once every account has been migrated
-    if (!flagIsTrue(includeMessageTextInResponse)) {
-      return newOk({});
-    }
-
-    // Return a the status and, if closed, the appropriate message
+    // Return the status and, if closed, the appropriate message
     const response = {
       status,
       message:

@@ -1,0 +1,52 @@
+{
+  "timezone": "America/New_York",
+  "holidays": { 
+    "12/25/2021": "Christmas"
+  },
+  "operatingHours": {
+    "webchat": {
+      "1": [{ "open": 0, "close": 2400 }],
+      "2": [{ "open": 0, "close": 2400 }],
+      "3": [{ "open": 0, "close": 2400 }],
+      "4": [{ "open": 0, "close": 2400 }],
+      "5": [{ "open": 0, "close": 2400 }],
+      "6": [{ "open": 0, "close": 2400 }],
+      "7": [{ "open": 0, "close": 2400 }]
+    },
+    "facebook": {
+      "1": [],
+      "2": [],
+      "3": [],
+      "4": [],
+      "5": [],
+      "6": [],
+      "7": []
+    },
+    "instagram": {
+      "1": [],
+      "2": [],
+      "3": [],
+      "4": [],
+      "5": [],
+      "6": [],
+      "7": []
+    }
+  },
+  "offices": {
+    "Fake Office": {
+      "timezone": "America/New_York",
+      "holidays": {},
+      "operatingHours": {
+        "facebook": {
+          "1": [],
+          "2": [],
+          "3": [],
+          "4": [],
+          "5": [],
+          "6": [],
+          "7": []
+        }
+      }
+    }
+  }
+}
