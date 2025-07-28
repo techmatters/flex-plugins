@@ -1,7 +1,20 @@
 {
     "intentName": "post_survey_yes",
-    "description": "General en-G/bots Post Survey bot",
-    "sampleUtterances": [],
+    "description": "Specific en-GB/bots Post Survey bot",
+    "sampleUtterances": [
+        {
+            "utterance": "Yes"
+        },
+        {
+            "utterance": "yes"
+        },
+        {
+            "utterance": "yeah"
+        },
+        {
+            "utterance": "1"
+        }
+    ],
     "dialogCodeHook": {
         "enabled": false
     },
