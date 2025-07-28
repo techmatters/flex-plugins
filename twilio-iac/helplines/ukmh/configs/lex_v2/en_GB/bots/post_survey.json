@@ -1,42 +1,56 @@
 {
     "post_survey": {
-      "description": "General en-G/bots Post Survey bot",
-      "locale": "en_US",
-      "child_directed": true,
-      "idle_session_ttl_in_seconds": "600",
-      "type": "Bot",
-      "intents": {
-        "post_survey_yes": {
-          "closing_response": {
-            "message": "Thank you for reaching out. Please contact us again if you need more help."
-          },
-          "slot_priorities": {
-            "1": {
-              "slot_name": "mood",
-              "slot_type_name": "mood_rating",
-              "slot_question": "On a scale from 1 (sad) to 5 (happy), what mood are you in after the session?",
-              "failure_response": "We are having trouble understanding your response. But nothing to worry, we will transfer you to a counsellor."
+        "description": "General en-G/bots Post Survey bot",
+        "locale": "en_US",
+        "child_directed": true,
+        "idle_session_ttl_in_seconds": "600",
+        "type": "Bot",
+        "intents": {
+            "post_survey_yes": {
+                "utterances": [
+                    {
+                        "utterance": "Yes"
+                    },
+                    {
+                        "utterance": "yes"
+                    },
+                    {
+                        "utterance": "yeah"
+                    },
+                    {
+                        "utterance": "1"
+                    }
+                ],
+                "closing_response": {
+                    "message": "Thank you for reaching out. Please contact us again if you need more help."
+                },
+                "slot_priorities": {
+                    "1": {
+                        "slot_name": "mood",
+                        "slot_type_name": "mood_rating",
+                        "slot_question": "On a scale from 1 (sad) to 5 (happy), what mood are you in after the session?",
+                        "failure_response": "We are having trouble understanding your response. But nothing to worry, we will transfer you to a counsellor."
+                    },
+                    "2": {
+                        "slot_name": "was_helpful",
+                        "slot_type_name": "helpful_rating",
+                        "slot_question": "What is your feedback on the session, how helpful was it?",
+                        "failure_response": "We are having trouble understanding your response. But nothing to worry, we will transfer you to a counsellor."
+                    },
+                    "3": {
+                        "slot_name": "explain",
+                        "slot_type_name": "AMAZON.FreeFormInput",
+                        "slot_question": "Please explain why you gave that rating.",
+                        "failure_response": "We are having trouble understanding your response. But nothing to worry, we will transfer you to a counsellor."
+                    }
+                }
             },
-            "2": {
-              "slot_name": "was_helpful",
-              "slot_type_name": "helpful_rating",
-              "slot_question": "What is your feedback on the session, how helpful was it?",
-              "failure_response": "We are having trouble understanding your response. But nothing to worry, we will transfer you to a counsellor."
-            },
-            "3": {
-              "slot_name": "explain",
-              "slot_type_name": "AMAZON.FreeFormInput",
-              "slot_question": "Please explain why you gave that rating.",
-              "failure_response": "We are having trouble understanding your response. But nothing to worry, we will transfer you to a counsellor."
+            "post_survey_no": {
+                "closing_response": {
+                    "message": "Thank you for reaching out. Please contact us again if you need more help."
+                },
+                "slot_priorities": {}
             }
-          }
-        },
-        "post_survey_no": {
-          "closing_response": {
-            "message": "Thank you for reaching out. Please contact us again if you need more help."
-          },
-          "slot_priorities": {}
         }
-      }
     }
-  }
+}
