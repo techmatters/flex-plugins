@@ -97,7 +97,7 @@ const ROUTES: Record<string, FunctionRoute> = {
     handler: handleEndChat,
   },
   operatingHours: {
-    requestPipeline: [validateFlexTokenRequest({ tokenMode: 'guest' })],
+    requestPipeline: [],
     handler: handleOperatingHours,
   },
 };
