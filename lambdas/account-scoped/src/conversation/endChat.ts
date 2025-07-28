@@ -195,12 +195,12 @@ export const handleEndChat: AccountScopedHandler = async (
         }),
       );
     } else {
-      const { members, attributes } = await client.chat.v2.services
+      const channelContext = client.chat.v2.services
         .get(await getChatServiceSid(accountSid))
-        .channels.get(channelSid!)
-        .fetch();
+        .channels.get(channelSid!);
+
       // Use the channelSid to fetch task that needs to be closed
-      const channelAttributes = JSON.parse(attributes);
+      const channelAttributes = JSON.parse((await channelContext.fetch()).attributes);
 
       channelCleanupRequired = await endContactOrPostSurvey(
         accountSid,
@@ -208,7 +208,7 @@ export const handleEndChat: AccountScopedHandler = async (
         body,
       );
 
-      const channelMembers = await members().list();
+      const channelMembers = await channelContext.members.list();
       await Promise.all(
         channelMembers.map(m => {
           if (JSON.parse(m.attributes).member_type !== 'guest') {
