@@ -18,6 +18,7 @@ import { Manager } from '@twilio/flex-webchat-ui';
 
 import { Configuration, OperatingHoursResponse } from '../types';
 import { setFormDefinition } from './pre-engagement-form/state';
+import { config } from "./config";
 
 const getOperatingHours = async (language: string): Promise<OperatingHoursResponse> => {
   const body = {
@@ -35,7 +36,7 @@ const getOperatingHours = async (language: string): Promise<OperatingHoursRespon
   };
 
   const { SERVERLESS_URL } = require('../private/secret'); // eslint-disable-line global-require
-  const response = await fetch(`${SERVERLESS_URL}/operatingHours`, options);
+  const response = await fetch(`${config.twilioServicesUrl ?? SERVERLESS_URL}/operatingHours`, options);
 
   if (response.status === 403) {
     throw new Error('Server responded with 403 status (Forbidden)');

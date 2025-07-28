@@ -32,9 +32,9 @@ const isSupervisor = (tokenResult: TokenValidatorResponse) =>
 export const validateFlexTokenRequest: ({
   tokenMode,
 }: {
-  tokenMode: 'supervisor' | 'worker';
+  tokenMode: 'supervisor' | 'worker' | 'guest';
 }) => HttpRequestPipelineStep =
-  ({ tokenMode }: { tokenMode: 'supervisor' | 'worker' }) =>
+  ({ tokenMode }: { tokenMode: 'supervisor' | 'worker' | 'guest' }) =>
   async (request, { accountSid }) => {
     const { Token: token } = request.body;
     if (!token) {
@@ -47,7 +47,7 @@ export const validateFlexTokenRequest: ({
         await getAccountAuthToken(accountSid),
       )) as TokenValidatorResponse;
       const isGuestToken = !isWorker(tokenResult) || isGuest(tokenResult);
-      if (isGuestToken) {
+      if (isGuestToken && tokenMode !== 'guest') {
         return newErr({
           message: 'Guest tokens are not authorized for this endpoint',
           error: { statusCode: 403 },

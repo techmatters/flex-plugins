@@ -32,6 +32,8 @@ import { getParticipantHandler } from './conference/getParticipant';
 import { updateParticipantHandler } from './conference/updateParticipant';
 import { removeParticipantHandler } from './conference/removeParticipant';
 import { statusCallbackHandler } from './conference/statusCallback';
+import { handleOperatingHours } from './operatingHours';
+import { handleEndChat } from './conversation/endChat';
 
 /**
  * Super simple router sufficient for directly ported Twilio Serverless functions
@@ -89,6 +91,14 @@ const ROUTES: Record<string, FunctionRoute> = {
   toggleSwitchboardQueue: {
     requestPipeline: [validateFlexTokenRequest({ tokenMode: 'supervisor' })],
     handler: handleToggleSwitchboardQueue,
+  },
+  endChat: {
+    requestPipeline: [validateFlexTokenRequest({ tokenMode: 'guest' })],
+    handler: handleEndChat,
+  },
+  operatingHours: {
+    requestPipeline: [validateFlexTokenRequest({ tokenMode: 'guest' })],
+    handler: handleOperatingHours,
   },
 };
 

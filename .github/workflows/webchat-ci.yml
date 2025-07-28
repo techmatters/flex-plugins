@@ -72,7 +72,7 @@ jobs:
         run: |
           cat <<EOT >> ./private/secret.ts
           export const API_KEY = '${{ env.IP_FIND_API_KEY }}';
-          export const SERVERLESS_URL = '${{ env.SERVERLESS_URL }}';
+          export const SERVERLESS_URL = 'https://hrm-development.tl.techmatters.org/lambda/twilio/account-scoped/${{ env.ACCOUNT_SID }}';
           export const RECAPTCHA_KEY = '${{ env.RECAPTCHA_KEY }}';
           export const RECAPTCHA_VERIFY_URL = 'https://hrm-development.tl.techmatters.org/lambda/recaptchaVerify'
           EOT

@@ -14,6 +14,9 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 import { DefinitionVersion, loadDefinition } from '@tech-matters/hrm-form-definitions';
+import { AccountSID } from '../twilioTypes';
+import { retrieveServiceConfigurationAttributes } from '../configuration/aseloConfiguration';
+import { getTwilioClient } from '../configuration/twilioConfiguration';
 
 const getHelplineCodeFromDefinitionVersionId = (definitionVersionId: string) => {
   if (definitionVersionId === 'demo-v1') return 'as';
@@ -62,4 +65,38 @@ export const clearDefinitionCache = () => {
   Object.keys(loadedDefinitionVersions).forEach(key => {
     delete loadedDefinitionVersions[key];
   });
+};
+
+export const getBaseUrl = async (accountSid: AccountSID): Promise<URL> => {
+  const {
+    form_definitions_version_url: configFormDefinitionsVersionUrl,
+    assets_bucket_url: assetsBucketUrl,
+    helpline_code: helplineCode,
+  } = await retrieveServiceConfigurationAttributes(await getTwilioClient(accountSid));
+  const formDefinitionsBaseUrl =
+    configFormDefinitionsVersionUrl || `${assetsBucketUrl}/form-definitions/`;
+  return new URL(`${formDefinitionsBaseUrl}${helplineCode}/v1`);
+};
+
+export const lookupCustomMessage = async (
+  accountSid: AccountSID,
+  locale: string,
+  translationKey: string,
+) => {
+  const { customStrings } =
+    (await getDefinitionVersion(await getBaseUrl(accountSid))) ?? {};
+  if (customStrings) {
+    const customMessageForLocale = customStrings.Messages.EndChatMsg[locale];
+    if (customMessageForLocale) {
+      return customMessageForLocale;
+    }
+    const [language] = locale.split('-');
+    if (language) {
+      const customMessageForLanguage = customStrings.Messages[translationKey]?.[language];
+      if (customMessageForLanguage) {
+        return customMessageForLanguage;
+      }
+    }
+  }
+  return undefined;
 };
