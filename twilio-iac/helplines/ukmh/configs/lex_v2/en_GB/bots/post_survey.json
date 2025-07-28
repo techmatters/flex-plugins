@@ -46,6 +46,20 @@
                 }
             },
             "post_survey_no": {
+                "utterances": [
+                    {
+                        "utterance": "No"
+                    },
+                    {
+                        "utterance": "no"
+                    },
+                    {
+                        "utterance": "nope"
+                    },
+                    {
+                        "utterance": "2"
+                    }
+                ],
                 "closing_response": {
                     "message": "Thank you for reaching out. Please contact us again if you need more help."
                 },
