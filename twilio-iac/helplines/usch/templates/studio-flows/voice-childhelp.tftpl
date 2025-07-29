@@ -478,6 +478,7 @@ ${
           "event": "noMatch"
         },
         {
+          "next": "send_voice_blocked_message",
           "event": "match",
           "conditions": [
             {
@@ -497,6 +498,25 @@ ${
           "x": 320,
           "y": -30
         }
+      }
+    },
+    {
+      "name": "send_voice_blocked_message",
+      "type": "say-play",
+      "transitions": [
+        {
+          "event": "audioComplete"
+        }
+      ],
+      "properties": {
+        "voice": "Polly.Salli",
+        "offset": {
+          "x": 880,
+          "y": -280
+        },
+        "loop": 1,
+        "say": "${flow_vars.voice_blocked_client_message}",
+        "language": "en-US"
       }
     }
   ],

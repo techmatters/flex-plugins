@@ -213,7 +213,7 @@ ${
       }
     },
     {
-      "name": "blocked_client_message",
+      "name": "send_sms_blocked_client_message",
       "type": "send-message",
       "transitions": [
         {
@@ -245,7 +245,7 @@ ${
           "event": "noMatch"
         },
         {
-          "next": "blocked_client_message",
+          "next": "send_sms_blocked_client_message",
           "event": "match",
           "conditions": [
             {
