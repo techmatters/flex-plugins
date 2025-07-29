@@ -37,15 +37,15 @@ const ViewTaskNumber = ({ task, isPositionModified }: Props) => {
     <>
       <UnmaskStyledButton
         onClick={toggleViewNumber}
-        ref={viewNumberRef}
+        buttonRef={viewNumberRef}
         // hack for positioning the button in Teams view page
         style={isPositionModified ? { position: 'fixed', alignSelf: 'center', marginRight: '5rem' } : {}}
       >
         {viewNumber ? <EyeOpenIcon /> : <EyeCloseIcon />}
       </UnmaskStyledButton>
       {viewNumber ? (
-        <Popper open={viewNumber} anchorEl={viewNumberRef.current} placement="bottom">
-          <Paper style={{ width: '250px', padding: '15px' }}>
+        <Popper open={viewNumber} anchorEl={viewNumberRef.current} placement="bottom" style={{ zIndex: 1 }}>
+          <Paper style={{ width: '250px', padding: '15px', backgroundColor: 'white', border: '1px solid black' }}>
             <Box style={{ float: 'right' }}>
               <HiddenText id="CloseButton">
                 <Template code="CloseButton" />

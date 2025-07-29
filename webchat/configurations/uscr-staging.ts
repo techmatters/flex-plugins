@@ -50,7 +50,7 @@ const preEngagementConfig: PreEngagementFormDefinition = {
     {
       type: 'checkbox',
       name: 'locationWithinServiceArea',
-      label:  `Incident location is within the service area. Check <a href="https://lahub.maps.arcgis.com/apps/mapviewer/index.html?webmap=0675f8e77b7149e99f954510d3f6dada">CIRCLE map</a> to confirm.`,
+      label:  `Incident location is within the service area. Check <a href="https://lahub.maps.arcgis.com/apps/instant/lookup/index.html?appid=66eb7ffa6da84d1bb787b828410abc04">CIRCLE map</a> to confirm.`,
       required: {
         value: true,
         message: 'Confirm that the incident location is within the service area.',
