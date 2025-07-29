@@ -210,7 +210,7 @@ ${
         "method": "POST",
         "content_type": "application/json;charset=utf-8",
         "add_twilio_auth": false,
-        "body": "{\n  \"channelSid\": \"{{flow.channel.address}}\",\n  \"conversationSid\": \"{{flow.channel.address}}\",\n  \"message\": \"trigger_pre_survey\",\n  \"studioFlowSid\": \"{{flow.flow_sid}}\",\n  \"language\": \"en-USCH\",\n  \"botSuffix\": \"pre_survey\",\n  \"triggerType\": \"withUserMessage\",\n  \"releaseType\": \"triggerStudioFlow\",\n  \"releaseFlag\": \"preSurveyComplete\",\n  \"channelType\": \"{% if trigger.conversation.ChannelAttributes.channel_type %}{{trigger.conversation.ChannelAttributes.channel_type}}{% else %}{{trigger.conversation.Source | downcase}}{% endif %}\",\n  \"isConversation\": \"true\"\n}",
+        "body": "{\n  \"channelSid\": \"{{flow.channel.address}}\",\n  \"conversationSid\": \"{{flow.channel.address}}\",\n  \"message\": \"trigger_pre_survey\",\n  \"studioFlowSid\": \"{{flow.flow_sid}}\",\n  \"language\": \"en-US\",\n  \"botSuffix\": \"pre_survey\",\n  \"triggerType\": \"withUserMessage\",\n  \"releaseType\": \"triggerStudioFlow\",\n  \"releaseFlag\": \"preSurveyComplete\",\n  \"channelType\": \"{% if trigger.conversation.ChannelAttributes.channel_type %}{{trigger.conversation.ChannelAttributes.channel_type}}{% else %}{{trigger.conversation.Source | downcase}}{% endif %}\",\n  \"isConversation\": \"true\"\n}",
         "url": "${lambda_twilio_account_scoped_url}/channelCapture/captureChannelWithBot"
       }
     },
