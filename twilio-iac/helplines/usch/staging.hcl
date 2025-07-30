@@ -40,7 +40,7 @@ locals {
       childhelp_sms_eng_language_message         = "For emergencies contact 911. Standard msg rates may apply. Terms of service can be found here: https://www.childhelphotline.org/terms-of-service . By continuing, you agree to our terms of service. If you cannot access the terms of service, you can also access help by calling the hotline at 800-422-4453."
       childhelp_sms_other_message                = "Currently, our text messaging platform only works in English. For assistance in other languages, please call our hotline at 1-800-422-4453."
       childhelp_sms_prequeue_message             = "Please note: A false report is a crime governed by federal and state laws, involving a person who, with intent to deceive, knowingly makes a false statement to a mandated reporter or law enforcement official that results in unwarranted government action. Childhelp's National Child Abuse Hotline is comprised of mandated reporters who will refer malicious or false reports to law enforcement for prosecution."
-      childhelp_sms_no_response_language_message = "no response message"
+      childhelp_sms_no_response_language_message = "We haven't heard back from you. This conversation will now time out due to inactivity. If you still need support, please reach out again. Crisis counselors are available 24/7. "
       childhelp_sms_failure_message              = "We are sorry, we had a technical issue. Please trying texting again or call 1-800-422-4453"
 
       #Common - Voice
