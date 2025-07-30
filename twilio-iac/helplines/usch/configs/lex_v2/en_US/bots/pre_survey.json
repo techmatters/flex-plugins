@@ -3,7 +3,7 @@
     "description": "Example specific usch/configs/lex_v2/en_USCH/bots Pre Survey bot",
     "locale": "en_US",
     "child_directed": true,
-    "idle_session_ttl_in_seconds": "600",
+    "idle_session_ttl_in_seconds": "300",
     "type": "Bot",
     "intents": {
       "pre_survey": {
@@ -20,7 +20,7 @@
           "slot_to_elicit": "aboutSelf"
         },
         "closing_response": {
-          "message": "Thank you, a counselor will be with you shortly. Para hablar con un consejero en Español, llame al 800-422-4453. Please note: A false report is a crime governed by federal and state laws, involving a person who, with intent to deceive, knowingly makes a false statement to a mandated reporter or law enforcement official that results in unwarranted government action. Childhelp’s National Child Abuse Hotline is comprised of mandated reporters who will refer malicious or false reports to law enforcement for prosecution."
+          "message": "Thank you, a counselor will be with you shortly."
         },
         "slot_priorities": {
           "1": {

@@ -47,8 +47,8 @@ ${
       ],
       "properties": {
         "offset": {
-          "x": 610,
-          "y": 170
+          "x": 1290,
+          "y": 2270
         },
         "workflow": "${workflow_sids.master}",
         "channel": "${task_channel_sids.chat}",
@@ -68,8 +68,8 @@ ${
       ],
       "properties": {
         "offset": {
-          "x": 960,
-          "y": 550
+          "x": 1640,
+          "y": 2700
         },
         "method": "POST",
         "content_type": "application/json;charset=utf-8",
@@ -145,10 +145,11 @@ ${
       "type": "split-based-on",
       "transitions": [
         {
-          "event": "noMatch"
+          "event": "noMatch",
+          "next": "send_courage_first_sms_welcome_message"
         },
         {
-          "next": "send_courage_first_closed_message",
+          "next": "send_courage_first_sms_closed_message",
           "event": "match",
           "conditions": [
             {
@@ -162,7 +163,7 @@ ${
           ]
         },
         {
-          "next": "get_language_message",
+          "next": "send_courage_first_sms_welcome_message",
           "event": "match",
           "conditions": [
             {
@@ -185,15 +186,17 @@ ${
       }
     },
     {
-      "name": "send_courage_first_closed_message",
+      "name": "send_courage_first_sms_closed_message",
       "type": "send-message",
       "transitions": [
         {
-          "next": "captureChannelWithBot",
-          "event": "sent"
+          "event": "sent",
+          "next": "send_courage_first_sms_redirect_message"
+
         },
         {
-          "event": "failed"
+          "event": "failed",
+          "next": "send_courage_first_sms_redirect_message"
         }
       ],
       "properties": {
@@ -206,11 +209,11 @@ ${
         "from": "Bot",
         "message_type": "custom",
         "to": "{{contact.channel.address}}",
-        "body": "courage_first_closed_message"
+        "body": "${flow_vars.courage_first_sms_closed_message}"
       }
     },
     {
-      "name": "blocked_client_message",
+      "name": "send_sms_blocked_client_message",
       "type": "send-message",
       "transitions": [
         {
@@ -230,7 +233,7 @@ ${
         "from": "Bot",
         "message_type": "custom",
         "to": "{{contact.channel.address}}",
-        "body": "${flow_vars.blocked_client_message}"
+        "body": "${flow_vars.sms_blocked_client_message}"
       }
     },
     {
@@ -242,7 +245,7 @@ ${
           "event": "noMatch"
         },
         {
-          "next": "blocked_client_message",
+          "next": "send_sms_blocked_client_message",
           "event": "match",
           "conditions": [
             {
@@ -273,7 +276,7 @@ ${
           "event": "noMatch"
         },
         {
-          "next": "attributes",
+          "next": "send_courage_first_sms_prequeue_message",
           "event": "match",
           "conditions": [
             {
@@ -303,121 +306,24 @@ ${
           "event": "success"
         },
         {
-          "next": "channelCleanup",
+          "next": "webhook_notify_error_chatbot",
           "event": "failed"
         }
       ],
       "properties": {
         "offset": {
-          "x": 560,
-          "y": 2270
+          "x": 490,
+          "y": 1650
         },
         "method": "POST",
         "content_type": "application/json;charset=utf-8",
         "add_twilio_auth": false,
-        "body": "{\n  \"channelSid\": \"{{flow.channel.address}}\",\n  \"conversationSid\": \"{{flow.channel.address}}\",\n  \"message\": \"trigger_pre_survey\",\n  \"studioFlowSid\": \"{{flow.flow_sid}}\",\n  \"language\": \"en-USCH\",\n  \"botSuffix\": \"pre_survey\",\n  \"triggerType\": \"withUserMessage\",\n  \"releaseType\": \"triggerStudioFlow\",\n  \"releaseFlag\": \"preSurveyComplete\",\n  \"channelType\": \"{% if trigger.conversation.ChannelAttributes.channel_type %}{{trigger.conversation.ChannelAttributes.channel_type}}{% else %}{{trigger.conversation.Source | downcase}}{% endif %}\",\n  \"isConversation\": \"true\"\n}",
+        "body": "{\n  \"channelSid\": \"{{flow.channel.address}}\",\n  \"conversationSid\": \"{{flow.channel.address}}\",\n  \"message\": \"trigger_pre_survey\",\n  \"studioFlowSid\": \"{{flow.flow_sid}}\",\n  \"language\": \"en-US\",\n  \"botSuffix\": \"pre_survey\",\n  \"triggerType\": \"withUserMessage\",\n  \"releaseType\": \"triggerStudioFlow\",\n  \"releaseFlag\": \"preSurveyComplete\",\n  \"channelType\": \"{% if trigger.conversation.ChannelAttributes.channel_type %}{{trigger.conversation.ChannelAttributes.channel_type}}{% else %}{{trigger.conversation.Source | downcase}}{% endif %}\",\n  \"isConversation\": \"true\"\n}",
         "url": "${lambda_twilio_account_scoped_url}/channelCapture/captureChannelWithBot"
       }
     },
     {
-      "name": "get_language_message",
-      "type": "send-and-wait-for-reply",
-      "transitions": [
-        {
-          "next": "split_language",
-          "event": "incomingMessage"
-        },
-        {
-          "event": "timeout"
-        },
-        {
-          "event": "deliveryFailure"
-        }
-      ],
-      "properties": {
-        "offset": {
-          "x": 520,
-          "y": 1400
-        },
-        "service": "{{trigger.message.InstanceSid}}",
-        "channel": "{{trigger.message.ChannelSid}}",
-        "from": "Bot",
-        "message_type": "custom",
-        "body": "${channel_flow_vars.language_message}",
-        "timeout": "3600"
-      }
-    },
-    {
-      "name": "split_language",
-      "type": "split-based-on",
-      "transitions": [
-        {
-           "next": "send_courage_first_eng_language_message",
-          "event": "noMatch"
-        },
-        {
-          "next": "send_courage_first_eng_language_message",
-          "event": "match",
-          "conditions": [
-            {
-              "friendly_name": "If value equal_to 1",
-              "arguments": [
-                "{{widgets.get_language_message.inbound.Body}}"
-              ],
-              "type": "equal_to",
-              "value": "1"
-            }
-          ]
-        },
-        {
-          "next": "send_courage_first_other_message",
-          "event": "match",
-          "conditions": [
-            {
-              "friendly_name": "If value equal_to 2",
-              "arguments": [
-                "{{widgets.get_language_message.inbound.Body}}"
-              ],
-              "type": "equal_to",
-              "value": "2"
-            }
-          ]
-        }
-      ],
-      "properties": {
-        "input": "{{widgets.get_language_message.inbound.Body}}",
-        "offset": {
-          "x": 450,
-          "y": 1680
-        }
-      }
-    },
-    {
-      "name": "send_courage_first_other_message",
-      "type": "send-message",
-      "transitions": [
-        {
-          "event": "sent"
-        },
-        {
-          "event": "failed"
-        }
-      ],
-      "properties": {
-        "offset": {
-          "x": 820,
-          "y": 1950
-        },
-        "service": "{{trigger.message.InstanceSid}}",
-        "channel": "{{trigger.message.ChannelSid}}",
-        "from": "Bot",
-        "message_type": "custom",
-        "to": "{{contact.channel.address}}",
-        "body": "${channel_flow_vars.courage_first_other_message}"
-      }
-    },
-    {
-      "name": "send_courage_first_eng_language_message",
+      "name": "send_courage_first_sms_welcome_message",
       "type": "send-message",
       "transitions": [
         {
@@ -430,15 +336,15 @@ ${
       ],
       "properties": {
         "offset": {
-          "x": 470,
-          "y": 1980
+          "x": 410,
+          "y": 1350
         },
         "service": "{{trigger.message.InstanceSid}}",
         "channel": "{{trigger.message.ChannelSid}}",
         "from": "Bot",
         "message_type": "custom",
         "to": "{{contact.channel.address}}",
-        "body": "${channel_flow_vars.courage_first_eng_language_message}"
+        "body": "${flow_vars.courage_first_sms_welcome_message}"
       }
     },
     {
@@ -446,18 +352,18 @@ ${
       "type": "make-http-request",
       "transitions": [
         {
-          "next": "webhook_notify_error_chatbot",
+          "next": "send_courage_first_sms_prequeue_message",
           "event": "success"
         },
         {
-          "next": "webhook_notify_error_chatbot",
+          "next": "send_courage_first_sms_failure_message",
           "event": "failed"
         }
       ],
       "properties": {
         "offset": {
-          "x": 710,
-          "y": 2490
+          "x": 800,
+          "y": 2110
         },
         "method": "POST",
         "content_type": "application/json;charset=utf-8",
@@ -471,7 +377,32 @@ ${
       "type": "make-http-request",
       "transitions": [
         {
+          "next": "channelCleanup",
           "event": "success"
+        },
+        {
+          "next": "channelCleanup",
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 630,
+          "y": 1890
+        },
+        "method": "POST",
+        "content_type": "application/json;charset=utf-8",
+        "add_twilio_auth": false,
+        "body": "{ \"text\": \"Issue detected [Chabot Failure] on ${short_helpline} ${short_environment} Flow SID: {{flow.flow_sid}} Execution SID: {{flow.sid}}  \" }",
+        "url": "${webhook_url_studio_errors}"
+      }
+    },
+    {
+      "name": "send_courage_first_sms_failure_message",
+      "type": "send-message",
+      "transitions": [
+        {
+          "event": "sent"
         },
         {
           "event": "failed"
@@ -479,14 +410,65 @@ ${
       ],
       "properties": {
         "offset": {
-          "x": 860,
-          "y": 2770
+          "x": 930,
+          "y": 2440
         },
-        "method": "POST",
-        "content_type": "application/json;charset=utf-8",
-        "add_twilio_auth": false,
-        "body": "{ \"text\": \"Issue detected [Chabot Failure] on ${short_helpline} ${short_environment} Flow SID: {{flow.flow_sid}} Execution SID: {{flow.sid}}  \" }",
-        "url": "${webhook_url_studio_errors}"
+        "service": "{{trigger.message.InstanceSid}}",
+        "channel": "{{trigger.message.ChannelSid}}",
+        "from": "Bot",
+        "message_type": "custom",
+        "to": "{{contact.channel.address}}",
+        "body": "${flow_vars.courage_first_sms_failure_message}"
+      }
+    },
+    {
+      "name": "send_courage_first_sms_prequeue_message",
+      "type": "send-message",
+      "transitions": [
+        {
+          "next": "attributes",
+          "event": "sent"
+        },
+        {
+          "event": "failed",
+          "next": "attributes"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 1240,
+          "y": 1640
+        },
+        "service": "{{trigger.message.InstanceSid}}",
+        "channel": "{{trigger.message.ChannelSid}}",
+        "from": "Bot",
+        "message_type": "custom",
+        "to": "{{contact.channel.address}}",
+        "body": "${flow_vars.courage_first_sms_prequeue_message}"
+      }
+    },
+    {
+      "name": "send_courage_first_sms_redirect_message",
+      "type": "send-message",
+      "transitions": [
+        {
+          "event": "sent"
+        },
+        {
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 20,
+          "y": 1690
+        },
+        "service": "{{trigger.message.InstanceSid}}",
+        "channel": "{{trigger.message.ChannelSid}}",
+        "from": "Bot",
+        "message_type": "custom",
+        "to": "{{contact.channel.address}}",
+        "body": "${flow_vars.courage_first_sms_redirect_message}"
       }
     }
   ],

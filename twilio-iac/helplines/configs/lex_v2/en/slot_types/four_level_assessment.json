@@ -3,7 +3,7 @@
   "slotTypeValues": [
     {
       "sampleValue": {
-        "value": "Good"
+        "value": "Excellent"
       },
       "synonyms": [
         {
@@ -16,7 +16,7 @@
           "value": "1"
         },
         {
-          "value": "🙂"
+          "value": "🥰"
         },
         {
           "value": ":)"
@@ -25,7 +25,7 @@
     },
     {
       "sampleValue": {
-        "value": "Fair"
+        "value": "Good"
       },
       "synonyms": [
         {
@@ -38,7 +38,7 @@
           "value": "2"
         },
         {
-          "value": "😐"
+          "value": "😊"
         },
         {
           "value": ":|"
@@ -47,7 +47,7 @@
     },
     {
       "sampleValue": {
-        "value": "Unsure"
+        "value": "Fair"
       },
       "synonyms": [
         {
@@ -60,7 +60,7 @@
           "value": "3"
         },
         {
-          "value": "😕"
+          "value": "😒"
         },
         {
           "value": ":/"
@@ -82,7 +82,7 @@
           "value": "4!"
         },
         {
-          "value": "🙁"
+          "value": "😡"
         },
         {
           "value": ":("
