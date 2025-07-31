@@ -59,23 +59,8 @@ export type Body = {
 
 const isOpen =
   (timeOfDay: number) =>
-  (shift: OperatingShift): boolean => {
-    console.log(
-      '>>>>>> shift.open',
-      shift.open,
-      'timeOfDay >= shift.open',
-      timeOfDay >= shift.open,
-    );
-    console.log(
-      '>>>>>> shift.close',
-      shift.close,
-      'timeOfDay < shift.close',
-      timeOfDay < shift.close,
-    );
-
-    return timeOfDay >= shift.open && timeOfDay < shift.close;
-  };
-
+  (shift: OperatingShift): boolean =>
+    timeOfDay >= shift.open && timeOfDay < shift.close;
 const getStatusFromEntry = (
   officeOperatingInfo: OfficeOperatingInfo,
   channel: string,
@@ -100,10 +85,7 @@ const getStatusFromEntry = (
   }
 
   const isInOpenShift = isOpen(timeOfDay);
-  const isOpenNow = operatingHours[channel][dayOfWeek].some(s => {
-    console.log('>>>>>> shift', s);
-    return isInOpenShift(s);
-  });
+  const isOpenNow = operatingHours[channel][dayOfWeek].some(isInOpenShift);
 
   if (isOpenNow) {
     return 'open';
@@ -175,13 +157,11 @@ export const handleOperatingHours: AccountScopedHandler = async (
 ): Promise<Result<HttpError, any>> => {
   try {
     const operatingInfoKey = await getOperatingInfoKey(accountSid);
-    console.log('>>>>>> operatingInfoKey', operatingInfoKey);
 
     const { channel, office, language } = body;
 
     const enforced = await areOperatingHoursEnforced(accountSid);
     if (!enforced) {
-      console.log('>>>>>> enforced', enforced);
       return newOpenResult();
     }
 
@@ -194,15 +174,11 @@ export const handleOperatingHours: AccountScopedHandler = async (
     let operatingInfo: OperatingInfo;
     try {
       operatingInfo = require(`./operatingInfo/${operatingInfoKey}.json`);
-
-      console.log('>>>>>> operatingInfo', operatingInfo);
     } catch (err) {
-      console.log('>>>>>> getting operatingInfo failed', err);
       return newOpenResult();
     }
 
     const status = getOperatingStatus(operatingInfo, channel, office);
-    console.log('>>>>>> status', status);
 
     // Return the status and, if closed, the appropriate message
     const response = {

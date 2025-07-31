@@ -5,13 +5,13 @@
   },
   "operatingHours": {
     "webchat": {
-      "1": [{ "open": 0, "close": 0 }],
-      "2": [{ "open": 0, "close": 0 }],
-      "3": [{ "open": 0, "close": 0 }],
-      "4": [{ "open": 0, "close": 0 }],
-      "5": [{ "open": 0, "close": 0 }],
-      "6": [{ "open": 0, "close": 0 }],
-      "7": [{ "open": 0, "close": 0 }]
+      "1": [{ "open": 0, "close": 2400 }],
+      "2": [{ "open": 0, "close": 2400 }],
+      "3": [{ "open": 0, "close": 2400 }],
+      "4": [{ "open": 0, "close": 2400 }],
+      "5": [{ "open": 0, "close": 2400 }],
+      "6": [{ "open": 0, "close": 2400 }],
+      "7": [{ "open": 0, "close": 2400 }]
     },
     "facebook": {
       "1": [],
