@@ -94,11 +94,15 @@ const getStatusFromEntry = (
   return 'closed';
 };
 
-const getOperatingStatus = (
-  operatingInfo: OperatingInfo,
-  channel: string,
-  office?: string,
-) => {
+const getOperatingStatus = ({
+  channel,
+  operatingInfo,
+  office,
+}: {
+  operatingInfo: OperatingInfo;
+  channel: string;
+  office?: string;
+}) => {
   const { offices, ...operatingInfoRoot } = operatingInfo;
 
   if (office) {
@@ -115,11 +119,15 @@ const getOperatingStatus = (
   return getStatusFromEntry(operatingInfoRoot, channel);
 };
 
-const getClosedMessage = async (
-  accountSid: AccountSID,
-  status: 'closed' | 'holiday',
-  locale: string = 'en-US',
-): Promise<string> => {
+const getClosedMessage = async ({
+  accountSid,
+  locale = 'en-US',
+  status,
+}: {
+  accountSid: AccountSID;
+  status: 'closed' | 'holiday';
+  locale: string;
+}): Promise<string> => {
   const messageKey = status === 'closed' ? 'ClosedOutOfShift' : 'ClosedHolidays';
 
   // Try to get the translated message
@@ -178,7 +186,7 @@ export const handleOperatingHours: AccountScopedHandler = async (
       return newOpenResult();
     }
 
-    const status = getOperatingStatus(operatingInfo, channel, office);
+    const status = getOperatingStatus({ operatingInfo, channel, office });
 
     // Return the status and, if closed, the appropriate message
     const response = {
@@ -186,7 +194,7 @@ export const handleOperatingHours: AccountScopedHandler = async (
       message:
         status === 'open'
           ? undefined
-          : await getClosedMessage(accountSid, status, language),
+          : await getClosedMessage({ accountSid, status, locale: language }),
     };
 
     return newOk(response);

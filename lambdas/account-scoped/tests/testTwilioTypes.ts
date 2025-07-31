@@ -19,7 +19,6 @@ import { TaskPage } from 'twilio/lib/rest/taskrouter/v1/workspace/task';
 const CONFIG_FIELDS = [
   'definitionVersion',
   'hrm_api_version',
-  'form_definitions_version_url',
   'assets_bucket_url',
   'helpline_code',
 ] as const;

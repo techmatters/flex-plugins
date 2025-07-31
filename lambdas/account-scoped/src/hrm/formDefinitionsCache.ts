@@ -31,7 +31,7 @@ const getVersionFromDefinitionVersionId = (definitionVersionId: string) => {
   return definitionVersionId.substring(definitionVersionId.length - 2);
 };
 
-export const getFormDefinitionUrl = ({
+const getFormDefinitionUrl = ({
   assetsBucketUrl,
   definitionVersion,
 }: {
@@ -45,10 +45,17 @@ export const getFormDefinitionUrl = ({
 
 export const loadedDefinitionVersions: Record<string, DefinitionVersion> = {};
 
-export const getDefinitionVersion = async (
-  formDefinitionRootUrl: URL,
-): Promise<DefinitionVersion> => {
-  const formDefinitionRootUrlString = formDefinitionRootUrl.toString();
+export const getDefinitionVersion = async ({
+  assetsBucketUrl,
+  definitionVersion,
+}: {
+  assetsBucketUrl: string;
+  definitionVersion: string;
+}): Promise<DefinitionVersion> => {
+  const formDefinitionRootUrlString = getFormDefinitionUrl({
+    assetsBucketUrl,
+    definitionVersion,
+  });
   if (!loadedDefinitionVersions[formDefinitionRootUrlString]) {
     console.debug('Loading forms at:', formDefinitionRootUrlString);
     loadedDefinitionVersions[formDefinitionRootUrlString] = await loadDefinition(
@@ -67,15 +74,18 @@ export const clearDefinitionCache = () => {
   });
 };
 
-export const getBaseUrl = async (accountSid: AccountSID): Promise<URL> => {
-  const {
-    form_definitions_version_url: configFormDefinitionsVersionUrl,
-    assets_bucket_url: assetsBucketUrl,
-    helpline_code: helplineCode,
-  } = await retrieveServiceConfigurationAttributes(await getTwilioClient(accountSid));
-  const formDefinitionsBaseUrl =
-    configFormDefinitionsVersionUrl || `${assetsBucketUrl}/form-definitions/`;
-  return new URL(`${formDefinitionsBaseUrl}${helplineCode}/v1`);
+export const getCurrentDefinitionVersion = async ({
+  accountSid,
+}: {
+  accountSid: AccountSID;
+}): Promise<DefinitionVersion> => {
+  const { assets_bucket_url: assetsBucketUrl, definitionVersion } =
+    await retrieveServiceConfigurationAttributes(await getTwilioClient(accountSid));
+  const currentDefinitionVersion = await getDefinitionVersion({
+    assetsBucketUrl,
+    definitionVersion,
+  });
+  return currentDefinitionVersion;
 };
 
 export const lookupCustomMessage = async (
@@ -83,8 +93,7 @@ export const lookupCustomMessage = async (
   locale: string,
   translationKey: string,
 ) => {
-  const { customStrings } =
-    (await getDefinitionVersion(await getBaseUrl(accountSid))) ?? {};
+  const { customStrings } = await getCurrentDefinitionVersion({ accountSid });
   if (customStrings) {
     const customMessageForLocale = customStrings.Messages.EndChatMsg[locale];
     if (customMessageForLocale) {
