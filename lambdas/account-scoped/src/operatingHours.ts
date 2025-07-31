@@ -59,8 +59,22 @@ export type Body = {
 
 const isOpen =
   (timeOfDay: number) =>
-  (shift: OperatingShift): boolean =>
-    timeOfDay >= shift.open && timeOfDay < shift.close;
+  (shift: OperatingShift): boolean => {
+    console.log(
+      '>>>>>> shift.open',
+      shift.open,
+      'timeOfDay >= shift.open',
+      timeOfDay >= shift.open,
+    );
+    console.log(
+      '>>>>>> shift.close',
+      shift.close,
+      'timeOfDay < shift.close',
+      timeOfDay < shift.close,
+    );
+
+    return timeOfDay >= shift.open && timeOfDay < shift.close;
+  };
 
 const getStatusFromEntry = (
   officeOperatingInfo: OfficeOperatingInfo,
@@ -86,7 +100,10 @@ const getStatusFromEntry = (
   }
 
   const isInOpenShift = isOpen(timeOfDay);
-  const isOpenNow = operatingHours[channel][dayOfWeek].some(isInOpenShift);
+  const isOpenNow = operatingHours[channel][dayOfWeek].some(s => {
+    console.log('>>>>>> shift', s);
+    return isInOpenShift(s);
+  });
 
   if (isOpenNow) {
     return 'open';
