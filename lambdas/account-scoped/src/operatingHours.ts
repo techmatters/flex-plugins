@@ -193,7 +193,7 @@ export const handleOperatingHours: AccountScopedHandler = async (
     }
     let operatingInfo: OperatingInfo;
     try {
-      operatingInfo = JSON.parse(require(`./operatingInfo/${operatingInfoKey}.json`));
+      operatingInfo = require(`./operatingInfo/${operatingInfoKey}.json`);
 
       console.log('>>>>>> operatingInfo', operatingInfo);
     } catch (err) {
