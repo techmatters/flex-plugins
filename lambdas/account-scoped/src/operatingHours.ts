@@ -175,10 +175,13 @@ export const handleOperatingHours: AccountScopedHandler = async (
 ): Promise<Result<HttpError, any>> => {
   try {
     const operatingInfoKey = await getOperatingInfoKey(accountSid);
+    console.log('>>>>>> operatingInfoKey', operatingInfoKey);
 
     const { channel, office, language } = body;
 
-    if (!(await areOperatingHoursEnforced(accountSid))) {
+    const enforced = await areOperatingHoursEnforced(accountSid);
+    if (!enforced) {
+      console.log('>>>>>> enforced', enforced);
       return newOpenResult();
     }
 
@@ -191,11 +194,15 @@ export const handleOperatingHours: AccountScopedHandler = async (
     let operatingInfo: OperatingInfo;
     try {
       operatingInfo = JSON.parse(require(`./operatingInfo/${operatingInfoKey}.json`));
-    } catch {
+
+      console.log('>>>>>> operatingInfo', operatingInfo);
+    } catch (err) {
+      console.log('>>>>>> getting operatingInfo failed', err);
       return newOpenResult();
     }
 
     const status = getOperatingStatus(operatingInfo, channel, office);
+    console.log('>>>>>> status', status);
 
     // Return the status and, if closed, the appropriate message
     const response = {
