@@ -18,24 +18,25 @@ import { populateHrmContactFormFromTaskByKeys } from '../../../src/hrm/populateH
 import { BLANK_CONTACT } from './testContacts';
 import { callTypes, HrmContact } from '@tech-matters/hrm-types';
 import each from 'jest-each';
-import { BASE_FORM_DEFINITION, MOCK_FORM_DEFINITION_URL } from '../../testHrmValues';
+import { BASE_FORM_DEFINITION } from '../../testHrmValues';
 import { isErr } from '../../../src/Result';
 import { AssertionError } from 'node:assert';
-import { getDefinitionVersion } from '../../../src/hrm/formDefinitionsCache';
+import { getCurrentDefinitionVersion } from '../../../src/hrm/formDefinitionsCache';
 import { RecursivePartial } from '../RecursivePartial';
 import { DefinitionVersion } from '@tech-matters/hrm-form-definitions';
 
 jest.mock('../../../src/hrm/formDefinitionsCache', () => ({
-  getDefinitionVersion: jest.fn(),
+  getCurrentDefinitionVersion: jest.fn(),
 }));
 
 const mockFetch: jest.MockedFunction<typeof fetch> = jest.fn();
-const mockGetDefinitionVersion = getDefinitionVersion as jest.MockedFunction<
-  typeof getDefinitionVersion
->;
+const mockGetCurrentDefinitionVersion =
+  getCurrentDefinitionVersion as jest.MockedFunction<typeof getCurrentDefinitionVersion>;
+
+const accountSid = 'ACxyz';
 
 const mockFormDefinitions = (definitionSet: RecursivePartial<DefinitionVersion>) => {
-  mockGetDefinitionVersion.mockResolvedValue({
+  mockGetCurrentDefinitionVersion.mockResolvedValue({
     ...BASE_FORM_DEFINITION,
     ...definitionSet,
     tabbedForms: {
@@ -271,16 +272,16 @@ describe('populateHrmContactFormFromTask', () => {
     }: TestParams) => {
       mockFormDefinitions(formDefinitionSet);
 
-      const populatedContactResult = await populateHrmContactFormFromTaskByKeys(
-        {
+      const populatedContactResult = await populateHrmContactFormFromTaskByKeys({
+        taskAttributes: {
           ...(preEngagementData ? { preEngagementData } : {}),
           ...(memory ? { memory } : {}),
           ...(firstName ? { firstName } : {}),
           ...(language ? { language } : {}),
         },
-        BLANK_CONTACT,
-        MOCK_FORM_DEFINITION_URL,
-      );
+        contact: BLANK_CONTACT,
+        accountSid,
+      });
       if (isErr(populatedContactResult)) {
         throw new AssertionError({ message: populatedContactResult.message });
       }

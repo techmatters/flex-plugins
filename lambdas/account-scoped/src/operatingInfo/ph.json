@@ -1,0 +1,51 @@
+{
+  "timezone": "Asia/Manila",
+  "holidays": {
+    "01/01/2023":"New Year's Day",
+    "01/02/2023":"Special non-working day after New Year",
+    "01/22/2023":"Lunar New Year's Day",
+    "01/23/2023":"First Philippine Republic Day",
+    "02/18/2023":"Lailatul Isra Wal Mi Raj (Tentative Date)",
+    "02/25/2023":"People Power Anniversary",
+    "03/21/2023":"March Equinox",
+    "04/06/2023":"Maundy Thursday",
+    "04/07/2023":"Good Friday",
+    "04/08/2023":"Black Saturday",
+    "04/09/2023":"Easter Sunday",
+    "04/10/2023":"The Day of Valor",
+    "04/22/2023":"Eidul-Fitar (Tentative Date)",
+    "05/01/2023":"Labor Day",
+    "06/12/2023":"Independence Day",
+    "06/21/2023":"June Solstice",
+    "06/29/2023":"Eid al-Adha (Feast of the Sacrifice) (Tentative Date)",
+    "07/10/2023":"Eid al-Adha Day 2 (Tentative Date)",
+    "07/19/2023":"Amun Jadid",
+    "08/21/2023":"Ninoy Aquino Day",
+    "08/28/2023":"National Heroes Day",
+    "09/03/2023":"Yamashita Surrender Day",
+    "09/08/2023":"Feast of the Nativity of Mary",
+    "09/23/2023":"September Equinox",
+    "09/27/2023":"Maulid un-Nabi (Tentative Date)",
+    "11/01/2023":"All Saints' Day",
+    "11/02/2023":"All Souls' Day",
+    "11/27/2023":"Bonifacio Day",
+    "11/30/2023":"Bonifacio Day",
+    "12/08/2023":"Feast of the Immaculate Conception",
+    "12/22/2023":"December Solstice",
+    "12/24/2023":"Christmas Eve",
+    "12/25/2023":"Christmas Day",
+    "12/30/2023":"Rizal Day",
+    "12/31/2023":"New Year's Eve"
+  },
+  "operatingHours": {
+    "facebook": {
+      "1": [{ "open": 900, "close": 1800 }],
+      "2": [{ "open": 900, "close": 1800 }],
+      "3": [{ "open": 900, "close": 1800 }],
+      "4": [{ "open": 900, "close": 1800 }],
+      "5": [{ "open": 900, "close": 1800 }],
+      "6": [{ "open": 900, "close": 1800 }],
+      "7": [{ "open": 900, "close": 1800 }]
+    }
+  }
+}
