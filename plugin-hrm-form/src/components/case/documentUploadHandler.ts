@@ -19,6 +19,36 @@ import { getHrmConfig } from '../../hrmConfig';
 import { fetchHrmApi, generateSignedURLPath } from '../../services/fetchHrmApi';
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024;
+
+// Allowed file extensions and their corresponding MIME types
+const ALLOWED_FILE_TYPES = {
+  '.png': ['image/png'],
+  '.jpg': ['image/jpeg', 'image/jpg'],
+  '.jpeg': ['image/jpeg', 'image/jpg'],
+  '.pdf': ['application/pdf'],
+  '.doc': ['application/msword'],
+  '.docx': ['application/vnd.openxmlformats-officedocument.wordprocessingml.document'],
+};
+
+/**
+ * Validates file extension and MIME type
+ * @param fileName The name of the file
+ * @param mimeType The MIME type of the file
+ * @returns true if valid, false otherwise
+ */
+const validateFileType = (fileName: string, mimeType: string): boolean => {
+  // Get file extension (case insensitive)
+  const extension = fileName.toLowerCase().substring(fileName.lastIndexOf('.'));
+  
+  // Check if extension is allowed
+  if (!ALLOWED_FILE_TYPES[extension]) {
+    return false;
+  }
+  
+  // Check if MIME type matches the extension
+  const allowedMimeTypes = ALLOWED_FILE_TYPES[extension];
+  return allowedMimeTypes.includes(mimeType.toLowerCase());
+};
 /**
  * This function calls an HTTP PUT to upload the document
  * @param file Document
@@ -52,6 +82,20 @@ const bindOnFileChange = (caseId: string) => async event => {
     alert('File exceeds max size.');
     return '';
   }
+
+  // Validate file extension
+  const extension = name.toLowerCase().substring(name.lastIndexOf('.'));
+  if (!ALLOWED_FILE_TYPES[extension]) {
+    alert('Invalid file type. Only PNG, JPG, JPEG, PDF, DOC, and DOCX files are allowed.');
+    return '';
+  }
+
+  // Validate MIME type and check for extension/MIME type mismatch
+  if (!validateFileType(name, type)) {
+    alert('Invalid file type. File content does not match the expected format.');
+    return '';
+  }
+
   const mimeType = type;
   const { docsBucket: bucket } = getHrmConfig();
 
