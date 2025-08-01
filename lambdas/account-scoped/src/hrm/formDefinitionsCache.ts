@@ -94,17 +94,14 @@ export const lookupCustomMessage = async (
   translationKey: string,
 ) => {
   const { customStrings } = await getCurrentDefinitionVersion({ accountSid });
-  console.log('>>>> customStrings', customStrings);
   if (customStrings) {
     const customMessageForLocale = customStrings.Messages[locale]?.[translationKey];
-    console.log('>>>> customMessageForLocale', customMessageForLocale);
     if (customMessageForLocale) {
       return customMessageForLocale;
     }
     const [language] = locale.split('-');
     if (language) {
       const customMessageForLanguage = customStrings.Messages[language]?.[translationKey];
-      console.log('>>>> customMessageForLanguage', customMessageForLanguage);
       if (customMessageForLanguage) {
         return customMessageForLanguage;
       }
