@@ -85,7 +85,6 @@ export const getCurrentDefinitionVersion = async ({
     assetsBucketUrl,
     definitionVersion,
   });
-  console.log('>>>> currentDefinitionVersion', currentDefinitionVersion);
   return currentDefinitionVersion;
 };
 
@@ -94,11 +93,7 @@ export const lookupCustomMessage = async (
   locale: string,
   translationKey: string,
 ) => {
-  console.log('>>>> accountSid', accountSid);
-  console.log('>>>> locale', locale);
-  console.log('>>>> translationKey', translationKey);
   const { customStrings } = await getCurrentDefinitionVersion({ accountSid });
-  console.log('>>>> customStrings', customStrings);
   if (customStrings) {
     const customMessageForLocale = customStrings.Messages.EndChatMsg[locale];
     if (customMessageForLocale) {
@@ -106,7 +101,7 @@ export const lookupCustomMessage = async (
     }
     const [language] = locale.split('-');
     if (language) {
-      const customMessageForLanguage = customStrings.Messages[translationKey]?.[language];
+      const customMessageForLanguage = customStrings.Messages[language]?.[translationKey];
       if (customMessageForLanguage) {
         return customMessageForLanguage;
       }
