@@ -32,10 +32,10 @@ beforeEach(() => {
 });
 
 beforeAll(async () => {
-  const formDefinitionsBaseUrl = buildBaseURL('v1');
+  const formDefinitionsBaseUrl = buildBaseURL('as-v1');
   await mockFetchImplementation(formDefinitionsBaseUrl);
 
-  mockGetDefinitionsResponse(getDefinitionVersions, 'v1', await loadDefinition(formDefinitionsBaseUrl));
+  mockGetDefinitionsResponse(getDefinitionVersions, 'as-v1', await loadDefinition(formDefinitionsBaseUrl));
 });
 
 test('<StandaloneSearch> should display <Search />', () => {

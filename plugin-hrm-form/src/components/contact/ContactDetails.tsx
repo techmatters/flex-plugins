@@ -132,7 +132,7 @@ const ContactDetails: React.FC<Props> = ({
       loadContactFromHrm();
     }
   }, [loadingStatus, savedContact, loadContactFromHrm]);
-  const version = savedContact?.rawJson.definitionVersion;
+  const version = savedContact?.definitionVersion ?? savedContact?.rawJson.definitionVersion;
 
   const strings = getTemplateStrings();
   /**

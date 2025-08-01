@@ -31,7 +31,7 @@ beforeEach(() => {
             connectedCase: {
               helpline: 'Fakeline',
               info: {
-                definitionVersion: 'demo-v1',
+                definitionVersion: 'as-v1',
               },
             },
           },
@@ -39,7 +39,7 @@ beforeEach(() => {
       },
       configuration: {
         definitionVersions: {
-          'demo-v1': {
+          'as-v1': {
             helplineInformation: {
               helplines: [
                 {

@@ -84,7 +84,8 @@ const handlePendingAction = <T extends Parameters<CreateHandlerMap<HrmState>>[0]
   });
 
 const updateConnectedCase = (state: HrmState, connectedCase: Case): HrmState => {
-  const caseDefinitionVersion = state.configuration.definitionVersions[connectedCase?.info?.definitionVersion];
+  const caseDefinitionVersion =
+    state.configuration.definitionVersions[connectedCase?.definitionVersion ?? connectedCase?.info?.definitionVersion];
   const stateCase = state.connectedCase.cases[connectedCase?.id];
   const outstandingUpdateCount = (stateCase?.outstandingUpdateCount ?? 1) - 1;
   const { status, ...restCaseSummary } = stateCase?.caseWorkingCopy?.caseSummary || {};
