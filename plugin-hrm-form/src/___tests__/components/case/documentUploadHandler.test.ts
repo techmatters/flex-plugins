@@ -121,6 +121,18 @@ describe('documentUploadHandler', () => {
         'Invalid file type. Only PNG, JPG, JPEG, PDF, DOC, and DOCX files are allowed.',
       );
     });
+
+    it('should reject files with no extension', async () => {
+      const file = new File(['fake content'], 'testfile', { type: 'text/plain', size: 1024 });
+      const event = { target: { files: [file] } };
+
+      const result = await onFileChange(event);
+
+      expect(result).toBe('');
+      expect(mockAlert).toHaveBeenCalledWith(
+        'Invalid file type. Only PNG, JPG, JPEG, PDF, DOC, and DOCX files are allowed.',
+      );
+    });
   });
 
   describe('File Size Validation', () => {
