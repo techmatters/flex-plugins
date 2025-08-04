@@ -64,71 +64,15 @@ describe('documentUploadHandler', () => {
     const handlers = bindFileUploadCustomHandlers(caseId);
     const { onFileChange } = handlers;
 
-    it('should accept valid PNG files', async () => {
-      const file = new File(['fake content'], 'test.png', { type: 'image/png', size: 1024 });
-      const event = { target: { files: [file] } };
-
-      const result = await onFileChange(event);
-
-      expect(result).toBeTruthy();
-      expect(mockAlert).not.toHaveBeenCalledWith(
-        'Invalid file type. Only PNG, JPG, JPEG, PDF, DOC, and DOCX files are allowed.',
-      );
-    });
-
-    it('should accept valid JPG files', async () => {
-      const file = new File(['fake content'], 'test.jpg', { type: 'image/jpeg', size: 1024 });
-      const event = { target: { files: [file] } };
-
-      const result = await onFileChange(event);
-
-      expect(result).toBeTruthy();
-      expect(mockAlert).not.toHaveBeenCalledWith(
-        'Invalid file type. Only PNG, JPG, JPEG, PDF, DOC, and DOCX files are allowed.',
-      );
-    });
-
-    it('should accept valid JPEG files', async () => {
-      const file = new File(['fake content'], 'test.jpeg', { type: 'image/jpeg', size: 1024 });
-      const event = { target: { files: [file] } };
-
-      const result = await onFileChange(event);
-
-      expect(result).toBeTruthy();
-      expect(mockAlert).not.toHaveBeenCalledWith(
-        'Invalid file type. Only PNG, JPG, JPEG, PDF, DOC, and DOCX files are allowed.',
-      );
-    });
-
-    it('should accept valid PDF files', async () => {
-      const file = new File(['fake content'], 'test.pdf', { type: 'application/pdf', size: 1024 });
-      const event = { target: { files: [file] } };
-
-      const result = await onFileChange(event);
-
-      expect(result).toBeTruthy();
-      expect(mockAlert).not.toHaveBeenCalledWith(
-        'Invalid file type. Only PNG, JPG, JPEG, PDF, DOC, and DOCX files are allowed.',
-      );
-    });
-
-    it('should accept valid DOC files', async () => {
-      const file = new File(['fake content'], 'test.doc', { type: 'application/msword', size: 1024 });
-      const event = { target: { files: [file] } };
-
-      const result = await onFileChange(event);
-
-      expect(result).toBeTruthy();
-      expect(mockAlert).not.toHaveBeenCalledWith(
-        'Invalid file type. Only PNG, JPG, JPEG, PDF, DOC, and DOCX files are allowed.',
-      );
-    });
-
-    it('should accept valid DOCX files', async () => {
-      const file = new File(['fake content'], 'test.docx', {
-        type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-        size: 1024,
-      });
+    each([
+      ['PNG', 'test.png', 'image/png'],
+      ['JPG', 'test.jpg', 'image/jpeg'],
+      ['JPEG', 'test.jpeg', 'image/jpeg'],
+      ['PDF', 'test.pdf', 'application/pdf'],
+      ['DOC', 'test.doc', 'application/msword'],
+      ['DOCX', 'test.docx', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'],
+    ]).it('should accept valid %s files', async (fileType, fileName, mimeType) => {
+      const file = new File(['fake content'], fileName, { type: mimeType, size: 1024 });
       const event = { target: { files: [file] } };
 
       const result = await onFileChange(event);
