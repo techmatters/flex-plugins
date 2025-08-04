@@ -39,12 +39,12 @@ const ALLOWED_FILE_TYPES = {
 const validateFileType = (fileName: string, mimeType: string): boolean => {
   // Get file extension (case insensitive)
   const extension = fileName.toLowerCase().substring(fileName.lastIndexOf('.'));
-  
+
   // Check if extension is allowed
   if (!ALLOWED_FILE_TYPES[extension]) {
     return false;
   }
-  
+
   // Check if MIME type matches the extension
   const allowedMimeTypes = ALLOWED_FILE_TYPES[extension];
   return allowedMimeTypes.includes(mimeType.toLowerCase());
