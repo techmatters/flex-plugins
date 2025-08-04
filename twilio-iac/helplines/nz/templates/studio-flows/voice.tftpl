@@ -32,7 +32,7 @@ ${
       }
     },
     {
-      "name": "SendCallToAgent",
+      "name": "attributes",
       "type": "send-to-flex",
       "transitions": [
         {
@@ -173,7 +173,7 @@ ${
       "type": "say-play",
       "transitions": [
         {
-          "next": "SendCallToAgent",
+          "next": "attributes",
           "event": "audioComplete"
         }
       ],
@@ -195,7 +195,7 @@ ${
           "event": "noMatch"
         },
         {
-          "next": "SendCallToAgentNoTimeout",
+          "next": "attributesNoTimeout",
           "event": "match",
           "conditions": [
             {
@@ -218,7 +218,7 @@ ${
       }
     },
     {
-      "name": "SendCallToAgentNoTimeout",
+      "name": "attributesNoTimeout",
       "type": "send-to-flex",
       "transitions": [
         {
@@ -248,20 +248,34 @@ ${
       "name": "country_check",
       "type": "split-based-on",
       "transitions": [
-        {
-          "next": "getProfileFlagsForIdentifier",
+       {
+          "next": "play_blocked",
           "event": "noMatch"
         },
         {
-          "next": "play_blocked",
+          "next": "getProfileFlagsForIdentifier",
           "event": "match",
           "conditions": [
             {
-              "friendly_name": "If value does_not_start_with +64",
+              "friendly_name": "If value regex ${channel_flow_vars.regex_allowed_test_numbers}",
               "arguments": [
                 "{{trigger.call.From}}"
               ],
-              "type": "does_not_start_with",
+              "type": "regex",
+              "value": "${channel_flow_vars.regex_allowed_test_numbers}"
+            }
+          ]
+        },
+        {
+          "next": "getProfileFlagsForIdentifier",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value starts_with +64",
+              "arguments": [
+                "{{trigger.call.From}}"
+              ],
+              "type": "starts_with",
               "value": "+64"
             }
           ]

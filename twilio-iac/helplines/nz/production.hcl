@@ -57,6 +57,7 @@ locals {
           blocked_url                = "https://nz-assets-6577.twil.io/blocked_number.mp3"
           initial_message_url        = "https://nz-assets-6577.twil.io/initial_message.mp3"
           external_parties_number    = "+6498867045"
+          regex_allowed_test_numbers = ""
         }
         enable_datadog_monitor = true
         custom_monitor = {

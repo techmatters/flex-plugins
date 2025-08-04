@@ -48,6 +48,7 @@ locals {
           blocked_url                = "https://nz-assets-8961.twil.io/blocked_number.mp3"
           initial_message_url        = "https://nz-assets-8961.twil.io/initial_message.mp3"
           external_parties_number    = "+6498867292"
+          regex_allowed_test_numbers = "\\+(56|1|27|64)\\d{6,20}"
 
         }
         chatbot_unique_names = []
