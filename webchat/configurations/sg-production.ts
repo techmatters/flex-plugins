@@ -24,4 +24,5 @@ export const config: Configuration = {
   ...sgStaging,
   accountSid,
   flexFlowSid,
+  twilioServicesUrl: new URL(`https://hrm-production.tl.techmatters.org/lambda/twilio/account-scoped/${accountSid}`),
 };
