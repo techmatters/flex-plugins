@@ -76,6 +76,7 @@ const bindOnFileChange = (caseId: string) => async event => {
   const { name, size, type } = file;
 
   if (size > MAX_FILE_SIZE) {
+    // Should this string be localizable?
     alert('File exceeds max size.');
     return '';
   }
@@ -83,6 +84,7 @@ const bindOnFileChange = (caseId: string) => async event => {
   // Validate file extension
   const extension = name.toLowerCase().substring(name.lastIndexOf('.'));
   if (!ALLOWED_FILE_TYPES[extension]) {
+    // Should this string be localizable?
     alert('Invalid file type. Only PNG, JPG, JPEG, PDF, DOC, and DOCX files are allowed.');
     return '';
   }
