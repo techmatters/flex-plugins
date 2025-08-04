@@ -13,7 +13,9 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
+
 import each from 'jest-each';
+
 import { bindFileUploadCustomHandlers } from '../../../components/case/documentUploadHandler';
 import { fetchHrmApi } from '../../../services/fetchHrmApi';
 import { getHrmConfig } from '../../../hrmConfig';
@@ -53,6 +55,7 @@ describe('documentUploadHandler', () => {
       docsBucket: 'test-bucket',
     } as any);
     mockFetchHrmApi.mockResolvedValue({
+      // eslint-disable-next-line
       media_url: mockPreSignedUrl,
     });
     global.fetch = jest.fn().mockResolvedValue({
