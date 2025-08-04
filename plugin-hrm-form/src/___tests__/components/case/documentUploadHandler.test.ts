@@ -13,7 +13,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
-
+import each from 'jest-each';
 import { bindFileUploadCustomHandlers } from '../../../components/case/documentUploadHandler';
 import { fetchHrmApi } from '../../../services/fetchHrmApi';
 import { getHrmConfig } from '../../../hrmConfig';
@@ -124,56 +124,15 @@ describe('documentUploadHandler', () => {
     const handlers = bindFileUploadCustomHandlers(caseId);
     const { onFileChange } = handlers;
 
-    it('should accept valid PNG MIME type', async () => {
-      const file = new File(['fake content'], 'test.png', { type: 'image/png', size: 1024 });
-      const event = { target: { files: [file] } };
-
-      const result = await onFileChange(event);
-
-      expect(result).toBeTruthy();
-      expect(mockAlert).not.toHaveBeenCalledWith('Invalid file type. File content does not match the expected format.');
-    });
-
-    it('should accept valid JPEG MIME types', async () => {
-      const file1 = new File(['fake content'], 'test.jpg', { type: 'image/jpeg', size: 1024 });
-      const file2 = new File(['fake content'], 'test2.jpg', { type: 'image/jpg', size: 1024 });
-
-      const event1 = { target: { files: [file1] } };
-      const event2 = { target: { files: [file2] } };
-
-      const result1 = await onFileChange(event1);
-      const result2 = await onFileChange(event2);
-
-      expect(result1).toBeTruthy();
-      expect(result2).toBeTruthy();
-      expect(mockAlert).not.toHaveBeenCalledWith('Invalid file type. File content does not match the expected format.');
-    });
-
-    it('should accept valid PDF MIME type', async () => {
-      const file = new File(['fake content'], 'test.pdf', { type: 'application/pdf', size: 1024 });
-      const event = { target: { files: [file] } };
-
-      const result = await onFileChange(event);
-
-      expect(result).toBeTruthy();
-      expect(mockAlert).not.toHaveBeenCalledWith('Invalid file type. File content does not match the expected format.');
-    });
-
-    it('should accept valid DOC MIME type', async () => {
-      const file = new File(['fake content'], 'test.doc', { type: 'application/msword', size: 1024 });
-      const event = { target: { files: [file] } };
-
-      const result = await onFileChange(event);
-
-      expect(result).toBeTruthy();
-      expect(mockAlert).not.toHaveBeenCalledWith('Invalid file type. File content does not match the expected format.');
-    });
-
-    it('should accept valid DOCX MIME type', async () => {
-      const file = new File(['fake content'], 'test.docx', {
-        type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-        size: 1024,
-      });
+    each([
+      ['PNG', 'test.png', 'image/png'],
+      ['PDF', 'test.pdf', 'application/pdf'],
+      ['DOC', 'test.doc', 'application/msword'],
+      ['JPG', 'test.jpg', 'image/jpg'],
+      ['JPEG', 'test.jpg', 'image/jpeg'],
+      ['DOCX', 'test.docx', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'],
+    ]).it('should accept valid %s MIME type', async (fileType, fileName, mimeType) => {
+      const file = new File(['fake content'], fileName, { type: mimeType, size: 1024 });
       const event = { target: { files: [file] } };
 
       const result = await onFileChange(event);
