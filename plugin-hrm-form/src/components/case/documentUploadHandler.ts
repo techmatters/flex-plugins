@@ -44,11 +44,8 @@ const validateFileType = (fileName: string, mimeType: string): boolean => {
   if (!ALLOWED_FILE_TYPES[extension]) {
     return false;
   }
-
-  // Check if MIME type matches the extension
-  const allowedMimeTypes = ALLOWED_FILE_TYPES[extension];
-  return allowedMimeTypes.includes(mimeType.toLowerCase());
 };
+
 /**
  * This function calls an HTTP PUT to upload the document
  * @param file Document
@@ -87,12 +84,6 @@ const bindOnFileChange = (caseId: string) => async event => {
   const extension = name.toLowerCase().substring(name.lastIndexOf('.'));
   if (!ALLOWED_FILE_TYPES[extension]) {
     alert('Invalid file type. Only PNG, JPG, JPEG, PDF, DOC, and DOCX files are allowed.');
-    return '';
-  }
-
-  // Validate MIME type and check for extension/MIME type mismatch
-  if (!validateFileType(name, type)) {
-    alert('Invalid file type. File content does not match the expected format.');
     return '';
   }
 
