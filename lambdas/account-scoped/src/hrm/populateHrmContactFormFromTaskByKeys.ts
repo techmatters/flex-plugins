@@ -23,7 +23,8 @@ import {
 } from '@tech-matters/hrm-form-definitions';
 import { FormValue, HrmContact, callTypes } from '@tech-matters/hrm-types';
 import { newErr, newOk, Result } from '../Result';
-import { getDefinitionVersion } from './formDefinitionsCache';
+import { getCurrentDefinitionVersion } from './formDefinitionsCache';
+import { AccountSID } from '../twilioTypes';
 
 type MapperFunction = (options: string[]) => (value: string) => string;
 
@@ -298,15 +299,19 @@ const populateContactSection = async (
   }
 };
 
-export const populateHrmContactFormFromTaskByKeys = async (
-  taskAttributes: Record<string, any>,
-  contact: HrmContact,
-  formDefinitionRootUrl: URL,
-): Promise<Result<Error, HrmContact>> => {
+export const populateHrmContactFormFromTaskByKeys = async ({
+  accountSid,
+  contact,
+  taskAttributes,
+}: {
+  taskAttributes: Record<string, any>;
+  contact: HrmContact;
+  accountSid: AccountSID;
+}): Promise<Result<Error, HrmContact>> => {
   try {
     const { memory, preEngagementData, firstName, language } = taskAttributes;
     const answers = { ...memory, firstName, language };
-    const definitionVersion = await getDefinitionVersion(formDefinitionRootUrl);
+    const definitionVersion = await getCurrentDefinitionVersion({ accountSid });
     console.debug(definitionVersion.tabbedForms);
     await populateInitialValues(contact, definitionVersion);
     if (!memory && !firstName && !preEngagementData) return newOk(contact);

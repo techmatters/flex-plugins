@@ -28,6 +28,7 @@
     "@twilio-labs/serverless-runtime-types": "^4.0.1",
     "date-fns": "^4.1.0",
     "lodash": "^4.17.21",
+    "moment-timezone": "^0.6.0",
     "twilio": "^5.4.0",
     "twilio-flex-token-validator": "^1.6.0"
   }
