@@ -30,6 +30,10 @@ const mockGetHrmConfig = getHrmConfig as jest.MockedFunction<typeof getHrmConfig
 const mockAlert = jest.fn();
 global.alert = mockAlert;
 
+// Error messages that should match documentUploadHandler.ts
+const FILE_TYPE_ERROR = 'Invalid file type. Only PNG, JPG, JPEG, PDF, DOC, and DOCX files are allowed.';
+const FILE_SIZE_ERROR = 'File exceeds max size.';
+
 // Mock File constructor and FileReader
 global.File = class MockFile {
   name: string;
@@ -81,9 +85,7 @@ describe('documentUploadHandler', () => {
       const result = await onFileChange(event);
 
       expect(result).toBeTruthy();
-      expect(mockAlert).not.toHaveBeenCalledWith(
-        'Invalid file type. Only PNG, JPG, JPEG, PDF, DOC, and DOCX files are allowed.',
-      );
+      expect(mockAlert).not.toHaveBeenCalled();
     });
 
     it('should reject files with invalid extensions', async () => {
@@ -93,9 +95,7 @@ describe('documentUploadHandler', () => {
       const result = await onFileChange(event);
 
       expect(result).toBe('');
-      expect(mockAlert).toHaveBeenCalledWith(
-        'Invalid file type. Only PNG, JPG, JPEG, PDF, DOC, and DOCX files are allowed.',
-      );
+      expect(mockAlert).toHaveBeenCalledWith(FILE_TYPE_ERROR);
     });
 
     it('should reject executable files', async () => {
@@ -105,9 +105,7 @@ describe('documentUploadHandler', () => {
       const result = await onFileChange(event);
 
       expect(result).toBe('');
-      expect(mockAlert).toHaveBeenCalledWith(
-        'Invalid file type. Only PNG, JPG, JPEG, PDF, DOC, and DOCX files are allowed.',
-      );
+      expect(mockAlert).toHaveBeenCalledWith(FILE_TYPE_ERROR);
     });
 
     it('should reject script files', async () => {
@@ -117,9 +115,7 @@ describe('documentUploadHandler', () => {
       const result = await onFileChange(event);
 
       expect(result).toBe('');
-      expect(mockAlert).toHaveBeenCalledWith(
-        'Invalid file type. Only PNG, JPG, JPEG, PDF, DOC, and DOCX files are allowed.',
-      );
+      expect(mockAlert).toHaveBeenCalledWith(FILE_TYPE_ERROR);
     });
 
     it('should reject files with no extension', async () => {
@@ -129,9 +125,7 @@ describe('documentUploadHandler', () => {
       const result = await onFileChange(event);
 
       expect(result).toBe('');
-      expect(mockAlert).toHaveBeenCalledWith(
-        'Invalid file type. Only PNG, JPG, JPEG, PDF, DOC, and DOCX files are allowed.',
-      );
+      expect(mockAlert).toHaveBeenCalledWith(FILE_TYPE_ERROR);
     });
   });
 
@@ -146,7 +140,7 @@ describe('documentUploadHandler', () => {
       const result = await onFileChange(event);
 
       expect(result).toBe('');
-      expect(mockAlert).toHaveBeenCalledWith('File exceeds max size.');
+      expect(mockAlert).toHaveBeenCalledWith(FILE_SIZE_ERROR);
     });
 
     it('should accept files under 5MB limit', async () => {
@@ -156,7 +150,7 @@ describe('documentUploadHandler', () => {
       const result = await onFileChange(event);
 
       expect(result).toBeTruthy();
-      expect(mockAlert).not.toHaveBeenCalledWith('File exceeds max size.');
+      expect(mockAlert).not.toHaveBeenCalled();
     });
   });
 });
