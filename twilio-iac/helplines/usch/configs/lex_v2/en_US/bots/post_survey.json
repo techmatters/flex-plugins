@@ -22,7 +22,7 @@
           }
         ],
         "closing_response": {
-          "message": "Thank you for reaching out. Please contact us again if you need more help."
+          "message": "Thank you for contacting the hotline.  Feel free to reach out again if you need additional support."
         },
         "slot_priorities": {
           "1": {
@@ -61,7 +61,7 @@
           }
         ],
         "closing_response": {
-          "message": "Thank you for reaching out. Please contact us again if you need more help."
+          "message": "Thank you for contacting the hotline.  Feel free to reach out again if you need additional support."
         },
         "slot_priorities": {}
     }
