@@ -59,7 +59,7 @@ locals {
         contact_identity     = "modica"
         templatefile         = "/app/twilio-iac/helplines/nz/templates/studio-flows/messaging-lex-priority-v3-lambda.tftpl"
         channel_flow_vars    = {
-          regex_allowed_test_numbers = "modica:\\+(111)\\d{1,20}"
+          regex_allowed_test_numbers = "modica:\\(111)\\d{1,20}"
         }
         chatbot_unique_names = []
       },
