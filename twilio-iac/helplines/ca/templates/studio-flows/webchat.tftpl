@@ -1,1499 +1,1473 @@
 ${
-  jsonencode(
-  {
-    "description": "Webchat Studio Flow",
-    "states": [
-      {
-        "name": "Trigger",
-        "type": "trigger",
-        "transitions": [
-          {
-            "next": "test_flag",
-            "event": "incomingMessage"
-          },
-          {
-            "event": "incomingCall"
-          },
-          {
-            "event": "incomingConversationMessage"
-          },
-          {
-            "event": "incomingRequest"
-          },
-          {
-            "event": "incomingParent"
-          }
-        ],
-        "properties": {
-          "offset": {
-            "x": 490,
-            "y": -510
-          }
+  jsonencode({
+  "description": "Webchat Studio Flow",
+  "states": [
+    {
+      "name": "Trigger",
+      "type": "trigger",
+      "transitions": [
+        {
+          "next": "test_flag",
+          "event": "incomingMessage"
+        },
+        {
+          "event": "incomingCall"
+        },
+        {
+          "event": "incomingConversationMessage"
+        },
+        {
+          "event": "incomingRequest"
+        },
+        {
+          "event": "incomingParent"
         }
-      },
-      {
-        "name": "defaultAttributes",
-        "type": "send-to-flex",
-        "transitions": [
-          {
-            "event": "callComplete"
-          },
-          {
-            "event": "failedToEnqueue"
-          },
-          {
-            "event": "callFailure"
-          }
-        ],
-        "properties": {
-          "offset": {
-            "x": 240,
-            "y": 820
-          },
-         "workflow": workflow_sids["master"],
-          "channel": task_channel_sids["default"],
-          "attributes": "{\"name\": \"{{trigger.message.ChannelAttributes.from}}\", \"channelType\": \"{{trigger.message.ChannelAttributes.channel_type}}\", \"channelSid\": \"{{trigger.message.ChannelSid}}\", \"helpline\": \"\", \"ignoreAgent\":\"\", \"transferTargetType\":\"\",\n\"memory\": {{widgets.ChatBot.memory | to_json}}}"
+      ],
+      "properties": {
+        "offset": {
+          "x": 490,
+          "y": -510
         }
-      },
-      {
-        "name": "webAttributes",
-        "type": "send-to-flex",
-        "transitions": [
-          {
-            "next": "test_flag_queue",
-            "event": "callComplete"
-          },
-          {
-            "event": "failedToEnqueue"
-          },
-          {
-            "event": "callFailure"
-          }
-        ],
-        "properties": {
-          "offset": {
-            "x": 590,
-            "y": 810
-          },
-          "workflow": workflow_sids["master"],
-          "channel": task_channel_sids["chat"],
-          "attributes": channel_attributes["default"]        }
-      },
-      {
-        "name": "AdjustAttributes",
-        "type": "split-based-on",
-        "transitions": [
-          {
-            "next": "defaultAttributes",
-            "event": "noMatch"
-          },
-          {
-            "event": "match",
-            "conditions": [
-              {
-                "friendly_name": "If value equal_to whatsapp",
-                "arguments": [
-                  "{{trigger.message.ChannelAttributes.channel_type}}"
-                ],
-                "type": "equal_to",
-                "value": "whatsapp"
-              }
-            ]
-          },
-          {
-            "event": "match",
-            "conditions": [
-              {
-                "friendly_name": "If value equal_to facebook",
-                "arguments": [
-                  "{{trigger.message.ChannelAttributes.channel_type}}"
-                ],
-                "type": "equal_to",
-                "value": "facebook"
-              }
-            ]
-          },
-          {
-            "event": "match",
-            "conditions": [
-              {
-                "friendly_name": "If value equal_to sms",
-                "arguments": [
-                  "{{trigger.message.ChannelAttributes.channel_type}}"
-                ],
-                "type": "equal_to",
-                "value": "sms"
-              }
-            ]
-          },
-          {
-            "next": "webAttributes",
-            "event": "match",
-            "conditions": [
-              {
-                "friendly_name": "If value equal_to web",
-                "arguments": [
-                  "{{trigger.message.ChannelAttributes.channel_type}}"
-                ],
-                "type": "equal_to",
-                "value": "web"
-              }
-            ]
-          }
-        ],
-        "properties": {
-          "input": "{{trigger.message.ChannelAttributes.channel_type}}",
-          "offset": {
-            "x": -200,
-            "y": 560
-          }
+      }
+    },
+    {
+      "name": "defaultAttributes",
+      "type": "send-to-flex",
+      "transitions": [
+        {
+          "event": "callComplete"
+        },
+        {
+          "event": "failedToEnqueue"
+        },
+        {
+          "event": "callFailure"
         }
-      },
-      {
-        "name": "send_message",
-        "type": "send-message",
-        "transitions": [
-          {
-            "next": "AdjustAttributes",
-            "event": "sent"
-          },
-          {
-            "event": "failed"
-          }
-        ],
-        "properties": {
-          "offset": {
-            "x": -80,
-            "y": 240
-          },
-          "service": "{{trigger.message.InstanceSid}}",
-          "channel": "{{trigger.message.ChannelSid}}",
-          "from": "System",
-          "to": "{{contact.channel.address}}",
-          "body": "Hi, welcome to Kids Help Phone’s Live Chat Counselling.\n\nFrom all of us, we want to share how grateful we are that you have reached out for support. It takes courage to do that.\n\nLive Chat Counselling is anonymous and confidential, meaning the only thing we know about you is what you choose to share with us.\n\nTo best care for your needs right now, the counsellor will ask you questions to understand what’s going on for you, check in on your safety and how to support you in this moment.\n\nAn average chat is roughly 45mins and you can anticipate that the counsellor will assist you in building next steps that are realistic and make sense for you and your life.\n\nTo make the most of your time together with the counsellor, you may find it helpful to think about what is most important to talk about in the conversation while you wait. Together you and the counsellor can give the topic the time and attention it deserves.\n\nAt Kids Help Phone, we want you to feel safe and respected. Our team of professional counsellors also deserve respect and safety. If anyone is abusive or using our service for inappropriate reasons the conversation will be ended. Anyone who continues to use our service in a harmful way may be denied from using our service. If you have any questions about this or any other part of our service, please speak with your counsellor or ask to speak to a manager. You can also review our Terms of Services on the website.\n\nOur average wait time to connect with a counsellor is 30 minutes. We understand that sometimes waiting can be tough. If you'd like to call a counsellor instead, please call 1-800-668-6868. It is confidential and anonymous, and available 24/7.\n\nOr if you prefer to text with a trained volunteer at our confidential texting service, you can text “LIVECHAT” to 686868 any time.\n\nIf this is an emergency, please call 911"
+      ],
+      "properties": {
+        "offset": {
+          "x": 240,
+          "y": 820
+        },
+        "workflow": "${workflow_sids.master}",
+        "channel": "${task_channel_sids.default}",
+        "attributes": "{\"name\": \"{{trigger.message.ChannelAttributes.from}}\", \"channelType\": \"{{trigger.message.ChannelAttributes.channel_type}}\", \"channelSid\": \"{{trigger.message.ChannelSid}}\", \"helpline\": \"\", \"ignoreAgent\":\"\", \"transferTargetType\":\"\",\n\"memory\": {{widgets.ChatBot.memory | to_json}}}"
+      }
+    },
+    {
+      "name": "webAttributes",
+      "type": "send-to-flex",
+      "transitions": [
+        {
+          "next": "test_flag_queue",
+          "event": "callComplete"
+        },
+        {
+          "event": "failedToEnqueue"
+        },
+        {
+          "event": "callFailure"
         }
-      },
-      {
-        "name": "engagement",
-        "type": "run-function",
-        "transitions": [
-          {
-            "next": "if_pending_users",
-            "event": "success"
-          },
-          {
-            "event": "fail"
-          }
-        ],
-        "properties": {
-          "service_sid": flow_vars["service_sid"],
-          "environment_sid": flow_vars["environment_sid"],
-          "offset": {
-            "x": 1610,
-            "y": 1750
-          },
-          "function_sid": flow_vars["engagement_function_sid"],
-          "parameters": [
+      ],
+      "properties": {
+        "offset": {
+          "x": 590,
+          "y": 810
+        },
+        "workflow": "${workflow_sids.master}",
+        "channel": "${task_channel_sids.chat}",
+        "attributes": "${channel_attributes.default}"
+      }
+    },
+    {
+      "name": "AdjustAttributes",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "defaultAttributes",
+          "event": "noMatch"
+        },
+        {
+          "event": "match",
+          "conditions": [
             {
-              "value": "{{widgets.webAttributes.sid}}",
-              "key": "taskSid"
-            },
-            {
-              "value": "{{widgets.webAttributes.task_queue_sid}}",
-              "key": "taskQueueSid"
-            },
-            {
-              "value": "{{widgets.webAttributes.workspace_sid}}",
-              "key": "workspaceSid"
+              "friendly_name": "If value equal_to whatsapp",
+              "arguments": [
+                "{{trigger.message.ChannelAttributes.channel_type}}"
+              ],
+              "type": "equal_to",
+              "value": "whatsapp"
             }
-          ],
-          "url": flow_vars["engagement_function_url"]
-        }
-      },
-      {
-        "name": "time_delay",
-        "type": "run-function",
-        "transitions": [
-          {
-            "next": "increment_cycle_counter",
-            "event": "success"
-          },
-          {
-            "event": "fail",
-            "next": "end_cycle_split"
-          }
-        ],
-        "properties": {
-          "service_sid": flow_vars["service_sid"],
-          "environment_sid": flow_vars["environment_sid"],
-          "offset": {
-            "x": 720,
-            "y": 1320
-          },
-          "function_sid": flow_vars["time_cycle_function_sid"],
-          "parameters": [
+          ]
+        },
+        {
+          "event": "match",
+          "conditions": [
             {
-              "value": "24",
-              "key": "cycle_frequency"
+              "friendly_name": "If value equal_to facebook",
+              "arguments": [
+                "{{trigger.message.ChannelAttributes.channel_type}}"
+              ],
+              "type": "equal_to",
+              "value": "facebook"
             }
-          ],
-          "url": flow_vars["time_cycle_function_url"]
-        }
-      },
-      {
-        "name": "if_pending_users",
-        "type": "split-based-on",
-        "transitions": [
-          {
-            "event": "noMatch"
-          },
-          {
-            "next": "message_counter",
-            "event": "match",
-            "conditions": [
-              {
-                "friendly_name": "If value greater_than 0",
-                "arguments": [
-                  "{{widgets.engagement.parsed.nrOfOlderTasks}}"
-                ],
-                "type": "greater_than",
-                "value": "0"
-              }
-            ]
-          }
-        ],
-        "properties": {
-          "input": "{{widgets.engagement.parsed.nrOfOlderTasks}}",
-          "offset": {
-            "x": 1730,
-            "y": 2070
-          }
-        }
-      },
-      {
-        "name": "position_in_queue",
-        "type": "send-message",
-        "transitions": [
-          {
-            "next": "reset_time_delay",
-            "event": "sent"
-          },
-          {
-            "event": "failed"
-          }
-        ],
-        "properties": {
-          "offset": {
-            "x": 280,
-            "y": 3230
-          },
-          "service": "{{trigger.message.InstanceSid}}",
-          "channel": "{{trigger.message.ChannelSid}}",
-          "from": "System",
-          "to": "{{contact.channel.address}}",
-          "body": "You are number {{widgets.engagement.parsed.nrOfOlderTasks}} in line. To keep your chat active, please do not leave/refresh this window or hit the back button."
-        }
-      },
-      {
-        "name": "helpline_parameters",
-        "type": "set-variables",
-        "transitions": [
-          {
-            "next": "engagement",
-            "event": "next"
-          }
-        ],
-        "properties": {
-          "variables": [
+          ]
+        },
+        {
+          "event": "match",
+          "conditions": [
             {
-              "value": "24",
-              "key": "cycle_frequency"
-            },
-            {
-              "value": "{\n \"1\": {\n   \"link\": \"link1.com\",\n   \"message\": \"We’re looking forward to chatting with you and appreciate your patience; a professional counsellor will be with you as soon as possible. If this is an emergency, please disconnect and dial 911.\"\n },\n \"2\": {\n   \"link\": \"link2.com\",\n   \"message\": \"We want you to know a counsellor would never disconnect without telling you first. However, technology can sometimes cause disconnections. We are truly sorry if this happens! If you get disconnected and are in crisis please call us at 1-800-668-6868. If this is an emergency and you get disconnected please call us or dial 911.\"\n },\n \"3\": {\n   \"link\": \"link3.com\",\n   \"message\": \"We appreciate your patience. If you would like to use our Texting service and speak with a Texting Crisis Responder, please text \"LIVECHAT\" to 686868. Otherwise, you will be connected with the next available counsellor.\"\n },\n \"4\": {\n   \"link\": \"link4.com\",\n   \"message\": \"I know waiting even a few minutes right now might seem impossible. A simple breathing exercise is easy to do and can really help to calm a busy mind or racing heart.<br/><br/> So, while you wait for a counsellor, maybe give SquareBreathing a try: <br/><br/> Breathe in through your nose while counting to 4 slowly.<br/><br/> Hold your breath while counting to 4 slowly.<br/><br/> Breathe out through your mouth while counting to 4 slowly.<br/><br/> Hold your breath while counting to 4 slowly.<br/><br/> Repeat 4 times and notice how you feel.\"\n }\n}",
-              "key": "links"
-            },
-            {
-              "value": "0",
-              "key": "message_counter"
+              "friendly_name": "If value equal_to sms",
+              "arguments": [
+                "{{trigger.message.ChannelAttributes.channel_type}}"
+              ],
+              "type": "equal_to",
+              "value": "sms"
             }
-          ],
-          "offset": {
-            "x": 610,
-            "y": 1090
-          }
-        }
-      },
-      {
-        "name": "increment_cycle_counter",
-        "type": "set-variables",
-        "transitions": [
-          {
-            "next": "end_cycle_split",
-            "event": "next"
-          }
-        ],
-        "properties": {
-          "variables": [
+          ]
+        },
+        {
+          "next": "webAttributes",
+          "event": "match",
+          "conditions": [
             {
-              "value": "{% if flow.variables.cycle_counter%} {{flow.variables.cycle_counter| plus: 1}} {% else %} 1 {% endif %}",
-              "key": "cycle_counter"
+              "friendly_name": "If value equal_to web",
+              "arguments": [
+                "{{trigger.message.ChannelAttributes.channel_type}}"
+              ],
+              "type": "equal_to",
+              "value": "web"
             }
-          ],
-          "offset": {
-            "x": 1060,
-            "y": 1330
-          }
+          ]
         }
-      },
-      {
-        "name": "end_cycle_split",
-        "type": "split-based-on",
-        "transitions": [
+      ],
+      "properties": {
+        "input": "{{trigger.message.ChannelAttributes.channel_type}}",
+        "offset": {
+          "x": -200,
+          "y": 560
+        }
+      }
+    },
+    {
+      "name": "send_message",
+      "type": "send-message",
+      "transitions": [
+        {
+          "next": "AdjustAttributes",
+          "event": "sent"
+        },
+        {
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": -80,
+          "y": 240
+        },
+        "service": "{{trigger.message.InstanceSid}}",
+        "channel": "{{trigger.message.ChannelSid}}",
+        "from": "System",
+        "to": "{{contact.channel.address}}",
+        "body": "Hi, welcome to Kids Help Phone’s Live Chat Counselling.\n\nFrom all of us, we want to share how grateful we are that you have reached out for support. It takes courage to do that.\n\nLive Chat Counselling is anonymous and confidential, meaning the only thing we know about you is what you choose to share with us.\n\nTo best care for your needs right now, the counsellor will ask you questions to understand what’s going on for you, check in on your safety and how to support you in this moment.\n\nAn average chat is roughly 45mins and you can anticipate that the counsellor will assist you in building next steps that are realistic and make sense for you and your life.\n\nTo make the most of your time together with the counsellor, you may find it helpful to think about what is most important to talk about in the conversation while you wait. Together you and the counsellor can give the topic the time and attention it deserves.\n\nAt Kids Help Phone, we want you to feel safe and respected. Our team of professional counsellors also deserve respect and safety. If anyone is abusive or using our service for inappropriate reasons the conversation will be ended. Anyone who continues to use our service in a harmful way may be denied from using our service. If you have any questions about this or any other part of our service, please speak with your counsellor or ask to speak to a manager. You can also review our Terms of Services on the website.\n\nOur average wait time to connect with a counsellor is 30 minutes. We understand that sometimes waiting can be tough. If you'd like to call a counsellor instead, please call 1-800-668-6868. It is confidential and anonymous, and available 24/7.\n\nOr if you prefer to text with a trained volunteer at our confidential texting service, you can text “LIVECHAT” to 686868 any time.\n\nIf this is an emergency, please call 911"
+      }
+    },
+    {
+      "name": "engagement",
+      "type": "run-function",
+      "transitions": [
+        {
+          "next": "if_pending_users",
+          "event": "success"
+        },
+        {
+          "event": "fail"
+        }
+      ],
+      "properties": {
+        "service_sid": "${flow_vars.service_sid}",
+        "environment_sid": "${flow_vars.environment_sid}",
+        "offset": {
+          "x": 1610,
+          "y": 1750
+        },
+        "function_sid": "${flow_vars.engagement_function_sid}",
+        "parameters": [
           {
-            "next": "time_delay",
-            "event": "noMatch"
+            "value": "{{widgets.webAttributes.sid}}",
+            "key": "taskSid"
           },
           {
-            "next": "engagement",
-            "event": "match",
-            "conditions": [
-              {
-                "friendly_name": "If value greater_than 23",
-                "arguments": [
-                  "{{flow.variables.cycle_counter}}"
-                ],
-                "type": "greater_than",
-                "value": "23"
-              }
-            ]
-          }
-        ],
-        "properties": {
-          "input": "{{flow.variables.cycle_counter}}",
-          "offset": {
-            "x": 1400,
-            "y": 1330
-          }
-        }
-      },
-      {
-        "name": "message_counter",
-        "type": "set-variables",
-        "transitions": [
+            "value": "{{widgets.webAttributes.task_queue_sid}}",
+            "key": "taskQueueSid"
+          },
           {
-            "next": "split_messages_language",
-            "event": "next"
+            "value": "{{widgets.webAttributes.workspace_sid}}",
+            "key": "workspaceSid"
           }
         ],
-        "properties": {
-          "variables": [
+        "url": "${flow_vars.engagement_function_url}"
+      }
+    },
+    {
+      "name": "time_delay",
+      "type": "run-function",
+      "transitions": [
+        {
+          "next": "increment_cycle_counter",
+          "event": "success"
+        },
+        {
+          "event": "fail",
+          "next": "end_cycle_split"
+        }
+      ],
+      "properties": {
+        "service_sid": "${flow_vars.service_sid}",
+        "environment_sid": "${flow_vars.environment_sid}",
+        "offset": {
+          "x": 720,
+          "y": 1320
+        },
+        "function_sid": "${flow_vars.time_cycle_function_sid}",
+        "parameters": [
+          {
+            "value": "24",
+            "key": "cycle_frequency"
+          }
+        ],
+        "url": "${flow_vars.time_cycle_function_url}"
+      }
+    },
+    {
+      "name": "if_pending_users",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "event": "noMatch"
+        },
+        {
+          "next": "message_counter",
+          "event": "match",
+          "conditions": [
             {
-              "value": "{% if flow.variables.message_counter%} {{flow.variables.message_counter| plus: 1}} {% else %} 1 {% endif %}",
-              "key": "message_counter"
+              "friendly_name": "If value greater_than 0",
+              "arguments": [
+                "{{widgets.engagement.parsed.nrOfOlderTasks}}"
+              ],
+              "type": "greater_than",
+              "value": "0"
             }
-          ],
-          "offset": {
-            "x": 1220,
-            "y": 2180
-          }
+          ]
         }
-      },
-      {
-        "name": "split_messages_en",
-        "type": "split-based-on",
-        "transitions": [
+      ],
+      "properties": {
+        "input": "{{widgets.engagement.parsed.nrOfOlderTasks}}",
+        "offset": {
+          "x": 1730,
+          "y": 2070
+        }
+      }
+    },
+    {
+      "name": "position_in_queue",
+      "type": "send-message",
+      "transitions": [
+        {
+          "next": "reset_time_delay",
+          "event": "sent"
+        },
+        {
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 280,
+          "y": 3230
+        },
+        "service": "{{trigger.message.InstanceSid}}",
+        "channel": "{{trigger.message.ChannelSid}}",
+        "from": "System",
+        "to": "{{contact.channel.address}}",
+        "body": "You are number {{widgets.engagement.parsed.nrOfOlderTasks}} in line. To keep your chat active, please do not leave/refresh this window or hit the back button."
+      }
+    },
+    {
+      "name": "helpline_parameters",
+      "type": "set-variables",
+      "transitions": [
+        {
+          "next": "engagement",
+          "event": "next"
+        }
+      ],
+      "properties": {
+        "variables": [
           {
-            "event": "noMatch"
+            "value": "24",
+            "key": "cycle_frequency"
           },
           {
-            "next": "position_in_queue",
-            "event": "match",
-            "conditions": [
-              {
-                "friendly_name": "If value equal_to 1",
-                "arguments": [
-                  "{{flow.variables.message_counter}}"
-                ],
-                "type": "equal_to",
-                "value": "1"
-              }
-            ]
+            "value": "{\n \"1\": {\n   \"link\": \"link1.com\",\n   \"message\": \"We’re looking forward to chatting with you and appreciate your patience; a professional counsellor will be with you as soon as possible. If this is an emergency, please disconnect and dial 911.\"\n },\n \"2\": {\n   \"link\": \"link2.com\",\n   \"message\": \"We want you to know a counsellor would never disconnect without telling you first. However, technology can sometimes cause disconnections. We are truly sorry if this happens! If you get disconnected and are in crisis please call us at 1-800-668-6868. If this is an emergency and you get disconnected please call us or dial 911.\"\n },\n \"3\": {\n   \"link\": \"link3.com\",\n   \"message\": \"We appreciate your patience. If you would like to use our Texting service and speak with a Texting Crisis Responder, please text \"LIVECHAT\" to 686868. Otherwise, you will be connected with the next available counsellor.\"\n },\n \"4\": {\n   \"link\": \"link4.com\",\n   \"message\": \"I know waiting even a few minutes right now might seem impossible. A simple breathing exercise is easy to do and can really help to calm a busy mind or racing heart.<br/><br/> So, while you wait for a counsellor, maybe give SquareBreathing a try: <br/><br/> Breathe in through your nose while counting to 4 slowly.<br/><br/> Hold your breath while counting to 4 slowly.<br/><br/> Breathe out through your mouth while counting to 4 slowly.<br/><br/> Hold your breath while counting to 4 slowly.<br/><br/> Repeat 4 times and notice how you feel.\"\n }\n}",
+            "key": "links"
           },
           {
-            "next": "first_message",
-            "event": "match",
-            "conditions": [
-              {
-                "friendly_name": "If value equal_to 2",
-                "arguments": [
-                  "{{flow.variables.message_counter}}"
-                ],
-                "type": "equal_to",
-                "value": "2"
-              }
-            ]
-          },
-          {
-            "next": "second_message",
-            "event": "match",
-            "conditions": [
-              {
-                "friendly_name": "If value equal_to 3",
-                "arguments": [
-                  "{{flow.variables.message_counter}}"
-                ],
-                "type": "equal_to",
-                "value": "3"
-              }
-            ]
-          },
-          {
-            "next": "third_message",
-            "event": "match",
-            "conditions": [
-              {
-                "friendly_name": "If value equal_to 4",
-                "arguments": [
-                  "{{flow.variables.message_counter}}"
-                ],
-                "type": "equal_to",
-                "value": "4"
-              }
-            ]
-          },
-          {
-            "next": "fourth_message",
-            "event": "match",
-            "conditions": [
-              {
-                "friendly_name": "If value equal_to 5",
-                "arguments": [
-                  "{{flow.variables.message_counter}}"
-                ],
-                "type": "equal_to",
-                "value": "5"
-              }
-            ]
-          },
-          {
-            "next": "helpline_parameters",
-            "event": "match",
-            "conditions": [
-              {
-                "friendly_name": "If value equal_to 6",
-                "arguments": [
-                  "{{flow.variables.message_counter}}"
-                ],
-                "type": "equal_to",
-                "value": "6"
-              }
-            ]
+            "value": "0",
+            "key": "message_counter"
           }
         ],
-        "properties": {
-          "input": "{{flow.variables.message_counter}}",
-          "offset": {
-            "x": 640,
-            "y": 2720
-          }
+        "offset": {
+          "x": 610,
+          "y": 1090
         }
-      },
-      {
-        "name": "first_message",
-        "type": "send-message",
-        "transitions": [
+      }
+    },
+    {
+      "name": "increment_cycle_counter",
+      "type": "set-variables",
+      "transitions": [
+        {
+          "next": "end_cycle_split",
+          "event": "next"
+        }
+      ],
+      "properties": {
+        "variables": [
           {
-            "next": "reset_time_delay",
-            "event": "sent"
-          },
-          {
-            "event": "failed"
+            "value": "{% if flow.variables.cycle_counter%} {{flow.variables.cycle_counter| plus: 1}} {% else %} 1 {% endif %}",
+            "key": "cycle_counter"
           }
         ],
-        "properties": {
-          "offset": {
-            "x": 580,
-            "y": 3320
-          },
-          "service": "{{trigger.message.InstanceSid}}",
-          "channel": "{{trigger.message.ChannelSid}}",
-          "from": "System",
-          "to": "{{contact.channel.address}}",
-          "body": "We’re looking forward to chatting with you and appreciate your patience; a professional counsellor will be with you as soon as possible. If this is an emergency, please disconnect and dial 911."
+        "offset": {
+          "x": 1060,
+          "y": 1330
         }
-      },
-      {
-        "name": "second_message",
-        "type": "send-message",
-        "transitions": [
-          {
-            "next": "reset_time_delay",
-            "event": "sent"
-          },
-          {
-            "event": "failed"
-          }
-        ],
-        "properties": {
-          "offset": {
-            "x": 830,
-            "y": 3470
-          },
-          "service": "{{trigger.message.InstanceSid}}",
-          "channel": "{{trigger.message.ChannelSid}}",
-          "from": "System",
-          "to": "{{contact.channel.address}}",
-          "body": "We want you to know a counsellor would never disconnect without telling you first. However, technology can sometimes cause disconnections. We are truly sorry if this happens! If you get disconnected and are in crisis please call us at 1-800-668-6868. If this is an emergency and you get disconnected please call us or dial 911."
-        }
-      },
-      {
-        "name": "third_message",
-        "type": "send-message",
-        "transitions": [
-          {
-            "next": "reset_time_delay",
-            "event": "sent"
-          },
-          {
-            "event": "failed"
-          }
-        ],
-        "properties": {
-          "offset": {
-            "x": 980,
-            "y": 3290
-          },
-          "service": "{{trigger.message.InstanceSid}}",
-          "channel": "{{trigger.message.ChannelSid}}",
-          "from": "System",
-          "to": "{{contact.channel.address}}",
-          "body": "We appreciate your patience. If you would like to use our Texting service and speak with a Texting Crisis Responder, please text \"LIVECHAT\" to 686868. Otherwise, you will be connected with the next available counsellor."
-        }
-      },
-      {
-        "name": "fourth_message",
-        "type": "send-message",
-        "transitions": [
-          {
-            "next": "reset_time_delay",
-            "event": "sent"
-          },
-          {
-            "event": "failed"
-          }
-        ],
-        "properties": {
-          "offset": {
-            "x": 1200,
-            "y": 3470
-          },
-          "service": "{{trigger.message.InstanceSid}}",
-          "channel": "{{trigger.message.ChannelSid}}",
-          "from": "System",
-          "to": "{{contact.channel.address}}",
-          "body": "I know waiting even a few minutes right now might seem impossible. A simple breathing exercise is easy to do and can really help to calm a busy mind or racing heart.\n\nSo, while you wait for a counsellor, maybe give SquareBreathing a try: \n\nBreathe in through your nose while counting to 4 slowly.\n\nHold your breath while counting to 4 slowly.\n\nBreathe out through your mouth while counting to 4 slowly.\n\nHold your breath while counting to 4 slowly.\n\nRepeat 4 times and notice how you feel."
-        }
-      },
-      {
-        "name": "reset_time_delay",
-        "type": "set-variables",
-        "transitions": [
-          {
-            "next": "time_delay",
-            "event": "next"
-          }
-        ],
-        "properties": {
-          "variables": [
+      }
+    },
+    {
+      "name": "end_cycle_split",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "time_delay",
+          "event": "noMatch"
+        },
+        {
+          "next": "engagement",
+          "event": "match",
+          "conditions": [
             {
-              "value": "1",
-              "key": "cycle_counter"
+              "friendly_name": "If value greater_than 23",
+              "arguments": [
+                "{{flow.variables.cycle_counter}}"
+              ],
+              "type": "greater_than",
+              "value": "23"
             }
-          ],
-          "offset": {
-            "x": 330,
-            "y": 1330
-          }
+          ]
         }
-      },
-      {
-        "name": "language_split",
-        "type": "split-based-on",
-        "transitions": [
+      ],
+      "properties": {
+        "input": "{{flow.variables.cycle_counter}}",
+        "offset": {
+          "x": 1400,
+          "y": 1330
+        }
+      }
+    },
+    {
+      "name": "message_counter",
+      "type": "set-variables",
+      "transitions": [
+        {
+          "next": "split_messages_language",
+          "event": "next"
+        }
+      ],
+      "properties": {
+        "variables": [
           {
-            "next": "chat_hours_en",
-            "event": "noMatch"
-          },
-          {
-            "next": "chat_hours_en",
-            "event": "match",
-            "conditions": [
-              {
-                "friendly_name": "If value equal_to \"en-CA\"",
-                "arguments": [
-                  "{{trigger.message.ChannelAttributes.pre_engagement_data.language}}"
-                ],
-                "type": "contains",
-                "value": "en-CA"
-              }
-            ]
-          },
-          {
-            "next": "chat_hours_fr",
-            "event": "match",
-            "conditions": [
-              {
-                "friendly_name": "If value equal_to fr-CA",
-                "arguments": [
-                  "{{trigger.message.ChannelAttributes.pre_engagement_data.language}}"
-                ],
-                "type": "contains",
-                "value": "fr-CA"
-              }
-            ]
+            "value": "{% if flow.variables.message_counter%} {{flow.variables.message_counter| plus: 1}} {% else %} 1 {% endif %}",
+            "key": "message_counter"
           }
         ],
-        "properties": {
-          "input": "{{trigger.message.ChannelAttributes.pre_engagement_data.language}}",
-          "offset": {
-            "x": 260,
-            "y": -350
-          }
+        "offset": {
+          "x": 1220,
+          "y": 2180
         }
-      },
-      {
-        "name": "send_message_fr",
-        "type": "send-message",
-        "transitions": [
-          {
-            "next": "AdjustAttributes",
-            "event": "sent"
-          },
-          {
-            "event": "failed"
-          }
-        ],
-        "properties": {
-          "offset": {
-            "x": 530,
-            "y": 240
-          },
-          "service": "{{trigger.message.InstanceSid}}",
-          "channel": "{{trigger.message.ChannelSid}}",
-          "from": "Système",
-          "to": "{{contact.channel.address}}",
-          "body": "Salut! Bienvenue au service d’intervention Clavardage en direct de Jeunesse, J’écoute. \n\nNous tenons tous à te féliciter d’avoir demandé de l’aide. Ça prend un grand courage pour faire ça. \n\nLe service d’intervention Clavardage en direct est un service anonyme et confidentiel; tout ce que nous savons de toi, c’est ce que tu choisis de nous dire. \n\nAfin de t’offrir du soutien qui correspond e mieux possible à tes besoins en ce moment, l’intervenant clinique te posera des questions afin de comprendre ce qui se passe dans ton quotidien, pour s’assurer de ta sécurité et pour déterminer quel soutien te serait le plus utile dans l’immédiat. L’intervenant t’aidera à définir les prochaines étapes réalisables qui prendront un sens tout particulier dans ta vie pendant la session de clavardage, qui dure habituellement environ 45 minutes. \nPour bénéficier pleinement de ton échange avec l’intervenant, il pourrait être utile, pendant que tu es dans la file d’attente, de penser aux choses importantes dont tu aimerais discuter. L’intervenant et toi pourrez alors prendre le temps nécessaire pour faire le tour du sujet. \n\nChez Jeunesse, J’écoute, nous tenons à ce que tu te sentes en sécurité et respecté. Il en va de même pour les membres de notre équipe d’intervenants cliniques professionnels, qui méritent eux aussi de travailler dans un environnement respectueux et sécuritaire. Si quelqu’un abuse ou utilise notre service pour des raisons inappropriées, on mettra fin à la conversation. Toute personne qui continue à avoir recours à notre service de manière malveillante peut se voir refuser l’accès. Si tu as des questions à cet égard ou sur tout autre aspect de notre service, pose-les à ton intervenant ou demande à communiquer avec un gestionnaire. Tu peux aussi consulter les Conditions de services sur le site Web. \n\nDe façon générale, le temps d’attente pour échanger avec un intervenant est d’une moyenne de 30 minutes. Nous comprenons que ça peut être difficile d’attendre. Si tu préfères parler avec un intervenant, appelle au 1 800 668-6868. Ce service, offert 24 heures par jour, 7 jours par semaine, est confidentiel et anonyme. \n\nTu peux aussi échanger avec un bénévole qualifié par texto en envoyant LIVECHAT au 686868 en tout temps. \n\nSi la situation est urgente, signale le 911."
-        }
-      },
-      {
-        "name": "split_messages_language",
-        "type": "split-based-on",
-        "transitions": [
-          {
-            "event": "noMatch"
-          },
-          {
-            "next": "split_messages_en",
-            "event": "match",
-            "conditions": [
-              {
-                "friendly_name": "If value contains en-CA",
-                "arguments": [
-                  "{{trigger.message.ChannelAttributes.pre_engagement_data.language}}"
-                ],
-                "type": "contains",
-                "value": "en-CA"
-              }
-            ]
-          },
-          {
-            "next": "split_messages_fr",
-            "event": "match",
-            "conditions": [
-              {
-                "friendly_name": "If value contains fr-CA",
-                "arguments": [
-                  "{{trigger.message.ChannelAttributes.pre_engagement_data.language}}"
-                ],
-                "type": "contains",
-                "value": "fr-CA"
-              }
-            ]
-          }
-        ],
-        "properties": {
-          "input": "{{trigger.message.ChannelAttributes.pre_engagement_data.language}}",
-          "offset": {
-            "x": 1290,
-            "y": 2440
-          }
-        }
-      },
-      {
-        "name": "split_messages_fr",
-        "type": "split-based-on",
-        "transitions": [
-          {
-            "event": "noMatch"
-          },
-          {
-            "next": "position_in_queue_fr",
-            "event": "match",
-            "conditions": [
-              {
-                "friendly_name": "If value equal_to 1",
-                "arguments": [
-                  "{{flow.variables.message_counter}}"
-                ],
-                "type": "equal_to",
-                "value": "1"
-              }
-            ]
-          },
-          {
-            "next": "first_message_fr",
-            "event": "match",
-            "conditions": [
-              {
-                "friendly_name": "If value equal_to 2",
-                "arguments": [
-                  "{{flow.variables.message_counter}}"
-                ],
-                "type": "equal_to",
-                "value": "2"
-              }
-            ]
-          },
-          {
-            "next": "second_message_fr",
-            "event": "match",
-            "conditions": [
-              {
-                "friendly_name": "If value equal_to 3",
-                "arguments": [
-                  "{{flow.variables.message_counter}}"
-                ],
-                "type": "equal_to",
-                "value": "3"
-              }
-            ]
-          },
-          {
-            "next": "third_message_fr",
-            "event": "match",
-            "conditions": [
-              {
-                "friendly_name": "If value equal_to 4",
-                "arguments": [
-                  "{{flow.variables.message_counter}}"
-                ],
-                "type": "equal_to",
-                "value": "4"
-              }
-            ]
-          },
-          {
-            "next": "fourth_message_fr",
-            "event": "match",
-            "conditions": [
-              {
-                "friendly_name": "If value equal_to 5",
-                "arguments": [
-                  "{{flow.variables.message_counter}}"
-                ],
-                "type": "equal_to",
-                "value": "5"
-              }
-            ]
-          },
-          {
-            "next": "helpline_parameters",
-            "event": "match",
-            "conditions": [
-              {
-                "friendly_name": "If value equal_to 6",
-                "arguments": [
-                  "{{flow.variables.message_counter}}"
-                ],
-                "type": "equal_to",
-                "value": "6"
-              }
-            ]
-          }
-        ],
-        "properties": {
-          "input": "{{flow.variables.message_counter}}",
-          "offset": {
-            "x": 1730,
-            "y": 2690
-          }
-        }
-      },
-      {
-        "name": "position_in_queue_fr",
-        "type": "send-message",
-        "transitions": [
-          {
-            "next": "reset_time_delay",
-            "event": "sent"
-          },
-          {
-            "event": "failed"
-          }
-        ],
-        "properties": {
-          "offset": {
-            "x": 1590,
-            "y": 3120
-          },
-          "service": "{{trigger.message.InstanceSid}}",
-          "channel": "{{trigger.message.ChannelSid}}",
-          "from": "Système",
-          "to": "{{contact.channel.address}}",
-          "body": "Tu es le numéro {{widgets.engagement.parsed.nrOfOlderTasks}} dans la file d’attente. Pour garder cette fenêtre de clavardage active, ne quitte pas ou ne rafraîchis pas la page. Il ne faut pas non plus cliquer sur le bouton précédent."
-        }
-      },
-      {
-        "name": "first_message_fr",
-        "type": "send-message",
-        "transitions": [
-          {
-            "next": "reset_time_delay",
-            "event": "sent"
-          },
-          {
-            "event": "failed"
-          }
-        ],
-        "properties": {
-          "offset": {
-            "x": 1730,
-            "y": 3350
-          },
-          "service": "{{trigger.message.InstanceSid}}",
-          "channel": "{{trigger.message.ChannelSid}}",
-          "from": "Système",
-          "to": "{{contact.channel.address}}",
-          "body": "Nous avons hâte de clavarder avec toi et sommes reconnaissants de ta patience; un intervenant clinique professionnel te répondra aussitôt que possible! Si la situation est urgente, signale le 911 immédiatement."
-        }
-      },
-      {
-        "name": "second_message_fr",
-        "type": "send-message",
-        "transitions": [
-          {
-            "next": "reset_time_delay",
-            "event": "sent"
-          },
-          {
-            "event": "failed"
-          }
-        ],
-        "properties": {
-          "offset": {
-            "x": 1900,
-            "y": 3500
-          },
-          "service": "{{trigger.message.InstanceSid}}",
-          "channel": "{{trigger.message.ChannelSid}}",
-          "from": "Système",
-          "to": "{{contact.channel.address}}",
-          "body": "Nous tenons à mentionner que jamais un intervenant ne terminerait une conversation sans t’en avertir. Par contre, la technologie peut parfois faire en sorte qu’une communication soit rompue. Nous sommes vraiment désolés lorsque ceci arrive. Si la communication devait être coupée lorsque tu es en situation de crise, tu peux nous appeler au 1 800 668-6868. Si c’est une urgence, compose le 911 immédiatement."
-        }
-      },
-      {
-        "name": "third_message_fr",
-        "type": "send-message",
-        "transitions": [
-          {
-            "next": "reset_time_delay",
-            "event": "sent"
-          },
-          {
-            "event": "failed"
-          }
-        ],
-        "properties": {
-          "offset": {
-            "x": 2080,
-            "y": 3270
-          },
-          "service": "{{trigger.message.InstanceSid}}",
-          "channel": "{{trigger.message.ChannelSid}}",
-          "from": "Système",
-          "to": "{{contact.channel.address}}",
-          "body": "Nous te remercions de ta patience. Si tu aimerais utiliser notre service par texto afin d’échanger avec un Répondant aux crises, envoie ALLO au 686868. Si tu préfères attendre, la connexion sera établie avec le prochain intervenant qui se libère."
-        }
-      },
-      {
-        "name": "fourth_message_fr",
-        "type": "send-message",
-        "transitions": [
-          {
-            "next": "reset_time_delay",
-            "event": "sent"
-          },
-          {
-            "event": "failed"
-          }
-        ],
-        "properties": {
-          "offset": {
-            "x": 2280,
-            "y": 3490
-          },
-          "service": "{{trigger.message.InstanceSid}}",
-          "channel": "{{trigger.message.ChannelSid}}",
-          "from": "Système",
-          "to": "{{contact.channel.address}}",
-          "body": "J’imagine que de penser à une période d’attente de même quelques minutes doit être angoissant. Parfois, pratiquer un exercice de respiration est un moyen facile de se calmer et de diminuer notre niveau d’anxiété.  \n\nEn attendant de pouvoir échanger avec un intervenant, pourquoi ne pas essayer la respiration carrée :\n\nInspire par le nez, en comptant lentement jusqu’à 4.\n\nRetiens ton souffle, encore en comptant lentement jusqu’à 4.\n\nRelâche ton souffle, cette fois par la bouche, en comptant encore une fois lentement jusqu’à 4.\n\nRetiens ton souffle, en comptant lentement jusqu’à 4.\n\nRépète ces étapes quatre fois encore pour voir si tu ressens moins d’anxiété."
-        }
-      },
-      {
-        "name": "check_queue_en",
-        "type": "run-function",
-        "transitions": [
-          {
-            "next": "en_capacity",
-            "event": "success"
-          },
-          {
-            "next": "send_message",
-            "event": "fail"
-          }
-        ],
-        "properties": {
-          "service_sid": flow_vars["service_sid"],
-          "environment_sid": flow_vars["environment_sid"],
-          "offset": {
-            "x": -380,
-            "y": -310
-          },
-          "function_sid": flow_vars["check_queue_capacity_function_sid"],
-          "parameters": [
+      }
+    },
+    {
+      "name": "split_messages_en",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "event": "noMatch"
+        },
+        {
+          "next": "position_in_queue",
+          "event": "match",
+          "conditions": [
             {
-              "value": flow_vars["english_queue_sid"],
-              "key": "taskQueueSid"
-            },
-            {
-              "value": flow_vars["workspace_sid"],
-              "key": "workspaceSid"
+              "friendly_name": "If value equal_to 1",
+              "arguments": [
+                "{{flow.variables.message_counter}}"
+              ],
+              "type": "equal_to",
+              "value": "1"
             }
-          ],
-          "url": flow_vars["check_queue_capacity_function_url"]
-        }
-      },
-      {
-        "name": "check_queue_fr",
-        "type": "run-function",
-        "transitions": [
-          {
-            "next": "fr_capacity",
-            "event": "success"
-          },
-          {
-            "next": "send_message_fr",
-            "event": "fail"
-          }
-        ],
-        "properties": {
-          "service_sid": flow_vars["service_sid"],
-          "environment_sid": flow_vars["environment_sid"],
-          "offset": {
-            "x": 1060,
-            "y": -140
-          },
-          "function_sid": flow_vars["check_queue_capacity_function_sid"],
-          "parameters": [
+          ]
+        },
+        {
+          "next": "first_message",
+          "event": "match",
+          "conditions": [
             {
-              "value": flow_vars["french_queue_sid"],
-              "key": "taskQueueSid"
-            },
-            {
-              "value": flow_vars["workspace_sid"],
-              "key": "workspaceSid"
+              "friendly_name": "If value equal_to 2",
+              "arguments": [
+                "{{flow.variables.message_counter}}"
+              ],
+              "type": "equal_to",
+              "value": "2"
             }
-          ],
-          "url": flow_vars["check_queue_capacity_function_url"]
-        }
-      },
-      {
-        "name": "en_capacity",
-        "type": "split-based-on",
-        "transitions": [
-          {
-            "next": "send_message",
-            "event": "noMatch"
-          },
-          {
-            "next": "send_queue_full_en",
-            "event": "match",
-            "conditions": [
-              {
-                "friendly_name": "If value greater_than 8",
-                "arguments": [
-                  "{{widgets.check_queue_en.parsed.totalTasks}}"
-                ],
-                "type": "greater_than",
-                "value": "8"
-              }
-            ]
-          }
-        ],
-        "properties": {
-          "input": "{{widgets.check_queue_en.parsed.totalTasks}}",
-          "offset": {
-            "x": -950,
-            "y": -170
-          }
-        }
-      },
-      {
-        "name": "send_queue_full_en",
-        "type": "send-message",
-        "transitions": [
-          {
-            "event": "sent"
-          },
-          {
-            "event": "failed"
-          }
-        ],
-        "properties": {
-          "offset": {
-            "x": -590,
-            "y": 230
-          },
-          "service": "{{trigger.message.InstanceSid}}",
-          "channel": "{{trigger.message.ChannelSid}}",
-          "from": "System",
-          "to": "{{contact.channel.address}}",
-          "body": "We're sorry, our Live Chat service is currently full. Please end your chat and try back soon. To reach a Kids Help Phone counsellor by phone, you can call us anytime at 1-800-668-6868. \nBe well, \nThe Kids Help Phone Team."
-        }
-      },
-      {
-        "name": "send_queue_full_fr",
-        "type": "send-message",
-        "transitions": [
-          {
-            "event": "sent"
-          },
-          {
-            "event": "failed"
-          }
-        ],
-        "properties": {
-          "offset": {
-            "x": 1620,
-            "y": 250
-          },
-          "service": "{{trigger.message.InstanceSid}}",
-          "channel": "{{trigger.message.ChannelSid}}",
-          "from": "Système",
-          "to": "{{contact.channel.address}}",
-          "body": "Nous sommes désolés, mais notre service de clavardage en direct est actuellement complet. S'il te plaît, ferme l'onglet et réessaie plus tard. Pour parler à un intervenant de Jeunesse J'écoute, tu peux nous téléphoner au 1-800-668-6868. \nPrends soin de toi, \nL'équipe de Jeunesse J'écoute."
-        }
-      },
-      {
-        "name": "fr_capacity",
-        "type": "split-based-on",
-        "transitions": [
-          {
-            "next": "send_message_fr",
-            "event": "noMatch"
-          },
-          {
-            "next": "send_queue_full_fr",
-            "event": "match",
-            "conditions": [
-              {
-                "friendly_name": "If value greater_than 2",
-                "arguments": [
-                  "{{widgets.check_queue_fr.parsed.totalTasks}}"
-                ],
-                "type": "greater_than",
-                "value": "2"
-              }
-            ]
-          }
-        ],
-        "properties": {
-          "input": "{{widgets.check_queue_fr.parsed.totalTasks}}",
-          "offset": {
-            "x": 1200,
-            "y": 180
-          }
-        }
-      },
-      {
-        "name": "chat_hours_en",
-        "type": "run-function",
-        "transitions": [
-          {
-            "next": "hours_split_en",
-            "event": "success"
-          },
-          {
-            "event": "fail"
-          }
-        ],
-        "properties": {
-          "service_sid": flow_vars["serverless_service_sid"],
-          "environment_sid": flow_vars["serverless_environment_sid"],
-          "offset": {
-            "x": -50,
-            "y": -500
-          },
-          "function_sid": flow_vars["operating_hours_function_sid"],
-          "parameters": [
+          ]
+        },
+        {
+          "next": "second_message",
+          "event": "match",
+          "conditions": [
             {
-              "value": "webchat",
-              "key": "channel"
-            },
-            {
-              "value": "true",
-              "key": "includeMessageTextInResponse"
-            },
-            {
-              "value": "en-CA",
-              "key": "language"
+              "friendly_name": "If value equal_to 3",
+              "arguments": [
+                "{{flow.variables.message_counter}}"
+              ],
+              "type": "equal_to",
+              "value": "3"
             }
-          ],
-          "url": flow_vars["operating_hours_function_url"]
-        }
-      },
-      {
-        "name": "hours_split_en",
-        "type": "split-based-on",
-        "transitions": [
-          {
-            "next": "check_counsellors_en",
-            "event": "noMatch"
-          },
-          {
-            "next": "check_counsellors_en",
-            "event": "match",
-            "conditions": [
-              {
-                "friendly_name": "If value contains open",
-                "arguments": [
-                  "{{widgets.chat_hours_en.parsed.status}}"
-                ],
-                "type": "contains",
-                "value": "open"
-              }
-            ]
-          },
-          {
-            "next": "send_closed",
-            "event": "match",
-            "conditions": [
-              {
-                "friendly_name": "If value contains closed",
-                "arguments": [
-                  "{{widgets.chat_hours_en.parsed.status}}"
-                ],
-                "type": "contains",
-                "value": "closed"
-              }
-            ]
-          },
-          {
-            "next": "send_closed",
-            "event": "match",
-            "conditions": [
-              {
-                "friendly_name": "If value contains holiday",
-                "arguments": [
-                  "{{widgets.chat_hours_en.parsed.status}}"
-                ],
-                "type": "contains",
-                "value": "holiday"
-              }
-            ]
-          }
-        ],
-        "properties": {
-          "input": "{{widgets.chat_hours_en.parsed.status}}",
-          "offset": {
-            "x": -1030,
-            "y": -500
-          }
-        }
-      },
-      {
-        "name": "send_closed",
-        "type": "send-message",
-        "transitions": [
-          {
-            "event": "sent"
-          },
-          {
-            "event": "failed"
-          }
-        ],
-        "properties": {
-          "offset": {
-            "x": -1380,
-            "y": -220
-          },
-          "service": "{{trigger.message.InstanceSid}}",
-          "channel": "{{trigger.message.ChannelSid}}",
-          "from": "System",
-          "to": "{{contact.channel.address}}",
-          "body": "{{widgets.chat_hours_en.parsed.message}}"
-        }
-      },
-      {
-        "name": "chat_hours_fr",
-        "type": "run-function",
-        "transitions": [
-          {
-            "next": "hours_split_fr",
-            "event": "success"
-          },
-          {
-            "event": "fail"
-          }
-        ],
-        "properties": {
-          "service_sid": flow_vars["serverless_service_sid"],
-          "environment_sid": flow_vars["serverless_environment_sid"],
-          "offset": {
-            "x": 690,
-            "y": -410
-          },
-          "function_sid": flow_vars["operating_hours_function_sid"],
-          "parameters": [
+          ]
+        },
+        {
+          "next": "third_message",
+          "event": "match",
+          "conditions": [
             {
-              "value": "webchat",
-              "key": "channel"
-            },
-            {
-              "value": "true",
-              "key": "includeMessageTextInResponse"
-            },
-            {
-              "value": "fr-CA",
-              "key": "language"
+              "friendly_name": "If value equal_to 4",
+              "arguments": [
+                "{{flow.variables.message_counter}}"
+              ],
+              "type": "equal_to",
+              "value": "4"
             }
-          ],
-          "url": flow_vars["operating_hours_function_url"]
-        }
-      },
-      {
-        "name": "hours_split_fr",
-        "type": "split-based-on",
-        "transitions": [
-          {
-            "next": "check_counsellors_fr",
-            "event": "noMatch"
-          },
-          {
-            "next": "check_counsellors_fr",
-            "event": "match",
-            "conditions": [
-              {
-                "friendly_name": "If value contains open",
-                "arguments": [
-                  "{{widgets.chat_hours_fr.parsed.status}}"
-                ],
-                "type": "contains",
-                "value": "open"
-              }
-            ]
-          },
-          {
-            "next": "send_closed_fr",
-            "event": "match",
-            "conditions": [
-              {
-                "friendly_name": "If value contains closed",
-                "arguments": [
-                  "{{widgets.chat_hours_fr.parsed.status}}"
-                ],
-                "type": "contains",
-                "value": "closed"
-              }
-            ]
-          },
-          {
-            "next": "send_closed_fr",
-            "event": "match",
-            "conditions": [
-              {
-                "friendly_name": "If value contains holiday",
-                "arguments": [
-                  "{{widgets.chat_hours_fr.parsed.status}}"
-                ],
-                "type": "contains",
-                "value": "holiday"
-              }
-            ]
-          }
-        ],
-        "properties": {
-          "input": "{{widgets.chat_hours_fr.parsed.status}}",
-          "offset": {
-            "x": 1400,
-            "y": -340
-          }
-        }
-      },
-      {
-        "name": "send_closed_fr",
-        "type": "send-message",
-        "transitions": [
-          {
-            "event": "sent"
-          },
-          {
-            "event": "failed"
-          }
-        ],
-        "properties": {
-          "offset": {
-            "x": 1640,
-            "y": -50
-          },
-          "service": "{{trigger.message.InstanceSid}}",
-          "channel": "{{trigger.message.ChannelSid}}",
-          "from": "Système",
-          "to": "{{contact.channel.address}}",
-          "body": "{{widgets.check_hours_fr.parsed.message}}"
-        }
-      },
-      {
-        "name": "check_counsellors_fr",
-        "type": "run-function",
-        "transitions": [
-          {
-            "next": "fr_counsellors",
-            "event": "success"
-          },
-          {
-            "next": "check_queue_fr",
-            "event": "fail"
-          }
-        ],
-        "properties": {
-          "service_sid": flow_vars["service_sid"],
-          "environment_sid": flow_vars["environment_sid"],
-          "offset": {
-            "x": 1560,
-            "y": -200
-          },
-          "function_sid": flow_vars["check_counsellors_function_sid"],
-          "parameters": [
+          ]
+        },
+        {
+          "next": "fourth_message",
+          "event": "match",
+          "conditions": [
             {
-              "value": flow_vars["workspace_sid"],
-              "key": "workspaceSid"
-            },
-            {
-              "value": flow_vars["french_queue_sid"],
-              "key": "taskQueueSid"
+              "friendly_name": "If value equal_to 5",
+              "arguments": [
+                "{{flow.variables.message_counter}}"
+              ],
+              "type": "equal_to",
+              "value": "5"
             }
-          ],
-          "url": flow_vars["check_counsellors_function_url"]
-        }
-      },
-      {
-        "name": "fr_counsellors",
-        "type": "split-based-on",
-        "transitions": [
-          {
-            "next": "send_queue_full_fr",
-            "event": "noMatch"
-          },
-          {
-            "next": "check_queue_fr",
-            "event": "match",
-            "conditions": [
-              {
-                "friendly_name": "If value greater_than 0",
-                "arguments": [
-                  "{{widgets.check_counsellors_fr.parsed.totalCounsellors}}"
-                ],
-                "type": "greater_than",
-                "value": "0"
-              }
-            ]
-          }
-        ],
-        "properties": {
-          "input": "{{widgets.check_counsellors_fr.parsed.totalCounsellors}}",
-          "offset": {
-            "x": 1680,
-            "y": 80
-          }
-        }
-      },
-      {
-        "name": "check_counsellors_en",
-        "type": "run-function",
-        "transitions": [
-          {
-            "next": "en_counsellors",
-            "event": "success"
-          },
-          {
-            "next": "check_queue_en",
-            "event": "fail"
-          }
-        ],
-        "properties": {
-          "service_sid": flow_vars["service_sid"],
-          "environment_sid": flow_vars["environment_sid"],
-          "offset": {
-            "x": -810,
-            "y": -210
-          },
-          "function_sid": flow_vars["check_counsellors_function_sid"],
-          "parameters": [
+          ]
+        },
+        {
+          "next": "helpline_parameters",
+          "event": "match",
+          "conditions": [
             {
-              "value": flow_vars["workspace_sid"],
-              "key": "workspaceSid"
-            },
-            {
-              "value": flow_vars["english_queue_sid"],
-              "key": "taskQueueSid"
+              "friendly_name": "If value equal_to 6",
+              "arguments": [
+                "{{flow.variables.message_counter}}"
+              ],
+              "type": "equal_to",
+              "value": "6"
             }
-          ],
-          "url": flow_vars["check_counsellors_function_url"]
+          ]
         }
-      },
-      {
-        "name": "en_counsellors",
-        "type": "split-based-on",
-        "transitions": [
+      ],
+      "properties": {
+        "input": "{{flow.variables.message_counter}}",
+        "offset": {
+          "x": 640,
+          "y": 2720
+        }
+      }
+    },
+    {
+      "name": "first_message",
+      "type": "send-message",
+      "transitions": [
+        {
+          "next": "reset_time_delay",
+          "event": "sent"
+        },
+        {
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 580,
+          "y": 3320
+        },
+        "service": "{{trigger.message.InstanceSid}}",
+        "channel": "{{trigger.message.ChannelSid}}",
+        "from": "System",
+        "to": "{{contact.channel.address}}",
+        "body": "We’re looking forward to chatting with you and appreciate your patience; a professional counsellor will be with you as soon as possible. If this is an emergency, please disconnect and dial 911."
+      }
+    },
+    {
+      "name": "second_message",
+      "type": "send-message",
+      "transitions": [
+        {
+          "next": "reset_time_delay",
+          "event": "sent"
+        },
+        {
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 830,
+          "y": 3470
+        },
+        "service": "{{trigger.message.InstanceSid}}",
+        "channel": "{{trigger.message.ChannelSid}}",
+        "from": "System",
+        "to": "{{contact.channel.address}}",
+        "body": "We want you to know a counsellor would never disconnect without telling you first. However, technology can sometimes cause disconnections. We are truly sorry if this happens! If you get disconnected and are in crisis please call us at 1-800-668-6868. If this is an emergency and you get disconnected please call us or dial 911."
+      }
+    },
+    {
+      "name": "third_message",
+      "type": "send-message",
+      "transitions": [
+        {
+          "next": "reset_time_delay",
+          "event": "sent"
+        },
+        {
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 980,
+          "y": 3290
+        },
+        "service": "{{trigger.message.InstanceSid}}",
+        "channel": "{{trigger.message.ChannelSid}}",
+        "from": "System",
+        "to": "{{contact.channel.address}}",
+        "body": "We appreciate your patience. If you would like to use our Texting service and speak with a Texting Crisis Responder, please text \"LIVECHAT\" to 686868. Otherwise, you will be connected with the next available counsellor."
+      }
+    },
+    {
+      "name": "fourth_message",
+      "type": "send-message",
+      "transitions": [
+        {
+          "next": "reset_time_delay",
+          "event": "sent"
+        },
+        {
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 1200,
+          "y": 3470
+        },
+        "service": "{{trigger.message.InstanceSid}}",
+        "channel": "{{trigger.message.ChannelSid}}",
+        "from": "System",
+        "to": "{{contact.channel.address}}",
+        "body": "I know waiting even a few minutes right now might seem impossible. A simple breathing exercise is easy to do and can really help to calm a busy mind or racing heart.\n\nSo, while you wait for a counsellor, maybe give SquareBreathing a try: \n\nBreathe in through your nose while counting to 4 slowly.\n\nHold your breath while counting to 4 slowly.\n\nBreathe out through your mouth while counting to 4 slowly.\n\nHold your breath while counting to 4 slowly.\n\nRepeat 4 times and notice how you feel."
+      }
+    },
+    {
+      "name": "reset_time_delay",
+      "type": "set-variables",
+      "transitions": [
+        {
+          "next": "time_delay",
+          "event": "next"
+        }
+      ],
+      "properties": {
+        "variables": [
           {
-            "next": "send_queue_full_en",
-            "event": "noMatch"
-          },
-          {
-            "next": "check_queue_en",
-            "event": "match",
-            "conditions": [
-              {
-                "friendly_name": "If value greater_than 0",
-                "arguments": [
-                  "{{widgets.check_counsellors_en.parsed.totalCounsellors}}"
-                ],
-                "type": "greater_than",
-                "value": "0"
-              }
-            ]
+            "value": "1",
+            "key": "cycle_counter"
           }
         ],
-        "properties": {
-          "input": "{{widgets.check_counsellors_en.parsed.totalCounsellors}}",
-          "offset": {
-            "x": -940,
-            "y": -10
-          }
+        "offset": {
+          "x": 330,
+          "y": 1330
         }
-      },
+      }
+    },
+    {
+      "name": "language_split",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "chatHoursEn",
+          "event": "noMatch"
+        },
+        {
+          "next": "chatHoursEn",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to \"en-CA\"",
+              "arguments": [
+                "{{trigger.message.ChannelAttributes.pre_engagement_data.language}}"
+              ],
+              "type": "contains",
+              "value": "en-CA"
+            }
+          ]
+        },
+        {
+          "next": "chatHoursFr",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to fr-CA",
+              "arguments": [
+                "{{trigger.message.ChannelAttributes.pre_engagement_data.language}}"
+              ],
+              "type": "contains",
+              "value": "fr-CA"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{trigger.message.ChannelAttributes.pre_engagement_data.language}}",
+        "offset": {
+          "x": 260,
+          "y": -350
+        }
+      }
+    },
+    {
+      "name": "send_message_fr",
+      "type": "send-message",
+      "transitions": [
+        {
+          "next": "AdjustAttributes",
+          "event": "sent"
+        },
+        {
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 530,
+          "y": 240
+        },
+        "service": "{{trigger.message.InstanceSid}}",
+        "channel": "{{trigger.message.ChannelSid}}",
+        "from": "Système",
+        "to": "{{contact.channel.address}}",
+        "body": "Salut! Bienvenue au service d’intervention Clavardage en direct de Jeunesse, J’écoute. \n\nNous tenons tous à te féliciter d’avoir demandé de l’aide. Ça prend un grand courage pour faire ça. \n\nLe service d’intervention Clavardage en direct est un service anonyme et confidentiel; tout ce que nous savons de toi, c’est ce que tu choisis de nous dire. \n\nAfin de t’offrir du soutien qui correspond e mieux possible à tes besoins en ce moment, l’intervenant clinique te posera des questions afin de comprendre ce qui se passe dans ton quotidien, pour s’assurer de ta sécurité et pour déterminer quel soutien te serait le plus utile dans l’immédiat. L’intervenant t’aidera à définir les prochaines étapes réalisables qui prendront un sens tout particulier dans ta vie pendant la session de clavardage, qui dure habituellement environ 45 minutes. \nPour bénéficier pleinement de ton échange avec l’intervenant, il pourrait être utile, pendant que tu es dans la file d’attente, de penser aux choses importantes dont tu aimerais discuter. L’intervenant et toi pourrez alors prendre le temps nécessaire pour faire le tour du sujet. \n\nChez Jeunesse, J’écoute, nous tenons à ce que tu te sentes en sécurité et respecté. Il en va de même pour les membres de notre équipe d’intervenants cliniques professionnels, qui méritent eux aussi de travailler dans un environnement respectueux et sécuritaire. Si quelqu’un abuse ou utilise notre service pour des raisons inappropriées, on mettra fin à la conversation. Toute personne qui continue à avoir recours à notre service de manière malveillante peut se voir refuser l’accès. Si tu as des questions à cet égard ou sur tout autre aspect de notre service, pose-les à ton intervenant ou demande à communiquer avec un gestionnaire. Tu peux aussi consulter les Conditions de services sur le site Web. \n\nDe façon générale, le temps d’attente pour échanger avec un intervenant est d’une moyenne de 30 minutes. Nous comprenons que ça peut être difficile d’attendre. Si tu préfères parler avec un intervenant, appelle au 1 800 668-6868. Ce service, offert 24 heures par jour, 7 jours par semaine, est confidentiel et anonyme. \n\nTu peux aussi échanger avec un bénévole qualifié par texto en envoyant LIVECHAT au 686868 en tout temps. \n\nSi la situation est urgente, signale le 911."
+      }
+    },
+    {
+      "name": "split_messages_language",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "event": "noMatch"
+        },
+        {
+          "next": "split_messages_en",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value contains en-CA",
+              "arguments": [
+                "{{trigger.message.ChannelAttributes.pre_engagement_data.language}}"
+              ],
+              "type": "contains",
+              "value": "en-CA"
+            }
+          ]
+        },
+        {
+          "next": "split_messages_fr",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value contains fr-CA",
+              "arguments": [
+                "{{trigger.message.ChannelAttributes.pre_engagement_data.language}}"
+              ],
+              "type": "contains",
+              "value": "fr-CA"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{trigger.message.ChannelAttributes.pre_engagement_data.language}}",
+        "offset": {
+          "x": 1290,
+          "y": 2440
+        }
+      }
+    },
+    {
+      "name": "split_messages_fr",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "event": "noMatch"
+        },
+        {
+          "next": "position_in_queue_fr",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to 1",
+              "arguments": [
+                "{{flow.variables.message_counter}}"
+              ],
+              "type": "equal_to",
+              "value": "1"
+            }
+          ]
+        },
+        {
+          "next": "first_message_fr",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to 2",
+              "arguments": [
+                "{{flow.variables.message_counter}}"
+              ],
+              "type": "equal_to",
+              "value": "2"
+            }
+          ]
+        },
+        {
+          "next": "second_message_fr",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to 3",
+              "arguments": [
+                "{{flow.variables.message_counter}}"
+              ],
+              "type": "equal_to",
+              "value": "3"
+            }
+          ]
+        },
+        {
+          "next": "third_message_fr",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to 4",
+              "arguments": [
+                "{{flow.variables.message_counter}}"
+              ],
+              "type": "equal_to",
+              "value": "4"
+            }
+          ]
+        },
+        {
+          "next": "fourth_message_fr",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to 5",
+              "arguments": [
+                "{{flow.variables.message_counter}}"
+              ],
+              "type": "equal_to",
+              "value": "5"
+            }
+          ]
+        },
+        {
+          "next": "helpline_parameters",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to 6",
+              "arguments": [
+                "{{flow.variables.message_counter}}"
+              ],
+              "type": "equal_to",
+              "value": "6"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{flow.variables.message_counter}}",
+        "offset": {
+          "x": 1730,
+          "y": 2690
+        }
+      }
+    },
+    {
+      "name": "position_in_queue_fr",
+      "type": "send-message",
+      "transitions": [
+        {
+          "next": "reset_time_delay",
+          "event": "sent"
+        },
+        {
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 1590,
+          "y": 3120
+        },
+        "service": "{{trigger.message.InstanceSid}}",
+        "channel": "{{trigger.message.ChannelSid}}",
+        "from": "Système",
+        "to": "{{contact.channel.address}}",
+        "body": "Tu es le numéro {{widgets.engagement.parsed.nrOfOlderTasks}} dans la file d’attente. Pour garder cette fenêtre de clavardage active, ne quitte pas ou ne rafraîchis pas la page. Il ne faut pas non plus cliquer sur le bouton précédent."
+      }
+    },
+    {
+      "name": "first_message_fr",
+      "type": "send-message",
+      "transitions": [
+        {
+          "next": "reset_time_delay",
+          "event": "sent"
+        },
+        {
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 1730,
+          "y": 3350
+        },
+        "service": "{{trigger.message.InstanceSid}}",
+        "channel": "{{trigger.message.ChannelSid}}",
+        "from": "Système",
+        "to": "{{contact.channel.address}}",
+        "body": "Nous avons hâte de clavarder avec toi et sommes reconnaissants de ta patience; un intervenant clinique professionnel te répondra aussitôt que possible! Si la situation est urgente, signale le 911 immédiatement."
+      }
+    },
+    {
+      "name": "second_message_fr",
+      "type": "send-message",
+      "transitions": [
+        {
+          "next": "reset_time_delay",
+          "event": "sent"
+        },
+        {
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 1900,
+          "y": 3500
+        },
+        "service": "{{trigger.message.InstanceSid}}",
+        "channel": "{{trigger.message.ChannelSid}}",
+        "from": "Système",
+        "to": "{{contact.channel.address}}",
+        "body": "Nous tenons à mentionner que jamais un intervenant ne terminerait une conversation sans t’en avertir. Par contre, la technologie peut parfois faire en sorte qu’une communication soit rompue. Nous sommes vraiment désolés lorsque ceci arrive. Si la communication devait être coupée lorsque tu es en situation de crise, tu peux nous appeler au 1 800 668-6868. Si c’est une urgence, compose le 911 immédiatement."
+      }
+    },
+    {
+      "name": "third_message_fr",
+      "type": "send-message",
+      "transitions": [
+        {
+          "next": "reset_time_delay",
+          "event": "sent"
+        },
+        {
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 2080,
+          "y": 3270
+        },
+        "service": "{{trigger.message.InstanceSid}}",
+        "channel": "{{trigger.message.ChannelSid}}",
+        "from": "Système",
+        "to": "{{contact.channel.address}}",
+        "body": "Nous te remercions de ta patience. Si tu aimerais utiliser notre service par texto afin d’échanger avec un Répondant aux crises, envoie ALLO au 686868. Si tu préfères attendre, la connexion sera établie avec le prochain intervenant qui se libère."
+      }
+    },
+    {
+      "name": "fourth_message_fr",
+      "type": "send-message",
+      "transitions": [
+        {
+          "next": "reset_time_delay",
+          "event": "sent"
+        },
+        {
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 2280,
+          "y": 3490
+        },
+        "service": "{{trigger.message.InstanceSid}}",
+        "channel": "{{trigger.message.ChannelSid}}",
+        "from": "Système",
+        "to": "{{contact.channel.address}}",
+        "body": "J’imagine que de penser à une période d’attente de même quelques minutes doit être angoissant. Parfois, pratiquer un exercice de respiration est un moyen facile de se calmer et de diminuer notre niveau d’anxiété.  \n\nEn attendant de pouvoir échanger avec un intervenant, pourquoi ne pas essayer la respiration carrée :\n\nInspire par le nez, en comptant lentement jusqu’à 4.\n\nRetiens ton souffle, encore en comptant lentement jusqu’à 4.\n\nRelâche ton souffle, cette fois par la bouche, en comptant encore une fois lentement jusqu’à 4.\n\nRetiens ton souffle, en comptant lentement jusqu’à 4.\n\nRépète ces étapes quatre fois encore pour voir si tu ressens moins d’anxiété."
+      }
+    },
+    {
+      "name": "check_queue_en",
+      "type": "run-function",
+      "transitions": [
+        {
+          "next": "en_capacity",
+          "event": "success"
+        },
+        {
+          "next": "send_message",
+          "event": "fail"
+        }
+      ],
+      "properties": {
+        "service_sid": "${flow_vars.service_sid}",
+        "environment_sid": "${flow_vars.environment_sid}",
+        "offset": {
+          "x": -380,
+          "y": -310
+        },
+        "function_sid": "${flow_vars.check_queue_capacity_function_sid}",
+        "parameters": [
+          {
+            "value": "${flow_vars.english_queue_sid}",
+            "key": "taskQueueSid"
+          },
+          {
+            "value": "${flow_vars.workspace_sid}",
+            "key": "workspaceSid"
+          }
+        ],
+        "url": "${flow_vars.check_queue_capacity_function_url}"
+      }
+    },
+    {
+      "name": "check_queue_fr",
+      "type": "run-function",
+      "transitions": [
+        {
+          "next": "fr_capacity",
+          "event": "success"
+        },
+        {
+          "next": "send_message_fr",
+          "event": "fail"
+        }
+      ],
+      "properties": {
+        "service_sid": "${flow_vars.service_sid}",
+        "environment_sid": "${flow_vars.environment_sid}",
+        "offset": {
+          "x": 1060,
+          "y": -140
+        },
+        "function_sid": "${flow_vars.check_queue_capacity_function_sid}",
+        "parameters": [
+          {
+            "value": "${flow_vars.french_queue_sid}",
+            "key": "taskQueueSid"
+          },
+          {
+            "value": "${flow_vars.workspace_sid}",
+            "key": "workspaceSid"
+          }
+        ],
+        "url": "${flow_vars.check_queue_capacity_function_url}"
+      }
+    },
+    {
+      "name": "en_capacity",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "send_message",
+          "event": "noMatch"
+        },
+        {
+          "next": "send_queue_full_en",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value greater_than 8",
+              "arguments": [
+                "{{widgets.check_queue_en.parsed.totalTasks}}"
+              ],
+              "type": "greater_than",
+              "value": "8"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{widgets.check_queue_en.parsed.totalTasks}}",
+        "offset": {
+          "x": -950,
+          "y": -170
+        }
+      }
+    },
+    {
+      "name": "send_queue_full_en",
+      "type": "send-message",
+      "transitions": [
+        {
+          "event": "sent"
+        },
+        {
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": -590,
+          "y": 230
+        },
+        "service": "{{trigger.message.InstanceSid}}",
+        "channel": "{{trigger.message.ChannelSid}}",
+        "from": "System",
+        "to": "{{contact.channel.address}}",
+        "body": "We're sorry, our Live Chat service is currently full. Please end your chat and try back soon. To reach a Kids Help Phone counsellor by phone, you can call us anytime at 1-800-668-6868. \nBe well, \nThe Kids Help Phone Team."
+      }
+    },
+    {
+      "name": "send_queue_full_fr",
+      "type": "send-message",
+      "transitions": [
+        {
+          "event": "sent"
+        },
+        {
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 1620,
+          "y": 250
+        },
+        "service": "{{trigger.message.InstanceSid}}",
+        "channel": "{{trigger.message.ChannelSid}}",
+        "from": "Système",
+        "to": "{{contact.channel.address}}",
+        "body": "Nous sommes désolés, mais notre service de clavardage en direct est actuellement complet. S'il te plaît, ferme l'onglet et réessaie plus tard. Pour parler à un intervenant de Jeunesse J'écoute, tu peux nous téléphoner au 1-800-668-6868. \nPrends soin de toi, \nL'équipe de Jeunesse J'écoute."
+      }
+    },
+    {
+      "name": "fr_capacity",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "send_message_fr",
+          "event": "noMatch"
+        },
+        {
+          "next": "send_queue_full_fr",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value greater_than 2",
+              "arguments": [
+                "{{widgets.check_queue_fr.parsed.totalTasks}}"
+              ],
+              "type": "greater_than",
+              "value": "2"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{widgets.check_queue_fr.parsed.totalTasks}}",
+        "offset": {
+          "x": 1200,
+          "y": 180
+        }
+      }
+    },
+    {
+      "name": "chatHoursEn",
+      "type": "make-http-request",
+      "transitions": [
+        {
+          "next": "hours_split_en",
+          "event": "success"
+        },
+        {
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": -50,
+          "y": -500
+        },
+        "method": "POST",
+        "content_type": "application/json;charset=utf-8",
+        "add_twilio_auth": false,
+        "body": "{\"channel\": \"webchat\", \"includeMessageTextInResponse\": \"true\", \"language\": \"en-CA\"}",
+        "url": "${get_profile_flags_for_identifier_base_url}/operatingHours"
+      }
+    },
+    {
+      "name": "hours_split_en",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "check_counsellors_en",
+          "event": "noMatch"
+        },
+        {
+          "next": "check_counsellors_en",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value contains open",
+              "arguments": [
+                "{{widgets.chatHoursEn.parsed.status}}"
+              ],
+              "type": "contains",
+              "value": "open"
+            }
+          ]
+        },
+        {
+          "next": "send_closed",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value contains closed",
+              "arguments": [
+                "{{widgets.chatHoursEn.parsed.status}}"
+              ],
+              "type": "contains",
+              "value": "closed"
+            }
+          ]
+        },
+        {
+          "next": "send_closed",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value contains holiday",
+              "arguments": [
+                "{{widgets.chatHoursEn.parsed.status}}"
+              ],
+              "type": "contains",
+              "value": "holiday"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{widgets.chatHoursEn.parsed.status}}",
+        "offset": {
+          "x": -1030,
+          "y": -500
+        }
+      }
+    },
+    {
+      "name": "send_closed",
+      "type": "send-message",
+      "transitions": [
+        {
+          "event": "sent"
+        },
+        {
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": -1380,
+          "y": -220
+        },
+        "service": "{{trigger.message.InstanceSid}}",
+        "channel": "{{trigger.message.ChannelSid}}",
+        "from": "System",
+        "to": "{{contact.channel.address}}",
+        "body": "{{widgets.chatHoursEn.parsed.message}}"
+      }
+    },
+    {
+      "name": "chatHoursFr",
+      "type": "make-http-request",
+      "transitions": [
+        {
+          "next": "hours_split_fr",
+          "event": "success"
+        },
+        {
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 690,
+          "y": -410
+        },
+        "method": "POST",
+        "content_type": "application/json;charset=utf-8",
+        "add_twilio_auth": false,
+        "body": "{\"channel\": \"webchat\", \"includeMessageTextInResponse\": \"true\", \"language\": \"fr-CA\"}",
+        "url": "${get_profile_flags_for_identifier_base_url}/operatingHours"
+      }
+    },
+    {
+      "name": "hours_split_fr",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "check_counsellors_fr",
+          "event": "noMatch"
+        },
+        {
+          "next": "check_counsellors_fr",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value contains open",
+              "arguments": [
+                "{{widgets.chatHoursFr.parsed.status}}"
+              ],
+              "type": "contains",
+              "value": "open"
+            }
+          ]
+        },
+        {
+          "next": "send_closed_fr",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value contains closed",
+              "arguments": [
+                "{{widgets.chatHoursFr.parsed.status}}"
+              ],
+              "type": "contains",
+              "value": "closed"
+            }
+          ]
+        },
+        {
+          "next": "send_closed_fr",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value contains holiday",
+              "arguments": [
+                "{{widgets.chatHoursFr.parsed.status}}"
+              ],
+              "type": "contains",
+              "value": "holiday"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{widgets.chatHoursFr.parsed.status}}",
+        "offset": {
+          "x": 1400,
+          "y": -340
+        }
+      }
+    },
+    {
+      "name": "send_closed_fr",
+      "type": "send-message",
+      "transitions": [
+        {
+          "event": "sent"
+        },
+        {
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 1640,
+          "y": -50
+        },
+        "service": "{{trigger.message.InstanceSid}}",
+        "channel": "{{trigger.message.ChannelSid}}",
+        "from": "Système",
+        "to": "{{contact.channel.address}}",
+        "body": "{{widgets.check_hours_fr.parsed.message}}"
+      }
+    },
+    {
+      "name": "check_counsellors_fr",
+      "type": "run-function",
+      "transitions": [
+        {
+          "next": "fr_counsellors",
+          "event": "success"
+        },
+        {
+          "next": "check_queue_fr",
+          "event": "fail"
+        }
+      ],
+      "properties": {
+        "service_sid": "${flow_vars.service_sid}",
+        "environment_sid": "${flow_vars.environment_sid}",
+        "offset": {
+          "x": 1560,
+          "y": -200
+        },
+        "function_sid": "${flow_vars.check_counsellors_function_sid}",
+        "parameters": [
+          {
+            "value": "${flow_vars.workspace_sid}",
+            "key": "workspaceSid"
+          },
+          {
+            "value": "${flow_vars.french_queue_sid}",
+            "key": "taskQueueSid"
+          }
+        ],
+        "url": "${flow_vars.check_counsellors_function_url}"
+      }
+    },
+    {
+      "name": "fr_counsellors",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "send_queue_full_fr",
+          "event": "noMatch"
+        },
+        {
+          "next": "check_queue_fr",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value greater_than 0",
+              "arguments": [
+                "{{widgets.check_counsellors_fr.parsed.totalCounsellors}}"
+              ],
+              "type": "greater_than",
+              "value": "0"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{widgets.check_counsellors_fr.parsed.totalCounsellors}}",
+        "offset": {
+          "x": 1680,
+          "y": 80
+        }
+      }
+    },
+    {
+      "name": "check_counsellors_en",
+      "type": "run-function",
+      "transitions": [
+        {
+          "next": "en_counsellors",
+          "event": "success"
+        },
+        {
+          "next": "check_queue_en",
+          "event": "fail"
+        }
+      ],
+      "properties": {
+        "service_sid": "${flow_vars.service_sid}",
+        "environment_sid": "${flow_vars.environment_sid}",
+        "offset": {
+          "x": -810,
+          "y": -210
+        },
+        "function_sid": "${flow_vars.check_counsellors_function_sid}",
+        "parameters": [
+          {
+            "value": "${flow_vars.workspace_sid}",
+            "key": "workspaceSid"
+          },
+          {
+            "value": "${flow_vars.english_queue_sid}",
+            "key": "taskQueueSid"
+          }
+        ],
+        "url": "${flow_vars.check_counsellors_function_url}"
+      }
+    },
+    {
+      "name": "en_counsellors",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "send_queue_full_en",
+          "event": "noMatch"
+        },
+        {
+          "next": "check_queue_en",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value greater_than 0",
+              "arguments": [
+                "{{widgets.check_counsellors_en.parsed.totalCounsellors}}"
+              ],
+              "type": "greater_than",
+              "value": "0"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{widgets.check_counsellors_en.parsed.totalCounsellors}}",
+        "offset": {
+          "x": -940,
+          "y": -10
+        }
+      }
+    },
     {
       "name": "test_flag",
       "type": "split-based-on",
@@ -1574,6 +1548,5 @@ ${
   "flags": {
     "allow_concurrent_calls": true
   }
-  }
-    )
+})
   }
