@@ -365,4 +365,5 @@ export const config: Configuration = {
   mapHelplineLanguage,
   captureIp,
   contactType,
+  twilioServicesUrl: new URL(`https://hrm-staging.tl.techmatters.org/lambda/twilio/account-scoped/${accountSid}`),
 };

@@ -2289,4 +2289,5 @@ export const config: Configuration = {
   captureIp,
   blockedEmojis,
   contactType,
+  twilioServicesUrl: new URL(`https://hrm-staging.tl.techmatters.org/lambda/twilio/account-scoped/${accountSid}`),
 };
