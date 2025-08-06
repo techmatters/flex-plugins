@@ -21,7 +21,7 @@ import { AnyAction } from 'redux';
 import { Template } from '@twilio/flex-ui';
 
 import { RootState } from '../../../states';
-import { Box, Column } from '../../../styles';
+import { Box, Column, Row } from '../../../styles';
 import SearchResultsBackButton from '../../search/SearchResults/SearchResultsBackButton';
 import {
   ResourceAttributesColumn,
@@ -29,6 +29,8 @@ import {
   ResourceTitle,
   ViewResourceArea,
   ResourceViewContainer,
+  ResourceSubheading,
+  ResourceSubheadingBold,
 } from '../styles';
 import ResourceAttribute from './ResourceAttribute';
 import { loadResourceAsyncAction, navigateToSearchAction, ResourceLoadStatus } from '../../../states/resources';
@@ -94,6 +96,17 @@ const ViewResource: React.FC<Props> = ({ resource, error, loadViewedResource, na
           {resource && (
             <>
               <ResourceTitle data-testid="resource-title">{name}</ResourceTitle>
+              {resourceAttributes.nameDetails && (
+                <Row style={{ marginTop: 5, marginBottom: 5 }}>
+                  <ResourceSubheading data-testid="resource-subtitle">
+                    <Template code="Alternate Name(s)" />
+                    {': '}
+                    <ResourceSubheadingBold data-testid="resource-subtitle">
+                      {resourceAttributes.nameDetails}
+                    </ResourceSubheadingBold>
+                  </ResourceSubheading>
+                </Row>
+              )}
               {attributes && (
                 <ResourceAttributesContainer>
                   {/* FIRST COLUMN */}
@@ -102,6 +115,18 @@ const ViewResource: React.FC<Props> = ({ resource, error, loadViewedResource, na
                       {
                         subtitle: 'Resources-View-Details',
                         attributeToDisplay: resourceAttributes.description,
+                      },
+                      {
+                        subtitle: 'Resources-View-Notes',
+                        attributeToDisplay: resourceAttributes.notes.join('\n'),
+                      },
+                      {
+                        subtitle: 'Resources-View-RecordType',
+                        attributeToDisplay: resourceAttributes.recordType,
+                      },
+                      {
+                        subtitle: 'Resources-View-Taxonomies',
+                        attributeToDisplay: resourceAttributes.taxonomies.join('\n'),
                       },
                       {
                         subtitle: 'Resources-View-TargetPopulation',
@@ -183,6 +208,23 @@ const ViewResource: React.FC<Props> = ({ resource, error, loadViewedResource, na
                     >
                       {resourceAttributes.primaryLocation}
                     </ResourceAttributeWithPrivacy>
+
+                    {resourceAttributes.phoneNumbers.map(p => {
+                      // const description = 'Phone';
+                      const description =
+                        'Phone' +
+                        `${
+                          p.type && p.type.toLocaleLowerCase() !== 'phone'
+                            ? ` (${p.type.charAt(0).toUpperCase()}${p.type.slice(1)})`
+                            : ''
+                        }`;
+
+                      return (
+                        <ResourceAttributeWithPrivacy key={p.number} isPrivate={p.isPrivate} description={description}>
+                          {[p.number, p.name, p.description].filter(Boolean).join('\n')}
+                        </ResourceAttributeWithPrivacy>
+                      );
+                    })}
 
                     <ResourceAttributeWithPrivacy
                       isPrivate={resourceAttributes.mainContact.isPrivate}

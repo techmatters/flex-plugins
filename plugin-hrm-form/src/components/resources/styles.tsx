@@ -70,6 +70,19 @@ export const ResourceTitle = styled('p')`
 `;
 ResourceTitle.displayName = 'ResourceTitle';
 
+export const ResourceSubheading = styled('h2')`
+  color: #192b33;
+  font-family: Open Sans;
+  font-size: 20px;
+  font-weight: 400;
+`;
+ResourceSubheading.displayName = 'ResourceSubheading';
+
+export const ResourceSubheadingBold = styled('span')`
+  font-weight: 700;
+`;
+ResourceSubheadingBold.displayName = 'ResourceSubheadingBold';
+
 export const ViewResourceArea = styled('div')`
   width: 100%;
   background-color: white;

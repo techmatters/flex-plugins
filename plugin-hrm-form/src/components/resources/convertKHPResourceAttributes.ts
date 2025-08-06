@@ -17,8 +17,10 @@
 import { KhpOperationsDay, KhpUiResource, Language } from './types';
 import { AttributeData, Attributes } from '../../services/ResourceService';
 
-const getAttributeData = (attributes: Attributes | undefined, language: Language, keyName: string): AttributeData => {
-  const propDataList = (attributes ?? {})[keyName];
+const getAttributeDataFromList = (
+  propDataList: Attributes | AttributeData<any>[] | undefined,
+  language: Language,
+): AttributeData => {
   if (propDataList && Array.isArray(propDataList)) {
     const propDataByLanguage = propDataList.find(item => item?.language === language || item?.language === '');
     if (propDataByLanguage && 'value' in propDataByLanguage && typeof propDataByLanguage.value === 'string') {
@@ -28,6 +30,11 @@ const getAttributeData = (attributes: Attributes | undefined, language: Language
     }
   }
   return undefined;
+};
+
+const getAttributeData = (attributes: Attributes | undefined, language: Language, keyName: string): AttributeData => {
+  const propDataList = (attributes ?? {})[keyName];
+  return getAttributeDataFromList(propDataList, language);
 };
 
 const extractAttributeValue = ({ value }: AttributeData) => {
@@ -188,7 +195,7 @@ const extractSiteLocation = (site: Attributes) => {
   };
 };
 
-const extractPhoneNumbers = (phoneObj: Attributes): Record<string, string> => {
+const extractSitePhoneNumbers = (phoneObj: Attributes): Record<string, string> => {
   const phoneNumbers = {};
   Object.keys(phoneObj ?? {}).forEach(key => {
     const { info } = getAttributeData(phoneObj, '', key);
@@ -253,7 +260,7 @@ const extractSiteDetails = (resource: Attributes, sites: Attributes, language: L
       operations: extractSiteOperatingHours(siteId, operationsAttributes, siteOperations, language),
       isActive: getBooleanAttributeValue(site, 'isActive'),
       details: getAttributeData(site, language, 'details')?.info?.details ?? '',
-      phoneNumbers: extractPhoneNumbers(getAttributeNode(site, 'phone')),
+      phoneNumbers: extractSitePhoneNumbers(getAttributeNode(site, 'phone')),
       coverage: extractCoverage(coverageAttributes, siteId),
     });
   }
@@ -292,6 +299,38 @@ const extractLanguages = (resource: Attributes) =>
     .filter(l => l)
     .join(', ');
 
+const extractArrayAttribute = (key: string) => (
+  attributes: Attributes,
+  language: Language,
+): AttributeData['value'][] => {
+  if (!attributes[key]) {
+    return ['N/A'];
+  }
+
+  return Object.values(attributes[key]).flatMap(attr =>
+    Array.isArray(attr)
+      ? attr.filter(item => item.language === language || item.language === '').map(({ value }) => value)
+      : [],
+  );
+};
+
+const extractNotes = extractArrayAttribute('notes');
+const extractTaxonomies = extractArrayAttribute('taxonomies');
+const extractPhoneNumbers = (resource: Attributes, language: Language) => {
+  if (!resource.phoneNumbers) return [];
+
+  return Object.values(resource.phoneNumbers).map(p => {
+    const { info, value } = getAttributeDataFromList(p, language);
+    return {
+      description: info?.description?.[language],
+      type: info?.type,
+      name: language === 'en' ? info?.name : info?.nameFR,
+      number: value.toString(),
+      isPrivate: info?.isPrivate,
+    };
+  });
+};
+
 export const convertKHPResourceAttributes = (
   attributes: Attributes,
   language: Language,
@@ -304,7 +343,16 @@ export const convertKHPResourceAttributes = (
   const coverage = attributes.coverage && !Array.isArray(attributes.coverage) ? attributes.coverage : undefined;
   const eligibility =
     attributes.eligibility && !Array.isArray(attributes.eligibility) ? attributes.eligibility : undefined;
+  const nameDetails = getAttributeValue(attributes, language, 'nameDetails');
+  const notes = extractNotes(attributes, language) as string[];
+  const taxonomies = extractTaxonomies(attributes, language) as string[];
+  const phoneNumbers = extractPhoneNumbers(attributes, language);
+
   return {
+    nameDetails,
+    notes,
+    recordType: getAttributeValue(attributes, language, 'recordType'),
+    taxonomies,
     status: getAttributeValue(attributes, language, 'status'),
     taxonomyCode: getAttributeValue(attributes, language, 'taxonomyCode'),
     description: extractDescriptionInfo(attributes.description, language),
@@ -331,6 +379,7 @@ export const convertKHPResourceAttributes = (
     documentsRequired: extractRequiredDocuments(attributes.documentsRequired, language),
     primaryLocationIsPrivate: getBooleanAttributeValue(attributes, 'primaryLocationIsPrivate'),
     primaryLocation: extractPrimaryLocation(attributes, language),
+    phoneNumbers,
     coverage: extractCoverage(coverage),
     eligibilityPhrase: getAttributeValue(eligibility, language, 'phrase'),
     site: extractSiteDetails(attributes, sites, language),
