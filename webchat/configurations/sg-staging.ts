@@ -299,5 +299,5 @@ export const config: Configuration = {
   memberDisplayOptions,
   captureIp,
   contactType,
-  twilioServicesUrl: new URL(`https://hrm-staging.tl.techmatters.org/lambda/twilio/account-scoped/${accountSid}`),
+  twilioServicesUrl: new URL(`https://hrm-staging-eu.tl.techmatters.org/lambda/twilio/account-scoped/${accountSid}`),
 };
