@@ -25,5 +25,5 @@ export const config: Configuration = {
   checkOpenHours: true,
   accountSid,
   flexFlowSid,
-  twilioServicesUrl: new URL(`https://hrm-production.tl.techmatters.org/lambda/twilio/account-scoped/${accountSid}`),
+  twilioServicesUrl: new URL(`https://hrm-production-ca.tl.techmatters.org/lambda/twilio/account-scoped/${accountSid}`),
 };
