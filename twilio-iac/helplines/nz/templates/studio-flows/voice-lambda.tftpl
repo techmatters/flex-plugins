@@ -1,7 +1,6 @@
 ${
-  jsonencode(
-  {
-  "description": flow_description,
+  jsonencode({
+  "description": "${flow_description}",
   "states": [
     {
       "name": "Trigger",
@@ -46,14 +45,14 @@ ${
         }
       ],
       "properties": {
-        "waitUrl": channel_flow_vars["wait_url"],
+        "waitUrl": "${channel_flow_vars.wait_url}",
         "offset": {
           "x": 890,
           "y": 1480
         },
-        "attributes": channel_attributes["default"],
-        "workflow":  workflow_sids["master_calls"],
-        "channel": task_channel_sids["voice"]
+        "attributes": "${channel_attributes.default}",
+        "workflow": "${workflow_sids.master_calls}",
+        "channel": "${task_channel_sids.voice}",
         "waitUrlMethod": "GET",
         "timeout": "3600"
       }
@@ -77,9 +76,9 @@ ${
           "y": 500
         },
         "method": "POST",
-        "content_type": "application/json;charset=utf-8",
         "add_twilio_auth": false,
-        "body": "{ \"trigger\": {{trigger | to_json}}}",
+        "content_type": "application/json;charset=utf-8",
+        "body": "{ \"trigger\": {{trigger | to_json}}, \"channelType\": \"${channel_name}\" }",
         "url": "${get_profile_flags_for_identifier_base_url}/getProfileFlagsForIdentifier"
       }
     },
@@ -160,7 +159,7 @@ ${
         }
       ],
       "properties": {
-        "play": channel_flow_vars["blocked_url"],
+        "play": "${channel_flow_vars.blocked_url}",
         "offset": {
           "x": 1320,
           "y": 980
@@ -178,7 +177,7 @@ ${
         }
       ],
       "properties": {
-        "play": channel_flow_vars["initial_message_url"],
+        "play": "${channel_flow_vars.initial_message_url}",
         "offset": {
           "x": 770,
           "y": 1190
@@ -199,12 +198,12 @@ ${
           "event": "match",
           "conditions": [
             {
-              "friendly_name": "If value equal_to ${channel_flow_vars["external_parties_number"]}",
+              "friendly_name": "If value equal_to ${channel_flow_vars.external_parties_number}",
               "arguments": [
                 "{{trigger.call.To}}"
               ],
               "type": "equal_to",
-              "value": channel_flow_vars["external_parties_number"]
+              "value": "${channel_flow_vars.external_parties_number}"
             }
           ]
         }
@@ -237,18 +236,18 @@ ${
           "x": 80,
           "y": 630
         },
-        "attributes": channel_attributes["default"],
-        "workflow":  workflow_sids["master_calls"],
-        "channel": task_channel_sids["voice"],
+        "attributes": "${channel_attributes.default}",
+        "workflow": "${workflow_sids.master_calls}",
+        "channel": "${task_channel_sids.voice}",
         "waitUrlMethod": "GET",
         "timeout": "3600"
-      },
+      }
     },
     {
       "name": "country_check",
       "type": "split-based-on",
       "transitions": [
-       {
+        {
           "next": "play_blocked",
           "event": "noMatch"
         },
@@ -289,12 +288,10 @@ ${
         }
       }
     }
-  
   ],
   "initial_state": "Trigger",
   "flags": {
     "allow_concurrent_calls": true
   }
-}
-  )
+})
 }
