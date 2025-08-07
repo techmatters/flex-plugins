@@ -261,6 +261,9 @@ export type FeatureFlags = {
   enable_language_selector: boolean // Enables the language of the UI to be changed by the user via a dropdown menu
   use_twilio_lambda_for_conference_functions: boolean; // Use PrepopulateMappings.json instead of PrepopulateKeys.json
   enable_configurable_max_categories: boolean;
+  
+  // TODO remove once this changes are enabled
+  enable_resouorces_updates: boolean;
 };
 /* eslint-enable camelcase */
 

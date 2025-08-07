@@ -25,6 +25,10 @@ export type KhpUiResource = {
   resourceSid: string;
   name: string;
   attributes: {
+    nameDetails: string;
+    notes: string[];
+    recordType: string;
+    taxonomies: string[];
     status: string;
     taxonomyCode: string;
     description: string;
@@ -46,6 +50,13 @@ export type KhpUiResource = {
     documentsRequired: string;
     primaryLocationIsPrivate: boolean;
     primaryLocation: string;
+    phoneNumbers: {
+      description: string;
+      type: string;
+      isPrivate: boolean;
+      name: string;
+      number: string;
+    }[];
     operations: KhpOperationsDay[];
     coverage: string;
     eligibilityPhrase: string;
