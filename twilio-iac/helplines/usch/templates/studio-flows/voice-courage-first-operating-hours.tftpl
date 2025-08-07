@@ -103,39 +103,26 @@ ${
     },
     {
       "name": "operatingHours",
-      "type": "run-function",
+      "type": "make-http-request",
       "transitions": [
         {
           "next": "split_status",
           "event": "success"
         },
         {
-          "event": "fail"
+          "event": "failed"
         }
       ],
       "properties": {
-        "service_sid": "${serverless_service_sid}",
-        "environment_sid": "${serverless_environment_sid}",
         "offset": {
           "x": 130,
           "y": -290
         },
-        "function_sid": "${flow_vars.operating_hours_function_sid}",
-        "parameters": [
-          {
-            "value": "voice",
-            "key": "channel"
-          },
-          {
-            "value": "true",
-            "key": "includeMessageTextInResponse"
-          },
-          {
-            "value": "en-USCH",
-            "key": "language"
-          }
-        ],
-        "url": "${serverless_url}/operatingHours"
+        "method": "POST",
+        "content_type": "application/json;charset=utf-8",
+        "add_twilio_auth": false,
+        "body": "{\"channel\": \"voice\", \"includeMessageTextInResponse\": \"true\", \"language\": \"en-USCH\"}",
+        "url": "${get_profile_flags_for_identifier_base_url}/operatingHours"
       }
     },
     {
