@@ -241,53 +241,29 @@
     "type": "listbox-multiselect",
     "isPII": false,
     "options": [
-      {
-        "value": "Referred to child protection agencies",
-        "label": "Referred to child protection agencies"
-      },
-      {
-        "value": "Referred to general healthcare services",
-        "label": "Referred to general healthcare services"
-      },
-      {
-        "value": "Referred to law enforcement agencies",
-        "label": "Referred to law enforcement agencies"
-      },
-      {
-        "value": "Referred to mental health services",
-        "label": "Referred to mental health services"
-      },
-      {
-        "value": "Referred to other organizations",
-        "label": "Referred to other organizations"
-      },
-      {
-        "value": "Referred to school counselors",
-        "label": "Referred to school counselors"
-      },
-      {
-        "value": "Referred to cyber reporting agencies",
-        "label": "Referred to cyber reporting agencies"
-      },
-      {
-        "value": "Provided informational resources",
-        "label": "Provided informational resources"
+       {
+        "value": "Identified coping skills",
+        "label": "Identified coping skills"
       },
       {
         "value": "Identified support systems",
         "label": "Identified support systems"
       },
       {
-        "value": "Identified coping skills",
-        "label": "Identified coping skills"
+        "value": "Next steps identified",
+        "label": "Next steps identified"
+      },
+      {
+        "value": "Other referral Provided",
+        "label": "Other referral Provided"
+      },
+      {
+        "value": "Referred to CPS",
+        "label": "Referred to CPS"
       },
       {
         "value": "Safety plan created",
         "label": "Safety plan created"
-      },
-      {
-        "value": "Next steps identified",
-        "label": "Next steps identified"
       },
       {
         "value": "N/A- Helpseeker stopped responding",
