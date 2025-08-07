@@ -90,8 +90,8 @@
     "type": "input"
   },
   {
-    "name": "numberofChildrenInvolved",
-    "label": "Number of Children Involved",
+    "name": "relationshipToOtherChild",
+    "label": "Relationship to other Child",
     "type": "select",
     "options": [
       {
@@ -168,7 +168,7 @@
   {
     "name": "description",
     "label": "Description (height, weight, eye colour, hair colour, particular birthmarks/signs ect)",
-    "type": "input",
+    "type": "textarea",
     "required": {
       "value": true,
       "message": "RequiredFieldError"
@@ -278,7 +278,7 @@
   {
     "name": "childNote",
     "label": "Notes (e.g passport,nickname)",
-    "type": "input",
+    "type": "textarea",
     "required": {
       "value": true,
       "message": "RequiredFieldError"
