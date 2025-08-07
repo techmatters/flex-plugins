@@ -1441,6 +1441,11 @@
     "isPII": false
   },
   {
+    "name": "bookingReference",
+    "label": "Booking Reference",
+    "type": "input"
+  },
+  {
     "name": "consentForResearchevaluation",
     "label": "Consent for Research/Evaluation",
     "type": "checkbox",
