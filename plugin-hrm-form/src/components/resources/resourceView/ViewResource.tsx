@@ -41,6 +41,7 @@ import SiteDetails from './SiteDetails';
 import OperatingHours from './OperatingHours';
 import { convertKHPResourceAttributes } from '../convertKHPResourceAttributes';
 import { namespace, referrableResourcesBase } from '../../../states/storeNamespaces';
+import useFeatureFlags from '../../../hooks/useFeatureFlags';
 
 type OwnProps = {
   resourceId: string;
@@ -67,6 +68,7 @@ const connector = connect(mapStateToProps, mapDispatchToProps);
 type Props = OwnProps & ConnectedProps<typeof connector>;
 
 const ViewResource: React.FC<Props> = ({ resource, error, loadViewedResource, navigateToSearch }) => {
+  const { enable_resouorces_updates: enableResourcesUpdates } = useFeatureFlags();
   if (!resource && !error) {
     loadViewedResource();
     return <div>Loading...</div>;
@@ -96,7 +98,7 @@ const ViewResource: React.FC<Props> = ({ resource, error, loadViewedResource, na
           {resource && (
             <>
               <ResourceTitle data-testid="resource-title">{name}</ResourceTitle>
-              {resourceAttributes.nameDetails && (
+              {enableResourcesUpdates && resourceAttributes.nameDetails && (
                 <Row style={{ marginTop: 5, marginBottom: 5 }}>
                   <ResourceSubheading data-testid="resource-subtitle">
                     <Template code="Alternate Name(s)" />
@@ -116,18 +118,22 @@ const ViewResource: React.FC<Props> = ({ resource, error, loadViewedResource, na
                         subtitle: 'Resources-View-Details',
                         attributeToDisplay: resourceAttributes.description,
                       },
-                      {
-                        subtitle: 'Resources-View-Notes',
-                        attributeToDisplay: resourceAttributes.notes.join('\n'),
-                      },
-                      {
-                        subtitle: 'Resources-View-RecordType',
-                        attributeToDisplay: resourceAttributes.recordType,
-                      },
-                      {
-                        subtitle: 'Resources-View-Taxonomies',
-                        attributeToDisplay: resourceAttributes.taxonomies.join('\n'),
-                      },
+                      ...(enableResourcesUpdates
+                        ? [
+                            {
+                              subtitle: 'Resources-View-Notes',
+                              attributeToDisplay: resourceAttributes.notes.join('\n'),
+                            },
+                            {
+                              subtitle: 'Resources-View-RecordType',
+                              attributeToDisplay: resourceAttributes.recordType,
+                            },
+                            {
+                              subtitle: 'Resources-View-Taxonomies',
+                              attributeToDisplay: resourceAttributes.taxonomies.join('\n'),
+                            },
+                          ]
+                        : []),
                       {
                         subtitle: 'Resources-View-TargetPopulation',
                         attributeToDisplay: resourceAttributes.targetPopulation,
@@ -209,22 +215,27 @@ const ViewResource: React.FC<Props> = ({ resource, error, loadViewedResource, na
                       {resourceAttributes.primaryLocation}
                     </ResourceAttributeWithPrivacy>
 
-                    {resourceAttributes.phoneNumbers.map(p => {
-                      // const description = 'Phone';
-                      const description =
-                        'Phone' +
-                        `${
-                          p.type && p.type.toLocaleLowerCase() !== 'phone'
-                            ? ` (${p.type.charAt(0).toUpperCase()}${p.type.slice(1)})`
-                            : ''
-                        }`;
+                    {enableResourcesUpdates &&
+                      resourceAttributes.phoneNumbers.map(p => {
+                        // const description = 'Phone';
+                        const description =
+                          'Phone' +
+                          `${
+                            p.type && p.type.toLocaleLowerCase() !== 'phone'
+                              ? ` (${p.type.charAt(0).toUpperCase()}${p.type.slice(1)})`
+                              : ''
+                          }`;
 
-                      return (
-                        <ResourceAttributeWithPrivacy key={p.number} isPrivate={p.isPrivate} description={description}>
-                          {[p.number, p.name, p.description].filter(Boolean).join('\n')}
-                        </ResourceAttributeWithPrivacy>
-                      );
-                    })}
+                        return (
+                          <ResourceAttributeWithPrivacy
+                            key={p.number}
+                            isPrivate={p.isPrivate}
+                            description={description}
+                          >
+                            {[p.number, p.name, p.description].filter(Boolean).join('\n')}
+                          </ResourceAttributeWithPrivacy>
+                        );
+                      })}
 
                     <ResourceAttributeWithPrivacy
                       isPrivate={resourceAttributes.mainContact.isPrivate}

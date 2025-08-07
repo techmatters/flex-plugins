@@ -319,16 +319,21 @@ const extractTaxonomies = extractArrayAttribute('taxonomies');
 const extractPhoneNumbers = (resource: Attributes, language: Language) => {
   if (!resource.phoneNumbers) return [];
 
-  return Object.values(resource.phoneNumbers).map(p => {
-    const { info, value } = getAttributeDataFromList(p, language);
-    return {
-      description: info?.description?.[language],
-      type: info?.type,
-      name: language === 'en' ? info?.name : info?.nameFR,
-      number: value.toString(),
-      isPrivate: info?.isPrivate,
-    };
-  });
+  return Object.values(resource.phoneNumbers)
+    .map(p => {
+      const { info, value } = getAttributeDataFromList(p, language);
+
+      if (!value) return null;
+
+      return {
+        description: info?.description?.[language],
+        type: info?.type,
+        name: language === 'en' ? info?.name : info?.nameFR,
+        number: value.toString(),
+        isPrivate: info?.isPrivate,
+      };
+    })
+    .filter(Boolean);
 };
 
 export const convertKHPResourceAttributes = (
