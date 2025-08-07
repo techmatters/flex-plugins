@@ -24,23 +24,11 @@
     "options": [
       {
         "value": "Unknown",
-        "label": ""
+        "label": "Unknown"
       },
       {
         "value": "Caregiver",
         "label": "Caregiver"
-      },
-      {
-        "value": "Friend",
-        "label": "Friend"
-      },
-      {
-        "value": "Grandparent",
-        "label": "Grandparent"
-      },
-      {
-        "value": "Neighbour",
-        "label": "Neighbour"
       },
       {
         "value": "Parent",
@@ -51,12 +39,32 @@
         "label": "Partner"
       },
       {
+        "value": "Peer",
+        "label": "Peer"
+      },
+      {
+        "value": "Family Member",
+        "label": "Family Member"
+      },
+      {
+        "value": "Guardian",
+        "label": "Guardian"
+      },
+      {
+        "value": "Institutional",
+        "label": "Institutional"
+      },
+      {
+        "value": "Other adult known to the child",
+        "label": "Other adult known to the child"
+      },
+      {
         "value": "Person in a position of responsibility",
-        "label": "Person in a position of responsibility"
+        "label": "Person in a position of responsibility (Please specify)"
       },
       {
         "value": "Sibling",
-        "label": "Sibling"
+        "label": "Sibling (s)"
       },
       {
         "value": "Stranger",
@@ -69,26 +77,43 @@
     ]
   },
   {
+    "name": "otherRelationship",
+    "label": "SpecifyOther",
+    "type": "input"
+  },
+  {
     "name": "streetAddress",
     "label": "Street Address",
     "type": "input"
   },
   {
-    "name": "province",
-    "label": "Province",
+    "name": "country",
+    "label": "Country",
     "type": "select",
     "options": [
       {
-        "value": "",
+        "value": "Unknown",
         "label": ""
       },
       {
-        "value": "Central",
-        "label": "Central"
+        "value": "France",
+        "label": "France"
       },
       {
-        "value": "Unknown",
-        "label": "Unknown"
+        "value": "Germany",
+        "label": "Germany"
+      },
+      {
+        "value": "Italy",
+        "label": "Italy"
+      },
+      {
+        "value": "Spain",
+        "label": "Spain"
+      },
+      {
+        "value": "Netherlands",
+        "label": ""
       }
     ],
     "required": {
@@ -97,44 +122,121 @@
     }
   },
   {
-    "name": "district",
-    "label": "District",
+    "name": "City",
+    "label": "City",
     "type": "dependent-select",
-    "dependsOn": "province",
-    "defaultOption": {
-      "value": "",
-      "label": ""
-    },
+    "dependsOn": "country",
+    "defaultOption": { "value": "Unknown", "label": "Unknown" },
     "options": {
-      "District1": [
-        {
-          "value": "Subdistrict1",
-          "label": "Subdistrict1"
-        },
-        {
-          "value": "Unknown",
-          "label": "Unknown"
-        }
+      "France": [
+        { "value": "Paris", "label": "Paris" },
+        { "value": "Marseille", "label": "Marseille" },
+        { "value": "Lyon", "label": "Lyon" },
+        { "value": "Toulouse", "label": "Toulouse" },
+        { "value": "Nice", "label": "Nice" },
+        { "value": "Nantes", "label": "Nantes" },
+        { "value": "Strasbourg", "label": "Strasbourg" },
+        { "value": "Montpellier", "label": "Montpellier" },
+        { "value": "Bordeaux", "label": "Bordeaux" },
+        { "value": "Lille", "label": "Lille" },
+        { "value": "Rennes", "label": "Rennes" },
+        { "value": "Reims", "label": "Reims" },
+        { "value": "Le Havre", "label": "Le Havre" },
+        { "value": "Cergy‑Pontoise", "label": "Cergy‑Pontoise" },
+        { "value": "Saint‑Étienne", "label": "Saint‑Étienne" },
+        { "value": "Unknown", "label": "Unknown" }
       ],
-      "District2": [
-        {
-          "value": "Subdistrict1",
-          "label": "Subdistrict1"
-        },
-        {
-          "value": "Unknown",
-          "label": "Unknown"
-        }
+      "Germany": [
+        { "value": "Berlin", "label": "Berlin" },
+        { "value": "Hamburg", "label": "Hamburg" },
+        { "value": "Munich", "label": "Munich" },
+        { "value": "Cologne", "label": "Cologne" },
+        { "value": "Frankfurt", "label": "Frankfurt" },
+        { "value": "Stuttgart", "label": "Stuttgart" },
+        { "value": "Düsseldorf", "label": "Düsseldorf" },
+        { "value": "Leipzig", "label": "Leipzig" },
+        { "value": "Dortmund", "label": "Dortmund" },
+        { "value": "Essen", "label": "Essen" },
+        { "value": "Bremen", "label": "Bremen" },
+        { "value": "Dresden", "label": "Dresden" },
+        { "value": "Hanover", "label": "Hanover" },
+        { "value": "Nuremberg", "label": "Nuremberg" },
+        { "value": "Duisburg", "label": "Duisburg" },
+        { "value": "Unknown", "label": "Unknown" }
+      ],
+      "Italy": [
+        { "value": "Rome", "label": "Rome" },
+        { "value": "Milan", "label": "Milan" },
+        { "value": "Naples", "label": "Naples" },
+        { "value": "Turin", "label": "Turin" },
+        { "value": "Palermo", "label": "Palermo" },
+        { "value": "Genoa", "label": "Genoa" },
+        { "value": "Bologna", "label": "Bologna" },
+        { "value": "Florence", "label": "Florence" },
+        { "value": "Bari", "label": "Bari" },
+        { "value": "Catania", "label": "Catania" },
+        { "value": "Venice", "label": "Venice" },
+        { "value": "Verona", "label": "Verona" },
+        { "value": "Messina", "label": "Messina" },
+        { "value": "Padua", "label": "Padua" },
+        { "value": "Trieste", "label": "Trieste" },
+        { "value": "Unknown", "label": "Unknown" }
+      ],
+      "Spain": [
+        { "value": "Madrid", "label": "Madrid" },
+        { "value": "Barcelona", "label": "Barcelona" },
+        { "value": "Valencia", "label": "Valencia" },
+        { "value": "Seville", "label": "Seville" },
+        { "value": "Zaragoza", "label": "Zaragoza" },
+        { "value": "Málaga", "label": "Málaga" },
+        { "value": "Murcia", "label": "Murcia" },
+        { "value": "Palma de Mallorca", "label": "Palma de Mallorca" },
+        { "value": "Las Palmas de Gran Canaria", "label": "Las Palmas de Gran Canaria" },
+        { "value": "Bilbao", "label": "Bilbao" },
+        { "value": "Alicante", "label": "Alicante" },
+        { "value": "Córdoba", "label": "Córdoba" },
+        { "value": "Valladolid", "label": "Valladolid" },
+        { "value": "Vigo", "label": "Vigo" },
+        { "value": "Gijón", "label": "Gijón" },
+        { "value": "Unknown", "label": "Unknown" }
+      ],
+      "Netherlands": [
+        { "value": "Amsterdam", "label": "Amsterdam" },
+        { "value": "Rotterdam", "label": "Rotterdam" },
+        { "value": "The Hague", "label": "The Hague" },
+        { "value": "Utrecht", "label": "Utrecht" },
+        { "value": "Eindhoven", "label": "Eindhoven" },
+        { "value": "Groningen", "label": "Groningen" },
+        { "value": "Tilburg", "label": "Tilburg" },
+        { "value": "Breda", "label": "Breda" },
+        { "value": "Enschede", "label": "Enschede" },
+        { "value": "Haarlem", "label": "Haarlem" },
+        { "value": "Leiden", "label": "Leiden" },
+        { "value": "Maastricht", "label": "Maastricht" },
+        { "value": "Apeldoorn", "label": "Apeldoorn" },
+        { "value": "Dordrecht", "label": "Dordrecht" },
+        { "value": "'s‑Hertogenbosch", "label": "'s‑Hertogenbosch" },
+        { "value": "Unknown", "label": "Unknown" }
       ]
-    },
+    }
+  },
+  {
+    "name": "phone1",
+    "label": "Phone #1",
+    "type": "input",
     "required": {
       "value": true,
       "message": "RequiredFieldError"
     }
   },
   {
-    "name": "phone1",
-    "label": "Phone #1",
+    "name": "postalCode",
+    "label": "Postal Code",
+    "type": "input"
+  },
+  {
+    "name": "email",
+    "label": "Email",
     "type": "input",
     "required": {
       "value": true,
@@ -148,21 +250,29 @@
     "options": [
       {
         "value": "Unknown",
-        "label": ""
+        "label": "Unknown"
       },
       {
         "value": "Boy",
-        "label": "Boy"
+        "label": "Boy/Man"
       },
       {
         "value": "Girl",
-        "label": "Girl"
+        "label": "Girl/Woman"
       },
       {
         "value": "Non-Binary",
-        "label": "Non-Binary"
+        "label": "Non-Binary/Transgender"
+      },
+      {
+        "value": "Other",
+        "label": "Other"
       }
-    ]
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
   },
   {
     "name": "age",
@@ -289,26 +399,57 @@
         "value": "Other",
         "label": "Other"
       }
-    ]
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
   },
   {
     "name": "language",
-    "label": "Language",
-    "type": "select",
+    "label": "Spoken Languages",
+    "type": "listbox-multiselect",
     "options": [
       {
         "value": "Unknown",
-        "label": ""
+        "label": "Unknown"
       },
       {
-        "value": "language1",
-        "label": "language1"
+        "value": "French",
+        "label": "French"
       }
-    ]
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "nationality",
+    "label": "Nationality(ies)",
+    "type": "listbox-multiselect",
+    "options": [
+      {
+        "value": "Unknown",
+        "label": "Unknown"
+      },
+      {
+        "value": "Spanish",
+        "label": "Spanish"
+      }
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
   },
   {
     "name": "ethnicity",
     "label": "Ethnicity",
-    "type": "input"
+    "type": "input",
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
   }
 ]

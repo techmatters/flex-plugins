@@ -1,17 +1,12 @@
 [
   {
     "name": "callSummary",
-    "label": "Contact Summary",
+    "label": "Contact Summary & Description",
     "type": "textarea",
     "required": {
       "value": true,
       "message": "RequiredFieldError"
     }
-  },
-  {
-    "name": "repeatCaller",
-    "label": "Repeat Caller?",
-    "type": "mixed-checkbox"
   },
   {
     "name": "actionTaken",
@@ -23,14 +18,47 @@
         "label": " "
       },
       {
-        "value": "Action taken",
-        "label": "Action taken"
+        "value": "recommendations",
+        "label": "Recommendations"
+      },
+      {
+        "value": "referralsToSchoolCounsellors",
+        "label": "Referrals to school counsellors"
+      },
+      {
+        "value": "referralsToChildProtectionAgencies",
+        "label": "Referrals to child protection agencies"
+      },
+      {
+        "value": "referralsToLawEnforcementAgencies ",
+        "label": "Referrals to law enforcement agencies "
+      },
+      {
+        "value": "referralsToGeneralHealthcareServices",
+        "label": "Referrals to general healthcare services"
+      },
+      {
+        "value": "referralsToOtherOrganisations",
+        "label": "Referrals to other organisations"
+      },
+      {
+        "value": "directInterventionsByTheChildHelpline",
+        "label": "Direct interventions by the child helpline"
       },
       {
         "value": "Other",
         "label": "Other"
       }
-    ]
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "keepConfidential",
+    "label": "Keep confidential",
+    "type": "checkbox"
   },
   {
     "name": "okForCaseWorkerToCall",
@@ -40,6 +68,20 @@
   {
     "name": "didYouDiscussRightsWithTheChild",
     "label": "Did you discuss rights with the child?",
-    "type": "mixed-checkbox"
+    "type": "select",
+    "options": [
+      {
+        "value": "Yes",
+        "label": "Yes"
+      },
+      {
+        "value": "No",
+        "label": "No"
+      },
+      {
+        "value": "NotApplicable",
+        "label": "Not Applicable"
+      }
+    ]
   }
 ]
