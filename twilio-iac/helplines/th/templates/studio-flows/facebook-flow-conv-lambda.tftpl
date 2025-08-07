@@ -1,6 +1,5 @@
 ${
-  jsonencode( 
-    {
+  jsonencode({
   "description": "Facebook Messaging Flow",
   "states": [
     {
@@ -73,9 +72,9 @@ ${
         },
         "service": "{{trigger.conversation.InstanceSid}}",
         "channel": "{{trigger.conversation.ChannelSid}}",
-        "from": flow_vars["widget_from"],
+        "from": "${flow_vars.widget_from}",
         "to": "{{contact.channel.address}}",
-        "body":  flow_vars["chat_blocked_message"]
+        "body": "${flow_vars.chat_blocked_message}"
       }
     },
     {
@@ -128,9 +127,9 @@ ${
           "x": 360,
           "y": 900
         },
-        "workflow": workflow_sids["master"],
-        "channel": task_channel_sids["chat"],
-        "attributes": channel_attributes["default"],
+        "workflow": "${workflow_sids.master}",
+        "channel": "${task_channel_sids.chat}",
+        "attributes": "${channel_attributes.default}",
         "timeout": "432000"
       }
     },
@@ -142,7 +141,7 @@ ${
           "event": "noMatch"
         },
         {
-          "next": "chat_hours",
+          "next": "chatHours",
           "event": "match",
           "conditions": [
             {
@@ -202,32 +201,27 @@ ${
       }
     },
     {
-      "name": "chat_hours",
-      "type": "run-function",
+      "name": "chatHours",
+      "type": "make-http-request",
       "transitions": [
         {
           "next": "split_chat_hours",
           "event": "success"
         },
         {
-          "event": "fail"
+          "event": "failed"
         }
       ],
       "properties": {
-        "service_sid": flow_vars["service_sid"],
-        "environment_sid": flow_vars["environment_sid"],
         "offset": {
           "x": -110,
           "y": 160
         },
-        "function_sid": flow_vars["operating_hours_function_sid"],
-        "parameters": [
-          {
-            "value": "facebook",
-            "key": "channel"
-          }
-        ],
-        "url": "${serverless_url}/operatingHours"
+        "method": "POST",
+        "content_type": "application/json;charset=utf-8",
+        "add_twilio_auth": false,
+        "body": "{\"channel\": \"facebook\"}",
+        "url": "${get_profile_flags_for_identifier_base_url}/operatingHours"
       }
     },
     {
@@ -244,7 +238,7 @@ ${
             {
               "friendly_name": "If value contains open",
               "arguments": [
-                "{{widgets.chat_hours.body}}"
+                "{{widgets.chatHours.body}}"
               ],
               "type": "contains",
               "value": "open"
@@ -258,7 +252,7 @@ ${
             {
               "friendly_name": "If value contains holiday",
               "arguments": [
-                "{{widgets.chat_hours.body}}"
+                "{{widgets.chatHours.body}}"
               ],
               "type": "contains",
               "value": "holiday"
@@ -272,7 +266,7 @@ ${
             {
               "friendly_name": "If value contains closed",
               "arguments": [
-                "{{widgets.chat_hours.body}}"
+                "{{widgets.chatHours.body}}"
               ],
               "type": "contains",
               "value": "closed"
@@ -281,7 +275,7 @@ ${
         }
       ],
       "properties": {
-        "input": "{{widgets.chat_hours.body}}",
+        "input": "{{widgets.chatHours.body}}",
         "offset": {
           "x": -80,
           "y": 410
@@ -317,8 +311,5 @@ ${
   "flags": {
     "allow_concurrent_calls": true
   }
-}
-
-
-  )
+})
 }

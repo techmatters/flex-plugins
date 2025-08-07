@@ -205,7 +205,7 @@ ${
         "method": "POST",
         "content_type": "application/json;charset=utf-8",
         "add_twilio_auth": false,
-        "body": "{\"trigger\" : {{trigger | to_json}}}",
+        "body": "{\"trigger\" : {{trigger | to_json}},\"channelType\": \"voice\"}",
         "url": "${get_profile_flags_for_identifier_base_url}/getProfileFlagsForIdentifier"
       }
     },
