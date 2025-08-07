@@ -1432,7 +1432,21 @@
   {
     "name": "consentForResearchevaluation",
     "label": "Consent for Research/Evaluation",
-    "type": "checkbox"
+    "type": "select",
+    "options": [
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "Yes",
+        "label": "Yes"
+      },
+      {
+        "value": "No",
+        "label": "No"
+      }
+    ]
   },
   {
     "name": "dataProcessingAndStorage",
@@ -1442,7 +1456,21 @@
   {
     "name": "termsAndConditions",
     "label": "Agreed to Privacy Policy",
-    "type": "checkbox"
+    "type": "select",
+    "options": [
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "Yes",
+        "label": "Yes"
+      },
+      {
+        "value": "No",
+        "label": "No"
+      }
+    ]
   },
   {
     "name": "ip",

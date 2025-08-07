@@ -167,7 +167,7 @@ const preEngagementConfig: PreEngagementFormDefinition = {
       ],
     },
     {
-      type: 'checkbox',
+      type: 'select',
       name: 'termsAndConditions',
       label:
         'I have read terms of use and the <a href="https://www.themix.org.uk/about-us/privacy-centre/privacy-policy/">privacy policy</a> and agree to them.',
@@ -175,6 +175,21 @@ const preEngagementConfig: PreEngagementFormDefinition = {
         value: true,
         message: "Sorry, if you don't accept our terms and privacy policy we can't provide counselling to you.",
       },
+      defaultValue: '',
+      options: [
+        {
+          value: "",
+          label: ""
+        },
+        {
+          value: 'Yes',
+          label: 'Yes',
+        },
+        {
+          value: 'No',
+          label: 'No',
+        },
+      ],
     },
     {
       type: 'checkbox',
@@ -187,10 +202,25 @@ const preEngagementConfig: PreEngagementFormDefinition = {
       },
     },
     {
-      type: 'checkbox',
-      name: 'consentForResearchevaluation',
+      type: 'select',
+      name: 'consentForResearhevaluation',
       label:
-        'I consent to being contacted for research or evaluation purposes.'
+        'I consent to being contacted for research or evaluation purposes.',
+      defaultValue: '',
+      options: [
+        {
+          value: "",
+          label: ""
+        },
+        {
+          value: 'Yes',
+          label: 'Yes',
+        },
+        {
+          value: 'No',
+          label: 'No',
+        },
+      ],
     },
   ],
 };
