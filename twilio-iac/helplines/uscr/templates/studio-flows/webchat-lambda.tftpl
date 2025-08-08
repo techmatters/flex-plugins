@@ -1,7 +1,7 @@
 ${
   jsonencode(
     {
-  "description": "Webchat Studio Flow",
+  "description": "${flow_description}"
   "states": [
     {
       "name": "Trigger",
@@ -52,8 +52,8 @@ ${
         "method": "POST",
         "content_type": "application/json;charset=utf-8",
         "add_twilio_auth": false,
-        "body": "{ \"trigger\": {{trigger | to_json}}}",
-        "url": "https://serverless-1641-production.twil.io/getProfileFlagsForIdentifier"
+        "body": "{ \"trigger\": {{trigger | to_json}}, \"channelType\": \"{% if trigger.conversation.ChannelAttributes.channel_type %}{{trigger.conversation.ChannelAttributes.channel_type}}{% else %}{{trigger.conversation.Source | downcase}}{% endif %}\"}",
+        "url": "${get_profile_flags_for_identifier_base_url}/getProfileFlagsForIdentifier"
       }
     },
     {
@@ -74,9 +74,9 @@ ${
         },
         "service": "{{trigger.message.InstanceSid}}",
         "channel": "{{trigger.message.ChannelSid}}",
-        "from": "LA CIRCLE",
+        "from": "${flow_vars.widget_from}",
         "to": "{{contact.channel.address}}",
-        "body": "Sorry, you're not able to contact LA CIRCLE from this device or account"
+        "body": "${flow_vars.chat_blocked_message}"
       }
     },
     {
@@ -131,8 +131,8 @@ ${
           "x": 80,
           "y": 250
         },
-        "workflow": "WW748f72aae92e6883479b69fd7b98e385",
-        "channel": "TCa412b91e90abec0453d4482cd3d80415",
+        "workflow": "${workflow_sids.master}",
+        "channel": "${task_channel_sids.chat}",
         "attributes": "{\n  \"e2eTestMode\": \"{{trigger.message.ChannelAttributes.pre_engagement_data.e2eTestMode}}\",\n  \"ip\": \"{{trigger.message.ChannelAttributes.pre_engagement_data.ip}}\",\n  \"firstName\": \"{{trigger.message.ChannelAttributes.from}}\",\n  \"channelType\": \"{{trigger.message.ChannelAttributes.channel_type}}\",\n  \"channelSid\": \"{{trigger.message.ChannelSid}}\",\n  \"helpline\": \"{{trigger.message.ChannelAttributes.pre_engagement_data.helpline}}\",\n  \"language\":\"en-US\",\n  \"ignoreAgent\": \"\",\n  \"transferTargetType\": \"\",\n  \"preEngagementData\": {{trigger.message.ChannelAttributes.pre_engagement_data | to_json}},\n  \"memory\": {{trigger.message.ChannelAttributes.memory | to_json}}\n}\n"
       }
     },
@@ -155,8 +155,8 @@ ${
         "method": "POST",
         "content_type": "application/json;charset=utf-8",
         "add_twilio_auth": false,
-        "body": "{ \"text\": \"Issue detected [Failed to Enqueue] on USCR STG Flow SID: {{flow.flow_sid}} Execution SID: {{flow.sid}}  \" }",
-        "url": "https://hooks.slack.com/services/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"
+        "body": "{ \"text\": \"Issue detected [Failed to Enqueue] on ${short_helpline} ${short_environment} Flow SID: {{flow.flow_sid}} Execution SID: {{flow.sid}}  \" }",
+        "url": "${webhook_url_studio_errors}"
       }
     },
     {

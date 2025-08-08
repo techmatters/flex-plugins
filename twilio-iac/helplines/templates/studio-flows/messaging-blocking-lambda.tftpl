@@ -1,8 +1,7 @@
 ${
-  jsonencode(
+  jsonencode({
+  "states": [
     {
-      "states": [
-      {
       "name": "Trigger",
       "type": "trigger",
       "transitions": [
@@ -72,9 +71,9 @@ ${
         },
         "service": "{{trigger.message.InstanceSid}}",
         "channel": "{{trigger.message.ChannelSid}}",
-        "from": flow_vars["widget_from"],
+        "from": "${flow_vars.widget_from}",
         "to": "{{contact.channel.address}}",
-        "body":  flow_vars["chat_blocked_message"]
+        "body": "${flow_vars.chat_blocked_message}"
       }
     },
     {
@@ -108,60 +107,59 @@ ${
         }
       }
     },
-      {
-        "transitions": [
-          {
-            "event": "callComplete"
-          },
-          {
-            "next": "webhook_notify_failed_to_enqueue",
-            "event": "failedToEnqueue"
-          },
-          {
-            "event": "callFailure"
-          }
-        ],
-        "type": "send-to-flex",
-        "name": "attributes",
-        "properties": {
-          "attributes": channel_attributes["default"],
-          "workflow":  workflow_sids["master"],
-          "channel": task_channel_sids["chat"],
-          "offset": {
-            "y": 250,
-            "x": 80
-          }
-        }
-      },
     {
-        "name": "webhook_notify_failed_to_enqueue",
-        "type": "make-http-request",
-        "transitions": [
-          {
-            "event": "success"
-          },
-          {
-            "event": "failed"
-          }
-        ],
-        "properties": {
-          "offset": {
-            "x": 540,
-            "y": 1250
-          },
-          "method": "POST",
-          "content_type": "application/json;charset=utf-8",
-          "body": "{ \"text\": \"Issue detected [Failed to Enqueue] on ${short_helpline} ${short_environment} Flow SID: {{flow.flow_sid}} Execution SID: {{flow.sid}}  \" }",
-          "add_twilio_auth": false,
-          "url": webhook_url_studio_errors
+      "transitions": [
+        {
+          "event": "callComplete"
+        },
+        {
+          "next": "webhook_notify_failed_to_enqueue",
+          "event": "failedToEnqueue"
+        },
+        {
+          "event": "callFailure"
         }
-      } 
       ],
-      "initial_state": "Trigger",
-      "flags": {
-        "allow_concurrent_calls": true
-      },
-      "description": flow_description
+      "type": "send-to-flex",
+      "name": "attributes",
+      "properties": {
+        "attributes": "${channel_attributes.default}",
+        "workflow": "${workflow_sids.master}",
+        "channel": "${task_channel_sids.chat}",
+        "offset": {
+          "y": 250,
+          "x": 80
+        }
+      }
+    },
+    {
+      "name": "webhook_notify_failed_to_enqueue",
+      "type": "make-http-request",
+      "transitions": [
+        {
+          "event": "success"
+        },
+        {
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 540,
+          "y": 1250
+        },
+        "method": "POST",
+        "content_type": "application/json;charset=utf-8",
+        "body": "{ \"text\": \"Issue detected [Failed to Enqueue] on ${short_helpline} ${short_environment} Flow SID: {{flow.flow_sid}} Execution SID: {{flow.sid}}  \" }",
+        "add_twilio_auth": false,
+        "url": "${webhook_url_studio_errors}"
+      }
     }
-    )
+  ],
+  "initial_state": "Trigger",
+  "flags": {
+    "allow_concurrent_calls": true
+  },
+  "description": "${flow_description}"
+})
   }
