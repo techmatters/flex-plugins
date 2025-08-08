@@ -27,7 +27,6 @@ import { reduce as RoutingReducer } from './routing/reducer';
 import { reduce as CSAMReportReducer } from './csam-report/reducer';
 import { reduce as DualWriteReducer } from './dualWrite/reducer';
 import { reduce as ReferrableResourcesReducer } from './resources';
-import { reduce as ConversationsReducer } from './conversations';
 import { reduce as ConferencingReducer } from './conferencing';
 import { reduce as ProfileReducer } from './profile/reducer';
 import { reduce as SwitchboardReducer } from './switchboard/reducer';
@@ -39,7 +38,6 @@ import {
   conferencingBase,
   configurationBase,
   contactFormsBase,
-  conversationsBase,
   csamReportBase,
   dualWriteBase,
   namespace,
@@ -61,7 +59,6 @@ const reducers = {
   [csamReportBase]: CSAMReportReducer,
   [dualWriteBase]: DualWriteReducer,
   [referrableResourcesBase]: ReferrableResourcesReducer,
-  [conversationsBase]: ConversationsReducer,
   [conferencingBase]: ConferencingReducer,
   [caseMergingBannersBase]: CaseMergingBannersReducer,
   [profileBase]: ProfileReducer,

@@ -18,7 +18,6 @@ import React, { useState, useEffect } from 'react';
 import { WorkersDataTable, ColumnDefinition } from '@twilio/flex-ui';
 import Tooltip from '@material-ui/core/Tooltip';
 
-import { getAseloFeatureFlags } from '../../hrmConfig';
 import { sortStatusColumn } from './teamsViewSorting';
 import { FontOpenSans, TagMiddleDot } from '../../styles';
 import { StatusActivityName } from './styles';
@@ -26,8 +25,6 @@ import { StatusActivityName } from './styles';
 const MAX_STATUS_LENGTH = 12;
 
 export const setUpStatusColumn = () => {
-  if (!getAseloFeatureFlags().enable_teams_view_enhancements2) return;
-
   WorkersDataTable.Content.add(
     <ColumnDefinition
       key="status"
@@ -49,10 +46,10 @@ const StatusCell = ({ item }) => {
     const isUnderOneHour = time.includes(':') || time.endsWith('s');
     const intervalTimeout = isUnderOneHour ? 1000 : 60000; // 1 second or 1 minute
 
-    // initial render at 0 seconds
+    // initial render at activityDuration
     setTime(item?.worker?.activityDuration);
 
-    // update when time or activity changes
+    // update periodically
     const interval = setInterval(() => {
       setTime(item?.worker?.activityDuration);
     }, intervalTimeout);
