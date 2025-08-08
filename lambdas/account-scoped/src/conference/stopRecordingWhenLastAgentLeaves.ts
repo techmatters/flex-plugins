@@ -62,13 +62,27 @@ const handler: ConferenceStatusEventHandler = async (event, accountSid, client) 
       .recordings.list();
     await Promise.all(
       conferenceRecordings.map(async recording => {
-        console.debug(
-          `Pausing recording ${recording.sid} for call ${recording.callSid} on conference ${conferenceSid}`,
-          recording,
-        );
-        return recording.update({
-          status: 'paused', // 'stopped' not supported for conferences
-        });
+        try {
+          if (recording.status === 'in-progress') {
+            console.debug(
+              `Pausing recording ${recording.sid} for call ${recording.callSid} on conference ${conferenceSid}`,
+              recording,
+            );
+            return await recording.update({
+              status: 'paused', // 'stopped' not supported for conferences
+            });
+          } else {
+            console.debug(
+              `Recording ${recording.sid} for call ${recording.callSid} on conference ${conferenceSid} in status '${recording.status}' so not attempting to pause`,
+              recording,
+            );
+          }
+        } catch (error) {
+          console.error(
+            `Error pausing recording ${recording.sid} for call ${recording.callSid} on conference ${conferenceSid}`,
+            error,
+          );
+        }
       }),
     );
     console.info(
