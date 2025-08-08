@@ -33,7 +33,7 @@ const useSwitchboardState = (): SwitchboardState => {
  * Hook to subscribe to the switchboard state from the Twilio Sync service and update the Redux store
  * @returns Cleanup function to unsubscribe from updates
  */
-const useSubscribeSwitchboardNotify = (): void => {
+const useSubscribeSwitchboardNotify = () => {
   const dispatch = useDispatch();
 
   const handleError = useCallback(
@@ -46,7 +46,7 @@ const useSubscribeSwitchboardNotify = (): void => {
     [dispatch],
   );
 
-  const onUpdate = useCallback(async () => {
+  const refreshSwitchboardState = useCallback(async () => {
     dispatch(setSwitchboardLoading(true));
     const switchboardStateResult = await getSwitchboardState();
 
@@ -67,10 +67,11 @@ const useSubscribeSwitchboardNotify = (): void => {
     const switchboardSubscribe = async () => {
       try {
         dispatch(setSwitchboardLoading(true));
-
-        onUpdate();
+        // initial state load
+        refreshSwitchboardState();
+        // subscribe to live updates
         const subscribeResult = await subscribeSwitchboardNotify({
-          onUpdate,
+          onUpdate: refreshSwitchboardState,
         });
 
         if (isErr(subscribeResult)) {
@@ -91,7 +92,9 @@ const useSubscribeSwitchboardNotify = (): void => {
         unsubscribe();
       }
     };
-  }, [dispatch, handleError, onUpdate]);
+  }, [dispatch, handleError, refreshSwitchboardState]);
+
+  return { refreshSwitchboardState };
 };
 
 /**
@@ -101,7 +104,7 @@ const useSubscribeSwitchboardNotify = (): void => {
 export const useSwitchboard = () => {
   const dispatch = useDispatch();
   const state = useSwitchboardState();
-  useSubscribeSwitchboardNotify();
+  const { refreshSwitchboardState } = useSubscribeSwitchboardNotify();
 
   const toggleSwitchboard = useCallback(
     async ({
@@ -119,18 +122,7 @@ export const useSwitchboard = () => {
 
         const response = await toggleSwitchboardingForQueue({ queueSid, supervisorWorkerSid, operation });
 
-        if (response && typeof response === 'object') {
-          const newState = {
-            isSwitchboardingActive: response.isSwitchboardingActive,
-            queueSid: response.queueSid,
-            queueName: response.queueName,
-            startTime: response.startTime,
-            supervisorWorkerSid: response.supervisorWorkerSid,
-          };
-
-          dispatch(updateSwitchboardState(newState));
-        }
-
+        refreshSwitchboardState();
         dispatch(setSwitchboardLoading(false));
       } catch (error) {
         const errorMessage = 'Failed to activate switchboarding. Please try again or contact support.';
@@ -139,7 +131,7 @@ export const useSwitchboard = () => {
         throw error;
       }
     },
-    [dispatch],
+    [dispatch, refreshSwitchboardState],
   );
 
   return { state, toggleSwitchboard };
