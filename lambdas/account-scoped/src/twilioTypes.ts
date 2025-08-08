@@ -25,6 +25,9 @@ export type WorkflowSID = `WW${string}`;
 export type ConversationSID = `CH${string}`;
 export type ChatChannelSID = ConversationSID;
 
+export type CallSid = `CA${string}`;
+export type ConferenceSid = `CF${string}`;
+
 export const isAccountSID = (value: string): value is AccountSID =>
   // This regex could be stricter if we only wanted to catch 'real' account SIDs, but our test account sids have non hexadecimal characters
   /^AC[0-9a-zA-Z_]+$/.test(value);

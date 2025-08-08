@@ -19,7 +19,7 @@ import { getSyncServiceSid, getTwilioClient } from '../configuration/twilioConfi
 import { newMissingParameterResult } from '../httpErrors';
 import { newOk } from '../Result';
 
-export const statusCallbackHandler: AccountScopedHandler = async (
+export const participantStatusCallbackHandler: AccountScopedHandler = async (
   { body },
   accountSid,
 ) => {
