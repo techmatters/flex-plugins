@@ -422,6 +422,12 @@ export const handleToggleSwitchboardQueue: AccountScopedHandler = async (
         supervisorWorkerSid,
       });
       if (isErr(enableResult)) {
+        if (enableResult.error.message?.includes('Unique name already exists')) {
+          return newErr({
+            message: enableResult.message,
+            error: { statusCode: 400, cause: enableResult.error },
+          });
+        }
         return newErr({
           message: enableResult.message,
           error: { statusCode: 500, cause: enableResult.error },
