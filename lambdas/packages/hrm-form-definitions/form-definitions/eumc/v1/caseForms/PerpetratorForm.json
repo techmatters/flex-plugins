@@ -525,7 +525,7 @@
   {
     "name":"location",
     "label":"Location",
-    "type":"multiselect-listbox",
+    "type":"listbox-multiselect",
     "options":[
       {
         "value": "unknown",
@@ -552,7 +552,7 @@
   {
     "name":"ifOnline",
     "label":"If online, where:",
-    "type":"multiselect-listbox",
+    "type":"listbox-multiselect",
     "options":[
       {
         "value": "unknown",
@@ -1601,7 +1601,7 @@
   {
     "name":"nationality",
     "label":"Nationality)ies",
-    "type":"multiselect-listbox",
+    "type":"listbox-multiselect",
     "options":[
       {
         "value":"afghan",
@@ -2386,7 +2386,7 @@
   {
     "name":"language",
     "label":"Language",
-    "type":"multiselect-listbox",
+    "type":"listbox-multiselect",
     "options":[
       {
         "value":"Unknown",
@@ -2833,6 +2833,6 @@
   {
     "name":"reason",
     "label":"Reason",
-    "type":"input"
+    "type":"textarea"
   }
 ]

@@ -428,7 +428,7 @@
   {
     "name": "nationality",
     "label": "Nationality)ies",
-    "type": "multiselect-listbox",
+    "type": "listbox-multiselect",
     "options": [
       { "value": "afghan", "label": "Afghan" },
       { "value": "albanian", "label": "Albanian" },
