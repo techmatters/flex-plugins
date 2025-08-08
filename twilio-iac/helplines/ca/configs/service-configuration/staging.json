@@ -1,7 +1,7 @@
 {
   "attributes": {
     "feature_flags": {
-      "enable_switchboarding_move_tasks": true
+      "enable_switchboarding_move_tasks": true,
       "enable_resouorces_updates": true
     },
     "form_definitions_base_url": "https://assets-staging.tl.techmatters.org/form-definitions/",
