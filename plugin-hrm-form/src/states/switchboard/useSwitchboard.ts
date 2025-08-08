@@ -121,14 +121,12 @@ export const useSwitchboard = () => {
         dispatch(setSwitchboardError(null));
 
         const response = await toggleSwitchboardingForQueue({ queueSid, supervisorWorkerSid, operation });
-
-        refreshSwitchboardState();
-        dispatch(setSwitchboardLoading(false));
       } catch (error) {
         const errorMessage = 'Failed to activate switchboarding. Please try again or contact support.';
         dispatch(setSwitchboardError(errorMessage));
-        dispatch(setSwitchboardLoading(false));
-        throw error;
+        // throw error;
+      } finally {
+        refreshSwitchboardState();
       }
     },
     [dispatch, refreshSwitchboardState],
