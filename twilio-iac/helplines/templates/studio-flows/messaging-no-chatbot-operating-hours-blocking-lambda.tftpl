@@ -7,10 +7,10 @@ ${
       "type": "trigger",
       "transitions": [
         {
+          "next": "getProfileFlagsForIdentifier",
           "event": "incomingMessage"
         },
         {
-          "next": "country_check",
           "event": "incomingCall"
         },
         {
@@ -31,52 +31,6 @@ ${
       }
     },
     {
-      "name": "SendCallToAgent",
-      "type": "send-to-flex",
-      "transitions": [
-        {
-          "event": "callComplete"
-        },
-        {
-          "next": "webhook_notify_error",
-          "event": "failedToEnqueue"
-        },
-        {
-          "next": "webhook_notify_error",
-          "event": "callFailure"
-        }
-      ],
-      "properties": {
-        "waitUrl": "${channel_flow_vars.busy_message_url}",
-        "offset": {
-          "x": 460,
-          "y": 1670
-        },
-        "workflow": "${workflow_sids.master}",
-        "channel": "${task_channel_sids.voice}",
-        "attributes": "${channel_attributes.default}",
-        "waitUrlMethod": "GET"
-      }
-    },
-    {
-      "name": "say_welcome_message",
-      "type": "say-play",
-      "transitions": [
-        {
-          "next": "SendCallToAgent",
-          "event": "audioComplete"
-        }
-      ],
-      "properties": {
-        "offset": {
-          "x": 380,
-          "y": 1390
-        },
-        "loop": 1,
-        "play": "${channel_flow_vars.welcome_message_url}"
-      }
-    },
-    {
       "name": "checkOperatingHours",
       "type": "make-http-request",
       "transitions": [
@@ -91,13 +45,13 @@ ${
       ],
       "properties": {
         "offset": {
-          "x": 70,
-          "y": 750
+          "x": 0,
+          "y": 600
         },
         "method": "POST",
         "content_type": "application/json;charset=utf-8",
         "add_twilio_auth": false,
-        "body": "{\"channel\": \"voice\", \"includeMessageTextInResponse\": \"true\", \"language\": \"${task_language}\"}",
+        "body": "{\"channel\": \"webchat\", \"includeMessageTextInResponse\": \"true\", \"language\": \"${task_language}\"}",
         "url": "${get_profile_flags_for_identifier_base_url}/operatingHours"
       }
     },
@@ -110,7 +64,7 @@ ${
           "event": "noMatch"
         },
         {
-          "next": "say_welcome_message",
+          "next": "send_welcome_message",
           "event": "match",
           "conditions": [
             {
@@ -141,8 +95,8 @@ ${
       "properties": {
         "input": "{{widgets.checkOperatingHours.parsed.status}}",
         "offset": {
-          "x": 190,
-          "y": 1040
+          "x": 210,
+          "y": 860
         }
       }
     },
@@ -159,8 +113,8 @@ ${
       ],
       "properties": {
         "offset": {
-          "x": -30,
-          "y": 1940
+          "x": 80,
+          "y": 1410
         },
         "method": "POST",
         "content_type": "application/json;charset=utf-8",
@@ -169,20 +123,76 @@ ${
       }
     },
     {
-      "name": "send_closed",
-      "type": "say-play",
+      "name": "send_welcome_message",
+      "type": "send-message",
       "transitions": [
         {
-          "event": "audioComplete"
+          "next": "attributes",
+          "event": "sent"
+        },
+        {
+          "next": "webhook_notify_error",
+          "event": "failed"
         }
       ],
       "properties": {
-        "play": "${channel_flow_vars.closed_message_url}",
         "offset": {
-          "x": 700,
-          "y": 1410
+          "x": 420,
+          "y": 1110
         },
-        "loop": 2
+        "service": "{{trigger.message.InstanceSid}}",
+        "channel": "{{trigger.message.ChannelSid}}",
+        "from": "${channel_flow_vars.widget_from}",
+        "to": "{{contact.channel.address}}",
+        "body": "${channel_flow_vars.chat_greeting_message}"
+      }
+    },
+    {
+      "name": "send_closed",
+      "type": "send-message",
+      "transitions": [
+        {
+          "event": "sent"
+        },
+        {
+          "next": "webhook_notify_error",
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 990,
+          "y": 1150
+        },
+        "service": "{{trigger.message.InstanceSid}}",
+        "channel": "{{trigger.message.ChannelSid}}",
+        "from": "${channel_flow_vars.widget_from}",
+        "to": "{{contact.channel.address}}",
+        "body": "{{widgets.checkOperatingHours.parsed.message}}"
+      }
+    },
+    {
+      "name": "attributes",
+      "type": "send-to-flex",
+      "transitions": [
+        {
+          "event": "callComplete"
+        },
+        {
+          "event": "failedToEnqueue"
+        },
+        {
+          "event": "callFailure"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 580,
+          "y": 1400
+        },
+        "workflow": "${workflow_sids.master}",
+        "channel": "${task_channel_sids.chat}",
+        "attributes": "${channel_attributes.default}"
       }
     },
     {
@@ -194,19 +204,42 @@ ${
           "event": "success"
         },
         {
+          "next": "checkOperatingHours",
           "event": "failed"
         }
       ],
       "properties": {
         "offset": {
-          "x": 150,
-          "y": 220
+          "x": -300,
+          "y": 150
         },
         "method": "POST",
         "content_type": "application/json;charset=utf-8",
-        "add_twilio_auth": false,
-        "body": "{\"trigger\" : {{trigger | to_json}}}",
+        "body": "{ \"trigger\": {{trigger | to_json}}}",
         "url": "${get_profile_flags_for_identifier_base_url}/getProfileFlagsForIdentifier"
+      }
+    },
+    {
+      "name": "send_blocked_message",
+      "type": "send-message",
+      "transitions": [
+        {
+          "event": "sent"
+        },
+        {
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": -420,
+          "y": 770
+        },
+        "service": "{{trigger.message.InstanceSid}}",
+        "channel": "{{trigger.message.ChannelSid}}",
+        "from": "${channel_flow_vars.widget_from}",
+        "to": "{{contact.channel.address}}",
+        "body": "${channel_flow_vars.chat_blocked_message}"
       }
     },
     {
@@ -218,13 +251,13 @@ ${
           "event": "noMatch"
         },
         {
-          "next": "blocked",
+          "next": "send_blocked_message",
           "event": "match",
           "conditions": [
             {
               "friendly_name": "If value contains blocked",
               "arguments": [
-                "{{widgets.getProfileFlagsForIdentifier.parsed}}"
+                "{{widgets.getProfileFlagsForIdentifier.parsed.flags}}"
               ],
               "type": "contains",
               "value": "blocked"
@@ -233,60 +266,10 @@ ${
         }
       ],
       "properties": {
-        "input": "{{widgets.getProfileFlagsForIdentifier.parsed}}",
+        "input": "{{widgets.getProfileFlagsForIdentifier.parsed.flags}}",
         "offset": {
-          "x": 170,
-          "y": 460
-        }
-      }
-    },
-    {
-      "name": "blocked",
-      "type": "say-play",
-      "transitions": [
-        {
-          "event": "audioComplete"
-        }
-      ],
-      "properties": {
-        "voice": "default",
-        "offset": {
-          "x": 590,
-          "y": 710
-        },
-        "loop": 1,
-        "play": "${channel_flow_vars.busy_message_url}",
-        "language": "${channel_flow_vars.voice_ivr_language}"
-      }
-    },
-    {
-      "name": "country_check",
-      "type": "split-based-on",
-      "transitions": [
-        {
-          "next": "getProfileFlagsForIdentifier",
-          "event": "noMatch"
-        },
-        {
-          "next": "blocked",
-          "event": "match",
-          "conditions": [
-            {
-              "friendly_name": "If value does_not_start_with +65",
-              "arguments": [
-                "{{trigger.call.From}}"
-              ],
-              "type": "does_not_start_with",
-              "value": "+65"
-            }
-          ]
-        }
-      ],
-      "properties": {
-        "input": "{{trigger.call.From}}",
-        "offset": {
-          "x": 500,
-          "y": 180
+          "x": -590,
+          "y": 470
         }
       }
     }
@@ -296,4 +279,4 @@ ${
     "allow_concurrent_calls": true
   }
 })
-}
+  }
