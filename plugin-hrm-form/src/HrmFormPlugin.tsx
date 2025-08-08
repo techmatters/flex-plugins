@@ -148,6 +148,7 @@ const setUpActions = (
 
   Flex.Actions.addListener('afterAcceptTask', ActionFunctions.afterAcceptTask(featureFlags, setupObject, getMessage));
 
+
   setUpTransferActions(setupObject);
 
   Flex.Actions.replaceAction('HangupCall', ActionFunctions.hangupCall);
