@@ -20,7 +20,8 @@
             "enable_region_resource_search": true,
             "enable_switchboarding": true,
             "enable_upload_documents": false,
-            "enable_voice_recordings": true
+            "enable_voice_recordings": true,
+            "enable_resouorces_updates": true
         },
         "helplineLanguage": "en-CA",
         "permissionConfig": "ca"
