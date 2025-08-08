@@ -28,7 +28,7 @@ const getMissingDefinitionVersions = async (versions: string[]) => {
 };
 
 export const getContactsMissingVersions = (contacts: Contact[]) =>
-  getMissingDefinitionVersions(contacts.map(c => c.rawJson.definitionVersion));
+  getMissingDefinitionVersions(contacts.map(c => c.definitionVersion ?? c.rawJson.definitionVersion));
 
 export const getCasesMissingVersions = async (cases: Case[]) =>
-  getMissingDefinitionVersions(cases.map(c => c.info.definitionVersion));
+  getMissingDefinitionVersions(cases.map(c => c.definitionVersion ?? c.info.definitionVersion));

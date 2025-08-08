@@ -233,8 +233,11 @@ const AddEditCaseItem: React.FC<AddEditCaseItemProps> = ({
   const checkForEdits = (action: DismissAction) => {
     if (isEqual(workingCopy, savedForm)) {
       close(action);
-    } else setDialogState(action === DismissAction.CLOSE ? DialogState.OPEN_FOR_CLOSE : DialogState.OPEN_FOR_BACK);
+    } else {
+      setDialogState(action === DismissAction.CLOSE ? DialogState.OPEN_FOR_CLOSE : DialogState.OPEN_FOR_BACK);
+    }
   };
+
   return (
     <FormProvider {...methods}>
       <NavigableContainer

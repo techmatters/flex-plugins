@@ -70,7 +70,7 @@ const EditContactSection: React.FC<Props> = ({
   });
   const strings = getTemplateStrings();
 
-  const version = savedContact?.rawJson.definitionVersion;
+  const version = savedContact?.definitionVersion ?? savedContact?.rawJson.definitionVersion;
 
   const definitionVersion = definitionVersions[version];
 

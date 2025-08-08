@@ -23,7 +23,7 @@ import { ReferralLookupStatus } from '../states/contacts/resourceReferral';
 export const VALID_EMPTY_CONTACT: Contact = {
   accountSid: 'AC',
   id: '',
-  definitionVersion: 'demo-v1',
+  definitionVersion: 'as-v1',
   taskId: 'WT',
   serviceSid: '',
   channelSid: '',

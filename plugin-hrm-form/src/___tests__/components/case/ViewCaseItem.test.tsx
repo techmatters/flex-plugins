@@ -141,11 +141,11 @@ describe('Test ViewHousehold', () => {
 
   beforeAll(async () => {
     mockReset();
-    const formDefinitionsBaseUrl = buildBaseURL('v1');
+    const formDefinitionsBaseUrl = buildBaseURL('as-v1');
     await mockFetchImplementation(formDefinitionsBaseUrl);
 
     mockV1 = await loadDefinition(formDefinitionsBaseUrl);
-    mockGetDefinitionsResponse(getDefinitionVersions, 'v1', mockV1);
+    mockGetDefinitionsResponse(getDefinitionVersions, 'as-v1', mockV1);
     mockGetInitializedCan.mockReturnValue(() => true);
   });
 

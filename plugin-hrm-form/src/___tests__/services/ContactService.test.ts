@@ -71,11 +71,11 @@ beforeEach(() => {
 const offlineContactTaskSid = 'offline-contact-task-workerSid';
 
 beforeAll(async () => {
-  const formDefinitionsBaseUrl = buildBaseURL('v1');
+  const formDefinitionsBaseUrl = buildBaseURL('as-v1');
   await mockFetchImplementation(formDefinitionsBaseUrl);
 
   mockV1 = await loadDefinition(formDefinitionsBaseUrl);
-  mockGetDefinitionsResponse(getDefinitionVersions, 'v1', mockV1);
+  mockGetDefinitionsResponse(getDefinitionVersions, 'as-v1', mockV1);
 });
 
 const createContactState = ({ callType, childFirstName }, contactlessTaskInfo = undefined): ContactState => {

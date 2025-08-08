@@ -41,10 +41,10 @@ beforeEach(() => {
 
 describe('test action creators', () => {
   beforeAll(async () => {
-    const formDefinitionsBaseUrl = buildBaseURL('v1');
+    const formDefinitionsBaseUrl = buildBaseURL('as-v1');
     await mockFetchImplementation(formDefinitionsBaseUrl);
 
-    mockGetDefinitionsResponse(getDefinitionVersions, 'v1', await loadDefinition(formDefinitionsBaseUrl));
+    mockGetDefinitionsResponse(getDefinitionVersions, 'as-v1', await loadDefinition(formDefinitionsBaseUrl));
   });
 
   test('handleSearchFormChange', () => {
@@ -60,7 +60,7 @@ describe('test action creators', () => {
   test('searchContacts (success)', async () => {
     const contact = {
       id: 'fake contact',
-      rawJson: { definitionVersion: 'v1' },
+      rawJson: { definitionVersion: 'as-v1' },
       counselor: '',
       tags: [],
     };
@@ -99,7 +99,7 @@ describe('test action creators', () => {
       updatedAt: '2020-11-23T17:38:42.227Z',
       helpline: '',
       info: {
-        definitionVersion: 'v1',
+        definitionVersion: 'as-v1',
         households: [{ household: { name: { firstName: 'Maria', lastName: 'Silva' } } }],
       },
     };
@@ -132,7 +132,7 @@ describe('test action creators', () => {
       updatedAt: '2020-11-23T17:38:42.227Z',
       helpline: '',
       info: {
-        definitionVersion: 'v1',
+        definitionVersion: 'as-v1',
         households: [{ household: { name: { firstName: 'Maria', lastName: 'Silva' } } }],
       },
     };

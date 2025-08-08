@@ -58,7 +58,7 @@ const mockRerenderAgentDesktop = rerenderAgentDesktop as jest.MockedFunction<typ
 const mockCreateOfflineContact = createOfflineContact as jest.MockedFunction<typeof createOfflineContact>;
 
 beforeAll(async () => {
-  const formDefinitionsBaseUrl = buildBaseURL('v1');
+  const formDefinitionsBaseUrl = buildBaseURL('as-v1');
   await mockFetchImplementation(formDefinitionsBaseUrl);
 
   mockV1 = await loadDefinition(formDefinitionsBaseUrl);

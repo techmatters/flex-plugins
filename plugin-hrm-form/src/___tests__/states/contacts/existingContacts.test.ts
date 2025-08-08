@@ -51,7 +51,7 @@ const baseContact: Contact = {
   taskId: 'TASK_ID',
   rawJson: {
     ...VALID_EMPTY_CONTACT.rawJson,
-    definitionVersion: 'v1',
+    definitionVersion: 'as-v1',
     callType: 'Child calling about self',
     childInformation: { firstName: 'Lorna', lastName: 'Ballantyne' },
     callerInformation: { firstName: 'Charlie', lastName: 'Ballantyne' },

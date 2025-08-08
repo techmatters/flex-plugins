@@ -67,7 +67,7 @@ const CaseListTableRow: React.FC<Props> = ({ caseId, handleClickViewCase }) => {
   );
   const caseLabel = useSelector((state: RootState) => selectCaseLabel(state, caseId, CONTACTS_TIMELINE_ID));
 
-  const version = caseItem.info.definitionVersion;
+  const version = caseItem.definitionVersion ?? caseItem.info.definitionVersion;
 
   useEffect(() => {
     const fetchDefinitionVersions = async () => {
