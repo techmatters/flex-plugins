@@ -34,7 +34,7 @@ export const baseMockConfig = {
   identity: '',
   token: '',
   counselorName: '',
-  definitionVersion: 'v1',
+  definitionVersion: 'as-v1',
   permissionConfig: 'zm',
   strings: {
     'Error-CategoryRequired': 'Required #{{minSelections}} category minimum, #{{maxSelections}} categories maximum',

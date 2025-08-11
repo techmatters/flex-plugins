@@ -37,12 +37,14 @@ export const getCasePayload = (contact: Contact, creatingWorkerSid: string, defi
         status: 'open',
         twilioWorkerId: contactForm.contactlessTask.createdOnBehalfOf,
         info: { definitionVersion, offlineContactCreator: creatingWorkerSid },
+        definitionVersion,
       }
     : {
         helpline,
         status: 'open',
         twilioWorkerId: creatingWorkerSid,
         info: { definitionVersion },
+        definitionVersion,
       };
 };
 

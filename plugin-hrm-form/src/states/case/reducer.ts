@@ -86,7 +86,8 @@ const contactUpdatingReducer = (hrmState: HrmState, action: ContactUpdatingActio
     const { configuration, connectedCase } = hrmState;
     const { contact, contactCase } = action.payload;
     if (contactCase) {
-      const caseDefinitionVersion = configuration.definitionVersions[contactCase.info.definitionVersion];
+      const caseDefinitionVersion =
+        configuration.definitionVersions[contactCase.definitionVersion ?? contactCase.info.definitionVersion];
       const references = connectedCase.cases[contactCase.id]?.references ?? new Set<string>();
       references.add(`contact-${contact.id}`);
       return {
@@ -123,7 +124,8 @@ const loadCaseListIntoState = (
     return cases.reduce((acc, newCase) => {
       // TODO: strip the totalCount property in HRM
       const { totalCount, ...caseToAdd } = newCase as Case & { totalCount: number };
-      const caseDefinitionVersion = configurationState.definitionVersions[newCase.info.definitionVersion];
+      const caseDefinitionVersion =
+        configurationState.definitionVersions[newCase.definitionVersion ?? newCase.info.definitionVersion];
       return loadCaseIntoState({
         state: acc,
         caseId: newCase.id,

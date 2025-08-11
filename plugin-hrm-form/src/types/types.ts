@@ -67,6 +67,7 @@ export type CaseInfo = CaseOverview & {
 export type Case = {
   accountSid: AccountSID;
   id: string;
+  definitionVersion: string;
   label: string;
   status: string;
   helpline: string;
@@ -365,6 +366,7 @@ export type ProfileSection = {
 export type Profile = {
   id: number;
   name: string;
+  definitionVersion: string;
   createdAt?: string;
   updatedAt?: string;
   identifiers?: Identifier[];
