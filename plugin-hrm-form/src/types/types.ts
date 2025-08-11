@@ -226,9 +226,7 @@ export type ConfigFlags = {
 /* eslint-disable camelcase */
 export type FeatureFlags = {
   // Please keep this in alphabetical order!
-  backend_handled_chat_janitor: boolean; // [Temporary flag until all accounts are migrated] Enables handling the janitor from taskrouter event listeners
   enable_active_contact_header: boolean; // Enables Active Contact Header
-  enable_aselo_messaging_ui: boolean; // Enables Aselo Messaging UI iinstead of the default Twilio one - reduced functionality for low spec clients.
   enable_canned_responses: boolean; // Enables Canned Responses
   enable_client_profiles: boolean; // Enables Client Profiles
   enable_conferencing: boolean; // Enables Conferencing UI and replaces default Twilio components and behavior  
@@ -239,7 +237,6 @@ export type FeatureFlags = {
   enable_dual_write: boolean; // Enables Saving Contacts on External Backends
   enable_emoji_picker: boolean; // Enables Emoji Picker
   enable_external_transcripts: boolean; // Enables Viewing Transcripts Stored Outside of Twilio
-  enable_filter_cases: boolean; // Enables Filters at Case List
   enable_fullstory_monitoring: boolean; // Enables Full Story
   enable_generalized_search: boolean; // Enables Generalized Search
   enable_last_case_status_update_info: boolean; // Enables showing the time, user and changed status of the most recent case status update on the 'Edit Case Summary' page
@@ -253,7 +250,6 @@ export type FeatureFlags = {
   enable_save_insights: boolean; // Enables Saving Aditional Data on Insights
   enable_switchboarding: boolean; // Enables Switchboarding
   enable_switchboarding_move_tasks: boolean; // Enables Switchboarding moving tasks from original queue to switchboard ^ne
-  enable_teams_view_enhancements2: boolean; // Enables custom Teams View UI with labels
   enable_twilio_transcripts: boolean; // Enables Viewing Transcripts Stored at Twilio
   enable_voice_recordings: boolean; // Enables Loading Voice Recordings
   enable_llm_summary: boolean; // Enables generation of suggested contact summaries via an LLM
