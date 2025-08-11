@@ -63,6 +63,37 @@ locals {
       }
     }
 
+    activities = {
+      meal_break : {
+        friendly_name = "Meal Break"
+        available     = false
+      },
+      documentation : {
+        friendly_name = "Documentation"
+        available     = false
+      },
+      supervision : {
+        friendly_name = "Supervision"
+        available     = false
+      },
+      refused : {
+        friendly_name = "Refused"
+        available     = false
+      },
+      meeting : {
+        friendly_name = "Meeting"
+        available     = false
+      },
+      break : {
+        friendly_name = "Break"
+        available     = false
+      },
+      training : {
+        friendly_name = "Training"
+        available     = false
+      }
+    }
+
     lex_bot_languages = {
       en_USCH : []
     }
