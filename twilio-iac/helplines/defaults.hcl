@@ -47,7 +47,8 @@ locals {
     "reservation.timeout",
     "reservation.wrapup",
   ]
-
+ 
+  activities = {}
   task_queues = {
     master : {
       friendly_name   = "Master"
@@ -75,7 +76,7 @@ locals {
     //   templatefile  = "/app/twilio-iac/helplines/templates/workflows/survey.tftpl"
     // },
   }
-
+  
 
   /*
   CAREFUL: OUR CODE BASE ONLY SUPPORTS CONVERSATIONS FOR THE CHAT TASK CHANNEL. 
