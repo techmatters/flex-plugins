@@ -1,55 +1,319 @@
 [
   {
-    "name": "date",
-    "label": "Date",
-    "type": "date-input",
-    "required": {
-      "value": true,
-      "message": "RequiredFieldError"
+    "name":"date",
+    "label":"Date",
+    "type":"date-input",
+    "required":{
+      "value":true,
+      "message":"RequiredFieldError"
     }
   },
   {
-    "name": "referredTo",
-    "label": "Referred To",
-    "type": "select",
-    "options": [
+    "name":"referredTo",
+    "label":"Referred To",
+    "type":"select",
+    "options":[
       {
-        "value": "",
-        "label": ""
+        "value":"",
+        "label":""
       },
       {
-        "value": "Clinic",
-        "label": "Clinic"
+        "value":"ALO116",
+        "label":"ALO 116"
       },
       {
-        "value": "Hospital",
-        "label": "Hospital"
+        "value":"147RataufDraht",
+        "label":"147 Rat auf Draht"
       },
       {
-        "value": "Social Welfare",
-        "label": "Social Welfare"
+        "value":"ChildFocus",
+        "label":"Child Focus"
       },
       {
-        "value": "Police",
-        "label": "Police"
+        "value":"NagjaCentreFoundation",
+        "label":"Nagja Centre Foundation"
       },
       {
-        "value": "Religious leader",
-        "label": "Religious leader"
+        "value":"CNZDCentarzaNestalu",
+        "label":"CNZD - Centar za Nestalu"
       },
       {
-        "value": "Other",
-        "label": "Other"
+        "value":"SPAVOHopeforChildren",
+        "label":"SPAVO & Hope for Children"
+      },
+      {
+        "value":"Cestazkrize",
+        "label":"Cesta z krize, z.u"
+      },
+      {
+        "value":"BornsVilkar",
+        "label":"Borns Vilkar"
+      },
+      {
+        "value":"Droitdenfance",
+        "label":"Droit d'enfance"
+      },
+      {
+        "value":"Thesmileofthechild",
+        "label":"The smile of the child"
+      },
+      {
+        "value":"KékVonal",
+        "label":"Kék Vonal"
+      },
+      {
+        "value":"Irishsocietyforpreventionofcrueltytochildren",
+        "label":"Irish society for the prevention of cruelty to children "
+      },
+      {
+        "value":"SOSTelefonoAzzurro",
+        "label":"SOS Telefono Azzurro"
+      },
+      {
+        "value":"MissingPersonsFamilySupportCentre",
+        "label":"Missing Persons' Family Support Centre"
+      },
+      {
+        "value":"ITAKA",
+        "label":"ITAKA"
+      },
+      {
+        "value":"InstitutodeApoioCriança",
+        "label":"Instituto de Apoio à Criança"
+      },
+      {
+        "value":"ASTRA",
+        "label":"ASTRA"
+      },
+      {
+        "value":"Linkadetskejistoty",
+        "label":"Linka detskej istoty, n.o"
+      },
+      {
+        "value":"FundacionANAR",
+        "label":"Fundacion ANAR"
+      },
+      {
+        "value":"MissingChildrenSwizterland",
+        "label":"Missing Children Swizterland"
+      },
+      {
+        "value":"CentrumInternationaleKinderontvoering",
+        "label":"Centrum Internationale Kinderontvoering"
+      },
+      {
+        "value":"MissingPeopleUK",
+        "label":"Missing People UK"
+      },
+      {
+        "value":"NGOMagnolia",
+        "label":"NGO Magnolia"
+      },
+      {
+        "value":"Lasteabiee",
+        "label":"Lasteabi.ee"
+      },
+      {
+        "value":"Nödcentralsverket",
+        "label":"Nödcentralsverket"
+      },
+      {
+        "value":"VermisstePolicija",
+        "label":"Vermisste Policija"
+      },
+      {
+        "value":"LOfficeNationaldelEnfance",
+        "label":"L'Office National de l'Enfance"
+      },
+      {
+        "value":"TheMaltaPoliceForce",
+        "label":"The Malta Police Force"
+      },
+      {
+        "value":"AsociatiaTelefonulCopilului ",
+        "label":"Asociatia Telefonul Copilului "
+      },
+      {
+        "value":"Zavod116",
+        "label":"Zavod 116"
+      },
+      {
+        "value":" SOSAlarm",
+        "label":" SOS Alarm"
+      },
+      {
+        "value":"Other",
+        "label":"Other (please specify)"
       }
     ],
-    "required": {
-      "value": true,
-      "message": "RequiredFieldError"
+    "required":{
+      "value":true,
+      "message":"RequiredFieldError"
     }
   },
   {
-    "name": "comments",
-    "label": "Comments",
-    "type": "textarea"
+    "name":"otherorganisation",
+    "label":"Other Organisation:",
+    "type":"input"
+  },
+  {
+    "name":"name",
+    "label":"Name",
+    "type":"input",
+    "required":{
+      "value":true,
+      "message":"RequiredFieldError"
+    }
+  },
+  {
+    "name":"phone",
+    "label":"Phone Number",
+    "type":"input",
+    "required":{
+      "value":true,
+      "message":"RequiredFieldError"
+    }
+  },
+  {
+    "name":"email",
+    "label":"Email",
+    "type":"input",
+    "required":{
+      "value":true,
+      "message":"RequiredFieldError"
+    }
+  },
+  {
+    "name":"backupperson",
+    "label":"Back up Person",
+    "type":"input",
+    "required":{
+      "value":true,
+      "message":"RequiredFieldError"
+    }
+  },
+  {
+    "name":"ccEmail",
+    "label":"Email (to be in cc)",
+    "type":"input",
+    "required":{
+      "value":true,
+      "message":"RequiredFieldError"
+    }
+  },
+  {
+    "name":"Consultmissingchildrendatabase",
+    "label":"Consult missing children data base",
+    "type":"mixed-checkbox",
+    "required":{
+      "value":true,
+      "message":"RequiredFieldError"
+    }
+  },
+  {
+    "name":"Establishcontactwithsupportpersoncontacting",
+    "label":"Establish contact with/support a person in contacting",
+    "type":"select",
+    "options":[
+      {
+        "value":"Unknown",
+        "label":"Unknown"
+      },
+      {
+        "value":"Childprotectionauthorities",
+        "label":"Child protection authorities"
+      },
+      {
+        "value":"nationalpolice",
+        "label":"National Police"
+      },
+      {
+        "value":"SocialServices",
+        "label":"Social Services"
+      },
+      {
+        "value":"Central Authority",
+        "label":"Central Authority"
+      },
+      {
+        "value":"Parentfamilychildlivingincountry",
+        "label":"Parent/family of the child living in the country"
+      },
+      {
+        "value":"other",
+        "label":"Other relevant authority/organisation (please specify)"
+      }
+    ],
+    "required":{
+      "value":true,
+      "message":"RequiredFieldError"
+    }
+  },
+  {
+    "name":"otherorganisation",
+    "label":"Other:",
+    "type":"input"
+  },
+  {
+    "name":"Requestedsupportfromorganisation",
+    "label":"Requested support from organisation on  ",
+    "type":"select",
+    "options":[
+      {
+        "value":"Unknown",
+        "label":"Unknown"
+      },
+      {
+        "value":"Translationinterpretation",
+        "label":"Translation/interpretation"
+      },
+      {
+        "value":"Legalframeworknationstatecontextcase",
+        "label":"Legal framework in your nation state in the context of this case"
+      },
+      {
+        "value":"Identifyingresponsibleorganisationreferral",
+        "label":"Identifying responsible organisation for a referral"
+      },
+      {
+        "value":"Central Authority",
+        "label":"Central Authority"
+      },
+      {
+        "value":"Parentfamilychildlivingincountry",
+        "label":"Parent/family of the child living in the country"
+      },
+      {
+        "value":"other",
+        "label":"Other action (please specify)"
+      }
+    ],
+    "required":{
+      "value":true,
+      "message":"RequiredFieldError"
+    }
+  },
+  {
+    "name":"other",
+    "label":"Other:",
+    "type":"input"
+  },
+  {
+    "name":"Sharepublicityappeal",
+    "label":"Share a publicity appeal",
+    "type":"mixed-checkbox",
+    "required":{
+      "value":true,
+      "message":"RequiredFieldError"
+    }
+  },
+  {
+    "name":"consentlegalguardian",
+    "label":"You are submiting this information after consultation with and approval from a person with parental authority",
+    "type":"mixed-checkbox",
+    "required":{
+      "value":true,
+      "message":"RequiredFieldError"
+    }
   }
 ]

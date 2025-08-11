@@ -105,39 +105,26 @@ ${
     },
     {
       "name": "operatingHours",
-      "type": "run-function",
+      "type": "make-http-request",
       "transitions": [
         {
           "next": "split_status",
           "event": "success"
         },
         {
-          "event": "fail"
+          "event": "failed"
         }
       ],
       "properties": {
-        "service_sid": "${serverless_service_sid}",
-        "environment_sid": "${serverless_environment_sid}",
         "offset": {
           "x": 200,
           "y": 740
         },
-        "function_sid": "${flow_vars.operating_hours_function_sid}",
-        "parameters": [
-          {
-            "value": "webchat",
-            "key": "channel"
-          },
-          {
-            "value": "true",
-            "key": "includeMessageTextInResponse"
-          },
-          {
-            "value": "en-USCH",
-            "key": "language"
-          }
-        ],
-        "url": "${serverless_url}/operatingHours"
+        "method": "POST",
+        "content_type": "application/json;charset=utf-8",
+        "add_twilio_auth": false,
+        "body": "{\"channel\": \"webchat\", \"includeMessageTextInResponse\": \"true\", \"language\": \"en-USCH\"}",
+        "url": "${get_profile_flags_for_identifier_base_url}/operatingHours"
       }
     },
     {
@@ -192,7 +179,6 @@ ${
         {
           "event": "sent",
           "next": "send_courage_first_sms_redirect_message"
-
         },
         {
           "event": "failed",

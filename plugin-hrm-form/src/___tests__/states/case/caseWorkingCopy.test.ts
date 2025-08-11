@@ -75,13 +75,13 @@ beforeEach(() => {
 
 describe('Working copy reducers', () => {
   const caseStateEntry: RecursivePartial<CaseStateEntry> = {
-    connectedCase: { info: { definitionVersion: 'v1' } },
+    connectedCase: { info: { definitionVersion: 'as-v1' } },
   };
   const state: CaseState = { cases: { 1: caseStateEntry as CaseStateEntry } };
   let mockV1;
 
   beforeAll(async () => {
-    const formDefinitionsBaseUrl = buildBaseURL('v1');
+    const formDefinitionsBaseUrl = buildBaseURL('as-v1');
     await mockFetchImplementation(formDefinitionsBaseUrl);
 
     mockV1 = await loadDefinition(formDefinitionsBaseUrl);

@@ -34,7 +34,7 @@ locals {
         messaging_mode       = "conversations"
         channel_type         = "messenger"
         contact_identity     = "messenger:565233119996327"
-        templatefile         = "/app/twilio-iac/helplines/tz/templates/studio-flows/messaging-blocking-conv.tftpl"
+        templatefile         = "/app/twilio-iac/helplines/tz/templates/studio-flows/messaging-blocking-conv-lambda.tftpl"
         channel_flow_vars    = {}
         chatbot_unique_names = []
       },
@@ -42,7 +42,7 @@ locals {
         messaging_mode       = "conversations"
         channel_type         = "messenger"
         contact_identity     = "messenger:709371978917654"
-        templatefile         = "/app/twilio-iac/helplines/tz/templates/studio-flows/messaging-blocking-conv.tftpl"
+        templatefile         = "/app/twilio-iac/helplines/tz/templates/studio-flows/messaging-blocking-conv-lambda.tftpl"
         channel_flow_vars    = {}
         chatbot_unique_names = []
       },

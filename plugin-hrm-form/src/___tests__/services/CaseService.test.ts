@@ -68,13 +68,14 @@ describe('createCase()', () => {
     updatedAt: '2022-12-22T07:20:17.042Z',
     status: 'open',
     helpline: 'a helpline',
-    info: { definitionVersion: 'demo-v1' },
+    info: { definitionVersion: 'as-v1' },
     twilioWorkerId: 'creating worker',
     accountSid: 'an account',
     createdBy: 'creating worker',
     updatedBy: null,
     categories: {},
     firstContact: undefined,
+    definitionVersion: 'as-v1',
   };
 
   const baselineContact: Contact = {
@@ -85,7 +86,7 @@ describe('createCase()', () => {
   test('No createdOnBehalfOf set - assumes a twilio contact, calls "POST /cases with twilioWorkerId set to owning worker', async () => {
     mockFetchHrmAPi.mockResolvedValue(baselineResponse);
 
-    const response = await createCase(baselineContact, 'creating worker', 'demo-v1');
+    const response = await createCase(baselineContact, 'creating worker', 'as-v1');
 
     const expectedUrl = `/cases`;
     const expectedOptions = {
@@ -95,8 +96,9 @@ describe('createCase()', () => {
         status: 'open',
         helpline: 'a helpline',
         info: {
-          definitionVersion: 'demo-v1',
+          definitionVersion: 'as-v1',
         },
+        definitionVersion: 'as-v1',
       }),
     };
     expect(fetchHrmApi).toHaveBeenCalledWith(expectedUrl, expectedOptions);
@@ -106,7 +108,8 @@ describe('createCase()', () => {
   test('contactlessTask.createdOnBehalfOf set - assumes offline contact, calls "POST /cases with offlineContactCreator set to creating worker and twilioWorkerId set to owning worker', async () => {
     const mockedResponse = {
       ...baselineResponse,
-      info: { definitionVersion: 'demo-v1', offlineContactCreator: 'creating worker' },
+      info: { definitionVersion: 'as-v1', offlineContactCreator: 'creating worker' },
+      definitionVersion: 'as-v1',
       twilioWorkerId: 'WK-owning worker',
     };
 
@@ -123,7 +126,7 @@ describe('createCase()', () => {
 
     mockFetchHrmAPi.mockResolvedValue(mockedResponse);
 
-    const response = await createCase(contactForm, 'creating worker', 'demo-v1');
+    const response = await createCase(contactForm, 'creating worker', 'as-v1');
 
     const expectedUrl = `/cases`;
     const expectedOptions = {
@@ -133,9 +136,10 @@ describe('createCase()', () => {
         status: 'open',
         helpline: 'a helpline',
         info: {
-          definitionVersion: 'demo-v1',
+          definitionVersion: 'as-v1',
           offlineContactCreator: 'creating worker',
         },
+        definitionVersion: 'as-v1',
       }),
     };
     expect(fetchHrmApi).toHaveBeenCalledWith(expectedUrl, expectedOptions);
@@ -150,12 +154,13 @@ describe('update endpoints', () => {
     updatedAt: '2022-12-22T07:20:17.042Z',
     status: 'open',
     helpline: 'a helpline',
-    info: { definitionVersion: 'demo-v1' },
+    info: { definitionVersion: 'as-v1' },
     twilioWorkerId: 'creating worker',
     accountSid: 'an account',
     createdBy: 'creating worker',
     updatedBy: null,
     categories: {},
+    definitionVersion: 'as-v1',
   };
 
   test('updateCaseOverview - Generates a PUT HTTP call via fetchHrmApi', async () => {

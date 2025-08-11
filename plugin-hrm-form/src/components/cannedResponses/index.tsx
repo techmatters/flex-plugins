@@ -15,45 +15,25 @@
  */
 
 /* eslint-disable react/prop-types */
-import React, { Dispatch } from 'react';
-import { connect, ConnectedProps, useSelector } from 'react-redux';
+import React from 'react';
+import { useSelector } from 'react-redux';
 import { Actions, withTheme } from '@twilio/flex-ui';
 
 import { selectCannedResponses } from '../../states/selectors/hrmStateSelectors';
 import { FormSelect, FormSelectWrapper, FormOption } from '../../styles';
 import { CannedResponsesContainer } from './styles';
-import { getAseloFeatureFlags, getTemplateStrings } from '../../hrmConfig';
-import { newUpdateDraftMessageTextAction } from '../../states/conversations';
+import { getTemplateStrings } from '../../hrmConfig';
 
 type MessageProps = { conversationSid?: string };
 
-const mapDispatchToProps = (
-  dispatch: Dispatch<{ type: string } & Record<string, any>>,
-  { conversationSid }: MessageProps,
-) => {
-  return {
-    updateDraftMessageText: (text: string) => {
-      dispatch(newUpdateDraftMessageTextAction(conversationSid, text));
-    },
-  };
-};
-
-const connector = connect(null, mapDispatchToProps);
-
-type Props = MessageProps & ConnectedProps<typeof connector>;
-
-const CannedResponses: React.FC<Props> = ({ conversationSid, updateDraftMessageText }) => {
+const CannedResponses: React.FC<MessageProps> = ({ conversationSid }) => {
   const cannedResponses = useSelector(selectCannedResponses);
   const strings = getTemplateStrings();
   const handleChange: React.ChangeEventHandler<HTMLSelectElement> = event => {
-    if (getAseloFeatureFlags().enable_aselo_messaging_ui) {
-      updateDraftMessageText(event.target.value);
-    } else {
-      Actions.invokeAction('SetInputText', {
-        conversationSid,
-        body: event.target.value,
-      });
-    }
+    Actions.invokeAction('SetInputText', {
+      conversationSid,
+      body: event.target.value,
+    });
   };
 
   if (!cannedResponses) return null;
@@ -77,6 +57,7 @@ const CannedResponses: React.FC<Props> = ({ conversationSid, updateDraftMessageT
     </CannedResponsesContainer>
   );
 };
+
 CannedResponses.displayName = 'CannedResponses';
 
-export default withTheme(connector(CannedResponses));
+export default withTheme(CannedResponses);
