@@ -15,14 +15,24 @@
  */
 
 import { AccountScopedHandler } from '../httpTypes';
-import { AccountSID, CallSid, ConferenceSid } from '../twilioTypes';
+import {
+  AccountSID,
+  CallSid,
+  ConferenceSid,
+  TaskSID,
+  WorkspaceSID,
+} from '../twilioTypes';
 import { newOk } from '../Result';
 import twilio from 'twilio';
 import { getTwilioClient } from '../configuration/twilioConfiguration';
 
-type EventType =
+type GlobalEventType =
   | 'conference-end'
   | 'conference-start'
+  | 'announcement-end'
+  | 'announcement-fail';
+
+type ParticipantEventType =
   | 'participant-leave'
   | 'participant-join'
   | 'participant-mute'
@@ -31,19 +41,42 @@ type EventType =
   | 'participant-unhold'
   | 'participant-modify'
   | 'participant-speech-start'
-  | 'participant-speech-stop'
-  | 'announcement-end'
-  | 'announcement-fail';
+  | 'participant-speech-stop';
 
-export type ConferenceEvent = {
+type EventType = ParticipantEventType | GlobalEventType;
+
+type ConferenceBaseEvent = {
   AccountSid: AccountSID;
   ConferenceSid: ConferenceSid;
   Timestamp: string;
-  StatusCallbackEvent: EventType;
-} & {
-  StatusCallbackEvent: 'participant-leave' | 'participant-join';
-  CallSid: CallSid;
+  Coaching: boolean;
+  EndConferenceOnCustomerExit: boolean;
+  FriendlyName: string;
+  ReservationSid: string;
+  StatusCallback: string;
+  BeepOnCustomerEntrance: boolean;
+  CustomerCallSid: CallSid;
+  SequenceNumber: number;
+  WorkspaceSid: WorkspaceSID;
+  StatusCallbackEvents: string;
+  TaskSid: TaskSID;
 };
+
+type ConferenceGlobalEvent = ConferenceBaseEvent & {
+  StatusCallbackEvent: GlobalEventType;
+};
+
+type ConferenceParticipantEvent = ConferenceBaseEvent & {
+  StatusCallbackEvent: ParticipantEventType;
+  CallSid: CallSid;
+  ReasonParticipantLeft: string;
+  ParticipantCallStatus: 'completed';
+  Muted: boolean;
+  Hold: boolean;
+  EndConferenceOnExit: boolean;
+  StartConferenceOnEnter: boolean;
+};
+export type ConferenceEvent = ConferenceParticipantEvent | ConferenceGlobalEvent;
 
 export type ConferenceStatusEventHandler = (
   event: ConferenceEvent,
