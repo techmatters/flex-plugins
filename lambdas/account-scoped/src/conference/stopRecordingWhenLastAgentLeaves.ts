@@ -51,10 +51,22 @@ const handler: ConferenceStatusEventHandler = async (event, accountSid, client) 
       continue;
     }
     // TODO: Detect caller vs agent
+    const call = await client.calls.get(participant.callSid).fetch();
     console.debug(
-      `Participant ${participant.label} (${participant.callSid}) identified as agent, keep recording`,
+      `Call for Participant ${participant.label} (${participant.callSid}):`,
+      call,
     );
-    agentStillInConference = true;
+    if (call.direction === 'inbound') {
+      console.debug(
+        `Participant ${participant.label} (${participant.callSid}) identified as agent because it's an inbound call, keep recording`,
+      );
+
+      agentStillInConference = true;
+      break;
+    }
+    console.debug(
+      `Participant ${participant.label} (${participant.callSid}) not identified as agent or external party, so must be the service user`,
+    );
   }
   if (!agentStillInConference) {
     const conferenceRecordings = await client.conferences
