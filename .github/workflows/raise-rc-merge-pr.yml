@@ -26,7 +26,7 @@ jobs:
     outputs:
       found_branches: ${{steps.find_branches.outputs.found-branches}}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           sparse-checkout-cone-mode: false
           sparse-checkout: |
@@ -48,7 +48,7 @@ jobs:
       matrix:
         target-branch: ${{ fromJSON(needs.find_target_branches.outputs.found_branches) }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Set merge branch name
         run: |
           github_sha_hash=${{ github.sha }}  
