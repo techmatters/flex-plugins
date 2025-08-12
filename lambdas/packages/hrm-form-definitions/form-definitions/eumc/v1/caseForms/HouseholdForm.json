@@ -426,6 +426,20 @@
     "type": "input"
   },
   {
+    "name": "phone1",
+    "label": "Phone #1",
+    "type": "input",
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "email",
+    "label": "Email",
+    "type": "input"
+  },
+  {
     "name": "nationality",
     "label": "Nationality)ies",
     "type": "listbox-multiselect",
@@ -626,21 +640,6 @@
       "value": true,
       "message": "RequiredFieldError"
     }
-  },
-
-  {
-    "name": "phone1",
-    "label": "Phone #1",
-    "type": "input",
-    "required": {
-      "value": true,
-      "message": "RequiredFieldError"
-    }
-  },
-  {
-    "name": "email",
-    "label": "Email",
-    "type": "input"
   },
   {
     "name": "language",
