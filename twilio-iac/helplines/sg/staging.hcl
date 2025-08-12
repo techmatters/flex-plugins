@@ -8,6 +8,7 @@ locals {
   config            = merge(local.common_config, local.local_config)
 
   local_config = {
+    operating_hours_enforced_override     = true
     custom_task_routing_filter_expression = "channelType =='voice' OR channelType =='web' OR isContactlessTask == true"
     flow_vars = {
       service_sid                   = "ZS8a0d3bbfb230721c2609641ca8e17ce1"
