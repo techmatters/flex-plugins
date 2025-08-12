@@ -24,7 +24,7 @@ jobs:
     outputs:
       target_helplines: ${{ steps.determine-target-helplines.outputs.target_helplines }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - id: determine-target-helplines
         shell: bash
         run: |
