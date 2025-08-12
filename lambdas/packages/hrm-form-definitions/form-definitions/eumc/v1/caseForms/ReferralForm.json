@@ -202,15 +202,6 @@
     }
   },
   {
-    "name":"Consultmissingchildrendatabase",
-    "label":"Consult missing children data base",
-    "type":"mixed-checkbox",
-    "required":{
-      "value":true,
-      "message":"RequiredFieldError"
-    }
-  },
-  {
     "name":"Establishcontactwithsupportpersoncontacting",
     "label":"Establish contact with/support a person in contacting",
     "type":"select",
@@ -297,6 +288,15 @@
     "name":"other",
     "label":"Other:",
     "type":"input"
+  },
+  {
+    "name":"Consultmissingchildrendatabase",
+    "label":"Consult missing children data base",
+    "type":"mixed-checkbox",
+    "required":{
+      "value":true,
+      "message":"RequiredFieldError"
+    }
   },
   {
     "name":"Sharepublicityappeal",

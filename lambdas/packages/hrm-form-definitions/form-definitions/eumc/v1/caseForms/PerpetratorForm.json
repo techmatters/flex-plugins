@@ -523,6 +523,31 @@
     }
   },
   {
+    "name":"streetAddress",
+    "label":"Street Address",
+    "type":"input"
+  },
+  {
+    "name":"city",
+    "label":"City",
+    "type":"input"
+  },
+  {
+    "name":"postalCode",
+    "label":"Postal Code",
+    "type":"input"
+  },
+  {
+    "name":"phone1",
+    "label":"Phone #1",
+    "type":"input"
+  },
+  {
+    "name":"email",
+    "label":"Email",
+    "type":"input"
+  },
+  {
     "name":"location",
     "label":"Location",
     "type":"listbox-multiselect",
@@ -1584,21 +1609,6 @@
     ]
   },
   {
-    "name":"streetAddress",
-    "label":"Street Address",
-    "type":"input"
-  },
-  {
-    "name":"city",
-    "label":"City",
-    "type":"input"
-  },
-  {
-    "name":"postalCode",
-    "label":"Postal Code",
-    "type":"input"
-  },
-  {
     "name":"nationality",
     "label":"Nationality)ies",
     "type":"listbox-multiselect",
@@ -2374,19 +2384,9 @@
     }
   },
   {
-    "name":"phone1",
-    "label":"Phone #1",
-    "type":"input"
-  },
-  {
-    "name":"email",
-    "label":"Email",
-    "type":"input"
-  },
-  {
     "name":"language",
     "label":"Language",
-    "type":"multiselect-listbox",
+    "type":"listbox-multiselect",
     "options":[
       {
         "value":"Unknown",
