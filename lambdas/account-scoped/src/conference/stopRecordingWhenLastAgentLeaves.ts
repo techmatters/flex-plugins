@@ -19,14 +19,18 @@ import {
   registerTaskRouterEventHandler,
 } from './conferenceStatusCallback';
 
-const handler: ConferenceStatusEventHandler = async (event, accountSid, client) => {
+const handler: ConferenceStatusEventHandler = async (event, _accountSid, client) => {
   if (event.StatusCallbackEvent !== 'participant-leave') {
     console.warn(
       `stopRecordingWhenLastAgentLeave called for ${event.StatusCallbackEvent} on ${event.ConferenceSid}, should only be called for 'participant-leave'`,
     );
     return;
   }
-  const { ConferenceSid: conferenceSid, CallSid: callSid } = event;
+  const {
+    ConferenceSid: conferenceSid,
+    CallSid: callSid,
+    CustomerCallSid: customerCallSid,
+  } = event;
   const remainingParticipants = await client.conferences
     .get(conferenceSid)
     .participants.list();
@@ -51,22 +55,17 @@ const handler: ConferenceStatusEventHandler = async (event, accountSid, client) 
       continue;
     }
     // TODO: Detect caller vs agent
-    const call = await client.calls.get(participant.callSid).fetch();
-    console.debug(
-      `Call for Participant ${participant.label} (${participant.callSid}):`,
-      call,
-    );
-    if (call.direction === 'inbound') {
+    if (participant.callSid === customerCallSid) {
       console.debug(
-        `Participant ${participant.label} (${participant.callSid}) identified as agent because it's an inbound call, keep recording`,
+        `Participant ${participant.label} (${participant.callSid}) identified as service user, because their call sid is the customer call sid`,
       );
-
-      agentStillInConference = true;
-      break;
+      continue;
     }
     console.debug(
-      `Participant ${participant.label} (${participant.callSid}) not identified as agent or external party, so must be the service user`,
+      `Participant ${participant.label} (${participant.callSid}) not identified as the service user or an external party, so must be an agent, keep recording`,
     );
+    agentStillInConference = true;
+    break;
   }
   if (!agentStillInConference) {
     const conferenceRecordings = await client.conferences
