@@ -20,6 +20,11 @@ locals {
       error_message                         = "There has been an error with your message, please try writing us again."
 
     }
+    system_down_templatefile = "/app/twilio-iac/helplines/templates/studio-flows/system-down.tftpl"
+    system_down_flow_vars    = {
+      is_system_down   = "true"
+      system_down_message = "System Down sorry"
+    }
 
     channels = {
       webchat : {
