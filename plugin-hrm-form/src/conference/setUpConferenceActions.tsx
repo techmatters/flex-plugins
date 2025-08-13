@@ -20,7 +20,7 @@ import * as Flex from '@twilio/flex-ui';
 
 import { hasTaskControl, isTransferring } from '../transfer/transferTaskState';
 import { TransfersNotifications } from '../transfer/setUpTransferActions';
-import { getHrmConfig } from '../hrmConfig';
+import { getAseloFeatureFlags, getHrmConfig } from '../hrmConfig';
 
 export const ConferenceNotifications = {
   UnholdParticipantsNotification: 'ConferenceNotifications_UnholdParticipantsNotification',
@@ -71,10 +71,12 @@ export const setUpConferenceActions = () => {
   });
 
   Flex.Actions.addListener('beforeAcceptTask', ({ conferenceOptions }) => {
-    conferenceOptions.conferenceStatusCallback = `${
-      getHrmConfig().accountScopedLambdaBaseUrl
-    }/conference/conferenceStatusCallback`;
-    conferenceOptions.conferenceStatusCallbackMethod = 'POST';
-    conferenceOptions.conferenceStatusCallbackEvent = 'leave';
+    if (getAseloFeatureFlags().enable_conference_status_event_handler) {
+      conferenceOptions.conferenceStatusCallback = `${
+        getHrmConfig().accountScopedLambdaBaseUrl
+      }/conference/conferenceStatusCallback`;
+      conferenceOptions.conferenceStatusCallbackMethod = 'POST';
+      conferenceOptions.conferenceStatusCallbackEvent = 'leave';
+    }
   });
 };

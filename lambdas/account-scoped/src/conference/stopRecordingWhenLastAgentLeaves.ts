@@ -92,8 +92,10 @@ const handler: ConferenceStatusEventHandler = async (event, _accountSid, client)
             );
           }
         } catch (error) {
+          // Sometimes errors are thrown but the recording appears to pause at the correct point.
+          // Perhaps more sophisticated error handling could determine the 'ok' errors? :-/
           console.error(
-            `Error pausing recording ${recording.sid} for call ${recording.callSid} on conference ${conferenceSid}`,
+            `Error pausing recording ${recording.sid} for call ${recording.callSid} on conference ${conferenceSid} (the recording may still have paused)`,
             error,
           );
         }
