@@ -59,7 +59,7 @@ ${
       "type": "make-http-request",
       "transitions": [
         {
-          "next": "split_system_down_status",
+          "next": "split_system_down_from_service_config",
           "event": "success"
         },
         {
@@ -78,7 +78,7 @@ ${
       }
     },
     {
-      "name": "split_system_down_status",
+      "name": "split_system_down_from_service_config",
       "type": "split-based-on",
       "transitions": [
         {
