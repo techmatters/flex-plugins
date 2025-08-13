@@ -45,6 +45,7 @@ module "taskRouter" {
   custom_task_routing_filter_expression = var.custom_task_routing_filter_expression
   events_filter                         = var.events_filter
   task_queues                           = var.task_queues
+  activities                            = var.activities
   workflows                             = var.workflows
   task_channels                         = var.task_channels
   phone_numbers                         = var.phone_numbers
