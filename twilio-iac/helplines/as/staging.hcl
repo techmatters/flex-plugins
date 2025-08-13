@@ -98,7 +98,7 @@ locals {
     system_down_templatefile = "/app/twilio-iac/helplines/templates/studio-flows/system-down.tftpl"
     
     system_down_flow_vars    = {
-      is_system_down   = "true"
+      is_system_down   = "false"
       message = "System Down sorry"
       voice_message = "System Down sorry"
       send_studio_message_function_sid= "ZH980bcf1102fd109e3d2f765bb0a78951"
