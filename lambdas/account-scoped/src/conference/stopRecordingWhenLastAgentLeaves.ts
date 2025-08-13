@@ -71,10 +71,13 @@ const handler: ConferenceStatusEventHandler = async (event, _accountSid, client)
     const conferenceRecordings = await client.conferences
       .get(conferenceSid)
       .recordings.list();
+    console.info(
+      `No participants identified as Aselo agents still in conference ${conferenceSid}, stopping all ${conferenceRecordings.length} recordings`,
+    );
     await Promise.all(
       conferenceRecordings.map(async recording => {
         try {
-          if (recording.status === 'in-progress') {
+          if (['in-progress', 'processing'].includes(recording.status)) {
             console.debug(
               `Pausing recording ${recording.sid} for call ${recording.callSid} on conference ${conferenceSid}`,
               recording,
@@ -95,9 +98,6 @@ const handler: ConferenceStatusEventHandler = async (event, _accountSid, client)
           );
         }
       }),
-    );
-    console.info(
-      `No participants identified as Aselo agents still in conference ${conferenceSid}, stopping all recordings`,
     );
   }
 };
