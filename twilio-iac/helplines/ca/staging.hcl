@@ -23,7 +23,6 @@ locals {
       operating_hours_function_url      = "https://serverless-8126-production.twil.io/operatingHours"
       check_counsellors_function_sid    = "ZHa0218fd2a7b2e3aa800ab78e0367acf7"
       check_counsellors_function_url    = "https://test-service-dee-4583.twil.io/check_counsellors"
-      webhook_url_studio_errors         = "https://hooks.slack.com/services/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"
     }
 
     #Channels
