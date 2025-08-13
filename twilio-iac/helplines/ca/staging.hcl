@@ -23,6 +23,7 @@ locals {
       operating_hours_function_url      = "https://serverless-8126-production.twil.io/operatingHours"
       check_counsellors_function_sid    = "ZHa0218fd2a7b2e3aa800ab78e0367acf7"
       check_counsellors_function_url    = "https://test-service-dee-4583.twil.io/check_counsellors"
+      webhook_url_studio_errors         = "https://hooks.slack.com/services/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"
     }
 
     #Channels
@@ -205,6 +206,10 @@ locals {
           en_number : "3656595751"
           fr_number : "3656011530"
           ns_fr_number : "7823120134"
+
+          988en_queue_sid : "WQc4e40f232125af1dabbdfda2c874bdfa"
+          988fr_queue_sid : "WQe1b539643a7a1a9eadb2a4b0d2caacd5"
+          988nsfr_queue_sid : "WQd08e832eb779a975d886a9898a71241a"
 
           en_function_url : "https://test-service-dee-4583.twil.io/988_en"
           fr_function_url : "https://test-service-dee-4583.twil.io/988_fr"
