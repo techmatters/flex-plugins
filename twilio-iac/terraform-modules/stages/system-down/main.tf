@@ -2,6 +2,7 @@ data "aws_ssm_parameter" "secrets" {
   name = "/terraform/twilio-iac/${var.environment}/${var.short_helpline}/secrets.json"
 }
 
+data "aws_caller_identity" "current" {}
 
 locals {
   secrets                               = jsondecode(data.aws_ssm_parameter.secrets.value)
