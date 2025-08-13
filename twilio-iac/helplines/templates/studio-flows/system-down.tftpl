@@ -1,6 +1,6 @@
 ${
   jsonencode({
-  "description": "System Down SubFlow",
+  "description": "${flow_description}",
   "states": [
     {
       "name": "Trigger",
@@ -48,10 +48,10 @@ ${
         },
         "service": "{{trigger.message.InstanceSid}}",
         "channel": "{{trigger.message.ChannelSid}}",
-        "from": "{{flow.channel.address}}",
+        "from": "${helpline}",
         "message_type": "custom",
         "to": "{{contact.channel.address}}",
-        "body": "Hello, \nwe are experiencing issues sorry.\nTrigger:  {{trigger | to_json }}"
+        "body": "${system_down_flow_vars.message}"
       }
     },
     {
@@ -120,7 +120,7 @@ ${
         "variables": [
           {
             "type": "string",
-            "value": "false",
+            "value": "${system_down_flow_vars.is_system_down}",
             "key": "system_down"
           }
         ],
@@ -285,28 +285,28 @@ ${
         }
       ],
       "properties": {
-        "service_sid": "ZS9e510cf63dadda3c22321633ef8368ae",
-        "environment_sid": "ZE307019aedfe00302459fec0d605ae7b6",
+        "service_sid": "${service_sid}",
+        "environment_sid": "${environment_sid}",
         "offset": {
           "x": 1420,
           "y": 1470
         },
-        "function_sid": "ZH980bcf1102fd109e3d2f765bb0a78951",
+        "function_sid": "${system_down_flow_vars.send_studio_message_function_sid}",
         "parameters": [
           {
             "value": "{{flow.channel.address}}",
             "key": "conversationSid"
           },
           {
-            "value": "Hello we are experiencing technical issues",
+            "value": "${system_down_flow_vars.message}",
             "key": "message"
           },
           {
-            "value": "Aselo",
+            "value": "${helpline}",
             "key": "from"
           }
         ],
-        "url": "https://serverless-3015-production.twil.io/sendStudioMessage"
+        "url": "${serverless_url}/sendStudioMessage"
       }
     },
     {
@@ -324,7 +324,7 @@ ${
           "y": 940
         },
         "loop": 1,
-        "say": "Hello, we are experiencing issues",
+        "say": "${system_down_flow_vars.voice_message}",
         "language": "en-US"
       }
     }
