@@ -36,6 +36,7 @@
         "version_message": ""
     },
     "attributes": {
+        "system_down" : true,
         "seenOnboarding" : true,
         "hrm_api_version" : "v0",
         "monitoringEnv" : "production",
