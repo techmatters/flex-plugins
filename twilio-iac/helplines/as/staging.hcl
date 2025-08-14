@@ -99,8 +99,8 @@ locals {
     
     system_down_flow_vars    = {
       is_system_down   = "false"
-      message = "System Down sorry"
-      voice_message = "System Down sorry"
+      message = "We're currently experiencing technical issues, and your message may not be delivered. We're working to resolve the problem and will be back online shortly. We apologize for the inconvenience."
+      voice_message = "We're currently experiencing technical issues, and your message may not be delivered. We're working to resolve the problem and will be back online shortly. We apologize for the inconvenience."
       send_studio_message_function_sid= "ZH980bcf1102fd109e3d2f765bb0a78951"
     }
   }
