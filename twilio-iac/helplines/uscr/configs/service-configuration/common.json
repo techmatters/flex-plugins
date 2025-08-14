@@ -13,7 +13,8 @@
             "enable_client_profiles":true,
             "enable_conferencing": true,
             "use_prepopulate_mappings": true,
-            "enable_conference_status_event_handler": true
+            "enable_conference_status_event_handler": true,
+            "enable_hang_up_by_hrm_saving": true
         },
         "definitionVersion": "uscr-v1",
         "external_recordings_enabled": false,
