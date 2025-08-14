@@ -8,6 +8,7 @@ locals {
   config            = merge(local.common_config, local.local_config)
 
   local_config = {
+    operating_hours_enforced_override     = false
     custom_task_routing_filter_expression = ""
     flow_vars = {
       widget_from                               = "Bot"

@@ -4,6 +4,7 @@ locals {
   config            = merge(local.common_config, local.local_config)
 
   local_config = {
+    operating_hours_enforced_override     = false
     #Studio flow
     flow_vars = {
       service_sid                   = "ZSeed7070ce3f2974cb12a0382a2c93340"
