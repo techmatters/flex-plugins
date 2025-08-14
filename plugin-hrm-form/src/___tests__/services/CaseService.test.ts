@@ -117,9 +117,9 @@ describe('createCase()', () => {
           ...baselineContact.rawJson.childInformation,
           firstName: 'first',
           lastName: 'last',
-        }
-      }
-    }
+        },
+      },
+    };
 
     const response = await createCase(contact, 'creating worker', 'as-v1');
 
