@@ -1,0 +1,336 @@
+${
+  jsonencode({
+  "description": "${flow_description}",
+  "states": [
+    {
+      "name": "Trigger",
+      "type": "trigger",
+      "transitions": [
+        {
+          "event": "incomingMessage"
+        },
+        {
+          "event": "incomingCall"
+        },
+        {
+          "event": "incomingConversationMessage"
+        },
+        {
+          "event": "incomingRequest"
+        },
+        {
+          "next": "set_var_system_down",
+          "event": "incomingParent"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 0,
+          "y": 0
+        }
+      }
+    },
+    {
+      "name": "send_message_technical_issues",
+      "type": "send-message",
+      "transitions": [
+        {
+          "event": "sent"
+        },
+        {
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 930,
+          "y": 1490
+        },
+        "service": "{{trigger.message.InstanceSid}}",
+        "channel": "{{trigger.message.ChannelSid}}",
+        "from": "${helpline}",
+        "message_type": "custom",
+        "to": "{{contact.channel.address}}",
+        "body": "${system_down_flow_vars.message}"
+      }
+    },
+    {
+      "name": "http_get_service_config",
+      "type": "make-http-request",
+      "transitions": [
+        {
+          "next": "split_system_down_from_service_config",
+          "event": "success"
+        },
+        {
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 240,
+          "y": 710
+        },
+        "method": "GET",
+        "content_type": "application/x-www-form-urlencoded;charset=utf-8",
+        "add_twilio_auth": true,
+        "url": "https://flex-api.twilio.com/v1/Configuration"
+      }
+    },
+    {
+      "name": "split_system_down_from_service_config",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "event": "noMatch"
+        },
+        {
+          "next": "split_based_on_trigger_type",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to true",
+              "arguments": [
+                "{{widgets.http_get_service_config.parsed.attributes.system_down}}"
+              ],
+              "type": "equal_to",
+              "value": "true"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{widgets.http_get_service_config.parsed.attributes.system_down}}",
+        "offset": {
+          "x": 340,
+          "y": 980
+        }
+      }
+    },
+    {
+      "name": "set_var_system_down",
+      "type": "set-variables",
+      "transitions": [
+        {
+          "next": "split_system_down_from_flow",
+          "event": "next"
+        }
+      ],
+      "properties": {
+        "variables": [
+          {
+            "type": "string",
+            "value": "${system_down_flow_vars.is_system_down}",
+            "key": "system_down"
+          }
+        ],
+        "offset": {
+          "x": 630,
+          "y": 200
+        }
+      }
+    },
+    {
+      "name": "split_system_down_from_flow",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "http_get_service_config",
+          "event": "noMatch"
+        },
+        {
+          "next": "split_based_on_trigger_type",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to true",
+              "arguments": [
+                "{{flow.variables.system_down}}"
+              ],
+              "type": "equal_to",
+              "value": "true"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{flow.variables.system_down}}",
+        "offset": {
+          "x": 200,
+          "y": 400
+        }
+      }
+    },
+    {
+      "name": "split_based_on_trigger_type",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "event": "noMatch"
+        },
+        {
+          "next": "send_message_technical_issues",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to message",
+              "arguments": [
+                "{{trigger.parent.trigger_type}}"
+              ],
+              "type": "equal_to",
+              "value": "message"
+            }
+          ]
+        },
+        {
+          "next": "set_var_channel_type",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to conversation",
+              "arguments": [
+                "{{trigger.parent.trigger_type}}"
+              ],
+              "type": "equal_to",
+              "value": "conversation"
+            }
+          ]
+        },
+        {
+          "next": "play_message_technical_issues",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to call",
+              "arguments": [
+                "{{trigger.parent.trigger_type}}"
+              ],
+              "type": "equal_to",
+              "value": "call"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{trigger.parent.trigger_type}}",
+        "offset": {
+          "x": 860,
+          "y": 720
+        }
+      }
+    },
+    {
+      "name": "split_based_on_channel_type",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "f_sendStudioMessage_technical_issues",
+          "event": "noMatch"
+        },
+        {
+          "next": "send_message_technical_issues",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value matches_any_of web,webchat,whatsapp,facebook,messenger",
+              "arguments": [
+                "{{flow.variables.channel_type}}"
+              ],
+              "type": "matches_any_of",
+              "value": "web,webchat,whatsapp,facebook,messenger"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{flow.variables.channel_type}}",
+        "offset": {
+          "x": 1250,
+          "y": 1150
+        }
+      }
+    },
+    {
+      "name": "set_var_channel_type",
+      "type": "set-variables",
+      "transitions": [
+        {
+          "next": "split_based_on_channel_type",
+          "event": "next"
+        }
+      ],
+      "properties": {
+        "variables": [
+          {
+            "type": "string",
+            "value": "{% if trigger.conversation.ChannelAttributes.channel_type %}{{trigger.conversation.ChannelAttributes.channel_type}}{% else %}{{trigger.conversation.Source | downcase}}{% endif %}",
+            "key": "channel_type"
+          }
+        ],
+        "offset": {
+          "x": 1180,
+          "y": 940
+        }
+      }
+    },
+    {
+      "name": "f_sendStudioMessage_technical_issues",
+      "type": "run-function",
+      "transitions": [
+        {
+          "event": "success"
+        },
+        {
+          "event": "fail"
+        }
+      ],
+      "properties": {
+        "service_sid": "${serverless_service_sid}",
+        "environment_sid": "${serverless_environment_sid}",
+        "offset": {
+          "x": 1420,
+          "y": 1470
+        },
+        "function_sid": "${system_down_flow_vars.send_studio_message_function_sid}",
+        "parameters": [
+          {
+            "value": "{{flow.channel.address}}",
+            "key": "conversationSid"
+          },
+          {
+            "value": "${system_down_flow_vars.message}",
+            "key": "message"
+          },
+          {
+            "value": "${helpline}",
+            "key": "from"
+          }
+        ],
+        "url": "${serverless_url}/sendStudioMessage"
+      }
+    },
+    {
+      "name": "play_message_technical_issues",
+      "type": "say-play",
+      "transitions": [
+        {
+          "event": "audioComplete"
+        }
+      ],
+      "properties": {
+        "voice": "Polly.Salli",
+        "offset": {
+          "x": 1650,
+          "y": 940
+        },
+        "loop": 1,
+        "say": "${system_down_flow_vars.voice_message}",
+        "language": "en-US"
+      }
+    }
+  ],
+  "initial_state": "Trigger",
+  "flags": {
+    "allow_concurrent_calls": true
+  }
+})}

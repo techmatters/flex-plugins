@@ -30,6 +30,8 @@ locals {
   task_router_workflow_sids             = local.provision_config.task_router_workflow_sids
   task_router_task_channel_sids         = local.provision_config.task_router_task_channel_sids
   task_router_task_queue_sids           = local.provision_config.task_router_task_queue_sids
+  system_down_config = var.enable_system_down ? data.terraform_remote_state.system_down[0].outputs : {}
+  system_down_studio_subflow_sid = var.enable_system_down ? local.system_down_config.system_down_studio_subflow_sid : ""
 
 
   stage = "configure"
@@ -46,6 +48,18 @@ data "terraform_remote_state" "provision" {
   }
 }
 
+data "terraform_remote_state" "system_down" {
+  count   = var.enable_system_down ? 1 : 0
+  backend = "s3"
+  
+  config = {
+    bucket   = "tl-terraform-state-${var.environment}"
+    key      = "twilio/${var.short_helpline}/system-down/terraform.tfstate"
+    region   = "us-east-1"
+    role_arn = "arn:aws:iam::${local.aws_account_id}:role/tf-twilio-iac-${var.environment}"
+  }
+}
+
 
 provider "twilio" {
   username = local.secrets.twilio_account_sid
@@ -57,6 +71,7 @@ module "channel" {
   flex_chat_service_sid      = local.services_flex_chat_service_sid
   workflow_sids              = local.task_router_workflow_sids
   task_channel_sids          = local.task_router_task_channel_sids
+  system_down_studio_subflow_sid = local.system_down_studio_subflow_sid
   channel_attributes         = var.channel_attributes
   channels                   = var.channels
   enable_post_survey         = var.enable_post_survey

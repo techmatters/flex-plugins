@@ -1,5 +1,6 @@
 {
     "attributes": {
+        "system_down" : false,
         "contacts_waiting_channels": [
             "voice",
             "sms",
