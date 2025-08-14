@@ -601,5 +601,7 @@
         "CaseSection-View-Title/assignedResponder": "View Assigned Responder",
         "CaseSection-Edit/assignedResponder": "Edit Assigned Responder",
         "CaseSection-Add/assignedResponder": "Add Assigned Responder",
-        "GeneralizedSearchForm-Counselor": "Operator"
+        "GeneralizedSearchForm-Counselor": "Operator",
+        "ContactDetails-GeneralDetails-HangUpBy/Agent": "Operator",
+          "Conference-Wrapping-HangupBy/Agent": "Call Ended by Operator",
 }}
