@@ -7,6 +7,7 @@ locals {
   helpline_region       = "us-east-1"
   aws_monitoring_region = "us-east-1"
   enable_post_survey    = false
+  enable_system_down    = false
   target_task_name      = "greeting"
   twilio_numbers        = []
   channel               = ""

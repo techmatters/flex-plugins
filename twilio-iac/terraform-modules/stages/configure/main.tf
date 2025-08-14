@@ -30,8 +30,8 @@ locals {
   task_router_workflow_sids             = local.provision_config.task_router_workflow_sids
   task_router_task_channel_sids         = local.provision_config.task_router_task_channel_sids
   task_router_task_queue_sids           = local.provision_config.task_router_task_queue_sids
-  system_down_config                    = data.terraform_remote_state.system_down.outputs
-  system_down_studio_subflow_sid        = local.system_down_config.system_down_studio_subflow_sid
+  system_down_config = var.enable_system_down ? data.terraform_remote_state.system_down[0].outputs : {}
+  system_down_studio_subflow_sid = var.enable_system_down ? local.system_down_config.system_down_studio_subflow_sid : ""
 
 
   stage = "configure"
@@ -49,8 +49,9 @@ data "terraform_remote_state" "provision" {
 }
 
 data "terraform_remote_state" "system_down" {
+  count   = var.enable_system_down ? 1 : 0
   backend = "s3"
-
+  
   config = {
     bucket   = "tl-terraform-state-${var.environment}"
     key      = "twilio/${var.short_helpline}/system-down/terraform.tfstate"
