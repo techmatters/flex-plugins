@@ -5,7 +5,8 @@
             "enable_csam_report": true,
             "enable_lex": true,
             "enable_llm_summary": true,
-            "enable_lex_v2": true
+            "enable_lex_v2": true,
+            "enable_hang_up_by_hrm_saving": true
         },
         "permissionConfig": "zm"
     }
