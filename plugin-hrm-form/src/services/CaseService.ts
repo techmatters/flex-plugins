@@ -30,6 +30,7 @@ const convertApiCaseToFlexCase = (apiCase: Case): Case => ({
 });
 export const getCasePayload = (contact: Contact, creatingWorkerSid: string, definitionVersion: string) => {
   const { helpline, rawJson: contactForm } = contact;
+  const label = `${contactForm.childInformation.firstName} ${contactForm.childInformation.lastName}`.trim() || null;
 
   return contactForm.contactlessTask?.createdOnBehalfOf
     ? {
@@ -38,6 +39,7 @@ export const getCasePayload = (contact: Contact, creatingWorkerSid: string, defi
         twilioWorkerId: contactForm.contactlessTask.createdOnBehalfOf,
         info: { definitionVersion, offlineContactCreator: creatingWorkerSid },
         definitionVersion,
+        label,
       }
     : {
         helpline,
@@ -45,6 +47,7 @@ export const getCasePayload = (contact: Contact, creatingWorkerSid: string, defi
         twilioWorkerId: creatingWorkerSid,
         info: { definitionVersion },
         definitionVersion,
+        label,
       };
 };
 
