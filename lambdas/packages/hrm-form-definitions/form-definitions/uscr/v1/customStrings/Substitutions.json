@@ -603,5 +603,5 @@
         "CaseSection-Add/assignedResponder": "Add Assigned Responder",
         "GeneralizedSearchForm-Counselor": "Operator",
         "ContactDetails-GeneralDetails-HangUpBy/Agent": "Operator",
-          "Conference-Wrapping-HangupBy/Agent": "Call Ended by Operator",
+          "Conference-Wrapping-HangupBy/Agent": "Call Ended by Operator"
 }}
