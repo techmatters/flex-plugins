@@ -177,7 +177,7 @@ export enum ListCasesSortBy {
   ID = 'id',
   CREATED_AT = 'createdAt',
   UPDATED_AT = 'updatedAt',
-  CHILD_NAME = 'childName',
+  LABEL = 'label',
   FOLLOW_UP_DATE = 'info.followUpDate',
 }
 

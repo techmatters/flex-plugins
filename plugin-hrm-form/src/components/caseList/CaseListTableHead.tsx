@@ -16,7 +16,7 @@
 
 /* eslint-disable react/prop-types */
 import React from 'react';
-import { TableHead, TableRow } from '@material-ui/core';
+import { TableRow } from '@material-ui/core';
 
 import CaseListTableHeadCell from './CaseListTableHeadCell';
 import { ListCasesSortBy, SortDirection } from '../../types/types';
@@ -32,9 +32,9 @@ const CaseListTableHead = () => {
           localizedText="CaseList-THCase"
         />
         <CaseListTableHeadCell
-          column={ListCasesSortBy.CHILD_NAME}
+          column={ListCasesSortBy.LABEL}
           defaultSortDirection={SortDirection.ASC}
-          localizedText="CaseList-THChildName"
+          localizedText="CaseList-THLabel"
         />
         <CaseListTableHeadCell localizedText="CaseList-THCounselor" />
         <CaseListTableHeadCell localizedText="CaseList-THSummary" width="20%" />
