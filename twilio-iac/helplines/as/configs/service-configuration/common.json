@@ -1,6 +1,10 @@
 {
     "attributes": {
         "definitionVersion": "as-v1",
+        "external_recordings_enabled": true,
+        "config_flags": {
+            "enableExternalRecordings": true
+        },
         "feature_flags": {
             "enable_active_contact_header": true,
             "enable_client_profiles": true,
@@ -15,7 +19,9 @@
             "use_prepopulate_mappings": true,
             "enable_resouorces_updates": true,
             "enable_conference_status_event_handler": true,
-            "enable_configurable_max_categories": true
+            "enable_configurable_max_categories": true,
+            "enable_llm_summary": true,
+            "enable_lambda_post_survey_processing": true,
         },
         "helplineLanguage": "en-US"
     }
