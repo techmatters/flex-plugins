@@ -270,6 +270,7 @@
   "CaseList-Filters-CaseCount-Plural": "{{count}} cases",
   "CaseList-THCase": "Case",
   "CaseList-THChildName": "Child",
+  "CaseList-THLabel": "Label",
   "CaseList-THSummary": "Summary",
   "CaseList-THCounselor": "Counsellor",
   "CaseList-THOpened": "Opened",
