@@ -38,9 +38,9 @@ locals {
         }
         enable_datadog_monitor = true
         custom_monitor = {
-          query = "sum(last_12h):sum:<metric>{*}.as_count() == 0"
+          query = "sum(last_24h):sum:<metric>{*}.as_count() == 0"
           custom_schedule = {
-            rrule    = "FREQ=DAILY;INTERVAL=2;BYHOUR=4;BYMINUTE=0"
+            rrule    = "FREQ=DAILY;INTERVAL=1;BYHOUR=4;BYMINUTE=0"
             timezone = "Pacific/Auckland"
           }
         }
@@ -61,9 +61,9 @@ locals {
         }
         enable_datadog_monitor = true
         custom_monitor = {
-          query = "sum(last_12h):sum:<metric>{*}.as_count() == 0"
+          query = "sum(last_24h):sum:<metric>{*}.as_count() == 0"
           custom_schedule = {
-            rrule    = "FREQ=DAILY;INTERVAL=2;BYHOUR=4;BYMINUTE=0"
+            rrule    = "FREQ=DAILY;INTERVAL=1;BYHOUR=4;BYMINUTE=0"
             timezone = "Pacific/Auckland"
           }
         }
@@ -80,9 +80,9 @@ locals {
         chatbot_unique_names   = []
         enable_datadog_monitor = true
         custom_monitor = {
-          query = "sum(last_12h):sum:<metric>{*}.as_count() == 0"
+          query = "sum(last_24h):sum:<metric>{*}.as_count() == 0"
           custom_schedule = {
-            rrule    = "FREQ=DAILY;INTERVAL=2;BYHOUR=4;BYMINUTE=0"
+            rrule    = "FREQ=DAILY;INTERVAL=1;BYHOUR=4;BYMINUTE=0"
             timezone = "Pacific/Auckland"
           }
         }
@@ -94,6 +94,13 @@ locals {
         templatefile         = "/app/twilio-iac/helplines/nz/templates/studio-flows/instagram-lex-priority-v2-lambda.tftpl"
         channel_flow_vars    = {}
         chatbot_unique_names = []
+        custom_monitor = {
+          query = "sum(last_2d):sum:<metric>{*}.as_count() == 0"
+          custom_schedule = {
+            rrule    = "FREQ=DAILY;INTERVAL=1;BYHOUR=4;BYMINUTE=0"
+            timezone = "Pacific/Auckland"
+          }
+        }
       },
       whatsapp : {
         messaging_mode       = "conversations"
@@ -102,6 +109,14 @@ locals {
         templatefile         = "/app/twilio-iac/helplines/nz/templates/studio-flows/messaging-lex-priority-v3-lambda.tftpl"
         channel_flow_vars    = {
           regex_allowed_test_numbers = "whatsapp:\\+(<SHORTCODE_HERE>)\\d{6,20}"
+        }
+        enable_datadog_monitor = true
+        custom_monitor = {
+          query = "sum(last_2d):sum:<metric>{*}.as_count() == 0"
+          custom_schedule = {
+            rrule    = "FREQ=DAILY;INTERVAL=1;BYHOUR=4;BYMINUTE=0"
+            timezone = "Pacific/Auckland"
+          }
         }
         chatbot_unique_names = []
       }

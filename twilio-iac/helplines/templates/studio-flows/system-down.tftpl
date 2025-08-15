@@ -327,6 +327,149 @@ ${
         "say": "${system_down_flow_vars.voice_message}",
         "language": "en-US"
       }
+    },
+    {
+      "name": "set_var_call_action",
+      "type": "set-variables",
+      "transitions": [
+        {
+          "next": "split_call_action",
+          "event": "next"
+        }
+      ],
+      "properties": {
+        "variables": [
+          {
+            "type": "string",
+            "value": "${system_down_flow_vars.call_action}",
+            "key": "call_action"
+          }
+        ],
+        "offset": {
+          "x": 2010,
+          "y": 940
+        }
+      }
+    },
+    {
+      "name": "split_call_action",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "play_message_technical_issues",
+          "event": "noMatch"
+        },
+        {
+          "next": "play_message_technical_issues",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to message",
+              "arguments": [
+                "{{flow.variables.call_action}}"
+              ],
+              "type": "equal_to",
+              "value": "message"
+            }
+          ]
+        },
+        {
+          "next": "play_message_recording_technical_issues",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to recording",
+              "arguments": [
+                "{{flow.variables.call_action}}"
+              ],
+              "type": "equal_to",
+              "value": "recording"
+            }
+          ]
+        },
+        {
+          "next": "play_message_forward_technical_issues",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to forward",
+              "arguments": [
+                "{{flow.variables.call_action}}"
+              ],
+              "type": "equal_to",
+              "value": "forward"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{flow.variables.call_action}}",
+        "offset": {
+          "x": 2160,
+          "y": 1220
+        }
+      }
+    },
+   {
+      "name": "play_message_recording_technical_issues",
+      "type": "say-play",
+      "transitions": [
+        {
+          "event": "audioComplete"
+        }
+      ],
+      "properties": {
+        "play": "${system_down_flow_vars.recording_url}",
+        "voice": "Polly.Salli",
+        "offset": {
+          "x": 2240,
+          "y": 1510
+        },
+        "loop": 1,
+        "language": "en-US"
+      }
+    },
+    {
+      "name": "play_message_forward_technical_issues",
+      "type": "say-play",
+      "transitions": [
+        {
+          "next": "connect_to_forward_number",
+          "event": "audioComplete"
+        }
+      ],
+      "properties": {
+        "voice": "Polly.Salli",
+        "offset": {
+          "x": 2610,
+          "y": 1510
+        },
+        "loop": 1,
+        "say": "${system_down_flow_vars.voice_message}",
+        "language": "en-US"
+      }
+    },
+    {
+      "name": "connect_to_forward_number",
+      "type": "connect-call-to",
+      "transitions": [
+        {
+          "event": "callCompleted"
+        },
+        {
+          "event": "hangup"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 2770,
+          "y": 1760
+        },
+        "caller_id": "{{contact.channel.address}}",
+        "noun": "number",
+        "to": "${system_down_flow_vars.forward_number}",
+        "timeout": 30
+      }
     }
   ],
   "initial_state": "Trigger",

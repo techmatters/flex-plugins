@@ -102,6 +102,10 @@ locals {
       message = "We're currently experiencing technical issues, and your message may not be delivered. We're working to resolve the problem and will be back online shortly. We apologize for the inconvenience."
       voice_message = "We're currently experiencing technical issues, and your call may not reach us. We're working to resolve the problem and will be back online shortly. We apologize for the inconvenience."
       send_studio_message_function_sid= "ZH980bcf1102fd109e3d2f765bb0a78951"
+      call_action = "message"
+      forward_number = "+123"
+      recording_url = "https://<place_holder>.mp3"
+
     }
   }
 }
