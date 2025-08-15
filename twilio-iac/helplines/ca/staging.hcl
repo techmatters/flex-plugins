@@ -207,6 +207,10 @@ locals {
           fr_number : "3656011530"
           ns_fr_number : "7823120134"
 
+          988en_queue_sid : "WQc4e40f232125af1dabbdfda2c874bdfa"
+          988fr_queue_sid : "WQe1b539643a7a1a9eadb2a4b0d2caacd5"
+          988nsfr_queue_sid : "WQd08e832eb779a975d886a9898a71241a"
+
           en_function_url : "https://test-service-dee-4583.twil.io/988_en"
           fr_function_url : "https://test-service-dee-4583.twil.io/988_fr"
         }
