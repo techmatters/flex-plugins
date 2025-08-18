@@ -113,12 +113,21 @@
       {
         "value":"familyMember",
         "label":"Family Member"
+      },
+      {
+        "value":"other",
+        "label":"Other"
       }
     ],
     "required":{
       "value":true,
       "message":"RequiredFieldError"
     }
+  },
+  {
+    "name":"otherrelationship",
+    "label":"Specify other",
+    "type":"input"
   },
   {
     "name":"dateOfBirth",
@@ -223,7 +232,7 @@
     "type":"select",
     "options":[
       {
-        "value":"",
+        "value":"Unknown",
         "label":"Unknown"
       },
       {
@@ -237,12 +246,12 @@
       {
         "value":"refugee",
         "label":"Refugee"
+      },
+      {
+        "value":"other",
+        "label":"Other"
       }
-    ],
-    "required":{
-      "value":true,
-      "message":"RequiredFieldError"
-    }
+    ]
   },
   {
     "name":"keyVulnerabilities",
@@ -250,8 +259,12 @@
     "type":"select",
     "options":[
       {
-        "value":"",
+        "value":"Unknown",
         "label":"Unknown"
+      },
+      {
+        "value":"none",
+        "label":"None"
       },
       {
         "value":"disability",
@@ -268,6 +281,10 @@
       {
         "value":"victimsOfAbuseTrafficking",
         "label":"Victims of abuse,trafficking,etc."
+      },
+      {
+        "value":"other",
+        "label":"Other"
       }
     ],
     "required":{
@@ -283,6 +300,11 @@
       "value":true,
       "message":"RequiredFieldError"
     }
+  },
+  {
+    "name":"mother",
+    "label":"Mother(s) (not applicable)",
+    "type":"checkbox"
   },
   {
     "name":"firstNameMother",
@@ -301,7 +323,7 @@
   },
   {
     "name":"father",
-    "label":"Father(s) (if applicable)",
+    "label":"Father(s) (not applicable)",
     "type":"checkbox"
   },
   {
@@ -322,36 +344,5 @@
       "value":true,
       "message":"RequiredFieldError"
     }
-  },
-  {
-    "name":"gradeLevel",
-    "label":"Grade Level",
-    "type":"select",
-    "options":[
-      {
-        "value":"Unknown",
-        "label":""
-      },
-      {
-        "value":"Grade 1 to 4",
-        "label":"Grade 1 to 4"
-      },
-      {
-        "value":"Grade 5 to 7",
-        "label":"Grade 5 to 7"
-      },
-      {
-        "value":"Grade 8 to 9",
-        "label":"Grade 8 to 9"
-      },
-      {
-        "value":"Grade 10 to 12",
-        "label":"Grade 10 to 12"
-      },
-      {
-        "value":"Out of school",
-        "label":"Out of school"
-      }
-    ]
   }
 ]

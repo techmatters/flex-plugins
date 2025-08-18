@@ -55,8 +55,8 @@
         "label":"Unknown"
       },
       {
-        "value":"ParentalGuardianHousehol",
-        "label":"Parental/guardian househol"
+        "value":"ParentalGuardianHousehold",
+        "label":"Parental/guardian household"
       },
       {
         "value":"FamilyMember",

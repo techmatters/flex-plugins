@@ -19,9 +19,6 @@
         },
         {
           "label": "Missing in Migration"
-        },
-        {
-          "label": "Unspecified/Other - Missing Children"
         }
       ]
     },
@@ -72,23 +69,6 @@
         },
         {
           "label": "Unspecified/Other - Violence"
-        }
-      ]
-    },
-    "Peer Relationships": {
-      "color": "#9AD703",
-      "subcategories": [
-        {
-          "label": "Friends and Friendships"
-        },
-        {
-          "label": "Partner Relationships"
-        },
-        {
-          "label": "Classmates/colleagues relationships"
-        },
-        {
-          "label": "Unspecified/Other - Peer Relationships"
         }
       ]
     },
