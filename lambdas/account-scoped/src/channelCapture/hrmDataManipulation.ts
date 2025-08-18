@@ -17,7 +17,7 @@
 import { get } from 'lodash';
 // eslint-disable-next-line prettier/prettier
 import type { LexMemory } from './lexClient';
-import type { OneToManyConfigSpec } from './insightsService';
+import { OneToManyConfigSpec } from '@tech-matters/hrm-form-definitions';
 
 export type PostSurveyData = { [question: string]: string | number };
 

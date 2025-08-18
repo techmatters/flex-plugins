@@ -16,6 +16,7 @@
 
 import { get } from 'lodash';
 import type { LexMemory } from './lexClient';
+import { OneToManyConfigSpec } from '@tech-matters/hrm-form-definitions';
 
 type BotMemory = LexMemory;
 
@@ -25,15 +26,6 @@ type InsightsAttributes = {
 };
 
 type TaskAttributes = {} & InsightsAttributes;
-
-type InsightsObject = 'customers' | 'conversations';
-
-// Each of this ConfigSpec maps (possibly) many form field to one insights attribute
-export type OneToManyConfigSpec = {
-  insightsObject: InsightsObject; // In which attributes object this goes
-  attributeName: string; // Which name the property receives in above object (e.g. customer_attribute_1)
-  questions: string[]; // Array of questions names (as they are named in the bot definition) to grab and concatenate to drop in above property
-};
 
 type SurveyInsightsUpdateFunction = (memory: BotMemory) => InsightsAttributes;
 
