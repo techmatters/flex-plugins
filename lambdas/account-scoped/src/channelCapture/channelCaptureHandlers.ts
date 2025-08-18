@@ -686,7 +686,7 @@ const saveSurveyInHRM = async ({
     data,
   };
 
-  await postToInternalHrmEndpoint(accountSid, hrmApiVersion, '/postSurveys', body);
+  await postToInternalHrmEndpoint(accountSid, hrmApiVersion, 'postSurveys', body);
 };
 
 const handlePostSurveyComplete = async ({
