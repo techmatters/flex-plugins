@@ -47,7 +47,7 @@
     "options":[
       {
         "value":"Unknown",
-        "label":""
+        "label":"Unknown"
       },
       {
         "value":"0",
@@ -456,10 +456,6 @@
       {
         "value":">100",
         "label":">100"
-      },
-      {
-        "value":"Unknown",
-        "label":"Unknown"
       }
     ],
     "required":{
@@ -599,17 +595,17 @@
         "value": "other",
         "label": "Other"
       }
-    ],
-    "required":{
-      "value":true,
-      "message":"RequiredFieldError"
-    }
+    ]
   },
   {
     "name":"country",
     "label":"Country",
     "type":"select",
     "options":[
+      {
+        "value": "unknown",
+        "label": "Unknown"
+      },
       {
         "value": "aruba",
         "label": "Aruba"
