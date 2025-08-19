@@ -26,7 +26,7 @@ import { postToInternalHrmEndpoint } from '../hrm/internalHrmRequest';
 import { ROUTE_PREFIX } from '../router';
 import { AccountSID } from '../twilioTypes';
 import { getCurrentDefinitionVersion } from '../hrm/formDefinitionsCache';
-import { OneToManyConfigSpec } from '@tech-matters/hrm-form-definitions';
+import { LegacyOneToManyConfigSpec } from '@tech-matters/hrm-form-definitions';
 
 const triggerTypes = ['withUserMessage', 'withNextMessage'] as const;
 export type TriggerTypes = (typeof triggerTypes)[number];
@@ -649,7 +649,7 @@ type PostSurveyBody = {
 };
 
 const saveSurveyInInsights = async (
-  postSurveyConfigJson: OneToManyConfigSpec[],
+  postSurveyConfigJson: LegacyOneToManyConfigSpec[],
   memory: LexMemory,
   controlTask: TaskInstance,
   controlTaskAttributes: any,
@@ -671,7 +671,7 @@ const saveSurveyInHRM = async ({
   memory,
   postSurveyConfigSpecs,
 }: {
-  postSurveyConfigSpecs: OneToManyConfigSpec[];
+  postSurveyConfigSpecs: LegacyOneToManyConfigSpec[];
   memory: LexMemory;
   controlTask: TaskInstance;
   controlTaskAttributes: any;

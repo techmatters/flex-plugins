@@ -16,7 +16,7 @@
 
 import { get } from 'lodash';
 import type { LexMemory } from './lexClient';
-import { OneToManyConfigSpec } from '@tech-matters/hrm-form-definitions';
+import { LegacyOneToManyConfigSpec } from '@tech-matters/hrm-form-definitions';
 
 type BotMemory = LexMemory;
 
@@ -48,7 +48,7 @@ const mergeAttributes = (
 
 const applyCustomUpdate =
   (
-    customUpdate: OneToManyConfigSpec,
+    customUpdate: LegacyOneToManyConfigSpec,
     pathBuilder: (question: string) => string,
   ): SurveyInsightsUpdateFunction =>
   memory => {
@@ -64,7 +64,7 @@ const applyCustomUpdate =
   };
 
 const bindApplyCustomUpdates = (
-  oneToManyConfigSpecs: OneToManyConfigSpec[],
+  oneToManyConfigSpecs: LegacyOneToManyConfigSpec[],
   pathBuilder: (question: string) => string,
 ): SurveyInsightsUpdateFunction[] => {
   const customUpdatesFuns = oneToManyConfigSpecs.map(spec =>
@@ -75,7 +75,7 @@ const bindApplyCustomUpdates = (
 };
 
 export const buildSurveyInsightsData = (
-  oneToManyConfigSpecs: OneToManyConfigSpec[],
+  oneToManyConfigSpecs: LegacyOneToManyConfigSpec[],
   taskAttributes: TaskAttributes,
   memory: BotMemory,
   pathBuilder: (question: string) => string = q => q,

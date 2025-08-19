@@ -35,7 +35,7 @@ import {
   FullyQualifiedFieldReference,
   FlexUILocaleEntry,
 } from './types';
-import { OneToManyConfigSpecs, OneToOneConfigSpec } from './insightsConfig';
+import { LegacyOneToManyConfigSpec, OneToManyConfigSpecs, OneToOneConfigSpec } from './insightsConfig';
 import { LayoutVersion } from './layoutVersion';
 
 // Type representing the JSON form where single fields don't need to be wrapped in arrays
@@ -244,7 +244,7 @@ export async function loadDefinition(baseUrl: string): Promise<DefinitionVersion
     fetchDefinition<CannedResponsesDefinitions>('CannedResponses.json', []),
     fetchDefinition<OneToOneConfigSpec>('insights/oneToOneConfigSpec.json'),
     fetchDefinition<OneToManyConfigSpecs>('insights/oneToManyConfigSpecs.json'),
-    fetchDefinition<OneToManyConfigSpecs>('insights/postSurvey.json', []),
+    fetchDefinition<LegacyOneToManyConfigSpec[]>('insights/postSurvey.json', []),
     fetchDefinition<DefinitionVersion['caseFilters']>('CaseFilters.json'),
     fetchDefinition<DefinitionVersion['caseStatus']>('CaseStatus.json'),
     fetchDefinition<DefinitionVersion['caseOverview']>('caseForms/CaseOverview.json'),

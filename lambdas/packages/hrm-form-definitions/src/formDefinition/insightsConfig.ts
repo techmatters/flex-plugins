@@ -37,6 +37,14 @@ export type OneToOneConfigSpec = {
 // Each of this ConfigSpec maps (possibly) many form field to one insights attribute
 export type OneToManyConfigSpec = {
   insightsObject: InsightsObject; // In which attributes object this goes
+  attributeName: string; // Which name the property receives in above object
+  paths: string[]; // Array of paths to grab and concatenate to drop in above property
+  saveForNonDataContacts?: boolean; // Allows the custom mapping to be saved for non-data contacts
+};
+
+// Each of this ConfigSpec maps (possibly) many form field to one insights attribute
+export type LegacyOneToManyConfigSpec = {
+  insightsObject: InsightsObject; // In which attributes object this goes
   attributeName: string; // Which name the property receives in above object (e.g. customer_attribute_1)
   questions: string[]; // Array of questions names (as they are named in the bot definition) to grab and concatenate to drop in above property
 };
