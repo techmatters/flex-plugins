@@ -1,6 +1,6 @@
 ${
   jsonencode({
-  "description": "(WIP) Whatsapp Studio Flow",
+  "description": "${flow_description}",
   "states": [
     {
       "name": "Trigger",
@@ -13,7 +13,7 @@ ${
           "event": "incomingCall"
         },
         {
-          "next": "getProfileFlagsForIdentifier",
+          "next": "f_getProfileFlagsForIdentifier",
           "event": "incomingConversationMessage"
         },
         {
@@ -25,47 +25,9 @@ ${
       ],
       "properties": {
         "offset": {
-          "x": -190,
-          "y": -1700
+          "x": -1670,
+          "y": -1260
         }
-      }
-    },
-    {
-      "name": "check_operating_hours",
-      "type": "run-function",
-      "transitions": [
-        {
-          "next": "split_status",
-          "event": "success"
-        },
-        {
-          "next": "webhook_notify_error",
-          "event": "fail"
-        }
-      ],
-      "properties": {
-        "service_sid": "ZSbf1bb881cc2e8db613ee6bca0e8e2c29",
-        "environment_sid": "ZE339938daa781b8e21baa45feae0e1afe",
-        "offset": {
-          "x": 30,
-          "y": -1010
-        },
-        "function_sid": "ZH5fcc5dee5089c176acd0bd24e7fa873e",
-        "parameters": [
-          {
-            "value": "webchat",
-            "key": "channel"
-          },
-          {
-            "value": "true",
-            "key": "includeMessageTextInResponse"
-          },
-          {
-            "value": "es-CO",
-            "key": "language"
-          }
-        ],
-        "url": "https://serverless-2395-production.twil.io/operatingHours"
       }
     },
     {
@@ -73,17 +35,17 @@ ${
       "type": "split-based-on",
       "transitions": [
         {
-          "next": "webhook_notify_error",
+          "next": "http_post_webhook_notify_error",
           "event": "noMatch"
         },
         {
-          "next": "terms_and_conditions",
+          "next": "send_wait_terms_conditions",
           "event": "match",
           "conditions": [
             {
               "friendly_name": "If value equal_to open",
               "arguments": [
-                "{{widgets.check_operating_hours.parsed.status}}"
+                "{{widgets.f_operatingHours.parsed.status}}"
               ],
               "type": "equal_to",
               "value": "open"
@@ -91,13 +53,13 @@ ${
           ]
         },
         {
-          "next": "send_welcome_menu",
+          "next": "send_wait_welcome_menu",
           "event": "match",
           "conditions": [
             {
               "friendly_name": "If matches_any_of closed,holiday",
               "arguments": [
-                "{{widgets.check_operating_hours.parsed.status}}"
+                "{{widgets.f_operatingHours.parsed.status}}"
               ],
               "type": "matches_any_of",
               "value": "closed,holiday"
@@ -106,15 +68,15 @@ ${
         }
       ],
       "properties": {
-        "input": "{{widgets.check_operating_hours.parsed.status}}",
+        "input": "{{widgets.f_operatingHours.parsed.status}}",
         "offset": {
-          "x": 390,
-          "y": -1410
+          "x": -1380,
+          "y": 10
         }
       }
     },
     {
-      "name": "webhook_notify_error",
+      "name": "http_post_webhook_notify_error",
       "type": "make-http-request",
       "transitions": [
         {
@@ -126,42 +88,18 @@ ${
       ],
       "properties": {
         "offset": {
-          "x": -70,
-          "y": -560
+          "x": -2890,
+          "y": 460
         },
         "method": "POST",
         "content_type": "application/json;charset=utf-8",
         "add_twilio_auth": false,
-        "body": "{ \"text\": \"Issue detected on CO STG Flow SID: {{flow.flow_sid}} Execution SID: {{flow.sid}}  \" }",
-        "url": "https://hooks.slack.com/services/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"
+        "body": "{ \"text\": \"Issue detected on ${short_helpline} ${short_environment} Flow SID: {{flow.flow_sid}} Execution SID: {{flow.sid}}  \" }",
+        "url": "${webhook_url_studio_errors}"
       }
     },
     {
-      "name": "send_closed",
-      "type": "send-message",
-      "transitions": [
-        {
-          "event": "sent"
-        },
-        {
-          "next": "webhook_notify_error",
-          "event": "failed"
-        }
-      ],
-      "properties": {
-        "offset": {
-          "x": 1140,
-          "y": -900
-        },
-        "service": "{{trigger.conversation.InstanceSid}}",
-        "channel": "{{trigger.conversation.ChannelSid}}",
-        "from": "Linea Libre",
-        "to": "{{contact.channel.address}}",
-        "body": "{{widgets.check_operating_hours.parsed.message}}"
-      }
-    },
-    {
-      "name": "attributes",
+      "name": "send_to_queue",
       "type": "send-to-flex",
       "transitions": [
         {
@@ -176,41 +114,41 @@ ${
       ],
       "properties": {
         "offset": {
-          "x": 1400,
-          "y": 610
+          "x": -2270,
+          "y": 2230
         },
-        "workflow": "WW268360a32f84c636a7f589d500990f58",
-        "channel": "TC2ab360d1cc63d0a7ed3b2dd39a8ba947",
-        "attributes": "{\n  \"name\": \"{{trigger.conversation.ChannelAttributes.from}}\",\n  \"channelType\": \"{% if trigger.conversation.ChannelAttributes.channel_type %}{{trigger.conversation.ChannelAttributes.channel_type}}{% else %}{{trigger.conversation.Source | downcase}}{% endif %}\",\n  \"customChannelType\": \"{{trigger.conversation.ChannelAttributes.channelType}}\", \n  \"channelSid\": \"{{trigger.conversation.ChannelSid}}\",\n  \"twilioNumber\": \"{{trigger.conversation.ChannelAttributes.twilioNumber}}\",\n  \"ignoreAgent\": \"\",\n  \"helpline\":\"Te Guío\",\n  \"language\":\"es-CO\",\n  \"transferTargetType\": \"\",\n  \"memory\": {{trigger.conversation.ChannelAttributes.memory | to_json}}\n}"
+        "workflow": "${workflow_sids.master}",
+        "channel": "${task_channel_sids.chat}",
+        "attributes": "${channel_attributes.default}"
       }
     },
     {
-      "name": "getProfileFlagsForIdentifier",
+      "name": "f_getProfileFlagsForIdentifier",
       "type": "make-http-request",
       "transitions": [
         {
-          "next": "contact_routing",
+          "next": "split_contact_routing",
           "event": "success"
         },
         {
-          "next": "check_operating_hours",
+          "next": "f_operatingHours",
           "event": "failed"
         }
       ],
       "properties": {
         "offset": {
-          "x": -200,
-          "y": -760
+          "x": -1480,
+          "y": -860
         },
         "method": "POST",
         "content_type": "application/json;charset=utf-8",
         "add_twilio_auth": false,
         "body": "{ \"trigger\": {{trigger | to_json}}, \"channelType\": \"whatsapp\"}",
-        "url": "https://serverless-2395-production.twil.io/getProfileFlagsForIdentifier"
+        "url": "${lambda_twilio_account_scoped_url}/getProfileFlagsForIdentifier"
       }
     },
     {
-      "name": "send_blocked_message",
+      "name": "send_message_blocked",
       "type": "send-message",
       "transitions": [
         {
@@ -222,32 +160,32 @@ ${
       ],
       "properties": {
         "offset": {
-          "x": -190,
-          "y": -1350
+          "x": -2150,
+          "y": -210
         },
         "service": "{{trigger.conversation.InstanceSid}}",
         "channel": "{{trigger.conversation.ChannelSid}}",
-        "from": "Te Guío",
+        "from": "${flow_vars.widget_from}",
         "to": "{{contact.channel.address}}",
-        "body": "Lamentablemente no puedes utilizar nuestros servicios."
+        "body": "${flow_vars.chat_blocked_message}"
       }
     },
     {
-      "name": "contact_routing",
+      "name": "split_contact_routing",
       "type": "split-based-on",
       "transitions": [
         {
-          "next": "check_operating_hours",
+          "next": "f_operatingHours",
           "event": "noMatch"
         },
         {
-          "next": "send_blocked_message",
+          "next": "send_message_blocked",
           "event": "match",
           "conditions": [
             {
               "friendly_name": "If value contains blocked",
               "arguments": [
-                "{{widgets.getProfileFlagsForIdentifier.parsed.flags}}"
+                "{{widgets.f_getProfileFlagsForIdentifier.parsed.flags}}"
               ],
               "type": "contains",
               "value": "blocked"
@@ -256,19 +194,19 @@ ${
         }
       ],
       "properties": {
-        "input": "{{widgets.getProfileFlagsForIdentifier.parsed.flags}}",
+        "input": "{{widgets.f_getProfileFlagsForIdentifier.parsed.flags}}",
         "offset": {
-          "x": -450,
-          "y": -980
+          "x": -1890,
+          "y": -590
         }
       }
     },
     {
-      "name": "terms_and_conditions",
+      "name": "send_wait_terms_conditions",
       "type": "send-and-wait-for-reply",
       "transitions": [
         {
-          "next": "terms_and_conditions_response",
+          "next": "split_terms_conditions_response",
           "event": "incomingMessage"
         },
         {
@@ -280,8 +218,8 @@ ${
       ],
       "properties": {
         "offset": {
-          "x": 740,
-          "y": -870
+          "x": -1780,
+          "y": 530
         },
         "service": "{{trigger.message.InstanceSid}}",
         "channel": "{{trigger.message.ChannelSid}}",
@@ -292,21 +230,21 @@ ${
       }
     },
     {
-      "name": "terms_and_conditions_response",
+      "name": "split_terms_conditions_response",
       "type": "split-based-on",
       "transitions": [
         {
-          "next": "terms_and_conditions_attempt",
+          "next": "set_var_terms_conditions_attempt",
           "event": "noMatch"
         },
         {
-          "next": "send_welcome_and_request_reason",
+          "next": "send_wait_welcome_and_reason",
           "event": "match",
           "conditions": [
             {
               "friendly_name": "If value matches_any_of 1,Si,Sí,si,sí",
               "arguments": [
-                "{{widgets.terms_and_conditions.inbound.Body}}"
+                "{{widgets.send_wait_terms_conditions.inbound.Body}}"
               ],
               "type": "matches_any_of",
               "value": "1,Si,Sí,si,sí"
@@ -314,13 +252,13 @@ ${
           ]
         },
         {
-          "next": "no_terms_message",
+          "next": "send_message_no_terms",
           "event": "match",
           "conditions": [
             {
               "friendly_name": "If value matches_any_of 2,No,no",
               "arguments": [
-                "{{widgets.terms_and_conditions.inbound.Body}}"
+                "{{widgets.send_wait_terms_conditions.inbound.Body}}"
               ],
               "type": "matches_any_of",
               "value": "2,No,no"
@@ -329,19 +267,19 @@ ${
         }
       ],
       "properties": {
-        "input": "{{widgets.terms_and_conditions.inbound.Body}}",
+        "input": "{{widgets.send_wait_terms_conditions.inbound.Body}}",
         "offset": {
-          "x": 820,
-          "y": -600
+          "x": -1700,
+          "y": 820
         }
       }
     },
     {
-      "name": "send_welcome_and_request_reason",
+      "name": "send_wait_welcome_and_reason",
       "type": "send-and-wait-for-reply",
       "transitions": [
         {
-          "next": "contact_reason_response",
+          "next": "split_contact_reason_response",
           "event": "incomingMessage"
         },
         {
@@ -353,8 +291,8 @@ ${
       ],
       "properties": {
         "offset": {
-          "x": 1120,
-          "y": -290
+          "x": -2130,
+          "y": 1260
         },
         "service": "{{trigger.message.InstanceSid}}",
         "channel": "{{trigger.message.ChannelSid}}",
@@ -365,21 +303,21 @@ ${
       }
     },
     {
-      "name": "contact_reason_response",
+      "name": "split_contact_reason_response",
       "type": "split-based-on",
       "transitions": [
         {
-          "next": "contact_reason_attempt",
+          "next": "set_var_contact_reason_attempt",
           "event": "noMatch"
         },
         {
-          "next": "send_wait_message",
+          "next": "send_message_wait",
           "event": "match",
           "conditions": [
             {
               "friendly_name": "If value matches_any_of 1,2,3,4",
               "arguments": [
-                "{{widgets.send_welcome_and_request_reason.inbound.Body}}"
+                "{{widgets.send_wait_welcome_and_reason.inbound.Body}}"
               ],
               "type": "matches_any_of",
               "value": "1,2,3,4"
@@ -387,13 +325,13 @@ ${
           ]
         },
         {
-          "next": "send_final_message",
+          "next": "send_message_final",
           "event": "match",
           "conditions": [
             {
               "friendly_name": "If value equal_to 5",
               "arguments": [
-                "{{widgets.send_welcome_and_request_reason.inbound.Body}}"
+                "{{widgets.send_wait_welcome_and_reason.inbound.Body}}"
               ],
               "type": "equal_to",
               "value": "5"
@@ -402,15 +340,15 @@ ${
         }
       ],
       "properties": {
-        "input": "{{widgets.send_welcome_and_request_reason.inbound.Body}}",
+        "input": "{{widgets.send_wait_welcome_and_reason.inbound.Body}}",
         "offset": {
-          "x": 1190,
-          "y": -30
+          "x": -2290,
+          "y": 1510
         }
       }
     },
     {
-      "name": "send_final_message",
+      "name": "send_message_final",
       "type": "send-message",
       "transitions": [
         {
@@ -422,8 +360,8 @@ ${
       ],
       "properties": {
         "offset": {
-          "x": 1760,
-          "y": 250
+          "x": -1770,
+          "y": 1860
         },
         "service": "{{trigger.message.InstanceSid}}",
         "channel": "{{trigger.message.ChannelSid}}",
@@ -434,11 +372,11 @@ ${
       }
     },
     {
-      "name": "terms_and_conditions_attempt",
+      "name": "set_var_terms_conditions_attempt",
       "type": "set-variables",
       "transitions": [
         {
-          "next": "split_terms_and_conditions_attempt",
+          "next": "split_terms_conditions_attempt",
           "event": "next"
         }
       ],
@@ -451,21 +389,21 @@ ${
           }
         ],
         "offset": {
-          "x": 540,
-          "y": -370
+          "x": -2130,
+          "y": 810
         }
       }
     },
     {
-      "name": "split_terms_and_conditions_attempt",
+      "name": "split_terms_conditions_attempt",
       "type": "split-based-on",
       "transitions": [
         {
-          "next": "terms_and_conditions",
+          "next": "send_wait_terms_conditions",
           "event": "noMatch"
         },
         {
-          "next": "send_closing_message",
+          "next": "send_message_closing",
           "event": "match",
           "conditions": [
             {
@@ -482,13 +420,13 @@ ${
       "properties": {
         "input": "{{flow.variables. terms_and_conditions_attempt}}",
         "offset": {
-          "x": 280,
-          "y": -610
+          "x": -2340,
+          "y": 540
         }
       }
     },
     {
-      "name": "send_closing_message",
+      "name": "send_message_closing",
       "type": "send-message",
       "transitions": [
         {
@@ -500,18 +438,18 @@ ${
       ],
       "properties": {
         "offset": {
-          "x": 250,
-          "y": 230
+          "x": -3260,
+          "y": 1800
         },
         "service": "{{trigger.conversation.InstanceSid}}",
         "channel": "{{trigger.conversation.ChannelSid}}",
-        "from": "Linea Libre",
+        "from": "${flow_vars.widget_from}",
         "to": "{{contact.channel.address}}",
-        "body": "Lo siento, no he logrado entender tu respuesta.\nPor favor, intenta comunicarte de nuevo con nosotros.\nAdiós!"
+        "body": "${channel_flow_vars.message_closing}"
       }
     },
     {
-      "name": "contact_reason_attempt",
+      "name": "set_var_contact_reason_attempt",
       "type": "set-variables",
       "transitions": [
         {
@@ -528,8 +466,8 @@ ${
           }
         ],
         "offset": {
-          "x": 940,
-          "y": 290
+          "x": -2590,
+          "y": 1770
         }
       }
     },
@@ -538,11 +476,11 @@ ${
       "type": "split-based-on",
       "transitions": [
         {
-          "next": "send_welcome_and_request_reason",
+          "next": "send_wait_welcome_and_reason",
           "event": "noMatch"
         },
         {
-          "next": "send_closing_message",
+          "next": "send_message_closing",
           "event": "match",
           "conditions": [
             {
@@ -559,17 +497,17 @@ ${
       "properties": {
         "input": "{{flow.variables. contact_reason_attempt}}",
         "offset": {
-          "x": 660,
-          "y": 0
+          "x": -2760,
+          "y": 1500
         }
       }
     },
     {
-      "name": "send_wait_message",
+      "name": "send_message_wait",
       "type": "send-message",
       "transitions": [
         {
-          "next": "attributes",
+          "next": "send_to_queue",
           "event": "sent"
         },
         {
@@ -578,18 +516,18 @@ ${
       ],
       "properties": {
         "offset": {
-          "x": 1370,
-          "y": 280
+          "x": -2140,
+          "y": 1850
         },
         "service": "{{trigger.conversation.InstanceSid}}",
         "channel": "{{trigger.conversation.ChannelSid}}",
-        "from": "Linea Libre",
+        "from": "${flow_vars.widget_from}",
         "to": "{{contact.channel.address}}",
-        "body": "¡Muchas gracias! En un momento uno de nuestros guías te atenderá. Por favor, espéranos.."
+        "body": "${channel_flow_vars.message_wait}"
       }
     },
     {
-      "name": "no_terms_message",
+      "name": "send_message_no_terms",
       "type": "send-message",
       "transitions": [
         {
@@ -601,18 +539,18 @@ ${
       ],
       "properties": {
         "offset": {
-          "x": 1560,
-          "y": -320
+          "x": -1370,
+          "y": 1240
         },
         "service": "{{trigger.conversation.InstanceSid}}",
         "channel": "{{trigger.conversation.ChannelSid}}",
-        "from": "Linea Libre",
+        "from": "${flow_vars.widget_from}",
         "to": "{{contact.channel.address}}",
-        "body": "Entendemos tu decisión. Para garantizar la privacidad y seguridad de todos los usuarios, es necesario aceptar nuestra política de privacidad para acceder a Te Guío.\n\nSi en otro momento decides continuar, estaremos aquí para apoyarte. 💙\n\nEn Te Guío está bien preguntar."
+        "body": "${channel_flow_vars.message_no_terms}"
       }
     },
     {
-      "name": "send_welcome_menu",
+      "name": "send_wait_welcome_menu",
       "type": "send-and-wait-for-reply",
       "transitions": [
         {
@@ -647,13 +585,13 @@ ${
           "event": "noMatch"
         },
         {
-          "next": "send_opt_1_emergency",
+          "next": "send_message_opt_1_emergency",
           "event": "match",
           "conditions": [
             {
               "friendly_name": "If value equal_to 1",
               "arguments": [
-                "{{widgets.send_welcome_menu.inbound.Body}}"
+                "{{widgets.send_wait_welcome_menu.inbound.Body}}"
               ],
               "type": "equal_to",
               "value": "1"
@@ -661,13 +599,13 @@ ${
           ]
         },
         {
-          "next": "send_opt_2_resources",
+          "next": "send_message_opt_2_resources",
           "event": "match",
           "conditions": [
             {
               "friendly_name": "If value equal_to 2",
               "arguments": [
-                "{{widgets.send_welcome_menu.inbound.Body}}"
+                "{{widgets.send_wait_welcome_menu.inbound.Body}}"
               ],
               "type": "equal_to",
               "value": "2"
@@ -675,13 +613,13 @@ ${
           ]
         },
         {
-          "next": "send_opt_3_ideas",
+          "next": "send_message_opt_3_ideas",
           "event": "match",
           "conditions": [
             {
               "friendly_name": "If value equal_to 3",
               "arguments": [
-                "{{widgets.send_welcome_menu.inbound.Body}}"
+                "{{widgets.send_wait_welcome_menu.inbound.Body}}"
               ],
               "type": "equal_to",
               "value": "3"
@@ -689,13 +627,13 @@ ${
           ]
         },
         {
-          "next": "send_opt_4_worries",
+          "next": "send_wait_opt_4_worries",
           "event": "match",
           "conditions": [
             {
               "friendly_name": "If value equal_to 4",
               "arguments": [
-                "{{widgets.send_welcome_menu.inbound.Body}}"
+                "{{widgets.send_wait_welcome_menu.inbound.Body}}"
               ],
               "type": "equal_to",
               "value": "4"
@@ -703,13 +641,13 @@ ${
           ]
         },
         {
-          "next": "send_opt_5_report",
+          "next": "send_wait_opt_5_report",
           "event": "match",
           "conditions": [
             {
               "friendly_name": "If value equal_to 5",
               "arguments": [
-                "{{widgets.send_welcome_menu.inbound.Body}}"
+                "{{widgets.send_wait_welcome_menu.inbound.Body}}"
               ],
               "type": "equal_to",
               "value": "5"
@@ -718,7 +656,7 @@ ${
         }
       ],
       "properties": {
-        "input": "{{widgets.send_welcome_menu.inbound.Body}}",
+        "input": "{{widgets.send_wait_welcome_menu.inbound.Body}}",
         "offset": {
           "x": -690,
           "y": 750
@@ -726,7 +664,7 @@ ${
       }
     },
     {
-      "name": "send_opt_2_resources",
+      "name": "send_message_opt_2_resources",
       "type": "send-message",
       "transitions": [
         {
@@ -751,7 +689,7 @@ ${
       }
     },
     {
-      "name": "send_opt_2_closure",
+      "name": "send_message_opt_2_closure",
       "type": "send-message",
       "transitions": [
         {
@@ -781,7 +719,7 @@ ${
       "type": "run-function",
       "transitions": [
         {
-          "next": "send_opt_2_closure",
+          "next": "send_message_opt_2_closure",
           "event": "success"
         },
         {
@@ -789,18 +727,18 @@ ${
         }
       ],
       "properties": {
-        "service_sid": "ZSef16a2a1468522b0bff91ff2e78d6744",
-        "environment_sid": "ZE94dddf1f10abf3042db52ed92e07895c",
+        "service_sid": "${flow_vars.co_assets_service_sid}",
+        "environment_sid": "${flow_vars.co_assets_environment_sid}",
         "offset": {
           "x": -240,
           "y": 1430
         },
-        "function_sid": "ZH7d2de177a88e6a62cfdca6f535216d7c",
-        "url": "https://co-assets-2865.twil.io/waitFiveSeconds"
+        "function_sid": "${flow_vars.wait_five_seconds_function_sid}",
+        "url": "${flow_vars.co_assets_url}/waitFiveSeconds"
       }
     },
     {
-      "name": "send_playback_menu",
+      "name": "send_wait_playback_menu",
       "type": "send-and-wait-for-reply",
       "transitions": [
         {
@@ -837,13 +775,13 @@ ${
           "event": "noMatch"
         },
         {
-          "next": "send_welcome_menu",
+          "next": "send_wait_welcome_menu",
           "event": "match",
           "conditions": [
             {
               "friendly_name": "If value equal_to 1",
               "arguments": [
-                "{{widgets.send_playback_menu.inbound.Body}}"
+                "{{widgets.send_wait_playback_menu.inbound.Body}}"
               ],
               "type": "equal_to",
               "value": "Volver al menú principal"
@@ -857,7 +795,7 @@ ${
             {
               "friendly_name": "If value equal_to 2",
               "arguments": [
-                "{{widgets.send_playback_menu.inbound.Body}}"
+                "{{widgets.send_wait_playback_menu.inbound.Body}}"
               ],
               "type": "equal_to",
               "value": "Terminar la comunicación"
@@ -871,7 +809,7 @@ ${
             {
               "friendly_name": "If value equal_to 3",
               "arguments": [
-                "{{widgets.send_playback_menu.inbound.Body}}"
+                "{{widgets.send_wait_playback_menu.inbound.Body}}"
               ],
               "type": "equal_to",
               "value": "Volver al menú anterior"
@@ -880,7 +818,7 @@ ${
         }
       ],
       "properties": {
-        "input": "{{widgets.send_playback_menu.inbound.Body}}",
+        "input": "{{widgets.send_wait_playback_menu.inbound.Body}}",
         "offset": {
           "x": -290,
           "y": 2620
@@ -912,7 +850,7 @@ ${
       }
     },
     {
-      "name": "send_opt_3_ideas",
+      "name": "send_message_opt_3_ideas",
       "type": "send-message",
       "transitions": [
         {
@@ -941,7 +879,7 @@ ${
       "type": "run-function",
       "transitions": [
         {
-          "next": "send_opt_3_closure",
+          "next": "send_message_opt_3_closure",
           "event": "success"
         },
         {
@@ -949,18 +887,18 @@ ${
         }
       ],
       "properties": {
-        "service_sid": "ZSef16a2a1468522b0bff91ff2e78d6744",
-        "environment_sid": "ZE94dddf1f10abf3042db52ed92e07895c",
+        "service_sid": "${flow_vars.co_assets_service_sid}",
+        "environment_sid": "${flow_vars.co_assets_environment_sid}",
         "offset": {
           "x": 110,
           "y": 1420
         },
-        "function_sid": "ZH7d2de177a88e6a62cfdca6f535216d7c",
-        "url": "https://co-assets-2865.twil.io/waitFiveSeconds"
+        "function_sid": "${flow_vars.wait_five_seconds_function_sid}",
+        "url": "${flow_vars.co_assets_url}/waitFiveSeconds"
       }
     },
     {
-      "name": "send_opt_3_closure",
+      "name": "send_message_opt_3_closure",
       "type": "send-message",
       "transitions": [
         {
@@ -993,13 +931,13 @@ ${
           "event": "noMatch"
         },
         {
-          "next": "send_opt_4_1",
+          "next": "send_message_opt_4_1",
           "event": "match",
           "conditions": [
             {
               "friendly_name": "If value equal_to 1",
               "arguments": [
-                "{{widgets.send_opt_4_worries.inbound.Body}}"
+                "{{widgets.send_wait_opt_4_worries.inbound.Body}}"
               ],
               "type": "equal_to",
               "value": "1"
@@ -1007,13 +945,13 @@ ${
           ]
         },
         {
-          "next": "send_opt_4_2",
+          "next": "send_message_opt_4_2",
           "event": "match",
           "conditions": [
             {
               "friendly_name": "If value equal_to 2",
               "arguments": [
-                "{{widgets.send_opt_4_worries.inbound.Body}}"
+                "{{widgets.send_wait_opt_4_worries.inbound.Body}}"
               ],
               "type": "equal_to",
               "value": "2"
@@ -1021,13 +959,13 @@ ${
           ]
         },
         {
-          "next": "send_opt_4_3",
+          "next": "send_message_opt_4_3",
           "event": "match",
           "conditions": [
             {
               "friendly_name": "If value equal_to 3",
               "arguments": [
-                "{{widgets.send_opt_4_worries.inbound.Body}}"
+                "{{widgets.send_wait_opt_4_worries.inbound.Body}}"
               ],
               "type": "equal_to",
               "value": "3"
@@ -1035,13 +973,13 @@ ${
           ]
         },
         {
-          "next": "send_opt_4_4",
+          "next": "send_message_opt_4_4",
           "event": "match",
           "conditions": [
             {
               "friendly_name": "If value equal_to 4",
               "arguments": [
-                "{{widgets.send_opt_4_worries.inbound.Body}}"
+                "{{widgets.send_wait_opt_4_worries.inbound.Body}}"
               ],
               "type": "equal_to",
               "value": "4"
@@ -1049,13 +987,13 @@ ${
           ]
         },
         {
-          "next": "send_opt_4_5",
+          "next": "send_message_opt_4_5",
           "event": "match",
           "conditions": [
             {
               "friendly_name": "If value equal_to 5",
               "arguments": [
-                "{{widgets.send_opt_4_worries.inbound.Body}}"
+                "{{widgets.send_wait_opt_4_worries.inbound.Body}}"
               ],
               "type": "equal_to",
               "value": "5"
@@ -1063,13 +1001,13 @@ ${
           ]
         },
         {
-          "next": "send_opt_4_6",
+          "next": "send_message_opt_4_6",
           "event": "match",
           "conditions": [
             {
               "friendly_name": "If value equal_to 6",
               "arguments": [
-                "{{widgets.send_opt_4_worries.inbound.Body}}"
+                "{{widgets.send_wait_opt_4_worries.inbound.Body}}"
               ],
               "type": "equal_to",
               "value": "6"
@@ -1077,13 +1015,13 @@ ${
           ]
         },
         {
-          "next": "send_opt_4_7",
+          "next": "send_message_opt_4_7",
           "event": "match",
           "conditions": [
             {
               "friendly_name": "If value equal_to 7",
               "arguments": [
-                "{{widgets.send_opt_4_worries.inbound.Body}}"
+                "{{widgets.send_wait_opt_4_worries.inbound.Body}}"
               ],
               "type": "equal_to",
               "value": "7"
@@ -1092,7 +1030,7 @@ ${
         }
       ],
       "properties": {
-        "input": "{{widgets.send_opt_4_worries.inbound.Body}}",
+        "input": "{{widgets.send_wait_opt_4_worries.inbound.Body}}",
         "offset": {
           "x": 580,
           "y": 1330
@@ -1100,7 +1038,7 @@ ${
       }
     },
     {
-      "name": "send_opt_4_worries",
+      "name": "send_wait_opt_4_worries",
       "type": "send-and-wait-for-reply",
       "transitions": [
         {
@@ -1128,7 +1066,7 @@ ${
       }
     },
     {
-      "name": "send_opt_4_1",
+      "name": "send_message_opt_4_1",
       "type": "send-message",
       "transitions": [
         {
@@ -1154,7 +1092,7 @@ ${
       }
     },
     {
-      "name": "send_opt_4_2",
+      "name": "send_message_opt_4_2",
       "type": "send-message",
       "transitions": [
         {
@@ -1180,7 +1118,7 @@ ${
       }
     },
     {
-      "name": "send_opt_4_3",
+      "name": "send_message_opt_4_3",
       "type": "send-message",
       "transitions": [
         {
@@ -1206,7 +1144,7 @@ ${
       }
     },
     {
-      "name": "send_opt_4_4",
+      "name": "send_message_opt_4_4",
       "type": "send-message",
       "transitions": [
         {
@@ -1232,7 +1170,7 @@ ${
       }
     },
     {
-      "name": "send_opt_4_5",
+      "name": "send_message_opt_4_5",
       "type": "send-message",
       "transitions": [
         {
@@ -1258,7 +1196,7 @@ ${
       }
     },
     {
-      "name": "send_opt_4_6",
+      "name": "send_message_opt_4_6",
       "type": "send-message",
       "transitions": [
         {
@@ -1284,7 +1222,7 @@ ${
       }
     },
     {
-      "name": "send_opt_4_7",
+      "name": "send_message_opt_4_7",
       "type": "send-message",
       "transitions": [
         {
@@ -1314,27 +1252,27 @@ ${
       "type": "run-function",
       "transitions": [
         {
-          "next": "send_opt_4_closure",
+          "next": "send_message_opt_4_closure",
           "event": "success"
         },
         {
-          "next": "send_opt_4_closure",
+          "next": "send_message_opt_4_closure",
           "event": "fail"
         }
       ],
       "properties": {
-        "service_sid": "ZSef16a2a1468522b0bff91ff2e78d6744",
-        "environment_sid": "ZE94dddf1f10abf3042db52ed92e07895c",
+        "service_sid": "${flow_vars.co_assets_service_sid}",
+        "environment_sid": "${flow_vars.co_assets_environment_sid}",
         "offset": {
           "x": 830,
           "y": 2330
         },
-        "function_sid": "ZH7d2de177a88e6a62cfdca6f535216d7c",
-        "url": "https://co-assets-2865.twil.io/waitFiveSeconds"
+        "function_sid": "${flow_vars.wait_five_seconds_function_sid}",
+        "url": "${flow_vars.co_assets_url}/waitFiveSeconds"
       }
     },
     {
-      "name": "send_opt_4_closure",
+      "name": "send_message_opt_4_closure",
       "type": "send-message",
       "transitions": [
         {
@@ -1359,7 +1297,7 @@ ${
       }
     },
     {
-      "name": "send_playback_previous_menu",
+      "name": "send_wait_playback_previous_menu",
       "type": "send-and-wait-for-reply",
       "transitions": [
         {
@@ -1392,23 +1330,23 @@ ${
       "type": "run-function",
       "transitions": [
         {
-          "next": "send_playback_previous_menu",
+          "next": "send_wait_playback_previous_menu",
           "event": "success"
         },
         {
-          "next": "send_playback_previous_menu",
+          "next": "send_wait_playback_previous_menu",
           "event": "fail"
         }
       ],
       "properties": {
-        "service_sid": "ZSef16a2a1468522b0bff91ff2e78d6744",
-        "environment_sid": "ZE94dddf1f10abf3042db52ed92e07895c",
+        "service_sid": "${flow_vars.co_assets_service_sid}",
+        "environment_sid": "${flow_vars.co_assets_environment_sid}",
         "offset": {
           "x": 660,
           "y": 2660
         },
-        "function_sid": "ZH7d2de177a88e6a62cfdca6f535216d7c",
-        "url": "https://co-assets-2865.twil.io/waitFiveSeconds"
+        "function_sid": "${flow_vars.wait_five_seconds_function_sid}",
+        "url": "${flow_vars.co_assets_url}/waitFiveSeconds"
       }
     },
     {
@@ -1419,13 +1357,13 @@ ${
           "event": "noMatch"
         },
         {
-          "next": "send_welcome_menu",
+          "next": "send_wait_welcome_menu",
           "event": "match",
           "conditions": [
             {
               "friendly_name": "If value equal_to 1",
               "arguments": [
-                "{{widgets.send_playback_previous_menu.inbound.Body}}"
+                "{{widgets.send_wait_playback_previous_menu.inbound.Body}}"
               ],
               "type": "equal_to",
               "value": "Volver al menú principal"
@@ -1439,7 +1377,7 @@ ${
             {
               "friendly_name": "If value equal_to 2",
               "arguments": [
-                "{{widgets.send_playback_previous_menu.inbound.Body}}"
+                "{{widgets.send_wait_playback_previous_menu.inbound.Body}}"
               ],
               "type": "equal_to",
               "value": "Terminar la comunicación"
@@ -1447,13 +1385,13 @@ ${
           ]
         },
         {
-          "next": "send_opt_4_worries",
+          "next": "send_wait_opt_4_worries",
           "event": "match",
           "conditions": [
             {
               "friendly_name": "If value equal_to 3",
               "arguments": [
-                "{{widgets.send_playback_previous_menu.inbound.Body}}"
+                "{{widgets.send_wait_playback_previous_menu.inbound.Body}}"
               ],
               "type": "equal_to",
               "value": "Volver al menú anterior"
@@ -1462,7 +1400,7 @@ ${
         }
       ],
       "properties": {
-        "input": "{{widgets.send_playback_previous_menu.inbound.Body}}",
+        "input": "{{widgets.send_wait_playback_previous_menu.inbound.Body}}",
         "offset": {
           "x": 530,
           "y": 3070
@@ -1470,7 +1408,7 @@ ${
       }
     },
     {
-      "name": "send_opt_5_report",
+      "name": "send_wait_opt_5_report",
       "type": "send-and-wait-for-reply",
       "transitions": [
         {
@@ -1505,13 +1443,13 @@ ${
           "event": "noMatch"
         },
         {
-          "next": "send_opt_5_1",
+          "next": "send_message_opt_5_1",
           "event": "match",
           "conditions": [
             {
               "friendly_name": "If value equal_to 1",
               "arguments": [
-                "{{widgets.send_opt_5_report.inbound.Body}}"
+                "{{widgets.send_wait_opt_5_report.inbound.Body}}"
               ],
               "type": "equal_to",
               "value": "1"
@@ -1519,13 +1457,13 @@ ${
           ]
         },
         {
-          "next": "send_opt_5_2",
+          "next": "send_message_opt_5_2",
           "event": "match",
           "conditions": [
             {
               "friendly_name": "If value equal_to 2",
               "arguments": [
-                "{{widgets.send_opt_5_report.inbound.Body}}"
+                "{{widgets.send_wait_opt_5_report.inbound.Body}}"
               ],
               "type": "equal_to",
               "value": "2"
@@ -1533,13 +1471,13 @@ ${
           ]
         },
         {
-          "next": "send_opt_5_3",
+          "next": "send_message_opt_5_3",
           "event": "match",
           "conditions": [
             {
               "friendly_name": "If value equal_to 3",
               "arguments": [
-                "{{widgets.send_opt_5_report.inbound.Body}}"
+                "{{widgets.send_wait_opt_5_report.inbound.Body}}"
               ],
               "type": "equal_to",
               "value": "3"
@@ -1547,13 +1485,13 @@ ${
           ]
         },
         {
-          "next": "send_opt_5_4",
+          "next": "send_message_opt_5_4",
           "event": "match",
           "conditions": [
             {
               "friendly_name": "If value equal_to 4",
               "arguments": [
-                "{{widgets.send_opt_5_report.inbound.Body}}"
+                "{{widgets.send_wait_opt_5_report.inbound.Body}}"
               ],
               "type": "equal_to",
               "value": "4"
@@ -1561,13 +1499,13 @@ ${
           ]
         },
         {
-          "next": "send_opt_5_5",
+          "next": "send_message_opt_5_5",
           "event": "match",
           "conditions": [
             {
               "friendly_name": "If value equal_to 5",
               "arguments": [
-                "{{widgets.send_opt_5_report.inbound.Body}}"
+                "{{widgets.send_wait_opt_5_report.inbound.Body}}"
               ],
               "type": "equal_to",
               "value": "5"
@@ -1575,13 +1513,13 @@ ${
           ]
         },
         {
-          "next": "send_opt_5_6",
+          "next": "send_message_opt_5_6",
           "event": "match",
           "conditions": [
             {
               "friendly_name": "If value equal_to 6",
               "arguments": [
-                "{{widgets.send_opt_5_report.inbound.Body}}"
+                "{{widgets.send_wait_opt_5_report.inbound.Body}}"
               ],
               "type": "equal_to",
               "value": "6"
@@ -1589,13 +1527,13 @@ ${
           ]
         },
         {
-          "next": "send_opt_5_7",
+          "next": "send_message_opt_5_7",
           "event": "match",
           "conditions": [
             {
               "friendly_name": "If value equal_to 7",
               "arguments": [
-                "{{widgets.send_opt_5_report.inbound.Body}}"
+                "{{widgets.send_wait_opt_5_report.inbound.Body}}"
               ],
               "type": "equal_to",
               "value": "7"
@@ -1603,13 +1541,13 @@ ${
           ]
         },
         {
-          "next": "send_opt_5_8",
+          "next": "send_message_opt_5_8",
           "event": "match",
           "conditions": [
             {
               "friendly_name": "If value equal_to 8",
               "arguments": [
-                "{{widgets.send_opt_5_report.inbound.Body}}"
+                "{{widgets.send_wait_opt_5_report.inbound.Body}}"
               ],
               "type": "equal_to",
               "value": "8"
@@ -1618,7 +1556,7 @@ ${
         }
       ],
       "properties": {
-        "input": "{{widgets.send_opt_5_report.inbound.Body}}",
+        "input": "{{widgets.send_wait_opt_5_report.inbound.Body}}",
         "offset": {
           "x": 1560,
           "y": 1330
@@ -1626,7 +1564,7 @@ ${
       }
     },
     {
-      "name": "send_opt_5_1",
+      "name": "send_message_opt_5_1",
       "type": "send-message",
       "transitions": [
         {
@@ -1652,7 +1590,7 @@ ${
       }
     },
     {
-      "name": "send_opt_5_2",
+      "name": "send_message_opt_5_2",
       "type": "send-message",
       "transitions": [
         {
@@ -1678,7 +1616,7 @@ ${
       }
     },
     {
-      "name": "send_opt_5_3",
+      "name": "send_message_opt_5_3",
       "type": "send-message",
       "transitions": [
         {
@@ -1704,7 +1642,7 @@ ${
       }
     },
     {
-      "name": "send_opt_5_4",
+      "name": "send_message_opt_5_4",
       "type": "send-message",
       "transitions": [
         {
@@ -1730,7 +1668,7 @@ ${
       }
     },
     {
-      "name": "send_opt_5_5",
+      "name": "send_message_opt_5_5",
       "type": "send-message",
       "transitions": [
         {
@@ -1756,7 +1694,7 @@ ${
       }
     },
     {
-      "name": "send_opt_5_6",
+      "name": "send_message_opt_5_6",
       "type": "send-message",
       "transitions": [
         {
@@ -1782,7 +1720,7 @@ ${
       }
     },
     {
-      "name": "send_opt_5_7",
+      "name": "send_message_opt_5_7",
       "type": "send-message",
       "transitions": [
         {
@@ -1808,7 +1746,7 @@ ${
       }
     },
     {
-      "name": "send_opt_5_8",
+      "name": "send_message_opt_5_8",
       "type": "send-message",
       "transitions": [
         {
@@ -1838,27 +1776,27 @@ ${
       "type": "run-function",
       "transitions": [
         {
-          "next": "send_opt_5_closure",
+          "next": "send_message_opt_5_closure",
           "event": "success"
         },
         {
-          "next": "send_opt_5_closure",
+          "next": "send_message_opt_5_closure",
           "event": "fail"
         }
       ],
       "properties": {
-        "service_sid": "ZSef16a2a1468522b0bff91ff2e78d6744",
-        "environment_sid": "ZE94dddf1f10abf3042db52ed92e07895c",
+        "service_sid": "${flow_vars.co_assets_service_sid}",
+        "environment_sid": "${flow_vars.co_assets_environment_sid}",
         "offset": {
           "x": 1980,
           "y": 2290
         },
-        "function_sid": "ZH7d2de177a88e6a62cfdca6f535216d7c",
-        "url": "https://co-assets-2865.twil.io/waitFiveSeconds"
+        "function_sid": "${flow_vars.wait_five_seconds_function_sid}",
+        "url": "${flow_vars.co_assets_url}/waitFiveSeconds"
       }
     },
     {
-      "name": "send_opt_5_closure",
+      "name": "send_message_opt_5_closure",
       "type": "send-message",
       "transitions": [
         {
@@ -1887,27 +1825,27 @@ ${
       "type": "run-function",
       "transitions": [
         {
-          "next": "send_playback_previous_menu_2",
+          "next": "send_wait_playback_previous_menu_2",
           "event": "success"
         },
         {
-          "next": "send_playback_previous_menu_2",
+          "next": "send_wait_playback_previous_menu_2",
           "event": "fail"
         }
       ],
       "properties": {
-        "service_sid": "ZSef16a2a1468522b0bff91ff2e78d6744",
-        "environment_sid": "ZE94dddf1f10abf3042db52ed92e07895c",
+        "service_sid": "${flow_vars.co_assets_service_sid}",
+        "environment_sid": "${flow_vars.co_assets_environment_sid}",
         "offset": {
           "x": 1610,
           "y": 2660
         },
-        "function_sid": "ZH7d2de177a88e6a62cfdca6f535216d7c",
-        "url": "https://co-assets-2865.twil.io/waitFiveSeconds"
+        "function_sid": "${flow_vars.wait_five_seconds_function_sid}",
+        "url": "${flow_vars.co_assets_url}/waitFiveSeconds"
       }
     },
     {
-      "name": "send_playback_previous_menu_2",
+      "name": "send_wait_playback_previous_menu_2",
       "type": "send-and-wait-for-reply",
       "transitions": [
         {
@@ -1943,13 +1881,13 @@ ${
           "event": "noMatch"
         },
         {
-          "next": "send_welcome_menu",
+          "next": "send_wait_welcome_menu",
           "event": "match",
           "conditions": [
             {
               "friendly_name": "If value equal_to 1",
               "arguments": [
-                "{{widgets.send_playback_previous_menu_2.inbound.Body}}"
+                "{{widgets.send_wait_playback_previous_menu_2.inbound.Body}}"
               ],
               "type": "equal_to",
               "value": "Volver al menú principal"
@@ -1963,7 +1901,7 @@ ${
             {
               "friendly_name": "If value equal_to 2",
               "arguments": [
-                "{{widgets.send_playback_previous_menu_2.inbound.Body}}"
+                "{{widgets.send_wait_playback_previous_menu_2.inbound.Body}}"
               ],
               "type": "equal_to",
               "value": "Terminar la comunicación"
@@ -1971,13 +1909,13 @@ ${
           ]
         },
         {
-          "next": "send_opt_5_report",
+          "next": "send_wait_opt_5_report",
           "event": "match",
           "conditions": [
             {
               "friendly_name": "If value equal_to 3",
               "arguments": [
-                "{{widgets.send_playback_previous_menu_2.inbound.Body}}"
+                "{{widgets.send_wait_playback_previous_menu_2.inbound.Body}}"
               ],
               "type": "equal_to",
               "value": "Volver al menú anterior"
@@ -1986,7 +1924,7 @@ ${
         }
       ],
       "properties": {
-        "input": "{{widgets.send_playback_previous_menu_2.inbound.Body}}",
+        "input": "{{widgets.send_wait_playback_previous_menu_2.inbound.Body}}",
         "offset": {
           "x": 1430,
           "y": 3090
@@ -1994,7 +1932,7 @@ ${
       }
     },
     {
-      "name": "send_opt_1_emergency",
+      "name": "send_message_opt_1_emergency",
       "type": "send-message",
       "transitions": [
         {
@@ -2022,23 +1960,48 @@ ${
       "type": "run-function",
       "transitions": [
         {
-          "next": "send_playback_menu",
+          "next": "send_wait_playback_menu",
           "event": "success"
         },
         {
-          "next": "send_playback_menu",
+          "next": "send_wait_playback_menu",
           "event": "fail"
         }
       ],
       "properties": {
-        "service_sid": "ZSef16a2a1468522b0bff91ff2e78d6744",
-        "environment_sid": "ZE94dddf1f10abf3042db52ed92e07895c",
+        "service_sid": "${flow_vars.co_assets_service_sid}",
+        "environment_sid": "${flow_vars.co_assets_environment_sid}",
         "offset": {
           "x": -170,
           "y": 1970
         },
-        "function_sid": "ZH7d2de177a88e6a62cfdca6f535216d7c",
-        "url": "https://co-assets-2865.twil.io/waitFiveSeconds"
+        "function_sid": "${flow_vars.wait_five_seconds_function_sid}",
+        "url": "${flow_vars.co_assets_url}/waitFiveSeconds"
+      }
+    },
+    {
+      "name": "f_operatingHours",
+      "type": "make-http-request",
+      "transitions": [
+        {
+          "next": "split_status",
+          "event": "success"
+        },
+        {
+          "next": "split_status",
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": -1200,
+          "y": -320
+        },
+        "method": "POST",
+        "content_type": "application/json;charset=utf-8",
+        "add_twilio_auth": false,
+        "body": "{channel = \"whatsapp\" }",
+        "url": "https://hrm-staging.tl.techmatters.org/lambda/twilio/account-scoped/AC76b8bd2798b01b067a1be7f17d36c894/operatingHours"
       }
     }
   ],

@@ -53,6 +53,9 @@ locals {
           widget_from           = "Te Guío"
           chat_greeting_message = "¡Hola, te damos la bienvenida a Te Guío! Esta es la línea de ayuda dedicada a adolescentes como tú, donde escuchamos y orientamos  las inquietudes que puedes tener para lograr vivir una sexualidad saludable. Qué gusto que te contactes con nosotros. Por favor espéranos mientras te contactamos con un Guía."
           chat_blocked_message  = "Lamentablemente no puedes utilizar nuestros servicios."
+          message_closing       = "Lo siento, no he logrado entender tu respuesta.\nPor favor, intenta comunicarte de nuevo con nosotros.\nAdiós!"
+          message_wait = "¡Muchas gracias! En un momento uno de nuestros guías te atenderá. Por favor, espéranos.."
+          message_no_terms = "Entendemos tu decisión. Para garantizar la privacidad y seguridad de todos los usuarios, es necesario aceptar nuestra política de privacidad para acceder a Te Guío.\n\nSi en otro momento decides continuar, estaremos aquí para apoyarte. 💙\n\nEn Te Guío está bien preguntar."
         }
         chatbot_unique_names = []
       }
@@ -62,10 +65,14 @@ locals {
       environment_sid                   = "ZE339938daa781b8e21baa45feae0e1afe"
       operating_hours_function_sid      = "ZH5fcc5dee5089c176acd0bd24e7fa873e"
       send_message_janitor_function_sid = "ZH74666f7e7ee6bc54405a2d37b98518f8"
+      co_assets_url                     = "https://co-assets-2865.twil.io"
+      co_assets_service_sid             = "ZSef16a2a1468522b0bff91ff2e78d6744"
+      co_assets_environment_sid         = "ZE94dddf1f10abf3042db52ed92e07895c"
+      wait_five_seconds_function_sid    = "ZH7d2de177a88e6a62cfdca6f535216d7c"
       chat_blocked_message              = "Lamentablemente no puedes utilizar nuestros servicios."
       widget_from                       = "Te Guío"
     }
 
-  get_profile_flags_for_identifier_base_url = "https://hrm-staging.tl.techmatters.org/lambda/twilio/account-scoped"
+    get_profile_flags_for_identifier_base_url = "https://hrm-staging.tl.techmatters.org/lambda/twilio/account-scoped"
   }
 }
