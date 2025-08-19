@@ -7,7 +7,7 @@ locals {
 
 
     custom_task_routing_filter_expression = "isContactlessTask==true OR channelType IN ['web', 'messenger', 'instagram', 'whatsapp'] OR  twilioNumber IN ['messenger:103574689075106', 'twitter:1540032139563073538', 'instagram:17841454586132629', 'whatsapp:+12135834846'] OR to IN ['+17752526377','+578005190671']"
-
+    operating_hours_enforced_override     = true
 
     channels = {
       webchat : {

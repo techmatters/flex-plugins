@@ -2000,8 +2000,8 @@ ${
         "method": "POST",
         "content_type": "application/json;charset=utf-8",
         "add_twilio_auth": false,
-        "body": "{channel = \"whatsapp\" }",
-        "url": "https://hrm-staging.tl.techmatters.org/lambda/twilio/account-scoped/AC76b8bd2798b01b067a1be7f17d36c894/operatingHours"
+        "body": "{\"channel\" : \"whatsapp\" },
+        "url": "${lambda_twilio_account_scoped_url}/operatingHours"
       }
     }
   ],
