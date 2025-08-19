@@ -34,7 +34,7 @@ const CaseListTableHead = () => {
         <CaseListTableHeadCell
           column={ListCasesSortBy.LABEL}
           defaultSortDirection={SortDirection.ASC}
-          localizedText="CaseList-THLabel"
+          localizedText="CaseList-THChildName"
         />
         <CaseListTableHeadCell localizedText="CaseList-THCounselor" />
         <CaseListTableHeadCell localizedText="CaseList-THSummary" width="20%" />
