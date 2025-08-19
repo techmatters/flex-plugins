@@ -9,7 +9,6 @@
             "enableExternalRecordings": false
         },
         "feature_flags": {
-            "enable_voice_recordings": true,
             "enable_client_profiles":true,
             "enable_conferencing": true,
             "enable_hierarchical_translations": true,

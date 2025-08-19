@@ -18,10 +18,9 @@
             "enable_switchboarding_move_tasks": true,
             "use_prepopulate_mappings": true,
             "enable_resouorces_updates": true,
-            "enable_conference_status_event_handler": true,
             "enable_configurable_max_categories": true,
             "enable_llm_summary": true,
-            "enable_lambda_post_survey_processing": true,
+            "enable_lambda_post_survey_processing": true
         },
         "helplineLanguage": "en-US"
     }
