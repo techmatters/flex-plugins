@@ -1,0 +1,2050 @@
+${
+  jsonencode({
+  "description": "(WIP) Whatsapp Studio Flow",
+  "states": [
+    {
+      "name": "Trigger",
+      "type": "trigger",
+      "transitions": [
+        {
+          "event": "incomingMessage"
+        },
+        {
+          "event": "incomingCall"
+        },
+        {
+          "next": "getProfileFlagsForIdentifier",
+          "event": "incomingConversationMessage"
+        },
+        {
+          "event": "incomingRequest"
+        },
+        {
+          "event": "incomingParent"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": -190,
+          "y": -1700
+        }
+      }
+    },
+    {
+      "name": "check_operating_hours",
+      "type": "run-function",
+      "transitions": [
+        {
+          "next": "split_status",
+          "event": "success"
+        },
+        {
+          "next": "webhook_notify_error",
+          "event": "fail"
+        }
+      ],
+      "properties": {
+        "service_sid": "ZSbf1bb881cc2e8db613ee6bca0e8e2c29",
+        "environment_sid": "ZE339938daa781b8e21baa45feae0e1afe",
+        "offset": {
+          "x": 30,
+          "y": -1010
+        },
+        "function_sid": "ZH5fcc5dee5089c176acd0bd24e7fa873e",
+        "parameters": [
+          {
+            "value": "webchat",
+            "key": "channel"
+          },
+          {
+            "value": "true",
+            "key": "includeMessageTextInResponse"
+          },
+          {
+            "value": "es-CO",
+            "key": "language"
+          }
+        ],
+        "url": "https://serverless-2395-production.twil.io/operatingHours"
+      }
+    },
+    {
+      "name": "split_status",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "webhook_notify_error",
+          "event": "noMatch"
+        },
+        {
+          "next": "terms_and_conditions",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to open",
+              "arguments": [
+                "{{widgets.check_operating_hours.parsed.status}}"
+              ],
+              "type": "equal_to",
+              "value": "open"
+            }
+          ]
+        },
+        {
+          "next": "send_welcome_menu",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If matches_any_of closed,holiday",
+              "arguments": [
+                "{{widgets.check_operating_hours.parsed.status}}"
+              ],
+              "type": "matches_any_of",
+              "value": "closed,holiday"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{widgets.check_operating_hours.parsed.status}}",
+        "offset": {
+          "x": 390,
+          "y": -1410
+        }
+      }
+    },
+    {
+      "name": "webhook_notify_error",
+      "type": "make-http-request",
+      "transitions": [
+        {
+          "event": "success"
+        },
+        {
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": -70,
+          "y": -560
+        },
+        "method": "POST",
+        "content_type": "application/json;charset=utf-8",
+        "add_twilio_auth": false,
+        "body": "{ \"text\": \"Issue detected on CO STG Flow SID: {{flow.flow_sid}} Execution SID: {{flow.sid}}  \" }",
+        "url": "https://hooks.slack.com/services/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"
+      }
+    },
+    {
+      "name": "send_closed",
+      "type": "send-message",
+      "transitions": [
+        {
+          "event": "sent"
+        },
+        {
+          "next": "webhook_notify_error",
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 1140,
+          "y": -900
+        },
+        "service": "{{trigger.conversation.InstanceSid}}",
+        "channel": "{{trigger.conversation.ChannelSid}}",
+        "from": "Linea Libre",
+        "to": "{{contact.channel.address}}",
+        "body": "{{widgets.check_operating_hours.parsed.message}}"
+      }
+    },
+    {
+      "name": "attributes",
+      "type": "send-to-flex",
+      "transitions": [
+        {
+          "event": "callComplete"
+        },
+        {
+          "event": "failedToEnqueue"
+        },
+        {
+          "event": "callFailure"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 1400,
+          "y": 610
+        },
+        "workflow": "WW268360a32f84c636a7f589d500990f58",
+        "channel": "TC2ab360d1cc63d0a7ed3b2dd39a8ba947",
+        "attributes": "{\n  \"name\": \"{{trigger.conversation.ChannelAttributes.from}}\",\n  \"channelType\": \"{% if trigger.conversation.ChannelAttributes.channel_type %}{{trigger.conversation.ChannelAttributes.channel_type}}{% else %}{{trigger.conversation.Source | downcase}}{% endif %}\",\n  \"customChannelType\": \"{{trigger.conversation.ChannelAttributes.channelType}}\", \n  \"channelSid\": \"{{trigger.conversation.ChannelSid}}\",\n  \"twilioNumber\": \"{{trigger.conversation.ChannelAttributes.twilioNumber}}\",\n  \"ignoreAgent\": \"\",\n  \"helpline\":\"Te Guío\",\n  \"language\":\"es-CO\",\n  \"transferTargetType\": \"\",\n  \"memory\": {{trigger.conversation.ChannelAttributes.memory | to_json}}\n}"
+      }
+    },
+    {
+      "name": "getProfileFlagsForIdentifier",
+      "type": "make-http-request",
+      "transitions": [
+        {
+          "next": "contact_routing",
+          "event": "success"
+        },
+        {
+          "next": "check_operating_hours",
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": -200,
+          "y": -760
+        },
+        "method": "POST",
+        "content_type": "application/json;charset=utf-8",
+        "add_twilio_auth": false,
+        "body": "{ \"trigger\": {{trigger | to_json}}, \"channelType\": \"whatsapp\"}",
+        "url": "https://serverless-2395-production.twil.io/getProfileFlagsForIdentifier"
+      }
+    },
+    {
+      "name": "send_blocked_message",
+      "type": "send-message",
+      "transitions": [
+        {
+          "event": "sent"
+        },
+        {
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": -190,
+          "y": -1350
+        },
+        "service": "{{trigger.conversation.InstanceSid}}",
+        "channel": "{{trigger.conversation.ChannelSid}}",
+        "from": "Te Guío",
+        "to": "{{contact.channel.address}}",
+        "body": "Lamentablemente no puedes utilizar nuestros servicios."
+      }
+    },
+    {
+      "name": "contact_routing",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "check_operating_hours",
+          "event": "noMatch"
+        },
+        {
+          "next": "send_blocked_message",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value contains blocked",
+              "arguments": [
+                "{{widgets.getProfileFlagsForIdentifier.parsed.flags}}"
+              ],
+              "type": "contains",
+              "value": "blocked"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{widgets.getProfileFlagsForIdentifier.parsed.flags}}",
+        "offset": {
+          "x": -450,
+          "y": -980
+        }
+      }
+    },
+    {
+      "name": "terms_and_conditions",
+      "type": "send-and-wait-for-reply",
+      "transitions": [
+        {
+          "next": "terms_and_conditions_response",
+          "event": "incomingMessage"
+        },
+        {
+          "event": "timeout"
+        },
+        {
+          "event": "deliveryFailure"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 740,
+          "y": -870
+        },
+        "service": "{{trigger.message.InstanceSid}}",
+        "channel": "{{trigger.message.ChannelSid}}",
+        "from": "{{flow.channel.address}}",
+        "message_type": "content_template",
+        "content_sid": "HX8cddbe4f1dddcd6b137ac70bfaeb5698",
+        "timeout": "3600"
+      }
+    },
+    {
+      "name": "terms_and_conditions_response",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "terms_and_conditions_attempt",
+          "event": "noMatch"
+        },
+        {
+          "next": "send_welcome_and_request_reason",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value matches_any_of 1,Si,Sí,si,sí",
+              "arguments": [
+                "{{widgets.terms_and_conditions.inbound.Body}}"
+              ],
+              "type": "matches_any_of",
+              "value": "1,Si,Sí,si,sí"
+            }
+          ]
+        },
+        {
+          "next": "no_terms_message",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value matches_any_of 2,No,no",
+              "arguments": [
+                "{{widgets.terms_and_conditions.inbound.Body}}"
+              ],
+              "type": "matches_any_of",
+              "value": "2,No,no"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{widgets.terms_and_conditions.inbound.Body}}",
+        "offset": {
+          "x": 820,
+          "y": -600
+        }
+      }
+    },
+    {
+      "name": "send_welcome_and_request_reason",
+      "type": "send-and-wait-for-reply",
+      "transitions": [
+        {
+          "next": "contact_reason_response",
+          "event": "incomingMessage"
+        },
+        {
+          "event": "timeout"
+        },
+        {
+          "event": "deliveryFailure"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 1120,
+          "y": -290
+        },
+        "service": "{{trigger.message.InstanceSid}}",
+        "channel": "{{trigger.message.ChannelSid}}",
+        "from": "{{flow.channel.address}}",
+        "message_type": "content_template",
+        "content_sid": "HX076f06e367c967998f42ab0fd63d6a07",
+        "timeout": "3600"
+      }
+    },
+    {
+      "name": "contact_reason_response",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "contact_reason_attempt",
+          "event": "noMatch"
+        },
+        {
+          "next": "send_wait_message",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value matches_any_of 1,2,3,4",
+              "arguments": [
+                "{{widgets.send_welcome_and_request_reason.inbound.Body}}"
+              ],
+              "type": "matches_any_of",
+              "value": "1,2,3,4"
+            }
+          ]
+        },
+        {
+          "next": "send_final_message",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to 5",
+              "arguments": [
+                "{{widgets.send_welcome_and_request_reason.inbound.Body}}"
+              ],
+              "type": "equal_to",
+              "value": "5"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{widgets.send_welcome_and_request_reason.inbound.Body}}",
+        "offset": {
+          "x": 1190,
+          "y": -30
+        }
+      }
+    },
+    {
+      "name": "send_final_message",
+      "type": "send-message",
+      "transitions": [
+        {
+          "event": "sent"
+        },
+        {
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 1760,
+          "y": 250
+        },
+        "service": "{{trigger.message.InstanceSid}}",
+        "channel": "{{trigger.message.ChannelSid}}",
+        "from": "{{flow.channel.address}}",
+        "message_type": "content_template",
+        "to": "{{contact.channel.address}}",
+        "content_sid": "HX1e5d6c2a6092c40c6059c9056e0b7646"
+      }
+    },
+    {
+      "name": "terms_and_conditions_attempt",
+      "type": "set-variables",
+      "transitions": [
+        {
+          "next": "split_terms_and_conditions_attempt",
+          "event": "next"
+        }
+      ],
+      "properties": {
+        "variables": [
+          {
+            "type": "string",
+            "value": "{% if flow.variables. terms_and_conditions_attempt %}{{flow.variables. terms_and_conditions_attempt | plus: 1}}{% else %}0{% endif %}",
+            "key": "terms_and_conditions_attempt"
+          }
+        ],
+        "offset": {
+          "x": 540,
+          "y": -370
+        }
+      }
+    },
+    {
+      "name": "split_terms_and_conditions_attempt",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "terms_and_conditions",
+          "event": "noMatch"
+        },
+        {
+          "next": "send_closing_message",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value greater_than 2",
+              "arguments": [
+                "{{flow.variables. terms_and_conditions_attempt}}"
+              ],
+              "type": "greater_than",
+              "value": "2"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{flow.variables. terms_and_conditions_attempt}}",
+        "offset": {
+          "x": 280,
+          "y": -610
+        }
+      }
+    },
+    {
+      "name": "send_closing_message",
+      "type": "send-message",
+      "transitions": [
+        {
+          "event": "sent"
+        },
+        {
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 250,
+          "y": 230
+        },
+        "service": "{{trigger.conversation.InstanceSid}}",
+        "channel": "{{trigger.conversation.ChannelSid}}",
+        "from": "Linea Libre",
+        "to": "{{contact.channel.address}}",
+        "body": "Lo siento, no he logrado entender tu respuesta.\nPor favor, intenta comunicarte de nuevo con nosotros.\nAdiós!"
+      }
+    },
+    {
+      "name": "contact_reason_attempt",
+      "type": "set-variables",
+      "transitions": [
+        {
+          "next": "split_contact_reason_attempt",
+          "event": "next"
+        }
+      ],
+      "properties": {
+        "variables": [
+          {
+            "type": "string",
+            "value": "{% if flow.variables.contact_attempt %}{{flow.variables.contact_attempt  | plus: 1}}{% else %}0{% endif %}",
+            "key": "contact_attempt"
+          }
+        ],
+        "offset": {
+          "x": 940,
+          "y": 290
+        }
+      }
+    },
+    {
+      "name": "split_contact_reason_attempt",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "send_welcome_and_request_reason",
+          "event": "noMatch"
+        },
+        {
+          "next": "send_closing_message",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value greater_than 2",
+              "arguments": [
+                "{{flow.variables. contact_reason_attempt}}"
+              ],
+              "type": "greater_than",
+              "value": "2"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{flow.variables. contact_reason_attempt}}",
+        "offset": {
+          "x": 660,
+          "y": 0
+        }
+      }
+    },
+    {
+      "name": "send_wait_message",
+      "type": "send-message",
+      "transitions": [
+        {
+          "next": "attributes",
+          "event": "sent"
+        },
+        {
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 1370,
+          "y": 280
+        },
+        "service": "{{trigger.conversation.InstanceSid}}",
+        "channel": "{{trigger.conversation.ChannelSid}}",
+        "from": "Linea Libre",
+        "to": "{{contact.channel.address}}",
+        "body": "¡Muchas gracias! En un momento uno de nuestros guías te atenderá. Por favor, espéranos.."
+      }
+    },
+    {
+      "name": "no_terms_message",
+      "type": "send-message",
+      "transitions": [
+        {
+          "event": "sent"
+        },
+        {
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 1560,
+          "y": -320
+        },
+        "service": "{{trigger.conversation.InstanceSid}}",
+        "channel": "{{trigger.conversation.ChannelSid}}",
+        "from": "Linea Libre",
+        "to": "{{contact.channel.address}}",
+        "body": "Entendemos tu decisión. Para garantizar la privacidad y seguridad de todos los usuarios, es necesario aceptar nuestra política de privacidad para acceder a Te Guío.\n\nSi en otro momento decides continuar, estaremos aquí para apoyarte. 💙\n\nEn Te Guío está bien preguntar."
+      }
+    },
+    {
+      "name": "send_welcome_menu",
+      "type": "send-and-wait-for-reply",
+      "transitions": [
+        {
+          "next": "split_options",
+          "event": "incomingMessage"
+        },
+        {
+          "event": "timeout"
+        },
+        {
+          "event": "deliveryFailure"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": -540,
+          "y": 380
+        },
+        "service": "{{trigger.message.InstanceSid}}",
+        "channel": "{{trigger.message.ChannelSid}}",
+        "from": "{{flow.channel.address}}",
+        "message_type": "content_template",
+        "content_sid": "HX3a03e3c706ab704ca6c4303d3629901a",
+        "timeout": "3600"
+      }
+    },
+    {
+      "name": "split_options",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "event": "noMatch"
+        },
+        {
+          "next": "send_opt_1_emergency",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to 1",
+              "arguments": [
+                "{{widgets.send_welcome_menu.inbound.Body}}"
+              ],
+              "type": "equal_to",
+              "value": "1"
+            }
+          ]
+        },
+        {
+          "next": "send_opt_2_resources",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to 2",
+              "arguments": [
+                "{{widgets.send_welcome_menu.inbound.Body}}"
+              ],
+              "type": "equal_to",
+              "value": "2"
+            }
+          ]
+        },
+        {
+          "next": "send_opt_3_ideas",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to 3",
+              "arguments": [
+                "{{widgets.send_welcome_menu.inbound.Body}}"
+              ],
+              "type": "equal_to",
+              "value": "3"
+            }
+          ]
+        },
+        {
+          "next": "send_opt_4_worries",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to 4",
+              "arguments": [
+                "{{widgets.send_welcome_menu.inbound.Body}}"
+              ],
+              "type": "equal_to",
+              "value": "4"
+            }
+          ]
+        },
+        {
+          "next": "send_opt_5_report",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to 5",
+              "arguments": [
+                "{{widgets.send_welcome_menu.inbound.Body}}"
+              ],
+              "type": "equal_to",
+              "value": "5"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{widgets.send_welcome_menu.inbound.Body}}",
+        "offset": {
+          "x": -690,
+          "y": 750
+        }
+      }
+    },
+    {
+      "name": "send_opt_2_resources",
+      "type": "send-message",
+      "transitions": [
+        {
+          "next": "five_second_delay",
+          "event": "sent"
+        },
+        {
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": -430,
+          "y": 1080
+        },
+        "service": "{{trigger.message.InstanceSid}}",
+        "channel": "{{trigger.message.ChannelSid}}",
+        "from": "{{flow.channel.address}}",
+        "message_type": "content_template",
+        "to": "{{contact.channel.address}}",
+        "content_sid": "HXfb6ef0985b9386d70c806df4e1a0c0b4"
+      }
+    },
+    {
+      "name": "send_opt_2_closure",
+      "type": "send-message",
+      "transitions": [
+        {
+          "next": "five_second_delay_closure",
+          "event": "sent"
+        },
+        {
+          "next": "five_second_delay_closure",
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": -360,
+          "y": 1740
+        },
+        "service": "{{trigger.message.InstanceSid}}",
+        "channel": "{{trigger.message.ChannelSid}}",
+        "from": "{{flow.channel.address}}",
+        "message_type": "content_template",
+        "to": "{{contact.channel.address}}",
+        "content_sid": "HXb935060a75ed82ac4de9b2b7b848c833"
+      }
+    },
+    {
+      "name": "five_second_delay",
+      "type": "run-function",
+      "transitions": [
+        {
+          "next": "send_opt_2_closure",
+          "event": "success"
+        },
+        {
+          "event": "fail"
+        }
+      ],
+      "properties": {
+        "service_sid": "ZSef16a2a1468522b0bff91ff2e78d6744",
+        "environment_sid": "ZE94dddf1f10abf3042db52ed92e07895c",
+        "offset": {
+          "x": -240,
+          "y": 1430
+        },
+        "function_sid": "ZH7d2de177a88e6a62cfdca6f535216d7c",
+        "url": "https://co-assets-2865.twil.io/waitFiveSeconds"
+      }
+    },
+    {
+      "name": "send_playback_menu",
+      "type": "send-and-wait-for-reply",
+      "transitions": [
+        {
+          "next": "split_playback_options",
+          "event": "incomingMessage"
+        },
+        {
+          "next": "send_final_goodbye",
+          "event": "timeout"
+        },
+        {
+          "event": "deliveryFailure"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": -230,
+          "y": 2240
+        },
+        "service": "{{trigger.message.InstanceSid}}",
+        "channel": "{{trigger.message.ChannelSid}}",
+        "from": "{{flow.channel.address}}",
+        "message_type": "content_template",
+        "content_sid": "HXc41534084761dd0ffc98cf3bcaffeee1",
+        "timeout": "3600"
+      }
+    },
+    {
+      "name": "split_playback_options",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "send_final_goodbye",
+          "event": "noMatch"
+        },
+        {
+          "next": "send_welcome_menu",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to 1",
+              "arguments": [
+                "{{widgets.send_playback_menu.inbound.Body}}"
+              ],
+              "type": "equal_to",
+              "value": "Volver al menú principal"
+            }
+          ]
+        },
+        {
+          "next": "send_final_goodbye",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to 2",
+              "arguments": [
+                "{{widgets.send_playback_menu.inbound.Body}}"
+              ],
+              "type": "equal_to",
+              "value": "Terminar la comunicación"
+            }
+          ]
+        },
+        {
+          "next": "split_options_worries",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to 3",
+              "arguments": [
+                "{{widgets.send_playback_menu.inbound.Body}}"
+              ],
+              "type": "equal_to",
+              "value": "Volver al menú anterior"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{widgets.send_playback_menu.inbound.Body}}",
+        "offset": {
+          "x": -290,
+          "y": 2620
+        }
+      }
+    },
+    {
+      "name": "send_final_goodbye",
+      "type": "send-message",
+      "transitions": [
+        {
+          "event": "sent"
+        },
+        {
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 100,
+          "y": 3320
+        },
+        "service": "{{trigger.message.InstanceSid}}",
+        "channel": "{{trigger.message.ChannelSid}}",
+        "from": "{{flow.channel.address}}",
+        "message_type": "content_template",
+        "to": "{{contact.channel.address}}",
+        "content_sid": "HXa7301c08423546cbbba2b6e420ed86f1"
+      }
+    },
+    {
+      "name": "send_opt_3_ideas",
+      "type": "send-message",
+      "transitions": [
+        {
+          "next": "opt_3_five_second_delay",
+          "event": "sent"
+        },
+        {
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": -60,
+          "y": 1080
+        },
+        "service": "{{trigger.message.InstanceSid}}",
+        "channel": "{{trigger.message.ChannelSid}}",
+        "from": "{{flow.channel.address}}",
+        "message_type": "content_template",
+        "to": "{{contact.channel.address}}",
+        "content_sid": "HXb7b192ab9812830a166bfec5040fa0c1"
+      }
+    },
+    {
+      "name": "opt_3_five_second_delay",
+      "type": "run-function",
+      "transitions": [
+        {
+          "next": "send_opt_3_closure",
+          "event": "success"
+        },
+        {
+          "event": "fail"
+        }
+      ],
+      "properties": {
+        "service_sid": "ZSef16a2a1468522b0bff91ff2e78d6744",
+        "environment_sid": "ZE94dddf1f10abf3042db52ed92e07895c",
+        "offset": {
+          "x": 110,
+          "y": 1420
+        },
+        "function_sid": "ZH7d2de177a88e6a62cfdca6f535216d7c",
+        "url": "https://co-assets-2865.twil.io/waitFiveSeconds"
+      }
+    },
+    {
+      "name": "send_opt_3_closure",
+      "type": "send-message",
+      "transitions": [
+        {
+          "next": "five_second_delay_closure",
+          "event": "sent"
+        },
+        {
+          "next": "five_second_delay_closure",
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 160,
+          "y": 1740
+        },
+        "service": "{{trigger.message.InstanceSid}}",
+        "channel": "{{trigger.message.ChannelSid}}",
+        "from": "{{flow.channel.address}}",
+        "message_type": "content_template",
+        "to": "{{contact.channel.address}}",
+        "content_sid": "HX67cc3515d008058dc256eb784b2dfadc"
+      }
+    },
+    {
+      "name": "split_options_worries",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "event": "noMatch"
+        },
+        {
+          "next": "send_opt_4_1",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to 1",
+              "arguments": [
+                "{{widgets.send_opt_4_worries.inbound.Body}}"
+              ],
+              "type": "equal_to",
+              "value": "1"
+            }
+          ]
+        },
+        {
+          "next": "send_opt_4_2",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to 2",
+              "arguments": [
+                "{{widgets.send_opt_4_worries.inbound.Body}}"
+              ],
+              "type": "equal_to",
+              "value": "2"
+            }
+          ]
+        },
+        {
+          "next": "send_opt_4_3",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to 3",
+              "arguments": [
+                "{{widgets.send_opt_4_worries.inbound.Body}}"
+              ],
+              "type": "equal_to",
+              "value": "3"
+            }
+          ]
+        },
+        {
+          "next": "send_opt_4_4",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to 4",
+              "arguments": [
+                "{{widgets.send_opt_4_worries.inbound.Body}}"
+              ],
+              "type": "equal_to",
+              "value": "4"
+            }
+          ]
+        },
+        {
+          "next": "send_opt_4_5",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to 5",
+              "arguments": [
+                "{{widgets.send_opt_4_worries.inbound.Body}}"
+              ],
+              "type": "equal_to",
+              "value": "5"
+            }
+          ]
+        },
+        {
+          "next": "send_opt_4_6",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to 6",
+              "arguments": [
+                "{{widgets.send_opt_4_worries.inbound.Body}}"
+              ],
+              "type": "equal_to",
+              "value": "6"
+            }
+          ]
+        },
+        {
+          "next": "send_opt_4_7",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to 7",
+              "arguments": [
+                "{{widgets.send_opt_4_worries.inbound.Body}}"
+              ],
+              "type": "equal_to",
+              "value": "7"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{widgets.send_opt_4_worries.inbound.Body}}",
+        "offset": {
+          "x": 580,
+          "y": 1330
+        }
+      }
+    },
+    {
+      "name": "send_opt_4_worries",
+      "type": "send-and-wait-for-reply",
+      "transitions": [
+        {
+          "next": "split_options_worries",
+          "event": "incomingMessage"
+        },
+        {
+          "event": "timeout"
+        },
+        {
+          "event": "deliveryFailure"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 400,
+          "y": 1080
+        },
+        "service": "{{trigger.message.InstanceSid}}",
+        "channel": "{{trigger.message.ChannelSid}}",
+        "from": "{{flow.channel.address}}",
+        "message_type": "content_template",
+        "content_sid": "HXf46139aeb08c1d233534dae8646c02eb",
+        "timeout": "3600"
+      }
+    },
+    {
+      "name": "send_opt_4_1",
+      "type": "send-message",
+      "transitions": [
+        {
+          "next": "opt_4_five_second_delay",
+          "event": "sent"
+        },
+        {
+          "next": "opt_4_five_second_delay",
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 520,
+          "y": 1620
+        },
+        "service": "{{trigger.message.InstanceSid}}",
+        "channel": "{{trigger.message.ChannelSid}}",
+        "from": "{{flow.channel.address}}",
+        "message_type": "content_template",
+        "to": "{{contact.channel.address}}",
+        "content_sid": "HX2c8d0fbd8805ec91fbfab69bc8d2f2d3"
+      }
+    },
+    {
+      "name": "send_opt_4_2",
+      "type": "send-message",
+      "transitions": [
+        {
+          "next": "opt_4_five_second_delay",
+          "event": "sent"
+        },
+        {
+          "next": "opt_4_five_second_delay",
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 600,
+          "y": 1820
+        },
+        "service": "{{trigger.message.InstanceSid}}",
+        "channel": "{{trigger.message.ChannelSid}}",
+        "from": "{{flow.channel.address}}",
+        "message_type": "content_template",
+        "to": "{{contact.channel.address}}",
+        "content_sid": "HX4e709a841d2b200b433796fc358774d8"
+      }
+    },
+    {
+      "name": "send_opt_4_3",
+      "type": "send-message",
+      "transitions": [
+        {
+          "next": "opt_4_five_second_delay",
+          "event": "sent"
+        },
+        {
+          "next": "opt_4_five_second_delay",
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 680,
+          "y": 2020
+        },
+        "service": "{{trigger.message.InstanceSid}}",
+        "channel": "{{trigger.message.ChannelSid}}",
+        "from": "{{flow.channel.address}}",
+        "message_type": "content_template",
+        "to": "{{contact.channel.address}}",
+        "content_sid": "HXc6c92788613a7d8a5cebf60bfc1e202e"
+      }
+    },
+    {
+      "name": "send_opt_4_4",
+      "type": "send-message",
+      "transitions": [
+        {
+          "next": "opt_4_five_second_delay",
+          "event": "sent"
+        },
+        {
+          "next": "opt_4_five_second_delay",
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 850,
+          "y": 1620
+        },
+        "service": "{{trigger.message.InstanceSid}}",
+        "channel": "{{trigger.message.ChannelSid}}",
+        "from": "{{flow.channel.address}}",
+        "message_type": "content_template",
+        "to": "{{contact.channel.address}}",
+        "content_sid": "HX07ec17590b49165f33b3b7be30dd633f"
+      }
+    },
+    {
+      "name": "send_opt_4_5",
+      "type": "send-message",
+      "transitions": [
+        {
+          "next": "opt_4_five_second_delay",
+          "event": "sent"
+        },
+        {
+          "next": "opt_4_five_second_delay",
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 930,
+          "y": 1820
+        },
+        "service": "{{trigger.message.InstanceSid}}",
+        "channel": "{{trigger.message.ChannelSid}}",
+        "from": "{{flow.channel.address}}",
+        "message_type": "content_template",
+        "to": "{{contact.channel.address}}",
+        "content_sid": "HXf48dba4eaaf21faaf2df894db61337b8"
+      }
+    },
+    {
+      "name": "send_opt_4_6",
+      "type": "send-message",
+      "transitions": [
+        {
+          "next": "opt_4_five_second_delay",
+          "event": "sent"
+        },
+        {
+          "next": "opt_4_five_second_delay",
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 1010,
+          "y": 2020
+        },
+        "service": "{{trigger.message.InstanceSid}}",
+        "channel": "{{trigger.message.ChannelSid}}",
+        "from": "{{flow.channel.address}}",
+        "message_type": "content_template",
+        "to": "{{contact.channel.address}}",
+        "content_sid": "HXfc02d4af0fcdab5265a0f0cd4b58c228"
+      }
+    },
+    {
+      "name": "send_opt_4_7",
+      "type": "send-message",
+      "transitions": [
+        {
+          "next": "opt_4_five_second_delay",
+          "event": "sent"
+        },
+        {
+          "next": "opt_4_five_second_delay",
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 1180,
+          "y": 1620
+        },
+        "service": "{{trigger.message.InstanceSid}}",
+        "channel": "{{trigger.message.ChannelSid}}",
+        "from": "{{flow.channel.address}}",
+        "message_type": "content_template",
+        "to": "{{contact.channel.address}}",
+        "content_sid": "HXb24ae48f56a6e35b2d3e00ac66b296a1"
+      }
+    },
+    {
+      "name": "opt_4_five_second_delay",
+      "type": "run-function",
+      "transitions": [
+        {
+          "next": "send_opt_4_closure",
+          "event": "success"
+        },
+        {
+          "next": "send_opt_4_closure",
+          "event": "fail"
+        }
+      ],
+      "properties": {
+        "service_sid": "ZSef16a2a1468522b0bff91ff2e78d6744",
+        "environment_sid": "ZE94dddf1f10abf3042db52ed92e07895c",
+        "offset": {
+          "x": 830,
+          "y": 2330
+        },
+        "function_sid": "ZH7d2de177a88e6a62cfdca6f535216d7c",
+        "url": "https://co-assets-2865.twil.io/waitFiveSeconds"
+      }
+    },
+    {
+      "name": "send_opt_4_closure",
+      "type": "send-message",
+      "transitions": [
+        {
+          "next": "opt_4_closure_five_second_delay",
+          "event": "sent"
+        },
+        {
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 1100,
+          "y": 2560
+        },
+        "service": "{{trigger.message.InstanceSid}}",
+        "channel": "{{trigger.message.ChannelSid}}",
+        "from": "{{flow.channel.address}}",
+        "message_type": "content_template",
+        "to": "{{contact.channel.address}}",
+        "content_sid": "HX6402298c0f0c4681040a2aec5b63745d"
+      }
+    },
+    {
+      "name": "send_playback_previous_menu",
+      "type": "send-and-wait-for-reply",
+      "transitions": [
+        {
+          "next": "split_playback_previous_options",
+          "event": "incomingMessage"
+        },
+        {
+          "next": "send_final_goodbye",
+          "event": "timeout"
+        },
+        {
+          "event": "deliveryFailure"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 1110,
+          "y": 2870
+        },
+        "service": "{{trigger.message.InstanceSid}}",
+        "channel": "{{trigger.message.ChannelSid}}",
+        "from": "{{flow.channel.address}}",
+        "message_type": "content_template",
+        "content_sid": "HX515fc59959ba6c8e20c81be376af3fb3",
+        "timeout": "3600"
+      }
+    },
+    {
+      "name": "opt_4_closure_five_second_delay",
+      "type": "run-function",
+      "transitions": [
+        {
+          "next": "send_playback_previous_menu",
+          "event": "success"
+        },
+        {
+          "next": "send_playback_previous_menu",
+          "event": "fail"
+        }
+      ],
+      "properties": {
+        "service_sid": "ZSef16a2a1468522b0bff91ff2e78d6744",
+        "environment_sid": "ZE94dddf1f10abf3042db52ed92e07895c",
+        "offset": {
+          "x": 660,
+          "y": 2660
+        },
+        "function_sid": "ZH7d2de177a88e6a62cfdca6f535216d7c",
+        "url": "https://co-assets-2865.twil.io/waitFiveSeconds"
+      }
+    },
+    {
+      "name": "split_playback_previous_options",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "event": "noMatch"
+        },
+        {
+          "next": "send_welcome_menu",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to 1",
+              "arguments": [
+                "{{widgets.send_playback_previous_menu.inbound.Body}}"
+              ],
+              "type": "equal_to",
+              "value": "Volver al menú principal"
+            }
+          ]
+        },
+        {
+          "next": "send_final_goodbye",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to 2",
+              "arguments": [
+                "{{widgets.send_playback_previous_menu.inbound.Body}}"
+              ],
+              "type": "equal_to",
+              "value": "Terminar la comunicación"
+            }
+          ]
+        },
+        {
+          "next": "send_opt_4_worries",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to 3",
+              "arguments": [
+                "{{widgets.send_playback_previous_menu.inbound.Body}}"
+              ],
+              "type": "equal_to",
+              "value": "Volver al menú anterior"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{widgets.send_playback_previous_menu.inbound.Body}}",
+        "offset": {
+          "x": 530,
+          "y": 3070
+        }
+      }
+    },
+    {
+      "name": "send_opt_5_report",
+      "type": "send-and-wait-for-reply",
+      "transitions": [
+        {
+          "next": "split_options_report",
+          "event": "incomingMessage"
+        },
+        {
+          "event": "timeout"
+        },
+        {
+          "event": "deliveryFailure"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 1770,
+          "y": 1070
+        },
+        "service": "{{trigger.message.InstanceSid}}",
+        "channel": "{{trigger.message.ChannelSid}}",
+        "from": "{{flow.channel.address}}",
+        "message_type": "content_template",
+        "content_sid": "HX90118370badfb40de34e0256e59fc14d",
+        "timeout": "3600"
+      }
+    },
+    {
+      "name": "split_options_report",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "event": "noMatch"
+        },
+        {
+          "next": "send_opt_5_1",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to 1",
+              "arguments": [
+                "{{widgets.send_opt_5_report.inbound.Body}}"
+              ],
+              "type": "equal_to",
+              "value": "1"
+            }
+          ]
+        },
+        {
+          "next": "send_opt_5_2",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to 2",
+              "arguments": [
+                "{{widgets.send_opt_5_report.inbound.Body}}"
+              ],
+              "type": "equal_to",
+              "value": "2"
+            }
+          ]
+        },
+        {
+          "next": "send_opt_5_3",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to 3",
+              "arguments": [
+                "{{widgets.send_opt_5_report.inbound.Body}}"
+              ],
+              "type": "equal_to",
+              "value": "3"
+            }
+          ]
+        },
+        {
+          "next": "send_opt_5_4",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to 4",
+              "arguments": [
+                "{{widgets.send_opt_5_report.inbound.Body}}"
+              ],
+              "type": "equal_to",
+              "value": "4"
+            }
+          ]
+        },
+        {
+          "next": "send_opt_5_5",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to 5",
+              "arguments": [
+                "{{widgets.send_opt_5_report.inbound.Body}}"
+              ],
+              "type": "equal_to",
+              "value": "5"
+            }
+          ]
+        },
+        {
+          "next": "send_opt_5_6",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to 6",
+              "arguments": [
+                "{{widgets.send_opt_5_report.inbound.Body}}"
+              ],
+              "type": "equal_to",
+              "value": "6"
+            }
+          ]
+        },
+        {
+          "next": "send_opt_5_7",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to 7",
+              "arguments": [
+                "{{widgets.send_opt_5_report.inbound.Body}}"
+              ],
+              "type": "equal_to",
+              "value": "7"
+            }
+          ]
+        },
+        {
+          "next": "send_opt_5_8",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to 8",
+              "arguments": [
+                "{{widgets.send_opt_5_report.inbound.Body}}"
+              ],
+              "type": "equal_to",
+              "value": "8"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{widgets.send_opt_5_report.inbound.Body}}",
+        "offset": {
+          "x": 1560,
+          "y": 1330
+        }
+      }
+    },
+    {
+      "name": "send_opt_5_1",
+      "type": "send-message",
+      "transitions": [
+        {
+          "next": "opt_5_five_second_delay",
+          "event": "sent"
+        },
+        {
+          "next": "opt_5_five_second_delay",
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 1600,
+          "y": 1600
+        },
+        "service": "{{trigger.message.InstanceSid}}",
+        "channel": "{{trigger.message.ChannelSid}}",
+        "from": "{{flow.channel.address}}",
+        "message_type": "content_template",
+        "to": "{{contact.channel.address}}",
+        "content_sid": "HX4cd5839a0bb5e4cf37e4a46fa9eca08d"
+      }
+    },
+    {
+      "name": "send_opt_5_2",
+      "type": "send-message",
+      "transitions": [
+        {
+          "next": "opt_5_five_second_delay",
+          "event": "sent"
+        },
+        {
+          "next": "opt_5_five_second_delay",
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 1660,
+          "y": 1780
+        },
+        "service": "{{trigger.message.InstanceSid}}",
+        "channel": "{{trigger.message.ChannelSid}}",
+        "from": "{{flow.channel.address}}",
+        "message_type": "content_template",
+        "to": "{{contact.channel.address}}",
+        "content_sid": "HX1780dd891ed3d7ed9da892b9b52a8c99"
+      }
+    },
+    {
+      "name": "send_opt_5_3",
+      "type": "send-message",
+      "transitions": [
+        {
+          "next": "opt_5_five_second_delay",
+          "event": "sent"
+        },
+        {
+          "next": "opt_5_five_second_delay",
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 1720,
+          "y": 1970
+        },
+        "service": "{{trigger.message.InstanceSid}}",
+        "channel": "{{trigger.message.ChannelSid}}",
+        "from": "{{flow.channel.address}}",
+        "message_type": "content_template",
+        "to": "{{contact.channel.address}}",
+        "content_sid": "HXe0d8cf537dc3a3ac40ccd060f281c700"
+      }
+    },
+    {
+      "name": "send_opt_5_4",
+      "type": "send-message",
+      "transitions": [
+        {
+          "next": "opt_5_five_second_delay",
+          "event": "sent"
+        },
+        {
+          "next": "opt_5_five_second_delay",
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 1950,
+          "y": 1600
+        },
+        "service": "{{trigger.message.InstanceSid}}",
+        "channel": "{{trigger.message.ChannelSid}}",
+        "from": "{{flow.channel.address}}",
+        "message_type": "content_template",
+        "to": "{{contact.channel.address}}",
+        "content_sid": "HXc515ac2dbb0de4795d7074098dba1996"
+      }
+    },
+    {
+      "name": "send_opt_5_5",
+      "type": "send-message",
+      "transitions": [
+        {
+          "next": "opt_5_five_second_delay",
+          "event": "sent"
+        },
+        {
+          "next": "opt_5_five_second_delay",
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 2000,
+          "y": 1780
+        },
+        "service": "{{trigger.message.InstanceSid}}",
+        "channel": "{{trigger.message.ChannelSid}}",
+        "from": "{{flow.channel.address}}",
+        "message_type": "content_template",
+        "to": "{{contact.channel.address}}",
+        "content_sid": "HXb432f34e5573014fdd385c93ef728b1b"
+      }
+    },
+    {
+      "name": "send_opt_5_6",
+      "type": "send-message",
+      "transitions": [
+        {
+          "next": "opt_5_five_second_delay",
+          "event": "sent"
+        },
+        {
+          "next": "opt_5_five_second_delay",
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 2060,
+          "y": 1970
+        },
+        "service": "{{trigger.message.InstanceSid}}",
+        "channel": "{{trigger.message.ChannelSid}}",
+        "from": "{{flow.channel.address}}",
+        "message_type": "content_template",
+        "to": "{{contact.channel.address}}",
+        "content_sid": "HXac9ceb67ab5f40002e0a1faa41a8c1dd"
+      }
+    },
+    {
+      "name": "send_opt_5_7",
+      "type": "send-message",
+      "transitions": [
+        {
+          "next": "opt_5_five_second_delay",
+          "event": "sent"
+        },
+        {
+          "next": "opt_5_five_second_delay",
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 2300,
+          "y": 1600
+        },
+        "service": "{{trigger.message.InstanceSid}}",
+        "channel": "{{trigger.message.ChannelSid}}",
+        "from": "{{flow.channel.address}}",
+        "message_type": "content_template",
+        "to": "{{contact.channel.address}}",
+        "content_sid": "HX081ba587eb33d7a804e71d92d0993cf4"
+      }
+    },
+    {
+      "name": "send_opt_5_8",
+      "type": "send-message",
+      "transitions": [
+        {
+          "next": "opt_5_five_second_delay",
+          "event": "sent"
+        },
+        {
+          "next": "opt_5_five_second_delay",
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 2340,
+          "y": 1780
+        },
+        "service": "{{trigger.message.InstanceSid}}",
+        "channel": "{{trigger.message.ChannelSid}}",
+        "from": "{{flow.channel.address}}",
+        "message_type": "content_template",
+        "to": "{{contact.channel.address}}",
+        "content_sid": "HXd0a65011b66db9f41786aa76bb2d5028"
+      }
+    },
+    {
+      "name": "opt_5_five_second_delay",
+      "type": "run-function",
+      "transitions": [
+        {
+          "next": "send_opt_5_closure",
+          "event": "success"
+        },
+        {
+          "next": "send_opt_5_closure",
+          "event": "fail"
+        }
+      ],
+      "properties": {
+        "service_sid": "ZSef16a2a1468522b0bff91ff2e78d6744",
+        "environment_sid": "ZE94dddf1f10abf3042db52ed92e07895c",
+        "offset": {
+          "x": 1980,
+          "y": 2290
+        },
+        "function_sid": "ZH7d2de177a88e6a62cfdca6f535216d7c",
+        "url": "https://co-assets-2865.twil.io/waitFiveSeconds"
+      }
+    },
+    {
+      "name": "send_opt_5_closure",
+      "type": "send-message",
+      "transitions": [
+        {
+          "next": "opt_5_closure_five_second_delay",
+          "event": "sent"
+        },
+        {
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 1990,
+          "y": 2560
+        },
+        "service": "{{trigger.message.InstanceSid}}",
+        "channel": "{{trigger.message.ChannelSid}}",
+        "from": "{{flow.channel.address}}",
+        "message_type": "content_template",
+        "to": "{{contact.channel.address}}",
+        "content_sid": "HX49d5199809113f10263805318a397456"
+      }
+    },
+    {
+      "name": "opt_5_closure_five_second_delay",
+      "type": "run-function",
+      "transitions": [
+        {
+          "next": "send_playback_previous_menu_2",
+          "event": "success"
+        },
+        {
+          "next": "send_playback_previous_menu_2",
+          "event": "fail"
+        }
+      ],
+      "properties": {
+        "service_sid": "ZSef16a2a1468522b0bff91ff2e78d6744",
+        "environment_sid": "ZE94dddf1f10abf3042db52ed92e07895c",
+        "offset": {
+          "x": 1610,
+          "y": 2660
+        },
+        "function_sid": "ZH7d2de177a88e6a62cfdca6f535216d7c",
+        "url": "https://co-assets-2865.twil.io/waitFiveSeconds"
+      }
+    },
+    {
+      "name": "send_playback_previous_menu_2",
+      "type": "send-and-wait-for-reply",
+      "transitions": [
+        {
+          "next": "split_playback_previous_options_2",
+          "event": "incomingMessage"
+        },
+        {
+          "next": "send_final_goodbye",
+          "event": "timeout"
+        },
+        {
+          "event": "deliveryFailure"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 1840,
+          "y": 2870
+        },
+        "service": "{{trigger.message.InstanceSid}}",
+        "channel": "{{trigger.message.ChannelSid}}",
+        "from": "{{flow.channel.address}}",
+        "message_type": "content_template",
+        "content_sid": "HX515fc59959ba6c8e20c81be376af3fb3",
+        "timeout": "3600"
+      }
+    },
+    {
+      "name": "split_playback_previous_options_2",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "event": "noMatch"
+        },
+        {
+          "next": "send_welcome_menu",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to 1",
+              "arguments": [
+                "{{widgets.send_playback_previous_menu_2.inbound.Body}}"
+              ],
+              "type": "equal_to",
+              "value": "Volver al menú principal"
+            }
+          ]
+        },
+        {
+          "next": "send_final_goodbye",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to 2",
+              "arguments": [
+                "{{widgets.send_playback_previous_menu_2.inbound.Body}}"
+              ],
+              "type": "equal_to",
+              "value": "Terminar la comunicación"
+            }
+          ]
+        },
+        {
+          "next": "send_opt_5_report",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to 3",
+              "arguments": [
+                "{{widgets.send_playback_previous_menu_2.inbound.Body}}"
+              ],
+              "type": "equal_to",
+              "value": "Volver al menú anterior"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{widgets.send_playback_previous_menu_2.inbound.Body}}",
+        "offset": {
+          "x": 1430,
+          "y": 3090
+        }
+      }
+    },
+    {
+      "name": "send_opt_1_emergency",
+      "type": "send-message",
+      "transitions": [
+        {
+          "event": "sent"
+        },
+        {
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": -740,
+          "y": 1120
+        },
+        "service": "{{trigger.message.InstanceSid}}",
+        "channel": "{{trigger.message.ChannelSid}}",
+        "from": "{{flow.channel.address}}",
+        "message_type": "content_template",
+        "to": "{{contact.channel.address}}",
+        "content_sid": "HX2f5a7f48d0b0b0eec4a20ee5f59f5b85"
+      }
+    },
+    {
+      "name": "five_second_delay_closure",
+      "type": "run-function",
+      "transitions": [
+        {
+          "next": "send_playback_menu",
+          "event": "success"
+        },
+        {
+          "next": "send_playback_menu",
+          "event": "fail"
+        }
+      ],
+      "properties": {
+        "service_sid": "ZSef16a2a1468522b0bff91ff2e78d6744",
+        "environment_sid": "ZE94dddf1f10abf3042db52ed92e07895c",
+        "offset": {
+          "x": -170,
+          "y": 1970
+        },
+        "function_sid": "ZH7d2de177a88e6a62cfdca6f535216d7c",
+        "url": "https://co-assets-2865.twil.io/waitFiveSeconds"
+      }
+    }
+  ],
+  "initial_state": "Trigger",
+  "flags": {
+    "allow_concurrent_calls": true
+  }
+})
+}

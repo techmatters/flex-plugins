@@ -48,7 +48,7 @@ locals {
         messaging_mode   = "conversations"
         channel_type     = "whatsapp"
         contact_identity = "whatsapp:+12135834846"
-        templatefile     = "/app/twilio-iac/helplines/co/templates/studio-flows/whatsapp.tftpl"
+        templatefile     = "/app/twilio-iac/helplines/co/templates/studio-flows/whatsapp-templates.tftpl"
         channel_flow_vars = {
           widget_from           = "Te Guío"
           chat_greeting_message = "¡Hola, te damos la bienvenida a Te Guío! Esta es la línea de ayuda dedicada a adolescentes como tú, donde escuchamos y orientamos  las inquietudes que puedes tener para lograr vivir una sexualidad saludable. Qué gusto que te contactes con nosotros. Por favor espéranos mientras te contactamos con un Guía."
