@@ -1,10 +1,11 @@
 {
     "attributes": {
-        "definitionVersion": "v1",
+        "definitionVersion": "zm-v1",
         "feature_flags": {
             "enable_csam_report": true,
             "enable_lex": true,
-            "enable_llm_summary": true
+            "enable_llm_summary": true,
+            "enable_lex_v2": true
         },
         "permissionConfig": "zm"
     }

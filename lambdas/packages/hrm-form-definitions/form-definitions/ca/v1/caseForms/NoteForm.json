@@ -1,20 +1,23 @@
 [
-    {
-      "name": "note",
-      "label": "FollowUpDetails",
-      "type": "textarea",
-      "placeholder": "",
-      "rows": 20,
-      "width": 250
-    },
-    {
+  {
+    "name": "note",
+    "label": "FollowUpDetails",
+    "type": "textarea",
+    "placeholder": "",
+    "rows": 20,
+    "width": 250,
+    "isPII": true
+  },
+  {
     "name": "counsellingManagerInformed",
     "label": "counsellingManagerInformed",
-    "type": "checkbox"
-    },
-    {
-      "name": "cmSignOff",
-      "label": "cmSignOff",
-      "type": "input"
-    }
-  ]
+    "type": "checkbox",
+    "isPII": false
+  },
+  {
+    "name": "cmSignOff",
+    "label": "cmSignOff",
+    "type": "input",
+    "isPII": true
+  }
+]

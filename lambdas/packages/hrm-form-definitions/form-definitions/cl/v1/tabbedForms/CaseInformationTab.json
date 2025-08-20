@@ -6,12 +6,14 @@
     "required": {
       "value": true,
       "message": "RequiredFieldError"
-    }
+    },
+    "isPII": true
   },
   {
     "name": "repeatCaller",
     "label": "Llamante Repetido?",
-    "type": "checkbox"
+    "type": "checkbox",
+    "isPII": false
   },
   {
     "name": "actionTaken",
@@ -34,6 +36,7 @@
         "value": "Se activa protocolo de protección",
         "label": "Se activa protocolo de protección"
       }
-    ]
+    ],
+    "isPII": false
   }
 ]

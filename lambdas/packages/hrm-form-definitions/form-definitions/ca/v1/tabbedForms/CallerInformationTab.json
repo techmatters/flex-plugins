@@ -48,7 +48,8 @@
         "value": "Other",
         "label": "Other"
       }
-    ]
+    ],
+    "isPII": false
   },
   {
     "name": "age",
@@ -163,7 +164,8 @@
         "value": ">30",
         "label": ">30"
       }
-    ]
+    ],
+    "isPII": false
   },
   {
     "name": "gender",
@@ -202,11 +204,13 @@
         "value": "Other",
         "label": "Other"
       }
-    ]
+    ],
+    "isPII": false
   },
   {
     "name": "otherGender",
     "label": "ifOtherGenderPleaseSpecify",
-    "type": "input"
+    "type": "input",
+    "isPII": true
   }
 ]

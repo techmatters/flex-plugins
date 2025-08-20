@@ -15,7 +15,7 @@
   "CaseSection-View-Title/household": "View Household Member",
   "CaseSection-BottomBar-SaveAndAddAnother/household": "Save and Add Another",
   "CaseSection-BottomBar-SaveAndAddAnother/incident": "Save and Add Another",
-  "BottomBar-SaveAndAddAnotherReferral": "Save and Add Another",
+  "CaseSection-BottomBar-SaveAndAddAnother/referral": "Save and Add Another",
   "CaseSection-BottomBar-SaveAndAddAnother/note": "Save and Add Another",
   "CaseSection-Add/incident": "Add Incident",
   "CaseSection-Add/document": "Add",

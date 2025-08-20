@@ -4,123 +4,16 @@
     "label": "Campaign",
     "type": "select",
     "isPII": false,
-    "defaultOption": {
-      "value": "",
-      "label": ""
-    },
     "options": [
       {
-        "value": "",
-        "label": ""
+        "value": "Childhelp Hotline",
+        "label": "Childhelp Hotline"
       },
       {
         "value": "Courage First",
         "label": "Courage First"
-      },
-      {
-        "value": "Childhelp Hotline",
-        "label": "Childhelp Hotline"
       }
     ],
-    "required": {
-      "value": true,
-      "message": "RequiredFieldError"
-    }
-  },
-  {
-    "name": "typeOfSport",
-    "label": "Type of Sport",
-    "type": "dependent-select",
-    "isPII": false,
-    "dependsOn": "campaign",
-    "defaultOption": {
-      "value": "",
-      "label": ""
-    },
-    "options": {
-      "Courage First": [
-        {
-          "value": "Baseball",
-          "label": "Baseball"
-        },
-        {
-          "value": "Basketball",
-          "label": "Basketball"
-        },
-        {
-          "value": "Cricket",
-          "label": "Cricket"
-        },
-        {
-          "value": "Dance",
-          "label": "Dance"
-        },
-        {
-          "value": "Figure Skating",
-          "label": "Figure Skating"
-        },
-        {
-          "value": "Football",
-          "label": "Football"
-        },
-        {
-          "value": "Golf",
-          "label": "Golf"
-        },
-        {
-          "value": "Gymnastics",
-          "label": "Gymnastics"
-        },
-        {
-          "value": "Hockey",
-          "label": "Hockey"
-        },
-        {
-          "value": "Karate",
-          "label": "Karate"
-        },
-        {
-          "value": "Lacrosse",
-          "label": "Lacrosse"
-        },
-        {
-          "value": "Rugby",
-          "label": "Rugby"
-        },
-        {
-          "value": "Skiing",
-          "label": "Skiing"
-        },
-        {
-          "value": "Soccer",
-          "label": "Soccer"
-        },
-        {
-          "value": "Softball",
-          "label": "Softball"
-        },
-        {
-          "value": "Swim",
-          "label": "Swim"
-        },
-        {
-          "value": "Tennis",
-          "label": "Tennis"
-        },
-        {
-          "value": "Track and Field",
-          "label": "Track and Field"
-        },
-        {
-          "value": "Volleyball",
-          "label": "Volleyball"
-        },
-        {
-          "value": "Wrestling",
-          "label": "Wrestling"
-        }
-      ]
-    },
     "required": {
       "value": true,
       "message": "RequiredFieldError"
@@ -348,53 +241,29 @@
     "type": "listbox-multiselect",
     "isPII": false,
     "options": [
-      {
-        "value": "Referred to child protection agencies",
-        "label": "Referred to child protection agencies"
-      },
-      {
-        "value": "Referred to general healthcare services",
-        "label": "Referred to general healthcare services"
-      },
-      {
-        "value": "Referred to law enforcement agencies",
-        "label": "Referred to law enforcement agencies"
-      },
-      {
-        "value": "Referred to mental health services",
-        "label": "Referred to mental health services"
-      },
-      {
-        "value": "Referred to other organizations",
-        "label": "Referred to other organizations"
-      },
-      {
-        "value": "Referred to school counselors",
-        "label": "Referred to school counselors"
-      },
-      {
-        "value": "Referred to cyber reporting agencies",
-        "label": "Referred to cyber reporting agencies"
-      },
-      {
-        "value": "Provided informational resources",
-        "label": "Provided informational resources"
+       {
+        "value": "Identified coping skills",
+        "label": "Identified coping skills"
       },
       {
         "value": "Identified support systems",
         "label": "Identified support systems"
       },
       {
-        "value": "Identified coping skills",
-        "label": "Identified coping skills"
+        "value": "Next steps identified",
+        "label": "Next steps identified"
+      },
+      {
+        "value": "Other referral Provided",
+        "label": "Other referral Provided"
+      },
+      {
+        "value": "Referred to CPS",
+        "label": "Referred to CPS"
       },
       {
         "value": "Safety plan created",
         "label": "Safety plan created"
-      },
-      {
-        "value": "Next steps identified",
-        "label": "Next steps identified"
       },
       {
         "value": "N/A- Helpseeker stopped responding",

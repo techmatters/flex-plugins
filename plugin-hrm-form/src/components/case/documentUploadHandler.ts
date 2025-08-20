@@ -19,6 +19,8 @@ import { getHrmConfig } from '../../hrmConfig';
 import { fetchHrmApi, generateSignedURLPath } from '../../services/fetchHrmApi';
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024;
+const ALLOWED_FILE_TYPES = ['.png', '.jpg', '.jpeg', '.pdf', '.doc', '.docx'];
+
 /**
  * This function calls an HTTP PUT to upload the document
  * @param file Document
@@ -49,9 +51,19 @@ const bindOnFileChange = (caseId: string) => async event => {
   const { name, size, type } = file;
 
   if (size > MAX_FILE_SIZE) {
+    // Should this string be localizable?
     alert('File exceeds max size.');
     return '';
   }
+
+  // Validate file extension
+  const extension = name.toLowerCase().substring(name.lastIndexOf('.'));
+  if (!ALLOWED_FILE_TYPES.includes(extension)) {
+    // Should this string be localizable?
+    alert('Invalid file type. Only PNG, JPG, JPEG, PDF, DOC, and DOCX files are allowed.');
+    return '';
+  }
+
   const mimeType = type;
   const { docsBucket: bucket } = getHrmConfig();
 

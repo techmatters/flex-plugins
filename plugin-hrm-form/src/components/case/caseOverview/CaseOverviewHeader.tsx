@@ -28,7 +28,8 @@ import {
 } from '../styles';
 import { Flex, Box } from '../../../styles';
 import { getHrmConfig } from '../../../hrmConfig';
-import CaseTags from '../CaseTags';
+import { getContactTags } from '../../../utils/categories';
+import CategoryWithTooltip from '../../common/CategoryWithTooltip';
 
 type OwnProps = {
   caseId: string;
@@ -74,8 +75,17 @@ const CaseOverviewHeader: React.FC<OwnProps> = ({
             icon={<PrintIcon />}
           />
         )}
-      </Flex>
-      <CaseTags definitionVersion={definitionVersion} categories={categories} />
+      </Flex>{' '}
+      <div className="expanded" style={{ marginTop: '10px' }}>
+        {getContactTags(definitionVersion, categories).map(({ fullyQualifiedName, label, color }) => (
+          <CategoryWithTooltip
+            key={fullyQualifiedName}
+            fullyQualifiedName={fullyQualifiedName}
+            category={label}
+            color={color}
+          />
+        ))}
+      </div>
     </DetailsHeaderContainer>
   );
 };

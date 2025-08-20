@@ -1,0 +1,50 @@
+# Copyright (C) 2021-2023 Technology Matters
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Affero General Public License as published
+# by the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Affero General Public License for more details.
+#
+# You should have received a copy of the GNU Affero General Public License
+# along with this program.  If not, see https://www.gnu.org/licenses/.
+
+name: 'Find later RC branches'
+description: 'Given a prefix, a suffix and a title, will generate the next iteration for a pre-release name like {prefix}-{suffix}'
+inputs:
+  rc-branch-name:
+    description: The RC branch name to check against, e.g. v1.45-rc.
+    required: true
+  trunk-name:
+    description: The trunk branch name, which always gets returned in the list e.g. main. Defaults to master
+    default: master
+outputs:
+  found-branches:
+    description: "The later RC branches found, as a JSON array in a string"
+    value: ${{ steps.find_later_rc_branches.outputs.found_branches }}
+
+runs:
+  using: "composite"
+  steps:
+
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+        sparse-checkout-cone-mode: false
+        sparse-checkout: |
+          .github/actions
+    - name: Use Node.js
+      uses: actions/setup-node@v1
+      with:
+        node-version: '22.x'
+    - name: Find later RC branches (and trunk)
+      run: npm run find-later-rc-branches
+      env:
+        RC_BRANCH_TO_CHECK: ${{ inputs.rc-branch-name }}
+        TRUNK_NAME: ${{ inputs.trunk-name }}
+      shell: bash
+      id: find_later_rc_branches
+      working-directory: ${{ github.action_path }}

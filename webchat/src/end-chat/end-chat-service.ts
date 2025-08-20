@@ -14,6 +14,9 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
+// eslint-disable-next-line import/no-unresolved
+import { config } from '../config';
+
 type Token = string;
 type ChannelSid = string;
 type Language = string;
@@ -30,7 +33,7 @@ export const finishChatTask = async (channelSid: ChannelSid, token: Token, langu
   };
   // eslint-disable-next-line global-require
   const { SERVERLESS_URL } = require('../../private/secret');
-  const response = await fetch(`${SERVERLESS_URL}/endChat`, options);
+  const response = await fetch(`${config.twilioServicesUrl ?? SERVERLESS_URL}/endChat`, options);
   const responseJson = await response.json();
 
   if (response.status === 403) {

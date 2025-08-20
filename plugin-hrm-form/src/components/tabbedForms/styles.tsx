@@ -48,7 +48,7 @@ export const AddedToCaseButton = styled('p')`
   letter-spacing: normal;
   color: ${HrmTheme.colors.secondaryButtonTextColor};
   border: none;
-  padding: 4px 10px;
+  padding: 2px 10px;
   min-width: auto;
 `;
 AddedToCaseButton.displayName = 'AddedToCaseButton';

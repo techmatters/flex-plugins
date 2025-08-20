@@ -11,7 +11,7 @@ locals {
   local_config = {
     helpline                   = "Childhelp"
     task_language              = "en-US"
-    enable_post_survey         = false
+    enable_post_survey         = true
     enable_external_recordings = false
     permission_config          = "usch"
     enable_lex_v2              = true
@@ -63,11 +63,42 @@ locals {
       }
     }
 
+    activities = {
+      meal_break : {
+        friendly_name = "Meal Break"
+        available     = false
+      },
+      documentation : {
+        friendly_name = "Documentation"
+        available     = false
+      },
+      supervision : {
+        friendly_name = "Supervision"
+        available     = false
+      },
+      refused : {
+        friendly_name = "Refused"
+        available     = false
+      },
+      meeting : {
+        friendly_name = "Meeting"
+        available     = false
+      },
+      break : {
+        friendly_name = "Break"
+        available     = false
+      },
+      training : {
+        friendly_name = "Training"
+        available     = false
+      }
+    }
+
     lex_bot_languages = {
       en_USCH : []
     }
     lex_v2_bot_languages = {
-       en_USCH : ["pre_survey"]
+       en_US : ["pre_survey", "post_survey"]
     }
     
   }

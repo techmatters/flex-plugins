@@ -19,7 +19,7 @@ import { Manager } from '@twilio/flex-webchat-ui';
 import { Configuration, OperatingHoursResponse } from '../types';
 import { setFormDefinition } from './pre-engagement-form/state';
 
-const getOperatingHours = async (language: string): Promise<OperatingHoursResponse> => {
+const getOperatingHours = async (serviceUrl: string, language: string): Promise<OperatingHoursResponse> => {
   const body = {
     channel: 'webchat',
     includeMessageTextInResponse: 'true',
@@ -34,8 +34,7 @@ const getOperatingHours = async (language: string): Promise<OperatingHoursRespon
     },
   };
 
-  const { SERVERLESS_URL } = require('../private/secret'); // eslint-disable-line global-require
-  const response = await fetch(`${SERVERLESS_URL}/operatingHours`, options);
+  const response = await fetch(`${serviceUrl}/operatingHours`, options);
 
   if (response.status === 403) {
     throw new Error('Server responded with 403 status (Forbidden)');
@@ -61,7 +60,11 @@ export const displayOperatingHours = async (
   // If a helpline has operating hours configuration set, the pre engagement config will show alternative canvas during closed or holiday times/days
   if (config.checkOpenHours) {
     try {
-      const operatingState = await getOperatingHours(externalWebChatLanguage || config.defaultLanguage);
+      const { SERVERLESS_URL } = require('../private/secret'); // eslint-disable-line global-require
+      const operatingState = await getOperatingHours(
+        config.twilioServicesUrl ?? SERVERLESS_URL,
+        externalWebChatLanguage || config.defaultLanguage,
+      );
       /*
        * Support legacy function to avoid braking changes
        * TODO: remove once every account has been migrated

@@ -31,12 +31,9 @@ export const TEST_CHANNEL_SID = 'CHut';
 export const DEFAULT_CONFIGURATION_ATTRIBUTES: AseloServiceConfigurationAttributes = {
   definitionVersion: 'ut-v1',
   hrm_api_version: 'v1',
-  form_definitions_version_url: 'http://mock-assets-bucket/form-definitions/',
   assets_bucket_url: 'http://mock-assets-bucket',
   helpline_code: 'ut',
-  feature_flags: {
-    enable_backend_hrm_contact_creation: true,
-  },
+  feature_flags: {},
 };
 
 export const EMPTY_TASK: TaskResource = {

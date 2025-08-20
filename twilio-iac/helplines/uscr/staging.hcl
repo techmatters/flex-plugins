@@ -19,14 +19,14 @@ locals {
       webchat : {
         channel_type         = "web"
         contact_identity     = ""
-        templatefile         = "/app/twilio-iac/helplines/uscr/templates/studio-flows/webchat.tftpl"
+        templatefile         = "/app/twilio-iac/helplines/uscr/templates/studio-flows/webchat-lambda-sd.tftpl"
         channel_flow_vars    = {}
         chatbot_unique_names = []
       },
       voice : {
         channel_type     = "voice"
         contact_identity = ""
-        templatefile     = "/app/twilio-iac/helplines/templates/studio-flows/voice-basic.tftpl"
+        templatefile     = "/app/twilio-iac/helplines/templates/studio-flows/voice-basic-sd.tftpl"
         channel_flow_vars = {
           voice_ivr_greeting_message = "Hello, thank you for calling CIRCLE. Please wait for an operator."
           voice_ivr_language         = "en-US"
@@ -48,5 +48,14 @@ locals {
       }
     }
     get_profile_flags_for_identifier_base_url = "https://hrm-staging.tl.techmatters.org/lambda/twilio/account-scoped"
+   #System Down Configuration
+    system_down_templatefile = "/app/twilio-iac/helplines/templates/studio-flows/system-down.tftpl"
+    enable_system_down    = true
+    system_down_flow_vars    = {
+      is_system_down   = "false"
+      message = "We're sorry, the CIRCLE Call Center is experiencing technical difficulties with our phone system. If this is an emergency, please call 911 or leave us a message at 213-816-4904. We apologize for the inconvenience and are working to be up and running shortly."
+      voice_message = "We're sorry, the CIRCLE Call Center is experiencing technical difficulties with our phone system. If this is an emergency, please call 911 or leave us a message at 213-816-4904. We apologize for the inconvenience and are working to be up and running shortly."
+      send_studio_message_function_sid= "ZHd9aa36ef63e286744c8677e919216853"
+    }
   }
 }

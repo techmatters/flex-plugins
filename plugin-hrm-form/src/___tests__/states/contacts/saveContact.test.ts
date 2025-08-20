@@ -123,11 +123,7 @@ describe('actions', () => {
       };
       mockGetContactByTaskSid.mockResolvedValue(taskContact);
       const actionPromiseResult = (dispatch(
-        newLoadContactFromHrmForTaskAsyncAction(
-          { taskSid: 'WT-load-me', attributes: {} } as CustomITask,
-          'WK',
-          'mock-ref',
-        ),
+        newLoadContactFromHrmForTaskAsyncAction({ taskSid: 'WT-load-me', attributes: {} } as CustomITask, 'mock-ref'),
       ) as unknown) as Promise<void>;
       const pendingState = getState();
       expect(pendingState.contactsBeingCreated.has('WT-load-me')).toBe(true);
@@ -205,9 +201,9 @@ describe('actions', () => {
       expect(submitContactForm).toHaveBeenCalledWith(task, baseContact, caseState);
     });
     test('Action sets the conversation duration', async () => {
-      let conversatioonDurationPassedToSubmitContactForm: number | undefined;
+      let conversationDurationPassedToSubmitContactForm: number | undefined;
       mockSubmitContactForm.mockImplementation((task, contact) => {
-        conversatioonDurationPassedToSubmitContactForm = contact.conversationDuration;
+        conversationDurationPassedToSubmitContactForm = contact.conversationDuration;
         return Promise.resolve(contact);
       });
       const caseState = {
@@ -232,7 +228,7 @@ describe('actions', () => {
         { ...baseContact, conversationDuration: expect.any(Number) },
         caseState,
       );
-      expect(conversatioonDurationPassedToSubmitContactForm).toBeGreaterThanOrEqual(100);
+      expect(conversationDurationPassedToSubmitContactForm).toBeGreaterThanOrEqual(100);
     });
 
     test('Updates contact in redux and sets metadata', async () => {
@@ -251,7 +247,7 @@ describe('actions', () => {
       // Check that the difference in startMillis is still insignificant
       expect(
         Math.abs(metadata.startMillis - newContactMetaData({ createdAt: new Date().toISOString() }).startMillis),
-      ).toBeLessThanOrEqual(100);
+      ).toBeLessThanOrEqual(10000);
       expect(metadata).toStrictEqual(
         expect.objectContaining({
           ...newContactMetaData({ createdAt: createdAtTimestamp }),

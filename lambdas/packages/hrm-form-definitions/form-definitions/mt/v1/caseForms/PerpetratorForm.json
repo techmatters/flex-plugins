@@ -2,12 +2,14 @@
   {
     "name": "firstName",
     "label": "First Name",
-    "type": "input"
+    "type": "input",
+    "isPII": true
   },
   {
     "name": "lastName",
     "label": "Last Name",
-    "type": "input"
+    "type": "input",
+    "isPII": true
   },
   {
     "name": "relationshipToChild",
@@ -63,7 +65,8 @@
     "required": {
       "value": true,
       "message": "RequiredFieldError"
-    }
+    },
+    "isPII": false
   },
   {
     "name": "gender",
@@ -95,7 +98,8 @@
     "required": {
       "value": true,
       "message": "RequiredFieldError"
-    }
+    },
+    "isPII": false
   },
   {
     "name": "age",
@@ -402,7 +406,8 @@
     "required": {
       "value": true,
       "message": "RequiredFieldError"
-    }
+    },
+    "isPII": false
   },
   {
     "name": "language",
@@ -430,22 +435,26 @@
         "value": "Other",
         "label": "Other"
       }
-    ]
+    ],
+    "isPII": false
   },
   {
     "name": "ethnicity-input",
     "label": "Ethinicity",
-    "type": "input"
+    "type": "input",
+    "isPII": true
   },
   {
     "name": "phone1",
     "label": "Phone Number",
-    "type": "input"
+    "type": "input",
+    "isPII": true
   },
   {
     "name": "streetAddress",
     "label": "Street Address",
-    "type": "input"
+    "type": "input",
+    "isPII": true
   },
   {
     "name": "region",
@@ -468,7 +477,8 @@
         "value": "Gozo",
         "label": "Gozo"
       }
-    ]
+    ],
+    "isPII": false
   },
   {
     "name": "locality",
@@ -772,6 +782,7 @@
           "label": "Marsalforn"
         }
       ]
-    }
+    },
+    "isPII": false
   }
 ]

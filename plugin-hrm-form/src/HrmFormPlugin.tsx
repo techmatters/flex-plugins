@@ -113,12 +113,9 @@ const setUpComponents = (featureFlags: FeatureFlags, setupObject: ReturnType<typ
   Components.setUpStandaloneSearch();
   setUpReferrableResources();
   setUpCounselorToolkits();
-  if (featureFlags.enable_aselo_messaging_ui) {
-    Components.replaceTwilioMessageInput();
-  } else {
-    if (featureFlags.enable_emoji_picker) Components.setupEmojiPicker();
-    if (featureFlags.enable_canned_responses) Components.setupCannedResponses();
-  }
+
+  if (featureFlags.enable_emoji_picker) Components.setupEmojiPicker();
+  if (featureFlags.enable_canned_responses) Components.setupCannedResponses();
 
   TeamsView.setUpAgentColumn();
   TeamsView.setUpStatusColumn();
@@ -145,7 +142,6 @@ const setUpActions = (
 
   // bind setupObject to the functions that requires some initialization
   const wrapupOverride = ActionFunctions.wrapupTask(setupObject, getMessage);
-  const beforeCompleteAction = ActionFunctions.beforeCompleteTask(featureFlags);
 
   Flex.Actions.addListener('afterAcceptTask', ActionFunctions.afterAcceptTask(featureFlags, setupObject, getMessage));
 
@@ -160,8 +156,6 @@ const setUpActions = (
   Flex.Actions.replaceAction('WrapupTask', wrapupOverride);
 
   Flex.Actions.replaceAction('CompleteTask', ActionFunctions.completeTaskOverride);
-
-  Flex.Actions.addListener('beforeCompleteTask', beforeCompleteAction);
 
   Flex.Actions.addListener('afterCompleteTask', ActionFunctions.afterCompleteTask);
 

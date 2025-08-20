@@ -6,7 +6,8 @@
     "required": {
       "value": true,
       "message": "RequiredFieldError"
-    }
+    },
+    "isPII": true
   },
   {
     "name": "lastName",
@@ -15,7 +16,8 @@
     "required": {
       "value": true,
       "message": "RequiredFieldError"
-    }
+    },
+    "isPII": true
   },
   {
     "name": "relationshipToChild",
@@ -154,12 +156,14 @@
     "required": {
       "value": true,
       "message": "RequiredFieldError"
-    }
+    },
+    "isPII": false
   },
   {
     "name": "streetAddress",
     "label": "Street Address",
-    "type": "input"
+    "type": "input",
+    "isPII": true
   },
   {
     "name": "province",
@@ -173,7 +177,8 @@
     "required": {
       "value": true,
       "message": "RequiredFieldError"
-    }
+    },
+    "isPII": false
   },
   {
     "name": "district",
@@ -184,27 +189,32 @@
       "value": "Unknown",
       "label": ""
     },
-    "optionsReferenceKey": "districtOptions"
+    "optionsReferenceKey": "districtOptions",
+    "isPII": false
   },
   {
     "name": "suburb",
     "label": "Suburb",
-    "type": "input"
+    "type": "input",
+    "isPII": true
   },
   {
     "name": "phone1",
     "label": "Phone Number (H)",
-    "type": "input"
+    "type": "input",
+    "isPII": true
   },
   {
     "name": "phone2",
     "label": "Phone Number (W)",
-    "type": "input"
+    "type": "input",
+    "isPII": true
   },
   {
     "name": "phone3",
     "label": "Cell Number",
-    "type": "input"
+    "type": "input",
+    "isPII": true
   },
   {
     "name": "gender",
@@ -227,7 +237,8 @@
         "value": "Non-Binary",
         "label": "Non-Binary"
       }
-    ]
+    ],
+    "isPII": false
   },
   {
     "name": "age",
@@ -354,6 +365,7 @@
         "value": "Other",
         "label": "Other"
       }
-    ]
+    ],
+    "isPII": false
   }
 ]

@@ -42,20 +42,12 @@
       "value": true,
       "message": "RequiredFieldError"
     },
-    "rows": 5,
-    "isPII": false
+    "rows": 5
   },
   {
-    "name": "reportedTo",
-    "label": "Referral - Who was is reported to?",
-    "type": "input",
-    "isPII": false
-  },
-  {
-    "name": "referenceNumberProvided",
-    "label": "Referral - Reference Number Provided",
-    "type": "input",
-    "isPII": true
+    "name": "bcReferenceNumberProvided",
+    "label": "BC - Reference Number Provided",
+    "type": "input"
   },
   {
     "name": "referralSummary",
@@ -67,9 +59,8 @@
   },
   {
     "name": "safetyPlanCompleted",
-    "label": "Was Safety plan completed?",
-    "type": "checkbox",
-    "isPII": false
+    "label": "Safety plan completed",
+    "type": "checkbox"
   },
   {
     "name": "whichSupervisorDidYouAlertToTheRisk",

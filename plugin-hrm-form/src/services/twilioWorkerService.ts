@@ -36,22 +36,6 @@ export const populateCounselors = async (): Promise<PopulateCounselorsReturn> =>
   return workerSummaries;
 };
 
-/**
- * Change the capacity for simultaneous chat sessions for a worker.
- * @deprecated This should no longer be called from flex once backend manual pulling is activated for all helplines
- * @param adjustment
- */
-export const adjustChatCapacity = async (adjustment: 'increase' | 'decrease'): Promise<void> => {
-  const { workerSid } = getHrmConfig();
-
-  const body = {
-    workerSid,
-    adjustment,
-  };
-
-  return fetchProtectedApi('/adjustChatCapacity', body);
-};
-
 export const pullNextTask = async (): Promise<TaskSID | undefined> => {
   const { workerSid } = getHrmConfig();
 

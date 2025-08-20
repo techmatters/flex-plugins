@@ -140,7 +140,7 @@ function createState(
           list: [],
           hash: {},
         },
-        definitionVersions: { v1: mockV1 },
+        definitionVersions: { 'as-v1': mockV1 },
         currentDefinitionVersion: mockV1,
       },
       routing: {
@@ -199,11 +199,11 @@ beforeEach(() => {
 });
 
 beforeAll(async () => {
-  const formDefinitionsBaseUrl = buildBaseURL('v1');
+  const formDefinitionsBaseUrl = buildBaseURL('as-v1');
   await mockFetchImplementation(formDefinitionsBaseUrl);
 
   mockV1 = await loadDefinition(formDefinitionsBaseUrl);
-  mockGetDefinitionsResponse(getDefinitionVersions, 'v1', mockV1);
+  mockGetDefinitionsResponse(getDefinitionVersions, 'as-v1', mockV1);
 });
 
 afterEach(() => {
@@ -305,7 +305,6 @@ test('<Search> should display <ContactDetails />', async () => {
       callType: 'Child calling about self',
       categories: {},
       contactlessTask: VALID_EMPTY_CONTACT.rawJson.contactlessTask,
-      definitionVersion: 'v1',
       childInformation: {
         firstName: 'Jill',
         lastName: 'Smith',

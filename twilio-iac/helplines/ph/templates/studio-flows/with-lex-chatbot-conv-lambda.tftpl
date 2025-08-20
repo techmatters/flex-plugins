@@ -319,32 +319,27 @@ ${
       }
     },
     {
-      "name": "check_operatinghrs_en",
-      "type": "run-function",
+      "name": "checkOperatinghrsEn",
+      "type": "make-http-request",
       "transitions": [
         {
           "next": "split_operating_en",
           "event": "success"
         },
         {
-          "event": "fail"
+          "event": "failed"
         }
       ],
       "properties": {
-        "service_sid": "${flow_vars.service_sid}",
-        "environment_sid": "${flow_vars.environment_sid}",
         "offset": {
           "x": -1160,
           "y": -450
         },
-        "function_sid": "${flow_vars.operating_hours_function_sid}",
-        "parameters": [
-          {
-            "value": "facebook",
-            "key": "channel"
-          }
-        ],
-        "url": "${serverless_url}/operatingHours"
+        "method": "POST",
+        "content_type": "application/json;charset=utf-8",
+        "add_twilio_auth": false,
+        "body": "{\"channel\": \"facebook\"}",
+        "url": "${get_profile_flags_for_identifier_base_url}/operatingHours"
       }
     },
     {
@@ -361,7 +356,7 @@ ${
             {
               "friendly_name": "If value contains open",
               "arguments": [
-                "{{widgets.check_operatinghrs_en.body}}"
+                "{{widgets.checkOperatinghrsEn.body}}"
               ],
               "type": "contains",
               "value": "open"
@@ -375,7 +370,7 @@ ${
             {
               "friendly_name": "If value contains closed",
               "arguments": [
-                "{{widgets.check_operatinghrs_en.body}}"
+                "{{widgets.checkOperatinghrsEn.body}}"
               ],
               "type": "contains",
               "value": "closed"
@@ -389,7 +384,7 @@ ${
             {
               "friendly_name": "If value contains holiday",
               "arguments": [
-                "{{widgets.check_operatinghrs_en.body}}"
+                "{{widgets.checkOperatinghrsEn.body}}"
               ],
               "type": "contains",
               "value": "holiday"
@@ -398,7 +393,7 @@ ${
         }
       ],
       "properties": {
-        "input": "{{widgets.check_operatinghrs_en.body}}",
+        "input": "{{widgets.checkOperatinghrsEn.body}}",
         "offset": {
           "x": -1250,
           "y": -190
@@ -508,32 +503,27 @@ ${
       }
     },
     {
-      "name": "check_operatinghrs_fil",
-      "type": "run-function",
+      "name": "checkOperatinghrsFil",
+      "type": "make-http-request",
       "transitions": [
         {
           "next": "split_operating_fil",
           "event": "success"
         },
         {
-          "event": "fail"
+          "event": "failed"
         }
       ],
       "properties": {
-        "service_sid": "${flow_vars.service_sid}",
-        "environment_sid": "${flow_vars.environment_sid}",
         "offset": {
           "x": -200,
           "y": -430
         },
-        "function_sid": "${flow_vars.operating_hours_function_sid}",
-        "parameters": [
-          {
-            "value": "facebook",
-            "key": "channel"
-          }
-        ],
-        "url": "${serverless_url}/operatingHours"
+        "method": "POST",
+        "content_type": "application/json;charset=utf-8",
+        "add_twilio_auth": false,
+        "body": "{\"channel\": \"facebook\"}",
+        "url": "${get_profile_flags_for_identifier_base_url}/operatingHours"
       }
     },
     {
@@ -574,7 +564,7 @@ ${
             {
               "friendly_name": "If value contains open",
               "arguments": [
-                "{{widgets.check_operatinghrs_fil.body}}"
+                "{{widgets.checkOperatinghrsFil.body}}"
               ],
               "type": "contains",
               "value": "open"
@@ -588,7 +578,7 @@ ${
             {
               "friendly_name": "If value contains closed",
               "arguments": [
-                "{{widgets.check_operatinghrs_fil.body}}"
+                "{{widgets.checkOperatinghrsFil.body}}"
               ],
               "type": "contains",
               "value": "closed"
@@ -602,7 +592,7 @@ ${
             {
               "friendly_name": "If value contains holiday",
               "arguments": [
-                "{{widgets.check_operatinghrs_fil.body}}"
+                "{{widgets.checkOperatinghrsFil.body}}"
               ],
               "type": "contains",
               "value": "holiday"
@@ -611,7 +601,7 @@ ${
         }
       ],
       "properties": {
-        "input": "{{widgets.check_operatinghrs_fil.body}}",
+        "input": "{{widgets.checkOperatinghrsFil.body}}",
         "offset": {
           "x": -60,
           "y": -190
@@ -901,7 +891,7 @@ ${
           ]
         },
         {
-          "next": "check_operatinghrs_en",
+          "next": "checkOperatinghrsEn",
           "event": "match",
           "conditions": [
             {
@@ -1106,7 +1096,7 @@ ${
           ]
         },
         {
-          "next": "check_operatinghrs_fil",
+          "next": "checkOperatinghrsFil",
           "event": "match",
           "conditions": [
             {

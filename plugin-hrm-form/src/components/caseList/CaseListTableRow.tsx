@@ -25,7 +25,6 @@ import { RootState } from '../../states';
 import { updateDefinitionVersion } from '../../states/configuration/actions';
 import { Case } from '../../types/types';
 import {
-  Box,
   CategoriesCell,
   DataCell,
   DataTableRow,
@@ -68,7 +67,7 @@ const CaseListTableRow: React.FC<Props> = ({ caseId, handleClickViewCase }) => {
   );
   const caseLabel = useSelector((state: RootState) => selectCaseLabel(state, caseId, CONTACTS_TIMELINE_ID));
 
-  const version = caseItem.info.definitionVersion;
+  const version = caseItem.definitionVersion ?? caseItem.info.definitionVersion;
 
   useEffect(() => {
     const fetchDefinitionVersions = async () => {
@@ -139,13 +138,17 @@ const CaseListTableRow: React.FC<Props> = ({ caseId, handleClickViewCase }) => {
         <SummaryCell>
           <TableSummaryFont>{shortSummary}</TableSummaryFont>
         </SummaryCell>
-        <CategoriesCell>
-          {categories &&
-            categories.map(category => (
-              <Box key={`category-tag-${category.label}`} marginBottom="5px">
-                <CategoryWithTooltip category={category.label} color={category.color} />
-              </Box>
-            ))}
+        <CategoriesCell className="expanded">
+          {categories.slice(0, 3).map((category, idx) => (
+            <span key={`category-tag-${category.fullyQualifiedName}`}>
+              <CategoryWithTooltip
+                category={category.label}
+                color={category.color}
+                fullyQualifiedName={category.fullyQualifiedName}
+              />
+              {idx === 2 && categories.length > 3 && ' ...'}
+            </span>
+          ))}
         </CategoriesCell>
         <DataCell>
           <TableBodyFont style={{ textAlign: 'right' }}>{opened}</TableBodyFont>

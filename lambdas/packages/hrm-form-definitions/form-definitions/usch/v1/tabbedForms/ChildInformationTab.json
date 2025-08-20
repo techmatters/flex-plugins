@@ -70,7 +70,7 @@
     }
   },
   {
-    "name": "childAge",
+    "name": "age",
     "label": "Child Age",
     "type": "select",
     "isPII": false,
@@ -98,6 +98,10 @@
       {
         "value": "N/A",
         "label": "N/A"
+      },
+      {
+        "value": "Unknown",
+        "label": "Unknown"
       }
     ],
     "required": {
@@ -112,8 +116,8 @@
     "isPII": false,
     "options": [
       {
-        "value": "Unknown",
-        "label": ""
+        "value": "00",
+        "label": "0"
       },
       {
         "value": "01",
@@ -144,7 +148,7 @@
     "isPII": false
   },
   {
-    "name": "childState",
+    "name": "state",
     "label": "Child State",
     "type": "select",
     "isPII": false,
@@ -376,11 +380,11 @@
     ]
   },
   {
-    "name": "childCountry",
+    "name": "country",
     "label": "Child Country",
     "type": "dependent-select",
     "isPII": false,
-    "dependsOn": "childState",
+    "dependsOn": "state",
     "defaultOption": {
       "value": "Unknown",
       "label": ""
@@ -1235,10 +1239,6 @@
           "label": "No"
         }
       ]
-    },
-    "required": {
-      "value": true,
-      "message": "RequiredFieldError"
     }
   },
   {
@@ -1262,10 +1262,6 @@
           "label": "No"
         }
       ]
-    },
-    "required": {
-      "value": true,
-      "message": "RequiredFieldError"
     }
   },
   {
@@ -1289,10 +1285,6 @@
           "label": "No"
         }
       ]
-    },
-    "required": {
-      "value": true,
-      "message": "RequiredFieldError"
     }
   },
   {
@@ -1316,10 +1308,6 @@
           "label": "No"
         }
       ]
-    },
-    "required": {
-      "value": true,
-      "message": "RequiredFieldError"
     }
   },
   {
@@ -1343,10 +1331,6 @@
           "label": "No"
         }
       ]
-    },
-    "required": {
-      "value": true,
-      "message": "RequiredFieldError"
     }
   },
   {
@@ -1370,10 +1354,6 @@
           "label": "No"
         }
       ]
-    },
-    "required": {
-      "value": true,
-      "message": "RequiredFieldError"
     }
   },
   {
@@ -1397,10 +1377,6 @@
           "label": "No"
         }
       ]
-    },
-    "required": {
-      "value": true,
-      "message": "RequiredFieldError"
     }
   },
   {
@@ -1428,10 +1404,6 @@
         "label": "High risk – Suicidal ideation with a plan and intent"
       }
       ]
-    },
-    "required": {
-      "value": true,
-      "message": "RequiredFieldError"
     }
   },
   {

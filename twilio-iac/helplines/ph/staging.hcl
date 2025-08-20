@@ -6,8 +6,7 @@ locals {
   twilio_numbers = []
 
   local_config = {
-
-    enable_lex_v2 = true
+    operating_hours_enforced_override     = false
     flow_vars = {
       service_sid                           = "ZS45d1a256ef1c4fa2112f7accc40306c5"
       environment_sid                       = "ZE730f552b9429ca7a2105c822ef7faae4"

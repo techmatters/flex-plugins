@@ -6,7 +6,8 @@
     "required": {
       "value": true,
       "message": "RequiredFieldError"
-    }
+    },
+    "isPII": false
   },
   {
     "name": "referredTo",
@@ -61,11 +62,13 @@
     "required": {
       "value": true,
       "message": "RequiredFieldError"
-    }
+    },
+    "isPII": false
   },
   {
     "name": "comments",
     "label": "Comments",
-    "type": "textarea"
+    "type": "textarea",
+    "isPII": true
   }
 ]

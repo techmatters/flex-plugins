@@ -107,21 +107,9 @@ export const handleEvent = async (
   const {
     definitionVersion,
     hrm_api_version: hrmApiVersion,
-    form_definitions_version_url: configFormDefinitionsVersionUrl,
-    assets_bucket_url: assetsBucketUrl,
-    helpline_code: helplineCode,
-    feature_flags: {
-      enable_backend_hrm_contact_creation: enableBackendHrmContactCreation,
-      use_prepopulate_mappings: usePrepopulateMappings,
-    },
+    feature_flags: { use_prepopulate_mappings: usePrepopulateMappings },
   } = serviceConfig.attributes;
 
-  if (!enableBackendHrmContactCreation) {
-    console.debug(
-      `enable_backend_hrm_contact_creation is not set, the contact associated with task ${taskSid} will be created from Flex.`,
-    );
-    return;
-  }
   const hrmAccountId = inferHrmAccountId(accountSid, workerName);
 
   if (contactId) {
@@ -174,18 +162,6 @@ export const handleEvent = async (
     return;
   }
 
-  const formDefinitionsBaseUrl =
-    configFormDefinitionsVersionUrl || `${assetsBucketUrl}/form-definitions/`;
-  const formDefinitionsVersionUrl = new URL(
-    `${formDefinitionsBaseUrl}${helplineCode}/v1`,
-  );
-  if (!enableBackendHrmContactCreation) {
-    console.debug(
-      `enable_backend_hrm_contact_creation is not set, the contact associated with task ${taskSid} will be created from Flex.`,
-    );
-    return;
-  }
-
   const twilioWorkspaceSid = await getWorkspaceSid(accountSid);
 
   console.debug('Creating HRM contact for task', taskSid, 'Hrm Account:', hrmAccountId);
@@ -229,11 +205,11 @@ export const handleEvent = async (
   const prepopulate = usePrepopulateMappings
     ? populateHrmContactFormFromTaskByMappings
     : populateHrmContactFormFromTaskByKeys;
-  const populatedContactResult = await prepopulate(
+  const populatedContactResult = await prepopulate({
     taskAttributes,
-    newContact,
-    formDefinitionsVersionUrl,
-  );
+    contact: newContact,
+    accountSid,
+  });
   if (isErr(populatedContactResult)) {
     console.warn(`Populating contact ${newContact.id} failed, creating blank contact`);
   }

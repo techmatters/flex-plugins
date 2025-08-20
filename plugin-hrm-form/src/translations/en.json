@@ -138,7 +138,7 @@
   "BottomBar-SaveAndEnd": "Save and End",
   "CaseSection-BottomBar-SaveAndAddAnother/note": "Save and Add Another Note",
   "CaseSection-BottomBar-Save/note": "Save Note",
-  "BottomBar-SaveAndAddAnotherReferral": "Save and Add Another Referral",
+  "CaseSection-BottomBar-SaveAndAddAnother/referral": "Save and Add Another Referral",
   "CaseSection-BottomBar-Save/referral": "Save Referral",
   "CaseSection-BottomBar-SaveAndAddAnother/perpetrator": "Save and Add Another Perpetrator",
   "CaseSection-BottomBar-Save/perpetrator": "Save Perpetrator",
@@ -540,6 +540,9 @@
   "Resources-View-OperatingHours": "Hours of Operation",
   "Resources-View-Website": "Website",
   "Resources-View-Details": "Details",
+  "Resources-View-Notes": "Notes",
+  "Resources-View-RecordType": "Record Type",
+  "Resources-View-Taxonomies":  "Taxonomy Names",
   "Resources-View-Sites": " ",
   "Resources-View-PrivateInformationWarning": "This information is private. Do not share with child.",
   "Resources-View-PrimaryAddress": "Primary Address",
@@ -563,6 +566,12 @@
   "Conference-AddConferenceCallParticipant": "Add Conference Call Participant",
   "Conference-EnterPhoneNumber": "Enter phone number",
   "Conference-DialButton": "Dial",
+
+  "Conference-Wrapping-HangupBy/Customer": "Call Ended by Service User",
+  "Conference-Wrapping-HangupBy/Agent": "Call Ended by Counselor",
+  "Conference-Wrapping-HangupBy/Consult": "Call Ended by Consulting Counselor",
+  "Conference-Wrapping-HangupBy/Warm Transfer": "Call Ended by Transfer",
+  "Conference-Wrapping-HangupBy/Cold Transfer": "Call Ended by Transfer",
   "HangupCallLeaveTooltip": "Leave Call",
   "NavigableContainer-BackButton": "Back",
   "NavigableContainer-CloseButton": "Close",
@@ -589,5 +598,12 @@
   "Switchboard-StatusInactive": "Switchboarding: Off",
   "Switchboard-ConfirmTurnOffSwitchboard": "Are you sure you want to turn off switchboarding?",
   "Switchboard-ActivateSwitchboarding": "Activate switchboarding",
-  "Switchboard-PleaseSelectQueue": "Please select a queue first"
+  "Switchboard-ModalTitleTurnOffSwitchboard": "Turn Off Switchboarding",
+  "Switchboard-ButtonTurnOffSwitchboard": "Turn Off",
+  "Switchboard-PleaseSelectQueue": "Please select a queue first",
+
+  "ContactForms-TextArea-GenerateSummary": "Generate Summary",
+  "ContactForms-TextArea-LoadingSummary": "Loading",
+
+  "LlmAssistant-Notifications-SummaryGenerationError": "There was an error generating the summary: {{errorMessage}}"
 }

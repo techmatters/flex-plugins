@@ -28,7 +28,7 @@ import { mockLocalFetchDefinitions } from '../../mockFetchDefinitions';
 import { mockPartialConfiguration } from '../../mockGetConfig';
 import { AddOfflineContactButton } from '../../../components/OfflineContact';
 import { rerenderAgentDesktop } from '../../../rerenderView';
-import { createContact } from '../../../services/ContactService';
+import { createOfflineContact } from '../../../services/ContactService';
 import { Contact } from '../../../types/types';
 import { namespace } from '../../../states/storeNamespaces';
 import { RootState } from '../../../states';
@@ -42,7 +42,7 @@ jest.mock('../../../rerenderView', () => ({
   rerenderAgentDesktop: jest.fn(),
 }));
 jest.mock('../../../services/ContactService', () => ({
-  createContact: jest.fn(),
+  createOfflineContact: jest.fn(),
   updateContactInHrm: jest.fn(),
 }));
 jest.mock('@twilio/flex-ui', () => ({
@@ -55,10 +55,10 @@ jest.mock('@twilio/flex-ui', () => ({
 const { mockFetchImplementation, mockReset, buildBaseURL } = mockLocalFetchDefinitions();
 const mockInvokeAction = Actions.invokeAction as jest.MockedFunction<typeof Actions.invokeAction>;
 const mockRerenderAgentDesktop = rerenderAgentDesktop as jest.MockedFunction<typeof rerenderAgentDesktop>;
-const mockCreateContact = createContact as jest.MockedFunction<typeof createContact>;
+const mockCreateOfflineContact = createOfflineContact as jest.MockedFunction<typeof createOfflineContact>;
 
 beforeAll(async () => {
-  const formDefinitionsBaseUrl = buildBaseURL('v1');
+  const formDefinitionsBaseUrl = buildBaseURL('as-v1');
   await mockFetchImplementation(formDefinitionsBaseUrl);
 
   mockV1 = await loadDefinition(formDefinitionsBaseUrl);
@@ -97,7 +97,7 @@ let baseState: RecursivePartial<RootState>;
 
 const mockStore = configureMockStore([]);
 test('click on button', async () => {
-  mockCreateContact.mockImplementation((contact: Contact) => {
+  mockCreateOfflineContact.mockImplementation((contact: Contact) => {
     console.log('Creating contact', contact);
     return Promise.resolve(contact);
   });
@@ -115,7 +115,7 @@ test('click on button', async () => {
   screen.getByText('OfflineContactButtonText').click();
   await waitFor(
     () => {
-      expect(mockCreateContact).toHaveBeenCalledWith(expect.anything(), 'WK123', getOfflineContactTask());
+      expect(mockCreateOfflineContact).toHaveBeenCalledWith(expect.anything(), 'WK123', getOfflineContactTask());
       expect(Actions.invokeAction).toHaveBeenCalledTimes(1);
     },
     { timeout: 1000 },

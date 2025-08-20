@@ -30,7 +30,6 @@ import LocalizationContext from '../contexts/LocalizationContext';
 import Translator from '../components/translator';
 import CaseList from '../components/caseList';
 import StandaloneSearch from '../components/StandaloneSearch';
-import SettingsSideLink from '../components/sideLinks/SettingsSideLink';
 import CaseListSideLink from '../components/sideLinks/CaseListSideLink';
 import StandaloneSearchSideLink from '../components/sideLinks/StandaloneSearchSideLink';
 import ManualPullButton from '../components/ManualPullButton';
@@ -45,7 +44,6 @@ import { Container } from '../components/queuesStatus/styles';
 import { FeatureFlags, standaloneTaskSid } from '../types/types';
 import { colors } from '../channels/colors';
 import { getHrmConfig } from '../hrmConfig';
-import { AseloMessageInput, AseloMessageList } from '../components/AseloMessaging';
 import { changeRoute } from '../states/routing/actions';
 import { AppRoutes, ChangeRouteMode } from '../states/routing/types';
 import { selectCurrentBaseRoute } from '../states/routing/getRoute';
@@ -71,8 +69,6 @@ const queuesStatusUI = (setupObject: SetupObject) => {
 };
 
 const addButtonsUI = (featureFlags: FeatureFlags) => {
-  const manager = Flex.Manager.getInstance();
-
   return (
     <Container key="add-buttons-section" backgroundColor={HrmTheme.colors.base2}>
       <HeaderContainer>
@@ -80,7 +76,7 @@ const addButtonsUI = (featureFlags: FeatureFlags) => {
           <Flex.Template code="AddButtons-Header" />
         </Box>
       </HeaderContainer>
-      {featureFlags.enable_manual_pulling && <ManualPullButton workerClient={manager.workerClient} />}
+      {featureFlags.enable_manual_pulling && <ManualPullButton />}
       {featureFlags.enable_offline_contact && <AddOfflineContactButton />}
     </Container>
   );
@@ -365,14 +361,6 @@ export const removeActionsIfTransferring = () => {
   Flex.ParticipantCanvas.Content.remove('actions', {
     if: props => hasNoControlAndIsWarm(props.task) && props.participant.participantType === 'worker',
   });
-};
-
-/**
- *
- */
-export const replaceTwilioMessageInput = () => {
-  Flex.MessageInputV2.Content.replace(<AseloMessageInput key="textarea" />, { sortOrder: -1 });
-  Flex.MessageList.Content.replace(<AseloMessageList key="list" />);
 };
 
 /**

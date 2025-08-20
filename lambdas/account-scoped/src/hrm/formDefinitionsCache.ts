@@ -14,6 +14,9 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 import { DefinitionVersion, loadDefinition } from '@tech-matters/hrm-form-definitions';
+import { AccountSID } from '../twilioTypes';
+import { retrieveServiceConfigurationAttributes } from '../configuration/aseloConfiguration';
+import { getTwilioClient } from '../configuration/twilioConfiguration';
 
 const getHelplineCodeFromDefinitionVersionId = (definitionVersionId: string) => {
   if (definitionVersionId === 'demo-v1') return 'as';
@@ -28,7 +31,7 @@ const getVersionFromDefinitionVersionId = (definitionVersionId: string) => {
   return definitionVersionId.substring(definitionVersionId.length - 2);
 };
 
-export const getFormDefinitionUrl = ({
+const getFormDefinitionUrl = ({
   assetsBucketUrl,
   definitionVersion,
 }: {
@@ -42,10 +45,17 @@ export const getFormDefinitionUrl = ({
 
 export const loadedDefinitionVersions: Record<string, DefinitionVersion> = {};
 
-export const getDefinitionVersion = async (
-  formDefinitionRootUrl: URL,
-): Promise<DefinitionVersion> => {
-  const formDefinitionRootUrlString = formDefinitionRootUrl.toString();
+export const getDefinitionVersion = async ({
+  assetsBucketUrl,
+  definitionVersion,
+}: {
+  assetsBucketUrl: string;
+  definitionVersion: string;
+}): Promise<DefinitionVersion> => {
+  const formDefinitionRootUrlString = getFormDefinitionUrl({
+    assetsBucketUrl,
+    definitionVersion,
+  });
   if (!loadedDefinitionVersions[formDefinitionRootUrlString]) {
     console.debug('Loading forms at:', formDefinitionRootUrlString);
     loadedDefinitionVersions[formDefinitionRootUrlString] = await loadDefinition(
@@ -62,4 +72,40 @@ export const clearDefinitionCache = () => {
   Object.keys(loadedDefinitionVersions).forEach(key => {
     delete loadedDefinitionVersions[key];
   });
+};
+
+export const getCurrentDefinitionVersion = async ({
+  accountSid,
+}: {
+  accountSid: AccountSID;
+}): Promise<DefinitionVersion> => {
+  const { assets_bucket_url: assetsBucketUrl, definitionVersion } =
+    await retrieveServiceConfigurationAttributes(await getTwilioClient(accountSid));
+  const currentDefinitionVersion = await getDefinitionVersion({
+    assetsBucketUrl,
+    definitionVersion,
+  });
+  return currentDefinitionVersion;
+};
+
+export const lookupCustomMessage = async (
+  accountSid: AccountSID,
+  locale: string,
+  translationKey: string,
+) => {
+  const { customStrings } = await getCurrentDefinitionVersion({ accountSid });
+  if (customStrings) {
+    const customMessageForLocale = customStrings.Messages[locale]?.[translationKey];
+    if (customMessageForLocale) {
+      return customMessageForLocale;
+    }
+    const [language] = locale.split('-');
+    if (language) {
+      const customMessageForLanguage = customStrings.Messages[language]?.[translationKey];
+      if (customMessageForLanguage) {
+        return customMessageForLanguage;
+      }
+    }
+  }
+  return undefined;
 };

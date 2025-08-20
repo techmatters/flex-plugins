@@ -2,7 +2,8 @@
     "attributes": {
         "definitionVersion": "ph-v1",
         "feature_flags": {
-            "enable_lex": true
+            "enable_lex": true,
+            "enable_lex_v2": true
         },
         "helplineLanguage": "en-US",
         "permissionConfig": "ph"
