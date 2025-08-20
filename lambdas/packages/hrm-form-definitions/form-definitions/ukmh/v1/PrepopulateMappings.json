@@ -7,7 +7,6 @@
     "anxietyScale": "ChildInformationTab.anxietyScale",
     "moodhappinessBefore": "ChildInformationTab.moodhappinessBefore",
     "bookingReference": "ChildInformationTab.bookingReference",
-    "termsAndConditions": "ChildInformationTab.termsAndConditions",
     "consentForResearchevaluation": "ChildInformationTab.consentForResearchevaluation",
     "ip": "ChildInformationTab.ip"
   },

@@ -64,7 +64,6 @@
       "incident": {
         "previewFields": [
           "riskToLifeAssessmentCompleted",
-          "safeguardingConcernsRaised",
           "escalationToOncall"
         ],
         "layout": {
@@ -81,8 +80,8 @@
       },
       "referral": {
         "previewFields": [
-          "breakConfidentialityBc",
-          "bcWhereReported"
+          "referral",
+          "whereReported"
         ],
         "caseHomeOrder": 1,
         "splitFormAt": 3,

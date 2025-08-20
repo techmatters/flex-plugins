@@ -1,9 +1,13 @@
 [
   {
-    "name": "breakConfidentialityBc",
-    "label": "Break Confidentiality (BC)",
-    "type": "listbox-multiselect",
+    "name": "referral",
+    "label": "Referral",
+    "type": "select",
     "options": [
+      {
+        "value": " ",
+        "label": " "
+      },
       {
         "value": "Safeguarding",
         "label": "Safeguarding"
@@ -13,11 +17,12 @@
         "label": "Risk"
       }
     ],
-    "rows": 3
+    "rows": 3,
+    "isPII": false
   },
   {
-    "name": "bcWhereReported",
-    "label": "BC - where reported",
+    "name": "whereReported",
+    "label": "Referral - where was it reported?",
     "type": "listbox-multiselect",
     "options": [
       {
@@ -37,24 +42,34 @@
       "value": true,
       "message": "RequiredFieldError"
     },
-    "rows": 5
+    "rows": 5,
+    "isPII": false
   },
   {
-    "name": "bcReferenceNumberProvided",
-    "label": "BC - Reference Number Provided",
-    "type": "input"
+    "name": "reportedTo",
+    "label": "Referral - Who was is reported to?",
+    "type": "input",
+    "isPII": false
   },
   {
-    "name": "bcSummaryOfConcernsShared",
-    "label": "BC - Summary of Concerns shared",
+    "name": "referenceNumberProvided",
+    "label": "Referral - Reference Number Provided",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "referralSummary",
+    "label": "Summary of Concerns shared",
     "type": "textarea",
     "rows": 10,
-    "width": 250
+    "width": 250,
+    "isPII": true
   },
   {
     "name": "safetyPlanCompleted",
-    "label": "Safety plan completed",
-    "type": "checkbox"
+    "label": "Was Safety plan completed?",
+    "type": "checkbox",
+    "isPII": false
   },
   {
     "name": "whichSupervisorDidYouAlertToTheRisk",
@@ -85,6 +100,7 @@
         "value": "Supervisor 5",
         "label": "Supervisor 5"
       }
-    ]
+    ],
+    "isPII": false
   }
 ]
