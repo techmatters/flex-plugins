@@ -11,6 +11,10 @@
     "label": "Incident",
     "formPath": "caseForms/IncidentForm.json"
   },
+  "safeguarding": {
+    "label": "Safeguarding",
+    "formPath": "caseForms/SafeguardingForm.json"
+  },
   "document": {
     "label": "Document",
     "formPath": "caseForms/DocumentForm.json"
