@@ -225,7 +225,7 @@ ${
         "channel": "{{trigger.message.ChannelSid}}",
         "from": "{{flow.channel.address}}",
         "message_type": "content_template",
-        "content_sid": "HX8cddbe4f1dddcd6b137ac70bfaeb5698",
+        "content_sid": "${channel_flow_vars.terms_and_conditions}",
         "timeout": "3600"
       }
     },
@@ -298,7 +298,7 @@ ${
         "channel": "{{trigger.message.ChannelSid}}",
         "from": "{{flow.channel.address}}",
         "message_type": "content_template",
-        "content_sid": "HX076f06e367c967998f42ab0fd63d6a07",
+        "content_sid": "${channel_flow_vars.send_welcome_and_request_reason}",
         "timeout": "3600"
       }
     },
@@ -368,7 +368,7 @@ ${
         "from": "{{flow.channel.address}}",
         "message_type": "content_template",
         "to": "{{contact.channel.address}}",
-        "content_sid": "HX1e5d6c2a6092c40c6059c9056e0b7646"
+        "content_sid": "${channel_flow_vars.send_final_message}"
       }
     },
     {
@@ -573,7 +573,7 @@ ${
         "channel": "{{trigger.message.ChannelSid}}",
         "from": "{{flow.channel.address}}",
         "message_type": "content_template",
-        "content_sid": "HX3a03e3c706ab704ca6c4303d3629901a",
+        "content_sid": "${channel_flow_vars.welcome_menu}",
         "timeout": "3600"
       }
     },
@@ -685,7 +685,7 @@ ${
         "from": "{{flow.channel.address}}",
         "message_type": "content_template",
         "to": "{{contact.channel.address}}",
-        "content_sid": "HXfb6ef0985b9386d70c806df4e1a0c0b4"
+        "content_sid": "${channel_flow_vars.option_2_resources}"
       }
     },
     {
@@ -711,7 +711,7 @@ ${
         "from": "{{flow.channel.address}}",
         "message_type": "content_template",
         "to": "{{contact.channel.address}}",
-        "content_sid": "HXb935060a75ed82ac4de9b2b7b848c833"
+        "content_sid": "${channel_flow_vars.option_2_closure}"
       }
     },
     {
@@ -762,7 +762,7 @@ ${
         "channel": "{{trigger.message.ChannelSid}}",
         "from": "{{flow.channel.address}}",
         "message_type": "content_template",
-        "content_sid": "HXc41534084761dd0ffc98cf3bcaffeee1",
+        "content_sid": "${channel_flow_vars.playback_menu}",
         "timeout": "3600"
       }
     },
@@ -846,7 +846,7 @@ ${
         "from": "{{flow.channel.address}}",
         "message_type": "content_template",
         "to": "{{contact.channel.address}}",
-        "content_sid": "HXa7301c08423546cbbba2b6e420ed86f1"
+        "content_sid": "${channel_flow_vars.final_goodbye}"
       }
     },
     {
@@ -871,7 +871,7 @@ ${
         "from": "{{flow.channel.address}}",
         "message_type": "content_template",
         "to": "{{contact.channel.address}}",
-        "content_sid": "HXb7b192ab9812830a166bfec5040fa0c1"
+        "content_sid": "${channel_flow_vars.option_3_ideas}"
       }
     },
     {
@@ -920,7 +920,7 @@ ${
         "from": "{{flow.channel.address}}",
         "message_type": "content_template",
         "to": "{{contact.channel.address}}",
-        "content_sid": "HX67cc3515d008058dc256eb784b2dfadc"
+        "content_sid": "${channel_flow_vars.option_3_closure}"
       }
     },
     {
@@ -1061,7 +1061,7 @@ ${
         "channel": "{{trigger.message.ChannelSid}}",
         "from": "{{flow.channel.address}}",
         "message_type": "content_template",
-        "content_sid": "HXf46139aeb08c1d233534dae8646c02eb",
+        "content_sid": "${channel_flow_vars.option_4_worries}",
         "timeout": "3600"
       }
     },
@@ -1088,7 +1088,7 @@ ${
         "from": "{{flow.channel.address}}",
         "message_type": "content_template",
         "to": "{{contact.channel.address}}",
-        "content_sid": "HX2c8d0fbd8805ec91fbfab69bc8d2f2d3"
+        "content_sid": "${channel_flow_vars.option_4_1}"
       }
     },
     {
@@ -1114,7 +1114,7 @@ ${
         "from": "{{flow.channel.address}}",
         "message_type": "content_template",
         "to": "{{contact.channel.address}}",
-        "content_sid": "HX4e709a841d2b200b433796fc358774d8"
+        "content_sid": "${channel_flow_vars.option_4_2}"
       }
     },
     {
@@ -1140,7 +1140,7 @@ ${
         "from": "{{flow.channel.address}}",
         "message_type": "content_template",
         "to": "{{contact.channel.address}}",
-        "content_sid": "HXc6c92788613a7d8a5cebf60bfc1e202e"
+        "content_sid": "${channel_flow_vars.option_4_3}"
       }
     },
     {
@@ -1166,7 +1166,7 @@ ${
         "from": "{{flow.channel.address}}",
         "message_type": "content_template",
         "to": "{{contact.channel.address}}",
-        "content_sid": "HX07ec17590b49165f33b3b7be30dd633f"
+        "content_sid": "${channel_flow_vars.option_4_4}"
       }
     },
     {
@@ -1192,7 +1192,7 @@ ${
         "from": "{{flow.channel.address}}",
         "message_type": "content_template",
         "to": "{{contact.channel.address}}",
-        "content_sid": "HXf48dba4eaaf21faaf2df894db61337b8"
+        "content_sid": "${channel_flow_vars.option_4_5}"
       }
     },
     {
@@ -1218,7 +1218,7 @@ ${
         "from": "{{flow.channel.address}}",
         "message_type": "content_template",
         "to": "{{contact.channel.address}}",
-        "content_sid": "HXfc02d4af0fcdab5265a0f0cd4b58c228"
+        "content_sid": "${channel_flow_vars.option_4_6}"
       }
     },
     {
@@ -1244,7 +1244,7 @@ ${
         "from": "{{flow.channel.address}}",
         "message_type": "content_template",
         "to": "{{contact.channel.address}}",
-        "content_sid": "HXb24ae48f56a6e35b2d3e00ac66b296a1"
+        "content_sid": "${channel_flow_vars.option_4_7}"
       }
     },
     {
@@ -1293,7 +1293,7 @@ ${
         "from": "{{flow.channel.address}}",
         "message_type": "content_template",
         "to": "{{contact.channel.address}}",
-        "content_sid": "HX6402298c0f0c4681040a2aec5b63745d"
+        "content_sid": "${channel_flow_vars.option_4_closure}"
       }
     },
     {
@@ -1321,7 +1321,7 @@ ${
         "channel": "{{trigger.message.ChannelSid}}",
         "from": "{{flow.channel.address}}",
         "message_type": "content_template",
-        "content_sid": "HX515fc59959ba6c8e20c81be376af3fb3",
+        "content_sid": "${channel_flow_vars.playback_previous_menu}",
         "timeout": "3600"
       }
     },
@@ -1431,7 +1431,7 @@ ${
         "channel": "{{trigger.message.ChannelSid}}",
         "from": "{{flow.channel.address}}",
         "message_type": "content_template",
-        "content_sid": "HX90118370badfb40de34e0256e59fc14d",
+        "content_sid": "${channel_flow_vars.option_5_report}",
         "timeout": "3600"
       }
     },
@@ -1586,7 +1586,7 @@ ${
         "from": "{{flow.channel.address}}",
         "message_type": "content_template",
         "to": "{{contact.channel.address}}",
-        "content_sid": "HX4cd5839a0bb5e4cf37e4a46fa9eca08d"
+        "content_sid": "${channel_flow_vars.option_5_1}"
       }
     },
     {
@@ -1612,7 +1612,7 @@ ${
         "from": "{{flow.channel.address}}",
         "message_type": "content_template",
         "to": "{{contact.channel.address}}",
-        "content_sid": "HX1780dd891ed3d7ed9da892b9b52a8c99"
+        "content_sid": "${channel_flow_vars.option_5_2}"
       }
     },
     {
@@ -1638,7 +1638,7 @@ ${
         "from": "{{flow.channel.address}}",
         "message_type": "content_template",
         "to": "{{contact.channel.address}}",
-        "content_sid": "HXe0d8cf537dc3a3ac40ccd060f281c700"
+        "content_sid": "${channel_flow_vars.option_5_3}"
       }
     },
     {
@@ -1664,7 +1664,7 @@ ${
         "from": "{{flow.channel.address}}",
         "message_type": "content_template",
         "to": "{{contact.channel.address}}",
-        "content_sid": "HXc515ac2dbb0de4795d7074098dba1996"
+        "content_sid": "${channel_flow_vars.option_5_4}"
       }
     },
     {
@@ -1690,7 +1690,7 @@ ${
         "from": "{{flow.channel.address}}",
         "message_type": "content_template",
         "to": "{{contact.channel.address}}",
-        "content_sid": "HXb432f34e5573014fdd385c93ef728b1b"
+        "content_sid": "${channel_flow_vars.option_5_5}"
       }
     },
     {
@@ -1716,7 +1716,7 @@ ${
         "from": "{{flow.channel.address}}",
         "message_type": "content_template",
         "to": "{{contact.channel.address}}",
-        "content_sid": "HXac9ceb67ab5f40002e0a1faa41a8c1dd"
+        "content_sid": "${channel_flow_vars.option_5_6}"
       }
     },
     {
@@ -1742,7 +1742,7 @@ ${
         "from": "{{flow.channel.address}}",
         "message_type": "content_template",
         "to": "{{contact.channel.address}}",
-        "content_sid": "HX081ba587eb33d7a804e71d92d0993cf4"
+        "content_sid": "${channel_flow_vars.option_5_7}"
       }
     },
     {
@@ -1768,7 +1768,7 @@ ${
         "from": "{{flow.channel.address}}",
         "message_type": "content_template",
         "to": "{{contact.channel.address}}",
-        "content_sid": "HXd0a65011b66db9f41786aa76bb2d5028"
+        "content_sid": "${channel_flow_vars.option_5_8}"
       }
     },
     {
@@ -1817,7 +1817,7 @@ ${
         "from": "{{flow.channel.address}}",
         "message_type": "content_template",
         "to": "{{contact.channel.address}}",
-        "content_sid": "HX49d5199809113f10263805318a397456"
+        "content_sid": "${channel_flow_vars.option_5_closure}"
       }
     },
     {
@@ -1869,7 +1869,7 @@ ${
         "channel": "{{trigger.message.ChannelSid}}",
         "from": "{{flow.channel.address}}",
         "message_type": "content_template",
-        "content_sid": "HX515fc59959ba6c8e20c81be376af3fb3",
+        "content_sid": "${channel_flow_vars.playback_previous_menu}",
         "timeout": "3600"
       }
     },
@@ -1952,7 +1952,7 @@ ${
         "from": "{{flow.channel.address}}",
         "message_type": "content_template",
         "to": "{{contact.channel.address}}",
-        "content_sid": "HX2f5a7f48d0b0b0eec4a20ee5f59f5b85"
+        "content_sid": "${channel_flow_vars.option_1_urgent_contact}"
       }
     },
     {
