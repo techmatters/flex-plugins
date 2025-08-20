@@ -245,29 +245,6 @@ export const FiltersBottomButtons = styled(Flex)`
 `;
 FiltersBottomButtons.displayName = 'FiltersBottomButtons';
 
-export const FiltersApplyButton = styled(PrimaryButton)`
-  padding: 5px 19px;
-  font-size: 13px;
-  font-weight: 600;
-  border-radius: 4px;
-`;
-FiltersApplyButton.displayName = 'FiltersApplyButton';
-
-export const FiltersClearButton = styled(SecondaryButton)`
-  background-color: transparent;
-  color: #192b33;
-
-  &:hover {
-    background-color: rgba(25, 43, 51, 0.1);
-  }
-
-  &:disabled {
-    background-color: transparent;
-    color: ${HrmTheme.colors.disabledColor};
-  }
-`;
-FiltersClearButton.displayName = 'FiltersClearButton';
-
 export const FiltersCheckbox = styled('input')`
   &[type='checkbox'] {
     display: inline-block;

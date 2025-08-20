@@ -16,9 +16,11 @@
 
 import React from 'react';
 import { Actions, Notifications, NotificationType, Template } from '@twilio/flex-ui';
+import * as Flex from '@twilio/flex-ui';
 
 import { hasTaskControl, isTransferring } from '../transfer/transferTaskState';
 import { TransfersNotifications } from '../transfer/setUpTransferActions';
+import { getAseloFeatureFlags, getHrmConfig } from '../hrmConfig';
 
 export const ConferenceNotifications = {
   UnholdParticipantsNotification: 'ConferenceNotifications_UnholdParticipantsNotification',
@@ -65,6 +67,16 @@ export const setUpConferenceActions = () => {
     if (someParticipantIsOnHold && hasTaskControl(payload.task)) {
       Notifications.showNotificationSingle(ConferenceNotifications.UnholdParticipantsNotification);
       abortFunction();
+    }
+  });
+
+  Flex.Actions.addListener('beforeAcceptTask', ({ conferenceOptions }) => {
+    if (getAseloFeatureFlags().enable_conference_status_event_handler) {
+      conferenceOptions.conferenceStatusCallback = `${
+        getHrmConfig().accountScopedLambdaBaseUrl
+      }/conference/conferenceStatusCallback`;
+      conferenceOptions.conferenceStatusCallbackMethod = 'POST';
+      conferenceOptions.conferenceStatusCallbackEvent = 'leave';
     }
   });
 };

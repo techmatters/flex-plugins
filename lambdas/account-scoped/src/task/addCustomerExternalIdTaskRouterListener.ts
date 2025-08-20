@@ -20,11 +20,9 @@ import { AccountSID, TaskSID } from '../twilioTypes';
 import { Twilio } from 'twilio';
 import { TASK_CREATED, TASK_UPDATED } from '../taskrouter/eventTypes';
 import { EventFields } from '../taskrouter';
-import { retrieveFeatureFlags } from '../configuration/aseloConfiguration';
 import { patchTaskAttributes } from './patchTaskAttributes';
 
 const isTaskRequiringExternalId = async (
-  client: Twilio,
   taskSid: TaskSID,
   {
     isContactlessTask,
@@ -40,15 +38,6 @@ const isTaskRequiringExternalId = async (
     );
     return false;
   }
-
-  const { lambda_task_created_handler: lambdaTaskCreatedHandler } =
-    await retrieveFeatureFlags(client);
-  if (!lambdaTaskCreatedHandler) {
-    console.debug(
-      `Feature flag lambda_task_created_handler not is enabled. Skipping addCustomerExternalId for ${taskSid}, it will be handled in Twilio Serverless.`,
-    );
-    return false;
-  }
   return true;
 };
 
@@ -60,7 +49,7 @@ const addCustomerExternalId: TaskRouterEventHandler = async (
   const { TaskSid, TaskAttributes } = event;
   const taskSid = TaskSid as TaskSID;
   const eventTaskAttributes = JSON.parse(TaskAttributes);
-  if (!(await isTaskRequiringExternalId(client, taskSid, eventTaskAttributes))) {
+  if (!(await isTaskRequiringExternalId(taskSid, eventTaskAttributes))) {
     return;
   }
 

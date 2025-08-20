@@ -34,6 +34,7 @@ resource "datadog_monitor" "nr_of_executions_threshold" {
     if config.enable_datadog_monitor == true
   } : {}
   include_tags = false
+  on_missing_data = "default"
   dynamic "scheduling_options" {
     for_each = each.value.custom_monitor.custom_schedule != null ? [1] : []
 

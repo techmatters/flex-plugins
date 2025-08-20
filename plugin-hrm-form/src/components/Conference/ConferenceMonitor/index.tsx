@@ -35,15 +35,17 @@ const ConferenceMonitor: React.FC<Props> = ({ conference, task }) => {
   const thisInstanceShouldMonitor =
     Boolean(task) && (hasTaskControl(task) || (isOriginalReservation(task) && isTransferring(task)));
 
-  const shouldDisableEndConferenceOnExit = ({ participants, conferenceSid }: Partial<Conference>) =>
+  const shouldDisableEndConferenceOnExit = ({ participants, conferenceSid, status }: Partial<Conference>) =>
     thisInstanceShouldMonitor &&
     Boolean(participants && conferenceSid) &&
+    status === 'active' &&
     participants.filter(p => p.status === 'joined').length > 2 &&
     participants.some(isJoinedWithEnd);
 
-  const shouldEnableEndConferenceOnExit = ({ participants, conferenceSid }: Partial<Conference>) =>
+  const shouldEnableEndConferenceOnExit = ({ participants, conferenceSid, status }: Partial<Conference>) =>
     thisInstanceShouldMonitor &&
     Boolean(participants && conferenceSid) &&
+    status === 'active' &&
     participants.filter(p => p.status === 'joined').length <= 2 &&
     participants.some(isJoinedWithoutEnd);
 

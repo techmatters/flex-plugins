@@ -406,8 +406,9 @@ export const updateDraftReducer = (
   }
 
   const definition =
-    configState.definitionVersions[state[contactId].savedContact.rawJson.definitionVersion] ??
-    configState.currentDefinitionVersion;
+    configState.definitionVersions[
+      state[contactId].savedContact.definitionVersion ?? state[contactId].savedContact.rawJson.definitionVersion
+    ] ?? configState.currentDefinitionVersion;
 
   if (draft?.rawJson) {
     // Transform from RHF friendly values to the state we want in redux

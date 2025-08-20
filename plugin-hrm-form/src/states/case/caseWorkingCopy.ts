@@ -52,8 +52,9 @@ const updateCaseSectionWorkingCopyReducer = (
   { sectionItem, caseId, id, caseSectionType }: UpdateCaseSectionWorkingCopyAction,
 ): CaseState => {
   const definition =
-    configState.definitionVersions[state.cases[caseId].connectedCase.info.definitionVersion] ??
-    configState.currentDefinitionVersion;
+    configState.definitionVersions[
+      state.cases[caseId].connectedCase.definitionVersion ?? state.cases[caseId].connectedCase.info.definitionVersion
+    ] ?? configState.currentDefinitionVersion;
   const transformedSectionItem: CaseSectionTypeSpecificData = transformValues(
     definition.caseSectionTypes[caseSectionType].form,
   )(sectionItem);

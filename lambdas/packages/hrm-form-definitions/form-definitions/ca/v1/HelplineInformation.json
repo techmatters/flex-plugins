@@ -5,9 +5,9 @@
         "label": "Kids Help Phone",
         "value": "Kids Help Phone",
         "default": true,
-        "kmsUrl": "http://kms2013.kidshelp.ca/Pages/Home.aspx",
+        "kmsUrl": "https://kidshelpphone.sharepoint.com/sites/KMSKnowledgeMobilizationSystem/SitePages/SCHome.aspx",
         "manager": {
-          "name": "Ayisha Memon",
+          "name": "",
           "phone": "",
           "email": ""
         }

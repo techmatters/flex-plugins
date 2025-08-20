@@ -6,7 +6,8 @@
     "required": {
       "value": true,
       "message": "RequiredFieldError"
-    }
+    },
+    "isPII": true
   },
   {
     "name": "lastName",
@@ -15,7 +16,8 @@
     "required": {
       "value": true,
       "message": "RequiredFieldError"
-    }
+    },
+    "isPII": true
   },
   {
     "name": "age",
@@ -150,17 +152,20 @@
     "required": {
       "value": true,
       "message": "RequiredFieldError"
-    }
+    },
+    "isPII": false
   },
   {
     "name": "dateOfBirth",
     "type": "date-input",
-    "label": "Date of Birth"
+    "label": "Date of Birth",
+    "isPII": false
   },
   {
     "name": "idNumber",
     "label": "ID Number",
-    "type": "input"
+    "type": "input",
+    "isPII": true
   },
   {
     "name": "gender",
@@ -191,17 +196,20 @@
     "required": {
       "value": true,
       "message": "RequiredFieldError"
-    }
+    },
+    "isPII": false
   },
   {
     "name": "streetAddress",
     "label": "Street Address",
-    "type": "input"
+    "type": "input",
+    "isPII": true
   },
   {
     "name": "addressDescription",
     "label": "Describe the Address",
-    "type": "input"
+    "type": "input",
+    "isPII": true
   },
   {
     "name": "province",
@@ -215,7 +223,8 @@
     "required": {
       "value": true,
       "message": "RequiredFieldError"
-    }
+    },
+    "isPII": false
   },
   {
     "name": "district",
@@ -226,7 +235,8 @@
       "value": "Unknown",
       "label": ""
     },
-    "optionsReferenceKey": "districtOptions"
+    "optionsReferenceKey": "districtOptions",
+    "isPII": false
   },
   {
     "name": "suburb",
@@ -235,12 +245,14 @@
     "required": {
       "value": true,
       "message": "RequiredFieldError"
-    }
+    },
+    "isPII": true
   },
   {
     "name": "phone1",
     "label": "Phone #1",
-    "type": "input"
+    "type": "input",
+    "isPII": true
   },
   {
     "name": "race",
@@ -267,22 +279,26 @@
         "value": "White",
         "label": "White"
       }
-    ]
+    ],
+    "isPII": false
   },
   {
     "name": "schoolName",
     "label": "School Name",
-    "type": "input"
+    "type": "input",
+    "isPII": true
   },
   {
     "name": "schoolPhone",
     "label": "School Phone #",
-    "type": "input"
+    "type": "input",
+    "isPII": true
   },
   {
     "name": "teacher",
     "label": "Name of Teacher",
-    "type": "input"
+    "type": "input",
+    "isPII": true
   },
   {
     "name": "gradeLevel",
@@ -349,7 +365,8 @@
         "value": "Out of School",
         "label": "Out of School"
       }
-    ]
+    ],
+    "isPII": false
   },
   {
     "name": "concernLevel",
@@ -376,7 +393,8 @@
     "required": {
       "value": true,
       "message": "RequiredFieldError"
-    }
+    },
+    "isPII": false
   },
   {
     "name": "livingSituation",
@@ -419,7 +437,8 @@
         "value": "Other",
         "label": "Other"
       }
-    ]
+    ],
+    "isPII": false
   },
   {
     "name": "vulnerableGroups",
@@ -470,7 +489,8 @@
         "value": "Other",
         "label": "Other"
       }
-    ]
+    ],
+    "isPII": false
   },
   {
     "name": "childStatus",
@@ -502,6 +522,7 @@
         "value": "Unknown",
         "label": "Unknown"
       }
-    ]
+    ],
+    "isPII": false
   }
 ]

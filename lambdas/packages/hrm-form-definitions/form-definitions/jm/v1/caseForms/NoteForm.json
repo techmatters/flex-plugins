@@ -5,7 +5,8 @@
     "type": "textarea",
     "placeholder": "",
     "rows": 10,
-    "width": 250
+    "width": 250,
+    "isPII": true
   },
   {
     "name": "objective",
@@ -13,7 +14,8 @@
     "type": "textarea",
     "placeholder": "",
     "rows": 10,
-    "width": 250
+    "width": 250,
+    "isPII": true
   },
   {
     "name": "assessment",
@@ -21,7 +23,8 @@
     "type": "textarea",
     "placeholder": "",
     "rows": 10,
-    "width": 250
+    "width": 250,
+    "isPII": true
   },
   {
     "name": "plan",
@@ -29,7 +32,8 @@
     "type": "textarea",
     "placeholder": "",
     "rows": 10,
-    "width": 250
+    "width": 250,
+    "isPII": true
   },
   {
     "name": "notes",
@@ -37,6 +41,7 @@
     "type": "textarea",
     "placeholder": "",
     "rows": 10,
-    "width": 250
+    "width": 250,
+    "isPII": true
   }
 ]

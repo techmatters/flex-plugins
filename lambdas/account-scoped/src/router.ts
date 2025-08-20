@@ -31,7 +31,11 @@ import { validateFlexTokenRequest } from './validation/flexToken';
 import { getParticipantHandler } from './conference/getParticipant';
 import { updateParticipantHandler } from './conference/updateParticipant';
 import { removeParticipantHandler } from './conference/removeParticipant';
-import { statusCallbackHandler } from './conference/statusCallback';
+import { participantStatusCallbackHandler } from './conference/participantStatusCallback';
+import { handleOperatingHours } from './operatingHours';
+import { handleEndChat } from './conversation/endChat';
+import { conferenceStatusCallbackHandler } from './conference/conferenceStatusCallback';
+import './conference/stopRecordingWhenLastAgentLeaves';
 
 /**
  * Super simple router sufficient for directly ported Twilio Serverless functions
@@ -66,6 +70,10 @@ const ROUTES: Record<string, FunctionRoute> = {
     requestPipeline: [validateWebhookRequest],
     handler: handleChatbotCallbackCleanup,
   },
+  'conference/conferenceStatusCallback': {
+    requestPipeline: [validateWebhookRequest],
+    handler: conferenceStatusCallbackHandler,
+  },
   'conference/addParticipant': {
     requestPipeline: [validateFlexTokenRequest({ tokenMode: 'worker' })],
     handler: addParticipantHandler,
@@ -82,13 +90,21 @@ const ROUTES: Record<string, FunctionRoute> = {
     requestPipeline: [validateFlexTokenRequest({ tokenMode: 'worker' })],
     handler: updateParticipantHandler,
   },
-  'conference/statusCallback': {
+  'conference/participantStatusCallback': {
     requestPipeline: [validateWebhookRequest],
-    handler: statusCallbackHandler,
+    handler: participantStatusCallbackHandler,
   },
   toggleSwitchboardQueue: {
     requestPipeline: [validateFlexTokenRequest({ tokenMode: 'supervisor' })],
     handler: handleToggleSwitchboardQueue,
+  },
+  endChat: {
+    requestPipeline: [validateFlexTokenRequest({ tokenMode: 'guest' })],
+    handler: handleEndChat,
+  },
+  operatingHours: {
+    requestPipeline: [],
+    handler: handleOperatingHours,
   },
 };
 

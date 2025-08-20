@@ -19,7 +19,7 @@ WORKDIR /app
 
 ARG TARGETARCH
 
-RUN curl -fsSL https://deb.nodesource.com/setup_16.x | bash - && \
+RUN curl -fsSL https://deb.nodesource.com/setup_22.x | bash - && \
     apt-get install -y \
         nodejs \
         autoconf \
@@ -54,7 +54,7 @@ WORKDIR /app
 
 RUN apt-get update && \
     apt-get install -y curl wget gpg && \
-    curl -fsSL https://deb.nodesource.com/setup_16.x | bash - && \
+    curl -fsSL https://deb.nodesource.com/setup_22.x | bash - && \
     apt-get install -y nodejs && \
     # move npm cache to /tmp for use in lambda
     npm config set cache /tmp --global && \

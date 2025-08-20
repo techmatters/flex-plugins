@@ -13,7 +13,8 @@
         "label": "Risk"
       }
     ],
-    "rows": 3
+    "rows": 3,
+    "isPII": false
   },
   {
     "name": "bcWhereReported",
@@ -37,24 +38,28 @@
       "value": true,
       "message": "RequiredFieldError"
     },
-    "rows": 5
+    "rows": 5,
+    "isPII": false
   },
   {
     "name": "bcReferenceNumberProvided",
     "label": "BC - Reference Number Provided",
-    "type": "input"
+    "type": "input",
+    "isPII": true
   },
   {
     "name": "bcSummaryOfConcernsShared",
     "label": "BC - Summary of Concerns shared",
     "type": "textarea",
     "rows": 10,
-    "width": 250
+    "width": 250,
+    "isPII": true
   },
   {
     "name": "safetyPlanCompleted",
     "label": "Safety plan completed",
-    "type": "checkbox"
+    "type": "checkbox",
+    "isPII": false
   },
   {
     "name": "whichSupervisorDidYouAlertToTheRisk",
@@ -85,6 +90,7 @@
         "value": "Supervisor 5",
         "label": "Supervisor 5"
       }
-    ]
+    ],
+    "isPII": false
   }
 ]

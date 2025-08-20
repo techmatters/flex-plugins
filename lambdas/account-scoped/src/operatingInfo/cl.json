@@ -1,0 +1,38 @@
+{
+  "timezone": "America/Santiago",
+  "holidays": {
+    "12/25/2024": "Navidad",
+    "01/01/2025": "Año Nuevo",
+    "04/18/2025": "Viernes Santo",
+    "05/01/2025": "Día del trabajo",
+    "05/21/2025": "Día de las glorias navales",
+    "06/20/2025": "Día nacional de los pueblos indígenas",
+    "07/16/2025": "Día de la virgen del carmen",
+    "08/15/2025": "Asunción de la virgen",
+    "09/18/2025": "Independencia nacional",
+    "09/19/2025": "Día de las glorias del ejército",
+    "10/31/2025": "Día de las Iglesias Evangélicas y Protestantes",
+    "12/08/2025": "Inmaculada Concepción",
+    "12/25/2025": "Navidad"
+  },
+  "operatingHours": {
+    "webchat": {
+      "1": [],
+      "2": [],
+      "3": [],
+      "4": [],
+      "5": [],
+      "6": [],
+      "7": []
+    },
+    "voice": {
+      "1": [],
+      "2": [],
+      "3": [],
+      "4": [],
+      "5": [],
+      "6": [],
+      "7": []
+    }
+  }
+}

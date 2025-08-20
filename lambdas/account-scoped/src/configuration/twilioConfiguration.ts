@@ -15,7 +15,7 @@
  */
 
 import { AccountSID, ChatServiceSID, WorkflowSID, WorkspaceSID } from '../twilioTypes';
-import { getSsmParameter } from '../ssmCache';
+import { getSsmParameter, SsmParameterNotFound } from '../ssmCache';
 import twilio, { Twilio } from 'twilio';
 
 export const getWorkspaceSid = async (accountSid: AccountSID): Promise<WorkspaceSID> =>
@@ -51,6 +51,34 @@ export const getHelplineCode = (accountSid: AccountSID): Promise<string> =>
 
 export const getSyncServiceSid = (accountSid: AccountSID): Promise<string> =>
   getSsmParameter(`/${process.env.NODE_ENV}/twilio/${accountSid}/sync_sid`);
+
+export const getFlexProxyServiceSid = (accountSid: AccountSID): Promise<string> =>
+  getSsmParameter(`/${process.env.NODE_ENV}/twilio/${accountSid}/flex_proxy_service_sid`);
+
+export const getOperatingInfoKey = (accountSid: AccountSID): Promise<string> =>
+  getSsmParameter(`/${process.env.NODE_ENV}/twilio/${accountSid}/operating_info_key`);
+
+export const areOperatingHoursEnforced = async (
+  accountSid: AccountSID,
+): Promise<boolean> => {
+  try {
+    const overrideText = await getSsmParameter(
+      `/${process.env.NODE_ENV}/twilio/${accountSid}/operating_hours_enforced_override`,
+    );
+    if (overrideText.toLowerCase() === 'true') return true;
+    if (overrideText.toLowerCase() === 'false') return false;
+  } catch (error) {
+    // fall back to default behaviour silently if parameter not found - this is the normal case
+    if (!(error instanceof SsmParameterNotFound)) {
+      console.error(
+        'Error looking up operating hours override in SSM, falling back to default',
+        error,
+      );
+    }
+  }
+  // Only enforce operating hours in prod by default
+  return process.env.NODE_ENV === 'production';
+};
 
 export const getSwitchboardQueueSid = (accountSid: AccountSID): Promise<string> =>
   getSsmParameter(`/${process.env.NODE_ENV}/twilio/${accountSid}/switchboard_queue_sid`);

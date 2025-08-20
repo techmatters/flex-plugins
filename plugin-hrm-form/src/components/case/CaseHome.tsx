@@ -14,13 +14,13 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Template } from '@twilio/flex-ui';
 import { useDispatch, useSelector } from 'react-redux';
 import { DefinitionVersion } from 'hrm-form-definitions';
 
 import { CaseContainer, CaseDetailsBorder } from './styles';
-import { BottomButtonBar, Box, DestructiveButton, TertiaryButton } from '../../styles';
+import { BottomButtonBar, Box, DestructiveButton, Flex, SecondaryButton } from '../../styles';
 import CaseOverviewHeader from './caseOverview/CaseOverviewHeader';
 import CaseOverview from './caseOverview';
 import Timeline from './timeline/Timeline';
@@ -37,7 +37,12 @@ import { selectCurrentTopmostRouteForTask } from '../../states/routing/getRoute'
 import selectCurrentRouteCaseState from '../../states/case/selectCurrentRouteCase';
 import CaseCreatedBanner from '../caseMergingBanners/CaseCreatedBanner';
 import AddToCaseBanner from '../caseMergingBanners/AddToCaseBanner';
-import { selectCaseLabel, selectTimelineContactCategories, selectTimelineCount } from '../../states/case/timeline';
+import {
+  newGetTimelineAsyncAction,
+  selectCaseLabel,
+  selectTimelineContactCategories,
+  selectTimelineCount,
+} from '../../states/case/timeline';
 import { selectDefinitionVersionForCase } from '../../states/configuration/selectDefinitions';
 import selectCaseHelplineData from '../../states/case/selectCaseHelplineData';
 import { selectCounselorName } from '../../states/configuration/selectCounselorsHash';
@@ -54,6 +59,7 @@ export type CaseHomeProps = {
 
 const MAX_ACTIVITIES_IN_TIMELINE_SECTION = 5;
 const MAIN_TIMELINE_ID = 'prime-timeline';
+const CONTACTS_TIMELINE_ID = 'print-contacts';
 
 const CaseHome: React.FC<CaseHomeProps> = ({ task, handlePrintCase, handleClose, handleSaveAndEnd, can }) => {
   // Hooks
@@ -63,9 +69,11 @@ const CaseHome: React.FC<CaseHomeProps> = ({ task, handlePrintCase, handleClose,
     isStandaloneITask(task) ? undefined : selectContactByTaskSid(state, task.taskSid)?.savedContact,
   );
   const routing = useSelector((state: RootState) => selectCurrentTopmostRouteForTask(state, task.taskSid) as CaseRoute);
+
   const timelineCategories = useSelector((state: RootState) =>
-    selectTimelineContactCategories(state, routing.caseId, MAIN_TIMELINE_ID),
+    selectTimelineContactCategories(state, routing.caseId, CONTACTS_TIMELINE_ID),
   );
+
   const activityCount = useSelector((state: RootState) =>
     routing.route === 'case' ? selectTimelineCount(state, routing.caseId, MAIN_TIMELINE_ID) : 0,
   );
@@ -86,6 +94,21 @@ const CaseHome: React.FC<CaseHomeProps> = ({ task, handlePrintCase, handleClose,
   const office = useSelector((state: RootState) => selectCaseHelplineData(state, routing.caseId));
 
   const dispatch = useDispatch();
+  useEffect(() => {
+    if (!timelineCategories) {
+      dispatch(
+        newGetTimelineAsyncAction(
+          routing.caseId,
+          CONTACTS_TIMELINE_ID,
+          [],
+          true,
+          { offset: 0, limit: 10000 },
+          `case-list`,
+        ),
+      );
+    }
+  }, [routing.caseId, dispatch, timelineCategories]);
+
   const openModal = (route: AppRoutes) => dispatch(RoutingActions.newOpenModalAction(route, task.taskSid));
   // End Hooks
   if (!connectedCase) return null; // narrow type before deconstructing
@@ -164,9 +187,11 @@ const CaseHome: React.FC<CaseHomeProps> = ({ task, handlePrintCase, handleClose,
               titleCode={hasMoreActivities ? 'Case-Timeline-RecentTitle' : 'Case-Timeline-Title'}
             />
             {hasMoreActivities && (
-              <TertiaryButton style={{ marginTop: '10px' }} onClick={onViewFullTimelineClick}>
-                <Template code="Case-Timeline-OpenFullTimelineButton" />
-              </TertiaryButton>
+              <Flex flexDirection="column" width="100%">
+                <SecondaryButton style={{ marginTop: '10px' }} onClick={onViewFullTimelineClick}>
+                  <Template code="Case-Timeline-OpenFullTimelineButton" />
+                </SecondaryButton>
+              </Flex>
             )}
           </CaseDetailsBorder>
         </Box>

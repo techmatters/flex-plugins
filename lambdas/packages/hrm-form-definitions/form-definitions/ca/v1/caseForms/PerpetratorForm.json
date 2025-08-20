@@ -6,7 +6,8 @@
     "required": {
       "value": true,
       "message": "RequiredFieldError"
-    }
+    },
+    "isPII": true
   },
   {
     "name": "lastName",
@@ -15,7 +16,8 @@
     "required": {
       "value": true,
       "message": "RequiredFieldError"
-    }
+    },
+    "isPII": true
   },
   {
     "name": "dateofBirth",
@@ -24,7 +26,8 @@
     "required": {
       "value": true,
       "message": "RequiredFieldError"
-    }
+    },
+    "isPII": false
   },
   {
     "name": "phone",
@@ -33,7 +36,8 @@
     "required": {
       "value": true,
       "message": "RequiredFieldError"
-    }
+    },
+    "isPII": true
   },
   {
     "name": "streetAddress",
@@ -42,7 +46,8 @@
     "required": {
       "value": true,
       "message": "RequiredFieldError"
-    }
+    },
+    "isPII": true
   },
   {
     "name": "city",
@@ -51,7 +56,8 @@
     "required": {
       "value": true,
       "message": "RequiredFieldError"
-    }
+    },
+    "isPII": true
   },
   {
     "name": "schoolName",
@@ -60,7 +66,8 @@
     "required": {
       "value": true,
       "message": "RequiredFieldError"
-    }
+    },
+    "isPII": true
   },
   {
     "name": "religion",
@@ -69,7 +76,8 @@
     "required": {
       "value": true,
       "message": "RequiredFieldError"
-    }
+    },
+    "isPII": true
   },
   {
     "name": "callerName",
@@ -78,25 +86,60 @@
     "required": {
       "value": true,
       "message": "RequiredFieldError"
-    }
+    },
+    "isPII": true
   },
   {
     "name": "relationshipToChild",
     "type": "select",
     "label": "referralSourceRelationship",
     "options": [
-      { "value": "", "label": "" },
-      { "value": "Peer", "label": "Peer" },
-      { "value": "Caregiver", "label": "Caregiver" },
-      { "value": "Partner", "label": "Partner" },
-      { "value": "OtherAdultKnownToChild", "label": "Other adult known to the child" },
-      { "value": "Sibling", "label": "Sibling(s)" },
-      { "value": "Stranger", "label": "Stranger" },
-      { "value": "Person in a position of responsibility", "label": "Person in a position of responsibility" },
-      { "value": "Other", "label": "Other" },
-      { "value": "Unknown", "label": "Unknown" }
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "Peer",
+        "label": "Peer"
+      },
+      {
+        "value": "Caregiver",
+        "label": "Caregiver"
+      },
+      {
+        "value": "Partner",
+        "label": "Partner"
+      },
+      {
+        "value": "OtherAdultKnownToChild",
+        "label": "Other adult known to the child"
+      },
+      {
+        "value": "Sibling",
+        "label": "Sibling(s)"
+      },
+      {
+        "value": "Stranger",
+        "label": "Stranger"
+      },
+      {
+        "value": "Person in a position of responsibility",
+        "label": "Person in a position of responsibility"
+      },
+      {
+        "value": "Other",
+        "label": "Other"
+      },
+      {
+        "value": "Unknown",
+        "label": "Unknown"
+      }
     ],
-    "required": { "value": true, "message": "RequiredFieldError" }
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    },
+    "isPII": false
   },
   {
     "name": "callerAddress",
@@ -105,7 +148,8 @@
     "required": {
       "value": true,
       "message": "RequiredFieldError"
-    }
+    },
+    "isPII": true
   },
   {
     "name": "callerProvince",
@@ -192,7 +236,8 @@
     "required": {
       "value": true,
       "message": "RequiredFieldError"
-    }
+    },
+    "isPII": false
   },
   {
     "name": "callerPhone",
@@ -201,6 +246,7 @@
     "required": {
       "value": true,
       "message": "RequiredFieldError"
-    }
+    },
+    "isPII": true
   }
 ]

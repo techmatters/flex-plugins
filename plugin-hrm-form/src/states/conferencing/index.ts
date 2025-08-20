@@ -20,7 +20,7 @@ import { Action } from 'redux';
 import { RemoveContactStateAction } from '../types';
 import { removeContactState } from '../actions';
 import {
-  createContactAsyncAction,
+  createOfflineContactAsyncAction,
   newLoadContactFromHrmForTaskAsyncAction,
   updateContactInHrmAsyncAction,
 } from '../contacts/saveContact';
@@ -103,7 +103,7 @@ const createNewEntryForTaskId = (state: ConferencingState, action: Action) => {
 
 const conferencingReducer = createReducer(initialState, handleAction => [
   // Handle GeneralActionType
-  handleAction(createContactAsyncAction.fulfilled, createNewEntryForTaskId),
+  handleAction(createOfflineContactAsyncAction.fulfilled, createNewEntryForTaskId),
   handleAction(newLoadContactFromHrmForTaskAsyncAction.fulfilled, createNewEntryForTaskId),
   handleAction(updateContactInHrmAsyncAction.fulfilled, (state, action) => {
     const {

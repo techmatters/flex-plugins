@@ -6,17 +6,19 @@
     "required": {
       "value": true,
       "message": "RequiredFieldError"
-    }
+    },
+    "isPII": true
   },
   {
     "name": "repeatCaller",
     "label": "Repeat Caller?",
-    "type": "mixed-checkbox"
+    "type": "mixed-checkbox",
+    "isPII": false
   },
   {
     "name": "actionTaken",
     "label": "Action Taken",
-     "type": "listbox-multiselect",
+    "type": "listbox-multiselect",
     "options": [
       {
         "value": "Unknown",
@@ -62,21 +64,25 @@
         "value": "Other",
         "label": "Other"
       }
-    ]
+    ],
+    "isPII": false
   },
   {
     "name": "okForCaseWorkerToCall",
     "label": "Ok for case worker to call?",
-    "type": "mixed-checkbox"
+    "type": "mixed-checkbox",
+    "isPII": false
   },
   {
     "name": "didWeSolveTheirProblem",
     "label": "Did the child feel we solved their problem?",
-    "type": "mixed-checkbox"
+    "type": "mixed-checkbox",
+    "isPII": false
   },
   {
     "name": "didYouDiscussRightsWithTheChild",
     "label": "Did you discuss rights with the child?",
-    "type": "mixed-checkbox"
+    "type": "mixed-checkbox",
+    "isPII": false
   }
 ]

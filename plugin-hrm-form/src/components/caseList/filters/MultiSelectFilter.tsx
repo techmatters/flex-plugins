@@ -31,12 +31,12 @@ import {
   MultiSelectListItem,
   MultiSelectCheckboxLabel,
   FiltersBottomButtons,
-  FiltersApplyButton,
-  FiltersClearButton,
   FiltersCheckbox,
   Flex,
   Box,
   FormLabel,
+  PrimaryButton,
+  SecondaryButton,
 } from '../../../styles';
 
 export type Item = {
@@ -271,11 +271,11 @@ const MultiSelectFilter: React.FC<Props> = ({
             </MultiSelectUnorderedList>
             <FiltersBottomButtons>
               <Box marginRight="10px">
-                <FiltersClearButton type="button" name="clearButton" onClick={handleClear}>
+                <SecondaryButton type="button" name="clearButton" onClick={handleClear}>
                   <Template code="CaseList-Filters-Clear" />
-                </FiltersClearButton>
+                </SecondaryButton>
               </Box>
-              <FiltersApplyButton
+              <PrimaryButton
                 type="submit"
                 name="applyButton"
                 onKeyDown={handleTabForLastElement}
@@ -283,7 +283,7 @@ const MultiSelectFilter: React.FC<Props> = ({
                 data-testid="Filter-Apply-Button"
               >
                 <Template code="CaseList-Filters-Apply" />
-              </FiltersApplyButton>
+              </PrimaryButton>
             </FiltersBottomButtons>
           </form>
         </FiltersDialog>

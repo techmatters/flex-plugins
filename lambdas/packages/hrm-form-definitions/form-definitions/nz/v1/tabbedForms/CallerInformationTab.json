@@ -6,17 +6,20 @@
     "required": {
       "value": true,
       "message": "RequiredFieldError"
-    }
+    },
+    "isPII": true
   },
   {
     "name": "firstName",
     "label": "First Name",
-    "type": "input"
+    "type": "input",
+    "isPII": true
   },
   {
     "name": "lastName",
     "label": "Last Name",
-    "type": "input"
+    "type": "input",
+    "isPII": true
   },
   {
     "name": "age",
@@ -116,7 +119,8 @@
         "value": ">64",
         "label": ">64"
       }
-    ]
+    ],
+    "isPII": false
   },
   {
     "name": "gender",
@@ -144,7 +148,8 @@
         "value": "Unknown",
         "label": "Unknown"
       }
-    ]
+    ],
+    "isPII": false
   },
   {
     "name": "relationshipToChild",
@@ -188,7 +193,8 @@
     "required": {
       "value": true,
       "message": "RequiredFieldError"
-    }
+    },
+    "isPII": false
   },
   {
     "name": "region",
@@ -268,7 +274,8 @@
         "value": "Southland",
         "label": "Southland"
       }
-    ]
+    ],
+    "isPII": false
   },
   {
     "name": "ethnicity",
@@ -356,6 +363,7 @@
         "value": "Tongan",
         "label": "Tongan"
       }
-    ]
+    ],
+    "isPII": false
   }
 ]

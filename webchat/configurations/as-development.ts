@@ -165,4 +165,5 @@ export const config: Configuration = {
   blockedEmojis,
   memberDisplayOptions,
   enableRecaptcha,
+  twilioServicesUrl: new URL(`https://hrm-development.tl.techmatters.org/lambda/twilio/account-scoped/${accountSid}`),
 };

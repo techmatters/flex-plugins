@@ -520,6 +520,9 @@
 "Resources-View-Coverage": "Couverture",
 "Resources-View-Coverage-SeeSites": "(voir les sites individuels)",
 "Resources-View-Eligibility": "Admissibilité",
+"Resources-View-Notes": "Notes",
+"Resources-View-RecordType": "Type d'enregistrement",
+"Resources-View-Taxonomies":  "Noms de taxonomie",
 "Resources-CopyId": "Copier la pièce d'identité",
 "Resources-IdCopied": "Copié !",
 "HangupCallLeaveTooltip": "Quitter",
@@ -638,6 +641,7 @@
 "Conference-EnterPhoneNumber": "Entrez le numéro de téléphone",
 "Conference-DialButton": "Appel",
 "Conference": "Conférence",
+"Add": "Ajouter",
 "Gender": "Sexe",
 "Age": "Âge",
 "Silent": "Silence",
@@ -660,6 +664,9 @@
 "HoldCustomerTooltip": "Mettre en attente",
 "UnholdCustomerTooltip": "Décoller",
 "HoldAgentTooltip": "Mettre en attente",
+"CallCanvasWorkerOnHold": "En attente",
+"CallParticipantStatusLive": "En direct",
+"CallParticipantStatusOnHold": "En attente",
 "UnholdAgentTooltip": "Décoller",
 "NewChatMessageNotificationTitle": "Nouveau message de {{lastMessage.authorName}}",
 
@@ -671,5 +678,11 @@
 "Switchboard-ModalTitleTurnOffSwitchboard": "Êtes-vous sûr de vouloir désactiver la commutation?",
 "Switchboard-ButtonTurnOffSwitchboard": "Désactiver",
 "Switchboard-ActivateSwitchboarding": "Activer la commutation",
-"Switchboard-PleaseSelectQueue": "Veuillez d'abord sélectionner une file d'attente"
+"Switchboard-PleaseSelectQueue": "Veuillez d'abord sélectionner une file d'attente",
+
+"Conference-Wrapping-HangupBy/Agent": "Appel Terminé par le Conseiller",
+"Conference-Wrapping-HangupBy/Customer": "Appel Terminé par l'Utilisateur du Service",
+"Conference-Wrapping-HangupBy/Consult": "Appel Terminé par le Conseiller Consultant",
+"Conference-Wrapping-HangupBy/Cold Transfer": "Appel Terminé par Transfert",
+"Conference-Wrapping-HangupBy/Warm Transfer": "Appel Terminé par Transfert"
 }

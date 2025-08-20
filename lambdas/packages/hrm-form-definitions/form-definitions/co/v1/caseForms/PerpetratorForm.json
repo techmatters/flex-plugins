@@ -2,12 +2,14 @@
   {
     "name": "firstName",
     "label": "Nombre",
-    "type": "input"
+    "type": "input",
+    "isPII": true
   },
   {
     "name": "lastName",
     "label": "Apellido",
-    "type": "input"
+    "type": "input",
+    "isPII": true
   },
   {
     "name": "relationshipToChild",
@@ -66,7 +68,8 @@
     "required": {
       "value": true,
       "message": "RequiredFieldError"
-    }
+    },
+    "isPII": false
   },
   {
     "name": "gender",
@@ -94,7 +97,8 @@
         "value": "Desconocido",
         "label": "Desconocido"
       }
-    ]
+    ],
+    "isPII": false
   },
   {
     "name": "age",
@@ -117,6 +121,7 @@
         "value": ">18",
         "label": ">18"
       }
-    ]
+    ],
+    "isPII": false
   }
 ]

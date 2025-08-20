@@ -1,6 +1,5 @@
 ${
-  jsonencode(
-{
+  jsonencode({
   "description": "${flow_description}",
   "states": [
     {
@@ -134,32 +133,27 @@ ${
       }
     },
     {
-      "name": "facebook_hours",
-      "type": "run-function",
+      "name": "facebookHours",
+      "type": "make-http-request",
       "transitions": [
         {
           "next": "check_fb_hours",
           "event": "success"
         },
         {
-          "event": "fail"
+          "event": "failed"
         }
       ],
       "properties": {
-        "service_sid": "${flow_vars.service_sid}",
-        "environment_sid": "${flow_vars.environment_sid}",
         "offset": {
           "x": -80,
           "y": -280
         },
-        "function_sid": "${flow_vars.operating_hours_function_sid}",
-        "parameters": [
-          {
-            "value": "facebook",
-            "key": "channel"
-          }
-        ],
-        "url": "${serverless_url}/operatingHours"
+        "method": "POST",
+        "content_type": "application/json;charset=utf-8",
+        "add_twilio_auth": false,
+        "body": "{\"channel\": \"facebook\"}",
+        "url": "${get_profile_flags_for_identifier_base_url}/operatingHours"
       }
     },
     {
@@ -176,7 +170,7 @@ ${
             {
               "friendly_name": "If value contains open",
               "arguments": [
-                "{{widgets.facebook_hours.body}}"
+                "{{widgets.facebookHours.body}}"
               ],
               "type": "contains",
               "value": "open"
@@ -190,7 +184,7 @@ ${
             {
               "friendly_name": "If value contains closed",
               "arguments": [
-                "{{widgets.facebook_hours.body}}"
+                "{{widgets.facebookHours.body}}"
               ],
               "type": "contains",
               "value": "closed"
@@ -204,7 +198,7 @@ ${
             {
               "friendly_name": "If value contains holiday",
               "arguments": [
-                "{{widgets.facebook_hours.body}}"
+                "{{widgets.facebookHours.body}}"
               ],
               "type": "contains",
               "value": "holiday"
@@ -213,7 +207,7 @@ ${
         }
       ],
       "properties": {
-        "input": "{{widgets.facebook_hours.body}}",
+        "input": "{{widgets.facebookHours.body}}",
         "offset": {
           "x": 40,
           "y": -60
@@ -353,7 +347,7 @@ ${
           "event": "noMatch"
         },
         {
-          "next": "facebook_hours",
+          "next": "facebookHours",
           "event": "match",
           "conditions": [
             {
@@ -673,6 +667,5 @@ ${
   "flags": {
     "allow_concurrent_calls": true
   }
-}
-)
+})
 }

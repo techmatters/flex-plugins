@@ -114,6 +114,7 @@
     "CaseSection-BottomBar-SaveAndAddAnother/enFollowUp": "Save and Add Another Follow Up",
     "Case-SectionList-NoItems/enFollowUp": "EN Follow Up",
     "CasePrint-TabularSection-Header/enFollowUp": "EN Follow Up",
-    "abusive": "Outside of Scope"
+    "abusive": "Outside of Scope",
+    "Transfer-TransferButton": "Take Over"
   }
 }

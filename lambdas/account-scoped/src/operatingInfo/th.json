@@ -1,0 +1,15 @@
+{
+  "timezone": "Asia/Bangkok",
+  "holidays": {},
+  "operatingHours": {
+    "facebook": {
+      "1": [{ "open": 600, "close": 2359 }],
+      "2": [{ "open": 600, "close": 2359 }],
+      "3": [{ "open": 600, "close": 2359 }],
+      "4": [{ "open": 600, "close": 2359 }],
+      "5": [{ "open": 600, "close": 2359 }],
+      "6": [{ "open": 600, "close": 2359 }],
+      "7": [{ "open": 600, "close": 2359 }]
+    }
+  }
+}

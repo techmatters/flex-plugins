@@ -21,44 +21,51 @@
         "label": "Set a timeframe"
       }
     ],
-    "rows": 6
+    "rows": 6,
+    "isPII": false
   },
   {
     "name": "plan",
     "label": "Plan",
     "type": "textarea",
     "rows": 10,
-    "width": 250
+    "width": 250,
+    "isPII": true
   },
   {
     "name": "accessToMeans",
     "label": "Access to means",
     "type": "textarea",
     "rows": 10,
-    "width": 250
+    "width": 250,
+    "isPII": true
   },
   {
     "name": "setATimeframe",
     "label": "Set a timeframe ",
     "type": "textarea",
     "rows": 8,
-    "width": 250
+    "width": 250,
+    "isPII": true
   },
   {
     "name": "escalationToOncall",
     "label": "Escalation to on-call",
-    "type": "checkbox"
+    "type": "checkbox",
+    "isPII": false
   },
   {
     "name": "escalationToOncallNotes",
     "label": "Escalation to on-call (Notes)",
     "type": "textarea",
     "rows": 10,
-    "width": 250
+    "width": 250,
+    "isPII": true
   },
   {
     "name": "oncallTeamMemberConsulted",
     "label": "On-Call team member consulted",
-    "type": "input"
+    "type": "input",
+    "isPII": true
   }
 ]

@@ -6,7 +6,8 @@
     "required": {
       "value": true,
       "message": "RequiredFieldError"
-    }
+    },
+    "isPII": true
   },
   {
     "name": "lastName",
@@ -15,9 +16,10 @@
     "required": {
       "value": true,
       "message": "RequiredFieldError"
-    }
+    },
+    "isPII": true
   },
-   {
+  {
     "name": "relationshipToChild",
     "label": "Relationship to Child",
     "type": "select",
@@ -154,12 +156,14 @@
     "required": {
       "value": true,
       "message": "RequiredFieldError"
-    }
+    },
+    "isPII": false
   },
   {
     "name": "streetAddress",
     "label": "Street Address",
-    "type": "input"
+    "type": "input",
+    "isPII": true
   },
   {
     "name": "province",
@@ -173,7 +177,8 @@
     "required": {
       "value": true,
       "message": "RequiredFieldError"
-    }
+    },
+    "isPII": false
   },
   {
     "name": "district",
@@ -184,17 +189,20 @@
       "value": "Unknown",
       "label": ""
     },
-    "optionsReferenceKey": "districtOptions"
+    "optionsReferenceKey": "districtOptions",
+    "isPII": false
   },
   {
     "name": "suburb",
     "label": "Suburb",
-    "type": "input"
+    "type": "input",
+    "isPII": true
   },
   {
     "name": "phone1",
     "label": "Phone #1",
-    "type": "input"
+    "type": "input",
+    "isPII": true
   },
   {
     "name": "gender",
@@ -225,7 +233,8 @@
     "required": {
       "value": true,
       "message": "RequiredFieldError"
-    }
+    },
+    "isPII": false
   },
   {
     "name": "age",
@@ -496,18 +505,20 @@
     "required": {
       "value": true,
       "message": "RequiredFieldError"
-    }
+    },
+    "isPII": false
   },
   {
     "name": "dateOfBirth",
     "label": "Date of Birth",
-    "type": "date-input"
+    "type": "date-input",
+    "isPII": false
   },
   {
     "name": "race",
     "label": "Race",
     "type": "select",
-     "options": [
+    "options": [
       {
         "value": "Unknown",
         "label": ""
@@ -528,17 +539,20 @@
         "value": "White",
         "label": "White"
       }
-    ]
+    ],
+    "isPII": false
   },
   {
     "name": "AddressDescription",
     "label": "Describe the Address",
-    "type": "input"
+    "type": "input",
+    "isPII": true
   },
   {
     "name": "copyToPerpetrator",
     "label": "This household member is also a perpetrator",
     "type": "copy-to",
-    "target": "perpetrator"
+    "target": "perpetrator",
+    "isPII": false
   }
 ]
