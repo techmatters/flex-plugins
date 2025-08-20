@@ -87,9 +87,14 @@
         "splitFormAt": 3,
         "printOrder": 1
       },
+      "safeguarding": {
+        "caseHomeOrder": 3,
+        "splitFormAt": 3,
+        "printOrder": 4
+      },
       "document": {
         "splitFormAt": 1,
-        "caseHomeOrder": 4,
+        "caseHomeOrder": 5,
         "printFormat": "hidden",
         "previewFields": [
           "createdAt",

@@ -1443,7 +1443,8 @@
   {
     "name": "bookingReference",
     "label": "Booking Reference",
-    "type": "input"
+    "type": "input",
+    "isPII": false
   },
   {
     "name": "consentForResearchevaluation",
@@ -1462,7 +1463,7 @@
         "value": "No",
         "label": "No"
       }
-    ]
+    ],
     "isPII": false
   },
   {
