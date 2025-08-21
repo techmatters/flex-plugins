@@ -16,23 +16,33 @@
 
 import { PrepopulateContactFormSelector } from './prepopulateContactFormSelector';
 
-enum FormAbout  {
-  Self= 1,
-  Other=2
+enum FormAbout {
+  Self = 1,
+  Other = 2,
 }
 
-const lookupServiceUserChoice = (preEngagementSelections: Record<string, string>, surveyAnswers: Record<string, string>, choiceLocations: { form: string, input: string, aboutSelfValue: string }[]) => {
+const lookupServiceUserChoice = (
+  preEngagementSelections: Record<string, string>,
+  surveyAnswers: Record<string, string>,
+  choiceLocations: { form: string; input: string; aboutSelfValue: string }[],
+) => {
   for (const { form, input, aboutSelfValue = 'Yes' } of choiceLocations) {
-    const choice = (form === 'pre-engagement' ? preEngagementSelections : surveyAnswers)?.[input];
+    const choice = (form === 'preEngagement' ? preEngagementSelections : surveyAnswers)?.[input];
     if (choice) {
       return choice === aboutSelfValue ? FormAbout.Self : FormAbout.Other;
     }
   }
-}
+};
 
-export const selectFormsFromServiceUserChoice: PrepopulateContactFormSelector = ( choiceLocations = [{ form: 'survey', input: 'aboutSelf', aboutSelfValue: 'Yes' }]) => ({
+export const selectFormsFromServiceUserChoice: PrepopulateContactFormSelector = (
+  choiceLocations = [{ form: 'survey', input: 'aboutSelf', aboutSelfValue: 'Yes' }],
+) => ({
   selectForms: (source, preEngagementSelections, surveyAnswers) => {
-    const serviceUserChoice = lookupServiceUserChoice(preEngagementSelections, surveyAnswers, choiceLocations);
+    const serviceUserChoice = lookupServiceUserChoice(
+      preEngagementSelections,
+      surveyAnswers,
+      choiceLocations,
+    );
     if (source === 'survey') {
       if (serviceUserChoice === FormAbout.Self) {
         return ['CaseInformationTab', 'ChildInformationTab'];
@@ -48,7 +58,11 @@ export const selectFormsFromServiceUserChoice: PrepopulateContactFormSelector = 
     }
   },
   selectCallType: (preEngagementSelections, surveyAnswers) => {
-    const serviceUserChoice = lookupServiceUserChoice(preEngagementSelections, surveyAnswers, choiceLocations);
+    const serviceUserChoice = lookupServiceUserChoice(
+      preEngagementSelections,
+      surveyAnswers,
+      choiceLocations,
+    );
     return serviceUserChoice === FormAbout.Other
       ? 'Someone calling about a child'
       : 'Child calling about self';
