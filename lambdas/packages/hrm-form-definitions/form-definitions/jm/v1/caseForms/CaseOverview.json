@@ -18,6 +18,26 @@
     "isPII": false
   },
   {
+    "name": "psychologist",
+    "label": "Assigned Psychologist",
+    "type": "select",
+    "options": [
+      {
+        "value": "None",
+        "label": ""
+      },
+      {
+        "value": "Janike Banton-Morris",
+        "label": "Janike Banton-Morris"
+      },
+      {
+        "value": "Kyle Schloss",
+        "label": "Kyle Schloss"
+      }
+    ],
+    "isPII": false
+  },
+  {
     "name": "riskFactors",
     "label": "Risk Factors",
     "type": "textarea",
