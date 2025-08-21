@@ -14,252 +14,294 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import {ContactFormDefinitionName, DefinitionVersion, selectFormsFromServiceUserChoice} from "../../../formDefinition";
-import each from "jest-each";
+import {
+  ContactFormDefinitionName,
+  DefinitionVersion,
+  selectFormsFromServiceUserChoice,
+} from '../../../formDefinition';
+import each from 'jest-each';
 
 type TestArrangement = {
-    choiceLocations?: { form: string, input: string, aboutSelfValue: string }[]
-    surveyAnswers: Record<string, string>,
-    preEngagementSelections: Record<string, string>,
-}
+  choiceLocations?: { form: string; input: string; aboutSelfValue: string }[];
+  surveyAnswers: Record<string, string>;
+  preEngagementSelections: Record<string, string>;
+};
 
 type SelectFormsTestCase = TestArrangement & {
-    expectedForms: ContactFormDefinitionName[];
-    formsDescription: string;
-    populateFrom: keyof DefinitionVersion["prepopulateMappings"]
-}
+  expectedForms: ContactFormDefinitionName[];
+  formsDescription: string;
+  populateFrom: keyof DefinitionVersion['prepopulateMappings'];
+};
 
 type SelectCallTypeTestCase = TestArrangement & {
-    expectedCallType: string;
-    callTypeDescription: string;
-}
+  expectedCallType: string;
+  callTypeDescription: string;
+};
 
 const selectFormsCasesWherePopulateFromIsIrrelevant: Omit<SelectFormsTestCase, 'populateFrom'>[] = [
-    {
-        surveyAnswers: {
-            aboutSelf: 'Yes'
-        },
-        preEngagementSelections: {},
-        expectedForms: ['ChildInformationTab', 'CaseInformationTab'],
-        formsDescription: 'Default choice location, {populateFrom} as source: returns ChildInformationTab and CaseInformationTab if survey->aboutSelf = Yes',
+  {
+    surveyAnswers: {
+      aboutSelf: 'Yes',
     },
-    {
-        surveyAnswers: {
-            aboutSelf: 'No'
-        },
-        preEngagementSelections: {},
-        expectedForms: ['CallerInformationTab', 'CaseInformationTab'],
-        formsDescription: 'Default choice location, {populateFrom} as source: returns CallerInformationTab and CaseInformationTab if survey->aboutSelf = No',
+    preEngagementSelections: {},
+    expectedForms: ['ChildInformationTab', 'CaseInformationTab'],
+    formsDescription:
+      'Default choice location, {populateFrom} as source: returns ChildInformationTab and CaseInformationTab if survey->aboutSelf = Yes',
+  },
+  {
+    surveyAnswers: {
+      aboutSelf: 'No',
     },
-    {
-        choiceLocations: [
-            { form: 'preEngagement', input: 'mySelfOrOther', aboutSelfValue: 'Myself' }
-        ],
-        surveyAnswers: {
-            aboutSelf: 'No'
-        },
-        preEngagementSelections: {
-            mySelfOrOther: 'Myself'
-        },
-        expectedForms: ['ChildInformationTab', 'CaseInformationTab'],
-        formsDescription: 'preEngagement set as only choice source, {populateFrom} as source, and choice source has aboutSelfValue set - returns ChildInformationTab and CaseInformationTab'
+    preEngagementSelections: {},
+    expectedForms: ['CallerInformationTab', 'CaseInformationTab'],
+    formsDescription:
+      'Default choice location, {populateFrom} as source: returns CallerInformationTab and CaseInformationTab if survey->aboutSelf = No',
+  },
+  {
+    choiceLocations: [{ form: 'preEngagement', input: 'mySelfOrOther', aboutSelfValue: 'Myself' }],
+    surveyAnswers: {
+      aboutSelf: 'No',
     },
-    {
-        choiceLocations: [
-            { form: 'preEngagement', input: 'myselfOrOther', aboutSelfValue: 'Myself' }
-        ],
-        surveyAnswers: {
-            aboutSelf: 'Yes'
-        },
-        preEngagementSelections: {
-            myselfOrOther: 'Other'
-        },
-        expectedForms: ['CallerInformationTab', 'CaseInformationTab'],
-        formsDescription: 'preEngagement set as only choice source, {populateFrom} as source, and choice source has something other than aboutSelfValue set - returns CallerInformationTab and CaseInformationTab'
+    preEngagementSelections: {
+      mySelfOrOther: 'Myself',
     },
-    {
-        choiceLocations: [
-            { form: 'preEngagement', input: 'myselfOrOther', aboutSelfValue: 'Myself' },
-            { form: 'survey', input: 'isAboutSelf', aboutSelfValue: 'Yeppers' }
-        ],
-        surveyAnswers: {
-            isAboutSelf: 'Yeppers'
-        },
-        preEngagementSelections: {
-            myselfOrOther: 'Other'
-        },
-        expectedForms: ['CallerInformationTab', 'CaseInformationTab'],
-        formsDescription: 'Two choice sources, both populated, {populateFrom} as source - uses first sources choice'
+    expectedForms: ['ChildInformationTab', 'CaseInformationTab'],
+    formsDescription:
+      'preEngagement set as only choice source, {populateFrom} as source, and choice source has aboutSelfValue set - returns ChildInformationTab and CaseInformationTab',
+  },
+  {
+    choiceLocations: [{ form: 'preEngagement', input: 'myselfOrOther', aboutSelfValue: 'Myself' }],
+    surveyAnswers: {
+      aboutSelf: 'Yes',
     },
-    {
-        choiceLocations: [
-            { form: 'preEngagement', input: 'myselfOrOther', aboutSelfValue: 'Myself' },
-            { form: 'survey', input: 'isAboutSelf', aboutSelfValue: 'Yeppers' }
-        ],
-        surveyAnswers: {
-            isAboutSelf: 'Yeppers'
-        },
-        preEngagementSelections: {},
-        expectedForms: ['ChildInformationTab', 'CaseInformationTab'],
-        formsDescription: 'Two choice sources, only second choice populated, {populateFrom} as source - uses second sources choice'
-    }];
+    preEngagementSelections: {
+      myselfOrOther: 'Other',
+    },
+    expectedForms: ['CallerInformationTab', 'CaseInformationTab'],
+    formsDescription:
+      'preEngagement set as only choice source, {populateFrom} as source, and choice source has something other than aboutSelfValue set - returns CallerInformationTab and CaseInformationTab',
+  },
+  {
+    choiceLocations: [
+      { form: 'preEngagement', input: 'myselfOrOther', aboutSelfValue: 'Myself' },
+      { form: 'survey', input: 'isAboutSelf', aboutSelfValue: 'Yeppers' },
+    ],
+    surveyAnswers: {
+      isAboutSelf: 'Yeppers',
+    },
+    preEngagementSelections: {
+      myselfOrOther: 'Other',
+    },
+    expectedForms: ['CallerInformationTab', 'CaseInformationTab'],
+    formsDescription:
+      'Two choice sources, both populated, {populateFrom} as source - uses first sources choice',
+  },
+  {
+    choiceLocations: [
+      { form: 'preEngagement', input: 'myselfOrOther', aboutSelfValue: 'Myself' },
+      { form: 'survey', input: 'isAboutSelf', aboutSelfValue: 'Yeppers' },
+    ],
+    surveyAnswers: {
+      isAboutSelf: 'Yeppers',
+    },
+    preEngagementSelections: {},
+    expectedForms: ['ChildInformationTab', 'CaseInformationTab'],
+    formsDescription:
+      'Two choice sources, only second choice populated, {populateFrom} as source - uses second sources choice',
+  },
+];
 
 const selectFormsTestCases: SelectFormsTestCase[] = [
-    ...selectFormsCasesWherePopulateFromIsIrrelevant.flatMap(tc => [
-        { ...tc, populateFrom: 'preEngagement', formsDescription: tc.formsDescription.replace('{populateFrom}', 'preEngagement') },
-        { ...tc, populateFrom: 'survey', formsDescription: tc.formsDescription.replace('{populateFrom}', 'survey')}] as SelectFormsTestCase[]),
+  ...selectFormsCasesWherePopulateFromIsIrrelevant.flatMap(
+    (tc) =>
+      [
+        {
+          ...tc,
+          populateFrom: 'preEngagement',
+          formsDescription: tc.formsDescription.replace('{populateFrom}', 'preEngagement'),
+        },
+        {
+          ...tc,
+          populateFrom: 'survey',
+          formsDescription: tc.formsDescription.replace('{populateFrom}', 'survey'),
+        },
+      ] as SelectFormsTestCase[],
+  ),
 
-    {
-        surveyAnswers: {},
-        preEngagementSelections: {},
-        populateFrom: 'preEngagement',
-        expectedForms: ['ChildInformationTab', 'CaseInformationTab'],
-        formsDescription: 'Default choice location, preEngagement as source: returns ChildInformationTab and CaseInformationTab if aboutSelf not present',
+  {
+    surveyAnswers: {},
+    preEngagementSelections: {},
+    populateFrom: 'preEngagement',
+    expectedForms: ['ChildInformationTab', 'CaseInformationTab'],
+    formsDescription:
+      'Default choice location, preEngagement as source: returns ChildInformationTab and CaseInformationTab if aboutSelf not present',
+  },
+  {
+    surveyAnswers: {},
+    preEngagementSelections: {},
+    populateFrom: 'survey',
+    expectedForms: ['CaseInformationTab'],
+    formsDescription:
+      'Default choice location, survey as source: returns CaseInformationTab only if aboutSelf not present',
+  },
+  {
+    surveyAnswers: {},
+    preEngagementSelections: { aboutSelf: 'Yes' },
+    populateFrom: 'survey',
+    expectedForms: ['CaseInformationTab'],
+    formsDescription:
+      'Default choice location, survey as source: returns CaseInformationTab only if aboutSelf is present in preEngagement',
+  },
+  {
+    choiceLocations: [
+      { form: 'preEngagement', input: 'myselfOrOther', aboutSelfValue: 'Myself' },
+      { form: 'survey', input: 'isAboutSelf', aboutSelfValue: 'Yeppers' },
+    ],
+    surveyAnswers: {
+      aboutSelf: 'No',
     },
-    {
-        surveyAnswers: {},
-        preEngagementSelections: {},
-        populateFrom: 'survey',
-        expectedForms: ['CaseInformationTab'],
-        formsDescription: 'Default choice location, survey as source: returns CaseInformationTab only if aboutSelf not present',
+    populateFrom: 'preEngagement',
+    preEngagementSelections: {},
+    expectedForms: ['ChildInformationTab', 'CaseInformationTab'],
+    formsDescription:
+      'Two choice sources, no choice populated, preEngagement as source - returns CallerInformationTab and CaseInformationTab (does NOT use default)',
+  },
+  {
+    choiceLocations: [
+      { form: 'preEngagement', input: 'myselfOrOther', aboutSelfValue: 'Myself' },
+      { form: 'survey', input: 'isAboutSelf', aboutSelfValue: 'Yeppers' },
+    ],
+    surveyAnswers: {
+      aboutSelf: 'No',
     },
-    {
-        surveyAnswers: {},
-        preEngagementSelections: { aboutSelf: 'Yes' },
-        populateFrom: 'survey',
-        expectedForms: ['CaseInformationTab'],
-        formsDescription: 'Default choice location, survey as source: returns CaseInformationTab only if aboutSelf is present in preEngagement',
-    },
-    {
-        choiceLocations: [
-            { form: 'preEngagement', input: 'myselfOrOther', aboutSelfValue: 'Myself' },
-            { form: 'survey', input: 'isAboutSelf', aboutSelfValue: 'Yeppers' }
-        ],
-        surveyAnswers: {
-            aboutSelf: 'No'
-        },
-        populateFrom: 'preEngagement',
-        preEngagementSelections: {},
-        expectedForms: ['ChildInformationTab', 'CaseInformationTab'],
-        formsDescription: 'Two choice sources, no choice populated, preEngagement as source - returns CallerInformationTab and CaseInformationTab (does NOT use default)'
-    },
-    {
-        choiceLocations: [
-            { form: 'preEngagement', input: 'myselfOrOther', aboutSelfValue: 'Myself' },
-            { form: 'survey', input: 'isAboutSelf', aboutSelfValue: 'Yeppers' }
-        ],
-        surveyAnswers: {
-            aboutSelf: 'No'
-        },
-        populateFrom: 'survey',
-        preEngagementSelections: {},
-        expectedForms: ['CaseInformationTab'],
-        formsDescription: 'Two choice sources, no choice populated, survey as source - returns CaseInformationTab only (does NOT fall back to default choice location)'
-    },
-]
+    populateFrom: 'survey',
+    preEngagementSelections: {},
+    expectedForms: ['CaseInformationTab'],
+    formsDescription:
+      'Two choice sources, no choice populated, survey as source - returns CaseInformationTab only (does NOT fall back to default choice location)',
+  },
+];
 
-const selectCallTypeTestCases: (SelectCallTypeTestCase)[] = [
-    {
-        surveyAnswers: {},
-        preEngagementSelections: {},
-        expectedCallType: 'Child calling about self',
-        callTypeDescription: 'Default choice location: returns child callType if aboutSelf not present'
+const selectCallTypeTestCases: SelectCallTypeTestCase[] = [
+  {
+    surveyAnswers: {},
+    preEngagementSelections: {},
+    expectedCallType: 'Child calling about self',
+    callTypeDescription: 'Default choice location: returns child callType if aboutSelf not present',
+  },
+  {
+    surveyAnswers: {
+      aboutSelf: 'Yes',
     },
-    {
-        surveyAnswers: {
-            aboutSelf: 'Yes'
-        },
-        preEngagementSelections: {},
-        expectedCallType: 'Child calling about self',
-        callTypeDescription: 'Default choice location: returns childCallType if survey->aboutSelf = Yes'
+    preEngagementSelections: {},
+    expectedCallType: 'Child calling about self',
+    callTypeDescription:
+      'Default choice location: returns childCallType if survey->aboutSelf = Yes',
+  },
+  {
+    surveyAnswers: {
+      aboutSelf: 'No',
     },
-    {
-        surveyAnswers: {
-            aboutSelf: 'No'
-        },
-        preEngagementSelections: {},
-        expectedCallType: 'Someone calling about a child',
-        callTypeDescription: 'Default choice location: returns caller callType if survey->aboutSelf = No'
+    preEngagementSelections: {},
+    expectedCallType: 'Someone calling about a child',
+    callTypeDescription:
+      'Default choice location: returns caller callType if survey->aboutSelf = No',
+  },
+  {
+    choiceLocations: [{ form: 'preEngagement', input: 'myselfOrOther', aboutSelfValue: 'Myself' }],
+    surveyAnswers: {
+      aboutSelf: 'No',
     },
-    {
-        choiceLocations: [
-            { form: 'preEngagement', input: 'myselfOrOther', aboutSelfValue: 'Myself' }
-        ],
-        surveyAnswers: {
-            aboutSelf: 'No'
-        },
-        preEngagementSelections: {
-            myselfOrOther: 'Myself'
-        },
-        expectedCallType: 'Child calling about self',
-        callTypeDescription: 'preEngagement set as only choice source, and choice source has aboutSelfValue set - child callType'
+    preEngagementSelections: {
+      myselfOrOther: 'Myself',
     },
-    {
-        choiceLocations: [
-            { form: 'preEngagement', input: 'myselfOrOther', aboutSelfValue: 'Myself' }
-        ],
-        surveyAnswers: {
-            aboutSelf: 'Yes'
-        },
-        preEngagementSelections: {
-            myselfOrOther: 'Other'
-        },
-        expectedCallType: 'Someone calling about a child',
-        callTypeDescription: 'preEngagement set as only choice source, and choice source has something other than aboutSelfValue set - caller callType'
+    expectedCallType: 'Child calling about self',
+    callTypeDescription:
+      'preEngagement set as only choice source, and choice source has aboutSelfValue set - child callType',
+  },
+  {
+    choiceLocations: [{ form: 'preEngagement', input: 'myselfOrOther', aboutSelfValue: 'Myself' }],
+    surveyAnswers: {
+      aboutSelf: 'Yes',
     },
-    {
-        choiceLocations: [
-            { form: 'preEngagement', input: 'myselfOrOther', aboutSelfValue: 'Myself' },
-            { form: 'survey', input: 'isAboutSelf', aboutSelfValue: 'Yeppers' }
-        ],
-        surveyAnswers: {
-            isAboutSelf: 'Yeppers'
-        },
-        preEngagementSelections: {
-            myselfOrOther: 'Other'
-        },
-        expectedCallType: 'Someone calling about a child',
-        callTypeDescription: 'Two choice sources, both populated - uses first sources choice'
+    preEngagementSelections: {
+      myselfOrOther: 'Other',
     },
-    {
-        choiceLocations: [
-            { form: 'preEngagement', input: 'myselfOrOther', aboutSelfValue: 'Myself' },
-            { form: 'survey', input: 'isAboutSelf', aboutSelfValue: 'Yeppers' }
-        ],
-        surveyAnswers: {
-            isAboutSelf: 'Yeppers'
-        },
-        preEngagementSelections: {},
-        expectedCallType: 'Child calling about self',
-        callTypeDescription: 'Two choice sources, only second choice populated - uses second sources choice'
+    expectedCallType: 'Someone calling about a child',
+    callTypeDescription:
+      'preEngagement set as only choice source, and choice source has something other than aboutSelfValue set - caller callType',
+  },
+  {
+    choiceLocations: [
+      { form: 'preEngagement', input: 'myselfOrOther', aboutSelfValue: 'Myself' },
+      { form: 'survey', input: 'isAboutSelf', aboutSelfValue: 'Yeppers' },
+    ],
+    surveyAnswers: {
+      isAboutSelf: 'Yeppers',
     },
-    {
-        choiceLocations: [
-            { form: 'preEngagement', input: 'myselfOrOther', aboutSelfValue: 'Myself' },
-            { form: 'survey', input: 'isAboutSelf', aboutSelfValue: 'Yeppers' }
-        ],
-        surveyAnswers: {
-            aboutSelf: 'No'
-        },
-        preEngagementSelections: {},
-        expectedCallType: 'Child calling about self',
-        callTypeDescription: 'Two choice sources, no choice populated - callType child (does NOT use default)'
-    }
-
-]
+    preEngagementSelections: {
+      myselfOrOther: 'Other',
+    },
+    expectedCallType: 'Someone calling about a child',
+    callTypeDescription: 'Two choice sources, both populated - uses first sources choice',
+  },
+  {
+    choiceLocations: [
+      { form: 'preEngagement', input: 'myselfOrOther', aboutSelfValue: 'Myself' },
+      { form: 'survey', input: 'isAboutSelf', aboutSelfValue: 'Yeppers' },
+    ],
+    surveyAnswers: {
+      isAboutSelf: 'Yeppers',
+    },
+    preEngagementSelections: {},
+    expectedCallType: 'Child calling about self',
+    callTypeDescription:
+      'Two choice sources, only second choice populated - uses second sources choice',
+  },
+  {
+    choiceLocations: [
+      { form: 'preEngagement', input: 'myselfOrOther', aboutSelfValue: 'Myself' },
+      { form: 'survey', input: 'isAboutSelf', aboutSelfValue: 'Yeppers' },
+    ],
+    surveyAnswers: {
+      aboutSelf: 'No',
+    },
+    preEngagementSelections: {},
+    expectedCallType: 'Child calling about self',
+    callTypeDescription:
+      'Two choice sources, no choice populated - callType child (does NOT use default)',
+  },
+];
 
 describe('selectForms', () => {
-    each(selectFormsTestCases).test('$formsDescription', ({ surveyAnswers, preEngagementSelections, choiceLocations, populateFrom, expectedForms }: SelectFormsTestCase) => {
-        const selector = selectFormsFromServiceUserChoice(choiceLocations);
-        const selected = selector.selectForms(populateFrom, preEngagementSelections, surveyAnswers);
-        expect(selected.sort()).toStrictEqual(expectedForms.sort());
-    });
-})
+  each(selectFormsTestCases).test(
+    '$formsDescription',
+    ({
+      surveyAnswers,
+      preEngagementSelections,
+      choiceLocations,
+      populateFrom,
+      expectedForms,
+    }: SelectFormsTestCase) => {
+      const selector = selectFormsFromServiceUserChoice(choiceLocations);
+      const selected = selector.selectForms(populateFrom, preEngagementSelections, surveyAnswers);
+      expect(selected.sort()).toStrictEqual(expectedForms.sort());
+    },
+  );
+});
 
 describe('selectCallType', () => {
-    each(selectCallTypeTestCases).test('$callTypeDescription', ({ surveyAnswers, preEngagementSelections, choiceLocations, expectedCallType }: SelectCallTypeTestCase) => {
-        const selector = selectFormsFromServiceUserChoice(choiceLocations);
-        const selected = selector.selectCallType(preEngagementSelections, surveyAnswers);
-        expect(selected).toStrictEqual(expectedCallType);
-    });
-})
+  each(selectCallTypeTestCases).test(
+    '$callTypeDescription',
+    ({
+      surveyAnswers,
+      preEngagementSelections,
+      choiceLocations,
+      expectedCallType,
+    }: SelectCallTypeTestCase) => {
+      const selector = selectFormsFromServiceUserChoice(choiceLocations);
+      const selected = selector.selectCallType(preEngagementSelections, surveyAnswers);
+      expect(selected).toStrictEqual(expectedCallType);
+    },
+  );
+});
