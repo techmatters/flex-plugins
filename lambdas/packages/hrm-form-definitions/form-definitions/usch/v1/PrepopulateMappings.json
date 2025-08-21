@@ -1,4 +1,16 @@
 {
+
+  "formSelector": {
+    "selectorType": "serviceUserChoiceSelector",
+    "parameter": [{
+      "form": "aboutSelf",
+      "input": "myselfOrOther",
+      "aboutSelfValue": "Yes"
+    }, {
+      "form": "survey",
+      "input": "aboutSelf"
+    }]
+  },
   "survey":{
    "age":[["CallerInformationTab.age","ChildInformationTab.age"]],
    "genderInput":[["CallerInformationTab.genderInput","ChildInformationTab.genderInput"]],
