@@ -19,12 +19,14 @@ import type { TaskInstance } from 'twilio/lib/rest/taskrouter/v1/workspace/task'
 import type { MemberInstance } from 'twilio/lib/rest/ipMessaging/v2/service/channel/member';
 import { LexClient, LexMemory } from './lexClient';
 import { PostSurveyData, buildDataObject } from './hrmDataManipulation';
-import { OneToManyConfigSpec, buildSurveyInsightsData } from './insightsService';
+import { buildSurveyInsightsData } from './insightsService';
 import { isErr, newErr, newOk, Result } from '../Result';
 import { Twilio } from 'twilio';
 import { postToInternalHrmEndpoint } from '../hrm/internalHrmRequest';
 import { ROUTE_PREFIX } from '../router';
 import { AccountSID } from '../twilioTypes';
+import { getCurrentDefinitionVersion } from '../hrm/formDefinitionsCache';
+import { LegacyOneToManyConfigSpec } from '@tech-matters/hrm-form-definitions';
 
 const triggerTypes = ['withUserMessage', 'withNextMessage'] as const;
 export type TriggerTypes = (typeof triggerTypes)[number];
@@ -623,7 +625,7 @@ const createStudioFlowTrigger = async (
   capturedChannelAttributes: CapturedChannelAttributes,
   controlTask: TaskInstance,
 ) => {
-  // Canceling tasks triggers janitor (see functions/taskrouterListeners/janitorListener.private.ts), so we remove this one since is not needed
+  // Canceling tasks triggers janitor (see functions/taskrouterListeners/janitorListener.ts), so we remove this one since is not needed
   await controlTask.remove();
   const { isConversation } = capturedChannelAttributes;
 
@@ -647,7 +649,7 @@ type PostSurveyBody = {
 };
 
 const saveSurveyInInsights = async (
-  postSurveyConfigJson: OneToManyConfigSpec[],
+  postSurveyConfigJson: LegacyOneToManyConfigSpec[],
   memory: LexMemory,
   controlTask: TaskInstance,
   controlTaskAttributes: any,
@@ -669,7 +671,7 @@ const saveSurveyInHRM = async ({
   memory,
   postSurveyConfigSpecs,
 }: {
-  postSurveyConfigSpecs: OneToManyConfigSpec[];
+  postSurveyConfigSpecs: LegacyOneToManyConfigSpec[];
   memory: LexMemory;
   controlTask: TaskInstance;
   controlTaskAttributes: any;
@@ -684,7 +686,7 @@ const saveSurveyInHRM = async ({
     data,
   };
 
-  await postToInternalHrmEndpoint(accountSid, hrmApiVersion, '/postSurveys', body);
+  await postToInternalHrmEndpoint(accountSid, hrmApiVersion, 'postSurveys', body);
 };
 
 const handlePostSurveyComplete = async ({
@@ -700,10 +702,11 @@ const handlePostSurveyComplete = async ({
 }) => {
   const serviceConfig = await twilioClient.flexApi.v1.configuration.get().fetch();
 
-  const { definitionVersion, hrm_api_version: hrmApiVersion } = serviceConfig.attributes;
-  const postSurveyConfigSpecs = definitionVersion?.insights?.postSurveySpecs;
+  const { hrm_api_version: hrmApiVersion } = serviceConfig.attributes;
+  const definition = await getCurrentDefinitionVersion({ accountSid });
+  const postSurveyConfigSpecs = definition?.insights?.postSurveySpecs;
 
-  if (definitionVersion && postSurveyConfigSpecs?.length) {
+  if (postSurveyConfigSpecs?.length) {
     const controlTaskAttributes = JSON.parse(controlTask.attributes);
 
     // parallel execution to save survey collected data in insights and hrm
@@ -724,17 +727,11 @@ const handlePostSurveyComplete = async ({
       }),
     ]);
 
-    // As survey tasks will never be assigned to a worker, they'll be kept in pending state. A pending can't transition to completed state, so we cancel them here to raise a task.canceled taskrouter event (see functions/taskrouterListeners/janitorListener.private.ts)
+    // As survey tasks will never be assigned to a worker, they'll be kept in pending state. A pending can't transition to completed state, so we cancel them here to raise a task.canceled taskrouter event (see functions/taskrouterListeners/janitorListener.ts)
     // This needs to be the last step so the new task attributes from saveSurveyInInsights make it to insights
     await controlTask.update({ assignmentStatus: 'canceled' });
   } else {
-    const errorMEssage =
-      // eslint-disable-next-line no-nested-ternary
-      !definitionVersion
-        ? 'Current definitionVersion is missing in service configuration.'
-        : !postSurveyConfigSpecs
-          ? `No postSurveyConfigJson found for definitionVersion ${definitionVersion}.`
-          : `postSurveyConfigJson for definitionVersion ${definitionVersion} is not a Twilio asset as expected`; // This should removed when if we move definition versions to an external source.
+    const errorMEssage = `No defined or invalid postSurveyConfigJson found for account ${accountSid}.`;
     console.info(`Error accessing to the post survey form definitions: ${errorMEssage}`);
   }
 };

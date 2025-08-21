@@ -43,7 +43,7 @@ const files = [
   'CannedResponses.json',
   'insights/oneToOneConfigSpec.json',
   'insights/oneToManyConfigSpecs.json',
-  'insights/postSurvey.private.json',
+  'insights/postSurvey.json',
   'CaseFilters.json',
   'CaseStatus.json',
   'caseForms/CaseOverview.json',
