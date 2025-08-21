@@ -87,6 +87,22 @@ const preEngagementConfig: PreEngagementFormDefinition = {
       required: true,
     },
     {
+      label: 'Are you reaching out on behalf of yourself or another person?',
+      type: 'select',
+      defaultValue: 'Yes',
+      name: 'aboutSelf',
+      options: [
+        {
+          value: 'Yes',
+          label: 'Myself',
+        },
+        {
+          value: 'No',
+          label: 'Someone else',
+        },
+      ],
+    },
+    {
       type: 'checkbox',
       name: 'termsAndConditions',
       label:
