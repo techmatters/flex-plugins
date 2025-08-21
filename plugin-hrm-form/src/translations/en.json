@@ -220,6 +220,7 @@
   "CaseSection-Edit/document": "Edit Document",
   "CaseSection-Edit/chicken": "Bwaaak bocboc",
   "Case-EditCaseSummary": "Edit Case Information",
+  "Case-EditCaseOverview": "Edit Case Overview",
   "Case-AddNoteTypeHere": "Type here to add note...",
   "Case-AddCaseSummaryHere": "Add case summary here...",
   "Case-ActionHeaderAdded": "Added on {{date}} at {{time}} by {{counsellor}}",

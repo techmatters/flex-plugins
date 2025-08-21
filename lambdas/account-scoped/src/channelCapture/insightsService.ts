@@ -16,6 +16,7 @@
 
 import { get } from 'lodash';
 import type { LexMemory } from './lexClient';
+import { LegacyOneToManyConfigSpec } from '@tech-matters/hrm-form-definitions';
 
 type BotMemory = LexMemory;
 
@@ -25,15 +26,6 @@ type InsightsAttributes = {
 };
 
 type TaskAttributes = {} & InsightsAttributes;
-
-type InsightsObject = 'customers' | 'conversations';
-
-// Each of this ConfigSpec maps (possibly) many form field to one insights attribute
-export type OneToManyConfigSpec = {
-  insightsObject: InsightsObject; // In which attributes object this goes
-  attributeName: string; // Which name the property receives in above object (e.g. customer_attribute_1)
-  questions: string[]; // Array of questions names (as they are named in the bot definition) to grab and concatenate to drop in above property
-};
 
 type SurveyInsightsUpdateFunction = (memory: BotMemory) => InsightsAttributes;
 
@@ -56,7 +48,7 @@ const mergeAttributes = (
 
 const applyCustomUpdate =
   (
-    customUpdate: OneToManyConfigSpec,
+    customUpdate: LegacyOneToManyConfigSpec,
     pathBuilder: (question: string) => string,
   ): SurveyInsightsUpdateFunction =>
   memory => {
@@ -72,7 +64,7 @@ const applyCustomUpdate =
   };
 
 const bindApplyCustomUpdates = (
-  oneToManyConfigSpecs: OneToManyConfigSpec[],
+  oneToManyConfigSpecs: LegacyOneToManyConfigSpec[],
   pathBuilder: (question: string) => string,
 ): SurveyInsightsUpdateFunction[] => {
   const customUpdatesFuns = oneToManyConfigSpecs.map(spec =>
@@ -83,7 +75,7 @@ const bindApplyCustomUpdates = (
 };
 
 export const buildSurveyInsightsData = (
-  oneToManyConfigSpecs: OneToManyConfigSpec[],
+  oneToManyConfigSpecs: LegacyOneToManyConfigSpec[],
   taskAttributes: TaskAttributes,
   memory: BotMemory,
   pathBuilder: (question: string) => string = q => q,
