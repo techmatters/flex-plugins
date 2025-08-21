@@ -3,8 +3,8 @@
   "formSelector": {
     "selectorType": "serviceUserChoiceSelector",
     "parameter": [{
-      "form": "aboutSelf",
-      "input": "myselfOrOther",
+      "form": "preEngagement",
+      "input": "aboutSelf",
       "aboutSelfValue": "Yes"
     }, {
       "form": "survey",
