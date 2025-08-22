@@ -1,9 +1,13 @@
 [
   {
-    "name": "breakConfidentialityBc",
-    "label": "Break Confidentiality (BC)",
-    "type": "listbox-multiselect",
+    "name": "referral",
+    "label": "Referral",
+    "type": "select",
     "options": [
+      {
+        "value": " ",
+        "label": " "
+      },
       {
         "value": "Safeguarding",
         "label": "Safeguarding"
@@ -17,8 +21,8 @@
     "isPII": false
   },
   {
-    "name": "bcWhereReported",
-    "label": "BC - where reported",
+    "name": "whereReported",
+    "label": "Referral - where was it reported?",
     "type": "listbox-multiselect",
     "options": [
       {
@@ -38,18 +42,16 @@
       "value": true,
       "message": "RequiredFieldError"
     },
-    "rows": 5,
-    "isPII": false
+    "rows": 5
   },
   {
     "name": "bcReferenceNumberProvided",
     "label": "BC - Reference Number Provided",
-    "type": "input",
-    "isPII": true
+    "type": "input"
   },
   {
-    "name": "bcSummaryOfConcernsShared",
-    "label": "BC - Summary of Concerns shared",
+    "name": "referralSummary",
+    "label": "Summary of Concerns shared",
     "type": "textarea",
     "rows": 10,
     "width": 250,
@@ -58,8 +60,7 @@
   {
     "name": "safetyPlanCompleted",
     "label": "Safety plan completed",
-    "type": "checkbox",
-    "isPII": false
+    "type": "checkbox"
   },
   {
     "name": "whichSupervisorDidYouAlertToTheRisk",

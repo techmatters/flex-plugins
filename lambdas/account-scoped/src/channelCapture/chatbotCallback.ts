@@ -174,7 +174,7 @@ export const handleChatbotCallback: AccountScopedHandler = async (
         });
       }
 
-      // TODO: unify with functions/channelCapture/channelCaptureHandlers.private.ts
+      // TODO: unify with functions/channelCapture/channelCaptureHandlers.ts
       let messages: string[] = [];
       if (lexVersion === 'v1') {
         messages.push(lexResponse.message || '');
@@ -182,7 +182,7 @@ export const handleChatbotCallback: AccountScopedHandler = async (
         messages = messages.concat(lexResponse.messages.map(m => m.content || ''));
       }
 
-      // TODO: unify with functions/channelCapture/channelCaptureHandlers.private.ts
+      // TODO: unify with functions/channelCapture/channelCaptureHandlers.ts
       for (const message of messages) {
         if (conversation) {
           // eslint-disable-next-line no-await-in-loop
