@@ -20,6 +20,7 @@ module.exports.handler = async (event) => {
   const env = { ...process.env };
 
   const { testName, npmScript } = event;
+  env.DEBUG = 'pw:api'
   if (testName) {
     env.TEST_NAME = testName;
   }

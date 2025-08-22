@@ -87,7 +87,7 @@ const playwrightConfig: PlaywrightTestConfig = {
   },
   testDir: './tests',
   retries: inLambda ? 0 : 1,
-  timeout: 300000,
+  timeout: 60000,
   reporter: [['junit', { outputFile: 'junit.xml' }]],
 };
 
