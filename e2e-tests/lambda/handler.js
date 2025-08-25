@@ -29,11 +29,10 @@ module.exports.handler = async (event) => {
     env.TEST_NAME = testName;
   }
 
-  const cmd = spawn('npm.cmd', ['-loglevel silent', 'run', npmScript || 'test'], {
+  const cmd = spawn('npm', ['-loglevel silent', 'run', npmScript || 'test'], {
     stdio: 'inherit',
     stderr: 'inherit',
     env,
-    shell: true,
   });
 
   const result = await new Promise((resolve, reject) => {
