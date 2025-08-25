@@ -274,7 +274,7 @@ ${
             {
               "friendly_name": "If value does_not_start_with +65",
               "arguments": [
-                "{{trigger.call.From}}"
+                "{{trigger.call.From | replace: 'sip:', '' | split: '@' | first}}"
               ],
               "type": "does_not_start_with",
               "value": "+65"
@@ -283,7 +283,7 @@ ${
         }
       ],
       "properties": {
-        "input": "{{trigger.call.From}}",
+        "input": "{{trigger.call.From | replace: 'sip:', '' | split: '@' | first}}",
         "offset": {
           "x": 500,
           "y": 180
