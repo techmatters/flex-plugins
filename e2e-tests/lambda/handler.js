@@ -15,6 +15,10 @@
  */
 
 const { spawn } = require('child_process');
+const path = require('path');
+const { promises: fs, createReadStream } = require('fs');
+const { S3 } = require('@aws-sdk/client-s3');
+const { SSMClient, GetParameterCommand } = require('@aws-sdk/client-ssm')
 
 module.exports.handler = async (event) => {
   const env = { ...process.env };
@@ -25,10 +29,11 @@ module.exports.handler = async (event) => {
     env.TEST_NAME = testName;
   }
 
-  const cmd = spawn('npm', ['-loglevel silent', 'run', npmScript || 'test'], {
+  const cmd = spawn('npm.cmd', ['-loglevel silent', 'run', npmScript || 'test'], {
     stdio: 'inherit',
     stderr: 'inherit',
     env,
+    shell: true,
   });
 
   const result = await new Promise((resolve, reject) => {
@@ -45,5 +50,55 @@ module.exports.handler = async (event) => {
     });
   });
 
+  const getParameterValue = async (name) => {
+    const ssm = new SSMClient({});
+    const params = {
+      Name: name,
+      WithDecryption: true,
+    };
+
+    const command = new GetParameterCommand(params);
+    const { Parameter: { Value } } = await ssm.send(command);
+    console.debug(`SSM ${name} = ${Value}`);
+    return Value;
+  };
+
   console.log(result);
+  // https://stackoverflow.com/a/65862128/30481093
+  async function uploadDir(dirPath, bucketName, s3BasePath, options = {}) {
+    const s3 = new S3(options);
+
+    // Recursive getFiles from
+    // https://stackoverflow.com/a/45130990/831465
+    async function getFiles(dir) {
+      const dirents = await fs.readdir(dir, { withFileTypes: true });
+      const files = await Promise.all(
+          dirents.map((dirent) => {
+            const res = path.resolve(dir, dirent.name);
+            return dirent.isDirectory() ? getFiles(res) : res;
+          })
+      );
+      return Array.prototype.concat(...files);
+    }
+
+    const files = await getFiles(dirPath);
+    console.debug('Uploading files:', files);
+    const uploads = files.map((filePath) =>
+        s3
+            .putObject({
+              Key: path.join(s3BasePath, path.relative(dirPath, filePath)).replace('\\', '/'),
+              Bucket: bucketName,
+              Body: createReadStream(filePath),
+            })
+    );
+    return Promise.all(uploads);
+  }
+  const now = new Date();
+
+  const accountSid = await getParameterValue(`/${env.HL_ENV}/twilio/${env.HL.toUpperCase()}/account_sid`);
+  const region = await getParameterValue(`/${env.HL_ENV}/aws/${accountSid}/region`)
+  const bucket = await getParameterValue(`/${env.HL_ENV}/s3/${accountSid}/docs_bucket_name`)
+  const s3KeyRoot = `e2e-tests/${now.getUTCFullYear()}-${now.getUTCMonth() + 1}-${now.getUTCDate()}T${now.getUTCHours()}${now.getUTCMinutes()}${now.getUTCSeconds()}-${now.getUTCMilliseconds()}`;
+  await uploadDir(path.resolve('/tmp/temp'), bucket, `${s3KeyRoot}/temp`, { region });
+  await uploadDir(path.resolve('/tmp/test-results'), bucket, `${s3KeyRoot}/test-results`, { region });
 };
