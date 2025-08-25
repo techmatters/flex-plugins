@@ -30,10 +30,10 @@ locals {
       webchat : {
         channel_type     = "web"
         contact_identity = ""
-        templatefile     = "/app/twilio-iac/helplines/nz/templates/studio-flows/messaging-no-chatbot-operating-hours-flags-routing-v2-lambda.tftpl"
+        templatefile     = "/app/twilio-iac/helplines/nz/templates/studio-flows/messaging-no-lex-op-hours-flags-routing-v2-lambda-sd.tftpl"
         channel_flow_vars = {
-          chat_greeting_message = "Kia ora, we'll connect you with someone soon. Your conversation is confidential, but if we feel that you or someone else is at serious risk of harm, we may have to link in with other services. We'll let you know if that becomes necessary."
-          widget_from           = "Youthline"
+          chat_greeting_message       = "Kia ora, we'll connect you with someone soon. Your conversation is confidential, but if we feel that you or someone else is at serious risk of harm, we may have to link in with other services. We'll let you know if that becomes necessary."
+          widget_from                 = "Youthline"
           allowed_shortcode_locations = "NZ"
         }
         enable_datadog_monitor = true
@@ -49,7 +49,7 @@ locals {
       voice : {
         channel_type     = "voice"
         contact_identity = ""
-        templatefile     = "/app/twilio-iac/helplines/nz/templates/studio-flows/voice-lambda.tftpl"
+        templatefile     = "/app/twilio-iac/helplines/nz/templates/studio-flows/voice-lambda-sd.tftpl"
         channel_flow_vars = {
           voice_ivr_greeting_message = "Kia ora, thank you for contacting Youthline. One of our counsellors will get back to you as soon as we can. If you or someone else are in immediate danger, please call 111 immediately."
           voice_ivr_language         = "en-US"
@@ -70,11 +70,11 @@ locals {
         chatbot_unique_names = []
       },
       modica : {
-        messaging_mode         = "conversations"
-        channel_type           = "custom"
-        contact_identity       = "modica"
-        templatefile           = "/app/twilio-iac/helplines/nz/templates/studio-flows/messaging-lex-priority-v3-lambda.tftpl"
-        channel_flow_vars    = {
+        messaging_mode   = "conversations"
+        channel_type     = "custom"
+        contact_identity = "modica"
+        templatefile     = "/app/twilio-iac/helplines/nz/templates/studio-flows/messaging-lex-priority-v3-lambda-sd.tftpl"
+        channel_flow_vars = {
           regex_allowed_test_numbers = "modica:\\+(<SHORTCODE_HERE>)\\d{1,20}"
         }
         chatbot_unique_names   = []
@@ -91,7 +91,7 @@ locals {
         messaging_mode       = "conversations"
         channel_type         = "custom"
         contact_identity     = "instagram"
-        templatefile         = "/app/twilio-iac/helplines/nz/templates/studio-flows/instagram-lex-priority-v2-lambda.tftpl"
+        templatefile         = "/app/twilio-iac/helplines/nz/templates/studio-flows/instagram-lex-priority-v2-lambda-sd.tftpl"
         channel_flow_vars    = {}
         chatbot_unique_names = []
         custom_monitor = {
@@ -103,11 +103,11 @@ locals {
         }
       },
       whatsapp : {
-        messaging_mode       = "conversations"
-        channel_type         = "whatsapp"
-        contact_identity     = "whatsapp:+6498865696"
-        templatefile         = "/app/twilio-iac/helplines/nz/templates/studio-flows/messaging-lex-priority-v3-lambda.tftpl"
-        channel_flow_vars    = {
+        messaging_mode   = "conversations"
+        channel_type     = "whatsapp"
+        contact_identity = "whatsapp:+6498865696"
+        templatefile     = "/app/twilio-iac/helplines/nz/templates/studio-flows/messaging-lex-priority-v3-lambda-sd.tftpl"
+        channel_flow_vars = {
           regex_allowed_test_numbers = "whatsapp:\\+(<SHORTCODE_HERE>)\\d{6,20}"
         }
         enable_datadog_monitor = true
@@ -122,5 +122,18 @@ locals {
       }
     }
     get_profile_flags_for_identifier_base_url = "https://hrm-production.tl.techmatters.org/lambda/twilio/account-scoped"
+    #System Down Configuration
+    system_down_templatefile = "/app/twilio-iac/helplines/templates/studio-flows/system-down.tftpl"
+    enable_system_down       = true
+    system_down_flow_vars = {
+      is_system_down                   = "false"
+      message                          = "We're sorry, the helpline is experiencing technical difficulties with our chat system. If this is an emergency, please call 111 or reach out to 1737. We apologize for the inconvenience and are working to be up and running shortly"
+      voice_message                    = "We're sorry, the helpline is experiencing technical difficulties with our chat system. If this is an emergency, please call 111 or reach out to 1737. We apologize for the inconvenience and are working to be up and running shortly"
+      send_studio_message_function_sid = "ZH8b62b0622a2350b932fa5d0efe0b3b14"
+      call_action                      = "message"
+      forward_number                   = " +123"
+      recording_url                    = "https://<place_holder>.mp3"
+
+    }
   }
 }

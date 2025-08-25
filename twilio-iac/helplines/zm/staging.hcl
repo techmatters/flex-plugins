@@ -9,7 +9,7 @@ locals {
       webchat : {
         channel_type         = "web"
         contact_identity     = ""
-        templatefile         = "/app/twilio-iac/helplines/zm/templates/studio-flows/messaging-webchat-lambda.tftpl"
+        templatefile         = "/app/twilio-iac/helplines/zm/templates/studio-flows/messaging-webchat-lambda-sd.tftpl"
         channel_flow_vars    = {}
         chatbot_unique_names = []
       },
@@ -17,7 +17,7 @@ locals {
         messaging_mode       = "conversations"
         channel_type         = "messenger"
         contact_identity     = "messenger:106338277501244"
-        templatefile         = "/app/twilio-iac/helplines/zm/templates/studio-flows/messaging-conv-lambda.tftpl"
+        templatefile         = "/app/twilio-iac/helplines/zm/templates/studio-flows/messaging-conv-lambda-sd.tftpl"
         channel_flow_vars    = {}
         chatbot_unique_names = []
       },
@@ -25,7 +25,7 @@ locals {
         messaging_mode       = "conversations"
         channel_type         = "whatsapp"
         contact_identity     = "whatsapp:+17035961454"
-        templatefile         = "/app/twilio-iac/helplines/zm/templates/studio-flows/messaging-conv-lambda.tftpl"
+        templatefile         = "/app/twilio-iac/helplines/zm/templates/studio-flows/messaging-conv-lambda-sd.tftpl"
         channel_flow_vars    = {}
         chatbot_unique_names = []
       },
@@ -49,7 +49,19 @@ locals {
       voice_ivr_blocked_message             = "Hi, you've been blocked from accessing Childline/Lifeline services and we are not able to receive further calls from you."
     }
     get_profile_flags_for_identifier_base_url = "https://hrm-staging.tl.techmatters.org/lambda/twilio/account-scoped"
-    ui_editable = true
-    #Chatbots
+    ui_editable                               = true
+
+    #System Down Configuration
+    system_down_templatefile = "/app/twilio-iac/helplines/templates/studio-flows/system-down.tftpl"
+    enable_system_down       = true
+    system_down_flow_vars = {
+      is_system_down                   = "false"
+      message                          = "Our chat system is currently experiencing technical difficulties. We apologize for the inconvenience and are working to get it back online as soon as possible. If this is an emergency, please call +260955065373. Please note that this is not a toll-free line so you may incur costs."
+      voice_message                    = "Our chat system is currently experiencing technical difficulties. We apologize for the inconvenience and are working to get it back online as soon as possible. If this is an emergency, please call +260955065373. Please note that this is not a toll-free line so you may incur costs."
+      send_studio_message_function_sid = "ZH4958d28a21898fa32e4b656635475f33"
+      call_action                      = "message"
+      forward_number                   = "+123"
+      recording_url                    = "https://<place_holder>.mp3"
+    }
   }
 }

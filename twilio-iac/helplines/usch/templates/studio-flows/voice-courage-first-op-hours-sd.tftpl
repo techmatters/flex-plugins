@@ -1,0 +1,411 @@
+${
+    jsonencode({
+  "description": "${flow_description}",
+  "states": [
+    {
+      "name": "Trigger",
+      "type": "trigger",
+      "transitions": [
+        {
+          "event": "incomingMessage"
+        },
+        {
+          "next": "run_subflow_system_down",
+          "event": "incomingCall"
+        },
+        {
+          "event": "incomingConversationMessage"
+        },
+        {
+          "event": "incomingRequest"
+        },
+        {
+          "event": "incomingParent"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 280,
+          "y": -1120
+        }
+      }
+    },
+    {
+      "name": "send_courage_first_voice_welcome_message",
+      "type": "say-play",
+      "transitions": [
+        {
+          "next": "set_courage_first_variable",
+          "event": "audioComplete"
+        }
+      ],
+      "properties": {
+        "voice": "Polly.Salli",
+        "offset": {
+          "x": 120,
+          "y": 230
+        },
+        "loop": 1,
+        "play": "https://usch-functions-6913.twil.io/courage_first_voice_welcome_message.mp3",
+        "language": "en-US"
+      }
+    },
+    {
+      "name": "webhook_notify_failed_to_enqueue",
+      "type": "make-http-request",
+      "transitions": [
+        {
+          "event": "success"
+        },
+        {
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 20,
+          "y": 1260
+        },
+        "method": "POST",
+        "content_type": "application/json;charset=utf-8",
+        "add_twilio_auth": false,
+        "body": "{ \"text\": \"Issue detected [Failed to Enqueue] on USCH STG Flow SID: {{flow.flow_sid}} Execution SID: {{flow.sid}}  \" }",
+        "url": "${webhook_url_studio_errors}"
+      }
+    },
+    {
+      "name": "attributes",
+      "type": "send-to-flex",
+      "transitions": [
+        {
+          "event": "callComplete"
+        },
+        {
+          "next": "webhook_notify_failed_to_enqueue",
+          "event": "failedToEnqueue"
+        },
+        {
+          "next": "webhook_notify_failed_to_enqueue",
+          "event": "callFailure"
+        }
+      ],
+      "properties": {
+        "waitUrl": "${flow_vars.serverless_usch_functions_url}/holdMusicAndMessageEnglish",
+        "offset": {
+          "x": 380,
+          "y": 940
+        },
+        "workflow": "${workflow_sids.master}",
+        "channel": "${task_channel_sids.voice}",
+        "attributes": "{\n \"type\": \"inbound\",\n \"name\": \"{{trigger.call.From}}\",\n \"ignoreAgent\": \"\",\n\"language\":\"en-CF\", \n \"service\":\"{{flow.variables.service}}\",\n \"transferTargetType\": \"\",\n \"channelType\": \"voice\",\n \"conversations\": {\n   \"ivr_path\": \"CourageFirst English\",\n   \"hang_up_by\": \"Customer\"\n }\n}",
+        "waitUrlMethod": "POST"
+      }
+    },
+    {
+      "name": "operatingHours",
+      "type": "make-http-request",
+      "transitions": [
+        {
+          "next": "split_status",
+          "event": "success"
+        },
+        {
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 130,
+          "y": -290
+        },
+        "method": "POST",
+        "content_type": "application/json;charset=utf-8",
+        "add_twilio_auth": false,
+        "body": "{\"channel\": \"voice\", \"includeMessageTextInResponse\": \"true\", \"language\": \"en-USCH\"}",
+        "url": "${get_profile_flags_for_identifier_base_url}/operatingHours"
+      }
+    },
+    {
+      "name": "split_status",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "send_courage_first_voice_welcome_message",
+          "event": "noMatch"
+        },
+        {
+          "next": "send_courage_first_voice_welcome_message",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to open",
+              "arguments": [
+                "{{widgets.operatingHours.parsed.status}}"
+              ],
+              "type": "equal_to",
+              "value": "open"
+            }
+          ]
+        },
+        {
+          "next": "send_courage_first_voice_redirect_option_message",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value matches_any_of closed,holiday",
+              "arguments": [
+                "{{widgets.operatingHours.parsed.status}}"
+              ],
+              "type": "matches_any_of",
+              "value": "closed,holiday"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{widgets.operatingHours.parsed.status}}",
+        "offset": {
+          "x": 510,
+          "y": -70
+        }
+      }
+    },
+    {
+      "name": "getProfileFlagsForIdentifier",
+      "type": "make-http-request",
+      "transitions": [
+        {
+          "next": "split_contact_routing",
+          "event": "success"
+        },
+        {
+          "next": "split_contact_routing",
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 260,
+          "y": -800
+        },
+        "method": "POST",
+        "content_type": "application/json;charset=utf-8",
+        "add_twilio_auth": false,
+        "body": "{ \"trigger\": {{trigger | to_json}}, \"channelType\": \"voice\"}",
+        "url": "${lambda_twilio_account_scoped_url}/getProfileFlagsForIdentifier"
+      }
+    },
+    {
+      "name": "split_contact_routing",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "operatingHours",
+          "event": "noMatch"
+        },
+        {
+          "event": "match",
+          "next": "send_voice_blocked_message",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to blocked",
+              "arguments": [
+                "{{widgets.getProfileFlagsForIdentifier.parsed.flags}}"
+              ],
+              "type": "equal_to",
+              "value": "blocked"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{widgets.getProfileFlagsForIdentifier.parsed.flags}}",
+        "offset": {
+          "x": 600,
+          "y": -560
+        }
+      }
+    },
+    {
+      "name": "send_courage_first_voice_redirect_childhelp_message",
+      "type": "say-play",
+      "transitions": [
+        {
+          "next": "set_childhelp_variable",
+          "event": "audioComplete"
+        }
+      ],
+      "properties": {
+        "voice": "Polly.Salli",
+        "offset": {
+          "x": 1050,
+          "y": 670
+        },
+        "loop": 1,
+        "play": "https://usch-functions-6913.twil.io/courage_first_voice_redirect_childhelp_message.mp3",
+        "language": "en-US"
+      }
+    },
+    {
+      "name": "set_courage_first_variable",
+      "type": "set-variables",
+      "transitions": [
+        {
+          "next": "attributes",
+          "event": "next"
+        }
+      ],
+      "properties": {
+        "variables": [
+          {
+            "type": "string",
+            "value": "CourageFirst",
+            "key": "service"
+          }
+        ],
+        "offset": {
+          "x": 330,
+          "y": 570
+        }
+      }
+    },
+    {
+      "name": "set_childhelp_variable",
+      "type": "set-variables",
+      "transitions": [
+        {
+          "next": "attributes",
+          "event": "next"
+        }
+      ],
+      "properties": {
+        "variables": [
+          {
+            "type": "string",
+            "value": "ChildHelp",
+            "key": "service"
+          }
+        ],
+        "offset": {
+          "x": 760,
+          "y": 880
+        }
+      }
+    },
+    {
+      "name": "send_courage_first_voice_redirect_option_message",
+      "type": "gather-input-on-call",
+      "transitions": [
+        {
+          "next": "split_redirect_option",
+          "event": "keypress"
+        },
+        {
+          "event": "speech"
+        },
+        {
+          "event": "timeout"
+        }
+      ],
+      "properties": {
+        "number_of_digits": 1,
+        "speech_timeout": "5",
+        "offset": {
+          "x": 1030,
+          "y": 170
+        },
+        "loop": 1,
+        "finish_on_key": "#",
+        "play": "https://usch-functions-6913.twil.io/courage_first_voice_redirect_option_message.mp3",
+        "language": "en-US",
+        "stop_gather": true,
+        "gather_language": "en",
+        "speech_model": "default",
+        "timeout": 10
+      }
+    },
+    {
+      "name": "split_redirect_option",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "event": "noMatch"
+        },
+        {
+          "next": "send_courage_first_voice_redirect_childhelp_message",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to 1",
+              "arguments": [
+                "{{widgets.send_courage_first_voice_redirect_option_message.Digits}}"
+              ],
+              "type": "equal_to",
+              "value": "1"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{widgets.send_courage_first_voice_redirect_option_message.Digits}}",
+        "offset": {
+          "x": 1090,
+          "y": 400
+        }
+      }
+    },
+    {
+      "name": "send_voice_blocked_message",
+      "type": "say-play",
+      "transitions": [
+        {
+          "event": "audioComplete"
+        }
+      ],
+      "properties": {
+        "voice": "Polly.Salli",
+        "offset": {
+          "x": 880,
+          "y": -280
+        },
+        "loop": 1,
+        "play": "https://usch-functions-6913.twil.io/voice_blocked_client_message.mp3",
+        "language": "en-US"
+      }
+    },
+    {
+      "name": "run_subflow_system_down",
+      "type": "run-subflow",
+      "transitions": [
+        {
+          "next": "getProfileFlagsForIdentifier",
+          "event": "completed"
+        },
+        {
+          "next": "getProfileFlagsForIdentifier",
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "flow_sid": "${system_down_studio_subflow_sid}",
+        "flow_revision": "LatestPublished",
+        "offset": {
+          "x": 110,
+          "y": -270
+        },
+        "parameters": [
+          {
+            "type": "string",
+            "value": "true",
+            "key": "system_down"
+          }
+        ]
+      }
+    }
+  ],
+  "initial_state": "Trigger",
+  "flags": {
+    "allow_concurrent_calls": true
+  }
+})
+}

@@ -10,11 +10,11 @@ locals {
 
     channels = {
       webchat : {
-        channel_type         = "web"
-        contact_identity     = ""
-        templatefile         = "/app/twilio-iac/helplines/templates/studio-flows/messaging-lex-v2-blocking-lambda.tftpl"
-        channel_flow_vars    = {}
-        chatbot_unique_names = []
+        channel_type           = "web"
+        contact_identity       = ""
+        templatefile           = "/app/twilio-iac/helplines/templates/studio-flows/messaging-lex-v2-blocking-lambda-sd.tftpl"
+        channel_flow_vars      = {}
+        chatbot_unique_names   = []
         enable_datadog_monitor = true
         custom_monitor = {
           query = "sum(last_1w):sum:<metric>{*}.as_count() == 0"
@@ -28,7 +28,7 @@ locals {
         messaging_mode         = "conversations"
         channel_type           = "custom"
         contact_identity       = "instagram"
-        templatefile           = "/app/twilio-iac/helplines/templates/studio-flows/messaging-custom-channel-lex-v3-blocking-lambda.tftpl"
+        templatefile           = "/app/twilio-iac/helplines/templates/studio-flows/messaging-custom-channel-lex-v3-blocking-lambda-sd.tftpl"
         channel_flow_vars      = {}
         chatbot_unique_names   = []
         enable_datadog_monitor = true
@@ -57,5 +57,18 @@ locals {
 
     get_profile_flags_for_identifier_base_url = "https://hrm-production.tl.techmatters.org/lambda/twilio/account-scoped"
 
+    #System Down Configuration
+    system_down_templatefile = "/app/twilio-iac/helplines/templates/studio-flows/system-down.tftpl"
+    enable_system_down       = true
+    system_down_flow_vars = {
+      is_system_down                   = "false"
+      message                          = "Thank you for reaching out to SafeSpotJa. We're sorry, the helpline is experiencing technical difficulties with our chat system. If this is an emergency, please call 119 or reach out to the Intake Desk of the Office of the Children's Advocate at 876 275-956. Once we are up and running, a counsellor will get back to you. We apologize for the inconvenience and appreciate your patience"
+      voice_message                    = "Thank you for reaching out to SafeSpotJa. We're sorry, the helpline is experiencing technical difficulties with our chat system. If this is an emergency, please call 119 or reach out to the Intake Desk of the Office of the Children's Advocate at 876 275-956. Once we are up and running, a counsellor will get back to you. We apologize for the inconvenience and appreciate your patience"
+      send_studio_message_function_sid = "ZH23e9b91816dd9df26637cb2c8b28b2c9"
+      call_action                      = "message"
+      forward_number                   = " +123"
+      recording_url                    = "https://<place_holder>.mp3"
+
+    }
   }
 }

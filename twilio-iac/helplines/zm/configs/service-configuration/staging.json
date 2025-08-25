@@ -1,5 +1,6 @@
 {
     "attributes": {
+        "system_down" : false,
         "feature_flags": {
             "enable_client_profiles": true
         },
