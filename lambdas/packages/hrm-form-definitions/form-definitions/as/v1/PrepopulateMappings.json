@@ -1,4 +1,15 @@
 {
+  "formSelector": {
+    "selectorType": "serviceUserChoiceSelector",
+    "parameter": [{
+      "form": "preEngagement",
+      "input": "myselfOrOther",
+      "aboutSelfValue": "myself"
+    }, {
+      "form": "survey",
+      "input": "aboutSelf"
+    }]
+  },
   "survey":{
     "age": "ChildInformationTab.age",
     "gender": "ChildInformationTab.gender"

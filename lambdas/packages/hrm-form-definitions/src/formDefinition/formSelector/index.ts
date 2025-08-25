@@ -20,18 +20,18 @@ import {
   ContactFormName,
   staticAvailableContactTabSelector,
 } from './prepopulateContactFormSelector';
-import { selectFormsFromAboutSelfSurveyQuestion } from './selectFormsFromAboutSelfSurveyQuestion';
+import { selectFormsFromServiceUserChoice } from './selectFormsFromServiceUserChoice';
 import { DefinitionVersion } from '../types';
 
 export * from './prepopulateContactFormSelector';
-export * from './selectFormsFromAboutSelfSurveyQuestion';
+export * from './selectFormsFromServiceUserChoice';
 
 const SELECTOR_MAP: Record<string, PrepopulateContactFormSelector> = {
   staticSelector: staticAvailableContactTabSelector,
-  surveyAnswerSelector: selectFormsFromAboutSelfSurveyQuestion,
+  serviceUserChoiceSelector: selectFormsFromServiceUserChoice,
 };
 
-const DEFAULT_SELECTOR = selectFormsFromAboutSelfSurveyQuestion;
+const DEFAULT_SELECTOR = selectFormsFromServiceUserChoice;
 
 export const lookupFormSelector = (
   prepopulateMappings: DefinitionVersion['prepopulateMappings'],
