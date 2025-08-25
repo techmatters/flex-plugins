@@ -43,14 +43,27 @@ locals {
 
           welcome_message_url = "https://sg-services-1705.twil.io/welcome_Message.mp3"
           busy_message_url    = "https://sg-services-1705.twil.io/busy_Message.mp3"
-          closed_message_url  = "https://sg-services-1705.twil.io/closed_Message.mp3" 
+          closed_message_url  = "https://sg-services-1705.twil.io/closed_Message.mp3"
 
-          widget_from           = "Tinkle Friend"
-          voice_ivr_blocked_message  = "Hi, you've been blocked from accessing Tinkle Friend services and we are not able to read or receive further messages from you."
+          widget_from               = "Tinkle Friend"
+          voice_ivr_blocked_message = "Hi, you've been blocked from accessing Tinkle Friend services and we are not able to read or receive further messages from you."
         }
         chatbot_unique_names = []
       }
     }
     get_profile_flags_for_identifier_base_url = "https://hrm-staging.tl.techmatters.org/lambda/twilio/account-scoped"
+    #System Down Configuration
+    system_down_templatefile = "/app/twilio-iac/helplines/templates/studio-flows/system-down.tftpl"
+    enable_system_down       = true
+    system_down_flow_vars = {
+      is_system_down                   = "false"
+      message                          = "Tinkle Friend is currently experiencing technical difficulties at the moment. If you need immediate support, please contact our friends at National Mindline 1771 or if you have any thoughts of suicide, please contact our friend at Samaritans of Singapore (SOS) at 1767. We seek for your understanding and being patient with us. We are working to be up and running shortly."
+      voice_message                    = "Tinkle Friend is currently experiencing technical difficulties at the moment. If you need immediate support, please contact our friends at National Mindline 1771 or if you have any thoughts of suicide, please contact our friend at Samaritans of Singapore (SOS) at 1767. We seek for your understanding and being patient with us. We are working to be up and running shortly."
+      send_studio_message_function_sid = "ZH2a2ee50d3166ac1344bf50675a6dc579"
+      call_action                      = "forward"
+      forward_number                   = " +6583803172"
+      recording_url                    = "https://<place_holder>.mp3"
+
+    }
   }
 }
