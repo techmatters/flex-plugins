@@ -14,11 +14,12 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { Actions, ActionPayload, withTaskContext, Manager } from '@twilio/flex-ui';
 import { EmojiIcon } from '@twilio-paste/icons/cjs/EmojiIcon';
 import Picker from '@emoji-mart/react';
+import pickerData from '@emoji-mart/data';
 
 import { Relative, Popup, SelectEmojiButton } from './styles';
 import { RootState } from '../../states';
@@ -126,10 +127,18 @@ const EmojiPicker: React.FC<MyProps> = ({ conversationSid }) => {
     [inputText, conversationSid],
   );
 
+  const sanitizedPickerData = useMemo(() => {
+    const emojis = Object.fromEntries(
+      Object.entries((pickerData as any).emojis).filter(([key]) => !blockedEmojis.includes(key)),
+    );
+    return { ...pickerData, emojis };
+  }, [blockedEmojis]);
+
   return (
     <Relative>
       <Popup isOpen={isOpen}>
         <Picker
+          data={sanitizedPickerData}
           onEmojiSelect={handleSelectEmoji}
           onClickOutside={handleClickOutside}
           exceptEmojis={blockedEmojis}

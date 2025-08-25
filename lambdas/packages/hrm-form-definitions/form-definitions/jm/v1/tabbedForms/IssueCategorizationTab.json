@@ -1,5 +1,6 @@
 {
   "SafeSpot": {
+    "maxSelections": 6,
     "categories": {
       "Missing children": {
         "color": "#BBE3FF",
