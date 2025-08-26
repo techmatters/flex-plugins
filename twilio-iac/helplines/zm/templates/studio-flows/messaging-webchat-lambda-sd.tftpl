@@ -378,7 +378,7 @@ ${
       }
     },
     {
-      "name": "getProfileFlagForIdentifier",
+      "name": "getProfileFlagsForIdentifier",
       "type": "make-http-request",
       "transitions": [
         {
@@ -417,7 +417,7 @@ ${
             {
               "friendly_name": "If value contains Blocked",
               "arguments": [
-                "{{widgets.getProfileFlagForIdentifier.parsed}}"
+                "{{widgets.getProfileFlagsForIdentifier.parsed}}"
               ],
               "type": "contains",
               "value": "Blocked"
@@ -426,7 +426,7 @@ ${
         }
       ],
       "properties": {
-        "input": "{{widgets.getProfileFlagForIdentifier.parsed}}",
+        "input": "{{widgets.getProfileFlagsForIdentifier.parsed}}",
         "offset": {
           "x": 270,
           "y": -710
