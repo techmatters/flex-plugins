@@ -4,7 +4,6 @@
     "label": "Incident or Person Description",
     "type": "textarea",
     "rows": 21,
-    "width": 217,
     "required": {
       "value": true,
       "message": "RequiredFieldError"
