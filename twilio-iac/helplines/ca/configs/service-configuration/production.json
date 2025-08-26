@@ -1,6 +1,6 @@
 {
   "attributes": {
-    "system_down" : true,
+    "system_down" : false,
     "feature_flags": {
     },
     "form_definitions_base_url": "https://assets-production.tl.techmatters.org/form-definitions/",
