@@ -20,35 +20,7 @@ const { promises: fs, createReadStream } = require('fs');
 const { S3 } = require('@aws-sdk/client-s3');
 const { SSMClient, GetParameterCommand } = require('@aws-sdk/client-ssm')
 
-module.exports.handler = async (event) => {
-  const env = { ...process.env };
-
-  const { testName, npmScript } = event;
-  env.DEBUG = 'pw:api'
-  if (testName) {
-    env.TEST_NAME = testName;
-  }
-
-  const cmd = spawn('npm', ['-loglevel silent', 'run', npmScript || 'test'], {
-    stdio: 'inherit',
-    stderr: 'inherit',
-    env,
-  });
-
-  const result = await new Promise((resolve, reject) => {
-    cmd.on('exit', (code) => {
-      if (code !== 0) {
-        reject(`Execution error: ${code}`);
-      } else {
-        resolve(`Exited with code: ${code}`);
-      }
-    });
-
-    cmd.on('error', (error) => {
-      reject(`Execution error: ${error}`);
-    });
-  });
-
+const uploadTestArtifactsToS3 = async (env) => {
   const getParameterValue = async (name) => {
     const ssm = new SSMClient({});
     const params = {
@@ -62,7 +34,7 @@ module.exports.handler = async (event) => {
     return Value;
   };
 
-  console.log(result);
+
   // https://stackoverflow.com/a/65862128/30481093
   async function uploadDir(dirPath, bucketName, s3BasePath, options = {}) {
     const s3 = new S3(options);
@@ -100,4 +72,41 @@ module.exports.handler = async (event) => {
   const s3KeyRoot = `e2e-tests/${now.getUTCFullYear()}-${now.getUTCMonth() + 1}-${now.getUTCDate()}T${now.getUTCHours()}${now.getUTCMinutes()}${now.getUTCSeconds()}-${now.getUTCMilliseconds()}`;
   await uploadDir(path.resolve('/tmp/temp'), bucket, `${s3KeyRoot}/temp`, { region });
   await uploadDir(path.resolve('/tmp/test-results'), bucket, `${s3KeyRoot}/test-results`, { region });
+}
+
+module.exports.handler = async (event) => {
+  const env = { ...process.env };
+
+  const { testName, npmScript } = event;
+  if (testName) {
+    env.TEST_NAME = testName;
+  }
+
+  const cmd = spawn('npm', ['-loglevel silent', 'run', npmScript || 'test'], {
+    stdio: 'inherit',
+    stderr: 'inherit',
+    env,
+  });
+
+  const result = await new Promise((resolve, reject) => {
+    cmd.on('exit', (code) => {
+      if (code !== 0) {
+        reject(`Execution error: ${code}`);
+      } else {
+        resolve(`Exited with code: ${code}`);
+      }
+    });
+
+    cmd.on('error', (error) => {
+      reject(`Execution error: ${error}`);
+    });
+  });
+
+  try {
+    await uploadTestArtifactsToS3(env)
+  } catch (err) {
+    console.error('Error uploading test artifacts:', err);
+  }
+
+  console.log(result);
 };
