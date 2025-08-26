@@ -8,7 +8,6 @@
       "message": "RequiredFieldError"
     },
     "isPII": true,
-    "width": "250px",
     "rows": "40",
     "additionalActions": [
       {
