@@ -57,7 +57,7 @@ locals {
       voice_message                    = "We're sorry, the CIRCLE Call Center is experiencing technical difficulties with our phone system. If this is an emergency, please call 911 or leave us a message at 213-816-4904. We apologize for the inconvenience and are working to be up and running shortly."
       send_studio_message_function_sid = "ZHd9aa36ef63e286744c8677e919216853"
       call_action                      = "forward"
-      forward_number                   = "+12138164904"
+      forward_number                   = "+12055189944"
       recording_url                    = "https://<place_holder>.mp3"
     }
   }
