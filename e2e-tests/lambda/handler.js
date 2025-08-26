@@ -19,10 +19,11 @@ const path = require('path');
 const { promises: fs, createReadStream } = require('fs');
 const { S3 } = require('@aws-sdk/client-s3');
 const { SSMClient, GetParameterCommand } = require('@aws-sdk/client-ssm')
+const SSM_REGION = 'us-east-1'; // All our parameters are in this region, regardless of where the actual helpline is deployed to
 
 const uploadTestArtifactsToS3 = async (env) => {
   const getParameterValue = async (name) => {
-    const ssm = new SSMClient({});
+    const ssm = new SSMClient({ region: SSM_REGION });
     const params = {
       Name: name,
       WithDecryption: true,
