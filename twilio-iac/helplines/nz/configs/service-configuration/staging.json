@@ -1,6 +1,6 @@
 {
     "attributes": {
-        "system_down" : false,
+        "system_down" : true,
         "definitionVersion": "nz-v1",
         "feature_flags": {
         },

@@ -1,6 +1,6 @@
 {
     "attributes": {
-        "system_down" : false,
+        "system_down" : true,
         "feature_flags": {
             "enable_lex_v2": true
         },
