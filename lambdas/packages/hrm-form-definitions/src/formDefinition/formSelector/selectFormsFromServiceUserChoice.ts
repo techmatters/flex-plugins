@@ -39,9 +39,9 @@ export const selectFormsFromServiceUserChoice: PrepopulateContactFormSelector = 
 ) => ({
   selectForms: (source, preEngagementSelections, surveyAnswers) => {
     const serviceUserChoice = lookupServiceUserChoice(
-        preEngagementSelections,
-        surveyAnswers,
-        choiceLocations,
+      preEngagementSelections,
+      surveyAnswers,
+      choiceLocations,
     );
     switch (serviceUserChoice) {
       case FormAbout.Self: {
@@ -51,7 +51,9 @@ export const selectFormsFromServiceUserChoice: PrepopulateContactFormSelector = 
         return ['CaseInformationTab', 'CallerInformationTab'];
       }
       default: {
-        return source === 'survey' ? ['CaseInformationTab'] : ['CaseInformationTab', 'ChildInformationTab'];
+        return source === 'survey'
+          ? ['CaseInformationTab']
+          : ['CaseInformationTab', 'ChildInformationTab'];
       }
     }
   },
