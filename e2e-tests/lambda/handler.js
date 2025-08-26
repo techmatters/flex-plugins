@@ -71,7 +71,8 @@ const uploadTestArtifactsToS3 = async (env) => {
   const region = await getParameterValue(`/${env.HL_ENV}/aws/${accountSid}/region`)
   const bucket = await getParameterValue(`/${env.HL_ENV}/s3/${accountSid}/docs_bucket_name`)
   const s3KeyRoot = `e2e-tests/${now.getUTCFullYear()}-${now.getUTCMonth() + 1}-${now.getUTCDate()}T${now.getUTCHours()}${now.getUTCMinutes()}${now.getUTCSeconds()}-${now.getUTCMilliseconds()}`;
-  await uploadDir(path.resolve('/tmp'), bucket, s3KeyRoot, { region });
+  await uploadDir(path.resolve('/tmp/state.json'), bucket, s3KeyRoot, { region });
+  await uploadDir(path.resolve('/tmp/test-results'), bucket, `${s3KeyRoot}/test-results`, { region });
 }
 
 module.exports.handler = async (event) => {
