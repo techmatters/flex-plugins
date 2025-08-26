@@ -43,20 +43,17 @@ export const selectFormsFromServiceUserChoice: PrepopulateContactFormSelector = 
       surveyAnswers,
       choiceLocations,
     );
-    if (source === 'survey') {
-      if (serviceUserChoice === FormAbout.Self) {
+    switch (serviceUserChoice) {
+      case FormAbout.Self: {
         return ['CaseInformationTab', 'ChildInformationTab'];
-      } else if (serviceUserChoice === FormAbout.Other) {
+      }
+      case FormAbout.Other: {
         return ['CaseInformationTab', 'CallerInformationTab'];
       }
-      return ['CaseInformationTab'];
-    } else {
-      if (serviceUserChoice === FormAbout.Other) {
-        return ['CaseInformationTab', 'CallerInformationTab'];
+      default: {
+        return source === 'survey' ? ['CaseInformationTab'] : ['CaseInformationTab', 'ChildInformationTab'];
       }
-      return ['CaseInformationTab', 'ChildInformationTab'];
-    }
-  },
+    },
   selectCallType: (preEngagementSelections, surveyAnswers) => {
     const serviceUserChoice = lookupServiceUserChoice(
       preEngagementSelections,
