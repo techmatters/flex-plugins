@@ -61,7 +61,7 @@ locals {
       voice_message                    = "Tinkle Friend is currently experiencing technical difficulties at the moment. If you need immediate support, please contact our friends at National Mindline 1771 or if you have any thoughts of suicide, please contact our friend at Samaritans of Singapore (SOS) at 1767. We seek for your understanding and being patient with us. We are working to be up and running shortly."
       send_studio_message_function_sid = "ZH2a2ee50d3166ac1344bf50675a6dc579"
       call_action                      = "forward"
-      forward_number                   = " +6583803172"
+      forward_number                   = " +12055189944"
       recording_url                    = "https://<place_holder>.mp3"
 
     }
