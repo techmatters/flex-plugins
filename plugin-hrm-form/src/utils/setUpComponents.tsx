@@ -18,6 +18,7 @@
 /* eslint-disable react/no-multi-comp */
 import React from 'react';
 import * as Flex from '@twilio/flex-ui';
+import { Notifications, NotificationType, Template } from '@twilio/flex-ui';
 
 import * as TransferHelpers from '../transfer/transferTaskState';
 import EmojiPicker from '../components/emojiPicker';
@@ -29,7 +30,6 @@ import LocalizationContext from '../contexts/LocalizationContext';
 import Translator from '../components/translator';
 import CaseList from '../components/caseList';
 import StandaloneSearch from '../components/StandaloneSearch';
-import SettingsSideLink from '../components/sideLinks/SettingsSideLink';
 import CaseListSideLink from '../components/sideLinks/CaseListSideLink';
 import StandaloneSearchSideLink from '../components/sideLinks/StandaloneSearchSideLink';
 import ManualPullButton from '../components/ManualPullButton';
@@ -44,12 +44,12 @@ import { Container } from '../components/queuesStatus/styles';
 import { FeatureFlags, standaloneTaskSid } from '../types/types';
 import { colors } from '../channels/colors';
 import { getHrmConfig } from '../hrmConfig';
-import { AseloMessageInput, AseloMessageList } from '../components/AseloMessaging';
 import { changeRoute } from '../states/routing/actions';
 import { AppRoutes, ChangeRouteMode } from '../states/routing/types';
 import { selectCurrentBaseRoute } from '../states/routing/getRoute';
 import { RootState } from '../states';
 import selectCurrentOfflineContact from '../states/contacts/selectCurrentOfflineContact';
+import { REFRESH_BROWSER_REQUIRED_FOR_LANGUAGE_CHANGE_NOTIFICATION_ID } from '../states/configuration/changeLanguage';
 
 type SetupObject = ReturnType<typeof getHrmConfig>;
 /**
@@ -69,8 +69,6 @@ const queuesStatusUI = (setupObject: SetupObject) => {
 };
 
 const addButtonsUI = (featureFlags: FeatureFlags) => {
-  const manager = Flex.Manager.getInstance();
-
   return (
     <Container key="add-buttons-section" backgroundColor={HrmTheme.colors.base2}>
       <HeaderContainer>
@@ -78,7 +76,7 @@ const addButtonsUI = (featureFlags: FeatureFlags) => {
           <Flex.Template code="AddButtons-Header" />
         </Box>
       </HeaderContainer>
-      {featureFlags.enable_manual_pulling && <ManualPullButton workerClient={manager.workerClient} />}
+      {featureFlags.enable_manual_pulling && <ManualPullButton />}
       {featureFlags.enable_offline_contact && <AddOfflineContactButton />}
     </Container>
   );
@@ -245,34 +243,7 @@ export const setUpCustomCRMContainer = () => {
 };
 
 /**
- * Add components used only by developers
- */
-export const setUpDeveloperComponents = (translateUI: (language: string) => Promise<void>) => {
-  const manager = Flex.Manager.getInstance();
-
-  Flex.ViewCollection.Content.add(
-    <Flex.View name="settings" key="settings-view">
-      <div>
-        <Translator manager={manager} translateUI={translateUI} key="translator" />
-      </div>
-    </Flex.View>,
-  );
-
-  Flex.SideNav.Content.add(
-    <SettingsSideLink
-      key="SettingsSideLink"
-      onClick={() => Flex.Actions.invokeAction('NavigateToView', { viewName: 'settings' })}
-      reserveSpace={false}
-      showLabel={false}
-    />,
-    {
-      align: 'end',
-    },
-  );
-};
-
-/**
- * Add components used only by developers
+ * Add components for case list
  */
 export const setUpCaseList = () => {
   Flex.ViewCollection.Content.add(
@@ -393,14 +364,6 @@ export const removeActionsIfTransferring = () => {
 };
 
 /**
- *
- */
-export const replaceTwilioMessageInput = () => {
-  Flex.MessageInputV2.Content.replace(<AseloMessageInput key="textarea" />, { sortOrder: -1 });
-  Flex.MessageList.Content.replace(<AseloMessageList key="list" />);
-};
-
-/**
  * Canned responses
  */
 export const setupCannedResponses = () => {
@@ -413,4 +376,26 @@ export const setupCannedResponses = () => {
  */
 export const setupEmojiPicker = () => {
   Flex.MessageInputActions.Content.add(<EmojiPicker key="emoji-picker" />);
+};
+
+export const setupWorkerLanguageSelect = () => {
+  Flex.MainHeader.Content.add(<Translator key="locale-selector" />, { align: 'end', sortOrder: 0 });
+  const LanguageSelectedNotification: React.FC<{ notificationContext?: { localeSelection: string } }> = ({
+    notificationContext: { localeSelection },
+  }) => (
+    <span>
+      <Template code="MainHeader-Translator-SelectionNotification" localeSelection={localeSelection} />{' '}
+      <a href=".">
+        <Template code="MainHeader-Translator-RefreshRequiredNotification" />
+      </a>{' '}
+      <Template code="MainHeader-Translator-RefreshWarningNotification" />
+    </span>
+  );
+
+  Notifications.registerNotification({
+    id: REFRESH_BROWSER_REQUIRED_FOR_LANGUAGE_CHANGE_NOTIFICATION_ID,
+    type: NotificationType.information,
+    timeout: 0,
+    content: <LanguageSelectedNotification />,
+  });
 };

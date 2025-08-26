@@ -32,7 +32,10 @@ import { getHelplineToSave } from '../services/HelplineService';
 import { getAseloFeatureFlags, getHrmConfig } from '../hrmConfig';
 import { rerenderAgentDesktop } from '../rerenderView';
 import { ContactState, updateDraft } from '../states/contacts/existingContacts';
-import { createContactAsyncAction, newLoadContactFromHrmForTaskAsyncAction } from '../states/contacts/saveContact';
+import {
+  createOfflineContactAsyncAction,
+  newLoadContactFromHrmForTaskAsyncAction,
+} from '../states/contacts/saveContact';
 import { isRouteModal } from '../states/routing/types';
 import { selectCurrentBaseRoute } from '../states/routing/getRoute';
 import { getUnsavedContact } from '../states/contacts/getUnsavedContact';
@@ -52,14 +55,13 @@ type Props = {
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
 const TaskView: React.FC<Props> = ({ task }) => {
-  const { enable_backend_hrm_contact_creation: enableBackendHrmContactCreation } = getAseloFeatureFlags();
   const { workerSid } = getHrmConfig();
   const taskContactId = (task?.attributes as any)?.contactId;
   const currentDefinitionVersion = useSelector((state: RootState) => selectCurrentDefinitionVersion(state));
   // Check if the entry for this task exists in each reducer
   const { savedContact, draftContact, metadata } = useSelector(
     (state: RootState) =>
-      (enableBackendHrmContactCreation && isTwilioTask(task)
+      (isTwilioTask(task)
         ? selectContactStateByContactId(state, taskContactId)
         : selectContactByTaskSid(state, task?.taskSid)) ?? ({} as ContactState),
   );
@@ -69,7 +71,8 @@ const TaskView: React.FC<Props> = ({ task }) => {
   const contactIsLoading = useSelector((state: RootState) => selectIsContactCreating(state, task?.taskSid));
   const shouldRecreateState =
     currentDefinitionVersion &&
-    !savedContact &&
+    // Needs reloading if taskSid on contact doesn't match the taskSid of the task
+    (!savedContact || savedContact.taskId !== task.taskSid) &&
     !(metadata?.loadingStatus === LoadingStatus.LOADING) &&
     !contactIsLoading;
 
@@ -77,29 +80,24 @@ const TaskView: React.FC<Props> = ({ task }) => {
   const asyncDispatcher = asyncDispatch(dispatch);
   const createContact = useCallback(
     (definition: DefinitionVersion) =>
-      asyncDispatcher(createContactAsyncAction(newContact(definition, task), workerSid, task)),
+      asyncDispatcher(createOfflineContactAsyncAction(newContact(definition, task), workerSid, task)),
     [asyncDispatcher, task, workerSid],
   );
   const updateHelpline = (contactId: string, helpline: string) => dispatch(updateDraft(contactId, { helpline }));
+  const { transferMeta } = isOfflineContactTask(task) ? { transferMeta: undefined } : task.attributes;
+  const sidWithTaskControl = transferMeta?.sidWithTaskControl;
   React.useEffect(() => {
-    if (shouldRecreateState && !isOfflineContactTask(task)) {
-      if (enableBackendHrmContactCreation && taskContactId) {
-        asyncDispatcher(newLoadContactFromHrmForTaskAsyncAction(task, workerSid, `${task.taskSid}-active`));
-      } else if (
-        !enableBackendHrmContactCreation &&
-        TaskHelper.isTaskAccepted(task) &&
-        !task.attributes.isContactlessTask
-      ) {
-        createContact(currentDefinitionVersion);
-      }
+    if (shouldRecreateState && !isOfflineContactTask(task) && taskContactId) {
+      asyncDispatcher(newLoadContactFromHrmForTaskAsyncAction(task, `${task.taskSid}-active`));
     }
   }, [
     createContact,
     currentDefinitionVersion,
     asyncDispatcher,
-    enableBackendHrmContactCreation,
     shouldRecreateState,
     task,
+    transferMeta,
+    sidWithTaskControl,
     taskContactId,
     workerSid,
   ]);
@@ -150,11 +148,7 @@ const TaskView: React.FC<Props> = ({ task }) => {
     return (
       <ContactNotLoaded
         onReload={async () => {
-          if (enableBackendHrmContactCreation) {
-            await asyncDispatcher(newLoadContactFromHrmForTaskAsyncAction(task, workerSid, `${task.taskSid}-active`));
-          } else {
-            await createContact(currentDefinitionVersion);
-          }
+          await asyncDispatcher(newLoadContactFromHrmForTaskAsyncAction(task, `${task.taskSid}-active`));
         }}
         onFinish={async () => {
           await completeTask(task, unsavedContact);

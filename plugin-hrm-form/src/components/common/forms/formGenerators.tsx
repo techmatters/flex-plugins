@@ -20,14 +20,12 @@
 import React from 'react';
 import { RegisterOptions, useFormContext } from 'react-hook-form';
 import { get, pick } from 'lodash';
-import { format, startOfDay } from 'date-fns';
 import { Template } from '@twilio/flex-ui';
-import { FormInputType, FormItemDefinition, InputOption, MixedOrBool, SelectOption } from 'hrm-form-definitions';
+import { FormInputType, FormItemDefinition, InputOption, MixedOrBool } from 'hrm-form-definitions';
 import SearchIcon from '@material-ui/icons/Search';
 
 import {
   Box,
-  DependentSelectLabel,
   FormCheckbox,
   FormCheckBoxWrapper,
   FormDateInput,
@@ -41,70 +39,15 @@ import {
   FormListboxMultiselectOptionLabel,
   FormListboxMultiselectOptionsContainer,
   FormMixedCheckbox,
-  FormOption,
   FormRadioInput,
-  FormSelect,
-  FormSelectWrapper,
-  FormTimeInput,
   FormSearchInput,
-  SearchIconContainer,
+  FormTimeInput,
   Row,
+  SearchIconContainer,
 } from '../../../styles';
 import type { HTMLElementRef } from './types';
 import UploadFileInput from './UploadFileInput';
-
-/**
- * Utility functions to create initial state from definition
- * @param {FormItemDefinition} def Definition for a single input of a Form
- */
-export const getInitialValue = (def: FormItemDefinition) => {
-  switch (def.type) {
-    case FormInputType.Input:
-    case FormInputType.NumericInput:
-    case FormInputType.Email:
-    case FormInputType.Textarea:
-    case FormInputType.FileUpload:
-      return '';
-    case FormInputType.DateInput: {
-      if (def.initializeWithCurrent) {
-        return format(startOfDay(new Date()), 'yyyy-MM-dd');
-      }
-      return '';
-    }
-    case FormInputType.TimeInput: {
-      if (def.initializeWithCurrent) {
-        return format(new Date(), 'HH:mm');
-      }
-
-      return '';
-    }
-    case FormInputType.RadioInput:
-      return def.defaultOption ?? '';
-    case FormInputType.ListboxMultiselect:
-      return [];
-    case FormInputType.Select:
-      return def.defaultOption ? def.defaultOption : def.options[0].value;
-    case FormInputType.DependentSelect:
-      return def.defaultOption.value;
-    case FormInputType.CopyTo:
-    case FormInputType.Checkbox:
-      return Boolean(def.initialChecked);
-    case 'mixed-checkbox':
-      return def.initialChecked === undefined ? 'mixed' : def.initialChecked;
-    default:
-      return null;
-  }
-};
-
-/**
- * Adds a new property to the given object, with the name of the given form item definition, and initial value will depend on it
- * @param obj the object to which add a property related to the provided form item definition
- * @param def the provided form item definition
- */
-export const createStateItem = <T extends {}>(obj: T, def: FormItemDefinition): T => ({
-  ...obj,
-  [def.name]: getInitialValue(def),
-});
+import { getTemplateStrings } from '../../../hrmConfig';
 
 const ConnectForm: React.FC<{
   children: <P extends ReturnType<typeof useFormContext>>(args: P) => JSX.Element;
@@ -122,29 +65,6 @@ export const RequiredAsterisk = () => (
 
 const getRules = (field: FormItemDefinition): RegisterOptions =>
   pick(field, ['max', 'maxLength', 'min', 'minLength', 'pattern', 'required', 'validate']);
-
-const bindCreateSelectOptions = (path: string) => (o: SelectOption, selected: boolean) => (
-  <FormOption key={`${path}-${o.label}-${o.value}`} value={o.value} isEmptyValue={o.value === ''} selected={selected}>
-    {o.label}
-  </FormOption>
-);
-
-const generateSelectOptions = (path: string, options: SelectOption[], currentValue: string): JSX.Element[] => {
-  const createSelectOptions = bindCreateSelectOptions(path);
-  const optionElements: JSX.Element[] = [];
-
-  // Need to select specifically first matching value, which is why we don't just use .map
-  let foundValue = false;
-  options.forEach(option => {
-    if (!foundValue && option.value === currentValue) {
-      foundValue = true;
-      optionElements.push(createSelectOptions(option, true));
-    } else {
-      optionElements.push(createSelectOptions(option, false));
-    }
-  });
-  return optionElements;
-};
 
 /**
  * Helper function used to calclulate the element that should be focused for FormInputType.ListboxMultiselect type inputs
@@ -337,7 +257,7 @@ export const getInputType = (parents: string[], updateCallback: () => void, cust
             const [isMounted, setIsMounted] = React.useState(false); // value to avoid setting the default in the first render.
 
             React.useEffect(() => {
-              if (isMounted && def.defaultOption) setValue(path, def.defaultOption);
+              if (isMounted && def.defaultOption) setValue(path, def.defaultOption.value);
               else setIsMounted(true);
             }, [isMounted, setValue]);
 
@@ -511,122 +431,6 @@ export const getInputType = (parents: string[], updateCallback: () => void, cust
                   </FormError>
                 )}
               </FormListboxMultiselect>
-            );
-          }}
-        </ConnectForm>
-      );
-    case FormInputType.Select:
-      return (
-        <ConnectForm key={path}>
-          {({ errors, register }) => {
-            const error = get(errors, path);
-            return (
-              <FormLabel htmlFor={path}>
-                <Row>
-                  <Box marginBottom="8px">
-                    {labelTextComponent}
-                    {rules.required && <RequiredAsterisk />}
-                  </Box>
-                </Row>
-                <FormSelectWrapper>
-                  <FormSelect
-                    id={path}
-                    data-testid={path}
-                    name={path}
-                    error={Boolean(error)}
-                    aria-invalid={Boolean(error)}
-                    aria-describedby={`${path}-error`}
-                    onChange={updateCallback}
-                    ref={ref => {
-                      if (htmlElRef) {
-                        htmlElRef.current = ref;
-                      }
-                      register(rules)(ref);
-                    }}
-                    disabled={!isEnabled}
-                  >
-                    {generateSelectOptions(path, def.options, initialValue)}
-                  </FormSelect>
-                </FormSelectWrapper>
-                {error && (
-                  <FormError>
-                    <Template id={`${path}-error`} code={error.message} />
-                  </FormError>
-                )}
-              </FormLabel>
-            );
-          }}
-        </ConnectForm>
-      );
-    case FormInputType.DependentSelect:
-      return (
-        <ConnectForm key={path}>
-          {({ errors, register, watch, setValue }) => {
-            const isMounted = React.useRef(false); // mutable value to avoid reseting the state in the first render. This preserves the "intialValue" provided
-            const prevDependeeValue = React.useRef(undefined); // mutable value to store previous dependeeValue
-
-            const dependeePath = [...parents, def.dependsOn].join('.');
-            const dependeeValue = watch(dependeePath);
-
-            React.useEffect(() => {
-              if (isMounted.current && prevDependeeValue.current && dependeeValue !== prevDependeeValue.current) {
-                setValue(path, def.defaultOption.value, { shouldValidate: true });
-              } else isMounted.current = true;
-
-              prevDependeeValue.current = dependeeValue;
-            }, [setValue, dependeeValue]);
-
-            const error = get(errors, path);
-            const hasOptions = Boolean(dependeeValue && def.options[dependeeValue]);
-            const shouldInitialize = initialValue && !isMounted.current;
-
-            const validate = (data: any) =>
-              hasOptions && def.required && data === def.defaultOption.value ? 'RequiredFieldError' : null;
-
-            // eslint-disable-next-line no-nested-ternary
-            const options: SelectOption[] = hasOptions
-              ? [def.defaultOption, ...def.options[dependeeValue]]
-              : shouldInitialize
-              ? [def.defaultOption, { label: initialValue, value: initialValue }]
-              : [def.defaultOption];
-
-            const disabled = !hasOptions && !shouldInitialize;
-
-            return (
-              <DependentSelectLabel htmlFor={path} disabled={disabled}>
-                <Row>
-                  <Box marginBottom="8px">
-                    {labelTextComponent}
-                    {hasOptions && rules.required && <RequiredAsterisk />}
-                  </Box>
-                </Row>
-                <FormSelectWrapper>
-                  <FormSelect
-                    id={path}
-                    data-testid={path}
-                    name={path}
-                    error={Boolean(error)}
-                    aria-invalid={Boolean(error)}
-                    aria-describedby={`${path}-error`}
-                    onChange={updateCallback}
-                    ref={ref => {
-                      if (htmlElRef) {
-                        htmlElRef.current = ref;
-                      }
-
-                      register({ validate })(ref);
-                    }}
-                    disabled={!isEnabled || disabled}
-                  >
-                    {generateSelectOptions(path, options, initialValue)}
-                  </FormSelect>
-                </FormSelectWrapper>
-                {error && (
-                  <FormError>
-                    <Template id={`${path}-error`} code={error.message} />
-                  </FormError>
-                )}
-              </DependentSelectLabel>
             );
           }}
         </ConnectForm>

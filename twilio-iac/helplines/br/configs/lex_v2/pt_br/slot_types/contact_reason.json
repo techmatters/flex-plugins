@@ -1,0 +1,85 @@
+{
+    "slotTypeName": "contact_reason",
+    "slotTypeValues": [
+        {
+            "sampleValue": {
+                "value": "1"
+            },
+            "synonyms": [
+                {
+                    "value": "denunciar um conteúdo"
+                },
+                {
+                    "value": "internet"
+                },
+                {
+                    "value": "conteúdo online"
+                },
+                {
+                    "value": "na internet"
+                },
+                {
+                    "value": "online"
+                }
+            ]
+        },
+        {
+            "sampleValue": {
+                "value": "2"
+            },
+            "synonyms": [
+                {
+                    "value": "ajuda"
+                },
+                {
+                    "value": "crime report"
+                },
+                {
+                    "value": "violência"
+                },
+                {
+                    "value": "Human rights crime"
+                },
+                {
+                    "value": "crime"
+                },
+                {
+                    "value": "direitos humanos"
+                }
+            ]
+        },
+        {
+            "sampleValue": {
+                "value": "3"
+            },
+            "synonyms": [
+                {
+                    "value": "pesquisador"
+                },
+                {
+                    "value": "jornalista"
+                },
+                {
+                    "value": "researcher"
+                }
+            ]
+        },
+        {
+            "sampleValue": {
+                "value": "4"
+            },
+            "synonyms": [
+                {
+                    "value": "other"
+                },
+                {
+                    "value": "nenhuma"
+                }
+            ]
+        }
+
+    ],
+    "valueSelectionSetting": {
+        "resolutionStrategy": "TopResolution"
+    }
+}

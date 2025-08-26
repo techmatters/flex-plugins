@@ -11,7 +11,7 @@ locals {
     custom_task_routing_filter_expression = "channelType IN ['web','voice'] OR isContactlessTask == true"
     flow_vars = {
       widget_from          = "LA CIRCLE"
-      chat_blocked_message = "Sorry, you're not able to contact LA CIRCLE from this device or account"
+      chat_blocked_message = "Sorry, you're not able to contact CIRCLE from this device or account."
     }
 
     #Channels
@@ -19,7 +19,7 @@ locals {
       webchat : {
         channel_type         = "web"
         contact_identity     = ""
-        templatefile         = "/app/twilio-iac/helplines/templates/studio-flows/messaging-blocking.tftpl"
+        templatefile         = "/app/twilio-iac/helplines/uscr/templates/studio-flows/webchat-lambda.tftpl"
         channel_flow_vars    = {}
         chatbot_unique_names = []
       },
@@ -28,7 +28,7 @@ locals {
         contact_identity = ""
         templatefile     = "/app/twilio-iac/helplines/templates/studio-flows/voice-basic.tftpl"
         channel_flow_vars = {
-          voice_ivr_greeting_message = "Hello, welcome to LA CIRCLE. Please wait for a counsellor."
+          voice_ivr_greeting_message = "Hello, thank you for calling CIRCLE. Please hold for an operator."
           voice_ivr_language         = "en-US"
           voice_ivr_blocked_message  = "Apologies, your number has been blocked."
 
@@ -47,5 +47,6 @@ locals {
         chatbot_unique_names = []
       }
     }
+    get_profile_flags_for_identifier_base_url = "https://hrm-production.tl.techmatters.org/lambda/twilio/account-scoped"
   }
 }

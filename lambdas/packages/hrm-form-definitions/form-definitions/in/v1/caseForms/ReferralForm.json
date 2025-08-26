@@ -1,0 +1,83 @@
+[
+  {
+    "name": "date",
+    "type": "date-input",
+    "label": "Date",
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    },
+    "metadata": {
+      "eventTimestampSource": true
+    },
+    "isPII": false
+  },
+  {
+    "name": "referredTo",
+    "label": "Referred To",
+    "type": "select",
+    "options": [
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "Shelter Home/Institution",
+        "label": "Shelter Home/Institution"
+      },
+      {
+        "value": "Child Welfare Committee",
+        "label": "Child Welfare Committee"
+      },
+      {
+        "value": "Juvenile Justice Board",
+        "label": "Juvenile Justice Board"
+      },
+      {
+        "value": "District Child Protection Unit",
+        "label": "District Child Protection Unit"
+      },
+      {
+        "value": "ChildLine",
+        "label": "ChildLine"
+      },
+      {
+        "value": "Hospital",
+        "label": "Hospital"
+      },
+      {
+        "value": "Police",
+        "label": "Police"
+      },
+      {
+        "value": "Counselling Services",
+        "label": "Counselling Services"
+      },
+      {
+        "value": "Other Helplines or Other NGOs",
+        "label": "Other Helplines or Other NGOs"
+      },
+      {
+        "value": "Other Services (Education, Health, Care Facility)",
+        "label": "Other Services (Education, Health, Care Facility)"
+      },
+      {
+        "value": "Other",
+        "label": "Other"
+      }
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    },
+    "isPII": false
+  },
+  {
+    "name": "comments",
+    "label": "Comments",
+    "type": "textarea",
+    "rows": 25,
+    "width": 300,
+    "isPII": true
+  }
+]

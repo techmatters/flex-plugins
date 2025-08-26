@@ -19,13 +19,12 @@ import { mount } from 'enzyme';
 import { StorelessThemeProvider } from '@twilio/flex-ui';
 import { Provider } from 'react-redux';
 import configureMockStore from 'redux-mock-store';
-import { DefinitionVersionId, loadDefinition } from 'hrm-form-definitions';
+import { loadDefinition } from 'hrm-form-definitions';
 
 import { mockLocalFetchDefinitions } from '../../mockFetchDefinitions';
 import IssueCategorizationSectionForm from '../../../components/contact/IssueCategorizationSectionForm';
 import { ToggleViewButton } from '../../../styles';
 import { setCategoriesGridView } from '../../../states/contacts/existingContacts';
-import { forExistingContact } from '../../../states/contacts/issueCategorizationStateApi';
 import { getAseloFeatureFlags } from '../../../hrmConfig';
 import { VALID_EMPTY_CONTACT } from '../../testContacts';
 import { FeatureFlags } from '../../../types/types';
@@ -67,7 +66,7 @@ beforeEach(() => {
 });
 
 beforeAll(async () => {
-  const formDefinitionsBaseUrl = buildBaseURL(DefinitionVersionId.v1);
+  const formDefinitionsBaseUrl = buildBaseURL('as-v1');
   await mockFetchImplementation(formDefinitionsBaseUrl);
 
   mockV1 = await loadDefinition(formDefinitionsBaseUrl);
@@ -91,12 +90,7 @@ test('Click on view subcategories as grid icon', () => {
   const wrapper = mount(
     <StorelessThemeProvider themeConf={{}}>
       <Provider store={store}>
-        <IssueCategorizationSectionForm
-          autoFocus={true}
-          definition={definition}
-          display={true}
-          stateApi={forExistingContact(contactId)}
-        />
+        <IssueCategorizationSectionForm autoFocus={true} definition={definition} display={true} contactId={contactId} />
       </Provider>
     </StorelessThemeProvider>,
   );
@@ -127,12 +121,7 @@ test('Click on view subcategories as list icon', () => {
   const wrapper = mount(
     <StorelessThemeProvider themeConf={{}}>
       <Provider store={store}>
-        <IssueCategorizationSectionForm
-          autoFocus={true}
-          definition={definition}
-          display={true}
-          stateApi={forExistingContact(contactId)}
-        />
+        <IssueCategorizationSectionForm autoFocus={true} definition={definition} display={true} contactId={contactId} />
       </Provider>
     </StorelessThemeProvider>,
   );

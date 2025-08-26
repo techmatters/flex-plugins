@@ -1,0 +1,111 @@
+{
+    "slotTypeName": "gender",
+    "slotTypeValues": [
+        {
+            "sampleValue": {
+                "value": "Female"
+            },
+            "synonyms": [
+                {
+                    "value": "f"
+                },
+                {
+                    "value": "1"
+                },
+                {
+                    "value": "girl"
+                },
+                {
+                    "value": "Mara"
+                },
+                {
+                    "value": "Tifla"
+                },
+                {
+                    "value": "дівчина"
+                },
+                {
+                    "value": "Жінка"
+                },
+                {
+                    "value": "woman"
+                }
+            ]
+        },
+        {
+            "sampleValue": {
+                "value": "Male"
+            },
+            "synonyms": [
+                {
+                    "value": "m"
+                },
+                {
+                    "value": "2"
+                },
+                {
+                    "value": "Raġel"
+                },
+                {
+                    "value": "Tifel"
+                },
+                {
+                    "value": "Чоловік"
+                },
+                {
+                    "value": "Хлопець"
+                },
+                {
+                    "value": "boy"
+                },
+                {
+                    "value": "man"
+                }
+            ]
+        },
+        {
+            "sampleValue": {
+                "value": "Other"
+            },
+            "synonyms": [
+                {
+                    "value": "o"
+                },
+                {
+                    "value": "3"
+                },
+                {
+                    "value": "Oħrajn"
+                },
+                {
+                    "value": "Інший"
+                },
+                {
+                    "value": "Others"
+                }
+            ]
+        },
+        {
+            "sampleValue": {
+                "value": "Unknown"
+            },
+            "synonyms": [
+                {
+                    "value": "x"
+                },
+                {
+                    "value": "4"
+                },
+                {
+                    "value": "Ma nixtieqx naghti risposta"
+                },
+                {
+                    "value": "Не хочу відповідати"
+                }
+            ]
+        }
+    ],
+    "valueSelectionSetting": {
+        "resolutionStrategy": "TopResolution"
+    }
+}

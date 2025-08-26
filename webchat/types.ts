@@ -42,6 +42,7 @@ export type Configuration = {
   showEmojiPicker?: boolean;
   blockedEmojis?: string[];
   enableRecaptcha?: boolean;
+  twilioServicesUrl?: URL;
 };
 
 type OperatingHoursStatus = 'open' | 'closed' | 'holiday';

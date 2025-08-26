@@ -5,8 +5,9 @@ locals {
 
   local_config = {
     enable_post_survey                    = true
-    enable_datadog_monitoring                = false
+    enable_datadog_monitoring             = false
     custom_task_routing_filter_expression = "channelType IN ['web']  OR isContactlessTask == true"
+    use_prepopulate_mappings              = true
 
     #Studio flow
     flow_vars = {
@@ -18,11 +19,11 @@ locals {
       webchat : {
         channel_type         = "web"
         contact_identity     = ""
-        templatefile         = "/app/twilio-iac/helplines/templates/studio-flows/webchat-basic.tftpl"
+        templatefile         = "/app/twilio-iac/helplines/ukmh/templates/studio-flows/messaging-greeting-message-blocking.tftpl"
         channel_flow_vars    = {}
         chatbot_unique_names = []
       }
     }
-
+    get_profile_flags_for_identifier_base_url = "https://hrm-staging-eu.tl.techmatters.org/lambda/twilio/account-scoped"
   }
 }

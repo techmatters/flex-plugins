@@ -34,7 +34,7 @@ locals {
       facebook : {
         channel_type     = "facebook"
         contact_identity = "messenger:113053900394672"
-        templatefile     = "/app/twilio-iac/helplines/mw/templates/studio-flows/mw-lex.tftpl"
+        templatefile     = "/app/twilio-iac/helplines/templates/studio-flows/messaging-blocking-conv-lambda.tftpl"
         channel_flow_vars = {
         }
         chatbot_unique_names = []
@@ -42,7 +42,7 @@ locals {
       ync : {
         channel_type     = "facebook"
         contact_identity = "messenger:154148147974717"
-        templatefile     = "/app/twilio-iac/helplines/mw/templates/studio-flows/mw-lex.tftpl"
+        templatefile     = "/app/twilio-iac/helplines/templates/studio-flows/messaging-blocking-conv-lambda.tftpl"
         channel_flow_vars = {
         }
         chatbot_unique_names = []
@@ -50,12 +50,12 @@ locals {
       iwf_mw : {
         channel_type     = "facebook"
         contact_identity = "messenger:338505126727604"
-        templatefile     = "/app/twilio-iac/helplines/mw/templates/studio-flows/mw-lex.tftpl"
+        templatefile     = "/app/twilio-iac/helplines/templates/studio-flows/messaging-blocking-conv-lambda.tftpl"
         channel_flow_vars = {
         }
         chatbot_unique_names = []
       }
     }
-
+    get_profile_flags_for_identifier_base_url = "https://hrm-production.tl.techmatters.org/lambda/twilio/account-scoped"
   }
 }

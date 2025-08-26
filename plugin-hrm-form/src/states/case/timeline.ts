@@ -33,7 +33,9 @@ import {
 } from './types';
 import { FullCaseSection } from '../../services/caseSectionService';
 import { getTemplateStrings } from '../../hrmConfig';
-import { selectDefinitionVersionForCase } from '../configuration/selectDefinitions';
+import { selectDefinitionVersionForCase, selectDefinitionVersionForContact } from '../configuration/selectDefinitions';
+import { selectCaseByCaseId } from './selectCaseStateByCaseId';
+import { contactLabelFromHrmContact, ContactLabelOptions } from '../contacts/contactIdentifier';
 
 export type PaginationSettings = { offset: number; limit: number };
 
@@ -45,17 +47,20 @@ export const newGetTimelineAsyncAction = createAsyncAction(
     sectionTypes: string[],
     includeContacts: boolean,
     pagination: PaginationSettings,
+    reference: string,
   ): Promise<{
     timelineResult: TimelineResult<Date>;
     caseId: Case['id'];
     timelineId: string;
     pagination: PaginationSettings;
+    reference: string;
   }> => {
     return {
       timelineResult: await getCaseTimeline(caseId, sectionTypes, includeContacts, pagination),
       caseId,
       timelineId,
       pagination,
+      reference,
     };
   },
 );
@@ -76,6 +81,7 @@ export const loadTimelineIntoRedux = (
   if (timeline.length !== timelineResult.count) {
     timeline = [];
     timeline.length = timelineResult.count;
+    timeline.fill(null, 0, timelineResult.count);
   }
   timelineResult.activities.forEach((timelineActivity, index) => {
     if (isCaseSectionTimelineActivity(timelineActivity)) {
@@ -141,6 +147,7 @@ export const selectTimeline = (
   const timelineWindow = timeline.slice(offset, offset + limit);
   return timelineWindow
     .map(timelineActivity => {
+      if (!timelineActivity) return timelineActivity;
       if (isCaseSectionIdentifierTimelineActivity(timelineActivity)) {
         const { activity } = timelineActivity;
         const section = sections?.[activity.sectionType]?.[activity.sectionId];
@@ -168,5 +175,46 @@ export const selectTimeline = (
 };
 
 // eslint-disable-next-line import/no-unused-modules
-export const selectTimelineCount = (state: RootState, caseId: string, timelineId: string): number | undefined =>
-  state[namespace].connectedCase.cases[caseId]?.timelines?.[timelineId]?.length;
+export const selectTimelineCount = (
+  state: RootState,
+  caseId: string,
+  timelineId: string,
+  filter: (activity: ContactIdentifierTimelineActivity | CaseSectionIdentifierTimelineActivity) => boolean = () => true,
+): number | undefined => state[namespace].connectedCase.cases[caseId]?.timelines?.[timelineId]?.filter(filter)?.length;
+
+export const selectTimelineContactCategories = (state: RootState, caseId: string, timelineId: string) => {
+  const timeline = selectTimeline(state, caseId, timelineId, { offset: 0, limit: 10000 });
+  if (!timeline) {
+    return undefined;
+  }
+  const contactActivities = timeline.filter(isContactTimelineActivity) as TimelineActivity<Contact>[];
+  const timelineCategories: Record<string, string[]> = {};
+  for (const { activity } of contactActivities) {
+    const categoriesList = Object.entries(activity.rawJson?.categories ?? {});
+    for (const [newCategory, newSubcategories] of categoriesList) {
+      timelineCategories[newCategory] = Array.from(
+        new Set([...(timelineCategories[newCategory] ?? []), ...newSubcategories]),
+      );
+    }
+  }
+  return timelineCategories;
+};
+
+export const selectCaseLabel = (
+  state: RootState,
+  caseId: string,
+  timelineId: string,
+  contactLabelOptions?: ContactLabelOptions,
+) => {
+  const caseLabelFromCase = selectCaseByCaseId(state, caseId)?.connectedCase?.label;
+  if (caseLabelFromCase) return caseLabelFromCase;
+  const timeline = selectTimeline(state, caseId, timelineId, { offset: 0, limit: 10000 });
+  if (timeline) {
+    const firstContact = timeline.find(isContactTimelineActivity) as TimelineActivity<Contact>;
+    if (firstContact?.activity) {
+      const def = selectDefinitionVersionForContact(state, firstContact.activity);
+      return contactLabelFromHrmContact(def, firstContact.activity, contactLabelOptions);
+    }
+  }
+  return contactLabelOptions?.placeholder ?? '';
+};

@@ -18,18 +18,21 @@
 /* eslint-disable dot-notation */
 import React from 'react';
 import { Text, View } from '@react-pdf/renderer';
-import { FormDefinition } from 'hrm-form-definitions';
+import type { FormValue } from 'hrm-types';
+import type { FormDefinition, LayoutDefinition } from 'hrm-form-definitions';
 import Handlebars from 'handlebars';
 
 import styles from './styles';
 import { presentValueFromStrings } from './presentValuesFromStrings';
 import { getTemplateStrings } from '../../../hrmConfig';
+import formatFormValue from '../../forms/formatFormValue';
 
 type OwnProps = {
   sectionNameTemplateCode: string;
   sectionNameTemplateValues: Record<string, string>;
-  values: Record<string, string | boolean>;
+  values: Record<string, FormValue>;
   definitions: FormDefinition;
+  layoutDefinition?: LayoutDefinition;
 };
 
 type Props = OwnProps;
@@ -39,6 +42,7 @@ const CasePrintSection: React.FC<Props> = ({
   sectionNameTemplateValues,
   values,
   definitions,
+  layoutDefinition,
 }) => {
   // <Template .../> tags don't render in the PDF it seems
   const strings = getTemplateStrings();
@@ -58,10 +62,14 @@ const CasePrintSection: React.FC<Props> = ({
           return (
             <View key={i} style={i % 2 === 0 ? styles['sectionItemRowOdd'] : styles['sectionItemRowEven']}>
               <View style={styles['sectionItemFirstColumn']}>
-                <Text style={{ marginRight: '10px' }}>{def.label}</Text>
+                <Text style={{ marginRight: '10px' }}>{strings[def.label] ?? def.label}</Text>
               </View>
               <View style={styles['sectionItemSecondColumn']}>
-                <Text>{presentValueFromStrings(strings)(values[def.name])(def)}</Text>
+                <Text>
+                  {presentValueFromStrings(strings)(
+                    formatFormValue(values[def.name], layoutDefinition?.layout?.[def.name], values),
+                  )(def)}
+                </Text>
               </View>
             </View>
           );

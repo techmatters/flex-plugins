@@ -164,6 +164,11 @@ variable "enable_post_survey" {
   default = false
 }
 
+variable "enable_system_down" {
+  type    = bool
+  default = false
+}
+
 variable "enable_datadog_monitoring" {
   type    = bool
   default = false
@@ -173,6 +178,13 @@ variable "hrm_transcript_retention_days_override" {
   description = "Number of days to retain HRM Contact Job Cleanup logs"
   type        = number
   default     = -1
+}
+
+
+variable "operating_hours_enforced_override" {
+  description = "Enforce operating hours"
+  type        = bool
+  default     = false
 }
 
 variable "case_status_transition_rules" {
@@ -206,7 +218,7 @@ variable "region" {
   type        = string
 }
 
-variable "get_profile_flags_for_identifiers_base_url" {
+variable "get_profile_flags_for_identifier_base_url" {
   description = "Base URL for the get profile flags for identifiers endpoint"
   type        = string
   default     = ""

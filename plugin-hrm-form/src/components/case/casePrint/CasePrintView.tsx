@@ -19,7 +19,7 @@
 import React, { useEffect, useState } from 'react';
 import { Document, Page, PDFViewer, View } from '@react-pdf/renderer';
 import { CircularProgress } from '@material-ui/core';
-import { callTypes } from 'hrm-form-definitions';
+import { callTypes } from 'hrm-types';
 import { parseISO } from 'date-fns';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -40,13 +40,17 @@ import { Contact, CustomITask, StandaloneITask } from '../../../types/types';
 import { TimelineActivity } from '../../../states/case/types';
 import { RootState } from '../../../states';
 import selectCurrentRouteCaseState from '../../../states/case/selectCurrentRouteCase';
-import { newGetTimelineAsyncAction, selectTimeline } from '../../../states/case/timeline';
+import {
+  newGetTimelineAsyncAction,
+  selectCaseLabel,
+  selectTimeline,
+  selectTimelineContactCategories,
+} from '../../../states/case/timeline';
 import { selectDefinitionVersionForCase } from '../../../states/configuration/selectDefinitions';
 import { selectCounselorsHash } from '../../../states/configuration/selectCounselorsHash';
 import selectCaseHelplineData from '../../../states/case/selectCaseHelplineData';
 import * as RoutingActions from '../../../states/routing/actions';
 import { FullCaseSection } from '../../../services/caseSectionService';
-import { contactLabelFromHrmContact } from '../../../states/contacts/contactIdentifier';
 
 type OwnProps = {
   task: CustomITask | StandaloneITask;
@@ -69,6 +73,10 @@ const CasePrintView: React.FC<OwnProps> = ({ task }) => {
         limit: MAX_PRINTOUT_CONTACTS,
       }) as TimelineActivity<Contact>[],
   );
+  const categories = useSelector((state: RootState) =>
+    selectTimelineContactCategories(state, connectedCase?.id, 'print-contacts'),
+  );
+  const caseLabel = useSelector((state: RootState) => selectCaseLabel(state, connectedCase?.id, 'print-contacts'));
   const sectionTypeNames = Object.keys(definitionVersion.caseSectionTypes).filter(
     sectionType => definitionVersion.layoutVersion.case.sectionTypes?.[sectionType]?.printFormat !== 'hidden',
   );
@@ -107,10 +115,17 @@ const CasePrintView: React.FC<OwnProps> = ({ task }) => {
   useEffect(() => {
     if (!contactTimeline) {
       dispatch(
-        newGetTimelineAsyncAction(connectedCase.id, 'print-contacts', [], true, {
-          offset: 0,
-          limit: MAX_PRINTOUT_CONTACTS,
-        }),
+        newGetTimelineAsyncAction(
+          connectedCase.id,
+          'print-contacts',
+          [],
+          true,
+          {
+            offset: 0,
+            limit: MAX_PRINTOUT_CONTACTS,
+          },
+          `case-${connectedCase.id}`,
+        ),
       );
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -121,10 +136,17 @@ const CasePrintView: React.FC<OwnProps> = ({ task }) => {
     useEffect(
       () => {
         dispatch(
-          newGetTimelineAsyncAction(connectedCase.id, sectionType, [sectionType], false, {
-            offset: 0,
-            limit: MAX_SECTIONS,
-          }),
+          newGetTimelineAsyncAction(
+            connectedCase.id,
+            sectionType,
+            [sectionType],
+            false,
+            {
+              offset: 0,
+              limit: MAX_SECTIONS,
+            },
+            `case-${connectedCase.id}`,
+          ),
         );
       },
       // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -175,7 +197,6 @@ const CasePrintView: React.FC<OwnProps> = ({ task }) => {
     ? parseISO(connectedCase.info.followUpDate).toLocaleDateString()
     : '';
 
-  const caseLabel = contactLabelFromHrmContact(definitionVersion, connectedCase.firstContact);
   const allCsamReports = contactTimeline?.flatMap(({ activity }) => activity?.csamReports ?? []) ?? [];
 
   const orderedListSections = Object.entries(definitionVersion.caseSectionTypes)
@@ -212,7 +233,7 @@ const CasePrintView: React.FC<OwnProps> = ({ task }) => {
                   followUpDate={printedFollowUpDate}
                   childIsAtRisk={connectedCase.info.childIsAtRisk}
                   counselor={counselorsHash[connectedCase.twilioWorkerId]}
-                  categories={connectedCase.categories}
+                  categories={categories}
                   caseManager={office?.manager}
                   chkOnBlob={chkOnBlob}
                   chkOffBlob={chkOffBlob}

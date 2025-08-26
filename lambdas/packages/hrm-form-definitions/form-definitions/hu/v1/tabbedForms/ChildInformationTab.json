@@ -1,0 +1,298 @@
+[
+  {
+    "name": "firstName",
+    "label": "Keresztnév",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "lastName",
+    "label": "Vezetéknév",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "gender",
+    "label": "Nem",
+    "type": "select",
+    "unknownOption": "Nem derült ki",
+    "options": [
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "Fiú",
+        "label": "Fiú"
+      },
+      {
+        "value": "Lány",
+        "label": "Lány"
+      },
+      {
+        "value": "Nem bináris",
+        "label": "Nem bináris"
+      },
+      {
+        "value": "Nem derült ki",
+        "label": "Nem derült ki"
+      }
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    },
+    "isPII": false
+  },
+  {
+    "name": "age",
+    "label": "Életkor",
+    "type": "select",
+    "unknownOption": "Nem derült ki",
+    "options": [
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "00",
+        "label": "0"
+      },
+      {
+        "value": "01",
+        "label": "1"
+      },
+      {
+        "value": "02",
+        "label": "2"
+      },
+      {
+        "value": "03",
+        "label": "3"
+      },
+      {
+        "value": "04",
+        "label": "4"
+      },
+      {
+        "value": "05",
+        "label": "5"
+      },
+      {
+        "value": "06",
+        "label": "6"
+      },
+      {
+        "value": "07",
+        "label": "7"
+      },
+      {
+        "value": "08",
+        "label": "8"
+      },
+      {
+        "value": "09",
+        "label": "9"
+      },
+      {
+        "value": "10",
+        "label": "10"
+      },
+      {
+        "value": "11",
+        "label": "11"
+      },
+      {
+        "value": "12",
+        "label": "12"
+      },
+      {
+        "value": "13",
+        "label": "13"
+      },
+      {
+        "value": "14",
+        "label": "14"
+      },
+      {
+        "value": "15",
+        "label": "15"
+      },
+      {
+        "value": "16",
+        "label": "16"
+      },
+      {
+        "value": "17",
+        "label": "17"
+      },
+      {
+        "value": "18",
+        "label": "18"
+      },
+      {
+        "value": "19",
+        "label": "19"
+      },
+      {
+        "value": "20",
+        "label": "20"
+      },
+      {
+        "value": "21",
+        "label": "21"
+      },
+      {
+        "value": "22",
+        "label": "22"
+      },
+      {
+        "value": "23",
+        "label": "23"
+      },
+      {
+        "value": "24",
+        "label": "24"
+      },
+      {
+        "value": "25",
+        "label": "25"
+      },
+      {
+        "value": ">25",
+        "label": ">25"
+      },
+      {
+        "value": "Nem derült ki",
+        "label": "Nem derült ki"
+      }
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    },
+    "isPII": false
+  },
+  {
+    "name": "streetAddress",
+    "label": "Utca, házszám",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "city",
+    "label": "Város",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "postalCode",
+    "label": "Irányítószám",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "language",
+    "label": "Nyelv",
+    "type": "select",
+    "unknownOption": "Nem derült ki",
+    "options": [
+      {
+        "value": "Nem derült ki",
+        "label": "Nem derült ki"
+      },
+      {
+        "value": "Ukrán",
+        "label": "Ukrán"
+      },
+      {
+        "value": "Orosz",
+        "label": "Orosz"
+      },
+      {
+        "value": "Magyar",
+        "label": "Magyar"
+      }
+    ],
+    "isPII": false
+  },
+  {
+    "name": "nationality",
+    "label": "Állampolgárság",
+    "type": "select",
+    "unknownOption": "Nem derült ki",
+    "options": [
+      {
+        "value": "Nem derült ki",
+        "label": ""
+      },
+      {
+        "value": "Ukrán",
+        "label": "Ukrán"
+      },
+      {
+        "value": "Orosz",
+        "label": "Orosz"
+      },
+      {
+        "value": "Magyar",
+        "label": "Magyar"
+      },
+      {
+        "value": "Egyéb",
+        "label": "Egyéb"
+      }
+    ],
+    "isPII": false
+  },
+  {
+    "name": "schoolName",
+    "label": "Iskola neve",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "gradeLevel",
+    "label": "Osztály",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "professionalName",
+    "label": "Segítő szakember neve, elérhetősége",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "vulnerableGroups",
+    "label": "Veszélyeztetett Csoportok",
+    "type": "listbox-multiselect",
+    "options": [
+      {
+        "value": "Törvénnyel összeütközésbe került gyerek",
+        "label": "Törvénnyel összeütközésbe került gyerek"
+      },
+      {
+        "value": "Szegénységben élő gyerek",
+        "label": "Szegénységben élő gyerek"
+      },
+      {
+        "value": "Etnikai, vallási kisebbséghez tartozó gyerek",
+        "label": "Etnikai, vallási kisebbséghez tartozó gyerek"
+      },
+      {
+        "value": "Menekült gyerek",
+        "label": "Menekült gyerek"
+      },
+      {
+        "value": "Fogyatékossággal élő gyerek",
+        "label": "Fogyatékossággal élő gyerek"
+      },
+      {
+        "value": "LGBTQI+",
+        "label": "LGBTQI+"
+      }
+    ],
+    "isPII": false
+  }
+]

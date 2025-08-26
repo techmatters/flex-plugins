@@ -4,6 +4,7 @@ locals {
   config            = merge(local.common_config, local.local_config)
 
   local_config = {
+    operating_hours_enforced_override     = false
 
     custom_task_routing_filter_expression = "channelType IN ['web','messenger', 'instagram', 'line']  OR isContactlessTask == true OR  twilioNumber == 'messenger:108893035300837', 'instagram:17841455607284645', 'line:Uac858d9182b0e0fe1fa1b5850ab662bd' OR to=='+6625440477'"
 
@@ -22,7 +23,7 @@ locals {
       webchat : {
         channel_type         = "web"
         contact_identity     = ""
-        templatefile         = "/app/twilio-iac/helplines/templates/studio-flows/messaging-blocking.tftpl"
+        templatefile         = "/app/twilio-iac/helplines/templates/studio-flows/messaging-blocking-lambda.tftpl"
         channel_flow_vars    = {}
         chatbot_unique_names = []
       },
@@ -30,7 +31,7 @@ locals {
         messaging_mode       = "conversations"
         channel_type         = "messenger"
         contact_identity     = "messenger:108893035300837"
-        templatefile         = "/app/twilio-iac/helplines/th/templates/studio-flows/facebook-flow-conv.tftpl"
+        templatefile         = "/app/twilio-iac/helplines/th/templates/studio-flows/facebook-flow-conv-lambda.tftpl"
         channel_flow_vars    = {}
         chatbot_unique_names = []
       },
@@ -38,7 +39,7 @@ locals {
         messaging_mode       = "conversations"
         channel_type         = "custom"
         contact_identity     = ""
-        templatefile         = "/app/twilio-iac/helplines/templates/studio-flows/messaging-custom-channel-blocking-conv.tftpl"
+        templatefile         = "/app/twilio-iac/helplines/templates/studio-flows/messaging-custom-channel-blocking-conv-lambda.tftpl"
         channel_flow_vars    = {}
         chatbot_unique_names = []
       },
@@ -46,12 +47,11 @@ locals {
         messaging_mode       = "conversations"
         channel_type         = "custom"
         contact_identity     = ""
-        templatefile         = "/app/twilio-iac/helplines/templates/studio-flows/messaging-custom-channel-blocking-conv.tftpl"
+        templatefile         = "/app/twilio-iac/helplines/templates/studio-flows/messaging-custom-channel-blocking-conv-lambda.tftpl"
         channel_flow_vars    = {}
         chatbot_unique_names = []
-        lambda_channel       = true
       }
     }
-
+    get_profile_flags_for_identifier_base_url = "https://hrm-staging.tl.techmatters.org/lambda/twilio/account-scoped"
   }
 }

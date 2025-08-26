@@ -1,0 +1,29 @@
+[
+  {
+    "name": "status",
+    "label": "Állapot",
+    "type": "select",
+    "isPII": false
+  },
+  {
+    "name": "childIsAtRisk",
+    "label": "A gyermek veszélyben van",
+    "type": "checkbox",
+    "isPII": false
+  },
+  {
+    "name": "followUpDate",
+    "label": "Frissítés dátuma",
+    "type": "date-input",
+    "isPII": false
+  },
+  {
+    "name": "summary",
+    "label": "Esetleírás",
+    "placeholder": "Nincs eset összefoglaló",
+    "type": "textarea",
+    "rows": 5,
+    "width": 300,
+    "isPII": true
+  }
+]

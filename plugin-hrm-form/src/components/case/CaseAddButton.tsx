@@ -39,7 +39,7 @@ const CaseAddButton: React.FC<Props> = ({ disabled, templateCode, onClick, withD
     >
       {!disabled && (
         <>
-          <Add style={{ marginLeft: 20, marginRight: 10, fontSize: 16, height: 17, color }} />
+          <Add style={{ marginLeft: 5, marginRight: 10, fontSize: 16, height: 17, color }} />
           <CaseAddButtonFont disabled={disabled}>
             <Template code={templateCode} />
           </CaseAddButtonFont>

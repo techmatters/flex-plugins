@@ -20,6 +20,22 @@ import { validateRequestMethod } from './validation/method';
 import { isAccountSID } from './twilioTypes';
 import { handleTaskRouterEvent } from './taskrouter';
 import { handleGetProfileFlagsForIdentifier } from './hrm/getProfileFlagsForIdentifier';
+import { handleToggleSwitchboardQueue } from './hrm/toggleSwitchboardQueue';
+import {
+  handleCaptureChannelWithBot,
+  handleChatbotCallback,
+  handleChatbotCallbackCleanup,
+} from './channelCapture';
+import { addParticipantHandler } from './conference/addParticipant';
+import { validateFlexTokenRequest } from './validation/flexToken';
+import { getParticipantHandler } from './conference/getParticipant';
+import { updateParticipantHandler } from './conference/updateParticipant';
+import { removeParticipantHandler } from './conference/removeParticipant';
+import { participantStatusCallbackHandler } from './conference/participantStatusCallback';
+import { handleOperatingHours } from './operatingHours';
+import { handleEndChat } from './conversation/endChat';
+import { conferenceStatusCallbackHandler } from './conference/conferenceStatusCallback';
+import './conference/stopRecordingWhenLastAgentLeaves';
 
 /**
  * Super simple router sufficient for directly ported Twilio Serverless functions
@@ -29,7 +45,7 @@ import { handleGetProfileFlagsForIdentifier } from './hrm/getProfileFlagsForIden
  * At that point we should decide whether to evolve this router or replace it with a 3rd party one
  */
 
-const ROUTE_PREFIX = '/lambda/twilio/account-scoped/';
+export const ROUTE_PREFIX = '/lambda/twilio/account-scoped/';
 
 const INITIAL_PIPELINE = [validateRequestMethod];
 
@@ -41,6 +57,54 @@ const ROUTES: Record<string, FunctionRoute> = {
   getProfileFlagsForIdentifier: {
     requestPipeline: [validateWebhookRequest],
     handler: handleGetProfileFlagsForIdentifier,
+  },
+  'channelCapture/captureChannelWithBot': {
+    requestPipeline: [validateWebhookRequest],
+    handler: handleCaptureChannelWithBot,
+  },
+  'channelCapture/chatbotCallback': {
+    requestPipeline: [validateWebhookRequest],
+    handler: handleChatbotCallback,
+  },
+  'channelCapture/chatbotCallbackCleanup': {
+    requestPipeline: [validateWebhookRequest],
+    handler: handleChatbotCallbackCleanup,
+  },
+  'conference/conferenceStatusCallback': {
+    requestPipeline: [validateWebhookRequest],
+    handler: conferenceStatusCallbackHandler,
+  },
+  'conference/addParticipant': {
+    requestPipeline: [validateFlexTokenRequest({ tokenMode: 'worker' })],
+    handler: addParticipantHandler,
+  },
+  'conference/getParticipant': {
+    requestPipeline: [validateFlexTokenRequest({ tokenMode: 'worker' })],
+    handler: getParticipantHandler,
+  },
+  'conference/removeParticipant': {
+    requestPipeline: [validateFlexTokenRequest({ tokenMode: 'worker' })],
+    handler: removeParticipantHandler,
+  },
+  'conference/updateParticipant': {
+    requestPipeline: [validateFlexTokenRequest({ tokenMode: 'worker' })],
+    handler: updateParticipantHandler,
+  },
+  'conference/participantStatusCallback': {
+    requestPipeline: [validateWebhookRequest],
+    handler: participantStatusCallbackHandler,
+  },
+  toggleSwitchboardQueue: {
+    requestPipeline: [validateFlexTokenRequest({ tokenMode: 'supervisor' })],
+    handler: handleToggleSwitchboardQueue,
+  },
+  endChat: {
+    requestPipeline: [validateFlexTokenRequest({ tokenMode: 'guest' })],
+    handler: handleEndChat,
+  },
+  operatingHours: {
+    requestPipeline: [],
+    handler: handleOperatingHours,
   },
 };
 

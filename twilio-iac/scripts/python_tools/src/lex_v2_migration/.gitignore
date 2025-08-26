@@ -1,0 +1,5 @@
+**/
+*.json
+!bot_definition_example.json
+!templates/
+!templates/**

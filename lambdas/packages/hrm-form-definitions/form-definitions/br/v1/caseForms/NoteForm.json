@@ -1,0 +1,11 @@
+[
+  {
+    "name": "note",
+    "label": "Notas",
+    "type": "textarea",
+    "placeholder": "Escreva aqui suas notas...",
+    "rows": 20,
+    "width": 500,
+    "isPII": true
+  }
+]

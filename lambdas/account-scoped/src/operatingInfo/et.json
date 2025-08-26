@@ -1,0 +1,38 @@
+{
+  "timezone": "Africa/Addis_Ababa",
+  "holidays": {
+    "09/11/2021":"Enkutash",
+    "09/27/2021":"Meskel",
+    "10/18/2021":"Prophet's Birthday",
+    "01/07/2022":"Orthodox Christmas Day",
+    "01/19/2022":"Timkat",
+    "03/02/2022":"Adwa Victory Day",
+    "04/22/2022":"Good Friday",
+    "04/24/2022":"Orthodox Easter",
+    "05/01/2022":"Labour Day",
+    "05/02/2022":"Eid al-Fitr",
+    "05/05/2022":"Patriots' Victory Day",
+    "05/28/2022":"Derg Downfall Day",
+    "07/09/2022":"Eid al-Adha"
+  },
+  "operatingHours": {
+    "webchat": {
+      "1": [{ "open": 800, "close": 1800 }],
+      "2": [{ "open": 800, "close": 1800 }],
+      "3": [{ "open": 800, "close": 1800 }],
+      "4": [{ "open": 800, "close": 1800 }],
+      "5": [{ "open": 800, "close": 1800 }],
+      "6": [{ "open": 800, "close": 1800 }],
+      "7": []
+    },
+    "facebook": {
+      "1": [{ "open": 800, "close": 1800 }],
+      "2": [{ "open": 800, "close": 1800 }],
+      "3": [{ "open": 800, "close": 1800 }],
+      "4": [{ "open": 800, "close": 1800 }],
+      "5": [{ "open": 800, "close": 1800 }],
+      "6": [{ "open": 800, "close": 1800 }],
+      "7": []
+    }
+  }
+}

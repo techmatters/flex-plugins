@@ -1,0 +1,103 @@
+{
+  "contactForm": {
+    "callerInformation": [
+     {
+        "name": "helpseekerIs",
+        "insights": ["conversations", "initiated_by"]
+      },
+      {
+        "name": "gender",
+        "insights": ["conversations", "conversation_attribute_4"]
+      },
+      {
+        "name": "age",
+        "insights": ["conversations", "conversation_attribute_3"]
+      },
+      {
+        "name": "state",
+        "insights": ["customers", "area"]
+      },
+      {
+        "name": "country",
+        "insights": ["customers", "region"]
+      }
+    ],
+    "childInformation": [
+      {
+        "name": "childIs",
+        "insights": ["customers", "customer_attribute_2"]
+      },
+      {
+        "name": "state",
+        "insights": ["customers", "city"]
+      },
+      {
+        "name": "country",
+        "insights": ["customers", "zip"]
+      },
+      {
+        "name": "safetyConcern",
+        "insights": ["conversations", "initiative"]
+      },
+      {
+        "name": "riskLevel",
+        "insights": ["conversations", "conversation_attribute_5"]
+      },
+      {
+        "name": "cfSportLevel",
+        "insights": ["customers", "organization"]
+      },
+      {
+        "name": "cfSportPlayed",
+        "insights": ["customers", "category"]
+      }
+    ],
+    "caseInformation": [
+      {
+        "name": "campaign",
+        "insights": ["customers", "market_segment"]
+      },
+      {
+        "name": "languageLineUsed",
+        "insights": ["conversations", "followed_by"]
+      },
+      {
+        "name": "counselorSpokeForeignLanguage",
+        "insights": ["customers", "customer_attribute_1"]
+      },
+      {
+        "name": "howTheHelpseekerHeardAboutUs",
+        "insights": ["customers", "customer_attribute_2"]
+      },
+      {
+        "name": "interactionWithHelpseeker",
+        "insights": ["conversations", "preceded_by"]
+      },
+      {
+        "name": "actionPlanDeveloped",
+        "insights": ["conversations", "in_business_hours"]
+      },
+      {
+        "name": "helpseekerReaction",
+        "insights": ["conversations", "conversation_attribute_7"]
+      },
+      {
+        "name": "wasASafetyPlanCreated",
+        "insights": ["customers", "acquisition_date"]
+      },
+      {
+        "name": "componentsOfSafetyPlan",
+        "insights": ["conversations", "conversation_attribute_6"]
+      }
+    ]
+  },
+  "caseForm": {
+    "topLevel": [
+      {
+        "name": "id",
+        "insights": ["conversations", "case"]
+      }
+    
+    ]
+  }
+}

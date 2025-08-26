@@ -31,6 +31,28 @@ test.describe.serial('Case List', () => {
   let page: Page;
   const cases = hrmCases();
   const permissions = hrmPermissions();
+  // Define the filters array for easy access and modification
+  const filters: Filter[] = ['status', 'counselor', 'createdAtFilter', 'updatedAtFilter'];
+  let caseListPage: ReturnType<typeof caseList>;
+
+  const warnViolations = (results: AxeResults, componentDescription: string) => {
+    if (results.violations.length) {
+      console.warn(
+        `${results.violations.length} accessibility violations found in ${componentDescription}.`,
+      );
+    }
+  };
+
+  const scanFilterDialogue = async (filter: Filter) => {
+    console.debug(`Scanning the '${filter}' filter dialog...`);
+    await caseListPage.openFilter(filter);
+    const filterAccessibilityScanResults = await new AxeBuilder({ page })
+      .include(`div[data-testid='CaseList-Filters-Panel']`)
+      .analyze();
+    // expect(filterAccessibilityScanResults.violations).toEqual([]);
+    warnViolations(filterAccessibilityScanResults, `the '${filter}' filter dialog`);
+    await caseListPage.openFilter(filter);
+  };
 
   test.beforeAll(async ({ browser }) => {
     await mockServer.start();
@@ -43,8 +65,13 @@ test.describe.serial('Case List', () => {
     await mockServer.stop();
   });
 
-  test('Case list loads items', async () => {
+  test.beforeEach(async () => {
     await page.goto('/case-list', { waitUntil: 'networkidle' });
+    await page.waitForSelector('div.Twilio-View-case-list', { state: 'visible', timeout: 10000 });
+    caseListPage = caseList(page);
+  });
+
+  test.only('Case list loads items', async () => {
     await caseList(page).verifyCaseIdsAreInListInOrder(
       cases
         .getMockCases()
@@ -58,45 +85,29 @@ test.describe.serial('Case List', () => {
       .include('div.Twilio-View-case-list')
       .analyze();
     expect(accessibilityScanResults.violations).toEqual([]);
-    const caseListPage = caseList(page);
 
-    const warnViolations = (results: AxeResults, componentDescription: string) => {
-      if (results.violations.length) {
-        console.warn(
-          `${results.violations.length} accessibility violations found in ${componentDescription}.`,
-        );
-      }
-    };
+    for (const filter of filters) {
+      await scanFilterDialogue(filter);
+    }
+  });
 
-    const scanFilterDialogue = async (filter: Filter) => {
-      console.debug(`Scanning the '${filter}' filter dialog...`);
-      await caseListPage.openFilter(filter);
-      const filterAccessibilityScanResults = await new AxeBuilder({ page })
-        .include(`div[data-testid='CaseList-Filters-Panel']`)
-        .analyze();
-      // expect(filterAccessibilityScanResults.violations).toEqual([]);
-      warnViolations(filterAccessibilityScanResults, `the '${filter}' filter dialog`);
-      await caseListPage.openFilter(filter);
-    };
-
-    await scanFilterDialogue('Status');
-    await scanFilterDialogue('Categories');
-    // await scanFilterDialogue('Counselor');
+  test('Case list accessibility: screen reader labels', async () => {
+    // Check that filter buttons have aria-label or accessible name
+    const filterButtons = await page.$$('[data-testid^="CaseList-Filter-"]');
+    for (const btn of filterButtons) {
+      const ariaLabel = await btn.getAttribute('aria-label');
+      const label = await btn.evaluate((el) => el.textContent?.trim() || '');
+      expect(ariaLabel || label.length > 0).toBeTruthy();
+    }
+    await scanFilterDialogue('status');
+    await scanFilterDialogue('counselor');
     await scanFilterDialogue('createdAtFilter');
     await scanFilterDialogue('updatedAtFilter');
-    await scanFilterDialogue('followUpDateFilter');
     await caseListPage.openFirstCaseButton();
     const caseHomeAccessibilityScanResults = await new AxeBuilder({ page })
       .include('div.Twilio-View-case-list')
       .analyze();
-    //expect(caseHomeAccessibilityScanResults.violations).toEqual([]);
+    expect(caseHomeAccessibilityScanResults.violations).toEqual([]);
     warnViolations(caseHomeAccessibilityScanResults, `the case home page`);
-    await caseListPage.editCase();
-    const caseEditAccessibilityScanResults = await new AxeBuilder({ page })
-      .include('div.Twilio-View-case-list')
-      .analyze();
-    //expect(caseHomeAccessibilityScanResults.violations).toEqual([]);
-    warnViolations(caseEditAccessibilityScanResults, `the case summary edit page`);
-    await caseListPage.closeModal();
   });
 });

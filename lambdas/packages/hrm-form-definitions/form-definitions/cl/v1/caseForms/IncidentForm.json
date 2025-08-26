@@ -1,0 +1,167 @@
+[
+  {
+    "name": "date",
+    "type": "date-input",
+    "label": "Fecha del Incidente",
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    },
+    "isPII": false
+  },
+  {
+    "name": "duration",
+    "label": "Duración",
+    "type": "select",
+    "unknownOption": "",
+    "options": [
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "Ocurriendo",
+        "label": "Ocurriendo"
+      },
+      {
+        "value": "Una vez",
+        "label": "Una vez"
+      },
+      {
+        "value": "Otra",
+        "label": "Otra"
+      }
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    },
+    "isPII": false
+  },
+  {
+    "name": "location",
+    "label": "Lugar del Incidente",
+    "type": "select",
+    "unknownOption": "",
+    "options": [
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "Hogar (Propio)",
+        "label": "Hogar (Propio)"
+      },
+      {
+        "value": "Hogar (Ajeno)",
+        "label": "Hogar (Ajeno)"
+      },
+      {
+        "value": "Institución Educativa",
+        "label": "Institución Educativa"
+      },
+      {
+        "value": "Lugar Público",
+        "label": "Lugar Público"
+      },
+      {
+        "value": "En Línea - Facebook",
+        "label": "En Línea - Facebook"
+      },
+      {
+        "value": "En Línea - Tik Tok",
+        "label": "En Línea - Tik Tok"
+      },
+      {
+        "value": "En Línea - Instagram",
+        "label": "En Línea - Instagram"
+      },
+      {
+        "value": "En Línea - Twitter",
+        "label": "En Línea - Twitter"
+      },
+      {
+        "value": "En Línea - Telegram",
+        "label": "En Línea - Telegram"
+      },
+      {
+        "value": "En Línea - Discord",
+        "label": "En Línea - Discord"
+      },
+      {
+        "value": "En Línea - Snapchat",
+        "label": "En Línea - Snapchat"
+      },
+      {
+        "value": "En Línea - WhatsApp",
+        "label": "En Línea - WhatsApp"
+      },
+      {
+        "value": "En Línea - Email",
+        "label": "En Línea - Email"
+      },
+      {
+        "value": "En Línea - Otro",
+        "label": "En Línea - Otro"
+      },
+      {
+        "value": "Otro",
+        "label": "Otro"
+      },
+      {
+        "value": "Desconocido",
+        "label": "Desconocido"
+      }
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    },
+    "isPII": false
+  },
+  {
+    "name": "incidentType",
+    "label": "Tipo de Incidente",
+    "type": "select",
+    "unknownOption": "desconocido",
+    "options": [
+      {
+        "value": "desconocido",
+        "label": ""
+      },
+      {
+        "value": "Vulneración de derechos ",
+        "label": "Vulneración de derechos "
+      },
+      {
+        "value": "Comportamiento suicida",
+        "label": "Comportamiento suicida"
+      }
+    ],
+    "isPII": false
+  },
+  {
+    "name": "isCaregiverAware",
+    "label": "¿Está la persona responsable al tanto?",
+    "type": "mixed-checkbox",
+    "isPII": false
+  },
+  {
+    "name": "incidentWitnessed",
+    "label": "¿Fue el incidente presenciado por alguien?",
+    "type": "mixed-checkbox",
+    "isPII": false
+  },
+  {
+    "name": "abuseReportedElsewhere",
+    "label": "¿Ha sido el incidente reportado en alguna parte?",
+    "type": "mixed-checkbox",
+    "isPII": false
+  },
+  {
+    "name": "whereElseBeenReported",
+    "label": "¿En dónde ha sido reportado el incidente?",
+    "type": "input",
+    "isPII": true
+  }
+]

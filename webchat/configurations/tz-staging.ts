@@ -25,25 +25,25 @@ const contactType: ContactType = 'ip';
 
 const translations: Translations = {
   'en-US': {
-    WelcomeMessage: 'C-Sema',
+    WelcomeMessage: 'National Child Helpline (116)',
     MessageCanvasTrayContent: '',
     MessageInputDisabledReasonHold:
       "Thank you very much for this information. We'll transfer you now. Please hold for a counsellor.",
     AutoFirstMessage: 'Incoming webchat contact from',
     PreEngagementDescription:
-      'Thank you for contacting C-Sema. To chat with a counsellor, please type your name and select the Start Chat button.',
+      'Thank you for contacting National Child Helpline (116). To chat with a counsellor, please type your name and select the Start Chat button.',
     WhatIsYourName: 'What is your name?',
     StartChat: 'Start Chat!',
     SelectLanguage: 'Select your language',
   },
-  "Swahili": {
-    WelcomeMessage: "C-Sema",
+  "sw_TZ": {
+    WelcomeMessage: "National Child Helpline (116)",
     MessageCanvasTrayContent: "",
     MessageInputDisabledReasonHold:
       "Asante sana kwa maelezo haya. Tutakuunganisha sasa. Tafadhali subiri ili kuzungumza na mshauri.",
     AutoFirstMessage: "Mawasiliano ya gumzo la wavuti yanayoingia kutoka",
     PreEngagementDescription:
-      "Asante kwa kuwasiliana na C-Sema. Ili kuzungumza na mshauri, tafadhali andika jina lako na bonyeza kitufe cha Anza Gumzo.",
+      "Asante kwa kuwasiliana na National Child Helpline (116). Ili kuzungumza na mshauri, tafadhali andika jina lako na bonyeza kitufe cha Anza Gumzo.",
     WhatIsYourName: "Jina lako ni nani?",
     StartChat: "Anza Gumzo!",
     SelectLanguage: "Chagua lugha yako"
@@ -57,19 +57,40 @@ const preEngagementConfig: PreEngagementFormDefinition = {
     {
       type: 'input-text',
       name: 'friendlyName',
-      label: 'Nickname',
-      placeholder: 'Nickname',
+      label: 'Name/Jina',
+      placeholder: 'What is your name?/Jina lako ni nani?',
       required: true,
     },
     {
       type: 'select',
       name: 'language',
-      label: 'SelectLanguage',
-      defaultValue: 'en-US',
+      label: 'Select Language/Chagua lugha',
       required: true,
       options: [
-        { value: 'en-US', label: '1. English' },
-        { value: 'Swahili', label: '2. Kiswahili' },
+        {
+          value: '',
+          label: ''
+        },
+        { value: 'en-US', label: 'English' },
+        { value: 'sw_TZ', label: 'Kiswahili' },
+      ],
+    },
+    {
+      type: 'select',
+      name: 'area',
+      label: 'Select Location/Chagua maeneo',
+      required: true,
+      options: [
+        {
+          value: '',
+          label: ''
+        },
+        { value: 'Main Land', 
+          label: 'Tanzania - Main Land' 
+        },
+        { value: 'Zanzibar/Pemba', 
+          label: 'Zanzibar/Pemba' 
+        },
       ],
     },
     {
@@ -79,7 +100,7 @@ const preEngagementConfig: PreEngagementFormDefinition = {
         'I agree with the <a href="https://www.sematanzania.org/child-helpline">Terms of Use</a>',
       required: {
         value: true,
-        message: '<message>',
+        message: "Sorry, if you don't accept our terms and conditions we can't provide counselling to you.",
       },
     },
   ],
@@ -88,6 +109,8 @@ const preEngagementConfig: PreEngagementFormDefinition = {
 const mapHelplineLanguage: MapHelplineLanguage = (helpline) => {
   // eslint-disable-next-line sonarjs/no-small-switch
   switch (helpline) {
+    case '2. Kiswahili':
+      return 'sw_TZ';
     default:
       return defaultLanguage;
   }
@@ -97,7 +120,7 @@ const memberDisplayOptions = {
   yourDefaultName: 'You',
   yourFriendlyNameOverride: false,
   theirFriendlyNameOverride: false,
-  theirDefaultName: 'C-Sema Counsellor',
+  theirDefaultName: 'National Child Helpline Counsellor',
 };
 
 export const config: Configuration = {

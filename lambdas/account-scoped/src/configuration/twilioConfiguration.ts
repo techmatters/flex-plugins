@@ -14,8 +14,9 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { AccountSID, ChatServiceSID, WorkspaceSID } from '../twilioTypes';
-import { getSsmParameter } from '../ssmCache';
+import { AccountSID, ChatServiceSID, WorkflowSID, WorkspaceSID } from '../twilioTypes';
+import { getSsmParameter, SsmParameterNotFound } from '../ssmCache';
+import twilio, { Twilio } from 'twilio';
 
 export const getWorkspaceSid = async (accountSid: AccountSID): Promise<WorkspaceSID> =>
   (await getSsmParameter(
@@ -29,5 +30,63 @@ export const getChatServiceSid = async (
     `/${process.env.NODE_ENV}/twilio/${accountSid}/chat_service_sid`,
   )) as ChatServiceSID;
 
+export const getMasterWorkflowSid = async (
+  accountSid: AccountSID,
+): Promise<WorkflowSID> =>
+  (await getSsmParameter(
+    `/${process.env.NODE_ENV}/twilio/${accountSid}/chat_workflow_sid`,
+  )) as WorkflowSID;
+
 export const getAccountAuthToken = (accountSid: AccountSID): Promise<string> =>
   getSsmParameter(`/${process.env.NODE_ENV}/twilio/${accountSid}/auth_token`);
+
+export const getTwilioWorkspaceSid = (accountSid: AccountSID): Promise<string> =>
+  getSsmParameter(`/${process.env.NODE_ENV}/twilio/${accountSid}/workspace_sid`);
+
+export const getSurveyWorkflowSid = (accountSid: AccountSID): Promise<string> =>
+  getSsmParameter(`/${process.env.NODE_ENV}/twilio/${accountSid}/survey_workflow_sid`);
+
+export const getHelplineCode = (accountSid: AccountSID): Promise<string> =>
+  getSsmParameter(`/${process.env.NODE_ENV}/twilio/${accountSid}/short_helpline`);
+
+export const getSyncServiceSid = (accountSid: AccountSID): Promise<string> =>
+  getSsmParameter(`/${process.env.NODE_ENV}/twilio/${accountSid}/sync_sid`);
+
+export const getFlexProxyServiceSid = (accountSid: AccountSID): Promise<string> =>
+  getSsmParameter(`/${process.env.NODE_ENV}/twilio/${accountSid}/flex_proxy_service_sid`);
+
+export const getOperatingInfoKey = (accountSid: AccountSID): Promise<string> =>
+  getSsmParameter(`/${process.env.NODE_ENV}/twilio/${accountSid}/operating_info_key`);
+
+export const areOperatingHoursEnforced = async (
+  accountSid: AccountSID,
+): Promise<boolean> => {
+  try {
+    const overrideText = await getSsmParameter(
+      `/${process.env.NODE_ENV}/twilio/${accountSid}/operating_hours_enforced_override`,
+    );
+    if (overrideText.toLowerCase() === 'true') return true;
+    if (overrideText.toLowerCase() === 'false') return false;
+  } catch (error) {
+    // fall back to default behaviour silently if parameter not found - this is the normal case
+    if (!(error instanceof SsmParameterNotFound)) {
+      console.error(
+        'Error looking up operating hours override in SSM, falling back to default',
+        error,
+      );
+    }
+  }
+  // Only enforce operating hours in prod by default
+  return process.env.NODE_ENV === 'production';
+};
+
+export const getSwitchboardQueueSid = (accountSid: AccountSID): Promise<string> =>
+  getSsmParameter(`/${process.env.NODE_ENV}/twilio/${accountSid}/switchboard_queue_sid`);
+
+export const getServerlessBaseUrl = (accountSid: AccountSID): Promise<string> =>
+  getSsmParameter(`/${process.env.NODE_ENV}/serverless/${accountSid}/base_url`);
+
+export const getTwilioClient = async (accountSid: AccountSID): Promise<Twilio> => {
+  const authToken = await getAccountAuthToken(accountSid);
+  return twilio(accountSid, authToken);
+};

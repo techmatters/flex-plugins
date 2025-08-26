@@ -70,9 +70,15 @@ runs:
 
     - name: Run Playwright tests
       if: ${{ inputs.run-ui-tests == 'false' }}
-      run: LOAD_SSM_CONFIG=true HL=${{inputs.helpline-shortcode}} HL_ENV=${{inputs.environment}} npm run test
+      run: npm run test
       working-directory: ${{ inputs.path }}/e2e-tests
       shell: bash
+      env:
+        # Uncomment for more logging
+        # DEBUG: 'pw:api'
+        LOAD_SSM_CONFIG: true
+        HL: ${{inputs.helpline-shortcode}}
+        HL_ENV: ${{inputs.environment}}
 
     - name: Run UI tests
       if: ${{ inputs.run-ui-tests == 'true' }}
@@ -85,3 +91,10 @@ runs:
       with:
         name: test-artifacts
         path: ${{ inputs.path }}/e2e-tests/test-results
+
+
+    - uses: actions/upload-artifact@v4
+      if: ${{ always() }}
+      with:
+        name: test-state
+        path: ${{ inputs.path }}/e2e-tests/temp

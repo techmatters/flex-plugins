@@ -80,14 +80,18 @@ export type TimelineActivity<T> = GenericTimelineActivity<T, Date>;
 
 export const isCaseSectionTimelineActivity = (
   activity: TimelineActivity<any>,
-): activity is TimelineActivity<FullCaseSection> => activity.activityType === 'case-section';
+): activity is TimelineActivity<FullCaseSection> => activity?.activityType === 'case-section';
 
 export const isContactTimelineActivity = (activity: TimelineActivity<any>): activity is TimelineActivity<Contact> =>
-  activity.activityType === 'contact';
+  activity?.activityType === 'contact';
 
 export type ContactIdentifierTimelineActivity = TimelineActivity<{ contactId: Contact['id'] }> & {
   activityType: 'contact-id';
 };
+
+export const isContactIdentifierTimelineActivity = (
+  activity: TimelineActivity<any>,
+): activity is CaseSectionIdentifierTimelineActivity => activity?.activityType === 'contact-id';
 
 export type CaseSectionIdentifierTimelineActivity = TimelineActivity<{
   sectionType: string;
@@ -98,7 +102,7 @@ export type CaseSectionIdentifierTimelineActivity = TimelineActivity<{
 
 export const isCaseSectionIdentifierTimelineActivity = (
   activity: TimelineActivity<any>,
-): activity is CaseSectionIdentifierTimelineActivity => activity.activityType === 'case-section-id';
+): activity is CaseSectionIdentifierTimelineActivity => activity?.activityType === 'case-section-id';
 
 export type CaseSummaryWorkingCopy = {
   status: string;

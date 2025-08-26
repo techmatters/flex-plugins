@@ -18,6 +18,7 @@ import { addDays } from 'date-fns';
 import { RecursivePartial } from '../../../RecursivePartial';
 import { HrmState, RootState } from '../../../../states';
 import { Case } from '../../../../types/types';
+import '../../../mockGetConfig';
 import selectCaseItemHistory from '../../../../states/case/sections/selectCaseItemHistory';
 import { namespace } from '../../../../states/storeNamespaces';
 import { CaseStateEntry } from '../../../../states/case/types';

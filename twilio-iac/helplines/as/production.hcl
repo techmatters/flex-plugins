@@ -7,6 +7,7 @@ locals {
     enable_post_survey                    = true
     permission_config = "demo"
     custom_task_routing_filter_expression = "channelType IN ['instagram','messenger','web','whatsapp','telegram','line','voice']  OR isContactlessTask == true OR  twilioNumber == 'messenger:105642325869250', 'instagram:17841459369720372' "
+    enable_lex_v2                     = true
     flow_vars = {
       capture_channel_with_bot_function_sid = "ZHd9eb5ce1b230abe29d9eafccc88b16d3"
       chatbot_callback_cleanup_function_sid = "ZH757387715913592aa1938b284411f18b"
@@ -21,7 +22,7 @@ locals {
       webchat : {
         channel_type         = "web"
         contact_identity     = ""
-        templatefile         = "/app/twilio-iac/helplines/templates/studio-flows/messaging-lex-v2-blocking.tftpl"
+        templatefile         = "/app/twilio-iac/helplines/templates/studio-flows/messaging-blocking-lambda.tftpl"
         channel_flow_vars    = {}
         chatbot_unique_names = []
       },
@@ -29,7 +30,7 @@ locals {
         messaging_mode       = "conversations"
         channel_type         = "messenger"
         contact_identity     = "messenger:105642325869250"
-        templatefile         = "/app/twilio-iac/helplines/templates/studio-flows/messaging-lex-v3-blocking.tftpl"
+        templatefile         = "/app/twilio-iac/helplines/templates/studio-flows/messaging-lex-v3-blocking-lambda.tftpl"
         channel_flow_vars    = {}
         chatbot_unique_names = []
       },
@@ -37,7 +38,7 @@ locals {
         messaging_mode       = "conversations"
         channel_type         = "whatsapp"
         contact_identity     = "whatsapp:+15079441697"
-        templatefile         = "/app/twilio-iac/helplines/templates/studio-flows/messaging-lex-v3-blocking.tftpl"
+        templatefile         = "/app/twilio-iac/helplines/templates/studio-flows/messaging-lex-v3-blocking-lambda.tftpl"
         channel_flow_vars    = {}
         chatbot_unique_names = []
       },
@@ -45,7 +46,7 @@ locals {
         messaging_mode       = "conversations"
         channel_type         = "custom"
         contact_identity     = "instagram"
-        templatefile         = "/app/twilio-iac/helplines/templates/studio-flows/messaging-custom-channel-lex-v3-blocking.tftpl"
+        templatefile         = "/app/twilio-iac/helplines/templates/studio-flows/messaging-custom-channel-lex-v3-blocking-lambda.tftpl"
         channel_flow_vars    = {}
         chatbot_unique_names = []
       },
@@ -53,7 +54,7 @@ locals {
         messaging_mode       = "conversations"
         channel_type         = "custom"
         contact_identity     = "line"
-        templatefile         = "/app/twilio-iac/helplines/templates/studio-flows/messaging-custom-channel-lex-v3-blocking.tftpl"
+        templatefile         = "/app/twilio-iac/helplines/templates/studio-flows/messaging-custom-channel-lex-v3-blocking-lambda.tftpl"
         channel_flow_vars    = {}
         chatbot_unique_names = []
       },
@@ -69,5 +70,7 @@ locals {
         chatbot_unique_names = []
       }
     }
+
+    get_profile_flags_for_identifier_base_url = "https://hrm-production.tl.techmatters.org/lambda/twilio/account-scoped"
   }
 }

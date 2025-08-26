@@ -1,0 +1,9 @@
+{
+    "attributes": {
+        "form_definitions_base_url": "https://assets-staging.tl.techmatters.org/form-definitions/",
+        "resources_base_url": "",
+        "logo_url" : "",
+        "feature_flags": {
+        }
+    }
+}

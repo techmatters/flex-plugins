@@ -1,0 +1,246 @@
+[
+  {
+    "name": "contactType",
+    "label": "contactType",
+    "type": "listbox-multiselect",
+    "options": [
+      {
+        "value": "Abusive",
+        "label": "Abusive"
+      },
+      {
+        "value": "Complaint",
+        "label": "Complaint"
+      },
+      {
+        "value": "Counselling",
+        "label": "Counselling"
+      },
+      {
+        "value": "Crisis Intervention",
+        "label": "Crisis Intervention"
+      },
+      {
+        "value": "Information about Good2Talk",
+        "label": "Information about Good2Talk"
+      },
+      {
+        "value": "Information about KHP",
+        "label": "Information about KHP"
+      },
+      {
+        "value": "Referral only",
+        "label": "Referral only"
+      },
+      {
+        "value": "Thank you",
+        "label": "Thank you"
+      },
+      {
+        "value": "Testing",
+        "label": "Testing"
+      },
+      {
+        "value": "Wrong Number",
+        "label": "Wrong Number"
+      }
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    },
+    "isPII": false
+  },
+  {
+    "name": "callSummary",
+    "label": "ifThankYou",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "complaintDetails",
+    "label": "ifComplaint",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "abuseDetails",
+    "label": "ifAbusive",
+    "type": "listbox-multiselect",
+    "options": [
+      {
+        "value": "Directly Abusive",
+        "label": "Direct Abusive to Counsellor"
+      },
+      {
+        "value": "Arousal",
+        "label": "Sexually Inappropriate/Arousal Caller"
+      },
+      {
+        "value": "Other",
+        "label": "Other"
+      }
+    ],
+    "isPII": false
+  },
+  {
+    "name": "otherAbuseDetails",
+    "label": "ifOtherAbuse",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "safetyPlan",
+    "label": "safetyPlan",
+    "type": "checkbox",
+    "isPII": false
+  },
+  {
+    "name": "emergencyReferralPolice",
+    "label": "emergencyReferralPolice",
+    "type": "checkbox",
+    "isPII": false
+  },
+  {
+    "name": "emergencyReferralCPS",
+    "label": "emergencyReferralCPS",
+    "type": "checkbox",
+    "isPII": false
+  },
+  {
+    "name": "callerAgreeable",
+    "label": "callerAgreeable",
+    "type": "checkbox",
+    "isPII": false
+  },
+  {
+    "name": "languageService",
+    "label": "languageService",
+    "type": "select",
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "Arabic Interpreter Service (BSCC)",
+        "label": "Arabic Interpreter Service (BSCC)"
+      },
+      {
+        "value": "Arabic Interpreter Service (LLS)",
+        "label": "Arabic Interpreter Service (LLS)"
+      },
+      {
+        "value": "French Interpreter Service (BSCC)",
+        "label": "French Interpreter Service (BSCC)"
+      },
+      {
+        "value": "French Interpreter Service (LLS)",
+        "label": "French Interpreter Service (LLS)"
+      },
+      {
+        "value": "Mandarin Interpreter Service (BSCC)",
+        "label": "Mandarin Interpreter Service (BSCC)"
+      },
+      {
+        "value": "Mandarin Interpreter Service (LLS)",
+        "label": "Mandarin Interpreter Service (LLS)"
+      }
+    ],
+    "isPII": false
+  },
+  {
+    "name": "interpreterID",
+    "label": "interpreterID",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "technicalProblems",
+    "label": "technicalProblems",
+    "type": "listbox-multiselect",
+    "options": [
+      {
+        "value": "Dropped Contact - Unknown Reason",
+        "label": "Dropped Contact - Unknown reason"
+      },
+      {
+        "value": "Dropped Contact - Internet Outage",
+        "label": "Dropped Contact - Internet Outage"
+      },
+      {
+        "value": "Dropped Contact - VPN Outage",
+        "label": "Dropped Contact - VPN Outage"
+      },
+      {
+        "value": "Dropped Contact - Connection Issue",
+        "label": "Dropped Contact - Connection Issue"
+      },
+      {
+        "value": "Headset Issue - Unable to hear caller",
+        "label": "Headset Issue - Unable to hear caller"
+      },
+      {
+        "value": "Headset Issue - Caller unable to hear counsellor",
+        "label": "Headset Issue - Caller unable to hear counsellor"
+      },
+      {
+        "value": "Chat Issue - Chatter unable to see counsellor responses",
+        "label": "Chat Issue - Chatter unable to see counsellor responses"
+      },
+      {
+        "value": "Other",
+        "label": "Other"
+      }
+    ],
+    "isPII": false
+  },
+  {
+    "name": "otherTechnicalProblems",
+    "label": "otherTechnicalProblems",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "additionalTools",
+    "label": "additionalTools",
+    "type": "listbox-multiselect",
+    "options": [
+      {
+        "value": "KMS",
+        "label": "KMS"
+      },
+      {
+        "value": "The Gateway (KHP Website)",
+        "label": "The Gateway (KHP Website)"
+      },
+      {
+        "value": "RAM",
+        "label": "RAM"
+      },
+      {
+        "value": "Other",
+        "label": "Other"
+      },
+      {
+        "value": "Not Applicable/Nothing",
+        "label": "Not Applicable/Nothing"
+      }
+    ],
+    "isPII": false
+  },
+  {
+    "name": "otherTools",
+    "label": "otherTools",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "referrals",
+    "label": "Referrals",
+    "type": "custom-contact-component",
+    "component": "resource-referral-list",
+    "saveable": false,
+    "isPII": false
+  }
+]

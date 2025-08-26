@@ -18,6 +18,7 @@ locals {
       send_message_janitor_function_sid     = "ZH91ec531cde681192daf63e306db90d88"
       widget_from                           = "Kellimni"
       chat_blocked_message                  = "Sorry, you're not able to contact Kellimni from this device or account"
+      outside_country_message               = "Thank you for reaching out to Kellimni.com. Please note that our services are available exclusively to individuals currently residing in Malta. If you are located in Malta but are using a VPN that does not indicate a Maltese IP address, we recommend connecting via a standard, approved internet protocol to access our support. If you are outside Malta, we encourage you to visit Throughline [https://silenthill.findahelpline.com/] to locate support services available in your region. We appreciate your understanding and hope you are able to find the assistance you need. Best regards, The Kellimni.com Team"
       ip_location_finder_url                = "https://hrm-production.tl.techmatters.org/lambda/ipLocationFinder"
     }
 
@@ -28,7 +29,9 @@ locals {
         channel_type         = "web"
         contact_identity     = ""
         templatefile         = "/app/twilio-iac/helplines/mt/templates/studio-flows/messaging-lex-web-location-block.tftpl"
-        channel_flow_vars    = {}
+        channel_flow_vars    = {
+          allowed_shortcode_locations = "MT"
+        }
         chatbot_unique_names = []
         enable_datadog_monitor = true
         custom_monitor = {
@@ -43,7 +46,7 @@ locals {
         messaging_mode       = "conversations"
         channel_type         = "messenger"
         contact_identity     = "messenger:325981127456443"
-        templatefile         = "/app/twilio-iac/helplines/mt/templates/studio-flows/messaging-lex-conv.tftpl"
+        templatefile         = "/app/twilio-iac/helplines/mt/templates/studio-flows/messaging-lex-conv-lambda.tftpl"
         channel_flow_vars    = {}
         chatbot_unique_names = []
         enable_datadog_monitor = true
@@ -59,15 +62,17 @@ locals {
         messaging_mode       = "conversations"
         channel_type         = "whatsapp"
         contact_identity     = "whatsapp:+15077097720"
-        templatefile         = "/app/twilio-iac/helplines/mt/templates/studio-flows/messaging-lex-conv.tftpl"
-        channel_flow_vars    = {}
+        templatefile         = "/app/twilio-iac/helplines/mt/templates/studio-flows/messaging-whatsapp-lex-conv-lambda.tftpl"
+        channel_flow_vars    = {
+           regex_allowed_test_numbers = "whatsapp:\\+(<SHORT_CODE_HERE>)\\d{6,20}"
+        }
         chatbot_unique_names = []
       },
       instagram : {
         messaging_mode       = "conversations"
         channel_type         = "custom"
         contact_identity     = "instagram"
-        templatefile         = "/app/twilio-iac/helplines/mt/templates/studio-flows/messaging-lex-conv.tftpl"
+        templatefile         = "/app/twilio-iac/helplines/mt/templates/studio-flows/messaging-lex-conv-lambda.tftpl"
         channel_flow_vars    = {}
         chatbot_unique_names = []
         enable_datadog_monitor = true
@@ -80,5 +85,6 @@ locals {
         }
       }
     }
+    get_profile_flags_for_identifier_base_url = "https://hrm-production-eu.tl.techmatters.org/lambda/twilio/account-scoped"
   }
 }

@@ -2,7 +2,6 @@
     "attributes": {
         "definitionVersion": "zw-v1",
         "feature_flags": {
-            "enable_generalized_search": true
         },
         "helplineLanguage": "en-US",
         "permissionConfig": "zw"

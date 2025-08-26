@@ -14,7 +14,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { callTypes } from 'hrm-form-definitions';
+import { callTypes } from 'hrm-types';
 
 import { channelTypes } from '../states/DomainConstants';
 
@@ -91,14 +91,4 @@ export const mapAge = (ageOptions: string[]) => (age: string) => {
   }
 
   return 'Unknown';
-};
-
-export const mapGenericOption = (options: string[]) => (value: string) => {
-  const validOption = options.find(e => e.toLowerCase() === value.toLowerCase());
-
-  if (!validOption) {
-    return 'Unknown';
-  }
-
-  return validOption;
 };

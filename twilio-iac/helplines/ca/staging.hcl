@@ -4,7 +4,7 @@ locals {
   config            = merge(local.common_config, local.local_config)
 
   local_config = {
-
+    operating_hours_enforced_override     = false
     #Studio flow
     flow_vars = {
       service_sid                       = "ZSb631f562c8306085ceb8329349fdd60b"
@@ -70,7 +70,7 @@ locals {
           fr_inflight_url : "https://test-service-dee-4583.twil.io/Msg60021.mp3"
           tr_inflight_url : "https://test-service-dee-4583.twil.io/Msg60011Tr.mp3"
           fr_nocounsellors_url : "https://test-service-dee-4583.twil.io/Msg60025.mp3"
-          fr_issues_url : "https://test-service-dee-4583.twil.io/FrTechIssuesmp3"
+          fr_issues_url : "https://test-service-dee-4583.twil.io/FrTechIssues.mp3"
           fr_switch_url : "https://test-service-dee-4583.twil.io/FrSwitchInterpreter.mp3"
           cyara_url : "https://test-service-dee-4583.twil.io/cyara-vq-testaudio.wav"
 
@@ -226,5 +226,6 @@ locals {
     }
     //Serverless -- to allow enabling the operating hours check on this staging account.
     ui_editable = true
+    get_profile_flags_for_identifier_base_url = "https://hrm-staging.tl.techmatters.org/lambda/twilio/account-scoped"
   }
 }

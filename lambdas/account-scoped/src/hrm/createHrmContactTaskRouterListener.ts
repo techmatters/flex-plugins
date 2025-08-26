@@ -16,19 +16,22 @@
 
 /* eslint-disable global-require */
 /* eslint-disable import/no-dynamic-require */
-import {
-  HrmContact,
-  populateHrmContactFormFromTask,
-} from './populateHrmContactFormFromTask';
+import { populateHrmContactFormFromTaskByKeys } from './populateHrmContactFormFromTaskByKeys';
 import { registerTaskRouterEventHandler } from '../taskrouter/taskrouterEventHandler';
 import { RESERVATION_ACCEPTED } from '../taskrouter/eventTypes';
 import type { EventFields } from '../taskrouter';
 import twilio from 'twilio';
-import { AccountSID } from '../twilioTypes';
+import { AccountSID, TaskSID, WorkerSID } from '../twilioTypes';
 import { getWorkspaceSid } from '../configuration/twilioConfiguration';
-import { postToInternalHrmEndpoint } from './internalHrmRequest';
-import { isErr } from '../Result';
+import {
+  patchOnInternalHrmEndpoint,
+  postToInternalHrmEndpoint,
+} from './internalHrmRequest';
+import { isErr, isOk } from '../Result';
 import { inferHrmAccountId } from './hrmAccountId';
+import { sanitizeIdentifierFromTask } from './sanitizeIdentifier';
+import { HrmContact } from '@tech-matters/hrm-types';
+import { populateHrmContactFormFromTaskByMappings } from './populateHrmContactFormFromTaskByMappings';
 
 // Temporarily copied to this repo, will share the flex types when we move them into the same repo
 
@@ -42,9 +45,9 @@ const BLANK_CONTACT: HrmContact = {
     childInformation: {},
     callerInformation: {},
     caseInformation: {},
-    callType: '',
+    callType: '' as any,
     contactlessTask: {
-      channel: 'web',
+      channel: '' as any,
       date: '',
       time: '',
       createdOnBehalfOf: '',
@@ -87,6 +90,9 @@ export const handleEvent = async (
     transferTargetType,
     channelType,
     customChannelType,
+    conference,
+    direction,
+    contactId,
   } = taskAttributes;
 
   if (isContactlessTask) {
@@ -96,34 +102,63 @@ export const handleEvent = async (
     return;
   }
 
-  if (transferTargetType) {
-    console.debug(
-      `Task ${taskSid} was created to receive a ${transferTargetType} transfer. The original contact will be used so a new one will not be created.`,
-    );
-    return;
-  }
-
   const serviceConfig = await client.flexApi.v1.configuration.get().fetch();
 
   const {
     definitionVersion,
     hrm_api_version: hrmApiVersion,
-    form_definitions_version_url: configFormDefinitionsVersionUrl,
-    assets_bucket_url: assetsBucketUrl,
-    helpline_code: helplineCode,
-    feature_flags: {
-      enable_backend_hrm_contact_creation: enableBackendHrmContactCreation,
-    },
+    feature_flags: { use_prepopulate_mappings: usePrepopulateMappings },
   } = serviceConfig.attributes;
 
   const hrmAccountId = inferHrmAccountId(accountSid, workerName);
-  const formDefinitionsVersionUrl =
-    configFormDefinitionsVersionUrl ||
-    `${assetsBucketUrl}/form-definitions/${helplineCode}/v1`;
-  if (!enableBackendHrmContactCreation) {
+
+  if (contactId) {
     console.debug(
-      `enable_backend_hrm_contact_creation is not set, the contact associated with task ${taskSid} will be created from Flex.`,
+      `Accepting task ${taskSid} that already has contactId ${contactId} attached. Ensuring this contact is owned by accepting worker ${workerSid}`,
     );
+    const responseResult = await patchOnInternalHrmEndpoint<
+      Partial<HrmContact>,
+      HrmContact
+    >(hrmAccountId, hrmApiVersion, `contacts/${contactId}`, {
+      twilioWorkerId: workerSid as WorkerSID,
+      taskId: taskSid as TaskSID,
+    });
+    if (isErr(responseResult)) {
+      console.error(
+        `Failed to update HRM contact for task ${taskSid}`,
+        responseResult.message,
+        responseResult.error,
+      );
+    }
+  }
+
+  if (transferTargetType) {
+    console.debug(
+      `Task ${taskSid} was created to receive a ${transferTargetType} transfer. The original contact will be used so a new one will not be created.`,
+    );
+
+    const taskContext = client.taskrouter.v1.workspaces
+      .get(await getWorkspaceSid(accountSid))
+      .tasks.get(taskSid);
+    const reservations = await taskContext.reservations.list();
+    const thisWorkersReservation = reservations.find(r => r.workerSid === workerSid);
+    if (thisWorkersReservation) {
+      await taskContext.update({
+        attributes: JSON.stringify({
+          ...taskAttributes,
+          transferMeta: {
+            ...taskAttributes.transferMeta,
+            sidWithTaskControl: thisWorkersReservation.sid,
+          },
+        }),
+      });
+      console.info(
+        `Set sidWithTaskControl to ${thisWorkersReservation.sid} for task ${taskSid}, giving control of it to worker ${workerSid}, who is accepting the transfer.`,
+      );
+    } else
+      console.warn(
+        `Could not find reservation on task ${taskSid} for worker ${workerSid}, even though they are accepting the task. Cannot set sidWithTaskControl to complete transfer.`,
+      );
     return;
   }
 
@@ -131,12 +166,30 @@ export const handleEvent = async (
 
   console.debug('Creating HRM contact for task', taskSid, 'Hrm Account:', hrmAccountId);
 
+  const isOutboundVoiceTask = direction === 'outbound' && Boolean(conference);
+
+  const channel = (customChannelType ||
+    (isOutboundVoiceTask && 'voice') ||
+    channelType ||
+    'default') as HrmContact['channel'];
+
+  const identifierResult = sanitizeIdentifierFromTask({
+    channelType: channel,
+    taskAttributes,
+  });
+
+  if (isErr(identifierResult)) {
+    console.warn(`Couldn't retrieve identifier for task ${taskSid}, using empty`);
+  }
+  const identifier = isOk(identifierResult) ? identifierResult.data : '';
+
   const newContact: HrmContact = {
     ...BLANK_CONTACT,
     definitionVersion,
-    channel: (customChannelType || channelType || 'default') as HrmContact['channel'],
+    channel,
     rawJson: {
       definitionVersion,
+      ...(channel === 'voice' ? { hangUpBy: 'Customer' } : {}),
       ...BLANK_CONTACT.rawJson,
     },
     twilioWorkerId: workerSid as HrmContact['twilioWorkerId'],
@@ -146,18 +199,25 @@ export const handleEvent = async (
     // We set createdBy to the workerSid because the contact is 'created' by the worker who accepts the task
     createdBy: workerSid as HrmContact['createdBy'],
     timeOfContact: new Date().toISOString(),
+    number: identifier,
   };
   console.debug('Creating HRM contact with timeOfContact:', newContact.timeOfContact);
-  const populatedContact = await populateHrmContactFormFromTask(
+  const prepopulate = usePrepopulateMappings
+    ? populateHrmContactFormFromTaskByMappings
+    : populateHrmContactFormFromTaskByKeys;
+  const populatedContactResult = await prepopulate({
     taskAttributes,
-    newContact,
-    formDefinitionsVersionUrl,
-  );
+    contact: newContact,
+    accountSid,
+  });
+  if (isErr(populatedContactResult)) {
+    console.warn(`Populating contact ${newContact.id} failed, creating blank contact`);
+  }
   const responseResult = await postToInternalHrmEndpoint<HrmContact, HrmContact>(
     hrmAccountId,
     hrmApiVersion,
     'contacts',
-    populatedContact,
+    isOk(populatedContactResult) ? populatedContactResult.data : newContact,
   );
   if (isErr(responseResult)) {
     console.error(
@@ -177,6 +237,7 @@ export const handleEvent = async (
   const updatedAttributes = {
     ...JSON.parse(currentTaskAttributes),
     contactId: id.toString(),
+    outboundVoiceTaskStartMillis: isOutboundVoiceTask ? new Date().getTime() : null,
   };
   await taskContext.update({ attributes: JSON.stringify(updatedAttributes) });
 };

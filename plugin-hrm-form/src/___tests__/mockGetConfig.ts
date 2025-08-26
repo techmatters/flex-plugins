@@ -16,7 +16,7 @@
 
 /* eslint-disable camelcase */
 
-import { DefinitionVersion, DefinitionVersionId } from 'hrm-form-definitions';
+import { DefinitionVersion } from 'hrm-form-definitions';
 
 export const baseMockConfig = {
   accountSid: 'ACfake',
@@ -34,10 +34,10 @@ export const baseMockConfig = {
   identity: '',
   token: '',
   counselorName: '',
-  definitionVersion: 'v1',
+  definitionVersion: 'as-v1',
   permissionConfig: 'zm',
   strings: {
-    'Error-CategoryRequired': 'Required 1 category minimum, 3 categories maximum',
+    'Error-CategoryRequired': 'Required #{{minSelections}} category minimum, #{{maxSelections}} categories maximum',
     'ContactDetails-GeneralDetails': 'General Details',
     'TabbedForms-AddCallerInfoTab': 'Caller Information',
     'TabbedForms-AddChildInfoTab': 'Child Information',
@@ -69,7 +69,7 @@ export const mockPartialConfiguration = partialConfig =>
 
 export const mockGetDefinitionsResponse = (
   funcToMock: () => any,
-  mockVersion: DefinitionVersionId,
+  mockVersion: string,
   mockFormDefinitions: DefinitionVersion,
 ) => {
   (<jest.Mock>funcToMock).mockReturnValue({

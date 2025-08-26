@@ -21,7 +21,7 @@ import './styles/global-overrides.css';
 
 import reducers from './states';
 import HrmTheme, { overrides } from './styles/HrmTheme';
-import { initLocalization, defaultLanguage } from './translations';
+import { defaultLocale, initLocalization } from './translations';
 import * as Providers from './utils/setUpProviders';
 import * as ActionFunctions from './utils/setUpActions';
 import { recordCallState } from './utils/setUpActions';
@@ -31,9 +31,10 @@ import * as Channels from './channels/setUpChannels';
 import setUpMonitoring from './utils/setUpMonitoring';
 import { changeLanguage } from './states/configuration/actions';
 import { getAseloFeatureFlags, getHrmConfig, initializeConfig, subscribeToConfigUpdates } from './hrmConfig';
-import { setUpSharedStateClient } from './utils/sharedState';
+import { setUpSyncClient } from './services/SyncService';
 import { FeatureFlags } from './types/types';
 import { setUpReferrableResources } from './components/resources/setUpReferrableResources';
+import QueuesView from './components/queuesView';
 import TeamsView from './components/teamsView';
 import { setUpCounselorToolkits } from './components/toolkits/setUpCounselorToolkits';
 import { setUpTransferComponents } from './components/transfer/setUpTransferComponents';
@@ -43,7 +44,7 @@ import { setUpConferenceActions, setupConferenceComponents } from './conference'
 import { setUpTransferActions } from './transfer/setUpTransferActions';
 import { playNotification } from './notifications/playNotification';
 import { namespace } from './states/storeNamespaces';
-import { maskManagerStringsWithIdentifiers, maskMessageListWithIdentifiers } from './maskIdentifiers';
+import { maskManagerStringsWithIdentifiers } from './maskIdentifiers';
 import { setUpViewMaskedVoiceNumber } from './maskIdentifiers/unmaskPhoneNumber';
 import { validateAndSetPermissionRules } from './permissions';
 import { setupLlmNotifications } from './components/contact/GenerateSummaryButton/setUpLlmNotifications';
@@ -56,7 +57,7 @@ export type SetupObject = ReturnType<typeof getHrmConfig>;
 const setUpLocalization = (config: ReturnType<typeof getHrmConfig>) => {
   const manager = Flex.Manager.getInstance();
 
-  const { helplineLanguage } = config;
+  const { counselorLanguage, helplineLanguage } = config;
 
   const twilioStrings = { ...manager.strings }; // save the originals
 
@@ -72,14 +73,16 @@ const setUpLocalization = (config: ReturnType<typeof getHrmConfig>) => {
 
   const localizationConfig = { twilioStrings, setNewStrings, afterNewStrings };
 
-  return initLocalization(localizationConfig, helplineLanguage);
+  return initLocalization(
+    localizationConfig,
+    localStorage.getItem(`${getHrmConfig().accountSid}_ASELO_PLUGIN_USER_LOCALE`) ||
+      counselorLanguage ||
+      helplineLanguage ||
+      defaultLocale,
+  );
 };
 
-const setUpComponents = (
-  featureFlags: FeatureFlags,
-  setupObject: ReturnType<typeof getHrmConfig>,
-  translateUI: (language: string) => Promise<void>,
-) => {
+const setUpComponents = (featureFlags: FeatureFlags, setupObject: ReturnType<typeof getHrmConfig>) => {
   // setUp (add) dynamic components
   Components.setUpQueuesStatusWriter(setupObject);
   Components.setUpQueuesStatus(setupObject);
@@ -94,15 +97,12 @@ const setUpComponents = (
   Channels.setupLineChatChannel();
 
   setUpViewMaskedVoiceNumber();
-  maskMessageListWithIdentifiers();
 
   setUpTransferComponents();
   Channels.setUpIncomingTransferMessage();
 
   Components.setUpCaseList();
   if (featureFlags.enable_client_profiles) Components.setUpClientProfileList();
-
-  if (!Boolean(setupObject.helpline)) Components.setUpDeveloperComponents(translateUI); // utilities for developers only
 
   // remove dynamic components
   Components.removeTaskCanvasHeaderActions(featureFlags);
@@ -113,12 +113,9 @@ const setUpComponents = (
   Components.setUpStandaloneSearch();
   setUpReferrableResources();
   setUpCounselorToolkits();
-  if (featureFlags.enable_aselo_messaging_ui) {
-    Components.replaceTwilioMessageInput();
-  } else {
-    if (featureFlags.enable_emoji_picker) Components.setupEmojiPicker();
-    if (featureFlags.enable_canned_responses) Components.setupCannedResponses();
-  }
+
+  if (featureFlags.enable_emoji_picker) Components.setupEmojiPicker();
+  if (featureFlags.enable_canned_responses) Components.setupCannedResponses();
 
   TeamsView.setUpAgentColumn();
   TeamsView.setUpStatusColumn();
@@ -127,7 +124,13 @@ const setUpComponents = (
   TeamsView.setUpTeamsViewFilters();
   TeamsView.setUpWorkerDirectoryFilters();
 
+  if (featureFlags.enable_switchboarding) {
+    QueuesView.setUpSwitchboard();
+  }
+
   if (featureFlags.enable_conferencing) setupConferenceComponents();
+
+  if (featureFlags.enable_language_selector) Components.setupWorkerLanguageSelect();
 };
 
 const setUpActions = (
@@ -139,7 +142,6 @@ const setUpActions = (
 
   // bind setupObject to the functions that requires some initialization
   const wrapupOverride = ActionFunctions.wrapupTask(setupObject, getMessage);
-  const beforeCompleteAction = ActionFunctions.beforeCompleteTask(featureFlags);
 
   Flex.Actions.addListener('afterAcceptTask', ActionFunctions.afterAcceptTask(featureFlags, setupObject, getMessage));
 
@@ -154,8 +156,6 @@ const setUpActions = (
   Flex.Actions.replaceAction('WrapupTask', wrapupOverride);
 
   Flex.Actions.replaceAction('CompleteTask', ActionFunctions.completeTaskOverride);
-
-  Flex.Actions.addListener('beforeCompleteTask', beforeCompleteAction);
 
   Flex.Actions.addListener('afterCompleteTask', ActionFunctions.afterCompleteTask);
 
@@ -190,13 +190,13 @@ export default class HrmFormPlugin extends FlexPlugin {
     await validateAndSetPermissionRules();
     await ActionFunctions.loadCurrentDefinitionVersion();
 
-    setUpSharedStateClient();
+    setUpSyncClient();
 
     /*
      * localization setup (translates the UI if necessary)
      */
-    const { translateUI, getMessage } = setUpLocalization(config);
-    setUpComponents(featureFlags, config, translateUI);
+    const { getMessage } = setUpLocalization(config);
+    setUpComponents(featureFlags, config);
     setUpActions(featureFlags, config, getMessage);
 
     TaskRouterListeners.setTaskWrapupEventListeners(featureFlags);

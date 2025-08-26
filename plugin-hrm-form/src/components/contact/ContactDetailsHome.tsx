@@ -19,12 +19,13 @@ import React, { useEffect, useMemo } from 'react';
 import { format } from 'date-fns';
 import { Actions, Icon, Insights, Template } from '@twilio/flex-ui';
 import { useDispatch, useSelector } from 'react-redux';
-import { callTypes, DataCallTypes, isNonSaveable } from 'hrm-form-definitions';
+import { callTypes, DataCallTypes } from 'hrm-types';
+import { isNonSaveable } from 'hrm-form-definitions';
 import { Edit } from '@material-ui/icons';
 import { Grid } from '@material-ui/core';
 
 import { useProfile } from '../../states/profile/hooks';
-import { Box, Flex } from '../../styles';
+import { Box, Flex, TertiaryButton } from '../../styles';
 import {
   Contact,
   ContactRawJson,
@@ -35,12 +36,13 @@ import {
   RouterTask,
   StandaloneITask,
 } from '../../types/types';
-import { ContactAddedFont, ContactDetailsIcon, SectionActionButton } from '../search/styles';
+import { ContactAddedFont, ContactDetailsIcon } from '../search/styles';
 import ContactDetailsSection from './ContactDetailsSection';
 import { SectionEntry, SectionEntryValue } from '../common/forms/SectionEntry';
 import { channelTypes, isChatChannel, isVoiceChannel } from '../../states/DomainConstants';
 import { isNonDataCallType } from '../../states/validationRules';
-import { formatCategories, formatDuration, mapChannelForInsights } from '../../utils';
+import { formatCategories, formatDuration } from '../../utils/formatters';
+import { mapChannelForInsights } from '../../utils/mappers';
 import { ContactDetailsSections, ContactDetailsSectionsType } from '../common/ContactDetails';
 import { RootState } from '../../states';
 import { DetailsContext, toggleDetailSectionExpanded } from '../../states/contacts/contactDetails';
@@ -56,7 +58,7 @@ import ContactRemovedFromCaseBanner from '../caseMergingBanners/ContactRemovedFr
 import { selectCaseMergingBanners } from '../../states/case/caseBanners';
 import { isSmsChannelType } from '../../utils/groupedChannels';
 import getCanEditContact from '../../permissions/canEditContact';
-import AddCaseButton from '../AddCaseButton';
+import AddCaseButton from '../tabbedForms/AddCaseButton';
 import openNewCase from '../case/openNewCase';
 import { formatCsamReport, formatResourceReferral } from './helpers';
 import ContactInProgressBanners from './ContactInProgressBanners';
@@ -158,7 +160,7 @@ const ContactDetailsHome: React.FC<Props> = function ({
 
   const isDraft = !savedContact.finalizedAt;
 
-  const { callType, categories } = rawJson;
+  const { callType, categories, hangUpBy } = rawJson;
 
   const auditMessage = (timestampText: string, workerSid: string, templateKey: string) => {
     if (timestampText && workerSid) {
@@ -213,12 +215,12 @@ const ContactDetailsHome: React.FC<Props> = function ({
   const EditIcon = ContactDetailsIcon(Edit);
 
   const externalReportButton = () => (
-    <SectionActionButton padding="0" type="button" onClick={() => createDraftCsamReport()}>
+    <TertiaryButton type="button" onClick={() => createDraftCsamReport()}>
       <EditIcon style={{ fontSize: '14px', padding: '-1px 6px 0 6px', marginRight: '6px' }} />
       <Grid item xs={12}>
         <Template code="ContactDetails-GeneralDetails-externalReport" />
       </Grid>
-    </SectionActionButton>
+    </TertiaryButton>
   );
 
   const loadConversationIntoOverlay = async () => {
@@ -267,10 +269,10 @@ const ContactDetailsHome: React.FC<Props> = function ({
   };
 
   const profileLink = featureFlags.enable_client_profiles && !isProfileRoute && savedContact.profileId && canView && (
-    <SectionActionButton padding="0" type="button" onClick={() => openProfileModal(savedContact.profileId)}>
+    <TertiaryButton type="button" onClick={() => openProfileModal(savedContact.profileId)}>
       <Icon icon="DefaultAvatar" />
       <Template code="Profile-ViewClient" />
-    </SectionActionButton>
+    </TertiaryButton>
   );
 
   const addedToCaseBanner = () => <ContactAddedToCaseBanner taskId={task.taskSid} contactId={savedContact.id} />;
@@ -337,6 +339,11 @@ const ContactDetailsHome: React.FC<Props> = function ({
         {addedBy && addedBy !== twilioWorkerId && (
           <SectionEntry descriptionKey="ContactDetails-GeneralDetails-AddedBy">
             <SectionEntryValue value={addedBy} />
+          </SectionEntry>
+        )}
+        {hangUpBy && (
+          <SectionEntry descriptionKey="ContactDetails-GeneralDetails-HangUpBy">
+            <SectionEntryValue value={`ContactDetails-GeneralDetails-HangUpBy/${hangUpBy}`} />
           </SectionEntry>
         )}
       </ContactDetailsSection>

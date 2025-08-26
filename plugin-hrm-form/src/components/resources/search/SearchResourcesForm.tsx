@@ -34,7 +34,7 @@ import {
   FormSelectWrapper,
   Row,
   SearchFormTopRule,
-  StyledNextStepButton,
+  PrimaryButton,
 } from '../../../styles';
 import {
   ResourcesSearchFormArea,
@@ -406,27 +406,24 @@ const SearchResourcesForm: React.FC<Props> = ({
       <BottomButtonBar>
         <SearchFormClearButton
           type="button"
-          secondary="true"
           roundCorners={true}
           onClick={() => {
             setGeneralSearchTermBoxText('');
             resetSearch();
           }}
-          style={{
-            opacity: hasValidSearchSettings() ? 1 : 0.3,
-          }}
+          disabled={!hasValidSearchSettings()}
         >
           <Template code="Search-ClearFormButton" />
         </SearchFormClearButton>
-        <StyledNextStepButton
-          style={{ opacity: hasValidSearchSettings() ? 1 : 0.3 }}
+        <PrimaryButton
+          disabled={!hasValidSearchSettings()}
           type="button"
           roundCorners={true}
           onClick={() => submitSearchIfValid()}
           data-testid="search-button"
         >
           <Template code="SearchForm-Button" />
-        </StyledNextStepButton>
+        </PrimaryButton>
       </BottomButtonBar>
     </ResourcesSearchFormContainer>
   );

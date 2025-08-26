@@ -20,46 +20,35 @@ import {
 } from '../taskrouter/taskrouterEventHandler';
 import { AccountSID, TaskSID } from '../twilioTypes';
 import { Twilio } from 'twilio';
-import { retrieveFeatureFlags } from '../configuration/aseloConfiguration';
 import { TASK_CREATED } from '../taskrouter/eventTypes';
 import { getChatServiceSid, getWorkspaceSid } from '../configuration/twilioConfiguration';
 
 type RelevantTaskAttributes = {
   isContactlessTask?: boolean;
-  channelType?: string;
-  customChannelType?: string;
 };
 
 const isTaskThatNeedsToBeAddedToChannelAttributes = async (
   taskSid: TaskSID,
-  { isContactlessTask, channelType, customChannelType }: RelevantTaskAttributes,
-  client: Twilio,
+  taskChannelUniqueName: string,
+  { isContactlessTask }: RelevantTaskAttributes,
 ): Promise<boolean> => {
-  if (isContactlessTask || (channelType || customChannelType) !== 'web') {
+  if (isContactlessTask || taskChannelUniqueName !== 'chat') {
     console.debug(
-      `Task ${taskSid} not suitable to add to channel attributes, isContactlessTask: ${isContactlessTask}, channelType: ${channelType}, customChannelType: ${customChannelType}`,
+      `Task ${taskSid} not suitable to add to channel attributes, isContactlessTask: ${isContactlessTask}, taskChannelUniqueName: ${taskChannelUniqueName}`,
     );
     return false;
   }
 
-  const { lambda_task_created_handler: lambdaTaskCreatedHandler } =
-    await retrieveFeatureFlags(client);
-  if (!lambdaTaskCreatedHandler) {
-    console.debug(
-      `Feature flag lambda_task_created_handler is enabled. Skipping addTaskSidToChannelAttributes for ${taskSid}, it will be handled in Twilio Serverless.`,
-    );
-    return false;
-  }
   return true;
 };
 
-const addTaskSidToChannelAttributes: TaskRouterEventHandler = async (
+export const addTaskSidToChannelAttributes: TaskRouterEventHandler = async (
   event: EventFields,
   accountSid: AccountSID,
   client: Twilio,
 ) => {
   console.debug('addTaskSidToChannelAttributes execution starts');
-  const { TaskSid, TaskAttributes } = event;
+  const { TaskSid, TaskAttributes, TaskChannelUniqueName: taskChannelUniqueName } = event;
 
   if (TaskSid === undefined) {
     throw new Error('TaskSid missing in event object');
@@ -71,8 +60,8 @@ const addTaskSidToChannelAttributes: TaskRouterEventHandler = async (
   if (
     !(await isTaskThatNeedsToBeAddedToChannelAttributes(
       taskSid,
+      taskChannelUniqueName,
       eventTaskAttributes,
-      client,
     ))
   ) {
     return;
@@ -83,15 +72,25 @@ const addTaskSidToChannelAttributes: TaskRouterEventHandler = async (
     await getChatServiceSid(accountSid),
   ]);
 
-  const task = await client.taskrouter.v1.workspaces(workspaceSid).tasks(TaskSid).fetch();
+  const task = await client.taskrouter.v1.workspaces
+    .get(workspaceSid)
+    .tasks.get(TaskSid)
+    .fetch();
 
   const { channelSid, conversationSid } = JSON.parse(task.attributes);
 
   if (conversationSid) {
     // Fetch channel to update with a taskId
-    const conversation = await client.conversations.v1
-      .conversations(conversationSid)
+    const conversation = await client.conversations.v1.conversations
+      .get(conversationSid)
       .fetch();
+
+    if (conversation.state === 'closed') {
+      console.warn(
+        `Attempting to add taskSid ${TaskSid} to closed conversation ${conversationSid}, closed conversations cannot be updated.`,
+      );
+      return;
+    }
 
     const conversationAttributes = JSON.parse(conversation.attributes);
 
@@ -113,9 +112,9 @@ const addTaskSidToChannelAttributes: TaskRouterEventHandler = async (
   }
 
   // Fetch channel to update with a taskId
-  const channel = await client.chat.v2
-    .services(chatServiceSid)
-    .channels(channelSid)
+  const channel = await client.chat.v2.services
+    .get(chatServiceSid)
+    .channels.get(channelSid)
     .fetch();
 
   const channelAttributes = JSON.parse(channel.attributes);

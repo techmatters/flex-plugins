@@ -22,15 +22,17 @@ import { BLANK_CONTACT } from './testContacts';
 import { EventFields } from '../../../src/taskrouter';
 import { getSsmParameter } from '../../../src/ssmCache';
 import { handleEvent } from '../../../src/hrm/createHrmContactTaskRouterListener';
-import { populateHrmContactFormFromTask } from '../../../src/hrm/populateHrmContactFormFromTask';
+import { populateHrmContactFormFromTaskByKeys } from '../../../src/hrm/populateHrmContactFormFromTaskByKeys';
 import {
   TEST_ACCOUNT_SID,
   TEST_CONTACT_ID,
+  TEST_RESERVATION_FOR_TEST_WORKER_ON_TEST_TASK_SID,
   TEST_TASK_SID,
   TEST_WORKER_SID,
   TEST_WORKSPACE_SID,
 } from '../../testTwilioValues';
 import { setConfigurationAttributes } from '../mockServiceConfiguration';
+import { newOk } from '../../../src/Result';
 
 const mockFetch: jest.MockedFunction<typeof fetch> = jest.fn();
 global.fetch = mockFetch;
@@ -42,12 +44,12 @@ const mockGetSsmParameter = getSsmParameter as jest.MockedFunction<
   typeof getSsmParameter
 >;
 
-jest.mock('../../../src/hrm/populateHrmContactFormFromTask', () => ({
-  populateHrmContactFormFromTask: jest.fn(),
+jest.mock('../../../src/hrm/populateHrmContactFormFromTaskByKeys', () => ({
+  populateHrmContactFormFromTaskByKeys: jest.fn(),
 }));
 const mockPopulateHrmContactFormFromTask =
-  populateHrmContactFormFromTask as jest.MockedFunction<
-    typeof populateHrmContactFormFromTask
+  populateHrmContactFormFromTaskByKeys as jest.MockedFunction<
+    typeof populateHrmContactFormFromTaskByKeys
   >;
 
 const newEventFields = (
@@ -94,6 +96,18 @@ describe('handleEvent', () => {
                         return {
                           update: mockUpdateTask as TaskContext['update'],
                           fetch: mockFetchTask as TaskContext['fetch'],
+                          reservations: {
+                            list: async () => {
+                              return [
+                                {
+                                  sid: TEST_RESERVATION_FOR_TEST_WORKER_ON_TEST_TASK_SID,
+                                  reservationStatus: 'pending',
+                                  workerName: 'workerName',
+                                  workerSid: TEST_WORKER_SID,
+                                },
+                              ];
+                            },
+                          },
                         } as TaskContext;
                       } else throw new Error(`Unexpected task SID: ${taskSid}`);
                     },
@@ -124,10 +138,12 @@ describe('handleEvent', () => {
         id: TEST_CONTACT_ID,
       }),
     } as Response);
-    mockPopulateHrmContactFormFromTask.mockResolvedValue({
-      ...BLANK_CONTACT,
-      id: TEST_CONTACT_ID,
-    });
+    mockPopulateHrmContactFormFromTask.mockResolvedValue(
+      newOk({
+        ...BLANK_CONTACT,
+        id: TEST_CONTACT_ID,
+      }),
+    );
   });
 
   test('offline contact task - does nothing', async () => {
@@ -138,28 +154,26 @@ describe('handleEvent', () => {
     expect(mockUpdateTask).not.toHaveBeenCalled();
   });
 
-  test('transfer task - does nothing', async () => {
+  test('transfer task - sets sidWithTaskControl to reservation sid for worker', async () => {
     const eventFields = newEventFields({ transferTargetType: 'queue' });
     setTaskReturnedByFetch(eventFields);
     await handleEvent(eventFields, TEST_ACCOUNT_SID, twilioClient);
+    const originalAttributes = JSON.parse(eventFields.TaskAttributes);
     expect(mockFetch).not.toHaveBeenCalled();
-    expect(mockUpdateTask).not.toHaveBeenCalled();
+    expect(mockUpdateTask).toHaveBeenCalledWith(
+      expect.objectContaining({
+        attributes: JSON.stringify({
+          ...originalAttributes,
+          transferMeta: {
+            ...originalAttributes.transferMeta,
+            sidWithTaskControl: TEST_RESERVATION_FOR_TEST_WORKER_ON_TEST_TASK_SID,
+          },
+        }),
+      }),
+    );
   });
 
-  test('enable_backend_hrm_contact_creation not set - does nothing', async () => {
-    twilioClient = setConfigurationAttributes(twilioClient, {
-      feature_flags: {
-        enable_backend_hrm_contact_creation: false,
-      },
-    });
-    const eventFields = newEventFields({});
-    setTaskReturnedByFetch(eventFields);
-    await handleEvent(eventFields, TEST_ACCOUNT_SID, twilioClient);
-    expect(mockFetch).not.toHaveBeenCalled();
-    expect(mockUpdateTask).not.toHaveBeenCalled();
-  });
-
-  test('enable_backend_hrm_contact_creation set, not a transfer or offline contact - creates contact and updates task attributes with contact ID', async () => {
+  test('not a transfer or offline contact - creates contact and updates task attributes with contact ID', async () => {
     const eventFields = newEventFields({});
     setTaskReturnedByFetch(eventFields);
     await handleEvent(eventFields, TEST_ACCOUNT_SID, twilioClient);

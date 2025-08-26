@@ -1,197 +1,183 @@
 ${
-  jsonencode(
-  {
-    "description": flow_description,
-    "states": [
-      {
-        "name": "Trigger",
-        "type": "trigger",
-        "transitions": [
-          {
-            "event": "incomingMessage"
-          },
-          {
-            "next": "getProfileFlagsForIdentifier",
-            "event": "incomingCall"
-          },
-          {
-            "event": "incomingConversationMessage"
-          },
-          {
-            "event": "incomingRequest"
-          },
-          {
-            "event": "incomingParent"
-          }
-        ],
-        "properties": {
-          "offset": {
-            "x": 0,
-            "y": -10
-          }
+  jsonencode({
+  "description": "${flow_description}",
+  "states": [
+    {
+      "name": "Trigger",
+      "type": "trigger",
+      "transitions": [
+        {
+          "event": "incomingMessage"
+        },
+        {
+          "next": "country_check",
+          "event": "incomingCall"
+        },
+        {
+          "event": "incomingConversationMessage"
+        },
+        {
+          "event": "incomingRequest"
+        },
+        {
+          "event": "incomingParent"
         }
-      },
-      {
-        "name": "SendCallToAgent",
-        "type": "send-to-flex",
-        "transitions": [
-          {
-            "event": "callComplete"
-          },
-          {
-            "next": "webhook_notify_error",
-            "event": "failedToEnqueue"
-          },
-          {
-            "next": "webhook_notify_error",
-            "event": "callFailure"
-          }
-        ],
-        "properties": {
-          "waitUrl": channel_flow_vars["busy_message_url"],
-          "offset": {
-            "x": 460,
-            "y": 1670
-          },
-          "workflow": workflow_sids["master"],
-          "channel": task_channel_sids["voice"],
-          "attributes":channel_attributes["default"]
-          "waitUrlMethod": "GET"
+      ],
+      "properties": {
+        "offset": {
+          "x": 0,
+          "y": -10
         }
-      },
-      {
-        "name": "say_welcome_message",
-        "type": "say-play",
-        "transitions": [
-          {
-            "next": "SendCallToAgent",
-            "event": "audioComplete"
-          }
-        ],
-        "properties": {
-          "offset": {
-            "x": 380,
-            "y": 1390
-          },
-          "loop": 1,
-          "play": channel_flow_vars["welcome_message_url"]
+      }
+    },
+    {
+      "name": "SendCallToAgent",
+      "type": "send-to-flex",
+      "transitions": [
+        {
+          "event": "callComplete"
+        },
+        {
+          "next": "webhook_notify_error",
+          "event": "failedToEnqueue"
+        },
+        {
+          "next": "webhook_notify_error",
+          "event": "callFailure"
         }
-      },
-      {
-        "name": "check_operating_hours",
-        "type": "run-function",
-        "transitions": [
-          {
-            "next": "split_status",
-            "event": "success"
-          },
-          {
-            "next": "webhook_notify_error",
-            "event": "fail"
-          }
-        ],
-        "properties": {
-          "service_sid": flow_vars["service_sid"],
-          "environment_sid": flow_vars["environment_sid"],
-          "offset": {
-            "x": 70,
-            "y": 750
-          },
-          "function_sid": flow_vars["operating_hours_function_sid"]
-          "parameters": [
+      ],
+      "properties": {
+        "waitUrl": "${channel_flow_vars.busy_message_url}",
+        "offset": {
+          "x": 460,
+          "y": 1670
+        },
+        "workflow": "${workflow_sids.master}",
+        "channel": "${task_channel_sids.voice}",
+        "attributes": "${channel_attributes.default}",
+        "waitUrlMethod": "GET"
+      }
+    },
+    {
+      "name": "say_welcome_message",
+      "type": "say-play",
+      "transitions": [
+        {
+          "next": "SendCallToAgent",
+          "event": "audioComplete"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 380,
+          "y": 1390
+        },
+        "loop": 1,
+        "play": "${channel_flow_vars.welcome_message_url}"
+      }
+    },
+    {
+      "name": "checkOperatingHours",
+      "type": "make-http-request",
+      "transitions": [
+        {
+          "next": "split_status",
+          "event": "success"
+        },
+        {
+          "next": "webhook_notify_error",
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 70,
+          "y": 750
+        },
+        "method": "POST",
+        "content_type": "application/json;charset=utf-8",
+        "add_twilio_auth": false,
+        "body": "{\"channel\": \"voice\", \"includeMessageTextInResponse\": \"true\", \"language\": \"${task_language}\"}",
+        "url": "${get_profile_flags_for_identifier_base_url}/operatingHours"
+      }
+    },
+    {
+      "name": "split_status",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "webhook_notify_error",
+          "event": "noMatch"
+        },
+        {
+          "next": "say_welcome_message",
+          "event": "match",
+          "conditions": [
             {
-              "value": "voice",
-              "key": "channel"
-            },
-            {
-              "value": "true",
-              "key": "includeMessageTextInResponse"
-            },
-            {
-              "value": task_language,
-              "key": "language"
+              "friendly_name": "If value equal_to open",
+              "arguments": [
+                "{{widgets.checkOperatingHours.parsed.status}}"
+              ],
+              "type": "equal_to",
+              "value": "open"
             }
-          ],
-          "url": "${serverless_url}/operatingHours"
+          ]
+        },
+        {
+          "next": "send_closed",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If matches_any_of closed,holiday",
+              "arguments": [
+                "{{widgets.checkOperatingHours.parsed.status}}"
+              ],
+              "type": "matches_any_of",
+              "value": "closed,holiday"
+            }
+          ]
         }
-      },
-      {
-        "name": "split_status",
-        "type": "split-based-on",
-        "transitions": [
-          {
-            "next": "webhook_notify_error",
-            "event": "noMatch"
-          },
-          {
-            "next": "say_welcome_message",
-            "event": "match",
-            "conditions": [
-              {
-                "friendly_name": "If value equal_to open",
-                "arguments": [
-                  "{{widgets.check_operating_hours.parsed.status}}"
-                ],
-                "type": "equal_to",
-                "value": "open"
-              }
-            ]
-          },
-          {
-            "next": "send_closed",
-            "event": "match",
-            "conditions": [
-              {
-                "friendly_name": "If matches_any_of closed,holiday",
-                "arguments": [
-                  "{{widgets.check_operating_hours.parsed.status}}"
-                ],
-                "type": "matches_any_of",
-                "value": "closed,holiday"
-              }
-            ]
-          }
-        ],
-        "properties": {
-          "input": "{{widgets.check_operating_hours.parsed.status}}",
-          "offset": {
-            "x": 190,
-            "y": 1040
-          }
+      ],
+      "properties": {
+        "input": "{{widgets.checkOperatingHours.parsed.status}}",
+        "offset": {
+          "x": 190,
+          "y": 1040
         }
-      },
-      {
-        "name": "webhook_notify_error",
-        "type": "make-http-request",
-        "transitions": [
-          {
-            "event": "success"
-          },
-          {
-            "event": "failed"
-          }
-        ],
-        "properties": {
-          "offset": {
-            "x": -30,
-            "y": 1940
-          },
-          "method": "POST",
-          "content_type": "application/json;charset=utf-8",
-          "body": "{ \"text\": \"Issue detected on ${short_helpline} ${short_environment} Flow SID: {{flow.flow_sid}} Execution SID: {{flow.sid}}  \" }",
-          "url": webhook_url_studio_errors
+      }
+    },
+    {
+      "name": "webhook_notify_error",
+      "type": "make-http-request",
+      "transitions": [
+        {
+          "event": "success"
+        },
+        {
+          "event": "failed"
         }
-      },
-      {
-        "name": "send_closed",
-        "type": "say-play",
-        "transitions": [
-          {
-            "event": "audioComplete"
-          }
-        ],
-        "properties": {
-        "play": channel_flow_vars["closed_message_url"],
+      ],
+      "properties": {
+        "offset": {
+          "x": -30,
+          "y": 1940
+        },
+        "method": "POST",
+        "content_type": "application/json;charset=utf-8",
+        "body": "{ \"text\": \"Issue detected on ${short_helpline} ${short_environment} Flow SID: {{flow.flow_sid}} Execution SID: {{flow.sid}}  \" }",
+        "url": "${webhook_url_studio_errors}"
+      }
+    },
+    {
+      "name": "send_closed",
+      "type": "say-play",
+      "transitions": [
+        {
+          "event": "audioComplete"
+        }
+      ],
+      "properties": {
+        "play": "${channel_flow_vars.closed_message_url}",
         "offset": {
           "x": 700,
           "y": 1410
@@ -228,7 +214,7 @@ ${
       "type": "split-based-on",
       "transitions": [
         {
-          "next": "check_operating_hours",
+          "next": "checkOperatingHours",
           "event": "noMatch"
         },
         {
@@ -264,20 +250,50 @@ ${
       ],
       "properties": {
         "voice": "default",
-          "offset": {
-            "x": 590,
-            "y": 710
-          },
-          "loop": 1,
-          "play": channel_flow_vars["busy_message_url"],
-          "language": channel_flow_vars["voice_ivr_language"]
+        "offset": {
+          "x": 590,
+          "y": 710
+        },
+        "loop": 1,
+        "play": "${channel_flow_vars.busy_message_url}",
+        "language": "${channel_flow_vars.voice_ivr_language}"
+      }
+    },
+    {
+      "name": "country_check",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "getProfileFlagsForIdentifier",
+          "event": "noMatch"
+        },
+        {
+          "next": "blocked",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value does_not_start_with +65",
+              "arguments": [
+                "{{trigger.call.From}}"
+              ],
+              "type": "does_not_start_with",
+              "value": "+65"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{trigger.call.From}}",
+        "offset": {
+          "x": 500,
+          "y": 180
         }
       }
-    ],
-    "initial_state": "Trigger",
-    "flags": {
-      "allow_concurrent_calls": true
     }
+  ],
+  "initial_state": "Trigger",
+  "flags": {
+    "allow_concurrent_calls": true
   }
-)
+})
 }

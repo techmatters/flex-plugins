@@ -1,0 +1,65 @@
+[
+  {
+    "name": "date",
+    "type": "date-input",
+    "label": "Date",
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    },
+    "metadata": {
+      "eventTimestampSource": true
+    },
+    "isPII": false
+  },
+  {
+    "name": "referredTo",
+    "label": "referredTo",
+    "type": "input",
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    },
+    "isPII": true
+  },
+  {
+    "name": "contactName",
+    "label": "contactName",
+    "type": "input",
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    },
+    "isPII": true
+  },
+  {
+    "name": "contactLocation",
+    "label": "contactLocation",
+    "type": "input",
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    },
+    "isPII": true
+  },
+  {
+    "name": "badgeNumber",
+    "label": "badgeNumber",
+    "type": "input",
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    },
+    "isPII": true
+  },
+  {
+    "name": "phone",
+    "label": "Phone",
+    "type": "input",
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    },
+    "isPII": true
+  }
+]

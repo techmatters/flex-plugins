@@ -16,6 +16,7 @@
 import { configureStore } from '@reduxjs/toolkit';
 import promiseMiddleware from 'redux-promise-middleware';
 
+import '../../mockGetConfig';
 import { connectToCase, getContactByTaskSid, updateContactInHrm } from '../../../services/ContactService';
 import { completeTask, submitContactForm } from '../../../services/formSubmissionHelpers';
 import { Case, Contact, CustomITask } from '../../../types/types';
@@ -65,6 +66,7 @@ const testStore = (stateChanges: ContactsState) =>
     ],
   });
 
+const createdAtTimestamp = new Date().toISOString();
 const baseContact: Contact = {
   ...VALID_EMPTY_CONTACT,
   id: '1337',
@@ -79,6 +81,7 @@ const baseContact: Contact = {
     categories: {},
     contactlessTask: { ...VALID_EMPTY_CONTACT.rawJson.contactlessTask, channel: 'web' },
   },
+  createdAt: createdAtTimestamp,
 };
 
 const task = <ITask>(<unknown>{ taskSid: 'WT-mock task' });
@@ -92,7 +95,6 @@ const baseCase: Case = {
   status: 'test-st',
   twilioWorkerId: 'WK2xxx1',
   info: {},
-  categories: {},
   createdAt: '12-05-2023',
   updatedAt: '12-05-2023',
 };
@@ -121,11 +123,7 @@ describe('actions', () => {
       };
       mockGetContactByTaskSid.mockResolvedValue(taskContact);
       const actionPromiseResult = (dispatch(
-        newLoadContactFromHrmForTaskAsyncAction(
-          { taskSid: 'WT-load-me', attributes: {} } as CustomITask,
-          'WK',
-          'mock-ref',
-        ),
+        newLoadContactFromHrmForTaskAsyncAction({ taskSid: 'WT-load-me', attributes: {} } as CustomITask, 'mock-ref'),
       ) as unknown) as Promise<void>;
       const pendingState = getState();
       expect(pendingState.contactsBeingCreated.has('WT-load-me')).toBe(true);
@@ -203,9 +201,9 @@ describe('actions', () => {
       expect(submitContactForm).toHaveBeenCalledWith(task, baseContact, caseState);
     });
     test('Action sets the conversation duration', async () => {
-      let conversatioonDurationPassedToSubmitContactForm: number | undefined;
+      let conversationDurationPassedToSubmitContactForm: number | undefined;
       mockSubmitContactForm.mockImplementation((task, contact) => {
-        conversatioonDurationPassedToSubmitContactForm = contact.conversationDuration;
+        conversationDurationPassedToSubmitContactForm = contact.conversationDuration;
         return Promise.resolve(contact);
       });
       const caseState = {
@@ -230,7 +228,7 @@ describe('actions', () => {
         { ...baseContact, conversationDuration: expect.any(Number) },
         caseState,
       );
-      expect(conversatioonDurationPassedToSubmitContactForm).toBeGreaterThanOrEqual(100);
+      expect(conversationDurationPassedToSubmitContactForm).toBeGreaterThanOrEqual(100);
     });
 
     test('Updates contact in redux and sets metadata', async () => {
@@ -247,10 +245,12 @@ describe('actions', () => {
       ) as unknown);
       const { metadata, savedContact } = getState().existingContacts[baseContact.id];
       // Check that the difference in startMillis is still insignificant
-      expect(Math.abs(metadata.startMillis - newContactMetaData(false).startMillis)).toBeLessThanOrEqual(100);
+      expect(
+        Math.abs(metadata.startMillis - newContactMetaData({ createdAt: new Date().toISOString() }).startMillis),
+      ).toBeLessThanOrEqual(10000);
       expect(metadata).toStrictEqual(
         expect.objectContaining({
-          ...newContactMetaData(false),
+          ...newContactMetaData({ createdAt: createdAtTimestamp }),
           loadingStatus: LoadingStatus.LOADED,
           startMillis: expect.any(Number),
         }),

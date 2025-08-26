@@ -1,0 +1,74 @@
+{
+    "intentName": "post_survey_no",
+    "description": "General es/bots Post Survey bot",
+    "sampleUtterances": [
+        {
+            "utterance": "not"
+        },
+        {
+            "utterance": "n"
+        },
+        {
+            "utterance": "nope"
+        },
+        {
+            "utterance": "nah"
+        },
+        {
+            "utterance": "no"
+        },
+        {
+            "utterance": "2"
+        }
+
+    ],
+    "dialogCodeHook": {
+        "enabled": false
+    },
+    "fulfillmentCodeHook": {
+        "enabled": false,
+        "active": true,
+        "postFulfillmentStatusSpecification": {
+            "successNextStep": {
+                "dialogAction": {
+                    "type": "CloseIntent"
+                },
+                "intent": {}
+            },
+            "failureNextStep": {
+                "dialogAction": {
+                    "type": "CloseIntent"
+                },
+                "intent": {}
+            },
+            "timeoutNextStep": {
+                "dialogAction": {
+                    "type": "CloseIntent"
+                },
+                "intent": {}
+            }
+        }
+    },
+    "slotPriorities": [],
+    "intentClosingSetting": {
+        "closingResponse": {
+            "messageGroups": [
+                {
+                    "message": {
+                        "plainTextMessage": {
+                            "value": "Gracias por contactarnos. No dudes en escribirnos de nuevo cuando necesites ayuda."
+                        }
+                    }
+                }
+            ],
+            "allowInterrupt": true
+        },
+        "active": true,
+        "nextStep": {
+            "dialogAction": {
+                "type": "EndConversation"
+            },
+            "intent": {}
+        }
+    }
+}

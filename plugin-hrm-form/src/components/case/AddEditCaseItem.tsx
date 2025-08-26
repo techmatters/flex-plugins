@@ -30,13 +30,14 @@ import {
   ColumnarBlock,
   ColumnarContent,
   Container,
-  StyledNextStepButton,
+  PrimaryButton,
+  SecondaryButton,
   TwoColumnLayout,
 } from '../../styles';
 import { CaseActionFormContainer } from './styles';
 import ActionHeader from './ActionHeader';
 import { RootState } from '../../states';
-import { createStateItem, CustomHandlers, disperseInputs, splitAt, splitInHalf } from '../common/forms/formGenerators';
+import { CustomHandlers, disperseInputs, splitAt, splitInHalf } from '../common/forms/formGenerators';
 import { useCreateFormFromDefinition } from '../forms';
 import type { Case, CustomITask, StandaloneITask } from '../../types/types';
 import {
@@ -68,6 +69,7 @@ import {
 } from '../../states/case/sections/caseSectionUpdates';
 import { getWorkingCopy } from '../../states/case/sections/workingCopy';
 import { getSectionItemById } from '../../states/case/sections/get';
+import { createStateItem } from '../common/forms/formValues';
 
 export type AddEditCaseItemProps = {
   task: CustomITask | StandaloneITask;
@@ -231,8 +233,11 @@ const AddEditCaseItem: React.FC<AddEditCaseItemProps> = ({
   const checkForEdits = (action: DismissAction) => {
     if (isEqual(workingCopy, savedForm)) {
       close(action);
-    } else setDialogState(action === DismissAction.CLOSE ? DialogState.OPEN_FOR_CLOSE : DialogState.OPEN_FOR_BACK);
+    } else {
+      setDialogState(action === DismissAction.CLOSE ? DialogState.OPEN_FOR_CLOSE : DialogState.OPEN_FOR_BACK);
+    }
   };
+
   return (
     <FormProvider {...methods}>
       <NavigableContainer
@@ -269,25 +274,24 @@ const AddEditCaseItem: React.FC<AddEditCaseItemProps> = ({
         <BottomButtonBar>
           {currentRoute.action === CaseItemAction.Add && (
             <Box marginRight="15px">
-              <StyledNextStepButton
+              <SecondaryButton
                 data-testid="Case-AddEditItemScreen-SaveAndAddAnotherItem"
-                secondary="true"
                 roundCorners
                 onClick={methods.handleSubmit(saveAndStay, onError)}
                 disabled={isUpdating}
               >
                 <Template code={`CaseSection-BottomBar-SaveAndAddAnother/${sectionTypeName}`} />
-              </StyledNextStepButton>
+              </SecondaryButton>
             </Box>
           )}
-          <StyledNextStepButton
+          <PrimaryButton
             data-testid="Case-AddEditItemScreen-SaveItem"
             roundCorners
             onClick={methods.handleSubmit(() => saveAndLeave(DismissAction.BACK), onError)}
             disabled={isUpdating}
           >
             <Template code={`CaseSection-BottomBar-Save/${sectionTypeName}`} />
-          </StyledNextStepButton>
+          </PrimaryButton>
         </BottomButtonBar>
         <CloseCaseDialog
           data-testid="CloseCaseDialog"

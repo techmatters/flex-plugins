@@ -50,18 +50,30 @@ test.describe.serial('Open and Edit a Case in Case List page', () => {
     console.log('Open Case List page');
     let page = caseList(pluginPage);
 
-    await page.filterCases('Status', 'Open');
-    // await page.filterCases('Counselor', 'Aselo Alerts');
+    // Wait for the case list to be fully loaded before applying filters
+    await pluginPage.waitForSelector('tr[data-testid="CaseList-TableRow"]', { timeout: 30000 });
+    console.log('Case list rows are visible, proceeding with filtering');
 
-    //for Categories filter, 2 valid options are required
-    await page.filterCases('Categories', 'Accessibility', 'Education');
+    try {
+      await page.filterCases('status', 'Open');
+      console.log('Successfully filtered by Open status');
+
+      // Add a short delay to ensure the first filter is fully applied
+      await pluginPage.waitForTimeout(1000);
+
+      await page.filterCases('counselor', 'Aselo Alerts');
+      console.log('Successfully filtered by counselor Aselo Alerts');
+    } catch (error) {
+      console.error('Error during filtering:', error);
+      throw error;
+    }
 
     const caseHomePage = await page.openFirstCaseButton();
 
     // Open notifications cover up the print icon :facepalm
     await notificationBar(pluginPage).dismissAllNotifications();
 
-    await page.viewClosePrintView();
+    await caseHomePage.viewClosePrintView();
 
     await caseHomePage.addCaseSection({
       sectionTypeId: 'note',
@@ -83,16 +95,16 @@ test.describe.serial('Open and Edit a Case in Case List page', () => {
       },
     });
 
-    await page.editCase();
+    await caseHomePage.clickEditCase();
 
-    await page.updateCaseSummary();
+    await caseHomePage.updateCaseSummary();
 
-    await page.verifyCaseSummaryUpdated();
+    await caseHomePage.verifyCaseSummaryUpdated();
 
-    await page.verifyCasePrintButtonIsVisible();
-    await page.verifyCategoryTooltipIsVisible();
+    await caseHomePage.verifyCasePrintButtonIsVisible();
+    await caseHomePage.verifyCategoryTooltipIsVisible();
 
-    await page.closeModal();
-    console.log('Closed Case');
+    await caseHomePage.closeModal();
+    console.debug('Closed Case');
   });
 });

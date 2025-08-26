@@ -1,0 +1,64 @@
+{
+  "slotTypeName": "yes_no",
+  "slotTypeValues": [
+    {
+      "sampleValue": {
+        "value": "No"
+      },
+      "synonyms": [
+        {
+          "value": "De ninguna manera"
+        },
+        {
+          "value": "Negativo"
+        },
+        {
+          "value": "No"
+        },
+        {
+          "value": "2"
+        },
+        {
+          "value": "Incorrecto"
+        },
+        {
+          "value": "¡Nunca!"
+        }
+      ]
+    },
+    {
+      "sampleValue": {
+        "value": "Yes"
+      },
+      "synonyms": [
+        {
+          "value": "Correcto"
+        },
+        {
+          "value": "Por supuesto"
+        },
+        {
+          "value": "Si"
+        },
+        {
+          "value": "Sí"
+        },
+        {
+          "value": "Afirmativo"
+        },
+        {
+          "value": "Claro"
+        },
+        {
+          "value": "¡Sí!"
+        },
+        {
+          "value": "1"
+        }
+      ]
+    }
+  ],
+  "valueSelectionSetting": {
+    "resolutionStrategy": "TopResolution"
+  }
+}

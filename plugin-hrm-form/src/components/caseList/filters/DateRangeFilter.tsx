@@ -29,13 +29,13 @@ import {
   FormRadioInput,
   DialogArrow,
   FiltersDialog,
-  FiltersApplyButton,
   FiltersBottomButtons,
-  FiltersClearButton,
   FiltersDialogTitle,
   MultiSelectButton,
   MultiSelectUnorderedList,
   DateErrorMessage,
+  SecondaryButton,
+  PrimaryButton,
 } from '../../../styles';
 import { DateFilterValue, isExistsDateFilterValue } from '../../../states/caseList/dateFilters';
 
@@ -301,7 +301,11 @@ const DateRangeFilter: React.FC<Props> = ({
                             register(ref);
                           }}
                         />
-                        <Template code={filter.titleKey} {...(filter.titleParameters ?? {})} />
+                        {typeof filter.titleKey === 'string' ? (
+                          <Template code={filter.titleKey} {...(filter.titleParameters ?? {})} />
+                        ) : (
+                          filter.titleKey
+                        )}
                       </FormLabel>
                     </li>
                   );
@@ -371,11 +375,11 @@ const DateRangeFilter: React.FC<Props> = ({
 
             <FiltersBottomButtons>
               <Box marginRight="10px">
-                <FiltersClearButton type="button" name="applyButton" onClick={handleClear}>
+                <SecondaryButton type="button" name="applyButton" onClick={handleClear}>
                   <Template code="CaseList-Filters-Clear" />
-                </FiltersClearButton>
+                </SecondaryButton>
               </Box>
-              <FiltersApplyButton
+              <PrimaryButton
                 type="submit"
                 name="applyButton"
                 ref={ref => {
@@ -386,7 +390,7 @@ const DateRangeFilter: React.FC<Props> = ({
                 disabled={dateValidations.to.invalid || dateValidations.from.invalid}
               >
                 <Template code="CaseList-Filters-Apply" />
-              </FiltersApplyButton>
+              </PrimaryButton>
             </FiltersBottomButtons>
           </form>
         </FiltersDialog>

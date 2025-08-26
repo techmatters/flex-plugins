@@ -20,7 +20,7 @@ import '@testing-library/jest-dom/extend-expect';
 import { Provider } from 'react-redux';
 import configureMockStore from 'redux-mock-store';
 import { StorelessThemeProvider } from '@twilio/flex-ui';
-import { DefinitionVersionId, loadDefinition } from 'hrm-form-definitions';
+import { loadDefinition } from 'hrm-form-definitions';
 
 import { mockLocalFetchDefinitions } from '../mockFetchDefinitions';
 import { mockGetDefinitionsResponse } from '../mockGetConfig';
@@ -56,11 +56,11 @@ beforeEach(() => {
 
 describe('Search Results', () => {
   beforeAll(async () => {
-    const formDefinitionsBaseUrl = buildBaseURL(DefinitionVersionId.v1);
+    const formDefinitionsBaseUrl = buildBaseURL('as-v1');
     await mockFetchImplementation(formDefinitionsBaseUrl);
 
     mockV1 = await loadDefinition(formDefinitionsBaseUrl);
-    mockGetDefinitionsResponse(getDefinitionVersions, DefinitionVersionId.v1, mockV1);
+    mockGetDefinitionsResponse(getDefinitionVersions, 'as-v1', mockV1);
 
     state1 = {
       [namespace]: {
@@ -69,7 +69,7 @@ describe('Search Results', () => {
             list: [],
             hash: { worker1: 'worker1 name' },
           },
-          definitionVersions: { v1: mockV1 },
+          definitionVersions: { 'as-v1': mockV1 },
           currentDefinitionVersion: mockV1,
         },
         activeContacts: {
@@ -92,11 +92,16 @@ describe('Search Results', () => {
           cases: {
             case1: {
               connectedCase: {
+                id: 'case1',
                 createdAt: new Date(1593469560208).toISOString(),
                 twilioWorkerId: 'worker1',
                 status: 'open',
                 info: null,
               },
+              timelines: { 'print-contacts': [] },
+            },
+            case2: {
+              timelines: { 'print-contacts': [] },
             },
           },
         },
@@ -188,7 +193,7 @@ describe('Search Results', () => {
           number: 'Anonymous',
           rawJson: {
             callType: 'Child calling about self',
-            definitionVersion: 'v1',
+            definitionVersion: 'as-v1',
             childInformation: {
               firstName: 'Jill',
               lastName: 'Smith',
@@ -206,6 +211,7 @@ describe('Search Results', () => {
       count: 1,
       cases: [
         {
+          id: 'case1',
           createdAt: '2020-11-23T17:38:42.227Z',
           updatedAt: '2020-11-23T17:38:42.227Z',
           helpline: '',
@@ -271,7 +277,7 @@ describe('Search Results', () => {
           number: 'Anonymous',
           rawJson: {
             callType: 'Child calling about self',
-            definitionVersion: 'v1',
+            definitionVersion: 'as-v1',
             childInformation: {
               firstName: 'Jill',
               lastName: 'Smith',
@@ -289,7 +295,7 @@ describe('Search Results', () => {
           number: 'Anonymous',
           rawJson: {
             callType: 'Child calling about self',
-            definitionVersion: 'v1',
+            definitionVersion: 'as-v1',
             childInformation: {
               firstName: 'Sarah',
               lastName: 'Park',
@@ -314,6 +320,7 @@ describe('Search Results', () => {
             households: [{ household: { name: { firstName: 'Maria', lastName: 'Silva' } } }],
             summary: 'case 1 summary',
           },
+          id: 'case1',
         },
         {
           createdAt: '2020-11-23T17:38:42.227Z',
@@ -323,6 +330,7 @@ describe('Search Results', () => {
             households: [{ household: { name: { firstName: 'John', lastName: 'Doe' } } }],
             summary: 'case 2 summary',
           },
+          id: 'case2',
         },
       ],
     };

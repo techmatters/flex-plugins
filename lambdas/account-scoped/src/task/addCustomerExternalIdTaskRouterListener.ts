@@ -16,29 +16,13 @@
 
 // eslint-disable-next-line prettier/prettier
 import {registerTaskRouterEventHandler, TaskRouterEventHandler} from '../taskrouter/taskrouterEventHandler';
-import { AccountSID, TaskSID, WorkspaceSID } from '../twilioTypes';
+import { AccountSID, TaskSID } from '../twilioTypes';
 import { Twilio } from 'twilio';
 import { TASK_CREATED, TASK_UPDATED } from '../taskrouter/eventTypes';
 import { EventFields } from '../taskrouter';
-import { retrieveFeatureFlags } from '../configuration/aseloConfiguration';
-import { getWorkspaceSid } from '../configuration/twilioConfiguration';
-
-type EnvVars = {
-  TWILIO_WORKSPACE_SID: WorkspaceSID;
-};
-
-const logError = (
-  taskSid: TaskSID,
-  workspaceSid: EnvVars['TWILIO_WORKSPACE_SID'],
-  step: 'fetch' | 'update',
-  errorInstance: Error,
-): void => {
-  const errorMessage = `Error at addCustomerExternalId: task with sid ${taskSid} does not exists in workspace ${workspaceSid} when trying to ${step} it.`;
-  console.error(errorMessage, errorInstance);
-};
+import { patchTaskAttributes } from './patchTaskAttributes';
 
 const isTaskRequiringExternalId = async (
-  client: Twilio,
   taskSid: TaskSID,
   {
     isContactlessTask,
@@ -54,15 +38,6 @@ const isTaskRequiringExternalId = async (
     );
     return false;
   }
-
-  const { lambda_task_created_handler: lambdaTaskCreatedHandler } =
-    await retrieveFeatureFlags(client);
-  if (!lambdaTaskCreatedHandler) {
-    console.debug(
-      `Feature flag lambda_task_created_handler not is enabled. Skipping addCustomerExternalId for ${taskSid}, it will be handled in Twilio Serverless.`,
-    );
-    return false;
-  }
   return true;
 };
 
@@ -74,42 +49,17 @@ const addCustomerExternalId: TaskRouterEventHandler = async (
   const { TaskSid, TaskAttributes } = event;
   const taskSid = TaskSid as TaskSID;
   const eventTaskAttributes = JSON.parse(TaskAttributes);
-  if (!(await isTaskRequiringExternalId(client, taskSid, eventTaskAttributes))) {
+  if (!(await isTaskRequiringExternalId(taskSid, eventTaskAttributes))) {
     return;
   }
 
-  const workspaceSid: WorkspaceSID = await getWorkspaceSid(accountSid);
-  console.info('Adding external_id to task', taskSid);
-
-  if (!taskSid) throw new Error('TaskSid missing in event object');
-
-  let task;
-
-  try {
-    task = await client.taskrouter.v1.workspaces(workspaceSid).tasks(taskSid).fetch();
-  } catch (err) {
-    logError(taskSid, workspaceSid, 'fetch', err as Error);
-    return;
-  }
-
-  const taskAttributes = JSON.parse(task.attributes);
-
-  const newAttributes = {
-    ...taskAttributes,
+  await patchTaskAttributes(client, accountSid, taskSid, originalAttributes => ({
+    ...originalAttributes,
     customers: {
-      ...taskAttributes.customers,
+      ...originalAttributes.customers,
       external_id: taskSid,
     },
-  };
-
-  try {
-    await client.taskrouter.v1
-      .workspaces(workspaceSid)
-      .tasks(taskSid)
-      .update({ attributes: JSON.stringify(newAttributes) });
-  } catch (err) {
-    logError(taskSid, workspaceSid, 'update', err as Error);
-  }
+  }));
 };
 
 registerTaskRouterEventHandler([TASK_CREATED, TASK_UPDATED], addCustomerExternalId);

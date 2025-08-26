@@ -25,6 +25,7 @@ import {
   SectionCollapse,
   ContactDetailsIcon,
 } from '../../search/styles';
+import { TertiaryButton } from '../../../styles';
 
 const ArrowDownIcon = ContactDetailsIcon(ArrowDropDownTwoTone);
 const ArrowUpIcon = ContactDetailsIcon(ArrowDropUpTwoTone);
@@ -70,9 +71,9 @@ const Section: React.FC<MyProps> = ({
         {!hideIcon && (expanded ? <ArrowUpIcon /> : <ArrowDownIcon />)}
       </SectionTitleButton>
       {showEditButton && (
-        <button type="button" onClick={handleEditClick}>
+        <TertiaryButton type="button" onClick={handleEditClick}>
           <Template code="EditButton" />
-        </button>
+        </TertiaryButton>
       )}
     </SectionTitleContainer>
     <SectionCollapse expanded={expanded} timeout="auto">

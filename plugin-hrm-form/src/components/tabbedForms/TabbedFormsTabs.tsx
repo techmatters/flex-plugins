@@ -18,7 +18,7 @@ import React, { Dispatch } from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 import SearchIcon from '@material-ui/icons/Search';
 import { Template } from '@twilio/flex-ui';
-import { callTypes } from 'hrm-form-definitions';
+import { callTypes } from 'hrm-types';
 
 import { removeOfflineContact } from '../../services/formSubmissionHelpers';
 import { RootState } from '../../states';
@@ -30,7 +30,6 @@ import { isNonDataCallType } from '../../states/validationRules';
 import { selectCaseMergingBanners } from '../../states/case/caseBanners';
 import { ContactDraftChanges, updateDraft } from '../../states/contacts/existingContacts';
 import { getUnsavedContact } from '../../states/contacts/getUnsavedContact';
-import { forExistingContact } from '../../states/contacts/issueCategorizationStateApi';
 import { updateContactInHrmAsyncAction } from '../../states/contacts/saveContact';
 import selectContactByTaskSid from '../../states/contacts/selectContactByTaskSid';
 import { emptyCategories } from '../../states/contacts/reducer';
@@ -337,7 +336,7 @@ const TabbedFormsTabs: React.FC<Props> = ({
               </TabbedFormTabContainer>
               <TabbedFormTabContainer display={subroute === 'categories'}>
                 <IssueCategorizationSectionForm
-                  stateApi={forExistingContact(savedContact.id)}
+                  contactId={savedContact.id}
                   display={subroute === 'categories'}
                   definition={currentDefinitionVersion.tabbedForms.IssueCategorizationTab(helpline)}
                   autoFocus={autoFocus}

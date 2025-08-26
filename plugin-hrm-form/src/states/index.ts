@@ -27,9 +27,9 @@ import { reduce as RoutingReducer } from './routing/reducer';
 import { reduce as CSAMReportReducer } from './csam-report/reducer';
 import { reduce as DualWriteReducer } from './dualWrite/reducer';
 import { reduce as ReferrableResourcesReducer } from './resources';
-import { reduce as ConversationsReducer } from './conversations';
 import { reduce as ConferencingReducer } from './conferencing';
 import { reduce as ProfileReducer } from './profile/reducer';
+import { reduce as SwitchboardReducer } from './switchboard/reducer';
 import { CaseState } from './case/types';
 import { ContactsState } from './contacts/types';
 import {
@@ -38,7 +38,6 @@ import {
   conferencingBase,
   configurationBase,
   contactFormsBase,
-  conversationsBase,
   csamReportBase,
   dualWriteBase,
   namespace,
@@ -46,6 +45,7 @@ import {
   queuesStatusBase,
   referrableResourcesBase,
   routingBase,
+  switchboardBase,
 } from './storeNamespaces';
 import { reduce as CaseMergingBannersReducer } from './case/caseBanners';
 import { customIntegrationsReducer } from './customIntegrations';
@@ -59,10 +59,10 @@ const reducers = {
   [csamReportBase]: CSAMReportReducer,
   [dualWriteBase]: DualWriteReducer,
   [referrableResourcesBase]: ReferrableResourcesReducer,
-  [conversationsBase]: ConversationsReducer,
   [conferencingBase]: ConferencingReducer,
   [caseMergingBannersBase]: CaseMergingBannersReducer,
   [profileBase]: ProfileReducer,
+  [switchboardBase]: SwitchboardReducer,
 
   /*
    * [csamClcReportBase]: CSAMCLCReportReducer,

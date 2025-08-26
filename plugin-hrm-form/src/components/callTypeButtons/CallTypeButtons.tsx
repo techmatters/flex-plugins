@@ -19,7 +19,8 @@
 import React from 'react';
 import { ITask, TaskHelper, Template } from '@twilio/flex-ui';
 import { connect, ConnectedProps } from 'react-redux';
-import { CallTypeButtonsEntry, callTypes } from 'hrm-form-definitions';
+import { callTypes } from 'hrm-types';
+import { CallTypeButtonsEntry } from 'hrm-form-definitions';
 
 import { RootState } from '../../states';
 import { ContactDraftChanges, updateDraft as newUpdateDraftAction } from '../../states/contacts/existingContacts';
@@ -150,7 +151,7 @@ const CallTypeButtons: React.FC<Props> = ({
                     {/* TODO: We currently need the call type name in English. I think we should actually save callType.name (instead of label) on the DB, and use it in here.  */}
                     <CallTypeIcon callType={callTypes[callType.name]} />
                   </Flex>
-                  {callType.label}
+                  <Template code={callType.label} />
                 </DataCallTypeButton>
               );
             })}

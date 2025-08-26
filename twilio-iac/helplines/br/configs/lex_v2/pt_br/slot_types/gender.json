@@ -1,0 +1,101 @@
+{
+    "slotTypeName": "gender",
+    "slotTypeValues": [
+        {
+            "sampleValue": {
+                "value": "Menina/Garota/Mulher"
+            },
+            "synonyms": [
+                {
+                    "value": "mulher"
+                },
+                {
+                    "value": "garota"
+                },
+                {
+                    "value": "ela"
+                },
+                {
+                    "value": "f"
+                },
+                {
+                    "value": "senhora"
+                },
+                {
+                    "value": "1"
+                }
+            ]
+        },
+        {
+            "sampleValue": {
+                "value": "Menino/Garoto/Homem"
+            },
+            "synonyms": [
+                {
+                    "value": "menino"
+                },
+                {
+                    "value": "homem"
+                },
+                {
+                    "value": "cara"
+                },
+                {
+                    "value": "ele"
+                },
+                {
+                    "value": "rapaz"
+                },
+                {
+                    "value": "2"
+                },
+                {
+                    "value": "m"
+                }
+            ]
+        },
+        {
+            "sampleValue": {
+                "value": "Desconhecido"
+            },
+            "synonyms": [
+                {
+                    "value": "4"
+                },
+                {
+                    "value": "não estou respondendo"
+                },
+                {
+                    "value": "não responder"
+                },
+                {
+                    "value": "prefiro não responder"
+                }
+            ]
+        },
+        {
+            "sampleValue": {
+                "value": "Não-binário"
+            },
+            "synonyms": [
+                {
+                    "value": "não binário"
+                },
+                {
+                    "value": "nenhum"
+                },
+                {
+                    "value": "nãobinário"
+                },
+                {
+                    "value": "3"
+                }
+            ]
+        }
+
+
+    ],
+    "valueSelectionSetting": {
+        "resolutionStrategy": "TopResolution"
+    }
+}

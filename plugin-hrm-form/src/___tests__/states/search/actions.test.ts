@@ -14,7 +14,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { DefinitionVersionId, loadDefinition } from 'hrm-form-definitions';
+import { loadDefinition } from 'hrm-form-definitions';
 import { endOfDay, formatISO, parseISO, startOfDay } from 'date-fns';
 
 import { mockLocalFetchDefinitions } from '../../mockFetchDefinitions';
@@ -41,14 +41,10 @@ beforeEach(() => {
 
 describe('test action creators', () => {
   beforeAll(async () => {
-    const formDefinitionsBaseUrl = buildBaseURL(DefinitionVersionId.v1);
+    const formDefinitionsBaseUrl = buildBaseURL('as-v1');
     await mockFetchImplementation(formDefinitionsBaseUrl);
 
-    mockGetDefinitionsResponse(
-      getDefinitionVersions,
-      DefinitionVersionId.v1,
-      await loadDefinition(formDefinitionsBaseUrl),
-    );
+    mockGetDefinitionsResponse(getDefinitionVersions, 'as-v1', await loadDefinition(formDefinitionsBaseUrl));
   });
 
   test('handleSearchFormChange', () => {
@@ -64,7 +60,7 @@ describe('test action creators', () => {
   test('searchContacts (success)', async () => {
     const contact = {
       id: 'fake contact',
-      rawJson: { definitionVersion: 'v1' },
+      rawJson: { definitionVersion: 'as-v1' },
       counselor: '',
       tags: [],
     };
@@ -103,7 +99,7 @@ describe('test action creators', () => {
       updatedAt: '2020-11-23T17:38:42.227Z',
       helpline: '',
       info: {
-        definitionVersion: 'v1',
+        definitionVersion: 'as-v1',
         households: [{ household: { name: { firstName: 'Maria', lastName: 'Silva' } } }],
       },
     };
@@ -136,7 +132,7 @@ describe('test action creators', () => {
       updatedAt: '2020-11-23T17:38:42.227Z',
       helpline: '',
       info: {
-        definitionVersion: 'v1',
+        definitionVersion: 'as-v1',
         households: [{ household: { name: { firstName: 'Maria', lastName: 'Silva' } } }],
       },
     };

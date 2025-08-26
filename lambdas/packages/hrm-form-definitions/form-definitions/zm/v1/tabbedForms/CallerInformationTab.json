@@ -1,0 +1,1031 @@
+[
+  {
+    "name": "firstName",
+    "label": "First Name",
+    "type": "input",
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    },
+    "isPII": true
+  },
+  {
+    "name": "lastName",
+    "label": "Last Name",
+    "type": "input",
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    },
+    "isPII": true
+  },
+  {
+    "name": "relationshipToChild",
+    "label": "Relationship to child",
+    "type": "select",
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "Caregiver",
+        "label": "Caregiver"
+      },
+      {
+        "value": "Friend",
+        "label": "Friend"
+      },
+      {
+        "value": "Grandparent",
+        "label": "Grandparent"
+      },
+      {
+        "value": "Neighbour",
+        "label": "Neighbour"
+      },
+      {
+        "value": "Parent",
+        "label": "Parent"
+      },
+      {
+        "value": "Partner",
+        "label": "Partner"
+      },
+      {
+        "value": "Person in a position of responsibility",
+        "label": "Person in a position of responsibility"
+      },
+      {
+        "value": "Sibling",
+        "label": "Sibling"
+      },
+      {
+        "value": "Stranger",
+        "label": "Stranger"
+      },
+      {
+        "value": "Other",
+        "label": "Other"
+      }
+    ],
+    "isPII": false
+  },
+  {
+    "name": "streetAddress",
+    "label": "Street Address",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "village",
+    "label": "Village",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "province",
+    "label": "Province",
+    "type": "select",
+    "options": [
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "Central",
+        "label": "Central"
+      },
+      {
+        "value": "Copperbelt",
+        "label": "Copperbelt"
+      },
+      {
+        "value": "Eastern",
+        "label": "Eastern"
+      },
+      {
+        "value": "Luapula",
+        "label": "Luapula"
+      },
+      {
+        "value": "Lusaka",
+        "label": "Lusaka"
+      },
+      {
+        "value": "Muchinga",
+        "label": "Muchinga"
+      },
+      {
+        "value": "Northern",
+        "label": "Northern"
+      },
+      {
+        "value": "North-Western",
+        "label": "North-Western"
+      },
+      {
+        "value": "Southern",
+        "label": "Southern"
+      },
+      {
+        "value": "Western",
+        "label": "Western"
+      },
+      {
+        "value": "Unknown",
+        "label": "Unknown"
+      }
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    },
+    "isPII": false
+  },
+  {
+    "name": "district",
+    "label": "District",
+    "type": "dependent-select",
+    "dependsOn": "province",
+    "defaultOption": {
+      "value": "",
+      "label": ""
+    },
+    "options": {
+      "Central": [
+        {
+          "value": "Chibombo",
+          "label": "Chibombo"
+        },
+        {
+          "value": "Chisamba",
+          "label": "Chisamba"
+        },
+        {
+          "value": "Chitambo",
+          "label": "Chitambo"
+        },
+        {
+          "value": "Itezhi-Tezhi",
+          "label": "Itezhi-Tezhi"
+        },
+        {
+          "value": "Kabwe",
+          "label": "Kabwe"
+        },
+        {
+          "value": "KapiriMposhi",
+          "label": "KapiriMposhi"
+        },
+        {
+          "value": "Luano",
+          "label": "Luano"
+        },
+        {
+          "value": "Mkushi",
+          "label": "Mkushi"
+        },
+        {
+          "value": "Mumbwa",
+          "label": "Mumbwa"
+        },
+        {
+          "value": "Ngabwe",
+          "label": "Ngabwe"
+        },
+        {
+          "value": "Serenje",
+          "label": "Serenje"
+        },
+        {
+          "value": "Shibuyunji",
+          "label": "Shibuyunji"
+        },
+        {
+          "value": "Unknown",
+          "label": "Unknown"
+        }
+      ],
+      "Copperbelt": [
+        {
+          "value": "Chililabombwe",
+          "label": "Chililabombwe"
+        },
+        {
+          "value": "Chingola",
+          "label": "Chingola"
+        },
+        {
+          "value": "Kalulushi",
+          "label": "Kalulushi"
+        },
+        {
+          "value": "Kitwe",
+          "label": "Kitwe"
+        },
+        {
+          "value": "Luanshya",
+          "label": "Luanshya"
+        },
+        {
+          "value": "Lufwanyama",
+          "label": "Lufwanyama"
+        },
+        {
+          "value": "Masaiti",
+          "label": "Masaiti"
+        },
+        {
+          "value": "Mpongwe",
+          "label": "Mpongwe"
+        },
+        {
+          "value": "Mufulira",
+          "label": "Mufulira"
+        },
+        {
+          "value": "Ndola",
+          "label": "Ndola"
+        },
+        {
+          "value": "Unknown",
+          "label": "Unknown"
+        }
+      ],
+      "Eastern": [
+        {
+          "value": "Chadiza",
+          "label": "Chadiza"
+        },
+        {
+          "value": "Chipata",
+          "label": "Chipata"
+        },
+        {
+          "value": "Katete",
+          "label": "Katete"
+        },
+        {
+          "value": "Lundazi",
+          "label": "Lundazi"
+        },
+        {
+          "value": "Mambwe",
+          "label": "Mambwe"
+        },
+        {
+          "value": "Nyimba",
+          "label": "Nyimba"
+        },
+        {
+          "value": "Petauke",
+          "label": "Petauke"
+        },
+        {
+          "value": "Sinda",
+          "label": "Sinda"
+        },
+        {
+          "value": "Vubwi",
+          "label": "Vubwi"
+        },
+        {
+          "value": "Unknown",
+          "label": "Unknown"
+        }
+      ],
+      "Luapula": [
+        {
+          "value": "Chembe",
+          "label": "Chembe"
+        },
+        {
+          "value": "Chiengi",
+          "label": "Chiengi"
+        },
+        {
+          "value": "Chipili",
+          "label": "Chipili"
+        },
+        {
+          "value": "Kawambwa",
+          "label": "Kawambwa"
+        },
+        {
+          "value": "Lunga",
+          "label": "Lunga"
+        },
+        {
+          "value": "Mansa",
+          "label": "Mansa"
+        },
+        {
+          "value": "Milenge",
+          "label": "Milenge"
+        },
+        {
+          "value": "Mwansabombwe",
+          "label": "Mwansabombwe"
+        },
+        {
+          "value": "Mwense",
+          "label": "Mwense"
+        },
+        {
+          "value": "Nchelenge",
+          "label": "Nchelenge"
+        },
+        {
+          "value": "Samfya",
+          "label": "Samfya"
+        },
+        {
+          "value": "Unknown",
+          "label": "Unknown"
+        }
+      ],
+      "Lusaka": [
+        {
+          "value": "Chilanga",
+          "label": "Chilanga"
+        },
+        {
+          "value": "Chirundu",
+          "label": "Chirundu"
+        },
+        {
+          "value": "Chongwe",
+          "label": "Chongwe"
+        },
+        {
+          "value": "Kafue",
+          "label": "Kafue"
+        },
+        {
+          "value": "Luangwa",
+          "label": "Luangwa"
+        },
+        {
+          "value": "Lusaka",
+          "label": "Lusaka"
+        },
+        {
+          "value": "Rufunsa",
+          "label": "Rufunsa"
+        },
+        {
+          "value": "Unknown",
+          "label": "Unknown"
+        }
+      ],
+      "Muchinga": [
+        {
+          "value": "Chama",
+          "label": "Chama"
+        },
+        {
+          "value": "Chilinda",
+          "label": "Chilinda"
+        },
+        {
+          "value": "Chinsali",
+          "label": "Chinsali"
+        },
+        {
+          "value": "Isoka",
+          "label": "Isoka"
+        },
+        {
+          "value": "Kanchibiya",
+          "label": "Kanchibiya"
+        },
+        {
+          "value": "Lavushimanda",
+          "label": "Lavushimanda"
+        },
+        {
+          "value": "Mafinga",
+          "label": "Mafinga"
+        },
+        {
+          "value": "Mpika",
+          "label": "Mpika"
+        },
+        {
+          "value": "Nakonde",
+          "label": "Nakonde"
+        },
+        {
+          "value": "Shiwang'andu",
+          "label": "Shiwang'andu"
+        },
+        {
+          "value": "Unknown",
+          "label": "Unknown"
+        }
+      ],
+      "Northern": [
+        {
+          "value": "Chilubi",
+          "label": "Chilubi"
+        },
+        {
+          "value": "Kaputa",
+          "label": "Kaputa"
+        },
+        {
+          "value": "Kasama",
+          "label": "Kasama"
+        },
+        {
+          "value": "Lunte",
+          "label": "Lunte"
+        },
+        {
+          "value": "Lupososhi",
+          "label": "Lupososhi"
+        },
+        {
+          "value": "Luwingu",
+          "label": "Luwingu"
+        },
+        {
+          "value": "Mbala",
+          "label": "Mbala"
+        },
+        {
+          "value": "Mporokoso",
+          "label": "Mporokoso"
+        },
+        {
+          "value": "Mpulungu",
+          "label": "Mpulungu"
+        },
+        {
+          "value": "Mungwi",
+          "label": "Mungwi"
+        },
+        {
+          "value": "Nsama",
+          "label": "Nsama"
+        },
+        {
+          "value": "Senga",
+          "label": "Senga"
+        },
+        {
+          "value": "Unknown",
+          "label": "Unknown"
+        }
+      ],
+      "North-Western": [
+        {
+          "value": "Chavuma",
+          "label": "Chavuma"
+        },
+        {
+          "value": "Ikelenge",
+          "label": "Ikelenge"
+        },
+        {
+          "value": "Kabompo",
+          "label": "Kabompo"
+        },
+        {
+          "value": "Kalumbila",
+          "label": "Kalumbila"
+        },
+        {
+          "value": "Kasempa",
+          "label": "Kasempa"
+        },
+        {
+          "value": "Manyinga",
+          "label": "Manyinga"
+        },
+        {
+          "value": "Mufumbwe",
+          "label": "Mufumbwe"
+        },
+        {
+          "value": "Mushindamo",
+          "label": "Mushindamo"
+        },
+        {
+          "value": "Mwinilunga",
+          "label": "Mwinilunga"
+        },
+        {
+          "value": "Solwezi",
+          "label": "Solwezi"
+        },
+        {
+          "value": "Zambezi",
+          "label": "Zambezi"
+        },
+        {
+          "value": "Unknown",
+          "label": "Unknown"
+        }
+      ],
+      "Southern": [
+        {
+          "value": "Chikankata",
+          "label": "Chikankata"
+        },
+        {
+          "value": "Choma",
+          "label": "Choma"
+        },
+        {
+          "value": "Gwembe",
+          "label": "Gwembe"
+        },
+        {
+          "value": "Kalomo",
+          "label": "Kalomo"
+        },
+        {
+          "value": "Kazungula",
+          "label": "Kazungula"
+        },
+        {
+          "value": "Livingstone",
+          "label": "Livingstone"
+        },
+        {
+          "value": "Mazabuka",
+          "label": "Mazabuka"
+        },
+        {
+          "value": "Monze",
+          "label": "Monze"
+        },
+        {
+          "value": "Namwala",
+          "label": "Namwala"
+        },
+        {
+          "value": "Pemba",
+          "label": "Pemba"
+        },
+        {
+          "value": "Siavonga",
+          "label": "Siavonga"
+        },
+        {
+          "value": "Sinazongwe",
+          "label": "Sinazongwe"
+        },
+        {
+          "value": "Zimba",
+          "label": "Zimba"
+        },
+        {
+          "value": "Unknown",
+          "label": "Unknown"
+        }
+      ],
+      "Western": [
+        {
+          "value": "Kalabo",
+          "label": "Kalabo"
+        },
+        {
+          "value": "Kaoma",
+          "label": "Kaoma"
+        },
+        {
+          "value": "Limulunga",
+          "label": "Limulunga"
+        },
+        {
+          "value": "Luampa",
+          "label": "Luampa"
+        },
+        {
+          "value": "Lukulu",
+          "label": "Lukulu"
+        },
+        {
+          "value": "Mitete",
+          "label": "Mitete"
+        },
+        {
+          "value": "Mongu",
+          "label": "Mongu"
+        },
+        {
+          "value": "Mulobezi",
+          "label": "Mulobezi"
+        },
+        {
+          "value": "Mwandi",
+          "label": "Mwandi"
+        },
+        {
+          "value": "Nalolo",
+          "label": "Nalolo"
+        },
+        {
+          "value": "Nkeyema",
+          "label": "Nkeyema"
+        },
+        {
+          "value": "Senanga",
+          "label": "Senanga"
+        },
+        {
+          "value": "Sesheke",
+          "label": "Sesheke"
+        },
+        {
+          "value": "Shangombo",
+          "label": "Shangombo"
+        },
+        {
+          "value": "Sikongo",
+          "label": "Sikongo"
+        },
+        {
+          "value": "Sioma",
+          "label": "Sioma"
+        },
+        {
+          "value": "Unknown",
+          "label": "Unknown"
+        }
+      ]
+    },
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    },
+    "isPII": false
+  },
+  {
+    "name": "postalCode",
+    "label": "Postal Code",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "phone1",
+    "label": "Phone #1",
+    "type": "input",
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    },
+    "isPII": true
+  },
+  {
+    "name": "phone2",
+    "label": "Phone #2",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "gender",
+    "label": "Gender",
+    "type": "select",
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "Boy",
+        "label": "Boy"
+      },
+      {
+        "value": "Girl",
+        "label": "Girl"
+      },
+      {
+        "value": "Non-Binary",
+        "label": "Non-Binary"
+      }
+    ],
+    "isPII": false
+  },
+  {
+    "name": "age",
+    "label": "Age",
+    "type": "select",
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "0",
+        "label": "0"
+      },
+      {
+        "value": "1",
+        "label": "1"
+      },
+      {
+        "value": "2",
+        "label": "2"
+      },
+      {
+        "value": "3",
+        "label": "3"
+      },
+      {
+        "value": "4",
+        "label": "4"
+      },
+      {
+        "value": "5",
+        "label": "5"
+      },
+      {
+        "value": "6",
+        "label": "6"
+      },
+      {
+        "value": "7",
+        "label": "7"
+      },
+      {
+        "value": "8",
+        "label": "8"
+      },
+      {
+        "value": "9",
+        "label": "9"
+      },
+      {
+        "value": "10",
+        "label": "10"
+      },
+      {
+        "value": "11",
+        "label": "11"
+      },
+      {
+        "value": "12",
+        "label": "12"
+      },
+      {
+        "value": "13",
+        "label": "13"
+      },
+      {
+        "value": "14",
+        "label": "14"
+      },
+      {
+        "value": "15",
+        "label": "15"
+      },
+      {
+        "value": "16",
+        "label": "16"
+      },
+      {
+        "value": "17",
+        "label": "17"
+      },
+      {
+        "value": "18",
+        "label": "18"
+      },
+      {
+        "value": "19",
+        "label": "19"
+      },
+      {
+        "value": "20",
+        "label": "20"
+      },
+      {
+        "value": "21",
+        "label": "21"
+      },
+      {
+        "value": "22",
+        "label": "22"
+      },
+      {
+        "value": "23",
+        "label": "23"
+      },
+      {
+        "value": "24",
+        "label": "24"
+      },
+      {
+        "value": "25",
+        "label": "25"
+      },
+      {
+        "value": "26",
+        "label": "26"
+      },
+      {
+        "value": "27",
+        "label": "27"
+      },
+      {
+        "value": "28",
+        "label": "28"
+      },
+      {
+        "value": "29",
+        "label": "29"
+      },
+      {
+        "value": "30",
+        "label": "30"
+      },
+      {
+        "value": "31",
+        "label": "31"
+      },
+      {
+        "value": "32",
+        "label": "32"
+      },
+      {
+        "value": "33",
+        "label": "33"
+      },
+      {
+        "value": "34",
+        "label": "34"
+      },
+      {
+        "value": "35",
+        "label": "35"
+      },
+      {
+        "value": "36",
+        "label": "36"
+      },
+      {
+        "value": "37",
+        "label": "37"
+      },
+      {
+        "value": "38",
+        "label": "38"
+      },
+      {
+        "value": "39",
+        "label": "39"
+      },
+      {
+        "value": "40",
+        "label": "40"
+      },
+      {
+        "value": "41",
+        "label": "41"
+      },
+      {
+        "value": "42",
+        "label": "42"
+      },
+      {
+        "value": "43",
+        "label": "43"
+      },
+      {
+        "value": "44",
+        "label": "44"
+      },
+      {
+        "value": "45",
+        "label": "45"
+      },
+      {
+        "value": "46",
+        "label": "46"
+      },
+      {
+        "value": "47",
+        "label": "47"
+      },
+      {
+        "value": "48",
+        "label": "48"
+      },
+      {
+        "value": "49",
+        "label": "49"
+      },
+      {
+        "value": "50",
+        "label": "50"
+      },
+      {
+        "value": "51",
+        "label": "51"
+      },
+      {
+        "value": "52",
+        "label": "52"
+      },
+      {
+        "value": "53",
+        "label": "53"
+      },
+      {
+        "value": "54",
+        "label": "54"
+      },
+      {
+        "value": "55",
+        "label": "55"
+      },
+      {
+        "value": "56",
+        "label": "56"
+      },
+      {
+        "value": "57",
+        "label": "57"
+      },
+      {
+        "value": "58",
+        "label": "58"
+      },
+      {
+        "value": "59",
+        "label": "59"
+      },
+      {
+        "value": "60",
+        "label": "60"
+      },
+      {
+        "value": ">60",
+        "label": ">60"
+      },
+      {
+        "value": "Unknown",
+        "label": "Unknown"
+      },
+      {
+        "value": "Other",
+        "label": "Other"
+      }
+    ],
+    "isPII": false
+  },
+  {
+    "name": "language",
+    "label": "Language",
+    "type": "select",
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "Bemba",
+        "label": "Bemba"
+      },
+      {
+        "value": "en-US",
+        "label": "English"
+      },
+      {
+        "value": "Kaonde",
+        "label": "Kaonde"
+      },
+      {
+        "value": "Lozi",
+        "label": "Lozi"
+      },
+      {
+        "value": "Lunda",
+        "label": "Lunda"
+      },
+      {
+        "value": "Luvale",
+        "label": "Luvale"
+      },
+      {
+        "value": "Nyanja",
+        "label": "Nyanja"
+      },
+      {
+        "value": "Tonga",
+        "label": "Tonga"
+      }
+    ],
+    "isPII": false
+  },
+  {
+    "name": "ethnicity",
+    "label": "Ethnicity",
+    "type": "input",
+    "isPII": true
+  }
+]

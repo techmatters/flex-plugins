@@ -15,6 +15,8 @@
  */
 
 import { styled } from '@twilio/flex-ui';
+import { Tooltip, withStyles } from '@material-ui/core';
+import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined';
 
 import HrmTheme from './HrmTheme';
 
@@ -117,11 +119,12 @@ type ChipTextProps = {
 export const ChipText = styled(FontOpenSans)<ChipTextProps>`
   display: inline-block;
   font-size: 12px;
-  font-weight: 400;
   line-height: 14px;
   opacity: 1;
   color: ${props => (props.color ? props.color : '#2f3e44')};
   font-weight: ${props => (props.bold ? 600 : 400)};
+  text-overflow: ellipsis;
+  overflow: hidden;
 `;
 ChipText.displayName = 'ChipText';
 
@@ -131,9 +134,14 @@ type ColorProps = {
 
 export const CategoryChip = styled(ChipBase)<ColorProps>`
   border-radius: 2px;
-  margin-right: 6px;
+  margin: 0 6px 6px 0;
   padding: 5px 12px;
   background-color: ${props => (props.color ? `${props.color}1a` : '#d8d8d8')};
+  text-overflow: ellipsis;
+  max-width: 140px;
+  .expanded & {
+    max-width: none;
+  }
 `;
 CategoryChip.displayName = 'CategoryChip';
 
@@ -163,3 +171,32 @@ export const OpaqueText = styled('span')`
   opacity: 0.7;
   font-size: 12px;
 `;
+
+export const CasePrintViewSpinner = styled('div')`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+`;
+CasePrintViewSpinner.displayName = 'CasePrintViewSpinner';
+
+export const HtmlTooltip = withStyles(theme => ({
+  tooltip: {
+    backgroundColor: '#717171',
+    color: '#fff',
+    maxWidth: 400,
+    fontSize: '10pt',
+    fontStyle: 'open sans semibold',
+    border: '1px solid #dadde9',
+  },
+}))(Tooltip);
+
+export const InformationIconButton = withStyles({
+  root: {
+    width: '16px',
+    height: '16px',
+    color: '#b4babd',
+    margin: '13px 20px 0 5px',
+    cursor: 'pointer',
+  },
+})(InfoOutlinedIcon);

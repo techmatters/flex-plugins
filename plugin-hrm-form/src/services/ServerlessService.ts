@@ -21,25 +21,11 @@
 /* eslint-disable sonarjs/prefer-immediate-return */
 /* eslint-disable camelcase */
 import { ITask, Notifications } from '@twilio/flex-ui';
-import { DefinitionVersion, DefinitionVersionId, loadDefinition } from 'hrm-form-definitions';
+import { DefinitionVersion, loadDefinition } from 'hrm-form-definitions';
 
 import fetchProtectedApi from './fetchProtectedApi';
 import type { ChildCSAMReportForm, CounselorCSAMReportForm } from '../states/csam-report/types';
 import { getHrmConfig } from '../hrmConfig';
-
-type GetTranslationBody = { language: string };
-
-// Returns translations json for Flex in string format
-export const getTranslation = async (body: GetTranslationBody): Promise<string> => {
-  const translation = await fetchProtectedApi('/getTranslation', body);
-  return translation;
-};
-
-// Returns translations json for system messages in string format
-export const getMessages = async (body: GetTranslationBody): Promise<string> => {
-  const messages = await fetchProtectedApi('/getMessages', body);
-  return messages;
-};
 
 type TransferChatStartBody = {
   taskSid: string;
@@ -79,12 +65,12 @@ export const sendSystemMessage = async (body: { taskSid: ITask['taskSid']; messa
   return response;
 };
 
-export const getDefinitionVersion = async (version: DefinitionVersionId): Promise<DefinitionVersion> => {
+export const getDefinitionVersion = async (version: string): Promise<DefinitionVersion> => {
   const { getFormDefinitionsBaseUrl } = getHrmConfig();
   return loadDefinition(getFormDefinitionsBaseUrl(version));
 };
 
-export const getDefinitionVersionsList = async (missingDefinitionVersions: DefinitionVersionId[]) =>
+export const getDefinitionVersionsList = async (missingDefinitionVersions: string[]) =>
   Promise.all(
     missingDefinitionVersions.map(async version => {
       const definition = await getDefinitionVersion(version);

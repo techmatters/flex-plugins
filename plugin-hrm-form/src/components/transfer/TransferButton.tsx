@@ -19,8 +19,7 @@ import React from 'react';
 import { Actions, Template, withTaskContext } from '@twilio/flex-ui';
 
 import { canTransferConference } from '../../transfer/transferTaskState';
-import { TransferStyledButton } from '../../styles/buttons';
-import HhrTheme from '../../styles/HrmTheme';
+import { TransferButton as TransferButtonStyled } from '../../styles/buttons';
 
 const TransferButton: React.FC<TaskContextProps> = ({ task }) => {
   if (!task) {
@@ -30,15 +29,13 @@ const TransferButton: React.FC<TaskContextProps> = ({ task }) => {
   const disabled = !canTransferConference(task);
 
   return (
-    <TransferStyledButton
-      color={HhrTheme.colors.secondaryButtonTextColor}
-      background={HhrTheme.colors.secondaryButtonColor}
+    <TransferButtonStyled
       onClick={() => Actions.invokeAction('ShowDirectory')}
       disabled={disabled}
       data-fs-id="Task-Transfer-Button"
     >
       <Template code="Transfer-TransferButton" />
-    </TransferStyledButton>
+    </TransferButtonStyled>
   );
 };
 

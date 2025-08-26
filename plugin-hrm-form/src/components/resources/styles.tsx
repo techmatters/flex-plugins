@@ -18,7 +18,7 @@ import { styled } from '@twilio/flex-ui';
 import { ButtonBase } from '@material-ui/core';
 
 import { Box, Column, Flex, Row, FontOpenSans, PreviewWrapper } from '../../styles';
-import { StyledNextStepButton } from '../../styles/buttons';
+import { SecondaryButton } from '../../styles/buttons';
 import HrmTheme from '../../styles/HrmTheme';
 
 export const ResourcePreviewWrapper = styled(PreviewWrapper)`
@@ -69,6 +69,19 @@ export const ResourceTitle = styled('p')`
   font-weight: 700;
 `;
 ResourceTitle.displayName = 'ResourceTitle';
+
+export const ResourceSubheading = styled('h2')`
+  color: #192b33;
+  font-family: Open Sans;
+  font-size: 20px;
+  font-weight: 400;
+`;
+ResourceSubheading.displayName = 'ResourceSubheading';
+
+export const ResourceSubheadingBold = styled('span')`
+  font-weight: 700;
+`;
+ResourceSubheadingBold.displayName = 'ResourceSubheadingBold';
 
 export const ViewResourceArea = styled('div')`
   width: 100%;
@@ -176,7 +189,7 @@ export const ResourcesSearchFormFilterHeader = styled(FontOpenSans)`
 `;
 ResourcesSearchFormFilterHeader.displayName = 'ResourcesSearchFormFilterHeader';
 
-export const SearchFormClearButton = styled(StyledNextStepButton)`
+export const SearchFormClearButton = styled(SecondaryButton)`
   margin-right: 15px;
   background: transparent !important; // Not sure why the important flag is needed here to override a style with less specificity
 `;

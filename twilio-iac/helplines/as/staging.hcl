@@ -6,7 +6,6 @@ locals {
   local_config = {
     enable_post_survey                    = true
     enable_datadog_monitoring             = false
-    enable_lex_v2                         = true
     custom_task_routing_filter_expression = "channelType IN ['instagram','messenger','web','whatsapp','telegram','line','voice'] OR isContactlessTask == true OR  twilioNumber == 'messenger:131329426738030' "
     permission_config                     = "demo"
 
@@ -26,15 +25,15 @@ locals {
       webchat : {
         channel_type         = "web"
         contact_identity     = ""
-        templatefile         = "/app/twilio-iac/helplines/templates/studio-flows/messaging-blocking.tftpl"
+        templatefile         = "/app/twilio-iac/helplines/templates/studio-flows/messaging-blocking-lambda-sd.tftpl"
         channel_flow_vars    = {}
         chatbot_unique_names = []
       },
       facebook : {
         messaging_mode       = "conversations"
         channel_type         = "messenger"
-        contact_identity     = "messenger:131329426738030"
-        templatefile         = "/app/twilio-iac/helplines/templates/studio-flows/messaging-lex-v3-blocking.tftpl"
+        contact_identity     = "messenger:399736463213496"
+        templatefile         = "/app/twilio-iac/helplines/templates/studio-flows/messaging-lex-v3-blocking-lambda-sd.tftpl"
         channel_flow_vars    = {}
         chatbot_unique_names = []
       },
@@ -42,7 +41,7 @@ locals {
         messaging_mode       = "conversations"
         channel_type         = "whatsapp"
         contact_identity     = "whatsapp:+12055189944"
-        templatefile         = "/app/twilio-iac/helplines/templates/studio-flows/messaging-lex-v3-blocking.tftpl"
+        templatefile         = "/app/twilio-iac/helplines/templates/studio-flows/messaging-lex-v3-blocking-lambda-sd.tftpl"
         channel_flow_vars    = {}
         chatbot_unique_names = []
       },
@@ -50,7 +49,7 @@ locals {
         messaging_mode       = "conversations"
         channel_type         = "custom"
         contact_identity     = "line"
-        templatefile         = "/app/twilio-iac/helplines/templates/studio-flows/messaging-custom-channel-lex-v3-blocking.tftpl"
+        templatefile         = "/app/twilio-iac/helplines/templates/studio-flows/messaging-custom-channel-lex-v3-blocking-lambda-sd.tftpl"
         channel_flow_vars    = {}
         chatbot_unique_names = []
       },
@@ -58,7 +57,7 @@ locals {
         messaging_mode       = "conversations"
         channel_type         = "custom"
         contact_identity     = "telegram"
-        templatefile         = "/app/twilio-iac/helplines/templates/studio-flows/messaging-custom-channel-lex-v3-blocking.tftpl"
+        templatefile         = "/app/twilio-iac/helplines/templates/studio-flows/messaging-custom-channel-lex-v3-blocking-lambda-sd.tftpl"
         channel_flow_vars    = {}
         chatbot_unique_names = []
       },
@@ -66,14 +65,14 @@ locals {
         messaging_mode       = "conversations"
         channel_type         = "custom"
         contact_identity     = "instagram"
-        templatefile         = "/app/twilio-iac/helplines/templates/studio-flows/messaging-custom-channel-lex-v3-blocking.tftpl"
+        templatefile         = "/app/twilio-iac/helplines/templates/studio-flows/messaging-custom-channel-lex-v3-blocking-lambda-sd.tftpl"
         channel_flow_vars    = {}
         chatbot_unique_names = []
       },
       voice : {
         channel_type     = "voice"
         contact_identity = ""
-        templatefile     = "/app/twilio-iac/helplines/templates/studio-flows/voice-basic.tftpl"
+        templatefile     = "/app/twilio-iac/helplines/templates/studio-flows/voice-basic-sd.tftpl"
         channel_flow_vars = {
           voice_ivr_greeting_message = "Hello, you are contacting Aselo. Please hold for a counsellor."
           voice_ivr_blocked_message  = "I'm sorry your number has been blocked."
@@ -92,5 +91,21 @@ locals {
         description : "system - 'In Progress' cases are closed after 5 minutes"
       }
     ]
+
+    get_profile_flags_for_identifier_base_url = "https://hrm-staging.tl.techmatters.org/lambda/twilio/account-scoped"
+
+    #System Down Configuration
+    system_down_templatefile = "/app/twilio-iac/helplines/templates/studio-flows/system-down.tftpl"
+    enable_system_down    = true
+    system_down_flow_vars    = {
+      is_system_down   = "false"
+      message = "We're currently experiencing technical issues, and your message may not be delivered. We're working to resolve the problem and will be back online shortly. We apologize for the inconvenience."
+      voice_message = "We're currently experiencing technical issues, and your call may not reach us. We're working to resolve the problem and will be back online shortly. We apologize for the inconvenience."
+      send_studio_message_function_sid= "ZH980bcf1102fd109e3d2f765bb0a78951"
+      call_action = "message"
+      forward_number = "+123"
+      recording_url = "https://<place_holder>.mp3"
+
+    }
   }
 }

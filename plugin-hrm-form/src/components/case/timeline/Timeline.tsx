@@ -22,8 +22,8 @@ import DialogContent from '@material-ui/core/DialogContent';
 
 import CallTypeIcon from '../../common/icons/CallTypeIcon';
 import TimelineIcon, { IconType } from './TimelineIcon';
-import { CaseSectionFont, TimelineCallTypeIcon, TimelineDate, TimelineRow, TimelineText, ViewButton } from '../styles';
-import { Box, Row, colors } from '../../../styles';
+import { CaseSectionFont, TimelineCallTypeIcon, TimelineDate, TimelineRow, TimelineText } from '../styles';
+import { Box, Row, colors, SecondaryButton } from '../../../styles';
 import CaseAddButton from '../CaseAddButton';
 import { Contact, CustomITask } from '../../../types/types';
 import { isCaseSectionTimelineActivity, isContactTimelineActivity } from '../../../states/case/types';
@@ -39,6 +39,7 @@ import asyncDispatch from '../../../states/asyncDispatch';
 import { selectContactsByCaseIdInCreatedOrder } from '../../../states/contacts/selectContactByCaseId';
 import { FullCaseSection } from '../../../services/caseSectionService';
 import { selectDefinitionVersionForCase } from '../../../states/configuration/selectDefinitions';
+import formatFormValue from '../../forms/formatFormValue';
 
 type OwnProps = {
   taskSid: CustomITask['taskSid'];
@@ -91,10 +92,17 @@ const Timeline: React.FC<OwnProps> = ({
     if (caseId) {
       console.log(`Fetching main timeline sections for case ${caseId}`);
       asyncDispatch(dispatch)(
-        newGetTimelineAsyncAction(caseId, timelineId, timelineCaseSectionTypes, true, {
-          offset: page * pageSize,
-          limit: pageSize,
-        }),
+        newGetTimelineAsyncAction(
+          caseId,
+          timelineId,
+          timelineCaseSectionTypes,
+          true,
+          {
+            offset: page * pageSize,
+            limit: pageSize,
+          },
+          `case-${caseId}`,
+        ),
       );
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -147,7 +155,7 @@ const Timeline: React.FC<OwnProps> = ({
           <CaseSectionFont id="Case-TimelineSection-label">
             <Template code={titleCode} />
           </CaseSectionFont>
-          <Box marginLeft="auto">
+          <Box marginLeft="auto" display="inline-flex">
             {timelineCaseSectionTypes.map(sectionType => (
               <CaseAddButton
                 key={sectionType}
@@ -163,11 +171,23 @@ const Timeline: React.FC<OwnProps> = ({
         timelineActivities.length > 0 &&
         timelineActivities.map((timelineActivity, index) => {
           let iconType: IconType;
+          let { text } = timelineActivity;
           if (isContactTimelineActivity(timelineActivity)) {
             iconType = timelineActivity.activity.channel as IconType;
           } else if (isCaseSectionTimelineActivity(timelineActivity)) {
             const layout = definitionVersion.layoutVersion.case.sectionTypes[timelineActivity.activity.sectionType];
             iconType = (layout?.timelineIcon || timelineActivity.activity.sectionType) as IconType;
+
+            text =
+              (layout.previewFields ?? [])
+                .map(field =>
+                  formatFormValue(
+                    timelineActivity.activity.sectionTypeSpecificData[field],
+                    layout?.layout?.[field],
+                    timelineActivity.activity.sectionTypeSpecificData,
+                  ),
+                )
+                .join(', ') || '--';
           }
           const date = timelineActivity.timestamp.toLocaleDateString(navigator.language);
           let canViewActivity = true;
@@ -175,7 +195,7 @@ const Timeline: React.FC<OwnProps> = ({
             if (timelineActivity.isDraft) {
               canViewActivity = false;
             } else {
-              canViewActivity = can(PermissionActions.VIEW_CONTACT, timelineActivity);
+              canViewActivity = can(PermissionActions.VIEW_CONTACT, timelineActivity.activity);
             }
           }
 
@@ -193,13 +213,13 @@ const Timeline: React.FC<OwnProps> = ({
                   <CallTypeIcon callType={timelineActivity.activity.rawJson.callType} fontSize="18px" />
                 </TimelineCallTypeIcon>
               )}
-              <TimelineText>{timelineActivity.text}</TimelineText>
+              <TimelineText>{text}</TimelineText>
               {canViewActivity && (
                 <Box marginLeft="auto">
                   <Box marginLeft="auto">
-                    <ViewButton onClick={() => handleViewClick(timelineActivity)}>
+                    <SecondaryButton onClick={() => handleViewClick(timelineActivity)}>
                       <Template code="Case-ViewButton" />
-                    </ViewButton>
+                    </SecondaryButton>
                   </Box>
                 </Box>
               )}

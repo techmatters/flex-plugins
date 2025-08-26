@@ -30,7 +30,7 @@ import {
   Box,
   ColumnarBlock,
   Container,
-  StyledNextStepButton,
+  PrimaryButton,
   TwoColumnLayout,
 } from '../../../styles';
 import { RootState } from '../../../states';
@@ -168,20 +168,24 @@ const EditCaseOverview: React.FC<Props> = ({
 
   const { getValues } = methods;
 
+  const initialValues = useMemo(() => {
+    const formValues = getValues() as CaseSummaryWorkingCopy;
+    return {
+      status: connectedCase.status,
+      ...connectedCase.info,
+      ...formValues,
+    };
+  }, [connectedCase.info, connectedCase.status, getValues]);
+
   useEffect(() => {
     if (!workingCopy) {
-      const formValues = getValues() as CaseSummaryWorkingCopy;
-      initialiseWorkingCopy(connectedCase.id, {
-        status: connectedCase.status,
-        ...connectedCase.info,
-        ...formValues,
-      });
+      initialiseWorkingCopy(connectedCase.id, initialValues);
     }
-  });
+  }, [connectedCase.id, initialValues, initialiseWorkingCopy, workingCopy]);
 
   const form = useCreateFormFromDefinition({
     definition: formDefinition,
-    initialValues: workingCopy,
+    initialValues,
     parentsPath: '',
     updateCallback: () => updateWorkingCopy(connectedCase.id, getValues() as CaseSummaryWorkingCopy),
     isItemEnabled: item => item.name === 'status' || can(PermissionActions.EDIT_CASE_OVERVIEW),
@@ -237,6 +241,7 @@ const EditCaseOverview: React.FC<Props> = ({
         titleCode="Case-EditCaseOverview"
         onGoBack={checkForEdits}
         onCloseModal={checkForEdits}
+        data-testid="Case-EditCaseOverview"
       >
         <CaseSummaryEditHistory {...historyDetails} />
         <Container formContainer={true}>
@@ -249,14 +254,14 @@ const EditCaseOverview: React.FC<Props> = ({
         </Container>
         <div style={{ width: '100%', height: 5, backgroundColor: '#ffffff' }} />
         <BottomButtonBar>
-          <StyledNextStepButton
+          <PrimaryButton
             disabled={isUpdating}
             data-testid="Case-EditCaseScreen-SaveItem"
             roundCorners
             onClick={methods.handleSubmit(saveAndLeave, onError)}
           >
             <Template code="BottomBar-SaveCaseSummary" />
-          </StyledNextStepButton>
+          </PrimaryButton>
         </BottomButtonBar>
         <CloseCaseDialog
           data-testid="CloseCaseDialog"

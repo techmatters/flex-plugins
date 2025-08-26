@@ -2,6 +2,7 @@
 #   region = var.helpline_region
 # }
 
+
 module "lex" {
   source = "../../lex/v1"
 
@@ -29,12 +30,13 @@ module "lex_v2" {
     aws           = aws
     aws.hl-region = aws.hl-region
   }
-  for_each = var.enable_lex_v2 ? var.lex_bot_languages : {}
+  for_each = var.enable_lex_v2 ? var.lex_v2_bot_languages : {}
 
-  helpline       = var.helpline
-  short_helpline = var.short_helpline
-  environment    = var.environment
-  language       = each.key
+  helpline        = var.helpline
+  short_helpline  = var.short_helpline
+  environment     = var.environment
+  language        = each.key
+  helpline_region = var.helpline_region
 
   lex_v2_bots       = var.lex_v2_bots[each.key]
   lex_v2_intents    = var.lex_v2_intents[each.key]

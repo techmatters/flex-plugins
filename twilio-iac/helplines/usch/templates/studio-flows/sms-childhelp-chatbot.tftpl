@@ -1,0 +1,523 @@
+${
+  jsonencode({
+  "description": "${flow_description}",
+  "states": [
+    {
+      "name": "Trigger",
+      "type": "trigger",
+      "transitions": [
+        {
+          "event": "incomingMessage"
+        },
+        {
+          "event": "incomingCall"
+        },
+        {
+          "next": "pre_survey_complete",
+          "event": "incomingConversationMessage"
+        },
+        {
+          "event": "incomingRequest"
+        },
+        {
+          "event": "incomingParent"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 60,
+          "y": -340
+        }
+      }
+    },
+    {
+      "name": "attributes",
+      "type": "send-to-flex",
+      "transitions": [
+        {
+          "event": "callComplete"
+        },
+        {
+          "next": "webhook_notify_failed_to_enqueue",
+          "event": "failedToEnqueue"
+        },
+        {
+          "event": "callFailure"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 1270,
+          "y": 1720
+        },
+        "workflow": "${workflow_sids.master}",
+        "channel": "${task_channel_sids.chat}",
+        "attributes": "${channel_attributes.default}"
+      }
+    },
+    {
+      "name": "webhook_notify_failed_to_enqueue",
+      "type": "make-http-request",
+      "transitions": [
+        {
+          "event": "success"
+        },
+        {
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 1530,
+          "y": 2040
+        },
+        "method": "POST",
+        "content_type": "application/json;charset=utf-8",
+        "add_twilio_auth": false,
+        "body": "{ \"text\": \"Issue detected [Failed to Enqueue] on ${short_helpline} ${short_environment} Flow SID: {{flow.flow_sid}} Execution SID: {{flow.sid}}  \" }",
+        "url": "${webhook_url_studio_errors}"
+      }
+    },
+    {
+      "name": "getProfileFlagsForIdentifier",
+      "type": "make-http-request",
+      "transitions": [
+        {
+          "next": "split_contact_routing",
+          "event": "success"
+        },
+        {
+          "next": "split_contact_routing",
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 210,
+          "y": 200
+        },
+        "method": "POST",
+        "content_type": "application/json;charset=utf-8",
+        "add_twilio_auth": false,
+        "body": "{ \"trigger\": {{trigger | to_json}}, \"channelType\": \"sms\"}",
+        "url": "${lambda_twilio_account_scoped_url}/getProfileFlagsForIdentifier"
+      }
+    },
+    {
+      "name": "sms_blocked_client_message",
+      "type": "send-message",
+      "transitions": [
+        {
+          "event": "sent"
+        },
+        {
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 660,
+          "y": 730
+        },
+        "service": "{{trigger.message.InstanceSid}}",
+        "channel": "{{trigger.message.ChannelSid}}",
+        "from": "Bot",
+        "message_type": "custom",
+        "to": "{{contact.channel.address}}",
+        "body": "${flow_vars.sms_blocked_client_message}"
+      }
+    },
+    {
+      "name": "split_contact_routing",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "get_childhelp_sms_language_message",
+          "event": "noMatch"
+        },
+        {
+          "next": "sms_blocked_client_message",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to blocked",
+              "arguments": [
+                "{{widgets.getProfileFlagsForIdentifier.parsed.flags}}"
+              ],
+              "type": "equal_to",
+              "value": "blocked"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{widgets.getProfileFlagsForIdentifier.parsed.flags}}",
+        "offset": {
+          "x": 290,
+          "y": 450
+        }
+      }
+    },
+    {
+      "name": "pre_survey_complete",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "getProfileFlagsForIdentifier",
+          "event": "noMatch"
+        },
+        {
+          "next": "send_childhelp_sms_prequeue_message",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to true",
+              "arguments": [
+                "{{trigger.conversation.ChannelAttributes.preSurveyComplete}}"
+              ],
+              "type": "equal_to",
+              "value": "true"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{trigger.conversation.ChannelAttributes.preSurveyComplete}}",
+        "offset": {
+          "x": 290,
+          "y": -80
+        }
+      }
+    },
+    {
+      "name": "captureChannelWithBot",
+      "type": "make-http-request",
+      "transitions": [
+        {
+          "event": "success"
+        },
+        {
+          "next": "webhook_notify_error_chatbot",
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 360,
+          "y": 1630
+        },
+        "method": "POST",
+        "content_type": "application/json;charset=utf-8",
+        "add_twilio_auth": false,
+        "body": "{\n  \"channelSid\": \"{{flow.channel.address}}\",\n  \"conversationSid\": \"{{flow.channel.address}}\",\n  \"message\": \"trigger_pre_survey\",\n  \"studioFlowSid\": \"{{flow.flow_sid}}\",\n  \"language\": \"en-US\",\n  \"botSuffix\": \"pre_survey\",\n  \"triggerType\": \"withUserMessage\",\n  \"releaseType\": \"triggerStudioFlow\",\n  \"releaseFlag\": \"preSurveyComplete\",\n  \"channelType\": \"{% if trigger.conversation.ChannelAttributes.channel_type %}{{trigger.conversation.ChannelAttributes.channel_type}}{% else %}{{trigger.conversation.Source | downcase}}{% endif %}\",\n  \"isConversation\": \"true\"\n}",
+        "url": "${lambda_twilio_account_scoped_url}/channelCapture/captureChannelWithBot"
+      }
+    },
+    {
+      "name": "get_childhelp_sms_language_message",
+      "type": "send-and-wait-for-reply",
+      "transitions": [
+        {
+          "next": "split_language",
+          "event": "incomingMessage"
+        },
+        {
+          "next": "split_escape_retry",
+          "event": "timeout"
+        },
+        {
+          "next": "send_childhelp_sms_eng_language_message",
+          "event": "deliveryFailure"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 320,
+          "y": 760
+        },
+        "service": "{{trigger.message.InstanceSid}}",
+        "channel": "{{trigger.message.ChannelSid}}",
+        "from": "Bot",
+        "message_type": "custom",
+        "body": "${flow_vars.childhelp_sms_language_message}",
+        "timeout": "3600"
+      }
+    },
+    {
+      "name": "split_language",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "send_childhelp_sms_eng_language_message",
+          "event": "noMatch"
+        },
+        {
+          "next": "send_childhelp_sms_eng_language_message",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to 1",
+              "arguments": [
+                "{{widgets.get_childhelp_sms_language_message.inbound.Body}}"
+              ],
+              "type": "equal_to",
+              "value": "1"
+            }
+          ]
+        },
+        {
+          "next": "send_childhelp_sms_other_language_message",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to 2",
+              "arguments": [
+                "{{widgets.get_childhelp_sms_language_message.inbound.Body}}"
+              ],
+              "type": "equal_to",
+              "value": "2"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{widgets.get_childhelp_sms_language_message.inbound.Body}}",
+        "offset": {
+          "x": 250,
+          "y": 1040
+        }
+      }
+    },
+    {
+      "name": "send_childhelp_sms_other_language_message",
+      "type": "send-message",
+      "transitions": [
+        {
+          "event": "sent"
+        },
+        {
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 620,
+          "y": 1310
+        },
+        "service": "{{trigger.message.InstanceSid}}",
+        "channel": "{{trigger.message.ChannelSid}}",
+        "from": "Bot",
+        "message_type": "custom",
+        "to": "{{contact.channel.address}}",
+        "body": "${flow_vars.childhelp_sms_other_message}"
+      }
+    },
+    {
+      "name": "send_childhelp_sms_eng_language_message",
+      "type": "send-message",
+      "transitions": [
+        {
+          "next": "captureChannelWithBot",
+          "event": "sent"
+        },
+        {
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 270,
+          "y": 1340
+        },
+        "service": "{{trigger.message.InstanceSid}}",
+        "channel": "{{trigger.message.ChannelSid}}",
+        "from": "Bot",
+        "message_type": "custom",
+        "to": "{{contact.channel.address}}",
+        "body": "${flow_vars.childhelp_sms_eng_language_message}"
+      }
+    },
+    {
+      "name": "channelCleanup",
+      "type": "make-http-request",
+      "transitions": [
+        {
+          "next": "attributes",
+          "event": "success"
+        },
+        {
+          "next": "send_childhelp_sms_failure_message",
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 930,
+          "y": 2100
+        },
+        "method": "POST",
+        "content_type": "application/json;charset=utf-8",
+        "add_twilio_auth": false,
+        "body": "{\"channelSid\": \"{{flow.channel.address}}\", \"conversationSid\": \"{{flow.channel.address}}\"}",
+        "url": "${lambda_twilio_account_scoped_url}/channelCapture/chatbotCallbackCleanup"
+      }
+    },
+    {
+      "name": "webhook_notify_error_chatbot",
+      "type": "make-http-request",
+      "transitions": [
+        {
+          "next": "channelCleanup",
+          "event": "success"
+        },
+        {
+          "next": "channelCleanup",
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 520,
+          "y": 1890
+        },
+        "method": "POST",
+        "content_type": "application/json;charset=utf-8",
+        "add_twilio_auth": false,
+        "body": "{ \"text\": \"Issue detected [Chabot Failure] on ${short_helpline} ${short_environment} Flow SID: {{flow.flow_sid}} Execution SID: {{flow.sid}}  \" }",
+        "url": "${webhook_url_studio_errors}"
+      }
+    },
+    {
+      "name": "send_childhelp_sms_prequeue_message",
+      "type": "send-message",
+      "transitions": [
+        {
+          "next": "attributes",
+          "event": "sent"
+        },
+        {
+          "next": "attributes",
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 1030,
+          "y": 1200
+        },
+        "service": "{{trigger.message.InstanceSid}}",
+        "channel": "{{trigger.message.ChannelSid}}",
+        "from": "Bot",
+        "message_type": "custom",
+        "to": "{{contact.channel.address}}",
+        "body": "${flow_vars.childhelp_sms_prequeue_message}"
+      }
+    },
+    {
+      "name": "send_childhelp_sms_no_response_language_message",
+      "type": "send-message",
+      "transitions": [
+        {
+          "event": "sent"
+        },
+        {
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 710,
+          "y": 1040
+        },
+        "service": "{{trigger.message.InstanceSid}}",
+        "channel": "{{trigger.message.ChannelSid}}",
+        "from": "Bot",
+        "message_type": "custom",
+        "to": "{{contact.channel.address}}",
+        "body": "${flow_vars.childhelp_sms_no_response_language_message}"
+      }
+    },
+    {
+      "name": "send_childhelp_sms_failure_message",
+      "type": "send-message",
+      "transitions": [
+        {
+          "event": "sent"
+        },
+        {
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 1190,
+          "y": 2400
+        },
+        "service": "{{trigger.message.InstanceSid}}",
+        "channel": "{{trigger.message.ChannelSid}}",
+        "from": "Bot",
+        "message_type": "custom",
+        "to": "{{contact.channel.address}}",
+        "body": "${flow_vars.childhelp_sms_failure_message}"
+      }
+    },
+    {
+      "name": "set_escape_retry",
+      "type": "set-variables",
+      "transitions": [
+        {
+          "next": "get_childhelp_sms_language_message",
+          "event": "next"
+        }
+      ],
+      "properties": {
+        "variables": [
+          {
+            "type": "string",
+            "value": "true",
+            "key": "escape_retry"
+          }
+        ],
+        "offset": {
+          "x": -30,
+          "y": 580
+        }
+      }
+    },
+    {
+      "name": "split_escape_retry",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "set_escape_retry",
+          "event": "noMatch"
+        },
+        {
+          "next": "send_childhelp_sms_no_response_language_message",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to true",
+              "arguments": [
+                "{{flow.variables.escape_retry}}"
+              ],
+              "type": "equal_to",
+              "value": "true"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{flow.variables.escape_retry}}",
+        "offset": {
+          "x": -320,
+          "y": 810
+        }
+      }
+    }
+  ],
+  "initial_state": "Trigger",
+  "flags": {
+    "allow_concurrent_calls": true
+  }
+})}

@@ -1,0 +1,145 @@
+[
+  {
+    "name": "firstName",
+    "label": "First Name",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "lastName",
+    "label": "Last Name",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "nickname",
+    "label": "Nickname",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "gender",
+    "label": "Gender",
+    "type": "select",
+    "unknownOption": "Unknown",
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "Male",
+        "label": "Male"
+      },
+      {
+        "value": "Female",
+        "label": "Female"
+      },
+      {
+        "value": "Other",
+        "label": "Other"
+      }
+    ],
+    "isPII": false
+  },
+  {
+    "name": "dateOfBirth",
+    "label": "Date of Birth",
+    "type": "date-input",
+    "isPII": false
+  },
+  {
+    "name": "language",
+    "label": "Language",
+    "type": "select",
+    "unknownOption": "Unknown",
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "English",
+        "label": "English"
+      },
+      {
+        "value": "Cantonese",
+        "label": "Cantonese"
+      },
+      {
+        "value": "Japanese",
+        "label": "Japanese"
+      },
+      {
+        "value": "Korean",
+        "label": "Korean"
+      },
+      {
+        "value": "Russian",
+        "label": "Russian"
+      },
+      {
+        "value": "Spanish",
+        "label": "Spanish"
+      },
+      {
+        "value": "Tagalog",
+        "label": "Tagalog"
+      },
+      {
+        "value": "Other",
+        "label": "Other"
+      }
+    ],
+    "isPII": false
+  },
+  {
+    "name": "race",
+    "label": "Race ",
+    "type": "select",
+    "unknownOption": "Unknown",
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "Asian",
+        "label": "Asian"
+      },
+      {
+        "value": "Black",
+        "label": "Black"
+      },
+      {
+        "value": "Hispanic/Latino",
+        "label": "Hispanic/Latino"
+      },
+      {
+        "value": "Indigenous American",
+        "label": "Indigenous American"
+      },
+      {
+        "value": "Middle Eastern",
+        "label": "Middle Eastern"
+      },
+      {
+        "value": "Multi-Ethnic",
+        "label": "Multi-Ethnic"
+      },
+      {
+        "value": "Native Hawaiian or other Pacific Islander",
+        "label": "Native Hawaiian or other Pacific Islander"
+      },
+      {
+        "value": "White",
+        "label": "White"
+      },
+      {
+        "value": "Other",
+        "label": "Other"
+      }
+    ],
+    "isPII": false
+  }
+]

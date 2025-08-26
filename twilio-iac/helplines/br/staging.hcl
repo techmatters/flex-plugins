@@ -6,7 +6,8 @@ locals {
 
   local_config = {
     custom_task_routing_filter_expression = "channelType IN ['web', 'messenger'] OR twilioNumber=='messenger:104153648721033' OR isContactlessTask==true OR twilioNumber=='line:Uedd8bf552b012ffe47233c545465c43e' OR twilioNumber=='instagram:17841454785688794'"
-
+    enable_lex_v2                         = true
+    operating_hours_enforced_override     = false
     #Studio flow
     flow_vars = {
       service_sid                           = "ZS948c6d0e9a4af91d194721de5b570840"
@@ -24,11 +25,11 @@ locals {
         messaging_mode       = "conversations"
         channel_type         = "messenger"
         contact_identity     = "messenger:104153648721033"
-        templatefile         = "/app/twilio-iac/helplines/br/templates/studio-flows/messaging-conv.tftpl"
+        templatefile         = "/app/twilio-iac/helplines/br/templates/studio-flows/messaging-conv-lambda.tftpl"
         channel_flow_vars    = {}
         chatbot_unique_names = []
       }
     }
-
+    get_profile_flags_for_identifier_base_url = "https://hrm-staging.tl.techmatters.org/lambda/twilio/account-scoped"
   }
 }

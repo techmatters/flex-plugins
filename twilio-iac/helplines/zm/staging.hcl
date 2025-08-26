@@ -9,7 +9,7 @@ locals {
       webchat : {
         channel_type         = "web"
         contact_identity     = ""
-        templatefile         = "/app/twilio-iac/helplines/zm/templates/studio-flows/messaging-webchat.tftpl"
+        templatefile         = "/app/twilio-iac/helplines/zm/templates/studio-flows/messaging-webchat-lambda.tftpl"
         channel_flow_vars    = {}
         chatbot_unique_names = []
       },
@@ -17,7 +17,7 @@ locals {
         messaging_mode       = "conversations"
         channel_type         = "messenger"
         contact_identity     = "messenger:106338277501244"
-        templatefile         = "/app/twilio-iac/helplines/zm/templates/studio-flows/messaging-conv.tftpl"
+        templatefile         = "/app/twilio-iac/helplines/zm/templates/studio-flows/messaging-conv-lambda.tftpl"
         channel_flow_vars    = {}
         chatbot_unique_names = []
       },
@@ -25,7 +25,7 @@ locals {
         messaging_mode       = "conversations"
         channel_type         = "whatsapp"
         contact_identity     = "whatsapp:+17035961454"
-        templatefile         = "/app/twilio-iac/helplines/zm/templates/studio-flows/messaging-conv.tftpl"
+        templatefile         = "/app/twilio-iac/helplines/zm/templates/studio-flows/messaging-conv-lambda.tftpl"
         channel_flow_vars    = {}
         chatbot_unique_names = []
       },
@@ -48,7 +48,7 @@ locals {
       voice_ivr_language                    = "en-US",
       voice_ivr_blocked_message             = "Hi, you've been blocked from accessing Childline/Lifeline services and we are not able to receive further calls from you."
     }
-
+    get_profile_flags_for_identifier_base_url = "https://hrm-staging.tl.techmatters.org/lambda/twilio/account-scoped"
     ui_editable = true
     #Chatbots
   }

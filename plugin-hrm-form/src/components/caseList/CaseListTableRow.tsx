@@ -17,16 +17,14 @@
 /* eslint-disable react/prop-types */
 import React, { useEffect } from 'react';
 import { Template } from '@twilio/flex-ui';
-import { connect, ConnectedProps } from 'react-redux';
-import { DefinitionVersionId } from 'hrm-form-definitions';
+import { useDispatch, useSelector } from 'react-redux';
 import { parseISO } from 'date-fns';
 
 import { getDefinitionVersion } from '../../services/ServerlessService';
 import { RootState } from '../../states';
-import * as ConfigActions from '../../states/configuration/actions';
+import { updateDefinitionVersion } from '../../states/configuration/actions';
 import { Case } from '../../types/types';
 import {
-  Box,
   CategoriesCell,
   DataCell,
   DataTableRow,
@@ -39,71 +37,55 @@ import {
   TableSummaryFont,
   TextCell,
 } from '../../styles';
-import { formatName, getShortSummary } from '../../utils';
+import { formatName, getShortSummary } from '../../utils/formatters';
 import { getContactTags } from '../../utils/categories';
 import CategoryWithTooltip from '../common/CategoryWithTooltip';
-import { contactLabelFromHrmContact } from '../../states/contacts/contactIdentifier';
-import { getHrmConfig } from '../../hrmConfig';
-import { configurationBase, namespace } from '../../states/storeNamespaces';
 import { selectCaseByCaseId } from '../../states/case/selectCaseStateByCaseId';
-import { selectFirstCaseContact } from '../../states/contacts/selectContactByCaseId';
 import { selectCounselorsHash } from '../../states/configuration/selectCounselorsHash';
+import { selectDefinitionVersions } from '../../states/configuration/selectDefinitions';
+import {
+  newGetTimelineAsyncAction,
+  selectCaseLabel,
+  selectTimelineContactCategories,
+} from '../../states/case/timeline';
 
 const CHAR_LIMIT = 200;
+const CONTACTS_TIMELINE_ID = 'print-contacts';
 
-type OwnProps = {
+type Props = {
   caseId: Case['id'];
   handleClickViewCase: (currentCase: Case) => () => void;
 };
 
-const mapStateToProps = (state: RootState, { caseId }: OwnProps) => {
-  const caseItem = selectCaseByCaseId(state, caseId)?.connectedCase;
-  return {
-    definitionVersions: state[namespace][configurationBase].definitionVersions,
-    counselorsHash: selectCounselorsHash(state),
-    caseItem,
-    firstConnectedContact: selectFirstCaseContact(state, caseItem),
-  };
-};
+const CaseListTableRow: React.FC<Props> = ({ caseId, handleClickViewCase }) => {
+  const dispatch = useDispatch();
+  const { connectedCase: caseItem } = useSelector((state: RootState) => selectCaseByCaseId(state, caseId));
+  const counselorsHash = useSelector(selectCounselorsHash);
+  const definitionVersions = useSelector(selectDefinitionVersions);
+  const timelineCategories = useSelector((state: RootState) =>
+    selectTimelineContactCategories(state, caseId, CONTACTS_TIMELINE_ID),
+  );
+  const caseLabel = useSelector((state: RootState) => selectCaseLabel(state, caseId, CONTACTS_TIMELINE_ID));
 
-const mapDispatchToProps = {
-  updateDefinitionVersion: ConfigActions.updateDefinitionVersion,
-};
-
-const connector = connect(mapStateToProps, mapDispatchToProps);
-
-type Props = OwnProps & ConnectedProps<typeof connector>;
-
-const CaseListTableRow: React.FC<Props> = ({
-  caseItem,
-  firstConnectedContact,
-  counselorsHash,
-  handleClickViewCase,
-  ...props
-}) => {
-  const { updateDefinitionVersion, definitionVersions } = props;
-  const { definitionVersion } = getHrmConfig();
-  let version = caseItem.info.definitionVersion;
-  if (!Object.values(DefinitionVersionId).includes(version)) {
-    console.warn(
-      `Form definition version ${
-        typeof version === 'string' ? `'${version}'` : version
-      } does not exist in defined set: ${Object.values(
-        DefinitionVersionId,
-      )}. Falling back to to current configured version '${definitionVersion}' for case with id ${caseItem.id}`,
-    );
-    version = definitionVersion;
-  }
+  const version = caseItem.definitionVersion ?? caseItem.info.definitionVersion;
 
   useEffect(() => {
     const fetchDefinitionVersions = async () => {
       const definitionVersion = await getDefinitionVersion(version);
-      updateDefinitionVersion(version, definitionVersion);
+      dispatch(updateDefinitionVersion(version, definitionVersion));
     };
     if (version && !definitionVersions[version]) {
       fetchDefinitionVersions();
     }
-  }, [definitionVersions, updateDefinitionVersion, version]);
+  }, [definitionVersions, version, dispatch]);
+
+  useEffect(() => {
+    if (!timelineCategories) {
+      dispatch(
+        newGetTimelineAsyncAction(caseId, CONTACTS_TIMELINE_ID, [], true, { offset: 0, limit: 10000 }, `case-list`),
+      );
+    }
+  }, [timelineCategories, caseId, dispatch]);
 
   if (!caseItem) {
     return null;
@@ -123,15 +105,13 @@ const CaseListTableRow: React.FC<Props> = ({
 
     const definitionVersion = definitionVersions[version];
 
-    const categories = getContactTags(definitionVersion, caseItem.categories);
+    const categories = timelineCategories ? getContactTags(definitionVersion, timelineCategories) : [];
     // Get the status for a case from the value of CaseStatus.json of the current form definitions
     const getCaseStatusLabel = (caseStatus: string) => {
       return definitionVersion
         ? Object.values(definitionVersion.caseStatus).filter(status => status.value === caseStatus)[0].label
         : caseStatus;
     };
-
-    const contactLabel = contactLabelFromHrmContact(definitionVersion, firstConnectedContact);
 
     return (
       <DataTableRow data-testid="CaseList-TableRow" onClick={handleClickViewCase(caseItem)}>
@@ -150,7 +130,7 @@ const CaseListTableRow: React.FC<Props> = ({
           </OpenLinkContainer>
         </NumericCell>
         <TextCell>
-          <TableBodyFont>{contactLabel}</TableBodyFont>
+          <TableBodyFont>{caseLabel}</TableBodyFont>
         </TextCell>
         <DataCell>
           <TableBodyFont>{counselor}</TableBodyFont>
@@ -158,13 +138,17 @@ const CaseListTableRow: React.FC<Props> = ({
         <SummaryCell>
           <TableSummaryFont>{shortSummary}</TableSummaryFont>
         </SummaryCell>
-        <CategoriesCell>
-          {categories &&
-            categories.map(category => (
-              <Box key={`category-tag-${category.label}`} marginBottom="5px">
-                <CategoryWithTooltip category={category.label} color={category.color} />
-              </Box>
-            ))}
+        <CategoriesCell className="expanded">
+          {categories.slice(0, 3).map((category, idx) => (
+            <span key={`category-tag-${category.fullyQualifiedName}`}>
+              <CategoryWithTooltip
+                category={category.label}
+                color={category.color}
+                fullyQualifiedName={category.fullyQualifiedName}
+              />
+              {idx === 2 && categories.length > 3 && ' ...'}
+            </span>
+          ))}
         </CategoriesCell>
         <DataCell>
           <TableBodyFont style={{ textAlign: 'right' }}>{opened}</TableBodyFont>
@@ -190,6 +174,5 @@ const CaseListTableRow: React.FC<Props> = ({
 };
 
 CaseListTableRow.displayName = 'CaseListTableRow';
-const connected = connector(CaseListTableRow);
 
-export default connected;
+export default CaseListTableRow;

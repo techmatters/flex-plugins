@@ -1,0 +1,141 @@
+[
+  {
+    "name": "firstName",
+    "label": "First Name",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "lastName",
+    "label": "Last Name",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "relationshipToChild",
+    "label": "Relationship to Child",
+    "type": "select",
+    "defaultOption": {
+      "value": "",
+      "label": ""
+    },
+    "optionsReferenceKey": "relationshipToChildOptions",
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    },
+    "isPII": false
+  },
+  {
+    "name": "streetAddress",
+    "label": "Street Address",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "city",
+    "label": "City",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "area",
+    "label": "Area",
+    "type": "select",
+    "defaultOption": {
+      "value": "unknown",
+      "label": ""
+    },
+    "optionsReferenceKey": "areaOptions",
+    "isPII": false
+  },
+  {
+    "name": "province",
+    "label": "Province",
+    "type": "dependent-select",
+    "dependsOn": "area",
+    "defaultOption": {
+      "value": "unknown",
+      "label": ""
+    },
+    "optionsReferenceKey": "provinceOptions",
+    "isPII": false
+  },
+  {
+    "name": "postalCode",
+    "label": "Postal Code",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "phone1",
+    "label": "Phone #1",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "phone2",
+    "label": "Phone #2",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "Emergency contact",
+    "label": "Emergency contact",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "gender",
+    "label": "Gender",
+    "type": "select",
+    "defaultOption": {
+      "value": "",
+      "label": ""
+    },
+    "optionsReferenceKey": "genderOptions",
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    },
+    "isPII": false
+  },
+  {
+    "name": "age",
+    "label": "Age",
+    "type": "select",
+    "defaultOption": {
+      "value": "",
+      "label": ""
+    },
+    "optionsReferenceKey": "ageOptions",
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    },
+    "isPII": false
+  },
+  {
+    "name": "language",
+    "label": "Language",
+    "type": "select",
+    "defaultOption": {
+      "value": "ภาษาไทย",
+      "label": "ภาษาไทย"
+    },
+    "optionsReferenceKey": "languageOptions",
+    "isPII": false
+  },
+  {
+    "name": "nationality",
+    "label": "Nationality",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "ethnicity-input",
+    "label": "Ethnicity",
+    "type": "input",
+    "isPII": true
+  }
+]

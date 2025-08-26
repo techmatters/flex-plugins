@@ -14,13 +14,13 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import React, { useMemo } from 'react';
+import React, { useEffect } from 'react';
 import { Template } from '@twilio/flex-ui';
 import { useDispatch, useSelector } from 'react-redux';
 import { DefinitionVersion } from 'hrm-form-definitions';
 
-import { CaseContainer, CaseDetailsBorder, ViewButton } from './styles';
-import { BottomButtonBar, Box, SaveAndEndButton } from '../../styles';
+import { CaseContainer, CaseDetailsBorder } from './styles';
+import { BottomButtonBar, Box, DestructiveButton, Flex, SecondaryButton } from '../../styles';
 import CaseOverviewHeader from './caseOverview/CaseOverviewHeader';
 import CaseOverview from './caseOverview';
 import Timeline from './timeline/Timeline';
@@ -37,15 +37,16 @@ import { selectCurrentTopmostRouteForTask } from '../../states/routing/getRoute'
 import selectCurrentRouteCaseState from '../../states/case/selectCurrentRouteCase';
 import CaseCreatedBanner from '../caseMergingBanners/CaseCreatedBanner';
 import AddToCaseBanner from '../caseMergingBanners/AddToCaseBanner';
-import { selectTimelineCount } from '../../states/case/timeline';
+import {
+  newGetTimelineAsyncAction,
+  selectCaseLabel,
+  selectTimelineContactCategories,
+  selectTimelineCount,
+} from '../../states/case/timeline';
 import { selectDefinitionVersionForCase } from '../../states/configuration/selectDefinitions';
 import selectCaseHelplineData from '../../states/case/selectCaseHelplineData';
 import { selectCounselorName } from '../../states/configuration/selectCounselorsHash';
-import { contactLabelFromHrmContact } from '../../states/contacts/contactIdentifier';
-import {
-  selectContactsByCaseIdInCreatedOrder,
-  selectFirstContactByCaseId,
-} from '../../states/contacts/selectContactByCaseId';
+import { isContactIdentifierTimelineActivity } from '../../states/case/types';
 
 export type CaseHomeProps = {
   task: CustomITask | StandaloneITask;
@@ -58,6 +59,7 @@ export type CaseHomeProps = {
 
 const MAX_ACTIVITIES_IN_TIMELINE_SECTION = 5;
 const MAIN_TIMELINE_ID = 'prime-timeline';
+const CONTACTS_TIMELINE_ID = 'print-contacts';
 
 const CaseHome: React.FC<CaseHomeProps> = ({ task, handlePrintCase, handleClose, handleSaveAndEnd, can }) => {
   // Hooks
@@ -68,12 +70,23 @@ const CaseHome: React.FC<CaseHomeProps> = ({ task, handlePrintCase, handleClose,
   );
   const routing = useSelector((state: RootState) => selectCurrentTopmostRouteForTask(state, task.taskSid) as CaseRoute);
 
-  const caseContacts = useSelector((state: RootState) => selectContactsByCaseIdInCreatedOrder(state, routing.caseId));
-  const firstConnectedContact = useSelector(
-    (state: RootState) => selectFirstContactByCaseId(state, routing.caseId)?.savedContact,
+  const timelineCategories = useSelector((state: RootState) =>
+    selectTimelineContactCategories(state, routing.caseId, CONTACTS_TIMELINE_ID),
   );
+
   const activityCount = useSelector((state: RootState) =>
     routing.route === 'case' ? selectTimelineCount(state, routing.caseId, MAIN_TIMELINE_ID) : 0,
+  );
+  const contactCount = useSelector((state: RootState) =>
+    routing.route === 'case'
+      ? selectTimelineCount(state, routing.caseId, MAIN_TIMELINE_ID, isContactIdentifierTimelineActivity)
+      : 0,
+  );
+  const caseLabel = useSelector((state: RootState) =>
+    selectCaseLabel(state, routing.caseId, MAIN_TIMELINE_ID, {
+      substituteForId: false,
+      placeholder: '',
+    }),
   );
 
   const definitionVersion = useSelector((state: RootState) => selectDefinitionVersionForCase(state, connectedCase));
@@ -81,17 +94,31 @@ const CaseHome: React.FC<CaseHomeProps> = ({ task, handlePrintCase, handleClose,
   const office = useSelector((state: RootState) => selectCaseHelplineData(state, routing.caseId));
 
   const dispatch = useDispatch();
+  useEffect(() => {
+    if (!timelineCategories) {
+      dispatch(
+        newGetTimelineAsyncAction(
+          routing.caseId,
+          CONTACTS_TIMELINE_ID,
+          [],
+          true,
+          { offset: 0, limit: 10000 },
+          `case-list`,
+        ),
+      );
+    }
+  }, [routing.caseId, dispatch, timelineCategories]);
+
   const openModal = (route: AppRoutes) => dispatch(RoutingActions.newOpenModalAction(route, task.taskSid));
   // End Hooks
   if (!connectedCase) return null; // narrow type before deconstructing
 
-  const isNewContact = Boolean(taskContact && taskContact.caseId === routing.caseId && !taskContact.finalizedAt);
-  const isNewCase = caseContacts.length === 1 && taskContact && taskContact.caseId === routing.caseId;
-  const isOrphanedCase = !firstConnectedContact;
-  const label = contactLabelFromHrmContact(definitionVersion, firstConnectedContact ?? taskContact, {
-    placeholder: '',
-    substituteForId: false,
-  });
+  const isNewContact = Boolean(
+    contactCount === 1 && taskContact && taskContact.caseId === routing.caseId && !taskContact.finalizedAt,
+  );
+  const isNewCase = taskContact && taskContact.caseId === routing.caseId;
+  const isOrphanedCase = !timelineCategories;
+  const label = caseLabel;
   const hasMoreActivities = activityCount > MAX_ACTIVITIES_IN_TIMELINE_SECTION;
 
   const caseId = connectedCase.id;
@@ -139,7 +166,7 @@ const CaseHome: React.FC<CaseHomeProps> = ({ task, handlePrintCase, handleClose,
             handlePrintCase={handlePrintCase}
             isOrphanedCase={isOrphanedCase}
             definitionVersion={definitionVersion}
-            categories={connectedCase.categories}
+            categories={timelineCategories ?? {}}
           />
           <CaseOverview
             task={task}
@@ -160,9 +187,11 @@ const CaseHome: React.FC<CaseHomeProps> = ({ task, handlePrintCase, handleClose,
               titleCode={hasMoreActivities ? 'Case-Timeline-RecentTitle' : 'Case-Timeline-Title'}
             />
             {hasMoreActivities && (
-              <ViewButton style={{ marginTop: '10px' }} withDivider={false} onClick={onViewFullTimelineClick}>
-                <Template code="Case-Timeline-OpenFullTimelineButton" />
-              </ViewButton>
+              <Flex flexDirection="column" width="100%">
+                <SecondaryButton style={{ marginTop: '10px' }} onClick={onViewFullTimelineClick}>
+                  <Template code="Case-Timeline-OpenFullTimelineButton" />
+                </SecondaryButton>
+              </Flex>
             )}
           </CaseDetailsBorder>
         </Box>
@@ -180,9 +209,9 @@ const CaseHome: React.FC<CaseHomeProps> = ({ task, handlePrintCase, handleClose,
       </CaseContainer>
       {isNewContact && (
         <BottomButtonBar>
-          <SaveAndEndButton roundCorners onClick={handleSaveAndEnd} data-testid="BottomBar-SaveCaseAndEnd">
+          <DestructiveButton roundCorners onClick={handleSaveAndEnd} data-testid="BottomBar-SaveCaseAndEnd">
             <Template code="BottomBar-SaveAndEnd" />
-          </SaveAndEndButton>
+          </DestructiveButton>
         </BottomButtonBar>
       )}
     </NavigableContainer>

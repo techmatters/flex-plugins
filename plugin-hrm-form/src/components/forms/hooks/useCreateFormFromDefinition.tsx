@@ -19,7 +19,7 @@ import { get } from 'lodash';
 
 import { createInput, CreateInputParams } from '../inputGenerator';
 import useFocus from '../../../utils/useFocus';
-import { getInitialValue } from '../../common/forms/formGenerators';
+import { getInitialValue } from '../../common/forms/formValues';
 
 type UseFormFromDefinition = {
   definition: FormDefinition;

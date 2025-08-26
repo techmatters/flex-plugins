@@ -21,7 +21,7 @@ import { Template } from '@twilio/flex-ui';
 import Edit from '@material-ui/icons/Edit';
 import { DefinitionVersion, isNonSaveable } from 'hrm-form-definitions';
 
-import { BottomButtonBar, Box, StyledNextStepButton } from '../../styles';
+import { BottomButtonBar, Box, SecondaryButton } from '../../styles';
 import { CaseLayout, FullWidthFormTextContainer } from './styles';
 import { RootState } from '../../states';
 import { SectionEntry, SectionEntryValue } from '../common/forms/SectionEntry';
@@ -82,6 +82,8 @@ const ViewCaseItem: React.FC<ViewCaseItemProps> = ({ task, definitionVersion, se
     type: 'case',
   };
 
+  const sectionTypeLayoutDefinition = definitionVersion.layoutVersion.case.sectionTypes[sectionTypeName];
+
   return (
     <CaseLayout>
       <NavigableContainer task={task} titleCode={`CaseSection-View-Title/${sectionTypeName}`}>
@@ -100,7 +102,13 @@ const ViewCaseItem: React.FC<ViewCaseItemProps> = ({ task, definitionVersion, se
             <Box paddingTop="10px">
               {formDefinition.map(e => (
                 <SectionEntry key={`entry-${e.label}`} descriptionKey={e.label}>
-                  <SectionEntryValue value={form[e.name]} targetObject={targetObject} definition={e} />
+                  <SectionEntryValue
+                    layout={sectionTypeLayoutDefinition?.layout?.[e.name]}
+                    value={form[e.name]}
+                    form={form}
+                    targetObject={targetObject}
+                    definition={e}
+                  />
                 </SectionEntry>
               ))}
             </Box>
@@ -109,15 +117,10 @@ const ViewCaseItem: React.FC<ViewCaseItemProps> = ({ task, definitionVersion, se
         {canEdit && (
           <BottomButtonBar>
             <Box marginRight="15px">
-              <StyledNextStepButton
-                secondary="true"
-                roundCorners
-                onClick={onEditCaseItemClick}
-                data-testid="Case-EditButton"
-              >
+              <SecondaryButton roundCorners onClick={onEditCaseItemClick} data-testid="Case-EditButton">
                 <Edit fontSize="inherit" style={{ marginRight: 5 }} />
                 <Template code="EditButton" />
-              </StyledNextStepButton>
+              </SecondaryButton>
             </Box>
           </BottomButtonBar>
         )}

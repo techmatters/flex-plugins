@@ -15,7 +15,7 @@
  */
 import promiseMiddleware from 'redux-promise-middleware';
 import { configureStore } from '@reduxjs/toolkit';
-import { DefinitionVersionId, loadDefinition } from 'hrm-form-definitions';
+import { loadDefinition } from 'hrm-form-definitions';
 
 import { mockLocalFetchDefinitions } from '../../mockFetchDefinitions';
 import '../../mockGetConfig';
@@ -47,14 +47,14 @@ const mockUpdateStatus = updateCaseStatus as jest.Mock<
 
 const mockGetCase = getCase as jest.Mock<ReturnType<typeof getCase>, Parameters<typeof getCase>>;
 const workerSid = 'Worker-Sid';
-const definitionVersion: DefinitionVersionId = DefinitionVersionId.demoV1;
+const definitionVersion: string = 'as-v1';
 const partialState: RecursivePartial<HrmState> = {
   connectedCase: {
     cases: {},
   },
   configuration: {
     definitionVersions: {
-      [definitionVersion]: {},
+      [definitionVersion]: { caseStatus: {} },
     },
   },
 };
@@ -62,7 +62,7 @@ const partialState: RecursivePartial<HrmState> = {
 const saveCaseState = partialState as HrmState;
 
 beforeAll(async () => {
-  const formDefinitionsBaseUrl = buildBaseURL(definitionVersion as DefinitionVersionId);
+  const formDefinitionsBaseUrl = buildBaseURL(definitionVersion);
   await mockFetchImplementation(formDefinitionsBaseUrl);
 
   const mockV1 = await loadDefinition(formDefinitionsBaseUrl);
@@ -92,7 +92,7 @@ const mockPayload: Omit<Case, 'sections' | 'label'> = {
   info: {},
   createdAt: '12-05-2023',
   updatedAt: '12-05-2023',
-  categories: {},
+  definitionVersion,
 };
 
 const testStore = (stateChanges: Partial<HrmState> = {}) =>
@@ -120,7 +120,7 @@ const nonInitialPartialState: RecursivePartial<HrmState> = {
           info: {},
           createdAt: '12-05-2023',
           updatedAt: '12-05-2023',
-          categories: {},
+          definitionVersion,
         },
         caseWorkingCopy: {
           sections: {},
@@ -178,7 +178,7 @@ const contact = {
     resourceReferralList: { resourceReferralIdToAdd: '', lookupStatus: ReferralLookupStatus.NOT_STARTED },
   },
   helpline: '',
-  metadata: { categories: { expanded: {}, gridView: false }, endMillis: 0, recreated: false, startMillis: 0 },
+  metadata: { categories: { expanded: {}, gridView: false }, endMillis: 0, startMillis: 0 },
   referrals: [],
 };
 
@@ -206,16 +206,14 @@ const expectObject: RecursivePartial<HrmState> = {
 
 describe('createCaseAsyncAction', () => {
   test('Calls the createCase service, and create a case', () => {
-    createCaseAsyncAction(contact, workerSid, definitionVersion as DefinitionVersionId);
+    createCaseAsyncAction(contact, workerSid, definitionVersion);
     expect(createCase).toHaveBeenCalledWith(contact, workerSid, definitionVersion);
   });
 
   test('should dispatch createCaseAsyncAction correctly', async () => {
     const { dispatch, getState } = testStore(nonInitialState);
     const startingState = getState();
-    await ((dispatch(
-      createCaseAsyncAction(contact, workerSid, definitionVersion as DefinitionVersionId),
-    ) as unknown) as Promise<void>);
+    await ((dispatch(createCaseAsyncAction(contact, workerSid, definitionVersion)) as unknown) as Promise<void>);
     const state = getState();
     expect(state).toStrictEqual({
       ...startingState,
@@ -230,7 +228,6 @@ describe('createCaseAsyncAction', () => {
             },
             connectedCase: {
               id: '234',
-              categories: undefined,
               info: {},
             },
             references: new Set(),
@@ -359,7 +356,7 @@ describe('updateCaseOverviewAsyncAction', () => {
           connectedCase: {
             ...VALID_EMPTY_CASE,
             id: 'ANOTHER_CASE',
-            info: { ...overview, definitionVersion: DefinitionVersionId.v1 },
+            info: { ...overview, definitionVersion },
           },
           references: new Set(),
           availableStatusTransitions: [],
@@ -411,8 +408,9 @@ describe('updateCaseOverviewAsyncAction', () => {
           operatingArea: 'Area 51',
           summary: 'updated summary',
           followUpDate: null,
-          definitionVersion: DefinitionVersionId.v1,
+          definitionVersion,
         },
+        definitionVersion,
       });
     });
 

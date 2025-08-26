@@ -29,6 +29,9 @@ locals {
   services_flex_chat_service_sid        = local.provision_config.services_flex_chat_service_sid
   task_router_workflow_sids             = local.provision_config.task_router_workflow_sids
   task_router_task_channel_sids         = local.provision_config.task_router_task_channel_sids
+  task_router_task_queue_sids           = local.provision_config.task_router_task_queue_sids
+  system_down_config = var.enable_system_down ? data.terraform_remote_state.system_down[0].outputs : {}
+  system_down_studio_subflow_sid = var.enable_system_down ? local.system_down_config.system_down_studio_subflow_sid : ""
 
 
   stage = "configure"
@@ -45,6 +48,18 @@ data "terraform_remote_state" "provision" {
   }
 }
 
+data "terraform_remote_state" "system_down" {
+  count   = var.enable_system_down ? 1 : 0
+  backend = "s3"
+  
+  config = {
+    bucket   = "tl-terraform-state-${var.environment}"
+    key      = "twilio/${var.short_helpline}/system-down/terraform.tfstate"
+    region   = "us-east-1"
+    role_arn = "arn:aws:iam::${local.aws_account_id}:role/tf-twilio-iac-${var.environment}"
+  }
+}
+
 
 provider "twilio" {
   username = local.secrets.twilio_account_sid
@@ -56,6 +71,7 @@ module "channel" {
   flex_chat_service_sid      = local.services_flex_chat_service_sid
   workflow_sids              = local.task_router_workflow_sids
   task_channel_sids          = local.task_router_task_channel_sids
+  system_down_studio_subflow_sid = local.system_down_studio_subflow_sid
   channel_attributes         = var.channel_attributes
   channels                   = var.channels
   enable_post_survey         = var.enable_post_survey
@@ -67,7 +83,7 @@ module "channel" {
   short_helpline             = upper(var.short_helpline)
   twilio_account_sid                         = local.secrets.twilio_account_sid
   serverless_url                             = local.serverless_url
-  get_profile_flags_for_identifiers_base_url = var.get_profile_flags_for_identifiers_base_url == "" ? local.serverless_url : "${var.get_profile_flags_for_identifiers_base_url}/${local.secrets.twilio_account_sid}"
+  get_profile_flags_for_identifier_base_url = var.get_profile_flags_for_identifier_base_url == "" ? local.serverless_url : "${var.get_profile_flags_for_identifier_base_url}/${local.secrets.twilio_account_sid}"
   serverless_service_sid                     = local.serverless_service_sid
   serverless_environment_sid                 = local.serverless_environment_production_sid
   region                                     = var.helpline_region
@@ -103,6 +119,14 @@ resource "aws_ssm_parameter" "transcript_retention_override" {
   value = var.hrm_transcript_retention_days_override
 }
 
+resource "aws_ssm_parameter" "operating_hours_enforced_override" {
+  count = var.environment == "staging" ? 1 : 0
+
+  name  = "/${var.environment}/twilio/${local.secrets.twilio_account_sid}/operating_hours_enforced_override"
+  type  = "SecureString"
+  value = var.operating_hours_enforced_override
+}
+
 resource "aws_ssm_parameter" "case_status_transition" {
   count       = var.case_status_transition_rules != null ? 1 : 0
   name        = "/${lower(var.environment)}/${var.helpline_region}/hrm/scheduled-task/case-status-transitionrules/${nonsensitive(local.secrets.twilio_account_sid)}"
@@ -132,6 +156,21 @@ resource "aws_ssm_parameter" "hrm_static_api_key_v2" {
   tags = {
     Environment = lower(var.environment)
     Name        = "/${lower(var.environment)}/twilio/${local.secrets.twilio_account_sid}/static_key"
+    Terraform   = true
+  }
+}
+
+
+resource "aws_ssm_parameter" "twilio_switchboard_queue_sid" {
+  count       = contains(keys(local.task_router_task_queue_sids), "switchboard") ? 1 : 0
+  name        = "/${lower(var.environment)}/twilio/${nonsensitive(local.secrets.twilio_account_sid)}/switchboard_queue_sid"
+  type        = "SecureString"
+  value       = local.task_router_task_queue_sids["switchboard"]
+  description = "Twilio account - Switchboard Queue SID"
+
+  tags = {
+    Environment = lower(var.environment)
+    Name        = "/${lower(var.environment)}/twilio/${nonsensitive(local.secrets.twilio_account_sid)}/switchboard_queue_sid"
     Terraform   = true
   }
 }

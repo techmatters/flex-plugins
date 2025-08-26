@@ -15,7 +15,7 @@
  */
 
 import { omit } from 'lodash';
-import { callTypes } from 'hrm-form-definitions';
+import { callTypes } from 'hrm-types';
 
 import {
   AppRoutes,

@@ -19,7 +19,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { CircularProgress } from '@material-ui/core';
 import { useEffect } from 'react';
 
-import { TertiaryButton } from '../../../styles';
+import { SecondaryButton } from '../../../styles';
 import { newGenerateSummaryAsyncAction } from '../../../states/contacts/llmAssistant';
 import { RootState } from '../../../states';
 import selectContactStateByContactId from '../../../states/contacts/selectContactStateByContactId';
@@ -74,7 +74,7 @@ const GenerateSummaryButton: React.FC<Props> = ({ contactId, form, item }) => {
   const alreadySummarized = (llmSupportedEntries[form] ?? []).includes(item);
 
   return (
-    <TertiaryButton
+    <SecondaryButton
       disabled={assistantWorking || alreadySummarized}
       onClick={() => asyncDispatcher(newGenerateSummaryAsyncAction(savedContact, form, item))}
       style={{}}
@@ -97,7 +97,7 @@ const GenerateSummaryButton: React.FC<Props> = ({ contactId, form, item }) => {
           </span>
         </>
       )}
-    </TertiaryButton>
+    </SecondaryButton>
   );
 };
 

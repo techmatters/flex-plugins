@@ -17,8 +17,6 @@
 import flexContext from '../../flex-in-a-box/global-context';
 import { addSeconds, subHours } from 'date-fns';
 // eslint-disable-next-line import/no-extraneous-dependencies
-import { DefinitionVersionId } from 'hrm-form-definitions';
-// eslint-disable-next-line import/no-extraneous-dependencies
 import { Page } from '@playwright/test';
 import context from '../global-context';
 import * as path from 'path';
@@ -39,7 +37,7 @@ const generateMockCases = (toGenerate: number): any[] => {
         'case category 2': ['subcategory3'],
       },
       info: {
-        definitionVersion: DefinitionVersionId.demoV1,
+        definitionVersion: 'demo-v1',
       },
       createdAt: time.toISOString(),
       updatedAt: time.toISOString(),
@@ -98,6 +96,19 @@ const hrmCases = () => {
             body: JSON.stringify({
               cases: mockCases.slice(0, 10),
               count: mockCases.length,
+            }),
+          });
+        },
+      );
+      await page.route(
+        new URL(path.join(PATH_PREFIX, '*', 'timeline**'), context.HRM_BASE_URL).toString(),
+        async (route) => {
+          await route.fulfill({
+            status: 200,
+            contentType: 'application/json',
+            body: JSON.stringify({
+              activities: [],
+              count: 0,
             }),
           });
         },

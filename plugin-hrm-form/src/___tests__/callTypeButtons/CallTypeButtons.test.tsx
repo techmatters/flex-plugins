@@ -18,20 +18,16 @@ import * as React from 'react';
 import renderer from 'react-test-renderer';
 import { render, screen, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
-import { Template } from '@twilio/flex-ui';
+import { StorelessThemeProvider, Template } from '@twilio/flex-ui';
 import { Provider } from 'react-redux';
 import configureMockStore from 'redux-mock-store';
 import '../mockStyled';
 import '../mockGetConfig';
-import { callTypes } from 'hrm-form-definitions';
+import { callTypes } from 'hrm-types';
 
 import '../../states/conferencing';
-import {
-  DataCallTypeButton,
-  NonDataCallTypeButton,
-  ConfirmButton,
-  CancelButton,
-} from '../../components/callTypeButtons/styles';
+import { DataCallTypeButton, NonDataCallTypeButton } from '../../components/callTypeButtons/styles';
+import { ConfirmButton } from '../../styles';
 import LocalizationContext from '../../contexts/LocalizationContext';
 import { changeRoute } from '../../states/routing/actions';
 import { updateDraft } from '../../states/contacts/existingContacts';
@@ -40,6 +36,7 @@ import CallTypeButtons from '../../components/callTypeButtons';
 import { submitContactFormAsyncAction, updateContactInHrmAsyncAction } from '../../states/contacts/saveContact';
 import { configurationBase, connectedCaseBase, contactFormsBase, namespace } from '../../states/storeNamespaces';
 import { VALID_EMPTY_METADATA } from '../testContacts';
+import HrmTheme from '../../styles/HrmTheme';
 
 jest.mock('../../states/conferencing', () => ({}));
 
@@ -66,6 +63,10 @@ const task = {
 const strings = {
   TaskHeaderEndCall: 'HANG UP',
   TaskHeaderEndChat: 'END CHAT',
+};
+
+const themeConf = {
+  colorTheme: HrmTheme,
 };
 
 const withEndCall = <Template code="TaskHeaderEndCall" />;
@@ -154,18 +155,20 @@ test('<CallTypeButtons> inital render (no dialog)', () => {
   const isCallTask = () => false;
 
   const component = renderer.create(
-    <LocalizationContext.Provider value={{ strings, isCallTask }}>
-      <Provider store={store}>
-        <CallTypeButtons task={task} dispatch={jest.fn()} />
-      </Provider>
-    </LocalizationContext.Provider>,
+    <StorelessThemeProvider themeConf={themeConf}>
+      <LocalizationContext.Provider value={{ strings, isCallTask }}>
+        <Provider store={store}>
+          <CallTypeButtons task={task} dispatch={jest.fn()} />
+        </Provider>
+      </LocalizationContext.Provider>
+    </StorelessThemeProvider>,
   ).root;
 
   expect(() => component.findAllByType(DataCallTypeButton)).not.toThrow();
   expect(() => component.findAllByType(NonDataCallTypeButton)).not.toThrow();
 });
 
-const getConfirmButtonText = component => component.findByType(ConfirmButton).props.children;
+const getConfirmButtonText = component => component.findByProps({ id: 'Task-EndCallOrChat-Button' }).props.children;
 
 test('<CallTypeButtons> renders dialog with all buttons', () => {
   const initialState = {
@@ -193,11 +196,13 @@ test('<CallTypeButtons> renders dialog with all buttons', () => {
   const isCallTask = () => false;
 
   const component = renderer.create(
-    <LocalizationContext.Provider value={{ strings, isCallTask }}>
-      <Provider store={store}>
-        <CallTypeButtons task={task} handleCompleteTask={jest.fn()} dispatch={jest.fn()} />
-      </Provider>
-    </LocalizationContext.Provider>,
+    <StorelessThemeProvider themeConf={themeConf}>
+      <LocalizationContext.Provider value={{ strings, isCallTask }}>
+        <Provider store={store}>
+          <CallTypeButtons task={task} handleCompleteTask={jest.fn()} dispatch={jest.fn()} />
+        </Provider>
+      </LocalizationContext.Provider>
+    </StorelessThemeProvider>,
   ).root;
 
   const callTypeButtonsDefinitions =
@@ -238,11 +243,13 @@ test('<CallTypeButtons> renders dialog with END CHAT button', () => {
   const isCallTask = () => false;
 
   const component = renderer.create(
-    <LocalizationContext.Provider value={{ strings, isCallTask }}>
-      <Provider store={store}>
-        <CallTypeButtons task={task} dispatch={jest.fn()} />
-      </Provider>
-    </LocalizationContext.Provider>,
+    <StorelessThemeProvider themeConf={themeConf}>
+      <LocalizationContext.Provider value={{ strings, isCallTask }}>
+        <Provider store={store}>
+          <CallTypeButtons task={task} dispatch={jest.fn()} />
+        </Provider>
+      </LocalizationContext.Provider>
+    </StorelessThemeProvider>,
   ).root;
 
   const confirmButtonText = getConfirmButtonText(component);
@@ -277,11 +284,13 @@ test('<CallTypeButtons> renders dialog with HANG UP button', () => {
   const isCallTask = () => true;
 
   const component = renderer.create(
-    <LocalizationContext.Provider value={{ strings, isCallTask }}>
-      <Provider store={store}>
-        <CallTypeButtons task={task} dispatch={jest.fn()} />
-      </Provider>
-    </LocalizationContext.Provider>,
+    <StorelessThemeProvider themeConf={themeConf}>
+      <LocalizationContext.Provider value={{ strings, isCallTask }}>
+        <Provider store={store}>
+          <CallTypeButtons task={task} dispatch={jest.fn()} />
+        </Provider>
+      </LocalizationContext.Provider>
+    </StorelessThemeProvider>,
   ).root;
 
   const confirmButtonText = getConfirmButtonText(component);
@@ -317,11 +326,13 @@ test('<CallTypeButtons> click on Data (Child) button', async () => {
   const isCallTask = () => false;
 
   render(
-    <LocalizationContext.Provider value={{ strings, isCallTask }}>
-      <Provider store={store}>
-        <CallTypeButtons task={task} />
-      </Provider>
-    </LocalizationContext.Provider>,
+    <StorelessThemeProvider themeConf={themeConf}>
+      <LocalizationContext.Provider value={{ strings, isCallTask }}>
+        <Provider store={store}>
+          <CallTypeButtons task={task} />
+        </Provider>
+      </LocalizationContext.Provider>
+    </StorelessThemeProvider>,
   );
 
   expect(screen.getByText('Child calling about self')).toBeInTheDocument();
@@ -361,11 +372,13 @@ test('<CallTypeButtons> click on NonData (Joke) button', () => {
   const isCallTask = () => false;
 
   render(
-    <LocalizationContext.Provider value={{ strings, isCallTask }}>
-      <Provider store={store}>
-        <CallTypeButtons task={task} handleCompleteTask={jest.fn()} />
-      </Provider>
-    </LocalizationContext.Provider>,
+    <StorelessThemeProvider themeConf={themeConf}>
+      <LocalizationContext.Provider value={{ strings, isCallTask }}>
+        <Provider store={store}>
+          <CallTypeButtons task={task} handleCompleteTask={jest.fn()} />
+        </Provider>
+      </LocalizationContext.Provider>
+    </StorelessThemeProvider>,
   );
 
   expect(screen.getByText('Joke')).toBeInTheDocument();
@@ -401,11 +414,13 @@ test('<CallTypeButtons> click on END CHAT button', async () => {
   const isCallTask = () => false;
 
   render(
-    <LocalizationContext.Provider value={{ strings, isCallTask }}>
-      <Provider store={store}>
-        <CallTypeButtons task={task} />
-      </Provider>
-    </LocalizationContext.Provider>,
+    <StorelessThemeProvider themeConf={themeConf}>
+      <LocalizationContext.Provider value={{ strings, isCallTask }}>
+        <Provider store={store}>
+          <CallTypeButtons task={task} />
+        </Provider>
+      </LocalizationContext.Provider>
+    </StorelessThemeProvider>,
   );
 
   expect(screen.getByText('TaskHeaderEndChat')).toBeInTheDocument();
@@ -444,11 +459,13 @@ test('<CallTypeButtons> click on CANCEL button', async () => {
   const isCallTask = () => false;
 
   render(
-    <LocalizationContext.Provider value={{ strings, isCallTask }}>
-      <Provider store={store}>
-        <CallTypeButtons task={task} />
-      </Provider>
-    </LocalizationContext.Provider>,
+    <StorelessThemeProvider themeConf={themeConf}>
+      <LocalizationContext.Provider value={{ strings, isCallTask }}>
+        <Provider store={store}>
+          <CallTypeButtons task={task} />
+        </Provider>
+      </LocalizationContext.Provider>
+    </StorelessThemeProvider>,
   );
 
   expect(screen.getByText('CancelButton')).toBeInTheDocument();

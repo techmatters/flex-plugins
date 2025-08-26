@@ -4,6 +4,8 @@
             "web"
         ],
         "definitionVersion": "ukmh-v1",
+        "feature_flags": {
+        },
         "helplineLanguage": "en-GB",
         "permissionConfig": "ukmh"
     },

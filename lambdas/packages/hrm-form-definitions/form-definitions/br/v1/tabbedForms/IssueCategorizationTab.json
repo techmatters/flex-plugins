@@ -1,0 +1,48 @@
+{
+  "SaferNet": {
+    "categories": {
+      "Violência": {
+        "color": "#F5A623",
+        "subcategories": [
+          {"label": "Bullying"},
+          {"label": "Ciberbullying/Ofensa"},
+          {"label": "Cyberstalking"},
+          {"label": "Compartilhamento não consensual de imagens íntimas"},
+          {"label": "Abuso sexual infantil online"},
+          {"label": "Exploração sexual infantil online"},
+          {"label": "Sextorsão"},
+          {"label": "Aliciamento sexual infantil online"},
+          {"label": "Fraudes/Golpes/Phishing"},
+          {"label": "Problemas com compras online"},
+          {"label": "Problemas com dados pessoais"},
+          {"label": "Encontros Virtuais"},
+          {"label": "Discurso de ódio"},
+          {"label": "Conteúdo ilegal/danoso"},
+          {"label": "Outras formas de violência online"},
+          {"label": "Mediação Parental/literacia digital"},
+          {"label": "Orientações gerais"}
+        ]
+      },
+      "Saúde mental": {
+        "color": "#F8E900",
+        "subcategories": [
+          {"label": "Uso excessivo/exagerado"},
+          {"label": "Automutilação"},
+          {"label": "Suicídio"},
+          {"label": "Transtornos Alimentares"},
+          {"label": "Inespecífico/Outros"}
+        ]
+      },
+      "Outras informação e contatos não relacionados com orientação": {
+        "color": "#767777",
+        "subcategories": [
+          {"label": "Imprensa"},
+          {"label": "Interrupção/Queda"},
+          {"label": "Feedback"},
+          {"label": "Solicitação De Material/Palestras"},
+          {"label": "Outras informação e contatos não relacionados com orientação"}
+        ]
+      }
+    }
+  }
+}

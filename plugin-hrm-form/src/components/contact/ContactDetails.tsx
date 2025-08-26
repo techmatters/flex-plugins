@@ -17,7 +17,8 @@
 import React, { Dispatch, useState } from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 import { CircularProgress } from '@material-ui/core';
-import { callTypes, DataCallTypes, DefinitionVersion } from 'hrm-form-definitions';
+import { callTypes, DataCallTypes } from 'hrm-types';
+import { DefinitionVersion } from 'hrm-form-definitions';
 import _ from 'lodash';
 
 import ContactDetailsHome from './ContactDetailsHome';
@@ -30,7 +31,6 @@ import * as ConfigActions from '../../states/configuration/actions';
 import { ContactDetailsSectionFormApi, contactDetailsSectionFormApi } from './contactDetailsSectionFormApi';
 import ContactDetailsSectionForm from './ContactDetailsSectionForm';
 import IssueCategorizationSectionForm from './IssueCategorizationSectionForm';
-import { forExistingContact } from '../../states/contacts/issueCategorizationStateApi';
 import { loadContactFromHrmByIdAsyncAction } from '../../states/contacts/saveContact';
 import {
   clearDraft,
@@ -132,7 +132,7 @@ const ContactDetails: React.FC<Props> = ({
       loadContactFromHrm();
     }
   }, [loadingStatus, savedContact, loadContactFromHrm]);
-  const version = savedContact?.rawJson.definitionVersion;
+  const version = savedContact?.definitionVersion ?? savedContact?.rawJson.definitionVersion;
 
   const strings = getTemplateStrings();
   /**
@@ -260,7 +260,7 @@ const ContactDetails: React.FC<Props> = ({
           {formPath === 'categories' ? (
             <IssueCategorizationSectionForm
               definition={definitionVersion.tabbedForms.IssueCategorizationTab(unsavedContact.helpline)}
-              stateApi={forExistingContact(contactId)}
+              contactId={contactId}
               display={true}
               autoFocus={true}
             />

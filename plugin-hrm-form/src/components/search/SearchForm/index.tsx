@@ -33,8 +33,8 @@ import {
   FormLabel,
   Row,
 } from '../../../styles';
-import { StyledNextStepButton } from '../../../styles/buttons';
-import { getContactValueTemplate, getFormattedNumberFromTask, getNumberFromTask } from '../../../utils';
+import { PrimaryButton } from '../../../styles/buttons';
+import { getContactValueTemplate, getFormattedNumberFromTask, getNumberFromTask } from '../../../utils/task';
 import {
   canOnlyViewOwnCases,
   canOnlyViewOwnContacts,
@@ -264,9 +264,9 @@ const SearchForm: React.FC<Props> = ({
         )}
       </Container>
       <BottomButtonBar>
-        <StyledNextStepButton type="button" disabled={!isTouched} roundCorners={true} onClick={submitSearch}>
+        <PrimaryButton type="button" disabled={!isTouched} roundCorners={true} onClick={submitSearch}>
           <Template code="SearchForm-Button" />
-        </StyledNextStepButton>
+        </PrimaryButton>
       </BottomButtonBar>
     </>
   );

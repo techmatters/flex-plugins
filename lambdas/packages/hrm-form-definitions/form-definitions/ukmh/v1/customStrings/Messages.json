@@ -1,0 +1,8 @@
+{
+  "en": {
+    "WelcomeMsg": "You’re now connected to The PeerChat Service. Your PeerChat Supporter will be with you shortly.",
+    "GoodbyeMsg": "The Peer Supporter has left the chat. Thank you for reaching out. Please contact us again if you need more help.",
+    "EndChatMsg": "The Young person left the conversation.",
+    "UnsupportedMediaErrorMsg": "Sorry, the message you just sent is unsupported and could not be delivered."
+  }
+}

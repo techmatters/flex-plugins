@@ -6,8 +6,7 @@ locals {
   twilio_numbers = []
 
   local_config = {
-
-
+    operating_hours_enforced_override     = false
     flow_vars = {
       service_sid                           = "ZS45d1a256ef1c4fa2112f7accc40306c5"
       environment_sid                       = "ZE730f552b9429ca7a2105c822ef7faae4"
@@ -23,11 +22,11 @@ locals {
         messaging_mode       = "conversations"
         channel_type         = "messenger"
         contact_identity     = "messenger:106378571968698"
-        templatefile         = "/app/twilio-iac/helplines/ph/templates/studio-flows/with-lex-chatbot-conv.tftpl"
+        templatefile         = "/app/twilio-iac/helplines/ph/templates/studio-flows/with-lex-chatbot-conv-lambda.tftpl"
         channel_flow_vars    = {}
         chatbot_unique_names = []
       }
     }
-
+    get_profile_flags_for_identifier_base_url = "https://hrm-staging.tl.techmatters.org/lambda/twilio/account-scoped"
   }
 }

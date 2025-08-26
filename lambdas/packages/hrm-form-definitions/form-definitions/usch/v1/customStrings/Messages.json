@@ -1,0 +1,50 @@
+{
+  "en": {
+    "WelcomeMsg": "Hello! I am a live counselor. This chat line does not take reports of abuse, but we are here to listen and to help by providing information, resources, and emotional support to individuals that are concerned about child abuse issues. How can I help you today?",
+    "GoodbyeMsg": "The counselor has left the chat. Thank you for reaching out. Please contact us again if you need more help.",
+    "EndChatMsg": "You ended the chat. Thank you for reaching out. Please contact us again if you need more help.",
+    "ClosedOutOfShift": "The helpline is out of shift, please reach us later.",
+    "ClosedHolidays": "The helpline is closed due to a holiday.",
+    "UnsupportedMediaErrorMsg": "Sorry, the message you just sent is unsupported and could not be delivered."
+  },
+  "ch": {
+    "WelcomeMsg": "Hello! I am a live Childhelp counselor. This chat line does not take reports of abuse, but we are here to listen and to help by providing information, resources, and emotional support to individuals that are concerned about child abuse issues. How can I help you today?",
+    "GoodbyeMsg": "The counselor has left the chat. Thank you for reaching out. Please contact us again if you need more help.",
+    "EndChatMsg": "You ended the chat. Thank you for reaching out. Please contact us again if you need more help.",
+    "ClosedOutOfShift": "The helpline is out of shift, please reach us later.",
+    "ClosedHolidays": "The helpline is closed due to a holiday.",
+    "UnsupportedMediaErrorMsg": "Sorry, the message you just sent is unsupported and could not be delivered."
+  },
+  "cf": {
+    "WelcomeMsg": "Hello! I am a Courage First Athlete Helpline counselor. This chat line does not take reports of abuse, but we are here to listen and to help by providing information, resources, and emotional support to individuals that are concerned about abuse in sports. How can I help you today?",
+    "GoodbyeMsg": "The counselor has left the chat. Thank you for reaching out. Please contact us again if you need more help.",
+    "EndChatMsg": "You ended the chat. Thank you for reaching out. Please contact us again if you need more help.",
+    "ClosedOutOfShift": "The helpline is out of shift, please reach us later.",
+    "ClosedHolidays": "The helpline is closed due to a holiday.",
+    "UnsupportedMediaErrorMsg": "Sorry, the message you just sent is unsupported and could not be delivered."
+  },
+  "en-CH": {
+    "WelcomeMsg": "Hello! I am a live Childhelp counselor. This chat line does not take reports of abuse, but we are here to listen and to help by providing information, resources, and emotional support to individuals that are concerned about child abuse issues. How can I help you today?",
+    "GoodbyeMsg": "The counselor has left the chat. Thank you for reaching out. Please contact us again if you need more help.",
+    "EndChatMsg": "You ended the chat. Thank you for reaching out. Please contact us again if you need more help.",
+    "ClosedOutOfShift": "The helpline is out of shift, please reach us later.",
+    "ClosedHolidays": "The helpline is closed due to a holiday.",
+    "UnsupportedMediaErrorMsg": "Sorry, the message you just sent is unsupported and could not be delivered."
+  },
+  "en-CF": {
+    "WelcomeMsg": "Hello! I am a Courage First Athlete Helpline counselor. This chat line does not take reports of abuse, but we are here to listen and to help by providing information, resources, and emotional support to individuals that are concerned about abuse in sports. How can I help you today?",
+    "GoodbyeMsg": "The counselor has left the chat. Thank you for reaching out. Please contact us again if you need more help.",
+    "EndChatMsg": "You ended the chat. Thank you for reaching out. Please contact us again if you need more help.",
+    "ClosedOutOfShift": "The helpline is out of shift, please reach us later.",
+    "ClosedHolidays": "The helpline is closed due to a holiday.",
+    "UnsupportedMediaErrorMsg": "Sorry, the message you just sent is unsupported and could not be delivered."
+  },
+  "es": {
+    "WelcomeMsg": "¡Hola! Soy un consejero de Childhelp. Esta línea de chat no recibe denuncias de abuso, pero estamos aquí para escucharte y ayudarte brindando información, recursos y apoyo emocional a personas preocupadas por temas de abuso infantil. ¿En qué puedo ayudarte hoy?",
+    "GoodbyeMsg": "El consejero ha salido del chat. Gracias por comunicarte con nosotros. Por favor contáctanos nuevamente si necesitas más ayuda.",
+    "EndChatMsg": "Has finalizado el chat. Gracias por comunicarte con nosotros. Por favor contáctanos nuevamente si necesitas más ayuda.",
+    "ClosedOutOfShift": "La línea de ayuda está fuera de horario. Por favor, contáctanos más tarde.",
+    "ClosedHolidays": "La línea de ayuda está cerrada debido a un día festivo.",
+    "UnsupportedMediaErrorMsg": "Lo sentimos, el mensaje que acabas de enviar no es compatible y no pudo ser entregado."
+  }
+}

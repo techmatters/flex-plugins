@@ -1,0 +1,13 @@
+{
+  "name": "{{trigger.conversation.ChannelAttributes.from}}",
+  "channelType": "sms",
+  "customChannelType": "sms", 
+  "channelSid": "{{trigger.conversation.ChannelSid}}",
+  "twilioNumber": "{{trigger.conversation.ChannelAttributes.twilioNumber}}",
+  "ignoreAgent": "",
+  "helpline":"${helpline}",
+  "service":"CourageFirst",
+  "language":"cf",
+  "transferTargetType": "",
+  "memory": {{trigger.conversation.ChannelAttributes.memory | to_json}}
+}

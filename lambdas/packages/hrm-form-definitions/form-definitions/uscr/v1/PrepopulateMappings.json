@@ -1,0 +1,22 @@
+{
+  "formSelector": {
+    "selectorType": "staticSelector",
+    "parameter": {
+      "availableTabs": [
+        "ChildInformationTab",
+        "CallerInformationTab",
+        "CaseInformationTab"
+      ]
+    }
+  },
+  "survey":{},
+  "preEngagement":{
+    "contactIdentifier": "CallerInformationTab.contactIdentifier",
+    "friendlyName": "CallerInformationTab.friendlyName",
+    "phone": "CallerInformationTab.phone",
+    "officeDepartmentBid": "CallerInformationTab.officeDepartmentBid",
+    "otherBID": "CallerInformationTab.otherBID",
+    "specificLocation": "ChildInformationTab.specificLocation",
+    "incidentSummary": "ChildInformationTab.incidentSummary"
+  }
+}
