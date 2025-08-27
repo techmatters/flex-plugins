@@ -113,22 +113,20 @@ locals {
   })
 
   lex_v2_bots = local.enable_lex_v2 ? {
-    for language, bots in local.lex_v2_bot_languages :
-    language => merge([
-      for bot in bots :
-      jsondecode(
-        file(
-          fileexists("/app/twilio-iac/helplines/${local.short_helpline}/configs/lex_v2/${language}/bots/${bot}.json") ?
-          "/app/twilio-iac/helplines/${local.short_helpline}/configs/lex_v2/${language}/bots/${bot}.json" :
-          fileexists("/app/twilio-iac/helplines/${local.short_helpline}/configs/lex_v2/common/bots/${bot}.json") ?
-          "/app/twilio-iac/helplines/${local.short_helpline}/configs/lex_v2/common/bots/${bot}.json" :
-          fileexists("/app/twilio-iac/helplines/configs/lex_v2/${language}/bots/${bot}.json") ?
-          "/app/twilio-iac/helplines/configs/lex_v2/${language}/bots/${bot}.json" :
-          "/app/twilio-iac/helplines/configs/lex_v2/${substr(language, 0, 2)}/bots/${bot}.json"
-        )
-      )
-    ]...)
-  } : {}
+  for language, bots in local.lex_v2_bot_languages :
+  language => merge([
+    for bot in bots :
+    jsondecode(file(
+      fileexists("/app/twilio-iac/helplines/${local.short_helpline}/configs/lex_v2/${language}/bots/${bot}.json") ?
+      "/app/twilio-iac/helplines/${local.short_helpline}/configs/lex_v2/${language}/bots/${bot}.json" :
+      fileexists("/app/twilio-iac/helplines/${local.short_helpline}/configs/lex_v2/common/bots/${bot}.json") ?
+      "/app/twilio-iac/helplines/${local.short_helpline}/configs/lex_v2/common/bots/${bot}.json" :
+      fileexists("/app/twilio-iac/helplines/configs/lex_v2/${language}/bots/${bot}.json") ?
+      "/app/twilio-iac/helplines/configs/lex_v2/${language}/bots/${bot}.json" :
+      "/app/twilio-iac/helplines/configs/lex_v2/${substr(language, 0, 2)}/bots/${bot}.json"
+    ))
+  ]...)
+} : null
   //leaving for debugging purposes
   //print2 = run_cmd("echo", jsonencode(local.lex_v2_bots))
   /*
