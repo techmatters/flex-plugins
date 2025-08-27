@@ -236,7 +236,7 @@ locals {
         )
       }
     ]
-  } : {}
+  } : null
 
   //leaving for debugging purposes
   //print8 = run_cmd("echo", jsonencode(local.lex_v2_intents))
