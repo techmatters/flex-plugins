@@ -163,7 +163,7 @@ locals {
     )
   }) : {}
 
-  lex_v2_slot_types = local.enable_lex_v2 ? tomap({
+  lex_v2_slot_types = local.enable_lex_v2 ? {
     for language, bots in local.lex_v2_bot_languages :
     language => [
       for slot_type in local.lex_v2_slot_types_names[language] : {
@@ -182,7 +182,7 @@ locals {
       }
       if !startswith(slot_type.name, "AMAZON")
     ]
-  }) : {}
+  } : null
 
   //leaving for debugging purposes
   //print6 = run_cmd("echo", jsonencode(local.lex_v2_slot_types))
