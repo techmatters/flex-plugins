@@ -1,0 +1,17 @@
+[
+  {
+    "insightsObject": "conversations",
+    "attributeName": "conversation_measure_6",
+    "questions": ["experience_rating"]
+  },
+  {
+    "insightsObject": "conversations",
+    "attributeName": "conversation_measure_7",
+    "questions": ["feel_supported"]
+  },
+  {
+    "insightsObject": "conversations",
+    "attributeName": "conversation_measure_8",
+    "questions": ["better_prepared"]
+  }
+]
