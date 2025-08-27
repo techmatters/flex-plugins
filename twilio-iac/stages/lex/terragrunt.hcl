@@ -275,24 +275,24 @@ lex_v2_slot_names = local.enable_lex_v2 ? tomap({
   }) : {}
 
   lex_v2_slots = local.enable_lex_v2 ? {
-    for language, bots in local.lex_v2_bot_languages :
-    language => [
-      for slot in local.lex_v2_slot_names[language] : {
-        bot_name = slot.bot_name
-        config = jsondecode(
-          file(
-            fileexists("/app/twilio-iac/helplines/${local.short_helpline}/configs/lex_v2/${language}/slots/${slot.name}.json") ?
-            "/app/twilio-iac/helplines/${local.short_helpline}/configs/lex_v2/${language}/slots/${slot.name}.json" :
-            fileexists("/app/twilio-iac/helplines/${local.short_helpline}/configs/lex_v2/common/slots/${slot.name}.json") ?
-            "/app/twilio-iac/helplines/${local.short_helpline}/configs/lex_v2/common/slots/${slot.name}.json" :
-            fileexists("/app/twilio-iac/helplines/configs/lex_v2/${language}/slots/${slot.name}.json") ?
-            "/app/twilio-iac/helplines/configs/lex_v2/${language}/slots/${slot.name}.json" :
-            "/app/twilio-iac/helplines/configs/lex_v2/${substr(language, 0, 2)}/slots/${slot.name}.json"
-          )
+  for language, bots in local.lex_v2_bot_languages :
+  language => [
+    for slot in local.lex_v2_slot_names[language] : {
+      bot_name = slot.bot_name
+      config   = jsondecode(
+        file(
+          fileexists("/app/twilio-iac/helplines/${local.short_helpline}/configs/lex_v2/${language}/slots/${slot.name}.json") ?
+          "/app/twilio-iac/helplines/${local.short_helpline}/configs/lex_v2/${language}/slots/${slot.name}.json" :
+          fileexists("/app/twilio-iac/helplines/${local.short_helpline}/configs/lex_v2/common/slots/${slot.name}.json") ?
+          "/app/twilio-iac/helplines/${local.short_helpline}/configs/lex_v2/common/slots/${slot.name}.json" :
+          fileexists("/app/twilio-iac/helplines/configs/lex_v2/${language}/slots/${slot.name}.json") ?
+          "/app/twilio-iac/helplines/configs/lex_v2/${language}/slots/${slot.name}.json" :
+          "/app/twilio-iac/helplines/configs/lex_v2/${substr(language, 0, 2)}/slots/${slot.name}.json"
         )
-      }
-    ]
-  } : {}
+      )
+    }
+  ]
+} : null
 
   //leaving for debugging purposes
   //print9 = run_cmd("echo", jsonencode(local.lex_v2_slots))
