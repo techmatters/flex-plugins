@@ -28,8 +28,8 @@ const playwrightConfig: PlaywrightTestConfig = {
     baseURL: getConfigValue('baseURL') as string,
     ignoreHTTPSErrors: inLambda ? true : false,
     permissions: ['microphone', 'clipboard-write', 'clipboard-read'],
-    screenshot: inLambda ? 'off' : 'only-on-failure',
-    video: inLambda ? 'off' : 'retry-with-video',
+    screenshot: 'only-on-failure',
+    video: inLambda ? 'retain-on-failure' : 'retry-with-video',
     launchOptions: inLambda
       ? {
           args: [

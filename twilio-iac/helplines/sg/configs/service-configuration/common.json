@@ -12,7 +12,8 @@
         "feature_flags": {
             "enable_voice_recordings": true,
             "enable_post_survey": false,
-            "enable_hang_up_by_hrm_saving": true
+            "enable_hang_up_by_hrm_saving": true,
+            "enable_configurable_max_categories": true
         },
         "helplineLanguage": "en-SG",
         "permissionConfig": "sg"
