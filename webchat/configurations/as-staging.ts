@@ -16,12 +16,13 @@
 
 import { Translations, Configuration, MapHelplineLanguage, ContactType } from '../types';
 import type { PreEngagementFormDefinition } from '../src/pre-engagement-form';
+import { PreEngagementFormDefinition, EMAIL_PATTERN } from '../src/pre-engagement-form';
 
 const accountSid = 'AC1ca120bc71593bbe9ca78e2232a31e0d';
 const flexFlowSid = 'FOf35e65754798822c36fb92e2e495227b';
 const defaultLanguage = 'en-US';
 const captureIp = true;
-const contactType: ContactType = 'ip';
+const contactType: ContactType = 'email';
 
 const translations: Translations = {
   ar: {
