@@ -140,7 +140,7 @@ export async function oktaSsoLoginViaApi(
     `https://${redirectHost}${redirectHeaders.location ?? redirectHeaders.Location!}`,
   );
   const resp = await apiRequest.get(redirectURL.toString());
-  console.debug('logged in page', await resp.text());
+  // console.debug('logged in page', await resp.text());
   expect(resp.ok()).toBe(true);
   await apiRequest.storageState({ path: getConfigValue('storageStatePath') as string });
   const tokenLookupResponse = await apiRequest.post(`https://preview.twilio.com/Flex/Tokens`, {
@@ -158,6 +158,7 @@ export async function oktaSsoLoginViaApi(
   expect(tokenLookupResponse.ok()).toBe(true);
   const tokenLookupResponseBody = await tokenLookupResponse.json();
 
+  console.debug(`E2E tests logged in to flex for ${accountSid} at ${homeUrl} with ${username}`);
   return tokenLookupResponseBody.token!;
 }
 
