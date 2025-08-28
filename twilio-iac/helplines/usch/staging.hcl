@@ -66,7 +66,7 @@ locals {
       webchat : {
         channel_type     = "web"
         contact_identity = ""
-        templatefile     = "/app/twilio-iac/helplines/usch/templates/studio-flows/webchat-no-chatbot.tftpl"
+        templatefile     = "/app/twilio-iac/helplines/usch/templates/studio-flows/webchat-no-lex-sd.tftpl"
         channel_flow_vars = {
           courage_first_url = "https://assets-staging.tl.techmatters.org/webchat/usch/usch_courage_first.html"
           childhelp_url     = "https://assets-staging.tl.techmatters.org/webchat/usch/usch_childhelp_hotline.html"
@@ -76,7 +76,7 @@ locals {
       voice_childhelp : {
         channel_type     = "voice"
         contact_identity = ""
-        templatefile     = "/app/twilio-iac/helplines/usch/templates/studio-flows/voice-childhelp.tftpl"
+        templatefile     = "/app/twilio-iac/helplines/usch/templates/studio-flows/voice-childhelp-sd.tftpl"
         channel_flow_vars = {
         }
         chatbot_unique_names = []
@@ -84,7 +84,7 @@ locals {
       voice_courage_first : {
         channel_type     = "voice"
         contact_identity = ""
-        templatefile     = "/app/twilio-iac/helplines/usch/templates/studio-flows/voice-courage-first-operating-hours.tftpl"
+        templatefile     = "/app/twilio-iac/helplines/usch/templates/studio-flows/voice-courage-first-op-hours-sd.tftpl"
         channel_flow_vars = {
         }
         chatbot_unique_names = []
@@ -93,7 +93,7 @@ locals {
         messaging_mode   = "conversations"
         channel_type     = "sms"
         contact_identity = "+14809999197"
-        templatefile     = "/app/twilio-iac/helplines/usch/templates/studio-flows/sms-childhelp-chatbot.tftpl"
+        templatefile     = "/app/twilio-iac/helplines/usch/templates/studio-flows/sms-childhelp-lex-sd.tftpl"
         channel_flow_vars = {
 
         }
@@ -103,7 +103,7 @@ locals {
         messaging_mode   = "conversations"
         channel_type     = "sms"
         contact_identity = "+16066032348"
-        templatefile     = "/app/twilio-iac/helplines/usch/templates/studio-flows/sms-courage-first-chatbot.tftpl"
+        templatefile     = "/app/twilio-iac/helplines/usch/templates/studio-flows/sms-courage-first-lex-sd.tftpl"
         channel_flow_vars = {
         }
         chatbot_unique_names = []
