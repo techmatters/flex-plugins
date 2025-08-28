@@ -75,6 +75,17 @@ jobs:
       matrix:
         lambda_path:
           - account-scoped
+          - facebook-callback
+          - facebookSignin
+          - instagramWebhook
+          - ipLocationFinder
+          - lineSetup
+          - lineWebhook
+          - modicaWebhook
+          - recaptchaVerify
+          - savePendingContacts
+          - TwilioErrorReporter
+          - twilioEventStreams
 
     steps:
       - name: Checkout
