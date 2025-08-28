@@ -15,7 +15,6 @@
  */
 
 import { Translations, Configuration, MapHelplineLanguage, ContactType } from '../types';
-import type { PreEngagementFormDefinition } from '../src/pre-engagement-form';
 import { PreEngagementFormDefinition, EMAIL_PATTERN } from '../src/pre-engagement-form';
 
 const accountSid = 'AC1ca120bc71593bbe9ca78e2232a31e0d';
