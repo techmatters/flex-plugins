@@ -1,3 +1,19 @@
+/**
+ * Copyright (C) 2021-2025 Technology Matters
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see https://www.gnu.org/licenses/.
+ */
+
 import {
   SSMClient,
   GetParameterCommand,
@@ -78,17 +94,14 @@ const getLineNumber = async (lineChannelAccessToken: string) => {
 
   const lineResponse = await fetch(lineBotInfoUrl, options);
   const lineResponseJson = await lineResponse.json();
-  const lineNumber = (lineResponseJson as any).userId;
-  return lineNumber;
+  return (lineResponseJson as any).userId;
 };
 
 const getLineWebhookMap = async (): Promise<WebhookMap> => {
   const obj = await getS3Object('aselo-webhooks', 'line-webhook-map.json');
 
   if (!obj) throw new Error('Body property missing on aselo-webhooks object');
-
-  const webhookMap = JSON.parse(obj.toString());
-  return webhookMap;
+  return JSON.parse(obj.toString());
 };
 
 const throwIfSSMParameterExists = async (name: string) => {
@@ -109,8 +122,7 @@ const throwIfWebhookMapEntryExists = (webhookMap: WebhookMap, lineNumber: string
 const SYNTAX_ERROR = 'SyntaxError';
 const parsePayload = (payloadString: string) => {
   try {
-    const payload = JSON.parse(payloadString);
-    return payload;
+    return JSON.parse(payloadString);
   } catch (err) {
     if (err instanceof Error && err.name === SYNTAX_ERROR) {
       throw new SyntaxErrorException(err.message);
@@ -161,7 +173,7 @@ export const handler = async (event: ALBEvent): Promise<ALBResult> => {
 
     // Throws ResourceAlreadyExistsException in case any resource already exists
     if (!overwrite) {
-      throwIfWebhookMapEntryExists(webhookMap, lineNumber),
+      throwIfWebhookMapEntryExists(webhookMap, lineNumber);
         await Promise.all([
           throwIfSSMParameterExists(lineFlexFlowSidSSMName),
           throwIfSSMParameterExists(lineChannelSecretSSMName),
