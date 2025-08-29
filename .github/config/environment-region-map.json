@@ -1,5 +1,0 @@
-{
-  "development": ["us-east-1"],
-  "staging": ["us-east-1", "eu-west-1"],
-  "production": ["us-east-1", "eu-west-1", "ca-central-1"]
-}
