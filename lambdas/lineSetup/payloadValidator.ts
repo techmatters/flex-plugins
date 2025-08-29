@@ -17,18 +17,21 @@
 import { z, ZodError } from 'zod';
 import InvalidInputPayloadException from './invalidInputPayloadException';
 
-const SERVERLESS_URL_REGEX = /^(https:\/\/serverless-)\d+-(production|dev)(\.twil\.io\/webhooks\/line\/LineToFlex)$/;
+const SERVERLESS_URL_REGEX =
+  /^(https:\/\/serverless-)\d+-(production|dev)(\.twil\.io\/webhooks\/line\/LineToFlex)$/;
 
 const PayloadSchema = z.object({
   env: z.enum(['DEV', 'STG', 'PROD']),
   helpline: z.string(),
   lineFlexFlowSid: z.string().startsWith('FO', {
-    message: 'lineFlexFlowSid must follow the pattern: FOxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
+    message:
+      'lineFlexFlowSid must follow the pattern: FOxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
   }),
   lineChannelSecret: z.string(),
   lineChannelAccessToken: z.string(),
   serverlessUrl: z.string().regex(SERVERLESS_URL_REGEX, {
-      message: 'serverlessUrl must follow the pattern: https://serverless-XXXX-production.twil.io/webhooks/line/LineToFlex',
+    message:
+      'serverlessUrl must follow the pattern: https://serverless-XXXX-production.twil.io/webhooks/line/LineToFlex',
   }),
   overwrite: z.boolean().optional(),
 });
@@ -46,6 +49,4 @@ const validatePayload = (payload: any) => {
   }
 };
 
-export {
-  validatePayload,
-};
+export { validatePayload };

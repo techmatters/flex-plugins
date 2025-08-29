@@ -18,8 +18,6 @@ import { S3Client, GetObjectCommand } from '@aws-sdk/client-s3';
 import { Readable } from 'stream';
 import type { ALBEvent, ALBResult } from 'aws-lambda';
 
-declare var fetch: typeof import('undici').fetch;
-
 const CORS_HEADERS = {
   'Access-Control-Allow-Headers': 'Content-Type',
   'Access-Control-Allow-Origin': '*', // Allow from anywhere

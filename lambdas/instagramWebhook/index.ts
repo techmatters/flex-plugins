@@ -20,8 +20,6 @@ import type { ALBEvent, ALBResult } from 'aws-lambda';
 import { Readable } from 'stream';
 import * as crypto from 'crypto';
 
-declare var fetch: typeof import('undici').fetch;
-
 const CORS_HEADERS = {
   'Access-Control-Allow-Headers': 'Content-Type',
   'Access-Control-Allow-Origin': '*', // Allow from anywhere
@@ -79,8 +77,8 @@ const isValidFacebookPayload = (event: ALBEvent, appSecret: string) => {
     .digest('hex');
 
   return crypto.timingSafeEqual(
-      Buffer.from(xHubSignature),
-      Buffer.from(`sha1=${expectedSignature}`),
+    Buffer.from(xHubSignature),
+    Buffer.from(`sha1=${expectedSignature}`),
   );
 };
 

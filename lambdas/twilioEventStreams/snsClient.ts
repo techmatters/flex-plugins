@@ -15,60 +15,60 @@
  */
 
 import {
-    MessageAttributeValue,
-    PublishCommand,
-    SNSClient,
-    SNSClientConfig,
+  MessageAttributeValue,
+  PublishCommand,
+  SNSClient,
+  SNSClientConfig,
 } from '@aws-sdk/client-sns';
 
 const convertToEndpoint = (endpointUrl: string) => {
-    const url: URL = new URL(endpointUrl);
-    return {
-        url: url,
-    };
+  const url: URL = new URL(endpointUrl);
+  return {
+    url: url,
+  };
 };
 
 const getSnsConfig = (): SNSClientConfig => {
-    if (process.env.SNS_ENDPOINT) {
-        return {
-            region: 'us-east-1',
-            endpoint: convertToEndpoint(process.env.SNS_ENDPOINT),
-        };
-    }
+  if (process.env.SNS_ENDPOINT) {
+    return {
+      region: 'us-east-1',
+      endpoint: convertToEndpoint(process.env.SNS_ENDPOINT),
+    };
+  }
 
-    if (process.env.LOCAL_SNS_PORT) {
-        return {
-            region: 'us-east-1',
-            endpoint: convertToEndpoint(`http://localhost:${process.env.LOCAL_SNS_PORT}`),
-        };
-    }
+  if (process.env.LOCAL_SNS_PORT) {
+    return {
+      region: 'us-east-1',
+      endpoint: convertToEndpoint(`http://localhost:${process.env.LOCAL_SNS_PORT}`),
+    };
+  }
 
-    return {};
+  return {};
 };
 
 export const sns = new SNSClient(getSnsConfig());
 
 export type PublishSnsParams = {
-    topicArn: string;
-    message: string;
-    messageGroupId?: string;
-    messageAttributes?: Record<string, string>;
+  topicArn: string;
+  message: string;
+  messageGroupId?: string;
+  messageAttributes?: Record<string, string>;
 };
 
 export const publishSns = async (params: PublishSnsParams) => {
-    const { topicArn, message, messageGroupId, messageAttributes } = params;
-    const messageAttributesPayload: Record<string, MessageAttributeValue> = {};
-    Object.entries(messageAttributes ?? {}).forEach(
-        ([key, value]) =>
-            (messageAttributesPayload[key] = { DataType: 'String', StringValue: value }),
-    );
+  const { topicArn, message, messageGroupId, messageAttributes } = params;
+  const messageAttributesPayload: Record<string, MessageAttributeValue> = {};
+  Object.entries(messageAttributes ?? {}).forEach(
+    ([key, value]) =>
+      (messageAttributesPayload[key] = { DataType: 'String', StringValue: value }),
+  );
 
-    const command = new PublishCommand({
-        TopicArn: topicArn,
-        Message: message,
-        MessageAttributes: messageAttributesPayload,
-        ...(messageGroupId ? { MessageGroupId: messageGroupId } : {}),
-    });
+  const command = new PublishCommand({
+    TopicArn: topicArn,
+    Message: message,
+    MessageAttributes: messageAttributesPayload,
+    ...(messageGroupId ? { MessageGroupId: messageGroupId } : {}),
+  });
 
-    return sns.send(command);
+  return sns.send(command);
 };

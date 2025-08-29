@@ -18,8 +18,6 @@ import { S3Client, GetObjectCommand } from '@aws-sdk/client-s3';
 import { Readable } from 'stream';
 import type { ALBEvent, ALBResult } from 'aws-lambda';
 
-declare var fetch: typeof import('undici').fetch;
-
 const s3Client = new S3Client({});
 
 const CORS_HEADERS = {

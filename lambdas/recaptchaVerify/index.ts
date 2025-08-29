@@ -17,8 +17,6 @@
 import type { ALBEvent, ALBResult } from 'aws-lambda';
 import { SSMClient, GetParameterCommand } from '@aws-sdk/client-ssm';
 
-declare var fetch: typeof import('undici').fetch;
-
 const ssmClient = new SSMClient({ region: 'us-east-1' });
 
 export const getSsmParameter = async (Name: string) => {
@@ -38,7 +36,9 @@ const headers = {
 export const handler = async (event: ALBEvent): Promise<ALBResult> => {
   if (event.httpMethod === 'POST') {
     try {
-      const RECAPTCHA_SECRET = await getSsmParameter('/global/google/recaptcha/secret_key');
+      const RECAPTCHA_SECRET = await getSsmParameter(
+        '/global/google/recaptcha/secret_key',
+      );
 
       const userResponse = event;
 
@@ -50,11 +50,14 @@ export const handler = async (event: ALBEvent): Promise<ALBResult> => {
         };
       }
 
-      const recaptchaResponse = await fetch('https://www.google.com/recaptcha/api/siteverify', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: `secret=${RECAPTCHA_SECRET}&response=${userResponse}`,
-      });
+      const recaptchaResponse = await fetch(
+        'https://www.google.com/recaptcha/api/siteverify',
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          body: `secret=${RECAPTCHA_SECRET}&response=${userResponse}`,
+        },
+      );
 
       const recaptchaResult = await recaptchaResponse.json();
 

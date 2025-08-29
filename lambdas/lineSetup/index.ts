@@ -34,8 +34,6 @@ import InvalidInputPayloadException from './invalidInputPayloadException';
 import ResourceAlreadyExistsException from './resourceAlreadyExistsException';
 import SyntaxErrorException from './syntaxErrorException';
 
-declare var fetch: typeof import('undici').fetch;
-
 type WebhookMap = { [lineNumber: string]: string };
 
 const ssmClient = new SSMClient({ region: 'us-east-1' });

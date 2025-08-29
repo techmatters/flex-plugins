@@ -1,9 +1,3 @@
-import {
-  SSMClient,
-  GetParameterCommand,
-  PutParameterCommand,
-  PutParameterCommandInput,
-} from '@aws-sdk/client-ssm';
 /**
  * Copyright (C) 2021-2025 Technology Matters
  * This program is free software: you can redistribute it and/or modify
@@ -19,6 +13,13 @@ import {
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
+
+import {
+  SSMClient,
+  GetParameterCommand,
+  PutParameterCommand,
+  PutParameterCommandInput,
+} from '@aws-sdk/client-ssm';
 
 import type { ALBEvent, ALBResult } from 'aws-lambda';
 
@@ -210,7 +211,7 @@ export const handler = async (event: ALBEvent): Promise<ALBResult> => {
         Overwrite: true,
       });
 
-      return  {
+      return {
         statusCode: 200,
         statusDescription: '200 OK',
         headers: { 'Content-Type': 'text/html' },

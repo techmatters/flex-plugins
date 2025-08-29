@@ -27,8 +27,7 @@ class InvalidInputPayloadException extends Error {
 
   // Default instanceof was not working to check if err was an instance of InvalidInputPayloadException
   public static instanceOf(err: unknown): err is InvalidInputPayloadException {
-    if(err instanceof Error && err.name === this.name) return true;
-    return false;
+    return err instanceof Error && err.name === this.name;
   }
 
   // Using arrow function here to automatically bind "this"
@@ -44,7 +43,7 @@ class InvalidInputPayloadException extends Error {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(body),
     };
-  }
-};
+  };
+}
 
 export default InvalidInputPayloadException;

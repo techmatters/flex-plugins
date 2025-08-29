@@ -19,8 +19,6 @@ import { S3Client, GetObjectCommand } from '@aws-sdk/client-s3';
 import type { ALBResult } from 'aws-lambda';
 import { Readable } from 'stream';
 
-declare var fetch: typeof import('undici').fetch;
-
 type SavePendingContactsInfo = {
   serverless_url: string;
   api_key: string;

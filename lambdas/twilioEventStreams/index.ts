@@ -17,22 +17,10 @@
 import type { ALBEvent, ALBResult } from 'aws-lambda';
 import { isValidTwilioRequest } from './requestValidator';
 import { removeAttributes, redactSensitiveAttributes } from './attributeFilterer';
-import { client , v2 } from '@datadog/datadog-api-client';
+import { client, v2 } from '@datadog/datadog-api-client';
 import { getSsmParameter } from './ssmCache';
 
-import { publishSns } from "./snsClient";
-
-// import { SSMClient, GetParameterCommand } from '@aws-sdk/client-ssm';
-
-// declare var fetch: typeof import('undici').fetch;
-
-// const ssmClient = new SSMClient({ region: 'us-east-1' });
-
-// export const getSsmParameter = async (Name: string) => {
-//   const command = new GetParameterCommand({ Name, WithDecryption: true });
-//   const response = await ssmClient.send(command);
-//   return response.Parameter?.Value;
-// };
+import { publishSns } from './snsClient';
 
 const headers = {
   'Content-Type': 'application/json',
@@ -41,7 +29,6 @@ const headers = {
   'Access-Control-Allow-Headers':
     'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token',
 };
-
 
 // Define a helper function to handle errors
 const handleError = (message: string, error?: Error, statusCode = 500): ALBResult => {
@@ -58,7 +45,6 @@ const handleError = (message: string, error?: Error, statusCode = 500): ALBResul
 };
 
 export const handler = async (event: ALBEvent): Promise<ALBResult> => {
-
   if (event.httpMethod === 'POST') {
     if (!event.body) {
       return handleError('Event body is null or undefined');
@@ -66,8 +52,8 @@ export const handler = async (event: ALBEvent): Promise<ALBResult> => {
 
     try {
       let body = JSON.parse(event.body);
-      const attributesToRemove = ["customers", "memory", "preEngagementData"];
-      const nestedAttributesToKeep = { "customers": ["external_id"] }
+      const attributesToRemove = ['customers', 'memory', 'preEngagementData'];
+      const nestedAttributesToKeep = { customers: ['external_id'] };
       // List of attributes to redact
       const sensitiveAttributes = [
         'customerAddress',
@@ -101,48 +87,52 @@ export const handler = async (event: ALBEvent): Promise<ALBResult> => {
       // Validate Twilio request
       const validRequest = isValidTwilioRequest(authToken, event);
       if (validRequest) {
-        const datadogApiKey = await getSsmParameter('/infrastructure-config/twilio-event-streams/datadog/api_key');
-        const datadogAppKey = await getSsmParameter('/infrastructure-config/twilio-event-streams/datadog/app_key');
+        const datadogApiKey = await getSsmParameter(
+          '/infrastructure-config/twilio-event-streams/datadog/api_key',
+        );
+        const datadogAppKey = await getSsmParameter(
+          '/infrastructure-config/twilio-event-streams/datadog/app_key',
+        );
         const datadogSite = 'datadoghq.com';
         const configurationOpts = {
           authMethods: {
             apiKeyAuth: datadogApiKey,
-            appKeyAuth: datadogAppKey
+            appKeyAuth: datadogAppKey,
           },
         };
         const configuration = client.createConfiguration(configurationOpts);
         configuration.setServerVariables({
-          site: datadogSite
+          site: datadogSite,
         });
         const apiInstance = new v2.LogsApi(configuration);
         const params = {
           body: [
             {
-              ddsource: "twilio",
-              ddtags: "",
-              hostname: "",
+              ddsource: 'twilio',
+              ddtags: '',
+              hostname: '',
               message: JSON.stringify(body[0]),
-              service: "twilio-event-stream",
+              service: 'twilio-event-stream',
             },
           ],
         };
         try {
           await apiInstance.submitLog(params);
         } catch (error) {
-          console.error("Error posting to Datadog", error);
+          console.error('Error posting to Datadog', error);
         }
 
         if (process.env.TWILIO_EVENTS_TOPIC_ARN) {
           try {
             await publishSns({
               topicArn: process.env.TWILIO_EVENTS_TOPIC_ARN,
-              message: event.body
+              message: event.body,
             });
           } catch (error) {
-            console.error("Error posting to SNS topic", error);
+            console.error('Error posting to SNS topic', error);
           }
         } else {
-          console.warn("TWILIO_EVENTS_TOPIC_ARN not set, cannot publish to SNS");
+          console.warn('TWILIO_EVENTS_TOPIC_ARN not set, cannot publish to SNS');
         }
 
         return {
@@ -151,11 +141,13 @@ export const handler = async (event: ALBEvent): Promise<ALBResult> => {
           body: '',
         };
       } else {
-        return handleError('Invalid Request', new Error('Signature verification failed'), 403);
+        return handleError(
+          'Invalid Request',
+          new Error('Signature verification failed'),
+          403,
+        );
       }
-
-    }
-    catch (error) {
+    } catch (error) {
       return handleError('Error handling the POST request', error as Error);
     }
   } else if (event.httpMethod === 'OPTIONS') {
