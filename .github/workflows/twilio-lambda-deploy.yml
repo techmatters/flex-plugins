@@ -132,13 +132,13 @@ jobs:
       - name: Read ECR url from SSM
         uses: "marvinpinto/action-inject-ssm-secrets@latest"
         with:
-          ssm_parameter: /twilio/lambda/${{ inputs.lambda_path }}/ecr-url
+          ssm_parameter: /global/lambda/${{ inputs.lambda_path }}/ecr-url
           env_variable_name: ECR_URL
 
       - name: Read ECR url from SSM
         uses: "marvinpinto/action-inject-ssm-secrets@latest"
         with:
-          ssm_parameter: /twilio/lambda/${{ inputs.lambda_path }}/short_name
+          ssm_parameter: /global/lambda/${{ inputs.lambda_path }}/short_name
           env_variable_name: SHO
 
       - name: Configure AWS credentials
