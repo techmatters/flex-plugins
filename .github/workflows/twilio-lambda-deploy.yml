@@ -75,7 +75,12 @@ jobs:
     outputs:
       matrix_json: ${{ steps.generate-output.outputs.matrix_json }}
     steps:
-
+      - name: Checkout Branch
+        uses: actions/checkout@v5
+        with:
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            .github/actions
       # The matrix build supports `lambda-groups` defined in the environment-region-map.json file
       # This allows us to deploy multiple lambdas to specific env/region combos that use a common docker image
       # That is some pretty intense JQ, but it works.
