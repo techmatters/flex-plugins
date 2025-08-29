@@ -10,7 +10,7 @@
         "insights": ["conversations", "conversation_attribute_4"]
       },
       {
-        "name": "age",
+        "name": "ageRange",
         "insights": ["conversations", "conversation_attribute_3"]
       },
       {
@@ -26,6 +26,10 @@
       {
         "name": "childIs",
         "insights": ["customers", "customer_attribute_2"]
+      },
+      {
+        "name": "ageRange",
+        "insights": ["customers", "acquisition_date"]
       },
       {
         "name": "state",

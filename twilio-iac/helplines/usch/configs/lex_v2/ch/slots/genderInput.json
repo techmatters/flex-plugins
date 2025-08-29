@@ -1,8 +1,8 @@
 {
-    "slotName": "experience_rating",
-    "slotTypeName": "four_level_assessment",
-    "intentName": "post_survey_yes",
-    "description": "Slot experience_rating for intent post_survey_yes",
+    "slotName": "genderInput",
+    "slotTypeName": "genderInput",
+    "intentName": "pre_survey",
+    "description": "Slot genderInput for intent pre_survey",
     "valueElicitationSetting": {
         "slotConstraint": "Required",
         "promptSpecification": {
@@ -10,9 +10,21 @@
                 {
                     "message": {
                         "plainTextMessage": {
-                            "value": "How was your experience today? \nReply with: \n 🥰= Excellent, 😊 = Good, 😒 = Fair, 😡 = Poor."
+                            "value": "What is your gender identity?"
                         }
-                    }
+                    },
+                    "variations": [
+                        {
+                            "plainTextMessage": {
+                                "value": "In one or two words. What is your gender identity?"
+                            }
+                        },
+                        {
+                            "plainTextMessage": {
+                                "value": "In just words. What is your gender identity?"
+                            }
+                        }
+                    ]
                 }
             ],
             "maxRetries": 1,
@@ -71,7 +83,7 @@
             "captureNextStep": {
                 "dialogAction": {
                     "type": "ElicitSlot",
-                    "slotToElicit": "feel_supported"
+                    "slotToElicit": "age"
                 },
                 "intent": {}
             },
@@ -80,7 +92,7 @@
                     {
                         "message": {
                             "plainTextMessage": {
-                                "value": "Thank you for reaching out. Please contact us again if you need more help."
+                                "value": "We are having trouble understanding your response."
                             }
                         }
                     }

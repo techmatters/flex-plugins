@@ -1,8 +1,8 @@
 {
-    "slotName": "experience_rating",
-    "slotTypeName": "four_level_assessment",
-    "intentName": "post_survey_yes",
-    "description": "Slot experience_rating for intent post_survey_yes",
+    "slotName": "aboutSelf",
+    "slotTypeName": "yes_no",
+    "intentName": "pre_survey",
+    "description": "Slot aboutSelf for intent pre_survey",
     "valueElicitationSetting": {
         "slotConstraint": "Required",
         "promptSpecification": {
@@ -10,7 +10,7 @@
                 {
                     "message": {
                         "plainTextMessage": {
-                            "value": "How was your experience today? \nReply with: \n 🥰= Excellent, 😊 = Good, 😒 = Fair, 😡 = Poor."
+                            "value": "If you are texting about yourself press 1. If you are texting about someone else press 2."
                         }
                     }
                 }
@@ -71,7 +71,7 @@
             "captureNextStep": {
                 "dialogAction": {
                     "type": "ElicitSlot",
-                    "slotToElicit": "feel_supported"
+                    "slotToElicit": "genderInput"
                 },
                 "intent": {}
             },
@@ -80,7 +80,7 @@
                     {
                         "message": {
                             "plainTextMessage": {
-                                "value": "Thank you for reaching out. Please contact us again if you need more help."
+                                "value": "We are having trouble understanding your response."
                             }
                         }
                     }

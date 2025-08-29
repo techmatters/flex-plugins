@@ -43,7 +43,7 @@ const preEngagementConfig: PreEngagementFormDefinition = {
     {
       label: 'How old are you?',
       type: 'select',
-      name: 'age',
+      name: 'ageRange',
       required: true,
       defaultValue: '',
       options: [

@@ -168,26 +168,6 @@ ${
       }
     },
     {
-      "name": "send_childhelp_voice_prequeue_spanish_message",
-      "type": "say-play",
-      "transitions": [
-        {
-          "next": "attributes_spanish",
-          "event": "audioComplete"
-        }
-      ],
-      "properties": {
-        "voice": "Polly.Mia",
-        "offset": {
-          "x": -210,
-          "y": 1800
-        },
-        "loop": 1,
-        "play": "https://usch-functions-6913.twil.io/childhelp_voice_prequeue_spanish_message.mp3",
-        "language": "es-MX"
-      }
-    },
-    {
       "name": "send_childhelp_voice_english_options_message",
       "type": "gather-input-on-call",
       "transitions": [
@@ -226,11 +206,11 @@ ${
       "type": "split-based-on",
       "transitions": [
         {
-          "next": "send_childhelp_voice_prequeue_eng_message",
+          "next": "attributes_english",
           "event": "noMatch"
         },
         {
-          "next": "send_childhelp_voice_prequeue_eng_message",
+          "next": "attributes_english",
           "event": "match",
           "conditions": [
             {
@@ -264,26 +244,6 @@ ${
           "x": 310,
           "y": 1300
         }
-      }
-    },
-    {
-      "name": "send_childhelp_voice_prequeue_eng_message",
-      "type": "say-play",
-      "transitions": [
-        {
-          "next": "attributes_english",
-          "event": "audioComplete"
-        }
-      ],
-      "properties": {
-        "voice": "Polly.Salli",
-        "offset": {
-          "x": 190,
-          "y": 1740
-        },
-        "loop": 1,
-        "play": "https://usch-functions-6913.twil.io/childhelp_voice_prequeue_eng_message.mp3",
-        "language": "en-US"
       }
     },
     {
@@ -346,7 +306,7 @@ ${
           ]
         },
         {
-          "next": "send_childhelp_voice_prequeue_spanish_message",
+          "next": "attributes_spanish",
           "event": "match",
           "conditions": [
             {

@@ -1,8 +1,8 @@
 {
-    "slotName": "experience_rating",
-    "slotTypeName": "four_level_assessment",
-    "intentName": "post_survey_yes",
-    "description": "Slot experience_rating for intent post_survey_yes",
+    "slotName": "age",
+    "slotTypeName": "age",
+    "intentName": "pre_survey",
+    "description": "Slot age for intent pre_survey",
     "valueElicitationSetting": {
         "slotConstraint": "Required",
         "promptSpecification": {
@@ -10,7 +10,7 @@
                 {
                     "message": {
                         "plainTextMessage": {
-                            "value": "How was your experience today? \nReply with: \n 🥰= Excellent, 😊 = Good, 😒 = Fair, 😡 = Poor."
+                            "value": "How old are you?"
                         }
                     }
                 }
@@ -71,7 +71,7 @@
             "captureNextStep": {
                 "dialogAction": {
                     "type": "ElicitSlot",
-                    "slotToElicit": "feel_supported"
+                    "slotToElicit": "stateInput"
                 },
                 "intent": {}
             },
@@ -80,7 +80,7 @@
                     {
                         "message": {
                             "plainTextMessage": {
-                                "value": "Thank you for reaching out. Please contact us again if you need more help."
+                                "value": "We are having trouble understanding your response."
                             }
                         }
                     }

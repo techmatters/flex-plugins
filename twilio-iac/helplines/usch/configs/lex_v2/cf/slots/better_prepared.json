@@ -1,8 +1,8 @@
 {
-    "slotName": "experience_rating",
-    "slotTypeName": "four_level_assessment",
+    "slotName": "better_prepared",
+    "slotTypeName": "yes_no",
     "intentName": "post_survey_yes",
-    "description": "Slot experience_rating for intent post_survey_yes",
+    "description": "Slot better_prepared for intent post_survey_yes",
     "valueElicitationSetting": {
         "slotConstraint": "Required",
         "promptSpecification": {
@@ -10,7 +10,7 @@
                 {
                     "message": {
                         "plainTextMessage": {
-                            "value": "How was your experience today? \nReply with: \n 🥰= Excellent, 😊 = Good, 😒 = Fair, 😡 = Poor."
+                            "value": "Do you feel better prepared to deal with your situation after this conversation? \nReply with: \n1 = Yes, 2 = No"
                         }
                     }
                 }
@@ -70,8 +70,7 @@
         "slotCaptureSetting": {
             "captureNextStep": {
                 "dialogAction": {
-                    "type": "ElicitSlot",
-                    "slotToElicit": "feel_supported"
+                    "type": "FulfillIntent"
                 },
                 "intent": {}
             },

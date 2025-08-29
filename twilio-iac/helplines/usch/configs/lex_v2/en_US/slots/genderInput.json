@@ -83,7 +83,7 @@
             "captureNextStep": {
                 "dialogAction": {
                     "type": "ElicitSlot",
-                    "slotToElicit": "age"
+                    "slotToElicit": "ageRange"
                 },
                 "intent": {}
             },
