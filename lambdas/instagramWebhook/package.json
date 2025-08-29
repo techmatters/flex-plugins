@@ -10,6 +10,8 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@tsconfig/node22": "^22.0.0",
+    "@types/node": "^22.13.11",
     "@types/aws-lambda": "^8.10.108",
     "ts-node": "^10.9.1"
   },
