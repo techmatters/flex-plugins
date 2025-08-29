@@ -80,7 +80,7 @@ jobs:
         with:
           sparse-checkout-cone-mode: false
           sparse-checkout: |
-            .github/actions
+            .github
       # The matrix build supports `lambda-groups` defined in the environment-region-map.json file
       # This allows us to deploy multiple lambdas to specific env/region combos that use a common docker image
       # That is some pretty intense JQ, but it works.
