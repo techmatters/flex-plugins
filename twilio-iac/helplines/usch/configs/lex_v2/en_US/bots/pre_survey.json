@@ -37,8 +37,8 @@
             "failure_response": "We are having trouble understanding your response."
           },
           "3": {
-            "slot_name": "age",
-            "slot_type_name": "age",
+            "slot_name": "ageRange",
+            "slot_type_name": "ageRange",
             "slot_question": "How old are you?",
             "failure_response": "We are having trouble understanding your response."
           },

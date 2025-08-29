@@ -1,6 +1,6 @@
 {
-    "slotName": "age",
-    "slotTypeName": "age",
+    "slotName": "ageRange",
+    "slotTypeName": "ageRange",
     "intentName": "pre_survey",
     "description": "Slot age for intent pre_survey",
     "valueElicitationSetting": {
