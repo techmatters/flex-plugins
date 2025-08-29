@@ -75,7 +75,7 @@ jobs:
       matrix:
         lambda_path:
           - account-scoped
-          - facebook-callback
+          - facebookCallback
           - facebookSignin
           - instagramWebhook
           - ipLocationFinder

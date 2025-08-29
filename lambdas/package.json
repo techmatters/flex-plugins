@@ -8,7 +8,7 @@
     "account-scoped",
     "associate-client-vpn",
     "disassociate-client-vpn",
-    "facebook-callback",
+    "facebookCallback",
     "facebookSignin",
     "instagramWebhook",
     "ipLocationFinder",

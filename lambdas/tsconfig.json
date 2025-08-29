@@ -8,7 +8,7 @@
     { "path": "account-scoped" },
     { "path": "associate-client-vpn" },
     { "path": "disassociate-client-vpn" },
-    { "path": "facebook-callback" },
+    { "path": "facebookCallback" },
     { "path": "facebookSignin" },
     { "path": "instagramWebhook" },
     { "path": "ipLocationFinder" },

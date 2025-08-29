@@ -3,6 +3,6 @@
   "extends": "./tsconfig.base.json",
   "files": [],
   "references": [
-    { "path": "facebook-callback" },
+    { "path": "modicaWebhook" },
   ]
 }
