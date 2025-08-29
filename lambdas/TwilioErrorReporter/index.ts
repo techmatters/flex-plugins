@@ -160,8 +160,9 @@ const shouldOmitLoggingEvent = (AccountSid: string, payload: DebuggerPayload) =>
 
   // As of Sep 5th 2022, Twilio is throwing a lot of randoms "Flex UI error", especially "Flex UI error: Voice SDK device error intercepted"
   // This is happening to all helplines
-  return productionAccounts.includes(AccountSid) &&
-      payload.error_code === TWILIO_FLEX_UI_ERROR;
+  return (
+    productionAccounts.includes(AccountSid) && payload.error_code === TWILIO_FLEX_UI_ERROR
+  );
 };
 
 function findCodeBySid(
@@ -218,9 +219,7 @@ export const handler = async (event: ALBEvent): Promise<ALBResult> => {
   const params = new URLSearchParams(decoded);
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { AccountSid, Level, Payload } = paramsToObject(
-    params,
-  ) as DebuggerEvent;
+  const { AccountSid, Level, Payload } = paramsToObject(params) as DebuggerEvent;
 
   if (!AccountSid || !Level || !Payload) {
     console.error('Missing required parameters', { AccountSid, Level, Payload });

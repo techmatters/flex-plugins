@@ -22,8 +22,7 @@ class SyntaxErrorException extends Error {
 
   // Default instanceof was not working to check if err was an instance of SyntaxErrorException
   public static instanceOf(err: unknown): err is SyntaxErrorException {
-    if(err instanceof Error && err.name === this.name) return true;
-    return false;
+    return err instanceof Error && err.name === this.name;
   }
 
   // Using arrow function here to automatically bind "this"
@@ -39,7 +38,7 @@ class SyntaxErrorException extends Error {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(body),
     };
-  }
+  };
 }
 
 export default SyntaxErrorException;

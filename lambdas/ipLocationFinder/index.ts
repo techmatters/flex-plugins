@@ -15,7 +15,6 @@
  */
 
 import type { ALBEvent, ALBResult } from 'aws-lambda';
-import axios from 'axios';
 import { isValidTwilioRequest } from './requestValidator';
 import { getSsmParameter } from './ssmCache';
 
@@ -29,7 +28,7 @@ const headers = {
 
 /**
  * Fetches information about an IP address using the ipfind API.
- * 
+ *
  * @param {string} ip - The IP address to look up.
  * @param {string} apiKey - The API key for authenticating with the ipfind service.
  * @returns {Promise<any>} - A promise that resolves with the IP information data.
@@ -37,14 +36,11 @@ const headers = {
  */
 async function getIPInfo(ip: string, apiKey: string): Promise<any> {
   try {
-    const response = await axios.get(`https://api.ipfind.com`, {
-      params: {
-        ip: ip,
-        auth: apiKey,
-      },
-    });
-
-    return response.data; // Return the data from the response
+    const ipFindUrl = new URL(`https://api.ipfind.com`);
+    ipFindUrl.searchParams.set('ip', ip);
+    ipFindUrl.searchParams.set('auth', apiKey);
+    const response = await fetch(ipFindUrl);
+    return await response.json(); // Return the data from the response
   } catch (error) {
     console.error('Error fetching IP info:', error);
     throw error; // Re-throw the error so it can be handled by the caller
@@ -53,7 +49,7 @@ async function getIPInfo(ip: string, apiKey: string): Promise<any> {
 
 /**
  * Handles errors by logging them and returning a structured ALBResult with the error message.
- * 
+ *
  * @param {string} message - A descriptive error message.
  * @param {Error} [error] - An optional error object for detailed information.
  * @param {number} [statusCode=500] - The HTTP status code for the response.
@@ -73,11 +69,11 @@ const handleError = (message: string, error?: Error, statusCode = 500): ALBResul
 };
 
 /**
- * AWS Lambda handler for processing ALB events. 
- * 
+ * AWS Lambda handler for processing ALB events.
+ *
  * Supports POST requests for validating Twilio requests and retrieving IP information,
  * as well as OPTIONS requests for CORS preflight.
- * 
+ *
  * @param {ALBEvent} event - The ALB event payload passed to the Lambda function.
  * @returns {Promise<ALBResult>} - The HTTP response object for ALB.
  */
@@ -126,7 +122,11 @@ export const handler = async (event: ALBEvent): Promise<ALBResult> => {
           return handleError('Error calling getIPInfo', error as Error);
         }
       } else {
-        return handleError('Invalid Request', new Error('Signature verification failed'), 403);
+        return handleError(
+          'Invalid Request',
+          new Error('Signature verification failed'),
+          403,
+        );
       }
     } catch (error) {
       return handleError('Error handling the POST request', error as Error);

@@ -172,11 +172,11 @@ export const handler = async (event: ALBEvent): Promise<ALBResult> => {
     // Throws ResourceAlreadyExistsException in case any resource already exists
     if (!overwrite) {
       throwIfWebhookMapEntryExists(webhookMap, lineNumber);
-        await Promise.all([
-          throwIfSSMParameterExists(lineFlexFlowSidSSMName),
-          throwIfSSMParameterExists(lineChannelSecretSSMName),
-          throwIfSSMParameterExists(lineChannelAccessTokenSSMName),
-        ]);
+      await Promise.all([
+        throwIfSSMParameterExists(lineFlexFlowSidSSMName),
+        throwIfSSMParameterExists(lineChannelSecretSSMName),
+        throwIfSSMParameterExists(lineChannelAccessTokenSSMName),
+      ]);
     }
 
     // Add new line-webhook-map entry

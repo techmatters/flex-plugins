@@ -15,9 +15,12 @@
  */
 
 import { validateRequest } from 'twilio'; // Ensure twilio module is installed and imported
-import { ALBEvent} from 'aws-lambda';
+import { ALBEvent } from 'aws-lambda';
 
-export const isValidTwilioRequest = (authToken: string | undefined, event: ALBEvent): boolean => {
+export const isValidTwilioRequest = (
+  authToken: string | undefined,
+  event: ALBEvent,
+): boolean => {
   if (!authToken) {
     console.error('Missing authToken');
     return false;
@@ -31,12 +34,16 @@ export const isValidTwilioRequest = (authToken: string | undefined, event: ALBEv
     return false;
   }
 
-  const buildQueryString = (params: { [key: string]: string | undefined } | undefined | null) => {
+  const buildQueryString = (
+    params: { [key: string]: string | undefined } | undefined | null,
+  ) => {
     if (!params) return ''; // Handle undefined or null case
 
     return Object.keys(params)
       .filter(key => params[key] !== undefined) // Filter out undefined values
-      .map(key => encodeURIComponent(key) + '=' + encodeURIComponent(params[key] as string))
+      .map(
+        key => encodeURIComponent(key) + '=' + encodeURIComponent(params[key] as string),
+      )
       .join('&');
   };
 
@@ -57,12 +64,11 @@ export const isValidTwilioRequest = (authToken: string | undefined, event: ALBEv
   //console.log('webhookUrl:', webhookUrl);
   //console.log('params:', {});
   const isValidRequest = validateRequest(authToken, twilioSignature, webhookUrl, {});
-  
-  
+
   if (!isValidRequest) {
     console.error('Twilio signature validation failed');
   } else {
-   // console.log('Twilio signature validation succeeded');
+    // console.log('Twilio signature validation succeeded');
   }
 
   return isValidRequest;
