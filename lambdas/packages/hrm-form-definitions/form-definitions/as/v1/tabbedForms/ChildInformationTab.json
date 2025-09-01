@@ -12,6 +12,12 @@
     "isPII": true
   },
   {
+    "name": "contactIdentifier",
+    "label": "Email",
+    "type": "input",
+    "isPII": true
+  },
+  {
     "name": "gender",
     "label": "Gender",
     "type": "select",

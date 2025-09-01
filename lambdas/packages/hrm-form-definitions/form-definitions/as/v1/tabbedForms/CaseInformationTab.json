@@ -102,7 +102,6 @@
     "type": "textarea",
     "required": { "value": true, "message": "RequiredFieldError" },
     "isPII": true,
-    "width": "300px",
     "rows": "40",
     "additionalActions": [
       {

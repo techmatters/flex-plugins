@@ -4,7 +4,7 @@ locals {
   config            = merge(local.common_config, local.local_config)
 
   local_config = {
-    operating_hours_enforced_override     = false
+    operating_hours_enforced_override = false
     #Studio flow
     flow_vars = {
       service_sid                       = "ZSb631f562c8306085ceb8329349fdd60b"
@@ -225,7 +225,19 @@ locals {
       "988_ns" : ["+17823120134"]
     }
     //Serverless -- to allow enabling the operating hours check on this staging account.
-    ui_editable = true
+    ui_editable                               = true
     get_profile_flags_for_identifier_base_url = "https://hrm-staging.tl.techmatters.org/lambda/twilio/account-scoped"
+    #System Down Configuration
+    system_down_templatefile = "/app/twilio-iac/helplines/templates/studio-flows/system-down.tftpl"
+    enable_system_down       = true
+    system_down_flow_vars = {
+      is_system_down                   = "false"
+      message                          = "We're sorry, our Live Chat service is currently full. Please end your chat and try back soon. To reach a Kids Help Phone counsellor by phone, you can call us anytime at 1-800-668-6868. \nBe well, \nThe Kids Help Phone Team."
+      voice_message                    = "We're sorry, our Live Chat service is currently full. Please end your chat and try back soon. To reach a Kids Help Phone counsellor by phone, you can call us anytime at 1-800-668-6868. \nBe well, \nThe Kids Help Phone Team."
+      send_studio_message_function_sid = "ZHfbb2e97ed5178c3fb72274369c0d4048"
+      call_action                      = "recording"
+      forward_number                   = "+123"
+      recording_url                    = "https://twilio-service-4854.twil.io/EnTechIssues.mp3"
+    }
   }
 }
