@@ -139,7 +139,7 @@ jobs:
         uses: "marvinpinto/action-inject-ssm-secrets@latest"
         with:
           ssm_parameter: /global/lambda/${{ inputs.lambda_path }}/short_name
-          env_variable_name: SHO
+          env_variable_name: SHORT_LAMBDA_NAME
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
