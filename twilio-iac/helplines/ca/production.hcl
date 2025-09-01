@@ -208,9 +208,13 @@ locals {
           en_number : "3656520724"
           fr_number : "6473707639"
           ns_fr_number : "7823120154"
+          redirect_number : ""
 
           en_function_url : "https://twilio-service-4854.twil.io/988_en"
           fr_function_url : "https://twilio-service-4854.twil.io/988_fr"
+
+          988_english_queue_sid : "WQc4e40f232125af1dabbdfda2c874bdfa"
+          988_french_queue_sid : "WQe1b539643a7a1a9eadb2a4b0d2caacd5"
 
         }
         chatbot_unique_names = []
