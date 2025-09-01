@@ -355,7 +355,7 @@ ${
           "event": "noMatch"
         },
         {
-          "next": "engagement",
+          "next": "check_counsellors_fr_post_queue",
           "event": "match",
           "conditions": [
             {
@@ -1377,7 +1377,7 @@ ${
       "type": "split-based-on",
       "transitions": [
         {
-          "next": "send_queue_full_fr",
+          "next": "send_no_counsellors_fr",
           "event": "noMatch"
         },
         {
@@ -1570,6 +1570,95 @@ ${
             "key": "system_down"
           }
         ]
+      }
+    },
+    {
+      "name": "send_no_counsellors_fr",
+      "type": "send-message",
+      "transitions": [
+        {
+          "event": "sent"
+        },
+        {
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 2220,
+          "y": 490
+        },
+        "service": "{{trigger.message.InstanceSid}}",
+        "channel": "{{trigger.message.ChannelSid}}",
+        "from": "{{flow.channel.address}}",
+        "message_type": "custom",
+        "to": "{{contact.channel.address}}",
+        "body": "Bonjour. Merci de nous avoir contactés. De manière inattendue, nous ne sommes pas en mesure de répondre à ton clavardage en direct. Toutefois, nous aimerions te proposer quelques alternatives, afin de pouvoir t'offrir du soutien. Si tu souhaites parler à un·e intervenant·e, appelle le 1-800-668-6868. Si tu préfères texter avec un·e répondant·e en situation de crise, envoyez le mot « Parler » par texto au 686868 ou connecte-toi via notre site web : https://jeunessejecoute.ca/besoin-daide-maintenant-envoie-nous-un-texto Notre service de clavardage en français sera de nouveau disponible demain à 19 h(HE). En cas d’urgence, compose le 911. Merci. Prends soin de toi."
+      }
+    },
+    {
+      "name": "fr_counsellors_post_queue",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "send_no_counsellors_fr",
+          "event": "noMatch"
+        },
+        {
+          "next": "engagement",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value greater_than 0",
+              "arguments": [
+                "{{widgets.check_counsellors_fr.parsed.totalCounsellors}}"
+              ],
+              "type": "greater_than",
+              "value": "0"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{widgets.check_counsellors_fr.parsed.totalCounsellors}}",
+        "offset": {
+          "x": 2200,
+          "y": 1310
+        }
+      }
+    },
+    {
+      "name": "check_counsellors_fr_post_queue",
+      "type": "run-function",
+      "transitions": [
+        {
+          "next": "fr_counsellors_post_queue",
+          "event": "success"
+        },
+        {
+          "next": "engagement",
+          "event": "fail"
+        }
+      ],
+      "properties": {
+        "service_sid": "${flow_vars.service_sid}",
+        "environment_sid": "${flow_vars.environment_sid}",
+        "offset": {
+          "x": 1560,
+          "y": -200
+        },
+        "function_sid": "${flow_vars.check_counsellors_function_sid}",
+        "parameters": [
+          {
+            "value": "${flow_vars.workspace_sid}",
+            "key": "workspaceSid"
+          },
+          {
+            "value": "${flow_vars.french_queue_sid}",
+            "key": "taskQueueSid"
+          }
+        ],
+        "url": "${flow_vars.check_counsellors_function_url}"
       }
     }
   ],
