@@ -135,7 +135,7 @@ jobs:
           ssm_parameter: /global/lambda/${{ inputs.lambda_path }}/ecr-url
           env_variable_name: ECR_URL
 
-      - name: Read ECR url from SSM
+      - name: Read short name from SSM
         uses: "marvinpinto/action-inject-ssm-secrets@latest"
         with:
           ssm_parameter: /global/lambda/${{ inputs.lambda_path }}/short_name
