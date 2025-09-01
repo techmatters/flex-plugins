@@ -36,6 +36,10 @@ const productionAccountMap = {
   AS_PRODUCTION: 'AC4858840776b1f98a1367c9c6a401bd2c',
   NZ_PRODUCTION: 'AC2825ea172ea83c2e422a9772a27beb29',
   USCR_PRODUCTION: 'AC34800d0cf642c95ce1f17785d239333c',
+  TZ_PRODUCTION: 'AC24b2e69a74f051b368f4ec17f51ddbbc',
+  UKMH_PRODUCTION: 'AC10edaafc5e4a4b6017d758b2f011142b',
+  MT_PRODUCTION: 'AC7854f6126459347434a8e659295ebb79',
+  SG_PRODUCTION: 'AC0751f021d17d50f0ee5af094acdee7c8',
 };
 
 const productionAccounts = Object.values(productionAccountMap);
@@ -64,12 +68,15 @@ const stagingAccountMap = {
   USCH_STAGING: 'AC147e360e21386797593c3893bf4def12',
   TZ_STAGING: 'AC94cb43c61dbc082094fb34cb147896eb',
   UKMH_STAGING: 'AC9eb11b6c714d785db648b6ea6a85c13f',
+  SG_STAGING: 'ACa00e3e32f7ba405cc0f5906906d88e97',
+  EUMC_STAGING: 'AC6fbdd2a933a559283445c5e527c3cfe3',
 };
 
 const stagingAccounts = Object.values(stagingAccountMap);
 
 const developmentAccountMap = {
   ASELO_DEVELOPMENT: 'ACd8a2e89748318adf6ddff7df6948deaf',
+  E2E_TESTING: 'AC6a65d4fbbc731e64e1c94e9806675c3b',
 };
 
 const developmentAccounts = Object.values(developmentAccountMap);
