@@ -51,7 +51,7 @@ locals {
       is_system_down                   = "false"
       message                          = "We're currently experiencing technical issues, and your message might not be received. We apologize for the inconvenience."
       voice_message                    = "We're currently experiencing technical issues, and your call might not be received. We apologize for the inconvenience."
-      send_studio_message_function_sid = ""
+      send_studio_message_function_sid = "ZH4b9cf9eb89b74a9ae256a731f8f4bc99"
       call_action                      = "message"
       forward_number                   = "+123"
       recording_url                    = "https://<place_holder>.mp3"
