@@ -65,7 +65,7 @@ export async function importDefaultResources(account: string) {
   let chatServiceSid;
 
   logInfo('Trying to import chatServiceInstanceSid from Flex Service Configuration');
-  chatServiceSid = (await client.flexApi.v1.configuration.get().fetch()).chatServiceInstanceSid;
+  chatServiceSid = (await client.flexApi.v1.configuration.fetch()).chatServiceInstanceSid;
 
   if (!chatServiceSid) {
     logWarning('Flex Service Configuration missing chatServiceInstanceSid');
