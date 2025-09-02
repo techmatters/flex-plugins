@@ -47,7 +47,7 @@ export async function importDefaultResources(account: string) {
   }
 
   await execTerraform(['init']);
-  const proxy = (await client.proxy.v1.services.list({ limit: 20 })).find(
+  const proxy = (await client.proxy.services.list({ limit: 20 })).find(
     (p) => p.uniqueName === 'Flex Proxy Service',
   );
   if (proxy) {
@@ -65,7 +65,7 @@ export async function importDefaultResources(account: string) {
   let chatServiceSid;
 
   logInfo('Trying to import chatServiceInstanceSid from Flex Service Configuration');
-  chatServiceSid = (await client.flexApi.v1.configuration.fetch()).chatServiceInstanceSid;
+  chatServiceSid = (await client.flexApi.configuration.get().fetch()).chatServiceInstanceSid;
 
   if (!chatServiceSid) {
     logWarning('Flex Service Configuration missing chatServiceInstanceSid');
