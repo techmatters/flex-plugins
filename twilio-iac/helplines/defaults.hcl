@@ -7,6 +7,7 @@ locals {
   helpline_region       = "us-east-1"
   aws_monitoring_region = "us-east-1"
   enable_post_survey    = false
+  enable_system_down    = false
   target_task_name      = "greeting"
   twilio_numbers        = []
   channel               = ""
@@ -47,7 +48,8 @@ locals {
     "reservation.timeout",
     "reservation.wrapup",
   ]
-
+ 
+  activities = {}
   task_queues = {
     master : {
       friendly_name   = "Master"
@@ -75,7 +77,7 @@ locals {
     //   templatefile  = "/app/twilio-iac/helplines/templates/workflows/survey.tftpl"
     // },
   }
-
+  
 
   /*
   CAREFUL: OUR CODE BASE ONLY SUPPORTS CONVERSATIONS FOR THE CHAT TASK CHANNEL. 

@@ -11,7 +11,7 @@ ${
           "event": "incomingMessage"
         },
         {
-          "next": "split_keys_lang",
+          "next": "run_subflow_system_down",
           "event": "incomingCall"
         },
         {
@@ -139,6 +139,35 @@ ${
           "x": 110,
           "y": 150
         }
+      }
+    },
+    {
+      "name": "run_subflow_system_down",
+      "type": "run-subflow",
+      "transitions": [
+        {
+          "next": "split_keys_lang",
+          "event": "completed"
+        },
+        {
+          "next": "split_keys_lang",
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "flow_sid": "${system_down_studio_subflow_sid}",
+        "flow_revision": "LatestPublished",
+        "offset": {
+          "x": 110,
+          "y": -270
+        },
+        "parameters": [
+          {
+            "type": "string",
+            "value": "true",
+            "key": "system_down"
+          }
+        ]
       }
     }
   ],

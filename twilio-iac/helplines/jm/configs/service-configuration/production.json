@@ -1,7 +1,8 @@
 {
     "attributes": {
+        "system_down" : false,
         "feature_flags": {
-            "enable_lex_v2": false
+            "enable_lex_v2": true
         },
         "multipleOfficeSupport": true,
         "previous_ui_version": {

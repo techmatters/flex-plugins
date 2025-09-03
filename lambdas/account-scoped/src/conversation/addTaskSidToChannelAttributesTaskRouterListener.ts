@@ -85,6 +85,13 @@ export const addTaskSidToChannelAttributes: TaskRouterEventHandler = async (
       .get(conversationSid)
       .fetch();
 
+    if (conversation.state === 'closed') {
+      console.warn(
+        `Attempting to add taskSid ${TaskSid} to closed conversation ${conversationSid}, closed conversations cannot be updated.`,
+      );
+      return;
+    }
+
     const conversationAttributes = JSON.parse(conversation.attributes);
 
     const updatedConversation = await conversation.update({

@@ -1,0 +1,156 @@
+/**
+ * Copyright (C) 2021-2023 Technology Matters
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see https://www.gnu.org/licenses/.
+ */
+
+import each from 'jest-each';
+
+import { bindFileUploadCustomHandlers } from '../../../components/case/documentUploadHandler';
+import { fetchHrmApi } from '../../../services/fetchHrmApi';
+import { getHrmConfig } from '../../../hrmConfig';
+
+jest.mock('../../../services/fetchHrmApi');
+jest.mock('../../../hrmConfig');
+
+const mockFetchHrmApi = fetchHrmApi as jest.MockedFunction<typeof fetchHrmApi>;
+const mockGetHrmConfig = getHrmConfig as jest.MockedFunction<typeof getHrmConfig>;
+
+// Mock global alert
+const mockAlert = jest.fn();
+global.alert = mockAlert;
+
+// Error messages that should match documentUploadHandler.ts
+const FILE_TYPE_ERROR = 'Invalid file type. Only PNG, JPG, JPEG, PDF, DOC, and DOCX files are allowed.';
+const FILE_SIZE_ERROR = 'File exceeds max size.';
+
+// Mock File constructor and FileReader
+global.File = class MockFile {
+  name: string;
+
+  size: number;
+
+  type: string;
+
+  constructor(chunks: any[], filename: string, options: any = {}) {
+    this.name = filename;
+    this.size = options.size || 1024;
+    this.type = options.type || 'application/octet-stream';
+  }
+} as any;
+
+describe('documentUploadHandler', () => {
+  const caseId = 'test-case-id';
+  const mockPreSignedUrl = 'https://example.com/upload';
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+    mockGetHrmConfig.mockReturnValue({
+      docsBucket: 'test-bucket',
+    } as any);
+    mockFetchHrmApi.mockResolvedValue({
+      // eslint-disable-next-line
+      media_url: mockPreSignedUrl,
+    });
+    global.fetch = jest.fn().mockResolvedValue({
+      ok: true,
+    });
+  });
+
+  describe('File Extension Validation', () => {
+    const handlers = bindFileUploadCustomHandlers(caseId);
+    const { onFileChange } = handlers;
+
+    each([
+      ['PNG', 'test.png', 'image/png'],
+      ['JPG', 'test.jpg', 'image/jpeg'],
+      ['JPEG', 'test.jpeg', 'image/jpeg'],
+      ['PDF', 'test.pdf', 'application/pdf'],
+      ['DOC', 'test.doc', 'application/msword'],
+      ['DOCX', 'test.docx', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'],
+    ]).it('should accept valid %s files', async (fileType, fileName, mimeType) => {
+      const file = new File(['fake content'], fileName, { type: mimeType, size: 1024 });
+      const event = { target: { files: [file] } };
+
+      const result = await onFileChange(event);
+
+      expect(result).toBeTruthy();
+      expect(mockAlert).not.toHaveBeenCalled();
+    });
+
+    it('should reject files with invalid extensions', async () => {
+      const file = new File(['fake content'], 'test.txt', { type: 'text/plain', size: 1024 });
+      const event = { target: { files: [file] } };
+
+      const result = await onFileChange(event);
+
+      expect(result).toBe('');
+      expect(mockAlert).toHaveBeenCalledWith(FILE_TYPE_ERROR);
+    });
+
+    it('should reject executable files', async () => {
+      const file = new File(['fake content'], 'malicious.exe', { type: 'application/x-msdownload', size: 1024 });
+      const event = { target: { files: [file] } };
+
+      const result = await onFileChange(event);
+
+      expect(result).toBe('');
+      expect(mockAlert).toHaveBeenCalledWith(FILE_TYPE_ERROR);
+    });
+
+    it('should reject script files', async () => {
+      const file = new File(['fake content'], 'script.js', { type: 'application/javascript', size: 1024 });
+      const event = { target: { files: [file] } };
+
+      const result = await onFileChange(event);
+
+      expect(result).toBe('');
+      expect(mockAlert).toHaveBeenCalledWith(FILE_TYPE_ERROR);
+    });
+
+    it('should reject files with no extension', async () => {
+      const file = new File(['fake content'], 'testfile', { type: 'text/plain', size: 1024 });
+      const event = { target: { files: [file] } };
+
+      const result = await onFileChange(event);
+
+      expect(result).toBe('');
+      expect(mockAlert).toHaveBeenCalledWith(FILE_TYPE_ERROR);
+    });
+  });
+
+  describe('File Size Validation', () => {
+    const handlers = bindFileUploadCustomHandlers(caseId);
+    const { onFileChange } = handlers;
+
+    it('should reject files exceeding 5MB limit', async () => {
+      const file = new File(['fake content'], 'large.pdf', { type: 'application/pdf', size: 6 * 1024 * 1024 });
+      const event = { target: { files: [file] } };
+
+      const result = await onFileChange(event);
+
+      expect(result).toBe('');
+      expect(mockAlert).toHaveBeenCalledWith(FILE_SIZE_ERROR);
+    });
+
+    it('should accept files under 5MB limit', async () => {
+      const file = new File(['fake content'], 'small.pdf', { type: 'application/pdf', size: 4 * 1024 * 1024 });
+      const event = { target: { files: [file] } };
+
+      const result = await onFileChange(event);
+
+      expect(result).toBeTruthy();
+      expect(mockAlert).not.toHaveBeenCalled();
+    });
+  });
+});

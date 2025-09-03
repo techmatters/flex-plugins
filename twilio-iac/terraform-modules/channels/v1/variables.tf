@@ -49,6 +49,12 @@ variable "serverless_environment_sid" {
   type        = string
 }
 
+variable "system_down_studio_subflow_sid" {
+  description = "system_down_studio_subflow_sid"
+  type        = string
+  default     = ""
+}
+
 variable "task_language" {
   type        = string
   default     = ""

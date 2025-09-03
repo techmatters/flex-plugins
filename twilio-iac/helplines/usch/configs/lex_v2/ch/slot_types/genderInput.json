@@ -1,0 +1,11 @@
+{
+    "slotTypeName": "genderInput",
+    "slotTypeValues": [],
+    "parentSlotTypeSignature": "AMAZON.AlphaNumeric",
+    "valueSelectionSetting": {
+        "resolutionStrategy": "TopResolution",
+        "regexFilter": {
+            "pattern": "[A-Za-z ]{1,30}"
+        }
+    }
+}

@@ -140,7 +140,7 @@ ${
           },
           {
             "type": "string",
-            "value": "en-CF",
+            "value": "cf",
             "key": "language"
           }
         ],
@@ -163,7 +163,12 @@ ${
         "variables": [
           {
             "type": "string",
-            "value": "en-CH",
+            "value": "ChildHelp",
+            "key": "service"
+          },
+          {
+            "type": "string",
+            "value": "ch",
             "key": "language"
           }
         ],
@@ -196,7 +201,7 @@ ${
           ]
         },
         {
-          "next": "send_other_language_courage_first_message",
+          "next": "send_courage_first_webchat_other_language_message",
           "event": "match",
           "conditions": [
             {
@@ -210,7 +215,7 @@ ${
           ]
         },
         {
-          "next": "send_other_language_courage_first_message",
+          "next": "send_courage_first_webchat_other_language_message",
           "event": "match",
           "conditions": [
             {
@@ -233,7 +238,7 @@ ${
       }
     },
     {
-      "name": "send_other_language_courage_first_message",
+      "name": "send_courage_first_webchat_other_language_message",
       "type": "send-message",
       "transitions": [
         {
@@ -253,7 +258,7 @@ ${
         "from": "Bot",
         "message_type": "custom",
         "to": "{{contact.channel.address}}",
-        "body": "${flow_vars.other_language_courage_first_message}"
+        "body": "${flow_vars.courage_first_webchat_other_language_message}"
       }
     },
     {
@@ -279,7 +284,7 @@ ${
           ]
         },
         {
-          "next": "send_other_language_childhelp_message",
+          "next": "send_childhelp_webchat_other_language_message",
           "event": "match",
           "conditions": [
             {
@@ -293,7 +298,7 @@ ${
           ]
         },
         {
-          "next": "send_other_language_childhelp_message",
+          "next": "send_childhelp_webchat_other_language_message",
           "event": "match",
           "conditions": [
             {
@@ -316,7 +321,7 @@ ${
       }
     },
     {
-      "name": "send_other_language_childhelp_message",
+      "name": "send_childhelp_webchat_other_language_message",
       "type": "send-message",
       "transitions": [
         {
@@ -336,7 +341,7 @@ ${
         "from": "Bot",
         "message_type": "custom",
         "to": "{{contact.channel.address}}",
-        "body": "${flow_vars.other_language_childhelp_message}"
+        "body": "${flow_vars.childhelp_webchat_other_language_message}"
       }
     },
     {
@@ -366,7 +371,7 @@ ${
     },
     {
       "name": "operatingHours",
-      "type": "run-function",
+      "type": "make-http-request",
       "transitions": [
         {
           "next": "split_status",
@@ -374,32 +379,19 @@ ${
         },
         {
           "next": "split_welcome_message",
-          "event": "fail"
+          "event": "failed"
         }
       ],
       "properties": {
-        "service_sid": "${serverless_service_sid}",
-        "environment_sid": "${serverless_environment_sid}",
         "offset": {
           "x": -150,
           "y": 1490
         },
-        "function_sid": "${flow_vars.operating_hours_function_sid}",
-        "parameters": [
-          {
-            "value": "webchat",
-            "key": "channel"
-          },
-          {
-            "value": "true",
-            "key": "includeMessageTextInResponse"
-          },
-          {
-            "value": "en-USCH",
-            "key": "language"
-          }
-        ],
-        "url": "${serverless_url}/operatingHours"
+        "method": "POST",
+        "content_type": "application/json;charset=utf-8",
+        "add_twilio_auth": false,
+        "body": "{\"channel\": \"webchat\", \"includeMessageTextInResponse\": \"true\", \"language\": \"en-USCH\"}",
+        "url": "${get_profile_flags_for_identifier_base_url}/operatingHours"
       }
     },
     {
@@ -410,7 +402,7 @@ ${
           "event": "noMatch"
         },
         {
-          "next": "send_courage_first_closed_message",
+          "next": "send_courage_first_webchat_closed_message",
           "event": "match",
           "conditions": [
             {
@@ -447,12 +439,11 @@ ${
       }
     },
     {
-      "name": "send_courage_first_closed_message",
+      "name": "send_courage_first_webchat_closed_message",
       "type": "send-message",
       "transitions": [
         {
-          "event": "sent",
-          "next": "reset_childhelp_variable"
+          "event": "sent"
         },
         {
           "event": "failed"
@@ -468,11 +459,11 @@ ${
         "from": "Bot",
         "message_type": "custom",
         "to": "{{contact.channel.address}}",
-        "body": "${flow_vars.courage_first_closed_message}"
+        "body": "${flow_vars.courage_first_webchat_closed_message}"
       }
     },
     {
-      "name": "send_blocked_client_message",
+      "name": "send_webchat_blocked_client_message",
       "type": "send-message",
       "transitions": [
         {
@@ -492,7 +483,7 @@ ${
         "from": "Bot",
         "message_type": "custom",
         "to": "{{contact.channel.address}}",
-        "body": "${flow_vars.blocked_client_message}"
+        "body": "${flow_vars.webchat_blocked_client_message}"
       }
     },
     {
@@ -504,7 +495,7 @@ ${
           "event": "noMatch"
         },
         {
-          "next": "send_blocked_client_message",
+          "next": "send_webchat_blocked_client_message",
           "event": "match",
           "conditions": [
             {
@@ -527,7 +518,7 @@ ${
       }
     },
     {
-      "name": "send_childhelp_welcome_message",
+      "name": "send_childhelp_webchat_welcome_message",
       "type": "send-message",
       "transitions": [
         {
@@ -549,7 +540,7 @@ ${
         "from": "Bot",
         "message_type": "custom",
         "to": "{{contact.channel.address}}",
-        "body": "${flow_vars.childhelp_welcome_message}"
+        "body": "${flow_vars.childhelp_webchat_welcome_message}"
       }
     },
     {
@@ -560,7 +551,7 @@ ${
           "event": "noMatch"
         },
         {
-          "next": "send_couragefirst_welcome_message",
+          "next": "send_courage_first_webchat_welcome_message",
           "event": "match",
           "conditions": [
             {
@@ -574,7 +565,7 @@ ${
           ]
         },
         {
-          "next": "send_childhelp_welcome_message",
+          "next": "send_childhelp_webchat_welcome_message",
           "event": "match",
           "conditions": [
             {
@@ -597,7 +588,7 @@ ${
       }
     },
     {
-      "name": "send_couragefirst_welcome_message",
+      "name": "send_courage_first_webchat_welcome_message",
       "type": "send-message",
       "transitions": [
         {
@@ -619,30 +610,7 @@ ${
         "from": "Bot",
         "message_type": "custom",
         "to": "{{contact.channel.address}}",
-        "body": "${flow_vars.couragefirst_welcome_message}"
-      }
-    },
-    {
-      "name": "reset_childhelp_variable",
-      "type": "set-variables",
-      "transitions": [
-        {
-          "next": "attributes",
-          "event": "next"
-        }
-      ],
-      "properties": {
-        "variables": [
-          {
-            "type": "string",
-            "value": "ChildHelp",
-            "key": "service"
-          }
-        ],
-        "offset": {
-          "x": -500,
-          "y": 2410
-        }
+        "body": "${flow_vars.courage_first_webchat_welcome_message}"
       }
     }
   ],

@@ -63,12 +63,47 @@ locals {
       }
     }
 
+    activities = {
+      meal_break : {
+        friendly_name = "Meal Break"
+        available     = false
+      },
+      documentation : {
+        friendly_name = "Documentation"
+        available     = false
+      },
+      supervision : {
+        friendly_name = "Supervision"
+        available     = false
+      },
+      refused : {
+        friendly_name = "Refused"
+        available     = false
+      },
+      meeting : {
+        friendly_name = "Meeting"
+        available     = false
+      },
+      break : {
+        friendly_name = "Break"
+        available     = false
+      },
+      training : {
+        friendly_name = "Training"
+        available     = false
+      }
+    }
+
     lex_bot_languages = {
       en_USCH : []
     }
     lex_v2_bot_languages = {
-       en_US : ["pre_survey", "post_survey"]
+       en_US : ["pre_survey", "post_survey"],
+       ch : ["post_survey"],
+       cf : ["post_survey"]
+
     }
+    
     
   }
 }

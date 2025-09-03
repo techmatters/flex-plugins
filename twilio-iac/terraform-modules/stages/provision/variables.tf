@@ -53,6 +53,14 @@ variable "events_filter" {
   type        = list(string)
 }
 
+variable "activities" {
+  description = "Activities"
+  type = map(object({
+    friendly_name   = string
+    available       = optional(bool)
+  }))
+}
+
 variable "task_queues" {
   description = "Task queues"
   type = map(object({

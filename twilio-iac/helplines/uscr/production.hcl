@@ -19,7 +19,7 @@ locals {
       webchat : {
         channel_type         = "web"
         contact_identity     = ""
-        templatefile         = "/app/twilio-iac/helplines/templates/studio-flows/messaging-blocking.tftpl"
+        templatefile         = "/app/twilio-iac/helplines/uscr/templates/studio-flows/webchat-lambda.tftpl"
         channel_flow_vars    = {}
         chatbot_unique_names = []
       },
@@ -41,12 +41,24 @@ locals {
         templatefile     = "/app/twilio-iac/helplines/uscr/templates/studio-flows/incoming_to_outbound_number.tftpl"
         channel_flow_vars = {
           voice_ivr_not_allowed_message = "Hello you are trying to contact LA CICLE. Sorry, we don't take calls directly from the public. Please call 911 if you are facing an emergency."
-          voice_ivr_language         = "en-US"
+          voice_ivr_language            = "en-US"
 
         }
         chatbot_unique_names = []
       }
     }
     get_profile_flags_for_identifier_base_url = "https://hrm-production.tl.techmatters.org/lambda/twilio/account-scoped"
+    #System Down Configuration
+    system_down_templatefile = "/app/twilio-iac/helplines/templates/studio-flows/system-down.tftpl"
+    enable_system_down       = true
+    system_down_flow_vars = {
+      is_system_down                   = "false"
+      message                          = "We're sorry, the CIRCLE Call Center is experiencing technical difficulties with our phone system. If this is an emergency, please call 911 or leave us a message at 213-816-4904. We apologize for the inconvenience and are working to be up and running shortly."
+      voice_message                    = "We're sorry, the CIRCLE Call Center is experiencing technical difficulties with our phone system. If this is an emergency, please call 911 or leave us a message at 213-816-4904. We apologize for the inconvenience and are working to be up and running shortly."
+      send_studio_message_function_sid = "ZH6ef484cb1db6d1ae755673ae6d23398a"
+      call_action                      = "forward"
+      forward_number                   = "+12138164904"
+      recording_url                    = "https://<place_holder>.mp3"
+    }
   }
 }

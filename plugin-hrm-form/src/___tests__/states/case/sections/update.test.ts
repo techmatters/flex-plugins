@@ -33,7 +33,7 @@ describe('copyCaseSection', () => {
 
   let demoV1: DefinitionVersion;
   beforeAll(async () => {
-    const formDefinitionsBaseUrl = buildBaseURL('demo-v1');
+    const formDefinitionsBaseUrl = buildBaseURL('as-v1');
     await mockFetchImplementation(formDefinitionsBaseUrl);
 
     demoV1 = await loadDefinition(formDefinitionsBaseUrl);

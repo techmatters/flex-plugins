@@ -17,7 +17,7 @@
 import { get } from 'lodash';
 // eslint-disable-next-line prettier/prettier
 import type { LexMemory } from './lexClient';
-import type { OneToManyConfigSpec } from './insightsService';
+import { LegacyOneToManyConfigSpec } from '@tech-matters/hrm-form-definitions';
 
 export type PostSurveyData = { [question: string]: string | number };
 
@@ -30,7 +30,7 @@ type BotMemory = LexMemory;
  */
 const flattenOneToMany =
   (memory: BotMemory, pathBuilder: (question: string) => string) =>
-  (accum: PostSurveyData, curr: OneToManyConfigSpec) => {
+  (accum: PostSurveyData, curr: LegacyOneToManyConfigSpec) => {
     const paths = curr.questions.map(
       question => ({
         question,
@@ -50,7 +50,7 @@ const flattenOneToMany =
  * Given the config for the post survey and the bot's memory, returns the collected answers in the fomat it's stored in HRM.
  */
 export const buildDataObject = (
-  oneToManyConfigSpecs: OneToManyConfigSpec[],
+  oneToManyConfigSpecs: LegacyOneToManyConfigSpec[],
   memory: BotMemory,
   pathBuilder: (question: string) => string = q => q,
 ) => {

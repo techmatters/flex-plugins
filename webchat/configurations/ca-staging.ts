@@ -2368,4 +2368,5 @@ export const config: Configuration = {
   contactType,
   blockedEmojis,
   enableRecaptcha,
+  twilioServicesUrl: new URL(`https://hrm-staging.tl.techmatters.org/lambda/twilio/account-scoped/${accountSid}`),
 };

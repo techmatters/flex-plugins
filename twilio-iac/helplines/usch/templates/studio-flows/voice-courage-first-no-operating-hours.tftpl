@@ -136,6 +136,7 @@ ${
         },
         {
           "event": "match",
+          "next": "send_voice_blocked_message",
           "conditions": [
             {
               "friendly_name": "If value equal_to blocked",
@@ -154,6 +155,25 @@ ${
           "x": 600,
           "y": -560
         }
+      }
+    },
+    {
+      "name": "send_voice_blocked_message",
+      "type": "say-play",
+      "transitions": [
+        {
+          "event": "audioComplete"
+        }
+      ],
+      "properties": {
+        "voice": "Polly.Salli",
+        "offset": {
+          "x": 880,
+          "y": -280
+        },
+        "loop": 1,
+        "say": "${flow_vars.voice_blocked_client_message}",
+        "language": "en-US"
       }
     }
   ],

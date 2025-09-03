@@ -1,101 +1,371 @@
 [
   {
-    "name": "date",
-    "label": "Date",
-    "type": "date-input",
-    "required": {
-      "value": true,
-      "message": "RequiredFieldError"
+    "name":"dateIncident",
+    "label":"Date",
+    "type":"date-input",
+    "required":{
+      "value":true,
+      "message":"RequiredFieldError"
     }
   },
   {
-    "name": "duration",
-    "label": "Duration",
-    "type": "select",
-    "options": [
+    "name":"duration",
+    "label":"Duration",
+    "type":"select",
+    "options":[
       {
-        "value": "",
-        "label": ""
+        "value":"",
+        "label":""
       },
       {
-        "value": "Ongoing",
-        "label": "Ongoing"
+        "value":"Ongoing",
+        "label":"Ongoing"
       },
       {
-        "value": "Once Off",
-        "label": "Once Off"
-      },
-      {
-        "value": "Other",
-        "label": "Other"
+        "value":"Dates",
+        "label":"Date Range"
       }
     ],
-    "required": {
-      "value": true,
-      "message": "RequiredFieldError"
+    "required":{
+      "value":true,
+      "message":"RequiredFieldError"
     }
   },
   {
-    "name": "location",
-    "label": "Location",
-    "type": "select",
-    "options": [
+    "name":"dateIncidentStart",
+    "label":"Start Date",
+    "type":"date-input"
+  },
+  {
+    "name":"dateIncidentEnd",
+    "label":"End Date",
+    "type":"date-input"
+  },
+  {
+    "name":"LocationwhereChildhasgonemissingfrom",
+    "label":"Location where child has gone missing from",
+    "type":"select",
+    "options":[
       {
-        "value": "",
-        "label": ""
+        "value":"",
+        "label":""
       },
       {
-        "value": "Unknown",
-        "label": "Unknown"
+        "value":"Unknown",
+        "label":"Unknown"
       },
       {
-        "value": "School",
-        "label": "School"
+        "value":"ParentalGuardianHousehold",
+        "label":"Parental/guardian household"
       },
       {
-        "value": "Home",
-        "label": "Home"
+        "value":"FamilyMember",
+        "label":"Family member"
       },
       {
-        "value": "Institution",
-        "label": "Institution"
+        "value":"PeerHousehold",
+        "label":"Peer Household"
       },
       {
-        "value": "Online",
-        "label": "Online"
+        "value":"EducationalEstablishment",
+        "label":"Educational Establishment"
       },
       {
-        "value": "Public Place",
-        "label": "Public Place"
+        "value":"InstitutionalCareCenter",
+        "label":"Institutional care center"
       },
       {
-        "value": "Other",
-        "label": "Other"
+        "value":"Online",
+        "label":"Online"
+      },
+      {
+        "value":"Public Place",
+        "label":"Public Place"
+      },
+      {
+        "value":"Other",
+        "label":"Other"
       }
     ],
-    "required": {
-      "value": true,
-      "message": "RequiredFieldError"
+    "required":{
+      "value":true,
+      "message":"RequiredFieldError"
     }
   },
   {
-    "name": "isCaregiverAware",
-    "label": "Is caregiver aware?",
-    "type": "mixed-checkbox"
+    "name":"reasonForMissing",
+    "label":"Reason for going missing",
+    "type":"textarea"
   },
   {
-    "name": "incidentWitnessed",
-    "label": "Was the incident witnessed by anyone?",
-    "type": "mixed-checkbox"
+    "name":"statusCase",
+    "label":"Status of Case",
+    "type":"select",
+    "options":[
+      {
+        "value":"Unknown",
+        "label":"Unknown"
+      },
+      {
+        "value":"Ongoing",
+        "label":"Ongoing"
+      },
+      {
+        "value":"Resolved",
+        "label":"Resolved"
+      }
+    ],
+    "required":{
+      "value":true,
+      "message":"RequiredFieldError"
+    }
   },
   {
-    "name": "abuseReportedElsewhere",
-    "label": "Has abuse been reported elsewhere?",
-    "type": "mixed-checkbox"
+    "name":"incidentWitnessed",
+    "label":"Was the incident witnessed by anyone?",
+    "type":"select",
+    "options":[
+      {
+        "value":"Unknown",
+        "label":"Unknown"
+      },
+      {
+        "value":"EducationalSector",
+        "label":"Educational Sector"
+      },
+      {
+        "value":"lawEnforcement",
+        "label":"Law Enforcement"
+      },
+      {
+        "value":"familyMember",
+        "label":"Family Member"
+      },
+      {
+        "value":"institutionalCare",
+        "label":"Institutional Care"
+      },
+      {
+        "value":"peer",
+        "label":"Peer"
+      },
+      {
+        "value":"parents",
+        "label":"Parents/guardians"
+      },
+      {
+        "value":"SocialServices",
+        "label":"Social Services"
+      },
+      {
+        "value":"Stranger",
+        "label":"Stranger"
+      },
+      {
+        "value":"Other",
+        "label":"Other"
+      }
+    ],
+    "required":{
+      "value":true,
+      "message":"RequiredFieldError"
+    }
   },
   {
-    "name": "whereElseBeenReported",
-    "label": "Where else the incident has been reported?",
-    "type": "mixed-checkbox"
+    "name":"WasIncidentReportedtoAnyone",
+    "label":"Was the incident reported to anyone?",
+    "type":"select",
+    "options":[
+      {
+        "value":"Unknown",
+        "label":"Unknown"
+      },
+      {
+        "value":"migrationAuthorities",
+        "label":"Migration Authorities"
+      },
+      {
+        "value":"nationalAuthorities",
+        "label":"National Authorities"
+      },
+      {
+        "value":"SocialServices",
+        "label":"Social Services"
+      },
+      {
+        "value":"healthInstitution",
+        "label":"Health Institution"
+      },
+      {
+        "value":"childHelpline",
+        "label":"Child Helpline"
+      },
+      {
+        "value":"other",
+        "label":"Other"
+      }
+    ],
+    "required":{
+      "value":true,
+      "message":"RequiredFieldError"
+    }
+  },
+  {
+    "name":"DisappearanceReportedPolice",
+    "label":"Disappearance reported to the police in requesting organisation’s country",
+    "type":"select",
+    "options":[
+      {
+        "value":"Unknown",
+        "label":"Unknown"
+      },
+      {
+        "value":"yes",
+        "label":"Yes"
+      },
+      {
+        "value":"no",
+        "label":"No"
+      },
+      {
+        "value":"na",
+        "label":"Not Applicable"
+      }
+    ]
+  },
+  {
+    "name":"DossierForwardedToInterpol",
+    "label":"Dossier forwarded to Interpol by the police",
+    "type":"select",
+    "options":[
+      {
+        "value":"Unknown",
+        "label":"Unknown"
+      },
+      {
+        "value":"yes",
+        "label":"Yes"
+      },
+      {
+        "value":"no",
+        "label":"No"
+      },
+      {
+        "value":"na",
+        "label":"Not Applicable"
+      }
+    ]
+  },
+  {
+    "name":"SISalertActivated",
+    "label":"SIS alert activated",
+    "type":"select",
+    "options":[
+      {
+        "value":"Unknown",
+        "label":"Unknown"
+      },
+      {
+        "value":"yes",
+        "label":"Yes"
+      },
+      {
+        "value":"no",
+        "label":"No"
+      },
+      {
+        "value":"na",
+        "label":"Not Applicable"
+      }
+    ]
+  },
+  {
+    "name":"IsCaregiverAware?",
+    "label":"Is caregiver aware?",
+    "type":"select",
+    "options":[
+      {
+        "value":"Unknown",
+        "label":"Unknown"
+      },
+      {
+        "value":"yes",
+        "label":"Yes"
+      },
+      {
+        "value":"no",
+        "label":"No"
+      }
+    ],
+    "required":{
+      "value":true,
+      "message":"RequiredFieldError"
+    }
+  },
+  {
+    "name":"HasAbuseBeenReported?",
+    "label":"Has abuse been reported?",
+    "type":"select",
+    "options":[
+      {
+        "value":"Unknown",
+        "label":"Unknown"
+      },
+      {
+        "value":"yes",
+        "label":"Yes"
+      },
+      {
+        "value":"no",
+        "label":"No"
+      }
+    ],
+    "required":{
+      "value":true,
+      "message":"RequiredFieldError"
+    }
+  },
+  {
+    "name":"toWhomreported?",
+    "label":"If so, to whom?",
+    "type":"select",
+    "options":[
+      {
+        "value":"Unknown",
+        "label":"Unknown"
+      },
+      {
+        "value":"lawEnforcement",
+        "label":"Law Enforcement"
+      },
+      {
+        "value":"healthSocialServices",
+        "label":"Health/Social Services"
+      },
+      {
+        "value":"institutionalChange",
+        "label":"Institutional Change"
+      },
+      {
+        "value":"familyMember",
+        "label":"Family Member"
+      },
+      {
+        "value":"peer",
+        "label":"Peer"
+      },
+      {
+        "value":"stranger",
+        "label":"Stranger"
+      },
+      {
+        "value":"other",
+        "label":"Other"
+      }
+    ],
+    "required":{
+      "value":true,
+      "message":"RequiredFieldError"
+    }
   }
 ]
