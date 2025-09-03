@@ -15,7 +15,7 @@
  */
 
 import qs from 'querystring';
-import { ALBEvent, ALBResult } from 'aws-lambda';
+import type { ALBEvent, ALBResult } from 'aws-lambda';
 import { lookupRoute } from './router';
 import { isErr, newErr } from './Result';
 import {
