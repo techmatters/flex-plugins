@@ -9,6 +9,7 @@
             "enableExternalRecordings": false
         },
         "feature_flags": {
+            "use_prepopulate_mappings": true
         },
         "definitionVersion": "usvc-v1",
         "external_recordings_enabled": false,
