@@ -40,9 +40,17 @@ export function logPageTelemetry(
   page: Page,
   configOverrides: Partial<PageTelemetryConfig> = {},
 ): void {
-  if (getConfigValue('browserTelemetryDisabled')) return;
+  if (getConfigValue('browserTelemetryDisabled')) {
+    console.info(
+      `browserTelemetryDisabled: ${getConfigValue(
+        'browserTelemetryDisabled',
+      )} - not logging browser output.`,
+    );
+    return;
+  }
 
   const config: PageTelemetryConfig = { ...DEFAULT_CONFIG, ...configOverrides };
+  console.debug('Browser Telemetry Config:', config);
   if (config.level === PageTelemetryLevel.NONE) return;
   page.on('console', (message) => {
     if (
@@ -51,11 +59,11 @@ export function logPageTelemetry(
       message.type() === 'warn' ||
       DEFAULT_EXCLUSIONS.every((exclusion) => !exclusion.test(message.text()))
     ) {
-      console.log(`[BROWSER: ${page.url()} (${message.type()})] ${message.text()}`);
+      console.debug(`[BROWSER: ${page.url()} (${message.type()})] ${message.text()}`);
     }
   });
   page.on('requestfailed', (request) => {
-    console.log(
+    console.info(
       `[BROWSER: ${page.url()} (REQUEST FAILED)] ${request.method()} ${request.url()} ${request.failure()}`,
     );
   });

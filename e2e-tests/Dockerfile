@@ -83,7 +83,6 @@ COPY e2e-tests/lambda/handler.js /app/e2e-tests/handler.js
 ENV TEST_IN_LAMBDA=true
 ENV XDG_CONFIG_HOME=/tmp/.config
 ENV PLAYWRIGHT_BROWSERS_PATH=/tmp
-ENV PLAYWRIGHT_BROWSER_TELEMETRY_DISABLED=true
 
 ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
 CMD ["handler.handler"]

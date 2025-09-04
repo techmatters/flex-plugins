@@ -50,7 +50,7 @@ const skipDataUpdateEnvs = ['staging', 'production'];
 // These are environments where we want to hit remote flex instead of localhost
 const flexEnvs = ['development', 'staging', 'production'];
 
-// This is kindof a hack to get the correct default remote webchat url and twilio account info for the local env
+// This is kind of a hack to get the correct default remote webchat url and twilio account info for the local env
 export const localOverrideEnv = helplineEnv === 'local' ? 'development' : helplineEnv;
 
 export const config: Config = {};

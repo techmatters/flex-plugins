@@ -25,7 +25,7 @@ export type SetupPageReturn = {
 
 // Sometimes the browser is not ready when we try to launch a page in a lambda
 const waitForBrowser = async (browser: Browser): Promise<void> => {
-  console.log('Waiting for browser to be ready');
+  console.info('Waiting for browser to be ready');
   let count = 0;
   while (!browser.isConnected()) {
     if (count > 20) {
@@ -39,7 +39,7 @@ const waitForBrowser = async (browser: Browser): Promise<void> => {
     await new Promise((resolve) => setTimeout(resolve, 1000));
     count++;
   }
-  console.log('Browser is ready');
+  console.info('Browser is ready');
 };
 
 export const setupContextAndPage = async (browser: Browser): Promise<SetupPageReturn> => {
@@ -71,10 +71,10 @@ export const setupContextAndPage = async (browser: Browser): Promise<SetupPageRe
 };
 
 export const closePage = async (page: Page): Promise<void> => {
-  console.log('Closing page');
+  console.info('Closing page');
   try {
     await page.close();
   } catch (e) {
-    console.log('Error closing page: ' + e);
+    console.warn('Error closing page: ' + e);
   }
 };
