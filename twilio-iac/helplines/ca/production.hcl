@@ -29,6 +29,8 @@ locals {
       operating_hours_function_url      = "https://serverless-3836-production.twil.io/operatingHours"
       check_counsellors_function_sid    = "ZH95bed62f9c0af98771e01cba4bd86d1f"
       check_counsellors_function_url    = "https://twilio-service-4854.twil.io/check_counsellors"
+      cancel_task_function_url          = "https://twilio-service-4854.twil.io/cancel_tasks"
+      cancel_task_function_sid          = "ZS052e3d62a635572170cfbff86fb1ce1d"
     }
 
     #Channels
