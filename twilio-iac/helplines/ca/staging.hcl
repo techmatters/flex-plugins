@@ -28,6 +28,8 @@ locals {
       operating_hours_function_url      = "https://serverless-8126-production.twil.io/operatingHours"
       check_counsellors_function_sid    = "ZHa0218fd2a7b2e3aa800ab78e0367acf7"
       check_counsellors_function_url    = "https://test-service-dee-4583.twil.io/check_counsellors"
+      cancel_task_function_url          = "https://test-service-dee-4583.twil.io/cancel_tasks"
+      cancel_task_function_sid          = "ZHe8a3de19523fa7ce8a41692e744a7f45"
     }
 
     #Channels
