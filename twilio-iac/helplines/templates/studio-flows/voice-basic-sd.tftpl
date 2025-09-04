@@ -31,7 +31,7 @@ ${
       }
     },
     {
-      "name": "SendCallToAgent",
+      "name": "send_to_queue",
       "type": "send-to-flex",
       "transitions": [
         {
@@ -56,11 +56,11 @@ ${
       }
     },
     {
-      "name": "Greeting",
+      "name": "play_message_welcome",
       "type": "say-play",
       "transitions": [
         {
-          "next": "SendCallToAgent",
+          "next": "send_to_queue",
           "event": "audioComplete"
         }
       ],
@@ -75,7 +75,7 @@ ${
       }
     },
     {
-      "name": "webhook_notify_failed_to_enqueue",
+      "name": "http_post_webhook_notify_failed_to_enqueue",
       "type": "make-http-request",
       "transitions": [
         {
@@ -101,11 +101,11 @@ ${
       "type": "run-subflow",
       "transitions": [
         {
-          "next": "Greeting",
+          "next": "play_message_welcome",
           "event": "completed"
         },
         {
-          "next": "Greeting",
+          "next": "play_message_welcome",
           "event": "failed"
         }
       ],

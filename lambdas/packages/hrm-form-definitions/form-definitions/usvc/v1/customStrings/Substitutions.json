@@ -1,0 +1,10 @@
+{
+  "en": {
+    "HelplineSubstitution": "Helpline-Substitution",
+    "Switchboard-NoQueuesSwitchboarded": "No queues are currently being switchboarded"
+  },
+  "es": {
+    "HelplineSubstitution": "Substitución de la Línea de Ayuda",
+    "Switchboard-NoQueuesSwitchboarded": "No hay colas que estén actualmente en switchboard"
+  }
+}

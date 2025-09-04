@@ -30,15 +30,15 @@ ${
       }
     },
     {
-      "name": "getProfileFlagsForIdentifier",
+      "name": "f_getProfileFlagsForIdentifier",
       "type": "make-http-request",
       "transitions": [
         {
-          "next": "contact_routing",
+          "next": "split_based_on_client_flag",
           "event": "success"
         },
         {
-          "next": "attributes",
+          "next": "send_to_queue",
           "event": "failed"
         }
       ],
@@ -54,7 +54,7 @@ ${
       }
     },
     {
-      "name": "send_blocked_message",
+      "name": "send_message_blocked",
       "type": "send-message",
       "transitions": [
         {
@@ -77,15 +77,15 @@ ${
       }
     },
     {
-      "name": "contact_routing",
+      "name": "split_based_on_client_flag",
       "type": "split-based-on",
       "transitions": [
         {
-          "next": "attributes",
+          "next": "send_to_queue",
           "event": "noMatch"
         },
         {
-          "next": "send_blocked_message",
+          "next": "send_message_blocked",
           "event": "match",
           "conditions": [
             {
@@ -113,7 +113,7 @@ ${
           "event": "callComplete"
         },
         {
-          "next": "webhook_notify_failed_to_enqueue",
+          "next": "http_post_notify_failed_to_enqueue",
           "event": "failedToEnqueue"
         },
         {
@@ -121,7 +121,7 @@ ${
         }
       ],
       "type": "send-to-flex",
-      "name": "attributes",
+      "name": "send_to_queue",
       "properties": {
         "attributes": "${channel_attributes.default}",
         "workflow": "${workflow_sids.master}",
@@ -133,7 +133,7 @@ ${
       }
     },
     {
-      "name": "webhook_notify_failed_to_enqueue",
+      "name": "http_post_notify_failed_to_enqueue",
       "type": "make-http-request",
       "transitions": [
         {
@@ -160,11 +160,11 @@ ${
       "type": "run-subflow",
       "transitions": [
         {
-          "next": "getProfileFlagsForIdentifier",
+          "next": "f_getProfileFlagsForIdentifier",
           "event": "completed"
         },
         {
-          "next": "getProfileFlagsForIdentifier",
+          "next": "f_getProfileFlagsForIdentifier",
           "event": "failed"
         }
       ],

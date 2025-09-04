@@ -116,7 +116,7 @@ locals {
     system_down_flow_vars = {
       is_system_down                   = "false"
       message                          = "We're currently experiencing technical issues, and your message might not be received. If this is an emergency please contact 911 or 988. We're working to resolve the problem and will be back online shortly. We apologize for the inconvenience."
-      voice_message                    = "We're currently experiencing technical issues, and your call might not be recieved. If this is an emergency please contact 911 or 988. We're working to resolve the problem and will be back online shortly. We apologize for the inconvenience."
+      voice_message                    = "We're currently experiencing technical issues, and your call might not be received. If this is an emergency please contact 911 or 988. We're working to resolve the problem and will be back online shortly. We apologize for the inconvenience."
       send_studio_message_function_sid = "ZHda5f23152bb1a843c303049674007b87"
       call_action                      = "message"
       forward_number                   = "+123"

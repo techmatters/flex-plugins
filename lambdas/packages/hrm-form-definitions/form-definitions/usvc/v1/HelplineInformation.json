@@ -1,0 +1,16 @@
+{
+  "label": "Helpline",
+  "helplines": [
+    {
+      "label": "NCVC",
+      "value": "NCVC",
+      "default": true,
+      "kmsUrl": "http://kms2013.kidshelp.ca/Pages/Home.asp",
+      "manager": {
+        "name": "Helpline Manager",
+        "phone": "+123 45 678",
+        "email": "supervisor@helpline.org"
+      }
+    }
+  ]
+}
