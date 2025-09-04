@@ -167,26 +167,6 @@ const preEngagementConfig: PreEngagementFormDefinition = {
       ],
     },
     {
-      type: 'checkbox',
-      name: 'termsAndConditions',
-      label:
-        'I have read terms of use and the <a href="https://www.themix.org.uk/about-us/privacy-centre/privacy-policy/">privacy policy</a> and agree to them.',
-      required: {
-        value: true,
-        message: "Sorry, if you don't accept our terms and privacy policy we can't provide counselling to you.",
-      },
-    },
-    {
-      type: 'checkbox',
-      name: 'dataProcessingAndStorage',
-      label:
-        'I consent to my data being processed and stored in order to access the Peer Support service.',
-      required: {
-        value: true,
-        message: "Sorry, if you don't consent to have your data being processed and stored we can't provide counselling to you.",
-      },
-    },
-    {
       type: 'select',
       name: 'consentForResearhevaluation',
       label:
@@ -206,6 +186,56 @@ const preEngagementConfig: PreEngagementFormDefinition = {
           label: 'No',
         },
       ],
+    },
+    {
+      type: 'select',
+      name: 'dataProcessingAndStorage',
+      label:
+        'I consent to my data being processed and stored in order to access the Peer Support service.',
+        defaultValue: '',
+        options: [
+          {
+            value: "",
+            label: ""
+          },
+          {
+            value: 'Yes',
+            label: 'Yes',
+          },
+          {
+            value: 'No',
+            label: 'No',
+          },
+        ],
+      required: {
+        value: true,
+        message: "Sorry, if you don't consent to have your data being processed and stored we can't provide counselling to you.",
+      },
+    },
+    {
+      type: 'select',
+      name: 'termsAndConditions',
+      label:
+        'I have read terms of use and the <a href="https://www.themix.org.uk/about-us/privacy-centre/privacy-policy/">privacy policy</a> and agree to them.',
+        defaultValue: '',
+        options: [
+          {
+            value: "",
+            label: ""
+          },
+          {
+            value: 'Yes',
+            label: 'Yes',
+          },
+          {
+            value: 'No',
+            label: 'No',
+          },
+        ],
+      required: {
+        value: true,
+        message: "Sorry, if you don't accept our terms and privacy policy we can't provide counselling to you.",
+      },
     },
   ],
 };
