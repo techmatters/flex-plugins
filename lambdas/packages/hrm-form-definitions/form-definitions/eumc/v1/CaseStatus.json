@@ -14,5 +14,13 @@
     "transitions": [
       "open"
     ]
+  },
+  "archived": {
+    "value": "archived",
+    "label": "Archived",
+    "color": "grey",
+    "transitions": [
+      "closed"
+    ]
   }
 }
