@@ -121,8 +121,50 @@
     }
   },
   {
+    "name":"incidentReportedtoPolice",
+    "label":"Has the incident been reported to the police?",
+    "type":"select",
+    "options":[
+      {
+        "value":"Unknown",
+        "label":"Unknown"
+      },
+      {
+        "value":"no",
+        "label":"No"
+      },
+      {
+        "value":"yes",
+        "label":"Yes"
+      }
+    ],
+    "required":{
+      "value":true,
+      "message":"RequiredFieldError"
+    }
+  },
+  {
     "name":"incidentWitnessed",
     "label":"Was the incident witnessed by anyone?",
+    "type":"select",
+    "options":[
+      {
+        "value":"Unknown",
+        "label":"Unknown"
+      },
+      {
+        "value":"no",
+        "label":"No"
+      },
+      {
+        "value":"yes",
+        "label":"Yes"
+      }
+    ]
+  },
+  {
+    "name":"incidentWitnessedby",
+    "label":"If so,to whom?",
     "type":"select",
     "options":[
       {
@@ -165,11 +207,7 @@
         "value":"Other",
         "label":"Other"
       }
-    ],
-    "required":{
-      "value":true,
-      "message":"RequiredFieldError"
-    }
+    ]
   },
   {
     "name":"WasIncidentReportedtoAnyone",
@@ -181,24 +219,12 @@
         "label":"Unknown"
       },
       {
-        "value":"migrationAuthorities",
-        "label":"Migration Authorities"
-      },
-      {
-        "value":"nationalAuthorities",
-        "label":"National Authorities"
-      },
-      {
         "value":"SocialServices",
         "label":"Social Services"
       },
       {
-        "value":"healthInstitution",
-        "label":"Health Institution"
-      },
-      {
-        "value":"childHelpline",
-        "label":"Child Helpline"
+        "value":"childProtection",
+        "label":"Child Protection"
       },
       {
         "value":"other",
@@ -209,6 +235,11 @@
       "value":true,
       "message":"RequiredFieldError"
     }
+  },
+  {
+    "name":"specify",
+    "label": "Specify",
+    "type": "input"
   },
   {
     "name":"DisappearanceReportedPolice",
