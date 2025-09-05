@@ -15,7 +15,7 @@
  */
 
 import { KhpOperationsDay, KhpUiResource, Language } from './types';
-import { AttributeData, Attributes } from '../../services/ResourceService';
+import { AttributeData, Attributes } from '../../../../services/ResourceService';
 
 const getAttributeDataFromList = (
   propDataList: Attributes | AttributeData<any>[] | undefined,
