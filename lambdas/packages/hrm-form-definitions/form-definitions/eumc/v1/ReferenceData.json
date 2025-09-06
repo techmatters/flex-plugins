@@ -1773,6 +1773,10 @@
   ],
   "languageOptions": [
     {
+      "value": "unknown",
+      "label": "Unknown"
+    },
+    {
       "value": "afrikaans",
       "label": "Afrikaans"
     },
