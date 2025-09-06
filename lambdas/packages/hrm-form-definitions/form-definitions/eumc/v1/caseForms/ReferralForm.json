@@ -7,8 +7,7 @@
   {
     "name": "hotlineList",
     "label": "Hotline Referred To",
-    "type":"input"
-    
+    "type": "input"
   },
   {
     "name": "otherorganisation",

@@ -224,11 +224,11 @@
         "label": "None"
       },
       {
-        "value": "abuse",
+        "value": "Abuse",
         "label": "Abuse"
       },
       {
-        "value": "disability",
+        "value": "Disability",
         "label": "Disability"
       },
       {
@@ -236,11 +236,11 @@
         "label": "LGBTQIA"
       },
       {
-        "value": "raceandethnicity",
+        "value": "Race & Ethnicity",
         "label": "Race & Ethnicity"
       },
       {
-        "value": "victimsOfAbuseTrafficking",
+        "value": "Immigration Status",
         "label": "Immigration Status"
       },
       {
