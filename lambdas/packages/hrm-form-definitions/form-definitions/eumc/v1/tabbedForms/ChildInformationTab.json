@@ -142,9 +142,7 @@
   {
     "name": "nationality",
     "label": "Nationality(ies)",
-    "type": "listbox-multiselect",
-    "optionsReferenceKey": "nationalityOptions",
-    "isPII": false
+    "type": "input"
   },
   {
     "name": "countryOfResidence",
@@ -260,10 +258,6 @@
     "label": "Key Vulnerabilities",
     "type": "dependent-select",
     "dependsOn": "keyVulnerabilitiesmain",
-    "defaultOption": {
-      "value": "unknown",
-      "label": ""
-    },
     "options": {
       "Immigration Status": [
         {
