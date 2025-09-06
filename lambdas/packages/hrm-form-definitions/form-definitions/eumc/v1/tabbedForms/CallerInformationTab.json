@@ -89,13 +89,7 @@
   {
     "name": "country",
     "label": "Country",
-    "type": "select",
-    "optionsReferenceKey": "countryOptions",
-    "isPII": false,
-    "required": {
-      "value": true,
-      "message": "RequiredFieldError"
-    }
+    "type": "input"
   },
   {
     "name": "City",
@@ -583,24 +577,12 @@
   {
     "name": "language",
     "label": "Spoken Languages",
-    "type": "listbox-multiselect",
-    "optionsReferenceKey": "languageOptions",
-    "isPII": false,
-    "required": {
-      "value": true,
-      "message": "RequiredFieldError"
-    }
+    "type": "input"
   },
   {
     "name": "nationality",
     "label": "Nationality(ies)",
-    "type": "listbox-multiselect",
-    "required": {
-      "value": true,
-      "message": "RequiredFieldError"
-    },
-    "optionsReferenceKey": "nationalityOptions",
-    "isPII": false
+    "type": "input"
   },
   {
     "name": "ethnicity",
