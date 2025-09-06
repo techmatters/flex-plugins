@@ -90,32 +90,8 @@
     "name": "country",
     "label": "Country",
     "type": "select",
-    "options": [
-      {
-        "value": "Unknown",
-        "label": ""
-      },
-      {
-        "value": "France",
-        "label": "France"
-      },
-      {
-        "value": "Germany",
-        "label": "Germany"
-      },
-      {
-        "value": "Italy",
-        "label": "Italy"
-      },
-      {
-        "value": "Spain",
-        "label": "Spain"
-      },
-      {
-        "value": "Netherlands",
-        "label": ""
-      }
-    ],
+    "optionsReferenceKey": "countryOptions",
+    "isPII": false,
     "required": {
       "value": true,
       "message": "RequiredFieldError"
@@ -608,10 +584,6 @@
     "name": "language",
     "label": "Spoken Languages",
     "type": "listbox-multiselect",
-    "defaultOption": {
-      "value": "unknown",
-      "label": "Unknown"
-    },
     "optionsReferenceKey": "languageOptions",
     "isPII": false,
     "required": {
@@ -623,10 +595,6 @@
     "name": "nationality",
     "label": "Nationality(ies)",
     "type": "listbox-multiselect",
-    "defaultOption": {
-      "value": "unknown",
-      "label": "Unknown"
-    },
     "required": {
       "value": true,
       "message": "RequiredFieldError"
