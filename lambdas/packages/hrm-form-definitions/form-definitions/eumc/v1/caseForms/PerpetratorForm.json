@@ -598,23 +598,17 @@
   {
     "name": "country",
     "label": "Country",
-    "type": "select",
-    "optionsReferenceKey": "countryOptions",
-    "isPII": false
+    "type": "input"
   },
   {
     "name": "nationality",
     "label": "Nationality(ies)",
-    "type": "listbox-multiselect",
-    "optionsReferenceKey": "nationalityOptions",
-    "isPII": false
+    "type": "input"
   },
   {
     "name": "language",
     "label": "Language",
-    "type": "listbox-multiselect",
-    "optionsReferenceKey": "languageOptions",
-    "isPII": false
+    "type": "input"
   },
   {
     "name": "description",

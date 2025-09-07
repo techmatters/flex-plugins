@@ -142,9 +142,7 @@
   {
     "name": "nationality",
     "label": "Nationality(ies)",
-    "type": "listbox-multiselect",
-    "optionsReferenceKey": "nationalityOptions",
-    "isPII": false
+    "type": "input"
   },
   {
     "name": "countryOfResidence",
@@ -176,7 +174,7 @@
     "options": [
       {
         "value": "Unknown",
-        "label": ""
+        "label": "Unknown"
       },
       {
         "value": "Alternative care",
@@ -222,15 +220,15 @@
         "label": "Unknown"
       },
       {
-        "value": "none",
+        "value": "None",
         "label": "None"
       },
       {
-        "value": "abuse",
+        "value": "Abuse",
         "label": "Abuse"
       },
       {
-        "value": "disability",
+        "value": "Disability",
         "label": "Disability"
       },
       {
@@ -238,11 +236,11 @@
         "label": "LGBTQIA"
       },
       {
-        "value": "raceandethnicity",
+        "value": "Race & Ethnicity",
         "label": "Race & Ethnicity"
       },
       {
-        "value": "victimsOfAbuseTrafficking",
+        "value": "Immigration Status",
         "label": "Immigration Status"
       },
       {
@@ -256,93 +254,6 @@
     }
   },
   {
-    "name": "keyvulnerabilitiessub",
-    "label": "Key Vulnerabilities",
-    "type": "dependent-select",
-    "dependsOn": "keyVulnerabilitiesmain",
-    "defaultOption": {
-      "value": "unknown",
-      "label": ""
-    },
-    "options": {
-      "Immigration Status": [
-        {
-          "value": "asylumSeeker",
-          "label": "Asylum Seeker"
-        },
-        {
-          "value": "asylumApplicant",
-          "label": "Asylum Applicant"
-        },
-        {
-          "value": "undocumentedMigrant",
-          "label": "Undocumented Migrant"
-        },
-        {
-          "value": "refugee",
-          "label": "Refugee"
-        }
-      ],
-      "Race & Ethnicity": [
-        {
-          "value": "BIPOC",
-          "label": "BIPOC"
-        },
-        {
-          "value": "ethnicMinority",
-          "label": "Ethnic Minority"
-        },
-        {
-          "value": "religiousMinority",
-          "label": "Religious Minority"
-        }
-      ],
-      "LGBTQIA": [
-        {
-          "value": "sexualOrientation",
-          "label": "Sexual Orientation"
-        },
-        {
-          "value": "genderIdentity",
-          "label": "Gender Identity"
-        }
-      ],
-      "Disability": [
-        {
-          "value": "mentalDisability",
-          "label": "Mental Disability"
-        },
-        {
-          "value": "physicalDisability",
-          "label": "Physical Disability"
-        }
-      ],
-      "Abuse": [
-        {
-          "value": "humanTrafficking",
-          "label": "Human Trafficking"
-        },
-        {
-          "value": "sexualAbuse",
-          "label": "Sexual Abuse"
-        },
-        {
-          "value": "sexualExploitatio",
-          "label": "Sexual Exploitation"
-        },
-        {
-          "value": "physicalAbuse",
-          "label": "Physical Abuse"
-        },
-        {
-          "value": "onlineGrooming",
-          "label": "Online Grooming"
-        }
-      ],
-      "isPII": false
-    }
-  },
-  {
     "name": "childNote",
     "label": "Notes (e.g passport,nickname)",
     "type": "textarea"
@@ -350,10 +261,7 @@
   {
     "name": "mother",
     "label": "Mother(s) (not applicable)",
-    "type": "mixed-checkbox",
-    "defaultOption": {
-      "value": "false"
-    }
+    "type": "checkbox"
   },
   {
     "name": "firstNameMother",
