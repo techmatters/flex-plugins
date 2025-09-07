@@ -220,7 +220,7 @@
         "label": "Unknown"
       },
       {
-        "value": "none",
+        "value": "None",
         "label": "None"
       },
       {
@@ -321,7 +321,7 @@
           "label": "Sexual Abuse"
         },
         {
-          "value": "sexualExploitatio",
+          "value": "sexualExploitation",
           "label": "Sexual Exploitation"
         },
         {
@@ -332,9 +332,20 @@
           "value": "onlineGrooming",
           "label": "Online Grooming"
         }
+      ],
+      "Other": [
+        {
+          "value": "other",
+          "label": "Other"
+        }
+      ],
+      "None": [
+        {
+          "value": "none",
+          "label": "none"
+        }
       ]
-    },
-      "isPII": false
+    }
   },
   {
     "name": "childNote",
@@ -344,7 +355,7 @@
   {
     "name": "mother",
     "label": "Mother(s) (not applicable)",
-    "type": "mixed-checkbox"
+    "type": "checkbox"
   },
   {
     "name": "firstNameMother",
