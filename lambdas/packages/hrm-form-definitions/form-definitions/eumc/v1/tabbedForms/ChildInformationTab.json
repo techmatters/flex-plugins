@@ -344,7 +344,7 @@
   {
     "name": "mother",
     "label": "Mother(s) (not applicable)",
-    "type": "mixed-checkbox"
+    "type": "checkbox"
   },
   {
     "name": "firstNameMother",
