@@ -174,7 +174,7 @@
     "options": [
       {
         "value": "Unknown",
-        "label": ""
+        "label": "Unknown"
       },
       {
         "value": "Alternative care",
@@ -332,9 +332,9 @@
           "value": "onlineGrooming",
           "label": "Online Grooming"
         }
-      ],
+      ]
+    },
       "isPII": false
-    }
   },
   {
     "name": "childNote",
