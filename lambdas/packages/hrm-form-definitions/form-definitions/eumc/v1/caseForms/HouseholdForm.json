@@ -481,8 +481,8 @@
     "type": "select",
     "options": [
       {
-        "value": "",
-        "label": ""
+        "value": "Unknown",
+        "label": "Unknown"
       },
       {
         "value": "Caregiver",
@@ -519,10 +519,6 @@
       {
         "value": "Other",
         "label": "Other"
-      },
-      {
-        "value": "Unknown",
-        "label": "Unknown"
       }
     ],
     "required": {
@@ -562,9 +558,7 @@
   {
     "name": "nationality",
     "label": "Nationality(ies)",
-    "type": "listbox-multiselect",
-    "optionsReferenceKey": "nationalityOptions",
-    "isPII": false
+    "type": "input"
   },
   {
     "name": "language",
@@ -661,10 +655,6 @@
   {
     "name": "ifYes",
     "label": "If yes, what type?",
-    "type": "textarea",
-    "required": {
-      "value": true,
-      "message": "RequiredFieldError"
-    }
+    "type": "textarea"
   }
 ]
