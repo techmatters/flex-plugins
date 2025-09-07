@@ -205,10 +205,19 @@
         "label": "With relatives"
       },
       {
+        "value": "receptionAccom",
+        "label": "Reception Accommodation"
+      },
+      {
         "value": "Other",
         "label": "Other"
       }
     ]
+  },
+  {
+    "name": "specify",
+    "label": "Specify",
+    "type": "input"
   },
   {
     "name": "keyVulnerabilitiesmain",
@@ -252,6 +261,11 @@
       "value": true,
       "message": "RequiredFieldError"
     }
+  },
+  {
+    "name": "specify",
+    "label": "Specify",
+    "type": "input"
   },
   {
     "name": "childNote",

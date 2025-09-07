@@ -18,9 +18,7 @@
   "archived": {
     "value": "archived",
     "label": "Archived",
-    "color": "grey",
-    "transitions": [
-      "closed"
-    ]
+    "color": "orange",
+    "transitions": ["open"] 
   }
 }
