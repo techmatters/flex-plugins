@@ -481,8 +481,8 @@
     "type": "select",
     "options": [
       {
-        "value": "",
-        "label": ""
+        "value": "Unknown",
+        "label": "Unknown"
       },
       {
         "value": "Caregiver",
@@ -519,10 +519,6 @@
       {
         "value": "Other",
         "label": "Other"
-      },
-      {
-        "value": "Unknown",
-        "label": "Unknown"
       }
     ],
     "required": {

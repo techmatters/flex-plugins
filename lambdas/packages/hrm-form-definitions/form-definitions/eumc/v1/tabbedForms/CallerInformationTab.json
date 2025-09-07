@@ -87,11 +87,6 @@
     "type": "input"
   },
   {
-    "name": "country",
-    "label": "Country",
-    "type": "input"
-  },
-  {
     "name": "City",
     "label": "City",
     "type": "input"
@@ -573,16 +568,6 @@
       "message": "RequiredFieldError"
     },
     "isPII": false
-  },
-  {
-    "name": "language",
-    "label": "Spoken Languages",
-    "type": "input"
-  },
-  {
-    "name": "nationality",
-    "label": "Nationality(ies)",
-    "type": "input"
   },
   {
     "name": "ethnicity",

@@ -344,10 +344,7 @@
   {
     "name": "mother",
     "label": "Mother(s) (not applicable)",
-    "type": "mixed-checkbox",
-    "defaultOption": {
-      "value": "false"
-    }
+    "type": "mixed-checkbox"
   },
   {
     "name": "firstNameMother",

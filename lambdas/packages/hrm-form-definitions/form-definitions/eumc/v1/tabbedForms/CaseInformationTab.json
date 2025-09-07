@@ -20,7 +20,7 @@
     "options": [
       {
         "value": "Unknown",
-        "label": " "
+        "label": "Unknown"
       },
       {
         "value": "recommendations",
