@@ -12,18 +12,6 @@
       "category": "data"
   },
   {
-      "name": "silent",
-      "label": "Silent",
-      "type": "button",
-      "category": "non-data"
-  },
-  {
-      "name": "blank",
-      "label": "Blank",
-      "type": "button",
-      "category": "non-data"
-  },
-  {
       "name": "abusive",
       "label": "Abusive",
       "type": "button",

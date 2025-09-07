@@ -27,16 +27,20 @@
         "label": "Unknown"
       },
       {
-        "value": "BoyMan",
-        "label": "Boy/Man"
+        "value": "Man",
+        "label": "Man"
       },
       {
-        "value": "GirlWoman",
-        "label": "Girl/Woman"
+        "value": "Woman",
+        "label": "Woman"
       },
       {
-        "value": "Non-BinaryTrans",
-        "label": "Non-Binary/Transgender"
+        "value": "Non-Binary",
+        "label": "Non-Binary"
+      },
+      {
+        "value": "Transgender",
+        "label": "Transgender"
       },
       {
         "value": "other",
@@ -469,11 +473,7 @@
         "value": "Unknown",
         "label": "Unknown"
       }
-    ],
-    "required": {
-      "value": true,
-      "message": "RequiredFieldError"
-    }
+    ]
   },
   {
     "name": "relationshipToChild",
@@ -616,6 +616,10 @@
         "label": "Custody by Mother"
       },
       {
+        "value": "custodyFather",
+        "label": "Custody by Father"
+      },
+      {
         "value": "attributedToThirdParty",
         "label": "Attributed To a Third Party"
       },
@@ -630,8 +634,13 @@
     }
   },
   {
+    "name": "specify",
+    "label": "Specify",
+    "type": "input"
+  },
+  {
     "name": "courtProceedings",
-    "label": "Court Proceedings (e.g custody battles, or return of the child)",
+    "label": "Legal Proceedings (e.g custody battles, or return of the child)",
     "type": "select",
     "options": [
       {

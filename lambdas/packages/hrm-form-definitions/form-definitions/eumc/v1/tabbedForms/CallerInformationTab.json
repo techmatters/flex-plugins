@@ -59,10 +59,6 @@
         "label": "Other adult known to the child"
       },
       {
-        "value": "Person in a position of responsibility",
-        "label": "Person in a position of responsibility (Please specify)"
-      },
-      {
         "value": "Sibling",
         "label": "Sibling (s)"
       },
@@ -78,7 +74,7 @@
   },
   {
     "name": "otherRelationship",
-    "label": "SpecifyOther",
+    "label": "Specify",
     "type": "input"
   },
   {
