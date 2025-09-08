@@ -6,8 +6,6 @@
   "license": "AGPL",
   "workspaces": [
     "account-scoped",
-    "associate-client-vpn",
-    "disassociate-client-vpn",
     "facebookCallback",
     "facebookSignin",
     "instagramWebhook",

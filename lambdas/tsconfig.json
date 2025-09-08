@@ -6,8 +6,6 @@
     { "path": "packages/hrm-types" },
     { "path": "packages/hrm-form-definitions" },
     { "path": "account-scoped" },
-    { "path": "associate-client-vpn" },
-    { "path": "disassociate-client-vpn" },
     { "path": "facebookCallback" },
     { "path": "facebookSignin" },
     { "path": "instagramWebhook" },
