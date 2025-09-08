@@ -28,8 +28,8 @@ const playwrightConfig: PlaywrightTestConfig = {
     baseURL: getConfigValue('baseURL') as string,
     ignoreHTTPSErrors: inLambda ? true : false,
     permissions: ['microphone', 'clipboard-write', 'clipboard-read'],
-    screenshot: inLambda ? 'off' : 'only-on-failure',
-    video: inLambda ? 'off' : 'retry-with-video',
+    screenshot: 'only-on-failure',
+    video: inLambda ? 'retain-on-failure' : 'retry-with-video',
     launchOptions: inLambda
       ? {
           args: [
@@ -88,7 +88,7 @@ const playwrightConfig: PlaywrightTestConfig = {
   testDir: './tests',
   retries: inLambda ? 0 : 1,
   timeout: 60000,
-  reporter: [['junit', { outputFile: 'junit.xml' }]],
+  reporter: [['junit', { outputFile: inLambda ? '/tmp/test-results/junit.xml' : 'junit.xml' }]],
 };
 
 // Only /tmp is writable in a lambda

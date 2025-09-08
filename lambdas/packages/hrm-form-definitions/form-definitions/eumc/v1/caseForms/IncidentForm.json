@@ -1,371 +1,402 @@
 [
   {
-    "name":"dateIncident",
-    "label":"Date",
-    "type":"date-input",
-    "required":{
-      "value":true,
-      "message":"RequiredFieldError"
+    "name": "dateIncident",
+    "label": "Date",
+    "type": "date-input",
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
     }
   },
   {
-    "name":"duration",
-    "label":"Duration",
-    "type":"select",
-    "options":[
+    "name": "duration",
+    "label": "Duration",
+    "type": "select",
+    "options": [
       {
-        "value":"",
-        "label":""
+        "value": "Unknown",
+        "label": "Unknown"
       },
       {
-        "value":"Ongoing",
-        "label":"Ongoing"
+        "value": "Ongoing",
+        "label": "Ongoing"
       },
       {
-        "value":"Dates",
-        "label":"Date Range"
+        "value": "Dates",
+        "label": "Date Range"
       }
     ],
-    "required":{
-      "value":true,
-      "message":"RequiredFieldError"
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
     }
   },
   {
-    "name":"dateIncidentStart",
-    "label":"Start Date",
-    "type":"date-input"
+    "name": "dateIncidentStart",
+    "label": "Start Date",
+    "type": "date-input"
   },
   {
-    "name":"dateIncidentEnd",
-    "label":"End Date",
-    "type":"date-input"
+    "name": "dateIncidentEnd",
+    "label": "End Date",
+    "type": "date-input"
   },
   {
-    "name":"LocationwhereChildhasgonemissingfrom",
-    "label":"Location where child has gone missing from",
-    "type":"select",
-    "options":[
+    "name": "LocationwhereChildhasgonemissingfrom",
+    "label": "Location where child has gone missing from",
+    "type": "select",
+    "options": [
       {
-        "value":"",
-        "label":""
+        "value": "",
+        "label": ""
       },
       {
-        "value":"Unknown",
-        "label":"Unknown"
+        "value": "Unknown",
+        "label": "Unknown"
       },
       {
-        "value":"ParentalGuardianHousehold",
-        "label":"Parental/guardian household"
+        "value": "ParentalGuardianHousehold",
+        "label": "Parental/guardian household"
       },
       {
-        "value":"FamilyMember",
-        "label":"Family member"
+        "value": "FamilyMember",
+        "label": "Family member"
       },
       {
-        "value":"PeerHousehold",
-        "label":"Peer Household"
+        "value": "PeerHousehold",
+        "label": "Peer Household"
       },
       {
-        "value":"EducationalEstablishment",
-        "label":"Educational Establishment"
+        "value": "EducationalEstablishment",
+        "label": "Educational Establishment"
       },
       {
-        "value":"InstitutionalCareCenter",
-        "label":"Institutional care center"
+        "value": "InstitutionalCareCenter",
+        "label": "Institutional care center"
       },
       {
-        "value":"Online",
-        "label":"Online"
+        "value": "Online",
+        "label": "Online"
       },
       {
-        "value":"Public Place",
-        "label":"Public Place"
+        "value": "Public Place",
+        "label": "Public Place"
       },
       {
-        "value":"Other",
-        "label":"Other"
+        "value": "Other",
+        "label": "Other"
       }
     ],
-    "required":{
-      "value":true,
-      "message":"RequiredFieldError"
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
     }
   },
   {
-    "name":"reasonForMissing",
-    "label":"Reason for going missing",
-    "type":"textarea"
+    "name": "reasonForMissing",
+    "label": "Reason for going missing",
+    "type": "textarea"
   },
   {
-    "name":"statusCase",
-    "label":"Status of Case",
-    "type":"select",
-    "options":[
+    "name": "statusCase",
+    "label": "Status of Case",
+    "type": "select",
+    "options": [
       {
-        "value":"Unknown",
-        "label":"Unknown"
+        "value": "Unknown",
+        "label": "Unknown"
       },
       {
-        "value":"Ongoing",
-        "label":"Ongoing"
+        "value": "Ongoing",
+        "label": "Ongoing"
       },
       {
-        "value":"Resolved",
-        "label":"Resolved"
+        "value": "Resolved",
+        "label": "Resolved"
       }
     ],
-    "required":{
-      "value":true,
-      "message":"RequiredFieldError"
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
     }
   },
   {
-    "name":"incidentWitnessed",
-    "label":"Was the incident witnessed by anyone?",
-    "type":"select",
-    "options":[
+    "name": "incidentReportedtoPolice",
+    "label": "Has the incident been reported to the police?",
+    "type": "select",
+    "options": [
       {
-        "value":"Unknown",
-        "label":"Unknown"
+        "value": "Unknown",
+        "label": "Unknown"
       },
       {
-        "value":"EducationalSector",
-        "label":"Educational Sector"
+        "value": "no",
+        "label": "No"
       },
       {
-        "value":"lawEnforcement",
-        "label":"Law Enforcement"
-      },
-      {
-        "value":"familyMember",
-        "label":"Family Member"
-      },
-      {
-        "value":"institutionalCare",
-        "label":"Institutional Care"
-      },
-      {
-        "value":"peer",
-        "label":"Peer"
-      },
-      {
-        "value":"parents",
-        "label":"Parents/guardians"
-      },
-      {
-        "value":"SocialServices",
-        "label":"Social Services"
-      },
-      {
-        "value":"Stranger",
-        "label":"Stranger"
-      },
-      {
-        "value":"Other",
-        "label":"Other"
+        "value": "yes",
+        "label": "Yes"
       }
     ],
-    "required":{
-      "value":true,
-      "message":"RequiredFieldError"
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
     }
   },
   {
-    "name":"WasIncidentReportedtoAnyone",
-    "label":"Was the incident reported to anyone?",
-    "type":"select",
-    "options":[
+    "name": "incidentWitnessed",
+    "label": "Was the incident witnessed by anyone?",
+    "type": "select",
+    "options": [
       {
-        "value":"Unknown",
-        "label":"Unknown"
+        "value": "Unknown",
+        "label": "Unknown"
       },
       {
-        "value":"migrationAuthorities",
-        "label":"Migration Authorities"
+        "value": "no",
+        "label": "No"
       },
       {
-        "value":"nationalAuthorities",
-        "label":"National Authorities"
-      },
-      {
-        "value":"SocialServices",
-        "label":"Social Services"
-      },
-      {
-        "value":"healthInstitution",
-        "label":"Health Institution"
-      },
-      {
-        "value":"childHelpline",
-        "label":"Child Helpline"
-      },
-      {
-        "value":"other",
-        "label":"Other"
-      }
-    ],
-    "required":{
-      "value":true,
-      "message":"RequiredFieldError"
-    }
-  },
-  {
-    "name":"DisappearanceReportedPolice",
-    "label":"Disappearance reported to the police in requesting organisation’s country",
-    "type":"select",
-    "options":[
-      {
-        "value":"Unknown",
-        "label":"Unknown"
-      },
-      {
-        "value":"yes",
-        "label":"Yes"
-      },
-      {
-        "value":"no",
-        "label":"No"
-      },
-      {
-        "value":"na",
-        "label":"Not Applicable"
+        "value": "yes",
+        "label": "Yes"
       }
     ]
   },
   {
-    "name":"DossierForwardedToInterpol",
-    "label":"Dossier forwarded to Interpol by the police",
-    "type":"select",
-    "options":[
+    "name": "incidentWitnessedby",
+    "label": "If so,to whom?",
+    "type": "select",
+    "options": [
       {
-        "value":"Unknown",
-        "label":"Unknown"
+        "value": "Unknown",
+        "label": "Unknown"
       },
       {
-        "value":"yes",
-        "label":"Yes"
+        "value": "EducationalSector",
+        "label": "Educational Sector"
       },
       {
-        "value":"no",
-        "label":"No"
+        "value": "lawEnforcement",
+        "label": "Law Enforcement"
       },
       {
-        "value":"na",
-        "label":"Not Applicable"
+        "value": "familyMember",
+        "label": "Family Member"
+      },
+      {
+        "value": "institutionalCare",
+        "label": "Institutional Care"
+      },
+      {
+        "value": "peer",
+        "label": "Peer"
+      },
+      {
+        "value": "parents",
+        "label": "Parents/guardians"
+      },
+      {
+        "value": "SocialServices",
+        "label": "Social Services"
+      },
+      {
+        "value": "Stranger",
+        "label": "Stranger"
+      },
+      {
+        "value": "Other",
+        "label": "Other"
       }
     ]
   },
   {
-    "name":"SISalertActivated",
-    "label":"SIS alert activated",
-    "type":"select",
-    "options":[
+    "name": "WasIncidentReportedtoAnyone",
+    "label": "Was the incident reported to anyone?",
+    "type": "select",
+    "options": [
       {
-        "value":"Unknown",
-        "label":"Unknown"
+        "value": "Unknown",
+        "label": "Unknown"
       },
       {
-        "value":"yes",
-        "label":"Yes"
+        "value": "SocialServices",
+        "label": "Social Services"
       },
       {
-        "value":"no",
-        "label":"No"
+        "value": "childProtection",
+        "label": "Child Protection"
       },
       {
-        "value":"na",
-        "label":"Not Applicable"
+        "value": "other",
+        "label": "Other"
+      }
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "specify",
+    "label": "Specify",
+    "type": "input"
+  },
+  {
+    "name": "DisappearanceReportedPolice",
+    "label": "Disappearance reported to the police in requesting organisation's country",
+    "type": "select",
+    "options": [
+      {
+        "value": "Unknown",
+        "label": "Unknown"
+      },
+      {
+        "value": "yes",
+        "label": "Yes"
+      },
+      {
+        "value": "no",
+        "label": "No"
+      },
+      {
+        "value": "na",
+        "label": "Not Applicable"
       }
     ]
   },
   {
-    "name":"IsCaregiverAware?",
-    "label":"Is caregiver aware?",
-    "type":"select",
-    "options":[
+    "name": "DossierForwardedToInterpol",
+    "label": "Dossier forwarded to Interpol by the police",
+    "type": "select",
+    "options": [
       {
-        "value":"Unknown",
-        "label":"Unknown"
+        "value": "Unknown",
+        "label": "Unknown"
       },
       {
-        "value":"yes",
-        "label":"Yes"
+        "value": "yes",
+        "label": "Yes"
       },
       {
-        "value":"no",
-        "label":"No"
+        "value": "no",
+        "label": "No"
+      },
+      {
+        "value": "na",
+        "label": "Not Applicable"
+      }
+    ]
+  },
+  {
+    "name": "SISalertActivated",
+    "label": "SIS alert activated",
+    "type": "select",
+    "options": [
+      {
+        "value": "Unknown",
+        "label": "Unknown"
+      },
+      {
+        "value": "yes",
+        "label": "Yes"
+      },
+      {
+        "value": "no",
+        "label": "No"
+      },
+      {
+        "value": "na",
+        "label": "Not Applicable"
+      }
+    ]
+  },
+  {
+    "name": "IsCaregiverAware?",
+    "label": "Is caregiver aware?",
+    "type": "select",
+    "options": [
+      {
+        "value": "Unknown",
+        "label": "Unknown"
+      },
+      {
+        "value": "yes",
+        "label": "Yes"
+      },
+      {
+        "value": "no",
+        "label": "No"
       }
     ],
-    "required":{
-      "value":true,
-      "message":"RequiredFieldError"
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
     }
   },
   {
-    "name":"HasAbuseBeenReported?",
-    "label":"Has abuse been reported?",
-    "type":"select",
-    "options":[
+    "name": "HasAbuseBeenReported?",
+    "label": "Has abuse been reported?",
+    "type": "select",
+    "options": [
       {
-        "value":"Unknown",
-        "label":"Unknown"
+        "value": "Unknown",
+        "label": "Unknown"
       },
       {
-        "value":"yes",
-        "label":"Yes"
+        "value": "yes",
+        "label": "Yes"
       },
       {
-        "value":"no",
-        "label":"No"
+        "value": "no",
+        "label": "No"
       }
     ],
-    "required":{
-      "value":true,
-      "message":"RequiredFieldError"
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
     }
   },
   {
-    "name":"toWhomreported?",
-    "label":"If so, to whom?",
-    "type":"select",
-    "options":[
+    "name": "toWhomreported?",
+    "label": "If so, to whom?",
+    "type": "select",
+    "options": [
       {
-        "value":"Unknown",
-        "label":"Unknown"
+        "value": "Unknown",
+        "label": "Unknown"
       },
       {
-        "value":"lawEnforcement",
-        "label":"Law Enforcement"
+        "value": "lawEnforcement",
+        "label": "Law Enforcement"
       },
       {
-        "value":"healthSocialServices",
-        "label":"Health/Social Services"
+        "value": "healthSocialServices",
+        "label": "Health/Social Services"
       },
       {
-        "value":"institutionalChange",
-        "label":"Institutional Change"
+        "value": "institutionalChange",
+        "label": "Institutional Change"
       },
       {
-        "value":"familyMember",
-        "label":"Family Member"
+        "value": "familyMember",
+        "label": "Family Member"
       },
       {
-        "value":"peer",
-        "label":"Peer"
+        "value": "peer",
+        "label": "Peer"
       },
       {
-        "value":"stranger",
-        "label":"Stranger"
+        "value": "stranger",
+        "label": "Stranger"
       },
       {
-        "value":"other",
-        "label":"Other"
+        "value": "other",
+        "label": "Other"
       }
     ],
-    "required":{
-      "value":true,
-      "message":"RequiredFieldError"
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
     }
   }
 ]

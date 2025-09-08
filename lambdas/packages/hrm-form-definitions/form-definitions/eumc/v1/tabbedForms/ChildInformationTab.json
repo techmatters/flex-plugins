@@ -1,348 +1,315 @@
 [
   {
-    "name":"firstName",
-    "label":"First Name",
-    "type":"input",
-    "required":{
-      "value":true,
-      "message":"RequiredFieldError"
+    "name": "firstName",
+    "label": "First Name",
+    "type": "input",
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
     }
   },
   {
-    "name":"lastName",
-    "label":"Last Name",
-    "type":"input",
-    "required":{
-      "value":true,
-      "message":"RequiredFieldError"
+    "name": "lastName",
+    "label": "Last Name",
+    "type": "input",
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
     }
   },
   {
-    "name":"numberofChildrenInvolved",
-    "label":"Number of Children Involved",
-    "type":"select",
-    "options":[
+    "name": "numberofChildrenInvolved",
+    "label": "Number of Children Involved",
+    "type": "select",
+    "options": [
       {
-        "value":"Unknown",
-        "label":"Unknown"
+        "value": "Unknown",
+        "label": "Unknown"
       },
       {
-        "value":"0",
-        "label":"0"
+        "value": "0",
+        "label": "0"
       },
       {
-        "value":"1",
-        "label":"1"
+        "value": "1",
+        "label": "1"
       },
       {
-        "value":"2",
-        "label":"2"
+        "value": "2",
+        "label": "2"
       },
       {
-        "value":"3",
-        "label":"3"
+        "value": "3",
+        "label": "3"
       },
       {
-        "value":"4",
-        "label":"4"
+        "value": "4",
+        "label": "4"
       },
       {
-        "value":"5",
-        "label":"5"
+        "value": "5",
+        "label": "5"
       },
       {
-        "value":"6",
-        "label":"6"
+        "value": "6",
+        "label": "6"
       },
       {
-        "value":"7",
-        "label":"7"
+        "value": "7",
+        "label": "7"
       },
       {
-        "value":"8",
-        "label":"8"
+        "value": "8",
+        "label": "8"
       },
       {
-        "value":"9",
-        "label":"9"
+        "value": "9",
+        "label": "9"
       },
       {
-        "value":"10",
-        "label":"10"
+        "value": "10",
+        "label": "10"
       },
       {
-        "value":"morethanTen",
-        "label":"More than 10"
+        "value": "morethanTen",
+        "label": "More than 10"
       },
       {
-        "value":"PersonalisedNumber",
-        "label":"Personalised Number"
+        "value": "PersonalisedNumber",
+        "label": "Personalised Number"
       }
     ],
-    "required":{
-      "value":true,
-      "message":"RequiredFieldError"
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
     }
   },
   {
-    "name":"personalisedNumber",
-    "label":"Personalised Number",
-    "type":"input"
+    "name": "personalisedNumber",
+    "label": "Personalised Number",
+    "type": "input"
   },
   {
-    "name":"relationshipToOtherChild",
-    "label":"Relationship to other Child",
-    "type":"select",
-    "options":[
+    "name": "relationshipToOtherChild",
+    "label": "Relationship to other Child",
+    "type": "select",
+    "options": [
       {
-        "value":"Unknown",
-        "label":"Unknown"
+        "value": "Unknown",
+        "label": "Unknown"
       },
       {
-        "value":"sibling",
-        "label":"Sibling"
+        "value": "sibling",
+        "label": "Sibling"
       },
       {
-        "value":"peer",
-        "label":"Peer"
+        "value": "peer",
+        "label": "Peer"
       },
       {
-        "value":"stranger",
-        "label":"Stranger"
+        "value": "stranger",
+        "label": "Stranger"
       },
       {
-        "value":"familyMember",
-        "label":"Family Member"
+        "value": "familyMember",
+        "label": "Family Member"
       },
       {
-        "value":"other",
-        "label":"Other"
+        "value": "other",
+        "label": "Other"
       }
     ],
-    "required":{
-      "value":true,
-      "message":"RequiredFieldError"
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
     }
   },
   {
-    "name":"otherrelationship",
-    "label":"Specify other",
-    "type":"input"
+    "name": "otherrelationship",
+    "label": "Specify other",
+    "type": "input"
   },
   {
-    "name":"dateOfBirth",
-    "label":"Date of Birth",
-    "type":"date-input",
-    "required":{
-      "value":true,
-      "message":"RequiredFieldError"
+    "name": "dateOfBirth",
+    "label": "Date of Birth",
+    "type": "date-input"
+  },
+  {
+    "name": "placeOfBirth",
+    "label": "Place of Birth",
+    "type": "input"
+  },
+  {
+    "name": "nationality",
+    "label": "Nationality(ies)",
+    "type": "input"
+  },
+  {
+    "name": "countryOfResidence",
+    "label": "Country of Current Residence",
+    "type": "input"
+  },
+  {
+    "name": "languagesSpoken",
+    "label": "Languages Spoken",
+    "type": "input",
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
     }
   },
   {
-    "name":"placeOfBirth",
-    "label":"Place of Birth",
-    "type":"input",
-    "required":{
-      "value":true,
-      "message":"RequiredFieldError"
+    "name": "description",
+    "label": "Description (height, weight, eye colour, hair colour, particular birthmarks/signs ect)",
+    "type": "textarea",
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
     }
   },
   {
-    "name":"nationality",
-    "label":"Nationality(ies)",
-    "type":"input",
-    "required":{
-      "value":true,
-      "message":"RequiredFieldError"
-    }
-  },
-  {
-    "name":"countryOfResidence",
-    "label":"Country of Current Residence",
-    "type":"input",
-    "required":{
-      "value":true,
-      "message":"RequiredFieldError"
-    }
-  },
-  {
-    "name":"languagesSpoken",
-    "label":"Languages Spoken",
-    "type":"input",
-    "required":{
-      "value":true,
-      "message":"RequiredFieldError"
-    }
-  },
-  {
-    "name":"description",
-    "label":"Description (height, weight, eye colour, hair colour, particular birthmarks/signs ect)",
-    "type":"textarea",
-    "required":{
-      "value":true,
-      "message":"RequiredFieldError"
-    }
-  },
-  {
-    "name":"livingSituation",
-    "label":"Living Situation",
-    "type":"select",
-    "options":[
+    "name": "livingSituation",
+    "label": "Living Situation",
+    "type": "select",
+    "options": [
       {
-        "value":"Unknown",
-        "label":""
+        "value": "Unknown",
+        "label": "Unknown"
       },
       {
-        "value":"Alternative care",
-        "label":"Alternative care"
+        "value": "Alternative care",
+        "label": "Alternative care"
       },
       {
-        "value":"Group residential facility",
-        "label":"Group residential facility"
+        "value": "Group residential facility",
+        "label": "Group residential facility"
       },
       {
-        "value":"Homeless or marginally housed",
-        "label":"Homeless or marginally housed"
+        "value": "Homeless or marginally housed",
+        "label": "Homeless or marginally housed"
       },
       {
-        "value":"In detention",
-        "label":"In detention"
+        "value": "In detention",
+        "label": "In detention"
       },
       {
-        "value":"Living independently",
-        "label":"Living independently"
+        "value": "Living independently",
+        "label": "Living independently"
       },
       {
-        "value":"With parent(s)",
-        "label":"With parent(s)"
+        "value": "With parent(s)",
+        "label": "With parent(s)"
       },
       {
-        "value":"With relatives",
-        "label":"With relatives"
+        "value": "With relatives",
+        "label": "With relatives"
       },
       {
-        "value":"Other",
-        "label":"Other"
+        "value": "receptionAccom",
+        "label": "Reception Accommodation"
+      },
+      {
+        "value": "Other",
+        "label": "Other"
       }
     ]
   },
   {
-    "name":"citizenshipStatus",
-    "label":"Citizenship Status",
-    "type":"select",
-    "options":[
-      {
-        "value":"Unknown",
-        "label":"Unknown"
-      },
-      {
-        "value":"asylumSeeker",
-        "label":"Asylum Seeker"
-      },
-      {
-        "value":"migrantChildOntheMove",
-        "label":"Migrant Child on the Move"
-      },
-      {
-        "value":"refugee",
-        "label":"Refugee"
-      },
-      {
-        "value":"other",
-        "label":"Other"
-      }
-    ]
+    "name": "specify",
+    "label": "Specify",
+    "type": "input"
   },
   {
-    "name":"keyVulnerabilities",
-    "label":"Key Vulnerabilities",
-    "type":"select",
-    "options":[
+    "name": "keyVulnerabilitiesmain",
+    "label": "Key Vulnerabilities (Main)",
+    "type": "select",
+    "options": [
       {
-        "value":"Unknown",
-        "label":"Unknown"
+        "value": "Unknown",
+        "label": "Unknown"
       },
       {
-        "value":"none",
-        "label":"None"
+        "value": "None",
+        "label": "None"
       },
       {
-        "value":"disability",
-        "label":"Disability"
+        "value": "Abuse",
+        "label": "Abuse"
       },
       {
-        "value":"mentalHealthDifficulties",
-        "label":"Mental Health Difficulties"
+        "value": "Disability",
+        "label": "Disability"
       },
       {
-        "value":"undocumentedAsylumSeekingRefugeeChildren",
-        "label":"Undocumented/asylum seeking/refugee children"
+        "value": "LGBTQIA",
+        "label": "LGBTQIA"
       },
       {
-        "value":"victimsOfAbuseTrafficking",
-        "label":"Victims of abuse,trafficking,etc."
+        "value": "Race & Ethnicity",
+        "label": "Race & Ethnicity"
       },
       {
-        "value":"other",
-        "label":"Other"
+        "value": "Immigration Status",
+        "label": "Immigration Status"
+      },
+      {
+        "value": "other",
+        "label": "Other"
       }
     ],
-    "required":{
-      "value":true,
-      "message":"RequiredFieldError"
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
     }
   },
   {
-    "name":"childNote",
-    "label":"Notes (e.g passport,nickname)",
-    "type":"textarea",
-    "required":{
-      "value":true,
-      "message":"RequiredFieldError"
-    }
+    "name": "specify",
+    "label": "Specify",
+    "type": "input"
   },
   {
-    "name":"mother",
-    "label":"Mother(s) (not applicable)",
-    "type":"checkbox"
+    "name": "childNote",
+    "label": "Notes (e.g passport,nickname)",
+    "type": "textarea"
   },
   {
-    "name":"firstNameMother",
-    "label":"Mothers First Name",
-    "type":"input"
+    "name": "mother",
+    "label": "Mother(s) (not applicable)",
+    "type": "checkbox"
   },
   {
-    "name":"lastNameMother",
-    "label":"Mothers Last Name",
-    "type":"input"
+    "name": "firstNameMother",
+    "label": "Mothers First Name",
+    "type": "input"
   },
   {
-    "name":"dateOfBirthMother",
-    "label":"Date of Birth (Mother)",
-    "type":"date-input"
+    "name": "lastNameMother",
+    "label": "Mothers Last Name",
+    "type": "input"
   },
   {
-    "name":"father",
-    "label":"Father(s) (not applicable)",
-    "type":"checkbox"
+    "name": "dateOfBirthMother",
+    "label": "Date of Birth (Mother)",
+    "type": "date-input"
   },
   {
-    "name":"firstNameMFather",
-    "label":"Fathers First Name",
-    "type":"input"
+    "name": "father",
+    "label": "Father(s) (not applicable)",
+    "type": "checkbox"
   },
   {
-    "name":"lastNameFather",
-    "label":"Fathers Last Name",
-    "type":"input"
+    "name": "firstNameMFather",
+    "label": "Fathers First Name",
+    "type": "input"
   },
   {
-    "name":"phone1",
-    "label":"Phone #1",
-    "type":"input",
-    "required":{
-      "value":true,
-      "message":"RequiredFieldError"
-    }
+    "name": "lastNameFather",
+    "label": "Fathers Last Name",
+    "type": "input"
+  },
+  {
+    "name": "phone1",
+    "label": "Phone #1",
+    "type": "input"
   }
 ]
