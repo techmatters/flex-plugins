@@ -32,7 +32,7 @@ export type CaseSectionForm<T = Record<string, string>> = {
 
 export const caseList = (page: Page) => {
   const caseListPage = page.locator('div.Twilio-ViewCollection');
-  console.log('Case List table is visible.');
+  console.debug('Case List table is visible.');
 
   const selectors = {
     caseListRowIdButton: caseListPage.locator(

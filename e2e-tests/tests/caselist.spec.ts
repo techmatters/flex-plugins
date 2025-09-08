@@ -37,9 +37,11 @@ test.describe.serial('Open and Edit a Case in Case List page', () => {
     );
 
     // Open Case List
-    await pluginPage.goto('/case-list', { waitUntil: 'load', timeout: 20000 });
-    await pluginPage.waitForSelector('div.Twilio-ViewCollection', { timeout: 20000 });
-    console.log('Case List table is visible.');
+    await pluginPage.goto('/case-list', { waitUntil: 'networkidle', timeout: 20000 });
+    await pluginPage.waitForSelector('div[data-testid="CaseList-Filters-Panel"]', {
+      timeout: 20000,
+    });
+    console.debug('Case List table is visible.');
   });
 
   test.afterAll(async () => {
@@ -47,22 +49,22 @@ test.describe.serial('Open and Edit a Case in Case List page', () => {
   });
 
   test('Filter Cases and Update a Case', async () => {
-    console.log('Open Case List page');
+    console.debug('Open Case List page');
     let page = caseList(pluginPage);
 
     // Wait for the case list to be fully loaded before applying filters
     await pluginPage.waitForSelector('tr[data-testid="CaseList-TableRow"]', { timeout: 30000 });
-    console.log('Case list rows are visible, proceeding with filtering');
+    console.debug('Case list rows are visible, proceeding with filtering');
 
     try {
       await page.filterCases('status', 'Open');
-      console.log('Successfully filtered by Open status');
+      console.debug('Successfully filtered by Open status');
 
       // Add a short delay to ensure the first filter is fully applied
       await pluginPage.waitForTimeout(1000);
 
       await page.filterCases('counselor', 'Aselo Alerts');
-      console.log('Successfully filtered by counselor Aselo Alerts');
+      console.debug('Successfully filtered by counselor Aselo Alerts');
     } catch (error) {
       console.error('Error during filtering:', error);
       throw error;
