@@ -168,7 +168,7 @@ const preEngagementConfig: PreEngagementFormDefinition = {
     },
     {
       type: 'select',
-      name: 'consentForResearhevaluation',
+      name: 'consentForResearchEvaluation',
       label:
         'I consent to being contacted for research or evaluation purposes.',
       defaultValue: '',
@@ -186,6 +186,10 @@ const preEngagementConfig: PreEngagementFormDefinition = {
           label: 'No',
         },
       ],
+      required: {
+        value: true,
+        message: "Sorry, you need to select one of the options",
+      },
     },
     {
       type: 'select',

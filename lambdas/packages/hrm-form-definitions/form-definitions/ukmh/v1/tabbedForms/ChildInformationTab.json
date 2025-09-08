@@ -1447,7 +1447,7 @@
     "isPII": false
   },
   {
-    "name": "consentForResearchevaluation",
+    "name": "consentForResearchEvaluation",
     "label": "Consent for Research/Evaluation",
     "type": "select",
     "options": [
