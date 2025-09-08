@@ -275,7 +275,7 @@
   {
     "name": "mother",
     "label": "Mother(s) (not applicable)",
-    "type": "checkbox"
+    "type": "mixed-checkbox"
   },
   {
     "name": "firstNameMother",
@@ -298,13 +298,23 @@
     "type": "checkbox"
   },
   {
-    "name": "firstNameMFather",
+    "name": "firstNameFather",
     "label": "Fathers First Name",
     "type": "input"
   },
   {
     "name": "lastNameFather",
     "label": "Fathers Last Name",
+    "type": "input"
+  },
+  {
+    "name": "guardian",
+    "label": "Guardian",
+    "type": "checkbox"
+  },
+  {
+    "name": "guardianspecify",
+    "label": "Guardian Name",
     "type": "input"
   },
   {
