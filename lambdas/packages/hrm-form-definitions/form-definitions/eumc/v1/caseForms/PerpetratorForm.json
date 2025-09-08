@@ -603,7 +603,13 @@
   {
     "name": "nationality",
     "label": "Nationality(ies)",
-    "type": "input"
+    "type": "select",
+    "defaultOption": {
+      "value": "unknown",
+      "label": "Unknown"
+    },
+    "optionsReferenceKey": "nationalityOptions",
+    "isPII": false
   },
   {
     "name": "language",
