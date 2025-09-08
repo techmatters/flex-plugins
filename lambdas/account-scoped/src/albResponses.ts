@@ -16,7 +16,7 @@
 
 import { ErrorResult } from './Result';
 import { HttpError } from './httpTypes';
-import { ALBEvent, ALBResult } from 'aws-lambda';
+import type { ALBEvent, ALBResult } from 'aws-lambda';
 
 export const CORS_HEADERS = {
   'Access-Control-Allow-Origin': '*',
