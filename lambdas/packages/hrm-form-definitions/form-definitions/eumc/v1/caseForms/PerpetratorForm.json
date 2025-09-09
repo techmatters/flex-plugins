@@ -598,12 +598,18 @@
   {
     "name": "country",
     "label": "Country",
-    "type": "input"
+    "type": "select",
+    "defaultOption": {
+      "value": "unknown",
+      "label": "Unknown"
+    },
+    "optionsReferenceKey": "countryOptions",
+    "isPII": false
   },
   {
     "name": "nationality",
     "label": "Nationality(ies)",
-    "type": "select",
+    "type": "listbox-multiselect",
     "defaultOption": {
       "value": "unknown",
       "label": "Unknown"
@@ -614,7 +620,13 @@
   {
     "name": "language",
     "label": "Language",
-    "type": "input"
+    "type": "listbox-multiselect",
+    "defaultOption": {
+      "value": "unknown",
+      "label": "Unknown"
+    },
+    "optionsReferenceKey": "languageOptions",
+    "isPII": false
   },
   {
     "name": "description",

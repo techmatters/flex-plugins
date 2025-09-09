@@ -558,22 +558,24 @@
   {
     "name": "nationality",
     "label": "Nationality(ies)",
-    "type": "input"
+    "type": "listbox-multiselect",
+    "defaultOption": {
+      "value": "unknown",
+      "label": "Unknown"
+    },
+    "optionsReferenceKey": "nationalityOptions",
+    "isPII": false
   },
   {
     "name": "language",
     "label": "Language",
-    "type": "select",
-    "options": [
-      {
-        "value": "Unknown",
-        "label": ""
-      },
-      {
-        "value": "english",
-        "label": "English"
-      }
-    ]
+    "type": "listbox-multiselect",
+    "defaultOption": {
+      "value": "unknown",
+      "label": "Unknown"
+    },
+    "optionsReferenceKey": "languageOptions",
+    "isPII": false
   },
   {
     "name": "abductor",
