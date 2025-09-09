@@ -135,8 +135,8 @@ jobs:
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v2
 
-      - name: Login to Amazon ECR
-        id: login-ecr
+      - name: Read EECR repo name
+        id: ecr-name
         uses: aws-actions/amazon-ecr-login@v2
       - name: Read ECR url from SSM
         uses: "marvinpinto/action-inject-ssm-secrets@latest"
