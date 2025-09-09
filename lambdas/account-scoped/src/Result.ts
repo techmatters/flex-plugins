@@ -95,7 +95,7 @@ export const ensureRejection = <TError extends ErrorResult<any>, TData>(
       };
       return await inputWrapper(errorUnwrapper);
     } catch (e) {
-      if (e instanceof ResultError<TError>) {
+      if (e instanceof ResultError) {
         return e.errorResult;
       }
       throw e;

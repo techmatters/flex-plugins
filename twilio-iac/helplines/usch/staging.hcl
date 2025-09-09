@@ -66,7 +66,7 @@ locals {
       webchat : {
         channel_type     = "web"
         contact_identity = ""
-        templatefile     = "/app/twilio-iac/helplines/usch/templates/studio-flows/webchat-no-chatbot.tftpl"
+        templatefile     = "/app/twilio-iac/helplines/usch/templates/studio-flows/webchat-no-lex-sd.tftpl"
         channel_flow_vars = {
           courage_first_url = "https://assets-staging.tl.techmatters.org/webchat/usch/usch_courage_first.html"
           childhelp_url     = "https://assets-staging.tl.techmatters.org/webchat/usch/usch_childhelp_hotline.html"
@@ -76,7 +76,7 @@ locals {
       voice_childhelp : {
         channel_type     = "voice"
         contact_identity = ""
-        templatefile     = "/app/twilio-iac/helplines/usch/templates/studio-flows/voice-childhelp.tftpl"
+        templatefile     = "/app/twilio-iac/helplines/usch/templates/studio-flows/voice-childhelp-sd.tftpl"
         channel_flow_vars = {
         }
         chatbot_unique_names = []
@@ -84,7 +84,7 @@ locals {
       voice_courage_first : {
         channel_type     = "voice"
         contact_identity = ""
-        templatefile     = "/app/twilio-iac/helplines/usch/templates/studio-flows/voice-courage-first-operating-hours.tftpl"
+        templatefile     = "/app/twilio-iac/helplines/usch/templates/studio-flows/voice-courage-first-op-hours-sd.tftpl"
         channel_flow_vars = {
         }
         chatbot_unique_names = []
@@ -93,7 +93,7 @@ locals {
         messaging_mode   = "conversations"
         channel_type     = "sms"
         contact_identity = "+14809999197"
-        templatefile     = "/app/twilio-iac/helplines/usch/templates/studio-flows/sms-childhelp-chatbot.tftpl"
+        templatefile     = "/app/twilio-iac/helplines/usch/templates/studio-flows/sms-childhelp-lex-sd.tftpl"
         channel_flow_vars = {
 
         }
@@ -103,12 +103,24 @@ locals {
         messaging_mode   = "conversations"
         channel_type     = "sms"
         contact_identity = "+16066032348"
-        templatefile     = "/app/twilio-iac/helplines/usch/templates/studio-flows/sms-courage-first-chatbot.tftpl"
+        templatefile     = "/app/twilio-iac/helplines/usch/templates/studio-flows/sms-courage-first-lex-sd.tftpl"
         channel_flow_vars = {
         }
         chatbot_unique_names = []
       }
     }
     get_profile_flags_for_identifier_base_url = "https://hrm-staging.tl.techmatters.org/lambda/twilio/account-scoped"
-  }
+    #System Down Configuration
+    system_down_templatefile = "/app/twilio-iac/helplines/templates/studio-flows/system-down.tftpl"
+    enable_system_down       = true
+    system_down_flow_vars = {
+      is_system_down                   = "false"
+      message                          = "We're currently experiencing technical issues, and your message might not be received. If this is an emergency please contact 911 or 988. We're working to resolve the problem and will be back online shortly. We apologize for the inconvenience."
+      voice_message                    = "We're currently experiencing technical issues, and your call might not be received. If this is an emergency please contact 911 or 988. We're working to resolve the problem and will be back online shortly. We apologize for the inconvenience."
+      send_studio_message_function_sid = "ZHda5f23152bb1a843c303049674007b87"
+      call_action                      = "message"
+      forward_number                   = "+123"
+      recording_url                    = "https://<place_holder>.mp3"
+    }
+ }
 }

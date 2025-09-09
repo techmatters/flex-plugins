@@ -14,5 +14,11 @@
     "transitions": [
       "open"
     ]
+  },
+  "archived": {
+    "value": "archived",
+    "label": "Archived",
+    "color": "orange",
+    "transitions": ["open"] 
   }
 }
