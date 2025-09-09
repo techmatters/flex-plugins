@@ -153,24 +153,12 @@
   {
     "name": "countryOfResidence",
     "label": "Country of Current Residence",
-    "type": "select",
-    "defaultOption": {
-      "value": "unknown",
-      "label": "Unknown"
-    },
-    "optionsReferenceKey": "countryOptions",
-    "isPII": false
+    "type": "input"
   },
   {
     "name": "languagesSpoken",
     "label": "Languages Spoken",
-    "type": "listbox-multiselect",
-    "defaultOption": {
-      "value": "unknown",
-      "label": "Unknown"
-    },
-    "optionsReferenceKey": "languageOptions",
-    "isPII": false
+    "type": "input"
   },
   {
     "name": "description",
