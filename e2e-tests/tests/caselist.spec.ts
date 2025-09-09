@@ -41,7 +41,7 @@ test.describe.serial('Open and Edit a Case in Case List page', () => {
     await pluginPage.waitForSelector('div[data-testid="CaseList-Filters-Panel"]', {
       timeout: 20000,
     });
-    console.debug('Case List table is visible.');
+    console.debug('Case List filter panel is visible.');
   });
 
   test.afterAll(async () => {
