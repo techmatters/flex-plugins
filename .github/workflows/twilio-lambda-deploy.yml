@@ -94,26 +94,12 @@ jobs:
         run: |
           # output to logs
           # Load lambda specific region mapping (if any)
-          if [ -f "./.github/workflows/config/lambda-specific-region-map.json" ]; then
-            LAMBDA_REGIONS=$(jq -c --arg lambda "${{inputs.lambda_path}}" '.[$lambda] // []' ./.github/workflows/config/lambda-specific-region-map.json)
-          else
-            LAMBDA_REGIONS="[]"
-          fi
-          echo "Lambda specific regions: $LAMBDA_REGIONS"
-          
-          # Load default environment region mapping
-          ENV_REGIONS=$(jq -c --arg env "${{ inputs.environment }}" '[.[$env][] | {region: .}]' ./.github/workflows/config/environment-region-map.json)
-          
-          # If lambda has specific regions defined, use those; otherwise use environment regions
-          if [ "$LAMBDA_REGIONS" != "[]" ]; then
-            matrix_json=$(jq -c '[.[] | {region: .}]' <<< "$LAMBDA_REGIONS")
-          else
-            matrix_json=$(jq -c --arg env "${{ inputs.environment }}" '[.[$env][] | {region: .}]' ./.github/workflows/config/environment-region-map.json)
-          fi
-          
+          LAMBDA_REGIONS=$(jq -c --arg lambda "${{inputs.lambda_path}}" --arg environment "${{inputs.environment}}" '.[$lambda][$environment] // []' ./.github/workflows/config/lambda-environment-region-map.json)
+          matrix_json=$(jq -c '[.[] | {region: .}]' <<< "$LAMBDA_REGIONS")
           echo "matrix_json=$matrix_json" >> $GITHUB_OUTPUT
           echo "matrix_json: $matrix_json"
   deploy_lambdas:
+    if: ${{ needs.determine_deployments.outputs.matrix_json != '[]' }}
     name: Deploy to Amazon ECS
     runs-on: ubuntu-latest
     needs: determine_deployments
