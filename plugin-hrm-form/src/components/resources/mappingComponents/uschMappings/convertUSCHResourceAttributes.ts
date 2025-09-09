@@ -15,7 +15,7 @@
  */
 
 import { UschUiResource, Language } from './types';
-import { AttributeData, Attributes } from '../../../../services/ResourceService';
+import { Attributes } from '../../../../services/ResourceService';
 import { getAttributeData, getAttributeDataFromList, getAttributeValue, toCsv } from '../extractors';
 
 const extractAddress = (attributes: Attributes, language: Language) => {
@@ -46,7 +46,7 @@ const extractCoverage = (coverage: Attributes): string => {
       if (!Array.isArray(coverageItems)) {
         return [];
       }
-      return coverageItems.map(ci => ci?.value);
+      return coverageItems.map(ci => ci?.value?.toString().trim());
     })
     .filter(ci => ci)
     .join('\n');
@@ -68,7 +68,7 @@ const extractPhoneNumbers = (attributes: Attributes, language: Language) => {
 
       return {
         number: number.value.toString(),
-        name: name?.value.toString() || type,
+        name: name?.value?.toString().trim() || type,
         description: description?.value.toString(),
       };
     })
@@ -78,7 +78,7 @@ const extractPhoneNumbers = (attributes: Attributes, language: Language) => {
 const extractCategories = (attributes: Attributes, language: Language) => {
   return Object.values(attributes.categories || {})
     .map(c => {
-      return getAttributeDataFromList(c, language).value?.toString();
+      return getAttributeDataFromList(c, language).value?.toString().trim();
     })
     .filter(Boolean);
 };

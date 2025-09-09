@@ -18,7 +18,6 @@ import React from 'react';
 import { Template } from '@twilio/flex-ui';
 
 import type { ReferrableResource } from '../../../../services/ResourceService';
-// import { convertKHPResourceAttributes } from './convertKHPResourceAttributes';
 import { Row } from '../../../../styles';
 import {
   ResourceAttributesColumn,
@@ -28,14 +27,10 @@ import {
 } from '../../styles';
 import ResourceAttribute from '../ResourceAttribute';
 import ResourceIdCopyButton from '../../ResourceIdCopyButton';
-import ResourceAttributeWithPrivacy from '../ResourceAttributeWithPrivacy';
-import useFeatureFlags from '../../../../hooks/useFeatureFlags';
 import { convertUSCHResourceAttributes } from './convertUSCHResourceAttributes';
 
 const ResourceAttributes: React.FC<{ resource: ReferrableResource }> = ({ resource }) => {
   const resourceAttributes = convertUSCHResourceAttributes(resource.attributes, 'en');
-  console.log('>>>>>>>', resourceAttributes);
-
   return (
     <>
       {resourceAttributes.alternateName && (
