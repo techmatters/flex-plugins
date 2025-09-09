@@ -135,13 +135,10 @@ jobs:
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v2
 
-      - name: Read ECR repo url
-        id: ecr-url
-        uses: aws-actions/amazon-ecr-login@v2
       - name: Read ECR url from SSM
         uses: "marvinpinto/action-inject-ssm-secrets@latest"
         with:
-          ssm_parameter: /global/lambda/${{ matrix.lambda_path }}/ecr_url
+          ssm_parameter: /global/lambda/${{ matrix.lambda_path }}/ecr-url
           env_variable_name: ECR_URL
       - name: Tag Image with version
         run: |
