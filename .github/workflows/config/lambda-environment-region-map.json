@@ -1,5 +1,5 @@
 {
-
+  "account-scoped": { "development": ["us-east-1"], "staging": ["us-east-1", "eu-west-1"], "production": ["us-east-1", "eu-west-1", "ca-central-1"] },
   "facebookCallback": { "development": ["us-east-1"], "staging": [], "production": ["us-east-1"] },
   "facebookSignin": { "development": ["us-east-1"], "staging": [], "production": ["us-east-1"] },
   "instagramWebhook": { "development": ["us-east-1"], "staging": [], "production": ["us-east-1"] },
