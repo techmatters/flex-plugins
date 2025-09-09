@@ -126,7 +126,7 @@
   },
   {
     "name": "otherrelationship",
-    "label": "Specify other",
+    "label": "Specify",
     "type": "input"
   },
   {
@@ -142,21 +142,35 @@
   {
     "name": "nationality",
     "label": "Nationality(ies)",
-    "type": "input"
+    "type": "listbox-multiselect",
+    "defaultOption": {
+      "value": "unknown",
+      "label": "Unknown"
+    },
+    "optionsReferenceKey": "nationalityOptions",
+    "isPII": false
   },
   {
     "name": "countryOfResidence",
     "label": "Country of Current Residence",
-    "type": "input"
+    "type": "select",
+    "defaultOption": {
+      "value": "unknown",
+      "label": "Unknown"
+    },
+    "optionsReferenceKey": "countryOptions",
+    "isPII": false
   },
   {
     "name": "languagesSpoken",
     "label": "Languages Spoken",
-    "type": "input",
-    "required": {
-      "value": true,
-      "message": "RequiredFieldError"
-    }
+    "type": "listbox-multiselect",
+    "defaultOption": {
+      "value": "unknown",
+      "label": "Unknown"
+    },
+    "optionsReferenceKey": "languageOptions",
+    "isPII": false
   },
   {
     "name": "description",

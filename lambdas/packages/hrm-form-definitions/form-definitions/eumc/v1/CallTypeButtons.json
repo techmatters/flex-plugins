@@ -10,11 +10,5 @@
       "label": "Someone calling about a child",
       "type": "button",
       "category": "data"
-  },
-  {
-      "name": "abusive",
-      "label": "Abusive",
-      "type": "button",
-      "category": "non-data"
   }
 ]
