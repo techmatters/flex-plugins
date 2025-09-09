@@ -30,8 +30,6 @@ import { convertUSCHResourceAttributes } from './convertUSCHResourceAttributes';
 const ResourcePreview: React.FC<{ resource: ReferrableResource }> = ({ resource }) => {
   const resourceAttributes = convertUSCHResourceAttributes(resource.attributes, 'en');
 
-  console.log('>>>>>>>', resourceAttributes);
-
   return (
     <PreviewRow>
       <ResourceAttributesColumn style={{ paddingLeft: 0, marginLeft: 0, alignSelf: 'baseline' }}>

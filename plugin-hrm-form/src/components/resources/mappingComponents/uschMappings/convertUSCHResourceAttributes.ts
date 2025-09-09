@@ -36,7 +36,6 @@ const extractAddress = (attributes: Attributes, language: Language) => {
 };
 
 const extractCoverage = (coverage: Attributes): string => {
-  console.log('>>>>>> extractCoverage')
   const coverageList = Object.values(coverage ?? {});
   /*
    * Each item in the coverage object is an array of coverage items.
@@ -59,7 +58,6 @@ const extractDescriptionInfo = (description, language: Language) => {
 };
 
 const extractPhoneNumbers = (attributes: Attributes, language: Language) => {
-  console.log('>>>>>> extractPhoneNumbers')
   return Object.entries(attributes.phone || {})
     .map(([type, p]) => {
       const name = getAttributeDataFromList(p.name, language);
@@ -78,7 +76,6 @@ const extractPhoneNumbers = (attributes: Attributes, language: Language) => {
 };
 
 const extractCategories = (attributes: Attributes, language: Language) => {
-  console.log('>>>>>> extractCategories')
   return Object.values(attributes.categories || {})
     .map(c => {
       return getAttributeDataFromList(c, language).value?.toString();
