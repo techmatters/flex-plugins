@@ -19,6 +19,8 @@ import type { ReferrableResource } from '../../../services/ResourceService';
 import { getHrmConfig } from '../../../hrmConfig';
 import KHPResourcePreviewAttributes from './khpMappings/ResourcePreviewAttributes';
 import KHPResourceViewAttributes from './khpMappings/ResourceViewAttributes';
+import USCHResourcePreviewAttributes from './uschMappings/ResourcePreviewAttributes';
+import USCHResourceViewAttributes from './uschMappings/ResourceViewAttributes';
 
 type MappingComponents = {
   ResourcePreviewAttributes: React.FC<{
@@ -34,15 +36,22 @@ const khpMappingComponents: MappingComponents = {
   ResourceViewAttributes: KHPResourceViewAttributes,
 };
 
+const uschMappingComponents: MappingComponents = {
+  ResourcePreviewAttributes: USCHResourcePreviewAttributes,
+  ResourceViewAttributes: USCHResourceViewAttributes,
+};
+
 const getMappingComponents = (): MappingComponents => {
   const { helplineCode } = getHrmConfig();
   switch (helplineCode.toUpperCase()) {
     case 'E2E':
-    case 'AS':
     case 'CA': {
       return khpMappingComponents;
     }
-    case 'USCH':
+    case 'AS':
+    case 'USCH': {
+      return uschMappingComponents;
+    }
     default: {
       throw new Error(`Mapping not defined for account ${helplineCode}`);
     }

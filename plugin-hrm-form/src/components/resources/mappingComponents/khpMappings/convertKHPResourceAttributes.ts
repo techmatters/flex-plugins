@@ -16,68 +16,17 @@
 
 import { KhpOperationsDay, KhpUiResource, Language } from './types';
 import { AttributeData, Attributes } from '../../../../services/ResourceService';
-
-const getAttributeDataFromList = (
-  propDataList: Attributes | AttributeData<any>[] | undefined,
-  language: Language,
-): AttributeData => {
-  if (propDataList && Array.isArray(propDataList)) {
-    const propDataByLanguage = propDataList.find(item => item?.language === language || item?.language === '');
-    if (propDataByLanguage && 'value' in propDataByLanguage && typeof propDataByLanguage.value === 'string') {
-      return propDataByLanguage;
-    } else if ('value' in propDataList[0]) {
-      return propDataList[0];
-    }
-  }
-  return undefined;
-};
-
-const getAttributeData = (attributes: Attributes | undefined, language: Language, keyName: string): AttributeData => {
-  const propDataList = (attributes ?? {})[keyName];
-  return getAttributeDataFromList(propDataList, language);
-};
-
-const extractAttributeValue = ({ value }: AttributeData) => {
-  if (typeof value === 'boolean') {
-    if (value) {
-      return 'Yes';
-    }
-    return 'No';
-  }
-  return (value ?? '').toString();
-};
-
-const getAttributeValue = (attributes: Attributes | undefined, language: Language, keyName: string) =>
-  extractAttributeValue(
-    getAttributeData(attributes, language, keyName) ?? { value: undefined, language: '', info: null },
-  );
-
-const getBooleanAttributeValue = (attributes: Attributes | undefined, keyName: string) => {
-  const { value } = getAttributeData(attributes, '', keyName) ?? {};
-  return Boolean(value);
-};
-
-const getAttributeDataItems = (attributes: Attributes | undefined, language: Language, keyName: string) => {
-  const propVal = (attributes ?? {})[keyName];
-  if (!propVal || Array.isArray(propVal)) {
-    return [];
-  }
-  return Object.keys(propVal)
-    .map(itemKey => getAttributeData(propVal, language, itemKey))
-    .filter(v => v);
-};
-
-const getAttributeNode = (attributes: Attributes | undefined, keyName: string): Attributes => {
-  const propVal = (attributes ?? {})[keyName];
-  if (!propVal || Array.isArray(propVal)) {
-    return {};
-  }
-  return propVal;
-};
-const getAttributeValuesAsCsv = (attributes: Attributes | undefined, language: Language, keyName: string) =>
-  getAttributeDataItems(attributes, language, keyName)
-    .map(attributeData => extractAttributeValue(attributeData))
-    .join(', ');
+import {
+  extractArrayAttribute,
+  getAttributeData,
+  getAttributeDataFromList,
+  getAttributeDataItems,
+  getAttributeNode,
+  getAttributeValue,
+  getAttributeValuesAsCsv,
+  getBooleanAttributeValue,
+  toCsv,
+} from '../extractors';
 
 const extractAgeRange = (attributes: Attributes, language: Language) => {
   const eligibilityMinAge = getAttributeValue(attributes, language, 'eligibilityMinAge');
@@ -86,11 +35,6 @@ const extractAgeRange = (attributes: Attributes, language: Language) => {
     return `${eligibilityMinAge} - ${eligibilityMaxAge} years`;
   }
   return 'N/A';
-};
-
-const toCsv = (...args: string[]) => {
-  const text = args.filter(v => v).join(', ');
-  return text ? `${text}\r\n` : '';
 };
 
 const extractPrimaryLocation = (attributes: Attributes, language: Language) => {
@@ -298,21 +242,6 @@ const extractLanguages = (resource: Attributes) =>
     })
     .filter(l => l)
     .join(', ');
-
-const extractArrayAttribute = (key: string) => (
-  attributes: Attributes,
-  language: Language,
-): AttributeData['value'][] => {
-  if (!attributes[key]) {
-    return ['N/A'];
-  }
-
-  return Object.values(attributes[key]).flatMap(attr =>
-    Array.isArray(attr)
-      ? attr.filter(item => item.language === language || item.language === '').map(({ value }) => value)
-      : [],
-  );
-};
 
 const extractNotes = extractArrayAttribute('notes');
 const extractTaxonomies = extractArrayAttribute('taxonomies');
