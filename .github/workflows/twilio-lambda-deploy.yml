@@ -94,11 +94,12 @@ jobs:
         run: |
           # output to logs
           # Load lambda specific region mapping (if any)
-          if [ -f "./.github/workflows/config/lambda-region-map.json" ]; then
+          if [ -f "./.github/workflows/config/lambda-specific-region-map.json" ]; then
             LAMBDA_REGIONS=$(jq -c --arg lambda "${{inputs.lambda_path}}" '.[$lambda] // []' ./.github/workflows/config/lambda-specific-region-map.json)
           else
             LAMBDA_REGIONS="[]"
           fi
+          echo "Lambda specific regions: $LAMBDA_REGIONS"
           
           # Load default environment region mapping
           ENV_REGIONS=$(jq -c --arg env "${{ inputs.environment }}" '[.[$env][] | {region: .}]' ./.github/workflows/config/environment-region-map.json)
@@ -111,6 +112,7 @@ jobs:
           fi
           
           echo "matrix_json=$matrix_json" >> $GITHUB_OUTPUT
+          echo "matrix_json: $matrix_json"
   deploy_lambdas:
     name: Deploy to Amazon ECS
     runs-on: ubuntu-latest
