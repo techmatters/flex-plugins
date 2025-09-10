@@ -183,7 +183,7 @@ const configOptions: ConfigOptions = {
   // The storage state path is used to store the state of the browser between tests
   storageStatePath: {
     envKey: 'STORAGE_STATE_PATH',
-    default: () => (getConfigValue('inLambda') ? '/tmp/state.json' : 'temp/state.json'),
+    default: () => (getConfigValue('inLambda') ? '/tmp/storage/state.json' : 'temp/state.json'),
   },
 
   // Specifying a test name will cause only the matching test file to be run.

@@ -43,7 +43,7 @@ const SearchAutoComplete: React.FC<Props> = ({
   return (
     <div style={{ position: 'relative', width: '100%' }}>
       <AutoCompleteDropdown>
-        {suggestSearch.taxonomyLevelNameCompletion
+        {(suggestSearch.taxonomyLevelNameCompletion || [])
           .filter(item => {
             const text = item.text.toLocaleLowerCase();
             return searchTermLength && text.includes(searchTerm) && text !== searchTerm;

@@ -7,7 +7,7 @@ ${
       "type": "trigger",
       "transitions": [
         {
-          "next": "test_flag",
+          "next": "run_subflow_system_down",
           "event": "incomingMessage"
         },
         {
@@ -1541,6 +1541,35 @@ ${
           "x": 970,
           "y": 740
         }
+      }
+    },
+    {
+      "name": "run_subflow_system_down",
+      "type": "run-subflow",
+      "transitions": [
+        {
+          "next": "test_flag",
+          "event": "completed"
+        },
+        {
+          "next": "test_flag",
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "flow_sid": "${system_down_studio_subflow_sid}",
+        "flow_revision": "LatestPublished",
+        "offset": {
+          "x": 110,
+          "y": -270
+        },
+        "parameters": [
+          {
+            "type": "string",
+            "value": "true",
+            "key": "system_down"
+          }
+        ]
       }
     }
   ],
