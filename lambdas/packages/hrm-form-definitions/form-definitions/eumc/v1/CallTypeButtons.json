@@ -10,5 +10,11 @@
       "label": "Someone calling about a child",
       "type": "button",
       "category": "data"
-  }
+  },
+  {
+    "name": "blank",
+    "label": "Blank",
+    "type": "button",
+    "category": "non-data"
+}
 ]
