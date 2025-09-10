@@ -1,5 +1,29 @@
 [
   {
+    "name": "categoryOfConcernRisk",
+    "label": "Category of Concern",
+    "type": "select",
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "Suicide",
+        "label": "Suicide"
+      },
+      {
+        "value": "Homicide",
+        "label": "Homicide"
+      },
+      {
+        "value": "Medical Emergency",
+        "label": "Medical Emergency"
+      }
+    ],
+    "isPII": false
+  },
+  {
     "name": "riskToLifeAssessmentCompleted",
     "label": "Risk to life assessment completed",
     "type": "listbox-multiselect",
