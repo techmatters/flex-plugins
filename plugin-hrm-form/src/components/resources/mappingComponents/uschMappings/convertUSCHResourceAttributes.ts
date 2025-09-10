@@ -64,10 +64,10 @@ const extractPhoneNumbers = (attributes: Attributes, language: Language) => {
       const number = getAttributeDataFromList(p.number, language);
       const description = getAttributeDataFromList(p.description, language);
 
-      if (!number.value) return null;
+      if (!number?.value) return null;
 
       return {
-        number: number.value?.toString(),
+        number: number?.value?.toString(),
         name: name?.value?.toString().trim() || type,
         description: description?.value?.toString(),
       };
@@ -78,7 +78,7 @@ const extractPhoneNumbers = (attributes: Attributes, language: Language) => {
 const extractCategories = (attributes: Attributes, language: Language) => {
   return Object.values(attributes.categories || {})
     .map(c => {
-      return getAttributeDataFromList(c, language).value?.toString().trim();
+      return getAttributeDataFromList(c, language)?.value?.toString().trim();
     })
     .filter(Boolean);
 };
