@@ -17,8 +17,8 @@ locals {
       widget_from                           = "Aselo"
       chat_blocked_message                  = "Sorry, you're not able to contact SafeSpot from this device or account"
       error_message                         = "There has been an error with your message, please try writing us again."
-    }
     ip_location_finder_url                = "https://hrm-staging.tl.techmatters.org/lambda/ipLocationFinder"
+    }
 
     channels = {
       webchat : {
