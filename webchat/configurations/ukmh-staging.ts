@@ -251,6 +251,13 @@ const mapHelplineLanguage: MapHelplineLanguage = (helpline) => {
   }
 };
 
+const memberDisplayOptions = {
+  yourDefaultName: 'You',
+  yourFriendlyNameOverride: false,
+  theirFriendlyNameOverride: false,
+  theirDefaultName: 'The Mix Peer Supporter',
+};
+
 export const config: Configuration = {
   accountSid,
   flexFlowSid,
