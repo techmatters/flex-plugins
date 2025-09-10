@@ -217,7 +217,7 @@
     ]
   },
   {
-    "name": "specify",
+    "name": "livingsitspecify",
     "label": "Specify",
     "type": "input"
   },
@@ -265,7 +265,7 @@
     }
   },
   {
-    "name": "specify",
+    "name": "keyvulnerabilityspecify",
     "label": "Specify",
     "type": "input"
   },
