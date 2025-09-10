@@ -18,13 +18,16 @@ locals {
       chat_blocked_message                  = "Sorry, you're not able to contact SafeSpot from this device or account"
       error_message                         = "There has been an error with your message, please try writing us again."
     }
+    ip_location_finder_url                = "https://hrm-staging.tl.techmatters.org/lambda/ipLocationFinder"
 
     channels = {
       webchat : {
         channel_type         = "web"
         contact_identity     = ""
-        templatefile         = "/app/twilio-iac/helplines/templates/studio-flows/messaging-blocking-lambda.tftpl"
-        channel_flow_vars    = {}
+        templatefile         = "/app/twilio-iac/helplines/as/templates/studio-flows/messaging-blocking-lambda-location-block.tftpl"
+        channel_flow_vars    = {
+          allowed_shortcode_locations = "US,CL,ZA"
+        }
         chatbot_unique_names = []
       },
       facebook : {
