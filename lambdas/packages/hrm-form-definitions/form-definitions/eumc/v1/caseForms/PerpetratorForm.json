@@ -598,13 +598,7 @@
   {
     "name": "country",
     "label": "Country",
-    "type": "select",
-    "defaultOption": {
-      "value": "unknown",
-      "label": "Unknown"
-    },
-    "optionsReferenceKey": "countryOptions",
-    "isPII": false
+    "type": "input"
   },
   {
     "name": "nationality",
@@ -620,13 +614,7 @@
   {
     "name": "language",
     "label": "Language",
-    "type": "listbox-multiselect",
-    "defaultOption": {
-      "value": "unknown",
-      "label": "Unknown"
-    },
-    "optionsReferenceKey": "languageOptions",
-    "isPII": false
+    "type": "input"
   },
   {
     "name": "description",

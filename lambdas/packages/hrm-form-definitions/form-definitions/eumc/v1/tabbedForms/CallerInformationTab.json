@@ -85,13 +85,7 @@
   {
     "name": "country",
     "label": "Country",
-    "type": "select",
-    "defaultOption": {
-      "value": "unknown",
-      "label": "Unknown"
-    },
-    "optionsReferenceKey": "countryOptions",
-    "isPII": false
+    "type": "input"
   },
   {
     "name": "City",
@@ -579,13 +573,7 @@
   {
     "name": "language",
     "label": "Spoken Languages",
-    "type": "listbox-multiselect",
-    "defaultOption": {
-      "value": "unknown",
-      "label": "Unknown"
-    },
-    "optionsReferenceKey": "languageOptions",
-    "isPII": false
+    "type": "input"
   },
   {
     "name": "nationality",

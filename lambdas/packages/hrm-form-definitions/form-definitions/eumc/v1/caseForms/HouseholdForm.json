@@ -569,13 +569,7 @@
   {
     "name": "language",
     "label": "Language",
-    "type": "listbox-multiselect",
-    "defaultOption": {
-      "value": "unknown",
-      "label": "Unknown"
-    },
-    "optionsReferenceKey": "languageOptions",
-    "isPII": false
+    "type": "input"
   },
   {
     "name": "abductor",
