@@ -32,7 +32,7 @@ jobs:
           sparse-checkout: |
             .github/actions
       - name: Use Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v5
         with:
           node-version: '22.x'
       - name: Find later RC branches
