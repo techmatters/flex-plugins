@@ -25,12 +25,12 @@ const extractAddress = (attributes: Attributes, language: Language) => {
     return '';
   }
 
-  const street = getAttributeData(address, language, 'street')?.value.toString();
-  const city = getAttributeData(address, language, 'city')?.value.toString();
-  const country = getAttributeData(address, language, 'country')?.value.toString();
-  const postalCode = getAttributeData(address, language, 'postalCode')?.value.toString();
+  const street = getAttributeData(address, language, 'street')?.value?.toString();
+  const city = getAttributeData(address, language, 'city')?.value?.toString();
+  const country = getAttributeData(address, language, 'country')?.value?.toString();
+  const postalCode = getAttributeData(address, language, 'postalCode')?.value?.toString();
   // province is not inside address object
-  const province = getAttributeData(attributes, language, 'stateProvince')?.value.toString();
+  const province = getAttributeData(attributes, language, 'stateProvince')?.value?.toString();
 
   return `${toCsv(street)}${toCsv(city, postalCode)}${toCsv(province, country)}`;
 };
@@ -67,9 +67,9 @@ const extractPhoneNumbers = (attributes: Attributes, language: Language) => {
       if (!number.value) return null;
 
       return {
-        number: number.value.toString(),
+        number: number.value?.toString(),
         name: name?.value?.toString().trim() || type,
-        description: description?.value.toString(),
+        description: description?.value?.toString(),
       };
     })
     .filter(Boolean);
