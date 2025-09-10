@@ -26,6 +26,7 @@ import { caseList, Filter } from '../../caseList';
 import AxeBuilder from '@axe-core/playwright';
 import { aseloPage } from '../aselo-service-mocks/aselo-page';
 import type { AxeResults } from 'axe-core';
+import { navigateToAgentDesktopAndWaitForItToSettle } from '../ui-global-setup';
 
 test.describe.serial('Case List', () => {
   let page: Page;
@@ -66,12 +67,17 @@ test.describe.serial('Case List', () => {
   });
 
   test.beforeEach(async () => {
-    await page.goto('/case-list', { waitUntil: 'networkidle' });
-    await page.waitForSelector('div.Twilio-View-case-list', { state: 'visible', timeout: 10000 });
+    await navigateToAgentDesktopAndWaitForItToSettle(page);
+    console.debug(`Navigating to /case-list, currently on ${page.url()}`);
+
+    await page.waitForSelector('div[data-testid="CaseList-Filters-Panel"]', {
+      timeout: 20000,
+    });
+    console.debug('Case List filter panel is visible.');
     caseListPage = caseList(page);
   });
 
-  test.only('Case list loads items', async () => {
+  test('Case list loads items', async () => {
     await caseList(page).verifyCaseIdsAreInListInOrder(
       cases
         .getMockCases()

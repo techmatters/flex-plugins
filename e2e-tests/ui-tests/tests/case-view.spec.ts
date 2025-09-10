@@ -23,6 +23,7 @@ import { caseList } from '../../caseList';
 import AxeBuilder from '@axe-core/playwright';
 import { aseloPage } from '../aselo-service-mocks/aselo-page';
 import { caseHome } from '../../case';
+import { navigateToAgentDesktopAndWaitForItToSettle } from '../ui-global-setup';
 
 test.describe.serial('Case View', () => {
   let page: Page;
@@ -34,7 +35,6 @@ test.describe.serial('Case View', () => {
     page = await aseloPage(browser);
     await cases.mockCaseEndpoints(page);
     await permissions.mockPermissionEndpoint(page);
-    await page.goto('/case-list', { waitUntil: 'networkidle' });
   });
 
   test.afterAll(async () => {
@@ -42,6 +42,7 @@ test.describe.serial('Case View', () => {
   });
 
   test.beforeEach(async () => {
+    await navigateToAgentDesktopAndWaitForItToSettle(page);
     await page.goto('/case-list', { waitUntil: 'networkidle' });
     await page.waitForSelector('div.Twilio-View-case-list', { state: 'visible', timeout: 10000 });
     await caseList(page).openFirstCaseButton();
