@@ -110,3 +110,11 @@ export const caseList = (page: Page) => {
     openFirstCaseButton,
   };
 };
+
+export const navigateToCaseListUsingButton = async (page: Page) => {
+  const sideLinkLocator = page.locator(`//button[@data-testid='case-list-side-link']`);
+  await sideLinkLocator.click();
+  await page.waitForSelector('div[data-testid="CaseList-Filters-Panel"]', {
+    timeout: 20000,
+  });
+};

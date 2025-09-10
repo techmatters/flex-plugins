@@ -22,7 +22,7 @@ import * as mockServer from '../flex-in-a-box/proxied-endpoints';
 import '../flex-in-a-box/local-resources';
 import hrmCases from '../aselo-service-mocks/hrm/cases';
 import hrmPermissions from '../aselo-service-mocks/hrm/permissions';
-import { caseList, Filter } from '../../caseList';
+import { caseList, Filter, navigateToCaseListUsingButton } from '../../caseList';
 import AxeBuilder from '@axe-core/playwright';
 import { aseloPage } from '../aselo-service-mocks/aselo-page';
 import type { AxeResults } from 'axe-core';
@@ -68,11 +68,7 @@ test.describe.serial('Case List', () => {
 
   test.beforeEach(async () => {
     await navigateToAgentDesktopAndWaitForItToSettle(page);
-    console.debug(`Navigating to /case-list, currently on ${page.url()}`);
-
-    await page.waitForSelector('div[data-testid="CaseList-Filters-Panel"]', {
-      timeout: 20000,
-    });
+    await navigateToCaseListUsingButton(page);
     console.debug('Case List filter panel is visible.');
     caseListPage = caseList(page);
   });

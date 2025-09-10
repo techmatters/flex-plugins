@@ -27,5 +27,4 @@ export const navigateToAgentDesktopAndWaitForItToSettle = async (page: Page) => 
   );
   await callsWaitingLabel.waitFor({ state: 'visible' });
   await page.waitForLoadState('networkidle');
-  await page.waitForTimeout(5000);
 };

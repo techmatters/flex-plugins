@@ -19,7 +19,7 @@ import * as mockServer from '../flex-in-a-box/proxied-endpoints';
 import '../flex-in-a-box/local-resources';
 import hrmCases from '../aselo-service-mocks/hrm/cases';
 import hrmPermissions from '../aselo-service-mocks/hrm/permissions';
-import { caseList } from '../../caseList';
+import { caseList, navigateToCaseListUsingButton } from '../../caseList';
 import AxeBuilder from '@axe-core/playwright';
 import { aseloPage } from '../aselo-service-mocks/aselo-page';
 import { caseHome } from '../../case';
@@ -43,8 +43,7 @@ test.describe.serial('Case View', () => {
 
   test.beforeEach(async () => {
     await navigateToAgentDesktopAndWaitForItToSettle(page);
-    await page.goto('/case-list', { waitUntil: 'networkidle' });
-    await page.waitForSelector('div.Twilio-View-case-list', { state: 'visible', timeout: 10000 });
+    await navigateToCaseListUsingButton(page);
     await caseList(page).openFirstCaseButton();
     await page.waitForSelector('div[data-testid="CaseHome-CaseDetailsComponent"]', {
       state: 'visible',

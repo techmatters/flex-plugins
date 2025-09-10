@@ -15,7 +15,7 @@
  */
 
 import { Page, request, test } from '@playwright/test';
-import { caseList } from '../caseList';
+import { caseList, navigateToCaseListUsingButton } from '../caseList';
 import { skipTestIfNotTargeted, skipTestIfDataUpdateDisabled } from '../skipTest';
 import { notificationBar } from '../notificationBar';
 import { setupContextAndPage, closePage } from '../browser';
@@ -37,11 +37,7 @@ test.describe.serial('Open and Edit a Case in Case List page', () => {
     );
 
     // Open Case List
-    await pluginPage.goto('/case-list', { waitUntil: 'networkidle', timeout: 20000 });
-    await pluginPage.waitForSelector('div[data-testid="CaseList-Filters-Panel"]', {
-      timeout: 20000,
-    });
-    console.debug('Case List filter panel is visible.');
+    await navigateToCaseListUsingButton(pluginPage);
   });
 
   test.afterAll(async () => {
