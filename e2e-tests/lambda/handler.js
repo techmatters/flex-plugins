@@ -91,20 +91,24 @@ module.exports.handler = async (event) => {
     stderr: 'inherit',
     env,
   });
+  let result;
+  try {
+    result = await new Promise((resolve, reject) => {
+      cmd.on('exit', (code) => {
+        if (code !== 0) {
+          reject(`Execution error: ${code}`);
+        } else {
+          resolve(`Exited with code: ${code}`);
+        }
+      });
 
-  const result = await new Promise((resolve, reject) => {
-    cmd.on('exit', (code) => {
-      if (code !== 0) {
-        reject(`Execution error: ${code}`);
-      } else {
-        resolve(`Exited with code: ${code}`);
-      }
+      cmd.on('error', (error) => {
+        reject(`Execution error: ${error}`);
+      });
     });
-
-    cmd.on('error', (error) => {
-      reject(`Execution error: ${error}`);
-    });
-  });
+  } catch (error) {
+    result = error;
+  }
 
   try {
     console.info('Attempting artifact uploads...');
