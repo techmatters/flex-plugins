@@ -19,6 +19,7 @@ const path = require('path');
 const { promises: fs, createReadStream } = require('fs');
 const { S3 } = require('@aws-sdk/client-s3');
 const { SSMClient, GetParameterCommand } = require('@aws-sdk/client-ssm')
+const format = require('date-fns/format').default
 const SSM_REGION = 'us-east-1'; // All our parameters are in this region, regardless of where the actual helpline is deployed to
 
 const uploadTestArtifactsToS3 = async (env) => {
@@ -70,7 +71,8 @@ const uploadTestArtifactsToS3 = async (env) => {
   const accountSid = await getParameterValue(`/${env.HL_ENV}/twilio/${env.HL.toUpperCase()}/account_sid`);
   const region = await getParameterValue(`/${env.HL_ENV}/aws/${accountSid}/region`)
   const bucket = await getParameterValue(`/${env.HL_ENV}/s3/${accountSid}/docs_bucket_name`)
-  const s3KeyRoot = `e2e-tests/${now.getUTCFullYear()}-${now.getUTCMonth() + 1}-${now.getUTCDate()}T${now.getUTCHours()}${now.getUTCMinutes()}${now.getUTCSeconds()}-${now.getUTCMilliseconds()}`;
+  const formattedDate = format(now, 'yyyy-MM-ddTHH-mm-ss-SSSS')
+  const s3KeyRoot = `e2e-tests/${formattedDate}`;
   await uploadDir(path.resolve('/tmp/storage'), bucket, s3KeyRoot, { region });
   await uploadDir(path.resolve('/tmp/test-results'), bucket, `${s3KeyRoot}/test-results`, { region });
 }
