@@ -51,5 +51,7 @@ export const agentDesktop = (page: Page) => {
 export const navigateToAgentDesktop = async (page: Page) => {
   await page.goto('/agent-desktop', { waitUntil: 'domcontentloaded' });
 
-  await expect(page.locator('button[data-testid="AddTaskButton"]')).toBeVisible({ timeout: 45000 });
+  await expect(page.locator('button[data-testid="AddTaskButton"]').nth(0)).toBeVisible({
+    timeout: 45000,
+  });
 };
