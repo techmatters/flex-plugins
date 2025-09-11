@@ -73,7 +73,7 @@ const uploadTestArtifactsToS3 = async (env) => {
   const bucket = await getParameterValue(`/${env.HL_ENV}/s3/${accountSid}/docs_bucket_name`)
   const formattedDate = format(now, 'yyyy-MM-ddTHH-mm-ss-SSSS')
   const s3KeyRoot = `e2e-tests/${formattedDate}`;
-  console.info(`Uploading test artifacts to ${s3KeyRoot}`)
+  console.info(`Uploading test artifacts to ${s3KeyRoot}`);
   await uploadDir(path.resolve('/tmp/storage'), bucket, s3KeyRoot, { region });
   await uploadDir(path.resolve('/tmp/test-results'), bucket, `${s3KeyRoot}/test-results`, { region });
 }
@@ -107,10 +107,11 @@ module.exports.handler = async (event) => {
   });
 
   try {
+    console.info('Attempting artifact uploads...');
     await uploadTestArtifactsToS3(env)
   } catch (err) {
     console.error('Error uploading test artifacts:', err);
   }
 
-  console.log(result);
+  console.info(result);
 };
