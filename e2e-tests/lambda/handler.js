@@ -91,7 +91,7 @@ module.exports.handler = async (event) => {
     stderr: 'inherit',
     env,
   });
-  let result;
+  let result, isError = false;
   try {
     result = await new Promise((resolve, reject) => {
       cmd.on('exit', (code) => {
@@ -108,6 +108,7 @@ module.exports.handler = async (event) => {
     });
   } catch (error) {
     result = error;
+    isError = true;
   }
 
   try {
@@ -116,6 +117,8 @@ module.exports.handler = async (event) => {
   } catch (err) {
     console.error('Error uploading test artifacts:', err);
   }
-
+  if (isError) {
+    throw result;
+  }
   console.info(`Test run (${env.TEST_NAME}) result: `, result);
 };
