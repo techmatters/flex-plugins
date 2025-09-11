@@ -26,7 +26,7 @@ import { caseList, Filter, navigateToCaseListUsingButton } from '../../caseList'
 import AxeBuilder from '@axe-core/playwright';
 import { aseloPage } from '../aselo-service-mocks/aselo-page';
 import type { AxeResults } from 'axe-core';
-import { navigateToAgentDesktopAndWaitForItToSettle } from '../ui-global-setup';
+import { navigateToAgentDesktop } from '../ui-global-setup';
 
 test.describe.serial('Case List', () => {
   let page: Page;
@@ -67,7 +67,7 @@ test.describe.serial('Case List', () => {
   });
 
   test.beforeEach(async () => {
-    await navigateToAgentDesktopAndWaitForItToSettle(page);
+    await navigateToAgentDesktop(page);
     await navigateToCaseListUsingButton(page);
     console.debug('Case List filter panel is visible.');
     caseListPage = caseList(page);

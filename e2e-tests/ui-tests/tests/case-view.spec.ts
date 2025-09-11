@@ -23,7 +23,7 @@ import { caseList, navigateToCaseListUsingButton } from '../../caseList';
 import AxeBuilder from '@axe-core/playwright';
 import { aseloPage } from '../aselo-service-mocks/aselo-page';
 import { caseHome } from '../../case';
-import { navigateToAgentDesktopAndWaitForItToSettle } from '../ui-global-setup';
+import { navigateToAgentDesktop } from '../ui-global-setup';
 
 test.describe.serial('Case View', () => {
   let page: Page;
@@ -42,7 +42,7 @@ test.describe.serial('Case View', () => {
   });
 
   test.beforeEach(async () => {
-    await navigateToAgentDesktopAndWaitForItToSettle(page);
+    await navigateToAgentDesktop(page);
     await navigateToCaseListUsingButton(page);
     await caseList(page).openFirstCaseButton();
     await page.waitForSelector('div[data-testid="CaseHome-CaseDetailsComponent"]', {

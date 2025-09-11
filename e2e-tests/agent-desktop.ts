@@ -51,6 +51,5 @@ export const agentDesktop = (page: Page) => {
 export const navigateToAgentDesktop = async (page: Page) => {
   await page.goto('/agent-desktop', { waitUntil: 'domcontentloaded' });
 
-  // There are multiple elements so we need to use waitForSelector instead of a locator/waitFor
-  await page.waitForSelector('button[data-testid="AddTaskButton"]', { timeout: 45000 });
+  await expect(page.locator('button[data-testid="AddTaskButton"]')).toBeVisible({ timeout: 45000 });
 };
