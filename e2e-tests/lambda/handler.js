@@ -71,7 +71,7 @@ const uploadTestArtifactsToS3 = async (env) => {
   const accountSid = await getParameterValue(`/${env.HL_ENV}/twilio/${env.HL.toUpperCase()}/account_sid`);
   const region = await getParameterValue(`/${env.HL_ENV}/aws/${accountSid}/region`)
   const bucket = await getParameterValue(`/${env.HL_ENV}/s3/${accountSid}/docs_bucket_name`)
-  const formattedDate = format(now, 'yyyy-MM-ddTHH-mm-ss-SSSS')
+  const formattedDate = format(now, 'yyyy-MM-dd-HH-mm-ss-SSSS')
   const s3KeyRoot = `e2e-tests/${env.TEST_NAME ?? 'all_test'}/${formattedDate}`;
   console.info(`Uploading test artifacts to ${s3KeyRoot}`);
   await uploadDir(path.resolve('/tmp/storage'), bucket, s3KeyRoot, { region });
