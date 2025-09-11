@@ -68,6 +68,7 @@ test.describe.serial('Case List', () => {
 
   test.beforeEach(async () => {
     await navigateToAgentDesktop(page);
+    // 2025-09-11 - it became necessary to navigate using the button, because Flex has become less stable and often forces you back to the agent desktop when you try to navigate there directly using the URL route.
     await navigateToCaseListUsingButton(page);
     console.debug('Case List filter panel is visible.');
     caseListPage = caseList(page);

@@ -37,6 +37,7 @@ test.describe.serial('Open and Edit a Case in Case List page', () => {
     );
 
     // Open Case List
+    // 2025-09-11 - it became necessary to navigate using the button, because Flex has become less stable and often forces you back to the agent desktop when you try to navigate there directly using the URL route.
     await navigateToCaseListUsingButton(pluginPage);
   });
 
