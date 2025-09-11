@@ -140,17 +140,6 @@
     "type": "input"
   },
   {
-    "name": "nationality",
-    "label": "Nationality(ies)",
-    "type": "listbox-multiselect",
-    "defaultOption": {
-      "value": "unknown",
-      "label": "Unknown"
-    },
-    "optionsReferenceKey": "nationalityOptions",
-    "isPII": false
-  },
-  {
     "name": "countryOfResidence",
     "label": "Country of Current Residence",
     "type": "input"
@@ -158,7 +147,449 @@
   {
     "name": "languagesSpoken",
     "label": "Languages Spoken",
-    "type": "input"
+    "type": "listbox-multiselect",
+    "options": [
+      {
+        "value": "unknown",
+        "label": "Unknown"
+      },
+      {
+        "value": "afrikaans",
+        "label": "Afrikaans"
+      },
+      {
+        "value": "albanian",
+        "label": "Albanian"
+      },
+      {
+        "value": "amharic",
+        "label": "Amharic"
+      },
+      {
+        "value": "arabic",
+        "label": "Arabic"
+      },
+      {
+        "value": "armenian",
+        "label": "Armenian"
+      },
+      {
+        "value": "azerbaijani",
+        "label": "Azerbaijani"
+      },
+      {
+        "value": "basque",
+        "label": "Basque"
+      },
+      {
+        "value": "belarusian",
+        "label": "Belarusian"
+      },
+      {
+        "value": "bengali",
+        "label": "Bengali"
+      },
+      {
+        "value": "bosnian",
+        "label": "Bosnian"
+      },
+      {
+        "value": "bulgarian",
+        "label": "Bulgarian"
+      },
+      {
+        "value": "burmese",
+        "label": "Burmese"
+      },
+      {
+        "value": "catalan",
+        "label": "Catalan"
+      },
+      {
+        "value": "cebuano",
+        "label": "Cebuano"
+      },
+      {
+        "value": "chichewa",
+        "label": "Chichewa"
+      },
+      {
+        "value": "chinese",
+        "label": "Chinese"
+      },
+      {
+        "value": "corsican",
+        "label": "Corsican"
+      },
+      {
+        "value": "croatian",
+        "label": "Croatian"
+      },
+      {
+        "value": "czech",
+        "label": "Czech"
+      },
+      {
+        "value": "danish",
+        "label": "Danish"
+      },
+      {
+        "value": "dutch",
+        "label": "Dutch"
+      },
+      {
+        "value": "english",
+        "label": "English"
+      },
+      {
+        "value": "esperanto",
+        "label": "Esperanto"
+      },
+      {
+        "value": "estonian",
+        "label": "Estonian"
+      },
+      {
+        "value": "filipino",
+        "label": "Filipino"
+      },
+      {
+        "value": "finnish",
+        "label": "Finnish"
+      },
+      {
+        "value": "french",
+        "label": "French"
+      },
+      {
+        "value": "frisian",
+        "label": "Frisian"
+      },
+      {
+        "value": "galician",
+        "label": "Galician"
+      },
+      {
+        "value": "georgian",
+        "label": "Georgian"
+      },
+      {
+        "value": "german",
+        "label": "German"
+      },
+      {
+        "value": "greek",
+        "label": "Greek"
+      },
+      {
+        "value": "gujarati",
+        "label": "Gujarati"
+      },
+      {
+        "value": "haitian creole",
+        "label": "Haitian Creole"
+      },
+      {
+        "value": "hausa",
+        "label": "Hausa"
+      },
+      {
+        "value": "hawaiian",
+        "label": "Hawaiian"
+      },
+      {
+        "value": "hebrew",
+        "label": "Hebrew"
+      },
+      {
+        "value": "hindi",
+        "label": "Hindi"
+      },
+      {
+        "value": "hmong",
+        "label": "Hmong"
+      },
+      {
+        "value": "hungarian",
+        "label": "Hungarian"
+      },
+      {
+        "value": "icelandic",
+        "label": "Icelandic"
+      },
+      {
+        "value": "igbo",
+        "label": "Igbo"
+      },
+      {
+        "value": "indonesian",
+        "label": "Indonesian"
+      },
+      {
+        "value": "irish",
+        "label": "Irish"
+      },
+      {
+        "value": "italian",
+        "label": "Italian"
+      },
+      {
+        "value": "japanese",
+        "label": "Japanese"
+      },
+      {
+        "value": "javanese",
+        "label": "Javanese"
+      },
+      {
+        "value": "kannada",
+        "label": "Kannada"
+      },
+      {
+        "value": "kazakh",
+        "label": "Kazakh"
+      },
+      {
+        "value": "khmer",
+        "label": "Khmer"
+      },
+      {
+        "value": "kinyarwanda",
+        "label": "Kinyarwanda"
+      },
+      {
+        "value": "korean",
+        "label": "Korean"
+      },
+      {
+        "value": "kurdish",
+        "label": "Kurdish"
+      },
+      {
+        "value": "kyrgyz",
+        "label": "Kyrgyz"
+      },
+      {
+        "value": "lao",
+        "label": "Lao"
+      },
+      {
+        "value": "latin",
+        "label": "Latin"
+      },
+      {
+        "value": "latvian",
+        "label": "Latvian"
+      },
+      {
+        "value": "lithuanian",
+        "label": "Lithuanian"
+      },
+      {
+        "value": "luxembourgish",
+        "label": "Luxembourgish"
+      },
+      {
+        "value": "macedonian",
+        "label": "Macedonian"
+      },
+      {
+        "value": "malagasy",
+        "label": "Malagasy"
+      },
+      {
+        "value": "malay",
+        "label": "Malay"
+      },
+      {
+        "value": "malayalam",
+        "label": "Malayalam"
+      },
+      {
+        "value": "maltese",
+        "label": "Maltese"
+      },
+      {
+        "value": "maori",
+        "label": "Maori"
+      },
+      {
+        "value": "marathi",
+        "label": "Marathi"
+      },
+      {
+        "value": "mongolian",
+        "label": "Mongolian"
+      },
+      {
+        "value": "myanmar",
+        "label": "Myanmar"
+      },
+      {
+        "value": "nepali",
+        "label": "Nepali"
+      },
+      {
+        "value": "norwegian",
+        "label": "Norwegian"
+      },
+      {
+        "value": "odia",
+        "label": "Odia"
+      },
+      {
+        "value": "pashto",
+        "label": "Pashto"
+      },
+      {
+        "value": "persian",
+        "label": "Persian"
+      },
+      {
+        "value": "polish",
+        "label": "Polish"
+      },
+      {
+        "value": "portuguese",
+        "label": "Portuguese"
+      },
+      {
+        "value": "punjabi",
+        "label": "Punjabi"
+      },
+      {
+        "value": "romanian",
+        "label": "Romanian"
+      },
+      {
+        "value": "russian",
+        "label": "Russian"
+      },
+      {
+        "value": "samoan",
+        "label": "Samoan"
+      },
+      {
+        "value": "scots gaelic",
+        "label": "Scots Gaelic"
+      },
+      {
+        "value": "serbian",
+        "label": "Serbian"
+      },
+      {
+        "value": "sesotho",
+        "label": "Sesotho"
+      },
+      {
+        "value": "shona",
+        "label": "Shona"
+      },
+      {
+        "value": "sindhi",
+        "label": "Sindhi"
+      },
+      {
+        "value": "sinhala",
+        "label": "Sinhala"
+      },
+      {
+        "value": "slovak",
+        "label": "Slovak"
+      },
+      {
+        "value": "slovenian",
+        "label": "Slovenian"
+      },
+      {
+        "value": "somali",
+        "label": "Somali"
+      },
+      {
+        "value": "spanish",
+        "label": "Spanish"
+      },
+      {
+        "value": "sundanese",
+        "label": "Sundanese"
+      },
+      {
+        "value": "swahili",
+        "label": "Swahili"
+      },
+      {
+        "value": "swedish",
+        "label": "Swedish"
+      },
+      {
+        "value": "tajik",
+        "label": "Tajik"
+      },
+      {
+        "value": "tamil",
+        "label": "Tamil"
+      },
+      {
+        "value": "tatar",
+        "label": "Tatar"
+      },
+      {
+        "value": "telugu",
+        "label": "Telugu"
+      },
+      {
+        "value": "thai",
+        "label": "Thai"
+      },
+      {
+        "value": "turkish",
+        "label": "Turkish"
+      },
+      {
+        "value": "turkmen",
+        "label": "Turkmen"
+      },
+      {
+        "value": "ukrainian",
+        "label": "Ukrainian"
+      },
+      {
+        "value": "urdu",
+        "label": "Urdu"
+      },
+      {
+        "value": "uyghur",
+        "label": "Uyghur"
+      },
+      {
+        "value": "uzbek",
+        "label": "Uzbek"
+      },
+      {
+        "value": "vietnamese",
+        "label": "Vietnamese"
+      },
+      {
+        "value": "welsh",
+        "label": "Welsh"
+      },
+      {
+        "value": "xhosa",
+        "label": "Xhosa"
+      },
+      {
+        "value": "yiddish",
+        "label": "Yiddish"
+      },
+      {
+        "value": "yoruba",
+        "label": "Yoruba"
+      },
+      {
+        "value": "zulu",
+        "label": "Zulu"
+      }
+    ]
   },
   {
     "name": "description",
