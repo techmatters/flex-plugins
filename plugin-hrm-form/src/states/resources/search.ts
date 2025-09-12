@@ -89,15 +89,19 @@ export type ReferrableResourceSearchState = {
   error?: Error;
 };
 
-export type TaxonomyLevelNameCompletion = {
-  taxonomyLevelNameCompletion: Array<{
-    text: string;
-    score: number;
-  }>;
+export type SuggestSearch = {
+  status: ResourceSearchStatus;
+  suggestions: {
+    [completionKey: string]: Array<{
+      text: string;
+      score: number;
+    }>;
+  };
 };
 
-export const suggestSearchInitialState: TaxonomyLevelNameCompletion = {
-  taxonomyLevelNameCompletion: [],
+export const suggestSearchInitialState: SuggestSearch = {
+  status: ResourceSearchStatus.NotSearched,
+  suggestions: {},
 };
 
 export const initialState: ReferrableResourceSearchState = {
@@ -255,7 +259,7 @@ export const suggestSearchReducer = createReducer(suggestSearchInitialState, han
   handleAction(suggestSearchAsyncAction.pending, state => {
     return {
       ...state,
-      taxonomyLevelNameCompletion: [],
+      suggestions: {},
       status: ResourceSearchStatus.ResultPending,
     };
   }),
@@ -263,7 +267,10 @@ export const suggestSearchReducer = createReducer(suggestSearchInitialState, han
   handleAction(suggestSearchAsyncAction.fulfilled, (state, { payload }) => {
     return {
       ...state,
-      taxonomyLevelNameCompletion: payload.taxonomyLevelNameCompletion,
+      suggestions: {
+        ...state.suggestions,
+        ...payload,
+      },
       status: ResourceSearchStatus.ResultReceived,
     };
   }),

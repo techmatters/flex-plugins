@@ -17,7 +17,7 @@
  */
 import fetchResourceApi from './fetchResourcesApi';
 import { getReferrableResourceConfig } from '../hrmConfig';
-import { TaxonomyLevelNameCompletion } from '../states/resources/search';
+import { SuggestSearch } from '../states/resources/search';
 
 export type AttributeData<T = any> = {
   language?: string;
@@ -68,7 +68,7 @@ export const searchResources = async (
   };
 };
 
-export const suggestSearch = async (prefix: string): Promise<TaxonomyLevelNameCompletion> => {
+export const suggestSearch = async (prefix: string): Promise<SuggestSearch['suggestions']> => {
   return fetchResourceApi(`suggest?prefix=${prefix}`);
 };
 
