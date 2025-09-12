@@ -19,6 +19,7 @@ const path = require('path');
 const { promises: fs, createReadStream } = require('fs');
 const { S3 } = require('@aws-sdk/client-s3');
 const { SSMClient, GetParameterCommand } = require('@aws-sdk/client-ssm')
+const { format } = require('date-fns')
 const SSM_REGION = 'us-east-1'; // All our parameters are in this region, regardless of where the actual helpline is deployed to
 
 const uploadTestArtifactsToS3 = async (env) => {
@@ -70,7 +71,9 @@ const uploadTestArtifactsToS3 = async (env) => {
   const accountSid = await getParameterValue(`/${env.HL_ENV}/twilio/${env.HL.toUpperCase()}/account_sid`);
   const region = await getParameterValue(`/${env.HL_ENV}/aws/${accountSid}/region`)
   const bucket = await getParameterValue(`/${env.HL_ENV}/s3/${accountSid}/docs_bucket_name`)
-  const s3KeyRoot = `e2e-tests/${now.getUTCFullYear()}-${now.getUTCMonth() + 1}-${now.getUTCDate()}T${now.getUTCHours()}${now.getUTCMinutes()}${now.getUTCSeconds()}-${now.getUTCMilliseconds()}`;
+  const formattedDate = format(now, 'yyyy-MM-dd-HH-mm-ss-SSSS')
+  const s3KeyRoot = `e2e-tests/${env.TEST_NAME ?? 'all_test'}/${formattedDate}`;
+  console.info(`Uploading test artifacts to ${s3KeyRoot}`);
   await uploadDir(path.resolve('/tmp/storage'), bucket, s3KeyRoot, { region });
   await uploadDir(path.resolve('/tmp/test-results'), bucket, `${s3KeyRoot}/test-results`, { region });
 }
@@ -88,26 +91,34 @@ module.exports.handler = async (event) => {
     stderr: 'inherit',
     env,
   });
+  let result, isError = false;
+  try {
+    result = await new Promise((resolve, reject) => {
+      cmd.on('exit', (code) => {
+        if (code !== 0) {
+          reject(`Execution error: ${code}`);
+        } else {
+          resolve(`Exited with code: ${code}`);
+        }
+      });
 
-  const result = await new Promise((resolve, reject) => {
-    cmd.on('exit', (code) => {
-      if (code !== 0) {
-        reject(`Execution error: ${code}`);
-      } else {
-        resolve(`Exited with code: ${code}`);
-      }
+      cmd.on('error', (error) => {
+        reject(`Execution error: ${error}`);
+      });
     });
-
-    cmd.on('error', (error) => {
-      reject(`Execution error: ${error}`);
-    });
-  });
+  } catch (error) {
+    result = error;
+    isError = true;
+  }
 
   try {
+    console.info('Attempting artifact uploads...');
     await uploadTestArtifactsToS3(env)
   } catch (err) {
     console.error('Error uploading test artifacts:', err);
   }
-
-  console.log(result);
+  if (isError) {
+    throw result;
+  }
+  console.info(`Test run (${env.TEST_NAME}) result: `, result);
 };

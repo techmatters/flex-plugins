@@ -26,7 +26,8 @@ const playwrightConfig: PlaywrightTestConfig = {
   use: {
     storageState: getConfigValue('storageStatePath') as string,
     baseURL: getConfigValue('baseURL') as string,
-    ignoreHTTPSErrors: inLambda ? true : false,
+    bypassCSP: Boolean(inLambda),
+    ignoreHTTPSErrors: Boolean(inLambda),
     permissions: ['microphone', 'clipboard-write', 'clipboard-read'],
     screenshot: 'only-on-failure',
     video: inLambda ? 'retain-on-failure' : 'retry-with-video',
@@ -63,6 +64,7 @@ const playwrightConfig: PlaywrightTestConfig = {
             '--disable-setuid-sandbox',
             '--disable-speech-api',
             '--disable-sync',
+            '--disable-web-security',
             '--disk-cache-size=33554432',
             '--hide-scrollbars',
             '--ignore-gpu-blacklist',
