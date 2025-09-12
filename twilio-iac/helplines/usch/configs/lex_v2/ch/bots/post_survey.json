@@ -28,7 +28,7 @@
           "1": {
             "slot_name": "experience_rating",
             "slot_type_name": "four_level_assessment",
-            "slot_question": "How was your experience today? \nReply with: \n 🥰= Excellent, 😊 = Good, 😒 = Fair, 😡 = Poor.",
+            "slot_question": "How was your experience today? \nReply with 1 = Excellent, 2 = Good, 3 = Fair, 4 = Poor",
             "failure_response": "Thank you for reaching out. Please contact us again if you need more help."
           },
           "2":  {

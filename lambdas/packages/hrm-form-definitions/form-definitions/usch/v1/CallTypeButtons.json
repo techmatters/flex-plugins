@@ -12,38 +12,32 @@
         "category": "data"
     },
     {
-        "name": "silent",
-        "label": "Silent",
+        "name": "donationVolunteer",
+        "label": "Donation/Volunteer",
         "type": "button",
         "category": "non-data"
     },
     {
-        "name": "hangup",
-        "label": "Hang up",
+        "name": "noAnswer",
+        "label": "No Answer",
         "type": "button",
         "category": "non-data"
     },
     {
-        "name": "abusive",
-        "label": "Abusive",
+        "name": "obscenePrank",
+        "label": "Obscene/Prank",
         "type": "button",
         "category": "non-data"
     },
     {
-        "name": "thanks",
-        "label": "Thank you",
+        "name": "transferred",
+        "label": "Transferred",
         "type": "button",
         "category": "non-data"
     },
-    {
-        "name": "questions",
-        "label": "Questions",
-        "type": "button",
-        "category": "non-data"
-    },
-    {
-        "name": "emergency",
-        "label": "Emergency",
+ {
+        "name": "wrongNumber",
+        "label": "Wrong Number",
         "type": "button",
         "category": "non-data"
     },

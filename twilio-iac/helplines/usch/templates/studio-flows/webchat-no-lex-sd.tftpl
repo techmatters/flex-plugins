@@ -90,11 +90,11 @@ ${
           "event": "match",
           "conditions": [
             {
-              "friendly_name": "If value equal_to courageFirst url",
+              "friendly_name": "If value starts with courageFirst url",
               "arguments": [
                 "{{trigger.message.ChannelAttributes.pre_engagement_data.location}}"
               ],
-              "type": "equal_to",
+              "type": "starts_with",
               "value": "${channel_flow_vars.courage_first_url}"
             }
           ]
@@ -104,11 +104,11 @@ ${
           "event": "match",
           "conditions": [
             {
-              "friendly_name": "If value equal_to childhelp url",
+              "friendly_name": "If value starts with childhelp url",
               "arguments": [
                 "{{trigger.message.ChannelAttributes.pre_engagement_data.location}}"
               ],
-              "type": "equal_to",
+              "type": "starts_with",
               "value": "${channel_flow_vars.childhelp_url}"
             }
           ]
@@ -630,8 +630,8 @@ ${
         "flow_sid": "${system_down_studio_subflow_sid}",
         "flow_revision": "LatestPublished",
         "offset": {
-          "x": 110,
-          "y": -270
+          "x": -140,
+          "y": -340
         },
         "parameters": [
           {
