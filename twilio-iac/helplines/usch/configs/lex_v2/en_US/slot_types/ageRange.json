@@ -1,85 +1,7 @@
 {
   "slotTypeName": "ageRange",
   "slotTypeValues": [
-    {
-      "sampleValue": {
-        "value": "0-5"
-      },
-      "synonyms": [
-        { "value": "0" },
-        { "value": "zero" },
-        { "value": "1" },
-        { "value": "one" },
-        { "value": "2" },
-        { "value": "two" },
-        { "value": "3" },
-        { "value": "three" },
-        { "value": "4" },
-        { "value": "four" },
-        { "value": "5" },
-        { "value": "five" }
-      ]
-    },
-    {
-      "sampleValue": {
-        "value": "6-12"
-      },
-      "synonyms": [
-        { "value": "6" },
-        { "value": "six" },
-        { "value": "7" },
-        { "value": "seven" },
-        { "value": "8" },
-        { "value": "eight" },
-        { "value": "9" },
-        { "value": "nine" },
-        { "value": "10" },
-        { "value": "ten" },
-        { "value": "11" },
-        { "value": "eleven" },
-        { "value": "12" },
-        { "value": "twelve" }
-      ]
-    },
-    {
-      "sampleValue": {
-        "value": "13-17"
-      },
-      "synonyms": [
-        { "value": "13" },
-        { "value": "thirteen" },
-        { "value": "14" },
-        { "value": "fourteen" },
-        { "value": "15" },
-        { "value": "fifteen" },
-        { "value": "16" },
-        { "value": "sixteen" },
-        { "value": "17" },
-        { "value": "seventeen" }
-      ]
-    },
-    {
-      "sampleValue": {
-        "value": "18-24"
-      },
-      "synonyms": [
-        { "value": "18" },
-        { "value": "eighteen" },
-        { "value": "19" },
-        { "value": "nineteen" },
-        { "value": "20" },
-        { "value": "twenty" },
-        { "value": "21" },
-        { "value": "twenty one" },
-        { "value": "22" },
-        { "value": "twenty two" },
-        { "value": "23" },
-        { "value": "twenty three" },
-        { "value": "24" },
-        { "value": "twenty four" }
-      ]
-    },
-    {
+     {
       "sampleValue": {
         "value": "N/A"
       },
@@ -241,7 +163,86 @@
         { "value": "Rather not say" },
         { "value": "prefer not to" },
         { "value": "X" },
+        { "value": "x" },
         { "value": "Prefer not to answer" }
+      ]
+    },
+    {
+      "sampleValue": {
+        "value": "0-5"
+      },
+      "synonyms": [
+        { "value": "0" },
+        { "value": "zero" },
+        { "value": "1" },
+        { "value": "one" },
+        { "value": "2" },
+        { "value": "two" },
+        { "value": "3" },
+        { "value": "three" },
+        { "value": "4" },
+        { "value": "four" },
+        { "value": "5" },
+        { "value": "five" }
+      ]
+    },
+    {
+      "sampleValue": {
+        "value": "6-12"
+      },
+      "synonyms": [
+        { "value": "6" },
+        { "value": "six" },
+        { "value": "7" },
+        { "value": "seven" },
+        { "value": "8" },
+        { "value": "eight" },
+        { "value": "9" },
+        { "value": "nine" },
+        { "value": "10" },
+        { "value": "ten" },
+        { "value": "11" },
+        { "value": "eleven" },
+        { "value": "12" },
+        { "value": "twelve" }
+      ]
+    },
+    {
+      "sampleValue": {
+        "value": "13-17"
+      },
+      "synonyms": [
+        { "value": "13" },
+        { "value": "thirteen" },
+        { "value": "14" },
+        { "value": "fourteen" },
+        { "value": "15" },
+        { "value": "fifteen" },
+        { "value": "16" },
+        { "value": "sixteen" },
+        { "value": "17" },
+        { "value": "seventeen" }
+      ]
+    },
+    {
+      "sampleValue": {
+        "value": "18-24"
+      },
+      "synonyms": [
+        { "value": "18" },
+        { "value": "eighteen" },
+        { "value": "19" },
+        { "value": "nineteen" },
+        { "value": "20" },
+        { "value": "twenty" },
+        { "value": "21" },
+        { "value": "twenty one" },
+        { "value": "22" },
+        { "value": "twenty two" },
+        { "value": "23" },
+        { "value": "twenty three" },
+        { "value": "24" },
+        { "value": "twenty four" }
       ]
     }
   ],
