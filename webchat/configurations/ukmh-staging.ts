@@ -265,6 +265,7 @@ export const config: Configuration = {
   translations,
   preEngagementConfig,
   mapHelplineLanguage,
+  memberDisplayOptions,
   captureIp,
   contactType,
 };
