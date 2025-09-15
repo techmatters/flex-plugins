@@ -25,7 +25,7 @@ locals {
       webchat : {
         channel_type     = "web"
         contact_identity = ""
-        templatefile     = "/app/twilio-iac/helplines/as/templates/studio-flows/messaging-blocking-lambda-location-block.tftpl"
+        templatefile     = "/app/twilio-iac/helplines/as/templates/studio-flows/messaging-blocking-lambda-location-block-sd.tftpl"
         channel_flow_vars = {
           allowed_shortcode_locations = "US,CL,ZA"
         }
