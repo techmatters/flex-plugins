@@ -17,7 +17,7 @@ locals {
       widget_from                           = "Aselo"
       chat_blocked_message                  = "Sorry, you're not able to contact SafeSpot from this device or account"
       error_message                         = "There has been an error with your message, please try writing us again."
-      ip_location_finder_url                = "https://hrm-staging.tl.techmatters.org/lambda/ipLocationFinder"
+      ip_location_finder_url                = "https://hrm-production.tl.techmatters.org/lambda/ipLocationFinder"
       outside_country_message               = "Thank you for reaching out to Aselo. Please note that our services are available exclusively to individuals currently residing in US. If you are located in US but are using a VPN that does not indicate a US IP address, we recommend connecting via a standard, approved internet protocol to access our support. If you are outside US, we encourage you to visit Throughline [https://silenthill.findahelpline.com/] to locate support services available in your region. We appreciate your understanding and hope you are able to find the assistance you need. Best regards, The Aselo Team"
     }
 
