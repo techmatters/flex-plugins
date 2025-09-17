@@ -44,7 +44,7 @@ export enum ResourceSearchStatus {
   Error,
 }
 
-export type FilterSelections = {
+type FilterSelections = {
   [filter: string]: number | string | boolean | string[];
 };
 
