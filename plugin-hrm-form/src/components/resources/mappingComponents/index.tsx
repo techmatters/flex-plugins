@@ -14,13 +14,37 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 import React from 'react';
+import type { Handler } from 'redux-promise-middleware-actions/lib/reducers';
 
+import type { LoadReferenceActionFunction } from '../../../states/resources/referenceLocations';
+import type { FilterOption } from '../../../states/resources/types';
+import type { ReferrableResourceSearchState, SearchSettings } from '../../../states/resources/search';
 import type { ReferrableResource } from '../../../services/ResourceService';
 import { getHrmConfig } from '../../../hrmConfig';
 import KHPResourcePreviewAttributes from './khpMappings/ResourcePreviewAttributes';
 import KHPResourceViewAttributes from './khpMappings/ResourceViewAttributes';
+import KHPResourceSearchFilters from './khpMappings/ResourceSearchFilters';
+import KHPResourcesSearchResultsDescriptionDetails from './khpMappings/ResourcesSearchResultsDescriptionDetails';
+import * as khpFilterSelectionState from './khpMappings/filterSelectionState';
 import USCHResourcePreviewAttributes from './uschMappings/ResourcePreviewAttributes';
 import USCHResourceViewAttributes from './uschMappings/ResourceViewAttributes';
+import USCHResourceSearchFilters from './uschMappings/ResourceSearchFilters';
+import USCHResourcesSearchResultsDescriptionDetails from './uschMappings/ResourcesSearchResultsDescriptionDetails';
+import * as uschFilterSelectionState from './uschMappings/filterSelectionState';
+
+type FilterSelectionState = {
+  loadReferenceActionFunction: (list: string) => LoadReferenceActionFunction;
+  handlerUpdateSearchFormAction: Handler<
+    ReferrableResourceSearchState,
+    { type: string; payload: SearchSettings },
+    ReferrableResourceSearchState
+  >;
+  handleLoadReferenceLocationsAsyncActionFulfilled: Handler<
+    ReferrableResourceSearchState,
+    { type: string; payload: { list: string; options: FilterOption[] } },
+    ReferrableResourceSearchState
+  >;
+};
 
 type MappingComponents = {
   ResourcePreviewAttributes: React.FC<{
@@ -29,16 +53,25 @@ type MappingComponents = {
   ResourceViewAttributes: React.FC<{
     resource: ReferrableResource;
   }>;
+  ResourceSearchFilters: React.FC<{}>;
+  ResourcesSearchResultsDescriptionDetails: React.FC<{}>;
+  filterSelectionState: FilterSelectionState;
 };
 
 const khpMappingComponents: MappingComponents = {
   ResourcePreviewAttributes: KHPResourcePreviewAttributes,
   ResourceViewAttributes: KHPResourceViewAttributes,
+  ResourceSearchFilters: KHPResourceSearchFilters,
+  ResourcesSearchResultsDescriptionDetails: KHPResourcesSearchResultsDescriptionDetails,
+  filterSelectionState: khpFilterSelectionState,
 };
 
 const uschMappingComponents: MappingComponents = {
   ResourcePreviewAttributes: USCHResourcePreviewAttributes,
   ResourceViewAttributes: USCHResourceViewAttributes,
+  ResourceSearchFilters: USCHResourceSearchFilters,
+  ResourcesSearchResultsDescriptionDetails: USCHResourcesSearchResultsDescriptionDetails,
+  filterSelectionState: uschFilterSelectionState,
 };
 
 const getMappingComponents = (): MappingComponents => {
@@ -58,7 +91,8 @@ const getMappingComponents = (): MappingComponents => {
   }
 };
 
-// eslint-disable-next-line import/no-unused-modules
+export const getFilterSelectionState = (): FilterSelectionState => getMappingComponents().filterSelectionState;
+
 export const ResourcePreviewAttributes: React.FC<{ resource: ReferrableResource }> = ({ resource }) => {
   return React.useMemo(() => {
     const mappingComponents = getMappingComponents();
@@ -66,10 +100,23 @@ export const ResourcePreviewAttributes: React.FC<{ resource: ReferrableResource 
   }, [resource]);
 };
 
-// eslint-disable-next-line import/no-unused-modules
 export const ResourceViewAttributes: React.FC<{ resource: ReferrableResource }> = ({ resource }) => {
   return React.useMemo(() => {
     const mappingComponents = getMappingComponents();
     return <mappingComponents.ResourceViewAttributes resource={resource} />;
   }, [resource]);
+};
+
+export const ResourceSearchFilters: React.FC<{}> = () => {
+  return React.useMemo(() => {
+    const mappingComponents = getMappingComponents();
+    return <mappingComponents.ResourceSearchFilters />;
+  }, []);
+};
+
+export const ResourcesSearchResultsDescriptionDetails: React.FC<{}> = () => {
+  return React.useMemo(() => {
+    const mappingComponents = getMappingComponents();
+    return <mappingComponents.ResourcesSearchResultsDescriptionDetails />;
+  }, []);
 };
