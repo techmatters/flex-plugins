@@ -17,13 +17,9 @@
 import { createAction, createAsyncAction, createReducer } from 'redux-promise-middleware-actions';
 
 import { ReferrableResource, searchResources, suggestSearch } from '../../services/ResourceService';
-import {
-  loadReferenceLocationsAsyncAction,
-  ReferenceLocationList,
-  referenceLocationsInitialState,
-  ReferenceLocationState,
-} from './referenceLocations';
+import { loadReferenceLocationsAsyncAction, ReferenceLocationState } from './referenceLocations';
 import { FilterOption } from './types';
+import { getFilterSelectionState } from '../../components/resources/mappingComponents';
 
 export type SearchSettings = Omit<Partial<ReferrableResourceSearchState['parameters']>, 'filterSelections'> & {
   filterSelections?: Partial<ReferrableResourceSearchState['parameters']['filterSelections']>;
@@ -48,38 +44,18 @@ export enum ResourceSearchStatus {
   Error,
 }
 
-const minAgeOptions: FilterOption<number>[] = [
-  { label: '0', value: undefined },
-  ...Array.from({ length: 30 }, (_, i) => i + 1).map(age => ({ value: age })),
-];
+export type FilterSelections = {
+  [filter: string]: number | string | boolean | string[];
+};
 
-const maxAgeOptions: FilterOption<number>[] = [
-  ...Array.from({ length: 30 }, (_, i) => i).map(age => ({ value: age })),
-  { value: undefined, label: '30+' },
-];
 export type ReferrableResourceSearchState = {
   referenceLocations: ReferenceLocationState;
   filterOptions: {
-    feeStructure: FilterOption[];
-    howServiceIsOffered: FilterOption[];
-    province: FilterOption[];
-    region?: FilterOption[];
-    city?: FilterOption[];
-    minEligibleAge: FilterOption<number>[];
-    maxEligibleAge: FilterOption<number>[];
+    [filter: string]: FilterOption<string | number>[];
   };
   parameters: {
     generalSearchTerm: string;
-    filterSelections: {
-      city?: string;
-      region?: string;
-      province?: string;
-      interpretationTranslationServicesAvailable?: true;
-      minEligibleAge?: number;
-      maxEligibleAge?: number;
-      feeStructure?: string[];
-      howServiceIsOffered?: string[];
-    };
+    filterSelections: FilterSelections;
     pageSize: number;
   };
   currentPage: number;
@@ -105,24 +81,8 @@ export const suggestSearchInitialState: SuggestSearch = {
 };
 
 export const initialState: ReferrableResourceSearchState = {
-  referenceLocations: referenceLocationsInitialState,
-  filterOptions: {
-    feeStructure: [
-      { value: 'Free' },
-      { value: 'Cost Unknown' },
-      { value: 'Membership Fee' },
-      { value: 'Cost for Service' },
-      { value: 'Sliding Scale' },
-      { value: 'One Time Small Fee' },
-      { value: 'Covered by Health Insurance' },
-    ],
-    howServiceIsOffered: [{ value: 'In-person Support' }, { value: 'Online Support' }, { value: 'Phone Support' }],
-    province: [{ label: '', value: undefined }],
-    region: [],
-    city: [],
-    minEligibleAge: minAgeOptions,
-    maxEligibleAge: maxAgeOptions,
-  },
+  referenceLocations: {},
+  filterOptions: {},
   parameters: {
     filterSelections: {},
     generalSearchTerm: '',
@@ -192,60 +152,6 @@ export const suggestSearchAsyncAction = createAsyncAction(SUGGEST_ACTION, async 
  */
 const HARD_SEARCH_RESULT_LIMIT = 10000;
 
-const getFilterOptionsBasedOnSelections = (
-  filterSelections: ReferrableResourceSearchState['parameters']['filterSelections'],
-  { provinceOptions, regionOptions, cityOptions }: ReferenceLocationState,
-): ReferrableResourceSearchState['filterOptions'] => {
-  return {
-    ...initialState.filterOptions,
-    minEligibleAge: minAgeOptions.filter(opt => {
-      const maxSelection = filterSelections.maxEligibleAge ?? 1000;
-      return opt.value === undefined || opt.value <= maxSelection;
-    }),
-    maxEligibleAge: maxAgeOptions.filter(opt => {
-      const minSelection = filterSelections.minEligibleAge ?? 0;
-      return opt.value === undefined || opt.value >= minSelection;
-    }),
-    province: [{ label: '', value: undefined }, ...provinceOptions],
-    region: [
-      { label: '', value: undefined },
-      ...regionOptions.filter(
-        ({ value }) => filterSelections.province && (!value || value.startsWith(filterSelections.province)),
-      ),
-    ],
-    city: [
-      { label: '', value: undefined },
-      ...cityOptions.filter(({ value }) => {
-        const { region, province } = filterSelections;
-        if (!province) {
-          return false;
-        }
-        const startPrefix = region?.startsWith(province) ? region : province;
-        return !value || value.startsWith(startPrefix);
-      }),
-    ],
-  };
-};
-
-const ensureFilterSelectionsAreValid = (
-  filterSelections: ReferrableResourceSearchState['parameters']['filterSelections'],
-  filterOptions: ReferrableResourceSearchState['filterOptions'],
-): ReferrableResourceSearchState['parameters']['filterSelections'] => {
-  return {
-    // Don't add undefined values to the filter selections
-    ...Object.fromEntries(
-      Object.entries({
-        ...filterSelections,
-        minEligibleAge: filterOptions.minEligibleAge.find(opt => opt.value === filterSelections.minEligibleAge)?.value,
-        maxEligibleAge: filterOptions.maxEligibleAge.find(opt => opt.value === filterSelections.maxEligibleAge)?.value,
-        province: filterOptions.province.find(opt => opt.value === filterSelections.province)?.value,
-        region: filterOptions.region.find(opt => opt.value === filterSelections.region)?.value,
-        city: filterOptions.city.find(opt => opt.value === filterSelections.city)?.value,
-      }).filter(([, value]) => value !== undefined),
-    ),
-  };
-};
-
 const rejectedAsyncAction = (handleAction, asyncAction) =>
   handleAction(asyncAction, (state, { payload }) => {
     return {
@@ -309,28 +215,6 @@ export const resourceSearchReducer = createReducer(initialState, handleAction =>
 
   rejectedAsyncAction(handleAction, searchResourceAsyncAction.rejected),
 
-  handleAction(updateSearchFormAction, (state, { payload }) => {
-    const updatedFilterOptions = getFilterOptionsBasedOnSelections(
-      {
-        ...state.parameters.filterSelections,
-        ...(payload.filterSelections ?? {}),
-      },
-      state.referenceLocations,
-    );
-    const validatedFilterSelections = ensureFilterSelectionsAreValid(
-      { ...state.parameters.filterSelections, ...payload.filterSelections },
-      updatedFilterOptions,
-    );
-    return {
-      ...state,
-      filterOptions: updatedFilterOptions,
-      parameters: {
-        ...state.parameters,
-        ...payload,
-        filterSelections: validatedFilterSelections,
-      },
-    };
-  }),
   handleAction(resetSearchFormAction, state => {
     return {
       ...state,
@@ -350,38 +234,12 @@ export const resourceSearchReducer = createReducer(initialState, handleAction =>
       currentPage: 0,
     };
   }),
-  handleAction(loadReferenceLocationsAsyncAction.fulfilled, (state, { payload }) => {
-    const { list, options } = payload;
-    let { referenceLocations } = state;
-    switch (list) {
-      case ReferenceLocationList.Provinces:
-        referenceLocations = { ...state.referenceLocations, provinceOptions: options };
-        break;
-      case ReferenceLocationList.Regions:
-        referenceLocations = { ...state.referenceLocations, regionOptions: options };
-        break;
-      case ReferenceLocationList.Cities:
-        referenceLocations = { ...state.referenceLocations, cityOptions: options };
-        break;
-      default:
-    }
-
-    const updatedFilterOptions = getFilterOptionsBasedOnSelections(
-      state.parameters.filterSelections,
-      state.referenceLocations,
-    );
-    const validatedFilterSelections = ensureFilterSelectionsAreValid(
-      state.parameters.filterSelections,
-      updatedFilterOptions,
-    );
-
-    return {
-      ...state,
-      filterOptions: updatedFilterOptions,
-      filterSelections: validatedFilterSelections,
-      referenceLocations,
-    };
-  }),
+  handleAction(updateSearchFormAction, (...params) =>
+    getFilterSelectionState().handlerUpdateSearchFormAction(...params),
+  ),
+  handleAction(loadReferenceLocationsAsyncAction.fulfilled, (...params) =>
+    getFilterSelectionState().handleLoadReferenceLocationsAsyncActionFulfilled(...params),
+  ),
 ]);
 
 export const getCurrentPageResults = ({
