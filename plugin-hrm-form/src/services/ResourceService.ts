@@ -82,3 +82,15 @@ export const getReferenceAttributeList = async (
   // Lists can contain slashes, but we only want them as one path section
   return fetchResourceApi(`reference-attributes/${encodeURIComponent(list)}?${queryString}`);
 };
+
+export const getDistinctStringAttributes = async ({
+  key,
+  language,
+}: {
+  key: string;
+  language?: string;
+}): Promise<{ value: string }[]> => {
+  const queryItems = Object.entries({ key, language }).filter(([, value]) => value);
+  const queryString = queryItems.map(([k, v]) => `${k}=${v}`).join('&');
+  return fetchResourceApi(`list-string-attributes?${queryString}`);
+};
