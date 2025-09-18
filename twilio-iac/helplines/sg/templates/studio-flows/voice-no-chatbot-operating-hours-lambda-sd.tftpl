@@ -54,7 +54,7 @@ ${
         },
         "workflow": "${workflow_sids.master}",
         "channel": "${task_channel_sids.voice}",
-        "attributes": "${channel_attributes.default}",
+        "attributes": "{\n  \"type\": \"inbound\",\n  \"name\": \"{{trigger.call.From | replace: 'sip:', '' | split: '@' | first}}\",\n  \"ignoreAgent\": \"\",\n  \"helpline\":\"Tinkle Friend\",\n  \"transferTargetType\": \"\",\n  \"channelType\": \"voice\",\n  \"conversations\": {\n    \"hang_up_by\": \"Customer\"\n  }\n}",
         "waitUrlMethod": "GET"
       }
     },
@@ -274,16 +274,16 @@ ${
             {
               "friendly_name": "If value does_not_start_with +65",
               "arguments": [
-                "{{trigger.call.From}}"
+                "{{trigger.call.From | replace: 'sip:', '' | split: '@' | first}}"
               ],
               "type": "does_not_start_with",
-              "value": "sip:+65"
+              "value": "+65"
             }
           ]
         }
       ],
       "properties": {
-        "input": "{{trigger.call.From}}",
+        "input": "{{trigger.call.From | replace: 'sip:', '' | split: '@' | first}}",
         "offset": {
           "x": 500,
           "y": 180
