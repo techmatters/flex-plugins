@@ -1,5 +1,73 @@
 [
   {
+    "name": "categoryOfConcern",
+    "label": "Category of Concern - Abuse Types",
+    "type": "select",
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "Bullying",
+        "label": "Bullying"
+      },
+      {
+        "value": "Discriminatory",
+        "label": "Discriminatory"
+      },
+      {
+        "value": "Domestic",
+        "label": "Domestic"
+      },
+      {
+        "value": "Emotional",
+        "label": "Emotional"
+      },
+      {
+        "value": "Financial",
+        "label": "Financial"
+      },
+      {
+        "value": "Forced Marriage",
+        "label": "Forced Marriage"
+      },
+      {
+        "value": "Missing from Home",
+        "label": "Missing from Home"
+      },
+      {
+        "value": "Modern Slavery",
+        "label": "Modern Slavery"
+      },
+      {
+        "value": "Neglect",
+        "label": "Neglect"
+      },
+      {
+        "value": "Organisational",
+        "label": "Organisational"
+      },
+      {
+        "value": "Other",
+        "label": "Other"
+      },
+      {
+        "value": "Physical",
+        "label": "Physical"
+      },
+      {
+        "value": "Pregnancy",
+        "label": "Pregnancy"
+      },
+      {
+        "value": "Sexual",
+        "label": "Sexual"
+      }
+    ],
+    "isPII": false
+  },
+  {
     "name": "riskFactors",
     "label": "Risk factors",
     "type": "textarea",
