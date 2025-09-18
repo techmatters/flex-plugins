@@ -32,9 +32,9 @@ import {
   USCHFilterOptions,
   USCHFilterSelections,
   USCHReferenceLocationList,
-  loadReferenceActionFunction,
 } from '../../../../states/resources/filterSelectionState/usch';
 import asyncDispatch from '../../../../states/asyncDispatch';
+import { getFilterSelectionState } from '..';
 
 const NO_LOCATION_SELECTED = '__NO_LOCATION_SELECTED__';
 
@@ -44,6 +44,7 @@ type LocationFilterName = Extract<keyof USCHFilterSelections, 'country' | 'provi
 const ResourceSearchFilters: React.FC<{}> = () => {
   const dispatch = useDispatch();
   const searchAsyncDispatch = asyncDispatch<AnyAction>(dispatch);
+  const { loadReferenceActionFunction } = getFilterSelectionState();
 
   const { referenceLocations, filterOptions, parameters } = useSelector(
     (state: RootState) => state[namespace][referrableResourcesBase].search,

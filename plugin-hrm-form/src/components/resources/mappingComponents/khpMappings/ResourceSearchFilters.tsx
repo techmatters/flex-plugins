@@ -43,9 +43,9 @@ import {
   KHPFilterOptions,
   KHPFilterSelections,
   KHPReferenceLocationList,
-  loadReferenceActionFunction,
 } from '../../../../states/resources/filterSelectionState/khp';
 import asyncDispatch from '../../../../states/asyncDispatch';
+import { getFilterSelectionState } from '..';
 
 const NO_AGE_SELECTED = -1;
 const NO_LOCATION_SELECTED = '__NO_LOCATION_SELECTED__';
@@ -58,6 +58,7 @@ type CheckboxFilterName = keyof Pick<KHPFilterSelections, 'howServiceIsOffered' 
 const ResourceSearchFilters: React.FC<{}> = () => {
   const dispatch = useDispatch();
   const searchAsyncDispatch = asyncDispatch<AnyAction>(dispatch);
+  const { loadReferenceActionFunction } = getFilterSelectionState();
 
   const { enable_region_resource_search: enableRegionResourceSearch } = getAseloFeatureFlags();
   const { referenceLocations, filterOptions, parameters } = useSelector(
