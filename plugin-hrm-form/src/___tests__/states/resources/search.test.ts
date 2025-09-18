@@ -35,6 +35,7 @@ import {
   SearchSettings,
   updateSearchFormAction,
 } from '../../../states/resources/search';
+import { initialFilterOptions } from '../../../components/resources/mappingComponents/khpMappings/filterSelectionState';
 
 jest.mock('../../../services/ResourceService');
 jest.mock('../../../hrmConfig');
@@ -59,7 +60,7 @@ const testStore = (stateChanges: Partial<ReferrableResourceSearchState> = {}) =>
 
 const nonInitialState: ReferrableResourceSearchState = {
   filterOptions: {
-    ...initialState.filterOptions,
+    ...initialFilterOptions,
     region: [{ label: '', value: undefined }],
     city: [{ label: '', value: undefined }],
   },
