@@ -26,6 +26,7 @@ import hrmPermissions from '../aselo-service-mocks/hrm/permissions';
 import { preload, useUnminifiedFlex } from '../flex-in-a-box/local-resources';
 import { aseloPage } from '../aselo-service-mocks/aselo-page';
 import { delay } from 'mockttp/dist/util/util';
+import { navigateToAgentDesktop } from '../ui-global-setup';
 
 test.describe.serial('Agent Desktop', () => {
   let page: Page;
@@ -43,11 +44,7 @@ test.describe.serial('Agent Desktop', () => {
   });
 
   test('Agent Desktop loads', async () => {
-    await page.goto('/agent-desktop', { waitUntil: 'networkidle' });
-    const callsWaitingLabel = page.locator(
-      "div.Twilio-AgentDesktopView-default div[data-testid='Fake Queue-voice']",
-    );
-    await callsWaitingLabel.waitFor({ state: 'visible' });
+    await navigateToAgentDesktop(page);
   });
 
   test('Contacts waiting passes AXE scan', async () => {

@@ -25,7 +25,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Use Node.js
         uses: actions/setup-node@v4
@@ -75,10 +75,21 @@ jobs:
       matrix:
         lambda_path:
           - account-scoped
+          - facebookCallback
+          - facebookSignin
+          - instagramWebhook
+          - ipLocationFinder
+          - lineSetup
+          - lineWebhook
+          - modicaWebhook
+          - recaptchaVerify
+          - savePendingContacts
+          - TwilioErrorReporter
+          - twilioEventStreams
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
@@ -96,7 +107,7 @@ jobs:
       - name: Read ECR url from SSM
         uses: "marvinpinto/action-inject-ssm-secrets@latest"
         with:
-          ssm_parameter: /twilio/lambda/${{ matrix.lambda_path }}/ecr-url
+          ssm_parameter: /global/lambda/${{ matrix.lambda_path }}/ecr-url
           env_variable_name: ECR_URL
       - name: Set Build Args
         run: |

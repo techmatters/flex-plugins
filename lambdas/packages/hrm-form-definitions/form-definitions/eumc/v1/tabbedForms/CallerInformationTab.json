@@ -59,10 +59,6 @@
         "label": "Other adult known to the child"
       },
       {
-        "value": "Person in a position of responsibility",
-        "label": "Person in a position of responsibility (Please specify)"
-      },
-      {
         "value": "Sibling",
         "label": "Sibling (s)"
       },
@@ -78,7 +74,7 @@
   },
   {
     "name": "otherRelationship",
-    "label": "SpecifyOther",
+    "label": "Specify",
     "type": "input"
   },
   {
@@ -86,139 +82,1021 @@
     "label": "Street Address",
     "type": "input"
   },
-  {
-    "name": "country",
-    "label": "Country",
-    "type": "select",
-    "options": [
-      {
-        "value": "Unknown",
-        "label": ""
-      },
-      {
-        "value": "France",
-        "label": "France"
-      },
-      {
-        "value": "Germany",
-        "label": "Germany"
-      },
-      {
-        "value": "Italy",
-        "label": "Italy"
-      },
-      {
-        "value": "Spain",
-        "label": "Spain"
-      },
-      {
-        "value": "Netherlands",
-        "label": ""
+    {
+      "name": "countryhouse",
+      "label": "Country",
+      "type": "select",
+      "options":[
+        {
+          "value": "unknown",
+          "label": "Unknown"
+        },
+        {
+          "value": "aruba",
+          "label": "Aruba"
+        },
+        {
+          "value": "afghanistan",
+          "label": "Afghanistan"
+        },
+        {
+          "value": "angola",
+          "label": "Angola"
+        },
+        {
+          "value": "anguilla",
+          "label": "Anguilla"
+        },
+        {
+          "value": "åland_islands",
+          "label": "Åland Islands"
+        },
+        {
+          "value": "albania",
+          "label": "Albania"
+        },
+        {
+          "value": "andorra",
+          "label": "Andorra"
+        },
+        {
+          "value": "united_arab_emirates",
+          "label": "United Arab Emirates"
+        },
+        {
+          "value": "argentina",
+          "label": "Argentina"
+        },
+        {
+          "value": "armenia",
+          "label": "Armenia"
+        },
+        {
+          "value": "american_samoa",
+          "label": "American Samoa"
+        },
+        {
+          "value": "antarctica",
+          "label": "Antarctica"
+        },
+        {
+          "value": "french_southern_territories",
+          "label": "French Southern Territories"
+        },
+        {
+          "value": "antigua_and_barbuda",
+          "label": "Antigua and Barbuda"
+        },
+        {
+          "value": "australia",
+          "label": "Australia"
+        },
+        {
+          "value": "austria",
+          "label": "Austria"
+        },
+        {
+          "value": "azerbaijan",
+          "label": "Azerbaijan"
+        },
+        {
+          "value": "burundi",
+          "label": "Burundi"
+        },
+        {
+          "value": "belgium",
+          "label": "Belgium"
+        },
+        {
+          "value": "benin",
+          "label": "Benin"
+        },
+        {
+          "value": "bonaire,_sint_eustatius_and_saba",
+          "label": "Bonaire, Sint Eustatius and Saba"
+        },
+        {
+          "value": "burkina_faso",
+          "label": "Burkina Faso"
+        },
+        {
+          "value": "bangladesh",
+          "label": "Bangladesh"
+        },
+        {
+          "value": "bulgaria",
+          "label": "Bulgaria"
+        },
+        {
+          "value": "bahrain",
+          "label": "Bahrain"
+        },
+        {
+          "value": "bahamas",
+          "label": "Bahamas"
+        },
+        {
+          "value": "bosnia_and_herzegovina",
+          "label": "Bosnia and Herzegovina"
+        },
+        {
+          "value": "saint_barthélemy",
+          "label": "Saint Barthélemy"
+        },
+        {
+          "value": "belarus",
+          "label": "Belarus"
+        },
+        {
+          "value": "belize",
+          "label": "Belize"
+        },
+        {
+          "value": "bermuda",
+          "label": "Bermuda"
+        },
+        {
+          "value": "bolivia,_plurinational_state_of",
+          "label": "Bolivia, Plurinational State of"
+        },
+        {
+          "value": "brazil",
+          "label": "Brazil"
+        },
+        {
+          "value": "barbados",
+          "label": "Barbados"
+        },
+        {
+          "value": "brunei_darussalam",
+          "label": "Brunei Darussalam"
+        },
+        {
+          "value": "bhutan",
+          "label": "Bhutan"
+        },
+        {
+          "value": "bouvet_island",
+          "label": "Bouvet Island"
+        },
+        {
+          "value": "botswana",
+          "label": "Botswana"
+        },
+        {
+          "value": "central_african_republic",
+          "label": "Central African Republic"
+        },
+        {
+          "value": "canada",
+          "label": "Canada"
+        },
+        {
+          "value": "cocos_(keeling)_islands",
+          "label": "Cocos (Keeling) Islands"
+        },
+        {
+          "value": "switzerland",
+          "label": "Switzerland"
+        },
+        {
+          "value": "chile",
+          "label": "Chile"
+        },
+        {
+          "value": "china",
+          "label": "China"
+        },
+        {
+          "value": "côte_d'ivoire",
+          "label": "Côte d'Ivoire"
+        },
+        {
+          "value": "cameroon",
+          "label": "Cameroon"
+        },
+        {
+          "value": "congo,_the_democratic_republic_of_the",
+          "label": "Congo, The Democratic Republic of the"
+        },
+        {
+          "value": "congo",
+          "label": "Congo"
+        },
+        {
+          "value": "cook_islands",
+          "label": "Cook Islands"
+        },
+        {
+          "value": "colombia",
+          "label": "Colombia"
+        },
+        {
+          "value": "comoros",
+          "label": "Comoros"
+        },
+        {
+          "value": "cabo_verde",
+          "label": "Cabo Verde"
+        },
+        {
+          "value": "costa_rica",
+          "label": "Costa Rica"
+        },
+        {
+          "value": "cuba",
+          "label": "Cuba"
+        },
+        {
+          "value": "curaçao",
+          "label": "Curaçao"
+        },
+        {
+          "value": "christmas_island",
+          "label": "Christmas Island"
+        },
+        {
+          "value": "cayman_islands",
+          "label": "Cayman Islands"
+        },
+        {
+          "value": "cyprus",
+          "label": "Cyprus"
+        },
+        {
+          "value": "czechia",
+          "label": "Czechia"
+        },
+        {
+          "value": "germany",
+          "label": "Germany"
+        },
+        {
+          "value": "djibouti",
+          "label": "Djibouti"
+        },
+        {
+          "value": "dominica",
+          "label": "Dominica"
+        },
+        {
+          "value": "denmark",
+          "label": "Denmark"
+        },
+        {
+          "value": "dominican_republic",
+          "label": "Dominican Republic"
+        },
+        {
+          "value": "algeria",
+          "label": "Algeria"
+        },
+        {
+          "value": "ecuador",
+          "label": "Ecuador"
+        },
+        {
+          "value": "egypt",
+          "label": "Egypt"
+        },
+        {
+          "value": "eritrea",
+          "label": "Eritrea"
+        },
+        {
+          "value": "western_sahara",
+          "label": "Western Sahara"
+        },
+        {
+          "value": "spain",
+          "label": "Spain"
+        },
+        {
+          "value": "estonia",
+          "label": "Estonia"
+        },
+        {
+          "value": "ethiopia",
+          "label": "Ethiopia"
+        },
+        {
+          "value": "finland",
+          "label": "Finland"
+        },
+        {
+          "value": "fiji",
+          "label": "Fiji"
+        },
+        {
+          "value": "falkland_islands_(malvinas)",
+          "label": "Falkland Islands (Malvinas)"
+        },
+        {
+          "value": "france",
+          "label": "France"
+        },
+        {
+          "value": "faroe_islands",
+          "label": "Faroe Islands"
+        },
+        {
+          "value": "micronesia,_federated_states_of",
+          "label": "Micronesia, Federated States of"
+        },
+        {
+          "value": "gabon",
+          "label": "Gabon"
+        },
+        {
+          "value": "united_kingdom",
+          "label": "United Kingdom"
+        },
+        {
+          "value": "georgia",
+          "label": "Georgia"
+        },
+        {
+          "value": "guernsey",
+          "label": "Guernsey"
+        },
+        {
+          "value": "ghana",
+          "label": "Ghana"
+        },
+        {
+          "value": "gibraltar",
+          "label": "Gibraltar"
+        },
+        {
+          "value": "guinea",
+          "label": "Guinea"
+        },
+        {
+          "value": "guadeloupe",
+          "label": "Guadeloupe"
+        },
+        {
+          "value": "gambia",
+          "label": "Gambia"
+        },
+        {
+          "value": "guinea-bissau",
+          "label": "Guinea-Bissau"
+        },
+        {
+          "value": "equatorial_guinea",
+          "label": "Equatorial Guinea"
+        },
+        {
+          "value": "greece",
+          "label": "Greece"
+        },
+        {
+          "value": "grenada",
+          "label": "Grenada"
+        },
+        {
+          "value": "greenland",
+          "label": "Greenland"
+        },
+        {
+          "value": "guatemala",
+          "label": "Guatemala"
+        },
+        {
+          "value": "french_guiana",
+          "label": "French Guiana"
+        },
+        {
+          "value": "guam",
+          "label": "Guam"
+        },
+        {
+          "value": "guyana",
+          "label": "Guyana"
+        },
+        {
+          "value": "hong_kong",
+          "label": "Hong Kong"
+        },
+        {
+          "value": "heard_island_and_mcdonald_islands",
+          "label": "Heard Island and McDonald Islands"
+        },
+        {
+          "value": "honduras",
+          "label": "Honduras"
+        },
+        {
+          "value": "croatia",
+          "label": "Croatia"
+        },
+        {
+          "value": "haiti",
+          "label": "Haiti"
+        },
+        {
+          "value": "hungary",
+          "label": "Hungary"
+        },
+        {
+          "value": "indonesia",
+          "label": "Indonesia"
+        },
+        {
+          "value": "isle_of_man",
+          "label": "Isle of Man"
+        },
+        {
+          "value": "india",
+          "label": "India"
+        },
+        {
+          "value": "british_indian_ocean_territory",
+          "label": "British Indian Ocean Territory"
+        },
+        {
+          "value": "ireland",
+          "label": "Ireland"
+        },
+        {
+          "value": "iran,_islamic_republic_of",
+          "label": "Iran, Islamic Republic of"
+        },
+        {
+          "value": "iraq",
+          "label": "Iraq"
+        },
+        {
+          "value": "iceland",
+          "label": "Iceland"
+        },
+        {
+          "value": "israel",
+          "label": "Israel"
+        },
+        {
+          "value": "italy",
+          "label": "Italy"
+        },
+        {
+          "value": "jamaica",
+          "label": "Jamaica"
+        },
+        {
+          "value": "jersey",
+          "label": "Jersey"
+        },
+        {
+          "value": "jordan",
+          "label": "Jordan"
+        },
+        {
+          "value": "japan",
+          "label": "Japan"
+        },
+        {
+          "value": "kazakhstan",
+          "label": "Kazakhstan"
+        },
+        {
+          "value": "kenya",
+          "label": "Kenya"
+        },
+        {
+          "value": "kyrgyzstan",
+          "label": "Kyrgyzstan"
+        },
+        {
+          "value": "cambodia",
+          "label": "Cambodia"
+        },
+        {
+          "value": "kiribati",
+          "label": "Kiribati"
+        },
+        {
+          "value": "saint_kitts_and_nevis",
+          "label": "Saint Kitts and Nevis"
+        },
+        {
+          "value": "korea,_republic_of",
+          "label": "Korea, Republic of"
+        },
+        {
+          "value": "kuwait",
+          "label": "Kuwait"
+        },
+        {
+          "value": "lao_people's_democratic_republic",
+          "label": "Lao People's Democratic Republic"
+        },
+        {
+          "value": "lebanon",
+          "label": "Lebanon"
+        },
+        {
+          "value": "liberia",
+          "label": "Liberia"
+        },
+        {
+          "value": "libya",
+          "label": "Libya"
+        },
+        {
+          "value": "saint_lucia",
+          "label": "Saint Lucia"
+        },
+        {
+          "value": "liechtenstein",
+          "label": "Liechtenstein"
+        },
+        {
+          "value": "sri_lanka",
+          "label": "Sri Lanka"
+        },
+        {
+          "value": "lesotho",
+          "label": "Lesotho"
+        },
+        {
+          "value": "lithuania",
+          "label": "Lithuania"
+        },
+        {
+          "value": "luxembourg",
+          "label": "Luxembourg"
+        },
+        {
+          "value": "latvia",
+          "label": "Latvia"
+        },
+        {
+          "value": "macao",
+          "label": "Macao"
+        },
+        {
+          "value": "saint_martin_(french_part)",
+          "label": "Saint Martin (French part)"
+        },
+        {
+          "value": "morocco",
+          "label": "Morocco"
+        },
+        {
+          "value": "monaco",
+          "label": "Monaco"
+        },
+        {
+          "value": "moldova,_republic_of",
+          "label": "Moldova, Republic of"
+        },
+        {
+          "value": "madagascar",
+          "label": "Madagascar"
+        },
+        {
+          "value": "maldives",
+          "label": "Maldives"
+        },
+        {
+          "value": "mexico",
+          "label": "Mexico"
+        },
+        {
+          "value": "marshall_islands",
+          "label": "Marshall Islands"
+        },
+        {
+          "value": "north_macedonia",
+          "label": "North Macedonia"
+        },
+        {
+          "value": "mali",
+          "label": "Mali"
+        },
+        {
+          "value": "malta",
+          "label": "Malta"
+        },
+        {
+          "value": "myanmar",
+          "label": "Myanmar"
+        },
+        {
+          "value": "montenegro",
+          "label": "Montenegro"
+        },
+        {
+          "value": "mongolia",
+          "label": "Mongolia"
+        },
+        {
+          "value": "northern_mariana_islands",
+          "label": "Northern Mariana Islands"
+        },
+        {
+          "value": "mozambique",
+          "label": "Mozambique"
+        },
+        {
+          "value": "mauritania",
+          "label": "Mauritania"
+        },
+        {
+          "value": "montserrat",
+          "label": "Montserrat"
+        },
+        {
+          "value": "martinique",
+          "label": "Martinique"
+        },
+        {
+          "value": "mauritius",
+          "label": "Mauritius"
+        },
+        {
+          "value": "malawi",
+          "label": "Malawi"
+        },
+        {
+          "value": "malaysia",
+          "label": "Malaysia"
+        },
+        {
+          "value": "mayotte",
+          "label": "Mayotte"
+        },
+        {
+          "value": "namibia",
+          "label": "Namibia"
+        },
+        {
+          "value": "new_caledonia",
+          "label": "New Caledonia"
+        },
+        {
+          "value": "niger",
+          "label": "Niger"
+        },
+        {
+          "value": "norfolk_island",
+          "label": "Norfolk Island"
+        },
+        {
+          "value": "nigeria",
+          "label": "Nigeria"
+        },
+        {
+          "value": "nicaragua",
+          "label": "Nicaragua"
+        },
+        {
+          "value": "niue",
+          "label": "Niue"
+        },
+        {
+          "value": "netherlands",
+          "label": "Netherlands"
+        },
+        {
+          "value": "norway",
+          "label": "Norway"
+        },
+        {
+          "value": "nepal",
+          "label": "Nepal"
+        },
+        {
+          "value": "nauru",
+          "label": "Nauru"
+        },
+        {
+          "value": "new_zealand",
+          "label": "New Zealand"
+        },
+        {
+          "value": "oman",
+          "label": "Oman"
+        },
+        {
+          "value": "pakistan",
+          "label": "Pakistan"
+        },
+        {
+          "value": "panama",
+          "label": "Panama"
+        },
+        {
+          "value": "pitcairn",
+          "label": "Pitcairn"
+        },
+        {
+          "value": "peru",
+          "label": "Peru"
+        },
+        {
+          "value": "philippines",
+          "label": "Philippines"
+        },
+        {
+          "value": "palau",
+          "label": "Palau"
+        },
+        {
+          "value": "papua_new_guinea",
+          "label": "Papua New Guinea"
+        },
+        {
+          "value": "poland",
+          "label": "Poland"
+        },
+        {
+          "value": "puerto_rico",
+          "label": "Puerto Rico"
+        },
+        {
+          "value": "korea,_democratic_people's_republic_of",
+          "label": "Korea, Democratic People's Republic of"
+        },
+        {
+          "value": "portugal",
+          "label": "Portugal"
+        },
+        {
+          "value": "paraguay",
+          "label": "Paraguay"
+        },
+        {
+          "value": "palestine,_state_of",
+          "label": "Palestine, State of"
+        },
+        {
+          "value": "french_polynesia",
+          "label": "French Polynesia"
+        },
+        {
+          "value": "qatar",
+          "label": "Qatar"
+        },
+        {
+          "value": "réunion",
+          "label": "Réunion"
+        },
+        {
+          "value": "romania",
+          "label": "Romania"
+        },
+        {
+          "value": "russian_federation",
+          "label": "Russian Federation"
+        },
+        {
+          "value": "rwanda",
+          "label": "Rwanda"
+        },
+        {
+          "value": "saudi_arabia",
+          "label": "Saudi Arabia"
+        },
+        {
+          "value": "sudan",
+          "label": "Sudan"
+        },
+        {
+          "value": "senegal",
+          "label": "Senegal"
+        },
+        {
+          "value": "singapore",
+          "label": "Singapore"
+        },
+        {
+          "value": "south_georgia_and_the_south_sandwich_islands",
+          "label": "South Georgia and the South Sandwich Islands"
+        },
+        {
+          "value": "saint_helena,_ascension_and_tristan_da_cunha",
+          "label": "Saint Helena, Ascension and Tristan da Cunha"
+        },
+        {
+          "value": "svalbard_and_jan_mayen",
+          "label": "Svalbard and Jan Mayen"
+        },
+        {
+          "value": "solomon_islands",
+          "label": "Solomon Islands"
+        },
+        {
+          "value": "sierra_leone",
+          "label": "Sierra Leone"
+        },
+        {
+          "value": "el_salvador",
+          "label": "El Salvador"
+        },
+        {
+          "value": "san_marino",
+          "label": "San Marino"
+        },
+        {
+          "value": "somalia",
+          "label": "Somalia"
+        },
+        {
+          "value": "saint_pierre_and_miquelon",
+          "label": "Saint Pierre and Miquelon"
+        },
+        {
+          "value": "serbia",
+          "label": "Serbia"
+        },
+        {
+          "value": "south_sudan",
+          "label": "South Sudan"
+        },
+        {
+          "value": "sao_tome_and_principe",
+          "label": "Sao Tome and Principe"
+        },
+        {
+          "value": "suriname",
+          "label": "Suriname"
+        },
+        {
+          "value": "slovakia",
+          "label": "Slovakia"
+        },
+        {
+          "value": "slovenia",
+          "label": "Slovenia"
+        },
+        {
+          "value": "sweden",
+          "label": "Sweden"
+        },
+        {
+          "value": "eswatini",
+          "label": "Eswatini"
+        },
+        {
+          "value": "sint_maarten_(dutch_part)",
+          "label": "Sint Maarten (Dutch part)"
+        },
+        {
+          "value": "seychelles",
+          "label": "Seychelles"
+        },
+        {
+          "value": "syrian_arab_republic",
+          "label": "Syrian Arab Republic"
+        },
+        {
+          "value": "turks_and_caicos_islands",
+          "label": "Turks and Caicos Islands"
+        },
+        {
+          "value": "chad",
+          "label": "Chad"
+        },
+        {
+          "value": "togo",
+          "label": "Togo"
+        },
+        {
+          "value": "thailand",
+          "label": "Thailand"
+        },
+        {
+          "value": "tajikistan",
+          "label": "Tajikistan"
+        },
+        {
+          "value": "tokelau",
+          "label": "Tokelau"
+        },
+        {
+          "value": "turkmenistan",
+          "label": "Turkmenistan"
+        },
+        {
+          "value": "timor-leste",
+          "label": "Timor-Leste"
+        },
+        {
+          "value": "tonga",
+          "label": "Tonga"
+        },
+        {
+          "value": "trinidad_and_tobago",
+          "label": "Trinidad and Tobago"
+        },
+        {
+          "value": "tunisia",
+          "label": "Tunisia"
+        },
+        {
+          "value": "turkey",
+          "label": "Turkey"
+        },
+        {
+          "value": "tuvalu",
+          "label": "Tuvalu"
+        },
+        {
+          "value": "taiwan,_province_of_china",
+          "label": "Taiwan, Province of China"
+        },
+        {
+          "value": "tanzania,_united_republic_of",
+          "label": "Tanzania, United Republic of"
+        },
+        {
+          "value": "uganda",
+          "label": "Uganda"
+        },
+        {
+          "value": "ukraine",
+          "label": "Ukraine"
+        },
+        {
+          "value": "united_states_minor_outlying_islands",
+          "label": "United States Minor Outlying Islands"
+        },
+        {
+          "value": "uruguay",
+          "label": "Uruguay"
+        },
+        {
+          "value": "united_states",
+          "label": "United States"
+        },
+        {
+          "value": "uzbekistan",
+          "label": "Uzbekistan"
+        },
+        {
+          "value": "holy_see_(vatican_city_state)",
+          "label": "Holy See (Vatican City State)"
+        },
+        {
+          "value": "saint_vincent_and_the_grenadines",
+          "label": "Saint Vincent and the Grenadines"
+        },
+        {
+          "value": "venezuela,_bolivarian_republic_of",
+          "label": "Venezuela, Bolivarian Republic of"
+        },
+        {
+          "value": "virgin_islands,_british",
+          "label": "Virgin Islands, British"
+        },
+        {
+          "value": "virgin_islands,_u.s.",
+          "label": "Virgin Islands, U.S."
+        },
+        {
+          "value": "viet_nam",
+          "label": "Viet Nam"
+        },
+        {
+          "value": "vanuatu",
+          "label": "Vanuatu"
+        },
+        {
+          "value": "wallis_and_futuna",
+          "label": "Wallis and Futuna"
+        },
+        {
+          "value": "samoa",
+          "label": "Samoa"
+        },
+        {
+          "value": "yemen",
+          "label": "Yemen"
+        },
+        {
+          "value": "south_africa",
+          "label": "South Africa"
+        },
+        {
+          "value": "zambia",
+          "label": "Zambia"
+        },
+        {
+          "value": "zimbabwe",
+          "label": "Zimbabwe"
+        }
+      ],
+      "required": {
+        "value": true,
+        "message": "RequiredFieldError"
       }
-    ],
-    "required": {
-      "value": true,
-      "message": "RequiredFieldError"
-    }
   },
   {
     "name": "City",
     "label": "City",
-    "type": "dependent-select",
-    "dependsOn": "country",
-    "defaultOption": { "value": "Unknown", "label": "Unknown" },
-    "options": {
-      "France": [
-        { "value": "Paris", "label": "Paris" },
-        { "value": "Marseille", "label": "Marseille" },
-        { "value": "Lyon", "label": "Lyon" },
-        { "value": "Toulouse", "label": "Toulouse" },
-        { "value": "Nice", "label": "Nice" },
-        { "value": "Nantes", "label": "Nantes" },
-        { "value": "Strasbourg", "label": "Strasbourg" },
-        { "value": "Montpellier", "label": "Montpellier" },
-        { "value": "Bordeaux", "label": "Bordeaux" },
-        { "value": "Lille", "label": "Lille" },
-        { "value": "Rennes", "label": "Rennes" },
-        { "value": "Reims", "label": "Reims" },
-        { "value": "Le Havre", "label": "Le Havre" },
-        { "value": "Cergy‑Pontoise", "label": "Cergy‑Pontoise" },
-        { "value": "Saint‑Étienne", "label": "Saint‑Étienne" },
-        { "value": "Unknown", "label": "Unknown" }
-      ],
-      "Germany": [
-        { "value": "Berlin", "label": "Berlin" },
-        { "value": "Hamburg", "label": "Hamburg" },
-        { "value": "Munich", "label": "Munich" },
-        { "value": "Cologne", "label": "Cologne" },
-        { "value": "Frankfurt", "label": "Frankfurt" },
-        { "value": "Stuttgart", "label": "Stuttgart" },
-        { "value": "Düsseldorf", "label": "Düsseldorf" },
-        { "value": "Leipzig", "label": "Leipzig" },
-        { "value": "Dortmund", "label": "Dortmund" },
-        { "value": "Essen", "label": "Essen" },
-        { "value": "Bremen", "label": "Bremen" },
-        { "value": "Dresden", "label": "Dresden" },
-        { "value": "Hanover", "label": "Hanover" },
-        { "value": "Nuremberg", "label": "Nuremberg" },
-        { "value": "Duisburg", "label": "Duisburg" },
-        { "value": "Unknown", "label": "Unknown" }
-      ],
-      "Italy": [
-        { "value": "Rome", "label": "Rome" },
-        { "value": "Milan", "label": "Milan" },
-        { "value": "Naples", "label": "Naples" },
-        { "value": "Turin", "label": "Turin" },
-        { "value": "Palermo", "label": "Palermo" },
-        { "value": "Genoa", "label": "Genoa" },
-        { "value": "Bologna", "label": "Bologna" },
-        { "value": "Florence", "label": "Florence" },
-        { "value": "Bari", "label": "Bari" },
-        { "value": "Catania", "label": "Catania" },
-        { "value": "Venice", "label": "Venice" },
-        { "value": "Verona", "label": "Verona" },
-        { "value": "Messina", "label": "Messina" },
-        { "value": "Padua", "label": "Padua" },
-        { "value": "Trieste", "label": "Trieste" },
-        { "value": "Unknown", "label": "Unknown" }
-      ],
-      "Spain": [
-        { "value": "Madrid", "label": "Madrid" },
-        { "value": "Barcelona", "label": "Barcelona" },
-        { "value": "Valencia", "label": "Valencia" },
-        { "value": "Seville", "label": "Seville" },
-        { "value": "Zaragoza", "label": "Zaragoza" },
-        { "value": "Málaga", "label": "Málaga" },
-        { "value": "Murcia", "label": "Murcia" },
-        { "value": "Palma de Mallorca", "label": "Palma de Mallorca" },
-        { "value": "Las Palmas de Gran Canaria", "label": "Las Palmas de Gran Canaria" },
-        { "value": "Bilbao", "label": "Bilbao" },
-        { "value": "Alicante", "label": "Alicante" },
-        { "value": "Córdoba", "label": "Córdoba" },
-        { "value": "Valladolid", "label": "Valladolid" },
-        { "value": "Vigo", "label": "Vigo" },
-        { "value": "Gijón", "label": "Gijón" },
-        { "value": "Unknown", "label": "Unknown" }
-      ],
-      "Netherlands": [
-        { "value": "Amsterdam", "label": "Amsterdam" },
-        { "value": "Rotterdam", "label": "Rotterdam" },
-        { "value": "The Hague", "label": "The Hague" },
-        { "value": "Utrecht", "label": "Utrecht" },
-        { "value": "Eindhoven", "label": "Eindhoven" },
-        { "value": "Groningen", "label": "Groningen" },
-        { "value": "Tilburg", "label": "Tilburg" },
-        { "value": "Breda", "label": "Breda" },
-        { "value": "Enschede", "label": "Enschede" },
-        { "value": "Haarlem", "label": "Haarlem" },
-        { "value": "Leiden", "label": "Leiden" },
-        { "value": "Maastricht", "label": "Maastricht" },
-        { "value": "Apeldoorn", "label": "Apeldoorn" },
-        { "value": "Dordrecht", "label": "Dordrecht" },
-        { "value": "'s‑Hertogenbosch", "label": "'s‑Hertogenbosch" },
-        { "value": "Unknown", "label": "Unknown" }
-      ]
-    }
+    "type": "input"
   },
   {
     "name": "phone1",
@@ -253,16 +1131,20 @@
         "label": "Unknown"
       },
       {
-        "value": "Boy",
-        "label": "Boy/Man"
+        "value": "man",
+        "label": "Man"
       },
       {
-        "value": "Girl",
-        "label": "Girl/Woman"
+        "value": "woman",
+        "label": "Woman"
       },
       {
         "value": "Non-Binary",
-        "label": "Non-Binary/Transgender"
+        "label": "Non-Binary"
+      },
+      {
+        "value": "transgender",
+        "label": "Transgender"
       },
       {
         "value": "Other",
@@ -281,46 +1163,46 @@
     "options": [
       {
         "value": "Unknown",
-        "label": ""
+        "label": "Unknown"
       },
       {
-        "value": "0",
+        "value": "00",
         "label": "0"
       },
       {
-        "value": "1",
+        "value": "01",
         "label": "1"
       },
       {
-        "value": "2",
+        "value": "02",
         "label": "2"
       },
       {
-        "value": "3",
+        "value": "03",
         "label": "3"
       },
       {
-        "value": "4",
+        "value": "04",
         "label": "4"
       },
       {
-        "value": "5",
+        "value": "05",
         "label": "5"
       },
       {
-        "value": "6",
+        "value": "06",
         "label": "6"
       },
       {
-        "value": "7",
+        "value": "07",
         "label": "7"
       },
       {
-        "value": "8",
+        "value": "08",
         "label": "8"
       },
       {
-        "value": "9",
+        "value": "09",
         "label": "9"
       },
       {
@@ -388,68 +1270,1537 @@
         "label": "25"
       },
       {
-        "value": ">25",
-        "label": ">25"
+        "value": "26",
+        "label": "26"
       },
       {
-        "value": "Unknown",
-        "label": "Unknown"
+        "value": "27",
+        "label": "27"
       },
       {
-        "value": "Other",
-        "label": "Other"
+        "value": "28",
+        "label": "28"
+      },
+      {
+        "value": "29",
+        "label": "29"
+      },
+      {
+        "value": "30",
+        "label": "30"
+      },
+      {
+        "value": "31",
+        "label": "31"
+      },
+      {
+        "value": "32",
+        "label": "32"
+      },
+      {
+        "value": "33",
+        "label": "33"
+      },
+      {
+        "value": "34",
+        "label": "34"
+      },
+      {
+        "value": "35",
+        "label": "35"
+      },
+      {
+        "value": "36",
+        "label": "36"
+      },
+      {
+        "value": "37",
+        "label": "37"
+      },
+      {
+        "value": "38",
+        "label": "38"
+      },
+      {
+        "value": "39",
+        "label": "39"
+      },
+      {
+        "value": "40",
+        "label": "40"
+      },
+      {
+        "value": "41",
+        "label": "41"
+      },
+      {
+        "value": "42",
+        "label": "42"
+      },
+      {
+        "value": "43",
+        "label": "43"
+      },
+      {
+        "value": "44",
+        "label": "44"
+      },
+      {
+        "value": "45",
+        "label": "45"
+      },
+      {
+        "value": "46",
+        "label": "46"
+      },
+      {
+        "value": "47",
+        "label": "47"
+      },
+      {
+        "value": "48",
+        "label": "48"
+      },
+      {
+        "value": "49",
+        "label": "49"
+      },
+      {
+        "value": "50",
+        "label": "50"
+      },
+      {
+        "value": "51",
+        "label": "51"
+      },
+      {
+        "value": "52",
+        "label": "52"
+      },
+      {
+        "value": "53",
+        "label": "53"
+      },
+      {
+        "value": "54",
+        "label": "54"
+      },
+      {
+        "value": "55",
+        "label": "55"
+      },
+      {
+        "value": "56",
+        "label": "56"
+      },
+      {
+        "value": "57",
+        "label": "57"
+      },
+      {
+        "value": "58",
+        "label": "58"
+      },
+      {
+        "value": "59",
+        "label": "59"
+      },
+      {
+        "value": "60",
+        "label": "60"
+      },
+      {
+        "value": "61",
+        "label": "61"
+      },
+      {
+        "value": "62",
+        "label": "62"
+      },
+      {
+        "value": "63",
+        "label": "63"
+      },
+      {
+        "value": "64",
+        "label": "64"
+      },
+      {
+        "value": "65",
+        "label": "65"
+      },
+      {
+        "value": "66",
+        "label": "66"
+      },
+      {
+        "value": "67",
+        "label": "67"
+      },
+      {
+        "value": "68",
+        "label": "68"
+      },
+      {
+        "value": "69",
+        "label": "69"
+      },
+      {
+        "value": "70",
+        "label": "70"
+      },
+      {
+        "value": "71",
+        "label": "71"
+      },
+      {
+        "value": "72",
+        "label": "72"
+      },
+      {
+        "value": "73",
+        "label": "73"
+      },
+      {
+        "value": "74",
+        "label": "74"
+      },
+      {
+        "value": "75",
+        "label": "75"
+      },
+      {
+        "value": "76",
+        "label": "76"
+      },
+      {
+        "value": "77",
+        "label": "77"
+      },
+      {
+        "value": "78",
+        "label": "78"
+      },
+      {
+        "value": "79",
+        "label": "79"
+      },
+      {
+        "value": "80",
+        "label": "80"
+      },
+      {
+        "value": "81",
+        "label": "81"
+      },
+      {
+        "value": "82",
+        "label": "82"
+      },
+      {
+        "value": "83",
+        "label": "83"
+      },
+      {
+        "value": "84",
+        "label": "84"
+      },
+      {
+        "value": "85",
+        "label": "85"
+      },
+      {
+        "value": "86",
+        "label": "86"
+      },
+      {
+        "value": "87",
+        "label": "87"
+      },
+      {
+        "value": "88",
+        "label": "88"
+      },
+      {
+        "value": "89",
+        "label": "89"
+      },
+      {
+        "value": "90",
+        "label": "90"
+      },
+      {
+        "value": "91",
+        "label": "91"
+      },
+      {
+        "value": "92",
+        "label": "92"
+      },
+      {
+        "value": "93",
+        "label": "93"
+      },
+      {
+        "value": "94",
+        "label": "94"
+      },
+      {
+        "value": "95",
+        "label": "95"
+      },
+      {
+        "value": "96",
+        "label": "96"
+      },
+      {
+        "value": "97",
+        "label": "97"
+      },
+      {
+        "value": "98",
+        "label": "98"
+      },
+      {
+        "value": "99",
+        "label": "99"
+      },
+      {
+        "value": "100",
+        "label": "100"
       }
     ],
     "required": {
       "value": true,
       "message": "RequiredFieldError"
-    }
+    },
+    "isPII": false
   },
   {
     "name": "language",
     "label": "Spoken Languages",
     "type": "listbox-multiselect",
-    "options": [
+    "options":[
       {
-        "value": "Unknown",
+        "value": "unknown",
         "label": "Unknown"
       },
       {
-        "value": "French",
+        "value": "afrikaans",
+        "label": "Afrikaans"
+      },
+      {
+        "value": "albanian",
+        "label": "Albanian"
+      },
+      {
+        "value": "amharic",
+        "label": "Amharic"
+      },
+      {
+        "value": "arabic",
+        "label": "Arabic"
+      },
+      {
+        "value": "armenian",
+        "label": "Armenian"
+      },
+      {
+        "value": "azerbaijani",
+        "label": "Azerbaijani"
+      },
+      {
+        "value": "basque",
+        "label": "Basque"
+      },
+      {
+        "value": "belarusian",
+        "label": "Belarusian"
+      },
+      {
+        "value": "bengali",
+        "label": "Bengali"
+      },
+      {
+        "value": "bosnian",
+        "label": "Bosnian"
+      },
+      {
+        "value": "bulgarian",
+        "label": "Bulgarian"
+      },
+      {
+        "value": "burmese",
+        "label": "Burmese"
+      },
+      {
+        "value": "catalan",
+        "label": "Catalan"
+      },
+      {
+        "value": "cebuano",
+        "label": "Cebuano"
+      },
+      {
+        "value": "chichewa",
+        "label": "Chichewa"
+      },
+      {
+        "value": "chinese",
+        "label": "Chinese"
+      },
+      {
+        "value": "corsican",
+        "label": "Corsican"
+      },
+      {
+        "value": "croatian",
+        "label": "Croatian"
+      },
+      {
+        "value": "czech",
+        "label": "Czech"
+      },
+      {
+        "value": "danish",
+        "label": "Danish"
+      },
+      {
+        "value": "dutch",
+        "label": "Dutch"
+      },
+      {
+        "value": "english",
+        "label": "English"
+      },
+      {
+        "value": "esperanto",
+        "label": "Esperanto"
+      },
+      {
+        "value": "estonian",
+        "label": "Estonian"
+      },
+      {
+        "value": "filipino",
+        "label": "Filipino"
+      },
+      {
+        "value": "finnish",
+        "label": "Finnish"
+      },
+      {
+        "value": "french",
         "label": "French"
+      },
+      {
+        "value": "frisian",
+        "label": "Frisian"
+      },
+      {
+        "value": "galician",
+        "label": "Galician"
+      },
+      {
+        "value": "georgian",
+        "label": "Georgian"
+      },
+      {
+        "value": "german",
+        "label": "German"
+      },
+      {
+        "value": "greek",
+        "label": "Greek"
+      },
+      {
+        "value": "gujarati",
+        "label": "Gujarati"
+      },
+      {
+        "value": "haitian creole",
+        "label": "Haitian Creole"
+      },
+      {
+        "value": "hausa",
+        "label": "Hausa"
+      },
+      {
+        "value": "hawaiian",
+        "label": "Hawaiian"
+      },
+      {
+        "value": "hebrew",
+        "label": "Hebrew"
+      },
+      {
+        "value": "hindi",
+        "label": "Hindi"
+      },
+      {
+        "value": "hmong",
+        "label": "Hmong"
+      },
+      {
+        "value": "hungarian",
+        "label": "Hungarian"
+      },
+      {
+        "value": "icelandic",
+        "label": "Icelandic"
+      },
+      {
+        "value": "igbo",
+        "label": "Igbo"
+      },
+      {
+        "value": "indonesian",
+        "label": "Indonesian"
+      },
+      {
+        "value": "irish",
+        "label": "Irish"
+      },
+      {
+        "value": "italian",
+        "label": "Italian"
+      },
+      {
+        "value": "japanese",
+        "label": "Japanese"
+      },
+      {
+        "value": "javanese",
+        "label": "Javanese"
+      },
+      {
+        "value": "kannada",
+        "label": "Kannada"
+      },
+      {
+        "value": "kazakh",
+        "label": "Kazakh"
+      },
+      {
+        "value": "khmer",
+        "label": "Khmer"
+      },
+      {
+        "value": "kinyarwanda",
+        "label": "Kinyarwanda"
+      },
+      {
+        "value": "korean",
+        "label": "Korean"
+      },
+      {
+        "value": "kurdish",
+        "label": "Kurdish"
+      },
+      {
+        "value": "kyrgyz",
+        "label": "Kyrgyz"
+      },
+      {
+        "value": "lao",
+        "label": "Lao"
+      },
+      {
+        "value": "latin",
+        "label": "Latin"
+      },
+      {
+        "value": "latvian",
+        "label": "Latvian"
+      },
+      {
+        "value": "lithuanian",
+        "label": "Lithuanian"
+      },
+      {
+        "value": "luxembourgish",
+        "label": "Luxembourgish"
+      },
+      {
+        "value": "macedonian",
+        "label": "Macedonian"
+      },
+      {
+        "value": "malagasy",
+        "label": "Malagasy"
+      },
+      {
+        "value": "malay",
+        "label": "Malay"
+      },
+      {
+        "value": "malayalam",
+        "label": "Malayalam"
+      },
+      {
+        "value": "maltese",
+        "label": "Maltese"
+      },
+      {
+        "value": "maori",
+        "label": "Maori"
+      },
+      {
+        "value": "marathi",
+        "label": "Marathi"
+      },
+      {
+        "value": "mongolian",
+        "label": "Mongolian"
+      },
+      {
+        "value": "myanmar",
+        "label": "Myanmar"
+      },
+      {
+        "value": "nepali",
+        "label": "Nepali"
+      },
+      {
+        "value": "norwegian",
+        "label": "Norwegian"
+      },
+      {
+        "value": "odia",
+        "label": "Odia"
+      },
+      {
+        "value": "pashto",
+        "label": "Pashto"
+      },
+      {
+        "value": "persian",
+        "label": "Persian"
+      },
+      {
+        "value": "polish",
+        "label": "Polish"
+      },
+      {
+        "value": "portuguese",
+        "label": "Portuguese"
+      },
+      {
+        "value": "punjabi",
+        "label": "Punjabi"
+      },
+      {
+        "value": "romanian",
+        "label": "Romanian"
+      },
+      {
+        "value": "russian",
+        "label": "Russian"
+      },
+      {
+        "value": "samoan",
+        "label": "Samoan"
+      },
+      {
+        "value": "scots gaelic",
+        "label": "Scots Gaelic"
+      },
+      {
+        "value": "serbian",
+        "label": "Serbian"
+      },
+      {
+        "value": "sesotho",
+        "label": "Sesotho"
+      },
+      {
+        "value": "shona",
+        "label": "Shona"
+      },
+      {
+        "value": "sindhi",
+        "label": "Sindhi"
+      },
+      {
+        "value": "sinhala",
+        "label": "Sinhala"
+      },
+      {
+        "value": "slovak",
+        "label": "Slovak"
+      },
+      {
+        "value": "slovenian",
+        "label": "Slovenian"
+      },
+      {
+        "value": "somali",
+        "label": "Somali"
+      },
+      {
+        "value": "spanish",
+        "label": "Spanish"
+      },
+      {
+        "value": "sundanese",
+        "label": "Sundanese"
+      },
+      {
+        "value": "swahili",
+        "label": "Swahili"
+      },
+      {
+        "value": "swedish",
+        "label": "Swedish"
+      },
+      {
+        "value": "tajik",
+        "label": "Tajik"
+      },
+      {
+        "value": "tamil",
+        "label": "Tamil"
+      },
+      {
+        "value": "tatar",
+        "label": "Tatar"
+      },
+      {
+        "value": "telugu",
+        "label": "Telugu"
+      },
+      {
+        "value": "thai",
+        "label": "Thai"
+      },
+      {
+        "value": "turkish",
+        "label": "Turkish"
+      },
+      {
+        "value": "turkmen",
+        "label": "Turkmen"
+      },
+      {
+        "value": "ukrainian",
+        "label": "Ukrainian"
+      },
+      {
+        "value": "urdu",
+        "label": "Urdu"
+      },
+      {
+        "value": "uyghur",
+        "label": "Uyghur"
+      },
+      {
+        "value": "uzbek",
+        "label": "Uzbek"
+      },
+      {
+        "value": "vietnamese",
+        "label": "Vietnamese"
+      },
+      {
+        "value": "welsh",
+        "label": "Welsh"
+      },
+      {
+        "value": "xhosa",
+        "label": "Xhosa"
+      },
+      {
+        "value": "yiddish",
+        "label": "Yiddish"
+      },
+      {
+        "value": "yoruba",
+        "label": "Yoruba"
+      },
+      {
+        "value": "zulu",
+        "label": "Zulu"
       }
-    ],
-    "required": {
-      "value": true,
-      "message": "RequiredFieldError"
-    }
+    ]
   },
   {
     "name": "nationality",
     "label": "Nationality(ies)",
     "type": "listbox-multiselect",
-    "options": [
-      {
-        "value": "Unknown",
-        "label": "Unknown"
-      },
-      {
-        "value": "Spanish",
-        "label": "Spanish"
-      }
-    ],
-    "required": {
-      "value": true,
-      "message": "RequiredFieldError"
+    "options":[
+    {
+      "value": "unknown",
+      "label": "Unknown"
+    },
+    {
+      "value": "afghan",
+      "label": "Afghan"
+    },
+    {
+      "value": "albanian",
+      "label": "Albanian"
+    },
+    {
+      "value": "algerian",
+      "label": "Algerian"
+    },
+    {
+      "value": "american",
+      "label": "American"
+    },
+    {
+      "value": "andorran",
+      "label": "Andorran"
+    },
+    {
+      "value": "angolan",
+      "label": "Angolan"
+    },
+    {
+      "value": "antiguan",
+      "label": "Antiguan"
+    },
+    {
+      "value": "argentine",
+      "label": "Argentine"
+    },
+    {
+      "value": "armenian",
+      "label": "Armenian"
+    },
+    {
+      "value": "australian",
+      "label": "Australian"
+    },
+    {
+      "value": "austrian",
+      "label": "Austrian"
+    },
+    {
+      "value": "azerbaijani",
+      "label": "Azerbaijani"
+    },
+    {
+      "value": "bahamian",
+      "label": "Bahamian"
+    },
+    {
+      "value": "bahraini",
+      "label": "Bahraini"
+    },
+    {
+      "value": "bangladeshi",
+      "label": "Bangladeshi"
+    },
+    {
+      "value": "barbadian",
+      "label": "Barbadian"
+    },
+    {
+      "value": "belarusian",
+      "label": "Belarusian"
+    },
+    {
+      "value": "belgian",
+      "label": "Belgian"
+    },
+    {
+      "value": "belizean",
+      "label": "Belizean"
+    },
+    {
+      "value": "beninese",
+      "label": "Beninese"
+    },
+    {
+      "value": "bhutanese",
+      "label": "Bhutanese"
+    },
+    {
+      "value": "bolivian",
+      "label": "Bolivian"
+    },
+    {
+      "value": "bosnian",
+      "label": "Bosnian"
+    },
+    {
+      "value": "botswanan",
+      "label": "Botswanan"
+    },
+    {
+      "value": "brazilian",
+      "label": "Brazilian"
+    },
+    {
+      "value": "british",
+      "label": "British"
+    },
+    {
+      "value": "bruneian",
+      "label": "Bruneian"
+    },
+    {
+      "value": "bulgarian",
+      "label": "Bulgarian"
+    },
+    {
+      "value": "burkinabe",
+      "label": "Burkinabe"
+    },
+    {
+      "value": "burmese",
+      "label": "Burmese"
+    },
+    {
+      "value": "burundian",
+      "label": "Burundian"
+    },
+    {
+      "value": "cambodian",
+      "label": "Cambodian"
+    },
+    {
+      "value": "cameroonian",
+      "label": "Cameroonian"
+    },
+    {
+      "value": "canadian",
+      "label": "Canadian"
+    },
+    {
+      "value": "cape verdean",
+      "label": "Cape Verdean"
+    },
+    {
+      "value": "central african",
+      "label": "Central African"
+    },
+    {
+      "value": "chadian",
+      "label": "Chadian"
+    },
+    {
+      "value": "chilean",
+      "label": "Chilean"
+    },
+    {
+      "value": "chinese",
+      "label": "Chinese"
+    },
+    {
+      "value": "colombian",
+      "label": "Colombian"
+    },
+    {
+      "value": "comoran",
+      "label": "Comoran"
+    },
+    {
+      "value": "congolese",
+      "label": "Congolese"
+    },
+    {
+      "value": "costa rican",
+      "label": "Costa Rican"
+    },
+    {
+      "value": "croatian",
+      "label": "Croatian"
+    },
+    {
+      "value": "cuban",
+      "label": "Cuban"
+    },
+    {
+      "value": "cypriot",
+      "label": "Cypriot"
+    },
+    {
+      "value": "czech",
+      "label": "Czech"
+    },
+    {
+      "value": "danish",
+      "label": "Danish"
+    },
+    {
+      "value": "djiboutian",
+      "label": "Djiboutian"
+    },
+    {
+      "value": "dominican",
+      "label": "Dominican"
+    },
+    {
+      "value": "dutch",
+      "label": "Dutch"
+    },
+    {
+      "value": "east timorese",
+      "label": "East Timorese"
+    },
+    {
+      "value": "ecuadorean",
+      "label": "Ecuadorean"
+    },
+    {
+      "value": "egyptian",
+      "label": "Egyptian"
+    },
+    {
+      "value": "emirati",
+      "label": "Emirati"
+    },
+    {
+      "value": "equatorial guinean",
+      "label": "Equatorial Guinean"
+    },
+    {
+      "value": "eritrean",
+      "label": "Eritrean"
+    },
+    {
+      "value": "estonian",
+      "label": "Estonian"
+    },
+    {
+      "value": "ethiopian",
+      "label": "Ethiopian"
+    },
+    {
+      "value": "fijian",
+      "label": "Fijian"
+    },
+    {
+      "value": "finnish",
+      "label": "Finnish"
+    },
+    {
+      "value": "french",
+      "label": "French"
+    },
+    {
+      "value": "gabonese",
+      "label": "Gabonese"
+    },
+    {
+      "value": "gambian",
+      "label": "Gambian"
+    },
+    {
+      "value": "georgian",
+      "label": "Georgian"
+    },
+    {
+      "value": "german",
+      "label": "German"
+    },
+    {
+      "value": "ghanaian",
+      "label": "Ghanaian"
+    },
+    {
+      "value": "greek",
+      "label": "Greek"
+    },
+    {
+      "value": "grenadian",
+      "label": "Grenadian"
+    },
+    {
+      "value": "guatemalan",
+      "label": "Guatemalan"
+    },
+    {
+      "value": "guinean",
+      "label": "Guinean"
+    },
+    {
+      "value": "guinea-bissauan",
+      "label": "Guinea-Bissauan"
+    },
+    {
+      "value": "guyanese",
+      "label": "Guyanese"
+    },
+    {
+      "value": "haitian",
+      "label": "Haitian"
+    },
+    {
+      "value": "honduran",
+      "label": "Honduran"
+    },
+    {
+      "value": "hungarian",
+      "label": "Hungarian"
+    },
+    {
+      "value": "icelandic",
+      "label": "Icelandic"
+    },
+    {
+      "value": "indian",
+      "label": "Indian"
+    },
+    {
+      "value": "indonesian",
+      "label": "Indonesian"
+    },
+    {
+      "value": "iranian",
+      "label": "Iranian"
+    },
+    {
+      "value": "iraqi",
+      "label": "Iraqi"
+    },
+    {
+      "value": "irish",
+      "label": "Irish"
+    },
+    {
+      "value": "israeli",
+      "label": "Israeli"
+    },
+    {
+      "value": "italian",
+      "label": "Italian"
+    },
+    {
+      "value": "ivorian",
+      "label": "Ivorian"
+    },
+    {
+      "value": "jamaican",
+      "label": "Jamaican"
+    },
+    {
+      "value": "japanese",
+      "label": "Japanese"
+    },
+    {
+      "value": "jordanian",
+      "label": "Jordanian"
+    },
+    {
+      "value": "kazakh",
+      "label": "Kazakh"
+    },
+    {
+      "value": "kenyan",
+      "label": "Kenyan"
+    },
+    {
+      "value": "kiribati",
+      "label": "Kiribati"
+    },
+    {
+      "value": "kosovar",
+      "label": "Kosovar"
+    },
+    {
+      "value": "kuwaiti",
+      "label": "Kuwaiti"
+    },
+    {
+      "value": "kyrgyz",
+      "label": "Kyrgyz"
+    },
+    {
+      "value": "laotian",
+      "label": "Laotian"
+    },
+    {
+      "value": "latvian",
+      "label": "Latvian"
+    },
+    {
+      "value": "lebanese",
+      "label": "Lebanese"
+    },
+    {
+      "value": "liberian",
+      "label": "Liberian"
+    },
+    {
+      "value": "libyan",
+      "label": "Libyan"
+    },
+    {
+      "value": "liechtensteiner",
+      "label": "Liechtensteiner"
+    },
+    {
+      "value": "lithuanian",
+      "label": "Lithuanian"
+    },
+    {
+      "value": "luxembourgish",
+      "label": "Luxembourgish"
+    },
+    {
+      "value": "macedonian",
+      "label": "Macedonian"
+    },
+    {
+      "value": "malagasy",
+      "label": "Malagasy"
+    },
+    {
+      "value": "malawian",
+      "label": "Malawian"
+    },
+    {
+      "value": "malaysian",
+      "label": "Malaysian"
+    },
+    {
+      "value": "maldivian",
+      "label": "Maldivian"
+    },
+    {
+      "value": "malian",
+      "label": "Malian"
+    },
+    {
+      "value": "maltese",
+      "label": "Maltese"
+    },
+    {
+      "value": "marshallese",
+      "label": "Marshallese"
+    },
+    {
+      "value": "mauritanian",
+      "label": "Mauritanian"
+    },
+    {
+      "value": "mauritian",
+      "label": "Mauritian"
+    },
+    {
+      "value": "mexican",
+      "label": "Mexican"
+    },
+    {
+      "value": "micronesian",
+      "label": "Micronesian"
+    },
+    {
+      "value": "moldovan",
+      "label": "Moldovan"
+    },
+    {
+      "value": "monacan",
+      "label": "Monacan"
+    },
+    {
+      "value": "mongolian",
+      "label": "Mongolian"
+    },
+    {
+      "value": "montenegrin",
+      "label": "Montenegrin"
+    },
+    {
+      "value": "moroccan",
+      "label": "Moroccan"
+    },
+    {
+      "value": "mozambican",
+      "label": "Mozambican"
+    },
+    {
+      "value": "namibian",
+      "label": "Namibian"
+    },
+    {
+      "value": "nauruan",
+      "label": "Nauruan"
+    },
+    {
+      "value": "nepalese",
+      "label": "Nepalese"
+    },
+    {
+      "value": "new zealander",
+      "label": "New Zealander"
+    },
+    {
+      "value": "nicaraguan",
+      "label": "Nicaraguan"
+    },
+    {
+      "value": "nigerien",
+      "label": "Nigerien"
+    },
+    {
+      "value": "nigerian",
+      "label": "Nigerian"
+    },
+    {
+      "value": "north korean",
+      "label": "North Korean"
+    },
+    {
+      "value": "norwegian",
+      "label": "Norwegian"
+    },
+    {
+      "value": "omani",
+      "label": "Omani"
+    },
+    {
+      "value": "pakistani",
+      "label": "Pakistani"
+    },
+    {
+      "value": "palauan",
+      "label": "Palauan"
+    },
+    {
+      "value": "panamanian",
+      "label": "Panamanian"
+    },
+    {
+      "value": "papua new guinean",
+      "label": "Papua New Guinean"
+    },
+    {
+      "value": "paraguayan",
+      "label": "Paraguayan"
+    },
+    {
+      "value": "peruvian",
+      "label": "Peruvian"
+    },
+    {
+      "value": "philippine",
+      "label": "Philippine"
+    },
+    {
+      "value": "polish",
+      "label": "Polish"
+    },
+    {
+      "value": "portuguese",
+      "label": "Portuguese"
+    },
+    {
+      "value": "qatari",
+      "label": "Qatari"
+    },
+    {
+      "value": "romanian",
+      "label": "Romanian"
+    },
+    {
+      "value": "russian",
+      "label": "Russian"
+    },
+    {
+      "value": "rwandan",
+      "label": "Rwandan"
+    },
+    {
+      "value": "saint lucian",
+      "label": "Saint Lucian"
+    },
+    {
+      "value": "salvadoran",
+      "label": "Salvadoran"
+    },
+    {
+      "value": "samoan",
+      "label": "Samoan"
+    },
+    {
+      "value": "san marinese",
+      "label": "San Marinese"
+    },
+    {
+      "value": "sao tomean",
+      "label": "Sao Tomean"
+    },
+    {
+      "value": "saudi",
+      "label": "Saudi"
+    },
+    {
+      "value": "scottish",
+      "label": "Scottish"
+    },
+    {
+      "value": "senegalese",
+      "label": "Senegalese"
+    },
+    {
+      "value": "serbian",
+      "label": "Serbian"
+    },
+    {
+      "value": "seychellois",
+      "label": "Seychellois"
+    },
+    {
+      "value": "sierra leonean",
+      "label": "Sierra Leonean"
+    },
+    {
+      "value": "singaporean",
+      "label": "Singaporean"
+    },
+    {
+      "value": "slovak",
+      "label": "Slovak"
+    },
+    {
+      "value": "slovenian",
+      "label": "Slovenian"
+    },
+    {
+      "value": "solomon islander",
+      "label": "Solomon Islander"
+    },
+    {
+      "value": "somali",
+      "label": "Somali"
+    },
+    {
+      "value": "south african",
+      "label": "South African"
+    },
+    {
+      "value": "south korean",
+      "label": "South Korean"
+    },
+    {
+      "value": "spanish",
+      "label": "Spanish"
+    },
+    {
+      "value": "sri lankan",
+      "label": "Sri Lankan"
+    },
+    {
+      "value": "sudanese",
+      "label": "Sudanese"
+    },
+    {
+      "value": "surinamese",
+      "label": "Surinamese"
+    },
+    {
+      "value": "swazi",
+      "label": "Swazi"
+    },
+    {
+      "value": "swedish",
+      "label": "Swedish"
+    },
+    {
+      "value": "swiss",
+      "label": "Swiss"
+    },
+    {
+      "value": "syrian",
+      "label": "Syrian"
+    },
+    {
+      "value": "taiwanese",
+      "label": "Taiwanese"
+    },
+    {
+      "value": "tajik",
+      "label": "Tajik"
+    },
+    {
+      "value": "tanzanian",
+      "label": "Tanzanian"
+    },
+    {
+      "value": "thai",
+      "label": "Thai"
+    },
+    {
+      "value": "togolese",
+      "label": "Togolese"
+    },
+    {
+      "value": "tongan",
+      "label": "Tongan"
+    },
+    {
+      "value": "trinidadian",
+      "label": "Trinidadian"
+    },
+    {
+      "value": "tunisian",
+      "label": "Tunisian"
+    },
+    {
+      "value": "turkish",
+      "label": "Turkish"
+    },
+    {
+      "value": "turkmen",
+      "label": "Turkmen"
+    },
+    {
+      "value": "tuvaluan",
+      "label": "Tuvaluan"
+    },
+    {
+      "value": "ugandan",
+      "label": "Ugandan"
+    },
+    {
+      "value": "ukrainian",
+      "label": "Ukrainian"
+    },
+    {
+      "value": "uruguayan",
+      "label": "Uruguayan"
+    },
+    {
+      "value": "uzbek",
+      "label": "Uzbek"
+    },
+    {
+      "value": "vanuatuan",
+      "label": "Vanuatuan"
+    },
+    {
+      "value": "venezuelan",
+      "label": "Venezuelan"
+    },
+    {
+      "value": "vietnamese",
+      "label": "Vietnamese"
+    },
+    {
+      "value": "welsh",
+      "label": "Welsh"
+    },
+    {
+      "value": "yemeni",
+      "label": "Yemeni"
+    },
+    {
+      "value": "zambian",
+      "label": "Zambian"
+    },
+    {
+      "value": "zimbabwean",
+      "label": "Zimbabwean"
     }
+  ]
   },
   {
     "name": "ethnicity",
     "label": "Ethnicity",
-    "type": "input",
-    "required": {
-      "value": true,
-      "message": "RequiredFieldError"
-    }
+    "type": "input"
   }
 ]

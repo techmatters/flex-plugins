@@ -11,7 +11,7 @@ ${
           "event": "incomingMessage"
         },
         {
-          "next": "G2TNSIntro",
+          "next": "run_subflow_system_down",
           "event": "incomingCall"
         },
         {
@@ -967,7 +967,36 @@ ${
           "attributes": "{\"type\": \"inbound\", \"name\": \"{{trigger.call.From}}\",\"ignoreAgent\":\"\", \"transferTargetType\":\"\",\"channelType\":\"voice\", \"interpreter\": \"fr\", \"conversations\": {\"ivr_path\" : \"French Interpreter\", \"hang_up_by\": \"Customer\"}}",
           "waitUrlMethod": "GET"
         }
+      },
+    {
+      "name": "run_subflow_system_down",
+      "type": "run-subflow",
+      "transitions": [
+        {
+          "next": "G2TNSIntro",
+          "event": "completed"
+        },
+        {
+          "next": "G2TNSIntro",
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "flow_sid": "${system_down_studio_subflow_sid}",
+        "flow_revision": "LatestPublished",
+        "offset": {
+          "x": 110,
+          "y": -270
+        },
+        "parameters": [
+          {
+            "type": "string",
+            "value": "true",
+            "key": "system_down"
+          }
+        ]
       }
+    }
   ],
   "initial_state": "Trigger",
   "flags": {

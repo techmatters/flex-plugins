@@ -13,8 +13,17 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
+import { expect, Page } from '@playwright/test';
 
 // eslint-disable-next-line @typescript-eslint/no-empty-function
 async function globalSetup() {}
 
 export default globalSetup;
+
+export const navigateToAgentDesktop = async (page: Page) => {
+  await page.goto('/agent-desktop', { waitUntil: 'domcontentloaded' });
+  const callsWaitingLabel = page.locator(
+    "div.Twilio-AgentDesktopView-default div[data-testid='Fake Queue-voice']",
+  );
+  await expect(callsWaitingLabel).toBeVisible({ timeout: 30000 });
+};

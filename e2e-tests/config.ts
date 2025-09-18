@@ -50,7 +50,7 @@ const skipDataUpdateEnvs = ['staging', 'production'];
 // These are environments where we want to hit remote flex instead of localhost
 const flexEnvs = ['development', 'staging', 'production'];
 
-// This is kindof a hack to get the correct default remote webchat url and twilio account info for the local env
+// This is kind of a hack to get the correct default remote webchat url and twilio account info for the local env
 export const localOverrideEnv = helplineEnv === 'local' ? 'development' : helplineEnv;
 
 export const config: Config = {};
@@ -183,7 +183,7 @@ const configOptions: ConfigOptions = {
   // The storage state path is used to store the state of the browser between tests
   storageStatePath: {
     envKey: 'STORAGE_STATE_PATH',
-    default: () => (getConfigValue('inLambda') ? '/tmp/state.json' : 'temp/state.json'),
+    default: () => (getConfigValue('inLambda') ? '/tmp/storage/state.json' : 'temp/state.json'),
   },
 
   // Specifying a test name will cause only the matching test file to be run.
