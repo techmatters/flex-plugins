@@ -17,8 +17,8 @@
 import React from 'react';
 import { Template } from '@twilio/flex-ui';
 
-import { KhpUiResource } from '../types';
-import { ResourcePreviewAttributeContent, ResourceSubtitle } from '../styles';
+import { KhpUiResource } from './types';
+import { ResourcePreviewAttributeContent, ResourceSubtitle } from '../../styles';
 
 type Props = {
   operations: KhpUiResource['attributes']['operations'];
@@ -78,5 +78,4 @@ const OperatingHours: React.FC<Props> = ({ operations, showDescriptionOfHours })
 
 OperatingHours.displayName = 'OperatingHours';
 
-// eslint-disable-next-line import/no-unused-modules
 export default OperatingHours;

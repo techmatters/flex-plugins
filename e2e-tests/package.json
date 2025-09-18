@@ -16,7 +16,7 @@
     "test:development:e2e:local": "cross-env LOAD_SSM_CONFIG=true HL_ENV=development HL=e2e npm run test -- --headed",
     "test:development:e2e:debug": "cross-env DEBUG=pw:api LOAD_SSM_CONFIG=true HL_ENV=development HL=e2e npm run test -- --headed --debug --retries 0 login",
     "test:staging:ca": "cross-env DEBUG=pw:api LOAD_SSM_CONFIG=true HL_ENV=staging HL=ca npm run test",
-    "test:staging:ca:headed": "LOAD_SSM_CONFIG=true HL_ENV=staging HL=ca SKIP_DATA_UPDATE=true PLAYWRIGHT_BROWSER_TELEMETRY_LEVEL=none npm test -- --headed",
+    "test:staging:ca:headed": "LOAD_SSM_CONFIG=true HL_ENV=staging HL=ca SKIP_DATA_UPDATE=true npm test -- --headed",
     "test:production:ca": "cross-env DEBUG=pw:api LOAD_SSM_CONFIG=true HL_ENV=production HL=ca npm run test",
     "lint": "eslint --ext ts .",
     "lint:fix": "npm run lint -- --fix .",

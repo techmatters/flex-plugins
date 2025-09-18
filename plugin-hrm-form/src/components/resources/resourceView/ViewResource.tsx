@@ -21,27 +21,13 @@ import { AnyAction } from 'redux';
 import { Template } from '@twilio/flex-ui';
 
 import { RootState } from '../../../states';
-import { Box, Column, Row } from '../../../styles';
+import { Box, Column } from '../../../styles';
 import SearchResultsBackButton from '../../search/SearchResults/SearchResultsBackButton';
-import {
-  ResourceAttributesColumn,
-  ResourceAttributesContainer,
-  ResourceTitle,
-  ViewResourceArea,
-  ResourceViewContainer,
-  ResourceSubheading,
-  ResourceSubheadingBold,
-} from '../styles';
-import ResourceAttribute from './ResourceAttribute';
+import { ResourceTitle, ViewResourceArea, ResourceViewContainer } from '../styles';
 import { loadResourceAsyncAction, navigateToSearchAction, ResourceLoadStatus } from '../../../states/resources';
 import asyncDispatch from '../../../states/asyncDispatch';
-import ResourceIdCopyButton from '../ResourceIdCopyButton';
-import ResourceAttributeWithPrivacy from './ResourceAttributeWithPrivacy';
-import SiteDetails from './SiteDetails';
-import OperatingHours from './OperatingHours';
-import { convertKHPResourceAttributes } from '../convertKHPResourceAttributes';
 import { namespace, referrableResourcesBase } from '../../../states/storeNamespaces';
-import useFeatureFlags from '../../../hooks/useFeatureFlags';
+import { ResourceViewAttributes } from '../mappingComponents';
 
 type OwnProps = {
   resourceId: string;
@@ -68,13 +54,11 @@ const connector = connect(mapStateToProps, mapDispatchToProps);
 type Props = OwnProps & ConnectedProps<typeof connector>;
 
 const ViewResource: React.FC<Props> = ({ resource, error, loadViewedResource, navigateToSearch }) => {
-  const { enable_resouorces_updates: enableResourcesUpdates } = useFeatureFlags();
   if (!resource && !error) {
     loadViewedResource();
     return <div>Loading...</div>;
   }
-  const { id, name, attributes } = resource;
-  const resourceAttributes = convertKHPResourceAttributes(attributes, 'en');
+  const { name } = resource;
 
   return (
     <ResourceViewContainer>
@@ -98,160 +82,7 @@ const ViewResource: React.FC<Props> = ({ resource, error, loadViewedResource, na
           {resource && (
             <>
               <ResourceTitle data-testid="resource-title">{name}</ResourceTitle>
-              {enableResourcesUpdates && resourceAttributes.nameDetails && (
-                <Row style={{ marginTop: 5, marginBottom: 5 }}>
-                  <ResourceSubheading data-testid="resource-subtitle">
-                    <Template code="Alternate Name(s)" />
-                    {': '}
-                    <ResourceSubheadingBold data-testid="resource-subtitle">
-                      {resourceAttributes.nameDetails}
-                    </ResourceSubheadingBold>
-                  </ResourceSubheading>
-                </Row>
-              )}
-              {attributes && (
-                <ResourceAttributesContainer>
-                  {/* FIRST COLUMN */}
-                  <ResourceAttributesColumn style={{ flexGrow: 3, paddingLeft: 0, marginLeft: '1px' }}>
-                    {[
-                      {
-                        subtitle: 'Resources-View-Details',
-                        attributeToDisplay: resourceAttributes.description,
-                      },
-                      ...(enableResourcesUpdates
-                        ? [
-                            {
-                              subtitle: 'Resources-View-Notes',
-                              attributeToDisplay: resourceAttributes.notes.join('\n'),
-                            },
-                            {
-                              subtitle: 'Resources-View-RecordType',
-                              attributeToDisplay: resourceAttributes.recordType,
-                            },
-                            {
-                              subtitle: 'Resources-View-Taxonomies',
-                              attributeToDisplay: resourceAttributes.taxonomies.join('\n'),
-                            },
-                          ]
-                        : []),
-                      {
-                        subtitle: 'Resources-View-TargetPopulation',
-                        attributeToDisplay: resourceAttributes.targetPopulation,
-                      },
-                      {
-                        subtitle: 'Resources-View-Accessibility',
-                        attributeToDisplay: resourceAttributes.accessibility,
-                      },
-                      {
-                        subtitle: 'Resources-View-HowToAccessSupport',
-                        attributeToDisplay: resourceAttributes.howToAccessSupport,
-                      },
-                      {
-                        subtitle: 'Resources-View-DocumentsRequired',
-                        attributeToDisplay: resourceAttributes.documentsRequired,
-                      },
-                      { subtitle: 'Resources-View-AgesServed', attributeToDisplay: resourceAttributes.ageRange },
-                      {
-                        subtitle: 'Resources-View-Eligibility',
-                        attributeToDisplay: resourceAttributes.eligibilityPhrase,
-                      },
-                      {
-                        subtitle: 'Resources-View-LanguagesServiced',
-                        attributeToDisplay: resourceAttributes.languagesServiced,
-                      },
-                    ].map(({ subtitle, attributeToDisplay }) => (
-                      <ResourceAttribute key={subtitle} description={subtitle}>
-                        {attributeToDisplay}
-                      </ResourceAttribute>
-                    ))}
-                  </ResourceAttributesColumn>
-
-                  {/* SECOND COLUMN */}
-                  <ResourceAttributesColumn style={{ flexGrow: 3 }} addDivider={true}>
-                    {[
-                      {
-                        subtitle: 'Resources-View-Website',
-                        attributeToDisplay: resourceAttributes.website,
-                        dataTestId: 'resource-website',
-                      },
-                      {
-                        subtitle: 'Resources-View-ApplicationProcess',
-                        attributeToDisplay: resourceAttributes.applicationProcess,
-                      },
-                      { subtitle: 'Resources-View-247', attributeToDisplay: resourceAttributes.available247 },
-                      {
-                        subtitle: 'Resources-View-HowIsServiceOffered',
-                        attributeToDisplay: resourceAttributes.howIsServiceOffered,
-                      },
-                      {
-                        subtitle: 'Resources-View-FeeStructure',
-                        attributeToDisplay: resourceAttributes.feeStructureSource,
-                      },
-                      {
-                        subtitle: 'Resources-View-TranslationServicesAvailable',
-                        attributeToDisplay: resourceAttributes.interpretationTranslationServicesAvailable,
-                      },
-                      {
-                        subtitle: 'Resources-View-Coverage',
-                        attributeToDisplay: resourceAttributes.coverage,
-                      },
-                      // eslint-disable-next-line sonarjs/no-identical-functions
-                    ].map(({ subtitle, attributeToDisplay, dataTestId }) => (
-                      <ResourceAttribute key={subtitle} description={subtitle} data-testid={dataTestId}>
-                        {attributeToDisplay}
-                      </ResourceAttribute>
-                    ))}
-                  </ResourceAttributesColumn>
-
-                  {/* THIRD COLUMN */}
-                  <ResourceAttributesColumn style={{ flexGrow: 4 }}>
-                    <span style={{ padding: '2px', width: '75%' }}>
-                      <ResourceIdCopyButton resourceId={id} height="44px" />
-                    </span>
-                    <ResourceAttributeWithPrivacy
-                      isPrivate={resourceAttributes.primaryLocationIsPrivate}
-                      description="Resources-View-PrimaryAddress"
-                    >
-                      {resourceAttributes.primaryLocation}
-                    </ResourceAttributeWithPrivacy>
-
-                    {enableResourcesUpdates &&
-                      resourceAttributes.phoneNumbers.map(p => {
-                        // const description = 'Phone';
-                        const description =
-                          'Phone' +
-                          `${
-                            p.type && p.type.toLocaleLowerCase() !== 'phone'
-                              ? ` (${p.type.charAt(0).toUpperCase()}${p.type.slice(1)})`
-                              : ''
-                          }`;
-
-                        return (
-                          <ResourceAttributeWithPrivacy
-                            key={p.number}
-                            isPrivate={p.isPrivate}
-                            description={description}
-                          >
-                            {[p.number, p.name, p.description].filter(Boolean).join('\n')}
-                          </ResourceAttributeWithPrivacy>
-                        );
-                      })}
-
-                    <ResourceAttributeWithPrivacy
-                      isPrivate={resourceAttributes.mainContact.isPrivate}
-                      description="Resources-View-ContactInfo"
-                    >
-                      {resourceAttributes.mainContact.mainContactText}
-                    </ResourceAttributeWithPrivacy>
-                    <ResourceAttribute description="Resources-View-OperatingHours">
-                      <OperatingHours operations={resourceAttributes.operations} showDescriptionOfHours={true} />
-                    </ResourceAttribute>
-                    <ResourceAttribute description="Resources-View-Sites">
-                      <SiteDetails sites={resourceAttributes.site} />
-                    </ResourceAttribute>
-                  </ResourceAttributesColumn>
-                </ResourceAttributesContainer>
-              )}
+              <ResourceViewAttributes resource={resource} />
             </>
           )}
         </ViewResourceArea>

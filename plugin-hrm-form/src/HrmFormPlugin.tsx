@@ -130,6 +130,15 @@ const setUpComponents = (featureFlags: FeatureFlags, setupObject: ReturnType<typ
 
   if (featureFlags.enable_conferencing) setupConferenceComponents();
 
+  const toggleDialpad = () => Flex.Actions.invokeAction('ToggleOutboundDialer');
+  Flex.KeyboardShortcutManager.addShortcuts({
+    V: {
+      action: toggleDialpad,
+      name: Flex.Manager.getInstance().strings['AgentDesktop-KeyboardShortcuts-ToggleDialpad'] ?? 'Toggle Dialpad',
+      throttle: 100,
+    },
+  });
+
   if (featureFlags.enable_language_selector) Components.setupWorkerLanguageSelect();
 };
 
