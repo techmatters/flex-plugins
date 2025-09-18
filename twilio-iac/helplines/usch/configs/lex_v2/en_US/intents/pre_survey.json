@@ -47,7 +47,7 @@
         },
         {
             "priority": 3,
-            "slotName": "age"
+            "slotName": "ageRange"
         },
         {
             "priority": 4,
@@ -81,7 +81,7 @@
                 {
                     "message": {
                         "plainTextMessage": {
-                            "value": "To help us better serve you, please answer the next four short questions. You will then be connected to a counselor. You can type '0' for any question."
+                            "value": "If this is a life-threatening emergency, please contact 911. To help us better serve you, please answer the next five short questions. You will then be connected to a counselor. You can type X if you prefer not to answer any question."
                         }
                     }
                 }

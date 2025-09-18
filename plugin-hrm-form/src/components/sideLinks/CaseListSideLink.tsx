@@ -30,6 +30,7 @@ const CaseListSideLink: React.FC<Props> = ({ showLabel, activeView, onClick }) =
       iconActive={<FolderIcon />}
       isActive={activeView === 'case-list'}
       onClick={onClick}
+      data-testid="case-list-side-link"
     >
       <Template code="SideNavCaseList" />
     </SideLink>

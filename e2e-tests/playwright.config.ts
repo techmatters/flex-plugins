@@ -26,10 +26,11 @@ const playwrightConfig: PlaywrightTestConfig = {
   use: {
     storageState: getConfigValue('storageStatePath') as string,
     baseURL: getConfigValue('baseURL') as string,
-    ignoreHTTPSErrors: inLambda ? true : false,
+    bypassCSP: Boolean(inLambda),
+    ignoreHTTPSErrors: Boolean(inLambda),
     permissions: ['microphone', 'clipboard-write', 'clipboard-read'],
-    screenshot: inLambda ? 'off' : 'only-on-failure',
-    video: inLambda ? 'off' : 'retry-with-video',
+    screenshot: 'only-on-failure',
+    video: inLambda ? 'retain-on-failure' : 'retry-with-video',
     launchOptions: inLambda
       ? {
           args: [
@@ -63,6 +64,7 @@ const playwrightConfig: PlaywrightTestConfig = {
             '--disable-setuid-sandbox',
             '--disable-speech-api',
             '--disable-sync',
+            '--disable-web-security',
             '--disk-cache-size=33554432',
             '--hide-scrollbars',
             '--ignore-gpu-blacklist',
@@ -88,7 +90,7 @@ const playwrightConfig: PlaywrightTestConfig = {
   testDir: './tests',
   retries: inLambda ? 0 : 1,
   timeout: 60000,
-  reporter: [['junit', { outputFile: 'junit.xml' }]],
+  reporter: [['junit', { outputFile: inLambda ? '/tmp/test-results/junit.xml' : 'junit.xml' }]],
 };
 
 // Only /tmp is writable in a lambda

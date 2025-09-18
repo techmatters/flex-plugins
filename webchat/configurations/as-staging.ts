@@ -15,13 +15,14 @@
  */
 
 import { Translations, Configuration, MapHelplineLanguage, ContactType } from '../types';
-import type { PreEngagementFormDefinition } from '../src/pre-engagement-form';
+import { PreEngagementFormDefinition, EMAIL_PATTERN } from '../src/pre-engagement-form';
 
 const accountSid = 'AC1ca120bc71593bbe9ca78e2232a31e0d';
 const flexFlowSid = 'FOf35e65754798822c36fb92e2e495227b';
 const defaultLanguage = 'en-US';
 const captureIp = true;
-const contactType: ContactType = 'ip';
+const contactType: ContactType = 'email';
+const enableRecaptcha = true;
 
 const translations: Translations = {
   ar: {
@@ -104,6 +105,17 @@ const preEngagementConfig: PreEngagementFormDefinition = {
       label: 'First Name',
       placeholder: 'GuestName',
       required: true,
+    },
+    {
+      type: 'input-text',
+      name: 'contactIdentifier',
+      label: 'Email',
+      required: true,
+      placeholder: 'Email',
+      pattern: {
+        value: EMAIL_PATTERN,
+        message: 'FieldValidationInvalidEmail',
+      },
     },
     {
       label: 'Age',
@@ -335,6 +347,13 @@ const preEngagementConfig: PreEngagementFormDefinition = {
   ],
 };
 
+const memberDisplayOptions = {
+  yourDefaultName: 'You',
+  yourFriendlyNameOverride: false,
+  theirFriendlyNameOverride: false,
+  theirDefaultName: 'Counsellor',
+};
+
 const mapHelplineLanguage: MapHelplineLanguage = (helpline) => {
   switch (helpline) {
     case 'Børns Vilkår (DK)':
@@ -363,7 +382,9 @@ export const config: Configuration = {
   translations,
   preEngagementConfig,
   mapHelplineLanguage,
+  memberDisplayOptions,
   captureIp,
   contactType,
+  enableRecaptcha,
   twilioServicesUrl: new URL(`https://hrm-staging.tl.techmatters.org/lambda/twilio/account-scoped/${accountSid}`),
 };
