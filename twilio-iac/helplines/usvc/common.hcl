@@ -45,11 +45,11 @@ locals {
         "friendly_name"  = "VictimConnect"
       },
       dcvh : {
-        "target_workers" = "1==0",
+        "target_workers" = "1==1",
         "friendly_name"  = "DC Victim Hotline"
       },
       dc_dispatch : {
-        "target_workers" = "1==0",
+        "target_workers" = "1==1",
         "friendly_name"  = "DC Dispatch"
       },
       survey : {
