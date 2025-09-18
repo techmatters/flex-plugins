@@ -44,7 +44,7 @@ import {
   KHPFilterSelections,
   KHPReferenceLocationList,
   loadReferenceActionFunction,
-} from './filterSelectionState';
+} from '../../../../states/resources/filterSelectionState/khp';
 import asyncDispatch from '../../../../states/asyncDispatch';
 
 const NO_AGE_SELECTED = -1;

@@ -33,7 +33,7 @@ import {
   USCHFilterSelections,
   USCHReferenceLocationList,
   loadReferenceActionFunction,
-} from './filterSelectionState';
+} from '../../../../states/resources/filterSelectionState/usch';
 import asyncDispatch from '../../../../states/asyncDispatch';
 
 const NO_LOCATION_SELECTED = '__NO_LOCATION_SELECTED__';

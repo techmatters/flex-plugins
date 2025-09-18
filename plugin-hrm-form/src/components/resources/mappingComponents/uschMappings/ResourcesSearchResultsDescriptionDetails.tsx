@@ -20,7 +20,7 @@ import { useSelector } from 'react-redux';
 import type { RootState } from '../../../../states';
 import { ResourcesSearchResultsDescriptionItem } from '../../styles';
 import { namespace, referrableResourcesBase } from '../../../../states/storeNamespaces';
-import { USCHFilterSelections } from './filterSelectionState';
+import { USCHFilterSelections } from '../../../../states/resources/filterSelectionState/usch';
 
 const ResourcesSearchResultsDescriptionDetails: React.FC<{}> = () => {
   const { filterOptions, parameters } = useSelector(

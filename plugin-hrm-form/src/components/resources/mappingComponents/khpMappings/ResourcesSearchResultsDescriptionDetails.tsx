@@ -20,7 +20,7 @@ import { useSelector } from 'react-redux';
 import type { RootState } from '../../../../states';
 import { ResourcesSearchResultsDescriptionItem } from '../../styles';
 import { namespace, referrableResourcesBase } from '../../../../states/storeNamespaces';
-import { KHPFilterSelections } from './filterSelectionState';
+import { KHPFilterSelections } from '../../../../states/resources/filterSelectionState/khp';
 
 const ResourcesSearchResultsDescriptionDetails: React.FC<{}> = () => {
   const { filterOptions, parameters } = useSelector(
