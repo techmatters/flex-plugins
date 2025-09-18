@@ -1,7 +1,7 @@
 [
     {
         "name": "child",
-        "label": "Victim Call",
+        "label": "Call about a Victim",
         "type": "button",
         "category": "data"
     },
