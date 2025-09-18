@@ -7,7 +7,7 @@ locals {
     enable_external_recordings            = true
     enable_post_survey                    = true
     permission_config                     = "demo"
-    custom_task_routing_filter_expression = "channelType IN ['instagram','messenger','web','whatsapp','telegram','line','voice']  OR isContactlessTask == true OR  twilioNumber == 'messenger:105642325869250', 'instagram:17841459369720372' "
+    custom_task_routing_filter_expression = "channelType IN ['instagram','messenger','web','whatsapp','telegram','line','voice', 'modica']  OR isContactlessTask == true OR  twilioNumber == 'messenger:105642325869250', 'instagram:17841459369720372' "
     enable_lex_v2                         = true
     flow_vars = {
       capture_channel_with_bot_function_sid = "ZHd9eb5ce1b230abe29d9eafccc88b16d3"
@@ -17,14 +17,18 @@ locals {
       widget_from                           = "Aselo"
       chat_blocked_message                  = "Sorry, you're not able to contact SafeSpot from this device or account"
       error_message                         = "There has been an error with your message, please try writing us again."
+      ip_location_finder_url                = "https://hrm-production.tl.techmatters.org/lambda/ipLocationFinder"
+      outside_country_message               = "Thank you for reaching out to Aselo. Please note that our services are available exclusively to individuals currently residing in US. If you are located in US but are using a VPN that does not indicate a US IP address, we recommend connecting via a standard, approved internet protocol to access our support. If you are outside US, we encourage you to visit Throughline [https://silenthill.findahelpline.com/] to locate support services available in your region. We appreciate your understanding and hope you are able to find the assistance you need. Best regards, The Aselo Team"
     }
 
     channels = {
       webchat : {
-        channel_type         = "web"
-        contact_identity     = ""
-        templatefile         = "/app/twilio-iac/helplines/templates/studio-flows/messaging-blocking-lambda-sd.tftpl"
-        channel_flow_vars    = {}
+        channel_type     = "web"
+        contact_identity = ""
+        templatefile     = "/app/twilio-iac/helplines/as/templates/studio-flows/messaging-blocking-lambda-location-block-sd.tftpl"
+        channel_flow_vars = {
+          allowed_shortcode_locations = "US,CL,ZA"
+        }
         chatbot_unique_names = []
       },
       facebook : {
@@ -68,6 +72,14 @@ locals {
           voice_ivr_blocked_message  = "I'm sorry your number has been blocked."
           voice_ivr_language         = "en-US"
         }
+        chatbot_unique_names = []
+      },
+      modica : {
+        messaging_mode   = "conversations"
+        channel_type     = "custom"
+        contact_identity = "modica"
+        templatefile     = "/app/twilio-iac/helplines/templates/studio-flows/messaging-custom-channel-lex-v3-blocking-lambda-sd.tftpl"
+        channel_flow_vars = {}
         chatbot_unique_names = []
       }
     }
