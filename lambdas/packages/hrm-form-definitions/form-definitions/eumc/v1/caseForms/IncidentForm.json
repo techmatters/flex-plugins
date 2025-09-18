@@ -144,6 +144,11 @@
     }
   },
   {
+    "name": "specify",
+    "label": "Specify",
+    "type": "input"
+  },
+  {
     "name": "incidentWitnessed",
     "label": "Was the incident witnessed by anyone?",
     "type": "select",

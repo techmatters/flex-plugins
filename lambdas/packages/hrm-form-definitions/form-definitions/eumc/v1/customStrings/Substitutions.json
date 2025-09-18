@@ -37,7 +37,7 @@
     "TabbedForms-NewCase": "New EN",
     "TabbedForms-ExistingCase": "Existing EN",
     "Case-CaseNumber": "External Notification #",
-    "Case-Timeline-ModalTitle": "External Notification #{{caseId}} Timeline",
+    "Case-Timeline-ModalTitle": "External Notification #{{caseId}} Contact Information",
     "Case-CaseSummarySection": "External Notification Summary",
     "Case-CaseDetailsChildName": "Victim Name",
     "Case-CaseDetailsOwner": "Counselor",

@@ -606,5 +606,7 @@
   "ContactForms-TextArea-GenerateSummary": "Generate Summary",
   "ContactForms-TextArea-LoadingSummary": "Loading",
 
-  "LlmAssistant-Notifications-SummaryGenerationError": "There was an error generating the summary: {{errorMessage}}"
+  "LlmAssistant-Notifications-SummaryGenerationError": "There was an error generating the summary: {{errorMessage}}",
+
+  "AgentDesktop-KeyboardShortcuts-ToggleDialpad": "Toggle Dialpad"
 }

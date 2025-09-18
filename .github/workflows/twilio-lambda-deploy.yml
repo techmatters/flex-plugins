@@ -25,15 +25,23 @@ on:
           - development
           - staging
           - production
-      region:
-        description: AWS Region to deploy to.
+      lambda_path:
+        description: Lambda to deploy.
         required: true
         type: choice
         options:
-          - us-east-1
-          - eu-west-1
-          - ca-central-1
-
+          - account-scoped
+          - facebookCallback
+          - facebookSignin
+          - instagramWebhook
+          - ipLocationFinder
+          - lineSetup
+          - lineWebhook
+          - modicaWebhook
+          - recaptchaVerify
+          - savePendingContacts
+          - TwilioErrorReporter
+          - twilioEventStreams
   workflow_call:
     secrets:
       AWS_ACCESS_KEY_ID:
@@ -46,29 +54,59 @@ on:
         type: string
         default: development
         required: true
-      region:
-        description: AWS Region to deploy to.
-        default: us-east-1
-        required: true
-        type: string
       send-slack-message:
         description: 'Specifies if should send a Slack message at the end of successful run. Defaults to true'
         required: false
         default: 'true'
         type: string
-
+      lambda_path:
+        description: Lambda to deploy.
+        required: true
+        type: string
 env:
   # if anything is set as a secret, it can't be used in outputs. So we need to set it as an env var
   PRIMARY_AWS_REGION: us-east-1
 
 jobs:
+  determine_deployments:
+    name: Determine deployment target regions
+    runs-on: ubuntu-latest
+
+    outputs:
+      matrix_json: ${{ steps.generate-output.outputs.matrix_json }}
+    steps:
+      - name: Checkout Branch
+        uses: actions/checkout@v5
+        with:
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            .github
+      # The matrix build supports `lambda-groups` defined in the environment-region-map.json file
+      # This allows us to deploy multiple lambdas to specific env/region combos that use a common docker image
+      # That is some pretty intense JQ, but it works.
+      # The current behavior is: If a key that matches the lambda name is found in the lambda-groups object, then
+      # created separate entries for each region/lambda combo. Otherwise, just use the lambda name and deploy to all
+      # regions that exist for that environment.
+      # matrices don't support complex object structures, so we generate a flat array of objects that contain the
+      # region and lambda name. If there are multiple lambdas, the region will be repeated for each lambda.
+      - name: Generate output
+        id: generate-output
+        run: |
+          # output to logs
+          # Load lambda specific region mapping (if any)
+          LAMBDA_REGIONS=$(jq -c --arg lambda "${{inputs.lambda_path}}" --arg environment "${{inputs.environment}}" '.[$lambda][$environment] // []' ./.github/workflows/config/lambda-environment-region-map.json)
+          matrix_json=$(jq -c '[.[] | {region: .}]' <<< "$LAMBDA_REGIONS")
+          echo "matrix_json=$matrix_json" >> $GITHUB_OUTPUT
+          echo "matrix_json: $matrix_json"
   deploy_lambdas:
+    if: ${{ needs.determine_deployments.outputs.matrix_json != '[]' }}
     name: Deploy to Amazon ECS
     runs-on: ubuntu-latest
+    needs: determine_deployments
     strategy:
+      fail-fast: false
       matrix:
-        lambda_path:
-          - account-scoped
+        include: ${{ fromJson(needs.determine_deployments.outputs.matrix_json) }}
     steps:
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
@@ -78,18 +116,25 @@ jobs:
           aws-region: ${{ env.PRIMARY_AWS_REGION }}
           mask-aws-account-id: 'no'
 
+
       - name: Read ECR url from SSM
         uses: "marvinpinto/action-inject-ssm-secrets@latest"
         with:
-          ssm_parameter: /twilio/lambda/${{ matrix.lambda_path }}/ecr-url
+          ssm_parameter: /global/lambda/${{ inputs.lambda_path }}/ecr-url
           env_variable_name: ECR_URL
+
+      - name: Read short name from SSM
+        uses: "marvinpinto/action-inject-ssm-secrets@latest"
+        with:
+          ssm_parameter: /global/lambda/${{ inputs.lambda_path }}/short_name
+          env_variable_name: SHORT_LAMBDA_NAME
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ inputs.region }}
+          aws-region: ${{ matrix.region }}
           mask-aws-account-id: 'no'
       # The search and replace is kinda ugly but works. We need to replace the primary region with the region we're deploying to.
       # because lambdas don't support ECR images in different regions. We use cross region replication in ECR to make the image
@@ -98,11 +143,10 @@ jobs:
         run: |
           REF_NAME="${{ github.ref_name }}"
           REF_NAME_FOR_DOCKER_TAG="${REF_NAME//\//_-}"
-          DOCKER_IMAGE=$(echo "${{ env.ECR_URL }}:${{ github.ref_type }}.$REF_NAME_FOR_DOCKER_TAG" | sed -r 's/${{ env.PRIMARY_AWS_REGION }}/${{ inputs.region }}/g')
+          DOCKER_IMAGE=$(echo "${{ env.ECR_URL }}:${{ github.ref_type }}.$REF_NAME_FOR_DOCKER_TAG" | sed -r 's/${{ env.PRIMARY_AWS_REGION }}/${{ matrix.region }}/g')
 
-          LAMBDA_NAME=$(basename "./${{ matrix.lambda_path == 'account-scoped' && 'acctscpe' || matrix.lambda_path }}")
-          SHORT_LAMBDA_NAME=${{ matrix.lambda_path== 'account-scoped' }}
-          LAMBDA="${{ inputs.environment }}-${{ inputs.region }}-$LAMBDA_NAME"
+          LAMBDA_NAME=$(basename "./$SHORT_LAMBDA_NAME")
+          LAMBDA="${{ inputs.environment }}-${{ matrix.region }}-$LAMBDA_NAME"
           OUTPUT=$(aws lambda update-function-code --function-name $LAMBDA --image-uri "$DOCKER_IMAGE" --publish)
           NEW_VERSION=$(echo "$OUTPUT" | jq -r '.Version')
 
@@ -145,5 +189,5 @@ jobs:
           token: ${{ env.GITHUB_ACTIONS_SLACK_BOT_TOKEN }}
           payload: |
             channel: ${{ env.ASELO_DEPLOYS_CHANNEL_ID }}
-            text: '`[Twilio lambdas - ${{ matrix.lambda_path }}]` Deployment of ${{ github.ref_type }} `${{ github.ref_name }}` requested by `${{ github.triggering_actor }}` completed with SHA ${{ github.sha }} to region `${{ inputs.region }}`, environment `${{ inputs.environment }}` :rocket:.'
+            text: '`[Twilio lambdas - ${{ matrix.lambda_path }}]` Deployment of ${{ github.ref_type }} `${{ github.ref_name }}` requested by `${{ github.triggering_actor }}` completed with SHA ${{ github.sha }} to region `${{ matrix.region }}`, environment `${{ inputs.environment }}` :rocket:.'
         if: ${{ inputs.send-slack-message != 'false' }}
