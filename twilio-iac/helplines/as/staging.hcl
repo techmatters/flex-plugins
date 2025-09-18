@@ -7,7 +7,7 @@ locals {
     enable_external_recordings = true
     enable_post_survey                    = true
     enable_datadog_monitoring             = false
-    custom_task_routing_filter_expression = "channelType IN ['instagram','messenger','web','whatsapp','telegram','line','voice'] OR isContactlessTask == true OR  twilioNumber == 'messenger:131329426738030' "
+    custom_task_routing_filter_expression = "channelType IN ['instagram','messenger','web','whatsapp','telegram','line','voice', 'modica'] OR isContactlessTask == true OR  twilioNumber == 'messenger:131329426738030' "
     permission_config                     = "demo"
 
     #Studio flow
@@ -26,7 +26,7 @@ locals {
       webchat : {
         channel_type         = "web"
         contact_identity     = ""
-        templatefile         = "/app/twilio-iac/helplines/templates/studio-flows/messaging-blocking-lambda-sd.tftpl"
+        templatefile         = "/app/twilio-iac/helplines/as/templates/studio-flows/messaging-blocking-lambda-location-block-sd.tftpl"
         channel_flow_vars    = {}
         chatbot_unique_names = []
       },
@@ -79,6 +79,14 @@ locals {
           voice_ivr_blocked_message  = "I'm sorry your number has been blocked."
           voice_ivr_language         = "en-US"
         }
+        chatbot_unique_names = []
+      },
+      modica : {
+        messaging_mode   = "conversations"
+        channel_type     = "custom"
+        contact_identity = "modica"
+        templatefile     = "/app/twilio-iac/helplines/templates/studio-flows/messaging-custom-channel-lex-v3-blocking-lambda-sd.tftpl"
+        channel_flow_vars = {}
         chatbot_unique_names = []
       }
     }

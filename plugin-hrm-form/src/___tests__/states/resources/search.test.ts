@@ -19,6 +19,7 @@ import promiseMiddleware from 'redux-promise-middleware';
 import each from 'jest-each';
 
 import { searchResources } from '../../../services/ResourceService';
+import { getHrmConfig } from '../../../hrmConfig';
 import {
   changeResultPageAction,
   getCurrentPageResults,
@@ -34,9 +35,15 @@ import {
   SearchSettings,
   updateSearchFormAction,
 } from '../../../states/resources/search';
+import { initialFilterOptions } from '../../../components/resources/mappingComponents/khpMappings/filterSelectionState';
 
 jest.mock('../../../services/ResourceService');
+jest.mock('../../../hrmConfig');
 
+const mockGetHrmConfig = getHrmConfig as jest.MockedFunction<typeof getHrmConfig>;
+mockGetHrmConfig.mockReturnValue({
+  helplineCode: 'E2E',
+} as any);
 const mockSearchResources = searchResources as jest.Mock<
   Promise<{ results: ReferrableResourceResult[]; totalCount: number }>
 >;
@@ -53,7 +60,7 @@ const testStore = (stateChanges: Partial<ReferrableResourceSearchState> = {}) =>
 
 const nonInitialState: ReferrableResourceSearchState = {
   filterOptions: {
-    ...initialState.filterOptions,
+    ...initialFilterOptions,
     region: [{ label: '', value: undefined }],
     city: [{ label: '', value: undefined }],
   },
