@@ -2,7 +2,7 @@
   "contact": {
     "callerInformation": {},
     "childInformation": {
-      "splitFormAt": 11
+      "splitFormAt": 12
     },
     "caseInformation": {
       "splitFormAt": 7
@@ -64,7 +64,6 @@
       "incident": {
         "previewFields": [
           "riskToLifeAssessmentCompleted",
-          "safeguardingConcernsRaised",
           "escalationToOncall"
         ],
         "layout": {
@@ -81,16 +80,21 @@
       },
       "referral": {
         "previewFields": [
-          "breakConfidentialityBc",
-          "bcWhereReported"
+          "referral",
+          "whereReported"
         ],
         "caseHomeOrder": 1,
         "splitFormAt": 3,
         "printOrder": 1
       },
+      "safeguarding": {
+        "caseHomeOrder": 3,
+        "splitFormAt": 3,
+        "printOrder": 4
+      },
       "document": {
         "splitFormAt": 1,
-        "caseHomeOrder": 4,
+        "caseHomeOrder": 5,
         "printFormat": "hidden",
         "previewFields": [
           "createdAt",

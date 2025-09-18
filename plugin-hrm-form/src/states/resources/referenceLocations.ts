@@ -16,10 +16,9 @@
 import { createAsyncAction } from 'redux-promise-middleware-actions';
 
 import { FilterOption } from './types';
-import { getReferenceAttributeList, ReferenceAttributeStringValue } from '../../services/ResourceService';
 
 // Deduplicate based on value and sort by label
-const dedupAndSort = (arr: FilterOption[]) => {
+export const dedupAndSort = (arr: FilterOption[]) => {
   const mapped = arr.reduce((optionMap: Record<string, FilterOption>, option: FilterOption) => {
     optionMap[option.value] = option;
     return optionMap;
@@ -29,34 +28,19 @@ const dedupAndSort = (arr: FilterOption[]) => {
 };
 
 export type ReferenceLocationState = {
-  provinceOptions: FilterOption[];
-  regionOptions: FilterOption[];
-  cityOptions: FilterOption[];
-};
-
-export const referenceLocationsInitialState: ReferenceLocationState = {
-  provinceOptions: [],
-  regionOptions: [],
-  cityOptions: [],
+  [input: string]: FilterOption[];
 };
 
 const LOAD_REFERENCE_LOCATIONS_LIST_ACTION = 'resource-action/reference-locations/load-all';
 
-export const enum ReferenceLocationList {
-  Provinces = 'provinces',
-  Regions = 'country/province/region',
-  Cities = 'country/province/region/city',
-}
+export type LoadReferenceActionFunction = () => Promise<{ list: string; options: FilterOption[] }>;
 
 export const loadReferenceLocationsAsyncAction = createAsyncAction(
   LOAD_REFERENCE_LOCATIONS_LIST_ACTION,
-  async (list: ReferenceLocationList): Promise<{ list: ReferenceLocationList; options: FilterOption[] }> => {
-    const apiAttributes = await getReferenceAttributeList(list, 'en');
-    const unsortedOptions = apiAttributes.map(({ value, info }: ReferenceAttributeStringValue) => ({
-      label: info?.name ?? value,
-      value,
-    }));
-    return { list, options: dedupAndSort(unsortedOptions) };
-  },
+  async ({
+    loadReferenceActionFunction,
+  }: {
+    loadReferenceActionFunction: LoadReferenceActionFunction;
+  }): Promise<{ list: string; options: FilterOption[] }> => loadReferenceActionFunction(),
   // { promiseTypeDelimiter: '/' }, // Doesn't work :-(
 );

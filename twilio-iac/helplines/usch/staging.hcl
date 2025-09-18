@@ -8,6 +8,7 @@ locals {
   config            = merge(local.common_config, local.local_config)
 
   local_config = {
+    operating_hours_enforced_override     = false
     custom_task_routing_filter_expression = ""
     flow_vars = {
       widget_from                               = "Bot"
@@ -32,11 +33,11 @@ locals {
       # Courage First -  SMS
       courage_first_sms_closed_message   = "Thank you for contacting the Courage First Athlete Helpline. If this is a life-threatening emergency, please contact 911."
       courage_first_sms_redirect_message = "You have reached us outside of our normal operating hours of Monday through Friday, 12pm to 8pm, PST. If you would like to text right now with a Crisis Counselor who can provide immediate emotional support and resources, please text 800-422-4453 to reach the Childhelp National Child Abuse Hotline"
-      courage_first_sms_welcome_message  = "Thank you for texting the Courage First Athlete Helpline. Standard msg rates may apply. Terms of service can be found at https://www.athletehelpline.org/terms/. By continuing, you agree to our terms of service."
+      courage_first_sms_welcome_message  = "Thank you for texting the Courage First Athlete Helpline. We'll reply to your questions and nothing else. For help with messages, reply HELP. To stop messages, reply STOP. Standard msg rates may apply. Terms of service can be found at https://www.athletehelpline.org/terms/. By continuing, you agree to our terms of service."
       courage_first_sms_failure_message  = "We are sorry, we had a technical issue. Please trying texting again or call 1-888-279-1026"
       courage_first_sms_prequeue_message = "Para hablar con un consejero en Español, llame al 800-422-4453. Please note: A false report is a crime governed by federal and state laws, involving a person who, with intent to deceive, knowingly makes a false statement to a mandated reporter or law enforcement official that results in unwarranted government action. Childhelp's National Child Abuse Hotline is comprised of mandated reporters who will refer malicious or false reports to law enforcement for prosecution."
       # ChildHelp -  SMS
-      childhelp_sms_language_message             = "Thank you for texting the National Child Abuse Hotline. For English, press 1. For any other language, please press 2."
+      childhelp_sms_language_message             = "Thank you for texting the National Child Abuse Hotline. We'll reply to your questions and nothing else. For help with messages, reply HELP. To stop messages, reply STOP. For English, press 1. For any other language, please press 2."
       childhelp_sms_eng_language_message         = "For emergencies contact 911. Standard msg rates may apply. Terms of service can be found here: https://www.childhelphotline.org/terms-of-service . By continuing, you agree to our terms of service. If you cannot access the terms of service, you can also access help by calling the hotline at 800-422-4453."
       childhelp_sms_other_message                = "Currently, our text messaging platform only works in English. For assistance in other languages, please call our hotline at 1-800-422-4453."
       childhelp_sms_prequeue_message             = "Please note: A false report is a crime governed by federal and state laws, involving a person who, with intent to deceive, knowingly makes a false statement to a mandated reporter or law enforcement official that results in unwarranted government action. Childhelp's National Child Abuse Hotline is comprised of mandated reporters who will refer malicious or false reports to law enforcement for prosecution."
@@ -65,7 +66,7 @@ locals {
       webchat : {
         channel_type     = "web"
         contact_identity = ""
-        templatefile     = "/app/twilio-iac/helplines/usch/templates/studio-flows/webchat-no-chatbot.tftpl"
+        templatefile     = "/app/twilio-iac/helplines/usch/templates/studio-flows/webchat-no-lex-sd.tftpl"
         channel_flow_vars = {
           courage_first_url = "https://assets-staging.tl.techmatters.org/webchat/usch/usch_courage_first.html"
           childhelp_url     = "https://assets-staging.tl.techmatters.org/webchat/usch/usch_childhelp_hotline.html"
@@ -75,7 +76,7 @@ locals {
       voice_childhelp : {
         channel_type     = "voice"
         contact_identity = ""
-        templatefile     = "/app/twilio-iac/helplines/usch/templates/studio-flows/voice-childhelp.tftpl"
+        templatefile     = "/app/twilio-iac/helplines/usch/templates/studio-flows/voice-childhelp-sd.tftpl"
         channel_flow_vars = {
         }
         chatbot_unique_names = []
@@ -83,7 +84,7 @@ locals {
       voice_courage_first : {
         channel_type     = "voice"
         contact_identity = ""
-        templatefile     = "/app/twilio-iac/helplines/usch/templates/studio-flows/voice-courage-first-operating-hours.tftpl"
+        templatefile     = "/app/twilio-iac/helplines/usch/templates/studio-flows/voice-courage-first-op-hours-sd.tftpl"
         channel_flow_vars = {
         }
         chatbot_unique_names = []
@@ -92,7 +93,7 @@ locals {
         messaging_mode   = "conversations"
         channel_type     = "sms"
         contact_identity = "+14809999197"
-        templatefile     = "/app/twilio-iac/helplines/usch/templates/studio-flows/sms-childhelp-chatbot.tftpl"
+        templatefile     = "/app/twilio-iac/helplines/usch/templates/studio-flows/sms-childhelp-lex-sd.tftpl"
         channel_flow_vars = {
 
         }
@@ -102,12 +103,24 @@ locals {
         messaging_mode   = "conversations"
         channel_type     = "sms"
         contact_identity = "+16066032348"
-        templatefile     = "/app/twilio-iac/helplines/usch/templates/studio-flows/sms-courage-first-chatbot.tftpl"
+        templatefile     = "/app/twilio-iac/helplines/usch/templates/studio-flows/sms-courage-first-lex-sd.tftpl"
         channel_flow_vars = {
         }
         chatbot_unique_names = []
       }
     }
     get_profile_flags_for_identifier_base_url = "https://hrm-staging.tl.techmatters.org/lambda/twilio/account-scoped"
-  }
+    #System Down Configuration
+    system_down_templatefile = "/app/twilio-iac/helplines/templates/studio-flows/system-down.tftpl"
+    enable_system_down       = true
+    system_down_flow_vars = {
+      is_system_down                   = "false"
+      message                          = "We're currently experiencing technical issues, and your message might not be received. If this is an emergency please contact 911 or 988. We're working to resolve the problem and will be back online shortly. We apologize for the inconvenience."
+      voice_message                    = "We're currently experiencing technical issues, and your call might not be received. If this is an emergency please contact 911 or 988. We're working to resolve the problem and will be back online shortly. We apologize for the inconvenience."
+      send_studio_message_function_sid = "ZHda5f23152bb1a843c303049674007b87"
+      call_action                      = "message"
+      forward_number                   = "+123"
+      recording_url                    = "https://<place_holder>.mp3"
+    }
+ }
 }

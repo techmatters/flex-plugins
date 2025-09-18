@@ -1,0 +1,49 @@
+{
+    "slotTypeName": "helpful_rating",
+    "slotTypeValues": [
+        {
+            "sampleValue": {
+                "value": "Very helpful"
+            },
+            "synonyms": [
+                {
+                    "value": "1"
+                }
+            ]
+        },
+        {
+            "sampleValue": {
+                "value": "Somewhat helpful"
+            },
+            "synonyms": [
+                {
+                    "value": "2"
+                }
+            ]
+        },
+        {
+            "sampleValue": {
+                "value": "Not very helpful"
+            },
+            "synonyms": [
+                {
+                    "value": "3"
+                }
+            ]
+        },
+         {
+            "sampleValue": {
+                "value": "Not at all helpful"
+            },
+            "synonyms": [
+                {
+                    "value": "4"
+                }
+            ]
+        }
+
+    ],
+    "valueSelectionSetting": {
+        "resolutionStrategy": "TopResolution"
+    }
+}

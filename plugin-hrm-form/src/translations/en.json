@@ -220,6 +220,7 @@
   "CaseSection-Edit/document": "Edit Document",
   "CaseSection-Edit/chicken": "Bwaaak bocboc",
   "Case-EditCaseSummary": "Edit Case Information",
+  "Case-EditCaseOverview": "Edit Case Overview",
   "Case-AddNoteTypeHere": "Type here to add note...",
   "Case-AddCaseSummaryHere": "Add case summary here...",
   "Case-ActionHeaderAdded": "Added on {{date}} at {{time}} by {{counsellor}}",
@@ -605,5 +606,7 @@
   "ContactForms-TextArea-GenerateSummary": "Generate Summary",
   "ContactForms-TextArea-LoadingSummary": "Loading",
 
-  "LlmAssistant-Notifications-SummaryGenerationError": "There was an error generating the summary: {{errorMessage}}"
+  "LlmAssistant-Notifications-SummaryGenerationError": "There was an error generating the summary: {{errorMessage}}",
+
+  "AgentDesktop-KeyboardShortcuts-ToggleDialpad": "Toggle Dialpad"
 }

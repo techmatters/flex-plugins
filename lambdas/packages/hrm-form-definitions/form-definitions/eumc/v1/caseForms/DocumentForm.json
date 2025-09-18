@@ -7,6 +7,27 @@
     "isPII": true
   },
   {
+    "name": "PictureoftheChild2",
+    "type": "file-upload",
+    "label": "Picture of the child 2",
+    "description": "Accepted file formats: Word, PDFs, or JPGs.\nFile size not to exceed 5MB",
+    "isPII": true
+  },
+  {
+    "name": "PictureoftheChild3",
+    "type": "file-upload",
+    "label": "Picture of the child3",
+    "description": "Accepted file formats: Word, PDFs, or JPGs.\nFile size not to exceed 5MB",
+    "isPII": true
+  },
+  {
+    "name": "PictureoftheChild4",
+    "type": "file-upload",
+    "label": "Picture of the child4",
+    "description": "Accepted file formats: Word, PDFs, or JPGs.\nFile size not to exceed 5MB",
+    "isPII": true
+  },
+  {
     "name": "ProofpoliceAcknowledgement",
     "type": "file-upload",
     "label": "Proof of police acknowledgement (the child reported missing to the police)",

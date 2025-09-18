@@ -1,5 +1,6 @@
 {
   "attributes": {
+    "system_down" : false,
     "feature_flags": {
       "enable_switchboarding_move_tasks": true,
       "enable_resouorces_updates": true

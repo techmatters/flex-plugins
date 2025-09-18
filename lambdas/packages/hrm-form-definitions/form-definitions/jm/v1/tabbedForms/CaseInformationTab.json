@@ -8,7 +8,6 @@
       "message": "RequiredFieldError"
     },
     "isPII": true,
-    "width": "270px",
     "rows": "40",
     "additionalActions": [
       {
@@ -221,10 +220,6 @@
       {
         "value": "Word of Mouth",
         "label": "Word of Mouth"
-      },
-      {
-        "value": "Unknown",
-        "label": "Unknown"
       }
     ],
     "required": {

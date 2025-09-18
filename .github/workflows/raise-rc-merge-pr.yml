@@ -26,13 +26,13 @@ jobs:
     outputs:
       found_branches: ${{steps.find_branches.outputs.found-branches}}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           sparse-checkout-cone-mode: false
           sparse-checkout: |
             .github/actions
       - name: Use Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v5
         with:
           node-version: '22.x'
       - name: Find later RC branches
@@ -48,7 +48,7 @@ jobs:
       matrix:
         target-branch: ${{ fromJSON(needs.find_target_branches.outputs.found_branches) }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Set merge branch name
         run: |
           github_sha_hash=${{ github.sha }}  
@@ -93,7 +93,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PR_URL: ${{ env.NEW_PR_URL || env.EXISTING_PR_URL }}
       - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v4
+        uses: aws-actions/configure-aws-credentials@v5
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
@@ -110,7 +110,7 @@ jobs:
           env_variable_name: "ASELO_RELEASE_DEPLOY_CHANNEL_ID"
       - name: Slack Aselo channel
         id: slack
-        uses: slackapi/slack-github-action@v2.1.0
+        uses: slackapi/slack-github-action@v2.1.1
         with:
           method: chat.postMessage
           token: ${{ env.GITHUB_ACTIONS_SLACK_BOT_TOKEN }}

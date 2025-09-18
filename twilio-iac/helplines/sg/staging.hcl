@@ -8,6 +8,7 @@ locals {
   config            = merge(local.common_config, local.local_config)
 
   local_config = {
+    operating_hours_enforced_override     = false
     custom_task_routing_filter_expression = "channelType =='voice' OR channelType =='web' OR isContactlessTask == true"
     flow_vars = {
       service_sid                   = "ZS8a0d3bbfb230721c2609641ca8e17ce1"
@@ -23,7 +24,7 @@ locals {
       webchat : {
         channel_type     = "web"
         contact_identity = ""
-        templatefile     = "/app/twilio-iac/helplines/templates/studio-flows/messaging-no-chatbot-operating-hours-blocking-lambda.tftpl"
+        templatefile     = "/app/twilio-iac/helplines/templates/studio-flows/messaging-no-chatbot-operating-hours-blocking-lambda-sd.tftpl"
         channel_flow_vars = {
           chat_greeting_message = "Hello, Tinkle Friend is engaged with other children at the moment. Please hold on for a while and we will attend to you as soon as we can. Thank you for your patience!.\nWhile waiting, you can check out our BUZZ magazine at http://www.tinklefriend.sg/buzz-magazine/. Alternatively, you can email us at tinklefriend@childrensociety.org.sg and we will respond to you in 3 working days.\nIf you are experiencing mental health issues and need immediate support please call National Mindline 1771. In the event that you are facing a crisis and thinking about suicide, you can Whatsapp our friends from Samaritans of Singapore (SOS) at 9151 1767. If you are in immediate danger, please call the Police at 999."
           widget_from           = "Tinkle Friend"
@@ -35,21 +36,34 @@ locals {
       voice : {
         channel_type     = "voice"
         contact_identity = ""
-        templatefile     = "/app/twilio-iac/helplines/sg/templates/studio-flows/voice-no-chatbot-operating-hours-lambda.tftpl"
+        templatefile     = "/app/twilio-iac/helplines/sg/templates/studio-flows/voice-no-chatbot-operating-hours-lambda-sd.tftpl"
         channel_flow_vars = {
           voice_ivr_language         = "en-US",
           voice_ivr_greeting_message = "Hello! Tinkle Friend is engaged with other children at the moment. Please hold on for a while and we will attend to you as soon as we can."
 
           welcome_message_url = "https://sg-services-1705.twil.io/welcome_Message.mp3"
           busy_message_url    = "https://sg-services-1705.twil.io/busy_Message.mp3"
-          closed_message_url  = "https://sg-services-1705.twil.io/closed_Message.mp3" 
+          closed_message_url  = "https://sg-services-1705.twil.io/closed_Message.mp3"
 
-          widget_from           = "Tinkle Friend"
-          voice_ivr_blocked_message  = "Hi, you've been blocked from accessing Tinkle Friend services and we are not able to read or receive further messages from you."
+          widget_from               = "Tinkle Friend"
+          voice_ivr_blocked_message = "Hi, you've been blocked from accessing Tinkle Friend services and we are not able to read or receive further messages from you."
         }
         chatbot_unique_names = []
       }
     }
     get_profile_flags_for_identifier_base_url = "https://hrm-staging.tl.techmatters.org/lambda/twilio/account-scoped"
+    #System Down Configuration
+    system_down_templatefile = "/app/twilio-iac/helplines/templates/studio-flows/system-down.tftpl"
+    enable_system_down       = true
+    system_down_flow_vars = {
+      is_system_down                   = "false"
+      message                          = "Tinkle Friend is currently experiencing technical difficulties at the moment. If you need immediate support, please contact our friends at National Mindline 1771 or if you have any thoughts of suicide, please contact our friend at Samaritans of Singapore (SOS) at 1767. We seek for your understanding and being patient with us. We are working to be up and running shortly."
+      voice_message                    = "Tinkle Friend is currently experiencing technical difficulties at the moment. If you need immediate support, please contact our friends at National Mindline 1771 or if you have any thoughts of suicide, please contact our friend at Samaritans of Singapore (SOS) at 1767. We seek for your understanding and being patient with us. We are working to be up and running shortly."
+      send_studio_message_function_sid = "ZH2a2ee50d3166ac1344bf50675a6dc579"
+      call_action                      = "forward"
+      forward_number                   = " +12055189944"
+      recording_url                    = "https://<place_holder>.mp3"
+
+    }
   }
 }

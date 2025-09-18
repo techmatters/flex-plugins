@@ -73,6 +73,12 @@ const preEngagementConfig: PreEngagementFormDefinition = {
       required: true,
     },
     {
+      type: 'input-text',
+      name: 'bookingReference',
+      label: 'Booking Reference',
+      required: true,
+    },
+    {
       label: 'On a scale from 0 (not anxious at all) to 10 (completely anxious), how anxious did you feel yesterday?',
       type: 'select',
       name: 'anxietyScale',
@@ -83,48 +89,48 @@ const preEngagementConfig: PreEngagementFormDefinition = {
           "label": ""
         },
         {
-          value: "00",
-          label: "0"
+          "value": "00",
+          "label": "0"
         },
         {
-          value: "01",
-          label: "1"
+          "value": "01",
+          "label": "1"
         },
         {
-          value: "02",
-          label: "2"
+          "value": "02",
+          "label": "2"
         },
         {
-          value: "03",
-          label: "3"
+          "value": "03",
+          "label": "3"
         },
         {
-          value: "04",
-          label: "4"
+          "value": "04",
+          "label": "4"
         },
         {
-          value: "05",
-          label: "5"
+          "value": "05",
+          "label": "5"
         },
         {
-          value: "06",
-          label: "6"
+          "value": "06",
+          "label": "6"
         },
         {
-          value: "07",
-          label: "7"
+          "value": "07",
+          "label": "7"
         },
         {
-          value: "08",
-          label: "8"
+          "value": "08",
+          "label": "8"
         },
         {
-          value: "09",
-          label: "9"
+          "value": "09",
+          "label": "9"
         },
         {
-          value: "10",
-          label: "10"
+          "value": "10",
+          "label": "10"
         }
       ],
     },
@@ -181,10 +187,25 @@ const preEngagementConfig: PreEngagementFormDefinition = {
       },
     },
     {
-      type: 'checkbox',
-      name: 'consentForResearchevaluation',
+      type: 'select',
+      name: 'consentForResearhevaluation',
       label:
-        'I consent to being contacted for research or evaluation purposes.'
+        'I consent to being contacted for research or evaluation purposes.',
+      defaultValue: '',
+      options: [
+        {
+          value: "",
+          label: ""
+        },
+        {
+          value: 'Yes',
+          label: 'Yes',
+        },
+        {
+          value: 'No',
+          label: 'No',
+        },
+      ],
     },
   ],
 };

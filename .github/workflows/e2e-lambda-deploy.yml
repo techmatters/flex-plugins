@@ -55,17 +55,17 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v4
+        uses: aws-actions/configure-aws-credentials@v5
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ env.PRIMARY_AWS_REGION }}
           # this plugin sets the AWS account ID to a secret which is not allowed in outputs
           # we have to disable that so repo output will work
-          mask-aws-account-id: 'no'
+          mask-aws-account-id: false
 
       - name: Login to Amazon ECR
         id: login-ecr
@@ -101,14 +101,14 @@ jobs:
 
     steps:
       - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v4
+        uses: aws-actions/configure-aws-credentials@v5
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ matrix.region }}
           # this plugin sets the AWS account ID to a secret which is not allowed in outputs
           # we have to disable that so repo output will work
-          mask-aws-account-id: 'no'
+          mask-aws-account-id: false
 
       - name: Update Lambda and Publish
         run: |
@@ -123,10 +123,10 @@ jobs:
           done
 
       # reconfigure AWS credentials to use the default region for SSM Parameter Store.
-      # aws-actions/configure-aws-credentials@v4 overrides env.AWS_DEFAULT_REGION, so
+      # aws-actions/configure-aws-credentials@v5 overrides env.AWS_DEFAULT_REGION, so
       # we name our env var PRIMARY_AWS_REGION to avoid that.
       - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v4
+        uses: aws-actions/configure-aws-credentials@v5
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
@@ -148,7 +148,7 @@ jobs:
       # Send Slack notifying success
       - name: Slack Aselo channel
         id: slack
-        uses: slackapi/slack-github-action@v2.1.0
+        uses: slackapi/slack-github-action@v2.1.1
         with:
           method: chat.postMessage
           token: ${{ env.GITHUB_ACTIONS_SLACK_BOT_TOKEN }}

@@ -1,120 +1,99 @@
 {
   "Missing Children Europe": {
-
-  "categories": {
-    "Missing children": {
-      "color": "#BBE3FF",
-      "subcategories": [
-        {
-          "label": "Parental abduction"
-        },
-        {
-          "label": "Lost, injured for or otherwise missing"
-        },
-        {
-          "label": "Running Away"
-        },
-        {
-          "label": "Criminal Abduction"
-        },
-        {
-          "label": "Missing in Migration"
-        },
-        {
-          "label": "Unspecified/Other - Missing Children"
-        }
-      ]
-    },
-    "Violence": {
-      "color": "#F5A623",
-      "subcategories": [
-        {
-          "label": "Bullying"
-        },
-        {
-          "label": "Child/Early/Forced marriage"
-        },
-        {
-          "label": "Child labour"
-        },
-        {
-          "label": "Commercial sexual exploitation (offline)"
-        },
-        {
-          "label": "Female Genital Mutilation (FGM)"
-        },
-        {
-          "label": "Gender-based harmful traditional practices (other than FGM)"
-        },
-        {
-          "label": "Harmful traditional practices other than child marriage and FGM"
-        },
-        {
-          "label": "Mental/Emotional violence"
-        },
-        {
-          "label": "Neglect (or negligent treatment)"
-        },
-        {
-          "label": "Online child sexual abuse"
-        },
-        {
-          "label": "Online child sexual exploitation"
-        },
-        {
-          "label": "Online Grooming"
-        },
-        {
-          "label": "Physical violence"
-        },
-        {
-          "label": "Sexual violence"
-        },
-        {
-          "label": "Unspecified/Other - Violence"
-        }
-      ]
-    },
-    "Peer Relationships": {
-      "color": "#9AD703",
-      "subcategories": [
-        {
-          "label": "Friends and Friendships"
-        },
-        {
-          "label": "Partner Relationships"
-        },
-        {
-          "label": "Classmates/colleagues relationships"
-        },
-        {
-          "label": "Unspecified/Other - Peer Relationships"
-        }
-      ]
-    },
-    "Non-Counselling contacts": {
-      "color": "#767777",
-      "subcategories": [
-        {
-          "label": "Complaints about the child helpline"
-        },
-        {
-          "label": "Questions by parents"
-        },
-        {
-          "label": "Questions about the child helpline"
-        },
-        {
-          "label": "Questions about other services"
-        },
-        {
-          "label": "\"Thank you for your assistance\""
-        },
-        {
-          "label": "Unspecified/Other - Non-Counselling"
-        }
-      ]
+    "categories": {
+      "Missing children": {
+        "color": "#BBE3FF",
+        "subcategories": [
+          {
+            "label": "Parental abduction"
+          },
+          {
+            "label": "Lost, injured for or otherwise missing"
+          },
+          {
+            "label": "Running Away"
+          },
+          {
+            "label": "Criminal Abduction"
+          },
+          {
+            "label": "Missing in Migration"
+          }
+        ]
+      },
+      "Violence": {
+        "color": "#F5A623",
+        "subcategories": [
+          {
+            "label": "Bullying"
+          },
+          {
+            "label": "Child/Early/Forced marriage"
+          },
+          {
+            "label": "Child labour"
+          },
+          {
+            "label": "Commercial sexual exploitation (offline)"
+          },
+          {
+            "label": "Female Genital Mutilation (FGM)"
+          },
+          {
+            "label": "Gender-based harmful traditional practices (other than FGM)"
+          },
+          {
+            "label": "Harmful traditional practices other than child marriage and FGM"
+          },
+          {
+            "label": "Mental/Emotional violence"
+          },
+          {
+            "label": "Neglect (or negligent treatment)"
+          },
+          {
+            "label": "Online child sexual abuse"
+          },
+          {
+            "label": "Online child sexual exploitation"
+          },
+          {
+            "label": "Online Grooming"
+          },
+          {
+            "label": "Physical violence"
+          },
+          {
+            "label": "Sexual violence"
+          },
+          {
+            "label": "Unspecified/Other - Violence"
+          }
+        ]
+      },
+      "Other": {
+        "color": "#767777",
+        "subcategories": [
+          {
+            "label": "Complaints about the child helpline"
+          },
+          {
+            "label": "Questions by parents"
+          },
+          {
+            "label": "Questions about the child helpline"
+          },
+          {
+            "label": "Questions about other services"
+          },
+          {
+            "label": "\"Thank you for your assistance\""
+          },
+          {
+            "label": "Unspecified/Other - Non-Counselling"
+          }
+        ]
+      }
     }
   }
-}
 }

@@ -99,6 +99,42 @@ describe('createCase()', () => {
           definitionVersion: 'as-v1',
         },
         definitionVersion: 'as-v1',
+        label: null,
+      }),
+    };
+    expect(fetchHrmApi).toHaveBeenCalledWith(expectedUrl, expectedOptions);
+    expect(response).toStrictEqual(baselineResponse);
+  });
+
+  test('No createdOnBehalfOf set - label uses childs first and last name if present', async () => {
+    mockFetchHrmAPi.mockResolvedValue(baselineResponse);
+
+    const contact = {
+      ...baselineContact,
+      rawJson: {
+        ...baselineContact.rawJson,
+        childInformation: {
+          ...baselineContact.rawJson.childInformation,
+          firstName: 'first',
+          lastName: 'last',
+        },
+      },
+    };
+
+    const response = await createCase(contact, 'creating worker', 'as-v1');
+
+    const expectedUrl = `/cases`;
+    const expectedOptions = {
+      method: 'POST',
+      body: expect.jsonStringToParseAs({
+        twilioWorkerId: 'creating worker',
+        status: 'open',
+        helpline: 'a helpline',
+        info: {
+          definitionVersion: 'as-v1',
+        },
+        definitionVersion: 'as-v1',
+        label: 'first last',
       }),
     };
     expect(fetchHrmApi).toHaveBeenCalledWith(expectedUrl, expectedOptions);
@@ -140,6 +176,7 @@ describe('createCase()', () => {
           offlineContactCreator: 'creating worker',
         },
         definitionVersion: 'as-v1',
+        label: null,
       }),
     };
     expect(fetchHrmApi).toHaveBeenCalledWith(expectedUrl, expectedOptions);
