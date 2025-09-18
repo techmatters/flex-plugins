@@ -7,7 +7,8 @@
       "aboutSelfValue": "myself"
     }, {
       "form": "survey",
-      "input": "aboutSelf"
+      "input": "callOrDispatch",
+      "aboutSelfValue": "1"
     }]
   },
   "survey":{
