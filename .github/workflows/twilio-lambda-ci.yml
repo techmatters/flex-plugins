@@ -40,7 +40,7 @@ jobs:
           aws-region: ${{ env.PRIMARY_AWS_REGION }}
           # this plugin sets the AWS account ID to a secret which is not allowed in outputs
           # we have to disable that so repo output will work
-          mask-aws-account-id: 'no'
+          mask-aws-account-id: false
 
       - name: Install lambda dependencies
         run: |
@@ -99,7 +99,7 @@ jobs:
           aws-region: ${{ env.PRIMARY_AWS_REGION }}
           # this plugin sets the AWS account ID to a secret which is not allowed in outputs
           # we have to disable that so repo output will work
-          mask-aws-account-id: 'no'
+          mask-aws-account-id: false
 
       - name: Login to Amazon ECR
         id: login-ecr
