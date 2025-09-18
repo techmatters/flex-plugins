@@ -15,13 +15,9 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import type { ReferrableResourceSearchState, SearchSettings } from '../../../../states/resources/search';
-import type { FilterOption } from '../../../../states/resources/types';
-import {
-  dedupAndSort,
-  LoadReferenceActionFunction,
-  ReferenceLocationState,
-} from '../../../../states/resources/referenceLocations';
+import type { ReferrableResourceSearchState, SearchSettings } from '../../search';
+import type { FilterOption } from '../../types';
+import { dedupAndSort, LoadReferenceActionFunction, ReferenceLocationState } from '../../referenceLocations';
 import { getDistinctStringAttributes } from '../../../../services/ResourceService';
 
 export type USCHReferenceLocationState = {

@@ -25,12 +25,12 @@ import KHPResourcePreviewAttributes from './khpMappings/ResourcePreviewAttribute
 import KHPResourceViewAttributes from './khpMappings/ResourceViewAttributes';
 import KHPResourceSearchFilters from './khpMappings/ResourceSearchFilters';
 import KHPResourcesSearchResultsDescriptionDetails from './khpMappings/ResourcesSearchResultsDescriptionDetails';
-import * as khpFilterSelectionState from './khpMappings/filterSelectionState';
+import * as khpFilterSelectionState from '../../../states/resources/filterSelectionState/khp';
 import USCHResourcePreviewAttributes from './uschMappings/ResourcePreviewAttributes';
 import USCHResourceViewAttributes from './uschMappings/ResourceViewAttributes';
 import USCHResourceSearchFilters from './uschMappings/ResourceSearchFilters';
 import USCHResourcesSearchResultsDescriptionDetails from './uschMappings/ResourcesSearchResultsDescriptionDetails';
-import * as uschFilterSelectionState from './uschMappings/filterSelectionState';
+import * as uschFilterSelectionState from '../../../states/resources/filterSelectionState/usch';
 
 type FilterSelectionState = {
   loadReferenceActionFunction: (list: string) => LoadReferenceActionFunction;
