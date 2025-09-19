@@ -3,7 +3,7 @@
   "facebookCallback": { "development": ["us-east-1"], "staging": [], "production": ["us-east-1"] },
   "facebookSignin": { "development": ["us-east-1"], "staging": [], "production": ["us-east-1"] },
   "instagramWebhook": { "development": ["us-east-1"], "staging": [], "production": ["us-east-1"] },
-  "ipLocationFinder": { "development": ["us-east-1"], "staging": [], "production": ["us-east-1"] },
+  "ipLocationFinder": { "development": [], "staging": ["us-east-1"], "production": ["us-east-1"] },
   "lineSetup": { "development": ["us-east-1"], "staging": [], "production": ["us-east-1"] },
   "lineWebhook": { "development": ["us-east-1"], "staging": [], "production": ["us-east-1"] },
   "modicaWebhook": { "development": ["us-east-1"], "staging": [], "production": ["us-east-1"] },
