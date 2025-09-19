@@ -69,11 +69,7 @@ const isTriggerPostSurvey = ({
   // Post survey is for chat tasks only. This will change when we introduce voice based post surveys
   if (taskChannelUniqueName !== 'chat') return false;
 
-  if (isChatCaptureControlTask(taskAttributes)) {
-    return false;
-  }
-
-  return true;
+  return !isChatCaptureControlTask(taskAttributes);
 };
 
 const getTriggerMessage = async ({
@@ -170,9 +166,7 @@ export const postSurveyInitHandler = async ({
     webhookBaseUrl,
   };
 
-  const result = await handleChannelCapture(client, params);
-
-  return result;
+  return handleChannelCapture(client, params);
 };
 
 const triggerPostSurvey: TaskRouterEventHandler = async (
@@ -198,17 +192,7 @@ const triggerPostSurvey: TaskRouterEventHandler = async (
       const serviceConfigAttributes =
         await retrieveServiceConfigurationAttributes(client);
       const { feature_flags: featureFlags, helplineLanguage } = serviceConfigAttributes;
-      const {
-        enable_post_survey: enablePostSurvey,
-        enable_lambda_post_survey_processing: enableLambdaPostSurveyProcessing,
-      } = featureFlags;
-
-      if (!enableLambdaPostSurveyProcessing) {
-        console.debug(
-          'enable_lambda_post_survey_processing is not set, the post survey handler will be process in twilio serverless.',
-        );
-        return;
-      }
+      const { enable_post_survey: enablePostSurvey } = featureFlags;
 
       if (enablePostSurvey) {
         const { channelSid, conversationSid, channelType, customChannelType } =
