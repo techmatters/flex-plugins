@@ -1,270 +1,1544 @@
 [
   {
-    "name": "firstName",
-    "label": "First Name",
-    "type": "input",
-    "isPII": true
-  },
-  {
-    "name": "lastName",
-    "label": "Last Name",
-    "type": "input",
-    "isPII": true
-  },
-  {
-    "name": "contactIdentifier",
-    "label": "Email",
-    "type": "input",
-    "isPII": true
-  },
-  {
-    "name": "gender",
-    "label": "Gender",
+    "name": "typeOfCallfrequencyOfAccess",
+    "label": "Type of Call/Frequency of Access",
     "type": "select",
+    "isPII": false,
     "options": [
-      { "value": "", "label": "" },
-      { "value": "Boy", "label": "Boy" },
-      { "value": "Girl", "label": "Girl" },
-      { "value": "Non-Binary", "label": "Non-Binary" },
-      { "value": "Unknown", "label": "Unknown" }
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "1st time user",
+        "label": "1st time user"
+      },
+      {
+        "value": "Hang-up/Non-starter",
+        "label": "Hang-up/Non-starter"
+      },
+      {
+        "value": "Return User",
+        "label": "Return User"
+      },
+      {
+        "value": "Test Call",
+        "label": "Test Call"
+      }
     ],
-    "required": { "value": true, "message": "RequiredFieldError" },
-    "isPII": false
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "sexOfVictim",
+    "label": "Sex of Victim",
+    "type": "select",
+    "isPII": false,
+    "options": [
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "Male ",
+        "label": "Male "
+      },
+      {
+        "value": "Female ",
+        "label": "Female "
+      },
+      {
+        "value": "I don't know ",
+        "label": "I don't know "
+      }
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
   },
   {
     "name": "age",
     "label": "Age",
     "type": "select",
+    "isPII": false,
     "options": [
-      { "value": "", "label": "" },
-      { "value": "Unborn", "label": "Unborn" },
-      { "value": "00", "label": "0" },
-      { "value": "01", "label": "1" },
-      { "value": "02", "label": "2" },
-      { "value": "03", "label": "3" },
-      { "value": "04", "label": "4" },
-      { "value": "05", "label": "5" },
-      { "value": "06", "label": "6" },
-      { "value": "07", "label": "7" },
-      { "value": "08", "label": "8" },
-      { "value": "09", "label": "9" },
-      { "value": "10", "label": "10" },
-      { "value": "11", "label": "11" },
-      { "value": "12", "label": "12" },
-      { "value": "13", "label": "13" },
-      { "value": "14", "label": "14" },
-      { "value": "15", "label": "15" },
-      { "value": "16", "label": "16" },
-      { "value": "17", "label": "17" },
-      { "value": "18", "label": "18" },
-      { "value": "19", "label": "19" },
-      { "value": "20", "label": "20" },
-      { "value": "21", "label": "21" },
-      { "value": "22", "label": "22" },
-      { "value": "23", "label": "23" },
-      { "value": "24", "label": "24" },
-      { "value": "25", "label": "25" },
-      { "value": ">25", "label": ">25" },
-      { "value": "Unknown", "label": "Unknown" }
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "0-10",
+        "label": "0-10"
+      },
+      {
+        "value": "Wed Nov 12 2025 00:00:00 GMT-0300 (Chile Summer Time)",
+        "label": "Wed Nov 12 2025 00:00:00 GMT-0300 (Chile Summer Time)"
+      },
+      {
+        "value": "13-17",
+        "label": "13-17"
+      },
+      {
+        "value": "18-24",
+        "label": "18-24"
+      },
+      {
+        "value": "25-30",
+        "label": "25-30"
+      },
+      {
+        "value": "31-34",
+        "label": "31-34"
+      },
+      {
+        "value": "35-59",
+        "label": "35-59"
+      },
+      {
+        "value": "60-65",
+        "label": "60-65"
+      },
+      {
+        "value": "66+",
+        "label": "66+"
+      },
+      {
+        "value": "Unknown/N/A",
+        "label": "Unknown/N/A"
+      }
     ],
-    "required": { "value": true, "message": "RequiredFieldError" },
-    "isPII": false
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
   },
   {
-    "name": "streetAddress",
-    "label": "Street Address",
-    "type": "input",
-    "isPII": true
-  },
-  {
-    "name": "city",
-    "label": "City",
-    "type": "input",
-    "isPII": false
-  },
-  {
-    "name": "province",
-    "label": "Province",
+    "name": "typeOfCallfrequencyOfAccess",
+    "label": "User",
     "type": "select",
+    "isPII": false,
     "options": [
-      { "value": "", "label": "" },
-      { "value": "Northern", "label": "Northern" },
-      { "value": "Eastern", "label": "Eastern" },
-      { "value": "Western", "label": "Western" },
-      { "value": "Southern", "label": "Southern" },
-      { "value": "Unknown", "label": "Unknown"}
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "1st time user",
+        "label": "1st time user"
+      },
+      {
+        "value": "Hang-up/Non-starter",
+        "label": "Hang-up/Non-starter"
+      },
+      {
+        "value": "Return User",
+        "label": "Return User"
+      },
+      {
+        "value": "Test Call",
+        "label": "Test Call"
+      }
     ],
-    "required": { "value": true, "message": "RequiredFieldError" },
-    "isPII": false
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
   },
   {
-    "name": "district",
-    "label": "District",
-    "type": "dependent-select",
-    "dependsOn": "province",
-    "defaultOption": { "value": "", "label": "" },
-    "options": {
-      "Northern": [
-        { "value": "District A", "label": "District A" },
-        { "value": "District B", "label": "District B" },
-        { "value": "District C", "label": "District C" },
-        { "value": "Unknown", "label": "Unknown"}
-      ],
-      "Eastern": [
-        { "value": "District A", "label": "District A" },
-        { "value": "District B", "label": "District B" },
-        { "value": "District C", "label": "District C" },
-        { "value": "Unknown", "label": "Unknown"}
-      ],
-      "Western": [
-        { "value": "District A", "label": "District A" },
-        { "value": "District B", "label": "District B" },
-        { "value": "District C", "label": "District C" },
-        { "value": "Unknown", "label": "Unknown"}
-      ],
-      "Southern": [
-        { "value": "District A", "label": "District A" },
-        { "value": "District B", "label": "District B" },
-        { "value": "District C", "label": "District C" },
-        { "value": "Unknown", "label": "Unknown"}
-      ]
+    "name": "location",
+    "label": "Location",
+    "type": "select",
+    "isPII": false,
+    "defaultOption": {
+      "value": "",
+      "label": ""
     },
-    "required": { "value": true, "message": "RequiredFieldError" },
-    "isPII": false
-  },
-  {
-    "name": "postalCode",
-    "label": "Postal Code",
-    "type": "input",
-    "isPII": false
-  },
-  {
-    "name": "phone1",
-    "label": "Phone #1",
-    "type": "input",
-    "isPII": true
-  },
-  {
-    "name": "phone2",
-    "label": "Phone #2",
-    "type": "input",
-    "isPII": true
-  },
-  {
-    "name": "language",
-    "label": "Language",
-    "type": "select",
     "options": [
-      { "value": "Unknown", "label": "" },
-      { "value": "Hausa", "label": "Hausa" },
-      { "value": "English", "label": "English" },
-      { "value": "Xhosa", "label": "Xhosa" },
-      { "value": "Bemba", "label": "Bemba" },
-      { "value": "Other", "label": "Other" }
-    ] ,
-    "isPII": false 
-  },
-  {
-    "name": "ethnicity",
-    "label": "Ethnicity",
-    "type": "input",
-    "isPII": false
-  },
-  {
-    "name": "schoolName",
-    "label": "School Name",
-    "type": "input",
-    "isPII": false
-  },
-  {
-    "name": "gradeLevel",
-    "label": "Grade Level",
-    "type": "select",
-    "options": [
-      { "value": "Unknown", "label": "" },
-      { "value": "Grade 1 to 4", "label": "Grade 1 to 4" },
-      { "value": "Grade 5 to 7", "label": "Grade 5 to 7" },
-      { "value": "Grade 8 to 9", "label": "Grade 8 to 9" },
-      { "value": "Grade 10 to 12", "label": "Grade 10 to 12" },
-      { "value": "Out of school", "label": "Out of school" }
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "Alabama",
+        "label": "Alabama"
+      },
+      {
+        "value": "Alaska",
+        "label": "Alaska"
+      },
+      {
+        "value": "Arizona",
+        "label": "Arizona"
+      },
+      {
+        "value": "Arkansas",
+        "label": "Arkansas"
+      },
+      {
+        "value": "California",
+        "label": "California"
+      },
+      {
+        "value": "Colorado",
+        "label": "Colorado"
+      },
+      {
+        "value": "Connecticut",
+        "label": "Connecticut"
+      },
+      {
+        "value": "Delaware",
+        "label": "Delaware"
+      },
+      {
+        "value": "Florida",
+        "label": "Florida"
+      },
+      {
+        "value": "Georgia",
+        "label": "Georgia"
+      },
+      {
+        "value": "Hawaii",
+        "label": "Hawaii"
+      },
+      {
+        "value": "Idaho",
+        "label": "Idaho"
+      },
+      {
+        "value": "Illinois",
+        "label": "Illinois"
+      },
+      {
+        "value": "Indiana",
+        "label": "Indiana"
+      },
+      {
+        "value": "Iowa",
+        "label": "Iowa"
+      },
+      {
+        "value": "Kansas",
+        "label": "Kansas"
+      },
+      {
+        "value": "Kentucky",
+        "label": "Kentucky"
+      },
+      {
+        "value": "Louisiana",
+        "label": "Louisiana"
+      },
+      {
+        "value": "Maine",
+        "label": "Maine"
+      },
+      {
+        "value": "Maryland",
+        "label": "Maryland"
+      },
+      {
+        "value": "Massachusetts",
+        "label": "Massachusetts"
+      },
+      {
+        "value": "Michigan",
+        "label": "Michigan"
+      },
+      {
+        "value": "Minnesota",
+        "label": "Minnesota"
+      },
+      {
+        "value": "Mississippi",
+        "label": "Mississippi"
+      },
+      {
+        "value": "Missouri",
+        "label": "Missouri"
+      },
+      {
+        "value": "Montana",
+        "label": "Montana"
+      },
+      {
+        "value": "Nebraska",
+        "label": "Nebraska"
+      },
+      {
+        "value": "Nevada",
+        "label": "Nevada"
+      },
+      {
+        "value": "New Hampshire",
+        "label": "New Hampshire"
+      },
+      {
+        "value": "New Jersey",
+        "label": "New Jersey"
+      },
+      {
+        "value": "New Mexico",
+        "label": "New Mexico"
+      },
+      {
+        "value": "New York",
+        "label": "New York"
+      },
+      {
+        "value": "North Carolina",
+        "label": "North Carolina"
+      },
+      {
+        "value": "North Dakota",
+        "label": "North Dakota"
+      },
+      {
+        "value": "Ohio",
+        "label": "Ohio"
+      },
+      {
+        "value": "Oklahoma",
+        "label": "Oklahoma"
+      },
+      {
+        "value": "Oregon",
+        "label": "Oregon"
+      },
+      {
+        "value": "Pensylvania",
+        "label": "Pensylvania"
+      },
+      {
+        "value": "Rhode Island",
+        "label": "Rhode Island"
+      },
+      {
+        "value": "South Carolina",
+        "label": "South Carolina"
+      },
+      {
+        "value": "South Dakota",
+        "label": "South Dakota"
+      },
+      {
+        "value": "Tennessee ",
+        "label": "Tennessee "
+      },
+      {
+        "value": "Texas",
+        "label": "Texas"
+      },
+      {
+        "value": "Utah ",
+        "label": "Utah "
+      },
+      {
+        "value": "Vermont",
+        "label": "Vermont"
+      },
+      {
+        "value": "Virgina ",
+        "label": "Virgina "
+      },
+      {
+        "value": "Washington D.C.",
+        "label": "Washington D.C."
+      },
+      {
+        "value": "West Virginia",
+        "label": "West Virginia"
+      },
+      {
+        "value": "Wisconsin",
+        "label": "Wisconsin"
+      },
+      {
+        "value": "Wyoming",
+        "label": "Wyoming"
+      },
+      {
+        "value": "U.S. Territory - American Somoa",
+        "label": "U.S. Territory - American Somoa"
+      },
+      {
+        "value": "U.S. Territory - Guam",
+        "label": "U.S. Territory - Guam"
+      },
+      {
+        "value": "U.S Territory - Northern Mariana Islands",
+        "label": "U.S Territory - Northern Mariana Islands"
+      },
+      {
+        "value": "U.S Territory - Puerto Rico",
+        "label": "U.S Territory - Puerto Rico"
+      },
+      {
+        "value": "U.S Territory - U.S. Virgin Islands",
+        "label": "U.S Territory - U.S. Virgin Islands"
+      },
+      {
+        "value": "U.S Territory - Other",
+        "label": "U.S Territory - Other"
+      },
+      {
+        "value": "International ",
+        "label": "International "
+      },
+      {
+        "value": "Unknown - USA State/Territory",
+        "label": "Unknown - USA State/Territory"
+      },
+      {
+        "value": "Unknown",
+        "label": "Unknown"
+      }
     ],
-    "isPII": false
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
   },
   {
-    "name": "livingSituation",
-    "label": "Living Situation",
+    "name": "dcquadrant",
+    "label": "DC Quadrant",
+    "type": "dependent-select",
+    "isPII": false,
+    "dependsOn": "location",
+    "defaultOption": {
+      "value": "",
+      "label": ""
+    },
+    "options": {},
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "race",
+    "label": "Race",
     "type": "select",
+    "isPII": false,
     "options": [
-      { "value": "Unknown", "label": "" },
-      { "value": "Alternative care", "label": "Alternative care" },
-      { "value": "Group residential facility", "label": "Group residential facility" },
-      { "value": "Homeless or marginally housed", "label": "Homeless or marginally housed" },
-      { "value": "In detention", "label": "In detention" },
-      { "value": "Living independently", "label": "Living independently" },
-      { "value": "With parent(s)", "label": "With parent(s)" },
-      { "value": "With relatives", "label": "With relatives" },
-      { "value": "Other", "label": "Other" }
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "American Indian/Alaska Native",
+        "label": "American Indian/Alaska Native"
+      },
+      {
+        "value": "Asian",
+        "label": "Asian"
+      },
+      {
+        "value": "African ",
+        "label": "African "
+      },
+      {
+        "value": "Black/African American",
+        "label": "Black/African American"
+      },
+      {
+        "value": "Hispanic/Latinx",
+        "label": "Hispanic/Latinx"
+      },
+      {
+        "value": "White non-latinx/Caucasian",
+        "label": "White non-latinx/Caucasian"
+      },
+      {
+        "value": "Other",
+        "label": "Other"
+      },
+      {
+        "value": "Two or more races",
+        "label": "Two or more races"
+      },
+      {
+        "value": "Unknown",
+        "label": "Unknown"
+      }
     ],
-    "isPII": false
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
   },
   {
-    "name": "vulnerableGroups",
-    "label": "Vulnerable Groups",
+    "name": "crimeExperiencedByVictim",
+    "label": "Crime Experienced by Victim",
     "type": "listbox-multiselect",
+    "isPII": false,
     "options": [
       {
-        "value": "Child in conflict with the law",
-        "label": "Child in conflict with the law"
+        "value": "Adult survivors of childhood abuse (physical, verbal, neglect, witness)",
+        "label": "Adult survivors of childhood abuse (physical, verbal, neglect, witness)"
       },
       {
-        "value": "Child living in conflict zone",
-        "label": "Child living in conflict zone"
+        "value": "Adult survivors of childhood abuse (sexual, witness)",
+        "label": "Adult survivors of childhood abuse (sexual, witness)"
       },
       {
-        "value": "Child living in poverty",
-        "label": "Child living in poverty"
+        "value": "Arson",
+        "label": "Arson"
       },
       {
-        "value": "Child member of an ethnic, racial or religious minority",
-        "label": "Child member of an ethnic, racial or religious minority"
+        "value": "Assault/attempted homicide",
+        "label": "Assault/attempted homicide"
       },
       {
-        "value": "Child on the move (involuntarily)",
-        "label": "Child on the move (involuntarily)"
+        "value": "Bullying (current minor)",
+        "label": "Bullying (current minor)"
       },
       {
-        "value": "Child on the move (voluntarily)",
-        "label": "Child on the move (voluntarily)"
+        "value": "Child exposed to violence (current minor)",
+        "label": "Child exposed to violence (current minor)"
       },
       {
-        "value": "Child with disability",
-        "label": "Child with disability"
+        "value": "Child physical abuse (current minor)",
+        "label": "Child physical abuse (current minor)"
       },
       {
-        "value": "LGBTQI+/SOGIESC child",
-        "label": "LGBTQI+/SOGIESC child"
+        "value": "Child pornography/child sexual abuse images",
+        "label": "Child pornography/child sexual abuse images"
       },
       {
-        "value": "Out-of-school child",
-        "label": "Out-of-school child"
+        "value": "Child sexual abuse (current minor)",
+        "label": "Child sexual abuse (current minor)"
+      },
+      {
+        "value": "Elder abuse or neglect",
+        "label": "Elder abuse or neglect"
+      },
+      {
+        "value": "Intimate partner violence",
+        "label": "Intimate partner violence"
+      },
+      {
+        "value": "Family violence or abuse",
+        "label": "Family violence or abuse"
+      },
+      {
+        "value": "Teen Dating Violence",
+        "label": "Teen Dating Violence"
+      },
+      {
+        "value": "Harassment (non sexual)",
+        "label": "Harassment (non sexual)"
+      },
+      {
+        "value": "Harassment (sexual)",
+        "label": "Harassment (sexual)"
+      },
+      {
+        "value": "Stalking",
+        "label": "Stalking"
+      },
+      {
+        "value": "Homicide",
+        "label": "Homicide"
+      },
+      {
+        "value": "Human trafficking (labor)",
+        "label": "Human trafficking (labor)"
+      },
+      {
+        "value": "Human trafficking (sex)",
+        "label": "Human trafficking (sex)"
+      },
+      {
+        "value": "Identity theft/fraud/economic crimes",
+        "label": "Identity theft/fraud/economic crimes"
+      },
+      {
+        "value": "Kidnapping custodial",
+        "label": "Kidnapping custodial"
+      },
+      {
+        "value": "Kidnapping non-custodial",
+        "label": "Kidnapping non-custodial"
+      },
+      {
+        "value": "Mass Event",
+        "label": "Mass Event"
+      },
+      {
+        "value": "Non-consensual pornography (adult)",
+        "label": "Non-consensual pornography (adult)"
+      },
+      {
+        "value": "Robbery",
+        "label": "Robbery"
+      },
+      {
+        "value": "Burglary",
+        "label": "Burglary"
+      },
+      {
+        "value": "Conservatorship/guardianship fraud/abuse victims",
+        "label": "Conservatorship/guardianship fraud/abuse victims"
+      },
+      {
+        "value": "Sexual assault (adult)",
+        "label": "Sexual assault (adult)"
+      },
+      {
+        "value": "Terrorism",
+        "label": "Terrorism"
+      },
+      {
+        "value": "Traffic/Vehicle Related Crime (DWI/DUI)",
+        "label": "Traffic/Vehicle Related Crime (DWI/DUI)"
+      },
+      {
+        "value": "Traffic/Vehicle Related Crime (Other)",
+        "label": "Traffic/Vehicle Related Crime (Other)"
+      },
+      {
+        "value": "Violation of a court or protective order",
+        "label": "Violation of a court or protective order"
+      },
+      {
+        "value": "Non-Criminal Event (Natural and Disaster)",
+        "label": "Non-Criminal Event (Natural and Disaster)"
+      },
+      {
+        "value": "Non-criminal event (other)",
+        "label": "Non-criminal event (other)"
+      },
+      {
+        "value": "Other - Violent",
+        "label": "Other - Violent"
+      },
+      {
+        "value": "Other - Property",
+        "label": "Other - Property"
+      },
+      {
+        "value": "Refused to answer",
+        "label": "Refused to answer"
+      },
+      {
+        "value": "Unknown/NA",
+        "label": "Unknown/NA"
+      }
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "selectPopulationGroupsCommunities",
+    "label": "Select Population Groups & Communities",
+    "type": "listbox-multiselect",
+    "isPII": false,
+    "options": [
+      {
+        "value": "Active military victim",
+        "label": "Active military victim"
+      },
+      {
+        "value": "Campus victim",
+        "label": "Campus victim"
+      },
+      {
+        "value": "Deaf/hard of hearing",
+        "label": "Deaf/hard of hearing"
+      },
+      {
+        "value": "Homelessness",
+        "label": "Homelessness"
+      },
+      {
+        "value": "Limited English Proficient (LEP) indivisuals",
+        "label": "Limited English Proficient (LEP) indivisuals"
+      },
+      {
+        "value": "Spanish Speaker",
+        "label": "Spanish Speaker"
+      },
+      {
+        "value": "American Abroad",
+        "label": "American Abroad"
+      },
+      {
+        "value": "Tribal victim/tribal crime",
+        "label": "Tribal victim/tribal crime"
+      },
+      {
+        "value": "Veteran/military",
+        "label": "Veteran/military"
+      },
+      {
+        "value": "Victim with a disability (cognitive/physical/mental)",
+        "label": "Victim with a disability (cognitive/physical/mental)"
+      },
+      {
+        "value": "Rural Community",
+        "label": "Rural Community"
+      },
+      {
+        "value": "Unknown/NA",
+        "label": "Unknown/NA"
+      }
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "crimeTypeTrends",
+    "label": "Crime Type Trends",
+    "type": "listbox-multiselect",
+    "isPII": false,
+    "options": [
+      {
+        "value": "Hate Crime/bias Crime",
+        "label": "Hate Crime/bias Crime"
+      },
+      {
+        "value": "Cybercrime/technology",
+        "label": "Cybercrime/technology"
+      },
+      {
+        "value": "Gang violence",
+        "label": "Gang violence"
+      },
+      {
+        "value": "Gun Violence",
+        "label": "Gun Violence"
+      },
+      {
+        "value": "Group/gang stalking",
+        "label": "Group/gang stalking"
+      },
+      {
+        "value": "Missing person",
+        "label": "Missing person"
+      },
+      {
+        "value": "Ritual/religious/cult abuse",
+        "label": "Ritual/religious/cult abuse"
+      },
+      {
+        "value": "Street harassment",
+        "label": "Street harassment"
+      },
+      {
+        "value": "Unknown/NA",
+        "label": "Unknown/NA"
+      }
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "keywords",
+    "label": "Keywords",
+    "type": "listbox-multiselect",
+    "isPII": false,
+    "options": [
+      {
+        "value": "Complaint against local agency",
+        "label": "Complaint against local agency"
+      },
+      {
+        "value": "Covid-19/coronavirus",
+        "label": "Covid-19/coronavirus"
+      },
+      {
+        "value": "Disconnected (by VAS)",
+        "label": "Disconnected (by VAS)"
+      },
+      {
+        "value": "Disconnected (by visitor or tech issue)",
+        "label": "Disconnected (by visitor or tech issue)"
+      },
+      {
+        "value": "Law enforcement complaint/misconduct",
+        "label": "Law enforcement complaint/misconduct"
+      },
+      {
+        "value": "National compassion fund",
+        "label": "National compassion fund"
+      },
+      {
+        "value": "Protective order",
+        "label": "Protective order"
+      },
+      {
+        "value": "PREA (VC only)",
+        "label": "PREA (VC only)"
+      },
+      {
+        "value": "Unknown/NA",
+        "label": "Unknown/NA"
+      }
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "servicesDiscussed",
+    "label": "Services Discussed",
+    "type": "listbox-multiselect",
+    "isPII": false,
+    "options": [
+      {
+        "value": "Advocacy",
+        "label": "Advocacy"
+      },
+      {
+        "value": "Case management",
+        "label": "Case management"
+      },
+      {
+        "value": "Crime reporting",
+        "label": "Crime reporting"
+      },
+      {
+        "value": "Crisis counseling and intervention",
+        "label": "Crisis counseling and intervention"
+      },
+      {
+        "value": "Financial or material assistance",
+        "label": "Financial or material assistance"
+      },
+      {
+        "value": "Forensic services",
+        "label": "Forensic services"
+      },
+      {
+        "value": "General social services",
+        "label": "General social services"
+      },
+      {
+        "value": "Hotline",
+        "label": "Hotline"
+      },
+      {
+        "value": "Housing - long term",
+        "label": "Housing - long term"
+      },
+      {
+        "value": "Housing - emergency shelter",
+        "label": "Housing - emergency shelter"
+      },
+      {
+        "value": "Identity theft recovery",
+        "label": "Identity theft recovery"
+      },
+      {
+        "value": "Legal services (civil)",
+        "label": "Legal services (civil)"
+      },
+      {
+        "value": "Legal services (criminal)",
+        "label": "Legal services (criminal)"
+      },
+      {
+        "value": "Medical services/advocacy",
+        "label": "Medical services/advocacy"
+      },
+      {
+        "value": "Mental health services",
+        "label": "Mental health services"
+      },
+      {
+        "value": "Safety planning",
+        "label": "Safety planning"
+      },
+      {
+        "value": "Support groups",
+        "label": "Support groups"
+      },
+      {
+        "value": "Training/Technical Assistance",
+        "label": "Training/Technical Assistance"
+      },
+      {
+        "value": "Victim rights referrals",
+        "label": "Victim rights referrals"
+      },
+      {
+        "value": "Volunteer/Community Involvement",
+        "label": "Volunteer/Community Involvement"
+      },
+      {
+        "value": "Other",
+        "label": "Other"
+      },
+      {
+        "value": "Unknown/NA",
+        "label": "Unknown/NA"
+      }
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "serviceProvided",
+    "label": "Service Provided",
+    "type": "listbox-multiselect",
+    "isPII": false,
+    "options": [
+      {
+        "value": "Bilingual services provided",
+        "label": "Bilingual services provided"
+      },
+      {
+        "value": "Interpreter accessed",
+        "label": "Interpreter accessed"
+      },
+      {
+        "value": "Emotional support",
+        "label": "Emotional support"
+      },
+      {
+        "value": "Information: Safety planning",
+        "label": "Information: Safety planning"
+      },
+      {
+        "value": "Information: DCVH/VC",
+        "label": "Information: DCVH/VC"
+      },
+      {
+        "value": "Information: Material assistance",
+        "label": "Information: Material assistance"
+      },
+      {
+        "value": "Information: Other advanced",
+        "label": "Information: Other advanced"
+      },
+      {
+        "value": "Information: Criminal justice process",
+        "label": "Information: Criminal justice process"
+      },
+      {
+        "value": "Information: Victim rights",
+        "label": "Information: Victim rights"
+      },
+      {
+        "value": "Information: Substance Abuse Treatment and support",
+        "label": "Information: Substance Abuse Treatment and support"
+      },
+      {
+        "value": "Referral to victim services program",
+        "label": "Referral to victim services program"
+      },
+      {
+        "value": "Referral to Crime Victim Compensation",
+        "label": "Referral to Crime Victim Compensation"
+      },
+      {
+        "value": "Referral to substance abuse treatment and support",
+        "label": "Referral to substance abuse treatment and support"
+      },
+      {
+        "value": "Referral to other service support and resources",
+        "label": "Referral to other service support and resources"
+      },
+      {
+        "value": "Other: Explain",
+        "label": "Other: Explain"
+      },
+      {
+        "value": "No Service Provided",
+        "label": "No Service Provided"
+      }
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "referralStatus",
+    "label": "Referral Status",
+    "type": "listbox-multiselect",
+    "isPII": false,
+    "options": [
+      {
+        "value": "Referred",
+        "label": "Referred"
+      },
+      {
+        "value": "No Referral Needed",
+        "label": "No Referral Needed"
+      },
+      {
+        "value": "Referral Refused",
+        "label": "Referral Refused"
+      }
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "howDidYouHearAboutUs",
+    "label": "How did you hear about us?",
+    "type": "listbox-multiselect",
+    "isPII": false,
+    "options": [
+      {
+        "value": "Unknown",
+        "label": "Unknown"
+      },
+      {
+        "value": "In-person outreach event",
+        "label": "In-person outreach event"
+      },
+      {
+        "value": "Internet search",
+        "label": "Internet search"
+      },
+      {
+        "value": "Law Enforcement Referral (VC)",
+        "label": "Law Enforcement Referral (VC)"
+      },
+      {
+        "value": "Outreach/Marketing Campaign",
+        "label": "Outreach/Marketing Campaign"
+      },
+      {
+        "value": "Professional (VC only)",
+        "label": "Professional (VC only)"
+      },
+      {
+        "value": "Social Media",
+        "label": "Social Media"
+      },
+      {
+        "value": "Word of Mouth",
+        "label": "Word of Mouth"
+      },
+      {
+        "value": "Other",
+        "label": "Other"
+      },
+      {
+        "value": "Other Hotline",
+        "label": "Other Hotline"
+      },
+      {
+        "value": "N/A",
+        "label": "N/A"
+      }
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "hotlineIntakeCollaboration",
+    "label": "Hotline Intake Collaboration",
+    "type": "select",
+    "isPII": false,
+    "options": [
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "Dispatch (SAVRAA Advocacy/Forensic Exams) (if selected dispatch fields apply)",
+        "label": "Dispatch (SAVRAA Advocacy/Forensic Exams) (if selected dispatch fields apply)"
+      },
+      {
+        "value": "DC SAFE CRL (OCAP)",
+        "label": "DC SAFE CRL (OCAP)"
+      },
+      {
+        "value": "GLOV",
+        "label": "GLOV"
+      },
+      {
+        "value": "MSP",
+        "label": "MSP"
+      },
+      {
+        "value": "PREA",
+        "label": "PREA"
+      },
+      {
+        "value": "N/A",
+        "label": "N/A"
+      }
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "victimFirstInitial",
+    "label": "Victim First Initial",
+    "type": "input",
+    "isPII": false,
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "victimLastInitial",
+    "label": "Victim Last Initial",
+    "type": "input",
+    "isPII": false,
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "victimDateOfBirth",
+    "type": "date-input",
+    "isPII": false,
+    "label": "Victim Date of Birth",
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "firstDispatchCase",
+    "label": "First Dispatch Case",
+    "type": "select",
+    "isPII": false,
+    "options": [
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "Yes",
+        "label": "Yes"
+      },
+      {
+        "value": "No",
+        "label": "No"
+      }
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "typeOfCase",
+    "label": "Type of Case",
+    "type": "listbox-multiselect",
+    "isPII": false,
+    "options": [
+      {
+        "value": "Sexual Assault",
+        "label": "Sexual Assault"
+      },
+      {
+        "value": "IPV",
+        "label": "IPV"
+      },
+      {
+        "value": "Family Violence",
+        "label": "Family Violence"
       },
       {
         "value": "Other",
         "label": "Other"
       }
     ],
-    "isPII": false
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
   },
   {
-    "name": "region",
-    "label": "Region",
-    "type": "select",
+    "name": "primaryServiceRequested",
+    "label": "Primary Service Requested",
+    "type": "listbox-multiselect",
+    "isPII": false,
     "options": [
-      { "value": "Unknown", "label": "" },
-      { "value": "Cities", "label": "Cities" },
-      { "value": "Rural areas", "label": "Rural areas" },
-      { "value": "Town & semi-dense areas", "label": "Town & semi-dense areas" }
+      {
+        "value": "Advocacy: Forensic Exam/SANE",
+        "label": "Advocacy: Forensic Exam/SANE"
+      },
+      {
+        "value": "Advocacy: Hospital Non-SANE Advocacy",
+        "label": "Advocacy: Hospital Non-SANE Advocacy"
+      },
+      {
+        "value": "Advocacy: Law Enforcement Reporting + Interviews",
+        "label": "Advocacy: Law Enforcement Reporting + Interviews"
+      },
+      {
+        "value": "Advocacy, setting not specified",
+        "label": "Advocacy, setting not specified"
+      },
+      {
+        "value": "Forensic Nurse, no advocacy",
+        "label": "Forensic Nurse, no advocacy"
+      },
+      {
+        "value": "Law Enforcement, no advocacy",
+        "label": "Law Enforcement, no advocacy"
+      },
+      {
+        "value": "Other Qualifying Service",
+        "label": "Other Qualifying Service"
+      }
     ],
-    "isPII": false
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "requestor",
+    "label": "Requestor",
+    "type": "listbox-multiselect",
+    "isPII": false,
+    "options": [
+      {
+        "value": "MPD SAU",
+        "label": "MPD SAU"
+      },
+      {
+        "value": "MPD YFSD",
+        "label": "MPD YFSD"
+      },
+      {
+        "value": "Dept of Corrections (DOC)",
+        "label": "Dept of Corrections (DOC)"
+      },
+      {
+        "value": "Other Law Enforcement Professional",
+        "label": "Other Law Enforcement Professional"
+      },
+      {
+        "value": "MedStar Dispatch",
+        "label": "MedStar Dispatch"
+      },
+      {
+        "value": "SANE Nurse",
+        "label": "SANE Nurse"
+      },
+      {
+        "value": "Other Medical Professional",
+        "label": "Other Medical Professional"
+      },
+      {
+        "value": "SAVRAA Advocate",
+        "label": "SAVRAA Advocate"
+      },
+      {
+        "value": "Other Community Professional",
+        "label": "Other Community Professional"
+      },
+      {
+        "value": "Victim",
+        "label": "Victim"
+      },
+      {
+        "value": "Friend or Family of Victim",
+        "label": "Friend or Family of Victim"
+      }
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "requestorInformation",
+    "label": "Requestor Information",
+    "type": "input",
+    "isPII": false,
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "nameOfRequestorIfProfessional",
+    "label": "Name of Requestor (If Professional)",
+    "type": "input",
+    "isPII": false,
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "agencyOfRequestorProfessional",
+    "label": "Agency of Requestor (Professional)",
+    "type": "input",
+    "isPII": false,
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "dispatchInformation",
+    "label": "Dispatch Information",
+    "type": "input",
+    "isPII": false,
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "locationOfDispatch",
+    "label": "Location of Dispatch",
+    "type": "input",
+    "isPII": false,
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "victimInformation",
+    "label": "Victim Information",
+    "type": "input",
+    "isPII": false,
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "victimAgeCategory",
+    "label": "Victim Age Category",
+    "type": "select",
+    "isPII": false,
+    "options": [
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "Adult (18+)",
+        "label": "Adult (18+)"
+      },
+      {
+        "value": "Youth (13-17)",
+        "label": "Youth (13-17)"
+      },
+      {
+        "value": "Child (<13 do not qualify)",
+        "label": "Child (<13 do not qualify)"
+      }
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "preferredLanguage",
+    "label": "Preferred Language",
+    "type": "select",
+    "isPII": false,
+    "options": [
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "English ",
+        "label": "English "
+      },
+      {
+        "value": "Spanish ",
+        "label": "Spanish "
+      },
+      {
+        "value": "ASL",
+        "label": "ASL"
+      },
+      {
+        "value": "Other",
+        "label": "Other"
+      }
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "typeOfAdvocacy",
+    "label": "Type of Advocacy",
+    "type": "select",
+    "isPII": false,
+    "options": [
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "Hospital (acute)",
+        "label": "Hospital (acute)"
+      },
+      {
+        "value": "Community (acute)",
+        "label": "Community (acute)"
+      },
+      {
+        "value": "Long-Term Case Management (no dispatch)",
+        "label": "Long-Term Case Management (no dispatch)"
+      },
+      {
+        "value": "Emotional Crisis (no dispatch)",
+        "label": "Emotional Crisis (no dispatch)"
+      },
+      {
+        "value": "Other",
+        "label": "Other"
+      }
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "organizationDispatched",
+    "label": "Organization Dispatched",
+    "type": "select",
+    "isPII": false,
+    "options": [
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "DCRCC",
+        "label": "DCRCC"
+      },
+      {
+        "value": "Volare",
+        "label": "Volare"
+      },
+      {
+        "value": "Safe Shores",
+        "label": "Safe Shores"
+      },
+      {
+        "value": "MPD SAU",
+        "label": "MPD SAU"
+      },
+      {
+        "value": "MPD YFSD",
+        "label": "MPD YFSD"
+      },
+      {
+        "value": "DCFNE",
+        "label": "DCFNE"
+      },
+      {
+        "value": "None",
+        "label": "None"
+      }
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "timeAdvocateCalled",
+    "label": "Time Advocate Called",
+    "type": "input",
+    "isPII": false,
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "individualDispatched",
+    "label": "Individual Dispatched",
+    "type": "input",
+    "isPII": false,
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "warmTransferComplete",
+    "label": "Warm Transfer Complete",
+    "type": "select",
+    "isPII": false,
+    "options": [
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "Yes",
+        "label": "Yes"
+      },
+      {
+        "value": "No",
+        "label": "No"
+      }
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "adminContacted",
+    "label": "Admin Contacted",
+    "type": "select",
+    "isPII": false,
+    "options": [
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "Yes",
+        "label": "Yes"
+      },
+      {
+        "value": "No",
+        "label": "No"
+      }
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "caseNotes",
+    "label": "Case Notes",
+    "type": "textarea",
+    "isPII": false,
+    "rows": 10,
+    "width": 250
   }
 ]

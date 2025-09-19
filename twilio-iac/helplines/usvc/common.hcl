@@ -17,9 +17,9 @@ locals {
     enable_lex_v2              = false
 
     channel_attributes = {
-      webchat               = "/app/twilio-iac/helplines/usch/templates/channel-attributes/webchat.tftpl",
-      voice                 = "/app/twilio-iac/helplines/usch/templates/channel-attributes/voice.tftpl",
-      sms_conversations     = "/app/twilio-iac/helplines/usch/templates/channel-attributes/sms-conversations.tftpl",
+      webchat               = "/app/twilio-iac/helplines/templates/channel-attributes/webchat.tftpl",
+      voice                 = "/app/twilio-iac/helplines/templates/channel-attributes/voice.tftpl",
+      sms_conversations     = "/app/twilio-iac/helplines/templates/channel-attributes/default-conversations.tftpl",
       default               = "/app/twilio-iac/helplines/templates/channel-attributes/default.tftpl",
       default-conversations = "/app/twilio-iac/helplines/templates/channel-attributes/default-conversations.tftpl"
     }
@@ -42,7 +42,15 @@ locals {
     task_queues = {
       master : {
         "target_workers" = "1==1",
-        "friendly_name"  = "NCVC"
+        "friendly_name"  = "VictimConnect"
+      },
+      dcvh : {
+        "target_workers" = "1==1",
+        "friendly_name"  = "DC Victim Hotline"
+      },
+      dc_dispatch : {
+        "target_workers" = "1==1",
+        "friendly_name"  = "DC Dispatch"
       },
       survey : {
         "target_workers" = "1==0",
