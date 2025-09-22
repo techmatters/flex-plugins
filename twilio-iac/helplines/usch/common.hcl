@@ -103,7 +103,23 @@ locals {
        cf : ["post_survey"]
 
     }
-    
+    s3_lifecycle_rules = {
+      hrm_export_expiry : {
+        id                 = "HRM Exported Data Expiration Rule"
+        expiration_in_days = 30
+        prefix             = "hrm-data/"
+      },
+      transcripts_expiry : {
+        id                 = "Transcripts Data Expiration Rule"
+        expiration_in_days = 60
+        prefix             = "transcripts/"
+      },
+      voice_recordings_expiry : {
+        id                 = "Voice Recordings Data Expiration Rule"
+        expiration_in_days = 1
+        prefix             = "voice-recordings/"
+      }
+    }
     
   }
 }
