@@ -10,6 +10,10 @@ locals {
     flow_vars = {
       service_sid                       = "ZS052e3d62a635572170cfbff86fb1ce1d"
       environment_sid                   = "ZEf8ce7107c3db8823a53edc59e628946f"
+      serverless_service_sid            = "ZS2035e3023773cf7a1a482950df4f2150"
+      servleress_environment_sid        = "ZE56ef3f078fe4b40ad57d4d4f63652210"
+      send_message_run_janitor_sid      = "ZH64d4824f9de7c938e41645eb75a2c99e"
+      send_message_run_janitor_url      = "https://serverless-3836-production.twil.io/sendMessageAndRunJanitor"
       time_cycle_function_sid           = "ZH8551f80ce0f53ad437368a4c4bd91001"
       time_cycle_function_url           = "https://twilio-service-4854.twil.io/time_cycle"
       engagement_function_sid           = "ZH10286342f7b1a3952466a9d25eba5d1c"
@@ -25,6 +29,8 @@ locals {
       operating_hours_function_url      = "https://serverless-3836-production.twil.io/operatingHours"
       check_counsellors_function_sid    = "ZH95bed62f9c0af98771e01cba4bd86d1f"
       check_counsellors_function_url    = "https://twilio-service-4854.twil.io/check_counsellors"
+      cancel_task_function_url          = "https://twilio-service-4854.twil.io/cancel_tasks"
+      cancel_task_function_sid          = "ZS052e3d62a635572170cfbff86fb1ce1d"
     }
 
     #Channels
