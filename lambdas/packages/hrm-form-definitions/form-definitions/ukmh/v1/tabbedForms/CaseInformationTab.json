@@ -373,8 +373,8 @@
   },
   {
     "name": "mhiSection",
-    "label": "=== DO NOT EDIT THE BELOW SECTION ===",
-    "type": "text"
+    "label": "Private Section",
+    "text": "Do not edit any of the below fields"
   },
   {
     "name": "lastName",
