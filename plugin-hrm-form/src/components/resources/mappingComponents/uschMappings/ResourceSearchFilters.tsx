@@ -138,7 +138,7 @@ const ResourceSearchFilters: React.FC<{}> = () => {
             }}
           >
             <FormLabel htmlFor="location-province">
-              <Template code="Province" />
+              <Template code="State" />
             </FormLabel>
             {locationDropdown('province', province)}
           </Column>
