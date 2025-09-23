@@ -1409,46 +1409,6 @@
     "isPII": false
   },
   {
-    "name": "dataProcessingAndStorage",
-    "label": "Consent for Data being stored and processed",
-    "type": "select",
-    "options": [
-      {
-        "value": "",
-        "label": ""
-      },
-      {
-        "value": "Yes",
-        "label": "Yes"
-      },
-      {
-        "value": "No",
-        "label": "No"
-      }
-    ],
-    "isPII": false
-  },
-  {
-    "name": "termsAndConditions",
-    "label": "Agreed to Privacy Policy",
-    "type": "select",
-    "options": [
-      {
-        "value": "",
-        "label": ""
-      },
-      {
-        "value": "Yes",
-        "label": "Yes"
-      },
-      {
-        "value": "No",
-        "label": "No"
-      }
-    ],
-    "isPII": false
-  },
-  {
     "name": "ip",
     "label": "IP Address",
     "type": "input",
