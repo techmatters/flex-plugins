@@ -370,5 +370,42 @@
     "label": "Have you finished the chat with YP?",
     "type": "checkbox",
     "isPII": false
+  },
+  {
+    "name": "mhiSection",
+    "label": "=== DO NOT EDIT THE BELOW SECTION ===",
+    "type": "text"
+  },
+  {
+    "name": "lastName",
+    "label": "Last Name",
+    "type": "input",
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    },
+    "isPII": true
+  },
+  {
+    "name": "contactIdentifier",
+    "label": "Email Address",
+    "type": "input",
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    },
+    "isPII": true
+  },
+  {
+    "name": "phone1",
+    "label": "Phone Number",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "ip",
+    "label": "IP Address",
+    "type": "input",
+    "isPII": true
   }
 ]

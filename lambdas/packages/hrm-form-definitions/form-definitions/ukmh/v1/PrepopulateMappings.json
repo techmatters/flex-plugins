@@ -1,14 +1,14 @@
 {
   "preEngagement":{
-    "contactIdentifier": "ChildInformationTab.contactIdentifier",
+    "contactIdentifier": "CaseInformationTab.contactIdentifier",
     "friendlyName": "ChildInformationTab.friendlyName",
-    "lastName": "ChildInformationTab.lastName",
-    "phone1": "ChildInformationTab.phone1",
+    "lastName": "CaseInformationTab.lastName",
+    "phone1": "CaseInformationTab.phone1",
     "anxietyScale": "ChildInformationTab.anxietyScale",
     "moodhappinessBefore": "ChildInformationTab.moodhappinessBefore",
     "bookingReference": "ChildInformationTab.bookingReference",
     "consentForResearchEvaluation": "ChildInformationTab.consentForResearchEvaluation",
-    "ip": "ChildInformationTab.ip"
+    "ip": "CaseInformationTab.ip"
   },
   "survey":{}
 }

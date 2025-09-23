@@ -17,16 +17,6 @@
     "isPII": true
   },
   {
-    "name": "lastName",
-    "label": "Last Name",
-    "type": "input",
-    "required": {
-      "value": true,
-      "message": "RequiredFieldError"
-    },
-    "isPII": true
-  },
-  {
     "name": "dateOfBirth",
     "type": "date-input",
     "label": "Date of Birth",
@@ -152,22 +142,6 @@
       "message": "RequiredFieldError"
     },
     "isPII": false
-  },
-  {
-    "name": "contactIdentifier",
-    "label": "Email Address",
-    "type": "input",
-    "required": {
-      "value": true,
-      "message": "RequiredFieldError"
-    },
-    "isPII": true
-  },
-  {
-    "name": "phone1",
-    "label": "Phone Number",
-    "type": "input",
-    "isPII": true
   },
   {
     "name": "region",
@@ -1407,11 +1381,5 @@
       }
     ],
     "isPII": false
-  },
-  {
-    "name": "ip",
-    "label": "IP Address",
-    "type": "input",
-    "isPII": true
   }
 ]
