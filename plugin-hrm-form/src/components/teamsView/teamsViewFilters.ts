@@ -19,6 +19,7 @@ import { Manager, FiltersListItemType, TeamsView, WorkerDirectoryTabs } from '@t
 import sortBy from 'lodash/sortBy';
 
 const activityNoOfflineByDefault: FilterDefinitionFactory = (appState, _teamFiltersPanelProps) => {
+  const title = 'Activities';
   const activitiesArray = Array.from(appState.flex.worker.activities.values());
 
   const options = activitiesArray.map(activity => ({
@@ -31,7 +32,7 @@ const activityNoOfflineByDefault: FilterDefinitionFactory = (appState, _teamFilt
     id: 'data.activity_name',
     fieldName: 'activity',
     type: FiltersListItemType.multiValue,
-    title: 'Activities',
+    title: Manager.getInstance().strings[title] ?? title,
     options,
   };
 };
@@ -45,9 +46,10 @@ const skillsOptions = Manager.getInstance().serviceConfiguration.taskrouter_skil
  * This function returns a list of skills defined in the taskrouter_skills configuration
  */
 const skillsFilterDefinition: FilterDefinitionFactory = () => {
+  const title = 'Enabled Skills';
   return {
     id: 'data.attributes.routing.skills',
-    title: 'Enabled Skills',
+    title: Manager.getInstance().strings[title] ?? title,
     fieldName: 'skills',
     type: FiltersListItemType.multiValue,
     options: skillsOptions ? sortBy(skillsOptions, ['label']) : [],
@@ -56,9 +58,10 @@ const skillsFilterDefinition: FilterDefinitionFactory = () => {
 };
 
 const disabledSkillsFilterDefinition: FilterDefinitionFactory = () => {
+  const title = 'Disabled Skills';
   return {
     id: 'data.attributes.disabled_skills.skills',
-    title: 'Disabled Skills',
+    title: Manager.getInstance().strings[title] ?? title,
     fieldName: 'disabled_skills',
     type: FiltersListItemType.multiValue,
     options: skillsOptions ? sortBy(skillsOptions, ['label']) : [],
