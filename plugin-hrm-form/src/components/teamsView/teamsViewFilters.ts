@@ -18,6 +18,8 @@ import type { FilterDefinitionFactory } from '@twilio/flex-ui/src/components/vie
 import { Manager, FiltersListItemType, TeamsView, WorkerDirectoryTabs } from '@twilio/flex-ui';
 import sortBy from 'lodash/sortBy';
 
+import { getAseloFeatureFlags } from '../../hrmConfig';
+
 const activityNoOfflineByDefault: FilterDefinitionFactory = (appState, _teamFiltersPanelProps) => {
   const title = 'Activities';
   const activitiesArray = Array.from(appState.flex.worker.activities.values());
@@ -139,13 +141,15 @@ const unassignedSkillsFilterDefinition: FilterDefinitionFactory = generateFilter
  * The skills filter is included if the feature flag is enabled.
  */
 export const setUpTeamsViewFilters = () => {
-  TeamsView.defaultProps.filters = [
-    activityNoOfflineByDefault,
-    skillsFilterDefinition,
-    disabledSkillsFilterDefinition,
-    assignedSkillsFilterDefinition,
-    unassignedSkillsFilterDefinition,
-  ];
+  TeamsView.defaultProps.filters = getAseloFeatureFlags().enable_assigned_skill_teams_view_filters
+    ? [
+        activityNoOfflineByDefault,
+        skillsFilterDefinition,
+        disabledSkillsFilterDefinition,
+        assignedSkillsFilterDefinition,
+        unassignedSkillsFilterDefinition,
+      ]
+    : [activityNoOfflineByDefault, skillsFilterDefinition, disabledSkillsFilterDefinition];
 };
 
 export const setUpWorkerDirectoryFilters = () => {
