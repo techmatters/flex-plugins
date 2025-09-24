@@ -6,10 +6,12 @@
             "sms"
         ],
         "config_flags": {
-            "enableExternalRecordings": false
+            "enableExternalRecordings": false,
+            "hideAddToNewCaseButton": true
         },
         "feature_flags": {
-            "use_prepopulate_mappings": true
+            "use_prepopulate_mappings": true,
+            "enable_client_profiles": false
         },
         "definitionVersion": "usvc-v1",
         "external_recordings_enabled": false,

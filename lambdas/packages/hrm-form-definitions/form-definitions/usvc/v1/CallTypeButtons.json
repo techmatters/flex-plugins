@@ -1,13 +1,13 @@
 [
     {
         "name": "child",
-        "label": "Call about a Victim",
+        "label": "Hotline Interactions",
         "type": "button",
         "category": "data"
     },
     {
         "name": "caller",
-        "label": "Dispatch Call",
+        "label": "DC Dispatch",
         "type": "button",
         "category": "data"
     },
