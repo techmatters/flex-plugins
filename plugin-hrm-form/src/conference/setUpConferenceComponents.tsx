@@ -20,7 +20,6 @@ import { ParticipantCanvasChildrenProps } from '@twilio/flex-ui/src/components/c
 
 import ConferencePanel from '../components/Conference/ConferenceActions/ConferencePanel';
 import ToggleMute from '../components/Conference/ConferenceActions/ToggleMute';
-import ToogleDialpad from '../components/Conference/ConferenceActions/ToogleDialpad';
 import Hangup from '../components/Conference/ConferenceActions/Hangup';
 import HoldParticipantButton from '../components/Conference/HoldParticipantButton';
 import RemoveParticipantButton from '../components/Conference/RemoveParticipantButton';
@@ -53,12 +52,8 @@ export const setupConferenceComponents = () => {
     sortOrder: 1,
     if: props => TaskHelper.isCallTask(props.task) && TaskHelper.isLiveCall(props.task),
   });
-  CallCanvasActions.Content.add(<ToogleDialpad key="open-dialpad" />, {
-    sortOrder: 1,
-    if: props => TaskHelper.isCallTask(props.task) && TaskHelper.isLiveCall(props.task),
-  });
   CallCanvasActions.Content.add(<Hangup key="conference-hangup" />, {
-    sortOrder: 3,
+    sortOrder: 2,
     if: props => TaskHelper.isCallTask(props.task) && TaskHelper.isLiveCall(props.task),
   });
 

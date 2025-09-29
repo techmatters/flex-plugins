@@ -30,6 +30,7 @@ import { conferencingBase, namespace } from '../../../states/storeNamespaces';
 import * as conferenceApi from '../../../services/conferenceService';
 
 type Props = TaskContextProps;
+const ADD_TO_CONFERENCE_KEY = 'Conference-Actions-Add';
 
 const ConferencePanel: React.FC<Props> = ({ task, conference }) => {
   const taskFromRedux = useSelector((state: RootState) => state[namespace][conferencingBase].tasks[task.taskSid]);
@@ -109,6 +110,7 @@ const ConferencePanel: React.FC<Props> = ({ task, conference }) => {
             (participants && participants.filter(participant => participant.status === 'joined').length >= 4)
           }
           onClick={toggleDialog}
+          aria-label={Manager.getInstance().strings[ADD_TO_CONFERENCE_KEY]}
         >
           <AddIcCallRounded />
         </ConferenceButton>
@@ -123,7 +125,7 @@ const ConferencePanel: React.FC<Props> = ({ task, conference }) => {
         )}
       </>
       <span>
-        <Template code="Conference" />
+        <Template code={ADD_TO_CONFERENCE_KEY} />
       </span>
     </ConferenceButtonWrapper>
   );
