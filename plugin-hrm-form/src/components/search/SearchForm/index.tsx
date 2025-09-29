@@ -23,16 +23,7 @@ import { Template } from '@twilio/flex-ui';
 import FieldText from '../../FieldText';
 import FieldSelect from '../../FieldSelect';
 import FieldDate from '../../FieldDate';
-import {
-  Bold,
-  BottomButtonBar,
-  Box,
-  Container,
-  FormCheckbox,
-  FormCheckBoxWrapper,
-  FormLabel,
-  Row,
-} from '../../../styles';
+import { Bold, BottomButtonBar, Box, Container, FormLabel, Row } from '../../../styles';
 import { PrimaryButton } from '../../../styles/buttons';
 import { getContactValueTemplate, getFormattedNumberFromTask, getNumberFromTask } from '../../../utils/task';
 import {
@@ -50,6 +41,8 @@ import { selectCounselorsList } from '../../../states/configuration/selectCounse
 import { selectCurrentDefinitionVersion } from '../../../states/configuration/selectDefinitions';
 import { CustomITask } from '../../../types/types';
 import selectContextContactId from '../../../states/contacts/selectContextContactId';
+import { FormCheckBoxWrapper } from '../../forms/components/styles';
+import { StyledFormCheckbox } from '../../forms/components/FormCheckbox/styles';
 
 const getField = value => ({
   value,
@@ -239,7 +232,7 @@ const SearchForm: React.FC<Props> = ({
               <FormLabel htmlFor="Search_PreviousContacts">
                 <FormCheckBoxWrapper data-testid="Search-PreviousContactsCheckbox">
                   <Box marginRight="5px">
-                    <FormCheckbox
+                    <StyledFormCheckbox
                       id="Search_PreviousContacts"
                       type="checkbox"
                       defaultChecked={Boolean(contactNumber)}

@@ -18,6 +18,7 @@ import React from 'react';
 import styled from '@emotion/styled';
 
 import HrmTheme from '../../../styles/HrmTheme';
+import { Row } from '../../../styles';
 
 export const FormLabel = styled('label')`
   display: flex;
@@ -72,3 +73,45 @@ export const FormInputBase = styled('input')<FormInputBaseProps>`
   }
 `;
 FormInputBase.displayName = 'FormInputBase';
+
+export type FormInputProps = { error?: boolean; width?: number | string; fullWidth?: boolean };
+
+export const FormCheckBoxWrapper = styled(Row)<FormInputProps>`
+  align-items: flex-start;
+  box-sizing: border-box; /* Tells the browser to account for any border and padding in the values you specify for an element's width and height. https://developer.mozilla.org/en-US/docs/Web/CSS/box-sizing*/
+  height: 36px;
+  border-radius: 4px;
+  border: ${props => (props.error ? '1px solid #CB3232' : 'none')};
+  box-shadow: ${props => (props.error ? '0px 0px 0px 2px rgba(234,16,16,0.2)' : 'none')};
+`;
+FormCheckBoxWrapper.displayName = 'FormCheckBoxWrapper';
+
+export const CheckboxBase = styled.input<FormInputProps>`
+  &[type='checkbox'] {
+    display: inline-block;
+    position: relative;
+    padding-left: 1.4em;
+    cursor: default;
+    margin-right: 5px;
+  }
+  &[type='checkbox']::before,
+  &[type='checkbox']::after {
+    position: absolute;
+    top: 50%;
+    left: 7px;
+    transform: translate(-50%, -50%);
+    content: '';
+    font-weight: 900;
+  }
+  &[type='checkbox']::before {
+    width: 13px;
+    height: 13px;
+    border: 1px solid hsl(0, 0%, 66%);
+    border-radius: 0.2em;
+    background-image: linear-gradient(to bottom, hsl(300, 3%, 93%), #fff 30%);
+  }
+  &[type='checkbox']:active::before {
+    background-image: linear-gradient(to bottom, hsl(300, 3%, 73%), hsl(300, 3%, 93%) 30%);
+  }
+`;
+CheckboxBase.displayName = 'CheckboxBase';
