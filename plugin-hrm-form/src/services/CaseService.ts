@@ -15,7 +15,7 @@
  */
 
 /* eslint-disable sonarjs/prefer-immediate-return */
-import type { GeneralizedSearchParams } from '../states/search/types';
+import type { ApiSearchParams } from '../states/search/types';
 import type { Case, CaseOverview, Contact, SearchCaseResult } from '../types/types';
 import type { FetchOptions } from './fetchApi';
 import type { GenericTimelineActivity } from '../states/case/types';
@@ -148,10 +148,6 @@ export async function getCaseTimeline(
   };
 }
 
-export async function searchCases(searchParams, limit, offset): Promise<SearchCaseResult> {
-  return listCases({ limit, offset }, searchParams);
-}
-
 export async function listCases(queryParams, listCasesPayload): Promise<SearchCaseResult> {
   const queryParamsString = getQueryParams(queryParams);
 
@@ -168,12 +164,12 @@ export async function listCases(queryParams, listCasesPayload): Promise<SearchCa
   };
 }
 
-export async function generalizedSearch({
+export async function searchCases({
   searchParameters,
   limit,
   offset,
 }: {
-  searchParameters: GeneralizedSearchParams;
+  searchParameters: ApiSearchParams;
   limit: number;
   offset: number;
 }): Promise<SearchCaseResult> {

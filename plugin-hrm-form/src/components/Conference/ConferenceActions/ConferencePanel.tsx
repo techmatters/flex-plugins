@@ -102,26 +102,24 @@ const ConferencePanel: React.FC<Props> = ({ task, conference }) => {
 
   return (
     <ConferenceButtonWrapper>
-      <>
-        <ConferenceButton
-          disabled={
-            !isLiveCall ||
-            (participants && participants.filter(participant => participant.status === 'joined').length >= 4)
-          }
-          onClick={toggleDialog}
-        >
-          <AddIcCallRounded />
-        </ConferenceButton>
-        {isDialogOpen && (
-          <PhoneInputDialog
-            targetNumber={phoneNumber}
-            setTargetNumber={setPhoneNumber}
-            handleClick={handleClick}
-            setIsDialogOpen={setIsDialogOpen}
-            isLoading={isCallStatusLoading(callStatus)}
-          />
-        )}
-      </>
+      <ConferenceButton
+        disabled={
+          !isLiveCall ||
+          (participants && participants.filter(participant => participant.status === 'joined').length >= 4)
+        }
+        onClick={toggleDialog}
+      >
+        <AddIcCallRounded />
+      </ConferenceButton>
+      {isDialogOpen && (
+        <PhoneInputDialog
+          targetNumber={phoneNumber}
+          setTargetNumber={setPhoneNumber}
+          handleClick={handleClick}
+          setIsDialogOpen={setIsDialogOpen}
+          isLoading={isCallStatusLoading(callStatus)}
+        />
+      )}
       <span>
         <Template code="Conference" />
       </span>

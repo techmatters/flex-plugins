@@ -5,9 +5,7 @@
             "web",
             "sms"
         ],
-        "config_flags": {
-            "enableExternalRecordings": false
-        },
+        "enableExternalRecordings": false,
         "feature_flags": {
             "enable_client_profiles":true,
             "enable_conferencing": true,

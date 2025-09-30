@@ -1,4 +1,4 @@
-/* eslint-disable sonarjs/cognitive-complexity */
+/* eslint-disable jsx-a11y/no-autofocus */
 /**
  * Copyright (C) 2021-2023 Technology Matters
  * This program is free software: you can redistribute it and/or modify
@@ -15,264 +15,207 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-/* eslint-disable no-empty-function */
-import React from 'react';
-import { connect } from 'react-redux';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useForm, FormProvider } from 'react-hook-form';
+import { useSelector } from 'react-redux';
+import type { FormDefinition } from 'hrm-form-definitions';
+import { pick } from 'lodash';
 import { Template } from '@twilio/flex-ui';
+import isFuture from 'date-fns/isFuture';
+import { parse } from 'date-fns';
 
-import FieldText from '../../FieldText';
-import FieldSelect from '../../FieldSelect';
-import FieldDate from '../../FieldDate';
+import { SearchFormClearButton } from '../../resources/styles';
+import type { RootState } from '../../../states';
+import { useCreateFormFromDefinition } from '../../forms';
+import { createSearchFormDefinition } from './searchFormDefiniton';
+import { configurationBase, namespace } from '../../../states/storeNamespaces';
 import {
-  Bold,
-  BottomButtonBar,
-  Box,
   Container,
-  FormCheckbox,
-  FormCheckBoxWrapper,
-  FormLabel,
-  Row,
+  ColumnarBlock,
+  BottomButtonBar,
+  PrimaryButton,
+  FontOpenSans,
+  Bold,
+  DateRangeSpacer,
+  TwoColumnLayoutResponsive,
+  SearchFormTopRule,
 } from '../../../styles';
-import { PrimaryButton } from '../../../styles/buttons';
-import { getContactValueTemplate, getFormattedNumberFromTask, getNumberFromTask } from '../../../utils/task';
-import {
-  canOnlyViewOwnCases,
-  canOnlyViewOwnContacts,
-  getInitializedCan,
-  PermissionActions,
-} from '../../../permissions';
-import { channelTypes } from '../../../states/DomainConstants';
+import { addMargin } from '../../common/forms/formGenerators';
 import { SearchFormValues } from '../../../states/search/types';
-import { getHrmConfig, getTemplateStrings } from '../../../hrmConfig';
-import { RootState } from '../../../states';
-import selectPreviousContactCounts from '../../../states/search/selectPreviousContactCounts';
-import { selectCounselorsList } from '../../../states/configuration/selectCounselorsHash';
-import { selectCurrentDefinitionVersion } from '../../../states/configuration/selectDefinitions';
-import { CustomITask } from '../../../types/types';
-import selectContextContactId from '../../../states/contacts/selectContextContactId';
-
-const getField = value => ({
-  value,
-  error: null,
-  validation: null,
-  touched: false,
-});
 
 type OwnProps = {
+  initialValues: SearchFormValues;
+  handleSearchFormUpdate: (values: Partial<SearchFormValues>) => void;
   handleSearch: (searchParams: any) => void;
-  handleSearchFormChange: (fieldName: string, value: string) => void;
-  values: SearchFormValues;
-  task: ITask | CustomITask;
+  onlyDataContacts: boolean;
 };
 
-const mapStateToProps = (state: RootState, { task }: OwnProps) => {
-  const contactId = selectContextContactId(state, task.taskSid, 'search', 'form');
-  return {
-    counselors: selectCounselorsList(state),
-    helplineInformation: selectCurrentDefinitionVersion(state)?.helplineInformation,
-    previousContactCounts: selectPreviousContactCounts(state, task.taskSid, `contact-${contactId}`) ?? {
-      contacts: 0,
-      cases: 0,
-    },
-  };
-};
-
-type Props = OwnProps & ReturnType<typeof mapStateToProps>;
-
-// eslint-disable-next-line complexity
-const SearchForm: React.FC<Props> = ({
-  values,
-  counselors,
-  previousContactCounts: { contacts: contactsCount, cases: casesCount },
-  handleSearchFormChange,
-  helplineInformation,
-  task,
+export const SearchForm: React.FC<OwnProps> = ({
+  initialValues,
+  handleSearchFormUpdate,
   handleSearch,
+  onlyDataContacts,
 }) => {
-  const can = React.useMemo(() => {
-    return getInitializedCan();
+  const containerRef = useRef(null);
+  const [containerWidth, setContainerWidth] = useState(0);
+  const updateWidth = () => {
+    if (containerRef.current) {
+      setContainerWidth(containerRef.current.offsetWidth);
+    }
+  };
+  useEffect(() => {
+    window.addEventListener('resize', updateWidth);
+    updateWidth();
+
+    return () => window.removeEventListener('resize', updateWidth);
   }, []);
 
-  const defaultEventHandlers = fieldName => ({
-    handleChange: e => {
-      handleSearchFormChange(fieldName, e.target.value);
-    },
-    handleBlur: () => {},
-    handleFocus: () => {},
+  const methods = useForm<Pick<SearchFormValues, 'searchTerm' | 'dateFrom' | 'dateTo' | 'counselor'>>();
+  const { getValues, watch, setError, clearErrors, reset, handleSubmit, register, setValue } = methods;
+
+  const searchTermValue = watch('searchTerm');
+  const counselorValue = watch('counselor');
+  const dateFromValue = watch('dateFrom');
+  const dateToValue = watch('dateTo');
+
+  const formInvalid = searchTermValue === '' && counselorValue === '' && dateFromValue === '' && dateToValue === '';
+
+  const updateCallback = useCallback(() => {
+    const values = getValues();
+    handleSearchFormUpdate(values);
+  }, [getValues, handleSearchFormUpdate]);
+
+  const onSubmit = handleSubmit(values => {
+    updateCallback(); // make sure all changes has been flushed before submitting
+    if (!formInvalid) {
+      handleSearch(values);
+    }
   });
 
-  const showPreviousContactsCheckbox = () => {
-    return contactsCount > 0 || casesCount > 0;
+  useEffect(() => {
+    register('onlyDataContacts');
+  }, [register]);
+
+  useEffect(() => {
+    setValue('onlyDataContacts', onlyDataContacts);
+  }, [onlyDataContacts, setValue]);
+
+  const counselor =
+    typeof initialValues.counselor === 'string' ? initialValues.counselor : initialValues.counselor.value;
+  const sanitizedInitialValues = { ...pick(initialValues, ['searchTerm', 'dateFrom', 'dateTo']), counselor };
+
+  const counselorsList = useSelector((state: RootState) => state[namespace][configurationBase].counselors.list);
+
+  const formDefinition: FormDefinition = useMemo(() => createSearchFormDefinition({ counselorsList }), [
+    counselorsList,
+  ]);
+
+  const form = useCreateFormFromDefinition({
+    definition: formDefinition,
+    initialValues: sanitizedInitialValues,
+    parentsPath: '',
+    updateCallback,
+  });
+
+  const arrangeSearchFormItems = (margin: number) => (formItems: JSX.Element[]) => {
+    const itemsWithMargin = formItems.map(item => addMargin(margin)(item));
+
+    return [
+      <div key="searchTerm">{itemsWithMargin[0]}</div>,
+      <FontOpenSans key="filter-subtitle " style={{ margin: '10px' }}>
+        <Bold>
+          <Template id="GeneralizedSearchForm-OptionalFilters" />
+        </Bold>
+      </FontOpenSans>,
+      <div key="counselor">{itemsWithMargin[1]}</div>,
+      <TwoColumnLayoutResponsive key="dateRange" width={containerWidth}>
+        <ColumnarBlock style={{ paddingRight: '5px' }}>{itemsWithMargin[2]}</ColumnarBlock>
+        <DateRangeSpacer width={containerWidth}>-</DateRangeSpacer>
+        <ColumnarBlock>{itemsWithMargin[3]}</ColumnarBlock>
+      </TwoColumnLayoutResponsive>,
+    ];
   };
 
-  const { firstName, lastName, counselor, helpline, phoneNumber, dateFrom, dateTo, contactNumber } = values;
+  const searchForm = arrangeSearchFormItems(5)(form);
 
-  const counselorsOptions = counselors.map(e => ({
-    label: e.fullName,
-    value: e.sid,
-  }));
+  // Add invisible field that errors if date + time are future (triggered by validaiton)
+  React.useEffect(() => {
+    register('isFutureAux', {
+      validate: () => {
+        if (dateToValue && isFuture(parse(dateToValue, 'yyyy-MM-dd', new Date()))) {
+          return 'DateCantBeGreaterThanToday'; // return non-null to generate an error, using the localized error key
+        }
+        return null;
+      },
+    });
+  }, [dateToValue, getValues, register, setError]);
 
-  if (!helplineInformation) return null;
+  // eslint-disable-next-line sonarjs/cognitive-complexity
+  useEffect(() => {
+    const validateDate = (date: string, errorKey: string) => {
+      if (date) {
+        const dateValue = parse(date, 'yyyy-MM-dd', new Date());
 
-  const helplineOptions = helplineInformation?.helplines ?? [];
-  const strings = getTemplateStrings();
-  const { helpline: userHelpline, multipleOfficeSupport } = getHrmConfig();
-  const searchParams = {
-    ...values,
-    counselor: typeof values.counselor === 'string' ? values.counselor : values.counselor?.value, // backend expects only counselor's SID
-    // If the user already has a helpline attribute we will hide the dropdown and send the userHelpline to the API
-    helpline: multipleOfficeSupport && helpline?.value ? helpline.value : userHelpline,
-    onlyDataContacts: false,
-    closedCases: true,
-  };
+        if (dateValue > new Date()) {
+          setError(errorKey, { type: 'manual', message: 'DateCantBeGreaterThanToday' });
+        } else {
+          clearErrors(errorKey);
+        }
+      }
+    };
 
-  const isTouched =
-    firstName || lastName || typeof values.counselor === 'string'
-      ? values.counselor
-      : values.counselor?.value || phoneNumber || dateFrom || dateTo || (helpline && helpline.value) || contactNumber;
+    const validateDateRange = (dateFrom: string, dateTo: string) => {
+      if (dateFrom && dateTo) {
+        const dateFromValue = parse(dateFrom, 'yyyy-MM-dd', new Date());
+        const dateToValue = parse(dateTo, 'yyyy-MM-dd', new Date());
 
-  const submitSearch = () => {
-    handleSearch(searchParams);
-  };
-  const submitOnEnter = event => {
-    if (event.key === 'Enter') submitSearch();
-  };
+        if (dateFromValue > dateToValue) {
+          setError('dateTo', { type: 'manual', message: 'DateToCantBeGreaterThanFrom' });
+        }
+        if (dateFromValue > new Date()) {
+          setError('dateFrom', { type: 'manual', message: 'DateCantBeGreaterThanToday' });
+        }
+        if (dateToValue > new Date()) {
+          setError('dateTo', { type: 'manual', message: 'DateCantBeGreaterThanToday' });
+        }
+        if (!(dateFromValue > dateToValue) && !(dateFromValue > new Date()) && !(dateToValue > new Date())) {
+          clearErrors('dateTo');
+        }
+      }
+    };
 
-  const contactNumberFromTask = getNumberFromTask(task);
-  const checkBoxName = getFormattedNumberFromTask(task);
+    validateDate(dateFromValue, 'dateFrom');
+    validateDate(dateToValue, 'dateTo');
+    validateDateRange(dateFromValue, dateToValue);
+  }, [setError, clearErrors, dateFromValue, dateToValue]);
 
-  const handleChangePreviousContactsCheckbox = () => {
-    const value = contactNumber === '' ? contactNumberFromTask : '';
-    handleSearchFormChange('contactNumber', value);
-  };
-  const webChatTemplate = getContactValueTemplate(task);
-  const localizedSource = {
-    [channelTypes.web]: webChatTemplate,
-    [channelTypes.voice]: 'PreviousContacts-PhoneNumber',
-    [channelTypes.sms]: 'PreviousContacts-PhoneNumber',
-    [channelTypes.whatsapp]: 'PreviousContacts-WhatsappNumber',
-    [channelTypes.facebook]: 'PreviousContacts-FacebookUser',
-    [channelTypes.telegram]: 'PreviousContacts-TelegramUser',
-    [channelTypes.instagram]: 'PreviousContacts-InstagramUser',
-    [channelTypes.line]: 'PreviousContacts-LineUser',
-  };
-
-  const maskIdentifiers = !can(PermissionActions.VIEW_IDENTIFIERS);
-
-  const canChooseCounselor = !(canOnlyViewOwnContacts() || canOnlyViewOwnCases());
+  const clearForm = () => reset({ searchTerm: '', counselor: '', dateFrom: '', dateTo: '' });
 
   return (
-    <>
-      <Container data-testid="SearchForm" formContainer={true} style={{ borderBottom: 'none' }}>
-        <Row>
-          <FieldText
-            id="Search_FirstName"
-            label={strings['SearchForm-Name']}
-            placeholder={strings['SearchForm-First']}
-            field={getField(firstName)}
-            {...defaultEventHandlers('firstName')}
-            style={{ marginRight: 25 }}
-            onKeyPress={submitOnEnter}
-          />
-          <FieldText
-            id="Search_LastName"
-            placeholder={strings['SearchForm-Last']}
-            field={getField(lastName)}
-            {...defaultEventHandlers('lastName')}
-            onKeyPress={submitOnEnter}
-          />
-        </Row>
-
-        <Row>
-          {canChooseCounselor && (
-            <FieldSelect
-              id="Search_Counselor"
-              name="counselor"
-              label={strings['SearchForm-Counselor']}
-              placeholder={strings['SearchForm-Name']}
-              field={getField(counselor ?? '')}
-              options={[{ label: '', value: '' }, ...counselorsOptions]}
-              {...defaultEventHandlers('counselor')}
-              style={{ marginRight: 25 }}
-            />
-          )}
-          <FieldDate
-            id="Search_DateFrom"
-            label={strings['SearchForm-DateRange']}
-            placeholder={strings['SearchForm-Start']}
-            field={getField(dateFrom)}
-            {...defaultEventHandlers('dateFrom')}
-          />
-          <FieldDate
-            id="Search_DateTo"
-            label=" "
-            placeholder={strings['SearchForm-End']}
-            field={getField(dateTo)}
-            {...defaultEventHandlers('dateTo')}
-          />
-        </Row>
-        <Row>
-          <FieldText
-            id="Search_CustomerPhoneNumber"
-            label={strings['SearchForm-Phone']}
-            field={getField(phoneNumber)}
-            {...defaultEventHandlers('phoneNumber')}
-            onKeyPress={submitOnEnter}
-            style={{ marginRight: 25 }}
-          />
-          {/* If the user has their helpline attribute set, we don't need to show the Office search criteria. */}
-          {multipleOfficeSupport && !userHelpline && helplineOptions.length > 0 && (
-            <FieldSelect
-              id="Search_Office"
-              name="office"
-              label={helplineInformation.label}
-              placeholder="--"
-              field={getField(helpline ?? '')}
-              options={[{ label: '', value: '' }, ...helplineOptions]}
-              {...defaultEventHandlers('helpline')}
-            />
-          )}
-        </Row>
-        {showPreviousContactsCheckbox() && (
-          <Row>
-            <Box marginTop="20px">
-              <FormLabel htmlFor="Search_PreviousContacts">
-                <FormCheckBoxWrapper data-testid="Search-PreviousContactsCheckbox">
-                  <Box marginRight="5px">
-                    <FormCheckbox
-                      id="Search_PreviousContacts"
-                      type="checkbox"
-                      defaultChecked={Boolean(contactNumber)}
-                      onChange={handleChangePreviousContactsCheckbox}
-                    />
-                  </Box>
-                  <span>
-                    <Template code="PreviousContacts-OnlyShowRecordsFrom" />{' '}
-                    <Template code={localizedSource[task.channelType]} />{' '}
-                    {maskIdentifiers ? (
-                      <Bold>
-                        <Template code="MaskIdentifiers" />
-                      </Bold>
-                    ) : (
-                      <Bold>{checkBoxName}</Bold>
-                    )}
-                  </span>
-                </FormCheckBoxWrapper>
-              </FormLabel>
-            </Box>
-          </Row>
-        )}
-      </Container>
-      <BottomButtonBar>
-        <PrimaryButton type="button" disabled={!isTouched} roundCorners={true} onClick={submitSearch}>
-          <Template code="SearchForm-Button" />
-        </PrimaryButton>
-      </BottomButtonBar>
-    </>
+    <FormProvider {...methods}>
+      <SearchFormTopRule />
+      <form onSubmit={onSubmit}>
+        <Container
+          data-testid="GeneralizedSearchForm"
+          data-fs-id="SearchForm"
+          formContainer={true}
+          ref={containerRef}
+          autoFocus={false}
+          style={{ border: 'none' }}
+        >
+          {searchForm}
+        </Container>
+        <BottomButtonBar
+          style={{ position: 'fixed', bottom: '0', width: containerWidth + 40, borderTop: '1px solid #e1e3ea' }}
+        >
+          <SearchFormClearButton type="button" roundCorners={true} onClick={clearForm} disabled={formInvalid}>
+            <Template code="Search-ClearFormButton" />
+          </SearchFormClearButton>
+          <PrimaryButton type="submit" roundCorners={true} disabled={formInvalid}>
+            <Template code="SearchForm-Button" />
+          </PrimaryButton>
+        </BottomButtonBar>
+      </form>
+    </FormProvider>
   );
 };
-
-const connector = connect(mapStateToProps);
-const connected = connector(SearchForm);
-
-export default connected;

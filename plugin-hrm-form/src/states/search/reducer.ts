@@ -354,26 +354,6 @@ export function reduce(
         },
       };
     }
-    case t.VIEW_PREVIOUS_CONTACTS: {
-      const task = state.tasks[action.taskId];
-      const context = state.tasks[action.taskId][action.context];
-      return {
-        ...state,
-        tasks: {
-          ...state.tasks,
-          [action.taskId]: {
-            ...task,
-            form: {
-              ...task.form,
-              [action.context]: {
-                ...context,
-                contactNumber: action.contactNumber,
-              },
-            },
-          },
-        },
-      };
-    }
     default:
       return state;
   }

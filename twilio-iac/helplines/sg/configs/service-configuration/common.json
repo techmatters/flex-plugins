@@ -6,9 +6,7 @@
         ],
         "definitionVersion": "sg-v1",
         "external_recordings_enabled": true,
-        "config_flags": {
-            "enableExternalRecordings": true
-        },
+        "enableExternalRecordings": true,
         "feature_flags": {
             "enable_voice_recordings": true,
             "enable_post_survey": false,

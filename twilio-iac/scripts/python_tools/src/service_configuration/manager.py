@@ -125,8 +125,8 @@ def show_remote(service_config: ServiceConfiguration):
 def show_flags(service_config: ServiceConfiguration):
     print_text("Feature Flags:")
     print_json(service_config.feature_flags)
-    print_text("Config Flags:")
-    print_json(service_config.config_flags)
+    print_text("Config:")
+    print_json(service_config)
 
 
 def show_local(service_config: ServiceConfiguration):
@@ -229,7 +229,7 @@ def generate_flags_matrix():
     for account_sid in config.get_account_sids():
         service_config = config.get_service_config(account_sid)
         account = f"{service_config.helpline_code}_{service_config.environment}"
-        flag_output = {**service_config.feature_flags, **service_config.config_flags}
+        flag_output = {**service_config.feature_flags}
         matrix[account] = flag_output
 
     ssm_client = config.get_ssm_client(service_config.environment)
