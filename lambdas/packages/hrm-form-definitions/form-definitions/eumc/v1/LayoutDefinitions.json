@@ -2,9 +2,7 @@
   "contact": {
     "callerInformation": {},
     "childInformation":{},
-    "caseInformation": {
-      "splitFormAt": 2
-    }
+    "caseInformation": {}
   },
   "case": {
     "sectionTypes": {
