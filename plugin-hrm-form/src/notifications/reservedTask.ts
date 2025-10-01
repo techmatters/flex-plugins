@@ -18,10 +18,14 @@ import { Manager } from '@twilio/flex-ui';
 
 import { isTwilioTask } from '../types/types';
 import { playNotification } from './playNotification';
+import { getAseloFeatureFlags } from '../hrmConfig';
 
 const reservedTaskMedias: { [reservationSid: string]: string } = {};
 
 export const subscribeReservedTaskAlert = () => {
+  const { disable_reserved_task_notification: disableReservedTaskNotification } = getAseloFeatureFlags();
+  if (disableReservedTaskNotification) return;
+
   const manager = Manager.getInstance();
   manager.workerClient.on('reservationCreated', notifyReservedTask);
 };

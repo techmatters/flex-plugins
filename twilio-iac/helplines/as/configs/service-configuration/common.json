@@ -20,7 +20,8 @@
             "enable_resouorces_updates": true,
             "enable_configurable_max_categories": true,
             "enable_llm_summary": true,
-            "enable_lambda_post_survey_processing": true
+            "enable_lambda_post_survey_processing": true,
+            "disable_reserved_task_notification": false
         },
         "helplineLanguage": "en-US"
     }

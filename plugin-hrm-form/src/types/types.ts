@@ -262,6 +262,8 @@ export type FeatureFlags = {
   
   // TODO remove once this changes are enabled
   enable_resouorces_updates: boolean;
+
+  disable_reserved_task_notification: boolean  // Enables Aselo custom implementation to notify a counselor when a task is reserved
 };
 /* eslint-enable camelcase */
 
