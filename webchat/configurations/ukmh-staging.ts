@@ -167,28 +167,8 @@ const preEngagementConfig: PreEngagementFormDefinition = {
       ],
     },
     {
-      type: 'checkbox',
-      name: 'termsAndConditions',
-      label:
-        'I have read terms of use and the <a href="https://www.themix.org.uk/about-us/privacy-centre/privacy-policy/">privacy policy</a> and agree to them.',
-      required: {
-        value: true,
-        message: "Sorry, if you don't accept our terms and privacy policy we can't provide counselling to you.",
-      },
-    },
-    {
-      type: 'checkbox',
-      name: 'dataProcessingAndStorage',
-      label:
-        'I consent to my data being processed and stored in order to access the Peer Support service.',
-      required: {
-        value: true,
-        message: "Sorry, if you don't consent to have your data being processed and stored we can't provide counselling to you.",
-      },
-    },
-    {
       type: 'select',
-      name: 'consentForResearhevaluation',
+      name: 'consentForResearchEvaluation',
       label:
         'I consent to being contacted for research or evaluation purposes.',
       defaultValue: '',
@@ -206,6 +186,30 @@ const preEngagementConfig: PreEngagementFormDefinition = {
           label: 'No',
         },
       ],
+      required: {
+        value: true,
+        message: "Sorry, you need to select one of the options",
+      },
+    },
+    {
+      type: 'checkbox',
+      name: 'dataProcessingAndStorage',
+      label:
+        'I consent to my data being processed and stored in order to access the Peer Support service.',
+      required: {
+        value: true,
+        message: "Sorry, if you don't consent to have your data being processed and stored we can't provide counselling to you.",
+      },
+    },
+    {
+      type: 'checkbox',
+      name: 'termsAndConditions',
+      label:
+        'I have read terms of use and the <a href="https://www.themix.org.uk/about-us/privacy-centre/privacy-policy/">privacy policy</a> and agree to them.',
+      required: {
+        value: true,
+        message: "Sorry, if you don't accept our terms and privacy policy we can't provide counselling to you.",
+      },
     },
   ],
 };
@@ -217,6 +221,13 @@ const mapHelplineLanguage: MapHelplineLanguage = (helpline) => {
   }
 };
 
+const memberDisplayOptions = {
+  yourDefaultName: 'You',
+  yourFriendlyNameOverride: false,
+  theirFriendlyNameOverride: false,
+  theirDefaultName: 'The Mix Peer Supporter',
+};
+
 export const config: Configuration = {
   accountSid,
   flexFlowSid,
@@ -224,6 +235,7 @@ export const config: Configuration = {
   translations,
   preEngagementConfig,
   mapHelplineLanguage,
+  memberDisplayOptions,
   captureIp,
   contactType,
 };
