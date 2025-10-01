@@ -93,15 +93,14 @@ export const SearchForm: React.FC<OwnProps> = ({
   });
 
   useEffect(() => {
-    register('onlyDataContacts');
+    register('onlyDataContacts' as any);
   }, [register]);
 
   useEffect(() => {
-    setValue('onlyDataContacts', onlyDataContacts);
+    setValue('onlyDataContacts' as any, onlyDataContacts);
   }, [onlyDataContacts, setValue]);
 
-  const counselor =
-    typeof initialValues.counselor === 'string' ? initialValues.counselor : initialValues.counselor.value;
+  const { counselor } = initialValues;
   const sanitizedInitialValues = { ...pick(initialValues, ['searchTerm', 'dateFrom', 'dateTo']), counselor };
 
   const counselorsList = useSelector((state: RootState) => state[namespace][configurationBase].counselors.list);
@@ -140,7 +139,7 @@ export const SearchForm: React.FC<OwnProps> = ({
 
   // Add invisible field that errors if date + time are future (triggered by validaiton)
   React.useEffect(() => {
-    register('isFutureAux', {
+    register('isFutureAux' as any, {
       validate: () => {
         if (dateToValue && isFuture(parse(dateToValue, 'yyyy-MM-dd', new Date()))) {
           return 'DateCantBeGreaterThanToday'; // return non-null to generate an error, using the localized error key
@@ -157,9 +156,9 @@ export const SearchForm: React.FC<OwnProps> = ({
         const dateValue = parse(date, 'yyyy-MM-dd', new Date());
 
         if (dateValue > new Date()) {
-          setError(errorKey, { type: 'manual', message: 'DateCantBeGreaterThanToday' });
+          setError(errorKey as any, { type: 'manual', message: 'DateCantBeGreaterThanToday' });
         } else {
-          clearErrors(errorKey);
+          clearErrors(errorKey as any);
         }
       }
     };
@@ -196,7 +195,7 @@ export const SearchForm: React.FC<OwnProps> = ({
       <SearchFormTopRule />
       <form onSubmit={onSubmit}>
         <Container
-          data-testid="GeneralizedSearchForm"
+          data-testid="SearchForm"
           data-fs-id="SearchForm"
           formContainer={true}
           ref={containerRef}

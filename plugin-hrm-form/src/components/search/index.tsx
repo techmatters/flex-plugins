@@ -25,12 +25,11 @@ import SearchResults, { CASES_PER_PAGE, CONTACTS_PER_PAGE } from './SearchResult
 import ContactDetails from '../contact/ContactDetails';
 import Case from '../case';
 import ProfileRouter, { isProfileRoute } from '../profile/ProfileRouter';
-import { SearchParams } from '../../states/search/types';
+import {SearchFormValues, SearchParams} from '../../states/search/types';
 import { CustomITask, StandaloneITask } from '../../types/types';
 import {
   newCreateSearchForm,
-  newSearchContactsAction,
-  newSearchCasesAction,
+  dispatchSearchContactsActions,
   newSearchFormUpdateAction,
 } from '../../states/search/actions';
 import { RootState } from '../../states';
@@ -43,6 +42,8 @@ import selectCasesForSearchResults from '../../states/search/selectCasesForSearc
 import selectContactsForSearchResults from '../../states/search/selectContactsForSearchResults';
 import { DetailsContext } from '../../states/contacts/contactDetails';
 import { SearchForm } from './SearchForm';
+import { newSearchCasesAsyncAction } from '../../states/search/results';
+import asyncDispatch from '../../states/asyncDispatch';
 
 type Props = {
   task: CustomITask | StandaloneITask;
@@ -55,6 +56,7 @@ const Search: React.FC<Props> = ({ task, currentIsCaller = false, saveUpdates })
   const [searchParams, setSearchParams] = useState<any>({});
   const { taskSid } = task;
   const dispatch = useDispatch();
+  const asyncDispatcher = asyncDispatch(dispatch);
   const routing = useSelector((state: RootState) => selectCurrentTopmostRouteForTask(state, taskSid));
   const searchContext = useSelector((state: RootState) => {
     const currentRoute = selectCurrentTopmostRouteForTask(state, taskSid);
@@ -72,7 +74,8 @@ const Search: React.FC<Props> = ({ task, currentIsCaller = false, saveUpdates })
     return selectCasesForSearchResults(state, taskSid, searchContext);
   });
 
-  const handleSearchFormUpdate = (context: string) => dispatch(newSearchFormUpdateAction(taskSid, context));
+  const handleSearchFormUpdate = (values: SearchFormValues) =>
+    dispatch(newSearchFormUpdateAction(taskSid, searchContext, values));
   const changeSearchPage = (
     subroute: SearchResultRoute['subroute'],
     action?: SearchRoute['action'],
@@ -85,8 +88,7 @@ const Search: React.FC<Props> = ({ task, currentIsCaller = false, saveUpdates })
       ),
     );
 
-  const searchContacts = (context: string) => newSearchContactsAction(dispatch)(taskSid, context);
-  const searchCases = (context: string) => newSearchCasesAction(dispatch)(taskSid, context);
+  const searchContacts = () => dispatchSearchContactsActions(dispatch)(taskSid, searchContext);
 
   useEffect(() => {
     if (!form) {
@@ -97,10 +99,12 @@ const Search: React.FC<Props> = ({ task, currentIsCaller = false, saveUpdates })
   const closeDialog = () => setMockedMessage('');
 
   const handleSearchContacts = (newSearchParams: SearchParams, newOffset: number) =>
-    searchContacts(searchContext)({ ...form, ...newSearchParams }, CONTACTS_PER_PAGE, newOffset);
+    searchContacts()({ ...form, ...newSearchParams }, CONTACTS_PER_PAGE, newOffset);
 
   const handleSearchCases = (newSearchParams, newOffset: number) =>
-    searchCases(searchContext)({ ...form, ...newSearchParams }, CASES_PER_PAGE, newOffset);
+    asyncDispatcher(
+      newSearchCasesAsyncAction(taskSid, searchContext, { ...form, ...newSearchParams }, CASES_PER_PAGE, newOffset),
+    );
 
   const setSearchParamsAndHandleSearch = async newSearchParams => {
     if (routing.route === 'search') {
@@ -220,7 +224,7 @@ const Search: React.FC<Props> = ({ task, currentIsCaller = false, saveUpdates })
       >
         <SearchForm
           initialValues={form}
-          handleSearchFormUpdate={handleSearchFormUpdate(searchContext)}
+          handleSearchFormUpdate={handleSearchFormUpdate}
           handleSearch={setSearchParamsAndHandleSearch}
           onlyDataContacts={Boolean(searchParams?.onlyDataContacts)}
         />

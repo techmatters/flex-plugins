@@ -62,7 +62,6 @@ import { ConfigurationState } from '../configuration/reducer';
 import { Contact } from '../../types/types';
 import {
   SEARCH_CONTACTS_SUCCESS,
-  SearchCasesSuccessAction,
   SearchContactsSuccessAction,
 } from '../search/types';
 import {
@@ -73,6 +72,7 @@ import {
 import { GetTimelineAsyncAction } from '../case/timeline';
 import {llmAssistantReducer} from "./llmAssistant";
 import {loadContactIntoRedux} from "./contactReduxUpdates";
+import {SearchCasesSuccessAction} from "../search/results";
 
 export const emptyCategories = [];
 

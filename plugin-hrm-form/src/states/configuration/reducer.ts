@@ -21,6 +21,7 @@ import * as t from './types';
 import { defaultLocale } from '../../translations';
 import { FETCH_CASE_LIST_FULFILLED_ACTION, FetchCaseListFulfilledAction } from '../caseList/listContent';
 import { changeLanguageReducer } from './changeLanguage';
+import {SEARCH_CASES_SUCCESS_ACTION, SearchCasesSuccessAction} from '../search/results';
 
 export type ConfigurationState = {
   locale: {
@@ -56,7 +57,7 @@ const boundChangeLanguageReducer = changeLanguageReducer(initialState);
 // eslint-disable-next-line import/no-unused-modules
 export function reduce(
   inputState = initialState,
-  action: t.ConfigurationActionType | FetchCaseListFulfilledAction,
+  action: t.ConfigurationActionType | FetchCaseListFulfilledAction | SearchCasesSuccessAction,
 ): ConfigurationState {
   const state = boundChangeLanguageReducer(inputState, action as any);
 
@@ -96,6 +97,7 @@ export function reduce(
         },
       };
     }
+    case SEARCH_CASES_SUCCESS_ACTION:
     case FETCH_CASE_LIST_FULFILLED_ACTION: {
       const { missingDefinitions } = action.payload;
       const missingDefinitionsMap = Object.fromEntries(

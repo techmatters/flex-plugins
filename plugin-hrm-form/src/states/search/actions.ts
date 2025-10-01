@@ -39,7 +39,9 @@ export const handleSearchFormChange = (taskId: string, context: string) => <K ex
   } as t.SearchActionType; // casting cause inference is not providing enough information, but the restrictions are made in argument types
 };
 
-export const newSearchFormUpdateAction = (taskId: string, context: string) => (
+export const newSearchFormUpdateAction = (
+  taskId: string,
+  context: string,
   values: t.SearchFormValues,
 ): t.SearchActionType => {
   return {
@@ -60,14 +62,13 @@ export const newCreateSearchForm = (taskId: string, context: string): t.SearchAc
 
 const convertSearchParamsToApiSearchParams = (searchParams: SearchParams): ApiSearchParams => ({
   ...searchParams,
-  counselor: typeof searchParams.counselor === 'string' ? searchParams.counselor : searchParams.counselor.value,
   helpline: typeof searchParams.helpline === 'string' ? searchParams.helpline : searchParams.helpline.value,
   dateFrom: searchParams.dateFrom ? formatISO(startOfDay(parseISO(searchParams.dateFrom))) : searchParams.dateFrom,
   dateTo: searchParams.dateTo ? formatISO(endOfDay(parseISO(searchParams.dateTo))) : searchParams.dateTo,
   onlyDataContacts: searchParams.onlyDataContacts,
 });
 
-export const newSearchContactsAction = (dispatch: Dispatch<any>) => (taskId: string, context: string) => async (
+export const dispatchSearchContactsActions = (dispatch: Dispatch<any>) => (taskId: string, context: string) => async (
   searchParams: SearchParams,
   limit: number,
   offset: number,
@@ -94,14 +95,14 @@ export const newSearchContactsAction = (dispatch: Dispatch<any>) => (taskId: str
   }
 };
 
-export const newSearchCasesAction = (dispatch: Dispatch<any>) => (taskId: string, context: string) => async (
+export const dispatchSearchCasesActions = (dispatch: Dispatch<any>) => (taskId: string, context: string) => async (
   searchParams: SearchParams,
   limit: number,
   offset: number,
   dispatchedFromPreviousContacts?: boolean,
 ) => {
   try {
-    dispatch({ type: t.SEARCH_CASES_REQUEST, taskId, context });
+    dispatch({ type: t.SEARCH_CASES, taskId, context });
 
     const searchParamsToSubmit = convertSearchParamsToApiSearchParams(searchParams);
 

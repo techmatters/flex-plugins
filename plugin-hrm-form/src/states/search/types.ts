@@ -22,7 +22,7 @@ export const HANDLE_FORM_UPDATE = 'HANDLE_FORM_UPDATE';
 export const SEARCH_CONTACTS_REQUEST = 'SEARCH_CONTACTS_REQUEST';
 export const SEARCH_CONTACTS_SUCCESS = 'SEARCH_CONTACTS_SUCCESS';
 export const SEARCH_CONTACTS_FAILURE = 'SEARCH_CONTACTS_FAILURE';
-export const SEARCH_CASES_REQUEST = 'SEARCH_CASES_REQUEST';
+export const SEARCH_CASES = 'search/cases';
 export const SEARCH_CASES_SUCCESS = 'SEARCH_CASES_SUCCESS';
 export const SEARCH_CASES_FAILURE = 'SEARCH_CASES_FAILURE';
 export const VIEW_PREVIOUS_CONTACTS = 'VIEW_PREVIOUS_CONTACTS';
@@ -32,7 +32,7 @@ export const CREATE_NEW_SEARCH = 'CREATE_NEW_SEARCH';
 export const newSearchFormEntry = {
   firstName: '',
   lastName: '',
-  counselor: { label: '', value: '' } as { label: string; value: string } | string,
+  counselor: '',
   phoneNumber: '',
   dateFrom: '',
   dateTo: '',
@@ -91,7 +91,7 @@ type SearchContactsFailureAction = {
   context: string;
 };
 
-type SearchCasesRequestAction = { type: typeof SEARCH_CASES_REQUEST; taskId: string; context: string };
+type SearchCasesRequestAction = { type: typeof SEARCH_CASES; taskId: string; context: string };
 
 export type SearchCasesSuccessAction = {
   type: typeof SEARCH_CASES_SUCCESS;

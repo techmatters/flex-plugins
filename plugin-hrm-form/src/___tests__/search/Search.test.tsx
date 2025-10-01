@@ -214,12 +214,14 @@ test('<Search> should display <SearchForm />', async () => {
   const searchFormValues: SearchFormValues = {
     firstName: 'Jill',
     lastName: 'Smith',
-    counselor: { label: 'Counselor Name', value: 'counselor-id' },
+    counselor: 'counselor-id',
     phoneNumber: 'Anonymous',
     dateFrom: '2020-03-10',
     dateTo: '2020-03-15',
     contactNumber: undefined,
     helpline: { label: '', value: '' },
+    searchTerm: 'term',
+    onlyDataContacts: false,
   };
   const task = { taskSid: 'WT123', attributes: { preEngagementData: {} } };
   const context = 'root';
@@ -251,12 +253,14 @@ test('<Search> should display <SearchForm /> with previous contacts checkbox', a
   const searchFormValues: SearchFormValues = {
     firstName: 'Jill',
     lastName: 'Smith',
-    counselor: { label: 'Counselor Name', value: 'counselor-id' },
+    counselor: 'counselor-id',
     phoneNumber: 'Anonymous',
     dateFrom: '2020-03-10',
     dateTo: '2020-03-15',
     contactNumber: undefined,
     helpline: { label: '', value: '' },
+    searchTerm: 'term',
+    onlyDataContacts: false,
   };
   const task = {
     taskSid: 'WT123',
