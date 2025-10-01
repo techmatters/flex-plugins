@@ -32,7 +32,7 @@ export type CaseSectionForm<T = Record<string, string>> = {
 
 export const caseList = (page: Page) => {
   const caseListPage = page.locator('div.Twilio-ViewCollection');
-  console.log('Case List table is visible.');
+  console.debug('Case List table is visible.');
 
   const selectors = {
     caseListRowIdButton: caseListPage.locator(
@@ -109,4 +109,12 @@ export const caseList = (page: Page) => {
     verifyCaseIdsAreInListInOrder,
     openFirstCaseButton,
   };
+};
+
+export const navigateToCaseListUsingButton = async (page: Page) => {
+  const sideLinkLocator = page.locator(`//button[@data-testid='case-list-side-link']`);
+  await sideLinkLocator.click();
+  await page.waitForSelector('div[data-testid="CaseList-Filters-Panel"]', {
+    timeout: 20000,
+  });
 };

@@ -54,7 +54,7 @@ jobs:
       - uses: actions/checkout@v5
 
       - name: Use Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v5
         with:
           node-version: '22.x'
 
@@ -106,17 +106,28 @@ jobs:
       matrix:
         lambda_path:
           - account-scoped
+          - facebookCallback
+          - facebookSignin
+          - instagramWebhook
+          - ipLocationFinder
+          - lineSetup
+          - lineWebhook
+          - modicaWebhook
+          - recaptchaVerify
+          - savePendingContacts
+          - TwilioErrorReporter
+          - twilioEventStreams
 
     steps:
       - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v4
+        uses: aws-actions/configure-aws-credentials@v5
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ env.PRIMARY_AWS_REGION }}
           # this plugin sets the AWS account ID to a secret which is not allowed in outputs
           # we have to disable that so repo output will work
-          mask-aws-account-id: 'no'
+          mask-aws-account-id: false
         env:
           # if anything is set as a secret, it can't be used in outputs. So we need to set it as an env var
           PRIMARY_AWS_REGION: us-east-1
@@ -124,11 +135,16 @@ jobs:
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v2
 
+      - name: Read ECR url from SSM
+        uses: "marvinpinto/action-inject-ssm-secrets@latest"
+        with:
+          ssm_parameter: /global/lambda/${{ matrix.lambda_path }}/ecr-url
+          env_variable_name: ECR_URL
       - name: Tag Image with version
         run: |
           REF_NAME="${{ github.ref_name }}"
           REF_NAME_FOR_DOCKER_TAG="${REF_NAME//\//_-}"
-          REPOSITORY_NAME="twilio/lambda/${{matrix.lambda_path}}"
+          REPOSITORY_NAME=$(echo $ECR_URL | cut -d'/' -f2-)
           MANIFEST=$(aws ecr batch-get-image --repository-name $REPOSITORY_NAME --image-ids imageTag="${{ github.ref_type }}.$REF_NAME_FOR_DOCKER_TAG" --output text --query 'images[].imageManifest')
           aws ecr put-image --repository-name $REPOSITORY_NAME --image-tag tag.${{ needs.generate-pre-release.outputs.qa-version }} --image-manifest "$MANIFEST"
   send-slack-message:

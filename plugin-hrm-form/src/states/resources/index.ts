@@ -25,7 +25,7 @@ import {
   suggestSearchInitialState,
   suggestSearchReducer,
   resourceSearchReducer,
-  TaxonomyLevelNameCompletion,
+  SuggestSearch,
 } from './search';
 
 export const enum ResourcePage {
@@ -73,7 +73,7 @@ export type ReferrableResourcesState = {
     )
   >;
   search: ReferrableResourceSearchState;
-  suggestSearch: TaxonomyLevelNameCompletion;
+  suggestSearch: SuggestSearch;
 };
 
 const initialState: ReferrableResourcesState = {

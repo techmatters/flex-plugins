@@ -9,41 +9,34 @@
     }
   },
   {
+    "name": "116counselor",
+    "label": "Counsellor Name",
+    "type": "input"
+  },
+  {
     "name": "actionTaken",
     "label": "Action Taken",
-    "type": "select",
+    "type": "listbox-multiselect",
     "options": [
       {
         "value": "Unknown",
-        "label": " "
+        "label": "Unknown"
       },
       {
         "value": "recommendations",
         "label": "Recommendations"
       },
       {
-        "value": "referralsToSchoolCounsellors",
-        "label": "Referrals to school counsellors"
+        "value": "referralsToHotline",
+        "label": "Referral to a hotline"
       },
       {
-        "value": "referralsToChildProtectionAgencies",
-        "label": "Referrals to child protection agencies"
+        "value": "referralsToinstitutionOrganisation",
+        "label": "Referral to an institution or other organisation"
       },
       {
-        "value": "referralsToLawEnforcementAgencies ",
-        "label": "Referrals to law enforcement agencies "
-      },
-      {
-        "value": "referralsToGeneralHealthcareServices",
-        "label": "Referrals to general healthcare services"
-      },
-      {
-        "value": "referralsToOtherOrganisations",
-        "label": "Referrals to other organisations"
-      },
-      {
-        "value": "directInterventionsByTheChildHelpline",
-        "label": "Direct interventions by the child helpline"
+        "value": "infoProvidedMCE",
+        "label": "Information provided by MCE"
       },
       {
         "value": "Other",
@@ -56,6 +49,146 @@
     }
   },
   {
+    "name": "specify",
+    "label": "Specify",
+    "type": "input"
+  },
+  {
+    "name": "hotlineList",
+    "label": "Hotline Referred To",
+    "type": "listbox-multiselect",
+    "options": [
+      {
+        "value": "ALO 116: ALB",
+        "label": "ALO 116: ALB"
+      },
+      {
+        "value": "Rat auf Draht: AT",
+        "label": "Rat auf Draht: AT"
+      },
+      {
+        "value": "Child Focus: BE",
+        "label": "Child Focus: BE"
+      },
+      {
+        "value": "CNZD  Centar za Nestalu: HR",
+        "label": "CNZD  Centar za Nestalu: HR"
+      },
+      {
+        "value": "Spavo & Hope for Children: CY",
+        "label": "Spavo & Hope for Children: CY"
+      },
+      {
+        "value": "Cesta z krize, z. ú : CZ",
+        "label": "Cesta z krize, z. ú : CZ"
+      },
+      {
+        "value": "Borns Vilkar : DK",
+        "label": "Borns Vilkar : DK"
+      },
+      {
+        "value": "Lasteabi : EE",
+        "label": "Lasteabi : EE"
+      },
+      {
+        "value": "Hätäkeskuslaitos : FI",
+        "label": "Hätäkeskuslaitos : FI"
+      },
+      {
+        "value": "Droit dEnfance : FR",
+        "label": "Droit dEnfance : FR"
+      },
+      {
+        "value": "Initiative Vermisste Kinder : DE",
+        "label": "Initiative Vermisste Kinder : DE"
+      },
+      {
+        "value": "The Smile of the Child: GR",
+        "label": "The Smile of the Child: GR"
+      },
+      {
+        "value": "Kék Vonal : HU",
+        "label": "Kék Vonal : HU"
+      },
+      {
+        "value": "Irish Society for the Prevention of Cruelty to Children : IE",
+        "label": "Irish Society for the Prevention of Cruelty to Children : IE"
+      },
+      {
+        "value": "SOS II Telefono Azzurro : IT",
+        "label": "SOS II Telefono Azzurro : IT"
+      },
+      {
+        "value": "Valsts Policija : LV",
+        "label": "Valsts Policija : LV"
+      },
+      {
+        "value": "Missing PersonsFamilies Support Centre : LT",
+        "label": "Missing Persons Families Support Centre : LT"
+      },
+      {
+        "value": "Office National de lEnfance : LU",
+        "label": "Office National de lEnfance : LU"
+      },
+      {
+        "value": "The Malta Police Force : MT",
+        "label": "The Malta Police Force : MT"
+      },
+      {
+        "value": "Centrum Internationale Kinderontvoerin : NL",
+        "label": "Centrum Internationale Kinderontvoerin : NL"
+      },
+      {
+        "value": "ITAKA : PL",
+        "label": "ITAKA : PL"
+      },
+      {
+        "value": "Instituto de Apoio à Criança (IAC) : PT",
+        "label": "Instituto de Apoio à Criança (IAC) : PT"
+      },
+      {
+        "value": "Asociatia Telefonul Copilului : RO",
+        "label": "Asociatia Telefonul Copilului : RO"
+      },
+      {
+        "value": "Astr : RS",
+        "label": "Astr : RS"
+      },
+      {
+        "value": "Linka detskej istoty, n. o. : SK",
+        "label": "Linka detskej istoty, n. o. : SK"
+      },
+      {
+        "value": "Association of Police Officers of Slovenia : SI",
+        "label": "Association of Police Officers of Slovenia : SI"
+      },
+      {
+        "value": "Fundación ANAR : ES",
+        "label": "Fundación ANAR : ES"
+      },
+      {
+        "value": "SOS Alarm : SE",
+        "label": "SOS Alarm : SE"
+      },
+      {
+        "value": "Missing Children Switzerland : CH",
+        "label": "Missing Children Switzerland : CH"
+      },
+      {
+        "value": "NGO Magnolia : UA",
+        "label": "NGO Magnolia : UA"
+      },
+      {
+        "value": "Missing People : UK",
+        "label": "Missing People : UK"
+      },
+      {
+        "value": "Other",
+        "label": "Other"
+      }
+    ]
+  },
+  {
     "name": "keepConfidential",
     "label": "Keep confidential",
     "type": "checkbox"
@@ -64,24 +197,5 @@
     "name": "okForCaseWorkerToCall",
     "label": "Ok for case worker to call?",
     "type": "mixed-checkbox"
-  },
-  {
-    "name": "didYouDiscussRightsWithTheChild",
-    "label": "Did you discuss rights with the child?",
-    "type": "select",
-    "options": [
-      {
-        "value": "Yes",
-        "label": "Yes"
-      },
-      {
-        "value": "No",
-        "label": "No"
-      },
-      {
-        "value": "NotApplicable",
-        "label": "Not Applicable"
-      }
-    ]
   }
 ]

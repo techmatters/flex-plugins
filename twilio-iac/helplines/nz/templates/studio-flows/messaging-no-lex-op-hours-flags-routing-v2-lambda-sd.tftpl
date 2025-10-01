@@ -39,7 +39,7 @@ ${
           "event": "success"
         },
         {
-          "next": "webhook_notify_error",
+          "next": "send_welcome_message",
           "event": "failed"
         }
       ],
@@ -60,7 +60,7 @@ ${
       "type": "split-based-on",
       "transitions": [
         {
-          "next": "webhook_notify_error",
+          "next": "send_welcome_message",
           "event": "noMatch"
         },
         {

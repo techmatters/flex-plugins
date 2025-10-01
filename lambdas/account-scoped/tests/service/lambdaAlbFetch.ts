@@ -14,7 +14,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { ALBEvent } from 'aws-lambda';
+import type { ALBEvent } from 'aws-lambda';
 import { handler } from '../../src';
 import { getExpectedTwilioSignature } from 'twilio/lib/webhooks/webhooks';
 

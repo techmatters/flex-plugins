@@ -17,7 +17,7 @@
  */
 import fetchResourceApi from './fetchResourcesApi';
 import { getReferrableResourceConfig } from '../hrmConfig';
-import { TaxonomyLevelNameCompletion } from '../states/resources/search';
+import { SuggestSearch } from '../states/resources/search';
 
 export type AttributeData<T = any> = {
   language?: string;
@@ -68,7 +68,7 @@ export const searchResources = async (
   };
 };
 
-export const suggestSearch = async (prefix: string): Promise<TaxonomyLevelNameCompletion> => {
+export const suggestSearch = async (prefix: string): Promise<SuggestSearch['suggestions']> => {
   return fetchResourceApi(`suggest?prefix=${prefix}`);
 };
 
@@ -81,4 +81,16 @@ export const getReferenceAttributeList = async (
   const queryString = queryItems.map(([k, v]) => `${k}=${v}`).join('&');
   // Lists can contain slashes, but we only want them as one path section
   return fetchResourceApi(`reference-attributes/${encodeURIComponent(list)}?${queryString}`);
+};
+
+export const getDistinctStringAttributes = async ({
+  key,
+  language,
+}: {
+  key: string;
+  language?: string;
+}): Promise<{ value: string }[]> => {
+  const queryItems = Object.entries({ key, language }).filter(([, value]) => value);
+  const queryString = queryItems.map(([k, v]) => `${k}=${v}`).join('&');
+  return fetchResourceApi(`list-string-attributes?${queryString}`);
 };

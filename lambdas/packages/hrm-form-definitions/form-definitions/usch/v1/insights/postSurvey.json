@@ -1,7 +1,7 @@
 [
   {
-    "insightsObject": "customers",
-    "attributeName": "customer_attribute_2",
+    "insightsObject": "conversations",
+    "attributeName": "preceded_by",
     "questions": ["experience_rating"]
   },
   {
