@@ -50,11 +50,7 @@ const ResourceAttributes: React.FC<{ resource: ReferrableResource }> = ({ resour
           <ResourceAttributesColumn style={{ flexGrow: 3, paddingLeft: 0, marginLeft: '1px' }}>
             {[
               {
-                subtitle: 'Short Description',
-                attributeToDisplay: resourceAttributes.shortDescription,
-              },
-              {
-                subtitle: 'Details',
+                subtitle: 'Description',
                 attributeToDisplay: resourceAttributes.description,
               },
               {

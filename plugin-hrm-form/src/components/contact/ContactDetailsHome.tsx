@@ -49,7 +49,7 @@ import { DetailsContext, toggleDetailSectionExpanded } from '../../states/contac
 import { getInitializedCan, PermissionActions } from '../../permissions';
 import { RecordingSection, TranscriptSection } from './MediaSection';
 import { newCSAMReportActionForContact } from '../../states/csam-report/actions';
-import { getAseloFeatureFlags, getTemplateStrings } from '../../hrmConfig';
+import { getAseloFeatureFlags, getHrmConfig, getTemplateStrings } from '../../hrmConfig';
 import { changeRoute, newOpenModalAction } from '../../states/routing/actions';
 import { selectCurrentTopmostRouteForTask } from '../../states/routing/getRoute';
 import { AppRoutes, isRouteWithContext } from '../../states/routing/types';
@@ -268,7 +268,7 @@ const ContactDetailsHome: React.FC<Props> = function ({
     await createNewCase(task, savedContact, savedContact);
   };
 
-  const profileLink = featureFlags.enable_client_profiles && !isProfileRoute && savedContact.profileId && canView && (
+  const profileLink = getHrmConfig().enableClientProfiles && !isProfileRoute && savedContact.profileId && canView && (
     <TertiaryButton type="button" onClick={() => openProfileModal(savedContact.profileId)}>
       <Icon icon="DefaultAvatar" />
       <Template code="Profile-ViewClient" />

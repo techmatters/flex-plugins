@@ -15,13 +15,15 @@
  */
 
 import React from 'react';
-import { IconButton, Notifications, TaskHelper } from '@twilio/flex-ui';
+import { IconButton, Notifications, TaskHelper, Manager } from '@twilio/flex-ui';
 import type { ParticipantCanvasChildrenProps } from '@twilio/flex-ui/src/components/canvas/ParticipantCanvas/ParticipantCanvas.definitions';
 
 import { ConferenceNotifications } from '../../../conference/setUpConferenceActions';
 import * as conferenceApi from '../../../services/conferenceService';
 
 type Props = Partial<ParticipantCanvasChildrenProps>;
+
+const HOLD_PARTICIPANT_KEY = 'Conference-Participant-Hold';
 
 const HoldParticipantButton: React.FC<Props> = ({ participant, task }) => {
   const [isLoading, setIsLoading] = React.useState(false);
@@ -48,6 +50,7 @@ const HoldParticipantButton: React.FC<Props> = ({ participant, task }) => {
   return (
     <>
       <IconButton
+        aria-label={Manager.getInstance().strings[HOLD_PARTICIPANT_KEY]}
         icon={participant.onHold ? 'HoldOff' : 'Hold'}
         onClick={handleClick}
         variant="secondary"

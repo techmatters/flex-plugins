@@ -52,11 +52,6 @@ const extractCoverage = (coverage: Attributes): string => {
     .join('\n');
 };
 
-const extractDescriptionInfo = (description, language: Language) => {
-  const descriptionByLanguage = description?.find(item => item.language === language || item.language === '');
-  return descriptionByLanguage && descriptionByLanguage.info ? descriptionByLanguage.info.text : null;
-};
-
 const extractPhoneNumbers = (attributes: Attributes, language: Language) => {
   return Object.entries(attributes.phone || {})
     .map(([type, p]) => {
@@ -99,6 +94,7 @@ export const convertUSCHResourceAttributes = (
   const hoursOfOperation = getAttributeValue(attributes, language, 'hoursOfOperation');
   const hoursFormatted = getAttributeValue(attributes, language, 'hoursFormatted');
   const phoneFax = getAttributeValue(attributes, language, 'phoneFax');
+  const description = getAttributeValue(attributes, language, 'description');
   const shortDescription = getAttributeValue(attributes, language, 'shortDescription');
   const emailAddress = getAttributeValue(attributes, language, 'emailAddress');
   const websiteAddress = getAttributeValue(attributes, language, 'websiteAddress');
@@ -109,7 +105,7 @@ export const convertUSCHResourceAttributes = (
     categories,
     comment,
     coverage: extractCoverage(coverage),
-    description: extractDescriptionInfo(attributes.description, language),
+    description,
     emailAddress,
     feeStructure,
     hoursFormatted,

@@ -102,7 +102,7 @@ const setUpComponents = (featureFlags: FeatureFlags, setupObject: ReturnType<typ
   Channels.setUpIncomingTransferMessage();
 
   Components.setUpCaseList();
-  if (featureFlags.enable_client_profiles) Components.setUpClientProfileList();
+  if (getHrmConfig().enableClientProfiles) Components.setUpClientProfileList();
 
   // remove dynamic components
   Components.removeTaskCanvasHeaderActions(featureFlags);

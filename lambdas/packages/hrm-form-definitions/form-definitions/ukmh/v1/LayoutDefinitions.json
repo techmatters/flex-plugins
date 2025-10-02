@@ -2,10 +2,10 @@
   "contact": {
     "callerInformation": {},
     "childInformation": {
-      "splitFormAt": 12
+      "splitFormAt": 7
     },
     "caseInformation": {
-      "splitFormAt": 7
+      "splitFormAt": 9
     }
   },
   "case": {
