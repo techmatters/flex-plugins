@@ -88,12 +88,17 @@ const filterInputExpressionStrings: Record<string, string> = {};
  * We re-evaluate the relevant entry each time the factory function is run, reading the current filter selections for the filter from redux state and generating the livequery snippet using the provided generator function
  * We then add all these filter expressions with AND logic to the hiddenFilter, which implements the filter
  */
-const generateFilterDefinitionFactoryForInputExpression = (
-  id: string,
-  queryGenerator: (selectionsString: string[]) => string,
-  titleKey: string,
-  fieldName: string = id.toLowerCase().replace('.', '_'),
-): FilterDefinitionFactory => (state, teamsViewProps) => {
+const generateFilterDefinitionFactoryForInputExpression = ({
+  id,
+  queryGenerator,
+  titleKey,
+  fieldName = id.toLowerCase().replace('.', '_'),
+}: {
+  id: string;
+  queryGenerator: (selectionsString: string[]) => string;
+  titleKey: string;
+  fieldName?: string;
+}): FilterDefinitionFactory => (state, teamsViewProps) => {
   const values = state.flex.supervisor.appliedFilters.find(af => af.name === id)?.values ?? [];
   const selections = Array.isArray(values) ? values : [values];
   if (selections.length) {
@@ -113,27 +118,26 @@ const generateFilterDefinitionFactoryForInputExpression = (
   };
 };
 
-const assignedSkillsFilterDefinition: FilterDefinitionFactory = generateFilterDefinitionFactoryForInputExpression(
-  `data.attributes.dummy_assigned_skills`,
-  selections => {
+const assignedSkillsFilterDefinition: FilterDefinitionFactory = generateFilterDefinitionFactoryForInputExpression({
+  id: `data.attributes.dummy_assigned_skills`,
+  queryGenerator: selections => {
     const selectionsString = selections.map(s => `\"${s}\"`).join(', ');
     return `(data.attributes.routing.skills IN [${selectionsString}] OR data.attributes.disabled_skills.skills IN [${selectionsString}])`;
   },
-  'Assigned Skills',
-);
+  titleKey: 'Assigned Skills',
+});
 
-const unassignedSkillsFilterDefinition: FilterDefinitionFactory = generateFilterDefinitionFactoryForInputExpression(
-  `data.attributes.dummy_unassigned_skills`,
-  selections =>
+const unassignedSkillsFilterDefinition: FilterDefinitionFactory = generateFilterDefinitionFactoryForInputExpression({
+  id: `data.attributes.dummy_unassigned_skills`,
+  queryGenerator: selections =>
     `(${selections
       .map(
         selection =>
           `(data.attributes.routing.skills NOT_IN [\"${selection}\"] AND data.attributes.disabled_skills.skills NOT_IN [\"${selection}\"])`,
       )
       .join(' OR ')})`,
-
-  'Unassigned Skills',
-);
+  titleKey: 'Unassigned Skills',
+});
 
 /**
  * This function sets up filters for the TeamsView component
