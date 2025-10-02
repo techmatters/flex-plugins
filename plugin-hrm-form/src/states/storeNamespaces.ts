@@ -29,4 +29,4 @@ export const conferencingBase = 'conferencing';
 export const caseMergingBannersBase = 'caseMergingBanners';
 export const profileBase = 'profile';
 export const switchboardBase = 'switchboard';
-export const teamsviewBase = 'teamsview';
+export const teamsViewBase = 'teamsView';

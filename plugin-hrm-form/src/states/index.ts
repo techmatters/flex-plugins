@@ -47,7 +47,7 @@ import {
   referrableResourcesBase,
   routingBase,
   switchboardBase,
-  teamsviewBase,
+  teamsViewBase,
 } from './storeNamespaces';
 import { reduce as CaseMergingBannersReducer } from './case/caseBanners';
 import { customIntegrationsReducer } from './customIntegrations';
@@ -65,7 +65,7 @@ const reducers = {
   [caseMergingBannersBase]: CaseMergingBannersReducer,
   [profileBase]: ProfileReducer,
   [switchboardBase]: SwitchboardReducer,
-  [teamsviewBase]: TeamsViewReducer,
+  [teamsViewBase]: TeamsViewReducer,
 
   /*
    * [csamClcReportBase]: CSAMCLCReportReducer,

@@ -19,14 +19,14 @@ import { WorkersDataTable, ColumnDefinition, useFlexSelector } from '@twilio/fle
 import { useDispatch, useSelector } from 'react-redux';
 import type { SupervisorState } from '@twilio/flex-ui/src/state/Supervisor/SupervisorState';
 
-import { namespace, teamsviewBase } from '../../states/storeNamespaces';
-import { teamsViewSelectWorkers, teamsViewUnselectWorkers } from '../../states/teamsView/actions';
+import { namespace, teamsViewBase } from '../../states/storeNamespaces';
+import { teamsViewSelectWorkers, teamsViewUnselectWorkers } from '../../states/teamsView/reducer';
 import { StyledFormCheckbox } from '../forms/components/FormCheckbox/styles';
 import { RootState } from '../../states';
 
 const SelectAllCheckbox: React.FC<{}> = () => {
   const dispatch = useDispatch();
-  const { selectedWorkers } = useSelector((state: RootState) => state[namespace][teamsviewBase]);
+  const { selectedWorkers } = useSelector((state: RootState) => state[namespace][teamsViewBase]);
   const { workers } =
     useFlexSelector((state: RootState) => state.flex.supervisor) || ({ workers: [] } as SupervisorState);
 
@@ -52,7 +52,7 @@ const SelectWorkerCheckbox: React.FC<{
   item: { worker: { sid: string; fullName: string } };
 }> = ({ item }) => {
   const dispatch = useDispatch();
-  const { selectedWorkers } = useSelector((state: RootState) => state[namespace][teamsviewBase]);
+  const { selectedWorkers } = useSelector((state: RootState) => state[namespace][teamsViewBase]);
   const { worker } = item;
   const isSelected = selectedWorkers?.has(worker.sid);
   const toggleSingleWorker = () =>

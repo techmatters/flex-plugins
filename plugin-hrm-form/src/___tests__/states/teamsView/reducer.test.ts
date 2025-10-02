@@ -15,9 +15,47 @@
  */
 import each from 'jest-each';
 
-import * as types from '../../../states/teamsView/types';
-import * as actions from '../../../states/teamsView/actions';
-import { reduce } from '../../../states/teamsView/reducer';
+import {
+  reduce,
+  TEAMSVIEW_SELECT_WORKERS,
+  TEAMSVIEW_UNSELECT_WORKERS,
+  teamsViewSelectWorkers,
+  teamsViewUnselectWorkers,
+} from '../../../states/teamsView/reducer';
+
+describe('test action creators', () => {
+  each([
+    {
+      workerSids: ['WK-123'],
+      description: 'single worker',
+    },
+    {
+      workerSids: ['WK-123', 'WK-999'],
+      description: 'multiple workers',
+    },
+  ]).test('teamsViewSelectWorkers - $description', async ({ workerSids }) => {
+    expect(teamsViewSelectWorkers(workerSids)).toStrictEqual({
+      type: TEAMSVIEW_SELECT_WORKERS,
+      payload: workerSids,
+    });
+  });
+
+  each([
+    {
+      workerSids: ['WK-123'],
+      description: 'single worker',
+    },
+    {
+      workerSids: ['WK-123', 'WK-999'],
+      description: 'multiple workers',
+    },
+  ]).test('teamsViewUnselectWorkers - $description', async ({ workerSids }) => {
+    expect(teamsViewUnselectWorkers(workerSids)).toStrictEqual({
+      type: TEAMSVIEW_UNSELECT_WORKERS,
+      payload: workerSids,
+    });
+  });
+});
 
 describe('test reducer', () => {
   test('empty state with unrelated action - should return initial state', async () => {
@@ -102,7 +140,7 @@ describe('test reducer', () => {
       description: 'add multiple workers already selected does nothing',
     },
   ]).test('TEAMSVIEW_SELECT_WORKERS - $description', async ({ state, workersSids, expected }) => {
-    const result = reduce(state, actions.teamsViewSelectWorkers(workersSids));
+    const result = reduce(state, teamsViewSelectWorkers(workersSids));
     expect(result).toStrictEqual(expected);
   });
 
@@ -178,7 +216,7 @@ describe('test reducer', () => {
       description: 'remove multiple selected workers to existing state results in partial state',
     },
   ]).test('TEAMSVIEW_UNSELECT_WORKERS - $description', async ({ state, workersSids, expected }) => {
-    const result = reduce(state, actions.teamsViewUnselectWorkers(workersSids));
+    const result = reduce(state, teamsViewUnselectWorkers(workersSids));
     expect(result).toStrictEqual(expected);
   });
 });

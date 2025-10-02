@@ -14,13 +14,40 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import {
-  TeamsViewState,
-  TeamsViewActionTypes,
-  TEAMSVIEW_SELECT_WORKERS,
-  TEAMSVIEW_UNSELECT_WORKERS,
-  initialState,
-} from './types';
+type TeamsViewState = {
+  selectedWorkers: Set<string>;
+};
+
+const initialState: TeamsViewState = {
+  selectedWorkers: new Set(),
+};
+
+// Action types
+export const TEAMSVIEW_SELECT_WORKERS = 'TEAMSVIEW_SELECT_WORKERS';
+export const TEAMSVIEW_UNSELECT_WORKERS = 'TEAMSVIEW_UNSELECT_WORKERS';
+
+type TeamsViewSelectWorkersAction = {
+  type: typeof TEAMSVIEW_SELECT_WORKERS;
+  payload: string[];
+};
+
+type TeamsViewUnselectWorkersAction = {
+  type: typeof TEAMSVIEW_UNSELECT_WORKERS;
+  payload: string[];
+};
+
+type TeamsViewActionTypes = TeamsViewSelectWorkersAction | TeamsViewUnselectWorkersAction;
+
+// Action creators
+export const teamsViewSelectWorkers = (workers: string[]): TeamsViewSelectWorkersAction => ({
+  type: TEAMSVIEW_SELECT_WORKERS,
+  payload: workers,
+});
+
+export const teamsViewUnselectWorkers = (workers: string[]): TeamsViewUnselectWorkersAction => ({
+  type: TEAMSVIEW_UNSELECT_WORKERS,
+  payload: workers,
+});
 
 export const reduce = (state = initialState, action: TeamsViewActionTypes): TeamsViewState => {
   switch (action.type) {
