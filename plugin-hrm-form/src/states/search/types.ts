@@ -14,17 +14,14 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { Contact, SearchCaseResult } from '../../types/types';
+import { Contact } from '../../types/types';
 
 // Action types
 export const HANDLE_SEARCH_FORM_CHANGE = 'HANDLE_SEARCH_FORM_CHANGE';
 export const HANDLE_FORM_UPDATE = 'HANDLE_FORM_UPDATE';
 export const SEARCH_CONTACTS_REQUEST = 'SEARCH_CONTACTS_REQUEST';
 export const SEARCH_CONTACTS_SUCCESS = 'SEARCH_CONTACTS_SUCCESS';
-export const SEARCH_CONTACTS_FAILURE = 'SEARCH_CONTACTS_FAILURE';
 export const SEARCH_CASES = 'search/cases';
-export const SEARCH_CASES_SUCCESS = 'SEARCH_CASES_SUCCESS';
-export const SEARCH_CASES_FAILURE = 'SEARCH_CASES_FAILURE';
 export const VIEW_PREVIOUS_CONTACTS = 'VIEW_PREVIOUS_CONTACTS';
 export const CREATE_NEW_SEARCH = 'CREATE_NEW_SEARCH';
 
@@ -71,8 +68,6 @@ type SearchFormUpdate = {
   values: Partial<SearchFormValues>;
 } & { type: typeof HANDLE_FORM_UPDATE; taskId: string; context: string };
 
-type SearchContactsRequestAction = { type: typeof SEARCH_CONTACTS_REQUEST; taskId: string; context: string };
-
 type CreateNewSearchAction = { type: typeof CREATE_NEW_SEARCH; taskId: string; context: string };
 
 export type SearchContactsSuccessAction = {
@@ -82,26 +77,6 @@ export type SearchContactsSuccessAction = {
   dispatchedFromPreviousContacts?: boolean;
   context: string;
 };
-
-type SearchContactsFailureAction = {
-  type: typeof SEARCH_CONTACTS_FAILURE;
-  error: any;
-  taskId: string;
-  dispatchedFromPreviousContacts?: boolean;
-  context: string;
-};
-
-type SearchCasesRequestAction = { type: typeof SEARCH_CASES; taskId: string; context: string };
-
-export type SearchCasesSuccessAction = {
-  type: typeof SEARCH_CASES_SUCCESS;
-  searchResult: SearchCaseResult;
-  taskId: string;
-  dispatchedFromPreviousContacts?: boolean;
-  context: string;
-};
-
-type SearchCasesFailureAction = { type: typeof SEARCH_CASES_FAILURE; error: any; taskId: string; context: string };
 
 type ViewPreviousContactsAction = {
   type: typeof VIEW_PREVIOUS_CONTACTS;
@@ -113,21 +88,10 @@ type ViewPreviousContactsAction = {
 export type SearchActionType =
   | SearchFormChangeAction
   | SearchFormUpdate
-  | SearchContactsRequestAction
-  | SearchContactsSuccessAction
-  | SearchContactsFailureAction
-  | SearchCasesRequestAction
-  | SearchCasesSuccessAction
-  | SearchCasesFailureAction
   | ViewPreviousContactsAction
   | CreateNewSearchAction;
 
 export type SearchResultReferences = {
   count: number;
   ids: string[];
-};
-
-export type PreviousContactCounts = {
-  contacts: number;
-  cases: number;
 };

@@ -19,12 +19,18 @@ import { configureStore } from '@reduxjs/toolkit';
 
 import * as t from '../../../states/search/types';
 import { newTaskEntry, SearchState } from '../../../states/search/reducer';
-import type { Case, SearchCaseResult } from '../../../types/types';
-import { newSearchCasesAsyncAction, resultsReducer } from '../../../states/search/results';
+import type { Case, Contact, SearchCaseResult } from '../../../types/types';
+import {
+  newSearchCasesAsyncAction,
+  newSearchContactsAsyncAction,
+  resultsReducer,
+} from '../../../states/search/results';
 import type { TaskSID } from '../../../types/twilio';
 import { searchCases } from '../../../services/CaseService';
 import asyncDispatch from '../../../states/asyncDispatch';
 import { getCasesMissingVersions, getContactsMissingVersions } from '../../../utils/definitionVersions';
+import { searchContacts } from '../../../services/ContactService';
+import { VALID_EMPTY_CONTACT } from '../../testContacts';
 
 jest.mock('../../../services/CaseService', () => ({
   searchCases: jest.fn().mockResolvedValue({ cases: [], count: 0 }),
@@ -37,7 +43,11 @@ jest.mock('../../../utils/definitionVersions', () => ({
   getContactsMissingVersions: jest.fn().mockResolvedValue([]),
 }));
 
+const mockSearchContacts = searchContacts as jest.MockedFunction<typeof searchContacts>;
 const mockSearchCases = searchCases as jest.MockedFunction<typeof searchCases>;
+const mockGetContactsMissingVersions = getContactsMissingVersions as jest.MockedFunction<
+  typeof getContactsMissingVersions
+>;
 const mockGetCasesMissingVersions = getCasesMissingVersions as jest.MockedFunction<typeof getCasesMissingVersions>;
 
 const task = { taskSid: 'WT123' as TaskSID };
@@ -69,15 +79,95 @@ const testStore = (stateChanges: Partial<SearchState> = {}) =>
     ],
   });
 
-beforeEach(() => {
-  mockSearchCases.mockClear();
-  mockSearchCases.mockResolvedValue({
-    cases: [],
-    count: 0,
+describe('Contact Search Action', () => {
+  beforeEach(() => {
+    mockSearchContacts.mockClear();
+    mockSearchContacts.mockResolvedValue({
+      contacts: [],
+      count: 0,
+    });
+  });
+
+  test('when pending updates redux to requesting state, makes request and looks up missing form definitions', async () => {
+    const { getState, dispatch } = testStore(initialState);
+    const contact1 = {} as Contact;
+    const contact2 = {} as Contact;
+    mockSearchContacts.mockResolvedValue({
+      contacts: [contact1, contact2],
+      count: 2,
+    });
+    expect(getState().tasks[task.taskSid][context].isRequesting).toBeFalsy();
+
+    const dispatchPromise = asyncDispatch(dispatch)(
+      newSearchContactsAsyncAction(task.taskSid, context, EMPTY_SEARCH_PARAMS, 0, 0),
+    );
+
+    const { tasks } = getState();
+    expect(tasks[task.taskSid][context].isRequesting).toBeTruthy();
+    expect(mockSearchContacts).toHaveBeenCalledWith({
+      limit: 0,
+      offset: 0,
+      searchParameters: {
+        ...EMPTY_SEARCH_PARAMS,
+        helpline: '',
+      },
+    });
+    expect(mockGetContactsMissingVersions).not.toHaveBeenCalled();
+    await dispatchPromise;
+    expect(mockGetContactsMissingVersions).toHaveBeenCalledWith([contact1, contact2]);
+  });
+  test('on success, updates redux to requesting state and marks as no longer requesting', async () => {
+    const { getState, dispatch } = testStore(initialState);
+    const searchResult = {
+      count: 2,
+      contacts: [
+        { ...VALID_EMPTY_CONTACT, id: 'fake contact result 1' },
+        { ...VALID_EMPTY_CONTACT, id: 'fake contact result 2' },
+      ],
+    } as t.DetailedSearchContactsResult; // type casting to avoid writing an entire DetailedSearchContactsResult) as SearchCaseResult;
+    mockSearchContacts.mockResolvedValue(searchResult);
+
+    expect(getState().tasks[task.taskSid][context].isRequesting).toBeFalsy();
+
+    const dispatchPromise = asyncDispatch(dispatch)(
+      newSearchContactsAsyncAction(task.taskSid, context, EMPTY_SEARCH_PARAMS, 0, 0),
+    );
+    expect(getState().tasks[task.taskSid][context].isRequesting).toBeTruthy();
+    await dispatchPromise;
+
+    expect(getState().tasks[task.taskSid][context].searchContactsResult).toStrictEqual({
+      count: 2,
+      ids: ['fake contact result 1', 'fake contact result 2'],
+    });
+    expect(getState().tasks[task.taskSid][context].isRequesting).toBeFalsy();
+  });
+  test('on success, updates redux to requesting state and marks as no longer requesting', async () => {
+    const { getState, dispatch } = testStore(initialState);
+    const serviceError = new Error('Splat!');
+    mockSearchContacts.mockRejectedValue(serviceError);
+
+    expect(getState().tasks[task.taskSid][context].isRequesting).toBeFalsy();
+
+    const dispatchPromise = asyncDispatch(dispatch)(
+      newSearchContactsAsyncAction(task.taskSid, context, EMPTY_SEARCH_PARAMS, 0, 0),
+    );
+    expect(getState().tasks[task.taskSid][context].isRequesting).toBeTruthy();
+    await dispatchPromise;
+    const { error, searchContactsResult, isRequesting } = getState().tasks[task.taskSid][context];
+    expect(error).toBe(serviceError);
+    expect(searchContactsResult).toStrictEqual(initialState.tasks[task.taskSid][context].searchContactsResult);
+    expect(isRequesting).toBeFalsy();
   });
 });
 
 describe('Case Search Action', () => {
+  beforeEach(() => {
+    mockSearchCases.mockClear();
+    mockSearchCases.mockResolvedValue({
+      cases: [],
+      count: 0,
+    });
+  });
   test('when pending updates redux to requesting state, makes request and looks up missing form definitions', async () => {
     const { getState, dispatch } = testStore(initialState);
     const case1 = {} as Case;

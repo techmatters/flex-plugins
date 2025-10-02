@@ -34,12 +34,7 @@ import { RecursivePartial } from '../RecursivePartial';
 import { RootState } from '../../states';
 import { Contact } from '../../types/types';
 import { VALID_EMPTY_CONTACT, VALID_EMPTY_METADATA } from '../testContacts';
-import {
-  DetailedSearchContactsResult,
-  newSearchFormEntry,
-  PreviousContactCounts,
-  SearchFormValues,
-} from '../../states/search/types';
+import { DetailedSearchContactsResult, newSearchFormEntry, SearchFormValues } from '../../states/search/types';
 import { AppRoutes } from '../../states/routing/types';
 import { ContactState, ExistingContactsState } from '../../states/contacts/existingContacts';
 
@@ -108,14 +103,12 @@ function createState(
     searchFormValues,
     currentContact,
     detailsExpanded,
-    previousContactCounts,
     route,
     searchContactsResult,
   }: {
     searchFormValues: SearchFormValues;
     currentContact: Contact;
     detailsExpanded: any;
-    previousContactCounts: { contacts: number; cases: number };
     route: AppRoutes;
     searchContactsResult?: DetailedSearchContactsResult;
   },
@@ -154,7 +147,6 @@ function createState(
           [taskId]: {
             [context]: {
               form: searchFormValues || newSearchFormEntry,
-              previousContactCounts,
               detailsExpanded: detailsExpanded || {},
               isRequesting: false,
               error: null,
@@ -229,7 +221,6 @@ test('<Search> should display <SearchForm />', async () => {
   const initialState = createState(task.taskSid, context, {
     searchFormValues,
     detailsExpanded,
-    previousContactCounts: undefined,
     currentContact: undefined,
     route: { route: 'search', subroute: 'form' },
   });
@@ -272,15 +263,9 @@ test('<Search> should display <SearchForm /> with previous contacts checkbox', a
   };
   const context = 'root';
 
-  const previousContactCounts: PreviousContactCounts = {
-    contacts: 3,
-    cases: 1,
-  };
-
   const initialState = createState(task.taskSid, context, {
     searchFormValues,
     detailsExpanded,
-    previousContactCounts,
     currentContact: undefined,
     route: { route: 'search', subroute: 'form' },
   });
@@ -365,7 +350,6 @@ test('<Search> should display <ContactDetails />', async () => {
     currentContact,
     detailsExpanded,
     searchFormValues: undefined,
-    previousContactCounts: undefined,
     searchContactsResult: { contacts: [currentContact], count: 1 },
     route: { route: 'contact', subroute: 'view', id: currentContact.id },
   });

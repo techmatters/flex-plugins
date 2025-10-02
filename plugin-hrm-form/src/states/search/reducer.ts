@@ -17,7 +17,7 @@
 import { omit } from 'lodash';
 
 import * as t from './types';
-import { newSearchFormEntry, PreviousContactCounts, SearchResultReferences } from './types';
+import { newSearchFormEntry, SearchResultReferences } from './types';
 import { REMOVE_CONTACT_STATE, RemoveContactStateAction } from '../types';
 import { Contact, standaloneTaskSid } from '../../types/types';
 import { ContactDetailsSections, ContactDetailsSectionsType } from '../../components/common/ContactDetails';
@@ -39,7 +39,6 @@ export type SearchStateTaskEntry = {
   };
   searchContactsResult: SearchResultReferences;
   searchCasesResult: SearchResultReferences;
-  previousContactCounts?: PreviousContactCounts;
   isRequesting: boolean;
   isRequestingCases: boolean;
   error: any;
@@ -213,75 +212,6 @@ export function reduce(
             [action.context]: {
               ...context,
               ...newTaskEntry,
-            },
-          },
-        },
-      };
-    }
-    case t.SEARCH_CONTACTS_REQUEST: {
-      const task = state.tasks[action.taskId];
-      const context = state.tasks[action.taskId][action.context];
-      return {
-        ...state,
-        tasks: {
-          ...state.tasks,
-          [action.taskId]: {
-            ...task,
-            [action.context]: {
-              ...context,
-              isRequesting: true,
-              contactRefreshRequired: false,
-            },
-          },
-        },
-      };
-    }
-    case t.SEARCH_CONTACTS_SUCCESS: {
-      const {
-        searchResult: { contacts, ...searchResult },
-        taskId,
-        dispatchedFromPreviousContacts,
-        context,
-      } = action;
-      const task = state.tasks[taskId];
-      const searchContext = state.tasks[taskId][context];
-      const newContactsResult = {
-        ids: contacts.map(c => c.id),
-        count: searchResult.count,
-      };
-      const previousContactCounts = dispatchedFromPreviousContacts
-        ? { ...searchContext.previousContactCounts, contacts: searchResult.count }
-        : searchContext.previousContactCounts;
-      return {
-        ...state,
-        tasks: {
-          ...state.tasks,
-          [taskId]: {
-            ...task,
-            [context]: {
-              ...searchContext,
-              searchContactsResult: newContactsResult,
-              isRequesting: false,
-              error: null,
-              previousContactCounts,
-            },
-          },
-        },
-      };
-    }
-    case t.SEARCH_CONTACTS_FAILURE: {
-      const task = state.tasks[action.taskId];
-      const context = state.tasks[action.taskId][action.context];
-      return {
-        ...state,
-        tasks: {
-          ...state.tasks,
-          [action.taskId]: {
-            ...task,
-            [action.context]: {
-              ...context,
-              isRequesting: false,
-              error: action.error,
             },
           },
         },

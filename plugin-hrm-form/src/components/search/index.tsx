@@ -14,8 +14,6 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-/* eslint-disable react/prop-types */
-/* eslint-disable react/no-multi-comp */
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Dialog from '@material-ui/core/Dialog';
@@ -25,13 +23,9 @@ import SearchResults, { CASES_PER_PAGE, CONTACTS_PER_PAGE } from './SearchResult
 import ContactDetails from '../contact/ContactDetails';
 import Case from '../case';
 import ProfileRouter, { isProfileRoute } from '../profile/ProfileRouter';
-import {SearchFormValues, SearchParams} from '../../states/search/types';
+import { SearchFormValues, SearchParams } from '../../states/search/types';
 import { CustomITask, StandaloneITask } from '../../types/types';
-import {
-  newCreateSearchForm,
-  dispatchSearchContactsActions,
-  newSearchFormUpdateAction,
-} from '../../states/search/actions';
+import { newCreateSearchForm, newSearchFormUpdateAction } from '../../states/search/actions';
 import { RootState } from '../../states';
 import { namespace } from '../../states/storeNamespaces';
 import { selectCurrentTopmostRouteForTask } from '../../states/routing/getRoute';
@@ -42,7 +36,7 @@ import selectCasesForSearchResults from '../../states/search/selectCasesForSearc
 import selectContactsForSearchResults from '../../states/search/selectContactsForSearchResults';
 import { DetailsContext } from '../../states/contacts/contactDetails';
 import { SearchForm } from './SearchForm';
-import { newSearchCasesAsyncAction } from '../../states/search/results';
+import { newSearchCasesAsyncAction, newSearchContactsAsyncAction } from '../../states/search/results';
 import asyncDispatch from '../../states/asyncDispatch';
 
 type Props = {
@@ -88,8 +82,6 @@ const Search: React.FC<Props> = ({ task, currentIsCaller = false, saveUpdates })
       ),
     );
 
-  const searchContacts = () => dispatchSearchContactsActions(dispatch)(taskSid, searchContext);
-
   useEffect(() => {
     if (!form) {
       dispatch(newCreateSearchForm(taskSid, searchContext));
@@ -99,7 +91,15 @@ const Search: React.FC<Props> = ({ task, currentIsCaller = false, saveUpdates })
   const closeDialog = () => setMockedMessage('');
 
   const handleSearchContacts = (newSearchParams: SearchParams, newOffset: number) =>
-    searchContacts()({ ...form, ...newSearchParams }, CONTACTS_PER_PAGE, newOffset);
+    asyncDispatcher(
+      newSearchContactsAsyncAction(
+        taskSid,
+        searchContext,
+        { ...form, ...newSearchParams },
+        CONTACTS_PER_PAGE,
+        newOffset,
+      ),
+    );
 
   const handleSearchCases = (newSearchParams, newOffset: number) =>
     asyncDispatcher(

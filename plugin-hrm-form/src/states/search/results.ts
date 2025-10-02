@@ -17,12 +17,13 @@
 import { createAsyncAction, createReducer } from 'redux-promise-middleware-actions';
 import { endOfDay, formatISO, parseISO, startOfDay } from 'date-fns';
 
-import { ApiSearchParams, SEARCH_CASES, SearchParams } from './types';
+import { ApiSearchParams, SEARCH_CASES, SEARCH_CONTACTS_REQUEST, SearchParams } from './types';
 import { searchCases } from '../../services/CaseService';
-import { getCasesMissingVersions } from '../../utils/definitionVersions';
+import { getCasesMissingVersions, getContactsMissingVersions } from '../../utils/definitionVersions';
 import { SearchState } from './reducer';
 import { TaskSID } from '../../types/twilio';
-import { SearchCaseResult } from '../../types/types';
+import { SearchCaseResult, SearchContactResult } from '../../types/types';
+import { searchContacts } from '../../services/ContactService';
 
 class SearchError extends Error {
   requestContext: {
@@ -44,16 +45,44 @@ const convertSearchParamsToApiSearchParams = (searchParams: SearchParams): ApiSe
   dateTo: searchParams.dateTo ? formatISO(endOfDay(parseISO(searchParams.dateTo))) : searchParams.dateTo,
 });
 
+export const newSearchContactsAsyncAction = createAsyncAction(
+  SEARCH_CONTACTS_REQUEST,
+  async (taskSid: TaskSID, context: string, searchParams: SearchParams, limit: number, offset: number) => {
+    try {
+      const searchParamsToSubmit = convertSearchParamsToApiSearchParams(searchParams);
+
+      const searchResult = await searchContacts({ searchParameters: searchParamsToSubmit, limit, offset });
+
+      const definitions = await getContactsMissingVersions(searchResult.contacts);
+
+      return {
+        searchResult,
+        taskSid,
+        reference: `search-${taskSid}`,
+        context,
+        missingDefinitions: definitions,
+      };
+    } catch (err) {
+      throw new SearchError(err, { context, taskSid });
+    }
+  },
+  (taskSid: string, context: string) => ({ taskSid, context }),
+);
+
+export const SEARCH_CONTACTS_SUCCESS_ACTION = `${SEARCH_CONTACTS_REQUEST}_FULFILLED` as const;
+
+export type SearchContactsSuccessAction = {
+  type: typeof SEARCH_CONTACTS_SUCCESS_ACTION;
+  payload: {
+    missingDefinitions: Awaited<ReturnType<typeof getContactsMissingVersions>>;
+    searchResult: SearchContactResult;
+    taskSid: TaskSID;
+  };
+};
+
 export const newSearchCasesAsyncAction = createAsyncAction(
   SEARCH_CASES,
-  async (
-    taskSid: TaskSID,
-    context: string,
-    searchParams: SearchParams,
-    limit: number,
-    offset: number,
-    dispatchedFromPreviousContacts?: boolean,
-  ) => {
+  async (taskSid: TaskSID, context: string, searchParams: SearchParams, limit: number, offset: number) => {
     try {
       const searchParamsToSubmit = convertSearchParamsToApiSearchParams(searchParams);
 
@@ -64,7 +93,6 @@ export const newSearchCasesAsyncAction = createAsyncAction(
       return {
         searchResult,
         taskSid,
-        dispatchedFromPreviousContacts,
         reference: `search-${taskSid}`,
         context,
         missingDefinitions: definitions,
@@ -89,6 +117,85 @@ export type SearchCasesSuccessAction = {
 
 export const resultsReducer = (initialState: SearchState): ((state: SearchState, action) => SearchState) =>
   createReducer(initialState, handleAction => [
+    handleAction(
+      newSearchContactsAsyncAction.pending as typeof newSearchCasesAsyncAction,
+      (state: SearchState, { meta: { taskSid, context } }) => {
+        const task = state.tasks[taskSid];
+        const currentEntry = state.tasks[taskSid][context];
+        return {
+          ...state,
+          tasks: {
+            ...state.tasks,
+            [taskSid]: {
+              ...task,
+              [context]: {
+                ...currentEntry,
+                isRequesting: true,
+                contactRefreshRequired: false,
+              },
+            },
+          },
+        };
+      },
+    ),
+    handleAction(
+      newSearchContactsAsyncAction.fulfilled,
+      (
+        state: SearchState,
+        {
+          payload: {
+            searchResult: { contacts, count },
+            taskSid,
+            context,
+          },
+        },
+      ) => {
+        const task = state.tasks[taskSid];
+        const currentEntry = state.tasks[taskSid][context];
+        const newContactsResult = {
+          ids: contacts.map(c => c.id),
+          count,
+        };
+        return {
+          ...state,
+          tasks: {
+            ...state.tasks,
+            [taskSid]: {
+              ...task,
+              [context]: {
+                ...currentEntry,
+                searchContactsResult: newContactsResult,
+                isRequesting: false,
+                error: null,
+              },
+            },
+          },
+        };
+      },
+    ),
+    handleAction(newSearchContactsAsyncAction.rejected, (state: SearchState, { payload }) => {
+      if (payload instanceof SearchError) {
+        const { taskSid, context } = payload.requestContext;
+        const task = state.tasks[taskSid];
+        const currentState = state.tasks[taskSid][context];
+        return {
+          ...state,
+          tasks: {
+            ...state.tasks,
+            [taskSid]: {
+              ...task,
+              [context]: {
+                ...currentState,
+                isRequesting: false,
+                error: payload.cause,
+              },
+            },
+          },
+        };
+      }
+      console.warn('Error thrown not of SearchError type, lacks context to update redux state', payload);
+      return state;
+    }),
     handleAction(
       newSearchCasesAsyncAction.pending as typeof newSearchCasesAsyncAction,
       (state: SearchState, { meta: { taskSid, context } }) => {
@@ -118,7 +225,6 @@ export const resultsReducer = (initialState: SearchState): ((state: SearchState,
           payload: {
             searchResult: { cases, count },
             taskSid,
-            dispatchedFromPreviousContacts,
             context,
           },
         },
@@ -129,9 +235,6 @@ export const resultsReducer = (initialState: SearchState): ((state: SearchState,
           ids: cases.map(c => c.id),
           count,
         };
-        const previousContactCounts = dispatchedFromPreviousContacts
-          ? { ...currentEntry.previousContactCounts, cases: newCasesResult.count }
-          : currentEntry.previousContactCounts;
         return {
           ...state,
           tasks: {
@@ -140,7 +243,6 @@ export const resultsReducer = (initialState: SearchState): ((state: SearchState,
               ...task,
               [context]: {
                 ...currentEntry,
-                previousContactCounts,
                 searchCasesResult: newCasesResult,
                 isRequestingCases: false,
                 casesError: null,
