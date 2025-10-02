@@ -34,7 +34,6 @@ import {
   CREATE_CONTACT_ACTION_FULFILLED,
   LOAD_CONTACT_FROM_HRM_FOR_TASK_ACTION_FULFILLED,
 } from '../contacts/types';
-import { SEARCH_CASES_SUCCESS, SearchCasesSuccessAction } from '../search/types';
 import type { Case } from '../../types/types';
 import type { ConfigurationState } from '../configuration/reducer';
 import { caseSectionUpdateReducer } from './sections/caseSectionUpdates';
@@ -48,6 +47,7 @@ import {
 } from './singleCase';
 import { loadCaseIntoState } from './loadCaseIntoState';
 import { dereferenceCase } from './referenceCase';
+import { SEARCH_CASES_SUCCESS_ACTION, SearchCasesSuccessAction } from '../search/results';
 
 const initialState: CaseState = {
   cases: {},
@@ -146,8 +146,8 @@ export function reduce(
     | CaseWorkingCopyActionType
     | RemoveContactStateAction
     | ContactUpdatingAction
-    | SearchCasesSuccessAction
-    | FetchCaseListFulfilledAction,
+    | FetchCaseListFulfilledAction
+    | SearchCasesSuccessAction,
 ): HrmState {
   let hrmState = boundSaveCaseReducer(inputRootState, action as any);
   hrmState = boundCaseSectionUpdateReducer(hrmState, action);
@@ -191,9 +191,9 @@ export function reduce(
         connectedCase: loadCaseListIntoState(state, configuration, cases, `case-list`),
       };
     }
-    case SEARCH_CASES_SUCCESS: {
-      const { searchResult, taskId } = action as SearchCasesSuccessAction;
-      const referenceId = `search-${taskId}`;
+    case SEARCH_CASES_SUCCESS_ACTION: {
+      const { searchResult, taskSid } = action.payload;
+      const referenceId = `search-${taskSid}`;
       return {
         ...hrmState,
         connectedCase: loadCaseListIntoState(state, configuration, searchResult?.cases, referenceId),

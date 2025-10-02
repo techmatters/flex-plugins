@@ -218,18 +218,11 @@ export type CounselorHash = {
   [sid: string]: string;
 };
 
-export type ConfigFlags = {
-  enableExternalRecordings: boolean;
-  enableUnmaskingCalls: boolean;
-  hideAddToNewCaseButton: boolean;
-};
-
 /* eslint-disable camelcase */
 export type FeatureFlags = {
   // Please keep this in alphabetical order!
   enable_active_contact_header: boolean; // Enables Active Contact Header
   enable_canned_responses: boolean; // Enables Canned Responses
-  enable_client_profiles: boolean; // Enables Client Profiles
   enable_conferencing: boolean; // Enables Conferencing UI and replaces default Twilio components and behavior  
   enable_confirm_on_browser_close: boolean; // Enables confirmation dialog on browser close when there are unsaved changes
   enable_counselor_toolkits: boolean; // Enables Counselor Toolkits
@@ -239,7 +232,6 @@ export type FeatureFlags = {
   enable_emoji_picker: boolean; // Enables Emoji Picker
   enable_external_transcripts: boolean; // Enables Viewing Transcripts Stored Outside of Twilio
   enable_fullstory_monitoring: boolean; // Enables Full Story
-  enable_generalized_search: boolean; // Enables Generalized Search
   enable_last_case_status_update_info: boolean; // Enables showing the time, user and changed status of the most recent case status update on the 'Edit Case Summary' page
   enable_manual_pulling: boolean; // Enables Adding Another Task
   enable_offline_contact: boolean; // Enables Creating Offline Contacts  

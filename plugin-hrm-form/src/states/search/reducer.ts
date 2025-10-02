@@ -17,7 +17,7 @@
 import { omit } from 'lodash';
 
 import * as t from './types';
-import { newSearchFormEntry, PreviousContactCounts, SearchResultReferences } from './types';
+import { newSearchFormEntry, SearchResultReferences } from './types';
 import { REMOVE_CONTACT_STATE, RemoveContactStateAction } from '../types';
 import { Contact, standaloneTaskSid } from '../../types/types';
 import { ContactDetailsSections, ContactDetailsSectionsType } from '../../components/common/ContactDetails';
@@ -30,6 +30,7 @@ import {
   UPDATE_CONTACT_ACTION_FULFILLED,
 } from '../contacts/types';
 import { CaseUpdatingAction, CREATE_CASE_ACTION_FULFILLED } from '../case/types';
+import { resultsReducer } from './results';
 
 export type SearchStateTaskEntry = {
   form: t.SearchFormValues;
@@ -38,7 +39,6 @@ export type SearchStateTaskEntry = {
   };
   searchContactsResult: SearchResultReferences;
   searchCasesResult: SearchResultReferences;
-  previousContactCounts?: PreviousContactCounts;
   isRequesting: boolean;
   isRequestingCases: boolean;
   error: any;
@@ -48,7 +48,7 @@ export type SearchStateTaskEntry = {
   searchExistingCaseStatus: boolean;
 };
 
-type SearchState = {
+export type SearchState = {
   tasks: {
     [taskId: string]: {
       [context: string]: SearchStateTaskEntry;
@@ -107,7 +107,7 @@ const contactUpdatingReducer = (state: SearchState, action: ContactUpdatingActio
     },
   };
 };
-
+const boundResultsReducer = resultsReducer(initialState);
 // eslint-disable-next-line complexity
 export function reduce(
   startingState = initialState,
@@ -118,7 +118,7 @@ export function reduce(
     | ContactConnectingAction
     | CaseUpdatingAction,
 ): SearchState {
-  let state = startingState;
+  let state = boundResultsReducer(startingState, action);
   if ((<string[]>[UPDATE_CONTACT_ACTION_FULFILLED, CREATE_CONTACT_ACTION_FULFILLED]).includes(action.type)) {
     state = {
       ...state,
@@ -212,163 +212,6 @@ export function reduce(
             [action.context]: {
               ...context,
               ...newTaskEntry,
-            },
-          },
-        },
-      };
-    }
-    case t.SEARCH_CONTACTS_REQUEST: {
-      const task = state.tasks[action.taskId];
-      const context = state.tasks[action.taskId][action.context];
-      return {
-        ...state,
-        tasks: {
-          ...state.tasks,
-          [action.taskId]: {
-            ...task,
-            [action.context]: {
-              ...context,
-              isRequesting: true,
-              contactRefreshRequired: false,
-            },
-          },
-        },
-      };
-    }
-    case t.SEARCH_CONTACTS_SUCCESS: {
-      const {
-        searchResult: { contacts, ...searchResult },
-        taskId,
-        dispatchedFromPreviousContacts,
-        context,
-      } = action;
-      const task = state.tasks[taskId];
-      const searchContext = state.tasks[taskId][context];
-      const newContactsResult = {
-        ids: contacts.map(c => c.id),
-        count: searchResult.count,
-      };
-      const previousContactCounts = dispatchedFromPreviousContacts
-        ? { ...searchContext.previousContactCounts, contacts: searchResult.count }
-        : searchContext.previousContactCounts;
-      return {
-        ...state,
-        tasks: {
-          ...state.tasks,
-          [taskId]: {
-            ...task,
-            [context]: {
-              ...searchContext,
-              searchContactsResult: newContactsResult,
-              isRequesting: false,
-              error: null,
-              previousContactCounts,
-            },
-          },
-        },
-      };
-    }
-    case t.SEARCH_CONTACTS_FAILURE: {
-      const task = state.tasks[action.taskId];
-      const context = state.tasks[action.taskId][action.context];
-      return {
-        ...state,
-        tasks: {
-          ...state.tasks,
-          [action.taskId]: {
-            ...task,
-            [action.context]: {
-              ...context,
-              isRequesting: false,
-              error: action.error,
-            },
-          },
-        },
-      };
-    }
-    case t.SEARCH_CASES_REQUEST: {
-      const task = state.tasks[action.taskId];
-      const context = state.tasks[action.taskId][action.context];
-      return {
-        ...state,
-        tasks: {
-          ...state.tasks,
-          [action.taskId]: {
-            ...task,
-            [action.context]: {
-              ...context,
-              isRequestingCases: true,
-              caseRefreshRequired: false,
-            },
-          },
-        },
-      };
-    }
-    case t.SEARCH_CASES_SUCCESS: {
-      const {
-        searchResult: { cases, count },
-        taskId,
-        dispatchedFromPreviousContacts,
-      } = action;
-      const task = state.tasks[taskId];
-      const context = state.tasks[action.taskId][action.context];
-      const newCasesResult = {
-        ids: cases.map(c => c.id),
-        count,
-      };
-      const previousContactCounts = dispatchedFromPreviousContacts
-        ? { ...context.previousContactCounts, cases: newCasesResult.count }
-        : context.previousContactCounts;
-      return {
-        ...state,
-        tasks: {
-          ...state.tasks,
-          [action.taskId]: {
-            ...task,
-            [action.context]: {
-              ...context,
-              previousContactCounts,
-              searchCasesResult: newCasesResult,
-              isRequestingCases: false,
-              casesError: null,
-            },
-          },
-        },
-      };
-    }
-    case t.SEARCH_CASES_FAILURE: {
-      const task = state.tasks[action.taskId];
-      const context = state.tasks[action.taskId][action.context];
-      return {
-        ...state,
-        tasks: {
-          ...state.tasks,
-          [action.taskId]: {
-            ...task,
-            [action.context]: {
-              ...context,
-              isRequestingCases: false,
-              casesError: action.error,
-            },
-          },
-        },
-      };
-    }
-    case t.VIEW_PREVIOUS_CONTACTS: {
-      const task = state.tasks[action.taskId];
-      const context = state.tasks[action.taskId][action.context];
-      return {
-        ...state,
-        tasks: {
-          ...state.tasks,
-          [action.taskId]: {
-            ...task,
-            form: {
-              ...task.form,
-              [action.context]: {
-                ...context,
-                contactNumber: action.contactNumber,
-              },
             },
           },
         },

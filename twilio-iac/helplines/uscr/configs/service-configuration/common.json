@@ -4,10 +4,8 @@
             "voice",
             "web"
         ],
-        "config_flags": {
-            "enableExternalRecordings": false,
-            "hideAddToNewCaseButton": true
-        },
+        "enableExternalRecordings": false,
+        "hideAddToNewCaseButton": true,
         "feature_flags": {
             "enable_voice_recordings": true,
             "enable_client_profiles":true,
