@@ -567,6 +567,13 @@
   "Conference-AddConferenceCallParticipant": "Add Conference Call Participant",
   "Conference-EnterPhoneNumber": "Enter phone number",
   "Conference-DialButton": "Dial",
+  "Conference-Actions-Leave": "Leave Call",
+  "Conference-Actions-Hangup": "Hang Up",
+  "Conference-Actions-Mute": "Mute",
+  "Conference-Actions-Unmute": "Unmute",
+  "Conference-Actions-Add": "Conference",
+  "Conference-Participant-Remove": "Remove Participant",
+  "Conference-Participant-Hold": "Hold Participant",
 
   "Conference-Wrapping-HangupBy/Customer": "Call Ended by Service User",
   "Conference-Wrapping-HangupBy/Agent": "Call Ended by Counselor",
