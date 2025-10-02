@@ -18,10 +18,10 @@ import parseISO from 'date-fns/parseISO';
 import { differenceInDays, differenceInHours } from 'date-fns';
 
 import { fetchRules } from './fetchRules';
-import { getHrmConfig, getAseloFeatureFlags } from '../hrmConfig';
+import { getHrmConfig } from '../hrmConfig';
 import { ProfileSection } from '../types/types';
 
-export { canOnlyViewOwnCases, canOnlyViewOwnContacts } from './search-permissions';
+export { canOnlyViewOwnCases } from './search-permissions';
 
 export const CaseActions = {
   VIEW_CASE: 'viewCase',
@@ -259,8 +259,6 @@ const validateTKActions = (rules: RulesFile) =>
       }, {}),
     )
     .reduce<{ [k in Action]: boolean }>((accum, obj) => ({ ...accum, ...obj }), {} as any);
-
-const isValidTargetKindActions = (validated: { [k in Action]: boolean }) => Object.values(validated).every(Boolean);
 
 let rules: RulesFile = null;
 export const getRules = () => rules;

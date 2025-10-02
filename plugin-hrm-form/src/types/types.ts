@@ -223,7 +223,6 @@ export type FeatureFlags = {
   // Please keep this in alphabetical order!
   enable_active_contact_header: boolean; // Enables Active Contact Header
   enable_canned_responses: boolean; // Enables Canned Responses
-  enable_client_profiles: boolean; // Enables Client Profiles
   enable_conferencing: boolean; // Enables Conferencing UI and replaces default Twilio components and behavior  
   enable_confirm_on_browser_close: boolean; // Enables confirmation dialog on browser close when there are unsaved changes
   enable_counselor_toolkits: boolean; // Enables Counselor Toolkits

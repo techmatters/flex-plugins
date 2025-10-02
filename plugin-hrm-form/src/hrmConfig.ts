@@ -80,7 +80,6 @@ const readConfig = () => {
     permissionConfig,
     enableExternalRecordings,
     enableUnmaskingCalls,
-    enableClientProfiles,
     hideAddToNewCaseButton,
   } = {
     // Deprecated, remove when service configurations changes have applied 2025-09-30
@@ -88,7 +87,6 @@ const readConfig = () => {
     ...manager.serviceConfiguration.attributes,
   } as any;
   const contactsWaitingChannels = manager.serviceConfiguration.attributes.contacts_waiting_channels || null;
-
   const featureFlagsFromEnvEntries = Object.entries(process.env)
     .filter(([varName]) => varName.startsWith(featureFlagEnvVarPrefix))
     .map(([name, value]) => [
@@ -101,6 +99,9 @@ const readConfig = () => {
     ...featureFlagsFromServiceConfig,
     ...featureFlagsFromEnv,
   };
+  // Compatibility, remove feature flag check when service configurations changes have applied 2025-09-30
+  const enableClientProfiles =
+    manager.serviceConfiguration.attributes.enableClientProfiles ?? featureFlags.enable_client_profiles ?? true;
   const { strings } = (manager as unknown) as {
     strings: { [key: string]: string };
   };
