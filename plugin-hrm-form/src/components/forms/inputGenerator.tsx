@@ -27,6 +27,7 @@ import FormTextArea from './components/FormTextArea/FormTextArea';
 import { TaskSID } from '../../types/twilio';
 import FormSelect from './components/FormSelect/FormSelect';
 import DependentFormSelect from './components/FormSelect/DependentFormSelect';
+import FormCheckbox from './components/FormCheckbox/FormCheckbox';
 
 const getRegisterOptions = (formItemDefinition: FormItemDefinition): RegisterOptions =>
   pick(formItemDefinition, ['max', 'maxLength', 'min', 'minLength', 'pattern', 'required', 'validate']);
@@ -122,6 +123,21 @@ export const createInput = ({
           dependsOn={formItemDefinition.dependsOn}
           dependentOptions={formItemDefinition.options}
           defaultOption={formItemDefinition.defaultOption}
+        />
+      );
+    }
+    case FormInputType.CopyTo:
+    case FormInputType.Checkbox: {
+      return (
+        <FormCheckbox
+          key={inputId}
+          inputId={inputId}
+          initialValue={initialValue}
+          updateCallback={updateCallback}
+          label={formItemDefinition.label}
+          registerOptions={registerOptions}
+          isEnabled={isEnabled}
+          htmlElRef={htmlElRef}
         />
       );
     }

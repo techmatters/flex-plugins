@@ -117,6 +117,7 @@ const setUpComponents = (featureFlags: FeatureFlags, setupObject: ReturnType<typ
   if (featureFlags.enable_emoji_picker) Components.setupEmojiPicker();
   if (featureFlags.enable_canned_responses) Components.setupCannedResponses();
 
+  TeamsView.setUpSelectAgentColumn();
   TeamsView.setUpAgentColumn();
   TeamsView.setUpStatusColumn();
   TeamsView.setUpSkillsColumn();

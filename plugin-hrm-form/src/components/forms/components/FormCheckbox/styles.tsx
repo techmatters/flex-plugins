@@ -13,21 +13,25 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
-import { setUpSelectAgentColumn } from './SelectAgentColumn';
-import { setUpAgentColumn } from './AgentColumn';
-import { setUpSkillsColumn } from './SkillsColumn';
-import { setUpStatusColumn } from './StatusColumn';
-import { setUpTeamsViewSorting } from './teamsViewSorting';
-import { setUpTeamsViewFilters, setUpWorkerDirectoryFilters } from './teamsViewFilters';
 
-const TeamsView = {
-  setUpSelectAgentColumn,
-  setUpAgentColumn,
-  setUpStatusColumn,
-  setUpSkillsColumn,
-  setUpTeamsViewSorting,
-  setUpTeamsViewFilters,
-  setUpWorkerDirectoryFilters,
-};
+import { styled } from '@twilio/flex-ui';
 
-export default TeamsView;
+import { CheckboxBase } from '../styles';
+
+export const StyledFormCheckbox = styled(CheckboxBase)`
+  &[type='checkbox']:checked::before {
+    border-color: #1976d2;
+    background: #1976d2;
+  }
+  &[type='checkbox']:checked::after {
+    font-family: 'Font Awesome 5 Free';
+    content: '\\f00c';
+    color: #ffffff;
+    font-weight: 900;
+  }
+
+  &[type='checkbox']:focus:not(:focus-visible) {
+    outline: auto;
+  }
+`;
+StyledFormCheckbox.displayName = 'FormCheckbox';
