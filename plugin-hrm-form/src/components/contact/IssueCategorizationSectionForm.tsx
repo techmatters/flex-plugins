@@ -68,10 +68,7 @@ const IssueCategorizationSectionForm: React.FC<Props> = ({ display, definition, 
   const selectedCount = Object.values(selectedCategories).reduce((acc, curr) => acc + curr.length, 0);
 
   const { clearErrors, register } = useFormContext();
-  const maxSelections =
-    (getAseloFeatureFlags().enable_configurable_max_categories
-      ? definition.maxSelections
-      : DEFAULT_MAXIMUM_SELECTIONS) ?? DEFAULT_MAXIMUM_SELECTIONS;
+  const maxSelections = definition.maxSelections ?? DEFAULT_MAXIMUM_SELECTIONS;
 
   // Add invisible field that errors if no category is selected (triggered by validation)
   React.useEffect(() => {
