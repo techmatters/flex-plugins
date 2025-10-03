@@ -61,7 +61,7 @@ export const displayOperatingHours = async (
   if (config.checkOpenHours) {
     try {
       const operatingState = await getOperatingHours(
-        config.twilioServicesUrl,
+        config.twilioServicesUrl?.toString(),
         externalWebChatLanguage || config.defaultLanguage,
       );
       /*
