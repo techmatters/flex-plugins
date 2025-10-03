@@ -107,6 +107,7 @@ const updateTaskAssignmentStatus = async (
       // If the task is wrapping, we assume the user is trying to end the post survey
       case 'wrapping':
       case 'reserved':
+      case 'completed':
       case 'pending': {
         await updateAssignmentStatus('canceled');
         return 'cleanup'; // indicate that there's cleanup needed
