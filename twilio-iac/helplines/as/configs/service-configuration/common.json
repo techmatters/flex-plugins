@@ -18,7 +18,8 @@
             "enable_resouorces_updates": true,
             "enable_configurable_max_categories": true,
             "enable_llm_summary": true,
-            "enable_lambda_post_survey_processing": true
+            "enable_lambda_post_survey_processing": true,
+            "enable_select_agents_teams_view": true
         },
         "helplineLanguage": "en-US"
     }

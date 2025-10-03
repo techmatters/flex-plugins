@@ -19,6 +19,7 @@ import { WorkersDataTable, ColumnDefinition, useFlexSelector } from '@twilio/fle
 import { useDispatch, useSelector } from 'react-redux';
 import type { SupervisorState } from '@twilio/flex-ui/src/state/Supervisor/SupervisorState';
 
+import { getAseloFeatureFlags } from '../../hrmConfig';
 import { namespace, teamsViewBase } from '../../states/storeNamespaces';
 import { teamsViewSelectWorkers, teamsViewUnselectWorkers } from '../../states/teamsView/reducer';
 import { StyledFormCheckbox } from '../forms/components/FormCheckbox/styles';
@@ -71,6 +72,9 @@ const SelectWorkerCheckbox: React.FC<{
 };
 
 export const setUpSelectAgentColumn = () => {
+  const { enable_select_agents_teams_view: enableSelectAgentsTeamsView } = getAseloFeatureFlags();
+  if (!enableSelectAgentsTeamsView) return;
+
   WorkersDataTable.Content.add(
     <ColumnDefinition
       key="select-worker"
