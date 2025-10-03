@@ -251,6 +251,7 @@ export type FeatureFlags = {
   use_twilio_lambda_for_conference_functions: boolean; // Use the twilio account scoped lambda for conferencing functions
   enable_conference_status_event_handler: boolean; // Enable conference status event handling. This needs to be set up from flex when accepting a task
   enable_assigned_skill_teams_view_filters: boolean; // Enable the 'Assigned Skill' and 'Unassigned Skill' filters on the teams view
+  enable_select_agents_teams_view: boolean; // Enable the checkboxes UI to select counselor(s)
   // TODO remove once this changes are enabled
   enable_resouorces_updates: boolean;
 };
