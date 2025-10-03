@@ -81,4 +81,5 @@ export const config: Configuration = {
   captureIp,
   contactType,
   enableRecaptcha,
+  twilioServicesUrl: new URL(`https://hrm-development.tl.techmatters.org/lambda/twilio/account-scoped/${accountSid}`),
 };

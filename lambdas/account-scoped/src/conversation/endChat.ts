@@ -104,6 +104,8 @@ const updateTaskAssignmentStatus = async (
         .update({ assignmentStatus });
 
     switch (task.assignmentStatus) {
+      // If the task is wrapping, we assume the user is trying to end the post survey
+      case 'wrapping':
       case 'reserved':
       case 'pending': {
         await updateAssignmentStatus('canceled');
