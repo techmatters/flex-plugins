@@ -121,12 +121,6 @@ jobs:
           ssm_parameter: "/${{ inputs.environment }}/twilio/${{ inputs.helpline_code }}/account_sid"
           env_variable_name: "ACCOUNT_SID"
 
-      - name: Set SERVERLESS_URL
-        uses: "marvinpinto/action-inject-ssm-secrets@latest"
-        with:
-          ssm_parameter: "/${{ inputs.environment }}/serverless/${{ env.ACCOUNT_SID }}/base_url"
-          env_variable_name: "SERVERLESS_URL"
-
       - name: Set RECAPTCHA_KEY
         uses: "marvinpinto/action-inject-ssm-secrets@latest"
         with:
