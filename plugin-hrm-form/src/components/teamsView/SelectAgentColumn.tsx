@@ -18,8 +18,8 @@ import React from 'react';
 import { WorkersDataTable, ColumnDefinition, useFlexSelector } from '@twilio/flex-ui';
 import { useDispatch, useSelector } from 'react-redux';
 import type { SupervisorState } from '@twilio/flex-ui/src/state/Supervisor/SupervisorState';
-import { getAseloFeatureFlags } from 'hrmConfig';
 
+import { getAseloFeatureFlags } from '../../hrmConfig';
 import { namespace, teamsViewBase } from '../../states/storeNamespaces';
 import { teamsViewSelectWorkers, teamsViewUnselectWorkers } from '../../states/teamsView/reducer';
 import { StyledFormCheckbox } from '../forms/components/FormCheckbox/styles';
