@@ -68,7 +68,7 @@ locals {
         templatefile     = "/app/twilio-iac/helplines/usch/templates/studio-flows/webchat-no-lex-sd.tftpl"
         channel_flow_vars = {
           courage_first_url = "https://www.athletehelpline.org"
-          childhelp_url     = "https://www.childhelp.org"
+          childhelp_url     = "https://www.childhelp"
         }
         chatbot_unique_names = []
       },
