@@ -55,10 +55,14 @@ const getBotNameV1 = ({
   helplineCode: string;
   botLanguage: string;
   botSuffix: string;
-}) => ({
-  botName: `${environment}_${helplineCode}_${botLanguage}_${botSuffix}`,
-  botAlias: 'latest', // Assume we always use the latest published version
-});
+}) => {
+  // Remove numbers as they are not supported in Lex v1 
+  const sanitizedHelplineCode = helplineCode.replaceAll(/[0-9]/gi, '');
+  return {
+    botName: `${environment}_${sanitizedHelplineCode}_${botLanguage}_${botSuffix}`,
+    botAlias: 'latest', // Assume we always use the latest published version
+  };
+};
 
 const postTextV1 = async ({
   botLanguageV1: botLanguage,
