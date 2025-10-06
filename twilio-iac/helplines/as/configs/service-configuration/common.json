@@ -3,6 +3,7 @@
         "definitionVersion": "as-v1",
         "external_recordings_enabled": true,
         "enableExternalRecordings": true,
+        "enableConferencing": true,
         "feature_flags": {
             "enable_active_contact_header": true,
             "enable_client_profiles": true,

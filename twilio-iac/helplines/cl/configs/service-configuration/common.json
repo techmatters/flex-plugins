@@ -7,6 +7,7 @@
         "definitionVersion": "cl-v1",
         "external_recordings_enabled": true,
         "enableExternalRecordings": true,
+        "enableConferencing": true,
         "feature_flags": {
             "enable_manual_pulling": false,
             "enable_lex": true,

@@ -9,6 +9,7 @@
         "enableExternalRecordings": true,
         "enableUnmaskingCalls": true,
         "enableClientProfiles": false,
+        "enableConferencing": true,
         "feature_flags": {
             "enable_client_profiles": false,
             "enable_conferencing": true,

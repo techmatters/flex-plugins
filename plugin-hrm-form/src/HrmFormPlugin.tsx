@@ -83,6 +83,7 @@ const setUpLocalization = (config: ReturnType<typeof getHrmConfig>) => {
 };
 
 const setUpComponents = (featureFlags: FeatureFlags, setupObject: ReturnType<typeof getHrmConfig>) => {
+  const { enableClientProfiles, enableConferencing } = getHrmConfig();
   // setUp (add) dynamic components
   Components.setUpQueuesStatusWriter(setupObject);
   Components.setUpQueuesStatus(setupObject);
@@ -102,7 +103,7 @@ const setUpComponents = (featureFlags: FeatureFlags, setupObject: ReturnType<typ
   Channels.setUpIncomingTransferMessage();
 
   Components.setUpCaseList();
-  if (getHrmConfig().enableClientProfiles) Components.setUpClientProfileList();
+  if (enableClientProfiles) Components.setUpClientProfileList();
 
   // remove dynamic components
   Components.removeTaskCanvasHeaderActions(featureFlags);
@@ -129,7 +130,7 @@ const setUpComponents = (featureFlags: FeatureFlags, setupObject: ReturnType<typ
     QueuesView.setUpSwitchboard();
   }
 
-  if (featureFlags.enable_conferencing) setupConferenceComponents();
+  if (enableConferencing) setupConferenceComponents();
 
   const toggleDialpad = () => Flex.Actions.invokeAction('ToggleOutboundDialer');
   Flex.KeyboardShortcutManager.addShortcuts({
@@ -149,6 +150,7 @@ const setUpActions = (
   getMessage: (key: string) => (language: string) => Promise<string>,
 ) => {
   ActionFunctions.excludeDeactivateConversationOrchestration();
+  const { enableConferencing } = getHrmConfig();
 
   // bind setupObject to the functions that requires some initialization
   const wrapupOverride = ActionFunctions.wrapupTask(setupObject, getMessage);
@@ -169,7 +171,7 @@ const setUpActions = (
 
   Flex.Actions.addListener('afterCompleteTask', ActionFunctions.afterCompleteTask);
 
-  if (featureFlags.enable_conferencing) setUpConferenceActions();
+  if (enableConferencing) setUpConferenceActions();
   if (featureFlags.enable_llm_summary) setupLlmNotifications();
 };
 

@@ -221,11 +221,8 @@ export type CounselorHash = {
 /* eslint-disable camelcase */
 export type FeatureFlags = {
   // Please keep this in alphabetical order!
-  enable_active_contact_header: boolean; // Enables Active Contact Header
   enable_canned_responses: boolean; // Enables Canned Responses
-  enable_conferencing: boolean; // Enables Conferencing UI and replaces default Twilio components and behavior  
   enable_confirm_on_browser_close: boolean; // Enables confirmation dialog on browser close when there are unsaved changes
-  enable_counselor_toolkits: boolean; // Enables Counselor Toolkits
   enable_csam_clc_report: boolean; // Enables CSAM child Reports
   enable_csam_report: boolean; // Enables CSAM Reports
   enable_dual_write: boolean; // Enables Saving Contacts on External Backends
@@ -234,12 +231,10 @@ export type FeatureFlags = {
   enable_fullstory_monitoring: boolean; // Enables Full Story
   enable_last_case_status_update_info: boolean; // Enables showing the time, user and changed status of the most recent case status update on the 'Edit Case Summary' page
   enable_manual_pulling: boolean; // Enables Adding Another Task
-  enable_offline_contact: boolean; // Enables Creating Offline Contacts  
   enable_permissions_from_backend: boolean; // Enables fetching permissions from backend service
   enable_post_survey: boolean; // Enables Post-Survey
   enable_previous_contacts: boolean; // Enables Previous Contacts Yellow Banner
   enable_region_resource_search: boolean; // Enables specifying a region as well as a province and / or city in Resource Search
-  enable_save_in_progress_contacts: boolean; // Enables Saving In Progress Contacts
   enable_save_insights: boolean; // Enables Saving Aditional Data on Insights
   enable_switchboarding: boolean; // Enables Switchboarding
   enable_switchboarding_move_tasks: boolean; // Enables Switchboarding moving tasks from original queue to switchboard ^ne

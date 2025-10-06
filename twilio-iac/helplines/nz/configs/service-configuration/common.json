@@ -10,6 +10,7 @@
         "definitionVersion": "nz-v1",
         "external_recordings_enabled": true,
         "enableExternalRecordings": true,
+        "enableConferencing": true,
         "enableUnmaskingCalls": false,
         "feature_flags": {
             "enable_client_profiles": true,
