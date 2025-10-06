@@ -56,7 +56,7 @@ const getBotNameV1 = ({
   botLanguage: string;
   botSuffix: string;
 }) => {
-  // Remove numbers as they are not supported in Lex v1 
+  // Remove numbers as they are not supported in Lex v1
   const sanitizedHelplineCode = helplineCode.replaceAll(/[0-9]/gi, '');
   return {
     botName: `${environment}_${sanitizedHelplineCode}_${botLanguage}_${botSuffix}`,
