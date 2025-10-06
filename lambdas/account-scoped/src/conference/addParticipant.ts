@@ -31,7 +31,7 @@ export const addParticipantHandler: AccountScopedHandler = async (
   if (!callStatusSyncDocumentSid)
     return newMissingParameterResult('callStatusSyncDocumentSid');
   const client = await getTwilioClient(accountSid);
-  const participant = client.conferences(conferenceSid).participants.create({
+  const participant = await client.conferences(conferenceSid).participants.create({
     from,
     to,
     earlyMedia: true,
