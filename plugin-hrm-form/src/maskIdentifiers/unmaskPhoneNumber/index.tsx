@@ -17,7 +17,7 @@
 import React from 'react';
 import { Supervisor, TaskCanvasHeader } from '@twilio/flex-ui';
 
-import { getAseloConfigFlags } from '../../hrmConfig';
+import { getHrmConfig } from '../../hrmConfig';
 import ViewTaskNumber from './ViewTaskNumber';
 import { getInitializedCan, PermissionActions } from '../../permissions';
 
@@ -28,7 +28,7 @@ export const setUpViewMaskedVoiceNumber = () => {
   const can = getInitializedCan();
   const maskIdentifiers = !can(PermissionActions.VIEW_IDENTIFIERS);
   if (!maskIdentifiers) return;
-  if (!getAseloConfigFlags().enableUnmaskingCalls) return;
+  if (!getHrmConfig().enableUnmaskingCalls) return;
 
   TaskCanvasHeader.Content.add(<ViewTaskNumber key="view-task-number" isPositionModified={false} />, {
     sortOrder: 1,

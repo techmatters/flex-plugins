@@ -102,7 +102,7 @@ const setUpComponents = (featureFlags: FeatureFlags, setupObject: ReturnType<typ
   Channels.setUpIncomingTransferMessage();
 
   Components.setUpCaseList();
-  if (featureFlags.enable_client_profiles) Components.setUpClientProfileList();
+  if (getHrmConfig().enableClientProfiles) Components.setUpClientProfileList();
 
   // remove dynamic components
   Components.removeTaskCanvasHeaderActions(featureFlags);
@@ -117,6 +117,7 @@ const setUpComponents = (featureFlags: FeatureFlags, setupObject: ReturnType<typ
   if (featureFlags.enable_emoji_picker) Components.setupEmojiPicker();
   if (featureFlags.enable_canned_responses) Components.setupCannedResponses();
 
+  TeamsView.setUpSelectAgentColumn();
   TeamsView.setUpAgentColumn();
   TeamsView.setUpStatusColumn();
   TeamsView.setUpSkillsColumn();

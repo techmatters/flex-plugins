@@ -17,7 +17,7 @@
 import * as Flex from '@twilio/flex-ui';
 
 import { buildFormDefinitionsBaseUrlGetter, inferConfiguredFormDefinitionsBaseUrl } from './definitionVersions';
-import { ConfigFlags, FeatureFlags } from './types/types';
+import { FeatureFlags } from './types/types';
 import type { RootState } from './states';
 import { namespace } from './states/storeNamespaces';
 import { WorkerSID } from './types/twilio';
@@ -78,11 +78,15 @@ const readConfig = () => {
     pdfImagesSource,
     multipleOfficeSupport,
     permissionConfig,
-  } = manager.serviceConfiguration.attributes;
+    enableExternalRecordings,
+    enableUnmaskingCalls,
+    hideAddToNewCaseButton,
+  } = {
+    // Deprecated, remove when service configurations changes have applied 2025-09-30
+    ...manager.serviceConfiguration.attributes.config_flags,
+    ...manager.serviceConfiguration.attributes,
+  } as any;
   const contactsWaitingChannels = manager.serviceConfiguration.attributes.contacts_waiting_channels || null;
-
-  const configFlags: ConfigFlags = manager.serviceConfiguration.attributes.config_flags || {};
-
   const featureFlagsFromEnvEntries = Object.entries(process.env)
     .filter(([varName]) => varName.startsWith(featureFlagEnvVarPrefix))
     .map(([name, value]) => [
@@ -95,12 +99,14 @@ const readConfig = () => {
     ...featureFlagsFromServiceConfig,
     ...featureFlagsFromEnv,
   };
+  // Compatibility, remove feature flag check when service configurations changes have applied 2025-09-30
+  const enableClientProfiles =
+    manager.serviceConfiguration.attributes.enableClientProfiles ?? featureFlags.enable_client_profiles ?? true;
   const { strings } = (manager as unknown) as {
     strings: { [key: string]: string };
   };
 
   return {
-    configFlags,
     featureFlags,
     strings,
     llm: {
@@ -135,6 +141,10 @@ const readConfig = () => {
       environment,
       docsBucket,
       contactSaveFrequency,
+      enableExternalRecordings,
+      enableUnmaskingCalls,
+      enableClientProfiles,
+      hideAddToNewCaseButton,
     },
     referrableResources: {
       resourcesBaseUrl,
@@ -170,7 +180,6 @@ export const getReferrableResourceConfig = () => cachedConfig.referrableResource
 export const getLlmConfig = () => cachedConfig.llm;
 
 export const getTemplateStrings = () => cachedConfig.strings;
-export const getAseloConfigFlags = (): ConfigFlags => cachedConfig.configFlags;
 export const getAseloFeatureFlags = (): FeatureFlags => cachedConfig.featureFlags;
 
 /**

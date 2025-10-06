@@ -14,14 +14,24 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { RootState } from '..';
-import { PreviousContactCounts } from './types';
-import selectSearchStateForTask from './selectSearchStateForTask';
+import { styled } from '@twilio/flex-ui';
 
-const selectPreviousContactCounts = (
-  state: RootState,
-  taskId: string,
-  context: string,
-): PreviousContactCounts | undefined => selectSearchStateForTask(state, taskId, context)?.previousContactCounts;
+import { CheckboxBase } from '../styles';
 
-export default selectPreviousContactCounts;
+export const StyledFormCheckbox = styled(CheckboxBase)`
+  &[type='checkbox']:checked::before {
+    border-color: #1976d2;
+    background: #1976d2;
+  }
+  &[type='checkbox']:checked::after {
+    font-family: 'Font Awesome 5 Free';
+    content: '\\f00c';
+    color: #ffffff;
+    font-weight: 900;
+  }
+
+  &[type='checkbox']:focus:not(:focus-visible) {
+    outline: auto;
+  }
+`;
+StyledFormCheckbox.displayName = 'FormCheckbox';

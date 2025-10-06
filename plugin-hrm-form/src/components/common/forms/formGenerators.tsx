@@ -26,8 +26,6 @@ import SearchIcon from '@material-ui/icons/Search';
 
 import {
   Box,
-  FormCheckbox,
-  FormCheckBoxWrapper,
   FormDateInput,
   FormError,
   FormFieldset,
@@ -47,7 +45,8 @@ import {
 } from '../../../styles';
 import type { HTMLElementRef } from './types';
 import UploadFileInput from './UploadFileInput';
-import { getTemplateStrings } from '../../../hrmConfig';
+import { StyledFormCheckbox } from '../../forms/components/FormCheckbox/styles';
+import { FormCheckBoxWrapper } from '../../forms/components/styles';
 
 const ConnectForm: React.FC<{
   children: <P extends ReturnType<typeof useFormContext>>(args: P) => JSX.Element;
@@ -396,7 +395,7 @@ export const getInputType = (parents: string[], updateCallback: () => void, cust
                       <FormListboxMultiselectOption role="option">
                         <FormListboxMultiselectOptionLabel htmlFor={`${path}-${value}`}>
                           <Box marginRight="5px">
-                            <FormCheckbox
+                            <StyledFormCheckbox
                               id={`${path}-${value}`}
                               data-testid={`listbox-multiselect-option-${path}-${value}`}
                               name={path}
@@ -431,48 +430,6 @@ export const getInputType = (parents: string[], updateCallback: () => void, cust
                   </FormError>
                 )}
               </FormListboxMultiselect>
-            );
-          }}
-        </ConnectForm>
-      );
-    case FormInputType.CopyTo:
-    case FormInputType.Checkbox:
-      return (
-        <ConnectForm key={path}>
-          {({ errors, register }) => {
-            const error = get(errors, path);
-            return (
-              <FormLabel htmlFor={path}>
-                <FormCheckBoxWrapper error={Boolean(error)}>
-                  <Box marginRight="5px">
-                    <FormCheckbox
-                      id={path}
-                      data-testid={path}
-                      name={path}
-                      type="checkbox"
-                      aria-invalid={Boolean(error)}
-                      aria-describedby={`${path}-error`}
-                      onChange={updateCallback}
-                      ref={ref => {
-                        if (htmlElRef) {
-                          htmlElRef.current = ref;
-                        }
-
-                        register(rules)(ref);
-                      }}
-                      defaultChecked={initialValue}
-                      disabled={!isEnabled}
-                    />
-                  </Box>
-                  {labelTextComponent}
-                  {rules.required && path !== 'ageVerified' && <RequiredAsterisk />}
-                </FormCheckBoxWrapper>
-                {error && (
-                  <FormError>
-                    <Template id={`${path}-error`} code={error.message} />
-                  </FormError>
-                )}
-              </FormLabel>
             );
           }}
         </ConnectForm>

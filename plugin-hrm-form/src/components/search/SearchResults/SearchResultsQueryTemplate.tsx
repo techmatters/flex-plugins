@@ -19,7 +19,6 @@ import { Template } from '@twilio/flex-ui';
 
 import { RootState } from '../../../states';
 import { Bold, FontOpenSans } from '../../../styles';
-import { getAseloFeatureFlags } from '../../../hrmConfig';
 import { CustomITask } from '../../../types/types';
 
 type SearchResultsQueryTemplateProps = {
@@ -39,8 +38,6 @@ export const SearchResultsQueryTemplate: React.FC<SearchResultsQueryTemplateProp
   contactsCount,
   counselorsHash,
 }) => {
-  const enableGeneralizedSearch = getAseloFeatureFlags().enable_generalized_search;
-
   const { activeView, searchFormQuery, agentFormQuery } = useSelector((state: RootState) => {
     const { taskSid } = task;
     const pluginHrmForm = state['plugin-hrm-form'].searchContacts.tasks[taskSid];
@@ -72,8 +69,8 @@ export const SearchResultsQueryTemplate: React.FC<SearchResultsQueryTemplateProp
     );
   };
 
-  const counselorNameString = (counselor, counselorsHash) => {
-    if (enableGeneralizedSearch && counselor !== '') {
+  const counselorNameString = (counselor: string, counselorsHash: Record<string, string>) => {
+    if (counselor !== '') {
       return (
         <>
           <Template code="SearchResults-CounselorName" /> <Bold>{counselorsHash[counselor]}.&nbsp;</Bold>
@@ -81,13 +78,6 @@ export const SearchResultsQueryTemplate: React.FC<SearchResultsQueryTemplateProp
       );
     }
 
-    if (!enableGeneralizedSearch && counselor?.label !== '') {
-      return (
-        <>
-          <Template code="SearchResults-CounselorName" /> <Bold>{counselor?.label}.&nbsp;</Bold>
-        </>
-      );
-    }
     return null;
   };
 
@@ -98,15 +88,11 @@ export const SearchResultsQueryTemplate: React.FC<SearchResultsQueryTemplateProp
     currentContext = agentFormQuery;
   }
 
-  const transformDate = date => new Date(date).toLocaleDateString();
-
   const ContextItem = ({ label, value }) => {
     if (!value) return null;
-    const formattedValue =
-      !enableGeneralizedSearch && (label === 'DateFrom' || label === 'DateTo') ? transformDate(value) : value;
     return (
       <>
-        <Template code={`SearchResults-${label}`} /> <Bold>{formattedValue}.&nbsp;</Bold>
+        <Template code={`SearchResults-${label}`} /> <Bold>{value}.&nbsp;</Bold>
       </>
     );
   };
@@ -114,24 +100,14 @@ export const SearchResultsQueryTemplate: React.FC<SearchResultsQueryTemplateProp
   return (
     <FontOpenSans>
       <span data-testid="SearchResultsCount">{countString(subroute, casesCount, contactsCount)}</span>
-
-      {/* The following are for legacy search fields */}
-      {!enableGeneralizedSearch && <>.&nbsp;</>}
       <ContextItem label="FirstName" value={currentContext?.firstName} />
       <ContextItem label="LastName" value={currentContext?.lastName} />
       <ContextItem label="PhoneNumber" value={currentContext?.phoneNumber} />
       <ContextItem label="Email" value={currentContext?.email} />
-
-      {/* The following are for generalized search fields */}
-      {enableGeneralizedSearch && (
-        <>
-          <Template code="SearchResults-For" />
-          &nbsp;
-        </>
-      )}
+      <Template code="SearchResults-For" />
+      &nbsp;
       {currentContext?.searchTerm && <Bold>&quot;{currentContext?.searchTerm}&quot;.&nbsp;</Bold>}
       {counselorNameString(currentContext?.counselor, counselorsHash)}
-
       {/* The following are for both types of search fields */}
       <ContextItem label="DateFrom" value={currentContext?.dateFrom} />
       <ContextItem label="DateTo" value={currentContext?.dateTo} />

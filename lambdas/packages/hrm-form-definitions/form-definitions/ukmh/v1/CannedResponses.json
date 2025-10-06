@@ -5,7 +5,7 @@
   },
   {
   "label": "Remit",
-  "text": "Thank you for reaching out to The Mix’s PeerChat. Today, you’ll have 45 minutes to talk to a trained supporter about your thoughts and feelings, what’s been going for you and why you have reached out. We can also look for more options that may be able to help further. If you become disconnected at any time during the chat please rejoin the link in your confirmation email.\n\nThe Mix is unable to provide urgent help. If you need urgent help, please visit https://www.themix.org.uk/get-support/urgent-help/\n\nHere at The Mix, we don’t tell anyone outside of the charity what you have shared with us. However, if we felt that you or someone else were in danger, then we would widen the circle of confidentiality by contacting the emergency services. If this were the case, we would tell you straight away and ask you for your details if we haven't got them already. \n\nFor further information, please visit https://www.themix.org.uk/about-us/privacy-centre/privacy-policy/"
+  "text": "Thank you for reaching out to The Mix’s PeerChat. Today, you’ll have 45 minutes to talk to a trained supporter about your thoughts and feelings, what’s been going for you and why you have reached out. We can also look for more options that may be able to help further. If you become disconnected at any time during the chat please rejoin the link in your confirmation email.\n\nThe Mix is unable to provide urgent help. If you need urgent help, please visit https://www.themix.org.uk/get-support/urgent-help/\n\nHere at The Mix, we don’t tell anyone outside of the charity what you have shared with us. However, if we felt that you or someone else were in danger, then we may pass this information onto Emergency or Social Services. We would always try to tell you if we needed to do this.\n\nFor further information, please visit https://www.themix.org.uk/about-us/privacy-centre/privacy-policy/"
   },
   {
   "label": "Silent - Check In",
@@ -25,11 +25,11 @@
   },
   {
   "label": "Breaking Confidentiality Part 1",
-  "text": "Here at The Mix, we take what you share seriously. We are concerned about what you’ve told us and believe that [your/ someone’s/ xxxx’s] life is in danger. Because of this, this conversation is no longer confidential, and we are limited in the options we can offer you. We are going to share this information with the emergency services to support you further. We would appreciate it if you could share your details to aid in this process.\n\nThank you , we will now be passing the details you have provided us with onto the Police. I am going to bring this conversation to an end as they may get in touch to provide you with support. You’ve been so brave to share your experiences today."
+  "text": "Here at The Mix, we take what you share seriously. We are concerned about what you’ve told us and believe that [you/ someone/xxxx] is in danger. We are going to share this information with the emergency services to support you further. \n\nTo support you in getting the right help today, can you confirm some information about yourself e.g. full name, where you live and your date of birth?\n\nThank you, we will now be passing the details you have provided us with onto the Emergency/Social Services. I am going to bring this conversation to an end as they may need to get in touch to provide you with support. You’ve been so brave to share your experiences today."
   },
   {
   "label": "Breaking Confidentiality Part 2",
-  "text": "Thank you, we will now be passing the details you have provided us with onto the Police. I am going to bring this conversation to an end as they may get in touch to provide you with support. You’ve been so brave to share your experiences today."
+  "text": "Thank you, we will now be passing the details you have provided us with onto the Emergency Services. I am going to bring this conversation to an end as they may need to get in touch to provide you with support. You’ve been so brave to share your experiences today."
   },
   {
   "label": "Bye Message",
