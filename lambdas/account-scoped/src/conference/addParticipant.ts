@@ -40,6 +40,10 @@ export const addParticipantHandler: AccountScopedHandler = async (
     statusCallbackEvent: ['initiated', 'ringing', 'answered', 'completed'],
     statusCallback: `${process.env.INTERNAL_HRM_URL}/lambda/twilio/account-scoped/conference/participantStatusCallback?callStatusSyncDocumentSid=${callStatusSyncDocumentSid}`,
   });
+  console.debug(
+    `Participant added to conference ${conferenceSid}, from ${from}, to ${to}`,
+    participant,
+  );
 
   return newOk({ message: 'New participant successfully added', participant });
 };
