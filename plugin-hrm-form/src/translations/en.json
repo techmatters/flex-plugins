@@ -504,7 +504,8 @@
   "UnmaskPhoneNumber": "Phone Number Revealed",
 
   "RecordingSection-Error": "Something went wrong on our end. Please contact your support team or supervisor.",
-
+  
+  "ReferrableResource-SideNav": "Resources",
   "Resources-LoadResourceError": "Something went wrong trying to load this resource.",
   "Resources-Search-FormTitle": "Resources",
   "Resources-Search-ResultsTitle": "Search Results",
