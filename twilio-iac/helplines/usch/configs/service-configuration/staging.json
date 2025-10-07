@@ -1,11 +1,10 @@
 {
     "attributes": {
+        "system_down" : false,
         "form_definitions_base_url": "https://assets-staging.tl.techmatters.org/form-definitions/",
-        "resources_base_url": "",
+        "resources_base_url": "https://hrm-staging.tl.techmatters.org",
         "logo_url" : "https://aselo-logo.s3.amazonaws.com/200+transparent+background+no+TM+staging.png",
         "feature_flags": {
-            "use_prepopulate_mappings": true,
-            "enable_lex_v2": true
         }
     }
 }

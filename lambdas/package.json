@@ -6,6 +6,17 @@
   "license": "AGPL",
   "workspaces": [
     "account-scoped",
+    "facebookCallback",
+    "facebookSignin",
+    "instagramWebhook",
+    "ipLocationFinder",
+    "lineSetup",
+    "lineWebhook",
+    "modicaWebhook",
+    "recaptchaVerify",
+    "savePendingContacts",
+    "TwilioErrorReporter",
+    "twilioEventStreams",
     "packages/*"
   ],
   "dependencies": {
@@ -14,6 +25,7 @@
   },
   "devDependencies": {
     "@tsconfig/node18": "^18.2.1",
+    "@tsconfig/node22": "^22.0.0",
     "@types/aws-lambda": "^8.10.119",
     "@types/jest": "^26.0.24",
     "@types/node": "^18.16.2",
@@ -25,7 +37,7 @@
     "aws-cdk": "^2.87.0",
     "aws-cdk-local": "^2.18.0",
     "cross-env": "^7.0.3",
-    "esbuild": "^0.25.8",
+    "esbuild": "^0.25.10",
     "eslint": "^8.44.0",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-config-airbnb-typescript": "^17.0.0",
@@ -42,7 +54,7 @@
     "prettier": "^3.0.0",
     "ts-jest": "^28.0.8",
     "ts-node": "^10.9.1",
-    "typescript": "^4.8.4",
+    "typescript": "^5.8.2",
     "wait-on": "^7.2.0"
   },
   "scripts": {

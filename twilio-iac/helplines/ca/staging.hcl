@@ -4,11 +4,15 @@ locals {
   config            = merge(local.common_config, local.local_config)
 
   local_config = {
-    operating_hours_enforced_override     = false
+    operating_hours_enforced_override = false
     #Studio flow
     flow_vars = {
       service_sid                       = "ZSb631f562c8306085ceb8329349fdd60b"
       environment_sid                   = "ZEd72a0800eb472d514e48977ffab9b642"
+      serverless_service_sid            = "ZS978c59a0e335c77ed1fc77715a806d42"
+      servleress_environment_sid        = "ZE1480176353cd0c0ea1825614e9806ed6"
+      send_message_run_janitor_sid      = "ZH25c10efaa9a9eeac2bcb6a551d2f8224"
+      send_message_run_janitor_url      = "https://serverless-8126-production.twil.io/sendMessageAndRunJanitor"
       time_cycle_function_sid           = "ZH3ee5654cb3c8cda06c2aaf84593b11a6"
       time_cycle_function_url           = "https://test-service-dee-4583.twil.io/time_cycle"
       engagement_function_sid           = "ZH946d079ec6be9b1b899a6cf30be0660f"
@@ -24,6 +28,8 @@ locals {
       operating_hours_function_url      = "https://serverless-8126-production.twil.io/operatingHours"
       check_counsellors_function_sid    = "ZHa0218fd2a7b2e3aa800ab78e0367acf7"
       check_counsellors_function_url    = "https://test-service-dee-4583.twil.io/check_counsellors"
+      cancel_task_function_url          = "https://test-service-dee-4583.twil.io/cancel_tasks"
+      cancel_task_function_sid          = "ZHe8a3de19523fa7ce8a41692e744a7f45"
     }
 
     #Channels
@@ -225,7 +231,19 @@ locals {
       "988_ns" : ["+17823120134"]
     }
     //Serverless -- to allow enabling the operating hours check on this staging account.
-    ui_editable = true
+    ui_editable                               = true
     get_profile_flags_for_identifier_base_url = "https://hrm-staging.tl.techmatters.org/lambda/twilio/account-scoped"
+    #System Down Configuration
+    system_down_templatefile = "/app/twilio-iac/helplines/templates/studio-flows/system-down.tftpl"
+    enable_system_down       = true
+    system_down_flow_vars = {
+      is_system_down                   = "false"
+      message                          = "We're sorry, our Live Chat service is currently full. Please end your chat and try back soon. To reach a Kids Help Phone counsellor by phone, you can call us anytime at 1-800-668-6868. \nBe well, \nThe Kids Help Phone Team."
+      voice_message                    = "We're sorry, our Live Chat service is currently full. Please end your chat and try back soon. To reach a Kids Help Phone counsellor by phone, you can call us anytime at 1-800-668-6868. \nBe well, \nThe Kids Help Phone Team."
+      send_studio_message_function_sid = "ZHfbb2e97ed5178c3fb72274369c0d4048"
+      call_action                      = "recording"
+      forward_number                   = "+123"
+      recording_url                    = "https://twilio-service-4854.twil.io/EnTechIssues.mp3"
+    }
   }
 }

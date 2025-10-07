@@ -1,0 +1,13 @@
+{
+  "en": {
+    "HelplineSubstitution": "Helpline-Substitution",
+    "Switchboard-NoQueuesSwitchboarded": "No queues are currently being switchboarded",
+    "TabbedForms-AddCallerInfoTab": "Dispatch Details",
+    "TabbedForms-AddCaseInfoTab": "Summary",
+    "TabbedForms-AddChildInfoTab": "Victim Call"
+  },
+  "es": {
+    "HelplineSubstitution": "Substitución de la Línea de Ayuda",
+    "Switchboard-NoQueuesSwitchboarded": "No hay colas que estén actualmente en switchboard"
+  }
+}

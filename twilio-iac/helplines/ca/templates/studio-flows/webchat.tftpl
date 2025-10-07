@@ -7,7 +7,7 @@ ${
       "type": "trigger",
       "transitions": [
         {
-          "next": "test_flag",
+          "next": "run_subflow_system_down",
           "event": "incomingMessage"
         },
         {
@@ -245,7 +245,8 @@ ${
       "type": "split-based-on",
       "transitions": [
         {
-          "event": "noMatch"
+          "event": "noMatch",
+          "next": "reset_time_delay"
         },
         {
           "next": "message_counter",
@@ -355,7 +356,7 @@ ${
           "event": "noMatch"
         },
         {
-          "next": "engagement",
+          "next": "check_counsellors_fr_post_queue",
           "event": "match",
           "conditions": [
             {
@@ -1377,7 +1378,7 @@ ${
       "type": "split-based-on",
       "transitions": [
         {
-          "next": "send_queue_full_fr",
+          "next": "send_no_counsellors",
           "event": "noMatch"
         },
         {
@@ -1541,6 +1542,202 @@ ${
           "x": 970,
           "y": 740
         }
+      }
+    },
+    {
+      "name": "run_subflow_system_down",
+      "type": "run-subflow",
+      "transitions": [
+        {
+          "next": "test_flag",
+          "event": "completed"
+        },
+        {
+          "next": "test_flag",
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "flow_sid": "${system_down_studio_subflow_sid}",
+        "flow_revision": "LatestPublished",
+        "offset": {
+          "x": 110,
+          "y": -270
+        },
+        "parameters": [
+          {
+            "type": "string",
+            "value": "true",
+            "key": "system_down"
+          }
+        ]
+      }
+    },
+    {
+      "name": "f_send_no_counsellors_fr",
+     "type": "run-function",
+      "transitions": [
+        {
+          "event": "success"
+        },
+        {
+          "event": "fail"
+        }
+      ],
+      "properties": {
+        "service_sid": "${flow_vars.serverless_service_sid}",
+        "environment_sid": "${flow_vars.serverless_environment_sid}",
+        "offset": {
+          "x": 2570,
+          "y": 800
+        },
+        "function_sid": "${flow_vars.send_message_run_janitor_sid}",
+        "parameters": [
+          {
+            "value": "{{flow.channel.address}}",
+            "key": "channelSid"
+          },
+          {
+            "value": "{{flow.channel.address}}",
+            "key": "conversationSid"
+          },
+          {
+            "value": "Bonjour. Merci de nous avoir contactés. De manière inattendue, nous ne sommes pas en mesure de répondre à ton clavardage en direct. Toutefois, nous aimerions te proposer quelques alternatives, afin de pouvoir t'offrir du soutien. Si tu souhaites parler à un·e intervenant·e, appelle le 1-800-668-6868. Si tu préfères texter avec un·e répondant·e en situation de crise, envoyez le mot « Parler » par texto au 686868 ou connecte-toi via notre site web : https://jeunessejecoute.ca/besoin-daide-maintenant-envoie-nous-un-texto. Notre service de clavardage en français sera de nouveau disponible demain à 19 h(HE). En cas d’urgence, compose le 911. Merci. Prends soin de toi.",
+            "key": "message"
+          },
+          {
+            "value": "System",
+            "key": "from"
+          }
+        ],
+        "url": "${flow_vars.send_message_run_janitor_url}"
+      }
+    },
+    {
+      "name": "fr_counsellors_post_queue",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "f_cancel_tasks",
+          "event": "noMatch"
+        },
+        {
+          "next": "engagement",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value greater_than 0",
+              "arguments": [
+                "{{widgets.check_counsellors_fr_post_queue.parsed.totalCounsellors}}"
+              ],
+              "type": "greater_than",
+              "value": "0"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{widgets.check_counsellors_fr_post_queue.parsed.totalCounsellors}}",
+        "offset": {
+          "x": 2200,
+          "y": 1310
+        }
+      }
+    },
+    {
+      "name": "check_counsellors_fr_post_queue",
+      "type": "run-function",
+      "transitions": [
+        {
+          "next": "fr_counsellors_post_queue",
+          "event": "success"
+        },
+        {
+          "next": "engagement",
+          "event": "fail"
+        }
+      ],
+      "properties": {
+        "service_sid": "${flow_vars.service_sid}",
+        "environment_sid": "${flow_vars.environment_sid}",
+        "offset": {
+          "x": 1560,
+          "y": -200
+        },
+        "function_sid": "${flow_vars.check_counsellors_function_sid}",
+        "parameters": [
+          {
+            "value": "${flow_vars.workspace_sid}",
+            "key": "workspaceSid"
+          },
+          {
+            "value": "${flow_vars.french_queue_sid}",
+            "key": "taskQueueSid"
+          }
+        ],
+        "url": "${flow_vars.check_counsellors_function_url}"
+      }
+    },
+    {
+      "name": "f_cancel_tasks",
+      "type": "run-function",
+      "transitions": [
+        {
+          "next": "f_send_no_counsellors_fr",
+          "event": "success"
+        },
+        {
+          "next": "send_no_counsellors",
+          "event": "fail"
+        }
+      ],
+      "properties": {
+        "service_sid": "${flow_vars.service_sid}",
+        "environment_sid": "${flow_vars.environment_sid}",
+        "offset": {
+          "x": 2730,
+          "y": 230
+        },
+        "function_sid": "${flow_vars.cancel_task_function_sid}",
+        "parameters": [
+          {
+            "value": "{{widgets.webAttributes.workspace_sid}}",
+            "key": "workspaceSid"
+          },
+          {
+            "value": "{{widgets.webAttributes.task_queue_sid}}",
+            "key": "taskQueueSid"
+          },
+          {
+            "value": "{{widgets.webAttributes.sid}}",
+            "key": "taskSid"
+          }
+        ],
+        "url": "${flow_vars.cancel_task_function_url}"
+      }
+    },
+    {
+      "name": "send_no_counsellors",
+      "type": "send-message",
+      "transitions": [
+        {
+          "event": "sent"
+        },
+        {
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 3000,
+          "y": 480
+        },
+        "service": "{{trigger.message.InstanceSid}}",
+        "channel": "{{trigger.message.ChannelSid}}",
+        "from": "System",
+        "message_type": "custom",
+        "to": "{{contact.channel.address}}",
+        "body": "Bonjour. Merci de nous avoir contactés. De manière inattendue, nous ne sommes pas en mesure de répondre à ton clavardage en direct. Toutefois, nous aimerions te proposer quelques alternatives, afin de pouvoir t'offrir du soutien. Si tu souhaites parler à un·e intervenant·e, appelle le 1-800-668-6868. Si tu préfères texter avec un·e répondant·e en situation de crise, envoyez le mot « Parler » par texto au 686868 ou connecte-toi via notre site web : https://jeunessejecoute.ca/besoin-daide-maintenant-envoie-nous-un-texto. Notre service de clavardage en français sera de nouveau disponible demain à 19 h(HE). En cas d’urgence, compose le 911. Merci. Prends soin de toi."
       }
     }
   ],

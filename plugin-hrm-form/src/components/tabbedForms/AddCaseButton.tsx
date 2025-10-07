@@ -20,7 +20,7 @@ import FolderIcon from '@material-ui/icons/CreateNewFolderOutlined';
 import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 
-import { getAseloConfigFlags } from '../../hrmConfig';
+import { getHrmConfig } from '../../hrmConfig';
 import { SecondaryButton } from '../../styles/buttons';
 import { StyledAddNewCaseDropdown, StyledAddNewCaseDropdownList } from './styles';
 
@@ -33,7 +33,7 @@ type OwnProps = {
 type Props = OwnProps;
 
 const AddCaseButton: React.FC<Props> = ({ handleNewCaseType, handleExistingCaseType, position }) => {
-  const { hideAddToNewCaseButton } = getAseloConfigFlags();
+  const { hideAddToNewCaseButton } = getHrmConfig();
   const [dropdown, setDropdown] = useState(false);
 
   const [enabled, setEnabled] = useState(true);

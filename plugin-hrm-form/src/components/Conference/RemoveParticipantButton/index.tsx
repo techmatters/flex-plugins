@@ -15,7 +15,7 @@
  */
 
 import React from 'react';
-import { IconButton, Notifications, TaskHelper } from '@twilio/flex-ui';
+import { IconButton, Manager, Notifications, TaskHelper } from '@twilio/flex-ui';
 import type { ParticipantCanvasChildrenProps } from '@twilio/flex-ui/src/components/canvas/ParticipantCanvas/ParticipantCanvas.definitions';
 import '../../../types/types';
 
@@ -24,6 +24,7 @@ import * as conferenceApi from '../../../services/conferenceService';
 import { newHangUpByStateManager } from '../../../hangUpByState';
 
 type Props = Partial<ParticipantCanvasChildrenProps>;
+const REMOVE_PARTICIPANT_KEY = 'Conference-Participant-Remove';
 
 const RemoveParticipantButton: React.FC<Props> = ({ participant, task }) => {
   const [isLoading, setIsLoading] = React.useState(false);
@@ -55,6 +56,7 @@ const RemoveParticipantButton: React.FC<Props> = ({ participant, task }) => {
 
   return (
     <IconButton
+      aria-label={Manager.getInstance().strings[REMOVE_PARTICIPANT_KEY]}
       icon="Hangup"
       onClick={handleClick}
       variant="destructive"

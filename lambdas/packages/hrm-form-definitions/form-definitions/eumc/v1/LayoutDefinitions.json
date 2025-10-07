@@ -1,17 +1,13 @@
 {
   "contact": {
     "callerInformation": {},
-    "childInformation": {
-      "splitFormAt": 14
-    },
-    "caseInformation": {
-      "splitFormAt": 2
-    }
+    "childInformation":{},
+    "caseInformation": {}
   },
   "case": {
     "sectionTypes": {
       "household": {
-        "splitFormAt": 8,
+        "splitFormAt": 10,
         "caseHomeOrder": 1,
         "printOrder": 1,
         "previewFields": [
@@ -38,7 +34,7 @@
         }
       },
       "perpetrator": {
-        "splitFormAt": 8,
+        "splitFormAt": 11,
         "caseHomeOrder": 2,
         "printOrder": 2,
         "previewFields": [
@@ -81,7 +77,7 @@
             "includeLabel": true
           }
         },
-        "splitFormAt": 8,
+        "splitFormAt": 7,
         "caseHomeOrder": 3,
         "printOrder": 3
       },

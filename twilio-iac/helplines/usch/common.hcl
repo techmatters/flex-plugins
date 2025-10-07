@@ -98,7 +98,22 @@ locals {
       en_USCH : []
     }
     lex_v2_bot_languages = {
-       en_US : ["pre_survey", "post_survey"]
+       en_US : ["pre_survey", "post_survey"],
+       ch : ["post_survey"],
+       cf : ["post_survey"]
+
+    }
+    s3_lifecycle_rules = {
+      transcripts_expiry : {
+        id                 = "Transcripts Data Expiration Rule"
+        expiration_in_days = 60
+        prefix             = "transcripts/"
+      },
+      voice_recordings_expiry : {
+        id                 = "Voice Recordings Data Expiration Rule"
+        expiration_in_days = 1
+        prefix             = "voice-recordings/"
+      }
     }
     
   }

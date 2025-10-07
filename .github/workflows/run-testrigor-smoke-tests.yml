@@ -23,6 +23,14 @@ on:
         options:
         - staging
         default: staging
+      helpline_code:
+        description: Short helpline code
+        type: choice
+        options:
+        - AS
+        - CA
+        - NZ
+        required: true
 
 jobs:
   run-smoke-tests-suite:
@@ -32,20 +40,25 @@ jobs:
       - name: Set Helpline Environment
         run: echo "ENVIRONMENT_NAME=${{inputs.environment_code}}" >> $GITHUB_ENV
       - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v4
+        uses: aws-actions/configure-aws-credentials@v5
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
+      - name: Set Twilio account SID
+        uses: "marvinpinto/action-inject-ssm-secrets@latest"
+        with:
+          ssm_parameter: "/${{env.ENVIRONMENT_NAME}}/twilio/${{inputs.helpline_code}}/account_sid"
+          env_variable_name: "TWILIO_ACCOUNT_SID"
       - name: Set Test Rigor Suite ID
         uses: "marvinpinto/action-inject-ssm-secrets@latest"
         with:
-          ssm_parameter: "/${{env.ENVIRONMENT_NAME}}/test_rigor/smoke_tests/test_suite_id"
+          ssm_parameter: "/${{env.ENVIRONMENT_NAME}}/test_rigor/smoke_tests/${{env.TWILIO_ACCOUNT_SID}}/test_suite_id"
           env_variable_name: "TEST_RIGOR_SUITE_ID"
       - name: Set Test Rigor Auth Token
         uses: "marvinpinto/action-inject-ssm-secrets@latest"
         with:
-          ssm_parameter: "/${{env.ENVIRONMENT_NAME}}/test_rigor/smoke_tests/auth_token"
+          ssm_parameter: "/${{env.ENVIRONMENT_NAME}}/test_rigor/smoke_tests/${{env.TWILIO_ACCOUNT_SID}}/auth_token"
           env_variable_name: "TEST_RIGOR_AUTH_TOKEN"
       - name: Set GITHUB_ACTIONS_SLACK_BOT_TOKEN
         uses: "marvinpinto/action-inject-ssm-secrets@latest"
@@ -85,4 +98,4 @@ jobs:
           token: ${{ env.GITHUB_ACTIONS_SLACK_BOT_TOKEN }}
           payload: |
             channel: ${{ env.ASELO_DEPLOYS_CHANNEL_ID }}
-            text: '`[testRigor]` Smoke Tests for environment `${{ inputs.environment_code }}` requested by `${{ github.triggering_actor }}` started using workflow `${{ github.workflow }}` :rocket:. \n Test Run: https://app.testrigor.com/test-suites/${{ env.TEST_RIGOR_SUITE_ID }}/runs/${{ env.TASK_ID }}'
+            text: '`[testRigor]` Smoke Tests for  environment: `${{ inputs.environment_code }} ` hl: `${{ inputs.helpline_code }}` requested by `${{ github.triggering_actor }}` started using workflow `${{ github.workflow }}` :rocket:. \n Test Run: https://app.testrigor.com/test-suites/${{ env.TEST_RIGOR_SUITE_ID }}/runs/${{ env.TASK_ID }}'

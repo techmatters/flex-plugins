@@ -3,7 +3,7 @@
     "description": "Example specific usch/configs/lex_v2/en_USCH/bots Pre Survey bot",
     "locale": "en_US",
     "child_directed": true,
-    "idle_session_ttl_in_seconds": "300",
+    "idle_session_ttl_in_seconds": "350",
     "type": "Bot",
     "intents": {
       "pre_survey": {
@@ -37,8 +37,8 @@
             "failure_response": "We are having trouble understanding your response."
           },
           "3": {
-            "slot_name": "age",
-            "slot_type_name": "age",
+            "slot_name": "ageRange",
+            "slot_type_name": "ageRange",
             "slot_question": "How old are you?",
             "failure_response": "We are having trouble understanding your response."
           },

@@ -1,0 +1,246 @@
+[
+  {
+    "name": "typeOfCallfrequencyOfAccess",
+    "label": "Type of Call/Frequency of Access",
+    "type": "select",
+    "isPII": false,
+    "options": [
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "1st time user",
+        "label": "1st time user"
+      },
+      {
+        "value": "Hang-up/Non-starter",
+        "label": "Hang-up/Non-starter"
+      },
+      {
+        "value": "Return User",
+        "label": "Return User"
+      },
+      {
+        "value": "Test Call",
+        "label": "Test Call"
+      }
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "sexOfVictim",
+    "label": "Sex of Victim",
+    "type": "select",
+    "isPII": false,
+    "options": [
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "Male ",
+        "label": "Male "
+      },
+      {
+        "value": "Female ",
+        "label": "Female "
+      },
+      {
+        "value": "I don't know ",
+        "label": "I don't know "
+      }
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "age",
+    "label": "Age",
+    "type": "select",
+    "isPII": false,
+    "options": [
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "0-10",
+        "label": "0-10"
+      },
+      {
+        "value": "Wed Nov 12 2025 00:00:00 GMT-0300 (Chile Summer Time)",
+        "label": "Wed Nov 12 2025 00:00:00 GMT-0300 (Chile Summer Time)"
+      },
+      {
+        "value": "13-17",
+        "label": "13-17"
+      },
+      {
+        "value": "18-24",
+        "label": "18-24"
+      },
+      {
+        "value": "25-30",
+        "label": "25-30"
+      },
+      {
+        "value": "31-34",
+        "label": "31-34"
+      },
+      {
+        "value": "35-59",
+        "label": "35-59"
+      },
+      {
+        "value": "60-65",
+        "label": "60-65"
+      },
+      {
+        "value": "66+",
+        "label": "66+"
+      },
+      {
+        "value": "Unknown/N/A",
+        "label": "Unknown/N/A"
+      }
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "typeOfCallfrequencyOfAccess",
+    "label": "User",
+    "type": "select",
+    "isPII": false,
+    "options": [
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "1st time user",
+        "label": "1st time user"
+      },
+      {
+        "value": "Hang-up/Non-starter",
+        "label": "Hang-up/Non-starter"
+      },
+      {
+        "value": "Return User",
+        "label": "Return User"
+      },
+      {
+        "value": "Test Call",
+        "label": "Test Call"
+      }
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "race",
+    "label": "Race",
+    "type": "select",
+    "isPII": false,
+    "options": [
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "American Indian/Alaska Native",
+        "label": "American Indian/Alaska Native"
+      },
+      {
+        "value": "Asian",
+        "label": "Asian"
+      },
+      {
+        "value": "African ",
+        "label": "African "
+      },
+      {
+        "value": "Black/African American",
+        "label": "Black/African American"
+      },
+      {
+        "value": "Hispanic/Latinx",
+        "label": "Hispanic/Latinx"
+      },
+      {
+        "value": "White non-latinx/Caucasian",
+        "label": "White non-latinx/Caucasian"
+      },
+      {
+        "value": "Other",
+        "label": "Other"
+      },
+      {
+        "value": "Two or more races",
+        "label": "Two or more races"
+      },
+      {
+        "value": "Unknown",
+        "label": "Unknown"
+      }
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "keywords",
+    "label": "Keywords",
+    "type": "listbox-multiselect",
+    "isPII": false,
+    "options": [
+      {
+        "value": "Complaint against local agency",
+        "label": "Complaint against local agency"
+      },
+      {
+        "value": "Disconnected (by VAS)",
+        "label": "Disconnected (by VAS)"
+      },
+      {
+        "value": "Disconnected (by visitor or tech issue)",
+        "label": "Disconnected (by visitor or tech issue)"
+      },
+      {
+        "value": "Law enforcement complaint/misconduct",
+        "label": "Law enforcement complaint/misconduct"
+      },
+      {
+        "value": "National compassion fund",
+        "label": "National compassion fund"
+      },
+      {
+        "value": "Protective order",
+        "label": "Protective order"
+      },
+      {
+        "value": "PREA (VC only)",
+        "label": "PREA (VC only)"
+      },
+      {
+        "value": "Unknown/NA",
+        "label": "Unknown/NA"
+      }
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  }
+]

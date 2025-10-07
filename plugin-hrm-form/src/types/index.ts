@@ -16,13 +16,8 @@
 
 import PropTypes from 'prop-types';
 
-export const counselorType = PropTypes.shape({
-  label: PropTypes.string,
-  value: PropTypes.string,
-});
-
 export const fieldType = PropTypes.shape({
-  value: PropTypes.oneOfType([PropTypes.bool, PropTypes.string, counselorType]),
+  value: PropTypes.oneOfType([PropTypes.bool, PropTypes.string]),
   error: PropTypes.string,
   validation: PropTypes.arrayOf(PropTypes.string),
   touched: PropTypes.bool,

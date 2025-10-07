@@ -28,19 +28,19 @@ jobs:
         uses: actions/checkout@v5
 
       - name: Use Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v5
         with:
           node-version: '22.x'
 
       - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v4
+        uses: aws-actions/configure-aws-credentials@v5
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ env.PRIMARY_AWS_REGION }}
           # this plugin sets the AWS account ID to a secret which is not allowed in outputs
           # we have to disable that so repo output will work
-          mask-aws-account-id: 'no'
+          mask-aws-account-id: false
 
       - name: Install lambda dependencies
         run: |
@@ -75,20 +75,31 @@ jobs:
       matrix:
         lambda_path:
           - account-scoped
+          - facebookCallback
+          - facebookSignin
+          - instagramWebhook
+          - ipLocationFinder
+          - lineSetup
+          - lineWebhook
+          - modicaWebhook
+          - recaptchaVerify
+          - savePendingContacts
+          - TwilioErrorReporter
+          - twilioEventStreams
 
     steps:
       - name: Checkout
         uses: actions/checkout@v5
 
       - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v4
+        uses: aws-actions/configure-aws-credentials@v5
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ env.PRIMARY_AWS_REGION }}
           # this plugin sets the AWS account ID to a secret which is not allowed in outputs
           # we have to disable that so repo output will work
-          mask-aws-account-id: 'no'
+          mask-aws-account-id: false
 
       - name: Login to Amazon ECR
         id: login-ecr
@@ -96,7 +107,7 @@ jobs:
       - name: Read ECR url from SSM
         uses: "marvinpinto/action-inject-ssm-secrets@latest"
         with:
-          ssm_parameter: /twilio/lambda/${{ matrix.lambda_path }}/ecr-url
+          ssm_parameter: /global/lambda/${{ matrix.lambda_path }}/ecr-url
           env_variable_name: ECR_URL
       - name: Set Build Args
         run: |

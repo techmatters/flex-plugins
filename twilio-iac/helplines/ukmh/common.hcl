@@ -6,32 +6,37 @@ locals {
 
 
   local_config = {
-    helpline                          = "Mental Health Innovations"
-    task_language                     = "en-GB"
-    enable_post_survey                = true
-    permission_config                 = "ukmh"
-    helpline_region                   = "eu-west-1"
+    helpline           = "Mental Health Innovations"
+    task_language      = "en-GB"
+    enable_post_survey = true
+    enable_lex_v2      = true
+    permission_config  = "ukmh"
+    helpline_region    = "eu-west-1"
 
 
     workflows = {
       master : {
         friendly_name = "Master Workflow"
-        templatefile = "/app/twilio-iac/helplines/templates/workflows/master.tftpl"
+        templatefile = "/app/twilio-iac/helplines/ukmh/templates/workflows/master.tftpl"
       },
       queue_transfers : {
         friendly_name = "Queue Transfers Workflow"
-        templatefile = "/app/twilio-iac/helplines/templates/workflows/queue-transfers.tftpl"
+        templatefile  = "/app/twilio-iac/helplines/templates/workflows/queue-transfers.tftpl"
       },
       survey : {
         friendly_name = "Survey Workflow"
-        templatefile = "/app/twilio-iac/helplines/templates/workflows/lex.tftpl"
+        templatefile  = "/app/twilio-iac/helplines/templates/workflows/lex.tftpl"
       }
     }
 
     task_queues = {
-      master : {
-        "target_workers" = "1==1",
+      supporter : {
+        "target_workers" = "(roles HAS 'agent')",
         "friendly_name"  = "The Mix"
+      },
+      coordinator : {
+        "target_workers" = "(roles HAS 'supervisor')",
+        "friendly_name"  = "The Mix - Supervisor"
       },
       survey : {
         "target_workers" = "1==0",
@@ -43,5 +48,8 @@ locals {
       }
     }
 
+    lex_v2_bot_languages = {
+      en_GB : ["post_survey"]
+    }
   }
 }

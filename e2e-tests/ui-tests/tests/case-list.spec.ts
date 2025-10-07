@@ -22,10 +22,11 @@ import * as mockServer from '../flex-in-a-box/proxied-endpoints';
 import '../flex-in-a-box/local-resources';
 import hrmCases from '../aselo-service-mocks/hrm/cases';
 import hrmPermissions from '../aselo-service-mocks/hrm/permissions';
-import { caseList, Filter } from '../../caseList';
+import { caseList, Filter, navigateToCaseListUsingButton } from '../../caseList';
 import AxeBuilder from '@axe-core/playwright';
 import { aseloPage } from '../aselo-service-mocks/aselo-page';
 import type { AxeResults } from 'axe-core';
+import { navigateToAgentDesktop } from '../ui-global-setup';
 
 test.describe.serial('Case List', () => {
   let page: Page;
@@ -66,12 +67,14 @@ test.describe.serial('Case List', () => {
   });
 
   test.beforeEach(async () => {
-    await page.goto('/case-list', { waitUntil: 'networkidle' });
-    await page.waitForSelector('div.Twilio-View-case-list', { state: 'visible', timeout: 10000 });
+    await navigateToAgentDesktop(page);
+    // 2025-09-11 - it became necessary to navigate using the button, because Flex has become less stable and often forces you back to the agent desktop when you try to navigate there directly using the URL route.
+    await navigateToCaseListUsingButton(page);
+    console.debug('Case List filter panel is visible.');
     caseListPage = caseList(page);
   });
 
-  test.only('Case list loads items', async () => {
+  test('Case list loads items', async () => {
     await caseList(page).verifyCaseIdsAreInListInOrder(
       cases
         .getMockCases()

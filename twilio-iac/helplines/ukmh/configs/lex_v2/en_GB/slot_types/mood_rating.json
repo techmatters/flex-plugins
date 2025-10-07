@@ -1,0 +1,85 @@
+{
+    "slotTypeName": "mood_rating",
+    "slotTypeValues": [
+        {
+            "sampleValue": {
+                "value": "1"
+            },
+            "synonyms": [
+                {
+                    "value": "Sad"
+                },
+                {
+                    "value": "☹️"
+                },
+                {
+                    "value": "not happy"
+                },
+                {
+                    "value": "frowning"
+                }
+            ]
+        },
+        {
+            "sampleValue": {
+                "value": "2"
+            },
+            "synonyms": [
+                {
+                    "value": "down"
+                }
+            ]
+        },
+        {
+            "sampleValue": {
+                "value": "3"
+            },
+            "synonyms": [
+                {
+                    "value": "neutral"
+                },
+                {
+                    "value": "indifferent"
+                },
+                {
+                    "value": "nothing changed"
+                },
+                {
+                    "value": "don't know"
+                }
+            ]
+        },
+         {
+            "sampleValue": {
+                "value": "4"
+            },
+            "synonyms": [
+                {
+                    "value": "okay"
+                },
+                {
+                    "value": "not bad"
+                }
+            ]
+        },
+         {
+            "sampleValue": {
+                "value": "5"
+            },
+            "synonyms": [
+                {
+                    "value": "happy"
+                },
+                {
+                    "value": "glad"
+                },
+                {
+                    "value": "great"
+                }
+            ]
+        }
+    ],
+    "valueSelectionSetting": {
+        "resolutionStrategy": "TopResolution"
+    }
+}

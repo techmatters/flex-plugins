@@ -15,7 +15,7 @@
  */
 
 import React from 'react';
-import { TaskContextProps, TaskHelper, Template, withTaskContext, Actions } from '@twilio/flex-ui';
+import { TaskContextProps, TaskHelper, Template, withTaskContext, Actions, Manager } from '@twilio/flex-ui';
 import DialpadOutlined from '@material-ui/icons/DialpadOutlined';
 import CloseOutlined from '@material-ui/icons/CloseOutlined';
 
@@ -35,14 +35,19 @@ const ToogleDialpad: React.FC<Props> = ({ call, task, conference, dialpadState }
   };
 
   const isLiveCall = TaskHelper.isLiveCall(task);
+  const buttonTextKey = 'Conference-Actions-Dial';
 
   return (
     <ConferenceButtonWrapper>
-      <ConferenceButton disabled={!isLiveCall} onClick={handleClick}>
+      <ConferenceButton
+        disabled={!isLiveCall}
+        onClick={handleClick}
+        aria-label={Manager.getInstance().strings[buttonTextKey]}
+      >
         {dialpadState ? <CloseOutlined /> : <DialpadOutlined />}
       </ConferenceButton>
       <span>
-        <Template code="Dial" />
+        <Template code={buttonTextKey} />
       </span>
     </ConferenceButtonWrapper>
   );

@@ -1,0 +1,21 @@
+{
+    "attributes": {
+        "contacts_waiting_channels": [
+            "voice",
+            "web",
+            "sms"
+        ],
+        "config_flags": {
+            "enableExternalRecordings": false,
+            "hideAddToNewCaseButton": true
+        },
+        "feature_flags": {
+            "use_prepopulate_mappings": true,
+            "enable_client_profiles": false
+        },
+        "definitionVersion": "usvc-v1",
+        "external_recordings_enabled": false,
+        "helplineLanguage": "en-USVC",
+        "permissionConfig": "usvc"
+    }
+}

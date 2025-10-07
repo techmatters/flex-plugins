@@ -55,11 +55,3 @@ export const canOnlyViewOwnCases = (): boolean => {
   const canViewAsOwner = checkRule({ viewCase: ['isCreator'] });
   return !canViewAsSupervisor && canViewAsOwner;
 };
-
-export const canOnlyViewOwnContacts = (): boolean => {
-  const { isSupervisor } = getHrmConfig();
-
-  const canViewAsSupervisor = isSupervisor && checkRule({ viewContact: ['isSupervisor'] });
-  const canViewAsOwner = checkRule({ viewContact: ['isOwner'] });
-  return !canViewAsSupervisor && canViewAsOwner;
-};

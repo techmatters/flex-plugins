@@ -218,18 +218,11 @@ export type CounselorHash = {
   [sid: string]: string;
 };
 
-export type ConfigFlags = {
-  enableExternalRecordings: boolean;
-  enableUnmaskingCalls: boolean;
-  hideAddToNewCaseButton: boolean;
-};
-
 /* eslint-disable camelcase */
 export type FeatureFlags = {
   // Please keep this in alphabetical order!
   enable_active_contact_header: boolean; // Enables Active Contact Header
   enable_canned_responses: boolean; // Enables Canned Responses
-  enable_client_profiles: boolean; // Enables Client Profiles
   enable_conferencing: boolean; // Enables Conferencing UI and replaces default Twilio components and behavior  
   enable_confirm_on_browser_close: boolean; // Enables confirmation dialog on browser close when there are unsaved changes
   enable_counselor_toolkits: boolean; // Enables Counselor Toolkits
@@ -239,7 +232,6 @@ export type FeatureFlags = {
   enable_emoji_picker: boolean; // Enables Emoji Picker
   enable_external_transcripts: boolean; // Enables Viewing Transcripts Stored Outside of Twilio
   enable_fullstory_monitoring: boolean; // Enables Full Story
-  enable_generalized_search: boolean; // Enables Generalized Search
   enable_last_case_status_update_info: boolean; // Enables showing the time, user and changed status of the most recent case status update on the 'Edit Case Summary' page
   enable_manual_pulling: boolean; // Enables Adding Another Task
   enable_offline_contact: boolean; // Enables Creating Offline Contacts  
@@ -256,10 +248,10 @@ export type FeatureFlags = {
   enable_llm_summary: boolean; // Enables generation of suggested contact summaries via an LLM
   use_prepopulate_mappings: boolean; // Use PrepopulateMappings.json instead of PrepopulateKeys.json
   enable_language_selector: boolean // Enables the language of the UI to be changed by the user via a dropdown menu
-  use_twilio_lambda_for_conference_functions: boolean; // Use PrepopulateMappings.json instead of PrepopulateKeys.json
-  enable_configurable_max_categories: boolean;
+  use_twilio_lambda_for_conference_functions: boolean; // Use the twilio account scoped lambda for conferencing functions
   enable_conference_status_event_handler: boolean; // Enable conference status event handling. This needs to be set up from flex when accepting a task
-  
+  enable_assigned_skill_teams_view_filters: boolean; // Enable the 'Assigned Skill' and 'Unassigned Skill' filters on the teams view
+  enable_select_agents_teams_view: boolean; // Enable the checkboxes UI to select counselor(s)
   // TODO remove once this changes are enabled
   enable_resouorces_updates: boolean;
 };

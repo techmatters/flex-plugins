@@ -30,6 +30,7 @@ import { conferencingBase, namespace } from '../../../states/storeNamespaces';
 import * as conferenceApi from '../../../services/conferenceService';
 
 type Props = TaskContextProps;
+const ADD_TO_CONFERENCE_KEY = 'Conference-Actions-Add';
 
 const ConferencePanel: React.FC<Props> = ({ task, conference }) => {
   const taskFromRedux = useSelector((state: RootState) => state[namespace][conferencingBase].tasks[task.taskSid]);
@@ -102,28 +103,28 @@ const ConferencePanel: React.FC<Props> = ({ task, conference }) => {
 
   return (
     <ConferenceButtonWrapper>
-      <>
-        <ConferenceButton
-          disabled={
-            !isLiveCall ||
-            (participants && participants.filter(participant => participant.status === 'joined').length >= 4)
-          }
-          onClick={toggleDialog}
-        >
-          <AddIcCallRounded />
-        </ConferenceButton>
-        {isDialogOpen && (
-          <PhoneInputDialog
-            targetNumber={phoneNumber}
-            setTargetNumber={setPhoneNumber}
-            handleClick={handleClick}
-            setIsDialogOpen={setIsDialogOpen}
-            isLoading={isCallStatusLoading(callStatus)}
-          />
-        )}
-      </>
+      <ConferenceButton
+        disabled={
+          !isLiveCall ||
+          (participants && participants.filter(participant => participant.status === 'joined').length >= 4)
+        }
+        onClick={toggleDialog}
+        aria-label={Manager.getInstance().strings[ADD_TO_CONFERENCE_KEY]}
+      >
+        <AddIcCallRounded />
+      </ConferenceButton>
+      {isDialogOpen && (
+        <PhoneInputDialog
+          targetNumber={phoneNumber}
+          setTargetNumber={setPhoneNumber}
+          handleClick={handleClick}
+          setIsDialogOpen={setIsDialogOpen}
+          isLoading={isCallStatusLoading(callStatus)}
+        />
+      )}
+
       <span>
-        <Template code="Conference" />
+        <Template code={ADD_TO_CONFERENCE_KEY} />
       </span>
     </ConferenceButtonWrapper>
   );

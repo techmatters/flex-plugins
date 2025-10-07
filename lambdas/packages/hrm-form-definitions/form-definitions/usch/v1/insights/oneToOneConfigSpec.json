@@ -10,8 +10,8 @@
         "insights": ["conversations", "conversation_attribute_4"]
       },
       {
-        "name": "age",
-        "insights": ["conversations", "conversation_attribute_3"]
+        "name": "ageRange",
+        "insights": ["customers", "customer_manager"]
       },
       {
         "name": "state",
@@ -26,6 +26,10 @@
       {
         "name": "childIs",
         "insights": ["customers", "customer_attribute_2"]
+      },
+      {
+        "name": "ageRange",
+        "insights": ["customers", "acquisition_date"]
       },
       {
         "name": "state",
@@ -59,31 +63,15 @@
       },
       {
         "name": "languageLineUsed",
-        "insights": ["conversations", "followed_by"]
-      },
-      {
-        "name": "counselorSpokeForeignLanguage",
-        "insights": ["customers", "customer_attribute_1"]
+        "insights": ["conversations", "email"]
       },
       {
         "name": "howTheHelpseekerHeardAboutUs",
-        "insights": ["customers", "customer_attribute_2"]
+        "insights": ["customers", "followed_by"]
       },
       {
         "name": "interactionWithHelpseeker",
         "insights": ["conversations", "preceded_by"]
-      },
-      {
-        "name": "actionPlanDeveloped",
-        "insights": ["conversations", "in_business_hours"]
-      },
-      {
-        "name": "helpseekerReaction",
-        "insights": ["conversations", "conversation_attribute_7"]
-      },
-      {
-        "name": "wasASafetyPlanCreated",
-        "insights": ["customers", "acquisition_date"]
       },
       {
         "name": "componentsOfSafetyPlan",
@@ -98,6 +86,12 @@
         "insights": ["conversations", "case"]
       }
     
-    ]
+    ],
+     "externalNotification": [
+        {
+          "name": "agencyContacted",
+          "insights": ["conversations", "conversation_attribute_7"]
+        }
+      ]
   }
 }
