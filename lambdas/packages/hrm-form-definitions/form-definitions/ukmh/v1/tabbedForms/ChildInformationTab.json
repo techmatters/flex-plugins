@@ -4,7 +4,10 @@
     "label": "Booking Reference",
     "type": "input",
     "isPII": false,
-    "readOnly": true
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
   },
   {
     "name": "friendlyName",
