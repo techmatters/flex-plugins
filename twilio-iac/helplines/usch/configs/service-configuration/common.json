@@ -9,13 +9,15 @@
         "feature_flags": {
             "enable_client_profiles":true,
             "enable_conferencing": true,
+            "enable_external_transcripts": false,
             "enable_hierarchical_translations": true,
             "enable_lex_v2": true,
             "enable_llm_summary": false,
             "enable_configurable_max_categories": true,
             "enable_post_survey": true,
             "enable_lambda_post_survey_processing": true,
-            "use_prepopulate_mappings": true
+            "use_prepopulate_mappings": true,
+            "enable_twilio_transcripts": true
         },
         "definitionVersion": "usch-v1",
         "external_recordings_enabled": false,
