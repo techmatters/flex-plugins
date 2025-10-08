@@ -25,7 +25,6 @@ import { useFormContext } from 'react-hook-form';
 
 import { RootState } from '../../states';
 import useFocus from '../../utils/useFocus';
-import { getAseloFeatureFlags } from '../../hrmConfig';
 import {
   Box,
   CategoriesWrapper,
@@ -134,7 +133,6 @@ const IssueCategorizationSectionForm: React.FC<Props> = ({ display, definition, 
                   dispatch(toggleSubcategory(contactId, category, subcategory))
                 }
                 selectedSubcategories={selectedCategories[category] ?? []}
-                counselorToolkitsEnabled={getAseloFeatureFlags().enable_counselor_toolkits}
                 selectedCount={selectedCount}
                 maxSelections={maxSelections}
               />

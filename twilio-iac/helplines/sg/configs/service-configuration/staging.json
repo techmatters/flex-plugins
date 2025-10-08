@@ -1,6 +1,7 @@
 {
     "attributes": {
         "system_down" : false,
+        "enableConferencing": true,
         "feature_flags": {
             "enable_conferencing":true
         },

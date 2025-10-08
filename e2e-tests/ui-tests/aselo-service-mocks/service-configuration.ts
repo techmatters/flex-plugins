@@ -28,7 +28,6 @@ export const serviceConfigurationAttributes = () => ({
     enable_contact_editing: true,
     enable_case_management: true,
     enable_twilio_transcripts: true,
-    enable_offline_contact: true,
     enable_manual_pulling: true,
     enable_csam_clc_report: true,
     enable_canned_responses: true,

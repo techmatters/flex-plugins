@@ -37,7 +37,6 @@ const createSubcategoryCheckbox = (
   color: string,
   toggleCallback: (category: string, subcategory: string) => void,
   selected: boolean,
-  counselorToolkitsEnabled: boolean,
   selectedCount: number,
   maxSelections: number,
 ) => {
@@ -60,7 +59,7 @@ const createSubcategoryCheckbox = (
           {label}
         </CategoryCheckboxField>
       </CategoryCheckboxLabel>
-      {counselorToolkitsEnabled && toolkitUrl && (
+      {toolkitUrl && (
         <HtmlTooltip title={`${label} - Tipsheet`} placement="bottom">
           <a href={toolkitUrl} target="_blank" rel="noreferrer">
             <InformationIconButton />
@@ -75,7 +74,6 @@ type Props = {
   category: string;
   categoryDefinition: CategoryEntry;
   toggleSubcategory: (category: string, subcategory: string) => void;
-  counselorToolkitsEnabled: boolean;
   selectedSubcategories: string[];
   gridView: boolean;
   selectedCount: number;
@@ -86,7 +84,6 @@ const CategoryCheckboxes: React.FC<Props> = ({
   category,
   categoryDefinition: { subcategories, color },
   toggleSubcategory,
-  counselorToolkitsEnabled,
   selectedSubcategories,
   gridView,
   selectedCount,
@@ -101,7 +98,6 @@ const CategoryCheckboxes: React.FC<Props> = ({
           color,
           toggleSubcategory,
           selectedSubcategories.includes(subcategory.label),
-          counselorToolkitsEnabled,
           selectedCount,
           maxSelections,
         ),
