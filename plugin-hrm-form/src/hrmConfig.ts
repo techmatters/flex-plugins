@@ -102,6 +102,9 @@ const readConfig = () => {
   // Compatibility, remove feature flag check when service configurations changes have applied 2025-09-30
   const enableClientProfiles =
     manager.serviceConfiguration.attributes.enableClientProfiles ?? featureFlags.enable_client_profiles ?? true;
+  // Compatibility, remove feature flag check when service configurations changes have applied 2025-09-30
+  const enableConferencing =
+    manager.serviceConfiguration.attributes.enableConferencing ?? featureFlags.enable_conferencing ?? false;
   const { strings } = (manager as unknown) as {
     strings: { [key: string]: string };
   };
@@ -144,6 +147,7 @@ const readConfig = () => {
       enableExternalRecordings,
       enableUnmaskingCalls,
       enableClientProfiles,
+      enableConferencing,
       hideAddToNewCaseButton,
     },
     referrableResources: {

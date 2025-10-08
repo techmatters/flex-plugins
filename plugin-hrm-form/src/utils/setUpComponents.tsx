@@ -77,7 +77,7 @@ const addButtonsUI = (featureFlags: FeatureFlags) => {
         </Box>
       </HeaderContainer>
       {featureFlags.enable_manual_pulling && <ManualPullButton />}
-      {featureFlags.enable_offline_contact && <AddOfflineContactButton />}
+      <AddOfflineContactButton />
     </Container>
   );
 };
@@ -189,20 +189,19 @@ export const setUpAddButtons = (featureFlags: FeatureFlags) => {
   // setup for manual pulling
   if (featureFlags.enable_manual_pulling) setUpManualPulling();
   // setup for offline contact tasks
-  if (featureFlags.enable_offline_contact) setUpOfflineContact();
+  setUpOfflineContact();
 
   // add UI
-  if (featureFlags.enable_manual_pulling || featureFlags.enable_offline_contact)
+  if (featureFlags.enable_manual_pulling)
     Flex.TaskList.Content.add(addButtonsUI(featureFlags), {
       sortOrder: Infinity,
       align: 'start',
     });
 
   // replace UI for task information
-  if (featureFlags.enable_offline_contact)
-    Flex.TaskCanvas.Content.replace(<TaskCanvasOverride key="TaskCanvas-empty" />, {
-      if: props => props.task.channelType === 'default',
-    });
+  Flex.TaskCanvas.Content.replace(<TaskCanvasOverride key="TaskCanvas-empty" />, {
+    if: props => props.task.channelType === 'default',
+  });
 };
 
 /**

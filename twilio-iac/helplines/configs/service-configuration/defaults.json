@@ -44,6 +44,7 @@
         "enableExternalRecordings": false,
         "enableUnmaskingCalls": false,
         "enableClientProfiles": true,
+        "enableConferencing": false,
         "feature_flags": {
             "enable_active_contact_header": true,
             "enable_canned_responses": true,

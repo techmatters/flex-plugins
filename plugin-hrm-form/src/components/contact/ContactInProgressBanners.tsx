@@ -32,7 +32,6 @@ import {
 } from '../../styles';
 import getCanEditInProgressContact from '../../permissions/canEditInProgressContact';
 import { newSubmitAndFinalizeContactFromOutsideTaskContextAsyncAction } from '../../states/contacts/saveContact';
-import { getAseloFeatureFlags } from '../../hrmConfig';
 import { RootState } from '../../states';
 import selectContactStateByContactId from '../../states/contacts/selectContactStateByContactId';
 import { checkTaskAssignment } from '../../services/twilioTaskService';
@@ -51,8 +50,6 @@ const ContactInProgressBanners: React.FC<ContactBannersProps> = ({ contactId }) 
   const dispatch = useDispatch();
   const workerRoles = Manager.getInstance().workerClient.attributes.roles;
   const isDraftContact = savedContact.finalizedAt;
-
-  const enableInProgressContacts = getAseloFeatureFlags().enable_save_in_progress_contacts;
 
   const canEditContact = useMemo(() => getCanEditInProgressContact(savedContact, workerRoles), [
     savedContact,
@@ -130,7 +127,7 @@ const ContactInProgressBanners: React.FC<ContactBannersProps> = ({ contactId }) 
             <BannerText>
               <Template code="Contact-DraftStatus" />
             </BannerText>
-            {enableInProgressContacts && canEditContact() && (
+            {canEditContact() && (
               <BannerAction alignRight={true} onClick={handleSaveAndEnd}>
                 <DestructiveButton>
                   <Template code="BottomBar-SaveAndEnd" />
