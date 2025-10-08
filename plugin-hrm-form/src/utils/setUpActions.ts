@@ -37,6 +37,7 @@ import { recordEvent } from '../fullStory';
 import { completeConversationTask, wrapupConversationTask } from '../services/twilioTaskService';
 import selectContactStateByContactId from '../states/contacts/selectContactStateByContactId';
 import { FeatureFlags } from '../types/FeatureFlags';
+
 type SetupObject = ReturnType<typeof getHrmConfig>;
 type GetMessage = (key: string) => (key: string) => Promise<string>;
 type ActionPayload = { task: ITask };

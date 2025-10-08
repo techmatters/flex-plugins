@@ -23,7 +23,7 @@ import { afterCompleteTask, excludeDeactivateConversationOrchestration } from '.
 import { namespace } from '../../states/storeNamespaces';
 import { FINALIZE_CONTACT as mockFINALIZE_CONTACT } from '../../states/contacts/types';
 import { newFinalizeContactAsyncAction } from '../../states/contacts/saveContact';
-import { FeatureFlags } from '../types/FeatureFlags';
+import { FeatureFlags } from '../../types/FeatureFlags';
 
 const taskSid = 'WT-THIS IS THE TASK SID!';
 

@@ -20,7 +20,7 @@ import { buildFormDefinitionsBaseUrlGetter, inferConfiguredFormDefinitionsBaseUr
 import type { RootState } from './states';
 import { namespace } from './states/storeNamespaces';
 import { WorkerSID } from './types/twilio';
-import { FeatureFlags } from '../types/FeatureFlags';
+import { FeatureFlags } from './types/FeatureFlags';
 
 const featureFlagEnvVarPrefix = 'REACT_APP_FF_';
 type ContactSaveFrequency = 'onTabChange' | 'onFinalSaveAndTransfer';

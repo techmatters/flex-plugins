@@ -47,7 +47,7 @@ import { maskManagerStringsWithIdentifiers } from './maskIdentifiers';
 import { setUpViewMaskedVoiceNumber } from './maskIdentifiers/unmaskPhoneNumber';
 import { validateAndSetPermissionRules } from './permissions';
 import { setupLlmNotifications } from './components/contact/GenerateSummaryButton/setUpLlmNotifications';
-import { FeatureFlags } from '../types/FeatureFlags';
+import { FeatureFlags } from './types/FeatureFlags';
 
 const PLUGIN_NAME = 'HrmFormPlugin';
 
