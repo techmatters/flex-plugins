@@ -16,13 +16,10 @@
 /* eslint-disable camelcase */
 export type FeatureFlags = {
   // Please keep this in alphabetical order!
-  enable_active_contact_header: boolean; // Enables Active Contact Header
   enable_assigned_skill_teams_view_filters: boolean; // Enable the 'Assigned Skill' and 'Unassigned Skill' filters on the teams view
   enable_canned_responses: boolean; // Enables Canned Responses
-  enable_conferencing: boolean; // Enables Conferencing UI and replaces default Twilio components and behavior
   enable_conference_status_event_handler: boolean; // Enable conference status event handling. This needs to be set up from flex when accepting a task
   enable_confirm_on_browser_close: boolean; // Enables confirmation dialog on browser close when there are unsaved changes
-  enable_counselor_toolkits: boolean; // Enables Counselor Toolkits
   enable_csam_clc_report: boolean; // Enables CSAM child Reports
   enable_csam_report: boolean; // Enables CSAM Reports
   enable_dual_write: boolean; // Enables Saving Contacts on External Backends
@@ -35,14 +32,12 @@ export type FeatureFlags = {
   // enable_lex_v2 - only used in Twilio Lambda
   enable_llm_summary: boolean; // Enables generation of suggested contact summaries via an LLM
   enable_manual_pulling: boolean; // Enables Adding Another Task
-  enable_offline_contact: boolean; // Enables Creating Offline Contacts
   enable_permissions_from_backend: boolean; // Enables fetching permissions from backend service
   enable_post_survey: boolean; // Enables Post-Survey
   enable_previous_contacts: boolean; // Enables Previous Contacts Yellow Banner
   enable_region_resource_search: boolean; // Enables specifying a region as well as a province and / or city in Resource Search
   // TODO remove once this changes are enabled
   enable_resouorces_updates: boolean;
-  enable_save_in_progress_contacts: boolean; // Enables Saving In Progress Contacts
   enable_save_insights: boolean; // Enables Saving Aditional Data on Insights
   enable_select_agents_teams_view: boolean; // Enable the checkboxes UI to select counselor(s)
   enable_switchboarding: boolean; // Enables Switchboarding
