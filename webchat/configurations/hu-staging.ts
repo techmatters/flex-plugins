@@ -134,4 +134,5 @@ export const config: Configuration = {
   checkOpenHours,
   closedHours,
   contactType,
+  twilioServicesUrl: new URL(`https://hrm-staging-eu.tl.techmatters.org/lambda/twilio/account-scoped/${accountSid}`),
 };

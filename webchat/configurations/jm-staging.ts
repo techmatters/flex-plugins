@@ -74,4 +74,5 @@ export const config: Configuration = {
   memberDisplayOptions,
   captureIp,
   contactType,
+  twilioServicesUrl: new URL(`https://hrm-staging.tl.techmatters.org/lambda/twilio/account-scoped/${accountSid}`),
 };

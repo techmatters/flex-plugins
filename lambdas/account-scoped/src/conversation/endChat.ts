@@ -113,6 +113,11 @@ const updateTaskAssignmentStatus = async (
         await updateAssignmentStatus('wrapping');
         return 'keep-alive'; // keep the channel alive for post survey
       }
+      // If the task is wrapping / complete, we assume the user is trying to end the post survey
+      case 'wrapping':
+      case 'completed': {
+        return 'cleanup'; // only clean up, task doesn't need cancelling
+      }
       default:
     }
 
