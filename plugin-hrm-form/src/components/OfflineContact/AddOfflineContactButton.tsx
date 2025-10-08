@@ -34,7 +34,7 @@ const AddOfflineContactButton: React.FC = () => {
   const currentDefinitionVersion = useSelector(selectCurrentDefinitionVersion);
   const isAddingOfflineContact = useSelector((state: RootState) => Boolean(selectCurrentOfflineContact(state)));
 
-  const [errorTimer, setErrorTimer] = useState<NodeJS.Timeout | null>(null);
+  const [errorTimer, setErrorTimer] = useState<number | null>(null);
 
   useEffect(() => {
     if (isAddingOfflineContact && errorTimer) {
