@@ -13,15 +13,17 @@
         ],
         "feature_flags": {
             "enable_active_contact_header": true,
+            "enable_assigned_skill_teams_view_filters": true,
             "enable_configurable_max_categories": true,
             "enable_csam_report": true,
+            "enable_lambda_post_survey_processing": true,
             "enable_language_selector": true,
+            "enable_llm_summary": true,
             "enable_lex": true,
             "enable_post_survey": true,
             "enable_voice_recordings": true,
-            "enable_llm_summary": true,
-            "enable_lambda_post_survey_processing": true,
-            "enable_lex_v2": true
+            "enable_lex_v2": true,
+            "enable_select_agents_teams_view": true
         },
         "multipleOfficeSupport": true,
         "pdfImagesSource": "https://tl-public-chat-as-stg.s3.amazonaws.com",
