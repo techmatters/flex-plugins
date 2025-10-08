@@ -17,10 +17,10 @@
 import * as Flex from '@twilio/flex-ui';
 
 import { buildFormDefinitionsBaseUrlGetter, inferConfiguredFormDefinitionsBaseUrl } from './definitionVersions';
-import { FeatureFlags } from './types/types';
 import type { RootState } from './states';
 import { namespace } from './states/storeNamespaces';
 import { WorkerSID } from './types/twilio';
+import { FeatureFlags } from '../types/FeatureFlags';
 
 const featureFlagEnvVarPrefix = 'REACT_APP_FF_';
 type ContactSaveFrequency = 'onTabChange' | 'onFinalSaveAndTransfer';

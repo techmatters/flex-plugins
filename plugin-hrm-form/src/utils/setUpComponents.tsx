@@ -41,7 +41,7 @@ import { Box, Column, HeaderContainer, TaskCanvasOverride } from '../styles';
 import HrmTheme from '../styles/HrmTheme';
 import { TLHPaddingLeft } from '../styles/GlobalOverrides';
 import { Container } from '../components/queuesStatus/styles';
-import { FeatureFlags, standaloneTaskSid } from '../types/types';
+import { standaloneTaskSid } from '../types/types';
 import { colors } from '../channels/colors';
 import { getHrmConfig } from '../hrmConfig';
 import { changeRoute } from '../states/routing/actions';
@@ -50,6 +50,7 @@ import { selectCurrentBaseRoute } from '../states/routing/getRoute';
 import { RootState } from '../states';
 import selectCurrentOfflineContact from '../states/contacts/selectCurrentOfflineContact';
 import { REFRESH_BROWSER_REQUIRED_FOR_LANGUAGE_CHANGE_NOTIFICATION_ID } from '../states/configuration/changeLanguage';
+import { FeatureFlags } from '../types/FeatureFlags';
 
 type SetupObject = ReturnType<typeof getHrmConfig>;
 /**

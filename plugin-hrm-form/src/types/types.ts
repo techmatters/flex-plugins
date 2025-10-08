@@ -218,43 +218,6 @@ export type CounselorHash = {
   [sid: string]: string;
 };
 
-/* eslint-disable camelcase */
-export type FeatureFlags = {
-  // Please keep this in alphabetical order!
-  enable_active_contact_header: boolean; // Enables Active Contact Header
-  enable_canned_responses: boolean; // Enables Canned Responses
-  enable_conferencing: boolean; // Enables Conferencing UI and replaces default Twilio components and behavior  
-  enable_confirm_on_browser_close: boolean; // Enables confirmation dialog on browser close when there are unsaved changes
-  enable_counselor_toolkits: boolean; // Enables Counselor Toolkits
-  enable_csam_clc_report: boolean; // Enables CSAM child Reports
-  enable_csam_report: boolean; // Enables CSAM Reports
-  enable_dual_write: boolean; // Enables Saving Contacts on External Backends
-  enable_emoji_picker: boolean; // Enables Emoji Picker
-  enable_external_transcripts: boolean; // Enables Viewing Transcripts Stored Outside of Twilio
-  enable_fullstory_monitoring: boolean; // Enables Full Story
-  enable_last_case_status_update_info: boolean; // Enables showing the time, user and changed status of the most recent case status update on the 'Edit Case Summary' page
-  enable_manual_pulling: boolean; // Enables Adding Another Task
-  enable_offline_contact: boolean; // Enables Creating Offline Contacts  
-  enable_permissions_from_backend: boolean; // Enables fetching permissions from backend service
-  enable_post_survey: boolean; // Enables Post-Survey
-  enable_previous_contacts: boolean; // Enables Previous Contacts Yellow Banner
-  enable_region_resource_search: boolean; // Enables specifying a region as well as a province and / or city in Resource Search
-  enable_save_in_progress_contacts: boolean; // Enables Saving In Progress Contacts
-  enable_save_insights: boolean; // Enables Saving Aditional Data on Insights
-  enable_switchboarding: boolean; // Enables Switchboarding
-  enable_switchboarding_move_tasks: boolean; // Enables Switchboarding moving tasks from original queue to switchboard ^ne
-  enable_twilio_transcripts: boolean; // Enables Viewing Transcripts Stored at Twilio
-  enable_voice_recordings: boolean; // Enables Loading Voice Recordings
-  enable_llm_summary: boolean; // Enables generation of suggested contact summaries via an LLM
-  use_prepopulate_mappings: boolean; // Use PrepopulateMappings.json instead of PrepopulateKeys.json
-  enable_language_selector: boolean // Enables the language of the UI to be changed by the user via a dropdown menu
-  use_twilio_lambda_for_conference_functions: boolean; // Use the twilio account scoped lambda for conferencing functions
-  enable_conference_status_event_handler: boolean; // Enable conference status event handling. This needs to be set up from flex when accepting a task
-  enable_assigned_skill_teams_view_filters: boolean; // Enable the 'Assigned Skill' and 'Unassigned Skill' filters on the teams view
-  enable_select_agents_teams_view: boolean; // Enable the checkboxes UI to select counselor(s)
-  // TODO remove once this changes are enabled
-  enable_resouorces_updates: boolean;
-};
 /* eslint-enable camelcase */
 
 export type LexMemory = {

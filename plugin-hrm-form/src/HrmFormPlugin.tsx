@@ -32,7 +32,6 @@ import setUpMonitoring from './utils/setUpMonitoring';
 import { changeLanguage } from './states/configuration/actions';
 import { getAseloFeatureFlags, getHrmConfig, initializeConfig, subscribeToConfigUpdates } from './hrmConfig';
 import { setUpSyncClient } from './services/SyncService';
-import { FeatureFlags } from './types/types';
 import { setUpReferrableResources } from './components/resources/setUpReferrableResources';
 import QueuesView from './components/queuesView';
 import TeamsView from './components/teamsView';
@@ -48,6 +47,7 @@ import { maskManagerStringsWithIdentifiers } from './maskIdentifiers';
 import { setUpViewMaskedVoiceNumber } from './maskIdentifiers/unmaskPhoneNumber';
 import { validateAndSetPermissionRules } from './permissions';
 import { setupLlmNotifications } from './components/contact/GenerateSummaryButton/setUpLlmNotifications';
+import { FeatureFlags } from '../types/FeatureFlags';
 
 const PLUGIN_NAME = 'HrmFormPlugin';
 

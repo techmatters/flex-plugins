@@ -24,7 +24,7 @@ import { populateCurrentDefinitionVersion, updateDefinitionVersion } from '../st
 import { clearCustomGoodbyeMessage } from '../states/dualWrite/actions';
 import * as GeneralActions from '../states/actions';
 import * as TransferHelpers from '../transfer/transferTaskState';
-import { CustomITask, FeatureFlags, isTwilioTask } from '../types/types';
+import { CustomITask, isTwilioTask } from '../types/types';
 import { getAseloFeatureFlags, getHrmConfig } from '../hrmConfig';
 import { subscribeAlertOnConversationJoined } from '../notifications/newMessage';
 import type { RootState } from '../states';
@@ -36,7 +36,7 @@ import { handleTransferredTask } from '../transfer/setUpTransferActions';
 import { recordEvent } from '../fullStory';
 import { completeConversationTask, wrapupConversationTask } from '../services/twilioTaskService';
 import selectContactStateByContactId from '../states/contacts/selectContactStateByContactId';
-
+import { FeatureFlags } from '../types/FeatureFlags';
 type SetupObject = ReturnType<typeof getHrmConfig>;
 type GetMessage = (key: string) => (key: string) => Promise<string>;
 type ActionPayload = { task: ITask };
