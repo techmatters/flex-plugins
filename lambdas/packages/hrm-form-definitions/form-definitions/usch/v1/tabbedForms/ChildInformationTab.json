@@ -1,7 +1,7 @@
 [
   {
-    "name": "childIs",
-    "label": "Child Is",
+    "name": "user",
+    "label": "User",
     "type": "select",
     "isPII": false,
     "options": [
@@ -10,16 +10,24 @@
         "label": ""
       },
       {
-        "value": "Abused Child",
-        "label": "Abused Child"
+        "value": "Community member",
+        "label": "Community member"
       },
       {
-        "value": "Distressed Child",
-        "label": "Distressed Child"
+        "value": "Family member of victim",
+        "label": "Family member of victim"
       },
       {
-        "value": "N/A",
-        "label": "N/A"
+        "value": "Friend of victim",
+        "label": "Friend of victim"
+      },
+      {
+        "value": "Professional",
+        "label": "Professional"
+      },
+      {
+        "value": "Victim (self)",
+        "label": "Victim (self)"
       }
     ],
     "required": {
@@ -28,14 +36,8 @@
     }
   },
   {
-    "name": "genderInput",
-    "label": "Child Gender (Input from Webchat Form)",
-    "type": "input",
-    "isPII": false
-  },
-  {
-    "name": "gender",
-    "label": "Child Gender",
+    "name": "typeOfCallfrequencyOfAccess",
+    "label": "Type of Call/Frequency of Access",
     "type": "select",
     "isPII": false,
     "options": [
@@ -44,24 +46,20 @@
         "label": ""
       },
       {
-        "value": "Male",
-        "label": "Male"
+        "value": "1st time user",
+        "label": "1st time user"
       },
       {
-        "value": "Female",
-        "label": "Female"
+        "value": "Hang-up/Non-starter",
+        "label": "Hang-up/Non-starter"
       },
       {
-        "value": "Gender Expansive",
-        "label": "Gender Expansive"
+        "value": "Return User",
+        "label": "Return User"
       },
       {
-        "value": "Unknown",
-        "label": "Unknown"
-      },
-      {
-        "value": "N/A",
-        "label": "N/A"
+        "value": "Test Call",
+        "label": "Test Call"
       }
     ],
     "required": {
@@ -70,8 +68,8 @@
     }
   },
   {
-    "name": "ageRange",
-    "label": "Child Age",
+    "name": "sexOfVictim",
+    "label": "Sex of Victim",
     "type": "select",
     "isPII": false,
     "options": [
@@ -80,12 +78,40 @@
         "label": ""
       },
       {
-        "value": "0-5",
-        "label": "0-5"
+        "value": "Male ",
+        "label": "Male "
       },
       {
-        "value": "6-12",
-        "label": "6-12"
+        "value": "Female ",
+        "label": "Female "
+      },
+      {
+        "value": "I don't know ",
+        "label": "I don't know "
+      }
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "age",
+    "label": "Age",
+    "type": "select",
+    "isPII": false,
+    "options": [
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "0-10",
+        "label": "0-10"
+      },
+      {
+        "value": "Wed Nov 12 2025 00:00:00 GMT-0300 (Chile Summer Time)",
+        "label": "Wed Nov 12 2025 00:00:00 GMT-0300 (Chile Summer Time)"
       },
       {
         "value": "13-17",
@@ -96,8 +122,76 @@
         "label": "18-24"
       },
       {
-        "value": "N/A",
-        "label": "N/A"
+        "value": "25-30",
+        "label": "25-30"
+      },
+      {
+        "value": "31-34",
+        "label": "31-34"
+      },
+      {
+        "value": "35-59",
+        "label": "35-59"
+      },
+      {
+        "value": "60-65",
+        "label": "60-65"
+      },
+      {
+        "value": "66+",
+        "label": "66+"
+      },
+      {
+        "value": "Unknown/N/A",
+        "label": "Unknown/N/A"
+      }
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "race",
+    "label": "Race",
+    "type": "select",
+    "isPII": false,
+    "options": [
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "American Indian/Alaska Native",
+        "label": "American Indian/Alaska Native"
+      },
+      {
+        "value": "Asian",
+        "label": "Asian"
+      },
+      {
+        "value": "African ",
+        "label": "African "
+      },
+      {
+        "value": "Black/African American",
+        "label": "Black/African American"
+      },
+      {
+        "value": "Hispanic/Latinx",
+        "label": "Hispanic/Latinx"
+      },
+      {
+        "value": "White non-latinx/Caucasian",
+        "label": "White non-latinx/Caucasian"
+      },
+      {
+        "value": "Other",
+        "label": "Other"
+      },
+      {
+        "value": "Two or more races",
+        "label": "Two or more races"
       },
       {
         "value": "Unknown",
@@ -110,60 +204,50 @@
     }
   },
   {
-    "name": "numberOfAdditionalVictims",
-    "label": "Number of additional victims",
+    "name": "language",
+    "label": "Language",
     "type": "select",
     "isPII": false,
     "options": [
       {
-        "value": "00",
-        "label": "0"
+        "value": "",
+        "label": ""
       },
       {
-        "value": "01",
-        "label": "1"
+        "value": "English",
+        "label": "English"
       },
       {
-        "value": "02",
-        "label": "2"
+        "value": "Spanish",
+        "label": "Spanish"
       },
       {
-        "value": "03",
-        "label": "3"
+        "value": "ASL",
+        "label": "ASL"
       },
       {
-        "value": "04",
-        "label": "4"
-      },
-      {
-        "value": "5+",
-        "label": "5+"
+        "value": "Other",
+        "label": "Other"
       }
-    ]
-  }, 
-  {
-    "name": "stateInput",
-    "label": "Child State (Input from SMS Chatbot)",
-    "type": "input",
-    "isPII": false
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
   },
   {
-    "name": "state",
-    "label": "Child State",
+    "name": "location",
+    "label": "Location",
     "type": "select",
     "isPII": false,
     "defaultOption": {
-      "value": "Unknown",
+      "value": "",
       "label": ""
     },
     "options": [
       {
-        "value": "Unknown",
+        "value": "",
         "label": ""
-      },
-      {
-        "value": "Out of USA",
-        "label": "Out of USA"
       },
       {
         "value": "Alabama",
@@ -314,8 +398,8 @@
         "label": "Oregon"
       },
       {
-        "value": "Pennsylvania",
-        "label": "Pennsylvania"
+        "value": "Pensylvania",
+        "label": "Pensylvania"
       },
       {
         "value": "Rhode Island",
@@ -330,32 +414,28 @@
         "label": "South Dakota"
       },
       {
-        "value": "Tennessee",
-        "label": "Tennessee"
+        "value": "Tennessee ",
+        "label": "Tennessee "
       },
       {
         "value": "Texas",
         "label": "Texas"
       },
       {
-        "value": "Utah",
-        "label": "Utah"
+        "value": "Utah ",
+        "label": "Utah "
       },
       {
         "value": "Vermont",
         "label": "Vermont"
       },
       {
-        "value": "Virginia",
-        "label": "Virginia"
+        "value": "Virgina ",
+        "label": "Virgina "
       },
       {
-        "value": "Washington",
-        "label": "Washington"
-      },
-      {
-        "value": "Washington, D.C.",
-        "label": "Washington, D.C."
+        "value": "Washington D.C.",
+        "label": "Washington D.C."
       },
       {
         "value": "West Virginia",
@@ -370,847 +450,40 @@
         "label": "Wyoming"
       },
       {
+        "value": "U.S. Territory - American Somoa",
+        "label": "U.S. Territory - American Somoa"
+      },
+      {
+        "value": "U.S. Territory - Guam",
+        "label": "U.S. Territory - Guam"
+      },
+      {
+        "value": "U.S Territory - Northern Mariana Islands",
+        "label": "U.S Territory - Northern Mariana Islands"
+      },
+      {
+        "value": "U.S Territory - Puerto Rico",
+        "label": "U.S Territory - Puerto Rico"
+      },
+      {
+        "value": "U.S Territory - U.S. Virgin Islands",
+        "label": "U.S Territory - U.S. Virgin Islands"
+      },
+      {
+        "value": "U.S Territory - Other",
+        "label": "U.S Territory - Other"
+      },
+      {
+        "value": "International ",
+        "label": "International "
+      },
+      {
+        "value": "Unknown - USA State/Territory",
+        "label": "Unknown - USA State/Territory"
+      },
+      {
         "value": "Unknown",
         "label": "Unknown"
-      },
-      {
-        "value": "N/A",
-        "label": "N/A"
-      }
-    ]
-  },
-  {
-    "name": "country",
-    "label": "Child Country",
-    "type": "dependent-select",
-    "isPII": false,
-    "dependsOn": "state",
-    "defaultOption": {
-      "value": "Unknown",
-      "label": ""
-    },
-    "options": {
-      "Out of USA": [
-        {
-          "value": "Afghanistan",
-          "label": "Afghanistan"
-        },
-        {
-          "value": "Albania",
-          "label": "Albania"
-        },
-        {
-          "value": "Algeria",
-          "label": "Algeria"
-        },
-        {
-          "value": "Andorra",
-          "label": "Andorra"
-        },
-        {
-          "value": "Angola",
-          "label": "Angola"
-        },
-        {
-          "value": "Antigua and Barbuda",
-          "label": "Antigua and Barbuda"
-        },
-        {
-          "value": "Argentina",
-          "label": "Argentina"
-        },
-        {
-          "value": "Armenia",
-          "label": "Armenia"
-        },
-        {
-          "value": "Austria",
-          "label": "Austria"
-        },
-        {
-          "value": "Azerbaijan",
-          "label": "Azerbaijan"
-        },
-        {
-          "value": "Bahrain",
-          "label": "Bahrain"
-        },
-        {
-          "value": "Bangladesh",
-          "label": "Bangladesh"
-        },
-        {
-          "value": "Barbados",
-          "label": "Barbados"
-        },
-        {
-          "value": "Belarus",
-          "label": "Belarus"
-        },
-        {
-          "value": "Belgium",
-          "label": "Belgium"
-        },
-        {
-          "value": "Belize",
-          "label": "Belize"
-        },
-        {
-          "value": "Benin",
-          "label": "Benin"
-        },
-        {
-          "value": "Bhutan",
-          "label": "Bhutan"
-        },
-        {
-          "value": "Bolivia",
-          "label": "Bolivia"
-        },
-        {
-          "value": "Bosnia and Herzegovina",
-          "label": "Bosnia and Herzegovina"
-        },
-        {
-          "value": "Botswana",
-          "label": "Botswana"
-        },
-        {
-          "value": "Brazil",
-          "label": "Brazil"
-        },
-        {
-          "value": "Brunei",
-          "label": "Brunei"
-        },
-        {
-          "value": "Bulgaria",
-          "label": "Bulgaria"
-        },
-        {
-          "value": "Burkina Faso",
-          "label": "Burkina Faso"
-        },
-        {
-          "value": "Burundi",
-          "label": "Burundi"
-        },
-        {
-          "value": "Cabo Verde",
-          "label": "Cabo Verde"
-        },
-        {
-          "value": "Cambodia",
-          "label": "Cambodia"
-        },
-        {
-          "value": "Cameroon",
-          "label": "Cameroon"
-        },
-        {
-          "value": "Canada",
-          "label": "Canada"
-        },
-        {
-          "value": "Central African Republic",
-          "label": "Central African Republic"
-        },
-        {
-          "value": "Chad",
-          "label": "Chad"
-        },
-        {
-          "value": "Channel Islands",
-          "label": "Channel Islands"
-        },
-        {
-          "value": "Chile",
-          "label": "Chile"
-        },
-        {
-          "value": "China",
-          "label": "China"
-        },
-        {
-          "value": "Colombia",
-          "label": "Colombia"
-        },
-        {
-          "value": "Comoros",
-          "label": "Comoros"
-        },
-        {
-          "value": "Congo",
-          "label": "Congo"
-        },
-        {
-          "value": "Costa Rica",
-          "label": "Costa Rica"
-        },
-        {
-          "value": "Côte d'Ivoire",
-          "label": "Côte d'Ivoire"
-        },
-        {
-          "value": "Croatia",
-          "label": "Croatia"
-        },
-        {
-          "value": "Cuba",
-          "label": "Cuba"
-        },
-        {
-          "value": "Cyprus",
-          "label": "Cyprus"
-        },
-        {
-          "value": "Czech Republic",
-          "label": "Czech Republic"
-        },
-        {
-          "value": "Denmark",
-          "label": "Denmark"
-        },
-        {
-          "value": "Djibouti",
-          "label": "Djibouti"
-        },
-        {
-          "value": "Dominica",
-          "label": "Dominica"
-        },
-        {
-          "value": "Dominican Republic",
-          "label": "Dominican Republic"
-        },
-        {
-          "value": "DR Congo",
-          "label": "DR Congo"
-        },
-        {
-          "value": "Ecuador",
-          "label": "Ecuador"
-        },
-        {
-          "value": "Egypt",
-          "label": "Egypt"
-        },
-        {
-          "value": "El Salvador",
-          "label": "El Salvador"
-        },
-        {
-          "value": "Equatorial Guinea",
-          "label": "Equatorial Guinea"
-        },
-        {
-          "value": "Eritrea",
-          "label": "Eritrea"
-        },
-        {
-          "value": "Estonia",
-          "label": "Estonia"
-        },
-        {
-          "value": "Eswatini",
-          "label": "Eswatini"
-        },
-        {
-          "value": "Ethiopia",
-          "label": "Ethiopia"
-        },
-        {
-          "value": "Faeroe Islands",
-          "label": "Faeroe Islands"
-        },
-        {
-          "value": "Finland",
-          "label": "Finland"
-        },
-        {
-          "value": "France",
-          "label": "France"
-        },
-        {
-          "value": "French Guiana",
-          "label": "French Guiana"
-        },
-        {
-          "value": "Gabon",
-          "label": "Gabon"
-        },
-        {
-          "value": "Gambia",
-          "label": "Gambia"
-        },
-        {
-          "value": "Georgia",
-          "label": "Georgia"
-        },
-        {
-          "value": "Germany",
-          "label": "Germany"
-        },
-        {
-          "value": "Ghana",
-          "label": "Ghana"
-        },
-        {
-          "value": "Gibraltar",
-          "label": "Gibraltar"
-        },
-        {
-          "value": "Greece",
-          "label": "Greece"
-        },
-        {
-          "value": "Grenada",
-          "label": "Grenada"
-        },
-        {
-          "value": "Guam",
-          "label": "Guam"
-        },
-        {
-          "value": "Guatemala",
-          "label": "Guatemala"
-        },
-        {
-          "value": "Guinea",
-          "label": "Guinea"
-        },
-        {
-          "value": "Guinea-Bissau",
-          "label": "Guinea-Bissau"
-        },
-        {
-          "value": "Guyana",
-          "label": "Guyana"
-        },
-        {
-          "value": "Haiti",
-          "label": "Haiti"
-        },
-        {
-          "value": "Holy See (Vatican City)",
-          "label": "Holy See (Vatican City)"
-        },
-        {
-          "value": "Honduras",
-          "label": "Honduras"
-        },
-        {
-          "value": "Hong Kong",
-          "label": "Hong Kong"
-        },
-        {
-          "value": "Hungary",
-          "label": "Hungary"
-        },
-        {
-          "value": "Iceland",
-          "label": "Iceland"
-        },
-        {
-          "value": "India",
-          "label": "India"
-        },
-        {
-          "value": "Indonesia",
-          "label": "Indonesia"
-        },
-        {
-          "value": "Iran",
-          "label": "Iran"
-        },
-        {
-          "value": "Iraq",
-          "label": "Iraq"
-        },
-        {
-          "value": "Ireland",
-          "label": "Ireland"
-        },
-        {
-          "value": "Isle of Man",
-          "label": "Isle of Man"
-        },
-        {
-          "value": "Israel",
-          "label": "Israel"
-        },
-        {
-          "value": "Italy",
-          "label": "Italy"
-        },
-        {
-          "value": "Jamaica",
-          "label": "Jamaica"
-        },
-        {
-          "value": "Japan",
-          "label": "Japan"
-        },
-        {
-          "value": "Jordan",
-          "label": "Jordan"
-        },
-        {
-          "value": "Kazakhstan",
-          "label": "Kazakhstan"
-        },
-        {
-          "value": "Kenya",
-          "label": "Kenya"
-        },
-        {
-          "value": "Kuwait",
-          "label": "Kuwait"
-        },
-        {
-          "value": "Kyrgyzstan",
-          "label": "Kyrgyzstan"
-        },
-        {
-          "value": "Laos",
-          "label": "Laos"
-        },
-        {
-          "value": "Latvia",
-          "label": "Latvia"
-        },
-        {
-          "value": "Lebanon",
-          "label": "Lebanon"
-        },
-        {
-          "value": "Lesotho",
-          "label": "Lesotho"
-        },
-        {
-          "value": "Liberia",
-          "label": "Liberia"
-        },
-        {
-          "value": "Libya",
-          "label": "Libya"
-        },
-        {
-          "value": "Liechtenstein",
-          "label": "Liechtenstein"
-        },
-        {
-          "value": "Lithuania",
-          "label": "Lithuania"
-        },
-        {
-          "value": "Luxembourg",
-          "label": "Luxembourg"
-        },
-        {
-          "value": "Macao",
-          "label": "Macao"
-        },
-        {
-          "value": "Madagascar",
-          "label": "Madagascar"
-        },
-        {
-          "value": "Malawi",
-          "label": "Malawi"
-        },
-        {
-          "value": "Malaysia",
-          "label": "Malaysia"
-        },
-        {
-          "value": "Maldives",
-          "label": "Maldives"
-        },
-        {
-          "value": "Mali",
-          "label": "Mali"
-        },
-        {
-          "value": "Malta",
-          "label": "Malta"
-        },
-        {
-          "value": "Mauritania",
-          "label": "Mauritania"
-        },
-        {
-          "value": "Mauritius",
-          "label": "Mauritius"
-        },
-        {
-          "value": "Mayotte",
-          "label": "Mayotte"
-        },
-        {
-          "value": "Mexico",
-          "label": "Mexico"
-        },
-        {
-          "value": "Moldova",
-          "label": "Moldova"
-        },
-        {
-          "value": "Monaco",
-          "label": "Monaco"
-        },
-        {
-          "value": "Mongolia",
-          "label": "Mongolia"
-        },
-        {
-          "value": "Montenegro",
-          "label": "Montenegro"
-        },
-        {
-          "value": "Morocco",
-          "label": "Morocco"
-        },
-        {
-          "value": "Mozambique",
-          "label": "Mozambique"
-        },
-        {
-          "value": "Myanmar",
-          "label": "Myanmar"
-        },
-        {
-          "value": "Namibia",
-          "label": "Namibia"
-        },
-        {
-          "value": "Nepal",
-          "label": "Nepal"
-        },
-        {
-          "value": "Netherlands",
-          "label": "Netherlands"
-        },
-        {
-          "value": "Nicaragua",
-          "label": "Nicaragua"
-        },
-        {
-          "value": "Niger",
-          "label": "Niger"
-        },
-        {
-          "value": "Nigeria",
-          "label": "Nigeria"
-        },
-        {
-          "value": "North Korea",
-          "label": "North Korea"
-        },
-        {
-          "value": "North Macedonia",
-          "label": "North Macedonia"
-        },
-        {
-          "value": "Norway",
-          "label": "Norway"
-        },
-        {
-          "value": "Oman",
-          "label": "Oman"
-        },
-        {
-          "value": "Pakistan",
-          "label": "Pakistan"
-        },
-        {
-          "value": "Panama",
-          "label": "Panama"
-        },
-        {
-          "value": "Paraguay",
-          "label": "Paraguay"
-        },
-        {
-          "value": "Peru",
-          "label": "Peru"
-        },
-        {
-          "value": "Philippines",
-          "label": "Philippines"
-        },
-        {
-          "value": "Poland",
-          "label": "Poland"
-        },
-        {
-          "value": "Portugal",
-          "label": "Portugal"
-        },
-        {
-          "value": "Puerto Rico",
-          "label": "Puerto Rico"
-        },
-        {
-          "value": "Qatar",
-          "label": "Qatar"
-        },
-        {
-          "value": "Réunion",
-          "label": "Réunion"
-        },
-        {
-          "value": "Romania",
-          "label": "Romania"
-        },
-        {
-          "value": "Russia",
-          "label": "Russia"
-        },
-        {
-          "value": "Rwanda",
-          "label": "Rwanda"
-        },
-        {
-          "value": "Saint Helena",
-          "label": "Saint Helena"
-        },
-        {
-          "value": "Saint Kitts and Nevis",
-          "label": "Saint Kitts and Nevis"
-        },
-        {
-          "value": "Saint Lucia",
-          "label": "Saint Lucia"
-        },
-        {
-          "value": "Saint Vincent and the Grenadines",
-          "label": "Saint Vincent and the Grenadines"
-        },
-        {
-          "value": "San Marino",
-          "label": "San Marino"
-        },
-        {
-          "value": "Sao Tome & Principe",
-          "label": "Sao Tome & Principe"
-        },
-        {
-          "value": "Saudi Arabia",
-          "label": "Saudi Arabia"
-        },
-        {
-          "value": "Senegal",
-          "label": "Senegal"
-        },
-        {
-          "value": "Serbia",
-          "label": "Serbia"
-        },
-        {
-          "value": "Seychelles",
-          "label": "Seychelles"
-        },
-        {
-          "value": "Sierra Leone",
-          "label": "Sierra Leone"
-        },
-        {
-          "value": "Singapore",
-          "label": "Singapore"
-        },
-        {
-          "value": "Slovakia",
-          "label": "Slovakia"
-        },
-        {
-          "value": "Slovenia",
-          "label": "Slovenia"
-        },
-        {
-          "value": "Somalia",
-          "label": "Somalia"
-        },
-        {
-          "value": "South Africa",
-          "label": "South Africa"
-        },
-        {
-          "value": "South Korea",
-          "label": "South Korea"
-        },
-        {
-          "value": "South Sudan",
-          "label": "South Sudan"
-        },
-        {
-          "value": "Spain",
-          "label": "Spain"
-        },
-        {
-          "value": "Sri Lanka",
-          "label": "Sri Lanka"
-        },
-        {
-          "value": "State of Palestine",
-          "label": "State of Palestine"
-        },
-        {
-          "value": "Sudan",
-          "label": "Sudan"
-        },
-        {
-          "value": "Suriname",
-          "label": "Suriname"
-        },
-        {
-          "value": "Sweden",
-          "label": "Sweden"
-        },
-        {
-          "value": "Switzerland",
-          "label": "Switzerland"
-        },
-        {
-          "value": "Syria",
-          "label": "Syria"
-        },
-        {
-          "value": "Taiwan",
-          "label": "Taiwan"
-        },
-        {
-          "value": "Tajikistan",
-          "label": "Tajikistan"
-        },
-        {
-          "value": "Tanzania",
-          "label": "Tanzania"
-        },
-        {
-          "value": "Thailand",
-          "label": "Thailand"
-        },
-        {
-          "value": "The Bahamas",
-          "label": "The Bahamas"
-        },
-        {
-          "value": "Timor-Leste",
-          "label": "Timor-Leste"
-        },
-        {
-          "value": "Togo",
-          "label": "Togo"
-        },
-        {
-          "value": "Trinidad and Tobago",
-          "label": "Trinidad and Tobago"
-        },
-        {
-          "value": "Tunisia",
-          "label": "Tunisia"
-        },
-        {
-          "value": "Turkey",
-          "label": "Turkey"
-        },
-        {
-          "value": "Turkmenistan",
-          "label": "Turkmenistan"
-        },
-        {
-          "value": "Uganda",
-          "label": "Uganda"
-        },
-        {
-          "value": "Ukraine",
-          "label": "Ukraine"
-        },
-        {
-          "value": "United Arab Emirates",
-          "label": "United Arab Emirates"
-        },
-        {
-          "value": "United Kingdom",
-          "label": "United Kingdom"
-        },
-        {
-          "value": "Uruguay",
-          "label": "Uruguay"
-        },
-        {
-          "value": "U.S. Virgin Islands",
-          "label": "U.S. Virgin Islands"
-        },
-        {
-          "value": "Uzbekistan",
-          "label": "Uzbekistan"
-        },
-        {
-          "value": "Venezuela",
-          "label": "Venezuela"
-        },
-        {
-          "value": "Vietnam",
-          "label": "Vietnam"
-        },
-        {
-          "value": "Western Sahara",
-          "label": "Western Sahara"
-        },
-        {
-          "value": "Yemen",
-          "label": "Yemen"
-        },
-        {
-          "value": "Zambia",
-          "label": "Zambia"
-        },
-        {
-          "value": "Zimbabwe",
-          "label": "Zimbabwe"
-        }
-      ]
-    }
-  },
-  {
-    "name": "safetyConcern",
-    "label": "Safety Concern",
-    "type": "select",
-    "isPII": false,
-    "defaultOption": {
-      "value": "",
-      "label": ""
-    },
-    "options": [
-      {
-        "value": "",
-        "label": ""
-      },
-      {
-        "value": "None",
-        "label": "None"
-      },
-      {
-        "value": "Suicidal Ideation",
-        "label": "Suicidal Ideation"
-      },
-      {
-        "value": "Imminent Harm",
-        "label": "Imminent Harm"
-      },
-      {
-        "value": "Homicidal Ideation",
-        "label": "Homicidal Ideation"
-      },
-      {
-        "value": "Medical Emergency",
-        "label": "Medical Emergency"
-      },
-      {
-        "value": "Safety Concern- Other",
-        "label": "Safety Concern- Other"
       }
     ],
     "required": {
@@ -1219,359 +492,450 @@
     }
   },
   {
-    "name": "q1",
-    "label": "Have you wished you were dead or wished you could go to sleep and not wake up?",
+    "name": "dcquadrant",
+    "label": "Dcquadrant",
     "type": "dependent-select",
     "isPII": false,
-    "dependsOn": "safetyConcern",
+    "dependsOn": "location",
     "defaultOption": {
       "value": "",
       "label": ""
     },
     "options": {
-      "Suicidal Ideation": [
+      "Alabama": [
         {
-          "value": "Yes",
-          "label": "Yes"
+          "value": "N/A",
+          "label": "N/A"
+        }
+      ],
+      "Alaska": [
+        {
+          "value": "N/A",
+          "label": "N/A"
+        }
+      ],
+      "Arizona": [
+        {
+          "value": "N/A",
+          "label": "N/A"
+        }
+      ],
+      "Arkansas": [
+        {
+          "value": "N/A",
+          "label": "N/A"
+        }
+      ],
+      "California": [
+        {
+          "value": "N/A",
+          "label": "N/A"
+        }
+      ],
+      "Colorado": [
+        {
+          "value": "N/A",
+          "label": "N/A"
+        }
+      ],
+      "Connecticut": [
+        {
+          "value": "N/A",
+          "label": "N/A"
+        }
+      ],
+      "Delaware": [
+        {
+          "value": "N/A",
+          "label": "N/A"
+        }
+      ],
+      "Florida": [
+        {
+          "value": "N/A",
+          "label": "N/A"
+        }
+      ],
+      "Georgia": [
+        {
+          "value": "N/A",
+          "label": "N/A"
+        }
+      ],
+      "Hawaii": [
+        {
+          "value": "N/A",
+          "label": "N/A"
+        }
+      ],
+      "Idaho": [
+        {
+          "value": "N/A",
+          "label": "N/A"
+        }
+      ],
+      "Illinois": [
+        {
+          "value": "N/A",
+          "label": "N/A"
+        }
+      ],
+      "Indiana": [
+        {
+          "value": "N/A",
+          "label": "N/A"
+        }
+      ],
+      "Iowa": [
+        {
+          "value": "N/A",
+          "label": "N/A"
+        }
+      ],
+      "Kansas": [
+        {
+          "value": "N/A",
+          "label": "N/A"
+        }
+      ],
+      "Kentucky": [
+        {
+          "value": "N/A",
+          "label": "N/A"
+        }
+      ],
+      "Louisiana": [
+        {
+          "value": "N/A",
+          "label": "N/A"
+        }
+      ],
+      "Maine": [
+        {
+          "value": "N/A",
+          "label": "N/A"
+        }
+      ],
+      "Maryland": [
+        {
+          "value": "N/A",
+          "label": "N/A"
+        }
+      ],
+      "Massachusetts": [
+        {
+          "value": "N/A",
+          "label": "N/A"
+        }
+      ],
+      "Michigan": [
+        {
+          "value": "N/A",
+          "label": "N/A"
+        }
+      ],
+      "Minnesota": [
+        {
+          "value": "N/A",
+          "label": "N/A"
+        }
+      ],
+      "Mississippi": [
+        {
+          "value": "N/A",
+          "label": "N/A"
+        }
+      ],
+      "Missouri": [
+        {
+          "value": "N/A",
+          "label": "N/A"
+        }
+      ],
+      "Montana": [
+        {
+          "value": "N/A",
+          "label": "N/A"
+        }
+      ],
+      "Nebraska": [
+        {
+          "value": "N/A",
+          "label": "N/A"
+        }
+      ],
+      "Nevada": [
+        {
+          "value": "N/A",
+          "label": "N/A"
+        }
+      ],
+      "New Hampshire": [
+        {
+          "value": "N/A",
+          "label": "N/A"
+        }
+      ],
+      "New Jersey": [
+        {
+          "value": "N/A",
+          "label": "N/A"
+        }
+      ],
+      "New Mexico": [
+        {
+          "value": "N/A",
+          "label": "N/A"
+        }
+      ],
+      "New York": [
+        {
+          "value": "N/A",
+          "label": "N/A"
+        }
+      ],
+      "North Carolina": [
+        {
+          "value": "N/A",
+          "label": "N/A"
+        }
+      ],
+      "North Dakota": [
+        {
+          "value": "N/A",
+          "label": "N/A"
+        }
+      ],
+      "Ohio": [
+        {
+          "value": "N/A",
+          "label": "N/A"
+        }
+      ],
+      "Oklahoma": [
+        {
+          "value": "N/A",
+          "label": "N/A"
+        }
+      ],
+      "Oregon": [
+        {
+          "value": "N/A",
+          "label": "N/A"
+        }
+      ],
+      "Pensylvania": [
+        {
+          "value": "N/A",
+          "label": "N/A"
+        }
+      ],
+      "Rhode Island": [
+        {
+          "value": "N/A",
+          "label": "N/A"
+        }
+      ],
+      "South Carolina": [
+        {
+          "value": "N/A",
+          "label": "N/A"
+        }
+      ],
+      "South Dakota": [
+        {
+          "value": "N/A",
+          "label": "N/A"
+        }
+      ],
+      "Tennessee ": [
+        {
+          "value": "N/A",
+          "label": "N/A"
+        }
+      ],
+      "Texas": [
+        {
+          "value": "N/A",
+          "label": "N/A"
+        }
+      ],
+      "Utah ": [
+        {
+          "value": "N/A",
+          "label": "N/A"
+        }
+      ],
+      "Vermont": [
+        {
+          "value": "N/A",
+          "label": "N/A"
+        }
+      ],
+      "Virgina ": [
+        {
+          "value": "N/A",
+          "label": "N/A"
+        }
+      ],
+      "Washington D.C.": [
+        {
+          "value": "NE",
+          "label": "NE"
         },
         {
-          "value": "No",
-          "label": "No"
-        }
-      ]
-    }
-  },
-  {
-    "name": "q2",
-    "label": "Have you actually had any thoughts of killing yourself?",
-    "type": "dependent-select",
-    "isPII": false,
-    "dependsOn": "q1",
-    "defaultOption": {
-      "value": "",
-      "label": ""
-    },
-    "options": {
-      "Yes": [
-        {
-          "value": "Yes",
-          "label": "Yes"
+          "value": "SE",
+          "label": "SE"
         },
         {
-          "value": "No",
-          "label": "No"
-        }
-      ]
-    }
-  },
-  {
-    "name": "q3",
-    "label": "Have you been thinking about how you might do this?",
-    "type": "dependent-select",
-    "isPII": false,
-    "dependsOn": "q2",
-    "defaultOption": {
-      "value": "",
-      "label": ""
-    },
-    "options": {
-      "Yes": [
-        {
-          "value": "Yes",
-          "label": "Yes"
+          "value": "NW",
+          "label": "NW"
         },
         {
-          "value": "No",
-          "label": "No"
-        }
-      ]
-    }
-  },
-  {
-    "name": "q4",
-    "label": "Have you had these thoughts and had some intention of acting on them?",
-    "type": "dependent-select",
-    "isPII": false,
-    "dependsOn": "q3",
-    "defaultOption": {
-      "value": "",
-      "label": ""
-    },
-    "options": {
-      "Yes": [
-        {
-          "value": "Yes",
-          "label": "Yes"
+          "value": "SW",
+          "label": "SW"
         },
         {
-          "value": "No",
-          "label": "No"
-        }
-      ]
-    }
-  },
-  {
-    "name": "q5",
-    "label": "Have you started to work out or worked out the details of how to kill yourself? Did you intend to carry out this plan?",
-    "type": "dependent-select",
-    "isPII": false,
-    "dependsOn": "q4",
-    "defaultOption": {
-      "value": "",
-      "label": ""
-    },
-    "options": {
-      "Yes": [
-        {
-          "value": "Yes",
-          "label": "Yes"
+          "value": "No fixed address",
+          "label": "No fixed address"
         },
         {
-          "value": "No",
-          "label": "No"
-        }
-      ]
-    }
-  },
-  {
-    "name": "q6",
-    "label": "Have you ever done anything, started to do anything, or prepared to do anything to end your life?",
-    "type": "dependent-select",
-    "isPII": false,
-    "dependsOn": "q5",
-    "defaultOption": {
-      "value": "",
-      "label": ""
-    },
-    "options": {
-      "Yes": [
-        {
-          "value": "Yes",
-          "label": "Yes"
+          "value": "Out of the District - International",
+          "label": "Out of the District - International"
         },
         {
-          "value": "No",
-          "label": "No"
-        }
-      ]
-    }
-  },
-  {
-    "name": "q7",
-    "label": "In the last 3 months, have you ever done anything, started to do anything, or prepared to do anything to end your life?",
-    "type": "dependent-select",
-    "isPII": false,
-    "dependsOn": "q6",
-    "defaultOption": {
-      "value": "",
-      "label": ""
-    },
-    "options": {
-      "Yes": [
-        {
-          "value": "Yes",
-          "label": "Yes"
+          "value": "Out of the District -USA",
+          "label": "Out of the District -USA"
         },
         {
-          "value": "No",
-          "label": "No"
+          "value": "Other DC ",
+          "label": "Other DC "
+        },
+        {
+          "value": "Unknown",
+          "label": "Unknown"
+        }
+      ],
+      "West Virginia": [
+        {
+          "value": "N/A",
+          "label": "N/A"
+        }
+      ],
+      "Wisconsin": [
+        {
+          "value": "N/A",
+          "label": "N/A"
+        }
+      ],
+      "Wyoming": [
+        {
+          "value": "N/A",
+          "label": "N/A"
+        }
+      ],
+      "U.S. Territory - American Somoa": [
+        {
+          "value": "N/A",
+          "label": "N/A"
+        }
+      ],
+      "U.S. Territory - Guam": [
+        {
+          "value": "N/A",
+          "label": "N/A"
+        }
+      ],
+      "U.S Territory - Northern Mariana Islands": [
+        {
+          "value": "N/A",
+          "label": "N/A"
+        }
+      ],
+      "U.S Territory - Puerto Rico": [
+        {
+          "value": "N/A",
+          "label": "N/A"
+        }
+      ],
+      "U.S Territory - U.S. Virgin Islands": [
+        {
+          "value": "N/A",
+          "label": "N/A"
+        }
+      ],
+      "U.S Territory - Other": [
+        {
+          "value": "N/A",
+          "label": "N/A"
+        }
+      ],
+      "International ": [
+        {
+          "value": "N/A",
+          "label": "N/A"
+        }
+      ],
+      "Unknown - USA State/Territory": [
+        {
+          "value": "N/A",
+          "label": "N/A"
+        }
+      ],
+      "Unknown": [
+        {
+          "value": "N/A",
+          "label": "N/A"
         }
       ]
-    }
-  },
-  {
-    "name": "riskLevel",
-    "label": "Risk level",
-    "type": "dependent-select",
-    "dependsOn": "safetyConcern",
-    "isPII": false,
-    "defaultOption": {
-      "value": "",
-      "label": ""
     },
-    "options": {
-      "Suicidal Ideation": [
-      {
-        "value": "Low risk - Suicidal ideation without plan or intent",
-        "label": "Low risk - Suicidal ideation without plan or intent"
-      },
-      {
-        "value": "Medium risk - Suicidal ideation with some level of plan and low intent",
-        "label": "Medium risk - Suicidal ideation with some level of plan and low intent"
-      },
-      {
-        "value": "High risk – Suicidal ideation with a plan and intent",
-        "label": "High risk – Suicidal ideation with a plan and intent"
-      }
-      ]
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
     }
   },
   {
-    "name": "cfSportLevel",
-    "label": "CF - Sport Level",
-    "type": "select",
+    "name": "keywords",
+    "label": "Keywords",
+    "type": "listbox-multiselect",
     "isPII": false,
     "options": [
       {
-        "value": "N/A",
-        "label": ""
+        "value": "Complaint against local agency",
+        "label": "Complaint against local agency"
       },
       {
-        "value": "N/A",
-        "label": "N/A"
+        "value": "Disconnected (by VAS)",
+        "label": "Disconnected (by VAS)"
       },
       {
-        "value": "Club",
-        "label": "Club"
+        "value": "Disconnected (by visitor or tech issue)",
+        "label": "Disconnected (by visitor or tech issue)"
       },
       {
-        "value": "K-12",
-        "label": "K-12"
+        "value": "Law enforcement complaint/misconduct",
+        "label": "Law enforcement complaint/misconduct"
       },
       {
-        "value": "College",
-        "label": "College"
+        "value": "National compassion fund",
+        "label": "National compassion fund"
       },
       {
-        "value": "Recreational",
-        "label": "Recreational"
+        "value": "Protective order",
+        "label": "Protective order"
       },
       {
-        "value": "Pro",
-        "label": "Pro"
+        "value": "PREA (VC only)",
+        "label": "PREA (VC only)"
       },
       {
-        "value": "Elite",
-        "label": "Elite"
-      },
-      {
-        "value": "Adaptive Paralympic",
-        "label": "Adaptive Paralympic"
-      },
-      {
-        "value": "Unknown",
-        "label": "Unknown"
+        "value": "Unknown/NA",
+        "label": "Unknown/NA"
       }
-    ]
-  },
-  {
-    "name": "cfSportPlayed",
-    "label": "CF - Sport Played",
-    "type": "select",
-    "isPII": false,
-    "options": [
-      {
-        "value": "N/A",
-        "label": ""
-      },
-      {
-        "value": "N/A",
-        "label": "N/A"
-      },
-      {
-        "value": "Archery",
-        "label": "Archery"
-      },
-      {
-        "value": "Baseball",
-        "label": "Baseball"
-      },
-      {
-        "value": "Basketball",
-        "label": "Basketball"
-      },
-      {
-        "value": "Cheer",
-        "label": "Cheer"
-      },
-      {
-        "value": "Cycling",
-        "label": "Cycling"
-      },
-      {
-        "value": "Dance",
-        "label": "Dance"
-      },
-      {
-        "value": "Fencing",
-        "label": "Fencing"
-      },
-      {
-        "value": "Football",
-        "label": "Football"
-      },
-      {
-        "value": "Golf",
-        "label": "Golf"
-      },
-      {
-        "value": "Gymnastics",
-        "label": "Gymnastics"
-      },
-      {
-        "value": "Hockey",
-        "label": "Hockey"
-      },
-      {
-        "value": "Horseback riding",
-        "label": "Horseback riding"
-      },
-      {
-        "value": "Lacrosse",
-        "label": "Lacrosse"
-      },
-      {
-        "value": "Martial arts",
-        "label": "Martial arts"
-      },
-      {
-        "value": "Rowing",
-        "label": "Rowing"
-      },
-      {
-        "value": "Rugby",
-        "label": "Rugby"
-      },
-      {
-        "value": "Skiing/Snowboarding",
-        "label": "Skiing/Snowboarding"
-      },
-      {
-        "value": "Soccer",
-        "label": "Soccer"
-      },
-      {
-        "value": "Softball",
-        "label": "Softball"
-      },
-      {
-        "value": "Swimming/Diving",
-        "label": "Swimming/Diving"
-      },
-      {
-        "value": "Tennis",
-        "label": "Tennis"
-      },
-      {
-        "value": "Track & field",
-        "label": "Track & field"
-      },
-      {
-        "value": "Volleyball",
-        "label": "Volleyball"
-      },
-      {
-        "value": "Weightlifting/Body building",
-        "label": "Weightlifting/Body building"
-      },
-      {
-        "value": "Wrestling",
-        "label": "Wrestling"
-      },
-      {
-        "value": "Other",
-        "label": "Other"
-      }
-    ]
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
   }
 ]

@@ -1,12 +1,13 @@
 {
   "contact": {
     "callerInformation": {
+      "splitFormAt": 10
     },
     "childInformation": {
-      "splitFormAt": 18
+      "splitFormAt": 4
     },
     "caseInformation": {
-      "splitFormAt": 11
+      "splitFormAt": 2
     }
   },
   "case": {
