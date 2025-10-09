@@ -35,6 +35,12 @@ export type ReferrableResource = {
   attributes: Record<string, Attributes>;
 };
 
+export type ListAttributeStringValue = {
+  value: string;
+  info: any;
+  language: string;
+};
+
 export type ReferenceAttributeStringValue = {
   value: string;
   id: string;
@@ -72,25 +78,31 @@ export const suggestSearch = async (prefix: string): Promise<SuggestSearch['sugg
   return fetchResourceApi(`suggest?prefix=${prefix}`);
 };
 
+const convertObjectToQueryString = (input: Record<string, any>): string => {
+  const queryItems = Object.entries(input).filter(([, value]) => value);
+  return queryItems.map(([k, v]) => `${k}=${v}`).join('&');
+};
+
 export const getReferenceAttributeList = async (
   list: string,
   language?: string,
   valueStartsWith?: string,
 ): Promise<ReferenceAttributeStringValue[]> => {
-  const queryItems = Object.entries({ valueStartsWith, language }).filter(([, value]) => value);
-  const queryString = queryItems.map(([k, v]) => `${k}=${v}`).join('&');
-  // Lists can contain slashes, but we only want them as one path section
-  return fetchResourceApi(`reference-attributes/${encodeURIComponent(list)}?${queryString}`);
+  // Lists can contain slashes, as soon as HRM v1.42.0 is deploy
+  return fetchResourceApi(
+    `reference-attributes/${encodeURIComponent(list)}?${convertObjectToQueryString({ valueStartsWith, language })}`,
+  );
 };
 
 export const getDistinctStringAttributes = async ({
   key,
   language,
+  valueStartsWith,
 }: {
   key: string;
   language?: string;
-}): Promise<{ value: string }[]> => {
-  const queryItems = Object.entries({ key, language }).filter(([, value]) => value);
-  const queryString = queryItems.map(([k, v]) => `${k}=${v}`).join('&');
-  return fetchResourceApi(`list-string-attributes?${queryString}`);
+  valueStartsWith?: string;
+}): Promise<ListAttributeStringValue[]> => {
+  // Keys can contain slashes, it's ok for them to be more path sections
+  return fetchResourceApi(`list-string-attributes/${key}?${convertObjectToQueryString({ valueStartsWith, language })}`);
 };

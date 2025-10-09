@@ -15,7 +15,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import React, { useEffect, useRef } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { AnyAction } from 'redux';
 import { Template } from '@twilio/flex-ui';
@@ -73,14 +73,18 @@ const SearchResourcesForm: React.FC = () => {
 
   const resetSearch = () => dispatch(resetSearchFormAction());
 
-  const updateSuggestSearch = debounce((prefix: string) => searchAsyncDispatch(suggestSearchAsyncAction(prefix)), 300, {
-    leading: true,
-    trailing: true,
-  });
+  const [generalSearchTermBoxText, setGeneralSearchTermBoxText] = React.useState(generalSearchTerm);
+
+  const updateSuggestSearch = useCallback(
+    debounce((prefix: string) => searchAsyncDispatch(suggestSearchAsyncAction(prefix)), 300, {
+      leading: true,
+      trailing: true,
+    }),
+    [],
+  );
 
   const firstElement = useRef(null);
   const strings = getTemplateStrings();
-  const [generalSearchTermBoxText, setGeneralSearchTermBoxText] = React.useState(generalSearchTerm);
 
   const hasValidSearchSettings = () =>
     generalSearchTermBoxText !== '' ||
@@ -95,7 +99,8 @@ const SearchResourcesForm: React.FC = () => {
 
   useEffect(() => {
     updateSuggestSearch(generalSearchTermBoxText);
-  }, [generalSearchTermBoxText, updateSuggestSearch]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [generalSearchTermBoxText]);
 
   useEffect(() => {
     setGeneralSearchTermBoxText(generalSearchTerm);

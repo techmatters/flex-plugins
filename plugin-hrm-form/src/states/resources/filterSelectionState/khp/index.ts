@@ -58,7 +58,7 @@ export type KHPFilterOptions = {
   maxEligibleAge: FilterOption<number>[];
 };
 
-const initialFilterOptions: KHPFilterOptions = {
+export const initialFilterOptions: KHPFilterOptions = {
   feeStructure: [
     { value: 'Free' },
     { value: 'Cost Unknown' },
