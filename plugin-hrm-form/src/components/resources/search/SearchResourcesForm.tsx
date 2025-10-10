@@ -100,6 +100,9 @@ const SearchResourcesForm: React.FC = () => {
   useEffect(() => {
     updateSuggestSearch(generalSearchTermBoxText);
     // eslint-disable-next-line react-hooks/exhaustive-deps
+    // updateSuggestSearch is intentionally omitted from the dependency array because it is a debounced, memoized callback
+    // with a stable reference (empty dependency array), and searchAsyncDispatch is stable. Including it would recreate
+    // the debounced function on every render, defeating its purpose.
   }, [generalSearchTermBoxText]);
 
   useEffect(() => {
