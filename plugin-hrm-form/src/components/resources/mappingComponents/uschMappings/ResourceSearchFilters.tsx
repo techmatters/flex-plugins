@@ -92,13 +92,12 @@ const ResourceSearchFilters: React.FC<{}> = () => {
   const locationDropdown = (locationFilterName: LocationFilterName, optionList: FilterOption[]) => {
     const capitalizedLocationFilterName = locationFilterName.charAt(0).toUpperCase() + locationFilterName.slice(1);
     return (
-      <FormSelectWrapper style={{ width: '100%' }}>
+      <FormSelectWrapper style={{ width: '100%', opacity: (optionList?.length || 0) > 1 ? 1 : 0.2 }}>
         <FormSelect
           id={`location-${locationFilterName}`}
           data-testid={`Resources-Search-Location-${capitalizedLocationFilterName}`}
           name={`location-${locationFilterName}`}
           onChange={({ target: { value } }) => updateFilterSelection(locationFilterName, value)}
-          value={filterSelections[locationFilterName] ?? NO_LOCATION_SELECTED}
           style={{ width: '100%' }}
         >
           {(optionList || []).map(({ value, label }) => (

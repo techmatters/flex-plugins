@@ -150,7 +150,7 @@ export const handlerUpdateSearchFormAction = (
 export const handleLoadReferenceLocationsAsyncActionFulfilled = (
   state: ReferrableResourceSearchState,
   { payload }: { payload: { list: string; options: FilterOption[] } },
-) => {
+): ReferrableResourceSearchState => {
   const { list, options } = payload;
   let { referenceLocations } = state;
   switch (list) {
