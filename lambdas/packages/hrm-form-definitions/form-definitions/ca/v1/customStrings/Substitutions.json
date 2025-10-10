@@ -170,7 +170,9 @@
   "Switchboard-ModalTitleTurnOffSwitchboard": "Are you sure you want to turn off switchboarding?",
   "Switchboard-ButtonTurnOffSwitchboard": "Turn off switchboard",
   "Switchboard-ActivateSwitchboarding": "Activate switchboarding",
-  "Switchboard-PleaseSelectQueue": "Please select a queue"
+  "Switchboard-PleaseSelectQueue": "Please select a queue",
+
+  "QueuesStatsHeaderAvgWaitTime": "ASA"
   
   },
   "fr": {
