@@ -394,6 +394,8 @@
   "Switchboard-StatusInactive": "Commutation : désactivé",
   "Switchboard-ModalTitleTurnOffSwitchboard": "Êtes-vous sûr de vouloir désactiver la commutation?",
   "Switchboard-ButtonTurnOffSwitchboard": "Désactiver",
-  "Switchboard-ActivateSwitchboarding": "Activer la commutation"
+  "Switchboard-ActivateSwitchboarding": "Activer la commutation",
+
+  "QueuesStatsHeaderAvgWaitTime": "ASA"
   }
 }
