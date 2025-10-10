@@ -38,16 +38,16 @@ locals {
         }
         chatbot_unique_names = []
       }
-      /*,
+      ,
       sms : {
         messaging_mode   = "conversations"
         channel_type     = "sms"
-        contact_identity = "+16066032348"
-        templatefile     = "/app/twilio-iac/helplines/usch/templates/studio-flows/sms-courage-first-lex-sd.tftpl"
+        contact_identity = "+12029984483"
+        templatefile     = "/app/twilio-iac/helplines/templates/studio-flows/messaging-blocking-conv-lambda.tftpl"
         channel_flow_vars = {
         }
         chatbot_unique_names = []
-      }*/
+      }
     }
     get_profile_flags_for_identifier_base_url = "https://hrm-staging.tl.techmatters.org/lambda/twilio/account-scoped"
     #System Down Configuration
