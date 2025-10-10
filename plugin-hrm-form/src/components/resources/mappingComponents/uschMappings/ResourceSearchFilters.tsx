@@ -98,6 +98,7 @@ const ResourceSearchFilters: React.FC<{}> = () => {
           data-testid={`Resources-Search-Location-${capitalizedLocationFilterName}`}
           name={`location-${locationFilterName}`}
           onChange={({ target: { value } }) => updateFilterSelection(locationFilterName, value)}
+          value={filterSelections[locationFilterName] ?? NO_LOCATION_SELECTED}
           style={{ width: '100%' }}
         >
           {(optionList || []).map(({ value, label }) => (
