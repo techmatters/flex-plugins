@@ -15,7 +15,6 @@
  */
 import React from 'react';
 import { ConferenceParticipant } from '@twilio/flex-ui';
-import '../../../types';
 import { Conference } from '@twilio/flex-ui/src/state/Conferences';
 
 import { hasTaskControl, isOriginalReservation, isTransferring } from '../../../transfer/transferTaskState';
