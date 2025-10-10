@@ -165,7 +165,6 @@ export const handleLoadReferenceLocationsAsyncActionFulfilled = (
       break;
     default:
   }
-
   const updatedFilterOptions = getFilterOptionsBasedOnSelections(state.parameters.filterSelections, referenceLocations);
   const validatedFilterSelections = ensureFilterSelectionsAreValid(
     state.parameters.filterSelections,
@@ -175,7 +174,9 @@ export const handleLoadReferenceLocationsAsyncActionFulfilled = (
   return {
     ...state,
     filterOptions: updatedFilterOptions,
-    filterSelections: validatedFilterSelections,
+    parameters: {
+      filterSelections: validatedFilterSelections,
+    },
     referenceLocations,
   };
 };

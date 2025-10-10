@@ -20,6 +20,8 @@ import { ReferrableResource, searchResources, suggestSearch } from '../../servic
 import { loadReferenceLocationsAsyncAction, ReferenceLocationState } from './referenceLocations';
 import { FilterOption } from './types';
 import { getFilterSelectionState } from '../../components/resources/mappingComponents';
+import { RootState } from '..';
+import { namespace, referrableResourcesBase } from '../storeNamespaces';
 
 export type SearchSettings = Omit<Partial<ReferrableResourceSearchState['parameters']>, 'filterSelections'> & {
   filterSelections?: Partial<ReferrableResourceSearchState['parameters']['filterSelections']>;
@@ -250,3 +252,6 @@ export const getCurrentPageResults = ({
 
 export const getPageCount = ({ results, parameters: { pageSize } }: ReferrableResourceSearchState) =>
   Math.ceil(results.length / pageSize);
+
+export const selectFilterSelections = <T extends FilterSelections>(state: RootState): T =>
+  state[namespace][referrableResourcesBase].search.parameters.filterSelections as T;
