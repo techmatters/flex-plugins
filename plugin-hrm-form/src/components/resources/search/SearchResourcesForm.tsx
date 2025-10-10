@@ -15,8 +15,8 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import React, { Dispatch, useEffect, useRef } from 'react';
-import { connect, ConnectedProps } from 'react-redux';
+import React, { useCallback, useEffect, useMemo, useRef } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { AnyAction } from 'redux';
 import { Template } from '@twilio/flex-ui';
 import debounce from 'lodash/debounce';
@@ -45,57 +45,46 @@ import SearchAutoComplete from './SearchAutoComplete';
 import { namespace, referrableResourcesBase } from '../../../states/storeNamespaces';
 import { ResourceSearchFilters } from '../mappingComponents';
 
-type OwnProps = {};
-
-const mapStateToProps = (state: RootState) => {
-  const {
-    parameters: { generalSearchTerm, pageSize, filterSelections },
-  } = state[namespace][referrableResourcesBase].search;
-  const { suggestSearch } = state[namespace][referrableResourcesBase];
-  return {
-    generalSearchTerm,
-    pageSize,
-    filterSelections,
-    suggestSearch,
-  };
-};
-
-const mapDispatchToProps = (dispatch: Dispatch<AnyAction>) => {
+const SearchResourcesForm: React.FC = () => {
+  const dispatch = useDispatch();
   const searchAsyncDispatch = asyncDispatch<AnyAction>(dispatch);
-  return {
-    searchAsyncDispatch,
-    updateGeneralSearchTerm: (generalSearchTerm: string) => dispatch(updateSearchFormAction({ generalSearchTerm })),
-    submitSearch: (
-      generalSearchTerm: string,
-      filterSelections: ReferrableResourceSearchState['parameters']['filterSelections'],
-      pageSize: number,
-    ) => searchAsyncDispatch(searchResourceAsyncAction({ generalSearchTerm, pageSize, filterSelections }, 0)),
-    resetSearch: () => dispatch(resetSearchFormAction()),
-    updateSuggestSearch: debounce((prefix: string) => searchAsyncDispatch(suggestSearchAsyncAction(prefix)), 300, {
+
+  const { generalSearchTerm, pageSize, filterSelections, suggestSearch } = useSelector((state: RootState) => {
+    const {
+      parameters: { generalSearchTerm, pageSize, filterSelections },
+    } = state[namespace][referrableResourcesBase].search;
+    const { suggestSearch } = state[namespace][referrableResourcesBase];
+    return {
+      generalSearchTerm,
+      pageSize,
+      filterSelections,
+      suggestSearch,
+    };
+  });
+
+  const updateGeneralSearchTerm = (generalSearchTerm: string) =>
+    dispatch(updateSearchFormAction({ generalSearchTerm }));
+
+  const submitSearch = (
+    generalSearchTerm: string,
+    filterSelections: ReferrableResourceSearchState['parameters']['filterSelections'],
+    pageSize: number,
+  ) => searchAsyncDispatch(searchResourceAsyncAction({ generalSearchTerm, pageSize, filterSelections }, 0));
+
+  const resetSearch = () => dispatch(resetSearchFormAction());
+
+  const [generalSearchTermBoxText, setGeneralSearchTermBoxText] = React.useState(generalSearchTerm);
+
+  const updateSuggestSearch = useCallback(
+    debounce((prefix: string) => searchAsyncDispatch(suggestSearchAsyncAction(prefix)), 300, {
       leading: true,
       trailing: true,
     }),
-  };
-};
+    [],
+  );
 
-const connector = connect(mapStateToProps, mapDispatchToProps);
-
-type Props = OwnProps & ConnectedProps<typeof connector>;
-
-const SearchResourcesForm: React.FC<Props> = ({
-  generalSearchTerm,
-  pageSize,
-  updateGeneralSearchTerm,
-  submitSearch,
-  resetSearch,
-  filterSelections,
-  suggestSearch,
-  updateSuggestSearch,
-  searchAsyncDispatch,
-}) => {
   const firstElement = useRef(null);
   const strings = getTemplateStrings();
-  const [generalSearchTermBoxText, setGeneralSearchTermBoxText] = React.useState(generalSearchTerm);
 
   const hasValidSearchSettings = () =>
     generalSearchTermBoxText !== '' ||
@@ -110,7 +99,11 @@ const SearchResourcesForm: React.FC<Props> = ({
 
   useEffect(() => {
     updateSuggestSearch(generalSearchTermBoxText);
-  }, [generalSearchTermBoxText, updateSuggestSearch]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // updateSuggestSearch is intentionally omitted from the dependency array because it is a debounced, memoized callback
+    // with a stable reference (empty dependency array), and searchAsyncDispatch is stable. Including it would recreate
+    // the debounced function on every render, defeating its purpose.
+  }, [generalSearchTermBoxText]);
 
   useEffect(() => {
     setGeneralSearchTermBoxText(generalSearchTerm);
@@ -190,4 +183,4 @@ const SearchResourcesForm: React.FC<Props> = ({
 
 SearchResourcesForm.displayName = 'ViewResource';
 
-export default connector(SearchResourcesForm);
+export default SearchResourcesForm;
