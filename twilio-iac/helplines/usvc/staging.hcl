@@ -37,8 +37,7 @@ locals {
           voice_ivr_language         = "en-US"
         }
         chatbot_unique_names = []
-      }
-      ,
+      },
       sms : {
         messaging_mode   = "conversations"
         channel_type     = "sms"
