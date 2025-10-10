@@ -200,7 +200,10 @@ export const handleLoadReferenceLocationsAsyncActionFulfilled = (state: Referrab
   return {
     ...state,
     filterOptions: updatedFilterOptions,
-    filterSelections: validatedFilterSelections,
+    parameters: {
+      ...state.parameters,
+      filterSelections: validatedFilterSelections,
+    },
     referenceLocations,
   };
 };

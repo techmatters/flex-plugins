@@ -175,6 +175,7 @@ export const handleLoadReferenceLocationsAsyncActionFulfilled = (
     ...state,
     filterOptions: updatedFilterOptions,
     parameters: {
+      ...state.parameters,
       filterSelections: validatedFilterSelections,
     },
     referenceLocations,
