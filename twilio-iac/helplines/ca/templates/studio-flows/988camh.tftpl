@@ -91,7 +91,7 @@ ${
           "event": "noMatch"
         },
         {
-          "next": "send_to_Q988En",
+          "next": "f_check_counsellors",
           "event": "match",
           "conditions": [
             {
@@ -105,7 +105,7 @@ ${
           ]
         },
         {
-          "next": "send_to_Q988Fr",
+          "next": "f_check_counsellors_fr",
           "event": "match",
           "conditions": [
             {
@@ -119,7 +119,7 @@ ${
           ]
         },
         {
-          "next": "send_to_Q988Fr",
+          "next": "f_check_counsellors_fr",
           "event": "match",
           "conditions": [
             {
@@ -168,6 +168,157 @@ ${
             "key": "system_down"
           }
         ]
+      }
+    },
+{
+      "name": "forward_call_camh",
+      "type": "connect-call-to",
+      "transitions": [
+        {
+          "event": "callCompleted"
+        },
+        {
+          "event": "hangup"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": -160,
+          "y": 760
+        },
+        "caller_id": "{{contact.channel.address}}",
+        "noun": "number",
+        "to": channel_flow_vars["redirect_number"],
+        "timeout": 30
+      }
+    },
+   {
+      "name": "f_check_counsellors",
+      "type": "run-function",
+      "transitions": [
+        {
+          "next": "split_available_counsellors",
+          "event": "success"
+        },
+        {
+          "next": "send_to_Q988En",
+          "event": "fail"
+        }
+      ],
+      "properties": {
+        "service_sid": "${flow_vars.service_sid}",
+        "environment_sid": "${flow_vars.environment_sid}",
+        "offset": {
+          "x": 1560,
+          "y": -200
+        },
+        "function_sid": "${flow_vars.check_counsellors_function_sid}",
+        "parameters": [
+          {
+            "value": "${flow_vars.workspace_sid}",
+            "key": "workspaceSid"
+          },
+          {
+            "value": channel_flow_vars["988_english_queue_sid"],
+            "key": "taskQueueSid"
+          }
+        ],
+        "url": "${flow_vars.check_counsellors_function_url}"
+      }
+    },
+    {
+      "name": "split_available_counsellors",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "forward_call_camh",
+          "event": "noMatch"
+        },
+        {
+          "next": "send_to_Q988En",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value greater_than 0",
+              "arguments": [
+                "{{widgets.f_check_counsellors.parsed.totalCounsellors}}"
+              ],
+              "type": "greater_than",
+              "value": "0"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{widgets.f_check_counsellors.parsed.totalCounsellors}}",
+        "offset": {
+          "x": -440,
+          "y": 470
+        }
+      }
+    },
+    {
+      "name": "f_check_counsellors_fr",
+      "type": "run-function",
+      "transitions": [
+        {
+          "next": "split_available_counsellors_fr",
+          "event": "success"
+        },
+        {
+          "next": "send_to_Q988Fr",
+          "event": "fail"
+        }
+      ],
+        "service_sid": "${flow_vars.service_sid}",
+        "environment_sid": "${flow_vars.environment_sid}",
+        "offset": {
+          "x": 1560,
+          "y": -200
+        },
+        "function_sid": "${flow_vars.check_counsellors_function_sid}",
+        "parameters": [
+          {
+            "value": "${flow_vars.workspace_sid}",
+            "key": "workspaceSid"
+          },
+          {
+            "value": channel_flow_vars["988_french_queue_sid"],
+            "key": "taskQueueSid"
+          }
+        ],
+        "url": "${flow_vars.check_counsellors_function_url}"
+      }
+    },
+    {
+      "name": "split_available_counsellors_fr",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "forward_call_camh",
+          "event": "noMatch"
+        },
+        {
+          "next": "send_to_Q988Fr",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value greater_than 0",
+              "arguments": [
+                "{{widgets.f_check_counsellors_fr.parsed.totalCounsellors}}"
+              ],
+              "type": "greater_than",
+              "value": "0"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{widgets.f_check_counsellors_fr.parsed.totalCounsellors}}",
+        "offset": {
+          "x": 250,
+          "y": 520
+        }
       }
     }
   ],
