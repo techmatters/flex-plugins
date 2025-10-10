@@ -59,7 +59,7 @@ const Search: React.FC<Props> = ({ task, currentIsCaller = false, saveUpdates })
     return contextContactId ? `contact-${contextContactId}` : 'root';
   });
   const form = useSelector(
-    ({ [namespace]: { searchContacts } }: RootState) => searchContacts.tasks[taskSid][searchContext].form,
+    ({ [namespace]: { searchContacts } }: RootState) => searchContacts.tasks[taskSid][searchContext]?.form,
   );
   const searchContactsResults = useSelector((state: RootState) => {
     return selectContactsForSearchResults(state, taskSid, searchContext);
