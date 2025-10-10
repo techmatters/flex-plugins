@@ -88,7 +88,7 @@ export const getReferenceAttributeList = async (
   language?: string,
   valueStartsWith?: string,
 ): Promise<ReferenceAttributeStringValue[]> => {
-  // Lists can contain slashes, as soon as HRM v1.42.0 is deploy
+  // Lists can contain slashes, as soon as HRM v1.42.0 is deployed
   return fetchResourceApi(
     `reference-attributes/${encodeURIComponent(list)}?${convertObjectToQueryString({ valueStartsWith, language })}`,
   );
