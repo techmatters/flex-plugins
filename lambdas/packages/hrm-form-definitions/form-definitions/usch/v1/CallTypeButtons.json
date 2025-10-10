@@ -1,7 +1,7 @@
 [
     {
         "name": "child",
-        "label": "Helpseeker calling about self",
+        "label": "Child calling about self",
         "type": "button",
         "category": "data"
     },

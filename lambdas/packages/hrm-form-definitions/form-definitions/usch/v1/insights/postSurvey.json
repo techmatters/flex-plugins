@@ -1,17 +1,17 @@
 [
   {
     "insightsObject": "conversations",
-    "attributeName": "preceded_by",
+    "attributeName": "customer_attribute_1",
     "questions": ["experience_rating"]
   },
   {
-    "insightsObject": "conversations",
-    "attributeName": "in_business_hours",
+    "insightsObject": "customers",
+    "attributeName": "customer_attribute_2",
     "questions": ["feel_supported"]
   },
   {
     "insightsObject": "customers",
-    "attributeName": "customer_attribute_1",
+    "attributeName": "customer_attribute_3", 
     "questions": ["better_prepared"]
   }
 ]

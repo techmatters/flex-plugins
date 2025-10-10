@@ -15,17 +15,17 @@
       },
       {
         "name": "state",
-        "insights": ["customers", "area"]
+        "insights": ["conversations", "conversation_attribute_9"]
       },
       {
         "name": "country",
-        "insights": ["customers", "region"]
+        "insights": ["conversations", "in_business_hours"]
       }
     ],
     "childInformation": [
       {
         "name": "childIs",
-        "insights": ["customers", "customer_attribute_2"]
+        "insights": ["customers", "preceded_by"] 
       },
       {
         "name": "ageRange",
@@ -33,11 +33,11 @@
       },
       {
         "name": "state",
-        "insights": ["customers", "city"]
+        "insights": ["conversations", "conversation_attribute_6"]
       },
       {
         "name": "country",
-        "insights": ["customers", "zip"]
+        "insights": ["conversations", "preceded_by"]
       },
       {
         "name": "safetyConcern",
@@ -68,14 +68,6 @@
       {
         "name": "howTheHelpseekerHeardAboutUs",
         "insights": ["customers", "followed_by"]
-      },
-      {
-        "name": "interactionWithHelpseeker",
-        "insights": ["conversations", "preceded_by"]
-      },
-      {
-        "name": "componentsOfSafetyPlan",
-        "insights": ["conversations", "conversation_attribute_6"]
       }
     ]
   },
