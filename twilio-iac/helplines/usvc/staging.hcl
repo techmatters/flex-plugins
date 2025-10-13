@@ -67,7 +67,7 @@ locals {
         }
         chatbot_unique_names = []
       },
-      voice_vc : {
+      voice_dcvh : {
         channel_type     = "voice"
         contact_identity = ""
         templatefile     = "/app/twilio-iac/helplines/usvc/templates/studio-flows/voice-dcvh-sd.tftpl"
