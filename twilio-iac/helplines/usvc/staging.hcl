@@ -54,27 +54,41 @@ locals {
       webchat : {
         channel_type     = "web"
         contact_identity = ""
-        templatefile     = "/app/twilio-iac/helplines/templates/studio-flows/messaging-blocking-lambda-sd.tftpl"
+        templatefile     = "/app/twilio-iac/helplines/usvc/templates/studio-flows/webchat-sd.tftpl"
         channel_flow_vars = {
         }
         chatbot_unique_names = []
       },
-      voice : {
+      voice_vc : {
         channel_type     = "voice"
         contact_identity = ""
-        templatefile     = "/app/twilio-iac/helplines/templates/studio-flows/voice-basic-sd.tftpl"
+        templatefile     = "/app/twilio-iac/helplines/usvc/templates/studio-flows/voice-vc-sd.tftpl"
         channel_flow_vars = {
-          voice_ivr_greeting_message = "Hello, you are contacting the National Center for Victims of Crime. Please hold for a agent."
-          voice_ivr_blocked_message  = "I'm sorry your number has been blocked."
-          voice_ivr_language         = "en-US"
+        }
+        chatbot_unique_names = []
+      },
+      voice_vc : {
+        channel_type     = "voice"
+        contact_identity = ""
+        templatefile     = "/app/twilio-iac/helplines/usvc/templates/studio-flows/voice-dcvh-sd.tftpl"
+        channel_flow_vars = {
+        }
+        chatbot_unique_names = []
+      },
+      sms_dcvh : {
+        messaging_mode   = "conversations"
+        channel_type     = "sms"
+        contact_identity = "+12029984483"
+        templatefile     = "/app/twilio-iac/helplines/usvc/templates/studio-flows/sms-dcvh-sd.tftpl"
+        channel_flow_vars = {
         }
         chatbot_unique_names = []
       },
       sms_vc : {
         messaging_mode   = "conversations"
         channel_type     = "sms"
-        contact_identity = "+12029984483"
-        templatefile     = "/app/twilio-iac/helplines/templates/studio-flows/messaging-blocking-conv-lambda.tftpl"
+        contact_identity = "+12345622296"
+        templatefile     = "/app/twilio-iac/helplines/usvc/templates/studio-flows/sms-vc-sd.tftpl"
         channel_flow_vars = {
         }
         chatbot_unique_names = []
