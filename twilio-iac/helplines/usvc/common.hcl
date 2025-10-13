@@ -41,16 +41,24 @@ locals {
     }
     task_queues = {
       master : {
-        "target_workers" = "1==1",
-        "friendly_name"  = "VictimConnect"
+        "target_workers" = "routing.skills HAS 'VC'",
+        "friendly_name"  = "VC English"
       },
       dcvh : {
-        "target_workers" = "1==1",
-        "friendly_name"  = "DC Victim Hotline"
+        "target_workers" = "routing.skills HAS 'DCVH'",
+        "friendly_name"  = "DCVH English"
+      },
+      vc_sp: {
+        "target_workers" = "routing.skills HAS 'VC' AND routing.skills HAS 'Spanish'",
+        "friendly_name"  = "VC Spanish"
+      },
+      dcvh_sp : {
+        "target_workers" = "routing.skills HAS 'DCVH' AND routing.skills HAS 'Spanish'",
+        "friendly_name"  = "DCVH Spanish"
       },
       dc_dispatch : {
-        "target_workers" = "1==1",
-        "friendly_name"  = "DC Dispatch"
+        "target_workers" = "routing.skills HAS 'DCVH'",
+        "friendly_name"  = "DCVH Dispatch"
       },
       survey : {
         "target_workers" = "1==0",
