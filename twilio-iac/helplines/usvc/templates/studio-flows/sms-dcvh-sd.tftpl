@@ -38,7 +38,7 @@ ${
           "event": "callComplete"
         },
         {
-          "next": "webhook_notify_failed_to_enqueue",
+          "next": "http_post_notify_failed_to_enqueue",
           "event": "failedToEnqueue"
         },
         {
@@ -74,7 +74,7 @@ ${
         "method": "POST",
         "content_type": "application/json;charset=utf-8",
         "add_twilio_auth": false,
-        "body": "{ \"text\": \"Issue detected [Failed to Enqueue] on {short_helpline} ${short_environment} Flow SID: {{flow.flow_sid}} Execution SID: {{flow.sid}}  \" }",
+        "body": "{ \"text\": \"Issue detected [Failed to Enqueue] on ${short_helpline} ${short_environment} Flow SID: {{flow.flow_sid}} Execution SID: {{flow.sid}}  \" }",
         "url": "${webhook_url_studio_errors}"
       }
     },
