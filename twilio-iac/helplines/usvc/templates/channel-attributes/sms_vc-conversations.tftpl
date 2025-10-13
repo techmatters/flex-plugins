@@ -6,8 +6,10 @@
   "twilioNumber": "{{trigger.conversation.ChannelAttributes.twilioNumber}}",
   "ignoreAgent": "",
   "helpline":"usvc",
-  "service":"NCVC",
+  "service":"VC",
   "language":"en-us",
   "transferTargetType": "",
-  "memory": {{trigger.conversation.ChannelAttributes.memory | to_json}}
+  "memory": {
+    "startForm":"HotlineInteractions"
+  }
 }

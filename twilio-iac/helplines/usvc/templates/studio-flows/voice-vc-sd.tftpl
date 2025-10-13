@@ -1,0 +1,322 @@
+${
+  jsonencode({
+  "description": "${flow_description}",
+  "states": [
+    {
+      "name": "Trigger",
+      "type": "trigger",
+      "transitions": [
+        {
+          "event": "incomingMessage"
+        },
+        {
+          "next": "run_subflow_system_down",
+          "event": "incomingCall"
+        },
+        {
+          "event": "incomingConversationMessage"
+        },
+        {
+          "event": "incomingRequest"
+        },
+        {
+          "event": "incomingParent"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 0,
+          "y": -10
+        }
+      }
+    },
+    {
+      "name": "send_to_vc_queue",
+      "type": "send-to-flex",
+      "transitions": [
+        {
+          "event": "callComplete"
+        },
+        {
+          "next": "http_post_webhook_notify_failed_to_enqueue",
+          "event": "failedToEnqueue"
+        },
+        {
+          "event": "callFailure"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": -380,
+          "y": 2240
+        },
+        "attributes": "${channel_attributes.default}",
+        "workflow": "${workflow_sids.master}",
+        "channel": "${task_channel_sids.voice}"
+      }
+    },
+    {
+      "name": "play_message_vc_voice_welcome",
+      "type": "say-play",
+      "transitions": [
+        {
+          "next": "gather_input_vc_voice_language",
+          "event": "audioComplete"
+        }
+      ],
+      "properties": {
+        "voice": "Polly.Danielle-Generative",
+        "offset": {
+          "x": 50,
+          "y": 730
+        },
+        "loop": 1,
+        "say": "${flow_vars.play_message_vc_voice_welcome}",
+        "language": "en-US"
+      }
+    },
+    {
+      "name": "http_post_notify_failed_to_enqueue",
+      "type": "make-http-request",
+      "transitions": [
+        {
+          "event": "success"
+        },
+        {
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 200,
+          "y": 1660
+        },
+        "method": "POST",
+        "content_type": "application/json;charset=utf-8",
+        "add_twilio_auth": false,
+        "body": "{ \"text\": \"Issue detected [Failed to Enqueue] on {short_helpline} ${short_environment} Flow SID: {{flow.flow_sid}} Execution SID: {{flow.sid}}  \" }",
+        "url": "${webhook_url_studio_errors}"
+      }
+    },
+    {
+      "name": "run_subflow_system_down",
+      "type": "run-subflow",
+      "transitions": [
+        {
+          "next": "set_var_service_start_form",
+          "event": "completed"
+        },
+        {
+          "next": "set_var_service_start_form",
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "flow_sid": "${system_down_studio_subflow_sid}",
+        "flow_revision": "LatestPublished",
+        "offset": {
+          "x": 230,
+          "y": 240
+        }
+      }
+    },
+    {
+      "name": "gather_input_vc_voice_language",
+      "type": "gather-input-on-call",
+      "transitions": [
+        {
+          "next": "split_language",
+          "event": "keypress"
+        },
+        {
+          "next": "gather_input_vc_voice_language",
+          "event": "speech"
+        },
+        {
+          "event": "timeout"
+        }
+      ],
+      "properties": {
+        "voice": "Polly.Danielle-Generative",
+        "number_of_digits": 1,
+        "speech_timeout": "5",
+        "offset": {
+          "x": -190,
+          "y": 1000
+        },
+        "loop": 2,
+        "finish_on_key": "#",
+        "say": "${flow_vars.play_message_vc_voice_language}",
+        "language": "en-US",
+        "stop_gather": false,
+        "gather_language": "en",
+        "speech_model": "default",
+        "timeout": 5
+      }
+    },
+    {
+      "name": "split_language",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "gather_input_vc_voice_language",
+          "event": "noMatch"
+        },
+        {
+          "next": "play_message_vc_voice_en_prequeue",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to 1",
+              "arguments": [
+                "{{widgets.gather_input_vc_voice_language.Digits}}"
+              ],
+              "type": "equal_to",
+              "value": "1"
+            }
+          ]
+        },
+        {
+          "next": "play_message_vc_voice_sp_prequeue",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to 2",
+              "arguments": [
+                "{{widgets.gather_input_vc_voice_language.Digits}}"
+              ],
+              "type": "equal_to",
+              "value": "2"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{widgets.gather_input_vc_voice_language.Digits}}",
+        "offset": {
+          "x": -350,
+          "y": 1230
+        }
+      }
+    },
+    {
+      "name": "play_message_vc_voice_en_prequeue",
+      "type": "say-play",
+      "transitions": [
+        {
+          "next": "set_var_english",
+          "event": "audioComplete"
+        }
+      ],
+      "properties": {
+        "voice": "Polly.Danielle-Generative",
+        "offset": {
+          "x": -610,
+          "y": 1550
+        },
+        "loop": 1,
+        "say": "${flow_vars.play_message_vc_voice_en_prequeue}",
+        "language": "en-US"
+      }
+    },
+    {
+      "name": "play_message_vc_voice_sp_prequeue",
+      "type": "say-play",
+      "transitions": [
+        {
+          "next": "set_var_spanish",
+          "event": "audioComplete"
+        }
+      ],
+      "properties": {
+        "voice": "Polly.Mía-Generative",
+        "offset": {
+          "x": -110,
+          "y": 1540
+        },
+        "loop": 1,
+        "say": "${flow_vars.play_message_vc_voice_sp_prequeue}",
+        "language": "es-MX"
+      }
+    },
+    {
+      "name": "set_var_service_start_form",
+      "type": "set-variables",
+      "transitions": [
+        {
+          "next": "play_message_vc_voice_welcome",
+          "event": "next"
+        }
+      ],
+      "properties": {
+        "variables": [
+          {
+            "type": "string",
+            "value": "VC",
+            "key": "service"
+          },
+          {
+            "type": "string",
+            "value": "HotlineInteractions",
+            "key": "startForm"
+          }
+        ],
+        "offset": {
+          "x": -140,
+          "y": 510
+        }
+      }
+    },
+    {
+      "name": "set_var_english",
+      "type": "set-variables",
+      "transitions": [
+        {
+          "next": "send_to_vc_queue",
+          "event": "next"
+        }
+      ],
+      "properties": {
+        "variables": [
+          {
+            "type": "string",
+            "value": "English",
+            "key": "serviceLanguage"
+          }
+        ],
+        "offset": {
+          "x": -650,
+          "y": 1860
+        }
+      }
+    },
+    {
+      "name": "set_var_spanish",
+      "type": "set-variables",
+      "transitions": [
+        {
+          "next": "send_to_vc_queue",
+          "event": "next"
+        }
+      ],
+      "properties": {
+        "variables": [
+          {
+            "type": "string",
+            "value": "Spanish",
+            "key": "serviceLanguage"
+          }
+        ],
+        "offset": {
+          "x": -170,
+          "y": 1860
+        }
+      }
+    }
+  ],
+  "initial_state": "Trigger",
+  "flags": {
+    "allow_concurrent_calls": true
+  }
+})
+  }

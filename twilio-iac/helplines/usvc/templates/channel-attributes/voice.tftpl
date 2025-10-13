@@ -4,5 +4,13 @@
   "ignoreAgent": "",
   "helpline":"${helpline}",
   "transferTargetType": "",
-  "channelType": "voice"
+  "service":"{{flow.variables.service}}",
+  "serviceLanguage":"{{flow.variables.serviceLanguage}}",
+  "memory": {
+    "startForm":"{{flow.variables.startForm}}"
+  },
+  "channelType": "voice",
+   "conversations": {
+    "hang_up_by": "Customer"
+  }
 }

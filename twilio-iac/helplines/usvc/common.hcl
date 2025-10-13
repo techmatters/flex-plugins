@@ -17,11 +17,12 @@ locals {
     enable_lex_v2              = false
 
     channel_attributes = {
-      webchat               = "/app/twilio-iac/helplines/templates/channel-attributes/webchat.tftpl",
-      voice                 = "/app/twilio-iac/helplines/templates/channel-attributes/voice.tftpl",
-      sms_conversations     = "/app/twilio-iac/helplines/templates/channel-attributes/default-conversations.tftpl",
-      default               = "/app/twilio-iac/helplines/templates/channel-attributes/default.tftpl",
-      default-conversations = "/app/twilio-iac/helplines/templates/channel-attributes/default-conversations.tftpl"
+      webchat                = "/app/twilio-iac/helplines/usvc/templates/channel-attributes/webchat.tftpl",
+      voice                  = "/app/twilio-iac/helplines/usvc/templates/channel-attributes/voice.tftpl",
+      sms_vc-conversations   = "/app/twilio-iac/helplines/usvc/templates/channel-attributes/sms_vc-conversations.tftpl",
+      sms_dcvh-conversations = "/app/twilio-iac/helplines/usvc/templates/channel-attributes/sms_dcvh-conversations.tftpl",
+      default                = "/app/twilio-iac/helplines/templates/channel-attributes/default.tftpl",
+      default-conversations  = "/app/twilio-iac/helplines/templates/channel-attributes/default-conversations.tftpl"
     }
     workflows = {
       master : {
@@ -48,7 +49,7 @@ locals {
         "target_workers" = "routing.skills HAS 'DCVH'",
         "friendly_name"  = "DCVH English"
       },
-      vc_sp: {
+      vc_sp : {
         "target_workers" = "routing.skills HAS 'VC' AND routing.skills HAS 'Spanish'",
         "friendly_name"  = "VC Spanish"
       },
