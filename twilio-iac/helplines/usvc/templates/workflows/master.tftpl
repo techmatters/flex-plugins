@@ -78,9 +78,9 @@
         "expression": "(channelType IN ['voice'] AND serviceLanguage == 'English' AND service =='Dispatch' ) OR  (targetSid=='${task_queues.dc_dispatch}' AND channelType IN ['voice'] )",
         "targets": [
           {
-            "expression": "(   worker.waitingOfflineContact != true   AND   (  'Dispatch' IN worker.routing.skills     AND     'Calls' IN worker.routing.skills  )   AND   (     (       task.channelType == 'voice'       AND       worker.channel.chat.assigned_tasks == 0     )     OR     (       task.channelType != 'voice'       AND       worker.channel.voice.assigned_tasks == 0     )   )   AND   (     (       task.transferTargetType == 'worker'       AND       task.targetSid == worker.sid     )     OR     (       task.transferTargetType != 'worker'       AND       worker.sid != task.ignoreAgent     )   ) ) OR (   worker.waitingOfflineContact == true   AND   task.targetSid == worker.sid   AND   task.isContactlessTask == true )",
+            "expression": "(   worker.waitingOfflineContact != true   AND   (  'DCVH' IN worker.routing.skills     AND     'Calls' IN worker.routing.skills  )   AND   (     (       task.channelType == 'voice'       AND       worker.channel.chat.assigned_tasks == 0     )     OR     (       task.channelType != 'voice'       AND       worker.channel.voice.assigned_tasks == 0     )   )   AND   (     (       task.transferTargetType == 'worker'       AND       task.targetSid == worker.sid     )     OR     (       task.transferTargetType != 'worker'       AND       worker.sid != task.ignoreAgent     )   ) ) OR (   worker.waitingOfflineContact == true   AND   task.targetSid == worker.sid   AND   task.isContactlessTask == true )",
             "queue": "${task_queues.dc_dispatch}",
-            "order_by": "worker.routing.levels.Dispatch DESC, worker.routing.levels.Calls DESC",
+            "order_by": "worker.routing.levels.DCVH DESC, worker.routing.levels.Calls DESC",
             "priority": 50
           }
         ]
