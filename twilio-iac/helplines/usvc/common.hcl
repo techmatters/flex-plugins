@@ -41,7 +41,7 @@ locals {
       }
     }
     task_queues = {
-      master : {
+      vc : {
         "target_workers" = "routing.skills HAS 'VC'",
         "friendly_name"  = "VC English"
       },
