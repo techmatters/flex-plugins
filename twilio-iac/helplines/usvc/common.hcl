@@ -31,10 +31,10 @@ locals {
         task_reservation_timeout = 30
       },
       //NOTE: MAKE SURE TO ADD THIS IF THE ACCOUNT USES A CONVERSATION CHANNEL
-     /* queue_transfers : {
+      queue_transfers : {
         friendly_name = "Queue Transfers Workflow"
         templatefile  = "/app/twilio-iac/helplines/templates/workflows/queue-transfers.tftpl"
-      },*/
+      },
       survey : {
         friendly_name = "Survey Workflow"
         templatefile  = "/app/twilio-iac/helplines/templates/workflows/lex.tftpl"
