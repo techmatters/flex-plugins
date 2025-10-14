@@ -94,7 +94,7 @@ ${
         "method": "POST",
         "content_type": "application/json;charset=utf-8",
         "add_twilio_auth": false,
-        "body": "{ \"text\": \"Issue detected [Failed to Enqueue] on ${short_helpline} ${short_environment} Flow SID: {{flow.flow_sid}} Execution SID: {{flow.sid}}  \" }",
+        "body": "{\n  \"blocks\": [\n{\n\t\t\t\"type\": \"section\",\n\t\t\t\"text\": {\n\t\t\t\t\"type\": \"plain_text\",\n\t\t\t\t\"text\": \"Issue detected [Failed to Enqueue] on USVC STG Flow SID: {{flow.flow_sid}} Execution SID: {{flow.sid}}\",\n\t\t\t\t\"emoji\": true\n\t\t\t}\n\t\t},\n    {\n      \"type\": \"section\",\n      \"text\": {\n        \"type\": \"mrkdwn\",\n        \"text\": \"{\\n \\\"name\\\": \\\"{{trigger.message.ChannelAttributes.from}}\\\",\\n \\\"channelType\\\": \\\"{{trigger.message.ChannelAttributes.channel_type}}\\\",\\n \\\"channelSid\\\": \\\"{{trigger.message.ChannelSid}}\\\",\\n \\\"twilioNumber\\\": \\\"{{trigger.message.ChannelAttributes.twilioNumber}}\\\",\\n \\\"ignoreAgent\\\": \\\"\\\",\\n \\\"helpline\\\": \\\"NCVC\\\",\\n \\\"language\\\": \\\"en-US\\\",\\n \\\"transferTargetType\\\": \\\"\\\",\\n \\\"memory\\\": {{trigger.message.ChannelAttributes.memory| to_json}}\\n}\"\n      }\n    }\n  ]\n}",
         "url": "${webhook_url_studio_errors}"
       }
     },
