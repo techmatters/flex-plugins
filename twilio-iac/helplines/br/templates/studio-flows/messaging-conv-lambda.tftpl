@@ -51,11 +51,11 @@ ${
         "method": "POST",
         "content_type": "application/json;charset=utf-8",
         "body": "{ \"trigger\": {{trigger | to_json}}, \"channelType\": \"{% if trigger.conversation.ChannelAttributes.channel_type %}{{trigger.conversation.ChannelAttributes.channel_type}}{% else %}{{trigger.conversation.Source | downcase}}{% endif %}\"}",
-        "url": "${get_profile_flags_for_identifier_base_url}/f_getProfileFlagsForIdentifier"
+        "url": "${get_profile_flags_for_identifier_base_url}/getProfileFlagsForIdentifier"
       }
     },
     {
-      "name": "send_message_blocked_message",
+      "name": "send_message_blocked",
       "type": "send-message",
       "transitions": [
         {
@@ -86,7 +86,7 @@ ${
           "event": "noMatch"
         },
         {
-          "next": "send_message_blocked_message",
+          "next": "send_message_blocked",
           "event": "match",
           "conditions": [
             {
@@ -133,7 +133,7 @@ ${
       }
     },
     {
-      "name": "http_post_facebookHours",
+      "name": "f_operatingHours_facebook",
       "type": "make-http-request",
       "transitions": [
         {
@@ -170,7 +170,7 @@ ${
             {
               "friendly_name": "If value contains open",
               "arguments": [
-                "{{widgets.http_post_facebookHours.body}}"
+                "{{widgets.facebookHours.body}}"
               ],
               "type": "contains",
               "value": "open"
@@ -178,13 +178,13 @@ ${
           ]
         },
         {
-          "next": "f_closed",
+          "next": "f_sendMessageAndRunJanitor_closed",
           "event": "match",
           "conditions": [
             {
               "friendly_name": "If value contains closed",
               "arguments": [
-                "{{widgets.http_post_facebookHours.body}}"
+                "{{widgets.facebookHours.body}}"
               ],
               "type": "contains",
               "value": "closed"
@@ -192,13 +192,13 @@ ${
           ]
         },
         {
-          "next": "f_holiday",
+          "next": "f_sendMessageAndRunJanitor_holiday",
           "event": "match",
           "conditions": [
             {
               "friendly_name": "If value contains holiday",
               "arguments": [
-                "{{widgets.http_post_facebookHours.body}}"
+                "{{widgets.facebookHours.body}}"
               ],
               "type": "contains",
               "value": "holiday"
@@ -207,7 +207,7 @@ ${
         }
       ],
       "properties": {
-        "input": "{{widgets.http_post_facebookHours.body}}",
+        "input": "{{widgets.facebookHours.body}}",
         "offset": {
           "x": 40,
           "y": -60
@@ -215,7 +215,7 @@ ${
       }
     },
     {
-      "name": "f_closed",
+      "name": "f_sendMessageAndRunJanitor_closed",
       "type": "run-function",
       "transitions": [
         {
@@ -255,7 +255,7 @@ ${
       }
     },
     {
-      "name": "f_holiday",
+      "name": "f_sendMessageAndRunJanitor_holiday",
       "type": "run-function",
       "transitions": [
         {
@@ -343,11 +343,11 @@ ${
       "type": "split-based-on",
       "transitions": [
         {
-          "next": "f_isOther",
+          "next": "f_sendMessageAndRunJanitor_other",
           "event": "noMatch"
         },
         {
-          "next": "http_post_facebookHours",
+          "next": "f_operatingHours_facebook",
           "event": "match",
           "conditions": [
             {
@@ -361,7 +361,7 @@ ${
           ]
         },
         {
-          "next": "f_isCrimeReport",
+          "next": "f_sendMessageAndRunJanitor_crime_report",
           "event": "match",
           "conditions": [
             {
@@ -375,7 +375,7 @@ ${
           ]
         },
         {
-          "next": "f_isResearcher",
+          "next": "f_sendMessageAndRunJanitor_researcher",
           "event": "match",
           "conditions": [
             {
@@ -389,7 +389,7 @@ ${
           ]
         },
         {
-          "next": "f_isOther",
+          "next": "f_sendMessageAndRunJanitor_other",
           "event": "match",
           "conditions": [
             {
@@ -439,7 +439,7 @@ ${
       "type": "split-based-on",
       "transitions": [
         {
-          "next": "http_post_reasonBot",
+          "next": "f_captureChannelWithBot_reason",
           "event": "noMatch"
         },
         {
@@ -497,7 +497,7 @@ ${
       }
     },
     {
-      "name": "http_post_reasonBot",
+      "name": "f_captureChannelWithBot_reason",
       "type": "make-http-request",
       "transitions": [
         {
@@ -543,7 +543,7 @@ ${
       }
     },
     {
-      "name": "f_isCrimeReport",
+      "name": "f_sendMessageAndRunJanitor_crime_report",
       "type": "run-function",
       "transitions": [
         {
@@ -583,7 +583,7 @@ ${
       }
     },
     {
-      "name": "f_isResearcher",
+      "name": "f_sendMessageAndRunJanitor_researcher",
       "type": "run-function",
       "transitions": [
         {
@@ -623,7 +623,7 @@ ${
       }
     },
     {
-      "name": "f_isOther",
+      "name": "f_sendMessageAndRunJanitor_other",
       "type": "run-function",
       "transitions": [
         {
