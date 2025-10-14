@@ -13,7 +13,7 @@ ${
           "event": "incomingCall"
         },
         {
-          "next": "http_getProfileFlagsForIdentifier",
+          "next": "f_getProfileFlagsForIdentifier",
           "event": "incomingConversationMessage"
         },
         {
@@ -31,7 +31,7 @@ ${
       }
     },
     {
-      "name": "http_getProfileFlagsForIdentifier",
+      "name": "f_getProfileFlagsForIdentifier",
       "type": "make-http-request",
       "transitions": [
         {
@@ -51,7 +51,7 @@ ${
         "method": "POST",
         "content_type": "application/json;charset=utf-8",
         "body": "{ \"trigger\": {{trigger | to_json}}, \"channelType\": \"{% if trigger.conversation.ChannelAttributes.channel_type %}{{trigger.conversation.ChannelAttributes.channel_type}}{% else %}{{trigger.conversation.Source | downcase}}{% endif %}\"}",
-        "url": "${get_profile_flags_for_identifier_base_url}/http_getProfileFlagsForIdentifier"
+        "url": "${get_profile_flags_for_identifier_base_url}/f_getProfileFlagsForIdentifier"
       }
     },
     {
@@ -92,7 +92,7 @@ ${
             {
               "friendly_name": "If value contains blocked",
               "arguments": [
-                "{{widgets.http_getProfileFlagsForIdentifier.parsed.flags}}"
+                "{{widgets.f_getProfileFlagsForIdentifier.parsed.flags}}"
               ],
               "type": "contains",
               "value": "blocked"
@@ -101,7 +101,7 @@ ${
         }
       ],
       "properties": {
-        "input": "{{widgets.http_getProfileFlagsForIdentifier.parsed.flags}}",
+        "input": "{{widgets.f_getProfileFlagsForIdentifier.parsed.flags}}",
         "offset": {
           "x": -800,
           "y": -1260
