@@ -16,7 +16,7 @@
                     "value": "news"
                 },
                 {
-                    "value": "4."
+                    "value": "5."
                 },
                 {
                     "value": "media"
@@ -63,7 +63,7 @@
                     "value": "instagram"
                 },
                 {
-                    "value": "2."
+                    "value": "3."
                 },
                 {
                     "value": "from fb"
@@ -87,7 +87,7 @@
                     "value": "from ig"
                 },
                 {
-                    "value": "2"
+                    "value": "3"
                 },
                 {
                     "value": "online"
@@ -97,6 +97,34 @@
                 },
                 {
                     "value": "from whatsapp"
+                }
+            ]
+        },
+        {
+            "sampleValue": {
+                "value": "Search Engine"
+            },
+            "synonyms": [
+                {
+                    "value": "search"
+                },
+                {
+                    "value": "google"
+                },
+                {
+                    "value": "yahoo"
+                },
+                {
+                    "value": "2."
+                },
+                {
+                    "value": "seach online"
+                },
+                {
+                    "value": "web"
+                },
+                {
+                    "value": "2"
                 }
             ]
         },
@@ -165,13 +193,13 @@
                     "value": "school"
                 },
                 {
-                    "value": "5"
+                    "value": "6"
                 },
                 {
                     "value": "friend"
                 },
                 {
-                    "value": "5."
+                    "value": "6."
                 },
                 {
                     "value": "my friend"
