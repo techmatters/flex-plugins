@@ -22,8 +22,6 @@ import { ProfileSection } from '../types/types';
 import { fetchPermissionRules } from '../services/PermissionsService';
 import { actionsMaps, PermissionActions, TargetKind } from './actions';
 
-export { canOnlyViewOwnCases } from './searchPermissions';
-
 type PermissionActionsKeys = keyof typeof PermissionActions;
 export type PermissionActionType = typeof PermissionActions[PermissionActionsKeys];
 
