@@ -34,3 +34,9 @@ variable "system_down_flow_vars" {
   default     = {}
   description = "Studio flow variables"
 }
+
+variable "debug_mode" {
+  type        = string
+  default     = "widget_failures"
+  description = "Debug mode"
+  }

@@ -107,5 +107,6 @@ locals {
       forward_number                   = "+123"
       recording_url                    = "https://<place_holder>.mp3"
     }
+    debug_mode = "tasks_created"
  }
 }
