@@ -38,7 +38,7 @@ import {
   Text,
 } from '../styles';
 import Pagination from '../../pagination';
-import { getInitializedCan, PermissionActions } from '../../../permissions';
+import { getInitializedCan } from '../../../permissions/rules';
 import { namespace } from '../../../states/storeNamespaces';
 import { RootState } from '../../../states';
 import { getCurrentTopmostRouteForTask } from '../../../states/routing/getRoute';
@@ -52,6 +52,7 @@ import { getHrmConfig, getTemplateStrings } from '../../../hrmConfig';
 import { createCaseAsyncAction } from '../../../states/case/saveCase';
 import asyncDispatch from '../../../states/asyncDispatch';
 import { SearchResultsQueryTemplate } from './SearchResultsQueryTemplate';
+import { PermissionActions } from '../../../permissions/actions';
 
 export const CONTACTS_PER_PAGE = 20;
 export const CASES_PER_PAGE = 20;

@@ -17,11 +17,9 @@
 import isEqual from 'lodash/isEqual';
 import sortBy from 'lodash/sortBy';
 
-import { getRules } from '.';
-import { fetchRules } from './fetchRules';
+import { getRules, RulesFile } from './rules';
 import { getHrmConfig } from '../hrmConfig';
 
-type RulesFile = Awaited<ReturnType<typeof fetchRules>>;
 type TargetRule = Partial<Record<keyof RulesFile, string[]>>;
 
 /**

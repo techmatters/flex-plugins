@@ -44,7 +44,7 @@ jest.mock('../../../services/CaseService', () => ({
   cancelCase: jest.fn(),
   getCase: jest.fn(),
 }));
-jest.mock('../../../permissions', () => ({
+jest.mock('../../../permissions/rules', () => ({
   getInitializedCan: jest.fn(() => () => true),
   PermissionActions: {},
 }));

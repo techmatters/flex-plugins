@@ -39,7 +39,7 @@ import AddEditCaseItem, { AddEditCaseItemProps } from './AddEditCaseItem';
 import ViewCaseItem from './ViewCaseItem';
 import { bindFileUploadCustomHandlers } from './documentUploadHandler';
 import { recordBackendError } from '../../fullStory';
-import { getInitializedCan } from '../../permissions';
+import { getInitializedCan } from '../../permissions/rules';
 import { CenteredContainer } from './styles';
 import EditCaseOverview from './caseOverview/EditCaseOverview';
 import * as ContactActions from '../../states/contacts/existingContacts';

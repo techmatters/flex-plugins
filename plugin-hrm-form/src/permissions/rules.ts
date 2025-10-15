@@ -17,59 +17,12 @@
 import parseISO from 'date-fns/parseISO';
 import { differenceInDays, differenceInHours } from 'date-fns';
 
-import { fetchRules } from './fetchRules';
 import { getHrmConfig } from '../hrmConfig';
 import { ProfileSection } from '../types/types';
+import { fetchPermissionRules } from '../services/PermissionsService';
+import { actionsMaps, PermissionActions, TargetKind } from './actions';
 
-export { canOnlyViewOwnCases } from './search-permissions';
-
-export const CaseActions = {
-  VIEW_CASE: 'viewCase',
-  CLOSE_CASE: 'closeCase',
-  REOPEN_CASE: 'reopenCase',
-  CASE_STATUS_TRANSITION: 'caseStatusTransition',
-  ADD_CASE_SECTION: 'addCaseSection',
-  EDIT_CASE_SECTION: 'editCaseSection',
-  EDIT_CASE_OVERVIEW: 'editCaseOverview',
-  UPDATE_CASE_CONTACTS: 'updateCaseContacts',
-} as const;
-
-export const ContactActions = {
-  VIEW_CONTACT: 'viewContact',
-  EDIT_CONTACT: 'editContact',
-  EDIT_IN_PROGRESS_CONTACT: 'editInProgressContact',
-  VIEW_EXTERNAL_TRANSCRIPT: 'viewExternalTranscript',
-  VIEW_RECORDING: 'viewRecording',
-  ADD_CONTACT_TO_CASE: 'addContactToCase',
-  REMOVE_CONTACT_FROM_CASE: 'removeContactFromCase',
-} as const;
-
-// eslint-disable-next-line import/no-unused-modules
-export const ProfileActions = {
-  VIEW_PROFILE: 'viewProfile',
-  // EDIT_PROFILE: 'editProfile', // we don't need edit for now, will be needed when users can attach more identifiers or edit the name
-  FLAG_PROFILE: 'flagProfile',
-  UNFLAG_PROFILE: 'unflagProfile',
-};
-
-// eslint-disable-next-line import/no-unused-modules
-export const ProfileSectionActions = {
-  CREATE_PROFILE_SECTION: 'createProfileSection',
-  VIEW_PROFILE_SECTION: 'viewProfileSection',
-  EDIT_PROFILE_SECTION: 'editProfileSection',
-};
-
-export const ViewIdentifiersAction = {
-  VIEW_IDENTIFIERS: 'viewIdentifiers',
-} as const;
-
-export const PermissionActions = {
-  ...CaseActions,
-  ...ContactActions,
-  ...ProfileActions,
-  ...ProfileSectionActions,
-  ...ViewIdentifiersAction,
-} as const;
+export { canOnlyViewOwnCases } from './searchPermissions';
 
 type PermissionActionsKeys = keyof typeof PermissionActions;
 export type PermissionActionType = typeof PermissionActions[PermissionActionsKeys];
@@ -155,8 +108,6 @@ type SupportedTKCondition = {
   viewIdentifiers: SupportedViewIdentifiersCondition;
 };
 
-export type TargetKind = keyof typeof actionsMaps;
-
 type TKCondition<T extends TargetKind> = SupportedTKCondition[T];
 type TKConditionsSet<T extends TargetKind> = TKCondition<T>[];
 type TKConditionsSets<T extends TargetKind> = TKConditionsSet<T>[];
@@ -188,18 +139,6 @@ const checkConditionsSets = <T extends TargetKind>(
   conditionsState: ConditionsState,
   conditionsSets: TKConditionsSets<T>,
 ): boolean => conditionsSets.some(checkConditionsSet(conditionsState));
-
-// eslint-disable-next-line import/no-unused-modules
-export const actionsMaps = {
-  case: CaseActions,
-  contact: ContactActions,
-  profile: ProfileActions,
-  profileSection: ProfileSectionActions,
-  postSurvey: {
-    /* TODO: add when used */
-  },
-  viewIdentifiers: ViewIdentifiersAction,
-} as const;
 
 const isTKCondition = <T extends TargetKind>(kind: T) => (c: any): c is TKCondition<T> => {
   if (!c) {
@@ -237,7 +176,9 @@ const isTKCondition = <T extends TargetKind>(kind: T) => (c: any): c is TKCondit
 type NestedStringValues<T> = T extends object
   ? { [K in keyof T]: T[K] extends string ? T[K] : NestedStringValues<T[K]> }[keyof T]
   : never;
+
 type Action = NestedStringValues<typeof actionsMaps>;
+
 export type RulesFile = { [k in Action]: TKConditionsSets<TargetKind> };
 
 const isValidTKConditionsSets = <T extends TargetKind>(kind: T) => (
@@ -265,7 +206,7 @@ export const getRules = () => rules;
 
 export const validateAndSetPermissionRules = async () => {
   try {
-    const rulesFile = await fetchRules();
+    const rulesFile = await fetchPermissionRules();
     validateTKActions(rulesFile);
     rules = rulesFile;
     return rules;

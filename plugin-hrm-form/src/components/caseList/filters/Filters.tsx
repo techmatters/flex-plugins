@@ -29,7 +29,7 @@ import { DateFilter, dateFilterOptionsInPast, dateFilterOptionsInPastAndFuture }
 import { RootState } from '../../../states';
 import * as CaseListSettingsActions from '../../../states/caseList/settings';
 import { getAseloFeatureFlags, getHrmConfig, getTemplateStrings } from '../../../hrmConfig';
-import { canOnlyViewOwnCases } from '../../../permissions';
+import { canOnlyViewOwnCases } from '../../../permissions/rules';
 import { caseListBase, configurationBase, namespace } from '../../../states/storeNamespaces';
 import { DateFilterValue } from '../../../states/caseList/dateFilters';
 import { getFilterComponent } from './CaseListFilterProvider';
