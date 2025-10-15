@@ -27,6 +27,11 @@ inputs = local.config
   */
 terraform {
 
+  // TODO: make this only happen on provision stage.
+  before_hook "manage_tf_secrets" {
+    commands = ["init"]
+    execute  = ["/app/twilio-iac/scripts/python_tools/manageSecrets.py", "${include.root.locals.environment}/${include.root.locals.short_helpline}"]
+  }
 
   source = "../../terraform-modules//stages/${include.root.locals.stage}"
 }
