@@ -27,7 +27,6 @@ import * as GeneralActions from '../states/actions';
 import asyncDispatch from '../states/asyncDispatch';
 import { newClearContactAsyncAction, removeFromCaseAsyncAction } from '../states/contacts/saveContact';
 import { getOfflineContactTaskSid } from '../states/contacts/offlineContactTask';
-import '../types';
 import { CaseStateEntry } from '../states/case/types';
 import { getExternalRecordingInfo } from './getExternalRecordingInfo';
 import { assignOfflineContactInit, assignOfflineContactResolve } from './twilioTaskService';

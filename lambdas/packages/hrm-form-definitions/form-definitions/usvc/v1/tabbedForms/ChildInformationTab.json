@@ -10,12 +10,24 @@
         "label": ""
       },
       {
-        "value": "Missing value",
-        "label": "Missing value"
+        "value": "Community member",
+        "label": "Community member"
       },
       {
-        "value": "Missing value 2",
-        "label": "Missing value 2"
+        "value": "Family member of victim",
+        "label": "Family member of victim"
+      },
+      {
+        "value": "Friend of victim",
+        "label": "Friend of victim"
+      },
+      {
+        "value": "Professional",
+        "label": "Professional"
+      },
+      {
+        "value": "Victim (self)",
+        "label": "Victim (self)"
       }
     ],
     "required": {
@@ -216,50 +228,6 @@
       {
         "value": "Other",
         "label": "Other"
-      }
-    ],
-    "required": {
-      "value": true,
-      "message": "RequiredFieldError"
-    }
-  },
-  {
-    "name": "keywords",
-    "label": "Keywords",
-    "type": "listbox-multiselect",
-    "isPII": false,
-    "options": [
-      {
-        "value": "Complaint against local agency",
-        "label": "Complaint against local agency"
-      },
-      {
-        "value": "Disconnected (by VAS)",
-        "label": "Disconnected (by VAS)"
-      },
-      {
-        "value": "Disconnected (by visitor or tech issue)",
-        "label": "Disconnected (by visitor or tech issue)"
-      },
-      {
-        "value": "Law enforcement complaint/misconduct",
-        "label": "Law enforcement complaint/misconduct"
-      },
-      {
-        "value": "National compassion fund",
-        "label": "National compassion fund"
-      },
-      {
-        "value": "Protective order",
-        "label": "Protective order"
-      },
-      {
-        "value": "PREA (VC only)",
-        "label": "PREA (VC only)"
-      },
-      {
-        "value": "Unknown/NA",
-        "label": "Unknown/NA"
       }
     ],
     "required": {
@@ -530,8 +498,8 @@
     "isPII": false,
     "dependsOn": "location",
     "defaultOption": {
-      "value": "N/A",
-      "label": "N/A"
+      "value": "",
+      "label": ""
     },
     "options": {
       "Alabama": [
@@ -921,6 +889,50 @@
         }
       ]
     },
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "keywords",
+    "label": "Keywords",
+    "type": "listbox-multiselect",
+    "isPII": false,
+    "options": [
+      {
+        "value": "Complaint against local agency",
+        "label": "Complaint against local agency"
+      },
+      {
+        "value": "Disconnected (by VAS)",
+        "label": "Disconnected (by VAS)"
+      },
+      {
+        "value": "Disconnected (by visitor or tech issue)",
+        "label": "Disconnected (by visitor or tech issue)"
+      },
+      {
+        "value": "Law enforcement complaint/misconduct",
+        "label": "Law enforcement complaint/misconduct"
+      },
+      {
+        "value": "National compassion fund",
+        "label": "National compassion fund"
+      },
+      {
+        "value": "Protective order",
+        "label": "Protective order"
+      },
+      {
+        "value": "PREA (VC only)",
+        "label": "PREA (VC only)"
+      },
+      {
+        "value": "Unknown/NA",
+        "label": "Unknown/NA"
+      }
+    ],
     "required": {
       "value": true,
       "message": "RequiredFieldError"
