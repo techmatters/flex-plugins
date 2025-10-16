@@ -140,7 +140,7 @@
         "label": "5+"
       }
     ]
-  }, 
+  },
   {
     "name": "stateInput",
     "label": "Child State (Input from SMS Chatbot)",
@@ -1359,38 +1359,38 @@
   {
     "name": "q7",
     "label": "In the last 3 months, have you ever done anything, started to do anything, or prepared to do anything to end your life?",
-    "type": "dependent-select",
+    "type": "select",
     "isPII": false,
-    "dependsOn": "q6",
     "defaultOption": {
       "value": "",
       "label": ""
     },
-    "options": {
-      "Yes": [
-        {
-          "value": "Yes",
-          "label": "Yes"
-        },
-        {
-          "value": "No",
-          "label": "No"
-        }
-      ]
-    }
+    "options": [
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "Yes",
+        "label": "Yes"
+      },
+      {
+        "value": "No",
+        "label": "No"
+      }
+    ]
   },
   {
     "name": "riskLevel",
     "label": "Risk level",
-    "type": "dependent-select",
-    "dependsOn": "safetyConcern",
+    "type": "select",
     "isPII": false,
     "defaultOption": {
       "value": "",
       "label": ""
     },
-    "options": {
-      "Suicidal Ideation": [
+
+    "options": [
       {
         "value": "Low risk - Suicidal ideation without plan or intent",
         "label": "Low risk - Suicidal ideation without plan or intent"
@@ -1403,8 +1403,7 @@
         "value": "High risk – Suicidal ideation with a plan and intent",
         "label": "High risk – Suicidal ideation with a plan and intent"
       }
-      ]
-    }
+    ]
   },
   {
     "name": "cfSportLevel",
