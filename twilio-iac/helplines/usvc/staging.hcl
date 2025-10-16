@@ -38,7 +38,7 @@ locals {
 
       # DCVH Voice
       play_message_dcvh_voice_welcome = "This is the welcome message play_message_dcvh_voice_welcome"
-      play_message_dcvh_voice_language = "This is  the language question. Press 1 for English and 2 for Spanish."
+      play_message_dcvh_voice_language = "This is  the language question. Press 1 for English, 2 for Spanish or 3 for Dispatch."
       play_message_dcvh_voice_en_prequeue = "This is the english prequeue message for DCVH"
       play_message_dcvh_voice_sp_prequeue = "This is the spanish prequeue message for DCVH"
       play_message_dcvh_voice_dispatch_prequeue = "This is the dispatch prequeue message for DCVH"
