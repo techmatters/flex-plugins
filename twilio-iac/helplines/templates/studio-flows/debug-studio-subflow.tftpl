@@ -31,7 +31,7 @@ ${
       }
     },
     {
-      "name": "http_post_tasks_created",
+      "name": "http_post_task_created",
       "type": "make-http-request",
       "transitions": [
         {
@@ -49,7 +49,7 @@ ${
         "method": "POST",
         "content_type": "application/json;charset=utf-8",
         "add_twilio_auth": false,
-        "body": "{\n  \"blocks\": [\n    {\n      \"text\": {\n        \"emoji\": true,\n        \"text\": \"Task created  on ${short_helpline} ${short_environment} \\n Flow SID: {{trigger.parent.parameters.flow_sid}} \\n Execution SID: {{trigger.parent.parameters.execution_sid}}\",\n        \"type\": \"plain_text\"\n      },\n      \"type\": \"section\"\n    },\n    {\n      \"text\": {\n        \"emoji\": true,\n        \"text\": \"Task attributes sent:\",\n        \"type\": \"plain_text\"\n      },\n      \"type\": \"section\"\n    },\n    {\n      \"text\": {\n        \"text\": \" ``` {{trigger.parent.parameters.task_attributes}}  ``` \",\n        \"type\": \"mrkdwn\"\n      },\n      \"type\": \"section\"\n    },\n    {\n      \"accessory\": {\n        \"action_id\": \"button-action\",\n        \"text\": {\n          \"emoji\": true,\n          \"text\": \"Open log\",\n          \"type\": \"plain_text\"\n        },\n        \"type\": \"button\",\n        \"url\": \"https://console.twilio.com/us1/service/studio/{{trigger.parent.parameters.flow_sid}}/studio-flow-instance-executions?frameUrl=%2Fconsole%2Fstudio%2Fflows%2F{{trigger.parent.parameters.flow_sid}}%2Fexecutions%2F{{{trigger.parent.parameters.execution_sid}}%3F__override_layout__%3Dembed%26bifrost%3Dtrue%26x-target-region%3Dus1\",\n        \"value\": \"click_me_123\"\n      },\n      \"text\": {\n        \"text\": \"More details in the log (make sure you are logged in with the appropriate Twilio account).\",\n        \"type\": \"mrkdwn\"\n      },\n      \"type\": \"section\"\n    }\n  ]\n}",
+        "body": "{\n  \"blocks\": [\n    {\n      \"text\": {\n        \"emoji\": true,\n        \"text\": \"Task created in ${short_helpline} ${short_environment} \\n Flow SID: {{trigger.parent.parameters.flow_sid}} \\n Execution SID: {{trigger.parent.parameters.execution_sid}}\",\n        \"type\": \"plain_text\"\n      },\n      \"type\": \"section\"\n    },\n    {\n      \"type\": \"divider\"\n    },\n    {\n      \"text\": {\n        \"emoji\": true,\n        \"text\": \"Task attributes sent:\",\n        \"type\": \"plain_text\"\n      },\n      \"type\": \"section\"\n    },\n    {\n      \"text\": {\n        \"text\": {{ trigger.parent.parameters.task_attributes | to_json  | replace: '1','X' | replace: '2','X' | replace: '3','X' | replace: '4','X' | replace: '5','X' | replace: '6','X' | replace: '7','X' | replace: '8','X' | replace: '9','X' | replace: '0','X'  }},\n        \"type\": \"mrkdwn\"\n      },\n      \"type\": \"section\"\n    },\n    {\n      \"type\": \"divider\"\n    },\n    {\n      \"accessory\": {\n        \"action_id\": \"button-action\",\n        \"text\": {\n          \"emoji\": true,\n          \"text\": \"Open log\",\n          \"type\": \"plain_text\"\n        },\n        \"type\": \"button\",\n        \"url\": \"https://console.twilio.com/us1/service/studio/{{trigger.parent.parameters.flow_sid}}/studio-flow-instance-executions?frameUrl=%2Fconsole%2Fstudio%2Fflows%2F{{trigger.parent.parameters.flow_sid}}%2Fexecutions%2F{{trigger.parent.parameters.execution_sid}}%3F__override_layout__%3Dembed%26bifrost%3Dtrue%26x-target-region%3Dus1\",\n        \"value\": \"click_me_123\"\n      },\n      \"text\": {\n        \"text\": \"More details in the log (make sure you are logged in with the appropriate Twilio account).\",\n        \"type\": \"mrkdwn\"\n      },\n      \"type\": \"section\"\n    }\n  ]\n}",
         "url": "${webhook_url_studio_errors}"
       }
     },
@@ -62,7 +62,7 @@ ${
           "event": "noMatch"
         },
         {
-          "next": "http_post_tasks_created",
+          "next": "http_post_task_created",
           "event": "match",
           "conditions": [
             {
