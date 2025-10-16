@@ -60,7 +60,7 @@ resource "twilio_studio_flows_v2" "debug_studio_subflow" {
   status        = "published"
   debug_templatefile = "/app/twilio-iac/helplines/templates/studio-flows/debug-studio-subflow.tftpl"
   definition = templatefile(
-    var.system_down_templatefile,
+    var.debug_templatefile,
     {
       flow_description                           = "Debug SubFlow",
       helpline                                   = var.helpline,
