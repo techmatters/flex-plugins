@@ -15,6 +15,7 @@ locals {
   serverless_environment_production_sid = local.provision_config.serverless_environment_production_sid
   stage = "system-down"
   webhook_url_studio_errors = nonsensitive(data.aws_ssm_parameter.webhook_url_studio_errors.value)
+  debug_templatefile = "/app/twilio-iac/helplines/templates/studio-flows/debug-studio-subflow.tftpl"
 }
 
 data "terraform_remote_state" "provision" {
@@ -58,9 +59,8 @@ resource "twilio_studio_flows_v2" "system_down_studio_subflow" {
 resource "twilio_studio_flows_v2" "debug_studio_subflow" {
   friendly_name = "Debug Studio SubFlow"
   status        = "published"
-  debug_templatefile = "/app/twilio-iac/helplines/templates/studio-flows/debug-studio-subflow.tftpl"
   definition = templatefile(
-    var.debug_templatefile,
+    local.debug_templatefile,
     {
       flow_description                           = "Debug SubFlow",
       helpline                                   = var.helpline,
