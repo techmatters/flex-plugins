@@ -35,14 +35,16 @@ ${
       "type": "send-to-flex",
       "transitions": [
         {
-          "event": "callComplete"
+          "event": "callComplete",
+          "next": "run_subflow_debug"
         },
         {
           "next": "run_subflow_debug",
           "event": "failedToEnqueue"
         },
         {
-          "event": "callFailure"
+          "event": "callFailure",
+          "next": "run_subflow_debug"
         }
       ],
       "properties": {

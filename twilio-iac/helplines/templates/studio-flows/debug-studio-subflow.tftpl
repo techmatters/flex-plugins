@@ -19,7 +19,7 @@ ${
           "event": "incomingRequest"
         },
         {
-          "next": "split_debug_mode",
+          "next": "set_var_debug_mode",
           "event": "incomingParent"
         }
       ],
@@ -68,7 +68,7 @@ ${
             {
               "friendly_name": "If value equal_to tasks_created",
               "arguments": [
-                "{{trigger.parent.parameters.debug_mode}}"
+                "{{flow.variables.debug_mode}}"
               ],
               "type": "equal_to",
               "value": "tasks_created"
@@ -82,7 +82,7 @@ ${
             {
               "friendly_name": "If value equal_to widget_failures",
               "arguments": [
-                "{{trigger.parent.parameters.debug_mode}}"
+                "{{flow.variables.debug_mode}}"
               ],
               "type": "equal_to",
               "value": "widget_failures"
@@ -91,7 +91,7 @@ ${
         }
       ],
       "properties": {
-        "input": "{{trigger.parent.parameters.debug_mode}}",
+        "input": "{{flow.variables.debug_mode}}",
         "offset": {
           "x": 100,
           "y": 300
@@ -119,6 +119,29 @@ ${
         "add_twilio_auth": false,
         "body": "{\n  \"blocks\": [\n    {\n      \"text\": {\n        \"emoji\": true,\n        \"text\": \"Issue detected  on ${short_helpline} ${short_environment} \\n Flow SID: {{trigger.parent.parameters.flow_sid}} \\n Execution SID: {{trigger.parent.parameters.execution_sid}}\",\n        \"type\": \"plain_text\"\n      },\n      \"type\": \"section\"\n    },\n    {\n      \"text\": {\n        \"emoji\": true,\n        \"text\": \"Flow data:\",\n        \"type\": \"plain_text\"\n      },\n      \"type\": \"section\"\n    },\n    {\n      \"text\": {\n        \"text\": \" ``` {{trigger.parent.parameters.flow}} ``` \",\n        \"type\": \"mrkdwn\"\n      },\n      \"type\": \"section\"\n    },\n    {\n      \"text\": {\n        \"emoji\": true,\n        \"text\": \"Trigger data:\",\n        \"type\": \"plain_text\"\n      },\n      \"type\": \"section\"\n    },\n    {\n      \"text\": {\n        \"text\": \" ``` {{trigger.parent.parameters.trigger}} ``` \",\n        \"type\": \"mrkdwn\"\n      },\n      \"type\": \"section\"\n    },\n    {\n      \"text\": {\n        \"emoji\": true,\n        \"text\": \"Widgets data:\",\n        \"type\": \"plain_text\"\n      },\n      \"type\": \"section\"\n    },\n    {\n      \"text\": {\n        \"text\": \" ``` {{trigger.parent.parameters.widgets}} ``` \",\n        \"type\": \"mrkdwn\"\n      },\n      \"type\": \"section\"\n    }\n  ]\n}",
         "url": "${webhook_url_studio_errors}"
+      }
+    },
+    {
+      "name": "set_var_debug_mode",
+      "type": "set-variables",
+      "transitions": [
+        {
+          "next": "split_debug_mode",
+          "event": "next"
+        }
+      ],
+      "properties": {
+        "variables": [
+          {
+            "type": "string",
+            "value": "${debug_mode}",
+            "key": "debug_mode"
+          }
+        ],
+        "offset": {
+          "x": 650,
+          "y": 130
+        }
       }
     }
   ],
