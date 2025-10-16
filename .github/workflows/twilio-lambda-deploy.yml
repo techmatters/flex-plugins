@@ -148,11 +148,11 @@ jobs:
           LAMBDA_NAME=$(basename "./$SHORT_LAMBDA_NAME")
           LAMBDA="${{ inputs.environment }}-${{ matrix.region }}-$LAMBDA_NAME"
           
-          PROVISIONED_CONCURRENCY_JSON=$(aws lambda get-provisioned-concurrency-config --function-name $LAMBDA --qualifer live || echo "not_exists")
+          PROVISIONED_CONCURRENCY_JSON=$(aws lambda get-provisioned-concurrency-config --function-name $LAMBDA --qualifier live || echo "not_exists")
           if [ "PROVISIONED_CONCURRENCY_JSON" != "not_exists" ]; then
             REQUESTED_CONCURRENCY=$(echo "PROVISIONED_CONCURRENCY_JSON" | jq -r '.RequestedProvisionedConcurrentExecutions')
-            aws lambda delete-provisioned-concurrency-config --function-name $LAMBDA --qualifer live
-            aws lambda put-provisioned-concurrency-config --function-name $LAMBDA --qualifer live --provisioned-concurrent-executions $REQUESTED_CONCURRENCY
+            aws lambda delete-provisioned-concurrency-config --function-name $LAMBDA --qualifier live
+            aws lambda put-provisioned-concurrency-config --function-name $LAMBDA --qualifier live --provisioned-concurrent-executions $REQUESTED_CONCURRENCY
           fi
 
       # reconfigure AWS credentials to use the default region for SSM Parameter Store.
