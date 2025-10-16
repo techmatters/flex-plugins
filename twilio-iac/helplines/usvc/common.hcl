@@ -13,7 +13,7 @@ locals {
     task_language              = "en-US"
     enable_post_survey         = false
     enable_external_recordings = false
-    permission_config          = "ncvc"
+    permission_config          = "usvc"
     enable_lex_v2              = false
 
     channel_attributes = {
