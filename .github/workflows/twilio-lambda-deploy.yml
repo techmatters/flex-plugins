@@ -147,19 +147,10 @@ jobs:
 
           LAMBDA_NAME=$(basename "./$SHORT_LAMBDA_NAME")
           LAMBDA="${{ inputs.environment }}-${{ matrix.region }}-$LAMBDA_NAME"
-          OUTPUT=$(aws lambda update-function-code --function-name $LAMBDA --image-uri "$DOCKER_IMAGE" --publish)
-          NEW_VERSION=$(echo "$OUTPUT" | jq -r '.Version')
-
-          ALIAS_EXISTS=$(aws lambda get-alias --function-name $LAMBDA --name live || echo "not_exists")
-          if [ "$ALIAS_EXISTS" == "not_exists" ]; then
-            aws lambda create-alias --function-name $LAMBDA --name live --function-version $NEW_VERSION
-          else
-            aws lambda update-alias --function-name $LAMBDA --name live --function-version $NEW_VERSION
-          fi
           
           PROVISIONED_CONCURRENCY_JSON=$(aws lambda get-provisioned-concurrency-config --function-name $LAMBDA --qualifer live || echo "not_exists")
           if [ "PROVISIONED_CONCURRENCY_JSON" != "not_exists" ]; then
-            REQUESTED_CONCURRENCY=$(echo "PROVISIONED_CONCURRENCY_JSON" | jq '.RequestedProvisionedConcurrentExecutions')
+            REQUESTED_CONCURRENCY=$(echo "PROVISIONED_CONCURRENCY_JSON" | jq -r '.RequestedProvisionedConcurrentExecutions')
             aws lambda delete-provisioned-concurrency-config --function-name $LAMBDA --qualifer live
             aws lambda put-provisioned-concurrency-config --function-name $LAMBDA --qualifer live --provisioned-concurrent-executions $REQUESTED_CONCURRENCY
           fi
