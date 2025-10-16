@@ -35,6 +35,7 @@ ${
       "type": "send-to-flex",
       "transitions": [
         {
+          "next": "run_subflow_debug",
           "event": "callComplete"
         },
         {
@@ -42,6 +43,7 @@ ${
           "event": "failedToEnqueue"
         },
         {
+          "next": "run_subflow_debug",
           "event": "callFailure"
         }
       ],
