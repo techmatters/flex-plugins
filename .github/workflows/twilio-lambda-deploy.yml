@@ -149,6 +149,7 @@ jobs:
           LAMBDA="${{ inputs.environment }}-${{ matrix.region }}-$LAMBDA_NAME"
           
           PROVISIONED_CONCURRENCY_JSON=$(aws lambda get-provisioned-concurrency-config --function-name $LAMBDA --qualifier live || echo "not_exists")
+          echo $REQUESTED_CONCURRENCY
           if [ "PROVISIONED_CONCURRENCY_JSON" != "not_exists" ]; then
             REQUESTED_CONCURRENCY=$(echo "PROVISIONED_CONCURRENCY_JSON" | jq -r '.RequestedProvisionedConcurrentExecutions')
             aws lambda delete-provisioned-concurrency-config --function-name $LAMBDA --qualifier live
