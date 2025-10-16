@@ -38,7 +38,7 @@ ${
           "event": "callComplete"
         },
         {
-          "next": "http_post_notify_failed_to_enqueue",
+          "next": "run_subflow_debug",
           "event": "failedToEnqueue"
         },
         {
@@ -73,73 +73,6 @@ ${
         "loop": 1,
         "say": "${flow_vars.play_message_vc_voice_welcome}",
         "language": "en-US"
-      }
-    },
-    {
-      "name": "http_post_notify_failed_to_enqueue",
-      "type": "make-http-request",
-      "transitions": [
-        {
-          "event": "success"
-        },
-        {
-          "event": "failed"
-        }
-      ],
-      "properties": {
-        "offset": {
-          "x": 200,
-          "y": 1660
-        },
-        "method": "POST",
-        "content_type": "application/json;charset=utf-8",
-        "add_twilio_auth": false,
-        "body": jsonencode({
-  blocks = [
-    {
-      type = "section"
-      text = {
-        type  = "plain_text"
-        text  = "Issue detected [Failed to Enqueue] on USVC STG \n Flow SID: *{{flow.flow_sid}}* \n Execution SID: *{{flow.sid}}*"
-        emoji = true
-      }
-    },
-    {
-      type = "section"
-      text = {
-        type  = "plain_text"
-        text  = "Task attributes sent:"
-        emoji = true
-      }
-    },
-    {
-      type = "section"
-      text = {
-        type = "mrkdwn"
-        text = " ``` ${channel_attributes.default} ``` "
-      }
-    },
-    {
-      type = "section"
-      text = {
-        type = "mrkdwn"
-        text = "More details in the log (make sure you are logged in with the appropriate Twilio account)."
-      }
-      accessory = {
-        type = "button"
-        text = {
-          type  = "plain_text"
-          text  = "Open log"
-          emoji = true
-        }
-        value      = "click_me_123"
-        url        = "https://console.twilio.com/us1/service/studio/{{flow.flow_sid}}/studio-flow-instance-executions?frameUrl=%2Fconsole%2Fstudio%2Fflows%2F{{flow.flow_sid}}%2Fexecutions%2F{{flow.sid}}%3F__override_layout__%3Dembed%26bifrost%3Dtrue%26x-target-region%3Dus1"
-        action_id  = "button-action"
-      }
-    }
-  ]
-}),
-        "url": "${webhook_url_studio_errors}"
       }
     },
     {
@@ -355,6 +288,63 @@ ${
           "x": -170,
           "y": 1860
         }
+      }
+    },
+    {
+      "name": "run_subflow_debug",
+      "type": "run-subflow",
+      "transitions": [
+        {
+          "event": "completed"
+        },
+        {
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "flow_sid": "${debug_studio_subflow_sid}",
+        "flow_revision": "LatestPublished",
+        "offset": {
+          "x": 700,
+          "y": 1650
+        },
+        "parameters": [
+          {
+            "type": "json_object",
+            "value": "{{flow}}",
+            "key": "flow"
+          },
+          {
+            "type": "string",
+            "value": "widget_failures",
+            "key": "debug_mode"
+          },
+          {
+            "type": "json_object",
+            "value": "{{widgets}}",
+            "key": "widgets"
+          },
+          {
+            "type": "json_object",
+            "value": "{{trigger}}",
+            "key": "trigger"
+          },
+          {
+            "type": "string",
+            "value": "{{flow.flow_sid}}",
+            "key": "flow_sid"
+          },
+          {
+            "type": "string",
+            "value": "{{flow.sid}}",
+            "key": "execution_sid"
+          },
+          {
+            "type": "string",
+            "value": "${channel_attributes.default}",
+            "key": "task_attributes"
+          }
+        ]
       }
     }
   ],
