@@ -96,7 +96,7 @@
     }
   },
   {
-    "name": "age",
+    "name": "ageRange",
     "label": "Age",
     "type": "select",
     "isPII": false,
