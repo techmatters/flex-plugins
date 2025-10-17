@@ -73,6 +73,30 @@ locals {
     }
 
     activities = {
+      demographics : {
+        friendly_name = "Demographics"
+        available     = false
+      },
+      meal_break : {
+        friendly_name = "Meal Break"
+        available     = false
+      },
+      meeting : {
+        friendly_name = "Meeting"
+        available     = false
+      },
+      refused : {
+        friendly_name = "Refused"
+        available     = false
+      },
+      supervision : {
+        friendly_name = "Supervision"
+        available     = false
+      },
+      training : {
+        friendly_name = "Training"
+        available     = false
+      }
     }
 
     lex_bot_languages = {

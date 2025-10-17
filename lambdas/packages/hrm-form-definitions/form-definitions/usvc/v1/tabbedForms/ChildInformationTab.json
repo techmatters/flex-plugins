@@ -68,8 +68,8 @@
     }
   },
   {
-    "name": "sexOfVictim",
-    "label": "Sex of Victim",
+    "name": "sexOfVisitor",
+    "label": "Sex of Visitor",
     "type": "select",
     "isPII": false,
     "options": [
@@ -86,8 +86,8 @@
         "label": "Female "
       },
       {
-        "value": "I don't know ",
-        "label": "I don't know "
+        "value": "Other",
+        "label": "Other"
       }
     ],
     "required": {
@@ -110,36 +110,44 @@
         "label": "0-10"
       },
       {
-        "value": "13-17",
-        "label": "13-17"
+        "value": "11-17",
+        "label": "11-17"
       },
       {
         "value": "18-24",
         "label": "18-24"
       },
       {
-        "value": "25-30",
-        "label": "25-30"
+        "value": "25-29",
+        "label": "25-29"
       },
       {
-        "value": "31-34",
-        "label": "31-34"
+        "value": "30-39",
+        "label": "30-39"
       },
       {
-        "value": "35-59",
-        "label": "35-59"
+        "value": "40-49",
+        "label": "40-49"
       },
       {
-        "value": "60-65",
-        "label": "60-65"
+        "value": "50-59",
+        "label": "50-59"
       },
       {
-        "value": "66+",
-        "label": "66+"
+        "value": "60-69",
+        "label": "60-69"
       },
       {
-        "value": "Unknown/N/A",
-        "label": "Unknown/N/A"
+        "value": "70-29",
+        "label": "70-29"
+      },
+      {
+        "value": "80-89",
+        "label": "80-89"
+      },
+      {
+        "value": "90-99",
+        "label": "90-99"
       }
     ],
     "required": {
