@@ -17,11 +17,9 @@
 import isEqual from 'lodash/isEqual';
 import sortBy from 'lodash/sortBy';
 
-import { getRules } from '.';
-import { fetchRules } from './fetchRules';
+import { getRules, RulesFile } from './rules';
 import { getHrmConfig } from '../hrmConfig';
 
-type RulesFile = Awaited<ReturnType<typeof fetchRules>>;
 type TargetRule = Partial<Record<keyof RulesFile, string[]>>;
 
 /**
@@ -53,13 +51,5 @@ export const canOnlyViewOwnCases = (): boolean => {
 
   const canViewAsSupervisor = isSupervisor && checkRule({ viewCase: ['isSupervisor'] });
   const canViewAsOwner = checkRule({ viewCase: ['isCreator'] });
-  return !canViewAsSupervisor && canViewAsOwner;
-};
-
-export const canOnlyViewOwnContacts = (): boolean => {
-  const { isSupervisor } = getHrmConfig();
-
-  const canViewAsSupervisor = isSupervisor && checkRule({ viewContact: ['isSupervisor'] });
-  const canViewAsOwner = checkRule({ viewContact: ['isOwner'] });
   return !canViewAsSupervisor && canViewAsOwner;
 };

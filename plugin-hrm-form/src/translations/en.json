@@ -504,7 +504,8 @@
   "UnmaskPhoneNumber": "Phone Number Revealed",
 
   "RecordingSection-Error": "Something went wrong on our end. Please contact your support team or supervisor.",
-
+  
+  "ReferrableResource-SideNav": "Resources",
   "Resources-LoadResourceError": "Something went wrong trying to load this resource.",
   "Resources-Search-FormTitle": "Resources",
   "Resources-Search-ResultsTitle": "Search Results",
@@ -567,6 +568,14 @@
   "Conference-AddConferenceCallParticipant": "Add Conference Call Participant",
   "Conference-EnterPhoneNumber": "Enter phone number",
   "Conference-DialButton": "Dial",
+  "Conference-Actions-Leave": "Leave Call",
+  "Conference-Actions-Hangup": "Hang Up",
+  "Conference-Actions-Mute": "Mute",
+  "Conference-Actions-Unmute": "Unmute",
+  "Conference-Actions-Add": "Conference",
+  "Conference-Actions-Dial": "Dial",
+  "Conference-Participant-Remove": "Remove Participant",
+  "Conference-Participant-Hold": "Hold Participant",
 
   "Conference-Wrapping-HangupBy/Customer": "Call Ended by Service User",
   "Conference-Wrapping-HangupBy/Agent": "Call Ended by Counselor",

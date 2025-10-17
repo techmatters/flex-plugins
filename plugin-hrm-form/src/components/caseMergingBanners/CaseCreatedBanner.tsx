@@ -27,10 +27,11 @@ import { cancelCaseAsyncAction } from '../../states/case/saveCase';
 import { showRemovedFromCaseBannerAction } from '../../states/case/caseBanners';
 import { CustomITask, StandaloneITask } from '../../types/types';
 import { BannerAction, BannerContainer, BannerText } from '../../styles/banners';
-import { getInitializedCan, PermissionActions } from '../../permissions';
+import { getInitializedCan } from '../../permissions/rules';
 import { selectContactsByCaseIdInCreatedOrder } from '../../states/contacts/selectContactByCaseId';
 import selectContactByTaskSid from '../../states/contacts/selectContactByTaskSid';
 import { selectCaseByCaseId } from '../../states/case/selectCaseStateByCaseId';
+import { PermissionActions } from '../../permissions/actions';
 
 type OwnProps = {
   task?: CustomITask | StandaloneITask;

@@ -25,10 +25,9 @@ import { mockLocalFetchDefinitions } from '../../mockFetchDefinitions';
 import IssueCategorizationSectionForm from '../../../components/contact/IssueCategorizationSectionForm';
 import { ToggleViewButton } from '../../../styles';
 import { setCategoriesGridView } from '../../../states/contacts/existingContacts';
-import { getAseloFeatureFlags } from '../../../hrmConfig';
 import { VALID_EMPTY_CONTACT } from '../../testContacts';
-import { FeatureFlags } from '../../../types/types';
 import { contactFormsBase, namespace } from '../../../states/storeNamespaces';
+import { FeatureFlags } from '../../../types/FeatureFlags';
 
 jest.mock('react-hook-form', () => ({
   useFormContext: () => ({
@@ -50,13 +49,6 @@ let expanded;
 
 const contactId = 'contact-id';
 const mockStore = configureMockStore([]);
-
-const mockGetAseloFeatureFlags = getAseloFeatureFlags as jest.MockedFunction<typeof getAseloFeatureFlags>;
-
-mockGetAseloFeatureFlags.mockReturnValue(
-  // eslint-disable-next-line camelcase
-  { enable_counselor_toolkits: true } as FeatureFlags,
-);
 
 const getGridIcon = wrapper => wrapper.find(ToggleViewButton).at(0);
 const getListIcon = wrapper => wrapper.find(ToggleViewButton).at(1);

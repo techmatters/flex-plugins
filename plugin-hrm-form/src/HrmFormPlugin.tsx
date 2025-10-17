@@ -32,7 +32,6 @@ import setUpMonitoring from './utils/setUpMonitoring';
 import { changeLanguage } from './states/configuration/actions';
 import { getAseloFeatureFlags, getHrmConfig, initializeConfig, subscribeToConfigUpdates } from './hrmConfig';
 import { setUpSyncClient } from './services/SyncService';
-import { FeatureFlags } from './types/types';
 import { setUpReferrableResources } from './components/resources/setUpReferrableResources';
 import QueuesView from './components/queuesView';
 import TeamsView from './components/teamsView';
@@ -46,8 +45,9 @@ import { playNotification } from './notifications/playNotification';
 import { namespace } from './states/storeNamespaces';
 import { maskManagerStringsWithIdentifiers } from './maskIdentifiers';
 import { setUpViewMaskedVoiceNumber } from './maskIdentifiers/unmaskPhoneNumber';
-import { validateAndSetPermissionRules } from './permissions';
+import { validateAndSetPermissionRules } from './permissions/rules';
 import { setupLlmNotifications } from './components/contact/GenerateSummaryButton/setUpLlmNotifications';
+import { FeatureFlags } from './types/FeatureFlags';
 
 const PLUGIN_NAME = 'HrmFormPlugin';
 
@@ -83,6 +83,7 @@ const setUpLocalization = (config: ReturnType<typeof getHrmConfig>) => {
 };
 
 const setUpComponents = (featureFlags: FeatureFlags, setupObject: ReturnType<typeof getHrmConfig>) => {
+  const { enableClientProfiles, enableConferencing } = getHrmConfig();
   // setUp (add) dynamic components
   Components.setUpQueuesStatusWriter(setupObject);
   Components.setUpQueuesStatus(setupObject);
@@ -102,7 +103,7 @@ const setUpComponents = (featureFlags: FeatureFlags, setupObject: ReturnType<typ
   Channels.setUpIncomingTransferMessage();
 
   Components.setUpCaseList();
-  if (featureFlags.enable_client_profiles) Components.setUpClientProfileList();
+  if (enableClientProfiles) Components.setUpClientProfileList();
 
   // remove dynamic components
   Components.removeTaskCanvasHeaderActions(featureFlags);
@@ -117,6 +118,7 @@ const setUpComponents = (featureFlags: FeatureFlags, setupObject: ReturnType<typ
   if (featureFlags.enable_emoji_picker) Components.setupEmojiPicker();
   if (featureFlags.enable_canned_responses) Components.setupCannedResponses();
 
+  TeamsView.setUpSelectAgentColumn();
   TeamsView.setUpAgentColumn();
   TeamsView.setUpStatusColumn();
   TeamsView.setUpSkillsColumn();
@@ -128,7 +130,7 @@ const setUpComponents = (featureFlags: FeatureFlags, setupObject: ReturnType<typ
     QueuesView.setUpSwitchboard();
   }
 
-  if (featureFlags.enable_conferencing) setupConferenceComponents();
+  if (enableConferencing) setupConferenceComponents();
 
   const toggleDialpad = () => Flex.Actions.invokeAction('ToggleOutboundDialer');
   Flex.KeyboardShortcutManager.addShortcuts({
@@ -148,6 +150,7 @@ const setUpActions = (
   getMessage: (key: string) => (language: string) => Promise<string>,
 ) => {
   ActionFunctions.excludeDeactivateConversationOrchestration();
+  const { enableConferencing } = getHrmConfig();
 
   // bind setupObject to the functions that requires some initialization
   const wrapupOverride = ActionFunctions.wrapupTask(setupObject, getMessage);
@@ -168,7 +171,7 @@ const setUpActions = (
 
   Flex.Actions.addListener('afterCompleteTask', ActionFunctions.afterCompleteTask);
 
-  if (featureFlags.enable_conferencing) setUpConferenceActions();
+  if (enableConferencing) setUpConferenceActions();
   if (featureFlags.enable_llm_summary) setupLlmNotifications();
 };
 
@@ -193,8 +196,6 @@ export default class HrmFormPlugin extends FlexPlugin {
 
     const config = getHrmConfig();
     const featureFlags = getAseloFeatureFlags();
-    // eslint-disable-next-line camelcase
-    featureFlags.enable_permissions_from_backend = true;
 
     await validateAndSetPermissionRules();
     await ActionFunctions.loadCurrentDefinitionVersion();

@@ -14,7 +14,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 import React from 'react';
-import { Template } from '@twilio/flex-ui';
+import { Template, Manager } from '@twilio/flex-ui';
 import { CallEnd as CallEndIcon } from '@material-ui/icons';
 import { CircularProgress } from '@material-ui/core';
 
@@ -28,6 +28,8 @@ type PhoneDialogProps = {
   setIsDialogOpen: (isDialogOpen: boolean) => void;
   isLoading: boolean;
 };
+
+const ENTER_NUMBER_KEY = 'Conference-EnterPhoneNumber';
 
 const PhoneInputDialog: React.FC<PhoneDialogProps> = ({
   targetNumber,
@@ -48,7 +50,7 @@ const PhoneInputDialog: React.FC<PhoneDialogProps> = ({
         </Bold>
         <CloseButton onClick={() => setIsDialogOpen(false)} aria-label="CloseButton" style={{ marginLeft: 'auto' }} />
       </Row>
-      <Template code="Conference-EnterPhoneNumber" />
+      <Template code={ENTER_NUMBER_KEY} />
       <Row>
         <input
           type="text"
@@ -58,6 +60,7 @@ const PhoneInputDialog: React.FC<PhoneDialogProps> = ({
           onChange={handleNumberChange}
           style={{ width: '60%', padding: '5px' }}
           disabled={isLoading}
+          aria-label={Manager.getInstance().strings[ENTER_NUMBER_KEY]}
         />
         <SecondaryButton autoFocus onClick={handleClick} disabled={isLoading}>
           {isLoading ? (

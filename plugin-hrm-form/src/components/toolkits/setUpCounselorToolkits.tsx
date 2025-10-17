@@ -18,14 +18,11 @@ import * as Flex from '@twilio/flex-ui';
 import React from 'react';
 
 import CounselorToolkitSideLink from './CounselorToolkitSideLink';
-import { getAseloFeatureFlags } from '../../hrmConfig';
 
 // eslint-disable-next-line import/no-unused-modules
 export const setUpCounselorToolkits = () => {
-  const featureFlags = getAseloFeatureFlags();
   // eslint-disable-next-line no-unused-expressions
-  featureFlags.enable_counselor_toolkits &&
-    Flex.SideNav.Content.add(
-      <CounselorToolkitSideLink key="CounselorToolkitSideLink" showLabel={true} reserveSpace={false} />,
-    );
+  Flex.SideNav.Content.add(
+    <CounselorToolkitSideLink key="CounselorToolkitSideLink" showLabel={true} reserveSpace={false} />,
+  );
 };

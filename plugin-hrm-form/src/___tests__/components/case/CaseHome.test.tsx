@@ -38,7 +38,7 @@ import { FullCaseSection } from '../../../services/caseSectionService';
 import { TaskSID } from '../../../types/twilio';
 import { CaseStateEntry } from '../../../states/case/types';
 
-jest.mock('../../../permissions', () => ({
+jest.mock('../../../permissions/rules', () => ({
   getInitializedCan: jest.fn(() => () => true),
   PermissionActions: {},
 }));

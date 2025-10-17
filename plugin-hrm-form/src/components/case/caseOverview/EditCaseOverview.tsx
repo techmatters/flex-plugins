@@ -45,7 +45,7 @@ import {
   removeCaseSummaryWorkingCopy,
   updateCaseSummaryWorkingCopy,
 } from '../../../states/case/caseWorkingCopy';
-import { PermissionActions, PermissionActionType } from '../../../permissions';
+import { PermissionActionType } from '../../../permissions/rules';
 import { useCreateFormFromDefinition } from '../../forms';
 import { getTemplateStrings } from '../../../hrmConfig';
 import { updateCaseOverviewAsyncAction } from '../../../states/case/saveCase';
@@ -55,6 +55,7 @@ import selectCurrentRouteCaseState from '../../../states/case/selectCurrentRoute
 import CaseSummaryEditHistory from './CaseOverviewEditHistory';
 import { selectDefinitionVersionForCase } from '../../../states/configuration/selectDefinitions';
 import { selectCaseHistoryDetails } from '../../../states/case/selectCaseStateByCaseId';
+import { PermissionActions } from '../../../permissions/actions';
 
 export type EditCaseOverviewProps = {
   task: CustomITask | StandaloneITask;

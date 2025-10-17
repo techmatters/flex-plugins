@@ -22,7 +22,6 @@ const flexFlowSid = 'FOf35e65754798822c36fb92e2e495227b';
 const defaultLanguage = 'en-US';
 const captureIp = true;
 const contactType: ContactType = 'email';
-const enableRecaptcha = true;
 
 const translations: Translations = {
   ar: {
@@ -385,6 +384,5 @@ export const config: Configuration = {
   memberDisplayOptions,
   captureIp,
   contactType,
-  enableRecaptcha,
   twilioServicesUrl: new URL(`https://hrm-staging.tl.techmatters.org/lambda/twilio/account-scoped/${accountSid}`),
 };

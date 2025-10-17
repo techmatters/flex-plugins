@@ -46,10 +46,10 @@ import { mapChannelForInsights } from '../../utils/mappers';
 import { ContactDetailsSections, ContactDetailsSectionsType } from '../common/ContactDetails';
 import { RootState } from '../../states';
 import { DetailsContext, toggleDetailSectionExpanded } from '../../states/contacts/contactDetails';
-import { getInitializedCan, PermissionActions } from '../../permissions';
+import { getInitializedCan } from '../../permissions/rules';
 import { RecordingSection, TranscriptSection } from './MediaSection';
 import { newCSAMReportActionForContact } from '../../states/csam-report/actions';
-import { getAseloFeatureFlags, getTemplateStrings } from '../../hrmConfig';
+import { getAseloFeatureFlags, getHrmConfig, getTemplateStrings } from '../../hrmConfig';
 import { changeRoute, newOpenModalAction } from '../../states/routing/actions';
 import { selectCurrentTopmostRouteForTask } from '../../states/routing/getRoute';
 import { AppRoutes, isRouteWithContext } from '../../states/routing/types';
@@ -66,6 +66,7 @@ import selectContactStateByContactId from '../../states/contacts/selectContactSt
 import { selectDefinitionVersionForContact } from '../../states/configuration/selectDefinitions';
 import { selectCounselorsHash } from '../../states/configuration/selectCounselorsHash';
 import selectContactDetailsByContext from '../../states/contacts/selectContactDetailsByContext';
+import { PermissionActions } from '../../permissions/actions';
 
 // TODO: complete this type
 type OwnProps = {
@@ -268,7 +269,7 @@ const ContactDetailsHome: React.FC<Props> = function ({
     await createNewCase(task, savedContact, savedContact);
   };
 
-  const profileLink = featureFlags.enable_client_profiles && !isProfileRoute && savedContact.profileId && canView && (
+  const profileLink = getHrmConfig().enableClientProfiles && !isProfileRoute && savedContact.profileId && canView && (
     <TertiaryButton type="button" onClick={() => openProfileModal(savedContact.profileId)}>
       <Icon icon="DefaultAvatar" />
       <Template code="Profile-ViewClient" />

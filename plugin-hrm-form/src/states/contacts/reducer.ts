@@ -61,11 +61,6 @@ import { saveContactReducer } from './saveContact';
 import { ConfigurationState } from '../configuration/reducer';
 import { Contact } from '../../types/types';
 import {
-  SEARCH_CONTACTS_SUCCESS,
-  SearchCasesSuccessAction,
-  SearchContactsSuccessAction,
-} from '../search/types';
-import {
   CREATE_CASE_ACTION_FULFILLED,
   GET_CASE_TIMELINE_ACTION_FULFILLED,
   isContactTimelineActivity
@@ -73,6 +68,7 @@ import {
 import { GetTimelineAsyncAction } from '../case/timeline';
 import {llmAssistantReducer} from "./llmAssistant";
 import {loadContactIntoRedux} from "./contactReduxUpdates";
+import {SEARCH_CONTACTS_SUCCESS_ACTION, SearchCasesSuccessAction, SearchContactsSuccessAction} from "../search/results";
 
 export const emptyCategories = [];
 
@@ -254,8 +250,8 @@ export function reduce(
     case ADD_EXTERNAL_REPORT_ENTRY: {
       return { ...state, existingContacts: addExternalReportEntryReducer(state.existingContacts, action) };
     }
-    case SEARCH_CONTACTS_SUCCESS: {
-      return loadContactListIntoState(state, rootState.configuration, action.searchResult.contacts, `${action.taskId}-search-contact`);
+    case SEARCH_CONTACTS_SUCCESS_ACTION: {
+      return loadContactListIntoState(state, rootState.configuration, action.payload.searchResult.contacts, `${action.payload.taskSid}-search-contact`);
     }
     case GET_CASE_TIMELINE_ACTION_FULFILLED: {
       const { payload: { timelineResult: { activities }, reference } } = action;
