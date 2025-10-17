@@ -110,7 +110,7 @@ const ROUTES: Record<string, FunctionRoute> = {
   updateWorkersSkills: {
     requestPipeline: [validateFlexTokenRequest({ tokenMode: 'supervisor' })],
     handler: updateWorkersSkills,
-  }
+  },
 };
 
 export const lookupRoute = (event: HttpRequest): AccountScopedRoute | undefined => {

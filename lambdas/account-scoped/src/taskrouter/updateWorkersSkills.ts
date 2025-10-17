@@ -25,6 +25,21 @@ import {
 const validOperations = ['enable', 'disable'] as const;
 type ValidOperations = (typeof validOperations)[number];
 
+const moveElementsBetweenArrays = ({
+  from,
+  to,
+  elements,
+}: {
+  from: Array<string>;
+  to: Array<string>;
+  elements: Array<string>;
+}) => {
+  const updatedFrom = from.filter(e => !elements.includes(e));
+  const updatedTo = Array.from(new Set([...to, ...elements]));
+
+  return { updatedFrom, updatedTo };
+};
+
 const updateSkillsOperation = ({
   attributes,
   operation,
@@ -34,36 +49,45 @@ const updateSkillsOperation = ({
   skills: Array<string>;
   operation: ValidOperations;
 }) => {
-  if (operation === 'enable') {
-    if (!attributes?.routing?.skills) {
-      return attributes;
-    }
+  const enabledSkills = attributes?.routing?.skills || [];
+  const disabledSkills = attributes?.disabled_skills?.skills || [];
 
-    const updatedSkills = Array.from(new Set([...attributes.routing.skills, ...skills]));
+  if (operation === 'enable') {
+    const { updatedFrom, updatedTo } = moveElementsBetweenArrays({
+      from: disabledSkills,
+      to: enabledSkills,
+      elements: skills,
+    });
 
     return {
       ...attributes,
       routing: {
-        ...attributes.routing,
-        skills: updatedSkills,
+        ...attributes?.routing,
+        skills: updatedTo,
+      },
+      disabled_skills: {
+        ...attributes.disabled_skills,
+        skills: updatedFrom,
       },
     };
   }
 
   if (operation === 'disable') {
-    if (!attributes?.disabled_skills?.skills) {
-      return attributes;
-    }
-
-    const updatedSkills = (attributes.disabled_skills.skills as string[]).filter(
-      s => !skills.includes(s),
-    );
+    const { updatedFrom, updatedTo } = moveElementsBetweenArrays({
+      from: enabledSkills,
+      to: disabledSkills,
+      elements: skills,
+    });
 
     return {
       ...attributes,
+      routing: {
+        ...attributes?.routing,
+        skills: updatedFrom,
+      },
       disabled_skills: {
         ...attributes.disabled_skills,
-        skills: updatedSkills,
+        skills: updatedTo,
       },
     };
   }
