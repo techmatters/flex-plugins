@@ -95,7 +95,7 @@ const updateWorkerSkills = async ({
       operation,
     });
 
-    await worker.update({ attributes: updatedAttributes });
+    await worker.update({ attributes: JSON.stringify(updatedAttributes) });
 
     return newOk(workerSid);
   } catch (err) {
