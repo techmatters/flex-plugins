@@ -29,9 +29,10 @@ import Pagination from '../pagination';
 import { CASES_PER_PAGE } from './CaseList';
 import type { Case } from '../../types/types';
 import * as CaseListSettingsActions from '../../states/caseList/settings';
-import { getInitializedCan, PermissionActions } from '../../permissions';
+import { getInitializedCan } from '../../permissions/rules';
 import { namespace } from '../../states/storeNamespaces';
 import { RootState } from '../../states';
+import { PermissionActions } from '../../permissions/actions';
 
 const ROW_HEIGHT = 89;
 

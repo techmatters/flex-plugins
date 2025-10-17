@@ -45,7 +45,7 @@ import { playNotification } from './notifications/playNotification';
 import { namespace } from './states/storeNamespaces';
 import { maskManagerStringsWithIdentifiers } from './maskIdentifiers';
 import { setUpViewMaskedVoiceNumber } from './maskIdentifiers/unmaskPhoneNumber';
-import { validateAndSetPermissionRules } from './permissions';
+import { validateAndSetPermissionRules } from './permissions/rules';
 import { setupLlmNotifications } from './components/contact/GenerateSummaryButton/setUpLlmNotifications';
 import { FeatureFlags } from './types/FeatureFlags';
 
@@ -196,8 +196,6 @@ export default class HrmFormPlugin extends FlexPlugin {
 
     const config = getHrmConfig();
     const featureFlags = getAseloFeatureFlags();
-    // eslint-disable-next-line camelcase
-    featureFlags.enable_permissions_from_backend = true;
 
     await validateAndSetPermissionRules();
     await ActionFunctions.loadCurrentDefinitionVersion();

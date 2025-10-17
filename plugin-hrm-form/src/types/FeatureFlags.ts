@@ -32,7 +32,6 @@ export type FeatureFlags = {
   // enable_lex_v2 - only used in Twilio Lambda
   enable_llm_summary: boolean; // Enables generation of suggested contact summaries via an LLM
   enable_manual_pulling: boolean; // Enables Adding Another Task
-  enable_permissions_from_backend: boolean; // Enables fetching permissions from backend service
   enable_post_survey: boolean; // Enables Post-Survey
   enable_previous_contacts: boolean; // Enables Previous Contacts Yellow Banner
   enable_region_resource_search: boolean; // Enables specifying a region as well as a province and / or city in Resource Search

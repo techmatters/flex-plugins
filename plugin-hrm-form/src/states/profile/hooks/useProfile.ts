@@ -19,8 +19,9 @@ import { useSelector } from 'react-redux';
 import * as ProfileSelectors from '../selectors';
 import { RootState } from '../..';
 import { UseProfileCommonParams } from './types';
-import { PermissionActions, getInitializedCan } from '../../../permissions';
+import { getInitializedCan } from '../../../permissions/rules';
 import { useProfileLoader } from './useProfileLoader';
+import { PermissionActions } from '../../../permissions/actions';
 
 export type UseProfileParams = UseProfileCommonParams & { autoload?: boolean; refresh?: boolean };
 

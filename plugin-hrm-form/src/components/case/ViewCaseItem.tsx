@@ -34,8 +34,9 @@ import NavigableContainer from '../NavigableContainer';
 import { selectCurrentTopmostRouteForTask } from '../../states/routing/getRoute';
 import selectCurrentRouteCaseState from '../../states/case/selectCurrentRouteCase';
 import selectCaseItemHistory from '../../states/case/sections/selectCaseItemHistory';
-import { getInitializedCan, PermissionActions } from '../../permissions';
+import { getInitializedCan } from '../../permissions/rules';
 import { getSectionItemById } from '../../states/case/sections/get';
+import { PermissionActions } from '../../permissions/actions';
 
 export type ViewCaseItemProps = {
   task: CustomITask | StandaloneITask;

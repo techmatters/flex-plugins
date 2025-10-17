@@ -25,8 +25,7 @@ import { StorelessThemeProvider } from '@twilio/flex-ui';
 import { loadDefinition } from 'hrm-form-definitions';
 
 import { mockGetDefinitionsResponse } from '../../mockGetConfig';
-import { fetchRules } from '../../../permissions/fetchRules';
-import { validateAndSetPermissionRules, getInitializedCan } from '../../../permissions';
+import { validateAndSetPermissionRules, getInitializedCan } from '../../../permissions/rules';
 import { mockLocalFetchDefinitions } from '../../mockFetchDefinitions';
 import CaseList from '../../../components/caseList';
 import { getDefinitionVersions } from '../../../hrmConfig';
@@ -40,13 +39,14 @@ import { HrmState, RootState } from '../../../states';
 import { CaseStateEntry } from '../../../states/case/types';
 import { VALID_EMPTY_CONTACT } from '../../testContacts';
 import { newGetTimelineAsyncAction, selectCaseLabel } from '../../../states/case/timeline';
+import { fetchPermissionRules } from '../../../services/PermissionsService';
+import mockRules from '../../fixtures/mockPermissionRules';
 
 const { mockFetchImplementation, mockReset, buildBaseURL } = mockLocalFetchDefinitions();
-const e2eRules = require('../../../permissions/e2e.json');
 
-jest.mock('../../../permissions/fetchRules', () => {
+jest.mock('../../../services/PermissionsService', () => {
   return {
-    fetchRules: jest.fn(() => {
+    fetchPermissionRules: jest.fn(() => {
       throw new Error('fetchRules not mocked!');
     }),
   };
@@ -64,8 +64,8 @@ jest.mock('../../../states/caseList/listContent', () => ({
 }));
 
 beforeEach(async () => {
-  const fetchRulesSpy = fetchRules as jest.MockedFunction<typeof fetchRules>;
-  fetchRulesSpy.mockResolvedValueOnce(e2eRules);
+  const fetchPermissionRulesSpy = fetchPermissionRules as jest.MockedFunction<typeof fetchPermissionRules>;
+  fetchPermissionRulesSpy.mockResolvedValueOnce(mockRules);
   await validateAndSetPermissionRules();
   getInitializedCan();
 });
@@ -86,9 +86,8 @@ const mockedCases: Record<string, CaseStateEntry> = {
       createdAt: '2020-07-07T17:38:42.227Z',
       updatedAt: '2020-07-07T19:20:33.339Z',
       status: 'open',
-      info: {
-        definitionVersion: 'as-v1',
-      },
+      definitionVersion: 'as-v1',
+      info: {},
       helpline: '',
     },
     timelines: {},
@@ -107,9 +106,8 @@ const mockedCases: Record<string, CaseStateEntry> = {
       createdAt: '2020-07-07T17:38:42.227Z',
       updatedAt: '2020-07-07T19:20:33.339Z',
       status: 'closed',
-      info: {
-        definitionVersion: 'as-v1',
-      },
+      definitionVersion: 'as-v1',
+      info: {},
       helpline: '',
     },
     timelines: {},
