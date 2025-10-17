@@ -18,7 +18,7 @@ import { connect, ConnectedProps } from 'react-redux';
 import { Template } from '@twilio/flex-ui';
 
 import { Case, Contact, CustomITask, StandaloneITask } from '../../types/types';
-import { getInitializedCan, PermissionActions } from '../../permissions';
+import { getInitializedCan } from '../../permissions/rules';
 import { RootState } from '../../states';
 import selectCurrentRouteCaseState from '../../states/case/selectCurrentRouteCase';
 import { Flex } from '../../styles';
@@ -33,6 +33,7 @@ import selectContactStateByContactId from '../../states/contacts/selectContactSt
 import { selectFirstContactByCaseId } from '../../states/contacts/selectContactByCaseId';
 import { selectCurrentTopmostRouteForTask } from '../../states/routing/getRoute';
 import { isCaseRoute } from '../../states/routing/types';
+import { PermissionActions } from '../../permissions/actions';
 
 type MyProps = {
   task: CustomITask | StandaloneITask;

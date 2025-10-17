@@ -6,10 +6,10 @@
         ],
         "definitionVersion": "ca-v1",
         "external_recordings_enabled": true,
-        "config_flags": {
-            "enableExternalRecordings": true,
-            "enableUnmaskingCalls": true
-        },
+        "enableExternalRecordings": true,
+        "enableUnmaskingCalls": true,
+        "enableClientProfiles": false,
+        "enableConferencing": true,
         "feature_flags": {
             "enable_client_profiles": false,
             "enable_conferencing": true,

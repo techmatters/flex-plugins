@@ -25,7 +25,7 @@ import CaseOverviewHeader from './caseOverview/CaseOverviewHeader';
 import CaseOverview from './caseOverview';
 import Timeline from './timeline/Timeline';
 import CaseSection from './CaseSection';
-import { PermissionActions, PermissionActionType } from '../../permissions';
+import { PermissionActionType } from '../../permissions/rules';
 import { AppRoutes, CaseItemAction, CaseRoute } from '../../states/routing/types';
 import { RootState } from '../../states';
 import { CustomITask, StandaloneITask } from '../../types/types';
@@ -47,6 +47,7 @@ import { selectDefinitionVersionForCase } from '../../states/configuration/selec
 import selectCaseHelplineData from '../../states/case/selectCaseHelplineData';
 import { selectCounselorName } from '../../states/configuration/selectCounselorsHash';
 import { isContactIdentifierTimelineActivity } from '../../states/case/types';
+import { PermissionActions } from '../../permissions/actions';
 
 export type CaseHomeProps = {
   task: CustomITask | StandaloneITask;

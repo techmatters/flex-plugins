@@ -60,9 +60,8 @@ export const displayOperatingHours = async (
   // If a helpline has operating hours configuration set, the pre engagement config will show alternative canvas during closed or holiday times/days
   if (config.checkOpenHours) {
     try {
-      const { SERVERLESS_URL } = require('../private/secret'); // eslint-disable-line global-require
       const operatingState = await getOperatingHours(
-        config.twilioServicesUrl ?? SERVERLESS_URL,
+        config.twilioServicesUrl?.toString(),
         externalWebChatLanguage || config.defaultLanguage,
       );
       /*

@@ -25,7 +25,6 @@ import { useFormContext } from 'react-hook-form';
 
 import { RootState } from '../../states';
 import useFocus from '../../utils/useFocus';
-import { getAseloFeatureFlags } from '../../hrmConfig';
 import {
   Box,
   CategoriesWrapper,
@@ -68,10 +67,7 @@ const IssueCategorizationSectionForm: React.FC<Props> = ({ display, definition, 
   const selectedCount = Object.values(selectedCategories).reduce((acc, curr) => acc + curr.length, 0);
 
   const { clearErrors, register } = useFormContext();
-  const maxSelections =
-    (getAseloFeatureFlags().enable_configurable_max_categories
-      ? definition.maxSelections
-      : DEFAULT_MAXIMUM_SELECTIONS) ?? DEFAULT_MAXIMUM_SELECTIONS;
+  const maxSelections = definition.maxSelections ?? DEFAULT_MAXIMUM_SELECTIONS;
 
   // Add invisible field that errors if no category is selected (triggered by validation)
   React.useEffect(() => {
@@ -137,7 +133,6 @@ const IssueCategorizationSectionForm: React.FC<Props> = ({ display, definition, 
                   dispatch(toggleSubcategory(contactId, category, subcategory))
                 }
                 selectedSubcategories={selectedCategories[category] ?? []}
-                counselorToolkitsEnabled={getAseloFeatureFlags().enable_counselor_toolkits}
                 selectedCount={selectedCount}
                 maxSelections={maxSelections}
               />

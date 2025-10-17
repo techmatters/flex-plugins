@@ -30,7 +30,7 @@ import {
   isFailureExternalRecordingInfo,
   shouldGetExternalRecordingInfo,
 } from './getExternalRecordingInfo';
-import { GeneralizedSearchParams, SearchParams } from '../states/search/types';
+import { ApiSearchParams } from '../states/search/types';
 import { ContactDraftChanges } from '../states/contacts/existingContacts';
 import { newContact } from '../states/contacts/contactState';
 import { ApiError, FetchOptions } from './fetchApi';
@@ -46,32 +46,12 @@ export const convertApiContactToFlexContact = (contact: Contact): Contact =>
       }
     : contact;
 
-export async function searchContacts(
-  searchParams: SearchParams,
-  limit,
-  offset,
-): Promise<{
-  count: number;
-  contacts: Contact[];
-}> {
-  const queryParams = getQueryParams({ limit, offset });
-  const options = {
-    method: 'POST',
-    body: JSON.stringify(searchParams),
-  };
-  const response = await fetchHrmApi(`/contacts/search${queryParams}`, options);
-  return {
-    ...response,
-    contacts: response.contacts.map(convertApiContactToFlexContact),
-  };
-}
-
-export async function generalizedSearch({
+export async function searchContacts({
   searchParameters,
   limit,
   offset,
 }: {
-  searchParameters: GeneralizedSearchParams;
+  searchParameters: ApiSearchParams;
   limit: number;
   offset: number;
 }): Promise<{

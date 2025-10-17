@@ -80,16 +80,6 @@ export const getFormattedNumberFromTask = (task: CustomITask) => {
     : getNumberFromTask(task);
 };
 
-// eslint-disable-next-line consistent-return
-export const getContactValueTemplate = task => {
-  const { preEngagementData } = task.attributes;
-  if (!preEngagementData) return '';
-  if (preEngagementData.contactType === 'ip') {
-    return 'PreviousContacts-IPAddress';
-  } else if (preEngagementData.contactType === 'email') {
-    return 'PreviousContacts-EmailAddress';
-  }
-};
 export const getTaskLanguage = ({ helplineLanguage }: Pick<ReturnType<typeof getHrmConfig>, 'helplineLanguage'>) => (
   task: ITask,
 ) => task.attributes.language || helplineLanguage;

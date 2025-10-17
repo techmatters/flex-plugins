@@ -14,7 +14,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { RulesFile } from '../permissions';
+import { RulesFile } from '../permissions/rules';
 import { fetchHrmApi } from './fetchHrmApi';
 
 export const fetchPermissionRules = async (): Promise<RulesFile> => {

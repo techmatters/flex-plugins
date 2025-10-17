@@ -14,22 +14,24 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import React from 'react';
+import { styled } from '@twilio/flex-ui';
 
-import { fieldType } from '../types';
+import { CheckboxBase } from '../styles';
 
-export const ValidationType = {
-  REQUIRED: 'REQUIRED', // Will not be applied if in the callerInformation tab and callType is not caller.  Will not be applied when callType is standalone.
-};
+export const StyledFormCheckbox = styled(CheckboxBase)`
+  &[type='checkbox']:checked::before {
+    border-color: #1976d2;
+    background: #1976d2;
+  }
+  &[type='checkbox']:checked::after {
+    font-family: 'Font Awesome 5 Free';
+    content: '\\f00c';
+    color: #ffffff;
+    font-weight: 900;
+  }
 
-const RequiredAsterisk = ({ field }) => {
-  const isRequired = field.validation && field.validation.includes(ValidationType.REQUIRED);
-  return isRequired && <span style={{ color: 'red' }}>*</span>;
-};
-
-RequiredAsterisk.displayName = 'RequiredAsterisk';
-RequiredAsterisk.propTypes = {
-  field: fieldType.isRequired,
-};
-
-export default RequiredAsterisk;
+  &[type='checkbox']:focus:not(:focus-visible) {
+    outline: auto;
+  }
+`;
+StyledFormCheckbox.displayName = 'FormCheckbox';

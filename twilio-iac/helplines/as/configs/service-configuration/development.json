@@ -4,10 +4,8 @@
             "assets_bucket_url": "https://assets-development.tl.techmatters.org"
         },
         "external_recordings_enabled": true,
-        "config_flags": {
-            "enableExternalRecordings": true,
-            "enableUnmaskingCalls": true
-        },
+        "enableExternalRecordings": true,
+        "enableUnmaskingCalls": true,
         "feature_flags": {
             "enable_configurable_max_categories": true,
             "enable_counselor_toolkits": true,

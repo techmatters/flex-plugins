@@ -16,7 +16,7 @@
 import React from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 
-import { getInitializedCan, PermissionActions } from '../../permissions';
+import { getInitializedCan } from '../../permissions/rules';
 import { Case } from '../../types/types';
 import CasePreview from '../search/CasePreview';
 import ProfileRelationshipList from './ProfileRelationshipList';
@@ -25,6 +25,7 @@ import * as RoutingActions from '../../states/routing/actions';
 import { namespace } from '../../states/storeNamespaces';
 import { RootState } from '../../states';
 import { ProfileCommonProps } from './types';
+import { PermissionActions } from '../../permissions/actions';
 
 type OwnProps = ProfileCommonProps;
 

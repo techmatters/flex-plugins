@@ -34,7 +34,8 @@ import {
 } from '../../styles';
 import { newOpenModalAction } from '../../states/routing/actions';
 import { useProfileFlags, useProfileSectionByType } from '../../states/profile/hooks';
-import { PermissionActions, getInitializedCan } from '../../permissions';
+import { getInitializedCan } from '../../permissions/rules';
+import { PermissionActions } from '../../permissions/actions';
 
 const CHAR_LIMIT = 250;
 

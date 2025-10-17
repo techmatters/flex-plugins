@@ -15,7 +15,8 @@
  */
 
 import { getTemplateStrings } from '../../hrmConfig';
-import { getInitializedCan, PermissionActions } from '../../permissions';
+import { getInitializedCan } from '../../permissions/rules';
+import { PermissionActions } from '../../permissions/actions';
 
 const TRUNCATED_IDENTIFIER_LENGTH = 4;
 const MAX_QUEUE_LENGTH = 13;

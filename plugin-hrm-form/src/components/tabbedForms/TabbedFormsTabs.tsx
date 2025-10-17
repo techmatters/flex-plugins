@@ -172,10 +172,7 @@ const TabbedFormsTabs: React.FC<Props> = ({
   saveDraft,
   updateDraftForm,
 }) => {
-  const {
-    enable_csam_report: csamReportEnabled,
-    enable_active_contact_header: enableContactHeader,
-  } = getAseloFeatureFlags();
+  const { enable_csam_report: csamReportEnabled } = getAseloFeatureFlags();
   const { contactSaveFrequency } = getHrmConfig();
   const { subroute, autoFocus } = currentRoute as TabbedFormRoute;
 
@@ -264,16 +261,14 @@ const TabbedFormsTabs: React.FC<Props> = ({
           </Box>
         )}
       </Row>
-      {enableContactHeader && (
-        <Row style={{ paddingLeft: '9px', paddingTop: '3px' }}>
-          <FontOpenSans>
-            <Bold>#{contactId}</Bold>
-            {!isOfflineContactTask(task) && !isStandaloneITask(task) && (
-              <OpaqueText style={{ fontStyle: 'italic' }}> ({task.queueName})</OpaqueText>
-            )}
-          </FontOpenSans>
-        </Row>
-      )}
+      <Row style={{ paddingLeft: '9px', paddingTop: '3px' }}>
+        <FontOpenSans>
+          <Bold>#{contactId}</Bold>
+          {!isOfflineContactTask(task) && !isStandaloneITask(task) && (
+            <OpaqueText style={{ fontStyle: 'italic' }}> ({task.queueName})</OpaqueText>
+          )}
+        </FontOpenSans>
+      </Row>
     </Box>
   );
 

@@ -18,7 +18,6 @@
  * Create a local file named 'secret.ts' that exports an API_KEY and SERVERLESS_URL
  */
 export const API_KEY = 'xxxxxxxxxxxxxxxxx'; // IP Find API Key
-export const SERVERLESS_URL = 'https://serverlexxxxxxxx-xxx.twil.io';
 export const RECAPTCHA_KEY = 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'; // ssm: /global/google/recaptcha/site_key
 export const RECAPTCHA_VERIFY_URL =
   'https://hrm-development.tl.techmatters.org/lambda/recaptchaVerify';

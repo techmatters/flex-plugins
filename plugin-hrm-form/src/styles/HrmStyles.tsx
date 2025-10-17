@@ -16,11 +16,12 @@
 
 /* eslint-disable no-nested-ternary */
 import React from 'react';
-import { Input, MenuItem, MenuList, Select } from '@material-ui/core';
+import { Input, MenuItem, Select } from '@material-ui/core';
 import { styled } from '@twilio/flex-ui';
 
-import { Row, Flex } from './layout';
+import { Flex } from './layout';
 import HrmTheme from './HrmTheme';
+import { CheckboxBase, FormInputProps } from '../components/forms/components/styles';
 
 const StyledInput = styled(Input)`
   display: flex;
@@ -224,8 +225,6 @@ export const FormError = styled('span')`
 `;
 FormError.displayName = 'FormError';
 
-type FormInputProps = { error?: boolean; width?: number | string; fullWidth?: boolean };
-
 export const FormInput = styled('input')<FormInputProps>`
   /* ---------- Input ---------- */
   & {
@@ -361,64 +360,6 @@ export const FormTextArea = styled('textarea')<FormInputProps>`
     border: 1px solid rgba(0, 59, 129, 0.37);
   }
 `;
-
-export const FormCheckBoxWrapper = styled(Row)<FormInputProps>`
-  align-items: flex-start;
-  box-sizing: border-box; /* Tells the browser to account for any border and padding in the values you specify for an element's width and height. https://developer.mozilla.org/en-US/docs/Web/CSS/box-sizing*/
-  height: 36px;
-  border-radius: 4px;
-  border: ${props => (props.error ? '1px solid #CB3232' : 'none')};
-  box-shadow: ${props => (props.error ? '0px 0px 0px 2px rgba(234,16,16,0.2)' : 'none')};
-`;
-FormCheckBoxWrapper.displayName = 'FormCheckBoxWrapper';
-
-const CheckboxBase = styled.input<FormInputProps>`
-  &[type='checkbox'] {
-    display: inline-block;
-    position: relative;
-    padding-left: 1.4em;
-    cursor: default;
-    margin-right: 5px;
-  }
-  &[type='checkbox']::before,
-  &[type='checkbox']::after {
-    position: absolute;
-    top: 50%;
-    left: 7px;
-    transform: translate(-50%, -50%);
-    content: '';
-    font-weight: 900;
-  }
-  &[type='checkbox']::before {
-    width: 13px;
-    height: 13px;
-    border: 1px solid hsl(0, 0%, 66%);
-    border-radius: 0.2em;
-    background-image: linear-gradient(to bottom, hsl(300, 3%, 93%), #fff 30%);
-  }
-  &[type='checkbox']:active::before {
-    background-image: linear-gradient(to bottom, hsl(300, 3%, 73%), hsl(300, 3%, 93%) 30%);
-  }
-`;
-CheckboxBase.displayName = 'CheckboxBase';
-
-export const FormCheckbox = styled(CheckboxBase)`
-  &[type='checkbox']:checked::before {
-    border-color: #1976d2;
-    background: #1976d2;
-  }
-  &[type='checkbox']:checked::after {
-    font-family: 'Font Awesome 5 Free';
-    content: '\\f00c';
-    color: #ffffff;
-    font-weight: 900;
-  }
-
-  &[type='checkbox']:focus:not(:focus-visible) {
-    outline: auto;
-  }
-`;
-FormCheckbox.displayName = 'FormCheckbox';
 
 export const FormMixedCheckbox = styled(CheckboxBase)`
   &[class~='mixed-checkbox'][type='checkbox'][aria-checked='false']::before {
