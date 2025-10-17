@@ -23,11 +23,12 @@ import { BannerLink, IconContainer, IdentifierContainer, YellowBannerContainer }
 import { Bold } from '../../../styles';
 import { newOpenModalAction } from '../../../states/routing/actions';
 import { getFormattedNumberFromTask, getNumberFromTask } from '../../../utils/task';
-import { getInitializedCan, PermissionActions } from '../../../permissions';
+import { getInitializedCan } from '../../../permissions/rules';
 import { CustomITask } from '../../../types/types';
 import selectChannelType from '../../../utils/selectChannelType';
 import { iconsFromTask } from './iconsFromTask';
 import { getHrmConfig } from '../../../hrmConfig';
+import { PermissionActions } from '../../../permissions/actions';
 
 type OwnProps = {
   task: CustomITask;

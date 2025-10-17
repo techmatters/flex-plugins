@@ -37,9 +37,9 @@ import { newGoBackAction } from '../../../states/routing/actions';
 import { RecursivePartial } from '../../RecursivePartial';
 import { RootState } from '../../../states';
 import { VALID_EMPTY_CASE } from '../../testCases';
-import { getInitializedCan } from '../../../permissions';
+import { getInitializedCan } from '../../../permissions/rules';
 
-jest.mock('../../../permissions', () => ({
+jest.mock('../../../permissions/rules', () => ({
   getInitializedCan: jest.fn(),
   PermissionActions: {},
 }));

@@ -19,7 +19,8 @@ import { Supervisor, TaskCanvasHeader } from '@twilio/flex-ui';
 
 import { getHrmConfig } from '../../hrmConfig';
 import ViewTaskNumber from './ViewTaskNumber';
-import { getInitializedCan, PermissionActions } from '../../permissions';
+import { getInitializedCan } from '../../permissions/rules';
+import { PermissionActions } from '../../permissions/actions';
 
 /**
  * Adds a custom button for voice channel to show the phone number in emergency situations

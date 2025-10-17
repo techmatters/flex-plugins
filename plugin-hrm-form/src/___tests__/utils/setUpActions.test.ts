@@ -18,12 +18,12 @@
 
 import { ChatOrchestrator } from '@twilio/flex-ui';
 
-import { FeatureFlags } from '../../types/types';
 import { REMOVE_CONTACT_STATE } from '../../states/types';
 import { afterCompleteTask, excludeDeactivateConversationOrchestration } from '../../utils/setUpActions';
 import { namespace } from '../../states/storeNamespaces';
 import { FINALIZE_CONTACT as mockFINALIZE_CONTACT } from '../../states/contacts/types';
 import { newFinalizeContactAsyncAction } from '../../states/contacts/saveContact';
+import { FeatureFlags } from '../../types/FeatureFlags';
 
 const taskSid = 'WT-THIS IS THE TASK SID!';
 

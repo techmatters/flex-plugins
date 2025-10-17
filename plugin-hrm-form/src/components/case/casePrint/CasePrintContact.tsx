@@ -25,9 +25,10 @@ import { Text, View } from '@react-pdf/renderer';
 import styles from './styles';
 import { mapChannel, mapChannelForInsights } from '../../../utils/mappers';
 import { formatStringToDateAndTime } from '../../../utils/formatters';
-import { getInitializedCan, PermissionActions } from '../../../permissions';
+import { getInitializedCan } from '../../../permissions/rules';
 import { presentValueFromStrings } from './presentValuesFromStrings';
 import { getTemplateStrings } from '../../../hrmConfig';
+import { PermissionActions } from '../../../permissions/actions';
 
 type OwnProps = {
   sectionName: string;

@@ -23,9 +23,9 @@ import { parseISO } from 'date-fns';
 import { Case, CustomITask, StandaloneITask } from '../../../types/types';
 import { CaseSectionFont, DetailsContainer } from '../styles';
 import { Box, SecondaryButton } from '../../../styles';
-import { PermissionActions } from '../../../permissions';
 import CaseTextAreaEntry from './CaseTextAreaEntry';
 import CaseOverviewItem from './CaseOverviewItem';
+import { PermissionActions } from '../../../permissions/actions';
 
 type Props = {
   task: CustomITask | StandaloneITask;

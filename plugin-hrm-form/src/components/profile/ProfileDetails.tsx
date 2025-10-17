@@ -26,9 +26,10 @@ import useProfileSectionTypes from '../../states/configuration/hooks/useProfileS
 import { ProfileCommonProps } from './types';
 import { DetailsWrapper, SectionHeader } from './styles';
 import ProfileFlagSection from './profileFlag/ProfileFlagSection';
-import { getInitializedCan, PermissionActions } from '../../permissions';
+import { getInitializedCan } from '../../permissions/rules';
 import ProfileDetailsSection from './section/ProfileDetailsSection';
 import ProfileSectionGroup from './section/ProfileSectionGroup';
+import { PermissionActions } from '../../permissions/actions';
 
 type OwnProps = ProfileCommonProps;
 

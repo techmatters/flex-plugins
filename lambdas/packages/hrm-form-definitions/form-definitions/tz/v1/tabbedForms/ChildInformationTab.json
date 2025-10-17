@@ -192,8 +192,7 @@
   {
     "name": "region",
     "label": "Region",
-    "type": "dependent-select",
-    "dependsOn": "location",
+    "type": "select",
     "defaultOption": {
       "value": "",
       "label": ""

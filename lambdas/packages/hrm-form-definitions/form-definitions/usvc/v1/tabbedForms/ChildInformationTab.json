@@ -1,5 +1,41 @@
 [
   {
+    "name": "user",
+    "label": "User",
+    "type": "select",
+    "isPII": false,
+    "options": [
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "Community member",
+        "label": "Community member"
+      },
+      {
+        "value": "Family member of victim",
+        "label": "Family member of victim"
+      },
+      {
+        "value": "Friend of victim",
+        "label": "Friend of victim"
+      },
+      {
+        "value": "Professional",
+        "label": "Professional"
+      },
+      {
+        "value": "Victim (self)",
+        "label": "Victim (self)"
+      }
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
     "name": "typeOfCallfrequencyOfAccess",
     "label": "Type of Call/Frequency of Access",
     "type": "select",
@@ -116,38 +152,6 @@
     }
   },
   {
-    "name": "typeOfCallfrequencyOfAccess",
-    "label": "User",
-    "type": "select",
-    "isPII": false,
-    "options": [
-      {
-        "value": "",
-        "label": ""
-      },
-      {
-        "value": "1st time user",
-        "label": "1st time user"
-      },
-      {
-        "value": "Hang-up/Non-starter",
-        "label": "Hang-up/Non-starter"
-      },
-      {
-        "value": "Return User",
-        "label": "Return User"
-      },
-      {
-        "value": "Test Call",
-        "label": "Test Call"
-      }
-    ],
-    "required": {
-      "value": true,
-      "message": "RequiredFieldError"
-    }
-  },
-  {
     "name": "race",
     "label": "Race",
     "type": "select",
@@ -194,6 +198,697 @@
         "label": "Unknown"
       }
     ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "language",
+    "label": "Language",
+    "type": "select",
+    "isPII": false,
+    "options": [
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "English",
+        "label": "English"
+      },
+      {
+        "value": "Spanish",
+        "label": "Spanish"
+      },
+      {
+        "value": "ASL",
+        "label": "ASL"
+      },
+      {
+        "value": "Other",
+        "label": "Other"
+      }
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "location",
+    "label": "Location",
+    "type": "select",
+    "isPII": false,
+    "defaultOption": {
+      "value": "",
+      "label": ""
+    },
+    "options": [
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "Alabama",
+        "label": "Alabama"
+      },
+      {
+        "value": "Alaska",
+        "label": "Alaska"
+      },
+      {
+        "value": "Arizona",
+        "label": "Arizona"
+      },
+      {
+        "value": "Arkansas",
+        "label": "Arkansas"
+      },
+      {
+        "value": "California",
+        "label": "California"
+      },
+      {
+        "value": "Colorado",
+        "label": "Colorado"
+      },
+      {
+        "value": "Connecticut",
+        "label": "Connecticut"
+      },
+      {
+        "value": "Delaware",
+        "label": "Delaware"
+      },
+      {
+        "value": "Florida",
+        "label": "Florida"
+      },
+      {
+        "value": "Georgia",
+        "label": "Georgia"
+      },
+      {
+        "value": "Hawaii",
+        "label": "Hawaii"
+      },
+      {
+        "value": "Idaho",
+        "label": "Idaho"
+      },
+      {
+        "value": "Illinois",
+        "label": "Illinois"
+      },
+      {
+        "value": "Indiana",
+        "label": "Indiana"
+      },
+      {
+        "value": "Iowa",
+        "label": "Iowa"
+      },
+      {
+        "value": "Kansas",
+        "label": "Kansas"
+      },
+      {
+        "value": "Kentucky",
+        "label": "Kentucky"
+      },
+      {
+        "value": "Louisiana",
+        "label": "Louisiana"
+      },
+      {
+        "value": "Maine",
+        "label": "Maine"
+      },
+      {
+        "value": "Maryland",
+        "label": "Maryland"
+      },
+      {
+        "value": "Massachusetts",
+        "label": "Massachusetts"
+      },
+      {
+        "value": "Michigan",
+        "label": "Michigan"
+      },
+      {
+        "value": "Minnesota",
+        "label": "Minnesota"
+      },
+      {
+        "value": "Mississippi",
+        "label": "Mississippi"
+      },
+      {
+        "value": "Missouri",
+        "label": "Missouri"
+      },
+      {
+        "value": "Montana",
+        "label": "Montana"
+      },
+      {
+        "value": "Nebraska",
+        "label": "Nebraska"
+      },
+      {
+        "value": "Nevada",
+        "label": "Nevada"
+      },
+      {
+        "value": "New Hampshire",
+        "label": "New Hampshire"
+      },
+      {
+        "value": "New Jersey",
+        "label": "New Jersey"
+      },
+      {
+        "value": "New Mexico",
+        "label": "New Mexico"
+      },
+      {
+        "value": "New York",
+        "label": "New York"
+      },
+      {
+        "value": "North Carolina",
+        "label": "North Carolina"
+      },
+      {
+        "value": "North Dakota",
+        "label": "North Dakota"
+      },
+      {
+        "value": "Ohio",
+        "label": "Ohio"
+      },
+      {
+        "value": "Oklahoma",
+        "label": "Oklahoma"
+      },
+      {
+        "value": "Oregon",
+        "label": "Oregon"
+      },
+      {
+        "value": "Pensylvania",
+        "label": "Pensylvania"
+      },
+      {
+        "value": "Rhode Island",
+        "label": "Rhode Island"
+      },
+      {
+        "value": "South Carolina",
+        "label": "South Carolina"
+      },
+      {
+        "value": "South Dakota",
+        "label": "South Dakota"
+      },
+      {
+        "value": "Tennessee ",
+        "label": "Tennessee "
+      },
+      {
+        "value": "Texas",
+        "label": "Texas"
+      },
+      {
+        "value": "Utah ",
+        "label": "Utah "
+      },
+      {
+        "value": "Vermont",
+        "label": "Vermont"
+      },
+      {
+        "value": "Virgina ",
+        "label": "Virgina "
+      },
+      {
+        "value": "Washington D.C.",
+        "label": "Washington D.C."
+      },
+      {
+        "value": "West Virginia",
+        "label": "West Virginia"
+      },
+      {
+        "value": "Wisconsin",
+        "label": "Wisconsin"
+      },
+      {
+        "value": "Wyoming",
+        "label": "Wyoming"
+      },
+      {
+        "value": "U.S. Territory - American Somoa",
+        "label": "U.S. Territory - American Somoa"
+      },
+      {
+        "value": "U.S. Territory - Guam",
+        "label": "U.S. Territory - Guam"
+      },
+      {
+        "value": "U.S Territory - Northern Mariana Islands",
+        "label": "U.S Territory - Northern Mariana Islands"
+      },
+      {
+        "value": "U.S Territory - Puerto Rico",
+        "label": "U.S Territory - Puerto Rico"
+      },
+      {
+        "value": "U.S Territory - U.S. Virgin Islands",
+        "label": "U.S Territory - U.S. Virgin Islands"
+      },
+      {
+        "value": "U.S Territory - Other",
+        "label": "U.S Territory - Other"
+      },
+      {
+        "value": "International ",
+        "label": "International "
+      },
+      {
+        "value": "Unknown - USA State/Territory",
+        "label": "Unknown - USA State/Territory"
+      },
+      {
+        "value": "Unknown",
+        "label": "Unknown"
+      }
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "dcquadrant",
+    "label": "Dcquadrant",
+    "type": "dependent-select",
+    "isPII": false,
+    "dependsOn": "location",
+    "defaultOption": {
+      "value": "",
+      "label": ""
+    },
+    "options": {
+      "Alabama": [
+        {
+          "value": "N/A",
+          "label": "N/A"
+        }
+      ],
+      "Alaska": [
+        {
+          "value": "N/A",
+          "label": "N/A"
+        }
+      ],
+      "Arizona": [
+        {
+          "value": "N/A",
+          "label": "N/A"
+        }
+      ],
+      "Arkansas": [
+        {
+          "value": "N/A",
+          "label": "N/A"
+        }
+      ],
+      "California": [
+        {
+          "value": "N/A",
+          "label": "N/A"
+        }
+      ],
+      "Colorado": [
+        {
+          "value": "N/A",
+          "label": "N/A"
+        }
+      ],
+      "Connecticut": [
+        {
+          "value": "N/A",
+          "label": "N/A"
+        }
+      ],
+      "Delaware": [
+        {
+          "value": "N/A",
+          "label": "N/A"
+        }
+      ],
+      "Florida": [
+        {
+          "value": "N/A",
+          "label": "N/A"
+        }
+      ],
+      "Georgia": [
+        {
+          "value": "N/A",
+          "label": "N/A"
+        }
+      ],
+      "Hawaii": [
+        {
+          "value": "N/A",
+          "label": "N/A"
+        }
+      ],
+      "Idaho": [
+        {
+          "value": "N/A",
+          "label": "N/A"
+        }
+      ],
+      "Illinois": [
+        {
+          "value": "N/A",
+          "label": "N/A"
+        }
+      ],
+      "Indiana": [
+        {
+          "value": "N/A",
+          "label": "N/A"
+        }
+      ],
+      "Iowa": [
+        {
+          "value": "N/A",
+          "label": "N/A"
+        }
+      ],
+      "Kansas": [
+        {
+          "value": "N/A",
+          "label": "N/A"
+        }
+      ],
+      "Kentucky": [
+        {
+          "value": "N/A",
+          "label": "N/A"
+        }
+      ],
+      "Louisiana": [
+        {
+          "value": "N/A",
+          "label": "N/A"
+        }
+      ],
+      "Maine": [
+        {
+          "value": "N/A",
+          "label": "N/A"
+        }
+      ],
+      "Maryland": [
+        {
+          "value": "N/A",
+          "label": "N/A"
+        }
+      ],
+      "Massachusetts": [
+        {
+          "value": "N/A",
+          "label": "N/A"
+        }
+      ],
+      "Michigan": [
+        {
+          "value": "N/A",
+          "label": "N/A"
+        }
+      ],
+      "Minnesota": [
+        {
+          "value": "N/A",
+          "label": "N/A"
+        }
+      ],
+      "Mississippi": [
+        {
+          "value": "N/A",
+          "label": "N/A"
+        }
+      ],
+      "Missouri": [
+        {
+          "value": "N/A",
+          "label": "N/A"
+        }
+      ],
+      "Montana": [
+        {
+          "value": "N/A",
+          "label": "N/A"
+        }
+      ],
+      "Nebraska": [
+        {
+          "value": "N/A",
+          "label": "N/A"
+        }
+      ],
+      "Nevada": [
+        {
+          "value": "N/A",
+          "label": "N/A"
+        }
+      ],
+      "New Hampshire": [
+        {
+          "value": "N/A",
+          "label": "N/A"
+        }
+      ],
+      "New Jersey": [
+        {
+          "value": "N/A",
+          "label": "N/A"
+        }
+      ],
+      "New Mexico": [
+        {
+          "value": "N/A",
+          "label": "N/A"
+        }
+      ],
+      "New York": [
+        {
+          "value": "N/A",
+          "label": "N/A"
+        }
+      ],
+      "North Carolina": [
+        {
+          "value": "N/A",
+          "label": "N/A"
+        }
+      ],
+      "North Dakota": [
+        {
+          "value": "N/A",
+          "label": "N/A"
+        }
+      ],
+      "Ohio": [
+        {
+          "value": "N/A",
+          "label": "N/A"
+        }
+      ],
+      "Oklahoma": [
+        {
+          "value": "N/A",
+          "label": "N/A"
+        }
+      ],
+      "Oregon": [
+        {
+          "value": "N/A",
+          "label": "N/A"
+        }
+      ],
+      "Pensylvania": [
+        {
+          "value": "N/A",
+          "label": "N/A"
+        }
+      ],
+      "Rhode Island": [
+        {
+          "value": "N/A",
+          "label": "N/A"
+        }
+      ],
+      "South Carolina": [
+        {
+          "value": "N/A",
+          "label": "N/A"
+        }
+      ],
+      "South Dakota": [
+        {
+          "value": "N/A",
+          "label": "N/A"
+        }
+      ],
+      "Tennessee ": [
+        {
+          "value": "N/A",
+          "label": "N/A"
+        }
+      ],
+      "Texas": [
+        {
+          "value": "N/A",
+          "label": "N/A"
+        }
+      ],
+      "Utah ": [
+        {
+          "value": "N/A",
+          "label": "N/A"
+        }
+      ],
+      "Vermont": [
+        {
+          "value": "N/A",
+          "label": "N/A"
+        }
+      ],
+      "Virgina ": [
+        {
+          "value": "N/A",
+          "label": "N/A"
+        }
+      ],
+      "Washington D.C.": [
+        {
+          "value": "NE",
+          "label": "NE"
+        },
+        {
+          "value": "SE",
+          "label": "SE"
+        },
+        {
+          "value": "NW",
+          "label": "NW"
+        },
+        {
+          "value": "SW",
+          "label": "SW"
+        },
+        {
+          "value": "No fixed address",
+          "label": "No fixed address"
+        },
+        {
+          "value": "Out of the District - International",
+          "label": "Out of the District - International"
+        },
+        {
+          "value": "Out of the District -USA",
+          "label": "Out of the District -USA"
+        },
+        {
+          "value": "Other DC ",
+          "label": "Other DC "
+        },
+        {
+          "value": "Unknown",
+          "label": "Unknown"
+        }
+      ],
+      "West Virginia": [
+        {
+          "value": "N/A",
+          "label": "N/A"
+        }
+      ],
+      "Wisconsin": [
+        {
+          "value": "N/A",
+          "label": "N/A"
+        }
+      ],
+      "Wyoming": [
+        {
+          "value": "N/A",
+          "label": "N/A"
+        }
+      ],
+      "U.S. Territory - American Somoa": [
+        {
+          "value": "N/A",
+          "label": "N/A"
+        }
+      ],
+      "U.S. Territory - Guam": [
+        {
+          "value": "N/A",
+          "label": "N/A"
+        }
+      ],
+      "U.S Territory - Northern Mariana Islands": [
+        {
+          "value": "N/A",
+          "label": "N/A"
+        }
+      ],
+      "U.S Territory - Puerto Rico": [
+        {
+          "value": "N/A",
+          "label": "N/A"
+        }
+      ],
+      "U.S Territory - U.S. Virgin Islands": [
+        {
+          "value": "N/A",
+          "label": "N/A"
+        }
+      ],
+      "U.S Territory - Other": [
+        {
+          "value": "N/A",
+          "label": "N/A"
+        }
+      ],
+      "International ": [
+        {
+          "value": "N/A",
+          "label": "N/A"
+        }
+      ],
+      "Unknown - USA State/Territory": [
+        {
+          "value": "N/A",
+          "label": "N/A"
+        }
+      ],
+      "Unknown": [
+        {
+          "value": "N/A",
+          "label": "N/A"
+        }
+      ]
+    },
     "required": {
       "value": true,
       "message": "RequiredFieldError"

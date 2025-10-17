@@ -33,8 +33,9 @@ import {
 import { isNonDataCallType } from '../../../states/validationRules';
 import CallTypeIcon from '../../common/icons/CallTypeIcon';
 import { channelTypes, ChannelTypes } from '../../../states/DomainConstants';
-import { getInitializedCan, PermissionActions } from '../../../permissions';
+import { getInitializedCan } from '../../../permissions/rules';
 import InfoIcon from '../../caseMergingBanners/InfoIcon';
+import { PermissionActions } from '../../../permissions/actions';
 
 type OwnProps = {
   channel: ChannelTypes | 'default';
