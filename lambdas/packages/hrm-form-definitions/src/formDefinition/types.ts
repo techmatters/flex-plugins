@@ -64,6 +64,7 @@ type ItemBase = {
   required?: { value: boolean; message: string } | boolean;
   maxLength?: { value: number; message: string };
   validate?: (data: any) => string | boolean;
+  isDisabled?: boolean;
 } & IsPIIFlag;
 
 type NonSaveable = {
