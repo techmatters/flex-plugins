@@ -58,19 +58,32 @@ export type USCHFilterSelections = {
   country?: string;
   province?: string;
   city?: string;
-  // feeStructure?: string[];
 };
 
-const getFilterOptionsBasedOnSelections = ({
-  countryOptions,
-  provinceOptions,
-  cityOptions,
-}: ReferenceLocationState = {}): USCHFilterOptions => {
+const getFilterOptionsBasedOnSelections = (
+  filterSelections: USCHFilterSelections,
+  { countryOptions, provinceOptions, cityOptions }: ReferenceLocationState = {},
+): USCHFilterOptions => {
   return {
     ...initialFilterOptions,
     country: [{ label: '', value: undefined }, ...(countryOptions || [])],
-    province: [{ label: '', value: undefined }, ...(provinceOptions || [])],
-    city: [{ label: '', value: undefined }, ...(cityOptions || [])],
+    province: [
+      { label: '', value: undefined },
+      ...(provinceOptions || []).filter(
+        ({ value }) => filterSelections.country && (!value || value.startsWith(filterSelections.country)),
+      ),
+    ],
+    city: [
+      { label: '', value: undefined },
+      ...(cityOptions || []).filter(({ value }) => {
+        const { country, province } = filterSelections;
+        if (!country) {
+          return false;
+        }
+        const startPrefix = province?.startsWith(country) ? province : country;
+        return !value || value.startsWith(startPrefix);
+      }),
+    ],
   };
 };
 
@@ -95,8 +108,8 @@ export const loadReferenceActionFunction: (list: string) => LoadReferenceActionF
   list: string,
 ) => async () => {
   const apiAttributes = await getDistinctStringAttributes({ key: list });
-  const unsortedOptions = apiAttributes.map(({ value }) => ({
-    label: value,
+  const unsortedOptions = apiAttributes.map(({ value, info }) => ({
+    label: info?.name ?? value,
     value,
   }));
   return { list, options: dedupAndSort(unsortedOptions) };
@@ -106,7 +119,13 @@ export const handlerUpdateSearchFormAction = (
   state: ReferrableResourceSearchState,
   { payload }: { payload: SearchSettings },
 ) => {
-  const updatedFilterOptions = getFilterOptionsBasedOnSelections(state.referenceLocations);
+  const updatedFilterOptions = getFilterOptionsBasedOnSelections(
+    {
+      ...state.parameters.filterSelections,
+      ...(payload.filterSelections ?? {}),
+    },
+    state.referenceLocations,
+  );
   const validatedFilterSelections = ensureFilterSelectionsAreValid(
     { ...state.parameters.filterSelections, ...payload.filterSelections },
     updatedFilterOptions,
@@ -131,7 +150,7 @@ export const handlerUpdateSearchFormAction = (
 export const handleLoadReferenceLocationsAsyncActionFulfilled = (
   state: ReferrableResourceSearchState,
   { payload }: { payload: { list: string; options: FilterOption[] } },
-) => {
+): ReferrableResourceSearchState => {
   const { list, options } = payload;
   let { referenceLocations } = state;
   switch (list) {
@@ -146,8 +165,7 @@ export const handleLoadReferenceLocationsAsyncActionFulfilled = (
       break;
     default:
   }
-
-  const updatedFilterOptions = getFilterOptionsBasedOnSelections(referenceLocations);
+  const updatedFilterOptions = getFilterOptionsBasedOnSelections(state.parameters.filterSelections, referenceLocations);
   const validatedFilterSelections = ensureFilterSelectionsAreValid(
     state.parameters.filterSelections,
     updatedFilterOptions,
@@ -156,7 +174,10 @@ export const handleLoadReferenceLocationsAsyncActionFulfilled = (
   return {
     ...state,
     filterOptions: updatedFilterOptions,
-    filterSelections: validatedFilterSelections,
+    parameters: {
+      ...state.parameters,
+      filterSelections: validatedFilterSelections,
+    },
     referenceLocations,
   };
 };
