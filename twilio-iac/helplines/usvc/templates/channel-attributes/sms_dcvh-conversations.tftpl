@@ -6,8 +6,14 @@
   "twilioNumber": "{{trigger.conversation.ChannelAttributes.twilioNumber}}",
   "ignoreAgent": "",
   "helpline":"usvc",
-  "service":"NCVC",
+  "service":"DCVH",
+  "serviceLanguage":"English",
   "language":"en-us",
   "transferTargetType": "",
-  "memory": {{trigger.conversation.ChannelAttributes.memory | to_json}}
+  "survey": {
+    "startForm":"{{flow.variables.startForm}}"
+  },
+  "memory": {
+    "startForm":"HotlineInteractions"
+  }
 }

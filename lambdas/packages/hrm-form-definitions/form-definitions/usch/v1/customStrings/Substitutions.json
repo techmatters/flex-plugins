@@ -7,6 +7,8 @@
     "ConnectDialog-Child": "Copy victim information from this record to new contact?",
     "ConnectDialog-Caller": "Copy help seeker information from this record to new contact?",
     "GeneralizedSearchForm-Counselor": "Counselor",
+    "StandaloneSearch-SideNav": "Case Search",
+    "SearchContactsAndCases-Title": "Case Search",
     "SearchContactsAndCases-TitleExistingCase": "Search for External Notifications",
     "SearchForm-Counselor": "Counselor",
     "SearchResultsIndex-Cases": "External Notifications",
