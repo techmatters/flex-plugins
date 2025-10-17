@@ -19,6 +19,7 @@ import { AccountScopedRoute, FunctionRoute, HttpRequest } from './httpTypes';
 import { validateRequestMethod } from './validation/method';
 import { isAccountSID } from './twilioTypes';
 import { handleTaskRouterEvent } from './taskrouter';
+import { updateWorkersSkills } from './taskrouter/updateWorkersSkills';
 import { handleGetProfileFlagsForIdentifier } from './hrm/getProfileFlagsForIdentifier';
 import { handleToggleSwitchboardQueue } from './hrm/toggleSwitchboardQueue';
 import {
@@ -106,6 +107,10 @@ const ROUTES: Record<string, FunctionRoute> = {
     requestPipeline: [],
     handler: handleOperatingHours,
   },
+  updateWorkersSkills: {
+    requestPipeline: [validateFlexTokenRequest({ tokenMode: 'supervisor' })],
+    handler: updateWorkersSkills,
+  }
 };
 
 export const lookupRoute = (event: HttpRequest): AccountScopedRoute | undefined => {
