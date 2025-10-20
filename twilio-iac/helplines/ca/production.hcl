@@ -248,7 +248,7 @@ locals {
       send_studio_message_function_sid = "ZH41748fcbbe5606b88307ee661993f5b7"
       call_action                      = "recording"
       forward_number                   = "+123"
-      recording_url                    = "https://twilio-service-4854.twil.io/EnTechIssues.mp3"
+      recording_url                    = "https://twilio-service-4854.twil.io/SystemDown.mp3"
     }
   }
 }
