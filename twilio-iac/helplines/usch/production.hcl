@@ -87,7 +87,18 @@ locals {
         channel_flow_vars = {
         }
         chatbot_unique_names = []
-      },/*
+      },
+      sms_childhelp_backup : {
+        messaging_mode   = "conversations"
+        channel_type     = "sms"
+        contact_identity = "+18557172986"
+        templatefile     = "/app/twilio-iac/helplines/usch/templates/studio-flows/sms-childhelp-lex-sd.tftpl"
+        channel_flow_vars = {
+
+        }
+        chatbot_unique_names = []
+      }
+      /*
       sms_childhelp : {
         messaging_mode   = "conversations"
         channel_type     = "sms"
@@ -101,7 +112,7 @@ locals {
       sms_courage_first : {
         messaging_mode   = "conversations"
         channel_type     = "sms"
-        contact_identity = "+16066032348"
+        contact_identity = "+18004224453"
         templatefile     = "/app/twilio-iac/helplines/usch/templates/studio-flows/sms-courage-first-lex-sd.tftpl"
         channel_flow_vars = {
         }

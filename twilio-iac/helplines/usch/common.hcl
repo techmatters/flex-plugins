@@ -15,19 +15,20 @@ locals {
     enable_external_recordings = false
     permission_config          = "usch"
     enable_lex_v2              = true
-    
+
     channel_attributes = {
-      webchat                         = "/app/twilio-iac/helplines/usch/templates/channel-attributes/webchat.tftpl",
-      voice                           = "/app/twilio-iac/helplines/usch/templates/channel-attributes/voice.tftpl",
-      sms_courage_first-conversations = "/app/twilio-iac/helplines/usch/templates/channel-attributes/sms_courage_first-conversations.tftpl",
-      sms_childhelp-conversations     = "/app/twilio-iac/helplines/usch/templates/channel-attributes/sms_childhelp-conversations.tftpl",
-      default                         = "/app/twilio-iac/helplines/templates/channel-attributes/default.tftpl",
-      default-conversations           = "/app/twilio-iac/helplines/templates/channel-attributes/default-conversations.tftpl"
+      webchat                            = "/app/twilio-iac/helplines/usch/templates/channel-attributes/webchat.tftpl",
+      voice                              = "/app/twilio-iac/helplines/usch/templates/channel-attributes/voice.tftpl",
+      sms_courage_first-conversations    = "/app/twilio-iac/helplines/usch/templates/channel-attributes/sms_courage_first-conversations.tftpl",
+      sms_childhelp-conversations        = "/app/twilio-iac/helplines/usch/templates/channel-attributes/sms_childhelp-conversations.tftpl",
+      sms_childhelp_backup-conversations = "/app/twilio-iac/helplines/usch/templates/channel-attributes/sms_childhelp-conversations.tftpl",
+      default                            = "/app/twilio-iac/helplines/templates/channel-attributes/default.tftpl",
+      default-conversations              = "/app/twilio-iac/helplines/templates/channel-attributes/default-conversations.tftpl"
     }
     workflows = {
       master : {
-        friendly_name = "Master Workflow"
-        templatefile  = "/app/twilio-iac/helplines/usch/templates/workflows/master.tftpl"
+        friendly_name            = "Master Workflow"
+        templatefile             = "/app/twilio-iac/helplines/usch/templates/workflows/master.tftpl"
         task_reservation_timeout = 30
       },
       //NOTE: MAKE SURE TO ADD THIS IF THE ACCOUNT USES A CONVERSATION CHANNEL
@@ -98,9 +99,9 @@ locals {
       en_USCH : []
     }
     lex_v2_bot_languages = {
-       en_US : ["pre_survey", "post_survey"],
-       ch : ["post_survey"],
-       cf : ["post_survey"]
+      en_US : ["pre_survey", "post_survey"],
+      ch : ["post_survey"],
+      cf : ["post_survey"]
 
     }
     s3_lifecycle_rules = {
@@ -115,7 +116,7 @@ locals {
         prefix             = "voice-recordings/"
       }
     }
-    
+
     hrm_transcript_retention_days_override = 60
   }
 }
