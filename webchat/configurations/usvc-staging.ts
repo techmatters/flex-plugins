@@ -14,404 +14,421 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { Translations, Configuration, MapHelplineLanguage, ContactType } from '../types';
-import { PreEngagementFormDefinition } from '../src/pre-engagement-form';
+import {
+  Translations,
+  Configuration,
+  MapHelplineLanguage,
+  ContactType,
+} from "../types";
+import { PreEngagementFormDefinition } from "../src/pre-engagement-form";
 
-const accountSid = 'ACdc48c7f157a3a59aa62f48566f3df993';
-const flexFlowSid = 'FOc3527f331630685eac0b188843ee40c9';
-const defaultLanguage = 'en-US';
+const accountSid = "ACdc48c7f157a3a59aa62f48566f3df993";
+const flexFlowSid = "FOc3527f331630685eac0b188843ee40c9";
+const defaultLanguage = "en-US";
 const captureIp = true;
 const checkOpenHours = false;
-const contactType: ContactType = 'ip';
+const contactType: ContactType = "ip";
 
 const closedHours: PreEngagementFormDefinition = {
-  description:
-    'Closed offices message',
+  description: "Closed offices message",
   fields: [],
 };
 
 const holidayHours: PreEngagementFormDefinition = {
-  description:
-    'Closed holidays message',
+  description: "Closed holidays message",
   fields: [],
 };
 
 const preEngagementConfig: PreEngagementFormDefinition = {
-  description: 'PreEngagementConfigDescription',
-  submitLabel: 'StartChat',
+  description: "PreEngagementConfigDescription",
+  submitLabel: "StartChat",
   fields: [
     {
-      label: 'How old are you?',
-      type: 'select',
-      name: 'ageRange',
-      required: true,
-      defaultValue: '',
-      options: [
-        {
-          "value": "",
-          "label": ""
-        },
-        {
-          "value": "0-5",
-          "label": "0-5"
-        },
-        {
-          "value": "6-12",
-          "label": "6-12"
-        },
-        {
-          "value": "13-17",
-          "label": "13-17"
-        },
-        {
-          "value": "18-24",
-          "label": "18-24"
-        },
-        {
-          "value": "Adult 25+",
-          "label": "Adult 25+"
-        },
-        {
-          "value": "N/A",
-          "label": "Prefer not to answer"
-        }
-      ],
-    },
-    {
-      label: 'Gender',
-      type: 'select',
-      name: 'gender',
-      required: true,
-      defaultValue: '',
+      type: "select",
+      name: "What state or territory are you chatting from?",
+      label: "location",
+      defaultValue: "",
       options: [
         {
           value: "",
-          label: ""
+          label: "",
         },
         {
-          value: 'Female',
-          label: 'Female',
+          value: "Alabama",
+          label: "Alabama",
         },
         {
-          value: 'Male',
-          label: 'Male',
+          value: "Alaska",
+          label: "Alaska",
         },
         {
-          value: 'Non-Binary',
-          label: 'Non-Binary',
+          value: "Arizona",
+          label: "Arizona",
         },
         {
-          value: 'Unknown',
-          label: 'Unknown',
+          value: "Arkansas",
+          label: "Arkansas",
+        },
+        {
+          value: "California",
+          label: "California",
+        },
+        {
+          value: "Colorado",
+          label: "Colorado",
+        },
+        {
+          value: "Connecticut",
+          label: "Connecticut",
+        },
+        {
+          value: "Delaware",
+          label: "Delaware",
+        },
+        {
+          value: "Florida",
+          label: "Florida",
+        },
+        {
+          value: "Georgia",
+          label: "Georgia",
+        },
+        {
+          value: "Hawaii",
+          label: "Hawaii",
+        },
+        {
+          value: "Idaho",
+          label: "Idaho",
+        },
+        {
+          value: "Illinois",
+          label: "Illinois",
+        },
+        {
+          value: "Indiana",
+          label: "Indiana",
+        },
+        {
+          value: "Iowa",
+          label: "Iowa",
+        },
+        {
+          value: "Kansas",
+          label: "Kansas",
+        },
+        {
+          value: "Kentucky",
+          label: "Kentucky",
+        },
+        {
+          value: "Louisiana",
+          label: "Louisiana",
+        },
+        {
+          value: "Maine",
+          label: "Maine",
+        },
+        {
+          value: "Maryland",
+          label: "Maryland",
+        },
+        {
+          value: "Massachusetts",
+          label: "Massachusetts",
+        },
+        {
+          value: "Michigan",
+          label: "Michigan",
+        },
+        {
+          value: "Minnesota",
+          label: "Minnesota",
+        },
+        {
+          value: "Mississippi",
+          label: "Mississippi",
+        },
+        {
+          value: "Missouri",
+          label: "Missouri",
+        },
+        {
+          value: "Montana",
+          label: "Montana",
+        },
+        {
+          value: "Nebraska",
+          label: "Nebraska",
+        },
+        {
+          value: "Nevada",
+          label: "Nevada",
+        },
+        {
+          value: "New Hampshire",
+          label: "New Hampshire",
+        },
+        {
+          value: "New Jersey",
+          label: "New Jersey",
+        },
+        {
+          value: "New Mexico",
+          label: "New Mexico",
+        },
+        {
+          value: "New York",
+          label: "New York",
+        },
+        {
+          value: "North Carolina",
+          label: "North Carolina",
+        },
+        {
+          value: "North Dakota",
+          label: "North Dakota",
+        },
+        {
+          value: "Ohio",
+          label: "Ohio",
+        },
+        {
+          value: "Oklahoma",
+          label: "Oklahoma",
+        },
+        {
+          value: "Oregon",
+          label: "Oregon",
+        },
+        {
+          value: "Pensylvania",
+          label: "Pensylvania",
+        },
+        {
+          value: "Rhode Island",
+          label: "Rhode Island",
+        },
+        {
+          value: "South Carolina",
+          label: "South Carolina",
+        },
+        {
+          value: "South Dakota",
+          label: "South Dakota",
+        },
+        {
+          value: "Tennessee ",
+          label: "Tennessee ",
+        },
+        {
+          value: "Texas",
+          label: "Texas",
+        },
+        {
+          value: "Utah ",
+          label: "Utah ",
+        },
+        {
+          value: "Vermont",
+          label: "Vermont",
+        },
+        {
+          value: "Virgina ",
+          label: "Virgina ",
+        },
+        {
+          value: "Washington ",
+          label: "Washington ",
+        },
+        {
+          value: "West Virginia",
+          label: "West Virginia",
+        },
+        {
+          value: "Wisconsin",
+          label: "Wisconsin",
+        },
+        {
+          value: "Wyoming",
+          label: "Wyoming",
+        },
+        {
+          value: "U.S. Territory - American Somoa",
+          label: "U.S. Territory - American Somoa",
+        },
+        {
+          value: "U.S. Territory - Guam",
+          label: "U.S. Territory - Guam",
+        },
+        {
+          value: "U.S Territory - Northern Mariana Islands",
+          label: "U.S Territory - Northern Mariana Islands",
+        },
+        {
+          value: "U.S Territory - Puerto Rico",
+          label: "U.S Territory - Puerto Rico",
+        },
+        {
+          value: "U.S Territory - U.S. Virgin Islands",
+          label: "U.S Territory - U.S. Virgin Islands",
+        },
+        {
+          value: "U.S Territory - Other",
+          label: "U.S Territory - Other",
+        },
+        {
+          value: "International ",
+          label: "International ",
+        },
+        {
+          value: "Prefer not to say",
+          label: "Prefer not to say",
         },
       ],
-    },
-    {
-      label: 'What state are you chatting from?',
-      type: 'select',
-      name: 'state',
       required: true,
-      defaultValue: '',
-      options: [
-        {
-          "value": "",
-          "label": ""
-        },
-        {
-          "value": "Out of USA",
-          "label": "Out of USA"
-        },
-        {
-          "value": "Alabama",
-          "label": "Alabama"
-        },
-        {
-          "value": "Alaska",
-          "label": "Alaska"
-        },
-        {
-          "value": "Arizona",
-          "label": "Arizona"
-        },
-        {
-          "value": "Arkansas",
-          "label": "Arkansas"
-        },
-        {
-          "value": "California",
-          "label": "California"
-        },
-        {
-          "value": "Colorado",
-          "label": "Colorado"
-        },
-        {
-          "value": "Connecticut",
-          "label": "Connecticut"
-        },
-        {
-          "value": "Delaware",
-          "label": "Delaware"
-        },
-        {
-          "value": "Florida",
-          "label": "Florida"
-        },
-        {
-          "value": "Georgia",
-          "label": "Georgia"
-        },
-        {
-          "value": "Hawaii",
-          "label": "Hawaii"
-        },
-        {
-          "value": "Idaho",
-          "label": "Idaho"
-        },
-        {
-          "value": "Illinois",
-          "label": "Illinois"
-        },
-        {
-          "value": "Indiana",
-          "label": "Indiana"
-        },
-        {
-          "value": "Iowa",
-          "label": "Iowa"
-        },
-        {
-          "value": "Kansas",
-          "label": "Kansas"
-        },
-        {
-          "value": "Kentucky",
-          "label": "Kentucky"
-        },
-        {
-          "value": "Louisiana",
-          "label": "Louisiana"
-        },
-        {
-          "value": "Maine",
-          "label": "Maine"
-        },
-        {
-          "value": "Maryland",
-          "label": "Maryland"
-        },
-        {
-          "value": "Massachusetts",
-          "label": "Massachusetts"
-        },
-        {
-          "value": "Michigan",
-          "label": "Michigan"
-        },
-        {
-          "value": "Minnesota",
-          "label": "Minnesota"
-        },
-        {
-          "value": "Mississippi",
-          "label": "Mississippi"
-        },
-        {
-          "value": "Missouri",
-          "label": "Missouri"
-        },
-        {
-          "value": "Montana",
-          "label": "Montana"
-        },
-        {
-          "value": "Nebraska",
-          "label": "Nebraska"
-        },
-        {
-          "value": "Nevada",
-          "label": "Nevada"
-        },
-        {
-          "value": "New Hampshire",
-          "label": "New Hampshire"
-        },
-        {
-          "value": "New Jersey",
-          "label": "New Jersey"
-        },
-        {
-          "value": "New Mexico",
-          "label": "New Mexico"
-        },
-        {
-          "value": "New York",
-          "label": "New York"
-        },
-        {
-          "value": "North Carolina",
-          "label": "North Carolina"
-        },
-        {
-          "value": "North Dakota",
-          "label": "North Dakota"
-        },
-        {
-          "value": "Ohio",
-          "label": "Ohio"
-        },
-        {
-          "value": "Oklahoma",
-          "label": "Oklahoma"
-        },
-        {
-          "value": "Oregon",
-          "label": "Oregon"
-        },
-        {
-          "value": "Pennsylvania",
-          "label": "Pennsylvania"
-        },
-        {
-          "value": "Rhode Island",
-          "label": "Rhode Island"
-        },
-        {
-          "value": "South Carolina",
-          "label": "South Carolina"
-        },
-        {
-          "value": "South Dakota",
-          "label": "South Dakota"
-        },
-        {
-          "value": "Tennessee",
-          "label": "Tennessee"
-        },
-        {
-          "value": "Texas",
-          "label": "Texas"
-        },
-        {
-          "value": "Utah",
-          "label": "Utah"
-        },
-        {
-          "value": "Vermont",
-          "label": "Vermont"
-        },
-        {
-          "value": "Virginia",
-          "label": "Virginia"
-        },
-        {
-          "value": "Washington",
-          "label": "Washington"
-        },
-        {
-          "value": "Washington, D.C.",
-          "label": "Washington, D.C."
-        },
-        {
-          "value": "West Virginia",
-          "label": "West Virginia"
-        },
-        {
-          "value": "Wisconsin",
-          "label": "Wisconsin"
-        },
-        {
-          "value": "Wyoming",
-          "label": "Wyoming"
-        },
-        {
-          "value": "Unknown",
-          "label": "Unknown"
-        },
-        {
-          "value": "N/A",
-          "label": "Prefer not to answer"
-        }
-      ],
-    }, 
-    {
-      label: 'Are you reaching out on behalf of yourself or another person?',
-      type: 'select',
-      defaultValue: 'Yes',
-      name: 'aboutSelf',
-      options: [
-        {
-          "value": "Yes",
-          "label": "Myself"
-        },
-        {
-          "value": "No",
-          "label": "Someone else"
-        }
-      ],
     },
     {
-      label: 'What is your preferred language?',
-      type: 'select',
-      defaultValue: 'en-US',
-      name: 'language',
+      type: "select",
+      name: "Sex",
+      label: "sex",
+      defaultValue: "",
       options: [
         {
-          "value": "en-US",
-          "label": "English"
+          value: "",
+          label: "",
         },
         {
-          "value": "en",
-          "label": "Other"
-        }
+          value: "Male",
+          label: "Male",
+        },
+        {
+          value: "Female",
+          label: "Female",
+        },
+        {
+          value: "Other",
+          label: "Other",
+        },
+        {
+          value: "Prefer not to say",
+          label: "Prefer not to say",
+        },
       ],
+      required: true,
     },
     {
-      type: 'checkbox',
-      name: 'termsAndConditions',
+      type: "select",
+      name: "Age",
+      label: "ageRange",
+      defaultValue: "",
+      options: [
+        {
+          value: "",
+          label: "",
+        },
+        {
+          value: "0-10",
+          label: "0-10",
+        },
+        {
+          value: "11-17",
+          label: "11-17",
+        },
+        {
+          value: "18-24",
+          label: "18-24",
+        },
+        {
+          value: "25-29",
+          label: "25-29",
+        },
+        {
+          value: "30-39",
+          label: "30-39",
+        },
+        {
+          value: "40-49",
+          label: "40-49",
+        },
+        {
+          value: "50-59",
+          label: "50-59",
+        },
+        {
+          value: "60-69",
+          label: "60-69",
+        },
+        {
+          value: "70-29",
+          label: "70-29",
+        },
+        {
+          value: "80-89",
+          label: "80-89",
+        },
+        {
+          value: "90-99",
+          label: "90-99",
+        },
+        {
+          value: "100+",
+          label: "100+",
+        },
+        {
+          value: "Prefer not to say",
+          label: "Prefer not to say",
+        },
+      ],
+      required: true,
+    },
+    {
+      type: "checkbox",
+      name: "safety",
       label:
-        'I\'ve read and accept the <a href="https://en.wikipedia.org/wiki/Terms_of_service">Terms and Conditions</a>',
+        "Your safety is important to us. If you are free from physical threat of harm, please click the box to connect with an agent. If you are not safe, please contact your local emergency services.",
       required: {
         value: true,
-        message: "Sorry, if you don't accept our terms and conditions we can't provide counseling to you.",
+        message: "Sorry, you need to confirm that you are safe to connect with an agent.",
       }, 
     },
   ],
 };
 
 const translations: Translations = {
-  'en-US': {
-    WelcomeMessage: 'Welcome to NCVC',
-    PreEngagementConfigDescription : 'To best serve you, answer 4 short questions and you will then be connected to a counselor. You can select "Prefer not to answer" for any question.',
-    MessageCanvasTrayContent: '',
+  "en-US": {
+    WelcomeMessage: "Welcome to NCVC",
+    PreEngagementConfigDescription:
+      'To best serve you, answer 4 short questions and you will then be connected to a counselor. You can select "Prefer not to answer" for any question.',
+    MessageCanvasTrayContent: "",
     MessageInputDisabledReasonHold:
       "Thank you very much for this information. We'll transfer you now. Please hold for a counselor.",
-    AutoFirstMessage: 'Incoming webchat contact from',
-    TypingIndicator: 'Counselor is typing',
-    StartChat: 'Start Chat!',
-    MessageCanvasTrayButton: 'Start New Chat',
-    Nickname: 'Nickname',
+    AutoFirstMessage: "Incoming webchat contact from",
+    TypingIndicator: "Counselor is typing",
+    StartChat: "Start Chat!",
+    MessageCanvasTrayButton: "Start New Chat",
+    Nickname: "Nickname",
   },
-  'Other': {
-    WelcomeMessage: 'Welcome to NCVC',
-    PreEngagementConfigDescription : 'To best serve you, answer 4 short questions and you will then be connected to a counselor. You can select "Prefer not to answer" for any question.',
-    MessageCanvasTrayContent: '',
+  Other: {
+    WelcomeMessage: "Welcome to NCVC",
+    PreEngagementConfigDescription:
+      'To best serve you, answer 4 short questions and you will then be connected to a counselor. You can select "Prefer not to answer" for any question.',
+    MessageCanvasTrayContent: "",
     MessageInputDisabledReasonHold:
       "Thank you very much for this information. We'll transfer you now. Please hold for a counselor.",
-    AutoFirstMessage: 'Incoming webchat contact from',
-    TypingIndicator: 'Counselor is typing',
-    StartChat: 'Start Chat!',
-    MessageCanvasTrayButton: 'Start New Chat',
-    Nickname: 'Nickname',
+    AutoFirstMessage: "Incoming webchat contact from",
+    TypingIndicator: "Counselor is typing",
+    StartChat: "Start Chat!",
+    MessageCanvasTrayButton: "Start New Chat",
+    Nickname: "Nickname",
   },
 };
 
 const memberDisplayOptions = {
-  yourDefaultName: 'You',
+  yourDefaultName: "You",
   yourFriendlyNameOverride: false,
   theirFriendlyNameOverride: false,
-  theirDefaultName: 'Counselor',
+  theirDefaultName: "Counselor",
 };
 
 const mapHelplineLanguage: MapHelplineLanguage = (helpline) => {
@@ -2180,9 +2197,8 @@ const blockedEmojis = [
   "triangular_flag_on_post",
   "us",
   "waving_black_flag",
-  "waving_white_flag"
-]
-
+  "waving_white_flag",
+];
 
 export const config: Configuration = {
   accountSid,
@@ -2198,5 +2214,7 @@ export const config: Configuration = {
   captureIp,
   blockedEmojis,
   contactType,
-  twilioServicesUrl: new URL(`https://hrm-staging.tl.techmatters.org/lambda/twilio/account-scoped/${accountSid}`),
+  twilioServicesUrl: new URL(
+    `https://hrm-staging.tl.techmatters.org/lambda/twilio/account-scoped/${accountSid}`
+  ),
 };
