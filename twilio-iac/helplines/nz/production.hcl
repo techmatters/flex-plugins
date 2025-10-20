@@ -127,8 +127,8 @@ locals {
     enable_system_down       = true
     system_down_flow_vars = {
       is_system_down                   = "false"
-      message                          = "We're sorry, the helpline is experiencing technical difficulties with our chat system. If this is an emergency, please call 111 or reach out to 1737. We apologize for the inconvenience and are working to be up and running shortly"
-      voice_message                    = "We're sorry, the helpline is experiencing technical difficulties with our chat system. If this is an emergency, please call 111 or reach out to 1737. We apologize for the inconvenience and are working to be up and running shortly"
+      message                          = "We're sorry, the helpline is experiencing technical difficulties with our chat system. If this is an emergency, please call 111 or reach out to 1737. We apologise for the inconvenience and are working to be up and running shortly"
+      voice_message                    = "We're sorry, the helpline is experiencing technical difficulties with our chat system. If this is an emergency, please call 111 or reach out to 1737. We apologise for the inconvenience and are working to be up and running shortly"
       send_studio_message_function_sid = "ZH8b62b0622a2350b932fa5d0efe0b3b14"
       call_action                      = "message"
       forward_number                   = " +123"
