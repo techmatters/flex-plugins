@@ -28,9 +28,9 @@ const initialState: TeamsViewState = {
 // Action types
 export const TEAMSVIEW_SELECT_WORKERS = 'teamsview/select-workers';
 export const TEAMSVIEW_UNSELECT_WORKERS = 'teamsview/unselect-workers';
-const TEAMSVIEW_SELECT_SKILLS = 'teamsview/select-skills';
-const TEAMSVIEW_SELECT_OPERATION = 'teamsview/select-operation';
-const TEAMSVIEW_RESET_STATE = 'teamsview/reset-state';
+export const TEAMSVIEW_SELECT_SKILLS = 'teamsview/select-skills';
+export const TEAMSVIEW_SELECT_OPERATION = 'teamsview/select-operation';
+export const TEAMSVIEW_RESET_STATE = 'teamsview/reset-state';
 
 type TeamsViewSelectWorkersAction = {
   type: typeof TEAMSVIEW_SELECT_WORKERS;
