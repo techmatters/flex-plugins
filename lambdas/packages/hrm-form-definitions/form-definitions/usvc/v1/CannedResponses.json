@@ -1,9 +1,5 @@
 [
   {
-    "label": "[ EXAMPLE ] Resource Information Request",
-    "text": "We can share resources based on your location and needs.\nCould you tell me the city and state where you’d like help, or let us know if you prefer general national resources?\nEverything you share will remain confidential."
-  },
-  {
     "label": "Cntd Past Session (VCRC & DCVH)",
     "text": "It seems like you may have been in a hotline session that got disconnected. Unfortunately, I do not have any information that you shared earlier due to the anonymous nature of our hotline. Apologies if you have already gone through this, but before we go any further, I would like to check in about some safety and privacy concerns. Would that be alright?"
   },
@@ -13,7 +9,7 @@
   },
   {
     "label": "Safe Place (VCRC & DCVH)",
-    "text": "We are unable to provide emergency services or dispatch emergency services on your behalf, so it is important that you are in a space free from danger or immediate threat of physical harm before we proceed. \r\n\r\nAre you in a space where you can talk with us without immediate threat of danger or physical harm? \r"
+    "text": "We are unable to provide emergency services or dispatch emergency services on your behalf, so it is important that you are in a space free from danger or immediate threat of physical harm before we proceed. \n\nAre you in a space where you can talk with us without immediate threat of danger or physical harm?"
   },
   {
     "label": "Not Safe (VCRC & DCVH)",
@@ -25,7 +21,7 @@
   },
   {
     "label": "Documentation Evidence (VCRC & DCVH)",
-    "text": "If you’re not doing so already, it is important to save and document any evidence that you can. This can help show a pattern of behavior over time. \n\nSome people document evidence by taking pictures, writing notes in a journal, planner or calendar, using a secure and private email, or making a plan to share evidence with a safe person who can store the information for you. It is ok if you haven’t done this yet. When you are able, take time to organize what you can in one place. A victim advocate in your area may be able to assist you with this task. \n\nAnother thing to be aware of, is keeping a list of resources in a safe place. The resources provided to you in this chat will disappear when the chat ends. This is intended to protect your privacy and safety. If you’re unable to find the resources later, or need more resources, you are welcome to contact us again for additional support.\n"
+    "text": "If you’re not doing so already, it is important to save and document any evidence that you can. This can help show a pattern of behavior over time. \r\n\r\nSome people document evidence by taking pictures, writing notes in a journal, planner or calendar, using a secure and private email, or making a plan to share evidence with a safe person who can store the information for you. It is ok if you haven’t done this yet. When you are able, take time to organize what you can in one place. A victim advocate in your area may be able to assist you with this task. \r\n\r\nAnother thing to be aware of, is keeping a list of resources in a safe place. The resources provided to you in this chat will disappear when the chat ends. This is intended to protect your privacy and safety. If you’re unable to find the resources later, or need more resources, you are welcome to contact us again for additional support.\r\n"
   },
   {
     "label": "Limitations (VCRC & DCVH)",
@@ -41,7 +37,7 @@
   },
   {
     "label": "Order of Protection (VCRC & DCVH)",
-    "text": "A potential resource for your situation could be obtaining an Order of Protection, sometimes referred to as a restraining order, protection order, or other similar title. Your county courthouse is generally a place to start the process, however, many police departments, victim services units, and court advocates at your local domestic or sexual violence and stalking services program might be helpful in assisting you with the application and court process. \r\nProtection orders take time and are only effective if you are able and willing to go through the court process and contact law enforcement when the order has been violated. We want to prepare you for what you may encounter when filing for an order of protection. For example, petitions may only be written in English. You can ask if there are interpreter services. You must have the offender/respondent's full name and a good or valid address where the offender/respondent can be found. Additionally, you will need to be ready to describe the events of violence or abuse where you were harmed, intimidated, assaulted, stalked, or otherwise threatened or harmed. An advocate at your local domestic violence, sexual assault, and stalking program can help prepare you for this.\r\nSome counties have different protection orders based on your relationship to the offender/respondent and the type of crime you experienced. Would you like me to find the nearest advocate, courthouse, and/or police station that can assist you with this process?\r\n\n"
+    "text": "A potential resource for your situation could be obtaining an Order of Protection, sometimes referred to as a restraining order, protection order, or other similar title. Your county courthouse is generally a place to start the process, however, many police departments, victim services units, and court advocates at your local domestic or sexual violence and stalking services program might be helpful in assisting you with the application and court process. \n\nProtection orders take time and are only effective if you are able and willing to go through the court process and contact law enforcement when the order has been violated. We want to prepare you for what you may encounter when filing for an order of protection. For example, petitions may only be written in English. You can ask if there are interpreter services. You must have the offender/respondent's full name and a good or valid address where the offender/respondent can be found. Additionally, you will need to be ready to describe the events of violence or abuse where you were harmed, intimidated, assaulted, stalked, or otherwise threatened or harmed. Some counties have different protection orders based on your relationship to the offender/respondent and the type of crime you experienced.\n\nAn advocate at your local domestic violence, sexual assault, and stalking program can help prepare you for this. Would you like me to find the nearest advocate, courthouse, and/or police station that can assist you with this process?\n\n\n"
   },
   {
     "label": "Repeat Chatter (VCRC & DCVH)",
@@ -49,15 +45,15 @@
   },
   {
     "label": "Resource Map (VCRC & DCVH)\r",
-    "text": "One resource I always share with visitors is the VictimConnect Resource Map. You can search for resources in your area by keywords, services provided, and crime type. The VictimConnect team is constantly adding to the Resource Map to include more victim services organizations. Check it out to see if you can find relevant and supportive resources in your community. https://victimconnect.org/resources/search-resources/"
+    "text": "One resource I always share with visitors is the VictimConnect Resource Map. You can search for resources in your area by keywords, services provided, and crime type: The VictimConnect team is constantly adding to the Resource Map to include more victim services organizations. Check it out to see if you can find relevant and supportive resources in your community: https://victimconnect.org/resources/search-resources/"
   },
   {
     "label": "Stalking (VCRC & DCVH)",
-    "text": "Stalking is a repeated pattern of behavior that is directed at a specific person. This can be done in person, through technology, and/or through another person. It can be challenging to remember or recognize all incidents of stalking. One tool that many experts recommend survivors use is a Stalking Incident and Behavior Log to keep track of behaviors and incidents which might help you if and when you decide to navigate civil and criminal justice systems. This resource is from the Stalking Prevention, Awareness, and Resource Center. https://www.stalkingawareness.org/wp-content/uploads/2018/07/SPARC_StalkingLogInstructions_2018_FINAL.pdf"
+    "text": "Stalking is a repeated pattern of behavior that is directed at a specific person. This can be done in person, through technology, and/or through another person. It can be challenging to remember or recognize all incidents of stalking. One tool that many experts recommend survivors use is a Stalking Incident and Behavior Log to keep track of behaviors and incidents which might help you if and when you decide to navigate civil and criminal justice systems. This resource is from the Stalking Prevention, Awareness, and Resource Center: https://www.stalkingawareness.org/documentation-log/"
   },
   {
     "label": "Trauma Reflexes & Habits (VCRC & DCVH)",
-    "text": "There is no “right way or wrong way” to respond to a traumatic event. Every single person’s response is unique. Our brains and bodies go into survival-mode, automatically responding in ways that keep us safe. We often react with automatic reflexes and habits that we have very little control over - our brains are wired to do this. Some people call these responses “fight, flight, fawn or freeze”. These automatic responses are completely normal.\nHowever you responded is your body’s normal reaction to an abnormal situation. \nWhat happened to you is not your fault. You did everything you could do to survive. "
+    "text": "There is no “right way or wrong way” to respond to a traumatic event. Every single person’s response is unique. Our brains and bodies go into survival-mode, automatically responding in ways that keep us safe. We often react with automatic reflexes and habits that we have very little control over - our brains are wired to do this. Some people call these responses “fight, flight, fawn or freeze”. These automatic responses are completely normal.\n\nHowever you responded is your body’s normal reaction to an abnormal situation. What happened to you is not your fault. \n\nYou did everything you could do to survive. "
   },
   {
     "label": "Trauma-Fawn Reflex (VCRC & DCVH)",
@@ -141,7 +137,7 @@
   },
   {
     "label": "\r\nPrivacy Policy SMS (DCVH)",
-    "text": "Our services are confidential and anonymous, which means you do not have to share any personally identifying information like your age, name or where you live. We do not store your IP address or have access to your phone number. If you are concerned about this conversation being saved on your phone via text messages, you are also welcome to chat online where the session will not be stored on your phone.\n\nAdditionally, I am a mandated reporter for the neglect or abuse of minor children and vulnerable adults. We can continue talking, but I want to let you know that if you do not want a report to be made, you may not want to share identifying information with me such as your name, address, or school. If you do share additional information it may require me to report what you are experiencing.\nIf for any reason you get disconnected, I encourage you to go back to the waiting room to be reconnected - or you can call or text the DC Victim Hotline: 1-844-4HELPDC (1-844-443-5732) \nDo you have any additional questions about privacy issues or computer safety?\n"
+    "text": "Our services are confidential and anonymous, which means you do not have to share any personally identifying information like your age, name or where you live. We do not store your IP address or have access to your phone number. If you are concerned about this conversation being saved on your phone via text messages, you are also welcome to chat online where the session will not be stored on your phone.\n\nAdditionally, I am a mandated reporter for the neglect or abuse of minor children and vulnerable adults. We can continue talking, but I want to let you know that if you do not want a report to be made, you may not want to share identifying information with me such as your name, address, or school. If you do share additional information it may require me to report what you are experiencing.\n\nIf for any reason you get disconnected, I encourage you to go back to the waiting room to be reconnected - or you can call or text the DC Victim Hotline: 1-844-4HELPDC (1-844-443-5732) \n\nDo you have any additional questions about privacy issues or computer safety?\n"
   },
   {
     "label": "Spanish (DCVH)\n",
@@ -158,5 +154,9 @@
   {
     "label": "Time Out Ending (DCVH)\r",
     "text": "It appears that you are no longer able to chat at this time so I am going to end this session for your safety and privacy. If you need additional assistance please return to waiting room to be reconnected - or you can call or text the DC Victim Hotline at 1-844-4HELPDC (1-844-443-5732) "
+  },
+  {
+    "label": "Dispatch Services",
+    "text": "Thank you for contacting the DC Victim Hotline. We are unable to provide dispatch services through our text or chat features. If you are seeking our dispatch services, please call 1-844-4HELPDC (1-844-443-5732) and choose the third option."
   }
 ]
