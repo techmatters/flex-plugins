@@ -14,17 +14,23 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-type TeamsViewState = {
+export type TeamsViewState = {
   selectedWorkers: Set<string>;
+  selectedSkills: Set<string>;
+  operation?: 'enable' | 'disable';
 };
 
 const initialState: TeamsViewState = {
   selectedWorkers: new Set(),
+  selectedSkills: new Set(),
 };
 
 // Action types
-export const TEAMSVIEW_SELECT_WORKERS = 'TEAMSVIEW_SELECT_WORKERS';
-export const TEAMSVIEW_UNSELECT_WORKERS = 'TEAMSVIEW_UNSELECT_WORKERS';
+export const TEAMSVIEW_SELECT_WORKERS = 'teamsview/select-workers';
+export const TEAMSVIEW_UNSELECT_WORKERS = 'teamsview/unselect-workers';
+const TEAMSVIEW_SELECT_SKILLS = 'teamsview/select-skills';
+const TEAMSVIEW_SELECT_OPERATION = 'teamsview/select-operation';
+const TEAMSVIEW_RESET_STATE = 'teamsview/reset-state';
 
 type TeamsViewSelectWorkersAction = {
   type: typeof TEAMSVIEW_SELECT_WORKERS;
@@ -36,7 +42,26 @@ type TeamsViewUnselectWorkersAction = {
   payload: string[];
 };
 
-type TeamsViewActionTypes = TeamsViewSelectWorkersAction | TeamsViewUnselectWorkersAction;
+type TeamsViewSelectSkillsAction = {
+  type: typeof TEAMSVIEW_SELECT_SKILLS;
+  payload: string[];
+};
+
+type TeamsViewSelectOperationAction = {
+  type: typeof TEAMSVIEW_SELECT_OPERATION;
+  payload: TeamsViewState['operation'];
+};
+
+type TeamsViewResetStateAction = {
+  type: typeof TEAMSVIEW_RESET_STATE;
+};
+
+type TeamsViewActionTypes =
+  | TeamsViewSelectWorkersAction
+  | TeamsViewUnselectWorkersAction
+  | TeamsViewSelectSkillsAction
+  | TeamsViewSelectOperationAction
+  | TeamsViewResetStateAction;
 
 // Action creators
 export const teamsViewSelectWorkers = (workers: string[]): TeamsViewSelectWorkersAction => ({
@@ -47,6 +72,20 @@ export const teamsViewSelectWorkers = (workers: string[]): TeamsViewSelectWorker
 export const teamsViewUnselectWorkers = (workers: string[]): TeamsViewUnselectWorkersAction => ({
   type: TEAMSVIEW_UNSELECT_WORKERS,
   payload: workers,
+});
+
+export const teamsViewSelectSkills = (skills: string[]): TeamsViewSelectSkillsAction => ({
+  type: TEAMSVIEW_SELECT_SKILLS,
+  payload: skills,
+});
+
+export const teamsViewSelectOperation = (operation: TeamsViewState['operation']): TeamsViewSelectOperationAction => ({
+  type: TEAMSVIEW_SELECT_OPERATION,
+  payload: operation,
+});
+
+export const teamsViewResetStateAction = (): TeamsViewResetStateAction => ({
+  type: TEAMSVIEW_RESET_STATE,
 });
 
 export const reduce = (state = initialState, action: TeamsViewActionTypes): TeamsViewState => {
@@ -65,6 +104,21 @@ export const reduce = (state = initialState, action: TeamsViewActionTypes): Team
         ...state,
         selectedWorkers,
       };
+    }
+    case TEAMSVIEW_SELECT_SKILLS: {
+      return {
+        ...state,
+        selectedSkills: new Set(action.payload),
+      };
+    }
+    case TEAMSVIEW_SELECT_OPERATION: {
+      return {
+        ...state,
+        operation: action.payload,
+      };
+    }
+    case TEAMSVIEW_RESET_STATE: {
+      return initialState;
     }
     default:
       return state;
