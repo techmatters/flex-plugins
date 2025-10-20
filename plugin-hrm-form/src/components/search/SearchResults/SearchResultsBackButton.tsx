@@ -24,14 +24,15 @@ import { BackText, BackIcon } from '../styles';
 type OwnProps = {
   text: JSX.Element | string;
   handleBack: () => void;
+  disabled?: boolean
 };
 
 type Props = OwnProps;
 
-const SearchResultsBackButton: React.FC<Props> = ({ text, handleBack }) => {
+const SearchResultsBackButton: React.FC<Props> = ({ text, handleBack, disabled }) => {
   return (
     <Row className="hiddenWhenEditingContact">
-      <StyledBackButton onClick={handleBack}>
+      <StyledBackButton onClick={handleBack} disabled={disabled}>
         <Row>
           <BackIcon />
           <BackText>{text}</BackText>
