@@ -300,6 +300,12 @@ export type StandaloneITask = {
   };
 };
 
+export const standaloneTask: StandaloneITask = {
+  taskSid: 'standalone-task-sid',
+  attributes: { isContactlessTask: false },
+};
+
+
 export function isStandaloneTask(task: RouterTask): task is StandaloneITask {
   return task.taskSid === standaloneTaskSid;
 }
