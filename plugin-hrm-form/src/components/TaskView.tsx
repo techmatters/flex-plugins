@@ -102,14 +102,6 @@ const TaskView: React.FC<Props> = ({ task }) => {
     workerSid,
   ]);
 
-  // Force a re-render on unmount (temporary fix NoTaskView issue with Offline Contacts)
-  React.useEffect(() => {
-    return () => {
-      if (isOfflineContactTask(task)) rerenderAgentDesktop();
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
   const contactInitialized = Boolean(unsavedContact);
   const helpline = unsavedContact?.helpline;
   const contactlessTask = unsavedContact?.rawJson?.contactlessTask;
