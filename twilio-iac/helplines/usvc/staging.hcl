@@ -117,8 +117,8 @@ locals {
     enable_system_down       = true
     system_down_flow_vars = {
       is_system_down                   = "false"
-      message                          = "We're currently experiencing technical issues, and your message might not be received. We apologize for the inconvenience."
-      voice_message                    = "We're currently experiencing technical issues, and your call might not be received. We apologize for the inconvenience."
+      message                          = "The hotline is temporarily unavailable. If you are seeking immediate, non-emergency assistance please visit victimconnect.org for available resources. \nNuestras líneas están temporalmente indisponible. Para víctimas en busca de recursos inmediatos, les invitamos a visitar nuestro Mapa de Recursos VictimConnect disponible en la página web victimconnect.org."
+      voice_message                    = "The hotline is temporarily unavailable. If you are seeking immediate, non-emergency assistance please visit victimconnect.org for available resources. \nNuestras líneas están temporalmente indisponible. Para víctimas en busca de recursos inmediatos, les invitamos a visitar nuestro Mapa de Recursos VictimConnect disponible en la página web victimconnect.org."
       send_studio_message_function_sid = "ZH4b9cf9eb89b74a9ae256a731f8f4bc99"
       call_action                      = "message"
       forward_number                   = "+123"
