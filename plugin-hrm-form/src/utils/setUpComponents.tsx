@@ -45,8 +45,7 @@ import { FeatureFlags, standaloneTaskSid } from '../types/types';
 import { colors } from '../channels/colors';
 import { getHrmConfig } from '../hrmConfig';
 import { changeRoute } from '../states/routing/actions';
-import { AppRoutes, ChangeRouteMode } from '../states/routing/types';
-import { selectCurrentBaseRoute } from '../states/routing/getRoute';
+import { ChangeRouteMode } from '../states/routing/types';
 import { RootState } from '../states';
 import selectCurrentOfflineContact from '../states/contacts/selectCurrentOfflineContact';
 import { REFRESH_BROWSER_REQUIRED_FOR_LANGUAGE_CHANGE_NOTIFICATION_ID } from '../states/configuration/changeLanguage';
@@ -171,18 +170,6 @@ const setUpOfflineContact = () => {
 };
 
 /**
- * Dispatch an action to route to the side link
- * Will reset standalone route to a starting target route if the standalone base route doesn't already match it
- * @param targetAppRoute
- */
-const routeToSideLink = (targetAppRoute: AppRoutes) => {
-  const { store } = Flex.Manager.getInstance();
-  const { route } = selectCurrentBaseRoute(store.getState() as RootState, standaloneTaskSid) ?? {};
-  if (route === targetAppRoute.route) return;
-  store.dispatch(changeRoute(targetAppRoute, standaloneTaskSid, ChangeRouteMode.ResetRoute));
-};
-
-/**
  * Add buttons to pull / create tasks
  */
 export const setUpAddButtons = (featureFlags: FeatureFlags) => {
@@ -256,7 +243,6 @@ export const setUpCaseList = () => {
       key="CaseListSideLink"
       onClick={() => {
         Flex.Actions.invokeAction('NavigateToView', { viewName: 'case-list' });
-        routeToSideLink({ route: 'case-list', subroute: 'case-list' });
       }}
       reserveSpace={false}
       showLabel={true}
@@ -280,7 +266,6 @@ export const setUpClientProfileList = () => {
       key="ProfileListSideLink"
       onClick={() => {
         Flex.Actions.invokeAction('NavigateToView', { viewName: 'profile-list' });
-        routeToSideLink({ route: 'profile-list', subroute: 'profile-list' });
         Flex.Manager.getInstance().store.dispatch(
           changeRoute(
             { route: 'profile-list', subroute: 'profile-list' },
@@ -306,8 +291,7 @@ export const setUpStandaloneSearch = () => {
     <StandaloneSearchSideLink
       key="StandaloneSearchSideLink"
       onClick={() => {
-        Flex.Actions.invokeAction('NavigateToView', { viewName: 'search' });
-        routeToSideLink({ route: 'search', subroute: 'form' });
+        Flex.Actions.invokeAction('NavigateToView', { viewName: 'search', subroute: 'form' });
       }}
       reserveSpace={false}
       showLabel={true}

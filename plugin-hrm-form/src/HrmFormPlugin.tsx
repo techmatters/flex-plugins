@@ -155,6 +155,8 @@ const setUpActions = (
   // bind setupObject to the functions that requires some initialization
   const wrapupOverride = ActionFunctions.wrapupTask(setupObject, getMessage);
 
+  Flex.Actions.addListener('afterNavigateToView', ActionFunctions.afterNavigateToView);
+
   Flex.Actions.addListener('afterAcceptTask', ActionFunctions.afterAcceptTask(featureFlags, setupObject, getMessage));
 
   setUpTransferActions(setupObject);
