@@ -43,7 +43,7 @@ locals {
       play_message_dcvh_voice_sp_prequeue       = "Gracias por contactar al DC Victim Hotline. Su seguridad es importante para nosotros. Nuestro servicio no ofrece asistencia de emergencia. Si su seguridad corre peligro inmediato, por favor desconéctese y contacte a la policía o al servicio de emergencia local."
       play_message_dcvh_voice_dispatch_prequeue = "Thank you for contacting DCVH dispatch services. A Victim Assistance Specialist will be with you shortly. We appreciate your patience as we assist other callers."
 
-     //test
+
 
     }
     //Serverless -- to allow enabling the operating hours check on this staging account.
