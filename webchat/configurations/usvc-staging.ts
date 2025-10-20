@@ -45,8 +45,8 @@ const preEngagementConfig: PreEngagementFormDefinition = {
   fields: [
     {
       type: "select",
-      name: "What state or territory are you chatting from?",
-      label: "location",
+      name: "location",
+      label: "What state or territory are you chatting from?",
       defaultValue: "",
       options: [
         {
@@ -290,8 +290,8 @@ const preEngagementConfig: PreEngagementFormDefinition = {
     },
     {
       type: "select",
-      name: "Sex",
-      label: "sex",
+      name: "sex",
+      label: "Sex",
       defaultValue: "",
       options: [
         {
@@ -319,8 +319,8 @@ const preEngagementConfig: PreEngagementFormDefinition = {
     },
     {
       type: "select",
-      name: "Age",
-      label: "ageRange",
+      name: "ageRange",
+      label: "Age",
       defaultValue: "",
       options: [
         {
@@ -399,12 +399,12 @@ const translations: Translations = {
   "en-US": {
     WelcomeMessage: "Welcome to NCVC",
     PreEngagementConfigDescription:
-      'To best serve you, answer 4 short questions and you will then be connected to a counselor. You can select "Prefer not to answer" for any question.',
+      'Welcome! Thank you for reaching out. To best serve you, please answer the questions below before we connect you to a Victim Assistance Specialist. You can select "Prefer not to answer" for any question.',
     MessageCanvasTrayContent: "",
     MessageInputDisabledReasonHold:
-      "Thank you very much for this information. We'll transfer you now. Please hold for a counselor.",
+      "Thank you very much for this information. We'll transfer you now. Please hold for a Victim Assistance Specialist.",
     AutoFirstMessage: "Incoming webchat contact from",
-    TypingIndicator: "Counselor is typing",
+    TypingIndicator: "Specialist is typing",
     StartChat: "Start Chat!",
     MessageCanvasTrayButton: "Start New Chat",
     Nickname: "Nickname",
@@ -412,12 +412,12 @@ const translations: Translations = {
   Other: {
     WelcomeMessage: "Welcome to NCVC",
     PreEngagementConfigDescription:
-      'To best serve you, answer 4 short questions and you will then be connected to a counselor. You can select "Prefer not to answer" for any question.',
+      'Welcome! Thank you for reaching out. To best serve you, please answer the questions below before we connect you to a Victim Assistance Specialist. You can select "Prefer not to answer" for any question.',
     MessageCanvasTrayContent: "",
     MessageInputDisabledReasonHold:
-      "Thank you very much for this information. We'll transfer you now. Please hold for a counselor.",
+      "Thank you very much for this information. We'll transfer you now. Please hold for a agen.",
     AutoFirstMessage: "Incoming webchat contact from",
-    TypingIndicator: "Counselor is typing",
+    TypingIndicator: "Specialist is typing",
     StartChat: "Start Chat!",
     MessageCanvasTrayButton: "Start New Chat",
     Nickname: "Nickname",
@@ -428,7 +428,7 @@ const memberDisplayOptions = {
   yourDefaultName: "You",
   yourFriendlyNameOverride: false,
   theirFriendlyNameOverride: false,
-  theirDefaultName: "Counselor",
+  theirDefaultName: "Specialist",
 };
 
 const mapHelplineLanguage: MapHelplineLanguage = (helpline) => {
