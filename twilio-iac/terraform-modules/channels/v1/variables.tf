@@ -55,6 +55,12 @@ variable "system_down_studio_subflow_sid" {
   default     = ""
 }
 
+variable "debug_studio_subflow_sid" {
+  description = "debug_studio_subflow_sid"
+  type        = string
+  default     = ""
+}
+
 variable "task_language" {
   type        = string
   default     = ""

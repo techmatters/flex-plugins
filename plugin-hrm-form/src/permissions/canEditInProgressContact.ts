@@ -13,9 +13,10 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
-import { getInitializedCan, PermissionActions } from '.';
+import { getInitializedCan } from './rules';
 import { Contact } from '../types/types';
 import { getHrmConfig } from '../hrmConfig';
+import { PermissionActions } from './actions';
 
 const getCanEditInProgressContact = (contact: Contact, workerRoles: string[]): (() => boolean) => {
   if (!contact.finalizedAt) {

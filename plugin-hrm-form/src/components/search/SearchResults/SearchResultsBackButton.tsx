@@ -24,7 +24,7 @@ import { BackText, BackIcon } from '../styles';
 type OwnProps = {
   text: JSX.Element | string;
   handleBack: () => void;
-  disabled?: boolean
+  disabled?: boolean;
 };
 
 type Props = OwnProps;

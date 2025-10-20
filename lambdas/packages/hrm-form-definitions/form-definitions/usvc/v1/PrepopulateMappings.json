@@ -1,21 +1,22 @@
 {
   "formSelector": {
     "selectorType": "serviceUserChoiceSelector",
-    "parameter": [{
-      "form": "preEngagement",
-      "input": "myselfOrOther",
-      "aboutSelfValue": "myself"
-    }, {
-      "form": "survey",
-      "input": "callOrDispatch",
-      "aboutSelfValue": "1"
-    }]
+    "parameter": [
+      {
+        "form": "preEngagement",
+        "input": "startForm",
+        "aboutSelfValue": "HotlineInteractions"
+      },
+      {
+        "form": "survey",
+        "input": "startForm",
+        "aboutSelfValue": "HotlineInteractions"
+      }
+    ]
   },
-  "survey":{
-    "age": "ChildInformationTab.age",
-    "gender": "ChildInformationTab.gender"
+  "survey": {
   },
-  "preEngagement":{
+  "preEngagement": {
     "age": "ChildInformationTab.age",
     "gender": "ChildInformationTab.gender",
     "firstName": "ChildInformationTab.firstName",

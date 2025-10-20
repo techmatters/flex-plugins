@@ -46,8 +46,6 @@ const getPathFromUrl = url => {
   return url.pathname.replace(/^\/|\/$/g, '');
 };
 
-export const getPathFromCurrentWindow = () => getPathFromUrl(window.location);
-
 export const initialState: RoutingState = {
   tasks: {
     [standaloneTaskSid]: [{ route: getPathFromUrl(window.location), subroute: getPathFromUrl(window.location) }],

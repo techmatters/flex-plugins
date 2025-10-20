@@ -19,32 +19,30 @@ import subHours from 'date-fns/subHours';
 import { subDays } from 'date-fns';
 
 import { mockPartialConfiguration } from '../mockGetConfig';
-import { fetchRules } from '../../permissions/fetchRules';
+import { cleanupInitializedCan, getInitializedCan, validateAndSetPermissionRules } from '../../permissions/rules';
+import { fetchPermissionRules } from '../../services/PermissionsService';
 import {
   actionsMaps,
   CaseActions,
-  cleanupInitializedCan,
   ContactActions,
-  getInitializedCan,
   PermissionActions,
   ProfileActions,
   ProfileSectionActions,
   TargetKind,
   ViewIdentifiersAction,
-  validateAndSetPermissionRules,
-} from '../../permissions';
+} from '../../permissions/actions';
 
 const NOT_CREATOR_WORKER_SID = 'WK-not creator';
 
-jest.mock('../../permissions/fetchRules', () => {
+jest.mock('../../services/PermissionsService', () => {
   return {
-    fetchRules: jest.fn(() => {
+    fetchPermissionRules: jest.fn(() => {
       throw new Error('fetchRules not mocked!');
     }),
   };
 });
 
-const fetchRulesSpy = fetchRules as jest.MockedFunction<typeof fetchRules>;
+const fetchPermissionRulesSpy = fetchPermissionRules as jest.MockedFunction<typeof fetchPermissionRules>;
 
 const buildRules = (conditionsSets, kind: TargetKind | 'all') => {
   const actionsForTK = kind === 'all' ? [] : Object.values(actionsMaps[kind]);
@@ -81,7 +79,7 @@ describe('Test that all actions work fine (everyone)', () => {
       isSupervisor: false,
     });
 
-    fetchRulesSpy.mockResolvedValue(rules);
+    fetchPermissionRulesSpy.mockResolvedValue(rules);
 
     await validateAndSetPermissionRules();
     const can = getInitializedCan();
@@ -215,7 +213,7 @@ describe('CasesActions', () => {
     `Should return $expectedResult for action $action when $expectedDescription and conditionsSets are $prettyConditionsSets`,
     async ({ action, conditionsSets, workerSid, isSupervisor, status = 'open', expectedResult, createdAt }) => {
       const rules = buildRules(conditionsSets, 'case');
-      fetchRulesSpy.mockResolvedValue(rules);
+      fetchPermissionRulesSpy.mockResolvedValue(rules);
 
       mockPartialConfiguration({
         workerSid,
@@ -345,7 +343,7 @@ describe('ContactActions', () => {
     `Should return $expectedResult for action $action when $expectedDescription and conditionsSets are $prettyConditionsSets`,
     async ({ action, conditionsSets, workerSid, isSupervisor, expectedResult, createdAt }) => {
       const rules = buildRules(conditionsSets, 'contact');
-      fetchRulesSpy.mockResolvedValue(rules);
+      fetchPermissionRulesSpy.mockResolvedValue(rules);
 
       mockPartialConfiguration({
         workerSid,
@@ -428,7 +426,7 @@ describe('ProfileActions', () => {
     `Should return $expectedResult for action $action when $expectedDescription and conditionsSets are $prettyConditionsSets`,
     async ({ action, conditionsSets, workerSid = 'workerSid', isSupervisor, expectedResult, createdAt }) => {
       const rules = buildRules(conditionsSets, 'profile');
-      fetchRulesSpy.mockResolvedValue(rules);
+      fetchPermissionRulesSpy.mockResolvedValue(rules);
 
       mockPartialConfiguration({
         workerSid,
@@ -535,7 +533,7 @@ describe('ProfileSectionActions', () => {
       sectionType,
     }) => {
       const rules = buildRules(conditionsSets, 'profileSection');
-      fetchRulesSpy.mockResolvedValue(rules);
+      fetchPermissionRulesSpy.mockResolvedValue(rules);
 
       mockPartialConfiguration({
         workerSid,
@@ -599,7 +597,7 @@ describe('ViewIdentifiersAction', () => {
     `Should return $expectedResult for action $action when $expectedDescription and conditionsSets are $prettyConditionsSets`,
     async ({ action, conditionsSets, isSupervisor, expectedResult }) => {
       const rules = buildRules(conditionsSets, 'viewIdentifiers');
-      fetchRulesSpy.mockResolvedValue(rules);
+      fetchPermissionRulesSpy.mockResolvedValue(rules);
 
       mockPartialConfiguration({
         workerSid: NOT_CREATOR_WORKER_SID,

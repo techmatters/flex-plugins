@@ -24,7 +24,7 @@ import { populateCurrentDefinitionVersion, updateDefinitionVersion } from '../st
 import { clearCustomGoodbyeMessage } from '../states/dualWrite/actions';
 import * as GeneralActions from '../states/actions';
 import * as TransferHelpers from '../transfer/transferTaskState';
-import { CustomITask, FeatureFlags, isTwilioTask, standaloneTaskSid } from '../types/types';
+import { CustomITask, isTwilioTask, standaloneTaskSid } from '../types/types';
 import { getAseloFeatureFlags, getHrmConfig } from '../hrmConfig';
 import { subscribeAlertOnConversationJoined } from '../notifications/newMessage';
 import type { RootState } from '../states';
@@ -36,10 +36,10 @@ import { handleTransferredTask } from '../transfer/setUpTransferActions';
 import { recordEvent } from '../fullStory';
 import { completeConversationTask, wrapupConversationTask } from '../services/twilioTaskService';
 import selectContactStateByContactId from '../states/contacts/selectContactStateByContactId';
-import { getPathFromCurrentWindow } from '../states/routing/reducer';
 import { selectCurrentBaseRoute } from '../states/routing/getRoute';
 import { changeRoute } from '../states/routing/actions';
 import { AppRoutes, ChangeRouteMode } from '../states/routing/types';
+import { FeatureFlags } from '../types/FeatureFlags';
 
 type SetupObject = ReturnType<typeof getHrmConfig>;
 type GetMessage = (key: string) => (key: string) => Promise<string>;
@@ -273,7 +273,6 @@ const routeToSideLink = (targetAppRoute: AppRoutes) => {
 };
 
 export const afterNavigateToView = ({ viewName, subroute }: { viewName: string; subroute?: string }): void => {
-  const currentPath = getPathFromCurrentWindow();
   // TODO: this types could be a bit better
   routeToSideLink({ route: viewName as any, subroute: subroute || (viewName as any) });
 };

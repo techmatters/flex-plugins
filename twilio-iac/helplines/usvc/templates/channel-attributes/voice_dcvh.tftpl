@@ -1,0 +1,16 @@
+{
+  "type": "inbound",
+  "name": "{{trigger.call.From}}",
+  "ignoreAgent": "",
+  "helpline":"${helpline}",
+  "transferTargetType": "",
+  "service":"{{flow.variables.service}}",
+  "serviceLanguage":"{{flow.variables.serviceLanguage}}",
+  "memory": {
+    "startForm":"{{flow.variables.startForm}}"
+  },
+  "channelType": "voice",
+   "conversations": {
+    "hang_up_by": "Customer"
+  }
+}

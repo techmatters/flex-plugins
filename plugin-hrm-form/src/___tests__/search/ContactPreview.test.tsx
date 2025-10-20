@@ -24,8 +24,7 @@ import { DeepPartial } from 'redux';
 
 import { mockLocalFetchDefinitions } from '../mockFetchDefinitions';
 import { mockGetDefinitionsResponse } from '../mockGetConfig';
-import { fetchRules } from '../../permissions/fetchRules';
-import { getInitializedCan, validateAndSetPermissionRules } from '../../permissions';
+import { getInitializedCan, RulesFile, validateAndSetPermissionRules } from '../../permissions/rules';
 import ContactPreview from '../../components/search/ContactPreview';
 import ContactHeader from '../../components/search/ContactPreview/ContactHeader';
 import TagsAndCounselor from '../../components/search/TagsAndCounselor';
@@ -34,6 +33,8 @@ import { Contact } from '../../types/types';
 import { RootState } from '../../states';
 import { configurationBase, namespace } from '../../states/storeNamespaces';
 import { VALID_EMPTY_CONTACT } from '../testContacts';
+import { fetchPermissionRules } from '../../services/PermissionsService';
+import mockRules from '../fixtures/mockPermissionRules';
 
 const { mockFetchImplementation, mockReset, buildBaseURL } = mockLocalFetchDefinitions();
 
@@ -42,19 +43,17 @@ const mockStore = configureMockStore([]);
 const NonExisting = () => <>NonExisting</>;
 NonExisting.displayName = 'NonExisting';
 
-const e2eRules = require('../../permissions/e2e.json');
-
-jest.mock('../../permissions/fetchRules', () => {
+jest.mock('../../services/PermissionsService', () => {
   return {
-    fetchRules: jest.fn(() => {
+    fetchPermissionRules: jest.fn(() => {
       throw new Error('fetchRules not mocked!');
     }),
   };
 });
 
 beforeEach(async () => {
-  const fetchRulesSpy = fetchRules as jest.MockedFunction<typeof fetchRules>;
-  fetchRulesSpy.mockResolvedValueOnce(e2eRules);
+  const fetchPermissionRulesSpy = fetchPermissionRules as jest.MockedFunction<typeof fetchPermissionRules>;
+  fetchPermissionRulesSpy.mockResolvedValue(mockRules as RulesFile);
   await validateAndSetPermissionRules();
   getInitializedCan();
 
@@ -87,14 +86,12 @@ test('<ContactPreview> should mount', async () => {
   const contact: Contact = {
     ...VALID_EMPTY_CONTACT,
     id: '123',
-    accountSid: '',
     timeOfContact: '2019-01-01T00:00:00.000Z',
     number: '+12025550440',
     channel: 'whatsapp',
     twilioWorkerId: 'WKxxxx',
     helpline: 'test helpline',
     conversationDuration: 0,
-    taskId: 'TASK_ID',
     rawJson: {
       definitionVersion: 'as-v1',
       callType: 'Child calling about self',

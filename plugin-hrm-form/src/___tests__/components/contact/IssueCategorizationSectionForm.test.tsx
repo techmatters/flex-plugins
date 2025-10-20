@@ -27,6 +27,7 @@ import { ToggleViewButton } from '../../../styles';
 import { setCategoriesGridView } from '../../../states/contacts/existingContacts';
 import { VALID_EMPTY_CONTACT } from '../../testContacts';
 import { contactFormsBase, namespace } from '../../../states/storeNamespaces';
+import { FeatureFlags } from '../../../types/FeatureFlags';
 
 jest.mock('react-hook-form', () => ({
   useFormContext: () => ({

@@ -17,11 +17,12 @@
 import { DefinitionVersion, loadDefinition, StatusInfo } from 'hrm-form-definitions';
 
 import { mockLocalFetchDefinitions } from '../../mockFetchDefinitions';
-import { getInitializedCan, PermissionActions } from '../../../permissions';
+import { getInitializedCan } from '../../../permissions/rules';
 import { Case } from '../../../types/types';
 import { getAvailableCaseStatusTransitions } from '../../../states/case/caseStatus';
+import { PermissionActions } from '../../../permissions/actions';
 
-jest.mock('../../../permissions', () => ({
+jest.mock('../../../permissions/rules', () => ({
   // Tried using jest.requireActual for this & it didn't work
   PermissionActions: {
     CLOSE_CASE: 'closeCase',

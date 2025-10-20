@@ -1,0 +1,296 @@
+${
+  jsonencode({
+  "description": "${flow_description}",
+  "states": [
+    {
+      "name": "Trigger",
+      "type": "trigger",
+      "transitions": [
+        {
+          "event": "incomingMessage"
+        },
+        {
+          "event": "incomingCall"
+        },
+        {
+          "next": "run_subflow_system_down",
+          "event": "incomingConversationMessage"
+        },
+        {
+          "event": "incomingRequest"
+        },
+        {
+          "event": "incomingParent"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": -160,
+          "y": -460
+        }
+      }
+    },
+    {
+      "name": "sen_to_vc_queue",
+      "type": "send-to-flex",
+      "transitions": [
+        {
+          "next": "run_subflow_debug",
+          "event": "callComplete"
+        },
+        {
+          "next": "run_subflow_debug",
+          "event": "failedToEnqueue"
+        },
+        {
+          "next": "run_subflow_debug",
+          "event": "callFailure"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": -410,
+          "y": 1430
+        },
+         "workflow": "${workflow_sids.master}",
+        "channel": "${task_channel_sids.chat}",
+        "attributes": "${channel_attributes.default}"
+      }
+    },
+    {
+      "name": "run_subflow_system_down",
+      "type": "run-subflow",
+      "transitions": [
+        {
+          "next": "send_message_vc_sms_welcome",
+          "event": "completed"
+        },
+        {
+          "next": "send_message_vc_sms_welcome",
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "flow_sid": "${system_down_studio_subflow_sid}",
+        "flow_revision": "LatestPublished",
+        "offset": {
+          "x": -450,
+          "y": -200
+        }
+      }
+    },
+    {
+      "name": "send_message_vc_sms_welcome",
+      "type": "send-message",
+      "transitions": [
+        {
+          "next": "send_wait_vc_sms_safety",
+          "event": "sent"
+        },
+        {
+          "next": "send_wait_vc_sms_safety",
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": -620,
+          "y": 100
+        },
+        "service": "{{trigger.message.InstanceSid}}",
+        "channel": "{{trigger.message.ChannelSid}}",
+        "from": "Bot",
+        "message_type": "custom",
+        "to": "{{contact.channel.address}}",
+        "body": "${flow_vars.send_message_vc_sms_welcome}"
+      }
+    },
+    {
+      "name": "send_wait_vc_sms_safety",
+      "type": "send-and-wait-for-reply",
+      "transitions": [
+        {
+          "next": "split_safety",
+          "event": "incomingMessage"
+        },
+        {
+          "next": "send_message_vc_sms_no_service",
+          "event": "timeout"
+        },
+        {
+          "next": "split_safety",
+          "event": "deliveryFailure"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": -700,
+          "y": 410
+        },
+        "service": "{{trigger.message.InstanceSid}}",
+        "channel": "{{trigger.message.ChannelSid}}",
+        "from": "Bot",
+        "message_type": "custom",
+        "body": "${flow_vars.send_wait_vc_sms_safety}",
+        "timeout": "3600"
+      }
+    },
+    {
+      "name": "send_message_vc_sms_no_service",
+      "type": "send-message",
+      "transitions": [
+        {
+          "event": "sent"
+        },
+        {
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": -150,
+          "y": 1040
+        },
+        "service": "{{trigger.message.InstanceSid}}",
+        "channel": "{{trigger.message.ChannelSid}}",
+        "from": "Bot",
+        "message_type": "custom",
+        "to": "{{contact.channel.address}}",
+        "body": "${flow_vars.send_message_vc_sms_no_service}"
+      }
+    },
+    {
+      "name": "split_safety",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "send_message_vc_sms_prequeue",
+          "event": "noMatch"
+        },
+        {
+          "next": "send_message_vc_sms_prequeue",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value matches_any_of yes,Yes,1,yeah,yup",
+              "arguments": [
+                "{{widgets.send_wait_vc_sms_safety.inbound.Body}}"
+              ],
+              "type": "matches_any_of",
+              "value": "yes,Yes,1,yeah,yup"
+            }
+          ]
+        },
+        {
+          "next": "send_message_vc_sms_no_service",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value matches_any_of No,no,nah,nope,2",
+              "arguments": [
+                "{{widgets.send_wait_vc_sms_safety.inbound.Body}}"
+              ],
+              "type": "matches_any_of",
+              "value": "No,no,nah,nope,2"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{widgets.send_wait_vc_sms_safety.inbound.Body}}",
+        "offset": {
+          "x": -860,
+          "y": 740
+        }
+      }
+    },
+    {
+      "name": "send_message_vc_sms_prequeue",
+      "type": "send-message",
+      "transitions": [
+        {
+          "next": "sen_to_vc_queue",
+          "event": "sent"
+        },
+        {
+          "next": "sen_to_vc_queue",
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": -680,
+          "y": 1190
+        },
+        "service": "{{trigger.message.InstanceSid}}",
+        "channel": "{{trigger.message.ChannelSid}}",
+        "from": "Bot",
+        "message_type": "custom",
+        "to": "{{contact.channel.address}}",
+        "body": "${flow_vars.send_message_vc_sms_prequeue}"
+      }
+    },
+    {
+      "name": "run_subflow_debug",
+      "type": "run-subflow",
+      "transitions": [
+        {
+          "event": "completed"
+        },
+        {
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "flow_sid": "${debug_studio_subflow_sid}",
+        "flow_revision": "LatestPublished",
+        "offset": {
+          "x": 700,
+          "y": 1650
+        },
+        "parameters": [
+          {
+            "type": "json_object",
+            "value": "{{flow}}",
+            "key": "flow"
+          },
+          {
+            "type": "string",
+            "value": "widget_failures",
+            "key": "debug_mode"
+          },
+          {
+            "type": "json_object",
+            "value": "{{widgets}}",
+            "key": "widgets"
+          },
+          {
+            "type": "json_object",
+            "value": "{{trigger}}",
+            "key": "trigger"
+          },
+          {
+            "type": "string",
+            "value": "{{flow.flow_sid}}",
+            "key": "flow_sid"
+          },
+          {
+            "type": "string",
+            "value": "{{flow.sid}}",
+            "key": "execution_sid"
+          },
+          {
+            "type": "string",
+            "value": "${channel_attributes.default}",
+            "key": "task_attributes"
+          }
+        ]
+      }
+    }
+  ],
+  "initial_state": "Trigger",
+  "flags": {
+    "allow_concurrent_calls": true
+  }
+})
+  }

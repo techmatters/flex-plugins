@@ -30,7 +30,7 @@ import TagsAndCounselor from '../TagsAndCounselor';
 import asyncDispatch from '../../../states/asyncDispatch';
 import { connectToCaseAsyncAction } from '../../../states/contacts/saveContact';
 import { newCloseModalAction } from '../../../states/routing/actions';
-import { getInitializedCan, PermissionActions } from '../../../permissions';
+import { getInitializedCan } from '../../../permissions/rules';
 import { PreviewRow } from '../styles';
 import selectContactStateByContactId from '../../../states/contacts/selectContactStateByContactId';
 import selectContextContactId from '../../../states/contacts/selectContextContactId';
@@ -41,6 +41,7 @@ import {
   selectTimelineContactCategories,
   selectTimelineCount,
 } from '../../../states/case/timeline';
+import { PermissionActions } from '../../../permissions/actions';
 
 type Props = {
   currentCase: Case;
