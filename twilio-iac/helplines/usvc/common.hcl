@@ -22,6 +22,8 @@ locals {
       voice_vc               = "/app/twilio-iac/helplines/usvc/templates/channel-attributes/voice_vc.tftpl",
       sms_vc-conversations   = "/app/twilio-iac/helplines/usvc/templates/channel-attributes/sms_vc-conversations.tftpl",
       sms_dcvh-conversations = "/app/twilio-iac/helplines/usvc/templates/channel-attributes/sms_dcvh-conversations.tftpl",
+      sms_vc_toll_free-conversations   = "/app/twilio-iac/helplines/usvc/templates/channel-attributes/sms_vc-conversations.tftpl",
+      sms_dcvh_toll_free-conversations = "/app/twilio-iac/helplines/usvc/templates/channel-attributes/sms_dcvh-conversations.tftpl",
       default                = "/app/twilio-iac/helplines/templates/channel-attributes/default.tftpl",
       default-conversations  = "/app/twilio-iac/helplines/templates/channel-attributes/default-conversations.tftpl"
     }
@@ -73,6 +75,30 @@ locals {
     }
 
     activities = {
+      demographics : {
+        friendly_name = "Demographics"
+        available     = false
+      },
+      meal_break : {
+        friendly_name = "Meal Break"
+        available     = false
+      },
+      meeting : {
+        friendly_name = "Meeting"
+        available     = false
+      },
+      refused : {
+        friendly_name = "Refused"
+        available     = false
+      },
+      supervision : {
+        friendly_name = "Supervision"
+        available     = false
+      },
+      training : {
+        friendly_name = "Training"
+        available     = false
+      }
     }
 
     lex_bot_languages = {

@@ -62,12 +62,12 @@ ${
       "type": "run-subflow",
       "transitions": [
         {
-          "next": "split_safety",
+          "next": "split_service",
           "event": "completed"
         },
         {
           "event": "failed",
-          "next": "split_safety"
+          "next": "split_service"
         }
       ],
       "properties": {
@@ -77,76 +77,6 @@ ${
           "x": 90,
           "y": -140
         }
-      }
-    },
-    {
-      "name": "split_safety",
-      "type": "split-based-on",
-      "transitions": [
-        {
-          "next": "split_service",
-          "event": "noMatch"
-        },
-        {
-          "next": "split_service",
-          "event": "match",
-          "conditions": [
-            {
-              "friendly_name": "If value equal_to Yes",
-              "arguments": [
-                "{{trigger.message.ChannelAttributes.pre_engagement_data.safety}}"
-              ],
-              "type": "equal_to",
-              "value": "Yes"
-            }
-          ]
-        },
-        {
-          "next": "send_message_webchat_no_service",
-          "event": "match",
-          "conditions": [
-            {
-              "friendly_name": "If value equal_to No",
-              "arguments": [
-                "{{trigger.message.ChannelAttributes.pre_engagement_data.safety}}"
-              ],
-              "type": "equal_to",
-              "value": "No"
-            }
-          ]
-        }
-      ],
-      "properties": {
-        "input": "{{trigger.message.ChannelAttributes.pre_engagement_data.safety}}",
-        "offset": {
-          "x": -130,
-          "y": 150
-        }
-      }
-    },
-    {
-      "name": "send_message_webchat_no_service",
-      "type": "send-message",
-      "transitions": [
-        {
-          "event": "sent"
-        },
-        {
-          "event": "failed",
-          "next": "run_subflow_debug"
-        }
-      ],
-      "properties": {
-        "offset": {
-          "x": 440,
-          "y": 450
-        },
-        "service": "{{trigger.message.InstanceSid}}",
-        "channel": "{{trigger.message.ChannelSid}}",
-        "from": "Bot",
-        "message_type": "custom",
-        "to": "{{contact.channel.address}}",
-        "body": "${flow_vars.send_message_webchat_no_service}"
       }
     },
     {
@@ -209,6 +139,11 @@ ${
             "type": "string",
             "value": "VC",
             "key": "service"
+          },
+          {
+            "type": "string",
+            "value": "vc",
+            "key": "language"
           }
         ],
         "offset": {
@@ -232,6 +167,11 @@ ${
             "type": "string",
             "value": "DCVH",
             "key": "service"
+          },
+          {
+            "type": "string",
+            "value": "dcvh",
+            "key": "language"
           }
         ],
         "offset": {
