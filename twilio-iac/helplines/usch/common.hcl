@@ -117,5 +117,6 @@ locals {
     }
     
     hrm_transcript_retention_days_override = 60
+    hrm_index_transcripts_for_search       = false
   }
 }
