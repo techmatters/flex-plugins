@@ -31,14 +31,14 @@ ${
       }
     },
     {
-      "name": "attributes",
+      "name": "send_to_queue_courage_first",
       "type": "send-to-flex",
       "transitions": [
         {
           "event": "callComplete"
         },
         {
-          "next": "webhook_notify_failed_to_enqueue",
+          "next": "http_post_webhook_notify_failed_to_enqueue",
           "event": "failedToEnqueue"
         },
         {
@@ -56,7 +56,7 @@ ${
       }
     },
     {
-      "name": "webhook_notify_failed_to_enqueue",
+      "name": "http_post_webhook_notify_failed_to_enqueue",
       "type": "make-http-request",
       "transitions": [
         {
@@ -79,7 +79,7 @@ ${
       }
     },
     {
-      "name": "getProfileFlagsForIdentifier",
+      "name": "f_getProfileFlagsForIdentifier",
       "type": "make-http-request",
       "transitions": [
         {
@@ -104,7 +104,7 @@ ${
       }
     },
     {
-      "name": "operatingHours",
+      "name": "f_operatingHours",
       "type": "make-http-request",
       "transitions": [
         {
@@ -133,16 +133,16 @@ ${
       "transitions": [
         {
           "event": "noMatch",
-          "next": "send_courage_first_sms_welcome_message"
+          "next": "send_message_courage_first_sms_welcome"
         },
         {
-          "next": "send_courage_first_sms_closed_message",
+          "next": "send_message_courage_first_sms_closed",
           "event": "match",
           "conditions": [
             {
               "friendly_name": "If value matches_any_of closed,holiday",
               "arguments": [
-                "{{widgets.operatingHours.parsed.status}}"
+                "{{widgets.f_operatingHours.parsed.status}}"
               ],
               "type": "matches_any_of",
               "value": "closed,holiday"
@@ -150,13 +150,13 @@ ${
           ]
         },
         {
-          "next": "send_courage_first_sms_welcome_message",
+          "next": "send_message_courage_first_sms_welcome",
           "event": "match",
           "conditions": [
             {
               "friendly_name": "If value equal_to open",
               "arguments": [
-                "{{widgets.operatingHours.parsed.status}}"
+                "{{widgets.f_operatingHours.parsed.status}}"
               ],
               "type": "equal_to",
               "value": "open"
@@ -165,7 +165,7 @@ ${
         }
       ],
       "properties": {
-        "input": "{{widgets.operatingHours.parsed.status}}",
+        "input": "{{widgets.f_operatingHours.parsed.status}}",
         "offset": {
           "x": -50,
           "y": 1030
@@ -173,16 +173,16 @@ ${
       }
     },
     {
-      "name": "send_courage_first_sms_closed_message",
+      "name": "send_message_courage_first_sms_closed",
       "type": "send-message",
       "transitions": [
         {
           "event": "sent",
-          "next": "send_courage_first_sms_redirect_message"
+          "next": "send_message_courage_first_sms_redirect"
         },
         {
           "event": "failed",
-          "next": "send_courage_first_sms_redirect_message"
+          "next": "send_message_courage_first_sms_redirect"
         }
       ],
       "properties": {
@@ -199,7 +199,7 @@ ${
       }
     },
     {
-      "name": "send_sms_blocked_client_message",
+      "name": "send_message_sms_blocked_client",
       "type": "send-message",
       "transitions": [
         {
@@ -227,17 +227,17 @@ ${
       "type": "split-based-on",
       "transitions": [
         {
-          "next": "operatingHours",
+          "next": "f_operatingHours",
           "event": "noMatch"
         },
         {
-          "next": "send_sms_blocked_client_message",
+          "next": "send_message_sms_blocked_client",
           "event": "match",
           "conditions": [
             {
               "friendly_name": "If value equal_to blocked",
               "arguments": [
-                "{{widgets.getProfileFlagsForIdentifier.parsed.flags}}"
+                "{{widgets.f_getProfileFlagsForIdentifier.parsed.flags}}"
               ],
               "type": "equal_to",
               "value": "blocked"
@@ -246,7 +246,7 @@ ${
         }
       ],
       "properties": {
-        "input": "{{widgets.getProfileFlagsForIdentifier.parsed.flags}}",
+        "input": "{{widgets.f_getProfileFlagsForIdentifier.parsed.flags}}",
         "offset": {
           "x": 290,
           "y": 450
@@ -254,15 +254,15 @@ ${
       }
     },
     {
-      "name": "pre_survey_complete",
+      "name": "split_pre_survey_complete",
       "type": "split-based-on",
       "transitions": [
         {
-          "next": "getProfileFlagsForIdentifier",
+          "next": "f_getProfileFlagsForIdentifier",
           "event": "noMatch"
         },
         {
-          "next": "send_courage_first_sms_prequeue_message",
+          "next": "send_message_courage_first_sms_prequeue",
           "event": "match",
           "conditions": [
             {
@@ -285,14 +285,14 @@ ${
       }
     },
     {
-      "name": "captureChannelWithBot",
+      "name": "f_captureChannelWithBot",
       "type": "make-http-request",
       "transitions": [
         {
           "event": "success"
         },
         {
-          "next": "webhook_notify_error_chatbot",
+          "next": "http_post_webhook_notify_error_chatbot",
           "event": "failed"
         }
       ],
@@ -309,11 +309,11 @@ ${
       }
     },
     {
-      "name": "send_courage_first_sms_welcome_message",
+      "name": "send_message_courage_first_sms_welcome",
       "type": "send-message",
       "transitions": [
         {
-          "next": "captureChannelWithBot",
+          "next": "f_captureChannelWithBot",
           "event": "sent"
         },
         {
@@ -334,15 +334,15 @@ ${
       }
     },
     {
-      "name": "channelCleanup",
+      "name": "f_chatbotCallbackCleanup",
       "type": "make-http-request",
       "transitions": [
         {
-          "next": "send_courage_first_sms_prequeue_message",
+          "next": "send_message_courage_first_sms_prequeue",
           "event": "success"
         },
         {
-          "next": "send_courage_first_sms_failure_message",
+          "next": "send_message_courage_first_sms_failure",
           "event": "failed"
         }
       ],
@@ -359,15 +359,15 @@ ${
       }
     },
     {
-      "name": "webhook_notify_error_chatbot",
+      "name": "http_post_webhook_notify_error_chatbot",
       "type": "make-http-request",
       "transitions": [
         {
-          "next": "channelCleanup",
+          "next": "f_chatbotCallbackCleanup",
           "event": "success"
         },
         {
-          "next": "channelCleanup",
+          "next": "f_chatbotCallbackCleanup",
           "event": "failed"
         }
       ],
@@ -384,7 +384,7 @@ ${
       }
     },
     {
-      "name": "send_courage_first_sms_failure_message",
+      "name": "send_message_courage_first_sms_failure",
       "type": "send-message",
       "transitions": [
         {
@@ -408,16 +408,16 @@ ${
       }
     },
     {
-      "name": "send_courage_first_sms_prequeue_message",
+      "name": "send_message_courage_first_sms_prequeue",
       "type": "send-message",
       "transitions": [
         {
-          "next": "attributes",
+          "next": "send_to_queue_courage_first",
           "event": "sent"
         },
         {
           "event": "failed",
-          "next": "attributes"
+          "next": "send_to_queue_courage_first"
         }
       ],
       "properties": {
@@ -434,7 +434,7 @@ ${
       }
     },
     {
-      "name": "send_courage_first_sms_redirect_message",
+      "name": "send_message_courage_first_sms_redirect",
       "type": "send-message",
       "transitions": [
         {
@@ -462,11 +462,11 @@ ${
       "type": "run-subflow",
       "transitions": [
         {
-          "next": "pre_survey_complete",
+          "next": "split_pre_survey_complete",
           "event": "completed"
         },
         {
-          "next": "pre_survey_complete",
+          "next": "split_pre_survey_complete",
           "event": "failed"
         }
       ],

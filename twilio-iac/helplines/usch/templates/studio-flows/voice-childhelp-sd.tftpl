@@ -31,23 +31,23 @@ ${
       }
     },
     {
-      "name": "attributes_spanish",
+      "name": "send_to_queue_childhelp_spanish",
       "type": "send-to-flex",
       "transitions": [
         {
           "event": "callComplete"
         },
         {
-          "next": "webhook_notify_failed_to_enqueue",
+          "next": "http_post_webhook_notify_failed_to_enqueue",
           "event": "failedToEnqueue"
         },
         {
-          "next": "webhook_notify_failed_to_enqueue",
+          "next": "http_post_webhook_notify_failed_to_enqueue",
           "event": "callFailure"
         }
       ],
       "properties": {
-        "waitUrl": "${flow_vars.serverless_usch_functions_url}/holdMusicAndMessageSpanish",
+        "waitUrl": "${flow_vars.serverless_usch_play_message_voice_blockeds_url}/holdMusicAndMessageSpanish",
         "offset": {
           "x": -50,
           "y": 2150
@@ -59,16 +59,16 @@ ${
       }
     },
      {
-      "name": "send_childhelp_voice_welcome_message",
+      "name": "play_message_childhelp_voice_welcome",
       "type": "say-play",
       "transitions": [
         {
-          "next": "send_childhelp_voice_spanish_option_message",
+          "next": "gather_input_childhelp_voice_spanish_option",
           "event": "audioComplete"
         }
       ],
       "properties": {
-        "play": "https://usch-functions-6913.twil.io/childhelp_voice_welcome_message.mp3",
+        "play": "${flow_vars.serverless_usch_functions_url}/childhelp_voice_welcome_message.mp3",
         "voice": "Polly.Salli",
         "offset": {
           "x": 0,
@@ -79,7 +79,7 @@ ${
       }
     },
     {
-      "name": "webhook_notify_failed_to_enqueue",
+      "name": "http_post_webhook_notify_failed_to_enqueue",
       "type": "make-http-request",
       "transitions": [
         {
@@ -102,7 +102,7 @@ ${
       }
     },
     {
-      "name": "send_childhelp_voice_spanish_option_message",
+      "name": "gather_input_childhelp_voice_spanish_option",
       "type": "gather-input-on-call",
       "transitions": [
         {
@@ -113,7 +113,7 @@ ${
           "event": "speech"
         },
         {
-          "next": "send_childhelp_voice_english_options_message",
+          "next": "gather_input_childhelp_voice_spanish_option",
           "event": "timeout"
         }
       ],
@@ -124,7 +124,7 @@ ${
           "y": 470
         },
         "finish_on_key": "#",
-        "play": "https://usch-functions-6913.twil.io/childhelp_voice_spanish_option_message.mp3",
+        "play": "${flow_vars.serverless_usch_functions_url}/childhelp_voice_spanish_option_message.mp3",
         "language": "es-MX",
         "stop_gather": false,
         "speech_model": "default",
@@ -141,17 +141,17 @@ ${
       "type": "split-based-on",
       "transitions": [
         {
-          "next": "send_childhelp_voice_english_options_message",
+          "next": "gather_input_childhelp_voice_spanish_option",
           "event": "noMatch"
         },
         {
-          "next": "isSkilledWorkerAvailable",
+          "next": "f_isSkilledWorkerAvailable",
           "event": "match",
           "conditions": [
             {
               "friendly_name": "If value equal_to 2",
               "arguments": [
-                "{{widgets.send_childhelp_voice_spanish_option_message.Digits}}"
+                "{{widgets.gather_input_childhelp_voice_spanish_option.Digits}}"
               ],
               "type": "equal_to",
               "value": "2"
@@ -160,7 +160,7 @@ ${
         }
       ],
       "properties": {
-        "input": "{{widgets.send_childhelp_voice_spanish_option_message.Digits}}",
+        "input": "{{widgets.gather_input_childhelp_voice_spanish_option.Digits}}",
         "offset": {
           "x": -180,
           "y": 720
@@ -168,7 +168,7 @@ ${
       }
     },
     {
-      "name": "send_childhelp_voice_english_options_message",
+      "name": "gather_input_childhelp_voice_spanish_option",
       "type": "gather-input-on-call",
       "transitions": [
         {
@@ -193,7 +193,7 @@ ${
         },
         "loop": 1,
         "finish_on_key": "#",
-        "play": "https://usch-functions-6913.twil.io/childhelp_voice_english_options_message.mp3",
+        "play": "${flow_vars.serverless_usch_functions_url}/childhelp_voice_english_options_message.mp3",
         "language": "en-US",
         "stop_gather": false,
         "gather_language": "en",
@@ -206,17 +206,17 @@ ${
       "type": "split-based-on",
       "transitions": [
         {
-          "next": "attributes_english",
+          "next": "send_to_queue_childhelp_english",
           "event": "noMatch"
         },
         {
-          "next": "attributes_english",
+          "next": "send_to_queue_childhelp_english",
           "event": "match",
           "conditions": [
             {
               "friendly_name": "If value equal_to 1",
               "arguments": [
-                "{{widgets.send_childhelp_voice_english_options_message.Digits}}"
+                "{{widgets.gather_input_childhelp_voice_spanish_option.Digits}}"
               ],
               "type": "equal_to",
               "value": "1"
@@ -224,13 +224,13 @@ ${
           ]
         },
         {
-          "next": "isSkilledWorkerAvailable",
+          "next": "f_isSkilledWorkerAvailable",
           "event": "match",
           "conditions": [
             {
               "friendly_name": "If value equal_to 2",
               "arguments": [
-                "{{widgets.send_childhelp_voice_english_options_message.Digits}}"
+                "{{widgets.gather_input_childhelp_voice_spanish_option.Digits}}"
               ],
               "type": "equal_to",
               "value": "2"
@@ -239,7 +239,7 @@ ${
         }
       ],
       "properties": {
-        "input": "{{widgets.send_childhelp_voice_english_options_message.Digits}}",
+        "input": "{{widgets.gather_input_childhelp_voice_spanish_option.Digits}}",
         "offset": {
           "x": 310,
           "y": 1300
@@ -247,7 +247,7 @@ ${
       }
     },
     {
-      "name": "isSkilledWorkerAvailable",
+      "name": "f_isSkilledWorkerAvailable",
       "type": "run-function",
       "transitions": [
         {
@@ -288,17 +288,17 @@ ${
       "type": "split-based-on",
       "transitions": [
         {
-          "next": "send_childhelp_voice_no_spanish_counselor_prequeue_message",
+          "next": "play_message_childhelp_voice_no_spanish_counselor_prequeue",
           "event": "noMatch"
         },
         {
-          "next": "send_childhelp_voice_no_spanish_counselor_prequeue_message",
+          "next": "play_message_childhelp_voice_no_spanish_counselor_prequeue",
           "event": "match",
           "conditions": [
             {
               "friendly_name": "If value equal_to 0",
               "arguments": [
-                "{{widgets.isSkilledWorkerAvailable.parsed.totalAvailableWorkers}}"
+                "{{widgets.f_isSkilledWorkerAvailable.parsed.totalAvailableWorkers}}"
               ],
               "type": "equal_to",
               "value": "0"
@@ -306,13 +306,13 @@ ${
           ]
         },
         {
-          "next": "attributes_spanish",
+          "next": "send_to_queue_childhelp_spanish",
           "event": "match",
           "conditions": [
             {
               "friendly_name": "If value greater_than 0",
               "arguments": [
-                "{{widgets.isSkilledWorkerAvailable.parsed.totalAvailableWorkers}}"
+                "{{widgets.f_isSkilledWorkerAvailable.parsed.totalAvailableWorkers}}"
               ],
               "type": "greater_than",
               "value": "0"
@@ -321,7 +321,7 @@ ${
         }
       ],
       "properties": {
-        "input": "{{widgets.isSkilledWorkerAvailable.parsed.totalAvailableWorkers}}",
+        "input": "{{widgets.f_isSkilledWorkerAvailable.parsed.totalAvailableWorkers}}",
         "offset": {
           "x": -400,
           "y": 1510
@@ -329,11 +329,11 @@ ${
       }
     },
     {
-      "name": "send_childhelp_voice_no_spanish_counselor_prequeue_message",
+      "name": "play_message_childhelp_voice_no_spanish_counselor_prequeue",
       "type": "say-play",
       "transitions": [
         {
-          "next": "attributes_no_spanish",
+          "next": "send_to_queue_no_spanish",
           "event": "audioComplete"
         }
       ],
@@ -344,23 +344,23 @@ ${
           "y": 1810
         },
         "loop": 1,
-        "play": "https://usch-functions-6913.twil.io/childhelp_voice_no_spanish_counselor_prequeue_message.mp3",
+        "play": "${flow_vars.serverless_usch_functions_url}/childhelp_voice_no_spanish_counselor_prequeue_message.mp3",
         "language": "en-US"
       }
     },
     {
-      "name": "attributes_no_spanish",
+      "name": "send_to_queue_no_spanish",
       "type": "send-to-flex",
       "transitions": [
         {
           "event": "callComplete"
         },
         {
-          "next": "webhook_notify_failed_to_enqueue",
+          "next": "http_post_webhook_notify_failed_to_enqueue",
           "event": "failedToEnqueue"
         },
         {
-          "next": "webhook_notify_failed_to_enqueue",
+          "next": "http_post_webhook_notify_failed_to_enqueue",
           "event": "callFailure"
         }
       ],
@@ -377,18 +377,18 @@ ${
       }
     },
     {
-      "name": "attributes_english",
+      "name": "send_to_queue_childhelp_english",
       "type": "send-to-flex",
       "transitions": [
         {
           "event": "callComplete"
         },
         {
-          "next": "webhook_notify_failed_to_enqueue",
+          "next": "http_post_webhook_notify_failed_to_enqueue",
           "event": "failedToEnqueue"
         },
         {
-          "next": "webhook_notify_failed_to_enqueue",
+          "next": "http_post_webhook_notify_failed_to_enqueue",
           "event": "callFailure"
         }
       ],
@@ -405,7 +405,7 @@ ${
       }
     },
     {
-      "name": "getProfileFlagsForIdentifier",
+      "name": "f_getProfileFlagsForIdentifier",
       "type": "make-http-request",
       "transitions": [
         {
@@ -434,17 +434,17 @@ ${
       "type": "split-based-on",
       "transitions": [
         {
-          "next": "send_childhelp_voice_welcome_message",
+          "next": "play_message_childhelp_voice_welcome",
           "event": "noMatch"
         },
         {
-          "next": "send_voice_blocked_message",
+          "next": "play_message_voice_blocked",
           "event": "match",
           "conditions": [
             {
               "friendly_name": "If value equal_to blocked",
               "arguments": [
-                "{{widgets.getProfileFlagsForIdentifier.parsed.flags}}"
+                "{{widgets.f_getProfileFlagsForIdentifier.parsed.flags}}"
               ],
               "type": "equal_to",
               "value": "blocked"
@@ -453,7 +453,7 @@ ${
         }
       ],
       "properties": {
-        "input": "{{widgets.getProfileFlagsForIdentifier.parsed.flags}}",
+        "input": "{{widgets.f_getProfileFlagsForIdentifier.parsed.flags}}",
         "offset": {
           "x": 320,
           "y": -30
@@ -461,7 +461,7 @@ ${
       }
     },
     {
-      "name": "send_voice_blocked_message",
+      "name": "play_message_voice_blocked",
       "type": "say-play",
       "transitions": [
         {
@@ -475,7 +475,7 @@ ${
           "y": -280
         },
         "loop": 1,
-        "play": "https://usch-functions-6913.twil.io/voice_blocked_client_message.mp3",
+        "play": "${flow_vars.serverless_usch_functions_url}/voice_blocked_client_message.mp3",
         "language": "en-US"
       }
     },
@@ -484,11 +484,11 @@ ${
       "type": "run-subflow",
       "transitions": [
         {
-          "next": "getProfileFlagsForIdentifier",
+          "next": "f_getProfileFlagsForIdentifier",
           "event": "completed"
         },
         {
-          "next": "getProfileFlagsForIdentifier",
+          "next": "f_getProfileFlagsForIdentifier",
           "event": "failed"
         }
       ],
