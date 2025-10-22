@@ -6,6 +6,7 @@
             "sms"
         ],
         "enableExternalRecordings": false,
+        "enableConferencing": true,
         "feature_flags": {
             "enable_client_profiles":true,
             "enable_conferencing": true,

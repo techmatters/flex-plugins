@@ -59,7 +59,7 @@ locals {
 
     }
     //Serverless -- to allow enabling the operating hours check on this staging account.
-    ui_editable = true
+    ui_editable = false
     #Channels
     channels = {
       webchat : {
