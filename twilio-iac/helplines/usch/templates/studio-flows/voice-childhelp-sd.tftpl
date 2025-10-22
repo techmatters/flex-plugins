@@ -113,7 +113,7 @@ ${
           "event": "speech"
         },
         {
-          "next": "gather_input_childhelp_voice_spanish_option",
+          "next": "gather_input_childhelp_voice_english_options",
           "event": "timeout"
         }
       ],
@@ -141,7 +141,7 @@ ${
       "type": "split-based-on",
       "transitions": [
         {
-          "next": "gather_input_childhelp_voice_spanish_option",
+          "next": "gather_input_childhelp_voice_english_options",
           "event": "noMatch"
         },
         {
@@ -168,7 +168,7 @@ ${
       }
     },
     {
-      "name": "gather_input_childhelp_voice_spanish_option",
+      "name": "gather_input_childhelp_voice_english_options",
       "type": "gather-input-on-call",
       "transitions": [
         {
@@ -216,7 +216,7 @@ ${
             {
               "friendly_name": "If value equal_to 1",
               "arguments": [
-                "{{widgets.gather_input_childhelp_voice_spanish_option.Digits}}"
+                "{{widgets.gather_input_childhelp_voice_english_options.Digits}}"
               ],
               "type": "equal_to",
               "value": "1"
@@ -230,7 +230,7 @@ ${
             {
               "friendly_name": "If value equal_to 2",
               "arguments": [
-                "{{widgets.gather_input_childhelp_voice_spanish_option.Digits}}"
+                "{{widgets.gather_input_childhelp_voice_english_options.Digits}}"
               ],
               "type": "equal_to",
               "value": "2"
@@ -239,7 +239,7 @@ ${
         }
       ],
       "properties": {
-        "input": "{{widgets.gather_input_childhelp_voice_spanish_option.Digits}}",
+        "input": "{{widgets.gather_input_childhelp_voice_english_options.Digits}}",
         "offset": {
           "x": 310,
           "y": 1300
