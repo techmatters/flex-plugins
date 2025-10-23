@@ -25,8 +25,8 @@ import { fullStoryId } from '../private/secret';
  */
 function helplineIdentifierFullStory(workerClient: Worker, flexVersion: string, customPlugins: CustomPlugins[]) {
   const { accountSid, attributes } = workerClient;
-  const { full_name: fullName, email, contact_uri: contactUri } = attributes ?? {};
-  FullStory.setUserVars({ accountSid, displayName: fullName || contactUri || 'Unknown', email });
+  const { full_name: fullName, email, contact_uri: contactUri, helpline_code: helplineCode } = attributes ?? {};
+  FullStory.setUserVars({ accountSid, displayName: fullName || contactUri || 'Unknown', email, helplineCode });
   FullStory.setVars('page', {
     flexVersion,
   });
