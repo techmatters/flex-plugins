@@ -1,3 +1,19 @@
+/**
+ * Copyright (C) 2021-2025 Technology Matters
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see https://www.gnu.org/licenses/.
+ */
+
 import type { Worker } from 'twilio-taskrouter';
 import { CustomPlugins, ServiceConfiguration } from '@twilio/flex-ui';
 import * as FullStory from '@fullstory/browser';
@@ -6,9 +22,8 @@ import { fullStoryId } from '../private/secret';
 
 /**
  * Identifies helpline usage by Twilio Account ID (accountSid) in FullStory
- * @param workerClient
  */
-function helplineIdentifierFullStory(workerClient: Worker, flexVersion, customPlugins: CustomPlugins[]) {
+function helplineIdentifierFullStory(workerClient: Worker, flexVersion: string, customPlugins: CustomPlugins[]) {
   const { accountSid, attributes } = workerClient;
   const { full_name: fullName, email, contact_uri: contactUri } = attributes ?? {};
   FullStory.setUserVars({ accountSid, displayName: fullName || contactUri || 'Unknown', email });
