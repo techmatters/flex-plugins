@@ -5,7 +5,7 @@
     "child_directed": true,
     "idle_session_ttl_in_seconds": "300",
     "staging_bot_alias_id": "TSTALIASID",
-    "production_bot_alias_id": "KHHJUVES2S",
+    "production_bot_alias_id": "PFS1TW2EYC",
     "type": "Bot",
     "intents": {
       "post_survey_yes": {
