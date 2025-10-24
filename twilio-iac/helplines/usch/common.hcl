@@ -98,9 +98,9 @@ locals {
       en_USCH : []
     }
     lex_v2_bot_languages = {
-       en_US : ["pre_survey", "post_survey"],
-       ch : ["post_survey"],
-       cf : ["post_survey"]
+      en_USCH : ["pre_survey", "post_survey"]
+      //ch : ["post_survey"],
+      //cf : ["post_survey"]
 
     }
     s3_lifecycle_rules = {
