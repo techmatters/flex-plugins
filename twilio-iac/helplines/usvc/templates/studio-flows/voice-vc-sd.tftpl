@@ -31,7 +31,7 @@ ${
       }
     },
     {
-      "name": "send_to_vc_queue",
+      "name": "send_to_queue_vc",
       "type": "send-to-flex",
       "transitions": [
         {
@@ -251,7 +251,7 @@ ${
       "type": "set-variables",
       "transitions": [
         {
-          "next": "send_to_vc_queue",
+          "next": "send_to_queue_vc",
           "event": "next"
         }
       ],
@@ -274,7 +274,7 @@ ${
       "type": "set-variables",
       "transitions": [
         {
-          "next": "send_to_vc_queue",
+          "next": "send_to_queue_vc",
           "event": "next"
         }
       ],
