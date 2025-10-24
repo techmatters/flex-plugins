@@ -143,6 +143,21 @@ const sendWelcomeMessageOnConversationJoined = (
   manager.conversationsClient.once('conversationJoined', (c: Conversation) => trySendWelcomeMessage(c, 0, 0));
 };
 
+export const beforeAcceptTask = (setupObject: SetupObject, getMessage: GetMessage) => async (
+  payload: ActionPayload,
+) => {
+  const { task } = payload;
+
+  if (TaskHelper.isChatBasedTask(task)) {
+    subscribeAlertOnConversationJoined(task);
+  }
+
+  // If this is the first counsellor that gets the task, say hi
+  if (TaskHelper.isChatBasedTask(task) && !TransferHelpers.hasTransferStarted(task)) {
+    sendWelcomeMessageOnConversationJoined(setupObject, getMessage, payload);
+  }
+};
+
 export const afterAcceptTask = (featureFlags: FeatureFlags, setupObject: SetupObject, getMessage: GetMessage) => async (
   payload: ActionPayload,
 ) => {
@@ -161,14 +176,6 @@ export const afterAcceptTask = (featureFlags: FeatureFlags, setupObject: SetupOb
       }
     }
   });
-  if (TaskHelper.isChatBasedTask(task)) {
-    subscribeAlertOnConversationJoined(task);
-  }
-
-  // If this is the first counsellor that gets the task, say hi
-  if (TaskHelper.isChatBasedTask(task) && !TransferHelpers.hasTransferStarted(task)) {
-    sendWelcomeMessageOnConversationJoined(setupObject, getMessage, payload);
-  }
 
   if (TransferHelpers.hasTransferStarted(task)) {
     await handleTransferredTask(task);

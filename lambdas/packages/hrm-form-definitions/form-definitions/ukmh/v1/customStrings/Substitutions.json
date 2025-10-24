@@ -63,6 +63,7 @@
         "Case-SectionList-NoItems/incident": "No Risk to Life Listed",
         "CaseSection-View-Title/incident": "View Risk to Life",
         "CasePrint-TabularSection-Header/incident": "Risk to Life {{sectionNo}} of {{sectionCount}}",
+        "TabbedForms-AddCaseInfoTab": "Admin only",
         "TabbedForms-CategoriesTab": "Topics",
         "Error-CategoryRequired": "Required #{{minSelections}} topic minimum, #{{maxSelections}} topics maximum",
         "CaseList-Filters-Categories": "Topics",

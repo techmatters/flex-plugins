@@ -25,20 +25,20 @@ ${
       ],
       "properties": {
         "offset": {
-          "x": 440,
-          "y": -460
+          "x": 190,
+          "y": -570
         }
       }
     },
     {
-      "name": "attributes",
+      "name": "send_to_queue",
       "type": "send-to-flex",
       "transitions": [
         {
           "event": "callComplete"
         },
         {
-          "next": "webhook_notify_failed_to_enqueue",
+          "next": "http_post_webhook_notify_failed_to_enqueue",
           "event": "failedToEnqueue"
         },
         {
@@ -56,7 +56,7 @@ ${
       }
     },
     {
-      "name": "webhook_notify_failed_to_enqueue",
+      "name": "http_post_webhook_notify_failed_to_enqueue",
       "type": "make-http-request",
       "transitions": [
         {
@@ -86,7 +86,7 @@ ${
           "event": "noMatch"
         },
         {
-          "next": "set_courage_first_variable",
+          "next": "set_var_courage_first",
           "event": "match",
           "conditions": [
             {
@@ -100,7 +100,7 @@ ${
           ]
         },
         {
-          "next": "set_childhelp_variable",
+          "next": "set_var_childhelp",
           "event": "match",
           "conditions": [
             {
@@ -123,7 +123,7 @@ ${
       }
     },
     {
-      "name": "set_courage_first_variable",
+      "name": "set_var_courage_first",
       "type": "set-variables",
       "transitions": [
         {
@@ -151,7 +151,7 @@ ${
       }
     },
     {
-      "name": "set_childhelp_variable",
+      "name": "set_var_childhelp",
       "type": "set-variables",
       "transitions": [
         {
@@ -183,25 +183,25 @@ ${
       "type": "split-based-on",
       "transitions": [
         {
-          "next": "operatingHours",
+          "next": "f_operatingHours",
           "event": "noMatch"
         },
         {
-          "next": "operatingHours",
+          "next": "f_operatingHours",
           "event": "match",
           "conditions": [
             {
-              "friendly_name": "If value equal_to English",
+              "friendly_name": "If value equal_to en-US",
               "arguments": [
                 "{{trigger.message.ChannelAttributes.pre_engagement_data.language}}"
               ],
               "type": "equal_to",
-              "value": "English"
+              "value": "en-US"
             }
           ]
         },
         {
-          "next": "send_courage_first_webchat_other_language_message",
+          "next": "send_message_courage_first_webchat_other_language",
           "event": "match",
           "conditions": [
             {
@@ -210,12 +210,12 @@ ${
                 "{{trigger.message.ChannelAttributes.pre_engagement_data.language}}"
               ],
               "type": "equal_to",
-              "value": "Other"
+              "value": "en"
             }
           ]
         },
         {
-          "next": "send_courage_first_webchat_other_language_message",
+          "next": "send_message_courage_first_webchat_other_language",
           "event": "match",
           "conditions": [
             {
@@ -238,7 +238,7 @@ ${
       }
     },
     {
-      "name": "send_courage_first_webchat_other_language_message",
+      "name": "send_message_courage_first_webchat_other_language",
       "type": "send-message",
       "transitions": [
         {
@@ -274,17 +274,17 @@ ${
           "event": "match",
           "conditions": [
             {
-              "friendly_name": "If value equal_to English",
+              "friendly_name": "If value equal_to en-US",
               "arguments": [
                 "{{trigger.message.ChannelAttributes.pre_engagement_data.language}}"
               ],
               "type": "equal_to",
-              "value": "English"
+              "value": "en-US"
             }
           ]
         },
         {
-          "next": "send_childhelp_webchat_other_language_message",
+          "next": "send_message_childhelp_webchat_other_language",
           "event": "match",
           "conditions": [
             {
@@ -293,12 +293,12 @@ ${
                 "{{trigger.message.ChannelAttributes.pre_engagement_data.language}}"
               ],
               "type": "equal_to",
-              "value": "Other"
+              "value": "en"
             }
           ]
         },
         {
-          "next": "send_childhelp_webchat_other_language_message",
+          "next": "send_message_childhelp_webchat_other_language",
           "event": "match",
           "conditions": [
             {
@@ -321,7 +321,7 @@ ${
       }
     },
     {
-      "name": "send_childhelp_webchat_other_language_message",
+      "name": "send_message_childhelp_webchat_other_language",
       "type": "send-message",
       "transitions": [
         {
@@ -345,7 +345,7 @@ ${
       }
     },
     {
-      "name": "getProfileFlagsForIdentifier",
+      "name": "f_getProfileFlagsForIdentifier",
       "type": "make-http-request",
       "transitions": [
         {
@@ -359,8 +359,8 @@ ${
       ],
       "properties": {
         "offset": {
-          "x": 190,
-          "y": -260
+          "x": 180,
+          "y": -150
         },
         "method": "POST",
         "content_type": "application/json;charset=utf-8",
@@ -370,7 +370,7 @@ ${
       }
     },
     {
-      "name": "operatingHours",
+      "name": "f_operatingHours",
       "type": "make-http-request",
       "transitions": [
         {
@@ -402,13 +402,13 @@ ${
           "event": "noMatch"
         },
         {
-          "next": "send_courage_first_webchat_closed_message",
+          "next": "send_message_courage_first_webchat_closed",
           "event": "match",
           "conditions": [
             {
               "friendly_name": "If value matches_any_of closed,holiday",
               "arguments": [
-                "{{widgets.operatingHours.parsed.status}}"
+                "{{widgets.f_operatingHours.parsed.status}}"
               ],
               "type": "matches_any_of",
               "value": "closed,holiday"
@@ -422,7 +422,7 @@ ${
             {
               "friendly_name": "If value equal_to open",
               "arguments": [
-                "{{widgets.operatingHours.parsed.status}}"
+                "{{widgets.f_operatingHours.parsed.status}}"
               ],
               "type": "equal_to",
               "value": "open"
@@ -431,7 +431,7 @@ ${
         }
       ],
       "properties": {
-        "input": "{{widgets.operatingHours.parsed.status}}",
+        "input": "{{widgets.f_operatingHours.parsed.status}}",
         "offset": {
           "x": -460,
           "y": 1740
@@ -439,7 +439,7 @@ ${
       }
     },
     {
-      "name": "send_courage_first_webchat_closed_message",
+      "name": "send_message_courage_first_webchat_closed",
       "type": "send-message",
       "transitions": [
         {
@@ -463,7 +463,7 @@ ${
       }
     },
     {
-      "name": "send_webchat_blocked_client_message",
+      "name": "send_message_webchat_blocked_client",
       "type": "send-message",
       "transitions": [
         {
@@ -495,13 +495,13 @@ ${
           "event": "noMatch"
         },
         {
-          "next": "send_webchat_blocked_client_message",
+          "next": "send_message_webchat_blocked_client",
           "event": "match",
           "conditions": [
             {
               "friendly_name": "If value equal_to blocked",
               "arguments": [
-                "{{widgets.getProfileFlagsForIdentifier.parsed.flags}}"
+                "{{widgets.f_getProfileFlagsForIdentifier.parsed.flags}}"
               ],
               "type": "equal_to",
               "value": "blocked"
@@ -510,7 +510,7 @@ ${
         }
       ],
       "properties": {
-        "input": "{{widgets.getProfileFlagsForIdentifier.parsed.flags}}",
+        "input": "{{widgets.f_getProfileFlagsForIdentifier.parsed.flags}}",
         "offset": {
           "x": 600,
           "y": -20
@@ -518,15 +518,15 @@ ${
       }
     },
     {
-      "name": "send_childhelp_webchat_welcome_message",
+      "name": "send_message_childhelp_webchat_welcome",
       "type": "send-message",
       "transitions": [
         {
-          "next": "attributes",
+          "next": "send_to_queue",
           "event": "sent"
         },
         {
-          "next": "attributes",
+          "next": "send_to_queue",
           "event": "failed"
         }
       ],
@@ -551,7 +551,7 @@ ${
           "event": "noMatch"
         },
         {
-          "next": "send_courage_first_webchat_welcome_message",
+          "next": "send_message_courage_first_webchat_welcome",
           "event": "match",
           "conditions": [
             {
@@ -565,7 +565,7 @@ ${
           ]
         },
         {
-          "next": "send_childhelp_webchat_welcome_message",
+          "next": "send_message_childhelp_webchat_welcome",
           "event": "match",
           "conditions": [
             {
@@ -588,15 +588,15 @@ ${
       }
     },
     {
-      "name": "send_courage_first_webchat_welcome_message",
+      "name": "send_message_courage_first_webchat_welcome",
       "type": "send-message",
       "transitions": [
         {
-          "next": "attributes",
+          "next": "send_to_queue",
           "event": "sent"
         },
         {
-          "next": "attributes",
+          "next": "send_to_queue",
           "event": "failed"
         }
       ],
@@ -618,11 +618,11 @@ ${
       "type": "run-subflow",
       "transitions": [
         {
-          "next": "getProfileFlagsForIdentifier",
+          "next": "f_getProfileFlagsForIdentifier",
           "event": "completed"
         },
         {
-          "next": "getProfileFlagsForIdentifier",
+          "next": "f_getProfileFlagsForIdentifier",
           "event": "failed"
         }
       ],
@@ -630,8 +630,8 @@ ${
         "flow_sid": "${system_down_studio_subflow_sid}",
         "flow_revision": "LatestPublished",
         "offset": {
-          "x": -140,
-          "y": -340
+          "x": -50,
+          "y": -370
         },
         "parameters": [
           {

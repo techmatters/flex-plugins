@@ -46,7 +46,7 @@ const extractCoverage = (coverage: Attributes): string => {
       if (!Array.isArray(coverageItems)) {
         return [];
       }
-      return coverageItems.map(ci => ci?.value?.toString().trim());
+      return coverageItems.map(ci => (ci?.info?.name || ci?.value)?.toString().trim());
     })
     .filter(ci => ci)
     .join('\n');

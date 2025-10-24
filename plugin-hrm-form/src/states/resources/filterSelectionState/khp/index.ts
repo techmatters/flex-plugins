@@ -58,7 +58,7 @@ export type KHPFilterOptions = {
   maxEligibleAge: FilterOption<number>[];
 };
 
-const initialFilterOptions: KHPFilterOptions = {
+export const initialFilterOptions: KHPFilterOptions = {
   feeStructure: [
     { value: 'Free' },
     { value: 'Cost Unknown' },
@@ -200,7 +200,10 @@ export const handleLoadReferenceLocationsAsyncActionFulfilled = (state: Referrab
   return {
     ...state,
     filterOptions: updatedFilterOptions,
-    filterSelections: validatedFilterSelections,
+    parameters: {
+      ...state.parameters,
+      filterSelections: validatedFilterSelections,
+    },
     referenceLocations,
   };
 };

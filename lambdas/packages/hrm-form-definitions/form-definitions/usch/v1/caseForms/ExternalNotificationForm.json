@@ -146,6 +146,12 @@
           "value": "No",
           "label": "No"
         }
+      ],
+      "No": [
+        {
+          "value": "N/A",
+          "label": "N/A"
+        }
       ]
     },
     "required": {
