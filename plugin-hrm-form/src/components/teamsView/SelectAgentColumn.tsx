@@ -192,7 +192,9 @@ const SelectWorkerCheckbox: React.FC<{
   const { worker } = item;
   const isSelected = selectedWorkers?.has(worker.sid);
   const toggleSingleWorker = () =>
-    isSelected ? dispatch(newTeamsViewUnselectWorkers([worker.sid])) : dispatch(newTeamsViewSelectWorkers([worker.sid]));
+    isSelected
+      ? dispatch(newTeamsViewUnselectWorkers([worker.sid]))
+      : dispatch(newTeamsViewSelectWorkers([worker.sid]));
 
   return (
     <StyledFormCheckbox

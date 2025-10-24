@@ -79,7 +79,9 @@ export const newTeamsViewSelectSkills = (skills: string[]): TeamsViewSelectSkill
   payload: skills,
 });
 
-export const newTeamsViewSelectOperation = (operation: TeamsViewState['operation']): TeamsViewSelectOperationAction => ({
+export const newTeamsViewSelectOperation = (
+  operation: TeamsViewState['operation'],
+): TeamsViewSelectOperationAction => ({
   type: TEAMSVIEW_SELECT_OPERATION,
   payload: operation,
 });
