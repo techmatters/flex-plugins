@@ -147,7 +147,9 @@ const sendWelcomeMessageOnConversationJoined = (
     }, ms);
   };
   // Ignore event payload as we already have everything we want in afterAcceptTask arguments. Start at 0ms as many users are able to send the message right away
+  console.log('>>>>>> subscribing to event conversationJoined');
   manager.conversationsClient.once('conversationJoined', (c: Conversation) => trySendWelcomeMessage(c, 0, 0));
+  console.log('>>>>>> subscribed to event conversationJoined');
 };
 
 export const afterAcceptTask = (featureFlags: FeatureFlags, setupObject: SetupObject, getMessage: GetMessage) => async (
