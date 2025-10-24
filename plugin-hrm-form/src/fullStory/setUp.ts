@@ -32,14 +32,15 @@ function helplineIdentifierFullStory(workerClient: Worker, flexVersion: string, 
   });
   const { src } = customPlugins.find(p => p.name === 'HRM Forms') ?? {};
   if (src) {
-    const { pluginVersion } =
+    const { pluginVersion, environment } =
       src.match(
-        /https:\/\/assets-\w+\.tl\.techmatters\.org\/plugins\/hrm-form\/\w+\/(?<pluginVersion>[\w.-]+)\/plugin-hrm-form\.js/,
+        /https:\/\/assets-(?<environment>\w+)\.tl\.techmatters\.org\/plugins\/hrm-form\/\w+\/(?<pluginVersion>[\w.-]+)\/plugin-hrm-form\.js/,
       )?.groups ?? {};
     FullStory.setVars('page', {
       pluginUrl: src,
       pluginVersion,
     });
+    FullStory.setUserVars({ environment });
   }
 }
 
