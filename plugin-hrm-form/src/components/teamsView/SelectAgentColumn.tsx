@@ -24,10 +24,10 @@ import { ArrowDropDown, ArrowDropUp, KeyboardArrowRight } from '@material-ui/ico
 import { getAseloFeatureFlags } from '../../hrmConfig';
 import { namespace, teamsViewBase } from '../../states/storeNamespaces';
 import {
-  teamsViewSelectOperation,
-  teamsViewSelectWorkers,
+  newTeamsViewSelectOperation,
+  newTeamsViewSelectWorkers,
   TeamsViewState,
-  teamsViewUnselectWorkers,
+  newTeamsViewUnselectWorkers,
 } from '../../states/teamsView/reducer';
 import { newOpenModalAction } from '../../states/routing/actions';
 import { StyledFormCheckbox } from '../forms/components/FormCheckbox/styles';
@@ -137,7 +137,7 @@ const SelectAllCheckbox: React.FC<{}> = () => {
   const allChecked = workersSids.length && workersSids.every(w => selectedWorkers?.has(w));
 
   const toggleAllWorkers = () =>
-    allChecked ? dispatch(teamsViewUnselectWorkers(workersSids)) : dispatch(teamsViewSelectWorkers(workersSids));
+    allChecked ? dispatch(newTeamsViewUnselectWorkers(workersSids)) : dispatch(newTeamsViewSelectWorkers(workersSids));
 
   return (
     <>
@@ -171,7 +171,7 @@ const SelectAllCheckbox: React.FC<{}> = () => {
           boxHeight={boxHeight}
           open={isOpen}
           onClickAction={operation => () => {
-            dispatch(teamsViewSelectOperation(operation));
+            dispatch(newTeamsViewSelectOperation(operation));
             // dispatch(changeRoute({ route: 'teams' }, standaloneTask.taskSid));
             dispatch(newOpenModalAction({ route: 'teams', subroute: 'select-skills' }, standaloneTask.taskSid));
             setIsOpen(false);
@@ -192,7 +192,7 @@ const SelectWorkerCheckbox: React.FC<{
   const { worker } = item;
   const isSelected = selectedWorkers?.has(worker.sid);
   const toggleSingleWorker = () =>
-    isSelected ? dispatch(teamsViewUnselectWorkers([worker.sid])) : dispatch(teamsViewSelectWorkers([worker.sid]));
+    isSelected ? dispatch(newTeamsViewUnselectWorkers([worker.sid])) : dispatch(newTeamsViewSelectWorkers([worker.sid]));
 
   return (
     <StyledFormCheckbox

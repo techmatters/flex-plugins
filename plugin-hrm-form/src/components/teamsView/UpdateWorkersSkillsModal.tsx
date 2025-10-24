@@ -24,7 +24,7 @@ import { skillsOptions } from './teamsViewFilters';
 import FormCheckbox from '../forms/components/FormCheckbox/FormCheckbox';
 import { Modal, Props as ModalProps } from '../../styles/modals';
 import { Box, Column, Row } from '../../styles/layout';
-import { teamsViewResetStateAction, teamsViewSelectSkills } from '../../states/teamsView/reducer';
+import { newTeamsViewResetStateAction, newTeamsViewSelectSkills } from '../../states/teamsView/reducer';
 import { namespace } from '../../states/storeNamespaces';
 import { RootState } from '../../states';
 import { RouterTask } from '../../types/types';
@@ -93,7 +93,7 @@ export const UpdateWorkersSkillsModal: React.FC<Props> = ({ task }) => {
             workers: Array.from(selectedWorkers),
           });
 
-          dispatch(teamsViewResetStateAction());
+          dispatch(newTeamsViewResetStateAction());
 
           if (registerForceCloseRef.current && typeof registerForceCloseRef.current === 'function') {
             registerForceCloseRef.current();
@@ -142,7 +142,7 @@ const SelectWorkersSkillsModal: React.FC<Props> = () => {
         initialValue={selectedSkills.has(skill.value)}
         updateCallback={() => {
           dispatch(
-            teamsViewSelectSkills(
+            newTeamsViewSelectSkills(
               Object.entries(getValues())
                 .filter(([, v]) => v)
                 .map(([k]) => k),

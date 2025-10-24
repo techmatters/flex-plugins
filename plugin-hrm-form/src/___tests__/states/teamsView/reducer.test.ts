@@ -18,15 +18,15 @@ import each from 'jest-each';
 import {
   reduce,
   TEAMSVIEW_SELECT_WORKERS,
-  teamsViewSelectWorkers,
+  newTeamsViewSelectWorkers,
   TEAMSVIEW_UNSELECT_WORKERS,
-  teamsViewUnselectWorkers,
+  newTeamsViewUnselectWorkers,
   TEAMSVIEW_SELECT_SKILLS,
-  teamsViewSelectSkills,
+  newTeamsViewSelectSkills,
   TEAMSVIEW_SELECT_OPERATION,
-  teamsViewSelectOperation,
+  newTeamsViewSelectOperation,
   TEAMSVIEW_RESET_STATE,
-  teamsViewResetStateAction,
+  newTeamsViewResetStateAction,
 } from '../../../states/teamsView/reducer';
 
 describe('test action creators', () => {
@@ -39,8 +39,8 @@ describe('test action creators', () => {
       workerSids: ['WK-123', 'WK-999'],
       description: 'multiple workers',
     },
-  ]).test('teamsViewSelectWorkers - $description', async ({ workerSids }) => {
-    expect(teamsViewSelectWorkers(workerSids)).toStrictEqual({
+  ]).test('newTeamsViewSelectWorkers - $description', async ({ workerSids }) => {
+    expect(newTeamsViewSelectWorkers(workerSids)).toStrictEqual({
       type: TEAMSVIEW_SELECT_WORKERS,
       payload: workerSids,
     });
@@ -55,8 +55,8 @@ describe('test action creators', () => {
       workerSids: ['WK-123', 'WK-999'],
       description: 'multiple workers',
     },
-  ]).test('teamsViewUnselectWorkers - $description', async ({ workerSids }) => {
-    expect(teamsViewUnselectWorkers(workerSids)).toStrictEqual({
+  ]).test('newTeamsViewUnselectWorkers - $description', async ({ workerSids }) => {
+    expect(newTeamsViewUnselectWorkers(workerSids)).toStrictEqual({
       type: TEAMSVIEW_UNSELECT_WORKERS,
       payload: workerSids,
     });
@@ -75,8 +75,8 @@ describe('test action creators', () => {
       skills: [],
       description: 'no skills - empty the state',
     },
-  ]).test('teamsViewSelectSkills - $description', async ({ skills }) => {
-    expect(teamsViewSelectSkills(skills)).toStrictEqual({
+  ]).test('newTeamsViewSelectSkills - $description', async ({ skills }) => {
+    expect(newTeamsViewSelectSkills(skills)).toStrictEqual({
       type: TEAMSVIEW_SELECT_SKILLS,
       payload: skills,
     });
@@ -87,8 +87,8 @@ describe('test action creators', () => {
       operation: 'operation',
       description: 'test selecting an operation',
     },
-  ]).test('teamsViewSelectOperation - $description', async ({ operation }) => {
-    expect(teamsViewSelectOperation(operation)).toStrictEqual({
+  ]).test('newTeamsViewSelectOperation - $description', async ({ operation }) => {
+    expect(newTeamsViewSelectOperation(operation)).toStrictEqual({
       type: TEAMSVIEW_SELECT_OPERATION,
       payload: operation,
     });
@@ -99,8 +99,8 @@ describe('test action creators', () => {
       operation: 'operation',
       description: 'test selecting an operation',
     },
-  ]).test('teamsViewResetStateAction - $description', async () => {
-    expect(teamsViewResetStateAction()).toStrictEqual({
+  ]).test('newTeamsViewResetStateAction - $description', async () => {
+    expect(newTeamsViewResetStateAction()).toStrictEqual({
       type: TEAMSVIEW_RESET_STATE,
     });
   });
@@ -203,7 +203,7 @@ describe('test reducer', () => {
       description: 'add multiple workers already selected does nothing',
     },
   ]).test('TEAMSVIEW_SELECT_WORKERS - $description', async ({ state, workersSids, expected }) => {
-    const result = reduce(state, teamsViewSelectWorkers(workersSids));
+    const result = reduce(state, newTeamsViewSelectWorkers(workersSids));
     expect(result).toStrictEqual(expected);
   });
 
@@ -293,7 +293,7 @@ describe('test reducer', () => {
       description: 'remove multiple selected workers to existing state results in partial state',
     },
   ]).test('TEAMSVIEW_UNSELECT_WORKERS - $description', async ({ state, workersSids, expected }) => {
-    const result = reduce(state, teamsViewUnselectWorkers(workersSids));
+    const result = reduce(state, newTeamsViewUnselectWorkers(workersSids));
     expect(result).toStrictEqual(expected);
   });
 
@@ -335,7 +335,7 @@ describe('test reducer', () => {
       description: 'set empty skills',
     },
   ]).test('TEAMSVIEW_SELECT_SKILLS - $description', async ({ state, skills, expected }) => {
-    const result = reduce(state, teamsViewSelectSkills(skills));
+    const result = reduce(state, newTeamsViewSelectSkills(skills));
     expect(result).toStrictEqual(expected);
   });
 
@@ -354,7 +354,7 @@ describe('test reducer', () => {
       description: 'update operation',
     },
   ]).test('TEAMSVIEW_SELECT_OPERATION - $description', async ({ state, operation, expected }) => {
-    const result = reduce(state, teamsViewSelectOperation(operation));
+    const result = reduce(state, newTeamsViewSelectOperation(operation));
     expect(result).toStrictEqual(expected);
   });
 
@@ -372,7 +372,7 @@ describe('test reducer', () => {
       description: 'reset state',
     },
   ]).test('TEAMSVIEW_RESET_STATE - $description', async ({ state, expected }) => {
-    const result = reduce(state, teamsViewResetStateAction());
+    const result = reduce(state, newTeamsViewResetStateAction());
     expect(result).toStrictEqual(expected);
   });
 });

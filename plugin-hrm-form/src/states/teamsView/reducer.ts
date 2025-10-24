@@ -64,27 +64,27 @@ type TeamsViewActionTypes =
   | TeamsViewResetStateAction;
 
 // Action creators
-export const teamsViewSelectWorkers = (workers: string[]): TeamsViewSelectWorkersAction => ({
+export const newTeamsViewSelectWorkers = (workers: string[]): TeamsViewSelectWorkersAction => ({
   type: TEAMSVIEW_SELECT_WORKERS,
   payload: workers,
 });
 
-export const teamsViewUnselectWorkers = (workers: string[]): TeamsViewUnselectWorkersAction => ({
+export const newTeamsViewUnselectWorkers = (workers: string[]): TeamsViewUnselectWorkersAction => ({
   type: TEAMSVIEW_UNSELECT_WORKERS,
   payload: workers,
 });
 
-export const teamsViewSelectSkills = (skills: string[]): TeamsViewSelectSkillsAction => ({
+export const newTeamsViewSelectSkills = (skills: string[]): TeamsViewSelectSkillsAction => ({
   type: TEAMSVIEW_SELECT_SKILLS,
   payload: skills,
 });
 
-export const teamsViewSelectOperation = (operation: TeamsViewState['operation']): TeamsViewSelectOperationAction => ({
+export const newTeamsViewSelectOperation = (operation: TeamsViewState['operation']): TeamsViewSelectOperationAction => ({
   type: TEAMSVIEW_SELECT_OPERATION,
   payload: operation,
 });
 
-export const teamsViewResetStateAction = (): TeamsViewResetStateAction => ({
+export const newTeamsViewResetStateAction = (): TeamsViewResetStateAction => ({
   type: TEAMSVIEW_RESET_STATE,
 });
 
