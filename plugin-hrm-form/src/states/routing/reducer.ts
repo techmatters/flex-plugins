@@ -46,7 +46,6 @@ const getPathFromUrl = url => {
   return url.pathname.replace(/^\/|\/$/g, '');
 };
 
-// eslint-disable-next-line import/no-unused-modules
 export const initialState: RoutingState = {
   tasks: {
     [standaloneTaskSid]: [{ route: getPathFromUrl(window.location), subroute: getPathFromUrl(window.location) }],

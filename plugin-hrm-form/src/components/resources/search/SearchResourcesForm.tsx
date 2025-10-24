@@ -15,7 +15,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import React, { useCallback, useEffect, useMemo, useRef } from 'react';
+import React, { useMemo, useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { AnyAction } from 'redux';
 import { Template } from '@twilio/flex-ui';
@@ -47,7 +47,7 @@ import { ResourceSearchFilters } from '../mappingComponents';
 
 const SearchResourcesForm: React.FC = () => {
   const dispatch = useDispatch();
-  const searchAsyncDispatch = asyncDispatch<AnyAction>(dispatch);
+  const searchAsyncDispatch = useMemo(() => asyncDispatch<AnyAction>(dispatch), [dispatch]);
 
   const { generalSearchTerm, pageSize, filterSelections, suggestSearch } = useSelector((state: RootState) => {
     const {
@@ -75,12 +75,13 @@ const SearchResourcesForm: React.FC = () => {
 
   const [generalSearchTermBoxText, setGeneralSearchTermBoxText] = React.useState(generalSearchTerm);
 
-  const updateSuggestSearch = useCallback(
-    debounce((prefix: string) => searchAsyncDispatch(suggestSearchAsyncAction(prefix)), 300, {
-      leading: true,
-      trailing: true,
-    }),
-    [],
+  const updateSuggestSearch = useMemo(
+    () =>
+      debounce((prefix: string) => searchAsyncDispatch(suggestSearchAsyncAction(prefix)), 300, {
+        leading: true,
+        trailing: true,
+      }),
+    [searchAsyncDispatch],
   );
 
   const firstElement = useRef(null);
@@ -99,11 +100,7 @@ const SearchResourcesForm: React.FC = () => {
 
   useEffect(() => {
     updateSuggestSearch(generalSearchTermBoxText);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    // updateSuggestSearch is intentionally omitted from the dependency array because it is a debounced, memoized callback
-    // with a stable reference (empty dependency array), and searchAsyncDispatch is stable. Including it would recreate
-    // the debounced function on every render, defeating its purpose.
-  }, [generalSearchTermBoxText]);
+  }, [generalSearchTermBoxText, updateSuggestSearch]);
 
   useEffect(() => {
     setGeneralSearchTermBoxText(generalSearchTerm);

@@ -39,7 +39,7 @@ const activityNoOfflineByDefault: FilterDefinitionFactory = (appState, _teamFilt
   };
 };
 
-const skillsOptions = Manager.getInstance().serviceConfiguration.taskrouter_skills?.map(({ name }) => ({
+export const skillsOptions = Manager.getInstance().serviceConfiguration.taskrouter_skills?.map(({ name }) => ({
   value: name,
   label: name,
 }));
