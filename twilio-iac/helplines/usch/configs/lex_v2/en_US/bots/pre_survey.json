@@ -18,7 +18,7 @@
           }
         ],
         "initial_response": {
-          "message": "If this is a life-threatening emergency, please contact 911. To help us better serve you, please answer the next five short questions. You will then be connected to a counselor. You can type X if you prefer not to answer any question.",
+          "message": "If this is a life-threatening emergency, please contact 911. To help us better serve you, please answer the next four short questions. You will then be connected to a counselor. You can type X if you prefer not to answer any question.",
           "slot_to_elicit": "aboutSelf"
         },
         "closing_response": {
