@@ -1392,6 +1392,10 @@
 
     "options": [
       {
+        "value": "",
+        "label": ""
+      },
+      {
         "value": "Low risk - Suicidal ideation without plan or intent",
         "label": "Low risk - Suicidal ideation without plan or intent"
       },
