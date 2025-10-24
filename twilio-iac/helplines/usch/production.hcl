@@ -32,7 +32,7 @@ locals {
       # Courage First -  SMS
       courage_first_sms_closed_message   = "Thank you for contacting the Courage First Athlete Helpline. If this is a life-threatening emergency, please contact 911."
       courage_first_sms_redirect_message = "You have reached us outside of our normal operating hours of Monday through Friday, 12pm to 8pm, PST. If you would like to text right now with a Crisis Counselor who can provide immediate emotional support and resources, please text 800-422-4453 to reach the Childhelp National Child Abuse Hotline"
-      courage_first_sms_welcome_message  = "Thank you for texting the Courage First Athlete Helpline. Standard msg rates may apply. Terms of service can be found at https://www.athletehelpline.org/terms/. By continuing, you agree to our terms of service."
+      courage_first_sms_welcome_message  = "Thank you for texting the Courage First Athlete Helpline. You'll be connected to a live counselor by SMS. We'll message only to support your conversation (no marketing). Message frequency may vary. Msg&Data rates may apply. Reply STOP to end, HELP for help. Privacy: https://www.athletehelpline.org/terms/. By continuing, you agree to our terms of service."
       courage_first_sms_failure_message  = "We are sorry, we had a technical issue. Please trying texting again or call 1-888-279-1026"
       courage_first_sms_prequeue_message = "Para hablar con un consejero en Español, llame al 800-422-4453. Please note: A false report is a crime governed by federal and state laws, involving a person who, with intent to deceive, knowingly makes a false statement to a mandated reporter or law enforcement official that results in unwarranted government action. Childhelp's National Child Abuse Hotline is comprised of mandated reporters who will refer malicious or false reports to law enforcement for prosecution."
       # ChildHelp -  SMS
@@ -59,7 +59,7 @@ locals {
 
     }
     //Serverless -- to allow enabling the operating hours check on this staging account.
-    ui_editable = true
+    ui_editable = false
     #Channels
     channels = {
       webchat : {
@@ -87,7 +87,18 @@ locals {
         channel_flow_vars = {
         }
         chatbot_unique_names = []
-      },/*
+      },
+      sms_childhelp_backup : {
+        messaging_mode   = "conversations"
+        channel_type     = "sms"
+        contact_identity = "+18557172986"
+        templatefile     = "/app/twilio-iac/helplines/usch/templates/studio-flows/sms-childhelp-lex-sd.tftpl"
+        channel_flow_vars = {
+
+        }
+        chatbot_unique_names = []
+      }
+      /*
       sms_childhelp : {
         messaging_mode   = "conversations"
         channel_type     = "sms"
@@ -101,7 +112,7 @@ locals {
       sms_courage_first : {
         messaging_mode   = "conversations"
         channel_type     = "sms"
-        contact_identity = "+16066032348"
+        contact_identity = "+18004224453"
         templatefile     = "/app/twilio-iac/helplines/usch/templates/studio-flows/sms-courage-first-lex-sd.tftpl"
         channel_flow_vars = {
         }

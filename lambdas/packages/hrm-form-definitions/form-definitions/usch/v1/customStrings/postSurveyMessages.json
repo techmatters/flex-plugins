@@ -1,4 +1,4 @@
 {
-  "triggerMessage": "Before you go, would you like a one-time anonymous survey by SMS? Your answers help us better support others facing similar challenges.  Thanks for taking a moment to share. Reply 'Yes' to receive it or 'No' to skip.",
+  "triggerMessage": "Before you go, would you like a one-time anonymous survey? Your answers help us better support others facing similar challenges.  Thanks for taking a moment to share. Reply 'Yes' to receive it or 'No' to skip.",
   "postSurveyCompleteMessage": "Thank you for contacting the hotline.  Feel free to reach out again if you need additional support."
 }
