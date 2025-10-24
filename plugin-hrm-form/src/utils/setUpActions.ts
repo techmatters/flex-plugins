@@ -67,12 +67,20 @@ const sendMessageOfKey = (messageKey: string) => (
   conversation: Conversation,
   getMessage: (key: string) => (key: string) => Promise<string>,
 ): ActionFunction => async (payload: ActionPayload) => {
-  const taskLanguage = getTaskLanguage(setupObject)(payload.task);
-  const message = await getMessage(messageKey)(taskLanguage);
-  const res = await conversation.sendMessage(message);
-  console.log(
-    `Successfully sent message '${message}' from key ${messageKey} translated to ${taskLanguage}, added as index ${res}`,
-  );
+  try {
+    console.log('>>>>>> sendMessageOfKey executed');
+    const taskLanguage = getTaskLanguage(setupObject)(payload.task);
+    const message = await getMessage(messageKey)(taskLanguage);
+    console.log('>>>>>> sendMessageOfKey message', message);
+    const res = await conversation.sendMessage(message);
+    console.log('>>>>>> sendMessageOfKey result', res);
+    console.log(
+      `Successfully sent message '${message}' from key ${messageKey} translated to ${taskLanguage}, added as index ${res}`,
+    );
+  } catch (err) {
+    console.error('>>>>>> sendMessageOfKey error', err);
+    throw err;
+  }
 };
 
 const sendSystemMessageOfKey = (messageKey: string) => (
@@ -108,21 +116,23 @@ const sendWelcomeMessageOnConversationJoined = (
   getMessage: GetMessage,
   payload: ActionPayload,
 ) => {
+  console.log('>>>>>> sendWelcomeMessageOnConversationJoined');
   const manager = Manager.getInstance();
   const trySendWelcomeMessage = (convo: Conversation, ms: number, retries: number) => {
+    console.log('>>>>>> trySendWelcomeMessage');
     setTimeout(async () => {
       try {
         const convoState = manager.store.getState().flex.chat.conversations[convo.sid];
         if (!convoState) {
           console.warn(
-            `Conversation ${convo.sid}, which should be for task ${payload.task.taskSid} not found in redux store.`,
+            `>>>>>> Conversation ${convo.sid}, which should be for task ${payload.task.taskSid} not found in redux store.`,
           );
           return;
         }
         // if channel is not ready, wait 200ms and retry
         if (convoState.isLoadingParticipants || convoState.isLoadingConversation || convoState.isLoadingMessages) {
           if (retries < 10) trySendWelcomeMessage(convo, 200, retries + 1);
-          else console.error('Failed to send welcome message: max retries reached.');
+          else console.error('>>>>>> Failed to send welcome message: max retries reached.');
         } else {
           sendWelcomeMessage(setupObject, convo, getMessage)(payload);
         }
@@ -131,13 +141,30 @@ const sendWelcomeMessageOnConversationJoined = (
         if (retries < 10) {
           trySendWelcomeMessage(convo, 200, retries + 1);
         } else {
-          console.error('Failed to send welcome message: max retries reached due to error.', error);
+          console.error('>>>>>> Failed to send welcome message: max retries reached due to error.', error);
         }
       }
     }, ms);
   };
   // Ignore event payload as we already have everything we want in afterAcceptTask arguments. Start at 0ms as many users are able to send the message right away
+  console.log('>>>>>> subscribing to event conversationJoined');
   manager.conversationsClient.once('conversationJoined', (c: Conversation) => trySendWelcomeMessage(c, 0, 0));
+  console.log('>>>>>> subscribed to event conversationJoined');
+};
+
+export const beforeAcceptTask = (setupObject: SetupObject, getMessage: GetMessage) => async (
+  payload: ActionPayload,
+) => {
+  const { task } = payload;
+
+  if (TaskHelper.isChatBasedTask(task)) {
+    subscribeAlertOnConversationJoined(task);
+  }
+
+  // If this is the first counsellor that gets the task, say hi
+  if (TaskHelper.isChatBasedTask(task) && !TransferHelpers.hasTransferStarted(task)) {
+    sendWelcomeMessageOnConversationJoined(setupObject, getMessage, payload);
+  }
 };
 
 export const afterAcceptTask = (featureFlags: FeatureFlags, setupObject: SetupObject, getMessage: GetMessage) => async (
@@ -158,14 +185,6 @@ export const afterAcceptTask = (featureFlags: FeatureFlags, setupObject: SetupOb
       }
     }
   });
-  if (TaskHelper.isChatBasedTask(task)) {
-    subscribeAlertOnConversationJoined(task);
-  }
-
-  // If this is the first counsellor that gets the task, say hi
-  if (TaskHelper.isChatBasedTask(task) && !TransferHelpers.hasTransferStarted(task)) {
-    sendWelcomeMessageOnConversationJoined(setupObject, getMessage, payload);
-  }
 
   if (TransferHelpers.hasTransferStarted(task)) {
     await handleTransferredTask(task);
