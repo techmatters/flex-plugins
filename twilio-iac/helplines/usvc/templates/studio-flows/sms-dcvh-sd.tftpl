@@ -31,7 +31,7 @@ ${
       }
     },
     {
-      "name": "sen_to_dcvh_queue",
+      "name": "send_to_queue_dcvh",
       "type": "send-to-flex",
       "transitions": [
         {
@@ -209,11 +209,11 @@ ${
       "type": "send-message",
       "transitions": [
         {
-          "next": "sen_to_dcvh_queue",
+          "next": "send_to_queue_dcvh",
           "event": "sent"
         },
         {
-          "next": "sen_to_dcvh_queue",
+          "next": "send_to_queue_dcvh",
           "event": "failed"
         }
       ],
