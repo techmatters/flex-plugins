@@ -24,23 +24,27 @@ import { fullStoryId } from '../private/secret';
  * Identifies helpline usage by Twilio Account ID (accountSid) in FullStory
  */
 function helplineIdentifierFullStory(workerClient: Worker, flexVersion: string, customPlugins: CustomPlugins[]) {
-  const { accountSid, attributes } = workerClient;
-  const { full_name: fullName, email, contact_uri: contactUri, helpline_code: helplineCode } = attributes ?? {};
-  FullStory.setUserVars({ accountSid, displayName: fullName || contactUri || 'Unknown', email, helplineCode });
-  FullStory.setVars('page', {
-    flexVersion,
-  });
-  const { src } = customPlugins.find(p => p.name === 'HRM Forms') ?? {};
-  if (src) {
-    const { pluginVersion, environment } =
-      src.match(
-        /https:\/\/assets-(?<environment>\w+)\.tl\.techmatters\.org\/plugins\/hrm-form\/\w+\/(?<pluginVersion>[\w.-]+)\/plugin-hrm-form\.js/,
-      )?.groups ?? {};
+  try {
+    const { accountSid, attributes } = workerClient;
+    const { full_name: fullName, email, contact_uri: contactUri, helpline_code: helplineCode } = attributes ?? {};
+    FullStory.setUserVars({ accountSid, displayName: fullName || contactUri || 'Unknown', email, helplineCode });
     FullStory.setVars('page', {
-      pluginUrl: src,
-      pluginVersion,
+      flexVersion,
     });
-    FullStory.setUserVars({ environment });
+    const { src } = customPlugins.find(p => p.name === 'HRM Forms') ?? {};
+    if (src) {
+      const { pluginVersion, environment } =
+        src.match(
+          /https:\/\/assets-(?<environment>\w+)\.tl\.techmatters\.org\/plugins\/hrm-form\/\w+\/(?<pluginVersion>[\w.-]+)\/plugin-hrm-form\.js/,
+        )?.groups ?? {};
+      FullStory.setVars('page', {
+        pluginUrl: src,
+        pluginVersion,
+      });
+      FullStory.setUserVars({ environment });
+    }
+  } catch (err) {
+    console.error('Error adding contextual data to FullStory session', err);
   }
 }
 
