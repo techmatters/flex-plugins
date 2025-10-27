@@ -9,6 +9,7 @@ locals {
 
   local_config = {
     custom_task_routing_filter_expression = ""
+    enable_datadog_monitoring             = true
     flow_vars = {
       widget_from                               = "Bot"
       operating_hours_function_sid              = "ZH456453b1f869a64ca46e55093189cebd"
@@ -26,7 +27,7 @@ locals {
       courage_first_webchat_other_language_message = "Currently, our chat platform only works in English. For assistance in other languages, please call our hotline at 1-888-279-1026."
       courage_first_webchat_closed_message         = "Thank you for contacting the Courage First Athlete Helpline. If this is a life-threatening emergency, please contact 911. You have reached us outside of our normal operating hours of Monday through Friday, 12pm to 8pm, PST.   If you would like to chat right now with a Crisis Counselor at the Childhelp National Child Abuse Hotline who can provide immediate emotional support and resources, please call or text 800-422-4453 or visit www.childhelphotline.org "
       courage_first_webchat_welcome_message        = "Please go to the following link for the full terms of service: Terms of Service - The Courage First Athlete Helpline https://www.athletehelpline.org/terms/ We will be with you shortly.\nPlease note: A false report is a crime governed by federal and state laws, involving a person who, with intent to deceive, knowingly makes a false statement to a mandated reporter or law enforcement official that results in unwarranted government action. The Courage First Athlete Helpline is comprised of mandated reporters who will refer malicious or false reports to law enforcement for prosecution.  If this is a life-threatening emergency please contact 911."
-      
+
       #Common - SMS
       sms_blocked_client_message = "We are unable to take your contact at this time. If this is an emergency please contact 911 or 988."
       # Courage First -  SMS
@@ -70,7 +71,15 @@ locals {
           courage_first_url = "https://www.athletehelpline.org"
           childhelp_url     = "https://www.childhelp"
         }
-        chatbot_unique_names = []
+        chatbot_unique_names   = []
+        enable_datadog_monitor = true
+        custom_monitor = {
+          query = "sum(last_24h):sum:<metric>{*}.as_count() == 0"
+          custom_schedule = {
+            rrule    = "FREQ=DAILY;INTERVAL=1;BYHOUR=6;BYMINUTE=0"
+            timezone = "America/Phoenix"
+          }
+        }
       },
       voice_childhelp : {
         channel_type     = "voice"
@@ -78,7 +87,15 @@ locals {
         templatefile     = "/app/twilio-iac/helplines/usch/templates/studio-flows/voice-childhelp-sd.tftpl"
         channel_flow_vars = {
         }
-        chatbot_unique_names = []
+        chatbot_unique_names   = []
+        enable_datadog_monitor = true
+        custom_monitor = {
+          query = "sum(last_24h):sum:<metric>{*}.as_count() == 0"
+          custom_schedule = {
+            rrule    = "FREQ=DAILY;INTERVAL=1;BYHOUR=6;BYMINUTE=0"
+            timezone = "America/Phoenix"
+          }
+        }
       },
       voice_courage_first : {
         channel_type     = "voice"
@@ -86,7 +103,15 @@ locals {
         templatefile     = "/app/twilio-iac/helplines/usch/templates/studio-flows/voice-courage-first-op-hours-sd.tftpl"
         channel_flow_vars = {
         }
-        chatbot_unique_names = []
+        chatbot_unique_names   = []
+        enable_datadog_monitor = true
+        custom_monitor = {
+          query = "sum(last_24h):sum:<metric>{*}.as_count() == 0"
+          custom_schedule = {
+            rrule    = "FREQ=DAILY;INTERVAL=1;BYHOUR=6;BYMINUTE=0"
+            timezone = "America/Phoenix"
+          }
+        }
       },
       sms_childhelp_backup : {
         messaging_mode   = "conversations"
@@ -96,9 +121,8 @@ locals {
         channel_flow_vars = {
 
         }
-        chatbot_unique_names = []
-      }
-      /*
+        chatbot_unique_names   = []
+      }/*,
       sms_childhelp : {
         messaging_mode   = "conversations"
         channel_type     = "sms"
@@ -107,7 +131,15 @@ locals {
         channel_flow_vars = {
 
         }
-        chatbot_unique_names = []
+        chatbot_unique_names   = []
+        enable_datadog_monitor = true
+        custom_monitor = {
+          query = "sum(last_24h):sum:<metric>{*}.as_count() == 0"
+          custom_schedule = {
+            rrule    = "FREQ=DAILY;INTERVAL=1;BYHOUR=6;BYMINUTE=0"
+            timezone = "America/Phoenix"
+          }
+        }
       },
       sms_courage_first : {
         messaging_mode   = "conversations"
@@ -116,7 +148,15 @@ locals {
         templatefile     = "/app/twilio-iac/helplines/usch/templates/studio-flows/sms-courage-first-lex-sd.tftpl"
         channel_flow_vars = {
         }
-        chatbot_unique_names = []
+        chatbot_unique_names   = []
+        enable_datadog_monitor = true
+        custom_monitor = {
+          query = "sum(last_24h):sum:<metric>{*}.as_count() == 0"
+          custom_schedule = {
+            rrule    = "FREQ=DAILY;INTERVAL=1;BYHOUR=6;BYMINUTE=0"
+            timezone = "America/Phoenix"
+          }
+        }
       }*/
     }
     get_profile_flags_for_identifier_base_url = "https://hrm-production.tl.techmatters.org/lambda/twilio/account-scoped"
