@@ -22,7 +22,7 @@ const flexFlowSid = 'FO8f7a4233cc590bf3d45f1b68c6058582';
 
 export const config: Configuration = {
   ...uscrStaging,
-  checkOpenHours: false,
+  checkOpenHours: true,
   accountSid,
   flexFlowSid,
   twilioServicesUrl: new URL(`https://hrm-production-eu.tl.techmatters.org/lambda/twilio/account-scoped/${accountSid}`),
