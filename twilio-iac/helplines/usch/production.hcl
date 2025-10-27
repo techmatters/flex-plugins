@@ -122,7 +122,7 @@ locals {
 
         }
         chatbot_unique_names   = []
-      }/*,
+      },
       sms_childhelp : {
         messaging_mode   = "conversations"
         channel_type     = "sms"
@@ -144,7 +144,7 @@ locals {
       sms_courage_first : {
         messaging_mode   = "conversations"
         channel_type     = "sms"
-        contact_identity = "+18004224453"
+        contact_identity = "+18882791026"
         templatefile     = "/app/twilio-iac/helplines/usch/templates/studio-flows/sms-courage-first-lex-sd.tftpl"
         channel_flow_vars = {
         }
@@ -157,7 +157,7 @@ locals {
             timezone = "America/Phoenix"
           }
         }
-      }*/
+      }
     }
     get_profile_flags_for_identifier_base_url = "https://hrm-production.tl.techmatters.org/lambda/twilio/account-scoped"
     #System Down Configuration
