@@ -122,7 +122,7 @@ locals {
 
         }
         chatbot_unique_names   = []
-      }/*,
+      },
       sms_childhelp : {
         messaging_mode   = "conversations"
         channel_type     = "sms"
@@ -157,7 +157,7 @@ locals {
             timezone = "America/Phoenix"
           }
         }
-      }*/
+      }
     }
     get_profile_flags_for_identifier_base_url = "https://hrm-production.tl.techmatters.org/lambda/twilio/account-scoped"
     #System Down Configuration
