@@ -131,7 +131,7 @@ export const updateContactInHrmAsyncAction = createAsyncAction(
       reference,
     };
   },
-  (previousContact: Contact, { conversationDuration, ...body }: ContactDraftChanges) => ({
+  (previousContact: Contact, { conversationDuration, ...body }: ContactDraftChanges = {}) => ({
     previousContact,
     changes: body,
   }),
