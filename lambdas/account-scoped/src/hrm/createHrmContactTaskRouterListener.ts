@@ -183,6 +183,8 @@ export const handleEvent = async (
   }
   const identifier = isOk(identifierResult) ? identifierResult.data : '';
 
+  const timeOfContactDate = new Date();
+
   const newContact: HrmContact = {
     ...BLANK_CONTACT,
     definitionVersion,
@@ -198,7 +200,7 @@ export const handleEvent = async (
     serviceSid: (channelSid && serviceConfig.chatServiceInstanceSid) ?? '',
     // We set createdBy to the workerSid because the contact is 'created' by the worker who accepts the task
     createdBy: workerSid as HrmContact['createdBy'],
-    timeOfContact: new Date().toISOString(),
+    timeOfContact: timeOfContactDate.toISOString(),
     number: identifier,
   };
   console.debug('Creating HRM contact with timeOfContact:', newContact.timeOfContact);
@@ -237,7 +239,10 @@ export const handleEvent = async (
   const updatedAttributes = {
     ...JSON.parse(currentTaskAttributes),
     contactId: id.toString(),
-    outboundVoiceTaskStartMillis: isOutboundVoiceTask ? new Date().getTime() : null,
+    outboundVoiceTaskStartMillis: isOutboundVoiceTask
+      ? timeOfContactDate.getTime()
+      : null,
+    timeOfContactMillis: timeOfContactDate.getTime(),
   };
   await taskContext.update({ attributes: JSON.stringify(updatedAttributes) });
 };

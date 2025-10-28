@@ -17,6 +17,7 @@
 import { isNullOrUndefined } from './checkers';
 import { Contact, isOfflineContact } from '../types/types';
 import { ContactMetadata } from '../states/contacts/types';
+import { getAseloFeatureFlags } from '../hrmConfig';
 
 const fillEndMillis = (metadata: ContactMetadata): ContactMetadata => ({
   ...metadata,
