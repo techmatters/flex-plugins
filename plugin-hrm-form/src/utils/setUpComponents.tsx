@@ -192,12 +192,10 @@ export const setUpAddButtons = (featureFlags: FeatureFlags) => {
   // setup for offline contact tasks
   setUpOfflineContact();
 
-  // add UI
-  if (featureFlags.enable_manual_pulling)
-    Flex.TaskList.Content.add(addButtonsUI(featureFlags), {
-      sortOrder: Infinity,
-      align: 'start',
-    });
+  Flex.TaskList.Content.add(addButtonsUI(featureFlags), {
+    sortOrder: Infinity,
+    align: 'start',
+  });
 
   // replace UI for task information
   Flex.TaskCanvas.Content.replace(<TaskCanvasOverride key="TaskCanvas-empty" />, {
