@@ -31,7 +31,7 @@ ${
       }
     },
     {
-      "name": "send_to_vc_queue",
+      "name": "send_to_queue_vc",
       "type": "send-to-flex",
       "transitions": [
         {
@@ -73,7 +73,7 @@ ${
           "y": 730
         },
         "loop": 1,
-        "say": "${flow_vars.play_message_vc_voice_welcome}",
+        "say": "${flow_vars.gather_input_vc_voice_language}",
         "language": "en-US"
       }
     },
@@ -118,14 +118,14 @@ ${
       "properties": {
         "voice": "Polly.Danielle-Generative",
         "number_of_digits": 1,
-        "speech_timeout": "5",
+        "speech_timeout": "20",
         "offset": {
           "x": -190,
           "y": 1000
         },
         "loop": 1,
         "finish_on_key": "#",
-        "say": "${flow_vars.play_message_vc_voice_language}",
+        "say": "${flow_vars.gather_input_vc_voice_language}",
         "language": "en-US",
         "stop_gather": false,
         "gather_language": "en",
@@ -251,7 +251,7 @@ ${
       "type": "set-variables",
       "transitions": [
         {
-          "next": "send_to_vc_queue",
+          "next": "send_to_queue_vc",
           "event": "next"
         }
       ],
@@ -274,7 +274,7 @@ ${
       "type": "set-variables",
       "transitions": [
         {
-          "next": "send_to_vc_queue",
+          "next": "send_to_queue_vc",
           "event": "next"
         }
       ],

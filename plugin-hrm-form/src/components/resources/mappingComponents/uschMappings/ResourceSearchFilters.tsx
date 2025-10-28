@@ -21,7 +21,7 @@ import { Template } from '@twilio/flex-ui';
 import { RootState } from '../../../../states';
 import { Column, FormLabel, FormOption, FormSelect, FormSelectWrapper, Row } from '../../../../styles';
 import { ResourcesSearchFormFilterHeader, ResourcesSearchFormSettingBox } from '../../styles';
-import { updateSearchFormAction } from '../../../../states/resources/search';
+import { selectFilterSelections, updateSearchFormAction } from '../../../../states/resources/search';
 import { FilterOption } from '../../../../states/resources/types';
 import { namespace, referrableResourcesBase } from '../../../../states/storeNamespaces';
 import {
@@ -50,7 +50,7 @@ const ResourceSearchFilters: React.FC<{}> = () => {
     (state: RootState) => state[namespace][referrableResourcesBase].search,
   );
   const { country, province, city } = (filterOptions || {}) as USCHFilterOptions;
-  const filterSelections = (parameters.filterSelections || {}) as USCHFilterSelections;
+  const filterSelections: USCHFilterSelections = useSelector(selectFilterSelections);
 
   useEffect(() => {
     const loadReferenceLocations = (referenceLocations: ReferenceLocationState) => {
@@ -92,7 +92,7 @@ const ResourceSearchFilters: React.FC<{}> = () => {
   const locationDropdown = (locationFilterName: LocationFilterName, optionList: FilterOption[]) => {
     const capitalizedLocationFilterName = locationFilterName.charAt(0).toUpperCase() + locationFilterName.slice(1);
     return (
-      <FormSelectWrapper style={{ width: '100%' }}>
+      <FormSelectWrapper style={{ width: '100%', opacity: (optionList?.length || 0) > 1 ? 1 : 0.2 }}>
         <FormSelect
           id={`location-${locationFilterName}`}
           data-testid={`Resources-Search-Location-${capitalizedLocationFilterName}`}

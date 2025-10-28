@@ -35,7 +35,7 @@ import {
   SearchSettings,
   updateSearchFormAction,
 } from '../../../states/resources/search';
-import { initialFilterOptions } from '../../../components/resources/mappingComponents/khpMappings/filterSelectionState';
+import { initialFilterOptions } from '../../../states/resources/filterSelectionState/khp';
 
 jest.mock('../../../services/ResourceService');
 jest.mock('../../../hrmConfig');

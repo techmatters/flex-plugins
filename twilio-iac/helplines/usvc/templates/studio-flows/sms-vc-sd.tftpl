@@ -31,7 +31,7 @@ ${
       }
     },
     {
-      "name": "sen_to_vc_queue",
+      "name": "send_to_queue_vc",
       "type": "send-to-flex",
       "transitions": [
         {
@@ -164,7 +164,7 @@ ${
       "type": "split-based-on",
       "transitions": [
         {
-          "next": "send_message_vc_sms_prequeue",
+          "next": "send_message_vc_sms_no_service",
           "event": "noMatch"
         },
         {
@@ -209,11 +209,11 @@ ${
       "type": "send-message",
       "transitions": [
         {
-          "next": "sen_to_vc_queue",
+          "next": "send_to_queue_vc",
           "event": "sent"
         },
         {
-          "next": "sen_to_vc_queue",
+          "next": "send_to_queue_vc",
           "event": "failed"
         }
       ],
