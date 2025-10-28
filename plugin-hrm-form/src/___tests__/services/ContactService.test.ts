@@ -320,7 +320,7 @@ describe('finalizeContact() (externalRecording)', () => {
 });
 
 test('updateContactInHrm - calls a PATCH HRM endpoint using the supplied contact ID in the route', async () => {
-  const responseBody = { id: 1234, rawJson: { caseInformation: {}, categories: {} } };
+  const responseBody = { id: '1234', rawJson: { caseInformation: {}, categories: {} } };
   const mockedFetch = jest.spyOn(global, 'fetch').mockResolvedValue(<Response>(<unknown>{
     ok: true,
     json: () => Promise.resolve(responseBody),

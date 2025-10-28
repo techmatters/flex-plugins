@@ -121,13 +121,10 @@ export const updateContactInHrmAsyncAction = createAsyncAction(
   UPDATE_CONTACT_ACTION,
   async (
     previousContact: Contact,
-    { conversationDuration, ...body }: ContactDraftChanges,
+    body: ContactDraftChanges,
     reference?: string,
   ): Promise<FulfilledUpdatedContactActionPayload> => {
-    const contact = await updateContactInHrm(
-      previousContact.id,
-      getAseloFeatureFlags().use_twilio_lambda_for_conversation_duration ? body : { ...body, conversationDuration },
-    );
+    const contact = await updateContactInHrm(previousContact.id, body);
     return {
       contact,
       previousContact,
