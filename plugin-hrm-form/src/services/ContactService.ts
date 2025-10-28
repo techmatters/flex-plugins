@@ -58,7 +58,7 @@ const convertApiContactToFlexContact = (contact: Contact): Contact =>
  * @param contact - original changes
  */
 const convertFlexContactToUpdateApiContact = (contact: ContactDraftChanges): ContactDraftChanges => {
-  const { conversationDuration, ...contactWithoutConversationDuration } = contact;
+  const { conversationDuration, ...contactWithoutConversationDuration } = contact ?? {};
   return getAseloFeatureFlags().use_twilio_lambda_for_conversation_duration
     ? contactWithoutConversationDuration
     : contact;
