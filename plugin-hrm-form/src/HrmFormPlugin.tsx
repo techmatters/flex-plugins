@@ -36,6 +36,7 @@ import { setUpReferrableResources } from './components/resources/setUpReferrable
 import QueuesView from './components/queuesView';
 import TeamsView from './components/teamsView';
 import { setUpCounselorToolkits } from './components/toolkits/setUpCounselorToolkits';
+import { setUpResourceMap } from './components/resourceMap/setUpResourceMap';
 import { setUpTransferComponents } from './components/transfer/setUpTransferComponents';
 import { subscribeNewMessageAlertOnPluginInit } from './notifications/newMessage';
 import { subscribeReservedTaskAlert } from './notifications/reservedTask';
@@ -114,6 +115,7 @@ const setUpComponents = (featureFlags: FeatureFlags, setupObject: ReturnType<typ
   Components.setUpStandaloneSearch();
   setUpReferrableResources();
   setUpCounselorToolkits();
+  setUpResourceMap();
 
   if (featureFlags.enable_emoji_picker) Components.setupEmojiPicker();
   if (featureFlags.enable_canned_responses) Components.setupCannedResponses();
