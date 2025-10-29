@@ -21,7 +21,9 @@
             "enable_voice_recordings": false,
             "enable_lambda_post_survey_processing": true,
             "enable_lex_v2": true,
-            "enable_hang_up_by_hrm_saving": true
+            "enable_hang_up_by_hrm_saving": true,
+            "use_twilio_lambda_for_conference_functions": true,
+            "use_twilio_lambda_for_conversation_duration": true
         },
         "contact_save_frequency": "onTabChange",
         "multipleOfficeSupport": true,
