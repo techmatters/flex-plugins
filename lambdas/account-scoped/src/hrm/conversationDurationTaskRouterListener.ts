@@ -82,7 +82,7 @@ export const handleSetDurationEvent = async (
     }
   } else {
     console.debug(
-      `timeOfContactMillis and contactId need to be set on task to set hangUpBy on contact. Task: ${taskSid}, Contact: ${contactId}, timeOfContactMillis: ${timeOfContactMillisString}`,
+      `timeOfContactMillis and contactId need to be set on task to set conversationDuration on contact. Task: ${taskSid}, Contact: ${contactId}, timeOfContactMillis: ${timeOfContactMillisString}`,
     );
   }
 };
