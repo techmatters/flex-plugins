@@ -28,9 +28,10 @@ import { showRemovedFromCaseBannerAction } from '../../states/case/caseBanners';
 import { RootState } from '../../states';
 import { BannerAction, BannerContainer, CaseLink, BannerText } from '../../styles/banners';
 import selectContactStateByContactId from '../../states/contacts/selectContactStateByContactId';
-import { getInitializedCan, PermissionActions } from '../../permissions';
+import { getInitializedCan } from '../../permissions/rules';
 import { getHrmConfig } from '../../hrmConfig';
 import { useCase } from '../../states/case/hooks/useCase';
+import { PermissionActions } from '../../permissions/actions';
 
 type OwnProps = {
   taskId: string;

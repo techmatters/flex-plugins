@@ -1,7 +1,9 @@
 data "aws_ssm_parameter" "secrets" {
   name = "/terraform/twilio-iac/${var.environment}/${var.short_helpline}/secrets.json"
 }
-
+data "aws_ssm_parameter" "webhook_url_studio_errors" {
+  name = "/${lower(var.environment)}/slack/webhook_url_studio_errors"
+}
 data "aws_caller_identity" "current" {}
 
 locals {
@@ -12,6 +14,8 @@ locals {
   serverless_service_sid                = local.provision_config.serverless_service_sid
   serverless_environment_production_sid = local.provision_config.serverless_environment_production_sid
   stage = "system-down"
+  webhook_url_studio_errors = nonsensitive(data.aws_ssm_parameter.webhook_url_studio_errors.value)
+  debug_templatefile = "/app/twilio-iac/helplines/templates/studio-flows/debug-studio-subflow.tftpl"
 }
 
 data "terraform_remote_state" "provision" {
@@ -47,6 +51,24 @@ resource "twilio_studio_flows_v2" "system_down_studio_subflow" {
       serverless_environment_sid                 = local.serverless_environment_production_sid,
       serverless_url                             = local.serverless_url,
       system_down_flow_vars                      = var.system_down_flow_vars
+    }
+  )
+}
+
+
+resource "twilio_studio_flows_v2" "debug_studio_subflow" {
+  friendly_name = "Debug Studio SubFlow"
+  status        = "published"
+  definition = templatefile(
+    local.debug_templatefile,
+    {
+      flow_description                           = "Debug SubFlow",
+      helpline                                   = var.helpline,
+      short_helpline                             = var.short_helpline,
+      short_environment                          = var.short_environment,
+      environment                                = var.environment,
+      debug_mode                                 = var.debug_mode,
+      webhook_url_studio_errors                  = local.webhook_url_studio_errors
     }
   )
 }

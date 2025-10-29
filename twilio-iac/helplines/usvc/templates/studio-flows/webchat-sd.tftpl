@@ -1,0 +1,298 @@
+${
+  jsonencode({
+  "description": "${flow_description}",
+  "states": [
+    {
+      "name": "Trigger",
+      "type": "trigger",
+      "transitions": [
+        {
+          "next": "run_subflow_system_down",
+          "event": "incomingMessage"
+        },
+        {
+          "event": "incomingCall"
+        },
+        {
+          "event": "incomingConversationMessage"
+        },
+        {
+          "event": "incomingRequest"
+        },
+        {
+          "event": "incomingParent"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": -160,
+          "y": -460
+        }
+      }
+    },
+    {
+      "name": "send_to_queue",
+      "type": "send-to-flex",
+      "transitions": [
+        {
+          "event": "callComplete",
+          "next": "run_subflow_debug"
+        },
+        {
+          "next": "run_subflow_debug",
+          "event": "failedToEnqueue"
+        },
+        {
+          "event": "callFailure",
+          "next": "run_subflow_debug"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": -50,
+          "y": 1370
+        },
+        "workflow": "${workflow_sids.master}",
+        "channel": "${task_channel_sids.chat}",
+        "attributes": "${channel_attributes.default}"
+      }
+    },
+    {
+      "name": "run_subflow_system_down",
+      "type": "run-subflow",
+      "transitions": [
+        {
+          "next": "split_service",
+          "event": "completed"
+        },
+        {
+          "event": "failed",
+          "next": "split_service"
+        }
+      ],
+      "properties": {
+        "flow_sid": "${system_down_studio_subflow_sid}",
+        "flow_revision": "LatestPublished",
+        "offset": {
+          "x": 90,
+          "y": -140
+        }
+      }
+    },
+    {
+      "name": "split_service",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "set_var_vc_service",
+          "event": "noMatch"
+        },
+        {
+          "next": "set_var_vc_service",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value starts_with vc_url",
+              "arguments": [
+                "{{trigger.message.ChannelAttributes.pre_engagement_data.location}}"
+              ],
+              "type": "starts_with",
+              "value": "${flow_vars.vc_url}"
+            }
+          ]
+        },
+        {
+          "next": "set_var_dcvh_service",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value starts_with dcvh_url",
+              "arguments": [
+                "{{trigger.message.ChannelAttributes.pre_engagement_data.location}}"
+              ],
+              "type": "starts_with",
+              "value": "${flow_vars.dcvh_url}"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{trigger.message.ChannelAttributes.pre_engagement_data.location}}",
+        "offset": {
+          "x": -150,
+          "y": 450
+        }
+      }
+    },
+    {
+      "name": "set_var_vc_service",
+      "type": "set-variables",
+      "transitions": [
+        {
+          "next": "send_message_vc_webchat_prequeue",
+          "event": "next"
+        }
+      ],
+      "properties": {
+        "variables": [
+          {
+            "type": "string",
+            "value": "VC",
+            "key": "service"
+          },
+          {
+            "type": "string",
+            "value": "vc",
+            "key": "language"
+          }
+        ],
+        "offset": {
+          "x": -220,
+          "y": 770
+        }
+      }
+    },
+    {
+      "name": "set_var_dcvh_service",
+      "type": "set-variables",
+      "transitions": [
+        {
+          "next": "send_message_dcvh_webchat_prequeue",
+          "event": "next"
+        }
+      ],
+      "properties": {
+        "variables": [
+          {
+            "type": "string",
+            "value": "DCVH",
+            "key": "service"
+          },
+          {
+            "type": "string",
+            "value": "dcvh",
+            "key": "language"
+          }
+        ],
+        "offset": {
+          "x": 190,
+          "y": 770
+        }
+      }
+    },
+    {
+      "name": "send_message_vc_webchat_prequeue",
+      "type": "send-message",
+      "transitions": [
+        {
+          "next": "send_to_queue",
+          "event": "sent"
+        },
+        {
+          "next": "send_to_queue",
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": -280,
+          "y": 1060
+        },
+        "service": "{{trigger.message.InstanceSid}}",
+        "channel": "{{trigger.message.ChannelSid}}",
+        "from": "Bot",
+        "message_type": "custom",
+        "to": "{{contact.channel.address}}",
+        "body": "${flow_vars.send_message_vc_webchat_prequeue}"
+      }
+    },
+    {
+      "name": "send_message_dcvh_webchat_prequeue",
+      "type": "send-message",
+      "transitions": [
+        {
+          "next": "send_to_queue",
+          "event": "sent"
+        },
+        {
+          "next": "send_to_queue",
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 220,
+          "y": 1070
+        },
+        "service": "{{trigger.message.InstanceSid}}",
+        "channel": "{{trigger.message.ChannelSid}}",
+        "from": "Bot",
+        "message_type": "custom",
+        "to": "{{contact.channel.address}}",
+        "body": "${flow_vars.send_message_dcvh_webchat_prequeue}"
+      }
+    },
+    {
+      "name": "run_subflow_debug",
+      "type": "run-subflow",
+      "transitions": [
+        {
+          "event": "completed"
+        },
+        {
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "flow_sid": "${debug_studio_subflow_sid}",
+        "flow_revision": "LatestPublished",
+        "offset": {
+          "x": 700,
+          "y": 1650
+        },
+        "parameters": [
+          {
+            "type": "json_object",
+            "value": "{{flow}}",
+            "key": "flow"
+          },
+          {
+            "type": "string",
+            "value": "widget_failures",
+            "key": "debug_mode"
+          },
+          {
+            "type": "json_object",
+            "value": "{{widgets}}",
+            "key": "widgets"
+          },
+          {
+            "type": "json_object",
+            "value": "{{trigger}}",
+            "key": "trigger"
+          },
+          {
+            "type": "string",
+            "value": "{{flow.flow_sid}}",
+            "key": "flow_sid"
+          },
+          {
+            "type": "string",
+            "value": "{{flow.sid}}",
+            "key": "execution_sid"
+          },
+          {
+            "type": "string",
+            "value": "${channel_attributes.default}",
+            "key": "task_attributes"
+          }
+        ]
+      }
+    }
+  ],
+  "initial_state": "Trigger",
+  "flags": {
+    "allow_concurrent_calls": true
+  }
+})
+  }

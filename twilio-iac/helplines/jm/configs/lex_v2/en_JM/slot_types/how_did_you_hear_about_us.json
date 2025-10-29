@@ -7,7 +7,7 @@
             },
             "synonyms": [
                 {
-                    "value": "4"
+                    "value": "5"
                 },
                 {
                     "value": "from the news"
@@ -16,7 +16,7 @@
                     "value": "news"
                 },
                 {
-                    "value": "4."
+                    "value": "5."
                 },
                 {
                     "value": "media"
@@ -63,7 +63,7 @@
                     "value": "instagram"
                 },
                 {
-                    "value": "2."
+                    "value": "3."
                 },
                 {
                     "value": "from fb"
@@ -87,7 +87,7 @@
                     "value": "from ig"
                 },
                 {
-                    "value": "2"
+                    "value": "3"
                 },
                 {
                     "value": "online"
@@ -102,11 +102,39 @@
         },
         {
             "sampleValue": {
+                "value": "Search Engine"
+            },
+            "synonyms": [
+                {
+                    "value": "search"
+                },
+                {
+                    "value": "google"
+                },
+                {
+                    "value": "yahoo"
+                },
+                {
+                    "value": "2."
+                },
+                {
+                    "value": "seach online"
+                },
+                {
+                    "value": "web"
+                },
+                {
+                    "value": "2"
+                }
+            ]
+        },
+        {
+            "sampleValue": {
                 "value": "SMS/Text Message"
             },
             "synonyms": [
                 {
-                    "value": "3."
+                    "value": "4."
                 },
                 {
                     "value": "text"
@@ -121,7 +149,7 @@
                     "value": "i got a text"
                 },
                 {
-                    "value": "3"
+                    "value": "4"
                 }
             ]
         },
@@ -165,13 +193,13 @@
                     "value": "school"
                 },
                 {
-                    "value": "5"
+                    "value": "6"
                 },
                 {
                     "value": "friend"
                 },
                 {
-                    "value": "5."
+                    "value": "6."
                 },
                 {
                     "value": "my friend"

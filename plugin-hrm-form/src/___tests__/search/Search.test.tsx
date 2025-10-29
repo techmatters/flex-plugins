@@ -24,8 +24,7 @@ import { StorelessThemeProvider } from '@twilio/flex-ui';
 
 import { mockLocalFetchDefinitions } from '../mockFetchDefinitions';
 import { mockGetDefinitionsResponse } from '../mockGetConfig';
-import { fetchRules } from '../../permissions/fetchRules';
-import { getInitializedCan, validateAndSetPermissionRules } from '../../permissions';
+import { getInitializedCan, validateAndSetPermissionRules } from '../../permissions/rules';
 import Search from '../../components/search';
 import { getDefinitionVersions } from '../../hrmConfig';
 import { DetailsContext } from '../../states/contacts/contactDetails';
@@ -37,6 +36,8 @@ import { VALID_EMPTY_CONTACT, VALID_EMPTY_METADATA } from '../testContacts';
 import { DetailedSearchContactsResult, newSearchFormEntry, SearchFormValues } from '../../states/search/types';
 import { AppRoutes } from '../../states/routing/types';
 import { ContactState, ExistingContactsState } from '../../states/contacts/existingContacts';
+import { fetchPermissionRules } from '../../services/PermissionsService';
+import mockRules from '../fixtures/mockPermissionRules';
 
 const { mockFetchImplementation, mockReset, buildBaseURL } = mockLocalFetchDefinitions();
 
@@ -65,19 +66,17 @@ jest.mock('@twilio/flex-ui', () => ({
   },
 }));
 
-const e2eRules = require('../../permissions/e2e.json');
-
-jest.mock('../../permissions/fetchRules', () => {
+jest.mock('../../services/PermissionsService', () => {
   return {
-    fetchRules: jest.fn(() => {
+    fetchPermissionRules: jest.fn(() => {
       throw new Error('fetchRules not mocked!');
     }),
   };
 });
 
 beforeEach(async () => {
-  const fetchRulesSpy = fetchRules as jest.MockedFunction<typeof fetchRules>;
-  fetchRulesSpy.mockResolvedValueOnce(e2eRules);
+  const fetchPermissionRulesSpy = fetchPermissionRules as jest.MockedFunction<typeof fetchPermissionRules>;
+  fetchPermissionRulesSpy.mockResolvedValueOnce(mockRules);
   await validateAndSetPermissionRules();
   getInitializedCan();
 });

@@ -13,21 +13,25 @@ locals {
     task_language              = "en-US"
     enable_post_survey         = false
     enable_external_recordings = false
-    permission_config          = "ncvc"
+    permission_config          = "usvc"
     enable_lex_v2              = false
 
     channel_attributes = {
-      webchat               = "/app/twilio-iac/helplines/templates/channel-attributes/webchat.tftpl",
-      voice                 = "/app/twilio-iac/helplines/templates/channel-attributes/voice.tftpl",
-      sms_conversations     = "/app/twilio-iac/helplines/templates/channel-attributes/default-conversations.tftpl",
-      default               = "/app/twilio-iac/helplines/templates/channel-attributes/default.tftpl",
-      default-conversations = "/app/twilio-iac/helplines/templates/channel-attributes/default-conversations.tftpl"
+      webchat                = "/app/twilio-iac/helplines/usvc/templates/channel-attributes/webchat.tftpl",
+      voice_dcvh             = "/app/twilio-iac/helplines/usvc/templates/channel-attributes/voice_dcvh.tftpl",
+      voice_vc               = "/app/twilio-iac/helplines/usvc/templates/channel-attributes/voice_vc.tftpl",
+      sms_vc-conversations   = "/app/twilio-iac/helplines/usvc/templates/channel-attributes/sms_vc-conversations.tftpl",
+      sms_dcvh-conversations = "/app/twilio-iac/helplines/usvc/templates/channel-attributes/sms_dcvh-conversations.tftpl",
+      sms_vc_toll_free-conversations   = "/app/twilio-iac/helplines/usvc/templates/channel-attributes/sms_vc-conversations.tftpl",
+      sms_dcvh_toll_free-conversations = "/app/twilio-iac/helplines/usvc/templates/channel-attributes/sms_dcvh-conversations.tftpl",
+      default                = "/app/twilio-iac/helplines/templates/channel-attributes/default.tftpl",
+      default-conversations  = "/app/twilio-iac/helplines/templates/channel-attributes/default-conversations.tftpl"
     }
     workflows = {
       master : {
         friendly_name            = "Master Workflow"
-        templatefile             = "/app/twilio-iac/helplines/templates/workflows/master.tftpl"
-        task_reservation_timeout = 30
+        templatefile             = "/app/twilio-iac/helplines/usvc/templates/workflows/master.tftpl"
+        task_reservation_timeout = 240
       },
       //NOTE: MAKE SURE TO ADD THIS IF THE ACCOUNT USES A CONVERSATION CHANNEL
       queue_transfers : {
@@ -40,17 +44,25 @@ locals {
       }
     }
     task_queues = {
-      master : {
-        "target_workers" = "1==1",
-        "friendly_name"  = "VictimConnect"
+      vc : {
+        "target_workers" = "routing.skills HAS 'VC'",
+        "friendly_name"  = "VC English"
       },
       dcvh : {
-        "target_workers" = "1==1",
-        "friendly_name"  = "DC Victim Hotline"
+        "target_workers" = "routing.skills HAS 'DCVH'",
+        "friendly_name"  = "DCVH English"
+      },
+      vc_sp : {
+        "target_workers" = "routing.skills HAS 'VC' AND routing.skills HAS 'Spanish'",
+        "friendly_name"  = "VC Spanish"
+      },
+      dcvh_sp : {
+        "target_workers" = "routing.skills HAS 'DCVH' AND routing.skills HAS 'Spanish'",
+        "friendly_name"  = "DCVH Spanish"
       },
       dc_dispatch : {
-        "target_workers" = "1==1",
-        "friendly_name"  = "DC Dispatch"
+        "target_workers" = "routing.skills HAS 'DCVH'",
+        "friendly_name"  = "DCVH Dispatch"
       },
       survey : {
         "target_workers" = "1==0",
@@ -63,6 +75,30 @@ locals {
     }
 
     activities = {
+      demographics : {
+        friendly_name = "Demographics"
+        available     = false
+      },
+      meal_break : {
+        friendly_name = "Meal Break"
+        available     = false
+      },
+      meeting : {
+        friendly_name = "Meeting"
+        available     = false
+      },
+      refused : {
+        friendly_name = "Refused"
+        available     = false
+      },
+      supervision : {
+        friendly_name = "Supervision"
+        available     = false
+      },
+      training : {
+        friendly_name = "Training"
+        available     = false
+      }
     }
 
     lex_bot_languages = {

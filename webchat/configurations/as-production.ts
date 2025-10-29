@@ -19,10 +19,12 @@ import { config as asStaging } from '../configurations/as-staging';
 
 const accountSid = 'AC4858840776b1f98a1367c9c6a401bd2c';
 const flexFlowSid = 'FO84c7ba10d1a11ade93c787c91faeaa74';
+const enableRecaptcha = true;
 
 export const config: Configuration = {
   ...asStaging,
   accountSid,
   flexFlowSid,
+  enableRecaptcha,
   twilioServicesUrl: new URL(`https://hrm-production.tl.techmatters.org/lambda/twilio/account-scoped/${accountSid}`),
 };

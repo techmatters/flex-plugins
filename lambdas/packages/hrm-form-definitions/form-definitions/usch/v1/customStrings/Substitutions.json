@@ -2,11 +2,13 @@
   "en": {
     "CallSummary-CallerName": "Help Seeker Name",
     "CallSummary-Counselor": "Counselor: ",
-    "CallType-child": "Victim calling about self",
+    "CallType-child": "Child calling about self",
     "CallType-caller": "Other",
     "ConnectDialog-Child": "Copy victim information from this record to new contact?",
     "ConnectDialog-Caller": "Copy help seeker information from this record to new contact?",
     "GeneralizedSearchForm-Counselor": "Counselor",
+    "StandaloneSearch-SideNav": "Case Search",
+    "SearchContactsAndCases-Title": "Case Search",
     "SearchContactsAndCases-TitleExistingCase": "Search for External Notifications",
     "SearchForm-Counselor": "Counselor",
     "SearchResultsIndex-Cases": "External Notifications",
@@ -115,6 +117,11 @@
     "Case-SectionList-NoItems/enFollowUp": "EN Follow Up",
     "CasePrint-TabularSection-Header/enFollowUp": "EN Follow Up",
     "abusive": "Outside of Scope",
-    "Transfer-TransferButton": "Take Over"
+    "Transfer-TransferButton": "Take Over",
+
+    "Profile-Title": "Client Record",
+    "Profile-EditHeader": "Edit Record",
+    "SideNavProfileList": "Client Records",
+    "ProfileList-Summary-None": "- No record summary -"
   }
 }

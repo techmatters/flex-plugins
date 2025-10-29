@@ -1,0 +1,425 @@
+${
+  jsonencode({
+  "description": "${flow_description}",
+  "states": [
+    {
+      "name": "Trigger",
+      "type": "trigger",
+      "transitions": [
+        {
+          "event": "incomingMessage"
+        },
+        {
+          "next": "run_subflow_system_down",
+          "event": "incomingCall"
+        },
+        {
+          "event": "incomingConversationMessage"
+        },
+        {
+          "event": "incomingRequest"
+        },
+        {
+          "event": "incomingParent"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 0,
+          "y": -10
+        }
+      }
+    },
+    {
+      "name": "send_to_queue_dcvh",
+      "type": "send-to-flex",
+      "transitions": [
+        {
+          "next": "run_subflow_debug",
+          "event": "callComplete"
+        },
+        {
+          "next": "run_subflow_debug",
+          "event": "failedToEnqueue"
+        },
+        {
+          "next": "run_subflow_debug",
+          "event": "callFailure"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": -380,
+          "y": 2240
+        },
+        "attributes": "${channel_attributes.default}",
+        "workflow": "${workflow_sids.master}",
+        "channel": "${task_channel_sids.voice}"
+      }
+    },
+    {
+      "name": "play_message_dcvh_voice_welcome",
+      "type": "say-play",
+      "transitions": [
+        {
+          "next": "gather_input_dcvh_voice_language",
+          "event": "audioComplete"
+        }
+      ],
+      "properties": {
+        "voice": "Polly.Danielle-Generative",
+        "offset": {
+          "x": 50,
+          "y": 730
+        },
+        "loop": 1,
+        "say": "${flow_vars.play_message_dcvh_voice_welcome}",
+        "language": "en-US"
+      }
+    },
+    {
+      "name": "run_subflow_system_down",
+      "type": "run-subflow",
+      "transitions": [
+        {
+          "next": "set_var_service_start_form",
+          "event": "completed"
+        },
+        {
+          "next": "set_var_service_start_form",
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "flow_sid": "${system_down_studio_subflow_sid}",
+        "flow_revision": "LatestPublished",
+        "offset": {
+          "x": 230,
+          "y": 240
+        }
+      }
+    },
+    {
+      "name": "gather_input_dcvh_voice_language",
+      "type": "gather-input-on-call",
+      "transitions": [
+        {
+          "next": "split_language",
+          "event": "keypress"
+        },
+        {
+          "next": "gather_input_dcvh_voice_language",
+          "event": "speech"
+        },
+        {
+          "event": "timeout"
+        }
+      ],
+      "properties": {
+        "voice": "Polly.Danielle-Generative",
+        "number_of_digits": 1,
+        "speech_timeout": "20",
+        "offset": {
+          "x": -190,
+          "y": 1000
+        },
+        "loop": 1,
+        "finish_on_key": "#",
+        "say": "${flow_vars.gather_input_dcvh_voice_language}",
+        "language": "en-US",
+        "stop_gather": false,
+        "gather_language": "en",
+        "speech_model": "default",
+        "timeout": 5
+      }
+    },
+    {
+      "name": "split_language",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "gather_input_dcvh_voice_language",
+          "event": "noMatch"
+        },
+        {
+          "next": "play_message_dcvh_voice_en_prequeue",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to 1",
+              "arguments": [
+                "{{widgets.gather_input_dcvh_voice_language.Digits}}"
+              ],
+              "type": "equal_to",
+              "value": "1"
+            }
+          ]
+        },
+        {
+          "next": "play_message_dcvh_voice_sp_prequeue",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to 2",
+              "arguments": [
+                "{{widgets.gather_input_dcvh_voice_language.Digits}}"
+              ],
+              "type": "equal_to",
+              "value": "2"
+            }
+          ]
+        },
+        {
+          "next": "play_message_dcvh_voice_dispatch_prequeue",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to 3",
+              "arguments": [
+                "{{widgets.gather_input_dcvh_voice_language.Digits}}"
+              ],
+              "type": "equal_to",
+              "value": "3"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{widgets.gather_input_dcvh_voice_language.Digits}}",
+        "offset": {
+          "x": -350,
+          "y": 1230
+        }
+      }
+    },
+    {
+      "name": "play_message_dcvh_voice_en_prequeue",
+      "type": "say-play",
+      "transitions": [
+        {
+          "next": "set_var_english",
+          "event": "audioComplete"
+        }
+      ],
+      "properties": {
+        "voice": "Polly.Danielle-Generative",
+        "offset": {
+          "x": -610,
+          "y": 1550
+        },
+        "loop": 1,
+        "say": "${flow_vars.play_message_dcvh_voice_en_prequeue}",
+        "language": "en-US"
+      }
+    },
+    {
+      "name": "play_message_dcvh_voice_sp_prequeue",
+      "type": "say-play",
+      "transitions": [
+        {
+          "next": "set_var_spanish",
+          "event": "audioComplete"
+        }
+      ],
+      "properties": {
+        "voice": "Polly.Lucia-Generative",
+        "offset": {
+          "x": -110,
+          "y": 1540
+        },
+        "loop": 1,
+        "say": "${flow_vars.play_message_dcvh_voice_sp_prequeue}",
+        "language": "es-ES"
+      }
+    },
+    {
+      "name": "set_var_service_start_form",
+      "type": "set-variables",
+      "transitions": [
+        {
+          "next": "play_message_dcvh_voice_welcome",
+          "event": "next"
+        }
+      ],
+      "properties": {
+        "variables": [
+          {
+            "type": "string",
+            "value": "DCVH",
+            "key": "service"
+          },
+          {
+            "type": "string",
+            "value": "HotlineInteractions",
+            "key": "startForm"
+          }
+        ],
+        "offset": {
+          "x": -140,
+          "y": 510
+        }
+      }
+    },
+    {
+      "name": "set_var_english",
+      "type": "set-variables",
+      "transitions": [
+        {
+          "next": "send_to_queue_dcvh",
+          "event": "next"
+        }
+      ],
+      "properties": {
+        "variables": [
+          {
+            "type": "string",
+            "value": "English",
+            "key": "serviceLanguage"
+          }
+        ],
+        "offset": {
+          "x": -650,
+          "y": 1860
+        }
+      }
+    },
+    {
+      "name": "set_var_spanish",
+      "type": "set-variables",
+      "transitions": [
+        {
+          "next": "send_to_queue_dcvh",
+          "event": "next"
+        }
+      ],
+      "properties": {
+        "variables": [
+          {
+            "type": "string",
+            "value": "Spanish",
+            "key": "serviceLanguage"
+          }
+        ],
+        "offset": {
+          "x": -170,
+          "y": 1860
+        }
+      }
+    },
+    {
+      "name": "play_message_dcvh_voice_dispatch_prequeue",
+      "type": "say-play",
+      "transitions": [
+        {
+          "next": "set_var_start_form_dispatch",
+          "event": "audioComplete"
+        }
+      ],
+      "properties": {
+        "voice": "Polly.Danielle-Generative",
+        "offset": {
+          "x": 350,
+          "y": 1540
+        },
+        "loop": 1,
+        "say": "${flow_vars.play_message_dcvh_voice_dispatch_prequeue}",
+        "language": "en-US"
+      }
+    },
+    {
+      "name": "set_var_start_form_dispatch",
+      "type": "set-variables",
+      "transitions": [
+        {
+          "next": "send_to_queue_dcvh",
+          "event": "next"
+        }
+      ],
+      "properties": {
+        "variables": [
+          {
+            "type": "string",
+            "value": "Disptach",
+            "key": "startForm"
+          },
+          {
+            "type": "string",
+            "value": "English",
+            "key": "serviceLanguage"
+          },
+          {
+            "type": "string",
+            "value": "Dispatch",
+            "key": "service"
+          }
+        ],
+        "offset": {
+          "x": 400,
+          "y": 1830
+        }
+      }
+    },
+    {
+      "name": "run_subflow_debug",
+      "type": "run-subflow",
+      "transitions": [
+        {
+          "event": "completed"
+        },
+        {
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "flow_sid": "${debug_studio_subflow_sid}",
+        "flow_revision": "LatestPublished",
+        "offset": {
+          "x": 700,
+          "y": 1650
+        },
+        "parameters": [
+          {
+            "type": "json_object",
+            "value": "{{flow}}",
+            "key": "flow"
+          },
+          {
+            "type": "string",
+            "value": "widget_failures",
+            "key": "debug_mode"
+          },
+          {
+            "type": "json_object",
+            "value": "{{widgets}}",
+            "key": "widgets"
+          },
+          {
+            "type": "json_object",
+            "value": "{{trigger}}",
+            "key": "trigger"
+          },
+          {
+            "type": "string",
+            "value": "{{flow.flow_sid}}",
+            "key": "flow_sid"
+          },
+          {
+            "type": "string",
+            "value": "{{flow.sid}}",
+            "key": "execution_sid"
+          },
+          {
+            "type": "string",
+            "value": "${channel_attributes.default}",
+            "key": "task_attributes"
+          }
+        ]
+      }
+    }
+  ],
+  "initial_state": "Trigger",
+  "flags": {
+    "allow_concurrent_calls": true
+  }
+})
+  }

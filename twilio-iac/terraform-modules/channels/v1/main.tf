@@ -63,6 +63,7 @@ resource "twilio_studio_flows_v2" "channel_studio_flow" {
       short_environment                          = var.short_environment,
       environment                                = var.environment,
       system_down_studio_subflow_sid             = var.system_down_studio_subflow_sid
+      debug_studio_subflow_sid                   = var.debug_studio_subflow_sid
       channel_attributes = {
         default : templatefile(
           lookup(

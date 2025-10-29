@@ -31,7 +31,7 @@ import { RootState } from '../../states';
 import { RecursivePartial } from '../RecursivePartial';
 import { VALID_EMPTY_METADATA } from '../testContacts';
 
-jest.mock('../../permissions', () => ({
+jest.mock('../../permissions/rules', () => ({
   getInitializedCan: jest.fn(() => () => true),
   PermissionActions: {},
 }));

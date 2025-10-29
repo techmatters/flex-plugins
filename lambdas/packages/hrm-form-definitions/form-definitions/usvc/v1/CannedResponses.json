@@ -1,49 +1,162 @@
-[{
-    "label": "Thank you for contacting.",
-    "text": "Thank you for contacting the helpline. We are here to support you. My name is XXX and I am a counselor at the helpline. "
+[
+  {
+    "label": "Cntd Past Session (VCRC & DCVH)",
+    "text": "It seems like you may have been in a hotline session that got disconnected. Unfortunately, I do not have any information that you shared earlier due to the anonymous nature of our hotline. Apologies if you have already gone through this, but before we go any further, I would like to check in about some safety and privacy concerns. Would that be alright?"
   },
   {
-    "label": "Confidentiality / Privacy",
-    "text": "Before we continue, I would love for you to know that this is a safe space for you to just talk and share the challenges that you are having. Everything you say here will remain here except in cases where you indicate that you are being harmed by someone (meaning any form of abuse), that you want to harm yourself (meaning suicide) or you want to harm someone. In any of these cases, I would have to inform my supervisor and inform the relevant authorities. Do you understand this?"
+    "label": "Permission (VCRC & DCVH)",
+    "text": "Before we go any further, I would like to check in about some safety and privacy concerns. Would that be all right?"
   },
   {
-    "label": "Emergency Services Call",
-    "text": "I am going to call 911 and will ask you to provide as much information as you can about the situation. Do you know where the situation is taking place?"
+    "label": "Safe Place (VCRC & DCVH)",
+    "text": "We are unable to provide emergency services or dispatch emergency services on your behalf, so it is important that you are in a space free from danger or immediate threat of physical harm before we proceed. Are you in a space where you can talk with us without immediate threat of danger or physical harm?"
   },
   {
-    "label": "What is the helpline?",
-    "text": "ChildLine is a 24/7 counseling helpline that provides free counselling and psychosocial support to children and teens under the age of 18 years."
+    "label": "Not Safe (VCRC & DCVH)",
+    "text": "We will need to disconnect now and recommend that you contact emergency services immediately. You are always welcome to contact us again at a later time when you are able. Thank you, your safety matters to us."
   },
   {
-    "label": "How did you learn about the helpline?",
-    "text": "If you don't mind me asking, can you please share with me how you came to know about the helpline?"
+    "label": "Transferred Chat (VCRC & DCVH)",
+    "text": "Hello. Your session has been transferred to me and I am happy to help you in any way I can. Would it be alright if I take a few moments to review what you discussed with my colleague?"
   },
   {
-    "label": "How do I avoid COVID?",
-    "text": "It’s understandable that you are worried about getting the COVID19 Virus, however, here are some tips to help you stay safe: \n\n • Wash your hands regularly / use sanitizer \n • Avoid handshakes, hugs and kisses. \n • Don’t touch your face unnecessarily \n • Keep a 1.5-meter distance from people, especially if they are symptomatic \n • If you feel that you show symptoms or have come in touch with a COVID19 positive person, please also call the COVID19 Helpline \n • Stay calm and don't panic"
+    "label": "Documentation Evidence (VCRC & DCVH)",
+    "text": "If you’re not doing so already, it is important to save and document any evidence that you can. This can help show a pattern of behavior over time. Some people document evidence by taking pictures, writing notes in a journal, planner or calendar, using a secure and private email, or making a plan to share evidence with a safe person who can store the information for you. It is ok if you haven’t done this yet. When you are able, take time to organize what you can in one place. A victim advocate in your area may be able to assist you with this task. Another thing to be aware of, is keeping a list of resources in a safe place. The resources provided to you in this chat will disappear when the chat ends. This is intended to protect your privacy and safety. If you’re unable to find the resources later, or need more resources, you are welcome to contact us again for additional support."
   },
   {
-    "label": "What is Physical abuse?",
-    "text": "Physical violence and abuse based on the fact that you are a man or a woman is an increasing problem. If you or anyone you know is being: Beaten, slapped, punched, kicked, bruised, cut, burnt or physically hurt in any way, they are being physically abused."
+    "label": "Limitations (VCRC & DCVH)",
+    "text": "Our goal is to provide you with information and referrals so that you can make the best decision for yourself. We cannot make decisions for you, file reports, conduct investigations of any kind on your behalf, or provide therapy or legal advice."
   },
   {
-    "label": "What is Verbal and Emotional abuse?",
-    "text": "Not all sexual and gender based violence is physical. Verbal abuse like screaming, shouting and name calling, and emotional abuse like threats and intimidation, are real problems, especially in families."
+    "label": "Mandatory Reporting Reminder (VCRC & DCVH)",
+    "text": "Before we proceed, I want to remind you that I am a mandated reporter for the neglect or abuse of minor children and vulnerable adults. We can continue talking, but I want to remind you that if you do not want a report to be made to your local authorities, you may not want to share identifying information with me such as your name, address, or school. If you do share additional information it may require me to report what you are experiencing. Do you have any questions about this? Please let me know how you'd like to proceed."
   },
   {
-    "label": "What is Sexual abuse and rape?",
-    "text": "People are sometimes forced to have sex with people when they don’t want to (rape), or to do sexual things against their will. This can happen once or more often. People may know the person or they may be a stranger. Sexual violence and abuse have immediate as well as long term physical and emotional consequences. Being sexually abused because you are a man or a woman is a growing problem."
+    "label": "No Media (VCRC & DCVH)",
+    "text": "Unfortunately, I am unable to open any media files. This is a feature of the platform to maintain your privacy."
   },
   {
-    "label": "Affirmations",
-    "text": "Thank you for sharing this with me. It is completely natural to feel the way you do."
+    "label": "Order of Protection (VCRC & DCVH)",
+    "text": "A potential resource for your situation could be obtaining an Order of Protection, sometimes referred to as a restraining order, protection order, or other similar title. Your county courthouse is generally a place to start the process, however, many police departments, victim services units, and court advocates at your local domestic or sexual violence and stalking services program might be helpful in assisting you with the application and court process. Protection orders take time and are only effective if you are able and willing to go through the court process and contact law enforcement when the order has been violated. We want to prepare you for what you may encounter when filing for an order of protection. For example, petitions may only be written in English. You can ask if there are interpreter services. You must have the offender/respondent's full name and a good or valid address where the offender/respondent can be found. Additionally, you will need to be ready to describe the events of violence or abuse where you were harmed, intimidated, assaulted, stalked, or otherwise threatened or harmed. Some counties have different protection orders based on your relationship to the offender/respondent and the type of crime you experienced.An advocate at your local domestic violence, sexual assault, and stalking program can help prepare you for this. Would you like me to find the nearest advocate, courthouse, and/or police station that can assist you with this process?"
   },
   {
-    "label": "Silent",
-    "text": "Unfortunately because there has been no response, we will have to end this conversation to speak with the next caller. When you are ready to chat with us you are welcome to reach out again."
+    "label": "Repeat Chatter (VCRC & DCVH)",
+    "text": "I am really glad that you have come here to find support. Unfortunately, we are only able to provide short-term services, not long-term support or counseling. I would encourage you to reach out to the resources that we've discussed."
   },
   {
-    "label": "Goodbye",
-    "text": "Thank you for reaching out to the helpline, we are here to support you. Please reach out to us again if you need to talk. "
+    "label": "Resource Map (VCRC & DCVH)",
+    "text": "One resource I always share with visitors is the VictimConnect Resource Map. You can search for resources in your area by keywords, services provided, and crime type: The VictimConnect team is constantly adding to the Resource Map to include more victim services organizations. Check it out to see if you can find relevant and supportive resources in your community: https://victimconnect.org/resources/search-resources/"
+  },
+  {
+    "label": "Stalking (VCRC & DCVH)",
+    "text": "Stalking is a repeated pattern of behavior that is directed at a specific person. This can be done in person, through technology, and/or through another person. It can be challenging to remember or recognize all incidents of stalking. One tool that many experts recommend survivors use is a Stalking Incident and Behavior Log to keep track of behaviors and incidents which might help you if and when you decide to navigate civil and criminal justice systems. This resource is from the Stalking Prevention, Awareness, and Resource Center: https://www.stalkingawareness.org/documentation-log/"
+  },
+  {
+    "label": "Trauma Reflexes & Habits (VCRC & DCVH)",
+    "text": "There is no “right way or wrong way” to respond to a traumatic event. Every single person’s response is unique. Our brains and bodies go into survival-mode, automatically responding in ways that keep us safe. We often react with automatic reflexes and habits that we have very little control over - our brains are wired to do this. Some people call these responses “fight, flight, fawn or freeze”. These automatic responses are completely normal.However you responded is your body’s normal reaction to an abnormal situation. What happened to you is not your fault. You did everything you could do to survive. "
+  },
+  {
+    "label": "Trauma-Fawn Reflex (VCRC & DCVH)",
+    "text": "What happened to you and how you responded is not your fault. Sometimes we cooperate in the hopes that we will become safe sooner. It is the way our brains and bodies help us survive. Some people call this natural reflex “fawning”. It has been described by some as “going into auto-pilot”. It is a normal response that many people experience. “Going along with it” or even actively participating does not mean you consented or wanted this experience to happen. It means that you did not feel safe, that saying “no” was not an option for you, and that you did what you had to do to survive. "
+  },
+  {
+    "label": "Warn Inappropriate (VCRC & DCVH)",
+    "text": "This conversation seems to be going in an inappropriate direction. I will need to end the conversation if it continues."
+  },
+  {
+    "label": "End Inappropriate (VCRC & DCVH)",
+    "text": "This conversation has become inappropriate. I am going to end this chat."
+  },
+  {
+    "label": "Long Response (VCRC & DCVH)",
+    "text": "Thank you for sharing with me the details of your experience. It may take me a moment to respond, but I assure you that I am here and I am reading your messages so I can best assist you. Feel free to continue typing if you need to communicate more, I just ask for your patience in the meantime while I catch up."
+  },
+  {
+    "label": "Follow-up Request (VCRC & DCVH)",
+    "text": "Unfortunately, I am unable to follow up with you once this session ends. We do not collect phone numbers, emails, or other contact information. This is to maintain your privacy and anonymity. Please continue to reach out to us when it is most convenient and safe for you. "
+  },
+  {
+    "label": "Time Out Warning (VCRC & DCVH)",
+    "text": "Are you still there? For safety and privacy reasons I will need to disconnect if the chat remains inactive."
+  },
+  {
+    "label": "Hours (VCRC Updated)",
+    "text": "The VictimConnect Resource Center is available 24/7, 365 days a year by phone, chat, and text."
+  },
+  {
+    "label": "Our Services (VCRC)",
+    "text": "VictimConnect Resource Center provides free, confidential information, emotional support, and referrals for victims of all crimes in the United States and U.S. territories, including Hawaii and Puerto Rico."
+  },
+  {
+    "label": "Privacy Policy (VCRC)",
+    "text": "Our services are confidential and anonymous, which means you so you do not have to share any personally identifying information like your age, name or where you live. We do not store your IP address or have access to your phone number. We do not record or store what you share with us. We also recommend that you not record or store this session in order to protect your privacy. Additionally, I am a mandated reporter for the neglect or abuse of minor children and vulnerable adults. We can continue talking, but I want to let you know that if you do not want a report to be made, you may not want to share identifying information with me such as your name, address, or school. If you do share additional information it may require me to report what you are experiencing.If for any reason you get disconnected, I encourage you to go back to the waiting room to be reconnected - or you can call or text the VictimConnect Helpline at: 1-855-4-VICTIM (1-855-484-2846). Do you have any additional questions about privacy issues or computer safety?"
+  },
+  {
+    "label": "Privacy Policy SMS (VCRC)",
+    "text": "Our services are confidential and anonymous, which means you do not have to share any personally identifying information like your age, name or where you live. We do not store your IP address or have access to your phone number. If you are concerned about this conversation being saved on your phone via text messages, you are also welcome to chat online where the session will not be stored on your phone.Additionally, I am a mandated reporter for the neglect or abuse of minor children and vulnerable adults. We can continue talking, but I want to let you know that if you do not want a report to be made, you may not want to share identifying information with me such as your name, address, or school. If you do share additional information it may require me to report what you are experiencing.If for any reason you get disconnected, I encourage you to go back to the waiting room to be reconnected - or you can call or text the VictimConnect Helpline at: 1-855-4-VICTIM (1-855-484-2846). Do you have any additional questions about privacy issues or computer safety?"
+  },
+  {
+    "label": "Spanish (VCRC)",
+    "text": "La línea de VictimConnect no tiene ayuda por chat en español. Para obtener servicios en español o para hablar con un intérprete, por favor llame al 1-855-4-VICTIM (1-855-484-2846)."
+  },
+  {
+    "label": "Hours (DCVH)",
+    "text": "The DC Victim Hotline is available 24/7, 365 days a year by phone, chat, and text."
+  },
+  {
+    "label": "Transition Back (VCRC)",
+    "text": "Thank you for reviewing this safety and privacy information. If you have other questions or concerns please let me know at any time. But for now, would you like to let me know more about what brought you to VictimConnect Resource Center?"
+  },
+  {
+    "label": "VC Feedback Survey (VCRC)",
+    "text": "Thank you for coming to the helpline today. Please help us continue to improve our service by completing a VictimConnect Feedback Survey. It will take less than a minute and all of your answers are confidential. Thank you again for sharing with me today."
+  },
+  {
+    "label": "Invitation to Return (VCRC)",
+    "text": "Thank you for coming to the hotline today. If you need more help discussing other resources or sources of support, please contact the VictimConnect Helpline at: 1-855-4-VICTIM (1-855-484-2846) and we will be more than happy to help you. If you have a few minutes, please help us improve our services by answering a couple questions once our session has ended. It will take less than a minute and all your answers are confidential."
+  },
+  {
+    "label": "Time Out Ending (VCRC)",
+    "text": "It appears that you are no longer able to chat at this time so I am going to end this session for your safety and privacy. If you need additional assistance please return to waiting room to be reconnected - or you can call or text the VictimConnect Helpline at 1-855-4-VICTIM (1-855-484-2846)"
+  },
+  {
+    "label": "Confirming Location (DCVH)",
+    "text": "In order to best assist you, can I ask which quadrant you are located or where the crime occurred, such as SE, NE, NW, or the SW part of DC?"
+  },
+  {
+    "label": "Out of District (DCVH)",
+    "text": "The DC Victim Hotline serves victims of crime in Washington, DC. I am happy to still assist you, but it may take longer to find the appropriate resources."
+  },
+  {
+    "label": "Our Services (DCVH)",
+    "text": "The DC Victim Hotline provides free, confidential information, emotional support, and referrals for victims of all crimes in the District of Columbia. "
+  },
+  {
+    "label": "Privacy Policy (DCVH)",
+    "text": "Our services are confidential and anonymous, which means you do not have to share any personally identifying information like your age, name or where you live. We do not store your IP address or have access to your phone number. We also recommend that you not record or store this session in order to protect your privacy.Additionally, I am a mandated reporter for the neglect or abuse of minor children and vulnerable adults. We can continue talking, but I want to let you know that if you do not want a report to be made, you may not want to share identifying information with me such as your name, address, or school. If you do share additional information it may require me to report what you are experiencing.If for any reason you get disconnected, I encourage you to go back to the waiting room to be reconnected - or you can call or text the DC Victim Hotline: 1-844-4HELPDC (1-844-443-5732) Do you have any additional questions about privacy issues or computer safety?"
+  },
+  {
+    "label": "Privacy Policy SMS (DCVH)",
+    "text": "Our services are confidential and anonymous, which means you do not have to share any personally identifying information like your age, name or where you live. We do not store your IP address or have access to your phone number. If you are concerned about this conversation being saved on your phone via text messages, you are also welcome to chat online where the session will not be stored on your phone.Additionally, I am a mandated reporter for the neglect or abuse of minor children and vulnerable adults. We can continue talking, but I want to let you know that if you do not want a report to be made, you may not want to share identifying information with me such as your name, address, or school. If you do share additional information it may require me to report what you are experiencing.If for any reason you get disconnected, I encourage you to go back to the waiting room to be reconnected - or you can call or text the DC Victim Hotline: 1-844-4HELPDC (1-844-443-5732) Do you have any additional questions about privacy issues or computer safety?"
+  },
+  {
+    "label": "Spanish (DCVH)",
+    "text": "La línea de DC Victim Hotline no tiene ayuda por chat en español. Para obtener servicios en español o para hablar con un intérprete, por favor llame al 1-844-4HELPDC (1-844-443-5732)."
+  },
+  {
+    "label": "DC Feedback Survey ",
+    "text": "Thank you for coming to the helpline today. Please help us continue to improve our service by completing a DC Victim Hotline Feedback Survey. It will take less than a minute and all of your answers are confidential. Thank you again for sharing with me today. "
+  },
+  {
+    "label": "Invitation to Return (DCVH)",
+    "text": "Thank you for coming to the hotline today. If you need more help discussing other resources or sources of support, please contact the DC Victim Hotline at: 1-844-4HELPDC (1-844-443-5732) and we will be more than happy to help you. If you have a few minutes, please help us improve our services by answering a couple questions once our session has ended. It will take less than a minute and all your answers are confidential"
+  },
+  {
+    "label": "Time Out Ending (DCVH)",
+    "text": "It appears that you are no longer able to chat at this time so I am going to end this session for your safety and privacy. If you need additional assistance please return to waiting room to be reconnected - or you can call or text the DC Victim Hotline at 1-844-4HELPDC (1-844-443-5732) "
+  },
+  {
+    "label": "Dispatch Services",
+    "text": "Thank you for contacting the DC Victim Hotline. We are unable to provide dispatch services through our text or chat features. If you are seeking our dispatch services, please call 1-844-4HELPDC (1-844-443-5732) and choose the third option."
   }
 ]

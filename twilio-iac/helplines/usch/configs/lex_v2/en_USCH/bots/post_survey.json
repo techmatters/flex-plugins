@@ -1,0 +1,72 @@
+{
+  "post_survey": {
+    "description": "Specific en_USCH/bots Post Survey bot",
+    "locale": "en_US",
+    "child_directed": true,
+    "idle_session_ttl_in_seconds": "300",
+    "staging_bot_alias_id": "TSTALIASID",
+    "production_bot_alias_id": "PFS1TW2EYC",
+    "type": "Bot",
+    "intents": {
+      "post_survey_yes": {
+        "utterances": [
+          {
+            "utterance": "Yes"
+          },
+          {
+            "utterance": "yes"
+          },
+          {
+            "utterance": "yeah"
+          },
+          {
+            "utterance": "1"
+          }
+        ],
+        "closing_response": {
+          "message": "Thank you for contacting the hotline.  Feel free to reach out again if you need additional support."
+        },
+        "slot_priorities": {
+          "1": {
+            "slot_name": "experience_rating",
+            "slot_type_name": "four_level_assessment",
+            "slot_question": "How was your experience today? \nReply with 1 = Excellent, 2 = Good, 3 = Fair, 4 = Poor",
+            "failure_response": "Thank you for reaching out. Please contact us again if you need more help."
+          },
+          "2":  {
+            "slot_name": "feel_supported",
+            "slot_type_name": "yes_no",
+            "slot_question": "Did you feel supported and respected by the counselor? \nReply with: \n1 = Yes, 2 = No",
+            "failure_response": "Thank you for reaching out. Please contact us again if you need more help."
+          },
+          "3":  {
+            "slot_name": "better_prepared",
+            "slot_type_name": "yes_no",
+            "slot_question": "Do you feel better prepared to deal with your situation after this conversation? \nReply with: \n1 = Yes, 2 = No",
+            "failure_response": "Thank you for reaching out. Please contact us again if you need more help."
+          }
+                }
+      },
+      "post_survey_no": {
+        "utterances": [
+          {
+            "utterance": "No"
+          },
+          {
+            "utterance": "no"
+          },
+          {
+            "utterance": "nope"
+          },
+          {
+            "utterance": "2"
+          }
+        ],
+        "closing_response": {
+          "message": "Thank you for contacting the hotline.  Feel free to reach out again if you need additional support."
+        },
+        "slot_priorities": {}
+    }
+  }
+}
+}

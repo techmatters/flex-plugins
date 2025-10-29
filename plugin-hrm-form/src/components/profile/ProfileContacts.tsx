@@ -16,13 +16,14 @@
 import React from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 
-import { getInitializedCan, PermissionActions } from '../../permissions';
+import { getInitializedCan } from '../../permissions/rules';
 import { Contact } from '../../types/types';
 import ContactPreview from '../search/ContactPreview';
 import * as ProfileTypes from '../../states/profile/types';
 import * as RoutingActions from '../../states/routing/actions';
 import ProfileRelationshipList from './ProfileRelationshipList';
 import { ProfileCommonProps } from './types';
+import { PermissionActions } from '../../permissions/actions';
 
 type OwnProps = ProfileCommonProps;
 

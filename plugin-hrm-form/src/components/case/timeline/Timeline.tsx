@@ -27,7 +27,7 @@ import { Box, Row, colors, SecondaryButton } from '../../../styles';
 import CaseAddButton from '../CaseAddButton';
 import { Contact, CustomITask } from '../../../types/types';
 import { isCaseSectionTimelineActivity, isContactTimelineActivity } from '../../../states/case/types';
-import { getInitializedCan, PermissionActions } from '../../../permissions';
+import { getInitializedCan } from '../../../permissions/rules';
 import { CaseItemAction, isCaseRoute } from '../../../states/routing/types';
 import { newOpenModalAction } from '../../../states/routing/actions';
 import { RootState } from '../../../states';
@@ -40,6 +40,7 @@ import { selectContactsByCaseIdInCreatedOrder } from '../../../states/contacts/s
 import { FullCaseSection } from '../../../services/caseSectionService';
 import { selectDefinitionVersionForCase } from '../../../states/configuration/selectDefinitions';
 import formatFormValue from '../../forms/formatFormValue';
+import { PermissionActions } from '../../../permissions/actions';
 
 type OwnProps = {
   taskSid: CustomITask['taskSid'];

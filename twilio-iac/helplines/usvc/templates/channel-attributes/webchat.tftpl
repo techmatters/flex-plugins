@@ -5,10 +5,19 @@
   "channelType": "{{trigger.message.ChannelAttributes.channel_type}}",
   "channelSid": "{{trigger.message.ChannelSid}}",
   "helpline": "{{trigger.message.ChannelAttributes.pre_engagement_data.helpline}}",
-  "language":"en-us",
-  "service":"NCVC",
+  "language":"{{flow.variables.language}}",
+  "service":"{{flow.variables.service}}",
+  "serviceLanguage":"English",
   "ignoreAgent": "",
   "transferTargetType": "",
   "preEngagementData": {{trigger.message.ChannelAttributes.pre_engagement_data | to_json}},
-  "memory": {{trigger.message.ChannelAttributes.memory | to_json}}
+  "memory": { 
+    "e2eTestMode": "{{trigger.message.ChannelAttributes.pre_engagement_data.e2eTestMode}}",
+    "contactIdentifier": "{{trigger.message.ChannelAttributes.pre_engagement_data.contactIdentifier}}",
+    "ip": "{{trigger.message.ChannelAttributes.pre_engagement_data.ip}}",
+    "contactType": "{{trigger.message.ChannelAttributes.pre_engagement_data.contactType}}",
+    "location": "{{trigger.message.ChannelAttributes.pre_engagement_data.location}}",
+    "friendlyName": "{{trigger.message.ChannelAttributes.pre_engagement_data.friendlyName}}",
+    "startForm": "HotlineInteractions"
+  }
 }
