@@ -62,7 +62,6 @@ const AddOfflineContactButton: React.FC = () => {
   }
 
   const onClick = async () => {
-    console.log('Onclick - creating contact');
     const contactToCreate = newContact(currentDefinitionVersion);
     contactToCreate.rawJson.contactlessTask.createdOnBehalfOf = getHrmConfig().workerSid;
 
