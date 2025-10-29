@@ -32,6 +32,8 @@ import { inferHrmAccountId } from './hrmAccountId';
 import { sanitizeIdentifierFromTask } from './sanitizeIdentifier';
 import { HrmContact } from '@tech-matters/hrm-types';
 import { populateHrmContactFormFromTaskByMappings } from './populateHrmContactFormFromTaskByMappings';
+import { parseISO } from 'date-fns/parseISO';
+import { HttpClientError } from '../httpErrors';
 
 // Temporarily copied to this repo, will share the flex types when we move them into the same repo
 
@@ -129,6 +131,16 @@ export const handleEvent = async (
         responseResult.message,
         responseResult.error,
       );
+      const { error } = responseResult;
+      if (error instanceof HttpClientError && error.statusCode === 404) {
+        console.info(
+          `Contact ${contactId} not found for task ${taskSid} - attempting to create a new one`,
+        );
+      } else {
+        return;
+      }
+    } else {
+      return;
     }
   }
 
@@ -229,7 +241,8 @@ export const handleEvent = async (
     );
     return;
   }
-  const { id } = responseResult.data;
+  const { id, timeOfContact: savedTimeOfContactString } = responseResult.data;
+  const savedTimeOfContactDate = parseISO(savedTimeOfContactString);
   console.info(`Created HRM contact with id ${id} for task ${taskSid}`);
 
   const taskContext = client.taskrouter.v1.workspaces
@@ -242,7 +255,7 @@ export const handleEvent = async (
     outboundVoiceTaskStartMillis: isOutboundVoiceTask
       ? timeOfContactDate.getTime()
       : null,
-    timeOfContactMillis: timeOfContactDate.getTime(),
+    timeOfContactMillis: savedTimeOfContactDate.getTime(),
   };
   await taskContext.update({ attributes: JSON.stringify(updatedAttributes) });
 };
