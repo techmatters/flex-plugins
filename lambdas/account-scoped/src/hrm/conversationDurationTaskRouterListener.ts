@@ -25,6 +25,9 @@ import { Twilio } from 'twilio';
 import { retrieveServiceConfigurationAttributes } from '../configuration/aseloConfiguration';
 import { TASK_WRAPUP } from '../taskrouter/eventTypes';
 
+const getTimeInputsDescription = (timeOfContactMillis: number, nowMillis: number) =>
+  `timeOfContact: ${new Date(timeOfContactMillis).toISOString()} (epoch: ${timeOfContactMillis}), end time (should be now): ${new Date(nowMillis).toISOString()} (epoch: ${nowMillis})`;
+
 export const handleSetDurationEvent = async (
   {
     TaskAttributes: taskAttributesString,
@@ -54,10 +57,10 @@ export const handleSetDurationEvent = async (
   if (timeOfContactMillisString && contactId) {
     const nowMillis = Date.now();
     const timeOfContactMillis = Number.parseInt(timeOfContactMillisString);
-    const conversationDuration = Math.floor(nowMillis - timeOfContactMillis / 1000);
+    const conversationDuration = Math.floor((nowMillis - timeOfContactMillis) / 1000);
     if (conversationDuration < 0) {
       console.warn(
-        `Negative conversation duration calculated for contact ${contactId}, task ${taskSid}. timeOfContact: ${new Date(timeOfContactMillis).toISOString()} (epoch: ${timeOfContactMillis}), end time (should be now): ${new Date(nowMillis).toISOString()} (epoch: ${nowMillis}), conversationDuration (seconds): ${conversationDuration}`,
+        `Negative conversationDuration calculated  on HRM contact ${contactId} for task ${taskSid}: ${conversationDuration} (${getTimeInputsDescription(timeOfContactMillis, nowMillis)}, conversationDuration (seconds))`,
       );
     }
     const responseResult = await patchOnInternalHrmEndpoint<
@@ -68,13 +71,13 @@ export const handleSetDurationEvent = async (
     });
     if (isErr(responseResult)) {
       console.error(
-        `Failed to set conversationDuration to ${conversationDuration} on HRM contact ${contactId} for task ${taskSid}`,
+        `Failed to set conversationDuration on HRM contact ${contactId} for task ${taskSid} to ${conversationDuration} (${getTimeInputsDescription(timeOfContactMillis, nowMillis)})`,
         responseResult.message,
         responseResult.error,
       );
     } else {
       console.info(
-        `Set conversationDuration Task: ${taskSid}, Contact: ${contactId}, conversationDuration: ${conversationDuration}`,
+        `Set conversationDuration Task: ${taskSid}, Contact: ${contactId}, conversationDuration: ${conversationDuration} (${getTimeInputsDescription(timeOfContactMillis, nowMillis)})`,
       );
     }
   } else {
