@@ -37,73 +37,41 @@ const initialState: TeamsViewState = {
   },
 };
 
-// Action types
-export const TEAMSVIEW_SELECT_WORKERS = 'teamsview/select-workers';
-export const TEAMSVIEW_UNSELECT_WORKERS = 'teamsview/unselect-workers';
-export const TEAMSVIEW_SELECT_SKILLS = 'teamsview/select-skills';
-export const TEAMSVIEW_SELECT_OPERATION = 'teamsview/select-operation';
-const TEAMSVIEW_UPDATE_WORKERS_SKILLS_ASYNC_ACTION = 'teamsview/update-workers-skills';
-const TEAMSVIEW_UPDATE_WORKERS_SKILLS_ASYNC_ACTION_PENDING = `${TEAMSVIEW_UPDATE_WORKERS_SKILLS_ASYNC_ACTION}_PENDING` as const;
-const TEAMSVIEW_UPDATE_WORKERS_SKILLS_ASYNC_ACTION_FULFILLED = `${TEAMSVIEW_UPDATE_WORKERS_SKILLS_ASYNC_ACTION}_FULFILLED` as const;
-const TEAMSVIEW_UPDATE_WORKERS_SKILLS_ASYNC_ACTION_REJECTED = `${TEAMSVIEW_UPDATE_WORKERS_SKILLS_ASYNC_ACTION}_REJECTED` as const;
-
+const TEAMSVIEW_SELECT_WORKERS = 'teamsview/select-workers';
 type TeamsViewSelectWorkersAction = {
   type: typeof TEAMSVIEW_SELECT_WORKERS;
   payload: string[];
 };
-
-type TeamsViewUnselectWorkersAction = {
-  type: typeof TEAMSVIEW_UNSELECT_WORKERS;
-  payload: string[];
-};
-
-type TeamsViewSelectSkillsAction = {
-  type: typeof TEAMSVIEW_SELECT_SKILLS;
-  payload: string[];
-};
-
-type TeamsViewSelectOperationAction = {
-  type: typeof TEAMSVIEW_SELECT_OPERATION;
-  payload: TeamsViewState['operation'];
-};
-
-type TeamsviewUpdateWorkersSkillsAsyncActionPending = {
-  type: typeof TEAMSVIEW_UPDATE_WORKERS_SKILLS_ASYNC_ACTION_PENDING;
-} & ReturnType<typeof newUpdateWorkersSkillsAsyncAction.pending>;
-
-type TeamsviewUpdateWorkersSkillsAsyncActionFulfilled = {
-  type: typeof TEAMSVIEW_UPDATE_WORKERS_SKILLS_ASYNC_ACTION_FULFILLED;
-} & ReturnType<typeof newUpdateWorkersSkillsAsyncAction.fulfilled>;
-
-type TeamsviewUpdateWorkersSkillsAsyncActionRejected = {
-  type: typeof TEAMSVIEW_UPDATE_WORKERS_SKILLS_ASYNC_ACTION_REJECTED;
-} & ReturnType<typeof newUpdateWorkersSkillsAsyncAction.rejected>;
-
-type TeamsViewActionTypes =
-  | TeamsViewSelectWorkersAction
-  | TeamsViewUnselectWorkersAction
-  | TeamsViewSelectSkillsAction
-  | TeamsViewSelectOperationAction
-  | TeamsviewUpdateWorkersSkillsAsyncActionPending
-  | TeamsviewUpdateWorkersSkillsAsyncActionFulfilled
-  | TeamsviewUpdateWorkersSkillsAsyncActionRejected;
-
-// Action creators
 export const newTeamsViewSelectWorkers = (workers: string[]): TeamsViewSelectWorkersAction => ({
   type: TEAMSVIEW_SELECT_WORKERS,
   payload: workers,
 });
 
+const TEAMSVIEW_UNSELECT_WORKERS = 'teamsview/unselect-workers';
+type TeamsViewUnselectWorkersAction = {
+  type: typeof TEAMSVIEW_UNSELECT_WORKERS;
+  payload: string[];
+};
 export const newTeamsViewUnselectWorkers = (workers: string[]): TeamsViewUnselectWorkersAction => ({
   type: TEAMSVIEW_UNSELECT_WORKERS,
   payload: workers,
 });
 
+const TEAMSVIEW_SELECT_SKILLS = 'teamsview/select-skills';
+type TeamsViewSelectSkillsAction = {
+  type: typeof TEAMSVIEW_SELECT_SKILLS;
+  payload: string[];
+};
 export const newTeamsViewSelectSkills = (skills: string[]): TeamsViewSelectSkillsAction => ({
   type: TEAMSVIEW_SELECT_SKILLS,
   payload: skills,
 });
 
+const TEAMSVIEW_SELECT_OPERATION = 'teamsview/select-operation';
+type TeamsViewSelectOperationAction = {
+  type: typeof TEAMSVIEW_SELECT_OPERATION;
+  payload: TeamsViewState['operation'];
+};
 export const newTeamsViewSelectOperation = (
   operation: TeamsViewState['operation'],
 ): TeamsViewSelectOperationAction => ({
@@ -111,7 +79,22 @@ export const newTeamsViewSelectOperation = (
   payload: operation,
 });
 
-// eslint-disable-next-line
+const TEAMSVIEW_UPDATE_WORKERS_SKILLS_ASYNC_ACTION = 'teamsview/update-workers-skills';
+
+const TEAMSVIEW_UPDATE_WORKERS_SKILLS_ASYNC_ACTION_PENDING = `${TEAMSVIEW_UPDATE_WORKERS_SKILLS_ASYNC_ACTION}_PENDING` as const;
+type TeamsviewUpdateWorkersSkillsAsyncActionPending = {
+  type: typeof TEAMSVIEW_UPDATE_WORKERS_SKILLS_ASYNC_ACTION_PENDING;
+} & ReturnType<typeof newUpdateWorkersSkillsAsyncAction.pending>;
+
+const TEAMSVIEW_UPDATE_WORKERS_SKILLS_ASYNC_ACTION_FULFILLED = `${TEAMSVIEW_UPDATE_WORKERS_SKILLS_ASYNC_ACTION}_FULFILLED` as const;
+type TeamsviewUpdateWorkersSkillsAsyncActionFulfilled = {
+  type: typeof TEAMSVIEW_UPDATE_WORKERS_SKILLS_ASYNC_ACTION_FULFILLED;
+} & ReturnType<typeof newUpdateWorkersSkillsAsyncAction.fulfilled>;
+
+const TEAMSVIEW_UPDATE_WORKERS_SKILLS_ASYNC_ACTION_REJECTED = `${TEAMSVIEW_UPDATE_WORKERS_SKILLS_ASYNC_ACTION}_REJECTED` as const;
+type TeamsviewUpdateWorkersSkillsAsyncActionRejected = {
+  type: typeof TEAMSVIEW_UPDATE_WORKERS_SKILLS_ASYNC_ACTION_REJECTED;
+} & ReturnType<typeof newUpdateWorkersSkillsAsyncAction.rejected>;
 export const newUpdateWorkersSkillsAsyncAction = createAsyncAction(
   TEAMSVIEW_UPDATE_WORKERS_SKILLS_ASYNC_ACTION,
   async ({
@@ -154,6 +137,15 @@ const asyncReducer = createReducer(initialState, handleAction => [
     };
   }),
 ]);
+
+type TeamsViewActionTypes =
+  | TeamsViewSelectWorkersAction
+  | TeamsViewUnselectWorkersAction
+  | TeamsViewSelectSkillsAction
+  | TeamsViewSelectOperationAction
+  | TeamsviewUpdateWorkersSkillsAsyncActionPending
+  | TeamsviewUpdateWorkersSkillsAsyncActionFulfilled
+  | TeamsviewUpdateWorkersSkillsAsyncActionRejected;
 
 export const reduce = (state = initialState, action: TeamsViewActionTypes): TeamsViewState => {
   switch (action.type) {

@@ -17,101 +17,23 @@ import each from 'jest-each';
 
 import {
   reduce,
-  TEAMSVIEW_SELECT_WORKERS,
   newTeamsViewSelectWorkers,
-  TEAMSVIEW_UNSELECT_WORKERS,
   newTeamsViewUnselectWorkers,
-  TEAMSVIEW_SELECT_SKILLS,
   newTeamsViewSelectSkills,
-  TEAMSVIEW_SELECT_OPERATION,
   newTeamsViewSelectOperation,
-  TEAMSVIEW_RESET_STATE,
-  newTeamsViewResetStateAction,
+  TeamsViewState,
 } from '../../../states/teamsView/reducer';
-
-describe('test action creators', () => {
-  each([
-    {
-      workerSids: ['WK-123'],
-      description: 'single worker',
-    },
-    {
-      workerSids: ['WK-123', 'WK-999'],
-      description: 'multiple workers',
-    },
-  ]).test('newTeamsViewSelectWorkers - $description', async ({ workerSids }) => {
-    expect(newTeamsViewSelectWorkers(workerSids)).toStrictEqual({
-      type: TEAMSVIEW_SELECT_WORKERS,
-      payload: workerSids,
-    });
-  });
-
-  each([
-    {
-      workerSids: ['WK-123'],
-      description: 'single worker',
-    },
-    {
-      workerSids: ['WK-123', 'WK-999'],
-      description: 'multiple workers',
-    },
-  ]).test('newTeamsViewUnselectWorkers - $description', async ({ workerSids }) => {
-    expect(newTeamsViewUnselectWorkers(workerSids)).toStrictEqual({
-      type: TEAMSVIEW_UNSELECT_WORKERS,
-      payload: workerSids,
-    });
-  });
-
-  each([
-    {
-      skills: ['skill-1'],
-      description: 'single skill',
-    },
-    {
-      workerSids: ['skill-1', 'skill-2'],
-      description: 'multiple skills',
-    },
-    {
-      skills: [],
-      description: 'no skills - empty the state',
-    },
-  ]).test('newTeamsViewSelectSkills - $description', async ({ skills }) => {
-    expect(newTeamsViewSelectSkills(skills)).toStrictEqual({
-      type: TEAMSVIEW_SELECT_SKILLS,
-      payload: skills,
-    });
-  });
-
-  each([
-    {
-      operation: 'operation',
-      description: 'test selecting an operation',
-    },
-  ]).test('newTeamsViewSelectOperation - $description', async ({ operation }) => {
-    expect(newTeamsViewSelectOperation(operation)).toStrictEqual({
-      type: TEAMSVIEW_SELECT_OPERATION,
-      payload: operation,
-    });
-  });
-
-  each([
-    {
-      operation: 'operation',
-      description: 'test selecting an operation',
-    },
-  ]).test('newTeamsViewResetStateAction - $description', async () => {
-    expect(newTeamsViewResetStateAction()).toStrictEqual({
-      type: TEAMSVIEW_RESET_STATE,
-    });
-  });
-});
 
 describe('test reducer', () => {
   test('empty state with unrelated action - should return initial state', async () => {
     const state = undefined;
-    const expected = {
+    const expected: TeamsViewState = {
       selectedWorkers: new Set(),
       selectedSkills: new Set(),
+      status: {
+        loading: false,
+        error: null,
+      },
     };
 
     const result = reduce(state, {} as any);
@@ -119,9 +41,13 @@ describe('test reducer', () => {
   });
 
   test('existing state with unrelated action - should return same state', async () => {
-    const state = {
+    const state: TeamsViewState = {
       selectedWorkers: new Set(['WK-123']),
       selectedSkills: new Set<string>(),
+      status: {
+        loading: false,
+        error: null,
+      },
     };
     const expected = state;
 
@@ -355,24 +281,6 @@ describe('test reducer', () => {
     },
   ]).test('TEAMSVIEW_SELECT_OPERATION - $description', async ({ state, operation, expected }) => {
     const result = reduce(state, newTeamsViewSelectOperation(operation));
-    expect(result).toStrictEqual(expected);
-  });
-
-  each([
-    {
-      state: {
-        selectedWorkers: new Set(['worker-1']),
-        selectedSkills: new Set(['skill-1']),
-        operation: 'enable',
-      },
-      expected: {
-        selectedWorkers: new Set(),
-        selectedSkills: new Set(),
-      },
-      description: 'reset state',
-    },
-  ]).test('TEAMSVIEW_RESET_STATE - $description', async ({ state, expected }) => {
-    const result = reduce(state, newTeamsViewResetStateAction());
     expect(result).toStrictEqual(expected);
   });
 });
