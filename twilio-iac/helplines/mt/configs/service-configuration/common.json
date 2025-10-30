@@ -13,7 +13,8 @@
         "feature_flags": {
             "enable_manual_pulling": false,
             "enable_lex": true,
-            "enable_lex_v2": true
+            "enable_lex_v2": true,
+            "use_prepopulate_mappings": true
         },
         "permissionConfig": "mt",
         "resources_base_url": ""
