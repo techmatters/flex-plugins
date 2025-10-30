@@ -17,11 +17,8 @@
   "survey": {
   },
   "preEngagement": {
-    "age": "ChildInformationTab.age",
-    "gender": "ChildInformationTab.gender",
-    "firstName": "ChildInformationTab.firstName",
-    "province": "CallerInformationTab.province",
-    "district": "CallerInformationTab.district",
-    "urgencyLevel": "CaseInformationTab.urgencyLevel"
+    "ageRange": "ChildInformationTab.ageRange",
+    "sex": "ChildInformationTab.sex",
+    "location": "CallerInformationTab.location"
   }
 }
