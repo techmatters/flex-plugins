@@ -24,15 +24,15 @@ import { skillsOptions } from './teamsViewFilters';
 import FormCheckbox from '../forms/components/FormCheckbox/FormCheckbox';
 import { Modal, Props as ModalProps } from '../../styles/modals';
 import { Box, Column, Row } from '../../styles/layout';
-import { newTeamsViewResetStateAction, newTeamsViewSelectSkills } from '../../states/teamsView/reducer';
+import { newTeamsViewSelectSkills, newUpdateWorkersSkillsAsyncAction } from '../../states/teamsView/reducer';
 import { namespace } from '../../states/storeNamespaces';
 import { RootState } from '../../states';
 import { RouterTask } from '../../types/types';
 import { changeRoute } from '../../states/routing/actions';
 import Router, { RouteConfig } from '../router/Router';
 import { getCurrentTopmostRouteForTask } from '../../states/routing/getRoute';
-import { updateWorkersSkills } from '../../services/twilioWorkerService';
 import { FontOpenSans } from '../../styles';
+import asyncDispatch from '../../states/asyncDispatch';
 
 const TEAMS_VIEW_ROUTES: RouteConfig<Props> = [
   {
@@ -55,11 +55,15 @@ type Props = {
 
 export const UpdateWorkersSkillsModal: React.FC<Props> = ({ task }) => {
   const dispatch = useDispatch();
-  const { operation, selectedSkills, selectedWorkers } = useSelector((state: RootState) => state[namespace].teamsView);
+  const {
+    operation,
+    selectedSkills,
+    selectedWorkers,
+    status: { loading },
+  } = useSelector((state: RootState) => state[namespace].teamsView);
   const routing = useSelector((state: RootState) => state[namespace].routing);
   const topmostRoute = getCurrentTopmostRouteForTask(routing, task.taskSid);
   const registerForceCloseRef = React.useRef(null);
-  const [loading, setLoading] = React.useState(false);
 
   const isDirty = Boolean(selectedSkills.size);
 
@@ -85,23 +89,19 @@ export const UpdateWorkersSkillsModal: React.FC<Props> = ({ task }) => {
             return;
           }
 
-          setLoading(true);
-
-          await updateWorkersSkills({
-            operation,
-            skills: Array.from(selectedSkills),
-            workers: Array.from(selectedWorkers),
-          });
-
-          dispatch(newTeamsViewResetStateAction());
+          await asyncDispatch(dispatch)(
+            newUpdateWorkersSkillsAsyncAction({
+              operation,
+              skills: Array.from(selectedSkills),
+              workers: Array.from(selectedWorkers),
+            }),
+          );
 
           if (registerForceCloseRef.current && typeof registerForceCloseRef.current === 'function') {
             registerForceCloseRef.current();
           }
         } catch (err) {
           console.error(err);
-        } finally {
-          setLoading(false);
         }
       },
       isOpen: true,

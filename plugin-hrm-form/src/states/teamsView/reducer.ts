@@ -14,15 +14,27 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
+import { createAsyncAction, createReducer } from 'redux-promise-middleware-actions';
+
+import { updateWorkersSkills } from '../../services/twilioWorkerService';
+
 export type TeamsViewState = {
   selectedWorkers: Set<string>;
   selectedSkills: Set<string>;
   operation?: 'enable' | 'disable';
+  status: {
+    loading: boolean;
+    error: any;
+  };
 };
 
 const initialState: TeamsViewState = {
   selectedWorkers: new Set(),
   selectedSkills: new Set(),
+  status: {
+    loading: false,
+    error: null,
+  },
 };
 
 // Action types
@@ -30,7 +42,10 @@ export const TEAMSVIEW_SELECT_WORKERS = 'teamsview/select-workers';
 export const TEAMSVIEW_UNSELECT_WORKERS = 'teamsview/unselect-workers';
 export const TEAMSVIEW_SELECT_SKILLS = 'teamsview/select-skills';
 export const TEAMSVIEW_SELECT_OPERATION = 'teamsview/select-operation';
-export const TEAMSVIEW_RESET_STATE = 'teamsview/reset-state';
+const TEAMSVIEW_UPDATE_WORKERS_SKILLS_ASYNC_ACTION = 'teamsview/update-workers-skills';
+const TEAMSVIEW_UPDATE_WORKERS_SKILLS_ASYNC_ACTION_PENDING = `${TEAMSVIEW_UPDATE_WORKERS_SKILLS_ASYNC_ACTION}_PENDING` as const;
+const TEAMSVIEW_UPDATE_WORKERS_SKILLS_ASYNC_ACTION_FULFILLED = `${TEAMSVIEW_UPDATE_WORKERS_SKILLS_ASYNC_ACTION}_FULFILLED` as const;
+const TEAMSVIEW_UPDATE_WORKERS_SKILLS_ASYNC_ACTION_REJECTED = `${TEAMSVIEW_UPDATE_WORKERS_SKILLS_ASYNC_ACTION}_REJECTED` as const;
 
 type TeamsViewSelectWorkersAction = {
   type: typeof TEAMSVIEW_SELECT_WORKERS;
@@ -52,16 +67,26 @@ type TeamsViewSelectOperationAction = {
   payload: TeamsViewState['operation'];
 };
 
-type TeamsViewResetStateAction = {
-  type: typeof TEAMSVIEW_RESET_STATE;
-};
+type TeamsviewUpdateWorkersSkillsAsyncActionPending = {
+  type: typeof TEAMSVIEW_UPDATE_WORKERS_SKILLS_ASYNC_ACTION_PENDING;
+} & ReturnType<typeof newUpdateWorkersSkillsAsyncAction.pending>;
+
+type TeamsviewUpdateWorkersSkillsAsyncActionFulfilled = {
+  type: typeof TEAMSVIEW_UPDATE_WORKERS_SKILLS_ASYNC_ACTION_FULFILLED;
+} & ReturnType<typeof newUpdateWorkersSkillsAsyncAction.fulfilled>;
+
+type TeamsviewUpdateWorkersSkillsAsyncActionRejected = {
+  type: typeof TEAMSVIEW_UPDATE_WORKERS_SKILLS_ASYNC_ACTION_REJECTED;
+} & ReturnType<typeof newUpdateWorkersSkillsAsyncAction.rejected>;
 
 type TeamsViewActionTypes =
   | TeamsViewSelectWorkersAction
   | TeamsViewUnselectWorkersAction
   | TeamsViewSelectSkillsAction
   | TeamsViewSelectOperationAction
-  | TeamsViewResetStateAction;
+  | TeamsviewUpdateWorkersSkillsAsyncActionPending
+  | TeamsviewUpdateWorkersSkillsAsyncActionFulfilled
+  | TeamsviewUpdateWorkersSkillsAsyncActionRejected;
 
 // Action creators
 export const newTeamsViewSelectWorkers = (workers: string[]): TeamsViewSelectWorkersAction => ({
@@ -86,9 +111,49 @@ export const newTeamsViewSelectOperation = (
   payload: operation,
 });
 
-export const newTeamsViewResetStateAction = (): TeamsViewResetStateAction => ({
-  type: TEAMSVIEW_RESET_STATE,
-});
+// eslint-disable-next-line
+export const newUpdateWorkersSkillsAsyncAction = createAsyncAction(
+  TEAMSVIEW_UPDATE_WORKERS_SKILLS_ASYNC_ACTION,
+  async ({
+    operation,
+    workers,
+    skills,
+  }: {
+    workers: string[];
+    skills: string[];
+    operation: Required<TeamsViewState['operation']>;
+  }): Promise<void> => {
+    return updateWorkersSkills({
+      operation,
+      workers,
+      skills,
+    });
+  },
+);
+
+const asyncReducer = createReducer(initialState, handleAction => [
+  handleAction(newUpdateWorkersSkillsAsyncAction.pending, (state, _action) => {
+    return {
+      ...state,
+      status: {
+        error: null,
+        loading: true,
+      },
+    };
+  }),
+  handleAction(newUpdateWorkersSkillsAsyncAction.fulfilled, (_state, _action) => {
+    return initialState;
+  }),
+  handleAction(newUpdateWorkersSkillsAsyncAction.rejected, (state, action) => {
+    return {
+      ...state,
+      status: {
+        error: action.payload,
+        loading: false,
+      },
+    };
+  }),
+]);
 
 export const reduce = (state = initialState, action: TeamsViewActionTypes): TeamsViewState => {
   switch (action.type) {
@@ -119,10 +184,7 @@ export const reduce = (state = initialState, action: TeamsViewActionTypes): Team
         operation: action.payload,
       };
     }
-    case TEAMSVIEW_RESET_STATE: {
-      return initialState;
-    }
     default:
-      return state;
+      return asyncReducer(state, action as any);
   }
 };
