@@ -102,6 +102,10 @@
       {
         "value": "Unknown",
         "label": "Unknown"
+      },
+      {
+        "value": "N/A",
+        "label": "N/A"
       }
     ],
     "required": {
