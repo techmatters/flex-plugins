@@ -158,9 +158,11 @@ const SelectWorkersSkillsModal: React.FC<Props> = () => {
 
   return (
     <FormProvider {...methods}>
-      <Row style={{ justifyContent: 'space-evenly', width: '100%' }}>
-        <Column>{renderSkillOptions.slice(0, Math.ceil(renderSkillOptions.length / 2))}</Column>
-        <Column>{renderSkillOptions.slice(Math.ceil(renderSkillOptions.length / 2))}</Column>
+      <Row style={{ justifyContent: 'space-evenly', alignItems: 'start', width: '100%' }}>
+        <Column style={{ width: '40%' }}>
+          {renderSkillOptions.slice(0, Math.ceil(renderSkillOptions.length / 2))}
+        </Column>
+        <Column style={{ width: '40%' }}>{renderSkillOptions.slice(Math.ceil(renderSkillOptions.length / 2))}</Column>
       </Row>
     </FormProvider>
   );
