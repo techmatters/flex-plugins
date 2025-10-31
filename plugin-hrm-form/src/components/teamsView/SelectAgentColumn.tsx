@@ -28,7 +28,7 @@ import {
   newTeamsViewSelectWorkers,
   TeamsViewState,
   newTeamsViewUnselectWorkers,
-} from '../../states/teamsView/reducer';
+} from '../../states/teamsView';
 import { newOpenModalAction } from '../../states/routing/actions';
 import { StyledFormCheckbox } from '../forms/components/FormCheckbox/styles';
 import { RootState } from '../../states';

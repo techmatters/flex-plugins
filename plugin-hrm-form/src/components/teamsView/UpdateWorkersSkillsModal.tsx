@@ -23,7 +23,7 @@ import type { SupervisorState } from '@twilio/flex-ui/src/state/Supervisor/Super
 import { skillsOptions } from './teamsViewFilters';
 import FormCheckbox from '../forms/components/FormCheckbox/FormCheckbox';
 import { Box, Column, Row } from '../../styles/layout';
-import { newTeamsViewSelectSkills, newUpdateWorkersSkillsAsyncAction } from '../../states/teamsView/reducer';
+import { newTeamsViewSelectSkills, newUpdateWorkersSkillsAsyncAction } from '../../states/teamsView';
 import { namespace } from '../../states/storeNamespaces';
 import { RootState } from '../../states';
 import { RouterTask } from '../../types/types';

@@ -22,7 +22,7 @@ import {
   newTeamsViewSelectSkills,
   newTeamsViewSelectOperation,
   TeamsViewState,
-} from '../../../states/teamsView/reducer';
+} from '../../../states/teamsView';
 
 describe('test reducer', () => {
   test('empty state with unrelated action - should return initial state', async () => {
