@@ -41,18 +41,26 @@ export class ProtectedApiError extends ApiError {
  */
 const fetchProtectedApi = async (
   endPoint,
-  body: Record<string, string> = {},
-  allOptions?: FetchOptions & { useTwilioLambda?: boolean },
+  body: Record<string, any> = {},
+  allOptions?: FetchOptions & { useTwilioLambda?: boolean; useJsonEncode?: boolean },
 ) => {
   const { serverlessBaseUrl, accountScopedLambdaBaseUrl } = getHrmConfig();
-  const { useTwilioLambda, ...fetchOptions } = allOptions ?? {};
+  const { useTwilioLambda, useJsonEncode, ...fetchOptions } = allOptions ?? {};
   const token = getValidToken();
   if (token instanceof Error) throw new ApiError(`Aborting request due to token issue: ${token.message}`, {}, token);
+
+  const { contentType, encodedBody } = useJsonEncode
+    ? { contentType: 'application/json', encodedBody: JSON.stringify({ ...body, Token: token }) }
+    : {
+        contentType: 'application/x-www-form-urlencoded;charset=UTF-8',
+        encodedBody: new URLSearchParams({ ...body, Token: token }),
+      };
+
   const options: RequestInit = {
     method: 'POST',
-    body: new URLSearchParams({ ...body, Token: token }),
+    body: encodedBody,
     headers: {
-      'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
+      'Content-Type': contentType,
     },
     ...fetchOptions,
   };

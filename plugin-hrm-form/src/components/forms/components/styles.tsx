@@ -79,7 +79,7 @@ export type FormInputProps = { error?: boolean; width?: number | string; fullWid
 export const FormCheckBoxWrapper = styled(Row)<FormInputProps>`
   align-items: flex-start;
   box-sizing: border-box; /* Tells the browser to account for any border and padding in the values you specify for an element's width and height. https://developer.mozilla.org/en-US/docs/Web/CSS/box-sizing*/
-  height: 36px;
+  min-height: 36px;
   border-radius: 4px;
   border: ${props => (props.error ? '1px solid #CB3232' : 'none')};
   box-shadow: ${props => (props.error ? '0px 0px 0px 2px rgba(234,16,16,0.2)' : 'none')};
