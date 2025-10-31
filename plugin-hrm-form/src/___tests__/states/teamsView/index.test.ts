@@ -21,7 +21,7 @@ import {
   TEAMSVIEW_UNSELECT_WORKERS,
   teamsViewSelectWorkers,
   teamsViewUnselectWorkers,
-} from '../../../states/teamsView/reducer';
+} from '../../../states/teamsView';
 
 describe('test action creators', () => {
   each([
