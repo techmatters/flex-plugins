@@ -120,6 +120,14 @@ resource "aws_ssm_parameter" "transcript_retention_override" {
   value = var.hrm_transcript_retention_days_override
 }
 
+resource "aws_ssm_parameter" "index_transcripts_for_search" {
+  count = var.hrm_index_transcripts_for_search == true ? 0 : 1
+
+  name  = "/${var.environment}/hrm/${local.secrets.twilio_account_sid}/index_transcripts_for_search"
+  type  = "String"
+  value = var.hrm_index_transcripts_for_search
+}
+
 resource "aws_ssm_parameter" "operating_hours_enforced_override" {
   count = var.environment == "staging" ? 1 : 0
 
