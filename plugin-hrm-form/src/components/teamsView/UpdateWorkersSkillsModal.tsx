@@ -22,7 +22,6 @@ import type { SupervisorState } from '@twilio/flex-ui/src/state/Supervisor/Super
 
 import { skillsOptions } from './teamsViewFilters';
 import FormCheckbox from '../forms/components/FormCheckbox/FormCheckbox';
-import { Modal, Props as ModalProps } from '../../styles/modals';
 import { Box, Column, Row } from '../../styles/layout';
 import { newTeamsViewSelectSkills, newUpdateWorkersSkillsAsyncAction } from '../../states/teamsView/reducer';
 import { namespace } from '../../states/storeNamespaces';
@@ -33,6 +32,7 @@ import Router, { RouteConfig } from '../router/Router';
 import { getCurrentTopmostRouteForTask } from '../../states/routing/getRoute';
 import { FontOpenSans } from '../../styles';
 import asyncDispatch from '../../states/asyncDispatch';
+import { Modal, Props as ModalProps } from '../../design-system/modals/Modal';
 
 const TEAMS_VIEW_ROUTES: RouteConfig<Props> = [
   {

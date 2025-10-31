@@ -15,48 +15,21 @@
  */
 
 import React from 'react';
-import { CircularProgress, styled, Template } from '@twilio/flex-ui';
+import { CircularProgress, Template } from '@twilio/flex-ui';
 import ModalBase from '@material-ui/core/Modal';
-import Dialog, { DialogProps } from '@material-ui/core/Dialog';
-import Paper from '@material-ui/core/Paper';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { TertiaryButton, PrimaryButton, DestructiveButton, CloseButton } from './buttons';
-import { Box, Row } from './layout';
-import SearchResultsBackButton from '../components/search/SearchResults/SearchResultsBackButton';
-import { getCurrentTopmostRouteForTask, getCurrentTopmostRouteStackForTask } from '../states/routing/getRoute';
-import { namespace } from '../states/storeNamespaces';
-import { RootState } from '../states';
-import { newCloseModalAction, newGoBackAction } from '../states/routing/actions';
-import { isRouteWithModalSupport } from '../states/routing/types';
-
-const ModalPaper = styled(Paper)`
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 50%;
-  max-width: 800px;
-  max-height: 600px;
-  background-color: white;
-  padding: 20px;
-  outline: none;
-  border-radius: 4px;
-`;
-
-const ModalTitle = styled('h2')`
-  font-size: 18px;
-  font-weight: bold;
-  margin: 0;
-`;
-
-const ButtonGroup = styled(Box)`
-  display: flex;
-  flex-direction: row;
-  justify-content: flex-end;
-  margin-top: 20px;
-  gap: 10px;
-`;
+import { TertiaryButton, PrimaryButton, CloseButton } from '../../../styles/buttons';
+import { Box, Row } from '../../../styles/layout';
+import SearchResultsBackButton from '../../../components/search/SearchResults/SearchResultsBackButton';
+import { getCurrentTopmostRouteForTask, getCurrentTopmostRouteStackForTask } from '../../../states/routing/getRoute';
+import { namespace } from '../../../states/storeNamespaces';
+import { RootState } from '../../../states';
+import { newCloseModalAction, newGoBackAction } from '../../../states/routing/actions';
+import { isRouteWithModalSupport } from '../../../states/routing/types';
+import { ButtonGroup } from '../styles';
+import { CloseDialog } from '../CloseDialog';
+import { ModalPaper, ModalTitle } from './styles';
 
 export type Props = {
   templateCodes: {
@@ -209,57 +182,5 @@ export const Modal: React.FC<Props> = ({
         />
       </ModalPaper>
     </ModalBase>
-  );
-};
-
-const CloseDialogHeader = styled('p')`
-  font-size: 20px;
-  font-weight: 700;
-  align-self: center;
-  text-align: center;
-`;
-
-const CloseDialogContent = styled('p')`
-  font-size: 14px;
-  margin: 20px 0;
-`;
-
-const CloseDialogPaper = styled((props: React.JSX.IntrinsicAttributes & DialogProps) => (
-  <Dialog {...props} classes={{ paper: 'paper' }} />
-))`
-  && .paper {
-    width: 60%;
-    max-width: 600px;
-  }
-`;
-
-const CloseDialog: React.FC<{
-  openDialog: boolean;
-  closeDialogHeader: string;
-  closeDialogContent: string;
-  onDiscardChanges: () => void;
-  onCloseDialog: () => void;
-}> = ({ openDialog, closeDialogHeader, closeDialogContent, onDiscardChanges, onCloseDialog }) => {
-  return (
-    <CloseDialogPaper open={openDialog} onClose={onCloseDialog}>
-      <Box padding="30px">
-        <CloseDialogHeader>
-          <Template code={closeDialogHeader} />
-        </CloseDialogHeader>
-        <Box padding="20px 0">
-          <CloseDialogContent>
-            <Template code={closeDialogContent} />
-          </CloseDialogContent>
-        </Box>
-        <ButtonGroup>
-          <TertiaryButton tabIndex={1} onClick={onCloseDialog}>
-            <Template code="Cancel" />
-          </TertiaryButton>
-          <DestructiveButton tabIndex={2} onClick={onDiscardChanges} style={{ margin: '0 15px' }}>
-            <Template code="Discard Changes" />
-          </DestructiveButton>
-        </ButtonGroup>
-      </Box>
-    </CloseDialogPaper>
   );
 };
