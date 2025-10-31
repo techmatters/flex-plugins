@@ -21,7 +21,7 @@ import type { SupervisorState } from '@twilio/flex-ui/src/state/Supervisor/Super
 
 import { getAseloFeatureFlags } from '../../hrmConfig';
 import { namespace, teamsViewBase } from '../../states/storeNamespaces';
-import { teamsViewSelectWorkers, teamsViewUnselectWorkers } from '../../states/teamsView';
+import { teamsViewSelectWorkers, teamsViewUnselectWorkers } from '../../states/teamsView/reducer';
 import { StyledFormCheckbox } from '../forms/components/FormCheckbox/styles';
 import { RootState } from '../../states';
 

@@ -30,7 +30,7 @@ import { reduce as ReferrableResourcesReducer } from './resources';
 import { reduce as ConferencingReducer } from './conferencing';
 import { reduce as ProfileReducer } from './profile/reducer';
 import { reduce as SwitchboardReducer } from './switchboard/reducer';
-import { reduce as TeamsViewReducer } from './teamsView';
+import { reduce as TeamsViewReducer } from './teamsView/reducer';
 import { CaseState } from './case/types';
 import { ContactsState } from './contacts/types';
 import {
