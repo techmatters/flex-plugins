@@ -13,10 +13,6 @@
     "name": "dateOfBirth",
     "type": "date-input",
     "label": "Date of Birth",
-    "required": {
-      "value": true,
-      "message": "RequiredFieldError"
-    },
     "isPII": false
   },
   {
@@ -44,5 +40,25 @@
     "label": "IP Address",
     "type": "input",
     "isPII": true
+  },
+  {
+    "name": "consentForResearchEvaluation",
+    "label": "Consent for Research/Evaluation",
+    "type": "select",
+    "options": [
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "Yes",
+        "label": "Yes"
+      },
+      {
+        "value": "No",
+        "label": "No"
+      }
+    ],
+    "isPII": false
   }
 ]
