@@ -208,7 +208,7 @@ locals {
           en_number : "3656520724"
           fr_number : "6473707639"
           ns_fr_number : "7823120154"
-          redirect_number : ""
+          redirect_number : "+16474833673" //NEED TO REPLACE
 
           en_function_url : "https://twilio-service-4854.twil.io/988_en"
           fr_function_url : "https://twilio-service-4854.twil.io/988_fr"
