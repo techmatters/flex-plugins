@@ -25,11 +25,11 @@ const contactType: ContactType = 'email';
 
 const translations: Translations = {
   'en-GB': {
-    WelcomeMessage: 'Welcome to The Mix Peer Chat Service',
-    EntryPointTagLine: 'The Mix Peer Chat Service',
-    TypingIndicator: 'Peer Supporter is typing',
+    WelcomeMessage: 'Welcome to The Mix PeerChat Service',
+    EntryPointTagLine: 'The Mix PeerChat Service',
+    TypingIndicator: 'PeerChat Supporter is typing',
     MessageCanvasTrayContent: '',
-    MessageInputDisabledReasonHold: 'Please hold for a Peer Supporter.',
+    MessageInputDisabledReasonHold: 'Please hold for a PeerChat Supporter.',
     AutoFirstMessage: 'Incoming webchat contact from',
     PreEngagementDescription: `Let's get started`,
     LetsChat: "Let's chat!",
@@ -195,7 +195,7 @@ const preEngagementConfig: PreEngagementFormDefinition = {
       type: 'checkbox',
       name: 'dataProcessingAndStorage',
       label:
-        'I consent to my data being processed and stored in order to access the Peer Support service.',
+        'I consent to my data being processed and stored in order to access the PeerChat Support service.',
       required: {
         value: true,
         message: "Sorry, if you don't consent to have your data being processed and stored we can't provide counselling to you.",
@@ -225,7 +225,7 @@ const memberDisplayOptions = {
   yourDefaultName: 'You',
   yourFriendlyNameOverride: false,
   theirFriendlyNameOverride: false,
-  theirDefaultName: 'The Mix Peer Supporter',
+  theirDefaultName: 'The Mix PeerChat Supporter',
 };
 
 export const config: Configuration = {
