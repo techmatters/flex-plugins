@@ -213,8 +213,8 @@ locals {
           en_function_url : "https://twilio-service-4854.twil.io/988_en"
           fr_function_url : "https://twilio-service-4854.twil.io/988_fr"
 
-          988_english_queue_sid : "WQc4e40f232125af1dabbdfda2c874bdfa"
-          988_french_queue_sid : "WQe1b539643a7a1a9eadb2a4b0d2caacd5"
+          988_english_queue_sid : "WQ5bc515dea65b42a91211b0914ef40914"
+          988_french_queue_sid : "WQ70aab2b1292265f05564b87b144b98ef"
 
         }
         chatbot_unique_names = []
