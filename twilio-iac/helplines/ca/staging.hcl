@@ -217,8 +217,8 @@ locals {
           en_function_url : "https://test-service-dee-4583.twil.io/988_en"
           fr_function_url : "https://test-service-dee-4583.twil.io/988_fr"
 
-          988_english_queue_sid : "WQc4e40f232125af1dabbdfda2c874bdfa"
-          988_french_queue_sid : "WQe1b539643a7a1a9eadb2a4b0d2caacd5"
+          "988_english_queue_sid" : "WQc4e40f232125af1dabbdfda2c874bdfa"
+          "988_french_queue_sid" : "WQe1b539643a7a1a9eadb2a4b0d2caacd5"
         }
         chatbot_unique_names = []
       }
