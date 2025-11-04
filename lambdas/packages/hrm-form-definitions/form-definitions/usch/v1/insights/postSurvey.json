@@ -1,6 +1,6 @@
 [
   {
-    "insightsObject": "conversations",
+    "insightsObject": "customers",
     "attributeName": "customer_attribute_1",
     "questions": ["experience_rating"]
   },
