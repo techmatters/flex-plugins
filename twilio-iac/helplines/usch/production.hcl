@@ -106,7 +106,7 @@ locals {
         chatbot_unique_names   = []
         enable_datadog_monitor = true
         custom_monitor = {
-          query = "sum(last_24h):sum:<metric>{*}.as_count() == 0"
+          query = "sum(last_4d):sum:<metric>{*}.as_count() == 0"
           custom_schedule = {
             rrule    = "FREQ=DAILY;INTERVAL=1;BYHOUR=6;BYMINUTE=0"
             timezone = "America/Phoenix"
@@ -151,7 +151,7 @@ locals {
         chatbot_unique_names   = []
         enable_datadog_monitor = true
         custom_monitor = {
-          query = "sum(last_24h):sum:<metric>{*}.as_count() == 0"
+          query = "sum(last_1w):sum:<metric>{*}.as_count() == 0"
           custom_schedule = {
             rrule    = "FREQ=DAILY;INTERVAL=1;BYHOUR=6;BYMINUTE=0"
             timezone = "America/Phoenix"
