@@ -34,6 +34,7 @@ function helplineIdentifierFullStory(
   };
   const pageVars: Record<string, string> = {
     flexVersion,
+    helplineCode,
   };
   try {
     const { accountSid, attributes, sid: workerSid } = workerClient;
@@ -44,6 +45,7 @@ function helplineIdentifierFullStory(
     } (${helplineCode} - [unable to infer environment from plugin url])`;
     userVars.email = email;
     userVars.workerSid = workerSid;
+    pageVars.accountSid = accountSid;
 
     const { src } = customPlugins.find(p => p.name === 'HRM Forms') ?? {};
     if (src) {
