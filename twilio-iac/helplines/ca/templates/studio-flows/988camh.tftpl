@@ -53,7 +53,7 @@ ${
         "workflow": workflow_sids["master"],
         "channel": task_channel_sids["voice"],
         "waitUrl": channel_flow_vars["en_function_url"],
-        "waitUrlMethod": "GET"
+        "waitUrlMethod": "GET",
         "attributes": "{\"language\": \"en-CA\",\n\"type\": \"inbound\", \"name\": \"{{trigger.call.From}}\",\"ignoreAgent\":\"\", \"transferTargetType\":\"\",\"channelType\":\"voice\", \"conversations\": {\"ivr_path\" : \"988 English\", \"hang_up_by\": \"Customer\"}}"
       }
     },
