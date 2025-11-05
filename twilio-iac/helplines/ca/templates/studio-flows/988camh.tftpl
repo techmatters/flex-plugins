@@ -270,6 +270,7 @@ ${
           "event": "fail"
         }
       ],
+      "properties": {
         "service_sid": "${flow_vars.service_sid}",
         "environment_sid": "${flow_vars.environment_sid}",
         "offset": {
@@ -288,6 +289,7 @@ ${
           }
         ],
         "url": "${flow_vars.check_counsellors_function_url}"
+      }
     },
     {
       "name": "split_available_counsellors_fr",
