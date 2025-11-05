@@ -23,35 +23,51 @@ import { fullStoryId } from '../private/secret';
 /**
  * Identifies helpline usage by Twilio Account ID (accountSid) in FullStory
  */
-function helplineIdentifierFullStory(workerClient: Worker, flexVersion: string, customPlugins: CustomPlugins[]) {
+function helplineIdentifierFullStory(
+  workerClient: Worker,
+  flexVersion: string,
+  customPlugins: CustomPlugins[],
+  helplineCode: string,
+) {
+  const userVars: Record<string, string> = {
+    helplineCode,
+  };
+  const pageVars: Record<string, string> = {
+    flexVersion,
+  };
   try {
     const { accountSid, attributes, sid: workerSid } = workerClient;
-    const { full_name: fullName, email, contact_uri: contactUri, helpline_code: helplineCode } = attributes ?? {};
-    FullStory.setUserVars({
-      accountSid,
-      displayName: fullName || contactUri || 'Unknown',
-      email,
-      helplineCode,
-      workerSid,
-    });
-    FullStory.setVars('page', {
-      flexVersion,
-    });
+    const { full_name: fullName, email, contact_uri: contactUri } = attributes ?? {};
+    userVars.accountSid = accountSid;
+    userVars.displayName = `${
+      fullName || contactUri || 'Unknown'
+    } (${helplineCode} - [unable to infer environment from plugin url])`;
+    userVars.email = email;
+    userVars.workerSid = workerSid;
+
     const { src } = customPlugins.find(p => p.name === 'HRM Forms') ?? {};
     if (src) {
+      pageVars.pluginUrl = src;
       const { pluginVersion, environment } =
         src.match(
           /https:\/\/assets-(?<environment>\w+)\.tl\.techmatters\.org\/plugins\/hrm-form\/\w+\/(?<pluginVersion>[\w.-]+)\/plugin-hrm-form\.js/,
         )?.groups ?? {};
-      FullStory.setVars('page', {
-        pluginUrl: src,
-        pluginVersion,
-      });
-      FullStory.setUserVars({ environment });
+      pageVars.pluginVersion = pluginVersion;
+      userVars.displayName = `${fullName || contactUri || 'Unknown'} (${helplineCode} - ${environment})`;
+      userVars.environment = environment;
     }
   } catch (err) {
-    console.error('Error adding contextual data to FullStory session', err);
+    console.error(
+      'Error locating contextual data to add to FullStory session, adding what we can',
+      err,
+      'User data found:',
+      userVars,
+      'Session data found:',
+      pageVars,
+    );
   }
+  FullStory.setUserVars(userVars);
+  FullStory.setVars('page', pageVars);
 }
 
 export function setUpFullStory(workerClient: Worker, serviceConfiguration: ServiceConfiguration) {
@@ -65,6 +81,7 @@ export function setUpFullStory(workerClient: Worker, serviceConfiguration: Servi
       workerClient,
       serviceConfiguration.ui_version,
       serviceConfiguration.plugin_service_attributes?.custom_plugins ?? [],
+      serviceConfiguration.attributes.helpline_code || '[helpline code not defined]',
     );
   }
 }
