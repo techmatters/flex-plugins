@@ -265,7 +265,10 @@ const TabbedFormsTabs: React.FC<Props> = ({
         <FontOpenSans>
           <Bold>#{contactId}</Bold>
           {!isOfflineContactTask(task) && !isStandaloneITask(task) && (
-            <OpaqueText style={{ fontStyle: 'italic' }}> (<Template code={task.queueName} />)</OpaqueText>
+            <OpaqueText style={{ fontStyle: 'italic' }}>
+              {' '}
+              (<Template code={task.queueName} />)
+            </OpaqueText>
           )}
         </FontOpenSans>
       </Row>
