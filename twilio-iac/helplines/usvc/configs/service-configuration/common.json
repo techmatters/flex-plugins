@@ -9,6 +9,7 @@
         "enableUnmaskingCalls": false,
         "config_flags": {
             "enableExternalRecordings": false,
+            "enable_conferencing": true,
             "hideAddToNewCaseButton": true
         },
         "feature_flags": {
