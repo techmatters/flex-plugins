@@ -49,8 +49,8 @@ ${
       ],
       "properties": {
         "offset": {
-          "x": -380,
-          "y": 2240
+          "x": -370,
+          "y": 2330
         },
         "attributes": "${channel_attributes.default}",
         "workflow": "${workflow_sids.master}",
@@ -58,22 +58,22 @@ ${
       }
     },
     {
-      "name": "play_message_vc_voice_welcome",
+      "name": "play_message_vc_voice_en_welcome",
       "type": "say-play",
       "transitions": [
         {
-          "next": "gather_input_vc_voice_language",
+          "next": "play_message_vc_voice_es_welcome",
           "event": "audioComplete"
         }
       ],
       "properties": {
         "voice": "Polly.Danielle-Generative",
         "offset": {
-          "x": 50,
-          "y": 730
+          "x": -470,
+          "y": 720
         },
         "loop": 1,
-        "say": "${flow_vars.play_message_vc_voice_welcome}",
+        "say": "${flow_vars.play_message_vc_voice_en_welcome}",
         "language": "en-US"
       }
     },
@@ -100,15 +100,15 @@ ${
       }
     },
     {
-      "name": "gather_input_vc_voice_language",
+      "name": "gather_input_vc_voice_en_language",
       "type": "gather-input-on-call",
       "transitions": [
         {
-          "next": "split_language",
+          "next": "split_language_en",
           "event": "keypress"
         },
         {
-          "next": "gather_input_vc_voice_language",
+          "next": "gather_input_vc_voice_en_language",
           "event": "speech"
         },
         {
@@ -120,12 +120,12 @@ ${
         "number_of_digits": 1,
         "speech_timeout": "20",
         "offset": {
-          "x": -190,
-          "y": 1000
+          "x": -340,
+          "y": 1090
         },
         "loop": 1,
         "finish_on_key": "#",
-        "say": "${flow_vars.gather_input_vc_voice_language}",
+        "say": "${flow_vars.gather_input_vc_voice_en_language}",
         "language": "en-US",
         "stop_gather": false,
         "gather_language": "en",
@@ -134,11 +134,11 @@ ${
       }
     },
     {
-      "name": "split_language",
+      "name": "split_language_en",
       "type": "split-based-on",
       "transitions": [
         {
-          "next": "gather_input_vc_voice_language",
+          "next": "gather_input_vc_voice_en_language",
           "event": "noMatch"
         },
         {
@@ -148,7 +148,7 @@ ${
             {
               "friendly_name": "If value equal_to 1",
               "arguments": [
-                "{{widgets.gather_input_vc_voice_language.Digits}}"
+                "{{widgets.gather_input_vc_voice_en_language.Digits}}"
               ],
               "type": "equal_to",
               "value": "1"
@@ -156,13 +156,13 @@ ${
           ]
         },
         {
-          "next": "play_message_vc_voice_sp_prequeue",
+          "next": "play_message_vc_voice_es_prequeue",
           "event": "match",
           "conditions": [
             {
               "friendly_name": "If value equal_to 2",
               "arguments": [
-                "{{widgets.gather_input_vc_voice_language.Digits}}"
+                "{{widgets.gather_input_vc_voice_en_language.Digits}}"
               ],
               "type": "equal_to",
               "value": "2"
@@ -171,10 +171,10 @@ ${
         }
       ],
       "properties": {
-        "input": "{{widgets.gather_input_vc_voice_language.Digits}}",
+        "input": "{{widgets.gather_input_vc_voice_en_language.Digits}}",
         "offset": {
-          "x": -350,
-          "y": 1230
+          "x": -470,
+          "y": 1400
         }
       }
     },
@@ -190,8 +190,8 @@ ${
       "properties": {
         "voice": "Polly.Danielle-Generative",
         "offset": {
-          "x": -610,
-          "y": 1550
+          "x": -660,
+          "y": 1780
         },
         "loop": 1,
         "say": "${flow_vars.play_message_vc_voice_en_prequeue}",
@@ -199,7 +199,7 @@ ${
       }
     },
     {
-      "name": "play_message_vc_voice_sp_prequeue",
+      "name": "play_message_vc_voice_es_prequeue",
       "type": "say-play",
       "transitions": [
         {
@@ -208,14 +208,14 @@ ${
         }
       ],
       "properties": {
-        "voice": "Polly.Lucia-Generative",
+        "voice": "Polly.Mía-Generative",
         "offset": {
-          "x": -110,
-          "y": 1540
+          "x": -180,
+          "y": 1820
         },
         "loop": 1,
-        "say": "This is the spanish prequeue message for VC",
-        "language": "es-ES"
+        "say": "${flow_vars.play_message_vc_voice_es_prequeue}",
+        "language": "es-MX"
       }
     },
     {
@@ -223,7 +223,7 @@ ${
       "type": "set-variables",
       "transitions": [
         {
-          "next": "play_message_vc_voice_welcome",
+          "next": "play_message_vc_voice_en_welcome",
           "event": "next"
         }
       ],
@@ -265,7 +265,7 @@ ${
         ],
         "offset": {
           "x": -650,
-          "y": 1860
+          "y": 2050
         }
       }
     },
@@ -287,8 +287,8 @@ ${
           }
         ],
         "offset": {
-          "x": -170,
-          "y": 1860
+          "x": -160,
+          "y": 2030
         }
       }
     },
@@ -307,8 +307,8 @@ ${
         "flow_sid": "${debug_studio_subflow_sid}",
         "flow_revision": "LatestPublished",
         "offset": {
-          "x": 700,
-          "y": 1650
+          "x": 50,
+          "y": 2640
         },
         "parameters": [
           {
@@ -347,6 +347,106 @@ ${
             "key": "task_attributes"
           }
         ]
+      }
+    },
+    {
+      "name": "gather_input_vc_voice_es_language",
+      "type": "gather-input-on-call",
+      "transitions": [
+        {
+          "next": "split_language_es",
+          "event": "keypress"
+        },
+        {
+          "next": "gather_input_vc_voice_en_language",
+          "event": "speech"
+        },
+        {
+          "next": "gather_input_vc_voice_en_language",
+          "event": "timeout"
+        }
+      ],
+      "properties": {
+        "voice": "Polly.Mía-Generative",
+        "number_of_digits": 1,
+        "speech_timeout": "20",
+        "offset": {
+          "x": 120,
+          "y": 1300
+        },
+        "loop": 1,
+        "finish_on_key": "#",
+        "say": "${flow_vars.gather_input_vc_voice_es_language}",
+        "language": "es-MX",
+        "stop_gather": false,
+        "gather_language": "en",
+        "speech_model": "default",
+        "timeout": 5
+      }
+    },
+    {
+      "name": "play_message_vc_voice_es_welcome",
+      "type": "say-play",
+      "transitions": [
+        {
+          "next": "gather_input_vc_voice_en_language",
+          "event": "audioComplete"
+        }
+      ],
+      "properties": {
+        "voice": "Polly.Mía-Generative",
+        "offset": {
+          "x": 20,
+          "y": 890
+        },
+        "loop": 1,
+        "say": "${flow_vars.play_message_vc_voice_es_welcome}",
+        "language": "es-MX"
+      }
+    },
+    {
+      "name": "split_language_es",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "gather_input_vc_voice_en_language",
+          "event": "noMatch"
+        },
+        {
+          "next": "play_message_vc_voice_en_prequeue",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to 1",
+              "arguments": [
+                "{{widgets.gather_input_vc_voice_es_language.Digits}}"
+              ],
+              "type": "equal_to",
+              "value": "1"
+            }
+          ]
+        },
+        {
+          "next": "play_message_vc_voice_es_prequeue",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to 2",
+              "arguments": [
+                "{{widgets.gather_input_vc_voice_es_language.Digits}}"
+              ],
+              "type": "equal_to",
+              "value": "2"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{widgets.gather_input_vc_voice_es_language.Digits}}",
+        "offset": {
+          "x": 170,
+          "y": 1560
+        }
       }
     }
   ],
