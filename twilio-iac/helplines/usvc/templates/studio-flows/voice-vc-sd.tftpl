@@ -112,6 +112,7 @@ ${
           "event": "speech"
         },
         {
+          "next": "gather_input_vc_voice_es_language",
           "event": "timeout"
         }
       ],
@@ -208,14 +209,14 @@ ${
         }
       ],
       "properties": {
-        "voice": "Polly.Mía-Generative",
+        "voice": "Polly.Lucia-Generative",
         "offset": {
           "x": -180,
           "y": 1820
         },
         "loop": 1,
         "say": "${flow_vars.play_message_vc_voice_es_prequeue}",
-        "language": "es-MX"
+        "language": "es-ES"
       }
     },
     {
@@ -367,7 +368,7 @@ ${
         }
       ],
       "properties": {
-        "voice": "Polly.Mía-Generative",
+        "voice": "Polly.Lucia-Generative",
         "number_of_digits": 1,
         "speech_timeout": "20",
         "offset": {
@@ -377,7 +378,7 @@ ${
         "loop": 1,
         "finish_on_key": "#",
         "say": "${flow_vars.gather_input_vc_voice_es_language}",
-        "language": "es-MX",
+        "language": "es-ES",
         "stop_gather": false,
         "gather_language": "en",
         "speech_model": "default",
@@ -394,14 +395,14 @@ ${
         }
       ],
       "properties": {
-        "voice": "Polly.Mía-Generative",
+        "voice": "Polly.Lucia-Generative",
         "offset": {
           "x": 20,
           "y": 890
         },
         "loop": 1,
         "say": "${flow_vars.play_message_vc_voice_es_welcome}",
-        "language": "es-MX"
+        "language": "es-ES"
       }
     },
     {
