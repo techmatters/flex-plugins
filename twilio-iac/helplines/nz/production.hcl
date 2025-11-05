@@ -94,6 +94,7 @@ locals {
         templatefile         = "/app/twilio-iac/helplines/nz/templates/studio-flows/instagram-lex-priority-v2-lambda-sd.tftpl"
         channel_flow_vars    = {}
         chatbot_unique_names = []
+        enable_datadog_monitor = true
         custom_monitor = {
           query = "sum(last_2d):sum:<metric>{*}.as_count() == 0"
           custom_schedule = {

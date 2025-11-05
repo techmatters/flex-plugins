@@ -100,7 +100,7 @@
   },
   {
     "name": "didYouContactCpsIn",
-    "label": "Did you contact CPS in Alabama, California, Connecticut, Iowa, Louisiana, Maryland, Massachussets, Michigan, Mississippi, Nevada, New York, or Vermont?",
+    "label": "Did you contact CPS in Alabama, California, Connecticut, Louisiana, Maryland, Massachussets, Michigan, Mississippi, Nevada, New York, or Vermont?",
     "type": "select",
     "isPII": false,
     "defaultOption": {

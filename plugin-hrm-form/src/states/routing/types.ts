@@ -221,6 +221,12 @@ export const isContactRoute = (route: AppRoutes): route is ContactRoute => {
   return route.route === 'contact';
 };
 
+
+type TeamsViewRoute = {
+  route: 'teams';
+  subroute?: 'select-skills' | 'confirm-update';
+}
+
 type OtherRoutes =
   | CSAMReportRoute
   | { route: 'select-call-type' }
@@ -231,13 +237,13 @@ type OtherRoutes =
   | ProfileListRoute
   | ProfileRoute
   | ProfileEditRoute
-  | ProfileSectionEditRoute;
+  | ProfileSectionEditRoute
+  | TeamsViewRoute;
 
 // The different routes we have in our app
 export type AppRoutes = CaseRoute | ProfileHomeRoute | OtherRoutes;
 
-export function isRouteWithModalSupport(appRoute: any): appRoute is RouteWithModalSupport {
-  return [
+const routesWithModalSupport: AppRoutes['route'][] = [
     'tabbed-forms',
     'case',
     'case-list',
@@ -246,7 +252,10 @@ export function isRouteWithModalSupport(appRoute: any): appRoute is RouteWithMod
     'search',
     'select-call-type',
     'profile-list',
-  ].includes(appRoute.route);
+    'teams',
+  ]
+export function isRouteWithModalSupport(appRoute: any): appRoute is RouteWithModalSupport {
+  return routesWithModalSupport.includes(appRoute.route);
 }
 
 export const isCaseRoute = (route: AppRoutes): route is CaseRoute => route?.route === 'case';

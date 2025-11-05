@@ -28,7 +28,6 @@ import { recordCallState } from './utils/setUpActions';
 import * as TaskRouterListeners from './utils/setUpTaskRouterListeners';
 import * as Components from './utils/setUpComponents';
 import * as Channels from './channels/setUpChannels';
-import setUpMonitoring from './utils/setUpMonitoring';
 import { changeLanguage } from './states/configuration/actions';
 import { getAseloFeatureFlags, getHrmConfig, initializeConfig, subscribeToConfigUpdates } from './hrmConfig';
 import { setUpSyncClient } from './services/SyncService';
@@ -48,6 +47,7 @@ import { setUpViewMaskedVoiceNumber } from './maskIdentifiers/unmaskPhoneNumber'
 import { validateAndSetPermissionRules } from './permissions/rules';
 import { setupLlmNotifications } from './components/contact/GenerateSummaryButton/setUpLlmNotifications';
 import { FeatureFlags } from './types/FeatureFlags';
+import { setUpFullStory } from './fullStory/setUp';
 
 const PLUGIN_NAME = 'HrmFormPlugin';
 
@@ -155,6 +155,8 @@ const setUpActions = (
   // bind setupObject to the functions that requires some initialization
   const wrapupOverride = ActionFunctions.wrapupTask(setupObject, getMessage);
 
+  Flex.Actions.addListener('afterNavigateToView', ActionFunctions.afterNavigateToView);
+
   Flex.Actions.addListener('beforeAcceptTask', ActionFunctions.beforeAcceptTask(setupObject, getMessage));
   Flex.Actions.addListener('afterAcceptTask', ActionFunctions.afterAcceptTask(featureFlags, setupObject, getMessage));
 
@@ -188,7 +190,7 @@ export default class HrmFormPlugin extends FlexPlugin {
   async init(flex: typeof Flex, manager: Flex.Manager) {
     loadCSS('https://use.fontawesome.com/releases/v5.15.4/css/solid.css');
 
-    setUpMonitoring(manager.workerClient, manager.serviceConfiguration);
+    setUpFullStory(manager.workerClient, manager.serviceConfiguration);
 
     console.log(`Welcome to ${PLUGIN_NAME}`);
     this.registerReducers(manager);

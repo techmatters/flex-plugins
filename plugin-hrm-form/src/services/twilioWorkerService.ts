@@ -70,3 +70,9 @@ export const getWorkerAttributes = async (workerSid: string) => {
 
   return fetchProtectedApi('/getWorkerAttributes', body);
 };
+
+export const updateWorkersSkills = async (payload: {
+  workers: Array<string>;
+  skills: Array<string>;
+  operation: 'enable' | 'disable';
+}) => fetchProtectedApi('/updateWorkersSkills', payload, { useTwilioLambda: true, useJsonEncode: true });

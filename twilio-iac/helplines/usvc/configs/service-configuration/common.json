@@ -11,7 +11,9 @@
         },
         "feature_flags": {
             "use_prepopulate_mappings": true,
-            "enable_client_profiles": false
+            "enable_client_profiles": false,
+            "enable_conferencing": true
+            
         },
         "definitionVersion": "usvc-v1",
         "external_recordings_enabled": false,

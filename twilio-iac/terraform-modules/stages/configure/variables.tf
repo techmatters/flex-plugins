@@ -180,6 +180,11 @@ variable "hrm_transcript_retention_days_override" {
   default     = -1
 }
 
+variable "hrm_index_transcripts_for_search" {
+  description = "Number of days to retain HRM Contact Job Cleanup logs"
+  type        = bool
+  default     = true
+}
 
 variable "operating_hours_enforced_override" {
   description = "Enforce operating hours"
