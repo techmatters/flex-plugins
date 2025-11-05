@@ -1404,26 +1404,6 @@
     "isPII": false
   },
   {
-    "name": "consentForResearchEvaluation",
-    "label": "Consent for Research/Evaluation",
-    "type": "select",
-    "options": [
-      {
-        "value": "",
-        "label": ""
-      },
-      {
-        "value": "Yes",
-        "label": "Yes"
-      },
-      {
-        "value": "No",
-        "label": "No"
-      }
-    ],
-    "isPII": false
-  },
-  {
     "name": "howDidYouHearOfTheMixPeerSupportService",
     "label": "How did you hear of the Mix PeerChat Service?",
     "type": "select",
