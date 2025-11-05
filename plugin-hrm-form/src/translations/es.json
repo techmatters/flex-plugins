@@ -224,7 +224,7 @@
   "CallType-CloseContact": "Cerrar Contacto",
   "ConnectDialog-Child": "¿Copiar información del niño de este registro a un nuevo contacto?",
   "ConnectDialog-Caller": "¿Copiar información del llamante de este registro a un nuevo contacto?",
-  "QueueCard-Name": "Nombre de la cola:",
+  "QueueCard-Name": "Nombre de la cola",
   "CaseHeader-ViewCase": "Abrir Caso",
   "Transfer-AcceptTransferButton": "Aceptar Transferencia",
   "Transfer-RejectTransferButton": "Rechazar Transferencia",

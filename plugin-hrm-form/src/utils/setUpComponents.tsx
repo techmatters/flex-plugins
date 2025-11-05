@@ -18,7 +18,8 @@
 /* eslint-disable react/no-multi-comp */
 import React from 'react';
 import * as Flex from '@twilio/flex-ui';
-import { Notifications, NotificationType, Template } from '@twilio/flex-ui';
+import { CallCanvas, Notifications, NotificationType, Template } from '@twilio/flex-ui';
+import { ParticipantCanvasChildrenProps } from '@twilio/flex-ui/src/components/canvas/ParticipantCanvas/ParticipantCanvas.definitions';
 
 import * as TransferHelpers from '../transfer/transferTaskState';
 import EmojiPicker from '../components/emojiPicker';
@@ -50,6 +51,8 @@ import { RootState } from '../states';
 import selectCurrentOfflineContact from '../states/contacts/selectCurrentOfflineContact';
 import { REFRESH_BROWSER_REQUIRED_FOR_LANGUAGE_CHANGE_NOTIFICATION_ID } from '../states/configuration/changeLanguage';
 import { FeatureFlags } from '../types/FeatureFlags';
+import QueueNameLabel from '../QueueNameLabel';
+import HangUpByLabel from '../components/HangUpByLabel';
 
 type SetupObject = ReturnType<typeof getHrmConfig>;
 /**
@@ -98,6 +101,37 @@ export const setUpQueuesStatusWriter = (setupObject: SetupObject) => {
   );
 };
 
+export const setUpExtraTranslations = (setupObject: SetupObject) => {
+  Flex.TaskInfoPanel.Content.add(
+    <QueueNameLabel
+      renderIfTranslationSameAsUntranslated={false}
+      key="queue-name-label"
+      style={{ flexFlow: 'column' }}
+    />,
+    { sortOrder: 0, align: 'start' },
+  );
+  Flex.CallCanvas.Content.add(
+    <QueueNameLabel
+      renderIfTranslationSameAsUntranslated={false}
+      key="queue-name-label"
+      style={{ justifyContent: 'center', gap: '5px', padding: '0.5rem' }}
+    />,
+    {
+      sortOrder: 0,
+    },
+  );
+  Flex.IncomingTaskCanvas.Content.add(
+    <QueueNameLabel
+      renderIfTranslationSameAsUntranslated={false}
+      key="queue-name-label"
+      style={{ justifyContent: 'center', gap: '5px', padding: '0.5rem' }}
+    />,
+    {
+      sortOrder: 0,
+    },
+  );
+};
+
 // Re-renders UI if there is a new reservation created and no active tasks (avoid a visual bug with QueuesStatus when there are no tasks)
 const setUpRerenderOnReservation = () => {
   const manager = Flex.Manager.getInstance();
@@ -111,7 +145,7 @@ const setUpRerenderOnReservation = () => {
 };
 
 /**
- * Add a widget at the beginnig of the TaskListContainer, which shows the pending tasks in each channel (consumes from QueuesStatusWriter)
+ * Add a widget at the beginning of the TaskListContainer, which shows the pending tasks in each channel (consumes from QueuesStatusWriter)
  */
 export const setUpQueuesStatus = (setupObject: SetupObject) => {
   setUpRerenderOnReservation();

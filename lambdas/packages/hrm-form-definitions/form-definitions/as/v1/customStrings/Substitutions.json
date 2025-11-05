@@ -1,7 +1,9 @@
 {
   "en": {
     "HelplineSubstitution": "Helpline-Substitution",
-    "Switchboard-NoQueuesSwitchboarded": "No queues are currently being switchboarded"
+    "Switchboard-NoQueuesSwitchboarded": "No queues are currently being switchboarded",
+    "Admin": "Badmin Madmin",
+    "Chat Queue Test": "Quat Teue Chest"
   },
   "es": {
     "HelplineSubstitution": "Substitución de la Línea de Ayuda",

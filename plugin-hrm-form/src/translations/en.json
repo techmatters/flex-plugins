@@ -31,7 +31,7 @@
   "QueueCard-LessThanMinute": "less than a minute",
   "QueueCard-OneMinute": "1 minute",
   "QueueCard-Minutes": "&nbsp;minutes",
-  "QueueCard-Name": "Queue name: ",
+  "QueueCard-Name": "Queue name",
   "QueueIndex-ContactsWaiting": "Contacts waiting",
   "AddButtons-Header": "Add...",
   "OfflineContacts-Header": "Offline Contacts",

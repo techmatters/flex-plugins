@@ -222,7 +222,7 @@
   "CallType-CloseContact": "Igen",
   "ConnectDialog-Child": "Átmásolja a gyerek adatait ebből a rekordból egy új jegyzőkönyvbe?",
   "ConnectDialog-Caller": "Átmásolja a hívó adatait ebből a rekordból egy új jegyzőkönyvbe?",
-  "QueueCard-Name": "Sor neve:",
+  "QueueCard-Name": "Sor neve",
   "CaseHeader-ViewCase": "Eset megtekintése",
   "Transfer-AcceptTransferButton": "Átadás elfogadása",
   "Transfer-RejectTransferButton": "Átadás elutasítása",
