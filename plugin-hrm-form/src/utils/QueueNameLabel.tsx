@@ -17,7 +17,7 @@
 import React, { CSSProperties } from 'react';
 import { Manager, styled, Template } from '@twilio/flex-ui';
 
-import { FontOpenSans } from './styles';
+import { FontOpenSans } from '../styles';
 
 const LabelText = styled(FontOpenSans)`
   font-size: 0.875rem;
@@ -40,11 +40,17 @@ const LabelContainer = styled('div')`
   box-sizing: border-box;
   width: 100%;
   display: flex;
+  justify-content: center;
+  gap: 5px;
+  padding: 0.5rem;
 `;
 
-type Props = TaskContextProps & { renderIfTranslationSameAsUntranslated?: boolean; style?: CSSProperties };
+type Props = TaskContextProps & {
+  renderIfTranslationSameAsUntranslated?: boolean;
+  layout: 'task-info-panel' | 'call-panel';
+};
 
-const QueueNameLabel: React.FC<Props> = ({ task, renderIfTranslationSameAsUntranslated = true, style }) => {
+const QueueNameLabel: React.FC<Props> = ({ task, renderIfTranslationSameAsUntranslated = true, layout }) => {
   const { strings } = Manager.getInstance();
   if (
     !renderIfTranslationSameAsUntranslated &&
@@ -52,8 +58,28 @@ const QueueNameLabel: React.FC<Props> = ({ task, renderIfTranslationSameAsUntran
   ) {
     return null;
   }
+  if (layout === 'task-info-panel') {
+    return (
+      <span className="Twilio" key="queue-name-label" style={{ marginTop: '16px' }}>
+        <p>
+          <Template code="TaskInfoPanel-AdditionalTaskContext" />
+        </p>
+        <dl>
+          <div>
+            <dt>
+              <Template code="QueueCard-Name" />
+              :&nbsp;
+            </dt>
+            <dd>
+              <Template code={task.queueName} />
+            </dd>
+          </div>
+        </dl>
+      </span>
+    );
+  }
   return (
-    <LabelContainer style={style}>
+    <LabelContainer>
       <LabelText>
         <Template code="QueueCard-Name" />{' '}
       </LabelText>
@@ -63,6 +89,7 @@ const QueueNameLabel: React.FC<Props> = ({ task, renderIfTranslationSameAsUntran
     </LabelContainer>
   );
 };
+
 QueueNameLabel.displayName = 'QueueNameLabel';
 
 export default QueueNameLabel;

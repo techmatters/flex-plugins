@@ -51,7 +51,7 @@ import { RootState } from '../states';
 import selectCurrentOfflineContact from '../states/contacts/selectCurrentOfflineContact';
 import { REFRESH_BROWSER_REQUIRED_FOR_LANGUAGE_CHANGE_NOTIFICATION_ID } from '../states/configuration/changeLanguage';
 import { FeatureFlags } from '../types/FeatureFlags';
-import QueueNameLabel from '../QueueNameLabel';
+import QueueNameLabel from './QueueNameLabel';
 import HangUpByLabel from '../components/HangUpByLabel';
 
 type SetupObject = ReturnType<typeof getHrmConfig>;
@@ -101,31 +101,18 @@ export const setUpQueuesStatusWriter = (setupObject: SetupObject) => {
   );
 };
 
-export const setUpExtraTranslations = (setupObject: SetupObject) => {
+export const setUpExtraTranslations = () => {
   Flex.TaskInfoPanel.Content.add(
-    <QueueNameLabel
-      renderIfTranslationSameAsUntranslated={false}
-      key="queue-name-label"
-      style={{ flexFlow: 'column' }}
-    />,
-    { sortOrder: 0, align: 'start' },
+    <QueueNameLabel renderIfTranslationSameAsUntranslated={true} key="queue-name-label" layout="task-info-panel" />,
   );
   Flex.CallCanvas.Content.add(
-    <QueueNameLabel
-      renderIfTranslationSameAsUntranslated={false}
-      key="queue-name-label"
-      style={{ justifyContent: 'center', gap: '5px', padding: '0.5rem' }}
-    />,
+    <QueueNameLabel renderIfTranslationSameAsUntranslated={false} key="queue-name-label" layout="call-panel" />,
     {
       sortOrder: 0,
     },
   );
   Flex.IncomingTaskCanvas.Content.add(
-    <QueueNameLabel
-      renderIfTranslationSameAsUntranslated={false}
-      key="queue-name-label"
-      style={{ justifyContent: 'center', gap: '5px', padding: '0.5rem' }}
-    />,
+    <QueueNameLabel renderIfTranslationSameAsUntranslated={false} key="queue-name-label" layout="call-panel" />,
     {
       sortOrder: 0,
     },

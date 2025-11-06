@@ -91,7 +91,7 @@ const setUpComponents = (featureFlags: FeatureFlags, setupObject: ReturnType<typ
   Components.setUpAddButtons(featureFlags);
   Components.setUpNoTasksUI(featureFlags, setupObject);
   Components.setUpCustomCRMContainer();
-  Components.setUpExtraTranslations(setupObject);
+  Components.setUpExtraTranslations();
 
   // set up default and custom channels
   Channels.setupDefaultChannels();

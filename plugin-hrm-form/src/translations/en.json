@@ -108,6 +108,7 @@
   "SharedStateSaveFormError": "The information stored in the form couldn't be saved. Task will be transferred anyway.",
   "SharedStateLoadFormError": "The information stored in the form by previous counsellor couldn't be retrieved. Starting current task with clear contact form.",
   "SharedStateSaveContactError": "Could not save pending contact at the Shared State.",
+  "TaskInfoPanel-AdditionalTaskContext": "Additional Task context",
   "Transfer-TransferButton": "Transfer",
   "Transfer-RefreshButton": "Refresh",
   "Transfer-ErrorLoadingMessages": "Error loading messages. To retry loading them, refresh your browser",
