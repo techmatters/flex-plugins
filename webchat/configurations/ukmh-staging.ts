@@ -135,7 +135,7 @@ const preEngagementConfig: PreEngagementFormDefinition = {
       ],
     },
     {
-      label: 'On a scale from 1 (sad) to 5 (happy), what mood are in currently?',
+      label: 'On a scale from 1 (sad) to 5 (happy), what mood are you in currently?',
       type: 'select',
       name: 'moodhappinessBefore',
       required: true,

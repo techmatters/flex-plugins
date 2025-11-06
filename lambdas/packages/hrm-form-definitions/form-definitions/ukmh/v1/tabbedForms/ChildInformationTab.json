@@ -1079,8 +1079,12 @@
     "type": "listbox-multiselect",
     "options": [
       {
-        "value": "School (primary or secondary)",
-        "label": "School (primary or secondary)"
+        "value": "Primary School",
+        "label": "Primary School"
+      },
+      {
+        "value": "Secondary School",
+        "label": "Secondary School"
       },
       {
         "value": "Further or Higher education",
@@ -1413,12 +1417,28 @@
         "label": ""
       },
       {
+        "value": "A search engine",
+        "label": "A search engine"
+      },
+      {
+        "value": "Chatbot (e.g. ChatGPT, Gemini, Claude, Grok etc)",
+        "label": "Chatbot (e.g. ChatGPT, Gemini, Claude, Grok etc)"
+      },
+      {
+        "value": "Media (e.g. TV, radio, newspapers)",
+        "label": "Media (e.g. TV, radio, newspapers)"
+      },
+      {
         "value": "Peers (e.g. friends / siblings)",
         "label": "Peers (e.g. friends / siblings)"
       },
       {
-        "value": "A search engine",
-        "label": "A search engine"
+        "value": "Referral from another website or organisation",
+        "label": "Referral from another website or organisation"
+      },
+      {
+        "value": "Shout",
+        "label": "Shout"
       },
       {
         "value": "Social media",
@@ -1427,14 +1447,6 @@
       {
         "value": "Teacher / health professional / youth worker",
         "label": "Teacher / health professional / youth worker"
-      },
-      {
-        "value": "Referral from another website or organisation",
-        "label": "Referral from another website or organisation"
-      },
-      {
-        "value": "Media",
-        "label": "Media"
       },
       {
         "value": "The Mix",
@@ -1461,20 +1473,24 @@
         "label": "Counselling"
       },
       {
-        "value": "Discussion boards ",
-        "label": "Discussion boards "
+        "value": "Discussion boards",
+        "label": "Discussion boards"
       },
       {
-        "value": "Group chats ",
-        "label": "Group chats "
+        "value": "Group chats",
+        "label": "Group chats"
       },
       {
-        "value": "Website ",
-        "label": "Website "
+        "value": "Website",
+        "label": "Website"
       },
       {
-        "value": "Social media ",
-        "label": "Social media "
+        "value": "Social media",
+        "label": "Social media"
+      },
+      {
+        "value": "None",
+        "label": "None"
       }
     ],
     "isPII": false
