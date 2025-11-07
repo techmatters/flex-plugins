@@ -618,6 +618,9 @@
   "Conference-AddConferenceCallParticipant": "Agregar Participante a Conferencia",
   "Conference-EnterPhoneNumber": "Ingrese número de teléfono",
   "Conference-DialButton": "Llamar",
+  "Conference-Notifications-UnholdParticipants": "No se puede abandonar la conferencia porque algunos participantes están en espera. Por favor, desactive la espera e inténtelo de nuevo.",
+  "Conference-Notifications-ErrorAddingParticipant": "Se produjo un error al intentar agregar un participante a la llamada, inténtelo de nuevo.",
+  "Conference-Notifications-ErrorUpdatingParticipant": "Se produjo un error al intentar actualizar al participante, inténtelo de nuevo.",
   "HangupCallLeaveTooltip": "Dejar Llamada",
   "NavigableContainer-BackButton": "Atrás",
   "NavigableContainer-CloseButton": "Cerrar",
@@ -643,5 +646,10 @@
   "blocked": "bloqueado",
   "repeated contact": "contacto repetido",
   "Transfer-RefreshButton": "Refrescar",
-  "Transfer-ErrorLoadingMessage": "Error cargando mensajes."
+  "Transfer-ErrorLoadingMessage": "Error cargando mensajes.",
+  "Transfer-Notifications-CantHangTransferInProgress": "No se puede finalizar la llamada hasta que se acepte o rechace la transferencia.",
+  "Forms-ResourceReferralsList-Add": "Agregar",
+  "Forms-ResourceReferralsList-Delete": "Borrar",
+  "Forms-FileUpload-InvalidFileTypeError": "Tipo de archivo no válido. Solo se permiten archivos PNG, JPG, JPEG, PDF, DOC y DOCX.",
+  "Forms-FileUpload-FileSizeError": "El archivo excede el tamaño máximo."
 }

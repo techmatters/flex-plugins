@@ -168,7 +168,7 @@ const ResourceReferralList: React.FC<Props> = ({
           disabled={lookupStatus === ReferralLookupStatus.PENDING || !resourceReferralToAddText}
           data-testid="add-resource-button"
         >
-          <Template code="Add" />
+          <Template code="Forms-ResourceReferralsList-Add" />
         </AddButton>
       </InputWrapper>
       {lookupStatus === ReferralLookupStatus.NOT_FOUND && (
@@ -192,7 +192,7 @@ const ResourceReferralList: React.FC<Props> = ({
               <span>{resourceName}</span>
               <span>ID #{resourceId}</span>
               <DeleteButton onClick={() => handleRemoveReferral(resourceId)}>
-                <Template code="Case-DeleteDocument" />
+                <Template code="Forms-ResourceReferralsList-Delete" />
               </DeleteButton>
             </ReferralItemInfo>
           </ReferralItem>

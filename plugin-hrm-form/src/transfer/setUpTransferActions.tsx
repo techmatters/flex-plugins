@@ -51,7 +51,7 @@ const setUpTransfersNotifications = () => {
   Notifications.registerNotification({
     id: TransfersNotifications.CantHangTransferInProgressNotification,
     type: NotificationType.error,
-    content: <Template code="Can't leave the call until the transfer is accepted or rejected." />,
+    content: <Template code="Transfer-Notifications-CantHangTransferInProgress" />,
   });
 };
 

@@ -33,20 +33,20 @@ const setupConferenceNotifications = () => {
     id: ConferenceNotifications.UnholdParticipantsNotification,
     type: NotificationType.error,
     content: (
-      <Template code="Can't leave conference because some participants are on hold. Please unhold and try again." />
+      <Template code="Conference-Notifications-UnholdParticipants" />
     ),
   });
 
   Notifications.registerNotification({
     id: ConferenceNotifications.ErrorAddingParticipantNotification,
     type: NotificationType.error,
-    content: <Template code="Something went wrong trying to add participant to the call, please try again." />,
+    content: <Template code="Conference-Notifications-ErrorAddingParticipant" />,
   });
 
   Notifications.registerNotification({
     id: ConferenceNotifications.ErrorUpdatingParticipantNotification,
     type: NotificationType.error,
-    content: <Template code="Something went wrong trying to update the participant, please try again." />,
+    content: <Template code="Conference-Notifications-ErrorUpdatingParticipantNotification" />,
   });
 };
 

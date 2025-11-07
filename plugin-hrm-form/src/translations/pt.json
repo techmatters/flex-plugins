@@ -51,6 +51,7 @@
   "Transfer-TaskLineChatMessengerReserved": "Transferir de",
   "Transfer-Cold": "Frio",
   "Transfer-Warm": "Caloroso",
+  "Transfer-Notifications-CantHangTransferInProgress": "Não é possível encerrar a chamada até que a transferência seja aceita ou rejeitada.",
   "SharedStateSaveFormError": "As informações registradas no formulário não puderam ser salvas. A tarefa será transferida de qualquer maneira.",
   "SharedStateLoadFormError": "As informações registradas no formulário pelo atendente anterior não puderam ser recuperadas. Iniciando a tarefa atual com um novo formulário de contato ",
   "TaskLineQueue": "Fila: {{task.queueName}}",
@@ -465,5 +466,12 @@
   "CaseMerging-ContactRemovedFromCase": "Contato removido do caso",
   "CaseMerging-CaseCreatedAndContactAdded": "Case #{{caseId}} criado e contato adicionado",
   "CaseMerging-ContactAddedToExistingCase": "Contato adicionado ao caso nº{{caseId}}",
-  "CaseMerging-CancelCase": "Cancelar Caso"
+  "CaseMerging-CancelCase": "Cancelar Caso",
+  "Forms-ResourceReferralsList-Add": "Adicionar",
+  "Forms-ResourceReferralsList-Delete": "Excluir",
+  "Forms-FileUpload-InvalidFileTypeError": "Tipo de arquivo inválido. Somente arquivos PNG, JPG, JPEG, PDF, DOC e DOCX são permitidos.",
+  "Forms-FileUpload-FileSizeError": "O arquivo excede o tamanho máximo permitido.",
+  "Conference-Notifications-UnholdParticipants": "Não é possível sair da conferência porque alguns participantes estão em espera. Por favor, saia da espera e tente novamente.",
+  "Conference-Notifications-ErrorAddingParticipant": "Ocorreu um erro ao tentar adicionar um participante à chamada. Por favor, tente novamente.",
+  "Conference-Notifications-ErrorUpdatingParticipant": "Ocorreu um erro ao tentar atualizar o participante. Tente novamente."
 }
