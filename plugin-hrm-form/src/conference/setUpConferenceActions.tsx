@@ -32,9 +32,7 @@ const setupConferenceNotifications = () => {
   Notifications.registerNotification({
     id: ConferenceNotifications.UnholdParticipantsNotification,
     type: NotificationType.error,
-    content: (
-      <Template code="Conference-Notifications-UnholdParticipants" />
-    ),
+    content: <Template code="Conference-Notifications-UnholdParticipants" />,
   });
 
   Notifications.registerNotification({

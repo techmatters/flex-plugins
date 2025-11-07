@@ -53,14 +53,14 @@ const bindOnFileChange = (caseId: string) => async event => {
 
   if (size > MAX_FILE_SIZE) {
     // Should this string be localizable?
-    alert(strings['Forms-FileUpload-InvalidFileTypeError']);
+    alert(strings['Forms-FileUpload-FileSizeError']);
     return '';
   }
 
   // Validate file extension
   const extension = name.toLowerCase().substring(name.lastIndexOf('.'));
   if (!ALLOWED_FILE_TYPES.includes(extension)) {
-    alert(strings['Forms-FileUpload-FileSizeError']);
+    alert(strings['Forms-FileUpload-InvalidFileTypeError']);
     return '';
   }
 
