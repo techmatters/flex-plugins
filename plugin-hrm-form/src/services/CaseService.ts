@@ -22,7 +22,6 @@ import type { GenericTimelineActivity } from '../states/case/types';
 import { fetchHrmApi } from './fetchHrmApi';
 import { getQueryParams } from './PaginationParams';
 import { convertApiCaseSectionToCaseSection, FullGenericCaseSection } from './caseSectionService';
-import { convertApiContactToFlexContact } from './ContactService';
 
 const convertApiCaseToFlexCase = (apiCase: Case): Case => ({
   ...apiCase,
@@ -108,10 +107,6 @@ const isApiCaseSectionTimelineActivity = (
 ): activity is GenericTimelineActivity<FullGenericCaseSection<string>, string> =>
   activity.activityType === 'case-section';
 
-const isApiContactTimelineActivity = (
-  activity: GenericTimelineActivity<any, string>,
-): activity is GenericTimelineActivity<Contact, string> => activity.activityType === 'contact';
-
 export async function getCaseTimeline(
   caseId: Case['id'],
   sectionTypes: string[],
@@ -135,9 +130,6 @@ export async function getCaseTimeline(
       let { activity } = timelineActivity;
       if (isApiCaseSectionTimelineActivity(timelineActivity)) {
         activity = convertApiCaseSectionToCaseSection(activity);
-      } else if (isApiContactTimelineActivity(timelineActivity)) {
-        // Bug in HRTM strips the caseId from the contact activity, workaround here adds it back
-        activity = convertApiContactToFlexContact({ caseId, ...activity });
       }
       return {
         ...timelineActivity,

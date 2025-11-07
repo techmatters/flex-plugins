@@ -32,6 +32,8 @@ import { inferHrmAccountId } from './hrmAccountId';
 import { sanitizeIdentifierFromTask } from './sanitizeIdentifier';
 import { HrmContact } from '@tech-matters/hrm-types';
 import { populateHrmContactFormFromTaskByMappings } from './populateHrmContactFormFromTaskByMappings';
+import { parseISO } from 'date-fns/parseISO';
+import { HttpClientError } from '../httpErrors';
 
 // Temporarily copied to this repo, will share the flex types when we move them into the same repo
 
@@ -129,6 +131,16 @@ export const handleEvent = async (
         responseResult.message,
         responseResult.error,
       );
+      const { error } = responseResult;
+      if (error instanceof HttpClientError && error.statusCode === 404) {
+        console.info(
+          `Contact ${contactId} not found for task ${taskSid} - attempting to create a new one`,
+        );
+      } else {
+        return;
+      }
+    } else {
+      return;
     }
   }
 
@@ -183,6 +195,8 @@ export const handleEvent = async (
   }
   const identifier = isOk(identifierResult) ? identifierResult.data : '';
 
+  const timeOfContactDate = new Date();
+
   const newContact: HrmContact = {
     ...BLANK_CONTACT,
     definitionVersion,
@@ -198,7 +212,7 @@ export const handleEvent = async (
     serviceSid: (channelSid && serviceConfig.chatServiceInstanceSid) ?? '',
     // We set createdBy to the workerSid because the contact is 'created' by the worker who accepts the task
     createdBy: workerSid as HrmContact['createdBy'],
-    timeOfContact: new Date().toISOString(),
+    timeOfContact: timeOfContactDate.toISOString(),
     number: identifier,
   };
   console.debug('Creating HRM contact with timeOfContact:', newContact.timeOfContact);
@@ -227,7 +241,8 @@ export const handleEvent = async (
     );
     return;
   }
-  const { id } = responseResult.data;
+  const { id, timeOfContact: savedTimeOfContactString } = responseResult.data;
+  const savedTimeOfContactDate = parseISO(savedTimeOfContactString);
   console.info(`Created HRM contact with id ${id} for task ${taskSid}`);
 
   const taskContext = client.taskrouter.v1.workspaces
@@ -237,9 +252,13 @@ export const handleEvent = async (
   const updatedAttributes = {
     ...JSON.parse(currentTaskAttributes),
     contactId: id.toString(),
-    outboundVoiceTaskStartMillis: isOutboundVoiceTask ? new Date().getTime() : null,
+    outboundVoiceTaskStartMillis: isOutboundVoiceTask
+      ? timeOfContactDate.getTime()
+      : null,
+    timeOfContactMillis: savedTimeOfContactDate.getTime(),
   };
   await taskContext.update({ attributes: JSON.stringify(updatedAttributes) });
+  console.info(`Set task ${taskSid} attributes:`, updatedAttributes);
 };
 
 registerTaskRouterEventHandler([RESERVATION_ACCEPTED], handleEvent);

@@ -20,8 +20,15 @@ import { isChatChannel, isVoiceChannel } from '../states/DomainConstants';
 import { isNonDataCallType } from '../states/validationRules';
 import { getQueryParams } from './PaginationParams';
 import { fetchHrmApi } from './fetchHrmApi';
-import { getDefinitionVersions, getHrmConfig } from '../hrmConfig';
-import { Contact, ConversationMedia, isOfflineContactTask, isTwilioTask, OfflineContactTask } from '../types/types';
+import { getAseloFeatureFlags, getDefinitionVersions, getHrmConfig } from '../hrmConfig';
+import {
+  Contact,
+  ConversationMedia,
+  isOfflineContact,
+  isOfflineContactTask,
+  isTwilioTask,
+  OfflineContactTask,
+} from '../types/types';
 import { saveContactToExternalBackend } from '../dualWrite';
 import { getNumberFromTask } from '../utils/task';
 import {
@@ -37,14 +44,16 @@ import { ApiError, FetchOptions } from './fetchApi';
 import { TaskSID, WorkerSID } from '../types/twilio';
 import { recordEvent } from '../fullStory';
 
-export const convertApiContactToFlexContact = (contact: Contact): Contact =>
-  contact
-    ? {
-        ...contact,
-        id: contact.id.toString(),
-        ...(contact.caseId ? { caseId: contact.caseId.toString() } : {}),
-      }
+/**
+ * Strips the contact attributes out that should be set automatically on task router event handlers outside of Flex
+ * @param contact - original changes
+ */
+const convertFlexContactToUpdateApiContact = (contact: ContactDraftChanges): ContactDraftChanges => {
+  const { conversationDuration, ...contactWithoutConversationDuration } = contact ?? {};
+  return getAseloFeatureFlags().use_twilio_lambda_for_conversation_duration
+    ? contactWithoutConversationDuration
     : contact;
+};
 
 export async function searchContacts({
   searchParameters,
@@ -64,11 +73,7 @@ export async function searchContacts({
     body: JSON.stringify({ searchParameters }),
   };
 
-  const response = await fetchHrmApi(`/contacts/generalizedSearch${queryParams}`, options);
-  return {
-    ...response,
-    contacts: response.contacts.map(convertApiContactToFlexContact),
-  };
+  return fetchHrmApi(`/contacts/generalizedSearch${queryParams}`, options);
 }
 
 type HandleTwilioTaskResponse = {
@@ -176,7 +181,6 @@ export const createOfflineContact = async (
     },
     twilioWorkerId,
     taskId: taskSid,
-    ...(contact.caseId ? { caseId: contact.caseId.toString() } : {}),
   };
 
   const options = {
@@ -184,7 +188,7 @@ export const createOfflineContact = async (
     body: JSON.stringify(contactForApi),
   };
 
-  return convertApiContactToFlexContact(await fetchHrmApi(`/contacts?finalize=false`, options));
+  return fetchHrmApi(`/contacts?finalize=false`, options);
 };
 
 export const updateContactInHrm = async (
@@ -194,15 +198,14 @@ export const updateContactInHrm = async (
 ): Promise<Contact> => {
   const options = {
     method: 'PATCH',
-    body: JSON.stringify(body),
+    body: JSON.stringify(convertFlexContactToUpdateApiContact(body)),
   };
 
-  return convertApiContactToFlexContact(await fetchHrmApi(`/contacts/${contactId}?finalize=${finalize}`, options));
+  return fetchHrmApi(`/contacts/${contactId}?finalize=${finalize}`, options);
 };
 
 /**
  * Function that saves the form to Contacts table.
- * If you don't intend to complete the twilio task, set shouldFillEndMillis=false
  */
 const saveContactToHrm = async (
   task,
@@ -244,7 +247,7 @@ const saveContactToHrm = async (
    * Probably.  It would just require passing the task.
    */
 
-  const contactToSave: Contact = {
+  const contactToSave: Partial<Contact> = {
     ...contact,
     rawJson: form,
     twilioWorkerId,
@@ -308,7 +311,7 @@ export async function connectToCase(contactId: string, caseId: string) {
     body: JSON.stringify(body),
   };
 
-  return convertApiContactToFlexContact(await fetchHrmApi(`/contacts/${contactId}/connectToCase`, options));
+  return fetchHrmApi(`/contacts/${contactId}/connectToCase`, options);
 }
 
 export async function removeFromCase(contactId: string) {
@@ -316,7 +319,7 @@ export async function removeFromCase(contactId: string) {
     method: 'DELETE',
   };
 
-  return convertApiContactToFlexContact(await fetchHrmApi(`/contacts/${contactId}/connectToCase`, options));
+  return fetchHrmApi(`/contacts/${contactId}/connectToCase`, options);
 }
 
 async function saveConversationMedia(contactId: string, conversationMedia: ConversationMedia[]) {
@@ -334,7 +337,7 @@ export const getContactByTaskSid = async (taskSid: string): Promise<Contact | un
     returnNullFor404: true,
   };
   try {
-    return convertApiContactToFlexContact(await fetchHrmApi(`/contacts/byTaskSid/${taskSid}`, options));
+    return await fetchHrmApi(`/contacts/byTaskSid/${taskSid}`, options);
   } catch (err) {
     if (err instanceof ApiError && err.response.status >= 404) {
       return null;
@@ -349,7 +352,7 @@ export const getContactById = async (contactId: string): Promise<Contact | undef
     returnNullFor404: true,
   };
   try {
-    return convertApiContactToFlexContact(await fetchHrmApi(`/contacts/${contactId}`, options));
+    return await fetchHrmApi(`/contacts/${contactId}`, options);
   } catch (err) {
     if (err instanceof ApiError && err.response.status >= 404) {
       return null;
