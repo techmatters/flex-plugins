@@ -44,15 +44,6 @@ import { ApiError, FetchOptions } from './fetchApi';
 import { TaskSID, WorkerSID } from '../types/twilio';
 import { recordEvent } from '../fullStory';
 
-const convertApiContactToFlexContact = (contact: Contact): Contact =>
-  contact
-    ? {
-        ...contact,
-        id: contact.id.toString(),
-        ...(contact.caseId ? { caseId: contact.caseId.toString() } : {}),
-      }
-    : contact;
-
 /**
  * Strips the contact attributes out that should be set automatically on task router event handlers outside of Flex
  * @param contact - original changes
