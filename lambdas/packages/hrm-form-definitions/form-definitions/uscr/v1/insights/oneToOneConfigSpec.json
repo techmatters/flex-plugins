@@ -2,69 +2,41 @@
   "contactForm": {
     "callerInformation": [
       {
-        "name": "requestor",
-        "insights": ["customers", "customer_attribute_1"]
+        "name": "reportingDistrict",
+        "insights": ["conversations", "conversation_attribute_5"]
       },
       {
-        "name": "typeOfVictim",
-        "insights": ["customers", "customer_attribute_2"]
+        "name": "officeDepartmentBid",
+        "insights": ["conversations", "conversation_attribute_6"]
+      },      
+      {
+        "name": "officerRequest",
+        "insights": ["conversations", "conversation_attribute_4"]
       },
       {
-        "name": "organizationDispatched",
-        "insights": ["customers", "customer_attribute_3"]
-      },
-      {
-        "name": "warmTransferComplete",
-        "insights": ["customers", "acquisition_date"]
-      },
-      {
-        "name": "preferredLanguage",
-        "insights": ["conversations", "initiated_by"]
+        "name": "officerStandby",
+        "insights": ["conversations", "conversation_attribute_3"]
       }
     ],
     "childInformation": [
       {
-        "name": "user",
-        "insights": ["customers", "email"]
-      },
-      {
-        "name": "typeOfCallfrequencyOfAccess",
-        "insights": ["customers", "category"]
-      },
-      {
-        "name": "sexOfVisitor",
-        "insights": ["customers", "market_segment"]
-      },
-      {
-        "name": "ageRange",
-        "insights": ["customers", "customer_manager"]
-      },
-      {
         "name": "race",
-        "insights": ["conversations", "case"]
-      },
-      {
-        "name": "language",
-        "insights": ["customers", "organization"]
-      },
-      {
-        "name": "dcquadrant",
-        "insights": ["conversations", "followed_by"]
-      },
-      {
-        "name": "location",
-        "insights": ["conversations", "in_business_hours"]
+        "insights": ["customers", "customer_attribute_2"]
       }
     ],
     "caseInformation": [
       {
-        "name": "referralStatus",
-        "insights": ["conversations", "preceded_by"]
+        "name": "priority",
+        "insights": ["conversations", "conversation_attribute_7"]
       }
     ]
   },
   "caseForm": {
     "topLevel": [
+      {
+        "name": "id",
+        "insights": ["conversations", "case"]
+      }
     ]
   }
 }
