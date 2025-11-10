@@ -13,7 +13,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
-import { getSsmParameter } from '../ssmCache';
+import { getSsmParameter, SsmParameterNotFound } from '../ssmCache';
 import { ErrorResult, newErr, newOk, Result } from '../Result';
 import { HttpClientError } from '../httpErrors';
 
@@ -28,9 +28,22 @@ const requestFromInternalHrmEndpoint = async <TRequest, TResponse>(
   retryLimit: number,
 ): Promise<Result<Error, TResponse>> => {
   const accountSid = inferAccountSidFromHrmAccountId(hrmAccountId);
-  const [hrmStaticKey] = await Promise.all([
-    getSsmParameter(`/${process.env.NODE_ENV}/twilio/${accountSid}/static_key`),
-  ]);
+  let hrmStaticKey: string;
+  try {
+    hrmStaticKey = await getSsmParameter(
+      `/${process.env.NODE_ENV}/hrm/service/${process.env.AWS_REGION}/static_key/${accountSid}`,
+    );
+  } catch (error) {
+    // Remove when a terraform apply has been done for all accounts
+    if (error && error instanceof SsmParameterNotFound) {
+      console.warn(
+        `New internal API key not set up for ${accountSid} yet, looking for legacy key`,
+      );
+      hrmStaticKey = await getSsmParameter(
+        `/${process.env.NODE_ENV}/twilio/${accountSid}/static_key`,
+      );
+    } else throw error;
+  }
   const endpointUrl = `${process.env.INTERNAL_HRM_URL}/internal/${hrmApiVersion}/accounts/${hrmAccountId}/${path}`;
 
   const options: RequestInit = {
