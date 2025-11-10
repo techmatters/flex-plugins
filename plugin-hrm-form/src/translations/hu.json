@@ -231,6 +231,7 @@
   "Transfer-TaskLineChatLineReserved": "Átadás",
   "Transfer-FormNotEditable": "A jegyzőkönyv zárolva van az átadás befejeződéséig",
   "Transfer-ChatWarmNotAllowed": "A warm átadás jelenleg nem támogatott",
+  "Transfer-Notifications-CantHangTransferInProgress": "Nem lehet kilépni a hívásból, amíg az átirányítást el nem fogadják vagy el nem utasítják.",
   "Error-ContinueWithoutRecording": "Hiba a háttérrendszerből. Biztos benne, hogy rögzítés nélkül szeretné befejezni a feladatot?",
   "Case-CasedetailsChildName": "Gyerek neve",
   "Case-CasedetailsOwner": "Ügyelők",
@@ -508,5 +509,12 @@
   "CaseMerging-ContactRemovedFromCase": "Az érintkező eltávolítva a tokból",
   "CaseMerging-CaseCreatedAndContactAdded": "A(z) {{caseId}} számú eset létrehozva, és a kapcsolattartó hozzáadva",
   "CaseMerging-ContactAddedToExistingCase": "Kapcsolattartó hozzáadva a {{caseId}} számú ügyhöz",
-  "CaseMerging-CancelCase": "Törölje az ügyet"
+  "CaseMerging-CancelCase": "Törölje az ügyet",
+  "Forms-ResourceReferralsList-Add": "Add hozzá",
+  "Forms-ResourceReferralsList-Delete": "Töröl",
+  "Forms-FileUpload-InvalidFileTypeError": "Érvénytelen fájltípus. Csak PNG, JPG, JPEG, PDF, DOC és DOCX fájlok engedélyezettek.",
+  "Forms-FileUpload-FileSizeError": "A fájl mérete meghaladja a maximális méretet.",
+  "Conference-Notifications-UnholdParticipants": "Nem lehet kilépni a konferenciából, mert néhány résztvevő várakozik. Kérjük, oldja fel a várakoztatást, és próbálja újra.",
+  "Conference-Notifications-ErrorAddingParticipant": "Hiba történt a résztvevő híváshoz való hozzáadásakor, kérjük, próbálja újra.",
+  "Conference-Notifications-ErrorUpdatingParticipant": "Hiba történt a résztvevő frissítése közben, kérjük, próbálja újra."
 }

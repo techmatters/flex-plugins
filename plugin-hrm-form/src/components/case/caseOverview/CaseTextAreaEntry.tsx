@@ -49,7 +49,7 @@ const CaseTextAreaEntry: React.FC<Props> = ({ connectedCaseState, textareaFields
         const defaultRows = 5;
 
         const placeholder =
-          field.placeholder || (field.name === 'summary' ? strings.NoCaseSummary : `No ${field.label}`);
+          strings[field.placeholder ?? ''] || (field.name === 'summary' ? strings.NoCaseSummary : `No ${field.label}`);
 
         return (
           <CaseDetailsBorder key={field.name} marginTop="25px">

@@ -18,21 +18,21 @@ import each from 'jest-each';
 
 import { bindFileUploadCustomHandlers } from '../../../components/case/documentUploadHandler';
 import { fetchHrmApi } from '../../../services/fetchHrmApi';
-import { getHrmConfig } from '../../../hrmConfig';
+import { getHrmConfig, getTemplateStrings } from '../../../hrmConfig';
 
 jest.mock('../../../services/fetchHrmApi');
 jest.mock('../../../hrmConfig');
 
 const mockFetchHrmApi = fetchHrmApi as jest.MockedFunction<typeof fetchHrmApi>;
 const mockGetHrmConfig = getHrmConfig as jest.MockedFunction<typeof getHrmConfig>;
-
+const mockGetTemplateStrings = getTemplateStrings as jest.MockedFunction<typeof getTemplateStrings>;
 // Mock global alert
 const mockAlert = jest.fn();
 global.alert = mockAlert;
 
 // Error messages that should match documentUploadHandler.ts
-const FILE_TYPE_ERROR = 'Invalid file type. Only PNG, JPG, JPEG, PDF, DOC, and DOCX files are allowed.';
-const FILE_SIZE_ERROR = 'File exceeds max size.';
+const FILE_TYPE_ERROR_KEY = 'Forms-FileUpload-InvalidFileTypeError';
+const FILE_SIZE_ERROR_KEY = 'Forms-FileUpload-FileSizeError';
 
 // Mock File constructor and FileReader
 global.File = class MockFile {
@@ -55,6 +55,10 @@ describe('documentUploadHandler', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    mockGetTemplateStrings.mockReturnValue({
+      [FILE_TYPE_ERROR_KEY]: FILE_TYPE_ERROR_KEY,
+      [FILE_SIZE_ERROR_KEY]: FILE_SIZE_ERROR_KEY,
+    });
     mockGetHrmConfig.mockReturnValue({
       docsBucket: 'test-bucket',
     } as any);
@@ -95,7 +99,7 @@ describe('documentUploadHandler', () => {
       const result = await onFileChange(event);
 
       expect(result).toBe('');
-      expect(mockAlert).toHaveBeenCalledWith(FILE_TYPE_ERROR);
+      expect(mockAlert).toHaveBeenCalledWith(FILE_TYPE_ERROR_KEY);
     });
 
     it('should reject executable files', async () => {
@@ -105,7 +109,7 @@ describe('documentUploadHandler', () => {
       const result = await onFileChange(event);
 
       expect(result).toBe('');
-      expect(mockAlert).toHaveBeenCalledWith(FILE_TYPE_ERROR);
+      expect(mockAlert).toHaveBeenCalledWith(FILE_TYPE_ERROR_KEY);
     });
 
     it('should reject script files', async () => {
@@ -115,7 +119,7 @@ describe('documentUploadHandler', () => {
       const result = await onFileChange(event);
 
       expect(result).toBe('');
-      expect(mockAlert).toHaveBeenCalledWith(FILE_TYPE_ERROR);
+      expect(mockAlert).toHaveBeenCalledWith(FILE_TYPE_ERROR_KEY);
     });
 
     it('should reject files with no extension', async () => {
@@ -125,7 +129,7 @@ describe('documentUploadHandler', () => {
       const result = await onFileChange(event);
 
       expect(result).toBe('');
-      expect(mockAlert).toHaveBeenCalledWith(FILE_TYPE_ERROR);
+      expect(mockAlert).toHaveBeenCalledWith(FILE_TYPE_ERROR_KEY);
     });
   });
 
@@ -140,7 +144,7 @@ describe('documentUploadHandler', () => {
       const result = await onFileChange(event);
 
       expect(result).toBe('');
-      expect(mockAlert).toHaveBeenCalledWith(FILE_SIZE_ERROR);
+      expect(mockAlert).toHaveBeenCalledWith(FILE_SIZE_ERROR_KEY);
     });
 
     it('should accept files under 5MB limit', async () => {
