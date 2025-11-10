@@ -131,8 +131,6 @@ export const isS3StoredTranscript = (m: ConversationMedia): m is S3StoredTranscr
 export const isS3StoredRecording = (m: ConversationMedia): m is S3StoredRecording =>
   m.storeType === 'S3' && m.storeTypeSpecificData.type === 'recording';
 
-
-
 export type Contact = {
   id: string;
   accountSid: AccountSID;
@@ -217,30 +215,6 @@ export type ListCasesFilters = {
 export type CounselorHash = {
   [sid: string]: string;
 };
-
-/* eslint-enable camelcase */
-
-export type LexMemory = {
-  aboutSelf?: 'Yes' | 'No';
-  [key: string]: string;
-};
-
-/* eslint-disable camelcase */
-export type AutopilotMemory = {
-  twilio: {
-    collected_data: {
-      collect_survey: {
-        answers: {
-          [key: string]: {
-            answer: string;
-            error: string;
-          };
-        };
-      };
-    };
-  };
-};
-/* eslint-enable camelcase */
 
 /**
  * Custom tasks

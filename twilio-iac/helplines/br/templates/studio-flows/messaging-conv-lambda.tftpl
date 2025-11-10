@@ -13,7 +13,7 @@ ${
           "event": "incomingCall"
         },
         {
-          "next": "getProfileFlagsForIdentifier",
+          "next": "f_getProfileFlagsForIdentifier",
           "event": "incomingConversationMessage"
         },
         {
@@ -31,15 +31,15 @@ ${
       }
     },
     {
-      "name": "getProfileFlagsForIdentifier",
+      "name": "f_getProfileFlagsForIdentifier",
       "type": "make-http-request",
       "transitions": [
         {
-          "next": "contact_routing",
+          "next": "split_contact_routing",
           "event": "success"
         },
         {
-          "next": "check_image",
+          "next": "split_check_image",
           "event": "failed"
         }
       ],
@@ -55,7 +55,7 @@ ${
       }
     },
     {
-      "name": "send_blocked_message",
+      "name": "send_message_blocked",
       "type": "send-message",
       "transitions": [
         {
@@ -78,21 +78,21 @@ ${
       }
     },
     {
-      "name": "contact_routing",
+      "name": "split_contact_routing",
       "type": "split-based-on",
       "transitions": [
         {
-          "next": "check_image",
+          "next": "split_check_image",
           "event": "noMatch"
         },
         {
-          "next": "send_blocked_message",
+          "next": "send_message_blocked",
           "event": "match",
           "conditions": [
             {
               "friendly_name": "If value contains blocked",
               "arguments": [
-                "{{widgets.getProfileFlagsForIdentifier.parsed.flags}}"
+                "{{widgets.f_getProfileFlagsForIdentifier.parsed.flags}}"
               ],
               "type": "contains",
               "value": "blocked"
@@ -101,7 +101,7 @@ ${
         }
       ],
       "properties": {
-        "input": "{{widgets.getProfileFlagsForIdentifier.parsed.flags}}",
+        "input": "{{widgets.f_getProfileFlagsForIdentifier.parsed.flags}}",
         "offset": {
           "x": -800,
           "y": -1260
@@ -109,7 +109,7 @@ ${
       }
     },
     {
-      "name": "attributes",
+      "name": "send_to_queue",
       "type": "send-to-flex",
       "transitions": [
         {
@@ -133,11 +133,11 @@ ${
       }
     },
     {
-      "name": "facebookHours",
+      "name": "f_operatingHours_facebook",
       "type": "make-http-request",
       "transitions": [
         {
-          "next": "check_fb_hours",
+          "next": "split_check_fb_hours",
           "event": "success"
         },
         {
@@ -157,14 +157,14 @@ ${
       }
     },
     {
-      "name": "check_fb_hours",
+      "name": "split_check_fb_hours",
       "type": "split-based-on",
       "transitions": [
         {
           "event": "noMatch"
         },
         {
-          "next": "pre_survey_complete",
+          "next": "split_pre_survey_complete",
           "event": "match",
           "conditions": [
             {
@@ -178,7 +178,7 @@ ${
           ]
         },
         {
-          "next": "closed",
+          "next": "f_sendMessageAndRunJanitor_closed",
           "event": "match",
           "conditions": [
             {
@@ -192,7 +192,7 @@ ${
           ]
         },
         {
-          "next": "holiday",
+          "next": "f_sendMessageAndRunJanitor_holiday",
           "event": "match",
           "conditions": [
             {
@@ -215,7 +215,7 @@ ${
       }
     },
     {
-      "name": "closed",
+      "name": "f_sendMessageAndRunJanitor_closed",
       "type": "run-function",
       "transitions": [
         {
@@ -255,7 +255,7 @@ ${
       }
     },
     {
-      "name": "holiday",
+      "name": "f_sendMessageAndRunJanitor_holiday",
       "type": "run-function",
       "transitions": [
         {
@@ -295,14 +295,14 @@ ${
       }
     },
     {
-      "name": "check_image",
+      "name": "split_check_image",
       "type": "split-based-on",
       "transitions": [
         {
           "event": "noMatch"
         },
         {
-          "next": "contact_reason_complete",
+          "next": "split_contact_reason_complete",
           "event": "match",
           "conditions": [
             {
@@ -316,7 +316,7 @@ ${
           ]
         },
         {
-          "next": "no_images",
+          "next": "send_message_no_images",
           "event": "match",
           "conditions": [
             {
@@ -339,15 +339,15 @@ ${
       }
     },
     {
-      "name": "check_response",
+      "name": "split_check_response",
       "type": "split-based-on",
       "transitions": [
         {
-          "next": "is_other",
+          "next": "f_sendMessageAndRunJanitor_other",
           "event": "noMatch"
         },
         {
-          "next": "facebookHours",
+          "next": "f_operatingHours_facebook",
           "event": "match",
           "conditions": [
             {
@@ -361,7 +361,7 @@ ${
           ]
         },
         {
-          "next": "is_crime_report",
+          "next": "f_sendMessageAndRunJanitor_crime_report",
           "event": "match",
           "conditions": [
             {
@@ -375,7 +375,7 @@ ${
           ]
         },
         {
-          "next": "is_researcher",
+          "next": "f_sendMessageAndRunJanitor_researcher",
           "event": "match",
           "conditions": [
             {
@@ -389,7 +389,7 @@ ${
           ]
         },
         {
-          "next": "is_other",
+          "next": "f_sendMessageAndRunJanitor_other",
           "event": "match",
           "conditions": [
             {
@@ -412,7 +412,7 @@ ${
       }
     },
     {
-      "name": "no_images",
+      "name": "send_message_no_images",
       "type": "send-message",
       "transitions": [
         {
@@ -435,15 +435,15 @@ ${
       }
     },
     {
-      "name": "contact_reason_complete",
+      "name": "split_contact_reason_complete",
       "type": "split-based-on",
       "transitions": [
         {
-          "next": "reasonBot",
+          "next": "f_captureChannelWithBot_reason",
           "event": "noMatch"
         },
         {
-          "next": "check_response",
+          "next": "split_check_response",
           "event": "match",
           "conditions": [
             {
@@ -466,15 +466,15 @@ ${
       }
     },
     {
-      "name": "pre_survey_complete",
+      "name": "split_pre_survey_complete",
       "type": "split-based-on",
       "transitions": [
         {
-          "next": "captureChannelBot",
+          "next": "f_captureChannelBot",
           "event": "noMatch"
         },
         {
-          "next": "attributes",
+          "next": "send_to_queue",
           "event": "match",
           "conditions": [
             {
@@ -497,7 +497,7 @@ ${
       }
     },
     {
-      "name": "reasonBot",
+      "name": "f_captureChannelWithBot_reason",
       "type": "make-http-request",
       "transitions": [
         {
@@ -520,7 +520,7 @@ ${
       }
     },
     {
-      "name": "captureChannelBot",
+      "name": "f_captureChannelBot",
       "type": "make-http-request",
       "transitions": [
         {
@@ -543,7 +543,7 @@ ${
       }
     },
     {
-      "name": "is_crime_report",
+      "name": "f_sendMessageAndRunJanitor_crime_report",
       "type": "run-function",
       "transitions": [
         {
@@ -583,7 +583,7 @@ ${
       }
     },
     {
-      "name": "is_researcher",
+      "name": "f_sendMessageAndRunJanitor_researcher",
       "type": "run-function",
       "transitions": [
         {
@@ -623,7 +623,7 @@ ${
       }
     },
     {
-      "name": "is_other",
+      "name": "f_sendMessageAndRunJanitor_other",
       "type": "run-function",
       "transitions": [
         {

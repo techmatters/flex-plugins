@@ -67,6 +67,7 @@ import {
   rollbackSavingStateInRedux,
   contactReduxUpdates,
 } from './contactReduxUpdates';
+import { getAseloFeatureFlags } from '../../hrmConfig';
 
 export const createOfflineContactAsyncAction = createAsyncAction(
   CREATE_CONTACT_ACTION,
@@ -130,14 +131,13 @@ export const updateContactInHrmAsyncAction = createAsyncAction(
       reference,
     };
   },
-  (previousContact: Contact, body: ContactDraftChanges) => ({
+  (previousContact: Contact, { conversationDuration, ...body }: ContactDraftChanges = {}) => ({
     previousContact,
     changes: body,
   }),
 );
 
 const BLANK_CONTACT_CHANGES: ContactDraftChanges = {
-  conversationDuration: 0,
   rawJson: {
     callType: '',
     childInformation: {},
@@ -180,8 +180,11 @@ export const removeFromCaseAsyncAction = createAsyncAction(
 export const submitContactFormAsyncAction = createAsyncAction(
   SET_SAVED_CONTACT,
   async (task: CustomITask, contact: Contact, metadata: ContactMetadata, caseState: CaseStateEntry) => {
-    const contactWithConversationDuration = setConversationDurationFromMetadata(contact, metadata);
-    return submitContactForm(task, contactWithConversationDuration, caseState);
+    if (!getAseloFeatureFlags().use_twilio_lambda_for_conversation_duration) {
+      const contactWithConversationDuration = setConversationDurationFromMetadata(contact, metadata);
+      return submitContactForm(task, contactWithConversationDuration, caseState);
+    }
+    return submitContactForm(task, contact, caseState);
   },
   (task: CustomITask, contact: Contact, metadata: ContactMetadata, caseState: CaseStateEntry) => ({
     task,

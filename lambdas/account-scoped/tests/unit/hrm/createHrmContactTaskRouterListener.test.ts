@@ -123,7 +123,7 @@ describe('handleEvent', () => {
     twilioClient = mockTwilioClient as twilio.Twilio;
 
     mockGetSsmParameter.mockImplementation((path: string) => {
-      if (path.endsWith('/static_key')) {
+      if (path.includes('/static_key')) {
         return Promise.resolve('unit_test_static_key');
       } else if (path.endsWith('/workspace_sid')) {
         return Promise.resolve(TEST_WORKSPACE_SID);

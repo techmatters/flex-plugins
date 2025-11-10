@@ -90,12 +90,6 @@
           },
           {
             "label": "Work/employment"
-          },
-          {
-            "label": "Breakups/separation/divorce"
-          },
-          {
-            "label": "Friendships/Relationships"
           }
         ]
       },
@@ -313,6 +307,9 @@
             "label": "Complaints"
           },
           {
+            "label": "Climate change/ environment"
+          },
+          {
             "label": "Feedback"
           },
           {
@@ -364,13 +361,21 @@
         "color": "#b3b582",
         "subcategories": [
           {
-            "label": "Disability"
-          },
-          {
             "label": "Ethnic Minorities"
           },
           {
             "label": "Religion/faith"
+          }
+        ]
+      },
+      "Relationships": {
+        "color": "#b3b582",
+        "subcategories": [
+          {
+            "label": "Breakups/separation/divorce"
+          },
+          {
+            "label": "Friendships/Relationships"
           }
         ]
       },

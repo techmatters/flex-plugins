@@ -24,10 +24,6 @@
     "label": "Age",
     "type": "select",
     "isPII": true,
-    "required": {
-      "value": true,
-      "message": "RequiredFieldError"
-    },
     "options": [
       {
         "value": "Unknown",
@@ -166,10 +162,6 @@
         "label": "Not specified"
       }
     ],
-    "required": {
-      "value": true,
-      "message": "RequiredFieldError"
-    },
     "isPII": false
   },
   {
@@ -182,96 +174,24 @@
         "label": ""
       },
       {
-        "value": "Guernsey",
-        "label": "Guernsey"
+        "value": "Aberdeenshire",
+        "label": "Aberdeenshire"
       },
       {
-        "value": "Jersey",
-        "label": "Jersey"
+        "value": "Anglesey/Sir Fon",
+        "label": "Anglesey/Sir Fon"
       },
       {
-        "value": "Derby",
-        "label": "Derby"
+        "value": "Angus",
+        "label": "Angus"
       },
       {
-        "value": "Derbyshire",
-        "label": "Derbyshire"
+        "value": "Argyll and Bute",
+        "label": "Argyll and Bute"
       },
       {
-        "value": "Leicester",
-        "label": "Leicester"
-      },
-      {
-        "value": "Leicestershire",
-        "label": "Leicestershire"
-      },
-      {
-        "value": "Lincolnshire",
-        "label": "Lincolnshire"
-      },
-      {
-        "value": "Northamptonshire",
-        "label": "Northamptonshire"
-      },
-      {
-        "value": "Nottingham",
-        "label": "Nottingham"
-      },
-      {
-        "value": "Nottinghamshire",
-        "label": "Nottinghamshire"
-      },
-      {
-        "value": "Rutland",
-        "label": "Rutland"
-      },
-      {
-        "value": "Bedfordshire",
-        "label": "Bedfordshire"
-      },
-      {
-        "value": "Cambridgeshire",
-        "label": "Cambridgeshire"
-      },
-      {
-        "value": "Central Bedfordshire",
-        "label": "Central Bedfordshire"
-      },
-      {
-        "value": "Essex",
-        "label": "Essex"
-      },
-      {
-        "value": "Hertfordshire",
-        "label": "Hertfordshire"
-      },
-      {
-        "value": "Luton",
-        "label": "Luton"
-      },
-      {
-        "value": "Norfolk",
-        "label": "Norfolk"
-      },
-      {
-        "value": "Peterborough",
-        "label": "Peterborough"
-      },
-      {
-        "value": "Southend-on-Sea",
-        "label": "Southend-on-Sea"
-      },
-      {
-        "value": "Suffolk",
-        "label": "Suffolk"
-      },
-      {
-        "value": "Thurrock",
-        "label": "Thurrock"
-      },
-      {
-        "value": "Isle of Man",
-        "label": "Isle of Man"
+        "value": "Ayrshire",
+        "label": "Ayrshire"
       },
       {
         "value": "Barking",
@@ -282,160 +202,20 @@
         "label": "Barnet"
       },
       {
+        "value": "Bath and North East Somerset",
+        "label": "Bath and North East Somerset"
+      },
+      {
+        "value": "Bedfordshire",
+        "label": "Bedfordshire"
+      },
+      {
+        "value": "Berkshire",
+        "label": "Berkshire"
+      },
+      {
         "value": "Bexley",
         "label": "Bexley"
-      },
-      {
-        "value": "Brent",
-        "label": "Brent"
-      },
-      {
-        "value": "Bromley",
-        "label": "Bromley"
-      },
-      {
-        "value": "Camden",
-        "label": "Camden"
-      },
-      {
-        "value": "Croydon",
-        "label": "Croydon"
-      },
-      {
-        "value": "Ealing",
-        "label": "Ealing"
-      },
-      {
-        "value": "Enfield",
-        "label": "Enfield"
-      },
-      {
-        "value": "Greenwich",
-        "label": "Greenwich"
-      },
-      {
-        "value": "Hackney",
-        "label": "Hackney"
-      },
-      {
-        "value": "Hammersmith",
-        "label": "Hammersmith"
-      },
-      {
-        "value": "Haringey",
-        "label": "Haringey"
-      },
-      {
-        "value": "Harrow",
-        "label": "Harrow"
-      },
-      {
-        "value": "Havering",
-        "label": "Havering"
-      },
-      {
-        "value": "Hillingdon",
-        "label": "Hillingdon"
-      },
-      {
-        "value": "Hounslow",
-        "label": "Hounslow"
-      },
-      {
-        "value": "Islington",
-        "label": "Islington"
-      },
-      {
-        "value": "Kensington and Chelsea",
-        "label": "Kensington and Chelsea"
-      },
-      {
-        "value": "Kingston",
-        "label": "Kingston"
-      },
-      {
-        "value": "Lambeth",
-        "label": "Lambeth"
-      },
-      {
-        "value": "Lewisham",
-        "label": "Lewisham"
-      },
-      {
-        "value": "London",
-        "label": "London"
-      },
-      {
-        "value": "Merton",
-        "label": "Merton"
-      },
-      {
-        "value": "Newham",
-        "label": "Newham"
-      },
-      {
-        "value": "Redbridge",
-        "label": "Redbridge"
-      },
-      {
-        "value": "Richmond",
-        "label": "Richmond"
-      },
-      {
-        "value": "Southwark",
-        "label": "Southwark"
-      },
-      {
-        "value": "Sutton",
-        "label": "Sutton"
-      },
-      {
-        "value": "Tower Hamlets",
-        "label": "Tower Hamlets"
-      },
-      {
-        "value": "Waltham Forest",
-        "label": "Waltham Forest"
-      },
-      {
-        "value": "Wandsworth",
-        "label": "Wandsworth"
-      },
-      {
-        "value": "Westminster",
-        "label": "Westminster"
-      },
-      {
-        "value": "Darlington",
-        "label": "Darlington"
-      },
-      {
-        "value": "Durham",
-        "label": "Durham"
-      },
-      {
-        "value": "Hartlepool",
-        "label": "Hartlepool"
-      },
-      {
-        "value": "Middlesbrough",
-        "label": "Middlesbrough"
-      },
-      {
-        "value": "Northumberland",
-        "label": "Northumberland"
-      },
-      {
-        "value": "Redcar and Cleveland",
-        "label": "Redcar and Cleveland"
-      },
-      {
-        "value": "Stockton-on-Tees",
-        "label": "Stockton-on-Tees"
-      },
-      {
-        "value": "Tyne and Wear",
-        "label": "Tyne and Wear"
       },
       {
         "value": "Blackburn with Darwen",
@@ -446,32 +226,88 @@
         "label": "Blackpool"
       },
       {
+        "value": "Blaenau Gwent",
+        "label": "Blaenau Gwent"
+      },
+      {
+        "value": "Bournemouth",
+        "label": "Bournemouth"
+      },
+      {
+        "value": "Bracknell Forest",
+        "label": "Bracknell Forest"
+      },
+      {
+        "value": "Brent",
+        "label": "Brent"
+      },
+      {
+        "value": "Bridgend",
+        "label": "Bridgend"
+      },
+      {
+        "value": "Brighton and Hove",
+        "label": "Brighton and Hove"
+      },
+      {
+        "value": "Bristol",
+        "label": "Bristol"
+      },
+      {
+        "value": "Bromley",
+        "label": "Bromley"
+      },
+      {
+        "value": "Buckinghamshire",
+        "label": "Buckinghamshire"
+      },
+      {
+        "value": "Caerphilly",
+        "label": "Caerphilly"
+      },
+      {
+        "value": "Caithness",
+        "label": "Caithness"
+      },
+      {
+        "value": "Cambridgeshire",
+        "label": "Cambridgeshire"
+      },
+      {
+        "value": "Camden",
+        "label": "Camden"
+      },
+      {
+        "value": "Cardiff",
+        "label": "Cardiff"
+      },
+      {
+        "value": "Carmarthenshire",
+        "label": "Carmarthenshire"
+      },
+      {
+        "value": "Central Bedfordshire",
+        "label": "Central Bedfordshire"
+      },
+      {
+        "value": "Ceredigion",
+        "label": "Ceredigion"
+      },
+      {
         "value": "Cheshire",
         "label": "Cheshire"
       },
       {
-        "value": "Cumbria",
-        "label": "Cumbria"
+        "value": "Clackmannanshire",
+        "label": "Clackmannanshire"
       },
       {
-        "value": "Greater Manchester",
-        "label": "Greater Manchester"
+        "value": "Conwy",
+        "label": "Conwy"
       },
       {
-        "value": "Halton",
-        "label": "Halton"
-      },
-      {
-        "value": "Lancashire",
-        "label": "Lancashire"
-      },
-      {
-        "value": "Merseyside",
-        "label": "Merseyside"
-      },
-      {
-        "value": "Warrington",
-        "label": "Warrington"
+        "value": "Cornwall",
+        "label": "Cornwall"
       },
       {
         "value": "County Antrim",
@@ -498,28 +334,36 @@
         "label": "County Tyrone"
       },
       {
-        "value": "Aberdeenshire",
-        "label": "Aberdeenshire"
+        "value": "Croydon",
+        "label": "Croydon"
       },
       {
-        "value": "Angus",
-        "label": "Angus"
+        "value": "Cumbria",
+        "label": "Cumbria"
       },
       {
-        "value": "Argyll and Bute",
-        "label": "Argyll and Bute"
+        "value": "Darlington",
+        "label": "Darlington"
       },
       {
-        "value": "Ayrshire",
-        "label": "Ayrshire"
+        "value": "Denbighshire",
+        "label": "Denbighshire"
       },
       {
-        "value": "Caithness",
-        "label": "Caithness"
+        "value": "Derby",
+        "label": "Derby"
       },
       {
-        "value": "Clackmannanshire",
-        "label": "Clackmannanshire"
+        "value": "Derbyshire",
+        "label": "Derbyshire"
+      },
+      {
+        "value": "Devon",
+        "label": "Devon"
+      },
+      {
+        "value": "Dorset",
+        "label": "Dorset"
       },
       {
         "value": "Dumfries and Galloway",
@@ -534,6 +378,14 @@
         "label": "Dundee"
       },
       {
+        "value": "Durham",
+        "label": "Durham"
+      },
+      {
+        "value": "Ealing",
+        "label": "Ealing"
+      },
+      {
         "value": "East Ayrshire",
         "label": "East Ayrshire"
       },
@@ -546,8 +398,24 @@
         "label": "East Lothian"
       },
       {
+        "value": "East Riding of Yorkshire",
+        "label": "East Riding of Yorkshire"
+      },
+      {
+        "value": "East Sussex",
+        "label": "East Sussex"
+      },
+      {
         "value": "Edinburgh",
         "label": "Edinburgh"
+      },
+      {
+        "value": "Enfield",
+        "label": "Enfield"
+      },
+      {
+        "value": "Essex",
+        "label": "Essex"
       },
       {
         "value": "Falkirk",
@@ -558,32 +426,248 @@
         "label": "Fife"
       },
       {
+        "value": "Flintshire",
+        "label": "Flintshire"
+      },
+      {
+        "value": "Glamorgan",
+        "label": "Glamorgan"
+      },
+      {
         "value": "Glasgow",
         "label": "Glasgow"
+      },
+      {
+        "value": "Gloucestershire",
+        "label": "Gloucestershire"
+      },
+      {
+        "value": "Greater Manchester",
+        "label": "Greater Manchester"
+      },
+      {
+        "value": "Greenwich",
+        "label": "Greenwich"
+      },
+      {
+        "value": "Guernsey",
+        "label": "Guernsey"
+      },
+      {
+        "value": "Gwynedd",
+        "label": "Gwynedd"
+      },
+      {
+        "value": "Hackney",
+        "label": "Hackney"
+      },
+      {
+        "value": "Halton",
+        "label": "Halton"
+      },
+      {
+        "value": "Hammersmith",
+        "label": "Hammersmith"
+      },
+      {
+        "value": "Hampshire",
+        "label": "Hampshire"
+      },
+      {
+        "value": "Haringey",
+        "label": "Haringey"
+      },
+      {
+        "value": "Harrow",
+        "label": "Harrow"
+      },
+      {
+        "value": "Hartlepool",
+        "label": "Hartlepool"
+      },
+      {
+        "value": "Havering",
+        "label": "Havering"
+      },
+      {
+        "value": "Hereford and Worcester",
+        "label": "Hereford and Worcester"
+      },
+      {
+        "value": "Hertfordshire",
+        "label": "Hertfordshire"
       },
       {
         "value": "Highland",
         "label": "Highland"
       },
       {
+        "value": "Hillingdon",
+        "label": "Hillingdon"
+      },
+      {
+        "value": "Hounslow",
+        "label": "Hounslow"
+      },
+      {
         "value": "Inverclyde",
         "label": "Inverclyde"
+      },
+      {
+        "value": "Isle of Man",
+        "label": "Isle of Man"
+      },
+      {
+        "value": "Isle of Wight",
+        "label": "Isle of Wight"
+      },
+      {
+        "value": "Isles of Scilly",
+        "label": "Isles of Scilly"
+      },
+      {
+        "value": "Islington",
+        "label": "Islington"
+      },
+      {
+        "value": "Jersey",
+        "label": "Jersey"
+      },
+      {
+        "value": "Kensington and Chelsea",
+        "label": "Kensington and Chelsea"
+      },
+      {
+        "value": "Kent",
+        "label": "Kent"
+      },
+      {
+        "value": "Kingston",
+        "label": "Kingston"
+      },
+      {
+        "value": "Kingston upon Hull",
+        "label": "Kingston upon Hull"
+      },
+      {
+        "value": "Lambeth",
+        "label": "Lambeth"
       },
       {
         "value": "Lanarkshire",
         "label": "Lanarkshire"
       },
       {
+        "value": "Lancashire",
+        "label": "Lancashire"
+      },
+      {
+        "value": "Leicester",
+        "label": "Leicester"
+      },
+      {
+        "value": "Leicestershire",
+        "label": "Leicestershire"
+      },
+      {
+        "value": "Lewisham",
+        "label": "Lewisham"
+      },
+      {
+        "value": "Lincolnshire",
+        "label": "Lincolnshire"
+      },
+      {
+        "value": "London",
+        "label": "London"
+      },
+      {
+        "value": "Luton",
+        "label": "Luton"
+      },
+      {
+        "value": "Medway",
+        "label": "Medway"
+      },
+      {
+        "value": "Merseyside",
+        "label": "Merseyside"
+      },
+      {
+        "value": "Merthyr Tydfil",
+        "label": "Merthyr Tydfil"
+      },
+      {
+        "value": "Merton",
+        "label": "Merton"
+      },
+      {
+        "value": "Middlesbrough",
+        "label": "Middlesbrough"
+      },
+      {
         "value": "Midlothian",
         "label": "Midlothian"
+      },
+      {
+        "value": "Milton Keynes",
+        "label": "Milton Keynes"
+      },
+      {
+        "value": "Monmouthshire",
+        "label": "Monmouthshire"
       },
       {
         "value": "Moray",
         "label": "Moray"
       },
       {
+        "value": "Neath Port Talbot",
+        "label": "Neath Port Talbot"
+      },
+      {
+        "value": "Newham",
+        "label": "Newham"
+      },
+      {
+        "value": "Norfolk",
+        "label": "Norfolk"
+      },
+      {
+        "value": "North East Lincolnshire",
+        "label": "North East Lincolnshire"
+      },
+      {
         "value": "North Lanarkshire",
         "label": "North Lanarkshire"
+      },
+      {
+        "value": "North Lincolnshire",
+        "label": "North Lincolnshire"
+      },
+      {
+        "value": "North Somerset",
+        "label": "North Somerset"
+      },
+      {
+        "value": "North Yorkshire",
+        "label": "North Yorkshire"
+      },
+      {
+        "value": "Northamptonshire",
+        "label": "Northamptonshire"
+      },
+      {
+        "value": "Northumberland",
+        "label": "Northumberland"
+      },
+      {
+        "value": "Nottingham",
+        "label": "Nottingham"
+      },
+      {
+        "value": "Nottinghamshire",
+        "label": "Nottinghamshire"
       },
       {
         "value": "Orkney",
@@ -594,160 +678,20 @@
         "label": "Orkney Isles"
       },
       {
-        "value": "Perth and Kinross",
-        "label": "Perth and Kinross"
-      },
-      {
-        "value": "Renfrewshire",
-        "label": "Renfrewshire"
-      },
-      {
-        "value": "Scottish Borders",
-        "label": "Scottish Borders"
-      },
-      {
-        "value": "Shetland Isles",
-        "label": "Shetland Isles"
-      },
-      {
-        "value": "South Ayrshire",
-        "label": "South Ayrshire"
-      },
-      {
-        "value": "South Lanarkshire",
-        "label": "South Lanarkshire"
-      },
-      {
-        "value": "Stirlingshire",
-        "label": "Stirlingshire"
-      },
-      {
-        "value": "West Dunbartonshire",
-        "label": "West Dunbartonshire"
-      },
-      {
-        "value": "West Lothian",
-        "label": "West Lothian"
-      },
-      {
-        "value": "Western Isles",
-        "label": "Western Isles"
-      },
-      {
-        "value": "Wigtownshire",
-        "label": "Wigtownshire"
-      },
-      {
-        "value": "Berkshire",
-        "label": "Berkshire"
-      },
-      {
-        "value": "Bracknell Forest",
-        "label": "Bracknell Forest"
-      },
-      {
-        "value": "Brighton and Hove",
-        "label": "Brighton and Hove"
-      },
-      {
-        "value": "Buckinghamshire",
-        "label": "Buckinghamshire"
-      },
-      {
-        "value": "East Sussex",
-        "label": "East Sussex"
-      },
-      {
-        "value": "Hampshire",
-        "label": "Hampshire"
-      },
-      {
-        "value": "Isle of Wight",
-        "label": "Isle of Wight"
-      },
-      {
-        "value": "Kent",
-        "label": "Kent"
-      },
-      {
-        "value": "Medway",
-        "label": "Medway"
-      },
-      {
-        "value": "Milton Keynes",
-        "label": "Milton Keynes"
-      },
-      {
         "value": "Oxfordshire",
         "label": "Oxfordshire"
       },
       {
-        "value": "Portsmouth",
-        "label": "Portsmouth"
+        "value": "Pembrokeshire",
+        "label": "Pembrokeshire"
       },
       {
-        "value": "Reading",
-        "label": "Reading"
+        "value": "Perth and Kinross",
+        "label": "Perth and Kinross"
       },
       {
-        "value": "Slough",
-        "label": "Slough"
-      },
-      {
-        "value": "Southampton",
-        "label": "Southampton"
-      },
-      {
-        "value": "Surrey",
-        "label": "Surrey"
-      },
-      {
-        "value": "West Sussex",
-        "label": "West Sussex"
-      },
-      {
-        "value": "Windsor and Maidenhead",
-        "label": "Windsor and Maidenhead"
-      },
-      {
-        "value": "Wokingham",
-        "label": "Wokingham"
-      },
-      {
-        "value": "Bath and North East Somerset",
-        "label": "Bath and North East Somerset"
-      },
-      {
-        "value": "Bournemouth",
-        "label": "Bournemouth"
-      },
-      {
-        "value": "Bristol",
-        "label": "Bristol"
-      },
-      {
-        "value": "Cornwall",
-        "label": "Cornwall"
-      },
-      {
-        "value": "Devon",
-        "label": "Devon"
-      },
-      {
-        "value": "Dorset",
-        "label": "Dorset"
-      },
-      {
-        "value": "Gloucestershire",
-        "label": "Gloucestershire"
-      },
-      {
-        "value": "Isles of Scilly",
-        "label": "Isles of Scilly"
-      },
-      {
-        "value": "North Somerset",
-        "label": "North Somerset"
+        "value": "Peterborough",
+        "label": "Peterborough"
       },
       {
         "value": "Plymouth",
@@ -758,164 +702,212 @@
         "label": "Poole"
       },
       {
-        "value": "Somerset",
-        "label": "Somerset"
-      },
-      {
-        "value": "South Gloucestershire",
-        "label": "South Gloucestershire"
-      },
-      {
-        "value": "Swindon",
-        "label": "Swindon"
-      },
-      {
-        "value": "Torbay",
-        "label": "Torbay"
-      },
-      {
-        "value": "Wiltshire",
-        "label": "Wiltshire"
-      },
-      {
-        "value": "Anglesey/Sir Fon",
-        "label": "Anglesey/Sir Fon"
-      },
-      {
-        "value": "Blaenau Gwent",
-        "label": "Blaenau Gwent"
-      },
-      {
-        "value": "Bridgend",
-        "label": "Bridgend"
-      },
-      {
-        "value": "Caerphilly",
-        "label": "Caerphilly"
-      },
-      {
-        "value": "Cardiff",
-        "label": "Cardiff"
-      },
-      {
-        "value": "Carmarthenshire",
-        "label": "Carmarthenshire"
-      },
-      {
-        "value": "Ceredigion",
-        "label": "Ceredigion"
-      },
-      {
-        "value": "Conwy",
-        "label": "Conwy"
-      },
-      {
-        "value": "Denbighshire",
-        "label": "Denbighshire"
-      },
-      {
-        "value": "Flintshire",
-        "label": "Flintshire"
-      },
-      {
-        "value": "Glamorgan",
-        "label": "Glamorgan"
-      },
-      {
-        "value": "Gwynedd",
-        "label": "Gwynedd"
-      },
-      {
-        "value": "Merthyr Tydfil",
-        "label": "Merthyr Tydfil"
-      },
-      {
-        "value": "Monmouthshire",
-        "label": "Monmouthshire"
-      },
-      {
-        "value": "Neath Port Talbot",
-        "label": "Neath Port Talbot"
-      },
-      {
-        "value": "Pembrokeshire",
-        "label": "Pembrokeshire"
+        "value": "Portsmouth",
+        "label": "Portsmouth"
       },
       {
         "value": "Powys",
         "label": "Powys"
       },
       {
+        "value": "Reading",
+        "label": "Reading"
+      },
+      {
+        "value": "Redbridge",
+        "label": "Redbridge"
+      },
+      {
+        "value": "Redcar and Cleveland",
+        "label": "Redcar and Cleveland"
+      },
+      {
+        "value": "Renfrewshire",
+        "label": "Renfrewshire"
+      },
+      {
         "value": "Rhondda Cynon Taff",
         "label": "Rhondda Cynon Taff"
       },
       {
-        "value": "Swansea",
-        "label": "Swansea"
+        "value": "Richmond",
+        "label": "Richmond"
       },
       {
-        "value": "Wrexham",
-        "label": "Wrexham"
+        "value": "Rutland",
+        "label": "Rutland"
       },
       {
-        "value": "Hereford and Worcester",
-        "label": "Hereford and Worcester"
+        "value": "Scottish Borders",
+        "label": "Scottish Borders"
+      },
+      {
+        "value": "Shetland Isles",
+        "label": "Shetland Isles"
       },
       {
         "value": "Shropshire",
         "label": "Shropshire"
       },
       {
-        "value": "Staffordshire",
-        "label": "Staffordshire"
+        "value": "Slough",
+        "label": "Slough"
       },
       {
-        "value": "Stoke-on-Trent",
-        "label": "Stoke-on-Trent"
+        "value": "Somerset",
+        "label": "Somerset"
       },
       {
-        "value": "Telford and Wrekin",
-        "label": "Telford and Wrekin"
+        "value": "South Ayrshire",
+        "label": "South Ayrshire"
       },
       {
-        "value": "Warwickshire",
-        "label": "Warwickshire"
+        "value": "South Gloucestershire",
+        "label": "South Gloucestershire"
       },
       {
-        "value": "West Midlands",
-        "label": "West Midlands"
-      },
-      {
-        "value": "Worcestershire",
-        "label": "Worcestershire"
-      },
-      {
-        "value": "East Riding of Yorkshire",
-        "label": "East Riding of Yorkshire"
-      },
-      {
-        "value": "Kingston upon Hull",
-        "label": "Kingston upon Hull"
-      },
-      {
-        "value": "North East Lincolnshire",
-        "label": "North East Lincolnshire"
-      },
-      {
-        "value": "North Lincolnshire",
-        "label": "North Lincolnshire"
-      },
-      {
-        "value": "North Yorkshire",
-        "label": "North Yorkshire"
+        "value": "South Lanarkshire",
+        "label": "South Lanarkshire"
       },
       {
         "value": "South Yorkshire",
         "label": "South Yorkshire"
       },
       {
+        "value": "Southampton",
+        "label": "Southampton"
+      },
+      {
+        "value": "Southend-on-Sea",
+        "label": "Southend-on-Sea"
+      },
+      {
+        "value": "Southwark",
+        "label": "Southwark"
+      },
+      {
+        "value": "Staffordshire",
+        "label": "Staffordshire"
+      },
+      {
+        "value": "Stirlingshire",
+        "label": "Stirlingshire"
+      },
+      {
+        "value": "Stockton-on-Tees",
+        "label": "Stockton-on-Tees"
+      },
+      {
+        "value": "Stoke-on-Trent",
+        "label": "Stoke-on-Trent"
+      },
+      {
+        "value": "Suffolk",
+        "label": "Suffolk"
+      },
+      {
+        "value": "Surrey",
+        "label": "Surrey"
+      },
+      {
+        "value": "Sutton",
+        "label": "Sutton"
+      },
+      {
+        "value": "Swansea",
+        "label": "Swansea"
+      },
+      {
+        "value": "Swindon",
+        "label": "Swindon"
+      },
+      {
+        "value": "Telford and Wrekin",
+        "label": "Telford and Wrekin"
+      },
+      {
+        "value": "Thurrock",
+        "label": "Thurrock"
+      },
+      {
+        "value": "Torbay",
+        "label": "Torbay"
+      },
+      {
+        "value": "Tower Hamlets",
+        "label": "Tower Hamlets"
+      },
+      {
+        "value": "Tyne and Wear",
+        "label": "Tyne and Wear"
+      },
+      {
+        "value": "Waltham Forest",
+        "label": "Waltham Forest"
+      },
+      {
+        "value": "Wandsworth",
+        "label": "Wandsworth"
+      },
+      {
+        "value": "Warrington",
+        "label": "Warrington"
+      },
+      {
+        "value": "Warwickshire",
+        "label": "Warwickshire"
+      },
+      {
+        "value": "West Dunbartonshire",
+        "label": "West Dunbartonshire"
+      },
+      {
+        "value": "West Lothian",
+        "label": "West Lothian"
+      },
+      {
+        "value": "West Midlands",
+        "label": "West Midlands"
+      },
+      {
+        "value": "West Sussex",
+        "label": "West Sussex"
+      },
+      {
         "value": "West Yorkshire",
         "label": "West Yorkshire"
+      },
+      {
+        "value": "Western Isles",
+        "label": "Western Isles"
+      },
+      {
+        "value": "Westminster",
+        "label": "Westminster"
+      },
+      {
+        "value": "Wigtownshire",
+        "label": "Wigtownshire"
+      },
+      {
+        "value": "Wiltshire",
+        "label": "Wiltshire"
+      },
+      {
+        "value": "Windsor and Maidenhead",
+        "label": "Windsor and Maidenhead"
+      },
+      {
+        "value": "Wokingham",
+        "label": "Wokingham"
+      },
+      {
+        "value": "Worcestershire",
+        "label": "Worcestershire"
+      },
+      {
+        "value": "Wrexham",
+        "label": "Wrexham"
       },
       {
         "value": "York",
@@ -967,10 +959,6 @@
         "label": "Prefer not to say"
       }
     ],
-    "required": {
-      "value": true,
-      "message": "RequiredFieldError"
-    },
     "isPII": false
   },
   {
@@ -995,10 +983,6 @@
         "label": "Prefer not to say"
       }
     ],
-    "required": {
-      "value": true,
-      "message": "RequiredFieldError"
-    },
     "isPII": false
   },
   {
@@ -1047,10 +1031,6 @@
         "label": "I identify in a different way"
       }
     ],
-    "required": {
-      "value": true,
-      "message": "RequiredFieldError"
-    },
     "isPII": false
   },
   {
@@ -1091,10 +1071,6 @@
         "label": "Prefer not to say"
       }
     ],
-    "required": {
-      "value": true,
-      "message": "RequiredFieldError"
-    },
     "isPII": false
   },
   {
@@ -1103,8 +1079,12 @@
     "type": "listbox-multiselect",
     "options": [
       {
-        "value": "School (primary or secondary)",
-        "label": "School (primary or secondary)"
+        "value": "Primary School",
+        "label": "Primary School"
+      },
+      {
+        "value": "Secondary School",
+        "label": "Secondary School"
       },
       {
         "value": "Further or Higher education",
@@ -1428,28 +1408,8 @@
     "isPII": false
   },
   {
-    "name": "consentForResearchEvaluation",
-    "label": "Consent for Research/Evaluation",
-    "type": "select",
-    "options": [
-      {
-        "value": "",
-        "label": ""
-      },
-      {
-        "value": "Yes",
-        "label": "Yes"
-      },
-      {
-        "value": "No",
-        "label": "No"
-      }
-    ],
-    "isPII": false
-  },
-  {
     "name": "howDidYouHearOfTheMixPeerSupportService",
-    "label": "How did you hear of the Mix Peer Chat Service?",
+    "label": "How did you hear of the Mix PeerChat Service?",
     "type": "select",
     "options": [
       {
@@ -1457,12 +1417,28 @@
         "label": ""
       },
       {
+        "value": "A search engine",
+        "label": "A search engine"
+      },
+      {
+        "value": "Chatbot (e.g. ChatGPT, Gemini, Claude, Grok etc)",
+        "label": "Chatbot (e.g. ChatGPT, Gemini, Claude, Grok etc)"
+      },
+      {
+        "value": "Media (e.g. TV, radio, newspapers)",
+        "label": "Media (e.g. TV, radio, newspapers)"
+      },
+      {
         "value": "Peers (e.g. friends / siblings)",
         "label": "Peers (e.g. friends / siblings)"
       },
       {
-        "value": "A search engine",
-        "label": "A search engine"
+        "value": "Referral from another website or organisation",
+        "label": "Referral from another website or organisation"
+      },
+      {
+        "value": "Shout",
+        "label": "Shout"
       },
       {
         "value": "Social media",
@@ -1471,14 +1447,6 @@
       {
         "value": "Teacher / health professional / youth worker",
         "label": "Teacher / health professional / youth worker"
-      },
-      {
-        "value": "Referral from another website or organisation",
-        "label": "Referral from another website or organisation"
-      },
-      {
-        "value": "Media",
-        "label": "Media"
       },
       {
         "value": "The Mix",
@@ -1505,20 +1473,24 @@
         "label": "Counselling"
       },
       {
-        "value": "Discussion boards ",
-        "label": "Discussion boards "
+        "value": "Discussion boards",
+        "label": "Discussion boards"
       },
       {
-        "value": "Group chats ",
-        "label": "Group chats "
+        "value": "Group chats",
+        "label": "Group chats"
       },
       {
-        "value": "Website ",
-        "label": "Website "
+        "value": "Website",
+        "label": "Website"
       },
       {
-        "value": "Social media ",
-        "label": "Social media "
+        "value": "Social media",
+        "label": "Social media"
+      },
+      {
+        "value": "None",
+        "label": "None"
       }
     ],
     "isPII": false

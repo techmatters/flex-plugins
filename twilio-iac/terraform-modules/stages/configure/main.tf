@@ -156,6 +156,7 @@ data "aws_ssm_parameter" "hrm_static_api_key_legacy" {
   #depends_on = [ module.hrmServiceIntegration.null_resource.hrm_static_api_key]
 }
 
+// Legacy, can be removed once HRM v1.45.x and Flex v2.44.x are fully deployed
 resource "aws_ssm_parameter" "hrm_static_api_key_v2" {
   name        = "/${lower(var.environment)}/twilio/${local.secrets.twilio_account_sid}/static_key"
   type        = "SecureString"
@@ -165,6 +166,19 @@ resource "aws_ssm_parameter" "hrm_static_api_key_v2" {
   tags = {
     Environment = lower(var.environment)
     Name        = "/${lower(var.environment)}/twilio/${local.secrets.twilio_account_sid}/static_key"
+    Terraform   = true
+  }
+}
+
+resource "aws_ssm_parameter" "hrm_internal_api_static_key" {
+  name        = "/${lower(var.environment)}/hrm/service/${lower(var.helpline_region)}/static_key/${nonsensitive(var.twilio_account_sid)}"
+  type        = "SecureString"
+  value       = data.aws_ssm_parameter.hrm_static_api_key_legacy.value
+  description = "Static key for internal HRM API access"
+
+  tags = {
+    Environment = lower(var.environment)
+    Name        = "/${lower(var.environment)}/hrm/service/${lower(var.helpline_region)}/static_key/${nonsensitive(var.twilio_account_sid)}"
     Terraform   = true
   }
 }

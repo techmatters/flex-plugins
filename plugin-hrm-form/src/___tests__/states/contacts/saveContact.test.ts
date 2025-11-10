@@ -143,10 +143,12 @@ describe('actions', () => {
     const mockSavedContact = { id: '12', ...VALID_EMPTY_CONTACT }; // Create a mock savedContact object
     mockUpdateContactInHrm.mockResolvedValue(mockSavedContact);
 
-    await (dispatch(updateContactInHrmAsyncAction(baseContact, { conversationDuration: 1234 })) as unknown);
+    await (dispatch(
+      updateContactInHrmAsyncAction(baseContact, { conversationDuration: 1234, queueName: 'WQbob' }),
+    ) as unknown);
     const state = getState();
 
-    expect(updateContactInHrm).toHaveBeenCalledWith(baseContact.id, { conversationDuration: 1234 });
+    expect(updateContactInHrm).toHaveBeenCalledWith(baseContact.id, { conversationDuration: 1234, queueName: 'WQbob' });
     const expected: ContactsState = {
       ...baseState,
       existingContacts: {
@@ -155,7 +157,8 @@ describe('actions', () => {
           draftContact: undefined,
           savedContact: {
             ...startingContactState.savedContact,
-            conversationDuration: 1234,
+            conversationDuration: 0,
+            queueName: 'WQbob',
           },
           metadata: {
             ...startingContactState.metadata,

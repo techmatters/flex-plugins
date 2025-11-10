@@ -402,6 +402,7 @@
   "Transfer-TaskLineChatWhatsAppReserved": "ถ่ายโอนจาก",
   "Transfer-TransferButton": "โอนย้าย",
   "Transfer-Warm": "อบอุ่น",
+  "Transfer-Notifications-CantHangTransferInProgress": "ไม่สามารถออกจากการโทรได้จนกว่าจะมีการยอมรับหรือปฏิเสธการโอนสาย",
   "TranslateButtonAriaLabel": "เปลี่ยนภาษา",
   "UploadFile-ButtonText": "อัปโหลดไฟล์",
   "WorkerDirectoryAgentsTabLabel": "ตัวแทน",
@@ -672,6 +673,9 @@
   "Conference-AddConferenceCallParticipant": "เพิ่มผู้เข้าร่วมการประชุมทางโทรศัพท์",
   "Conference-EnterPhoneNumber": "ป้อนหมายเลขโทรศัพท์",
   "Conference-DialButton": "โทร",
+  "Conference-Notifications-UnholdParticipants": "ไม่สามารถออกจากการประชุมได้เนื่องจากผู้เข้าร่วมบางคนถูกพักสาย กรุณายกเลิกการพักสายแล้วลองใหม่อีกครั้ง",
+  "Conference-Notifications-ErrorAddingParticipant": "เกิดข้อผิดพลาดในการพยายามเพิ่มผู้เข้าร่วมในการโทร โปรดลองอีกครั้ง",
+  "Conference-Notifications-ErrorUpdatingParticipant": "กิดข้อผิดพลาดในการพยายามอัปเดตผู้เข้าร่วม โปรดลองอีกครั้ง",
   "HangupCallLeaveTooltip": "ออกจากสาย",
   "NavigableContainer-BackButton": "กลับ",
   "NavigableContainer-CloseButton": "ปิด",
@@ -679,5 +683,9 @@
   "TeamsView-NoSkills": "- ไม่มีทักษะที่ระบุ -",
   "blocked":"ถูกบล็อก",
   "Long Term Block (100 Years)":"การบล็อกระยะยาว (100 ปี)",
-  "abusive":"คุกคาม"
+  "abusive":"คุกคาม",
+  "Forms-ResourceReferralsList-Add": "เพิ่ม",
+  "Forms-ResourceReferralsList-Delete": "ลบ",
+  "Forms-FileUpload-InvalidFileTypeError": "ประเภทไฟล์ไม่ถูกต้อง อนุญาตเฉพาะไฟล์ PNG, JPG, JPEG, PDF, DOC และ DOCX เท่านั้น",
+  "Forms-FileUpload-FileSizeError": "ไฟล์มีขนาดเกินขนาดสูงสุด"
 }

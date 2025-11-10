@@ -7,7 +7,7 @@
     "anxietyScale": "ChildInformationTab.anxietyScale",
     "moodhappinessBefore": "ChildInformationTab.moodhappinessBefore",
     "bookingReference": "ChildInformationTab.bookingReference",
-    "consentForResearchEvaluation": "ChildInformationTab.consentForResearchEvaluation",
+    "consentForResearchEvaluation": "CaseInformationTab.consentForResearchEvaluation",
     "ip": "CaseInformationTab.ip"
   },
   "survey":{}

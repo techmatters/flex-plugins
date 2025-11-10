@@ -10,7 +10,7 @@
                 {
                     "message": {
                         "plainTextMessage": {
-                            "value": "What is your feedback on the session, how helpful was it? 1.Very helpful, 2.Somewhat helpful, 3.Not very helpful, 4.Not at all helpful"
+                            "value": "What is your feedback on the session, how helpful was it? 1. Not at all helpful; 2. Not very helpful; 3. Somewhat helpful; 4. Very helpful"
                         }
                     }
                 }

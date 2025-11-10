@@ -35,7 +35,7 @@ export const HRM_AUTH_SSM_PARAMETERS = [
     valueGenerator: () => TEST_AUTH_TOKEN,
   },
   {
-    name: `/${process.env.NODE_ENV}/twilio/${TEST_ACCOUNT_SID}/static_key`,
+    name: `/${process.env.NODE_ENV}/hrm/service/${process.env.AWS_REGION}/static_key/${TEST_ACCOUNT_SID}`,
     valueGenerator: () => 'static_key',
   },
 ];

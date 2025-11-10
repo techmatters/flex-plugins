@@ -126,6 +126,7 @@
 "Transfer-FormNotEditable": "Formulaire verrouillé jusqu'à la fin du transfert.",
 "Transfer-ChatWarmNotAllowed": "Le transfert à chaud pour les chats n'est actuellement pas pris en charge",
 "Transfer-CannotTransferTooManyParticipants": "Transfert impossible s'il y a 3 participants ou plus",
+"Transfer-Notifications-CantHangTransferInProgress": "Impossible de quitter l'appel tant que le transfert n'est pas accepté ou refusé.",
 "WorkerDirectoryTitle": "Transfert",
 "WorkerDirectoryAgentsTabLabel": "Agents",
 "WorkerDirectoryQueuesTabLabel": "Files d'attente",
@@ -684,5 +685,12 @@
 "Conference-Wrapping-HangupBy/Customer": "Appel Terminé par l'Utilisateur du Service",
 "Conference-Wrapping-HangupBy/Consult": "Appel Terminé par le Conseiller Consultant",
 "Conference-Wrapping-HangupBy/Cold Transfer": "Appel Terminé par Transfert",
-"Conference-Wrapping-HangupBy/Warm Transfer": "Appel Terminé par Transfert"
+"Conference-Wrapping-HangupBy/Warm Transfer": "Appel Terminé par Transfert",
+"Conference-Notifications-UnholdParticipants": "Impossible de quitter la conférence car certains participants sont en attente. Veuillez réessayer.",
+"Conference-Notifications-ErrorAddingParticipant": "Une erreur s'est produite lors de la tentative d'ajout d'un participant à l'appel. Veuillez réessayer.",
+"Conference-Notifications-ErrorUpdatingParticipant": "Une erreur s'est produite lors de la mise à jour des informations du participant. Veuillez réessayer.",
+"Forms-ResourceReferralsList-Add": "A jouter",
+"Forms-ResourceReferralsList-Delete": "Supprimer",
+"Forms-FileUpload-InvalidFileTypeError": "Type de fichier invalide. Seuls les fichiers PNG, JPG, JPEG, PDF, DOC et DOCX sont autorisés.",
+"Forms-FileUpload-FileSizeError": "Le fichier dépasse la taille maximale."
 }
