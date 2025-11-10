@@ -15,6 +15,7 @@
  */
 import React from 'react';
 import { CategoryEntry } from 'hrm-form-definitions';
+import { Template } from '@twilio/flex-ui';
 
 import {
   SubcategoriesWrapper,
@@ -56,7 +57,7 @@ const createSubcategoryCheckbox = (
             checked={selected}
             data-testid={`categories.${category}.${label}`}
           />
-          {label}
+          <Template code={label} />
         </CategoryCheckboxField>
       </CategoryCheckboxLabel>
       {toolkitUrl && (
