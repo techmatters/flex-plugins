@@ -10,7 +10,7 @@
                 {
                     "message": {
                         "plainTextMessage": {
-                            "value": "How did you hear about us? Please select one: 1: Advertisement 2: Social Media 3: SMS/Text Message 4: Traditional Media 5: Word of Mouth"
+                            "value": "How did you hear about us? Please select one: 1: Advertisement 2: Search Engine 3: Social Media 4: SMS/Text Message 5: Traditional Media 6: Word of Mouth"
                         }
                     }
                 }
