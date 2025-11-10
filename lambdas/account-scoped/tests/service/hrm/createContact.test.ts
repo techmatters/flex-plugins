@@ -40,7 +40,11 @@ import { RESERVATION_ACCEPTED } from '../../../src/taskrouter/eventTypes';
 import { mockFormDefinitions } from '../sandbox/mockFormDefinitions';
 import { BASE_FORM_DEFINITION } from '../../testHrmValues';
 
-import { mockHrmContacts, verifyCreateContactRequest } from '../sandbox/mockHrm';
+import {
+  HRM_AUTH_SSM_PARAMETERS,
+  mockHrmContacts,
+  verifyCreateContactRequest,
+} from '../sandbox/mockHrm';
 import { MockedEndpoint } from 'mockttp';
 import { BLANK_CONTACT } from '../../unit/hrm/testContacts';
 import { TaskSID } from '../../../src/twilioTypes';
@@ -79,17 +83,10 @@ describe('Create HRM Contact on Reservation Accepted event', () => {
       BASE_FORM_DEFINITION,
     );
     await mockSsmParameters(await mockttpServer(), [
-      {
-        name: `/${process.env.NODE_ENV}/twilio/${TEST_ACCOUNT_SID}/auth_token`,
-        valueGenerator: () => TEST_AUTH_TOKEN,
-      },
+      ...HRM_AUTH_SSM_PARAMETERS,
       {
         name: `/${process.env.NODE_ENV}/twilio/${TEST_ACCOUNT_SID}/workspace_sid`,
         valueGenerator: () => TEST_WORKSPACE_SID,
-      },
-      {
-        name: `/${process.env.NODE_ENV}/twilio/${TEST_ACCOUNT_SID}/static_key`,
-        valueGenerator: () => 'static_key',
       },
     ]);
     await mockTaskApi(EMPTY_TASK);

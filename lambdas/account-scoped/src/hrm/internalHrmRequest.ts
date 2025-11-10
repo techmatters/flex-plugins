@@ -28,25 +28,22 @@ const requestFromInternalHrmEndpoint = async <TRequest, TResponse>(
   retryLimit: number,
 ): Promise<Result<Error, TResponse>> => {
   const accountSid = inferAccountSidFromHrmAccountId(hrmAccountId);
-  const [hrmStaticKey] = await Promise.all([
-    async () => {
-      try {
-        return await getSsmParameter(
-          `/${process.env.NODE_ENV}/hrm/service/${process.env.AWS_REGION}/static_key/${accountSid}`,
-        );
-      } catch (error) {
-        // Remove when a terraform apply has been done for all accounts
-        if (error instanceof SsmParameterNotFound) {
-          console.warn(
-            `New internal API key not set up for ${accountSid} yet, looking for legacy key`,
-          );
-          return getSsmParameter(
-            `/${process.env.NODE_ENV}/twilio/${accountSid}/static_key`,
-          );
-        } else throw error;
-      }
-    },
-  ]);
+  let hrmStaticKey: string;
+  try {
+    hrmStaticKey = await getSsmParameter(
+      `/${process.env.NODE_ENV}/hrm/service/${process.env.AWS_REGION}/static_key/${accountSid}`,
+    );
+  } catch (error) {
+    // Remove when a terraform apply has been done for all accounts
+    if (error instanceof SsmParameterNotFound) {
+      console.warn(
+        `New internal API key not set up for ${accountSid} yet, looking for legacy key`,
+      );
+      hrmStaticKey = await getSsmParameter(
+        `/${process.env.NODE_ENV}/twilio/${accountSid}/static_key`,
+      );
+    } else throw error;
+  }
   const endpointUrl = `${process.env.INTERNAL_HRM_URL}/internal/${hrmApiVersion}/accounts/${hrmAccountId}/${path}`;
 
   const options: RequestInit = {
