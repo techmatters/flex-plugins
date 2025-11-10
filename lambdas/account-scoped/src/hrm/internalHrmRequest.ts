@@ -35,7 +35,7 @@ const requestFromInternalHrmEndpoint = async <TRequest, TResponse>(
     );
   } catch (error) {
     // Remove when a terraform apply has been done for all accounts
-    if (error && error instanceof SsmParameterNotFound) {
+    if (error instanceof SsmParameterNotFound) {
       console.warn(
         `New internal API key not set up for ${accountSid} yet, looking for legacy key`,
       );
