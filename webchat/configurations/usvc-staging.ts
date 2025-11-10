@@ -290,7 +290,7 @@ const preEngagementConfig: PreEngagementFormDefinition = {
     },
     {
       type: "select",
-      name: "sex",
+      name: "sexOfVisitor",
       label: "Sex",
       defaultValue: "",
       options: [
