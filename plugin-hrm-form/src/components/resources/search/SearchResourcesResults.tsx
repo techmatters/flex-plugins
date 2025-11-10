@@ -100,7 +100,7 @@ const SearchResourcesResults: React.FC<Props> = ({
       <Column>
         <Box margin="25px 0 0 25px" style={{ paddingBottom: '10px' }}>
           <SearchResultsBackButton
-            text={<Template code="Return to Search Criteria" />}
+            text={<Template code="SearchResultsIndex-Back" />}
             // eslint-disable-next-line no-empty-function
             handleBack={returnToForm}
           />
