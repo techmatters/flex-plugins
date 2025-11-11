@@ -10,7 +10,8 @@
         "config_flags": {
             "enableExternalRecordings": false,
             "enable_conferencing": true,
-            "hideAddToNewCaseButton": true
+            "hideAddToNewCaseButton": true,
+            "enable_previous_contacts": false
         },
         "feature_flags": {
             "use_prepopulate_mappings": true,
