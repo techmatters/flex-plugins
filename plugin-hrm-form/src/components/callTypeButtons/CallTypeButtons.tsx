@@ -170,7 +170,7 @@ const CallTypeButtons: React.FC<Props> = ({
                 marginRight={i % 2 === 0}
                 disabled={loadingStatus === LoadingStatus.LOADING}
               >
-                {callType.label}
+                <Template code={callType.label} />
               </NonDataCallTypeButton>
             ))}
         </Box>

@@ -189,7 +189,8 @@ const ResourceSearchFilters: React.FC<{}> = () => {
                     );
                   }}
                 />
-                &nbsp;&nbsp;{label ?? value}
+                &nbsp;&nbsp;
+                <Template code={label ?? value} />
               </FormLabel>
             </Grid>
           ))}
