@@ -75,7 +75,6 @@ export type AddEditCaseItemProps = {
   task: CustomITask | StandaloneITask;
   definitionVersion: DefinitionVersion;
   customFormHandlers?: CustomHandlers;
-  reactHookFormOptions?: Partial<{ shouldUnregister: boolean }>;
   sectionTypeName: string;
 };
 
@@ -89,7 +88,6 @@ const AddEditCaseItem: React.FC<AddEditCaseItemProps> = ({
   definitionVersion,
   task,
   customFormHandlers,
-  reactHookFormOptions,
   sectionTypeName,
 }) => {
   const { workerSid } = getHrmConfig();
@@ -132,17 +130,19 @@ const AddEditCaseItem: React.FC<AddEditCaseItemProps> = ({
     return formDefinition.reduce(createStateItem, {});
   }, [sectionId, sections, formDefinition, sectionTypeName]);
 
+  const methods = useForm();
+  const { getValues, unregister } = methods;
+
   useEffect(() => {
     if (!workingCopy) {
+      unregister(Object.keys(getValues()));
       if (sectionId) {
         dispatch(initialiseExistingCaseSectionWorkingCopy(currentRoute.caseId, sectionTypeName, sectionId));
       } else {
         dispatch(initialiseNewCaseSectionWorkingCopy(currentRoute.caseId, sectionTypeName, savedForm));
       }
     }
-  }, [sectionId, workingCopy, savedForm, currentRoute.caseId, dispatch, sectionTypeName]);
-
-  const methods = useForm(reactHookFormOptions);
+  }, [getValues, unregister, sectionId, workingCopy, savedForm, currentRoute.caseId, dispatch, sectionTypeName]);
 
   enum DialogState {
     CLOSED,
@@ -151,8 +151,6 @@ const AddEditCaseItem: React.FC<AddEditCaseItemProps> = ({
   }
 
   const [dialogState, setDialogState] = React.useState(DialogState.CLOSED);
-
-  const { getValues } = methods;
 
   const form = useCreateFormFromDefinition({
     definition: formDefinition,
@@ -208,8 +206,11 @@ const AddEditCaseItem: React.FC<AddEditCaseItemProps> = ({
 
   async function saveAndStay() {
     await save();
+<<<<<<< Updated upstream
     // Reset the entire form state, fields reference, and subscriptions.
     methods.reset();
+=======
+>>>>>>> Stashed changes
     closeActions(caseId, sectionId, DismissAction.NONE);
   }
 
