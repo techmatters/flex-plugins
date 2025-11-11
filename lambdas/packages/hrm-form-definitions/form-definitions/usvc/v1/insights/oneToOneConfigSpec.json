@@ -32,14 +32,6 @@
         "insights": ["customers", "category"]
       },
       {
-        "name": "sexOfVisitor",
-        "insights": ["customers", "market_segment"]
-      },
-      {
-        "name": "ageRange",
-        "insights": ["customers", "customer_manager"]
-      },
-      {
         "name": "race",
         "insights": ["conversations", "case"]
       },
