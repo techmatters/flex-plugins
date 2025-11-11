@@ -70,8 +70,8 @@ type NonDataCallTypeButtonProps = {
 export const NonDataCallTypeButton = styled(Button)<NonDataCallTypeButtonProps>`
   white-space: normal;
   width: 140px;
-  height: 44px;
-  margin-bottom: 10px;
+  min-height: 44px;
+  padding: 0;
   display: inline-flex;
   align-items: center;
   justify-content: center;

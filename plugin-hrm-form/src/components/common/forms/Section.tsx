@@ -31,7 +31,7 @@ const ArrowDownIcon = ContactDetailsIcon(ArrowDropDownTwoTone);
 const ArrowUpIcon = ContactDetailsIcon(ArrowDropUpTwoTone);
 
 type MyProps = {
-  sectionTitle: string | JSX.Element;
+  sectionTitle: string;
   color?: string;
   expanded: boolean;
   handleExpandClick: (event?: any) => void;
@@ -67,7 +67,9 @@ const Section: React.FC<MyProps> = ({
         onClick={handleExpandClick}
         data-testid={buttonDataTestid}
       >
-        <SectionTitleText>{sectionTitle}</SectionTitleText>
+        <SectionTitleText>
+          <Template code={sectionTitle} />
+        </SectionTitleText>
         {!hideIcon && (expanded ? <ArrowUpIcon /> : <ArrowDownIcon />)}
       </SectionTitleButton>
       {showEditButton && (
