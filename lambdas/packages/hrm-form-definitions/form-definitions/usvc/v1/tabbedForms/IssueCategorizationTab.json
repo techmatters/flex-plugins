@@ -258,9 +258,6 @@
             "label": "Homelessness"
           },
           {
-            "label": "Limited English Proficient (LEP) individuals"
-          },
-          {
             "label": "Spanish Speaker"
           },
           {
@@ -299,6 +296,12 @@
             "label": "Crisis counseling and intervention"
           },
           {
+            "label": "Crime Victims' Rights"
+          },
+          {
+            "label": "Employment Rights"
+          },
+          {
             "label": "Financial or material assistance"
           },
           {
@@ -332,6 +335,15 @@
             "label": "Mental health services"
           },
           {
+            "label": "National Compassion Fund"
+          },
+          {
+            "label": "PREA"
+          },
+          {
+            "label": "Protective Order"
+          },
+          {
             "label": "Safety planning"
           },
           {
@@ -358,10 +370,7 @@
         "color": "#c99f7d",
         "subcategories": [
           {
-            "label": "Bilingual services provided"
-          },
-          {
-            "label": "Interpreter accessed"
+            "label": "Assisted with Crime Victims' Compensation Application"
           },
           {
             "label": "Emotional support"
@@ -386,18 +395,6 @@
           },
           {
             "label": "Information: Substance Abuse Treatment and support"
-          },
-          {
-            "label": "Referral to victim services program"
-          },
-          {
-            "label": "Referral to Crime Victim Compensation"
-          },
-          {
-            "label": "Referral to substance abuse treatment and support"
-          },
-          {
-            "label": "Referral to other service support and resources"
           },
           {
             "label": "Other: Explain"

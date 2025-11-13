@@ -38,8 +38,8 @@
     "isPII": false,
     "dependsOn": "referralStatus",
     "defaultOption": {
-      "value": "N/A",
-      "label": "N/A"
+      "value": "",
+      "label": ""
     },
     "options": {
       "Referred": [
