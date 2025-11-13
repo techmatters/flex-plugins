@@ -37,10 +37,6 @@
     "type": "dependent-select",
     "isPII": false,
     "dependsOn": "referralStatus",
-    "defaultOption": {
-      "value": "",
-      "label": ""
-    },
     "options": {
       "Referred": [
         {
