@@ -36,8 +36,8 @@
     }
   },
   {
-    "name": "typeOfCallfrequencyOfAccess",
-    "label": "Type of Call/Frequency of Access",
+    "name": "frequencyOfAccess",
+    "label": "Frequency of Access",
     "type": "select",
     "isPII": false,
     "options": [
@@ -48,10 +48,6 @@
       {
         "value": "1st time user",
         "label": "1st time user"
-      },
-      {
-        "value": "Hang-up/Non-starter",
-        "label": "Hang-up/Non-starter"
       },
       {
         "value": "Return User",
@@ -608,10 +604,14 @@
     }
   },
   {
-    "name": "language",
-    "label": "Language",
+    "name": "englishProficiency",
+    "label": "English Proficiency",
     "type": "select",
     "isPII": false,
+    "defaultOption": {
+      "value": "",
+      "label": ""
+    },
     "options": [
       {
         "value": "",
@@ -622,18 +622,86 @@
         "label": "English"
       },
       {
-        "value": "Spanish",
-        "label": "Spanish"
-      },
-      {
-        "value": "ASL",
-        "label": "ASL"
-      },
-      {
-        "value": "Other",
-        "label": "Other"
+        "value": "LEP",
+        "label": "LEP"
       }
     ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "otherLanguage",
+    "label": "Other Language",
+    "type": "dependent-select",
+    "isPII": false,
+    "dependsOn": "englishProficiency",
+    "defaultOption": {
+      "value": "",
+      "label": ""
+    },
+    "options": {
+      "English": [
+        {
+          "value": "N/A",
+          "label": "N/A"
+        }
+      ],
+      "LEP": [
+        {
+          "value": "Spanish",
+          "label": "Spanish"
+        },
+        {
+          "value": "Other",
+          "label": "Other"
+        }
+      ]
+    },
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "languageServiceUsed",
+    "label": "Language Service Used",
+    "type": "dependent-select",
+    "isPII": false,
+    "dependsOn": "otherLanguage",
+    "defaultOption": {
+      "value": "",
+      "label": ""
+    },
+    "options": {
+      "N/A": [
+        {
+          "value": "N/A",
+          "label": "N/A"
+        }
+      ],
+      "Spanish": [
+        {
+          "value": "Bilingual",
+          "label": "Bilingual"
+        },
+        {
+          "value": "Interpreter",
+          "label": "Interpreter"
+        }
+      ],
+      "Other": [
+        {
+          "value": "Bilingual",
+          "label": "Bilingual"
+        },
+        {
+          "value": "Interpreter",
+          "label": "Interpreter"
+        }
+      ]
+    },
     "required": {
       "value": true,
       "message": "RequiredFieldError"
@@ -896,7 +964,7 @@
     }
   },
   {
-    "name": "dcquadrant",
+    "name": "dcQuadrant",
     "label": "Dcquadrant",
     "type": "dependent-select",
     "isPII": false,
@@ -1293,50 +1361,6 @@
         }
       ]
     },
-    "required": {
-      "value": true,
-      "message": "RequiredFieldError"
-    }
-  },
-  {
-    "name": "keywords",
-    "label": "Keywords",
-    "type": "listbox-multiselect",
-    "isPII": false,
-    "options": [
-      {
-        "value": "Complaint against local agency",
-        "label": "Complaint against local agency"
-      },
-      {
-        "value": "Disconnected (by VAS)",
-        "label": "Disconnected (by VAS)"
-      },
-      {
-        "value": "Disconnected (by visitor or tech issue)",
-        "label": "Disconnected (by visitor or tech issue)"
-      },
-      {
-        "value": "Law enforcement complaint/misconduct",
-        "label": "Law enforcement complaint/misconduct"
-      },
-      {
-        "value": "National compassion fund",
-        "label": "National compassion fund"
-      },
-      {
-        "value": "Protective order",
-        "label": "Protective order"
-      },
-      {
-        "value": "PREA (VC only)",
-        "label": "PREA (VC only)"
-      },
-      {
-        "value": "Unknown/NA",
-        "label": "Unknown/NA"
-      }
-    ],
     "required": {
       "value": true,
       "message": "RequiredFieldError"
