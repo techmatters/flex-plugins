@@ -6,10 +6,6 @@
         "insights": ["customers", "customer_attribute_1"]
       },
       {
-        "name": "typeOfVictim",
-        "insights": ["customers", "customer_attribute_2"]
-      },
-      {
         "name": "organizationDispatched",
         "insights": ["customers", "customer_attribute_3"]
       },
@@ -28,7 +24,11 @@
         "insights": ["customers", "email"]
       },
       {
-        "name": "typeOfCallfrequencyOfAccess",
+        "name": "typeOfVictim",
+        "insights": ["customers", "customer_attribute_2"]
+      },
+      {
+        "name": "frequencyOfAccess",
         "insights": ["customers", "category"]
       },
       {
@@ -36,8 +36,16 @@
         "insights": ["conversations", "case"]
       },
       {
-        "name": "language",
+        "name": "englishProficiency",
         "insights": ["customers", "organization"]
+      },
+      {
+        "name": "otherLanguage",
+        "insights": ["conversations", "productive"]
+      },
+      {
+        "name": "languageServiceUsed",
+        "insights": ["conversations", "conversation_attribute_5"]
       },
       {
         "name": "dcquadrant",
@@ -52,6 +60,10 @@
       {
         "name": "referralStatus",
         "insights": ["conversations", "preceded_by"]
+      },
+       {
+        "name": "referralTo",
+        "insights": ["conversations", "initiative"]
       }
     ]
   },
