@@ -113,15 +113,3 @@ variable "ui_editable" {
   type        = bool
   default     = false
 }
-
-variable "integration_tests_enabled" {
-  description = "Whether to enable integration tests runner lambda"
-  type        = bool
-  default     = false
-}
-
-variable "integration_tests_alb_url" {
-  description = "URL of the ALB in front of the Lambda under test for integration tests"
-  type        = string
-  default     = ""
-}
