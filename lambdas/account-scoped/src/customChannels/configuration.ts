@@ -15,7 +15,7 @@
  */
 
 import { AccountSID } from '../twilioTypes';
-import { getSsmParameter, SsmParameterNotFound } from '../ssmCache';
+import { getSsmParameter, SsmParameterNotFound } from '@tech-matters/ssm-cache';
 import { AseloCustomChannel } from './customChannelToFlex';
 
 const LEGACY_FACEBOOK_PAGE_ACCESS_TOKEN_PARAMETERS: Record<AccountSID, string> = {

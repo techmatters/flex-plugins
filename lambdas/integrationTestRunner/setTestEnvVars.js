@@ -1,0 +1,27 @@
+/**
+ * Copyright (C) 2021-2025 Technology Matters
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see https://www.gnu.org/licenses/.
+ */
+
+// Set up environment variables for integration tests
+// These will typically be overridden by actual values when running in Lambda
+
+process.env.AWS_REGION = process.env.AWS_REGION || 'us-east-1';
+process.env.NODE_ENV = process.env.NODE_ENV || 'test';
+
+// ALB URL for the Lambda under test
+// This should be provided as an environment variable when running in Lambda
+if (!process.env.ALB_URL) {
+  console.warn('ALB_URL not set - tests may fail if they require calling the Lambda under test');
+}

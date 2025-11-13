@@ -1,15 +1,32 @@
-data "aws_ssm_parameter" "secrets" {
+add data "aws_ssm_parameter" "secrets" {
   name = "/terraform/twilio-iac/${var.environment}/${var.short_helpline}/secrets.json"
 }
 
 locals {
   secrets = jsondecode(data.aws_ssm_parameter.secrets.value)
   stage   = "provision"
+  vpc_data                          = data.terraform_remote_state.vpc.outputs
+  private_subnets                   = local.vpc_data.private_subnets
+  vpc_id                            = local.vpc_data.vpc_id
+  hrm_data                          = data.terraform_remote_state.hrm.outputs
+  internal_source_security_group_id = local.hrm_data.internal_source_security_group_id
 }
 
 provider "twilio" {
   username = local.secrets.twilio_account_sid
   password = local.secrets.twilio_auth_token
+}
+
+
+data "terraform_remote_state" "vpc" {
+  backend = "s3"
+
+  config = {
+    bucket   = "tl-terraform-state-${var.environment}"
+    key      = "infrastructure-config/${var.region}/vpc/terraform.tfstate"
+    region   = "us-east-1"
+    role_arn = var.iam_role
+  }
 }
 
 module "hrmServiceIntegration" {
@@ -86,12 +103,16 @@ module "aws" {
   s3_lifecycle_rules  = var.s3_lifecycle_rules
 }
 
-#TODO: Remove the provider and moved once this has been applied everywhere
-provider "github" {
-  owner = "techmatters"
-}
-
-moved {
-  from = module.github
-  to   = module.github[0]
+# Integration test runner Lambda
+module "integration_test_runner" {
+  count                  = var.integration_tests_enabled ? 1 : 0
+  source                 = "../../integration-test-runner"
+  environment            = var.environment
+  short_helpline         = upper(var.short_helpline)
+  region                 = var.helpline_region
+  alb_url                = var.integration_tests_alb_url
+  schedule_expression    = "rate(3 hours)"
+  # VPC configuration to be added from previous terraform stage outputs
+  subnet_ids             = local.private_subnets
+  security_group_ids     = [local.internal_source_security_group_id]
 }

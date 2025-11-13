@@ -67,12 +67,11 @@ export const redirectConversationMessageToExternalChat = async (
 ): Promise<RedirectResult> => {
   const { Body, ConversationSid, EventType, ParticipantSid, Source, Author } = event;
   let shouldSend = false;
+  const conversationContext = client.conversations.v1.conversations.get(ConversationSid);
   if (Source === 'SDK') {
     shouldSend = true;
   } else if (Source === 'API' && EventType === 'onMessageAdded') {
-    const participants = await client.conversations.v1.conversations
-      .get(ConversationSid)
-      .participants.list();
+    const participants = await conversationContext.participants.list();
 
     const sortByDateCreated = (a: any, b: any) =>
       a.dateCreated > b.dateCreated ? 1 : -1;
@@ -85,16 +84,21 @@ export const redirectConversationMessageToExternalChat = async (
       ![Author, ParticipantSid].includes(firstParticipantSid);
   }
   if (shouldSend) {
-    const useTestApi =
-      JSON.parse(
-        (await client.conversations.v1.conversations.get(ConversationSid).fetch())
-          ?.attributes ?? {},
-      ).useTestApi ?? false;
+    const conversationInstance = await conversationContext.fetch();
+    const conversationAttributes = JSON.parse(conversationInstance?.attributes ?? {});
+    const useTestApi = conversationAttributes.useTestApi ?? false;
     const response = await sendExternalMessage(recipientId, Body, useTestApi);
     if (response.ok) {
+      if (useTestApi) {
+        conversationAttributes.externalSendResponses = [
+          ...conversationAttributes.externalSendResponses,
+          { dateReceived: new Date().toISOString(), response: response.body },
+        ];
+        await conversationInstance.update({ attributes: conversationAttributes });
+      }
       return { status: 'sent', response };
     }
-    console.log(
+    console.info(
       `Failed to send message: ${response.resultCode}`,
       response.body,
       response.meta,

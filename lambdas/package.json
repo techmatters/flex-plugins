@@ -9,6 +9,8 @@
     "facebookCallback",
     "facebookSignin",
     "instagramWebhook",
+    "integrationTests",
+    "integrationTestRunner",
     "ipLocationFinder",
     "lineSetup",
     "lineWebhook",

@@ -5,10 +5,13 @@
   "references": [
     { "path": "packages/hrm-types" },
     { "path": "packages/hrm-form-definitions" },
+    { "path": "packages/ssm-cache" },
+    { "path": "packages/s3" },
     { "path": "account-scoped" },
     { "path": "facebookCallback" },
     { "path": "facebookSignin" },
     { "path": "instagramWebhook" },
+    { "path": "integrationTestRunner" },
     { "path": "ipLocationFinder" },
     { "path": "lineSetup" },
     { "path": "lineWebhook" },

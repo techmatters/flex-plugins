@@ -14,7 +14,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { getSsmParameter } from '../../../src/ssmCache';
+import { getSsmParameter } from '@tech-matters/ssm-cache';
 import twilio from 'twilio';
 import { EventType, handleTaskRouterEvent } from '../../../src/taskrouter';
 import { TEST_ACCOUNT_SID, TEST_AUTH_TOKEN } from '../../testTwilioValues';

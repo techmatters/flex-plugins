@@ -15,7 +15,7 @@
  */
 
 import { AccountSID, ChatServiceSID, WorkflowSID, WorkspaceSID } from '../twilioTypes';
-import { getSsmParameter, SsmParameterNotFound } from '../ssmCache';
+import { getSsmParameter, SsmParameterNotFound } from '@tech-matters/ssm-cache';
 import twilio, { Twilio } from 'twilio';
 
 export const getWorkspaceSid = async (accountSid: AccountSID): Promise<WorkspaceSID> =>
