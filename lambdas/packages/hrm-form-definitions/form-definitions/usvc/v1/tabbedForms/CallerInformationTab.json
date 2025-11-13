@@ -40,30 +40,6 @@
     }
   },
   {
-    "name": "typeOfVictim",
-    "label": "Type of Victim",
-    "type": "select",
-    "isPII": false,
-    "options": [
-      {
-        "value": "",
-        "label": ""
-      },
-      {
-        "value": "Primary Victim",
-        "label": "Primary Victim"
-      },
-      {
-        "value": "Secondary Victim",
-        "label": "Secondary Victim"
-      }
-    ],
-    "required": {
-      "value": true,
-      "message": "RequiredFieldError"
-    }
-  },
-  {
     "name": "victimFirstInitial",
     "label": "Victim First Initial",
     "type": "input",
@@ -322,38 +298,6 @@
       {
         "value": "Child (12 or less do not qualify)",
         "label": "Child (12 or less do not qualify)"
-      }
-    ],
-    "required": {
-      "value": true,
-      "message": "RequiredFieldError"
-    }
-  },
-  {
-    "name": "preferredLanguage",
-    "label": "Preferred Language",
-    "type": "select",
-    "isPII": false,
-    "options": [
-      {
-        "value": "",
-        "label": ""
-      },
-      {
-        "value": "English",
-        "label": "English"
-      },
-      {
-        "value": "Spanish",
-        "label": "Spanish"
-      },
-      {
-        "value": "ASL",
-        "label": "ASL"
-      },
-      {
-        "value": "Other",
-        "label": "Other"
       }
     ],
     "required": {
