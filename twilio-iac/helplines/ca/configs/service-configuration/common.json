@@ -22,7 +22,8 @@
             "enable_upload_documents": false,
             "enable_voice_recordings": true,
             "enable_resouorces_updates": true,
-            "enable_conference_status_event_handler": true
+            "enable_conference_status_event_handler": true,
+            "use_prepopulate_mappings": true
         },
         "helplineLanguage": "en-CA",
         "permissionConfig": "ca"
