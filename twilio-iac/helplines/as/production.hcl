@@ -27,7 +27,7 @@ locals {
         contact_identity = ""
         templatefile     = "/app/twilio-iac/helplines/as/templates/studio-flows/messaging-blocking-lambda-location-block-sd.tftpl"
         channel_flow_vars = {
-          allowed_shortcode_locations = "US,CL,ZA"
+          allowed_shortcode_locations = "US,CL,ZA,IE,AR"
         }
         chatbot_unique_names = []
       },

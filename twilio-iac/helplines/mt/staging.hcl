@@ -29,7 +29,7 @@ locals {
         contact_identity     = ""
         templatefile         = "/app/twilio-iac/helplines/mt/templates/studio-flows/messaging-lex-web-location-block.tftpl"
         channel_flow_vars    = {
-          allowed_shortcode_locations = "MT,US,CL,ZA"
+          allowed_shortcode_locations = "MT,US,CL,ZA,IE,AR"
         }
         chatbot_unique_names = []
       },
