@@ -335,7 +335,6 @@
 
   "QueueCard-LessThanMinute": "less than a minute",
   "QueueCard-Minutes": "&nbsp;minutes",
-  "QueueCard-Name": "Queue name:",
   "QueueCard-None": "none",
   "QueueCard-OneMinute": "1 minute",
   "QueueCard-WaitLabel": "Longest wait time:",

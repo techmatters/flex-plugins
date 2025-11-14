@@ -48,6 +48,7 @@ import { validateAndSetPermissionRules } from './permissions/rules';
 import { setupLlmNotifications } from './components/contact/GenerateSummaryButton/setUpLlmNotifications';
 import { FeatureFlags } from './types/FeatureFlags';
 import { setUpFullStory } from './fullStory/setUp';
+import { setUpExtraTranslations } from './utils/setUpComponents';
 
 const PLUGIN_NAME = 'HrmFormPlugin';
 
@@ -90,6 +91,7 @@ const setUpComponents = (featureFlags: FeatureFlags, setupObject: ReturnType<typ
   Components.setUpAddButtons(featureFlags);
   Components.setUpNoTasksUI(featureFlags, setupObject);
   Components.setUpCustomCRMContainer();
+  Components.setUpExtraTranslations();
 
   // set up default and custom channels
   Channels.setupDefaultChannels();

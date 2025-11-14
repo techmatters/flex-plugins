@@ -233,7 +233,6 @@
   "CallType-CloseContact": "Close Contact",
   "ConnectDialog-Child": "Copy client information from this record to new contact?",
   "ConnectDialog-Caller": "Copy caller information from this record to new contact?",
-  "QueueCard-Name": "Queue name:",
   "CaseHeader-ViewCase": "View Case",
   "Transfer-AcceptTransferButton": "Accept Transfer",
   "Transfer-RejectTransferButton": "Reject Transfer",

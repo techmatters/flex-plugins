@@ -109,9 +109,7 @@ export const initLocalization = (localizationConfig: LocalizationConfig, helplin
   const defaultTranslation = require(`./${defaultLanguage}.json`);
   setNewStrings(defaultTranslation);
 
-  const shouldLoadCustomTranslations = helplineLanguage && helplineLanguage !== defaultLocale;
-
-  if (shouldLoadCustomTranslations) {
+  if (helplineLanguage) {
     translateUI(helplineLanguage);
   } else {
     console.warn('Not loading custom translations', { helplineLanguage });
