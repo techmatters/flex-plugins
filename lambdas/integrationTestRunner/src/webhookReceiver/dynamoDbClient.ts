@@ -22,14 +22,7 @@ import {
   BatchWriteCommand,
 } from '@aws-sdk/lib-dynamodb';
 import { WebhookRecord } from './types';
-
-const getTableName = (): string => {
-  const tableName = process.env.WEBHOOK_RECORDS_TABLE_NAME;
-  if (!tableName) {
-    throw new Error('WEBHOOK_RECORDS_TABLE_NAME environment variable is not set');
-  }
-  return tableName;
-};
+const WEBHOOK_RECORDS_TABLE_NAME = 'webhook-requests';
 
 const getDynamoDBClient = (): DynamoDBDocumentClient => {
   const client = new DynamoDBClient({
@@ -56,10 +49,9 @@ const getClient = (): DynamoDBDocumentClient => {
  */
 export const recordWebhook = async (record: WebhookRecord): Promise<void> => {
   const client = getClient();
-  const tableName = getTableName();
 
   const command = new PutCommand({
-    TableName: tableName,
+    TableName: WEBHOOK_RECORDS_TABLE_NAME,
     Item: {
       sessionId: record.sessionId,
       timestamp: record.timestamp,
@@ -79,10 +71,9 @@ export const recordWebhook = async (record: WebhookRecord): Promise<void> => {
  */
 export const retrieveWebhooks = async (sessionId: string): Promise<WebhookRecord[]> => {
   const client = getClient();
-  const tableName = getTableName();
 
   const command = new QueryCommand({
-    TableName: tableName,
+    TableName: WEBHOOK_RECORDS_TABLE_NAME,
     KeyConditionExpression: 'sessionId = :sessionId',
     ExpressionAttributeValues: {
       ':sessionId': sessionId,
@@ -100,11 +91,10 @@ export const retrieveWebhooks = async (sessionId: string): Promise<WebhookRecord
  */
 export const deleteWebhooks = async (sessionId: string): Promise<number> => {
   const client = getClient();
-  const tableName = getTableName();
 
   // First, query to get all items for this sessionId
   const queryCommand = new QueryCommand({
-    TableName: tableName,
+    TableName: WEBHOOK_RECORDS_TABLE_NAME,
     KeyConditionExpression: 'sessionId = :sessionId',
     ExpressionAttributeValues: {
       ':sessionId': sessionId,
@@ -140,7 +130,7 @@ export const deleteWebhooks = async (sessionId: string): Promise<number> => {
 
     const batchWriteCommand = new BatchWriteCommand({
       RequestItems: {
-        [tableName]: deleteRequests,
+        [WEBHOOK_RECORDS_TABLE_NAME]: deleteRequests,
       },
     });
 
