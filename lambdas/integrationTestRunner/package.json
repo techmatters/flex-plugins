@@ -25,6 +25,8 @@
     "@aws-sdk/lib-dynamodb": "^3.716.0",
     "@tech-matters/ssm-cache": "^1.00",
     "@tech-matters/s3": "^1.00",
+    "@tech-matters/twilio-types": "^1.0.0",
+    "@tech-matters/twilio-configuration": "^1.0.0",
     "date-fns": "^4.1.0"
   }
 }

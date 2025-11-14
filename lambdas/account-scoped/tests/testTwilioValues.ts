@@ -14,7 +14,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { AccountSID, TaskSID, WorkerSID } from '../src/twilioTypes';
+import { AccountSID, TaskSID, WorkerSID } from '@tech-matters/twilio-types';
 import { AseloServiceConfigurationAttributes, TaskResource } from './testTwilioTypes';
 
 export const TEST_ACCOUNT_SID: AccountSID = 'ACut';

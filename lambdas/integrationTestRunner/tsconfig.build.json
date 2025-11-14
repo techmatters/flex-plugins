@@ -5,6 +5,8 @@
   "references": [
     { "path": "packages/ssm-cache" },
     { "path": "packages/s3" },
+    { "path": "packages/twilio-types" },
+    { "path": "packages/twilio-configuration" },
     { "path": "integrationTestRunner" }
   ]
 }

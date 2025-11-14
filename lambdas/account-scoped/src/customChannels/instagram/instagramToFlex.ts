@@ -24,9 +24,9 @@ import {
   sendConversationMessageToFlex,
 } from '../customChannelToFlex';
 import { AccountScopedHandler, HttpRequest } from '../../httpTypes';
-import { AccountSID, ConversationSID } from '../../twilioTypes';
+import { AccountSID, ConversationSID } from '@tech-matters/twilio-types';
 import { newErr, newOk } from '../../Result';
-import { getTwilioClient } from '../../configuration/twilioConfiguration';
+import { getTwilioClient } from '@tech-matters/twilio-configuration';
 import { getChannelStudioFlowSid, getFacebookAppSecret } from '../configuration';
 import { Twilio } from 'twilio';
 

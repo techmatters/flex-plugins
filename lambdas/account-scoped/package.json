@@ -27,6 +27,8 @@
     "@tech-matters/hrm-form-definitions": "^1.0.0",
     "@tech-matters/hrm-types": "^1.0.0",
     "@tech-matters/ssm-cache": "^1.0.0",
+    "@tech-matters/twilio-types": "^1.0.0",
+    "@tech-matters/twilio-configuration": "^1.0.0",
     "@twilio-labs/serverless-runtime-types": "^4.0.1",
     "date-fns": "^4.1.0",
     "lodash": "^4.17.21",

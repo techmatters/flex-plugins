@@ -16,7 +16,7 @@
 
 import each from 'jest-each';
 import { flexToInstagramHandler } from '../../../../src/customChannels/instagram/flexToInstagram';
-import { AccountSID } from '../../../../src/twilioTypes';
+import { AccountSID } from '@tech-matters/twilio-types';
 import { getTwilioClient } from '../../../../src/configuration/twilioConfiguration';
 import { HttpRequest } from '../../../../src/httpTypes';
 import { isErr, isOk } from '../../../../src/Result';

@@ -21,7 +21,7 @@ import {
   Body,
 } from '../../../../src/customChannels/instagram/instagramToFlex';
 import { HttpRequest } from '../../../../src/httpTypes';
-import { AccountSID } from '../../../../src/twilioTypes';
+import { AccountSID } from '@tech-matters/twilio-types';
 import { isOk } from '../../../../src/Result';
 import { getTwilioClient } from '../../../../src/configuration/twilioConfiguration';
 

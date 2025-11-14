@@ -28,7 +28,7 @@ import {
 import { AccountScopedHandler, HttpError, HttpRequest } from '../../httpTypes';
 import { isErr, newOk, Result } from '../../Result';
 import { newMissingParameterResult } from '../../httpErrors';
-import { getTwilioClient } from '../../configuration/twilioConfiguration';
+import { getTwilioClient } from '@tech-matters/twilio-configuration';
 import { getFacebookPageAccessToken } from '../configuration';
 
 export type Body = WebhookEvent & {

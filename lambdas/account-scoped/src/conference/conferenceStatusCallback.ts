@@ -21,10 +21,10 @@ import {
   ConferenceSid,
   TaskSID,
   WorkspaceSID,
-} from '../twilioTypes';
+} from '@tech-matters/twilio-types';
 import { newOk } from '../Result';
 import twilio from 'twilio';
-import { getTwilioClient } from '../configuration/twilioConfiguration';
+import { getTwilioClient } from '@tech-matters/twilio-configuration';
 
 type GlobalEventType =
   | 'conference-end'

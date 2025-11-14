@@ -23,12 +23,12 @@
  */
 
 // eslint-disable-next-line prettier/prettier
-import {AccountSID, ChatChannelSID, ConversationSID} from '../twilioTypes';
+import {AccountSID, ChatChannelSID, ConversationSID} from '@tech-matters/twilio-types';
 import {
   getChatServiceSid,
   getFlexProxyServiceSid,
   getTwilioClient,
-} from '../configuration/twilioConfiguration';
+} from '@tech-matters/twilio-configuration';
 
 export type Event =
   | {

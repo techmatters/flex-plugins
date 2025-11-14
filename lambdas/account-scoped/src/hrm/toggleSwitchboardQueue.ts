@@ -22,7 +22,7 @@ import {
   getSyncServiceSid,
   getTwilioClient,
   getTwilioWorkspaceSid,
-} from '../configuration/twilioConfiguration';
+} from '@tech-matters/twilio-configuration';
 import { Twilio } from 'twilio';
 import {
   SwitchboardSyncState,
@@ -30,7 +30,7 @@ import {
   SWITCHBOARD_NOTIFY_DOCUMENT,
   SWITCHBOARD_WORKFLOW_FILTER_PREFIX,
 } from '@tech-matters/hrm-types';
-import { AccountSID } from '../twilioTypes';
+import { AccountSID } from '@tech-matters/twilio-types';
 import { retrieveServiceConfigurationAttributes } from '../configuration/aseloConfiguration';
 
 export type OperationType = 'enable' | 'disable';

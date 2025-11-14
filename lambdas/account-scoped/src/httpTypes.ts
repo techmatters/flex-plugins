@@ -15,7 +15,7 @@
  */
 
 import { Result } from './Result';
-import { AccountSID } from './twilioTypes';
+import { AccountSID } from '@tech-matters/twilio-types';
 
 export type HttpError = {
   statusCode: number;

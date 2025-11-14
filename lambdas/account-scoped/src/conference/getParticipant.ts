@@ -16,7 +16,7 @@
 
 import { AccountScopedHandler } from '../httpTypes';
 import { newMissingParameterResult } from '../httpErrors';
-import { getTwilioClient } from '../configuration/twilioConfiguration';
+import { getTwilioClient } from '@tech-matters/twilio-configuration';
 import { newOk } from '../Result';
 
 export type Body = {

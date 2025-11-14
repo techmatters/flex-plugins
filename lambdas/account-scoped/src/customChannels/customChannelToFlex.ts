@@ -14,9 +14,9 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { AccountSID, ConversationSID } from '../twilioTypes';
+import { AccountSID, ConversationSID } from '@tech-matters/twilio-types';
 import { Twilio } from 'twilio';
-import { getTwilioClient } from '../configuration/twilioConfiguration';
+import { getTwilioClient } from '@tech-matters/twilio-configuration';
 
 const CONVERSATION_CLOSE_TIMEOUT = 'P3D'; // ISO 8601 duration format https://en.wikipedia.org/wiki/ISO_8601
 

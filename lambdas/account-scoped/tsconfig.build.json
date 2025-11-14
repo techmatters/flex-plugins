@@ -6,6 +6,8 @@
     { "path": "packages/ssm-cache" },
     { "path": "packages/hrm-types" },
     { "path": "packages/hrm-form-definitions" },
+    { "path": "packages/twilio-types" },
+    { "path": "packages/twilio-configuration" },
     { "path": "account-scoped" },
   ]
 }

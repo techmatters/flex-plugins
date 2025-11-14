@@ -15,11 +15,11 @@
  */
 
 import { AccountScopedHandler } from '../httpTypes';
-import { AccountSID } from '../twilioTypes';
+import { AccountSID } from '@tech-matters/twilio-types';
 import { newOk } from '../Result';
 import { EventType } from './eventTypes';
 import twilio from 'twilio';
-import { getTwilioClient } from '../configuration/twilioConfiguration';
+import { getTwilioClient } from '@tech-matters/twilio-configuration';
 
 export type TaskRouterEventHandler = (
   event: any,

@@ -15,7 +15,7 @@
  */
 
 import { AccountScopedHandler } from '../httpTypes';
-import { getSyncServiceSid, getTwilioClient } from '../configuration/twilioConfiguration';
+import { getSyncServiceSid, getTwilioClient } from '@tech-matters/twilio-configuration';
 import { newMissingParameterResult } from '../httpErrors';
 import { newOk } from '../Result';
 

@@ -15,7 +15,7 @@
  */
 
 import { AccountScopedHandler, HttpError } from '../httpTypes';
-import { getAccountAuthToken } from '../configuration/twilioConfiguration';
+import { getAccountAuthToken } from '@tech-matters/twilio-configuration';
 import twilio from 'twilio';
 import { isErr, newErr, newOk, Result } from '../Result';
 import { getFromInternalHrmEndpoint } from './internalHrmRequest';

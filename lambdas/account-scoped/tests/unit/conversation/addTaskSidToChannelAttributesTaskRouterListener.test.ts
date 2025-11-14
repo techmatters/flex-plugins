@@ -26,7 +26,7 @@ import {
 } from '../../testTwilioValues';
 import { TaskContext, TaskInstance } from 'twilio/lib/rest/taskrouter/v1/workspace/task';
 import { WorkspaceContext } from 'twilio/lib/rest/taskrouter/v1/workspace';
-import { TaskSID } from '../../../src/twilioTypes';
+import { TaskSID } from '@tech-matters/twilio-types';
 import { addTaskSidToChannelAttributes } from '../../../src/conversation/addTaskSidToChannelAttributesTaskRouterListener';
 import {
   ConversationContext,
