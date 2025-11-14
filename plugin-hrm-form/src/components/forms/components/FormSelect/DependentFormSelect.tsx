@@ -104,7 +104,7 @@ const DependentFormSelect: React.FC<DependentFormSelectProps> = ({
       isErrorState={Boolean(error)}
       errorId={errorId}
       errorTextComponent={errorTextComponent}
-      optionComponents={generateSelectOptions(inputId, options)}
+      optionComponents={generateSelectOptions(inputId, options, defaultValue)}
     />
   );
 };
