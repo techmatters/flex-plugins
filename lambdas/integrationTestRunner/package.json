@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "jest",
-    "docker:build": "docker build -t integration-test-runner --build-arg lambda_name=integrationTestRunner --build-arg lambda_dir=. -f ../../Dockerfile ../"
+    "docker:build": "docker build -t integrationtestrunner --build-arg lambda_name=integrationTestRunner --build-arg lambda_dir=. -f ../Dockerfile ../"
   },
   "author": "Tech Matters",
   "license": "AGPL",
@@ -24,6 +24,7 @@
     "@aws-sdk/client-dynamodb": "^3.716.0",
     "@aws-sdk/lib-dynamodb": "^3.716.0",
     "@tech-matters/ssm-cache": "^1.00",
-    "@tech-matters/s3": "^1.00"
+    "@tech-matters/s3": "^1.00",
+    "date-fns": "^4.1.0"
   }
 }

@@ -37,7 +37,7 @@ import { newOk } from '../../../src/Result';
 const mockFetch: jest.MockedFunction<typeof fetch> = jest.fn();
 global.fetch = mockFetch;
 
-jest.mock('../../../src/ssmCache', () => ({
+jest.mock('@tech-matters/ssm-cache', () => ({
   getSsmParameter: jest.fn(),
 }));
 const mockGetSsmParameter = getSsmParameter as jest.MockedFunction<

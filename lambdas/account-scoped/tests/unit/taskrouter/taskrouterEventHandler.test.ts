@@ -36,7 +36,7 @@ const mockTwilio: jest.MockedFunction<(account: string, auth: string) => twilio.
     (account: string, auth: string) => twilio.Twilio
   >;
 
-jest.mock('../../../src/ssmCache', () => ({
+jest.mock('@tech-matters/ssm-cache', () => ({
   getSsmParameter: jest.fn(),
 }));
 const mockGetSsmParameter = getSsmParameter as jest.MockedFunction<
