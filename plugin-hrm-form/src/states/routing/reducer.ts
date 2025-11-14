@@ -42,13 +42,15 @@ export const newTaskEntry = {
   route: 'select-call-type' as const,
 };
 
-const getPathFromUrl = url => {
-  return url.pathname.replace(/^\/|\/$/g, '');
+const getPathFromUrl = (url: Location) => {
+  return url?.pathname.replace(/^\/|\/$/g, '') || '';
 };
 
 export const initialState: RoutingState = {
   tasks: {
-    [standaloneTaskSid]: [{ route: getPathFromUrl(window.location), subroute: getPathFromUrl(window.location) }],
+    [standaloneTaskSid]: [
+      { route: getPathFromUrl(window.location) as any, subroute: getPathFromUrl(window.location) as any },
+    ],
   },
 };
 
