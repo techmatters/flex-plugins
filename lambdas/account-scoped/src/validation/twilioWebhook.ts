@@ -17,7 +17,7 @@
 import twilio from 'twilio';
 import { newErr, newOk } from '../Result';
 import { HttpRequestPipelineStep } from '../httpTypes';
-import { getAccountAuthToken } from '../configuration/twilioConfiguration';
+import { getAccountAuthToken } from '@tech-matters/twilio-configuration';
 
 export const validateWebhookRequest: HttpRequestPipelineStep = async (
   request,

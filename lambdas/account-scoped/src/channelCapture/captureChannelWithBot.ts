@@ -25,7 +25,7 @@ import {
   getHelplineCode,
   getSurveyWorkflowSid,
   getTwilioWorkspaceSid,
-} from '../configuration/twilioConfiguration';
+} from '@tech-matters/twilio-configuration';
 
 export const handleCaptureChannelWithBot: AccountScopedHandler = async (
   request,

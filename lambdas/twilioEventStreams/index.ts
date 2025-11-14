@@ -18,7 +18,7 @@ import type { ALBEvent, ALBResult } from 'aws-lambda';
 import { isValidTwilioRequest } from './requestValidator';
 import { removeAttributes, redactSensitiveAttributes } from './attributeFilterer';
 import { client, v2 } from '@datadog/datadog-api-client';
-import { getSsmParameter } from './ssmCache';
+import { getSsmParameter } from '@tech-matters/ssm-cache';
 
 import { publishSns } from './snsClient';
 

@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "docker:build": "docker build -t facebookCallback --build-arg lambda_name=facebookCallback --build-arg lambda_dir=. -f ../Dockerfile ../"
+    "docker:build": "docker build -t facebookcallback --build-arg lambda_name=facebookCallback --build-arg lambda_dir=. -f ../Dockerfile ../"
   },
   "author": "",
   "license": "ISC",

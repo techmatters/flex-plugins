@@ -18,7 +18,7 @@ import { HttpRequestPipelineStep } from '../httpTypes';
 import { validator } from 'twilio-flex-token-validator';
 import { newErr, newOk } from '../Result';
 import { newMissingParameterResult } from '../httpErrors';
-import { getAccountAuthToken } from '../configuration/twilioConfiguration';
+import { getAccountAuthToken } from '@tech-matters/twilio-configuration';
 
 type TokenValidatorResponse = { worker_sid: string; roles: string[] };
 

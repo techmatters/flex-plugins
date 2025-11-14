@@ -1,0 +1,66 @@
+/**
+ * Copyright (C) 2021-2025 Technology Matters
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see https://www.gnu.org/licenses/.
+ */
+
+import { spawn } from 'child_process';
+import type { ALBEvent } from 'aws-lambda';
+
+export type IntegrationTestEvent = {
+  npmScript: string;
+  testName?: string;
+};
+
+export const isIntegrationTestEvent = (
+  event: IntegrationTestEvent | ALBEvent,
+): event is IntegrationTestEvent => Boolean((event as IntegrationTestEvent).npmScript);
+
+export const runJestTests = async (event: IntegrationTestEvent) => {
+  const env = { ...process.env };
+
+  const { testName, npmScript } = event;
+  if (testName) {
+    env.TEST_NAME = testName;
+  }
+
+  const cmd = spawn('npm', ['-loglevel silent', 'run', npmScript || 'test'], {
+    stdio: 'inherit',
+    env,
+  });
+  let result,
+    isError = false;
+  try {
+    result = await new Promise((resolve, reject) => {
+      cmd.on('exit', code => {
+        if (code !== 0) {
+          reject(`Execution error: ${code}`);
+        } else {
+          resolve(`Exited with code: ${code}`);
+        }
+      });
+
+      cmd.on('error', error => {
+        reject(`Execution error: ${error}`);
+      });
+    });
+  } catch (error) {
+    result = error;
+    isError = true;
+  }
+
+  if (isError) {
+    throw result;
+  }
+  console.info(`Test run (${env.TEST_NAME}) result: `, result);
+};

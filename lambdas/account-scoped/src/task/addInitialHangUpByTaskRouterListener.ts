@@ -16,7 +16,7 @@
 
 // eslint-disable-next-line prettier/prettier
 import {registerTaskRouterEventHandler, TaskRouterEventHandler} from '../taskrouter/taskrouterEventHandler';
-import { AccountSID, TaskSID } from '../twilioTypes';
+import { AccountSID, TaskSID } from '@tech-matters/twilio-types';
 import { Twilio } from 'twilio';
 import { TASK_CREATED } from '../taskrouter/eventTypes';
 import { EventFields } from '../taskrouter';

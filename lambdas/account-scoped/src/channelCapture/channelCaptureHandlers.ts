@@ -24,7 +24,7 @@ import { isErr, newErr, newOk, Result } from '../Result';
 import { Twilio } from 'twilio';
 import { postToInternalHrmEndpoint } from '../hrm/internalHrmRequest';
 import { ROUTE_PREFIX } from '../router';
-import { AccountSID } from '../twilioTypes';
+import { AccountSID } from '@tech-matters/twilio-types';
 import { getCurrentDefinitionVersion } from '../hrm/formDefinitionsCache';
 import { LegacyOneToManyConfigSpec } from '@tech-matters/hrm-form-definitions';
 
