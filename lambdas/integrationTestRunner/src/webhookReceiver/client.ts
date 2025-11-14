@@ -1,4 +1,4 @@
-import { WebhookDeleteResponse, WebhookRecord } from './types';
+import { WebhookRecord } from './types';
 import { addMilliseconds } from 'date-fns/addMilliseconds';
 import { isAfter } from 'date-fns/isAfter';
 import { AssertionError } from 'node:assert';
@@ -17,26 +17,6 @@ const getSessionRequests = async (sessionId: string): Promise<WebhookRecord[]> =
   });
   if (response.ok) {
     return (await response.json()) as WebhookRecord[];
-  } else {
-    const text = await response.text();
-    console.error('Unable to get webhook record', response, await response.text());
-    throw new Error(`Unable to get webhook record, status: ${response.status}, ${text}`);
-  }
-};
-
-const deleteSessionRequests = async (sessionId: string): Promise<number> => {
-  if (!WEBHOOK_RECEIVER_URL)
-    throw new Error('Configuration error: WEBHOOK_RECEIVER_URL env var is required');
-  const response = await fetch(WEBHOOK_RECEIVER_URL, {
-    method: 'DELETE',
-    headers: {
-      'x-webhook-receiver-operation': 'DELETE',
-      'x-webhook-receiver-session-id': sessionId,
-    },
-  });
-
-  if (response.ok) {
-    return ((await response.json()) as WebhookDeleteResponse).deletedCount as number;
   } else {
     const text = await response.text();
     console.error('Unable to get webhook record', response, await response.text());
@@ -83,7 +63,7 @@ export const startWebhookReceiverSession = (helplineCode: string) => {
     },
     end: () => {
       sessionActive = false;
-      return deleteSessionRequests(sessionId);
+      // return deleteSessionRequests(sessionId);
     },
   };
 };

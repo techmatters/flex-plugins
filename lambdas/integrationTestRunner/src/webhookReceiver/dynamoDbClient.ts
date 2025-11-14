@@ -67,6 +67,7 @@ export const recordWebhook = async (record: WebhookRecord): Promise<void> => {
       method: record.method,
       headers: record.headers,
       body: record.body,
+      expiryTime: Date.now() + 1000 * 60 * 60 * 24 * 7,
     },
   });
 

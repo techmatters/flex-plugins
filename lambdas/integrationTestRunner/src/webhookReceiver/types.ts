@@ -14,7 +14,6 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-export type WebhookOperation = 'RECORD' | 'RETRIEVE' | 'DELETE';
 export type ISO8601UTCDateString =
   `${number}-${number}-${number}${'T' | ' '}${number}:${number}:${number}.${number}Z`;
 
