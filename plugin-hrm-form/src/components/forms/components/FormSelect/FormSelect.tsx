@@ -69,7 +69,7 @@ const FormSelect: React.FC<FormSelectProps> = ({
       isErrorState={Boolean(error)}
       errorId={errorId}
       errorTextComponent={errorTextComponent}
-      optionComponents={generateSelectOptions(inputId, selectOptions)}
+      optionComponents={generateSelectOptions(inputId, selectOptions, defaultValue)}
     />
   );
 };

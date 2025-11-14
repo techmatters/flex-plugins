@@ -20,13 +20,25 @@ import React from 'react';
 import { FormOption } from '../../../../styles';
 import { getTemplateStrings } from '../../../../hrmConfig';
 
-const bindCreateSelectOptions = (path: string) => (o: SelectOption) => (
-  <FormOption key={`${path}-${o.label}-${o.value}`} value={o.value} isEmptyValue={o.value === ''}>
+const bindCreateSelectOptions = (path: string) => (o: SelectOption, selected: boolean) => (
+  <FormOption key={`${path}-${o.label}-${o.value}`} value={o.value} isEmptyValue={o.value === ''} selected={selected}>
     {getTemplateStrings()[o.label] ?? o.label}
   </FormOption>
 );
 
-export const generateSelectOptions = (path: string, options: SelectOption[]): JSX.Element[] => {
+export const generateSelectOptions = (path: string, options: SelectOption[], currentValue: string): JSX.Element[] => {
   const createSelectOptions = bindCreateSelectOptions(path);
-  return options.map(createSelectOptions);
+  const optionElements: JSX.Element[] = [];
+
+  // Need to select specifically first matching value, which is why we don't just use .map
+  let foundValue = false;
+  options.forEach(option => {
+    if (!foundValue && option.value === currentValue) {
+      foundValue = true;
+      optionElements.push(createSelectOptions(option, true));
+    } else {
+      optionElements.push(createSelectOptions(option, false));
+    }
+  });
+  return optionElements;
 };
