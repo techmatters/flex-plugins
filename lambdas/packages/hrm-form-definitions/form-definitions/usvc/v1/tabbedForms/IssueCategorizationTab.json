@@ -59,7 +59,7 @@
             "label": "Family violence or abuse"
           },
           {
-            "label": "Financial Crimes"
+            "label": "Financial Crimes - CEV"
           },
           {
             "label": "Fraud/Scams - employment"
@@ -80,7 +80,7 @@
             "label": "Gang Violence"
           },
           {
-            "label": "Gangstalking"
+            "label": "Gangstalking - CEV"
           },
           {
             "label": "Gun Violence (non-mass incident)"
@@ -98,7 +98,7 @@
             "label": "Homicide"
           },
           {
-            "label": "Human Trafficking - Labor"
+            "label": "Human Trafficking - Labor - CEV"
           },
           {
             "label": "Human Trafficking - Sex"
@@ -170,7 +170,7 @@
             "label": "Traffic/Vehicle Related Crimes (Other)"
           },
           {
-            "label": "Unknown/NA"
+            "label": "Unknown/NA - CEV"
           },
           {
             "label": "Violation of a court or protective order"
@@ -196,7 +196,7 @@
             "label": "Harassment/Bullying (non-sexual)"
           },
           {
-            "label": "Financial Crimes"
+            "label": "Financial Crimes - CTT"
           },
           {
             "label": "Identity Theft "
@@ -208,7 +208,7 @@
             "label": "Property Crimes"
           },
           {
-            "label": "Human Trafficking - Labor"
+            "label": "Human Trafficking - Labor - CTT"
           },
           {
             "label": "Gun Violence ( non-mass incident)"
@@ -226,7 +226,7 @@
             "label": "Traffic/Vehicle Related Crimes "
           },
           {
-            "label": "Gangstalking"
+            "label": "Gangstalking - CTT"
           },
           {
             "label": "ElderAbuse"
@@ -235,10 +235,10 @@
             "label": "Ritual/religious/cult abuse"
           },
           {
-            "label": "Other"
+            "label": "Other - CTT"
           },
           {
-            "label": "Unknown/NA"
+            "label": "Unknown/NA - CTT"
           }
         ]
       },
@@ -276,7 +276,7 @@
             "label": "Rural Community"
           },
           {
-            "label": "Unknown/NA"
+            "label": "Unknown/NA - SPGC"
           }
         ]
       },
@@ -359,10 +359,10 @@
             "label": "Volunteer/Community Involvement"
           },
           {
-            "label": "Other"
+            "label": "Other - SD"
           },
           {
-            "label": "Unknown/NA"
+            "label": "Unknown/NA - SD"
           }
         ]
       },
