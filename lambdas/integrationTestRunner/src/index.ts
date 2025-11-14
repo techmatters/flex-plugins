@@ -14,74 +14,19 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { execSync } from 'child_process';
 import type { ALBEvent, ALBResult } from 'aws-lambda';
 import { handleWebhookReceiver } from './webhookReceiver/handler';
-
-export type IntegrationTestEvent = {
-  testPattern: string;
-  jestArgs?: string[];
-};
-
-const isIntegrationTestEvent = (
-  event: IntegrationTestEvent | ALBEvent,
-): event is IntegrationTestEvent => Boolean((event as IntegrationTestEvent).testPattern);
-
-export type IntegrationTestResult = {
-  success: boolean;
-  output: string;
-  error?: string;
-};
+import {
+  IntegrationTestEvent,
+  isIntegrationTestEvent,
+  runJestTests,
+} from './testOrchestrator/runJestTests.';
 
 export const handler = async (
   event: IntegrationTestEvent | ALBEvent,
-): Promise<IntegrationTestResult | ALBResult> => {
+): Promise<void | ALBResult> => {
   if (isIntegrationTestEvent(event)) {
-    try {
-      const testPattern = event.testPattern || '';
-      const additionalArgs = event.jestArgs || [];
-
-      const jestCommand = [
-        'npx',
-        'jest',
-        testPattern,
-        '--runInBand',
-        '--forceExit',
-        '--detectOpenHandles',
-        ...additionalArgs,
-      ]
-        .filter(Boolean)
-        .join(' ');
-
-      console.info('Running Jest command:', jestCommand);
-
-      // Run tests from the integrationTests directory
-      const testsDir = process.env.INTEGRATION_TESTS_DIR || '../integrationTests';
-
-      const output = execSync(jestCommand, {
-        cwd: testsDir,
-        encoding: 'utf8',
-        stdio: 'pipe',
-      });
-
-      console.info('Jest completed successfully');
-      console.debug('Jest output:', output);
-
-      return {
-        success: true,
-        output,
-      };
-    } catch (error: any) {
-      // Jest returns non-zero exit code when tests fail
-      const output = error.stdout || error.stderr || String(error);
-      console.error('Jest failed:', output);
-
-      return {
-        success: false,
-        output,
-        error: error.message,
-      };
-    }
+    return runJestTests(event);
   } else {
     return handleWebhookReceiver(event);
   }
