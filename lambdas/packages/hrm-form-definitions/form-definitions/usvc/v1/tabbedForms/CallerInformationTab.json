@@ -278,66 +278,6 @@
     }
   },
   {
-    "name": "victimAgeCategory",
-    "label": "Victim Age Category",
-    "type": "select",
-    "isPII": false,
-    "options": [
-      {
-        "value": "",
-        "label": ""
-      },
-      {
-        "value": "Adult (18+)",
-        "label": "Adult (18+)"
-      },
-      {
-        "value": "Youth (13-17)",
-        "label": "Youth (13-17)"
-      },
-      {
-        "value": "Child (12 or less do not qualify)",
-        "label": "Child (12 or less do not qualify)"
-      }
-    ],
-    "required": {
-      "value": true,
-      "message": "RequiredFieldError"
-    }
-  },
-  {
-    "name": "preferredLanguage",
-    "label": "Preferred Language",
-    "type": "select",
-    "isPII": false,
-    "options": [
-      {
-        "value": "",
-        "label": ""
-      },
-      {
-        "value": "English",
-        "label": "English"
-      },
-      {
-        "value": "Spanish",
-        "label": "Spanish"
-      },
-      {
-        "value": "ASL",
-        "label": "ASL"
-      },
-      {
-        "value": "Other",
-        "label": "Other"
-      }
-    ],
-    "required": {
-      "value": true,
-      "message": "RequiredFieldError"
-    }
-  },
-  {
     "name": "typeOfAdvocacy",
     "label": "Type of Advocacy",
     "type": "select",

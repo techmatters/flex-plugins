@@ -2,9 +2,17 @@
   {
     "name": "referralStatus",
     "label": "Referral Status",
-    "type": "listbox-multiselect",
+    "type": "select",
     "isPII": false,
+    "defaultOption": {
+      "value": "",
+      "label": ""
+    },
     "options": [
+      {
+        "value": "",
+        "label": ""
+      },
       {
         "value": "Referred",
         "label": "Referred"
@@ -18,6 +26,53 @@
         "label": "Referral Refused"
       }
     ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "referralTo",
+    "label": "Referral to",
+    "type": "dependent-select",
+    "isPII": false,
+    "dependsOn": "referralStatus",
+    "defaultOption": {
+      "value": "",
+      "label": ""
+    },
+    "options": {
+      "Referred": [
+        {
+          "value": "Referral to victim services program",
+          "label": "Referral to victim services program"
+        },
+        {
+          "value": "Referral to Crime Victim Compensation",
+          "label": "Referral to Crime Victim Compensation"
+        },
+        {
+          "value": "Referral to substance abuse treatment and support",
+          "label": "Referral to substance abuse treatment and support"
+        },
+        {
+          "value": "Referral to other service support and resources",
+          "label": "Referral to other service support and resources"
+        }
+      ],
+      "No Referral Needed": [
+        {
+          "value": "N/A",
+          "label": "N/A"
+        }
+      ],
+      "Referral Refused": [
+        {
+          "value": "N/A",
+          "label": "N/A"
+        }
+      ]
+    },
     "required": {
       "value": true,
       "message": "RequiredFieldError"
@@ -84,7 +139,7 @@
     "label": "Case notes ",
     "type": "textarea",
     "isPII": false,
-    "rows": 20,
+    "rows": 10,
     "width": 250,
     "required": {
       "value": true,
