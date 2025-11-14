@@ -53,8 +53,8 @@ const deleteProxySession = async (accountSid: AccountSID, proxySession: string) 
       console.log(`Tried to remove proxy session ${proxySession} but couldn't find it.`);
       return false;
     }
-
-    return await ps.remove();
+    const removeResult = await ps.remove();
+    return removeResult;
   } catch (err) {
     // eslint-disable-next-line no-console
     console.log('deleteProxySession error: ', err);

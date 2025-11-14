@@ -26,17 +26,19 @@ export const getFacebookPageAccessToken = async (
   accountSid: AccountSID,
 ): Promise<string> => {
   try {
-    return await getSsmParameter(
+    const parameter = await getSsmParameter(
       `/${process.env.NODE_ENV}/twilio/${accountSid}/facebook_page_access_token`,
     );
+    return parameter;
   } catch (error) {
     if (error instanceof SsmParameterNotFound) {
       console.warn(
         `New facebook page access token parameter not found for accountSid: ${accountSid}, looking up legacy name.`,
       );
-      return await getSsmParameter(
+      const legacyParameter = await getSsmParameter(
         LEGACY_FACEBOOK_PAGE_ACCESS_TOKEN_PARAMETERS[accountSid],
       );
+      return legacyParameter;
     }
     throw error;
   }
