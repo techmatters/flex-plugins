@@ -36,7 +36,7 @@ import { EventFields } from '../../../src/taskrouter';
 import each from 'jest-each';
 import { ChannelContext, ChannelInstance } from 'twilio/lib/rest/chat/v2/service/channel';
 
-jest.mock('../../../src/configuration/twilioConfiguration', () => ({
+jest.mock('@tech-matters/twilio-configuration', () => ({
   getWorkspaceSid: jest.fn().mockResolvedValue(TEST_WORKSPACE_SID),
   getChatServiceSid: jest.fn().mockResolvedValue(TEST_CHAT_SERVICE_SID),
 }));

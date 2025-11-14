@@ -17,7 +17,7 @@
 import each from 'jest-each';
 import { flexToInstagramHandler } from '../../../../src/customChannels/instagram/flexToInstagram';
 import { AccountSID } from '@tech-matters/twilio-types';
-import { getTwilioClient } from '../../../../src/configuration/twilioConfiguration';
+import { getTwilioClient } from '@tech-matters/twilio-configuration';
 import { HttpRequest } from '../../../../src/httpTypes';
 import { isErr, isOk } from '../../../../src/Result';
 import { AssertionError } from 'node:assert';
@@ -26,7 +26,7 @@ global.fetch = jest.fn();
 
 const mockFetch = fetch as jest.MockedFunction<typeof fetch>;
 
-jest.mock('../../../../src/configuration/twilioConfiguration', () => ({
+jest.mock('@tech-matters/twilio-configuration', () => ({
   getTwilioClient: jest.fn(),
 }));
 
