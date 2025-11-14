@@ -15,7 +15,7 @@
  */
 
 import { spawn } from 'child_process';
-import type {ALBEvent} from "aws-lambda";
+import type { ALBEvent } from 'aws-lambda';
 
 export type IntegrationTestEvent = {
   npmScript: string;
@@ -23,7 +23,7 @@ export type IntegrationTestEvent = {
 };
 
 export const isIntegrationTestEvent = (
-    event: IntegrationTestEvent | ALBEvent,
+  event: IntegrationTestEvent | ALBEvent,
 ): event is IntegrationTestEvent => Boolean((event as IntegrationTestEvent).npmScript);
 
 export const runJestTests = async (event: IntegrationTestEvent) => {
