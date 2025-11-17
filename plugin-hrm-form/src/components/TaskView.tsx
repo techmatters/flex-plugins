@@ -30,7 +30,6 @@ import { Flex } from '../styles';
 import { isStandaloneITask } from './case/Case';
 import { getHelplineToSave } from '../services/HelplineService';
 import { getAseloFeatureFlags, getHrmConfig } from '../hrmConfig';
-import { rerenderAgentDesktop } from '../rerenderView';
 import { ContactState, updateDraft } from '../states/contacts/existingContacts';
 import {
   createOfflineContactAsyncAction,
