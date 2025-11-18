@@ -23,7 +23,6 @@ import {
   ExternalSendResult,
   redirectConversationMessageToExternalChat,
   RedirectResult,
-  WebhookEvent,
 } from '../flexToCustomChannel';
 import { AccountScopedHandler, HttpError, HttpRequest } from '../../httpTypes';
 import { isErr, newOk, Result } from '../../Result';
@@ -31,7 +30,7 @@ import { newMissingParameterResult } from '../../httpErrors';
 import { getTwilioClient } from '../../configuration/twilioConfiguration';
 import { getFacebookPageAccessToken } from '../configuration';
 
-export type Body = WebhookEvent & {
+export type Body = ConversationWebhookEvent & {
   recipientId: string; // The IGSID of the user that started the conversation. Provided as query parameter
 };
 
