@@ -131,7 +131,7 @@ const createConversation = async (
     });
     const channelAttributes = JSON.parse((await conversationContext.fetch()).attributes);
 
-    console.log('channelAttributes prior to update', channelAttributes);
+    console.debug('channelAttributes prior to update', channelAttributes);
 
     await conversationContext.update({
       'timers.closed': CONVERSATION_CLOSE_TIMEOUT,
