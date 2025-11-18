@@ -2,7 +2,6 @@
   "attributes": {
     "system_down" : false,
     "feature_flags": {
-      "enable_assigned_skill_teams_view_filters": true,
       "enable_resouorces_updates": true,
       "enable_switchboarding_move_tasks": true,
       "enable_select_agents_teams_view": true

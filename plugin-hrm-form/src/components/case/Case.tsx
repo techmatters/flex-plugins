@@ -190,9 +190,6 @@ const Case: React.FC<Props> = ({
 
       return renderCaseItemPage(sectionTypeName, {
         customFormHandlers: bindFileUploadCustomHandlers(connectedCase.id),
-        reactHookFormOptions: {
-          shouldUnregister: false,
-        },
       });
     }
     if (subroute === NewCaseSubroutes.CaseOverview) {

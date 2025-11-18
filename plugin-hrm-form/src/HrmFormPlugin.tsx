@@ -48,6 +48,8 @@ import { validateAndSetPermissionRules } from './permissions/rules';
 import { setupLlmNotifications } from './components/contact/GenerateSummaryButton/setUpLlmNotifications';
 import { FeatureFlags } from './types/FeatureFlags';
 import { setUpFullStory } from './fullStory/setUp';
+import { setUpExtraTranslations } from './utils/setUpComponents';
+import { getPathFromUrl } from './states/routing/reducer';
 
 const PLUGIN_NAME = 'HrmFormPlugin';
 
@@ -68,7 +70,9 @@ const setUpLocalization = (config: ReturnType<typeof getHrmConfig>) => {
 
   const afterNewStrings = (language: string) => {
     manager.store.dispatch(changeLanguage(language));
-    Flex.Actions.invokeAction('NavigateToView', { viewName: manager.store.getState().flex.view.activeView }); // force a re-render
+    Flex.Actions.invokeAction('NavigateToView', {
+      viewName: manager.store.getState().flex.view.activeView || getPathFromUrl(window.location) || 'agent-desktop',
+    }); // force a re-render
   };
 
   const localizationConfig = { twilioStrings, setNewStrings, afterNewStrings };
@@ -90,6 +94,7 @@ const setUpComponents = (featureFlags: FeatureFlags, setupObject: ReturnType<typ
   Components.setUpAddButtons(featureFlags);
   Components.setUpNoTasksUI(featureFlags, setupObject);
   Components.setUpCustomCRMContainer();
+  Components.setUpExtraTranslations();
 
   // set up default and custom channels
   Channels.setupDefaultChannels();

@@ -11,6 +11,7 @@
         "enableClientProfiles": false,
         "enableConferencing": true,
         "feature_flags": {
+            "enable_assigned_skill_teams_view_filters": true,
             "enable_client_profiles": false,
             "enable_conferencing": true,
             "enable_language_selector": true,
