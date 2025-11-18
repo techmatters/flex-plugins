@@ -1,412 +1,409 @@
 {
-  "NCVC":{
+  "NCVC": {
     "categories": {
       "Crime Experienced by Victim": {
-      "color": "#fac05e",
-      "subcategories": [
-        {
-          "label": "Adult survivors of childhood abuse (physical, verbal, neglect, witness)"
-        },
-        {
-          "label": "Adult survivors of childhood abuse (sexual, witness)"
-        },
-        {
-          "label": "Arson"
-        },
-        {
-          "label": "Assault/Aggravated Assault"
-        },
-        {
-          "label": "Attempted Homcide"
-        },
-        {
-          "label": "Bullying (current minor)"
-        },
-        {
-          "label": "Burglary"
-        },
-        {
-          "label": "Carjacking"
-        },
-        {
-          "label": "Child exposed to violence (current minor)"
-        },
-        {
-          "label": "Child physical abuse (current minor)"
-        },
-        {
-          "label": "Child sexual abuse (current minor)"
-        },
-        {
-          "label": "Child Sexual Abuse Materials (CSAM)"
-        },
-        {
-          "label": "Conservatorship/guardianship fraud/abuse victims"
-        },
-        {
-          "label": "Cyberstalking"
-        },
-        {
-          "label": "Doxing"
-        },
-        {
-          "label": "DWI/DUI"
-        },
-        {
-          "label": "Elder Abuse"
-        },
-        {
-          "label": "Family violence or abuse"
-        },
-        {
-          "label": "Financial Crimes"
-        },
-        {
-          "label": "Fraud/Scams - employment"
-        },
-        {
-          "label": "Fraud/Scams - investments/crypto"
-        },
-        {
-          "label": "Fraud/Scams - mass marketing"
-        },
-        {
-          "label": "Fraud/Scams - mortgage/lending"
-        },
-        {
-          "label": "Fraud/Scams - romance/relationship"
-        },
-        {
-          "label": "Gang Violence"
-        },
-        {
-          "label": "Gangstalking"
-        },
-        {
-          "label": "Gun Violence (non-mass incident)"
-        },
-        {
-          "label": "Hacking"
-        },
-        {
-          "label": "Harassment - Non-sexual"
-        },
-        {
-          "label": "Hate Crime/Bias Crime"
-        },
-        {
-          "label": "Homicide"
-        },
-        {
-          "label": "Human Trafficking - Labor"
-        },
-        {
-          "label": "Human Trafficking - Sex"
-        },
-        {
-          "label": "Identity theft"
-        },
-        {
-          "label": "Image based sexual abuse"
-        },
-        {
-          "label": "Intimate partner surveillance "
-        },
-        {
-          "label": "Intimate partner violence"
-        },
-        {
-          "label": "Kidnapping custodial"
-        },
-        {
-          "label": "Kidnapping non-custodial"
-        },
-        {
-          "label": "Mass Violence Incident - gun violence"
-        },
-        {
-          "label": "Mass Violence Incident - terrorism"
-        },
-        {
-          "label": "Non-consensual sexting"
-        },
-        {
-          "label": "Non-Criminal Event (Natural and Disaster)"
-        },
-        {
-          "label": "Non-criminal event (other)"
-        },
-        {
-          "label": "Online harassment"
-        },
-        {
-          "label": "Online impersonation"
-        },
-        {
-          "label": "Other - Property"
-        },
-        {
-          "label": "Other - Violent"
-        },
-        {
-          "label": "Refused to answer"
-        },
-        {
-          "label": "Robbery"
-        },
-        {
-          "label": "Sexual assault (adult)"
-        },
-        {
-          "label": "Sexual Harassment"
-        },
-        {
-          "label": "Stalking"
-        },
-        {
-          "label": "Teen Dating Violence"
-        },
-        {
-          "label": "Traffic/Vehicle Related Crimes (Other)"
-        },
-        {
-          "label": "Unknown/NA"
-        },
-        {
-          "label": "Violation of a court or protective order"
-        }
-      ]
-    },
-    "Crime Type Trends": {
-      "color": "#085f63",
-      "subcategories": [
-        {
-          "label": "Child abuse"
-        },
-        {
-          "label": "Adult Survivors of Child Abuse"
-        },
-        {
-          "label": "GBV"
-        },
-        {
-          "label": "Technology Facilitated Abuse"
-        },
-        {
-          "label": "Harassment/Bullying (non-sexual)"
-        },
-        {
-          "label": "Financial Crimes"
-        },
-        {
-          "label": "Identity Theft "
-        },
-        {
-          "label": "Violent Crimes"
-        },
-        {
-          "label": "Property Crimes"
-        },
-        {
-          "label": "Human Trafficking - Labor"
-        },
-        {
-          "label": "Gun Violence ( non-mass incident)"
-        },
-        {
-          "label": "Mass Violence - gun violence"
-        },
-        {
-          "label": "Mass Violence - terrorism"
-        },
-        {
-          "label": "Hate/Bias Crimes "
-        },
-        {
-          "label": "Traffic/Vehicle Related Crimes "
-        },
-        {
-          "label": "Gangstalking"
-        },
-        {
-          "label": "ElderAbuse"
-        },
-        {
-          "label": "Ritual/religious/cult abuse"
-        },
-        {
-          "label": "Other"
-        },
-        {
-          "label": "Unknown/NA"
-        }
-      ]
-    },
-    "Select Population Groups & Communities": {
-      "color": "#f0817c",
-      "subcategories": [
-        {
-          "label": "Active military victim"
-        },
-        {
-          "label": "Campus victim"
-        },
-        {
-          "label": "Deaf/hard of hearing"
-        },
-        {
-          "label": "Homelessness"
-        },
-        {
-          "label": "Limited English Proficient (LEP) individuals"
-        },
-        {
-          "label": "Spanish Speaker"
-        },
-        {
-          "label": "American Abroad"
-        },
-        {
-          "label": "Tribal victim/tribal crime"
-        },
-        {
-          "label": "Veteran/military"
-        },
-        {
-          "label": "Victim with a disability (cognitive/physical/mental)"
-        },
-        {
-          "label": "Rural Community"
-        },
-        {
-          "label": "Unknown/NA"
-        }
-      ]
-    },
-    "Services Discussed": {
-      "color": "#4d92c2",
-      "subcategories": [
-        {
-          "label": "Advocacy"
-        },
-        {
-          "label": "Case management"
-        },
-        {
-          "label": "Crime reporting"
-        },
-        {
-          "label": "Crisis counseling and intervention"
-        },
-        {
-          "label": "Financial or material assistance"
-        },
-        {
-          "label": "Forensic services"
-        },
-        {
-          "label": "General social services"
-        },
-        {
-          "label": "Hotline"
-        },
-        {
-          "label": "Housing - long term"
-        },
-        {
-          "label": "Housing - emergency shelter"
-        },
-        {
-          "label": "Identity theft recovery"
-        },
-        {
-          "label": "Legal services (civil)"
-        },
-        {
-          "label": "Legal services (criminal)"
-        },
-        {
-          "label": "Medical services/advocacy"
-        },
-        {
-          "label": "Mental health services"
-        },
-        {
-          "label": "Safety planning"
-        },
-        {
-          "label": "Support groups"
-        },
-        {
-          "label": "Training/Technical Assistance"
-        },
-        {
-          "label": "Victim rights referrals"
-        },
-        {
-          "label": "Volunteer/Community Involvement"
-        },
-        {
-          "label": "Other"
-        },
-        {
-          "label": "Unknown/NA"
-        }
-      ]
-    },
-    "Service Provided": {
-      "color": "#c99f7d",
-      "subcategories": [
-        {
-          "label": "Bilingual services provided"
-        },
-        {
-          "label": "Interpreter accessed"
-        },
-        {
-          "label": "Emotional support"
-        },
-        {
-          "label": "Information: Safety planning"
-        },
-        {
-          "label": "Information: DCVH/VC"
-        },
-        {
-          "label": "Information: Material assistance"
-        },
-        {
-          "label": "Information: Other advanced"
-        },
-        {
-          "label": "Information: Criminal justice process"
-        },
-        {
-          "label": "Information: Victim rights"
-        },
-        {
-          "label": "Information: Substance Abuse Treatment and support"
-        },
-        {
-          "label": "Referral to victim services program"
-        },
-        {
-          "label": "Referral to Crime Victim Compensation"
-        },
-        {
-          "label": "Referral to substance abuse treatment and support"
-        },
-        {
-          "label": "Referral to other service support and resources"
-        },
-        {
-          "label": "Other: Explain"
-        },
-        {
-          "label": "No Service Provided"
-        }
-      ]
-    }
+        "color": "#fac05e",
+        "subcategories": [
+          {
+            "label": "Adult survivors of childhood abuse (physical, verbal, neglect, witness)"
+          },
+          {
+            "label": "Adult survivors of childhood abuse (sexual, witness)"
+          },
+          {
+            "label": "Arson"
+          },
+          {
+            "label": "Assault/Aggravated Assault"
+          },
+          {
+            "label": "Attempted Homicide"
+          },
+          {
+            "label": "Bullying (current minor)"
+          },
+          {
+            "label": "Burglary"
+          },
+          {
+            "label": "Carjacking"
+          },
+          {
+            "label": "Child exposed to violence (current minor)"
+          },
+          {
+            "label": "Child physical abuse (current minor)"
+          },
+          {
+            "label": "Child sexual abuse (current minor)"
+          },
+          {
+            "label": "Child Sexual Abuse Materials (CSAM)"
+          },
+          {
+            "label": "Conservatorship/guardianship fraud/abuse victims"
+          },
+          {
+            "label": "Cyberstalking"
+          },
+          {
+            "label": "Doxing"
+          },
+          {
+            "label": "DWI/DUI"
+          },
+          {
+            "label": "Elder Abuse"
+          },
+          {
+            "label": "Family violence or abuse"
+          },
+          {
+            "label": "Financial Crimes - CEV"
+          },
+          {
+            "label": "Fraud/Scams - employment"
+          },
+          {
+            "label": "Fraud/Scams - investments/crypto"
+          },
+          {
+            "label": "Fraud/Scams - mass marketing"
+          },
+          {
+            "label": "Fraud/Scams - mortgage/lending"
+          },
+          {
+            "label": "Fraud/Scams - romance/relationship"
+          },
+          {
+            "label": "Gang Violence"
+          },
+          {
+            "label": "Gangstalking - CEV"
+          },
+          {
+            "label": "Gun Violence (non-mass incident)"
+          },
+          {
+            "label": "Hacking"
+          },
+          {
+            "label": "Harassment - Non-sexual"
+          },
+          {
+            "label": "Hate Crime/Bias Crime"
+          },
+          {
+            "label": "Homicide"
+          },
+          {
+            "label": "Human Trafficking - Labor - CEV"
+          },
+          {
+            "label": "Human Trafficking - Sex"
+          },
+          {
+            "label": "Identity theft"
+          },
+          {
+            "label": "Image based sexual abuse"
+          },
+          {
+            "label": "Intimate partner surveillance"
+          },
+          {
+            "label": "Intimate partner violence"
+          },
+          {
+            "label": "Kidnapping custodial"
+          },
+          {
+            "label": "Kidnapping non-custodial"
+          },
+          {
+            "label": "Mass Violence Incident - gun violence"
+          },
+          {
+            "label": "Mass Violence Incident - terrorism"
+          },
+          {
+            "label": "Non-consensual sexting"
+          },
+          {
+            "label": "Non-Criminal Event (Natural and Disaster)"
+          },
+          {
+            "label": "Non-criminal event (other)"
+          },
+          {
+            "label": "Online harassment"
+          },
+          {
+            "label": "Online impersonation"
+          },
+          {
+            "label": "Other - Property"
+          },
+          {
+            "label": "Other - Violent"
+          },
+          {
+            "label": "Refused to answer"
+          },
+          {
+            "label": "Robbery"
+          },
+          {
+            "label": "Sexual assault (adult)"
+          },
+          {
+            "label": "Sexual Harassment"
+          },
+          {
+            "label": "Stalking"
+          },
+          {
+            "label": "Teen Dating Violence"
+          },
+          {
+            "label": "Traffic/Vehicle Related Crimes (Other)"
+          },
+          {
+            "label": "Unknown/NA - CEV"
+          },
+          {
+            "label": "Violation of a court or protective order"
+          }
+        ]
+      },
+      "Crime Type Trends": {
+        "color": "#085f63",
+        "subcategories": [
+          {
+            "label": "Child abuse"
+          },
+          {
+            "label": "Adult Survivors of Child Abuse"
+          },
+          {
+            "label": "Gender Based Violence"
+          },
+          {
+            "label": "Technology Facilitated Abuse"
+          },
+          {
+            "label": "Harassment/Bullying (non-sexual)"
+          },
+          {
+            "label": "Financial Crimes - CTT"
+          },
+          {
+            "label": "Identity Theft"
+          },
+          {
+            "label": "Violent Crimes"
+          },
+          {
+            "label": "Property Crimes"
+          },
+          {
+            "label": "Human Trafficking - Labor - CTT"
+          },
+          {
+            "label": "Gun Violence ( non-mass incident)"
+          },
+          {
+            "label": "Mass Violence - gun violence"
+          },
+          {
+            "label": "Mass Violence - terrorism"
+          },
+          {
+            "label": "Hate/Bias Crimes"
+          },
+          {
+            "label": "Traffic/Vehicle Related Crimes"
+          },
+          {
+            "label": "Gangstalking - CTT"
+          },
+          {
+            "label": "ElderAbuse"
+          },
+          {
+            "label": "Ritual/religious/cult abuse"
+          },
+          {
+            "label": "Other - CTT"
+          },
+          {
+            "label": "Unknown/NA - CTT"
+          }
+        ]
+      },
+      "Select Population Groups & Communities": {
+        "color": "#f0817c",
+        "subcategories": [
+          {
+            "label": "Active military victim"
+          },
+          {
+            "label": "Campus victim"
+          },
+          {
+            "label": "Deaf/hard of hearing"
+          },
+          {
+            "label": "Homelessness"
+          },
+          {
+            "label": "Spanish Speaker"
+          },
+          {
+            "label": "American Abroad"
+          },
+          {
+            "label": "Tribal victim/tribal crime"
+          },
+          {
+            "label": "Veteran/military"
+          },
+          {
+            "label": "Victim with a disability (cognitive/physical/mental)"
+          },
+          {
+            "label": "Rural Community"
+          },
+          {
+            "label": "Unknown/NA - SPGC"
+          }
+        ]
+      },
+      "Services Discussed": {
+        "color": "#4d92c2",
+        "subcategories": [
+          {
+            "label": "Advocacy"
+          },
+          {
+            "label": "Case management"
+          },
+          {
+            "label": "Crime reporting"
+          },
+          {
+            "label": "Crisis counseling and intervention"
+          },
+          {
+            "label": "Crime Victims' Rights"
+          },
+          {
+            "label": "Employment Rights"
+          },
+          {
+            "label": "Financial or material assistance"
+          },
+          {
+            "label": "Forensic services"
+          },
+          {
+            "label": "General social services"
+          },
+          {
+            "label": "Hotline"
+          },
+          {
+            "label": "Housing - long term"
+          },
+          {
+            "label": "Housing - emergency shelter"
+          },
+          {
+            "label": "Identity theft recovery"
+          },
+          {
+            "label": "Legal services (civil)"
+          },
+          {
+            "label": "Legal services (criminal)"
+          },
+          {
+            "label": "Medical services/advocacy"
+          },
+          {
+            "label": "Mental health services"
+          },
+          {
+            "label": "National Compassion Fund"
+          },
+          {
+            "label": "PREA"
+          },
+          {
+            "label": "Protective Order"
+          },
+          {
+            "label": "Safety planning"
+          },
+          {
+            "label": "Support groups"
+          },
+          {
+            "label": "Training/Technical Assistance"
+          },
+          {
+            "label": "Victim rights referrals"
+          },
+          {
+            "label": "Volunteer/Community Involvement"
+          },
+          {
+            "label": "Other - SD"
+          },
+          {
+            "label": "Unknown/NA - SD"
+          }
+        ]
+      },
+      "Service Provided": {
+        "color": "#c99f7d",
+        "subcategories": [
+          {
+            "label": "Assisted with Crime Victims' Compensation Application"
+          },
+          {
+            "label": "Emotional support"
+          },
+          {
+            "label": "Information: Safety planning"
+          },
+          {
+            "label": "Information: DCVH/VC"
+          },
+          {
+            "label": "Information: Material assistance"
+          },
+          {
+            "label": "Information: Other advanced"
+          },
+          {
+            "label": "Information: Criminal justice process"
+          },
+          {
+            "label": "Information: Victim rights"
+          },
+          {
+            "label": "Information: Substance Abuse Treatment and support"
+          },
+          {
+            "label": "Other: Explain"
+          },
+          {
+            "label": "No Service Provided"
+          }
+        ]
+      }
     },
     "maxSelections": 100
   }

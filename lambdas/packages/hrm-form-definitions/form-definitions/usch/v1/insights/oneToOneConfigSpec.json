@@ -63,7 +63,7 @@
       },
       {
         "name": "languageLineUsed",
-        "insights": ["conversations", "email"]
+        "insights": ["conversations", "customer_email"]
       },
       {
         "name": "howTheHelpseekerHeardAboutUs",
