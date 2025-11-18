@@ -49,6 +49,7 @@ import { setupLlmNotifications } from './components/contact/GenerateSummaryButto
 import { FeatureFlags } from './types/FeatureFlags';
 import { setUpFullStory } from './fullStory/setUp';
 import { setUpExtraTranslations } from './utils/setUpComponents';
+import { getPathFromUrl } from './states/routing/reducer';
 
 const PLUGIN_NAME = 'HrmFormPlugin';
 
@@ -69,7 +70,9 @@ const setUpLocalization = (config: ReturnType<typeof getHrmConfig>) => {
 
   const afterNewStrings = (language: string) => {
     manager.store.dispatch(changeLanguage(language));
-    Flex.Actions.invokeAction('NavigateToView', { viewName: manager.store.getState().flex.view.activeView }); // force a re-render
+    Flex.Actions.invokeAction('NavigateToView', {
+      viewName: manager.store.getState().flex.view.activeView || getPathFromUrl(window.location) || 'agent-desktop',
+    }); // force a re-render
   };
 
   const localizationConfig = { twilioStrings, setNewStrings, afterNewStrings };
