@@ -42,8 +42,8 @@ export const newTaskEntry = {
   route: 'select-call-type' as const,
 };
 
-const getPathFromUrl = (url: Location) => {
-  return url?.pathname.replace(/^\/|\/$/g, '') || '';
+export const getPathFromUrl = (url: Location) => {
+  return url?.pathname?.replace(/^\/|\/$/g, '') || 'agent-desktop';
 };
 
 export const initialState: RoutingState = {
