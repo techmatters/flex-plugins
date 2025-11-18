@@ -19,7 +19,6 @@ import {
   WebhookResponse,
   WebhookRecord,
   WebhookRecordResponse,
-  WebhookRetrieveResponse,
   WebhookDeleteResponse,
   ISO8601UTCDateString,
 } from './types';
@@ -32,7 +31,7 @@ const createResponse = (statusCode: number, body: WebhookResponse): ALBResult =>
       'Content-Type': 'application/json',
       'Access-Control-Allow-Origin': '*',
       'Access-Control-Allow-Methods': 'POST,GET,DELETE,OPTIONS',
-      'Access-Control-Allow-Headers': 'Content-Type,X-List-Id',
+      'Access-Control-Allow-Headers': 'Content-Type,X-Webhook-Receiver-Session-Id',
     },
     body: JSON.stringify(body),
   };
@@ -40,11 +39,8 @@ const createResponse = (statusCode: number, body: WebhookResponse): ALBResult =>
 
 const createErrorResponse = (statusCode: number, message: string): ALBResult => {
   return createResponse(statusCode, {
-    success: false,
     message,
-    records: [],
-    count: 0,
-  } as WebhookRetrieveResponse);
+  });
 };
 
 const getSessionIdFromRequest = (event: ALBEvent): string | null => {
@@ -86,9 +82,7 @@ const handleRecordOperation = async (
     await recordWebhook(record);
 
     const response: WebhookRecordResponse = {
-      success: true,
       message: 'Webhook recorded successfully',
-      record,
     };
 
     return createResponse(200, response);
@@ -102,11 +96,7 @@ const handleRetrieveOperation = async (sessionId: string): Promise<ALBResult> =>
   try {
     const records = await retrieveWebhooks(sessionId);
 
-    const response: WebhookRetrieveResponse = {
-      success: true,
-      records,
-      count: records.length,
-    };
+    const response: WebhookRecord[] = records;
 
     return createResponse(200, response);
   } catch (error: any) {
@@ -120,7 +110,6 @@ const handleDeleteOperation = async (sessionId: string): Promise<ALBResult> => {
     const deletedCount = await deleteWebhooks(sessionId);
 
     const response: WebhookDeleteResponse = {
-      success: true,
       message: `Successfully deleted ${deletedCount} webhook record(s)`,
       deletedCount,
     };
@@ -142,11 +131,8 @@ export const handleWebhookReceiver = async (event: ALBEvent): Promise<ALBResult>
   // Handle OPTIONS for CORS preflight
   if (event.httpMethod === 'OPTIONS') {
     return createResponse(200, {
-      success: true,
       message: 'CORS preflight',
-      records: [],
-      count: 0,
-    } as WebhookRetrieveResponse);
+    });
   }
 
   const sessionId = getSessionIdFromRequest(event);

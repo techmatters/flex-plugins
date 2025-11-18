@@ -19,11 +19,11 @@ import { addMilliseconds } from 'date-fns/addMilliseconds';
 import { isAfter } from 'date-fns/isAfter';
 import { AssertionError } from 'node:assert';
 
-const { WEBHOOK_RECEIVER_URL, NODE_ENV } = process.env;
+const { HRM_URL, NODE_ENV } = process.env;
+const WEBHOOK_RECEIVER_URL = `${HRM_URL}/lambda/integrationTestRunner`;
 
 const getSessionRequests = async (sessionId: string): Promise<WebhookRecord[]> => {
-  if (!WEBHOOK_RECEIVER_URL)
-    throw new Error('Configuration error: WEBHOOK_RECEIVER_URL env var is required');
+  if (!HRM_URL) throw new Error('Configuration error: HRM_URL env var is required');
   const response = await fetch(WEBHOOK_RECEIVER_URL, {
     method: 'GET',
     headers: {

@@ -20,7 +20,7 @@ import {
   IntegrationTestEvent,
   isIntegrationTestEvent,
   runJestTests,
-} from './testOrchestrator/runJestTests.';
+} from './testOrchestrator/runJestTests';
 
 export const handler = async (
   event: IntegrationTestEvent | ALBEvent,

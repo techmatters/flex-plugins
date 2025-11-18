@@ -1,10 +1,10 @@
 {
   "name": "@tech-matters/integration-test-runner",
   "version": "1.0.0",
-  "description": "Lambda for running integration tests with Mockttp webhook mocking",
+  "description": "Lambda for running integration tests",
   "main": "index.js",
   "scripts": {
-    "test": "jest",
+    "test:integration": "jest",
     "docker:build": "docker build -t integrationtestrunner --build-arg lambda_name=integrationTestRunner --build-arg lambda_dir=. -f ../Dockerfile ../"
   },
   "author": "Tech Matters",

@@ -27,24 +27,20 @@ export type WebhookRecord = {
 };
 
 export type WebhookRecordResponse = {
-  success: boolean;
   message: string;
-  record?: WebhookRecord;
-};
-
-export type WebhookRetrieveResponse = {
-  success: boolean;
-  records: WebhookRecord[];
-  count: number;
 };
 
 export type WebhookDeleteResponse = {
-  success: boolean;
   message: string;
   deletedCount: number;
 };
 
+type WebhookErrorResponse = {
+  message: string;
+};
+
 export type WebhookResponse =
   | WebhookRecordResponse
-  | WebhookRetrieveResponse
-  | WebhookDeleteResponse;
+  | WebhookRecord[]
+  | WebhookDeleteResponse
+  | WebhookErrorResponse;

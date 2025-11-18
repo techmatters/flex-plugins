@@ -18,7 +18,7 @@ import { WebhookReceiverSession } from './webhookReceiver/client';
 import { getS3Object } from '@tech-matters/s3';
 import { getSsmParameter } from '@tech-matters/ssm-cache';
 
-const INSTAGRAM_WEBHOOK_URL = `https://${process.env.HRM_URL}/lambda/instagramWebhook`;
+const INSTAGRAM_WEBHOOK_URL = `https://microservices.tl.techmatters.org:443/lambda/instagramWebhook`;
 const { NODE_ENV, HRM_URL } = process.env;
 
 let webhookReverseMap: Record<string, string>;
@@ -67,11 +67,11 @@ export const sendInstagramMessage = async (
     webhookReverseMap = Object.fromEntries(webhookReverseMapEntries);
   }
   const accountSid = await getSsmParameter(
-    `${NODE_ENV}/twilio/${helplineCode.toUpperCase()}/account_sid`,
+    `/${NODE_ENV}/twilio/${helplineCode.toUpperCase()}/account_sid`,
   );
   const instagramId =
     webhookReverseMap[
-      `${HRM_URL}/lambda/account-scoped/${accountSid}/customChannels/instagram/instagramToFlex`
+      `/${HRM_URL}/lambda/account-scoped/${accountSid}/customChannels/instagram/instagramToFlex`
     ];
   const currentTimestamp = Date.now();
   const body: InstagramMessageEvent = {
@@ -100,6 +100,7 @@ export const sendInstagramMessage = async (
   };
 
   await fetch(INSTAGRAM_WEBHOOK_URL, {
+    method: 'POST',
     body: JSON.stringify(body),
   });
 };

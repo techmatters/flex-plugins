@@ -18,10 +18,5 @@
 // These will typically be overridden by actual values when running in Lambda
 
 process.env.AWS_REGION = process.env.AWS_REGION || 'us-east-1';
-process.env.NODE_ENV = process.env.NODE_ENV || 'test';
+process.env.NODE_ENV = process.env.NODE_ENV || 'development';
 
-// ALB URL for the Lambda under test
-// This should be provided as an environment variable when running in Lambda
-if (!process.env.ALB_URL) {
-  console.warn('ALB_URL not set - tests may fail if they require calling the Lambda under test');
-}

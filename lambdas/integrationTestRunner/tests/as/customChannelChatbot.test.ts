@@ -19,7 +19,7 @@ import {
   sendInstagramMessage,
 } from '../../src/instagram';
 
-const HELPLINE_CODE = 'JM';
+const HELPLINE_CODE = 'AS';
 
 let webhookReceiverSession: ReturnType<typeof startWebhookReceiverSession>;
 

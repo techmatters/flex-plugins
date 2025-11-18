@@ -20,6 +20,5 @@ module.exports = {
   rootDir: './',
   maxWorkers: 1, // Run tests serially
   setupFiles: ['<rootDir>/setTestEnvVars.js'],
-  testMatch: ['tests/**/*.test.ts'],
   reporters: ['default', 'jest-junit'],
 };
