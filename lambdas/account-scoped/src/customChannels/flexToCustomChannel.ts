@@ -15,14 +15,6 @@
  */
 import { Twilio } from 'twilio';
 
-export type ProgrammableChatWebhookEvent = {
-  Body: string;
-  From: string;
-  ChannelSid: string;
-  EventType: string;
-  Source: string;
-};
-
 export type ConversationWebhookEvent = {
   Body: string;
   Author: string;
@@ -39,10 +31,8 @@ export type ExternalSendResult = {
   resultCode: number;
 };
 
-export type WebhookEvent = ConversationWebhookEvent | ProgrammableChatWebhookEvent;
-
-type Params<T extends WebhookEvent, TResponse = any> = {
-  event: T;
+type Params<TResponse = any> = {
+  event: ConversationWebhookEvent;
   recipientId: string;
   sendExternalMessage: (
     recipientId: string,
@@ -51,19 +41,11 @@ type Params<T extends WebhookEvent, TResponse = any> = {
   ) => Promise<TResponse>;
 };
 
-export const isConversationWebhookEvent = (
-  event: WebhookEvent,
-): event is ConversationWebhookEvent => 'ConversationSid' in event;
-
 export type RedirectResult = { status: 'ignored' } | { status: 'sent'; response: any };
 
 export const redirectConversationMessageToExternalChat = async (
   client: Twilio,
-  {
-    event,
-    recipientId,
-    sendExternalMessage,
-  }: Params<ConversationWebhookEvent, ExternalSendResult>,
+  { event, recipientId, sendExternalMessage }: Params<ExternalSendResult>,
 ): Promise<RedirectResult> => {
   const { Body, ConversationSid, EventType, ParticipantSid, Source, Author } = event;
   let shouldSend = false;
