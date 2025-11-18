@@ -78,20 +78,23 @@ const validateProperties = (
 };
 
 export const flexToInstagramHandler: AccountScopedHandler = async (
-  { body: event }: HttpRequest,
+  { body: event, query: { recipientId } }: HttpRequest,
   accountSid,
 ) => {
   console.info('==== FlexToInstagram handler ====');
   console.info('Received event:', event);
 
+  if (!recipientId) {
+    return newMissingParameterResult('recipientId');
+  }
+
   let result: RedirectResult;
-  const requiredProperties: (keyof ConversationWebhookEvent | 'recipientId')[] = [
+  const requiredProperties: (keyof ConversationWebhookEvent)[] = [
     'ConversationSid',
     'Body',
     'Author',
     'EventType',
     'Source',
-    'recipientId',
   ];
   const validationResult = validateProperties(event, requiredProperties);
   if (isErr(validationResult)) {
@@ -99,7 +102,7 @@ export const flexToInstagramHandler: AccountScopedHandler = async (
   }
   const facebookPageAccessToken = await getFacebookPageAccessToken(accountSid);
 
-  const { recipientId, ...eventToSend } = event;
+  const { ...eventToSend } = event;
   const client = await getTwilioClient(accountSid);
   result = await redirectConversationMessageToExternalChat(client, {
     event: eventToSend,
