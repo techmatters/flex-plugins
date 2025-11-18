@@ -23,12 +23,8 @@ export const validateWebhookRequest: HttpRequestPipelineStep = async (
   request,
   { accountSid },
 ) => {
-  const {
-    headers,
-    path,
-    query: { bodySHA256 },
-    body,
-  } = request;
+  const { headers, path, query, body } = request;
+  const { bodySHA256 } = query;
   const authToken = await getAccountAuthToken(accountSid);
   const {
     'x-twilio-signature': twiloSignature,
@@ -39,9 +35,15 @@ export const validateWebhookRequest: HttpRequestPipelineStep = async (
     return newErr({ message: 'Missing Twilio signature', error: { statusCode: 400 } });
   }
   // Use the original webhook URL if it exists, otherwise assume the webhook is pointing directly to this lambda
+  const queryString = Object.entries(query)
+    .map(
+      ([key, value]) =>
+        `${encodeURIComponent(key)}=${encodeURIComponent(value?.toString() ?? 'undefined')}`,
+    )
+    .join('&');
   const urlForValidation =
     originalWebhookUrl ||
-    `https://${host}${path}${bodySHA256 ? `?bodySHA256=${bodySHA256}` : ''}`;
+    `https://${host}${path}${queryString.length ? `?${queryString}` : ''}`;
   const isValid = twilio.validateRequest(
     authToken,
     twiloSignature,
@@ -52,6 +54,8 @@ export const validateWebhookRequest: HttpRequestPipelineStep = async (
     console.warn(
       `Failed to validate webhook request, url: ${urlForValidation}, bodySHA256: ${bodySHA256} body:`,
       body,
+      'query values:',
+      request.query,
     );
     return newErr({ message: 'Request validation failed', error: { statusCode: 403 } });
   }
