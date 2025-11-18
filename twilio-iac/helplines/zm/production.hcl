@@ -60,6 +60,14 @@ locals {
         channel_flow_vars = {
         }
         chatbot_unique_names = []
+        enable_datadog_monitor = true
+        custom_monitor = {
+          query = "sum(last_24h):sum:<metric>{*}.as_count() == 0"
+          custom_schedule = {
+            rrule    = "FREQ=DAILY;INTERVAL=1;BYHOUR=10;BYMINUTE=0"
+            timezone = "Africa/Johannesburg"
+          }
+        }
       }
     }
     #Studio flow

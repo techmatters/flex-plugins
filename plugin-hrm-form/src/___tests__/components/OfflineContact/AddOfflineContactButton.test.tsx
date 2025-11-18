@@ -27,7 +27,6 @@ import { loadDefinition } from 'hrm-form-definitions';
 import { mockLocalFetchDefinitions } from '../../mockFetchDefinitions';
 import { mockPartialConfiguration } from '../../mockGetConfig';
 import { AddOfflineContactButton } from '../../../components/OfflineContact';
-import { rerenderAgentDesktop } from '../../../rerenderView';
 import { createOfflineContact } from '../../../services/ContactService';
 import { Contact } from '../../../types/types';
 import { namespace } from '../../../states/storeNamespaces';
@@ -38,9 +37,6 @@ import { getOfflineContactTask } from '../../../states/contacts/offlineContactTa
 let mockV1;
 
 jest.mock('../../../services/ServerlessService');
-jest.mock('../../../rerenderView', () => ({
-  rerenderAgentDesktop: jest.fn(),
-}));
 jest.mock('../../../services/ContactService', () => ({
   createOfflineContact: jest.fn(),
   updateContactInHrm: jest.fn(),
@@ -54,7 +50,6 @@ jest.mock('@twilio/flex-ui', () => ({
 
 const { mockFetchImplementation, mockReset, buildBaseURL } = mockLocalFetchDefinitions();
 const mockInvokeAction = Actions.invokeAction as jest.MockedFunction<typeof Actions.invokeAction>;
-const mockRerenderAgentDesktop = rerenderAgentDesktop as jest.MockedFunction<typeof rerenderAgentDesktop>;
 const mockCreateOfflineContact = createOfflineContact as jest.MockedFunction<typeof createOfflineContact>;
 
 beforeAll(async () => {
@@ -88,7 +83,6 @@ beforeAll(async () => {
 beforeEach(async () => {
   mockReset();
   mockInvokeAction.mockClear();
-  mockRerenderAgentDesktop.mockClear();
 });
 
 expect.extend(toHaveNoViolations);
@@ -120,7 +114,6 @@ test('click on button', async () => {
     },
     { timeout: 1000 },
   );
-  // expect(rerenderAgentDesktop).toHaveBeenCalledTimes(1);
   /*
    * This is failing and couldn't fix it yet
    * expect(recreateContactState).toHaveBeenCalled();
@@ -154,7 +147,6 @@ test('button should be disabled (default task exists)', () => {
   screen.getByText('OfflineContactButtonText').click();
 
   expect(Actions.invokeAction).not.toHaveBeenCalled();
-  expect(rerenderAgentDesktop).not.toHaveBeenCalled();
   expect(recreateContactState).not.toHaveBeenCalled();
 });
 

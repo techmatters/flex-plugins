@@ -152,7 +152,7 @@ export const instagramToFlexHandler: AccountScopedHandler = async (
   const uniqueUserName = `${channelType}:${senderExternalId}`;
   const senderScreenName = uniqueUserName; // TODO: see if we can use ig handle somehow
   const messageAttributes = JSON.stringify({ messageExternalId });
-  const onMessageSentWebhookUrl = `https://${process.env.INTERNAL_HRM_URL}/lambda/twilio/account-scoped/customChannels/instagram/flexToInstagram?recipientId=${senderExternalId}`;
+  const onMessageSentWebhookUrl = `${process.env.WEBHOOK_BASE_URL}/lambda/twilio/account-scoped/${accountSid}/customChannels/instagram/flexToInstagram?recipientId=${senderExternalId}`;
   const studioFlowSid = await getChannelStudioFlowSid(
     accountSid,
     AseloCustomChannel.Instagram,

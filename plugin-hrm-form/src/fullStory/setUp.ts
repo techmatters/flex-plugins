@@ -55,6 +55,7 @@ function helplineIdentifierFullStory(
           /https:\/\/assets-(?<environment>\w+)\.tl\.techmatters\.org\/plugins\/hrm-form\/\w+\/(?<pluginVersion>[\w.-]+)\/plugin-hrm-form\.js/,
         )?.groups ?? {};
       pageVars.pluginVersion = pluginVersion;
+      pageVars.environment = environment;
       userVars.displayName = `${fullName || contactUri || 'Unknown'} (${helplineCode} - ${environment})`;
       userVars.environment = environment;
     }
