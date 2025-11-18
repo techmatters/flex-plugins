@@ -5,11 +5,9 @@
 - Default "reducer" extended with Aselo custom ones, via [`manager.store.replaceReducer`](./src/aselo-webchat.tsx#L156) API.
 - Customize language using different [`FlexWebChat.Manager`](./src/aselo-webchat.tsx#L159) APIs.
   - The code that handles the translation can be found in [`getChangeLanguageWebChat`](./src/language.ts).
-- Event listeners are added to the chat channel to tweak behavior of the system
-  - [`setChannelOnCreateWebChat`](./src/aselo-webchat.tsx#L167), unlocks the channel when the agent participant is added to the channel.
-  - [`subscribeToChannel`](./src/aselo-webchat.tsx#L168), subscirbe Redux updates based on the channel `updated` event.
 - Customizations via "components API".
   - [Disable greeting message](./src/aselo-webchat.tsx#L172) via `FlexWebChat.MessagingCanvas`.
+    - [`setChannelOnCreateWebChat`](./src/aselo-webchat.tsx#L167) "unlocks it" when the agent participant is added to the channel.
   - [Customize member display props](./src/aselo-webchat.tsx#L175) via `FlexWebChat.MessagingCanvas`.
   - [Customize the look of "chat bubble"](./src/messagebubble-component/renderCustomMessageBubble.tsx#L22) via `FlexWebChat.MessageListItem.Bubble`.
   - [Disable input](./src/aselo-webchat.tsx#L186) via `FlexWebChat.MessageInput`.
