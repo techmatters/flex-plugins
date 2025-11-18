@@ -21,7 +21,7 @@
     "childInformation": [
       {
         "name": "user",
-        "insights": ["customers", "email"]
+        "insights": ["customers", "customer_email"]
       },
       {
         "name": "typeOfVictim",
