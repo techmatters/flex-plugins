@@ -52,12 +52,7 @@ let mockTwilioClient: any;
 const ACCOUNT_SID: AccountSID = 'ACxx';
 const FACEBOOK_PAGE_ACCESS_TOKEN = 'test token';
 
-const validEvent = ({
-  recipientId = 'recipientId',
-  Author = 'senderId',
-  Source = 'API',
-} = {}) => ({
-  recipientId,
+const validEvent = ({ Author = 'senderId', Source = 'API' } = {}) => ({
   Source,
   Body: 'the message text',
   EventType: 'onMessageAdded',
@@ -90,9 +85,10 @@ describe('FlexToInstagram', () => {
   each([
     {
       conditionDescription: 'the recipientId parameter not provided',
-      event: { ...validEvent(), recipientId: undefined },
+      event: validEvent(),
       expectedStatus: 400,
       expectedMessage: 'recipientId missing',
+      recipientId: null,
     },
     {
       conditionDescription: 'the Body parameter not provided',
@@ -128,20 +124,21 @@ describe('FlexToInstagram', () => {
       endpointImpl = async () => ({ status: 200, data: 'OK' }),
       expectedStatus,
       expectedMessage,
+      recipientId = 'recipientId',
     }) => {
       mockFetch.mockImplementation(endpointImpl);
-
+      const request = {
+        body: event,
+        query: { ...(recipientId ? { recipientId } : {}) },
+      } as HttpRequest;
       if (expectedStatus === 500) {
-        await expect(
-          flexToInstagramHandler({ body: event } as HttpRequest, ACCOUNT_SID),
-        ).rejects.toThrow(new Error('BOOM'));
+        await expect(flexToInstagramHandler(request, ACCOUNT_SID)).rejects.toThrow(
+          new Error('BOOM'),
+        );
         return;
       }
 
-      const result = await flexToInstagramHandler(
-        { body: event } as HttpRequest,
-        ACCOUNT_SID,
-      );
+      const result = await flexToInstagramHandler(request, ACCOUNT_SID);
 
       if (isErr(result)) {
         // Matching like this reports the message and the status in the fail message, rather than just one or the other, which you get with 2 separate checks
@@ -200,7 +197,10 @@ describe('FlexToInstagram', () => {
         } as any,
       } as Response);
       const result = await flexToInstagramHandler(
-        { body: event } as HttpRequest,
+        {
+          body: event,
+          query: { recipientId: 'recipientId' } as Record<string, string>,
+        } as HttpRequest,
         ACCOUNT_SID,
       );
 
@@ -213,7 +213,7 @@ describe('FlexToInstagram', () => {
             method: 'post',
             body: JSON.stringify({
               recipient: {
-                id: event.recipientId,
+                id: 'recipientId',
               },
               message: {
                 text: event.Body,
