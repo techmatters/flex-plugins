@@ -63,12 +63,13 @@ const ResourceSearchFilters: React.FC<{}> = () => {
     [dispatch],
   );
 
-  const countriesLength = referenceLocations.countryOptions?.length || 0;
+  const defaultCountryTarget = 'United States';
+  const { countryOptions } = referenceLocations;
   useEffect(() => {
-    if (countriesLength) {
-      updateFilterSelection('country', 'United States');
+    if (countryOptions?.length && countryOptions.some(o => o.value === defaultCountryTarget)) {
+      updateFilterSelection('country', defaultCountryTarget);
     }
-  }, [countriesLength, updateFilterSelection]);
+  }, [countryOptions, updateFilterSelection]);
 
   useEffect(() => {
     const loadReferenceLocations = (referenceLocations: ReferenceLocationState) => {
