@@ -57,7 +57,7 @@
       },
       {
         "name": "childOnTheMove",
-        "insights": ["customers", "email"]
+        "insights": ["customers", "customer_email"]
       },
       {
         "name": "childWithDisability",

@@ -4,10 +4,10 @@
       "splitFormAt": 10
     },
     "childInformation": {
-      "splitFormAt": 4
+      "splitFormAt": 6
     },
     "caseInformation": {
-      "splitFormAt": 2
+      "splitFormAt": 3
     }
   },
   "case": {

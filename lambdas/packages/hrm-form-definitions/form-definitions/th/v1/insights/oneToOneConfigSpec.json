@@ -25,7 +25,7 @@
       },
       {
         "name": "vulnerableGroups",
-        "insights": ["customers", "email"]
+        "insights": ["customers", "customer_email"]
       }
     ],
     "caseInformation": [

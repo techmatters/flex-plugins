@@ -17,8 +17,8 @@
   "survey": {
   },
   "preEngagement": {
-    "ageRange": "ChildInformationTab.ageRange",
-    "sex": "ChildInformationTab.sex",
-    "location": "CallerInformationTab.location"
+    "age": "ChildInformationTab.age",
+    "gender": "ChildInformationTab.gender",
+    "location": "ChildInformationTab.location"
   }
 }
