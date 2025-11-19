@@ -86,7 +86,7 @@ module.exports.handler = async (event) => {
     env.TEST_NAME = testName;
   }
 
-  const cmd = spawn('npm', ['-loglevel silent', 'run', npmScript || 'test'], {
+  const cmd = spawn(/^win/.test(process.platform) ? 'npm.cmd' : 'npm', ['-loglevel silent', 'run', npmScript || 'test'], {
     stdio: 'inherit',
     stderr: 'inherit',
     env,

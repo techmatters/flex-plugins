@@ -18,26 +18,35 @@ import { spawn } from 'child_process';
 import type { ALBEvent } from 'aws-lambda';
 
 export type IntegrationTestEvent = {
-  npmScript: string;
-  testName?: string;
+  testFilter: string;
 };
 
 export const isIntegrationTestEvent = (
   event: IntegrationTestEvent | ALBEvent,
-): event is IntegrationTestEvent => Boolean((event as IntegrationTestEvent).npmScript);
+): event is IntegrationTestEvent => Boolean((event as IntegrationTestEvent).testFilter);
 
 export const runJestTests = async (event: IntegrationTestEvent) => {
   const env = { ...process.env };
 
-  const { testName, npmScript } = event;
-  if (testName) {
-    env.TEST_NAME = testName;
-  }
+  const { testFilter } = event;
 
-  const cmd = spawn('npm', ['-loglevel silent', 'run', npmScript || 'test'], {
-    stdio: 'inherit',
-    env,
-  });
+  const cmd = spawn(
+    /^win/.test(process.platform) ? 'npm.cmd' : 'npm',
+    [
+      'run',
+      'test:integration',
+      '--',
+      '--verbose',
+      '--maxWorkers=1',
+      '--forceExit',
+      testFilter,
+    ],
+    {
+      stdio: 'inherit',
+      env,
+      shell: true,
+    },
+  );
   let result,
     isError = false;
   try {
@@ -62,5 +71,5 @@ export const runJestTests = async (event: IntegrationTestEvent) => {
   if (isError) {
     throw result;
   }
-  console.info(`Test run (${env.TEST_NAME}) result: `, result);
+  console.info(`Test run (${testFilter}) result: `, result);
 };

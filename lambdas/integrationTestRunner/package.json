@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test:integration": "jest",
+    "simulate-lambda-test-run": "cross-env NODE_ENV=development HRM_URL=https://hrm-development.tl.techmatters.org npx ts-node ./src/cli.ts AS",
     "docker:build": "docker build -t integrationtestrunner --build-arg lambda_name=integrationTestRunner --build-arg lambda_dir=. -f ../Dockerfile ../"
   },
   "author": "Tech Matters",
@@ -18,7 +19,8 @@
     "jest-junit": "^16.0.0",
     "ts-jest": "^28.0.8",
     "ts-node": "^10.9.1",
-    "typescript": "^5.8.2"
+    "typescript": "^5.8.2",
+    "cross-env": "^7.0.3"
   },
   "dependencies": {
     "@aws-sdk/client-dynamodb": "^3.716.0",
