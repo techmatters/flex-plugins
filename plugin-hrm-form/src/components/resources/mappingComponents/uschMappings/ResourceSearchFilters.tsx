@@ -13,7 +13,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
-import React, { useEffect } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { AnyAction } from 'redux';
 import { Template } from '@twilio/flex-ui';
@@ -52,6 +52,24 @@ const ResourceSearchFilters: React.FC<{}> = () => {
   const { country, province, city } = (filterOptions || {}) as USCHFilterOptions;
   const filterSelections: USCHFilterSelections = useSelector(selectFilterSelections);
 
+  const updateFilterSelection = useCallback(
+    (filterName: FilterName, filterValue: string | number | boolean | string[]) => {
+      let reduxFilterValue = filterValue;
+      if (filterName === 'country' || filterName === 'province' || filterName === 'city') {
+        reduxFilterValue = filterValue === NO_LOCATION_SELECTED ? undefined : filterValue;
+      }
+      dispatch(updateSearchFormAction({ filterSelections: { [filterName]: reduxFilterValue } }));
+    },
+    [dispatch],
+  );
+
+  const countriesLength = referenceLocations.countryOptions?.length || 0;
+  useEffect(() => {
+    if (countriesLength) {
+      updateFilterSelection('country', 'United States');
+    }
+  }, [countriesLength, updateFilterSelection]);
+
   useEffect(() => {
     const loadReferenceLocations = (referenceLocations: ReferenceLocationState) => {
       if (!referenceLocations.countryOptions?.length) {
@@ -81,15 +99,14 @@ const ResourceSearchFilters: React.FC<{}> = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const updateFilterSelection = (filterName: FilterName, filterValue: string | number | boolean | string[]) => {
-    let reduxFilterValue = filterValue;
-    if (filterName === 'country' || filterName === 'province' || filterName === 'city') {
-      reduxFilterValue = filterValue === NO_LOCATION_SELECTED ? undefined : filterValue;
-    }
-    dispatch(updateSearchFormAction({ filterSelections: { [filterName]: reduxFilterValue } }));
-  };
-
-  const locationDropdown = (locationFilterName: LocationFilterName, optionList: FilterOption[]) => {
+  const locationDropdown = ({
+    locationFilterName,
+    optionList,
+  }: {
+    locationFilterName: LocationFilterName;
+    optionList: FilterOption[];
+    defaultValue?: FilterOption;
+  }) => {
     const capitalizedLocationFilterName = locationFilterName.charAt(0).toUpperCase() + locationFilterName.slice(1);
     return (
       <FormSelectWrapper style={{ width: '100%', opacity: (optionList?.length || 0) > 1 ? 1 : 0.2 }}>
@@ -128,7 +145,10 @@ const ResourceSearchFilters: React.FC<{}> = () => {
             <FormLabel htmlFor="location-region">
               <Template code="Country" />
             </FormLabel>
-            {locationDropdown('country', country)}
+            {locationDropdown({
+              locationFilterName: 'country',
+              optionList: country,
+            })}
           </Column>
           <Column
             style={{
@@ -140,7 +160,7 @@ const ResourceSearchFilters: React.FC<{}> = () => {
             <FormLabel htmlFor="location-province">
               <Template code="State" />
             </FormLabel>
-            {locationDropdown('province', province)}
+            {locationDropdown({ locationFilterName: 'province', optionList: province })}
           </Column>
           <Column
             style={{
@@ -152,7 +172,7 @@ const ResourceSearchFilters: React.FC<{}> = () => {
             <FormLabel htmlFor="location-city">
               <Template code="City" />
             </FormLabel>
-            {locationDropdown('city', city)}
+            {locationDropdown({ locationFilterName: 'city', optionList: city })}
           </Column>
         </Row>
       </ResourcesSearchFormSettingBox>
