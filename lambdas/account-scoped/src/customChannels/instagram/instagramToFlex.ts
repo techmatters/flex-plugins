@@ -87,7 +87,7 @@ const isInstagramStoryReply = (
 const getStoryMentionText = (message: InstagramMessageObject['message']) =>
   message.attachments
     ? `Story mention: ${message.attachments[0].payload.url}`
-    : 'Looks like this event does not includes a valid url in the payload';
+    : 'Looks like this event does not include a valid url in the payload';
 
 const unsendConversationMessage = async (
   client: Twilio,
