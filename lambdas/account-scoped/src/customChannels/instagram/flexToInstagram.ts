@@ -23,6 +23,7 @@ import {
   ExternalSendResult,
   redirectConversationMessageToExternalChat,
   RedirectResult,
+  TEST_SEND_URL,
 } from '../flexToCustomChannel';
 import { AccountScopedHandler, HttpError, HttpRequest } from '../../httpTypes';
 import { isErr, newOk, Result } from '../../Result';
@@ -35,7 +36,7 @@ export type Body = ConversationWebhookEvent & {
 };
 
 const sendInstagramMessage =
-  (facebookPageAccessToken: string, overrideUrl?: string) =>
+  (facebookPageAccessToken: string) =>
   async (
     recipientId: string,
     messageText: string,
@@ -49,7 +50,7 @@ const sendInstagramMessage =
         text: messageText,
       },
     };
-    const sendUrl = `${overrideUrl || 'https://graph.facebook.com/v19.0/me/messages'}?access_token=${facebookPageAccessToken}`;
+    const sendUrl = `${testSessionId ? TEST_SEND_URL : 'https://graph.facebook.com/v19.0/me/messages'}?access_token=${facebookPageAccessToken}`;
     const response = await fetch(sendUrl, {
       method: 'post',
       body: JSON.stringify(body),
@@ -105,14 +106,11 @@ export const flexToInstagramHandler: AccountScopedHandler = async (
   const facebookPageAccessToken = await getFacebookPageAccessToken(accountSid);
 
   const { ...eventToSend } = event;
-  const testSendUrl = `${process.env.WEBHOOK_BASE_URL}/lambda/integrationTestRunner`;
   const client = await getTwilioClient(accountSid);
   result = await redirectConversationMessageToExternalChat(client, {
     event: eventToSend,
     recipientId,
-    sendExternalMessage: event.testSessionId
-      ? sendInstagramMessage(facebookPageAccessToken, testSendUrl)
-      : sendInstagramMessage(facebookPageAccessToken),
+    sendExternalMessage: sendInstagramMessage(facebookPageAccessToken),
   });
 
   switch (result.status) {

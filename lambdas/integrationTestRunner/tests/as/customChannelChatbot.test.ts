@@ -31,7 +31,7 @@ afterEach(async () => {
   await webhookReceiverSession.end();
 });
 
-test('JM_STG instagram custom channel chatbot integration test', async () => {
+test('AS_DEV instagram custom channel chatbot integration test', async () => {
   await sendInstagramMessage(
     HELPLINE_CODE,
     webhookReceiverSession,

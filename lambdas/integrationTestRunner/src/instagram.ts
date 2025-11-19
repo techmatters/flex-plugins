@@ -18,6 +18,7 @@ import { WebhookReceiverSession } from './webhookReceiver/client';
 import { getS3Object } from '@tech-matters/s3';
 import { getSsmParameter } from '@tech-matters/ssm-cache';
 import { InstagramMessageEvent } from '@tech-matters/twilio-types';
+import crypto from 'crypto';
 
 const INSTAGRAM_WEBHOOK_URL = `https://microservices.tl.techmatters.org:443/lambda/instagramWebhook`;
 const { NODE_ENV, HRM_URL } = process.env;
@@ -35,7 +36,9 @@ export const sendInstagramMessage = async (
   messageText: string,
 ) => {
   if (!webhookReverseMap) {
-    const webhookMap = await getS3Object('aselo-webhooks', 'instagram-webhook-map.json');
+    const webhookMap = JSON.parse(
+      await getS3Object('aselo-webhooks', 'instagram-webhook-map.json'),
+    );
     const webhookReverseMapEntries = Object.entries(webhookMap).map(([k, v]) => [v, k]);
     webhookReverseMap = Object.fromEntries(webhookReverseMapEntries);
   }
@@ -44,7 +47,7 @@ export const sendInstagramMessage = async (
   );
   const instagramId =
     webhookReverseMap[
-      `/${HRM_URL}/lambda/account-scoped/${accountSid}/customChannels/instagram/instagramToFlex`
+      `${HRM_URL}/lambda/twilio/account-scoped/${accountSid}/customChannels/instagram/instagramToFlex`
     ];
   const currentTimestamp = Date.now();
   const body: InstagramMessageEvent = {
@@ -55,10 +58,10 @@ export const sendInstagramMessage = async (
         messaging: [
           {
             sender: {
-              id: `integration-test-sender/${sessionId}`,
+              id: `integration-test-sender-${sessionId}`,
             },
             recipient: {
-              id: `integration-test-recipient/${sessionId}`,
+              id: `integration-test-recipient-${sessionId}`,
             },
             timestamp: currentTimestamp,
             message: {
@@ -72,11 +75,25 @@ export const sendInstagramMessage = async (
     ],
     testSessionId: sessionId,
   };
+  const bodyJson = JSON.stringify(body);
+  const appSecret = await getSsmParameter(`FACEBOOK_APP_SECRET`);
+  const signature = crypto.createHmac('sha1', appSecret).update(bodyJson).digest('hex');
 
-  await fetch(INSTAGRAM_WEBHOOK_URL, {
+  const response = await fetch(INSTAGRAM_WEBHOOK_URL, {
     method: 'POST',
-    body: JSON.stringify(body),
+    body: bodyJson,
+    headers: {
+      'x-hub-signature': `sha1=${signature}`,
+    },
   });
+  if (!response.ok) {
+    console.warn(
+      `Error sending Instagram message to API`,
+      response.status,
+      await response.text(),
+    );
+  }
+  expect(response.ok).toBe(true);
 };
 
 export const expectInstagramMessageReceived = async (

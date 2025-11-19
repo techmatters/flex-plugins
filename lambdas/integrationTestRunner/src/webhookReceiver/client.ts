@@ -43,7 +43,7 @@ const getSessionRequests = async (sessionId: string): Promise<WebhookRecord[]> =
 const delay = (ms: number | undefined) => new Promise(resolve => setTimeout(resolve, ms));
 
 export const startWebhookReceiverSession = (helplineCode: string) => {
-  const sessionId = `${helplineCode}/${NODE_ENV}/${new Date().toISOString()}}`;
+  const sessionId = `${helplineCode}-${NODE_ENV}-${new Date().toISOString().replaceAll(/[: \/]/g, '_')}`;
   let sessionActive = true;
   return {
     sessionId,
@@ -75,6 +75,7 @@ export const startWebhookReceiverSession = (helplineCode: string) => {
       throw new AssertionError({
         message: 'Expected message not seen',
         actual: sessionRequests,
+        expected: [],
       });
     },
     end: () => {

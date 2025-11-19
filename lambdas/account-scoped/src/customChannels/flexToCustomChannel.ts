@@ -15,6 +15,8 @@
  */
 import { Twilio } from 'twilio';
 
+export const TEST_SEND_URL = `${process.env.WEBHOOK_BASE_URL}/lambda/integrationTestRunner`;
+
 export type ConversationWebhookEvent = {
   Body: string;
   Author: string;
