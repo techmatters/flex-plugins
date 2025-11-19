@@ -14,17 +14,17 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 import { startWebhookReceiverSession } from '../../src/webhookReceiver/client';
-import {
-  expectInstagramMessageReceived,
-  sendInstagramMessage,
-} from '../../src/instagram';
+import { verifyInstagramMessageExchange } from '../../src/instagram';
+import { verifyMessageExchange } from '../../src/verify';
 
 const HELPLINE_CODE = 'AS';
 
 let webhookReceiverSession: ReturnType<typeof startWebhookReceiverSession>;
+let verifyExchange: ReturnType<typeof verifyMessageExchange>;
 
 beforeEach(async () => {
   webhookReceiverSession = startWebhookReceiverSession(HELPLINE_CODE);
+  verifyExchange = verifyInstagramMessageExchange(webhookReceiverSession, HELPLINE_CODE);
 });
 
 afterEach(async () => {
@@ -32,10 +32,39 @@ afterEach(async () => {
 });
 
 test('AS_DEV instagram custom channel chatbot integration test', async () => {
-  await sendInstagramMessage(
-    HELPLINE_CODE,
-    webhookReceiverSession,
-    `Hello from integration test ${webhookReceiverSession.sessionId}`,
-  );
-  await expectInstagramMessageReceived(webhookReceiverSession, 'Welcome to SafeSpot');
+  await verifyExchange([
+    {
+      sender: 'service-user',
+      text: `Hello from integration test ${webhookReceiverSession.sessionId}`,
+    },
+    {
+      sender: 'flex',
+      text: `Welcome to the helpline. Please answer the following questions.`,
+    },
+    { sender: 'flex', text: `Are you calling about yourself? Please answer Yes or No.` },
+    {
+      sender: 'service-user',
+      text: `Y`,
+    },
+    {
+      sender: 'flex',
+      text: `How old are you?`,
+    },
+    {
+      sender: 'service-user',
+      text: `17`,
+    },
+    {
+      sender: 'flex',
+      text: `What is your gender?`,
+    },
+    {
+      sender: 'service-user',
+      text: `F`,
+    },
+    {
+      sender: 'flex',
+      text: `We will transfer you now. Please hold for a counsellor.`,
+    },
+  ]);
 });

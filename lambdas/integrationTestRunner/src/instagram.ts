@@ -19,6 +19,7 @@ import { getS3Object } from '@tech-matters/s3';
 import { getSsmParameter } from '@tech-matters/ssm-cache';
 import { InstagramMessageEvent } from '@tech-matters/twilio-types';
 import crypto from 'crypto';
+import { verifyMessageExchange } from './verify';
 
 const INSTAGRAM_WEBHOOK_URL = `https://microservices.tl.techmatters.org:443/lambda/instagramWebhook`;
 const { NODE_ENV, HRM_URL } = process.env;
@@ -30,88 +31,89 @@ export type Body = InstagramMessageEvent & {
   bodyAsString?: string; // entire payload as string (preserves the ordering to decode and compare with xHubSignature)
 };
 
-export const sendInstagramMessage = async (
-  helplineCode: string,
-  { sessionId }: WebhookReceiverSession,
-  messageText: string,
-) => {
-  if (!webhookReverseMap) {
-    const webhookMap = JSON.parse(
-      await getS3Object('aselo-webhooks', 'instagram-webhook-map.json'),
+export const sendInstagramMessage =
+  (helplineCode: string, { sessionId }: WebhookReceiverSession) =>
+  async (messageText: string) => {
+    if (!webhookReverseMap) {
+      const webhookMap = JSON.parse(
+        await getS3Object('aselo-webhooks', 'instagram-webhook-map.json'),
+      );
+      const webhookReverseMapEntries = Object.entries(webhookMap).map(([k, v]) => [v, k]);
+      webhookReverseMap = Object.fromEntries(webhookReverseMapEntries);
+    }
+    const accountSid = await getSsmParameter(
+      `/${NODE_ENV}/twilio/${helplineCode.toUpperCase()}/account_sid`,
     );
-    const webhookReverseMapEntries = Object.entries(webhookMap).map(([k, v]) => [v, k]);
-    webhookReverseMap = Object.fromEntries(webhookReverseMapEntries);
-  }
-  const accountSid = await getSsmParameter(
-    `/${NODE_ENV}/twilio/${helplineCode.toUpperCase()}/account_sid`,
-  );
-  const instagramId =
-    webhookReverseMap[
-      `${HRM_URL}/lambda/twilio/account-scoped/${accountSid}/customChannels/instagram/instagramToFlex`
-    ];
-  const currentTimestamp = Date.now();
-  const body: InstagramMessageEvent = {
-    object: 'instagram',
-    entry: [
-      {
-        id: instagramId,
-        messaging: [
-          {
-            sender: {
-              id: `integration-test-sender-${sessionId}`,
+    const instagramId =
+      webhookReverseMap[
+        `${HRM_URL}/lambda/twilio/account-scoped/${accountSid}/customChannels/instagram/instagramToFlex`
+      ];
+    const currentTimestamp = Date.now();
+    const body: InstagramMessageEvent = {
+      object: 'instagram',
+      entry: [
+        {
+          id: instagramId,
+          messaging: [
+            {
+              sender: {
+                id: `integration-test-sender-${sessionId}`,
+              },
+              recipient: {
+                id: `integration-test-recipient-${sessionId}`,
+              },
+              timestamp: currentTimestamp,
+              message: {
+                mid: sessionId,
+                text: messageText,
+              },
             },
-            recipient: {
-              id: `integration-test-recipient-${sessionId}`,
-            },
-            timestamp: currentTimestamp,
-            message: {
-              mid: sessionId,
-              text: messageText,
-            },
-          },
-        ],
-        time: currentTimestamp,
+          ],
+          time: currentTimestamp,
+        },
+      ],
+      testSessionId: sessionId,
+    };
+    const bodyJson = JSON.stringify(body);
+    const appSecret = await getSsmParameter(`FACEBOOK_APP_SECRET`);
+    const signature = crypto.createHmac('sha1', appSecret).update(bodyJson).digest('hex');
+
+    const response = await fetch(INSTAGRAM_WEBHOOK_URL, {
+      method: 'POST',
+      body: bodyJson,
+      headers: {
+        'x-hub-signature': `sha1=${signature}`,
       },
-    ],
-    testSessionId: sessionId,
+    });
+    if (!response.ok) {
+      console.warn(
+        `Error sending Instagram message to API`,
+        response.status,
+        await response.text(),
+      );
+    }
+    expect(response.ok).toBe(true);
   };
-  const bodyJson = JSON.stringify(body);
-  const appSecret = await getSsmParameter(`FACEBOOK_APP_SECRET`);
-  const signature = crypto.createHmac('sha1', appSecret).update(bodyJson).digest('hex');
 
-  const response = await fetch(INSTAGRAM_WEBHOOK_URL, {
-    method: 'POST',
-    body: bodyJson,
-    headers: {
-      'x-hub-signature': `sha1=${signature}`,
-    },
-  });
-  if (!response.ok) {
-    console.warn(
-      `Error sending Instagram message to API`,
-      response.status,
-      await response.text(),
+export const expectInstagramMessageReceived =
+  (webhookReceiverSession: WebhookReceiverSession) => async (messageText: string) =>
+    webhookReceiverSession.expectRequestToBeReceived(
+      record => {
+        const { recipient, message } = JSON.parse(record.body);
+        return (
+          recipient?.id ===
+            `integration-test-sender-${webhookReceiverSession.sessionId}` &&
+          message?.text === messageText
+        );
+      },
+      { timeoutMilliseconds: 30 * 1000 },
     );
-  }
-  expect(response.ok).toBe(true);
-};
 
-export const expectInstagramMessageReceived = async (
-  webhookReceiverSession: WebhookReceiverSession,
-  messageText: string,
+export const verifyInstagramMessageExchange = (
+  session: WebhookReceiverSession,
+  helplineCode: string,
 ) =>
-  webhookReceiverSession.expectRequestToBeReceived(
-    record => {
-      const parsedBody = JSON.parse(record.body);
-      expect(parsedBody).toMatchObject({
-        recipient: {
-          id: `integration-test-recipient/${webhookReceiverSession.sessionId}`,
-        },
-        message: {
-          text: messageText,
-        },
-      });
-      return true;
-    },
-    { timeoutMilliseconds: 30 * 1000 },
+  verifyMessageExchange(
+    sendInstagramMessage(helplineCode, session),
+    expectInstagramMessageReceived(session),
   );
