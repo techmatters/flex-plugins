@@ -37,7 +37,7 @@ type Params<TResponse = any> = {
   sendExternalMessage: (
     recipientId: string,
     messageText: string,
-    useTestApi?: boolean,
+    testSessionId?: string,
   ) => Promise<TResponse>;
 };
 
@@ -68,16 +68,9 @@ export const redirectConversationMessageToExternalChat = async (
   if (shouldSend) {
     const conversationInstance = await conversationContext.fetch();
     const conversationAttributes = JSON.parse(conversationInstance?.attributes ?? {});
-    const useTestApi = conversationAttributes.useTestApi ?? false;
-    const response = await sendExternalMessage(recipientId, Body, useTestApi);
+    const { testSessionId } = conversationAttributes;
+    const response = await sendExternalMessage(recipientId, Body, testSessionId);
     if (response.ok) {
-      if (useTestApi) {
-        conversationAttributes.externalSendResponses = [
-          ...conversationAttributes.externalSendResponses,
-          { dateReceived: new Date().toISOString(), response: response.body },
-        ];
-        await conversationInstance.update({ attributes: conversationAttributes });
-      }
       return { status: 'sent', response };
     }
     console.info(

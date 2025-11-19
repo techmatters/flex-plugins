@@ -35,8 +35,12 @@ export type Body = ConversationWebhookEvent & {
 };
 
 const sendInstagramMessage =
-  (facebookPageAccessToken: string) =>
-  async (recipientId: string, messageText: string): Promise<ExternalSendResult> => {
+  (facebookPageAccessToken: string, overrideUrl?: string) =>
+  async (
+    recipientId: string,
+    messageText: string,
+    testSessionId?: string,
+  ): Promise<ExternalSendResult> => {
     const body = {
       recipient: {
         id: recipientId,
@@ -45,17 +49,15 @@ const sendInstagramMessage =
         text: messageText,
       },
     };
-
-    const response = await fetch(
-      `https://graph.facebook.com/v19.0/me/messages?access_token=${facebookPageAccessToken}`,
-      {
-        method: 'post',
-        body: JSON.stringify(body),
-        headers: {
-          'Content-Type': 'application/json',
-        },
+    const sendUrl = `${overrideUrl || 'https://graph.facebook.com/v19.0/me/messages'}?access_token=${facebookPageAccessToken}`;
+    const response = await fetch(sendUrl, {
+      method: 'post',
+      body: JSON.stringify(body),
+      headers: {
+        'Content-Type': 'application/json',
+        ...(testSessionId ? { 'x-webhook-receiver-session-id': testSessionId } : {}),
       },
-    );
+    });
 
     return {
       ok: response.ok,
@@ -103,11 +105,14 @@ export const flexToInstagramHandler: AccountScopedHandler = async (
   const facebookPageAccessToken = await getFacebookPageAccessToken(accountSid);
 
   const { ...eventToSend } = event;
+  const testSendUrl = `${process.env.WEBHOOK_BASE_URL}/lambda/integrationTestRunner`;
   const client = await getTwilioClient(accountSid);
   result = await redirectConversationMessageToExternalChat(client, {
     event: eventToSend,
     recipientId,
-    sendExternalMessage: sendInstagramMessage(facebookPageAccessToken),
+    sendExternalMessage: event.testSessionId
+      ? sendInstagramMessage(facebookPageAccessToken, testSendUrl)
+      : sendInstagramMessage(facebookPageAccessToken),
   });
 
   switch (result.status) {

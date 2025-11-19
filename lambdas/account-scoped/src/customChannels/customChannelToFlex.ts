@@ -86,10 +86,11 @@ type CreateFlexConversationParams = {
   studioFlowSid: string;
   channelType: AseloCustomChannel; // The chat channel being used
   uniqueUserName: string; // Unique identifier for this user
-  senderScreenName: string; // Friendly info to show to show in the Flex UI (like Telegram handle)
+  senderScreenName: string; // Friendly info to show in the Flex UI (like Telegram handle)
   onMessageSentWebhookUrl: string; // The url that must be used as the onMessageSent event webhook.
   conversationFriendlyName: string; // A name for the Flex conversation (typically same as uniqueUserName)
   useTestApi?: boolean; // [optional] If true, messages from flex will be sent to a test endpoint rather than the real 3rd party API.
+  testApiSessionId?: string; // A session identifier to identify the test run if this is part of an integration test.
   twilioNumber: string; // The target Twilio number (usually have the shape <channel>:<id>, e.g. telegram:1234567)
 };
 
@@ -108,6 +109,7 @@ const createConversation = async (
     onMessageSentWebhookUrl,
     studioFlowSid,
     useTestApi,
+    testSessionId,
   }: CreateFlexConversationParams,
 ): Promise<{ conversationSid: ConversationSID; error?: Error }> => {
   if (useTestApi) {
@@ -143,6 +145,7 @@ const createConversation = async (
         senderScreenName,
         twilioNumber,
         useTestApi,
+        testSessionId,
       }),
     });
 
