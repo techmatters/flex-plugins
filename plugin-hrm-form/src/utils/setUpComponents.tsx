@@ -101,24 +101,6 @@ export const setUpQueuesStatusWriter = (setupObject: SetupObject) => {
   );
 };
 
-export const setUpExtraTranslations = () => {
-  Flex.TaskInfoPanel.Content.add(
-    <QueueNameLabel renderIfTranslationSameAsUntranslated={true} key="queue-name-label" layout="task-info-panel" />,
-  );
-  Flex.CallCanvas.Content.add(
-    <QueueNameLabel renderIfTranslationSameAsUntranslated={false} key="queue-name-label" layout="call-panel" />,
-    {
-      sortOrder: 0,
-    },
-  );
-  Flex.IncomingTaskCanvas.Content.add(
-    <QueueNameLabel renderIfTranslationSameAsUntranslated={false} key="queue-name-label" layout="call-panel" />,
-    {
-      sortOrder: 0,
-    },
-  );
-};
-
 // Re-renders UI if there is a new reservation created and no active tasks (avoid a visual bug with QueuesStatus when there are no tasks)
 const setUpRerenderOnReservation = () => {
   const manager = Flex.Manager.getInstance();
