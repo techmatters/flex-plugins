@@ -17,39 +17,12 @@
 import { WebhookReceiverSession } from './webhookReceiver/client';
 import { getS3Object } from '@tech-matters/s3';
 import { getSsmParameter } from '@tech-matters/ssm-cache';
+import { InstagramMessageEvent } from '@tech-matters/twilio-types';
 
 const INSTAGRAM_WEBHOOK_URL = `https://microservices.tl.techmatters.org:443/lambda/instagramWebhook`;
 const { NODE_ENV, HRM_URL } = process.env;
 
 let webhookReverseMap: Record<string, string>;
-
-// Types copied from account-scoped/customChannels/instagram
-type InstagramMessageObject = {
-  sender: {
-    id: string;
-  };
-  recipient: {
-    id: string;
-  };
-  timestamp: number; // message timestamp
-  message: {
-    mid: string;
-    text?: string; // the body of the message
-    attachments?: { type: string; payload: { url: string } }[];
-    is_deleted?: boolean;
-  };
-};
-
-type InstagramMessageEntry = {
-  time: number; // event timestamp
-  id: string; // IGSID of the subscribed Instagram account
-  messaging: [InstagramMessageObject];
-};
-
-type InstagramMessageEvent = {
-  object: 'instagram';
-  entry: [InstagramMessageEntry];
-};
 
 export type Body = InstagramMessageEvent & {
   xHubSignature?: string; // x-hub-signature header sent from Facebook
@@ -89,7 +62,7 @@ export const sendInstagramMessage = async (
             },
             timestamp: currentTimestamp,
             message: {
-              mid: `${sessionId}`,
+              mid: sessionId,
               text: messageText,
             },
           },
@@ -97,6 +70,7 @@ export const sendInstagramMessage = async (
         time: currentTimestamp,
       },
     ],
+    testSessionId: sessionId,
   };
 
   await fetch(INSTAGRAM_WEBHOOK_URL, {

@@ -89,7 +89,6 @@ type CreateFlexConversationParams = {
   senderScreenName: string; // Friendly info to show in the Flex UI (like Telegram handle)
   onMessageSentWebhookUrl: string; // The url that must be used as the onMessageSent event webhook.
   conversationFriendlyName: string; // A name for the Flex conversation (typically same as uniqueUserName)
-  useTestApi?: boolean; // [optional] If true, messages from flex will be sent to a test endpoint rather than the real 3rd party API.
   testSessionId?: string; // A session identifier to identify the test run if this is part of an integration test.
   twilioNumber: string; // The target Twilio number (usually have the shape <channel>:<id>, e.g. telegram:1234567)
 };
@@ -108,13 +107,12 @@ const createConversation = async (
     senderScreenName,
     onMessageSentWebhookUrl,
     studioFlowSid,
-    useTestApi,
     testSessionId,
   }: CreateFlexConversationParams,
 ): Promise<{ conversationSid: ConversationSID; error?: Error }> => {
-  if (useTestApi) {
+  if (testSessionId) {
     console.info(
-      'useTestApi flag set. All outgoing messages will be sent to the test API.',
+      'testSessionId specified. All outgoing messages will be sent to the test API.',
     );
   }
 
@@ -144,7 +142,6 @@ const createConversation = async (
         channelType,
         senderScreenName,
         twilioNumber,
-        useTestApi,
         testSessionId,
       }),
     });
@@ -201,7 +198,7 @@ export const sendConversationMessageToFlex = async (
     senderExternalId,
     customSubscribedExternalId,
     conversationFriendlyName,
-    useTestApi,
+    testSessionId,
   }: SendConversationMessageToFlexParams,
 ): Promise<{ status: 'ignored' } | { status: 'sent'; response: any }> => {
   const subscribedExternalId = customSubscribedExternalId || accountSid;
@@ -225,7 +222,7 @@ export const sendConversationMessageToFlex = async (
         senderScreenName,
         onMessageSentWebhookUrl,
         conversationFriendlyName,
-        useTestApi,
+        testSessionId,
       },
     );
 
