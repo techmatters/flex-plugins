@@ -90,7 +90,7 @@ type CreateFlexConversationParams = {
   onMessageSentWebhookUrl: string; // The url that must be used as the onMessageSent event webhook.
   conversationFriendlyName: string; // A name for the Flex conversation (typically same as uniqueUserName)
   useTestApi?: boolean; // [optional] If true, messages from flex will be sent to a test endpoint rather than the real 3rd party API.
-  testApiSessionId?: string; // A session identifier to identify the test run if this is part of an integration test.
+  testSessionId?: string; // A session identifier to identify the test run if this is part of an integration test.
   twilioNumber: string; // The target Twilio number (usually have the shape <channel>:<id>, e.g. telegram:1234567)
 };
 
