@@ -179,7 +179,7 @@ type SendConversationMessageToFlexParams = Omit<
 
 /**
  * Given a uniqueUserName, tries to send a message to the active chat channel for this user.
- * To retrieve the channel we do a lookup on the user channel map stored in Sync Service.
+ * To retrieve the channel we look up conversations by the user's identity using the Conversations API.
  * If the channel or the map does not exists, we create it here.
  * The uniqueUserName is typacally '<channelType>:<unique identifier of the sender>'
  *   (e.g. if the message is sent by Telegram user 1234567, the uniqueUserName will be 'telegram:1234567')
