@@ -108,7 +108,7 @@ const unsendConversationMessage = async (
 };
 
 /**
- * Validates that the payload is signed with FACEBOOK_APP_SECRET so we know it's comming from Facebook
+ * Validates that the payload is signed with FACEBOOK_APP_SECRET so we know it's coming from Facebook
  */
 const isValidFacebookPayload = (event: Body, appSecret: string) => {
   if (!event.bodyAsString || !event.xHubSignature) return false;
