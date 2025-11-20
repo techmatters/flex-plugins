@@ -36,9 +36,12 @@ export const runJestTests = async (event: IntegrationTestEvent) => {
       'run',
       'test:integration',
       '--',
+      '--roots',
+      '.',
+      '--testTimeout=60000',
       '--verbose',
-      '--maxWorkers=1',
       '--forceExit',
+      '--runInBand',
       testFilter,
     ],
     {
