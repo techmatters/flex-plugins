@@ -20,6 +20,7 @@ import { verifyMessageExchange } from '../../verify';
 // This is a hack to work around the fact that AS_DEV isn't in terraform but E2E_DEV doesn't have any custom channels configured
 const HELPLINE_CODE = 'AS';
 const TEST_TIMEOUT_MILLISECONDS = 5 * 60 * 1000;
+jest.setTimeout(TEST_TIMEOUT_MILLISECONDS);
 
 let webhookReceiverSession: ReturnType<typeof startWebhookReceiverSession>;
 let verifyExchange: ReturnType<typeof verifyMessageExchange>;
@@ -27,7 +28,6 @@ let verifyExchange: ReturnType<typeof verifyMessageExchange>;
 beforeEach(async () => {
   webhookReceiverSession = startWebhookReceiverSession(HELPLINE_CODE);
   verifyExchange = verifyInstagramMessageExchange(webhookReceiverSession, HELPLINE_CODE);
-  jest.setTimeout(TEST_TIMEOUT_MILLISECONDS);
 });
 
 afterEach(async () => {
@@ -35,7 +35,6 @@ afterEach(async () => {
 });
 
 test('AS_DEV instagram custom channel chatbot integration test', async () => {
-  jest.setTimeout(TEST_TIMEOUT_MILLISECONDS);
   await verifyExchange([
     {
       sender: 'service-user',
