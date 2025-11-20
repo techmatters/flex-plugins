@@ -37,6 +37,9 @@ RUN dnf install -y rsync \
     && cp -r packages /var/task/ \
     && cp -r node_modules /var/task/
 
+RUN cp ${lambda_dir}/${lambda_name}/jest.config.js /var/task/ \
+    || cp ${lambda_dir}/${lambda_name}/setTestEnvVars.js /var/task/ \
+    || exit 0
 # Ignore errors if node_modules is not present
 RUN rsync -a ${lambda_dir}/${lambda_name}/node_modules/ /var/task/node_modules; exit 0
 
