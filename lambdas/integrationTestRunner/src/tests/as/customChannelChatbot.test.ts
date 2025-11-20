@@ -13,9 +13,9 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
-import { startWebhookReceiverSession } from '../../src/webhookReceiver/client';
-import { verifyInstagramMessageExchange } from '../../src/instagram';
-import { verifyMessageExchange } from '../../src/verify';
+import { startWebhookReceiverSession } from '../../webhookReceiver/client';
+import { verifyInstagramMessageExchange } from '../../instagram';
+import { verifyMessageExchange } from '../../verify';
 
 const HELPLINE_CODE = 'AS';
 const TEST_TIMEOUT_MILLISECONDS = 5 * 60 * 1000;

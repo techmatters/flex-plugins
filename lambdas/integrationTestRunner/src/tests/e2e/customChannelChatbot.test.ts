@@ -13,9 +13,9 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
-import { startWebhookReceiverSession } from '../../src/webhookReceiver/client';
-import { verifyInstagramMessageExchange } from '../../src/instagram';
-import { verifyMessageExchange } from '../../src/verify';
+import { startWebhookReceiverSession } from '../../webhookReceiver/client';
+import { verifyInstagramMessageExchange } from '../../instagram';
+import { verifyMessageExchange } from '../../verify';
 
 // This is a hack to work around the fact that AS_DEV isn't in terraform but E2E_DEV doesn't have any custom channels configured
 const HELPLINE_CODE = 'AS';

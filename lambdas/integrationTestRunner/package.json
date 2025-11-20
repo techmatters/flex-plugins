@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test:integration": "jest",
-    "simulate-lambda-test-run": "cross-env NODE_ENV=development HRM_URL=https://hrm-development.tl.techmatters.org npx ts-node ./src/cli.ts AS",
+    "simulate-lambda-test-run-ts": "cross-env NODE_ENV=development HRM_URL=https://hrm-development.tl.techmatters.org npx ts-node ./src/cli.ts tests/as",
+    "simulate-lambda-test-run-js": "cross-env NODE_ENV=development HRM_URL=https://hrm-development.tl.techmatters.org node ./dist/cli.js tests/as",
     "docker:build": "docker build -t integrationtestrunner --build-arg lambda_name=integrationTestRunner --build-arg lambda_dir=. -f ../Dockerfile ../"
   },
   "author": "Tech Matters",
