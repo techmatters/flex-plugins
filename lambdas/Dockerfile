@@ -32,6 +32,7 @@ RUN dnf install -y rsync \
     && npm ci -w ${lambda_dir}/${lambda_name} -w packages/* --verbose \
     && npx tsc -b tsconfig.build.json --verbose \
     && cp -r ${lambda_dir}/${lambda_name}/dist/. /var/task/ \
+    && cp ${lambda_dir}/${lambda_name}/package.json /var/task/ \
     && mkdir -p /var/task/${lambda_dir} \
     && cp -r packages /var/task/ \
     && cp -r node_modules /var/task/
