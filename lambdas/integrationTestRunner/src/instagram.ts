@@ -49,6 +49,10 @@ export const sendInstagramMessage =
       webhookReverseMap[
         `${HRM_URL}/lambda/twilio/account-scoped/${accountSid}/customChannels/instagram/instagramToFlex`
       ];
+
+    console.debug(
+      `[${sessionId}] Looked up instagram id ${instagramId} for: '${messageText}'`,
+    );
     const currentTimestamp = Date.now();
     const body: InstagramMessageEvent = {
       object: 'instagram',
@@ -77,6 +81,7 @@ export const sendInstagramMessage =
     };
     const bodyJson = JSON.stringify(body);
     const appSecret = await getSsmParameter(`FACEBOOK_APP_SECRET`);
+
     const signature = crypto.createHmac('sha1', appSecret).update(bodyJson).digest('hex');
 
     const response = await fetch(INSTAGRAM_WEBHOOK_URL, {
@@ -88,12 +93,13 @@ export const sendInstagramMessage =
     });
     if (!response.ok) {
       console.warn(
-        `Error sending Instagram message to API`,
+        `[${sessionId}] Error sending Instagram message to API: '${messageText}'`,
         response.status,
         await response.text(),
       );
     }
     expect(response.ok).toBe(true);
+    console.debug(`[${sessionId}] Successfully Sent Instagram message: '${messageText}'`);
   };
 
 export const expectInstagramMessageReceived =
