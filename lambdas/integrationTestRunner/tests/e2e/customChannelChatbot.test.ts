@@ -17,6 +17,7 @@ import { startWebhookReceiverSession } from '../../src/webhookReceiver/client';
 import { verifyInstagramMessageExchange } from '../../src/instagram';
 import { verifyMessageExchange } from '../../src/verify';
 
+// This is a hack to work around the fact that AS_DEV isn't in terraform but E2E_DEV doesn't have any custom channels configured
 const HELPLINE_CODE = 'AS';
 const TEST_TIMEOUT_MILLISECONDS = 5 * 60 * 1000;
 

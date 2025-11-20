@@ -29,5 +29,6 @@ locals {
       }
     }
     get_profile_flags_for_identifier_base_url = "https://hrm-development.tl.techmatters.org/lambda/twilio/account-scoped"
+    enable_integration_tests                  = true
   }
 }

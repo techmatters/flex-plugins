@@ -106,3 +106,12 @@ variable "queue_transfers_workflow_sid" {
   default     = "WWxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
 }
 
+variable "enable_integration_tests" {
+  description = "Schedule Integration Tests"
+  type        = bool
+}
+
+variable "integration_test_lambda_schedule" {
+  description = "Integration Test Event Bridge Schedule Expression"
+  type        = string
+}

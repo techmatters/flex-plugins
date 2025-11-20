@@ -113,3 +113,8 @@ variable "ui_editable" {
   type        = bool
   default     = false
 }
+
+variable "enable_integration_tests" {
+  description = "Enables integration tests to run on a schedule for this helpline"
+  type        =  bool
+}
