@@ -2,6 +2,18 @@
   "task_routing": {
     "filters": [
       {
+        "filter_friendly_name": "Direct Transfers",
+        "expression": "transferTargetType =='worker' AND isContactlessTask != true",
+        "targets": [
+          {
+            "queue": "${task_queues.direct_transfers}",
+            "known_worker_sid": "task.targetSid",
+            "expression": "worker.waitingOfflineContact != true",
+            "priority": 150
+          }
+        ]
+      },
+      {
         "filter_friendly_name": "VC English Calls",
         "expression": "(channelType IN ['voice'] AND serviceLanguage == 'English' AND service =='VC' ) OR  (targetSid=='${task_queues.vc}' AND channelType IN ['voice'] )",
         "targets": [

@@ -64,6 +64,10 @@ locals {
         "target_workers" = "routing.skills HAS 'DCVH'",
         "friendly_name"  = "DCVH Dispatch"
       },
+      direct_transfers : {
+        "target_workers" = "routing.skills HAS 'Transfers'",
+        "friendly_name"  = "Direct Transfers"
+      },
       survey : {
         "target_workers" = "1==0",
         "friendly_name"  = "Survey"
