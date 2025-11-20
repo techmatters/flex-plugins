@@ -42,7 +42,6 @@ export const runJestTests = async (event: IntegrationTestEvent) => {
       '--verbose',
       '--forceExit',
       '--runInBand',
-      '--silent',
       testFilter,
     ],
     {
