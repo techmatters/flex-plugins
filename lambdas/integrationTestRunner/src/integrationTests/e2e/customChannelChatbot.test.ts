@@ -35,6 +35,7 @@ afterEach(async () => {
 });
 
 test('AS_DEV instagram custom channel chatbot integration test', async () => {
+  jest.setTimeout(TEST_TIMEOUT_MILLISECONDS);
   await verifyExchange([
     {
       sender: 'service-user',
