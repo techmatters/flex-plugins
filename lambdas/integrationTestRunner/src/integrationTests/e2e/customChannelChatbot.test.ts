@@ -26,6 +26,7 @@ let webhookReceiverSession: ReturnType<typeof startWebhookReceiverSession>;
 let verifyExchange: ReturnType<typeof verifyMessageExchange>;
 
 beforeEach(async () => {
+  console.debug(`Starting test`);
   webhookReceiverSession = startWebhookReceiverSession(HELPLINE_CODE);
   verifyExchange = verifyInstagramMessageExchange(webhookReceiverSession, HELPLINE_CODE);
 });

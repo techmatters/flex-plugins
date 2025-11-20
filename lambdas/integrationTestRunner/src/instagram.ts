@@ -34,6 +34,7 @@ export type Body = InstagramMessageEvent & {
 export const sendInstagramMessage =
   (helplineCode: string, { sessionId }: WebhookReceiverSession) =>
   async (messageText: string) => {
+    console.debug(`[${sessionId}] Sending Instagram message: '${messageText}'`);
     if (!webhookReverseMap) {
       const webhookMap = JSON.parse(
         await getS3Object('aselo-webhooks', 'instagram-webhook-map.json'),
@@ -96,18 +97,22 @@ export const sendInstagramMessage =
   };
 
 export const expectInstagramMessageReceived =
-  (webhookReceiverSession: WebhookReceiverSession) => async (messageText: string) =>
-    webhookReceiverSession.expectRequestToBeReceived(
+  ({ sessionId, expectRequestToBeReceived }: WebhookReceiverSession) =>
+  async (messageText: string) => {
+    console.debug(
+      `[${sessionId}] Expecting to receive Instagram message: '${messageText}'`,
+    );
+    return expectRequestToBeReceived(
       record => {
         const { recipient, message } = JSON.parse(record.body);
         return (
-          recipient?.id ===
-            `integration-test-sender-${webhookReceiverSession.sessionId}` &&
+          recipient?.id === `integration-test-sender-${sessionId}` &&
           message?.text === messageText
         );
       },
       { timeoutMilliseconds: 30 * 1000 },
     );
+  };
 
 export const verifyInstagramMessageExchange = (
   session: WebhookReceiverSession,
