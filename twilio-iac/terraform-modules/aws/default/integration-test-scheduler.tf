@@ -27,7 +27,7 @@ resource "aws_cloudwatch_event_target" "integration_test_event_target_job" {
   arn      = local.integration_test_lambda_arn
   rule     = aws_cloudwatch_event_rule.integration_test_event_rule[0].name
   input    = jsonencode({
-    "testFilter" = "tests/as"
+    "testFilter" = "tests/${lower(var.short_helpline)}"
   })
 }
 
