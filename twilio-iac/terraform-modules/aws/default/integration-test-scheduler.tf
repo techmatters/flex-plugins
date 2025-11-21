@@ -18,7 +18,7 @@ locals {
 
 resource "aws_cloudwatch_event_rule" "integration_test_event_rule" {
   count               = var.enable_integration_tests ? 1 : 0
-  name                = "${local.integration_test_lambda_name}-event-rule"
+  name                = "${local.integration_test_lambda_name}-event-rule-${lower(var.short_helpline)}"
   schedule_expression = var.integration_test_lambda_schedule
 }
 
