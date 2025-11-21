@@ -45,7 +45,7 @@ const preEngagementConfig: PreEngagementFormDefinition = {
   fields: [
     {
       type: "select",
-      name: "stateOrLocation",
+      name: "state",
       label: "What state or territory are you chatting from?",
       defaultValue: "",
       options: [

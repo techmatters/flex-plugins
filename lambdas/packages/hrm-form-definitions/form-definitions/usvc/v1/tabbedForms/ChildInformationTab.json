@@ -1108,7 +1108,7 @@
     }
   },
   {
-    "name": "stateOrLocation",
+    "name": "state",
     "label": "Location",
     "type": "select",
     "isPII": false,

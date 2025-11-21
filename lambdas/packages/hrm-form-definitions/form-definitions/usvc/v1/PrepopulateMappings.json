@@ -19,6 +19,6 @@
   "preEngagement": {
     "age": "ChildInformationTab.age",
     "gender": "ChildInformationTab.gender",
-    "stateOrLocation": "ChildInformationTab.stateOrLocation"
+    "state": "ChildInformationTab.state"
   }
 }
