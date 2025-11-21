@@ -88,9 +88,9 @@ module.exports.handler = async (event) => {
 
   const cmd = spawn(/^win/.test(process.platform) ? 'npm.cmd' : 'npm', ['-loglevel silent', 'run', npmScript || 'test'], {
     stdio: 'inherit',
-    stderr: 'inherit',
     env,
   });
+
   let result, isError = false;
   try {
     result = await new Promise((resolve, reject) => {

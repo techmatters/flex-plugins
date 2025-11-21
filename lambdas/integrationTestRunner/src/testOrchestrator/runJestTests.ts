@@ -31,8 +31,9 @@ export const runJestTests = async (event: IntegrationTestEvent) => {
   const { testFilter } = event;
 
   const cmd = spawn(
-    /^win/.test(process.platform) ? 'jest' : 'jest',
+    /^win/.test(process.platform) ? 'npx' : 'npx',
     [
+      'jest',
       '--roots',
       '.',
       '--testTimeout=60000',
