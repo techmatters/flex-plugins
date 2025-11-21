@@ -98,6 +98,16 @@
         ]
       },
       {
+        "filter_friendly_name": "Offline Contacts",
+        "expression": "isContactlessTask == true",
+        "targets": [
+          {
+            "expression": "(worker.waitingOfflineContact == true AND task.targetSid == worker.sid AND task.isContactlessTask == true)",
+            "queue": "${task_queues.vc}"
+          }
+        ]
+      },
+      {
         "filter_friendly_name": "E2E Test",
         "expression": "channelType=='web' AND e2eTestMode=='true'",
         "targets": [
