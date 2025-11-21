@@ -135,6 +135,9 @@ export const initWebchat = async () => {
       ip,
       e2eTestMode,
     },
+    markdownSupport: {
+        enabled: true,
+    },
     colorTheme: {
       overrides: {
         PreEngagementCanvas: {
