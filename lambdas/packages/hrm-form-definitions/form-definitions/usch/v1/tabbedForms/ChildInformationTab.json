@@ -396,6 +396,10 @@
     "options": {
       "Out of USA": [
         {
+          "value": "Unknown",
+          "label": "Unknown"
+        },
+        {
           "value": "Afghanistan",
           "label": "Afghanistan"
         },
