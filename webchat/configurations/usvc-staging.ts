@@ -222,28 +222,28 @@ const preEngagementConfig: PreEngagementFormDefinition = {
           label: "South Dakota",
         },
         {
-          value: "Tennessee ",
-          label: "Tennessee ",
+          value: "Tennessee",
+          label: "Tennessee",
         },
         {
           value: "Texas",
           label: "Texas",
         },
         {
-          value: "Utah ",
-          label: "Utah ",
+          value: "Utah",
+          label: "Utah",
         },
         {
           value: "Vermont",
           label: "Vermont",
         },
         {
-          value: "Virgina ",
-          label: "Virgina ",
+          value: "Virgina",
+          label: "Virgina",
         },
         {
-          value: "Washington ",
-          label: "Washington ",
+          value: "Washington",
+          label: "Washington",
         },
         {
           value: "West Virginia",
@@ -282,8 +282,8 @@ const preEngagementConfig: PreEngagementFormDefinition = {
           label: "U.S Territory - Other",
         },
         {
-          value: "International ",
-          label: "International ",
+          value: "International",
+          label: "International",
         },
       ],
       required: true,
