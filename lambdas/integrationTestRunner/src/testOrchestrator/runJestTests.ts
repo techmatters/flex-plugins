@@ -46,7 +46,7 @@ export const runJestTests = async (event: IntegrationTestEvent) => {
     {
       stdio: 'inherit',
       env,
-      shell: /^win/.test(process.platform),
+      shell: true,
     },
   );
   let result,
