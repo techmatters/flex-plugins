@@ -45,8 +45,16 @@
             "expression": "(   worker.waitingOfflineContact != true   AND   (     'VC' IN worker.routing.skills     AND     'Calls' IN worker.routing.skills   AND   'Spanish' IN worker.routing.skills   )   AND   (     (       task.channelType == 'voice'       AND       worker.channel.chat.assigned_tasks == 0     )     OR     (       task.channelType != 'voice'       AND       worker.channel.voice.assigned_tasks == 0     )   )   AND   (     (       task.transferTargetType == 'worker'       AND       task.targetSid == worker.sid     )     OR     (       task.transferTargetType != 'worker'       AND       worker.sid != task.ignoreAgent     )   ) ) OR (   worker.waitingOfflineContact == true   AND   task.targetSid == worker.sid   AND   task.isContactlessTask == true )",
             "queue": "${task_queues.vc_sp}",
             "order_by": "worker.routing.levels.Spanish DESC, worker.routing.levels.VC DESC",
-            "priority": 25
+            "priority": 25,
+            "timeout": 20
+          },
+          {
+            "queue": "${task_queues.vc}",
+            "expression": "( worker.waitingOfflineContact != true AND ( 'VC' IN worker.routing.skills AND 'Calls' IN worker.routing.skills ) AND ( ( task.channelType == 'voice' AND worker.channel.chat.assigned_tasks == 0 ) OR ( task.channelType != 'voice' AND worker.channel.voice.assigned_tasks == 0 ) ) AND ( ( task.transferTargetType == 'worker' AND task.targetSid == worker.sid ) OR ( task.transferTargetType != 'worker' AND worker.sid != task.ignoreAgent ) ) ) OR ( worker.waitingOfflineContact == true AND task.targetSid == worker.sid AND task.isContactlessTask == true) ",
+            "priority": 25,
+            "order_by": "worker.routing.levels.VC DESC"
           }
+          
         ]
       },
       {
@@ -81,7 +89,14 @@
             "expression": "(   worker.waitingOfflineContact != true   AND   (     'DCVH' IN worker.routing.skills     AND     'Calls' IN worker.routing.skills   AND   'Spanish' IN worker.routing.skills   )   AND   (     (       task.channelType == 'voice'       AND       worker.channel.chat.assigned_tasks == 0     )     OR     (       task.channelType != 'voice'       AND       worker.channel.voice.assigned_tasks == 0     )   )   AND   (     (       task.transferTargetType == 'worker'       AND       task.targetSid == worker.sid     )     OR     (       task.transferTargetType != 'worker'       AND       worker.sid != task.ignoreAgent     )   ) ) OR (   worker.waitingOfflineContact == true   AND   task.targetSid == worker.sid   AND   task.isContactlessTask == true )",
             "queue": "${task_queues.dcvh_sp}",
             "order_by": "worker.routing.levels.Spanish DESC, worker.routing.levels.DCVH DESC",
-            "priority": 25
+            "priority": 25,
+            "timeout": 20
+          },
+          {
+            "queue": "${task_queues.dcvh}",
+            "expression": "( worker.waitingOfflineContact != true AND ( 'DCVH' IN worker.routing.skills AND 'Calls' IN worker.routing.skills ) AND ( ( task.channelType == 'voice' AND worker.channel.chat.assigned_tasks == 0 ) OR ( task.channelType != 'voice' AND worker.channel.voice.assigned_tasks == 0 ) ) AND ( ( task.transferTargetType == 'worker' AND task.targetSid == worker.sid ) OR ( task.transferTargetType != 'worker' AND worker.sid != task.ignoreAgent ) ) ) OR ( worker.waitingOfflineContact == true AND task.targetSid == worker.sid AND task.isContactlessTask == true) ",
+            "priority": 25,
+            "order_by": "worker.routing.levels.DCVH DESC"
           }
         ]
       },

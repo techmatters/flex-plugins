@@ -12,7 +12,8 @@
             "enable_conferencing": true,
             "hideAddToNewCaseButton": true,
             "enable_previous_contacts": false,
-            "use_prepopulate_mappings": true
+            "use_prepopulate_mappings": true,
+            "enable_hang_up_by_hrm_saving": true
         },
         "feature_flags": {
             "use_prepopulate_mappings": true,
