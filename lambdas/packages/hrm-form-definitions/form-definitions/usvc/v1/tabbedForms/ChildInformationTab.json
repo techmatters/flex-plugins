@@ -1368,7 +1368,7 @@
     "label": "Dcquadrant",
     "type": "dependent-select",
     "isPII": false,
-    "dependsOn": "location",
+    "dependsOn": "state",
     "defaultOption": {
       "value": "",
       "label": ""
