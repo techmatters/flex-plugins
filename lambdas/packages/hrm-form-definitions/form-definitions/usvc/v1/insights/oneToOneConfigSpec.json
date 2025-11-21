@@ -52,7 +52,7 @@
         "insights": ["conversations", "followed_by"]
       },
       {
-        "name": "location",
+        "name": "stateOrLocation",
         "insights": ["conversations", "in_business_hours"]
       }
     ],
