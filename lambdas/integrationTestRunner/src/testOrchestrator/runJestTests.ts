@@ -42,14 +42,17 @@ export const runJestTests = async (event: IntegrationTestEvent) => {
       '--verbose',
       '--forceExit',
       '--runInBand',
+      '--ci',
       testFilter,
     ],
     {
-      stdio: 'inherit',
+      stdio: 'pipe',
       env,
       shell: /^win/.test(process.platform),
     },
   );
+  cmd.stdout.pipe(process.stdout);
+  cmd.stderr.pipe(process.stderr);
   let result,
     isError = false;
   try {

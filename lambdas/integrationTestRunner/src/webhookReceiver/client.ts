@@ -62,21 +62,28 @@ export const startWebhookReceiverSession = (helplineCode: string) => {
       const delayMilliseconds = Math.min(timeoutMilliseconds / 5, 1000); // Try to check 5 times at least, but also never delay longer than a second
       let sessionRequests: WebhookRecord[] = [];
       while (isAfter(timeout, new Date())) {
+        console.debug(`[${sessionId}] Polling session requests`);
         if (sessionActive) {
           sessionRequests = await getSessionRequests(sessionId);
           if (sessionRequests.some(verifier)) {
+            console.debug(`[${sessionId}] Request found`);
             return;
           }
         } else {
           throw new Error('webhook receiver session ended');
         }
+        console.debug(
+          `[${sessionId}] Request not found, trying again in ${delayMilliseconds}ms`,
+        );
         await delay(delayMilliseconds);
       }
-      throw new AssertionError({
+      const err = new AssertionError({
         message: 'Expected message not seen',
         actual: sessionRequests,
         expected: [],
       });
+      console.error(err);
+      throw err;
     },
     end: () => {
       sessionActive = false;
