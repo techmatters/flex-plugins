@@ -15,7 +15,9 @@
  */
 
 import { handler } from './index';
-
+process.env.NODE_ENV = process.argv[3] || process.env.NODE_ENV || 'development';
+const shortRegion = (process.env.AWS_REGION || 'us-east-1').split('-')[0];
+process.env.HRM_URL = `https://hrm-${process.env.NODE_ENV}${shortRegion === 'us' ? '' : `-${shortRegion}`}.tl.techmatters.org`;
 // Entry point for simulating a lambda test run locally
 handler({
   testFilter: process.argv[2],
