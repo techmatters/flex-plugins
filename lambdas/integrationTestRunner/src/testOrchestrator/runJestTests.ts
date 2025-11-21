@@ -31,11 +31,8 @@ export const runJestTests = async (event: IntegrationTestEvent) => {
   const { testFilter } = event;
 
   const cmd = spawn(
-    /^win/.test(process.platform) ? 'npm.cmd' : 'npm',
+    /^win/.test(process.platform) ? 'jest' : 'jest',
     [
-      'run',
-      'test:integration',
-      '--',
       '--roots',
       '.',
       '--testTimeout=60000',
@@ -46,13 +43,11 @@ export const runJestTests = async (event: IntegrationTestEvent) => {
       testFilter,
     ],
     {
-      stdio: 'pipe',
+      stdio: 'inherit',
       env,
       shell: /^win/.test(process.platform),
     },
   );
-  cmd.stdout.pipe(process.stdout);
-  cmd.stderr.pipe(process.stderr);
   let result,
     isError = false;
   try {
