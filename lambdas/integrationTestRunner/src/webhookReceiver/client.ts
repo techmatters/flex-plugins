@@ -35,7 +35,7 @@ const getSessionRequests = async (sessionId: string): Promise<WebhookRecord[]> =
     return (await response.json()) as WebhookRecord[];
   } else {
     const text = await response.text();
-    console.error('Unable to get webhook record', response, await response.text());
+    console.error('Unable to get webhook record', response, text);
     throw new Error(`Unable to get webhook record, status: ${response.status}, ${text}`);
   }
 };
@@ -62,7 +62,6 @@ export const startWebhookReceiverSession = (helplineCode: string) => {
       const delayMilliseconds = Math.min(timeoutMilliseconds / 5, 1000); // Try to check 5 times at least, but also never delay longer than a second
       let sessionRequests: WebhookRecord[] = [];
       while (isAfter(timeout, new Date())) {
-        console.debug(`[${sessionId}] Polling session requests`);
         if (sessionActive) {
           sessionRequests = await getSessionRequests(sessionId);
           if (sessionRequests.some(verifier)) {
@@ -72,9 +71,6 @@ export const startWebhookReceiverSession = (helplineCode: string) => {
         } else {
           throw new Error('webhook receiver session ended');
         }
-        console.debug(
-          `[${sessionId}] Request not found, trying again in ${delayMilliseconds}ms`,
-        );
         await delay(delayMilliseconds);
       }
       const err = new AssertionError({

@@ -37,7 +37,7 @@ export const sendInstagramMessage =
     console.debug(`[${sessionId}] Sending Instagram message: '${messageText}'`);
     if (!webhookReverseMap) {
       console.debug(
-        `[${sessionId}] Getting instagram webhhok map to send: '${messageText}'`,
+        `[${sessionId}] Getting instagram webhook map to send: '${messageText}'`,
       );
       const webhookMap = JSON.parse(
         await getS3Object('aselo-webhooks', 'instagram-webhook-map.json'),
@@ -50,13 +50,11 @@ export const sendInstagramMessage =
       `[${sessionId}] Looking up account sid via '${accountSidSsmKey}' to send: '${messageText}'`,
     );
     const accountSid = await getSsmParameter(accountSidSsmKey);
-    const instagramId =
-      webhookReverseMap[
-        `${HRM_URL}/lambda/twilio/account-scoped/${accountSid}/customChannels/instagram/instagramToFlex`
-      ];
+    const targetUrl = `${HRM_URL}/lambda/twilio/account-scoped/${accountSid}/customChannels/instagram/instagramToFlex`;
+    const instagramId = webhookReverseMap[targetUrl];
 
     console.debug(
-      `[${sessionId}] Looked up instagram id ${instagramId} for: '${messageText}'`,
+      `[${sessionId}] Looked up instagram id ${instagramId} using ${targetUrl} for: '${messageText}'`,
     );
     const currentTimestamp = Date.now();
     const body: InstagramMessageEvent = {
