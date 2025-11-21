@@ -41,7 +41,7 @@ test('JM/staging instagram custom channel chatbot integration test', async () =>
     },
     {
       sender: 'flex',
-      text: `Welcome to the helpline. Please answer the following questions.`,
+      text: `Welcome to the helpline. To help us better serve you, please answer the following questions. You can say -prefer not to answer- (or type X) to any question.`,
     },
     { sender: 'flex', text: `Are you calling about yourself? Please answer Yes or No.` },
     {
@@ -63,6 +63,22 @@ test('JM/staging instagram custom channel chatbot integration test', async () =>
     {
       sender: 'service-user',
       text: `F`,
+    },
+    {
+      sender: 'flex',
+      text: `What parish are you located in?`,
+    },
+    {
+      sender: 'service-user',
+      text: `Kingston`,
+    },
+    {
+      sender: 'flex',
+      text: `How did you hear about us? Please select one: 1: Advertisement 2: Social Media 3: SMS/Text Message 4: Traditional Media 5: Word of Mouth`,
+    },
+    {
+      sender: 'service-user',
+      text: `1`,
     },
     {
       sender: 'flex',
