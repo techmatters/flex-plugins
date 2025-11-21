@@ -22,9 +22,8 @@ import {
   BatchWriteCommand,
 } from '@aws-sdk/lib-dynamodb';
 import { WebhookRecord } from './types';
-const AWS_REGION = process.env.AWS_REGION || 'us-east-1';
 const ENVIRONMENT = process.env.NODE_ENV || 'development';
-const WEBHOOK_RECORDS_TABLE_NAME = `webhook-requests-${ENVIRONMENT}-${AWS_REGION}`;
+const WEBHOOK_RECORDS_TABLE_NAME = `webhook-requests-${ENVIRONMENT}`;
 
 const getDynamoDBClient = (): DynamoDBDocumentClient => {
   const client = new DynamoDBClient({
