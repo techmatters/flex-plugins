@@ -32,6 +32,8 @@ export const runJestTests = async ({
 }: IntegrationTestEvent) => {
   const env = { ...process.env };
 
+  // Running jest via NPM or NPX causes issues with piping output through to this process when run in a lambda
+  // Both approaches work locally, but not in the lambda, there are no logs and we don't detect the test run finishing
   const cmd = spawn(
     'node',
     [
