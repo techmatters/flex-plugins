@@ -141,9 +141,7 @@ const QueuesCard: React.FC<Props> = props => {
           <Template code="QueueCard-Name" />:
         </HiddenText>
         <HiddenText role="region" aria-labelledby={`name-${qName}`} />
-        <QueueName>
-          <Template code={qName} />
-        </QueueName>
+        <QueueName>{qName}</QueueName>
         <Box marginTop="7px" marginBottom="14px">
           <Row>
             {contactsWaitingChannels && Array.isArray(contactsWaitingChannels)

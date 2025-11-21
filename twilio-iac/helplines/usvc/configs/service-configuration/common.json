@@ -5,14 +5,17 @@
             "web",
             "sms"
         ],
+        "enableConferencing": true,
+        "enableUnmaskingCalls": false,
         "config_flags": {
             "enableExternalRecordings": false,
-            "hideAddToNewCaseButton": true
+            "enable_conferencing": true,
+            "hideAddToNewCaseButton": true,
+            "enable_previous_contacts": false
         },
         "feature_flags": {
             "use_prepopulate_mappings": true,
-            "enable_client_profiles": false,
-            "enable_conferencing": true
+            "enable_client_profiles": false
             
         },
         "definitionVersion": "usvc-v1",
