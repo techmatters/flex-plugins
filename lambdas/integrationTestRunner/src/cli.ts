@@ -16,6 +16,10 @@
 
 import { handler } from './index';
 
-handler({ testFilter: process.argv[2] }).catch(err => {
+// Entry point for simulating a lambda test run locally
+handler({
+  testFilter: process.argv[2],
+  jestPathOverride: '../../node_modules/jest/bin/jest.js',
+}).catch(err => {
   console.error(err);
 });

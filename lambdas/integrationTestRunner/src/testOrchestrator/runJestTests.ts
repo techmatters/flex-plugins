@@ -19,21 +19,23 @@ import type { ALBEvent } from 'aws-lambda';
 
 export type IntegrationTestEvent = {
   testFilter: string;
+  jestPathOverride?: string;
 };
 
 export const isIntegrationTestEvent = (
   event: IntegrationTestEvent | ALBEvent,
 ): event is IntegrationTestEvent => Boolean((event as IntegrationTestEvent).testFilter);
 
-export const runJestTests = async (event: IntegrationTestEvent) => {
+export const runJestTests = async ({
+  testFilter,
+  jestPathOverride,
+}: IntegrationTestEvent) => {
   const env = { ...process.env };
 
-  const { testFilter } = event;
-
   const cmd = spawn(
-    /^win/.test(process.platform) ? 'npx' : 'npx',
+    'node',
     [
-      'jest',
+      jestPathOverride || './node_modules/jest/bin/jest.js',
       '--roots',
       '.',
       '--testTimeout=60000',
