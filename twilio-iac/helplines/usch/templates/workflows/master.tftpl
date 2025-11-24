@@ -212,7 +212,7 @@
         "expression": "isContactlessTask == true",
         "targets": [
           {
-            "expression": "(worker.waitingOfflineContact == true AND task.targetSid == worker.sid AND task.isContactlessTask == true)",
+            "expression": "(task.targetSid == worker.sid AND task.isContactlessTask == true)",
             "queue": "${task_queues.master}"
           }
         ]
