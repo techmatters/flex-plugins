@@ -48,6 +48,7 @@ locals {
     ui_editable = false
     #Chatbots
     get_profile_flags_for_identifier_base_url = "https://hrm-staging.tl.techmatters.org/lambda/twilio/account-scoped"
+    enable_integration_tests                  = true
     #System Down Configuration
     system_down_templatefile = "/app/twilio-iac/helplines/templates/studio-flows/system-down.tftpl"
     enable_system_down       = true

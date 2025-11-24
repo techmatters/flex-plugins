@@ -17,25 +17,23 @@ import { startWebhookReceiverSession } from '../../webhookReceiver/client';
 import { verifyInstagramMessageExchange } from '../../instagram';
 import { verifyMessageExchange } from '../../verify';
 
-// This is a hack to work around the fact that AS_DEV isn't in terraform but E2E_DEV doesn't have any custom channels configured
-const HELPLINE_CODE = 'AS';
+const HELPLINE_CODE = 'JM';
 const TEST_TIMEOUT_MILLISECONDS = 5 * 60 * 1000;
-jest.setTimeout(TEST_TIMEOUT_MILLISECONDS);
 
 let webhookReceiverSession: ReturnType<typeof startWebhookReceiverSession>;
 let verifyExchange: ReturnType<typeof verifyMessageExchange>;
 
 beforeEach(async () => {
-  console.debug(`Starting test`);
   webhookReceiverSession = startWebhookReceiverSession(HELPLINE_CODE);
   verifyExchange = verifyInstagramMessageExchange(webhookReceiverSession, HELPLINE_CODE);
+  jest.setTimeout(TEST_TIMEOUT_MILLISECONDS);
 });
 
 afterEach(async () => {
   await webhookReceiverSession.end();
 });
 
-test('AS_DEV instagram custom channel chatbot integration test', async () => {
+test('JM/staging instagram custom channel chatbot integration test', async () => {
   await verifyExchange([
     {
       sender: 'service-user',
@@ -43,7 +41,7 @@ test('AS_DEV instagram custom channel chatbot integration test', async () => {
     },
     {
       sender: 'flex',
-      text: `Welcome to the helpline. Please answer the following questions.`,
+      text: `Welcome to the helpline. To help us better serve you, please answer the following questions. You can say -prefer not to answer- (or type X) to any question.`,
     },
     { sender: 'flex', text: `Are you calling about yourself? Please answer Yes or No.` },
     {
@@ -65,6 +63,22 @@ test('AS_DEV instagram custom channel chatbot integration test', async () => {
     {
       sender: 'service-user',
       text: `F`,
+    },
+    {
+      sender: 'flex',
+      text: `What parish are you located in?`,
+    },
+    {
+      sender: 'service-user',
+      text: `Kingston`,
+    },
+    {
+      sender: 'flex',
+      text: `How did you hear about us? Please select one: 1: Advertisement 2: Social Media 3: SMS/Text Message 4: Traditional Media 5: Word of Mouth`,
+    },
+    {
+      sender: 'service-user',
+      text: `1`,
     },
     {
       sender: 'flex',

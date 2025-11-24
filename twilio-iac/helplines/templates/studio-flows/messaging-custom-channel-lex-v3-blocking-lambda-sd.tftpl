@@ -177,6 +177,77 @@ ${
       }
     },
     {
+        "name": "check_for_integration_test",
+        "type": "split-based-on",
+        "transitions": [
+          {
+              "next": "attributes",
+              "event": "noMatch"
+            },
+            {
+              "next": "end_integration_test",
+              "event": "match",
+              "conditions": [
+                {
+                  "friendly_name": "{{trigger.conversation.ChannelAttributes.testSessionId}}",
+                  "arguments": [
+                    "{{trigger.conversation.ChannelAttributes.testSessionId}}"
+                  ],
+                  "type": "is_not_blank",
+                  "value": "Is Not Blank"
+                }
+              ]
+            }
+        ]
+        "properties": {
+          "input": "{{trigger.conversation.ChannelAttributes.testSessionId}}",
+          "offset": {
+            "x": -450,
+            "y": 150
+          }
+        }
+    },
+    {
+      "name": "end_integration_test",
+      "type": "run-function",
+      "transitions": [
+        {
+          "event": "success"
+        },
+        {
+          "event": "fail"
+        }
+      ],
+      "properties": {
+        "service_sid": "${serverless_service_sid}",
+        "environment_sid": "${serverless_environment_sid}",
+        "offset": {
+          "x": -670,
+          "y": 360
+        },
+        "function_sid": "${flow_vars.send_message_janitor_function_sid}",
+        "parameters": [
+          {
+            "value": "{{flow.channel.address}}",
+            "key": "channelSid"
+          },
+          {
+            "value": "{{flow.channel.address}}",
+            "key": "conversationSid"
+          },
+          {
+            "value": "Integration test run completed successfully. 🚀",
+            "key": "message"
+          },
+          {
+            "value": "${flow_vars.widget_from}",
+            "key": "from"
+          }
+        ],
+        "url": "${serverless_url}/sendMessageAndRunJanitor"
+      }
+    },
+    {
       "name": "attributes",
       "type": "send-to-flex",
       "transitions": [
@@ -210,7 +281,7 @@ ${
           "event": "noMatch"
         },
         {
-          "next": "attributes",
+          "next": "check_for_integration_test",
           "event": "match",
           "conditions": [
             {
@@ -261,7 +332,7 @@ ${
       "type": "make-http-request",
       "transitions": [
         {
-          "next": "attributes",
+          "next": "check_for_integration_test",
           "event": "success"
         },
         {
