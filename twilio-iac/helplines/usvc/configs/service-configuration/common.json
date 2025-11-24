@@ -11,7 +11,9 @@
             "enableExternalRecordings": false,
             "enable_conferencing": true,
             "hideAddToNewCaseButton": true,
-            "enable_previous_contacts": false
+            "enable_previous_contacts": false,
+            "use_prepopulate_mappings": true,
+            "enable_hang_up_by_hrm_saving": true
         },
         "feature_flags": {
             "use_prepopulate_mappings": true,
@@ -22,5 +24,38 @@
         "external_recordings_enabled": false,
         "helplineLanguage": "en-USVC",
         "permissionConfig": "usvc"
-    }
+    },
+    "taskrouter_skills": [
+        {
+            "maximum": 20,
+            "minimum": 1,
+            "multivalue": true,
+            "name": "VC"
+        },
+        {
+            "maximum": 20,
+            "minimum": 1,
+            "multivalue": true,
+            "name": "DCVH"
+        },
+        {
+            "maximum": 20,
+            "minimum": 1,
+            "multivalue": true,
+            "name": "Spanish"
+        },
+        {
+            "maximum": null,
+            "minimum": null,
+            "multivalue": false,
+            "name": "Calls"
+        },
+        {
+            "maximum": null,
+            "minimum": null,
+            "multivalue": false,
+            "name": "Transfers"
+        }
+    ]
+
 }

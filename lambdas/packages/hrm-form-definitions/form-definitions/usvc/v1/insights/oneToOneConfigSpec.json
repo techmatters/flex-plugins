@@ -14,6 +14,10 @@
         "insights": ["customers", "acquisition_date"]
       },
       {
+        "name": "typeOfVictim",
+        "insights": ["customers", "customer_attribute_2"]
+      },
+      {
         "name": "preferredLanguage",
         "insights": ["conversations", "initiated_by"]
       }
@@ -22,10 +26,6 @@
       {
         "name": "user",
         "insights": ["customers", "customer_email"]
-      },
-      {
-        "name": "typeOfVictim",
-        "insights": ["customers", "customer_attribute_2"]
       },
       {
         "name": "frequencyOfAccess",
@@ -52,7 +52,7 @@
         "insights": ["conversations", "followed_by"]
       },
       {
-        "name": "location",
+        "name": "state",
         "insights": ["conversations", "in_business_hours"]
       }
     ],
