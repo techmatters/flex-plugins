@@ -154,6 +154,11 @@ locals {
       events = [
         { type : "com.twilio.messaging.message.failed" }
       ]
+    },
+    errors : {
+      events = [
+        { type : "com.twilio.error-logs.error.logged" }
+      ]
     }
   }
 
