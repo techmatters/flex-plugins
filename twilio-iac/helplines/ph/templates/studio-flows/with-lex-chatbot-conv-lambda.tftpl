@@ -109,7 +109,7 @@ ${
       }
     },
     {
-      "name": "send_to_queue_ECPAT",
+      "name": "send_to_queue_ecpat",
       "type": "send-to-flex",
       "transitions": [
         {
@@ -200,7 +200,7 @@ ${
           ]
         },
         {
-          "next": "f_sendMessageAndRunJanitor_En_No",
+          "next": "send_message_en_no",
           "event": "match",
           "conditions": [
             {
@@ -223,7 +223,7 @@ ${
       }
     },
     {
-      "name": "f_sendMessageAndRunJanitor_En_No",
+      "name": "send_message_en_no",
       "type": "send-message",
       "transitions": [
         {
@@ -247,7 +247,7 @@ ${
       }
     },
     {
-      "name": "f_sendMessageAndRunJanitor_Fil_No",
+      "name": "send_message_fil_no",
       "type": "send-message",
       "transitions": [
         {
@@ -271,7 +271,7 @@ ${
       }
     },
     {
-      "name": "send_to_queue_ECPAT",
+      "name": "send_to_queue_ecpat",
       "type": "send-to-flex",
       "transitions": [
         {
@@ -295,11 +295,11 @@ ${
       }
     },
     {
-      "name": "f_sendMessageAndRunJanitor_replied234_fil",
+      "name": "send_message_replied234_fil",
       "type": "send-message",
       "transitions": [
         {
-          "next": "send_to_queue_Non-counselling",
+          "next": "send_to_queue_non_counselling",
           "event": "sent"
         },
         {
@@ -323,7 +323,7 @@ ${
       "type": "make-http-request",
       "transitions": [
         {
-          "next": "split_operatingHours_en",
+          "next": "split_operating_hours_en",
           "event": "success"
         },
         {
@@ -343,7 +343,7 @@ ${
       }
     },
     {
-      "name": "split_operatingHours_en",
+      "name": "split_operating_hours_en",
       "type": "split-based-on",
       "transitions": [
         {
@@ -405,7 +405,7 @@ ${
       "type": "send-message",
       "transitions": [
         {
-          "next": "send_to_queue_Outside Operating Hours",
+          "next": "send_to_queue_outside_operating_hours",
           "event": "sent"
         },
         {
@@ -429,7 +429,7 @@ ${
       "type": "send-and-wait-for-reply",
       "transitions": [
         {
-          "next": "f_sendMessageAndRunJanitor_replied234_en",
+          "next": "send_message_replied234_en",
           "event": "incomingMessage"
         },
         {
@@ -452,11 +452,11 @@ ${
       }
     },
     {
-      "name": "f_sendMessageAndRunJanitor_replied234_en",
+      "name": "send_message_replied234_en",
       "type": "send-message",
       "transitions": [
         {
-          "next": "send_to_queue_Non-counselling",
+          "next": "send_to_queue_non_counselling",
           "event": "sent"
         },
         {
@@ -480,7 +480,7 @@ ${
       "type": "send-and-wait-for-reply",
       "transitions": [
         {
-          "next": "f_sendMessageAndRunJanitor_replied234_fil",
+          "next": "send_message_replied234_fil",
           "event": "incomingMessage"
         },
         {
@@ -507,7 +507,7 @@ ${
       "type": "make-http-request",
       "transitions": [
         {
-          "next": "split_operatingHours_fil",
+          "next": "split_operating_hours_fil",
           "event": "success"
         },
         {
@@ -531,7 +531,7 @@ ${
       "type": "send-message",
       "transitions": [
         {
-          "next": "send_to_queue_Outside Operating Hours",
+          "next": "send_to_queue_outside_operating_hours",
           "event": "sent"
         },
         {
@@ -551,7 +551,7 @@ ${
       }
     },
     {
-      "name": "split_operatingHours_fil",
+      "name": "split_operating_hours_fil",
       "type": "split-based-on",
       "transitions": [
         {
@@ -609,7 +609,7 @@ ${
       }
     },
     {
-      "name": "send_to_queue_Outside Operating Hours",
+      "name": "send_to_queue_outside_operating_hours",
       "type": "send-to-flex",
       "transitions": [
         {
@@ -634,7 +634,7 @@ ${
       }
     },
     {
-      "name": "send_to_queue_Non-counselling",
+      "name": "send_to_queue_non_counselling",
       "type": "send-to-flex",
       "transitions": [
         {
@@ -659,7 +659,7 @@ ${
       }
     },
     {
-      "name": "send_to_queue_Outside Operating Hours",
+      "name": "send_to_queue_outside_operating_hours",
       "type": "send-to-flex",
       "transitions": [
         {
@@ -684,7 +684,7 @@ ${
       }
     },
     {
-      "name": "send_to_queue_Non-counselling",
+      "name": "send_to_queue_non_counselling",
       "type": "send-to-flex",
       "transitions": [
         {
@@ -1221,7 +1221,7 @@ ${
           ]
         },
         {
-          "next": "f_sendMessageAndRunJanitor_Fil_No",
+          "next": "send_message_fil_no",
           "event": "match",
           "conditions": [
             {
@@ -1275,7 +1275,7 @@ ${
           "event": "noMatch"
         },
         {
-          "next": "send_to_queue_ECPAT",
+          "next": "send_to_queue_ecpat",
           "event": "match",
           "conditions": [
             {
@@ -1306,7 +1306,7 @@ ${
           "event": "noMatch"
         },
         {
-          "next": "send_to_queue_ECPAT",
+          "next": "send_to_queue_ecpat",
           "event": "match",
           "conditions": [
             {
@@ -1356,7 +1356,7 @@ ${
       "type": "send-message",
       "transitions": [
         {
-          "next": "send_to_queue_ECPAT",
+          "next": "send_to_queue_ecpat",
           "event": "sent"
         },
         {
@@ -1380,7 +1380,7 @@ ${
       "type": "send-message",
       "transitions": [
         {
-          "next": "send_to_queue_ECPAT",
+          "next": "send_to_queue_ecpat",
           "event": "sent"
         },
         {
