@@ -37,6 +37,8 @@ import { handleOperatingHours } from './operatingHours';
 import { handleEndChat } from './conversation/endChat';
 import { conferenceStatusCallbackHandler } from './conference/conferenceStatusCallback';
 import './conference/stopRecordingWhenLastAgentLeaves';
+import { initWebchatHandler } from './webchatAuthentication/initWebchat';
+import { refreshTokenHandler } from './webchatAuthentication/refreshToken';
 
 /**
  * Super simple router sufficient for directly ported Twilio Serverless functions
@@ -94,6 +96,14 @@ const ROUTES: Record<string, FunctionRoute> = {
   'conference/participantStatusCallback': {
     requestPipeline: [validateWebhookRequest],
     handler: participantStatusCallbackHandler,
+  },
+  'webchatAuth/initWebchat': {
+    requestPipeline: [],
+    handler: initWebchatHandler,
+  },
+  'webchatAuth/refreshToken': {
+    requestPipeline: [],
+    handler: refreshTokenHandler,
   },
   toggleSwitchboardQueue: {
     requestPipeline: [validateFlexTokenRequest({ tokenMode: 'supervisor' })],

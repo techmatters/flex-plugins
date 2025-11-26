@@ -31,3 +31,14 @@ export const newMissingParameterResult = (property: string): ErrorResult<HttpErr
     message: `${property} missing`,
     error: { cause: new Error(`${property} is required`), statusCode: 400 },
   });
+
+export const newMissingEnvironmentVariableResult = (
+  envVar: string,
+): ErrorResult<HttpError> =>
+  newErr({
+    message: `Environment variable ${envVar} missing`,
+    error: {
+      cause: new Error(`Environment variable ${envVar} is required`),
+      statusCode: 500,
+    },
+  });
