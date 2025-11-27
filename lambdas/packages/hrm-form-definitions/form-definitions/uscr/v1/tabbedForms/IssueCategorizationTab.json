@@ -57,6 +57,14 @@
           }
         ]
       },
+      "Follow Up": {
+        "color": "#8055BA",
+        "subcategories": [
+          {
+            "label": "Follow Up"
+          }
+        ]
+      },
       "Declined Incident": {
         "color": "#767777",
         "subcategories": [
