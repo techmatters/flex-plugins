@@ -148,14 +148,14 @@ export const handleLoadReferenceLocationsAsyncActionFulfilled = (
 ): ReferrableResourceSearchState => {
   const { list, options } = payload;
   let { referenceLocations } = state;
-  let defaultFilterSelection: Partial<USCHFilterSelections> = {};
+  let defaultFilterSelection: Partial<USCHFilterSelections> = state.parameters.filterSelections;
 
   switch (list) {
     case USCHReferenceLocationList.Country:
       referenceLocations = { ...referenceLocations, countryOptions: options };
       const defaultCountryTarget = 'United States';
       if (options.some(o => o.value === defaultCountryTarget)) {
-        defaultFilterSelection = { country: defaultCountryTarget };
+        defaultFilterSelection = { ...defaultFilterSelection, country: defaultCountryTarget };
       }
       break;
     case USCHReferenceLocationList.Provinces:

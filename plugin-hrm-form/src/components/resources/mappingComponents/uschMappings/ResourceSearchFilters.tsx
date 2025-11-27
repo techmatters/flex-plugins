@@ -52,16 +52,13 @@ const ResourceSearchFilters: React.FC<{}> = () => {
   const { country, province, city } = (filterOptions || {}) as USCHFilterOptions;
   const filterSelections: USCHFilterSelections = useSelector(selectFilterSelections);
 
-  const updateFilterSelection = useCallback(
-    (filterName: FilterName, filterValue: string | number | boolean | string[]) => {
-      let reduxFilterValue = filterValue;
-      if (filterName === 'country' || filterName === 'province' || filterName === 'city') {
-        reduxFilterValue = filterValue === NO_LOCATION_SELECTED ? undefined : filterValue;
-      }
-      dispatch(updateSearchFormAction({ filterSelections: { [filterName]: reduxFilterValue } }));
-    },
-    [dispatch],
-  );
+  const updateFilterSelection = (filterName: FilterName, filterValue: string | number | boolean | string[]) => {
+    let reduxFilterValue = filterValue;
+    if (filterName === 'country' || filterName === 'province' || filterName === 'city') {
+      reduxFilterValue = filterValue === NO_LOCATION_SELECTED ? undefined : filterValue;
+    }
+    dispatch(updateSearchFormAction({ filterSelections: { [filterName]: reduxFilterValue } }));
+  };
 
   useEffect(() => {
     const loadReferenceLocations = (referenceLocations: ReferenceLocationState) => {
