@@ -21,6 +21,7 @@ locals {
         chatbot_unique_names = []
       }
     }
+    get_profile_flags_for_identifier_base_url = "https://hrm-staging.tl.techmatters.org/lambda/twilio/account-scoped"
 
   #System Down Configuration
     system_down_templatefile = "/app/twilio-iac/helplines/templates/studio-flows/system-down.tftpl"
@@ -29,7 +30,7 @@ locals {
       is_system_down                   = "false"
       message                          = "Our chat system is currently experiencing technical difficulties. We apologize for the inconvenience and are working to get it back online as soon as possible. If this is an emergency, please call +260955065373. Please note that this is not a toll-free line so you may incur costs."
       voice_message                    = "Our chat system is currently experiencing technical difficulties. We apologize for the inconvenience and are working to get it back online as soon as possible. If this is an emergency, please call +260955065373. Please note that this is not a toll-free line so you may incur costs."
-      send_studio_message_function_sid = "ZH4958d28a21898fa32e4b656635475f33"
+      send_studio_message_function_sid = ""
       call_action                      = "message"
       forward_number                   = "+123"
       recording_url                    = "https://<place_holder>.mp3"
