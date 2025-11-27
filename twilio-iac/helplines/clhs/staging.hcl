@@ -10,7 +10,6 @@ locals {
   local_config = {
     custom_task_routing_filter_expression = ""
     flow_vars                             = {}
-  }
     #Channels
     channels = {
       webchat : {
@@ -23,7 +22,7 @@ locals {
     }
     get_profile_flags_for_identifier_base_url = "https://hrm-staging.tl.techmatters.org/lambda/twilio/account-scoped"
 
-  #System Down Configuration
+    #System Down Configuration
     system_down_templatefile = "/app/twilio-iac/helplines/templates/studio-flows/system-down.tftpl"
     enable_system_down       = true
     system_down_flow_vars = {
@@ -35,4 +34,6 @@ locals {
       forward_number                   = "+123"
       recording_url                    = "https://<place_holder>.mp3"
     }
+  }
+
 }
