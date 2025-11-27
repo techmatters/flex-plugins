@@ -37,6 +37,8 @@ import { handleOperatingHours } from './operatingHours';
 import { handleEndChat } from './conversation/endChat';
 import { conferenceStatusCallbackHandler } from './conference/conferenceStatusCallback';
 import './conference/stopRecordingWhenLastAgentLeaves';
+import { instagramToFlexHandler } from './customChannels/instagram/instagramToFlex';
+import { flexToInstagramHandler } from './customChannels/instagram/flexToInstagram';
 
 /**
  * Super simple router sufficient for directly ported Twilio Serverless functions
@@ -94,6 +96,14 @@ const ROUTES: Record<string, FunctionRoute> = {
   'conference/participantStatusCallback': {
     requestPipeline: [validateWebhookRequest],
     handler: participantStatusCallbackHandler,
+  },
+  'customChannels/instagram/instagramToFlex': {
+    requestPipeline: [],
+    handler: instagramToFlexHandler,
+  },
+  'customChannels/instagram/flexToInstagram': {
+    requestPipeline: [validateWebhookRequest],
+    handler: flexToInstagramHandler,
   },
   toggleSwitchboardQueue: {
     requestPipeline: [validateFlexTokenRequest({ tokenMode: 'supervisor' })],
