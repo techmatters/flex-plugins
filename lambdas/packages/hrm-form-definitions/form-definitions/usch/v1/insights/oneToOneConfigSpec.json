@@ -67,7 +67,7 @@
       },
       {
         "name": "howTheHelpseekerHeardAboutUs",
-        "insights": ["customers", "followed_by"]
+        "insights": ["conversations", "followed_by"]
       }
     ]
   },
