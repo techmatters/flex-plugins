@@ -86,33 +86,7 @@
   {
     "name": "safeguardingStaff",
     "label": "Which safeguarding staff did you alert?",
-    "type": "select",
-    "options": [
-      {
-        "value": "Unknown",
-        "label": ""
-      },
-      {
-        "value": "Supervisor 1",
-        "label": "Supervisor 1"
-      },
-      {
-        "value": "Supervisor 2",
-        "label": "Supervisor 2"
-      },
-      {
-        "value": "Supervisor 3",
-        "label": "Supervisor 3"
-      },
-      {
-        "value": "Supervisor 4",
-        "label": "Supervisor 4"
-      },
-      {
-        "value": "Supervisor 5",
-        "label": "Supervisor 5"
-      }
-    ],
+    "type": "input",
     "isPII": false
   },
   {
