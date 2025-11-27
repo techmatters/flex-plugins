@@ -1,7 +1,7 @@
 {
   "name": "@tech-matters/s3",
   "version": "1.0.0",
-  "description": "Module to handle AWS SSM parameter caching",
+  "description": "Module to handle AWS S3 operations",
   "main": "dist/index.js",
   "devDependencies": {
     "@tsconfig/node22": "^22.0.0",
