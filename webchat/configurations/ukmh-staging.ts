@@ -195,7 +195,7 @@ const preEngagementConfig: PreEngagementFormDefinition = {
       type: 'checkbox',
       name: 'dataProcessingAndStorage',
       label:
-        'I consent to my data being processed and stored in order to access the PeerChat Support service.',
+        'I consent to the processing of my personal data (including sensitive data relating to matters such as my mental health and wellbeing) by MHI (parent organisation of The Mix and Shout) for the purpose of providing me with the PeerChat Service.',
       required: {
         value: true,
         message: "Sorry, if you don't consent to have your data being processed and stored we can't provide counselling to you.",
@@ -205,7 +205,17 @@ const preEngagementConfig: PreEngagementFormDefinition = {
       type: 'checkbox',
       name: 'termsAndConditions',
       label:
-        'I have read terms of use and the <a href="https://www.themix.org.uk/about-us/privacy-centre/privacy-policy/">privacy policy</a> and agree to them.',
+        'I agree to the PeerChat Service <a href="https://www.themix.org.uk/about-us/privacy-centre/peerchat-terms-of-service/">Terms & Conditions</a>.',
+      required: {
+        value: true,
+        message: "Sorry, if you don't accept our terms and privacy policy we can't provide counselling to you.",
+      },
+    },
+    {
+      type: 'checkbox',
+      name: 'privacyPolicy',
+      label:
+        'I acknowledge that I have read and understand the PeerChat Service <a href="https://www.themix.org.uk/about-us/privacy-centre/peerchat-privacy-notice/">Privacy Policy</a>.',
       required: {
         value: true,
         message: "Sorry, if you don't accept our terms and privacy policy we can't provide counselling to you.",
