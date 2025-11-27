@@ -63,14 +63,6 @@ const ResourceSearchFilters: React.FC<{}> = () => {
     [dispatch],
   );
 
-  const defaultCountryTarget = 'United States';
-  const { countryOptions } = referenceLocations;
-  useEffect(() => {
-    if (countryOptions?.length && countryOptions.some(o => o.value === defaultCountryTarget)) {
-      updateFilterSelection('country', defaultCountryTarget);
-    }
-  }, [countryOptions, updateFilterSelection]);
-
   useEffect(() => {
     const loadReferenceLocations = (referenceLocations: ReferenceLocationState) => {
       if (!referenceLocations.countryOptions?.length) {
@@ -106,7 +98,6 @@ const ResourceSearchFilters: React.FC<{}> = () => {
   }: {
     locationFilterName: LocationFilterName;
     optionList: FilterOption[];
-    defaultValue?: FilterOption;
   }) => {
     const capitalizedLocationFilterName = locationFilterName.charAt(0).toUpperCase() + locationFilterName.slice(1);
     return (
