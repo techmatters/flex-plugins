@@ -23,6 +23,9 @@ module.exports = {
     '@typescript-eslint/indent': 'off',
     '@typescript-eslint/quotes': 'off',
     'import/prefer-default-export': 'off',
+    // This rule gives false positives in CI for some reason.
+    // When getSsmParameter was moved to a separate library, calling it with 'return await getSssmParameter'
+    '@typescript-eslint/return-await': 'warn',
   },
   settings: {
     'import/resolver': {

@@ -19,15 +19,15 @@
 import '@twilio-labs/serverless-runtime-types';
 
 import type { TaskInstance } from 'twilio/lib/rest/taskrouter/v1/workspace/task';
-import { ChatChannelSID, ConversationSID } from '../twilioTypes';
+import { ChatChannelSID, ConversationSID } from '@tech-matters/twilio-types';
 import { AccountScopedHandler, HttpError } from '../httpTypes';
-import { AccountSID } from '../twilioTypes';
+import { AccountSID } from '@tech-matters/twilio-types';
 import { newErr, newOk, Result } from '../Result';
 import {
   getChatServiceSid,
   getTwilioClient,
   getTwilioWorkspaceSid,
-} from '../configuration/twilioConfiguration';
+} from '@tech-matters/twilio-configuration';
 import { lookupCustomMessage } from '../hrm/formDefinitionsCache';
 import { chatChannelJanitor } from './chatChannelJanitor';
 

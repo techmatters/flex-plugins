@@ -20,7 +20,7 @@ import { TaskContext, TaskInstance } from 'twilio/lib/rest/taskrouter/v1/workspa
 import { WorkspaceContext } from 'twilio/lib/rest/taskrouter/v1/workspace';
 import { BLANK_CONTACT } from './testContacts';
 import { EventFields } from '../../../src/taskrouter';
-import { getSsmParameter } from '../../../src/ssmCache';
+import { getSsmParameter } from '@tech-matters/ssm-cache';
 import { handleEvent } from '../../../src/hrm/createHrmContactTaskRouterListener';
 import { populateHrmContactFormFromTaskByKeys } from '../../../src/hrm/populateHrmContactFormFromTaskByKeys';
 import {
@@ -37,7 +37,7 @@ import { newOk } from '../../../src/Result';
 const mockFetch: jest.MockedFunction<typeof fetch> = jest.fn();
 global.fetch = mockFetch;
 
-jest.mock('../../../src/ssmCache', () => ({
+jest.mock('@tech-matters/ssm-cache', () => ({
   getSsmParameter: jest.fn(),
 }));
 const mockGetSsmParameter = getSsmParameter as jest.MockedFunction<

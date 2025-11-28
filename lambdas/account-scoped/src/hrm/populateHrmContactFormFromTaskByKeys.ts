@@ -24,7 +24,7 @@ import {
 import { FormValue, HrmContact, callTypes } from '@tech-matters/hrm-types';
 import { newErr, newOk, Result } from '../Result';
 import { getCurrentDefinitionVersion } from './formDefinitionsCache';
-import { AccountSID } from '../twilioTypes';
+import { AccountSID } from '@tech-matters/twilio-types';
 
 type MapperFunction = (options: string[]) => (value: string) => string;
 

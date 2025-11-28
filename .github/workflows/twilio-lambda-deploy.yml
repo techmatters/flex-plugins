@@ -34,6 +34,7 @@ on:
           - facebookCallback
           - facebookSignin
           - instagramWebhook
+          - integrationTestRunner
           - ipLocationFinder
           - lineSetup
           - lineWebhook

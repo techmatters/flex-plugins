@@ -14,9 +14,9 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { AccountSID, TaskSID, WorkspaceSID } from '../twilioTypes';
+import { AccountSID, TaskSID, WorkspaceSID } from '@tech-matters/twilio-types';
 import { Twilio } from 'twilio';
-import { getWorkspaceSid } from '../configuration/twilioConfiguration';
+import { getWorkspaceSid } from '@tech-matters/twilio-configuration';
 
 const logError = (
   taskSid: TaskSID,
