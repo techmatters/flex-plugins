@@ -17,13 +17,13 @@
 import '@twilio-labs/serverless-runtime-types';
 import moment from 'moment-timezone';
 import { AccountScopedHandler, HttpError } from './httpTypes';
-import { AccountSID } from './twilioTypes';
+import { AccountSID } from '@tech-matters/twilio-types';
 import { newErr, newOk, Result } from './Result';
 import { lookupCustomMessage } from './hrm/formDefinitionsCache';
 import {
   areOperatingHoursEnforced,
   getOperatingInfoKey,
-} from './configuration/twilioConfiguration';
+} from '@tech-matters/twilio-configuration';
 
 type OperatingShift = { open: number; close: number };
 

@@ -14,7 +14,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { getSsmParameter } from '../../../src/ssmCache';
+import { getSsmParameter } from '@tech-matters/ssm-cache';
 import twilio from 'twilio';
 import { EventType, handleTaskRouterEvent } from '../../../src/taskrouter';
 import { TEST_ACCOUNT_SID, TEST_AUTH_TOKEN } from '../../testTwilioValues';
@@ -36,7 +36,7 @@ const mockTwilio: jest.MockedFunction<(account: string, auth: string) => twilio.
     (account: string, auth: string) => twilio.Twilio
   >;
 
-jest.mock('../../../src/ssmCache', () => ({
+jest.mock('@tech-matters/ssm-cache', () => ({
   getSsmParameter: jest.fn(),
 }));
 const mockGetSsmParameter = getSsmParameter as jest.MockedFunction<

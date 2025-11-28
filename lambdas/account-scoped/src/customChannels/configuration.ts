@@ -14,11 +14,11 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { AccountSID } from '../twilioTypes';
-import { getSsmParameter, SsmParameterNotFound } from '../ssmCache';
+import { AccountSID } from '@tech-matters/twilio-types';
+import { getSsmParameter, SsmParameterNotFound } from '@tech-matters/ssm-cache';
 import { AseloCustomChannel } from './customChannelToFlex';
 import { retrieveServiceConfigurationAttributes } from '../configuration/aseloConfiguration';
-import { getTwilioClient } from '../configuration/twilioConfiguration';
+import { getTwilioClient } from '@tech-matters/twilio-configuration';
 
 const LEGACY_FACEBOOK_PAGE_ACCESS_TOKEN_PARAMETERS: Record<
   string,
@@ -62,9 +62,10 @@ export const getFacebookPageAccessToken = async (
   accountSid: AccountSID,
 ): Promise<string> => {
   try {
-    return await getSsmParameter(
+    const parameter = await getSsmParameter(
       `/${process.env.NODE_ENV}/twilio/${accountSid}/facebook_page_access_token`,
     );
+    return parameter;
   } catch (error) {
     if (error instanceof SsmParameterNotFound) {
       console.warn(

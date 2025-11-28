@@ -16,7 +16,7 @@
 
 import { mockttpServer } from './mockingProxy';
 import 'twilio/lib/rest/taskrouter/v1/workspace/task';
-import { AccountSID } from '../../../src/twilioTypes';
+import { AccountSID } from '@tech-matters/twilio-types';
 import { ConfigurationInstance } from 'twilio/lib/rest/flexApi/v1/configuration';
 
 // https://flex-api.twilio.com/v1/Configuration

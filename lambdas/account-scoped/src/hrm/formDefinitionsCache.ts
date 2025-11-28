@@ -14,9 +14,9 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 import { DefinitionVersion, loadDefinition } from '@tech-matters/hrm-form-definitions';
-import { AccountSID } from '../twilioTypes';
+import { AccountSID } from '@tech-matters/twilio-types';
 import { retrieveServiceConfigurationAttributes } from '../configuration/aseloConfiguration';
-import { getTwilioClient } from '../configuration/twilioConfiguration';
+import { getTwilioClient } from '@tech-matters/twilio-configuration';
 
 const getHelplineCodeFromDefinitionVersionId = (definitionVersionId: string) => {
   if (definitionVersionId === 'demo-v1') return 'as';

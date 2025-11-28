@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2021-2023 Technology Matters
+ * Copyright (C) 2021-2025 Technology Matters
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
  * by the Free Software Foundation, either version 3 of the License, or
@@ -31,3 +31,5 @@ export type ConferenceSid = `CF${string}`;
 export const isAccountSID = (value: string): value is AccountSID =>
   // This regex could be stricter if we only wanted to catch 'real' account SIDs, but our test account sids have non hexadecimal characters
   /^AC[0-9a-zA-Z_]+$/.test(value);
+
+export * from './instagram';

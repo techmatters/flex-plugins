@@ -24,7 +24,7 @@ import {
   getAccountAuthToken,
   getChatServiceSid,
   getWorkspaceSid,
-} from '../configuration/twilioConfiguration';
+} from '@tech-matters/twilio-configuration';
 import { LexClient } from './lexClient';
 import { chatbotCallbackCleanup } from './chatbotCallbackCleanup';
 

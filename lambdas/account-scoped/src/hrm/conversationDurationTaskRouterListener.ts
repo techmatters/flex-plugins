@@ -15,7 +15,7 @@
  */
 
 import type { EventFields } from '../taskrouter';
-import { AccountSID } from '../twilioTypes';
+import { AccountSID } from '@tech-matters/twilio-types';
 import { registerTaskRouterEventHandler } from '../taskrouter/taskrouterEventHandler';
 import { patchOnInternalHrmEndpoint } from './internalHrmRequest';
 import { HrmContact } from '@tech-matters/hrm-types';

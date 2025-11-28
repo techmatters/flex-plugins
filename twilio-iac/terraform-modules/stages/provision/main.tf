@@ -84,6 +84,9 @@ module "aws" {
   bucket_region       = var.helpline_region
   helpline_region     = var.helpline_region
   s3_lifecycle_rules  = var.s3_lifecycle_rules
+
+  enable_integration_tests         = var.enable_integration_tests
+  integration_test_lambda_schedule = "rate(3 hours)"
 }
 
 #TODO: Remove the provider and moved once this has been applied everywhere
