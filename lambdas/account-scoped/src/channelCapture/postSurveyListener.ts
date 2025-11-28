@@ -18,7 +18,7 @@ import {
   registerTaskRouterEventHandler,
   TaskRouterEventHandler,
 } from '../taskrouter/taskrouterEventHandler';
-import { AccountSID } from '../twilioTypes';
+import { AccountSID } from '@tech-matters/twilio-types';
 import { Twilio } from 'twilio';
 import { EventType, TASK_WRAPUP } from '../taskrouter/eventTypes';
 import { EventFields } from '../taskrouter';
@@ -34,7 +34,7 @@ import {
   getServerlessBaseUrl,
   getSurveyWorkflowSid,
   getTwilioWorkspaceSid,
-} from '../configuration/twilioConfiguration';
+} from '@tech-matters/twilio-configuration';
 
 const GLOBAL_DEFAULT_LANGUAGE = 'en-US';
 

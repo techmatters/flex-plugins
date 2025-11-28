@@ -24,48 +24,17 @@ import {
   sendConversationMessageToFlex,
 } from '../customChannelToFlex';
 import { AccountScopedHandler, HttpRequest } from '../../httpTypes';
-import { AccountSID, ConversationSID } from '../../twilioTypes';
+import {
+  AccountSID,
+  ConversationSID,
+  InstagramMessageEvent,
+  InstagramMessageObject,
+  InstagramStoryReply,
+} from '@tech-matters/twilio-types';
 import { newErr, newOk } from '../../Result';
-import { getTwilioClient } from '../../configuration/twilioConfiguration';
+import { getTwilioClient } from '@tech-matters/twilio-configuration';
 import { getChannelStudioFlowSid, getFacebookAppSecret } from '../configuration';
 import { Twilio } from 'twilio';
-
-type InstagramMessageObject = {
-  sender: {
-    id: string;
-  };
-  recipient: {
-    id: string;
-  };
-  timestamp: number; // message timestamp
-  message: {
-    mid: string;
-    text?: string; // the body of the message
-    attachments?: { type: string; payload: { url: string } }[];
-    is_deleted?: boolean;
-  };
-};
-
-type InstagramStoryReply = InstagramMessageObject['message'] & {
-  reply_to: {
-    story: { url: string; id: string };
-  };
-};
-
-type InstagramMessageEntry = {
-  time: number; // event timestamp
-  id: string; // IGSID of the subscribed Instagram account
-  messaging: [InstagramMessageObject];
-};
-
-/** Object describing a single entry and a single message.
- * We sanitize the payload in the central webhook.
- *  If we start seeing batched events this shape will not be a singleton but an array
- */
-type InstagramMessageEvent = {
-  object: 'instagram';
-  entry: [InstagramMessageEntry];
-};
 
 export type Body = InstagramMessageEvent & {
   xHubSignature?: string; // x-hub-signature header sent from Facebook
@@ -130,10 +99,11 @@ const isValidFacebookPayload = (event: Body, appSecret: string) => {
 };
 
 export const instagramToFlexHandler: AccountScopedHandler = async (
-  { body: event }: HttpRequest,
+  { body }: HttpRequest,
   accountSid: AccountSID,
 ) => {
   const client = await getTwilioClient(accountSid);
+  const event: InstagramMessageEvent = body;
   if (!isValidFacebookPayload(event, await getFacebookAppSecret())) {
     return newErr({
       message: 'Forbidden',
@@ -209,6 +179,7 @@ export const instagramToFlexHandler: AccountScopedHandler = async (
     senderExternalId,
     customSubscribedExternalId: subscribedExternalId,
     conversationFriendlyName: chatFriendlyName,
+    testSessionId: event.testSessionId,
   });
 
   switch (result.status) {

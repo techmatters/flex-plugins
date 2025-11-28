@@ -23,11 +23,12 @@ import {
   ExternalSendResult,
   redirectConversationMessageToExternalChat,
   RedirectResult,
+  TEST_SEND_URL,
 } from '../flexToCustomChannel';
 import { AccountScopedHandler, HttpError, HttpRequest } from '../../httpTypes';
 import { isErr, newOk, Result } from '../../Result';
 import { newMissingParameterResult } from '../../httpErrors';
-import { getTwilioClient } from '../../configuration/twilioConfiguration';
+import { getTwilioClient } from '@tech-matters/twilio-configuration';
 import { getFacebookPageAccessToken } from '../configuration';
 
 export type Body = ConversationWebhookEvent & {
@@ -36,7 +37,11 @@ export type Body = ConversationWebhookEvent & {
 
 const sendInstagramMessage =
   (facebookPageAccessToken: string) =>
-  async (recipientId: string, messageText: string): Promise<ExternalSendResult> => {
+  async (
+    recipientId: string,
+    messageText: string,
+    testSessionId?: string,
+  ): Promise<ExternalSendResult> => {
     const body = {
       recipient: {
         id: recipientId,
@@ -45,17 +50,15 @@ const sendInstagramMessage =
         text: messageText,
       },
     };
-
-    const response = await fetch(
-      `https://graph.facebook.com/v19.0/me/messages?access_token=${facebookPageAccessToken}`,
-      {
-        method: 'post',
-        body: JSON.stringify(body),
-        headers: {
-          'Content-Type': 'application/json',
-        },
+    const sendUrl = `${testSessionId ? TEST_SEND_URL : 'https://graph.facebook.com/v19.0/me/messages'}?access_token=${facebookPageAccessToken}`;
+    const response = await fetch(sendUrl, {
+      method: 'post',
+      body: JSON.stringify(body),
+      headers: {
+        'Content-Type': 'application/json',
+        ...(testSessionId ? { 'x-webhook-receiver-session-id': testSessionId } : {}),
       },
-    );
+    });
 
     return {
       ok: response.ok,

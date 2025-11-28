@@ -26,7 +26,7 @@ import {
 } from '../../testTwilioValues';
 import { TaskContext, TaskInstance } from 'twilio/lib/rest/taskrouter/v1/workspace/task';
 import { WorkspaceContext } from 'twilio/lib/rest/taskrouter/v1/workspace';
-import { TaskSID } from '../../../src/twilioTypes';
+import { TaskSID } from '@tech-matters/twilio-types';
 import { addTaskSidToChannelAttributes } from '../../../src/conversation/addTaskSidToChannelAttributesTaskRouterListener';
 import {
   ConversationContext,
@@ -36,7 +36,7 @@ import { EventFields } from '../../../src/taskrouter';
 import each from 'jest-each';
 import { ChannelContext, ChannelInstance } from 'twilio/lib/rest/chat/v2/service/channel';
 
-jest.mock('../../../src/configuration/twilioConfiguration', () => ({
+jest.mock('@tech-matters/twilio-configuration', () => ({
   getWorkspaceSid: jest.fn().mockResolvedValue(TEST_WORKSPACE_SID),
   getChatServiceSid: jest.fn().mockResolvedValue(TEST_CHAT_SERVICE_SID),
 }));

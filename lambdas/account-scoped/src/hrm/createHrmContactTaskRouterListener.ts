@@ -21,8 +21,8 @@ import { registerTaskRouterEventHandler } from '../taskrouter/taskrouterEventHan
 import { RESERVATION_ACCEPTED } from '../taskrouter/eventTypes';
 import type { EventFields } from '../taskrouter';
 import twilio from 'twilio';
-import { AccountSID, TaskSID, WorkerSID } from '../twilioTypes';
-import { getWorkspaceSid } from '../configuration/twilioConfiguration';
+import { AccountSID, TaskSID, WorkerSID } from '@tech-matters/twilio-types';
+import { getWorkspaceSid } from '@tech-matters/twilio-configuration';
 import {
   patchOnInternalHrmEndpoint,
   postToInternalHrmEndpoint,

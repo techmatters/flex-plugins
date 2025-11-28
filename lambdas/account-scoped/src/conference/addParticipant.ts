@@ -17,7 +17,7 @@
 import { AccountScopedHandler } from '../httpTypes';
 import { newOk } from '../Result';
 import { newMissingParameterResult } from '../httpErrors';
-import { getTwilioClient } from '../configuration/twilioConfiguration';
+import { getTwilioClient } from '@tech-matters/twilio-configuration';
 
 export const addParticipantHandler: AccountScopedHandler = async (
   { body },

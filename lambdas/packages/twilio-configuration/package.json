@@ -1,0 +1,20 @@
+{
+  "name": "@tech-matters/twilio-configuration",
+  "version": "1.0.0",
+  "description": "Module to hold helper functions for reading configuration related to twilio, providing access to twilio APIs, and twilio specific data types",
+  "main": "dist/index.js",
+  "dependencies": {
+    "twilio": "^5.4.0",
+    "@tech-matters/ssm-cache": "^1.0.0",
+    "@tech-matters/twilio-types": "^1.0.0"
+  },
+  "devDependencies": {
+    "@tsconfig/node22": "^22.0.0",
+    "ts-node": "^10.1.0",
+    "typescript": "^5.9.2"
+  },
+  "scripts": {
+    "build": "npx tsc",
+    "lint": "eslint --max-warnings 5 --ext ts src"
+  }
+}

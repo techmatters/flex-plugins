@@ -15,6 +15,8 @@
  */
 import { Twilio } from 'twilio';
 
+export const TEST_SEND_URL = `${process.env.WEBHOOK_BASE_URL}/lambda/integrationTestRunner`;
+
 export type ConversationWebhookEvent = {
   Body: string;
   Author: string;
@@ -37,7 +39,7 @@ type Params<TResponse = any> = {
   sendExternalMessage: (
     recipientId: string,
     messageText: string,
-    useTestApi?: boolean,
+    testSessionId?: string,
   ) => Promise<TResponse>;
 };
 
@@ -49,12 +51,11 @@ export const redirectConversationMessageToExternalChat = async (
 ): Promise<RedirectResult> => {
   const { Body, ConversationSid, EventType, ParticipantSid, Source, Author } = event;
   let shouldSend = false;
+  const conversationContext = client.conversations.v1.conversations.get(ConversationSid);
   if (Source === 'SDK') {
     shouldSend = true;
   } else if (Source === 'API' && EventType === 'onMessageAdded') {
-    const participants = await client.conversations.v1.conversations
-      .get(ConversationSid)
-      .participants.list();
+    const participants = await conversationContext.participants.list();
 
     const sortByDateCreated = (a: any, b: any) =>
       a.dateCreated > b.dateCreated ? 1 : -1;
@@ -67,16 +68,14 @@ export const redirectConversationMessageToExternalChat = async (
       ![Author, ParticipantSid].includes(firstParticipantSid);
   }
   if (shouldSend) {
-    const useTestApi =
-      JSON.parse(
-        (await client.conversations.v1.conversations.get(ConversationSid).fetch())
-          ?.attributes ?? {},
-      ).useTestApi ?? false;
-    const response = await sendExternalMessage(recipientId, Body, useTestApi);
+    const conversationInstance = await conversationContext.fetch();
+    const conversationAttributes = JSON.parse(conversationInstance?.attributes ?? {});
+    const { testSessionId } = conversationAttributes;
+    const response = await sendExternalMessage(recipientId, Body, testSessionId);
     if (response.ok) {
       return { status: 'sent', response };
     }
-    console.log(
+    console.info(
       `Failed to send message: ${response.resultCode}`,
       response.body,
       response.meta,

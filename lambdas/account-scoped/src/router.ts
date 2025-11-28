@@ -17,7 +17,7 @@
 import { validateWebhookRequest } from './validation/twilioWebhook';
 import { AccountScopedRoute, FunctionRoute, HttpRequest } from './httpTypes';
 import { validateRequestMethod } from './validation/method';
-import { isAccountSID } from './twilioTypes';
+import { isAccountSID } from '@tech-matters/twilio-types';
 import { handleTaskRouterEvent } from './taskrouter';
 import { updateWorkersSkills } from './taskrouter/updateWorkersSkills';
 import { handleGetProfileFlagsForIdentifier } from './hrm/getProfileFlagsForIdentifier';

@@ -16,7 +16,7 @@
 
 import type { ALBEvent, ALBResult } from 'aws-lambda';
 import { isValidTwilioRequest } from './requestValidator';
-import { getSsmParameter } from './ssmCache';
+import { getSsmParameter } from '@tech-matters/ssm-cache';
 
 const headers = {
   'Content-Type': 'application/json',

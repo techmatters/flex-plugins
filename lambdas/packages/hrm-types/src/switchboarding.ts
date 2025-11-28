@@ -14,6 +14,8 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
+// TODO: Move to twilio-types when we can share packages between flex and lambdas more easily
+
 export const SWITCHBOARD_QUEUE_NAME = 'Switchboard Queue';
 export const SWITCHBOARD_WORKFLOW_FILTER_PREFIX = 'Switchboard Workflow';
 

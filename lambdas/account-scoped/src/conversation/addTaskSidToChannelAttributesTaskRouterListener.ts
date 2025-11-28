@@ -18,10 +18,10 @@ import {
   registerTaskRouterEventHandler,
   TaskRouterEventHandler,
 } from '../taskrouter/taskrouterEventHandler';
-import { AccountSID, TaskSID } from '../twilioTypes';
+import { AccountSID, TaskSID } from '@tech-matters/twilio-types';
 import { Twilio } from 'twilio';
 import { TASK_CREATED } from '../taskrouter/eventTypes';
-import { getChatServiceSid, getWorkspaceSid } from '../configuration/twilioConfiguration';
+import { getChatServiceSid, getWorkspaceSid } from '@tech-matters/twilio-configuration';
 
 type RelevantTaskAttributes = {
   isContactlessTask?: boolean;
