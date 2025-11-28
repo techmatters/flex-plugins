@@ -15,9 +15,9 @@
  */
 
 import { getAccountAuthToken, getTwilioClient } from '@tech-matters/twilio-configuration';
-import type { AccountScopedHandler } from '../httpTypes';
+import type { AccountScopedHandler, HttpError } from '../httpTypes';
 import type { AccountSID, ConversationSID } from '@tech-matters/twilio-types';
-import { newOk } from '../Result';
+import { isErr, newErr, newOk, Result } from '../Result';
 
 import { createToken, TOKEN_TTL_IN_SECONDS } from './createToken';
 
@@ -26,7 +26,7 @@ const contactWebchatOrchestrator = async (
   addressSid: string,
   formData: any,
   customerFriendlyName: string,
-) => {
+): Promise<Result<HttpError, { conversationSid: ConversationSID; identity: string }>> => {
   console.info('Calling Webchat Orchestrator');
 
   const params = new URLSearchParams();
@@ -54,6 +54,21 @@ const contactWebchatOrchestrator = async (
     },
     body: params,
   });
+  if (!res.ok) {
+    const bodyError = await res.text();
+    console.error(
+      'Error calling https://flex-api.twilio.com/v2/WebChats',
+      accountSid,
+      bodyError,
+    );
+    return newErr({
+      message: bodyError,
+      error: {
+        statusCode: 500,
+        cause: new Error(bodyError),
+      },
+    });
+  }
   ({ identity, conversation_sid: conversationSid } = (await res.json()) as any);
 
   console.info('Webchat Orchestrator successfully called');
@@ -114,7 +129,9 @@ export const initWebchatHandler: AccountScopedHandler = async (request, accountS
     request.body?.formData,
     customerFriendlyName,
   );
-
+  if (isErr(result)) {
+    return result;
+  }
   ({ identity, conversationSid } = result.data);
 
   // Generate token for customer

@@ -102,7 +102,7 @@ export const generateSecurityHeaders = async (): Promise<SecurityHeadersType> =>
 // eslint-disable-next-line import/no-unused-modules
 export const generateMixPanelHeaders = (): MixPanelHeadersType => {
     return {
-        [HEADER_APP_VERSION]: process.env.APP_VERSION ?? "",
+        [HEADER_APP_VERSION]: process.env.APP_VERSION ?? "1.0.0",
         [HEADER_WEBCHAT_VERSION]: process.env.WEBCHAT_VERSION ?? ""
     };
 };
