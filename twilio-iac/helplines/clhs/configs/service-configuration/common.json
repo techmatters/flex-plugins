@@ -1,0 +1,10 @@
+{
+    "attributes": {
+        "contacts_waiting_channels": [
+            "web"
+        ],
+        "definitionVersion": "clhs-v1",
+        "helplineLanguage": "es-CL",
+        "permissionConfig": "clhs"
+    }
+}
