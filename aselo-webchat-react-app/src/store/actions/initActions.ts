@@ -1,23 +1,23 @@
-import { Client } from "@twilio/conversations";
-import { Dispatch } from "redux";
+import { Client, ConnectionState } from '@twilio/conversations';
+import { Dispatch } from 'redux';
 
-import { initMessagesListener } from "./listeners/messagesListener";
-import { initParticipantsListener } from "./listeners/participantsListener";
-import { initConversationListener } from "./listeners/conversationListener";
-import { ConfigState, EngagementPhase } from "../definitions";
-import { initClientListeners } from "./listeners/clientListener";
-import { notifications } from "../../notifications";
-import { ACTION_START_SESSION, ACTION_LOAD_CONFIG } from "./actionTypes";
-import { addNotification, changeEngagementPhase } from "./genericActions";
-import { MESSAGES_LOAD_COUNT } from "../../constants";
-import { parseRegionForConversations } from "../../utils/regionUtil";
-import { sessionDataHandler } from "../../sessionDataHandler";
-import { createParticipantNameMap } from "../../utils/participantNameMap";
+import { initMessagesListener } from './listeners/messagesListener';
+import { initParticipantsListener } from './listeners/participantsListener';
+import { initConversationListener } from './listeners/conversationListener';
+import { ConfigState, EngagementPhase } from '../definitions';
+import { initClientListeners } from './listeners/clientListener';
+import { notifications } from '../../notifications';
+import { ACTION_START_SESSION, ACTION_LOAD_CONFIG } from './actionTypes';
+import { addNotification, changeEngagementPhase } from './genericActions';
+import { MESSAGES_LOAD_COUNT } from '../../constants';
+import { parseRegionForConversations } from '../../utils/regionUtil';
+import { sessionDataHandler } from '../../sessionDataHandler';
+import { createParticipantNameMap } from '../../utils/participantNameMap';
 
 export function initConfig(config: ConfigState) {
     return {
         type: ACTION_LOAD_CONFIG,
-        payload: config
+        payload: config,
     };
 }
 
@@ -26,8 +26,24 @@ export type InitSessionPayload = {
     conversationSid: string;
 };
 
+const newInitialisedConversationsClient = async (token: string): Promise<Client> => {
+    const conversationsClient = new Client(token, {
+        region: parseRegionForConversations(sessionDataHandler.getRegion()),
+    });
+    await new Promise<void>((res) => {
+        const handler: (cs: ConnectionState) => void = (cs) => {
+            if (cs === 'connected') {
+                res();
+                conversationsClient.off('connectionStateChanged', handler);
+            }
+        };
+        conversationsClient.onWithReplay('connectionStateChanged', handler);
+    });
+    return conversationsClient;
+};
+
 export function initSession({ token, conversationSid }: InitSessionPayload) {
-    const logger = window.Twilio.getLogger("initSession");
+    const logger = window.Twilio.getLogger('initSession');
     return async (dispatch: Dispatch) => {
         let conversationsClient: Client;
         let conversation;
@@ -37,9 +53,7 @@ export function initSession({ token, conversationSid }: InitSessionPayload) {
         let participantNameMap;
 
         try {
-            conversationsClient = await Client.create(token, {
-                region: parseRegionForConversations(sessionDataHandler.getRegion())
-            });
+            conversationsClient = await newInitialisedConversationsClient(token);
             try {
                 conversation = await conversationsClient.getConversationBySid(conversationSid);
             } catch (e) {
@@ -47,15 +61,13 @@ export function initSession({ token, conversationSid }: InitSessionPayload) {
                 dispatch(changeEngagementPhase({ phase: EngagementPhase.PreEngagementForm }));
                 return;
             }
-
             participants = await conversation.getParticipants();
             users = await Promise.all(participants.map(async (p) => p.getUser()));
             messages = (await conversation.getMessages(MESSAGES_LOAD_COUNT)).items;
 
             participantNameMap = createParticipantNameMap(participants, users, conversation);
-    
         } catch (e) {
-            logger.error("Something went wrong when initializing session", e);
+            logger.error('Something went wrong when initializing session', e);
             throw e;
         }
 
@@ -71,8 +83,8 @@ export function initSession({ token, conversationSid }: InitSessionPayload) {
                 messages,
                 conversationState: conversation.state?.current,
                 currentPhase: EngagementPhase.MessagingCanvas,
-                participantNames: participantNameMap
-            }
+                participantNames: participantNameMap,
+            },
         });
 
         initClientListeners(conversationsClient, dispatch);

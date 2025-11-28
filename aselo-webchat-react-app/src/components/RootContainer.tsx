@@ -5,7 +5,6 @@ import { MessagingCanvasPhase } from "./MessagingCanvasPhase";
 import { AppState, EngagementPhase } from "../store/definitions";
 import { PreEngagementFormPhase } from "./PreEngagementFormPhase";
 import { LoadingPhase } from "./LoadingPhase";
-import { EntryPoint } from "./EntryPoint";
 import { innerContainerStyles, outerContainerStyles } from "./styles/RootContainer.styles";
 
 const getPhaseComponent = (phase: EngagementPhase) => {
@@ -38,7 +37,6 @@ export function RootContainer() {
                         {getPhaseComponent(currentPhase)}
                     </Box>
                 )}
-                <EntryPoint />
             </Box>
         </Box>
     );
