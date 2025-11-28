@@ -131,11 +131,6 @@ export const handlerUpdateSearchFormAction = (
     updatedFilterOptions,
   );
 
-  console.log('>>>>>>>>>>> payload', payload);
-  console.log('>>>>>>>>>>> referenceLocations', state.referenceLocations);
-  console.log('>>>>>>>>>>> updatedFilterOptions', updatedFilterOptions);
-  console.log('>>>>>>>>>>> validatedFilterSelections', validatedFilterSelections);
-
   return {
     ...state,
     filterOptions: updatedFilterOptions,
@@ -153,9 +148,15 @@ export const handleLoadReferenceLocationsAsyncActionFulfilled = (
 ): ReferrableResourceSearchState => {
   const { list, options } = payload;
   let { referenceLocations } = state;
+  let defaultFilterSelection: Partial<USCHFilterSelections> = state.parameters.filterSelections;
+
   switch (list) {
     case USCHReferenceLocationList.Country:
       referenceLocations = { ...referenceLocations, countryOptions: options };
+      const defaultCountryTarget = 'United States';
+      if (options.some(o => o.value === defaultCountryTarget)) {
+        defaultFilterSelection = { ...defaultFilterSelection, country: defaultCountryTarget };
+      }
       break;
     case USCHReferenceLocationList.Provinces:
       referenceLocations = { ...referenceLocations, provinceOptions: options };
@@ -176,7 +177,10 @@ export const handleLoadReferenceLocationsAsyncActionFulfilled = (
     filterOptions: updatedFilterOptions,
     parameters: {
       ...state.parameters,
-      filterSelections: validatedFilterSelections,
+      filterSelections: {
+        ...defaultFilterSelection,
+        ...validatedFilterSelections,
+      },
     },
     referenceLocations,
   };
