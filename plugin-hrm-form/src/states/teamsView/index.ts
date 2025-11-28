@@ -21,7 +21,7 @@ import { updateWorkersSkills } from '../../services/twilioWorkerService';
 export type TeamsViewState = {
   selectedWorkers: Set<string>;
   selectedSkills: Set<string>;
-  operation?: 'enable' | 'disable';
+  operation?: 'enable' | 'disable' | 'assign' | 'unassign';
   status: {
     loading: boolean;
     error: any;
