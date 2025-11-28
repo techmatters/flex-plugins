@@ -3,6 +3,7 @@ import { GenericThemeShape } from "@twilio-paste/theme";
 import { AlertVariants } from "@twilio-paste/core/alert";
 
 import { FileAttachmentConfig } from "../definitions";
+import {TaskState} from "../task";
 
 export enum EngagementPhase {
     PreEngagementForm = "PreEngagementForm",
@@ -67,4 +68,5 @@ export type AppState = {
     config: ConfigState;
     session: SessionState;
     notifications: NotificationState;
+    task: TaskState;
 };
