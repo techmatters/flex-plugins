@@ -27,7 +27,7 @@ export async function contactBackend<T>(
     body: InitWebchatAPIPayload | RefreshTokenAPIPayload,
 ): Promise<T> {
     /* eslint-disable-next-line no-use-before-define, @typescript-eslint/no-use-before-define */
-    const _endpoint = `https://https://hrm-development.tl.techmatters.org/lambda/twilio/account-scoped/AS`;
+    const _endpoint = `https://hrm-development.tl.techmatters.org/lambda/twilio/account-scoped/AS`;
     const securityHeaders = await generateSecurityHeaders();
     const mixpanelHeaders = generateMixPanelHeaders();
     const logger = window.Twilio.getLogger("SessionDataHandler");

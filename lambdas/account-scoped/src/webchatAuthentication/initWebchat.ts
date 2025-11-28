@@ -20,7 +20,6 @@ import type { AccountSID, ConversationSID } from '@tech-matters/twilio-types';
 import { newOk } from '../Result';
 
 import { createToken, TOKEN_TTL_IN_SECONDS } from './createToken';
-const { version } = require('./../../package.json');
 
 const contactWebchatOrchestrator = async (
   accountSid: AccountSID,
@@ -51,7 +50,7 @@ const contactWebchatOrchestrator = async (
     headers: {
       Authorization:
         'Basic ' + Buffer.from(accountSid + ':' + authToken).toString('base64'),
-      'ui-version': version,
+      'ui-version': process.env.WEBCHAT_VERSION || '1.0.0',
     },
     body: params,
   });
