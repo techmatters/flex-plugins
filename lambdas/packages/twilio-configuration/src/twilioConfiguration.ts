@@ -14,8 +14,13 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { AccountSID, ChatServiceSID, WorkflowSID, WorkspaceSID } from '../twilioTypes';
-import { getSsmParameter, SsmParameterNotFound } from '../ssmCache';
+import {
+  AccountSID,
+  ChatServiceSID,
+  WorkflowSID,
+  WorkspaceSID,
+} from '@tech-matters/twilio-types';
+import { getSsmParameter, SsmParameterNotFound } from '@tech-matters/ssm-cache';
 import twilio, { Twilio } from 'twilio';
 
 export const getWorkspaceSid = async (accountSid: AccountSID): Promise<WorkspaceSID> =>

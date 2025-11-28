@@ -20,7 +20,7 @@ import { newMissingParameterResult } from '../httpErrors';
 import {
   getTwilioClient,
   getTwilioWorkspaceSid,
-} from '../configuration/twilioConfiguration';
+} from '@tech-matters/twilio-configuration';
 
 const validOperations = ['enable', 'disable'] as const;
 type ValidOperations = (typeof validOperations)[number];

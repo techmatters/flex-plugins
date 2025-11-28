@@ -23,7 +23,7 @@ import {
 import { getFromInternalHrmEndpoint } from '../../../src/hrm/internalHrmRequest';
 import { handleGetProfileFlagsForIdentifier } from '../../../src/hrm/getProfileFlagsForIdentifier';
 import { TriggerEvent } from '../../../src/hrm/sanitizeIdentifier';
-import { getAccountAuthToken } from '../../../src/configuration/twilioConfiguration';
+import { getAccountAuthToken } from '@tech-matters/twilio-configuration';
 import { isErr, isOk, newErr, newOk } from '../../../src/Result';
 import { HttpRequest } from '../../../src/httpTypes';
 import { AssertionError } from 'node:assert';
@@ -31,7 +31,7 @@ import each from 'jest-each';
 
 jest.mock('twilio', () => () => ({}));
 
-jest.mock('../../../src/configuration/twilioConfiguration', () => ({
+jest.mock('@tech-matters/twilio-configuration', () => ({
   getAccountAuthToken: jest.fn(),
 }));
 

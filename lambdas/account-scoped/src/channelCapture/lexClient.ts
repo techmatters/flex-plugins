@@ -27,7 +27,7 @@ import {
   RecognizeTextResponse,
 } from '@aws-sdk/client-lex-runtime-v2';
 import { isErr, newErr, newOk } from '../Result';
-import { getSsmParameter } from '../ssmCache';
+import { getSsmParameter } from '@tech-matters/ssm-cache';
 
 export type LexMemory = { [q: string]: string | number };
 
