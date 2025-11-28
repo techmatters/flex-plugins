@@ -125,7 +125,7 @@ export const initWebchatHandler: AccountScopedHandler = async (request, accountS
   // Hit Webchat Orchestration endpoint to generate conversation and get customer participant sid
   const result = await contactWebchatOrchestrator(
     accountSid,
-    'CVc98e0e891d4978f80754c43fe328291e',
+    'IG1ba46f2d6828b42ddd363f5045138044',
     request.body?.formData,
     customerFriendlyName,
   );
