@@ -22,7 +22,7 @@ import {
   getTwilioWorkspaceSid,
 } from '../configuration/twilioConfiguration';
 
-const validOperations = ['enable', 'disable'] as const;
+const validOperations = ['enable', 'disable', 'assign', 'unassign'] as const;
 type ValidOperations = (typeof validOperations)[number];
 
 const moveElementsBetweenArrays = ({
@@ -30,9 +30,9 @@ const moveElementsBetweenArrays = ({
   to,
   elements,
 }: {
-  from: Array<string>;
-  to: Array<string>;
-  elements: Array<string>;
+  from: string[];
+  to: string[];
+  elements: string[];
 }) => {
   const updatedFrom = from.filter(e => !elements.includes(e));
   const updatedTo = Array.from(new Set([...to, ...elements]));
@@ -40,56 +40,158 @@ const moveElementsBetweenArrays = ({
   return { updatedFrom, updatedTo };
 };
 
+const mergeAttributes = ({
+  attributes,
+  enabledSkills,
+  disabledSkills,
+}: {
+  attributes: { [k: string]: any };
+  enabledSkills: string[];
+  disabledSkills: string[];
+}) => {
+  return {
+    ...attributes,
+    routing: {
+      ...attributes?.routing,
+      skills: enabledSkills,
+    },
+    disabled_skills: {
+      ...attributes.disabled_skills,
+      skills: disabledSkills,
+    },
+  };
+};
+
+const handleEnableOperation = ({
+  attributes,
+  enabledSkills,
+  disabledSkills,
+  skills,
+}: {
+  attributes: { [k: string]: any };
+  enabledSkills: string[];
+  disabledSkills: string[];
+  skills: string[];
+}) => {
+  const { updatedFrom, updatedTo } = moveElementsBetweenArrays({
+    from: disabledSkills,
+    to: enabledSkills,
+    elements: skills,
+  });
+
+  return mergeAttributes({
+    attributes,
+    enabledSkills: updatedTo,
+    disabledSkills: updatedFrom,
+  });
+};
+
+const handleDisableOperation = ({
+  attributes,
+  enabledSkills,
+  disabledSkills,
+  skills,
+}: {
+  attributes: { [k: string]: any };
+  enabledSkills: string[];
+  disabledSkills: string[];
+  skills: string[];
+}) => {
+  const { updatedFrom, updatedTo } = moveElementsBetweenArrays({
+    from: enabledSkills,
+    to: disabledSkills,
+    elements: skills,
+  });
+
+  return mergeAttributes({
+    attributes,
+    enabledSkills: updatedFrom,
+    disabledSkills: updatedTo,
+  });
+};
+
+const handleAssignOperation = ({
+  attributes,
+  enabledSkills,
+  disabledSkills,
+  skills,
+}: {
+  attributes: { [k: string]: any };
+  enabledSkills: string[];
+  disabledSkills: string[];
+  skills: string[];
+}) => {
+  const assignedSkills = new Set([...enabledSkills, ...disabledSkills]);
+
+  const updatedEnabledSkills = skills.reduce((accum, skill) => {
+    if (assignedSkills.has(skill)) {
+      return accum;
+    }
+
+    return [...accum, skill];
+  }, enabledSkills);
+
+  return mergeAttributes({
+    attributes,
+    enabledSkills: updatedEnabledSkills,
+    disabledSkills,
+  });
+};
+
+const handleUnassignOperation = ({
+  attributes,
+  enabledSkills,
+  disabledSkills,
+  skills,
+}: {
+  attributes: { [k: string]: any };
+  enabledSkills: string[];
+  disabledSkills: string[];
+  skills: string[];
+}) => {
+  const updatedEnabledSkills = enabledSkills.filter(s => !skills.includes(s));
+  const updatedDisabledSkills = disabledSkills.filter(s => !skills.includes(s));
+
+  return mergeAttributes({
+    attributes,
+    enabledSkills: updatedEnabledSkills,
+    disabledSkills: updatedDisabledSkills,
+  });
+};
+
 const updateSkillsOperation = ({
   attributes,
   operation,
   skills,
 }: {
-  attributes: any;
-  skills: Array<string>;
+  attributes: { [k: string]: any };
+  skills: string[];
   operation: ValidOperations;
 }) => {
   const enabledSkills = attributes?.routing?.skills || [];
   const disabledSkills = attributes?.disabled_skills?.skills || [];
+  const params = {
+    attributes,
+    enabledSkills,
+    disabledSkills,
+    skills,
+  };
 
-  if (operation === 'enable') {
-    const { updatedFrom, updatedTo } = moveElementsBetweenArrays({
-      from: disabledSkills,
-      to: enabledSkills,
-      elements: skills,
-    });
-
-    return {
-      ...attributes,
-      routing: {
-        ...attributes?.routing,
-        skills: updatedTo,
-      },
-      disabled_skills: {
-        ...attributes.disabled_skills,
-        skills: updatedFrom,
-      },
-    };
-  }
-
-  if (operation === 'disable') {
-    const { updatedFrom, updatedTo } = moveElementsBetweenArrays({
-      from: enabledSkills,
-      to: disabledSkills,
-      elements: skills,
-    });
-
-    return {
-      ...attributes,
-      routing: {
-        ...attributes?.routing,
-        skills: updatedFrom,
-      },
-      disabled_skills: {
-        ...attributes.disabled_skills,
-        skills: updatedTo,
-      },
-    };
+  switch (operation) {
+    case 'enable': {
+      return handleEnableOperation(params);
+    }
+    case 'disable': {
+      return handleDisableOperation(params);
+    }
+    case 'assign': {
+      return handleAssignOperation(params);
+    }
+    case 'unassign': {
+      return handleUnassignOperation(params);
+    }
+    default:
+      return attributes;
   }
 };
 
@@ -132,27 +234,31 @@ const updateWorkerSkills = async ({
 };
 
 export const updateWorkersSkills: AccountScopedHandler = async ({ body }, accountSid) => {
-  const { workers, skills, operation } = body;
+  try {
+    const { workers, skills, operation } = body;
 
-  if (!workers || !Array.isArray(workers)) return newMissingParameterResult('workers');
-  if (!skills || !Array.isArray(skills)) return newMissingParameterResult('skills');
-  if (!operation || !validOperations.includes(operation))
-    return newMissingParameterResult('operation');
+    if (!workers || !Array.isArray(workers)) return newMissingParameterResult('workers');
+    if (!skills || !Array.isArray(skills)) return newMissingParameterResult('skills');
+    if (!operation || !validOperations.includes(operation))
+      return newMissingParameterResult('operation');
 
-  const workspaceSid = await getTwilioWorkspaceSid(accountSid);
+    const workspaceSid = await getTwilioWorkspaceSid(accountSid);
 
-  const client = await getTwilioClient(accountSid);
+    const client = await getTwilioClient(accountSid);
 
-  const result = await Promise.all(
-    workers.map(workerSid =>
-      updateWorkerSkills({ operation, skills, workerSid, workspaceSid, client }),
-    ),
-  );
+    const result = await Promise.all(
+      workers.map(workerSid =>
+        updateWorkerSkills({ operation, skills, workerSid, workspaceSid, client }),
+      ),
+    );
 
-  console.debug(`Skills ${skills} ${operation} for workers ${workers}`);
+    console.debug(`Skills ${skills} ${operation} for workers ${workers}`);
 
-  return newOk({
-    message: `Skills ${skills} ${operation} for workers ${workers}`,
-    result,
-  });
+    return newOk({
+      message: `Skills ${skills} ${operation} for workers ${workers}`,
+      result,
+    });
+  } catch (error: any) {
+    return newErr({ message: error.message, error: { statusCode: 500, cause: error } });
+  }
 };
