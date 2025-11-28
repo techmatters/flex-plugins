@@ -22,26 +22,26 @@ export const finishChatTask = async (channelSid: ChannelSid, token: Token, langu
     const body = { channelSid, Token: token, language };
 
     const options = {
-        method: 'POST',
+        method: "POST",
         body: JSON.stringify(body),
         headers: {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
         },
     };
 
     const response = await fetch(
-        `https://hrm-development.tl.techmatters.org/lambda/twilio/account-scoped/ACd8a2e89748318adf6ddff7df6948deaf/endChat`,
+        `https://hrm-development.tl.techmatters.org/lambda/twilio/account-scoped/AS/endChat`,
         options,
     );
     const responseJson = await response.json();
 
     if (response.status === 403) {
-        throw new Error('Server responded with 403 status (Forbidden)');
+        throw new Error("Server responded with 403 status (Forbidden)");
     }
 
     if (!response.ok) {
         const option = responseJson.stack ? { cause: responseJson.stack } : null;
-        console.error('Error:', option);
+        console.error("Error:", option);
         throw new Error(responseJson.message);
     }
 

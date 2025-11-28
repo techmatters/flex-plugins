@@ -55,6 +55,20 @@ export const newErr = <TError>({
   };
 };
 
+export const newJsErrorResult = <TError extends Error>(
+  error: TError,
+): ErrorResult<TError> => {
+  return {
+    _tag: 'Result',
+    status: 'error',
+    message: error.message,
+    error,
+    unwrap: function (this: ErrorResult<TError>) {
+      throw new ResultError(this);
+    },
+  };
+};
+
 type AsyncResultTypeFunction<TError extends ErrorResult<any>, TData> = (
   ...p: any[]
 ) => Promise<Result<TError, TData>>;
