@@ -42,6 +42,7 @@ import { flexToInstagramHandler } from './customChannels/instagram/flexToInstagr
 import { initWebchatHandler } from './webchatAuthentication/initWebchat';
 import { refreshTokenHandler } from './webchatAuthentication/refreshToken';
 import { getAccountSid } from '@tech-matters/twilio-configuration';
+import { validateRequestWithTwilioJwtToken } from './validation/twilioJwt';
 
 /**
  * Super simple router sufficient for directly ported Twilio Serverless functions
@@ -136,13 +137,17 @@ const ACCOUNTSID_ROUTES: Record<string, FunctionRoute> = {
 };
 
 const ENV_SHORTCODE_ROUTES: Record<string, FunctionRoute> = {
-  'webchatAuth/initWebchat': {
+  'webchatAuthentication/initWebchat': {
     requestPipeline: [],
     handler: initWebchatHandler,
   },
-  'webchatAuth/refreshToken': {
-    requestPipeline: [],
+  'webchatAuthentication/refreshToken': {
+    requestPipeline: [validateRequestWithTwilioJwtToken],
     handler: refreshTokenHandler,
+  },
+  endChat: {
+    requestPipeline: [validateRequestWithTwilioJwtToken],
+    handler: handleEndChat,
   },
 };
 

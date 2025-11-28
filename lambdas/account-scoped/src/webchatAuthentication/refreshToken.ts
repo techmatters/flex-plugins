@@ -15,51 +15,15 @@
  */
 
 import { AccountScopedHandler } from '../httpTypes';
-import jwt, { VerifyErrors } from 'jsonwebtoken';
-import { newMissingEnvironmentVariableResult } from '../httpErrors';
 import { createToken, TOKEN_TTL_IN_SECONDS } from './createToken';
-import { isOk, newErr, newJsErrorResult, newOk, Result } from '../Result';
+import { newOk } from '../Result';
 
 export const refreshTokenHandler: AccountScopedHandler = async ({ body }, accountSid) => {
   console.info('Refreshing token', accountSid);
-  let providedIdentity;
-  const { ADDRESS_SID, API_KEY, API_SECRET } = process.env;
-  if (!ADDRESS_SID) {
-    return newMissingEnvironmentVariableResult('ADDRESS_SID');
-  }
-  if (!API_KEY) {
-    return newMissingEnvironmentVariableResult('API_KEY');
-  }
-  if (!API_SECRET) {
-    return newMissingEnvironmentVariableResult('API_SECRET');
-  }
-  const validationResult = await new Promise<
-    Result<VerifyErrors | Error, jwt.JwtPayload | undefined>
-  >(res =>
-    jwt.verify(body.token, API_SECRET, {}, (err, decoded) => {
-      if (err) return res(newJsErrorResult(err));
-      if (typeof decoded === 'string') {
-        return res(
-          newJsErrorResult(
-            new Error(`Decoded token is string not a payload object: '${decoded}'`),
-          ),
-        );
-      }
-      return res(newOk(decoded));
-    }),
-  );
-  if (isOk(validationResult)) {
-    providedIdentity = validationResult.data?.grants?.identity;
-  } else {
-    return newErr({
-      message: 'Error validating token',
-      error: { statusCode: 403, cause: validationResult.error },
-    });
-  }
 
-  console.info('Token is valid for', providedIdentity, accountSid);
+  const providedIdentity = body.validationResult?.grants?.identity;
 
-  const refreshedToken = createToken(accountSid, API_KEY, API_SECRET, providedIdentity);
+  const refreshedToken = await createToken(accountSid, providedIdentity);
 
   console.info('Token refreshed', providedIdentity, accountSid);
 

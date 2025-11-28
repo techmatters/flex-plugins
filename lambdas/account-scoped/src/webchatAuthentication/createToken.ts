@@ -14,23 +14,44 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { AccountSID } from '../twilioTypes';
+import { AccountSID } from '@tech-matters/twilio-types';
 import { jwt as TwilioJwt } from 'twilio';
+import { getChatServiceSid, getHelplineCode } from '@tech-matters/twilio-configuration';
+import { getSsmParameter } from '@tech-matters/ssm-cache';
 
 export const TOKEN_TTL_IN_SECONDS = 60 * 60 * 6;
 
-export const createToken = (
-  accountSid: AccountSID,
-  apiKey: string,
-  apiSecret: string,
-  identity: string,
-) => {
+const lookupLegacySsmParameter = async (accountSid: AccountSID, suffix: string) => {
+  const shortCode = (await getHelplineCode(accountSid)).toUpperCase();
+  const { NODE_ENV } = process.env!;
+  let shortEnv: string;
+  switch (NODE_ENV) {
+    case 'production':
+      shortEnv = 'PROD';
+      break;
+    case 'staging':
+      shortEnv = 'STAGING';
+      break;
+    default:
+      shortEnv = 'PROD';
+  }
+  return getSsmParameter(`${shortEnv}_TWILIO_${shortCode}_${suffix}`);
+};
+
+export const getApiSecret = async (accountSid: AccountSID): Promise<string> =>
+  lookupLegacySsmParameter(accountSid, 'SECRET');
+
+export const createToken = async (accountSid: AccountSID, identity: string) => {
   console.debug('Creating new token', accountSid);
+
+  const apiKey = await lookupLegacySsmParameter(accountSid, 'API_KEY');
+  const apiSecret = await getApiSecret(accountSid);
+
   const { AccessToken } = TwilioJwt;
   const { ChatGrant } = AccessToken;
-
+  const serviceSid = await getChatServiceSid(accountSid);
   const chatGrant = new ChatGrant({
-    serviceSid: process.env.CONVERSATIONS_SERVICE_SID,
+    serviceSid,
   });
 
   const token = new AccessToken(accountSid, apiKey, apiSecret, {

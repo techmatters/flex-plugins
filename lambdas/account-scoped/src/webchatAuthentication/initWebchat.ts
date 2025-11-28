@@ -14,16 +14,12 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import {
-  getAccountAuthToken,
-  getTwilioClient,
-} from '../configuration/twilioConfiguration';
+import { getAccountAuthToken, getTwilioClient } from '@tech-matters/twilio-configuration';
 import type { AccountScopedHandler } from '../httpTypes';
-import type { AccountSID, ConversationSID } from '../twilioTypes';
+import type { AccountSID, ConversationSID } from '@tech-matters/twilio-types';
 import { newOk } from '../Result';
 
 import { createToken, TOKEN_TTL_IN_SECONDS } from './createToken';
-import { newMissingEnvironmentVariableResult } from '../httpErrors';
 const { version } = require('./../../package.json');
 
 const contactWebchatOrchestrator = async (
@@ -106,16 +102,6 @@ const sendWelcomeMessage = async (
 
 export const initWebchatHandler: AccountScopedHandler = async (request, accountSid) => {
   console.info('Initiating webchat', accountSid);
-  const { ADDRESS_SID, API_KEY, API_SECRET } = process.env;
-  if (!ADDRESS_SID) {
-    return newMissingEnvironmentVariableResult('ADDRESS_SID');
-  }
-  if (!API_KEY) {
-    return newMissingEnvironmentVariableResult('API_KEY');
-  }
-  if (!API_SECRET) {
-    return newMissingEnvironmentVariableResult('API_SECRET');
-  }
 
   const customerFriendlyName = request.body?.formData?.friendlyName || 'Customer';
 
@@ -125,7 +111,7 @@ export const initWebchatHandler: AccountScopedHandler = async (request, accountS
   // Hit Webchat Orchestration endpoint to generate conversation and get customer participant sid
   const result = await contactWebchatOrchestrator(
     accountSid,
-    ADDRESS_SID,
+    'CVc98e0e891d4978f80754c43fe328291e',
     request.body?.formData,
     customerFriendlyName,
   );
@@ -133,7 +119,7 @@ export const initWebchatHandler: AccountScopedHandler = async (request, accountS
   ({ identity, conversationSid } = result.data);
 
   // Generate token for customer
-  const token = createToken(accountSid, API_KEY, API_SECRET, identity);
+  const token = await createToken(accountSid, identity);
 
   // OPTIONAL — if user query is defined
   if (request.body?.formData?.query) {
