@@ -1,0 +1,25 @@
+{
+  "survey": {},
+  "preEngagement": {
+    "age": [
+      "ChildInformationTab.age",
+      "CallerInformationTab.age"
+    ],
+    "gender": [
+      "ChildInformationTab.gender",
+      "CallerInformationTab.gender"
+    ],
+    "friendlyName": [
+      "ChildInformationTab.friendlyName",
+      "CallerInformationTab.friendlyName"
+    ],
+    "region": [
+      "ChildInformationTab.region",
+      "CallerInformationTab.region"
+    ],
+    "ethnicity": [
+      "ChildInformationTab.ethnicity",
+      "CallerInformationTab.ethnicity"
+    ]
+  }
+}

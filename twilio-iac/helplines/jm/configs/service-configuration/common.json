@@ -12,7 +12,8 @@
             "enable_lex": true,
             "enable_llm_summary": true,
             "enable_lex_v2": true,
-            "enable_configurable_max_categories": true
+            "enable_configurable_max_categories": true,
+            "use_prepopulate_mappings": true
         },
         "helplineLanguage": "en-JM",
         "permissionConfig": "jm"
