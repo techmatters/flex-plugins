@@ -23,12 +23,12 @@
  */
 
 // eslint-disable-next-line prettier/prettier
-import {AccountSID, ChatChannelSID, ConversationSID} from '../twilioTypes';
+import {AccountSID, ChatChannelSID, ConversationSID} from '@tech-matters/twilio-types';
 import {
   getChatServiceSid,
   getFlexProxyServiceSid,
   getTwilioClient,
-} from '../configuration/twilioConfiguration';
+} from '@tech-matters/twilio-configuration';
 
 export type Event =
   | {
@@ -53,8 +53,8 @@ const deleteProxySession = async (accountSid: AccountSID, proxySession: string) 
       console.log(`Tried to remove proxy session ${proxySession} but couldn't find it.`);
       return false;
     }
-
-    return await ps.remove();
+    const removeResult = await ps.remove();
+    return removeResult;
   } catch (err) {
     // eslint-disable-next-line no-console
     console.log('deleteProxySession error: ', err);
@@ -103,7 +103,7 @@ const deactivateConversation = async (
     if (attributes.proxySession) {
       await deleteProxySession(accountSid, attributes.proxySession);
     }
-    console.log('Attempting to deactivate active conversation', conversationSid);
+    console.info('Attempting to deactivate active conversation', conversationSid);
     const updated = await conversation.update({
       state: 'closed',
       xTwilioWebhookEnabled: 'true',

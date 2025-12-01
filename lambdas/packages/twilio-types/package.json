@@ -1,0 +1,15 @@
+{
+  "name": "@tech-matters/twilio-types",
+  "version": "1.0.0",
+  "description": "Module to hold Twilio related data types (twilio domain repo version)",
+  "main": "dist/index.js",
+  "devDependencies": {
+    "@tsconfig/node22": "^22.0.0",
+    "ts-node": "^10.1.0",
+    "typescript": "^5.9.2"
+  },
+  "scripts": {
+    "build": "npx tsc",
+    "lint": "eslint --max-warnings 5 --ext ts src"
+  }
+}

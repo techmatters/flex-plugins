@@ -21,9 +21,9 @@ import {
   Body,
 } from '../../../../src/customChannels/instagram/instagramToFlex';
 import { HttpRequest } from '../../../../src/httpTypes';
-import { AccountSID } from '../../../../src/twilioTypes';
+import { AccountSID } from '@tech-matters/twilio-types';
 import { isOk } from '../../../../src/Result';
-import { getTwilioClient } from '../../../../src/configuration/twilioConfiguration';
+import { getTwilioClient } from '@tech-matters/twilio-configuration';
 
 jest.mock('../../../../src/customChannels/configuration', () => ({
   getFacebookPageAccessToken: jest.fn().mockResolvedValue('test token'),
@@ -31,7 +31,7 @@ jest.mock('../../../../src/customChannels/configuration', () => ({
   getChannelStudioFlowSid: jest.fn().mockResolvedValue('INSTAGRAM_STUDIO_FLOW_SID'),
 }));
 
-jest.mock('../../../../src/configuration/twilioConfiguration', () => ({
+jest.mock('@tech-matters/twilio-configuration', () => ({
   getTwilioClient: jest.fn(),
 }));
 

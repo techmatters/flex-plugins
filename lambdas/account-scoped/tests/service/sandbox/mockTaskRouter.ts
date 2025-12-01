@@ -16,7 +16,7 @@
 
 import { mockttpServer } from './mockingProxy';
 import 'twilio/lib/rest/taskrouter/v1/workspace/task';
-import { TaskSID, WorkspaceSID } from '../../../src/twilioTypes';
+import { TaskSID, WorkspaceSID } from '@tech-matters/twilio-types';
 import { TaskResource } from '../../testTwilioTypes';
 
 //const twilioTaskEndpointAnyTaskPattern: RegExp =
