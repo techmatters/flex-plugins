@@ -62,7 +62,7 @@ const mergeAttributes = ({
   };
 };
 
-const handleEnableOperation = ({
+const setSkillsEnable = ({
   attributes,
   enabledSkills,
   disabledSkills,
@@ -86,7 +86,7 @@ const handleEnableOperation = ({
   });
 };
 
-const handleDisableOperation = ({
+const setSkillsDisable = ({
   attributes,
   enabledSkills,
   disabledSkills,
@@ -110,7 +110,7 @@ const handleDisableOperation = ({
   });
 };
 
-const handleAssignOperation = ({
+const setSkillsAssign = ({
   attributes,
   enabledSkills,
   disabledSkills,
@@ -138,7 +138,7 @@ const handleAssignOperation = ({
   });
 };
 
-const handleUnassignOperation = ({
+const setSkillsUnassign = ({
   attributes,
   enabledSkills,
   disabledSkills,
@@ -179,16 +179,16 @@ const updateSkillsOperation = ({
 
   switch (operation) {
     case 'enable': {
-      return handleEnableOperation(params);
+      return setSkillsEnable(params);
     }
     case 'disable': {
-      return handleDisableOperation(params);
+      return setSkillsDisable(params);
     }
     case 'assign': {
-      return handleAssignOperation(params);
+      return setSkillsAssign(params);
     }
     case 'unassign': {
-      return handleUnassignOperation(params);
+      return setSkillsUnassign(params);
     }
     default:
       return attributes;
@@ -233,7 +233,10 @@ const updateWorkerSkills = async ({
   }
 };
 
-export const updateWorkersSkills: AccountScopedHandler = async ({ body }, accountSid) => {
+export const handleUpdateWorkersSkills: AccountScopedHandler = async (
+  { body },
+  accountSid,
+) => {
   try {
     const { workers, skills, operation } = body;
 
