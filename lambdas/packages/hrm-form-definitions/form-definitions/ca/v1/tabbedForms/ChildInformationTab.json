@@ -424,7 +424,7 @@
   {
     "name": "livingSituation",
     "label": "Residence/Population Center",
-    "type": "listbox-multiselect",
+    "type": "select",
     "options": [
       {
         "value": "",
