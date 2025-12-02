@@ -162,6 +162,7 @@
   "Training/TechTesting": "Training/Tech Testing",
   "CMOnlyEmergency": "CM Only - Emergency",
   "NewcomerLength": "How long have you been in Canada?",
+  "ifOtherInterpreter": "If Other Interpreter Service used, please specify:", 
 
   "Switchboard-NoQueuesSwitchboarded": "No queues are currently being switchboarded",
   "Switchboard-QueueSwitchboardedStatus": "{{queueName}} queue is currently being switchboarded by {{supervisorName}} since {{startDate}} at {{startTime}}",
@@ -389,6 +390,7 @@
   "incidentType": "Type d'incident ?",
   "NewcomerLength": "Depuis combien de temps êtes-vous au Canada ?",
   "Please select an option": "Veuillez sélectionner une option",
+  "ifOtherInterpreter": "Si vous avez utilisé un autre service d'interprétation, veuillez préciser :", 
 
   "Switchboard-NoQueuesSwitchboarded": "aucune file d'attente n'est commutée",
   "Switchboard-QueueSwitchboardedStatus": "{{queueName}} est en cours de changement par {{supervisorName}} depuis {{startDate}} à {{startTime}}",
