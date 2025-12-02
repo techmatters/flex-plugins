@@ -135,32 +135,24 @@
     "type": "listbox-multiselect",
     "options": [
       {
-        "value": "Agender",
-        "label": "Agender"
+        "value": "Girl/Woman",
+        "label": "Girl/Woman"
       },
       {
-        "value": "Cis Male/Man",
-        "label": "Cis Male/Man"
+        "value": "Boy/Man",
+        "label": "Boy/Man"
       },
       {
-        "value": "Cis Female/Woman",
-        "label": "Cis Female/Woman"
+        "value": "Non-Binary, Trans, Genderqueer, Genderfluid, Two-Spirit",
+        "label": "Non-Binary, Trans, Genderqueer, Genderfluid, Two-Spirit"
       },
       {
-        "value": "Non-Binary/Genderqueer/Gender fluid",
-        "label": "Non-Binary/Genderqueer/Gender fluid"
+        "value": "Heterosexual (Straight)",
+        "label": "Heterosexual (Straight)"
       },
       {
-        "value": "Two-Spirit",
-        "label": "Two-Spirit"
-      },
-      {
-        "value": "Trans Female/Woman",
-        "label": "Trans Female/Woman"
-      },
-      {
-        "value": "Trans Male/Man",
-        "label": "Trans Male/Man"
+        "value": "Homosexual (Gay or Lesbian), Asexual, Bisexual, Pansexual, Two-Spirit",
+        "label": "Homosexual (Gay or Lesbian), Asexual, Bisexual, Pansexual, Two-Spirit"
       },
       {
         "value": "Other",
@@ -168,7 +160,7 @@
       },
       {
         "value": "Unknown",
-        "label": "Unknown/Did not disclose/Did not ask"
+        "label": "Did not disclose/Did not ask"
       }
     ],
     "required": {
@@ -182,50 +174,6 @@
     "label": "ifOtherGenderPleaseSpecify",
     "type": "input",
     "isPII": true
-  },
-  {
-    "name": "sexualOrientation",
-    "label": "SexualOrientation",
-    "type": "listbox-multiselect",
-    "options": [
-      {
-        "value": "Asexual",
-        "label": "Asexual"
-      },
-      {
-        "value": "Bisexual or Pansexual",
-        "label": "Bisexual or Pansexual"
-      },
-      {
-        "value": "Gay or Lesbian",
-        "label": "Gay or Lesbian"
-      },
-      {
-        "value": "Queer",
-        "label": "Queer"
-      },
-      {
-        "value": "Heterosexual or Straight",
-        "label": "Heterosexual or Straight"
-      },
-      {
-        "value": "Questioning or Unsure",
-        "label": "Questioning or Unsure"
-      },
-      {
-        "value": "Other",
-        "label": "Other"
-      },
-      {
-        "value": "Unknown",
-        "label": "Unknown/Did not disclose/Did not ask"
-      }
-    ],
-    "required": {
-      "value": true,
-      "message": "RequiredFieldError"
-    },
-    "isPII": false
   },
   {
     "name": "otherSexualOrientation",
@@ -331,32 +279,8 @@
         "label": "Black (e.g., African, Afro-Caribbean, African Canadian descent)"
       },
       {
-        "value": "East Asian",
-        "label": "East Asian (e.g., East Asian descent; Korean, Chinese, Japanese, etc.)"
-      },
-      {
         "value": "Indigenous",
-        "label": "Indigenous (To North America)"
-      },
-      {
-        "value": "First Nations",
-        "label": "First Nations [sub-category of Indigenous (To North America)]"
-      },
-      {
-        "value": "Métis",
-        "label": "Métis [sub-category of Indigenous (To North America)]"
-      },
-      {
-        "value": "Inuit",
-        "label": "Inuit [sub-category of Indigenous (To North America)]"
-      },
-      {
-        "value": "Indigenous (non-specified)",
-        "label": "Indigenous (non-specified) [sub-category of Indigenous (To North America)]"
-      },
-      {
-        "value": "Indigenous (Not to North America)",
-        "label": "Indigenous (Not to North America)"
+        "label": "Indigenous"
       },
       {
         "value": "Latin American",
@@ -367,12 +291,8 @@
         "label": "Middle Eastern (e.g., Arab, Persian, West Asian descent; Egyptian, Iranian, Lebanese, Turkish, etc.)"
       },
       {
-        "value": "Southeast Asian",
-        "label": "Southeast Asian (e.g., Southeast Asian descent; Cambodian, Filipino, Indonesian, Laotian, Vietnamese, etc.)"
-      },
-      {
-        "value": "South Asian",
-        "label": "South Asian (e.g., South Asian descent; East Indian, Afghan, Pakistani, Sri Lankan, etc.)"
+        "value": "South, East, or Southeast Asian",
+        "label": "South, East, or Southeast Asian (e.g., Korean, Chinese, Japanese, Cambodian, Filipino, Indonesian, Laotian, Vietnamese, Pakistani, Sri Lankan, etc.)"
       },
       {
         "value": "White",
@@ -380,7 +300,7 @@
       },
       {
         "value": "Other",
-        "label": "Other"
+        "label": "Other (Prefers to Self-Identify)"
       },
       {
         "value": "Unknown",
@@ -398,6 +318,46 @@
     "label": "ifOtherRacePleaseSpecify",
     "type": "input",
     "isPII": true
+  },
+  {
+    "name": "indigenousGroup",
+    "label": "indigenousGroup",
+    "type": "select",
+    "options": [
+      {
+        "value": "N/A",
+        "label": "N/A"
+      },
+      {
+        "value": "First Nations",
+        "label": "First Nations"
+      },
+      {
+        "value": "Métis",
+        "label": "Métis"
+      },
+      {
+        "value": "Inuit",
+        "label": "Inuit"
+      },
+      {
+        "value": "Indigenous (non-specified)",
+        "label": "Indigenous (non-specified)"
+      },
+      {
+        "value": "Other",
+        "label": "Other"
+      },
+      {
+        "value": "Unknown",
+        "label": "Unknown/Did not disclose/Did not ask"
+      }
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    },
+    "isPII": false
   },
   {
     "name": "school",
@@ -463,52 +423,32 @@
   },
   {
     "name": "livingSituation",
-    "label": "Residence/Living Situation",
-    "type": "select",
+    "label": "Residence/Population Center",
+    "type": "listbox-multiselect",
     "options": [
       {
         "value": "",
         "label": "Please select an option"
       },
       {
-        "value": "Living with family members/guardians",
-        "label": "Living with family members/guardians"
+        "value": "Rural area",
+        "label": "Rural area"
       },
       {
-        "value": "Member of a military family",
-        "label": "Member of a military family"
+        "value": "Urban area",
+        "label": "Urban area"
       },
       {
-        "value": "Living independently/with peers",
-        "label": "Living independently/with peers"
+        "value": "First Nations reserve",
+        "label": "First Nations reserve"
       },
       {
-        "value": "Living in a School residence",
-        "label": "Living in a School residence"
+        "value": "Military family",
+        "label": "Military family"
       },
       {
-        "value": "In hospital",
-        "label": "In hospital"
-      },
-      {
-        "value": "Treatment centre",
-        "label": "Treatment centre"
-      },
-      {
-        "value": "Recovery home",
-        "label": "Recovery home"
-      },
-      {
-        "value": "Assisted living centre",
-        "label": "Assisted living centre"
-      },
-      {
-        "value": "Homeless",
-        "label": "Homeless (living in a shelter, on the streets or staying with people temporarily)"
-      },
-      {
-        "value": "In care",
-        "label": "In care"
+        "value": "Homeless (e.g., Living in a Shelter, On the Streets, Staying with People Temporarily)",
+        "label": "Homeless (e.g., Living in a Shelter, On the Streets, Staying with People Temporarily)"
       },
       {
         "value": "Other",
@@ -532,63 +472,13 @@
     "isPII": true
   },
   {
-    "name": "region",
-    "label": "PopulationCentre",
-    "type": "select",
-    "options": [
-      {
-        "value": "",
-        "label": "Please select an option"
-      },
-      {
-        "value": "Rural area",
-        "label": "Rural area (approximately 1,000 people)"
-      },
-      {
-        "value": "Small city/town",
-        "label": "Small city/town (approximately 1,000 to 29,999 people)"
-      },
-      {
-        "value": "Medium city",
-        "label": "Medium city (approximately 30,000 to 99,999 people)"
-      },
-      {
-        "value": "Large city/urban centre",
-        "label": "Large city/urban centre (approximately 100,000 people or more)"
-      },
-      {
-        "value": "First Nations reserve",
-        "label": "First Nations reserve"
-      },
-      {
-        "value": "Other",
-        "label": "Other"
-      },
-      {
-        "value": "Unknown",
-        "label": "Unknown/Did not disclose/Did not ask"
-      }
-    ],
-    "required": {
-      "value": true,
-      "message": "RequiredFieldError"
-    },
-    "isPII": false
-  },
-  {
-    "name": "otherPopulation",
-    "label": "ifOtherPopulationPleaseSpecify",
-    "type": "input",
-    "isPII": true
-  },
-  {
     "name": "upset",
     "label": "Upset",
     "type": "select",
     "options": [
       {
         "value": "N/A - Call",
-        "label": ""
+        "label": "N/A - Call"
       },
       {
         "value": "1",
@@ -623,6 +513,10 @@
         "label": "Did not disclose/Did not ask"
       }
     ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    },
     "isPII": false
   },
   {
@@ -630,6 +524,10 @@
     "label": "supportType",
     "type": "listbox-multiselect",
     "options": [
+      {
+        "value": "NA - Call",
+        "label": "NA - Call"
+      },
       {
         "value": "I want to talk about my feelings",
         "label": "I want to talk about my feelings"
@@ -655,6 +553,10 @@
         "label": "Unknown/Did not disclose/Did not ask"
       }
     ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    },
     "isPII": false
   },
   {
@@ -741,12 +643,8 @@
         "label": "6 or more years"
       },
       {
-        "value": "I prefer not to answer",
-        "label": "I prefer not to answer"
-      },
-      {
-        "value": "Unknown",
-        "label": "I don't know"
+        "value": "Did not disclose/Did not ask",
+        "label": "Did not disclose/Did not ask"
       }
     ]
     },
