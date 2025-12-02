@@ -40,9 +40,6 @@ const contactWebchatOrchestrator = async (
       friendlyName: customerFriendlyName,
     }),
   );
-
-  let conversationSid: ConversationSID;
-  let identity;
   const authToken = await getAccountAuthToken(accountSid);
 
   const res = await fetch(`https://flex-api.twilio.com/v2/WebChats`, {
@@ -69,9 +66,11 @@ const contactWebchatOrchestrator = async (
       },
     });
   }
-  ({ identity, conversationSid } = (await res.json()) as any);
+  const orchestratorResponse = (await res.json()) as any;
 
-  console.info('Webchat Orchestrator successfully called');
+  console.info('Webchat Orchestrator successfully called', orchestratorResponse);
+
+  const { conversationSid, identity } = orchestratorResponse;
 
   return newOk({
     conversationSid,
