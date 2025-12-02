@@ -90,12 +90,6 @@
     "isPII": true
   },
   {
-    "name": "safetyPlan",
-    "label": "safetyPlan",
-    "type": "checkbox",
-    "isPII": false
-  },
-  {
     "name": "emergencyReferralPolice",
     "label": "emergencyReferralPolice",
     "type": "checkbox",
@@ -145,9 +139,19 @@
       {
         "value": "Mandarin Interpreter Service (LLS)",
         "label": "Mandarin Interpreter Service (LLS)"
+      },
+      {
+        "value": "Other",
+        "label": "Other"
       }
     ],
     "isPII": false
+  },
+  {
+    "name": "ifOtherInterpreter",
+    "label": "ifOtherInterpreter",
+    "type": "input",
+    "isPII": true
   },
   {
     "name": "interpreterID",
