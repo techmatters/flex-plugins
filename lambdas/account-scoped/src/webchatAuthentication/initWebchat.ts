@@ -70,7 +70,7 @@ const contactWebchatOrchestrator = async (
 
   console.info('Webchat Orchestrator successfully called', orchestratorResponse);
 
-  const { conversationSid, identity } = orchestratorResponse;
+  const { conversation_sid: conversationSid, identity } = orchestratorResponse;
 
   return newOk({
     conversationSid,
