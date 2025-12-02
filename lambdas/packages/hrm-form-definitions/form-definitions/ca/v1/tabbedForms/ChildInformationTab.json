@@ -468,7 +468,7 @@
     "options": [
       {
         "value": "",
-        "label": ""
+        "label": "Please select an option"
       },
       {
         "value": "Living with family members/guardians",
@@ -538,7 +538,7 @@
     "options": [
       {
         "value": "",
-        "label": ""
+        "label": "Please select an option"
       },
       {
         "value": "Rural area",
