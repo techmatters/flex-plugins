@@ -192,6 +192,24 @@ const ConfirmUpdatesModal: React.FC<Props> = () => {
               .length;
           }
 
+          if (operation === 'assign') {
+            return selectedWorkersFlexState.filter(
+              w =>
+                !(
+                  w.worker.attributes.routing?.skills?.includes(skill) ||
+                  w.worker.attributes.disabled_skills?.skills?.includes(skill)
+                ),
+            ).length;
+          }
+
+          if (operation === 'unassign') {
+            return selectedWorkersFlexState.filter(
+              w =>
+                w.worker.attributes.routing?.skills?.includes(skill) ||
+                w.worker.attributes.disabled_skills?.skills?.includes(skill),
+            ).length;
+          }
+
           return 0;
         };
 

@@ -18,6 +18,7 @@ import { getHrmConfig } from '../hrmConfig';
 import fetchProtectedApi from './fetchProtectedApi';
 import { TaskSID } from '../types/twilio';
 import { ApiError } from './fetchApi';
+import { TeamsViewState } from '../states/teamsView';
 
 type PopulateCounselorsReturn = { sid: string; fullName: string }[];
 
@@ -74,5 +75,5 @@ export const getWorkerAttributes = async (workerSid: string) => {
 export const updateWorkersSkills = async (payload: {
   workers: Array<string>;
   skills: Array<string>;
-  operation: 'enable' | 'disable';
+  operation: Required<TeamsViewState['operation']>;
 }) => fetchProtectedApi('/updateWorkersSkills', payload, { useTwilioLambda: true, useJsonEncode: true });
