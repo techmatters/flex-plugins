@@ -163,7 +163,8 @@
   "CMOnlyEmergency": "CM Only - Emergency",
   "NewcomerLength": "How long have you been in Canada?",
   "ifOtherInterpreter": "If Other Interpreter Service used, please specify:", 
-  "Gender": "Which of these gender & sexual orientation option(s) does the service user identify with?".
+  "Gender": "Which of these gender & sexual orientation option(s) does the service user identify with?",
+  "indigenousGroup": "If Indigenous, to which Indigenous group does the service user belong?",
     
 
   "Switchboard-NoQueuesSwitchboarded": "No queues are currently being switchboarded",
@@ -394,6 +395,7 @@
   "Please select an option": "Veuillez sélectionner une option",
   "ifOtherInterpreter": "Si vous avez utilisé un autre service d'interprétation, veuillez préciser :", 
   "Gender": "À laquelle(s) option(s) de genre et d'orientation sexuelle l'usager du service s'identifie-t-il ?",
+  "indigenousGroup": "Si l'usager est autochtone, à quel groupe autochtone appartient-il ?",
 
   "Switchboard-NoQueuesSwitchboarded": "aucune file d'attente n'est commutée",
   "Switchboard-QueueSwitchboardedStatus": "{{queueName}} est en cours de changement par {{supervisorName}} depuis {{startDate}} à {{startTime}}",
