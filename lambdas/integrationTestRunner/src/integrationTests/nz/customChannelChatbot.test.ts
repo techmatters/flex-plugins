@@ -43,8 +43,10 @@ test('NZ/staging instagram custom channel chatbot integration test', async () =>
       sender: 'flex',
       text: `Kia ora, you've reached Youthline.`,
     },
-    { sender: 'flex', 
-    text: `If you'd like to talk to the Helpline, please respond 'Yes'. To contact the Fundraising and Marketing team, please respond 'No'.`},
+    {
+      sender: 'flex',
+      text: `If you'd like to talk to the Helpline, please respond 'Yes'. To contact the Fundraising and Marketing team, please respond 'No'.`,
+    },
     {
       sender: 'service-user',
       text: `Yes`,
