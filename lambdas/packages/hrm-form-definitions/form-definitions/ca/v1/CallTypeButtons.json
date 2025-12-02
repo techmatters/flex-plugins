@@ -13,16 +13,10 @@
   },
   {
     "name": "silent",
-    "label": "Silent",
+    "label": "Silent/Hang Up (Under 5 Minutes)",
     "type": "button",
     "category": "non-data"
-  },
-  {
-    "name": "hangup",
-    "label": "Hang Up",
-    "type": "button",
-    "category": "non-data"
-  },    
+  },  
   {
     "name": "abuse",
     "label": "Direct Abuse to Counsellor",
