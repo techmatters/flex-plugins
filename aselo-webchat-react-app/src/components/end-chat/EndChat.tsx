@@ -15,12 +15,11 @@
  */
 
 /* eslint-disable react/require-default-props */
-import React, { useState } from "react";
+import { useState } from "react";
 import { Button } from "@twilio-paste/core/button";
 import { useDispatch } from "react-redux";
 
-import { finishChatTask } from "./end-chat-service";
-import { sessionDataHandler } from "../../sessionDataHandler";
+import { contactBackend, sessionDataHandler } from "../../sessionDataHandler";
 import { changeEngagementPhase, updatePreEngagementData } from "../../store/actions/genericActions";
 import { EngagementPhase } from "../../store/definitions";
 
@@ -41,9 +40,12 @@ export default function EndChat({ channelSid, token, language, action }: Props) 
             case "finishTask":
                 try {
                     setDisabled(true);
-                    await finishChatTask(channelSid, token, language);
+                    await contactBackend("/endChat", { channelSid, token, language });
+                    sessionDataHandler.clear();
+                    dispatch(updatePreEngagementData({ email: "", name: "", query: "" }));
+                    dispatch(changeEngagementPhase({ phase: EngagementPhase.PreEngagementForm }));
                 } catch (error) {
-                    console.log(error);
+                    console.error(error);
                 } finally {
                     setDisabled(false);
                 }

@@ -14,13 +14,10 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-/* eslint-disable react/require-default-props */
-import React from "react";
 import { useDispatch } from "react-redux";
 import { Button } from "@twilio-paste/core/button";
 
-import { finishChatTask } from "./end-chat-service";
-import { sessionDataHandler } from "../../sessionDataHandler";
+import { contactBackend, sessionDataHandler } from "../../sessionDataHandler";
 import { changeEngagementPhase, updatePreEngagementData } from "../../store/actions/genericActions";
 import { EngagementPhase } from "../../store/definitions";
 
@@ -41,7 +38,7 @@ export default function QuickExit({ channelSid, token, language, finishTask }: P
         if (finishTask) {
             // Only if we started a task
             try {
-                await finishChatTask(channelSid, token, language);
+                await contactBackend("/endChat", { channelSid, token, language });
             } catch (error) {
                 console.error(error);
             }

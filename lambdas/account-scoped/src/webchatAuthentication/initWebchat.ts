@@ -69,7 +69,7 @@ const contactWebchatOrchestrator = async (
       },
     });
   }
-  ({ identity, conversation_sid: conversationSid } = (await res.json()) as any);
+  ({ identity, conversationSid } = (await res.json()) as any);
 
   console.info('Webchat Orchestrator successfully called');
 
@@ -125,7 +125,7 @@ export const initWebchatHandler: AccountScopedHandler = async (request, accountS
   // Hit Webchat Orchestration endpoint to generate conversation and get customer participant sid
   const result = await contactWebchatOrchestrator(
     accountSid,
-    'IG1ba46f2d6828b42ddd363f5045138044',
+    'IG1ba46f2d6828b42ddd363f5045138044', // Obvs needs to be SSM parameter
     request.body?.formData,
     customerFriendlyName,
   );

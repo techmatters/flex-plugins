@@ -1,11 +1,11 @@
-import { ProcessedTokenResponse, TokenResponse } from "./definitions";
+import { TokenResponse } from "./definitions";
 import { LocalStorageUtil } from "./utils/LocalStorage";
 import { generateMixPanelHeaders, generateSecurityHeaders } from "./utils/generateHeaders";
 
 export const LOCALSTORAGE_SESSION_ITEM_ID = "TWILIO_WEBCHAT_WIDGET";
 const CUSTOMER_DEFAULT_NAME = "Customer";
 
-type SessionDataStorage = ProcessedTokenResponse & {
+type SessionDataStorage = TokenResponse & {
     loginTimestamp: string | null;
     participantNameMap?: Record<string, string>;
 };
@@ -19,12 +19,18 @@ type InitWebchatAPIPayload = {
 
 type RefreshTokenAPIPayload = {
     DeploymentKey: string;
-    Token: string;
+    token: string;
+};
+
+type EndChatPayload = {
+    channelSid: string;
+    language?: string;
+    token: string;
 };
 
 export async function contactBackend<T>(
     endpointRoute: string,
-    body: InitWebchatAPIPayload | RefreshTokenAPIPayload,
+    body: InitWebchatAPIPayload | RefreshTokenAPIPayload | EndChatPayload,
 ): Promise<T> {
     /* eslint-disable-next-line no-use-before-define, @typescript-eslint/no-use-before-define */
     const _endpoint = `https://hrm-development.tl.techmatters.org/lambda/twilio/account-scoped/AS`;
@@ -89,7 +95,7 @@ class SessionDataHandler {
         return this._deploymentKey;
     }
 
-    tryResumeExistingSession(): ProcessedTokenResponse | null {
+    tryResumeExistingSession(): TokenResponse | null {
         const logger = window.Twilio.getLogger("SessionDataHandler");
         logger.info("trying to refresh existing session");
         const storedTokenData = getStoredSessionData();
@@ -127,7 +133,7 @@ class SessionDataHandler {
         try {
             newTokenData = await contactBackend<TokenResponse>("/webchatAuthentication/refreshToken", {
                 DeploymentKey: this._deploymentKey,
-                Token: storedTokenData.token,
+                token: storedTokenData.token,
             });
         } catch (e) {
             logger.error(`Something went wrong when trying to get an updated token: ${e}`);
@@ -152,12 +158,10 @@ class SessionDataHandler {
 
         let newTokenData;
         storeSessionData({
-            ...this.processNewTokenResponse({
-                token: "",
-                expiration: "",
-                identity: customerIdentity ?? "",
-                conversation_sid: "",
-            }),
+            token: "",
+            expiration: "",
+            identity: customerIdentity ?? "",
+            conversationSid: "",
             loginTimestamp,
         });
 
@@ -178,22 +182,12 @@ class SessionDataHandler {
         }
 
         logger.info("new session successfully created");
-        const response = this.processNewTokenResponse(newTokenData);
         storeSessionData({
-            ...response,
+            ...newTokenData,
             loginTimestamp,
         });
 
-        return response as ProcessedTokenResponse;
-    }
-
-    processNewTokenResponse(tokenResponse: TokenResponse): ProcessedTokenResponse {
-        return {
-            token: tokenResponse.token,
-            expiration: tokenResponse.expiration,
-            identity: tokenResponse.identity,
-            conversationSid: tokenResponse.conversation_sid,
-        };
+        return newTokenData as TokenResponse;
     }
 
     clear() {
