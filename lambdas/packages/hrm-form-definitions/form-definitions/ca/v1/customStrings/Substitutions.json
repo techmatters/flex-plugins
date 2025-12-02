@@ -161,6 +161,7 @@
   "ArousalCaller": "Arousal Caller",
   "Training/TechTesting": "Training/Tech Testing",
   "CMOnlyEmergency": "CM Only - Emergency",
+  "NewcomerLength": "How long have you been in Canada?",
 
   "Switchboard-NoQueuesSwitchboarded": "No queues are currently being switchboarded",
   "Switchboard-QueueSwitchboardedStatus": "{{queueName}} queue is currently being switchboarded by {{supervisorName}} since {{startDate}} at {{startTime}}",
@@ -386,6 +387,8 @@
   "isChildInImmediateDanger": "La personne concernée est-elle en danger immédiat ?",
   "incidentLocation": "Lieu de l'incident",
   "incidentType": "Type d'incident ?",
+  "NewcomerLength": "Depuis combien de temps êtes-vous au Canada ?",
+  "Please select an option": "Veuillez sélectionner une option",
 
   "Switchboard-NoQueuesSwitchboarded": "aucune file d'attente n'est commutée",
   "Switchboard-QueueSwitchboardedStatus": "{{queueName}} est en cours de changement par {{supervisorName}} depuis {{startDate}} à {{startTime}}",
