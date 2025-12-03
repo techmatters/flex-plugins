@@ -472,6 +472,73 @@
     "isPII": true
   },
   {
+    "name": "Newcomer",
+    "label": "Newcomer",
+    "type": "select",
+      "options": [
+      {
+        "value": "",
+        "label": "Please select an option"
+      },
+      {
+        "value": "Yes",
+        "label": "Yes"
+      },
+      {
+        "value": "No",
+        "label": "No"
+      },
+      {
+        "value": "Maybe",
+        "label": "Maybe"
+      },
+      {
+        "value": "Unknown",
+        "label": "Did not disclose"
+      }
+    ],
+      "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    },
+    "isPII": false
+  },
+  {
+    "name": "newcomerLength",
+    "label": "NewcomerLength",
+    "type": "dependent-select",
+    "dependsOn": "Newcomer",
+    "defaultOption": {
+      "value": "Unknown",
+      "label": ""
+    },
+      "options": {
+        "Yes": [
+      {
+        "value": "",
+        "label": "Please select an option"
+      },
+      {
+        "value": "5 years or less",
+        "label": "5 years or less"
+      },
+      {
+        "value": "6 or more years",
+        "label": "6 or more years"
+      },
+      {
+        "value": "Did not disclose/Did not ask",
+        "label": "Did not disclose/Did not ask"
+      }
+    ]
+    },
+      "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    },
+    "isPII": false
+  },
+  {
     "name": "upset",
     "label": "Upset",
     "type": "select",
@@ -565,34 +632,6 @@
     "type": "select",
     "options": [
       {
-        "value": "N/A - Call",
-        "label": ""
-      },
-      {
-        "value": "Yes",
-        "label": "Yes"
-      },
-      {
-        "value": "No",
-        "label": "No"
-      },
-      {
-        "value": "Maybe",
-        "label": "Maybe"
-      },
-      {
-        "value": "Unknown",
-        "label": "Did not disclose"
-      }
-    ],
-    "isPII": false
-  },
-  {
-    "name": "Newcomer",
-    "label": "Newcomer",
-    "type": "select",
-      "options": [
-      {
         "value": "",
         "label": "Please select an option"
       },
@@ -603,29 +642,21 @@
       {
         "value": "No",
         "label": "No"
-      },
-      {
-        "value": "Maybe",
-        "label": "Maybe"
-      },
-      {
-        "value": "Unknown",
-        "label": "Did not disclose"
       }
     ],
-      "required": {
+    "required": {
       "value": true,
       "message": "RequiredFieldError"
     },
     "isPII": false
   },
   {
-    "name": "newcomerLength",
-    "label": "NewcomerLength",
+    "name": "suicideRiskAssessment",
+    "label": "suicideRiskAssessment",
     "type": "dependent-select",
-    "dependsOn": "Newcomer",
+    "dependsOn": "suicidalThoughts",
     "defaultOption": {
-      "value": "Unknown",
+      "value": "N/A",
       "label": ""
     },
       "options": {
@@ -635,16 +666,215 @@
         "label": "Please select an option"
       },
       {
-        "value": "5 years or less",
-        "label": "5 years or less"
+        "value": "Yes",
+        "label": "Yes"
       },
       {
-        "value": "6 or more years",
-        "label": "6 or more years"
+        "value": "No",
+        "label": "No"
+      }
+    ]
+    },
+      "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    },
+    "isPII": false
+  },
+  {
+    "name": "suicideSafetyPlan",
+    "label": "suicideSafetyPlan",
+    "type": "dependent-select",
+    "dependsOn": "suicidalThoughts",
+    "defaultOption": {
+      "value": "N/A",
+      "label": ""
+    },
+      "options": {
+        "Yes": [
+      {
+        "value": "",
+        "label": "Please select an option"
       },
       {
-        "value": "Did not disclose/Did not ask",
-        "label": "Did not disclose/Did not ask"
+        "value": "Yes",
+        "label": "Yes"
+      },
+      {
+        "value": "No",
+        "label": "No"
+      }
+    ]
+    },
+      "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    },
+    "isPII": false
+  },
+  {
+    "name": "homicidalThoughts",
+    "label": "homicidalThoughts",
+    "type": "select",
+    "options": [
+      {
+        "value": "",
+        "label": "Please select an option"
+      },
+      {
+        "value": "Yes",
+        "label": "Yes"
+      },
+      {
+        "value": "No",
+        "label": "No"
+      }
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    },
+    "isPII": false
+  },
+  {
+    "name": "homicideRiskAssessment",
+    "label": "homicideRiskAssessment",
+    "type": "dependent-select",
+    "dependsOn": "homicidalThoughts",
+    "defaultOption": {
+      "value": "N/A",
+      "label": ""
+    },
+      "options": {
+        "Yes": [
+      {
+        "value": "",
+        "label": "Please select an option"
+      },
+      {
+        "value": "Yes",
+        "label": "Yes"
+      },
+      {
+        "value": "No",
+        "label": "No"
+      }
+    ]
+    },
+      "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    },
+    "isPII": false
+  },
+  {
+    "name": "homicideSafetyPlan",
+    "label": "homicideSafetyPlan",
+    "type": "dependent-select",
+    "dependsOn": "homicidalThoughts",
+    "defaultOption": {
+      "value": "N/A",
+      "label": ""
+    },
+      "options": {
+        "Yes": [
+      {
+        "value": "",
+        "label": "Please select an option"
+      },
+      {
+        "value": "Yes",
+        "label": "Yes"
+      },
+      {
+        "value": "No",
+        "label": "No"
+      }
+    ]
+    },
+      "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    },
+    "isPII": false
+  },
+  {
+    "name": "experiencingAbuse",
+    "label": "experiencingAbuse",
+    "type": "select",
+    "options": [
+      {
+        "value": "",
+        "label": "Please select an option"
+      },
+      {
+        "value": "Yes",
+        "label": "Yes"
+      },
+      {
+        "value": "No",
+        "label": "No"
+      }
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    },
+    "isPII": false
+  },
+  {
+    "name": "abuseRiskAssessment",
+    "label": "abuseRiskAssessment",
+    "type": "dependent-select",
+    "dependsOn": "experiencingAbuse",
+    "defaultOption": {
+      "value": "N/A",
+      "label": ""
+    },
+      "options": {
+        "Yes": [
+      {
+        "value": "",
+        "label": "Please select an option"
+      },
+      {
+        "value": "Yes",
+        "label": "Yes"
+      },
+      {
+        "value": "No",
+        "label": "No"
+      }
+    ]
+    },
+      "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    },
+    "isPII": false
+  },
+  {
+    "name": "abuseSafetyPlan",
+    "label": "abuseSafetyPlan",
+    "type": "dependent-select",
+    "dependsOn": "experiencingAbuse",
+    "defaultOption": {
+      "value": "N/A",
+      "label": ""
+    },
+      "options": {
+        "Yes": [
+      {
+        "value": "",
+        "label": "Please select an option"
+      },
+      {
+        "value": "Yes",
+        "label": "Yes"
+      },
+      {
+        "value": "No",
+        "label": "No"
       }
     ]
     },
