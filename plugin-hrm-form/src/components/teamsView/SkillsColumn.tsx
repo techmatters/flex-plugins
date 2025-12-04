@@ -21,7 +21,7 @@ import { WorkersDataTable, ColumnDefinition, Template, styled } from '@twilio/fl
 import { Divider, Tooltip } from '@material-ui/core';
 import { ArrowDropDown, ArrowDropUp, KeyboardArrowRight } from '@material-ui/icons';
 
-import { Flex, Column, OpaqueText, Row, Box } from '../../styles';
+import { Flex, Column, OpaqueText, Row, Box, PrimaryButton } from '../../styles';
 import { MultiSelectButton } from '../../styles/filters';
 import { SkillsList, StyledChip } from './styles';
 import { sortSkills } from './teamsViewSorting';
@@ -47,25 +47,23 @@ const SkillsColumnHeader: React.FC = () => {
       <Row ref={boxRef}>
         <Template code="TeamsView-SkillsColumnTitle" />
         {Boolean(selectedWorkers.size) && (
-          <Box marginLeft="10px">
-            <MultiSelectButton
-              isOpened={isOpen}
-              isActive={Boolean(selectedWorkers.size)}
+          <Box marginLeft="10px" ref={buttonRef}>
+            <PrimaryButton
+              roundCorners={true}
               disabled={!selectedWorkers.size}
-              type="button"
               onClick={e => {
                 e.stopPropagation();
                 setIsOpen(prev => !prev);
               }}
               ref={buttonRef}
-              style={{ textDecorationLine: 'none' }}
+              style={{ height: '24px' }}
             >
               <Template code="TeamsView-SkillsActionsButtonTitle" />
               <Flex marginLeft="15px">
                 {isOpen && <ArrowDropUp />}
                 {!isOpen && <ArrowDropDown />}
               </Flex>
-            </MultiSelectButton>
+            </PrimaryButton>
           </Box>
         )}
       </Row>

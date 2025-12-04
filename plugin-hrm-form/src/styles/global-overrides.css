@@ -163,6 +163,21 @@ div.Twilio-Splitter div.Twilio-AgentDesktopView\.Panel2 {
     margin: .75rem .25rem;
 }
 
+.Twilio-DataTable-Header > span {
+  width: 100%;
+  align-items: center;
+}
+.Twilio-DataTable-Header > span > span[data-paste-element="ICON"] {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: right;
+}
+.Twilio-DataTable-Header > span > span[data-paste-element="ICON"] > svg {
+  height: 20px;
+  width: 20px;
+}
+
 /**  
  * Overrides to allow better UX for Reset and Apply (buttons) in the Filter Panel
  */
