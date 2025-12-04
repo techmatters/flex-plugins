@@ -20,31 +20,28 @@ import { CloseDialogPaper, CloseDialogHeader, CloseDialogContent } from './style
 import { Box } from '../../../styles/layout';
 import { DestructiveButton, TertiaryButton } from '../../../styles/buttons';
 import { ButtonGroup } from '../styles';
+import { getTemplate } from '../getTemplate';
 
 export const CloseDialog: React.FC<{
   openDialog: boolean;
-  closeDialogHeader: string;
-  closeDialogContent: string;
+  closeDialogHeader: string | React.ReactElement;
+  closeDialogContent: string | React.ReactElement;
   onDiscardChanges: () => void;
   onCloseDialog: () => void;
 }> = ({ openDialog, closeDialogHeader, closeDialogContent, onDiscardChanges, onCloseDialog }) => {
   return (
     <CloseDialogPaper open={openDialog} onClose={onCloseDialog}>
       <Box padding="30px">
-        <CloseDialogHeader>
-          <Template code={closeDialogHeader} />
-        </CloseDialogHeader>
+        <CloseDialogHeader>{getTemplate(closeDialogHeader)}</CloseDialogHeader>
         <Box padding="20px 0">
-          <CloseDialogContent>
-            <Template code={closeDialogContent} />
-          </CloseDialogContent>
+          <CloseDialogContent>{getTemplate(closeDialogContent)}</CloseDialogContent>
         </Box>
         <ButtonGroup>
           <TertiaryButton tabIndex={1} onClick={onCloseDialog}>
-            <Template code="Cancel" />
+            <Template code="Modals-CloseDialog-CancelButton" />
           </TertiaryButton>
           <DestructiveButton tabIndex={2} onClick={onDiscardChanges} style={{ margin: '0 15px' }}>
-            <Template code="Discard Changes" />
+            <Template code="Modals-CloseDialog-DiscardButton" />
           </DestructiveButton>
         </ButtonGroup>
       </Box>
