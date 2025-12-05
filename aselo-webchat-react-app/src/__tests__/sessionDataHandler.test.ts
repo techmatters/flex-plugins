@@ -8,8 +8,8 @@ jest.mock("../logger");
 Object.defineProperty(navigator, "mediaCapabilities", {
     writable: true,
     value: {
-        decodingInfo: jest.fn().mockResolvedValue({} as unknown as MediaCapabilitiesDecodingInfo)
-    }
+        decodingInfo: jest.fn().mockResolvedValue({} as unknown as MediaCapabilitiesDecodingInfo),
+    },
 });
 
 const originalEnv = process.env;
@@ -20,14 +20,14 @@ describe("session data handler", () => {
             value: {
                 getLogger(className: string) {
                     return new WebChatLogger(className);
-                }
-            }
+                },
+            },
         });
         process.env = {
             ...originalEnv,
             APP_VERSION: "1.25.10",
-            WEBCHAT_VERSION: "3.55"
-          };
+            WEBCHAT_VERSION: "3.55",
+        };
     });
     afterEach(() => {
         jest.clearAllMocks();
@@ -91,20 +91,20 @@ describe("session data handler", () => {
 
             jest.useFakeTimers().setSystemTime(new Date("2023-01-01"));
 
-            const currentTime = Date.now().toString();
+            const currentTime = Date.now();
             const tokenPayload = {
                 expiration: `${currentTime + 10e5}`,
                 token: "new token",
                 // eslint-disable-next-line camelcase
                 conversation_sid: "sid",
-                identity: "identity"
+                identity: "identity",
             };
             fetchMock.once(() => true, tokenPayload);
             await sessionDataHandler.fetchAndStoreNewSession({ formData: {} });
 
             const expected = {
-                ...sessionDataHandler.processNewTokenResponse(tokenPayload),
-                loginTimestamp: currentTime
+                ...tokenPayload,
+                loginTimestamp: currentTime,
             };
             expect(setLocalStorageItemSpy).toHaveBeenCalledTimes(2);
             expect(setLocalStorageItemSpy).toHaveBeenNthCalledWith(
@@ -115,13 +115,13 @@ describe("session data handler", () => {
                     expiration: "",
                     identity: "",
                     conversationSid: "",
-                    loginTimestamp: currentTime
-                })
+                    loginTimestamp: currentTime,
+                }),
             );
             expect(setLocalStorageItemSpy).toHaveBeenNthCalledWith(
                 2,
                 "TWILIO_WEBCHAT_WIDGET",
-                JSON.stringify(expected)
+                JSON.stringify(expected),
             );
         });
 
@@ -131,7 +131,7 @@ describe("session data handler", () => {
                 token: "new token",
                 // eslint-disable-next-line camelcase
                 conversation_sid: "sid",
-                identity: "identity"
+                identity: "identity",
             };
             fetchMock.once(() => true, tokenPayload);
             const { token } = await sessionDataHandler.fetchAndStoreNewSession({ formData: {} });
@@ -146,8 +146,8 @@ describe("session data handler", () => {
                 JSON.stringify({
                     expiration: Date.now() + 10e5,
                     token: "token",
-                    conversationSid: "sid"
-                })
+                    conversationSid: "sid",
+                }),
             );
 
             const tokenPayload = sessionDataHandler.tryResumeExistingSession();
@@ -160,8 +160,8 @@ describe("session data handler", () => {
                 JSON.stringify({
                     expiration: Date.now() - 10e5,
                     token: "token",
-                    conversationSid: "sid"
-                })
+                    conversationSid: "sid",
+                }),
             );
 
             const tokenPayload = sessionDataHandler.tryResumeExistingSession();
@@ -181,7 +181,7 @@ describe("session data handler", () => {
             jest.spyOn(Object.getPrototypeOf(window.localStorage), "getItem").mockReturnValueOnce({
                 expiration: Date.now() - 10e5,
                 token: "token",
-                conversationSid: "sid"
+                conversationSid: "sid",
             });
 
             const tokenPayload = sessionDataHandler.tryResumeExistingSession();
@@ -202,8 +202,8 @@ describe("session data handler", () => {
                 JSON.stringify({
                     expiration: Date.now() - 10e5,
                     token: "token",
-                    conversationSid: "sid"
-                })
+                    conversationSid: "sid",
+                }),
             );
             jest.spyOn(window, "fetch").mockImplementationOnce(() => {
                 throw Error("Backend failed to process the request");
@@ -219,15 +219,15 @@ describe("session data handler", () => {
                 JSON.stringify({
                     expiration: Date.now() + 10e5,
                     token: "token",
-                    conversationSid: "sid"
-                })
+                    conversationSid: "sid",
+                }),
             );
             const setLocalStorageItemSpy = jest.spyOn(Object.getPrototypeOf(window.localStorage), "setItem");
 
             const tokenPayload = {
                 expiration: Date.now() + 10e5,
                 token: "new token",
-                conversationSid: "sid"
+                conversationSid: "sid",
             };
             fetchMock.once(() => true, tokenPayload);
             await sessionDataHandler.getUpdatedToken();
@@ -240,14 +240,14 @@ describe("session data handler", () => {
                 JSON.stringify({
                     expiration: Date.now() + 10e5,
                     token: "token",
-                    conversationSid: "sid"
-                })
+                    conversationSid: "sid",
+                }),
             );
 
             const tokenPayload = {
                 expiration: Date.now() + 10e5,
                 token: "new token",
-                conversationSid: "sid"
+                conversationSid: "sid",
             };
             fetchMock.once(() => true, tokenPayload);
             const { token } = await sessionDataHandler.getUpdatedToken();
@@ -263,8 +263,8 @@ describe("session data handler", () => {
                 expiration: Date.now() + 10e5,
                 token: "token",
                 conversationSid: "sid",
-                identity: "identity"
-            })
+                identity: "identity",
+            }),
         );
         sessionDataHandler.clear();
         expect(spySetItem).toHaveBeenCalledWith("TWILIO_WEBCHAT_WIDGET", JSON.stringify({ identity: "identity" }));
@@ -275,29 +275,8 @@ describe("session data handler", () => {
             jest.spyOn(window, "fetch").mockRejectedValueOnce("ForcedFailure");
 
             await expect(sessionDataHandler.fetchAndStoreNewSession({ formData: {} })).rejects.toThrowError(
-                new Error("No results from server")
+                new Error("No results from server"),
             );
-        });
-    });
-
-    describe("processNewTokenResponse", () => {
-        it("should process data as expected", () => {
-            const tokenResponse = {
-                expiration: "2021-01-01",
-                token: "token",
-                // eslint-disable-next-line camelcase
-                conversation_sid: "sid",
-                identity: "identity"
-            };
-
-            const processedTokenResponse = sessionDataHandler.processNewTokenResponse(tokenResponse);
-
-            expect(processedTokenResponse).toEqual({
-                expiration: "2021-01-01",
-                token: "token",
-                conversationSid: "sid",
-                identity: "identity"
-            });
         });
     });
 });
