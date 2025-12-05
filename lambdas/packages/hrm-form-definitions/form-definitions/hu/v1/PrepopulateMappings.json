@@ -1,0 +1,9 @@
+{
+    "survey": {
+        "geolocation": [
+            "CallerInformationTab.geolocation",
+            "ChildInformationTab.geolocation"
+        ]
+    },
+    "preEngagement": {}
+}
