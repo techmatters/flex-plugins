@@ -18,7 +18,7 @@ import React from 'react';
 import { createPortal } from 'react-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { WorkersDataTable, ColumnDefinition, Template, styled } from '@twilio/flex-ui';
-import { Tooltip } from '@material-ui/core';
+import { Divider, Tooltip } from '@material-ui/core';
 import { ArrowDropDown, ArrowDropUp, KeyboardArrowRight } from '@material-ui/icons';
 
 import { Flex, Column, OpaqueText, Row, Box } from '../../styles';
@@ -195,6 +195,15 @@ const DropdownPortal: React.FC<{
         </DropDownButton>
         <DropDownButton onClick={onClickAction('disable')}>
           <Template code="Disable Skills" />
+          <KeyboardArrowRight style={{ marginLeft: '20px' }} />
+        </DropDownButton>
+        <Divider variant="middle" />
+        <DropDownButton onClick={onClickAction('assign')}>
+          <Template code="Assign Skills" />
+          <KeyboardArrowRight style={{ marginLeft: '20px' }} />
+        </DropDownButton>
+        <DropDownButton onClick={onClickAction('unassign')}>
+          <Template code="Unassign Skills" />
           <KeyboardArrowRight style={{ marginLeft: '20px' }} />
         </DropDownButton>
       </Column>
