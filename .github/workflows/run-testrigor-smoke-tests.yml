@@ -42,7 +42,7 @@ jobs:
 
   run-smoke-tests-suite:
     runs-on: ubuntu-latest
-
+    needs: deploy-flex
     steps:
       - name: Set Helpline Environment
         run: echo "ENVIRONMENT_NAME=${{inputs.environment_code}}" >> $GITHUB_ENV
