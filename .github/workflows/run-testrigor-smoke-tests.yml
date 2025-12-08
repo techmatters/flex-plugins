@@ -35,10 +35,11 @@ on:
 jobs:
   deploy-flex:
     uses: ./.github/workflows/flex-deploy.yml
+    secrets: inherit
     with:
       helpline_code: ${{ inputs.helpline_code }}
       environment_code: ${{ inputs.environment_code }}
-      
+
   run-smoke-tests-suite:
     runs-on: ubuntu-latest
 
