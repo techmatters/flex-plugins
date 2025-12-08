@@ -5,7 +5,7 @@ locals {
 
   local_config = {
 
-    custom_task_routing_filter_expression = "channelType =='web' OR isContactlessTask==true OR twilioNumber=='messenger:103647528912458'"
+    custom_task_routing_filter_expression = "channelType =='web' OR twilioNumber=='messenger:103647528912458'"
 
     #Studio flow
     flow_vars = {

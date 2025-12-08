@@ -9,7 +9,7 @@ locals {
 
   local_config = {
     operating_hours_enforced_override     = false
-    custom_task_routing_filter_expression = "channelType =='voice' OR channelType =='web' OR isContactlessTask == true"
+    custom_task_routing_filter_expression = "channelType =='voice' OR channelType =='web'"
     flow_vars = {
       service_sid                   = "ZS8a0d3bbfb230721c2609641ca8e17ce1"
       environment_sid               = "ZEc53cef7898c0b95ee402fb4144e90d1f"
