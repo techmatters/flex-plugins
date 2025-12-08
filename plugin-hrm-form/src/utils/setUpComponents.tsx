@@ -42,7 +42,7 @@ import { Box, Column, HeaderContainer, TaskCanvasOverride } from '../styles';
 import HrmTheme from '../styles/HrmTheme';
 import { TLHPaddingLeft } from '../styles/GlobalOverrides';
 import { Container } from '../components/queuesStatus/styles';
-import { standaloneTaskSid } from '../types/types';
+import { isOfflineContactTask, standaloneTaskSid } from '../types/types';
 import { colors } from '../channels/colors';
 import { getHrmConfig } from '../hrmConfig';
 import { changeRoute } from '../states/routing/actions';
@@ -149,6 +149,33 @@ const isIncomingOfflineContact = task =>
 
 const setUpOfflineContact = () => {
   const manager = Flex.Manager.getInstance();
+
+  Flex.ViewCollection.Content.add(
+    React.createElement('Twilio.Flex.View', { key: 'empty-page', name: 'empty-page' }, ''),
+  );
+  Flex.AgentDesktopView.Panel1.Content.remove('taskCanvas', {
+    if: ({ task }) => !task || isOfflineContactTask(task),
+  });
+  Flex.Actions.addListener('beforeSelectTask', payload => {
+    console.log('>>>>>>>> beforeSelectTask', payload);
+    if (!payload.task || isOfflineContactTask(payload.task)) {
+      console.log('>>>>>>>> is offline contact');
+      Flex.AgentDesktopView.defaultProps.splitterOptions = {
+        initialFirstPanelSize: '25%',
+      };
+    } else {
+      console.log('>>>>>>>> is live contact');
+      Flex.AgentDesktopView.defaultProps.splitterOptions = {
+        initialFirstPanelSize: '50%',
+      };
+    }
+  });
+  Flex.Actions.addListener('afterSelectTask', () => {
+    console.log('>>>>>>>> afterSelectTask');
+    Flex.Actions.invokeAction('NavigateToView', { viewName: 'empty-page' }).then(() =>
+      Flex.Actions.invokeAction('NavigateToView', { viewName: 'agent-desktop' }),
+    );
+  });
 
   Flex.TaskList.Content.add(<OfflineContactTask key="offline-contact-task" />, {
     sortOrder: 100,
