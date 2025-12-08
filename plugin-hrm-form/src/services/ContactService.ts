@@ -21,14 +21,7 @@ import { isNonDataCallType } from '../states/validationRules';
 import { getQueryParams } from './PaginationParams';
 import { fetchHrmApi } from './fetchHrmApi';
 import { getAseloFeatureFlags, getDefinitionVersions, getHrmConfig } from '../hrmConfig';
-import {
-  Contact,
-  ConversationMedia,
-  isOfflineContact,
-  isOfflineContactTask,
-  isTwilioTask,
-  OfflineContactTask,
-} from '../types/types';
+import { Contact, ConversationMedia, isOfflineContactTask, isTwilioTask, OfflineContactTask } from '../types/types';
 import { saveContactToExternalBackend } from '../dualWrite';
 import { getNumberFromTask } from '../utils/task';
 import {
@@ -81,7 +74,7 @@ type HandleTwilioTaskResponse = {
   externalRecordingInfo?: ExternalRecordingInfoSuccess;
 };
 
-export const handleTwilioTask = async (
+export const determineConversationMedia = async (
   task,
   contact?: Contact,
   reservationSid?: string | undefined,
@@ -93,14 +86,14 @@ export const handleTwilioTask = async (
   if (!isTwilioTask(task)) {
     return returnData;
   }
-
+  const { enforceZeroTranscriptRetention } = getHrmConfig();
   const finalReservationSid = reservationSid ?? task.sid;
   const isChatTask = TaskHelper.isChatBasedTask(task) || (contact && isChatChannel(contact.channel));
   const isVoiceTask = TaskHelper.isCallTask(task) || (contact && isVoiceChannel(contact.channel));
-  const isCallOrChatTask = isChatTask || isVoiceTask;
+  const isCallOrRetainedChatTask = (isChatTask && !enforceZeroTranscriptRetention) || isVoiceTask;
 
   try {
-    if (isChatTask) {
+    if (isChatTask && !enforceZeroTranscriptRetention) {
       returnData.conversationMedia.push({
         storeType: 'S3',
         storeTypeSpecificData: {
@@ -111,7 +104,7 @@ export const handleTwilioTask = async (
     }
 
     // Store reservation sid to use Twilio insights overlay (recordings/transcript)
-    if (isCallOrChatTask) {
+    if (isCallOrRetainedChatTask) {
       returnData.conversationMedia.push({
         storeType: 'twilio',
         storeTypeSpecificData: {
@@ -265,7 +258,7 @@ export const finalizeContact = async (
   reservationSid?: string | undefined,
 ): Promise<Contact> => {
   try {
-    const twilioTaskResult = await handleTwilioTask(task, contact, reservationSid);
+    const twilioTaskResult = await determineConversationMedia(task, contact, reservationSid);
     await saveConversationMedia(contact.id, twilioTaskResult.conversationMedia);
     return await updateContactInHrm(contact.id, {}, true);
   } catch (error) {

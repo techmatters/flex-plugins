@@ -20,7 +20,12 @@ import { TaskHelper } from '@twilio/flex-ui';
 
 import { mockLocalFetchDefinitions } from '../mockFetchDefinitions';
 import { baseMockConfig as mockBaseConfig, mockGetDefinitionsResponse } from '../mockGetConfig';
-import { finalizeContact, handleTwilioTask, saveContact, updateContactInHrm } from '../../services/ContactService';
+import {
+  finalizeContact,
+  determineConversationMedia,
+  saveContact,
+  updateContactInHrm,
+} from '../../services/ContactService';
 import { channelTypes } from '../../states/DomainConstants';
 import { getDefinitionVersions, getHrmConfig } from '../../hrmConfig';
 import { VALID_EMPTY_CONTACT, VALID_EMPTY_METADATA } from '../testContacts';
@@ -377,7 +382,7 @@ describe('handleTwilioTask() (externalRecording)', () => {
       },
     };
 
-    const result = await handleTwilioTask(task);
+    const result = await determineConversationMedia(task);
     expect(result).toStrictEqual({
       conversationMedia: [
         {
@@ -413,7 +418,7 @@ describe('handleTwilioTask() (externalRecording)', () => {
       attributes: {},
     };
 
-    const returnData = await handleTwilioTask(task);
+    const returnData = await determineConversationMedia(task);
     expect(returnData).toStrictEqual({
       conversationMedia: [{ storeType: 'twilio', storeTypeSpecificData: { reservationSid: undefined } }],
     });
