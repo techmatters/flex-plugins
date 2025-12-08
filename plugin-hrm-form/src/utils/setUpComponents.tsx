@@ -150,6 +150,12 @@ const isIncomingOfflineContact = task =>
 const setUpOfflineContact = () => {
   const manager = Flex.Manager.getInstance();
 
+  Flex.ViewCollection.Content.add(
+    <Flex.View name="empty-view" key="empty-view">
+      <></>
+    </Flex.View>,
+  );
+
   Flex.TaskList.Content.add(<OfflineContactTask key="offline-contact-task" />, {
     sortOrder: 100,
     align: 'start',
