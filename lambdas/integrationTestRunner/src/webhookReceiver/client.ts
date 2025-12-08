@@ -18,27 +18,9 @@ import { WebhookRecord } from './types';
 import { addMilliseconds } from 'date-fns/addMilliseconds';
 import { isAfter } from 'date-fns/isAfter';
 import { AssertionError } from 'node:assert';
+import { retrieveWebhooks } from './dynamoDbClient';
 
-const { HRM_URL, NODE_ENV } = process.env;
-const WEBHOOK_RECEIVER_URL = `${HRM_URL}/lambda/integrationTestRunner`;
-
-const getSessionRequests = async (sessionId: string): Promise<WebhookRecord[]> => {
-  if (!HRM_URL) throw new Error('Configuration error: HRM_URL env var is required');
-  const response = await fetch(WEBHOOK_RECEIVER_URL, {
-    method: 'GET',
-    headers: {
-      'x-webhook-receiver-operation': 'RETRIEVE',
-      'x-webhook-receiver-session-id': sessionId,
-    },
-  });
-  if (response.ok) {
-    return (await response.json()) as WebhookRecord[];
-  } else {
-    const text = await response.text();
-    console.error('Unable to get webhook record', response, text);
-    throw new Error(`Unable to get webhook record, status: ${response.status}, ${text}`);
-  }
-};
+const { NODE_ENV } = process.env;
 
 const delay = (ms: number | undefined) => new Promise(resolve => setTimeout(resolve, ms));
 
@@ -47,13 +29,6 @@ export const startWebhookReceiverSession = (helplineCode: string) => {
   let sessionActive = true;
   return {
     sessionId,
-    getSessionRequests: () => {
-      if (sessionActive) {
-        return getSessionRequests(sessionId);
-      } else {
-        throw new Error('webhook receiver session ended');
-      }
-    },
     expectRequestToBeReceived: async (
       verifier: (record: WebhookRecord) => boolean,
       { timeoutMilliseconds }: { timeoutMilliseconds: number },
@@ -63,7 +38,7 @@ export const startWebhookReceiverSession = (helplineCode: string) => {
       let sessionRequests: WebhookRecord[] = [];
       while (isAfter(timeout, new Date())) {
         if (sessionActive) {
-          sessionRequests = await getSessionRequests(sessionId);
+          sessionRequests = await retrieveWebhooks(sessionId);
           if (sessionRequests.some(verifier)) {
             console.debug(`[${sessionId}] Request found`);
             return;
