@@ -1,49 +1,55 @@
 [
   {
     "name": "child",
-    "label": "Child calling about self",
+    "label": "Niñe o adolescente que contacta para hablar sobre sí mismo",
     "type": "button",
     "category": "data"
   },
   {
     "name": "caller",
-    "label": "Someone calling about a child",
+    "label": "Alguien que se contacta por un niñe o adolescente",
     "type": "button",
     "category": "data"
   },
   {
     "name": "silent",
-    "label": "Silent",
+    "label": "Silencio",
     "type": "button",
     "category": "non-data"
   },
   {
     "name": "blank",
-    "label": "Blank",
+    "label": "No definido",
     "type": "button",
     "category": "non-data"
   },
   {
     "name": "joke",
-    "label": "Joke",
+    "label": "Broma",
     "type": "button",
     "category": "non-data"
   },
   {
     "name": "hangup",
-    "label": "Hang up",
+    "label": "Se corta la comunicación",
     "type": "button",
     "category": "non-data"
   },
   {
-    "name": "wrongnumber",
-    "label": "Wrong Number",
+    "name": "wrongNumber",
+    "label": "Número equivocado",
+    "type": "button",
+    "category": "non-data"
+  },
+  {
+    "name": "test",
+    "label": "Prueba",
     "type": "button",
     "category": "non-data"
   },
   {
     "name": "abusive",
-    "label": "Abusive",
+    "label": "Abusivo",
     "type": "button",
     "category": "non-data"
   }
