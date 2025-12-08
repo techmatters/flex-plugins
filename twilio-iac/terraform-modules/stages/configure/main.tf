@@ -32,7 +32,7 @@ locals {
   task_router_task_queue_sids           = local.provision_config.task_router_task_queue_sids
   system_down_config = var.enable_system_down ? data.terraform_remote_state.system_down[0].outputs : {}
   system_down_studio_subflow_sid = var.enable_system_down ? local.system_down_config.system_down_studio_subflow_sid : ""
-  debug_studio_subflow_sid = local.system_down_config.debug_studio_subflow_sid
+  debug_studio_subflow_sid = var.enable_system_down ? local.system_down_config.debug_studio_subflow_sid : ""
 
   stage = "configure"
 }
