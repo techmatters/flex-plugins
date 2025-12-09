@@ -3,8 +3,7 @@
         "attributeUpdates": {
             "assets_bucket_url": "https://assets-development.tl.techmatters.org"
         },
-        "external_recordings_enabled": true,
-        "enableExternalRecordings": true,
+        "external_recordings_enabled": false,
         "enableUnmaskingCalls": true,
         "feature_flags": {
             "enable_configurable_max_categories": true,
@@ -33,7 +32,8 @@
             "semver": "2.n",
             "version": "2.2.0"
         },
-        "resources_base_url": "https://hrm-development.tl.techmatters.org"
+        "resources_base_url": "https://hrm-development.tl.techmatters.org",
+        "enforceZeroTranscriptRetention": true
     },
     "ui_attributes": {
         "colorTheme": {
