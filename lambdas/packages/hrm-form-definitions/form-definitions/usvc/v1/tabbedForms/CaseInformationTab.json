@@ -140,10 +140,6 @@
     "type": "textarea",
     "isPII": false,
     "rows": 10,
-    "width": 250,
-    "required": {
-      "value": true,
-      "message": "RequiredFieldError"
-    }
+    "width": 250
   }
 ]
