@@ -19,9 +19,8 @@ import { CircularProgress, Template } from '@twilio/flex-ui';
 import ModalBase from '@material-ui/core/Modal';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { TertiaryButton, PrimaryButton, CloseButton } from '../../../styles/buttons';
+import { TertiaryButton, PrimaryButton, CloseButton, StyledBackButton } from '../../../styles/buttons';
 import { Box, Row } from '../../../styles/layout';
-import SearchResultsBackButton from '../../../components/search/SearchResults/SearchResultsBackButton';
 import { getCurrentTopmostRouteForTask, getCurrentTopmostRouteStackForTask } from '../../../states/routing/getRoute';
 import { namespace } from '../../../states/storeNamespaces';
 import { RootState } from '../../../states';
@@ -30,12 +29,18 @@ import { isRouteWithModalSupport } from '../../../states/routing/types';
 import { ButtonGroup } from '../styles';
 import { CloseDialog } from '../CloseDialog';
 import { ModalPaper, ModalTitle } from './styles';
+import { LargeBackIcon } from '../../../components/NavigableContainer/styles';
+import { HiddenText } from '../../../styles';
+import { getTemplate } from '../getTemplate';
 
 export type Props = {
   templateCodes: {
-    header: string;
-    primaryButton: string;
-    backButton?: string;
+    header: string | React.ReactElement;
+    primaryButton: string | React.ReactElement;
+    cancelDialog: {
+      header: string | React.ReactElement;
+      content: string | React.ReactElement;
+    };
   };
   isOpen: boolean;
   isDirty: boolean;
@@ -115,24 +120,24 @@ export const Modal: React.FC<Props> = ({
       style={{ padding: '16px' }}
     >
       <ModalPaper style={{ display: 'flex', flexDirection: 'column' }}>
-        <Row>
-          {hasHistory && (
-            <SearchResultsBackButton
-              handleBack={goBack}
-              text={<Template code={templateCodes.backButton} disabled={disableExitModal} />}
-            />
-          )}
-          <Box style={{ marginLeft: 'auto' }}>
-            <CloseButton tabIndex={3} aria-label="CloseButton" onClick={onCloseModal} disabled={disableExitModal} />
-          </Box>
-        </Row>
-        <Row style={{ width: '100%', justifyContent: 'center' }}>
-          <Box width="fit-content" marginBottom="20px" justifyContent="center">
-            <ModalTitle>
-              <Template code={templateCodes.header} />
-            </ModalTitle>
-          </Box>
-        </Row>
+        <Box marginTop="10px" marginBottom="20px">
+          <Row>
+            <Box width="30px">
+              {hasHistory && (
+                <StyledBackButton style={{ marginRight: '10px' }} onClick={goBack}>
+                  <LargeBackIcon />
+                  <HiddenText>
+                    <Template code="NavigableContainer-BackButton" />
+                  </HiddenText>
+                </StyledBackButton>
+              )}
+            </Box>
+            <ModalTitle>{getTemplate(templateCodes.header)}</ModalTitle>
+            <Box style={{ marginLeft: 'auto' }}>
+              <CloseButton tabIndex={3} aria-label="CloseButton" onClick={onCloseModal} disabled={disableExitModal} />
+            </Box>
+          </Row>
+        </Box>
 
         <Box
           style={{
@@ -152,7 +157,7 @@ export const Modal: React.FC<Props> = ({
             <Template code="BottomBar-Cancel" />
           </TertiaryButton>
           <PrimaryButton onClick={onClickPrimaryButton} disabled={disablePrimaryButton}>
-            <Template code={templateCodes.primaryButton} />
+            {getTemplate(templateCodes.primaryButton)}
             {isLoading && (
               <Box
                 style={{
@@ -169,13 +174,12 @@ export const Modal: React.FC<Props> = ({
                 <CircularProgress size={12} borderWidth={2} animating />
               </Box>
             )}
-            {/* {isLoading ? <CircularProgress size={12} /> : <Template code={templateCodes.primaryButton} />} */}
           </PrimaryButton>
         </ButtonGroup>
 
         <CloseDialog
-          closeDialogHeader="Are you sure you want to cancel enabling bulk skills?"
-          closeDialogContent="Your changes will be discarded."
+          closeDialogHeader={getTemplate(templateCodes.cancelDialog.header)}
+          closeDialogContent={getTemplate(templateCodes.cancelDialog.content)}
           openDialog={openDiscardDialog}
           onDiscardChanges={onCloseModal}
           onCloseDialog={() => setOpenDiscardDialog(false)}

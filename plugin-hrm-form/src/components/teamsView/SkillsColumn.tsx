@@ -21,7 +21,7 @@ import { WorkersDataTable, ColumnDefinition, Template, styled } from '@twilio/fl
 import { Divider, Tooltip } from '@material-ui/core';
 import { ArrowDropDown, ArrowDropUp, KeyboardArrowRight } from '@material-ui/icons';
 
-import { Flex, Column, OpaqueText, Row, Box } from '../../styles';
+import { Flex, Column, OpaqueText, Row, Box, PrimaryButton } from '../../styles';
 import { MultiSelectButton } from '../../styles/filters';
 import { SkillsList, StyledChip } from './styles';
 import { sortSkills } from './teamsViewSorting';
@@ -45,27 +45,27 @@ const SkillsColumnHeader: React.FC = () => {
   return (
     <>
       <Row ref={boxRef}>
-        <Template code="Skills" />
-        <Box marginLeft="10px" style={{ ...(!selectedWorkers.size && { opactity: 0, visibility: 'hidden' }) }}>
-          <MultiSelectButton
-            isOpened={isOpen}
-            isActive={Boolean(selectedWorkers.size)}
-            disabled={!selectedWorkers.size}
-            type="button"
-            onClick={e => {
-              e.stopPropagation();
-              setIsOpen(prev => !prev);
-            }}
-            ref={buttonRef}
-            style={{ textDecorationLine: 'none' }}
-          >
-            <Template code="Actions" />
-            <Flex marginLeft="15px">
-              {isOpen && <ArrowDropUp />}
-              {!isOpen && <ArrowDropDown />}
-            </Flex>
-          </MultiSelectButton>
-        </Box>
+        <Template code="TeamsView-SkillsColumnTitle" />
+        {Boolean(selectedWorkers.size) && (
+          <Box marginLeft="10px" ref={buttonRef}>
+            <PrimaryButton
+              roundCorners={true}
+              disabled={!selectedWorkers.size}
+              onClick={e => {
+                e.stopPropagation();
+                setIsOpen(prev => !prev);
+              }}
+              ref={buttonRef}
+              style={{ height: '24px' }}
+            >
+              <Template code="TeamsView-SkillsActionsButtonTitle" />
+              <Flex marginLeft="15px">
+                {isOpen && <ArrowDropUp />}
+                {!isOpen && <ArrowDropDown />}
+              </Flex>
+            </PrimaryButton>
+          </Box>
+        )}
       </Row>
       <DropdownPortal
         anchorRef={buttonRef}
@@ -190,20 +190,20 @@ const DropdownPortal: React.FC<{
     >
       <Column>
         <DropDownButton onClick={onClickAction('enable')}>
-          <Template code="Enable Skills" />
+          <Template code="TeamsView-EnableSkills" />
           <KeyboardArrowRight style={{ marginLeft: '20px' }} />
         </DropDownButton>
         <DropDownButton onClick={onClickAction('disable')}>
-          <Template code="Disable Skills" />
+          <Template code="TeamsView-DisableSkills" />
           <KeyboardArrowRight style={{ marginLeft: '20px' }} />
         </DropDownButton>
         <Divider variant="middle" />
         <DropDownButton onClick={onClickAction('assign')}>
-          <Template code="Assign Skills" />
+          <Template code="TeamsView-AssignSkills" />
           <KeyboardArrowRight style={{ marginLeft: '20px' }} />
         </DropDownButton>
         <DropDownButton onClick={onClickAction('unassign')}>
-          <Template code="Unassign Skills" />
+          <Template code="TeamsView-UnassignSkills" />
           <KeyboardArrowRight style={{ marginLeft: '20px' }} />
         </DropDownButton>
       </Column>
