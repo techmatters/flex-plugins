@@ -1337,7 +1337,7 @@
   },
   {
     "name": "dcquadrant",
-    "label": "Dcquadrant",
+    "label": "Dc Quadrant",
     "type": "dependent-select",
     "isPII": false,
     "dependsOn": "state",
