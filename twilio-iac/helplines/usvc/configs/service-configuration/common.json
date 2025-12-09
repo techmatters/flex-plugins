@@ -24,38 +24,6 @@
         "external_recordings_enabled": false,
         "helplineLanguage": "en-USVC",
         "permissionConfig": "usvc"
-    },
-    "taskrouter_skills": [
-        {
-            "maximum": 20,
-            "minimum": 1,
-            "multivalue": true,
-            "name": "VC"
-        },
-        {
-            "maximum": 20,
-            "minimum": 1,
-            "multivalue": true,
-            "name": "DCVH"
-        },
-        {
-            "maximum": 20,
-            "minimum": 1,
-            "multivalue": true,
-            "name": "Spanish"
-        },
-        {
-            "maximum": null,
-            "minimum": null,
-            "multivalue": false,
-            "name": "Calls"
-        },
-        {
-            "maximum": null,
-            "minimum": null,
-            "multivalue": false,
-            "name": "Transfers"
-        }
-    ]
+    }
 
 }
