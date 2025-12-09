@@ -122,5 +122,7 @@ locals {
       forward_number                   = "+123"
       recording_url                    = "https://<place_holder>.mp3"
     }
+
+    hrm_transcript_retention_days_override = 7
  }
 }

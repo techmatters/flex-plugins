@@ -21,7 +21,7 @@ import {
 import type { AccountSID } from '@tech-matters/twilio-types';
 import { Twilio } from 'twilio';
 import {
-  CHANNEL_UPDATE,
+  CHANNEL_UPDATED,
   ChannelUpdatedEvent,
   ConversationStateUpdatedEvent,
 } from './eventTypes';
@@ -88,6 +88,6 @@ const deleteInactiveChatChannelEventHandler: ServiceScopedConversationEventHandl
   };
 
 registerServiceScopedConversationEventHandler(
-  [CHANNEL_UPDATE],
+  [CHANNEL_UPDATED],
   deleteInactiveChatChannelEventHandler,
 );

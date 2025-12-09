@@ -55,6 +55,7 @@ export const MESSAGE_SEND = 'onMessageSend'; // Sending a Message
 export const MEDIA_MESSAGE_SEND = 'onMediaMessageSend'; // Sending a Media Message
 export const CHANNEL_ADD = 'onChannelAdd'; // Creating a Channel
 export const CHANNEL_UPDATE = 'onChannelUpdate'; // Edit Channel Properties
+export const CHANNEL_UPDATED = 'onChannelUpdated'; // Edited Channel Properties
 export const CHANNEL_DESTROY = 'onChannelDestroy'; // Deleting Channel / Destroying Channel
 export const MEMBER_ADD = 'onMemberAdd'; // Joining Channel / Channel Member being Added
 export const MEMBER_UPDATE = 'onMemberUpdate'; // Channel Member to be Updated
@@ -100,6 +101,7 @@ export const programmableChatEventTypes = {
   MEDIA_MESSAGE_SEND,
   CHANNEL_ADD,
   CHANNEL_UPDATE,
+  CHANNEL_UPDATED,
   CHANNEL_DESTROY,
   MEMBER_ADD,
   MEMBER_UPDATE,
