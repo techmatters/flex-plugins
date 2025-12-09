@@ -7,18 +7,13 @@
         ],
         "enableConferencing": true,
         "enableUnmaskingCalls": false,
-        "config_flags": {
-            "enableExternalRecordings": false,
-            "enable_conferencing": true,
-            "hideAddToNewCaseButton": true,
-            "enable_previous_contacts": false,
-            "use_prepopulate_mappings": true,
-            "enable_hang_up_by_hrm_saving": true
-        },
+        "hideAddToNewCaseButton": true,
+        "enableExternalRecordings": false,   
         "feature_flags": {
             "use_prepopulate_mappings": true,
-            "enable_client_profiles": false
-            
+            "enable_client_profiles": false,
+            "enable_previous_contacts": false,
+            "enable_hang_up_by_hrm_saving": true
         },
         "definitionVersion": "usvc-v1",
         "external_recordings_enabled": false,
