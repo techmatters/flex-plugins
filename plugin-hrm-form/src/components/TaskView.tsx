@@ -47,6 +47,7 @@ import selectContactByTaskSid from '../states/contacts/selectContactByTaskSid';
 import { selectCurrentDefinitionVersion } from '../states/configuration/selectDefinitions';
 import { LoadingStatus } from '../states/contacts/types';
 import selectContactStateByContactId from '../states/contacts/selectContactStateByContactId';
+import { rerenderAgentDesktop } from '../rerenderView';
 
 type Props = {
   task: CustomITask;
@@ -125,6 +126,14 @@ const TaskView: React.FC<Props> = ({ task }) => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [contactlessTask, contactInitialized, helpline, task, updateHelpline, unsavedContact?.id]);
+
+  // Force a re-render on unmount so "NoTaskView" is shown after an offline contact is ended (if no other task is assigned)
+  React.useEffect(() => {
+    return () => {
+      if (isOfflineContactTask(task)) rerenderAgentDesktop();
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   if (!currentDefinitionVersion) {
     return null;
