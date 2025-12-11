@@ -113,14 +113,9 @@ export const Modal: React.FC<Props> = ({
   }, [closeModal, registerForceCloseRef]);
 
   return (
-    <ModalBase
-      open={isOpen}
-      onClose={onCloseModal}
-      aria-labelledby="queue-selection-modal-title"
-      style={{ padding: '16px' }}
-    >
+    <ModalBase open={isOpen} onClose={onCloseModal} aria-labelledby="queue-selection-modal-title">
       <ModalPaper style={{ display: 'flex', flexDirection: 'column' }}>
-        <Box marginTop="10px" marginBottom="20px">
+        <Box marginBottom="20px">
           <Row>
             <Box width="30px">
               {hasHistory && (
@@ -134,7 +129,7 @@ export const Modal: React.FC<Props> = ({
             </Box>
             <ModalTitle>{getTemplate(templateCodes.header)}</ModalTitle>
             <Box style={{ marginLeft: 'auto' }}>
-              <CloseButton tabIndex={3} aria-label="CloseButton" onClick={onCloseModal} disabled={disableExitModal} />
+              <CloseButton aria-label="CloseButton" onClick={onCloseModal} disabled={disableExitModal} />
             </Box>
           </Row>
         </Box>
@@ -146,6 +141,8 @@ export const Modal: React.FC<Props> = ({
             flexDirection: 'column',
             justifyContent: 'start',
             alignItems: 'center',
+            maxHeight: '160px',
+            padding: '20px',
             overflow: 'auto',
           }}
         >

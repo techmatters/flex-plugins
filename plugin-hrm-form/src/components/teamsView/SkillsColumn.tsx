@@ -18,11 +18,10 @@ import React from 'react';
 import { createPortal } from 'react-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { WorkersDataTable, ColumnDefinition, Template, styled } from '@twilio/flex-ui';
-import { Divider, Tooltip } from '@material-ui/core';
-import { ArrowDropDown, ArrowDropUp, KeyboardArrowRight } from '@material-ui/icons';
+import { Tooltip } from '@material-ui/core';
+import { ArrowDropDown, ArrowDropUp } from '@material-ui/icons';
 
 import { Flex, Column, OpaqueText, Row, Box, PrimaryButton } from '../../styles';
-import { MultiSelectButton } from '../../styles/filters';
 import { SkillsList, StyledChip } from './styles';
 import { sortSkills } from './teamsViewSorting';
 import { newTeamsViewSelectOperation, TeamsViewState } from '../../states/teamsView';
@@ -56,13 +55,12 @@ const SkillsColumnHeader: React.FC = () => {
                 setIsOpen(prev => !prev);
               }}
               ref={buttonRef}
-              style={{ height: '24px' }}
             >
-              <Template code="TeamsView-SkillsActionsButtonTitle" />
-              <Flex marginLeft="15px">
-                {isOpen && <ArrowDropUp />}
-                {!isOpen && <ArrowDropDown />}
+              <Flex marginRight="5px">
+                {isOpen && <ArrowDropUp style={{ width: '20px', height: '20px' }} />}
+                {!isOpen && <ArrowDropDown style={{ width: '20px', height: '20px' }} />}
               </Flex>
+              <Template code="TeamsView-SkillsActionsButtonTitle" />
             </PrimaryButton>
           </Box>
         )}
@@ -138,6 +136,8 @@ const StyledButton = styled.button`
   text-align: left;
   cursor: pointer;
   font-family: sans-serif;
+  font-size: 14px;
+  font-weight: 400;
   transition: background 0.2s ease,
 
   &:hover {
@@ -181,7 +181,7 @@ const DropdownPortal: React.FC<{
         marginTop: '5px',
         background: 'white',
         boxSizing: 'border-box',
-        width: '230px',
+        padding: '16px',
         border: '1px solid lightgray',
         zIndex: 9999,
       }}
@@ -191,20 +191,15 @@ const DropdownPortal: React.FC<{
       <Column>
         <DropDownButton onClick={onClickAction('enable')}>
           <Template code="TeamsView-EnableSkills" />
-          <KeyboardArrowRight style={{ marginLeft: '20px' }} />
         </DropDownButton>
         <DropDownButton onClick={onClickAction('disable')}>
           <Template code="TeamsView-DisableSkills" />
-          <KeyboardArrowRight style={{ marginLeft: '20px' }} />
         </DropDownButton>
-        <Divider variant="middle" />
         <DropDownButton onClick={onClickAction('assign')}>
           <Template code="TeamsView-AssignSkills" />
-          <KeyboardArrowRight style={{ marginLeft: '20px' }} />
         </DropDownButton>
         <DropDownButton onClick={onClickAction('unassign')}>
           <Template code="TeamsView-UnassignSkills" />
-          <KeyboardArrowRight style={{ marginLeft: '20px' }} />
         </DropDownButton>
       </Column>
     </div>,

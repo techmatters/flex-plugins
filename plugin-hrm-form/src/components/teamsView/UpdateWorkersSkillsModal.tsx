@@ -198,9 +198,7 @@ const ConfirmUpdatesModal: React.FC<Props> = () => {
   const selectedWorkersFlexState = workers.filter(w => selectedWorkers.has(w.worker.sid));
 
   return (
-    <Column
-      style={{ justifyContent: 'center', width: '100%', height: '100%', padding: '10px 30px', paddingRight: 'auto' }}
-    >
+    <Column style={{ justifyContent: 'center', width: '100%', height: '100%' }}>
       {Array.from(selectedSkills).map(skill => {
         const getWorkersForOperation = () => {
           if (operation === 'enable') {
