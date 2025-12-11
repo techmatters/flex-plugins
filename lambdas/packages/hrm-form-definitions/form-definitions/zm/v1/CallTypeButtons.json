@@ -18,6 +18,12 @@
         "category": "non-data"
     },
     {
+        "name": "VAWIE",
+        "label": "VAWIE",
+        "type": "button",
+        "category": "non-data"
+    },
+    {
         "name": "blank",
         "label": "Blank",
         "type": "button",
