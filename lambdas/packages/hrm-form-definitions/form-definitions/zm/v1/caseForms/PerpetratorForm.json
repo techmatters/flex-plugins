@@ -1,5 +1,15 @@
 [
   {
+    "name": "noOfPerpetrators",
+    "type": "input",
+    "label": "Number Of Perpetrators",
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    },
+    "isPII": false
+  },
+  {
     "name": "firstName",
     "type": "input",
     "label": "First Name",
@@ -17,6 +27,12 @@
       "value": true,
       "message": "RequiredFieldError"
     },
+    "isPII": true
+  },
+  {
+    "name": "otherNames",
+    "type": "input",
+    "label": "Other Pertrator Names",
     "isPII": true
   },
   {
@@ -992,6 +1008,12 @@
       "value": true,
       "message": "RequiredFieldError"
     },
+    "isPII": false
+  },
+  {
+    "name": "typeOfElectroralActor",
+    "type": "input",
+    "label": "Type Of Electroral Actor",
     "isPII": false
   },
   {

@@ -94,6 +94,30 @@
     "isPII": false
   },
   {
+    "name": "incidentWitnessed",
+    "label": "Was the incident witnessed by anyone?",
+    "type": "mixed-checkbox",
+    "isPII": false
+  },
+  {
+    "name": "Witnesses",
+    "label": "Who was the incident witnessed by?",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "politicalOrElectionRelated",
+    "label": "Political Or Election Related?",
+    "type": "checkbox",
+    "isPII": false
+  },
+  {
+    "name": "onlineDigitalHarm",
+    "label": "Online/Digital Harm Involved",
+    "type": "checkbox",
+    "isPII": false
+  },
+  {
     "name": "abuseReportedElsewhere",
     "label": "Has abuse been reported elsewhere?",
     "type": "mixed-checkbox",
@@ -104,5 +128,13 @@
     "label": "Where else the incident has been reported?",
     "type": "input",
     "isPII": true
+  },
+  {
+    "name": "VAWIENote",
+    "label": "VAWIE Notes",
+    "type": "textarea",
+    "rows": 25,
+    "width": 300,
+    "isPII": false
   }
 ]

@@ -66,6 +66,10 @@
         "label": "Religious leader"
       },
       {
+        "value": "electionRelatedService",
+        "label": "Election Related Service"
+      },
+      {
         "value": "Other",
         "label": "Other"
       }

@@ -52,6 +52,9 @@
             "label": "Online Addiction"
           },
           {
+            "label": "VAWIE"
+          },
+          {
             "label": "Other Online Harm"
           }
         ]
@@ -143,6 +146,9 @@
           },
           {
             "label": "Physical violence"
+          },
+          {
+            "label": "Political related GBV"
           },
           {
             "label": "Sexual violence"
@@ -556,6 +562,9 @@
             "label": "Hacking"
           },
           {
+            "label": "VAWIE" 
+          },
+          {
             "label": "Online Addiction"
           },
           {
@@ -658,6 +667,9 @@
           },
           {
             "label": "Physical violence"
+          },
+          {
+            "label": "Political related GBV"
           },
           {
             "label": "Sexual violence"
@@ -842,6 +854,23 @@
           },
           {
             "label": "TB"
+          },
+          {
+            "label": "Unspecified/Other"
+          }
+        ]
+      },
+      "VAWIE Project": {
+        "color": "#47BA5E",
+        "subcategories": [
+          {
+            "label": "Violence Experienced During Election"
+          },
+          {
+            "label": "VAWIE Confirmed GBV component"
+          },
+          {
+            "label": "VAWIE Possible GBV component"
           },
           {
             "label": "Unspecified/Other"
