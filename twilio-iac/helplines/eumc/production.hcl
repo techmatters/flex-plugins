@@ -6,7 +6,7 @@ locals {
 
   local_config = {
 
-    custom_task_routing_filter_expression = "isContactlessTask==true'"
+    custom_task_routing_filter_expression = "channelType IN []"
 
 
     flow_vars = {}

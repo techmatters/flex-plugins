@@ -6,7 +6,7 @@ locals {
   local_config = {
     operating_hours_enforced_override     = false
 
-    custom_task_routing_filter_expression = "channelType IN ['web','messenger', 'instagram', 'line']  OR isContactlessTask == true OR  twilioNumber == 'messenger:108893035300837', 'instagram:17841455607284645', 'line:Uac858d9182b0e0fe1fa1b5850ab662bd' OR to=='+6625440477'"
+    custom_task_routing_filter_expression = "channelType IN ['web','messenger', 'instagram', 'line'] OR  twilioNumber == 'messenger:108893035300837', 'instagram:17841455607284645', 'line:Uac858d9182b0e0fe1fa1b5850ab662bd' OR to=='+6625440477'"
 
 
     flow_vars = {

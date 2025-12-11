@@ -6,7 +6,7 @@ locals {
 
   local_config = {
 
-    custom_task_routing_filter_expression = "isContactlessTask==true or twilioNumber=='whatsapp:+18122896374'"
+    custom_task_routing_filter_expression = "twilioNumber=='whatsapp:+18122896374'"
 
 
     flow_vars = {}

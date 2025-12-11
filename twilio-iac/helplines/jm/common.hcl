@@ -63,6 +63,7 @@ locals {
 
 
     phone_numbers = {}
+    enable_system_down    = false
 
   }
 }

@@ -7,55 +7,18 @@
         ],
         "enableConferencing": true,
         "enableUnmaskingCalls": false,
-        "config_flags": {
-            "enableExternalRecordings": false,
-            "enable_conferencing": true,
-            "hideAddToNewCaseButton": true,
-            "enable_previous_contacts": false,
-            "use_prepopulate_mappings": true,
-            "enable_hang_up_by_hrm_saving": true
-        },
+        "hideAddToNewCaseButton": true,
+        "enableExternalRecordings": false,   
         "feature_flags": {
             "use_prepopulate_mappings": true,
-            "enable_client_profiles": false
-            
+            "enable_client_profiles": false,
+            "enable_previous_contacts": false,
+            "enable_hang_up_by_hrm_saving": true
         },
         "definitionVersion": "usvc-v1",
         "external_recordings_enabled": false,
         "helplineLanguage": "en-USVC",
         "permissionConfig": "usvc"
-    },
-    "taskrouter_skills": [
-        {
-            "maximum": 20,
-            "minimum": 1,
-            "multivalue": true,
-            "name": "VC"
-        },
-        {
-            "maximum": 20,
-            "minimum": 1,
-            "multivalue": true,
-            "name": "DCVH"
-        },
-        {
-            "maximum": 20,
-            "minimum": 1,
-            "multivalue": true,
-            "name": "Spanish"
-        },
-        {
-            "maximum": null,
-            "minimum": null,
-            "multivalue": false,
-            "name": "Calls"
-        },
-        {
-            "maximum": null,
-            "minimum": null,
-            "multivalue": false,
-            "name": "Transfers"
-        }
-    ]
+    }
 
 }

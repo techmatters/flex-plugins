@@ -5,7 +5,7 @@ locals {
 
   local_config = {
     enable_datadog_monitoring             = true
-    custom_task_routing_filter_expression = "helpline=='SaferNet' or isContactlessTask==true OR channelType IN ['web', 'messenger'] OR twilioNumber=='messenger:175804982467404'"
+    custom_task_routing_filter_expression = "helpline=='SaferNet' OR channelType IN ['web', 'messenger'] OR twilioNumber=='messenger:175804982467404'"
 
     #Studio flow
     flow_vars = {

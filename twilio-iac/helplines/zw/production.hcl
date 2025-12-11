@@ -7,7 +7,7 @@ locals {
 
   local_config = {
     enable_datadog_monitoring             = true
-    custom_task_routing_filter_expression = "channelType IN ['web', 'messenger']  OR isContactlessTask == true OR  twilioNumber == 'messenger:123236277715368'"
+    custom_task_routing_filter_expression = "channelType IN ['web', 'messenger'] OR  twilioNumber == 'messenger:123236277715368'"
 
 
     flow_vars = {

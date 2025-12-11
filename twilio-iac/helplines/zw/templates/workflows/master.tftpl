@@ -30,6 +30,16 @@
             "queue": "${task_queues.bulawayo}"
           }
         ]
+      },
+      {
+        "filter_friendly_name": "Offline Contacts",
+        "expression": "isContactlessTask == true",
+        "targets": [
+          {
+            "expression": "(task.targetSid == worker.sid AND task.isContactlessTask == true)",
+            "queue": "${task_queues.master}"
+          }
+        ]
       }
     ]
   } 
