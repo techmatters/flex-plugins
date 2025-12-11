@@ -79,7 +79,7 @@ const deleteInactiveChatChannelEventHandler: ServiceScopedConversationEventHandl
         await client.chat.v2.services
           .get(await getChatServiceSid(accountSid))
           .channels.get(channelSid)
-          .remove();
+          .remove({ xTwilioWebhookEnabled: 'true' });
         console.debug(
           `Deleted ${channelSid} when it's status attribute was set to INACTIVE because account ${accountSid} has a zero transcript retention policy.`,
         );
