@@ -4,10 +4,10 @@ locals {
   config            = merge(local.common_config, local.local_config)
 
   local_config = {
-    enable_external_recordings = true
+    enable_external_recordings            = true
     enable_post_survey                    = true
     enable_datadog_monitoring             = false
-    custom_task_routing_filter_expression = "channelType IN ['instagram','messenger','web','whatsapp','telegram','line','voice', 'modica'] OR isContactlessTask == true OR  twilioNumber == 'messenger:131329426738030' "
+    custom_task_routing_filter_expression = "channelType IN ['instagram','messenger','web','whatsapp','telegram','line','voice', 'modica', 'sms'] OR isContactlessTask == true OR  twilioNumber == 'messenger:131329426738030' "
     permission_config                     = "demo"
 
     #Studio flow
@@ -19,15 +19,18 @@ locals {
       widget_from                           = "Aselo"
       chat_blocked_message                  = "Sorry, you're not able to contact Aselo from this device or account"
       error_message                         = "There has been an error with your message, please try writing us again."
+      outside_country_message               = "Thank you for reaching out to Kellimni.com. Please note that our services are available exclusively to individuals currently residing in Malta. If you are located in Malta but are using a VPN that does not indicate a Maltese IP address, we recommend connecting via a standard, approved internet protocol to access our support. If you are outside Malta, we encourage you to visit Throughline [https://silenthill.findahelpline.com/] to locate support services available in your region. We appreciate your understanding and hope you are able to find the assistance you need. Best regards, The Kellimni.com Team"
+      ip_location_finder_url                = "https://hrm-staging.tl.techmatters.org/lambda/ipLocationFinder"
 
     }
 
     channels = {
       webchat : {
-        channel_type         = "web"
-        contact_identity     = ""
-        templatefile         = "/app/twilio-iac/helplines/as/templates/studio-flows/messaging-blocking-lambda-location-block-sd.tftpl"
-        channel_flow_vars    = {}
+        channel_type     = "web"
+        contact_identity = ""
+        templatefile     = "/app/twilio-iac/helplines/as/templates/studio-flows/messaging-blocking-lambda-location-block-sd.tftpl"
+        channel_flow_vars = {
+        allowed_shortcode_locations = "MT,US,CL,ZA,IE,AR" }
         chatbot_unique_names = []
       },
       facebook : {
@@ -82,11 +85,21 @@ locals {
         chatbot_unique_names = []
       },
       modica : {
+        messaging_mode       = "conversations"
+        channel_type         = "custom"
+        contact_identity     = "modica"
+        templatefile         = "/app/twilio-iac/helplines/templates/studio-flows/messaging-custom-channel-lex-v3-blocking-lambda-sd.tftpl"
+        channel_flow_vars    = {}
+        chatbot_unique_names = []
+      },
+      sms : {
         messaging_mode   = "conversations"
-        channel_type     = "custom"
-        contact_identity = "modica"
+        channel_type     = "sms"
+        contact_identity = "+19047064372"
         templatefile     = "/app/twilio-iac/helplines/templates/studio-flows/messaging-custom-channel-lex-v3-blocking-lambda-sd.tftpl"
-        channel_flow_vars = {}
+        channel_flow_vars = {
+
+        }
         chatbot_unique_names = []
       }
     }
@@ -105,15 +118,15 @@ locals {
 
     #System Down Configuration
     system_down_templatefile = "/app/twilio-iac/helplines/templates/studio-flows/system-down.tftpl"
-    enable_system_down    = true
-    system_down_flow_vars    = {
-      is_system_down   = "false"
-      message = "We're currently experiencing technical issues, and your message may not be delivered. We're working to resolve the problem and will be back online shortly. We apologize for the inconvenience."
-      voice_message = "We're currently experiencing technical issues, and your call may not reach us. We're working to resolve the problem and will be back online shortly. We apologize for the inconvenience."
-      send_studio_message_function_sid= "ZH980bcf1102fd109e3d2f765bb0a78951"
-      call_action = "message"
-      forward_number = "+123"
-      recording_url = "https://<place_holder>.mp3"
+    enable_system_down       = true
+    system_down_flow_vars = {
+      is_system_down                   = "false"
+      message                          = "We're currently experiencing technical issues, and your message may not be delivered. We're working to resolve the problem and will be back online shortly. We apologize for the inconvenience."
+      voice_message                    = "We're currently experiencing technical issues, and your call may not reach us. We're working to resolve the problem and will be back online shortly. We apologize for the inconvenience."
+      send_studio_message_function_sid = "ZH980bcf1102fd109e3d2f765bb0a78951"
+      call_action                      = "message"
+      forward_number                   = "+123"
+      recording_url                    = "https://<place_holder>.mp3"
 
     }
   }
