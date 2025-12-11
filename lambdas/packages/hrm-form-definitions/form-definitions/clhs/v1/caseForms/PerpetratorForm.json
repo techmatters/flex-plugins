@@ -1,228 +1,48 @@
 [
   {
     "name": "firstName",
-    "label": "First Name",
+    "label": "Nombre",
     "type": "input",
-    "required": {
-      "value": true,
-      "message": "RequiredFieldError"
-    }
+    "isPII": true
   },
   {
     "name": "lastName",
-    "label": "Last Name",
+    "label": "Apellidos",
     "type": "input",
-    "required": {
-      "value": true,
-      "message": "RequiredFieldError"
-    }
-  },
-  {
-    "name": "relationshipToChild",
-    "label": "Relationship to child",
-    "type": "select",
-    "options": [
-      {
-        "value": "",
-        "label": ""
-      },
-      {
-        "value": "Caregiver",
-        "label": "Caregiver"
-      },
-      {
-        "value": "Friend",
-        "label": "Friend"
-      },
-      {
-        "value": "Grandparent",
-        "label": "Grandparent"
-      },
-      {
-        "value": "Neighbour",
-        "label": "Neighbour"
-      },
-      {
-        "value": "Parent",
-        "label": "Parent"
-      },
-      {
-        "value": "Partner",
-        "label": "Partner"
-      },
-      {
-        "value": "Person in a position of responsibility",
-        "label": "Person in a position of responsibility"
-      },
-      {
-        "value": "Sibling",
-        "label": "Sibling"
-      },
-      {
-        "value": "Stranger",
-        "label": "Stranger"
-      },
-      {
-        "value": "Other",
-        "label": "Other"
-      },
-      {
-        "value": "Unknown",
-        "label": "Unknown"
-      }
-    ],
-    "required": {
-      "value": true,
-      "message": "RequiredFieldError"
-    }
-  },
-  {
-    "name": "streetAddress",
-    "label": "Street Address",
-    "type": "input"
-  },
-  {
-    "name": "province",
-    "label": "Province",
-    "type": "select",
-    "options": [
-      {
-        "value": "",
-        "label": ""
-      },
-      {
-        "value": "Central",
-        "label": "Central"
-      },
-      {
-        "value": "Unknown",
-        "label": "Unknown"
-      }
-    ],
-    "required": {
-      "value": true,
-      "message": "RequiredFieldError"
-    }
-  },
-  {
-    "name": "district",
-    "label": "District",
-    "type": "dependent-select",
-    "dependsOn": "province",
-    "defaultOption": {
-      "value": "",
-      "label": ""
-    },
-    "options": {
-      "District1": [
-        {
-          "value": "Subdistrict1",
-          "label": "Subdistrict1"
-        },
-        {
-          "value": "Unknown",
-          "label": "Unknown"
-        }
-      ],
-      "District2": [
-        {
-          "value": "Subdistrict1",
-          "label": "Subdistrict1"
-        },
-        {
-          "value": "Unknown",
-          "label": "Unknown"
-        }
-      ]
-    },
-    "required": {
-      "value": true,
-      "message": "RequiredFieldError"
-    }
-  },
-  {
-    "name": "phone1",
-    "label": "Phone #1",
-    "type": "input"
-  },
-  {
-    "name": "gender",
-    "label": "Gender",
-    "type": "select",
-    "options": [
-      {
-        "value": "",
-        "label": ""
-      },
-      {
-        "value": "Boy",
-        "label": "Boy"
-      },
-      {
-        "value": "Girl",
-        "label": "Girl"
-      },
-      {
-        "value": "Non-Binary",
-        "label": "Non-Binary"
-      },
-      {
-        "value": "Unknown",
-        "label": "Unknown"
-      }
-    ],
-    "required": {
-      "value": true,
-      "message": "RequiredFieldError"
-    }
+    "isPII": true
   },
   {
     "name": "age",
-    "label": "Age",
+    "label": "Edad",
     "type": "select",
+    "unknownOption": "Unknown",
     "options": [
       {
         "value": "Unknown",
         "label": ""
       },
       {
-        "value": "0",
-        "label": "0"
+        "value": "<5",
+        "label": "<5"
       },
       {
-        "value": "1",
-        "label": "1"
-      },
-      {
-        "value": "2",
-        "label": "2"
-      },
-      {
-        "value": "3",
-        "label": "3"
-      },
-      {
-        "value": "4",
-        "label": "4"
-      },
-      {
-        "value": "5",
+        "value": "05",
         "label": "5"
       },
       {
-        "value": "6",
+        "value": "06",
         "label": "6"
       },
       {
-        "value": "7",
+        "value": "07",
         "label": "7"
       },
       {
-        "value": "8",
+        "value": "08",
         "label": "8"
       },
       {
-        "value": "9",
+        "value": "09",
         "label": "9"
       },
       {
@@ -430,41 +250,197 @@
         "label": "60"
       },
       {
-        "value": ">60",
-        "label": ">60"
+        "value": "61",
+        "label": "61"
       },
       {
-        "value": "Unknown",
-        "label": "Unknown"
+        "value": "62",
+        "label": "62"
       },
       {
-        "value": "Other",
-        "label": "Other"
+        "value": "63",
+        "label": "63"
+      },
+      {
+        "value": "64",
+        "label": "64"
+      },
+      {
+        "value": "65",
+        "label": "65"
+      },
+      {
+        "value": "66",
+        "label": "66"
+      },
+      {
+        "value": "67",
+        "label": "67"
+      },
+      {
+        "value": "68",
+        "label": "68"
+      },
+      {
+        "value": "69",
+        "label": "69"
+      },
+      {
+        "value": "70",
+        "label": "70"
+      },
+      {
+        "value": "71",
+        "label": "71"
+      },
+      {
+        "value": "72",
+        "label": "72"
+      },
+      {
+        "value": "73",
+        "label": "73"
+      },
+      {
+        "value": "74",
+        "label": "74"
+      },
+      {
+        "value": "75",
+        "label": "75"
+      },
+      {
+        "value": "76",
+        "label": "76"
+      },
+      {
+        "value": "77",
+        "label": "77"
+      },
+      {
+        "value": "78",
+        "label": "78"
+      },
+      {
+        "value": "79",
+        "label": "79"
+      },
+      {
+        "value": "80",
+        "label": "80"
+      },
+      {
+        "value": ">80",
+        "label": ">80"
       }
     ],
-    "required": {
-      "value": true,
-      "message": "RequiredFieldError"
-    }
+    "isPII": false
   },
   {
-    "name": "language",
-    "label": "Language",
+    "name": "gender",
+    "label": "Género",
     "type": "select",
+    "unknownOption": "Desconocido",
+    "options": [
+      {
+        "value": "Desconocido",
+        "label": ""
+      },
+      {
+        "value": "Masculino",
+        "label": "Masculino"
+      },
+      {
+        "value": "Femenino",
+        "label": "Femenino"
+      },
+      {
+        "value": "No binario",
+        "label": "No binario"
+      },
+      {
+        "value": "Otro",
+        "label": "Otro"
+      },
+      {
+        "value": "Prefiero no decir",
+        "label": "Prefiero no decir"
+      },
+      {
+        "value": "Desconocido",
+        "label": "Desconocido"
+      }
+    ],
+    "isPII": false
+  },
+  {
+    "name": "relationshipToChild",
+    "label": "Relación con el niño",
+    "type": "select",
+    "unknownOption": "Desconocido",
+    "options": [
+      {
+        "value": "Desconocido",
+        "label": ""
+      },
+      {
+        "value": "Par",
+        "label": "Par"
+      },
+      {
+        "value": "Cuidador Principal",
+        "label": "Cuidador Principal"
+      },
+      {
+        "value": "Pareja",
+        "label": "Pareja"
+      },
+      {
+        "value": "Adulto/a Significativo/a",
+        "label": "Adulto/a Significativo/a"
+      },
+      {
+        "value": "Hermano/a",
+        "label": "Hermano/a"
+      },
+      {
+        "value": "Extraño",
+        "label": "Extraño"
+      },
+      {
+        "value": "Educador/a",
+        "label": "Educador/a"
+      },
+      {
+        "value": "Otro",
+        "label": "Otro"
+      }
+    ],
+    "isPII": false
+  },
+  {
+    "name": "ageAtTheTimeOfAgression",
+    "label": "Edad al momento de agredir",
+    "type": "select",
+    "unknownOption": "Unknown",
     "options": [
       {
         "value": "Unknown",
         "label": ""
       },
       {
-        "value": "language1",
-        "label": "language1"
+        "value": "Menor de 14 años",
+        "label": "Menor de 14 años"
+      },
+      {
+        "value": "Entre 14 y 18 años",
+        "label": "Entre 14 y 18 años"
+      },
+      {
+        "value": "Mayor de 18 años",
+        "label": "Mayor de 18 años"
       }
-    ]
-  },
-  {
-    "name": "ethnicity",
-    "label": "Ethnicity",
-    "type": "input"
+    ],
+    "isPII": false
   }
 ]
