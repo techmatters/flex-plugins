@@ -14,8 +14,8 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { Contact } from '../../types/types';
-import { ContactDraftChanges } from './existingContacts';
+import type { Contact } from '../../types/types';
+import type { ContactDraftChanges, ContactState } from './existingContacts';
 
 export const getUnsavedContact = (savedContact: Contact, draftContact: ContactDraftChanges): Contact => {
   if (!savedContact && !draftContact) {
@@ -29,4 +29,9 @@ export const getUnsavedContact = (savedContact: Contact, draftContact: ContactDr
       ...draftContact?.rawJson,
     },
   };
+};
+
+export const getUnsavedContactFromState = (state: ContactState): Contact => {
+  const { savedContact, draftContact } = state ?? {};
+  return getUnsavedContact(savedContact, draftContact);
 };
