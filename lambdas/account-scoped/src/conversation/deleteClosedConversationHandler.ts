@@ -47,7 +47,7 @@ const deleteClosedConversationEventHandler: ServiceScopedConversationEventHandle
       console.debug(
         `Conversation state for ${conversationSid} updated from ${stateFrom} to ${stateTo} and account ${accountSid} has a zero transcript retention policy, deleting conversation`,
       );
-      await client.conversations.v1.conversations.get(conversationSid).remove();
+      await client.conversations.v1.conversations.get(conversationSid).remove({ xTwilioWebhookEnabled: 'true' });
       console.debug(
         `Deleted ${conversationSid} when it's state was updated from ${stateFrom} to ${stateTo} because account ${accountSid} has a zero transcript retention policy.`,
       );
