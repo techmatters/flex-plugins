@@ -117,16 +117,14 @@ export const Modal: React.FC<Props> = ({
       <ModalPaper style={{ display: 'flex', flexDirection: 'column' }}>
         <Box marginBottom="20px">
           <Row>
-            <Box width="30px">
-              {hasHistory && (
-                <StyledBackButton style={{ marginRight: '10px' }} onClick={goBack}>
-                  <LargeBackIcon />
-                  <HiddenText>
-                    <Template code="NavigableContainer-BackButton" />
-                  </HiddenText>
-                </StyledBackButton>
-              )}
-            </Box>
+            {hasHistory && (
+              <StyledBackButton style={{ marginRight: '10px' }} onClick={goBack}>
+                <LargeBackIcon />
+                <HiddenText>
+                  <Template code="NavigableContainer-BackButton" />
+                </HiddenText>
+              </StyledBackButton>
+            )}
             <ModalTitle>{getTemplate(templateCodes.header)}</ModalTitle>
             <Box style={{ marginLeft: 'auto' }}>
               <CloseButton aria-label="CloseButton" onClick={onCloseModal} disabled={disableExitModal} />

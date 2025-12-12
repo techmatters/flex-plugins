@@ -33,7 +33,7 @@ export const CloseDialogPaper = styled((props: React.JSX.IntrinsicAttributes & D
   && .paper {
     width: 60%;
     max-width: 400px;
-    padding: 36px;
+    padding: 32px 24px;
     border-radius: 8px;
     border: 1px solid #e0e3ea;
     box-shadow: 0 4px 16px 0 rgba(0, 0, 0, 0.25);

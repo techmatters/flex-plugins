@@ -25,7 +25,7 @@ export const ModalPaper = styled(Paper)`
   width: 50%;
   max-width: 600px;
   background-color: white;
-  padding: 24px;
+  padding: 32px 24px;
   outline: none;
   border-radius: 4px;
 `;

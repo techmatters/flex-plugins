@@ -56,11 +56,11 @@ const SkillsColumnHeader: React.FC = () => {
               }}
               ref={buttonRef}
             >
+              <Template code="TeamsView-SkillsActionsButtonTitle" />
               <Flex marginRight="5px">
                 {isOpen && <ArrowDropUp style={{ width: '20px', height: '20px' }} />}
                 {!isOpen && <ArrowDropDown style={{ width: '20px', height: '20px' }} />}
               </Flex>
-              <Template code="TeamsView-SkillsActionsButtonTitle" />
             </PrimaryButton>
           </Box>
         )}
