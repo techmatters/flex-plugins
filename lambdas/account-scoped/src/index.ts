@@ -69,7 +69,7 @@ export const handler = async (event: ALBEvent): Promise<ALBResult> => {
     if (request.method === 'OPTIONS') {
       return okJsonResponse();
     }
-    const route = lookupRoute(request);
+    const route = await lookupRoute(request);
     if (route) {
       let processedRequest = request;
       for (const step of route.requestPipeline) {

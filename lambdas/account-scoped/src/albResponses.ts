@@ -22,7 +22,7 @@ export const CORS_HEADERS = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Methods': 'OPTIONS,POST,GET,PUT,DELETE,PATCH,HEAD',
   'Access-Control-Allow-Headers':
-    'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token',
+    'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,ui-version,webchat-version,x-twilio-sec-webchatinfo,x-twilio-sec-usersettings,x-twilio-sec-decoders',
 };
 
 export const okJsonResponse = (body: any = {}): ALBResult => ({

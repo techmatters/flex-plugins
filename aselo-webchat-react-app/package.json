@@ -73,10 +73,10 @@
     "start": "react-app-rewired start",
     "build": "react-app-rewired build",
     "test": "LC_ALL=\"en_GB.UTF-8\" react-app-rewired test --watchAll=false --env=jsdom --transformIgnorePatterns \"node_modules/(?!(@twilio-paste|@twilio/conversations))/\"",
-    "test:nowatch": "yarn test --watchAll=false --verbose --runInBand",
+    "test:nowatch": "npm test --watchAll=false --verbose --runInBand",
     "bootstrap": "node scripts/bootstrap",
     "e2eCleanupExistingTasks": "node scripts/e2eCleanupExistingTasks",
-    "deploy": "yarn build && node scripts/deploy",
+    "deploy": "npm run build && node scripts/deploy",
     "eject": "react-app-rewired eject",
     "test:e2e": "cypress open"
   },
