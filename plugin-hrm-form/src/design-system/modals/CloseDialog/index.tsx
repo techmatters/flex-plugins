@@ -31,20 +31,16 @@ export const CloseDialog: React.FC<{
 }> = ({ openDialog, closeDialogHeader, closeDialogContent, onDiscardChanges, onCloseDialog }) => {
   return (
     <CloseDialogPaper open={openDialog} onClose={onCloseDialog}>
-      <Box padding="30px">
-        <CloseDialogHeader>{getTemplate(closeDialogHeader)}</CloseDialogHeader>
-        <Box padding="20px 0">
-          <CloseDialogContent>{getTemplate(closeDialogContent)}</CloseDialogContent>
-        </Box>
-        <ButtonGroup>
-          <TertiaryButton tabIndex={1} onClick={onCloseDialog}>
-            <Template code="Modals-CloseDialog-CancelButton" />
-          </TertiaryButton>
-          <DestructiveButton tabIndex={2} onClick={onDiscardChanges} style={{ margin: '0 15px' }}>
-            <Template code="Modals-CloseDialog-DiscardButton" />
-          </DestructiveButton>
-        </ButtonGroup>
-      </Box>
+      <CloseDialogHeader>{getTemplate(closeDialogHeader)}</CloseDialogHeader>
+      <CloseDialogContent>{getTemplate(closeDialogContent)}</CloseDialogContent>
+      <ButtonGroup>
+        <TertiaryButton tabIndex={1} onClick={onCloseDialog}>
+          <Template code="Modals-CloseDialog-CancelButton" />
+        </TertiaryButton>
+        <DestructiveButton tabIndex={2} onClick={onDiscardChanges} style={{ marginLeft: '20px' }}>
+          <Template code="Modals-CloseDialog-DiscardButton" />
+        </DestructiveButton>
+      </ButtonGroup>
     </CloseDialogPaper>
   );
 };
