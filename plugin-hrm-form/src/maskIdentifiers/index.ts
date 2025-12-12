@@ -76,7 +76,6 @@ export const maskManagerStringsWithIdentifiers = <T extends Strings<string> & { 
     theirFriendlyNameOverride: false,
     yourFriendlyNameOverride: true,
   };
-
   // Mask IP address shown in the first message for web channel
   MessageList.Content.remove('0', {
     if: ({ conversation }) => conversation?.source?.attributes?.channel_type === 'web',
