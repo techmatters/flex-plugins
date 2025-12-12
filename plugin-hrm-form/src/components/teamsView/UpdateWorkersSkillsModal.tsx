@@ -53,6 +53,12 @@ type Props = {
   task: RouterTask;
 };
 
+const operationTemplateCodes: { [k in TeamsViewState['operation']]: string } = {
+  enable: 'TeamsView-Enable',
+  disable: 'TeamsView-Disable',
+  assign: 'TeamsView-Assign',
+  unassign: 'TeamsView-Unassign',
+};
 export const UpdateWorkersSkillsModal: React.FC<Props> = ({ task }) => {
   const dispatch = useDispatch();
   const {
@@ -184,11 +190,11 @@ const SelectWorkersSkillsModal: React.FC<Props> = () => {
   );
 };
 
-const operationTemplateCodes: { [k in TeamsViewState['operation']]: string } = {
-  enable: 'TeamsView-Enable',
-  disable: 'TeamsView-Disable',
-  assign: 'TeamsView-Assign',
-  unassign: 'TeamsView-Unassign',
+const operationTemplateCodesFor: { [k in TeamsViewState['operation']]: string } = {
+  enable: 'TeamsView-EnableFor',
+  disable: 'TeamsView-DisableFor',
+  assign: 'TeamsView-AssignFor',
+  unassign: 'TeamsView-UnassignFor',
 };
 const ConfirmUpdatesModal: React.FC<Props> = () => {
   const { selectedSkills, selectedWorkers, operation } = useSelector((state: RootState) => state[namespace].teamsView);
@@ -198,9 +204,7 @@ const ConfirmUpdatesModal: React.FC<Props> = () => {
   const selectedWorkersFlexState = workers.filter(w => selectedWorkers.has(w.worker.sid));
 
   return (
-    <Column
-      style={{ justifyContent: 'center', width: '100%', height: '100%', padding: '10px 30px', paddingRight: 'auto' }}
-    >
+    <Column style={{ justifyContent: 'center', width: '100%', height: '100%' }}>
       {Array.from(selectedSkills).map(skill => {
         const getWorkersForOperation = () => {
           if (operation === 'enable') {
@@ -233,12 +237,20 @@ const ConfirmUpdatesModal: React.FC<Props> = () => {
           return 0;
         };
 
+        const workersForOperation = getWorkersForOperation();
+
         return (
           <Row style={{ width: '100%' }} key={skill}>
             <OperationText>{skill}:</OperationText>
             &nbsp;
             <OperationContentText>
-              <Template code={operationTemplateCodes[operation]} /> {getWorkersForOperation()}
+              <Template code={operationTemplateCodesFor[operation]} /> {workersForOperation}
+              &nbsp;
+              {workersForOperation === 1 ? (
+                <Template code="TeamsView-Counsellor" />
+              ) : (
+                <Template code="TeamsView-Counsellors" />
+              )}
             </OperationContentText>
           </Row>
         );

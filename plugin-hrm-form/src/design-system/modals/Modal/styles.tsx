@@ -23,16 +23,14 @@ export const ModalPaper = styled(Paper)`
   left: 50%;
   transform: translate(-50%, -50%);
   width: 50%;
-  max-width: 800px;
-  max-height: 600px;
+  max-width: 600px;
   background-color: white;
-  padding: 20px;
+  padding: 32px 24px;
   outline: none;
   border-radius: 4px;
 `;
 
 export const ModalTitle = styled('h2')`
-  font-size: 18px;
+  font-size: 20px;
   font-weight: bold;
-  margin: 0;
 `;
