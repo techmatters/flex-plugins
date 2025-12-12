@@ -83,6 +83,7 @@ const readConfig = () => {
     enableExternalRecordings,
     enableUnmaskingCalls,
     hideAddToNewCaseButton,
+    enforceZeroTranscriptRetention,
   } = {
     // Deprecated, remove when service configurations changes have applied 2025-09-30
     ...manager.serviceConfiguration.attributes.config_flags,
@@ -142,6 +143,7 @@ const readConfig = () => {
       permissionConfig,
       contactsWaitingChannels,
       externalRecordingsEnabled,
+      enforceZeroTranscriptRetention,
       helplineCode,
       environment,
       docsBucket,
