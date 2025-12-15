@@ -14,7 +14,9 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
-import { Strings, TaskChannelDefinition, MessagingCanvas, MessageList } from '@twilio/flex-ui';
+import { Strings, TaskChannelDefinition, MessagingCanvas, MessageList, Manager } from '@twilio/flex-ui';
+// Weird type to pull in, but I can't see how it can be inferred from the public API, so it's this or 'any' xD
+import type { ChatProperties } from '@twilio/flex-ui/src/internal-flex-commons/src';
 
 import { getInitializedCan } from '../permissions/rules';
 import { PermissionActions } from '../permissions/actions';
@@ -81,4 +83,41 @@ export const maskManagerStringsWithIdentifiers = <T extends Strings<string> & { 
     if: ({ conversation }) => conversation?.source?.attributes?.channel_type === 'web',
   });
   return newStrings;
+};
+
+export const maskConversationServiceUserNames = (manager: Manager) => {
+  let can: ReturnType<typeof getInitializedCan>;
+  manager.store.subscribe(() => {
+    can = getInitializedCan();
+    if (!can(PermissionActions.VIEW_IDENTIFIERS)) {
+      const {
+        participants: { bySid },
+        chat,
+      } = manager.store.getState().flex;
+      const flexNonAgentParticipantList = Object.values(bySid).filter(fp => fp.type !== 'agent');
+      for (const [conversationSid, conversation] of Object.entries(chat.conversations)) {
+        for (const participant of conversation.participants.values()) {
+          // Check if this conversation participant matches the convo sid and conversation member sid of a non agent participant.
+          const isNotAgent = Boolean(
+            flexNonAgentParticipantList.find(fp => {
+              const mediaProperties = fp.mediaProperties as ChatProperties;
+              return (
+                mediaProperties.conversationSid === conversationSid && mediaProperties.sid === participant.source.sid
+              );
+            }),
+          );
+          // Only mask non agent participants, which should only be the service user
+          // The right side of the OR condition is for webchat 2.
+          // Programmable Chat conversation participants are not listed in the 'participants' redux store so the above check soes not work
+          // However they do have a member_type attribute set on the participant in the conversation, so we can use that
+          // This check can be removed once webchat 2 support is removed
+          // eslint-disable-next-line dot-notation
+          if (isNotAgent || participant.source.attributes['member_type'] === 'guest') {
+            // eslint-disable-next-line dot-notation
+            (participant as any).friendlyName = manager.strings['MaskIdentifiers'] || 'XXXXXX';
+          }
+        }
+      }
+    }
+  });
 };

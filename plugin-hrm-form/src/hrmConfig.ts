@@ -21,8 +21,6 @@ import type { RootState } from './states';
 import { namespace } from './states/storeNamespaces';
 import { WorkerSID } from './types/twilio';
 import { FeatureFlags } from './types/FeatureFlags';
-import { getInitializedCan } from './permissions/rules';
-import { PermissionActions } from './permissions/actions';
 
 const featureFlagEnvVarPrefix = 'REACT_APP_FF_';
 type ContactSaveFrequency = 'onTabChange' | 'onFinalSaveAndTransfer';
@@ -174,27 +172,11 @@ export const initializeConfig = () => {
 };
 
 export const subscribeToConfigUpdates = (manager: Flex.Manager) => {
-  let can: ReturnType<typeof getInitializedCan>;
   manager.store.subscribe(() => {
     try {
       cachedConfig = readConfig();
     } catch (err) {
       console.warn('Failed to read configuration - leaving cached version the same', err);
-    }
-  });
-  manager.store.subscribe(() => {
-    can = getInitializedCan();
-    if (can(PermissionActions.VIEW_IDENTIFIERS)) {
-      for (const conversation of Object.values(manager.store.getState().flex.chat.conversations)) {
-        for (const [_sid, participant] of conversation.participants.entries()) {
-          // Only mask the service user, which should be the only 'guest' member type
-          // eslint-disable-next-line dot-notation
-          if (participant.source.attributes['member_type'] === 'guest') {
-            // @ts-ignore
-            participant.friendlyName = manager.strings.MaskIdentifiers || 'XXXXXX';
-          }
-        }
-      }
     }
   });
 };

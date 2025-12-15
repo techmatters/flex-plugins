@@ -42,7 +42,7 @@ import { setUpConferenceActions, setupConferenceComponents } from './conference'
 import { setUpTransferActions } from './transfer/setUpTransferActions';
 import { playNotification } from './notifications/playNotification';
 import { namespace } from './states/storeNamespaces';
-import { maskManagerStringsWithIdentifiers } from './maskIdentifiers';
+import { maskConversationServiceUserNames, maskManagerStringsWithIdentifiers } from './maskIdentifiers';
 import { setUpViewMaskedVoiceNumber } from './maskIdentifiers/unmaskPhoneNumber';
 import { validateAndSetPermissionRules } from './permissions/rules';
 import { setupLlmNotifications } from './components/contact/GenerateSummaryButton/setUpLlmNotifications';
@@ -259,6 +259,10 @@ export default class HrmFormPlugin extends FlexPlugin {
      * This is a workaround until we deprecate 'getConfig' in it's current form after we migrate to Flex 2.0
      */
     subscribeToConfigUpdates(manager);
+    /*
+     * This is ahack to try and mask the name of the service user without also masking the names of other agents in the conversation
+     */
+    maskConversationServiceUserNames(manager);
   }
 }
 
