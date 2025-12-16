@@ -33,7 +33,7 @@
   },
   {
     "label": "No Media (VCRC & DCVH)",
-    "text": "Unfortunately, I am unable to open any media files. This is a feature of the platform to maintain your privacy."
+    "text": "Unfortunately, I am unable to open any media files. This feature exists to ensure your anonymity and privacy is maintained throughout our conversation."
   },
   {
     "label": "Order of Protection (VCRC & DCVH)",
@@ -41,7 +41,7 @@
   },
   {
     "label": "Repeat Chatter (VCRC & DCVH)",
-    "text": "I am really glad that you have come here to find support. Unfortunately, we are only able to provide short-term services, not long-term support or counseling. I would encourage you to reach out to the resources that we've discussed."
+    "text": "I am really glad that you have come here to find support. I am happy that you've decided to seek support.encourage you to reach out to the resources that we've discussed."
   },
   {
     "label": "Resource Map (VCRC & DCVH)",
@@ -53,11 +53,11 @@
   },
   {
     "label": "Trauma Reflexes & Habits (VCRC & DCVH)",
-    "text": "There is no “right way or wrong way” to respond to a traumatic event. Every single person's response is unique. Our brains and bodies go into survival-mode, automatically responding in ways that keep us safe. We often react with automatic reflexes and habits that we have very little control over - our brains are wired to do this. Some people call these responses “fight, flight, fawn or freeze”. These automatic responses are completely normal.However you responded is your body's normal reaction to an abnormal situation. What happened to you is not your fault. You did everything you could do to survive. "
+    "text": "There is no \"right way\" or \"wrong way\" to respond to a traumatic event. Every single person's response is unique. Our brains and bodies go into survival-mode, automatically responding in ways that keep us safe. We often react with automatic reflexes and habits that we have very little control over - our brains are wired to do this. Some people call these responses fight, flight, fawn or freeze. These automatic responses are completely normal.However you responded is your body's normal reaction to an abnormal situation. What happened to you is not your fault. You did everything you could do to survive. "
   },
   {
     "label": "Trauma-Fawn Reflex (VCRC & DCVH)",
-    "text": "What happened to you and how you responded is not your fault. Sometimes we cooperate in the hopes that we will become safe sooner. It is the way our brains and bodies help us survive. Some people call this natural reflex “fawning”. It has been described by some as “going into auto-pilot”. It is a normal response that many people experience. “Going along with it” or even actively participating does not mean you consented or wanted this experience to happen. It means that you did not feel safe, that saying “no” was not an option for you, and that you did what you had to do to survive. "
+    "text": "What happened to you and how you responded is not your fault. Sometimes we cooperate in the hopes that we will become safe sooner. It is the way our brains and bodies help us survive. Some people call this natural reflex \"fawning\". It has been described by some as \"going into auto-pilot\". It is a normal response that many people experience. \"Going along with it\" or even actively participating does not mean you consented or wanted this experience to happen. It means that you did not feel safe, that saying \"no\" was not an option for you, and that you did what you had to do to survive. "
   },
   {
     "label": "Warn Inappropriate (VCRC & DCVH)",
