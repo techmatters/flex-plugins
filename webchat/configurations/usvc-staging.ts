@@ -206,8 +206,8 @@ const preEngagementConfig: PreEngagementFormDefinition = {
           label: "Oregon",
         },
         {
-          value: "Pensylvania",
-          label: "Pensylvania",
+          value: "Pennsylvania",
+          label: "Pennsylvania",
         },
         {
           value: "Rhode Island",
