@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
-import { Strings, TaskChannelDefinition, MessagingCanvas, MessageList, Manager } from '@twilio/flex-ui';
+import { Strings, TaskChannelDefinition, MessageList, Manager } from '@twilio/flex-ui';
 // Weird type to pull in, but I can't see how it can be inferred from the public API, so it's this or 'any' xD
 import type { ChatProperties } from '@twilio/flex-ui/src/internal-flex-commons/src';
 
@@ -70,14 +70,6 @@ export const maskManagerStringsWithIdentifiers = <T extends Strings<string> & { 
       newStrings[key] = value.replace(/{{defaultFrom}}/g, newStrings.MaskIdentifiers);
     }
   });
-
-  const maskedMessage = newStrings.MaskIdentifiers || 'XXXXXX';
-  // Mask identifiers in messaging canvas for the sender
-  MessagingCanvas.defaultProps.memberDisplayOptions = {
-    theirDefaultName: maskedMessage,
-    theirFriendlyNameOverride: false,
-    yourFriendlyNameOverride: true,
-  };
   // Mask IP address shown in the first message for web channel
   MessageList.Content.remove('0', {
     if: ({ conversation }) => conversation?.source?.attributes?.channel_type === 'web',
@@ -113,6 +105,8 @@ export const maskConversationServiceUserNames = (manager: Manager) => {
           // This check can be removed once webchat 2 support is removed
           // eslint-disable-next-line dot-notation
           if (isNotAgent || participant.source.attributes['member_type'] === 'guest') {
+            // Overwriting the read only friendly name is a blatant hack here, but it's only one level below the UI
+            // So I think it's unlikely that this masked name is likely to find its way back to and backend system in Twilio or HRM
             // eslint-disable-next-line dot-notation
             (participant as any).friendlyName = manager.strings['MaskIdentifiers'] || 'XXXXXX';
           }
