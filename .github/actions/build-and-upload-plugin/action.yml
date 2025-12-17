@@ -56,7 +56,7 @@ runs:
       with:
         ssm_parameter: "DEV_DATADOG_AS_APP_ID"
         env_variable_name: "DATADOG_APP_ID"
-    - name: Set Datadog Client Access token
+    - name: Set Datadog Client Access Token
       uses: "marvinpinto/action-inject-ssm-secrets@latest"
       with:
         ssm_parameter: "DEV_DATADOG_AS_ACCESS_TOKEN"
