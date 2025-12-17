@@ -242,8 +242,8 @@ const preEngagementConfig: PreEngagementFormDefinition = {
           label: "Virgina",
         },
         {
-          value: "Washington",
-          label: "Washington",
+          value: "Washington D.C.",
+          label: "Washington D.C.",
         },
         {
           value: "West Virginia",
@@ -284,6 +284,10 @@ const preEngagementConfig: PreEngagementFormDefinition = {
         {
           value: "International",
           label: "International",
+        },
+        {
+          value: "Unknown - USA State/Territory",
+          label: "Unknown - USA State/Territory",
         },
       ],
       required: true,
