@@ -14,7 +14,6 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 // Close task as a supervisor
-import '@twilio-labs/serverless-runtime-types';
 import { AccountSID, TaskSID } from '@tech-matters/twilio-types';
 import { newMissingParameterResult } from '../httpErrors';
 import type {
@@ -30,7 +29,7 @@ import {
   isTaskNotFoundErrorResult,
   VALID_RESERVATION_STATUSES_FOR_TASK_OWNER,
 } from './getTaskAndReservations';
-import { HttpError } from '../httpTypes';
+import type { HttpError } from '../httpTypes';
 
 type AssignmentResult = Result<{ cause: Error }, { completedTask: TaskInstance }>;
 

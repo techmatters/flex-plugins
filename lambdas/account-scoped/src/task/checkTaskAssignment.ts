@@ -13,8 +13,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
-import '@twilio-labs/serverless-runtime-types';
-import { AccountScopedHandler, HttpRequest } from '../httpTypes';
+import type { AccountScopedHandler, HttpRequest } from '../httpTypes';
 import type { AccountSID, TaskSID } from '@tech-matters/twilio-types';
 import { newMissingParameterResult } from '../httpErrors';
 import { newOk } from '../Result';

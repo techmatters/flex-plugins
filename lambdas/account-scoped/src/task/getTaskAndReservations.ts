@@ -14,22 +14,21 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
-import '@twilio-labs/serverless-runtime-types';
 import {
   FlexValidatedHandler,
   isSupervisor,
   TokenValidatorResponse,
 } from '../validation/flexToken';
-import { AccountSID, TaskSID } from '@tech-matters/twilio-types';
+import type { AccountSID, TaskSID } from '@tech-matters/twilio-types';
 import { ErrorResult, isErr, newErr, newOk, Result } from '../Result';
-import { HttpError } from '../httpTypes';
+import type { HttpError } from '../httpTypes';
 import { getTwilioClient, getWorkspaceSid } from '@tech-matters/twilio-configuration';
 import { newMissingParameterResult } from '../httpErrors';
-import {
+import type {
   ReservationInstance,
-  type ReservationStatus,
+  ReservationStatus,
 } from 'twilio/lib/rest/taskrouter/v1/workspace/task/reservation';
-import { TaskInstance } from 'twilio/lib/rest/taskrouter/v1/workspace/task';
+import type { TaskInstance } from 'twilio/lib/rest/taskrouter/v1/workspace/task';
 
 type TaskNotFoundErrorResultPayload = { type: 'TaskNotFoundError'; cause: Error };
 
