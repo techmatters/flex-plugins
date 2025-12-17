@@ -26,7 +26,6 @@ locals {
       serverless_service_sid            = "ZS2035e3023773cf7a1a482950df4f2150"
       serverless_environment_sid        = "ZE56ef3f078fe4b40ad57d4d4f63652210"
       operating_hours_function_sid      = "ZH77510a142c7bad7449d04e415b6c8187"
-      operating_hours_function_url      = "https://serverless-3836-production.twil.io/operatingHours"
       check_counsellors_function_sid    = "ZH95bed62f9c0af98771e01cba4bd86d1f"
       check_counsellors_function_url    = "https://twilio-service-4854.twil.io/check_counsellors"
       cancel_task_function_url          = "https://twilio-service-4854.twil.io/cancel_tasks"
