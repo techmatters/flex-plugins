@@ -11,7 +11,7 @@
   "case": {
     "sectionTypes": {
       "ecuphs": {
-        "splitFormAt": 7,
+        "splitFormAt": 9,
         "caseHomeOrder": 1,
         "printOrder": 1,
         "previewFields": [

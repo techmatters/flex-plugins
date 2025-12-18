@@ -54,12 +54,6 @@
       "label": ""
     },
     "options": {
-      "No": [
-        {
-          "value": "N/A",
-          "label": "N/A"
-        }
-      ],
       "Sí": [
         {
           "value": "No",
