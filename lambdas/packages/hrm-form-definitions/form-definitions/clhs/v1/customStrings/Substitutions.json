@@ -50,10 +50,10 @@
     "TabbedForms-AddCallerInfoTab": "Desactivado",
     "TabbedForms-CategoriesTab": "Tags",
     "Case-CaseOverviewLabel": "ECUPHS de este Usuarie",
-    "Case-SectionList-ecuphsCreated": "Ecuphs contestada",
-    "TabbedForms-NewCase": "Crear módulo ECUPHS",
-    "TabbedForms-ExistingCase": "Agregar ECUPHS al un módulo",
-    "Case-CaseNumber": "Módulo ECUPHS #",
+    "Case-SectionList-ecuphsCreated": "ECUPHS contestada",
+    "TabbedForms-NewCase": "Crear carpeta ECUPHS",
+    "TabbedForms-ExistingCase": "Agregar ECUPHS a una carpeta",
+    "Case-CaseNumber": "Carpeta ECUPHS #",
     "Case-Timeline-ModalTitle": "Línea de Tiempo ECUPHS #{{caseId}}",
     "Case-CaseSummarySection": "CaseSummarySection",
     "Case-CaseDetailsStatusLabel": "CaseDetailsStatusLabel",
@@ -64,6 +64,7 @@
     "Case-SectionList-Title/ecuphs": "Encuesta ECUPHS",
     "Case-SectionList-Add/ecuphs": "Agregar",
     "CaseSection-BottomBar-Save/ecuphs": "Guardar",
-    "CaseSection-BottomBar-SaveAndAddAnother/ecuphs": "Guardar y agregar una nueva"
+    "CaseSection-BottomBar-SaveAndAddAnother/ecuphs": "Guardar y agregar una nueva",
+    "CaseMerging-RemoveFromCase": "Quitar de la carpeta"
   }
 }
