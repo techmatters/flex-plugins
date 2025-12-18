@@ -1,1 +1,22 @@
-[]
+[
+  {
+    "label": "Horario ",
+    "text": "Nuestros horarios de atención son:\nLunes a Martes\n13:00 a 14:00 y de 18:00 a 00:00\n\nMiércoles a viernes \n13:00 a 14:00 y de 17:00 a 00:00\n\nSábados y Domingos\n13:00 a 14:00 y de 19:00 a 00:00"
+  },
+  {
+    "label": "Línea *4141",
+    "text": "Si requieres de una atención especializada en prevención del suicidio puedes contactarte con la Línea de Prevención del Suicidio llamando al *4141, gratuita y disponible en todo momento"
+  },
+  {
+    "label": "Bibliodiversa",
+    "text": "En todomejora.org/bibliodiversa puedes encontrar mayor información sobre temáticas LGBTIQA+ en torno a salud mental y educación"
+  },
+  {
+    "label": "Familia a Colores",
+    "text": "Para madres, padres y personas cuidadoras tenemos disponible el Programa Familia a Colores, le cual ofrece consejerías gratuitas que se pueden agendar escribiendo por Whatsapp al número +56 9 6319 9475"
+  },
+  {
+    "label": "Inactividad usuarie",
+    "text": "¿Sigues ahí? Te recordamos que estamos aquí para apoyarte"
+  }
+]

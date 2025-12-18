@@ -6,12 +6,6 @@
     "isPII": false
   },
   {
-    "name": "childIsAtRisk",
-    "label": "El niño está en riesgo",
-    "type": "checkbox",
-    "isPII": false
-  },
-  {
     "name": "followUpDate",
     "label": "Follow Up Date",
     "type": "date-input",
