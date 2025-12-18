@@ -66,6 +66,10 @@
     "CaseSection-BottomBar-Save/ecuphs": "Guardar",
     "CaseSection-BottomBar-SaveAndAddAnother/ecuphs": "Guardar y agregar una nueva",
     "CaseMerging-RemoveFromCase": "Quitar de la carpeta",
-    "Case-SectionList-NoItems/ecuphs": "No hay encuestas ECUPHS contestadas"
+    "Case-SectionList-NoItems/ecuphs": "No hay encuestas ECUPHS contestadas",
+    "CaseMerging-ContactRemovedFromCase": "Contacto eliminado de la carpeta",
+    "CaseMerging-CaseCreatedAndContactAdded": "Carpeta #{{caseId}} creada y contacto agregado",
+    "CaseMerging-ContactAddedToExistingCase": "Contacto agregado a la Carpeta #{{caseId}}",
+    "CaseMerging-CancelCase": "Cancelar Carpeta"
   }
 }
