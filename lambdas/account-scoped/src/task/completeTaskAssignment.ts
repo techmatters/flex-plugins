@@ -16,10 +16,7 @@
 // Close task as a supervisor
 import { AccountSID, TaskSID } from '@tech-matters/twilio-types';
 import { newMissingParameterResult } from '../httpErrors';
-import type {
-  FlexValidatedHandler,
-  TokenValidatorResponse,
-} from '../validation/flexToken';
+import { FlexValidatedHandler, isSupervisor } from '../validation/flexToken';
 import { isErr, isOk, newErr, newOk, Result } from '../Result';
 import { getTwilioClient } from '@tech-matters/twilio-configuration';
 import { Twilio } from 'twilio';
@@ -30,13 +27,59 @@ import {
   VALID_RESERVATION_STATUSES_FOR_TASK_OWNER,
 } from './getTaskAndReservations';
 import type { HttpError } from '../httpTypes';
+import { ReservationInstance } from 'twilio/lib/rest/taskrouter/v1/workspace/task/reservation';
 
 type AssignmentResult = Result<{ cause: Error }, { completedTask: TaskInstance }>;
+type CompleteReservationsResult = Result<
+  { cause: Error },
+  {
+    completedReservationSids: string[];
+    completeReservationErrors: Error[];
+  }
+>;
 
-const closeTaskAssignment = async (
+const completeReservations = async (
+  reservations: ReservationInstance[],
+): Promise<CompleteReservationsResult> => {
+  try {
+    const results = await Promise.allSettled(
+      reservations
+        .filter(r => ['wrapping', 'accepted'].includes(r.reservationStatus))
+        .map(async r => {
+          console.debug(
+            `Attempting to complete reservation ${r.sid} on task ${r.taskSid} for worker ${r.workerSid}, status: ${r.reservationStatus}`,
+          );
+          await r.update({
+            reservationStatus: 'completed',
+          });
+          console.debug(
+            `Completed reservation ${r.sid} on task ${r.taskSid} for worker ${r.workerSid}, status: ${r.reservationStatus}`,
+          );
+          return r.sid;
+        }),
+    );
+    return newOk({
+      completedReservationSids: results
+        .map(r => (r.status === 'fulfilled' ? r.value : undefined))
+        .filter(Boolean) as string[],
+      completeReservationErrors: results
+        .map(r => (r.status === 'rejected' ? r.reason : undefined))
+        .filter(Boolean) as Error[],
+    });
+  } catch (err) {
+    const error = err as Error;
+    return newErr({
+      message: error.message,
+      error: {
+        cause: error,
+      },
+    });
+  }
+};
+
+const completeTaskAssignment = async (
   client: Twilio,
   task: TaskInstance,
-  finalTaskAttributes: string,
 ): Promise<AssignmentResult> => {
   try {
     const attributes = JSON.parse(task.attributes);
@@ -45,7 +88,6 @@ const closeTaskAssignment = async (
     // Ends the task for the worker and client for chat tasks, and only for the worker for voice tasks
     const completedTask = await task.update({
       assignmentStatus: 'completed',
-      attributes: finalTaskAttributes,
     });
 
     // Ends the call for the client for voice
@@ -60,9 +102,6 @@ const closeTaskAssignment = async (
     });
   }
 };
-
-const isSupervisor = (tokenResult: TokenValidatorResponse) =>
-  Array.isArray(tokenResult.roles) && tokenResult.roles.includes('supervisor');
 
 export const completeTaskAssignmentHandler: FlexValidatedHandler = async (
   { body: event, tokenResult },
@@ -91,13 +130,19 @@ export const completeTaskAssignmentHandler: FlexValidatedHandler = async (
       error: { statusCode: 403 },
     });
   }
-  const closeResult = await closeTaskAssignment(
+  const completeReservationsResult = await completeReservations(reservations ?? []);
+  if (isErr(completeReservationsResult)) {
+    console.error(
+      `Error completing reservations for task ${taskSid}`,
+      completeReservationsResult.error,
+    );
+  }
+  const completeTaskResult = await completeTaskAssignment(
     await getTwilioClient(accountSid),
     task,
-    JSON.stringify({}),
   );
 
-  return isOk(closeResult)
-    ? closeResult
-    : { ...closeResult, error: { ...closeResult.error, statusCode: 500 } };
+  return isOk(completeTaskResult)
+    ? completeTaskResult
+    : { ...completeTaskResult, error: { ...completeTaskResult.error, statusCode: 500 } };
 };
