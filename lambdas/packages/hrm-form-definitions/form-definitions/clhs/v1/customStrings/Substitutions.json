@@ -49,7 +49,21 @@
     "CSAMCLCReportForm-ChildAge": "Cuál es la edad del usuarie?",
     "TabbedForms-AddCallerInfoTab": "Desactivado",
     "TabbedForms-CategoriesTab": "Tags",
-    "Case-CaseOverviewLabel": "Desactivado",
-    "Case-SectionList-ecuphsCreated": "Ecuphs contestada"
+    "Case-CaseOverviewLabel": "ECUPHS de este Usuarie",
+    "Case-SectionList-ecuphsCreated": "Ecuphs contestada",
+    "TabbedForms-NewCase": "Crear módulo ECUPHS",
+    "TabbedForms-ExistingCase": "Agregar ECUPHS al un módulo",
+    "Case-CaseNumber": "Módulo ECUPHS #",
+    "Case-Timeline-ModalTitle": "Línea de Tiempo ECUPHS #{{caseId}}",
+    "Case-CaseSummarySection": "CaseSummarySection",
+    "Case-CaseDetailsStatusLabel": "CaseDetailsStatusLabel",
+    "CaseSection-Add/ecuphs": "Agregar ECUPHS",
+    "CaseSection-Edit/ecuphs": "Editar ECUPHS",
+    "CaseSection-Delete/ecuphs": "Borrar ECUPHS",
+    "CaseSection-View/ecuphs": "Ver ECUPHS",
+    "Case-SectionList-Title/ecuphs": "Encuesta ECUPHS",
+    "Case-SectionList-Add/ecuphs": "Agregar",
+    "CaseSection-BottomBar-Save/ecuphs": "Guardar",
+    "CaseSection-BottomBar-SaveAndAddAnother/ecuphs": "Guardar y agregar una nueva"
   }
 }
