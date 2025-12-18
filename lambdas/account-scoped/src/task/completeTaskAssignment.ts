@@ -136,6 +136,15 @@ export const completeTaskAssignmentHandler: FlexValidatedHandler = async (
       `Error completing reservations for task ${taskSid}`,
       completeReservationsResult.error,
     );
+  } else {
+    if (completeReservationsResult.data.completedReservationSids?.length) {
+      console.info(
+        `Completed reservations for task ${taskSid}: ${completeReservationsResult.data.completedReservationSids}.`,
+      );
+    }
+    completeReservationsResult.data.completeReservationErrors.map(cre =>
+      console.warn('Error completing reservation:', cre),
+    );
   }
   const completeTaskResult = await completeTaskAssignment(
     await getTwilioClient(accountSid),
