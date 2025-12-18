@@ -18,10 +18,9 @@
           "passiveDeathWish"
         ],
         "layout": {
-          "passiveDeathWish": {
-            "widthRatio": 1.5,
-            "labelTemplateCode": "Case-PerpetratorName",
-            "valueTemplateCode": "Case-SectionList-PreviewNameValue"
+          "newCompoundField": {
+            "includeLabel": false,
+            "valueTemplateCode": "Case-SectionList-ecuphsCreated"
           }
         }
       }

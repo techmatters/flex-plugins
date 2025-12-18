@@ -49,6 +49,7 @@
     "CSAMCLCReportForm-ChildAge": "Cuál es la edad del usuarie?",
     "TabbedForms-AddCallerInfoTab": "Desactivado",
     "TabbedForms-CategoriesTab": "Tags",
-    "Case-CaseOverviewLabel": "Desactivado"
+    "Case-CaseOverviewLabel": "Desactivado",
+    "Case-SectionList-ecuphsCreated": "Ecuphs contestada"
   }
 }
