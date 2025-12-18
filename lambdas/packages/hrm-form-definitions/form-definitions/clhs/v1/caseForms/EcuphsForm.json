@@ -41,7 +41,11 @@
         "value": "Sí",
         "label": "Sí"
       }
-    ]
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
   },
   {
     "name": "suicideIdeation",
@@ -93,6 +97,10 @@
           "label": "Sí"
         }
       ]
+    },
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
     }
   },
   {

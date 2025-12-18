@@ -56,7 +56,7 @@
     "Case-CaseNumber": "Carpeta ECUPHS #",
     "Case-Timeline-ModalTitle": "Línea de Tiempo ECUPHS #{{caseId}}",
     "Case-CaseSummarySection": "CaseSummarySection",
-    "Case-CaseDetailsStatusLabel": "CaseDetailsStatusLabel",
+    "Case-CaseDetailsStatusLabel": "Estado",
     "CaseSection-Add/ecuphs": "Agregar ECUPHS",
     "CaseSection-Edit/ecuphs": "Editar ECUPHS",
     "CaseSection-Delete/ecuphs": "Borrar ECUPHS",
@@ -65,6 +65,7 @@
     "Case-SectionList-Add/ecuphs": "Agregar",
     "CaseSection-BottomBar-Save/ecuphs": "Guardar",
     "CaseSection-BottomBar-SaveAndAddAnother/ecuphs": "Guardar y agregar una nueva",
-    "CaseMerging-RemoveFromCase": "Quitar de la carpeta"
+    "CaseMerging-RemoveFromCase": "Quitar de la carpeta",
+    "Case-SectionList-NoItems/ecuphs": "No hay encuestas ECUPHS contestadas"
   }
 }
