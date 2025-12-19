@@ -20,7 +20,6 @@ import { Template, Manager, Notifications, NotificationType } from '@twilio/flex
 import { useDispatch, useSelector } from 'react-redux';
 
 import InfoIcon from '../caseMergingBanners/InfoIcon';
-import SaveContactCallTypeDialog from '../callTypeButtons/SaveContactCallTypeDialog';
 import {
   BannerAction,
   BannerContainer,
@@ -29,13 +28,18 @@ import {
   HeaderCloseButton,
   HiddenText,
   DestructiveButton,
+  PrimaryButton,
 } from '../../styles';
 import getCanEditInProgressContact from '../../permissions/canEditInProgressContact';
-import { newSubmitAndFinalizeContactFromOutsideTaskContextAsyncAction } from '../../states/contacts/saveContact';
+import {
+  CompleteTaskError,
+  newSubmitAndFinalizeContactFromOutsideTaskContextAsyncAction,
+} from '../../states/contacts/saveContact';
 import { RootState } from '../../states';
 import selectContactStateByContactId from '../../states/contacts/selectContactStateByContactId';
 import { checkTaskAssignment } from '../../services/twilioTaskService';
 import { isOfflineContact } from '../../types/types';
+import { ConfirmDialog } from '../../design-system/modals/ConfirmDialog';
 
 type ContactBannersProps = {
   contactId: string;
@@ -43,9 +47,11 @@ type ContactBannersProps = {
 
 const ContactInProgressBanners: React.FC<ContactBannersProps> = ({ contactId }) => {
   const savedContact = useSelector((state: RootState) => selectContactStateByContactId(state, contactId)?.savedContact);
+  const finalizeError = useSelector((state: RootState) => selectContactStateByContactId(state, contactId)?.metadata?.finalizeStatus?.error);
   const [showResolvedBanner, setShowResolvedBanner] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [finalizeRequested, setFinalizeRequested] = useState(false);
+  const [isRemoveDialogOpen, setIsRemoveDialogOpen] = useState(false);
 
   const dispatch = useDispatch();
   const workerRoles = Manager.getInstance().workerClient.attributes.roles;
@@ -75,6 +81,9 @@ const ContactInProgressBanners: React.FC<ContactBannersProps> = ({ contactId }) 
         }
       }
     }
+    if (finalizeRequested && finalizeError instanceof CompleteTaskError) {
+      setIsRemoveDialogOpen(true);
+    }
 
     // Clean up notification if it exists
     return () => {
@@ -83,7 +92,7 @@ const ContactInProgressBanners: React.FC<ContactBannersProps> = ({ contactId }) 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [finalizeRequested, isDraftContact]);
 
-  const updateAndSaveContact = async () => {
+  const updateAndSaveContact = async (removeTask = false) => {
     const updatedContact = {
       ...savedContact,
       rawJson: {
@@ -92,7 +101,7 @@ const ContactInProgressBanners: React.FC<ContactBannersProps> = ({ contactId }) 
       },
     };
     try {
-      await dispatch(newSubmitAndFinalizeContactFromOutsideTaskContextAsyncAction(updatedContact)).payload;
+      await dispatch(newSubmitAndFinalizeContactFromOutsideTaskContextAsyncAction(updatedContact, removeTask)).payload;
       setFinalizeRequested(true);
     } catch (error) {
       console.error('Failed to save and finalize contact:', error);
@@ -112,10 +121,18 @@ const ContactInProgressBanners: React.FC<ContactBannersProps> = ({ contactId }) 
   const handleConfirm = async () => {
     await updateAndSaveContact();
     setIsDialogOpen(false);
+    setIsRemoveDialogOpen(false);
+  };
+
+  const handleRemoveTaskConfirm = async () => {
+    await updateAndSaveContact(true);
+    setIsDialogOpen(false);
+    setIsRemoveDialogOpen(false);
   };
 
   const handleCancel = () => {
     setIsDialogOpen(false);
+    setIsRemoveDialogOpen(false);
   };
 
   return (
@@ -154,11 +171,19 @@ const ContactInProgressBanners: React.FC<ContactBannersProps> = ({ contactId }) 
           </Flex>
         </BannerContainer>
       )}
-      <SaveContactCallTypeDialog
-        isOpen={isDialogOpen}
-        isEnabled={true}
-        handleConfirm={handleConfirm}
-        handleCancel={handleCancel}
+      <ConfirmDialog
+        openDialog={isDialogOpen}
+        actionComponent={<PrimaryButton onClick={handleConfirm} />}
+        closeDialogHeader=""
+        closeDialogContent="NonDataCallTypeDialog-CloseConfirm"
+        onCloseDialog={handleCancel}
+      />
+      <ConfirmDialog
+        openDialog={isRemoveDialogOpen}
+        actionComponent={<DestructiveButton onClick={handleRemoveTaskConfirm} />}
+        closeDialogHeader=""
+        closeDialogContent="An error occured trying to close the task, associated with this task. Do you want to try to cancel / remove it instead? The data for this contents will probably not get stored in the insights reporting system if you do."
+        onCloseDialog={handleCancel}
       />
     </>
   );

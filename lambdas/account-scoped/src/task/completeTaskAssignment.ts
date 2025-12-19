@@ -51,6 +51,22 @@ export const completeTaskAssignmentHandler: FlexValidatedHandler = async (
       403,
     );
   }
+  const completeTaskResult = await updateTaskAndCallStatus(
+    await getTwilioClient(accountSid),
+    task,
+    'completed',
+  );
+
+  if (isOk(completeTaskResult)) {
+    return completeTaskResult;
+  }
+
+  console.error(
+    `Error completing task ${taskSid},attempting to complete reservations`,
+    completeTaskResult.error.cause,
+  );
+
+  // Try to close individual reservations
   const completeReservationsResult = await updateReservationStatuses(
     reservations ?? [],
     'completed',
@@ -70,13 +86,10 @@ export const completeTaskAssignmentHandler: FlexValidatedHandler = async (
       console.warn('Error completing reservation:', cre),
     );
   }
-  const completeTaskResult = await updateTaskAndCallStatus(
-    await getTwilioClient(accountSid),
-    task,
-    'completed',
-  );
 
-  return isOk(completeTaskResult)
-    ? completeTaskResult
-    : newHttpErrorResult(completeTaskResult.error.cause, 500, completeTaskResult.message);
+  return newHttpErrorResult(
+    completeTaskResult.error.cause,
+    500,
+    completeTaskResult.message,
+  );
 };
