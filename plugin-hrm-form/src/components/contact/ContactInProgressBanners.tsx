@@ -47,7 +47,9 @@ type ContactBannersProps = {
 
 const ContactInProgressBanners: React.FC<ContactBannersProps> = ({ contactId }) => {
   const savedContact = useSelector((state: RootState) => selectContactStateByContactId(state, contactId)?.savedContact);
-  const finalizeError = useSelector((state: RootState) => selectContactStateByContactId(state, contactId)?.metadata?.finalizeStatus?.error);
+  const finalizeError = useSelector(
+    (state: RootState) => selectContactStateByContactId(state, contactId)?.metadata?.finalizeStatus?.error,
+  );
   const [showResolvedBanner, setShowResolvedBanner] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [finalizeRequested, setFinalizeRequested] = useState(false);
