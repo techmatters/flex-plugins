@@ -26,6 +26,7 @@ import {
 } from './getTaskAndReservations';
 import { updateTaskAndCallStatus } from './updateTaskAndCall';
 import { updateReservationStatuses } from './updateReservations';
+import { chatChannelJanitor } from '../conversation/chatChannelJanitor';
 
 export const completeTaskAssignmentHandler: FlexValidatedHandler = async (
   { body: event, tokenResult },
@@ -51,45 +52,59 @@ export const completeTaskAssignmentHandler: FlexValidatedHandler = async (
       403,
     );
   }
+
   const completeTaskResult = await updateTaskAndCallStatus(
     await getTwilioClient(accountSid),
     task,
     'completed',
   );
 
+  let result: Awaited<ReturnType<FlexValidatedHandler>>;
+
   if (isOk(completeTaskResult)) {
-    return completeTaskResult;
-  }
-
-  console.error(
-    `Error completing task ${taskSid},attempting to complete reservations`,
-    completeTaskResult.error.cause,
-  );
-
-  // Try to close individual reservations
-  const completeReservationsResult = await updateReservationStatuses(
-    reservations ?? [],
-    'completed',
-  );
-  if (isErr(completeReservationsResult)) {
-    console.error(
-      `Error completing reservations for task ${taskSid}`,
-      completeReservationsResult.error,
-    );
+    result = completeTaskResult;
   } else {
-    if (completeReservationsResult.data.updatedReservationSids?.length) {
-      console.info(
-        `Completed reservations for task ${taskSid}: ${completeReservationsResult.data.updatedReservationSids}.`,
+    console.error(
+      `Error completing task ${taskSid},attempting to complete reservations`,
+      completeTaskResult.error.cause,
+    );
+
+    // Try to close individual reservations
+    const completeReservationsResult = await updateReservationStatuses(
+      reservations ?? [],
+      'completed',
+    );
+    if (isErr(completeReservationsResult)) {
+      console.error(
+        `Error completing reservations for task ${taskSid}`,
+        completeReservationsResult.error,
+      );
+    } else {
+      if (completeReservationsResult.data.updatedReservationSids?.length) {
+        console.info(
+          `Completed reservations for task ${taskSid}: ${completeReservationsResult.data.updatedReservationSids}.`,
+        );
+      }
+      completeReservationsResult.data.updateReservationErrors.map(cre =>
+        console.warn('Error completing reservation:', cre),
       );
     }
-    completeReservationsResult.data.updateReservationErrors.map(cre =>
-      console.warn('Error completing reservation:', cre),
+
+    result = newHttpErrorResult(
+      completeTaskResult.error.cause,
+      500,
+      completeTaskResult.message,
     );
   }
-
-  return newHttpErrorResult(
-    completeTaskResult.error.cause,
-    500,
-    completeTaskResult.message,
-  );
+  const taskAttributes = JSON.parse(task?.attributes || 'null');
+  try {
+    await chatChannelJanitor(accountSid, taskAttributes);
+  } catch (error) {
+    console.error(
+      `Chat channel / conversation janitor failed completing task ${taskSid}, a stale channel / conversation is likely. Task attributes:`,
+      taskAttributes,
+      error,
+    );
+  }
+  return result;
 };

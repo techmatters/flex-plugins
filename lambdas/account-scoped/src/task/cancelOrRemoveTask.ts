@@ -26,6 +26,7 @@ import {
 } from './getTaskAndReservations';
 import { removeTaskAndCall, updateTaskAndCallStatus } from './updateTaskAndCall';
 import { updateReservationStatuses } from './updateReservations';
+import { chatChannelJanitor } from '../conversation/chatChannelJanitor';
 
 export const cancelOrRemoveTaskHandler: FlexValidatedHandler = async (
   { body: event, tokenResult },
@@ -53,41 +54,53 @@ export const cancelOrRemoveTaskHandler: FlexValidatedHandler = async (
       403,
     );
   }
-  const cancelReservationsResult = await updateReservationStatuses(
-    reservations ?? [],
-    'canceled',
-  );
-  if (isErr(cancelReservationsResult)) {
-    console.error(
-      `Error cancelling reservations for task ${taskSid} ${byLogClause}`,
-      cancelReservationsResult.error,
-    );
-  } else {
-    if (cancelReservationsResult.data.updatedReservationSids?.length) {
-      console.info(
-        `Cancelled reservations for task ${taskSid}: ${cancelReservationsResult.data.updatedReservationSids}.`,
-      );
-    }
-    cancelReservationsResult.data.updatedReservationSids.map(cre =>
-      console.warn(`Error completing reservation ${byLogClause}:`, cre),
-    );
-  }
+  let result: Awaited<ReturnType<FlexValidatedHandler>>;
   const client = await getTwilioClient(accountSid);
+
   const cancelTaskResult = await updateTaskAndCallStatus(client, task, 'canceled');
 
   if (isOk(cancelTaskResult)) {
-    return cancelTaskResult;
+    result = cancelTaskResult;
+  } else {
+    console.error(
+      `Failed to cancel task ${taskSid} ${byLogClause}, attempting to remove it`,
+      cancelTaskResult.message,
+      cancelTaskResult.error.cause,
+    );
+    const cancelReservationsResult = await updateReservationStatuses(
+      reservations ?? [],
+      'canceled',
+    );
+    if (isErr(cancelReservationsResult)) {
+      console.error(
+        `Error cancelling reservations for task ${taskSid} ${byLogClause}`,
+        cancelReservationsResult.error,
+      );
+    } else {
+      if (cancelReservationsResult.data.updatedReservationSids?.length) {
+        console.info(
+          `Cancelled reservations for task ${taskSid}: ${cancelReservationsResult.data.updatedReservationSids}.`,
+        );
+      }
+      cancelReservationsResult.data.updatedReservationSids.map(cre =>
+        console.warn(`Error cancelling reservation ${byLogClause}:`, cre),
+      );
+    }
+    const removeResult = await removeTaskAndCall(client, task);
+    result = isOk(removeResult)
+      ? removeResult
+      : newHttpErrorResult(removeResult.error.cause, 500, removeResult.message);
   }
 
-  console.error(
-    `Failed to cancel task ${taskSid} ${byLogClause}, attempting to remove it`,
-    cancelTaskResult.message,
-    cancelTaskResult.error.cause,
-  );
-
-  const removeResult = await removeTaskAndCall(client, task);
-
-  return isOk(removeResult)
-    ? removeResult
-    : newHttpErrorResult(removeResult.error.cause, 500, removeResult.message);
+  const taskAttributes = JSON.parse(task?.attributes || 'null');
+  try {
+    await chatChannelJanitor(accountSid, taskAttributes);
+  } catch (error) {
+    console.error(
+      `Chat channel / conversation janitor failed completing task ${taskSid}, a stale channel / conversation is likely. Task attributes:`,
+      taskAttributes,
+      error,
+    );
+  }
+  return result;
 };
