@@ -277,6 +277,8 @@ export const newSubmitAndFinalizeContactFromOutsideTaskContextAsyncAction = crea
           );
           cause = completeTaskError;
         }
+
+        // Just check if the status updated again rather than figure it out from the error, this is more reliable
         const updatedStatus = (await getTaskAndReservations(taskSid))?.task?.status;
         if (updatedStatus !== 'completed') {
           throw new CompleteTaskError(`Task ${taskSid} did not complete`, cause);
@@ -414,13 +416,17 @@ export const saveContactReducer = (initialState: ContactsState) =>
     handleAction(
       newSubmitAndFinalizeContactFromOutsideTaskContextAsyncAction.rejected,
       (state, action): ContactsState => {
-        const { meta: contact, error } = action as typeof action & {
+        const { meta: contact, payload: error } = action as typeof action & {
           meta: Contact;
         };
         const updatedState = rollbackSavingStateInRedux(state, contact, undefined);
-        updatedState[contact.id].metadata.finalizeState = {
-          error,
-        };
+        const updatedContact = updatedState.existingContacts[contact.id];
+
+        if (updatedContact) {
+          updatedContact.metadata.finalizeStatus = {
+            error,
+          };
+        }
         return updatedState;
       },
     ),

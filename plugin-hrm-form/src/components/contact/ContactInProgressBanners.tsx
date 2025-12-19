@@ -40,6 +40,7 @@ import selectContactStateByContactId from '../../states/contacts/selectContactSt
 import { checkTaskAssignment } from '../../services/twilioTaskService';
 import { isOfflineContact } from '../../types/types';
 import { ConfirmDialog } from '../../design-system/modals/ConfirmDialog';
+import asyncDispatch from '../../states/asyncDispatch';
 
 type ContactBannersProps = {
   contactId: string;
@@ -51,11 +52,10 @@ const ContactInProgressBanners: React.FC<ContactBannersProps> = ({ contactId }) 
     (state: RootState) => selectContactStateByContactId(state, contactId)?.metadata?.finalizeStatus?.error,
   );
   const [showResolvedBanner, setShowResolvedBanner] = useState(false);
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isFinalizeContactDialogOpen, setIsFinalizeContactDialogOpen] = useState(false);
+  const [isRemoveTaskDialogOpen, setIsRemoveTaskDialogOpen] = useState(false);
   const [finalizeRequested, setFinalizeRequested] = useState(false);
-  const [isRemoveDialogOpen, setIsRemoveDialogOpen] = useState(false);
-
-  const dispatch = useDispatch();
+  const asyncDispatcher = asyncDispatch(useDispatch());
   const workerRoles = Manager.getInstance().workerClient.attributes.roles;
   const isDraftContact = savedContact.finalizedAt;
 
@@ -83,8 +83,10 @@ const ContactInProgressBanners: React.FC<ContactBannersProps> = ({ contactId }) 
         }
       }
     }
+    // Show the dialog offering to remove the task if completing it failed in the first attempt
+    // Currently, other errors don't do anything
     if (finalizeRequested && finalizeError instanceof CompleteTaskError) {
-      setIsRemoveDialogOpen(true);
+      setIsRemoveTaskDialogOpen(true);
     }
 
     // Clean up notification if it exists
@@ -92,9 +94,13 @@ const ContactInProgressBanners: React.FC<ContactBannersProps> = ({ contactId }) 
       Notifications.dismissNotificationById('NoConversationMediaNotification');
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [finalizeRequested, isDraftContact]);
+  }, [finalizeRequested, finalizeError, isDraftContact]);
 
-  const updateAndSaveContact = async (removeTask = false) => {
+  /**
+   * Dispatches the action to try to complete the task (if it's not an offline contact and the task still exists) and finalize the contact
+   * @param removeTask - will try to cancel the task rather than complete it, and failing that, remove it. Used when attempting to complete has already failed
+   */
+  const updateTaskAndFinalizeContact = async (removeTask = false) => {
     const updatedContact = {
       ...savedContact,
       rawJson: {
@@ -103,7 +109,7 @@ const ContactInProgressBanners: React.FC<ContactBannersProps> = ({ contactId }) 
       },
     };
     try {
-      await dispatch(newSubmitAndFinalizeContactFromOutsideTaskContextAsyncAction(updatedContact, removeTask)).payload;
+      await asyncDispatcher(newSubmitAndFinalizeContactFromOutsideTaskContextAsyncAction(updatedContact, removeTask));
       setFinalizeRequested(true);
     } catch (error) {
       console.error('Failed to save and finalize contact:', error);
@@ -114,27 +120,25 @@ const ContactInProgressBanners: React.FC<ContactBannersProps> = ({ contactId }) 
     const { isAssigned } = await checkTaskAssignment(savedContact.taskId);
 
     if (isAssigned === true) {
-      setIsDialogOpen(true);
+      setIsFinalizeContactDialogOpen(true);
     } else {
-      await updateAndSaveContact();
+      await updateTaskAndFinalizeContact();
     }
   };
 
-  const handleConfirm = async () => {
-    await updateAndSaveContact();
-    setIsDialogOpen(false);
-    setIsRemoveDialogOpen(false);
+  const handleFinalizeContactConfirm = async () => {
+    await updateTaskAndFinalizeContact();
+    setIsFinalizeContactDialogOpen(false);
   };
 
   const handleRemoveTaskConfirm = async () => {
-    await updateAndSaveContact(true);
-    setIsDialogOpen(false);
-    setIsRemoveDialogOpen(false);
+    await updateTaskAndFinalizeContact(true);
+    setIsRemoveTaskDialogOpen(false);
   };
 
   const handleCancel = () => {
-    setIsDialogOpen(false);
-    setIsRemoveDialogOpen(false);
+    setIsFinalizeContactDialogOpen(false);
+    setIsRemoveTaskDialogOpen(false);
   };
 
   return (
@@ -174,17 +178,25 @@ const ContactInProgressBanners: React.FC<ContactBannersProps> = ({ contactId }) 
         </BannerContainer>
       )}
       <ConfirmDialog
-        openDialog={isDialogOpen}
-        actionComponent={<PrimaryButton onClick={handleConfirm} />}
-        closeDialogHeader=""
-        closeDialogContent="NonDataCallTypeDialog-CloseConfirm"
+        openDialog={isFinalizeContactDialogOpen}
+        actionComponent={
+          <PrimaryButton onClick={handleFinalizeContactConfirm}>
+            <Template code="Contact-ConfirmFinalizeContactDialog-ConfirmButton" />
+          </PrimaryButton>
+        }
+        closeDialogHeader="Contact-ConfirmFinalizeContactDialog-Header"
+        closeDialogContent="Contact-ConfirmFinalizeContactDialog-Content"
         onCloseDialog={handleCancel}
       />
       <ConfirmDialog
-        openDialog={isRemoveDialogOpen}
-        actionComponent={<DestructiveButton onClick={handleRemoveTaskConfirm} />}
-        closeDialogHeader=""
-        closeDialogContent="An error occured trying to close the task, associated with this task. Do you want to try to cancel / remove it instead? The data for this contents will probably not get stored in the insights reporting system if you do."
+        openDialog={isRemoveTaskDialogOpen}
+        actionComponent={
+          <DestructiveButton onClick={handleRemoveTaskConfirm}>
+            <Template code="Contact-ConfirmRemoveTaskDialog-ConfirmButton" />
+          </DestructiveButton>
+        }
+        closeDialogHeader="Contact-ConfirmRemoveTaskDialog-Header"
+        closeDialogContent="Contact-ConfirmRemoveTaskDialog-Content"
         onCloseDialog={handleCancel}
       />
     </>

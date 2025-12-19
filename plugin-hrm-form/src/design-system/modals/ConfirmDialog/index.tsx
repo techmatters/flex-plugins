@@ -36,7 +36,7 @@ export const ConfirmDialog: React.FC<{
         <TertiaryButton tabIndex={1} onClick={onCloseDialog}>
           <Template code="Modals-CloseDialog-CancelButton" />
         </TertiaryButton>
-          {actionComponent}
+        {actionComponent}
       </ButtonGroup>
     </ConfirmDialogPaper>
   );
