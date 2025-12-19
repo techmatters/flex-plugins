@@ -57,7 +57,7 @@ import * as TransferHelpers from '../../transfer/transferTaskState';
 import { TaskSID, WorkerSID } from '../../types/twilio';
 import { CaseStateEntry } from '../case/types';
 import { getOfflineContactTask } from './offlineContactTask';
-import { completeTaskAssignment, getTaskAndReservations } from '../../services/twilioTaskService';
+import { cancelOrRemoveTask, completeTaskAssignment, getTaskAndReservations } from '../../services/twilioTaskService';
 import { setConversationDurationFromMetadata } from '../../utils/conversationDuration';
 import { ProtectedApiError } from '../../services/fetchProtectedApi';
 import {
@@ -68,6 +68,17 @@ import {
   contactReduxUpdates,
 } from './contactReduxUpdates';
 import { getAseloFeatureFlags } from '../../hrmConfig';
+
+export class CompleteTaskError extends Error {
+  constructor(message: string, cause?: Error) {
+    super(message, { cause });
+
+    // see: https://github.com/microsoft/TypeScript/wiki/FAQ#why-doesnt-extending-built-ins-like-error-array-and-map-work
+    Object.setPrototypeOf(this, CompleteTaskError.prototype);
+
+    this.name = 'CompleteTaskError';
+  }
+}
 
 export const createOfflineContactAsyncAction = createAsyncAction(
   CREATE_CONTACT_ACTION,
@@ -204,7 +215,7 @@ export const newFinalizeContactAsyncAction = createAsyncAction(
 export const newSubmitAndFinalizeContactFromOutsideTaskContextAsyncAction = createAsyncAction(
   SUBMIT_AND_FINALIZE_CONTACT_FROM_OUTSIDE_TASK_CONTEXT,
   // eslint-disable-next-line sonarjs/cognitive-complexity
-  async (contact: Contact) => {
+  async (contact: Contact, removeTask: boolean) => {
     const { taskId: taskSid } = contact;
     let task: CustomITask | ITask | undefined;
     let reservationSid: string | undefined;
@@ -252,7 +263,27 @@ export const newSubmitAndFinalizeContactFromOutsideTaskContextAsyncAction = crea
         throw error;
       }
     } else if (task) {
-      await completeTaskAssignment(task.taskSid || (isTwilioTask(task) && task.sid));
+      const taskSid = task.taskSid || (isTwilioTask(task) && task.sid);
+      if (removeTask) {
+        await cancelOrRemoveTask(taskSid);
+      } else {
+        let cause = undefined;
+        try {
+          await completeTaskAssignment(taskSid);
+        } catch (completeTaskError) {
+          console.log(
+            `Error ${removeTask ? 'cancelling / removing' : 'completing'} task ${taskSid}`,
+            completeTaskError,
+          );
+          cause = completeTaskError;
+        }
+
+        // Just check if the status updated again rather than figure it out from the error, this is more reliable
+        const updatedStatus = (await getTaskAndReservations(taskSid))?.task?.status;
+        if (updatedStatus !== 'completed') {
+          throw new CompleteTaskError(`Task ${taskSid} did not complete`, cause);
+        }
+      }
       const updatedContact = await submitContactForm(task, contact, caseState);
       return finalizeContact(task, updatedContact, reservationSid);
     }
@@ -385,10 +416,18 @@ export const saveContactReducer = (initialState: ContactsState) =>
     handleAction(
       newSubmitAndFinalizeContactFromOutsideTaskContextAsyncAction.rejected,
       (state, action): ContactsState => {
-        const { meta: contact } = action as typeof action & {
+        const { meta: contact, payload: error } = action as typeof action & {
           meta: Contact;
         };
-        return rollbackSavingStateInRedux(state, contact, undefined);
+        const updatedState = rollbackSavingStateInRedux(state, contact, undefined);
+        const updatedContact = updatedState.existingContacts[contact.id];
+
+        if (updatedContact) {
+          updatedContact.metadata.finalizeStatus = {
+            error,
+          };
+        }
+        return updatedState;
       },
     ),
     handleAction(

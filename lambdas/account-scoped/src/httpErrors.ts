@@ -26,8 +26,19 @@ export class HttpClientError extends Error {
     this.name = 'HttpClientError';
   }
 }
+
 export const newMissingParameterResult = (property: string): ErrorResult<HttpError> =>
   newErr({
     message: `${property} missing`,
     error: { cause: new Error(`${property} is required`), statusCode: 400 },
+  });
+
+export const newHttpErrorResult = (
+  cause: Error | string,
+  statusCode: number,
+  message?: string,
+): ErrorResult<HttpError> =>
+  newErr({
+    message: message ?? (typeof cause === 'string' ? cause : cause.message),
+    error: { ...(typeof cause !== 'string' ? { cause } : {}), statusCode },
   });

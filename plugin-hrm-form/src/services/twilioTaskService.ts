@@ -92,7 +92,11 @@ export const getTaskAndReservations = async (taskSid: string): Promise<GetTaskAn
     returnNullFor404: true,
   };
   try {
-    return await fetchProtectedApi(`${pathRoot}/getTaskAndReservations`, body, { ...options, useTwilioLambda });
+    const res = await fetchProtectedApi(`${pathRoot}/getTaskAndReservations`, body, { ...options, useTwilioLambda });
+    if (res?.task) {
+      res.task.status = res.task.status ?? res.task.assignmentStatus;
+    }
+    return res;
   } catch (error) {
     console.error('An error occurred while fetching task and reservations:', error);
     throw error;
@@ -106,4 +110,9 @@ export const completeTaskAssignment = async (taskSid: string) => {
   const pathRoot = useTwilioLambda ? '/task' : '';
 
   return fetchProtectedApi(`${pathRoot}/completeTaskAssignment`, body, { useTwilioLambda });
+};
+
+export const cancelOrRemoveTask = async (taskSid: string) => {
+  const body = { taskSid };
+  return fetchProtectedApi(`task/cancelOrRemoveTask`, body, { useTwilioLambda: true });
 };

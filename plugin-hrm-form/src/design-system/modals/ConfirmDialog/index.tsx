@@ -16,27 +16,28 @@
 import React from 'react';
 import { Template } from '@twilio/flex-ui';
 
-import { DestructiveButton } from '../../../styles/buttons';
-import { ConfirmDialog } from '../ConfirmDialog';
+import { ConfirmDialogPaper, ConfirmDialogHeader, ConfirmDialogContent } from './styles';
+import { TertiaryButton } from '../../../styles/buttons';
+import { ButtonGroup } from '../styles';
+import { getTemplate } from '../getTemplate';
 
-export const CloseDialog: React.FC<{
+export const ConfirmDialog: React.FC<{
   openDialog: boolean;
   closeDialogHeader: string | React.ReactElement;
   closeDialogContent: string | React.ReactElement;
-  onDiscardChanges: () => void;
+  actionComponent: React.ReactElement;
   onCloseDialog: () => void;
-}> = ({ openDialog, closeDialogHeader, closeDialogContent, onDiscardChanges, onCloseDialog }) => {
+}> = ({ openDialog, closeDialogHeader, closeDialogContent, actionComponent, onCloseDialog }) => {
   return (
-    <ConfirmDialog
-      openDialog={openDialog}
-      closeDialogHeader={closeDialogHeader}
-      closeDialogContent={closeDialogContent}
-      actionComponent={
-        <DestructiveButton tabIndex={2} onClick={onDiscardChanges} style={{ marginLeft: '20px' }}>
-          <Template code="Modals-CloseDialog-DiscardButton" />
-        </DestructiveButton>
-      }
-      onCloseDialog={onCloseDialog}
-    />
+    <ConfirmDialogPaper open={openDialog} onClose={onCloseDialog}>
+      <ConfirmDialogHeader>{getTemplate(closeDialogHeader)}</ConfirmDialogHeader>
+      <ConfirmDialogContent>{getTemplate(closeDialogContent)}</ConfirmDialogContent>
+      <ButtonGroup>
+        <TertiaryButton tabIndex={1} onClick={onCloseDialog}>
+          <Template code="Modals-CloseDialog-CancelButton" />
+        </TertiaryButton>
+        {actionComponent}
+      </ButtonGroup>
+    </ConfirmDialogPaper>
   );
 };
