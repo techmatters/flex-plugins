@@ -79,7 +79,8 @@ export const handler = async (event: ALBEvent): Promise<ALBResult> => {
         }
         processedRequest = stepResult.unwrap();
       }
-      const result = await route.handler(processedRequest, route.accountSid);
+      // TODO: Rethink types around pipelines & handlers so this cast isn't necessary
+      const result = await route.handler(processedRequest as any, route.accountSid);
       if (isErr(result)) {
         console.error(
           `handler for path ${event.path} resulted in error ${result.message}`,
