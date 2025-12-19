@@ -1,55 +1,19 @@
 [
   {
     "name": "child",
-    "label": "Niñe o adolescente que contacta para hablar sobre sí mismo",
+    "label": "Contacto de Usuarie",
     "type": "button",
     "category": "data"
   },
   {
     "name": "caller",
-    "label": "Alguien que se contacta por un niñe o adolescente",
+    "label": "Desactivado",
     "type": "button",
     "category": "data"
   },
   {
-    "name": "silent",
-    "label": "Silencio",
-    "type": "button",
-    "category": "non-data"
-  },
-  {
-    "name": "blank",
-    "label": "No definido",
-    "type": "button",
-    "category": "non-data"
-  },
-  {
-    "name": "joke",
-    "label": "Broma",
-    "type": "button",
-    "category": "non-data"
-  },
-  {
-    "name": "hangup",
-    "label": "Se corta la comunicación",
-    "type": "button",
-    "category": "non-data"
-  },
-  {
-    "name": "wrongNumber",
-    "label": "Número equivocado",
-    "type": "button",
-    "category": "non-data"
-  },
-  {
     "name": "test",
     "label": "Prueba",
-    "type": "button",
-    "category": "non-data"
-  },
-  {
-    "name": "abusive",
-    "label": "Abusivo",
     "type": "button",
     "category": "non-data"
   }
