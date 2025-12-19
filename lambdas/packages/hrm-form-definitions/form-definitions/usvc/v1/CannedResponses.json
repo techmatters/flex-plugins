@@ -8,10 +8,6 @@
     "text": "Before we go any further, I would like to check in about some safety and privacy concerns. Would that be all right?"
   },
   {
-    "label": "Safe Place (VCRC & DCVH)",
-    "text": "We are unable to provide emergency services or dispatch emergency services on your behalf, so it is important that you are in a space free from danger or immediate threat of physical harm before we proceed. Are you in a space where you can talk with us without immediate threat of danger or physical harm?"
-  },
-  {
     "label": "Not Safe (VCRC & DCVH)",
     "text": "We will need to disconnect now and recommend that you contact emergency services immediately. You are always welcome to contact us again at a later time when you are able. Thank you, your safety matters to us."
   },
