@@ -192,13 +192,28 @@ const preEngagementConfig: PreEngagementFormDefinition = {
       },
     },
     {
-      type: 'checkbox',
+      type: 'select',
       name: 'dataProcessingAndStorage',
       label:
-        'I consent to the processing of my personal data (including sensitive data relating to matters such as my mental health and wellbeing) by MHI (parent organisation of The Mix and Shout) for the purpose of providing me with the PeerChat Service.',
+        'I consent to the processing of my personal data (including any sensitive data I disclose) by MHI (parent organisation of The Mix) for the purposes of data analytics to improve the PeerChat Service. I can withdraw my consent at any time by emailing dataprotection@mhiuk.org.',
+        defaultValue: '',
+        options: [
+          {
+            value: "",
+            label: ""
+          },
+          {
+            value: 'Yes',
+            label: 'Yes',
+          },
+          {
+            value: 'No',
+            label: 'No',
+          },
+        ],
       required: {
         value: true,
-        message: "Sorry, if you don't consent to have your data being processed and stored we can't provide counselling to you.",
+        message: "Sorry, you need to select one of the options",
       },
     },
     {
