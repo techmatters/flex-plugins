@@ -3,7 +3,8 @@
         "definitionVersion": "hu-v1",
         "feature_flags": {
             "enable_csam_report": true,
-            "enable_lex": true
+            "enable_lex": true,
+            "use_prepopulate_mappings": true
         },
         "helplineLanguage": "hu-HU",
         "permissionConfig": "hu"
