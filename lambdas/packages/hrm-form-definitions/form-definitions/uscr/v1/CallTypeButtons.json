@@ -12,6 +12,12 @@
         "category": "data"
     },
     {
+        "name": "followUp",
+        "label": "Follow Up (Case ID Provided)",
+        "type": "button",
+        "category": "non-data"
+    },
+    {
         "name": "test",
         "label": "Test/Informational",
         "type": "button",
