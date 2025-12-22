@@ -54,6 +54,7 @@ export const chatbotCallbackCleanup = async ({
 }: ChatbotCallbackCleanupParams) => {
   const memory = lexMemory || {};
 
+  // we use undefined as default for capturedChannelAttributes, as it falsy value is used to skip handleChannelRelease step
   const capturedChannelAttributes =
     channelAttributes.capturedChannelAttributes as CapturedChannelAttributes;
 
@@ -110,7 +111,7 @@ export const chatbotCallbackCleanup = async ({
     environment,
     helplineCode,
     userId,
-  } = capturedChannelAttributes;
+  } = capturedChannelAttributes || {};
 
   const shouldDeleteSession =
     botLanguage && botSuffix && environment && helplineCode && userId;
