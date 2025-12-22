@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2021-2023 Technology Matters
+ * Copyright (C) 2021-2025 Technology Matters
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
  * by the Free Software Foundation, either version 3 of the License, or
@@ -13,24 +13,8 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
+import './unsupportedMediaErrorConversationHandler';
+import './deleteClosedConversationHandler';
 
-import { styled } from '@twilio/flex-ui';
-import Paper from '@material-ui/core/Paper';
-
-export const ModalPaper = styled(Paper)`
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 50%;
-  max-width: 600px;
-  background-color: white;
-  padding: 32px 24px;
-  outline: none;
-  border-radius: 4px;
-`;
-
-export const ModalTitle = styled('h2')`
-  font-size: 20px;
-  font-weight: bold;
-`;
+export { handleConversationEvent } from './serviceScopedConversationEventHandler';
+export { conversationEventTypes, ConversationEvent } from './eventTypes';

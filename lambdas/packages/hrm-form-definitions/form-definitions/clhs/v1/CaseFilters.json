@@ -4,6 +4,5 @@
   "operatingArea": { "searchable": true, "type": "multi-select", "position": "left" },
 
   "createdDate": { "component": "generate-created-date-filter", "position": "right" },
-  "updatedDate": { "component": "generate-updated-date-filter", "position": "right" },
-  "followUpDate": { "type": "date-input", "allowFutureDates": true, "position": "right" }
+  "updatedDate": { "component": "generate-updated-date-filter", "position": "right" }
 }

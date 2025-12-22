@@ -605,6 +605,30 @@
   "CaseMerging-ContactUndoRemovedFromCase": "Undo",
 
   "TeamsView-NoSkills": "- No skills listed -",
+  "TeamsView-SkillsColumnTitle": "Skills",
+  "TeamsView-SkillsActionsButtonTitle": "Actions",
+  "TeamsView-EnableSkills": "Enable Skills...",
+  "TeamsView-DisableSkills": "Disable Skills...",
+  "TeamsView-AssignSkills": "Assign Skills...",
+  "TeamsView-UnassignSkills": "Unassign Skills...",
+  "TeamsView-ModalContinueButton": "Continue with these changes?",
+  "TeamsView-Enable": "enable",
+  "TeamsView-Disable": "disable",
+  "TeamsView-Assign": "assign",
+  "TeamsView-Unassign": "unassign",
+  "TeamsView-EnableFor": "enable for",
+  "TeamsView-DisableFor": "disable for",
+  "TeamsView-AssignFor": "assign for",
+  "TeamsView-UnassignFor": "unassign for",
+  "TeamsView-SelectSkillsHeader": "Select skills to",
+  "TeamsView-SelectSkillsPrimaryButton": "Next",
+  "TeamsView-ConfirmUpdateHeader": "Confirm and Save",
+  "TeamsView-ConfirmUpdatePrimaryButton": "Confirm and Save",
+  "TeamsView-Counsellor": "counsellor",
+  "TeamsView-Counsellors": "counsellors",
+  "TeamsView-CancelDialogHeader": "Discard changes?",
+  "TeamsView-CancelDialogContent": "Your changes will be discarded.",
+
   "MainHeader-Translator-RefreshRequiredNotification": "Refresh page to apply",
   "MainHeader-Translator-SelectionNotification": "You have selected {{localeSelection}}",
   "MainHeader-Translator-RefreshWarningNotification": "Refreshing will disconnect any active voice and video calls.",
@@ -626,5 +650,8 @@
 
   "LlmAssistant-Notifications-SummaryGenerationError": "There was an error generating the summary: {{errorMessage}}",
 
-  "AgentDesktop-KeyboardShortcuts-ToggleDialpad": "Toggle Dialpad"
+  "AgentDesktop-KeyboardShortcuts-ToggleDialpad": "Toggle Dialpad",
+
+  "Modals-CloseDialog-CancelButton": "Cancel",
+  "Modals-CloseDialog-DiscardButton": "Discard"
 }

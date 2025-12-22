@@ -21,6 +21,6 @@ export const ButtonGroup = styled(Box)`
   display: flex;
   flex-direction: row;
   justify-content: flex-end;
-  margin-top: 20px;
+  padding: 10px 0px;
   gap: 10px;
 `;

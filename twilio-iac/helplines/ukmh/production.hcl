@@ -6,7 +6,7 @@ locals {
   local_config = {
     enable_post_survey                    = true
     enable_datadog_monitoring                = false
-    custom_task_routing_filter_expression = "channelType IN ['web']  OR isContactlessTask == true"
+    custom_task_routing_filter_expression = "channelType IN ['web']"
 
     #Studio flow
     flow_vars = {

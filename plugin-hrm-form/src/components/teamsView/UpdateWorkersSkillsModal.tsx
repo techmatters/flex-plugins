@@ -23,7 +23,7 @@ import type { SupervisorState } from '@twilio/flex-ui/src/state/Supervisor/Super
 import { skillsOptions } from './teamsViewFilters';
 import FormCheckbox from '../forms/components/FormCheckbox/FormCheckbox';
 import { Box, Column, Row } from '../../styles/layout';
-import { newTeamsViewSelectSkills, newUpdateWorkersSkillsAsyncAction } from '../../states/teamsView';
+import { newTeamsViewSelectSkills, newUpdateWorkersSkillsAsyncAction, TeamsViewState } from '../../states/teamsView';
 import { namespace } from '../../states/storeNamespaces';
 import { RootState } from '../../states';
 import { RouterTask } from '../../types/types';
@@ -53,6 +53,12 @@ type Props = {
   task: RouterTask;
 };
 
+const operationTemplateCodes: { [k in TeamsViewState['operation']]: string } = {
+  enable: 'TeamsView-Enable',
+  disable: 'TeamsView-Disable',
+  assign: 'TeamsView-Assign',
+  unassign: 'TeamsView-Unassign',
+};
 export const UpdateWorkersSkillsModal: React.FC<Props> = ({ task }) => {
   const dispatch = useDispatch();
   const {
@@ -75,7 +81,20 @@ export const UpdateWorkersSkillsModal: React.FC<Props> = ({ task }) => {
         dispatch(changeRoute({ route: 'teams', subroute: 'confirm-update' }, task.taskSid));
       },
       isOpen: true,
-      templateCodes: { header: `Select skills to ${operation}`, primaryButton: 'Next' },
+      templateCodes: {
+        header: (
+          <Row>
+            <Template code="TeamsView-SelectSkillsHeader" />
+            &nbsp;
+            <Template code={operationTemplateCodes[operation]} />
+          </Row>
+        ),
+        primaryButton: 'TeamsView-SelectSkillsPrimaryButton',
+        cancelDialog: {
+          header: 'TeamsView-CancelDialogHeader',
+          content: 'TeamsView-CancelDialogContent',
+        },
+      },
       isDirty,
       isPrimaryButtonDisabled: !isDirty,
       registerForceCloseRef,
@@ -106,9 +125,12 @@ export const UpdateWorkersSkillsModal: React.FC<Props> = ({ task }) => {
       },
       isOpen: true,
       templateCodes: {
-        header: 'Confirm and Save',
-        primaryButton: 'Confirm and Save',
-        backButton: 'Return to Select Skills',
+        header: 'TeamsView-ConfirmUpdateHeader',
+        primaryButton: 'TeamsView-ConfirmUpdatePrimaryButton',
+        cancelDialog: {
+          header: 'TeamsView-CancelDialogHeader',
+          content: 'TeamsView-CancelDialogContent',
+        },
       },
       isDirty,
       isLoading: loading,
@@ -168,6 +190,12 @@ const SelectWorkersSkillsModal: React.FC<Props> = () => {
   );
 };
 
+const operationTemplateCodesFor: { [k in TeamsViewState['operation']]: string } = {
+  enable: 'TeamsView-EnableFor',
+  disable: 'TeamsView-DisableFor',
+  assign: 'TeamsView-AssignFor',
+  unassign: 'TeamsView-UnassignFor',
+};
 const ConfirmUpdatesModal: React.FC<Props> = () => {
   const { selectedSkills, selectedWorkers, operation } = useSelector((state: RootState) => state[namespace].teamsView);
   const { workers } =
@@ -175,12 +203,8 @@ const ConfirmUpdatesModal: React.FC<Props> = () => {
 
   const selectedWorkersFlexState = workers.filter(w => selectedWorkers.has(w.worker.sid));
 
-  const operationTemplateCode = `${operation} for`;
-
   return (
-    <Column
-      style={{ justifyContent: 'center', width: '100%', height: '100%', padding: '10px 30px', paddingRight: 'auto' }}
-    >
+    <Column style={{ justifyContent: 'center', width: '100%', height: '100%' }}>
       {Array.from(selectedSkills).map(skill => {
         const getWorkersForOperation = () => {
           if (operation === 'enable') {
@@ -213,19 +237,27 @@ const ConfirmUpdatesModal: React.FC<Props> = () => {
           return 0;
         };
 
+        const workersForOperation = getWorkersForOperation();
+
         return (
           <Row style={{ width: '100%' }} key={skill}>
             <OperationText>{skill}:</OperationText>
             &nbsp;
             <OperationContentText>
-              <Template code={operationTemplateCode} /> {getWorkersForOperation()}
+              <Template code={operationTemplateCodesFor[operation]} /> {workersForOperation}
+              &nbsp;
+              {workersForOperation === 1 ? (
+                <Template code="TeamsView-Counsellor" />
+              ) : (
+                <Template code="TeamsView-Counsellors" />
+              )}
             </OperationContentText>
           </Row>
         );
       })}
       <Box marginTop="20px">
         <OperationText>
-          <Template code="Continue with these changes?" />
+          <Template code="TeamsView-ModalContinueButton" />
         </OperationText>
       </Box>
     </Column>

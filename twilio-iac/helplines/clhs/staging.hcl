@@ -8,7 +8,7 @@ locals {
   config            = merge(local.common_config, local.local_config)
 
   local_config = {
-    custom_task_routing_filter_expression = "channelType IN ['web']  OR isContactlessTask == true"
+    custom_task_routing_filter_expression = "channelType IN ['web']"
     flow_vars                             = {
       widget_from = "Hora Segura"
       chat_blocked_message  = "Hi, you've been blocked from accessing our services and we are not able to read or receive further messages from you."

@@ -1242,8 +1242,8 @@
         "label": "Oregon"
       },
       {
-        "value": "Pensylvania",
-        "label": "Pensylvania"
+        "value": "Pennsylvania",
+        "label": "Pennsylvania"
       },
       {
         "value": "Rhode Island",
@@ -1337,7 +1337,7 @@
   },
   {
     "name": "dcquadrant",
-    "label": "Dcquadrant",
+    "label": "Dc Quadrant",
     "type": "dependent-select",
     "isPII": false,
     "dependsOn": "state",
@@ -1568,7 +1568,7 @@
           "label": "N/A"
         }
       ],
-      "Pensylvania": [
+      "Pennsylvania": [
         {
           "value": "N/A",
           "label": "N/A"

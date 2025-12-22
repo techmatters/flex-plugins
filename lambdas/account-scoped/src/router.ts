@@ -39,6 +39,7 @@ import { conferenceStatusCallbackHandler } from './conference/conferenceStatusCa
 import './conference/stopRecordingWhenLastAgentLeaves';
 import { instagramToFlexHandler } from './customChannels/instagram/instagramToFlex';
 import { flexToInstagramHandler } from './customChannels/instagram/flexToInstagram';
+import { handleConversationEvent } from './conversation';
 import { initWebchatHandler } from './webchatAuthentication/initWebchat';
 import { refreshTokenHandler } from './webchatAuthentication/refreshToken';
 import { getAccountSid } from '@tech-matters/twilio-configuration';
@@ -101,6 +102,10 @@ const ACCOUNTSID_ROUTES: Record<string, FunctionRoute> = {
   'conference/participantStatusCallback': {
     requestPipeline: [validateWebhookRequest],
     handler: participantStatusCallbackHandler,
+  },
+  'conversations/serviceScopedConversationEventHandler': {
+    requestPipeline: [validateWebhookRequest],
+    handler: handleConversationEvent,
   },
   'customChannels/instagram/instagramToFlex': {
     requestPipeline: [],

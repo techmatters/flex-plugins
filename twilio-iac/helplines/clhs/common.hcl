@@ -13,7 +13,7 @@ locals {
     task_language              = "es-CL"
     enable_post_survey         = false
     enable_external_recordings = true
-    permission_config          = "demo"
+    permission_config          = "clhs"
     helpline_region            = "us-east-1"
     workflows = {
       master : {

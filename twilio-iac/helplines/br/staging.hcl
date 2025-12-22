@@ -5,7 +5,7 @@ locals {
 
 
   local_config = {
-    custom_task_routing_filter_expression = "channelType IN ['web', 'messenger'] OR twilioNumber=='messenger:104153648721033' OR isContactlessTask==true OR twilioNumber=='line:Uedd8bf552b012ffe47233c545465c43e' OR twilioNumber=='instagram:17841454785688794'"
+    custom_task_routing_filter_expression = "channelType IN ['web', 'messenger'] OR twilioNumber=='messenger:104153648721033' OR twilioNumber=='line:Uedd8bf552b012ffe47233c545465c43e' OR twilioNumber=='instagram:17841454785688794'"
     enable_lex_v2                         = true
     operating_hours_enforced_override     = false
     #Studio flow

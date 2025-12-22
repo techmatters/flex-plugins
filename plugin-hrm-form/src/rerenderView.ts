@@ -13,29 +13,10 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
-import React from 'react';
-import { styled } from '@twilio/flex-ui';
-import Dialog, { DialogProps } from '@material-ui/core/Dialog';
 
-export const CloseDialogHeader = styled('p')`
-  font-size: 20px;
-  font-weight: 700;
-`;
+import * as Flex from '@twilio/flex-ui';
 
-export const CloseDialogContent = styled('p')`
-  font-size: 14px;
-  padding: 16px 0px;
-`;
-
-export const CloseDialogPaper = styled((props: React.JSX.IntrinsicAttributes & DialogProps) => (
-  <Dialog {...props} classes={{ paper: 'paper' }} />
-))`
-  && .paper {
-    width: 60%;
-    max-width: 400px;
-    padding: 32px 24px;
-    border-radius: 8px;
-    border: 1px solid #e0e3ea;
-    box-shadow: 0 4px 16px 0 rgba(0, 0, 0, 0.25);
-  }
-`;
+export const rerenderAgentDesktop = async () => {
+  await Flex.Actions.invokeAction('NavigateToView', { viewName: 'empty-view' });
+  await Flex.Actions.invokeAction('NavigateToView', { viewName: 'agent-desktop' });
+};

@@ -1,3 +1,8 @@
 {
-  "es": {}
+  "es": {
+    "SideNavAgentDashboard": "Escritorio del Guía",
+    "SharedStateLoadFormError": "La información almacenada en el formulario por el guía anterior no pudo ser recuperada. Iniciando la tarea actual con un nuevo formulario de contacto.",
+    "CSAMCLCReportForm-Header": "Hacer un Reporte Externo: CSAM - Crear Link para Adolescente",
+    "CSAMCLCReportForm-ChildAge": "Cuál es la edad del adolescente?"
+  }
 }

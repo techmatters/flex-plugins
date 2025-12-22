@@ -4,10 +4,6 @@
     "label": "Referral Status",
     "type": "select",
     "isPII": false,
-    "defaultOption": {
-      "value": "",
-      "label": ""
-    },
     "options": [
       {
         "value": "",
@@ -34,45 +30,30 @@
   {
     "name": "referralTo",
     "label": "Referral to",
-    "type": "dependent-select",
+    "type": "listbox-multiselect",
     "isPII": false,
-    "dependsOn": "referralStatus",
-    "defaultOption": {
-      "value": "",
-      "label": ""
-    },
-    "options": {
-      "Referred": [
-        {
-          "value": "Referral to victim services program",
-          "label": "Referral to victim services program"
-        },
-        {
-          "value": "Referral to Crime Victim Compensation",
-          "label": "Referral to Crime Victim Compensation"
-        },
-        {
-          "value": "Referral to substance abuse treatment and support",
-          "label": "Referral to substance abuse treatment and support"
-        },
-        {
-          "value": "Referral to other service support and resources",
-          "label": "Referral to other service support and resources"
-        }
-      ],
-      "No Referral Needed": [
-        {
-          "value": "N/A",
-          "label": "N/A"
-        }
-      ],
-      "Referral Refused": [
-        {
-          "value": "N/A",
-          "label": "N/A"
-        }
-      ]
-    },
+    "options": [
+      {
+        "value": "Referral to victim services program",
+        "label": "Referral to victim services program"
+      },
+      {
+        "value": "Referral to Crime Victim Compensation",
+        "label": "Referral to Crime Victim Compensation"
+      },
+      {
+        "value": "Referral to substance abuse treatment and support",
+        "label": "Referral to substance abuse treatment and support"
+      },
+      {
+        "value": "Referral to other service support and resources",
+        "label": "Referral to other service support and resources"
+      },
+      {
+        "value": "N/A",
+        "label": "N/A"
+      }
+    ],
     "required": {
       "value": true,
       "message": "RequiredFieldError"
@@ -140,10 +121,6 @@
     "type": "textarea",
     "isPII": false,
     "rows": 10,
-    "width": 250,
-    "required": {
-      "value": true,
-      "message": "RequiredFieldError"
-    }
+    "width": 250
   }
 ]

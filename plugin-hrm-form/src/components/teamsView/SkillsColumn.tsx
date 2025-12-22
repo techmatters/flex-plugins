@@ -18,11 +18,10 @@ import React from 'react';
 import { createPortal } from 'react-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { WorkersDataTable, ColumnDefinition, Template, styled } from '@twilio/flex-ui';
-import { Divider, Tooltip } from '@material-ui/core';
-import { ArrowDropDown, ArrowDropUp, KeyboardArrowRight } from '@material-ui/icons';
+import { Tooltip } from '@material-ui/core';
+import { ArrowDropDown, ArrowDropUp } from '@material-ui/icons';
 
-import { Flex, Column, OpaqueText, Row, Box } from '../../styles';
-import { MultiSelectButton } from '../../styles/filters';
+import { Flex, Column, OpaqueText, Row, Box, PrimaryButton } from '../../styles';
 import { SkillsList, StyledChip } from './styles';
 import { sortSkills } from './teamsViewSorting';
 import { newTeamsViewSelectOperation, TeamsViewState } from '../../states/teamsView';
@@ -45,27 +44,26 @@ const SkillsColumnHeader: React.FC = () => {
   return (
     <>
       <Row ref={boxRef}>
-        <Template code="Skills" />
-        <Box marginLeft="10px" style={{ ...(!selectedWorkers.size && { opactity: 0, visibility: 'hidden' }) }}>
-          <MultiSelectButton
-            isOpened={isOpen}
-            isActive={Boolean(selectedWorkers.size)}
-            disabled={!selectedWorkers.size}
-            type="button"
-            onClick={e => {
-              e.stopPropagation();
-              setIsOpen(prev => !prev);
-            }}
-            ref={buttonRef}
-            style={{ textDecorationLine: 'none' }}
-          >
-            <Template code="Actions" />
-            <Flex marginLeft="15px">
-              {isOpen && <ArrowDropUp />}
-              {!isOpen && <ArrowDropDown />}
-            </Flex>
-          </MultiSelectButton>
-        </Box>
+        <Template code="TeamsView-SkillsColumnTitle" />
+        {Boolean(selectedWorkers.size) && (
+          <Box marginLeft="10px" ref={buttonRef}>
+            <PrimaryButton
+              roundCorners={true}
+              disabled={!selectedWorkers.size}
+              onClick={e => {
+                e.stopPropagation();
+                setIsOpen(prev => !prev);
+              }}
+              ref={buttonRef}
+            >
+              <Template code="TeamsView-SkillsActionsButtonTitle" />
+              <Flex marginRight="5px">
+                {isOpen && <ArrowDropUp style={{ width: '20px', height: '20px' }} />}
+                {!isOpen && <ArrowDropDown style={{ width: '20px', height: '20px' }} />}
+              </Flex>
+            </PrimaryButton>
+          </Box>
+        )}
       </Row>
       <DropdownPortal
         anchorRef={buttonRef}
@@ -138,6 +136,8 @@ const StyledButton = styled.button`
   text-align: left;
   cursor: pointer;
   font-family: sans-serif;
+  font-size: 14px;
+  font-weight: 400;
   transition: background 0.2s ease,
 
   &:hover {
@@ -181,7 +181,7 @@ const DropdownPortal: React.FC<{
         marginTop: '5px',
         background: 'white',
         boxSizing: 'border-box',
-        width: '230px',
+        padding: '16px',
         border: '1px solid lightgray',
         zIndex: 9999,
       }}
@@ -190,21 +190,16 @@ const DropdownPortal: React.FC<{
     >
       <Column>
         <DropDownButton onClick={onClickAction('enable')}>
-          <Template code="Enable Skills" />
-          <KeyboardArrowRight style={{ marginLeft: '20px' }} />
+          <Template code="TeamsView-EnableSkills" />
         </DropDownButton>
         <DropDownButton onClick={onClickAction('disable')}>
-          <Template code="Disable Skills" />
-          <KeyboardArrowRight style={{ marginLeft: '20px' }} />
+          <Template code="TeamsView-DisableSkills" />
         </DropDownButton>
-        <Divider variant="middle" />
         <DropDownButton onClick={onClickAction('assign')}>
-          <Template code="Assign Skills" />
-          <KeyboardArrowRight style={{ marginLeft: '20px' }} />
+          <Template code="TeamsView-AssignSkills" />
         </DropDownButton>
         <DropDownButton onClick={onClickAction('unassign')}>
-          <Template code="Unassign Skills" />
-          <KeyboardArrowRight style={{ marginLeft: '20px' }} />
+          <Template code="TeamsView-UnassignSkills" />
         </DropDownButton>
       </Column>
     </div>,
