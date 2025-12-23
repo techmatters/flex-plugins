@@ -27,6 +27,8 @@ import {
   resourceSearchReducer,
   SuggestSearch,
 } from './search';
+import { namespace } from '../storeNamespaces';
+import { RootState } from '..';
 
 export const enum ResourcePage {
   ViewResource = 'view-resource',
@@ -145,3 +147,12 @@ export function reduce(inputState = initialState, action: AnyAction): Referrable
   };
   return resourceReducer(state, action as any);
 }
+
+export const selectResourceById = (
+  {
+    [namespace]: {
+      referrableResources: { resources },
+    },
+  }: RootState,
+  resourceId: string,
+) => resources[resourceId];

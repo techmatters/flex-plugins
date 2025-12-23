@@ -15,9 +15,9 @@
  */
 
 import * as React from 'react';
-import { connect, ConnectedProps } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Template } from '@twilio/flex-ui';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import ReplyIcon from '@material-ui/icons/Reply';
 import ErrorIcon from '@material-ui/icons/Error';
 
@@ -31,8 +31,7 @@ import {
   removeResourceReferralForUnsavedContactAction,
 } from '../../../states/contacts/resourceReferral';
 import asyncDispatch from '../../../states/asyncDispatch';
-import { loadResourceAsyncAction, ResourceLoadStatus } from '../../../states/resources';
-import { ReferrableResource } from '../../../services/ResourceService';
+import { loadResourceAsyncAction, ResourceLoadStatus, selectResourceById } from '../../../states/resources';
 import {
   Container,
   InputWrapper,
@@ -44,61 +43,49 @@ import {
   Error,
   DeleteButton,
 } from './styles';
-import { contactFormsBase, namespace, referrableResourcesBase } from '../../../states/storeNamespaces';
+import selectContactStateByContactId from '../../../states/contacts/selectContactStateByContactId';
+import { getUnsavedContact } from '../../../states/contacts/getUnsavedContact';
 
-type OwnProps = {
+type Props = {
   contactId: string;
 };
 
-const mapStateToProps = (state: RootState, { contactId }: OwnProps) => {
-  const {
-    draftContact,
-    metadata: {
-      draft: {
-        resourceReferralList: { lookupStatus, resourceReferralIdToAdd },
+const ResourceReferralList: React.FC<Props> = ({ contactId }) => {
+  const { referrals, lookupStatus, resourceReferralIdToAdd } = useSelector((state: RootState) => {
+    const {
+      draftContact,
+      savedContact,
+      metadata: {
+        draft: {
+          resourceReferralList: { lookupStatus, resourceReferralIdToAdd },
+        },
       },
-    },
-  } = state[namespace][contactFormsBase].existingContacts[contactId];
-  const referrals = draftContact?.referrals ?? [];
-  return {
-    referrals: referrals ?? [],
-    lookupStatus,
-    resourceReferralIdToAdd,
-    lookedUpResource: state[namespace][referrableResourcesBase].resources[resourceReferralIdToAdd],
-  };
-};
+    } = selectContactStateByContactId(state, contactId);
+    return {
+      referrals: getUnsavedContact(savedContact, draftContact)?.referrals ?? [],
+      savedContact,
+      lookupStatus,
+      resourceReferralIdToAdd,
+    };
+  });
 
-const mapDispatchToProps = (dispatch, { contactId }: OwnProps) => ({
-  updateResourceReferralIdToAdd: (value: string) =>
-    dispatch(updateResourceReferralIdToAddForUnsavedContactAction(contactId, value)),
+  const lookedUpResource = useSelector((state: RootState) => selectResourceById(state, resourceReferralIdToAdd));
 
-  updateResourceReferralLookupStatus: (value: ReferralLookupStatus) =>
-    dispatch(updateResourceReferralLookupStatusForUnsavedContactAction(contactId, value)),
-  loadResource: (resourceId: string) => asyncDispatch(dispatch)(loadResourceAsyncAction(resourceId)),
-  addResourceReferral: (resource: ReferrableResource) => {
-    dispatch(addResourceReferralForUnsavedContactAction(contactId, resource));
-  },
+  const dispatch = useDispatch();
 
-  updateResourceReferralIdToRemove: (value: string) => {
+  const updateResourceReferralIdToAdd = (value: string) =>
+    dispatch(updateResourceReferralIdToAddForUnsavedContactAction(contactId, value));
+
+  const updateResourceReferralLookupStatus = useCallback(
+    (value: ReferralLookupStatus) =>
+      dispatch(updateResourceReferralLookupStatusForUnsavedContactAction(contactId, value)),
+    [contactId, dispatch],
+  );
+
+  const updateResourceReferralIdToRemove = (value: string) => {
     dispatch(removeResourceReferralForUnsavedContactAction(contactId, value));
-  },
-});
+  };
 
-const connector = connect(mapStateToProps, mapDispatchToProps);
-
-type Props = OwnProps & ConnectedProps<typeof connector>;
-
-const ResourceReferralList: React.FC<Props> = ({
-  referrals,
-  resourceReferralIdToAdd,
-  lookedUpResource,
-  updateResourceReferralIdToAdd,
-  updateResourceReferralLookupStatus,
-  loadResource,
-  lookupStatus,
-  addResourceReferral,
-  updateResourceReferralIdToRemove,
-}) => {
   // component state 'buffer' to keep the input responsive
   const [resourceReferralToAddText, setResourceReferralToAddText] = useState(resourceReferralIdToAdd);
 
@@ -129,20 +116,20 @@ const ResourceReferralList: React.FC<Props> = ({
   useEffect(() => {
     if (!lookedUpResource) {
       if (resourceReferralIdToAdd) {
-        loadResource(resourceReferralIdToAdd);
+        asyncDispatch(dispatch)(loadResourceAsyncAction(resourceReferralIdToAdd));
       }
     } else if (lookupStatus === ReferralLookupStatus.PENDING) {
       if (lookedUpResource.status === ResourceLoadStatus.Error) {
         updateResourceReferralLookupStatus(ReferralLookupStatus.NOT_FOUND);
       } else if (lookedUpResource.status === ResourceLoadStatus.Loaded) {
         updateResourceReferralLookupStatus(ReferralLookupStatus.FOUND);
-        addResourceReferral(lookedUpResource.resource);
+        dispatch(addResourceReferralForUnsavedContactAction(contactId, lookedUpResource.resource));
         setResourceReferralToAddText('');
       }
     }
   }, [
-    addResourceReferral,
-    loadResource,
+    contactId,
+    dispatch,
     lookedUpResource,
     lookupStatus,
     resourceReferralIdToAdd,
@@ -204,8 +191,6 @@ const ResourceReferralList: React.FC<Props> = ({
 
 ResourceReferralList.displayName = 'ResourceReferralList';
 
-const ConnectedResourceReferralList = connector(ResourceReferralList);
-
 customContactComponentRegistry.register('resource-referral-list', parameters => {
-  return <ConnectedResourceReferralList contactId={parameters.contactId} />;
+  return <ResourceReferralList contactId={parameters.contactId} />;
 });
