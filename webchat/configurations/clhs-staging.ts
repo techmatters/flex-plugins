@@ -95,7 +95,7 @@ const preEngagementConfig: PreEngagementFormDefinition = {
       placeholder: 'Email',
       pattern: {
         value: EMAIL_PATTERN,
-        message: 'FieldValidationInvalidEmail',
+        message: 'Por favor provea una dirección válida de email',
       },
     },
     {
