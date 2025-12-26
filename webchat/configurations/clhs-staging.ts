@@ -1979,7 +1979,8 @@ const preEngagementConfig: PreEngagementFormDefinition = {
 
 const translations: Translations = {
   'en-US': {
-    WelcomeMessage: 'Welcome to  Línea Libre',
+    WelcomeMessage: '¡Hola! te damos la bienvenida a Hora Segura ❤️ Completa esta información para saber más de ti y poder ayudarte.',
+    PreEngagementDescription: '¡Hola! te damos la bienvenida a Hora Segura ❤️ Completa esta información para saber más de ti y poder ayudarte.',
     MessageCanvasTrayContent: '',
     MessageInputDisabledReasonHold:
       "Thank you very much for this information. We'll transfer you now. Please hold for a practitioner.",
@@ -1997,7 +1998,7 @@ const translations: Translations = {
     Nickname: 'Nickname',
   },
   'es-CL': {
-    WelcomeMessage: '¡Bienvenid@ a Línea Libre!',
+    WelcomeMessage: '¡Hola! te damos la bienvenida a Hora Segura ❤️ Completa esta información para saber más de ti y poder ayudarte.',
     MessageCanvasTrayContent: '',
     MessageInputDisabledReasonHold:
       'Muchas gracias por la información. Lo transferiremos ahora. Por favor espere for un agente.',
@@ -2022,7 +2023,7 @@ const translations: Translations = {
     SendMessageTooltip: 'Enviar Mensaje',
     FieldValidationRequiredField: 'Campo requerido',
     FieldValidationInvalidEmail: 'Por favor provea una dirección válida de email',
-    PreEngagementDescription: 'Comencemos',
+    PreEngagementDescription: '¡Hola! te damos la bienvenida a Hora Segura ❤️ Completa esta información para saber más de ti y poder ayudarte.',
     BotGreeting: '¿Cómo puedo ayudar?',
     Gender: '¿Cuál es tu género?',
     Masculino: 'Masculino',
