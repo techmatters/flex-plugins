@@ -15,7 +15,7 @@
  */
 
 import { Translations, Configuration, MapHelplineLanguage, ContactType } from '../types';
-import type { PreEngagementFormDefinition } from '../src/pre-engagement-form';
+import { PreEngagementFormDefinition, EMAIL_PATTERN } from '../src/pre-engagement-form';
 
 const accountSid = 'AC19e76d8895ab396b3e56eda95adbfa21';
 const flexFlowSid = 'FO44e7331dfccffc2ed6a03dd6bc43ee43';
@@ -85,7 +85,19 @@ const preEngagementConfig: PreEngagementFormDefinition = {
       placeholder: 'Guest',
       required: true,
     },
+    {
+      type: 'input-text',
+      name: 'contactIdentifier',
+      label: 'Email',
+      required: true,
+      placeholder: 'Email',
+      pattern: {
+        value: EMAIL_PATTERN,
+        message: 'FieldValidationInvalidEmail',
+      },
+    },
   ],
+  
 };
 
 const mapHelplineLanguage: MapHelplineLanguage = (helpline) => {
