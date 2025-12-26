@@ -32,9 +32,10 @@ const translations: Translations = {
       "Thank you very much for this information. We'll transfer you now. Please hold for a counsellor.",
     AutoFirstMessage: 'Incoming webchat contact from',
     PreEngagementDescription:
-      'Thank you for contacting Hora Segura. To chat with a counsellor, please type your name and select the Start Chat button.',
+      '¡Hola! te damos la bienvenida a Hora Segura ❤️ Completa esta información para saber más de ti y poder ayudarte.',
     WhatIsYourName: 'What is your name?',
     StartChat: 'Start Chat!',
+    FieldValidationInvalidEmail: 'Por favor provea una dirección válida de email',
   },
   'es-CL': {
     WelcomeMessage: '¡Bienvenid@ a Hora Segura!',
@@ -62,7 +63,7 @@ const translations: Translations = {
     SendMessageTooltip: 'Enviar Mensaje',
     FieldValidationRequiredField: 'Campo requerido',
     FieldValidationInvalidEmail: 'Por favor provea una dirección válida de email',
-    PreEngagementDescription: 'Comencemos',
+    PreEngagementDescription: '¡Hola! te damos la bienvenida a Hora Segura ❤️ Completa esta información para saber más de ti y poder ayudarte.',
     BotGreeting: '¿Cómo puedo ayudar?',
     Gender: '¿Cuál es tu género?',
     Masculino: 'Masculino',
