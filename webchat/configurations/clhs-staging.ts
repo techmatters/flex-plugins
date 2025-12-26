@@ -97,7 +97,6 @@ const preEngagementConfig: PreEngagementFormDefinition = {
         message: 'FieldValidationInvalidEmail',
       },
     },
-    ,
     {
       type: "select",
       name: "age",
@@ -235,6 +234,7 @@ const preEngagementConfig: PreEngagementFormDefinition = {
       ],
       required: true,
     },
+
   ],
   
 };
