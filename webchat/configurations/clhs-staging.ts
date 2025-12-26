@@ -23,59 +23,17 @@ const defaultLanguage = 'es-CL';
 const captureIp = true;
 const checkOpenHours = false;
 const contactType: ContactType = 'email';
-
-const translations: Translations = {
-  'en-US': {
-    WelcomeMessage: 'Hora Segura',
-    MessageCanvasTrayContent: '',
-    MessageInputDisabledReasonHold:
-      "Thank you very much for this information. We'll transfer you now. Please hold for a counsellor.",
-    AutoFirstMessage: 'Incoming webchat contact from',
-    PreEngagementDescription:
-      '¡Hola! te damos la bienvenida a Hora Segura ❤️ Completa esta información para saber más de ti y poder ayudarte.',
-    WhatIsYourName: 'What is your name?',
-    StartChat: 'Start Chat!',
-    FieldValidationInvalidEmail: 'Por favor provea una dirección válida de email',
-  },
-  'es-CL': {
-    WelcomeMessage: '¡Bienvenid@ a Hora Segura!',
-    MessageCanvasTrayContent: '',
-    MessageInputDisabledReasonHold:
-      'Muchas gracias por la información. Lo transferiremos ahora. Por favor espere for un agente.',
-    AutoFirstMessage: 'Nuevo contacto del webchat de',
-    TypingIndicator: '{0} está escribiendo ... ',
-    StartChat: 'Comenzar Nuevo Chat!',
-    MessageCanvasTrayButton: 'Comenzar Nuevo Chat',
-    EntryPointTagline: 'Chatea con nosotros',
-    InvalidPreEngagementMessage:
-      'Los formularios previos al compromiso no se han establecido y son necesarios para iniciar el chat web. Por favor configúrelos ahora en la configuración.',
-    InvalidPreEngagementButton: 'Aprende más',
-    PredefinedChatMessageAuthorName: 'Bot',
-    PredefinedChatMessageBody: '¡Hola! ¿Cómo podemos ayudarte hoy?',
-    InputPlaceHolder: 'Escribe un mensaje',
-    Read: 'Visto',
-    MessageSendingDisabled: 'El envío de mensajes ha sido desactivado',
-    Today: 'HOY',
-    Yesterday: 'AYER',
-    Save: 'GUARDAR',
-    Reset: 'RESETEAR',
-    MessageCharacterCountStatus: '{{currentCharCount}} / {{maxCharCount}}',
-    SendMessageTooltip: 'Enviar Mensaje',
-    FieldValidationRequiredField: 'Campo requerido',
-    FieldValidationInvalidEmail: 'Por favor provea una dirección válida de email',
-    PreEngagementDescription: '¡Hola! te damos la bienvenida a Hora Segura ❤️ Completa esta información para saber más de ti y poder ayudarte.',
-    BotGreeting: '¿Cómo puedo ayudar?',
-    Gender: '¿Cuál es tu género?',
-    Masculino: 'Masculino',
-    Femenino: 'Femenino',
-    Otro: 'Otro',
-    PrefieroNoDecir: 'Prefiero no decir',
-    Email: 'Email',
-    Edad: 'Edad',
-    Nickname: 'Nickname',
-  },
+const closedHours: PreEngagementFormDefinition = {
+  description:
+    "Lamentamos no poder conversar contigo en este momento.\nPuedes hablar con nosotres en los siguientes horarios:\nunes y Martes de 13:00 a 14:00 y 18:00 a 00:00hrs.\nHorario de Chile\nMiercoles a Viernes de 13:00 a 14:00 y 17:00 a 00:00hrs.\nHorario de Chile\nSábados y Domingos de 13:00 a 14:00 y 19:00 a 23:00hrs.\nHorario de Chile\nPor el momento te recomendamos el siguiente material de apoye y otra línea de ayuda e información:\nSalud Responde\nTélefono disponible 24/7 para asistencia, orientación y apoyo en temáticas de salud.\nContáctate al 600 360 7777",
+  fields: [],
 };
 
+const holidayHours: PreEngagementFormDefinition = {
+  description:
+   "Lamentamos no poder conversar contigo en este momento.\nPuedes hablar con nosotres en los siguientes horarios:\nunes y Martes de 13:00 a 14:00 y 18:00 a 00:00hrs.\nHorario de Chile\nMiercoles a Viernes de 13:00 a 14:00 y 17:00 a 00:00hrs.\nHorario de Chile\nSábados y Domingos de 13:00 a 14:00 y 19:00 a 23:00hrs.\nHorario de Chile\nPor el momento te recomendamos el siguiente material de apoye y otra línea de ayuda e información:\nSalud Responde\nTélefono disponible 24/7 para asistencia, orientación y apoyo en temáticas de salud.\nContáctate al 600 360 7777",
+  fields: [],
+};
 const preEngagementConfig: PreEngagementFormDefinition = {
   description: 'PreEngagementDescription',
   submitLabel: 'StartChat',
@@ -2019,19 +1977,76 @@ const preEngagementConfig: PreEngagementFormDefinition = {
   
 };
 
+const translations: Translations = {
+  'en-US': {
+    WelcomeMessage: 'Welcome to  Línea Libre',
+    MessageCanvasTrayContent: '',
+    MessageInputDisabledReasonHold:
+      "Thank you very much for this information. We'll transfer you now. Please hold for a practitioner.",
+    AutoFirstMessage: 'Incoming webchat contact from',
+    TypingIndicator: 'Counselor is typing',
+    StartChat: 'Start Chat!',
+    MessageCanvasTrayButton: 'Start New Chat',
+    Email: 'Email',
+    Edad: 'Age',
+    Gender: 'What is your gender',
+    Masculino: 'Male',
+    Femenino: 'Female',
+    Otro: 'Other',
+    PrefieroNoDecir: 'Prefer not to say',
+    Nickname: 'Nickname',
+  },
+  'es-CL': {
+    WelcomeMessage: '¡Bienvenid@ a Línea Libre!',
+    MessageCanvasTrayContent: '',
+    MessageInputDisabledReasonHold:
+      'Muchas gracias por la información. Lo transferiremos ahora. Por favor espere for un agente.',
+    AutoFirstMessage: 'Nuevo contacto del webchat de',
+    TypingIndicator: '{0} está escribiendo ... ',
+    StartChat: 'Comenzar Nuevo Chat!',
+    MessageCanvasTrayButton: 'Comenzar Nuevo Chat',
+    EntryPointTagline: 'Chatea con nosotros',
+    InvalidPreEngagementMessage:
+      'Los formularios previos al compromiso no se han establecido y son necesarios para iniciar el chat web. Por favor configúrelos ahora en la configuración.',
+    InvalidPreEngagementButton: 'Aprende más',
+    PredefinedChatMessageAuthorName: 'Bot',
+    PredefinedChatMessageBody: '¡Hola! ¿Cómo podemos ayudarte hoy?',
+    InputPlaceHolder: 'Escribe un mensaje',
+    Read: 'Visto',
+    MessageSendingDisabled: 'El envío de mensajes ha sido desactivado',
+    Today: 'HOY',
+    Yesterday: 'AYER',
+    Save: 'GUARDAR',
+    Reset: 'RESETEAR',
+    MessageCharacterCountStatus: '{{currentCharCount}} / {{maxCharCount}}',
+    SendMessageTooltip: 'Enviar Mensaje',
+    FieldValidationRequiredField: 'Campo requerido',
+    FieldValidationInvalidEmail: 'Por favor provea una dirección válida de email',
+    PreEngagementDescription: 'Comencemos',
+    BotGreeting: '¿Cómo puedo ayudar?',
+    Gender: '¿Cuál es tu género?',
+    Masculino: 'Masculino',
+    Femenino: 'Femenino',
+    Otro: 'Otro',
+    PrefieroNoDecir: 'Prefiero no decir',
+    Email: 'Email',
+    Edad: 'Edad',
+    Nickname: 'Nickname',
+  },
+};
+
+const memberDisplayOptions = {
+  yourDefaultName: 'Usted',
+  yourFriendlyNameOverride: false,
+  theirFriendlyNameOverride: false,
+  theirDefaultName: 'Volutarie',
+};
+
 const mapHelplineLanguage: MapHelplineLanguage = (helpline) => {
-  // eslint-disable-next-line sonarjs/no-small-switch
   switch (helpline) {
     default:
       return defaultLanguage;
   }
-};
-
-const memberDisplayOptions = {
-  yourDefaultName: 'You',
-  yourFriendlyNameOverride: false,
-  theirFriendlyNameOverride: false,
-  theirDefaultName: 'Hora Segura Counsellor',
 };
 
 export const config: Configuration = {
@@ -2040,6 +2055,9 @@ export const config: Configuration = {
   defaultLanguage,
   translations,
   preEngagementConfig,
+  closedHours,
+  holidayHours,
+  checkOpenHours,
   mapHelplineLanguage,
   memberDisplayOptions,
   captureIp,
