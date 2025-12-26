@@ -2011,7 +2011,7 @@ const preEngagementConfig: PreEngagementFormDefinition = {
         'He leído y acepto los <a href="https://www.google.cl">términos y condiciones</a>',
       required: {
         value: true,
-        message: "<message>",
+        message: "Tienes que approbar los términos y condiciones para poder iniciar un chat.",
       },
     },
   ],
