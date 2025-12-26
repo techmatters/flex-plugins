@@ -79,11 +79,11 @@ const preEngagementConfig: PreEngagementFormDefinition = {
   description: 'PreEngagementDescription',
   submitLabel: 'StartChat',
   fields: [
-    {
-      type: 'input-text',
-      name: 'friendlyName',
-      label: 'WhatIsYourName',
-      placeholder: 'Guest',
+       {
+      type: "input-text",
+      name: "nameOrNickname",
+      label: "Nombre/Apodo",
+      placeholder: "Nombre/Apodo",
       required: true,
     },
     {
