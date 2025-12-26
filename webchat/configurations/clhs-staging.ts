@@ -21,7 +21,8 @@ const accountSid = 'AC19e76d8895ab396b3e56eda95adbfa21';
 const flexFlowSid = 'FO44e7331dfccffc2ed6a03dd6bc43ee43';
 const defaultLanguage = 'es-CL';
 const captureIp = true;
-const contactType: ContactType = 'ip';
+const checkOpenHours = false;
+const contactType: ContactType = 'email';
 
 const translations: Translations = {
   'en-US': {
