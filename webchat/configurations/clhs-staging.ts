@@ -1800,6 +1800,220 @@ const preEngagementConfig: PreEngagementFormDefinition = {
         ],
       },
     },
+    {
+      type: "select",
+      label: "¿Con cuál género te identificas?",
+      name: "gender",
+      defaultValue: "",
+      options: [
+        {
+          value: "",
+          label: "",
+        },
+        {
+          value: "Femenino",
+          label: "Femenino",
+        },
+        {
+          value: "Masculino",
+          label: "Masculino",
+        },
+        {
+          value: "Transfemenino",
+          label: "Transfemenino",
+        },
+        {
+          value: "Transmasculino",
+          label: "Transmasculino",
+        },
+        {
+          value: "No binario",
+          label: "No binario",
+        },
+        {
+          value: "Estoy descubriéndolo",
+          label: "Estoy descubriéndolo",
+        },
+        {
+          value: "No sé",
+          label: "No sé",
+        },
+        {
+          value: "Prefiero no responder",
+          label: "Prefiero no responder",
+        },
+      ],
+
+      required: true,
+    },
+    {
+      type: "select",
+      label: "¿Cuál es tu sexo asignado al nacer?",
+      name: "biologicalSex",
+      defaultValue: "",
+      options: [
+        {
+          value: "",
+          label: "",
+        },
+        {
+          value: "Femenino",
+          label: "Femenino",
+        },
+        {
+          value: "Masculino",
+          label: "Masculino",
+        },
+      ],
+
+      required: true,
+    },
+    {
+      type: "select",
+      label: "Actualmente te identificas como:",
+      name: "sexualAndAffectiveOrientation",
+      defaultValue: "",
+      options: [
+        {
+          value: "",
+          label: "",
+        },
+        {
+          value: "Lesbiana",
+          label: "Lesbiana",
+        },
+        {
+          value: "Gay",
+          label: "Gay",
+        },
+        {
+          value: "Bisexual",
+          label: "Bisexual",
+        },
+        {
+          value: "Pansexual",
+          label: "Pansexual",
+        },
+        {
+          value: "Asexual",
+          label: "Asexual",
+        },
+        {
+          value: "Heterosexual",
+          label: "Heterosexual",
+        },
+        {
+          value: "Estoy descubriéndolo",
+          label: "Estoy descubriéndolo",
+        },
+        {
+          value: "No sé",
+          label: "No sé",
+        },
+        {
+          value: "Prefiero no responder",
+          label: "Prefiero no responder",
+        },
+      ],
+
+      required: true,
+    },
+    {
+      type: "select",
+      label: "¿Eres una persona intersexual?",
+      name: "intersexuality",
+      defaultValue: "",
+      options: [
+        {
+          value: "",
+          label: "",
+        },
+        {
+          value: "Si",
+          label: "Si",
+        },
+        {
+          value: "No",
+          label: "No",
+        },
+        {
+          value: "No sé",
+          label: "No sé",
+        },
+        {
+          value: "Prefiero no responder",
+          label: "Prefiero no responder",
+        },
+      ],
+
+      required: true,
+    },
+    {
+      type: "select",
+      label: "¿Eres una persona neurodivergente?",
+      name: "neurodivergence",
+      defaultValue: "",
+      options: [
+        {
+          value: "",
+          label: "",
+        },
+        {
+          value: "Si",
+          label: "Si",
+        },
+        {
+          value: "No",
+          label: "No",
+        },
+        {
+          value: "No sé",
+          label: "No sé",
+        },
+        {
+          value: "Prefiero no responder",
+          label: "Prefiero no responder",
+        },
+      ],
+
+      required: true,
+    },
+    {
+      type: "select",
+      label: "¿Qué tipo de ayuda estás buscando?",
+      name: "typeOfHelp",
+      defaultValue: "",
+      options: [
+        {
+          value: "",
+          label: "",
+        },
+        {
+          value: "Necesito ayuda urgente",
+          label: "Necesito ayuda urgente",
+        },
+        {
+          value: "Quiero recibir orientación",
+          label: "Quiero recibir orientación",
+        },
+        {
+          value: "Otro",
+          label: "Otro",
+        },
+      ],
+
+      required: true,
+    },
+    {
+      type: "checkbox",
+      name: "termsAndConditions",
+      label:
+        'He leído y acepto los <a href="https://www.google.cl">términos y condiciones</a>',
+      required: {
+        value: true,
+        message: "<message>",
+      },
+    },
   ],
   
 };
