@@ -1989,15 +1989,15 @@ const preEngagementConfig: PreEngagementFormDefinition = {
           label: "",
         },
         {
-          value: "Necesito ayuda urgente",
+          value: "emergency",
           label: "Necesito ayuda urgente",
         },
         {
-          value: "Quiero recibir orientación",
+          value: "helpAndOrientation",
           label: "Quiero recibir orientación",
         },
         {
-          value: "Otro",
+          value: "Other",
           label: "Otro",
         },
       ],
