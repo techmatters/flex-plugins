@@ -35,7 +35,7 @@ const holidayHours: PreEngagementFormDefinition = {
   fields: [],
 };
 const preEngagementConfig: PreEngagementFormDefinition = {
-  description: 'PreEngagementDescription',
+  description: 'WelcomeMessage',
   submitLabel: 'StartChat',
   fields: [
        {
