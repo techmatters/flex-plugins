@@ -40,6 +40,7 @@ export const contactReduxUpdates = (
           ...newContactMetaData({ createdAt: savedContact?.createdAt }),
           ...existingContacts[id]?.metadata,
           loadingStatus: LoadingStatus.LOADING,
+          finalizeStatus: {},
         },
       },
     },
@@ -92,7 +93,7 @@ export const loadContactIntoRedux = (
       ...existingContacts,
       [contact.id]: {
         ...existingContacts[contact.id],
-        metadata: { ...metadata, loadingStatus: LoadingStatus.LOADED },
+        metadata: { ...metadata, loadingStatus: LoadingStatus.LOADED, finalizeStatus: {} },
         savedContact: {
           ...existingAssociations,
           ...contact,

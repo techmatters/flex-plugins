@@ -46,6 +46,7 @@ import { handleConversationEvent } from './conversation';
 import { getTaskAndReservationsHandler } from './task/getTaskAndReservations';
 import { checkTaskAssignmentHandler } from './task/checkTaskAssignment';
 import { completeTaskAssignmentHandler } from './task/completeTaskAssignment';
+import { cancelOrRemoveTaskHandler } from './task/cancelOrRemoveTask';
 import { initWebchatHandler } from './webchatAuthentication/initWebchat';
 import { refreshTokenHandler } from './webchatAuthentication/refreshToken';
 import { getAccountSid } from '@tech-matters/twilio-configuration';
@@ -92,19 +93,19 @@ const ACCOUNTSID_ROUTES: Record<
     handler: conferenceStatusCallbackHandler,
   },
   'conference/addParticipant': {
-    requestPipeline: [validateFlexTokenRequest({ tokenMode: 'worker' })],
+    requestPipeline: [validateFlexTokenRequest({ tokenMode: 'agent' })],
     handler: addParticipantHandler,
   },
   'conference/getParticipant': {
-    requestPipeline: [validateFlexTokenRequest({ tokenMode: 'worker' })],
+    requestPipeline: [validateFlexTokenRequest({ tokenMode: 'agent' })],
     handler: getParticipantHandler,
   },
   'conference/removeParticipant': {
-    requestPipeline: [validateFlexTokenRequest({ tokenMode: 'worker' })],
+    requestPipeline: [validateFlexTokenRequest({ tokenMode: 'agent' })],
     handler: removeParticipantHandler,
   },
   'conference/updateParticipant': {
-    requestPipeline: [validateFlexTokenRequest({ tokenMode: 'worker' })],
+    requestPipeline: [validateFlexTokenRequest({ tokenMode: 'agent' })],
     handler: updateParticipantHandler,
   },
   'conference/participantStatusCallback': {
@@ -144,15 +145,19 @@ const ACCOUNTSID_ROUTES: Record<
     handler: handleOperatingHours,
   },
   'task/checkTaskAssignment': {
-    requestPipeline: [validateFlexTokenRequest({ tokenMode: 'worker' })],
+    requestPipeline: [validateFlexTokenRequest({ tokenMode: 'agent' })],
     handler: checkTaskAssignmentHandler,
   },
   'task/completeTaskAssignment': {
-    requestPipeline: [validateFlexTokenRequest({ tokenMode: 'worker' })],
+    requestPipeline: [validateFlexTokenRequest({ tokenMode: 'agent' })],
     handler: completeTaskAssignmentHandler,
   },
+  'task/cancelOrRemoveTask': {
+    requestPipeline: [validateFlexTokenRequest({ tokenMode: 'agent' })],
+    handler: cancelOrRemoveTaskHandler,
+  },
   'task/getTaskAndReservations': {
-    requestPipeline: [validateFlexTokenRequest({ tokenMode: 'worker' })],
+    requestPipeline: [validateFlexTokenRequest({ tokenMode: 'agent' })],
     handler: getTaskAndReservationsHandler,
   },
   updateWorkersSkills: {

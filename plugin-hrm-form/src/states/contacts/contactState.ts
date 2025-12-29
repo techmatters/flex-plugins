@@ -44,6 +44,7 @@ export const newContactMetaData = ({ createdAt }: { createdAt: string }): Contac
     endMillis: null,
     categories: categoriesMeta,
     loadingStatus: LoadingStatus.LOADED,
+    finalizeStatus: {},
     llmAssistant: {
       status: LlmAssistantStatus.READY,
     },
