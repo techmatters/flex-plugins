@@ -18,6 +18,7 @@ import {
   ConferenceStatusEventHandler,
   registerTaskRouterEventHandler,
 } from './conferenceStatusCallback';
+import RestException from 'twilio/lib/base/RestException';
 
 const handler: ConferenceStatusEventHandler = async (event, _accountSid, client) => {
   if (event.StatusCallbackEvent !== 'participant-leave') {
@@ -92,10 +93,19 @@ const handler: ConferenceStatusEventHandler = async (event, _accountSid, client)
             );
           }
         } catch (error) {
-          // Sometimes errors are thrown but the recording appears to pause at the correct point.
-          // Perhaps more sophisticated error handling could determine the 'ok' errors? :-/
+          if (
+            error instanceof RestException &&
+            error.status === 400 &&
+            error.code === 21220
+          ) {
+            // Often errors of this type are thrown but the recording appears to pause at the correct point.
+            console.debug(
+              `An error was thrown pausing recording ${recording.sid} for call ${recording.callSid} on conference ${conferenceSid}, but the pause operation would normally be successful or redundant when this type or error is thrown`,
+              error,
+            );
+          }
           console.error(
-            `Error pausing recording ${recording.sid} for call ${recording.callSid} on conference ${conferenceSid} (the recording may still have paused)`,
+            `Error pausing recording ${recording.sid} for call ${recording.callSid} on conference ${conferenceSid}`,
             error,
           );
         }
