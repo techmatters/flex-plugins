@@ -173,36 +173,32 @@
     "type": "listbox-multiselect",
     "options": [
       {
-        "value": "Agender",
-        "label": "Agender"
+        "value": "Girl/Woman",
+        "label": "Girl/Woman"
       },
       {
-        "value": "Cis Male/Man",
-        "label": "Cis Male/Man"
+        "value": "Boy/Man",
+        "label": "Boy/Man"
       },
       {
-        "value": "Cis Female/Woman",
-        "label": "Cis Female/Woman"
+        "value": "Non-Binary, Trans, Genderqueer, Genderfluid, Two-Spirit",
+        "label": "Non-Binary, Trans, Genderqueer, Genderfluid, Two-Spirit"
       },
       {
-        "value": "Non-Binary/Genderqueer/Gender fluid",
-        "label": "Non-Binary/Genderqueer/Gender fluid"
+        "value": "Heterosexual (Straight)",
+        "label": "Heterosexual (Straight)"
       },
       {
-        "value": "Two-Spirit",
-        "label": "Two-Spirit"
-      },
-      {
-        "value": "Trans Female/Woman",
-        "label": "Trans Female/Woman"
-      },
-      {
-        "value": "Trans Male/Man",
-        "label": "Trans Male/Man"
+        "value": "Homosexual (Gay or Lesbian), Asexual, Bisexual, Pansexual, Two-Spirit",
+        "label": "Homosexual (Gay or Lesbian), Asexual, Bisexual, Pansexual, Two-Spirit"
       },
       {
         "value": "Other",
         "label": "Other"
+      },
+      {
+        "value": "Unknown",
+        "label": "Did not disclose/Did not ask"
       }
     ],
     "isPII": false

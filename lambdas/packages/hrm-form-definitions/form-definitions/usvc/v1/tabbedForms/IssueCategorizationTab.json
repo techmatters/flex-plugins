@@ -181,37 +181,37 @@
         "color": "#085f63",
         "subcategories": [
           {
-            "label": "Child abuse"
-          },
-          {
             "label": "Adult Survivors of Child Abuse"
           },
           {
-            "label": "Gender Based Violence"
+            "label": "Child Abuse"
           },
           {
-            "label": "Technology Facilitated Abuse"
-          },
-          {
-            "label": "Harassment/Bullying (non-sexual)"
+            "label": "Elder Abuse"
           },
           {
             "label": "Financial Crimes - CTT"
           },
           {
-            "label": "Identity Theft"
+            "label": "Gangstalking - CTT"
           },
           {
-            "label": "Violent Crimes"
+            "label": "Gender Based Violence"
           },
           {
-            "label": "Property Crimes"
+            "label": "Gun Violence ( non-mass incident)"
+          },
+          {
+            "label": "Harassment/Bullying (non-sexual)"
+          },
+          {
+            "label": "Hate/Bias Crimes"
           },
           {
             "label": "Human Trafficking - Labor - CTT"
           },
           {
-            "label": "Gun Violence ( non-mass incident)"
+            "label": "Identity Theft"
           },
           {
             "label": "Mass Violence - gun violence"
@@ -220,25 +220,25 @@
             "label": "Mass Violence - terrorism"
           },
           {
-            "label": "Hate/Bias Crimes"
+            "label": "Other - CTT"
           },
           {
-            "label": "Traffic/Vehicle Related Crimes"
-          },
-          {
-            "label": "Gangstalking - CTT"
-          },
-          {
-            "label": "ElderAbuse"
+            "label": "Property Crimes"
           },
           {
             "label": "Ritual/religious/cult abuse"
           },
           {
-            "label": "Other - CTT"
+            "label": "Technology Facilitated Abuse"
+          },
+          {
+            "label": "Traffic/Vehicle Related Crimes"
           },
           {
             "label": "Unknown/NA - CTT"
+          },
+          {
+            "label": "Violent Crimes"
           }
         ]
       },
@@ -400,7 +400,10 @@
             "label": "Other: Explain"
           },
           {
-            "label": "No Service Provided"
+            "label": "No service provided"
+          },
+          {
+            "label": "Information"
           }
         ]
       }
