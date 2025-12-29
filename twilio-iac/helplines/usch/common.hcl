@@ -12,7 +12,7 @@ locals {
     helpline                   = "Childhelp"
     task_language              = "en-US"
     enable_post_survey         = true
-    enable_external_recordings = false
+    enable_external_recordings = true
     permission_config          = "usch"
     enable_lex_v2              = true
 
