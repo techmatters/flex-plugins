@@ -63,7 +63,10 @@ export const ROUTE_PREFIX = '/lambda/twilio/account-scoped/';
 
 const INITIAL_PIPELINE = [validateRequestMethod];
 
-const ACCOUNTSID_ROUTES: Record<string, FunctionRoute | FunctionRoute<FlexValidatedHttpRequest>> = {
+const ACCOUNTSID_ROUTES: Record<
+  string,
+  FunctionRoute | FunctionRoute<FlexValidatedHttpRequest>
+> = {
   'webhooks/taskrouterCallback': {
     requestPipeline: [validateWebhookRequest],
     handler: handleTaskRouterEvent,
@@ -173,9 +176,11 @@ const ENV_SHORTCODE_ROUTES: Record<string, FunctionRoute> = {
   },
 };
 
-export const lookupRoute = (
+export const lookupRoute = async (
   event: HttpRequest,
-): AccountScopedRoute | AccountScopedRoute<FlexValidatedHttpRequest> | undefined => {
+): Promise<
+  AccountScopedRoute | AccountScopedRoute<FlexValidatedHttpRequest> | undefined
+> => {
   if (event.path.startsWith(ROUTE_PREFIX)) {
     const path = event.path.substring(ROUTE_PREFIX.length);
     const [accountIdentifier, ...applicationPathParts] = path.split('/');
