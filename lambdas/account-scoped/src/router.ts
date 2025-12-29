@@ -46,6 +46,10 @@ import { handleConversationEvent } from './conversation';
 import { getTaskAndReservationsHandler } from './task/getTaskAndReservations';
 import { checkTaskAssignmentHandler } from './task/checkTaskAssignment';
 import { completeTaskAssignmentHandler } from './task/completeTaskAssignment';
+import { initWebchatHandler } from './webchatAuthentication/initWebchat';
+import { refreshTokenHandler } from './webchatAuthentication/refreshToken';
+import { getAccountSid } from '@tech-matters/twilio-configuration';
+import { validateRequestWithTwilioJwtToken } from './validation/twilioJwt';
 
 /**
  * Super simple router sufficient for directly ported Twilio Serverless functions
@@ -59,7 +63,7 @@ export const ROUTE_PREFIX = '/lambda/twilio/account-scoped/';
 
 const INITIAL_PIPELINE = [validateRequestMethod];
 
-const ROUTES: Record<string, FunctionRoute | FunctionRoute<FlexValidatedHttpRequest>> = {
+const ACCOUNTSID_ROUTES: Record<string, FunctionRoute | FunctionRoute<FlexValidatedHttpRequest>> = {
   'webhooks/taskrouterCallback': {
     requestPipeline: [validateWebhookRequest],
     handler: handleTaskRouterEvent,
@@ -116,6 +120,14 @@ const ROUTES: Record<string, FunctionRoute | FunctionRoute<FlexValidatedHttpRequ
     requestPipeline: [validateWebhookRequest],
     handler: flexToInstagramHandler,
   },
+  'webchatAuth/initWebchat': {
+    requestPipeline: [],
+    handler: initWebchatHandler,
+  },
+  'webchatAuth/refreshToken': {
+    requestPipeline: [],
+    handler: refreshTokenHandler,
+  },
   toggleSwitchboardQueue: {
     requestPipeline: [validateFlexTokenRequest({ tokenMode: 'supervisor' })],
     handler: handleToggleSwitchboardQueue,
@@ -146,25 +158,58 @@ const ROUTES: Record<string, FunctionRoute | FunctionRoute<FlexValidatedHttpRequ
   },
 };
 
+const ENV_SHORTCODE_ROUTES: Record<string, FunctionRoute> = {
+  'webchatAuthentication/initWebchat': {
+    requestPipeline: [],
+    handler: initWebchatHandler,
+  },
+  'webchatAuthentication/refreshToken': {
+    requestPipeline: [validateRequestWithTwilioJwtToken],
+    handler: refreshTokenHandler,
+  },
+  endChat: {
+    requestPipeline: [validateRequestWithTwilioJwtToken],
+    handler: handleEndChat,
+  },
+};
+
 export const lookupRoute = (
   event: HttpRequest,
 ): AccountScopedRoute | AccountScopedRoute<FlexValidatedHttpRequest> | undefined => {
   if (event.path.startsWith(ROUTE_PREFIX)) {
     const path = event.path.substring(ROUTE_PREFIX.length);
-    const [accountSid, ...applicationPathParts] = path.split('/');
-    console.debug(
-      `Looking up route for account ${accountSid} and path ${applicationPathParts.join('/')}`,
-    );
-    const functionRoute = ROUTES[applicationPathParts.join('/')];
-    if (functionRoute && isAccountSID(accountSid)) {
+    const [accountIdentifier, ...applicationPathParts] = path.split('/');
+    if (isAccountSID(accountIdentifier)) {
       console.debug(
-        `Found route for account ${accountSid} and path ${applicationPathParts.join('/')}`,
+        `Looking up route for account ${accountIdentifier} and path ${applicationPathParts.join('/')}`,
       );
-      return {
-        accountSid,
-        ...functionRoute,
-        requestPipeline: [...INITIAL_PIPELINE, ...functionRoute.requestPipeline],
-      };
+      const functionRoute = ACCOUNTSID_ROUTES[applicationPathParts.join('/')];
+      if (functionRoute) {
+        console.debug(
+          `Found route for account ${accountIdentifier} and path ${applicationPathParts.join('/')}`,
+        );
+        return {
+          accountSid: accountIdentifier,
+          ...functionRoute,
+          requestPipeline: [...INITIAL_PIPELINE, ...functionRoute.requestPipeline],
+        };
+      }
+    } else {
+      // Assume account identifier is a short code
+      console.debug(
+        `Looking up route for environment ${process.env.NODE_ENV}, shortCode ${accountIdentifier} and path ${applicationPathParts.join('/')}`,
+      );
+      const functionRoute = ENV_SHORTCODE_ROUTES[applicationPathParts.join('/')];
+      if (functionRoute) {
+        console.debug(
+          `Found route for account ${accountIdentifier} and path ${applicationPathParts.join('/')}`,
+        );
+        return {
+          accountSid: await getAccountSid(accountIdentifier),
+          ...functionRoute,
+          requestPipeline: [...INITIAL_PIPELINE, ...functionRoute.requestPipeline],
+        };
+      }
     }
   }
 };

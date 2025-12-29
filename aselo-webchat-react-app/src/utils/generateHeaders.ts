@@ -1,0 +1,124 @@
+/**
+ * Copyright (C) 2021-2026 Technology Matters
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see https://www.gnu.org/licenses/.
+ */
+
+import { LOCALSTORAGE_SESSION_ITEM_ID } from "../sessionDataHandler";
+import { LocalStorageUtil } from "./LocalStorage";
+
+const HEADER_SEC_DECODER = "x-twilio-sec-decoders";
+const HEADER_SEC_USERSETTINGS = "x-twilio-sec-usersettings";
+const HEADER_SEC_WEBCHAT = "x-twilio-sec-webchatinfo";
+const HEADER_APP_VERSION = "ui-version";
+const HEADER_WEBCHAT_VERSION = "webchat-version";
+
+type SecurityHeadersType = {
+    [HEADER_SEC_USERSETTINGS]: string;
+    [HEADER_SEC_WEBCHAT]: string;
+    [HEADER_SEC_DECODER]: string;
+};
+
+type MixPanelHeadersType = {
+    [HEADER_APP_VERSION]: string;
+    [HEADER_WEBCHAT_VERSION]: string;
+};
+
+type MediaCapabilitiesInfo = MediaCapabilitiesDecodingInfo | MediaCapabilitiesEncodingInfo;
+
+export const DEFAULT_NAVIGATOR_LANG = "en_IN";
+export const DEFAULT_COOKIE_ENABLED = false;
+export const DEFAULT_LOGIN_TIMESTAMP = "9999999";
+const DEFAULT_CODEC_INFO = {
+    powerEfficient: false,
+    smooth: false,
+    supported: false,
+    keySystemAccess: "twilio-keySystemAccess"
+} as MediaCapabilitiesInfo;
+
+const getUserSpecificSettings = () => {
+    return {
+        language: navigator.language ?? DEFAULT_NAVIGATOR_LANG,
+        cookieEnabled: navigator.cookieEnabled ?? DEFAULT_COOKIE_ENABLED,
+        userTimezone: new Date().getTimezoneOffset()
+    };
+};
+
+const getWebchatInfo = () => {
+    const sessionStorage = LocalStorageUtil.get(LOCALSTORAGE_SESSION_ITEM_ID) ?? "";
+    return {
+        loginTimestamp: sessionStorage?.loginTimestamp || DEFAULT_LOGIN_TIMESTAMP,
+    };
+};
+
+const getAudioVideoDecoders = async () => {
+    const audioDecorder = navigator.mediaCapabilities?.decodingInfo({
+        type: "file",
+        audio: {
+            contentType: "audio/mp3",
+            channels: "2",
+            bitrate: 132700,
+            samplerate: 5200
+        }
+    });
+    const videoDecorder = navigator.mediaCapabilities?.decodingInfo({
+        type: "file",
+        audio: {
+            contentType: "audio/mp4",
+            channels: "2",
+            bitrate: 132700,
+            samplerate: 5200
+        }
+    });
+
+    return Promise.allSettled([audioDecorder, videoDecorder]).then(
+        (results: Array<PromiseSettledResult<MediaCapabilitiesInfo>>) => {
+            const allFullfied = results.every((result) => result.status === "fulfilled" && Boolean(result.value));
+
+            let audio: MediaCapabilitiesInfo = DEFAULT_CODEC_INFO;
+            let video: MediaCapabilitiesInfo = DEFAULT_CODEC_INFO;
+
+            if (allFullfied) {
+                const _res = results as Array<PromiseFulfilledResult<MediaCapabilitiesInfo>>;
+
+                audio = _res[0].value;
+                video = _res[1].value;
+            }
+
+            return {
+                audio,
+                video
+            };
+        }
+    );
+};
+
+// eslint-disable-next-line import/no-unused-modules
+export const generateSecurityHeaders = async (): Promise<SecurityHeadersType> => {
+    const headers = {} as SecurityHeadersType;
+    return getAudioVideoDecoders().then((decoders) => {
+        headers[HEADER_SEC_WEBCHAT] = JSON.stringify(getWebchatInfo());
+        headers[HEADER_SEC_USERSETTINGS] = JSON.stringify(getUserSpecificSettings());
+        headers[HEADER_SEC_DECODER] = JSON.stringify(decoders);
+
+        return headers;
+    });
+};
+
+// eslint-disable-next-line import/no-unused-modules
+export const generateMixPanelHeaders = (): MixPanelHeadersType => {
+    return {
+        [HEADER_APP_VERSION]: process.env.APP_VERSION ?? "1.0.0",
+        [HEADER_WEBCHAT_VERSION]: process.env.WEBCHAT_VERSION ?? ""
+    };
+};

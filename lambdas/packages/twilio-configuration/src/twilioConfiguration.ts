@@ -56,6 +56,11 @@ export const getSurveyWorkflowSid = (accountSid: AccountSID): Promise<string> =>
 export const getHelplineCode = (accountSid: AccountSID): Promise<string> =>
   getSsmParameter(`/${process.env.NODE_ENV}/twilio/${accountSid}/short_helpline`);
 
+export const getAccountSid = async (shortCode: string): Promise<AccountSID> =>
+  (await getSsmParameter(
+    `/${process.env.NODE_ENV}/twilio/${shortCode.toUpperCase()}/account_sid`,
+  )) as AccountSID;
+
 export const getSyncServiceSid = (accountSid: AccountSID): Promise<string> =>
   getSsmParameter(`/${process.env.NODE_ENV}/twilio/${accountSid}/sync_sid`);
 

@@ -90,12 +90,6 @@
     "isPII": true
   },
   {
-    "name": "safetyPlan",
-    "label": "safetyPlan",
-    "type": "checkbox",
-    "isPII": false
-  },
-  {
     "name": "emergencyReferralPolice",
     "label": "emergencyReferralPolice",
     "type": "checkbox",
@@ -123,28 +117,12 @@
         "label": ""
       },
       {
-        "value": "Arabic Interpreter Service (BSCC)",
-        "label": "Arabic Interpreter Service (BSCC)"
+        "value": "Language Line",
+        "label": "Language Line"
       },
       {
-        "value": "Arabic Interpreter Service (LLS)",
-        "label": "Arabic Interpreter Service (LLS)"
-      },
-      {
-        "value": "French Interpreter Service (BSCC)",
-        "label": "French Interpreter Service (BSCC)"
-      },
-      {
-        "value": "French Interpreter Service (LLS)",
-        "label": "French Interpreter Service (LLS)"
-      },
-      {
-        "value": "Mandarin Interpreter Service (BSCC)",
-        "label": "Mandarin Interpreter Service (BSCC)"
-      },
-      {
-        "value": "Mandarin Interpreter Service (LLS)",
-        "label": "Mandarin Interpreter Service (LLS)"
+        "value": "Voice",
+        "label": "Voice"
       }
     ],
     "isPII": false
