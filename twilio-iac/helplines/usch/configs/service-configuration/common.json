@@ -5,7 +5,8 @@
             "web",
             "sms"
         ],
-        "enableExternalRecordings": false,
+        "external_recordings_enabled": true,
+        "enableExternalRecordings": true,
         "enableConferencing": true,
         "feature_flags": {
             "enable_client_profiles":true,
@@ -16,13 +17,13 @@
             "enable_llm_summary": false,
             "enable_configurable_max_categories": true,
             "enable_post_survey": true,
+            "enable_voice_recordings": true,
             "enable_lambda_post_survey_processing": true,
             "use_prepopulate_mappings": true,
             "enable_twilio_transcripts": false,
             "enable_hang_up_by_hrm_saving": true
         },
         "definitionVersion": "usch-v1",
-        "external_recordings_enabled": false,
         "helplineLanguage": "en-USCH",
         "permissionConfig": "usch"
     }
