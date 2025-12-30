@@ -11,10 +11,11 @@ locals {
   local_config = {
     helpline                   = "Hora Segura"
     task_language              = "es-CL"
-    enable_post_survey         = false
-    enable_external_recordings = true
+    enable_post_survey         = true
+    enable_external_recordings = false
     permission_config          = "clhs"
     helpline_region            = "us-east-1"
+    enable_lex_v2                     = true
     workflows = {
       master : {
         friendly_name = "Master Workflow"
@@ -47,6 +48,10 @@ locals {
         "target_workers" = "email=='aselo-alerts+production@techmatters.org'",
         "friendly_name"  = "E2E Test Queue"
       }
+    }
+
+    lex_v2_bot_languages = {
+      es_CLHS : ["post_survey"]
     }
   }
 }

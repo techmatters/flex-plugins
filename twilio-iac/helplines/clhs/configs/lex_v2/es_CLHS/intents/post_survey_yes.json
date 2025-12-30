@@ -1,0 +1,86 @@
+{
+    "intentName": "post_survey_yes",
+    "description": "Specific es_CLHS/bots Post Survey bot",
+    "sampleUtterances": [
+        {
+            "utterance": "Sí"
+        },
+        {
+            "utterance": "Si"
+        },
+        {
+            "utterance": "si"
+        },
+        {
+            "utterance": "sí"
+        },
+        {
+            "utterance": "ok"
+        },
+        {
+            "utterance": "1"
+        }
+    ],
+    "dialogCodeHook": {
+        "enabled": false
+    },
+    "fulfillmentCodeHook": {
+        "enabled": false,
+        "active": true,
+        "postFulfillmentStatusSpecification": {
+            "successNextStep": {
+                "dialogAction": {
+                    "type": "CloseIntent"
+                },
+                "intent": {}
+            },
+            "failureNextStep": {
+                "dialogAction": {
+                    "type": "CloseIntent"
+                },
+                "intent": {}
+            },
+            "timeoutNextStep": {
+                "dialogAction": {
+                    "type": "CloseIntent"
+                },
+                "intent": {}
+            }
+        }
+    },
+    "slotPriorities": [
+        {
+            "priority": 1,
+            "slotName": "felt_supported"
+        },
+        {
+            "priority": 2,
+            "slotName": "able_to_express"
+        },
+        {
+            "priority": 3,
+            "slotName": "felt_better"
+        }
+    ],
+    "intentClosingSetting": {
+        "closingResponse": {
+            "messageGroups": [
+                {
+                    "message": {
+                        "plainTextMessage": {
+                            "value": "Gracias por contactarnos. No dudes en escribirnos de nuevo cuando necesites ayuda ❤️"
+                        }
+                    }
+                }
+            ],
+            "allowInterrupt": true
+        },
+        "active": true,
+        "nextStep": {
+            "dialogAction": {
+                "type": "EndConversation"
+            },
+            "intent": {}
+        }
+    }
+}

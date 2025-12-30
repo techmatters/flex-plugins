@@ -9,9 +9,10 @@ locals {
 
   local_config = {
     custom_task_routing_filter_expression = "channelType IN ['web']"
-    flow_vars                             = {
-      widget_from = "Hora Segura"
-      chat_blocked_message  = "Hi, you've been blocked from accessing our services and we are not able to read or receive further messages from you."
+    flow_vars = {
+      widget_from                           = "Hora Segura"
+      chat_blocked_message                  = "Hola, perdona, has sido bloqueado temporalmente de nuestros servicios."
+      send_message_webchat_welcome_prequeue = "¡Hola! Te damos la bienvenida a este espacio seguro para conversar. En instantes te pondremos en contacto con nuestro equipo para poder iniciar la conversación. "
     }
     #Channels
     channels = {
@@ -30,7 +31,7 @@ locals {
     enable_system_down       = true
     system_down_flow_vars = {
       is_system_down                   = "false"
-      message                          = "Our chat system is currently experiencing technical difficulties. We apologize for the inconvenience and are working to get it back online as soon as possible. If this is an emergency, please call +260955065373. Please note that this is not a toll-free line so you may incur costs."
+      message                          = "Perdona, nuestro sistema está experimentando algunos problemas técnicos. Tu contacto puede que no llegue a ser atendido o experimente interrupciones."
       voice_message                    = "Our chat system is currently experiencing technical difficulties. We apologize for the inconvenience and are working to get it back online as soon as possible. If this is an emergency, please call +260955065373. Please note that this is not a toll-free line so you may incur costs."
       send_studio_message_function_sid = ""
       call_action                      = "message"
