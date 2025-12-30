@@ -3,6 +3,15 @@
         "contacts_waiting_channels": [
             "web"
         ],
+        "enableClientProfiles": true,
+         "feature_flags": {
+            "enable_hierarchical_translations": true,
+            "enable_lex_v2": true,
+            "enable_configurable_max_categories": true,
+            "enable_post_survey": true,
+            "enable_lambda_post_survey_processing": true,
+            "use_prepopulate_mappings": true
+        },
         "definitionVersion": "clhs-v1",
         "helplineLanguage": "es-CL",
         "permissionConfig": "clhs"
