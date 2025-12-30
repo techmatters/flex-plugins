@@ -1715,30 +1715,6 @@
     }
   },
   {
-    "name": "biologicalSex",
-    "label": "Sexo asignado al nacer",
-    "type": "select",
-    "isPII": false,
-    "options": [
-      {
-        "value": "",
-        "label": ""
-      },
-      {
-        "value": "Femenino",
-        "label": "Femenino"
-      },
-      {
-        "value": "Masculino",
-        "label": "Masculino"
-      }
-    ],
-    "required": {
-      "value": true,
-      "message": "RequiredFieldError"
-    }
-  },
-  {
     "name": "sexualAndAffectiveOrientation",
     "label": "Orientación Sexoafectiva",
     "type": "select",

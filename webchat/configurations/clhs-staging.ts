@@ -1807,28 +1807,6 @@ const preEngagementConfig: PreEngagementFormDefinition = {
     },
     {
       type: "select",
-      label: "¿Cuál es tu sexo asignado al nacer?",
-      name: "biologicalSex",
-      defaultValue: "",
-      options: [
-        {
-          value: "",
-          label: "",
-        },
-        {
-          value: "Femenino",
-          label: "Femenino",
-        },
-        {
-          value: "Masculino",
-          label: "Masculino",
-        },
-      ],
-
-      required: true,
-    },
-    {
-      type: "select",
       label: "Actualmente te identificas como:",
       name: "sexualAndAffectiveOrientation",
       defaultValue: "",

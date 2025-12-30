@@ -33,8 +33,12 @@ locals {
     task_queues = {
       master : {
         "target_workers" = "1==1",
-        "friendly_name"  = "Hora Segura"
+        "friendly_name"  = "Atención"
       },
+      priority : {
+        "target_workers" = "routing.skills HAS 'Prioridad'",
+        "friendly_name"  = "Contactos Urgentes"
+      }
       survey : {
         "target_workers" = "1==0",
         "friendly_name"  = "Survey"
