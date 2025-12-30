@@ -50,11 +50,11 @@
     "TabbedForms-AddCallerInfoTab": "Desactivado",
     "TabbedForms-CategoriesTab": "Tags",
     "TabbedForms-AddCaseInfoTab": "Atributos",
-    "Case-CaseOverviewLabel": "Carpeta ECUPHS",
+    "Case-CaseOverviewLabel": "ECUPHS",
     "Case-SectionList-ecuphsCreated": "ECUPHS contestada",
-    "TabbedForms-NewCase": "Crear carpeta ECUPHS",
-    "TabbedForms-ExistingCase": "Agregar ECUPHS a una carpeta",
-    "Case-CaseNumber": "Carpeta ECUPHS #",
+    "TabbedForms-NewCase": "Crear ECUPHS",
+    "TabbedForms-ExistingCase": "Agregar a ECUPHS",
+    "Case-CaseNumber": "ECUPHS #",
     "Case-Timeline-ModalTitle": "Línea de Tiempo ECUPHS #{{caseId}}",
     "Case-CaseSummarySection": "CaseSummarySection",
     "Case-CaseDetailsStatusLabel": "Estado",
@@ -66,11 +66,11 @@
     "Case-SectionList-Add/ecuphs": "Agregar",
     "CaseSection-BottomBar-Save/ecuphs": "Guardar",
     "CaseSection-BottomBar-SaveAndAddAnother/ecuphs": "Guardar y agregar una nueva",
-    "CaseMerging-RemoveFromCase": "Quitar de la carpeta",
+    "CaseMerging-RemoveFromCase": "Quitar de ECUPHS",
     "Case-SectionList-NoItems/ecuphs": "No hay encuestas ECUPHS contestadas",
-    "CaseMerging-ContactRemovedFromCase": "Contacto eliminado de la carpeta",
-    "CaseMerging-CaseCreatedAndContactAdded": "Carpeta #{{caseId}} creada y contacto agregado",
-    "CaseMerging-ContactAddedToExistingCase": "Contacto agregado a la Carpeta #{{caseId}}",
-    "CaseMerging-CancelCase": "Cancelar Carpeta"
+    "CaseMerging-ContactRemovedFromCase": "Contacto eliminado de ",
+    "CaseMerging-CaseCreatedAndContactAdded": " #{{caseId}} creada y contacto agregado",
+    "CaseMerging-ContactAddedToExistingCase": "Contacto agregado a #{{caseId}}",
+    "CaseMerging-CancelCase": "Cancelar "
   }
 }
