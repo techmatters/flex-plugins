@@ -71,6 +71,9 @@
     "CaseMerging-ContactRemovedFromCase": "Contacto eliminado de ",
     "CaseMerging-CaseCreatedAndContactAdded": " #{{caseId}} creada y contacto agregado",
     "CaseMerging-ContactAddedToExistingCase": "Contacto agregado a #{{caseId}}",
-    "CaseMerging-CancelCase": "Cancelar "
+    "CaseMerging-CancelCase": "Cancelar ",
+    "CaseHeader-ConnectToTaskContact": "Agregar a ECUPHS",
+    "CaseHeader-TaskContactConnected": "Agregado a ECUPHS",
+    "BottomBar-AddContactToNewCase": "Agregar a ECUPHS"
   }
 }
