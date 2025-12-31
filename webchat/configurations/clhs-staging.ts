@@ -35,7 +35,7 @@ const holidayHours: PreEngagementFormDefinition = {
   fields: [],
 };
 const preEngagementConfig: PreEngagementFormDefinition = {
-  description: 'WelcomeMessage',
+  description: 'PreEngagementDescription',
   submitLabel: 'StartChat',
   fields: [
        {
@@ -1957,7 +1957,7 @@ const preEngagementConfig: PreEngagementFormDefinition = {
 
 const translations: Translations = {
   'en-US': {
-    WelcomeMessage: '¡Hola! te damos la bienvenida a Hora Segura ❤️ Completa esta información para saber más de ti y poder ayudarte.',
+    WelcomeMessage: '¡Hola! te damos la bienvenida a Hora Segura ❤️',
     PreEngagementDescription: '¡Hola! te damos la bienvenida a Hora Segura ❤️ Completa esta información para saber más de ti y poder ayudarte.',
     MessageCanvasTrayContent: '',
     MessageInputDisabledReasonHold:
@@ -1976,7 +1976,8 @@ const translations: Translations = {
     Nickname: 'Nickname',
   },
   'es-CL': {
-    WelcomeMessage: '¡Hola! te damos la bienvenida a Hora Segura ❤️ Completa esta información para saber más de ti y poder ayudarte.',
+    WelcomeMessage: '¡Hola! te damos la bienvenida a Hora Segura ❤️',
+    PreEngagementDescription: '¡Hola! te damos la bienvenida a Hora Segura ❤️ Completa esta información para saber más de ti y poder ayudarte.',
     MessageCanvasTrayContent: '',
     MessageInputDisabledReasonHold:
       'Muchas gracias por la información. Lo transferiremos ahora. Por favor espere for un agente.',
