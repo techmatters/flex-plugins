@@ -25,7 +25,8 @@ locals {
       }
     }
     get_profile_flags_for_identifier_base_url = "https://hrm-staging.tl.techmatters.org/lambda/twilio/account-scoped"
-
+    //Serverless -- to allow enabling the operating hours check on this staging account.
+    ui_editable = true
     #System Down Configuration
     system_down_templatefile = "/app/twilio-iac/helplines/templates/studio-flows/system-down.tftpl"
     enable_system_down       = true
