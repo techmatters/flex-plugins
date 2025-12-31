@@ -74,6 +74,7 @@
     "CaseMerging-CancelCase": "Cancelar ",
     "CaseHeader-ConnectToTaskContact": "Agregar a ECUPHS",
     "CaseHeader-TaskContactConnected": "Agregado a ECUPHS",
-    "BottomBar-AddContactToNewCase": "Agregar a ECUPHS"
+    "BottomBar-AddContactToNewCase": "Agregar a ECUPHS",
+    "BottomBar-AddedToCase": "Agregado a ECUPHS"
   }
 }
