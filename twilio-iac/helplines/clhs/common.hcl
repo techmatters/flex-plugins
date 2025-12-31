@@ -10,15 +10,17 @@ locals {
 
   local_config = {
     helpline                   = "Hora Segura"
-    task_language              = "es-CL"
-    enable_post_survey         = false
-    enable_external_recordings = true
+    task_language              = "es-CLHS"
+    enable_post_survey         = true
+    enable_external_recordings = false
     permission_config          = "clhs"
     helpline_region            = "us-east-1"
+    enable_lex_v2                     = true
     workflows = {
       master : {
         friendly_name = "Master Workflow"
-        templatefile  = "/app/twilio-iac/helplines/templates/workflows/master.tftpl"
+        templatefile  = "/app/twilio-iac/helplines/clhs/templates/workflows/master.tftpl"
+        task_reservation_timeout = 60
       },
       //NOTE: MAKE SURE TO ADD THIS IF THE ACCOUNT USES A CONVERSATION CHANNEL
       queue_transfers : {
@@ -33,8 +35,12 @@ locals {
     task_queues = {
       master : {
         "target_workers" = "1==1",
-        "friendly_name"  = "Hora Segura"
+        "friendly_name"  = "Atención"
       },
+      priority : {
+        "target_workers" = "routing.skills HAS 'Prioridad'",
+        "friendly_name"  = "Contactos Urgentes"
+      }
       survey : {
         "target_workers" = "1==0",
         "friendly_name"  = "Survey"
@@ -43,6 +49,10 @@ locals {
         "target_workers" = "email=='aselo-alerts+production@techmatters.org'",
         "friendly_name"  = "E2E Test Queue"
       }
+    }
+
+    lex_v2_bot_languages = {
+      es_CLHS : ["post_survey"]
     }
   }
 }

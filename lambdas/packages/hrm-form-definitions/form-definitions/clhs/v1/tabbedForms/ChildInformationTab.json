@@ -1715,30 +1715,6 @@
     }
   },
   {
-    "name": "biologicalSex",
-    "label": "Sexo Biológico",
-    "type": "select",
-    "isPII": false,
-    "options": [
-      {
-        "value": "",
-        "label": ""
-      },
-      {
-        "value": "Femenino",
-        "label": "Femenino"
-      },
-      {
-        "value": "Masculino",
-        "label": "Masculino"
-      }
-    ],
-    "required": {
-      "value": true,
-      "message": "RequiredFieldError"
-    }
-  },
-  {
     "name": "sexualAndAffectiveOrientation",
     "label": "Orientación Sexoafectiva",
     "type": "select",
@@ -1809,6 +1785,10 @@
         "label": "No"
       },
       {
+        "value": "No sé",
+        "label": "No sé"
+      },
+      {
         "value": "Prefiero no responder",
         "label": "Prefiero no responder"
       }
@@ -1819,10 +1799,32 @@
     }
   },
   {
-    "name": "amIANeurodivergentPerson",
-    "label": "Soy una persona neurodivergente?",
-    "type": "checkbox",
+    "name": "neurodivergence",
+    "label": "Soy una persona neurodivergente",
+    "type": "select",
     "isPII": false,
+    "options": [
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "Sí",
+        "label": "Sí"
+      },
+      {
+        "value": "No",
+        "label": "No"
+      },
+      {
+        "value": "No sé",
+        "label": "No sé"
+      },
+      {
+        "value": "Prefiero no responder",
+        "label": "Prefiero no responder"
+      }
+    ],
     "required": {
       "value": true,
       "message": "RequiredFieldError"
