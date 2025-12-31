@@ -10,7 +10,7 @@ locals {
 
   local_config = {
     helpline                   = "Hora Segura"
-    task_language              = "es-CL"
+    task_language              = "es-CLHS"
     enable_post_survey         = true
     enable_external_recordings = false
     permission_config          = "clhs"
@@ -20,6 +20,7 @@ locals {
       master : {
         friendly_name = "Master Workflow"
         templatefile  = "/app/twilio-iac/helplines/templates/workflows/master.tftpl"
+        task_reservation_timeout = 60
       },
       //NOTE: MAKE SURE TO ADD THIS IF THE ACCOUNT USES A CONVERSATION CHANNEL
       queue_transfers : {
