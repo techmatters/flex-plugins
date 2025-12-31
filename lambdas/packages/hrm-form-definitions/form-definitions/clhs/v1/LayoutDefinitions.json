@@ -15,10 +15,10 @@
         "caseHomeOrder": 1,
         "printOrder": 1,
         "previewFields": [
-          "passiveDeathWish"
+          "epuchsCreated"
         ],
         "layout": {
-          "newCompoundField": {
+          "epuchsCreated": {
             "includeLabel": false,
             "valueTemplateCode": "Case-SectionList-ecuphsCreated"
           }
