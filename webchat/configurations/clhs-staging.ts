@@ -2002,7 +2002,6 @@ const translations: Translations = {
     SendMessageTooltip: 'Enviar Mensaje',
     FieldValidationRequiredField: 'Campo requerido',
     FieldValidationInvalidEmail: 'Por favor provea una dirección válida de email',
-    PreEngagementDescription: '¡Hola! te damos la bienvenida a Hora Segura ❤️ Completa esta información para saber más de ti y poder ayudarte.',
     BotGreeting: '¿Cómo puedo ayudar?',
     Gender: '¿Cuál es tu género?',
     Masculino: 'Masculino',
