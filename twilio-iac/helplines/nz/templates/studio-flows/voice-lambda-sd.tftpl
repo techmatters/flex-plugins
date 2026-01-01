@@ -31,7 +31,7 @@ ${
       }
     },
     {
-      "name": "attributes",
+      "name": "send_to_queue",
       "type": "send-to-flex",
       "transitions": [
         {
@@ -58,15 +58,15 @@ ${
       }
     },
     {
-      "name": "getProfileFlagsForIdentifier",
+      "name": "f_getProfileFlagsForIdentifier",
       "type": "make-http-request",
       "transitions": [
         {
-          "next": "contact_routing",
+          "next": "split_contact_routing",
           "event": "success"
         },
         {
-          "next": "play_initial_message",
+          "next": "play_message_initial",
           "event": "failed"
         }
       ],
@@ -83,15 +83,15 @@ ${
       }
     },
     {
-      "name": "contact_routing",
+      "name": "split_contact_routing",
       "type": "split-based-on",
       "transitions": [
         {
-          "next": "play_initial_message",
+          "next": "play_message_initial",
           "event": "noMatch"
         },
         {
-          "next": "play_blocked",
+          "next": "play_message_blocked",
           "event": "match",
           "conditions": [
             {
@@ -105,7 +105,7 @@ ${
           ]
         },
         {
-          "next": "set_clinical",
+          "next": "set_var_clinical",
           "event": "match",
           "conditions": [
             {
@@ -128,11 +128,11 @@ ${
       }
     },
     {
-      "name": "set_clinical",
+      "name": "set_var_clinical",
       "type": "set-variables",
       "transitions": [
         {
-          "next": "play_initial_message",
+          "next": "play_message_initial",
           "event": "next"
         }
       ],
@@ -151,7 +151,7 @@ ${
       }
     },
     {
-      "name": "play_blocked",
+      "name": "play_message_blocked",
       "type": "say-play",
       "transitions": [
         {
@@ -168,11 +168,11 @@ ${
       }
     },
     {
-      "name": "play_initial_message",
+      "name": "play_message_initial",
       "type": "say-play",
       "transitions": [
         {
-          "next": "attributes",
+          "next": "send_to_queue",
           "event": "audioComplete"
         }
       ],
@@ -186,15 +186,15 @@ ${
       }
     },
     {
-      "name": "need_bypass",
+      "name": "split_need_bypass",
       "type": "split-based-on",
       "transitions": [
         {
-          "next": "country_check",
+          "next": "split_country_check",
           "event": "noMatch"
         },
         {
-          "next": "attributesNoTimeout",
+          "next": "send_to_queue_bypass",
           "event": "match",
           "conditions": [
             {
@@ -217,7 +217,7 @@ ${
       }
     },
     {
-      "name": "attributesNoTimeout",
+      "name": "send_to_queue_bypass",
       "type": "send-to-flex",
       "transitions": [
         {
@@ -244,15 +244,15 @@ ${
       }
     },
     {
-      "name": "country_check",
+      "name": "split_country_check",
       "type": "split-based-on",
       "transitions": [
         {
-          "next": "play_blocked",
+          "next": "play_message_blocked",
           "event": "noMatch"
         },
         {
-          "next": "getProfileFlagsForIdentifier",
+          "next": "f_getProfileFlagsForIdentifier",
           "event": "match",
           "conditions": [
             {
@@ -266,7 +266,7 @@ ${
           ]
         },
         {
-          "next": "getProfileFlagsForIdentifier",
+          "next": "f_getProfileFlagsForIdentifier",
           "event": "match",
           "conditions": [
             {
@@ -288,16 +288,16 @@ ${
         }
       }
     },
-     {
+    {
       "name": "run_subflow_system_down",
       "type": "run-subflow",
       "transitions": [
         {
-          "next": "need_bypass",
+          "next": "split_need_bypass",
           "event": "completed"
         },
         {
-          "next": "need_bypass",
+          "next": "split_need_bypass",
           "event": "failed"
         }
       ],

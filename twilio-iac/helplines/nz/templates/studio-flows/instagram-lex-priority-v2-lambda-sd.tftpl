@@ -31,7 +31,7 @@ ${
       }
     },
     {
-      "name": "attributes",
+      "name": "send_to_queue",
       "type": "send-to-flex",
       "transitions": [
         {
@@ -55,15 +55,15 @@ ${
       }
     },
     {
-      "name": "pre_survey_complete",
+      "name": "split_pre_survey_complete",
       "type": "split-based-on",
       "transitions": [
         {
-          "next": "captureChannelWithBot",
+          "next": "f_captureChannelWithBot",
           "event": "noMatch"
         },
         {
-          "next": "is_bot",
+          "next": "split_is_bot",
           "event": "match",
           "conditions": [
             {
@@ -86,14 +86,14 @@ ${
       }
     },
     {
-      "name": "captureChannelWithBot",
+      "name": "f_captureChannelWithBot",
       "type": "make-http-request",
       "transitions": [
         {
           "event": "success"
         },
         {
-          "next": "channelCleanup",
+          "next": "f_chatbotCallbackCleanup",
           "event": "failed"
         }
       ],
@@ -110,15 +110,15 @@ ${
       }
     },
     {
-      "name": "channelCleanup",
+      "name": "f_chatbotCallbackCleanup",
       "type": "make-http-request",
       "transitions": [
         {
-          "next": "attributes",
+          "next": "send_to_queue",
           "event": "success"
         },
         {
-          "next": "send_message_run_janitor",
+          "next": "f_sendMessageAndRunJanitor_error",
           "event": "failed"
         }
       ],
@@ -135,15 +135,15 @@ ${
       }
     },
     {
-      "name": "getProfileFlagsForIdentifier",
+      "name": "f_getProfileFlagsForIdentifier",
       "type": "make-http-request",
       "transitions": [
         {
-          "next": "contact_routing",
+          "next": "split_contact_routing",
           "event": "success"
         },
         {
-          "next": "contact_routing",
+          "next": "split_contact_routing",
           "event": "failed"
         }
       ],
@@ -160,21 +160,21 @@ ${
       }
     },
     {
-      "name": "contact_routing",
+      "name": "split_contact_routing",
       "type": "split-based-on",
       "transitions": [
         {
-          "next": "counsel_check_complete",
+          "next": "split_counsel_check_complete",
           "event": "noMatch"
         },
         {
-          "next": "send_blocked_message",
+          "next": "f_sendMessageAndRunJanitor_blocked",
           "event": "match",
           "conditions": [
             {
               "friendly_name": "If value contains blocked",
               "arguments": [
-                "{{widgets.getProfileFlagsForIdentifier.parsed.flags}}"
+                "{{widgets.f_getProfileFlagsForIdentifier.parsed.flags}}"
               ],
               "type": "contains",
               "value": "blocked"
@@ -182,13 +182,13 @@ ${
           ]
         },
         {
-          "next": "set_clinical",
+          "next": "set_var_clinical",
           "event": "match",
           "conditions": [
             {
               "friendly_name": "If value contains case management",
               "arguments": [
-                "{{widgets.getProfileFlagsForIdentifier.parsed.flags}}"
+                "{{widgets.f_getProfileFlagsForIdentifier.parsed.flags}}"
               ],
               "type": "contains",
               "value": "case management"
@@ -197,7 +197,7 @@ ${
         }
       ],
       "properties": {
-        "input": "{{widgets.getProfileFlagsForIdentifier.parsed.flags}}",
+        "input": "{{widgets.f_getProfileFlagsForIdentifier.parsed.flags}}",
         "offset": {
           "x": -50,
           "y": -150
@@ -205,11 +205,11 @@ ${
       }
     },
     {
-      "name": "set_clinical",
+      "name": "set_var_clinical",
       "type": "set-variables",
       "transitions": [
         {
-          "next": "attributes",
+          "next": "send_to_queue",
           "event": "next"
         }
       ],
@@ -228,7 +228,7 @@ ${
       }
     },
     {
-      "name": "send_blocked_message",
+      "name": "f_sendMessageAndRunJanitor_blocked",
       "type": "run-function",
       "transitions": [
         {
@@ -268,7 +268,7 @@ ${
       }
     },
     {
-      "name": "send_message_run_janitor",
+      "name": "f_sendMessageAndRunJanitor_error",
       "type": "run-function",
       "transitions": [
         {
@@ -308,14 +308,14 @@ ${
       }
     },
     {
-      "name": "is_bot",
+      "name": "split_is_bot",
       "type": "split-based-on",
       "transitions": [
         {
           "event": "noMatch"
         },
         {
-          "next": "attributes",
+          "next": "send_to_queue",
           "event": "match",
           "conditions": [
             {
@@ -338,15 +338,15 @@ ${
       }
     },
     {
-      "name": "counsel_check_complete",
+      "name": "split_counsel_check_complete",
       "type": "split-based-on",
       "transitions": [
         {
-          "next": "captureChannelWithCounselBot",
+          "next": "f_captureChannelWithBot_counsel",
           "event": "noMatch"
         },
         {
-          "next": "if_counselling",
+          "next": "split_if_counselling",
           "event": "match",
           "conditions": [
             {
@@ -369,14 +369,14 @@ ${
       }
     },
     {
-      "name": "captureChannelWithCounselBot",
+      "name": "f_captureChannelWithBot_counsel",
       "type": "make-http-request",
       "transitions": [
         {
           "event": "success"
         },
         {
-          "next": "channelCleanup",
+          "next": "f_chatbotCallbackCleanup",
           "event": "failed"
         }
       ],
@@ -393,15 +393,15 @@ ${
       }
     },
     {
-      "name": "if_counselling",
+      "name": "split_if_counselling",
       "type": "split-based-on",
       "transitions": [
         {
-          "next": "pre_survey_complete",
+          "next": "split_pre_survey_complete",
           "event": "noMatch"
         },
         {
-          "next": "pre_survey_complete",
+          "next": "split_pre_survey_complete",
           "event": "match",
           "conditions": [
             {
@@ -415,7 +415,7 @@ ${
           ]
         },
         {
-          "next": "send_marketing_message",
+          "next": "f_sendMessageAndRunJanitor_marketing",
           "event": "match",
           "conditions": [
             {
@@ -438,7 +438,7 @@ ${
       }
     },
     {
-      "name": "send_marketing_message",
+      "name": "f_sendMessageAndRunJanitor_marketing",
       "type": "run-function",
       "transitions": [
         {
@@ -482,11 +482,11 @@ ${
       "type": "run-subflow",
       "transitions": [
         {
-          "next": "getProfileFlagsForIdentifier",
+          "next": "f_getProfileFlagsForIdentifier",
           "event": "completed"
         },
         {
-          "next": "getProfileFlagsForIdentifier",
+          "next": "f_getProfileFlagsForIdentifier",
           "event": "failed"
         }
       ],
