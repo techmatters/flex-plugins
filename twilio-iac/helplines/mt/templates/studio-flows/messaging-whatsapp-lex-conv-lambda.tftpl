@@ -13,7 +13,7 @@ ${
           "event": "incomingCall"
         },
         {
-          "next": "country_check",
+          "next": "split_country_check",
           "event": "incomingConversationMessage"
         },
         {
@@ -30,16 +30,16 @@ ${
         }
       }
     },
-    {
-      "name": "country_check",
+    { 
+      "name": "split_country_check",
       "type": "split-based-on",
       "transitions": [
         {
-          "next": "send_blocked_country_message",
+          "next": "f_sendMessageAndRunJanitor_blocked_country",
           "event": "noMatch"
         },
         {
-          "next": "getProfileFlagsForIdentifier",
+          "next": "f_getProfileFlagsForIdentifier",
           "event": "match",
           "conditions": [
             {
@@ -53,7 +53,7 @@ ${
           ]
         },
         {
-          "next": "getProfileFlagsForIdentifier",
+          "next": "f_getProfileFlagsForIdentifier",
           "event": "match",
           "conditions": [
             {
@@ -67,7 +67,7 @@ ${
           ]
         },
         {
-          "next": "language_selector_complete",
+          "next": "split_language_selector_complete",
           "event": "match",
           "conditions": [
             {
@@ -90,7 +90,7 @@ ${
       }
     },
     {
-      "name": "send_blocked_country_message",
+      "name": "f_sendMessageAndRunJanitor_blocked_country",
       "type": "run-function",
       "transitions": [
         {
@@ -130,11 +130,11 @@ ${
       }
     },
     {
-      "name": "getProfileFlagsForIdentifier",
+      "name": "f_getProfileFlagsForIdentifier",
       "type": "make-http-request",
       "transitions": [
         {
-          "next": "contact_routing",
+          "next": "split_contact_routing",
           "event": "success"
         },
         {
@@ -154,7 +154,7 @@ ${
       }
     },
     {
-      "name": "send_blocked_message",
+      "name": "f_sendMessageAndRunJanitor_blocked",
       "type": "run-function",
       "transitions": [
         {
@@ -194,7 +194,7 @@ ${
       }
     },
     {
-      "name": "contact_routing",
+      "name": "split_contact_routing",
       "type": "split-based-on",
       "transitions": [
         {
@@ -202,13 +202,13 @@ ${
           "event": "noMatch"
         },
         {
-          "next": "send_blocked_message",
+          "next": "f_sendMessageAndRunJanitor_blocked",
           "event": "match",
           "conditions": [
             {
               "friendly_name": "If value contains blocked",
               "arguments": [
-                "{{widgets.getProfileFlagsForIdentifier.parsed.flags}}"
+                "{{widgets.f_getProfileFlagsForIdentifier.parsed.flags}}"
               ],
               "type": "contains",
               "value": "blocked"
@@ -217,7 +217,7 @@ ${
         }
       ],
       "properties": {
-        "input": "{{widgets.getProfileFlagsForIdentifier.parsed.flags}}",
+        "input": "{{widgets.f_getProfileFlagsForIdentifier.parsed.flags}}",
         "offset": {
           "x": -690,
           "y": -60
@@ -225,7 +225,7 @@ ${
       }
     },
     {
-      "name": "attributes",
+      "name": "send_to_queue",
       "type": "send-to-flex",
       "transitions": [
         {
@@ -249,15 +249,15 @@ ${
       }
     },
     {
-      "name": "language_selector_complete",
+      "name": "split_language_selector_complete",
       "type": "split-based-on",
       "transitions": [
         {
-          "next": "captureChannelWithLanguageBot",
+          "next": "f_captureChannelWithBot_language",
           "event": "noMatch"
         },
         {
-          "next": "terms_conditions_complete",
+          "next": "split_terms_conditions_complete",
           "event": "match",
           "conditions": [
             {
@@ -280,14 +280,14 @@ ${
       }
     },
     {
-      "name": "captureChannelWithLanguageBot",
+      "name": "f_captureChannelWithBot_language",
       "type": "make-http-request",
       "transitions": [
         {
           "event": "success"
         },
         {
-          "next": "channelCleanup",
+          "next": "f_chatbotCallbackCleanup",
           "event": "failed"
         }
       ],
@@ -304,15 +304,15 @@ ${
       }
     },
     {
-      "name": "pre_survey_complete",
+      "name": "split_pre_survey_complete",
       "type": "split-based-on",
       "transitions": [
         {
-          "next": "uk_split_2",
+          "next": "split_uk_2",
           "event": "noMatch"
         },
         {
-          "next": "attributes",
+          "next": "send_to_queue",
           "event": "match",
           "conditions": [
             {
@@ -335,14 +335,14 @@ ${
       }
     },
     {
-      "name": "captureChannelWithBot",
+      "name": "f_captureChannelWithBot",
       "type": "make-http-request",
       "transitions": [
         {
           "event": "success"
         },
         {
-          "next": "channelCleanup",
+          "next": "f_chatbotCallbackCleanup",
           "event": "failed"
         }
       ],
@@ -359,15 +359,15 @@ ${
       }
     },
     {
-      "name": "terms_conditions_complete",
+      "name": "split_terms_conditions_complete",
       "type": "split-based-on",
       "transitions": [
         {
-          "next": "uk_split",
+          "next": "split_uk",
           "event": "noMatch"
         },
         {
-          "next": "terms_acceptance",
+          "next": "split_terms_acceptance",
           "event": "match",
           "conditions": [
             {
@@ -390,14 +390,14 @@ ${
       }
     },
     {
-      "name": "captureChannelTerms",
+      "name": "f_captureChannelWithBot_terms",
       "type": "make-http-request",
       "transitions": [
         {
           "event": "success"
         },
         {
-          "next": "channelCleanup",
+          "next": "f_chatbotCallbackCleanup",
           "event": "failed"
         }
       ],
@@ -414,15 +414,15 @@ ${
       }
     },
     {
-      "name": "terms_acceptance",
+      "name": "split_terms_acceptance",
       "type": "split-based-on",
       "transitions": [
         {
-          "next": "language_split_terms_no_acceptance",
+          "next": "split_terms_no_acceptance",
           "event": "noMatch"
         },
         {
-          "next": "pre_survey_complete",
+          "next": "split_pre_survey_complete",
           "event": "match",
           "conditions": [
             {
@@ -445,15 +445,15 @@ ${
       }
     },
     {
-      "name": "language_split_terms_no_acceptance",
+      "name": "split_terms_no_acceptance",
       "type": "split-based-on",
       "transitions": [
         {
-          "next": "send_message_run_janitor_en",
+          "next": "f_sendMessageAndRunJanitor_no_terms_en",
           "event": "noMatch"
         },
         {
-          "next": "send_message_run_janitor_en",
+          "next": "f_sendMessageAndRunJanitor_no_terms_en",
           "event": "match",
           "conditions": [
             {
@@ -467,7 +467,7 @@ ${
           ]
         },
         {
-          "next": "send_message_run_janitor_mt",
+          "next": "f_sendMessageAndRunJanitor_no_terms_mt",
           "event": "match",
           "conditions": [
             {
@@ -481,7 +481,7 @@ ${
           ]
         },
         {
-          "next": "send_message_run_janitor_uk",
+          "next": "f_sendMessageAndRunJanitor_no_terms_uk",
           "event": "match",
           "conditions": [
             {
@@ -504,15 +504,15 @@ ${
       }
     },
     {
-      "name": "uk_split",
+      "name": "split_uk",
       "type": "split-based-on",
       "transitions": [
         {
-          "next": "captureChannelTerms",
+          "next": "f_captureChannelWithBot_terms",
           "event": "noMatch"
         },
         {
-          "next": "captureChannelTermsUk",
+          "next": "f_captureChannelWithBot_uk",
           "event": "match",
           "conditions": [
             {
@@ -535,14 +535,14 @@ ${
       }
     },
     {
-      "name": "captureChannelTermsUk",
+      "name": "f_captureChannelWithBot_uk",
       "type": "make-http-request",
       "transitions": [
         {
           "event": "success"
         },
         {
-          "next": "channelCleanup",
+          "next": "f_chatbotCallbackCleanup",
           "event": "failed"
         }
       ],
@@ -559,15 +559,15 @@ ${
       }
     },
     {
-      "name": "uk_split_2",
+      "name": "split_uk_2",
       "type": "split-based-on",
       "transitions": [
         {
-          "next": "captureChannelWithBot",
+          "next": "f_captureChannelWithBot",
           "event": "noMatch"
         },
         {
-          "next": "captureChannelWithBotUk",
+          "next": "f_captureChannelWithBot_uk",
           "event": "match",
           "conditions": [
             {
@@ -590,14 +590,14 @@ ${
       }
     },
     {
-      "name": "captureChannelWithBotUk",
+      "name": "f_captureChannelWithBot_uk",
       "type": "make-http-request",
       "transitions": [
         {
           "event": "success"
         },
         {
-          "next": "channelCleanup",
+          "next": "f_chatbotCallbackCleanup",
           "event": "failed"
         }
       ],
@@ -618,11 +618,11 @@ ${
       "type": "split-based-on",
       "transitions": [
         {
-          "next": "language_selector_complete",
+          "next": "split_language_selector_complete",
           "event": "noMatch"
         },
         {
-          "next": "language_split_web",
+          "next": "split_language_web",
           "event": "match",
           "conditions": [
             {
@@ -645,7 +645,7 @@ ${
       }
     },
     {
-      "name": "language_split_web",
+      "name": "split_language_web",
       "type": "split-based-on",
       "transitions": [
         {
@@ -708,7 +708,7 @@ ${
       "type": "send-message",
       "transitions": [
         {
-          "next": "web_attributes",
+          "next": "send_to_queue_webchat",
           "event": "sent"
         },
         {
@@ -732,7 +732,7 @@ ${
       "type": "send-message",
       "transitions": [
         {
-          "next": "web_attributes",
+          "next": "send_to_queue_webchat",
           "event": "sent"
         },
         {
@@ -756,7 +756,7 @@ ${
       "type": "send-message",
       "transitions": [
         {
-          "next": "web_attributes",
+          "next": "send_to_queue_webchat",
           "event": "sent"
         },
         {
@@ -776,7 +776,7 @@ ${
       }
     },
     {
-      "name": "web_attributes",
+      "name": "send_to_queue_webchat",
       "type": "send-to-flex",
       "transitions": [
         {
@@ -800,7 +800,7 @@ ${
       }
     },
     {
-      "name": "send_message_run_janitor_en",
+      "name": "f_sendMessageAndRunJanitor_no_terms_en",
       "type": "run-function",
       "transitions": [
         {
@@ -840,7 +840,7 @@ ${
       }
     },
     {
-      "name": "send_message_run_janitor_mt",
+      "name": "f_sendMessageAndRunJanitor_no_terms_mt",
       "type": "run-function",
       "transitions": [
         {
@@ -880,7 +880,7 @@ ${
       }
     },
     {
-      "name": "send_message_run_janitor_uk",
+      "name": "f_sendMessageAndRunJanitor_no_terms_uk",
       "type": "run-function",
       "transitions": [
         {
@@ -920,15 +920,15 @@ ${
       }
     },
     {
-      "name": "webhook_notify_error",
+      "name": "http_post_webhook_notify_error",
       "type": "make-http-request",
       "transitions": [
         {
-          "next": "attributes",
+          "next": "send_to_queue",
           "event": "success"
         },
         {
-          "next": "attributes",
+          "next": "send_to_queue",
           "event": "failed"
         }
       ],
@@ -944,15 +944,15 @@ ${
       }
     },
     {
-      "name": "channelCleanup",
+      "name": "f_chatbotCallbackCleanup",
       "type": "make-http-request",
       "transitions": [
         {
-          "next": "webhook_notify_error",
+          "next": "http_post_webhook_notify_error",
           "event": "success"
         },
         {
-          "next": "send_message_run_janitor",
+          "next": "f_sendMessageAndRunJanitor_error",
           "event": "failed"
         }
       ],
@@ -969,15 +969,15 @@ ${
       }
     },
     {
-      "name": "send_message_run_janitor",
+      "name": "f_sendMessageAndRunJanitor_error",
       "type": "run-function",
       "transitions": [
         {
-          "next": "webhook_notify_error_cleanup",
+          "next": "http_post_webhook_notify_error_cleanup",
           "event": "success"
         },
         {
-          "next": "webhook_notify_error_cleanup",
+          "next": "http_post_webhook_notify_error_cleanup",
           "event": "fail"
         }
       ],
@@ -1011,7 +1011,7 @@ ${
       }
     },
     {
-      "name": "webhook_notify_error_cleanup",
+      "name": "http_post_webhook_notify_error_cleanup",
       "type": "make-http-request",
       "transitions": [
         {
