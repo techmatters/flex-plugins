@@ -31,7 +31,7 @@ ${
       }
     },
     {
-      "name": "checkOperatingHours",
+      "name": "f_checkOperatingHours",
       "type": "make-http-request",
       "transitions": [
         {
@@ -39,7 +39,7 @@ ${
           "event": "success"
         },
         {
-          "next": "send_welcome_message",
+          "next": "send_message_welcome",
           "event": "failed"
         }
       ],
@@ -52,7 +52,7 @@ ${
         "content_type": "application/json;charset=utf-8",
         "add_twilio_auth": false,
         "body": "{\"channel\": \"webchat\", \"includeMessageTextInResponse\": \"true\", \"language\": \"en-NZ\"}",
-        "url": "${get_profile_flags_for_identifier_base_url}/operatingHours"
+        "url": "${get_profile_flags_for_identifier_base_url}/checkOperatingHours"
       }
     },
     {
@@ -60,11 +60,11 @@ ${
       "type": "split-based-on",
       "transitions": [
         {
-          "next": "send_welcome_message",
+          "next": "send_message_welcome",
           "event": "noMatch"
         },
         {
-          "next": "send_welcome_message",
+          "next": "send_message_welcome",
           "event": "match",
           "conditions": [
             {
@@ -78,7 +78,7 @@ ${
           ]
         },
         {
-          "next": "send_closed",
+          "next": "send_message_closed",
           "event": "match",
           "conditions": [
             {
@@ -101,7 +101,7 @@ ${
       }
     },
     {
-      "name": "webhook_notify_error",
+      "name": "http_post_webhook_notify_error",
       "type": "make-http-request",
       "transitions": [
         {
@@ -124,15 +124,15 @@ ${
       }
     },
     {
-      "name": "send_welcome_message",
+      "name": "send_message_welcome",
       "type": "send-message",
       "transitions": [
         {
-          "next": "attributes",
+          "next": "send_to_queue",
           "event": "sent"
         },
         {
-          "next": "webhook_notify_error",
+          "next": "http_post_webhook_notify_error",
           "event": "failed"
         }
       ],
@@ -149,14 +149,14 @@ ${
       }
     },
     {
-      "name": "send_closed",
+      "name": "send_message_closed",
       "type": "send-message",
       "transitions": [
         {
           "event": "sent"
         },
         {
-          "next": "webhook_notify_error",
+          "next": "http_post_webhook_notify_error",
           "event": "failed"
         }
       ],
@@ -173,14 +173,14 @@ ${
       }
     },
     {
-      "name": "attributes",
+      "name": "send_to_queue",
       "type": "send-to-flex",
       "transitions": [
         {
           "event": "callComplete"
         },
         {
-          "next": "webhook_notify_error",
+          "next": "http_post_webhook_notify_error",
           "event": "failedToEnqueue"
         },
         {
@@ -198,15 +198,15 @@ ${
       }
     },
     {
-      "name": "contact_routing",
+      "name": "split_contact_routing",
       "type": "split-based-on",
       "transitions": [
         {
-          "next": "checkOperatingHours",
+          "next": "f_checkOperatingHours",
           "event": "noMatch"
         },
         {
-          "next": "send_blocked_message",
+          "next": "send_message_blocked",
           "event": "match",
           "conditions": [
             {
@@ -220,7 +220,7 @@ ${
           ]
         },
         {
-          "next": "set_clinical",
+          "next": "set_var_clinical",
           "event": "match",
           "conditions": [
             {
@@ -243,15 +243,15 @@ ${
       }
     },
     {
-      "name": "getProfileFlagsForIdentifier",
+      "name": "f_getProfileFlagsForIdentifier",
       "type": "make-http-request",
       "transitions": [
         {
-          "next": "contact_routing",
+          "next": "split_contact_routing",
           "event": "success"
         },
         {
-          "next": "contact_routing",
+          "next": "split_contact_routing",
           "event": "failed"
         }
       ],
@@ -268,7 +268,7 @@ ${
       }
     },
     {
-      "name": "send_blocked_message",
+      "name": "send_message_blocked",
       "type": "send-message",
       "transitions": [
         {
@@ -291,11 +291,11 @@ ${
       }
     },
     {
-      "name": "set_clinical",
+      "name": "set_var_clinical",
       "type": "set-variables",
       "transitions": [
         {
-          "next": "checkOperatingHours",
+          "next": "f_checkOperatingHours",
           "event": "next"
         }
       ],
@@ -314,15 +314,15 @@ ${
       }
     },
     {
-      "name": "ipLocationFinder",
+      "name": "http_post_ip_location_finder",
       "type": "make-http-request",
       "transitions": [
         {
-          "next": "block_non_NZ_contacts",
+          "next": "split_block_non_nz_contacts",
           "event": "success"
         },
         {
-          "next": "getProfileFlagsForIdentifier",
+          "next": "f_getProfileFlagsForIdentifier",
           "event": "failed"
         }
       ],
@@ -339,15 +339,15 @@ ${
       }
     },
     {
-      "name": "block_non_NZ_contacts",
+      "name": "split_block_non_nz_contacts",
       "type": "split-based-on",
       "transitions": [
         {
-          "next": "send_blocked_location_message",
+          "next": "f_sendMessageAndRunJanitor_blocked_location",
           "event": "noMatch"
         },
         {
-          "next": "getProfileFlagsForIdentifier",
+          "next": "f_getProfileFlagsForIdentifier",
           "event": "match",
           "conditions": [
             {
@@ -370,7 +370,7 @@ ${
       }
     },
     {
-      "name": "send_blocked_location_message",
+      "name": "f_sendMessageAndRunJanitor_blocked_location",
       "type": "run-function",
       "transitions": [
         {
@@ -410,11 +410,11 @@ ${
       "type": "run-subflow",
       "transitions": [
         {
-          "next": "ipLocationFinder",
+          "next": "http_post_ip_location_finder",
           "event": "completed"
         },
         {
-          "next": "ipLocationFinder",
+          "next": "http_post_ip_location_finder",
           "event": "failed"
         }
       ],
