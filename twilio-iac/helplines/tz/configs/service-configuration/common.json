@@ -8,7 +8,8 @@
         ],
         "definitionVersion": "tz-v1",
         "feature_flags": {
-            "enable_lex": true
+            "enable_lex": true,
+            "use_prepopulate_mappings": true
         },
         "helplineLanguage": "en-US",
         "permissionConfig": "tz"

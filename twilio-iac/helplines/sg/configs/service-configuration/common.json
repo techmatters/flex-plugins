@@ -11,7 +11,9 @@
             "enable_voice_recordings": true,
             "enable_post_survey": false,
             "enable_hang_up_by_hrm_saving": true,
-            "enable_configurable_max_categories": true
+            "enable_configurable_max_categories": true,
+            "use_prepopulate_mappings": true,
+            "enable_conferencing": false
         },
         "helplineLanguage": "en-SG",
         "permissionConfig": "sg"
