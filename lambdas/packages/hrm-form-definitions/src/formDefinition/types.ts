@@ -465,5 +465,5 @@ export type DefinitionVersion = {
     label: string;
     url: string;
     type: 'embedded' | 'new-window';
-  }[]
+  }[];
 };
