@@ -17,7 +17,6 @@
 import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { InformationIcon } from '@twilio-paste/icons/cjs/InformationIcon';
-import {  } from '@twilio-paste/icons/cjs/Map';
 import { SideLink, SideNavChildrenProps, Manager, Template } from '@twilio/flex-ui';
 import { DefinitionVersion } from 'hrm-form-definitions';
 import * as Flex from '@twilio/flex-ui';
