@@ -44,6 +44,7 @@ import { initWebchatHandler } from './webchatAuthentication/initWebchat';
 import { refreshTokenHandler } from './webchatAuthentication/refreshToken';
 import { getAccountSid } from '@tech-matters/twilio-configuration';
 import { validateRequestWithTwilioJwtToken } from './validation/twilioJwt';
+import { handleLookupSensitiveData } from './configuration/sensitiveData';
 
 /**
  * Super simple router sufficient for directly ported Twilio Serverless functions
@@ -102,6 +103,10 @@ const ACCOUNTSID_ROUTES: Record<string, FunctionRoute> = {
   'conference/participantStatusCallback': {
     requestPipeline: [validateWebhookRequest],
     handler: participantStatusCallbackHandler,
+  },
+  'configuration/sensitiveData': {
+    requestPipeline: [validateWebhookRequest],
+    handler: handleLookupSensitiveData,
   },
   'conversations/serviceScopedConversationEventHandler': {
     requestPipeline: [validateWebhookRequest],

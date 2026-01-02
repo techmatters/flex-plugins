@@ -19,6 +19,7 @@
  * This file will be in place until we move "formDefinitionsUrl" to service configuration
  */
 import * as Flex from '@twilio/flex-ui';
+import { Preprocessor } from 'hrm-form-definitions';
 
 /**
  * Returns then environment from the following URL:
@@ -62,4 +63,10 @@ export const buildFormDefinitionsBaseUrlGetter = (baseUrl: URL = undefined) => (
   const version = getVersionFromDefinitionVersionId(definitionVersionId);
 
   return `${baseUrl}${helplineCode}/${version}`;
+};
+
+export const substituteSensitiveValues: Preprocessor = async (input: string) => {
+  const { serviceConfiguration } = Flex.Manager.getInstance();
+  const sensitiveValues = serviceConfiguration.attributes.sensitiveValues ?? {};
+  return input.replace(/\{\{sensitive:(\w+)}}/gi, (_token, key) => sensitiveValues[key] ?? key);
 };

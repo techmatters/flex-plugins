@@ -163,42 +163,38 @@ export const handleOperatingHours: AccountScopedHandler = async (
   { body },
   accountSid: AccountSID,
 ): Promise<Result<HttpError, any>> => {
-  try {
-    const operatingInfoKey = await getOperatingInfoKey(accountSid);
+  const operatingInfoKey = await getOperatingInfoKey(accountSid);
 
-    const { channel, office, language } = body;
+  const { channel, office, language } = body;
 
-    const enforced = await areOperatingHoursEnforced(accountSid);
-    if (!enforced) {
-      return newOpenResult();
-    }
-
-    if (channel === undefined) {
-      return newErr({
-        message: 'channel parameter is missing',
-        error: { statusCode: 400 },
-      });
-    }
-    let operatingInfo: OperatingInfo;
-    try {
-      operatingInfo = require(`./operatingInfo/${operatingInfoKey}.json`);
-    } catch (err) {
-      return newOpenResult();
-    }
-
-    const status = getOperatingStatus({ operatingInfo, channel, office });
-
-    // Return the status and, if closed, the appropriate message
-    const response = {
-      status,
-      message:
-        status === 'open'
-          ? undefined
-          : await getClosedMessage({ accountSid, status, locale: language }),
-    };
-
-    return newOk(response);
-  } catch (error: any) {
-    return newErr({ message: error.message, error: { statusCode: 500, cause: error } });
+  const enforced = await areOperatingHoursEnforced(accountSid);
+  if (!enforced) {
+    return newOpenResult();
   }
+
+  if (channel === undefined) {
+    return newErr({
+      message: 'channel parameter is missing',
+      error: { statusCode: 400 },
+    });
+  }
+  let operatingInfo: OperatingInfo;
+  try {
+    operatingInfo = require(`./operatingInfo/${operatingInfoKey}.json`);
+  } catch (err) {
+    return newOpenResult();
+  }
+
+  const status = getOperatingStatus({ operatingInfo, channel, office });
+
+  // Return the status and, if closed, the appropriate message
+  const response = {
+    status,
+    message:
+      status === 'open'
+        ? undefined
+        : await getClosedMessage({ accountSid, status, locale: language }),
+  };
+
+  return newOk(response);
 };
