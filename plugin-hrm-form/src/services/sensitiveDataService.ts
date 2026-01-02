@@ -23,7 +23,7 @@ export const lookupSensitiveData = async (key: string) => {
       {
         key,
       },
-      { returnNullFor404: true },
+      { returnNullFor404: true, useTwilioLambda: true },
     )) || {};
   return value;
 };
