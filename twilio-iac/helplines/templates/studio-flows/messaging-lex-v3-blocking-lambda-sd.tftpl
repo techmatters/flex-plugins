@@ -1,7 +1,7 @@
 ${
   jsonencode(
    {
-  "description": flow_description,
+  "description": "${flow_description}",
   "states": [
     {
       "name": "Trigger",
@@ -32,15 +32,15 @@ ${
       }
     },
     {
-      "name": "getProfileFlagsForIdentifier",
+      "name": "f_getProfileFlagsForIdentifier",
       "type": "make-http-request",
       "transitions": [
         {
-          "next": "contact_routing",
+          "next": "split_contact_routing",
           "event": "success"
         },
         {
-          "next": "pre_survey_complete",
+          "next": "split_pre_survey_complete",
           "event": "failed"
         }
       ],
@@ -57,7 +57,7 @@ ${
       }
     },
     {
-      "name": "send_blocked_message",
+      "name": "send_message_blocked",
       "type": "send-message",
       "transitions": [
         {
@@ -74,27 +74,27 @@ ${
         },
         "service": "{{trigger.conversation.InstanceSid}}",
         "channel": "{{trigger.conversation.ChannelSid}}",
-        "from": flow_vars["widget_from"],
+        "from": "${flow_vars.widget_from}",
         "to": "{{contact.channel.address}}",
-        "body":  flow_vars["chat_blocked_message"]
+        "body":  "${flow_vars.chat_blocked_message}"
       }
     },
     {
-      "name": "contact_routing",
+      "name": "split_contact_routing",
       "type": "split-based-on",
       "transitions": [
         {
-          "next": "pre_survey_complete",
+          "next": "split_pre_survey_complete",
           "event": "noMatch"
         },
         {
-          "next": "send_blocked_message",
+          "next": "send_message_blocked",
           "event": "match",
           "conditions": [
             {
               "friendly_name": "If value contains blocked",
               "arguments": [
-                "{{widgets.getProfileFlagsForIdentifier.parsed.flags}}"
+                "{{widgets.f_getProfileFlagsForIdentifier.parsed.flags}}"
               ],
               "type": "contains",
               "value": "blocked"
@@ -103,7 +103,7 @@ ${
         }
       ],
       "properties": {
-        "input": "{{widgets.getProfileFlagsForIdentifier.parsed.flags}}",
+        "input": "{{widgets.f_getProfileFlagsForIdentifier.parsed.flags}}",
         "offset": {
           "x": -690,
           "y": -60
@@ -111,14 +111,14 @@ ${
       }
     },
     {
-      "name": "attributes",
+      "name": "send_to_queue",
       "type": "send-to-flex",
       "transitions": [
         {
           "event": "callComplete"
         },
         {
-          "next": "webhook_notify_failed_to_enqueue",
+          "next": "http_post_webhook_notify_failed_to_enqueue",
           "event": "failedToEnqueue"
         },
         {
@@ -130,21 +130,21 @@ ${
           "x": 420,
           "y": 970
         },
-      "workflow": workflow_sids["master"],
-      "channel": task_channel_sids["chat"],
-      "attributes":channel_attributes["default"]
+      "workflow": "${workflow_sids.master}",
+      "channel": "${task_channel_sids.chat}",
+      "attributes":"${channel_attributes.default}"
       }
     },
     {
-      "name": "pre_survey_complete",
+      "name": "split_pre_survey_complete",
       "type": "split-based-on",
       "transitions": [
         {
-          "next": "captureChannelWithBot",
+          "next": "f_captureChannelWithBot",
           "event": "noMatch"
         },
         {
-          "next": "attributes",
+          "next": "send_to_queue",
           "event": "match",
           "conditions": [
             {
@@ -167,14 +167,14 @@ ${
       }
     },
   {
-  "name": "captureChannelWithBot",
+  "name": "f_captureChannelWithBot",
   "type": "make-http-request",
   "transitions": [
     {
       "event": "success"
     },
     {
-      "next": "webhook_notify_error",
+      "next": "http_post_webhook_notify_error",
       "event": "failed"
     }
   ],
@@ -191,15 +191,15 @@ ${
   }
 },
    {
-  "name": "channelCleanup",
+  "name": "f_chatbotCallbackCleanup",
   "type": "make-http-request",
   "transitions": [
     {
-      "next": "attributes",
+      "next": "send_to_queue",
       "event": "success"
     },
     {
-      "next": "send_message_run_janitor",
+      "next": "f_sendMessageAndRunJanitor_error",
       "event": "failed"
     }
   ],
@@ -216,15 +216,15 @@ ${
   }
 },
     {
-      "name": "webhook_notify_error",
+      "name": "http_post_webhook_notify_error",
       "type": "make-http-request",
       "transitions": [
         {
-          "next": "channelCleanup",
+          "next": "f_chatbotCallbackCleanup",
           "event": "success"
         },
         {
-          "next": "channelCleanup",
+          "next": "f_chatbotCallbackCleanup",
           "event": "failed"
         }
       ],
@@ -237,11 +237,11 @@ ${
         "content_type": "application/json;charset=utf-8",
         "add_twilio_auth": false,
         "body": "{ \"text\": \"Issue detected on ${short_helpline} ${short_environment} Flow SID: {{flow.flow_sid}} Execution SID: {{flow.sid}}  \" }",
-        "url": webhook_url_studio_errors
+        "url": "${webhook_url_studio_errors}"
       }
     },
     {
-      "name": "webhook_notify_failed_to_enqueue",
+      "name": "http_post_webhook_notify_failed_to_enqueue",
       "type": "make-http-request",
       "transitions": [
         {
@@ -260,11 +260,11 @@ ${
         "content_type": "application/json;charset=utf-8",
         "add_twilio_auth": false,
         "body": "{ \"text\": \"Issue detected [Failed to Enqueue] on ${short_helpline} ${short_environment} Flow SID: {{flow.flow_sid}} Execution SID: {{flow.sid}}  \" }",
-        "url": webhook_url_studio_errors
+        "url": "${webhook_url_studio_errors}"
       }
     },
     {
-      "name": "send_message_run_janitor",
+      "name": "f_sendMessageAndRunJanitor_error",
       "type": "run-function",
       "transitions": [
         {
@@ -275,13 +275,13 @@ ${
         }
       ],
       "properties": {
-        "service_sid": serverless_service_sid,
-        "environment_sid": serverless_environment_sid,
+        "service_sid": "${serverless_service_sid}",
+        "environment_sid": "${serverless_environment_sid}",
         "offset": {
           "x": 110,
           "y": 1260
         },
-        "function_sid": flow_vars["send_message_janitor_function_sid"],
+        "function_sid": "${flow_vars.send_message_janitor_function_sid}",
         "parameters": [
           {
             "value": "{{flow.channel.address}}",
@@ -292,11 +292,11 @@ ${
             "key": "conversationSid"
           },
           {
-            "value": flow_vars["error_message"],
+            "value": "${flow_vars.error_message}",
             "key": "message"
           },
           {
-            "value": flow_vars["widget_from"],
+            "value": "${flow_vars.widget_from}",
             "key": "from"
           }
         ],
@@ -308,11 +308,11 @@ ${
       "type": "run-subflow",
       "transitions": [
         {
-          "next": "getProfileFlagsForIdentifier",
+          "next": "f_getProfileFlagsForIdentifier",
           "event": "completed"
         },
         {
-          "next": "getProfileFlagsForIdentifier",
+          "next": "f_getProfileFlagsForIdentifier",
           "event": "failed"
         }
       ],
@@ -337,7 +337,5 @@ ${
   "flags": {
     "allow_concurrent_calls": true
   }
-}
-
-  )
+})
 }
