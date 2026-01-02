@@ -104,7 +104,7 @@ const ACCOUNTSID_ROUTES: Record<string, FunctionRoute> = {
     requestPipeline: [validateWebhookRequest],
     handler: participantStatusCallbackHandler,
   },
-  'configuration/sensitiveData': {
+  'configuration/lookupSensitiveData': {
     requestPipeline: [validateWebhookRequest],
     handler: handleLookupSensitiveData,
   },

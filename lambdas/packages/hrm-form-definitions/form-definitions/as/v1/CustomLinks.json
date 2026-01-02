@@ -1,5 +1,5 @@
 [
-  { "label": "CustomLink-Label-ResourceMap", "type": "embedded", "url": "https://assets-development.tl.techmatters.org/webchat/as/test-chat.html",
+  { "label": "CustomLink-Label-ResourceMap", "type": "embedded", "url": "{{sensitive:resource_map_url}}",
     "icon": "map"
   }
 ]

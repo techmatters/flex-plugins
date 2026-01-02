@@ -21,6 +21,8 @@
 import * as Flex from '@twilio/flex-ui';
 import { Preprocessor } from 'hrm-form-definitions';
 
+import { lookupSensitiveData } from './services/sensitiveDataService';
+
 /**
  * Returns then environment from the following URL:
  * "https://hrm-{environment}.tl.techmatters.org"
@@ -66,7 +68,14 @@ export const buildFormDefinitionsBaseUrlGetter = (baseUrl: URL = undefined) => (
 };
 
 export const substituteSensitiveValues: Preprocessor = async (input: string) => {
-  const { serviceConfiguration } = Flex.Manager.getInstance();
-  const sensitiveValues = serviceConfiguration.attributes.sensitiveValues ?? {};
-  return input.replace(/\{\{sensitive:(\w+)}}/gi, (_token, key) => sensitiveValues[key] ?? key);
+  // First find all the sensitive tokens and look up their values, building a map
+  const matches = input.matchAll(/\{\{sensitive:(?<key>\w+)}}/gi);
+  const lookupPromises = [...matches].map(async m => {
+    const { key } = m.groups;
+    return [key, await lookupSensitiveData(key)];
+  });
+  // Then use that map to replace all the values in a second pass.
+  // Works around the limitation that replaceAll cannot take an async function
+  const sensitiveValues = Object.fromEntries(await Promise.all(lookupPromises));
+  return input.replaceAll(/\{\{sensitive:(\w+)}}/gi, (_token, key) => sensitiveValues[key] ?? key);
 };
