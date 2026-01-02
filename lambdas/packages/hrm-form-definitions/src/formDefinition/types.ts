@@ -460,4 +460,10 @@ export type DefinitionVersion = {
     Substitutions: LocalizedStringMap;
   };
   flexUiLocales?: FlexUILocaleEntry[];
+  customLinks?: {
+    icon: string;
+    label: string;
+    url: string;
+    type: 'embedded' | 'new-window';
+  }[]
 };

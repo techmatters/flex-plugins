@@ -232,6 +232,7 @@ export async function loadDefinition(baseUrl: string): Promise<DefinitionVersion
     messages,
     substitutions,
     flexUiLocales,
+    customLinks,
   ] = await Promise.all([
     fetchDefinition<LayoutVersion>('LayoutDefinitions.json'),
     fetchDefinition<FormItemJsonDefinition[]>('tabbedForms/CallerInformationTab.json'),
@@ -264,6 +265,7 @@ export async function loadDefinition(baseUrl: string): Promise<DefinitionVersion
     fetchDefinition<LocalizedStringMap>('customStrings/Messages.json', {}),
     fetchDefinition<LocalizedStringMap>('customStrings/Substitutions.json', {}),
     fetchDefinition<FlexUILocaleEntry[]>('FlexUiLocales.json', []),
+    fetchDefinition<DefinitionVersion['customLinks']>('CustomLinks.json', []),
   ] as const);
   const expandedCaseSections: CaseSectionTypeDefinitions = await loadAndExpandCaseSections(
     caseSections,
@@ -309,5 +311,6 @@ export async function loadDefinition(baseUrl: string): Promise<DefinitionVersion
       Substitutions: substitutions,
     },
     flexUiLocales,
+    customLinks,
   };
 }
