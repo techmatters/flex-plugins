@@ -29,14 +29,19 @@ const CustomEmbeddedLinkSet: React.FC<Props> = () => {
   const currentRoute = useSelector((s: RootState) => selectCurrentTopmostRouteForTask(s, standaloneTaskSid));
   const definitionVersion = useSelector(selectCurrentDefinitionVersion);
   const { strings } = Manager.getInstance();
-  if (currentRoute?.route !== 'custom-link' || !currentRoute?.subroute || currentRoute.subroute === 'custom-link')
+  if (currentRoute?.route !== 'custom-link') {
     return null;
-  const linkDefinition = definitionVersion?.customLinks?.find(({ url }) => url === currentRoute.subroute);
+  }
+  const linkDefinition =
+    definitionVersion?.customLinks?.find(({ url }) => url === currentRoute.subroute) ??
+    definitionVersion?.customLinks?.[0];
   let title = currentRoute.subroute;
   if (linkDefinition?.label) {
     title = strings[linkDefinition.label] ?? linkDefinition.label;
   }
-  return <iframe src={currentRoute.subroute} style={{ width: '100%', height: '100%' }} title={title} />;
+  const url = linkDefinition?.url ?? currentRoute.subroute;
+
+  return <iframe src={url} style={{ width: '100%', height: '100%' }} title={title} />;
 };
 
 export default CustomEmbeddedLinkSet;
