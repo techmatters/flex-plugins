@@ -16,6 +16,7 @@
 
 import { Result } from './Result';
 import { AccountSID } from '@tech-matters/twilio-types';
+import { FlexValidatedHttpRequest } from './validation/flexToken';
 
 export type HttpError = {
   statusCode: number;
@@ -30,22 +31,26 @@ export type HttpRequest = {
   body: any;
 };
 
-export type AccountScopedHandler = (
-  event: HttpRequest,
+export type AccountScopedHandler<T extends HttpRequest = HttpRequest> = (
+  event: T,
   accountSid: AccountSID,
 ) => Promise<Result<HttpError, any>>;
 
-type PipelineStep<Input, Context = undefined, Output = Input> = (
+export type PipelineStep<Input, Context = undefined, Output = Input> = (
   item: Input,
   context: Context,
 ) => Promise<Result<HttpError, Output>>;
 
-export type HttpRequestPipelineStep = PipelineStep<HttpRequest, AccountScopedRoute>;
+export type HttpRequestPipelineStep = PipelineStep<
+  HttpRequest | FlexValidatedHttpRequest,
+  AccountScopedRoute | AccountScopedRoute<FlexValidatedHttpRequest>
+>;
 
-export type FunctionRoute = {
+export type FunctionRoute<T extends HttpRequest = HttpRequest> = {
   requestPipeline: HttpRequestPipelineStep[];
-  handler: AccountScopedHandler;
+  handler: AccountScopedHandler<T>;
 };
-export type AccountScopedRoute = FunctionRoute & {
+
+export type AccountScopedRoute<T extends HttpRequest = HttpRequest> = FunctionRoute<T> & {
   accountSid: AccountSID;
 };
