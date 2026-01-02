@@ -17,6 +17,7 @@
 import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { InformationIcon } from '@twilio-paste/icons/cjs/InformationIcon';
+import MapIcon from '@material-ui/icons/Map';
 import { SideLink, SideNavChildrenProps, Manager, Template } from '@twilio/flex-ui';
 import { DefinitionVersion } from 'hrm-form-definitions';
 import * as Flex from '@twilio/flex-ui';
@@ -33,6 +34,10 @@ const ICON_MAP: Record<
   info: {
     active: labelKey => <InformationIcon decorative={false} title={lookupLabel(labelKey)} />,
     inactive: labelKey => <InformationIcon decorative={false} title={lookupLabel(labelKey)} />,
+  },
+  map: {
+    active: labelKey => <MapIcon aria-label={lookupLabel(labelKey)} titleAccess={lookupLabel(labelKey)} />,
+    inactive: labelKey => <MapIcon aria-label={lookupLabel(labelKey)} titleAccess={lookupLabel(labelKey)} />,
   },
 };
 

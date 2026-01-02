@@ -26,6 +26,7 @@ import { DefinitionVersion, loadDefinition } from 'hrm-form-definitions';
 import fetchProtectedApi from './fetchProtectedApi';
 import type { ChildCSAMReportForm, CounselorCSAMReportForm } from '../states/csam-report/types';
 import { getHrmConfig } from '../hrmConfig';
+import { substituteSensitiveValues } from '../definitionVersions';
 
 type TransferChatStartBody = {
   taskSid: string;
@@ -67,7 +68,7 @@ export const sendSystemMessage = async (body: { taskSid: ITask['taskSid']; messa
 
 export const getDefinitionVersion = async (version: string): Promise<DefinitionVersion> => {
   const { getFormDefinitionsBaseUrl } = getHrmConfig();
-  return loadDefinition(getFormDefinitionsBaseUrl(version));
+  return loadDefinition(getFormDefinitionsBaseUrl(version), [substituteSensitiveValues]);
 };
 
 export const getDefinitionVersionsList = async (missingDefinitionVersions: string[]) =>

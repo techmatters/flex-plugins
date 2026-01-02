@@ -55,6 +55,8 @@ type PrepopulateMappingJson = {
   >;
 };
 
+export type Preprocessor = (input:string) => Promise<string>
+
 const expandFormDefinition = (
   itemJsonDefs: FormItemJsonDefinition[],
   referenceData: Record<string, any>,
@@ -111,6 +113,7 @@ const loadAndExpandCaseSections = async (
 const fetchDefinitionGivenConfig = async <T>(
   baseUrl: string,
   jsonPath: string,
+  preprocessors: ((input:string) => Promise<string>)[],
   placeholder?: T,
 ) => {
   const baseUrlObj = new URL(baseUrl);
@@ -119,7 +122,10 @@ const fetchDefinitionGivenConfig = async <T>(
   const response = await fetch(url.toString());
 
   if (response?.ok) {
-    const bodyText = await response.text();
+    let bodyText = await response.text();
+    for (const preprocessor of preprocessors) {
+      bodyText = await preprocessor(bodyText);
+    }
     try {
       const json = JSON.parse(bodyText);
       return json as T;
@@ -146,17 +152,17 @@ const fetchDefinitionGivenConfig = async <T>(
  * Returns an object that exposes the function:
  * - fetchDefinition<T>(jsonPath: string, placeholder?: T)
  */
-const buildFetchDefinition = (baseUrl: string) => ({
+const buildFetchDefinition = (baseUrl: string, preprocessors: Preprocessor[]) => ({
   fetchDefinition: <T>(jsonPath: string, placeholder?: T) =>
-    fetchDefinitionGivenConfig(baseUrl, jsonPath, placeholder),
+    fetchDefinitionGivenConfig(baseUrl, jsonPath, preprocessors, placeholder),
 });
 
 type IssueCategorizationTabModuleType = {
   [helpline: string]: CategoriesDefinition;
 };
 
-export async function loadDefinition(baseUrl: string): Promise<DefinitionVersion> {
-  const { fetchDefinition } = buildFetchDefinition(baseUrl);
+export async function loadDefinition(baseUrl: string, preprocessors: Preprocessor[] = []): Promise<DefinitionVersion> {
+  const { fetchDefinition } = buildFetchDefinition(baseUrl, preprocessors);
 
   // Placeholder for prepopulateKeys
   const prepopulateKeysEmpty: DefinitionVersion['prepopulateKeys'] = {
