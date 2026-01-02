@@ -72,7 +72,14 @@ export const substituteSensitiveValues: Preprocessor = async (input: string) => 
   const matches = input.matchAll(/\{\{sensitive:(?<key>\w+)}}/gi);
   const lookupPromises = [...matches].map(async m => {
     const { key } = m.groups;
-    return [key, await lookupSensitiveData(key)];
+    if (key) {
+      try {
+        return [key, await lookupSensitiveData(key)];
+      } catch (e) {
+        console.error(`Error occured looking up sensitive value ${key}:`, e);
+      }
+    }
+    return [key, key];
   });
   // Then use that map to replace all the values in a second pass.
   // Works around the limitation that replaceAll cannot take an async function

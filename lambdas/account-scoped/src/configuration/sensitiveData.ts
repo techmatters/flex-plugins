@@ -25,7 +25,7 @@ export const handleLookupSensitiveData: AccountScopedHandler = async (
 ): Promise<Result<HttpError, any>> => {
   const { key } = body;
   try {
-    const value = getSsmParameter(
+    const value = await getSsmParameter(
       `/${process.env.NODE_ENV}/configuration/${accountSid}/sensitive_data/${key}`,
     );
 
