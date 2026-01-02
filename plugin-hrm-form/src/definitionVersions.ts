@@ -84,5 +84,6 @@ export const substituteSensitiveValues: Preprocessor = async (input: string) => 
   // Then use that map to replace all the values in a second pass.
   // Works around the limitation that replaceAll cannot take an async function
   const sensitiveValues = Object.fromEntries(await Promise.all(lookupPromises));
+  // eslint-disable-next-line prefer-named-capture-group
   return input.replaceAll(/\{\{sensitive:(\w+)}}/gi, (_token, key) => sensitiveValues[key] ?? key);
 };
