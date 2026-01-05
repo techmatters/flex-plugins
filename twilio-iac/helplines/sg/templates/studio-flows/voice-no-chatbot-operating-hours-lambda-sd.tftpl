@@ -31,18 +31,18 @@ ${
       }
     },
     {
-      "name": "SendCallToAgent",
+      "name": "send_to_queue",
       "type": "send-to-flex",
       "transitions": [
         {
           "event": "callComplete"
         },
         {
-          "next": "webhook_notify_error",
+          "next": "http_post_webhook_notify_error",
           "event": "failedToEnqueue"
         },
         {
-          "next": "webhook_notify_error",
+          "next": "http_post_webhook_notify_error",
           "event": "callFailure"
         }
       ],
@@ -59,11 +59,11 @@ ${
       }
     },
     {
-      "name": "say_welcome_message",
+      "name": "play_message_welcome",
       "type": "say-play",
       "transitions": [
         {
-          "next": "SendCallToAgent",
+          "next": "send_to_queue",
           "event": "audioComplete"
         }
       ],
@@ -77,7 +77,7 @@ ${
       }
     },
     {
-      "name": "checkOperatingHours",
+      "name": "f_operatingHours",
       "type": "make-http-request",
       "transitions": [
         {
@@ -85,7 +85,7 @@ ${
           "event": "success"
         },
         {
-          "next": "webhook_notify_error",
+          "next": "http_post_webhook_notify_error",
           "event": "failed"
         }
       ],
@@ -106,17 +106,17 @@ ${
       "type": "split-based-on",
       "transitions": [
         {
-          "next": "webhook_notify_error",
+          "next": "http_post_webhook_notify_error",
           "event": "noMatch"
         },
         {
-          "next": "say_welcome_message",
+          "next": "play_message_welcome",
           "event": "match",
           "conditions": [
             {
               "friendly_name": "If value equal_to open",
               "arguments": [
-                "{{widgets.checkOperatingHours.parsed.status}}"
+                "{{widgets.f_operatingHours.parsed.status}}"
               ],
               "type": "equal_to",
               "value": "open"
@@ -124,13 +124,13 @@ ${
           ]
         },
         {
-          "next": "send_closed",
+          "next": "play_message_closed",
           "event": "match",
           "conditions": [
             {
               "friendly_name": "If matches_any_of closed,holiday",
               "arguments": [
-                "{{widgets.checkOperatingHours.parsed.status}}"
+                "{{widgets.f_operatingHours.parsed.status}}"
               ],
               "type": "matches_any_of",
               "value": "closed,holiday"
@@ -139,7 +139,7 @@ ${
         }
       ],
       "properties": {
-        "input": "{{widgets.checkOperatingHours.parsed.status}}",
+        "input": "{{widgets.f_operatingHours.parsed.status}}",
         "offset": {
           "x": 190,
           "y": 1040
@@ -147,7 +147,7 @@ ${
       }
     },
     {
-      "name": "webhook_notify_error",
+      "name": "http_post_webhook_notify_error",
       "type": "make-http-request",
       "transitions": [
         {
@@ -169,7 +169,7 @@ ${
       }
     },
     {
-      "name": "send_closed",
+      "name": "play_message_closed",
       "type": "say-play",
       "transitions": [
         {
@@ -186,11 +186,11 @@ ${
       }
     },
     {
-      "name": "getProfileFlagsForIdentifier",
+      "name": "f_getProfileFlagsForIdentifier",
       "type": "make-http-request",
       "transitions": [
         {
-          "next": "contact_routing",
+          "next": "split_contact_routing",
           "event": "success"
         },
         {
@@ -210,21 +210,21 @@ ${
       }
     },
     {
-      "name": "contact_routing",
+      "name": "split_contact_routing",
       "type": "split-based-on",
       "transitions": [
         {
-          "next": "checkOperatingHours",
+          "next": "f_operatingHours",
           "event": "noMatch"
         },
         {
-          "next": "blocked",
+          "next": "play_message_blocked",
           "event": "match",
           "conditions": [
             {
               "friendly_name": "If value contains blocked",
               "arguments": [
-                "{{widgets.getProfileFlagsForIdentifier.parsed}}"
+                "{{widgets.f_getProfileFlagsForIdentifier.parsed}}"
               ],
               "type": "contains",
               "value": "blocked"
@@ -233,7 +233,7 @@ ${
         }
       ],
       "properties": {
-        "input": "{{widgets.getProfileFlagsForIdentifier.parsed}}",
+        "input": "{{widgets.f_getProfileFlagsForIdentifier.parsed}}",
         "offset": {
           "x": 170,
           "y": 460
@@ -241,7 +241,7 @@ ${
       }
     },
     {
-      "name": "blocked",
+      "name": "play_message_blocked",
       "type": "say-play",
       "transitions": [
         {
@@ -260,15 +260,15 @@ ${
       }
     },
     {
-      "name": "country_check",
+      "name": "split_country_check",
       "type": "split-based-on",
       "transitions": [
         {
-          "next": "getProfileFlagsForIdentifier",
+          "next": "f_getProfileFlagsForIdentifier",
           "event": "noMatch"
         },
         {
-          "next": "blocked",
+          "next": "play_message_blocked",
           "event": "match",
           "conditions": [
             {
@@ -295,11 +295,11 @@ ${
       "type": "run-subflow",
       "transitions": [
         {
-          "next": "country_check",
+          "next": "split_country_check",
           "event": "completed"
         },
         {
-          "next": "country_check",
+          "next": "split_country_check",
           "event": "failed"
         }
       ],
