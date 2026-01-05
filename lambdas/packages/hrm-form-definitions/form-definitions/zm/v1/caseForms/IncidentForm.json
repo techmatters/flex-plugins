@@ -112,6 +112,50 @@
     "isPII": false
   },
   {
+    "name": "locationElectionIncident",
+    "label": "Location of the incident in Relation to Politics/Elections",
+    "type": "select",
+    "options": [
+      {
+        "value": "partyPrimary",
+        "label": "Party Primary"
+      },
+      {
+        "value": "nominations",
+        "label": "Nominations"
+      },
+      {
+        "value": "campaignEvent",
+        "label": "Campaign event/Rally"
+      },
+      {
+        "value": "meeting",
+        "label": "Meeting (specify with who)"
+      },
+      {
+        "value": "online",
+        "label": "Online"
+      },
+      {
+        "value": "voting",
+        "label": "Voting"
+      },
+      {
+        "value": "votingCounting",
+        "label": "Voting Counting"
+      },
+      {
+        "value": "Unknown",
+        "label": "Unknown"
+      },
+      {
+        "value": "Other",
+        "label": "Other"
+      }
+    ],
+    "isPII": false
+  },
+  {
     "name": "onlineDigitalHarm",
     "label": "Online/Digital Harm Involved",
     "type": "checkbox",
