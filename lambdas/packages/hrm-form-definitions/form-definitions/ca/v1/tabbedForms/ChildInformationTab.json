@@ -662,10 +662,6 @@
       "options": {
         "Yes": [
       {
-        "value": "",
-        "label": "Please select an option"
-      },
-      {
         "value": "Yes",
         "label": "Yes"
       },
@@ -692,10 +688,6 @@
     },
       "options": {
         "Yes": [
-      {
-        "value": "",
-        "label": "Please select an option"
-      },
       {
         "value": "Yes",
         "label": "Yes"
@@ -748,10 +740,6 @@
       "options": {
         "Yes": [
       {
-        "value": "",
-        "label": "Please select an option"
-      },
-      {
         "value": "Yes",
         "label": "Yes"
       },
@@ -778,10 +766,6 @@
     },
       "options": {
         "Yes": [
-      {
-        "value": "",
-        "label": "Please select an option"
-      },
       {
         "value": "Yes",
         "label": "Yes"
@@ -834,10 +818,6 @@
       "options": {
         "Yes": [
       {
-        "value": "",
-        "label": "Please select an option"
-      },
-      {
         "value": "Yes",
         "label": "Yes"
       },
@@ -864,10 +844,6 @@
     },
       "options": {
         "Yes": [
-      {
-        "value": "",
-        "label": "Please select an option"
-      },
       {
         "value": "Yes",
         "label": "Yes"
