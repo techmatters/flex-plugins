@@ -62,6 +62,7 @@
     "CaseSection-Edit/ecuphs": "Editar ECUPHS",
     "CaseSection-Delete/ecuphs": "Borrar ECUPHS",
     "CaseSection-View/ecuphs": "Ver ECUPHS",
+    "CaseSection-View-Title/ecuphs": "Ver ECUPHS",
     "Case-SectionList-Title/ecuphs": "Encuesta ECUPHS",
     "Case-SectionList-Add/ecuphs": "Agregar",
     "CaseSection-BottomBar-Save/ecuphs": "Guardar",
@@ -75,6 +76,31 @@
     "CaseHeader-ConnectToTaskContact": "Agregar a ECUPHS",
     "CaseHeader-TaskContactConnected": "Agregado a ECUPHS",
     "BottomBar-AddContactToNewCase": "Agregar a ECUPHS",
-    "BottomBar-AddedToCase": "Agregado a ECUPHS"
-  }
+    "BottomBar-AddedToCase": "Agregado a ECUPHS",
+    "CaseList-Cases": "Ecuphs",
+    "CaseList-NoCases": "No se encontraron encuestas.",
+    "CaseList-Filters-CaseCount-Singular": "{{count}} ecuphs",
+    "CaseList-Filters-CaseCount-Plural": "{{count}} ecuphs",
+    "CaseList-THCase": "Ecuphs #",
+    "CaseList-THChildName": "Nr Contacto",
+    "CaseList-THSummary": "--",
+    "CaseList-THOpened": "Abierto",
+    "CaseList-THUpdated": "Actualizado",
+    "CaseList-THFollowUp": "--",
+    "CaseList-THCategory": "Tags",
+    "NoCaseSummary": "--",
+    "CaseList-ExpandButton": "Abrir detalles de la encuesta",
+    "CaseList-SomethingWentWrong": "Algo salió mal mientras se cargaba la lista de ecuphs. Vuelva a intentarlo en un momento.",
+    "Profile-NoCasesFound": "No se encontraron ecuphs",
+    "SearchContactsAndCases-TitleExistingCase": "Buscar ecuphs",
+    "SearchResultsIndex-SelectCase": "Seleccione una encuesta",
+    "SearchResultsIndex-NoCasesFound": "No se encontraron ecuphs",
+    "SearchResultsIndex-NoContactsFound": "No se encontraron contactos",
+    "SearchResultsIndex-SearchAgainForCase": "Buscar nuevamente una ecuphs",
+    "SearchResultsIndex-SearchAgainForContact": "Buscar nuevamente un contacto",
+    "SearchResultsIndex-SaveToNewCase": "Guarde este contacto en una nueva ecuphs",
+    "PreviousContacts-Cases": "ecuphs",
+    "SearchContactsAndCases-Title": "Buscar contactos y ecuphs"
+
+    }
 }
