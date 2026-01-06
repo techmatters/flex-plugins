@@ -1,5 +1,5 @@
 [
-  {
+ {
     "name": "status",
     "label": "Case Status",
     "type": "select",
@@ -19,7 +19,8 @@
   },
   {
     "name": "summary",
-    "label": "Summary",
+    "label": "Case Summary",
+    "placeholder": "No case summary",
     "type": "textarea",
     "rows": 5,
     "width": 300,
