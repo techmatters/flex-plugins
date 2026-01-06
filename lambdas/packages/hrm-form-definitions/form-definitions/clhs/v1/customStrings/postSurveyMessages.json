@@ -1,4 +1,4 @@
 {
-  "triggerMessage": "Queremos conocer cómo fue tu experiencia en la conversación de hoy. Responder esta encuesta es voluntario, confidencial y nos ayuda a mejorar la atención del programa. ¿Te gustaría responder una breve encuesta? Responde Sí o No.",
-  "postSurveyCompleteMessage": "Gracias por contactarnos. No dudes en escribirnos de nuevo cuando necesites ayuda ❤️"
+  "triggerMessage": "Before you go, would you like a one-time anonymous survey? Your answers help us better support others facing similar challenges.  Thanks for taking a moment to share. Reply 'Yes' to receive it or 'No' to skip.",
+  "postSurveyCompleteMessage": "Thank you for contacting the hotline.  Feel free to reach out again if you need additional support."
 }

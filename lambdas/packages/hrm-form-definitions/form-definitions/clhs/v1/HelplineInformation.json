@@ -1,14 +1,16 @@
 {
-    "label": "Helpline",
-    "helplines": [
-      {
-        "label": "Hora Segura",
-        "value": "Hora Segura",
-        "default": true,
-        "manager": {
-          "name": "Helpline Manager",
-          "phone": "+12345678910",
-          "email": "info@helpline.org"
-        }
+  "label": "Childhelp",
+  "helplines": [
+    {
+      "label": "Childhelp",
+      "value": "Childhelp",
+      "default": true,
+      "kmsUrl": "www.google.com",
+      "manager": {
+        "name": "Helpline Manager",
+        "phone": "+123 45 678",
+        "email": "supervisor@helpline.org"
       }
-    ]}
+    }
+  ]
+}

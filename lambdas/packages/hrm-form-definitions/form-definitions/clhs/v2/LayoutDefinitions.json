@@ -1,0 +1,29 @@
+{
+  "contact": {
+    "callerInformation": {},
+    "childInformation": {
+      "splitFormAt": 4
+    },
+    "caseInformation": {
+      "splitFormAt": 4
+    }
+  },
+  "case": {
+    "sectionTypes": {
+      "ecuphs": {
+        "splitFormAt":11,
+        "caseHomeOrder": 1,
+        "printOrder": 1,
+        "previewFields": [
+          "epuchsCreated"
+        ],
+        "layout": {
+          "epuchsCreated": {
+            "includeLabel": false,
+            "valueTemplateCode": "Case-SectionList-ecuphsCreated"
+          }
+        }
+      }
+    }
+  }
+}

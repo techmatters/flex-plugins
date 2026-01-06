@@ -2,7 +2,7 @@
   {
     "name": "date",
     "type": "date-input",
-    "label": "Fecha",
+    "label": "Date",
     "required": {
       "value": true,
       "message": "RequiredFieldError"
@@ -14,61 +14,60 @@
   },
   {
     "name": "referredTo",
-    "label": "Derivado a",
+    "label": "Referred To",
     "type": "select",
-    "unknownOption": "",
     "options": [
       {
         "value": "",
         "label": ""
       },
       {
+        "value": "OSC",
+        "label": "OSC"
+      },
+      {
+        "value": "DREAMS",
+        "label": "DREAMS"
+      },
+      {
+        "value": "Clinic",
+        "label": "Clinic"
+      },
+      {
         "value": "Hospital",
         "label": "Hospital"
       },
       {
-        "value": "Carabineros",
-        "label": "Carabineros"
+        "value": "Social Welfare",
+        "label": "Social Welfare"
       },
       {
-        "value": "Centro privado",
-        "label": "Centro privado"
+        "value": "National Prosecutions Authority",
+        "label": "National Prosecutions Authority"
       },
       {
-        "value": "FPLC (fundación para la confianza)",
-        "label": "FPLC (fundación para la confianza)"
+        "value": "Police (CPU)",
+        "label": "Police (CPU)"
       },
       {
-        "value": "Profesional red FPLC",
-        "label": "Profesional red FPLC"
+        "value": "Police (VSU)",
+        "label": "Police (VSU)"
       },
       {
-        "value": "CESFAM/COSAM",
-        "label": "CESFAM/COSAM"
+        "value": "Chief/Head man",
+        "label": "Chief/Head man"
       },
       {
-        "value": "HOSPITAL DIGITAL",
-        "label": "HOSPITAL DIGITAL"
+        "value": "Head teacher",
+        "label": "Head teacher"
       },
       {
-        "value": "OPD (oficina de protección de derechos)",
-        "label": "OPD (oficina de protección de derechos)"
+        "value": "Religious leader",
+        "label": "Religious leader"
       },
       {
-        "value": "CAVD (centro de atención a víctimas de delitos)",
-        "label": "CAVD (centro de atención a víctimas de delitos)"
-      },
-      {
-        "value": "Fiscalía",
-        "label": "Fiscalía"
-      },
-      {
-        "value": "Tribunal de familia",
-        "label": "Tribunal de familia"
-      },
-      {
-        "value": "Otro",
-        "label": "Otro"
+        "value": "Other",
+        "label": "Other"
       }
     ],
     "required": {
@@ -78,15 +77,11 @@
     "isPII": false
   },
   {
-    "name": "personId",
-    "label": "RUT",
-    "type": "input",
-    "isPII": true
-  },
-  {
     "name": "comments",
-    "label": "Comentario",
+    "label": "Comments",
     "type": "textarea",
+    "rows": 25,
+    "width": 300,
     "isPII": true
   }
 ]

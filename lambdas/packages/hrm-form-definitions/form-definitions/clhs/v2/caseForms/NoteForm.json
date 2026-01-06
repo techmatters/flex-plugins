@@ -1,9 +1,9 @@
 [
   {
     "name": "note",
-    "label": "Note",
+    "label": "Nota",
     "type": "textarea",
-    "placeholder": "Type here to add note...",
+    "placeholder": "Escriba su nota aquí...",
     "rows": 20,
     "width": 500,
     "isPII": true
