@@ -40,12 +40,10 @@ export const cancelOrRemoveTaskHandler: FlexValidatedHandler = async (
   const byLogClause = `by ${isSupervisor(tokenResult) ? 'supervisor' : 'agent'} ${tokenResult.worker_sid}`;
   const lookupResult = await getTaskAndReservations(accountSid, taskSid, tokenResult);
   if (isErr(lookupResult)) {
-    if (isErr(lookupResult)) {
-      return newHttpErrorResult(
-        lookupResult.error.cause,
-        isTaskNotFoundErrorResult(lookupResult) ? 404 : 500,
-      );
-    }
+    return newHttpErrorResult(
+      lookupResult.error.cause,
+      isTaskNotFoundErrorResult(lookupResult) ? 404 : 500,
+    );
   }
   const { task, reservations } = lookupResult.unwrap();
   if (!isSupervisor(tokenResult) && !reservations?.length) {
@@ -82,7 +80,7 @@ export const cancelOrRemoveTaskHandler: FlexValidatedHandler = async (
           `Cancelled reservations for task ${taskSid}: ${cancelReservationsResult.data.updatedReservationSids}.`,
         );
       }
-      cancelReservationsResult.data.updatedReservationSids.map(cre =>
+      cancelReservationsResult.data.updateReservationErrors.map(cre =>
         console.warn(`Error cancelling reservation ${byLogClause}:`, cre),
       );
     }
