@@ -100,7 +100,8 @@
     "SearchResultsIndex-SearchAgainForContact": "Buscar nuevamente un contacto",
     "SearchResultsIndex-SaveToNewCase": "Guarde este contacto en una nueva ecuphs",
     "PreviousContacts-Cases": "ecuphs",
-    "SearchContactsAndCases-Title": "Buscar contactos y ecuphs"
+    "SearchContactsAndCases-Title": "Buscar contactos y ecuphs",
+    "CaseSummary-None": "--"
 
     }
 }
