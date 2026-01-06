@@ -1,66 +1,22 @@
 [
   {
-    "label": "Welcome Message",
-    "text": "Hello! I am a live counselor. This chat line does not take reports of abuse, but we are here to listen and to help by providing information, resources, and emotional support. How can I help you today?"
+    "label": "Horario ",
+    "text": "Nuestros horarios de atención son:\nLunes a Martes\n13:00 a 14:00 y de 18:00 a 00:00\n\nMiércoles a viernes \n13:00 a 14:00 y de 17:00 a 00:00\n\nSábados y Domingos\n13:00 a 14:00 y de 19:00 a 00:00"
   },
   {
-    "label": "Abusive Language",
-    "text": "Please use respectful language or I will need to end the conversation. Thank you."
+    "label": "Línea *4141",
+    "text": "Si requieres de una atención especializada en prevención del suicidio puedes contactarte con la Línea de Prevención del Suicidio llamando al *4141, gratuita y disponible en todo momento"
   },
   {
-    "label": "Adult Support",
-    "text": "Who is the adult you trust the most? Maybe a teacher, counselor, or relative?"
+    "label": "Bibliodiversa",
+    "text": "En todomejora.org/bibliodiversa puedes encontrar mayor información sobre temáticas LGBTIQA+ en torno a salud mental y educación"
   },
   {
-    "label": "Confidential Non Anon",
-    "text": "Our hotline is confidential but not anonymous. Our counselors can only see information you choose to share and we do not ask for identifying information. However, in emergencies supervisors may need to notify CPS or police."
+    "label": "Familia a Colores",
+    "text": "Para madres, padres y personas cuidadoras tenemos disponible el Programa Familia a Colores, le cual ofrece consejerías gratuitas que se pueden agendar escribiendo por Whatsapp al número +56 9 6319 9475"
   },
   {
-    "label": "CPS Response",
-    "text": "I wish I could give you details about what happens when you report, but investigations are handled differently depending on the type of abuse reported and the ways the laws are written in each state. However, the main goal of CPS in every state is to keep children safe."
-  },
-  {
-    "label": "External Links",
-    "text": "Unfortunately, we cannot click on external links or view attachments like pictures. Can you describe your concern?"
-  },
-  {
-    "label": "Immediate Danger 911",
-    "text": "If you are in immediate danger or in need of medical attention, please call 911."
-  },
-  {
-    "label": "No Contact Warning",
-    "text": "Checking in— I haven't heard from you and will need to end the conversation if there is no response in the next 5 minutes."
-  },
-  {
-    "label": "Non reporting line",
-    "text": "Abuse must be reported to Child Protective Services in the state where the abuse occurred. We are not able to receive reports of abuse on our hotline, but I can get you information to report. In what city and state did the abuse occur?"
-  },
-  {
-    "label": "Please wait",
-    "text": "Please give me a moment to research resources. I appreciate your patience."
-  },
-  {
-    "label": "Purpose of Hotline",
-    "text": "Our crisis line provides emotional support, education, guidance, and resources to individuals affected by child abuse."
-  },
-  {
-    "label": "CSAM Reporting",
-    "text": "Child Sexual Abuse Material (CSAM) can be reported to the National Center for Missing and Exploited Children's CyberTipline at https://report.cybertip.org/reporting and clicking 'I understand' or by calling 1-800-843-5678. Do not share or forward this content with anyone"
-  },
-  {
-    "label": "Multiple Contacts",
-    "text": "It appears you are connected with another counselor. I will end our conversation so you can focus."
-  },
-  {
-    "label": "Spanish Call Us",
-    "text": "Para asistencia en español, por favor llame a la línea directa al 1-800-422-4453 para que podamos usar un intérprete para ayudarle"
-  },
-  {
-    "label": "Tech Issues",
-    "text": "We are experiencing technical difficulties. I appreciate your patience."
-  },
-  {
-    "label": "Wrap-up",
-    "text": "Thank you for contacting our hotline. I will need to assist others at this time. We are here 24/7 if you need further support. Take care."
+    "label": "Inactividad usuarie",
+    "text": "¿Sigues ahí? Te recordamos que estamos aquí para apoyarte"
   }
 ]

@@ -1,41 +1,17 @@
 [
   {
-    "name": "childIs",
-    "label": "Child Is",
-    "type": "select",
-    "isPII": false,
-    "options": [
-      {
-        "value": "",
-        "label": ""
-      },
-      {
-        "value": "Abused Child",
-        "label": "Abused Child"
-      },
-      {
-        "value": "Distressed Child",
-        "label": "Distressed Child"
-      },
-      {
-        "value": "N/A",
-        "label": "N/A"
-      }
-    ],
-    "required": {
-      "value": true,
-      "message": "RequiredFieldError"
-    }
-  },
-  {
-    "name": "genderInput",
-    "label": "Child Gender (Input from Webchat Form)",
+    "name": "nameOrNickname",
+    "label": "Nombre/Apodo",
     "type": "input",
-    "isPII": false
+    "isPII": true,
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
   },
   {
-    "name": "gender",
-    "label": "Child Gender",
+    "name": "age",
+    "label": "Edad",
     "type": "select",
     "isPII": false,
     "options": [
@@ -43,82 +19,6 @@
         "value": "",
         "label": ""
       },
-      {
-        "value": "Male",
-        "label": "Male"
-      },
-      {
-        "value": "Female",
-        "label": "Female"
-      },
-      {
-        "value": "Gender Expansive",
-        "label": "Gender Expansive"
-      },
-      {
-        "value": "Unknown",
-        "label": "Unknown"
-      },
-      {
-        "value": "N/A",
-        "label": "N/A"
-      }
-    ],
-    "required": {
-      "value": true,
-      "message": "RequiredFieldError"
-    }
-  },
-  {
-    "name": "ageRange",
-    "label": "Child Age",
-    "type": "select",
-    "isPII": false,
-    "options": [
-      {
-        "value": "",
-        "label": ""
-      },
-      {
-        "value": "0-5",
-        "label": "0-5"
-      },
-      {
-        "value": "6-12",
-        "label": "6-12"
-      },
-      {
-        "value": "13-17",
-        "label": "13-17"
-      },
-      {
-        "value": "18-24",
-        "label": "18-24"
-      },
-      {
-        "value": "Adult 25+",
-        "label": "Adult 25+"
-      },
-      {
-        "value": "Unknown",
-        "label": "Unknown"
-      },
-      {
-        "value": "N/A",
-        "label": "N/A"
-      }
-    ],
-    "required": {
-      "value": true,
-      "message": "RequiredFieldError"
-    }
-  },
-  {
-    "name": "numberOfAdditionalVictims",
-    "label": "Number of additional victims",
-    "type": "select",
-    "isPII": false,
-    "options": [
       {
         "value": "00",
         "label": "0"
@@ -140,1085 +40,108 @@
         "label": "4"
       },
       {
-        "value": "5+",
-        "label": "5+"
-      }
-    ]
-  },
-  {
-    "name": "stateInput",
-    "label": "Child State (Input from SMS Chatbot)",
-    "type": "input",
-    "isPII": false
-  },
-  {
-    "name": "state",
-    "label": "Child State",
-    "type": "select",
-    "isPII": false,
-    "defaultOption": {
-      "value": "Unknown",
-      "label": ""
-    },
-    "options": [
-      {
-        "value": "Unknown",
-        "label": ""
+        "value": "05",
+        "label": "5"
       },
       {
-        "value": "Out of USA",
-        "label": "Out of USA"
+        "value": "06",
+        "label": "6"
       },
       {
-        "value": "Alabama",
-        "label": "Alabama"
+        "value": "07",
+        "label": "7"
       },
       {
-        "value": "Alaska",
-        "label": "Alaska"
+        "value": "08",
+        "label": "8"
       },
       {
-        "value": "Arizona",
-        "label": "Arizona"
+        "value": "09",
+        "label": "9"
       },
       {
-        "value": "Arkansas",
-        "label": "Arkansas"
+        "value": "10",
+        "label": "10"
       },
       {
-        "value": "California",
-        "label": "California"
+        "value": "11",
+        "label": "11"
       },
       {
-        "value": "Colorado",
-        "label": "Colorado"
+        "value": "12",
+        "label": "12"
       },
       {
-        "value": "Connecticut",
-        "label": "Connecticut"
+        "value": "13",
+        "label": "13"
       },
       {
-        "value": "Delaware",
-        "label": "Delaware"
+        "value": "14",
+        "label": "14"
       },
       {
-        "value": "Florida",
-        "label": "Florida"
+        "value": "15",
+        "label": "15"
       },
       {
-        "value": "Georgia",
-        "label": "Georgia"
+        "value": "16",
+        "label": "16"
       },
       {
-        "value": "Hawaii",
-        "label": "Hawaii"
+        "value": "17",
+        "label": "17"
       },
       {
-        "value": "Idaho",
-        "label": "Idaho"
+        "value": "18",
+        "label": "18"
       },
       {
-        "value": "Illinois",
-        "label": "Illinois"
+        "value": "19",
+        "label": "19"
       },
       {
-        "value": "Indiana",
-        "label": "Indiana"
+        "value": "20",
+        "label": "20"
       },
       {
-        "value": "Iowa",
-        "label": "Iowa"
+        "value": "21",
+        "label": "21"
       },
       {
-        "value": "Kansas",
-        "label": "Kansas"
+        "value": "22",
+        "label": "22"
       },
       {
-        "value": "Kentucky",
-        "label": "Kentucky"
+        "value": "23",
+        "label": "23"
       },
       {
-        "value": "Louisiana",
-        "label": "Louisiana"
+        "value": "24",
+        "label": "24"
       },
       {
-        "value": "Maine",
-        "label": "Maine"
+        "value": "25",
+        "label": "25"
       },
       {
-        "value": "Maryland",
-        "label": "Maryland"
+        "value": "26",
+        "label": "26"
       },
       {
-        "value": "Massachusetts",
-        "label": "Massachusetts"
+        "value": "27",
+        "label": "27"
       },
       {
-        "value": "Michigan",
-        "label": "Michigan"
+        "value": "28",
+        "label": "28"
       },
       {
-        "value": "Minnesota",
-        "label": "Minnesota"
+        "value": "29",
+        "label": "29"
       },
       {
-        "value": "Mississippi",
-        "label": "Mississippi"
-      },
-      {
-        "value": "Missouri",
-        "label": "Missouri"
-      },
-      {
-        "value": "Montana",
-        "label": "Montana"
-      },
-      {
-        "value": "Nebraska",
-        "label": "Nebraska"
-      },
-      {
-        "value": "Nevada",
-        "label": "Nevada"
-      },
-      {
-        "value": "New Hampshire",
-        "label": "New Hampshire"
-      },
-      {
-        "value": "New Jersey",
-        "label": "New Jersey"
-      },
-      {
-        "value": "New Mexico",
-        "label": "New Mexico"
-      },
-      {
-        "value": "New York",
-        "label": "New York"
-      },
-      {
-        "value": "North Carolina",
-        "label": "North Carolina"
-      },
-      {
-        "value": "North Dakota",
-        "label": "North Dakota"
-      },
-      {
-        "value": "Ohio",
-        "label": "Ohio"
-      },
-      {
-        "value": "Oklahoma",
-        "label": "Oklahoma"
-      },
-      {
-        "value": "Oregon",
-        "label": "Oregon"
-      },
-      {
-        "value": "Pennsylvania",
-        "label": "Pennsylvania"
-      },
-      {
-        "value": "Rhode Island",
-        "label": "Rhode Island"
-      },
-      {
-        "value": "South Carolina",
-        "label": "South Carolina"
-      },
-      {
-        "value": "South Dakota",
-        "label": "South Dakota"
-      },
-      {
-        "value": "Tennessee",
-        "label": "Tennessee"
-      },
-      {
-        "value": "Texas",
-        "label": "Texas"
-      },
-      {
-        "value": "Utah",
-        "label": "Utah"
-      },
-      {
-        "value": "Vermont",
-        "label": "Vermont"
-      },
-      {
-        "value": "Virginia",
-        "label": "Virginia"
-      },
-      {
-        "value": "Washington",
-        "label": "Washington"
-      },
-      {
-        "value": "Washington, D.C.",
-        "label": "Washington, D.C."
-      },
-      {
-        "value": "West Virginia",
-        "label": "West Virginia"
-      },
-      {
-        "value": "Wisconsin",
-        "label": "Wisconsin"
-      },
-      {
-        "value": "Wyoming",
-        "label": "Wyoming"
-      },
-      {
-        "value": "Unknown",
-        "label": "Unknown"
-      },
-      {
-        "value": "N/A",
-        "label": "N/A"
-      }
-    ]
-  },
-  {
-    "name": "country",
-    "label": "Child Country",
-    "type": "dependent-select",
-    "isPII": false,
-    "dependsOn": "state",
-    "defaultOption": {
-      "value": "Unknown",
-      "label": ""
-    },
-    "options": {
-      "Out of USA": [
-        {
-          "value": "Unknown",
-          "label": "Unknown"
-        },
-        {
-          "value": "Afghanistan",
-          "label": "Afghanistan"
-        },
-        {
-          "value": "Albania",
-          "label": "Albania"
-        },
-        {
-          "value": "Algeria",
-          "label": "Algeria"
-        },
-        {
-          "value": "Andorra",
-          "label": "Andorra"
-        },
-        {
-          "value": "Angola",
-          "label": "Angola"
-        },
-        {
-          "value": "Antigua and Barbuda",
-          "label": "Antigua and Barbuda"
-        },
-        {
-          "value": "Argentina",
-          "label": "Argentina"
-        },
-        {
-          "value": "Armenia",
-          "label": "Armenia"
-        },
-        {
-          "value": "Austria",
-          "label": "Austria"
-        },
-        {
-          "value": "Azerbaijan",
-          "label": "Azerbaijan"
-        },
-        {
-          "value": "Bahrain",
-          "label": "Bahrain"
-        },
-        {
-          "value": "Bangladesh",
-          "label": "Bangladesh"
-        },
-        {
-          "value": "Barbados",
-          "label": "Barbados"
-        },
-        {
-          "value": "Belarus",
-          "label": "Belarus"
-        },
-        {
-          "value": "Belgium",
-          "label": "Belgium"
-        },
-        {
-          "value": "Belize",
-          "label": "Belize"
-        },
-        {
-          "value": "Benin",
-          "label": "Benin"
-        },
-        {
-          "value": "Bhutan",
-          "label": "Bhutan"
-        },
-        {
-          "value": "Bolivia",
-          "label": "Bolivia"
-        },
-        {
-          "value": "Bosnia and Herzegovina",
-          "label": "Bosnia and Herzegovina"
-        },
-        {
-          "value": "Botswana",
-          "label": "Botswana"
-        },
-        {
-          "value": "Brazil",
-          "label": "Brazil"
-        },
-        {
-          "value": "Brunei",
-          "label": "Brunei"
-        },
-        {
-          "value": "Bulgaria",
-          "label": "Bulgaria"
-        },
-        {
-          "value": "Burkina Faso",
-          "label": "Burkina Faso"
-        },
-        {
-          "value": "Burundi",
-          "label": "Burundi"
-        },
-        {
-          "value": "Cabo Verde",
-          "label": "Cabo Verde"
-        },
-        {
-          "value": "Cambodia",
-          "label": "Cambodia"
-        },
-        {
-          "value": "Cameroon",
-          "label": "Cameroon"
-        },
-        {
-          "value": "Canada",
-          "label": "Canada"
-        },
-        {
-          "value": "Central African Republic",
-          "label": "Central African Republic"
-        },
-        {
-          "value": "Chad",
-          "label": "Chad"
-        },
-        {
-          "value": "Channel Islands",
-          "label": "Channel Islands"
-        },
-        {
-          "value": "Chile",
-          "label": "Chile"
-        },
-        {
-          "value": "China",
-          "label": "China"
-        },
-        {
-          "value": "Colombia",
-          "label": "Colombia"
-        },
-        {
-          "value": "Comoros",
-          "label": "Comoros"
-        },
-        {
-          "value": "Congo",
-          "label": "Congo"
-        },
-        {
-          "value": "Costa Rica",
-          "label": "Costa Rica"
-        },
-        {
-          "value": "Côte d'Ivoire",
-          "label": "Côte d'Ivoire"
-        },
-        {
-          "value": "Croatia",
-          "label": "Croatia"
-        },
-        {
-          "value": "Cuba",
-          "label": "Cuba"
-        },
-        {
-          "value": "Cyprus",
-          "label": "Cyprus"
-        },
-        {
-          "value": "Czech Republic",
-          "label": "Czech Republic"
-        },
-        {
-          "value": "Denmark",
-          "label": "Denmark"
-        },
-        {
-          "value": "Djibouti",
-          "label": "Djibouti"
-        },
-        {
-          "value": "Dominica",
-          "label": "Dominica"
-        },
-        {
-          "value": "Dominican Republic",
-          "label": "Dominican Republic"
-        },
-        {
-          "value": "DR Congo",
-          "label": "DR Congo"
-        },
-        {
-          "value": "Ecuador",
-          "label": "Ecuador"
-        },
-        {
-          "value": "Egypt",
-          "label": "Egypt"
-        },
-        {
-          "value": "El Salvador",
-          "label": "El Salvador"
-        },
-        {
-          "value": "Equatorial Guinea",
-          "label": "Equatorial Guinea"
-        },
-        {
-          "value": "Eritrea",
-          "label": "Eritrea"
-        },
-        {
-          "value": "Estonia",
-          "label": "Estonia"
-        },
-        {
-          "value": "Eswatini",
-          "label": "Eswatini"
-        },
-        {
-          "value": "Ethiopia",
-          "label": "Ethiopia"
-        },
-        {
-          "value": "Faeroe Islands",
-          "label": "Faeroe Islands"
-        },
-        {
-          "value": "Finland",
-          "label": "Finland"
-        },
-        {
-          "value": "France",
-          "label": "France"
-        },
-        {
-          "value": "French Guiana",
-          "label": "French Guiana"
-        },
-        {
-          "value": "Gabon",
-          "label": "Gabon"
-        },
-        {
-          "value": "Gambia",
-          "label": "Gambia"
-        },
-        {
-          "value": "Georgia",
-          "label": "Georgia"
-        },
-        {
-          "value": "Germany",
-          "label": "Germany"
-        },
-        {
-          "value": "Ghana",
-          "label": "Ghana"
-        },
-        {
-          "value": "Gibraltar",
-          "label": "Gibraltar"
-        },
-        {
-          "value": "Greece",
-          "label": "Greece"
-        },
-        {
-          "value": "Grenada",
-          "label": "Grenada"
-        },
-        {
-          "value": "Guam",
-          "label": "Guam"
-        },
-        {
-          "value": "Guatemala",
-          "label": "Guatemala"
-        },
-        {
-          "value": "Guinea",
-          "label": "Guinea"
-        },
-        {
-          "value": "Guinea-Bissau",
-          "label": "Guinea-Bissau"
-        },
-        {
-          "value": "Guyana",
-          "label": "Guyana"
-        },
-        {
-          "value": "Haiti",
-          "label": "Haiti"
-        },
-        {
-          "value": "Holy See (Vatican City)",
-          "label": "Holy See (Vatican City)"
-        },
-        {
-          "value": "Honduras",
-          "label": "Honduras"
-        },
-        {
-          "value": "Hong Kong",
-          "label": "Hong Kong"
-        },
-        {
-          "value": "Hungary",
-          "label": "Hungary"
-        },
-        {
-          "value": "Iceland",
-          "label": "Iceland"
-        },
-        {
-          "value": "India",
-          "label": "India"
-        },
-        {
-          "value": "Indonesia",
-          "label": "Indonesia"
-        },
-        {
-          "value": "Iran",
-          "label": "Iran"
-        },
-        {
-          "value": "Iraq",
-          "label": "Iraq"
-        },
-        {
-          "value": "Ireland",
-          "label": "Ireland"
-        },
-        {
-          "value": "Isle of Man",
-          "label": "Isle of Man"
-        },
-        {
-          "value": "Israel",
-          "label": "Israel"
-        },
-        {
-          "value": "Italy",
-          "label": "Italy"
-        },
-        {
-          "value": "Jamaica",
-          "label": "Jamaica"
-        },
-        {
-          "value": "Japan",
-          "label": "Japan"
-        },
-        {
-          "value": "Jordan",
-          "label": "Jordan"
-        },
-        {
-          "value": "Kazakhstan",
-          "label": "Kazakhstan"
-        },
-        {
-          "value": "Kenya",
-          "label": "Kenya"
-        },
-        {
-          "value": "Kuwait",
-          "label": "Kuwait"
-        },
-        {
-          "value": "Kyrgyzstan",
-          "label": "Kyrgyzstan"
-        },
-        {
-          "value": "Laos",
-          "label": "Laos"
-        },
-        {
-          "value": "Latvia",
-          "label": "Latvia"
-        },
-        {
-          "value": "Lebanon",
-          "label": "Lebanon"
-        },
-        {
-          "value": "Lesotho",
-          "label": "Lesotho"
-        },
-        {
-          "value": "Liberia",
-          "label": "Liberia"
-        },
-        {
-          "value": "Libya",
-          "label": "Libya"
-        },
-        {
-          "value": "Liechtenstein",
-          "label": "Liechtenstein"
-        },
-        {
-          "value": "Lithuania",
-          "label": "Lithuania"
-        },
-        {
-          "value": "Luxembourg",
-          "label": "Luxembourg"
-        },
-        {
-          "value": "Macao",
-          "label": "Macao"
-        },
-        {
-          "value": "Madagascar",
-          "label": "Madagascar"
-        },
-        {
-          "value": "Malawi",
-          "label": "Malawi"
-        },
-        {
-          "value": "Malaysia",
-          "label": "Malaysia"
-        },
-        {
-          "value": "Maldives",
-          "label": "Maldives"
-        },
-        {
-          "value": "Mali",
-          "label": "Mali"
-        },
-        {
-          "value": "Malta",
-          "label": "Malta"
-        },
-        {
-          "value": "Mauritania",
-          "label": "Mauritania"
-        },
-        {
-          "value": "Mauritius",
-          "label": "Mauritius"
-        },
-        {
-          "value": "Mayotte",
-          "label": "Mayotte"
-        },
-        {
-          "value": "Mexico",
-          "label": "Mexico"
-        },
-        {
-          "value": "Moldova",
-          "label": "Moldova"
-        },
-        {
-          "value": "Monaco",
-          "label": "Monaco"
-        },
-        {
-          "value": "Mongolia",
-          "label": "Mongolia"
-        },
-        {
-          "value": "Montenegro",
-          "label": "Montenegro"
-        },
-        {
-          "value": "Morocco",
-          "label": "Morocco"
-        },
-        {
-          "value": "Mozambique",
-          "label": "Mozambique"
-        },
-        {
-          "value": "Myanmar",
-          "label": "Myanmar"
-        },
-        {
-          "value": "Namibia",
-          "label": "Namibia"
-        },
-        {
-          "value": "Nepal",
-          "label": "Nepal"
-        },
-        {
-          "value": "Netherlands",
-          "label": "Netherlands"
-        },
-        {
-          "value": "Nicaragua",
-          "label": "Nicaragua"
-        },
-        {
-          "value": "Niger",
-          "label": "Niger"
-        },
-        {
-          "value": "Nigeria",
-          "label": "Nigeria"
-        },
-        {
-          "value": "North Korea",
-          "label": "North Korea"
-        },
-        {
-          "value": "North Macedonia",
-          "label": "North Macedonia"
-        },
-        {
-          "value": "Norway",
-          "label": "Norway"
-        },
-        {
-          "value": "Oman",
-          "label": "Oman"
-        },
-        {
-          "value": "Pakistan",
-          "label": "Pakistan"
-        },
-        {
-          "value": "Panama",
-          "label": "Panama"
-        },
-        {
-          "value": "Paraguay",
-          "label": "Paraguay"
-        },
-        {
-          "value": "Peru",
-          "label": "Peru"
-        },
-        {
-          "value": "Philippines",
-          "label": "Philippines"
-        },
-        {
-          "value": "Poland",
-          "label": "Poland"
-        },
-        {
-          "value": "Portugal",
-          "label": "Portugal"
-        },
-        {
-          "value": "Puerto Rico",
-          "label": "Puerto Rico"
-        },
-        {
-          "value": "Qatar",
-          "label": "Qatar"
-        },
-        {
-          "value": "Réunion",
-          "label": "Réunion"
-        },
-        {
-          "value": "Romania",
-          "label": "Romania"
-        },
-        {
-          "value": "Russia",
-          "label": "Russia"
-        },
-        {
-          "value": "Rwanda",
-          "label": "Rwanda"
-        },
-        {
-          "value": "Saint Helena",
-          "label": "Saint Helena"
-        },
-        {
-          "value": "Saint Kitts and Nevis",
-          "label": "Saint Kitts and Nevis"
-        },
-        {
-          "value": "Saint Lucia",
-          "label": "Saint Lucia"
-        },
-        {
-          "value": "Saint Vincent and the Grenadines",
-          "label": "Saint Vincent and the Grenadines"
-        },
-        {
-          "value": "San Marino",
-          "label": "San Marino"
-        },
-        {
-          "value": "Sao Tome & Principe",
-          "label": "Sao Tome & Principe"
-        },
-        {
-          "value": "Saudi Arabia",
-          "label": "Saudi Arabia"
-        },
-        {
-          "value": "Senegal",
-          "label": "Senegal"
-        },
-        {
-          "value": "Serbia",
-          "label": "Serbia"
-        },
-        {
-          "value": "Seychelles",
-          "label": "Seychelles"
-        },
-        {
-          "value": "Sierra Leone",
-          "label": "Sierra Leone"
-        },
-        {
-          "value": "Singapore",
-          "label": "Singapore"
-        },
-        {
-          "value": "Slovakia",
-          "label": "Slovakia"
-        },
-        {
-          "value": "Slovenia",
-          "label": "Slovenia"
-        },
-        {
-          "value": "Somalia",
-          "label": "Somalia"
-        },
-        {
-          "value": "South Africa",
-          "label": "South Africa"
-        },
-        {
-          "value": "South Korea",
-          "label": "South Korea"
-        },
-        {
-          "value": "South Sudan",
-          "label": "South Sudan"
-        },
-        {
-          "value": "Spain",
-          "label": "Spain"
-        },
-        {
-          "value": "Sri Lanka",
-          "label": "Sri Lanka"
-        },
-        {
-          "value": "State of Palestine",
-          "label": "State of Palestine"
-        },
-        {
-          "value": "Sudan",
-          "label": "Sudan"
-        },
-        {
-          "value": "Suriname",
-          "label": "Suriname"
-        },
-        {
-          "value": "Sweden",
-          "label": "Sweden"
-        },
-        {
-          "value": "Switzerland",
-          "label": "Switzerland"
-        },
-        {
-          "value": "Syria",
-          "label": "Syria"
-        },
-        {
-          "value": "Taiwan",
-          "label": "Taiwan"
-        },
-        {
-          "value": "Tajikistan",
-          "label": "Tajikistan"
-        },
-        {
-          "value": "Tanzania",
-          "label": "Tanzania"
-        },
-        {
-          "value": "Thailand",
-          "label": "Thailand"
-        },
-        {
-          "value": "The Bahamas",
-          "label": "The Bahamas"
-        },
-        {
-          "value": "Timor-Leste",
-          "label": "Timor-Leste"
-        },
-        {
-          "value": "Togo",
-          "label": "Togo"
-        },
-        {
-          "value": "Trinidad and Tobago",
-          "label": "Trinidad and Tobago"
-        },
-        {
-          "value": "Tunisia",
-          "label": "Tunisia"
-        },
-        {
-          "value": "Turkey",
-          "label": "Turkey"
-        },
-        {
-          "value": "Turkmenistan",
-          "label": "Turkmenistan"
-        },
-        {
-          "value": "Uganda",
-          "label": "Uganda"
-        },
-        {
-          "value": "Ukraine",
-          "label": "Ukraine"
-        },
-        {
-          "value": "United Arab Emirates",
-          "label": "United Arab Emirates"
-        },
-        {
-          "value": "United Kingdom",
-          "label": "United Kingdom"
-        },
-        {
-          "value": "Uruguay",
-          "label": "Uruguay"
-        },
-        {
-          "value": "U.S. Virgin Islands",
-          "label": "U.S. Virgin Islands"
-        },
-        {
-          "value": "Uzbekistan",
-          "label": "Uzbekistan"
-        },
-        {
-          "value": "Venezuela",
-          "label": "Venezuela"
-        },
-        {
-          "value": "Vietnam",
-          "label": "Vietnam"
-        },
-        {
-          "value": "Western Sahara",
-          "label": "Western Sahara"
-        },
-        {
-          "value": "Yemen",
-          "label": "Yemen"
-        },
-        {
-          "value": "Zambia",
-          "label": "Zambia"
-        },
-        {
-          "value": "Zimbabwe",
-          "label": "Zimbabwe"
-        }
-      ]
-    }
-  },
-  {
-    "name": "safetyConcern",
-    "label": "Safety Concern",
-    "type": "select",
-    "isPII": false,
-    "defaultOption": {
-      "value": "",
-      "label": ""
-    },
-    "options": [
-      {
-        "value": "",
-        "label": ""
-      },
-      {
-        "value": "None",
-        "label": "None"
-      },
-      {
-        "value": "Suicidal Ideation",
-        "label": "Suicidal Ideation"
-      },
-      {
-        "value": "Imminent Harm",
-        "label": "Imminent Harm"
-      },
-      {
-        "value": "Homicidal Ideation",
-        "label": "Homicidal Ideation"
-      },
-      {
-        "value": "Medical Emergency",
-        "label": "Medical Emergency"
-      },
-      {
-        "value": "Safety Concern- Other",
-        "label": "Safety Concern- Other"
+        "value": "30 o más",
+        "label": "30 o más"
       }
     ],
     "required": {
@@ -1227,146 +150,8 @@
     }
   },
   {
-    "name": "q1",
-    "label": "Have you wished you were dead or wished you could go to sleep and not wake up?",
-    "type": "dependent-select",
-    "isPII": false,
-    "dependsOn": "safetyConcern",
-    "defaultOption": {
-      "value": "",
-      "label": ""
-    },
-    "options": {
-      "Suicidal Ideation": [
-        {
-          "value": "Yes",
-          "label": "Yes"
-        },
-        {
-          "value": "No",
-          "label": "No"
-        }
-      ]
-    }
-  },
-  {
-    "name": "q2",
-    "label": "Have you actually had any thoughts of killing yourself?",
-    "type": "dependent-select",
-    "isPII": false,
-    "dependsOn": "q1",
-    "defaultOption": {
-      "value": "",
-      "label": ""
-    },
-    "options": {
-      "Yes": [
-        {
-          "value": "Yes",
-          "label": "Yes"
-        },
-        {
-          "value": "No",
-          "label": "No"
-        }
-      ]
-    }
-  },
-  {
-    "name": "q3",
-    "label": "Have you been thinking about how you might do this?",
-    "type": "dependent-select",
-    "isPII": false,
-    "dependsOn": "q2",
-    "defaultOption": {
-      "value": "",
-      "label": ""
-    },
-    "options": {
-      "Yes": [
-        {
-          "value": "Yes",
-          "label": "Yes"
-        },
-        {
-          "value": "No",
-          "label": "No"
-        }
-      ]
-    }
-  },
-  {
-    "name": "q4",
-    "label": "Have you had these thoughts and had some intention of acting on them?",
-    "type": "dependent-select",
-    "isPII": false,
-    "dependsOn": "q3",
-    "defaultOption": {
-      "value": "",
-      "label": ""
-    },
-    "options": {
-      "Yes": [
-        {
-          "value": "Yes",
-          "label": "Yes"
-        },
-        {
-          "value": "No",
-          "label": "No"
-        }
-      ]
-    }
-  },
-  {
-    "name": "q5",
-    "label": "Have you started to work out or worked out the details of how to kill yourself? Did you intend to carry out this plan?",
-    "type": "dependent-select",
-    "isPII": false,
-    "dependsOn": "q4",
-    "defaultOption": {
-      "value": "",
-      "label": ""
-    },
-    "options": {
-      "Yes": [
-        {
-          "value": "Yes",
-          "label": "Yes"
-        },
-        {
-          "value": "No",
-          "label": "No"
-        }
-      ]
-    }
-  },
-  {
-    "name": "q6",
-    "label": "Have you ever done anything, started to do anything, or prepared to do anything to end your life?",
-    "type": "dependent-select",
-    "isPII": false,
-    "dependsOn": "q5",
-    "defaultOption": {
-      "value": "",
-      "label": ""
-    },
-    "options": {
-      "Yes": [
-        {
-          "value": "Yes",
-          "label": "Yes"
-        },
-        {
-          "value": "No",
-          "label": "No"
-        }
-      ]
-    }
-  },
-  {
-    "name": "q7",
-    "label": "In the last 3 months, have you ever done anything, started to do anything, or prepared to do anything to end your life?",
+    "name": "region",
+    "label": "Región",
     "type": "select",
     "isPII": false,
     "defaultOption": {
@@ -1379,210 +164,1670 @@
         "label": ""
       },
       {
-        "value": "Yes",
-        "label": "Yes"
+        "value": "Arica y Parinacota",
+        "label": "Arica y Parinacota"
+      },
+      {
+        "value": "Tarapacá",
+        "label": "Tarapacá"
+      },
+      {
+        "value": "Antofagasta",
+        "label": "Antofagasta"
+      },
+      {
+        "value": "Atacama",
+        "label": "Atacama"
+      },
+      {
+        "value": "Coquimbo",
+        "label": "Coquimbo"
+      },
+      {
+        "value": "Valparaíso",
+        "label": "Valparaíso"
+      },
+      {
+        "value": "Lib. Gral. Bernardo O'Higgins",
+        "label": "Lib. Gral. Bernardo O'Higgins"
+      },
+      {
+        "value": "Maule",
+        "label": "Maule"
+      },
+      {
+        "value": "Ñuble",
+        "label": "Ñuble"
+      },
+      {
+        "value": "Biobío",
+        "label": "Biobío"
+      },
+      {
+        "value": "La Araucanía",
+        "label": "La Araucanía"
+      },
+      {
+        "value": "Los Ríos",
+        "label": "Los Ríos"
+      },
+      {
+        "value": "Los Lagos",
+        "label": "Los Lagos"
+      },
+      {
+        "value": "Aysén",
+        "label": "Aysén"
+      },
+      {
+        "value": "Magallanes y Antártica Chilena",
+        "label": "Magallanes y Antártica Chilena"
+      },
+      {
+        "value": "Metropolitana de Santiago",
+        "label": "Metropolitana de Santiago"
+      }
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "commune",
+    "label": "Comuna",
+    "type": "dependent-select",
+    "isPII": false,
+    "dependsOn": "region",
+    "defaultOption": {
+      "value": "",
+      "label": ""
+    },
+    "options": {
+      "Arica y Parinacota": [
+        {
+          "value": "Arica",
+          "label": "Arica"
+        },
+        {
+          "value": "Camarones",
+          "label": "Camarones"
+        },
+        {
+          "value": "Putre",
+          "label": "Putre"
+        },
+        {
+          "value": "General Lagos",
+          "label": "General Lagos"
+        }
+      ],
+      "Tarapacá": [
+        {
+          "value": "Iquique",
+          "label": "Iquique"
+        },
+        {
+          "value": "Alto Hospicio",
+          "label": "Alto Hospicio"
+        },
+        {
+          "value": "Pozo Almonte",
+          "label": "Pozo Almonte"
+        },
+        {
+          "value": "Camiña",
+          "label": "Camiña"
+        },
+        {
+          "value": "Colchane",
+          "label": "Colchane"
+        },
+        {
+          "value": "Huara",
+          "label": "Huara"
+        },
+        {
+          "value": "Pica",
+          "label": "Pica"
+        }
+      ],
+      "Antofagasta": [
+        {
+          "value": "Antofagasta",
+          "label": "Antofagasta"
+        },
+        {
+          "value": "Mejillones",
+          "label": "Mejillones"
+        },
+        {
+          "value": "Sierra Gorda",
+          "label": "Sierra Gorda"
+        },
+        {
+          "value": "Taltal",
+          "label": "Taltal"
+        },
+        {
+          "value": "Calama",
+          "label": "Calama"
+        },
+        {
+          "value": "Ollagüe",
+          "label": "Ollagüe"
+        },
+        {
+          "value": "San Pedro de Atacama",
+          "label": "San Pedro de Atacama"
+        },
+        {
+          "value": "Tocopilla",
+          "label": "Tocopilla"
+        },
+        {
+          "value": "María Elena",
+          "label": "María Elena"
+        }
+      ],
+      "Atacama": [
+        {
+          "value": "Copiapó",
+          "label": "Copiapó"
+        },
+        {
+          "value": "Caldera",
+          "label": "Caldera"
+        },
+        {
+          "value": "Tierra Amarilla",
+          "label": "Tierra Amarilla"
+        },
+        {
+          "value": "Chañaral",
+          "label": "Chañaral"
+        },
+        {
+          "value": "Diego de Almagro",
+          "label": "Diego de Almagro"
+        },
+        {
+          "value": "Vallenar",
+          "label": "Vallenar"
+        },
+        {
+          "value": "Alto del Carmen",
+          "label": "Alto del Carmen"
+        },
+        {
+          "value": "Freirina",
+          "label": "Freirina"
+        },
+        {
+          "value": "Huasco",
+          "label": "Huasco"
+        }
+      ],
+      "Coquimbo": [
+        {
+          "value": "La Serena",
+          "label": "La Serena"
+        },
+        {
+          "value": "Coquimbo",
+          "label": "Coquimbo"
+        },
+        {
+          "value": "Andacollo",
+          "label": "Andacollo"
+        },
+        {
+          "value": "La Higuera",
+          "label": "La Higuera"
+        },
+        {
+          "value": "Paihuano",
+          "label": "Paihuano"
+        },
+        {
+          "value": "Vicuña",
+          "label": "Vicuña"
+        },
+        {
+          "value": "Illapel",
+          "label": "Illapel"
+        },
+        {
+          "value": "Canela",
+          "label": "Canela"
+        },
+        {
+          "value": "Los Vilos",
+          "label": "Los Vilos"
+        },
+        {
+          "value": "Salamanca",
+          "label": "Salamanca"
+        },
+        {
+          "value": "Ovalle",
+          "label": "Ovalle"
+        },
+        {
+          "value": "Combarbalá",
+          "label": "Combarbalá"
+        },
+        {
+          "value": "Monte Patria",
+          "label": "Monte Patria"
+        },
+        {
+          "value": "Punitaqui",
+          "label": "Punitaqui"
+        },
+        {
+          "value": "Río Hurtado",
+          "label": "Río Hurtado"
+        }
+      ],
+      "Valparaíso": [
+        {
+          "value": "Valparaíso",
+          "label": "Valparaíso"
+        },
+        {
+          "value": "Casablanca",
+          "label": "Casablanca"
+        },
+        {
+          "value": "Concón",
+          "label": "Concón"
+        },
+        {
+          "value": "Juan Fernández",
+          "label": "Juan Fernández"
+        },
+        {
+          "value": "Puchuncaví",
+          "label": "Puchuncaví"
+        },
+        {
+          "value": "Quintero",
+          "label": "Quintero"
+        },
+        {
+          "value": "Viña del Mar",
+          "label": "Viña del Mar"
+        },
+        {
+          "value": "Isla de Pascua",
+          "label": "Isla de Pascua"
+        },
+        {
+          "value": "Los Andes",
+          "label": "Los Andes"
+        },
+        {
+          "value": "Calle Larga",
+          "label": "Calle Larga"
+        },
+        {
+          "value": "Rinconada",
+          "label": "Rinconada"
+        },
+        {
+          "value": "San Esteban",
+          "label": "San Esteban"
+        },
+        {
+          "value": "La Ligua",
+          "label": "La Ligua"
+        },
+        {
+          "value": "Cabildo",
+          "label": "Cabildo"
+        },
+        {
+          "value": "Papudo",
+          "label": "Papudo"
+        },
+        {
+          "value": "Petorca",
+          "label": "Petorca"
+        },
+        {
+          "value": "Zapallar",
+          "label": "Zapallar"
+        },
+        {
+          "value": "Quillota",
+          "label": "Quillota"
+        },
+        {
+          "value": "La Calera",
+          "label": "La Calera"
+        },
+        {
+          "value": "Hijuelas",
+          "label": "Hijuelas"
+        },
+        {
+          "value": "La Cruz",
+          "label": "La Cruz"
+        },
+        {
+          "value": "Nogales",
+          "label": "Nogales"
+        },
+        {
+          "value": "San Antonio",
+          "label": "San Antonio"
+        },
+        {
+          "value": "Algarrobo",
+          "label": "Algarrobo"
+        },
+        {
+          "value": "Cartagena",
+          "label": "Cartagena"
+        },
+        {
+          "value": "El Quisco",
+          "label": "El Quisco"
+        },
+        {
+          "value": "El Tabo",
+          "label": "El Tabo"
+        },
+        {
+          "value": "Santo Domingo",
+          "label": "Santo Domingo"
+        },
+        {
+          "value": "San Felipe",
+          "label": "San Felipe"
+        },
+        {
+          "value": "Catemu",
+          "label": "Catemu"
+        },
+        {
+          "value": "Llay-Llay",
+          "label": "Llay-Llay"
+        },
+        {
+          "value": "Panquehue",
+          "label": "Panquehue"
+        },
+        {
+          "value": "Putaendo",
+          "label": "Putaendo"
+        },
+        {
+          "value": "Santa María",
+          "label": "Santa María"
+        },
+        {
+          "value": "Quilpué",
+          "label": "Quilpué"
+        },
+        {
+          "value": "Limache",
+          "label": "Limache"
+        },
+        {
+          "value": "Olmué",
+          "label": "Olmué"
+        },
+        {
+          "value": "Villa Alemana",
+          "label": "Villa Alemana"
+        }
+      ],
+      "Lib. Gral. Bernardo O'Higgins": [
+        {
+          "value": "Rancagua",
+          "label": "Rancagua"
+        },
+        {
+          "value": "Codegua",
+          "label": "Codegua"
+        },
+        {
+          "value": "Coinco",
+          "label": "Coinco"
+        },
+        {
+          "value": "Coltauco",
+          "label": "Coltauco"
+        },
+        {
+          "value": "Doñihue",
+          "label": "Doñihue"
+        },
+        {
+          "value": "Graneros",
+          "label": "Graneros"
+        },
+        {
+          "value": "Las Cabras",
+          "label": "Las Cabras"
+        },
+        {
+          "value": "Machalí",
+          "label": "Machalí"
+        },
+        {
+          "value": "Malloa",
+          "label": "Malloa"
+        },
+        {
+          "value": "Mostazal",
+          "label": "Mostazal"
+        },
+        {
+          "value": "Olivar",
+          "label": "Olivar"
+        },
+        {
+          "value": "Peumo",
+          "label": "Peumo"
+        },
+        {
+          "value": "Pichidegua",
+          "label": "Pichidegua"
+        },
+        {
+          "value": "Quinta de Tilcoco",
+          "label": "Quinta de Tilcoco"
+        },
+        {
+          "value": "Rengo",
+          "label": "Rengo"
+        },
+        {
+          "value": "Requínoa",
+          "label": "Requínoa"
+        },
+        {
+          "value": "San Vicente",
+          "label": "San Vicente"
+        },
+        {
+          "value": "Pichilemu",
+          "label": "Pichilemu"
+        },
+        {
+          "value": "La Estrella",
+          "label": "La Estrella"
+        },
+        {
+          "value": "Litueche",
+          "label": "Litueche"
+        },
+        {
+          "value": "Marchihue",
+          "label": "Marchihue"
+        },
+        {
+          "value": "Navidad",
+          "label": "Navidad"
+        },
+        {
+          "value": "Paredones",
+          "label": "Paredones"
+        },
+        {
+          "value": "San Fernando",
+          "label": "San Fernando"
+        },
+        {
+          "value": "Chépica",
+          "label": "Chépica"
+        },
+        {
+          "value": "Chimbarongo",
+          "label": "Chimbarongo"
+        },
+        {
+          "value": "Lolol",
+          "label": "Lolol"
+        },
+        {
+          "value": "Nancagua",
+          "label": "Nancagua"
+        },
+        {
+          "value": "Palmilla",
+          "label": "Palmilla"
+        },
+        {
+          "value": "Peralillo",
+          "label": "Peralillo"
+        },
+        {
+          "value": "Placilla",
+          "label": "Placilla"
+        },
+        {
+          "value": "Pumanque",
+          "label": "Pumanque"
+        },
+        {
+          "value": "Santa Cruz",
+          "label": "Santa Cruz"
+        }
+      ],
+      "Maule": [
+        {
+          "value": "Talca",
+          "label": "Talca"
+        },
+        {
+          "value": "Constitución",
+          "label": "Constitución"
+        },
+        {
+          "value": "Curepto",
+          "label": "Curepto"
+        },
+        {
+          "value": "Empedrado",
+          "label": "Empedrado"
+        },
+        {
+          "value": "Maule",
+          "label": "Maule"
+        },
+        {
+          "value": "Pelarco",
+          "label": "Pelarco"
+        },
+        {
+          "value": "Pencahue",
+          "label": "Pencahue"
+        },
+        {
+          "value": "Río Claro",
+          "label": "Río Claro"
+        },
+        {
+          "value": "San Clemente",
+          "label": "San Clemente"
+        },
+        {
+          "value": "San Rafael",
+          "label": "San Rafael"
+        },
+        {
+          "value": "Cauquenes",
+          "label": "Cauquenes"
+        },
+        {
+          "value": "Chanco",
+          "label": "Chanco"
+        },
+        {
+          "value": "Pelluhue",
+          "label": "Pelluhue"
+        },
+        {
+          "value": "Curicó",
+          "label": "Curicó"
+        },
+        {
+          "value": "Hualañé",
+          "label": "Hualañé"
+        },
+        {
+          "value": "Licantén",
+          "label": "Licantén"
+        },
+        {
+          "value": "Molina",
+          "label": "Molina"
+        },
+        {
+          "value": "Rauco",
+          "label": "Rauco"
+        },
+        {
+          "value": "Romeral",
+          "label": "Romeral"
+        },
+        {
+          "value": "Sagrada Familia",
+          "label": "Sagrada Familia"
+        },
+        {
+          "value": "Teno",
+          "label": "Teno"
+        },
+        {
+          "value": "Vichuquén",
+          "label": "Vichuquén"
+        },
+        {
+          "value": "Linares",
+          "label": "Linares"
+        },
+        {
+          "value": "Colbún",
+          "label": "Colbún"
+        },
+        {
+          "value": "Longaví",
+          "label": "Longaví"
+        },
+        {
+          "value": "Parral",
+          "label": "Parral"
+        },
+        {
+          "value": "Retiro",
+          "label": "Retiro"
+        },
+        {
+          "value": "San Javier",
+          "label": "San Javier"
+        },
+        {
+          "value": "Villa Alegre",
+          "label": "Villa Alegre"
+        },
+        {
+          "value": "Yerbas Buenas",
+          "label": "Yerbas Buenas"
+        }
+      ],
+      "Ñuble": [
+        {
+          "value": "Chillán",
+          "label": "Chillán"
+        },
+        {
+          "value": "Bulnes",
+          "label": "Bulnes"
+        },
+        {
+          "value": "Chillán Viejo",
+          "label": "Chillán Viejo"
+        },
+        {
+          "value": "El Carmen",
+          "label": "El Carmen"
+        },
+        {
+          "value": "Pemuco",
+          "label": "Pemuco"
+        },
+        {
+          "value": "Pinto",
+          "label": "Pinto"
+        },
+        {
+          "value": "Quillón",
+          "label": "Quillón"
+        },
+        {
+          "value": "San Ignacio",
+          "label": "San Ignacio"
+        },
+        {
+          "value": "Yungay",
+          "label": "Yungay"
+        },
+        {
+          "value": "Quirihue",
+          "label": "Quirihue"
+        },
+        {
+          "value": "Cobquecura",
+          "label": "Cobquecura"
+        },
+        {
+          "value": "Coelemu",
+          "label": "Coelemu"
+        },
+        {
+          "value": "Ninhue",
+          "label": "Ninhue"
+        },
+        {
+          "value": "Portezuelo",
+          "label": "Portezuelo"
+        },
+        {
+          "value": "Ránquil",
+          "label": "Ránquil"
+        },
+        {
+          "value": "Treguaco",
+          "label": "Treguaco"
+        },
+        {
+          "value": "San Carlos",
+          "label": "San Carlos"
+        },
+        {
+          "value": "Coihueco",
+          "label": "Coihueco"
+        },
+        {
+          "value": "Ñiquén",
+          "label": "Ñiquén"
+        },
+        {
+          "value": "San Fabián",
+          "label": "San Fabián"
+        },
+        {
+          "value": "San Nicolás",
+          "label": "San Nicolás"
+        }
+      ],
+      "Biobío": [
+        {
+          "value": "Concepción",
+          "label": "Concepción"
+        },
+        {
+          "value": "Coronel",
+          "label": "Coronel"
+        },
+        {
+          "value": "Chiguayante",
+          "label": "Chiguayante"
+        },
+        {
+          "value": "Florida",
+          "label": "Florida"
+        },
+        {
+          "value": "Hualqui",
+          "label": "Hualqui"
+        },
+        {
+          "value": "Lota",
+          "label": "Lota"
+        },
+        {
+          "value": "Penco",
+          "label": "Penco"
+        },
+        {
+          "value": "San Pedro de La Paz",
+          "label": "San Pedro de La Paz"
+        },
+        {
+          "value": "Santa Juana",
+          "label": "Santa Juana"
+        },
+        {
+          "value": "Talcahuano",
+          "label": "Talcahuano"
+        },
+        {
+          "value": "Tomé",
+          "label": "Tomé"
+        },
+        {
+          "value": "Hualpén",
+          "label": "Hualpén"
+        },
+        {
+          "value": "Lebu",
+          "label": "Lebu"
+        },
+        {
+          "value": "Arauco",
+          "label": "Arauco"
+        },
+        {
+          "value": "Cañete",
+          "label": "Cañete"
+        },
+        {
+          "value": "Contulmo",
+          "label": "Contulmo"
+        },
+        {
+          "value": "Curanilahue",
+          "label": "Curanilahue"
+        },
+        {
+          "value": "Los Álamos",
+          "label": "Los Álamos"
+        },
+        {
+          "value": "Tirúa",
+          "label": "Tirúa"
+        },
+        {
+          "value": "Los Ángeles",
+          "label": "Los Ángeles"
+        },
+        {
+          "value": "Antuco",
+          "label": "Antuco"
+        },
+        {
+          "value": "Cabrero",
+          "label": "Cabrero"
+        },
+        {
+          "value": "Laja",
+          "label": "Laja"
+        },
+        {
+          "value": "Mulchén",
+          "label": "Mulchén"
+        },
+        {
+          "value": "Nacimiento",
+          "label": "Nacimiento"
+        },
+        {
+          "value": "Negrete",
+          "label": "Negrete"
+        },
+        {
+          "value": "Quilaco",
+          "label": "Quilaco"
+        },
+        {
+          "value": "Quilleco",
+          "label": "Quilleco"
+        },
+        {
+          "value": "San Rosendo",
+          "label": "San Rosendo"
+        },
+        {
+          "value": "Santa Bárbara",
+          "label": "Santa Bárbara"
+        },
+        {
+          "value": "Tucapel",
+          "label": "Tucapel"
+        },
+        {
+          "value": "Yumbel",
+          "label": "Yumbel"
+        },
+        {
+          "value": "Alto Biobío",
+          "label": "Alto Biobío"
+        }
+      ],
+      "La Araucanía": [
+        {
+          "value": "Temuco",
+          "label": "Temuco"
+        },
+        {
+          "value": "Carahue",
+          "label": "Carahue"
+        },
+        {
+          "value": "Cunco",
+          "label": "Cunco"
+        },
+        {
+          "value": "Curarrehue",
+          "label": "Curarrehue"
+        },
+        {
+          "value": "Freire",
+          "label": "Freire"
+        },
+        {
+          "value": "Galvarino",
+          "label": "Galvarino"
+        },
+        {
+          "value": "Gorbea",
+          "label": "Gorbea"
+        },
+        {
+          "value": "Lautaro",
+          "label": "Lautaro"
+        },
+        {
+          "value": "Loncoche",
+          "label": "Loncoche"
+        },
+        {
+          "value": "Melipeuco",
+          "label": "Melipeuco"
+        },
+        {
+          "value": "Nueva Imperial",
+          "label": "Nueva Imperial"
+        },
+        {
+          "value": "Padre Las Casas",
+          "label": "Padre Las Casas"
+        },
+        {
+          "value": "Perquenco",
+          "label": "Perquenco"
+        },
+        {
+          "value": "Pitrufquén",
+          "label": "Pitrufquén"
+        },
+        {
+          "value": "Pucón",
+          "label": "Pucón"
+        },
+        {
+          "value": "Saavedra",
+          "label": "Saavedra"
+        },
+        {
+          "value": "Teodoro Schmidt",
+          "label": "Teodoro Schmidt"
+        },
+        {
+          "value": "Toltén",
+          "label": "Toltén"
+        },
+        {
+          "value": "Vilcún",
+          "label": "Vilcún"
+        },
+        {
+          "value": "Villarrica",
+          "label": "Villarrica"
+        },
+        {
+          "value": "Cholchol",
+          "label": "Cholchol"
+        },
+        {
+          "value": "Angol",
+          "label": "Angol"
+        },
+        {
+          "value": "Collipulli",
+          "label": "Collipulli"
+        },
+        {
+          "value": "Curacautín",
+          "label": "Curacautín"
+        },
+        {
+          "value": "Ercilla",
+          "label": "Ercilla"
+        },
+        {
+          "value": "Lonquimay",
+          "label": "Lonquimay"
+        },
+        {
+          "value": "Los Sauces",
+          "label": "Los Sauces"
+        },
+        {
+          "value": "Lumaco",
+          "label": "Lumaco"
+        },
+        {
+          "value": "Purén",
+          "label": "Purén"
+        },
+        {
+          "value": "Renaico",
+          "label": "Renaico"
+        },
+        {
+          "value": "Traiguén",
+          "label": "Traiguén"
+        },
+        {
+          "value": "Victoria",
+          "label": "Victoria"
+        }
+      ],
+      "Los Ríos": [
+        {
+          "value": "Valdivia",
+          "label": "Valdivia"
+        },
+        {
+          "value": "Corral",
+          "label": "Corral"
+        },
+        {
+          "value": "Lanco",
+          "label": "Lanco"
+        },
+        {
+          "value": "Los Lagos",
+          "label": "Los Lagos"
+        },
+        {
+          "value": "Máfil",
+          "label": "Máfil"
+        },
+        {
+          "value": "Mariquina",
+          "label": "Mariquina"
+        },
+        {
+          "value": "Paillaco",
+          "label": "Paillaco"
+        },
+        {
+          "value": "Panguipulli",
+          "label": "Panguipulli"
+        },
+        {
+          "value": "La Unión",
+          "label": "La Unión"
+        },
+        {
+          "value": "Futrono",
+          "label": "Futrono"
+        },
+        {
+          "value": "Lago Ranco",
+          "label": "Lago Ranco"
+        },
+        {
+          "value": "Río Bueno",
+          "label": "Río Bueno"
+        }
+      ],
+      "Los Lagos": [
+        {
+          "value": "Puerto Montt",
+          "label": "Puerto Montt"
+        },
+        {
+          "value": "Calbuco",
+          "label": "Calbuco"
+        },
+        {
+          "value": "Cochamó",
+          "label": "Cochamó"
+        },
+        {
+          "value": "Fresia",
+          "label": "Fresia"
+        },
+        {
+          "value": "Frutillar",
+          "label": "Frutillar"
+        },
+        {
+          "value": "Los Muermos",
+          "label": "Los Muermos"
+        },
+        {
+          "value": "Llanquihue",
+          "label": "Llanquihue"
+        },
+        {
+          "value": "Maullín",
+          "label": "Maullín"
+        },
+        {
+          "value": "Puerto Varas",
+          "label": "Puerto Varas"
+        },
+        {
+          "value": "Castro",
+          "label": "Castro"
+        },
+        {
+          "value": "Ancud",
+          "label": "Ancud"
+        },
+        {
+          "value": "Chonchi",
+          "label": "Chonchi"
+        },
+        {
+          "value": "Curaco de Vélez",
+          "label": "Curaco de Vélez"
+        },
+        {
+          "value": "Dalcahue",
+          "label": "Dalcahue"
+        },
+        {
+          "value": "Puqueldón",
+          "label": "Puqueldón"
+        },
+        {
+          "value": "Queilén",
+          "label": "Queilén"
+        },
+        {
+          "value": "Quellón",
+          "label": "Quellón"
+        },
+        {
+          "value": "Quemchi",
+          "label": "Quemchi"
+        },
+        {
+          "value": "Quinchao",
+          "label": "Quinchao"
+        },
+        {
+          "value": "Osorno",
+          "label": "Osorno"
+        },
+        {
+          "value": "Puerto Octay",
+          "label": "Puerto Octay"
+        },
+        {
+          "value": "Purranque",
+          "label": "Purranque"
+        },
+        {
+          "value": "Puyehue",
+          "label": "Puyehue"
+        },
+        {
+          "value": "Río Negro",
+          "label": "Río Negro"
+        },
+        {
+          "value": "San Juan de la Costa",
+          "label": "San Juan de la Costa"
+        },
+        {
+          "value": "San Pablo",
+          "label": "San Pablo"
+        },
+        {
+          "value": "Chaitén",
+          "label": "Chaitén"
+        },
+        {
+          "value": "Futaleufú",
+          "label": "Futaleufú"
+        },
+        {
+          "value": "Hualaihué",
+          "label": "Hualaihué"
+        },
+        {
+          "value": "Palena",
+          "label": "Palena"
+        }
+      ],
+      "Aysén": [
+        {
+          "value": "Coyhaique",
+          "label": "Coyhaique"
+        },
+        {
+          "value": "Lago Verde",
+          "label": "Lago Verde"
+        },
+        {
+          "value": "Aysén",
+          "label": "Aysén"
+        },
+        {
+          "value": "Cisnes",
+          "label": "Cisnes"
+        },
+        {
+          "value": "Guaitecas",
+          "label": "Guaitecas"
+        },
+        {
+          "value": "Cochrane",
+          "label": "Cochrane"
+        },
+        {
+          "value": "O'Higgins",
+          "label": "O'Higgins"
+        },
+        {
+          "value": "Tortel",
+          "label": "Tortel"
+        },
+        {
+          "value": "Chile Chico",
+          "label": "Chile Chico"
+        },
+        {
+          "value": "Río Ibáñez",
+          "label": "Río Ibáñez"
+        }
+      ],
+      "Magallanes y Antártica Chilena": [
+        {
+          "value": "Punta Arenas",
+          "label": "Punta Arenas"
+        },
+        {
+          "value": "Laguna Blanca",
+          "label": "Laguna Blanca"
+        },
+        {
+          "value": "Río Verde",
+          "label": "Río Verde"
+        },
+        {
+          "value": "San Gregorio",
+          "label": "San Gregorio"
+        },
+        {
+          "value": "Cabo de Hornos",
+          "label": "Cabo de Hornos"
+        },
+        {
+          "value": "Antártica",
+          "label": "Antártica"
+        },
+        {
+          "value": "Porvenir",
+          "label": "Porvenir"
+        },
+        {
+          "value": "Primavera",
+          "label": "Primavera"
+        },
+        {
+          "value": "Timaukel",
+          "label": "Timaukel"
+        },
+        {
+          "value": "Natales",
+          "label": "Natales"
+        },
+        {
+          "value": "Torres del Paine",
+          "label": "Torres del Paine"
+        }
+      ],
+      "Metropolitana de Santiago": [
+        {
+          "value": "Santiago",
+          "label": "Santiago"
+        },
+        {
+          "value": "Cerrillos",
+          "label": "Cerrillos"
+        },
+        {
+          "value": "Cerro Navia",
+          "label": "Cerro Navia"
+        },
+        {
+          "value": "Conchalí",
+          "label": "Conchalí"
+        },
+        {
+          "value": "El Bosque",
+          "label": "El Bosque"
+        },
+        {
+          "value": "Estación Central",
+          "label": "Estación Central"
+        },
+        {
+          "value": "Huechuraba",
+          "label": "Huechuraba"
+        },
+        {
+          "value": "Independencia",
+          "label": "Independencia"
+        },
+        {
+          "value": "La Cisterna",
+          "label": "La Cisterna"
+        },
+        {
+          "value": "La Florida",
+          "label": "La Florida"
+        },
+        {
+          "value": "La Granja",
+          "label": "La Granja"
+        },
+        {
+          "value": "La Pintana",
+          "label": "La Pintana"
+        },
+        {
+          "value": "La Reina",
+          "label": "La Reina"
+        },
+        {
+          "value": "Las Condes",
+          "label": "Las Condes"
+        },
+        {
+          "value": "Lo Barnechea",
+          "label": "Lo Barnechea"
+        },
+        {
+          "value": "Lo Espejo",
+          "label": "Lo Espejo"
+        },
+        {
+          "value": "Lo Prado",
+          "label": "Lo Prado"
+        },
+        {
+          "value": "Macul",
+          "label": "Macul"
+        },
+        {
+          "value": "Maipú",
+          "label": "Maipú"
+        },
+        {
+          "value": "Ñuñoa",
+          "label": "Ñuñoa"
+        },
+        {
+          "value": "Pedro Aguirre Cerda",
+          "label": "Pedro Aguirre Cerda"
+        },
+        {
+          "value": "Peñalolén",
+          "label": "Peñalolén"
+        },
+        {
+          "value": "Providencia",
+          "label": "Providencia"
+        },
+        {
+          "value": "Pudahuel",
+          "label": "Pudahuel"
+        },
+        {
+          "value": "Quilicura",
+          "label": "Quilicura"
+        },
+        {
+          "value": "Quinta Normal",
+          "label": "Quinta Normal"
+        },
+        {
+          "value": "Recoleta",
+          "label": "Recoleta"
+        },
+        {
+          "value": "Renca",
+          "label": "Renca"
+        },
+        {
+          "value": "San Joaquín",
+          "label": "San Joaquín"
+        },
+        {
+          "value": "San Miguel",
+          "label": "San Miguel"
+        },
+        {
+          "value": "San Ramón",
+          "label": "San Ramón"
+        },
+        {
+          "value": "Vitacura",
+          "label": "Vitacura"
+        },
+        {
+          "value": "Puente Alto",
+          "label": "Puente Alto"
+        },
+        {
+          "value": "Pirque",
+          "label": "Pirque"
+        },
+        {
+          "value": "San José de Maipo",
+          "label": "San José de Maipo"
+        },
+        {
+          "value": "Colina",
+          "label": "Colina"
+        },
+        {
+          "value": "Lampa",
+          "label": "Lampa"
+        },
+        {
+          "value": "Til Til",
+          "label": "Til Til"
+        },
+        {
+          "value": "San Bernardo",
+          "label": "San Bernardo"
+        },
+        {
+          "value": "Buin",
+          "label": "Buin"
+        },
+        {
+          "value": "Calera de Tango",
+          "label": "Calera de Tango"
+        },
+        {
+          "value": "Paine",
+          "label": "Paine"
+        },
+        {
+          "value": "Melipilla",
+          "label": "Melipilla"
+        },
+        {
+          "value": "Alhué",
+          "label": "Alhué"
+        },
+        {
+          "value": "Curacaví",
+          "label": "Curacaví"
+        },
+        {
+          "value": "María Pinto",
+          "label": "María Pinto"
+        },
+        {
+          "value": "San Pedro",
+          "label": "San Pedro"
+        },
+        {
+          "value": "Talagante",
+          "label": "Talagante"
+        },
+        {
+          "value": "El Monte",
+          "label": "El Monte"
+        },
+        {
+          "value": "Isla de Maipo",
+          "label": "Isla de Maipo"
+        },
+        {
+          "value": "Padre Hurtado",
+          "label": "Padre Hurtado"
+        },
+        {
+          "value": "Peñaflor",
+          "label": "Peñaflor"
+        }
+      ]
+    },
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "gender",
+    "label": "Identidad de Género",
+    "type": "select",
+    "isPII": false,
+    "options": [
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "Femenino",
+        "label": "Femenino"
+      },
+      {
+        "value": "Masculino",
+        "label": "Masculino"
+      },
+      {
+        "value": "Transfemenino",
+        "label": "Transfemenino"
+      },
+      {
+        "value": "Transmasculino",
+        "label": "Transmasculino"
+      },
+      {
+        "value": "No binario",
+        "label": "No binario"
+      },
+      {
+        "value": "Estoy descubriéndolo",
+        "label": "Estoy descubriéndolo"
+      },
+      {
+        "value": "No sé",
+        "label": "No sé"
+      },
+      {
+        "value": "Prefiero no responder",
+        "label": "Prefiero no responder"
+      }
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "sexualAndAffectiveOrientation",
+    "label": "Orientación Sexoafectiva",
+    "type": "select",
+    "isPII": false,
+    "options": [
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "Lesbiana",
+        "label": "Lesbiana"
+      },
+      {
+        "value": "Gay",
+        "label": "Gay"
+      },
+      {
+        "value": "Bisexual",
+        "label": "Bisexual"
+      },
+      {
+        "value": "Pansexual",
+        "label": "Pansexual"
+      },
+      {
+        "value": "Asexual",
+        "label": "Asexual"
+      },
+      {
+        "value": "Heterosexual",
+        "label": "Heterosexual"
+      },
+      {
+        "value": "Estoy descubriéndolo",
+        "label": "Estoy descubriéndolo"
+      },
+      {
+        "value": "No sé",
+        "label": "No sé"
+      },
+      {
+        "value": "Prefiero no responder",
+        "label": "Prefiero no responder"
+      }
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "intersexuality",
+    "label": "Intersexualidad",
+    "type": "select",
+    "isPII": false,
+    "options": [
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "Si",
+        "label": "Si"
       },
       {
         "value": "No",
         "label": "No"
+      },
+      {
+        "value": "No sé",
+        "label": "No sé"
+      },
+      {
+        "value": "Prefiero no responder",
+        "label": "Prefiero no responder"
       }
-    ]
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
   },
   {
-    "name": "riskLevel",
-    "label": "Risk level",
+    "name": "neurodivergence",
+    "label": "Soy una persona neurodivergente",
     "type": "select",
     "isPII": false,
-    "defaultOption": {
-      "value": "",
-      "label": ""
-    },
-
     "options": [
       {
         "value": "",
         "label": ""
       },
       {
-        "value": "Low risk - Suicidal ideation without plan or intent",
-        "label": "Low risk - Suicidal ideation without plan or intent"
+        "value": "Sí",
+        "label": "Sí"
       },
       {
-        "value": "Medium risk - Suicidal ideation with some level of plan and low intent",
-        "label": "Medium risk - Suicidal ideation with some level of plan and low intent"
+        "value": "No",
+        "label": "No"
       },
       {
-        "value": "High risk – Suicidal ideation with a plan and intent",
-        "label": "High risk – Suicidal ideation with a plan and intent"
+        "value": "No sé",
+        "label": "No sé"
+      },
+      {
+        "value": "Prefiero no responder",
+        "label": "Prefiero no responder"
       }
-    ]
-  },
-  {
-    "name": "cfSportLevel",
-    "label": "CF - Sport Level",
-    "type": "select",
-    "isPII": false,
-    "options": [
-      {
-        "value": "N/A",
-        "label": ""
-      },
-      {
-        "value": "N/A",
-        "label": "N/A"
-      },
-      {
-        "value": "Club",
-        "label": "Club"
-      },
-      {
-        "value": "K-12",
-        "label": "K-12"
-      },
-      {
-        "value": "College",
-        "label": "College"
-      },
-      {
-        "value": "Recreational",
-        "label": "Recreational"
-      },
-      {
-        "value": "Pro",
-        "label": "Pro"
-      },
-      {
-        "value": "Elite",
-        "label": "Elite"
-      },
-      {
-        "value": "Adaptive Paralympic",
-        "label": "Adaptive Paralympic"
-      },
-      {
-        "value": "Unknown",
-        "label": "Unknown"
-      }
-    ]
-  },
-  {
-    "name": "cfSportPlayed",
-    "label": "CF - Sport Played",
-    "type": "select",
-    "isPII": false,
-    "options": [
-      {
-        "value": "N/A",
-        "label": ""
-      },
-      {
-        "value": "N/A",
-        "label": "N/A"
-      },
-      {
-        "value": "Archery",
-        "label": "Archery"
-      },
-      {
-        "value": "Baseball",
-        "label": "Baseball"
-      },
-      {
-        "value": "Basketball",
-        "label": "Basketball"
-      },
-      {
-        "value": "Cheer",
-        "label": "Cheer"
-      },
-      {
-        "value": "Cycling",
-        "label": "Cycling"
-      },
-      {
-        "value": "Dance",
-        "label": "Dance"
-      },
-      {
-        "value": "Fencing",
-        "label": "Fencing"
-      },
-      {
-        "value": "Football",
-        "label": "Football"
-      },
-      {
-        "value": "Golf",
-        "label": "Golf"
-      },
-      {
-        "value": "Gymnastics",
-        "label": "Gymnastics"
-      },
-      {
-        "value": "Hockey",
-        "label": "Hockey"
-      },
-      {
-        "value": "Horseback riding",
-        "label": "Horseback riding"
-      },
-      {
-        "value": "Lacrosse",
-        "label": "Lacrosse"
-      },
-      {
-        "value": "Martial arts",
-        "label": "Martial arts"
-      },
-      {
-        "value": "Rowing",
-        "label": "Rowing"
-      },
-      {
-        "value": "Rugby",
-        "label": "Rugby"
-      },
-      {
-        "value": "Skiing/Snowboarding",
-        "label": "Skiing/Snowboarding"
-      },
-      {
-        "value": "Soccer",
-        "label": "Soccer"
-      },
-      {
-        "value": "Softball",
-        "label": "Softball"
-      },
-      {
-        "value": "Swimming/Diving",
-        "label": "Swimming/Diving"
-      },
-      {
-        "value": "Tennis",
-        "label": "Tennis"
-      },
-      {
-        "value": "Track & field",
-        "label": "Track & field"
-      },
-      {
-        "value": "Volleyball",
-        "label": "Volleyball"
-      },
-      {
-        "value": "Weightlifting/Body building",
-        "label": "Weightlifting/Body building"
-      },
-      {
-        "value": "Wrestling",
-        "label": "Wrestling"
-      },
-      {
-        "value": "Other",
-        "label": "Other"
-      }
-    ]
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
   }
 ]

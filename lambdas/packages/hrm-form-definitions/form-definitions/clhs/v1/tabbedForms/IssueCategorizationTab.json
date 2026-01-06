@@ -1,224 +1,103 @@
 {
-  "Childhelp": {
+  "Hora Segura": {
     "maxSelections": 100,
     "categories": {
-      "Access to Services": {
-        "color": "#f0817c",
-        "subcategories": [
-          {
-            "label": "Child Care Issues"
-          },
-          {
-            "label": "Child Support- Custody Dispute"
-          },
-          {
-            "label": "Childhelp Information"
-          },
-          {
-            "label": "CPS- Questions/Information"
-          },
-          {
-            "label": "CPS- Report Abuse"
-          },
-          {
-            "label": "Emancipation"
-          },
-          {
-            "label": "Father's Rights"
-          },
-          {
-            "label": "Grandparent's Rights"
-          },
-          {
-            "label": "Homelessness"
-          },
-          {
-            "label": "Legal Issues"
-          },
-          {
-            "label": "System Failure"
-          },
-          {
-            "label": "Welfare Fraud"
-          }
-        ]
-      },
-      "Courage First Athlete Helpline": {
-        "color": "#14919b",
-        "subcategories": [
-          {
-            "label": "Athletic Touching"
-          },
-          {
-            "label": "Body Image/Eating Disorder"
-          },
-          {
-            "label": "Bullying/Teammate Dynamics"
-          },
-          {
-            "label": "Burnout/Loss of Identity"
-          },
-          {
-            "label": "Coaching Issue"
-          },
-          {
-            "label": "Courage First Information"
-          },
-          {
-            "label": "Doping"
-          },
-          {
-            "label": "Grooming/Power Asymmetry"
-          },
-          {
-            "label": "Safesport Reporting Information"
-          },
-          {
-            "label": "Sports Retirement"
-          }
-        ]
-      },
-      "Discrimination and Exclusion": {
-        "color": "#4d92c2",
-        "subcategories": [
-          {
-            "label": "Immigration Issues"
-          },
-          {
-            "label": "LGBTQIA Issues"
-          },
-          {
-            "label": "Racial Bias/Discrimination"
-          },
-          {
-            "label": "Refugee Issues"
-          }
-        ]
-      },
-      "Education and Occupation": {
-        "color": "#e7c582",
-        "subcategories": [
-          {
-            "label": "School Issues"
-          },
-          {
-            "label": "Youth Sports/Coaching Issues"
-          }
-        ]
-      },
-      "Family Relationships": {
-        "color": "#c99f7d",
-        "subcategories": [
-          {
-            "label": "Parent-Teen Relationships"
-          },
-          {
-            "label": "Parenting Concerns- Other"
-          },
-          {
-            "label": "Parenting Concerns- Own"
-          },
-          {
-            "label": "Teen Issues"
-          }
-        ]
-      },
-      "Mental Health": {
-        "color": "#fac05e",
-        "subcategories": [
-          {
-            "label": "Addiction/Substance Use"
-          },
-          {
-            "label": "Adult Survivor Issues"
-          },
-          {
-            "label": "Discipline/Behavior Issues"
-          },
-          {
-            "label": "Mental Health Issues"
-          },
-          {
-            "label": "Non-Suicidal Self Injury"
-          },
-          {
-            "label": "Suicide Ideation- Other"
-          },
-          {
-            "label": "Suicide Ideation- Self"
-          }
-        ]
-      },
-      "Missing children": {
+      "Salud mental ": {
         "color": "#085f63",
         "subcategories": [
           {
-            "label": "Abduction Issues"
+            "label": "Consumo Problemático de Sustancia"
           },
           {
-            "label": "Runaway"
+            "label": "Sintomatología Ansiosa"
+          },
+          {
+            "label": "Sintomatología Depresiva"
+          },
+          {
+            "label": "Comportamiento Suicida"
+          },
+          {
+            "label": "TCA"
           }
         ]
       },
-      "Violence": {
+      "Violencia ": {
         "color": "#14919b",
         "subcategories": [
           {
-            "label": "Abandonment"
+            "label": "Bullying/Cyberbullying"
           },
           {
-            "label": "Abuse Neglect- Medical"
+            "label": "Negligencia"
           },
           {
-            "label": "Abuse- Adult or Elderly"
+            "label": "Vulneración de Derechos"
           },
           {
-            "label": "Abuse- Emotional"
+            "label": "Discriminación por OSIEGCS"
+          }
+        ]
+      },
+      "Problemáticas en los vínculos ": {
+        "color": "#fac05e",
+        "subcategories": [
+          {
+            "label": "Familia"
           },
           {
-            "label": "Abuse- Neglect"
+            "label": "Amistades"
           },
           {
-            "label": "Abuse- Physical"
+            "label": "Parejas"
           },
           {
-            "label": "Abuse- Sexual"
+            "label": "Pares en Establecimientos Escolares"
           },
           {
-            "label": "Abuse- Sibling"
+            "label": "Desconocidos"
+          }
+        ]
+      },
+      "Consejería": {
+        "color": "#f79d8f",
+        "subcategories": [
+          {
+            "label": "Psicoeducación Emocional"
           },
           {
-            "label": "Abuse- Unspecified"
+            "label": "Alfabetización"
           },
           {
-            "label": "Bullying"
+            "label": "Bienestar Sexual"
+          }
+        ]
+      },
+      "Derivación/Referenciación": {
+        "color": "#f0817c",
+        "subcategories": [
+          {
+            "label": "Derivación"
           },
           {
-            "label": "Child Sexual Abuse Material (CSAM)"
+            "label": "Referenciación"
+          }
+        ]
+      },
+      "Acceso a servicios": {
+        "color": "#4d92c2",
+        "subcategories": [
+          {
+            "label": "Salud Mental"
           },
           {
-            "label": "Domestic Violence"
+            "label": "Salud Sexual y Reproductiva"
           },
           {
-            "label": "Female Genital Mutilation (FGM/C)\n"
+            "label": "Apoyo Legal"
           },
           {
-            "label": "Forced Child Marriage"
-          },
-          {
-            "label": "Online Concerns"
-          },
-          {
-            "label": "Sex Offender Issues"
-          },
-          {
-            "label": "Sextortion"
-          },
-          {
-            "label": "Trafficking- Labor"
-          },
-          {
-            "label": "Trafficking- Sex"
+            "label": "Acompañamiento de Identidad de Género"
           }
         ]
       }

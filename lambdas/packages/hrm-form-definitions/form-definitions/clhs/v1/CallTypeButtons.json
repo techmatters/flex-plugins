@@ -1,56 +1,50 @@
 [
-    {
-        "name": "child",
-        "label": "Child calling about self",
-        "type": "button",
-        "category": "data"
-    },
-    {
-        "name": "caller",
-        "label": "Other",
-        "type": "button",
-        "category": "data"
-    },
-    {
-        "name": "donationVolunteer",
-        "label": "Donation/Volunteer",
-        "type": "button",
-        "category": "non-data"
-    },
-    {
-        "name": "noAnswer",
-        "label": "No Answer",
-        "type": "button",
-        "category": "non-data"
-    },
-    {
-        "name": "obscenePrank",
-        "label": "Obscene/Prank",
-        "type": "button",
-        "category": "non-data"
-    },
-    {
-        "name": "transferred",
-        "label": "Transferred",
-        "type": "button",
-        "category": "non-data"
-    },
- {
-        "name": "wrongNumber",
-        "label": "Wrong Number",
-        "type": "button",
-        "category": "non-data"
-    },
-    {
-        "name": "test",
-        "label": "Test",
-        "type": "button",
-        "category": "non-data"
-    },
-    {
-        "name": "outgoingCall",
-        "label": "Outgoing Call",
-        "type": "button",
-        "category": "non-data"
-    }
+  {
+    "name": "child",
+    "label": "Persona usuaria",
+    "type": "button",
+    "category": "data"
+  },
+  {
+    "name": "blank",
+    "label": "Desactivado",
+    "type": "button",
+    "category": "non-data"
+  },
+  {
+    "name": "silent",
+    "label": "No caracterizable",
+    "type": "button",
+    "category": "non-data"
+  },
+  {
+    "name": "joke",
+    "label": "Broma",
+    "type": "button",
+    "category": "non-data"
+  },
+  {
+    "name": "abusive",
+    "label": "Violento",
+    "type": "button",
+    "category": "non-data"
+  },
+  {
+    "name": "complaints",
+    "label": "Quejas del PHS",
+    "type": "button",
+    "category": "non-data"
+  },
+  {
+    "name": "questions",
+    "label": "Dudas generales PHS",
+    "type": "button",
+    "category": "non-data"
+  },
+  {
+    "name": "test",
+    "label": "Test",
+    "type": "button",
+    "category": "non-data"
+  }
 ]

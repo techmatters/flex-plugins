@@ -1,25 +1,12 @@
 {
-
-  "formSelector": {
-    "selectorType": "serviceUserChoiceSelector",
-    "parameter": [{
-      "form": "preEngagement",
-      "input": "aboutSelf",
-      "aboutSelfValue": "Yes"
-    }, {
-      "form": "survey",
-      "input": "aboutSelf"
-    }]
-  },
-  "survey":{
-   "ageRange":[["CallerInformationTab.ageRange","ChildInformationTab.ageRange"]],
-   "genderInput":[["CallerInformationTab.genderInput","ChildInformationTab.genderInput"]],
-   "stateInput":[["CallerInformationTab.stateInput","ChildInformationTab.stateInput"]]
-  },
   "preEngagement":{
-    "ageRange": [["CallerInformationTab.ageRange","ChildInformationTab.ageRange"]],
-    "genderInput":[["CallerInformationTab.genderInput","ChildInformationTab.genderInput"]],
-    "state":[["CallerInformationTab.state","ChildInformationTab.state"]],
-    "howTheHelpseekerHeardAboutUs":"CaseInformationTab.howTheHelpseekerHeardAboutUs"
+    "nameOrNickname": [["ChildInformationTab.nameOrNickname"]],
+    "age":[["ChildInformationTab.age"]],
+    "region":[["ChildInformationTab.region"]],
+    "commune":[["ChildInformationTab.commune"]],
+    "gender":[["ChildInformationTab.gender"]],
+    "sexualAndAffectiveOrientation":[["ChildInformationTab.sexualAndAffectiveOrientation"]],
+    "intersexuality":[["ChildInformationTab.intersexuality"]],
+    "neurodivergence":[["ChildInformationTab.neurodivergence"]]
   }
 }
