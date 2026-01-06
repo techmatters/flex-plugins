@@ -1,10 +1,10 @@
 {
-  "en": {
-    "WelcomeMsg": "Hello! I am a live counselor. This chat line does not take reports of abuse, but we are here to listen and to help by providing information, resources, and emotional support. How can I help you today?",
-    "GoodbyeMsg": "The counselor has left the chat. Thank you for reaching out. Please contact us again if you need more help.",
-    "EndChatMsg": "You ended the chat. Thank you for reaching out. Please contact us again if you need more help.",
-    "ClosedOutOfShift": "The helpline is out of shift, please reach us later.",
-    "ClosedHolidays": "The helpline is closed due to a holiday.",
-    "UnsupportedMediaErrorMsg": "Sorry, the message you just sent is unsupported and could not be delivered."
+  "es": {
+    "WelcomeMsg": "¡Hola! Te damos la bienvenida a este espacio seguro para conversar ❤️ Cuéntanos ¿En qué te podemos ayudar?",
+    "GoodbyeMsg": "¡Muchas gracias por contactarte con nuestro equipo! Recuerda que puedes volver cuando lo necesites en los horarios de atención disponibles.",
+    "EndChatMsg": "¡Muchas gracias por contactarte con nuestro equipo! Esperamos que la conversación te haya sido de apoyo.",
+    "ClosedOutOfShift": "Lamentamos no poder conversar contigo en este momento. Puedes hablar con nosotres en los siguientes horarios: Lunes y Martes de 13:00 a 14:00 y 18:00 a 00:00hrs. Horario de Chile. Miércoles a Viernes de 13:00 a 14:00 y 17:00 a 00:00hrs. Horario de Chile Sábados y Domingos de 13:00 a 14:00 y 19:00 a 23:00hrs. Horario de Chile Por el momento te recomendamos el siguiente material de apoye y otra línea de ayuda e información: Salud Responde Télefono disponible 24/7 para asistencia, orientación y apoyo en temáticas de salud. Contáctate al 600 360 7777",
+    "ClosedHolidays": "Lamentamos no poder conversar contigo en este momento. Puedes hablar con nosotres en los siguientes horarios: Lunes y Martes de 13:00 a 14:00 y 18:00 a 00:00hrs. Horario de Chile. Miércoles a Viernes de 13:00 a 14:00 y 17:00 a 00:00hrs. Horario de Chile Sábados y Domingos de 13:00 a 14:00 y 19:00 a 23:00hrs. Horario de Chile Por el momento te recomendamos el siguiente material de apoye y otra línea de ayuda e información: Salud Responde Télefono disponible 24/7 para asistencia, orientación y apoyo en temáticas de salud. Contáctate al 600 360 7777",
+    "UnsupportedMediaErrorMsg": "Lo sentimos, pero el archivo no es compatible con nuestros servicios."
   }
 }
