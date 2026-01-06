@@ -1,32 +1,22 @@
 [
   {
     "name": "summary",
-    "label": "Summary",
-    "editLabel": "Edit Summary",
+    "label": "Resumen",
+    "editLabel": "Editar Resumen",
     "type": "textarea",
     "rows": 20,
     "width": 500,
-    "placeholder": "Enter a summary of the client",
+    "placeholder": "Ingrese un resumen del cliente",
     "isPII": true
   },
   {
-    "name": "recommendedApproach",
-    "label": "Recommended Approach",
-    "editLabel": "Edit Recommended Approach",
+    "name": "blockReasons",
+    "label": "Motivo del Bloqueo",
+    "editLabel": "Editar motivo del bloqueo",
     "type": "textarea",
     "rows": 20,
     "width": 500,
-    "placeholder": "Enter recommended approach",
-    "isPII": true
-  },
-  {
-    "name": "details",
-    "label": "Details",
-    "editLabel": "Edit Details",
-    "type": "textarea",
-    "rows": 20,
-    "width": 500,
-    "placeholder": "Enter Details",
+    "placeholder": "Ingrese un motivo del bloqueo",
     "isPII": true
   }
 ]
