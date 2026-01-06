@@ -3,7 +3,7 @@
   "slotTypeValues": [
     {
       "sampleValue": {
-        "value": "muy en desacuerdo"
+        "value": "Muy en desacuerdo"
       },
       "synonyms": [
         {
@@ -19,7 +19,7 @@
     },
     {
       "sampleValue": {
-        "value": "de acuerdo"
+        "value": "De acuerdo"
       },
       "synonyms": [
         {
@@ -35,7 +35,7 @@
     },
     {
       "sampleValue": {
-        "value": "ni en desacuerdo ni de acuerdo"
+        "value": "Ni en desacuerdo ni de acuerdo"
       },
       "synonyms": [
         {
@@ -51,7 +51,7 @@
     },
     {
       "sampleValue": {
-        "value": "en desacuerdo"
+        "value": "En desacuerdo"
       },
       "synonyms": [
         {
@@ -67,7 +67,7 @@
     },
     {
       "sampleValue": {
-        "value": "muy de acuerdo"
+        "value": "Muy de acuerdo"
       },
       "synonyms": [
         {
