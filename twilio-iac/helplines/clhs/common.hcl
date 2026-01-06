@@ -38,7 +38,7 @@ locals {
         "friendly_name"  = "Atención"
       },
       priority : {
-        "target_workers" = "routing.skills HAS 'Prioridad'",
+        "target_workers" = "1==1",
         "friendly_name"  = "Contactos Urgentes"
       }
       survey : {
