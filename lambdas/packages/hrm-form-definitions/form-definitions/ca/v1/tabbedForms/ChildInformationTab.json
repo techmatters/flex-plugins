@@ -510,7 +510,7 @@
     "dependsOn": "Newcomer",
     "defaultOption": {
       "value": "Unknown",
-      "label": ""
+      "label": "Please select an option"
     },
       "options": {
         "Yes": [
