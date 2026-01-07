@@ -515,7 +515,7 @@
       "options": {
         "Yes": [
       {
-        "value": "",
+        "value": "Unknown",
         "label": "Please select an option"
       },
       {
@@ -844,6 +844,11 @@
       {
         "value": "No",
         "label": "No"
+      },
+       "No": [
+      {
+        "value": "N/A",
+        "label": "N/A"
       }
     ]
     },
@@ -859,7 +864,7 @@
     "type": "dependent-select",
     "dependsOn": "experiencingAbuse",
     "defaultOption": {
-      "value": "N/A",
+      "value": "Unknown",
       "label": ""
     },
       "options": {
