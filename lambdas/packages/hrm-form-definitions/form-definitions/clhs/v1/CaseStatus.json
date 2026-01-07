@@ -1,6 +1,6 @@
 {
   "open": {
-    "value": "abierta",
+    "value": "open",
     "label": "Abierta",
     "color": "green",
     "transitions": [
@@ -8,7 +8,7 @@
     ]
   },
   "closed": {
-    "value": "cerrada",
+    "value": "closed",
     "label": "Cerrada",
     "color": "red",
     "transitions": [
