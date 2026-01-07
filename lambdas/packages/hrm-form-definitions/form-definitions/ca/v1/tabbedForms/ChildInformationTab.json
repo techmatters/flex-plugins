@@ -515,10 +515,6 @@
       "options": {
         "Yes": [
       {
-        "value": "Unknown",
-        "label": "Please select an option"
-      },
-      {
         "value": "5 years or less",
         "label": "5 years or less"
       },
@@ -530,7 +526,25 @@
         "value": "Did not disclose/Did not ask",
         "label": "Did not disclose/Did not ask"
       }
-    ]
+    ],
+      "No": [
+      {
+        "value": "Unknown",
+        "label": "N/A"
+      }
+    ],
+     "Maybe": [
+      {
+        "value": "Unknown",
+        "label": "N/A"
+      }
+    ],
+     "Unknown": [
+      {
+        "value": "Unknown",
+        "label": "N/A"
+      }
+    ]    
     },
       "required": {
       "value": true,
@@ -656,15 +670,11 @@
     "type": "dependent-select",
     "dependsOn": "suicidalThoughts",
     "defaultOption": {
-      "value": "N/A",
-      "label": ""
+      "value": "Unknown",
+      "label": "N/A"
     },
       "options": {
         "Yes": [
-      {
-        "value": "",
-        "label": "Please select an option"
-      },
       {
         "value": "Yes",
         "label": "Yes"
@@ -672,6 +682,12 @@
       {
         "value": "No",
         "label": "No"
+      }
+    ],
+       "No": [
+      {
+        "value": "Unknown",
+        "label": "N/A"
       }
     ]
     },
@@ -687,15 +703,11 @@
     "type": "dependent-select",
     "dependsOn": "suicidalThoughts",
     "defaultOption": {
-      "value": "N/A",
-      "label": ""
+      "value": "Unknown",
+      "label": "N/A"
     },
       "options": {
         "Yes": [
-      {
-        "value": "",
-        "label": "Please select an option"
-      },
       {
         "value": "Yes",
         "label": "Yes"
@@ -703,6 +715,12 @@
       {
         "value": "No",
         "label": "No"
+      }
+    ],
+       "No": [
+      {
+        "value": "Unknown",
+        "label": "N/A"
       }
     ]
     },
@@ -742,15 +760,11 @@
     "type": "dependent-select",
     "dependsOn": "homicidalThoughts",
     "defaultOption": {
-      "value": "N/A",
-      "label": ""
+      "value": "Unknown",
+      "label": "N/A"
     },
       "options": {
         "Yes": [
-      {
-        "value": "",
-        "label": "Please select an option"
-      },
       {
         "value": "Yes",
         "label": "Yes"
@@ -758,6 +772,12 @@
       {
         "value": "No",
         "label": "No"
+      }
+    ],
+       "No": [
+      {
+        "value": "Unknown",
+        "label": "N/A"
       }
     ]
     },
@@ -773,15 +793,11 @@
     "type": "dependent-select",
     "dependsOn": "homicidalThoughts",
     "defaultOption": {
-      "value": "N/A",
-      "label": ""
+      "value": "Unknown",
+      "label": "N/A"
     },
       "options": {
         "Yes": [
-      {
-        "value": "",
-        "label": "Please select an option"
-      },
       {
         "value": "Yes",
         "label": "Yes"
@@ -789,6 +805,12 @@
       {
         "value": "No",
         "label": "No"
+      }
+    ],
+       "No": [
+      {
+        "value": "Unknown",
+        "label": "N/A"
       }
     ]
     },
@@ -828,15 +850,11 @@
     "type": "dependent-select",
     "dependsOn": "experiencingAbuse",
     "defaultOption": {
-      "value": "N/A",
-      "label": ""
+      "value": "Unknown",
+      "label": "N/A"
     },
       "options": {
         "Yes": [
-      {
-        "value": "",
-        "label": "Please select an option"
-      },
           {
         "value": "Yes",
         "label": "Yes"
@@ -848,7 +866,7 @@
       ],
        "No": [
       {
-        "value": "N/A",
+        "value": "Unknown",
         "label": "N/A"
       }
     ]
@@ -866,14 +884,10 @@
     "dependsOn": "experiencingAbuse",
     "defaultOption": {
       "value": "Unknown",
-      "label": ""
+      "label": "N/A"
     },
       "options": {
         "Yes": [
-      {
-        "value": "",
-        "label": "Please select an option"
-      },
           {
         "value": "Yes",
         "label": "Yes"
@@ -881,6 +895,12 @@
       {
         "value": "No",
         "label": "No"
+      }
+    ],
+       "No": [
+      {
+        "value": "Unknown",
+        "label": "N/A"
       }
     ]
     },
