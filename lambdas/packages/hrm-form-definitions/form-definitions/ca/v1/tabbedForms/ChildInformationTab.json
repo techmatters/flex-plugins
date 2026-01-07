@@ -509,7 +509,7 @@
     "type": "dependent-select",
     "dependsOn": "Newcomer",
     "defaultOption": {
-      "value": "Unknown",
+      "value": "N/A - Not Indigenous",
       "label": "Please select an option"
     },
       "options": {
@@ -526,29 +526,7 @@
         "value": "Did not disclose/Did not ask",
         "label": "Did not disclose/Did not ask"
       }
-    ],
-      "No": [
-      {
-        "value": "Unknown",
-        "label": "N/A"
-      }
-    ],
-     "Maybe": [
-      {
-        "value": "Unknown",
-        "label": "N/A"
-      }
-    ],
-     "Unknown": [
-      {
-        "value": "Unknown",
-        "label": "N/A"
-      }
-    ]    
-    },
-      "required": {
-      "value": true,
-      "message": "RequiredFieldError"
+    ]  
     },
     "isPII": false
   },
@@ -683,17 +661,7 @@
         "value": "No",
         "label": "No"
       }
-    ],
-       "No": [
-      {
-        "value": "Unknown",
-        "label": "N/A"
-      }
     ]
-    },
-      "required": {
-      "value": true,
-      "message": "RequiredFieldError"
     },
     "isPII": false
   },
@@ -716,17 +684,7 @@
         "value": "No",
         "label": "No"
       }
-    ],
-       "No": [
-      {
-        "value": "Unknown",
-        "label": "N/A"
-      }
     ]
-    },
-      "required": {
-      "value": true,
-      "message": "RequiredFieldError"
     },
     "isPII": false
   },
@@ -774,16 +732,6 @@
         "label": "No"
       }
     ],
-       "No": [
-      {
-        "value": "Unknown",
-        "label": "N/A"
-      }
-    ]
-    },
-      "required": {
-      "value": true,
-      "message": "RequiredFieldError"
     },
     "isPII": false
   },
@@ -807,16 +755,6 @@
         "label": "No"
       }
     ],
-       "No": [
-      {
-        "value": "Unknown",
-        "label": "N/A"
-      }
-    ]
-    },
-      "required": {
-      "value": true,
-      "message": "RequiredFieldError"
     },
     "isPII": false
   },
@@ -863,17 +801,8 @@
         "value": "No",
         "label": "No"
       }
-      ],
-       "No": [
-      {
-        "value": "Unknown",
-        "label": "N/A"
-      }
+      ]
     ]
-    },
-      "required": {
-      "value": true,
-      "message": "RequiredFieldError"
     },
     "isPII": false
   },
@@ -896,17 +825,7 @@
         "value": "No",
         "label": "No"
       }
-    ],
-       "No": [
-      {
-        "value": "Unknown",
-        "label": "N/A"
-      }
     ]
-    },
-      "required": {
-      "value": true,
-      "message": "RequiredFieldError"
     },
     "isPII": false
   }
