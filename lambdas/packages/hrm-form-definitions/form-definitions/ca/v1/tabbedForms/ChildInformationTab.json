@@ -634,6 +634,10 @@
       {
         "value": "No",
         "label": "No"
+      },
+      {
+        "value": "Not Applicable",
+        "label": "N/A"
       }
     ],
     "required": {
@@ -704,6 +708,10 @@
       {
         "value": "No",
         "label": "No"
+      },
+      {
+        "value": "Not Applicable",
+        "label": "N/A"
       }
     ],
     "required": {
@@ -774,6 +782,10 @@
       {
         "value": "No",
         "label": "No"
+      },
+      {
+        "value": "Not Applicable",
+        "label": "N/A"
       }
     ],
     "required": {
