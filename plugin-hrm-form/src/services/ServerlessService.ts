@@ -20,35 +20,12 @@
 
 /* eslint-disable sonarjs/prefer-immediate-return */
 /* eslint-disable camelcase */
-import { ITask, Notifications } from '@twilio/flex-ui';
+import { ITask } from '@twilio/flex-ui';
 import { DefinitionVersion, loadDefinition } from 'hrm-form-definitions';
 
 import fetchProtectedApi from './fetchProtectedApi';
 import type { ChildCSAMReportForm, CounselorCSAMReportForm } from '../states/csam-report/types';
 import { getHrmConfig } from '../hrmConfig';
-
-type TransferChatStartBody = {
-  taskSid: string;
-  targetSid: string;
-  ignoreAgent: string;
-  mode: string;
-};
-
-type TrasferChatStartReturn = { closed: string; kept: string };
-
-export const transferChatStart = async (body: TransferChatStartBody): Promise<TrasferChatStartReturn> => {
-  try {
-    const result = await fetchProtectedApi('/transferChatStart', body);
-    return result;
-  } catch (err) {
-    Notifications.showNotification('TransferFailed', {
-      reason: `Worker ${body.targetSid} is not available.`,
-    });
-
-    // propagate the error
-    throw err;
-  }
-};
 
 export const issueSyncToken = async (): Promise<string> => {
   const res = await fetchProtectedApi('/issueSyncToken');
