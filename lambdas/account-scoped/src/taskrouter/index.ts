@@ -21,6 +21,7 @@ import '../task/addCustomerExternalIdTaskRouterListener';
 import '../task/addInitialHangUpByTaskRouterListener';
 import '../conversation/addTaskSidToChannelAttributesTaskRouterListener';
 import '../channelCapture/postSurveyListener';
+import '../transfer/transferTaskRouterListener';
 
 export { handleTaskRouterEvent } from './taskrouterEventHandler';
 
