@@ -50,6 +50,8 @@ import { initWebchatHandler } from './webchatAuthentication/initWebchat';
 import { refreshTokenHandler } from './webchatAuthentication/refreshToken';
 import { getAccountSid } from '@tech-matters/twilio-configuration';
 import { validateRequestWithTwilioJwtToken } from './validation/twilioJwt';
+import { transferStartHandler } from './transfer/transferStart';
+import { adjustChatCapacityHandler } from './conversation/adjustChatCapacity';
 
 /**
  * Super simple router sufficient for directly ported Twilio Serverless functions
@@ -115,6 +117,10 @@ const ACCOUNTSID_ROUTES: Record<
     requestPipeline: [validateWebhookRequest],
     handler: handleConversationEvent,
   },
+  'conversation/adjustChatCapacity': {
+    requestPipeline: [validateFlexTokenRequest({ tokenMode: 'worker' })],
+    handler: adjustChatCapacityHandler,
+  },
   'customChannels/instagram/instagramToFlex': {
     requestPipeline: [],
     handler: instagramToFlexHandler,
@@ -154,6 +160,10 @@ const ACCOUNTSID_ROUTES: Record<
   'task/getTaskAndReservations': {
     requestPipeline: [validateFlexTokenRequest({ tokenMode: 'worker' })],
     handler: getTaskAndReservationsHandler,
+  },
+  'transfer/transferStart': {
+    requestPipeline: [validateFlexTokenRequest({ tokenMode: 'worker' })],
+    handler: transferStartHandler,
   },
   updateWorkersSkills: {
     requestPipeline: [validateFlexTokenRequest({ tokenMode: 'supervisor' })],
