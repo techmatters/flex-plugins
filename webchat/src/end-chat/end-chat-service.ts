@@ -31,8 +31,7 @@ export const finishChatTask = async (channelSid: ChannelSid, token: Token, langu
       'Content-Type': 'application/json',
     },
   };
-  // eslint-disable-next-line global-require
-  const { SERVERLESS_URL } = require('../../private/secret');
+
   const response = await fetch(`${config.twilioServicesUrl}/endChat`, options);
   const responseJson = await response.json();
 
