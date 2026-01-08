@@ -26,6 +26,7 @@ import { isErr, newErr, newOk, Result } from '../Result';
 import { WorkerInstance } from 'twilio/lib/rest/taskrouter/v1/workspace/worker';
 import { getSsmParameter } from '@tech-matters/ssm-cache';
 import { retrieveServiceConfigurationAttributes } from '../configuration/aseloConfiguration';
+import { TaskInstance } from 'twilio/lib/rest/taskrouter/v1/workspace/task';
 
 export type Body = {
   taskSid: TaskSID;
@@ -170,6 +171,28 @@ async function increaseChatCapacity(
   }
 }
 
+export const transferCallToQueue = async (
+  accountSid: AccountSID,
+  originalTask: TaskInstance,
+  newAttributes: any,
+): Promise<TaskSID> => {
+  const client = await getTwilioClient(accountSid);
+  const programmableChatTransferWorkflowSid =
+    await getConversationsTransferWorkflow(accountSid);
+
+  // create New task
+  const newTask = await client.taskrouter.v1.workspaces
+    .get(await getWorkspaceSid(accountSid))
+    .tasks.create({
+      workflowSid: programmableChatTransferWorkflowSid,
+      taskChannel: originalTask.taskChannelUniqueName,
+      attributes: JSON.stringify(newAttributes),
+      priority: 100,
+    });
+
+  return newTask.sid as TaskSID;
+};
+
 export const transferStartHandler: AccountScopedHandler = async (
   { body: event }: HttpRequest,
   accountSid: AccountSID,
@@ -241,8 +264,13 @@ export const transferStartHandler: AccountScopedHandler = async (
     transferTargetType,
   };
 
+  if (originalTask.taskChannelUniqueName === 'voice') {
+    const newTaskSid = transferCallToQueue(accountSid, originalTask, newAttributes);
+    return newOk({ taskSid: newTaskSid });
+  }
+
   /**
-   * Check if is transfering a conversation.
+   * Check if is transferring a conversation.
    * It might be better to accept an `isConversation` parameter.
    * But for now, we can check if a conversation exists given a conversationId.
    */
