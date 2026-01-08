@@ -38,9 +38,9 @@ export type FlexValidatedHandler = AccountScopedHandler<FlexValidatedHttpRequest
 export const validateFlexTokenRequest: ({
   tokenMode,
 }: {
-  tokenMode: 'supervisor' | 'worker' | 'guest';
+  tokenMode: 'supervisor' | 'agent' | 'guest';
 }) => HttpRequestPipelineStep =
-  ({ tokenMode }: { tokenMode: 'supervisor' | 'worker' | 'guest' }) =>
+  ({ tokenMode }: { tokenMode: 'supervisor' | 'agent' | 'guest' }) =>
   async (request, { accountSid }) => {
     const { Token: token } = request.body;
     if (!token) {

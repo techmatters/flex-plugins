@@ -24,11 +24,11 @@ import {
   isTaskNotFoundErrorResult,
   VALID_RESERVATION_STATUSES_FOR_TASK_OWNER,
 } from './getTaskAndReservations';
-import { updateTaskAndCallStatus } from './updateTaskAndCall';
+import { removeTaskAndCall, updateTaskAndCallStatus } from './updateTaskAndCall';
 import { updateReservationStatuses } from './updateReservations';
 import { chatChannelJanitor } from '../conversation/chatChannelJanitor';
 
-export const completeTaskAssignmentHandler: FlexValidatedHandler = async (
+export const cancelOrRemoveTaskHandler: FlexValidatedHandler = async (
   { body: event, tokenResult },
   accountSid: AccountSID,
 ) => {
@@ -37,7 +37,7 @@ export const completeTaskAssignmentHandler: FlexValidatedHandler = async (
   if (taskSid === undefined) {
     return newMissingParameterResult('taskSid');
   }
-
+  const byLogClause = `by ${isSupervisor(tokenResult) ? 'supervisor' : 'agent'} ${tokenResult.worker_sid}`;
   const lookupResult = await getTaskAndReservations(accountSid, taskSid, tokenResult);
   if (isErr(lookupResult)) {
     return newHttpErrorResult(
@@ -52,50 +52,44 @@ export const completeTaskAssignmentHandler: FlexValidatedHandler = async (
       403,
     );
   }
-
-  const completeTaskResult = await updateTaskAndCallStatus(
-    await getTwilioClient(accountSid),
-    task,
-    'completed',
-  );
-
   let result: Awaited<ReturnType<FlexValidatedHandler>>;
+  const client = await getTwilioClient(accountSid);
 
-  if (isOk(completeTaskResult)) {
-    result = completeTaskResult;
+  const cancelTaskResult = await updateTaskAndCallStatus(client, task, 'canceled');
+
+  if (isOk(cancelTaskResult)) {
+    result = cancelTaskResult;
   } else {
     console.error(
-      `Error completing task ${taskSid},attempting to complete reservations`,
-      completeTaskResult.error.cause,
+      `Failed to cancel task ${taskSid} ${byLogClause}, attempting to remove it`,
+      cancelTaskResult.message,
+      cancelTaskResult.error.cause,
     );
-
-    // Try to close individual reservations
-    const completeReservationsResult = await updateReservationStatuses(
+    const cancelReservationsResult = await updateReservationStatuses(
       reservations ?? [],
-      'completed',
+      'canceled',
     );
-    if (isErr(completeReservationsResult)) {
+    if (isErr(cancelReservationsResult)) {
       console.error(
-        `Error completing reservations for task ${taskSid}`,
-        completeReservationsResult.error,
+        `Error cancelling reservations for task ${taskSid} ${byLogClause}`,
+        cancelReservationsResult.error,
       );
     } else {
-      if (completeReservationsResult.data.updatedReservationSids?.length) {
+      if (cancelReservationsResult.data.updatedReservationSids?.length) {
         console.info(
-          `Completed reservations for task ${taskSid}: ${completeReservationsResult.data.updatedReservationSids}.`,
+          `Cancelled reservations for task ${taskSid}: ${cancelReservationsResult.data.updatedReservationSids}.`,
         );
       }
-      completeReservationsResult.data.updateReservationErrors.map(cre =>
-        console.warn('Error completing reservation:', cre),
+      cancelReservationsResult.data.updateReservationErrors.map(cre =>
+        console.warn(`Error cancelling reservation ${byLogClause}:`, cre),
       );
     }
-
-    result = newHttpErrorResult(
-      completeTaskResult.error.cause,
-      500,
-      completeTaskResult.message,
-    );
+    const removeResult = await removeTaskAndCall(client, task);
+    result = isOk(removeResult)
+      ? removeResult
+      : newHttpErrorResult(removeResult.error.cause, 500, removeResult.message);
   }
+
   const taskAttributes = JSON.parse(task?.attributes || 'null');
   try {
     await chatChannelJanitor(accountSid, taskAttributes);

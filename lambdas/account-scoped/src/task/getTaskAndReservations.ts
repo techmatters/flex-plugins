@@ -46,6 +46,7 @@ export const VALID_RESERVATION_STATUSES_FOR_TASK_OWNER: ReservationStatus[] = [
   'wrapping',
   'accepted',
 ];
+
 export const getTaskAndReservations = async (
   accountSid: AccountSID,
   taskSid: TaskSID,
@@ -70,14 +71,15 @@ export const getTaskAndReservations = async (
     } else if (!isSupervisor(tokenResult)) {
       reservations = reservations.filter(
         reservation =>
-          reservation.workerSid === tokenResult.worker_sid &&
+          (isSupervisor(tokenResult) ||
+            reservation.workerSid === tokenResult.worker_sid) &&
           VALID_RESERVATION_STATUSES_FOR_TASK_OWNER.includes(
             reservation.reservationStatus,
           ),
       );
       if (reservations.length === 0) {
         console.info(
-          `No reservations found for worker ${tokenResult.worker_sid} on task ${taskSid} in any of these states:`,
+          `No reservations found ${isSupervisor(tokenResult) ? 'by supervisor' : `for worker`} ${tokenResult.worker_sid} on task ${taskSid} in any of these states:`,
           VALID_RESERVATION_STATUSES_FOR_TASK_OWNER,
         );
       }

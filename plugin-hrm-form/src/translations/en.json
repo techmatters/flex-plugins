@@ -393,6 +393,12 @@
   "Contact-ExternalReport": "File External Report",
   "Contact-DraftStatus": "In Progress",
   "Contact-ResolvedStatus": "Contact has been saved",
+  "Contact-ConfirmFinalizeContactDialog-ConfirmButton": "Save and End Contact",
+  "Contact-ConfirmFinalizeContactDialog-Header": "Save and End Contact",
+  "Contact-ConfirmFinalizeContactDialog-Content": "Save contact and complete any ongoing task associated with it?",
+  "Contact-ConfirmRemoveTaskDialog-ConfirmButton": "Remove Task",
+  "Contact-ConfirmRemoveTaskDialog-Header": "Remove Task",
+  "Contact-ConfirmRemoveTaskDialog-Content": "An error occurred trying to complete the task associated with this contact. Do you want to try to remove the task instead? This will clear the task from the counsellors list but the data for this contact will not get stored in the insights reporting system if you do.",
 
   "ContactCopyButton": "Copy",
   "ManualPullButtonText": "Another Task",
