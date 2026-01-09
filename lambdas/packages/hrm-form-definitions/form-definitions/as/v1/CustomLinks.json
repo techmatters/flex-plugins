@@ -1,5 +1,8 @@
 [
   { "label": "Resource Map", "type": "embedded", "url": "https://assets-development.tl.techmatters.org/webchat/as/test-chat.html",
-    "icon": "info"
-  }
+    "icon": "map"
+  },
+  { "label": "Resource Info", "type": "new-window", "url": "https://assets-development.tl.techmatters.org/webchat/as/test-chat.html",
+  "icon": "info"
+}
 ]

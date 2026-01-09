@@ -17,12 +17,14 @@
 import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { InformationIcon } from '@twilio-paste/icons/cjs/InformationIcon';
+import MapIcon from '@material-ui/icons/Map';
 import { SideLink, SideNavChildrenProps, Manager, Template } from '@twilio/flex-ui';
-import { DefinitionVersion } from 'hrm-form-definitions';
+import { CustomLink } from 'hrm-form-definitions';
 import * as Flex from '@twilio/flex-ui';
 
-import CustomSideLinkConfirmDialog from './CustomSideLinkConfirmDialog';
 import { selectCurrentDefinitionVersion } from '../../states/configuration/selectDefinitions';
+import { ConfirmDialog } from '../../design-system/modals/ConfirmDialog';
+import { PrimaryButton } from '../../styles';
 
 const lookupLabel = (key: string) => Manager.getInstance().strings[key] ?? key;
 
@@ -34,38 +36,41 @@ const ICON_MAP: Record<
     active: labelKey => <InformationIcon decorative={false} title={lookupLabel(labelKey)} />,
     inactive: labelKey => <InformationIcon decorative={false} title={lookupLabel(labelKey)} />,
   },
+  map: {
+    active: labelKey => <MapIcon aria-label={lookupLabel(labelKey)} titleAccess={lookupLabel(labelKey)} />,
+    inactive: labelKey => <MapIcon aria-label={lookupLabel(labelKey)} titleAccess={lookupLabel(labelKey)} />,
+  },
 };
 
 type Props = SideNavChildrenProps & {
   showLabel: boolean;
   url: string;
-  linkType: DefinitionVersion['customLinks'][number]['type'];
+  linkType: CustomLink['type'];
   iconKey: string;
   labelKey: string;
 };
 
 const CustomSideLink: React.FC<Props> = ({ showLabel, url, linkType, iconKey, labelKey }) => {
-  const [anchorEl, setAnchorEl] = useState(null);
+  const [dialogIsOpen, setDialogIsOpen] = useState(false);
   const definitionVersion = useSelector(selectCurrentDefinitionVersion);
   if (!definitionVersion) {
     return null;
   }
 
   const handleCloseDialog = () => {
-    setAnchorEl(null);
+    setDialogIsOpen(false);
   };
 
-  const handleOpenConnectDialog = e => {
-    e.stopPropagation();
-    setAnchorEl(e.currentTarget);
+  const handleOpenLinkDialog = () => {
+    setDialogIsOpen(true);
   };
 
   return (
     <>
       <div
-        onClick={e => {
+        onClick={() => {
           if (linkType === 'new-window') {
-            handleOpenConnectDialog(e);
+            handleOpenLinkDialog();
           } else {
             Flex.Actions.invokeAction('NavigateToView', { viewName: `custom-link`, subroute: url });
           }
@@ -80,7 +85,24 @@ const CustomSideLink: React.FC<Props> = ({ showLabel, url, linkType, iconKey, la
         </SideLink>
       </div>
       {linkType === 'new-window' && (
-        <CustomSideLinkConfirmDialog anchorEl={anchorEl} handleCloseDialog={handleCloseDialog} url={url} />
+        <ConfirmDialog
+          openDialog={dialogIsOpen}
+          dialogHeader="Toolkit-ConfirmTextOne"
+          dialogContent="Toolkit-ConfirmTextTwo"
+          actionComponent={
+            <PrimaryButton
+              tabIndex={1}
+              style={{ marginLeft: '20px' }}
+              onClick={() => {
+                window.open(url, '_blank');
+                handleCloseDialog();
+              }}
+            >
+              <Template code="Modals-ConfirmDialog-ConfirmButton" />
+            </PrimaryButton>
+          }
+          onCloseDialog={handleCloseDialog}
+        />
       )}
     </>
   );
