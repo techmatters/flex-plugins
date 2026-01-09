@@ -68,6 +68,9 @@ export type ContactMetadata = {
     dialogsOpen: { [key: string]: boolean };
   };
   loadingStatus: LoadingStatus;
+  finalizeStatus: {
+    error?: Error;
+  };
   llmAssistant: {
     status: LlmAssistantStatus;
     lastError?: Error;

@@ -17,17 +17,17 @@ import React from 'react';
 import { styled } from '@twilio/flex-ui';
 import Dialog, { DialogProps } from '@material-ui/core/Dialog';
 
-export const CloseDialogHeader = styled('p')`
+export const ConfirmDialogHeader = styled('p')`
   font-size: 20px;
   font-weight: 700;
 `;
 
-export const CloseDialogContent = styled('p')`
+export const ConfirmDialogContent = styled('p')`
   font-size: 14px;
   padding: 16px 0px;
 `;
 
-export const CloseDialogPaper = styled((props: React.JSX.IntrinsicAttributes & DialogProps) => (
+export const ConfirmDialogPaper = styled((props: React.JSX.IntrinsicAttributes & DialogProps) => (
   <Dialog {...props} classes={{ paper: 'paper' }} />
 ))`
   && .paper {

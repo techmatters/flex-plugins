@@ -1,1 +1,39 @@
-{}
+{
+  "contactForm": {
+    "callerInformation": [
+    ],
+    "childInformation": [
+      {
+        "name": "region",
+        "insights": ["customers", "region"] 
+      },
+      {
+        "name": "commune",
+        "insights": ["customers", "area"]
+      },
+      {
+        "name": "sexualAndAffectiveOrientation",
+        "insights": ["customers", "market_segment"]
+      },
+      {
+        "name": "intersexuality",
+        "insights": ["customers", "customer_manager"]
+      },
+      {
+        "name": "neurodivergence",
+        "insights": ["conversations", "acquisition_date"]
+      }
+    ],
+    "caseInformation": [
+    ]
+  },
+  "caseForm": {
+    "topLevel": [
+      {
+        "name": "id",
+        "insights": ["conversations", "case"]
+      }
+    
+    ]
+  }
+}

@@ -1012,8 +1012,34 @@
   },
   {
     "name": "typeOfElectroralActor",
-    "type": "input",
     "label": "Type Of Electroral Actor",
+    "type": "select",
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "partyMember",
+        "label": "Party Member"
+      },
+      {
+        "value": "supporter",
+        "label": "Supporter"
+      },
+      {
+        "value": "candidate",
+        "label": "Candidate"
+      },
+      {
+        "value": "pollingAgent",
+        "label": "Polling Agent"
+      },
+      {
+        "value": "other",
+        "label": "Others"
+      }
+    ],
     "isPII": false
   },
   {

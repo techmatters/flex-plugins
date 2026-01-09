@@ -28,7 +28,10 @@ import {
   handleChatbotCallbackCleanup,
 } from './channelCapture';
 import { addParticipantHandler } from './conference/addParticipant';
-import { validateFlexTokenRequest } from './validation/flexToken';
+import {
+  FlexValidatedHttpRequest,
+  validateFlexTokenRequest,
+} from './validation/flexToken';
 import { getParticipantHandler } from './conference/getParticipant';
 import { updateParticipantHandler } from './conference/updateParticipant';
 import { removeParticipantHandler } from './conference/removeParticipant';
@@ -40,6 +43,10 @@ import './conference/stopRecordingWhenLastAgentLeaves';
 import { instagramToFlexHandler } from './customChannels/instagram/instagramToFlex';
 import { flexToInstagramHandler } from './customChannels/instagram/flexToInstagram';
 import { handleConversationEvent } from './conversation';
+import { getTaskAndReservationsHandler } from './task/getTaskAndReservations';
+import { checkTaskAssignmentHandler } from './task/checkTaskAssignment';
+import { completeTaskAssignmentHandler } from './task/completeTaskAssignment';
+import { cancelOrRemoveTaskHandler } from './task/cancelOrRemoveTask';
 import { initWebchatHandler } from './webchatAuthentication/initWebchat';
 import { refreshTokenHandler } from './webchatAuthentication/refreshToken';
 import { getAccountSid } from '@tech-matters/twilio-configuration';
@@ -57,8 +64,10 @@ export const ROUTE_PREFIX = '/lambda/twilio/account-scoped/';
 
 const INITIAL_PIPELINE = [validateRequestMethod];
 
-// Routes
-const ACCOUNTSID_ROUTES: Record<string, FunctionRoute> = {
+const ACCOUNTSID_ROUTES: Record<
+  string,
+  FunctionRoute | FunctionRoute<FlexValidatedHttpRequest>
+> = {
   'webhooks/taskrouterCallback': {
     requestPipeline: [validateWebhookRequest],
     handler: handleTaskRouterEvent,
@@ -84,19 +93,19 @@ const ACCOUNTSID_ROUTES: Record<string, FunctionRoute> = {
     handler: conferenceStatusCallbackHandler,
   },
   'conference/addParticipant': {
-    requestPipeline: [validateFlexTokenRequest({ tokenMode: 'worker' })],
+    requestPipeline: [validateFlexTokenRequest({ tokenMode: 'agent' })],
     handler: addParticipantHandler,
   },
   'conference/getParticipant': {
-    requestPipeline: [validateFlexTokenRequest({ tokenMode: 'worker' })],
+    requestPipeline: [validateFlexTokenRequest({ tokenMode: 'agent' })],
     handler: getParticipantHandler,
   },
   'conference/removeParticipant': {
-    requestPipeline: [validateFlexTokenRequest({ tokenMode: 'worker' })],
+    requestPipeline: [validateFlexTokenRequest({ tokenMode: 'agent' })],
     handler: removeParticipantHandler,
   },
   'conference/updateParticipant': {
-    requestPipeline: [validateFlexTokenRequest({ tokenMode: 'worker' })],
+    requestPipeline: [validateFlexTokenRequest({ tokenMode: 'agent' })],
     handler: updateParticipantHandler,
   },
   'conference/participantStatusCallback': {
@@ -135,6 +144,22 @@ const ACCOUNTSID_ROUTES: Record<string, FunctionRoute> = {
     requestPipeline: [],
     handler: handleOperatingHours,
   },
+  'task/checkTaskAssignment': {
+    requestPipeline: [validateFlexTokenRequest({ tokenMode: 'agent' })],
+    handler: checkTaskAssignmentHandler,
+  },
+  'task/completeTaskAssignment': {
+    requestPipeline: [validateFlexTokenRequest({ tokenMode: 'agent' })],
+    handler: completeTaskAssignmentHandler,
+  },
+  'task/cancelOrRemoveTask': {
+    requestPipeline: [validateFlexTokenRequest({ tokenMode: 'agent' })],
+    handler: cancelOrRemoveTaskHandler,
+  },
+  'task/getTaskAndReservations': {
+    requestPipeline: [validateFlexTokenRequest({ tokenMode: 'agent' })],
+    handler: getTaskAndReservationsHandler,
+  },
   updateWorkersSkills: {
     requestPipeline: [validateFlexTokenRequest({ tokenMode: 'supervisor' })],
     handler: handleUpdateWorkersSkills,
@@ -158,7 +183,9 @@ const ENV_SHORTCODE_ROUTES: Record<string, FunctionRoute> = {
 
 export const lookupRoute = async (
   event: HttpRequest,
-): Promise<AccountScopedRoute | undefined> => {
+): Promise<
+  AccountScopedRoute | AccountScopedRoute<FlexValidatedHttpRequest> | undefined
+> => {
   if (event.path.startsWith(ROUTE_PREFIX)) {
     const path = event.path.substring(ROUTE_PREFIX.length);
     const [accountIdentifier, ...applicationPathParts] = path.split('/');

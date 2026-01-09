@@ -1,32 +1,66 @@
 tg_args ?= $(tf_args)     # --terragrunt-log-level debug --terragrunt-debug
 
 TG_ENV = -e TERRAGRUNT_DOWNLOAD=".terragrunt-cache/$(HL)/$(HL_ENV)"
+TF_PLUGIN_CACHE_CONT = /terraform-provider-cache
+
+ifeq ($(origin TF_PLUGIN_CACHE_HOST), undefined)
+  $(info Terraform plugin cache directory not explicitly provided, looking for defaults)
+  ifneq ($(wildcard /opt/terraform-provider-cache),)
+    TF_PLUGIN_CACHE_HOST := /opt/terraform-provider-cache
+  else ifneq ($(wildcard $(HOME)/terraform-provider-cache),)
+    TF_PLUGIN_CACHE_HOST := $(HOME)/terraform-provider-cache
+  else
+    $(error Terraform plugin cache directory not found, please make sure one of the default locations is present or explicitly provide one)
+  endif
+else
+  ifeq ($(wildcard $(TF_PLUGIN_CACHE_HOST)),)
+    $(error Terraform plugin cache directory does not exist: $(TF_PLUGIN_CACHE_HOST))
+  endif
+endif
+
+$(info Terraform plugin cache directory: $(TF_PLUGIN_CACHE_HOST))
 
 verify-env:
 
 apply-tg: verify-env
-	docker run -it --rm $(DEFAULT_ARGS) $(TG_ENV) $(DOCKER_IMAGE):$(TF_VER) terragrunt apply $(tg_args)
+	docker run -it --rm \
+  -v $(TF_PLUGIN_CACHE_HOST):$(TF_PLUGIN_CACHE_CONT) \
+  $(DEFAULT_ARGS) $(TG_ENV) $(DOCKER_IMAGE):$(TF_VER) terragrunt apply $(tg_args)
 
 apply-all-tg: verify-env
-	docker run -it --rm $(DEFAULT_ARGS) $(TG_ENV) $(DOCKER_IMAGE):$(TF_VER) terragrunt run-all apply $(tg_args)
+	docker run -it --rm \
+  -v $(TF_PLUGIN_CACHE_HOST):$(TF_PLUGIN_CACHE_CONT) \
+  $(DEFAULT_ARGS) $(TG_ENV) $(DOCKER_IMAGE):$(TF_VER) terragrunt run-all apply $(tg_args)
 
 init-tg: verify-env
-	docker run -it --rm $(DEFAULT_ARGS) $(TG_ENV) $(DOCKER_IMAGE):$(TF_VER) terragrunt init $(tg_args)
+	docker run -it --rm \
+  -v $(TF_PLUGIN_CACHE_HOST):$(TF_PLUGIN_CACHE_CONT) \
+  $(DEFAULT_ARGS) $(TG_ENV) $(DOCKER_IMAGE):$(TF_VER) terragrunt init $(tg_args)
 
 init-all-tg: verify-env
-	docker run -it --rm $(DEFAULT_ARGS) $(TG_ENV) $(DOCKER_IMAGE):$(TF_VER) terragrunt run-all init $(tg_args)
+	docker run -it --rm \
+  -v $(TF_PLUGIN_CACHE_HOST):$(TF_PLUGIN_CACHE_CONT) \
+  $(DEFAULT_ARGS) $(TG_ENV) $(DOCKER_IMAGE):$(TF_VER) terragrunt run-all init $(tg_args)
 
 plan-tg: verify-env
-	docker run -it --rm $(DEFAULT_ARGS) $(TG_ENV) $(DOCKER_IMAGE):$(TF_VER) terragrunt plan $(tg_args)
+	docker run -it --rm \
+  -v $(TF_PLUGIN_CACHE_HOST):$(TF_PLUGIN_CACHE_CONT) \
+  $(DEFAULT_ARGS) $(TG_ENV) $(DOCKER_IMAGE):$(TF_VER) terragrunt plan $(tg_args)
 
 plan-all-tg: verify-env
-	docker run -it --rm $(DEFAULT_ARGS) $(TG_ENV) $(DOCKER_IMAGE):$(TF_VER) terragrunt run-all plan $(tg_args)
+	docker run -it --rm \
+  -v $(TF_PLUGIN_CACHE_HOST):$(TF_PLUGIN_CACHE_CONT) \
+  $(DEFAULT_ARGS) $(TG_ENV) $(DOCKER_IMAGE):$(TF_VER) terragrunt run-all plan $(tg_args)
 
 destroy-tg: verify-env
-	docker run -it --rm $(DEFAULT_ARGS) $(TG_ENV) $(DOCKER_IMAGE):$(TF_VER) terragrunt destroy $(tg_args)
+	docker run -it --rm \
+  -v $(TF_PLUGIN_CACHE_HOST):$(TF_PLUGIN_CACHE_CONT) \
+  $(DEFAULT_ARGS) $(TG_ENV) $(DOCKER_IMAGE):$(TF_VER) terragrunt destroy $(tg_args)
 
 destroy-all-tg: verify-env
-	docker run -it --rm $(DEFAULT_ARGS) $(TG_ENV) $(DOCKER_IMAGE):$(TF_VER) terragrunt rum-all destroy $(tg_args)
+	docker run -it --rm \
+  -v $(TF_PLUGIN_CACHE_HOST):$(TF_PLUGIN_CACHE_CONT) \
+  $(DEFAULT_ARGS) $(TG_ENV) $(DOCKER_IMAGE):$(TF_VER) terragrunt rum-all destroy $(tg_args)
 
 ##@ Terragrunt Stage Targets - Usage: make [target] HL=[hl short code] HL_ENV=[hl environment]
 apply: verify-pre-work apply-tg ## Apply the current terragrunt stage

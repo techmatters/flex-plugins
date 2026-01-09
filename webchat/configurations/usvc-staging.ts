@@ -25,7 +25,7 @@ import { PreEngagementFormDefinition } from "../src/pre-engagement-form";
 const accountSid = "ACdc48c7f157a3a59aa62f48566f3df993";
 const flexFlowSid = "FOc3527f331630685eac0b188843ee40c9";
 const defaultLanguage = "en-US";
-const captureIp = true;
+const captureIp = false;
 const checkOpenHours = false;
 const contactType: ContactType = "ip";
 

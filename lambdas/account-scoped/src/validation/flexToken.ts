@@ -14,27 +14,33 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { HttpRequestPipelineStep } from '../httpTypes';
+import { AccountScopedHandler, HttpRequest, HttpRequestPipelineStep } from '../httpTypes';
 import { validator } from 'twilio-flex-token-validator';
 import { newErr, newOk } from '../Result';
 import { newMissingParameterResult } from '../httpErrors';
 import { getAccountAuthToken } from '@tech-matters/twilio-configuration';
 
-type TokenValidatorResponse = { worker_sid: string; roles: string[] };
+export type TokenValidatorResponse = { worker_sid: string; roles: string[] };
 
 const isWorker = (tokenResult: TokenValidatorResponse) =>
   Boolean(tokenResult.worker_sid) && tokenResult.worker_sid.startsWith('WK');
 const isGuest = (tokenResult: TokenValidatorResponse) =>
   Array.isArray(tokenResult.roles) && tokenResult.roles.includes('guest');
-const isSupervisor = (tokenResult: TokenValidatorResponse) =>
+export const isSupervisor = (tokenResult: TokenValidatorResponse) =>
   Array.isArray(tokenResult.roles) && tokenResult.roles.includes('supervisor');
+
+export type FlexValidatedHttpRequest = HttpRequest & {
+  tokenResult: TokenValidatorResponse;
+};
+
+export type FlexValidatedHandler = AccountScopedHandler<FlexValidatedHttpRequest>;
 
 export const validateFlexTokenRequest: ({
   tokenMode,
 }: {
-  tokenMode: 'supervisor' | 'worker' | 'guest';
+  tokenMode: 'supervisor' | 'agent' | 'guest';
 }) => HttpRequestPipelineStep =
-  ({ tokenMode }: { tokenMode: 'supervisor' | 'worker' | 'guest' }) =>
+  ({ tokenMode }: { tokenMode: 'supervisor' | 'agent' | 'guest' }) =>
   async (request, { accountSid }) => {
     const { Token: token } = request.body;
     if (!token) {
@@ -64,7 +70,7 @@ export const validateFlexTokenRequest: ({
         }
       }
 
-      return newOk(request);
+      return newOk({ ...request, tokenResult });
     } catch (err) {
       const error = err as Error;
 

@@ -17,6 +17,7 @@
 import fetchProtectedApi from './fetchProtectedApi';
 import { TaskSID } from '../types/twilio';
 import { FetchOptions } from './fetchApi';
+import { getAseloFeatureFlags } from '../hrmConfig';
 
 /**
  * Creates a new task (offline contact) in behalf of targetSid worker with attributes. Other attributes for routing are added to the task in the implementation of assignOfflineContact serverless function
@@ -70,9 +71,12 @@ export const completeConversationTask = async (taskSid: TaskSID) =>
   fetchProtectedApi('/interaction/transitionAgentParticipants', { taskSid, targetStatus: 'closed' });
 
 export const checkTaskAssignment = async (taskSid: string) => {
+  const { use_twilio_lambda_for_task_assignment: useTwilioLambda } = getAseloFeatureFlags();
   const body = { taskSid };
-
-  return fetchProtectedApi('/checkTaskAssignment', body);
+  const pathRoot = useTwilioLambda ? '/task' : '';
+  return fetchProtectedApi(`${pathRoot}/checkTaskAssignment`, body, {
+    useTwilioLambda,
+  });
 };
 
 type GetTaskAndReservationsResponse = {
@@ -82,11 +86,17 @@ type GetTaskAndReservationsResponse = {
 
 export const getTaskAndReservations = async (taskSid: string): Promise<GetTaskAndReservationsResponse> => {
   const body = { taskSid };
+  const { use_twilio_lambda_for_task_assignment: useTwilioLambda } = getAseloFeatureFlags();
+  const pathRoot = useTwilioLambda ? '/task' : '';
   const options: FetchOptions = {
     returnNullFor404: true,
   };
   try {
-    return await fetchProtectedApi('/getTaskAndReservations', body, options);
+    const res = await fetchProtectedApi(`${pathRoot}/getTaskAndReservations`, body, { ...options, useTwilioLambda });
+    if (res?.task) {
+      res.task.status = res.task.status ?? res.task.assignmentStatus;
+    }
+    return res;
   } catch (error) {
     console.error('An error occurred while fetching task and reservations:', error);
     throw error;
@@ -96,5 +106,13 @@ export const getTaskAndReservations = async (taskSid: string): Promise<GetTaskAn
 export const completeTaskAssignment = async (taskSid: string) => {
   const body = { taskSid };
 
-  return fetchProtectedApi('/completeTaskAssignment', body);
+  const { use_twilio_lambda_for_task_assignment: useTwilioLambda } = getAseloFeatureFlags();
+  const pathRoot = useTwilioLambda ? '/task' : '';
+
+  return fetchProtectedApi(`${pathRoot}/completeTaskAssignment`, body, { useTwilioLambda });
+};
+
+export const cancelOrRemoveTask = async (taskSid: string) => {
+  const body = { taskSid };
+  return fetchProtectedApi(`task/cancelOrRemoveTask`, body, { useTwilioLambda: true });
 };

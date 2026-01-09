@@ -1,6 +1,5 @@
 ${
-  jsonencode(
-{
+  jsonencode({
   "description": "${flow_description}",
   "states": [
     {
@@ -32,11 +31,11 @@ ${
       }
     },
     {
-      "name": "set_hasNonSurveyTasks",
+      "name": "set_var_has_non_survey_tasks",
       "type": "set-variables",
       "transitions": [
         {
-          "next": "block_if_non_survey_task_associated",
+          "next": "split_block_if_non_survey_task_associated",
           "event": "next"
         }
       ],
@@ -54,11 +53,11 @@ ${
       }
     },
     {
-      "name": "block_if_non_survey_task_associated",
+      "name": "split_block_if_non_survey_task_associated",
       "type": "split-based-on",
       "transitions": [
         {
-          "next": "getProfileFlagsForIdentifier",
+          "next": "f_getProfileFlagsForIdentifier",
           "event": "match",
           "conditions": [
             {
@@ -81,15 +80,15 @@ ${
       }
     },
     {
-      "name": "getProfileFlagsForIdentifier",
+      "name": "f_getProfileFlagsForIdentifier",
       "type": "make-http-request",
       "transitions": [
         {
-          "next": "contact_routing",
+          "next": "split_contact_routing",
           "event": "success"
         },
         {
-          "next": "pre_survey_complete",
+          "next": "split_pre_survey_complete",
           "event": "failed"
         }
       ],
@@ -106,7 +105,7 @@ ${
       }
     },
     {
-      "name": "send_blocked_message",
+      "name": "send_message_blocked",
       "type": "run-function",
       "transitions": [
         {
@@ -146,21 +145,21 @@ ${
       }
     },
     {
-      "name": "contact_routing",
+      "name": "split_contact_routing",
       "type": "split-based-on",
       "transitions": [
         {
-          "next": "pre_survey_complete",
+          "next": "split_pre_survey_complete",
           "event": "noMatch"
         },
         {
-          "next": "send_blocked_message",
+          "next": "send_message_blocked",
           "event": "match",
           "conditions": [
             {
               "friendly_name": "If value contains blocked",
               "arguments": [
-                "{{widgets.getProfileFlagsForIdentifier.parsed.flags}}"
+                "{{widgets.f_getProfileFlagsForIdentifier.parsed.flags}}"
               ],
               "type": "contains",
               "value": "blocked"
@@ -169,7 +168,7 @@ ${
         }
       ],
       "properties": {
-        "input": "{{widgets.getProfileFlagsForIdentifier.parsed.flags}}",
+        "input": "{{widgets.f_getProfileFlagsForIdentifier.parsed.flags}}",
         "offset": {
           "x": -450,
           "y": 120
@@ -177,38 +176,38 @@ ${
       }
     },
     {
-        "name": "check_for_integration_test",
-        "type": "split-based-on",
-        "transitions": [
-          {
-              "next": "attributes",
-              "event": "noMatch"
-            },
+      "name": "split_check_for_integration_test",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "send_to_queue",
+          "event": "noMatch"
+        },
+        {
+          "next": "f_sendMessageAndRunJanitor_end_integration_test",
+          "event": "match",
+          "conditions": [
             {
-              "next": "end_integration_test",
-              "event": "match",
-              "conditions": [
-                {
-                  "friendly_name": "{{trigger.conversation.ChannelAttributes.testSessionId}}",
-                  "arguments": [
-                    "{{trigger.conversation.ChannelAttributes.testSessionId}}"
-                  ],
-                  "type": "is_not_blank",
-                  "value": "Is Not Blank"
-                }
-              ]
+              "friendly_name": "{{trigger.conversation.ChannelAttributes.testSessionId}}",
+              "arguments": [
+                "{{trigger.conversation.ChannelAttributes.testSessionId}}"
+              ],
+              "type": "is_not_blank",
+              "value": "Is Not Blank"
             }
-        ]
-        "properties": {
-          "input": "{{trigger.conversation.ChannelAttributes.testSessionId}}",
-          "offset": {
-            "x": -450,
-            "y": 150
-          }
+          ]
         }
+      ],
+      "properties": {
+        "input": "{{trigger.conversation.ChannelAttributes.testSessionId}}",
+        "offset": {
+          "x": -450,
+          "y": 150
+        }
+      }
     },
     {
-      "name": "end_integration_test",
+      "name": "f_sendMessageAndRunJanitor_end_integration_test",
       "type": "run-function",
       "transitions": [
         {
@@ -248,14 +247,14 @@ ${
       }
     },
     {
-      "name": "attributes",
+      "name": "send_to_queue",
       "type": "send-to-flex",
       "transitions": [
         {
           "event": "callComplete"
         },
         {
-          "next": "webhook_notify_failed_to_enqueue",
+          "next": "http_post_webhook_notify_failed_to_enqueue",
           "event": "failedToEnqueue"
         },
         {
@@ -273,15 +272,15 @@ ${
       }
     },
     {
-      "name": "pre_survey_complete",
+      "name": "split_pre_survey_complete",
       "type": "split-based-on",
       "transitions": [
         {
-          "next": "captureChannelWithBot",
+          "next": "f_captureChannelWithBot",
           "event": "noMatch"
         },
         {
-          "next": "check_for_integration_test",
+          "next": "split_check_for_integration_test",
           "event": "match",
           "conditions": [
             {
@@ -304,7 +303,7 @@ ${
       }
     },
     {
-      "name": "captureChannelWithBot",
+      "name": "f_captureChannelWithBot",
       "type": "make-http-request",
       "transitions": [
         {
@@ -312,7 +311,7 @@ ${
         },
         {
           "event": "failed",
-          "next": "webhook_notify_error"
+          "next": "http_post_webhook_notify_error"
         }
       ],
       "properties": {
@@ -328,15 +327,15 @@ ${
       }
     },
     {
-      "name": "channelCleanup",
+      "name": "f_chatbotCallbackCleanup",
       "type": "make-http-request",
       "transitions": [
         {
-          "next": "check_for_integration_test",
+          "next": "split_check_for_integration_test",
           "event": "success"
         },
         {
-          "next": "send_message_run_janitor",
+          "next": "f_sendMessageAndRunJanitor_error",
           "event": "failed"
         }
       ],
@@ -353,15 +352,15 @@ ${
       }
     },
     {
-      "name": "webhook_notify_error",
+      "name": "http_post_webhook_notify_error",
       "type": "make-http-request",
       "transitions": [
         {
-          "next": "channelCleanup",
+          "next": "f_chatbotCallbackCleanup",
           "event": "success"
         },
         {
-          "next": "channelCleanup",
+          "next": "f_chatbotCallbackCleanup",
           "event": "failed"
         }
       ],
@@ -378,7 +377,7 @@ ${
       }
     },
     {
-      "name": "webhook_notify_failed_to_enqueue",
+      "name": "http_post_webhook_notify_failed_to_enqueue",
       "type": "make-http-request",
       "transitions": [
         {
@@ -401,7 +400,7 @@ ${
       }
     },
     {
-      "name": "send_message_run_janitor",
+      "name": "f_sendMessageAndRunJanitor_error",
       "type": "run-function",
       "transitions": [
         {
@@ -445,11 +444,11 @@ ${
       "type": "run-subflow",
       "transitions": [
         {
-          "next": "set_hasNonSurveyTasks",
+          "next": "set_var_has_non_survey_tasks",
           "event": "completed"
         },
         {
-          "next": "set_hasNonSurveyTasks",
+          "next": "set_var_has_non_survey_tasks",
           "event": "failed"
         }
       ],
@@ -474,6 +473,5 @@ ${
   "flags": {
     "allow_concurrent_calls": true
   }
-}
-)
+})
 }

@@ -1,12 +1,36 @@
 ##@ Account Setup/Migration Scripts
+TF_PLUGIN_CACHE_CONT = /terraform-provider-cache
+
+ifeq ($(origin TF_PLUGIN_CACHE_HOST), undefined)
+  $(info Terraform plugin cache directory not explicitly provided, looking for defaults)
+  ifneq ($(wildcard /opt/terraform-provider-cache),)
+    TF_PLUGIN_CACHE_HOST := /opt/terraform-provider-cache
+  else ifneq ($(wildcard $(HOME)/terraform-provider-cache),)
+    TF_PLUGIN_CACHE_HOST := $(HOME)/terraform-provider-cache
+  else
+    $(error Terraform plugin cache directory not found, please make sure one of the default locations is present or explicitly provide one)
+  endif
+else
+  ifeq ($(wildcard $(TF_PLUGIN_CACHE_HOST)),)
+    $(error Terraform plugin cache directory does not exist: $(TF_PLUGIN_CACHE_HOST))
+  endif
+endif
+
+$(info Terraform plugin cache directory: $(TF_PLUGIN_CACHE_HOST))
 
 setup-new-environment: verify-env init manage-ssm-secrets twilio-resources-import-account-defaults ## Setup a new environment
 
 manage-ssm-secrets: verify-env ## Manage SSM secrets needed for the environment
-	docker run -it --rm $(DEFAULT_ARGS) $(TG_ENV) $(DOCKER_IMAGE):$(TF_VER) $(TF_ROOT_PATH)/scripts/python_tools/manageSecrets.py "$(HL_ENV)/$(HL)"
+	docker run -it --rm \
+  -v $(TF_PLUGIN_CACHE_HOST):$(TF_PLUGIN_CACHE_CONT) \
+  $(DEFAULT_ARGS) $(TG_ENV) $(DOCKER_IMAGE):$(TF_VER) $(TF_ROOT_PATH)/scripts/python_tools/manageSecrets.py "$(HL_ENV)/$(HL)"
 
 twilio-resources-import-account-defaults: verify-env
-	docker run -it --rm $(DEFAULT_ARGS) $(TG_ENV) $(DOCKER_IMAGE):$(TF_VER) $(TF_ROOT_PATH)/scripts/deploy-scripts/terragrunt/twilioResourceImportAccountDefaults.sh
+	docker run -it --rm \
+  -v $(TF_PLUGIN_CACHE_HOST):$(TF_PLUGIN_CACHE_CONT) \
+  $(DEFAULT_ARGS) $(TG_ENV) $(DOCKER_IMAGE):$(TF_VER) $(TF_ROOT_PATH)/scripts/deploy-scripts/terragrunt/twilioResourceImportAccountDefaults.sh
 
 migrate-state: verify-env
-	docker run -it --rm $(DEFAULT_ARGS) $(TG_ENV) $(DOCKER_IMAGE):$(TF_VER) $(TF_ROOT_PATH)/scripts/migration/state/main.sh $(HL_ENV) $(HL) $(MY_ENV)
+	docker run -it --rm \
+  -v $(TF_PLUGIN_CACHE_HOST):$(TF_PLUGIN_CACHE_CONT) \
+  $(DEFAULT_ARGS) $(TG_ENV) $(DOCKER_IMAGE):$(TF_VER) $(TF_ROOT_PATH)/scripts/migration/state/main.sh $(HL_ENV) $(HL) $(MY_ENV)
