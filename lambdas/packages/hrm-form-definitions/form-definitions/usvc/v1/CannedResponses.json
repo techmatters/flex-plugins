@@ -96,10 +96,6 @@
     "text": "La línea de VictimConnect no tiene ayuda por chat en español. Para obtener servicios en español o para hablar con un intérprete, por favor llame al 1-855-4-VICTIM (1-855-484-2846)."
   },
   {
-    "label": "Hours (DCVH)",
-    "text": "The DC Victim Hotline is available 24/7, 365 days a year by phone, chat, and text."
-  },
-  {
     "label": "Transition Back (VCRC)",
     "text": "Thank you for reviewing this safety and privacy information. If you have other questions or concerns please let me know at any time. But for now, would you like to let me know more about what brought you to VictimConnect Resource Center?"
   },
@@ -140,8 +136,12 @@
     "text": "La línea de DC Victim Hotline no tiene ayuda por chat en español. Para obtener servicios en español o para hablar con un intérprete, por favor llame al 1-844-4HELPDC (1-844-443-5732)."
   },
   {
-    "label": "DC Feedback Survey ",
-    "text": "Thank you for coming to the helpline today. Please help us continue to improve our service by completing a DC Victim Hotline Feedback Survey. It will take less than a minute and all of your answers are confidential. Thank you again for sharing with me today. "
+    "label": "Transition Back (DCVH)",
+    "text": "Thank you for reviewing this safety and privacy information. If you have other questions or concerns please let me know at any time. But for now, would you like to let me know more about what brought you to the DC Victim Hotline?"
+  },
+  {
+    "label": "Hours (DCVH)",
+    "text": "The DC Victim Hotline is available 24/7, 365 days a year by phone, chat, and text."
   },
   {
     "label": "Invitation to Return (DCVH)",
@@ -152,7 +152,11 @@
     "text": "It appears that you are no longer able to chat at this time so I am going to end this session for your safety and privacy. If you need additional assistance please return to waiting room to be reconnected - or you can call or text the DC Victim Hotline at 1-844-4HELPDC (1-844-443-5732) "
   },
   {
-    "label": "Dispatch Services",
+    "label": "Dispatch Services (DCVH)",
     "text": "Thank you for contacting the DC Victim Hotline. We are unable to provide dispatch services through our text or chat features. If you are seeking our dispatch services, please call 1-844-4HELPDC (1-844-443-5732) and choose the third option."
+  },
+  {
+    "label": "DC Feedback Survey (DCVH)",
+    "text": "Thank you for coming to the helpline today. Please help us continue to improve our service by completing a DC Victim Hotline Feedback Survey. It will take less than a minute and all of your answers are confidential. Thank you again for sharing with me today. "
   }
 ]
