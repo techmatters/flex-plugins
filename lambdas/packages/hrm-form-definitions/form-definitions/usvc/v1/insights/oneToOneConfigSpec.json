@@ -54,6 +54,10 @@
       {
         "name": "state",
         "insights": ["conversations", "in_business_hours"]
+      },
+      {
+        "name": "state",
+        "insights": ["customers", "customer_phone"]
       }
     ],
     "caseInformation": [
