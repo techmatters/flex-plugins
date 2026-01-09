@@ -57,6 +57,7 @@ const files = [
   'customStrings/Messages.json',
   'customStrings/Substitutions.json',
   'FlexUiLocales.json',
+  'CustomLinks.json',
 ];
 
 const getDefinitionVersionId = (formDefinitionsBaseUrl: string) =>
