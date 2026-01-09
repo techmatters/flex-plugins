@@ -179,7 +179,22 @@ export const transferCallToQueue = async (
   const client = await getTwilioClient(accountSid);
   const programmableChatTransferWorkflowSid =
     await getConversationsTransferWorkflow(accountSid);
-
+  const { conference: taskConferenceInfo } = newAttributes;
+  const conferenceContext = client.conferences.get(taskConferenceInfo.sid);
+  const originalAgentCallSid = taskConferenceInfo.participants.worker;
+  const conferenceParticipants = await conferenceContext.participants.list();
+  const originalAgentParticipant = conferenceParticipants.find(
+    p => p.callSid === originalAgentCallSid,
+  );
+  if (originalAgentParticipant) {
+    await originalAgentParticipant.update({ endConferenceOnExit: false });
+  }
+  await Promise.all(
+    conferenceParticipants
+      .filter(p => p.callSid !== originalAgentCallSid)
+      .map(p => p.update({ hold: true })),
+  );
+  await originalAgentParticipant?.remove();
   // create New task
   const newTask = await client.taskrouter.v1.workspaces
     .get(await getWorkspaceSid(accountSid))
