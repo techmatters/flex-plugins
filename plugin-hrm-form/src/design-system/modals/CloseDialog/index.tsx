@@ -29,8 +29,8 @@ export const CloseDialog: React.FC<{
   return (
     <ConfirmDialog
       openDialog={openDialog}
-      closeDialogHeader={closeDialogHeader}
-      closeDialogContent={closeDialogContent}
+      dialogHeader={closeDialogHeader}
+      dialogContent={closeDialogContent}
       actionComponent={
         <DestructiveButton tabIndex={2} onClick={onDiscardChanges} style={{ marginLeft: '20px' }}>
           <Template code="Modals-CloseDialog-DiscardButton" />

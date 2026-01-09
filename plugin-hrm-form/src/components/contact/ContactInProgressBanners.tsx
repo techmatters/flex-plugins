@@ -184,8 +184,8 @@ const ContactInProgressBanners: React.FC<ContactBannersProps> = ({ contactId }) 
             <Template code="Contact-ConfirmFinalizeContactDialog-ConfirmButton" />
           </PrimaryButton>
         }
-        closeDialogHeader="Contact-ConfirmFinalizeContactDialog-Header"
-        closeDialogContent="Contact-ConfirmFinalizeContactDialog-Content"
+        dialogHeader="Contact-ConfirmFinalizeContactDialog-Header"
+        dialogContent="Contact-ConfirmFinalizeContactDialog-Content"
         onCloseDialog={handleCancel}
       />
       <ConfirmDialog
@@ -195,8 +195,8 @@ const ContactInProgressBanners: React.FC<ContactBannersProps> = ({ contactId }) 
             <Template code="Contact-ConfirmRemoveTaskDialog-ConfirmButton" />
           </DestructiveButton>
         }
-        closeDialogHeader="Contact-ConfirmRemoveTaskDialog-Header"
-        closeDialogContent="Contact-ConfirmRemoveTaskDialog-Content"
+        dialogHeader="Contact-ConfirmRemoveTaskDialog-Header"
+        dialogContent="Contact-ConfirmRemoveTaskDialog-Content"
         onCloseDialog={handleCancel}
       />
     </>

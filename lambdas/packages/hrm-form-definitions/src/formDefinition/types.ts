@@ -378,6 +378,13 @@ export type LocalizedStringMap = {
   };
 };
 
+export type CustomLink = {
+  icon: string;
+  label: string;
+  url: string;
+  type: 'embedded' | 'new-window';
+};
+
 export type FullyQualifiedFieldReference = `${keyof DefinitionVersion['tabbedForms']}.${string}`;
 /**
  * Type that defines a complete version for all the customizable forms used across the app
@@ -460,4 +467,5 @@ export type DefinitionVersion = {
     Substitutions: LocalizedStringMap;
   };
   flexUiLocales?: FlexUILocaleEntry[];
+  customLinks?: CustomLink[];
 };

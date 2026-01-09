@@ -507,7 +507,7 @@
   "BottomBar-SaveOnClose": "Save Changes?",
   "BottomBar-DontSave": "No, Don't Save",
   "BottomBar-Save": "Yes, Save",
-  "Toolkit-ConfirmTextOne": "You will be redirected to {{helpline}}'s knowledge management system.",
+  "Toolkit-ConfirmTextOne": "You will be redirected to an external knowledge management system.",
   "Toolkit-ConfirmTextTwo": "Are you sure you want to continue?",
   
   "MaskIdentifiers": "XXXXXX",
@@ -658,6 +658,7 @@
 
   "AgentDesktop-KeyboardShortcuts-ToggleDialpad": "Toggle Dialpad",
 
+  "Modals-ConfirmDialog-ConfirmButton": "OK",
   "Modals-CloseDialog-CancelButton": "Cancel",
   "Modals-CloseDialog-DiscardButton": "Discard"
 }
