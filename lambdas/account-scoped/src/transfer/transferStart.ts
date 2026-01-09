@@ -189,7 +189,7 @@ export const transferCallToQueue = async (
       attributes: JSON.stringify(newAttributes),
       priority: 100,
     });
-
+  console.debug(`Transfer target task created with sid ${newTask.sid}`);
   return newTask.sid as TaskSID;
 };
 
