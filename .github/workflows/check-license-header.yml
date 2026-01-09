@@ -21,7 +21,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Branch
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: Validate License Headers
         run: npm run license:check
