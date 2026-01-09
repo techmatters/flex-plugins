@@ -383,7 +383,7 @@ export type CustomLink = {
   label: string;
   url: string;
   type: 'embedded' | 'new-window';
-}
+};
 
 export type FullyQualifiedFieldReference = `${keyof DefinitionVersion['tabbedForms']}.${string}`;
 /**
