@@ -34,7 +34,6 @@ import { setUpSyncClient } from './services/SyncService';
 import { setUpReferrableResources } from './components/resources/setUpReferrableResources';
 import QueuesView from './components/queuesView';
 import TeamsView from './components/teamsView';
-import { setUpCounselorToolkits } from './components/toolkits/setUpCounselorToolkits';
 import { setUpTransferComponents } from './components/transfer/setUpTransferComponents';
 import { subscribeNewMessageAlertOnPluginInit } from './notifications/newMessage';
 import { subscribeReservedTaskAlert } from './notifications/reservedTask';
@@ -117,7 +116,6 @@ const setUpComponents = (featureFlags: FeatureFlags, setupObject: ReturnType<typ
 
   Components.setUpStandaloneSearch();
   setUpReferrableResources();
-  setUpCounselorToolkits();
 
   if (featureFlags.enable_emoji_picker) Components.setupEmojiPicker();
   if (featureFlags.enable_canned_responses) Components.setupCannedResponses();
