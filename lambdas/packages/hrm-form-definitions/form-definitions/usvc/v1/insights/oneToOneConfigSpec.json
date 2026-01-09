@@ -58,6 +58,14 @@
       {
         "name": "state",
         "insights": ["customers", "customer_phone"]
+      },
+      {
+        "name": "state",
+        "insights": ["customers", "phone"]
+      },
+      {
+        "name": "state",
+        "insights": ["customers", "name"]
       }
     ],
     "caseInformation": [
