@@ -9,6 +9,6 @@
     "attributeName": "conversation_attribute_5",
     "insightsObject": "conversations",
     "paths": ["savedContact.profileId"],
-    "saveForNonDataContacts": false
+    "saveForNonDataContacts": true
   }
 ]

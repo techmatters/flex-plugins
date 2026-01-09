@@ -6,5 +6,29 @@
       "savedContact.id"
     ],
     "saveForNonDataContacts": true
+  },
+  {
+    "attributeName": "conversation_attribute_10",
+    "insightsObject": "conversations",
+    "paths": [
+      "savedContact.id"
+    ],
+    "saveForNonDataContacts": true
+  },
+  {
+    "attributeName": "phone",
+    "insightsObject": "customers",
+    "paths": [
+      "savedContact.id"
+    ],
+    "saveForNonDataContacts": true
+  },
+  {
+    "attributeName": "name",
+    "insightsObject": "customers",
+    "paths": [
+      "savedContact.id"
+    ],
+    "saveForNonDataContacts": true
   }
 ]
