@@ -76,7 +76,7 @@ export type ChannelColors = {
 export const transferModes = {
   cold: 'COLD',
   warm: 'WARM',
-};
+} as const;
 
 export const transferStatuses = {
   transferring: 'transferring',

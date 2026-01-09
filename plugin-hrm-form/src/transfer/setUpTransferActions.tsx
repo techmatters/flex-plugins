@@ -30,17 +30,20 @@ import {
 import * as TransferHelpers from './transferTaskState';
 import { transferModes } from '../states/DomainConstants';
 import { recordEvent } from '../fullStory';
-import { transferChatStart } from '../services/ServerlessService';
 import { getHrmConfig } from '../hrmConfig';
 import { RootState } from '../states';
 import { reactivateAseloListeners } from '../conversationListeners';
 import selectContactByTaskSid from '../states/contacts/selectContactByTaskSid';
 import { ContactState } from '../states/contacts/existingContacts';
 import { saveFormSharedState } from './formDataTransfer';
+import { transferStart } from '../services/transferService';
 
 type SetupObject = ReturnType<typeof getHrmConfig>;
 type ActionPayload = { task: ITask };
-type ActionPayloadWithOptions = ActionPayload & { options: { mode: string }; targetSid: string };
+type ActionPayloadWithOptions = ActionPayload & {
+  options: { mode: typeof transferModes[keyof typeof transferModes] };
+  targetSid: string;
+};
 const DEFAULT_TRANSFER_MODE = transferModes.cold;
 
 export const TransfersNotifications = {
@@ -71,7 +74,7 @@ const getStateContactForms = (taskSid: string): ContactState => {
 };
 
 /**
- * Custom override for TransferTask action. Saves the form to share with another counselor (if possible) and then starts the transfer
+ * Custom override for TransferTask action. Saves the form to ensure it's up to date on the backend (if possible) and then starts the transfer
  */
 const customTransferTask = (setupObject: SetupObject): ReplacedActionFunction => async (
   payload: ActionPayloadWithOptions,
@@ -110,9 +113,9 @@ const customTransferTask = (setupObject: SetupObject): ReplacedActionFunction =>
     const { conferenceSid } = payload.task.conference || {};
     const conferenceSidFromAttributes = payload.task.attributes?.conference?.sid;
     if (!conferenceSid && !conferenceSidFromAttributes) {
-      console.log('>> Could not find any conferenceSid');
+      console.debug('>> Could not find any conferenceSid');
     } else if (conferenceSid && !conferenceSidFromAttributes) {
-      console.log('>> Updating task attributes with conferenceSid');
+      console.debug('>> Updating task attributes with conferenceSid');
       // const customer = payload.task.conference?.participants.find(p => p.participantType === 'customer').participantSid;
       await payload.task.setAttributes({
         ...payload.task.attributes,
@@ -130,8 +133,6 @@ const customTransferTask = (setupObject: SetupObject): ReplacedActionFunction =>
 
     if (disableTransfer) {
       window.alert(Manager.getInstance().strings['Transfer-CannotTransferTooManyParticipants']);
-    } else {
-      return safeTransfer(() => original(payload), payload.task);
     }
   }
 
@@ -142,7 +143,7 @@ const customTransferTask = (setupObject: SetupObject): ReplacedActionFunction =>
     ignoreAgent: workerSid,
   };
 
-  return safeTransfer(() => transferChatStart(body), payload.task);
+  return safeTransfer(() => transferStart(body), payload.task);
 };
 
 const afterCancelTransfer = (payload: ActionPayload) => TransferHelpers.clearTransferMeta(payload.task);
