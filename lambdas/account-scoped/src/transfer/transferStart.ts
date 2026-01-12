@@ -305,7 +305,11 @@ export const transferStartHandler: AccountScopedHandler = async (
   };
 
   if (originalTask.taskChannelUniqueName === 'voice') {
-    const newTaskSid = coldTransferCallToQueue(accountSid, originalTask, newAttributes);
+    const newTaskSid = await coldTransferCallToQueue(
+      accountSid,
+      originalTask,
+      newAttributes,
+    );
     return newOk({ taskSid: newTaskSid });
   }
 
