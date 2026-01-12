@@ -171,16 +171,25 @@ async function increaseChatCapacity(
   }
 }
 
-export const transferCallToQueue = async (
+export const coldTransferCallToQueue = async (
   accountSid: AccountSID,
   originalTask: TaskInstance,
   newAttributes: any,
 ): Promise<TaskSID> => {
+  console.debug(
+    `[transfer: original task: ${originalTask.sid}] Cold transferring call to queue`,
+  );
   const client = await getTwilioClient(accountSid);
   const programmableChatTransferWorkflowSid =
     await getConversationsTransferWorkflow(accountSid);
   const { conference: taskConferenceInfo } = newAttributes;
+  console.debug(
+    `[transfer: original task: ${originalTask.sid}, conference: ${taskConferenceInfo.sid}] Found conference info`,
+  );
   const conferenceContext = client.conferences.get(taskConferenceInfo.sid);
+  console.debug(
+    `[transfer: original task: ${originalTask.sid}, conference: ${taskConferenceInfo.sid}] Found conference instance`,
+  );
   const originalAgentCallSid = taskConferenceInfo.participants.worker;
   const conferenceParticipants = await conferenceContext.participants.list();
   const originalAgentParticipant = conferenceParticipants.find(
@@ -188,11 +197,25 @@ export const transferCallToQueue = async (
   );
   if (originalAgentParticipant) {
     await originalAgentParticipant.update({ endConferenceOnExit: false });
+    console.debug(
+      `[transfer: original task: ${originalTask.sid}, conference: ${taskConferenceInfo.sid}] Found original agent to remove from conference: ${originalAgentParticipant?.callSid}`,
+    );
+  } else {
+    console.warn(
+      `[transfer: original task: ${originalTask.sid}, conference: ${taskConferenceInfo.sid}] Could not find original agent to remove from conference`,
+      conferenceParticipants,
+    );
   }
   await Promise.all(
     conferenceParticipants
       .filter(p => p.callSid !== originalAgentCallSid)
-      .map(p => p.update({ hold: true })),
+      .map(p => {
+        console.debug(
+          `[transfer: original task: ${originalTask.sid}, conference: ${taskConferenceInfo.sid}] Putting participant on hold: ${p.callSid}`,
+          p,
+        );
+        return p.update({ hold: true });
+      }),
   );
   await originalAgentParticipant?.remove();
   // create New task
@@ -204,7 +227,9 @@ export const transferCallToQueue = async (
       attributes: JSON.stringify(newAttributes),
       priority: 100,
     });
-  console.debug(`Transfer target task created with sid ${newTask.sid}`);
+  console.debug(
+    `[transfer: original task: ${originalTask.sid}, conference: ${taskConferenceInfo.sid}] Transfer target task created with sid ${newTask.sid}`,
+  );
   return newTask.sid as TaskSID;
 };
 
@@ -280,7 +305,7 @@ export const transferStartHandler: AccountScopedHandler = async (
   };
 
   if (originalTask.taskChannelUniqueName === 'voice') {
-    const newTaskSid = transferCallToQueue(accountSid, originalTask, newAttributes);
+    const newTaskSid = coldTransferCallToQueue(accountSid, originalTask, newAttributes);
     return newOk({ taskSid: newTaskSid });
   }
 
