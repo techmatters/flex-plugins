@@ -49,6 +49,7 @@ import { setupLlmNotifications } from './components/contact/GenerateSummaryButto
 import { FeatureFlags } from './types/FeatureFlags';
 import { setUpFullStory } from './fullStory/setUp';
 import { getPathFromUrl } from './states/routing/reducer';
+import { setUpCustomSideLinks } from './components/customSideLinks/setUpCustomSideLinks';
 
 const PLUGIN_NAME = 'HrmFormPlugin';
 
@@ -145,6 +146,8 @@ const setUpComponents = (featureFlags: FeatureFlags, setupObject: ReturnType<typ
   });
 
   if (featureFlags.enable_language_selector) Components.setupWorkerLanguageSelect();
+
+  setUpCustomSideLinks();
 };
 
 const setUpActions = (
