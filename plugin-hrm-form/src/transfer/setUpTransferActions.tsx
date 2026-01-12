@@ -30,7 +30,7 @@ import {
 import * as TransferHelpers from './transferTaskState';
 import { transferModes } from '../states/DomainConstants';
 import { recordEvent } from '../fullStory';
-import { getHrmConfig } from '../hrmConfig';
+import { getAseloFeatureFlags, getHrmConfig } from '../hrmConfig';
 import { RootState } from '../states';
 import { reactivateAseloListeners } from '../conversationListeners';
 import selectContactByTaskSid from '../states/contacts/selectContactByTaskSid';
@@ -79,6 +79,7 @@ const getStateContactForms = (taskSid: string): ContactState => {
 const customTransferTask = (setupObject: SetupObject): ReplacedActionFunction => async (
   payload: ActionPayloadWithOptions,
   original: ActionFunction,
+  // eslint-disable-next-line sonarjs/cognitive-complexity
 ) => {
   const mode = payload.options.mode || DEFAULT_TRANSFER_MODE;
 
@@ -128,11 +129,14 @@ const customTransferTask = (setupObject: SetupObject): ReplacedActionFunction =>
         },
       });
     }
-
     const disableTransfer = !TransferHelpers.canTransferConference(payload.task);
 
     if (disableTransfer) {
       window.alert(Manager.getInstance().strings['Transfer-CannotTransferTooManyParticipants']);
+    } else {
+      const targetType = payload.targetSid.startsWith('WK') ? 'worker' : 'queue';
+      const featureFlag = `use_custom_voice_transfers_for_${mode.toLowerCase()}_${targetType}_transfers`;
+      if (!getAseloFeatureFlags()[featureFlag]) return safeTransfer(() => original(payload), payload.task);
     }
   }
 
