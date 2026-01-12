@@ -28,3 +28,6 @@ type TransferChatStartReturn = { closed: string; kept: string };
 
 export const transferStart = async (body: TransferChatStartBody): Promise<TransferChatStartReturn> =>
   fetchProtectedApi('transfer/transferStart', body, { useTwilioLambda: true });
+
+export const serverlessChatTransferStart = async (body: TransferChatStartBody): Promise<TransferChatStartReturn> =>
+  fetchProtectedApi('transferChatStart', body, { useTwilioLambda: false });

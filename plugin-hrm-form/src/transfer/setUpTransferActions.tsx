@@ -36,7 +36,7 @@ import { reactivateAseloListeners } from '../conversationListeners';
 import selectContactByTaskSid from '../states/contacts/selectContactByTaskSid';
 import { ContactState } from '../states/contacts/existingContacts';
 import { saveFormSharedState } from './formDataTransfer';
-import { transferStart } from '../services/transferService';
+import { serverlessChatTransferStart, transferStart } from '../services/transferService';
 
 type SetupObject = ReturnType<typeof getHrmConfig>;
 type ActionPayload = { task: ITask };
@@ -81,6 +81,7 @@ const customTransferTask = (setupObject: SetupObject): ReplacedActionFunction =>
   original: ActionFunction,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 ) => {
+  const featureFlags = getAseloFeatureFlags();
   const mode = payload.options.mode || DEFAULT_TRANSFER_MODE;
 
   /*
@@ -147,7 +148,13 @@ const customTransferTask = (setupObject: SetupObject): ReplacedActionFunction =>
     ignoreAgent: workerSid,
   };
 
-  return safeTransfer(() => transferStart(body), payload.task);
+  return safeTransfer(
+    () =>
+      featureFlags.use_twilio_lambda_for_starting_chat_transfers
+        ? transferStart(body)
+        : serverlessChatTransferStart(body),
+    payload.task,
+  );
 };
 
 const afterCancelTransfer = (payload: ActionPayload) => TransferHelpers.clearTransferMeta(payload.task);
