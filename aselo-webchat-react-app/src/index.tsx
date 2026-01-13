@@ -23,32 +23,23 @@ const defaultConfig: ConfigState = {
     theme: {
         isLight: true,
     },
-    fileAttachment: {
-        enabled: true,
-        maxFileSize: 16777216, // 16 MB
-        acceptedExtensions: ["jpg", "jpeg", "png", "amr", "mp3", "mp4", "pdf", "txt"],
-    },
 };
 
-const initWebchat = async (userConfig: UserConfig) => {
-    const validKeys = ["deploymentKey", "region", "theme", "appStatus"];
+const initWebchat = async (configLocation: URL, userConfig: UserConfig) => {
+    const helplineConfigResponse = await fetch(configLocation);
     const logger = window.Twilio.getLogger(`InitWebChat`);
-
-    if (!userConfig || !userConfig.deploymentKey) {
+    if (!helplineConfigResponse.ok) {
+        logger.error(`Failed to load helpline specific config for Aselo Webchat from ${configLocation}, aborting load`);
+        return;
+    }
+    const webchatConfig: ConfigState = merge({}, defaultConfig, await helplineConfigResponse.json(), userConfig);
+    if (!webchatConfig || !userConfig.deploymentKey) {
         logger.error(`deploymentKey must exist to connect to Webchat servers`);
         return;
     }
 
-    for (const key in userConfig) {
-        if (!validKeys.includes(key)) {
-            logger.warn(`${key} is not supported.`);
-        }
-    }
-
     store.dispatch(changeExpandedStatus({ expanded: userConfig.appStatus === "open" }));
     delete userConfig.appStatus;
-
-    const webchatConfig = merge({}, defaultConfig, userConfig);
 
     sessionDataHandler.setRegion(webchatConfig.region);
     sessionDataHandler.setDeploymentKey(webchatConfig.deploymentKey);
@@ -62,7 +53,7 @@ const initWebchat = async (userConfig: UserConfig) => {
         <Provider store={store}>
             <WebchatWidget />
         </Provider>,
-        rootElement
+        rootElement,
     );
 
     if (window.Cypress) {
@@ -87,6 +78,6 @@ Object.assign(window, {
     Twilio: {
         initWebchat,
         initLogger,
-        getLogger
-    }
+        getLogger,
+    },
 });

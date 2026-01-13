@@ -47,6 +47,7 @@
     "@typescript-eslint/parser": "^5.4.0",
     "axios": "^0.24.0",
     "cors": "^2.8.5",
+    "cross-env": "^10.1.0",
     "cypress": "12.17.2",
     "cypress-file-upload": "^5.0.8",
     "dotenv": "^16.0.0",
@@ -58,9 +59,11 @@
     "express": "4.17.3",
     "fetch-mock-jest": "^1.5.1",
     "filemanager-webpack-plugin": "^8.0.0",
+    "http-server": "^14.1.1",
     "jsonwebtoken": "^8.5.1",
     "node-fetch": "^2.6.6",
     "nodemon": "^2.0.15",
+    "npm-run-all": "^4.1.5",
     "prettier": "^2.4.1",
     "twilio": "^3.74.0",
     "typescript": "^4.4.2",
@@ -73,13 +76,16 @@
   "scripts": {
     "start": "react-app-rewired start",
     "build": "react-app-rewired build",
+    "start:as_dev": "cross-env CONFIG_URL=http://localhost:9090/as/development.json run-s dev:local-config-server start",
     "test": "LC_ALL=\"en_GB.UTF-8\" react-app-rewired test --watchAll=false --env=jsdom --transformIgnorePatterns \"node_modules/(?!(@twilio-paste|@twilio/conversations))/\"",
     "test:nowatch": "npm test --watchAll=false --verbose --runInBand",
     "bootstrap": "node scripts/bootstrap",
     "e2eCleanupExistingTasks": "node scripts/e2eCleanupExistingTasks",
+    "mergeConfigs": "node scripts/mergeConfigs",
     "deploy": "npm run build && node scripts/deploy",
     "eject": "react-app-rewired eject",
-    "test:e2e": "cypress open"
+    "test:e2e": "cypress open",
+    "dev:local-config-server": "npx http-server ../lambdas/packages/hrm-form-definitions/form-definitions -p 9090 --cors -c-1"
   },
   "browserslist": [
     ">0.2%",
@@ -98,8 +104,5 @@
       "<rootDir>/src/coverage/"
     ],
     "rootDir": "./"
-  },
-  "engines": {
-    "node": ">=18"
   }
 }
