@@ -21,13 +21,13 @@ const defaultConfig: ConfigState = {
     deploymentKey: "",
     region: "",
     theme: {
-        isLight: true
+        isLight: true,
     },
     fileAttachment: {
         enabled: true,
         maxFileSize: 16777216, // 16 MB
-        acceptedExtensions: ["jpg", "jpeg", "png", "amr", "mp3", "mp4", "pdf", "txt"]
-    }
+        acceptedExtensions: ["jpg", "jpeg", "png", "amr", "mp3", "mp4", "pdf", "txt"],
+    },
 };
 
 const initWebchat = async (userConfig: UserConfig) => {

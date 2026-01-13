@@ -25,7 +25,7 @@ import { getUserIp } from './ip-tracker';
 import { displayOperatingHours } from './operating-hours';
 import { updateZIndex, getWebChatAttributeValues } from './dom-utils';
 import blockedIps from './blockedIps.json';
-import CloseChatButtons from './end-chat/CloseChatButtons';
+import CloseChatButtons from './endChat/CloseChatButtons';
 import { getChangeLanguageWebChat } from './language';
 import { applyMobileOptimization } from './mobile-optimization';
 import { aseloReducer } from './aselo-webchat-state';
