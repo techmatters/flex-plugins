@@ -99,7 +99,7 @@ jobs:
       - name: Invalidate CloudFront cache
         if: ${{ inputs.invalidate-cache != 'false' }}
         run: |
-          CF_DISTRO=$(aws cloudfront list-distributions --query "DistributionList.Items[*].{id:Id,origin:Origins.Items[0].DomainName}[?origin=='s3://assets-${{ inputs.environment }}.tl.techmatters.org.s3-website.us-east-1.amazonaws.com'].id" --output text)
+          CF_DISTRO=$(aws cloudfront list-distributions --query "DistributionList.Items[*].{id:Id,origin:Origins.Items[0].DomainName}[?origin=='assets-${{ inputs.environment }}.tl.techmatters.org.s3-website.us-east-1.amazonaws.com'].id" --output text)
           aws cloudfront create-invalidation --distribution-id $CF_DISTRO --paths /webchat/${{ inputs.helpline_code }}/config.json
 
       # Set any env vars needed from Parameter Store here
