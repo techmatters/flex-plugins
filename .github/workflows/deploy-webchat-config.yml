@@ -81,7 +81,7 @@ jobs:
         working-directory: ./aselo-webchat-react-app
 
       - name: Merge up configurations
-        run: npm run mergeConfigs ${{ inputs.environment }}
+        run: npm run mergeConfigs ${{ inputs.environment }} ${{ inputs.helpline_code }}
         working-directory: ./aselo-webchat-react-app
 
       - name: Configure AWS credentials

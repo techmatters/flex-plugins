@@ -17,20 +17,26 @@
 const fs = require("fs/promises");
 const merge = require("lodash.merge");
 
-const generateMergedConfigs = async (environment) => {
-    const defaults = JSON.parse(await fs.readFile('./configSrc/defaults.json', 'utf8'));
-    const contents =  await fs.readdir('./configSrc/', { recursive: false, withFileTypes: true });
-    const directories = contents.filter((ent) => ent.isDirectory()).map(({ name }) => name)
-    for (const shortCode of directories) {
+const generateMergedConfigs = async (environment, helplineCode) => {
+    const defaults = JSON.parse(await fs.readFile('./configSrc/defaults.json', { encoding: 'utf8' }));
+    const helplineCodes = [];
+    if (helplineCode) {
+        helplineCodes.push(helplineCode);
+    } else {
+        const contents =  await fs.readdir('./configSrc/', { recursive: false, withFileTypes: true });
+        const directories = contents.filter((ent) => ent.isDirectory()).map(({ name }) => name)
+        helplineCodes.push(...directories);
+    }
+    for (const shortCode of helplineCodes) {
 
-        const helplineCommon = JSON.parse(await fs.readFile(`./configSrc/${shortCode}/common.json`, 'utf8'));
-        const environmentSpecific = JSON.parse(await fs.readFile(`./configSrc/${shortCode}/${environment}.json`, 'utf8'));
+        const helplineCommon = JSON.parse(await fs.readFile(`./configSrc/${shortCode}/common.json`, { encoding: 'utf8' }));
+        const environmentSpecific = JSON.parse(await fs.readFile(`./configSrc/${shortCode}/${environment}.json`, { encoding: 'utf8' }));
         await fs.mkdir(`./mergedConfigs/${shortCode}`, { recursive: true });
         await fs.writeFile(`./mergedConfigs/${shortCode}/${environment}.json`, JSON.stringify(merge(defaults, helplineCommon, environmentSpecific), null, 2))
     }
 }
 
-generateMergedConfigs(process.argv[2]).then(
+generateMergedConfigs(process.argv[2], process.argv[3]).then(
     () => console.info(`Merged logs generated for ${process.argv[2]}.`),
     (err) => console.error(`Error generating merged configs for ${process.argv[2]}.`, err)
 );
