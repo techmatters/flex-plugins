@@ -119,7 +119,7 @@ const ACCOUNTSID_ROUTES: Record<
     handler: handleConversationEvent,
   },
   'conversation/adjustChatCapacity': {
-    requestPipeline: [validateFlexTokenRequest({ tokenMode: 'worker' })],
+    requestPipeline: [validateFlexTokenRequest({ tokenMode: 'agent' })],
     handler: adjustChatCapacityHandler,
   },
   'customChannels/instagram/instagramToFlex': {
@@ -167,7 +167,7 @@ const ACCOUNTSID_ROUTES: Record<
     handler: getTaskAndReservationsHandler,
   },
   'transfer/transferStart': {
-    requestPipeline: [validateFlexTokenRequest({ tokenMode: 'worker' })],
+    requestPipeline: [validateFlexTokenRequest({ tokenMode: 'agent' })],
     handler: transferStartHandler,
   },
   updateWorkersSkills: {
