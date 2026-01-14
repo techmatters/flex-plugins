@@ -146,12 +146,22 @@ const QueuesStatusWriter = props => {
   const dispatch = useDispatch();
   const queuesStatusState = useSelector(state => state[namespace][queuesStatusBase]);
   
+  const queuesStatusUpdateCallback = useCallback(
+    (queuesStatus) => dispatch(queuesStatusUpdate(queuesStatus)),
+    [dispatch]
+  );
+  
+  const queuesStatusFailureCallback = useCallback(
+    (error) => dispatch(queuesStatusFailure(error)),
+    [dispatch]
+  );
+  
   return (
     <InnerQueuesStatusWriter
       {...props}
       queuesStatusState={queuesStatusState}
-      queuesStatusUpdate={(queuesStatus) => dispatch(queuesStatusUpdate(queuesStatus))}
-      queuesStatusFailure={(error) => dispatch(queuesStatusFailure(error))}
+      queuesStatusUpdate={queuesStatusUpdateCallback}
+      queuesStatusFailure={queuesStatusFailureCallback}
     />
   );
 };

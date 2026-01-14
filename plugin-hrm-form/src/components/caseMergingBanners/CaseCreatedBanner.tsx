@@ -32,6 +32,7 @@ import { selectContactsByCaseIdInCreatedOrder } from '../../states/contacts/sele
 import selectContactByTaskSid from '../../states/contacts/selectContactByTaskSid';
 import { selectCaseByCaseId } from '../../states/case/selectCaseStateByCaseId';
 import { PermissionActions } from '../../permissions/actions';
+import { RootState } from '../../states';
 
 type Props = {
   task?: CustomITask | StandaloneITask;
@@ -41,9 +42,9 @@ type Props = {
 const CreatedCaseBanner: React.FC<Props> = ({ task, caseId }) => {
   const dispatch = useDispatch();
   const taskSid = task ? task.taskSid : getOfflineContactTaskSid();
-  const cas = useSelector(state => selectCaseByCaseId(state, caseId)?.connectedCase);
-  const caseContacts = useSelector(state => selectContactsByCaseIdInCreatedOrder(state, caseId));
-  const taskContact = useSelector(state => selectContactByTaskSid(state, taskSid)?.savedContact);
+  const cas = useSelector((state: RootState) => selectCaseByCaseId(state, caseId)?.connectedCase);
+  const caseContacts = useSelector((state: RootState) => selectContactsByCaseIdInCreatedOrder(state, caseId));
+  const taskContact = useSelector((state: RootState) => selectContactByTaskSid(state, taskSid)?.savedContact);
   const hasOtherContacts = Boolean(caseContacts.find(contact => contact.savedContact?.taskId !== taskSid));
 
   const removeContactFromCase = async (contactId: string) => asyncDispatch(dispatch)(removeFromCaseAsyncAction(contactId));
