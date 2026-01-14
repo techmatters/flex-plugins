@@ -65,8 +65,8 @@ const BottomBar: React.FC<BottomBarProps> = ({
   const { draftContact, savedContact, metadata } = useSelector((state: RootState) => 
     selectContactStateByContactId(state, contactId) ?? {}
   );
-  const caseState = useSelector((state: RootState) => selectCaseByCaseId(state, savedContact.caseId ?? ''));
-  const contactIsSaving = metadata.loadingStatus === LoadingStatus.LOADING || savedContact.finalizedAt !== null;
+  const caseState = useSelector((state: RootState) => selectCaseByCaseId(state, savedContact?.caseId ?? ''));
+  const contactIsSaving = metadata?.loadingStatus === LoadingStatus.LOADING || savedContact?.finalizedAt !== null;
   const contact = getUnsavedContact(savedContact, draftContact);
 
   const openModal = (route: AppRoutes) => dispatch(RoutingActions.newOpenModalAction(route, task.taskSid));
