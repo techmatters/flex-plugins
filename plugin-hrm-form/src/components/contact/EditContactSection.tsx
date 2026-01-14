@@ -14,8 +14,8 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { connect, ConnectedProps } from 'react-redux';
-import React, { Dispatch, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import React, { useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { Template } from '@twilio/flex-ui';
 import { CircularProgress } from '@material-ui/core';
@@ -39,7 +39,7 @@ import { updateContactInHrmAsyncAction } from '../../states/contacts/saveContact
 import { namespace } from '../../states/storeNamespaces';
 import { newGoBackAction } from '../../states/routing/actions';
 
-type OwnProps = {
+type Props = {
   context: DetailsContext;
   contactId: string;
   task: CustomITask | StandaloneITask;
@@ -48,22 +48,24 @@ type OwnProps = {
   onClose: () => void;
 };
 
-// eslint-disable-next-line no-use-before-define
-type Props = OwnProps & ConnectedProps<typeof connector>;
+const EditContactSection: React.FC<Props> = ({ contactId, task, children, tabPath, onClose }) => {
+  const dispatch = useDispatch();
+  const contactState = useSelector((state: RootState) => state[namespace].activeContacts.existingContacts[contactId]);
+  const definitionVersions = useSelector((state: RootState) => state[namespace].configuration.definitionVersions);
+  const savedContact = contactState?.savedContact;
+  const draftContact = contactState?.draftContact;
+  const confirmCloseDialogOpen = Boolean(contactState?.metadata?.draft?.dialogsOpen?.[`${tabPath}-confirm-close`]);
+  const confirmBackDialogOpen = Boolean(contactState?.metadata?.draft?.dialogsOpen?.[`${tabPath}-confirm-back`]);
 
-const EditContactSection: React.FC<Props> = ({
-  savedContact,
-  draftContact,
-  definitionVersions,
-  children,
-  clearContactDraft,
-  goBack,
-  onClose,
-  updateContactsFormInHrmAsyncAction,
-  confirmCloseDialogOpen,
-  confirmBackDialogOpen,
-  closeDialog,
-}) => {
+  const goBack = () => dispatch(newGoBackAction(task.taskSid));
+  const updateContactsFormInHrmAsyncAction = async (contact: Contact, changes: ContactDraftChanges) => {
+    await asyncDispatch<AnyAction>(dispatch)(updateContactInHrmAsyncAction(contact, changes));
+  };
+  const closeDialog = (dismissAction: 'close' | 'back') =>
+    dispatch(newSetContactDialogStateAction(contactId, `${tabPath}-confirm-${dismissAction}`, false));
+  const clearContactDraft = () => {
+    dispatch(clearDraft(contactId));
+  };
   const methods = useForm({
     shouldFocusError: false,
     mode: 'onSubmit',
@@ -142,40 +144,4 @@ const EditContactSection: React.FC<Props> = ({
   );
 };
 
-const mapDispatchToProps = (
-  dispatch: Dispatch<{ type: string } & Record<string, any>>,
-  { contactId, task, tabPath }: OwnProps,
-) => {
-  const updateContactAsyncDispatch = asyncDispatch<AnyAction>(dispatch);
-  return {
-    goBack: () => dispatch(newGoBackAction(task.taskSid)),
-    updateContactsFormInHrmAsyncAction: async (contact: Contact, changes: ContactDraftChanges) => {
-      await updateContactAsyncDispatch(updateContactInHrmAsyncAction(contact, changes));
-    },
-    closeDialog: (dismissAction: 'close' | 'back') =>
-      dispatch(newSetContactDialogStateAction(contactId, `${tabPath}-confirm-${dismissAction}`, false)),
-    clearContactDraft: () => {
-      dispatch(clearDraft(contactId));
-    },
-  };
-};
-
-const mapStateToProps = (
-  { [namespace]: { activeContacts, configuration } }: RootState,
-  { contactId, tabPath }: OwnProps,
-) => {
-  const contactState = activeContacts.existingContacts[contactId];
-  return {
-    definitionVersions: configuration.definitionVersions,
-    counselorsHash: configuration.counselors.hash,
-    savedContact: contactState?.savedContact,
-    draftContact: contactState?.draftContact,
-    confirmCloseDialogOpen: Boolean(contactState?.metadata?.draft?.dialogsOpen?.[`${tabPath}-confirm-close`]),
-    confirmBackDialogOpen: Boolean(contactState?.metadata?.draft?.dialogsOpen?.[`${tabPath}-confirm-back`]),
-  };
-};
-
-const connector = connect(mapStateToProps, mapDispatchToProps);
-const connected = connector(EditContactSection);
-
-export default connected;
+export default EditContactSection;

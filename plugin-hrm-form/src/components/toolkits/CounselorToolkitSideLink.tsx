@@ -15,7 +15,7 @@
  */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 import React, { useState } from 'react';
-import { connect, ConnectedProps } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { InformationIcon } from '@twilio-paste/icons/cjs/InformationIcon';
 import { SideLink, SideNavChildrenProps } from '@twilio/flex-ui';
 import { HelplineEntry } from 'hrm-form-definitions';
@@ -24,18 +24,12 @@ import CounselorToolkitDialog from './CounselorToolkitDialog';
 import { RootState } from '../../states';
 import { configurationBase, namespace } from '../../states/storeNamespaces';
 
-const mapStateToProps = (state: RootState) => ({
-  definitionVersion: state[namespace][configurationBase].currentDefinitionVersion,
-});
+type Props = SideNavChildrenProps & {
+  showLabel: boolean;
+};
 
-const connector = connect(mapStateToProps);
-
-type Props = SideNavChildrenProps &
-  ConnectedProps<typeof connector> & {
-    showLabel: boolean;
-  };
-
-const CounselorToolkitSideLink: React.FC<Props> = ({ showLabel, definitionVersion }) => {
+const CounselorToolkitSideLink: React.FC<Props> = ({ showLabel }) => {
+  const definitionVersion = useSelector((state: RootState) => state[namespace][configurationBase].currentDefinitionVersion);
   const [anchorEl, setAnchorEl] = useState(null);
 
   if (!definitionVersion) {
@@ -83,4 +77,4 @@ const CounselorToolkitSideLink: React.FC<Props> = ({ showLabel, definitionVersio
 
 CounselorToolkitSideLink.displayName = 'CounselorToolkitSideLink';
 
-export default connector(CounselorToolkitSideLink);
+export default CounselorToolkitSideLink;
