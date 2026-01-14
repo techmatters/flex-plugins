@@ -25,7 +25,7 @@ import { getUserIp } from './ip-tracker';
 import { displayOperatingHours } from './operating-hours';
 import { updateZIndex, getWebChatAttributeValues } from './dom-utils';
 import blockedIps from './blockedIps.json';
-import CloseChatButtons from './endChat/CloseChatButtons';
+import CloseChatButtons from './end-chat/CloseChatButtons';
 import { getChangeLanguageWebChat } from './language';
 import { applyMobileOptimization } from './mobile-optimization';
 import { aseloReducer } from './aselo-webchat-state';
@@ -184,7 +184,7 @@ export const initWebchat = async () => {
 
   // Hide message input and send button if disabledReason is not undefined
   FlexWebChat.MessageInput.Content.remove('textarea', {
-    if: (props) => (manager.chatClient.user.attributes as any).lockInput,
+    if: () => (manager.chatClient.user.attributes as any).lockInput,
   });
 
   // Hide first message ("AutoFirstMessage", sent to create a new task)
