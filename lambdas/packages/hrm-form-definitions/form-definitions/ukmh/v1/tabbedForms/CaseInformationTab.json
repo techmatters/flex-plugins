@@ -60,5 +60,25 @@
       }
     ],
     "isPII": false
+  },
+  {
+    "name": "dataProcessingAndStorage",
+    "label": "Consent for Data Storage and Processing",
+    "type": "select",
+    "options": [
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "Yes",
+        "label": "Yes"
+      },
+      {
+        "value": "No",
+        "label": "No"
+      }
+    ],
+    "isPII": false
   }
 ]

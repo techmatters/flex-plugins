@@ -8,6 +8,7 @@
     "moodhappinessBefore": "ChildInformationTab.moodhappinessBefore",
     "bookingReference": "ChildInformationTab.bookingReference",
     "consentForResearchEvaluation": "CaseInformationTab.consentForResearchEvaluation",
+    "dataProcessingAndStorage": "CaseInformationTab.dataProcessingAndStorage",
     "ip": "CaseInformationTab.ip"
   },
   "survey":{}
