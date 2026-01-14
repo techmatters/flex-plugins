@@ -1,0 +1,17 @@
+[
+  {
+    "insightsObject": "customers",
+    "attributeName": "customer_attribute_1",
+    "questions": ["mood"]
+  },
+  {
+    "insightsObject": "customers",
+    "attributeName": "customer_attribute_2",
+    "questions": ["was_helpful"]
+  },
+  {
+    "insightsObject": "customers",
+    "attributeName": "customer_attribute_3", 
+    "questions": ["explain"]
+  }
+]
