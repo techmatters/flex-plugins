@@ -1,0 +1,79 @@
+# Copyright (C) 2021-2023 Technology Matters
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Affero General Public License as published
+# by the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Affero General Public License for more details.
+#
+# You should have received a copy of the GNU Affero General Public License
+# along with this program.  If not, see https://www.gnu.org/licenses/.
+
+name: Aselo Webchat React App CI
+
+on:
+  workflow_call:
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Branch
+        uses: actions/checkout@v6
+      - name: Use Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: '22.x'
+      - name: Create Temp Files
+        run: |
+          touch ./.env
+        working-directory: ./aselo-webchat-react-app
+      - name: Install dependencies # this should be moved to an action like .github/actions/install-flex-Plugin once we start sharing code
+        run: npm ci
+      - name: Run aselo-webchat-react-app code Lint
+        run: npm run lint --if-present
+        working-directory: ./aselo-webchat-react-app
+  unit-test:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout Branch
+      uses: actions/checkout@v6
+    - name: Use Node.js
+      uses: actions/setup-node@v6
+      with:
+        node-version: '22.x'
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v5
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: us-east-1
+    - name: Run aselo-webchat-react-app tests
+      run: npm run test
+      working-directory: ./aselo-webchat-react-app
+    - name: Publish Test Reports
+      uses: dorny/test-reporter@v2
+      if: success() || failure() # always run even if the previous step fails
+      with:
+        name: Unit Tests Report
+        path: '!(node_modules)/**/junit.xml'
+        reporter: jest-junit
+  upload-aselo-webchat-react-app:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Branch
+        uses: actions/checkout@v6
+      - name: Use Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: '22.x'
+      - name: Build and Upload Aselo Webchat React App
+        uses: ./.github/actions/build-and-upload-aselo-webchat-react-app
+        with:
+          git-reference-type: ${{ github.ref_type }}
+          git-reference: ${{ github.ref_name }}
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_DEFAULT_REGION }}
