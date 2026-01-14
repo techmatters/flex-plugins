@@ -28,7 +28,7 @@ on:
           - production
 
       helpline_code:
-        description: Short helpline code
+        description: Short helpline code (lower case)
         type: string
         required: true
 
@@ -93,7 +93,7 @@ jobs:
 
       - name: Deploy form-definitions to S3
         run: |
-          aws s3 cp ./mergedConfigs/${{ inputs.helpline_code }}/${{ inputs.environment }} s3://assets-${{ inputs.environment }}.tl.techmatters.org/webchat/${{ inputs.helpline_code }}/config.json --acl public-read
+          aws s3 cp ./mergedConfigs/${{ inputs.helpline_code }}/${{ inputs.environment }}.json s3://assets-${{ inputs.environment }}.tl.techmatters.org/webchat/${{ inputs.helpline_code }}/config.json --acl public-read
         working-directory: ./aselo-webchat-react-app
 
       - name: Invalidate CloudFront cache

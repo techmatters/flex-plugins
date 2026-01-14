@@ -28,7 +28,7 @@ on:
           - production
 
       helpline_code:
-        description: Short helpline code
+        description: Short helpline code (lower case)
         type: string
         required: true
 
