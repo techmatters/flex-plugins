@@ -28,11 +28,7 @@ const defaultConfig: ConfigState = {
 
 const initWebchat = async (configLocation?: URL, overrides: Partial<ConfigState> = {}) => {
     const logger = window.Twilio.getLogger(`InitWebChat`);
-    const configUrl = configLocation || process.env.REACT_APP_CONFIG_URL;
-    if (!configUrl) {
-        logger.error(`No config URL specified in querystring or webpack env vars`);
-        return;
-    }
+    const configUrl = configLocation || process.env.REACT_APP_CONFIG_URL || "./config.json";
     const helplineConfigResponse = await fetch(configUrl);
     if (!helplineConfigResponse.ok) {
         logger.error(`Failed to load helpline specific config for Aselo Webchat from ${configLocation}, aborting load`);
