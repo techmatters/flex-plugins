@@ -16,8 +16,7 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { omit } from 'lodash';
 
 import { queuesStatusUpdate, queuesStatusFailure } from '../../states/queuesStatus/actions';
@@ -143,17 +142,18 @@ export class InnerQueuesStatusWriter extends React.Component {
   }
 }
 
-const mapStateToProps = state => {
-  const queuesStatusState = state[namespace][queuesStatusBase];
-
-  return { queuesStatusState };
+const QueuesStatusWriter = props => {
+  const dispatch = useDispatch();
+  const queuesStatusState = useSelector(state => state[namespace][queuesStatusBase]);
+  
+  return (
+    <InnerQueuesStatusWriter
+      {...props}
+      queuesStatusState={queuesStatusState}
+      queuesStatusUpdate={(queuesStatus) => dispatch(queuesStatusUpdate(queuesStatus))}
+      queuesStatusFailure={(error) => dispatch(queuesStatusFailure(error))}
+    />
+  );
 };
 
-const mapDispatchToProps = dispatch => {
-  return {
-    queuesStatusUpdate: bindActionCreators(queuesStatusUpdate, dispatch),
-    queuesStatusFailure: bindActionCreators(queuesStatusFailure, dispatch),
-  };
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(InnerQueuesStatusWriter);
+export default QueuesStatusWriter;
