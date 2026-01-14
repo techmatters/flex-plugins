@@ -36,8 +36,9 @@ import { getTemplateStrings } from '../../hrmConfig';
 import { Contact, ContactRawJson, CustomITask, StandaloneITask } from '../../types/types';
 import asyncDispatch from '../../states/asyncDispatch';
 import { updateContactInHrmAsyncAction } from '../../states/contacts/saveContact';
-import { namespace } from '../../states/storeNamespaces';
 import { newGoBackAction } from '../../states/routing/actions';
+import selectContactStateByContactId from '../../states/contacts/selectContactStateByContactId';
+import { selectDefinitionVersions } from '../../states/configuration/selectDefinitions';
 
 type Props = {
   context: DetailsContext;
@@ -50,8 +51,8 @@ type Props = {
 
 const EditContactSection: React.FC<Props> = ({ contactId, task, children, tabPath, onClose }) => {
   const dispatch = useDispatch();
-  const contactState = useSelector((state: RootState) => state[namespace].activeContacts.existingContacts[contactId]);
-  const definitionVersions = useSelector((state: RootState) => state[namespace].configuration.definitionVersions);
+  const contactState = useSelector((state: RootState) => selectContactStateByContactId(state, contactId));
+  const definitionVersions = useSelector(selectDefinitionVersions);
   const savedContact = contactState?.savedContact;
   const draftContact = contactState?.draftContact;
   const confirmCloseDialogOpen = Boolean(contactState?.metadata?.draft?.dialogsOpen?.[`${tabPath}-confirm-close`]);

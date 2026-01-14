@@ -39,9 +39,9 @@ import { AppRoutes } from '../../states/routing/types';
 import selectContactByTaskSid from '../../states/contacts/selectContactByTaskSid';
 import asyncDispatch from '../../states/asyncDispatch';
 import { submitContactFormAsyncAction, updateContactInHrmAsyncAction } from '../../states/contacts/saveContact';
-import { configurationBase, namespace } from '../../states/storeNamespaces';
 import { ContactMetadata, LoadingStatus } from '../../states/contacts/types';
 import { getUnsavedContact } from '../../states/contacts/getUnsavedContact';
+import { selectCurrentDefinitionVersion } from '../../states/configuration/selectDefinitions';
 
 const isDialogOpen = (task: CustomITask, contact: ContactDraftChanges) => {
   if (isOfflineContactTask(task)) return false;
@@ -58,7 +58,7 @@ const CallTypeButtons: React.FC<Props> = ({ task, localization }) => {
   const { savedContact, draftContact, metadata } = useSelector((state: RootState) => 
     selectContactByTaskSid(state, task.taskSid) ?? {}
   );
-  const currentDefinitionVersion = useSelector((state: RootState) => state[namespace][configurationBase].currentDefinitionVersion);
+  const currentDefinitionVersion = useSelector(selectCurrentDefinitionVersion);
 
   const changeRoute = (route: AppRoutes) => dispatch(newChangeRouteAction(route, task.taskSid));
   const saveContactChangesInHrm = (contact: Contact, changes: ContactDraftChanges) =>

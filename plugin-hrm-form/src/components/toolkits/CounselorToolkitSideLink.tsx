@@ -21,15 +21,14 @@ import { SideLink, SideNavChildrenProps } from '@twilio/flex-ui';
 import { HelplineEntry } from 'hrm-form-definitions';
 
 import CounselorToolkitDialog from './CounselorToolkitDialog';
-import { RootState } from '../../states';
-import { configurationBase, namespace } from '../../states/storeNamespaces';
+import { selectCurrentDefinitionVersion } from '../../states/configuration/selectDefinitions';
 
 type Props = SideNavChildrenProps & {
   showLabel: boolean;
 };
 
 const CounselorToolkitSideLink: React.FC<Props> = ({ showLabel }) => {
-  const definitionVersion = useSelector((state: RootState) => state[namespace][configurationBase].currentDefinitionVersion);
+  const definitionVersion = useSelector(selectCurrentDefinitionVersion);
   const [anchorEl, setAnchorEl] = useState(null);
 
   if (!definitionVersion) {

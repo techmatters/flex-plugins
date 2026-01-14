@@ -45,7 +45,10 @@ const AddToCaseBanner: React.FC<Props> = ({ task }: Props) => {
   const { connectedCase } = useSelector((state: RootState) => selectCurrentRouteCaseState(state, task.taskSid) ?? {});
   const contactId = useSelector((state: RootState) => selectContextContactId(state, task.taskSid, 'case', 'home'));
   const contact = useSelector((state: RootState) => selectContactStateByContactId(state, contactId)?.savedContact);
-  const isOrphanedCase = isCaseRoute(route) ? !useSelector((state: RootState) => selectFirstContactByCaseId(state, route.caseId)) : true;
+  const isOrphanedCase = useSelector((state: RootState) => {
+    if (!isCaseRoute(route)) return true;
+    return !selectFirstContactByCaseId(state, route.caseId);
+  });
 
   const connectCaseToContact = async (taskContact: Contact, cas: Case) =>
     asyncDispatch(dispatch)(connectToCaseAsyncAction(taskContact.id, cas.id));
