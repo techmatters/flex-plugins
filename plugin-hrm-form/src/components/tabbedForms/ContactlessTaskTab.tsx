@@ -15,8 +15,8 @@
  */
 
 /* eslint-disable react/prop-types */
-import React, { Dispatch } from 'react';
-import { connect, ConnectedProps, useSelector } from 'react-redux';
+import React from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { FieldError, useFormContext } from 'react-hook-form';
 import { format, isFuture, parse } from 'date-fns';
 import { get } from 'lodash';
@@ -34,7 +34,7 @@ import { configurationBase, namespace } from '../../states/storeNamespaces';
 import { getUnsavedContact } from '../../states/contacts/getUnsavedContact';
 import selectContactByTaskSid from '../../states/contacts/selectContactByTaskSid';
 
-type OwnProps = {
+type Props = {
   task: OfflineContactTask;
   display: boolean;
   helplineInformation: DefinitionVersion['helplineInformation'];
@@ -43,38 +43,26 @@ type OwnProps = {
   autoFocus: boolean;
 };
 
-const mapStateToProps = (state: RootState, { task }: OwnProps) => {
-  const { savedContact, draftContact } = selectContactByTaskSid(state, task.taskSid) ?? {};
-  return {
-    counselorsList: state[namespace][configurationBase].counselors.list,
-    unsavedContact: getUnsavedContact(savedContact, draftContact),
-  };
-};
-
-const mapDispatchToProps = (dispatch: Dispatch<any>) => {
-  return {
-    updateContactlessTaskDraft: (
-      contactId: string,
-      timeOfContact: string,
-      contactlessTask: ContactRawJson['contactlessTask'],
-      helpline: string,
-    ) => dispatch(updateDraft(contactId, { rawJson: { contactlessTask }, helpline, timeOfContact })),
-  };
-};
-
-const connector = connect(mapStateToProps, mapDispatchToProps);
-
-type Props = OwnProps & ConnectedProps<typeof connector>;
-
 const ContactlessTaskTab: React.FC<Props> = ({
   display,
   helplineInformation,
   definition,
-  counselorsList,
   autoFocus,
-  unsavedContact,
-  updateContactlessTaskDraft,
+  task,
 }) => {
+  const dispatch = useDispatch();
+  const { savedContact, draftContact } = useSelector((state: RootState) => 
+    selectContactByTaskSid(state, task.taskSid) ?? {}
+  );
+  const counselorsList = useSelector((state: RootState) => state[namespace][configurationBase].counselors.list);
+  const unsavedContact = getUnsavedContact(savedContact, draftContact);
+  
+  const updateContactlessTaskDraft = (
+    contactId: string,
+    timeOfContact: string,
+    contactlessTask: ContactRawJson['contactlessTask'],
+    helpline: string,
+  ) => dispatch(updateDraft(contactId, { rawJson: { contactlessTask }, helpline, timeOfContact }));
   const { getValues, register, setError, setValue, watch, errors } = useFormContext();
 
   const workerSid = useSelector(selectWorkerSid);
@@ -158,6 +146,5 @@ const ContactlessTaskTab: React.FC<Props> = ({
 };
 
 ContactlessTaskTab.displayName = 'ContactlessTaskTab';
-const connected = connector(ContactlessTaskTab);
 
-export default connected;
+export default ContactlessTaskTab;
