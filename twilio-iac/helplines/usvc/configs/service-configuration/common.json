@@ -8,7 +8,8 @@
         "enableConferencing": true,
         "enableUnmaskingCalls": false,
         "hideAddToNewCaseButton": true,
-        "enableExternalRecordings": false,   
+        "enableExternalRecordings": false,
+        "enableClientProfiles": false,   
         "feature_flags": {
             "use_prepopulate_mappings": true,
             "enable_client_profiles": false,
