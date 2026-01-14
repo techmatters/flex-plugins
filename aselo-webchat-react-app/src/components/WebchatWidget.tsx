@@ -23,11 +23,13 @@ import { AppState, EngagementPhase } from "../store/definitions";
 import { sessionDataHandler } from "../sessionDataHandler";
 import { initSession } from "../store/actions/initActions";
 import { changeEngagementPhase } from "../store/actions/genericActions";
+import { EntryPoint } from "./EntryPoint";
 
 const AnyCustomizationProvider: FC<CustomizationProviderProps & { style: CSSProperties }> = CustomizationProvider;
 
 export function WebchatWidget() {
     const theme = useSelector((state: AppState) => state.config.theme);
+    const alwaysOpen = useSelector((state: AppState) => state.config.alwaysOpen);
     const dispatch = useDispatch();
 
     useEffect(() => {
@@ -54,25 +56,26 @@ export function WebchatWidget() {
             theme={theme?.overrides}
             elements={{
                 MESSAGE_INPUT: {
-                    boxShadow: "none!important" as "none"
+                    boxShadow: "none!important" as "none",
                 },
                 MESSAGE_INPUT_BOX: {
                     display: "inline-block",
-                    boxShadow: "none"
+                    boxShadow: "none",
                 },
                 ALERT: {
                     paddingTop: "space30",
-                    paddingBottom: "space30"
+                    paddingBottom: "space30",
                 },
                 BUTTON: {
                     "&[aria-disabled='true'][color='colorTextLink']": {
-                        color: "colorTextLinkWeak"
-                    }
-                }
+                        color: "colorTextLinkWeak",
+                    },
+                },
             }}
             style={{ minHeight: "100%", minWidth: "100%" }}
         >
             <RootContainer />
+            {!alwaysOpen && <EntryPoint />}
         </AnyCustomizationProvider>
     );
 }
