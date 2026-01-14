@@ -77,7 +77,7 @@ jobs:
         uses: actions/checkout@v6
 
       - name: Install Webchat packages
-        run: npm ci
+        run: npm ci --legacy-peer-deps
         working-directory: ./aselo-webchat-react-app
 
       - name: Merge up configurations
