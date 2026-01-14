@@ -15,7 +15,7 @@
  */
 
 import React from 'react';
-import { connect, ConnectedProps } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Template } from '@twilio/flex-ui';
 
 import InfoIcon from './InfoIcon';
@@ -33,45 +33,23 @@ import selectContactByTaskSid from '../../states/contacts/selectContactByTaskSid
 import { selectCaseByCaseId } from '../../states/case/selectCaseStateByCaseId';
 import { PermissionActions } from '../../permissions/actions';
 
-type OwnProps = {
+type Props = {
   task?: CustomITask | StandaloneITask;
   caseId: string;
 };
 
-// eslint-disable-next-line no-use-before-define
-type Props = OwnProps & ConnectedProps<typeof connector>;
-
-const mapStateToProps = (state, { task, caseId }: OwnProps) => {
+const CreatedCaseBanner: React.FC<Props> = ({ task, caseId }) => {
+  const dispatch = useDispatch();
   const taskSid = task ? task.taskSid : getOfflineContactTaskSid();
-  const cas = selectCaseByCaseId(state, caseId)?.connectedCase;
-  const caseContacts = selectContactsByCaseIdInCreatedOrder(state, caseId);
-  const taskContact = selectContactByTaskSid(state, taskSid)?.savedContact;
-  return {
-    cas,
-    taskSid,
-    hasOtherContacts: Boolean(caseContacts.find(contact => contact.savedContact?.taskId !== taskSid)),
-    taskContact,
-  };
-};
+  const cas = useSelector(state => selectCaseByCaseId(state, caseId)?.connectedCase);
+  const caseContacts = useSelector(state => selectContactsByCaseIdInCreatedOrder(state, caseId));
+  const taskContact = useSelector(state => selectContactByTaskSid(state, taskSid)?.savedContact);
+  const hasOtherContacts = Boolean(caseContacts.find(contact => contact.savedContact?.taskId !== taskSid));
 
-const mapDispatchToProps = dispatch => ({
-  removeContactFromCase: async (contactId: string) => asyncDispatch(dispatch)(removeFromCaseAsyncAction(contactId)),
-  cancelCase: async (caseId: string) => asyncDispatch(dispatch)(cancelCaseAsyncAction(caseId)),
-  showRemovedFromCaseBanner: (contactId: string) => dispatch(showRemovedFromCaseBannerAction(contactId)),
-  navigateBack: (taskSid: string) => dispatch(newGoBackAction(taskSid)),
-});
-
-const CreatedCaseBanner: React.FC<Props> = ({
-  task: { taskSid },
-  caseId,
-  cas,
-  hasOtherContacts,
-  taskContact,
-  removeContactFromCase,
-  cancelCase,
-  showRemovedFromCaseBanner,
-  navigateBack,
-}) => {
+  const removeContactFromCase = async (contactId: string) => asyncDispatch(dispatch)(removeFromCaseAsyncAction(contactId));
+  const cancelCase = async (caseId: string) => asyncDispatch(dispatch)(cancelCaseAsyncAction(caseId));
+  const showRemovedFromCaseBanner = (contactId: string) => dispatch(showRemovedFromCaseBannerAction(contactId));
+  const navigateBack = (taskSid: string) => dispatch(newGoBackAction(taskSid));
   const can = React.useMemo(() => {
     return getInitializedCan();
   }, []);
@@ -110,6 +88,4 @@ const CreatedCaseBanner: React.FC<Props> = ({
 
 CreatedCaseBanner.displayName = 'CreatedCaseBanner';
 
-const connector = connect(mapStateToProps, mapDispatchToProps);
-
-export default connector(CreatedCaseBanner);
+export default CreatedCaseBanner;

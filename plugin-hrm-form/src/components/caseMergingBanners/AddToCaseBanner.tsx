@@ -13,8 +13,8 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
-import React, { Dispatch } from 'react';
-import { connect, ConnectedProps } from 'react-redux';
+import React from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { Template } from '@twilio/flex-ui';
 
 import { Case, Contact, CustomITask, StandaloneITask } from '../../types/types';
@@ -35,40 +35,22 @@ import { selectCurrentTopmostRouteForTask } from '../../states/routing/getRoute'
 import { isCaseRoute } from '../../states/routing/types';
 import { PermissionActions } from '../../permissions/actions';
 
-type MyProps = {
+type Props = {
   task: CustomITask | StandaloneITask;
 };
 
-const mapStateToProps = (state: RootState, { task }: MyProps) => {
-  const route = selectCurrentTopmostRouteForTask(state, task.taskSid);
-  const { connectedCase } = selectCurrentRouteCaseState(state, task.taskSid) ?? {};
-  const contactId = selectContextContactId(state, task.taskSid, 'case', 'home');
-  const contact = selectContactStateByContactId(state, contactId)?.savedContact;
-  return {
-    connectedCase,
-    contact,
-    isOrphanedCase: isCaseRoute(route) ? !selectFirstContactByCaseId(state, route.caseId) : true,
-  };
-};
+const AddToCaseBanner: React.FC<Props> = ({ task }: Props) => {
+  const dispatch = useDispatch();
+  const route = useSelector((state: RootState) => selectCurrentTopmostRouteForTask(state, task.taskSid));
+  const { connectedCase } = useSelector((state: RootState) => selectCurrentRouteCaseState(state, task.taskSid) ?? {});
+  const contactId = useSelector((state: RootState) => selectContextContactId(state, task.taskSid, 'case', 'home'));
+  const contact = useSelector((state: RootState) => selectContactStateByContactId(state, contactId)?.savedContact);
+  const isOrphanedCase = isCaseRoute(route) ? !useSelector((state: RootState) => selectFirstContactByCaseId(state, route.caseId)) : true;
 
-const mapDispatchToProps = (dispatch: Dispatch<any>, { task }: MyProps) => ({
-  connectCaseToContact: async (taskContact: Contact, cas: Case) =>
-    asyncDispatch(dispatch)(connectToCaseAsyncAction(taskContact.id, cas.id)),
-  closeModal: () =>
-    dispatch(newCloseModalAction(task.taskSid, task.taskSid === 'standalone-task-sid' ? 'contact' : 'tabbed-forms')),
-});
-
-const connector = connect(mapStateToProps, mapDispatchToProps);
-
-type Props = MyProps & ConnectedProps<typeof connector>;
-
-const AddToCaseBanner: React.FC<Props> = ({
-  connectedCase,
-  contact,
-  connectCaseToContact,
-  isOrphanedCase,
-  closeModal,
-}: Props) => {
+  const connectCaseToContact = async (taskContact: Contact, cas: Case) =>
+    asyncDispatch(dispatch)(connectToCaseAsyncAction(taskContact.id, cas.id));
+  const closeModal = () =>
+    dispatch(newCloseModalAction(task.taskSid, task.taskSid === 'standalone-task-sid' ? 'contact' : 'tabbed-forms'));
   const can = React.useMemo(() => {
     return getInitializedCan();
   }, []);
@@ -113,4 +95,4 @@ const AddToCaseBanner: React.FC<Props> = ({
 
 AddToCaseBanner.displayName = 'AddToCaseBanner';
 
-export default connector(AddToCaseBanner);
+export default AddToCaseBanner;

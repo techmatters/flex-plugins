@@ -17,7 +17,7 @@
 /* eslint-disable react/prop-types */
 import React, { useState } from 'react';
 import { Notifications } from '@twilio/flex-ui';
-import { connect } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import { RootState } from '../../states';
 import { isAnyChatPending } from '../queuesStatus/helpers';
@@ -25,10 +25,10 @@ import AddTaskButton from '../common/AddTaskButton';
 import { configurationBase, namespace, queuesStatusBase } from '../../states/storeNamespaces';
 import { pullNextTask } from '../../services/twilioWorkerService';
 
-// eslint-disable-next-line no-use-before-define
-type Props = ReturnType<typeof mapStateToProps>;
-
-const ManualPullButton: React.FC<Props> = ({ queuesStatusState, chatChannelCapacity, worker }) => {
+const ManualPullButton: React.FC = () => {
+  const queuesStatusState = useSelector((state: RootState) => state[namespace][queuesStatusBase]);
+  const chatChannelCapacity = useSelector((state: RootState) => state[namespace][configurationBase].workerInfo.chatChannelCapacity);
+  const worker = useSelector((state: RootState) => state.flex.worker);
   const [isWaitingNewTask, setWaitingNewTask] = useState(false);
 
   const pullTask = async () => {
@@ -69,12 +69,4 @@ const ManualPullButton: React.FC<Props> = ({ queuesStatusState, chatChannelCapac
 
 ManualPullButton.displayName = 'ManualPullButton';
 
-const mapStateToProps = (state: RootState) => {
-  const queuesStatusState = state[namespace][queuesStatusBase];
-  const { chatChannelCapacity } = state[namespace][configurationBase].workerInfo;
-  const { worker } = state.flex;
-
-  return { queuesStatusState, chatChannelCapacity, worker };
-};
-
-export default connect(mapStateToProps, null)(ManualPullButton);
+export default ManualPullButton;

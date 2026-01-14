@@ -18,7 +18,7 @@
 /* eslint-disable react/prop-types */
 import React from 'react';
 import { ITask, TaskHelper, Template } from '@twilio/flex-ui';
-import { connect, ConnectedProps } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { callTypes } from 'hrm-types';
 import { CallTypeButtonsEntry } from 'hrm-form-definitions';
 
@@ -48,27 +48,35 @@ const isDialogOpen = (task: CustomITask, contact: ContactDraftChanges) => {
   return Boolean(contact?.rawJson?.callType && isNonDataCallType(contact?.rawJson?.callType));
 };
 
-type OwnProps = {
+type Props = {
   task: CustomITask;
   localization: { manager: { status: any }; isCallTask: (task: ITask) => boolean };
 };
 
-// eslint-disable-next-line no-use-before-define
-type Props = OwnProps & ConnectedProps<typeof connector>;
+const CallTypeButtons: React.FC<Props> = ({ task, localization }) => {
+  const dispatch = useDispatch();
+  const { savedContact, draftContact, metadata } = useSelector((state: RootState) => 
+    selectContactByTaskSid(state, task.taskSid) ?? {}
+  );
+  const currentDefinitionVersion = useSelector((state: RootState) => state[namespace][configurationBase].currentDefinitionVersion);
+const CallTypeButtons: React.FC<Props> = ({ task, localization }) => {
+  const dispatch = useDispatch();
+  const { savedContact, draftContact, metadata } = useSelector((state: RootState) => 
+    selectContactByTaskSid(state, task.taskSid) ?? {}
+  );
+  const currentDefinitionVersion = useSelector((state: RootState) => state[namespace][configurationBase].currentDefinitionVersion);
 
-const CallTypeButtons: React.FC<Props> = ({
-  savedContact,
-  draftContact,
-  task,
-  metadata,
-  localization,
-  currentDefinitionVersion,
-  updateCallType,
-  clearCallType,
-  changeRoute,
-  saveContactChangesInHrm,
-  saveFinalizedNonDataContact,
-}) => {
+  const changeRoute = (route: AppRoutes) => dispatch(newChangeRouteAction(route, task.taskSid));
+  const saveContactChangesInHrm = (contact: Contact, changes: ContactDraftChanges) =>
+    asyncDispatch(dispatch)(updateContactInHrmAsyncAction(contact, changes, task.taskSid));
+  const saveFinalizedNonDataContact = (contact: Contact, changes: ContactDraftChanges, metaData: ContactMetadata) =>
+    // Deliberately using dispatch rather than asyncDispatch here, because we still handle the error from where the action is dispatched.
+    // TODO: Rework error handling to be based on redux state set by the _REJECTED action
+    dispatch(submitContactFormAsyncAction(task, getUnsavedContact(contact, changes), metaData, undefined));
+  const updateCallType = (contactId: string, callType: string) =>
+    dispatch(newUpdateDraftAction(contactId, { rawJson: { callType } }));
+  const clearCallType = (contactId: string) => dispatch(newUpdateDraftAction(contactId, { rawJson: { callType: null } }));
+
   const { isCallTask } = localization;
   const { loadingStatus } = metadata;
 
@@ -189,27 +197,4 @@ const CallTypeButtons: React.FC<Props> = ({
 
 CallTypeButtons.displayName = 'CallTypeButtons';
 
-const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
-  const { savedContact, draftContact, metadata } = selectContactByTaskSid(state, ownProps.task.taskSid) ?? {};
-  const { currentDefinitionVersion } = state[namespace][configurationBase];
-  // Return loadingStatus as it's own prop so changes to it will trigger a re-render
-  return { savedContact, draftContact, metadata, currentDefinitionVersion };
-};
-
-const mapDispatchToProps = (dispatch, { task }: OwnProps) => ({
-  changeRoute: (route: AppRoutes) => dispatch(newChangeRouteAction(route, task.taskSid)),
-  saveContactChangesInHrm: (contact: Contact, changes: ContactDraftChanges) =>
-    asyncDispatch(dispatch)(updateContactInHrmAsyncAction(contact, changes, task.taskSid)),
-  saveFinalizedNonDataContact: (contact: Contact, changes: ContactDraftChanges, metaData: ContactMetadata) =>
-    // Deliberately using dispatch rather than asyncDispatch here, because we still handle the error from where the action is dispatched.
-    // TODO: Rework error handling to be based on redux state set by the _REJECTED action
-    dispatch(submitContactFormAsyncAction(task, getUnsavedContact(contact, changes), metaData, undefined)),
-  updateCallType: (contactId: string, callType: string) =>
-    dispatch(newUpdateDraftAction(contactId, { rawJson: { callType } })),
-  clearCallType: (contactId: string) => dispatch(newUpdateDraftAction(contactId, { rawJson: { callType: null } })),
-});
-
-const connector = connect(mapStateToProps, mapDispatchToProps);
-const connected = connector(CallTypeButtons);
-
-export default withLocalization(connected);
+export default withLocalization(CallTypeButtons);
