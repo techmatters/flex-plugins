@@ -19,12 +19,12 @@ import { GenericThemeShape } from "@twilio-paste/theme";
 import { AlertVariants } from "@twilio-paste/core/alert";
 
 import { FileAttachmentConfig } from "../definitions";
-import {TaskState} from "../task";
+import { TaskState } from "../task";
 
 export enum EngagementPhase {
     PreEngagementForm = "PreEngagementForm",
     MessagingCanvas = "MessagingCanvas",
-    Loading = "Loading"
+    Loading = "Loading",
 }
 
 export type ChatState = {
@@ -54,18 +54,15 @@ export type SessionState = {
     preEngagementData?: PreEngagementData;
 };
 
-export type UserConfig = {
+export type ConfigState = {
+    fileAttachment?: FileAttachmentConfig;
     deploymentKey: string;
     region?: string;
-    appStatus?: "open";
+    alwaysOpen?: boolean;
     theme?: {
         isLight?: boolean;
         overrides?: Partial<GenericThemeShape>;
     };
-};
-
-export type ConfigState = UserConfig & {
-    fileAttachment?: FileAttachmentConfig;
 };
 
 export type Notification = {

@@ -16,18 +16,15 @@
 
 window.addEventListener("DOMContentLoaded", () => {
   const urlParams = new URLSearchParams(window.location.search);
-  const isLightTheme = urlParams.get("theme") !== "dark";
+  const theme = urlParams.get("theme");
+  const isLightTheme = theme !== "dark";
+  const alwaysOpen = urlParams.get("alwaysOpen")
   const el = document.querySelector("[data-theme-pref]");
-  const configUrl = urlParams.get("configUrl") || process.env.CONFIG_URL || `https://assets-${urlParams.get('environment')}.tl.techmatters.org/webchat/${urlParams.get('environment')}/test-chat.html`;
   el && el.setAttribute("data-theme-pref", isLightTheme ? "light-theme" : "dark-theme");
 
   Twilio.initLogger("info");
-  Twilio.initWebchat(configUrl, {
-    deploymentKey: urlParams.get("deploymentKey"),
-    region: urlParams.get("region"),
-    appStatus: 'open',
-    theme: {
-      isLight: isLightTheme
-    }
-  })
+  Twilio.initWebchat(urlParams.get('configUrl'), {
+    ...(theme ? { theme: { isLight: isLightTheme } } : {}),
+    ...(alwaysOpen ? { alwaysOpen: alwaysOpen.toLowerCase() === 'true' } : {})
+  });
 });

@@ -76,7 +76,7 @@
   "scripts": {
     "start": "react-app-rewired start",
     "build": "react-app-rewired build",
-    "start:as_dev": "cross-env CONFIG_URL=http://localhost:9090/as/development.json run-s dev:local-config-server start",
+    "start:as_dev": "cross-env REACT_APP_CONFIG_URL=http://localhost:9090/as/development.json run-p dev:local-config-server start",
     "test": "LC_ALL=\"en_GB.UTF-8\" react-app-rewired test --watchAll=false --env=jsdom --transformIgnorePatterns \"node_modules/(?!(@twilio-paste|@twilio/conversations))/\"",
     "test:nowatch": "npm test --watchAll=false --verbose --runInBand",
     "bootstrap": "node scripts/bootstrap",
@@ -85,7 +85,7 @@
     "deploy": "npm run build && node scripts/deploy",
     "eject": "react-app-rewired eject",
     "test:e2e": "cypress open",
-    "dev:local-config-server": "npx http-server ../lambdas/packages/hrm-form-definitions/form-definitions -p 9090 --cors -c-1"
+    "dev:local-config-server": "npx http-server ./mergedConfigs -p 9090 --cors -c-1"
   },
   "browserslist": [
     ">0.2%",
