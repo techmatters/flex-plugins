@@ -70,6 +70,10 @@
         "label": "Unknown"
       },
       {
+        "value": "DC VAN",
+        "label": "DC VAN"
+      },
+      {
         "value": "In-person outreach event",
         "label": "In-person outreach event"
       },

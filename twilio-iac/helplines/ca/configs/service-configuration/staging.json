@@ -3,8 +3,7 @@
     "system_down" : false,
     "feature_flags": {
       "enable_resouorces_updates": true,
-      "enable_switchboarding_move_tasks": true,
-      "enable_select_agents_teams_view": true
+      "enable_switchboarding_move_tasks": true
     },
     "form_definitions_base_url": "https://assets-staging.tl.techmatters.org/form-definitions/",
     "resources_base_url": "https://hrm-staging.tl.techmatters.org",
