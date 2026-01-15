@@ -58,9 +58,8 @@ const CustomCRMContainer: React.FC<Props> = ({ task }) => {
     );
   });
 
-  const populateCounselorList = (listPayload: Awaited<ReturnType<typeof populateCounselors>>) =>
-    dispatch(populateCounselorsState(listPayload));
   const { enable_confirm_on_browser_close: enableConfirmOnBrowserClose } = getAseloFeatureFlags();
+
   useEffect(() => {
     const fetchPopulateCounselors = async () => {
       try {
@@ -74,7 +73,7 @@ const CustomCRMContainer: React.FC<Props> = ({ task }) => {
     };
 
     fetchPopulateCounselors();
-  }, [populateCounselorList]);
+  }, [dispatch]);
 
   useEffect(() => {
     if (!currentOfflineContact) {
