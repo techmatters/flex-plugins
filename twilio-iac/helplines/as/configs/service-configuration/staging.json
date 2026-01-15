@@ -23,7 +23,8 @@
             "enable_post_survey": true,
             "enable_voice_recordings": true,
             "enable_lex_v2": true,
-            "enable_select_agents_teams_view": true
+            "enable_select_agents_teams_view": true,
+            "use_twilio_lambda_for_task_assignment": true
         },
         "multipleOfficeSupport": true,
         "pdfImagesSource": "https://tl-public-chat-as-stg.s3.amazonaws.com",

@@ -3,7 +3,8 @@
     "system_down" : false,
     "feature_flags": {
       "enable_voice_recordings": true,
-      "enable_client_profiles": true
+      "enable_client_profiles": true,
+      "use_twilio_lambda_for_task_assignment": true
     },
     "pdfImagesSource": "https://tl-public-chat-jm-stg.s3.amazonaws.com",
     "previous_ui_version": {
