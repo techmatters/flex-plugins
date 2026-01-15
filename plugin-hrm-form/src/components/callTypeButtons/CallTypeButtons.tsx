@@ -55,10 +55,13 @@ type Props = {
 
 const CallTypeButtons: React.FC<Props> = ({ task, localization }) => {
   const dispatch = useDispatch();
-  const { savedContact, draftContact, metadata } = useSelector(
-    (state: RootState) => selectContactByTaskSid(state, task.taskSid) ?? {},
-  );
+  const contactState = useSelector((state: RootState) => selectContactByTaskSid(state, task.taskSid));
   const currentDefinitionVersion = useSelector(selectCurrentDefinitionVersion);
+  if (!contactState) {
+    return null;
+  }
+
+  const { savedContact, draftContact, metadata } = contactState;
 
   const changeRoute = (route: AppRoutes) => dispatch(newChangeRouteAction(route, task.taskSid));
   const saveContactChangesInHrm = (contact: Contact, changes: ContactDraftChanges) =>

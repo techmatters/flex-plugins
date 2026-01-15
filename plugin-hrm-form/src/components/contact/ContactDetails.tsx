@@ -69,16 +69,12 @@ const ContactDetails: React.FC<Props> = ({
 }) => {
   const dispatch = useDispatch();
   const currentRoute = useSelector((state: RootState) => selectCurrentTopmostRouteForTask(state, task.taskSid));
-  const { savedContact: taskContact } = useSelector(
-    (state: RootState) => selectContactByTaskSid(state, task.taskSid) ?? {},
-  );
-  const { savedContact, draftContact, metadata } = useSelector(
-    (state: RootState) => selectContactStateByContactId(state, contactId) ?? {},
-  );
+  const taskContactState = useSelector((state: RootState) => selectContactByTaskSid(state, task.taskSid));
+  const savedContactState = useSelector((state: RootState) => selectContactStateByContactId(state, contactId));
   const definitionVersions = useSelector((state: RootState) => selectDefinitionVersions(state));
-  const loadingStatus = metadata?.loadingStatus;
   const draftCsamReport = useSelector((state: RootState) => state[namespace]['csam-report'].contacts[contactId]);
 
+  const { loadingStatus } = savedContactState?.metadata;
   const updateDraftForm = (draftContactId: string, form: Partial<ContactRawJson>) =>
     dispatch(updateDraft(draftContactId, { rawJson: form }));
   const closeModal = () => dispatch(newCloseModalAction(task.taskSid));
@@ -91,11 +87,12 @@ const ContactDetails: React.FC<Props> = ({
 
   React.useEffect(() => {
     // No conversationMedia means we've only loaded contact info required for the list, not the full contact, do a full load
-    if (!savedContact?.conversationMedia && loadingStatus !== 'loading') {
+    if (!savedContactState?.savedContact?.conversationMedia && loadingStatus !== 'loading') {
       dispatch(loadContactFromHrmByIdAsyncAction(contactId, `${task.taskSid}-viewing`));
     }
-  }, [contactId, dispatch, loadingStatus, savedContact, task.taskSid]);
-  const version = savedContact?.definitionVersion ?? savedContact?.rawJson.definitionVersion;
+  }, [contactId, dispatch, loadingStatus, savedContactState.savedContact, task.taskSid]);
+  const version =
+    savedContactState?.savedContact?.definitionVersion ?? savedContactState?.savedContact?.rawJson.definitionVersion;
 
   const strings = getTemplateStrings();
   /**
@@ -110,13 +107,17 @@ const ContactDetails: React.FC<Props> = ({
     if (version && !definitionVersions[version]) {
       fetchDefinitionVersions();
     }
-  }, [definitionVersions, version, savedContact, dispatch]);
+  }, [definitionVersions, version, savedContactState.savedContact, dispatch]);
 
   const definitionVersion = definitionVersions[version];
 
   const [connectDialogAnchorEl, setConnectDialogAnchorEl] = useState(null);
   const [callTypeInfoToCopy, setCallTypeInfoToCopy] = useState<DataCallTypes>(null);
 
+  if (!taskContactState || !savedContactState) return null;
+
+  const { savedContact: taskContact } = taskContactState;
+  const { savedContact, draftContact } = savedContactState;
   if (!definitionVersion || !savedContact)
     return (
       <DetailsContainer>
