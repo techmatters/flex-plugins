@@ -1,8 +1,7 @@
 {
     "attributes": {
         "feature_flags": { 
-            "use_twilio_lambda_for_conference_functions": true,
-            "use_twilio_lambda_for_task_assignment": true        
+            "use_twilio_lambda_for_conference_functions": true        
         },
         "hrm_base_url": "https://hrm-staging-eu.tl.techmatters.org",
         "logo_url" : "https://aselo-logo.s3.amazonaws.com/200+transparent+background+no+TM+staging.png"
