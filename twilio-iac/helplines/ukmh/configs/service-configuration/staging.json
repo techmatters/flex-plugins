@@ -8,9 +8,10 @@
         },
         "feature_flags": {
             "enable_lex_v2": true,
-            "use_prepopulate_mappings": true,
             "enable_post_survey": true,
-            "enable_lambda_post_survey_processing": true
+            "enable_lambda_post_survey_processing": true,
+            "use_prepopulate_mappings": true,
+            "use_twilio_lambda_for_task_assignment": true
         }
     }
 }
