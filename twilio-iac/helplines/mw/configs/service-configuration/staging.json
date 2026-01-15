@@ -2,6 +2,7 @@
     "attributes": {
         "feature_flags": {
             "enable_external_transcripts": false,
+            "use_twilio_lambda_for_conference_functions": true,
             "use_twilio_lambda_for_task_assignment": true
         },
         "pdfImagesSource": "https://tl-public-chat-mw-stg.s3.amazonaws.com",
