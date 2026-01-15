@@ -14,15 +14,15 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { BoxStyleProps } from "@twilio-paste/core/box";
+import { BoxStyleProps } from '@twilio-paste/core/box';
 
 export const notificationBarContainerStyles: BoxStyleProps = {
-    position: "relative"
+  position: 'relative',
 };
 
 export const notificationBarStyles: BoxStyleProps = {
-    position: "absolute",
-    width: "100%",
-    overflow: "hidden",
-    zIndex: "zIndex10"
+  position: 'absolute',
+  width: '100%',
+  overflow: 'hidden',
+  zIndex: 'zIndex10',
 };

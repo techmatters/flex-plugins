@@ -14,20 +14,20 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { AnyAction } from "redux";
-import { Conversation } from "@twilio/conversations";
+import { AnyAction } from 'redux';
+import { Conversation } from '@twilio/conversations';
 
-import { ACTION_START_SESSION, ACTION_UPDATE_CONVERSATION_ATTRIBUTES } from "./store/actions/actionTypes";
+import { ACTION_START_SESSION, ACTION_UPDATE_CONVERSATION_ATTRIBUTES } from './store/actions/actionTypes';
 
 export type TaskState = {
-    tasksSids?: string[];
+  tasksSids?: string[];
 };
 
 const initialState: TaskState = {};
 
 export const taskReducer = (state: TaskState = initialState, { type, payload }: AnyAction) => {
-    if ([ACTION_START_SESSION, ACTION_UPDATE_CONVERSATION_ATTRIBUTES].includes(type)) {
-        return { ...state, tasksSids: (payload.conversation as Conversation).attributes.tasksSids };
-    }
-    return state;
+  if ([ACTION_START_SESSION, ACTION_UPDATE_CONVERSATION_ATTRIBUTES].includes(type)) {
+    return { ...state, tasksSids: (payload.conversation as Conversation).attributes.tasksSids };
+  }
+  return state;
 };

@@ -14,25 +14,26 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { AnyAction, Reducer } from "redux";
+import { AnyAction, Reducer } from 'redux';
 
-import { ConfigState } from "./definitions";
-import { ACTION_LOAD_CONFIG } from "./actions/actionTypes";
+import { ConfigState } from './definitions';
+import { ACTION_LOAD_CONFIG } from './actions/actionTypes';
 
 const initialState: ConfigState = {
-    deploymentKey: ""
+  deploymentKey: '',
 };
 
 export const ConfigReducer: Reducer = (state: ConfigState = initialState, action: AnyAction): ConfigState => {
-    switch (action.type) {
-        case ACTION_LOAD_CONFIG: {
-            return {
-                ...state,
-                ...action.payload
-            };
-        }
-
-        default:
-            return state;
+  // eslint-disable-next-line sonarjs/no-small-switch
+  switch (action.type) {
+    case ACTION_LOAD_CONFIG: {
+      return {
+        ...state,
+        ...action.payload,
+      };
     }
+
+    default:
+      return state;
+  }
 };
