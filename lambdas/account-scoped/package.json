@@ -32,7 +32,7 @@
     "@tech-matters/twilio-types": "^1.0.0",
     "@twilio-labs/serverless-runtime-types": "^4.0.1",
     "date-fns": "^4.1.0",
-    "jsonwebtoken": "^9.0.2",
+    "jsonwebtoken": "^9.0.3",
     "lodash": "^4.17.21",
     "moment-timezone": "^0.6.0",
     "twilio": "^5.4.0",
