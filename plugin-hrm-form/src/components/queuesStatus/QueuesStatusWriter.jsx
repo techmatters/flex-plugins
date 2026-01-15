@@ -14,7 +14,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import React from 'react';
+import React, { useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { omit } from 'lodash';
