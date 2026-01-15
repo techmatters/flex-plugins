@@ -19,13 +19,16 @@ import React from 'react';
 
 import CustomSideLinkSet from './CustomSideLinkSet';
 import CustomEmbeddedLinkSet from './CustomEmbeddedLinkSet';
+import { getAseloFeatureFlags } from '../../hrmConfig';
 
 // eslint-disable-next-line import/no-unused-modules
 export const setUpCustomSideLinks = () => {
-  Flex.ViewCollection.Content.add(
-    <Flex.View name="custom-link" key="custom-link-view">
-      <CustomEmbeddedLinkSet />
-    </Flex.View>,
-  );
-  Flex.SideNav.Content.add(<CustomSideLinkSet key="custom-link-set" />);
+  if (getAseloFeatureFlags().enable_custom_links) {
+    Flex.ViewCollection.Content.add(
+      <Flex.View name="custom-link" key="custom-link-view">
+        <CustomEmbeddedLinkSet />
+      </Flex.View>,
+    );
+    Flex.SideNav.Content.add(<CustomSideLinkSet key="custom-link-set" />);
+  }
 };
