@@ -19,12 +19,14 @@ window.addEventListener("DOMContentLoaded", () => {
   const theme = urlParams.get("theme") || document.currentScript?.getAttribute('theme');
   const isLightTheme = theme !== "dark";
   const alwaysOpen = urlParams.get("alwaysOpen")
+  const defaultLocale = urlParams.get("locale");
   const el = document.querySelector("[data-theme-pref]");
   el && el.setAttribute("data-theme-pref", isLightTheme ? "light-theme" : "dark-theme");
 
   Twilio.initLogger("info");
   Twilio.initWebchat(urlParams.get('configUrl') || document.currentScript?.getAttribute('config-url'), {
     ...(theme ? { theme: { isLight: isLightTheme } } : {}),
-    ...(alwaysOpen ? { alwaysOpen: alwaysOpen.toLowerCase() === 'true' } : {})
+    ...(alwaysOpen ? { alwaysOpen: alwaysOpen.toLowerCase() === 'true' } : {}),
+    ...(defaultLocale ? { defaultLocale } : {})
   });
 });

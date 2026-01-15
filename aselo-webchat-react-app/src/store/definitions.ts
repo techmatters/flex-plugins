@@ -21,6 +21,8 @@ import { AlertVariants } from "@twilio-paste/core/alert";
 import { FileAttachmentConfig } from "../definitions";
 import { TaskState } from "../task";
 
+export type LocaleString = `${Lowercase<string>}-${Uppercase<string>}`;
+
 export enum EngagementPhase {
     PreEngagementForm = "PreEngagementForm",
     MessagingCanvas = "MessagingCanvas",
@@ -63,6 +65,9 @@ export type ConfigState = {
         isLight?: boolean;
         overrides?: Partial<GenericThemeShape>;
     };
+    translations: Record<string, Record<string, string>>;
+    defaultLocale: LocaleString;
+    currentLocale?: LocaleString;
 };
 
 export type Notification = {

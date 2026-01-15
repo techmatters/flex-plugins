@@ -16,9 +16,11 @@
 
 const fs = require("fs/promises");
 const merge = require("lodash.merge");
+const DEFAULT_LANGUAGE = 'en';
 
 const generateMergedConfigs = async (environment, helplineCode) => {
     const defaults = JSON.parse(await fs.readFile('./configSrc/defaults.json', { encoding: 'utf8' }));
+    const defaultTranslations = JSON.parse(await fs.readFile(`./translationsSrc/${DEFAULT_LANGUAGE}.json`, { encoding: 'utf8' }));
     const helplineCodes = [];
     if (helplineCode) {
         helplineCodes.push(helplineCode);
@@ -28,11 +30,39 @@ const generateMergedConfigs = async (environment, helplineCode) => {
         helplineCodes.push(...directories);
     }
     for (const shortCode of helplineCodes) {
-
         const helplineCommon = JSON.parse(await fs.readFile(`./configSrc/${shortCode}/common.json`, { encoding: 'utf8' }));
         const environmentSpecific = JSON.parse(await fs.readFile(`./configSrc/${shortCode}/${environment}.json`, { encoding: 'utf8' }));
+        const mergedConfig = merge(defaults, helplineCommon, environmentSpecific);
+
+        // Assume the languages required by the helpline based on the translation files that exist in the helplines 'translations' directory under their entry in configSrc
+        // e.g. ./configSrc/as/translations/en-US.json
+        // Should a helpline need to support a language but require no helpline specific translations, add a file with an empty json object in it
+        const contents =  await fs.readdir(`./configSrc/${shortCode}/translations`, { recursive: false, withFileTypes: true });
+        const mergedTranslations = {};
+        const helplineTranslationFilenames = contents.filter((ent) => ent.isFile() && ent.name.endsWith('.json')).map(({ name }) => name)
+        for (const translationFilename of helplineTranslationFilenames) {
+            const helplineTranslations = JSON.parse(await fs.readFile(`./configSrc/${shortCode}/translations/${translationFilename}`, { encoding: 'utf8' }));
+            let localeTranslations = {};
+            const localeTranslationsPath = `./translationsSrc/${translationFilename}`
+            try {
+                localeTranslations = JSON.parse(await fs.readFile(localeTranslationsPath, { encoding: 'utf8' }));
+            } catch (err) {
+                console.info(`Failed to read locale translations at ${localeTranslationsPath}, assuming there are none`, err)
+            }
+            let languageTranslations = {};
+            const [localeName] = translationFilename.split('.');
+            const [languageName] = localeName.split('-');
+            const languageTranslationsPath = `./translationsSrc/${languageName}.json`;
+            try {
+                languageTranslations = JSON.parse(await fs.readFile(languageTranslationsPath, { encoding: 'utf8' }));
+            } catch (err) {
+                console.info(`Failed to read language translations at ${languageTranslationsPath}, assuming there are none`, err)
+            }
+            mergedTranslations[translationFilename.split('.')[0]] = merge(defaultTranslations, languageTranslations, localeTranslations, helplineTranslations);
+        }
+        mergedConfig.translations = mergedTranslations;
         await fs.mkdir(`./mergedConfigs/${shortCode}`, { recursive: true });
-        await fs.writeFile(`./mergedConfigs/${shortCode}/${environment}.json`, JSON.stringify(merge(defaults, helplineCommon, environmentSpecific), null, 2))
+        await fs.writeFile(`./mergedConfigs/${shortCode}/${environment}.json`, JSON.stringify(mergedConfig, null, 2))
     }
 }
 
