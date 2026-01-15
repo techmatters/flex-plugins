@@ -27,7 +27,7 @@ import { NotificationBar } from "./NotificationBar";
 import { removeNotification } from "../store/actions/genericActions";
 import { notifications } from "../notifications";
 import { AttachFileDropArea } from "./AttachFileDropArea";
-import CloseChatButtons from "./end-chat/CloseChatButtons";
+import CloseChatButtons from "./endChat/CloseChatButtons";
 
 const sendInitialUserQuery = async (conv?: Conversation, query?: string): Promise<void> => {
     if (!query || !conv) return;

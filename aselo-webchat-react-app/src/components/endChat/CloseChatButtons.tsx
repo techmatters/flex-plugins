@@ -26,7 +26,7 @@ const CloseChatButtons = () => {
     const { conversation, token, tasksSids } = useSelector((state: AppState) => ({
         conversation: state.chat?.conversation,
         token: state.session.token,
-        tasksSids: state?.task?.tasksSids
+        tasksSids: state?.task?.tasksSids,
     }));
     if (!conversation || !token) {
         return null;

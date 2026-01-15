@@ -1,0 +1,8 @@
+{
+  "fileAttachment": {
+    "enabled": true,
+    "maxFileSize": 16777216,
+    "acceptedExtensions": ["jpg", "jpeg", "png", "amr", "mp3", "mp4", "pdf", "txt"]
+  },
+  "alwaysOpen": true
+}

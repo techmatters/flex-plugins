@@ -16,6 +16,7 @@
 
 // Config reducer actions
 export const ACTION_LOAD_CONFIG = "ACTION_LOAD_CONFIG";
+export const ACTION_CHANGE_LOCALE = "ACTION_CHANGE_LOCALE";
 
 // Chat reducer actions
 export const ACTION_CHANGE_EXPANDED_STATUS = "ACTION_CHANGE_EXPANDED_STATUS";

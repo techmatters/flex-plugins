@@ -22,6 +22,7 @@ import { useDispatch } from "react-redux";
 import { contactBackend, sessionDataHandler } from "../../sessionDataHandler";
 import { changeEngagementPhase, updatePreEngagementData } from "../../store/actions/genericActions";
 import { EngagementPhase } from "../../store/definitions";
+import LocalizedTemplate from "../../localization/LocalizedTemplate";
 
 type Props = {
     channelSid: string;
@@ -60,7 +61,7 @@ export default function EndChat({ channelSid, token, language, action }: Props) 
     return (
         <Button variant="destructive" onClick={handleEndChat} disabled={disabled}>
             <span>CloseLarge</span>
-            <span>EndChatButtonLabel</span>
+            <LocalizedTemplate key="EndChatButtonLabel" />
         </Button>
     );
 }
