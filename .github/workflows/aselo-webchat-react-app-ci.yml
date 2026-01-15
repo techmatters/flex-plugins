@@ -26,6 +26,9 @@ jobs:
         uses: actions/setup-node@v6
         with:
           node-version: '22.x'
+      - name: Install dependencies
+        run: npm ci
+        working-directory: ./aselo-webchat-react-app
       - name: Create Temp Files
         run: |
           touch ./.env
@@ -44,12 +47,9 @@ jobs:
       uses: actions/setup-node@v6
       with:
         node-version: '22.x'
-    - name: Configure AWS credentials
-      uses: aws-actions/configure-aws-credentials@v5
-      with:
-        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-region: us-east-1
+    - name: Install dependencies
+      run: npm ci
+      working-directory: ./aselo-webchat-react-app
     - name: Run aselo-webchat-react-app tests
       run: npm run test
       working-directory: ./aselo-webchat-react-app
@@ -63,17 +63,26 @@ jobs:
   upload-aselo-webchat-react-app:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Branch
-        uses: actions/checkout@v6
-      - name: Use Node.js
-        uses: actions/setup-node@v6
-        with:
-          node-version: '22.x'
-      - name: Build and Upload Aselo Webchat React App
-        uses: ./.github/actions/build-and-upload-aselo-webchat-react-app
-        with:
-          git-reference-type: ${{ github.ref_type }}
-          git-reference: ${{ github.ref_name }}
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ secrets.AWS_DEFAULT_REGION }}
+    - name: Checkout Branch
+      uses: actions/checkout@v6
+    - name: Use Node.js
+      uses: actions/setup-node@v6
+      with:
+        node-version: '22.x'
+    - name: Install dependencies
+      run: npm ci
+      working-directory: ./aselo-webchat-react-app
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v5
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: us-east-1
+    - name: Build and Upload Aselo Webchat React App
+      uses: ./.github/actions/build-and-upload-aselo-webchat-react-app
+      with:
+        git-reference-type: ${{ github.ref_type }}
+        git-reference: ${{ github.ref_name }}
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ secrets.AWS_DEFAULT_REGION }}
