@@ -34,7 +34,6 @@ import { setUpSyncClient } from './services/SyncService';
 import { setUpReferrableResources } from './components/resources/setUpReferrableResources';
 import QueuesView from './components/queuesView';
 import TeamsView from './components/teamsView';
-import { setUpCounselorToolkits } from './components/toolkits/setUpCounselorToolkits';
 import { setUpTransferComponents } from './components/transfer/setUpTransferComponents';
 import { subscribeNewMessageAlertOnPluginInit } from './notifications/newMessage';
 import { subscribeReservedTaskAlert } from './notifications/reservedTask';
@@ -49,6 +48,7 @@ import { setupLlmNotifications } from './components/contact/GenerateSummaryButto
 import { FeatureFlags } from './types/FeatureFlags';
 import { setUpFullStory } from './fullStory/setUp';
 import { getPathFromUrl } from './states/routing/reducer';
+import { setUpCustomSideLinks } from './components/customSideLinks/setUpCustomSideLinks';
 
 const PLUGIN_NAME = 'HrmFormPlugin';
 
@@ -116,7 +116,6 @@ const setUpComponents = (featureFlags: FeatureFlags, setupObject: ReturnType<typ
 
   Components.setUpStandaloneSearch();
   setUpReferrableResources();
-  setUpCounselorToolkits();
 
   if (featureFlags.enable_emoji_picker) Components.setupEmojiPicker();
   if (featureFlags.enable_canned_responses) Components.setupCannedResponses();
@@ -145,6 +144,8 @@ const setUpComponents = (featureFlags: FeatureFlags, setupObject: ReturnType<typ
   });
 
   if (featureFlags.enable_language_selector) Components.setupWorkerLanguageSelect();
+
+  setUpCustomSideLinks();
 };
 
 const setUpActions = (
