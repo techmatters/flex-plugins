@@ -47,7 +47,8 @@ const CreatedCaseBanner: React.FC<Props> = ({ task, caseId }) => {
   const taskContact = useSelector((state: RootState) => selectContactByTaskSid(state, taskSid)?.savedContact);
   const hasOtherContacts = Boolean(caseContacts.find(contact => contact.savedContact?.taskId !== taskSid));
 
-  const removeContactFromCase = async (contactId: string) => asyncDispatch(dispatch)(removeFromCaseAsyncAction(contactId));
+  const removeContactFromCase = async (contactId: string) =>
+    asyncDispatch(dispatch)(removeFromCaseAsyncAction(contactId));
   const cancelCase = async (caseId: string) => asyncDispatch(dispatch)(cancelCaseAsyncAction(caseId));
   const showRemovedFromCaseBanner = (contactId: string) => dispatch(showRemovedFromCaseBannerAction(contactId));
   const navigateBack = (taskSid: string) => dispatch(newGoBackAction(taskSid));

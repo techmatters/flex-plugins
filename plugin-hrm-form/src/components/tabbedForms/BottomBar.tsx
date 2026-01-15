@@ -62,15 +62,20 @@ const BottomBar: React.FC<BottomBarProps> = ({
   contactId,
 }) => {
   const dispatch = useDispatch();
-  const { draftContact, savedContact, metadata } = useSelector((state: RootState) => 
-    selectContactStateByContactId(state, contactId) ?? {}
+  const { draftContact, savedContact, metadata } = useSelector(
+    (state: RootState) => selectContactStateByContactId(state, contactId) ?? {},
   );
   const caseState = useSelector((state: RootState) => selectCaseByCaseId(state, savedContact?.caseId ?? ''));
   const contactIsSaving = metadata?.loadingStatus === LoadingStatus.LOADING || savedContact?.finalizedAt !== null;
   const contact = getUnsavedContact(savedContact, draftContact);
 
   const openModal = (route: AppRoutes) => dispatch(RoutingActions.newOpenModalAction(route, task.taskSid));
-  const submitContactForm = (task: CustomITask, contact: Contact, metadata: ContactMetadata, caseState: CaseStateEntry) =>
+  const submitContactForm = (
+    task: CustomITask,
+    contact: Contact,
+    metadata: ContactMetadata,
+    caseState: CaseStateEntry,
+  ) =>
     // Deliberately using dispatch rather than asyncDispatch here, because we still handle the error from where the action is dispatched.
     // TODO: Rework error handling to be based on redux state set by the _REJECTED action
     dispatch(submitContactFormAsyncAction(task, contact, metadata, caseState));

@@ -55,8 +55,8 @@ type Props = {
 
 const CallTypeButtons: React.FC<Props> = ({ task, localization }) => {
   const dispatch = useDispatch();
-  const { savedContact, draftContact, metadata } = useSelector((state: RootState) => 
-    selectContactByTaskSid(state, task.taskSid) ?? {}
+  const { savedContact, draftContact, metadata } = useSelector(
+    (state: RootState) => selectContactByTaskSid(state, task.taskSid) ?? {},
   );
   const currentDefinitionVersion = useSelector(selectCurrentDefinitionVersion);
 
@@ -69,7 +69,8 @@ const CallTypeButtons: React.FC<Props> = ({ task, localization }) => {
     dispatch(submitContactFormAsyncAction(task, getUnsavedContact(contact, changes), metaData, undefined));
   const updateCallType = (contactId: string, callType: string) =>
     dispatch(newUpdateDraftAction(contactId, { rawJson: { callType } }));
-  const clearCallType = (contactId: string) => dispatch(newUpdateDraftAction(contactId, { rawJson: { callType: null } }));
+  const clearCallType = (contactId: string) =>
+    dispatch(newUpdateDraftAction(contactId, { rawJson: { callType: null } }));
 
   const { isCallTask } = localization;
   const { loadingStatus } = metadata;

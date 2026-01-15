@@ -27,7 +27,9 @@ import { pullNextTask } from '../../services/twilioWorkerService';
 
 const ManualPullButton: React.FC = () => {
   const queuesStatusState = useSelector((state: RootState) => state[namespace][queuesStatusBase]);
-  const chatChannelCapacity = useSelector((state: RootState) => state[namespace][configurationBase].workerInfo.chatChannelCapacity);
+  const chatChannelCapacity = useSelector(
+    (state: RootState) => state[namespace][configurationBase].workerInfo.chatChannelCapacity,
+  );
   const worker = useSelector((state: RootState) => state.flex.worker);
   const [isWaitingNewTask, setWaitingNewTask] = useState(false);
 

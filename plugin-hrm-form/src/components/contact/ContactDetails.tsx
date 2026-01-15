@@ -18,7 +18,6 @@ import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { CircularProgress } from '@material-ui/core';
 import { callTypes, DataCallTypes } from 'hrm-types';
-import { DefinitionVersion } from 'hrm-form-definitions';
 import _ from 'lodash';
 
 import ContactDetailsHome from './ContactDetailsHome';
@@ -32,12 +31,7 @@ import { ContactDetailsSectionFormApi, contactDetailsSectionFormApi } from './co
 import ContactDetailsSectionForm from './ContactDetailsSectionForm';
 import IssueCategorizationSectionForm from './IssueCategorizationSectionForm';
 import { loadContactFromHrmByIdAsyncAction } from '../../states/contacts/saveContact';
-import {
-  clearDraft,
-  newSetContactDialogStateAction,
-  releaseContact,
-  updateDraft,
-} from '../../states/contacts/existingContacts';
+import { clearDraft, newSetContactDialogStateAction, updateDraft } from '../../states/contacts/existingContacts';
 import CSAMReport from '../CSAMReport/CSAMReport';
 import { existingContactCSAMApi } from '../CSAMReport/csamReportApi';
 import { getTemplateStrings } from '../../hrmConfig';
@@ -75,14 +69,16 @@ const ContactDetails: React.FC<Props> = ({
 }) => {
   const dispatch = useDispatch();
   const currentRoute = useSelector((state: RootState) => selectCurrentTopmostRouteForTask(state, task.taskSid));
-  const { savedContact: taskContact } = useSelector((state: RootState) => selectContactByTaskSid(state, task.taskSid) ?? {});
-  const { savedContact, draftContact, metadata } = useSelector((state: RootState) => selectContactStateByContactId(state, contactId) ?? {});
+  const { savedContact: taskContact } = useSelector(
+    (state: RootState) => selectContactByTaskSid(state, task.taskSid) ?? {},
+  );
+  const { savedContact, draftContact, metadata } = useSelector(
+    (state: RootState) => selectContactStateByContactId(state, contactId) ?? {},
+  );
   const definitionVersions = useSelector((state: RootState) => selectDefinitionVersions(state));
   const loadingStatus = metadata?.loadingStatus;
   const draftCsamReport = useSelector((state: RootState) => state[namespace]['csam-report'].contacts[contactId]);
 
-  const updateDefinitionVersion = (version: string, definitionVersion: DefinitionVersion) =>
-    dispatch(ConfigActions.updateDefinitionVersion(version, definitionVersion));
   const updateDraftForm = (draftContactId: string, form: Partial<ContactRawJson>) =>
     dispatch(updateDraft(draftContactId, { rawJson: form }));
   const closeModal = () => dispatch(newCloseModalAction(task.taskSid));
@@ -92,13 +88,13 @@ const ContactDetails: React.FC<Props> = ({
   const goBack = () => dispatch(newGoBackAction(task.taskSid));
   const openFormConfirmDialog = (form: keyof ContactRawJson, dismissAction: 'close' | 'back') =>
     dispatch(newSetContactDialogStateAction(contactId, `${form}-confirm-${dismissAction}`, true));
-  const loadContactFromHrm = () => dispatch(loadContactFromHrmByIdAsyncAction(contactId, `${task.taskSid}-viewing`));
+
   React.useEffect(() => {
     // No conversationMedia means we've only loaded contact info required for the list, not the full contact, do a full load
     if (!savedContact?.conversationMedia && loadingStatus !== 'loading') {
-      loadContactFromHrm();
+      dispatch(loadContactFromHrmByIdAsyncAction(contactId, `${task.taskSid}-viewing`));
     }
-  }, [loadingStatus, savedContact, loadContactFromHrm]);
+  }, [contactId, dispatch, loadingStatus, savedContact, task.taskSid]);
   const version = savedContact?.definitionVersion ?? savedContact?.rawJson.definitionVersion;
 
   const strings = getTemplateStrings();
@@ -108,13 +104,13 @@ const ContactDetails: React.FC<Props> = ({
   React.useEffect(() => {
     const fetchDefinitionVersions = async () => {
       const definitionVersion = await getDefinitionVersion(version);
-      updateDefinitionVersion(version, definitionVersion);
+      dispatch(ConfigActions.updateDefinitionVersion(version, definitionVersion));
     };
 
     if (version && !definitionVersions[version]) {
       fetchDefinitionVersions();
     }
-  }, [definitionVersions, updateDefinitionVersion, version, savedContact]);
+  }, [definitionVersions, version, savedContact, dispatch]);
 
   const definitionVersion = definitionVersions[version];
 

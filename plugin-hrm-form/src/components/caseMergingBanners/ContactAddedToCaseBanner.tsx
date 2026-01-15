@@ -41,7 +41,9 @@ type Props = {
 const ContactAddedToCaseBanner: React.FC<Props> = ({ taskId, contactId }) => {
   const dispatch = useDispatch();
   const offlineSavedContact = useSelector((state: RootState) => selectContactByTaskSid(state, taskId)?.savedContact);
-  const existingSavedContact = useSelector((state: RootState) => selectContactStateByContactId(state, contactId)?.savedContact);
+  const existingSavedContact = useSelector(
+    (state: RootState) => selectContactStateByContactId(state, contactId)?.savedContact,
+  );
   const contact = offlineSavedContact || existingSavedContact;
   const caseId = offlineSavedContact?.caseId || existingSavedContact?.caseId;
 

@@ -43,20 +43,14 @@ type Props = {
   autoFocus: boolean;
 };
 
-const ContactlessTaskTab: React.FC<Props> = ({
-  display,
-  helplineInformation,
-  definition,
-  autoFocus,
-  task,
-}) => {
+const ContactlessTaskTab: React.FC<Props> = ({ display, helplineInformation, definition, autoFocus, task }) => {
   const dispatch = useDispatch();
-  const { savedContact, draftContact } = useSelector((state: RootState) => 
-    selectContactByTaskSid(state, task.taskSid) ?? {}
+  const { savedContact, draftContact } = useSelector(
+    (state: RootState) => selectContactByTaskSid(state, task.taskSid) ?? {},
   );
   const counselorsList = useSelector((state: RootState) => state[namespace][configurationBase].counselors.list);
   const unsavedContact = getUnsavedContact(savedContact, draftContact);
-  
+
   const updateContactlessTaskDraft = (
     contactId: string,
     timeOfContact: string,

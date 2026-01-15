@@ -145,17 +145,13 @@ export class InnerQueuesStatusWriter extends React.Component {
 const QueuesStatusWriter = props => {
   const dispatch = useDispatch();
   const queuesStatusState = useSelector(state => state[namespace][queuesStatusBase]);
-  
-  const queuesStatusUpdateCallback = useCallback(
-    (queuesStatus) => dispatch(queuesStatusUpdate(queuesStatus)),
-    [dispatch]
-  );
-  
-  const queuesStatusFailureCallback = useCallback(
-    (error) => dispatch(queuesStatusFailure(error)),
-    [dispatch]
-  );
-  
+
+  const queuesStatusUpdateCallback = useCallback(queuesStatus => dispatch(queuesStatusUpdate(queuesStatus)), [
+    dispatch,
+  ]);
+
+  const queuesStatusFailureCallback = useCallback(error => dispatch(queuesStatusFailure(error)), [dispatch]);
+
   return (
     <InnerQueuesStatusWriter
       {...props}

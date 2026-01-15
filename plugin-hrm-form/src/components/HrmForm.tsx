@@ -36,7 +36,9 @@ type Props = {
 };
 
 const HrmForm: React.FC<Props> = ({ task }) => {
-  const routing = useSelector((state: RootState) => getCurrentTopmostRouteForTask(state[namespace].routing, task.taskSid));
+  const routing = useSelector((state: RootState) =>
+    getCurrentTopmostRouteForTask(state[namespace].routing, task.taskSid),
+  );
   const { savedContact } = useSelector((state: RootState) => selectContactByTaskSid(state, task.taskSid) ?? {});
   if (!routing) return null;
 

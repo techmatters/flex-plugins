@@ -29,7 +29,7 @@ import { namespace } from '../states/storeNamespaces';
 import { getUnsavedContact } from '../states/contacts/getUnsavedContact';
 import asyncDispatch from '../states/asyncDispatch';
 import { newLoadContactFromHrmForTaskAsyncAction } from '../states/contacts/saveContact';
-import { getAseloFeatureFlags, getHrmConfig } from '../hrmConfig';
+import { getAseloFeatureFlags } from '../hrmConfig';
 import { selectAnyContactIsSaving } from '../states/contacts/selectContactSaveStatus';
 import selectCurrentOfflineContact from '../states/contacts/selectCurrentOfflineContact';
 import { populateCounselors } from '../services/twilioWorkerService';
@@ -60,14 +60,13 @@ const CustomCRMContainer: React.FC<Props> = ({ task }) => {
 
   const populateCounselorList = (listPayload: Awaited<ReturnType<typeof populateCounselors>>) =>
     dispatch(populateCounselorsState(listPayload));
-  const loadDraftOfflineContact = () =>
-    asyncDispatch(dispatch)(newLoadContactFromHrmForTaskAsyncAction(getOfflineContactTask()));
   const { enable_confirm_on_browser_close: enableConfirmOnBrowserClose } = getAseloFeatureFlags();
   useEffect(() => {
     const fetchPopulateCounselors = async () => {
       try {
+        // TODO (Steve): Migrate this to a single async action
         const counselorsList = await populateCounselors();
-        populateCounselorList(counselorsList);
+        dispatch(populateCounselorsState(counselorsList));
       } catch (err) {
         // TODO (Gian): probably we need to handle this in a nicer way
         console.error(err.message);
@@ -79,9 +78,9 @@ const CustomCRMContainer: React.FC<Props> = ({ task }) => {
 
   useEffect(() => {
     if (!currentOfflineContact) {
-      loadDraftOfflineContact();
+      asyncDispatch(dispatch)(newLoadContactFromHrmForTaskAsyncAction(getOfflineContactTask()));
     }
-  }, [currentOfflineContact, loadDraftOfflineContact]);
+  }, [currentOfflineContact, dispatch]);
 
   useEffect(() => {
     if (!enableConfirmOnBrowserClose) {

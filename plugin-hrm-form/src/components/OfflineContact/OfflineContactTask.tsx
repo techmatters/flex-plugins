@@ -39,7 +39,9 @@ type Props = { selectedTaskSid?: string };
 
 const OfflineContactTask: React.FC<Props> = ({ selectedTaskSid }) => {
   const isAddingOfflineContact = useSelector((state: RootState) => selectCurrentOfflineContact(state));
-  const { savedContact, draftContact } = useSelector((state: RootState) => selectContactByTaskSid(state, getOfflineContactTaskSid()) || {});
+  const { savedContact, draftContact } = useSelector(
+    (state: RootState) => selectContactByTaskSid(state, getOfflineContactTaskSid()) || {},
+  );
   const offlineContact = savedContact ? getUnsavedContact(savedContact, draftContact) : undefined;
   if (!isAddingOfflineContact) return null;
   const offlineContactForms = offlineContact?.rawJson;
