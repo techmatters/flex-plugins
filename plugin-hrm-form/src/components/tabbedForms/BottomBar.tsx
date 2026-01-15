@@ -62,9 +62,10 @@ const BottomBar: React.FC<BottomBarProps> = ({
   contactId,
 }) => {
   const dispatch = useDispatch();
-  const { draftContact, savedContact, metadata } = useSelector(
-    (state: RootState) => selectContactStateByContactId(state, contactId) ?? {},
-  );
+  const contactStateById = useSelector((state: RootState) => selectContactStateByContactId(state, contactId));
+  const draftContact = contactStateById?.draftContact;
+  const savedContact = contactStateById?.savedContact;
+  const metadata = contactStateById?.metadata;
   const caseState = useSelector((state: RootState) => selectCaseByCaseId(state, savedContact?.caseId ?? ''));
   const contactIsSaving = metadata?.loadingStatus === LoadingStatus.LOADING || savedContact?.finalizedAt !== null;
   const contact = getUnsavedContact(savedContact, draftContact);

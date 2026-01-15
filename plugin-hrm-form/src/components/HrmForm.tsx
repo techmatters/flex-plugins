@@ -39,7 +39,8 @@ const HrmForm: React.FC<Props> = ({ task }) => {
   const routing = useSelector((state: RootState) =>
     getCurrentTopmostRouteForTask(state[namespace].routing, task.taskSid),
   );
-  const { savedContact } = useSelector((state: RootState) => selectContactByTaskSid(state, task.taskSid) ?? {});
+  const contactState = useSelector((state: RootState) => selectContactByTaskSid(state, task.taskSid));
+  const savedContact = contactState?.savedContact;
   if (!routing) return null;
 
   const routes: RouteConfig<Props> = [
