@@ -47,7 +47,11 @@ const generateMergedConfigs = async (environment, helplineCode) => {
             try {
                 localeTranslations = JSON.parse(await fs.readFile(localeTranslationsPath, { encoding: 'utf8' }));
             } catch (err) {
-                console.info(`Failed to read locale translations at ${localeTranslationsPath}, assuming there are none`, err)
+                if (err.code === 'ENOENT') {
+                    console.info(`No locale translations at ${localeTranslationsPath}, skipping`);
+                } else {
+                    console.info(`Failed to read locale translations at ${localeTranslationsPath}, assuming there are none`, err);
+                }
             }
             let languageTranslations = {};
             const [localeName] = translationFilename.split('.');
@@ -56,7 +60,12 @@ const generateMergedConfigs = async (environment, helplineCode) => {
             try {
                 languageTranslations = JSON.parse(await fs.readFile(languageTranslationsPath, { encoding: 'utf8' }));
             } catch (err) {
-                console.info(`Failed to read language translations at ${languageTranslationsPath}, assuming there are none`, err)
+                if (err.code === 'ENOENT') {
+                    console.info(`No language translations at ${languageTranslationsPath}, skipping`);
+                } else {
+                    console.info(`Failed to read language translations at ${languageTranslationsPath}, assuming there are none`, err);
+                }
+
             }
             mergedTranslations[translationFilename.split('.')[0]] = merge(defaultTranslations, languageTranslations, localeTranslations, helplineTranslations);
         }
