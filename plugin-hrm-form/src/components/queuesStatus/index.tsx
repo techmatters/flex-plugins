@@ -16,7 +16,7 @@
 
 /* eslint-disable react/prop-types */
 import React from 'react';
-import { connect, ConnectedProps } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { Template } from '@twilio/flex-ui';
 
 import { RootState } from '../../states';
@@ -27,23 +27,14 @@ import { TLHPaddingLeft } from '../../styles/GlobalOverrides';
 import type { CoreChannelTypes, ChannelColors } from '../../states/DomainConstants';
 import { namespace, queuesStatusBase } from '../../states/storeNamespaces';
 
-type OwnProps = {
+type Props = {
   colors: ChannelColors;
   paddingRight: boolean;
   contactsWaitingChannels?: CoreChannelTypes[];
 };
 
-const mapStateToProps = (state: RootState) => {
-  const queuesStatusState = state[namespace][queuesStatusBase];
-
-  return { queuesStatusState };
-};
-
-const connector = connect(mapStateToProps, null);
-
-type Props = OwnProps & ConnectedProps<typeof connector>;
-
-const QueuesStatus: React.FC<Props> = ({ colors, queuesStatusState, paddingRight, contactsWaitingChannels }) => {
+const QueuesStatus: React.FC<Props> = ({ colors, paddingRight, contactsWaitingChannels }) => {
+  const queuesStatusState = useSelector((state: RootState) => state[namespace][queuesStatusBase]);
   const { queuesStatus, error } = queuesStatusState;
   return (
     <Container role="complementary" tabIndex={0} className=".fullstory-unmask">
@@ -77,4 +68,4 @@ QueuesStatus.defaultProps = {
   paddingRight: false,
 };
 
-export default connector(QueuesStatus);
+export default QueuesStatus;

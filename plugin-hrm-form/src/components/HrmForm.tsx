@@ -16,7 +16,7 @@
 
 /* eslint-disable react/prop-types */
 import React from 'react';
-import { connect, ConnectedProps } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import CallTypeButtons from './callTypeButtons';
 import ProfileRouter, { isProfileRoute } from './profile/ProfileRouter';
@@ -31,26 +31,16 @@ import { getCurrentTopmostRouteForTask } from '../states/routing/getRoute';
 import type { CSAMReportRoute } from '../states/routing/types';
 import Router, { RouteConfig } from './router/Router';
 
-type OwnProps = {
+type Props = {
   task: CustomITask;
 };
 
-const mapStateToProps = (state: RootState, { task }: OwnProps) => {
-  const { routing, configuration } = state[namespace];
-  const { savedContact, metadata } = selectContactByTaskSid(state, task.taskSid) ?? {};
-
-  return {
-    routing: getCurrentTopmostRouteForTask(routing, task.taskSid),
-    savedContact,
-    metadata,
-    definitionVersion: configuration.currentDefinitionVersion,
-  };
-};
-
-const connector = connect(mapStateToProps);
-type Props = OwnProps & ConnectedProps<typeof connector>;
-
-const HrmForm: React.FC<Props> = ({ routing, task, savedContact }) => {
+const HrmForm: React.FC<Props> = ({ task }) => {
+  const routing = useSelector((state: RootState) =>
+    getCurrentTopmostRouteForTask(state[namespace].routing, task.taskSid),
+  );
+  const contactState = useSelector((state: RootState) => selectContactByTaskSid(state, task.taskSid));
+  const savedContact = contactState?.savedContact;
   if (!routing) return null;
 
   const routes: RouteConfig<Props> = [
@@ -81,4 +71,4 @@ const HrmForm: React.FC<Props> = ({ routing, task, savedContact }) => {
 
 HrmForm.displayName = 'HrmForm';
 
-export default connector(HrmForm);
+export default HrmForm;
