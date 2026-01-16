@@ -113,11 +113,9 @@ const ContactDetails: React.FC<Props> = ({
 
   const [connectDialogAnchorEl, setConnectDialogAnchorEl] = useState(null);
   const [callTypeInfoToCopy, setCallTypeInfoToCopy] = useState<DataCallTypes>(null);
+  const { savedContact: taskContact } = taskContactState ?? {};
+  const { savedContact, draftContact } = savedContactState ?? {};
 
-  if (!taskContactState || !savedContactState) return null;
-
-  const { savedContact: taskContact } = taskContactState;
-  const { savedContact, draftContact } = savedContactState;
   if (!definitionVersion || !savedContact)
     return (
       <DetailsContainer>
