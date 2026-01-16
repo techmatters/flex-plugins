@@ -53,8 +53,9 @@
     "Case-CaseOverviewLabel": "ECUPHS",
     "Case-SectionList-ecuphsCreated": "ECUPHS contestada",
     "TabbedForms-NewCase": "Crear ECUPHS",
-    "TabbedForms-ExistingCase": "Agregar a ECUPHS",
+    "TabbedForms-ExistingCase": "------------------",
     "Case-CaseNumber": "ECUPHS #",
+    "SearchResultsIndex-Cases": "ECUPHS",
     "Case-Timeline-ModalTitle": "Línea de Tiempo ECUPHS #{{caseId}}",
     "Case-CaseSummarySection": "CaseSummarySection",
     "Case-CaseDetailsStatusLabel": "Estado",
@@ -73,9 +74,9 @@
     "CaseMerging-CaseCreatedAndContactAdded": " #{{caseId}} creada y contacto agregado",
     "CaseMerging-ContactAddedToExistingCase": "Contacto agregado a #{{caseId}}",
     "CaseMerging-CancelCase": "Cancelar ",
-    "CaseHeader-ConnectToTaskContact": "Agregar a ECUPHS",
+    "CaseHeader-ConnectToTaskContact": "------------------",
     "CaseHeader-TaskContactConnected": "Agregado a ECUPHS",
-    "BottomBar-AddContactToNewCase": "Agregar a ECUPHS",
+    "BottomBar-AddContactToNewCase": "------------------",
     "BottomBar-AddedToCase": "Agregado a ECUPHS",
     "CaseList-Cases": "Ecuphs",
     "CaseList-NoCases": "No se encontraron encuestas.",
@@ -102,7 +103,12 @@
     "PreviousContacts-Cases": "ecuphs",
     "SearchContactsAndCases-Title": "Buscar contactos y ecuphs",
     "CaseSummary-None": "--",
-    "SideNavCaseList": "Lista de Ecuphs"
+    "SideNavCaseList": "Lista de Ecuphs",
+    "SearchResultsIndex-ViewCases": "Ver ecuphs",
+    "SearchResultsIndex-ClosedCases": "ecuphs cerradas",
+    "Case-CaseManager": "Administrador de Ecuphs",
+    "CaseMerging-AddContactToCase": "Agregar contacto a ecuphs",
+    
 
     }
 }
