@@ -15,52 +15,52 @@
  */
 
 /* eslint-disable react/require-default-props */
-import { useState } from "react";
-import { Button } from "@twilio-paste/core/button";
-import { useDispatch } from "react-redux";
+import { useState } from 'react';
+import { Button } from '@twilio-paste/core/button';
+import { useDispatch } from 'react-redux';
 
-import { contactBackend, sessionDataHandler } from "../../sessionDataHandler";
-import { changeEngagementPhase, updatePreEngagementData } from "../../store/actions/genericActions";
-import { EngagementPhase } from "../../store/definitions";
+import { contactBackend, sessionDataHandler } from '../../sessionDataHandler';
+import { changeEngagementPhase, updatePreEngagementData } from '../../store/actions/genericActions';
+import { EngagementPhase } from '../../store/definitions';
 
 type Props = {
-    channelSid: string;
-    token: string;
-    language?: string;
-    action: "finishTask" | "restartEngagement";
+  channelSid: string;
+  token: string;
+  language?: string;
+  action: 'finishTask' | 'restartEngagement';
 };
 
 export default function EndChat({ channelSid, token, language, action }: Props) {
-    const [disabled, setDisabled] = useState(false);
-    const dispatch = useDispatch();
+  const [disabled, setDisabled] = useState(false);
+  const dispatch = useDispatch();
 
-    // Serverless call to end chat
-    const handleEndChat = async () => {
-        switch (action) {
-            case "finishTask":
-                try {
-                    setDisabled(true);
-                    await contactBackend("/endChat", { channelSid, token, language });
-                    sessionDataHandler.clear();
-                    dispatch(updatePreEngagementData({ email: "", name: "", query: "" }));
-                    dispatch(changeEngagementPhase({ phase: EngagementPhase.PreEngagementForm }));
-                } catch (error) {
-                    console.error(error);
-                } finally {
-                    setDisabled(false);
-                }
-                return;
-            case "restartEngagement":
-            default:
-                sessionDataHandler.clear();
-                dispatch(updatePreEngagementData({ email: "", name: "", query: "" }));
-                dispatch(changeEngagementPhase({ phase: EngagementPhase.PreEngagementForm }));
+  // Serverless call to end chat
+  const handleEndChat = async () => {
+    switch (action) {
+      case 'finishTask':
+        try {
+          setDisabled(true);
+          await contactBackend('/endChat', { channelSid, token, language });
+          sessionDataHandler.clear();
+          dispatch(updatePreEngagementData({ email: '', name: '', query: '' }));
+          dispatch(changeEngagementPhase({ phase: EngagementPhase.PreEngagementForm }));
+        } catch (error) {
+          console.error(error);
+        } finally {
+          setDisabled(false);
         }
-    };
-    return (
-        <Button variant="destructive" onClick={handleEndChat} disabled={disabled}>
-            <span>CloseLarge</span>
-            <span>EndChatButtonLabel</span>
-        </Button>
-    );
+        return;
+      case 'restartEngagement':
+      default:
+        sessionDataHandler.clear();
+        dispatch(updatePreEngagementData({ email: '', name: '', query: '' }));
+        dispatch(changeEngagementPhase({ phase: EngagementPhase.PreEngagementForm }));
+    }
+  };
+  return (
+    <Button variant="destructive" onClick={handleEndChat} disabled={disabled}>
+      <span>CloseLarge</span>
+      <span>EndChatButtonLabel</span>
+    </Button>
+  );
 }

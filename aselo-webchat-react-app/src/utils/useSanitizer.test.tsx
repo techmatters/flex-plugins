@@ -14,36 +14,38 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { act } from "@testing-library/react";
-import { renderHook } from "@testing-library/react-hooks";
-import { useSanitizer } from "./useSanitizer";
-import validator from "validator";
-describe("useSanitizer custom hook", () => {
-    it("should set the default state on render", () => {
-        const { result } = renderHook(() => useSanitizer());
+import { act } from '@testing-library/react';
+import { renderHook } from '@testing-library/react-hooks';
+import validator from 'validator';
 
-        expect(result.current.userInput).toBe('');
+import { useSanitizer } from './useSanitizer';
+
+describe('useSanitizer custom hook', () => {
+  it('should set the default state on render', () => {
+    const { result } = renderHook(() => useSanitizer());
+
+    expect(result.current.userInput).toBe('');
+  });
+
+  it('should update the local state of the hook after input sanitization', () => {
+    const { result } = renderHook(() => useSanitizer());
+
+    act(() => {
+      result.current.onUserInputSubmit('newText');
     });
 
-    it("should update the local state of the hook after input sanitization", () => {
-        const { result } = renderHook(() => useSanitizer());
+    expect(result.current.userInput).toBe('newText');
+  });
 
-        act(() => {
-            result.current.onUserInputSubmit("newText");
-        });
+  it('should escape unwanted characters', () => {
+    const blackListSpy = jest.spyOn(validator, 'blacklist');
+    const { result } = renderHook(() => useSanitizer());
 
-        expect(result.current.userInput).toBe("newText");
+    act(() => {
+      result.current.onUserInputSubmit("<script>alert('Hello!!!')</script>");
     });
 
-    it("should escape unwanted characters", () => {
-        const blackListSpy = jest.spyOn(validator, "blacklist");
-        const { result } = renderHook(() => useSanitizer());
-
-        act(() => {
-            result.current.onUserInputSubmit("<script>alert('Hello!!!')</script>");
-        });
-
-        expect(result.current.userInput).toBe("script>alert('Hello!!!')script>");
-        expect(blackListSpy).toBeCalled();
-    });
+    expect(result.current.userInput).toBe("script>alert('Hello!!!')script>");
+    expect(blackListSpy).toBeCalled();
+  });
 });

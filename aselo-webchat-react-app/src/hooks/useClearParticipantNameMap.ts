@@ -14,12 +14,12 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { useEffect } from "react";
+import { useEffect } from 'react';
 
-import { removeParticpantMap } from "../utils/participantNameMap";
+import { removeParticpantMap } from '../utils/participantNameMap';
 
 export const useClearParticipantNameMap = () => {
-    useEffect(() => {
-        removeParticpantMap();
-    });
+  useEffect(() => {
+    removeParticpantMap();
+  });
 };

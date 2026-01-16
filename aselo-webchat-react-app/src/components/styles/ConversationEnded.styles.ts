@@ -14,24 +14,24 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { BoxStyleProps } from "@twilio-paste/core/box";
-import { TextStyleProps } from "@twilio-paste/core/text";
+import { BoxStyleProps } from '@twilio-paste/core/box';
+import { TextStyleProps } from '@twilio-paste/core/text';
 
 export const containerStyles: BoxStyleProps = {
-    padding: "space60",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    flexDirection: "column",
-    backgroundColor: "colorBackground",
-    textAlign: "center"
+  padding: 'space60',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  flexDirection: 'column',
+  backgroundColor: 'colorBackground',
+  textAlign: 'center',
 };
 
 export const titleStyles: TextStyleProps = {
-    fontSize: "fontSize50"
+  fontSize: 'fontSize50',
 };
 
 export const textStyles: TextStyleProps = {
-    marginBottom: "space50",
-    marginTop: "space50"
+  marginBottom: 'space50',
+  marginTop: 'space50',
 };

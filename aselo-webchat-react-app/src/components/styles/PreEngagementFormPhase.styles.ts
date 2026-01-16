@@ -14,24 +14,24 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { BoxStyleProps } from "@twilio-paste/core/box";
-import { TextStyleProps } from "@twilio-paste/core/text";
+import { BoxStyleProps } from '@twilio-paste/core/box';
+import { TextStyleProps } from '@twilio-paste/core/text';
 
 export const formStyles: BoxStyleProps = {
-    padding: "space40",
-    paddingTop: "space80",
-    overflow: "auto"
+  padding: 'space40',
+  paddingTop: 'space80',
+  overflow: 'auto',
 };
 
 export const titleStyles: TextStyleProps = {
-    fontSize: "fontSize70",
-    marginBottom: "space60"
+  fontSize: 'fontSize70',
+  marginBottom: 'space60',
 };
 
 export const introStyles: TextStyleProps = {
-    marginBottom: "space70"
+  marginBottom: 'space70',
 };
 
 export const fieldStyles: BoxStyleProps = {
-    marginBottom: "space70"
+  marginBottom: 'space70',
 };

@@ -14,46 +14,46 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { Box } from "@twilio-paste/core/box";
-import { useSelector } from "react-redux";
+import { Box } from '@twilio-paste/core/box';
+import { useSelector } from 'react-redux';
 
-import { MessagingCanvasPhase } from "./MessagingCanvasPhase";
-import { AppState, EngagementPhase } from "../store/definitions";
-import { PreEngagementFormPhase } from "./PreEngagementFormPhase";
-import { LoadingPhase } from "./LoadingPhase";
-import { innerContainerStyles, outerContainerStyles } from "./styles/RootContainer.styles";
+import { MessagingCanvasPhase } from './MessagingCanvasPhase';
+import { AppState, EngagementPhase } from '../store/definitions';
+import { PreEngagementFormPhase } from './PreEngagementFormPhase';
+import { LoadingPhase } from './LoadingPhase';
+import { innerContainerStyles, outerContainerStyles } from './styles/RootContainer.styles';
 
 const getPhaseComponent = (phase: EngagementPhase) => {
-    switch (phase) {
-        case EngagementPhase.Loading:
-            return <LoadingPhase />;
-        case EngagementPhase.MessagingCanvas:
-            return <MessagingCanvasPhase />;
-        case EngagementPhase.PreEngagementForm:
-        default:
-            return <PreEngagementFormPhase />;
-    }
+  switch (phase) {
+    case EngagementPhase.Loading:
+      return <LoadingPhase />;
+    case EngagementPhase.MessagingCanvas:
+      return <MessagingCanvasPhase />;
+    case EngagementPhase.PreEngagementForm:
+    default:
+      return <PreEngagementFormPhase />;
+  }
 };
 
 const defaultFont: React.CSSProperties = {
-    fontFamily: "Oxygen, Ubuntu, sans-serif"
+  fontFamily: 'Oxygen, Ubuntu, sans-serif',
 };
 
 export function RootContainer() {
-    const { currentPhase, expanded } = useSelector(({ session }: AppState) => ({
-        currentPhase: session.currentPhase,
-        expanded: session.expanded
-    }));
+  const { currentPhase, expanded } = useSelector(({ session }: AppState) => ({
+    currentPhase: session.currentPhase,
+    expanded: session.expanded,
+  }));
 
-    return (
-        <Box style={defaultFont}>
-            <Box {...outerContainerStyles}>
-                {expanded && (
-                    <Box data-test="root-container" {...innerContainerStyles}>
-                        {getPhaseComponent(currentPhase)}
-                    </Box>
-                )}
-            </Box>
-        </Box>
-    );
+  return (
+    <Box style={defaultFont}>
+      <Box {...outerContainerStyles}>
+        {expanded && (
+          <Box data-test="root-container" {...innerContainerStyles}>
+            {getPhaseComponent(currentPhase)}
+          </Box>
+        )}
+      </Box>
+    </Box>
+  );
 }

@@ -14,23 +14,23 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { Box } from "@twilio-paste/core/box";
-import { useSelector } from "react-redux";
+import { Box } from '@twilio-paste/core/box';
+import { useSelector } from 'react-redux';
 
-import { AppState } from "../store/definitions";
-import { NotificationBarItem } from "./NotificationBarItem";
-import { notificationBarContainerStyles, notificationBarStyles } from "./styles/NotificationBar.styles";
+import { AppState } from '../store/definitions';
+import { NotificationBarItem } from './NotificationBarItem';
+import { notificationBarContainerStyles, notificationBarStyles } from './styles/NotificationBar.styles';
 
 export const NotificationBar = () => {
-    const notifications = useSelector((store: AppState) => store.notifications);
+  const notifications = useSelector((store: AppState) => store.notifications);
 
-    return (
-        <Box {...notificationBarContainerStyles}>
-            <Box {...notificationBarStyles}>
-                {notifications.map((notification) => (
-                    <NotificationBarItem key={notification.id} {...notification} />
-                ))}
-            </Box>
-        </Box>
-    );
+  return (
+    <Box {...notificationBarContainerStyles}>
+      <Box {...notificationBarStyles}>
+        {notifications.map(notification => (
+          <NotificationBarItem key={notification.id} {...notification} />
+        ))}
+      </Box>
+    </Box>
+  );
 };

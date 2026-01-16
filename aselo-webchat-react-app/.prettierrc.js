@@ -15,11 +15,10 @@
  */
 
 module.exports = {
-    trailingComma: "all",
-    printWidth: 120,
-    tabWidth: 4,
-    semi: true,
-    singleQuote: false,
-    arrowParens: "always",
-    endOfLine: "auto"
+  arrowParens: 'avoid',
+  singleQuote: true,
+  endOfLine: 'auto',
+  trailingComma: 'all',
+  singleQuote: true,
+  printWidth: 120,
 };
