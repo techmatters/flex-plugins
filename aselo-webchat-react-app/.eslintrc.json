@@ -2,8 +2,7 @@
   "extends": [
     "twilio-react",
     "plugin:react/jsx-runtime",
-    "plugin:sonarjs/recommended",
-    "plugin:prettier/recommended"
+    "plugin:sonarjs/recommended"
   ],
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
