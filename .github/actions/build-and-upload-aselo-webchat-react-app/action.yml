@@ -85,7 +85,7 @@ runs:
         mv app.js.gz app.js
         mv asset-manifest.json.gz asset-manifest.json
         mv index.html.gz index.html
-      working-directory: ./aselo-webchat-react-app
+      working-directory: ./aselo-webchat-react-app/build
       shell: bash
     - name: Zip js files
       run: |
@@ -105,8 +105,8 @@ runs:
         AWS_ACCESS_KEY_ID: ${{ inputs.aws-access-key-id }}
         AWS_SECRET_ACCESS_KEY: ${{ inputs.aws-secret-access-key }}
         AWS_REGION: ${{ inputs.aws-region }}
-        SOURCE_DIR: "aselo-webchat-react-app/build/static/js"
-        DEST_DIR: aselo-webchat-react-app/${{inputs.git-reference-type}}/${{inputs.git-reference}}/static/js
+        SOURCE_DIR: "aselo-webchat-react-app/build"
+        DEST_DIR: aselo-webchat-react-app/${{inputs.git-reference-type}}/${{inputs.git-reference}}
     # - name: Upload files to Staging S3 bucket
     #   uses: jakejarvis/s3-sync-action@master
     #   with:
