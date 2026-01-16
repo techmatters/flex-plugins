@@ -17,7 +17,8 @@
 import { AccountScopedHandler } from '../httpTypes';
 import { newMissingParameterResult } from '../httpErrors';
 import { getTwilioClient } from '@tech-matters/twilio-configuration';
-import { newOk } from '../Result';
+import { newErr, newOk } from '../Result';
+import type RestException from 'twilio/lib/base/RestException';
 
 const validUpdates = ['endConferenceOnExit', 'hold', 'muted'] as const;
 
@@ -56,8 +57,24 @@ export const updateParticipantHandler: AccountScopedHandler = async (
     .conferences(conferenceSid)
     .participants(callSid)
     .fetch();
-
-  await participant.update(parsedUpdates);
+  try {
+    await participant.update(parsedUpdates);
+  } catch (error) {
+    const restError = error as RestException;
+    if (restError.status === 404) {
+      const message = `Participant with call sid ${callSid} not found on ${accountSid}/${conferenceSid}`;
+      // Often errors of this type are thrown but the recording appears to pause at the correct point.
+      console.warn(message, error);
+      return newErr({
+        message,
+        error: {
+          cause: restError,
+          statusCode: 404,
+        },
+      });
+    }
+    throw error;
+  }
 
   return newOk({ message: `Participant updated: ${updates}` });
 };
