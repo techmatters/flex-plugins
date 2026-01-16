@@ -107,8 +107,6 @@
     "SearchResultsIndex-ViewCases": "Ver ecuphs",
     "SearchResultsIndex-ClosedCases": "ecuphs cerradas",
     "Case-CaseManager": "Administrador de Ecuphs",
-    "CaseMerging-AddContactToCase": "Agregar contacto a ecuphs",
-    
-
-    }
+    "CaseMerging-AddContactToCase": "Agregar contacto a ecuphs"
+  }
 }
