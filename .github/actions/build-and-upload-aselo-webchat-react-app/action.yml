@@ -64,7 +64,7 @@ runs:
 
     # Build aselo-webchat-react-app 
     - name: Run build command
-      run: CI=false npm run build ## TODO: remove CI=false once lint is fixed
+      run: npm run build ## TODO: remove CI=false once lint is fixed
       working-directory: ./aselo-webchat-react-app
       shell: bash
     - name: Check bundle was built
