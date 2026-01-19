@@ -126,6 +126,7 @@ describe('Messaging Canvas Phase', () => {
   });
 
   it('renders conversation ended when conversation state is closed', () => {
+    // eslint-disable-next-line sonarjs/no-identical-functions
     (useSelector as jest.Mock).mockImplementation((callback: any) =>
       callback({
         chat: { conversationState: 'closed' },
