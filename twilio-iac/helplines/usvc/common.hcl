@@ -117,6 +117,7 @@ locals {
         prefix             = "transcripts/"
       }
     }
+    hrm_transcript_retention_days_override = 180
 
   }
 }
