@@ -63,6 +63,8 @@ export type ConfigState = {
         isLight?: boolean;
         overrides?: Partial<GenericThemeShape>;
     };
+    helplineCode: string;
+    aseloBackendUrl: string;
 };
 
 export type Notification = {

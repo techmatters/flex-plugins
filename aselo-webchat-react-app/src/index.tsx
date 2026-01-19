@@ -17,15 +17,6 @@ import { ConfigState } from "./store/definitions";
 import { initLogger, getLogger } from "./logger";
 import { changeExpandedStatus } from "./store/actions/genericActions";
 
-const defaultConfig: ConfigState = {
-    deploymentKey: "",
-    region: "",
-    alwaysOpen: false,
-    theme: {
-        isLight: true,
-    },
-};
-
 const initWebchat = async (configLocation?: URL, overrides: Partial<ConfigState> = {}) => {
     const logger = window.Twilio.getLogger(`InitWebChat`);
     const configUrl = configLocation || process.env.REACT_APP_CONFIG_URL || "./config.json";
@@ -34,7 +25,7 @@ const initWebchat = async (configLocation?: URL, overrides: Partial<ConfigState>
         logger.error(`Failed to load helpline specific config for Aselo Webchat from ${configLocation}, aborting load`);
         return;
     }
-    const webchatConfig: ConfigState = merge({}, defaultConfig, await helplineConfigResponse.json(), overrides);
+    const webchatConfig: ConfigState = merge(await helplineConfigResponse.json(), overrides);
     if (!webchatConfig || !webchatConfig.deploymentKey) {
         logger.error(`deploymentKey must exist to connect to Webchat servers`);
         return;

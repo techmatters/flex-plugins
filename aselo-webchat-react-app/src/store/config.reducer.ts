@@ -18,9 +18,12 @@ import { AnyAction, Reducer } from "redux";
 
 import { ConfigState } from "./definitions";
 import { ACTION_LOAD_CONFIG } from "./actions/actionTypes";
+import {AppState} from "./store";
 
 const initialState: ConfigState = {
-    deploymentKey: ""
+    aseloBackendUrl: "",
+    helplineCode: "",
+    deploymentKey: "",
 };
 
 export const ConfigReducer: Reducer = (state: ConfigState = initialState, action: AnyAction): ConfigState => {
@@ -28,7 +31,7 @@ export const ConfigReducer: Reducer = (state: ConfigState = initialState, action
         case ACTION_LOAD_CONFIG: {
             return {
                 ...state,
-                ...action.payload
+                ...action.payload,
             };
         }
 
@@ -36,3 +39,5 @@ export const ConfigReducer: Reducer = (state: ConfigState = initialState, action
             return state;
     }
 };
+
+export const selectConfig = (root: AppState): ConfigState => root.config
