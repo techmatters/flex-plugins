@@ -12,8 +12,6 @@
         "enableClientProfiles": false,   
         "feature_flags": {
             "use_prepopulate_mappings": true,
-            "enable_external_transcripts": true,
-            "enable_twilio_transcripts": false,
             "enable_client_profiles": false,
             "enable_previous_contacts": false,
             "enable_hang_up_by_hrm_saving": true,
