@@ -115,6 +115,11 @@ locals {
         id                 = "Transcripts Data Expiration Rule"
         expiration_in_days = 180
         prefix             = "transcripts/"
+      },
+      hrm_data_expiry : {
+        id                 = "Transcripts Data Expiration Rule"
+        expiration_in_days = 180
+        prefix             = "hrm-data/"
       }
     }
     hrm_transcript_retention_days_override = 180
