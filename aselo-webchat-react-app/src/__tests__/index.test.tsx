@@ -23,15 +23,24 @@ import { WebchatWidget } from '../components/WebchatWidget';
 import { store } from '../store/store';
 import * as initActions from '../store/actions/initActions';
 import * as genericActions from '../store/actions/genericActions';
+import WebChatLogger from '../logger';
 
 jest.mock('react-dom');
+jest.mock('../logger');
 
 store.dispatch = jest.fn();
 
+const mockLogger = new WebChatLogger('InitWebChat');
 describe('Index', () => {
   const { initWebchat } = window.Twilio;
   beforeAll(() => {
-    window.Twilio.getLogger = jest.fn();
+    Object.defineProperty(window, 'Twilio', {
+      value: {
+        getLogger() {
+          return mockLogger;
+        },
+      },
+    });
   });
 
   afterEach(() => {

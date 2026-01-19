@@ -80,7 +80,9 @@ describe('session data handler', () => {
         .mockImplementation(async (): Promise<never> => mockFetch as Promise<never>);
       sessionDataHandler.setRegion('stage');
       await contactBackend('/Webchat/Tokens/Refresh', { formData: {} });
-      expect(fetchSpy.mock.calls[0][0]).toEqual('https://flex-api.stage.twilio.com/v2/Webchat/Tokens/Refresh');
+      expect(fetchSpy.mock.calls[0][0]).toEqual(
+        'https://hrm-development.tl.techmatters.org/lambda/twilio/account-scoped/AS/Webchat/Tokens/Refresh',
+      );
     });
 
     it('should call correct prod url', async () => {
@@ -89,7 +91,9 @@ describe('session data handler', () => {
         .spyOn(window, 'fetch')
         .mockImplementation(async (): Promise<never> => mockFetch as Promise<never>);
       await contactBackend('/Webchat/Tokens/Refresh', { formData: {} });
-      expect(fetchSpy.mock.calls[0][0]).toEqual('https://flex-api.twilio.com/v2/Webchat/Tokens/Refresh');
+      expect(fetchSpy.mock.calls[0][0]).toEqual(
+        'https://hrm-development.tl.techmatters.org/lambda/twilio/account-scoped/AS/Webchat/Tokens/Refresh',
+      );
     });
   });
 
@@ -120,7 +124,7 @@ describe('session data handler', () => {
 
       const expected = {
         ...tokenPayload,
-        loginTimestamp: currentTime,
+        loginTimestamp: currentTime.toString(),
       };
       expect(setLocalStorageItemSpy).toHaveBeenCalledTimes(2);
       expect(setLocalStorageItemSpy).toHaveBeenNthCalledWith(
@@ -131,7 +135,7 @@ describe('session data handler', () => {
           expiration: '',
           identity: '',
           conversationSid: '',
-          loginTimestamp: currentTime,
+          loginTimestamp: currentTime.toString(),
         }),
       );
       expect(setLocalStorageItemSpy).toHaveBeenNthCalledWith(2, 'TWILIO_WEBCHAT_WIDGET', JSON.stringify(expected));

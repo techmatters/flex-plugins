@@ -66,6 +66,8 @@ describe('Messaging Canvas Phase', () => {
     (useSelector as jest.Mock).mockImplementation((callback: any) =>
       callback({
         chat: { conversationState: 'closed' },
+        session: { token: 'token' },
+        task: { tasksSids: 'tasksSids' },
       }),
     );
     conversationMock.getMessagesCount.mockResolvedValue(0);
@@ -109,7 +111,11 @@ describe('Messaging Canvas Phase', () => {
 
   it('renders message input (and file drop area wrapper) when conversation state is active', () => {
     (useSelector as jest.Mock).mockImplementation((callback: any) =>
-      callback({ chat: { conversationState: 'active' } }),
+      callback({
+        chat: { conversationState: 'active' },
+        session: { token: 'token' },
+        task: { tasksSids: 'tasksSids' },
+      }),
     );
 
     const { queryByTitle } = render(<MessagingCanvasPhase />);
@@ -121,7 +127,11 @@ describe('Messaging Canvas Phase', () => {
 
   it('renders conversation ended when conversation state is closed', () => {
     (useSelector as jest.Mock).mockImplementation((callback: any) =>
-      callback({ chat: { conversationState: 'closed' } }),
+      callback({
+        chat: { conversationState: 'closed' },
+        session: { token: 'token' },
+        task: { tasksSids: 'tasksSids' },
+      }),
     );
 
     const { queryByTitle } = render(<MessagingCanvasPhase />);
@@ -163,6 +173,8 @@ describe('Messaging Canvas Phase', () => {
     (useSelector as jest.Mock).mockImplementation((callback: any) =>
       callback({
         chat: { conversationState: 'closed', conversation: conversationMock },
+        session: { token: 'token' },
+        task: { tasksSids: 'tasksSids' },
       }),
     );
     conversationMock.getMessagesCount.mockResolvedValue(1);
@@ -189,6 +201,8 @@ describe('Messaging Canvas Phase', () => {
     (useSelector as jest.Mock).mockImplementation((callback: any) =>
       callback({
         chat: { conversationState: 'closed' },
+        session: { token: 'token' },
+        task: { tasksSids: 'tasksSids' },
       }),
     );
     conversationMock.getMessagesCount.mockResolvedValue(1);

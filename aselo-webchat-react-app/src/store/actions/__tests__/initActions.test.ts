@@ -35,7 +35,11 @@ import { SessionReducer } from '../../session.reducer';
 import { notifications } from '../../../notifications';
 import WebChatLogger from '../../../logger';
 
-jest.mock('@twilio/conversations');
+jest.mock('@twilio/conversations', () => {
+  return {
+    Client: jest.fn(),
+  };
+});
 jest.mock('../listeners/clientListener', () => ({
   initClientListeners: jest.fn(),
 }));
@@ -71,6 +75,9 @@ describe('Actions', () => {
   } as unknown as Conversation;
   const conversationsClient = {
     getConversationBySid: () => conversation,
+    onWithReplay: (_event, handler) => {
+      handler('connected');
+    },
   } as unknown as Client;
 
   let mockStore: any;
@@ -95,7 +102,7 @@ describe('Actions', () => {
 
   describe('initSession', () => {
     it('dispatches start session action with fetched state as payload', async () => {
-      jest.spyOn(Client, 'create').mockResolvedValueOnce(conversationsClient);
+      (Client as any).mockReturnValueOnce(conversationsClient);
       const mockDispatch = jest.fn();
 
       await initSession({ token, conversationSid })(mockDispatch);
@@ -119,7 +126,7 @@ describe('Actions', () => {
     });
 
     it('initializes listeners', async () => {
-      jest.spyOn(Client, 'create').mockResolvedValueOnce(conversationsClient);
+      (Client as any).mockReturnValueOnce(conversationsClient);
 
       await mockStore.dispatch(initSession({ token, conversationSid }));
 
@@ -130,7 +137,7 @@ describe('Actions', () => {
     });
 
     it('revert back to preEngagementForm with an error notification if it fails to initialize session', async () => {
-      jest.spyOn(Client, 'create').mockResolvedValueOnce({} as Client);
+      (Client as any).mockReturnValueOnce({ onWithReplay: conversationsClient.onWithReplay });
       const innerDispatchSpy = jest.fn();
       jest.spyOn(mockStore, 'dispatch').mockImplementation((callback: any) => callback(innerDispatchSpy));
       await mockStore.dispatch(initSession({ token, conversationSid }));
