@@ -799,6 +799,7 @@ const preEngagementConfig: PreEngagementFormDefinition = {
 const translations: Translations = {
   "en-US": {
     WelcomeMessage: "Welcome to NCVC",
+    EntryPointTagline: 'Chat Live Now',
     PreEngagementConfigDescription:
       'Welcome! Thank you for reaching out. To best serve you, please answer the questions below before we connect you to a Victim Assistance Specialist. You can select "Prefer not to answer" for any question.',
     MessageCanvasTrayContent: "",
@@ -812,6 +813,7 @@ const translations: Translations = {
   },
   Other: {
     WelcomeMessage: "Welcome to NCVC",
+    EntryPointTagline: 'Chat Live Now',
     PreEngagementConfigDescription:
       'Welcome! Thank you for reaching out. To best serve you, please answer the questions below before we connect you to a Victim Assistance Specialist. You can select "Prefer not to answer" for any question.',
     MessageCanvasTrayContent: "",

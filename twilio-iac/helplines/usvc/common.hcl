@@ -110,7 +110,13 @@ locals {
     lex_v2_bot_languages = {
 
     }
-
+    s3_lifecycle_rules = {
+      transcripts_expiry : {
+        id                 = "Transcripts Data Expiration Rule"
+        expiration_in_days = 180
+        prefix             = "transcripts/"
+      }
+    }
 
   }
 }
