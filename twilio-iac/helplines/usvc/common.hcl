@@ -117,7 +117,7 @@ locals {
         prefix             = "transcripts/"
       },
       hrm_data_expiry : {
-        id                 = "Transcripts Data Expiration Rule"
+        id                 = "HRM Data Expiration Rule"
         expiration_in_days = 180
         prefix             = "hrm-data/"
       }
