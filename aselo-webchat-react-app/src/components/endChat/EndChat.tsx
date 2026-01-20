@@ -17,11 +17,13 @@
 /* eslint-disable react/require-default-props */
 import { useState } from 'react';
 import { Button } from '@twilio-paste/core/button';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { contactBackend, sessionDataHandler } from '../../sessionDataHandler';
 import { changeEngagementPhase, updatePreEngagementData } from '../../store/actions/genericActions';
 import { EngagementPhase } from '../../store/definitions';
+import { selectConfig } from '../../store/config.reducer';
+import LocalizedTemplate from '../../localization/LocalizedTemplate';
 
 type Props = {
   channelSid: string;
@@ -33,6 +35,8 @@ type Props = {
 export default function EndChat({ channelSid, token, language, action }: Props) {
   const [disabled, setDisabled] = useState(false);
   const dispatch = useDispatch();
+  const config = useSelector(selectConfig);
+  const configuredBackend = contactBackend(config);
 
   // Serverless call to end chat
   const handleEndChat = async () => {
@@ -40,7 +44,7 @@ export default function EndChat({ channelSid, token, language, action }: Props) 
       case 'finishTask':
         try {
           setDisabled(true);
-          await contactBackend('/endChat', { channelSid, token, language });
+          await configuredBackend('/endChat', { channelSid, token, language });
           sessionDataHandler.clear();
           dispatch(updatePreEngagementData({ email: '', name: '', query: '' }));
           dispatch(changeEngagementPhase({ phase: EngagementPhase.PreEngagementForm }));
@@ -60,7 +64,7 @@ export default function EndChat({ channelSid, token, language, action }: Props) 
   return (
     <Button variant="destructive" onClick={handleEndChat} disabled={disabled}>
       <span>CloseLarge</span>
-      <span>EndChatButtonLabel</span>
+      <LocalizedTemplate key="EndChatButtonLabel" />
     </Button>
   );
 }
