@@ -18,7 +18,7 @@ window.addEventListener("DOMContentLoaded", () => {
   const urlParams = new URLSearchParams(window.location.search);
   const theme = urlParams.get("theme") || document.currentScript?.getAttribute('theme');
   const isLightTheme = theme !== "dark";
-  const alwaysOpen = urlParams.get("alwaysOpen")
+  const alwaysOpen = urlParams.get("alwaysOpen");
   const el = document.querySelector("[data-theme-pref]");
   el && el.setAttribute("data-theme-pref", isLightTheme ? "light-theme" : "dark-theme");
 
