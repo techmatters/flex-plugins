@@ -24,7 +24,7 @@ const generateMergedConfigs = async (environment, helplineCode) => {
         helplineCodes.push(helplineCode);
     } else {
         const contents =  await fs.readdir('./configSrc/', { recursive: false, withFileTypes: true });
-        const directories = contents.filter((ent) => ent.isDirectory()).map(({ name }) => name)
+        const directories = contents.filter((ent) => ent.isDirectory()).map(({ name }) => name);
         helplineCodes.push(...directories);
     }
     for (const shortCode of helplineCodes) {
