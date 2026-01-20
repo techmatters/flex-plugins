@@ -22,7 +22,7 @@ const initWebchat = async (configLocation?: URL, overrides: Partial<ConfigState>
     const configUrl = configLocation || process.env.REACT_APP_CONFIG_URL || "./config.json";
     const helplineConfigResponse = await fetch(configUrl);
     if (!helplineConfigResponse.ok) {
-        logger.error(`Failed to load helpline specific config for Aselo Webchat from ${configLocation}, aborting load`);
+        logger.error(`Failed to load helpline specific config for Aselo Webchat from ${configUrl}, aborting load`);
         return;
     }
     const webchatConfig: ConfigState = merge(await helplineConfigResponse.json(), overrides);
