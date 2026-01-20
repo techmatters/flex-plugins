@@ -1,8 +1,7 @@
 {
     "attributes": {
         "feature_flags": {  
-            "use_twilio_lambda_for_conference_functions": true,
-            "use_twilio_lambda_for_task_assignment": true  
+            "use_twilio_lambda_for_conference_functions": true  
         },
         "helplineLanguage": "en-IN",
         "hrm_base_url": "https://hrm-staging.tl.techmatters.org",

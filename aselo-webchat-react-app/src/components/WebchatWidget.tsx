@@ -23,11 +23,13 @@ import { AppState, EngagementPhase } from '../store/definitions';
 import { sessionDataHandler } from '../sessionDataHandler';
 import { initSession } from '../store/actions/initActions';
 import { changeEngagementPhase } from '../store/actions/genericActions';
+import { EntryPoint } from './EntryPoint';
 
 const AnyCustomizationProvider: FC<CustomizationProviderProps & { style: CSSProperties }> = CustomizationProvider;
 
 export function WebchatWidget() {
   const theme = useSelector((state: AppState) => state.config.theme);
+  const alwaysOpen = useSelector((state: AppState) => state.config.alwaysOpen);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -73,6 +75,7 @@ export function WebchatWidget() {
       style={{ minHeight: '100%', minWidth: '100%' }}
     >
       <RootContainer />
+      {!alwaysOpen && <EntryPoint />}
     </AnyCustomizationProvider>
   );
 }

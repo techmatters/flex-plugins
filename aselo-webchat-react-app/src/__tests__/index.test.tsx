@@ -52,9 +52,9 @@ describe('Index', () => {
       const renderSpy = jest.spyOn(reactDom, 'render');
 
       const root = document.createElement('div');
-      root.id = 'twilio-webchat-widget-root';
+      root.id = 'aselo-webchat-widget-root';
       document.body.appendChild(root);
-      initWebchat({ deploymentKey: 'CV000000' });
+      initWebchat(undefined, { deploymentKey: 'CV000000' });
 
       expect(renderSpy).toBeCalledWith(
         <Provider store={store}>
@@ -68,7 +68,7 @@ describe('Index', () => {
       const setRegionSpy = jest.spyOn(sessionDataHandler, 'setRegion');
 
       const region = 'Foo';
-      initWebchat({ deploymentKey: 'CV000000', region });
+      initWebchat(undefined, { deploymentKey: 'CV000000', region });
 
       expect(setRegionSpy).toBeCalledWith(region);
     });
@@ -77,7 +77,7 @@ describe('Index', () => {
       const setDeploymentKeySpy = jest.spyOn(sessionDataHandler, 'setDeploymentKey');
 
       const deploymentKey = 'Foo';
-      initWebchat({ deploymentKey });
+      initWebchat(undefined, { deploymentKey });
 
       expect(setDeploymentKeySpy).toBeCalledWith(deploymentKey);
     });
@@ -85,7 +85,7 @@ describe('Index', () => {
     it('initializes config', () => {
       const initConfigSpy = jest.spyOn(initActions, 'initConfig');
 
-      initWebchat({ deploymentKey: 'CV000000' });
+      initWebchat(undefined, { deploymentKey: 'CV000000' });
 
       expect(initConfigSpy).toBeCalled();
     });
@@ -94,7 +94,7 @@ describe('Index', () => {
       const initConfigSpy = jest.spyOn(initActions, 'initConfig');
 
       const deploymentKey = 'CV000000';
-      initWebchat({ deploymentKey });
+      initWebchat(undefined, { deploymentKey });
 
       expect(initConfigSpy).toBeCalledWith(expect.objectContaining({ deploymentKey, theme: { isLight: true } }));
     });
@@ -103,45 +103,32 @@ describe('Index', () => {
       const logger = window.Twilio.getLogger('InitWebChat');
       const errorLoggerSpy = jest.spyOn(logger, 'error');
 
-      // @ts-ignore
       initWebchat();
       expect(errorLoggerSpy).toBeCalledTimes(1);
       expect(errorLoggerSpy).toHaveBeenCalledWith('deploymentKey must exist to connect to Webchat servers');
     });
 
-    it('gives warning when unsupported params are passed', () => {
-      const logger = window.Twilio.getLogger('InitWebChat');
-      const warningSpy = jest.spyOn(logger, 'warn');
-
-      // @ts-ignore
-      initWebchat({ deploymentKey: 'xyz', someKey: 'abc' });
-      expect(warningSpy).toBeCalledTimes(1);
-      expect(warningSpy).toHaveBeenCalledWith('someKey is not supported.');
-    });
-
-    it('triggers expanded true if appStatus is open', () => {
+    it('triggers expanded true if alwaysOpen is set', () => {
       const changeExpandedStatusSpy = jest.spyOn(genericActions, 'changeExpandedStatus');
 
-      initWebchat({ deploymentKey: 'CV000000', appStatus: 'open' });
+      initWebchat(undefined, { deploymentKey: 'CV000000', alwaysOpen: true });
       expect(changeExpandedStatusSpy).toHaveBeenCalledWith({ expanded: true });
     });
 
-    it('triggers expanded false if appStatus is not set to open', () => {
+    it('triggers expanded false if alwaysOpen is not set', () => {
       const changeExpandedStatusSpy = jest.spyOn(genericActions, 'changeExpandedStatus');
 
-      // @ts-ignore
-      initWebchat({ deploymentKey: 'CV000000', appStatus: 'closed' });
+      initWebchat(undefined, { deploymentKey: 'CV000000', alwaysOpen: false });
       expect(changeExpandedStatusSpy).toHaveBeenCalledWith({ expanded: false });
 
-      // @ts-ignore
-      initWebchat({ deploymentKey: 'CV000000', appStatus: 'some_garbage_value' });
+      initWebchat(undefined, { deploymentKey: 'CV000000', alwaysOpen: 'some nonsense' as any });
       expect(changeExpandedStatusSpy).toHaveBeenCalledWith({ expanded: false });
     });
 
     it('triggers expanded false with default appStatus', () => {
       const changeExpandedStatusSpy = jest.spyOn(genericActions, 'changeExpandedStatus');
 
-      initWebchat({ deploymentKey: 'CV000000' });
+      initWebchat(undefined, { deploymentKey: 'CV000000' });
       expect(changeExpandedStatusSpy).toHaveBeenCalledWith({ expanded: false });
     });
   });

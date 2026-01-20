@@ -21,6 +21,9 @@ import { AlertVariants } from '@twilio-paste/core/alert';
 import { FileAttachmentConfig } from '../definitions';
 import { TaskState } from '../task';
 
+// eslint-disable-next-line import/no-unused-modules
+export type LocaleString = `${Lowercase<string>}-${Uppercase<string>}`;
+
 export enum EngagementPhase {
   PreEngagementForm = 'PreEngagementForm',
   MessagingCanvas = 'MessagingCanvas',
@@ -54,18 +57,20 @@ export type SessionState = {
   preEngagementData?: PreEngagementData;
 };
 
-export type UserConfig = {
+export type ConfigState = {
+  fileAttachment?: FileAttachmentConfig;
   deploymentKey: string;
   region?: string;
-  appStatus?: 'open';
+  alwaysOpen?: boolean;
   theme?: {
     isLight?: boolean;
     overrides?: Partial<GenericThemeShape>;
   };
-};
-
-export type ConfigState = UserConfig & {
-  fileAttachment?: FileAttachmentConfig;
+  helplineCode: string;
+  aseloBackendUrl: string;
+  translations: Record<string, Record<string, string>>;
+  defaultLocale: LocaleString;
+  currentLocale?: LocaleString;
 };
 
 export type Notification = {

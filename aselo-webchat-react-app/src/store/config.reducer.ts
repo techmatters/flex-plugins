@@ -16,15 +16,19 @@
 
 import { AnyAction, Reducer } from 'redux';
 
-import { ConfigState } from './definitions';
-import { ACTION_LOAD_CONFIG } from './actions/actionTypes';
+import { AppState, ConfigState } from './definitions';
+import { ACTION_CHANGE_LOCALE, ACTION_LOAD_CONFIG } from './actions/actionTypes';
+import { AppState } from './store';
 
 const initialState: ConfigState = {
+  defaultLocale: 'xx-XX',
+  translations: {},
+  aseloBackendUrl: '',
+  helplineCode: '',
   deploymentKey: '',
 };
 
 export const ConfigReducer: Reducer = (state: ConfigState = initialState, action: AnyAction): ConfigState => {
-  // eslint-disable-next-line sonarjs/no-small-switch
   switch (action.type) {
     case ACTION_LOAD_CONFIG: {
       return {
@@ -32,8 +36,17 @@ export const ConfigReducer: Reducer = (state: ConfigState = initialState, action
         ...action.payload,
       };
     }
-
+    case ACTION_CHANGE_LOCALE: {
+      return {
+        ...state,
+        currentLocale: action.payload.currentLocale,
+      };
+    }
     default:
       return state;
   }
 };
+
+export const selectConfig = (root: AppState): ConfigState => root.config;
+export const selectCurrentTranslations = (state: AppState) =>
+  state.config.translations[state.config.currentLocale || state.config.defaultLocale];

@@ -36,3 +36,5 @@ const reducers = combineReducers({
 });
 
 export const store = createStore(reducers, composeEnhancers(applyMiddleware(thunk)));
+
+export type AppState = ReturnType<typeof store.getState>;

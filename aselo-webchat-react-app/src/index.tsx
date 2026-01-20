@@ -13,49 +13,33 @@ import { store } from './store/store';
 import { WebchatWidget } from './components/WebchatWidget';
 import { sessionDataHandler } from './sessionDataHandler';
 import { initConfig } from './store/actions/initActions';
-import { ConfigState, UserConfig } from './store/definitions';
+import { ConfigState } from './store/definitions';
 import { initLogger, getLogger } from './logger';
 import { changeExpandedStatus } from './store/actions/genericActions';
 
-const defaultConfig: ConfigState = {
-  deploymentKey: '',
-  region: '',
-  theme: {
-    isLight: true,
-  },
-  fileAttachment: {
-    enabled: true,
-    maxFileSize: 16777216, // 16 MB
-    acceptedExtensions: ['jpg', 'jpeg', 'png', 'amr', 'mp3', 'mp4', 'pdf', 'txt'],
-  },
-};
-
-const initWebchat = async (userConfig: UserConfig) => {
-  const validKeys = ['deploymentKey', 'region', 'theme', 'appStatus'];
+const initWebchat = async (configLocation?: URL, overrides: Partial<ConfigState> = {}) => {
   const logger = window.Twilio.getLogger(`InitWebChat`);
-
-  if (!userConfig || !userConfig.deploymentKey) {
+  const configUrl = configLocation || process.env.REACT_APP_CONFIG_URL || './config.json';
+  const helplineConfigResponse = await fetch(configUrl);
+  if (!helplineConfigResponse.ok) {
+    logger.error(`Failed to load helpline specific config for Aselo Webchat from ${configUrl}, aborting load`);
+    return;
+  }
+  const webchatConfig: ConfigState = merge(await helplineConfigResponse.json(), overrides);
+  webchatConfig.currentLocale = webchatConfig.defaultLocale;
+  if (!webchatConfig || !webchatConfig.deploymentKey) {
     logger.error(`deploymentKey must exist to connect to Webchat servers`);
     return;
   }
 
-  for (const key in userConfig) {
-    if (!validKeys.includes(key)) {
-      logger.warn(`${key} is not supported.`);
-    }
-  }
-
-  store.dispatch(changeExpandedStatus({ expanded: userConfig.appStatus === 'open' }));
-  delete userConfig.appStatus;
-
-  const webchatConfig = merge({}, defaultConfig, userConfig);
+  store.dispatch(changeExpandedStatus({ expanded: Boolean(webchatConfig.alwaysOpen) }));
 
   sessionDataHandler.setRegion(webchatConfig.region);
   sessionDataHandler.setDeploymentKey(webchatConfig.deploymentKey);
 
   store.dispatch(initConfig(webchatConfig));
 
-  const rootElement = document.getElementById('twilio-webchat-widget-root');
+  const rootElement = document.getElementById('aselo-webchat-widget-root');
   logger.info('Now rendering the webchat');
 
   render(
@@ -73,7 +57,7 @@ const initWebchat = async (userConfig: UserConfig) => {
 declare global {
   interface Window {
     Twilio: {
-      initWebchat: (config: ConfigState) => void;
+      initWebchat: (url?: URL, config?: Partial<ConfigState>) => void;
       initLogger: (level?: LogLevelDesc) => void;
       getLogger: (className: string) => Logger;
     };
