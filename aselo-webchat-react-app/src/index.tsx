@@ -26,6 +26,7 @@ const initWebchat = async (configLocation?: URL, overrides: Partial<ConfigState>
         return;
     }
     const webchatConfig: ConfigState = merge(await helplineConfigResponse.json(), overrides);
+    webchatConfig.currentLocale = webchatConfig.defaultLocale;
     if (!webchatConfig || !webchatConfig.deploymentKey) {
         logger.error(`deploymentKey must exist to connect to Webchat servers`);
         return;
