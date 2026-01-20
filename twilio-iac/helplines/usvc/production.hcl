@@ -52,14 +52,14 @@ locals {
     ui_editable = true
     #Channels
     channels = {
-     /* webchat : {
+      webchat : {
         channel_type     = "web"
         contact_identity = ""
         templatefile     = "/app/twilio-iac/helplines/usvc/templates/studio-flows/webchat-sd.tftpl"
         channel_flow_vars = {
         }
         chatbot_unique_names = []
-      },*/
+      },
       voice_vc : {
         channel_type     = "voice"
         contact_identity = ""
