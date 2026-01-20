@@ -41,7 +41,7 @@ const deleteClosedConversationEventHandler: ServiceScopedConversationEventHandle
     const serviceConfigAttributes = await retrieveServiceConfigurationAttributes(client);
 
     const zeroTranscriptRetention = Boolean(
-      serviceConfigAttributes.enforceZeroTranscriptRetention || 'false',
+      serviceConfigAttributes.enforceZeroTranscriptRetention,
     );
     if (zeroTranscriptRetention && stateTo === 'closed') {
       console.debug(
@@ -70,7 +70,7 @@ const deleteInactiveChatChannelEventHandler: ServiceScopedConversationEventHandl
     const serviceConfigAttributes = await retrieveServiceConfigurationAttributes(client);
 
     const zeroTranscriptRetention = Boolean(
-      serviceConfigAttributes.enforceZeroTranscriptRetention || 'false',
+      serviceConfigAttributes.enforceZeroTranscriptRetention,
     );
     if (zeroTranscriptRetention) {
       const { status } = JSON.parse(attributesJson || '{}');

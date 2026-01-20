@@ -49,7 +49,7 @@ Your application now supports query params, so that you can customise.
 3. `theme`: Decide if `light` or `dark` suits you and provide that value as here. Application will boot with the said theme. For more info, refer to [Configuration section](#configuration).
 
 Below is an example where you've provide all of the query params:
-[http://localhost:3000/?deploymentKey=CV00000&appStatus=open&theme=light](http://localhost:3000/?deploymentKey=CV00000&appStatus=open&theme=light)
+[http://localhost:3000/?deploymentKey=CV00000&theme=light](http://localhost:3000/?deploymentKey=CV00000&theme=light)
 
 We are working towards exposing more values that allows customisation at minimal steps. However, if you want to customise beyond, please feel free to make changes to your code and then, make sure to upload and host this file on your server, or on a host service, that is accessible from your website's domain.
 
@@ -133,7 +133,7 @@ Here's an example of how to use this config object in your `index.html` template
 window.addEventListener("load", () => {
     Twilio.initWebchat({
         deploymentKey: "CVAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
-        appStatus: "open",
+        alwaysOpen: true,
         theme: {
             isLight: true
         }
@@ -142,7 +142,7 @@ window.addEventListener("load", () => {
 ```
 
 1. `deploymentKey` is a UUID with a fixed length. As a security enhancement, we have encapsulated **AccountSid** with **DeploymentKey**. An **AccountSid** has one-to-many relationship with **DeploymentKey**. This means, **AccountSid** is not any public entity anymore for webchat. Customers are to use **DeploymentKey** to initiate Webchat UI. For more info on how to create a **Deployment Key** refer to [this section](https://www.twilio.com/docs/flex/developer/conversations/webchat/security#deployment-key-shields-your-account-information)
-2. `appStatus` is used to keep the widget opened or closed. We find this helpful where you want to customise to keep the widget open. To keep it open, set value to 'open'. Don't pass this value to keep the widget 'closed'. For more information refer to [this section](https://www.twilio.com/docs/flex/developer/conversations/webchat/setup#customize-webchat)
+2. `alwaysOpen` Set this if you want the widget to only render in its open state, without the 'open / close' button. For more information refer to [this section](https://www.twilio.com/docs/flex/developer/conversations/webchat/setup#customize-webchat)
 3. `theme` can be used to quickly customise the look and feel of the app. `theme.isLight` is a boolean to quickly toggle between the light and dark theme of Paste. For more information refer to [this section]([this section](https://www.twilio.com/docs/flex/developer/conversations/webchat/setup#customize-webchat)
 
 
@@ -201,7 +201,7 @@ Based on your choice in the previous step, make sure to have it loaded in your w
 Next, declare the root element that the webchat widget will be rendered into:
 
 ```html
-<div id="twilio-webchat-widget-root"></div>
+<div id="aselo-webchat-widget-root"></div>
 ```
 
 Finally, add the code to initialize the webchat widget as per as shown in [Configuration section](#configuration).

@@ -17,6 +17,8 @@
 import { TokenResponse } from './definitions';
 import { LocalStorageUtil } from './utils/LocalStorage';
 import { generateMixPanelHeaders, generateSecurityHeaders } from './utils/generateHeaders';
+import { ConfigState } from './store/definitions';
+import { store } from './store/store';
 
 export const LOCALSTORAGE_SESSION_ITEM_ID = 'TWILIO_WEBCHAT_WIDGET';
 const CUSTOMER_DEFAULT_NAME = 'Customer';
@@ -44,39 +46,40 @@ type EndChatPayload = {
   token: string;
 };
 
-export async function contactBackend<T>(
-  endpointRoute: string,
-  body: InitWebchatAPIPayload | RefreshTokenAPIPayload | EndChatPayload,
-): Promise<T> {
-  const _endpoint = `https://hrm-development.tl.techmatters.org/lambda/twilio/account-scoped/AS`;
-  const securityHeaders = await generateSecurityHeaders();
-  const mixpanelHeaders = generateMixPanelHeaders();
-  const logger = window.Twilio.getLogger('SessionDataHandler');
-  const urlEncodedBody = new URLSearchParams();
-  for (const key in body) {
-    if (body.hasOwnProperty(key)) {
-      urlEncodedBody.append(key, (body as Record<string, string>)[key].toString());
+export const contactBackend = ({ aseloBackendUrl, helplineCode }: ConfigState) => {
+  const lambdaUrl = `${aseloBackendUrl}/lambda/twilio/account-scoped/${helplineCode.toUpperCase()}`;
+  return async <T>(
+    endpointRoute: string,
+    body: InitWebchatAPIPayload | RefreshTokenAPIPayload | EndChatPayload,
+  ): Promise<T> => {
+    const securityHeaders = await generateSecurityHeaders();
+    const mixpanelHeaders = generateMixPanelHeaders();
+    const logger = window.Twilio.getLogger('SessionDataHandler');
+    const urlEncodedBody = new URLSearchParams();
+    for (const key in body) {
+      if (body.hasOwnProperty(key)) {
+        urlEncodedBody.append(key, (body as Record<string, string>)[key].toString());
+      }
     }
-  }
-  const response = await fetch(_endpoint + endpointRoute, {
-    method: 'POST',
-    headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/x-www-form-urlencoded',
-      ...securityHeaders,
-      ...mixpanelHeaders,
-    },
-    body: urlEncodedBody.toString(),
-  });
+    const response = await fetch(lambdaUrl + endpointRoute, {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/x-www-form-urlencoded',
+        ...securityHeaders,
+        ...mixpanelHeaders,
+      },
+      body: urlEncodedBody.toString(),
+    });
 
-  if (!response.ok) {
-    logger.error('Request to backend failed');
-    throw new Error('Request to backend failed');
-  }
+    if (!response.ok) {
+      logger.error('Request to backend failed');
+      throw new Error('Request to backend failed');
+    }
 
-  return response.json();
-}
-
+    return response.json();
+  };
+};
 function storeSessionData(data: SessionDataStorage) {
   LocalStorageUtil.set(LOCALSTORAGE_SESSION_ITEM_ID, data);
 }
@@ -148,10 +151,13 @@ class SessionDataHandler {
 
     let newTokenData: TokenResponse;
     try {
-      newTokenData = await contactBackend<TokenResponse>('/webchatAuthentication/refreshToken', {
-        DeploymentKey: this._deploymentKey,
-        token: storedTokenData.token,
-      });
+      newTokenData = await contactBackend(store.getState().config)<TokenResponse>(
+        '/webchatAuthentication/refreshToken',
+        {
+          DeploymentKey: this._deploymentKey,
+          token: storedTokenData.token,
+        },
+      );
     } catch (e) {
       logger.error(`Something went wrong when trying to get an updated token: ${e}`);
       throw Error(`Something went wrong when trying to get an updated token: ${e}`);
@@ -192,7 +198,10 @@ class SessionDataHandler {
       if (customerIdentity) {
         payload.Identity = customerIdentity;
       }
-      newTokenData = await contactBackend<TokenResponse>('/webchatAuthentication/initWebchat', payload);
+      newTokenData = await contactBackend(store.getState().config)<TokenResponse>(
+        '/webchatAuthentication/initWebchat',
+        payload,
+      );
     } catch (e) {
       logger.error('No results from server');
       throw Error('No results from server');
