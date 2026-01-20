@@ -18,7 +18,7 @@ import { Configuration } from '../types';
 import { config as usvcStaging } from '../configurations/usvc-staging';
 
 const accountSid = 'AC3240f813a27a4c52b12e5c5c23960b25';
-const flexFlowSid = 'FO0b9657fa11fc5e24ee26e98575ee4df2';
+const flexFlowSid = 'FO98a2a2bf5f016669bba61ef9c19983aa';
 
 export const config: Configuration = {
   ...usvcStaging,
