@@ -40,4 +40,4 @@ export const ConfigReducer: Reducer = (state: ConfigState = initialState, action
     }
 };
 
-export const selectConfig = (root: AppState): ConfigState => root.config
+export const selectConfig = (root: AppState): ConfigState => root.config;
