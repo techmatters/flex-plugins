@@ -91,7 +91,7 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
 
-      - name: Deploy form-definitions to S3
+      - name: Deploy webchat config to S3
         run: |
           aws s3 cp ./mergedConfigs/${{ inputs.helpline_code }}/${{ inputs.environment }}.json s3://assets-${{ inputs.environment }}.tl.techmatters.org/webchat/${{ inputs.helpline_code }}/config.json --acl public-read
         working-directory: ./aselo-webchat-react-app
@@ -124,5 +124,5 @@ jobs:
           token: ${{ env.GITHUB_ACTIONS_SLACK_BOT_TOKEN }}
           payload: |
             channel: ${{ env.ASELO_DEPLOYS_CHANNEL_ID }}
-            text: '`[Flex]` Deployed webchat configs to helpine: `${{ env.helpline_code }}, environment `${{ env.environment }} from ${{ github.ref_type }} `${{ github.ref_name }}` requested by `${{ github.triggering_actor }}` completed with SHA ${{ github.sha }}` :rocket:.'
+            text: '`[Flex]` Deployed webchat configs to helpline: `${{ env.helpline_code }}, environment `${{ env.environment }} from ${{ github.ref_type }} `${{ github.ref_name }}` requested by `${{ github.triggering_actor }}` completed with SHA ${{ github.sha }}` :rocket:.'
         if: ${{ inputs.send-slack-message != 'false' }}

@@ -18,6 +18,7 @@ import fetchMock from "fetch-mock-jest";
 
 import { sessionDataHandler, contactBackend } from "../sessionDataHandler";
 import WebChatLogger from "../logger";
+import { ConfigState } from "../store/definitions";
 
 jest.mock("../logger");
 
@@ -27,6 +28,12 @@ Object.defineProperty(navigator, "mediaCapabilities", {
         decodingInfo: jest.fn().mockResolvedValue({} as unknown as MediaCapabilitiesDecodingInfo),
     },
 });
+
+const TEST_CONFIG_STATE: ConfigState = {
+    aseloBackendUrl: "http://mock-aselo-backend",
+    deploymentKey: "",
+    helplineCode: "xx",
+};
 
 const originalEnv = process.env;
 
@@ -79,7 +86,7 @@ describe("session data handler", () => {
                 .spyOn(window, "fetch")
                 .mockImplementation(async (): Promise<never> => mockFetch as Promise<never>);
             sessionDataHandler.setRegion("stage");
-            await contactBackend("/Webchat/Tokens/Refresh", { formData: {} });
+            await contactBackend(TEST_CONFIG_STATE)("/Webchat/Tokens/Refresh", { DeploymentKey: "dk", token: "token" });
             expect(fetchSpy.mock.calls[0][0]).toEqual("https://flex-api.stage.twilio.com/v2/Webchat/Tokens/Refresh");
         });
 
@@ -88,7 +95,7 @@ describe("session data handler", () => {
             const fetchSpy = jest
                 .spyOn(window, "fetch")
                 .mockImplementation(async (): Promise<never> => mockFetch as Promise<never>);
-            await contactBackend("/Webchat/Tokens/Refresh", { formData: {} });
+            await contactBackend(TEST_CONFIG_STATE)("/Webchat/Tokens/Refresh", { DeploymentKey: "dk", token: "token" });
             expect(fetchSpy.mock.calls[0][0]).toEqual("https://flex-api.twilio.com/v2/Webchat/Tokens/Refresh");
         });
     });

@@ -65,6 +65,8 @@ export type ConfigState = {
         isLight?: boolean;
         overrides?: Partial<GenericThemeShape>;
     };
+    helplineCode: string;
+    aseloBackendUrl: string;
     translations: Record<string, Record<string, string>>;
     defaultLocale: LocaleString;
     currentLocale?: LocaleString;

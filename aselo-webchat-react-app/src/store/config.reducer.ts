@@ -18,10 +18,13 @@ import { AnyAction, Reducer } from "redux";
 
 import { AppState, ConfigState } from "./definitions";
 import { ACTION_CHANGE_LOCALE, ACTION_LOAD_CONFIG } from "./actions/actionTypes";
+import {AppState} from "./store";
 
 const initialState: ConfigState = {
     defaultLocale: "xx-XX",
     translations: {},
+    aseloBackendUrl: "",
+    helplineCode: "",
     deploymentKey: "",
 };
 
@@ -44,5 +47,6 @@ export const ConfigReducer: Reducer = (state: ConfigState = initialState, action
     }
 };
 
+export const selectConfig = (root: AppState): ConfigState => root.config;
 export const selectCurrentTranslations = (state: AppState) =>
     state.config.translations[state.config.currentLocale || state.config.defaultLocale];

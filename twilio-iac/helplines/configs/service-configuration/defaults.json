@@ -75,7 +75,7 @@
             "enable_twilio_transcripts": false,
             "enable_upload_documents": true,
             "enable_voice_recordings": false,
-            "use_twilio_lambda_for_conference_functions": false
+            "use_twilio_lambda_for_task_assignment": true
         },
         "multipleOfficeSupport": false,
         "WARNING": "These attributes are set using a tool in the twilio-iac repo. If you are seeing this message anywhere else, please stop and use the process described here: https://github.com/techmatters/flex-plugins/blob/master/twilio-iac/docs/service_configuration.md"

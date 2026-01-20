@@ -26,7 +26,7 @@ const generateMergedConfigs = async (environment, helplineCode) => {
         helplineCodes.push(helplineCode);
     } else {
         const contents =  await fs.readdir('./configSrc/', { recursive: false, withFileTypes: true });
-        const directories = contents.filter((ent) => ent.isDirectory()).map(({ name }) => name)
+        const directories = contents.filter((ent) => ent.isDirectory()).map(({ name }) => name);
         helplineCodes.push(...directories);
     }
     for (const shortCode of helplineCodes) {
@@ -76,6 +76,6 @@ const generateMergedConfigs = async (environment, helplineCode) => {
 }
 
 generateMergedConfigs(process.argv[2], process.argv[3]).then(
-    () => console.info(`Merged logs generated for ${process.argv[2]}.`),
+    () => console.info(`Merged configs generated for ${process.argv[2]}.`),
     (err) => console.error(`Error generating merged configs for ${process.argv[2]}.`, err)
 );
