@@ -23,15 +23,15 @@ import { getTemplate } from '../getTemplate';
 
 export const ConfirmDialog: React.FC<{
   openDialog: boolean;
-  closeDialogHeader: string | React.ReactElement;
-  closeDialogContent: string | React.ReactElement;
+  dialogHeader: string | React.ReactElement;
+  dialogContent: string | React.ReactElement;
   actionComponent: React.ReactElement;
   onCloseDialog: () => void;
-}> = ({ openDialog, closeDialogHeader, closeDialogContent, actionComponent, onCloseDialog }) => {
+}> = ({ openDialog, dialogHeader, dialogContent, actionComponent, onCloseDialog }) => {
   return (
     <ConfirmDialogPaper open={openDialog} onClose={onCloseDialog}>
-      <ConfirmDialogHeader>{getTemplate(closeDialogHeader)}</ConfirmDialogHeader>
-      <ConfirmDialogContent>{getTemplate(closeDialogContent)}</ConfirmDialogContent>
+      <ConfirmDialogHeader>{getTemplate(dialogHeader)}</ConfirmDialogHeader>
+      <ConfirmDialogContent>{getTemplate(dialogContent)}</ConfirmDialogContent>
       <ButtonGroup>
         <TertiaryButton tabIndex={1} onClick={onCloseDialog}>
           <Template code="Modals-CloseDialog-CancelButton" />

@@ -227,6 +227,12 @@ type TeamsViewRoute = {
   subroute?: 'select-skills' | 'confirm-update';
 }
 
+type CustomLinkRoute = {
+
+  route: 'custom-link';
+  subroute: string;
+}
+
 type OtherRoutes =
   | CSAMReportRoute
   | { route: 'select-call-type' }
@@ -238,7 +244,8 @@ type OtherRoutes =
   | ProfileRoute
   | ProfileEditRoute
   | ProfileSectionEditRoute
-  | TeamsViewRoute;
+  | TeamsViewRoute
+    | CustomLinkRoute;
 
 // The different routes we have in our app
 export type AppRoutes = CaseRoute | ProfileHomeRoute | OtherRoutes;

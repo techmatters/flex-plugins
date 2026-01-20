@@ -22,6 +22,7 @@ export type FeatureFlags = {
   enable_confirm_on_browser_close: boolean; // Enables confirmation dialog on browser close when there are unsaved changes
   enable_csam_clc_report: boolean; // Enables CSAM child Reports
   enable_csam_report: boolean; // Enables CSAM Reports
+  enable_custom_links: boolean; // Enables custom side links to be set from a CustomLinks.json form definition file
   enable_dual_write: boolean; // Enables Saving Contacts on External Backends
   enable_emoji_picker: boolean; // Enables Emoji Picker
   enable_external_transcripts: boolean; // Enables Viewing Transcripts Stored Outside of Twilio

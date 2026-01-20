@@ -3,7 +3,8 @@
         "system_down" : false,
         "enableConferencing": true,
         "feature_flags": {
-            "enable_conferencing":true
+            "enable_conferencing": true,
+            "use_twilio_lambda_for_conference_functions": true
         },
         "helpline_code": "sg",
         "form_definitions_base_url": "https://assets-staging.tl.techmatters.org/form-definitions/",

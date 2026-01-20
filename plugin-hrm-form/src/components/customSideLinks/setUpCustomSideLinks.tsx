@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2021-2023 Technology Matters
+ * Copyright (C) 2021-2025 Technology Matters
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
  * by the Free Software Foundation, either version 3 of the License, or
@@ -17,12 +17,18 @@
 import * as Flex from '@twilio/flex-ui';
 import React from 'react';
 
-import CounselorToolkitSideLink from './CounselorToolkitSideLink';
+import CustomSideLinkSet from './CustomSideLinkSet';
+import CustomEmbeddedLinkSet from './CustomEmbeddedLinkSet';
+import { getAseloFeatureFlags } from '../../hrmConfig';
 
 // eslint-disable-next-line import/no-unused-modules
-export const setUpCounselorToolkits = () => {
-  // eslint-disable-next-line no-unused-expressions
-  Flex.SideNav.Content.add(
-    <CounselorToolkitSideLink key="CounselorToolkitSideLink" showLabel={true} reserveSpace={false} />,
-  );
+export const setUpCustomSideLinks = () => {
+  if (getAseloFeatureFlags().enable_custom_links) {
+    Flex.ViewCollection.Content.add(
+      <Flex.View name="custom-link" key="custom-link-view">
+        <CustomEmbeddedLinkSet />
+      </Flex.View>,
+    );
+    Flex.SideNav.Content.add(<CustomSideLinkSet key="custom-link-set" />);
+  }
 };

@@ -8,12 +8,14 @@
         "enableConferencing": true,
         "enableUnmaskingCalls": false,
         "hideAddToNewCaseButton": true,
-        "enableExternalRecordings": false,   
+        "enableExternalRecordings": false,
+        "enableClientProfiles": false,   
         "feature_flags": {
             "use_prepopulate_mappings": true,
             "enable_client_profiles": false,
             "enable_previous_contacts": false,
-            "enable_hang_up_by_hrm_saving": true
+            "enable_hang_up_by_hrm_saving": true,
+            "enable_custom_links" : true
         },
         "definitionVersion": "usvc-v1",
         "external_recordings_enabled": false,

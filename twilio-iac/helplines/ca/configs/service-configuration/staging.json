@@ -3,7 +3,8 @@
     "system_down" : false,
     "feature_flags": {
       "enable_resouorces_updates": true,
-      "enable_switchboarding_move_tasks": true
+      "enable_switchboarding_move_tasks": true,
+      "use_twilio_lambda_for_conference_functions": true
     },
     "form_definitions_base_url": "https://assets-staging.tl.techmatters.org/form-definitions/",
     "resources_base_url": "https://hrm-staging.tl.techmatters.org",
