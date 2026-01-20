@@ -124,5 +124,5 @@ jobs:
           token: ${{ env.GITHUB_ACTIONS_SLACK_BOT_TOKEN }}
           payload: |
             channel: ${{ env.ASELO_DEPLOYS_CHANNEL_ID }}
-            text: '`[Flex]` Deployed webchat configs to helpine: `${{ env.helpline_code }}, environment `${{ env.environment }} from ${{ github.ref_type }} `${{ github.ref_name }}` requested by `${{ github.triggering_actor }}` completed with SHA ${{ github.sha }}` :rocket:.'
+            text: '`[Flex]` Deployed webchat configs to helpline: `${{ env.helpline_code }}, environment `${{ env.environment }} from ${{ github.ref_type }} `${{ github.ref_name }}` requested by `${{ github.triggering_actor }}` completed with SHA ${{ github.sha }}` :rocket:.'
         if: ${{ inputs.send-slack-message != 'false' }}
