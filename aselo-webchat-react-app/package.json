@@ -8,9 +8,9 @@
   "homepage": ".",
   "dependencies": {
     "@emotion/core": "^10.0.28",
-    "@twilio-paste/core": "^10.20.0",
-    "@twilio-paste/icons": "^6.1.0",
-    "@twilio-paste/theme": "^5.3.3",
+    "@twilio-paste/core": "^21.5.0",
+    "@twilio-paste/icons": "^13.1.0",
+    "@twilio-paste/theme": "^12.0.1",
     "@twilio/conversations": "2.1.0-rc.0",
     "@types/file-saver": "2.0.5",
     "file-saver": "2.0.5",
@@ -61,8 +61,8 @@
     "express": "4.17.3",
     "fetch-mock-jest": "^1.5.1",
     "filemanager-webpack-plugin": "^8.0.0",
-    "jest-junit": "^16.0.0",
     "http-server": "^14.1.1",
+    "jest-junit": "^16.0.0",
     "jsonwebtoken": "^9.0.3",
     "node-fetch": "^3.3.2",
     "nodemon": "^2.0.15",
@@ -78,7 +78,7 @@
   },
   "scripts": {
     "start": "react-app-rewired start",
-    "start:as_dev": "cross-env REACT_APP_CONFIG_URL=http://localhost:9090/as/development.json run-p mergeConfigs dev:local-config-server start",
+    "start:as_dev": "cross-env REACT_APP_CONFIG_URL='http://localhost:9090/as/development.json' run-p dev:merge-configs dev:local-config-server start",
     "build": "react-app-rewired build",
     "lint": "eslint --ext js --ext jsx --ext ts --ext tsx src/",
     "lint:fix": "npm run lint -- --fix",
@@ -90,6 +90,7 @@
     "deploy": "npm run build && node scripts/deploy",
     "eject": "react-app-rewired eject",
     "test:e2e": "cypress open",
+    "dev:merge-configs": "npm run mergeConfigs development as",
     "dev:local-config-server": "npx http-server ./mergedConfigs -p 9090 --cors -c-1"
   },
   "browserslist": [
