@@ -65,6 +65,10 @@
       },
       {
         "name": "state",
+        "insights": ["customers", "area"]
+      },
+      {
+        "name": "state",
         "insights": ["customers", "name"]
       }
     ],
