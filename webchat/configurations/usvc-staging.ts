@@ -238,8 +238,8 @@ const preEngagementConfig: PreEngagementFormDefinition = {
           label: "Vermont",
         },
         {
-          value: "Virgina",
-          label: "Virgina",
+          value: "Virginia",
+          label: "Virginia",
         },
         {
           value: "Washington D.C.",
