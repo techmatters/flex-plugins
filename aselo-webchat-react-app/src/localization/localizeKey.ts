@@ -20,6 +20,6 @@ import { ConfigState } from '../store/definitions';
 export const localizeKey =
   (localeTranslations: ConfigState['translations'][keyof ConfigState['translations']]) =>
   (key: string, parameters: Record<string, string> = {}) => {
-    const lookedUpValue = localeTranslations[key] || key;
+    const lookedUpValue = (localeTranslations && localeTranslations[key]) || key;
     return Mustache.render(lookedUpValue, parameters);
   };

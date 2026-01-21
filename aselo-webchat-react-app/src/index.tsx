@@ -17,15 +17,32 @@ import { ConfigState } from './store/definitions';
 import { initLogger, getLogger } from './logger';
 import { changeExpandedStatus } from './store/actions/genericActions';
 
+const getHelplineConfig = async ({ configUrl }: { configUrl: string | URL }) => {
+  try {
+    const helplineConfigResponse = await fetch(configUrl);
+    if (!helplineConfigResponse.ok) {
+      const errMsg = `Failed to load helpline specific config for Aselo Webchat from ${configUrl}, aborting load`;
+      return { status: 'error', message: errMsg } as const;
+    }
+
+    const helplineConfigJSON = await helplineConfigResponse.json();
+    return { status: 'ok', data: helplineConfigJSON } as const;
+  } catch (err) {
+    return { status: 'error', message: err instanceof Error ? err.message : String(err) } as const;
+  }
+};
+
 const initWebchat = async (configLocation?: URL, overrides: Partial<ConfigState> = {}) => {
   const logger = window.Twilio.getLogger(`InitWebChat`);
   const configUrl = configLocation || process.env.REACT_APP_CONFIG_URL || './config.json';
-  const helplineConfigResponse = await fetch(configUrl);
-  if (!helplineConfigResponse.ok) {
-    logger.error(`Failed to load helpline specific config for Aselo Webchat from ${configUrl}, aborting load`);
+
+  const helplineConfigResponse = await getHelplineConfig({ configUrl });
+  if (helplineConfigResponse.status === 'error') {
+    logger.error(helplineConfigResponse.message);
     return;
   }
-  const webchatConfig: ConfigState = merge(await helplineConfigResponse.json(), overrides);
+
+  const webchatConfig: ConfigState = merge(helplineConfigResponse.data, overrides);
   webchatConfig.currentLocale = webchatConfig.defaultLocale;
   if (!webchatConfig || !webchatConfig.deploymentKey) {
     logger.error(`deploymentKey must exist to connect to Webchat servers`);
@@ -57,7 +74,7 @@ const initWebchat = async (configLocation?: URL, overrides: Partial<ConfigState>
 declare global {
   interface Window {
     Twilio: {
-      initWebchat: (url?: URL, config?: Partial<ConfigState>) => void;
+      initWebchat: typeof initWebchat;
       initLogger: (level?: LogLevelDesc) => void;
       getLogger: (className: string) => Logger;
     };

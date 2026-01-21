@@ -36,6 +36,11 @@ export default function EndChat({ channelSid, token, language, action }: Props) 
   const [disabled, setDisabled] = useState(false);
   const dispatch = useDispatch();
   const config = useSelector(selectConfig);
+
+  if (!config) {
+    return null;
+  }
+
   const configuredBackend = contactBackend(config);
 
   // Serverless call to end chat
@@ -61,10 +66,11 @@ export default function EndChat({ channelSid, token, language, action }: Props) 
         dispatch(changeEngagementPhase({ phase: EngagementPhase.PreEngagementForm }));
     }
   };
+
   return (
     <Button variant="destructive" onClick={handleEndChat} disabled={disabled}>
       <span>CloseLarge</span>
-      <LocalizedTemplate key="EndChatButtonLabel" />
+      <LocalizedTemplate code="EndChatButtonLabel" />
     </Button>
   );
 }
