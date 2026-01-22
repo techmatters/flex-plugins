@@ -104,101 +104,6 @@ ${
       }
     },
     {
-      "name": "f_operatingHours",
-      "type": "make-http-request",
-      "transitions": [
-        {
-          "next": "split_status",
-          "event": "success"
-        },
-        {
-          "event": "failed"
-        }
-      ],
-      "properties": {
-        "offset": {
-          "x": 200,
-          "y": 740
-        },
-        "method": "POST",
-        "content_type": "application/json;charset=utf-8",
-        "add_twilio_auth": false,
-        "body": "{\"channel\": \"sms\", \"includeMessageTextInResponse\": \"true\", \"language\": \"en-USCH\"}",
-        "url": "${get_profile_flags_for_identifier_base_url}/operatingHours"
-      }
-    },
-    {
-      "name": "split_status",
-      "type": "split-based-on",
-      "transitions": [
-        {
-          "event": "noMatch",
-          "next": "send_message_courage_first_sms_welcome"
-        },
-        {
-          "next": "send_message_courage_first_sms_closed",
-          "event": "match",
-          "conditions": [
-            {
-              "friendly_name": "If value matches_any_of closed,holiday",
-              "arguments": [
-                "{{widgets.f_operatingHours.parsed.status}}"
-              ],
-              "type": "matches_any_of",
-              "value": "closed,holiday"
-            }
-          ]
-        },
-        {
-          "next": "send_message_courage_first_sms_welcome",
-          "event": "match",
-          "conditions": [
-            {
-              "friendly_name": "If value equal_to open",
-              "arguments": [
-                "{{widgets.f_operatingHours.parsed.status}}"
-              ],
-              "type": "equal_to",
-              "value": "open"
-            }
-          ]
-        }
-      ],
-      "properties": {
-        "input": "{{widgets.f_operatingHours.parsed.status}}",
-        "offset": {
-          "x": -50,
-          "y": 1030
-        }
-      }
-    },
-    {
-      "name": "send_message_courage_first_sms_closed",
-      "type": "send-message",
-      "transitions": [
-        {
-          "event": "sent",
-          "next": "send_message_courage_first_sms_redirect"
-        },
-        {
-          "event": "failed",
-          "next": "send_message_courage_first_sms_redirect"
-        }
-      ],
-      "properties": {
-        "offset": {
-          "x": -20,
-          "y": 1350
-        },
-        "service": "{{trigger.message.InstanceSid}}",
-        "channel": "{{trigger.message.ChannelSid}}",
-        "from": "Bot",
-        "message_type": "custom",
-        "to": "{{contact.channel.address}}",
-        "body": "${flow_vars.courage_first_sms_closed_message}"
-      }
-    },
-    {
       "name": "send_message_sms_blocked_client",
       "type": "send-message",
       "transitions": [
@@ -227,7 +132,7 @@ ${
       "type": "split-based-on",
       "transitions": [
         {
-          "next": "f_operatingHours",
+          "next": "send_message_courage_first_sms_welcome",
           "event": "noMatch"
         },
         {
