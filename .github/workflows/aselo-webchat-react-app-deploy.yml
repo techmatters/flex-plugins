@@ -1,0 +1,192 @@
+# Copyright (C) 2021-2023 Technology Matters
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Affero General Public License as published
+# by the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Affero General Public License for more details.
+#
+# You should have received a copy of the GNU Affero General Public License
+# along with this program.  If not, see https://www.gnu.org/licenses/.
+
+# Upload Webchat to S3 bucket with Github Actions
+name: Aselo Webchat React App Deploy
+
+on:
+  workflow_dispatch:
+    inputs:
+      helpline_code:
+        description: "The short (usually 2 character) upper case code used to identify the helpline internally, e.g. ZA, IN, BR."
+        required: true
+        type: string
+      environment:
+        description: "Helpline Environment: development, staging, production"
+        required: true
+        type: string
+      recaptcha_verify_url:
+        description: "Recaptcha Verify URL"
+        required: false
+        type: string
+
+  workflow_call:
+    inputs:
+      helpline_code:
+        description: "The short (usually 2 character) upper case code used to identify the helpline internally, e.g. ZA, IN, BR."
+        required: true
+        type: string
+      environment:
+        description: "Helpline Environment"
+        required: true
+        type: string
+      recaptcha_verify_url:
+        description: "Recaptcha Verify URL"
+        required: false
+        type: string
+      send-slack-message:
+        description: If set to false a slack message will not be sent - useful for E2E test deploys.
+        default: 'true'
+        type: string
+      invalidate-cache:
+        description: 'Specifies if should invalidate CloudFront cache for form data. Defaults to true, set to false if the caller will handle cache invalidation.'
+        required: false
+        default: 'true'
+        type: string
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  build:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Change String Case for Helpline Code
+      - name: Change String Case for Helpline Code
+        id: helpline_code
+        uses: "ASzc/change-string-case-action@v6"
+        with:
+          string: "${{ inputs.helpline_code }}"
+      # Set SHORT_ENVIRONMENT_CODE
+      - name: Production Environment
+        if: inputs.environment == 'production'
+        run: echo "SHORT_ENVIRONMENT_CODE=prod" >> $GITHUB_ENV
+
+      - name: Staging Environment
+        if: inputs.environment == 'staging'
+        run: echo "SHORT_ENVIRONMENT_CODE=stg" >> $GITHUB_ENV
+
+      - name: Development Environment
+        if: inputs.environment == 'development'
+        run: echo "SHORT_ENVIRONMENT_CODE=dev" >> $GITHUB_ENV
+
+      # Setup credentials to access AWS for parameters
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v5
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: "us-east-1"
+
+      # Get AWS parameters
+      - name: Set GITHUB_ACTIONS_SLACK_BOT_TOKEN
+        uses: "marvinpinto/action-inject-ssm-secrets@latest"
+        with:
+          ssm_parameter: "GITHUB_ACTIONS_SLACK_BOT_TOKEN"
+          env_variable_name: "GITHUB_ACTIONS_SLACK_BOT_TOKEN"
+
+      - name: Set ASELO_DEPLOYS_CHANNEL_ID
+        uses: "marvinpinto/action-inject-ssm-secrets@latest"
+        with:
+          ssm_parameter: "ASELO_DEPLOYS_CHANNEL_ID"
+          env_variable_name: "ASELO_DEPLOYS_CHANNEL_ID"
+
+      - name: Set ACCOUNT_SID
+        uses: "marvinpinto/action-inject-ssm-secrets@latest"
+        with:
+          ssm_parameter: "/${{ inputs.environment }}/twilio/${{ inputs.helpline_code }}/account_sid"
+          env_variable_name: "ACCOUNT_SID"
+
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v6
+
+      - name: Use Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: "22.x"
+
+      - name: Create local working directory
+        run: mkdir -p ./aselo-webchat-react-app
+
+      - name: Download target build from S3
+        run: |
+          aws s3 sync \   
+            s3://assets-${{ inputs.environment }}.tl.techmatters.org/aselo-webchat-react-app//${{ github.ref_type }}/${{ github.ref_name }} \
+            ./aselo-webchat-react-app \
+            --delete \
+            --no-progress
+        shell: bash
+
+      - name: Copy target config and remove the rest
+        run: |
+          mv ./mergedConfigs/${{ steps.helpline_code.outputs.lowercase }}/${{ inputs.environment }}.json config.json
+          rm -rf ./mergedConfigs 
+        working-directory: aselo-webchat-react-app
+        shell: bash
+
+      # Upload the app to S3 corresponding buckets
+      - name: Upload Webchat to S3 bucket
+        uses: jakejarvis/s3-sync-action@master
+        with:
+          args: --acl public-read --follow-symlinks --exclude '*' --include '*.js' --include '*.js.map' --include '*.json' --include '*.css' --include 'index.html' --content-encoding 'gzip'
+        env:
+          AWS_S3_BUCKET: tl-public-chat-${{ steps.helpline_code.outputs.lowercase }}-$SHORT_ENVIRONMENT_CODE
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: "${{ secrets.AWS_DEFAULT_REGION }}"
+          SOURCE_DIR: "aselo-webchat-react-app"
+          DEST_DIR: "aselo-webchat-react-app"
+      - name: Upload Webchat to S3 bucket
+        uses: jakejarvis/s3-sync-action@master
+        with:
+          args: --acl public-read --follow-symlinks --exclude '*' --include '*.js' --include '*.js.map' --include '*.json' --include '*.css' --include 'index.html' --content-encoding 'gzip'
+        env:
+          AWS_S3_BUCKET: assets-${{ inputs.environment }}.tl.techmatters.org
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: "${{ secrets.AWS_DEFAULT_REGION }}"
+          SOURCE_DIR: "aselo-webchat-react-app"
+          DEST_DIR: "aselo-webchat-react-app/${{ steps.helpline_code.outputs.lowercase }}"
+
+      - name: Clear cloudfront cache
+        if: ${{ inputs.invalidate-cache != 'false' }}
+        run: |
+          CF_DISTRO=$(aws cloudfront list-distributions --query "DistributionList.Items[*].{id:Id,origin:Origins.Items[0].DomainName}[?origin=='assets-${{ inputs.environment }}.tl.techmatters.org.s3-website.us-east-1.amazonaws.com'].id" --output text)
+          aws cloudfront create-invalidation --distribution-id $CF_DISTRO --paths /aselo-webchat-react-app/${{ steps.helpline_code.outputs.lowercase }}/*
+
+      # Send Slack notifying success
+      - name: Slack Aselo channel
+        id: slack
+        uses: slackapi/slack-github-action@v2.1.1
+        if: ${{ inputs.send-slack-message != 'false' }}
+        with:
+          method: chat.postMessage
+          token: ${{ env.GITHUB_ACTIONS_SLACK_BOT_TOKEN }}
+          payload: |
+            channel: ${{ env.ASELO_DEPLOYS_CHANNEL_ID }}
+            text: '`[WEBCHAT]` Deployment to `${{inputs.helpline_code}}-${{inputs.environment}}` of ${{ github.ref_type }} `${{ github.ref_name }}` requested by `${{ github.triggering_actor }}` completed using workflow `${{ github.workflow }}` with SHA ${{ github.sha }} :rocket:.'
+      # Update deployment matrix 
+      - name: Update deployment matrix
+        uses: ./.github/actions/deployment-matrix
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_DEFAULT_REGION }}
+          identifier: ${{ inputs.helpline_code }}
+          environment: ${{ inputs.environment}}
+          service_repo: 'aselo-webchat-react-app'
+          version_tag: ${{ github.ref_name }}
+
