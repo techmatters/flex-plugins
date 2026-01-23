@@ -76,7 +76,7 @@ locals {
         }
         chatbot_unique_names = []
       },
-      /*sms_dcvh_toll_free : {
+      sms_dcvh_toll_free : {
         messaging_mode   = "conversations"
         channel_type     = "sms"
         contact_identity = "+18444435732"
@@ -93,7 +93,7 @@ locals {
         channel_flow_vars = {
         }
         chatbot_unique_names = []
-      }*/
+      }
     }
     get_profile_flags_for_identifier_base_url = "https://hrm-staging.tl.techmatters.org/lambda/twilio/account-scoped"
     #System Down Configuration
