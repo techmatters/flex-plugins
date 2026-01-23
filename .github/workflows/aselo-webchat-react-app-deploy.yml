@@ -119,18 +119,18 @@ jobs:
           node-version: "22.x"
 
       - name: Create local working directory
-        run: mkdir -p ./aselo-webchat-react-app
+        run: mkdir -p ./aselo-webchat-react-app/temp
 
       - name: Download target build from S3
         run: |
-          aws s3 sync 's3://assets-${{ inputs.environment }}.tl.techmatters.org/aselo-webchat-react-app//${{ github.ref_type }}/${{ github.ref_name }}' './aselo-webchat-react-app' --delete --no-progress
+          aws s3 sync 's3://assets-${{ inputs.environment }}.tl.techmatters.org/aselo-webchat-react-app//${{ github.ref_type }}/${{ github.ref_name }}' './aselo-webchat-react-app/temp' --delete --no-progress
         shell: bash
 
       - name: Copy target config and remove the rest
         run: |
           mv './mergedConfigs/${{ steps.helpline_code.outputs.lowercase }}/${{ inputs.environment }}.json' 'config.json'
           rm -rf ./mergedConfigs 
-        working-directory: aselo-webchat-react-app
+        working-directory: aselo-webchat-react-app/temp
         shell: bash
 
       # Upload the app to S3 corresponding buckets
@@ -143,7 +143,7 @@ jobs:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_REGION: "${{ secrets.AWS_DEFAULT_REGION }}"
-          SOURCE_DIR: "aselo-webchat-react-app"
+          SOURCE_DIR: "aselo-webchat-react-app/temp"
           DEST_DIR: "aselo-webchat-react-app"
       - name: Upload Webchat to S3 bucket
         uses: jakejarvis/s3-sync-action@master
@@ -154,7 +154,7 @@ jobs:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_REGION: "${{ secrets.AWS_DEFAULT_REGION }}"
-          SOURCE_DIR: "aselo-webchat-react-app"
+          SOURCE_DIR: "aselo-webchat-react-app/temp"
           DEST_DIR: "aselo-webchat-react-app/${{ steps.helpline_code.outputs.lowercase }}"
 
       - name: Clear cloudfront cache
