@@ -58,7 +58,7 @@ on:
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   # This workflow contains a single job called "build"
-  build:
+  deploy:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
 
@@ -125,6 +125,10 @@ jobs:
         run: |
           aws s3 sync 's3://assets-${{ inputs.environment }}.tl.techmatters.org/aselo-webchat-react-app//${{ github.ref_type }}/${{ github.ref_name }}' './aselo-webchat-react-app/temp' --delete --no-progress
         shell: bash
+
+      - name: debug
+        run: ls -a -R
+        working-directory: aselo-webchat-react-app/temp
 
       - name: Copy target config and remove the rest
         run: |
