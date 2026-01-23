@@ -99,6 +99,10 @@ const postTextV2 = async ({
 
     const lexClient = new LexRuntimeV2Client({});
 
+    console.debug(
+      `Sending message to bot ${environment}_${helplineCode}_${botLanguage}_${botSuffix} bot id: ${botId}, bot alias: ${botAliasId}, localeId: ${localeId}`,
+    );
+
     const lexResponse = await lexClient.send(
       new RecognizeTextCommand({
         botAliasId,

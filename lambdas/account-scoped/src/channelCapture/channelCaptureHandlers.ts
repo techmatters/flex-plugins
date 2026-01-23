@@ -93,7 +93,6 @@ const updateChannelWithCapture = async (
   attributes: CapturedChannelAttributes,
 ) => {
   const {
-    enableLexV2,
     userId,
     environment,
     helplineCode,
@@ -125,7 +124,6 @@ const updateChannelWithCapture = async (
       participantSid: userIdentityOrParticipantId,
       // All of this can be passed as url params to the webhook instead
       capturedChannelAttributes: {
-        enableLexV2,
         userId,
         environment,
         helplineCode,
