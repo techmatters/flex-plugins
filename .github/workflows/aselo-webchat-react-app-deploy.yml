@@ -123,16 +123,12 @@ jobs:
 
       - name: Download target build from S3
         run: |
-          aws s3 sync \   
-            s3://assets-${{ inputs.environment }}.tl.techmatters.org/aselo-webchat-react-app//${{ github.ref_type }}/${{ github.ref_name }} \
-            ./aselo-webchat-react-app \
-            --delete \
-            --no-progress
+          aws s3 sync 's3://assets-${{ inputs.environment }}.tl.techmatters.org/aselo-webchat-react-app//${{ github.ref_type }}/${{ github.ref_name }}' './aselo-webchat-react-app' --delete --no-progress
         shell: bash
 
       - name: Copy target config and remove the rest
         run: |
-          mv ./mergedConfigs/${{ steps.helpline_code.outputs.lowercase }}/${{ inputs.environment }}.json config.json
+          mv './mergedConfigs/${{ steps.helpline_code.outputs.lowercase }}/${{ inputs.environment }}.json' 'config.json'
           rm -rf ./mergedConfigs 
         working-directory: aselo-webchat-react-app
         shell: bash
