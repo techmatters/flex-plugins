@@ -118,7 +118,8 @@ const postTextV2 = async ({
   }
 };
 
-const isEndOfDialogV2 = (dialogState: string | undefined) => dialogState === 'Close';
+const isEndOfDialogV2 = (lexResponse: RecognizeTextResponse) =>
+  lexResponse.sessionState?.dialogAction?.type === 'Close';
 
 const deleteSessionV2 = async ({
   botLanguage,
