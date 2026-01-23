@@ -14,12 +14,6 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 import {
-  LexRuntimeServiceClient,
-  PostTextCommand,
-  DeleteSessionCommand,
-  PostTextResponse,
-} from '@aws-sdk/client-lex-runtime-service';
-import {
   LexRuntimeV2Client,
   RecognizeTextCommand,
   DeleteSessionCommand as DeleteSessionCommandV2,
@@ -43,113 +37,6 @@ type DeleteSessionParams = {
   helplineCode: string;
   botSuffix: string;
   sessionId: string;
-};
-
-const getBotNameV1 = ({
-  botLanguage,
-  botSuffix,
-  environment,
-  helplineCode,
-}: {
-  environment: string;
-  helplineCode: string;
-  botLanguage: string;
-  botSuffix: string;
-}) => {
-  // Remove numbers as they are not supported in Lex v1
-  const sanitizedHelplineCode = helplineCode.replaceAll(/[0-9]/gi, '');
-  return {
-    botName: `${environment}_${sanitizedHelplineCode}_${botLanguage}_${botSuffix}`,
-    botAlias: 'latest', // Assume we always use the latest published version
-  };
-};
-
-const postTextV1 = async ({
-  botLanguageV1: botLanguage,
-  botSuffix,
-  environment,
-  helplineCode,
-  inputText,
-  sessionId,
-}: PostTextParams & { botLanguageV1: string }) => {
-  try {
-    const { botAlias, botName } = getBotNameV1({
-      botLanguage,
-      botSuffix,
-      environment,
-      helplineCode,
-    });
-
-    const lexClient = new LexRuntimeServiceClient({});
-
-    const lexResponse = await lexClient.send(
-      new PostTextCommand({
-        botName,
-        botAlias,
-        inputText,
-        userId: sessionId,
-      }),
-    );
-
-    return newOk({ lexVersion: 'v1', lexResponse } as const);
-  } catch (error) {
-    return newErr({
-      message: error instanceof Error ? error.message : String(error),
-      error,
-    });
-  }
-};
-
-const isEndOfDialogV1 = (dialogState: string | undefined) =>
-  dialogState === 'Fulfilled' || dialogState === 'Failed';
-
-const deleteSessionV1 = async ({
-  botLanguageV1: botLanguage,
-  botSuffix,
-  environment,
-  helplineCode,
-  sessionId,
-}: DeleteSessionParams & { botLanguageV1: string }) => {
-  try {
-    const { botAlias, botName } = getBotNameV1({
-      botLanguage,
-      botSuffix,
-      environment,
-      helplineCode,
-    });
-
-    const lexClient = new LexRuntimeServiceClient({});
-
-    const lexResponse = await lexClient.send(
-      new DeleteSessionCommand({
-        botName,
-        botAlias,
-        userId: sessionId,
-      }),
-    );
-
-    return newOk({ lexVersion: 'v1', lexResponse } as const);
-  } catch (error) {
-    return newErr({
-      message: error instanceof Error ? error.message : String(error),
-      error,
-    });
-  }
-};
-
-const LexV1 = {
-  postText: postTextV1,
-  isEndOfDialog: isEndOfDialogV1,
-  getBotName: getBotNameV1,
-  deleteSession: deleteSessionV1,
-};
-
-export type LexV2Memory = {
-  [q: string]: {
-    originalValue: string | number;
-    interpretedValue: string | number;
-    resolvedValues: (string | number)[];
-  };
 };
 
 const getBotNameV2 = async ({
@@ -299,96 +186,20 @@ const LexV2 = {
   convertV2ToV1Memory,
 };
 
-const postText = async ({
-  enableLexV2,
-  postTextParams,
-}: {
-  enableLexV2: boolean;
-  postTextParams: PostTextParams & { botLanguage: string; botLanguageV1: string };
-}) => {
-  try {
-    if (enableLexV2) {
-      const res = await LexV2.postText(postTextParams);
-      return res;
-    }
-
-    const res = await LexV1.postText(postTextParams);
-    return res;
-  } catch (error) {
-    return newErr({
-      message: error instanceof Error ? error.message : String(error),
-      error: error instanceof Error ? error : new Error(String(error)),
-    });
-  }
-};
-
-const deleteSession = async ({
-  enableLexV2,
-  deleteSessionParams,
-}: {
-  enableLexV2: boolean;
-  deleteSessionParams: DeleteSessionParams & {
-    botLanguage: string;
-    botLanguageV1: string;
-  };
-}) => {
-  try {
-    if (enableLexV2) {
-      return await LexV2.deleteSession(deleteSessionParams);
-    }
-
-    return await LexV1.deleteSession(deleteSessionParams);
-  } catch (error) {
-    return newErr({
-      message: error instanceof Error ? error.message : String(error),
-      error: error instanceof Error ? error : new Error(String(error)),
-    });
-  }
-};
-
-const isEndOfDialog = ({
-  enableLexV2,
-  lexResponse,
-}:
-  | {
-      enableLexV2: false;
-      lexResponse: PostTextResponse;
-    }
-  | {
-      enableLexV2: true;
-      lexResponse: RecognizeTextResponse;
-    }) => {
-  if (enableLexV2) {
-    return LexV2.isEndOfDialog(lexResponse.sessionState?.dialogAction?.type);
-  }
-
-  return LexV1.isEndOfDialog(lexResponse.dialogState);
-};
-
 const getBotMemory = ({
-  enableLexV2,
   lexResponse,
-}:
-  | {
-      enableLexV2: false;
-      lexResponse: PostTextResponse;
-    }
-  | {
-      enableLexV2: true;
-      lexResponse: RecognizeTextResponse;
-    }) => {
-  if (enableLexV2) {
-    return LexV2.convertV2ToV1Memory(lexResponse.sessionState?.intent?.slots);
-  }
-
-  return lexResponse.slots || {};
+}: {
+  enableLexV2: boolean;
+  lexResponse: RecognizeTextResponse;
+}) => {
+  return LexV2.convertV2ToV1Memory(lexResponse.sessionState?.intent?.slots);
 };
 
 const LexClient = {
-  postText,
-  deleteSession,
-  isEndOfDialog,
+  postText: postTextV2,
+  deleteSession: deleteSessionV2,
+  isEndOfDialog: isEndOfDialogV2,
   getBotMemory,
 };
 
-export { LexV1, LexV2, LexClient };
+export { LexV2, LexClient };

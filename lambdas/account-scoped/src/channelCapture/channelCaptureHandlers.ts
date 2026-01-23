@@ -205,16 +205,12 @@ const triggerWithUserMessage = async (
 ) => {
   // trigger Lex first, in order to reduce the time between the creating the webhook and sending the message
   const lexResult = await LexClient.postText({
-    enableLexV2,
-    postTextParams: {
-      botLanguage,
-      botLanguageV1,
-      botSuffix,
-      environment,
-      helplineCode,
-      inputText,
-      sessionId: userId,
-    },
+    botLanguage,
+    botSuffix,
+    environment,
+    helplineCode,
+    inputText,
+    sessionId: userId,
   });
 
   let webhook;
@@ -261,17 +257,13 @@ const triggerWithUserMessage = async (
     throw lexResult.error;
   }
 
-  const { lexResponse, lexVersion } = lexResult.data;
+  const { lexResponse } = lexResult.data;
 
   let messages: string[] = [];
-  if (lexVersion === 'v1') {
-    messages.push(lexResponse.message || '');
-  } else if (lexVersion === 'v2') {
-    if (!lexResponse.messages) {
-      throw new Error('Lex response does not includes messages');
-    }
-    messages = messages.concat(lexResponse.messages.map(m => m.content || ''));
+  if (!lexResponse.messages) {
+    throw new Error('Lex response does not includes messages');
   }
+  messages = messages.concat(lexResponse.messages.map(m => m.content || ''));
 
   for (const message of messages) {
     if (isConversation) {
