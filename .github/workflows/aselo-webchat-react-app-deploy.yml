@@ -123,7 +123,7 @@ jobs:
 
       - name: Download target build from S3
         run: |
-          aws s3 sync 's3://assets-${{ inputs.environment }}.tl.techmatters.org/aselo-webchat-react-app//${{ github.ref_type }}/${{ github.ref_name }}' './aselo-webchat-react-app/temp' --delete --no-progress
+          aws s3 sync 's3://assets-${{ inputs.environment }}.tl.techmatters.org/aselo-webchat-react-app/${{ github.ref_type }}/${{ github.ref_name }}' './aselo-webchat-react-app/temp' --delete --no-progress
         shell: bash
 
       - name: debug
