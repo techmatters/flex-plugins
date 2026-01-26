@@ -126,10 +126,6 @@ jobs:
           aws s3 sync 's3://assets-${{ inputs.environment }}.tl.techmatters.org/aselo-webchat-react-app/${{ github.ref_type }}/${{ github.ref_name }}' './aselo-webchat-react-app/temp' --delete --no-progress
         shell: bash
 
-      - name: debug
-        run: ls -a -R
-        working-directory: aselo-webchat-react-app/temp
-
       - name: Copy target config and remove the rest
         run: |
           mv './mergedConfigs/${{ steps.helpline_code.outputs.lowercase }}/${{ inputs.environment }}.json' 'config.json'
