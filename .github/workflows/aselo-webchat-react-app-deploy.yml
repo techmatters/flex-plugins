@@ -13,7 +13,7 @@
 # along with this program.  If not, see https://www.gnu.org/licenses/.
 
 # Upload Webchat to S3 bucket with Github Actions
-name: Aselo Webchat React App Deploy
+name: Deploy Aselo Webchat React App - single helpline
 
 on:
   workflow_dispatch:
