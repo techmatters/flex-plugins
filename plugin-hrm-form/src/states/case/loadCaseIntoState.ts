@@ -30,6 +30,7 @@ export const loadCaseIntoState = ({
   referenceId,
   error = null,
   loading = false,
+  preserveWorkingCopy = false,
 }: {
   state: CaseState;
   caseId: Case['id'];
@@ -38,11 +39,13 @@ export const loadCaseIntoState = ({
   referenceId: string;
   loading?: boolean;
   error?: ParseFetchErrorResult;
+  preserveWorkingCopy?: boolean;
 }): CaseState => {
   const existingCase = state.cases[caseId];
   const statusUpdates = { loading, error };
 
   const existingReferences = existingCase?.references;
+  const existingWorkingCopy = existingCase?.caseWorkingCopy;
 
   if (!existingCase || !existingCase.connectedCase) {
     return {
@@ -51,7 +54,7 @@ export const loadCaseIntoState = ({
         ...state.cases,
         [caseId]: {
           connectedCase: newCase,
-          caseWorkingCopy: { sections: {} },
+          caseWorkingCopy: preserveWorkingCopy && existingWorkingCopy ? existingWorkingCopy : { sections: {} },
           availableStatusTransitions: getAvailableCaseStatusTransitions(newCase, definitionVersion),
           // eslint-disable-next-line no-nested-ternary
           references: existingReferences
