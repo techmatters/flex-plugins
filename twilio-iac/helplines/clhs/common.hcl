@@ -35,11 +35,13 @@ locals {
     task_queues = {
       master : {
         "target_workers" = "1==1",
-        "friendly_name"  = "Atención"
+        "friendly_name"  = "Atención",
+        "max_reserved_workers" = 5
       },
       priority : {
         "target_workers" = "1==1",
-        "friendly_name"  = "Contactos Urgentes"
+        "friendly_name"  = "Contactos Urgentes",
+        "max_reserved_workers" = 5
       }
       survey : {
         "target_workers" = "1==0",
