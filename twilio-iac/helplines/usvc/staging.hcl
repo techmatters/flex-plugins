@@ -16,7 +16,7 @@ locals {
       vc_url   = "https://assets-staging.tl.techmatters.org/webchat/usvc/vc-test-chat.html"
       dcvh_url = "https://assets-staging.tl.techmatters.org/webchat/usvc/dcvh-test-chat.html"
 
-
+      serverless_usvc_functions_url = "https://usvc-recordings-7169.twil.io"
       #VC Webchat
       send_message_vc_webchat_prequeue = "Thank you for contacting the VictimConnect Resource Center. One of our Victim Assistance Specialists will be with you shortly. To receive services in a preferred language other than English, please call 1-855-4-VICTIM (1-855-484-2846). Gracias por contactar el Centro de Recursos VictimConnect. La línea de VictimConnect no ofrece servicios por chat en español en este momento. Para obtener servicios en español o para hablar con un intérprete, por favor llame al 1-855-4-VICTIM (1-855-484-2846)."
       #VC SMS
