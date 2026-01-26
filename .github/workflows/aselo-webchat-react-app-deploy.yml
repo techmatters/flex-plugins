@@ -1,0 +1,63 @@
+# Copyright (C) 2021-2023 Technology Matters
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Affero General Public License as published
+# by the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Affero General Public License for more details.
+#
+# You should have received a copy of the GNU Affero General Public License
+# along with this program.  If not, see https://www.gnu.org/licenses/.
+
+# Upload Webchat to S3 bucket with Github Actions
+name: Aselo Webchat React App Deploy
+
+on:
+  workflow_dispatch:
+    inputs:
+      helpline_code:
+        description: "The short (usually 2 character) upper case code used to identify the helpline internally, e.g. ZA, IN, BR."
+        required: true
+        type: string
+      environment:
+        description: "Helpline Environment: development, staging, production"
+        required: true
+        type: string
+      recaptcha_verify_url:
+        description: "Recaptcha Verify URL"
+        required: false
+        type: string
+
+  workflow_call:
+    inputs:
+      helpline_code:
+        description: "The short (usually 2 character) upper case code used to identify the helpline internally, e.g. ZA, IN, BR."
+        required: true
+        type: string
+      environment:
+        description: "Helpline Environment"
+        required: true
+        type: string
+      recaptcha_verify_url:
+        description: "Recaptcha Verify URL"
+        required: false
+        type: string
+      send-slack-message:
+        description: If set to false a slack message will not be sent - useful for E2E test deploys.
+        default: 'true'
+        type: string
+      invalidate-cache:
+        description: 'Specifies if should invalidate CloudFront cache for form data. Defaults to true, set to false if the caller will handle cache invalidation.'
+        required: false
+        default: 'true'
+        type: string
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  build:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest

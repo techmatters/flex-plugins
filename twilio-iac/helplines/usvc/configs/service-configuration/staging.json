@@ -1,6 +1,5 @@
 {
     "attributes": {
-        "enforceZeroTranscriptRetention": true,
         "system_down" : false,
         "form_definitions_base_url": "https://assets-staging.tl.techmatters.org/form-definitions/",
         "resources_base_url": "",

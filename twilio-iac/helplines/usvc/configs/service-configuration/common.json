@@ -5,6 +5,7 @@
             "web",
             "sms"
         ],
+        "enforceZeroTranscriptRetention": false,
         "enableConferencing": true,
         "enableUnmaskingCalls": false,
         "hideAddToNewCaseButton": true,
