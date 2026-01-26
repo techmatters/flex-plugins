@@ -35,15 +35,12 @@ ${
       "type": "send-to-flex",
       "transitions": [
         {
-          "next": "run_subflow_debug",
           "event": "callComplete"
         },
         {
-          "next": "run_subflow_debug",
           "event": "failedToEnqueue"
         },
         {
-          "next": "run_subflow_debug",
           "event": "callFailure"
         }
       ],
@@ -96,7 +93,6 @@ ${
         }
       ],
       "properties": {
-        "voice": "Polly.Danielle-Generative",
         "number_of_digits": 1,
         "speech_timeout": "20",
         "offset": {
@@ -105,7 +101,7 @@ ${
         },
         "loop": 1,
         "finish_on_key": "#",
-        "say": "${flow_vars.gather_input_vc_voice_language}",
+        "play": "${flow_vars.serverless_usvc_functions_url}/gather_input_vc_voice_language.mp3",
         "language": "en-US",
         "stop_gather": false,
         "gather_language": "en",
@@ -168,13 +164,12 @@ ${
         }
       ],
       "properties": {
-        "voice": "Polly.Danielle-Generative",
         "offset": {
           "x": -660,
           "y": 1780
         },
         "loop": 1,
-        "say": "${flow_vars.play_message_vc_voice_en_prequeue}",
+        "play": "${flow_vars.serverless_usvc_functions_url}/play_message_vc_voice_en_prequeue.mp3",
         "language": "en-US"
       }
     },
@@ -194,7 +189,7 @@ ${
           "y": 1820
         },
         "loop": 1,
-        "say": "${flow_vars.play_message_vc_voice_es_prequeue}",
+        "play": "${flow_vars.serverless_usvc_functions_url}/play_message_vc_voice_es_prequeue.mp3",
         "language": "es-ES"
       }
     },
