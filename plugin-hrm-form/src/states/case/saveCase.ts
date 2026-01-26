@@ -25,6 +25,7 @@ import { getAvailableCaseStatusTransitions } from './caseStatus';
 import { connectToCase } from '../../services/ContactService';
 import { connectToCaseAsyncAction } from '../contacts/saveContact';
 import { markCaseAsUpdating } from './markCaseAsUpdating';
+import { referenceCase } from './referenceCase';
 
 const UPDATE_CASE_OVERVIEW_ACTION = 'case-action/update-overview';
 
@@ -129,13 +130,38 @@ const handleUpdateCaseOverviewFulfilledAction = (
 const handleCreateCaseFulfilledAction = (
   handleAction: CreateHandlerMap<HrmState>,
   asyncAction: typeof createCaseAsyncAction.fulfilled,
-) => handleAction(asyncAction, (state, { payload }): HrmState => updateConnectedCase(state, payload.newCase));
+) =>
+  handleAction(
+    asyncAction,
+    (state, { payload }): HrmState => {
+      const { newCase, connectedContact } = payload;
+      const updatedState = updateConnectedCase(state, newCase);
+      return {
+        ...updatedState,
+        connectedCase: referenceCase({
+          caseId: newCase.id,
+          referenceId: `contact-${connectedContact.id}`,
+          state: updatedState.connectedCase,
+        }),
+      };
+    },
+  );
 
 const handleConnectToCaseFulfilledAction = (
   handleAction: CreateHandlerMap<HrmState>,
   asyncAction: typeof connectToCaseAsyncAction.fulfilled,
 ) =>
-  handleAction(asyncAction, (state, { payload: { contact, contactCase } }) => updateConnectedCase(state, contactCase));
+  handleAction(asyncAction, (state, { payload: { contact, contactCase } }) => {
+    const updated = updateConnectedCase(state, contactCase);
+    return {
+      ...updated,
+      connectedCase: referenceCase({
+        caseId: contactCase.id,
+        referenceId: `contact-${contact.id}`,
+        state: updated.connectedCase,
+      }),
+    };
+  });
 
 const handleCancelCaseFulfilledAction = (
   handleAction: CreateHandlerMap<HrmState>,
