@@ -24,15 +24,13 @@ import {
 import { getConfigValue } from './config';
 
 export const defaultScript: ChatStatement[] = [
-  botStatement(
-    'Welcome. To help us better serve you, please answer the following questions. Are you calling about yourself? Please answer Yes or No.',
-  ),
+  botStatement('Welcome to the helpline. Please answer the following questions.'),
   callerStatement('yes'),
   botStatement('How old are you?'),
   callerStatement('10'),
   botStatement('What is your gender?'),
   callerStatement('girl'),
-  botStatement("We'll transfer you now. Please hold for a counsellor."),
+  botStatement('We will transfer you now. Please hold for a counsellor.'),
   counselorAutoStatement('Hi, this is the counsellor. How can I help you?'),
   callerStatement('CALLER TEST CHAT MESSAGE'),
   counselorStatement('COUNSELLOR TEST CHAT MESSAGE'),
