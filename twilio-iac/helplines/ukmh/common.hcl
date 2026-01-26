@@ -38,6 +38,10 @@ locals {
         "target_workers" = "(roles HAS 'supervisor')",
         "friendly_name"  = "The Mix - Supervisor"
       },
+      everyone : {
+        "target_workers" = "1==1",
+        "friendly_name"  = "Everyone"
+      },
       survey : {
         "target_workers" = "1==0",
         "friendly_name"  = "Survey"
