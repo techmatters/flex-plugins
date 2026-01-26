@@ -103,15 +103,8 @@ export const chatbotCallbackCleanup = async ({
     }
   };
 
-  const {
-    botLanguage,
-    botLanguageV1,
-    botSuffix,
-    enableLexV2,
-    environment,
-    helplineCode,
-    userId,
-  } = capturedChannelAttributes || {};
+  const { botLanguage, botSuffix, environment, helplineCode, userId } =
+    capturedChannelAttributes || {};
 
   const shouldDeleteSession =
     botLanguage && botSuffix && environment && helplineCode && userId;
@@ -120,15 +113,11 @@ export const chatbotCallbackCleanup = async ({
     // Delete Lex session. This is not really needed as the session will expire, but that depends on the config of Lex.
     shouldDeleteSession &&
       LexClient.deleteSession({
-        enableLexV2,
-        deleteSessionParams: {
-          botLanguage,
-          botLanguageV1,
-          botSuffix,
-          environment,
-          helplineCode,
-          sessionId: userId,
-        },
+        botLanguage,
+        botSuffix,
+        environment,
+        helplineCode,
+        sessionId: userId,
       }),
     // Update channel attributes (remove channelCapturedByBot and add memory)
     updateChannelOrConversationAttributes(releasedChannelAttributes),

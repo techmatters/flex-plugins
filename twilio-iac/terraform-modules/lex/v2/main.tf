@@ -42,7 +42,7 @@ data "aws_iam_role" "role-lex-v2-bot" {
 resource "aws_lexv2models_bot" "this" {
   provider    = aws.hl-region
   for_each = var.lex_v2_bots
-  name     = replace("${local.name_prefix}_${each.key}", "2", "")
+  name     = "${local.name_prefix}_${each.key}"
   description = each.value.description
   data_privacy {
     child_directed = each.value.child_directed
@@ -409,15 +409,7 @@ resource "null_resource" "update_slots" {
           AWS_REGION = var.helpline_region
         }
         command = <<EOT
-        aws lexv2-models update-slot \
-        --bot-id ${aws_lexv2models_bot.this[each.value.bot_name].id} \
-        --bot-version ${aws_lexv2models_bot_locale.this[each.value.bot_name].bot_version} \
-        --locale-id ${aws_lexv2models_bot_locale.this[each.value.bot_name].locale_id} \
-        --intent-id ${split(":", aws_lexv2models_intent.this["${each.value.bot_name}_${each.value.config.intentName}"].id)[0]} \
-        --slot-id ${split(",", aws_lexv2models_slot.this["${each.value.config.intentName}_${each.value.config.slotName}"].id)[4]}  \
-        --slot-name ${each.value.config.slotName} \
-        --slot-type-id ${startswith(each.value.config.slotTypeName, "AMAZON") ? each.value.config.slotTypeName : split(",", aws_lexv2models_slot_type.this["${each.value.bot_name}_${each.value.config.slotTypeName}"].id)[3]} \
-        --value-elicitation-setting '${replace(jsonencode(each.value.config.valueElicitationSetting), "'", "'\\''")}'
+        aws lexv2-models update-slot --bot-id ${aws_lexv2models_bot.this[each.value.bot_name].id} --bot-version ${aws_lexv2models_bot_locale.this[each.value.bot_name].bot_version} --locale-id ${aws_lexv2models_bot_locale.this[each.value.bot_name].locale_id} --intent-id ${split(":", aws_lexv2models_intent.this["${each.value.bot_name}_${each.value.config.intentName}"].id)[0]} --slot-id ${split(",", aws_lexv2models_slot.this["${each.value.config.intentName}_${each.value.config.slotName}"].id)[4]}  --slot-name ${each.value.config.slotName} --slot-type-id ${startswith(each.value.config.slotTypeName, "AMAZON") ? each.value.config.slotTypeName : split(",", aws_lexv2models_slot_type.this["${each.value.bot_name}_${each.value.config.slotTypeName}"].id)[3]} --value-elicitation-setting '${replace(jsonencode(each.value.config.valueElicitationSetting), "'", "'\\''")}'
         EOT
     }
     
@@ -442,17 +434,7 @@ resource "null_resource" "update_intent_settings" {
           AWS_REGION = var.helpline_region
         }
         command = <<EOT
-        aws lexv2-models update-intent \
-        --bot-id ${aws_lexv2models_bot.this[each.value.bot_name].id} \
-        --bot-version ${aws_lexv2models_bot_locale.this[each.value.bot_name].bot_version} \
-        --locale-id ${aws_lexv2models_bot_locale.this[each.value.bot_name].locale_id} \
-        --intent-id ${split(":", aws_lexv2models_intent.this["${each.value.bot_name}_${each.value.config.intentName}"].id)[0]} \
-        --intent-name ${each.value.config.intentName} \
-        ${each.value.config.intentClosingSetting != null ? "--intent-closing-setting '${replace(jsonencode(each.value.config.intentClosingSetting), "'", "'\\''")}'" : ""} \
-        ${each.value.config.initialResponseSetting != null ? "--initial-response-setting '${replace(jsonencode(each.value.config.initialResponseSetting), "'", "'\\''")}'" : ""} \
-        ${each.value.config.fulfillmentCodeHook != null ? "--fulfillment-code-hook '${replace(jsonencode(each.value.config.fulfillmentCodeHook), "'", "'\\''")}'" : ""} \
-        ${each.value.config.sampleUtterances != null ? "--sample-utterances '${replace(jsonencode(each.value.config.sampleUtterances), "'", "'\\''")}'" : ""} \
-        ${lookup(local.grouped_intent_slots, each.key, null) != null ? "--slot-priorities '${local.grouped_intent_slots[each.key].slot_priorities}'"  : ""} \
+        aws lexv2-models update-intent --bot-id ${aws_lexv2models_bot.this[each.value.bot_name].id} --bot-version ${aws_lexv2models_bot_locale.this[each.value.bot_name].bot_version} --locale-id ${aws_lexv2models_bot_locale.this[each.value.bot_name].locale_id} --intent-id ${split(":", aws_lexv2models_intent.this["${each.value.bot_name}_${each.value.config.intentName}"].id)[0]} --intent-name ${each.value.config.intentName} ${each.value.config.intentClosingSetting != null ? "--intent-closing-setting '${replace(jsonencode(each.value.config.intentClosingSetting), "'", "'\\''")}'" : ""} ${each.value.config.initialResponseSetting != null ? "--initial-response-setting '${replace(jsonencode(each.value.config.initialResponseSetting), "'", "'\\''")}'" : ""} ${each.value.config.fulfillmentCodeHook != null ? "--fulfillment-code-hook '${replace(jsonencode(each.value.config.fulfillmentCodeHook), "'", "'\\''")}'" : ""} ${each.value.config.sampleUtterances != null ? "--sample-utterances '${replace(jsonencode(each.value.config.sampleUtterances), "'", "'\\''")}'" : ""} ${lookup(local.grouped_intent_slots, each.key, null) != null ? "--slot-priorities '${local.grouped_intent_slots[each.key].slot_priorities}'"  : ""}
         EOT
     }
    depends_on = [
@@ -463,7 +445,7 @@ resource "null_resource" "update_intent_settings" {
 
 resource "aws_ssm_parameter" "bot_config" {
   for_each = var.lex_v2_bots
-  name  = "${replace("${local.ssm_variable_name_prefix}_${each.key}", "2", "")}"
+  name  = "${local.ssm_variable_name_prefix}_${each.key}"
   type  = "SecureString"
   value = jsonencode({
     botId      = "${aws_lexv2models_bot.this["${each.key}"].id}"
