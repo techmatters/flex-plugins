@@ -1,7 +1,7 @@
 {
   "SideNavSettings": "Configuración",
   "TaskFilterWrapping": "Tareas en Cierre",
-  "TaskHeaderStatusWrapup": "Terminar",
+  "TaskHeaderStatusWrapup": "En Cierre",
   "TaskHeaderEndCall": "Cortar",
   "TabbedForms-ContactNotLoaded-Retry": "Reintentar",
   "CaseSection-Add/note": "Agregar una Nota",

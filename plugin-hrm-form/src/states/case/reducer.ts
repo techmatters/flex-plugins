@@ -132,6 +132,8 @@ const loadCaseListIntoState = (
         definitionVersion: caseDefinitionVersion,
         newCase: caseToAdd,
         referenceId,
+        // Any cases being worked on elsewhere when the list is loaded should have in-progress edits preserved
+        preserveWorkingCopy: true,
       });
     }, withoutOldSearchResults);
   }

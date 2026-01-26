@@ -48,7 +48,6 @@ locals {
   environment          = include.root.locals.config.environment
   lex_bot_languages    = include.root.locals.config.lex_bot_languages
   lex_v2_bot_languages = include.root.locals.config.lex_v2_bot_languages
-  enable_lex_v2        = include.root.locals.config.enable_lex_v2
 
   lex_bots = tomap({
     for language, bots in local.lex_bot_languages :
@@ -112,7 +111,7 @@ locals {
     )
   })
 
-  lex_v2_bots = local.enable_lex_v2 ? {
+  lex_v2_bots = {
     for language, bots in local.lex_v2_bot_languages :
     language => merge([
       for bot in bots :
@@ -126,11 +125,11 @@ locals {
         "/app/twilio-iac/helplines/configs/lex_v2/${substr(language, 0, 2)}/bots/${bot}.json"
       ))
     ]...)
-  } : null
+  }
   //leaving for debugging purposes
   //print2 = run_cmd("echo", jsonencode(local.lex_v2_bots))
   /*
-  lex_v2_slot_types_names = local.enable_lex_v2 ? tomap({
+  lex_v2_slot_types_names = tomap({
     for language, bots in local.lex_v2_bot_languages :
     language => distinct(
       flatten([
@@ -143,10 +142,10 @@ locals {
         ]
       ])
     )
-  }) : {}
+  })
   */
 
-  lex_v2_slot_types_names = local.enable_lex_v2 ? tomap({
+  lex_v2_slot_types_names = tomap({
     for language, bots in local.lex_v2_bot_languages :
     language => distinct(
       flatten([
@@ -161,9 +160,9 @@ locals {
         ]
       ])
     )
-  }) : {}
+  })
 
-  lex_v2_slot_types = local.enable_lex_v2 ? {
+  lex_v2_slot_types =  {
     for language, bots in local.lex_v2_bot_languages :
     language => [
       for slot_type in local.lex_v2_slot_types_names[language] : {
@@ -182,13 +181,13 @@ locals {
       }
       if !startswith(slot_type.name, "AMAZON")
     ]
-  } : null
+  }
 
   //leaving for debugging purposes
   //print6 = run_cmd("echo", jsonencode(local.lex_v2_slot_types))
 
   /*
-  lex_v2_intent_names = local.enable_lex_v2 ? tomap({
+  lex_v2_intent_names = tomap({
     for language, bots in local.lex_v2_bot_languages :
     language => distinct(
       flatten([
@@ -201,9 +200,9 @@ locals {
         ]
       ])
     )
-  }) : {}
+  })
   */
-  lex_v2_intent_names = local.enable_lex_v2 ? tomap({
+  lex_v2_intent_names = tomap({
     for language, bots in local.lex_v2_bot_languages :
     language => distinct(
       flatten([
@@ -216,9 +215,9 @@ locals {
         ]
       ])
     )
-  }) : {}
+  })
 
-  lex_v2_intents = local.enable_lex_v2 ? {
+  lex_v2_intents = {
     for language, bots in local.lex_v2_bot_languages :
     language => [
       for intent in local.lex_v2_intent_names[language] : {
@@ -236,13 +235,13 @@ locals {
         )
       }
     ]
-  } : null
+  }
 
   //leaving for debugging purposes
   //print8 = run_cmd("echo", jsonencode(local.lex_v2_intents))
 
   /*
-lex_v2_slot_names = local.enable_lex_v2 ? tomap({
+lex_v2_slot_names = tomap({
     for language, bots in local.lex_v2_bot_languages :
     language => distinct(
       flatten([
@@ -255,9 +254,9 @@ lex_v2_slot_names = local.enable_lex_v2 ? tomap({
         ]
       ])
     )
-  }) : {}
+  })
 */
-  lex_v2_slot_names = local.enable_lex_v2 ? tomap({
+  lex_v2_slot_names = tomap({
     for language, bots in local.lex_v2_bot_languages :
     language => distinct(
       flatten([
@@ -272,9 +271,9 @@ lex_v2_slot_names = local.enable_lex_v2 ? tomap({
         ]
       ])
     )
-  }) : {}
+  })
 
-  lex_v2_slots = local.enable_lex_v2 ? {
+  lex_v2_slots = {
   for language, bots in local.lex_v2_bot_languages :
   language => [
     for slot in local.lex_v2_slot_names[language] : {
@@ -292,7 +291,7 @@ lex_v2_slot_names = local.enable_lex_v2 ? tomap({
       )
     }
   ]
-} : null
+}
 
   //leaving for debugging purposes
   //print9 = run_cmd("echo", jsonencode(local.lex_v2_slots))
