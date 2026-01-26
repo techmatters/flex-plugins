@@ -17,23 +17,19 @@ name: End to End Testing CI
 # Action
 on: [pull_request, workflow_dispatch]
 concurrency: e2e
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "build"
-  build:
-    # The type of runner that the job will run on
+  e2e_test:
+    name: E2E tests
     runs-on: ubuntu-latest
 
-    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - name: Checkout Branch
         uses: actions/checkout@v6
 
       - name: Use Node.js
         uses: actions/setup-node@v6
         with:
-          node-version: '20.x' # some twilio dev deps still complain about node 22 :-(
+          node-version: '22.x'
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v5
