@@ -121,7 +121,7 @@ export const handleChatbotCallback: AccountScopedHandler = async (
       const capturedChannelAttributes =
         channelAttributes.capturedChannelAttributes as CapturedChannelAttributes;
 
-      const { botLanguage, botSuffix, enableLexV2, environment, helplineCode, userId } =
+      const { botLanguage, botSuffix, environment, helplineCode, userId } =
         capturedChannelAttributes;
 
       const lexResult = await LexClient.postText({
@@ -158,7 +158,7 @@ export const handleChatbotCallback: AccountScopedHandler = async (
           conversation,
           channel,
           channelAttributes,
-          memory: LexClient.getBotMemory({ enableLexV2, lexResponse }),
+          memory: LexClient.getBotMemory({ lexResponse }),
           twilioWorkspaceSid,
         });
       }

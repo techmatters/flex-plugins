@@ -35,12 +35,10 @@ const releaseTypes = ['triggerStudioFlow', 'postSurveyComplete'] as const;
 export type ReleaseTypes = (typeof releaseTypes)[number];
 
 export type CapturedChannelAttributes = {
-  enableLexV2: boolean;
   userId: string;
   environment: string;
   helplineCode: string;
   botLanguage: string;
-  botLanguageV1: string;
   botSuffix: string;
   controlTaskSid: string;
   releaseType: ReleaseTypes;
@@ -97,7 +95,6 @@ const updateChannelWithCapture = async (
     environment,
     helplineCode,
     botLanguage,
-    botLanguageV1,
     botSuffix,
     controlTaskSid,
     chatbotCallbackWebhookSid,
@@ -128,7 +125,6 @@ const updateChannelWithCapture = async (
         environment,
         helplineCode,
         botLanguage,
-        botLanguageV1,
         botSuffix,
         controlTaskSid,
         chatbotCallbackWebhookSid,
@@ -150,11 +146,9 @@ const updateChannelWithCapture = async (
 
 type CaptureChannelOptions = {
   accountSid: AccountSID;
-  enableLexV2: boolean;
   environment: string;
   helplineCode: string;
   botLanguage: string;
-  botLanguageV1: string;
   botSuffix: string;
   inputText: string;
   userId: string;
@@ -183,13 +177,11 @@ const triggerWithUserMessage = async (
   channelOrConversation: ChannelInstance | ConversationInstance,
   {
     accountSid,
-    enableLexV2,
     userId,
     environment,
     helplineCode,
     botSuffix,
     botLanguage,
-    botLanguageV1,
     inputText,
     controlTaskSid,
     releaseType,
@@ -229,12 +221,10 @@ const triggerWithUserMessage = async (
   }
 
   await updateChannelWithCapture(channelOrConversation, {
-    enableLexV2,
     userId,
     environment,
     helplineCode,
     botLanguage,
-    botLanguageV1,
     botSuffix,
     controlTaskSid,
     releaseType,
@@ -289,12 +279,10 @@ const triggerWithNextMessage = async (
   channelOrConversation: ChannelInstance | ConversationInstance,
   {
     accountSid,
-    enableLexV2,
     userId,
     environment,
     helplineCode,
     botLanguage,
-    botLanguageV1,
     botSuffix,
     inputText,
     controlTaskSid,
@@ -338,12 +326,10 @@ const triggerWithNextMessage = async (
 
   // const updated =
   await updateChannelWithCapture(channelOrConversation, {
-    enableLexV2,
     userId,
     environment,
     helplineCode,
     botLanguage,
-    botLanguageV1,
     botSuffix,
     controlTaskSid,
     releaseType,
@@ -562,17 +548,12 @@ export const handleChannelCapture = async (
       ? await twilioClient.conversations.v1.conversations(conversationSid).fetch()
       : await twilioClient.chat.v2.services(chatServiceSid).channels(channelSid!).fetch();
 
-    const serviceConfig = await twilioClient.flexApi.v1.configuration.get().fetch();
-    const enableLexV2 = Boolean(serviceConfig.attributes.feature_flags.enable_lex_v2);
-
     const options: CaptureChannelOptions = {
       accountSid,
-      enableLexV2,
       environment: environment.toLowerCase(),
       helplineCode: helplineCode.toLowerCase(),
       botSuffix,
       botLanguage: languageSanitized.toLowerCase(),
-      botLanguageV1: languageSanitized,
       releaseType,
       studioFlowSid,
       memoryAttribute,

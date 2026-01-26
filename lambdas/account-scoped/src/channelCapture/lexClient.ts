@@ -17,7 +17,6 @@ import {
   LexRuntimeV2Client,
   RecognizeTextCommand,
   DeleteSessionCommand as DeleteSessionCommandV2,
-  Slot,
   RecognizeTextResponse,
 } from '@aws-sdk/client-lex-runtime-v2';
 import { isErr, newErr, newOk } from '../Result';
@@ -39,7 +38,7 @@ type DeleteSessionParams = {
   sessionId: string;
 };
 
-const getBotNameV2 = async ({
+const getBotName = async ({
   botLanguage,
   botSuffix,
   environment,
@@ -75,7 +74,7 @@ const getBotNameV2 = async ({
   }
 };
 
-const postTextV2 = async ({
+const postText = async ({
   botLanguage,
   botSuffix,
   environment,
@@ -84,7 +83,7 @@ const postTextV2 = async ({
   sessionId,
 }: PostTextParams & { botLanguage: string }) => {
   try {
-    const result = await getBotNameV2({
+    const result = await getBotName({
       botLanguage,
       botSuffix,
       environment,
@@ -122,10 +121,10 @@ const postTextV2 = async ({
   }
 };
 
-const isEndOfDialogV2 = (lexResponse: RecognizeTextResponse) =>
+const isEndOfDialog = (lexResponse: RecognizeTextResponse) =>
   lexResponse.sessionState?.dialogAction?.type === 'Close';
 
-const deleteSessionV2 = async ({
+const deleteSession = async ({
   botLanguage,
   botSuffix,
   environment,
@@ -133,7 +132,7 @@ const deleteSessionV2 = async ({
   sessionId,
 }: DeleteSessionParams & { botLanguage: string }) => {
   try {
-    const result = await getBotNameV2({
+    const result = await getBotName({
       botLanguage,
       botSuffix,
       environment,
@@ -166,45 +165,21 @@ const deleteSessionV2 = async ({
   }
 };
 
-const convertV2ToV1Memory = (
-  memory:
-    | {
-        [key: string]: Slot;
-      }
-    | undefined,
-): LexMemory => {
-  if (!memory) {
+const getBotMemory = ({ lexResponse }: { lexResponse: RecognizeTextResponse }) => {
+  const { slots } = lexResponse.sessionState?.intent || {};
+  if (!slots) {
     return {};
   }
 
-  return Object.entries(memory).reduce(
+  return Object.entries(slots).reduce(
     (accum, [q, { value }]) => ({ ...accum, [q]: value?.interpretedValue || '' }),
     {} as LexMemory,
   );
 };
 
-const LexV2 = {
-  postText: postTextV2,
-  isEndOfDialog: isEndOfDialogV2,
-  deleteSession: deleteSessionV2,
-  getBotName: getBotNameV2,
-  convertV2ToV1Memory,
-};
-
-const getBotMemory = ({
-  lexResponse,
-}: {
-  enableLexV2: boolean;
-  lexResponse: RecognizeTextResponse;
-}) => {
-  return LexV2.convertV2ToV1Memory(lexResponse.sessionState?.intent?.slots);
-};
-
-const LexClient = {
-  postText: postTextV2,
-  deleteSession: deleteSessionV2,
-  isEndOfDialog: isEndOfDialogV2,
+export const LexClient = {
+  postText,
+  deleteSession,
+  isEndOfDialog,
   getBotMemory,
 };
-
-export { LexV2, LexClient };
