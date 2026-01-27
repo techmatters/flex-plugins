@@ -69,18 +69,6 @@ jobs:
         uses: "ASzc/change-string-case-action@v6"
         with:
           string: "${{ inputs.helpline_code }}"
-      # Set SHORT_ENVIRONMENT_CODE
-      - name: Production Environment
-        if: inputs.environment == 'production'
-        run: echo "SHORT_ENVIRONMENT_CODE=prod" >> $GITHUB_ENV
-
-      - name: Staging Environment
-        if: inputs.environment == 'staging'
-        run: echo "SHORT_ENVIRONMENT_CODE=stg" >> $GITHUB_ENV
-
-      - name: Development Environment
-        if: inputs.environment == 'development'
-        run: echo "SHORT_ENVIRONMENT_CODE=dev" >> $GITHUB_ENV
 
       # Setup credentials to access AWS for parameters
       - name: Configure AWS credentials
@@ -132,18 +120,6 @@ jobs:
         working-directory: aselo-webchat-react-app/temp
         shell: bash
 
-      # Upload the app to S3 corresponding buckets
-      - name: Upload Webchat to S3 bucket
-        uses: jakejarvis/s3-sync-action@master
-        with:
-          args: --acl public-read --follow-symlinks --exclude '*' --include '*.js' --include '*.js.map' --include '*.json' --include '*.css' --include 'index.html' --content-encoding 'gzip'
-        env:
-          AWS_S3_BUCKET: tl-public-chat-${{ steps.helpline_code.outputs.lowercase }}-$SHORT_ENVIRONMENT_CODE
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_REGION: "${{ secrets.AWS_DEFAULT_REGION }}"
-          SOURCE_DIR: "aselo-webchat-react-app/temp"
-          DEST_DIR: "aselo-webchat-react-app"
       - name: Upload Webchat to S3 bucket
         uses: jakejarvis/s3-sync-action@master
         with:
