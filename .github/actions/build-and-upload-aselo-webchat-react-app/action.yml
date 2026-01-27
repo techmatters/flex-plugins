@@ -40,28 +40,6 @@ runs:
         aws-access-key-id: ${{ inputs.aws-access-key-id }}
         aws-secret-access-key: ${{ inputs.aws-secret-access-key }}
         aws-region: ${{ inputs.aws-region }}
-    # Get AWS parameters
-    # - name: Set Fullstory org id
-    #   uses: "marvinpinto/action-inject-ssm-secrets@latest"
-    #   with:
-    #     ssm_parameter: "FULLSTORY_ID"
-    #     env_variable_name: "FULLSTORY_ID"
-
-    # - name: Create secret.js
-    #   run: |
-    #     touch ./src/private/secret.js
-    #   working-directory: ./plugin-hrm-form
-    #   shell: bash
-    # - name: Fill secret.js
-    #   run: |
-    #     cat <<EOT >> ./src/private/secret.js
-    #     export const datadogAccessToken = '$DATADOG_ACCESS_TOKEN';
-    #     export const datadogApplicationID = '$DATADOG_APP_ID';
-    #     export const fullStoryId = '$FULLSTORY_ID';
-    #     EOT
-    #   working-directory: ./plugin-hrm-form
-    #   shell: bash
-
     # Build aselo-webchat-react-app 
     - name: Run build command
       run: npm run build ## TODO: remove CI=false once lint is fixed
@@ -73,27 +51,19 @@ runs:
       with:
         script: |
           core.setFailed('Bundle was not built!')
-    # Zip files individually
+    - name: Merge configs for helplines and copy to build
+      run: |
+        npm run mergeConfigs
+        mv mergedConfigs build/mergedConfigs
+      working-directory: ./aselo-webchat-react-app
+      shell: bash
+    # Zip files recursively
     # Cloudfront only zips files under 10000000 bytes on the fly, so we need to store these zipped
     - name: Zip files
       run: |
-        gzip -9 -v app.css
-        gzip -9 -v app.js
-        gzip -9 -v asset-manifest.json
-        gzip -9 -v index.html
-        mv app.css.gz app.css
-        mv app.js.gz app.js
-        mv asset-manifest.json.gz asset-manifest.json
-        mv index.html.gz index.html
+        gzip -r -9 .
+        find . -type f -name '*.gz' -exec sh -c 'mv -n "$1" "${1%.gz}"' _ {} \;
       working-directory: ./aselo-webchat-react-app/build
-      shell: bash
-    - name: Zip js files
-      run: |
-        gzip -9 -v webchat.min.js
-        gzip -9 -v webchat.min.js.map
-        mv webchat.min.js.gz webchat.min.js
-        mv webchat.min.js.map.gz webchat.min.js.map
-      working-directory: ./aselo-webchat-react-app/build/static/js
       shell: bash
     # Upload to S3 buckets
     - name: Upload files to Development S3 bucket
