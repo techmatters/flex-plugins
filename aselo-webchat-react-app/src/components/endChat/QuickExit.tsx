@@ -32,6 +32,11 @@ type Props = {
 export default function QuickExit({ channelSid, token, language, finishTask }: Props) {
   const dispatch = useDispatch();
   const config = useSelector(selectConfig);
+
+  if (!config) {
+    return null;
+  }
+
   const configuredBackend = contactBackend(config);
   const handleExit = async () => {
     // Clear chat history and open a new location
@@ -49,7 +54,7 @@ export default function QuickExit({ channelSid, token, language, finishTask }: P
   };
 
   return (
-    <Button variant="destructive" style={{ backgroundColor: '#d22f2f' }} onClick={handleExit}>
+    <Button variant="destructive" css={{ backgroundColor: '#d22f2f' }} onClick={handleExit}>
       QuickExitButtonLabel QuickExitIcon
     </Button>
   );

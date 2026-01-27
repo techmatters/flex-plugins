@@ -16,7 +16,7 @@
 
 import { Client, Conversation, Participant, Message, User } from '@twilio/conversations';
 import { GenericThemeShape } from '@twilio-paste/theme';
-import { AlertVariants } from '@twilio-paste/core/alert';
+import { AlertProps } from '@twilio-paste/core/alert';
 
 import { FileAttachmentConfig } from '../definitions';
 import { TaskState } from '../task';
@@ -79,7 +79,7 @@ export type Notification = {
   onDismiss?: () => void;
   message: string;
   timeout?: number;
-  type: AlertVariants;
+  type: AlertProps['variant'];
 };
 
 export type NotificationState = Notification[];

@@ -25,7 +25,7 @@ import { initSession } from '../store/actions/initActions';
 import { changeEngagementPhase } from '../store/actions/genericActions';
 import { EntryPoint } from './EntryPoint';
 
-const AnyCustomizationProvider: FC<CustomizationProviderProps & { style: CSSProperties }> = CustomizationProvider;
+const AnyCustomizationProvider: FC<CustomizationProviderProps> = CustomizationProvider;
 
 export function WebchatWidget() {
   const theme = useSelector((state: AppState) => state.config.theme);

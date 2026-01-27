@@ -18,10 +18,10 @@ import { useSelector } from 'react-redux';
 import { localizeKey } from './localizeKey';
 import { selectCurrentTranslations } from '../store/config.reducer';
 
-const LocalizedTemplate: React.FC<{ key: string } & Record<string, string>> = ({ key, ...parameters }) => {
+const LocalizedTemplate: React.FC<{ code: string } & Record<string, string>> = ({ code, ...parameters }) => {
   const translations = useSelector(selectCurrentTranslations);
   const translateForCurrentLocale = localizeKey(translations);
-  return <>{translateForCurrentLocale(key, parameters)}</>;
+  return <>{translateForCurrentLocale(code, parameters)}</>;
 };
 
 export default LocalizedTemplate;

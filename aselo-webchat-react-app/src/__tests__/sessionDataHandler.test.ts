@@ -14,6 +14,8 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
+import { TextDecoder, TextEncoder } from 'util';
+
 import fetchMock from 'fetch-mock-jest';
 
 import { sessionDataHandler, contactBackend } from '../sessionDataHandler';
@@ -22,6 +24,7 @@ import { ConfigState } from '../store/definitions';
 
 jest.mock('../logger');
 
+Object.assign(global, { TextDecoder, TextEncoder });
 Object.defineProperty(navigator, 'mediaCapabilities', {
   writable: true,
   value: {
@@ -33,6 +36,8 @@ const TEST_CONFIG_STATE: ConfigState = {
   aseloBackendUrl: 'http://mock-aselo-backend',
   deploymentKey: '',
   helplineCode: 'xx',
+  translations: {},
+  defaultLocale: 'en-US',
 };
 
 const originalEnv = process.env;
@@ -87,7 +92,9 @@ describe('session data handler', () => {
         .mockImplementation(async (): Promise<never> => mockFetch as Promise<never>);
       sessionDataHandler.setRegion('stage');
       await contactBackend(TEST_CONFIG_STATE)('/Webchat/Tokens/Refresh', { DeploymentKey: 'dk', token: 'token' });
-      expect(fetchSpy.mock.calls[0][0]).toEqual('https://flex-api.stage.twilio.com/v2/Webchat/Tokens/Refresh');
+      expect(fetchSpy.mock.calls[0][0]).toEqual(
+        `${TEST_CONFIG_STATE.aseloBackendUrl}/lambda/twilio/account-scoped/XX/Webchat/Tokens/Refresh`,
+      );
     });
 
     it('should call correct prod url', async () => {
@@ -96,7 +103,9 @@ describe('session data handler', () => {
         .spyOn(window, 'fetch')
         .mockImplementation(async (): Promise<never> => mockFetch as Promise<never>);
       await contactBackend(TEST_CONFIG_STATE)('/Webchat/Tokens/Refresh', { DeploymentKey: 'dk', token: 'token' });
-      expect(fetchSpy.mock.calls[0][0]).toEqual('https://flex-api.twilio.com/v2/Webchat/Tokens/Refresh');
+      expect(fetchSpy.mock.calls[0][0]).toEqual(
+        `${TEST_CONFIG_STATE.aseloBackendUrl}/lambda/twilio/account-scoped/XX/Webchat/Tokens/Refresh`,
+      );
     });
   });
 
@@ -127,7 +136,7 @@ describe('session data handler', () => {
 
       const expected = {
         ...tokenPayload,
-        loginTimestamp: currentTime,
+        loginTimestamp: currentTime.toString(),
       };
       expect(setLocalStorageItemSpy).toHaveBeenCalledTimes(2);
       expect(setLocalStorageItemSpy).toHaveBeenNthCalledWith(
@@ -138,7 +147,7 @@ describe('session data handler', () => {
           expiration: '',
           identity: '',
           conversationSid: '',
-          loginTimestamp: currentTime,
+          loginTimestamp: currentTime.toString(),
         }),
       );
       expect(setLocalStorageItemSpy).toHaveBeenNthCalledWith(2, 'TWILIO_WEBCHAT_WIDGET', JSON.stringify(expected));

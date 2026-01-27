@@ -18,7 +18,6 @@ import { AnyAction, Reducer } from 'redux';
 
 import { AppState, ConfigState } from './definitions';
 import { ACTION_CHANGE_LOCALE, ACTION_LOAD_CONFIG } from './actions/actionTypes';
-import { AppState } from './store';
 
 const initialState: ConfigState = {
   defaultLocale: 'xx-XX',
