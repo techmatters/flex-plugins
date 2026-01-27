@@ -13,15 +13,15 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
-import { useSelector } from "react-redux";
+import { useSelector } from 'react-redux';
 
-import { localizeKey } from "./localizeKey";
-import { selectCurrentTranslations } from "../store/config.reducer";
+import { localizeKey } from './localizeKey';
+import { selectCurrentTranslations } from '../store/config.reducer';
 
 const LocalizedTemplate: React.FC<{ key: string } & Record<string, string>> = ({ key, ...parameters }) => {
-    const translations = useSelector(selectCurrentTranslations);
-    const translateForCurrentLocale = localizeKey(translations);
-    return <>{translateForCurrentLocale(key, parameters)}</>;
+  const translations = useSelector(selectCurrentTranslations);
+  const translateForCurrentLocale = localizeKey(translations);
+  return <>{translateForCurrentLocale(key, parameters)}</>;
 };
 
 export default LocalizedTemplate;

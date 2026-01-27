@@ -14,43 +14,43 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import {useDispatch, useSelector} from "react-redux";
-import { Button } from "@twilio-paste/core/button";
+import { useDispatch, useSelector } from 'react-redux';
+import { Button } from '@twilio-paste/core/button';
 
-import { contactBackend, sessionDataHandler } from "../../sessionDataHandler";
-import { changeEngagementPhase, updatePreEngagementData } from "../../store/actions/genericActions";
-import { EngagementPhase } from "../../store/definitions";
-import {selectConfig} from "../../store/config.reducer";
+import { contactBackend, sessionDataHandler } from '../../sessionDataHandler';
+import { changeEngagementPhase, updatePreEngagementData } from '../../store/actions/genericActions';
+import { EngagementPhase } from '../../store/definitions';
+import { selectConfig } from '../../store/config.reducer';
 
 type Props = {
-    channelSid: string;
-    token: string;
-    language?: string;
-    finishTask: boolean;
+  channelSid: string;
+  token: string;
+  language?: string;
+  finishTask: boolean;
 };
 
 export default function QuickExit({ channelSid, token, language, finishTask }: Props) {
-    const dispatch = useDispatch();
-    const config = useSelector(selectConfig);
-    const configuredBackend = contactBackend(config);
-    const handleExit = async () => {
-        // Clear chat history and open a new location
-        sessionDataHandler.clear();
-        dispatch(updatePreEngagementData({ email: "", name: "", query: "" }));
-        dispatch(changeEngagementPhase({ phase: EngagementPhase.PreEngagementForm }));
-        if (finishTask) {
-            // Only if we started a task
-            try {
-                await configuredBackend("/endChat", { channelSid, token, language });
-            } catch (error) {
-                console.error(error);
-            }
-        }
-    };
+  const dispatch = useDispatch();
+  const config = useSelector(selectConfig);
+  const configuredBackend = contactBackend(config);
+  const handleExit = async () => {
+    // Clear chat history and open a new location
+    sessionDataHandler.clear();
+    dispatch(updatePreEngagementData({ email: '', name: '', query: '' }));
+    dispatch(changeEngagementPhase({ phase: EngagementPhase.PreEngagementForm }));
+    if (finishTask) {
+      // Only if we started a task
+      try {
+        await configuredBackend('/endChat', { channelSid, token, language });
+      } catch (error) {
+        console.error(error);
+      }
+    }
+  };
 
-    return (
-        <Button variant="destructive" style={{ backgroundColor: "#d22f2f" }} onClick={handleExit}>
-            QuickExitButtonLabel QuickExitIcon
-        </Button>
-    );
+  return (
+    <Button variant="destructive" style={{ backgroundColor: '#d22f2f' }} onClick={handleExit}>
+      QuickExitButtonLabel QuickExitIcon
+    </Button>
+  );
 }
