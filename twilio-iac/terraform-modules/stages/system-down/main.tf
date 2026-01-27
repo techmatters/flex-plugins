@@ -25,7 +25,9 @@ data "terraform_remote_state" "provision" {
     bucket   = "tl-terraform-state-${var.environment}"
     key      = "twilio/${var.short_helpline}/provision/terraform.tfstate"
     region   = "us-east-1"
-    role_arn = "arn:aws:iam::${local.aws_account_id}:role/tf-twilio-iac-${var.environment}"
+    assume_role = {
+      role_arn = "arn:aws:iam::${local.aws_account_id}:role/tf-twilio-iac-${var.environment}"
+    }
   }
 }
 
