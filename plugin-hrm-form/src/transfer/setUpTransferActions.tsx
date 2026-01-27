@@ -30,17 +30,20 @@ import {
 import * as TransferHelpers from './transferTaskState';
 import { transferModes } from '../states/DomainConstants';
 import { recordEvent } from '../fullStory';
-import { transferChatStart } from '../services/ServerlessService';
-import { getHrmConfig } from '../hrmConfig';
+import { getAseloFeatureFlags, getHrmConfig } from '../hrmConfig';
 import { RootState } from '../states';
 import { reactivateAseloListeners } from '../conversationListeners';
 import selectContactByTaskSid from '../states/contacts/selectContactByTaskSid';
 import { ContactState } from '../states/contacts/existingContacts';
 import { saveFormSharedState } from './formDataTransfer';
+import { serverlessChatTransferStart, transferStart } from '../services/transferService';
 
 type SetupObject = ReturnType<typeof getHrmConfig>;
 type ActionPayload = { task: ITask };
-type ActionPayloadWithOptions = ActionPayload & { options: { mode: string }; targetSid: string };
+type ActionPayloadWithOptions = ActionPayload & {
+  options: { mode: typeof transferModes[keyof typeof transferModes] };
+  targetSid: string;
+};
 const DEFAULT_TRANSFER_MODE = transferModes.cold;
 
 export const TransfersNotifications = {
@@ -71,12 +74,14 @@ const getStateContactForms = (taskSid: string): ContactState => {
 };
 
 /**
- * Custom override for TransferTask action. Saves the form to share with another counselor (if possible) and then starts the transfer
+ * Custom override for TransferTask action. Saves the form to ensure it's up to date on the backend (if possible) and then starts the transfer
  */
 const customTransferTask = (setupObject: SetupObject): ReplacedActionFunction => async (
   payload: ActionPayloadWithOptions,
   original: ActionFunction,
+  // eslint-disable-next-line sonarjs/cognitive-complexity
 ) => {
+  const featureFlags = getAseloFeatureFlags();
   const mode = payload.options.mode || DEFAULT_TRANSFER_MODE;
 
   /*
@@ -110,9 +115,9 @@ const customTransferTask = (setupObject: SetupObject): ReplacedActionFunction =>
     const { conferenceSid } = payload.task.conference || {};
     const conferenceSidFromAttributes = payload.task.attributes?.conference?.sid;
     if (!conferenceSid && !conferenceSidFromAttributes) {
-      console.log('>> Could not find any conferenceSid');
+      console.debug('>> Could not find any conferenceSid');
     } else if (conferenceSid && !conferenceSidFromAttributes) {
-      console.log('>> Updating task attributes with conferenceSid');
+      console.debug('>> Updating task attributes with conferenceSid');
       // const customer = payload.task.conference?.participants.find(p => p.participantType === 'customer').participantSid;
       await payload.task.setAttributes({
         ...payload.task.attributes,
@@ -125,13 +130,14 @@ const customTransferTask = (setupObject: SetupObject): ReplacedActionFunction =>
         },
       });
     }
-
     const disableTransfer = !TransferHelpers.canTransferConference(payload.task);
 
     if (disableTransfer) {
       window.alert(Manager.getInstance().strings['Transfer-CannotTransferTooManyParticipants']);
     } else {
-      return safeTransfer(() => original(payload), payload.task);
+      const targetType = payload.targetSid.startsWith('WK') ? 'worker' : 'queue';
+      const featureFlag = `use_custom_voice_transfers_for_${mode.toLowerCase()}_${targetType}_transfers`;
+      if (!getAseloFeatureFlags()[featureFlag]) return safeTransfer(() => original(payload), payload.task);
     }
   }
 
@@ -142,7 +148,13 @@ const customTransferTask = (setupObject: SetupObject): ReplacedActionFunction =>
     ignoreAgent: workerSid,
   };
 
-  return safeTransfer(() => transferChatStart(body), payload.task);
+  return safeTransfer(
+    () =>
+      featureFlags.use_twilio_lambda_for_starting_chat_transfers
+        ? transferStart(body)
+        : serverlessChatTransferStart(body),
+    payload.task,
+  );
 };
 
 const afterCancelTransfer = (payload: ActionPayload) => TransferHelpers.clearTransferMeta(payload.task);
