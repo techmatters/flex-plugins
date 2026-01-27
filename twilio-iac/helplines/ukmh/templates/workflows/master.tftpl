@@ -2,31 +2,31 @@
   "task_routing": {
     "filters": [
       {
+        "filter_friendly_name": "Transfer Handling",
+        "expression": "transferTargetType == 'worker'",
+        "targets": [
+          {
+            "queue": "${task_queues.everyone}",
+            "expression": "worker.sid == task.targetSid"
+          }
+        ]
+      },
+      {
         "filter_friendly_name": "PeerChat Coordinator",
         "expression": "channelType IN ['web'] AND transferTargetType == ''",
         "targets": [
           {
-            "expression": "(worker.roles HAS 'supervisor') AND (worker.waitingOfflineContact != true AND ((task.channelType == 'voice' AND worker.channel.chat.assigned_tasks == 0) OR (task.channelType != 'voice' AND worker.channel.voice.assigned_tasks == 0)) AND ((task.transferTargetType == 'worker' AND task.targetSid == worker.sid) OR (task.transferTargetType != 'worker' AND worker.sid != task.ignoreAgent))) ",
+            "expression": "(worker.roles HAS 'supervisor') AND (worker.waitingOfflineContact != true AND ((task.channelType == 'voice' AND worker.channel.chat.assigned_tasks == 0) OR (task.channelType != 'voice' AND worker.channel.voice.assigned_tasks == 0)) AND ((task.transferTargetType == 'worker' AND task.targetSid == worker.sid) OR (task.transferTargetType != 'worker' AND worker.sid != task.ignoreAgent))) OR (worker.waitingOfflineContact == true AND task.targetSid == worker.sid AND task.isContactlessTask == true)",
             "queue": "${task_queues.coordinator}"
           }
         ]
       },
       {
         "filter_friendly_name": "Mental Health Innovations",
-        "expression": "${task_routing_filter_expression}",
+        "expression": "channelType IN ['web']  OR isContactlessTask == true OR transferTargetType != ''",
         "targets": [
           {
-            "expression": "(worker.roles HAS 'agent') AND (worker.waitingOfflineContact != true AND ((task.channelType == 'voice' AND worker.channel.chat.assigned_tasks == 0) OR (task.channelType != 'voice' AND worker.channel.voice.assigned_tasks == 0)) AND ((task.transferTargetType == 'worker' AND task.targetSid == worker.sid) OR (task.transferTargetType != 'worker' AND worker.sid != task.ignoreAgent))) ",
-            "queue": "${task_queues.supporter}"
-          }
-        ]
-      },
-      {
-        "filter_friendly_name": "Offline Contacts",
-        "expression": "isContactlessTask == true",
-        "targets": [
-          {
-            "expression": "(task.targetSid == worker.sid AND task.isContactlessTask == true)",
+            "expression": "(worker.waitingOfflineContact != true AND ((task.channelType == 'voice' AND worker.channel.chat.assigned_tasks == 0) OR (task.channelType != 'voice' AND worker.channel.voice.assigned_tasks == 0)) AND ((task.transferTargetType == 'worker' AND task.targetSid == worker.sid) OR (task.transferTargetType != 'worker' AND worker.sid != task.ignoreAgent))) OR (worker.waitingOfflineContact == true AND task.targetSid == worker.sid AND task.isContactlessTask == true)",
             "queue": "${task_queues.supporter}"
           }
         ]
@@ -36,11 +36,11 @@
         "expression": "channelType=='web' AND e2eTestMode=='true'",
         "targets": [
           {
-            "expression": "(worker.waitingOfflineContact != true AND ((task.channelType == 'voice' AND worker.channel.chat.assigned_tasks == 0) OR (task.channelType != 'voice' AND worker.channel.voice.assigned_tasks == 0)) AND ((task.transferTargetType == 'worker' AND task.targetSid == worker.sid) OR (task.transferTargetType != 'worker' AND worker.sid != task.ignoreAgent))) ",
+            "expression": "(worker.waitingOfflineContact != true AND ((task.channelType == 'voice' AND worker.channel.chat.assigned_tasks == 0) OR (task.channelType != 'voice' AND worker.channel.voice.assigned_tasks == 0)) AND ((task.transferTargetType == 'worker' AND task.targetSid == worker.sid) OR (task.transferTargetType != 'worker' AND worker.sid != task.ignoreAgent))) OR (worker.waitingOfflineContact == true AND task.targetSid == worker.sid AND task.isContactlessTask == true)",
             "queue": "${task_queues.e2e_test}"
           }
         ]
       }
     ]
-  } 
+  }
 }
