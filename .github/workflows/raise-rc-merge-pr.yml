@@ -49,6 +49,8 @@ jobs:
         target-branch: ${{ fromJSON(needs.find_target_branches.outputs.found_branches) }}
     steps:
       - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
       - name: Set merge branch name
         run: |
           github_sha_hash=${{ github.sha }}  

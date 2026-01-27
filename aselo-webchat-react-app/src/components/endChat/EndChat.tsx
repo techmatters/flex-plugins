@@ -15,56 +15,62 @@
  */
 
 /* eslint-disable react/require-default-props */
-import { useState } from "react";
-import { Button } from "@twilio-paste/core/button";
-import { useDispatch, useSelector } from "react-redux";
+import { useState } from 'react';
+import { Button } from '@twilio-paste/core/button';
+import { useDispatch, useSelector } from 'react-redux';
 
-import { contactBackend, sessionDataHandler } from "../../sessionDataHandler";
-import { changeEngagementPhase, updatePreEngagementData } from "../../store/actions/genericActions";
-import { EngagementPhase } from "../../store/definitions";
-import { selectConfig } from "../../store/config.reducer";
-import LocalizedTemplate from "../../localization/LocalizedTemplate";
+import { contactBackend, sessionDataHandler } from '../../sessionDataHandler';
+import { changeEngagementPhase, updatePreEngagementData } from '../../store/actions/genericActions';
+import { EngagementPhase } from '../../store/definitions';
+import { selectConfig } from '../../store/config.reducer';
+import LocalizedTemplate from '../../localization/LocalizedTemplate';
 
 type Props = {
-    channelSid: string;
-    token: string;
-    language?: string;
-    action: "finishTask" | "restartEngagement";
+  channelSid: string;
+  token: string;
+  language?: string;
+  action: 'finishTask' | 'restartEngagement';
 };
 
 export default function EndChat({ channelSid, token, language, action }: Props) {
-    const [disabled, setDisabled] = useState(false);
-    const dispatch = useDispatch();
-    const config = useSelector(selectConfig);
-    const configuredBackend = contactBackend(config);
+  const [disabled, setDisabled] = useState(false);
+  const dispatch = useDispatch();
+  const config = useSelector(selectConfig);
 
-    // Serverless call to end chat
-    const handleEndChat = async () => {
-        switch (action) {
-            case "finishTask":
-                try {
-                    setDisabled(true);
-                    await configuredBackend("/endChat", { channelSid, token, language });
-                    sessionDataHandler.clear();
-                    dispatch(updatePreEngagementData({ email: "", name: "", query: "" }));
-                    dispatch(changeEngagementPhase({ phase: EngagementPhase.PreEngagementForm }));
-                } catch (error) {
-                    console.error(error);
-                } finally {
-                    setDisabled(false);
-                }
-                return;
-            case "restartEngagement":
-            default:
-                sessionDataHandler.clear();
-                dispatch(updatePreEngagementData({ email: "", name: "", query: "" }));
-                dispatch(changeEngagementPhase({ phase: EngagementPhase.PreEngagementForm }));
+  if (!config) {
+    return null;
+  }
+
+  const configuredBackend = contactBackend(config);
+
+  // Serverless call to end chat
+  const handleEndChat = async () => {
+    switch (action) {
+      case 'finishTask':
+        try {
+          setDisabled(true);
+          await configuredBackend('/endChat', { channelSid, token, language });
+          sessionDataHandler.clear();
+          dispatch(updatePreEngagementData({ email: '', name: '', query: '' }));
+          dispatch(changeEngagementPhase({ phase: EngagementPhase.PreEngagementForm }));
+        } catch (error) {
+          console.error(error);
+        } finally {
+          setDisabled(false);
         }
-    };
-    return (
-        <Button variant="destructive" onClick={handleEndChat} disabled={disabled}>
-            <span>CloseLarge</span>
-            <LocalizedTemplate key="EndChatButtonLabel" />
-        </Button>
-    );
+        return;
+      case 'restartEngagement':
+      default:
+        sessionDataHandler.clear();
+        dispatch(updatePreEngagementData({ email: '', name: '', query: '' }));
+        dispatch(changeEngagementPhase({ phase: EngagementPhase.PreEngagementForm }));
+    }
+  };
+
+  return (
+    <Button variant="destructive" onClick={handleEndChat} disabled={disabled}>
+      <span>CloseLarge</span>
+      <LocalizedTemplate code="EndChatButtonLabel" />
+    </Button>
+  );
 }
