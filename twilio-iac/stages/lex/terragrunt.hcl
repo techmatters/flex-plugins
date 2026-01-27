@@ -46,70 +46,7 @@ include "root" {
 locals {
   short_helpline       = include.root.locals.config.short_helpline
   environment          = include.root.locals.config.environment
-  lex_bot_languages    = include.root.locals.config.lex_bot_languages
   lex_v2_bot_languages = include.root.locals.config.lex_v2_bot_languages
-
-  lex_bots = tomap({
-    for language, bots in local.lex_bot_languages :
-    language => merge(
-      [
-        for bot in bots :
-        fileexists("/app/twilio-iac/helplines/${local.short_helpline}/configs/lex/${language}/bots/${bot}.json") ?
-        jsondecode(file("/app/twilio-iac/helplines/${local.short_helpline}/configs/lex/${language}/bots/${bot}.json")) :
-        fileexists("/app/twilio-iac/helplines/${local.short_helpline}/configs/lex/common/bots/${bot}.json") ?
-        jsondecode(file("/app/twilio-iac/helplines/${local.short_helpline}/configs/lex/common/bots/${bot}.json")) :
-        fileexists("/app/twilio-iac/helplines/configs/lex/${language}/bots/${bot}.json") ?
-        jsondecode(file("/app/twilio-iac/helplines/configs/lex/${language}/bots/${bot}.json")) :
-        jsondecode(file("/app/twilio-iac/helplines/configs/lex/${substr(language, 0, 2)}/bots/${bot}.json"))
-      ]...
-    )
-  })
-
-  lex_intents = tomap({
-    for language, bots in local.lex_bot_languages :
-    language => merge(
-      [
-        for bot in bots :
-        fileexists("/app/twilio-iac/helplines/${local.short_helpline}/configs/lex/${language}/intents/${bot}.json") ?
-        jsondecode(file("/app/twilio-iac/helplines/${local.short_helpline}/configs/lex/${language}/intents/${bot}.json")) :
-        fileexists("/app/twilio-iac/helplines/${local.short_helpline}/configs/lex/common/intents/${bot}.json") ?
-        jsondecode(file("/app/twilio-iac/helplines/${local.short_helpline}/configs/lex/common/intents/${bot}.json")) :
-        fileexists("/app/twilio-iac/helplines/configs/lex/${language}/intents/${bot}.json") ?
-        jsondecode(file("/app/twilio-iac/helplines/configs/lex/${language}/intents/${bot}.json")) :
-        jsondecode(file("/app/twilio-iac/helplines/configs/lex/${substr(language, 0, 2)}/intents/${bot}.json"))
-      ]...
-    )
-  })
-
-
-
-  slot_types_names = tomap({
-    for language, bots in local.lex_bot_languages :
-    language => distinct(
-      flatten([
-        for obj_key, obj_value in local.lex_intents[language] : [
-          for slot_name, slot_data in obj_value["slots"] :
-          slot_data["slot_type"] if !startswith(slot_data["slot_type"], "AMAZON.")
-        ]
-      ])
-    )
-  })
-
-  lex_slot_types = tomap({
-    for language, bots in local.lex_bot_languages :
-    language => merge(
-      [
-        for slot_type in local.slot_types_names[language] :
-        fileexists("/app/twilio-iac/helplines/${local.short_helpline}/configs/lex/${language}/slot_types/${slot_type}.json") ?
-        jsondecode(file("/app/twilio-iac/helplines/${local.short_helpline}/configs/lex/${language}/slot_types/${slot_type}.json")) :
-        fileexists("/app/twilio-iac/helplines/${local.short_helpline}/configs/lex/common/slot_types/${slot_type}.json") ?
-        jsondecode(file("/app/twilio-iac/helplines/${local.short_helpline}/configs/lex/common/slot_types/${slot_type}.json")) :
-        fileexists("/app/twilio-iac/helplines/configs/lex/${language}/slot_types/${slot_type}.json") ?
-        jsondecode(file("/app/twilio-iac/helplines/configs/lex/${language}/slot_types/${slot_type}.json")) :
-        jsondecode(file("/app/twilio-iac/helplines/configs/lex/${substr(language, 0, 2)}/slot_types/${slot_type}.json"))
-      ]...
-    )
-  })
 
   lex_v2_bots = {
     for language, bots in local.lex_v2_bot_languages :
@@ -297,9 +234,6 @@ lex_v2_slot_names = tomap({
   //print9 = run_cmd("echo", jsonencode(local.lex_v2_slots))
 
   local_config = {
-    lex_bots          = local.lex_bots
-    lex_intents       = local.lex_intents
-    lex_slot_types    = local.lex_slot_types
     lex_v2_bots       = local.lex_v2_bots
     lex_v2_intents    = local.lex_v2_intents
     lex_v2_slot_types = local.lex_v2_slot_types
