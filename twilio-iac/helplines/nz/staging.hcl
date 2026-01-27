@@ -69,7 +69,9 @@ locals {
         channel_type         = "custom"
         contact_identity     = "instagram"
         templatefile         = "/app/twilio-iac/helplines/nz/templates/studio-flows/instagram-lex-priority-v2-lambda-sd.tftpl"
-        channel_flow_vars    = {}
+        channel_flow_vars    = {
+          widget_from                 = "Youthline"
+        }
         chatbot_unique_names = []
       },
       whatsapp : {
@@ -84,6 +86,7 @@ locals {
       }
     }
     get_profile_flags_for_identifier_base_url = "https://hrm-staging.tl.techmatters.org/lambda/twilio/account-scoped"
+    enable_integration_tests                  = true
     #System Down Configuration
     system_down_templatefile = "/app/twilio-iac/helplines/templates/studio-flows/system-down.tftpl"
     enable_system_down       = true
