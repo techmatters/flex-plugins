@@ -48,7 +48,7 @@ jobs:
     with:
       project: aselo-webchat-react-app
       helplines: ${{ needs.configure.outputs.target_helplines }}
-      environments: '[ ${{ inputs.environment }} ]'
+      environments: '[ "${{ inputs.environment }}" ]'
       invalidate-cache: 'false'
 
   invalidate-cache:
