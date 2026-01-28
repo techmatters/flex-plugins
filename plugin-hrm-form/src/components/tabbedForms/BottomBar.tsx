@@ -15,7 +15,7 @@
  */
 /* eslint-disable sonarjs/cognitive-complexity */
 import React from 'react';
-import { connect } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Template } from '@twilio/flex-ui';
 import { CircularProgress } from '@material-ui/core';
 
@@ -51,25 +51,37 @@ type BottomBarProps = {
   saveUpdates: () => Promise<void>;
 };
 
-const BottomBar: React.FC<
-  BottomBarProps & ReturnType<typeof mapDispatchToProps> & ReturnType<typeof mapStateToProps>
-> = ({
+const BottomBar: React.FC<BottomBarProps> = ({
   showNextButton,
   showSubmitButton,
   handleSubmitIfValid,
   optionalButtons,
-  contact,
-  metadata,
   task,
-  openModal,
   nextTab,
-  caseState,
-  submitContactForm,
   saveUpdates,
-  savedContact,
-  contactIsSaving,
-  createNewCase,
+  contactId,
 }) => {
+  const dispatch = useDispatch();
+  const contactStateById = useSelector((state: RootState) => selectContactStateByContactId(state, contactId));
+  const draftContact = contactStateById?.draftContact;
+  const savedContact = contactStateById?.savedContact;
+  const metadata = contactStateById?.metadata;
+  const caseState = useSelector((state: RootState) => selectCaseByCaseId(state, savedContact?.caseId ?? ''));
+  const contactIsSaving = metadata?.loadingStatus === LoadingStatus.LOADING || savedContact?.finalizedAt !== null;
+  const contact = getUnsavedContact(savedContact, draftContact);
+
+  const openModal = (route: AppRoutes) => dispatch(RoutingActions.newOpenModalAction(route, task.taskSid));
+  const submitContactForm = (
+    task: CustomITask,
+    contact: Contact,
+    metadata: ContactMetadata,
+    caseState: CaseStateEntry,
+  ) =>
+    // Deliberately using dispatch rather than asyncDispatch here, because we still handle the error from where the action is dispatched.
+    // TODO: Rework error handling to be based on redux state set by the _REJECTED action
+    dispatch(submitContactFormAsyncAction(task, contact, metadata, caseState));
+  const createNewCase = async (task: RouterTask, savedContact: Contact, contact: Contact) =>
+    openNewCase(task, savedContact, contact, dispatch);
   const strings = getTemplateStrings();
 
   const isAddedToCase = savedContact?.caseId;
@@ -165,30 +177,4 @@ const BottomBar: React.FC<
 
 BottomBar.displayName = 'BottomBar';
 
-const mapStateToProps = (state: RootState, { contactId }: BottomBarProps) => {
-  const { draftContact, savedContact, metadata } = selectContactStateByContactId(state, contactId) ?? {};
-  const caseState = selectCaseByCaseId(state, savedContact.caseId ?? '');
-  const contactIsSaving = metadata.loadingStatus === LoadingStatus.LOADING || savedContact.finalizedAt !== null;
-  return {
-    contact: getUnsavedContact(savedContact, draftContact),
-    metadata,
-    caseState,
-    savedContact,
-    contactIsSaving,
-  };
-};
-
-const mapDispatchToProps = (dispatch, { task }: BottomBarProps) => {
-  return {
-    changeRoute: (route: AppRoutes) => dispatch(RoutingActions.changeRoute(route, task.taskSid)),
-    openModal: (route: AppRoutes) => dispatch(RoutingActions.newOpenModalAction(route, task.taskSid)),
-    submitContactForm: (task: CustomITask, contact: Contact, metadata: ContactMetadata, caseState: CaseStateEntry) =>
-      // Deliberately using dispatch rather than asyncDispatch here, because we still handle the error from where the action is dispatched.
-      // TODO: Rework error handling to be based on redux state set by the _REJECTED action
-      dispatch(submitContactFormAsyncAction(task, contact, metadata, caseState)),
-    createNewCase: async (task: RouterTask, savedContact: Contact, contact: Contact) =>
-      openNewCase(task, savedContact, contact, dispatch),
-  };
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(BottomBar);
+export default BottomBar;
