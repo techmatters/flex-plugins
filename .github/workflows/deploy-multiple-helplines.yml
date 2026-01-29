@@ -135,10 +135,12 @@ jobs:
       - name: Slack message prefix - Flex
         if: inputs.project == 'flex'
         run: echo "SLACK_MESSAGE_PREFIX=\`[FLEX PARALLEL DEPLOYMENT]\` Flex" >> $GITHUB_ENV
-
       - name: Slack message prefix - Webchat
         if: inputs.project == 'webchat'
         run: echo "SLACK_MESSAGE_PREFIX=\`[WEBCHAT PARALLEL DEPLOYMENT]\` Webchat" >> $GITHUB_ENV
+      - name: Slack message prefix - Webchat
+        if: inputs.project == 'aselo-webchat-react-app'
+        run: echo "SLACK_MESSAGE_PREFIX=\`[ASELO WEBCHAT PARALLEL DEPLOYMENT]\` Aselo Webchat" >> $GITHUB_ENV
 
       - name: Slack Aselo channel
         id: slack
