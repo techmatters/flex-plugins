@@ -15,7 +15,7 @@
  */
 
 import React from 'react';
-import { connect } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Template } from '@twilio/flex-ui';
 
 import selectContactByTaskSid from '../../states/contacts/selectContactByTaskSid';
@@ -33,41 +33,27 @@ import { getHrmConfig } from '../../hrmConfig';
 import { useCase } from '../../states/case/hooks/useCase';
 import { PermissionActions } from '../../permissions/actions';
 
-type OwnProps = {
+type Props = {
   taskId: string;
   contactId?: string;
 };
 
-type Props = OwnProps & ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>;
-
-const mapStateToProps = (state: RootState, { taskId, contactId }: OwnProps) => {
-  const offlineSavedContact = selectContactByTaskSid(state, taskId)?.savedContact;
-  const existingSavedContact = selectContactStateByContactId(state, contactId)?.savedContact;
+const ContactAddedToCaseBanner: React.FC<Props> = ({ taskId, contactId }) => {
+  const dispatch = useDispatch();
+  const offlineSavedContact = useSelector((state: RootState) => selectContactByTaskSid(state, taskId)?.savedContact);
+  const existingSavedContact = useSelector(
+    (state: RootState) => selectContactStateByContactId(state, contactId)?.savedContact,
+  );
+  const contact = offlineSavedContact || existingSavedContact;
   const caseId = offlineSavedContact?.caseId || existingSavedContact?.caseId;
-  return {
-    contact: offlineSavedContact || existingSavedContact,
-    caseId,
-    existingSavedContact,
-  };
-};
 
-const mapDispatchToProps = (dispatch, { taskId }: OwnProps) => ({
-  viewCaseDetails: ({ id }: Case) => {
+  const viewCaseDetails = ({ id }: Case) => {
     dispatch(newOpenModalAction({ route: 'case', subroute: 'home', caseId: id, isCreating: false }, taskId));
-  },
-  removeContactFromCase: async (contactId: string, caseId?: string) => {
+  };
+  const removeContactFromCase = async (contactId: string, caseId?: string) => {
     await asyncDispatch(dispatch)(removeFromCaseAsyncAction(contactId));
     dispatch(showRemovedFromCaseBannerAction(contactId, caseId));
-  },
-});
-
-const ContactAddedToCaseBanner: React.FC<Props> = ({
-  contact,
-  viewCaseDetails,
-  removeContactFromCase,
-  caseId,
-  existingSavedContact,
-}) => {
+  };
   const { connectedCase } = useCase({
     caseId: contact.caseId,
     referenceId: `contact-added-to-case-banner-${contact.id}`,
@@ -126,7 +112,4 @@ const ContactAddedToCaseBanner: React.FC<Props> = ({
   );
 };
 
-const connector = connect(mapStateToProps, mapDispatchToProps);
-const connected = connector(ContactAddedToCaseBanner);
-
-export default connected;
+export default ContactAddedToCaseBanner;

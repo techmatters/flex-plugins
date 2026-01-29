@@ -15,36 +15,36 @@
  */
 
 /* eslint-disable react/require-default-props */
-import * as React from "react";
-import { useSelector } from "react-redux";
+import * as React from 'react';
+import { useSelector } from 'react-redux';
 
-import Exit from "./QuickExit";
-import End from "./EndChat";
-import { AppState } from "../../store/definitions";
+import Exit from './QuickExit';
+import End from './EndChat';
+import { AppState } from '../../store/definitions';
 
 const CloseChatButtons = () => {
-    const { conversation, token, tasksSids } = useSelector((state: AppState) => ({
-        conversation: state.chat?.conversation,
-        token: state.session.token,
-        tasksSids: state?.task?.tasksSids,
-    }));
-    if (!conversation || !token) {
-        return null;
-    }
+  const { conversation, token, tasksSids } = useSelector((state: AppState) => ({
+    conversation: state.chat?.conversation,
+    token: state.session.token,
+    tasksSids: state?.task?.tasksSids,
+  }));
+  if (!conversation || !token) {
+    return null;
+  }
 
-    const finishTask = Boolean(tasksSids?.length);
-    return (
-        <>
-            <End
-                channelSid={conversation.sid}
-                token={token}
-                language="en"
-                action={finishTask ? "finishTask" : "restartEngagement"}
-            />
-            <Exit channelSid={conversation.sid} token={token} language="en" finishTask={finishTask} />
-            QuickExitDescription
-        </>
-    );
+  const finishTask = Boolean(tasksSids?.length);
+  return (
+    <>
+      <End
+        channelSid={conversation.sid}
+        token={token}
+        language="en"
+        action={finishTask ? 'finishTask' : 'restartEngagement'}
+      />
+      <Exit channelSid={conversation.sid} token={token} language="en" finishTask={finishTask} />
+      QuickExitDescription
+    </>
+  );
 };
 
 export default CloseChatButtons;

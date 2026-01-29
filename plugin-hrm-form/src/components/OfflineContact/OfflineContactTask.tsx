@@ -17,7 +17,7 @@
 /* eslint-disable react/prop-types */
 import React from 'react';
 import { Actions, Template } from '@twilio/flex-ui';
-import { connect, ConnectedProps } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import { RootState } from '../../states';
 import { TLHPaddingLeft } from '../../styles/GlobalOverrides';
@@ -35,12 +35,14 @@ import { getOfflineContactTaskSid } from '../../states/contacts/offlineContactTa
 import { getUnsavedContact } from '../../states/contacts/getUnsavedContact';
 import selectCurrentOfflineContact from '../../states/contacts/selectCurrentOfflineContact';
 
-type OwnProps = { selectedTaskSid?: string };
+type Props = { selectedTaskSid?: string };
 
-// eslint-disable-next-line no-use-before-define
-type Props = OwnProps & ConnectedProps<typeof connector>;
-
-const OfflineContactTask: React.FC<Props> = ({ isAddingOfflineContact, selectedTaskSid, offlineContact }) => {
+const OfflineContactTask: React.FC<Props> = ({ selectedTaskSid }) => {
+  const isAddingOfflineContact = useSelector((state: RootState) => selectCurrentOfflineContact(state));
+  const contactState = useSelector((state: RootState) => selectContactByTaskSid(state, getOfflineContactTaskSid()));
+  const savedContact = contactState?.savedContact;
+  const draftContact = contactState?.draftContact;
+  const offlineContact = savedContact ? getUnsavedContact(savedContact, draftContact) : undefined;
   if (!isAddingOfflineContact) return null;
   const offlineContactForms = offlineContact?.rawJson;
 
@@ -79,14 +81,4 @@ const OfflineContactTask: React.FC<Props> = ({ isAddingOfflineContact, selectedT
 
 OfflineContactTask.displayName = 'OfflineContactTask';
 
-const mapStateToProps = (state: RootState) => {
-  const { savedContact, draftContact } = selectContactByTaskSid(state, getOfflineContactTaskSid()) || {};
-  return {
-    isAddingOfflineContact: selectCurrentOfflineContact(state),
-    offlineContact: savedContact ? getUnsavedContact(savedContact, draftContact) : undefined,
-  };
-};
-
-const connector = connect(mapStateToProps);
-
-export default connector(OfflineContactTask);
+export default OfflineContactTask;
