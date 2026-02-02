@@ -16,8 +16,9 @@
 
 /* eslint-disable react/require-default-props */
 import { useState } from 'react';
-import { Button } from '@twilio-paste/core/button';
 import { useDispatch, useSelector } from 'react-redux';
+import { Button } from '@twilio-paste/core/button';
+import { CloseIcon } from '@twilio-paste/icons/esm/CloseIcon';
 
 import { contactBackend, sessionDataHandler } from '../../sessionDataHandler';
 import { changeEngagementPhase, updatePreEngagementData } from '../../store/actions/genericActions';
@@ -68,9 +69,9 @@ export default function EndChat({ channelSid, token, language, action }: Props) 
   };
 
   return (
-    <Button variant="destructive" onClick={handleEndChat} disabled={disabled}>
-      <span>CloseLarge</span>
-      <LocalizedTemplate code="EndChatButtonLabel" />
+    <Button variant="destructive_secondary" element="CHAT_CLOSE_BUTTON" onClick={handleEndChat} disabled={disabled}>
+      <CloseIcon decorative={true} />
+      <LocalizedTemplate code="Header-CloseChatButtons-EndChatButtonLabel" />
     </Button>
   );
 }

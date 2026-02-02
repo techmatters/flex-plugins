@@ -16,11 +16,13 @@
 
 import { useDispatch, useSelector } from 'react-redux';
 import { Button } from '@twilio-paste/core/button';
+import { LogOutIcon } from '@twilio-paste/icons/esm/LogOutIcon';
 
 import { contactBackend, sessionDataHandler } from '../../sessionDataHandler';
 import { changeEngagementPhase, updatePreEngagementData } from '../../store/actions/genericActions';
 import { EngagementPhase } from '../../store/definitions';
 import { selectConfig } from '../../store/config.reducer';
+import LocalizedTemplate from '../../localization/LocalizedTemplate';
 
 type Props = {
   channelSid: string;
@@ -54,8 +56,8 @@ export default function QuickExit({ channelSid, token, language, finishTask }: P
   };
 
   return (
-    <Button variant="destructive" css={{ backgroundColor: '#d22f2f' }} onClick={handleExit}>
-      QuickExitButtonLabel QuickExitIcon
+    <Button variant="destructive" element="CHAT_CLOSE_BUTTON" onClick={handleExit}>
+      <LocalizedTemplate code="Header-CloseChatButtons-QuickExitButtonLabel" /> <LogOutIcon decorative={true} />
     </Button>
   );
 }

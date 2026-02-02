@@ -1,6 +1,7 @@
 {
-  "EndChatButtonLabel": "End Chat",
-  "QuickExitButtonLabel": "Quick Exit",
-  "QuickExitDescription": "Need to leave immediately?",
-  "ChatWithUs": "Chat with Us"
+  "Header-CloseChatButtons-EndChatButtonLabel": "End Chat",
+  "Header-CloseChatButtons-QuickExitButtonLabel": "Quick Exit",
+  "Header-CloseChatButtons-QuickExitDescription": "Need to leave immediately?",
+  "Header-TitleBar-Title": "Live Chat",
+  "MessagePhase-MessageList-ChatStartMessage": "Chat Started"
 }

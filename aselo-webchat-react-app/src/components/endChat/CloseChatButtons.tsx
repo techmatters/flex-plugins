@@ -17,10 +17,14 @@
 /* eslint-disable react/require-default-props */
 import * as React from 'react';
 import { useSelector } from 'react-redux';
+import { Grid } from '@twilio-paste/core/grid';
+import { Column, DetailText } from '@twilio-paste/core';
+import { Box } from '@twilio-paste/core/box';
 
-import Exit from './QuickExit';
-import End from './EndChat';
+import QuickExit from './QuickExit';
+import EndChat from './EndChat';
 import { AppState } from '../../store/definitions';
+import LocalizedTemplate from '../../localization/LocalizedTemplate';
 
 const CloseChatButtons = () => {
   const { conversation, token, tasksSids } = useSelector((state: AppState) => ({
@@ -34,16 +38,24 @@ const CloseChatButtons = () => {
 
   const finishTask = Boolean(tasksSids?.length);
   return (
-    <>
-      <End
-        channelSid={conversation.sid}
-        token={token}
-        language="en"
-        action={finishTask ? 'finishTask' : 'restartEngagement'}
-      />
-      <Exit channelSid={conversation.sid} token={token} language="en" finishTask={finishTask} />
-      QuickExitDescription
-    </>
+    <Box padding="space30">
+      <Grid gutter="space30">
+        <Column>
+          <EndChat
+            channelSid={conversation.sid}
+            token={token}
+            language="en"
+            action={finishTask ? 'finishTask' : 'restartEngagement'}
+          />
+        </Column>
+        <Column>
+          <QuickExit channelSid={conversation.sid} token={token} language="en" finishTask={finishTask} />
+          <DetailText element="URGENT">
+            <LocalizedTemplate code="Header-CloseChatButtons-QuickExitDescription" />
+          </DetailText>
+        </Column>
+      </Grid>
+    </Box>
   );
 };
 

@@ -18,12 +18,13 @@ import { Box } from '@twilio-paste/core/box';
 import { Text } from '@twilio-paste/core/text';
 
 import { containerStyles, titleStyles } from './styles/Header.styles';
+import LocalizedTemplate from '../localization/LocalizedTemplate';
 
 export const Header = ({ customTitle }: { customTitle?: string }) => {
   return (
     <Box as="header" {...containerStyles}>
       <Text as="h2" {...titleStyles}>
-        {customTitle || 'Live Chat'}
+        <LocalizedTemplate code={customTitle || 'Header-TitleBar-Title'} />
       </Text>
     </Box>
   );
