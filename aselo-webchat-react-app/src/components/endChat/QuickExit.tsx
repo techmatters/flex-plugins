@@ -24,14 +24,18 @@ import { EngagementPhase } from '../../store/definitions';
 import { selectConfig } from '../../store/config.reducer';
 import LocalizedTemplate from '../../localization/LocalizedTemplate';
 
-type Props = {
-  channelSid: string;
-  token: string;
-  language?: string;
-  finishTask: boolean;
-};
+type Props =
+  | {
+      channelSid: string;
+      token: string;
+      language?: string;
+      action: 'finishTask';
+    }
+  | {
+      action: 'restartEngagement';
+    };
 
-export default function QuickExit({ channelSid, token, language, finishTask }: Props) {
+export default function QuickExit(props: Props) {
   const dispatch = useDispatch();
   const config = useSelector(selectConfig);
 
@@ -45,10 +49,10 @@ export default function QuickExit({ channelSid, token, language, finishTask }: P
     sessionDataHandler.clear();
     dispatch(updatePreEngagementData({ email: '', name: '', query: '' }));
     dispatch(changeEngagementPhase({ phase: EngagementPhase.PreEngagementForm }));
-    if (finishTask) {
+    if (props.action === 'finishTask') {
       // Only if we started a task
       try {
-        await configuredBackend('/endChat', { channelSid, token, language });
+        await configuredBackend('/endChat', props);
       } catch (error) {
         console.error(error);
       }

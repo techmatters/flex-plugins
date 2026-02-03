@@ -47,5 +47,5 @@ export const ConfigReducer: Reducer = (state: ConfigState = initialState, action
 };
 
 export const selectConfig = (root: AppState): ConfigState => root.config;
-export const selectCurrentTranslations = (state: AppState) =>
-  state.config.translations[state.config.currentLocale || state.config.defaultLocale];
+export const selectCurrentLocale = (state: AppState) => state.config.currentLocale || state.config.defaultLocale;
+export const selectCurrentTranslations = (state: AppState) => state.config.translations[selectCurrentLocale(state)];
