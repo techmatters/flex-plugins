@@ -52,11 +52,12 @@ export default function QuickExit(props: Props) {
     if (props.action === 'finishTask') {
       // Only if we started a task
       try {
-        await configuredBackend('/endChat', props);
+        configuredBackend('/endChat', props).then(() => null);
       } catch (error) {
         console.error(error);
       }
     }
+    window.location.replace('https://google.com');
   };
 
   return (
