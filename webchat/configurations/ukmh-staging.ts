@@ -25,8 +25,8 @@ const contactType: ContactType = 'email';
 
 const translations: Translations = {
   'en-GB': {
-    WelcomeMessage: 'Welcome to The Mix PeerChat Service',
-    EntryPointTagLine: 'The Mix PeerChat Service',
+    WelcomeMessage: 'Welcome to The PeerChat Service',
+    EntryPointTagLine: 'The PeerChat Service',
     TypingIndicator: 'PeerChat Supporter is typing',
     MessageCanvasTrayContent: '',
     MessageInputDisabledReasonHold: 'Please hold for a PeerChat Supporter.',
@@ -235,7 +235,7 @@ const memberDisplayOptions = {
   yourDefaultName: 'You',
   yourFriendlyNameOverride: false,
   theirFriendlyNameOverride: false,
-  theirDefaultName: 'The Mix PeerChat Supporter',
+  theirDefaultName: 'The PeerChat Supporter',
 };
 
 export const config: Configuration = {
