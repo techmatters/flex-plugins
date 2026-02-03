@@ -1,0 +1,49 @@
+{
+    "attributes": {
+        "contacts_waiting_channels": [
+            "web",
+            "voice"
+        ],
+        "definitionVersion": "nzba-v1",
+        "feature_flags": {
+            "enable_lex": true
+        },
+        "helplineLanguage": "en-NZ",
+        "permissionConfig": "nzba"
+    },
+    "ui_attributes": {
+        "colorTheme": {
+            "baseName": "GreyLight",
+            "overrides": {
+                "MainHeader": {
+                    "Button": {
+                        "color": "#000000"
+                    },
+                    "Container": {
+                        "background": "#FFFFFF",
+                        "color": "#000000"
+                    },
+                    "Icon": {
+                        "color": "#000000"
+                    }
+                },
+                "SideNav": {
+                    "Button": {
+                        "background": "#FFFFFF"
+                    },
+                    "Container": {
+                        "background": "#FFFFFF"
+                    },
+                    "Icon": {
+                        "color": "#000000"
+                    }
+                }
+            },
+            "preset": {
+                "id": "mono-light",
+                "name": "Simple Light"
+            }
+        },
+        "theme": null
+    }
+}
