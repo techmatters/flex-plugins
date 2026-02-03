@@ -23,14 +23,14 @@ locals {
       webchat : {
         channel_type         = "web"
         contact_identity     = ""
-        templatefile         = "/app/twilio-iac/helplines/templates/studio-flows/messaging-blocking-welcome-lambda-sd.tftpl"
+        templatefile         = "/app/twilio-iac/helplines/templates/studio-flows/messaging-blocking-lambda.tftpl"
         channel_flow_vars    = {}
         chatbot_unique_names = []
       },
       voice : {
         channel_type     = "voice"
         contact_identity = ""
-        templatefile     = "/app/twilio-iac/helplines/templates/studio-flows/voice-basic-sd.tftpl"
+        templatefile     = "/app/twilio-iac/helplines/templates/studio-flows/voice-basic.tftpl"
         channel_flow_vars = {
           voice_ivr_greeting_message = "Hello, you are contacting Barnardos. Please hold for a counsellor."
           voice_ivr_blocked_message  = "I'm sorry your number has been blocked."
@@ -42,17 +42,5 @@ locals {
 
     get_profile_flags_for_identifier_base_url = "https://hrm-staging.tl.techmatters.org/lambda/twilio/account-scoped"
 
-    #System Down Configuration
-    system_down_templatefile = "/app/twilio-iac/helplines/templates/studio-flows/system-down.tftpl"
-    enable_system_down    = true
-    system_down_flow_vars    = {
-      is_system_down   = "false"
-      message = "We're currently experiencing technical issues, and your message may not be delivered. We're working to resolve the problem and will be back online shortly. We apologize for the inconvenience."
-      voice_message = "We're currently experiencing technical issues, and your call may not reach us. We're working to resolve the problem and will be back online shortly. We apologize for the inconvenience."
-      call_action = "message"
-      forward_number = "+123"
-      recording_url = "https://<place_holder>.mp3"
-
-    }
   }
 }
