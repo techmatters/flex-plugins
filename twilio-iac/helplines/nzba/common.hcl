@@ -45,6 +45,10 @@ locals {
       default : "Default"
       chat : "Programmable Chat"
       voice : "Voice"
+      sms : "SMS"
+      video : "Video"
+      email : "Email"
+      survey : "Survey"
     }
 
   }
