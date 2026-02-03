@@ -1,0 +1,27 @@
+[
+    {
+      "name": "status",
+      "label": "Case Status",
+      "type": "select",
+      "isPII": false
+    },
+    {
+      "name": "childIsAtRisk",
+      "label": "Child is at risk",
+      "type": "checkbox",
+      "isPII": false
+    },
+    {
+      "name": "followUpDate",
+      "label": "Follow Up Date",
+      "type": "date-input",
+      "isPII": false
+    },
+    {
+      "name": "summary",
+      "label": "Summary",
+      "type": "textarea",
+      "rows": 5,
+      "width": 300,
+      "isPII": true
+    }]
