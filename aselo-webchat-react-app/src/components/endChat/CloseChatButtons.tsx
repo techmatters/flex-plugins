@@ -18,7 +18,8 @@
 import * as React from 'react';
 import { useSelector } from 'react-redux';
 import { Grid } from '@twilio-paste/core/grid';
-import { Column, DetailText } from '@twilio-paste/core';
+import { DetailText } from '@twilio-paste/core/detail-text';
+import { Column } from '@twilio-paste/grid';
 import { Box } from '@twilio-paste/core/box';
 
 import QuickExit from './QuickExit';
