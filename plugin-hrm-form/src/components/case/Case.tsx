@@ -15,9 +15,9 @@
  */
 
 import React, { useEffect, useState } from 'react';
-import { connect, ConnectedProps } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { CircularProgress } from '@material-ui/core';
-import { AnyAction, bindActionCreators } from 'redux';
+import { AnyAction } from 'redux';
 
 import { RootState } from '../../states';
 import { getDefinitionVersion } from '../../services/ServerlessService';
@@ -58,32 +58,56 @@ export const isStandaloneITask = (task): task is StandaloneITask => {
   return task && task.taskSid === 'standalone-task-sid';
 };
 
-type OwnProps = {
+type Props = {
   task: CustomITask | StandaloneITask;
   handleClose?: () => void;
   onNewCaseSaved?: (savedCase: CaseType) => Promise<void>;
 };
 
-// eslint-disable-next-line no-use-before-define
-type Props = OwnProps & ConnectedProps<typeof connector>;
-
 const Case: React.FC<Props> = ({
   task,
-  connectedCaseId,
-  counselorsHash,
-  removeConnectedCase,
-  redirectToNewCase,
-  closeModal,
-  handleClose = closeModal,
-  routing,
-  // loadCase,
-  loadContacts,
-  releaseAllContacts,
-  openPrintModal,
+  handleClose,
   onNewCaseSaved = () => Promise.resolve(),
-  contextContact,
-  ...props
 }) => {
+  const dispatch = useDispatch();
+  const [loading, setLoading] = useState(false);
+  
+  const currentRoute = useSelector((state: RootState) => selectCurrentTopmostRouteForTask(state, task.taskSid));
+  const connectedCaseId = isCaseRoute(currentRoute) ? currentRoute.caseId : undefined;
+  const contactId = useSelector((state: RootState) => selectContextContactId(state, task.taskSid, 'case', 'home'));
+  const counselorsHash = useSelector(selectCounselorsHash);
+  const definitionVersions = useSelector(selectDefinitionVersions);
+  const currentDefinitionVersion = useSelector(selectCurrentDefinitionVersion);
+  const routing = currentRoute as CaseRoute;
+  const contextContact = useSelector(
+    (state: RootState) => selectContactStateByContactId(state, contactId)?.savedContact,
+  );
+
+  const closeModal = () => dispatch(RoutingActions.newCloseModalAction(task.taskSid));
+  const redirectToNewCase = (caseId: string) =>
+    dispatch(
+      RoutingActions.changeRoute(
+        { route: 'case', subroute: 'home', caseId, isCreating: true },
+        task.taskSid,
+        ChangeRouteMode.Replace,
+      ),
+    );
+  const openPrintModal = (caseId: CaseType['id']) => {
+    dispatch(RoutingActions.newOpenModalAction({ route: 'case', subroute: 'case-print-view', caseId }, task.taskSid));
+  };
+  const removeConnectedCase = async (contactId: string) => {
+    await asyncDispatch<AnyAction>(dispatch)(removeFromCaseAsyncAction(contactId));
+  };
+  const updateDefinitionVersion = (connectedCase: CaseType, taskSid: string, definition) => {
+    dispatch(
+      ConfigActions.updateDefinitionVersion(
+        connectedCase.definitionVersion ?? connectedCase.info.definitionVersion,
+        definition,
+      ),
+    );
+  };
+  const releaseAllContacts = (referenceId: string) => dispatch(ContactActions.releaseAllContacts(referenceId));
+  const loadContacts = (contactIds: string[]) => dispatch(ContactActions.loadContacts(contactIds));
   const [loading, setLoading] = useState(false);
   const { connectedCase, loading: loadingCase } = useCase({
     caseId: connectedCaseId,
@@ -98,6 +122,8 @@ const Case: React.FC<Props> = ({
   const { workerSid } = getHrmConfig();
   const strings = getTemplateStrings();
 
+  const actualHandleClose = handleClose || closeModal;
+
   useEffect(() => {
     if (routing.isCreating && !routing.caseId && contextContact?.caseId) {
       redirectToNewCase(contextContact.caseId);
@@ -105,7 +131,6 @@ const Case: React.FC<Props> = ({
   });
 
   const version = connectedCase?.definitionVersion ?? connectedCase?.info.definitionVersion;
-  const { updateDefinitionVersion, definitionVersions } = props;
 
   /**
    * Check if the definitionVersion for this case exists in redux, and look for it if not.
@@ -119,9 +144,9 @@ const Case: React.FC<Props> = ({
     if (version && !definitionVersions[version]) {
       fetchDefinitionVersions();
     }
-  }, [connectedCase, definitionVersions, task.taskSid, updateDefinitionVersion, version]);
+  }, [connectedCase, definitionVersions, task.taskSid, version]);
 
-  const definitionVersion = props.definitionVersions[version];
+  const definitionVersion = definitionVersions[version];
 
   if (loading || loadingCase) {
     return (
@@ -159,7 +184,7 @@ const Case: React.FC<Props> = ({
 
   const handleCloseCase = async () => {
     releaseAllContacts(`case-${connectedCase.id}`);
-    handleClose();
+    actualHandleClose();
   };
 
   if (isAddCaseSectionRoute(routing) || isViewCaseSectionRoute(routing) || isEditCaseSectionRoute(routing)) {
@@ -226,52 +251,4 @@ const Case: React.FC<Props> = ({
 
 Case.displayName = 'Case';
 
-const mapStateToProps = (state: RootState, { task }: OwnProps) => {
-  const currentRoute = selectCurrentTopmostRouteForTask(state, task.taskSid);
-  const connectedCaseId = isCaseRoute(currentRoute) ? currentRoute.caseId : undefined;
-  const contactId = selectContextContactId(state, task.taskSid, 'case', 'home');
-
-  return {
-    connectedCaseId,
-    counselorsHash: selectCounselorsHash(state),
-    definitionVersions: selectDefinitionVersions(state),
-    currentDefinitionVersion: selectCurrentDefinitionVersion(state),
-    routing: currentRoute as CaseRoute,
-    contextContact: selectContactStateByContactId(state, contactId)?.savedContact,
-  };
-};
-
-const mapDispatchToProps = (dispatch, { task }: OwnProps) => {
-  const caseAsyncDispatch = asyncDispatch<AnyAction>(dispatch);
-  const updateCaseDefinition = (connectedCase: CaseType, taskSid: string, definition) => {
-    dispatch(
-      ConfigActions.updateDefinitionVersion(
-        connectedCase.definitionVersion ?? connectedCase.info.definitionVersion,
-        definition,
-      ),
-    );
-  };
-  return {
-    redirectToNewCase: (caseId: string) =>
-      dispatch(
-        RoutingActions.changeRoute(
-          { route: 'case', subroute: 'home', caseId, isCreating: true },
-          task.taskSid,
-          ChangeRouteMode.Replace,
-        ),
-      ),
-    closeModal: () => dispatch(RoutingActions.newCloseModalAction(task.taskSid)),
-    openPrintModal: (caseId: CaseType['id']) => {
-      dispatch(RoutingActions.newOpenModalAction({ route: 'case', subroute: 'case-print-view', caseId }, task.taskSid));
-    },
-    removeConnectedCase: (contactId: string) => caseAsyncDispatch(removeFromCaseAsyncAction(contactId)),
-    updateDefinitionVersion: updateCaseDefinition,
-    releaseAllContacts: bindActionCreators(ContactActions.releaseAllContacts, dispatch),
-    loadContacts: bindActionCreators(ContactActions.loadContacts, dispatch),
-  };
-};
-
-const connector = connect(mapStateToProps, mapDispatchToProps);
-const connected = connector(Case);
-
-export default connected;
+export default Case;
