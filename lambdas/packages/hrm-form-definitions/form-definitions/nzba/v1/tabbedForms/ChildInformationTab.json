@@ -198,8 +198,20 @@
         "label": ""
       },
       {
-        "value": "Central",
-        "label": "Central"
+        "value": "Northern",
+        "label": "Northern"
+      },
+      {
+        "value": "Eastern",
+        "label": "Eastern"
+      },
+      {
+        "value": "Western",
+        "label": "Western"
+      },
+      {
+        "value": "Southern",
+        "label": "Southern"
       },
       {
         "value": "Unknown",
@@ -209,7 +221,8 @@
     "required": {
       "value": true,
       "message": "RequiredFieldError"
-    }
+    },
+    "isPII": false
   },
   {
     "name": "district",
@@ -221,20 +234,72 @@
       "label": ""
     },
     "options": {
-      "District1": [
+      "Northern": [
         {
-          "value": "Subdistrict1",
-          "label": "Subdistrict1"
+          "value": "District A",
+          "label": "District A"
+        },
+        {
+          "value": "District B",
+          "label": "District B"
+        },
+        {
+          "value": "District C",
+          "label": "District C"
         },
         {
           "value": "Unknown",
           "label": "Unknown"
         }
       ],
-      "District2": [
+      "Eastern": [
         {
-          "value": "Subdistrict1",
-          "label": "Subdistrict1"
+          "value": "District A",
+          "label": "District A"
+        },
+        {
+          "value": "District B",
+          "label": "District B"
+        },
+        {
+          "value": "District C",
+          "label": "District C"
+        },
+        {
+          "value": "Unknown",
+          "label": "Unknown"
+        }
+      ],
+      "Western": [
+        {
+          "value": "District A",
+          "label": "District A"
+        },
+        {
+          "value": "District B",
+          "label": "District B"
+        },
+        {
+          "value": "District C",
+          "label": "District C"
+        },
+        {
+          "value": "Unknown",
+          "label": "Unknown"
+        }
+      ],
+      "Southern": [
+        {
+          "value": "District A",
+          "label": "District A"
+        },
+        {
+          "value": "District B",
+          "label": "District B"
+        },
+        {
+          "value": "District C",
+          "label": "District C"
         },
         {
           "value": "Unknown",
@@ -245,7 +310,8 @@
     "required": {
       "value": true,
       "message": "RequiredFieldError"
-    }
+    },
+    "isPII": false
   },
   {
     "name": "phone1",

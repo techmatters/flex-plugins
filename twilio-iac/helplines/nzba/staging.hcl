@@ -8,7 +8,7 @@ locals {
     enable_post_survey                    = true
     enable_datadog_monitoring             = false
     custom_task_routing_filter_expression = "channelType IN ['web','voice']"
-    permission_config                     = "demo"
+    permission_config                     = "nzba"
 
     #Studio flow
     flow_vars = {
