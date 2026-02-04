@@ -25,13 +25,13 @@ import * as initActions from '../store/actions/initActions';
 import * as genericActions from '../store/actions/genericActions';
 import WebChatLogger from '../logger';
 
-jest.mock('node-fetch');
 jest.mock('react-dom');
 jest.mock('../logger');
 
 store.dispatch = jest.fn();
 
 const mockFetch = jest.fn();
+global.fetch = mockFetch;
 const mockLogger = new WebChatLogger('InitWebChat');
 describe('Index', () => {
   const { initWebchat } = window.Twilio;
@@ -61,7 +61,7 @@ describe('Index', () => {
       document.body.appendChild(root);
       await initWebchat(undefined, { deploymentKey: 'CV000000' });
 
-      expect(renderSpy).toBeCalledWith(
+      expect(renderSpy).toHaveBeenCalledWith(
         <Provider store={store}>
           <WebchatWidget />
         </Provider>,
@@ -76,7 +76,7 @@ describe('Index', () => {
       const region = 'Foo';
       await initWebchat(undefined, { deploymentKey: 'CV000000', region });
 
-      expect(setRegionSpy).toBeCalledWith(region);
+      expect(setRegionSpy).toHaveBeenCalledWith(region);
     });
 
     it('sets deployment key correctly', async () => {
@@ -86,7 +86,7 @@ describe('Index', () => {
       const deploymentKey = 'Foo';
       await initWebchat(undefined, { deploymentKey });
 
-      expect(setDeploymentKeySpy).toBeCalledWith(deploymentKey);
+      expect(setDeploymentKeySpy).toHaveBeenCalledWith(deploymentKey);
     });
 
     it('initializes config', async () => {
@@ -95,7 +95,7 @@ describe('Index', () => {
 
       await initWebchat(undefined, { deploymentKey: 'CV000000' });
 
-      expect(initConfigSpy).toBeCalled();
+      expect(initConfigSpy).toHaveBeenCalled();
     });
 
     it('initializes config with provided config merged with default config', async () => {
@@ -105,7 +105,7 @@ describe('Index', () => {
       const deploymentKey = 'CV000000';
       await initWebchat(undefined, { deploymentKey });
 
-      expect(initConfigSpy).toBeCalledWith(expect.objectContaining({ deploymentKey }));
+      expect(initConfigSpy).toHaveBeenCalledWith(expect.objectContaining({ deploymentKey }));
     });
 
     it('gives error when deploymentKey is missing', async () => {
@@ -114,7 +114,7 @@ describe('Index', () => {
       mockFetch.mockResolvedValueOnce(new Response(JSON.stringify({}), { status: 200 }));
 
       await initWebchat();
-      expect(errorLoggerSpy).toBeCalledTimes(1);
+      expect(errorLoggerSpy).toHaveBeenCalledTimes(1);
       expect(errorLoggerSpy).toHaveBeenCalledWith('deploymentKey must exist to connect to Webchat servers');
     });
 

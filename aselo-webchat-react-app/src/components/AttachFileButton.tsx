@@ -17,7 +17,7 @@
 import { useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Button } from '@twilio-paste/core/button';
-import { AttachIcon } from '@twilio-paste/icons/esm/AttachIcon';
+import { AttachIcon } from '@twilio-paste/icons/cjs/AttachIcon';
 
 import { AppState } from '../store/definitions';
 import { hiddenInputStyles } from './styles/AttachFileButton.styles';

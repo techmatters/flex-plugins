@@ -13,13 +13,14 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
-
 import { render } from '@testing-library/react';
 import '@testing-library/jest-dom';
 
+import { resetMockRedux } from '../../__mocks__/redux/mockRedux';
 import { Header } from '../Header';
 
 describe('Header', () => {
+  beforeEach(() => resetMockRedux());
   it('renders the header', () => {
     const { container } = render(<Header />);
 
@@ -36,6 +37,6 @@ describe('Header', () => {
   it('renders header with default text when no custom title provided', () => {
     const { queryByText } = render(<Header />);
 
-    expect(queryByText('Live Chat')).toBeInTheDocument();
+    expect(queryByText('Header-TitleBar-Title')).toBeInTheDocument();
   });
 });

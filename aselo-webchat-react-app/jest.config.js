@@ -1,0 +1,45 @@
+/**
+ * Copyright (C) 2021-2023 Technology Matters
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see https://www.gnu.org/licenses/.
+ */
+
+module.exports = config => {
+  return (
+    config || {
+      testTimeout: 30000,
+      preset: 'ts-jest',
+      rootDir: './',
+      maxWorkers: 1,
+      setupFiles: ['<rootDir>/setTestEnvVars.js'],
+      globals: {
+        'ts-jest': {
+          // to give support to const enum. Not working, conflicting with module resolution
+          useExperimentalLanguageServer: true,
+        },
+      },
+      reporters: ['default', 'jest-junit'],
+      testEnvironment: 'jsdom',
+      transformIgnorePatterns: ['node_modules/(?!(@twilio-paste|@twilio/conversations))/'],
+        collectCoverage: true,
+        collectCoverageFrom: [
+            "<rootDir>/src/components/**/*.ts",
+            "!src/**/*.d.ts",
+            "!**/node_modules/**"
+        ],
+        coveragePathIgnorePatterns: [
+            "<rootDir>/src/coverage/"
+        ],
+    }
+  );
+};

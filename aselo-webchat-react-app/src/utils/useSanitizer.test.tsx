@@ -46,6 +46,6 @@ describe('useSanitizer custom hook', () => {
     });
 
     expect(result.current.userInput).toBe("script>alert('Hello!!!')script>");
-    expect(blackListSpy).toBeCalled();
+    expect(blackListSpy).toHaveBeenCalled();
   });
 });

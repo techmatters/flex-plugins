@@ -16,7 +16,7 @@
 
 import { useDispatch, useSelector } from 'react-redux';
 import { Button } from '@twilio-paste/core/button';
-import { LogOutIcon } from '@twilio-paste/icons/esm/LogOutIcon';
+import { LogOutIcon } from '@twilio-paste/icons/cjs/LogOutIcon';
 
 import { contactBackend, sessionDataHandler } from '../../sessionDataHandler';
 import { changeEngagementPhase, updatePreEngagementData } from '../../store/actions/genericActions';

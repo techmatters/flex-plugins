@@ -21,7 +21,7 @@ import { Box } from '@twilio-paste/core/box';
 import { InputBox } from '@twilio-paste/core/input-box';
 import { TextArea } from '@twilio-paste/core/textarea';
 import { Button } from '@twilio-paste/core/button';
-import { SendIcon } from '@twilio-paste/icons/esm/SendIcon';
+import { SendIcon } from '@twilio-paste/icons/cjs/SendIcon';
 
 import { AppState } from '../store/definitions';
 import { AttachFileButton } from './AttachFileButton';

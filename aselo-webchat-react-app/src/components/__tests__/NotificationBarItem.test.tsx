@@ -17,13 +17,10 @@
 import { fireEvent, render } from '@testing-library/react';
 import '@testing-library/jest-dom';
 
+import { resetMockRedux } from '../../__mocks__/redux/mockRedux';
 import { NotificationBarItem } from '../NotificationBarItem';
 import * as genericActions from '../../store/actions/genericActions';
 import { Notification } from '../../store/definitions';
-
-jest.mock('react-redux', () => ({
-  useDispatch: () => jest.fn(),
-}));
 
 describe('Notification Bar Item', () => {
   const notification: Notification = {
@@ -34,6 +31,11 @@ describe('Notification Bar Item', () => {
   };
 
   const dismissButtonTitle = 'Dismiss alert';
+
+  beforeEach(() => {
+    jest.resetAllMocks();
+    resetMockRedux();
+  });
 
   it('renders a notification bar item', () => {
     const { container } = render(<NotificationBarItem {...notification} />);
@@ -82,7 +84,7 @@ describe('Notification Bar Item', () => {
   it('dismisses notification only when timeout is finished if set', () => {
     const removeNotificationSpy = jest.spyOn(genericActions, 'removeNotification');
 
-    jest.useFakeTimers();
+    jest.useFakeTimers('legacy');
     const onDismiss = jest.fn();
     render(<NotificationBarItem {...notification} timeout={1000} onDismiss={onDismiss} />);
 
