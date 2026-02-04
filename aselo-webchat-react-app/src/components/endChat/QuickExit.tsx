@@ -52,8 +52,10 @@ export default function QuickExit(props: Props) {
     if (props.action === 'finishTask') {
       // Only if we started a task
       try {
+        // Fire and forget end chat request, don't delay blanking the page waiting for the response
         configuredBackend('/endChat', props).then(() => null);
       } catch (error) {
+        // Only errors synchronously making the request will be caught, not errors from the service
         console.error(error);
       }
     }
