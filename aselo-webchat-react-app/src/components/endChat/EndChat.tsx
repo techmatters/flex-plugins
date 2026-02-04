@@ -18,7 +18,7 @@
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Button } from '@twilio-paste/core/button';
-import { DeleteIcon } from '@twilio-paste/icons/esm/DeleteIcon';
+import { CloseIcon } from '@twilio-paste/icons/cjs/CloseIcon';
 
 import { contactBackend, sessionDataHandler } from '../../sessionDataHandler';
 import { changeEngagementPhase, updatePreEngagementData } from '../../store/actions/genericActions';
@@ -80,7 +80,7 @@ export default function EndChat(props: Props) {
 
   return (
     <Button variant="destructive_secondary" element="CHAT_CLOSE_BUTTON" onClick={handleEndChat} disabled={disabled}>
-      <DeleteIcon decorative={true} />
+      <CloseIcon decorative={true} />
       <LocalizedTemplate code="Header-CloseChatButtons-EndChatButtonLabel" />
     </Button>
   );
