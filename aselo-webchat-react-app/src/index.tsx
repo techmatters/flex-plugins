@@ -12,7 +12,7 @@ import { Logger, LogLevelDesc } from 'loglevel';
 import { store } from './store/store';
 import { WebchatWidget } from './components/WebchatWidget';
 import { sessionDataHandler } from './sessionDataHandler';
-import { initConfig } from './store/actions/initActions';
+import { initConfigThunk } from './store/actions/initActions';
 import { ConfigState } from './store/definitions';
 import { initLogger, getLogger } from './logger';
 import { changeExpandedStatus } from './store/actions/genericActions';
@@ -54,7 +54,7 @@ const initWebchat = async (configLocation?: URL, overrides: Partial<ConfigState>
   sessionDataHandler.setRegion(webchatConfig.region);
   sessionDataHandler.setDeploymentKey(webchatConfig.deploymentKey);
 
-  store.dispatch(initConfig(webchatConfig));
+  await store.dispatch(initConfigThunk(webchatConfig) as any);
 
   const rootElement = document.getElementById('aselo-webchat-widget-root');
   logger.info('Now rendering the webchat');

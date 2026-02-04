@@ -16,6 +16,7 @@
 
 import { Client, ConnectionState } from '@twilio/conversations';
 import { Dispatch } from 'redux';
+import { ThunkAction, ThunkActionDispatch } from 'redux-thunk';
 
 import { initMessagesListener } from './listeners/messagesListener';
 import { initParticipantsListener } from './listeners/participantsListener';
@@ -23,19 +24,43 @@ import { initConversationListener } from './listeners/conversationListener';
 import { ConfigState, EngagementPhase } from '../definitions';
 import { initClientListeners } from './listeners/clientListener';
 import { notifications } from '../../notifications';
-import { ACTION_START_SESSION, ACTION_LOAD_CONFIG } from './actionTypes';
+import {
+  ACTION_START_SESSION,
+  ACTION_LOAD_CONFIG_REQUEST,
+  ACTION_LOAD_CONFIG_SUCCESS,
+  ACTION_LOAD_CONFIG_FAILURE,
+} from './actionTypes';
 import { addNotification, changeEngagementPhase } from './genericActions';
 import { MESSAGES_LOAD_COUNT } from '../../constants';
 import { parseRegionForConversations } from '../../utils/regionUtil';
 import { sessionDataHandler } from '../../sessionDataHandler';
 import { createParticipantNameMap } from '../../utils/participantNameMap';
+import { getDefinitionVersion } from '../../services/configService';
+import type { AppState } from '../store';
 
-export function initConfig(config: ConfigState) {
-  return {
-    type: ACTION_LOAD_CONFIG,
-    payload: config,
+export const initConfigThunk = (
+  config: Omit<ConfigState, 'preEngagementForm'>,
+): ThunkAction<void, AppState, unknown, any> => {
+  return async dispatch => {
+    dispatch({ type: ACTION_LOAD_CONFIG_REQUEST });
+    try {
+      const { preEngagementForm } = await getDefinitionVersion({
+        environment: config.environment,
+        definitionVersionId: config.definitionVersion,
+      });
+
+      dispatch({
+        type: ACTION_LOAD_CONFIG_SUCCESS,
+        payload: { ...config, preEngagementForm },
+      });
+    } catch (err) {
+      dispatch({
+        type: ACTION_LOAD_CONFIG_FAILURE,
+        payload: err,
+      });
+    }
   };
-}
+};
 
 export type InitSessionPayload = {
   token: string;
