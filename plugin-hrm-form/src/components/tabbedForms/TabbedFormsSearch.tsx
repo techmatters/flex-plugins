@@ -14,9 +14,10 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import React, { Dispatch } from 'react';
-import { connect, ConnectedProps } from 'react-redux';
+import React from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { callTypes } from 'hrm-types';
+import { AnyAction } from 'redux';
 
 import { RootState } from '../../states';
 import asyncDispatch from '../../states/asyncDispatch';
@@ -28,27 +29,18 @@ import { Contact } from '../../types/types';
 import Search from '../search';
 import { TabbedFormsCommonProps } from './types';
 
-type OwnProps = TabbedFormsCommonProps;
+type Props = TabbedFormsCommonProps;
 
-const mapStateToProps = (state: RootState, { task: { taskSid } }: OwnProps) => {
-  const { savedContact, draftContact } = selectContactByTaskSid(state, taskSid);
-  return {
-    draftContact,
-    savedContact,
-    updatedContact: getUnsavedContact(savedContact, draftContact),
+const TabbedFormsSearch: React.FC<Props> = ({ task }) => {
+  const dispatch = useDispatch();
+  const { savedContact, draftContact } = useSelector((state: RootState) =>
+    selectContactByTaskSid(state, task.taskSid),
+  );
+  const updatedContact = getUnsavedContact(savedContact, draftContact);
+
+  const saveDraft = async (savedContact: Contact, draftContact: ContactDraftChanges) => {
+    await asyncDispatch<AnyAction>(dispatch)(updateContactInHrmAsyncAction(savedContact, draftContact, task.taskSid));
   };
-};
-
-const mapDispatchToProps = (dispatch: Dispatch<any>, { task }: OwnProps) => ({
-  saveDraft: (savedContact: Contact, draftContact: ContactDraftChanges) =>
-    asyncDispatch(dispatch)(updateContactInHrmAsyncAction(savedContact, draftContact, task.taskSid)),
-});
-
-const connector = connect(mapStateToProps, mapDispatchToProps);
-
-type Props = OwnProps & ConnectedProps<typeof connector>;
-
-const TabbedFormsSearch: React.FC<Props> = ({ task, draftContact, savedContact, saveDraft }) => {
   return (
     <Search
       task={task}
@@ -60,4 +52,4 @@ const TabbedFormsSearch: React.FC<Props> = ({ task, draftContact, savedContact, 
 
 TabbedFormsSearch.displayName = 'TabbedFormsSearch';
 
-export default connector(TabbedFormsSearch);
+export default TabbedFormsSearch;
