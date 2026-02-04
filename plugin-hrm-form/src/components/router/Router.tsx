@@ -60,9 +60,10 @@ export type RouteConfig<TProps> = RouteConfigEntry<TProps>[];
 
 type RouteConfigAny = RouteConfig<any>;
 
-type RouterProps<TProps = any> = TProps & {
+type RouterProps = {
   routeConfig: RouteConfigAny;
   task: RouterTask;
+  [key: string]: any; // Allow additional props to be passed through
 };
 
 type Props = RouterProps;

@@ -104,7 +104,7 @@ const Case: React.FC<Props> = ({ task, handleClose, onNewCaseSaved = () => Promi
   };
   const releaseAllContacts = (referenceId: string) => dispatch(ContactActions.releaseAllContacts(referenceId));
   const loadContacts = (contactIds: string[]) => dispatch(ContactActions.loadContacts(contactIds));
-  const [loading, setLoading] = useState(false);
+
   const { connectedCase, loading: loadingCase } = useCase({
     caseId: connectedCaseId,
     referenceId: `case-details-${task.taskSid}`,
