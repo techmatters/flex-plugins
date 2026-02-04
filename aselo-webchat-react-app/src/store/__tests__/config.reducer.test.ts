@@ -19,7 +19,7 @@ import '@testing-library/jest-dom';
 
 import { ConfigReducer } from '../config.reducer';
 import { ConfigState } from '../definitions';
-import { ACTION_LOAD_CONFIG } from '../actions/actionTypes';
+import { ACTION_LOAD_CONFIG_SUCCESS } from '../actions/actionTypes';
 import { store } from '../store';
 
 describe('Config Reducer', () => {
@@ -35,7 +35,7 @@ describe('Config Reducer', () => {
     const newState: ConfigState = ConfigReducer(
       {},
       {
-        type: ACTION_LOAD_CONFIG,
+        type: ACTION_LOAD_CONFIG_SUCCESS,
         payload: {
           serverUrl: 'test-endpoint-1',
         },

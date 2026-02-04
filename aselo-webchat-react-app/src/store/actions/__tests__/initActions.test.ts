@@ -19,14 +19,16 @@ import { applyMiddleware, combineReducers, createStore, compose } from 'redux';
 import thunk from 'redux-thunk';
 
 import { MockedPaginator } from '../../../test-utils';
-import { initConfig, initSession } from '../initActions';
+import { initConfigThunk, initSession } from '../initActions';
 import { initClientListeners } from '../listeners/clientListener';
 import { initConversationListener } from '../listeners/conversationListener';
 import { EngagementPhase } from '../../definitions';
 import {
   ACTION_ADD_NOTIFICATION,
   ACTION_CHANGE_ENGAGEMENT_PHASE,
-  ACTION_LOAD_CONFIG,
+  ACTION_LOAD_CONFIG_FAILURE,
+  ACTION_LOAD_CONFIG_REQUEST,
+  ACTION_LOAD_CONFIG_SUCCESS,
   ACTION_START_SESSION,
 } from '../actionTypes';
 import { initMessagesListener } from '../listeners/messagesListener';
@@ -34,6 +36,7 @@ import { initParticipantsListener } from '../listeners/participantsListener';
 import { SessionReducer } from '../../session.reducer';
 import { notifications } from '../../../notifications';
 import WebChatLogger from '../../../logger';
+import * as configService from '../../../services/configService';
 
 jest.mock('@twilio/conversations', () => {
   return {
@@ -53,6 +56,7 @@ jest.mock('../listeners/participantsListener', () => ({
   initParticipantsListener: jest.fn(),
 }));
 jest.mock('../../../logger');
+jest.mock('../../../services/configService');
 
 const createSessionStore = () =>
   createStore(
@@ -156,11 +160,41 @@ describe('Actions', () => {
     });
   });
 
-  describe('initConfig', () => {
-    it('returns init config action', () => {
-      expect(initConfig({} as any)).toEqual({
-        type: ACTION_LOAD_CONFIG,
+  describe('initConfigThunk', () => {
+    it('success case calls ACTION_LOAD_CONFIG_SUCCESS', async () => {
+      jest.spyOn(configService, 'getDefinitionVersion').mockResolvedValueOnce({} as any);
+      const thunk = initConfigThunk({} as any);
+
+      const dispatch = jest.fn();
+      const getState = jest.fn();
+
+      await thunk(dispatch, getState, {});
+      expect(dispatch).toHaveBeenCalledWith({
+        type: ACTION_LOAD_CONFIG_REQUEST,
+      });
+      expect(dispatch).toHaveBeenCalledWith({
+        type: ACTION_LOAD_CONFIG_SUCCESS,
         payload: {},
+      });
+    });
+
+    it('failure case calls ACTION_LOAD_CONFIG_FAILURE', async () => {
+      const err = new Error('kaboom!');
+      jest.spyOn(configService, 'getDefinitionVersion').mockImplementationOnce(() => {
+        throw err
+      });
+      const thunk = initConfigThunk({} as any);
+
+      const dispatch = jest.fn();
+      const getState = jest.fn();
+
+      await thunk(dispatch, getState, {});
+      expect(dispatch).toHaveBeenCalledWith({
+        type: ACTION_LOAD_CONFIG_REQUEST,
+      });
+      expect(dispatch).toHaveBeenCalledWith({
+        type: ACTION_LOAD_CONFIG_FAILURE,
+        payload: err,
       });
     });
   });
