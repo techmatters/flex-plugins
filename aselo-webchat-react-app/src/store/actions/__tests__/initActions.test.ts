@@ -181,7 +181,7 @@ describe('Actions', () => {
     it('failure case calls ACTION_LOAD_CONFIG_FAILURE', async () => {
       const err = new Error('kaboom!');
       jest.spyOn(configService, 'getDefinitionVersion').mockImplementationOnce(() => {
-        throw err
+        throw err;
       });
       const thunk = initConfigThunk({} as any);
 
