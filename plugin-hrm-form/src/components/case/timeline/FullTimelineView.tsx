@@ -14,8 +14,8 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import React, { Dispatch } from 'react';
-import { connect, ConnectedProps } from 'react-redux';
+import React from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { Template } from '@twilio/flex-ui';
 
 import NavigableContainer from '../../NavigableContainer';
@@ -37,44 +37,34 @@ type MyProps = {
 const TIMELINE_PAGE_SIZE = 25;
 const MAIN_TIMELINE_ID = 'prime-timeline';
 
-const mapStateToProps = (state: RootState, { task }: MyProps) => {
-  const { caseId, page = 0 } = selectCurrentTopmostRouteForTask(state, task.taskSid) as CaseTimelineRoute;
-  return {
-    page,
-    activityCount: selectTimelineCount(state, caseId, MAIN_TIMELINE_ID),
-    caseId,
+const FullTimelineView: React.FC<MyProps> = ({ task }: MyProps) => {
+  const dispatch = useDispatch();
+  
+  const { caseId, page = 0 } = useSelector((state: RootState) =>
+    selectCurrentTopmostRouteForTask(state, task.taskSid)
+  ) as CaseTimelineRoute;
+  const activityCount = useSelector((state: RootState) =>
+    selectTimelineCount(state, caseId, MAIN_TIMELINE_ID)
+  );
+
+  const changePageForThisCase = (page: number) => {
+    dispatch(
+      changeRoute({ route: 'case', subroute: 'timeline', caseId, page }, task.taskSid, ChangeRouteMode.Replace),
+    );
+    dispatch(
+      newGetTimelineAsyncAction(
+        caseId,
+        'prime-timeline',
+        ['note', 'referral'],
+        true,
+        {
+          offset: page * TIMELINE_PAGE_SIZE,
+          limit: TIMELINE_PAGE_SIZE,
+        },
+        `case-${caseId}`,
+      ),
+    );
   };
-};
-
-const mapDispatchToProps = (dispatch: Dispatch<any>, { task }: MyProps) => {
-  return {
-    changePage: (caseId: string) => (page: number) => {
-      dispatch(
-        changeRoute({ route: 'case', subroute: 'timeline', caseId, page }, task.taskSid, ChangeRouteMode.Replace),
-      );
-      dispatch(
-        newGetTimelineAsyncAction(
-          caseId,
-          'prime-timeline',
-          ['note', 'referral'],
-          true,
-          {
-            offset: page * TIMELINE_PAGE_SIZE,
-            limit: TIMELINE_PAGE_SIZE,
-          },
-          `case-${caseId}`,
-        ),
-      );
-    },
-  };
-};
-
-const connector = connect(mapStateToProps, mapDispatchToProps);
-
-type Props = MyProps & ConnectedProps<typeof connector>;
-
-const FullTimelineView: React.FC<Props> = ({ task, page, activityCount, changePage, caseId }: Props) => {
-  const changePageForThisCase = changePage(caseId);
 
   return (
     <CaseLayout>
@@ -114,4 +104,4 @@ const FullTimelineView: React.FC<Props> = ({ task, page, activityCount, changePa
 
 FullTimelineView.displayName = 'FullTimelineView';
 
-export default connector(FullTimelineView);
+export default FullTimelineView;

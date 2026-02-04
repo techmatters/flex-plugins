@@ -49,7 +49,9 @@ const state: RecursivePartial<RootState> = {
         list: [],
         hash: { worker1: 'worker1 name' },
       },
-      definitionVersions: {},
+      definitionVersions: {
+        'as-v1': null,
+      },
       currentDefinitionVersion: {
         caseStatus: {
           open: {
@@ -129,10 +131,10 @@ describe('Test EditCaseOverview', () => {
     mockReset();
     ownProps = {
       task: task as StandaloneITask,
-      definitionVersion: mockV1,
       can: () => true,
     };
     store.dispatch = jest.fn();
+    state[namespace].configuration.definitionVersions['as-v1'] = mockV1;
   });
   test('Test close functionality', async () => {
     render(
