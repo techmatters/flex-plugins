@@ -17,7 +17,7 @@
 /* eslint-disable react/prop-types */
 import React from 'react';
 import { CircularProgress, TableBody } from '@material-ui/core';
-import { connect, ConnectedProps } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Template } from '@twilio/flex-ui';
 import InfoIcon from '@material-ui/icons/Info';
 
@@ -43,21 +43,18 @@ type OwnProps = {
   handleClickViewCase: (currentCase: Case) => () => void;
 };
 
-// eslint-disable-next-line no-use-before-define
-type Props = OwnProps & ConnectedProps<typeof connector>;
-
 /**
  * This component is split to make it easier to read, but is basically a 8 columns Table (8 for data, 1 for the "expand" button)
  */
-const CaseListTable: React.FC<Props> = ({
+const CaseListTable: React.FC<OwnProps> = ({
   loading,
   caseList,
   caseCount,
-  currentPage,
-  updateCaseListPage,
   handleClickViewCase,
-  currentDefinitionVersion,
 }) => {
+  const dispatch = useDispatch();
+  const currentDefinitionVersion = useSelector((state: RootState) => state[namespace].configuration.currentDefinitionVersion);
+  const currentPage = useSelector((state: RootState) => state[namespace].caseList.currentSettings.page);
   const can = React.useMemo(() => {
     return getInitializedCan();
   }, []);
@@ -118,7 +115,7 @@ const CaseListTable: React.FC<Props> = ({
             transparent
             page={currentPage}
             pagesCount={pagesCount}
-            handleChangePage={updateCaseListPage}
+            handleChangePage={(page) => dispatch(CaseListSettingsActions.updateCaseListPage(page))}
             disabled={loading}
           />
         </div>
@@ -129,16 +126,4 @@ const CaseListTable: React.FC<Props> = ({
 
 CaseListTable.displayName = 'CaseListTable';
 
-const mapStateToProps = ({ [namespace]: { configuration, caseList } }: RootState) => ({
-  currentDefinitionVersion: configuration.currentDefinitionVersion,
-  currentPage: caseList.currentSettings.page,
-});
-
-const mapDispatchToProps = {
-  updateCaseListPage: CaseListSettingsActions.updateCaseListPage,
-};
-
-const connector = connect(mapStateToProps, mapDispatchToProps);
-const connected = connector(CaseListTable);
-
-export default connected;
+export default CaseListTable;

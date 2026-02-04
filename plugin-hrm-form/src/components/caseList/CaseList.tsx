@@ -15,16 +15,14 @@
  */
 
 import React, { useEffect } from 'react';
-import { connect, ConnectedProps } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Template } from '@twilio/flex-ui';
-import { DefinitionVersion } from 'hrm-form-definitions';
 
 import Case from '../case';
 import { StandaloneITask, Case as CaseType } from '../../types/types';
 import CaseListTable from './CaseListTable';
 import { ListContainer, CenteredContainer, SomethingWentWrongText, StandaloneContainer } from '../../styles';
 import { CaseLayout } from '../case/styles';
-import * as ConfigActions from '../../states/configuration/actions';
 import { RootState } from '../../states';
 import * as ListContent from '../../states/caseList/listContent';
 import { getHrmConfig } from '../../hrmConfig';
@@ -34,7 +32,6 @@ import ContactDetails from '../contact/ContactDetails';
 import { DetailsContext } from '../../states/contacts/contactDetails';
 import selectCasesForList from '../../states/caseList/selectCasesForList';
 import selectCaseListSettings from '../../states/caseList/selectCaseListSettings';
-import { CaseListSettingsState } from '../../states/caseList/settings';
 import asyncDispatch from '../../states/asyncDispatch';
 import ProfileRouter, { isProfileRoute } from '../profile/ProfileRouter';
 
@@ -45,60 +42,31 @@ const standaloneTask: StandaloneITask = {
   attributes: { isContactlessTask: false },
 };
 
-type OwnProps = {};
-
-const mapDispatchToProps = dispatch => {
-  return {
-    updateDefinitionVersion: (version: string, definitions: DefinitionVersion) =>
-      dispatch(ConfigActions.updateDefinitionVersion(version, definitions)),
-    fetchCaseList: (settings: CaseListSettingsState, helpline) =>
-      asyncDispatch(dispatch)(ListContent.fetchCaseListAsyncAction(settings, helpline, CASES_PER_PAGE)),
-    openCaseDetails: (caseId: string) =>
-      dispatch(newOpenModalAction({ route: 'case', subroute: 'home', caseId }, standaloneTask.taskSid)),
-    closeCaseDetails: () => dispatch(newCloseModalAction(standaloneTask.taskSid)),
-  };
-};
-
-const mapStateToProps = (state: RootState) => {
-  return {
-    currentSettings: selectCaseListSettings(state).current,
-    routing: selectCurrentTopmostRouteForTask(state, standaloneTask.taskSid) ?? {
+const CaseList: React.FC = () => {
+  const dispatch = useDispatch();
+  const currentSettings = useSelector((state: RootState) => selectCaseListSettings(state).current);
+  const routing = useSelector((state: RootState) => 
+    selectCurrentTopmostRouteForTask(state, standaloneTask.taskSid) ?? {
       route: 'case-list',
       subroute: 'case-list',
-    },
-    ...selectCasesForList(state),
-  };
-};
-
-const connector = connect(mapStateToProps, mapDispatchToProps);
-
-// eslint-disable-next-line no-use-before-define
-type Props = OwnProps & ConnectedProps<typeof connector>;
-
-const CaseList: React.FC<Props> = ({
-  openCaseDetails,
-  closeCaseDetails,
-  cases: caseList,
-  count: caseCount,
-  currentSettings,
-  fetchError,
-  listLoading,
-  routing,
-  fetchCaseList,
-}) => {
+    }
+  );
+  const { cases: caseList, count: caseCount, fetchError, listLoading } = useSelector((state: RootState) => 
+    selectCasesForList(state)
+  );
   const { helpline } = getHrmConfig();
 
   useEffect(() => {
-    fetchCaseList(currentSettings, helpline);
+    asyncDispatch(dispatch)(ListContent.fetchCaseListAsyncAction(currentSettings, helpline, CASES_PER_PAGE));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentSettings, helpline]);
 
   const handleClickViewCase = (currentCase: CaseType) => () => {
-    openCaseDetails(currentCase.id.toString());
+    dispatch(newOpenModalAction({ route: 'case', subroute: 'home', caseId: currentCase.id.toString() }, standaloneTask.taskSid));
   };
 
   const closeCaseView = async () => {
-    closeCaseDetails();
+    dispatch(newCloseModalAction(standaloneTask.taskSid));
   };
 
   if (fetchError)
@@ -158,6 +126,5 @@ const CaseList: React.FC<Props> = ({
 };
 
 CaseList.displayName = 'CaseList';
-const connected = connector(CaseList);
 
-export default connected;
+export default CaseList;
