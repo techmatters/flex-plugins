@@ -26,9 +26,9 @@ export type PreEngagementFormItem = FormItemDefinition & {
 };
 
 export type PreEngagementForm = {
-  description: string;
+  description?: string;
   submitLabel?: string;
-  fields: PreEngagementFormItem[];
+  fields?: PreEngagementFormItem[];
 };
 
 export const loadWebchatDefinition = async (
@@ -38,6 +38,7 @@ export const loadWebchatDefinition = async (
 
   const preEngagementForm = await fetchDefinition<PreEngagementForm>(
     'webchat/PreEngagementForm.json',
+    {},
   );
 
   return { preEngagementForm };
