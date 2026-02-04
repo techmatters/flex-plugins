@@ -1,0 +1,38 @@
+{
+  "description": "PreEngagementDescription",
+  "submitLabel": "LetsChat",
+  "fields": [
+    {
+      "type": "input-text",
+      "name": "name",
+      "label": "First Name",
+      "placeholder": "John",
+      "required": true
+    },
+    {
+      "label": "Are you reaching out on behalf of yourself or another person?",
+      "type": "select",
+      "defaultValue": "myself",
+      "name": "myselfOrOther",
+      "options": [
+        {
+          "value": "myself",
+          "label": "Myself"
+        },
+        {
+          "value": "other",
+          "label": "Someone else"
+        }
+      ]
+    },
+    {
+      "type": "checkbox",
+      "name": "termsAndConditions",
+      "label": "Accept <a href=\"https://www.redpapaz.org/wp-content/uploads/2019/02/Politica_de_Tratamiento_de_Informacion_-_Red_PaPaz.pdf\">terms and conditions</a>",
+      "required": {
+        "value": true,
+        "message": "You need to accept the terms and conditions"
+      }
+    }
+  ]
+}
