@@ -57,7 +57,7 @@ export default function QuickExit(props: Props) {
         console.error(error);
       }
     }
-    window.location.replace('https://google.com');
+    window.location.replace(config.quickExitUrl);
   };
 
   return (

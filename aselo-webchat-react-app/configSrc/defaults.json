@@ -1,4 +1,5 @@
 {
   "alwaysOpen": false,
-  "defaultLocale": "en-US"
+  "defaultLocale": "en-US",
+  "quickExit": "https://www.google.com"
 }

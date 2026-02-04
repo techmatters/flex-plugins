@@ -25,6 +25,7 @@ const initialState: ConfigState = {
   aseloBackendUrl: '',
   helplineCode: '',
   deploymentKey: '',
+  quickExitUrl: 'https://www.google.com',
 };
 
 export const ConfigReducer: Reducer = (state: ConfigState = initialState, action: AnyAction): ConfigState => {
