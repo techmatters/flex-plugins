@@ -39,18 +39,14 @@ const MAIN_TIMELINE_ID = 'prime-timeline';
 
 const FullTimelineView: React.FC<MyProps> = ({ task }: MyProps) => {
   const dispatch = useDispatch();
-  
+
   const { caseId, page = 0 } = useSelector((state: RootState) =>
-    selectCurrentTopmostRouteForTask(state, task.taskSid)
+    selectCurrentTopmostRouteForTask(state, task.taskSid),
   ) as CaseTimelineRoute;
-  const activityCount = useSelector((state: RootState) =>
-    selectTimelineCount(state, caseId, MAIN_TIMELINE_ID)
-  );
+  const activityCount = useSelector((state: RootState) => selectTimelineCount(state, caseId, MAIN_TIMELINE_ID));
 
   const changePageForThisCase = (page: number) => {
-    dispatch(
-      changeRoute({ route: 'case', subroute: 'timeline', caseId, page }, task.taskSid, ChangeRouteMode.Replace),
-    );
+    dispatch(changeRoute({ route: 'case', subroute: 'timeline', caseId, page }, task.taskSid, ChangeRouteMode.Replace));
     dispatch(
       newGetTimelineAsyncAction(
         caseId,

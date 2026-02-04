@@ -38,15 +38,13 @@ type Props = TabbedFormsCommonProps;
 const TabbedFormsCase: React.FC<Props> = props => {
   const { task } = props;
   const dispatch = useDispatch();
-  const { metadata, savedContact } = useSelector((state: RootState) =>
-    selectContactByTaskSid(state, task.taskSid),
-  );
+  const { metadata, savedContact } = useSelector((state: RootState) => selectContactByTaskSid(state, task.taskSid));
   const caseState = useSelector((state: RootState) => selectCaseByCaseId(state, savedContact?.caseId));
   const strings = getTemplateStrings();
   const { newSubmitHandler } = useTabbedFormContext();
 
   const closeModal = () => dispatch(newCloseModalAction(task.taskSid, 'tabbed-forms'));
-  
+
   const finaliseContact = (contact: Contact, metadata: ContactMetadata, caseState: CaseStateEntry) =>
     dispatch(submitContactFormAsyncAction(task as CustomITask, contact, metadata, caseState));
 

@@ -33,9 +33,7 @@ type Props = TabbedFormsCommonProps;
 
 const TabbedFormsSearch: React.FC<Props> = ({ task }) => {
   const dispatch = useDispatch();
-  const { savedContact, draftContact } = useSelector((state: RootState) =>
-    selectContactByTaskSid(state, task.taskSid),
-  );
+  const { savedContact, draftContact } = useSelector((state: RootState) => selectContactByTaskSid(state, task.taskSid));
   const updatedContact = getUnsavedContact(savedContact, draftContact);
 
   const saveDraft = async (savedContact: Contact, draftContact: ContactDraftChanges) => {

@@ -61,8 +61,6 @@ import '../customIntegrations/uscr/DispatchIncidentButton';
 
 type Props = TabbedFormsCommonProps;
 
-
-
 const mapTabsComponents = (errors: any) => (t: TabbedFormSubroutes | 'search') => {
   switch (t) {
     case 'search':
@@ -104,7 +102,7 @@ const mapTabsToIndex = (contact: Contact, contactForm: Partial<ContactRawJson>):
 
 const TabbedFormsTabs: React.FC<Props> = ({ task }) => {
   const dispatch = useDispatch();
-  
+
   const { taskSid } = task;
   const {
     [namespace]: { configuration, routing: routingState },
@@ -115,12 +113,12 @@ const TabbedFormsTabs: React.FC<Props> = ({ task }) => {
   const { showConnectedToCaseBanner, showRemovedFromCaseBanner } = useSelector((state: RootState) =>
     selectCaseMergingBanners(state, contactId),
   );
-  const currentDefinitionVersion = configuration.currentDefinitionVersion;
+  const { currentDefinitionVersion } = configuration;
   const updatedContact = getUnsavedContact(savedContact, draftContact);
 
   const backToCallTypeSelect = () =>
     dispatch(changeRoute({ route: 'select-call-type' }, taskSid, ChangeRouteMode.Replace));
-  
+
   const clearCallType = async (savedContact: Contact, otherChanges: ContactDraftChanges) => {
     await asyncDispatch<AnyAction>(dispatch)(
       updateContactInHrmAsyncAction(
@@ -130,27 +128,25 @@ const TabbedFormsTabs: React.FC<Props> = ({ task }) => {
       ),
     );
   };
-  
+
   const navigateToTab = (tab: TabbedFormSubroutes) =>
-    dispatch(
-      changeRoute({ route: 'tabbed-forms', subroute: tab, autoFocus: false }, taskSid, ChangeRouteMode.Replace),
-    );
-  
+    dispatch(changeRoute({ route: 'tabbed-forms', subroute: tab, autoFocus: false }, taskSid, ChangeRouteMode.Replace));
+
   const newCSAMReport = (contactId: string, csamReportType: CSAMReportType) =>
     dispatch(newCSAMReportActionForContact(contactId, csamReportType, true));
-  
+
   const openCSAMReport = (previousRoute: AppRoutes) =>
     dispatch(changeRoute({ route: 'csam-report', subroute: 'form', previousRoute }, taskSid));
-  
+
   const openSearchModal = (contextContactId: string) =>
     dispatch(newOpenModalAction({ contextContactId, route: 'search', subroute: 'form' }, taskSid));
-  
+
   const removeIfOfflineContact = (contact: Contact) => removeOfflineContact(dispatch, contact);
-  
+
   const saveDraft = async (savedContact: Contact, draftContact: ContactDraftChanges) => {
     await asyncDispatch<AnyAction>(dispatch)(updateContactInHrmAsyncAction(savedContact, draftContact, taskSid));
   };
-  
+
   const updateDraftForm = (contactId: Contact['id'], form: Partial<ContactRawJson>) =>
     dispatch(updateDraft(contactId, { rawJson: form }));
 

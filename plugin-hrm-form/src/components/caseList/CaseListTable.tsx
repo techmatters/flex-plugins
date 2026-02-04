@@ -46,14 +46,11 @@ type OwnProps = {
 /**
  * This component is split to make it easier to read, but is basically a 8 columns Table (8 for data, 1 for the "expand" button)
  */
-const CaseListTable: React.FC<OwnProps> = ({
-  loading,
-  caseList,
-  caseCount,
-  handleClickViewCase,
-}) => {
+const CaseListTable: React.FC<OwnProps> = ({ loading, caseList, caseCount, handleClickViewCase }) => {
   const dispatch = useDispatch();
-  const currentDefinitionVersion = useSelector((state: RootState) => state[namespace].configuration.currentDefinitionVersion);
+  const currentDefinitionVersion = useSelector(
+    (state: RootState) => state[namespace].configuration.currentDefinitionVersion,
+  );
   const currentPage = useSelector((state: RootState) => state[namespace].caseList.currentSettings.page);
   const can = React.useMemo(() => {
     return getInitializedCan();
@@ -115,7 +112,7 @@ const CaseListTable: React.FC<OwnProps> = ({
             transparent
             page={currentPage}
             pagesCount={pagesCount}
-            handleChangePage={(page) => dispatch(CaseListSettingsActions.updateCaseListPage(page))}
+            handleChangePage={page => dispatch(CaseListSettingsActions.updateCaseListPage(page))}
             disabled={loading}
           />
         </div>

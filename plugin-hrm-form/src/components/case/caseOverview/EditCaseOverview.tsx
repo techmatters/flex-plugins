@@ -69,17 +69,15 @@ const enum DialogState {
 
 const EditCaseOverview: React.FC<EditCaseOverviewProps> = ({ task, can }) => {
   const dispatch = useDispatch();
-  
-  const connectedCaseState = useSelector((state: RootState) =>
-    selectCurrentRouteCaseState(state, task.taskSid)
-  );
+
+  const connectedCaseState = useSelector((state: RootState) => selectCurrentRouteCaseState(state, task.taskSid));
   const historyDetails = useSelector((state: RootState) =>
-    selectCaseHistoryDetails(state, connectedCaseState?.connectedCase)
+    selectCaseHistoryDetails(state, connectedCaseState?.connectedCase),
   );
   const workingCopy = connectedCaseState?.caseWorkingCopy.caseSummary;
   const isUpdating = (connectedCaseState?.outstandingUpdateCount ?? 0) > 0;
   const definitionVersion = useSelector((state: RootState) =>
-    selectDefinitionVersionForCase(state, connectedCaseState?.connectedCase)
+    selectDefinitionVersionForCase(state, connectedCaseState?.connectedCase),
   );
   const { connectedCase, availableStatusTransitions } = connectedCaseState ?? {};
 
@@ -162,7 +160,8 @@ const EditCaseOverview: React.FC<EditCaseOverviewProps> = ({ task, can }) => {
     definition: formDefinition,
     initialValues,
     parentsPath: '',
-    updateCallback: () => dispatch(updateCaseSummaryWorkingCopy(connectedCase.id, getValues() as CaseSummaryWorkingCopy)),
+    updateCallback: () =>
+      dispatch(updateCaseSummaryWorkingCopy(connectedCase.id, getValues() as CaseSummaryWorkingCopy)),
     isItemEnabled: item => item.name === 'status' || can(PermissionActions.EDIT_CASE_OVERVIEW),
     shouldFocusFirstElement: false,
   });
@@ -189,7 +188,9 @@ const EditCaseOverview: React.FC<EditCaseOverviewProps> = ({ task, can }) => {
     const { status: oldStatus, id } = connectedCaseState.connectedCase;
     const { status, ...updatedInfoValues } = workingCopy;
 
-    await asyncDispatch<AnyAction>(dispatch)(updateCaseOverviewAsyncAction(id, updatedInfoValues, status === oldStatus ? undefined : status));
+    await asyncDispatch<AnyAction>(dispatch)(
+      updateCaseOverviewAsyncAction(id, updatedInfoValues, status === oldStatus ? undefined : status),
+    );
   };
 
   const saveAndLeave = async () => {
@@ -246,7 +247,11 @@ const EditCaseOverview: React.FC<EditCaseOverviewProps> = ({ task, can }) => {
           setDialog={() => setDialogState(DialogState.Closed)}
           handleDontSaveClose={() => {
             dispatch(removeCaseSummaryWorkingCopy(connectedCase.id));
-            dispatch(dialogState === DialogState.OpenForClose ? newCloseModalAction(task.taskSid) : newGoBackAction(task.taskSid));
+            dispatch(
+              dialogState === DialogState.OpenForClose
+                ? newCloseModalAction(task.taskSid)
+                : newGoBackAction(task.taskSid),
+            );
           }}
           handleSaveUpdate={methods.handleSubmit(saveAndLeave, onError)}
         />

@@ -64,14 +64,10 @@ type Props = {
   onNewCaseSaved?: (savedCase: CaseType) => Promise<void>;
 };
 
-const Case: React.FC<Props> = ({
-  task,
-  handleClose,
-  onNewCaseSaved = () => Promise.resolve(),
-}) => {
+const Case: React.FC<Props> = ({ task, handleClose, onNewCaseSaved = () => Promise.resolve() }) => {
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(false);
-  
+
   const currentRoute = useSelector((state: RootState) => selectCurrentTopmostRouteForTask(state, task.taskSid));
   const connectedCaseId = isCaseRoute(currentRoute) ? currentRoute.caseId : undefined;
   const contactId = useSelector((state: RootState) => selectContextContactId(state, task.taskSid, 'case', 'home'));

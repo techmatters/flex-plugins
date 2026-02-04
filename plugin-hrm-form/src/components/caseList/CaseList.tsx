@@ -45,14 +45,15 @@ const standaloneTask: StandaloneITask = {
 const CaseList: React.FC = () => {
   const dispatch = useDispatch();
   const currentSettings = useSelector((state: RootState) => selectCaseListSettings(state).current);
-  const routing = useSelector((state: RootState) => 
-    selectCurrentTopmostRouteForTask(state, standaloneTask.taskSid) ?? {
-      route: 'case-list',
-      subroute: 'case-list',
-    }
+  const routing = useSelector(
+    (state: RootState) =>
+      selectCurrentTopmostRouteForTask(state, standaloneTask.taskSid) ?? {
+        route: 'case-list',
+        subroute: 'case-list',
+      },
   );
-  const { cases: caseList, count: caseCount, fetchError, listLoading } = useSelector((state: RootState) => 
-    selectCasesForList(state)
+  const { cases: caseList, count: caseCount, fetchError, listLoading } = useSelector((state: RootState) =>
+    selectCasesForList(state),
   );
   const { helpline } = getHrmConfig();
 
@@ -62,7 +63,12 @@ const CaseList: React.FC = () => {
   }, [currentSettings, helpline]);
 
   const handleClickViewCase = (currentCase: CaseType) => () => {
-    dispatch(newOpenModalAction({ route: 'case', subroute: 'home', caseId: currentCase.id.toString() }, standaloneTask.taskSid));
+    dispatch(
+      newOpenModalAction(
+        { route: 'case', subroute: 'home', caseId: currentCase.id.toString() },
+        standaloneTask.taskSid,
+      ),
+    );
   };
 
   const closeCaseView = async () => {
