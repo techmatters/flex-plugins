@@ -1,6 +1,6 @@
 {
   "Header-CloseChatButtons-EndChatButtonLabel": "End Chat",
-  "Header-CloseChatButtons-EndChatConfirmDialogMessageFromChat": "End the current chat? You're messages will be lost",
+  "Header-CloseChatButtons-EndChatConfirmDialogMessageFromChat": "End the current chat? Your messages will be lost.",
   "Header-CloseChatButtons-EndChatConfirmDialogMessageFromPreEngagement": "Abandon the current chat?",
   "Header-CloseChatButtons-QuickExitButtonLabel": "Quick Exit",
   "Header-CloseChatButtons-QuickExitDescription": "Need to leave immediately?",
