@@ -38,14 +38,13 @@ const translations: Translations = {
 };
 
 const preEngagementConfig: PreEngagementFormDefinition = {
-  description: 'PreEngagementDescription',
+  description: 'Let us chat',
   submitLabel: 'StartChat',
   fields: [
     {
       type: 'input-text',
       name: 'firstName',
       label: 'First Name',
-      placeholder: 'Insert your name',
       required: true,
     },
     {
