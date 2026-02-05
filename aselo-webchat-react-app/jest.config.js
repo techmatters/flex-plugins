@@ -31,15 +31,15 @@ module.exports = config => {
       reporters: ['default', 'jest-junit'],
       testEnvironment: 'jsdom',
       transformIgnorePatterns: ['node_modules/(?!(@twilio-paste|@twilio/conversations))/'],
-        collectCoverage: true,
-        collectCoverageFrom: [
-            "<rootDir>/src/components/**/*.ts",
-            "!src/**/*.d.ts",
-            "!**/node_modules/**"
-        ],
-        coveragePathIgnorePatterns: [
-            "<rootDir>/src/coverage/"
-        ],
+      collectCoverage: true,
+      collectCoverageFrom: [
+        "<rootDir>/src/components/**/*.ts",
+        "!src/**/*.d.ts",
+        "!**/node_modules/**"
+      ],
+      coveragePathIgnorePatterns: [
+        "<rootDir>/src/coverage/"
+      ],
     }
   );
 };
