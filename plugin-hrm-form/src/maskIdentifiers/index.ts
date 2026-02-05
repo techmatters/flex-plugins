@@ -110,7 +110,7 @@ export const maskConversationServiceUserNames = (manager: Manager) => {
         let isAgent: boolean;
         if (participant.source.attributes['member_type']) {
           // Webchat 2 over programmable chat, check if participant is a guest
-          // Programmable Chat conversation participants are not listed in the 'participants' redux store so the above check does not work
+          // Programmable Chat conversation participants are not listed in the 'participants' redux store, so checking that store does not work for them
           // However they do have a member_type attribute set on the participant in the conversation, so we can use that
           // This check can be removed once webchat 2 support is removed
           isAgent = participant.source.attributes['member_type'] !== 'guest';
