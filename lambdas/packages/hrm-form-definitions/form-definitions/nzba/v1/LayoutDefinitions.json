@@ -38,6 +38,15 @@
     },
     "documents": {
       "splitFormAt": 1
+    },
+    "note": {
+      "printOrder": 5,
+      "caseHomeLocation": "timeline",
+      "printFormat": "list",
+      "previewFields": ["note"],
+      "layout": {
+        "note": {}
+      }
     }
   }
 }
