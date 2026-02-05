@@ -83,53 +83,53 @@ describe('maskConversationServiceUserNames', () => {
 
     each([
       {
-        scenario: 'no member_type attribute and not in flex store as agent',
+        testCase: 'no member_type attribute and not in flex store as agent',
         participantAttributes: {},
         flexParticipants: { participant1: { type: 'agent', sid: 'MB999' } },
         expectedName: 'MASKED',
       },
       {
-        scenario: 'no member_type attribute and no agents in flex store',
+        testCase: 'no member_type attribute and no agents in flex store',
         participantAttributes: {},
         flexParticipants: {},
         expectedName: 'MASKED',
       },
       {
-        scenario: 'no member_type attribute and only non-agent participants in flex store',
+        testCase: 'no member_type attribute and only non-agent participants in flex store',
         participantAttributes: {},
         flexParticipants: { participant1: { type: 'customer', sid: 'MB456' } },
         expectedName: 'MASKED',
       },
       {
-        scenario: 'member_type is guest, even if in flex store as agent',
+        testCase: 'member_type is guest, even if in flex store as agent',
         participantAttributes: { member_type: 'guest' },
         flexParticipants: { participant1: { type: 'agent', sid: 'MB456' } },
         expectedName: 'MASKED',
       },
       {
-        scenario: 'member_type is non-guest value, even if not in flex store as agent',
+        testCase: 'member_type is non-guest value, even if not in flex store as agent',
         participantAttributes: { member_type: 'agent' },
         flexParticipants: { participant1: { type: 'customer', sid: 'MB456' } },
         expectedName: 'Original Name',
       },
       {
-        scenario: 'member_type is supervisor',
+        testCase: 'member_type is supervisor',
         participantAttributes: { member_type: 'supervisor' },
         flexParticipants: {},
         expectedName: 'Original Name',
       },
       {
-        scenario: 'no member_type attribute and is in flex store as agent',
+        testCase: 'no member_type attribute and is in flex store as agent',
         participantAttributes: {},
         flexParticipants: { participant1: { type: 'agent', sid: 'MB456' } },
         expectedName: 'Original Name',
       },
-    ]).test('participant should have correct masking when $scenario', ({ participantAttributes, flexParticipants, expectedName }) => {
+    ]).test('participant should have correct masking when $testCase', ({ participantAttributes, flexParticipants, expectedName }) => {
       const conversationSid = 'CH123';
       const participantSid = 'MB456';
       const participant = createParticipant(participantSid, participantAttributes);
 
-      const bySid: Record<string, any> = {};
+      const bySid: Record<string, ReturnType<typeof createFlexParticipant>> = {};
       Object.entries(flexParticipants).forEach(([key, value]) => {
         bySid[key] = createFlexParticipant(value.type, conversationSid, value.sid);
       });
