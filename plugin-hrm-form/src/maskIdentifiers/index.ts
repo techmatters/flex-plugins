@@ -86,18 +86,17 @@ export const maskConversationServiceUserNames = (manager: Manager) => {
         participants: { bySid },
         chat,
       } = manager.store.getState().flex;
-      const flexNonAgentParticipantList = Object.values(bySid).filter(fp => fp.type !== 'agent');
+      const flexAgentParticipantList = Object.values(bySid).filter(fp => fp.type === 'agent');
       for (const [conversationSid, conversation] of Object.entries(chat.conversations)) {
         for (const participant of conversation.participants.values()) {
           // Check if this conversation participant matches the convo sid and conversation member sid of a non agent participant.
-          const isNotAgent = Boolean(
-            flexNonAgentParticipantList.find(fp => {
-              const mediaProperties = fp.mediaProperties as ChatProperties;
-              return (
-                mediaProperties.conversationSid === conversationSid && mediaProperties.sid === participant.source.sid
-              );
-            }),
-          );
+          // If the conversation participant is absent from the participants store, assume it's not an agent
+          const isNotAgent = flexAgentParticipantList.every(fp => {
+            const mediaProperties = fp.mediaProperties as ChatProperties;
+            return (
+              mediaProperties.conversationSid !== conversationSid || mediaProperties.sid !== participant.source.sid
+            );
+          });
           // Only mask non agent participants, which should only be the service user
           // The right side of the OR condition is for webchat 2.
           // Programmable Chat conversation participants are not listed in the 'participants' redux store so the above check soes not work
