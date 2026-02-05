@@ -64,11 +64,7 @@ describe('maskConversationServiceUserNames', () => {
     friendlyName: 'Original Name',
   });
 
-  const createFlexParticipant = (
-    type: string,
-    conversationSid: string,
-    participantSid: string,
-  ) => ({
+  const createFlexParticipant = (type: string, conversationSid: string, participantSid: string) => ({
     type,
     mediaProperties: {
       conversationSid,
@@ -124,34 +120,37 @@ describe('maskConversationServiceUserNames', () => {
         flexParticipants: { participant1: { type: 'agent', sid: 'MB456' } },
         expectedName: 'Original Name',
       },
-    ]).test('participant should have correct masking when $testCase', ({ participantAttributes, flexParticipants, expectedName }) => {
-      const conversationSid = 'CH123';
-      const participantSid = 'MB456';
-      const participant = createParticipant(participantSid, participantAttributes);
+    ]).test(
+      'participant should have correct masking when $testCase',
+      ({ participantAttributes, flexParticipants, expectedName }) => {
+        const conversationSid = 'CH123';
+        const participantSid = 'MB456';
+        const participant = createParticipant(participantSid, participantAttributes);
 
-      const bySid: Record<string, ReturnType<typeof createFlexParticipant>> = {};
-      Object.entries(flexParticipants).forEach(([key, value]) => {
-        bySid[key] = createFlexParticipant(value.type, conversationSid, value.sid);
-      });
+        const bySid: Record<string, ReturnType<typeof createFlexParticipant>> = {};
+        Object.entries(flexParticipants).forEach(([key, value]) => {
+          bySid[key] = createFlexParticipant(value.type, conversationSid, value.sid);
+        });
 
-      mockManager.store.getState.mockReturnValue({
-        flex: {
-          participants: { bySid },
-          chat: {
-            conversations: {
-              [conversationSid]: {
-                participants: new Map([[participantSid, participant]]),
+        mockManager.store.getState.mockReturnValue({
+          flex: {
+            participants: { bySid },
+            chat: {
+              conversations: {
+                [conversationSid]: {
+                  participants: new Map([[participantSid, participant]]),
+                },
               },
             },
           },
-        },
-      });
+        });
 
-      maskConversationServiceUserNames(mockManager as Manager);
-      storeSubscribeCallback();
+        maskConversationServiceUserNames(mockManager as Manager);
+        storeSubscribeCallback();
 
-      expect(participant.friendlyName).toBe(expectedName);
-    });
+        expect(participant.friendlyName).toBe(expectedName);
+      },
+    );
 
     test('should handle multiple conversations with different participants', () => {
       const conversationSid1 = 'CH123';
@@ -211,10 +210,10 @@ describe('maskConversationServiceUserNames', () => {
       const participantSid = 'MB456';
       const participant = createParticipant(participantSid);
 
-      if (maskString !== undefined) {
-        mockManager.strings.MaskIdentifiers = maskString;
-      } else {
+      if (maskString === undefined) {
         delete mockManager.strings.MaskIdentifiers;
+      } else {
+        mockManager.strings.MaskIdentifiers = maskString;
       }
 
       mockManager.store.getState.mockReturnValue({
