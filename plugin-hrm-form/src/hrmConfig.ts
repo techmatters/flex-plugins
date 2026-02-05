@@ -74,8 +74,12 @@ const readConfig = () => {
 
   const { helpline_code: helplineCode, environment } = manager.serviceConfiguration.attributes;
   const docsBucket = `tl-aselo-docs-${helplineCode}-${environment}`;
+  const configuredFormDefinitionsBaseUrl =
+    process.env.REACT_APP_FORM_DEFINITIONS_BASE_URL ||
+    manager.serviceConfiguration.attributes.form_definitions_base_url;
   const getFormDefinitionsBaseUrl = buildFormDefinitionsBaseUrlGetter({
     environment: getEnvironmentFromHrmBaseUrl(manager),
+    configuredFormDefinitionsBaseUrl,
   });
 
   const externalRecordingsEnabled = manager.serviceConfiguration.attributes.external_recordings_enabled || false;

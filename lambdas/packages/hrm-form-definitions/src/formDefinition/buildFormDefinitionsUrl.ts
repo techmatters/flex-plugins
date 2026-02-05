@@ -28,11 +28,21 @@ const getVersionFromDefinitionVersionId = (definitionVersionId: string) => {
 };
 
 export const buildFormDefinitionsBaseUrlGetter =
-  ({ environment }: { environment: string }) =>
+  ({
+    environment,
+    configuredFormDefinitionsBaseUrl,
+  }: {
+    environment: string;
+    configuredFormDefinitionsBaseUrl?: string;
+  }) =>
   (definitionVersionId: string) => {
-    const baseUrl = `https://assets-${environment}.tl.techmatters.org/form-definitions/`;
     const helplineCode = getHelplineCodeFromDefinitionVersionId(definitionVersionId);
     const version = getVersionFromDefinitionVersionId(definitionVersionId);
 
-    return `${baseUrl}${helplineCode}/${version}`;
+    if (configuredFormDefinitionsBaseUrl) {
+      return `${configuredFormDefinitionsBaseUrl}/${helplineCode}/${version}`;
+    }
+
+    const baseUrl = `https://assets-${environment}.tl.techmatters.org/form-definitions`;
+    return `${baseUrl}/${helplineCode}/${version}`;
   };
