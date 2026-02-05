@@ -78,7 +78,9 @@ export const maskManagerStringsWithIdentifiers = <T extends Strings<string> & { 
 };
 
 // Extract types from guts of flex store
-type ParticipantState = AppState['chat']['conversations'][string]['participants'] extends Map<any, infer I> ? I : never;
+type ParticipantState = AppState['chat']['conversations'][string]['participants'] extends Map<unknown, infer I>
+  ? I
+  : never;
 // Check if this conversation participant matches the convo sid and conversation member sid of an agent participant.
 // If the conversation participant is absent from the participants store, assume it's not an agent
 const isConversationParticipantAnAgent = (manager: Manager, participant: ParticipantState, conversationSid: string) => {
