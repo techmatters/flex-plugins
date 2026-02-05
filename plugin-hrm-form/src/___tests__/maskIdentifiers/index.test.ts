@@ -14,7 +14,11 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
+/* eslint-disable camelcase */
+
 import { Manager } from '@twilio/flex-ui';
+import each from 'jest-each';
+
 import { maskConversationServiceUserNames } from '../../maskIdentifiers';
 import { getInitializedCan } from '../../permissions/rules';
 import { PermissionActions } from '../../permissions/actions';
@@ -77,18 +81,62 @@ describe('maskConversationServiceUserNames', () => {
       mockCan.mockImplementation((action: string) => action !== PermissionActions.VIEW_IDENTIFIERS);
     });
 
-    test('participant should be masked when no member_type attribute and not in flex store as agent', () => {
+    each([
+      {
+        scenario: 'no member_type attribute and not in flex store as agent',
+        participantAttributes: {},
+        flexParticipants: { participant1: { type: 'agent', sid: 'MB999' } },
+        expectedName: 'MASKED',
+      },
+      {
+        scenario: 'no member_type attribute and no agents in flex store',
+        participantAttributes: {},
+        flexParticipants: {},
+        expectedName: 'MASKED',
+      },
+      {
+        scenario: 'no member_type attribute and only non-agent participants in flex store',
+        participantAttributes: {},
+        flexParticipants: { participant1: { type: 'customer', sid: 'MB456' } },
+        expectedName: 'MASKED',
+      },
+      {
+        scenario: 'member_type is guest, even if in flex store as agent',
+        participantAttributes: { member_type: 'guest' },
+        flexParticipants: { participant1: { type: 'agent', sid: 'MB456' } },
+        expectedName: 'MASKED',
+      },
+      {
+        scenario: 'member_type is non-guest value, even if not in flex store as agent',
+        participantAttributes: { member_type: 'agent' },
+        flexParticipants: { participant1: { type: 'customer', sid: 'MB456' } },
+        expectedName: 'Original Name',
+      },
+      {
+        scenario: 'member_type is supervisor',
+        participantAttributes: { member_type: 'supervisor' },
+        flexParticipants: {},
+        expectedName: 'Original Name',
+      },
+      {
+        scenario: 'no member_type attribute and is in flex store as agent',
+        participantAttributes: {},
+        flexParticipants: { participant1: { type: 'agent', sid: 'MB456' } },
+        expectedName: 'Original Name',
+      },
+    ]).test('participant should have correct masking when $scenario', ({ participantAttributes, flexParticipants, expectedName }) => {
       const conversationSid = 'CH123';
       const participantSid = 'MB456';
-      const participant = createParticipant(participantSid);
+      const participant = createParticipant(participantSid, participantAttributes);
+
+      const bySid: Record<string, any> = {};
+      Object.entries(flexParticipants).forEach(([key, value]) => {
+        bySid[key] = createFlexParticipant(value.type, conversationSid, value.sid);
+      });
 
       mockManager.store.getState.mockReturnValue({
         flex: {
-          participants: {
-            bySid: {
-              participant1: createFlexParticipant('agent', conversationSid, 'MB999'), // Different participant
-            },
-          },
+          participants: { bySid },
           chat: {
             conversations: {
               [conversationSid]: {
@@ -102,171 +150,7 @@ describe('maskConversationServiceUserNames', () => {
       maskConversationServiceUserNames(mockManager as Manager);
       storeSubscribeCallback();
 
-      expect(participant.friendlyName).toBe('MASKED');
-    });
-
-    test('participant should be masked when no member_type attribute and no agents in flex store', () => {
-      const conversationSid = 'CH123';
-      const participantSid = 'MB456';
-      const participant = createParticipant(participantSid);
-
-      mockManager.store.getState.mockReturnValue({
-        flex: {
-          participants: {
-            bySid: {},
-          },
-          chat: {
-            conversations: {
-              [conversationSid]: {
-                participants: new Map([[participantSid, participant]]),
-              },
-            },
-          },
-        },
-      });
-
-      maskConversationServiceUserNames(mockManager as Manager);
-      storeSubscribeCallback();
-
-      expect(participant.friendlyName).toBe('MASKED');
-    });
-
-    test('participant should be masked when no member_type attribute and only non-agent participants in flex store', () => {
-      const conversationSid = 'CH123';
-      const participantSid = 'MB456';
-      const participant = createParticipant(participantSid);
-
-      mockManager.store.getState.mockReturnValue({
-        flex: {
-          participants: {
-            bySid: {
-              participant1: createFlexParticipant('customer', conversationSid, participantSid),
-            },
-          },
-          chat: {
-            conversations: {
-              [conversationSid]: {
-                participants: new Map([[participantSid, participant]]),
-              },
-            },
-          },
-        },
-      });
-
-      maskConversationServiceUserNames(mockManager as Manager);
-      storeSubscribeCallback();
-
-      expect(participant.friendlyName).toBe('MASKED');
-    });
-
-    test('participant should be masked when member_type is guest, even if in flex store as agent', () => {
-      const conversationSid = 'CH123';
-      const participantSid = 'MB456';
-      const participant = createParticipant(participantSid, { member_type: 'guest' });
-
-      mockManager.store.getState.mockReturnValue({
-        flex: {
-          participants: {
-            bySid: {
-              participant1: createFlexParticipant('agent', conversationSid, participantSid),
-            },
-          },
-          chat: {
-            conversations: {
-              [conversationSid]: {
-                participants: new Map([[participantSid, participant]]),
-              },
-            },
-          },
-        },
-      });
-
-      maskConversationServiceUserNames(mockManager as Manager);
-      storeSubscribeCallback();
-
-      expect(participant.friendlyName).toBe('MASKED');
-    });
-
-    test('participant should NOT be masked when member_type is non-guest value, even if not in flex store as agent', () => {
-      const conversationSid = 'CH123';
-      const participantSid = 'MB456';
-      const participant = createParticipant(participantSid, { member_type: 'agent' });
-
-      mockManager.store.getState.mockReturnValue({
-        flex: {
-          participants: {
-            bySid: {
-              participant1: createFlexParticipant('customer', conversationSid, participantSid),
-            },
-          },
-          chat: {
-            conversations: {
-              [conversationSid]: {
-                participants: new Map([[participantSid, participant]]),
-              },
-            },
-          },
-        },
-      });
-
-      maskConversationServiceUserNames(mockManager as Manager);
-      storeSubscribeCallback();
-
-      expect(participant.friendlyName).toBe('Original Name');
-    });
-
-    test('participant should NOT be masked when member_type is supervisor', () => {
-      const conversationSid = 'CH123';
-      const participantSid = 'MB456';
-      const participant = createParticipant(participantSid, { member_type: 'supervisor' });
-
-      mockManager.store.getState.mockReturnValue({
-        flex: {
-          participants: {
-            bySid: {},
-          },
-          chat: {
-            conversations: {
-              [conversationSid]: {
-                participants: new Map([[participantSid, participant]]),
-              },
-            },
-          },
-        },
-      });
-
-      maskConversationServiceUserNames(mockManager as Manager);
-      storeSubscribeCallback();
-
-      expect(participant.friendlyName).toBe('Original Name');
-    });
-
-    test('participant should NOT be masked when no member_type attribute and is in flex store as agent', () => {
-      const conversationSid = 'CH123';
-      const participantSid = 'MB456';
-      const participant = createParticipant(participantSid);
-
-      mockManager.store.getState.mockReturnValue({
-        flex: {
-          participants: {
-            bySid: {
-              participant1: createFlexParticipant('agent', conversationSid, participantSid),
-            },
-          },
-          chat: {
-            conversations: {
-              [conversationSid]: {
-                participants: new Map([[participantSid, participant]]),
-              },
-            },
-          },
-        },
-      });
-
-      maskConversationServiceUserNames(mockManager as Manager);
-      storeSubscribeCallback();
-
-      expect(participant.friendlyName).toBe('Original Name');
+      expect(participant.friendlyName).toBe(expectedName);
     });
 
     test('should handle multiple conversations with different participants', () => {
@@ -311,18 +195,31 @@ describe('maskConversationServiceUserNames', () => {
       expect(guestParticipant2.friendlyName).toBe('MASKED');
     });
 
-    test('should use custom mask string when provided', () => {
+    each([
+      {
+        description: 'custom mask string when provided',
+        maskString: 'CUSTOM_MASK',
+        expectedResult: 'CUSTOM_MASK',
+      },
+      {
+        description: 'default mask string when MaskIdentifiers string is not provided',
+        maskString: undefined,
+        expectedResult: 'XXXXXX',
+      },
+    ]).test('should use $description', ({ maskString, expectedResult }) => {
       const conversationSid = 'CH123';
       const participantSid = 'MB456';
       const participant = createParticipant(participantSid);
 
-      mockManager.strings.MaskIdentifiers = 'CUSTOM_MASK';
+      if (maskString !== undefined) {
+        mockManager.strings.MaskIdentifiers = maskString;
+      } else {
+        delete mockManager.strings.MaskIdentifiers;
+      }
 
       mockManager.store.getState.mockReturnValue({
         flex: {
-          participants: {
-            bySid: {},
-          },
+          participants: { bySid: {} },
           chat: {
             conversations: {
               [conversationSid]: {
@@ -336,35 +233,7 @@ describe('maskConversationServiceUserNames', () => {
       maskConversationServiceUserNames(mockManager as Manager);
       storeSubscribeCallback();
 
-      expect(participant.friendlyName).toBe('CUSTOM_MASK');
-    });
-
-    test('should use default mask string when MaskIdentifiers string is not provided', () => {
-      const conversationSid = 'CH123';
-      const participantSid = 'MB456';
-      const participant = createParticipant(participantSid);
-
-      delete mockManager.strings.MaskIdentifiers;
-
-      mockManager.store.getState.mockReturnValue({
-        flex: {
-          participants: {
-            bySid: {},
-          },
-          chat: {
-            conversations: {
-              [conversationSid]: {
-                participants: new Map([[participantSid, participant]]),
-              },
-            },
-          },
-        },
-      });
-
-      maskConversationServiceUserNames(mockManager as Manager);
-      storeSubscribeCallback();
-
-      expect(participant.friendlyName).toBe('XXXXXX');
+      expect(participant.friendlyName).toBe(expectedResult);
     });
   });
 
@@ -405,41 +274,31 @@ describe('maskConversationServiceUserNames', () => {
       mockCan.mockImplementation((action: string) => action !== PermissionActions.VIEW_IDENTIFIERS);
     });
 
-    test('should handle empty conversations object', () => {
-      mockManager.store.getState.mockReturnValue({
-        flex: {
-          participants: {
-            bySid: {},
+    each([
+      {
+        testName: 'empty conversations object',
+        setupState: () => ({
+          flex: {
+            participants: { bySid: {} },
+            chat: { conversations: {} },
           },
-          chat: {
-            conversations: {},
-          },
-        },
-      });
-
-      expect(() => {
-        maskConversationServiceUserNames(mockManager as Manager);
-        storeSubscribeCallback();
-      }).not.toThrow();
-    });
-
-    test('should handle conversation with empty participants map', () => {
-      const conversationSid = 'CH123';
-
-      mockManager.store.getState.mockReturnValue({
-        flex: {
-          participants: {
-            bySid: {},
-          },
-          chat: {
-            conversations: {
-              [conversationSid]: {
-                participants: new Map(),
+        }),
+      },
+      {
+        testName: 'conversation with empty participants map',
+        setupState: () => ({
+          flex: {
+            participants: { bySid: {} },
+            chat: {
+              conversations: {
+                CH123: { participants: new Map() },
               },
             },
           },
-        },
-      });
+        }),
+      },
+    ]).test('should handle $testName', ({ setupState }) => {
+      mockManager.store.getState.mockReturnValue(setupState());
 
       expect(() => {
         maskConversationServiceUserNames(mockManager as Manager);
