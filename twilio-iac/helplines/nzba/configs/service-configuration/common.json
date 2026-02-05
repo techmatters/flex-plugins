@@ -1,18 +1,15 @@
 {
     "attributes": {
         "contacts_waiting_channels": [
-            "web"
+            "web",
+            "voice"
         ],
-        "definitionVersion": "ukmh-v1",
+        "definitionVersion": "nzba-v1",
         "feature_flags": {
-            "enable_lex_v2": true,
-            "enable_post_survey": true,
-            "enable_lambda_post_survey_processing": true,
-            "use_prepopulate_mappings": true,
-            "use_twilio_lambda_for_conference_functions": true
+            "use_prepopulate_mappings": true
         },
-        "helplineLanguage": "en-GB",
-        "permissionConfig": "ukmh"
+        "helplineLanguage": "en-NZ",
+        "permissionConfig": "nzba"
     },
     "ui_attributes": {
         "colorTheme": {

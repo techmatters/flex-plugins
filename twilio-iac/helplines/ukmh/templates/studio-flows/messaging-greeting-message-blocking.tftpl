@@ -74,7 +74,7 @@ ${
             },
             "service": "{{trigger.message.InstanceSid}}",
             "channel": "{{trigger.message.ChannelSid}}",
-            "from": "The Mix PeerChat Service",
+            "from": "The PeerChat Service",
             "to": "{{contact.channel.address}}",
             "body": flow_vars["chat_blocked_message"]
           }
@@ -132,7 +132,7 @@ ${
             },
             "workflow": workflow_sids["master"],
             "channel": task_channel_sids["chat"],
-            "from": "The Mix PeerChat Service",
+            "from": "The PeerChat Service",
             "attributes": channel_attributes["default"]
           }
         },
@@ -178,10 +178,10 @@ ${
             },
             "service": "{{trigger.message.InstanceSid}}",
             "channel": "{{trigger.message.ChannelSid}}",
-            "from": "The Mix PeerChat Service",
+            "from": "The PeerChat Service",
             "message_type": "custom",
             "to": "{{contact.channel.address}}",
-            "body": "Welcome to The Mix. We'll be with you soon. If you're currently in crisis, text THEMIX to 85258"
+            "body": "Welcome to the PeerChat Service. We'll be with you soon. If you're currently in crisis, text THEMIX to 85258. \n\n NB: You have read and agreed to our terms of use (https://www.themix.org.uk/about-us/privacy-centre/peerchat-terms-of-service/) and privacy policy (https://www.themix.org.uk/about-us/privacy-centre/peerchat-privacy-notice/)"
           }
         }
       ],

@@ -6,18 +6,15 @@ locals {
 
 
   local_config = {
-    helpline           = "Mental Health Innovations"
-    task_language      = "en-GB"
-    enable_post_survey = true
-    enable_lex_v2      = true
-    permission_config  = "ukmh"
-    helpline_region    = "eu-west-1"
-
+    helpline                          = "Barnardos"
+    default_autopilot_chatbot_enabled = false
+    task_language                     = "en-NZ"
+    helpline_region                   = "eu-west-1"
 
     workflows = {
       master : {
         friendly_name = "Master Workflow"
-        templatefile = "/app/twilio-iac/helplines/ukmh/templates/workflows/master.tftpl"
+        templatefile  = "/app/twilio-iac/helplines/templates/workflows/master.tftpl"
       },
       queue_transfers : {
         friendly_name = "Queue Transfers Workflow"
@@ -30,17 +27,9 @@ locals {
     }
 
     task_queues = {
-      supporter : {
-        "target_workers" = "(roles HAS 'agent')",
-        "friendly_name"  = "The Mix"
-      },
-      coordinator : {
-        "target_workers" = "(roles HAS 'supervisor')",
-        "friendly_name"  = "The Mix - Supervisor"
-      },
-      everyone : {
+      master : {
         "target_workers" = "1==1",
-        "friendly_name"  = "Everyone"
+        "friendly_name"  = "Aselo"
       },
       survey : {
         "target_workers" = "1==0",
@@ -49,11 +38,18 @@ locals {
       e2e_test : {
         "target_workers" = "email=='aselo-alerts+production@techmatters.org'",
         "friendly_name"  = "E2E Test Queue"
-      }
+      },
     }
 
-    lex_v2_bot_languages = {
-      en_GB : ["post_survey"]
+    task_channels = {
+      default : "Default"
+      chat : "Programmable Chat"
+      voice : "Voice"
+      sms : "SMS"
+      video : "Video"
+      email : "Email"
+      survey : "Survey"
     }
+
   }
 }
