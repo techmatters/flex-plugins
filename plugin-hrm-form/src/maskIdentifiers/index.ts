@@ -87,11 +87,12 @@ const isConversationParticipantAnAgent = (
   participant: ParticipantState,
   conversationSid: string,
 ) =>
-  flexAgentParticipantList.length === 0 ||
-  flexAgentParticipantList.every(fp => {
-    const mediaProperties = fp.mediaProperties as ChatProperties;
-    return mediaProperties.conversationSid !== conversationSid || mediaProperties.sid !== participant.source.sid;
-  });
+  Boolean(
+    flexAgentParticipantList.find(fp => {
+      const mediaProperties = fp.mediaProperties as ChatProperties;
+      return mediaProperties.conversationSid === conversationSid && mediaProperties.sid === participant.source.sid;
+    }),
+  );
 
 export const maskConversationServiceUserNames = (manager: Manager) => {
   let can: ReturnType<typeof getInitializedCan>;
