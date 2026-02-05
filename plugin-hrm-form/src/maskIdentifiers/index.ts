@@ -78,21 +78,24 @@ export const maskManagerStringsWithIdentifiers = <T extends Strings<string> & { 
 };
 
 // Extract types from guts of flex store
-type ConversationParticipant = AppState['participants']['bySid'][string];
 type ParticipantState = AppState['chat']['conversations'][string]['participants'] extends Map<any, infer I> ? I : never;
-// Check if this conversation participant matches the convo sid and conversation member sid of a non agent participant.
+// Check if this conversation participant matches the convo sid and conversation member sid of an agent participant.
 // If the conversation participant is absent from the participants store, assume it's not an agent
-const isConversationParticipantAnAgent = (
-  flexAgentParticipantList: ConversationParticipant[],
-  participant: ParticipantState,
-  conversationSid: string,
-) =>
-  Boolean(
-    flexAgentParticipantList.find(fp => {
+const isConversationParticipantAnAgent = (manager: Manager, participant: ParticipantState, conversationSid: string) => {
+  const {
+    participants: { bySid },
+  } = manager.store.getState().flex;
+  return Boolean(
+    Object.values(bySid).find(fp => {
       const mediaProperties = fp.mediaProperties as ChatProperties;
-      return mediaProperties.conversationSid === conversationSid && mediaProperties.sid === participant.source.sid;
+      return (
+        fp.type === 'agent' &&
+        mediaProperties.conversationSid === conversationSid &&
+        mediaProperties.sid === participant.source.sid
+      );
     }),
   );
+};
 
 export const maskConversationServiceUserNames = (manager: Manager) => {
   let can: ReturnType<typeof getInitializedCan>;
@@ -100,11 +103,7 @@ export const maskConversationServiceUserNames = (manager: Manager) => {
     can = getInitializedCan();
     if (can(PermissionActions.VIEW_IDENTIFIERS)) return;
 
-    const {
-      participants: { bySid },
-      chat,
-    } = manager.store.getState().flex;
-    const flexAgentParticipantList = Object.values(bySid).filter(fp => fp.type === 'agent');
+    const { chat } = manager.store.getState().flex;
 
     for (const [conversationSid, conversation] of Object.entries(chat.conversations)) {
       for (const participant of conversation.participants.values()) {
@@ -116,7 +115,7 @@ export const maskConversationServiceUserNames = (manager: Manager) => {
           // This check can be removed once webchat 2 support is removed
           isAgent = participant.source.attributes['member_type'] !== 'guest';
         } else {
-          isAgent = isConversationParticipantAnAgent(flexAgentParticipantList, participant, conversationSid);
+          isAgent = isConversationParticipantAnAgent(manager, participant, conversationSid);
         }
         // Only mask non agent participants, which should only be the service user
         if (!isAgent) {
