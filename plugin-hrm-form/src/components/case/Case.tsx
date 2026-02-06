@@ -17,7 +17,6 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { CircularProgress } from '@material-ui/core';
-import { AnyAction } from 'redux';
 
 import { RootState } from '../../states';
 import { getDefinitionVersion } from '../../services/ServerlessService';
@@ -44,8 +43,6 @@ import { CenteredContainer } from './styles';
 import EditCaseOverview from './caseOverview/EditCaseOverview';
 import * as ContactActions from '../../states/contacts/existingContacts';
 import { getHrmConfig, getTemplateStrings } from '../../hrmConfig';
-import asyncDispatch from '../../states/asyncDispatch';
-import { removeFromCaseAsyncAction } from '../../states/contacts/saveContact';
 import { selectCurrentTopmostRouteForTask } from '../../states/routing/getRoute';
 import { selectCurrentDefinitionVersion, selectDefinitionVersions } from '../../states/configuration/selectDefinitions';
 import FullTimelineView from './timeline/FullTimelineView';
@@ -91,9 +88,6 @@ const Case: React.FC<Props> = ({ task, handleClose, onNewCaseSaved = () => Promi
   const openPrintModal = (caseId: CaseType['id']) => {
     dispatch(RoutingActions.newOpenModalAction({ route: 'case', subroute: 'case-print-view', caseId }, task.taskSid));
   };
-  const removeConnectedCase = async (contactId: string) => {
-    await asyncDispatch<AnyAction>(dispatch)(removeFromCaseAsyncAction(contactId));
-  };
   const updateDefinitionVersion = (connectedCase: CaseType, taskSid: string, definition) => {
     dispatch(
       ConfigActions.updateDefinitionVersion(
@@ -103,7 +97,6 @@ const Case: React.FC<Props> = ({ task, handleClose, onNewCaseSaved = () => Promi
     );
   };
   const releaseAllContacts = (referenceId: string) => dispatch(ContactActions.releaseAllContacts(referenceId));
-  const loadContacts = (contactIds: string[]) => dispatch(ContactActions.loadContacts(contactIds));
 
   const { connectedCase, loading: loadingCase } = useCase({
     caseId: connectedCaseId,
