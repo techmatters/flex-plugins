@@ -15,8 +15,8 @@
  */
 
 import { Box } from '@twilio-paste/core/box';
-import { ChatIcon } from '@twilio-paste/icons/esm/ChatIcon';
-import { ChevronDownIcon } from '@twilio-paste/icons/esm/ChevronDownIcon';
+import { ChatIcon } from '@twilio-paste/icons/cjs/ChatIcon';
+import { ChevronDownIcon } from '@twilio-paste/icons/cjs/ChevronDownIcon';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { changeExpandedStatus } from '../store/actions/genericActions';
@@ -30,7 +30,7 @@ export const EntryPoint = () => {
   return (
     <Box
       as="button"
-      data-test="entry-point-button"
+      data-testid="entry-point-button"
       onClick={() => dispatch(changeExpandedStatus({ expanded: !expanded }))}
       {...containerStyles}
     >

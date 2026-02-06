@@ -1,6 +1,6 @@
 {
-  "EndChatButtonLabel": "Ħruġ mill-chat",
-  "QuickExitButtonLabel": "Ħruġ malajr",
-  "QuickExitDescription": "Għandek bżonn titlaq malajr?",
-  "ChatWithUs": "Chat magħna"
+  "Header-CloseChatButtons-EndChatButtonLabel": "Ħruġ mill-chat",
+  "Header-CloseChatButtons-QuickExitButtonLabel": "Ħruġ malajr",
+  "Header-CloseChatButtons-QuickExitDescription": "Għandek bżonn titlaq malajr?",
+  "Header-TitleBar-Title": "Chat magħna"
 }

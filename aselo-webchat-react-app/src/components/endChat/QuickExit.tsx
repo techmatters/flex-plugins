@@ -16,20 +16,26 @@
 
 import { useDispatch, useSelector } from 'react-redux';
 import { Button } from '@twilio-paste/core/button';
+import { LogOutIcon } from '@twilio-paste/icons/cjs/LogOutIcon';
 
 import { contactBackend, sessionDataHandler } from '../../sessionDataHandler';
 import { changeEngagementPhase, updatePreEngagementData } from '../../store/actions/genericActions';
 import { EngagementPhase } from '../../store/definitions';
 import { selectConfig } from '../../store/config.reducer';
+import LocalizedTemplate from '../../localization/LocalizedTemplate';
 
-type Props = {
-  channelSid: string;
-  token: string;
-  language?: string;
-  finishTask: boolean;
-};
+type Props =
+  | {
+      channelSid: string;
+      token: string;
+      language?: string;
+      action: 'finishTask';
+    }
+  | {
+      action: 'restartEngagement';
+    };
 
-export default function QuickExit({ channelSid, token, language, finishTask }: Props) {
+export default function QuickExit(props: Props) {
   const dispatch = useDispatch();
   const config = useSelector(selectConfig);
 
@@ -43,19 +49,22 @@ export default function QuickExit({ channelSid, token, language, finishTask }: P
     sessionDataHandler.clear();
     dispatch(updatePreEngagementData({ email: '', name: '', query: '' }));
     dispatch(changeEngagementPhase({ phase: EngagementPhase.PreEngagementForm }));
-    if (finishTask) {
+    if (props.action === 'finishTask') {
       // Only if we started a task
       try {
-        await configuredBackend('/endChat', { channelSid, token, language });
+        // Fire and forget end chat request, don't delay blanking the page waiting for the response
+        configuredBackend('/endChat', props).then(() => null);
       } catch (error) {
+        // Only errors synchronously making the request will be caught, not errors from the service
         console.error(error);
       }
     }
+    window.location.replace(config.quickExitUrl);
   };
 
   return (
-    <Button variant="destructive" css={{ backgroundColor: '#d22f2f' }} onClick={handleExit}>
-      QuickExitButtonLabel QuickExitIcon
+    <Button variant="destructive" element="CHAT_CLOSE_BUTTON" onClick={handleExit}>
+      <LocalizedTemplate code="Header-CloseChatButtons-QuickExitButtonLabel" /> <LogOutIcon decorative={true} />
     </Button>
   );
 }

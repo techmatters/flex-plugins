@@ -32,6 +32,7 @@ import {
   ACTION_UPDATE_PARTICIPANT,
   ACTION_UPDATE_PARTICIPANT_NAME,
 } from './actions/actionTypes';
+import type { AppState } from './store';
 
 const initialState: ChatState = {};
 
@@ -155,3 +156,5 @@ export const ChatReducer: Reducer = (state: ChatState = initialState, action: An
       return state;
   }
 };
+
+export const selectConversation = (state: AppState) => state.chat?.conversation;
