@@ -108,7 +108,10 @@ export const maskConversationServiceUserNames = (manager: Manager) => {
     for (const [conversationSid, conversation] of Object.entries(chat.conversations)) {
       for (const participant of conversation.participants.values()) {
         let isAgent: boolean;
-        if (participant.source.attributes['member_type']) {
+        if (participant.source.identity && participant.source.identity === manager.user.identity) {
+          // Identity matches logged in user's identity, it's the current user
+          isAgent = true;
+        } else if (participant.source.attributes['member_type']) {
           // Webchat 2 over programmable chat, check if participant is a guest
           // Programmable Chat conversation participants are not listed in the 'participants' redux store, so checking that store does not work for them
           // However they do have a member_type attribute set on the participant in the conversation, so we can use that
