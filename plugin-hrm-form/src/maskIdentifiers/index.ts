@@ -54,14 +54,17 @@ export const maskChannelStringsWithIdentifiers = (channelType: TaskChannelDefini
     // The unmasked service user number appears in the last message info on SMS if they sent the last message
     // Lets replace it with a version that doesn't include the sender, regardless of who s
     TaskListItem.secondLine = task => {
-      const conversationState = StateHelper.getConversationStateForTask(task);
       const taskHelper = new TaskHelper(task);
+      const conversationState = StateHelper.getConversationStateForTask(task);
+      if (!conversationState) {
+        return taskHelper.durationSinceUpdate;
+      }
       const conversationHelper = new ConversationHelper(conversationState);
       return `${taskHelper.durationSinceUpdate} | ${
-        conversationHelper.lastMessage.isFromMe
-          ? conversationHelper.lastMessage.authorName
+        conversationHelper.lastMessage?.isFromMe
+          ? conversationHelper.lastMessage?.authorName
           : strings['MaskIdentifiers'] ?? '-'
-      }: ${conversationHelper.lastMessage.source.body}`;
+      }: ${conversationHelper.lastMessage?.source.body ?? ''}`;
     };
   }
   // Task panel during an active call
