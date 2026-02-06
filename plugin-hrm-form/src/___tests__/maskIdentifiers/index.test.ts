@@ -43,6 +43,9 @@ describe('maskConversationServiceUserNames', () => {
       strings: {
         MaskIdentifiers: 'MASKED',
       },
+      user: {
+        identity: 'current-user-identity',
+      },
       store: {
         subscribe: jest.fn((callback: () => void) => {
           storeSubscribeCallback = callback;
@@ -56,10 +59,11 @@ describe('maskConversationServiceUserNames', () => {
     jest.clearAllMocks();
   });
 
-  const createParticipant = (sid: string, attributes: Record<string, any> = {}) => ({
+  const createParticipant = (sid: string, attributes: Record<string, any> = {}, identity?: string) => ({
     source: {
       sid,
       attributes,
+      ...(identity && { identity }),
     },
     friendlyName: 'Original Name',
   });
@@ -78,6 +82,27 @@ describe('maskConversationServiceUserNames', () => {
     });
 
     each([
+      {
+        testCase: 'identity matches manager user identity, regardless of other checks',
+        participantAttributes: {},
+        participantIdentity: 'current-user-identity',
+        flexParticipants: {},
+        expectedName: 'Original Name',
+      },
+      {
+        testCase: 'identity matches manager user identity, even with guest member_type',
+        participantAttributes: { member_type: 'guest' },
+        participantIdentity: 'current-user-identity',
+        flexParticipants: {},
+        expectedName: 'Original Name',
+      },
+      {
+        testCase: 'identity matches manager user identity, even when not in flex store',
+        participantAttributes: {},
+        participantIdentity: 'current-user-identity',
+        flexParticipants: { participant1: { type: 'customer', sid: 'MB999' } },
+        expectedName: 'Original Name',
+      },
       {
         testCase: 'no member_type attribute and not in flex store as agent',
         participantAttributes: {},
@@ -122,10 +147,10 @@ describe('maskConversationServiceUserNames', () => {
       },
     ]).test(
       'participant should have correct masking when $testCase',
-      ({ participantAttributes, flexParticipants, expectedName }) => {
+      ({ participantAttributes, participantIdentity, flexParticipants, expectedName }) => {
         const conversationSid = 'CH123';
         const participantSid = 'MB456';
-        const participant = createParticipant(participantSid, participantAttributes);
+        const participant = createParticipant(participantSid, participantAttributes, participantIdentity);
 
         const bySid: Record<string, ReturnType<typeof createFlexParticipant>> = {};
         Object.entries(flexParticipants).forEach(([key, value]) => {
