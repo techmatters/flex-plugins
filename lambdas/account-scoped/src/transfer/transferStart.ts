@@ -26,6 +26,7 @@ import { isErr, newErr, newOk, Result } from '../Result';
 import { WorkerInstance } from 'twilio/lib/rest/taskrouter/v1/workspace/worker';
 import { getSsmParameter } from '@tech-matters/ssm-cache';
 import { retrieveServiceConfigurationAttributes } from '../configuration/aseloConfiguration';
+import { TaskInstance } from 'twilio/lib/rest/taskrouter/v1/workspace/task';
 
 export type Body = {
   taskSid: TaskSID;
@@ -170,6 +171,68 @@ async function increaseChatCapacity(
   }
 }
 
+export const coldTransferCallToQueue = async (
+  accountSid: AccountSID,
+  originalTask: TaskInstance,
+  newAttributes: any,
+): Promise<TaskSID> => {
+  console.debug(
+    `[transfer: original task: ${originalTask.sid}] Cold transferring call to queue`,
+  );
+  const client = await getTwilioClient(accountSid);
+  const programmableChatTransferWorkflowSid =
+    await getConversationsTransferWorkflow(accountSid);
+  const { conference: taskConferenceInfo } = newAttributes;
+  console.debug(
+    `[transfer: original task: ${originalTask.sid}, conference: ${taskConferenceInfo.sid}] Found conference info`,
+  );
+  const conferenceContext = client.conferences.get(taskConferenceInfo.sid);
+  console.debug(
+    `[transfer: original task: ${originalTask.sid}, conference: ${taskConferenceInfo.sid}] Found conference instance`,
+  );
+  const originalAgentCallSid = taskConferenceInfo.participants.worker;
+  const conferenceParticipants = await conferenceContext.participants.list();
+  const originalAgentParticipant = conferenceParticipants.find(
+    p => p.callSid === originalAgentCallSid,
+  );
+  if (originalAgentParticipant) {
+    await originalAgentParticipant.update({ endConferenceOnExit: false });
+    console.debug(
+      `[transfer: original task: ${originalTask.sid}, conference: ${taskConferenceInfo.sid}] Found original agent to remove from conference: ${originalAgentParticipant?.callSid}`,
+    );
+  } else {
+    console.warn(
+      `[transfer: original task: ${originalTask.sid}, conference: ${taskConferenceInfo.sid}] Could not find original agent to remove from conference`,
+      conferenceParticipants,
+    );
+  }
+  await Promise.all(
+    conferenceParticipants
+      .filter(p => p.callSid !== originalAgentCallSid)
+      .map(p => {
+        console.debug(
+          `[transfer: original task: ${originalTask.sid}, conference: ${taskConferenceInfo.sid}] Putting participant on hold: ${p.callSid}`,
+          p,
+        );
+        return p.update({ hold: true });
+      }),
+  );
+  await originalAgentParticipant?.remove();
+  // create New task
+  const newTask = await client.taskrouter.v1.workspaces
+    .get(await getWorkspaceSid(accountSid))
+    .tasks.create({
+      workflowSid: programmableChatTransferWorkflowSid,
+      taskChannel: originalTask.taskChannelUniqueName,
+      attributes: JSON.stringify(newAttributes),
+      priority: 100,
+    });
+  console.debug(
+    `[transfer: original task: ${originalTask.sid}, conference: ${taskConferenceInfo.sid}] Transfer target task created with sid ${newTask.sid}`,
+  );
+  return newTask.sid as TaskSID;
+};
+
 export const transferStartHandler: AccountScopedHandler = async (
   { body: event }: HttpRequest,
   accountSid: AccountSID,
@@ -241,8 +304,17 @@ export const transferStartHandler: AccountScopedHandler = async (
     transferTargetType,
   };
 
+  if (originalTask.taskChannelUniqueName === 'voice') {
+    const newTaskSid = await coldTransferCallToQueue(
+      accountSid,
+      originalTask,
+      newAttributes,
+    );
+    return newOk({ taskSid: newTaskSid });
+  }
+
   /**
-   * Check if is transfering a conversation.
+   * Check if is transferring a conversation.
    * It might be better to accept an `isConversation` parameter.
    * But for now, we can check if a conversation exists given a conversationId.
    */
