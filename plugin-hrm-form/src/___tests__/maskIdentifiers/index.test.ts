@@ -15,6 +15,7 @@
  */
 
 import { Manager } from '@twilio/flex-ui';
+
 import { maskConversationServiceUserNames } from '../../maskIdentifiers';
 import { getInitializedCan } from '../../permissions/rules';
 import { PermissionActions } from '../../permissions/actions';
@@ -24,6 +25,22 @@ jest.mock('../../permissions/rules', () => ({
 }));
 
 const mockGetInitializedCan = getInitializedCan as jest.MockedFunction<typeof getInitializedCan>;
+
+// Helper function to create a mock state with a single participant
+const createMockStateWithParticipant = (participant: any, conversationSid = 'conversation-1') => ({
+  flex: {
+    chat: {
+      conversations: {
+        [conversationSid]: {
+          participants: new Map([['participant', participant]]),
+        },
+      },
+    },
+    participants: {
+      bySid: {},
+    },
+  },
+});
 
 describe('maskConversationServiceUserNames', () => {
   let mockManager: any;
@@ -99,12 +116,7 @@ describe('maskConversationServiceUserNames', () => {
 
   describe('when user does not have VIEW_IDENTIFIERS permission', () => {
     beforeEach(() => {
-      const mockCan = jest.fn((action: string) => {
-        if (action === PermissionActions.VIEW_IDENTIFIERS) {
-          return false;
-        }
-        return true;
-      });
+      const mockCan = jest.fn((action: string) => action !== PermissionActions.VIEW_IDENTIFIERS);
       mockGetInitializedCan.mockReturnValue(mockCan);
     });
 
@@ -130,23 +142,11 @@ describe('maskConversationServiceUserNames', () => {
 
     it('should identify participant as agent when identity matches manager.user.identity, irrespective of other checks', () => {
       // Set up scenario where participant would fail other checks but has matching identity
+      // eslint-disable-next-line camelcase
       mockParticipant1.source.attributes = { member_type: 'guest' };
 
       // Mock the flex participants store to not include this participant
-      mockManager.store.getState = jest.fn(() => ({
-        flex: {
-          chat: {
-            conversations: {
-              'conversation-1': {
-                participants: new Map([['participant-1', mockParticipant1]]),
-              },
-            },
-          },
-          participants: {
-            bySid: {},
-          },
-        },
-      }));
+      mockManager.store.getState = jest.fn(() => createMockStateWithParticipant(mockParticipant1));
 
       maskConversationServiceUserNames(mockManager as Manager);
 
@@ -160,22 +160,10 @@ describe('maskConversationServiceUserNames', () => {
 
     it('should identify participant as agent when member_type is not guest (webchat 2 scenario)', () => {
       mockParticipant2.source.identity = null;
+      // eslint-disable-next-line camelcase
       mockParticipant2.source.attributes = { member_type: 'agent' };
 
-      mockManager.store.getState = jest.fn(() => ({
-        flex: {
-          chat: {
-            conversations: {
-              'conversation-1': {
-                participants: new Map([['participant-2', mockParticipant2]]),
-              },
-            },
-          },
-          participants: {
-            bySid: {},
-          },
-        },
-      }));
+      mockManager.store.getState = jest.fn(() => createMockStateWithParticipant(mockParticipant2));
 
       maskConversationServiceUserNames(mockManager as Manager);
 
@@ -188,22 +176,10 @@ describe('maskConversationServiceUserNames', () => {
 
     it('should mask participant when member_type is guest (webchat 2 scenario)', () => {
       mockParticipant3.source.identity = null;
+      // eslint-disable-next-line camelcase
       mockParticipant3.source.attributes = { member_type: 'guest' };
 
-      mockManager.store.getState = jest.fn(() => ({
-        flex: {
-          chat: {
-            conversations: {
-              'conversation-1': {
-                participants: new Map([['participant-3', mockParticipant3]]),
-              },
-            },
-          },
-          participants: {
-            bySid: {},
-          },
-        },
-      }));
+      mockManager.store.getState = jest.fn(() => createMockStateWithParticipant(mockParticipant3));
 
       maskConversationServiceUserNames(mockManager as Manager);
 
@@ -254,20 +230,7 @@ describe('maskConversationServiceUserNames', () => {
       // Remove identity and member_type to force check of flex.participants.bySid
       mockParticipant3.source.identity = null;
 
-      mockManager.store.getState = jest.fn(() => ({
-        flex: {
-          chat: {
-            conversations: {
-              'conversation-1': {
-                participants: new Map([['participant-3', mockParticipant3]]),
-              },
-            },
-          },
-          participants: {
-            bySid: {},
-          },
-        },
-      }));
+      mockManager.store.getState = jest.fn(() => createMockStateWithParticipant(mockParticipant3));
 
       maskConversationServiceUserNames(mockManager as Manager);
 
@@ -282,20 +245,7 @@ describe('maskConversationServiceUserNames', () => {
       mockParticipant3.source.identity = null;
       mockManager.strings = {};
 
-      mockManager.store.getState = jest.fn(() => ({
-        flex: {
-          chat: {
-            conversations: {
-              'conversation-1': {
-                participants: new Map([['participant-3', mockParticipant3]]),
-              },
-            },
-          },
-          participants: {
-            bySid: {},
-          },
-        },
-      }));
+      mockManager.store.getState = jest.fn(() => createMockStateWithParticipant(mockParticipant3));
 
       maskConversationServiceUserNames(mockManager as Manager);
 
@@ -309,12 +259,7 @@ describe('maskConversationServiceUserNames', () => {
 
   describe('when user has VIEW_IDENTIFIERS permission', () => {
     beforeEach(() => {
-      const mockCan = jest.fn((action: string) => {
-        if (action === PermissionActions.VIEW_IDENTIFIERS) {
-          return true;
-        }
-        return false;
-      });
+      const mockCan = jest.fn((action: string) => action === PermissionActions.VIEW_IDENTIFIERS);
       mockGetInitializedCan.mockReturnValue(mockCan);
     });
 
