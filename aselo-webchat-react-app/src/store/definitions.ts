@@ -17,6 +17,7 @@
 import { Client, Conversation, Participant, Message, User } from '@twilio/conversations';
 import { GenericThemeShape } from '@twilio-paste/theme';
 import { AlertProps } from '@twilio-paste/core/alert';
+import { PreEngagementForm } from 'hrm-form-definitions';
 
 import { FileAttachmentConfig } from '../definitions';
 import { TaskState } from '../task';
@@ -68,6 +69,9 @@ export type ConfigState = {
   };
   helplineCode: string;
   aseloBackendUrl: string;
+  definitionVersion: string;
+  environment: string;
+  preEngagementForm: PreEngagementForm | null;
   translations: Record<string, Record<string, string>>;
   defaultLocale: LocaleString;
   currentLocale?: LocaleString;

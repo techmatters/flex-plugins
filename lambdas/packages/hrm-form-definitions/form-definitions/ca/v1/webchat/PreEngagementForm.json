@@ -1,0 +1,645 @@
+{
+  "description": "PreEngagementConfigDescription",
+  "submitLabel": "StartChat",
+  "fields": [
+    {
+      "type": "input-text",
+      "name": "nickname",
+      "label": "LabelNickname",
+      "placeholder": "Guest",
+      "required": true
+    },
+    {
+      "type": "select",
+      "name": "age",
+      "label": "HowOldAreYou",
+      "defaultValue": "Unknown",
+      "required": true,
+      "options": [
+        {
+          "value": "5 or younger",
+          "label": "FiveOrYounger"
+        },
+        {
+          "value": "06",
+          "label": "6"
+        },
+        {
+          "value": "07",
+          "label": "7"
+        },
+        {
+          "value": "08",
+          "label": "8"
+        },
+        {
+          "value": "09",
+          "label": "9"
+        },
+        {
+          "value": "10",
+          "label": "10"
+        },
+        {
+          "value": "11",
+          "label": "11"
+        },
+        {
+          "value": "12",
+          "label": "12"
+        },
+        {
+          "value": "13",
+          "label": "13"
+        },
+        {
+          "value": "14",
+          "label": "14"
+        },
+        {
+          "value": "15",
+          "label": "15"
+        },
+        {
+          "value": "16",
+          "label": "16"
+        },
+        {
+          "value": "17",
+          "label": "17"
+        },
+        {
+          "value": "18",
+          "label": "18"
+        },
+        {
+          "value": "19",
+          "label": "19"
+        },
+        {
+          "value": "20",
+          "label": "20"
+        },
+        {
+          "value": "21",
+          "label": "21"
+        },
+        {
+          "value": "22",
+          "label": "22"
+        },
+        {
+          "value": "23",
+          "label": "23"
+        },
+        {
+          "value": "24",
+          "label": "24"
+        },
+        {
+          "value": "25",
+          "label": "25"
+        },
+        {
+          "value": "26",
+          "label": "26"
+        },
+        {
+          "value": "27",
+          "label": "27"
+        },
+        {
+          "value": "28",
+          "label": "28"
+        },
+        {
+          "value": "29",
+          "label": "29"
+        },
+        {
+          "value": ">30",
+          "label": ">30"
+        },
+        {
+          "value": "Unknown",
+          "label": "PreferNotToAnswer"
+        }
+      ]
+    },
+    {
+      "type": "select",
+      "name": "gender",
+      "label": "DoYouConsiderYourselfToBe",
+      "defaultValue": "Unknown",
+      "required": true,
+      "options": [
+        {
+          "value": "Agender",
+          "label": "Agender"
+        },
+        {
+          "value": "Cis Male/Man",
+          "label": "CisMaleMan"
+        },
+        {
+          "value": "Cis Female/Woman",
+          "label": "CisFemaleWoman"
+        },
+        {
+          "value": "Non-Binary/Genderqueer/Gender fluid",
+          "label": "NonBinaryGenderqueerGenderFluid"
+        },
+        {
+          "value": "Two-Spirit",
+          "label": "TwoSpirit"
+        },
+        {
+          "value": "Trans Female/Woman",
+          "label": "TransFemaleWoman"
+        },
+        {
+          "value": "Trans Male/Man",
+          "label": "TransMaleMan"
+        },
+        {
+          "value": "Other",
+          "label": "Other"
+        },
+        {
+          "value": "Unknown",
+          "label": "PreferNotToAnswer"
+        }
+      ]
+    },
+    {
+      "type": "select",
+      "name": "sexualOrientation",
+      "label": "DoYouConsiderYourselfToBe",
+      "defaultValue": "Unknown",
+      "required": true,
+      "options": [
+        {
+          "value": "Asexual",
+          "label": "Asexual"
+        },
+        {
+          "value": "Bisexual or Pansexual",
+          "label": "BisexualOrPansexual"
+        },
+        {
+          "value": "Gay or Lesbian",
+          "label": "GayOrLesbian"
+        },
+        {
+          "value": "Queer",
+          "label": "Queer"
+        },
+        {
+          "value": "Heterosexual or Straight",
+          "label": "HeterosexualOrStraight"
+        },
+        {
+          "value": "Questioning or Unsure",
+          "label": "QuestioningOrUnsure"
+        },
+        {
+          "value": "Other",
+          "label": "Other"
+        },
+        {
+          "value": "Unknown",
+          "label": "PreferNotToAnswer"
+        }
+      ]
+    },
+    {
+      "type": "select",
+      "name": "Newcomer",
+      "label": "LabelNewcomer",
+      "defaultValue": "Unknown",
+      "required": true,
+      "options": [
+        {
+          "value": "yes",
+          "label": "Yes"
+        },
+        {
+          "value": "no",
+          "label": "No"
+        },
+        {
+          "value": "Unknown",
+          "label": "PreferNotToAnswer"
+        }
+      ]
+    },
+    {
+      "type": "select",
+      "name": "province",
+      "label": "LabelProvince",
+      "defaultValue": "Unknown",
+      "required": true,
+      "options": [
+        {
+          "value": "Alberta",
+          "label": "Alberta"
+        },
+        {
+          "value": "British Columbia",
+          "label": "BritishColumbia"
+        },
+        {
+          "value": "Inuvialuit",
+          "label": "Inuvialuit"
+        },
+        {
+          "value": "Manitoba",
+          "label": "Manitoba"
+        },
+        {
+          "value": "New Brunswick",
+          "label": "NewBrunswick"
+        },
+        {
+          "value": "Newfoundland and Labrador",
+          "label": "NewfoundlandAndLabrador"
+        },
+        {
+          "value": "Northwest Territories",
+          "label": "NorthwestTerritories"
+        },
+        {
+          "value": "Nova Scotia",
+          "label": "NovaScotia"
+        },
+        {
+          "value": "Nunavat",
+          "label": "Nunavat"
+        },
+        {
+          "value": "Nunavik",
+          "label": "Nunavik"
+        },
+        {
+          "value": "Nunatsiavut",
+          "label": "Nunatsiavut"
+        },
+        {
+          "value": "Ontario",
+          "label": "Ontario"
+        },
+        {
+          "value": "Prince Edward Island",
+          "label": "PrinceEdwardIsland"
+        },
+        {
+          "value": "Québec",
+          "label": "Quebec"
+        },
+        {
+          "value": "Saskatchewan",
+          "label": "Saskatchewan"
+        },
+        {
+          "value": "Yukon",
+          "label": "Yukon"
+        },
+        {
+          "value": "Contacting us from outside of Canada",
+          "label": "ContactingOutsideCanada"
+        },
+        {
+          "value": "Unknown",
+          "label": "PreferNotToAnswer"
+        }
+      ]
+    },
+    {
+      "type": "select",
+      "name": "region",
+      "label": "TellMoreAboutLive",
+      "defaultValue": "Unknown",
+      "required": true,
+      "options": [
+        {
+          "value": "Rural area",
+          "label": "RuralArea"
+        },
+        {
+          "value": "Small city/town",
+          "label": "SmallCityTown"
+        },
+        {
+          "value": "Medium city",
+          "label": "MediumCity"
+        },
+        {
+          "value": "Large city/urban centre",
+          "label": "LargeCityUrbanCentre"
+        },
+        {
+          "value": "First Nations reserve",
+          "label": "FirstNationsreserve"
+        },
+        {
+          "value": "Other",
+          "label": "Other"
+        },
+        {
+          "value": "Unknown",
+          "label": "PreferNotToAnswer"
+        }
+      ]
+    },
+    {
+      "type": "select",
+      "name": "upset",
+      "label": "LabelScale",
+      "defaultValue": "1",
+      "required": true,
+      "options": [
+        {
+          "value": "1",
+          "label": "NotVery"
+        },
+        {
+          "value": "2",
+          "label": "2"
+        },
+        {
+          "value": "3",
+          "label": "3"
+        },
+        {
+          "value": "4",
+          "label": "4"
+        },
+        {
+          "value": "5",
+          "label": "5"
+        },
+        {
+          "value": "6",
+          "label": "6"
+        },
+        {
+          "value": "7",
+          "label": "Very"
+        }
+      ]
+    },
+    {
+      "type": "select",
+      "name": "ethnicity",
+      "label": "DoYouConsiderYourselfToBe",
+      "defaultValue": "Unknown",
+      "required": false,
+      "options": [
+        {
+          "value": "",
+          "label": ""
+        },
+        {
+          "value": "Black",
+          "label": "BlackEthnicity"
+        },
+        {
+          "value": "East Asian",
+          "label": "EastAsian"
+        },
+        {
+          "value": "Indigenous",
+          "label": "IndigenousToNorthAmerica"
+        },
+        {
+          "value": "First Nations",
+          "label": "FirstNationsToNorthAmerica"
+        },
+        {
+          "value": "Métis",
+          "label": "MetisToNorthAmerica"
+        },
+        {
+          "value": "Inuit",
+          "label": "Inuit"
+        },
+        {
+          "value": "Indigenous (non-specified)",
+          "label": "IndigenousNonSpecified"
+        },
+        {
+          "value": "Indigenous (Not to North America)",
+          "label": "IndigenousNotToNorthAmerica"
+        },
+        {
+          "value": "Latin American",
+          "label": "LatinAmerican"
+        },
+        {
+          "value": "Middle Eastern",
+          "label": "MiddleEastern"
+        },
+        {
+          "value": "Southeast Asian",
+          "label": "SoutheastAsian"
+        },
+        {
+          "value": "South Asian",
+          "label": "SouthAsian"
+        },
+        {
+          "value": "White",
+          "label": "WhiteEuropeanDescent"
+        },
+        {
+          "value": "Other",
+          "label": "Other"
+        },
+        {
+          "value": "Unknown",
+          "label": "PreferNotToAnswer"
+        }
+      ]
+    },
+    {
+      "type": "select",
+      "name": "school",
+      "label": "LabelSchool",
+      "defaultValue": "Unknown",
+      "required": false,
+      "options": [
+        {
+          "value": "",
+          "label": ""
+        },
+        {
+          "value": "Elementary School",
+          "label": "ElementarySchool"
+        },
+        {
+          "value": "Middle school/Junior High",
+          "label": "MiddleschoolJuniorHigh"
+        },
+        {
+          "value": "High School",
+          "label": "HighSchool"
+        },
+        {
+          "value": "Alternative Education School/Program",
+          "label": "AlternativeEducationSchoolProgram"
+        },
+        {
+          "value": "College",
+          "label": "College"
+        },
+        {
+          "value": "University",
+          "label": "University"
+        },
+        {
+          "value": "Home School",
+          "label": "HomeSchool"
+        },
+        {
+          "value": "Other",
+          "label": "Other"
+        },
+        {
+          "value": "Not a student",
+          "label": "NotAStudent"
+        },
+        {
+          "value": "Unknown",
+          "label": "PreferNotToAnswer"
+        }
+      ]
+    },
+    {
+      "type": "select",
+      "name": "livingSituation",
+      "label": "LabelLivingSituation",
+      "defaultValue": "Unknown",
+      "required": false,
+      "options": [
+        {
+          "value": "",
+          "label": ""
+        },
+        {
+          "value": "Living with family members/guardians",
+          "label": "LivingWithFamilyMembersGuardians"
+        },
+        {
+          "value": "Member of a military family",
+          "label": "MemberMilitaryFamily"
+        },
+        {
+          "value": "Living independently/with peers",
+          "label": "LivingIndependentlyWithPeers"
+        },
+        {
+          "value": "Living in a School residence",
+          "label": "LivingSchoolResidence"
+        },
+        {
+          "value": "In hospital",
+          "label": "InHospital"
+        },
+        {
+          "value": "Treatment centre",
+          "label": "TreatmentCentre"
+        },
+        {
+          "value": "Recovery home",
+          "label": "RecoveryHome"
+        },
+        {
+          "value": "Assisted living centre",
+          "label": "AssistedLivingCentre"
+        },
+        {
+          "value": "Homeless",
+          "label": "Homeless"
+        },
+        {
+          "value": "In care",
+          "label": "InCare"
+        },
+        {
+          "value": "Other",
+          "label": "Other"
+        },
+        {
+          "value": "Unknown",
+          "label": "PreferNotToAnswer"
+        }
+      ]
+    },
+    {
+      "type": "select",
+      "name": "supportType",
+      "label": "LabelSupportType",
+      "defaultValue": "Unknown",
+      "required": false,
+      "options": [
+        {
+          "value": "",
+          "label": ""
+        },
+        {
+          "value": "I want to talk about my feelings",
+          "label": "IWantToTalkAboutMyFeelings"
+        },
+        {
+          "value": "I'm looking for tips and strategies",
+          "label": "ImLookingForTipsAndStrategies"
+        },
+        {
+          "value": "I want support to solve a conflict/problem",
+          "label": "IWantSupportToSolveAConflict"
+        },
+        {
+          "value": "I need help to be safer",
+          "label": "INeedHelpToBeSafer"
+        },
+        {
+          "value": "I want to know how to help someone else",
+          "label": "IWantToKnowHowToHelpSomeoneElse"
+        },
+        {
+          "value": "I need help finding a resource/information",
+          "label": "INeedHelpFindingAResource"
+        },
+        {
+          "value": "Unknown",
+          "label": "PreferNotToAnswer"
+        }
+      ]
+    },
+    {
+      "type": "select",
+      "name": "suicidalThoughts",
+      "label": "LabelSuicidalThoughts",
+      "defaultValue": "Unknown",
+      "required": false,
+      "options": [
+        {
+          "value": "Unknown",
+          "label": ""
+        },
+        {
+          "value": "Yes",
+          "label": "Yes"
+        },
+        {
+          "value": "No",
+          "label": "No"
+        },
+        {
+          "value": "Maybe",
+          "label": "Maybe"
+        }
+      ]
+    }
+  ]
+}

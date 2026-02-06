@@ -90,7 +90,7 @@ describe('Index', () => {
     });
 
     it('initializes config', async () => {
-      const initConfigSpy = jest.spyOn(initActions, 'initConfig');
+      const initConfigSpy = jest.spyOn(initActions, 'initConfigThunk');
       mockFetch.mockResolvedValueOnce(new Response(JSON.stringify({}), { status: 200 }));
 
       await initWebchat(undefined, { deploymentKey: 'CV000000' });
@@ -99,7 +99,7 @@ describe('Index', () => {
     });
 
     it('initializes config with provided config merged with default config', async () => {
-      const initConfigSpy = jest.spyOn(initActions, 'initConfig');
+      const initConfigSpy = jest.spyOn(initActions, 'initConfigThunk');
       mockFetch.mockResolvedValueOnce(new Response(JSON.stringify({}), { status: 200 }));
 
       const deploymentKey = 'CV000000';

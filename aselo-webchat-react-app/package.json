@@ -17,6 +17,7 @@
     "google-auth-library": "8.5.1",
     "googleapis": "107.0.0",
     "googleapis-common": "6.0.3",
+    "hrm-form-definitions": "file:../lambdas/packages/hrm-form-definitions",
     "jszip": "3.10.1",
     "lodash.merge": "^4.6.2",
     "lodash.throttle": "^4.1.1",
@@ -81,6 +82,7 @@
     "recursive-readdir": "2.2.3"
   },
   "scripts": {
+    "preinstall": "cd ../lambdas/packages/hrm-form-definitions && npm ci && npm run build && cd ../hrm-types && npm ci && npm run build",
     "start": "react-app-rewired start",
     "start:as_dev": "cross-env REACT_APP_CONFIG_URL='http://localhost:9090/as/development.json' run-p dev:merge-configs dev:local-config-server start",
     "build": "react-app-rewired build",

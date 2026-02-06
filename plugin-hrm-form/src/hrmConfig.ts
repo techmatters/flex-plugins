@@ -15,8 +15,8 @@
  */
 
 import * as Flex from '@twilio/flex-ui';
+import { buildFormDefinitionsBaseUrlGetter } from 'hrm-form-definitions';
 
-import { buildFormDefinitionsBaseUrlGetter, inferConfiguredFormDefinitionsBaseUrl } from './definitionVersions';
 import type { RootState } from './states';
 import { namespace } from './states/storeNamespaces';
 import { WorkerSID } from './types/twilio';
@@ -24,6 +24,23 @@ import { FeatureFlags } from './types/FeatureFlags';
 
 const featureFlagEnvVarPrefix = 'REACT_APP_FF_';
 type ContactSaveFrequency = 'onTabChange' | 'onFinalSaveAndTransfer';
+
+const getEnvironmentFromHrmBaseUrl = (manager: Flex.Manager) => {
+  const hrmBaseUrl = `${process.env.REACT_APP_HRM_BASE_URL || manager.serviceConfiguration.attributes.hrm_base_url}`;
+  const prefix = 'https://hrm-';
+  const suffix = '.tl.techmatters.org';
+  const environment = hrmBaseUrl.substring(prefix.length, hrmBaseUrl.indexOf(suffix)).replace('-eu', '');
+
+  /*
+   * hrm-test is an alias of hrm-staging that we should deprecate & remove, but some accounts are still configured to point at it
+   * This ensures any accounts still pointing at hrm-test go to the right bucket for their assets
+   */
+  if (environment === 'test') {
+    return 'staging';
+  }
+
+  return environment;
+};
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
 const readConfig = () => {
@@ -52,16 +69,18 @@ const readConfig = () => {
     : undefined;
   const serverlessBaseUrl =
     process.env.REACT_APP_SERVERLESS_BASE_URL || manager.serviceConfiguration.attributes.serverless_base_url;
-  const configuredFormDefinitionsBaseUrl =
-    process.env.REACT_APP_FORM_DEFINITIONS_BASE_URL ||
-    manager.serviceConfiguration.attributes.form_definitions_base_url ||
-    inferConfiguredFormDefinitionsBaseUrl(manager);
   const logoUrl = manager.serviceConfiguration.attributes.logo_url;
   const assetsBucketUrl = manager.serviceConfiguration.attributes.assets_bucket_url;
-  const getFormDefinitionsBaseUrl = buildFormDefinitionsBaseUrlGetter(new URL(configuredFormDefinitionsBaseUrl));
 
   const { helpline_code: helplineCode, environment } = manager.serviceConfiguration.attributes;
   const docsBucket = `tl-aselo-docs-${helplineCode}-${environment}`;
+  const configuredFormDefinitionsBaseUrl =
+    process.env.REACT_APP_FORM_DEFINITIONS_BASE_URL ||
+    manager.serviceConfiguration.attributes.form_definitions_base_url;
+  const getFormDefinitionsBaseUrl = buildFormDefinitionsBaseUrlGetter({
+    environment: getEnvironmentFromHrmBaseUrl(manager),
+    configuredFormDefinitionsBaseUrl,
+  });
 
   const externalRecordingsEnabled = manager.serviceConfiguration.attributes.external_recordings_enabled || false;
   const contactSaveFrequency: ContactSaveFrequency =

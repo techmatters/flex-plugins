@@ -132,7 +132,7 @@ const DispatchIncidentButton: React.FC<Props> = ({ contactId }) => {
   ) : (
     <TertiaryButton
       type="button"
-      onClick={() => console.log('>>>> clicked', savedContact, connectedCase)}
+      // onClick={() => undefined}
       title="Dispatch Incident"
       data-testid="dispatch-incident-button"
       disabled={true}

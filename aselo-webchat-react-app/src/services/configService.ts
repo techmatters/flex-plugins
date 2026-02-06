@@ -13,13 +13,20 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
+import { buildFormDefinitionsBaseUrlGetter, loadWebchatDefinition, PreEngagementForm } from 'hrm-form-definitions';
 
-export * from './insightsConfig';
-export * from './types';
-export * from './loadDefinition';
-export * from './loadWebchatDefinition';
-export * from './buildFormDefinitionsUrl';
-export * from './formSelector';
-export { LayoutVersion } from './layoutVersion';
-export { LayoutDefinition } from './layoutVersion';
-export { LayoutValue } from './layoutVersion';
+// eslint-disable-next-line import/no-unused-modules
+export const getDefinitionVersion = async ({
+  definitionVersionId,
+  environment,
+}: {
+  definitionVersionId: string;
+  environment: string;
+}): Promise<{
+  preEngagementForm: PreEngagementForm;
+}> => {
+  const formDefinitionsBaseUrl = buildFormDefinitionsBaseUrlGetter({ environment })(definitionVersionId);
+  // eslint-disable-next-line
+  const definition = await loadWebchatDefinition(formDefinitionsBaseUrl);
+  return definition;
+};

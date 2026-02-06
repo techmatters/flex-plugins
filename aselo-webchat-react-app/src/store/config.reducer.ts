@@ -17,12 +17,15 @@
 import { AnyAction, Reducer } from 'redux';
 
 import { AppState, ConfigState } from './definitions';
-import { ACTION_CHANGE_LOCALE, ACTION_LOAD_CONFIG } from './actions/actionTypes';
+import { ACTION_CHANGE_LOCALE, ACTION_LOAD_CONFIG_SUCCESS } from './actions/actionTypes';
 
 const initialState: ConfigState = {
   defaultLocale: 'xx-XX',
   translations: {},
   aseloBackendUrl: '',
+  environment: '',
+  definitionVersion: '',
+  preEngagementForm: null,
   helplineCode: '',
   deploymentKey: '',
   quickExitUrl: 'https://www.google.com',
@@ -30,7 +33,7 @@ const initialState: ConfigState = {
 
 export const ConfigReducer: Reducer = (state: ConfigState = initialState, action: AnyAction): ConfigState => {
   switch (action.type) {
-    case ACTION_LOAD_CONFIG: {
+    case ACTION_LOAD_CONFIG_SUCCESS: {
       return {
         ...state,
         ...action.payload,
