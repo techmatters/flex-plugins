@@ -22,6 +22,7 @@ import { AppState, EngagementPhase } from '../store/definitions';
 import { PreEngagementFormPhase } from './PreEngagementFormPhase';
 import { LoadingPhase } from './LoadingPhase';
 import { innerContainerStyles, outerContainerStyles } from './styles/RootContainer.styles';
+import { EntryPoint } from './EntryPoint';
 
 const getPhaseComponent = (phase: EngagementPhase) => {
   switch (phase) {
@@ -44,6 +45,7 @@ export function RootContainer() {
     currentPhase: session.currentPhase,
     expanded: session.expanded,
   }));
+  const alwaysOpen = useSelector((state: AppState) => state.config.alwaysOpen);
 
   return (
     <Box style={defaultFont}>
@@ -53,6 +55,7 @@ export function RootContainer() {
             {getPhaseComponent(currentPhase)}
           </Box>
         )}
+        {!alwaysOpen && <EntryPoint />}
       </Box>
     </Box>
   );

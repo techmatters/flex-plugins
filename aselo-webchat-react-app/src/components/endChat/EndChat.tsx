@@ -16,23 +16,29 @@
 
 /* eslint-disable react/require-default-props */
 import { useState } from 'react';
-import { Button } from '@twilio-paste/core/button';
 import { useDispatch, useSelector } from 'react-redux';
+import { Button } from '@twilio-paste/core/button';
+import { CloseIcon } from '@twilio-paste/icons/cjs/CloseIcon';
 
 import { contactBackend, sessionDataHandler } from '../../sessionDataHandler';
 import { changeEngagementPhase, updatePreEngagementData } from '../../store/actions/genericActions';
 import { EngagementPhase } from '../../store/definitions';
 import { selectConfig } from '../../store/config.reducer';
 import LocalizedTemplate from '../../localization/LocalizedTemplate';
+import { localizeKey } from '../../localization/localizeKey';
 
-type Props = {
-  channelSid: string;
-  token: string;
-  language?: string;
-  action: 'finishTask' | 'restartEngagement';
-};
+type Props =
+  | {
+      channelSid: string;
+      token: string;
+      language?: string;
+      action: 'finishTask';
+    }
+  | {
+      action: 'restartEngagement';
+    };
 
-export default function EndChat({ channelSid, token, language, action }: Props) {
+export default function EndChat(props: Props) {
   const [disabled, setDisabled] = useState(false);
   const dispatch = useDispatch();
   const config = useSelector(selectConfig);
@@ -42,35 +48,40 @@ export default function EndChat({ channelSid, token, language, action }: Props) 
   }
 
   const configuredBackend = contactBackend(config);
-
+  const configuredLocalizeKey = localizeKey(config.translations[config.currentLocale ?? config.defaultLocale]);
   // Serverless call to end chat
   const handleEndChat = async () => {
-    switch (action) {
+    switch (props.action) {
       case 'finishTask':
-        try {
-          setDisabled(true);
-          await configuredBackend('/endChat', { channelSid, token, language });
-          sessionDataHandler.clear();
-          dispatch(updatePreEngagementData({ email: '', name: '', query: '' }));
-          dispatch(changeEngagementPhase({ phase: EngagementPhase.PreEngagementForm }));
-        } catch (error) {
-          console.error(error);
-        } finally {
-          setDisabled(false);
+        if (confirm(configuredLocalizeKey('Header-CloseChatButtons-EndChatConfirmDialogMessageFromChat'))) {
+          try {
+            const { token, channelSid, language } = props;
+            setDisabled(true);
+            await configuredBackend('/endChat', { channelSid, token, language });
+            sessionDataHandler.clear();
+            dispatch(updatePreEngagementData({ email: '', name: '', query: '' }));
+            dispatch(changeEngagementPhase({ phase: EngagementPhase.PreEngagementForm }));
+          } catch (error) {
+            console.error(error);
+          } finally {
+            setDisabled(false);
+          }
         }
         return;
       case 'restartEngagement':
       default:
-        sessionDataHandler.clear();
-        dispatch(updatePreEngagementData({ email: '', name: '', query: '' }));
-        dispatch(changeEngagementPhase({ phase: EngagementPhase.PreEngagementForm }));
+        if (confirm(configuredLocalizeKey('Header-CloseChatButtons-EndChatConfirmDialogMessageFromPreEngagement'))) {
+          sessionDataHandler.clear();
+          dispatch(updatePreEngagementData({ email: '', name: '', query: '' }));
+          dispatch(changeEngagementPhase({ phase: EngagementPhase.PreEngagementForm }));
+        }
     }
   };
 
   return (
-    <Button variant="destructive" onClick={handleEndChat} disabled={disabled}>
-      <span>CloseLarge</span>
-      <LocalizedTemplate code="EndChatButtonLabel" />
+    <Button variant="destructive_secondary" element="CHAT_CLOSE_BUTTON" onClick={handleEndChat} disabled={disabled}>
+      <CloseIcon decorative={true} />
+      <LocalizedTemplate code="Header-CloseChatButtons-EndChatButtonLabel" />
     </Button>
   );
 }

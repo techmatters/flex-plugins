@@ -23,13 +23,15 @@ export const outerContainerStyles: BoxStyleProps = {
   display: 'flex',
   flexDirection: 'column',
   alignItems: 'flex-end',
+  maxHeight: '100%',
 };
 
 export const innerContainerStyles: BoxStyleProps = {
   boxShadow: 'shadow',
   display: 'flex',
   flexDirection: 'column',
-  width: '320px',
+  minHeight: '320px',
+  width: '350px',
   height: '590px',
   marginBottom: 'space50',
   borderRadius: 'borderRadius30',

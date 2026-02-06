@@ -24,6 +24,7 @@ import {
   ACTION_UPDATE_SESSION_DATA,
   ACTION_UPDATE_PRE_ENGAGEMENT_DATA,
 } from './actions/actionTypes';
+import type { AppState } from './store';
 
 const initialState: SessionState = {
   currentPhase: EngagementPhase.Loading,
@@ -81,3 +82,5 @@ export const SessionReducer: Reducer<SessionState, AnyAction> = (
       return state;
   }
 };
+
+export const selectToken = (state: AppState) => state.session.token;

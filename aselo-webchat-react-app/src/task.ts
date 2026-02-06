@@ -18,6 +18,7 @@ import { AnyAction } from 'redux';
 import { Conversation } from '@twilio/conversations';
 
 import { ACTION_START_SESSION, ACTION_UPDATE_CONVERSATION_ATTRIBUTES } from './store/actions/actionTypes';
+import type { AppState } from './store/store';
 
 export type TaskState = {
   tasksSids?: string[];
@@ -31,3 +32,5 @@ export const taskReducer = (state: TaskState = initialState, { type, payload }: 
   }
   return state;
 };
+
+export const selectTaskSids = (state: AppState) => state.task?.tasksSids;

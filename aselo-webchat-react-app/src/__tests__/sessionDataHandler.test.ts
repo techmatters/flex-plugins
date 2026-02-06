@@ -16,11 +16,19 @@
 
 import { TextDecoder, TextEncoder } from 'util';
 
-import fetchMock from 'fetch-mock-jest';
-
 import { sessionDataHandler, contactBackend } from '../sessionDataHandler';
 import WebChatLogger from '../logger';
 import { ConfigState } from '../store/definitions';
+
+global.fetch = jest.fn();
+
+const fetchMock = global.fetch as jest.MockedFunction<typeof fetch>;
+
+const okFetchResponse = (responseBody: any) =>
+  ({
+    json: () => Promise.resolve(responseBody),
+    ok: true,
+  } as Awaited<ReturnType<typeof fetch>>);
 
 jest.mock('../logger');
 
@@ -33,6 +41,7 @@ Object.defineProperty(navigator, 'mediaCapabilities', {
 });
 
 const TEST_CONFIG_STATE: ConfigState = {
+  quickExitUrl: 'https://mock-aselo-quickexit',
   aseloBackendUrl: 'http://mock-aselo-backend',
   deploymentKey: '',
   helplineCode: 'xx',
@@ -82,17 +91,14 @@ describe('session data handler', () => {
 
     afterEach(() => {
       sessionDataHandler.setRegion('');
-      fetchMock.reset();
+      fetchMock.mockReset();
     });
 
     it('should call correct stage url', async () => {
-      const mockFetch = Promise.resolve({ ok: true, json: async () => Promise.resolve('okay') });
-      const fetchSpy = jest
-        .spyOn(window, 'fetch')
-        .mockImplementation(async (): Promise<never> => mockFetch as Promise<never>);
+      fetchMock.mockResolvedValue(okFetchResponse({}));
       sessionDataHandler.setRegion('stage');
       await contactBackend(TEST_CONFIG_STATE)('/Webchat/Tokens/Refresh', { DeploymentKey: 'dk', token: 'token' });
-      expect(fetchSpy.mock.calls[0][0]).toEqual(
+      expect(fetchMock.mock.calls[0][0]).toEqual(
         `${TEST_CONFIG_STATE.aseloBackendUrl}/lambda/twilio/account-scoped/XX/Webchat/Tokens/Refresh`,
       );
     });
@@ -111,11 +117,11 @@ describe('session data handler', () => {
 
   describe('fetch and store new session', () => {
     it('should throw if backend request fails', async () => {
-      jest.spyOn(window, 'fetch').mockImplementationOnce(() => {
+      fetchMock.mockImplementationOnce(() => {
         throw Error('Backend failed to process the request');
       });
 
-      await expect(sessionDataHandler.fetchAndStoreNewSession({ formData: {} })).rejects.toThrowError();
+      await expect(sessionDataHandler.fetchAndStoreNewSession({ formData: {} })).rejects.toThrow();
     });
 
     it('should store new token data in local storage', async () => {
@@ -131,7 +137,7 @@ describe('session data handler', () => {
         conversation_sid: 'sid',
         identity: 'identity',
       };
-      fetchMock.once(() => true, tokenPayload);
+      fetchMock.mockResolvedValue(okFetchResponse(tokenPayload));
       await sessionDataHandler.fetchAndStoreNewSession({ formData: {} });
 
       const expected = {
@@ -161,7 +167,7 @@ describe('session data handler', () => {
         conversation_sid: 'sid',
         identity: 'identity',
       };
-      fetchMock.once(() => true, tokenPayload);
+      fetchMock.mockResolvedValue(okFetchResponse(tokenPayload));
       const { token } = await sessionDataHandler.fetchAndStoreNewSession({ formData: {} });
 
       expect(token).toBe(tokenPayload.token);
@@ -222,7 +228,7 @@ describe('session data handler', () => {
     it("should throw if current token doesn't exist", async () => {
       jest.spyOn(Object.getPrototypeOf(window.localStorage), 'getItem').mockReturnValueOnce(null);
 
-      await expect(sessionDataHandler.getUpdatedToken()).rejects.toThrowError();
+      await expect(sessionDataHandler.getUpdatedToken()).rejects.toThrow();
     });
 
     it('should throw if backend request fails', async () => {
@@ -233,11 +239,11 @@ describe('session data handler', () => {
           conversationSid: 'sid',
         }),
       );
-      jest.spyOn(window, 'fetch').mockImplementationOnce(() => {
+      fetchMock.mockImplementationOnce(() => {
         throw Error('Backend failed to process the request');
       });
 
-      await expect(sessionDataHandler.getUpdatedToken()).rejects.toThrowError();
+      await expect(sessionDataHandler.getUpdatedToken()).rejects.toThrow();
     });
 
     it('should store new token in local storage', async () => {
@@ -257,7 +263,7 @@ describe('session data handler', () => {
         token: 'new token',
         conversationSid: 'sid',
       };
-      fetchMock.once(() => true, tokenPayload);
+      fetchMock.mockResolvedValue(okFetchResponse(tokenPayload));
       await sessionDataHandler.getUpdatedToken();
 
       expect(setLocalStorageItemSpy).toHaveBeenCalledWith('TWILIO_WEBCHAT_WIDGET', JSON.stringify(tokenPayload));
@@ -277,7 +283,7 @@ describe('session data handler', () => {
         token: 'new token',
         conversationSid: 'sid',
       };
-      fetchMock.once(() => true, tokenPayload);
+      fetchMock.mockResolvedValue(okFetchResponse(tokenPayload));
       const { token } = await sessionDataHandler.getUpdatedToken();
 
       expect(token).toBe(tokenPayload.token);
@@ -300,9 +306,9 @@ describe('session data handler', () => {
 
   describe('contactBackend', () => {
     it('should', async () => {
-      jest.spyOn(window, 'fetch').mockRejectedValueOnce('ForcedFailure');
+      fetchMock.mockRejectedValueOnce('ForcedFailure');
 
-      await expect(sessionDataHandler.fetchAndStoreNewSession({ formData: {} })).rejects.toThrowError(
+      await expect(sessionDataHandler.fetchAndStoreNewSession({ formData: {} })).rejects.toThrow(
         new Error('No results from server'),
       );
     });

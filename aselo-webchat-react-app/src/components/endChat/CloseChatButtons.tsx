@@ -17,33 +17,50 @@
 /* eslint-disable react/require-default-props */
 import * as React from 'react';
 import { useSelector } from 'react-redux';
+import { Grid } from '@twilio-paste/core/grid';
+import { DetailText } from '@twilio-paste/core/detail-text';
+import { Column } from '@twilio-paste/grid';
+import { Box } from '@twilio-paste/core/box';
 
-import Exit from './QuickExit';
-import End from './EndChat';
-import { AppState } from '../../store/definitions';
+import QuickExit from './QuickExit';
+import EndChat from './EndChat';
+import LocalizedTemplate from '../../localization/LocalizedTemplate';
+import { selectConversation } from '../../store/chat.reducer';
+import { selectTaskSids } from '../../task';
+import { selectToken } from '../../store/session.reducer';
+import { selectCurrentLocale } from '../../store/config.reducer';
 
 const CloseChatButtons = () => {
-  const { conversation, token, tasksSids } = useSelector((state: AppState) => ({
-    conversation: state.chat?.conversation,
-    token: state.session.token,
-    tasksSids: state?.task?.tasksSids,
-  }));
-  if (!conversation || !token) {
-    return null;
-  }
+  const conversation = useSelector(selectConversation);
+  const token = useSelector(selectToken);
+  const tasksSids = useSelector(selectTaskSids);
+  const locale = useSelector(selectCurrentLocale);
 
-  const finishTask = Boolean(tasksSids?.length);
+  const endChatButton =
+    conversation && token && tasksSids?.length ? (
+      <EndChat channelSid={conversation.sid} token={token} language={locale} action="finishTask" />
+    ) : (
+      <EndChat action="restartEngagement" />
+    );
+  const quickExitButton =
+    conversation && token && tasksSids?.length ? (
+      <QuickExit channelSid={conversation.sid} token={token} language={locale} action="finishTask" />
+    ) : (
+      <QuickExit action="restartEngagement" />
+    );
+
   return (
-    <>
-      <End
-        channelSid={conversation.sid}
-        token={token}
-        language="en"
-        action={finishTask ? 'finishTask' : 'restartEngagement'}
-      />
-      <Exit channelSid={conversation.sid} token={token} language="en" finishTask={finishTask} />
-      QuickExitDescription
-    </>
+    <Box padding="space30">
+      <Grid gutter="space30">
+        <Column>{endChatButton}</Column>
+        <Column>
+          {quickExitButton}
+          <DetailText element="URGENT">
+            <LocalizedTemplate code="Header-CloseChatButtons-QuickExitDescription" />
+          </DetailText>
+        </Column>
+      </Grid>
+    </Box>
   );
 };
 

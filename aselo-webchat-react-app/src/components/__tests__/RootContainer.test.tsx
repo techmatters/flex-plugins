@@ -14,16 +14,12 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { render } from '@testing-library/react';
-import '@testing-library/jest-dom';
-import { useSelector } from 'react-redux';
+import { render, waitFor } from '@testing-library/react';
 
+import '@testing-library/jest-dom';
+import { BASE_MOCK_REDUX, resetMockRedux } from '../../__mocks__/redux/mockRedux';
 import { EngagementPhase } from '../../store/definitions';
 import { RootContainer } from '../RootContainer';
-
-jest.mock('react-redux', () => ({
-  useSelector: jest.fn(),
-}));
 
 jest.mock('../EntryPoint', () => ({
   EntryPoint: () => <div title="EntryPoint" />,
@@ -43,9 +39,12 @@ jest.mock('../PreEngagementFormPhase', () => ({
 
 describe('Root Container', () => {
   beforeEach(() => {
-    (useSelector as jest.Mock).mockImplementation((callback: any) =>
-      callback({ session: { expanded: false, currentPhase: null } }),
-    );
+    resetMockRedux({
+      config: {
+        ...BASE_MOCK_REDUX.config,
+        alwaysOpen: false,
+      },
+    });
   });
 
   it('renders the root container', () => {
@@ -54,17 +53,21 @@ describe('Root Container', () => {
     expect(container).toBeInTheDocument();
   });
 
-  // It does not seems like the 'EntryPoint' component is actually used in the code base
-  it.skip('renders the entry point', () => {
+  it('renders the entry point', () => {
     const { queryByTestId } = render(<RootContainer />);
-
-    expect(queryByTestId('EntryPoint')).toBeInTheDocument();
+    waitFor(() => {
+      expect(queryByTestId('entry-point-button')).toBeInTheDocument();
+    });
   });
 
   it('renders the loading phase when supplied as phase', () => {
-    (useSelector as jest.Mock).mockImplementation((callback: any) =>
-      callback({ session: { expanded: true, currentPhase: EngagementPhase.Loading } }),
-    );
+    resetMockRedux({
+      session: {
+        ...BASE_MOCK_REDUX.session,
+        expanded: true,
+        currentPhase: EngagementPhase.Loading,
+      },
+    });
 
     const { queryByTitle } = render(<RootContainer />);
 
@@ -72,9 +75,13 @@ describe('Root Container', () => {
   });
 
   it('renders the messaging canvas phase when supplied as phase', () => {
-    (useSelector as jest.Mock).mockImplementation((callback: any) =>
-      callback({ session: { expanded: true, currentPhase: EngagementPhase.MessagingCanvas } }),
-    );
+    resetMockRedux({
+      session: {
+        ...BASE_MOCK_REDUX.session,
+        expanded: true,
+        currentPhase: EngagementPhase.MessagingCanvas,
+      },
+    });
 
     const { queryByTitle } = render(<RootContainer />);
 
@@ -82,19 +89,26 @@ describe('Root Container', () => {
   });
 
   it('renders pre-engagement form phase when supplied as phase', () => {
-    (useSelector as jest.Mock).mockImplementation((callback: any) =>
-      callback({ session: { expanded: true, currentPhase: EngagementPhase.PreEngagementForm } }),
-    );
-
+    resetMockRedux({
+      session: {
+        ...BASE_MOCK_REDUX.session,
+        expanded: true,
+        currentPhase: EngagementPhase.PreEngagementForm,
+      },
+    });
     const { queryByTitle } = render(<RootContainer />);
 
     expect(queryByTitle('PreEngagementFormPhase')).toBeInTheDocument();
   });
 
   it('renders the re-engagement form phase as default phase', () => {
-    (useSelector as jest.Mock).mockImplementation((callback: any) =>
-      callback({ session: { expanded: true, currentPhase: null } }),
-    );
+    resetMockRedux({
+      session: {
+        ...BASE_MOCK_REDUX.session,
+        currentPhase: null as any,
+        expanded: true,
+      },
+    });
 
     const { queryByTitle } = render(<RootContainer />);
 
@@ -102,9 +116,12 @@ describe('Root Container', () => {
   });
 
   it('does not render phase when not expanded', () => {
-    (useSelector as jest.Mock).mockImplementation((callback: any) =>
-      callback({ session: { expanded: false, currentPhase: EngagementPhase.MessagingCanvas } }),
-    );
+    resetMockRedux({
+      session: {
+        ...BASE_MOCK_REDUX.session,
+        currentPhase: EngagementPhase.MessagingCanvas,
+      },
+    });
 
     const { queryByTitle } = render(<RootContainer />);
 

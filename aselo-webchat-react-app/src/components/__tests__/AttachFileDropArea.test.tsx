@@ -14,7 +14,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { fireEvent, render, waitFor } from '@testing-library/react';
+import { fireEvent, render } from '@testing-library/react';
 import '@testing-library/jest-dom';
 
 import * as genericActions from '../../store/actions/genericActions';
@@ -36,7 +36,7 @@ jest.mock('react-redux', () => ({
     }),
 }));
 
-jest.mock('@twilio-paste/icons/esm/AttachIcon', () => ({
+jest.mock('@twilio-paste/icons/cjs/AttachIcon', () => ({
   AttachIcon: () => <div title="AttachIcon" />,
 }));
 
