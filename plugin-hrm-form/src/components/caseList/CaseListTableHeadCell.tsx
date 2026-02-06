@@ -18,13 +18,12 @@
 import React from 'react';
 import { Template } from '@twilio/flex-ui';
 import { ArrowDownward } from '@material-ui/icons';
-import { connect, ConnectedProps } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { TableHeaderFont, HeaderCell } from '../../styles';
 import { ListCasesQueryParams, SortDirection } from '../../types/types';
 import * as CaseListSettingsActions from '../../states/caseList/settings';
 import { RootState } from '../../states';
-import { getAseloFeatureFlags } from '../../hrmConfig';
 import { caseListBase, namespace } from '../../states/storeNamespaces';
 
 type SortDirectionParam = ListCasesQueryParams['sortDirection'];
@@ -37,24 +36,21 @@ type OwnProps = {
   width?: string;
 };
 
-// eslint-disable-next-line no-use-before-define
-type Props = OwnProps & ConnectedProps<typeof connector>;
-
 const changeSortDirection = (sortDirection: SortDirectionParam): SortDirectionParam =>
   sortDirection === SortDirection.ASC ? SortDirection.DESC : SortDirection.ASC;
 
 /**
  * If column prop is filled, the cell will enable sorting by this column
  */
-const CaseListTableHeadCell: React.FC<Props> = ({
+const CaseListTableHeadCell: React.FC<OwnProps> = ({
   column,
   defaultSortDirection = SortDirection.DESC,
   localizedText,
   width,
-  currentSort,
-  updateCaseListSort,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
+  const dispatch = useDispatch();
+  const currentSort = useSelector((state: RootState) => state[namespace][caseListBase].currentSettings.sort);
   const drawSort = () => {
     if (!currentSort || !column || column !== currentSort.sortBy) return null;
 
@@ -85,7 +81,7 @@ const CaseListTableHeadCell: React.FC<Props> = ({
       ? defaultSortDirection
       : changeSortDirection(currentSort?.sortDirection);
 
-    updateCaseListSort({ sortBy: column, sortDirection: updatedSortDirection });
+    dispatch(CaseListSettingsActions.updateCaseListSort({ sortBy: column, sortDirection: updatedSortDirection }));
   };
   const textAlign = () => {
     if (
@@ -114,16 +110,4 @@ const CaseListTableHeadCell: React.FC<Props> = ({
 
 CaseListTableHeadCell.displayName = 'CaseListTableHeadCell';
 
-const mapDispatchToProps = {
-  updateCaseListSort: CaseListSettingsActions.updateCaseListSort,
-};
-
-const mapStateToProps = (state: RootState) => ({
-  currentSort: state[namespace][caseListBase].currentSettings.sort,
-  currentSortCompare: JSON.stringify(state[namespace][caseListBase].currentSettings.sort),
-});
-
-const connector = connect(mapStateToProps, mapDispatchToProps);
-const connected = connector(CaseListTableHeadCell);
-
-export default connected;
+export default CaseListTableHeadCell;

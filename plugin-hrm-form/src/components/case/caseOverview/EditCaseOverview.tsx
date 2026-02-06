@@ -18,11 +18,11 @@
 /* eslint-disable react/prop-types */
 import React, { useEffect, useMemo } from 'react';
 import { Template } from '@twilio/flex-ui';
-import { connect } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { FieldValues, FormProvider, SubmitErrorHandler, useForm } from 'react-hook-form';
 import { FormDefinition, FormInputType } from 'hrm-form-definitions';
 import { isEqual } from 'lodash';
-import { AnyAction, bindActionCreators } from 'redux';
+import { AnyAction } from 'redux';
 
 import {
   BottomButtonBar,
@@ -34,7 +34,6 @@ import {
   TwoColumnLayout,
 } from '../../../styles';
 import { RootState } from '../../../states';
-import * as RoutingActions from '../../../states/routing/actions';
 import { newCloseModalAction, newGoBackAction } from '../../../states/routing/actions';
 import type { Case, CaseOverview, CustomITask, StandaloneITask } from '../../../types/types';
 import { recordingErrorHandler } from '../../../fullStory';
@@ -62,51 +61,24 @@ export type EditCaseOverviewProps = {
   can: (action: PermissionActionType) => boolean;
 };
 
-const mapStateToProps = (state: RootState, { task }: EditCaseOverviewProps) => {
-  const connectedCaseState = selectCurrentRouteCaseState(state, task.taskSid);
-  const historyDetails = selectCaseHistoryDetails(state, connectedCaseState?.connectedCase);
-  const workingCopy = connectedCaseState?.caseWorkingCopy.caseSummary;
-  const isUpdating = (connectedCaseState?.outstandingUpdateCount ?? 0) > 0;
-  const definitionVersion = selectDefinitionVersionForCase(state, connectedCaseState?.connectedCase);
-  return { connectedCaseState, workingCopy, definitionVersion, historyDetails, isUpdating };
-};
-
-const mapDispatchToProps = (dispatch, { task }: EditCaseOverviewProps) => {
-  const updateCaseAsyncDispatch = asyncDispatch<AnyAction>(dispatch);
-  return {
-    changeRoute: bindActionCreators(RoutingActions.changeRoute, dispatch),
-    initialiseWorkingCopy: bindActionCreators(initialiseCaseSummaryWorkingCopy, dispatch),
-    updateWorkingCopy: bindActionCreators(updateCaseSummaryWorkingCopy, dispatch),
-    closeActions: (caseId: string, closeModal: boolean) => {
-      dispatch(removeCaseSummaryWorkingCopy(caseId));
-      dispatch(closeModal ? newCloseModalAction(task.taskSid) : newGoBackAction(task.taskSid));
-    },
-    updateCaseAsyncAction: (caseId: Case['id'], overview: CaseOverview, status: Case['status']) =>
-      updateCaseAsyncDispatch(updateCaseOverviewAsyncAction(caseId, overview, status)),
-  };
-};
-
-type Props = EditCaseOverviewProps & ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>;
-
 const enum DialogState {
   Closed,
   OpenForBack,
   OpenForClose,
 }
 
-const EditCaseOverview: React.FC<Props> = ({
-  task,
-  historyDetails,
-  connectedCaseState,
-  workingCopy,
-  initialiseWorkingCopy,
-  updateWorkingCopy,
-  closeActions,
-  can,
-  updateCaseAsyncAction,
-  isUpdating,
-  definitionVersion,
-}) => {
+const EditCaseOverview: React.FC<EditCaseOverviewProps> = ({ task, can }) => {
+  const dispatch = useDispatch();
+
+  const connectedCaseState = useSelector((state: RootState) => selectCurrentRouteCaseState(state, task.taskSid));
+  const historyDetails = useSelector((state: RootState) =>
+    selectCaseHistoryDetails(state, connectedCaseState?.connectedCase),
+  );
+  const workingCopy = connectedCaseState?.caseWorkingCopy.caseSummary;
+  const isUpdating = (connectedCaseState?.outstandingUpdateCount ?? 0) > 0;
+  const definitionVersion = useSelector((state: RootState) =>
+    selectDefinitionVersionForCase(state, connectedCaseState?.connectedCase),
+  );
   const { connectedCase, availableStatusTransitions } = connectedCaseState ?? {};
 
   const caseOverviewFields = definitionVersion?.caseOverview;
@@ -180,15 +152,16 @@ const EditCaseOverview: React.FC<Props> = ({
 
   useEffect(() => {
     if (!workingCopy) {
-      initialiseWorkingCopy(connectedCase.id, initialValues);
+      dispatch(initialiseCaseSummaryWorkingCopy(connectedCase.id, initialValues));
     }
-  }, [connectedCase.id, initialValues, initialiseWorkingCopy, workingCopy]);
+  }, [connectedCase.id, initialValues, dispatch, workingCopy]);
 
   const form = useCreateFormFromDefinition({
     definition: formDefinition,
     initialValues,
     parentsPath: '',
-    updateCallback: () => updateWorkingCopy(connectedCase.id, getValues() as CaseSummaryWorkingCopy),
+    updateCallback: () =>
+      dispatch(updateCaseSummaryWorkingCopy(connectedCase.id, getValues() as CaseSummaryWorkingCopy)),
     isItemEnabled: item => item.name === 'status' || can(PermissionActions.EDIT_CASE_OVERVIEW),
     shouldFocusFirstElement: false,
   });
@@ -215,12 +188,15 @@ const EditCaseOverview: React.FC<Props> = ({
     const { status: oldStatus, id } = connectedCaseState.connectedCase;
     const { status, ...updatedInfoValues } = workingCopy;
 
-    await updateCaseAsyncAction(id, updatedInfoValues, status === oldStatus ? undefined : status);
+    await asyncDispatch<AnyAction>(dispatch)(
+      updateCaseOverviewAsyncAction(id, updatedInfoValues, status === oldStatus ? undefined : status),
+    );
   };
 
   const saveAndLeave = async () => {
     await save();
-    closeActions(connectedCase.id, false);
+    dispatch(removeCaseSummaryWorkingCopy(connectedCase.id));
+    dispatch(newGoBackAction(task.taskSid));
   };
 
   const strings = getTemplateStrings();
@@ -231,7 +207,8 @@ const EditCaseOverview: React.FC<Props> = ({
 
   const checkForEdits = (closeModal: boolean) => {
     if (isEqual(workingCopy, savedForm)) {
-      closeActions(connectedCase.id, closeModal);
+      dispatch(removeCaseSummaryWorkingCopy(connectedCase.id));
+      dispatch(closeModal ? newCloseModalAction(task.taskSid) : newGoBackAction(task.taskSid));
     } else setDialogState(closeModal ? DialogState.OpenForClose : DialogState.OpenForBack);
   };
 
@@ -240,8 +217,8 @@ const EditCaseOverview: React.FC<Props> = ({
       <NavigableContainer
         task={task}
         titleCode="Case-EditCaseOverview"
-        onGoBack={checkForEdits}
-        onCloseModal={checkForEdits}
+        onGoBack={() => checkForEdits(false)}
+        onCloseModal={() => checkForEdits(true)}
         data-testid="Case-EditCaseOverview"
       >
         <CaseSummaryEditHistory {...historyDetails} />
@@ -268,7 +245,14 @@ const EditCaseOverview: React.FC<Props> = ({
           data-testid="CloseCaseDialog"
           openDialog={dialogState === DialogState.OpenForClose || dialogState === DialogState.OpenForBack}
           setDialog={() => setDialogState(DialogState.Closed)}
-          handleDontSaveClose={() => closeActions(connectedCase.id, dialogState === DialogState.OpenForClose)}
+          handleDontSaveClose={() => {
+            dispatch(removeCaseSummaryWorkingCopy(connectedCase.id));
+            dispatch(
+              dialogState === DialogState.OpenForClose
+                ? newCloseModalAction(task.taskSid)
+                : newGoBackAction(task.taskSid),
+            );
+          }}
           handleSaveUpdate={methods.handleSubmit(saveAndLeave, onError)}
         />
       </NavigableContainer>
@@ -278,4 +262,4 @@ const EditCaseOverview: React.FC<Props> = ({
 
 EditCaseOverview.displayName = 'EditCaseOverview';
 
-export default connect(mapStateToProps, mapDispatchToProps)(EditCaseOverview);
+export default EditCaseOverview;

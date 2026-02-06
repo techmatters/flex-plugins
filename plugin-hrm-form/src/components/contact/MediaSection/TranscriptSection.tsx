@@ -16,7 +16,7 @@
 
 import { Template } from '@twilio/flex-ui';
 import React, { useState } from 'react';
-import { connect } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import format from 'date-fns/format';
 
@@ -30,7 +30,7 @@ import { MessageList } from '../../Messaging/MessageList';
 import { ErrorFont, ItalicFont, LoadMediaButton, LoadMediaButtonText } from './styles';
 import { contactFormsBase, namespace } from '../../../states/storeNamespaces';
 
-type OwnProps = {
+type Props = {
   contactId: string;
   twilioStoredTranscript?: TwilioStoredMedia;
   externalStoredTranscript?: S3StoredTranscript;
@@ -77,19 +77,18 @@ const groupMessagesByDate = (m: MessageWithSenderInfo, index: number, ms: Messag
 const groupMessagesAndAddSenderInfo = (transcript: TranscriptResult['transcript']): GroupedMessage[] =>
   transcript.messages.map(addSenderInfoToMessage(transcript.participants)).map(groupMessagesByDate);
 
-// eslint-disable-next-line no-use-before-define
-type Props = OwnProps & ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps;
-
 const TranscriptSection: React.FC<Props> = ({
   contactId,
   twilioStoredTranscript,
   externalStoredTranscript,
   loadConversationIntoOverlay,
-  transcript,
-  loadTranscript,
 
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
+  const dispatch = useDispatch();
+  const transcript = useSelector(
+    (state: RootState) => state[namespace][contactFormsBase].existingContacts[contactId]?.transcript,
+  );
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState(null);
   const [updatedGroupMessages, setUpdatedGroupMessages] = useState<GroupedMessage[]>([]);
@@ -143,7 +142,7 @@ const TranscriptSection: React.FC<Props> = ({
       validateFetchResponse(transcriptResponse);
       const transcriptJson: TranscriptResult = await transcriptResponse.json();
 
-      loadTranscript(contactId, transcriptJson.transcript);
+      dispatch(loadTranscript(contactId, transcriptJson.transcript));
 
       setLoading(false);
     } catch (err) {
@@ -240,12 +239,4 @@ const TranscriptSection: React.FC<Props> = ({
   );
 };
 
-const mapStateToProps = (state: RootState, ownProps: OwnProps) => ({
-  transcript: state[namespace][contactFormsBase].existingContacts[ownProps.contactId]?.transcript,
-});
-
-const mapDispatchToProps = {
-  loadTranscript,
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(TranscriptSection);
+export default TranscriptSection;

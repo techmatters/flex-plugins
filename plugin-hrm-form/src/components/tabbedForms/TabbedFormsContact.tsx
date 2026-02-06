@@ -13,8 +13,8 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
-import React, { Dispatch } from 'react';
-import { connect, ConnectedProps } from 'react-redux';
+import React from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { callTypes, DataCallTypes } from 'hrm-types';
 
 import { RootState } from '../../states';
@@ -26,27 +26,20 @@ import ContactDetails from '../contact/ContactDetails';
 import { TabbedFormsCommonProps } from './types';
 import { changeRoute, newCloseModalAction } from '../../states/routing/actions';
 
-type OwnProps = TabbedFormsCommonProps;
+type Props = TabbedFormsCommonProps;
 
-const mapStateToProps = (state: RootState, { task: { taskSid } }: OwnProps) => {
-  const currentRoute = selectCurrentTopmostRouteForTask(state, taskSid);
-  const contactId = (currentRoute as ContactRoute)?.id;
-  return {
-    contactId,
-  };
-};
+const TabbedFormsContact: React.FC<Props> = ({ task }) => {
+  const dispatch = useDispatch();
+  const contactId = useSelector((state: RootState) => {
+    const currentRoute = selectCurrentTopmostRouteForTask(state, task.taskSid);
+    return (currentRoute as ContactRoute)?.id;
+  });
 
-const mapDispatchToProps = (dispatch: Dispatch<any>, { task }: OwnProps) => ({
-  closeModal: () => dispatch(newCloseModalAction(task.taskSid, 'tabbed-forms')),
-  navigateToTab: (tab: TabbedFormSubroutes) =>
+  const closeModal = () => dispatch(newCloseModalAction(task.taskSid, 'tabbed-forms'));
+  const navigateToTab = (tab: TabbedFormSubroutes) =>
     dispatch(
       changeRoute({ route: 'tabbed-forms', subroute: tab, autoFocus: false }, task.taskSid, ChangeRouteMode.Replace),
-    ),
-});
-const connector = connect(mapStateToProps, mapDispatchToProps);
-type Props = OwnProps & ConnectedProps<typeof connector>;
-
-const TabbedFormsContact: React.FC<Props> = ({ task, contactId, closeModal, navigateToTab }) => {
+    );
   const handleConnectConfirmDialog = (callType: DataCallTypes) => {
     closeModal();
     if (callType === callTypes.caller) {
@@ -71,4 +64,4 @@ const TabbedFormsContact: React.FC<Props> = ({ task, contactId, closeModal, navi
 
 TabbedFormsContact.displayName = 'TabbedFormsContact';
 
-export default connector(TabbedFormsContact);
+export default TabbedFormsContact;

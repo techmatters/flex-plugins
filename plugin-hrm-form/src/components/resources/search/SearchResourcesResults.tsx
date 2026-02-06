@@ -14,8 +14,8 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import React, { Dispatch } from 'react';
-import { connect, ConnectedProps } from 'react-redux';
+import React from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { AnyAction } from 'redux';
 import { Template } from '@twilio/flex-ui';
 
@@ -45,53 +45,17 @@ import ResourcePreview from './ResourcePreview';
 import { namespace, referrableResourcesBase } from '../../../states/storeNamespaces';
 import { ResourcesSearchResultsDescriptionDetails } from '../mappingComponents';
 
-type OwnProps = {};
+const SearchResourcesResults: React.FC = () => {
+  const dispatch = useDispatch();
 
-const mapStateToProps = (state: RootState) => {
-  const searchState = state[namespace][referrableResourcesBase].search;
+  const searchState = useSelector((state: RootState) => state[namespace][referrableResourcesBase].search);
   const { error, status, currentPage, parameters } = searchState;
   const currentPageResults = getCurrentPageResults(searchState);
-  return {
-    parameters,
-    currentPageResults,
-    currentPage,
-    error,
-    status,
-    resultPageCount: getPageCount(searchState),
-    resultCount: searchState.results.length,
-  };
-};
-
-const mapDispatchToProps = (dispatch: Dispatch<AnyAction>) => {
-  const searchAsyncDispatch = asyncDispatch<AnyAction>(dispatch);
-  return {
-    returnToForm: () => dispatch(returnToSearchFormAction()),
-    viewResource: (id: string) => dispatch(viewResourceAction(id)),
-    changePage: (page: number) => dispatch(changeResultPageAction(page)),
-    retrievePageResults: (parameters: SearchSettings, page: number) =>
-      searchAsyncDispatch(searchResourceAsyncAction(parameters, page, false)),
-  };
-};
-
-const connector = connect(mapStateToProps, mapDispatchToProps);
-
-type Props = OwnProps & ConnectedProps<typeof connector>;
-
-const SearchResourcesResults: React.FC<Props> = ({
-  parameters,
-  currentPageResults,
-  error,
-  resultPageCount,
-  resultCount,
-  currentPage,
-  changePage,
-  retrievePageResults,
-  returnToForm,
-  viewResource,
-}) => {
+  const resultPageCount = getPageCount(searchState);
+  const resultCount = searchState.results.length;
   // If any results for the current page are undefined (i.e. expected to exist given the total result count but not in  redux yet) query the back end
   if (!currentPageResults.every(res => res)) {
-    retrievePageResults(parameters, currentPage);
+    asyncDispatch<AnyAction>(dispatch)(searchResourceAsyncAction(parameters, currentPage, false));
     return null;
   }
 
@@ -102,7 +66,7 @@ const SearchResourcesResults: React.FC<Props> = ({
           <SearchResultsBackButton
             text={<Template code="SearchResultsIndex-Back" />}
             // eslint-disable-next-line no-empty-function
-            handleBack={returnToForm}
+            handleBack={() => dispatch(returnToSearchFormAction())}
           />
         </Box>
         <SearchFormTopRule />
@@ -132,7 +96,10 @@ const SearchResourcesResults: React.FC<Props> = ({
         <ResourcesSearchResultsList>
           {currentPageResults.map(result => (
             <li key={result.id}>
-              <ResourcePreview resourceResult={result} onClickViewResource={() => viewResource(result.id)} />
+              <ResourcePreview
+                resourceResult={result}
+                onClickViewResource={() => dispatch(viewResourceAction(result.id))}
+              />
             </li>
           ))}
         </ResourcesSearchResultsList>
@@ -142,7 +109,7 @@ const SearchResourcesResults: React.FC<Props> = ({
               transparent
               page={currentPage}
               pagesCount={resultPageCount}
-              handleChangePage={pageNumber => changePage(pageNumber)}
+              handleChangePage={pageNumber => dispatch(changeResultPageAction(pageNumber))}
             />
           </div>
         ) : null}
@@ -153,4 +120,4 @@ const SearchResourcesResults: React.FC<Props> = ({
 
 SearchResourcesResults.displayName = 'ViewResource';
 
-export default connector(SearchResourcesResults);
+export default SearchResourcesResults;
