@@ -28,6 +28,7 @@ import * as ListContent from '../../states/caseList/listContent';
 import { getHrmConfig } from '../../hrmConfig';
 import { selectCurrentTopmostRouteForTask } from '../../states/routing/getRoute';
 import { newCloseModalAction, newOpenModalAction } from '../../states/routing/actions';
+import { isContactRoute, ProfileRoute, AppRoutes, ContactRoute } from '../../states/routing/types';
 import ContactDetails from '../contact/ContactDetails';
 import { DetailsContext } from '../../states/contacts/contactDetails';
 import selectCasesForList from '../../states/caseList/selectCasesForList';
@@ -94,12 +95,13 @@ const CaseList: React.FC = () => {
     );
   }
 
-  if (routing.route === 'contact') {
+  if (routing.route === 'contact' && isContactRoute(routing as AppRoutes)) {
+    const contactRoute = routing as ContactRoute;
     return (
       <StandaloneContainer>
         <CaseLayout>
           <ContactDetails
-            contactId={routing.id}
+            contactId={contactRoute.id}
             enableEditing={true}
             context={DetailsContext.CASE_DETAILS}
             task={standaloneTask}
@@ -109,7 +111,7 @@ const CaseList: React.FC = () => {
     );
   }
 
-  if (isProfileRoute(routing)) {
+  if (isProfileRoute(routing as AppRoutes)) {
     return (
       <StandaloneContainer>
         <ProfileRouter task={standaloneTask} />

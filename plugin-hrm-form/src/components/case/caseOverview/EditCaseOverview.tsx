@@ -217,8 +217,8 @@ const EditCaseOverview: React.FC<EditCaseOverviewProps> = ({ task, can }) => {
       <NavigableContainer
         task={task}
         titleCode="Case-EditCaseOverview"
-        onGoBack={checkForEdits}
-        onCloseModal={checkForEdits}
+        onGoBack={() => checkForEdits(false)}
+        onCloseModal={() => checkForEdits(true)}
         data-testid="Case-EditCaseOverview"
       >
         <CaseSummaryEditHistory {...historyDetails} />

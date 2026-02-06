@@ -68,24 +68,25 @@ const FullTimelineView: React.FC<MyProps> = ({ task }: MyProps) => {
         task={task}
         titleCode="Case-Timeline-ModalTitle"
         titleValues={{ caseId }}
-        style={{ textAlign: 'center' }}
       >
-        <AddToCaseBanner task={task} />
-        <Timeline
-          taskSid={task.taskSid}
-          timelineId={MAIN_TIMELINE_ID}
-          pageSize={TIMELINE_PAGE_SIZE}
-          page={page}
-          titleCode="Case-Timeline-Title"
-        />
-        <p style={{ marginTop: '10px', fontStyle: 'italic' }}>
-          <Template
-            code="Case-Timeline-PaginationDescription"
-            from={page * TIMELINE_PAGE_SIZE + 1}
-            to={Math.min((page + 1) * TIMELINE_PAGE_SIZE, activityCount)}
-            total={activityCount}
+        <div style={{ textAlign: 'center' }}>
+          <AddToCaseBanner task={task} />
+          <Timeline
+            taskSid={task.taskSid}
+            timelineId={MAIN_TIMELINE_ID}
+            pageSize={TIMELINE_PAGE_SIZE}
+            page={page}
+            titleCode="Case-Timeline-Title"
           />
-        </p>
+          <p style={{ marginTop: '10px', fontStyle: 'italic' }}>
+            <Template
+              code="Case-Timeline-PaginationDescription"
+              from={page * TIMELINE_PAGE_SIZE + 1}
+              to={Math.min((page + 1) * TIMELINE_PAGE_SIZE, activityCount)}
+              total={activityCount}
+            />
+          </p>
+        </div>
         {activityCount > TIMELINE_PAGE_SIZE && (
           <Pagination
             pagesCount={Math.ceil(activityCount / TIMELINE_PAGE_SIZE)}

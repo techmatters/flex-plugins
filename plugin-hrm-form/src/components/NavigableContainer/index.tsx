@@ -41,7 +41,7 @@ type Props = {
   onCloseModal?: () => void;
   focusPriority?: FocusTarget[];
   noOverflow?: boolean;
-} & StyledProps;
+} & Partial<StyledProps>;
 
 const NavigableContainer: React.FC<Props> = ({
   children,

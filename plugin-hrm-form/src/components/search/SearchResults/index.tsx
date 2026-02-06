@@ -23,7 +23,7 @@ import { AnyAction } from 'redux';
 
 import ContactPreview from '../ContactPreview';
 import CasePreview from '../CasePreview';
-import { Contact, CustomITask, SearchCaseResult, SearchContactResult } from '../../../types/types';
+import { Contact, CustomITask, StandaloneITask, SearchCaseResult, SearchContactResult } from '../../../types/types';
 import { Row } from '../../../styles';
 import {
   NoResultTextLink,
@@ -60,7 +60,7 @@ export const CONTACTS_PER_PAGE = 20;
 export const CASES_PER_PAGE = 20;
 
 type Props = {
-  task: CustomITask;
+  task: CustomITask | StandaloneITask;
   searchContactsResults: SearchContactResult;
   searchCasesResults: SearchCaseResult;
   onlyDataContacts: boolean;
@@ -69,7 +69,7 @@ type Props = {
   handleSearchCases: (offset: number) => void;
   toggleNonDataContacts: () => void;
   toggleClosedCases: () => void;
-  handleBack: () => void;
+  handleBack?: () => void;
   saveUpdates: () => Promise<void>;
 };
 
