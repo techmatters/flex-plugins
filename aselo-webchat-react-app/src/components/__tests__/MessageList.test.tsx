@@ -16,17 +16,14 @@
 
 import { fireEvent, render, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import { useSelector } from 'react-redux';
 
+import { resetMockRedux } from '../../__mocks__/redux/mockRedux';
 import { MessageList } from '../MessageList';
 import { getMoreMessages } from '../../store/actions/genericActions';
 import { SeparatorType } from '../definitions';
 
-const fileAttachmentConfig = {
-  enabled: true,
-  maxFileSize: 16777216,
-  acceptedExtensions: ['jpg', 'jpeg', 'png', 'amr', 'mp3', 'mp4', 'pdf'],
-};
+const messageBubbleTestId = 'message-bubble';
+
 const user1 = {
   identity: 'identity 1',
   friendlyName: 'name 1',
@@ -47,27 +44,19 @@ const message2 = {
   dateCreated: new Date('01/02/2021'),
   body: 'message 2',
 };
-const defaultState = {
-  chat: {
-    conversation: {
-      dateCreated: message1.dateCreated,
-      getMessagesCount: jest.fn(),
-      addListener: jest.fn(),
-      removeListener: jest.fn(),
-    },
-    conversationsClient: { user: user1 },
-    messages: [message1, message2],
-    participants: [],
-    users: [user1, user2],
-  },
-  config: { fileAttachment: fileAttachmentConfig },
-};
-const messageBubbleTestId = 'message-bubble';
 
-jest.mock('react-redux', () => ({
-  useDispatch: () => jest.fn(),
-  useSelector: jest.fn(),
-}));
+const defaultChatState = {
+  conversation: {
+    dateCreated: message1.dateCreated,
+    getMessagesCount: jest.fn(),
+    addListener: jest.fn(),
+    removeListener: jest.fn(),
+  },
+  conversationsClient: { user: user1 },
+  messages: [message1, message2],
+  participants: [],
+  users: [user1, user2],
+};
 
 jest.mock('../../store/actions/genericActions', () => ({
   getMoreMessages: jest.fn(),
@@ -86,7 +75,7 @@ jest.mock('@twilio-paste/core/spinner', () => ({
 
 describe('Message List', () => {
   beforeEach(() => {
-    (useSelector as jest.Mock).mockImplementation((callback: any) => callback(defaultState));
+    resetMockRedux({ chat: defaultChatState });
   });
 
   it('renders the message list', () => {
@@ -104,15 +93,12 @@ describe('Message List', () => {
   });
 
   it('does not render any chat items if no messages object', () => {
-    (useSelector as jest.Mock).mockImplementation((callback: any) =>
-      callback({
-        ...defaultState,
-        chat: {
-          ...defaultState.chat,
-          messages: null,
-        },
-      }),
-    );
+    resetMockRedux({
+      chat: {
+        ...defaultChatState,
+        messages: null,
+      },
+    });
 
     const { queryAllByTestId, queryAllByTitle } = render(<MessageList />);
 
@@ -121,15 +107,12 @@ describe('Message List', () => {
   });
 
   it('renders a participant typing', () => {
-    (useSelector as jest.Mock).mockImplementation((callback: any) =>
-      callback({
-        ...defaultState,
-        chat: {
-          ...defaultState.chat,
-          participants: [{ identity: user1.identity }, { identity: user2.identity, isTyping: true }],
-        },
-      }),
-    );
+    resetMockRedux({
+      chat: {
+        ...defaultChatState,
+        participants: [{ identity: user1.identity }, { identity: user2.identity, isTyping: true }],
+      },
+    });
 
     const { queryByText } = render(<MessageList />);
 
@@ -137,15 +120,12 @@ describe('Message List', () => {
   });
 
   it('does not render client participant typing', () => {
-    (useSelector as jest.Mock).mockImplementation((callback: any) =>
-      callback({
-        ...defaultState,
-        chat: {
-          ...defaultState.chat,
-          participants: [{ identity: user1.identity, isTyping: true }, { identity: user2.identity }],
-        },
-      }),
-    );
+    resetMockRedux({
+      chat: {
+        ...defaultChatState,
+        participants: [{ identity: user1.identity, isTyping: true }, { identity: user2.identity }],
+      },
+    });
 
     const { queryByText } = render(<MessageList />);
 
@@ -154,7 +134,7 @@ describe('Message List', () => {
 
   it('renders loading spinner when there are non-loaded messages', async () => {
     const getMessagesCountSpy = jest
-      .spyOn(defaultState.chat.conversation, 'getMessagesCount')
+      .spyOn(defaultChatState.conversation, 'getMessagesCount')
       .mockImplementation(() => 4); // 2 messages are loaded initially
 
     const { queryByTitle } = render(<MessageList />);
@@ -167,7 +147,7 @@ describe('Message List', () => {
 
   it('does not render loading spinner when all messages loaded', async () => {
     const getMessagesCountSpy = jest
-      .spyOn(defaultState.chat.conversation, 'getMessagesCount')
+      .spyOn(defaultChatState.conversation, 'getMessagesCount')
       .mockImplementation(() => 2); // 2 messages are loaded initially
 
     const { queryByTitle } = render(<MessageList />);
@@ -229,18 +209,15 @@ describe('Message List', () => {
         body: 'message 8',
       },
     ];
-    (useSelector as jest.Mock).mockImplementation((callback: any) =>
-      callback({
-        ...defaultState,
-        chat: {
-          ...defaultState.chat,
-          messages,
-        },
-      }),
-    );
+    resetMockRedux({
+      chat: {
+        ...defaultChatState,
+        messages,
+      },
+    });
     const totalMessagesCount = 20;
     const getMessagesCountSpy = jest
-      .spyOn(defaultState.chat.conversation, 'getMessagesCount')
+      .spyOn(defaultChatState.conversation, 'getMessagesCount')
       .mockImplementation(() => totalMessagesCount);
 
     const { getByRole } = render(<MessageList />);
@@ -251,7 +228,7 @@ describe('Message List', () => {
 
       expect(getMessagesCountSpy).toHaveBeenCalled();
       expect(getMoreMessages).toHaveBeenCalledWith({
-        conversation: defaultState.chat.conversation,
+        conversation: defaultChatState.conversation,
         anchor: totalMessagesCount - messages.length - 1,
       });
     });
@@ -277,15 +254,12 @@ describe('Message List', () => {
         dateCreated: new Date(),
         body: 'message 2',
       };
-      (useSelector as jest.Mock).mockImplementation((callback: any) =>
-        callback({
-          ...defaultState,
-          chat: {
-            ...defaultState.chat,
-            messages: [messageToday1, messageToday2],
-          },
-        }),
-      );
+      resetMockRedux({
+        chat: {
+          ...defaultChatState,
+          messages: [messageToday1, messageToday2],
+        },
+      });
 
       const { queryAllByRole, queryAllByTitle } = render(<MessageList />);
 
@@ -308,15 +282,12 @@ describe('Message List', () => {
         dateCreated: new Date(),
         body: 'message today',
       };
-      (useSelector as jest.Mock).mockImplementation((callback: any) =>
-        callback({
-          ...defaultState,
-          chat: {
-            ...defaultState.chat,
-            messages: [messageYesterday, messageToday],
-          },
-        }),
-      );
+      resetMockRedux({
+        chat: {
+          ...defaultChatState,
+          messages: [messageYesterday, messageToday],
+        },
+      });
 
       const { queryAllByRole, queryAllByTitle } = render(<MessageList />);
 
@@ -343,20 +314,16 @@ describe('Message List', () => {
         dateCreated: new Date(),
         body: 'message 3',
       };
-
-      (useSelector as jest.Mock).mockImplementation((callback: any) =>
-        callback({
-          ...defaultState,
-          chat: {
-            ...defaultState.chat,
-            messages: [messageNew1, messageNew2, messageNew3],
-            conversation: {
-              ...defaultState.chat.conversation,
-              lastReadMessageIndex: 0,
-            },
+      resetMockRedux({
+        chat: {
+          ...defaultChatState,
+          messages: [messageNew1, messageNew2, messageNew3],
+          conversation: {
+            ...defaultChatState.conversation,
+            lastReadMessageIndex: 0,
           },
-        }),
-      );
+        },
+      });
 
       const { queryAllByRole, queryAllByTitle } = render(<MessageList />);
 
@@ -383,20 +350,16 @@ describe('Message List', () => {
         dateCreated: new Date(),
         body: 'message 3',
       };
-
-      (useSelector as jest.Mock).mockImplementation((callback: any) =>
-        callback({
-          ...defaultState,
-          chat: {
-            ...defaultState.chat,
-            messages: [messageNew1, messageNew2, messageNew3],
-            conversation: {
-              ...defaultState.chat.conversation,
-              lastReadMessageIndex: 2,
-            },
+      resetMockRedux({
+        chat: {
+          ...defaultChatState,
+          messages: [messageNew1, messageNew2, messageNew3],
+          conversation: {
+            ...defaultChatState.conversation,
+            lastReadMessageIndex: 2,
           },
-        }),
-      );
+        },
+      });
 
       const { queryAllByRole, queryAllByTitle } = render(<MessageList />);
 
@@ -423,20 +386,16 @@ describe('Message List', () => {
         dateCreated: new Date(),
         body: 'message 3',
       };
-
-      (useSelector as jest.Mock).mockImplementation((callback: any) =>
-        callback({
-          ...defaultState,
-          chat: {
-            ...defaultState.chat,
-            messages: [messageNew1, messageNew2, messageNew3],
-            conversation: {
-              ...defaultState.chat.conversation,
-              lastReadMessageIndex: 1,
-            },
+      resetMockRedux({
+        chat: {
+          ...defaultChatState,
+          messages: [messageNew1, messageNew2, messageNew3],
+          conversation: {
+            ...defaultChatState.conversation,
+            lastReadMessageIndex: 1,
           },
-        }),
-      );
+        },
+      });
 
       const { queryAllByRole, queryAllByTitle } = render(<MessageList />);
 
@@ -451,20 +410,16 @@ describe('Message List', () => {
         dateCreated: new Date(),
         body: 'message 2',
       };
-
-      (useSelector as jest.Mock).mockImplementation((callback: any) =>
-        callback({
-          ...defaultState,
-          chat: {
-            ...defaultState.chat,
-            messages: [message1, messageNewToday],
-            conversation: {
-              ...defaultState.chat.conversation,
-              lastReadMessageIndex: 0,
-            },
+      resetMockRedux({
+        chat: {
+          ...defaultChatState,
+          messages: [message1, messageNewToday],
+          conversation: {
+            ...defaultChatState.conversation,
+            lastReadMessageIndex: 0,
           },
-        }),
-      );
+        },
+      });
 
       const { queryAllByRole, queryAllByTitle } = render(<MessageList />);
 
@@ -485,15 +440,12 @@ describe('Message List', () => {
     });
 
     it('message list container is focusable when there are no messages', () => {
-      (useSelector as jest.Mock).mockImplementation((callback: any) =>
-        callback({
-          ...defaultState,
-          chat: {
-            ...defaultState.chat,
-            messages: [],
-          },
-        }),
-      );
+      resetMockRedux({
+        chat: {
+          ...defaultChatState,
+          messages: [],
+        },
+      });
       const { getByRole } = render(<MessageList />);
       const messagesContainer = getByRole('log');
 
@@ -550,16 +502,13 @@ describe('Message List', () => {
     it('does not focus if triggered by a click', async () => {
       const message3 = { ...message2, index: 2 };
       const messages = [message1, message2, message3];
-      // eslint-disable-next-line sonarjs/no-identical-functions
-      (useSelector as jest.Mock).mockImplementation((callback: any) =>
-        callback({
-          ...defaultState,
-          chat: {
-            ...defaultState.chat,
-            messages,
-          },
-        }),
-      );
+      resetMockRedux({
+        chat: {
+          ...defaultChatState,
+          messages,
+        },
+      });
+
       const { queryAllByTestId } = render(<MessageList />);
 
       const [topBubble, middleBubble, bottomBubble] = queryAllByTestId(messageBubbleTestId);

@@ -36,6 +36,7 @@ const initWebchat = async (configLocation?: URL, overrides: Partial<ConfigState>
   const logger = window.Twilio.getLogger(`InitWebChat`);
   const configUrl = configLocation || process.env.REACT_APP_CONFIG_URL || './config.json';
 
+  // TODO: Move this config loading into a redux thunk
   const helplineConfigResponse = await getHelplineConfig({ configUrl });
   if (helplineConfigResponse.status === 'error') {
     logger.error(helplineConfigResponse.message);

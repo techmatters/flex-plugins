@@ -14,19 +14,19 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-window.addEventListener("DOMContentLoaded", () => {
+window.addEventListener('DOMContentLoaded', () => {
   const urlParams = new URLSearchParams(window.location.search);
-  const theme = urlParams.get("theme") || document.currentScript?.getAttribute('theme');
-  const isLightTheme = theme !== "dark";
-  const alwaysOpen = urlParams.get("alwaysOpen");
-  const defaultLocale = urlParams.get("locale");
-  const el = document.querySelector("[data-theme-pref]");
-  el && el.setAttribute("data-theme-pref", isLightTheme ? "light-theme" : "dark-theme");
+  const theme = urlParams.get('theme') || document.currentScript?.getAttribute('theme');
+  const isLightTheme = theme !== 'dark';
+  const alwaysOpen = urlParams.get('alwaysOpen');
+  const defaultLocale = urlParams.get('locale');
+  const el = document.querySelector('[data-theme-pref]');
+  el?.setAttribute('data-theme-pref', isLightTheme ? 'light-theme' : 'dark-theme');
 
-  Twilio.initLogger("info");
+  Twilio.initLogger('info');
   Twilio.initWebchat(urlParams.get('configUrl') || document.currentScript?.getAttribute('config-url'), {
-    ...(theme ? { theme: { isLight: isLightTheme } } : {}),
+    theme: { isLight: isLightTheme },
     ...(alwaysOpen ? { alwaysOpen: alwaysOpen.toLowerCase() === 'true' } : {}),
-    ...(defaultLocale ? { defaultLocale } : {})
+    ...(defaultLocale ? { defaultLocale } : {}),
   });
 });

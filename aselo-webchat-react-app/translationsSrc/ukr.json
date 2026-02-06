@@ -1,6 +1,6 @@
 {
-  "EndChatButtonLabel": "Вийти із чату",
-  "QuickExitButtonLabel": "Швидкий вихід",
-  "QuickExitDescription": "Потрібно швидко піти?",
-  "ChatWithUs": "Спілкуйтеся з нами"
+  "Header-CloseChatButtons-EndChatButtonLabel": "Вийти із чату",
+  "Header-CloseChatButtons-QuickExitButtonLabel": "Швидкий вихід",
+  "Header-CloseChatButtons-QuickExitDescription": "Потрібно швидко піти?",
+  "Header-TitleBar-Title": "Спілкуйтеся з нами"
 }

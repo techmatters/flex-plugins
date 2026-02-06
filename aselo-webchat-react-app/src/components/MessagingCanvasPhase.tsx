@@ -58,10 +58,10 @@ export const MessagingCanvasPhase = () => {
   return (
     <Wrapper>
       <Header />
+      <CloseChatButtons />
       <NotificationBar />
       <MessageList />
       {conversationState === 'active' ? <MessageInput /> : <ConversationEnded />}
-      <CloseChatButtons />
     </Wrapper>
   );
 };

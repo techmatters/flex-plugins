@@ -20,9 +20,9 @@ import { ScreenReaderOnly } from '@twilio-paste/core/screen-reader-only';
 import { useSelector } from 'react-redux';
 import { Text } from '@twilio-paste/core/text';
 import { Flex } from '@twilio-paste/core/flex';
-import { UserIcon } from '@twilio-paste/icons/esm/UserIcon';
+import { UserIcon } from '@twilio-paste/icons/cjs/UserIcon';
 import { Key, KeyboardEvent, useEffect, useRef, useState } from 'react';
-import { SuccessIcon } from '@twilio-paste/icons/esm/SuccessIcon';
+import { SuccessIcon } from '@twilio-paste/icons/cjs/SuccessIcon';
 
 import { AppState } from '../store/definitions';
 import { FilePreview } from './FilePreview';

@@ -71,6 +71,7 @@ export type ConfigState = {
   translations: Record<string, Record<string, string>>;
   defaultLocale: LocaleString;
   currentLocale?: LocaleString;
+  quickExitUrl: `https://${string}`;
 };
 
 export type Notification = {

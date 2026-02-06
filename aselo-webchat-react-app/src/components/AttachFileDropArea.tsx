@@ -18,7 +18,7 @@ import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Box } from '@twilio-paste/core/box';
 import { Text } from '@twilio-paste/core/text';
-import { AttachIcon } from '@twilio-paste/icons/esm/AttachIcon';
+import { AttachIcon } from '@twilio-paste/icons/cjs/AttachIcon';
 
 import {
   attachIconContainerStyles,

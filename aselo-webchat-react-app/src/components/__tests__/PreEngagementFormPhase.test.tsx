@@ -18,11 +18,11 @@ import { fireEvent, render, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { Provider } from 'react-redux';
 
-import { PreEngagementFormPhase } from '../PreEngagementFormPhase';
+import { sessionDataHandler } from '../../sessionDataHandler';
 import * as initAction from '../../store/actions/initActions';
 import { EngagementPhase } from '../../store/definitions';
-import { sessionDataHandler } from '../../sessionDataHandler';
 import { store } from '../../store/store';
+import { PreEngagementFormPhase } from '../PreEngagementFormPhase';
 
 const token = 'token';
 const conversationSid = 'sid';
@@ -31,6 +31,7 @@ jest.mock('../../sessionDataHandler', () => ({
     fetchAndStoreNewSession: () => ({ token, conversationSid }),
     getRegion: jest.fn(),
   },
+  contactBackend: jest.fn(),
 }));
 
 jest.mock('../Header', () => ({
@@ -56,6 +57,7 @@ describe('Pre Engagement Form Phase', () => {
   const query = 'Why is a potato?';
 
   beforeEach(() => {
+    jest.resetAllMocks();
     jest.spyOn(initAction, 'initSession').mockImplementation((data: any) => data);
   });
 

@@ -38,6 +38,7 @@ import {
   outerContainerStyles,
   participantTypingStyles,
 } from './styles/MessageList.styles';
+import LocalizedTemplate from '../localization/LocalizedTemplate';
 
 const noop = async (t: number) => new Promise(res => setTimeout(res, t));
 
@@ -185,7 +186,7 @@ export const MessageList = () => {
       <>
         <Box {...conversationEventContainerStyles}>
           <Text as="h3" {...conversationEventTitleStyles} data-test="chat-started">
-            Chat started
+            <LocalizedTemplate code="MessagePhase-MessageList-ChatStartMessage" />
           </Text>
           <Text as="p" {...conversationEventDateStyles}>
             {conversation?.dateCreated.toLocaleString()}
