@@ -60,11 +60,14 @@ export const maskChannelStringsWithIdentifiers = (channelType: TaskChannelDefini
         return taskHelper.durationSinceUpdate;
       }
       const conversationHelper = new ConversationHelper(conversationState);
+      if (!conversationHelper.lastMessage) {
+        return taskHelper.durationSinceUpdate;
+      }
       return `${taskHelper.durationSinceUpdate} | ${
-        conversationHelper.lastMessage?.isFromMe
-          ? conversationHelper.lastMessage?.authorName
-          : strings['MaskIdentifiers'] ?? '-'
-      }: ${conversationHelper.lastMessage?.source.body ?? ''}`;
+        conversationHelper.lastMessage.isFromMe
+          ? conversationHelper.lastMessage.authorName
+          : strings['MaskIdentifiers'] ?? 'XXXXXX'
+      }: ${conversationHelper.lastMessage.source.body ?? ''}`;
     };
   }
   // Task panel during an active call
