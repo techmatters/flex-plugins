@@ -17,6 +17,8 @@
 export * from './insightsConfig';
 export * from './types';
 export * from './loadDefinition';
+export * from './loadWebchatDefinition';
+export * from './buildFormDefinitionsUrl';
 export * from './formSelector';
 export { LayoutVersion } from './layoutVersion';
 export { LayoutDefinition } from './layoutVersion';

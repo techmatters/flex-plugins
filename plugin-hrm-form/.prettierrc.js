@@ -14,13 +14,11 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-const baseConfig = require('./node_modules/eslint-config-twilio/rules/prettier');
-
 module.exports = {
-  ...baseConfig,
-  ...{
-    arrowParens: 'avoid',
-    singleQuote: true,
-    endOfLine: 'auto',
-  },
+  arrowParens: 'avoid',
+  singleQuote: true,
+  endOfLine: 'auto',
+  trailingComma: 'all',
+  singleQuote: true,
+  printWidth: 120,
 };

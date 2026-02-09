@@ -8,15 +8,16 @@
   "homepage": ".",
   "dependencies": {
     "@emotion/core": "^10.0.28",
-    "@twilio-paste/core": "^10.20.0",
-    "@twilio-paste/icons": "^6.1.0",
-    "@twilio-paste/theme": "^5.3.3",
+    "@twilio-paste/core": "^21.5.0",
+    "@twilio-paste/icons": "^13.1.0",
+    "@twilio-paste/theme": "^12.0.1",
     "@twilio/conversations": "2.1.0-rc.0",
     "@types/file-saver": "2.0.5",
     "file-saver": "2.0.5",
     "google-auth-library": "8.5.1",
     "googleapis": "107.0.0",
     "googleapis-common": "6.0.3",
+    "hrm-form-definitions": "file:../lambdas/packages/hrm-form-definitions",
     "jszip": "3.10.1",
     "lodash.merge": "^4.6.2",
     "lodash.throttle": "^4.1.1",
@@ -45,9 +46,9 @@
     "@types/react": "^17.0.20",
     "@types/react-dom": "^17.0.9",
     "@types/validator": "^13.7.17",
-    "@typescript-eslint/eslint-plugin": "^5.3.1",
+    "@typescript-eslint/eslint-plugin": "^5.62.0",
     "@typescript-eslint/parser": "^5.4.0",
-    "axios": "^1.13.2",
+    "axios": "^0.24.0",
     "cors": "^2.8.5",
     "cross-env": "^10.1.0",
     "cypress": "12.17.2",
@@ -58,28 +59,36 @@
     "eslint-config-twilio-react": "^1.35.1",
     "eslint-config-twilio-ts": "^1.35.1",
     "eslint-plugin-prettier": "^4.0.0",
-    "express": "4.22.0",
+    "express": "4.17.3",
     "fetch-mock-jest": "^1.5.1",
     "filemanager-webpack-plugin": "^8.0.0",
     "http-server": "^14.1.1",
+    "jest": "^30.2.0",
+    "jest-environment-jsdom": "^30.2.0",
+    "jest-junit": "^16.0.0",
     "jsonwebtoken": "^9.0.3",
     "node-fetch": "^3.3.2",
     "nodemon": "^2.0.15",
     "npm-run-all": "^4.1.5",
     "prettier": "^2.4.1",
+    "ts-jest": "^29.4.6",
     "twilio": "^3.74.0",
     "typescript": "^4.4.2",
-    "webpack-bundle-analyzer": "^4.5.0"
+    "webpack-bundle-analyzer": "^4.5.0",
+    "whatwg-fetch": "^3.6.20"
   },
   "resolutions": {
     "react-scripts/@svgr/webpack": "7.0.0",
     "recursive-readdir": "2.2.3"
   },
   "scripts": {
+    "preinstall": "cd ../lambdas/packages/hrm-form-definitions && npm ci && npm run build && cd ../hrm-types && npm ci && npm run build",
     "start": "react-app-rewired start",
+    "start:as_dev": "cross-env REACT_APP_CONFIG_URL='http://localhost:9090/as/development.json' run-p dev:merge-configs dev:local-config-server start",
     "build": "react-app-rewired build",
-    "start:as_dev": "cross-env REACT_APP_CONFIG_URL=http://localhost:9090/as/development.json run-p mergeConfigs dev:local-config-server start",
-    "test": "LC_ALL=\"en_GB.UTF-8\" react-app-rewired test --watchAll=false --env=jsdom --transformIgnorePatterns \"node_modules/(?!(@twilio-paste|@twilio/conversations))/\"",
+    "lint": "eslint --ext js --ext jsx --ext ts --ext tsx src/",
+    "lint:fix": "npm run lint -- --fix",
+    "test": "jest",
     "test:nowatch": "npm test --watchAll=false --verbose --runInBand",
     "bootstrap": "node scripts/bootstrap",
     "e2eCleanupExistingTasks": "node scripts/e2eCleanupExistingTasks",
@@ -87,6 +96,7 @@
     "deploy": "npm run build && node scripts/deploy",
     "eject": "react-app-rewired eject",
     "test:e2e": "cypress open",
+    "dev:merge-configs": "npm run mergeConfigs development as",
     "dev:local-config-server": "npx http-server ./mergedConfigs -p 9090 --cors -c-1"
   },
   "browserslist": [
@@ -94,17 +104,5 @@
     "not dead",
     "not ie <= 11",
     "not op_mini all"
-  ],
-  "jest": {
-    "collectCoverage": true,
-    "collectCoverageFrom": [
-      "<rootDir>/src/components/**/*.ts",
-      "!src/**/*.d.ts",
-      "!**/node_modules/**"
-    ],
-    "coveragePathIgnorePatterns": [
-      "<rootDir>/src/coverage/"
-    ],
-    "rootDir": "./"
-  }
+  ]
 }

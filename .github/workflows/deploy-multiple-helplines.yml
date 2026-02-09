@@ -82,6 +82,22 @@ jobs:
       send-slack-message: ${{ inputs.send_slack_message_per_deploy }}
       invalidate-cache: ${{ inputs.invalidate-cache }}
 
+  deploy-aselo-webchat-react-app-helplines:
+    if: inputs.project == 'aselo-webchat-react-app'
+    strategy:
+      fail-fast: false
+      matrix:
+        short_helplines: ${{ fromJson(inputs.helplines) }}
+        environment: ${{ fromJson(inputs.environments) }}
+    uses: ./.github/workflows/aselo-webchat-react-app-deploy.yml
+    secrets: inherit
+    with:
+      helpline_code: ${{ matrix.short_helplines }}
+      environment: ${{ matrix.environment }}
+      recaptcha_verify_url: ${{ inputs.recaptcha_verify_url }}
+      send-slack-message: ${{ inputs.send_slack_message_per_deploy }}
+      invalidate-cache: ${{ inputs.invalidate-cache }}
+
   # Send Slack notifying success
   send-slack-message:
     # The type of runner that the job will run on
@@ -119,10 +135,12 @@ jobs:
       - name: Slack message prefix - Flex
         if: inputs.project == 'flex'
         run: echo "SLACK_MESSAGE_PREFIX=\`[FLEX PARALLEL DEPLOYMENT]\` Flex" >> $GITHUB_ENV
-
       - name: Slack message prefix - Webchat
         if: inputs.project == 'webchat'
         run: echo "SLACK_MESSAGE_PREFIX=\`[WEBCHAT PARALLEL DEPLOYMENT]\` Webchat" >> $GITHUB_ENV
+      - name: Slack message prefix - Webchat
+        if: inputs.project == 'aselo-webchat-react-app'
+        run: echo "SLACK_MESSAGE_PREFIX=\`[ASELO WEBCHAT PARALLEL DEPLOYMENT]\` Aselo Webchat" >> $GITHUB_ENV
 
       - name: Slack Aselo channel
         id: slack

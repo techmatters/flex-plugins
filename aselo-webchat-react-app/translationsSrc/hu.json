@@ -1,6 +1,6 @@
 {
-  "EndChatButtonLabel": "Csevegés befejezése",
-  "QuickExitButtonLabel": "Gyors kilépés",
-  "QuickExitDescription": "Gyorsan el kell menni?",
-  "ChatWithUs": "Csevegés velünk"
+  "Header-CloseChatButtons-EndChatButtonLabel": "Csevegés befejezése",
+  "Header-CloseChatButtons-QuickExitButtonLabel": "Gyors kilépés",
+  "Header-CloseChatButtons-QuickExitDescription": "Gyorsan el kell menni?",
+  "Header-TitleBar-Title": "Csevegés velünk"
 }

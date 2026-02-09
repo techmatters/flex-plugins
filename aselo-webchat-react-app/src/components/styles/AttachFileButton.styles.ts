@@ -14,12 +14,12 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { CSSProperties } from "react";
+import { CSSProperties } from 'react';
 
 export const hiddenInputStyles: CSSProperties = {
-    visibility: "hidden",
-    position: "absolute",
-    width: "1px",
-    height: "1px",
-    overflow: "hidden"
+  visibility: 'hidden',
+  position: 'absolute',
+  width: '1px',
+  height: '1px',
+  overflow: 'hidden',
 };

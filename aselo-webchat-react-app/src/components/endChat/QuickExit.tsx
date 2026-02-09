@@ -14,43 +14,57 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import {useDispatch, useSelector} from "react-redux";
-import { Button } from "@twilio-paste/core/button";
+import { useDispatch, useSelector } from 'react-redux';
+import { Button } from '@twilio-paste/core/button';
+import { LogOutIcon } from '@twilio-paste/icons/cjs/LogOutIcon';
 
-import { contactBackend, sessionDataHandler } from "../../sessionDataHandler";
-import { changeEngagementPhase, updatePreEngagementData } from "../../store/actions/genericActions";
-import { EngagementPhase } from "../../store/definitions";
-import {selectConfig} from "../../store/config.reducer";
+import { contactBackend, sessionDataHandler } from '../../sessionDataHandler';
+import { changeEngagementPhase, updatePreEngagementData } from '../../store/actions/genericActions';
+import { EngagementPhase } from '../../store/definitions';
+import { selectConfig } from '../../store/config.reducer';
+import LocalizedTemplate from '../../localization/LocalizedTemplate';
 
-type Props = {
-    channelSid: string;
-    token: string;
-    language?: string;
-    finishTask: boolean;
-};
-
-export default function QuickExit({ channelSid, token, language, finishTask }: Props) {
-    const dispatch = useDispatch();
-    const config = useSelector(selectConfig);
-    const configuredBackend = contactBackend(config);
-    const handleExit = async () => {
-        // Clear chat history and open a new location
-        sessionDataHandler.clear();
-        dispatch(updatePreEngagementData({ email: "", name: "", query: "" }));
-        dispatch(changeEngagementPhase({ phase: EngagementPhase.PreEngagementForm }));
-        if (finishTask) {
-            // Only if we started a task
-            try {
-                await configuredBackend("/endChat", { channelSid, token, language });
-            } catch (error) {
-                console.error(error);
-            }
-        }
+type Props =
+  | {
+      channelSid: string;
+      token: string;
+      language?: string;
+      action: 'finishTask';
+    }
+  | {
+      action: 'restartEngagement';
     };
 
-    return (
-        <Button variant="destructive" style={{ backgroundColor: "#d22f2f" }} onClick={handleExit}>
-            QuickExitButtonLabel QuickExitIcon
-        </Button>
-    );
+export default function QuickExit(props: Props) {
+  const dispatch = useDispatch();
+  const config = useSelector(selectConfig);
+
+  if (!config) {
+    return null;
+  }
+
+  const configuredBackend = contactBackend(config);
+  const handleExit = async () => {
+    // Clear chat history and open a new location
+    sessionDataHandler.clear();
+    dispatch(updatePreEngagementData({ email: '', name: '', query: '' }));
+    dispatch(changeEngagementPhase({ phase: EngagementPhase.PreEngagementForm }));
+    if (props.action === 'finishTask') {
+      // Only if we started a task
+      try {
+        // Fire and forget end chat request, don't delay blanking the page waiting for the response
+        configuredBackend('/endChat', props).then(() => null);
+      } catch (error) {
+        // Only errors synchronously making the request will be caught, not errors from the service
+        console.error(error);
+      }
+    }
+    window.location.replace(config.quickExitUrl);
+  };
+
+  return (
+    <Button variant="destructive" element="CHAT_CLOSE_BUTTON" onClick={handleExit}>
+      <LocalizedTemplate code="Header-CloseChatButtons-QuickExitButtonLabel" /> <LogOutIcon decorative={true} />
+    </Button>
+  );
 }

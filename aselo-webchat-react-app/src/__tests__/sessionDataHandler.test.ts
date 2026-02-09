@@ -14,292 +14,303 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import fetchMock from "fetch-mock-jest";
+import { TextDecoder, TextEncoder } from 'util';
 
-import { sessionDataHandler, contactBackend } from "../sessionDataHandler";
-import WebChatLogger from "../logger";
-import { ConfigState } from "../store/definitions";
+import { sessionDataHandler, contactBackend } from '../sessionDataHandler';
+import WebChatLogger from '../logger';
+import { ConfigState } from '../store/definitions';
 
-jest.mock("../logger");
+global.fetch = jest.fn();
 
-Object.defineProperty(navigator, "mediaCapabilities", {
-    writable: true,
-    value: {
-        decodingInfo: jest.fn().mockResolvedValue({} as unknown as MediaCapabilitiesDecodingInfo),
-    },
+const fetchMock = global.fetch as jest.MockedFunction<typeof fetch>;
+
+const okFetchResponse = (responseBody: any) =>
+  ({
+    json: () => Promise.resolve(responseBody),
+    ok: true,
+  } as Awaited<ReturnType<typeof fetch>>);
+
+jest.mock('../logger');
+
+Object.assign(global, { TextDecoder, TextEncoder });
+Object.defineProperty(navigator, 'mediaCapabilities', {
+  writable: true,
+  value: {
+    decodingInfo: jest.fn().mockResolvedValue({} as unknown as MediaCapabilitiesDecodingInfo),
+  },
 });
 
 const TEST_CONFIG_STATE: ConfigState = {
-    aseloBackendUrl: "http://mock-aselo-backend",
-    deploymentKey: "",
-    helplineCode: "xx",
+  quickExitUrl: 'https://mock-aselo-quickexit',
+  aseloBackendUrl: 'http://mock-aselo-backend',
+  deploymentKey: '',
+  helplineCode: 'xx',
+  translations: {},
+  defaultLocale: 'en-US',
 };
 
 const originalEnv = process.env;
 
-describe("session data handler", () => {
-    beforeAll(() => {
-        Object.defineProperty(window, "Twilio", {
-            value: {
-                getLogger(className: string) {
-                    return new WebChatLogger(className);
-                },
-            },
-        });
-        process.env = {
-            ...originalEnv,
-            APP_VERSION: "1.25.10",
-            WEBCHAT_VERSION: "3.55",
-        };
+describe('session data handler', () => {
+  beforeAll(() => {
+    Object.defineProperty(window, 'Twilio', {
+      value: {
+        getLogger(className: string) {
+          return new WebChatLogger(className);
+        },
+      },
     });
+    process.env = {
+      ...originalEnv,
+      APP_VERSION: '1.25.10',
+      WEBCHAT_VERSION: '3.55',
+    };
+  });
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
+  afterAll(() => {
+    process.env = originalEnv;
+  });
+
+  it('should set the region', () => {
+    sessionDataHandler.setRegion('Foo');
+    expect(sessionDataHandler.getRegion()).toBe('Foo');
+  });
+
+  it('should set the deployment key', () => {
+    sessionDataHandler.setDeploymentKey('key1');
+    expect(sessionDataHandler.getDeploymentKey()).toBe('key1');
+  });
+
+  describe('contactBackend', () => {
+    beforeEach(() => () => {
+      sessionDataHandler.setRegion('');
+    });
+
     afterEach(() => {
-        jest.clearAllMocks();
+      sessionDataHandler.setRegion('');
+      fetchMock.mockReset();
     });
 
-    afterAll(() => {
-        process.env = originalEnv;
+    it('should call correct stage url', async () => {
+      fetchMock.mockResolvedValue(okFetchResponse({}));
+      sessionDataHandler.setRegion('stage');
+      await contactBackend(TEST_CONFIG_STATE)('/Webchat/Tokens/Refresh', { DeploymentKey: 'dk', token: 'token' });
+      expect(fetchMock.mock.calls[0][0]).toEqual(
+        `${TEST_CONFIG_STATE.aseloBackendUrl}/lambda/twilio/account-scoped/XX/Webchat/Tokens/Refresh`,
+      );
     });
 
-    it("should set the region", () => {
-        sessionDataHandler.setRegion("Foo");
-        expect(sessionDataHandler.getRegion()).toBe("Foo");
+    it('should call correct prod url', async () => {
+      const mockFetch = Promise.resolve({ ok: true, json: async () => Promise.resolve('okay') });
+      const fetchSpy = jest
+        .spyOn(window, 'fetch')
+        .mockImplementation(async (): Promise<never> => mockFetch as Promise<never>);
+      await contactBackend(TEST_CONFIG_STATE)('/Webchat/Tokens/Refresh', { DeploymentKey: 'dk', token: 'token' });
+      expect(fetchSpy.mock.calls[0][0]).toEqual(
+        `${TEST_CONFIG_STATE.aseloBackendUrl}/lambda/twilio/account-scoped/XX/Webchat/Tokens/Refresh`,
+      );
+    });
+  });
+
+  describe('fetch and store new session', () => {
+    it('should throw if backend request fails', async () => {
+      fetchMock.mockImplementationOnce(() => {
+        throw Error('Backend failed to process the request');
+      });
+
+      await expect(sessionDataHandler.fetchAndStoreNewSession({ formData: {} })).rejects.toThrow();
     });
 
-    it("should set the deployment key", () => {
-        sessionDataHandler.setDeploymentKey("key1");
-        expect(sessionDataHandler.getDeploymentKey()).toBe("key1");
+    it('should store new token data in local storage', async () => {
+      const setLocalStorageItemSpy = jest.spyOn(Object.getPrototypeOf(window.localStorage), 'setItem');
+
+      jest.useFakeTimers().setSystemTime(new Date('2023-01-01'));
+
+      const currentTime = Date.now();
+      const tokenPayload = {
+        expiration: `${currentTime + 10e5}`,
+        token: 'new token',
+        // eslint-disable-next-line camelcase
+        conversation_sid: 'sid',
+        identity: 'identity',
+      };
+      fetchMock.mockResolvedValue(okFetchResponse(tokenPayload));
+      await sessionDataHandler.fetchAndStoreNewSession({ formData: {} });
+
+      const expected = {
+        ...tokenPayload,
+        loginTimestamp: currentTime.toString(),
+      };
+      expect(setLocalStorageItemSpy).toHaveBeenCalledTimes(2);
+      expect(setLocalStorageItemSpy).toHaveBeenNthCalledWith(
+        1,
+        'TWILIO_WEBCHAT_WIDGET',
+        JSON.stringify({
+          token: '',
+          expiration: '',
+          identity: '',
+          conversationSid: '',
+          loginTimestamp: currentTime.toString(),
+        }),
+      );
+      expect(setLocalStorageItemSpy).toHaveBeenNthCalledWith(2, 'TWILIO_WEBCHAT_WIDGET', JSON.stringify(expected));
     });
 
-    describe("contactBackend", () => {
-        beforeEach(() => () => {
-            sessionDataHandler.setRegion("");
-        });
+    it('should return a new token', async () => {
+      const tokenPayload = {
+        expiration: `${Date.now() + 10e5}`,
+        token: 'new token',
+        // eslint-disable-next-line camelcase
+        conversation_sid: 'sid',
+        identity: 'identity',
+      };
+      fetchMock.mockResolvedValue(okFetchResponse(tokenPayload));
+      const { token } = await sessionDataHandler.fetchAndStoreNewSession({ formData: {} });
 
-        afterEach(() => {
-            sessionDataHandler.setRegion("");
-            fetchMock.reset();
-        });
+      expect(token).toBe(tokenPayload.token);
+    });
+  });
 
-        it("should call correct stage url", async () => {
-            const mockFetch = Promise.resolve({ ok: true, json: async () => Promise.resolve("okay") });
-            const fetchSpy = jest
-                .spyOn(window, "fetch")
-                .mockImplementation(async (): Promise<never> => mockFetch as Promise<never>);
-            sessionDataHandler.setRegion("stage");
-            await contactBackend(TEST_CONFIG_STATE)("/Webchat/Tokens/Refresh", { DeploymentKey: "dk", token: "token" });
-            expect(fetchSpy.mock.calls[0][0]).toEqual("https://flex-api.stage.twilio.com/v2/Webchat/Tokens/Refresh");
-        });
+  describe('resuming existing session', () => {
+    it('should succeed trying to resume an existing session if the token is valid', () => {
+      jest.spyOn(Object.getPrototypeOf(window.localStorage), 'getItem').mockReturnValueOnce(
+        JSON.stringify({
+          expiration: Date.now() + 10e5,
+          token: 'token',
+          conversationSid: 'sid',
+        }),
+      );
 
-        it("should call correct prod url", async () => {
-            const mockFetch = Promise.resolve({ ok: true, json: async () => Promise.resolve("okay") });
-            const fetchSpy = jest
-                .spyOn(window, "fetch")
-                .mockImplementation(async (): Promise<never> => mockFetch as Promise<never>);
-            await contactBackend(TEST_CONFIG_STATE)("/Webchat/Tokens/Refresh", { DeploymentKey: "dk", token: "token" });
-            expect(fetchSpy.mock.calls[0][0]).toEqual("https://flex-api.twilio.com/v2/Webchat/Tokens/Refresh");
-        });
+      const tokenPayload = sessionDataHandler.tryResumeExistingSession();
+
+      expect(tokenPayload).not.toBeNull();
     });
 
-    describe("fetch and store new session", () => {
-        it("should throw if backend request fails", async () => {
-            jest.spyOn(window, "fetch").mockImplementationOnce(() => {
-                throw Error("Backend failed to process the request");
-            });
+    it('should fail trying to resume an existing session if the token has expired', () => {
+      jest.spyOn(Object.getPrototypeOf(window.localStorage), 'getItem').mockReturnValueOnce(
+        JSON.stringify({
+          expiration: Date.now() - 10e5,
+          token: 'token',
+          conversationSid: 'sid',
+        }),
+      );
 
-            await expect(sessionDataHandler.fetchAndStoreNewSession({ formData: {} })).rejects.toThrowError();
-        });
+      const tokenPayload = sessionDataHandler.tryResumeExistingSession();
 
-        it("should store new token data in local storage", async () => {
-            const setLocalStorageItemSpy = jest.spyOn(Object.getPrototypeOf(window.localStorage), "setItem");
-
-            jest.useFakeTimers().setSystemTime(new Date("2023-01-01"));
-
-            const currentTime = Date.now();
-            const tokenPayload = {
-                expiration: `${currentTime + 10e5}`,
-                token: "new token",
-                // eslint-disable-next-line camelcase
-                conversation_sid: "sid",
-                identity: "identity",
-            };
-            fetchMock.once(() => true, tokenPayload);
-            await sessionDataHandler.fetchAndStoreNewSession({ formData: {} });
-
-            const expected = {
-                ...tokenPayload,
-                loginTimestamp: currentTime,
-            };
-            expect(setLocalStorageItemSpy).toHaveBeenCalledTimes(2);
-            expect(setLocalStorageItemSpy).toHaveBeenNthCalledWith(
-                1,
-                "TWILIO_WEBCHAT_WIDGET",
-                JSON.stringify({
-                    token: "",
-                    expiration: "",
-                    identity: "",
-                    conversationSid: "",
-                    loginTimestamp: currentTime,
-                }),
-            );
-            expect(setLocalStorageItemSpy).toHaveBeenNthCalledWith(
-                2,
-                "TWILIO_WEBCHAT_WIDGET",
-                JSON.stringify(expected),
-            );
-        });
-
-        it("should return a new token", async () => {
-            const tokenPayload = {
-                expiration: `${Date.now() + 10e5}`,
-                token: "new token",
-                // eslint-disable-next-line camelcase
-                conversation_sid: "sid",
-                identity: "identity",
-            };
-            fetchMock.once(() => true, tokenPayload);
-            const { token } = await sessionDataHandler.fetchAndStoreNewSession({ formData: {} });
-
-            expect(token).toBe(tokenPayload.token);
-        });
+      expect(tokenPayload).toBeNull();
     });
 
-    describe("resuming existing session", () => {
-        it("should succeed trying to resume an existing session if the token is valid", () => {
-            jest.spyOn(Object.getPrototypeOf(window.localStorage), "getItem").mockReturnValueOnce(
-                JSON.stringify({
-                    expiration: Date.now() + 10e5,
-                    token: "token",
-                    conversationSid: "sid",
-                }),
-            );
+    it('should fail trying to resume an existing session if the localStorage is empty', () => {
+      jest.spyOn(Object.getPrototypeOf(window.localStorage), 'getItem').mockReturnValueOnce(null);
 
-            const tokenPayload = sessionDataHandler.tryResumeExistingSession();
+      const tokenPayload = sessionDataHandler.tryResumeExistingSession();
 
-            expect(tokenPayload).not.toBeNull();
-        });
-
-        it("should fail trying to resume an existing session if the token has expired", () => {
-            jest.spyOn(Object.getPrototypeOf(window.localStorage), "getItem").mockReturnValueOnce(
-                JSON.stringify({
-                    expiration: Date.now() - 10e5,
-                    token: "token",
-                    conversationSid: "sid",
-                }),
-            );
-
-            const tokenPayload = sessionDataHandler.tryResumeExistingSession();
-
-            expect(tokenPayload).toBeNull();
-        });
-
-        it("should fail trying to resume an existing session if the localStorage is empty", () => {
-            jest.spyOn(Object.getPrototypeOf(window.localStorage), "getItem").mockReturnValueOnce(null);
-
-            const tokenPayload = sessionDataHandler.tryResumeExistingSession();
-
-            expect(tokenPayload).toBeNull();
-        });
-
-        it("should fail trying to resume an existing session if the localStorage has badly formatted data", () => {
-            jest.spyOn(Object.getPrototypeOf(window.localStorage), "getItem").mockReturnValueOnce({
-                expiration: Date.now() - 10e5,
-                token: "token",
-                conversationSid: "sid",
-            });
-
-            const tokenPayload = sessionDataHandler.tryResumeExistingSession();
-
-            expect(tokenPayload).toBeNull();
-        });
+      expect(tokenPayload).toBeNull();
     });
 
-    describe("updating the token", () => {
-        it("should throw if current token doesn't exist", async () => {
-            jest.spyOn(Object.getPrototypeOf(window.localStorage), "getItem").mockReturnValueOnce(null);
+    it('should fail trying to resume an existing session if the localStorage has badly formatted data', () => {
+      jest.spyOn(Object.getPrototypeOf(window.localStorage), 'getItem').mockReturnValueOnce({
+        expiration: Date.now() - 10e5,
+        token: 'token',
+        conversationSid: 'sid',
+      });
 
-            await expect(sessionDataHandler.getUpdatedToken()).rejects.toThrowError();
-        });
+      const tokenPayload = sessionDataHandler.tryResumeExistingSession();
 
-        it("should throw if backend request fails", async () => {
-            jest.spyOn(Object.getPrototypeOf(window.localStorage), "getItem").mockReturnValueOnce(
-                JSON.stringify({
-                    expiration: Date.now() - 10e5,
-                    token: "token",
-                    conversationSid: "sid",
-                }),
-            );
-            jest.spyOn(window, "fetch").mockImplementationOnce(() => {
-                throw Error("Backend failed to process the request");
-            });
+      expect(tokenPayload).toBeNull();
+    });
+  });
 
-            await expect(sessionDataHandler.getUpdatedToken()).rejects.toThrowError();
-        });
+  describe('updating the token', () => {
+    it("should throw if current token doesn't exist", async () => {
+      jest.spyOn(Object.getPrototypeOf(window.localStorage), 'getItem').mockReturnValueOnce(null);
 
-        it("should store new token in local storage", async () => {
-            jest.useFakeTimers().setSystemTime(new Date("2023-01-01"));
-
-            jest.spyOn(Object.getPrototypeOf(window.localStorage), "getItem").mockReturnValueOnce(
-                JSON.stringify({
-                    expiration: Date.now() + 10e5,
-                    token: "token",
-                    conversationSid: "sid",
-                }),
-            );
-            const setLocalStorageItemSpy = jest.spyOn(Object.getPrototypeOf(window.localStorage), "setItem");
-
-            const tokenPayload = {
-                expiration: Date.now() + 10e5,
-                token: "new token",
-                conversationSid: "sid",
-            };
-            fetchMock.once(() => true, tokenPayload);
-            await sessionDataHandler.getUpdatedToken();
-
-            expect(setLocalStorageItemSpy).toHaveBeenCalledWith("TWILIO_WEBCHAT_WIDGET", JSON.stringify(tokenPayload));
-        });
-
-        it("should return a new token", async () => {
-            jest.spyOn(Object.getPrototypeOf(window.localStorage), "getItem").mockReturnValueOnce(
-                JSON.stringify({
-                    expiration: Date.now() + 10e5,
-                    token: "token",
-                    conversationSid: "sid",
-                }),
-            );
-
-            const tokenPayload = {
-                expiration: Date.now() + 10e5,
-                token: "new token",
-                conversationSid: "sid",
-            };
-            fetchMock.once(() => true, tokenPayload);
-            const { token } = await sessionDataHandler.getUpdatedToken();
-
-            expect(token).toBe(tokenPayload.token);
-        });
+      await expect(sessionDataHandler.getUpdatedToken()).rejects.toThrow();
     });
 
-    it("should clear the token from the local storage", () => {
-        const spySetItem = jest.spyOn(Object.getPrototypeOf(window.localStorage), "setItem");
-        jest.spyOn(Object.getPrototypeOf(window.localStorage), "getItem").mockReturnValueOnce(
-            JSON.stringify({
-                expiration: Date.now() + 10e5,
-                token: "token",
-                conversationSid: "sid",
-                identity: "identity",
-            }),
-        );
-        sessionDataHandler.clear();
-        expect(spySetItem).toHaveBeenCalledWith("TWILIO_WEBCHAT_WIDGET", JSON.stringify({ identity: "identity" }));
+    it('should throw if backend request fails', async () => {
+      jest.spyOn(Object.getPrototypeOf(window.localStorage), 'getItem').mockReturnValueOnce(
+        JSON.stringify({
+          expiration: Date.now() - 10e5,
+          token: 'token',
+          conversationSid: 'sid',
+        }),
+      );
+      fetchMock.mockImplementationOnce(() => {
+        throw Error('Backend failed to process the request');
+      });
+
+      await expect(sessionDataHandler.getUpdatedToken()).rejects.toThrow();
     });
 
-    describe("contactBackend", () => {
-        it("should", async () => {
-            jest.spyOn(window, "fetch").mockRejectedValueOnce("ForcedFailure");
+    it('should store new token in local storage', async () => {
+      jest.useFakeTimers().setSystemTime(new Date('2023-01-01'));
 
-            await expect(sessionDataHandler.fetchAndStoreNewSession({ formData: {} })).rejects.toThrowError(
-                new Error("No results from server"),
-            );
-        });
+      jest.spyOn(Object.getPrototypeOf(window.localStorage), 'getItem').mockReturnValueOnce(
+        JSON.stringify({
+          expiration: Date.now() + 10e5,
+          token: 'token',
+          conversationSid: 'sid',
+        }),
+      );
+      const setLocalStorageItemSpy = jest.spyOn(Object.getPrototypeOf(window.localStorage), 'setItem');
+
+      const tokenPayload = {
+        expiration: Date.now() + 10e5,
+        token: 'new token',
+        conversationSid: 'sid',
+      };
+      fetchMock.mockResolvedValue(okFetchResponse(tokenPayload));
+      await sessionDataHandler.getUpdatedToken();
+
+      expect(setLocalStorageItemSpy).toHaveBeenCalledWith('TWILIO_WEBCHAT_WIDGET', JSON.stringify(tokenPayload));
     });
+
+    it('should return a new token', async () => {
+      jest.spyOn(Object.getPrototypeOf(window.localStorage), 'getItem').mockReturnValueOnce(
+        JSON.stringify({
+          expiration: Date.now() + 10e5,
+          token: 'token',
+          conversationSid: 'sid',
+        }),
+      );
+
+      const tokenPayload = {
+        expiration: Date.now() + 10e5,
+        token: 'new token',
+        conversationSid: 'sid',
+      };
+      fetchMock.mockResolvedValue(okFetchResponse(tokenPayload));
+      const { token } = await sessionDataHandler.getUpdatedToken();
+
+      expect(token).toBe(tokenPayload.token);
+    });
+  });
+
+  it('should clear the token from the local storage', () => {
+    const spySetItem = jest.spyOn(Object.getPrototypeOf(window.localStorage), 'setItem');
+    jest.spyOn(Object.getPrototypeOf(window.localStorage), 'getItem').mockReturnValueOnce(
+      JSON.stringify({
+        expiration: Date.now() + 10e5,
+        token: 'token',
+        conversationSid: 'sid',
+        identity: 'identity',
+      }),
+    );
+    sessionDataHandler.clear();
+    expect(spySetItem).toHaveBeenCalledWith('TWILIO_WEBCHAT_WIDGET', JSON.stringify({ identity: 'identity' }));
+  });
+
+  describe('contactBackend', () => {
+    it('should', async () => {
+      fetchMock.mockRejectedValueOnce('ForcedFailure');
+
+      await expect(sessionDataHandler.fetchAndStoreNewSession({ formData: {} })).rejects.toThrow(
+        new Error('No results from server'),
+      );
+    });
+  });
 });
