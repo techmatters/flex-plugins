@@ -15,7 +15,7 @@
  */
 
 import React from 'react';
-import { connect } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Template } from '@twilio/flex-ui';
 import { Close } from '@material-ui/icons';
 
@@ -34,44 +34,24 @@ import { getInitializedCan } from '../../permissions/rules';
 import { selectCaseByCaseId } from '../../states/case/selectCaseStateByCaseId';
 import { PermissionActions } from '../../permissions/actions';
 
-type OwnProps = {
+type Props = {
   taskId: string;
   contactId?: string;
   showUndoButton?: boolean;
 };
 
-const mapStateToProps = (state: RootState, { taskId, contactId }: OwnProps) => {
-  const contact = selectContactByTaskSid(state, taskId);
-  const { caseId } = selectCaseMergingBanners(state, contactId);
-  const savedContact = selectContactStateByContactId(state, contactId)?.savedContact;
-  const connectedCase = selectCaseByCaseId(state, caseId)?.connectedCase;
+const ContactRemovedFromCaseBanner: React.FC<Props> = ({ taskId, contactId, showUndoButton }) => {
+  const dispatch = useDispatch();
+  const contact = useSelector((state: RootState) => selectContactByTaskSid(state, taskId));
+  const { caseId } = useSelector((state: RootState) => selectCaseMergingBanners(state, contactId));
+  const savedContact = useSelector((state: RootState) => selectContactStateByContactId(state, contactId)?.savedContact);
+  const connectedCase = useSelector((state: RootState) => selectCaseByCaseId(state, caseId)?.connectedCase);
+  const contactIdToUse = savedContact?.id ? savedContact?.id : contact?.savedContact.id;
 
-  return {
-    contactId: savedContact?.id ? savedContact?.id : contact?.savedContact.id,
-    caseId,
-    savedContact,
-    connectedCase,
-  };
-};
-
-const mapDispatchToProps = dispatch => ({
-  close: (contactId: string) => dispatch(closeRemovedFromCaseBannerAction(contactId)),
-  connectCaseToTaskContact: async (taskContact: Contact, caseId: string) => {
+  const close = (contactId: string) => dispatch(closeRemovedFromCaseBannerAction(contactId));
+  const connectCaseToTaskContact = async (taskContact: Contact, caseId: string) => {
     await asyncDispatch(dispatch)(connectToCaseAsyncAction(taskContact.id, caseId));
-  },
-});
-
-type Props = OwnProps & ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>;
-
-const ContactRemovedFromCaseBanner: React.FC<Props> = ({
-  contactId,
-  close,
-  showUndoButton,
-  savedContact,
-  connectCaseToTaskContact,
-  caseId,
-  connectedCase,
-}) => {
+  };
   const can = React.useMemo(() => {
     return getInitializedCan();
   }, []);
@@ -99,7 +79,7 @@ const ContactRemovedFromCaseBanner: React.FC<Props> = ({
           <Template code="CaseMerging-ContactUndoRemovedFromCase" />
         </CaseLink>
       )}
-      <HeaderCloseButton onClick={() => close(contactId)} style={{ opacity: '.75' }}>
+      <HeaderCloseButton onClick={() => close(contactIdToUse)} style={{ opacity: '.75' }}>
         <HiddenText>
           <Template code="NavigableContainer-CloseButton" />
         </HiddenText>
@@ -109,7 +89,4 @@ const ContactRemovedFromCaseBanner: React.FC<Props> = ({
   );
 };
 
-const connector = connect(mapStateToProps, mapDispatchToProps);
-const connected = connector(ContactRemovedFromCaseBanner);
-
-export default connected;
+export default ContactRemovedFromCaseBanner;

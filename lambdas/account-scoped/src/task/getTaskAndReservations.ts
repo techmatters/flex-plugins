@@ -29,6 +29,7 @@ import type {
   ReservationStatus,
 } from 'twilio/lib/rest/taskrouter/v1/workspace/task/reservation';
 import type { TaskInstance } from 'twilio/lib/rest/taskrouter/v1/workspace/task';
+import type RestException from 'twilio/lib/base/RestException';
 
 type TaskNotFoundErrorResultPayload = { type: 'TaskNotFoundError'; cause: Error };
 
@@ -66,7 +67,7 @@ export const getTaskAndReservations = async (
   try {
     reservations = await taskContext.reservations.list();
 
-    if (reservations.length === 0) {
+    if (!reservations?.length) {
       console.info(`No reservations found for task ${taskSid}`);
     } else if (!isSupervisor(tokenResult)) {
       reservations = reservations.filter(
@@ -96,20 +97,16 @@ export const getTaskAndReservations = async (
 
     return newOk({ task, reservations });
   } catch (err: any) {
-    const error = err as Error;
-    if (
-      error.message.match(
-        /The requested resource \/Workspaces\/WS[a-z0-9]+\/Tasks\/WT[a-z0-9]+ was not found/,
-      )
-    ) {
+    const restError = err as RestException;
+    if (restError.status === 404) {
       return newErr<TaskNotFoundErrorResultPayload>({
         message: `Task with sid ${taskSid} not found`,
-        error: { type: 'TaskNotFoundError', cause: error } as const,
+        error: { type: 'TaskNotFoundError', cause: err } as const,
       });
     }
     return newErr<UnknownErrorResultPayload>({
       message: err.message,
-      error: { type: 'UnknownError', cause: error } as const,
+      error: { type: 'UnknownError', cause: err } as const,
     });
   }
 };

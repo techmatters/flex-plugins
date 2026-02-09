@@ -44,7 +44,8 @@ module.exports = function override(config) {
         }),
         new webpack.DefinePlugin({
             "process.env.APP_VERSION": JSON.stringify(require("./package.json").version),
-            "process.env.WEBCHAT_VERSION": JSON.stringify(dotenv.config().parsed.WEBCHAT_VERSION)
+            "process.env.WEBCHAT_VERSION": JSON.stringify(dotenv.config().parsed.WEBCHAT_VERSION),
+            "process.env.REACT_APP_CONFIG_URL": process.env.REACT_APP_CONFIG_URL,
         })
     ];
     return config;

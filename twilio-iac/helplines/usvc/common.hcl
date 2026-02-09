@@ -31,7 +31,7 @@ locals {
       master : {
         friendly_name            = "Master Workflow"
         templatefile             = "/app/twilio-iac/helplines/usvc/templates/workflows/master.tftpl"
-        task_reservation_timeout = 240
+        task_reservation_timeout = 90
       },
       //NOTE: MAKE SURE TO ADD THIS IF THE ACCOUNT USES A CONVERSATION CHANNEL
       queue_transfers : {
@@ -110,7 +110,19 @@ locals {
     lex_v2_bot_languages = {
 
     }
-
+    s3_lifecycle_rules = {
+      transcripts_expiry : {
+        id                 = "Transcripts Data Expiration Rule"
+        expiration_in_days = 180
+        prefix             = "transcripts/"
+      },
+      hrm_data_expiry : {
+        id                 = "HRM Data Expiration Rule"
+        expiration_in_days = 180
+        prefix             = "hrm-data/"
+      }
+    }
+    hrm_transcript_retention_days_override = 180
 
   }
 }

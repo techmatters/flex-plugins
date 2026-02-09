@@ -115,7 +115,10 @@ const fetchDefinitionGivenConfig = async <T>(
 ) => {
   const baseUrlObj = new URL(baseUrl);
 
-  const url = new URL(path.join(baseUrlObj.pathname, jsonPath), baseUrlObj.origin);
+  const url =
+    typeof window === 'undefined'
+      ? new URL(path.join(baseUrlObj.pathname, jsonPath), baseUrlObj.origin)
+      : new URL([baseUrlObj.pathname, jsonPath].join('/'), baseUrlObj.origin);
   const response = await fetch(url.toString());
 
   if (response?.ok) {
@@ -146,7 +149,7 @@ const fetchDefinitionGivenConfig = async <T>(
  * Returns an object that exposes the function:
  * - fetchDefinition<T>(jsonPath: string, placeholder?: T)
  */
-const buildFetchDefinition = (baseUrl: string) => ({
+export const buildFetchDefinition = (baseUrl: string) => ({
   fetchDefinition: <T>(jsonPath: string, placeholder?: T) =>
     fetchDefinitionGivenConfig(baseUrl, jsonPath, placeholder),
 });

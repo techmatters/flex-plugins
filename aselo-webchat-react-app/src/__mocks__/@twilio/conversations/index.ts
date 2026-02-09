@@ -14,5 +14,6 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-export { Conversation } from "./conversation";
-export { Client } from "./client";
+// eslint-disable-next-line import/no-unused-modules
+export { Conversation } from './conversation';
+export { Client } from './client';

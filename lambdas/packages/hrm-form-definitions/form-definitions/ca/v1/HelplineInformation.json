@@ -5,7 +5,6 @@
         "label": "Kids Help Phone",
         "value": "Kids Help Phone",
         "default": true,
-        "kmsUrl": "https://kidshelpphone.sharepoint.com/sites/KMSKnowledgeMobilizationSystem/SitePages/SCHome.aspx",
         "manager": {
           "name": "",
           "phone": "",

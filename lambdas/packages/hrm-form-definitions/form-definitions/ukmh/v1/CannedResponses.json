@@ -1,50 +1,62 @@
 [
   {
-  "label": "Hello",
-  "text": "Hello, thank you for signing up to speak with us today. Before we get started can we share a bit about the ways we can offer you support here on our PeerChat service?"
+    "label": "Remit",
+    "text": "Thank you for reaching out to The Mix’s PeerChat. Today, you’ll have 45 minutes to talk to a trained supporter about what’s been going on for you and why you have reached out. If its suitable, we can also look for other options that may be able to help you further. If you become disconnected at any time during the chat, please rejoin the link in your confirmation email.\n\nPeerChat is unable to provide urgent or crisis mental health support. If you need urgent help, please visit https://www.themix.org.uk/get-support/urgent-help/\n\nOur PeerChat conversation will not be shared with anyone outside of the organisation. However, if we feel that you or someone else may be in danger, then we may pass this information onto Emergency or Social Services. Wherever possible, we will always try and let you know we will be doing this.\n\nFor further information, please visit \nhttps://www.themix.org.uk/about-us/privacy-centre/privacy-policy/"
   },
   {
-  "label": "Remit",
-  "text": "Thank you for reaching out to The Mix’s PeerChat. Today, you’ll have 45 minutes to talk to a trained supporter about your thoughts and feelings, what’s been going for you and why you have reached out. We can also look for more options that may be able to help further. If you become disconnected at any time during the chat please rejoin the link in your confirmation email.\n\nThe Mix is unable to provide urgent help. If you need urgent help, please visit https://www.themix.org.uk/get-support/urgent-help/\n\nHere at The Mix, we don’t tell anyone outside of the charity what you have shared with us. However, if we felt that you or someone else were in danger, then we may pass this information onto Emergency or Social Services. We would always try to tell you if we needed to do this.\n\nFor further information, please visit https://www.themix.org.uk/about-us/privacy-centre/privacy-policy/"
+    "label": "Silent - Check In",
+    "text": "I noticed you’ve gone quiet, I just wanted to check if now is still a good time to talk. If you become disconnected at any time please rejoin the link sent in your confirmation email."
   },
   {
-  "label": "Silent - Check In",
-  "text": "I noticed you’ve gone quiet, I just wanted to check if now is still a good time to talk. If you become disconnected at any time please rejoin the link sent in your confirmation email."
+    "label": "Signposting - save the resource",
+    "text": "Just a note about resources before I send them over to you. As this conversation we're having isn't saved anywhere, it would be a good idea to copy and paste the resource somewhere safe, so you can access it as and when you need it - it might be something you come back to again and again?"
   },
   {
-  "label": "Signposting - Types of help",
-  "text": "We can look for different types of support, such as advice, counselling, emotional support and practical help. Do you know which of these you would prefer?"
+    "label": "Signposting - Types of help",
+    "text": "We can look for different types of support, such as advice, counselling, emotional support and practical help. Do you know which of these you would prefer?"
   },
   {
-  "label": "Signposting- How support can be accessed.",
-  "text": "Support can be accessed in a few different ways such as face-to-face, over the phone or online. Do you know which of these you’d prefer?"
+    "label": "Signposting- How support can be accessed",
+    "text": "Support can be accessed in a few different ways such as face-to-face, over the phone or online. Do you know which of these you’d prefer?"
   },
   {
-  "label": "Urge 999",
-  "text": "Here at The Mix we take your thoughts of suicide seriously. We hear you and your feelings are important. We just wanted to let you know that if you did feel at any point that you were going to act on your thoughts of suicide, then we would urge you to call the emergency services on 999, or go to your local A&E department to explain your intentions to them, so that they can support you."
+    "label": "Signposting - Reminder to save",
+    "text": "Finally, Just a reminder... remember to copy and paste the resource link somewhere safe before you close this chat. "
   },
   {
-  "label": "Breaking Confidentiality Part 1",
-  "text": "Here at The Mix, we take what you share seriously. We are concerned about what you’ve told us and believe that [you/ someone/xxxx] is in danger. We are going to share this information with the emergency services to support you further. \n\nTo support you in getting the right help today, can you confirm some information about yourself e.g. full name, where you live and your date of birth?\n\nThank you, we will now be passing the details you have provided us with onto the Emergency/Social Services. I am going to bring this conversation to an end as they may need to get in touch to provide you with support. You’ve been so brave to share your experiences today."
+    "label": "Urge 999",
+    "text": "Here within PeerChat, we take your thoughts of suicide seriously. We hear you and your feelings are important. We wanted to let you know that if you did feel at any point that you were going to act on your thoughts of suicide, then we would urge you to call the emergency services on 999, or go to your local A&E department, so they can support you further."
   },
   {
-  "label": "Breaking Confidentiality Part 2",
-  "text": "Thank you, we will now be passing the details you have provided us with onto the Emergency Services. I am going to bring this conversation to an end as they may need to get in touch to provide you with support. You’ve been so brave to share your experiences today."
+    "label": "Confidentiality 1 (Explanation)",
+    "text": "This is confidential which means we won't share information unless you're at risk of seriously harming yourself or being harmed by someone else. In that case, we may need to share this with other agencies, like the emergency or social services, to help keep you safe."
   },
   {
-  "label": "Bye Message",
-  "text": "You’ve been really brave in taking the time to reach out to us here at The Mix today. After this chat ends, you will receive an email that outlines what was spoken about in this chat and the resources you asked for. We hope these resources will be able to support you further.\n\nTake good care."
+    "label": "Confidentiality2 (How we work)",
+    "text": "I wanted to let you know a little about how we work, we are able to keep most things confidential unless we are concerned that your life or somebody elses life is in immediate danger, or we talk about a child at risk of serious harm."
   },
   {
-  "label": "Bye - Survey link",
-  "text": "Just before you go, here at The Mix, we want to make sure we’re providing services that suit your needs and preferences. To get that right we’d love to ask you a few questions about your preferences when it comes to services and your experience with them. Could we contact you after this conversation via email to send you a link to our short survey?"
+    "label": "Confidentiality 3 (May need to breach confidentiality)",
+    "text": "We care about your safety, and whilst we are here to support you through [INSERT ISSUE], we may need to tell another agency, like the emergency or social services, if you’re in danger. How does that feel to you?"
   },
   {
-  "label": "Moving into signposting",
-  "text": "hank you for everything you've shared today. Here at The Mix, as well as offering emotional support and a space to talk, something else we can offer is to look for some further resources or services that might be able to support you with some of the themes and topics we've explored today. Is that something you'd be interested in?"
+    "label": "Breaking Confidentiality Part 1",
+    "text": "Thank you for sharing this with me, I have taken what you've shared seriously. As we are concerned about what you’ve told us and believe that [you/ someone/xxxx] is in danger. We are going to share this information with the emergency services to support you further. \n\nTo enable us to support you further, I will need to ask you some personal information (ie name, address, date of birth)\n\nThank you, we will now be passing the information you have provided us with onto Emergency/Social Services. I am going to bring this conversation to a close as they may need to get in touch to provide you with support. \n"
   },
   {
-  "label": "Pre-signposting questions",
-  "text": "Just before I take a look on our resource data-base, may I ask you to kindly confirm your age, gender identity, as well as your nearest city or town? This is to help us locate services that are as relevant as possible for yourself.\n\nIf you do not wish me to look for local services, or you don't want to share your nearest city or town, sharing the name of the county you live in or the wider area (either England, Wales, Scotland, or Northern Ireland) would be helpful."
+    "label": "Breaking Confidentiality Part 2",
+    "text": "Thank you, we will now be passing the information you have provided us with onto Emergency Services. I am going to bring this conversation to a close as they may need to get in touch to provide you with support. "
+  },
+  {
+    "label": "Bye - Survey link",
+    "text": "Just before you go, here at The Mix, we want to make sure we’re providing services that suit your needs and preferences. To get that right we’d love to ask you a few questions about your preferences when it comes to services and your experience with them. Could we contact you after this conversation via email to send you a link to our short survey?"
+  },
+  {
+    "label": "Moving into signposting",
+    "text": "Thank you for everything you've shared today. Here on PeerChat, as well as offering emotional support and a space to talk, we can also offer to look for further resources or services that might be able to support you with some of the themes and topics we've explored today. Is that something you'd be interested in?"
+  },
+  {
+    "label": "Pre-signposting questions",
+    "text": "Just before I take a look on our resource data-base, could you confirm your age, gender identity, as well as your nearest city or town? This could help us locate services more suited to you and your situation. \n\nIf you do not wish me to look for local services, or you don't want to share your nearest city or town, sharing the name of the county you live in or the wider area (either England, Wales, Scotland, or Northern Ireland) would be helpful."
   }
-  ]
+]

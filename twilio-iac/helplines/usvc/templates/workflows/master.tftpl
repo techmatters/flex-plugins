@@ -118,7 +118,12 @@
         "targets": [
           {
             "expression": "(task.targetSid == worker.sid AND task.isContactlessTask == true)",
-            "queue": "${task_queues.vc}"
+            "queue": "${task_queues.vc}",
+            "skip_if": "1==1"
+          },
+          {
+            "queue": "${task_queues.dcvh}",
+            "expression": "(task.targetSid == worker.sid AND task.isContactlessTask == true)"
           }
         ]
       },

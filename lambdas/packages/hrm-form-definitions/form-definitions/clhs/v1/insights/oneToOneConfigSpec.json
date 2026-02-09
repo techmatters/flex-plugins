@@ -21,7 +21,7 @@
       },
       {
         "name": "neurodivergence",
-        "insights": ["conversations", "acquisition_date"]
+        "insights": ["customers", "acquisition_date"]
       }
     ],
     "caseInformation": [

@@ -62,6 +62,9 @@ type ItemBase = {
   type: FormInputType;
   metadata?: Record<string, any>;
   required?: { value: boolean; message: string } | boolean;
+  min?: { value: number; message: string };
+  max?: { value: number; message: string };
+  minLength?: { value: number; message: string };
   maxLength?: { value: number; message: string };
   validate?: (data: any) => string | boolean;
 } & IsPIIFlag;
