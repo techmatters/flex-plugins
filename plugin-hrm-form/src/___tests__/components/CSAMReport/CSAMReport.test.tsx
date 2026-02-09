@@ -26,7 +26,7 @@ import '@testing-library/jest-dom/extend-expect';
 import { CSAMReportTypes, isCounsellorTaskEntry, CSAMReportStateEntry } from '../../../states/csam-report/types';
 import '../../mockGetConfig';
 import { CSAMReportScreen } from '../../../components/CSAMReport/CSAMReport';
-import { childInitialValues, initialValues } from '../../../components/CSAMReport/CSAMReportFormDefinition';
+import { initialValues } from '../../../components/CSAMReport/CSAMReportFormDefinition';
 import { CSAMPage, CSAMReportApi } from '../../../components/CSAMReport/csamReportApi';
 import { namespace, configurationBase } from '../../../states/storeNamespaces';
 import { RootState } from '../../../states';
@@ -35,7 +35,6 @@ import { RecursivePartial } from '../../RecursivePartial';
 console.error = () => undefined;
 expect.extend(toHaveNoViolations);
 
-const taskSid = 'task-sid';
 const workerSid = 'worker-sid';
 
 let mockCSAMReportApi: CSAMReportApi;
