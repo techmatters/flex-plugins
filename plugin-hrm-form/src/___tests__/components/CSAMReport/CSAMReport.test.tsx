@@ -19,13 +19,18 @@ import * as React from 'react';
 import { toHaveNoViolations } from 'jest-axe';
 import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { StorelessThemeProvider } from '@twilio/flex-ui';
+import { Provider } from 'react-redux';
+import configureMockStore from 'redux-mock-store';
 import '@testing-library/jest-dom/extend-expect';
 
 import { CSAMReportTypes, isCounsellorTaskEntry, CSAMReportStateEntry } from '../../../states/csam-report/types';
 import '../../mockGetConfig';
-import { CSAMReportScreen, Props } from '../../../components/CSAMReport/CSAMReport';
+import { CSAMReportScreen } from '../../../components/CSAMReport/CSAMReport';
 import { childInitialValues, initialValues } from '../../../components/CSAMReport/CSAMReportFormDefinition';
 import { CSAMPage, CSAMReportApi } from '../../../components/CSAMReport/csamReportApi';
+import { namespace, configurationBase } from '../../../states/storeNamespaces';
+import { RootState } from '../../../states';
+import { RecursivePartial } from '../../RecursivePartial';
 
 console.error = () => undefined;
 expect.extend(toHaveNoViolations);
@@ -36,27 +41,23 @@ const workerSid = 'worker-sid';
 let mockCSAMReportApi: CSAMReportApi;
 let dispatcherMocks;
 
-const setupProps = (
+const mockStore = configureMockStore([]);
+
+const setupMockState = (
   currentPage: CSAMPage,
   csamReportState: CSAMReportStateEntry,
-): Props & { alertSpy: jest.SpyInstance } => {
+): RecursivePartial<RootState> => {
   (mockCSAMReportApi.currentPage as jest.Mock).mockReturnValue(currentPage);
   (mockCSAMReportApi.reportState as jest.Mock).mockReturnValue(csamReportState);
+  
   return {
-    alertSpy: jest.spyOn(window, 'alert'),
-    updateChildForm: dispatcherMocks.updateChildReportDispatcher,
-    updateCounsellorForm: dispatcherMocks.updateCounsellorReportDispatcher,
-    updateStatus: dispatcherMocks.updateStatusDispatcher,
-    navigate: dispatcherMocks.navigationActionDispatcher,
-    addCSAMReportEntry: dispatcherMocks.addReportDispatcher,
-    exit: dispatcherMocks.exitActionDispatcher,
-    pickReportType: dispatcherMocks.pickReportTypeDispatcher,
-    csamReportState,
-    currentPage,
-    setEditPageOpen: jest.fn(),
-    setEditPageClosed: jest.fn(),
-    counselorsHash: { workerSid },
-    api: mockCSAMReportApi,
+    [namespace]: {
+      [configurationBase]: {
+        counselors: {
+          hash: { [workerSid]: workerSid },
+        },
+      },
+    },
   };
 };
 
@@ -64,50 +65,26 @@ const renderCSAMReportScreen = (
   subrouteParam = CSAMPage.Form,
   csamReportStateParam: CSAMReportStateEntry = { form: initialValues, reportType: CSAMReportTypes.COUNSELLOR },
 ) => {
-  const {
-    alertSpy,
-    updateChildForm,
-    updateCounsellorForm,
-    updateStatus,
-    addCSAMReportEntry,
-    csamReportState,
-    currentPage,
-    counselorsHash,
-    setEditPageClosed,
-    setEditPageOpen,
-    navigate,
-    exit,
-    api,
-  } = setupProps(subrouteParam, csamReportStateParam);
+  const alertSpy = jest.spyOn(window, 'alert');
+  const mockState = setupMockState(subrouteParam, csamReportStateParam);
+  const store = mockStore(mockState);
 
   render(
     <StorelessThemeProvider themeConf={{}}>
-      <CSAMReportScreen
-        taskSid={taskSid}
-        updateChildForm={updateChildForm}
-        updateCounsellorForm={updateCounsellorForm}
-        updateStatus={updateStatus}
-        addCSAMReportEntry={addCSAMReportEntry}
-        csamReportState={csamReportState}
-        counselorsHash={counselorsHash}
-        navigate={navigate}
-        exit={exit}
-        api={api}
-        setEditPageOpen={setEditPageOpen}
-        setEditPageClosed={setEditPageClosed}
-        currentPage={currentPage}
-      />
+      <Provider store={store}>
+        <CSAMReportScreen api={mockCSAMReportApi} />
+      </Provider>
     </StorelessThemeProvider>,
   );
 
   return {
     alertSpy,
-    updateStatus,
-    addCSAMReportEntry,
-    csamReportState,
-    counselorsHash,
-    navigate,
-    api,
+    updateStatus: dispatcherMocks.updateStatusDispatcher,
+    addCSAMReportEntry: dispatcherMocks.addReportDispatcher,
+    csamReportState: csamReportStateParam,
+    counselorsHash: { workerSid },
+    navigate: dispatcherMocks.navigationActionDispatcher,
+    api: mockCSAMReportApi,
   };
 };
 
@@ -119,6 +96,7 @@ beforeEach(() => {
     updateChildReportDispatcher: jest.fn(),
     updateCounsellorReportDispatcher: jest.fn(),
     updateStatusDispatcher: jest.fn(),
+    pickReportTypeDispatcher: jest.fn(),
   };
 
   mockCSAMReportApi = {
@@ -127,7 +105,7 @@ beforeEach(() => {
     navigationActionDispatcher: () => dispatcherMocks.navigationActionDispatcher,
     updateChildReportDispatcher: () => dispatcherMocks.updateChildReportDispatcher,
     updateCounsellorReportDispatcher: () => dispatcherMocks.updateCounsellorReportDispatcher,
-    updateStatusDispatcher: () => dispatcherMocks.updateCounsellorReportDispatcher,
+    updateStatusDispatcher: () => dispatcherMocks.updateStatusDispatcher,
     pickReportTypeDispatcher: () => dispatcherMocks.pickReportTypeDispatcher,
     saveReport: jest.fn(),
     currentPage: jest.fn(),
