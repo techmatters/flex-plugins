@@ -1,23 +1,16 @@
 [
     {
-        "insightsObject": "customers",
-        "attributeName": "customer_attribute_1",
+        "insightsObject": "conversations",
+        "attributeName": "preceded_by",
         "questions": [
             "mood"
         ]
     },
     {
-        "insightsObject": "customers",
-        "attributeName": "customer_attribute_2",
+        "insightsObject": "conversations",
+        "attributeName": "in_business_hours",
         "questions": [
             "was_helpful"
-        ]
-    },
-    {
-        "insightsObject": "customers",
-        "attributeName": "customer_attribute_3",
-        "questions": [
-            "explain"
         ]
     }
 ]
