@@ -38,16 +38,11 @@ type OwnProps = {
   renderItem: (d: ProfileTypes.ProfileRelationshipTypes) => React.ReactNode;
 };
 
-const ProfileRelationshipList: React.FC<OwnProps> = ({
-  profileId,
-  type,
-  renderItem,
-}) => {
+const ProfileRelationshipList: React.FC<OwnProps> = ({ profileId, type, renderItem }) => {
   const dispatch = useDispatch();
 
-  const { data, loading, page, total } = useSelector((state: RootState) =>
-    profileSelectors.selectProfileRelationshipsByType(state, profileId, type)
-  ) || {};
+  const { data, loading, page, total } =
+    useSelector((state: RootState) => profileSelectors.selectProfileRelationshipsByType(state, profileId, type)) || {};
 
   const hasData = data && data.length > 0;
 

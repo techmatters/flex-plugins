@@ -42,13 +42,10 @@ let dispatcherMocks;
 
 const mockStore = configureMockStore([]);
 
-const setupMockState = (
-  currentPage: CSAMPage,
-  csamReportState: CSAMReportStateEntry,
-): RecursivePartial<RootState> => {
+const setupMockState = (currentPage: CSAMPage, csamReportState: CSAMReportStateEntry): RecursivePartial<RootState> => {
   (mockCSAMReportApi.currentPage as jest.Mock).mockReturnValue(currentPage);
   (mockCSAMReportApi.reportState as jest.Mock).mockReturnValue(csamReportState);
-  
+
   return {
     [namespace]: {
       [configurationBase]: {

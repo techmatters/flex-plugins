@@ -73,6 +73,7 @@ type Props = {
   saveUpdates: () => Promise<void>;
 };
 
+/* eslint-disable sonarjs/cognitive-complexity */
 const SearchResults: React.FC<Props> = ({
   task,
   searchContactsResults,
@@ -442,6 +443,7 @@ const SearchResults: React.FC<Props> = ({
     </>
   );
 };
+/* eslint-enable sonarjs/cognitive-complexity */
 SearchResults.displayName = 'SearchResults';
 
 export default SearchResults;

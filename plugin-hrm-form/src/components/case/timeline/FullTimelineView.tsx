@@ -64,11 +64,7 @@ const FullTimelineView: React.FC<MyProps> = ({ task }: MyProps) => {
 
   return (
     <CaseLayout>
-      <NavigableContainer
-        task={task}
-        titleCode="Case-Timeline-ModalTitle"
-        titleValues={{ caseId }}
-      >
+      <NavigableContainer task={task} titleCode="Case-Timeline-ModalTitle" titleValues={{ caseId }}>
         <div style={{ textAlign: 'center' }}>
           <AddToCaseBanner task={task} />
           <Timeline

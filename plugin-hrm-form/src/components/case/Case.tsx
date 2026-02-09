@@ -88,14 +88,6 @@ const Case: React.FC<Props> = ({ task, handleClose, onNewCaseSaved = () => Promi
   const openPrintModal = (caseId: CaseType['id']) => {
     dispatch(RoutingActions.newOpenModalAction({ route: 'case', subroute: 'case-print-view', caseId }, task.taskSid));
   };
-  const updateDefinitionVersion = (connectedCase: CaseType, taskSid: string, definition) => {
-    dispatch(
-      ConfigActions.updateDefinitionVersion(
-        connectedCase.definitionVersion ?? connectedCase.info.definitionVersion,
-        definition,
-      ),
-    );
-  };
   const releaseAllContacts = (referenceId: string) => dispatch(ContactActions.releaseAllContacts(referenceId));
 
   const { connectedCase, loading: loadingCase } = useCase({
@@ -127,13 +119,18 @@ const Case: React.FC<Props> = ({ task, handleClose, onNewCaseSaved = () => Promi
   useEffect(() => {
     const fetchDefinitionVersions = async () => {
       const definitionVersion = await getDefinitionVersion(version);
-      updateDefinitionVersion(connectedCase, version, definitionVersion);
+      dispatch(
+        ConfigActions.updateDefinitionVersion(
+          connectedCase.definitionVersion ?? connectedCase.info.definitionVersion,
+          definitionVersion,
+        ),
+      );
     };
 
     if (version && !definitionVersions[version]) {
       fetchDefinitionVersions();
     }
-  }, [connectedCase, definitionVersions, task.taskSid, version]);
+  }, [connectedCase, definitionVersions, dispatch, task.taskSid, version]);
 
   const definitionVersion = definitionVersions[version];
 

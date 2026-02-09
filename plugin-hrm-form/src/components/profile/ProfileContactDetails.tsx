@@ -37,11 +37,19 @@ const ProfileContactDetails: React.FC<ProfileCommonProps> = ({ task, ...props })
     dispatch(newCloseModalAction(task.taskSid, 'tabbed-forms'));
     if (callType === callTypes.caller) {
       dispatch(
-        changeRoute({ route: 'tabbed-forms', subroute: 'callerInformation', autoFocus: false }, task.taskSid, ChangeRouteMode.Replace),
+        changeRoute(
+          { route: 'tabbed-forms', subroute: 'callerInformation', autoFocus: false },
+          task.taskSid,
+          ChangeRouteMode.Replace,
+        ),
       );
     } else {
       dispatch(
-        changeRoute({ route: 'tabbed-forms', subroute: 'childInformation', autoFocus: false }, task.taskSid, ChangeRouteMode.Replace),
+        changeRoute(
+          { route: 'tabbed-forms', subroute: 'childInformation', autoFocus: false },
+          task.taskSid,
+          ChangeRouteMode.Replace,
+        ),
       );
     }
   };
