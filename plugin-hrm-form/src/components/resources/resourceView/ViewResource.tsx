@@ -24,9 +24,13 @@ import { RootState } from '../../../states';
 import { Box, Column } from '../../../styles';
 import SearchResultsBackButton from '../../search/SearchResults/SearchResultsBackButton';
 import { ResourceTitle, ViewResourceArea, ResourceViewContainer } from '../styles';
-import { loadResourceAsyncAction, navigateToSearchAction, ResourceLoadStatus } from '../../../states/resources';
+import {
+  loadResourceAsyncAction,
+  navigateToSearchAction,
+  selectResourceData,
+  selectResourceError,
+} from '../../../states/resources';
 import asyncDispatch from '../../../states/asyncDispatch';
-import { namespace, referrableResourcesBase } from '../../../states/storeNamespaces';
 import { ResourceViewAttributes } from '../mappingComponents';
 
 type Props = {
@@ -36,11 +40,8 @@ type Props = {
 const ViewResource: React.FC<Props> = ({ resourceId }) => {
   const dispatch = useDispatch();
 
-  const resourceState = useSelector(
-    (state: RootState) => state[namespace][referrableResourcesBase].resources[resourceId],
-  );
-  const resource = resourceState?.status === ResourceLoadStatus.Loading ? undefined : resourceState?.resource;
-  const error = resourceState?.status === ResourceLoadStatus.Loading ? undefined : resourceState?.error;
+  const resource = useSelector((state: RootState) => selectResourceData(state, resourceId));
+  const error = useSelector((state: RootState) => selectResourceError(state, resourceId));
 
   if (resource || error) {
     const { name } = resource || {};
