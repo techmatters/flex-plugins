@@ -1,0 +1,128 @@
+# Copyright (C) 2021-2026 Technology Matters
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Affero General Public License as published
+# by the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Affero General Public License for more details.
+#
+# You should have received a copy of the GNU Affero General Public License
+# along with this program.  If not, see https://www.gnu.org/licenses/.
+
+
+name: 'Deploy webchat configuration to S3'
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: Environment to deploy
+        default: development
+        required: true
+        type: choice
+        options:
+          - development
+          - staging
+          - production
+
+      helpline_code:
+        description: Short helpline code (lower case)
+        type: string
+        required: true
+
+      # version could be added in the future once we have more versions. For now, we only have one version.
+
+  workflow_call:
+    secrets:
+      AWS_ACCESS_KEY_ID:
+        required: true
+      AWS_SECRET_ACCESS_KEY:
+        required: true
+
+    inputs:
+      environment:
+        description: Environment to deploy. E.G = development, staging, production (must match with the AWS environment value). Default value = development
+        type: string
+        default: development
+        required: true
+
+      helpline_code:
+        description: Short helpline code Default value = as
+        type: string
+        default: as
+        required: true
+
+      send-slack-message:
+        description: 'Specifies if should send a Slack message at the end of successful run. Defaults to true'
+        required: false
+        default: 'true'
+        type: string
+
+      invalidate-cache:
+        description: 'Specifies if should invalidate CloudFront cache. Defaults to true, set to false if the caller will handle cache invalidation.'
+        required: false
+        default: 'true'
+        type: string
+
+
+jobs:
+  deploy_webchat_config:
+    name: Deploy webchat configurations to S3
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Install Webchat packages
+        run: npm ci --legacy-peer-deps
+        working-directory: ./aselo-webchat-react-app
+
+      - name: Merge up configurations
+        run: npm run mergeConfigs ${{ inputs.environment }} ${{ inputs.helpline_code }}
+        working-directory: ./aselo-webchat-react-app
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v5
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+
+      - name: Deploy webchat config to S3
+        run: |
+          aws s3 cp ./mergedConfigs/${{ inputs.helpline_code }}/${{ inputs.environment }}.json s3://assets-${{ inputs.environment }}.tl.techmatters.org/webchat/${{ inputs.helpline_code }}/config.json --acl public-read
+        working-directory: ./aselo-webchat-react-app
+
+      - name: Invalidate CloudFront cache
+        if: ${{ inputs.invalidate-cache != 'false' }}
+        run: |
+          CF_DISTRO=$(aws cloudfront list-distributions --query "DistributionList.Items[*].{id:Id,origin:Origins.Items[0].DomainName}[?origin=='assets-${{ inputs.environment }}.tl.techmatters.org.s3-website.us-east-1.amazonaws.com'].id" --output text)
+          aws cloudfront create-invalidation --distribution-id $CF_DISTRO --paths /webchat/${{ inputs.helpline_code }}/config.json
+
+      # Set any env vars needed from Parameter Store here
+      - name: Set GITHUB_ACTIONS_SLACK_BOT_TOKEN
+        uses: 'marvinpinto/action-inject-ssm-secrets@latest'
+        with:
+          ssm_parameter: 'GITHUB_ACTIONS_SLACK_BOT_TOKEN'
+          env_variable_name: 'GITHUB_ACTIONS_SLACK_BOT_TOKEN'
+
+      - name: Set ASELO_DEPLOYS_CHANNEL_ID
+        uses: 'marvinpinto/action-inject-ssm-secrets@latest'
+        with:
+          ssm_parameter: 'ASELO_DEPLOYS_CHANNEL_ID'
+          env_variable_name: 'ASELO_DEPLOYS_CHANNEL_ID'
+
+      # Send Slack notifying success
+      - name: Slack Aselo channel
+        id: slack
+        uses: slackapi/slack-github-action@v2.1.1
+        with:
+          method: chat.postMessage
+          token: ${{ env.GITHUB_ACTIONS_SLACK_BOT_TOKEN }}
+          payload: |
+            channel: ${{ env.ASELO_DEPLOYS_CHANNEL_ID }}
+            text: '`[Flex]` Deployed webchat configs to helpline: `${{ env.helpline_code }}, environment `${{ env.environment }} from ${{ github.ref_type }} `${{ github.ref_name }}` requested by `${{ github.triggering_actor }}` completed with SHA ${{ github.sha }}` :rocket:.'
+        if: ${{ inputs.send-slack-message != 'false' }}

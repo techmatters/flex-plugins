@@ -100,11 +100,12 @@ const handler: ConferenceStatusEventHandler = async (event, _accountSid, client)
               `An error was thrown pausing recording ${recording.sid} for call ${recording.callSid} on conference ${conferenceSid}, but the pause operation would normally be successful or redundant when this type or error is thrown`,
               error,
             );
+          } else {
+            console.error(
+              `Error pausing recording ${recording.sid} for call ${recording.callSid} on conference ${conferenceSid}`,
+              error,
+            );
           }
-          console.error(
-            `Error pausing recording ${recording.sid} for call ${recording.callSid} on conference ${conferenceSid}`,
-            error,
-          );
         }
       }),
     );

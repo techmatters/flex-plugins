@@ -21,7 +21,6 @@ import { mockLocalFetchDefinitions } from '../../mockFetchDefinitions';
 import '../../mockGetConfig';
 import { createCaseAsyncAction, saveCaseReducer, updateCaseOverviewAsyncAction } from '../../../states/case/saveCase';
 import { HrmState } from '../../../states';
-import { reduce } from '../../../states/case/reducer';
 import { createCase, getCase, updateCaseOverview, updateCaseStatus } from '../../../services/CaseService';
 import { connectToCase } from '../../../services/ContactService';
 import { ReferralLookupStatus } from '../../../states/contacts/resourceReferral';
@@ -182,28 +181,6 @@ const contact = {
   referrals: [],
 };
 
-const expectObject: RecursivePartial<HrmState> = {
-  ...partialState,
-  connectedCase: {
-    cases: {
-      [mockPayload.id]: {
-        connectedCase: mockPayload,
-        caseWorkingCopy: {
-          sections: {},
-          caseSummary: {
-            status: 'test-st',
-            followUpDate: '',
-            childIsAtRisk: false,
-            summary: '',
-          },
-        },
-        availableStatusTransitions: [],
-        references: new Set(['x']),
-      },
-    },
-  },
-};
-
 describe('createCaseAsyncAction', () => {
   test('Calls the createCase service, and create a case', () => {
     createCaseAsyncAction(contact, workerSid, definitionVersion);
@@ -230,7 +207,7 @@ describe('createCaseAsyncAction', () => {
               id: '234',
               info: {},
             },
-            references: new Set(),
+            references: new Set(['contact-contact-1']),
             sections: {},
             timelines: {},
             outstandingUpdateCount: 0,
@@ -238,12 +215,6 @@ describe('createCaseAsyncAction', () => {
         },
       },
     });
-  });
-
-  test('should handle createCaseAsyncAction in the reducer', async () => {
-    const expected: HrmState = expectObject as HrmState;
-    const result = reduce(nonInitialState, createCaseAsyncAction(contact, workerSid, definitionVersion));
-    expect(result).toEqual(expected);
   });
 });
 

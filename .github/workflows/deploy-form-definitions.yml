@@ -28,7 +28,7 @@ on:
           - production
 
       helpline_code:
-        description: Short helpline code
+        description: Short helpline code (lower case)
         type: string
         required: true
 
@@ -74,7 +74,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         
       - name: Validate and normalize input variables
         run: bash .github/scripts/setupDeployFormDefinitionsEnv.sh ${{ inputs.environment }} ${{ inputs.helpline_code }}
@@ -119,5 +119,5 @@ jobs:
           token: ${{ env.GITHUB_ACTIONS_SLACK_BOT_TOKEN }}
           payload: |
             channel: ${{ env.ASELO_DEPLOYS_CHANNEL_ID }}
-            text: '`[Flex]` Deployment of ${{ github.ref_type }} `${{ github.ref_name }}` requested by `${{ github.triggering_actor }}` completed with SHA ${{ github.sha }}, helpine: `${{ env.helpline_code }}, environment `${{ env.environment }}` :rocket:.'
+            text: '`[Flex]` Deployed form definitions to helpine: `${{ env.helpline_code }}, environment `${{ env.environment }} from ${{ github.ref_type }} `${{ github.ref_name }}` requested by `${{ github.triggering_actor }}` completed with SHA ${{ github.sha }}` :rocket:.'
         if: ${{ inputs.send-slack-message != 'false' }}

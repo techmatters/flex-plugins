@@ -121,27 +121,16 @@ export const handleChatbotCallback: AccountScopedHandler = async (
       const capturedChannelAttributes =
         channelAttributes.capturedChannelAttributes as CapturedChannelAttributes;
 
-      const {
-        botLanguage,
-        botLanguageV1,
-        botSuffix,
-        enableLexV2,
-        environment,
-        helplineCode,
-        userId,
-      } = capturedChannelAttributes;
+      const { botLanguage, botSuffix, environment, helplineCode, userId } =
+        capturedChannelAttributes;
 
       const lexResult = await LexClient.postText({
-        enableLexV2,
-        postTextParams: {
-          botLanguage,
-          botLanguageV1,
-          botSuffix,
-          environment,
-          helplineCode,
-          inputText: Body,
-          sessionId: userId,
-        },
+        botLanguage,
+        botSuffix,
+        environment,
+        helplineCode,
+        inputText: Body,
+        sessionId: userId,
       });
 
       if (isErr(lexResult)) {
@@ -160,27 +149,22 @@ export const handleChatbotCallback: AccountScopedHandler = async (
 
       const twilioWorkspaceSid = await getWorkspaceSid(accountSid);
 
-      const { lexResponse, lexVersion } = lexResult.data;
+      const { lexResponse } = lexResult.data;
       // If the session ended, we should unlock the channel to continue the Studio Flow
-      if (LexClient.isEndOfDialog({ enableLexV2, lexResponse })) {
+      if (LexClient.isEndOfDialog(lexResponse)) {
         await chatbotCallbackCleanup({
           accountSid,
           twilioClient,
           conversation,
           channel,
           channelAttributes,
-          memory: LexClient.getBotMemory({ enableLexV2, lexResponse }),
+          memory: LexClient.getBotMemory({ lexResponse }),
           twilioWorkspaceSid,
         });
       }
 
       // TODO: unify with functions/channelCapture/channelCaptureHandlers.ts
-      let messages: string[] = [];
-      if (lexVersion === 'v1') {
-        messages.push(lexResponse.message || '');
-      } else if (lexVersion === 'v2' && lexResponse.messages) {
-        messages = messages.concat(lexResponse.messages.map(m => m.content || ''));
-      }
+      const messages = (lexResponse.messages || []).map(m => m.content || '');
 
       // TODO: unify with functions/channelCapture/channelCaptureHandlers.ts
       for (const message of messages) {

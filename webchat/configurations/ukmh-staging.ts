@@ -198,7 +198,7 @@ const preEngagementConfig: PreEngagementFormDefinition = {
         'I consent to the processing of my personal data (including sensitive data relating to matters such as my mental health and wellbeing) by MHI (parent organisation of The Mix and Shout) for the purpose of providing me with the PeerChat Service.',
       required: {
         value: true,
-        message: "Sorry, if you don't consent to have your data being processed and stored we can't provide counselling to you.",
+        message: "Sorry, if you do not consent to have your data being processed and stored we cannot provide the PeerChat service to you.",
       },
     },
     {
@@ -208,7 +208,7 @@ const preEngagementConfig: PreEngagementFormDefinition = {
         'I agree to the PeerChat Service <a href="https://www.themix.org.uk/about-us/privacy-centre/peerchat-terms-of-service/">Terms & Conditions</a>.',
       required: {
         value: true,
-        message: "Sorry, if you don't accept our terms and privacy policy we can't provide counselling to you.",
+        message: "Sorry, if you do not accept our terms and conditions we cannot provide the PeerChat service to you.",
       },
     },
     {
@@ -218,7 +218,7 @@ const preEngagementConfig: PreEngagementFormDefinition = {
         'I acknowledge that I have read and understand the PeerChat Service <a href="https://www.themix.org.uk/about-us/privacy-centre/peerchat-privacy-notice/">Privacy Policy</a>.',
       required: {
         value: true,
-        message: "Sorry, if you don't accept our terms and privacy policy we can't provide counselling to you.",
+        message: "Sorry, if you do not accept our privacy policy we cannot provide the PeerChat service to you.",
       },
     },
   ],
