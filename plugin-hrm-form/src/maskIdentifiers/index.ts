@@ -14,7 +14,18 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
-import { Strings, TaskChannelDefinition, MessageList, Manager, AppState } from '@twilio/flex-ui';
+import {
+  Strings,
+  TaskChannelDefinition,
+  MessagingCanvas,
+  MessageList,
+  StateHelper,
+  ConversationHelper,
+  TaskHelper,
+  DefaultTaskChannels,
+  Manager,
+  AppState,
+} from '@twilio/flex-ui';
 // Weird type to pull in, but I can't see how it can be inferred from the public API, so it's this or 'any' xD
 import type { ChatProperties } from '@twilio/flex-ui/src/internal-flex-commons/src';
 
@@ -26,7 +37,7 @@ export const maskChannelStringsWithIdentifiers = (channelType: TaskChannelDefini
   const can = getInitializedCan();
   const maskIdentifiers = !can(PermissionActions.VIEW_IDENTIFIERS);
   if (!maskIdentifiers) return;
-
+  const { strings } = Manager.getInstance();
   const {
     IncomingTaskCanvas,
     TaskListItem,
@@ -42,7 +53,26 @@ export const maskChannelStringsWithIdentifiers = (channelType: TaskChannelDefini
 
   // Task list and panel when a call comes in
   TaskListItem.firstLine = 'MaskIdentifiers';
-
+  if (channelType.name === DefaultTaskChannels.ChatSms.name) {
+    // The unmasked service user number appears in the last message info on SMS if they sent the last message
+    // Let's replace it with a version that doesn't include the sender's identity, regardless of who sent the last message.
+    TaskListItem.secondLine = task => {
+      const taskHelper = new TaskHelper(task);
+      const conversationState = StateHelper.getConversationStateForTask(task);
+      if (!conversationState) {
+        return taskHelper.durationSinceUpdate;
+      }
+      const conversationHelper = new ConversationHelper(conversationState);
+      if (!conversationHelper.lastMessage) {
+        return taskHelper.durationSinceUpdate;
+      }
+      return `${taskHelper.durationSinceUpdate} | ${
+        conversationHelper.lastMessage.isFromMe
+          ? conversationHelper.lastMessage.authorName
+          : strings['MaskIdentifiers'] ?? 'XXXXXX'
+      }: ${conversationHelper.lastMessage.source.body ?? ''}`;
+    };
+  }
   // Task panel during an active call
   TaskCanvasHeader.title = 'MaskIdentifiers';
   Supervisor.TaskCanvasHeader.title = 'MaskIdentifiers';
