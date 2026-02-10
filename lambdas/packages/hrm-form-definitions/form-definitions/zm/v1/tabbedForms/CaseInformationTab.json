@@ -74,20 +74,24 @@
         "label": "Direct interventions by the child helpline"
       },
       {
+        "value": "electionRelatedService",
+        "label": "Election Related Service"
+      },
+      {
         "value": "Recommendations of resources",
         "label": "Recommendations of resources"
       },
       {
         "value": "Referrals to child protection agencies",
-        "label": "Referrals to child protection agencies"
+        "label": "Referrals to child protection agencies (Social Welfare/National Prosecutions Authority"
       },
       {
         "value": "Referrals to general healthcare professionals",
-        "label": "Referrals to general healthcare services"
+        "label": "Referrals to general healthcare services (Clinic/Hospital)"
       },
       {
         "value": "Referrals to law enforcement agencies",
-        "label": "Referrals to law enforcement agencies"
+        "label": "Referrals to law enforcement agencies Police (CPU)/(VSU)"
       },
       {
         "value": "Referrals to mental health services",
@@ -95,7 +99,7 @@
       },
       {
         "value": "Referrals to other organisations",
-        "label": "Referrals to other organisations"
+        "label": "Referrals to other organisations (OSC/DREAMS/Legal Aid)"
       },
       {
         "value": "Referrals to school counsellors",

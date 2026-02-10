@@ -1091,5 +1091,14 @@
     "label": "Ethnicity",
     "type": "input",
     "isPII": true
+  },
+  {
+    "name": "Vawiecomments",
+    "label": "VAWIE Notes",
+    "type": "textarea",
+    "placeholder": "",
+    "rows": 10,
+    "width": 289,
+    "isPII": true
   }
 ]
