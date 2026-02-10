@@ -210,7 +210,11 @@ const CasePrintView: React.FC<OwnProps> = ({ task }) => {
     );
 
   return (
-    <NavigableContainer task={task} onGoBack={() => dispatch(RoutingActions.newGoBackAction(task.taskSid))}>
+    <NavigableContainer
+      task={task}
+      titleCode="Case-PrintView"
+      onGoBack={() => dispatch(RoutingActions.newGoBackAction(task.taskSid))}
+    >
       {loading || !sectionTypeNames.every(sectionName => sectionTimelines[sectionName]) || !contactTimeline ? (
         <CasePrintViewSpinner>
           <CircularProgress size={50} />

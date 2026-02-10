@@ -15,7 +15,7 @@
  */
 
 import React from 'react';
-import { connect, ConnectedProps } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import { StandaloneITask } from '../../types/types';
 import { ListContainer, StandaloneContainer } from '../../styles';
@@ -24,26 +24,18 @@ import ProfileListTable from './ProfileListTable';
 import ProfileRouter, { isProfileRoute } from '../profile/ProfileRouter';
 import { RootState } from '../../states';
 import { selectCurrentTopmostRouteForTask } from '../../states/routing/getRoute';
+import { AppRoutes } from '../../states/routing/types';
 
 const standaloneTask: StandaloneITask = {
   taskSid: 'standalone-task-sid',
   attributes: { isContactlessTask: false },
 };
 
-type OwnProps = {};
+const ProfileListPage: React.FC = () => {
+  const routing = useSelector((state: RootState) =>
+    selectCurrentTopmostRouteForTask(state, standaloneTask.taskSid),
+  ) as AppRoutes;
 
-type Props = OwnProps & ConnectedProps<typeof connector>;
-
-const mapStateToProps = (state: RootState) => {
-  return {
-    routing: selectCurrentTopmostRouteForTask(state, standaloneTask.taskSid) ?? {
-      route: 'profile-list',
-      subroute: 'profile-list',
-    },
-  };
-};
-
-const ProfileListPage: React.FC<Props> = ({ routing }) => {
   if (isProfileRoute(routing))
     return (
       <StandaloneContainer>
@@ -59,7 +51,5 @@ const ProfileListPage: React.FC<Props> = ({ routing }) => {
   );
 };
 
-const connector = connect(mapStateToProps);
-
 // eslint-disable-next-line import/no-unused-modules
-export default connector(ProfileListPage);
+export default ProfileListPage;

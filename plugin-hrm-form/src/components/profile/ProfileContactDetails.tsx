@@ -13,11 +13,10 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
-import React, { Dispatch } from 'react';
-import { connect, ConnectedProps } from 'react-redux';
+import React from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { callTypes, DataCallTypes } from 'hrm-types';
 
-import { namespace } from '../../states/storeNamespaces';
 import { RootState } from '../../states';
 import { DetailsContext } from '../../states/contacts/contactDetails';
 import { ChangeRouteMode, isContactRoute, TabbedFormSubroutes } from '../../states/routing/types';
@@ -25,47 +24,47 @@ import { getCurrentTopmostRouteForTask } from '../../states/routing/getRoute';
 import ContactDetails from '../contact/ContactDetails';
 import { ProfileCommonProps } from './types';
 import { changeRoute, newCloseModalAction } from '../../states/routing/actions';
+import { namespace } from '../../states/storeNamespaces';
 
-type OwnProps = ProfileCommonProps;
+const ProfileContactDetails: React.FC<ProfileCommonProps> = ({ task, ...props }) => {
+  const dispatch = useDispatch();
 
-const mapStateToProps = (state: RootState, { task: { taskSid } }) => {
-  const routingState = state[namespace].routing;
-  const currentRoute = getCurrentTopmostRouteForTask(routingState, taskSid);
+  const routingState = useSelector((state: RootState) => state[namespace].routing);
+  const currentRoute = getCurrentTopmostRouteForTask(routingState, task.taskSid);
   const contactId = isContactRoute(currentRoute) && currentRoute?.id;
 
-  return {
-    contactId,
-  };
-};
-
-const mapDispatchToProps = (dispatch: Dispatch<any>, { task }: OwnProps) => ({
-  closeModal: () => dispatch(newCloseModalAction(task.taskSid, 'tabbed-forms')),
-  navigateToTab: (tab: TabbedFormSubroutes) =>
-    dispatch(
-      changeRoute({ route: 'tabbed-forms', subroute: tab, autoFocus: false }, task.taskSid, ChangeRouteMode.Replace),
-    ),
-});
-
-const connector = connect(mapStateToProps, mapDispatchToProps);
-type Props = OwnProps & ConnectedProps<typeof connector>;
-
-const ProfileContactDetails: React.FC<Props> = ({ closeModal, navigateToTab, ...props }) => {
   const handleConnectConfirmDialog = (callType: DataCallTypes) => {
-    closeModal();
+    dispatch(newCloseModalAction(task.taskSid, 'tabbed-forms'));
     if (callType === callTypes.caller) {
-      navigateToTab('callerInformation');
+      dispatch(
+        changeRoute(
+          { route: 'tabbed-forms', subroute: 'callerInformation', autoFocus: false },
+          task.taskSid,
+          ChangeRouteMode.Replace,
+        ),
+      );
     } else {
-      navigateToTab('childInformation');
+      dispatch(
+        changeRoute(
+          { route: 'tabbed-forms', subroute: 'childInformation', autoFocus: false },
+          task.taskSid,
+          ChangeRouteMode.Replace,
+        ),
+      );
     }
   };
 
   return (
     <ContactDetails
       {...props}
+      contactId={contactId}
+      task={task}
       onConfirmConnectDialog={handleConnectConfirmDialog}
       context={DetailsContext.CONTACT_SEARCH}
     />
   );
 };
 
-export default connector(ProfileContactDetails);
+ProfileContactDetails.displayName = 'ProfileContactDetails';
+
+export default ProfileContactDetails;

@@ -15,7 +15,7 @@
  */
 
 import React from 'react';
-import { connect, ConnectedProps } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Tab as TwilioTab, Template } from '@twilio/flex-ui';
 import { CircularProgress } from '@material-ui/core';
 
@@ -33,33 +33,15 @@ import type { RootState } from '../../states';
 import type { ProfileRoute } from '../../states/routing/types';
 import type { ProfileCommonProps } from './types';
 
-type OwnProps = ProfileCommonProps;
+const ProfileTabs: React.FC<ProfileCommonProps> = ({ profileId, task }) => {
+  const dispatch = useDispatch();
+  const { taskSid } = task;
 
-const mapStateToProps = (state: RootState, { task: { taskSid } }: OwnProps) => {
-  const routingState = state[namespace].routing;
-  const route = getCurrentTopmostRouteForTask(routingState, taskSid);
-  const currentTab = (route as ProfileRoute).subroute || 'details';
-
-  return {
-    currentTab,
-  };
-};
-
-const mapDispatchToProps = (dispatch, { task }: OwnProps) => ({
-  changeProfileTab: (id, subroute) =>
-    dispatch(
-      RoutingActions.changeRoute(
-        { route: 'profile', profileId: id, subroute },
-        task.taskSid,
-        RoutingTypes.ChangeRouteMode.Replace,
-      ),
-    ),
-});
-
-const connector = connect(mapStateToProps, mapDispatchToProps);
-type Props = OwnProps & ConnectedProps<typeof connector>;
-
-const ProfileTabs: React.FC<Props> = ({ profileId, task, currentTab, changeProfileTab }) => {
+  const currentTab = useSelector((state: RootState) => {
+    const routingState = state[namespace].routing;
+    const route = getCurrentTopmostRouteForTask(routingState, taskSid);
+    return (route as ProfileRoute).subroute || 'details';
+  });
   const { canView } = useProfile({ profileId });
   const { total: contactsCount, loading: contactsLoading } = useProfileRelationshipsByType({
     profileId,
@@ -111,7 +93,15 @@ const ProfileTabs: React.FC<Props> = ({ profileId, task, currentTab, changeProfi
     <NavigableContainer task={task} titleCode="Profile-Title">
       <StyledTabs
         selectedTabName={currentTab}
-        onTabSelected={(selectedTab: RoutingTypes.ProfileTabs) => changeProfileTab(profileId, selectedTab)}
+        onTabSelected={(selectedTab: RoutingTypes.ProfileTabs) =>
+          dispatch(
+            RoutingActions.changeRoute(
+              { route: 'profile', profileId, subroute: selectedTab },
+              taskSid,
+              RoutingTypes.ChangeRouteMode.Replace,
+            ),
+          )
+        }
         alignment="center"
         keepTabsMounted={false}
       >
@@ -121,4 +111,4 @@ const ProfileTabs: React.FC<Props> = ({ profileId, task, currentTab, changeProfi
   );
 };
 
-export default connector(ProfileTabs);
+export default ProfileTabs;

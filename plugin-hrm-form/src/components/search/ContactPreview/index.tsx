@@ -15,7 +15,7 @@
  */
 
 import React, { useEffect } from 'react';
-import { connect, ConnectedProps } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { callTypes } from 'hrm-types';
 
 import ContactHeader from './ContactHeader';
@@ -36,15 +36,6 @@ type ContactPreviewProps = {
   contact: Contact;
   handleViewDetails: () => void;
 };
-
-const mapStateToProps = (state: RootState, { contact }: ContactPreviewProps) => ({
-  definitionVersions: selectDefinitionVersions(state),
-  counselorName: selectCounselorName(state, contact.twilioWorkerId),
-});
-
-const connector = connect(mapStateToProps);
-
-type Props = ContactPreviewProps & ConnectedProps<typeof connector>;
 
 /**
  * Since different helplines can have different forms, this function is a
@@ -80,7 +71,12 @@ const getCallerName = (rawJson: ContactRawJson) => {
   return undefined;
 };
 
-const ContactPreview: React.FC<Props> = ({ contact, handleViewDetails, definitionVersions, counselorName }) => {
+const ContactPreview: React.FC<ContactPreviewProps> = ({ contact, handleViewDetails }) => {
+  const dispatch = useDispatch();
+
+  const definitionVersions = useSelector(selectDefinitionVersions);
+  const counselorName = useSelector((state: RootState) => selectCounselorName(state, contact.twilioWorkerId));
+
   const { callType } = contact.rawJson;
   const callerName = getCallerName(contact.rawJson);
   const { definitionVersion: versionId, caseInformation } = contact.rawJson;
@@ -93,9 +89,11 @@ const ContactPreview: React.FC<Props> = ({ contact, handleViewDetails, definitio
 
   useEffect(() => {
     if (versionId && !definitionVersions[versionId]) {
-      getDefinitionVersion(versionId).then(definitionVersion => updateDefinitionVersion(versionId, definitionVersion));
+      getDefinitionVersion(versionId).then(definitionVersion =>
+        dispatch(updateDefinitionVersion(versionId, definitionVersion)),
+      );
     }
-  }, [versionId, definitionVersions]);
+  }, [versionId, definitionVersions, dispatch]);
 
   return (
     <Flex width="100%">
@@ -134,4 +132,4 @@ const ContactPreview: React.FC<Props> = ({ contact, handleViewDetails, definitio
 
 ContactPreview.displayName = 'ContactPreview';
 
-export default connector(ContactPreview);
+export default ContactPreview;

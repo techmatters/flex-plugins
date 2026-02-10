@@ -14,10 +14,10 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import React, { Dispatch } from 'react';
+import React from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { CircularProgress } from '@material-ui/core';
-import { connect, ConnectedProps } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import CSAMReportStatusScreen from './CSAMReportStatusScreen';
 import CSAMReportCounsellorForm from './CSAMReportCounsellorForm';
@@ -30,45 +30,24 @@ import CSAMReportChildForm from './CSAMReportChildForm';
 import { getHrmConfig, getTemplateStrings } from '../../hrmConfig';
 import { configurationBase, namespace } from '../../states/storeNamespaces';
 
-type OwnProps = {
+type Props = {
   api: CSAMReportApi;
 };
 
-const mapStateToProps = (state: RootState, { api }: OwnProps) => ({
-  csamReportState: api.reportState(state),
-  currentPage: api.currentPage(state),
-  counselorsHash: state[namespace][configurationBase].counselors.hash,
-});
-
-const mapDispatchToProps = (dispatch: Dispatch<any>, { api }: OwnProps) => {
-  return {
-    updateCounsellorForm: api.updateCounsellorReportDispatcher(dispatch),
-    updateChildForm: api.updateChildReportDispatcher(dispatch),
-    updateStatus: api.updateStatusDispatcher(dispatch),
-    navigate: api.navigationActionDispatcher(dispatch),
-    exit: api.exitActionDispatcher(dispatch),
-    addCSAMReportEntry: api.addReportDispatcher(dispatch),
-    pickReportType: api.pickReportTypeDispatcher(dispatch),
-  };
-};
-
-// eslint-disable-next-line no-use-before-define
-export type Props = OwnProps & ConnectedProps<typeof connector>;
-
 // exported for test purposes
-export const CSAMReportScreen: React.FC<Props> = ({
-  updateChildForm,
-  updateCounsellorForm,
-  updateStatus,
-  navigate,
-  exit,
-  addCSAMReportEntry,
-  csamReportState,
-  currentPage,
-  counselorsHash,
-  api,
-  pickReportType,
-}) => {
+export const CSAMReportScreen: React.FC<Props> = ({ api }) => {
+  const dispatch = useDispatch();
+  const csamReportState = useSelector((state: RootState) => api.reportState(state));
+  const currentPage = useSelector((state: RootState) => api.currentPage(state));
+  const counselorsHash = useSelector((state: RootState) => state[namespace][configurationBase].counselors.hash);
+
+  const updateCounsellorForm = api.updateCounsellorReportDispatcher(dispatch);
+  const updateChildForm = api.updateChildReportDispatcher(dispatch);
+  const updateStatus = api.updateStatusDispatcher(dispatch);
+  const navigate = api.navigationActionDispatcher(dispatch);
+  const exit = api.exitActionDispatcher(dispatch);
+  const addCSAMReportEntry = api.addReportDispatcher(dispatch);
+  const pickReportType = api.pickReportTypeDispatcher(dispatch);
   const methods = useForm({ reValidateMode: 'onChange' });
 
   const { workerSid } = getHrmConfig();
@@ -186,7 +165,4 @@ export const CSAMReportScreen: React.FC<Props> = ({
 
 CSAMReportScreen.displayName = 'CSAMReportScreen';
 
-const connector = connect(mapStateToProps, mapDispatchToProps);
-const connected = connector(CSAMReportScreen);
-
-export default connected;
+export default CSAMReportScreen;

@@ -16,14 +16,14 @@
 
 /* eslint-disable react/prop-types */
 import React, { useEffect } from 'react';
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Tab as TwilioTab, Template } from '@twilio/flex-ui';
 import InfoIcon from '@material-ui/icons/Info';
+import { AnyAction } from 'redux';
 
 import ContactPreview from '../ContactPreview';
 import CasePreview from '../CasePreview';
-import { Contact, CustomITask, SearchCaseResult, SearchContactResult } from '../../../types/types';
+import { Contact, CustomITask, StandaloneITask, SearchCaseResult, SearchContactResult } from '../../../types/types';
 import { Row } from '../../../styles';
 import {
   NoResultTextLink,
@@ -39,9 +39,9 @@ import {
 } from '../styles';
 import Pagination from '../../pagination';
 import { getInitializedCan } from '../../../permissions/rules';
-import { namespace } from '../../../states/storeNamespaces';
 import { RootState } from '../../../states';
-import { getCurrentTopmostRouteForTask } from '../../../states/routing/getRoute';
+import { namespace } from '../../../states/storeNamespaces';
+import { selectCurrentTopmostRouteForTask } from '../../../states/routing/getRoute';
 import * as RoutingActions from '../../../states/routing/actions';
 import { changeRoute, newOpenModalAction } from '../../../states/routing/actions';
 import { AppRoutes, ChangeRouteMode, SearchResultRoute, isCaseRoute } from '../../../states/routing/types';
@@ -53,12 +53,14 @@ import { createCaseAsyncAction } from '../../../states/case/saveCase';
 import asyncDispatch from '../../../states/asyncDispatch';
 import { SearchResultsQueryTemplate } from './SearchResultsQueryTemplate';
 import { PermissionActions } from '../../../permissions/actions';
+import { selectCounselorsHash } from '../../../states/configuration/selectCounselorsHash';
+import selectSearchStateForTask from '../../../states/search/selectSearchStateForTask';
 
 export const CONTACTS_PER_PAGE = 20;
 export const CASES_PER_PAGE = 20;
 
-type OwnProps = {
-  task: CustomITask;
+type Props = {
+  task: CustomITask | StandaloneITask;
   searchContactsResults: SearchContactResult;
   searchCasesResults: SearchCaseResult;
   onlyDataContacts: boolean;
@@ -67,11 +69,11 @@ type OwnProps = {
   handleSearchCases: (offset: number) => void;
   toggleNonDataContacts: () => void;
   toggleClosedCases: () => void;
-  handleBack: () => void;
+  handleBack?: () => void;
   saveUpdates: () => Promise<void>;
 };
 
-type Props = OwnProps & ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>;
+/* eslint-disable sonarjs/cognitive-complexity */
 const SearchResults: React.FC<Props> = ({
   task,
   searchContactsResults,
@@ -82,26 +84,29 @@ const SearchResults: React.FC<Props> = ({
   handleSearchCases,
   toggleNonDataContacts,
   toggleClosedCases,
-  viewContactDetails,
-  changeCaseResultPage,
-  changeContactResultPage,
-  viewCaseDetails,
-  newCase,
-  counselorsHash,
-  routing,
-  isRequestingCases,
-  isRequestingContacts,
-  caseRefreshRequired,
-  contactRefreshRequired,
-  openModal,
-  contact,
   saveUpdates,
-  createCaseAsyncAction,
-  closeModal,
-  contextContactId,
-  searchContext,
 }) => {
-  const { subroute: currentResultPage, casesPage, contactsPage } = routing as SearchResultRoute;
+  const dispatch = useDispatch();
+  const taskId = task.taskSid;
+
+  const routing = useSelector((state: RootState) =>
+    selectCurrentTopmostRouteForTask(state, taskId),
+  ) as SearchResultRoute;
+  const contextContactId = (isCaseRoute(routing) || routing.route === 'search') && routing.contextContactId;
+  const searchContext = contextContactId ? `contact-${contextContactId}` : 'root';
+
+  const searchState = useSelector((state: RootState) => selectSearchStateForTask(state, taskId, searchContext));
+  const { isRequesting: isRequestingContacts, isRequestingCases, caseRefreshRequired, contactRefreshRequired } =
+    searchState || {};
+
+  const counselorsHash = useSelector(selectCounselorsHash);
+  const contact = useSelector((state: RootState) => {
+    const { activeContacts } = state[namespace];
+    const { draftContact, savedContact } = activeContacts.existingContacts[searchContext] ?? {};
+    return getUnsavedContact(savedContact, draftContact);
+  });
+
+  const { subroute: currentResultPage, casesPage, contactsPage } = routing;
 
   const can = React.useMemo(() => {
     return getInitializedCan();
@@ -122,6 +127,39 @@ const SearchResults: React.FC<Props> = ({
   if (routing.route !== 'search' || (routing.subroute !== 'case-results' && routing.subroute !== 'contact-results')) {
     return null;
   }
+
+  const changeContactResultPage = (contactsPage: number, currentRoute: SearchResultRoute) => {
+    dispatch(
+      changeRoute({ ...currentRoute, subroute: 'contact-results', contactsPage }, taskId, ChangeRouteMode.Replace),
+    );
+  };
+
+  const changeCaseResultPage = (casesPage: number, currentRoute: SearchResultRoute) => {
+    dispatch(changeRoute({ ...currentRoute, subroute: 'case-results', casesPage }, taskId, ChangeRouteMode.Replace));
+  };
+
+  const viewCaseDetails = (caseId: string, contextContactId: string) => {
+    dispatch(
+      newOpenModalAction({ contextContactId, route: 'case', subroute: 'home', isCreating: false, caseId }, taskId),
+    );
+  };
+
+  const newCase = () => {
+    dispatch(newOpenModalAction({ route: 'case', subroute: 'home', isCreating: true, caseId: undefined }, taskId));
+  };
+
+  const viewContactDetails = ({ id }: Contact) => {
+    dispatch(newOpenModalAction({ route: 'contact', subroute: 'view', id: id.toString() }, taskId));
+  };
+
+  const openModal = (route: AppRoutes) => {
+    dispatch(RoutingActions.newOpenModalAction(route, taskId));
+  };
+
+  const closeModal = () => {
+    dispatch(RoutingActions.newCloseModalAction(taskId));
+  };
+
   const setContactsPage = (page: number) => changeContactResultPage(page, routing);
   const setCasesPage = (page: number) => changeCaseResultPage(page, routing);
 
@@ -177,7 +215,7 @@ const SearchResults: React.FC<Props> = ({
 
     try {
       await saveUpdates();
-      await createCaseAsyncAction(contact, workerSid, definitionVersion);
+      await asyncDispatch<AnyAction>(dispatch)(createCaseAsyncAction(contact, workerSid, definitionVersion));
       closeModal();
       newCase();
     } catch (error) {
@@ -405,66 +443,7 @@ const SearchResults: React.FC<Props> = ({
     </>
   );
 };
+/* eslint-enable sonarjs/cognitive-complexity */
 SearchResults.displayName = 'SearchResults';
 
-const mapStateToProps = (state: RootState, { task }: OwnProps) => {
-  const { searchContacts, configuration, routing, activeContacts } = state[namespace];
-  const taskId = task.taskSid;
-  const currentRoute = getCurrentTopmostRouteForTask(routing, taskId);
-  const contextContactId =
-    (isCaseRoute(currentRoute) || currentRoute.route === 'search') && currentRoute.contextContactId;
-  const searchContext = contextContactId ? `contact-${contextContactId}` : 'root';
-  const { isRequesting, isRequestingCases, caseRefreshRequired, contactRefreshRequired } =
-    searchContacts?.tasks[taskId][searchContext] || {};
-  const { counselors } = configuration;
-  const { draftContact, savedContact } = activeContacts.existingContacts[searchContext] ?? {};
-
-  return {
-    isRequestingContacts: isRequesting,
-    isRequestingCases,
-    caseRefreshRequired,
-    contactRefreshRequired,
-    counselorsHash: counselors.hash,
-    routing: getCurrentTopmostRouteForTask(routing, taskId),
-    searchCase: searchContacts.tasks[task.taskSid].searchExistingCaseStatus,
-    contact: getUnsavedContact(savedContact, draftContact),
-    searchContext,
-    contextContactId,
-  };
-};
-
-const mapDispatchToProps = (dispatch, ownProps) => {
-  const taskId = ownProps.task.taskSid;
-
-  return {
-    changeContactResultPage: (contactsPage: number, currentRoute: SearchResultRoute) => {
-      dispatch(
-        changeRoute({ ...currentRoute, subroute: 'contact-results', contactsPage }, taskId, ChangeRouteMode.Replace),
-      );
-    },
-    changeCaseResultPage: (casesPage: number, currentRoute: SearchResultRoute) => {
-      dispatch(changeRoute({ ...currentRoute, subroute: 'case-results', casesPage }, taskId, ChangeRouteMode.Replace));
-    },
-    viewCaseDetails: (caseId: string, contextContactId: string) => {
-      dispatch(
-        newOpenModalAction({ contextContactId, route: 'case', subroute: 'home', isCreating: false, caseId }, taskId),
-      );
-    },
-    newCase: () => {
-      dispatch(newOpenModalAction({ route: 'case', subroute: 'home', isCreating: true, caseId: undefined }, taskId));
-    },
-    viewContactDetails: ({ id }: Contact) => {
-      dispatch(newOpenModalAction({ route: 'contact', subroute: 'view', id: id.toString() }, taskId));
-    },
-    changeRoute: bindActionCreators(RoutingActions.changeRoute, dispatch),
-    openModal: (route: AppRoutes) => dispatch(RoutingActions.newOpenModalAction(route, taskId)),
-    closeModal: () => dispatch(RoutingActions.newCloseModalAction(taskId)),
-    createCaseAsyncAction: async (contact, workerSid: string, definitionVersion: string) => {
-      // Deliberately using dispatch rather than asyncDispatch here, because we still handle the error from where the action is dispatched.
-      // TODO: Rework error handling to be based on redux state set by the _REJECTED action
-      await asyncDispatch(dispatch)(createCaseAsyncAction(contact, workerSid, definitionVersion));
-    },
-  };
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(SearchResults);
+export default SearchResults;

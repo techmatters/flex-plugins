@@ -15,7 +15,7 @@
  */
 
 import React from 'react';
-import { connect, ConnectedProps } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import { RootState } from '../../states';
 import { namespace } from '../../states/storeNamespaces';
@@ -60,22 +60,13 @@ export type RouteConfig<TProps> = RouteConfigEntry<TProps>[];
 
 type RouteConfigAny = RouteConfig<any>;
 
-type OwnProps = {
+type RouterProps = {
   routeConfig: RouteConfigAny;
   task: RouterTask;
+  [key: string]: any; // Allow additional props to be passed through
 };
 
-const mapStateToProps = (state: RootState, { task: { taskSid } }: OwnProps) => {
-  const routingState = state[namespace].routing;
-  const routing = getCurrentTopmostRouteForTask(routingState, taskSid);
-
-  return {
-    routing,
-  };
-};
-
-const connector = connect(mapStateToProps);
-type Props = OwnProps & ConnectedProps<typeof connector>;
+type Props = RouterProps;
 
 const getRootRoutes = (routeConfig: RouteConfigAny) =>
   routeConfig
@@ -122,8 +113,12 @@ export const shouldHandleRoute = (routing: AppRoutes, routeConfig: RouteConfigAn
 };
 
 const Router: React.FC<Props> = props => {
-  const { routeConfig, routing } = props;
-  return getHandleableRoute(routeConfig, routing)?.renderComponent(props) || null;
+  const { routeConfig, task } = props;
+  const routing = useSelector((state: RootState) => {
+    const routingState = state[namespace].routing;
+    return getCurrentTopmostRouteForTask(routingState, task.taskSid);
+  });
+  return getHandleableRoute(routeConfig, routing)?.renderComponent({ ...props, routing }) || null;
 };
 
-export default connector(Router);
+export default Router;

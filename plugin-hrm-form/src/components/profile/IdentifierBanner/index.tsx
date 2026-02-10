@@ -15,7 +15,7 @@
  */
 
 import React from 'react';
-import { connect, ConnectedProps } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { Template } from '@twilio/flex-ui';
 
 import { useIdentifierByIdentifier, useProfile, useProfileRelationshipsByType } from '../../../states/profile/hooks';
@@ -30,32 +30,13 @@ import { iconsFromTask } from './iconsFromTask';
 import { getHrmConfig } from '../../../hrmConfig';
 import { PermissionActions } from '../../../permissions/actions';
 
-type OwnProps = {
+type Props = {
   task: CustomITask;
   enableClientProfiles?: boolean;
 };
 
-const mapDispatchToProps = (dispatch, ownProps) => {
-  const { task } = ownProps;
-  const taskId = task.taskSid;
-
-  return {
-    openProfileModal: id => {
-      dispatch(newOpenModalAction({ route: 'profile', profileId: id }, taskId));
-    },
-    openContactsModal: id => {
-      dispatch(newOpenModalAction({ route: 'profile', subroute: 'contacts', profileId: id }, taskId));
-    },
-    openCasesModal: id => {
-      dispatch(newOpenModalAction({ route: 'profile', subroute: 'cases', profileId: id }, taskId));
-    },
-  };
-};
-
-const connector = connect(null, mapDispatchToProps);
-type Props = OwnProps & ConnectedProps<typeof connector>;
-
-const ProfileIdentifierBanner: React.FC<Props> = ({ task, openProfileModal, openContactsModal, openCasesModal }) => {
+const ProfileIdentifierBanner: React.FC<Props> = ({ task }) => {
+  const dispatch = useDispatch();
   const can = React.useMemo(() => {
     return getInitializedCan();
   }, []);
@@ -91,13 +72,13 @@ const ProfileIdentifierBanner: React.FC<Props> = ({ task, openProfileModal, open
   if (!shouldDisplayBanner || contactsLoading || casesLoading) return null;
 
   const handleViewClients = () => {
-    openProfileModal(profileId);
+    dispatch(newOpenModalAction({ route: 'profile', profileId }, task.taskSid));
   };
   const handleViewContacts = () => {
-    openContactsModal(profileId);
+    dispatch(newOpenModalAction({ route: 'profile', subroute: 'contacts', profileId }, task.taskSid));
   };
   const handleViewCases = () => {
-    openCasesModal(profileId);
+    dispatch(newOpenModalAction({ route: 'profile', subroute: 'cases', profileId }, task.taskSid));
   };
 
   return (
@@ -154,4 +135,4 @@ const ProfileIdentifierBanner: React.FC<Props> = ({ task, openProfileModal, open
 };
 
 ProfileIdentifierBanner.displayName = 'PreviousContactsBanner';
-export default connector(ProfileIdentifierBanner);
+export default ProfileIdentifierBanner;

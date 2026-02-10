@@ -17,7 +17,7 @@
 /* eslint-disable react/prop-types */
 import React from 'react';
 import { Template } from '@twilio/flex-ui';
-import { connect } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { CaseOverviewTypeEntry } from 'hrm-form-definitions';
 
 import { CaseDetailsBorder, CaseSectionFont, CaseStyledTextArea } from '../styles';
@@ -26,17 +26,15 @@ import { getTemplateStrings } from '../../../hrmConfig';
 import selectCurrentRouteCaseState from '../../../states/case/selectCurrentRouteCase';
 import { RootState } from '../../../states';
 
-type OwnProps = {
+type Props = {
   task: CustomITask | StandaloneITask;
   textareaFields?: (CaseOverviewTypeEntry & {
     placeholder?: string;
   })[];
 };
 
-// eslint-disable-next-line no-use-before-define
-type Props = OwnProps & ReturnType<typeof mapStateToProps>;
-
-const CaseTextAreaEntry: React.FC<Props> = ({ connectedCaseState, textareaFields }) => {
+const CaseTextAreaEntry: React.FC<Props> = ({ task, textareaFields }) => {
+  const connectedCaseState = useSelector((state: RootState) => selectCurrentRouteCaseState(state, task.taskSid));
   const strings = getTemplateStrings();
   const { connectedCase } = connectedCaseState;
 
@@ -73,8 +71,4 @@ const CaseTextAreaEntry: React.FC<Props> = ({ connectedCaseState, textareaFields
 
 CaseTextAreaEntry.displayName = 'CaseTextAreaEntry';
 
-const mapStateToProps = (state: RootState, { task }: OwnProps) => {
-  return { connectedCaseState: selectCurrentRouteCaseState(state, task.taskSid) };
-};
-
-export default connect(mapStateToProps)(CaseTextAreaEntry);
+export default CaseTextAreaEntry;

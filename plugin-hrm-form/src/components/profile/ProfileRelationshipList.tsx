@@ -15,9 +15,10 @@
  */
 
 import React, { useEffect } from 'react';
-import { connect, ConnectedProps } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Template } from '@twilio/flex-ui';
 import InfoIcon from '@material-ui/icons/Info';
+import { AnyAction } from 'redux';
 
 import Pagination from '../pagination';
 import asyncDispatch from '../../states/asyncDispatch';
@@ -29,40 +30,6 @@ import { RootState } from '../../states';
 import { SearchResultWarningContainer, Text } from '../search/styles';
 import { Row } from '../../styles';
 
-const mapStateToProps = (state: RootState, { profileId, type }) => {
-  const { data, loading, page, total } =
-    profileSelectors.selectProfileRelationshipsByType(state, profileId, type) || {};
-
-  return {
-    data,
-    loading,
-    page,
-    total,
-  };
-};
-
-const mapDispatchToProps = (dispatch, { profileId, type }: OwnProps) => ({
-  loadRelationshipAsync: (page: number) =>
-    asyncDispatch(dispatch)(
-      profileActions.loadRelationshipAsync({
-        profileId,
-        type,
-        page,
-      }),
-    ),
-  updatePage: (page: number) =>
-    dispatch(
-      profileActions.updateRelationshipsPage({
-        profileId,
-        type,
-        page,
-      }),
-    ),
-});
-
-const connector = connect(mapStateToProps, mapDispatchToProps);
-type Props = OwnProps & ConnectedProps<typeof connector>;
-
 type ProfileId = ProfileTypes.Profile['id'];
 
 type OwnProps = {
@@ -71,23 +38,35 @@ type OwnProps = {
   renderItem: (d: ProfileTypes.ProfileRelationshipTypes) => React.ReactNode;
 };
 
-const ProfileRelationshipList: React.FC<Props> = ({
-  data,
-  loading,
-  page,
-  type,
-  total,
-  updatePage,
-  loadRelationshipAsync,
-  renderItem,
-}) => {
+const ProfileRelationshipList: React.FC<OwnProps> = ({ profileId, type, renderItem }) => {
+  const dispatch = useDispatch();
+
+  const { data, loading, page, total } =
+    useSelector((state: RootState) => profileSelectors.selectProfileRelationshipsByType(state, profileId, type)) || {};
+
   const hasData = data && data.length > 0;
 
   useEffect(() => {
     if (loading) return;
-    loadRelationshipAsync(page);
+    asyncDispatch<AnyAction>(dispatch)(
+      profileActions.loadRelationshipAsync({
+        profileId,
+        type,
+        page,
+      }),
+    );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page]);
+
+  const handleChangePage = (newPage: number) => {
+    dispatch(
+      profileActions.updateRelationshipsPage({
+        profileId,
+        type,
+        page: newPage,
+      }),
+    );
+  };
 
   const renderData = () => {
     if (loading) {
@@ -115,7 +94,7 @@ const ProfileRelationshipList: React.FC<Props> = ({
 
     const pagesCount = Math.ceil(total / PAGE_SIZE);
 
-    return <Pagination page={page} pagesCount={pagesCount} handleChangePage={updatePage} disabled={loading} />;
+    return <Pagination page={page} pagesCount={pagesCount} handleChangePage={handleChangePage} disabled={loading} />;
   };
 
   return (
@@ -126,4 +105,6 @@ const ProfileRelationshipList: React.FC<Props> = ({
   );
 };
 
-export default connector(ProfileRelationshipList);
+ProfileRelationshipList.displayName = 'ProfileRelationshipList';
+
+export default ProfileRelationshipList;

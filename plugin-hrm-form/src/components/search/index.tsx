@@ -180,7 +180,6 @@ const Search: React.FC<Props> = ({ task, currentIsCaller = false, saveUpdates })
             >
               <SearchResults
                 task={task}
-                currentIsCaller={currentIsCaller}
                 searchContactsResults={searchContactsResults}
                 searchCasesResults={searchCasesResults}
                 onlyDataContacts={searchParams.onlyDataContacts}

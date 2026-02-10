@@ -15,7 +15,7 @@
  */
 
 import React from 'react';
-import { connect } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import { RootState } from '../../states';
 import { ResourcePage } from '../../states/resources';
@@ -24,15 +24,8 @@ import SearchResources from './search/SearchResources';
 import ViewResource from './resourceView/ViewResource';
 import { namespace, referrableResourcesBase } from '../../states/storeNamespaces';
 
-const mapStateToProps = (state: RootState) => ({
-  route: state[namespace][referrableResourcesBase].route,
-});
-
-const connector = connect(mapStateToProps);
-
-type Props = ReturnType<typeof mapStateToProps>;
-
-const ReferrableResources: React.FC<Props> = ({ route }) => {
+const ReferrableResources: React.FC = () => {
+  const route = useSelector((state: RootState) => state[namespace][referrableResourcesBase].route);
   switch (route.page) {
     case ResourcePage.Search: {
       return <SearchResources />;
@@ -51,4 +44,4 @@ const ReferrableResources: React.FC<Props> = ({ route }) => {
 
 ReferrableResources.displayName = 'ReferrableResources';
 
-export default connector(ReferrableResources);
+export default ReferrableResources;

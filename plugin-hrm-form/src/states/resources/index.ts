@@ -156,3 +156,19 @@ export const selectResourceById = (
   }: RootState,
   resourceId: string,
 ) => resources[resourceId];
+
+export const selectResourceData = (state: RootState, resourceId: string): ReferrableResource | undefined => {
+  const resourceState = selectResourceById(state, resourceId);
+  if (!resourceState || resourceState.status === ResourceLoadStatus.Loading) {
+    return undefined;
+  }
+  return resourceState.resource;
+};
+
+export const selectResourceError = (state: RootState, resourceId: string): Error | undefined => {
+  const resourceState = selectResourceById(state, resourceId);
+  if (!resourceState || resourceState.status === ResourceLoadStatus.Loading) {
+    return undefined;
+  }
+  return resourceState.error;
+};
