@@ -9,6 +9,7 @@ locals {
     enable_datadog_monitoring             = false
     custom_task_routing_filter_expression = "channelType IN ['web','voice']"
     permission_config                     = "nzba"
+    bot_language                          = "en-US"
 
     #Studio flow
     flow_vars = {
@@ -23,7 +24,7 @@ locals {
       webchat : {
         channel_type         = "web"
         contact_identity     = ""
-        templatefile         = "/app/twilio-iac/helplines/templates/studio-flows/messaging-no-chatbot-operating-hours-blocking-lambda.tftpl"
+        templatefile         = "/app/twilio-iac/helplines/templates/studio-flows/messaging-lex-v3-blocking-lambda.tftpl"
         channel_flow_vars    = {}
         chatbot_unique_names = []
       },
