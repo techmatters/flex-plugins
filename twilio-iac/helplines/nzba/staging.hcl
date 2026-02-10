@@ -9,11 +9,10 @@ locals {
     enable_datadog_monitoring             = false
     custom_task_routing_filter_expression = "channelType IN ['web','voice']"
     permission_config                     = "nzba"
-    bot_language                          = "en-US"
 
     #Studio flow
     flow_vars = {
-
+    bot_language                          = "en-US"
       widget_from                           = "Barnardos"
       chat_blocked_message                  = "Sorry, you're not able to contact Barnardos from this device or account"
       error_message                         = "There has been an error with your message, please try writing us again."
