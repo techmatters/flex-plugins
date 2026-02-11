@@ -1017,7 +1017,7 @@
     "options": [
       {
         "value": "Unknown",
-        "label": ""
+        "label": "Unknown"
       },
       {
         "value": "partyMember",
@@ -1091,5 +1091,14 @@
     "label": "Ethnicity",
     "type": "input",
     "isPII": true
+  },
+  {
+    "name": "vawieComments",
+    "label": "VAWIE Notes",
+    "type": "textarea",
+    "placeholder": "",
+    "rows": 10,
+    "width": 100,
+    "isPII": false
   }
 ]

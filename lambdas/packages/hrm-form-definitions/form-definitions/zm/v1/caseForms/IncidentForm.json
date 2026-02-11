@@ -112,6 +112,44 @@
     "isPII": false
   },
   {
+    "name": "electoralActor",
+    "label": "Electoral Actor",
+    "type": "select",
+    "options": [
+    {
+      "label": "Voter/Individual"
+    },
+    {
+      "label": "Candidate/Aspiring candidate"
+    },
+    {
+      "label": "Party activist/Member"
+    },
+    {
+      "label": "Party agent/Pollwatcher"
+    },
+    {
+      "label": "Nonpartisan election observer"
+    },
+    {
+      "label": "CSO Rep"
+    },
+    {
+      "label": "Security Agent"
+    },
+    {
+      "label": "Media"
+    },
+    {
+      "label": "Family/Community"
+    },
+    {
+      "label": "Election worker/official"
+    }
+  ],
+  "isPII":false
+  },
+  {
     "name": "locationElectionIncident",
     "label": "Location of the incident in Relation to Politics/Elections",
     "type": "select",
