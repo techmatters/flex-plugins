@@ -1093,7 +1093,7 @@
     "isPII": true
   },
   {
-    "name": "Vawiecomments",
+    "name": "vawieComments",
     "label": "VAWIE Notes",
     "type": "textarea",
     "placeholder": "",
