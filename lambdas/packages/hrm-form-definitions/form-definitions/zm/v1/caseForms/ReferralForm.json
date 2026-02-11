@@ -18,8 +18,8 @@
     "type": "listbox-multiselect",
     "options": [
       {
-        "value": "",
-        "label": ""
+        "value": "Unknown",
+        "label": "Unknown"
       },
       {
         "value": "OSC",
