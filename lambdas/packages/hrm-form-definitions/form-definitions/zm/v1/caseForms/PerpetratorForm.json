@@ -1017,7 +1017,7 @@
     "options": [
       {
         "value": "Unknown",
-        "label": ""
+        "label": "Unknown"
       },
       {
         "value": "partyMember",
@@ -1098,7 +1098,7 @@
     "type": "textarea",
     "placeholder": "",
     "rows": 10,
-    "width": 289,
-    "isPII": true
+    "width": 100,
+    "isPII": false
   }
 ]
