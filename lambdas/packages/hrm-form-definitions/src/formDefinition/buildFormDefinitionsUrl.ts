@@ -38,7 +38,9 @@ export const buildFormDefinitionsBaseUrlGetter =
   (definitionVersionId: string) => {
     const helplineCode = getHelplineCodeFromDefinitionVersionId(definitionVersionId);
     const version = getVersionFromDefinitionVersionId(definitionVersionId);
-    let baseUrl: string = configuredFormDefinitionsBaseUrl || `https://assets-${environment}.tl.techmatters.org/form-definitions/`;
+    let baseUrl: string =
+      configuredFormDefinitionsBaseUrl ||
+      `https://assets-${environment}.tl.techmatters.org/form-definitions/`;
     if (!baseUrl.endsWith('/')) {
       baseUrl = `${baseUrl}/`;
     }
