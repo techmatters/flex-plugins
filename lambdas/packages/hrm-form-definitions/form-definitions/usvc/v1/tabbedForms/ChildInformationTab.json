@@ -1278,6 +1278,10 @@
         "label": "Virginia"
       },
       {
+        "value": "Washington",
+        "label": "Washington"
+      },
+      {
         "value": "Washington D.C.",
         "label": "Washington D.C."
       },
@@ -1617,6 +1621,12 @@
         }
       ],
       "Virginia": [
+        {
+          "value": "N/A",
+          "label": "N/A"
+        }
+      ],
+      "Washington": [
         {
           "value": "N/A",
           "label": "N/A"
