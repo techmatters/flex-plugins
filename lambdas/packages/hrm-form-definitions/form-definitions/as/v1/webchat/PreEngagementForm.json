@@ -3,7 +3,7 @@
   "submitLabel": "LetsChat",
   "fields": [
     {
-      "type": "input-text",
+      "type": "input",
       "name": "firstName",
       "label": "First Name",
       "placeholder": "GuestName",

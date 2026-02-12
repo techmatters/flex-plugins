@@ -3,14 +3,14 @@
   "submitLabel": "LetsChat",
   "fields": [
     {
-      "type": "input-text",
+      "type": "input",
       "name": "friendlyName",
       "label": "First Name",
       "placeholder": "Your name",
       "required": true
     },
     {
-      "type": "input-text",
+      "type": "input",
       "name": "lastName",
       "label": "Last Name",
       "placeholder": "Your last name",
@@ -24,14 +24,14 @@
       "placeholder": "Your Email"
     },
     {
-      "type": "input-text",
+      "type": "input",
       "name": "phone1",
       "label": "Phone Number",
       "placeholder": "Your phone number",
       "required": true
     },
     {
-      "type": "input-text",
+      "type": "input",
       "name": "bookingReference",
       "label": "Booking Reference",
       "required": true
