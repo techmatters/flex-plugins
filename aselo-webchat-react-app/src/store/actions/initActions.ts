@@ -51,7 +51,7 @@ export const initConfigThunk = (
 
       dispatch({
         type: ACTION_LOAD_CONFIG_SUCCESS,
-        payload: { ...config, preEngagementForm },
+        payload: { ...config, preEngagementFormDefinition: preEngagementForm },
       });
     } catch (err) {
       dispatch({
