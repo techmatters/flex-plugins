@@ -1020,23 +1020,23 @@
         "label": "Unknown"
       },
       {
-        "value": "partyMember",
+        "value": "Party Member",
         "label": "Party Member"
       },
       {
-        "value": "supporter",
+        "value": "Supporter",
         "label": "Supporter"
       },
       {
-        "value": "candidate",
+        "value": "Candidate",
         "label": "Candidate"
       },
       {
-        "value": "pollingAgent",
+        "value": "Polling Agent",
         "label": "Polling Agent"
       },
       {
-        "value": "other",
+        "value": "Other",
         "label": "Others"
       }
     ],
