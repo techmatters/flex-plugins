@@ -100,7 +100,7 @@
     "isPII": false
   },
   {
-    "name": "Witnesses",
+    "name": "witnesses",
     "label": "Who was the incident witnessed by?",
     "type": "input",
     "isPII": true
@@ -116,38 +116,48 @@
     "label": "Electoral Actor",
     "type": "select",
     "options": [
-    {
-      "label": "Voter/Individual"
-    },
-    {
-      "label": "Candidate/Aspiring candidate"
-    },
-    {
-      "label": "Party activist/Member"
-    },
-    {
-      "label": "Party agent/Pollwatcher"
-    },
-    {
-      "label": "Nonpartisan election observer"
-    },
-    {
-      "label": "CSO Rep"
-    },
-    {
-      "label": "Security Agent"
-    },
-    {
-      "label": "Media"
-    },
-    {
-      "label": "Family/Community"
-    },
-    {
-      "label": "Election worker/official"
-    }
-  ],
-  "isPII":false
+      {
+        "label": "Voter/Individual",
+        "value": "Voter/Individual"
+      },
+      {
+        "label": "Candidate/Aspiring candidate",
+        "value": "Candidate/Aspiring candidate"
+      },
+      {
+        "label": "Party activist/Member",
+        "value": "Party activist/Member"
+      },
+      {
+        "label": "Party agent/Pollwatcher",
+        "value": "Party agent/Pollwatcher"
+      },
+      {
+        "label": "Nonpartisan election observer",
+        "value": "Nonpartisan election observer"
+      },
+      {
+        "label": "CSO Rep",
+        "value": "CSO Rep"
+      },
+      {
+        "label": "Security Agent",
+        "value": "Security Agent"
+      },
+      {
+        "label": "Media",
+        "value": "Media"
+      },
+      {
+        "label": "Family/Community",
+        "value": "Family/Community"
+      },
+      {
+        "label": "Election worker/official",
+        "value": "Election worker/official"
+      }
+    ],
+    "isPII": false
   },
   {
     "name": "locationElectionIncident",
@@ -212,7 +222,7 @@
     "isPII": true
   },
   {
-    "name": "VAWIENote",
+    "name": "vawieNote",
     "label": "VAWIE Notes",
     "type": "textarea",
     "rows": 25,
