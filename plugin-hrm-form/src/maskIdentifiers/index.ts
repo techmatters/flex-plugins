@@ -17,7 +17,6 @@
 import {
   Strings,
   TaskChannelDefinition,
-  MessagingCanvas,
   MessageList,
   StateHelper,
   ConversationHelper,
@@ -26,7 +25,6 @@ import {
   Manager,
   AppState,
 } from '@twilio/flex-ui';
-import { Strings, TaskChannelDefinition, MessageList, Manager, AppState } from '@twilio/flex-ui';
 // Weird type to pull in, but I can't see how it can be inferred from the public API, so it's this or 'any' xD
 import type { ChatProperties } from '@twilio/flex-ui/src/internal-flex-commons/src';
 
