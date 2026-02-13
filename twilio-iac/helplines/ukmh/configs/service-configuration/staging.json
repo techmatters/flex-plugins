@@ -4,13 +4,15 @@
         "resources_base_url": "",
         "logo_url" : "https://aselo-logo.s3.amazonaws.com/200+transparent+background+no+TM+staging.png",
         "config_flags": {
-            "hideAddToNewCaseButton": false
+            "hideAddToNewCaseButton": false,
+            "enableUnmaskingCalls": false
         },
         "feature_flags": {
             "enable_lex_v2": true,
-            "use_prepopulate_mappings": true,
             "enable_post_survey": true,
-            "enable_lambda_post_survey_processing": true
+            "enable_lambda_post_survey_processing": true,
+            "use_prepopulate_mappings": true,
+            "use_twilio_lambda_for_conference_functions": true
         }
     }
 }

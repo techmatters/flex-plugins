@@ -15,8 +15,8 @@
  */
 
 /* eslint-disable react/prop-types */
-import React, { Dispatch, useEffect } from 'react';
-import { connect, ConnectedProps } from 'react-redux';
+import React, { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { withTaskContext } from '@twilio/flex-ui';
 import _ from 'lodash';
 
@@ -29,34 +29,43 @@ import { namespace } from '../states/storeNamespaces';
 import { getUnsavedContact } from '../states/contacts/getUnsavedContact';
 import asyncDispatch from '../states/asyncDispatch';
 import { newLoadContactFromHrmForTaskAsyncAction } from '../states/contacts/saveContact';
-import { getAseloFeatureFlags, getHrmConfig } from '../hrmConfig';
+import { getAseloFeatureFlags } from '../hrmConfig';
 import { selectAnyContactIsSaving } from '../states/contacts/selectContactSaveStatus';
 import selectCurrentOfflineContact from '../states/contacts/selectCurrentOfflineContact';
 import { populateCounselors } from '../services/twilioWorkerService';
 
-type OwnProps = {
+type Props = {
   task?: ITask;
 };
 
-// eslint-disable-next-line no-use-before-define
-type Props = OwnProps & ConnectedProps<typeof connector>;
-
 let handleUnloadRef = null;
 
-const CustomCRMContainer: React.FC<Props> = ({
-  selectedTaskSid,
-  task,
-  hasUnsavedChanges,
-  populateCounselorList,
-  currentOfflineContact,
-  loadDraftOfflineContact,
-}) => {
+const CustomCRMContainer: React.FC<Props> = ({ task }) => {
+  const dispatch = useDispatch();
+  const selectedTaskSid = useSelector((state: RootState) => state.flex.view.selectedTaskSid);
+  const currentOfflineContact = useSelector((state: RootState) => selectCurrentOfflineContact(state));
+  const hasUnsavedChanges = useSelector((state: RootState) => {
+    const { activeContacts, connectedCase } = state[namespace];
+    return (
+      Object.values(activeContacts.existingContacts).some(
+        ({ savedContact, draftContact }) => !_.isEqual(savedContact, getUnsavedContact(savedContact, draftContact)),
+      ) ||
+      Object.values(connectedCase.cases).some(
+        ({ caseWorkingCopy }) =>
+          caseWorkingCopy.caseSummary || Object.values(caseWorkingCopy.sections ?? {}).some(section => section),
+      ) ||
+      selectAnyContactIsSaving(state)
+    );
+  });
+
   const { enable_confirm_on_browser_close: enableConfirmOnBrowserClose } = getAseloFeatureFlags();
+
   useEffect(() => {
     const fetchPopulateCounselors = async () => {
       try {
+        // TODO (Steve): Migrate this to a single async action
         const counselorsList = await populateCounselors();
-        populateCounselorList(counselorsList);
+        dispatch(populateCounselorsState(counselorsList));
       } catch (err) {
         // TODO (Gian): probably we need to handle this in a nicer way
         console.error(err.message);
@@ -64,13 +73,13 @@ const CustomCRMContainer: React.FC<Props> = ({
     };
 
     fetchPopulateCounselors();
-  }, [populateCounselorList]);
+  }, [dispatch]);
 
   useEffect(() => {
     if (!currentOfflineContact) {
-      loadDraftOfflineContact();
+      asyncDispatch(dispatch)(newLoadContactFromHrmForTaskAsyncAction(getOfflineContactTask()));
     }
-  }, [currentOfflineContact, loadDraftOfflineContact]);
+  }, [currentOfflineContact, dispatch]);
 
   useEffect(() => {
     if (!enableConfirmOnBrowserClose) {
@@ -110,37 +119,4 @@ const CustomCRMContainer: React.FC<Props> = ({
 
 CustomCRMContainer.displayName = 'CustomCRMContainer';
 
-const mapStateToProps = (state: RootState) => {
-  const {
-    [namespace]: { activeContacts, connectedCase },
-    flex,
-  } = state;
-  const { selectedTaskSid } = flex.view;
-  const currentOfflineContact = selectCurrentOfflineContact(state);
-  const hasUnsavedChanges =
-    Object.values(activeContacts.existingContacts).some(
-      ({ savedContact, draftContact }) => !_.isEqual(savedContact, getUnsavedContact(savedContact, draftContact)),
-    ) ||
-    Object.values(connectedCase.cases).some(
-      ({ caseWorkingCopy }) =>
-        caseWorkingCopy.caseSummary || Object.values(caseWorkingCopy.sections ?? {}).some(section => section),
-    ) ||
-    selectAnyContactIsSaving(state);
-  return {
-    selectedTaskSid,
-    currentOfflineContact,
-    hasUnsavedChanges,
-  };
-};
-
-const mapDispatchToProps = (dispatch: Dispatch<any>) => {
-  return {
-    loadDraftOfflineContact: () =>
-      asyncDispatch(dispatch)(newLoadContactFromHrmForTaskAsyncAction(getOfflineContactTask())),
-    populateCounselorList: (listPayload: Awaited<ReturnType<typeof populateCounselors>>) =>
-      dispatch(populateCounselorsState(listPayload)),
-  };
-};
-
-const connector = connect(mapStateToProps, mapDispatchToProps);
-export default withTaskContext(connector(CustomCRMContainer));
+export default withTaskContext(CustomCRMContainer);

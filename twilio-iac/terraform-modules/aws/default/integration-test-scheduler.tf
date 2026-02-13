@@ -7,7 +7,9 @@ data "terraform_remote_state" "microservices" {
     bucket   = "tl-terraform-state-${lower(var.environment)}"
     key      = "infrastructure-config/${var.helpline_region}/microservices/terraform.tfstate"
     region   = "us-east-1"
-    role_arn = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/tf-twilio-iac-${lower(var.environment)}"
+    assume_role = {
+      role_arn = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/tf-twilio-iac-${lower(var.environment)}"
+    }
   }
 }
 

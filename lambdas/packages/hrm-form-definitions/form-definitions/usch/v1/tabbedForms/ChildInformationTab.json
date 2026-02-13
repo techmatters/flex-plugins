@@ -1215,10 +1215,6 @@
       {
         "value": "Medical Emergency",
         "label": "Medical Emergency"
-      },
-      {
-        "value": "Safety Concern- Other",
-        "label": "Safety Concern- Other"
       }
     ],
     "required": {

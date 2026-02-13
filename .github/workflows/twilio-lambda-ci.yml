@@ -25,7 +25,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: Use Node.js
         uses: actions/setup-node@v6
@@ -90,7 +90,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v5
@@ -132,3 +132,4 @@ jobs:
           push: true
           # 'latest' is never used, but it keeps terraform happy
           tags: ${{ env.ECR_URL }}:${{ github.ref_type }}.${{ env.ref_name_for_docker }},${{ env.ECR_URL }}:${{ github.sha }},${{ env.ECR_URL }}:latest
+          provenance: false

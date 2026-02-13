@@ -2,27 +2,6 @@
 #   region = var.helpline_region
 # }
 
-
-module "lex" {
-  source = "../../lex/v1"
-
-  providers = {
-    aws           = aws
-    aws.hl-region = aws.hl-region
-  }
-
-  for_each = var.lex_bot_languages
-
-  helpline       = var.helpline
-  short_helpline = var.short_helpline
-  environment    = var.environment
-  language       = each.key
-
-  bots       = var.lex_bots[each.key]
-  intents    = var.lex_intents[each.key]
-  slot_types = var.lex_slot_types[each.key]
-}
-
 module "lex_v2" {
   source = "../../lex/v2"
 
@@ -30,7 +9,7 @@ module "lex_v2" {
     aws           = aws
     aws.hl-region = aws.hl-region
   }
-  for_each = var.enable_lex_v2 ? var.lex_v2_bot_languages : {}
+  for_each = var.lex_v2_bot_languages
 
   helpline        = var.helpline
   short_helpline  = var.short_helpline

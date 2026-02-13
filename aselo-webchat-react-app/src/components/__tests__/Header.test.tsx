@@ -13,29 +13,30 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
+import { render } from '@testing-library/react';
+import '@testing-library/jest-dom';
 
-import { render } from "@testing-library/react";
-import "@testing-library/jest-dom";
+import { resetMockRedux } from '../../__mocks__/redux/mockRedux';
+import { Header } from '../Header';
 
-import { Header } from "../Header";
+describe('Header', () => {
+  beforeEach(() => resetMockRedux());
+  it('renders the header', () => {
+    const { container } = render(<Header />);
 
-describe("Header", () => {
-    it("renders the header", () => {
-        const { container } = render(<Header />);
+    expect(container).toBeInTheDocument();
+  });
 
-        expect(container).toBeInTheDocument();
-    });
+  it('renders header with custom title', () => {
+    const customTitle = 'Chat Title';
+    const { queryByText } = render(<Header customTitle={customTitle} />);
 
-    it("renders header with custom title", () => {
-        const customTitle = "Chat Title";
-        const { queryByText } = render(<Header customTitle={customTitle} />);
+    expect(queryByText(customTitle)).toBeInTheDocument();
+  });
 
-        expect(queryByText(customTitle)).toBeInTheDocument();
-    });
+  it('renders header with default text when no custom title provided', () => {
+    const { queryByText } = render(<Header />);
 
-    it("renders header with default text when no custom title provided", () => {
-        const { queryByText } = render(<Header />);
-
-        expect(queryByText("Live Chat")).toBeInTheDocument();
-    });
+    expect(queryByText('Header-TitleBar-Title')).toBeInTheDocument();
+  });
 });

@@ -1,6 +1,8 @@
 {
     "attributes": {
-        "feature_flags": {},
+        "feature_flags": {
+            "use_twilio_lambda_for_conference_functions": true
+        },
         "form_definitions_base_url": "https://assets-staging.tl.techmatters.org/form-definitions/",
         "resources_base_url": "",
         "logo_url" : "https://aselo-logo.s3.amazonaws.com/200+transparent+background+no+TM+staging.png"

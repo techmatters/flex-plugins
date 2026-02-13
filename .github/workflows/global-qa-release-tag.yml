@@ -51,7 +51,7 @@ jobs:
 
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
 
       - name: Use Node.js
         uses: actions/setup-node@v6
@@ -73,7 +73,7 @@ jobs:
 
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
         with:
           sparse-checkout-cone-mode: false
           sparse-checkout: |
@@ -91,6 +91,16 @@ jobs:
 
       - name: Copy plugin to S3 release folders
         uses: ./.github/actions/copy-plugin-to-release-location
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_DEFAULT_REGION }}
+          source-git-reference-type: ${{ github.ref_type }}
+          source-git-reference: ${{ github.ref_name }}
+          target-git-tag: ${{ steps.create_pre_release.outputs.generated-pre-release-tag }}
+
+      - name: Copy aselo webchat react app to S3 release folders
+        uses: ./.github/actions/copy-aselo-webchat-react-app-to-release-location
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
@@ -155,7 +165,7 @@ jobs:
 
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
         with:
           sparse-checkout-cone-mode: false
           sparse-checkout: |

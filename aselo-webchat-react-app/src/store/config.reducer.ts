@@ -14,25 +14,42 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { AnyAction, Reducer } from "redux";
+import { AnyAction, Reducer } from 'redux';
 
-import { ConfigState } from "./definitions";
-import { ACTION_LOAD_CONFIG } from "./actions/actionTypes";
+import { AppState, ConfigState } from './definitions';
+import { ACTION_CHANGE_LOCALE, ACTION_LOAD_CONFIG_SUCCESS } from './actions/actionTypes';
 
 const initialState: ConfigState = {
-    deploymentKey: ""
+  defaultLocale: 'xx-XX',
+  translations: {},
+  aseloBackendUrl: '',
+  environment: '',
+  definitionVersion: '',
+  preEngagementForm: null,
+  helplineCode: '',
+  deploymentKey: '',
+  quickExitUrl: 'https://www.google.com',
 };
 
 export const ConfigReducer: Reducer = (state: ConfigState = initialState, action: AnyAction): ConfigState => {
-    switch (action.type) {
-        case ACTION_LOAD_CONFIG: {
-            return {
-                ...state,
-                ...action.payload
-            };
-        }
-
-        default:
-            return state;
+  switch (action.type) {
+    case ACTION_LOAD_CONFIG_SUCCESS: {
+      return {
+        ...state,
+        ...action.payload,
+      };
     }
+    case ACTION_CHANGE_LOCALE: {
+      return {
+        ...state,
+        currentLocale: action.payload.currentLocale,
+      };
+    }
+    default:
+      return state;
+  }
 };
+
+export const selectConfig = (root: AppState): ConfigState => root.config;
+export const selectCurrentLocale = (state: AppState) => state.config.currentLocale || state.config.defaultLocale;
+export const selectCurrentTranslations = (state: AppState) => state.config.translations[selectCurrentLocale(state)];

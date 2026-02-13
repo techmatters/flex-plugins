@@ -4,89 +4,91 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory.
  */
-import merge from "lodash.merge";
-import { render } from "react-dom";
-import { Provider } from "react-redux";
-import { Logger, LogLevelDesc } from "loglevel";
+import merge from 'lodash.merge';
+import { render } from 'react-dom';
+import { Provider } from 'react-redux';
+import { Logger, LogLevelDesc } from 'loglevel';
 
-import { store } from "./store/store";
-import { WebchatWidget } from "./components/WebchatWidget";
-import { sessionDataHandler } from "./sessionDataHandler";
-import { initConfig } from "./store/actions/initActions";
-import { ConfigState, UserConfig } from "./store/definitions";
-import { initLogger, getLogger } from "./logger";
-import { changeExpandedStatus } from "./store/actions/genericActions";
+import { store } from './store/store';
+import { WebchatWidget } from './components/WebchatWidget';
+import { sessionDataHandler } from './sessionDataHandler';
+import { initConfigThunk } from './store/actions/initActions';
+import { ConfigState } from './store/definitions';
+import { initLogger, getLogger } from './logger';
+import { changeExpandedStatus } from './store/actions/genericActions';
 
-const defaultConfig: ConfigState = {
-    deploymentKey: "",
-    region: "",
-    theme: {
-        isLight: true
-    },
-    fileAttachment: {
-        enabled: true,
-        maxFileSize: 16777216, // 16 MB
-        acceptedExtensions: ["jpg", "jpeg", "png", "amr", "mp3", "mp4", "pdf", "txt"]
+const getHelplineConfig = async ({ configUrl }: { configUrl: string | URL }) => {
+  try {
+    const helplineConfigResponse = await fetch(configUrl);
+    if (!helplineConfigResponse.ok) {
+      const errMsg = `Failed to load helpline specific config for Aselo Webchat from ${configUrl}, aborting load`;
+      return { status: 'error', message: errMsg } as const;
     }
+
+    const helplineConfigJSON = await helplineConfigResponse.json();
+    return { status: 'ok', data: helplineConfigJSON } as const;
+  } catch (err) {
+    return { status: 'error', message: err instanceof Error ? err.message : String(err) } as const;
+  }
 };
 
-const initWebchat = async (userConfig: UserConfig) => {
-    const validKeys = ["deploymentKey", "region", "theme", "appStatus"];
-    const logger = window.Twilio.getLogger(`InitWebChat`);
+const initWebchat = async (configLocation?: URL, overrides: Partial<ConfigState> = {}) => {
+  const logger = window.Twilio.getLogger(`InitWebChat`);
+  const configUrl = configLocation || process.env.REACT_APP_CONFIG_URL || './config.json';
 
-    if (!userConfig || !userConfig.deploymentKey) {
-        logger.error(`deploymentKey must exist to connect to Webchat servers`);
-        return;
-    }
+  // TODO: Move this config loading into a redux thunk
+  const helplineConfigResponse = await getHelplineConfig({ configUrl });
+  if (helplineConfigResponse.status === 'error') {
+    logger.error(helplineConfigResponse.message);
+    return;
+  }
 
-    for (const key in userConfig) {
-        if (!validKeys.includes(key)) {
-            logger.warn(`${key} is not supported.`);
-        }
-    }
+  const webchatConfig: ConfigState = merge(helplineConfigResponse.data, overrides);
+  webchatConfig.currentLocale = webchatConfig.defaultLocale;
+  if (!webchatConfig || !webchatConfig.deploymentKey) {
+    logger.error(`deploymentKey must exist to connect to Webchat servers`);
+    return;
+  }
 
-    store.dispatch(changeExpandedStatus({ expanded: userConfig.appStatus === "open" }));
-    delete userConfig.appStatus;
+  store.dispatch(changeExpandedStatus({ expanded: Boolean(webchatConfig.alwaysOpen) }));
 
-    const webchatConfig = merge({}, defaultConfig, userConfig);
+  sessionDataHandler.setRegion(webchatConfig.region);
+  sessionDataHandler.setDeploymentKey(webchatConfig.deploymentKey);
 
-    sessionDataHandler.setRegion(webchatConfig.region);
-    sessionDataHandler.setDeploymentKey(webchatConfig.deploymentKey);
+  await store.dispatch(initConfigThunk(webchatConfig) as any);
 
-    store.dispatch(initConfig(webchatConfig));
+  const rootElement = document.getElementById('aselo-webchat-widget-root');
+  logger.info('Now rendering the webchat');
 
-    const rootElement = document.getElementById("twilio-webchat-widget-root");
-    logger.info("Now rendering the webchat");
+  render(
+    <Provider store={store}>
+      <WebchatWidget />
+    </Provider>,
+    rootElement,
+  );
 
-    render(
-        <Provider store={store}>
-            <WebchatWidget />
-        </Provider>,
-        rootElement
-    );
-
-    if (window.Cypress) {
-        window.store = store;
-    }
+  if (window.Cypress) {
+    window.store = store;
+  }
 };
 
 declare global {
-    interface Window {
-        Twilio: {
-            initWebchat: (config: ConfigState) => void;
-            initLogger: (level?: LogLevelDesc) => void;
-            getLogger: (className: string) => Logger;
-        };
-        Cypress: Cypress.Cypress;
-        store: typeof store;
-    }
+  interface Window {
+    Twilio: {
+      initWebchat: typeof initWebchat;
+      initLogger: (level?: LogLevelDesc) => void;
+      getLogger: (className: string) => Logger;
+    };
+    Cypress: Cypress.Cypress;
+    store: typeof store;
+  }
 }
 
 // Expose `initWebchat` function to window object
 Object.assign(window, {
-    Twilio: {
-        initWebchat,
-        initLogger,
-        getLogger
-    }
+  Twilio: {
+    initWebchat,
+    initLogger,
+    getLogger,
+  },
 });
