@@ -15,11 +15,10 @@
  */
 import { PreEngagementFormItem, PreEngagementForm, FormInputType } from 'hrm-form-definitions';
 
-import InputText from './input-text';
-import Select from './select';
-import DependentSelect from './dependent-select';
-import Checkbox from './checkbox';
-import { HandleChangeFunction } from './form-component';
+import InputText from './Input';
+import Select from './Select';
+import DependentSelect from './DependentSelect';
+import Checkbox from './Checkbox';
 
 const EMAIL_PATTERN = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i;
 
@@ -29,8 +28,8 @@ const generateFormItem = ({
   handleChange,
 }: {
   definition: PreEngagementFormItem;
-  defaultValue?: string;
-  handleChange: HandleChangeFunction;
+  defaultValue?: string | boolean;
+  handleChange: () => void;
 }) => {
   const rules = {
     required: definition.required,
@@ -75,7 +74,7 @@ const generateFormItem = ({
           label={definition.label}
           rules={rules}
           options={definition.options}
-          defaultValue={defaultValue}
+          defaultValue={defaultValue as string}
           handleChange={handleChange}
         />
       );
@@ -106,12 +105,29 @@ const generateFormItem = ({
   }
 };
 
+const getDefaultValue = (def: PreEngagementFormItem) => {
+  switch (def.type) {
+    case FormInputType.Input:
+    case FormInputType.Email:
+    case FormInputType.Select:
+    case FormInputType.DependentSelect:
+      return '';
+    case FormInputType.Checkbox:
+      return false;
+    default:
+      return undefined;
+  }
+};
+
 export const generateForm = ({
   form,
   handleChange,
 }: {
   form: PreEngagementForm['fields'];
-  handleChange: HandleChangeFunction;
+  handleChange: () => void;
 }) => {
-  return form && form.map(definition => generateFormItem({ definition, handleChange }));
+  return (
+    form &&
+    form.map(definition => generateFormItem({ definition, handleChange, defaultValue: getDefaultValue(definition) }))
+  );
 };

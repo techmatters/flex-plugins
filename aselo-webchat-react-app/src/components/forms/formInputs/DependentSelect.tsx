@@ -16,11 +16,11 @@
 
 /* eslint-disable react/require-default-props */
 import React, { useEffect, useRef } from 'react';
-import { useFormContext, UseControllerProps } from 'react-hook-form';
-import { Select as SelectInput } from '@twilio-paste/core';
+import { useFormContext, UseControllerOptions } from 'react-hook-form';
+import { Box, Label, Select as SelectInput } from '@twilio-paste/core';
 
-import FormComponent, { HandleChangeFunction } from './form-component';
 import LocalizedTemplate from '../../../localization/LocalizedTemplate';
+import { useFormController } from './useFormController';
 
 type Options = {
   [key: string]: {
@@ -33,12 +33,16 @@ type OwnProps = {
   label: string;
   dependsOn: string;
   options: Options;
-  handleChange: HandleChangeFunction;
+  handleChange: () => void;
 };
 
-type Props = OwnProps & UseControllerProps;
+type Props = OwnProps & UseControllerOptions;
 
 const DependentSelect: React.FC<Props> = ({ name, label, rules, dependsOn, options, handleChange }) => {
+  const { field, isRequired, error, errorMessage } = useFormController({
+    name,
+    rules,
+  });
   const {
     watch,
     setValue,
@@ -74,9 +78,17 @@ const DependentSelect: React.FC<Props> = ({ name, label, rules, dependsOn, optio
       : [];
 
   return (
-    <FormComponent name={name} label={label} rules={rules} handleChange={handleChange}>
-      <SelectInput disabled={!dependsOnValue}>{buildOptions()}</SelectInput>
-    </FormComponent>
+    <Box style={{ marginBottom: '20px' }}>
+      <Label htmlFor={name}>
+        <span style={{ display: 'block', marginBottom: '10px' }}>
+          <LocalizedTemplate code={label} /> {isRequired && '*'}
+        </span>
+        <SelectInput {...field} id={name} hasError={Boolean(error)} onBlur={handleChange} disabled={!dependsOnValue}>
+          {buildOptions()}
+        </SelectInput>
+      </Label>
+      {error && <span style={{ color: 'rgb(203, 50, 50)' }}>{errorMessage}</span>}
+    </Box>
   );
 };
 

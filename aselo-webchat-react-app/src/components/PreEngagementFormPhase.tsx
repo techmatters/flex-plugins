@@ -28,18 +28,16 @@ import { AppState, EngagementPhase } from '../store/definitions';
 import { Header } from './Header';
 import { notifications } from '../notifications';
 import { NotificationBar } from './NotificationBar';
-import { introStyles, fieldStyles, titleStyles, formStyles } from './styles/PreEngagementFormPhase.styles';
-import { useSanitizer } from '../utils/useSanitizer';
+import { fieldStyles, titleStyles, formStyles } from './styles/PreEngagementFormPhase.styles';
 import CloseChatButtons from './endChat/CloseChatButtons';
 import LocalizedTemplate from '../localization/LocalizedTemplate';
-import { generateForm } from './pre-engagement-form/form-components';
+import { generateForm } from './forms/formInputs';
 
 export const PreEngagementFormPhase = () => {
   const { preEngagementData } = useSelector((state: AppState) => state.session ?? {});
   const { preEngagementFormDefinition } = useSelector((state: AppState) => state.config);
   const methods = useForm({ defaultValues: preEngagementData, mode: 'onChange' });
   const dispatch = useDispatch();
-  const { onUserInputSubmit } = useSanitizer();
 
   const { friendlyName } = preEngagementData;
 
@@ -55,9 +53,7 @@ export const PreEngagementFormPhase = () => {
       const data = await sessionDataHandler.fetchAndStoreNewSession({
         formData: {
           ...preEngagementData,
-          friendlyName: friendlyName && onUserInputSubmit(friendlyName, true),
-          // email,
-          // query: query && onUserInputSubmit(query),
+          friendlyName,
         },
       });
       dispatch(
@@ -73,7 +69,6 @@ export const PreEngagementFormPhase = () => {
   };
 
   if (!preEngagementFormDefinition) {
-    console.log('>>>>>>>>>> preEngagementFormDefinition', preEngagementFormDefinition);
     return null;
   }
 
