@@ -18,7 +18,7 @@ import parseISO from 'date-fns/parseISO';
 import { differenceInDays, differenceInHours } from 'date-fns';
 
 import { getHrmConfig } from '../hrmConfig';
-import { ProfileSection } from '../types/types';
+import {ContactRawJson, ProfileSection} from '../types/types';
 import { fetchPermissionRules } from '../services/PermissionsService';
 import { actionsMaps, PermissionActions, TargetKind } from './actions';
 
@@ -52,6 +52,19 @@ type ContactSpecificCondition = typeof contactSpecificConditions[number];
 
 const isContactSpecificCondition = (c: any): c is ContactSpecificCondition =>
   typeof c === 'string' && contactSpecificConditions.includes(c as any);
+type ContactFieldSpecificCondition = {
+  // eslint-disable-next-line prettier/prettier
+  field: `rawJson.${keyof ContactRawJson}.${string}`;
+};
+
+const isContactFieldSpecificCondition = (c: any): c is ContactFieldSpecificCondition => {
+  if (typeof c?.field === 'string') {
+    const [root, ...path] = c.field.split('.');
+    return root === 'rawJson' && path.length === 2;
+  }
+
+  return false;
+};
 
 const caseSpecificConditions = ['isCreator', 'isCaseOpen', 'isCaseContactOwner'] as const;
 type CaseSpecificCondition = typeof caseSpecificConditions[number];
@@ -77,6 +90,11 @@ type SupportedContactCondition = TimeBasedCondition | UserBasedCondition | Conta
 const isSupportedContactCondition = (c: any): c is SupportedContactCondition =>
   isTimeBasedCondition(c) || isUserBasedCondition(c) || isContactSpecificCondition(c);
 
+
+type SupportedContactFieldCondition = SupportedContactCondition;
+const isSupportedContactFieldCondition = (c: any): c is SupportedContactFieldCondition =>
+    isSupportedContactCondition(c) || isContactFieldSpecificCondition(c);
+
 type SupportedCaseCondition = TimeBasedCondition | UserBasedCondition | CaseSpecificCondition;
 const isSupportedCaseCondition = (c: any): c is SupportedCaseCondition =>
   isTimeBasedCondition(c) || isUserBasedCondition(c) || isCaseSpecificCondition(c);
@@ -99,6 +117,7 @@ const isSupportedViewIdentifiersCondition = (c: any): c is SupportedPostSurveyCo
 // Defines which actions are supported on each TargetKind
 type SupportedTKCondition = {
   contact: SupportedContactCondition;
+  contactField: SupportedContactFieldCondition;
   case: SupportedCaseCondition;
   profile: SupportedProfileCondition;
   profileSection: SupportedProfileSectionCondition;
@@ -146,6 +165,9 @@ const isTKCondition = <T extends TargetKind>(kind: T) => (c: any): c is TKCondit
   switch (kind) {
     case 'contact': {
       return isSupportedContactCondition(c);
+    }
+    case 'contactField': {
+      return isSupportedContactFieldCondition(c);
     }
     case 'case': {
       return isSupportedCaseCondition(c);
@@ -275,6 +297,24 @@ const applyProfileSectionSpecificConditions = (conditions: ProfileSectionSpecifi
       return accum;
     }, {});
 
+const applyContactFieldSpecificConditions = (conditions: ContactFieldSpecificCondition[]) => (
+    field: ContactFieldSpecificCondition['field'],
+) =>
+    conditions
+        .map(c => Object.entries(c)[0])
+        .reduce<Record<string, boolean>>((accum, [cond, param]) => {
+          // use the stringified cond-param as key, e.g. '{ "sectionType": "summary" }'
+          if (cond === 'field') {
+            const key = JSON.stringify({ [cond]: param });
+            return {
+              ...accum,
+              [key]: field === param,
+            };
+          }
+
+          return accum;
+        }, {});
+
 const setupAllow = <T extends TargetKind>(kind: T, conditionsSets: TKConditionsSets<T>) => {
   // We could do type validation on target depending on targetKind if we ever want to make sure the "allow" is called on a proper target (same as cancan used to do)
 
@@ -307,6 +347,24 @@ const setupAllow = <T extends TargetKind>(kind: T, conditionsSets: TKConditionsS
           createdDaysAgo: false,
           createdHoursAgo: false,
           ...appliedTimeBasedConditions,
+        };
+
+        return checkConditionsSets(conditionsState, conditionsSets);
+      }
+      case 'contactField': {
+        const specificConditions = conditionsSets.flatMap(cs =>
+          cs.map(c => (isContactFieldSpecificCondition(c) ? c : null)).filter(c => c !== null),
+        );
+        const { contact, field } = target;
+        const appliedSpecificConditions = applyContactFieldSpecificConditions(specificConditions)(field);
+        const conditionsState: ConditionsState = {
+          isSupervisor: performer.isSupervisor,
+          isOwner: isContactOwner(performer, contact),
+          everyone: true,
+          createdDaysAgo: false,
+          createdHoursAgo: false,
+          ...appliedTimeBasedConditions,
+          ...appliedSpecificConditions,
         };
 
         return checkConditionsSets(conditionsState, conditionsSets);
