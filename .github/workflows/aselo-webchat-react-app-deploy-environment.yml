@@ -1,0 +1,70 @@
+# Copyright (C) 2021-2023 Technology Matters
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Affero General Public License as published
+# by the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Affero General Public License for more details.
+#
+# You should have received a copy of the GNU Affero General Public License
+# along with this program.  If not, see https://www.gnu.org/licenses/.
+
+name: Deploy Aselo Webchat React App - environment
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: Environment to deploy.
+        default: development
+        required: true
+        type: choice
+        options:
+          - development
+          - staging
+          - production
+
+jobs:
+  configure:
+    name: Determine Configuration
+    runs-on: ubuntu-latest
+    outputs:
+      target_helplines: ${{ steps.determine-target-helplines.outputs.target_helplines }}
+    steps:
+      - uses: actions/checkout@v6
+      - id: determine-target-helplines
+        shell: bash
+        run: |
+          helplines=$(node aselo-webchat-react-app/scripts/outputHelplinesForEnvironment.js '${{ inputs.environment }}')
+          echo "target_helplines=$helplines" >> $GITHUB_OUTPUT
+  deploy-helplines:
+    name: Deploy to multiple helplines
+    needs: configure
+    uses: ./.github/workflows/deploy-multiple-helplines.yml
+    secrets: inherit
+    with:
+      project: aselo-webchat-react-app
+      helplines: ${{ needs.configure.outputs.target_helplines }}
+      environments: '[ "${{ inputs.environment }}" ]'
+      invalidate-cache: 'false'
+
+  invalidate-cache:
+    name: Invalidate CloudFront cache for all production aselo-webchat-react-app files
+    needs: deploy-helplines
+    runs-on: ubuntu-latest
+    steps:
+      # Setup credentials to access AWS for parameters
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v5
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: "us-east-1"
+      - name: Clear cloudfront cache
+        run: |
+          CF_DISTRO=$(aws cloudfront list-distributions --query "DistributionList.Items[*].{id:Id,origin:Origins.Items[0].DomainName}[?origin=='assets-${{ inputs.environment }}.tl.techmatters.org.s3-website.us-east-1.amazonaws.com'].id" --output text)
+          aws cloudfront create-invalidation --distribution-id $CF_DISTRO --paths /aselo-webchat-react-app/${{ steps.helpline_code.outputs.lowercase }}/*
+

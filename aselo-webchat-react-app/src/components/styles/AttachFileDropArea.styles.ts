@@ -14,9 +14,9 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { BoxStyleProps } from "@twilio-paste/core/box";
-import { TextStyleProps } from "@twilio-paste/core/text";
-import { keyframes } from "@emotion/core";
+import { BoxStyleProps } from '@twilio-paste/core/box';
+import { TextStyleProps } from '@twilio-paste/core/text';
+import { keyframes } from '@emotion/core';
 
 const popIn = keyframes`
     0% {
@@ -30,44 +30,44 @@ const popIn = keyframes`
 `;
 
 export const containerStyles: BoxStyleProps = {
-    position: "relative",
-    display: "flex",
-    flexDirection: "column",
-    flexGrow: 1,
-    overflow: "hidden"
+  position: 'relative',
+  display: 'flex',
+  flexDirection: 'column',
+  flexGrow: 1,
+  overflow: 'hidden',
 };
 
 export const dropAreaStyles: BoxStyleProps = {
-    position: "absolute",
-    zIndex: "zIndex10",
-    top: "space30",
-    left: "space30",
-    bottom: "space30",
-    right: "space30",
-    backgroundColor: "colorBackgroundBody",
-    opacity: 0.96,
-    borderColor: "colorBorderPrimary",
-    borderWidth: "borderWidth20",
-    borderStyle: "dashed",
-    borderRadius: "borderRadius30",
-    display: "flex",
-    flexDirection: "column",
-    alignContent: "center",
-    justifyContent: "center",
-    textAlign: "center",
-    pointerEvents: "none",
-    animation: `${popIn} 0.1s forwards`
+  position: 'absolute',
+  zIndex: 'zIndex10',
+  top: 'space30',
+  left: 'space30',
+  bottom: 'space30',
+  right: 'space30',
+  backgroundColor: 'colorBackgroundBody',
+  opacity: 0.96,
+  borderColor: 'colorBorderPrimary',
+  borderWidth: 'borderWidth20',
+  borderStyle: 'dashed',
+  borderRadius: 'borderRadius30',
+  display: 'flex',
+  flexDirection: 'column',
+  alignContent: 'center',
+  justifyContent: 'center',
+  textAlign: 'center',
+  pointerEvents: 'none',
+  animation: `${popIn} 0.1s forwards`,
 };
 
 export const attachIconContainerStyles: BoxStyleProps = {
-    marginLeft: "auto",
-    marginRight: "auto",
-    color: "colorTextLink"
+  marginLeft: 'auto',
+  marginRight: 'auto',
+  color: 'colorTextLink',
 };
 
 export const attachTitleStyles: TextStyleProps = {
-    fontSize: "fontSize40",
-    fontWeight: "fontWeightBold",
-    lineHeight: "lineHeight40",
-    color: "colorText"
+  fontSize: 'fontSize40',
+  fontWeight: 'fontWeightBold',
+  lineHeight: 'lineHeight40',
+  color: 'colorText',
 };

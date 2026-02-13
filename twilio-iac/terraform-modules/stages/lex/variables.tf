@@ -18,82 +18,9 @@ variable "helpline" {
   type        = string
 }
 
-variable "lex_bot_languages" {
-  type    = map(list(string))
-  default = {}
-}
 variable "lex_v2_bot_languages" {
   type    = map(list(string))
   default = {}
-}
-
-variable "lex_slot_types" {
-  description = "The slot types for the helpline."
-  type = map(map(object({
-    description              = string
-    value_selection_strategy = string
-    values = map(object({
-      synonyms = optional(list(string), []),
-    }))
-  })))
-}
-
-variable "lex_intents" {
-  description = "The intents for the helpline."
-  type = map(map(object({
-    description       = string
-    sample_utterances = list(string)
-    fulfillment_activity = object({
-      type = string
-    })
-    conclusion_statement = object({
-      content      = string
-      content_type = string
-    })
-    rejection_statement = object({
-      content      = string
-      content_type = string
-    })
-    slots = map(object({
-      priority        = number
-      description     = string
-      slot_constraint = string
-      slot_type       = string
-      value_elicitation_prompt = object({
-        max_attempts = number
-        content      = string
-        content_type = string
-      })
-    }))
-  })))
-}
-
-variable "lex_bots" {
-  description = "The bots for the helpline."
-  type = map(map(object({
-    description                 = string
-    locale                      = optional(string, "en-US")
-    process_behavior            = optional(string, "BUILD")
-    child_directed              = optional(bool, true)
-    idle_session_ttl_in_seconds = optional(number, 300)
-    enable_model_improvements   = optional(bool, true)
-    abort_statement = object({
-      content      = string
-      content_type = string
-    })
-    clarification_prompt = object({
-      max_attempts = number
-      content      = string
-      content_type = string
-    })
-    intents = list(string)
-  })))
-}
-
-variable "enable_lex_v2" {
-  description = "Flag to enable or disable the lex_v2 module"
-  type        = bool
-  default     = false
 }
 
 variable "lex_v2_bots" {

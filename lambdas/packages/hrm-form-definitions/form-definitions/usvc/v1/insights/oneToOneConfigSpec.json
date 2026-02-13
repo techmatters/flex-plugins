@@ -19,13 +19,13 @@
       },
       {
         "name": "preferredLanguage",
-        "insights": ["conversations", "initiated_by"]
+        "insights": ["conversations", "conversation_attribute_6"]
       }
     ],
     "childInformation": [
       {
         "name": "user",
-        "insights": ["customers", "customer_email"]
+        "insights": ["conversations", "conversation_attribute_7"]
       },
       {
         "name": "frequencyOfAccess",
@@ -62,6 +62,10 @@
       {
         "name": "state",
         "insights": ["customers", "phone"]
+      },
+      {
+        "name": "state",
+        "insights": ["customers", "area"]
       },
       {
         "name": "state",

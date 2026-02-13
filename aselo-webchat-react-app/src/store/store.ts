@@ -28,11 +28,14 @@ const typeWindow = window as unknown as { __REDUX_DEVTOOLS_EXTENSION_COMPOSE__: 
 const composeEnhancers = typeWindow.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
 const reducers = combineReducers({
-    chat: ChatReducer,
-    config: ConfigReducer,
-    notifications: NotificationReducer,
-    session: SessionReducer,
-    task: taskReducer,
+  chat: ChatReducer,
+  config: ConfigReducer,
+  notifications: NotificationReducer,
+  session: SessionReducer,
+  task: taskReducer,
 });
 
 export const store = createStore(reducers, composeEnhancers(applyMiddleware(thunk)));
+
+// eslint-disable-next-line import/no-unused-modules
+export type AppState = ReturnType<typeof store.getState>;

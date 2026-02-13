@@ -95,6 +95,13 @@ export const areOperatingHoursEnforced = async (
 export const getSwitchboardQueueSid = (accountSid: AccountSID): Promise<string> =>
   getSsmParameter(`/${process.env.NODE_ENV}/twilio/${accountSid}/switchboard_queue_sid`);
 
+export const getConversationsTransferWorkflow = (
+  accountSid: AccountSID,
+): Promise<string> =>
+  getSsmParameter(
+    `/${process.env.NODE_ENV}/twilio/${accountSid}/conversations_chat_transfer_workflow_sid`,
+  );
+
 export const getServerlessBaseUrl = (accountSid: AccountSID): Promise<string> =>
   getSsmParameter(`/${process.env.NODE_ENV}/serverless/${accountSid}/base_url`);
 

@@ -1,1 +1,183 @@
-{}
+{
+    "contactForm": {
+        "callerInformation": [
+        ],
+        "childInformation": [
+            {
+                "name": "bookingReference",
+                "insights": [
+                    "customers",
+                    "customer_attribute_2"
+                ]
+            },
+            {
+                "name": "region",
+                "insights": [
+                    "customers",
+                    "region"
+                ]
+            },
+            {
+                "name": "isGenderSameAsSexAtBirth",
+                "insights": [
+                    "customers",
+                    "city"
+                ]
+            },
+            {
+                "name": "sexuality",
+                "insights": [
+                    "customers",
+                    "customer_attribute_1"
+                ]
+            },
+            {
+                "name": "ethnicity",
+                "insights": [
+                    "customers",
+                    "customer_manager"
+                ]
+            },
+            {
+                "name": "preexistingConditionsdifficulties",
+                "insights": [
+                    "customers",
+                    "zip"
+                ]
+            },
+            {
+                "name": "appointmentTopic",
+                "insights": [
+                    "customers",
+                    "category"
+                ]
+            },
+            {
+                "name": "anxietyScale",
+                "insights": [
+                    "customers",
+                    "acquisition_date"
+                ]
+            },
+            {
+                "name": "moodhappinessBefore",
+                "insights": [
+                    "customers",
+                    "email"
+                ]
+            },
+            {
+                "name": "howDidYouHearOfTheMixPeerSupportService",
+                "insights": [
+                    "customers",
+                    "market_segment"
+                ]
+            },
+            {
+                "name": "currentCopingStrategies",
+                "insights": [
+                    "customers",
+                    "organization"
+                ]
+            },
+            {
+                "name": "recommendedCopingStrategies",
+                "insights": [
+                    "customers",
+                    "area"
+                ]
+            },
+            {
+                "name": "wereSignpostsOffered",
+                "insights": [
+                    "conversations",
+                    "conversation_measure_1"
+                ]
+            },
+            {
+                "name": "internalSignpostsOffered",
+                "insights": [
+                    "conversations",
+                    "conversation_measure_2"
+                ]
+            },
+            {
+                "name": "sessionOutcome",
+                "insights": [
+                    "conversations",
+                    "conversation_measure_3"
+                ]
+            }
+        ],
+        "caseInformation": [
+            {
+                "name": "consentForResearchEvaluation",
+                "insights": [
+                    "conversations",
+                    "conversation_measure_4"
+                ]
+            }
+        ]
+    },
+    "caseForm": {
+        "topLevel": [
+            {
+                "name": "id",
+                "insights": [
+                    "conversations",
+                    "case"
+                ]
+            }
+        ],
+        "caseOverview": [
+            {
+                "name": "safeguardingConcernsRaised",
+                "insights": [
+                    "conversations",
+                    "followed_by"
+                ]
+            }
+        ],
+        "safeguarding": [
+            {
+                "name": "categoryOfConcern",
+                "insights": [
+                    "conversations",
+                    "conversation_attribute_6"
+                ]
+            }
+        ],
+        "incident": [
+            {
+                "name": "categoryOfConcernRisk",
+                "insights": [
+                    "conversations",
+                    "conversation_attribute_7"
+                ]
+            },
+            {
+                "name": "riskToLifeAssessmentCompleted",
+                "insights": [
+                    "conversations",
+                    "conversation_attribute_5"
+                ]
+            }
+        ],
+        "referral": [
+            {
+                "name": "referral",
+                "insights": [
+                    "conversations",
+                    "initiative"
+                ]
+            },
+            {
+                "name": "whereReported",
+                "insights": [
+                    "conversations",
+                    "initiated_by"
+                ]
+            }
+        ]
+    }
+}

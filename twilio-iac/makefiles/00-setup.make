@@ -1,5 +1,5 @@
 DOCKER_IMAGE ?= public.ecr.aws/techmatters/terraform
-TF_VER ?= 1.5.4
+TF_VER ?= 1.14.3
 
 GIT_ROOT ?= $(shell git rev-parse --show-toplevel)
 MOUNT_PATH = /app
@@ -12,6 +12,9 @@ ifdef OS
     MY_ENV := $(shell powershell Split-Path -Path (Get-Location) -Leaf)
     MY_RELATIVE_PATH != powershell (Get-Location).Path.Replace(\"\\\", \"/\").Replace(\"$(GIT_ROOT)\", \"\")
     DIND_ARG = -v "//var/run/docker.sock:/var/run/docker.sock"
+    ifeq ($(origin TF_PLUGIN_CACHE_HOST), undefined)
+        TF_PLUGIN_CACHE_HOST := C:\terraform-provider-cache
+    endif
 else
     # We're NOT running windows, assume bash is available
     MY_ENV := $(shell basename $(CURDIR))
