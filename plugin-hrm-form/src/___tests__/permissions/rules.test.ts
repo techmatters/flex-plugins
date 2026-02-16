@@ -629,10 +629,7 @@ describe('ContactFieldActions', () => {
         // Test 1: Fields not specified by a 'field' condition in any condition set are always allowed
         {
           action,
-          conditionsSets: [
-            ['isSupervisor'],
-            [{ field: otherField }],
-          ],
+          conditionsSets: [['isSupervisor'], [{ field: otherField }]],
           workerSid: 'not owner',
           isSupervisor: false,
           field: testField,
@@ -641,9 +638,7 @@ describe('ContactFieldActions', () => {
         },
         {
           action,
-          conditionsSets: [
-            [{ field: otherField }],
-          ],
+          conditionsSets: [[{ field: otherField }]],
           workerSid: 'not owner',
           isSupervisor: false,
           field: testField,
@@ -653,9 +648,7 @@ describe('ContactFieldActions', () => {
         // Test 2: Condition sets with no field condition will allow any field if they evaluate to true
         {
           action,
-          conditionsSets: [
-            ['everyone'],
-          ],
+          conditionsSets: [['everyone']],
           workerSid: 'not owner',
           isSupervisor: false,
           field: testField,
@@ -664,9 +657,7 @@ describe('ContactFieldActions', () => {
         },
         {
           action,
-          conditionsSets: [
-            ['isSupervisor'],
-          ],
+          conditionsSets: [['isSupervisor']],
           workerSid: 'not owner',
           isSupervisor: true,
           field: testField,
@@ -675,34 +666,28 @@ describe('ContactFieldActions', () => {
         },
         {
           action,
-          conditionsSets: [
-            ['isOwner'],
-          ],
+          conditionsSets: [['isOwner']],
           workerSid: 'owner',
           isSupervisor: false,
           field: testField,
           expectedResult: true,
           expectedDescription: 'no field condition, isOwner condition evaluates to true',
         },
-        // Test 3: If condition sets with no field condition evaluate to false, but there are no condition sets 
+        // Test 3: If condition sets with no field condition evaluate to false, but there are no condition sets
         // with a field condition matching the field being checked, the action should be allowed
         {
           action,
-          conditionsSets: [
-            ['isSupervisor'],
-          ],
+          conditionsSets: [['isSupervisor']],
           workerSid: 'not owner',
           isSupervisor: false,
           field: testField,
           expectedResult: true,
-          expectedDescription: 'no field-specific conditions exist, so field is allowed even though isSupervisor is false',
+          expectedDescription:
+            'no field-specific conditions exist, so field is allowed even though isSupervisor is false',
         },
         {
           action,
-          conditionsSets: [
-            ['isOwner'],
-            ['isSupervisor'],
-          ],
+          conditionsSets: [['isOwner'], ['isSupervisor']],
           workerSid: 'not owner',
           isSupervisor: false,
           field: testField,
@@ -711,35 +696,29 @@ describe('ContactFieldActions', () => {
         },
         {
           action,
-          conditionsSets: [
-            ['isSupervisor'],
-            [{ field: otherField }],
-          ],
+          conditionsSets: [['isSupervisor'], [{ field: otherField }]],
           workerSid: 'not owner',
           isSupervisor: false,
           field: testField,
           expectedResult: true,
-          expectedDescription: 'field has no specific conditions (only other field specified), allowed even though isSupervisor is false',
+          expectedDescription:
+            'field has no specific conditions (only other field specified), allowed even though isSupervisor is false',
         },
-        // Test 4: Multiple field conditions in the same set specifying different fields means 
+        // Test 4: Multiple field conditions in the same set specifying different fields means
         // that condition set will be filtered out, demonstrating it can't restrict a field on its own
         {
           action,
-          conditionsSets: [
-            [{ field: testField }, { field: otherField }],
-          ],
+          conditionsSets: [[{ field: testField }, { field: otherField }]],
           workerSid: 'not owner',
           isSupervisor: false,
           field: testField,
           expectedResult: true,
-          expectedDescription: 'multiple different field conditions in same set gets filtered out, no field-specific conditions remain, so allowed',
+          expectedDescription:
+            'multiple different field conditions in same set gets filtered out, no field-specific conditions remain, so allowed',
         },
         {
           action,
-          conditionsSets: [
-            [{ field: testField }, { field: otherField }],
-            ['everyone'],
-          ],
+          conditionsSets: [[{ field: testField }, { field: otherField }], ['everyone']],
           workerSid: 'not owner',
           isSupervisor: false,
           field: testField,
@@ -748,10 +727,7 @@ describe('ContactFieldActions', () => {
         },
         {
           action,
-          conditionsSets: [
-            [{ field: testField }, { field: otherField }],
-            ['isSupervisor'],
-          ],
+          conditionsSets: [[{ field: testField }, { field: otherField }], ['isSupervisor']],
           workerSid: 'not owner',
           isSupervisor: true,
           field: testField,
@@ -760,15 +736,13 @@ describe('ContactFieldActions', () => {
         },
         {
           action,
-          conditionsSets: [
-            [{ field: testField }, { field: otherField }],
-            ['isSupervisor'],
-          ],
+          conditionsSets: [[{ field: testField }, { field: otherField }], ['isSupervisor']],
           workerSid: 'not owner',
           isSupervisor: false,
           field: testField,
           expectedResult: true,
-          expectedDescription: 'conflicting field conditions get filtered out, no field-specific conditions remain even though isSupervisor is false, so allowed',
+          expectedDescription:
+            'conflicting field conditions get filtered out, no field-specific conditions remain even though isSupervisor is false, so allowed',
         },
         {
           action,
@@ -780,7 +754,8 @@ describe('ContactFieldActions', () => {
           isSupervisor: false,
           field: testField,
           expectedResult: true,
-          expectedDescription: 'conflicting field conditions filtered out, but valid field condition with isOwner passes',
+          expectedDescription:
+            'conflicting field conditions filtered out, but valid field condition with isOwner passes',
         },
         {
           action,
@@ -792,14 +767,13 @@ describe('ContactFieldActions', () => {
           isSupervisor: false,
           field: testField,
           expectedResult: false,
-          expectedDescription: 'conflicting field conditions filtered out, valid field condition exists but isOwner is false',
+          expectedDescription:
+            'conflicting field conditions filtered out, valid field condition exists but isOwner is false',
         },
         // Additional comprehensive tests
         {
           action,
-          conditionsSets: [
-            [{ field: testField }, 'isOwner'],
-          ],
+          conditionsSets: [[{ field: testField }, 'isOwner']],
           workerSid: 'owner',
           isSupervisor: false,
           field: testField,
@@ -808,9 +782,7 @@ describe('ContactFieldActions', () => {
         },
         {
           action,
-          conditionsSets: [
-            [{ field: testField }, 'isOwner'],
-          ],
+          conditionsSets: [[{ field: testField }, 'isOwner']],
           workerSid: 'not owner',
           isSupervisor: false,
           field: testField,
@@ -819,10 +791,7 @@ describe('ContactFieldActions', () => {
         },
         {
           action,
-          conditionsSets: [
-            [{ field: testField }],
-            ['isSupervisor'],
-          ],
+          conditionsSets: [[{ field: testField }], ['isSupervisor']],
           workerSid: 'not owner',
           isSupervisor: true,
           field: testField,
@@ -831,9 +800,7 @@ describe('ContactFieldActions', () => {
         },
         {
           action,
-          conditionsSets: [
-            [{ field: testField }],
-          ],
+          conditionsSets: [[{ field: testField }]],
           workerSid: 'not owner',
           isSupervisor: false,
           field: testField,
@@ -842,9 +809,7 @@ describe('ContactFieldActions', () => {
         },
         {
           action,
-          conditionsSets: [
-            [{ field: otherField }, 'everyone'],
-          ],
+          conditionsSets: [[{ field: otherField }, 'everyone']],
           workerSid: 'not owner',
           isSupervisor: false,
           field: testField,
