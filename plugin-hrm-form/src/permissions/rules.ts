@@ -353,7 +353,37 @@ const setupAllow = <T extends TargetKind>(kind: T, conditionsSets: TKConditionsS
       }
       case 'contactField': {
         const { contact, field } = target;
-        // Filter out any condition sets that apply specivfically to a field other than this one
+        
+        // Apply time-based conditions using the contact's createdAt
+        const contactTimeBasedConditions = applyTimeBasedConditions(timeBasedConditions)(performer, contact, { curentTimestamp: new Date() });
+        
+        // Check if any condition set has a field condition
+        const hasFieldConditions = conditionsSets.some(css => css.some(isContactFieldSpecificCondition));
+        
+        // If no condition sets mention any field, allow all fields
+        if (!hasFieldConditions) {
+          const conditionsState: ConditionsState = {
+            isSupervisor: performer.isSupervisor,
+            isOwner: isContactOwner(performer, contact),
+            everyone: true,
+            createdDaysAgo: false,
+            createdHoursAgo: false,
+            ...contactTimeBasedConditions,
+          };
+          return checkConditionsSets(conditionsState, conditionsSets);
+        }
+        
+        // Check if this specific field is mentioned in any field condition
+        const fieldIsMentioned = conditionsSets.some(css => 
+          css.some(cs => isContactFieldSpecificCondition(cs) && cs.field === field)
+        );
+        
+        // If this field is not mentioned in any field condition, allow it by default
+        if (!fieldIsMentioned) {
+          return true;
+        }
+        
+        // Filter out any condition sets that apply specifically to a field other than this one
         // Keep only global conditions and ones that apply to this field
         const applicableConditions = conditionsSets.filter(css => !css.some(cs => isContactFieldSpecificCondition(cs) && cs.field !== field));
         const conditionsState: ConditionsState = {
@@ -362,7 +392,7 @@ const setupAllow = <T extends TargetKind>(kind: T, conditionsSets: TKConditionsS
           everyone: true,
           createdDaysAgo: false,
           createdHoursAgo: false,
-          ...appliedTimeBasedConditions,
+          ...contactTimeBasedConditions,
           [JSON.stringify({ field })]: true,
         };
 

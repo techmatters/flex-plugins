@@ -25,6 +25,7 @@ import {
   actionsMaps,
   CaseActions,
   ContactActions,
+  ContactFieldActions,
   PermissionActions,
   ProfileActions,
   ProfileSectionActions,
@@ -609,6 +610,166 @@ describe('ViewIdentifiersAction', () => {
       const can = getInitializedCan();
 
       expect(can(action)).toBe(expectedResult);
+    },
+  );
+});
+
+describe('ContactFieldActions', () => {
+  afterEach(() => {
+    cleanupInitializedCan();
+  });
+
+  const testFieldPath = 'rawJson.caseInformation.callSummary' as const;
+  const otherFieldPath = 'rawJson.caseInformation.categories' as const;
+  const contact = { twilioWorkerId: 'owner', createdAt: new Date().toISOString() };
+
+  each(
+    Object.values(ContactFieldActions)
+      .flatMap(action => [
+        {
+          action,
+          conditionsSets: [['everyone']],
+          workerSid: 'not owner',
+          isSupervisor: false,
+          field: testFieldPath,
+          expectedResult: true,
+          expectedDescription: 'everyone condition allows any field',
+        },
+        {
+          action,
+          conditionsSets: [['isOwner']],
+          workerSid: 'owner',
+          isSupervisor: false,
+          field: testFieldPath,
+          expectedResult: true,
+          expectedDescription: 'isOwner condition without field restriction allows any field',
+        },
+        {
+          action,
+          conditionsSets: [['isOwner']],
+          workerSid: 'not owner',
+          isSupervisor: false,
+          field: testFieldPath,
+          expectedResult: false,
+          expectedDescription: 'isOwner condition evaluates false for non-owner',
+        },
+        {
+          action,
+          conditionsSets: [[{ field: testFieldPath }]],
+          workerSid: 'not owner',
+          isSupervisor: false,
+          field: testFieldPath,
+          expectedResult: true,
+          expectedDescription: 'field condition matches the target field',
+        },
+        {
+          action,
+          conditionsSets: [[{ field: otherFieldPath }]],
+          workerSid: 'not owner',
+          isSupervisor: false,
+          field: testFieldPath,
+          expectedResult: true,
+          expectedDescription: 'field not specified by any field condition is always allowed',
+        },
+        {
+          action,
+          conditionsSets: [[{ field: testFieldPath }]],
+          workerSid: 'not owner',
+          isSupervisor: false,
+          field: otherFieldPath,
+          expectedResult: true,
+          expectedDescription: 'checking different field than specified in field condition allows it',
+        },
+        {
+          action,
+          conditionsSets: [['isOwner'], [{ field: otherFieldPath }]],
+          workerSid: 'not owner',
+          isSupervisor: false,
+          field: testFieldPath,
+          expectedResult: true,
+          expectedDescription: 'field not in any field condition is allowed even if other condition sets exist',
+        },
+        {
+          action,
+          conditionsSets: [[{ field: testFieldPath }, { field: otherFieldPath }]],
+          workerSid: 'not owner',
+          isSupervisor: false,
+          field: testFieldPath,
+          expectedResult: false,
+          expectedDescription: 'multiple field conditions in same set always evaluate false',
+        },
+        {
+          action,
+          conditionsSets: [[{ field: testFieldPath }, { field: otherFieldPath }], ['everyone']],
+          workerSid: 'not owner',
+          isSupervisor: false,
+          field: testFieldPath,
+          expectedResult: true,
+          expectedDescription: 'multiple field conditions in same set can be overridden by other condition sets',
+        },
+        {
+          action,
+          conditionsSets: [['isSupervisor'], ['isOwner', { field: testFieldPath }]],
+          workerSid: 'not owner',
+          isSupervisor: true,
+          field: testFieldPath,
+          expectedResult: true,
+          expectedDescription: 'supervisor can access without field-specific permission',
+        },
+        {
+          action,
+          conditionsSets: [['isOwner', { field: testFieldPath }]],
+          workerSid: 'owner',
+          isSupervisor: false,
+          field: testFieldPath,
+          expectedResult: true,
+          expectedDescription: 'owner with matching field condition can access',
+        },
+        {
+          action,
+          conditionsSets: [['isOwner', { field: testFieldPath }]],
+          workerSid: 'owner',
+          isSupervisor: false,
+          field: otherFieldPath,
+          expectedResult: true,
+          expectedDescription: 'owner checking field not specified is allowed',
+        },
+        {
+          action,
+          conditionsSets: [['isOwner', { field: testFieldPath }]],
+          workerSid: 'not owner',
+          isSupervisor: false,
+          field: testFieldPath,
+          expectedResult: false,
+          expectedDescription: 'non-owner with field-specific condition cannot access',
+        },
+        {
+          action,
+          conditionsSets: [[{ createdHoursAgo: 1 }]],
+          workerSid: 'not owner',
+          isSupervisor: false,
+          field: testFieldPath,
+          expectedResult: true,
+          expectedDescription: 'time-based condition without field restriction allows any field',
+        },
+      ])
+      .map(addPrettyPrintConditions),
+  ).test(
+    `Should return $expectedResult for action $action when $expectedDescription and conditionsSets are $prettyConditionsSets`,
+    async ({ action, conditionsSets, workerSid, isSupervisor, field, expectedResult }) => {
+      const rules = buildRules(conditionsSets, 'contactField');
+      fetchPermissionRulesSpy.mockResolvedValue(rules);
+
+      mockPartialConfiguration({
+        workerSid,
+        isSupervisor,
+      });
+
+      await validateAndSetPermissionRules();
+
+      const can = getInitializedCan();
+
+      expect(can(action, { contact, field })).toBe(expectedResult);
     },
   );
 });
