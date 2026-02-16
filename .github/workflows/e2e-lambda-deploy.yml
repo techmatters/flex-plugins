@@ -78,6 +78,7 @@ jobs:
           file: ./e2e-tests/Dockerfile
           push: true
           tags: ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:live,${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:${{ github.sha }}
+          provenance: false
 
       - name: Generate output
         id: generate-output
