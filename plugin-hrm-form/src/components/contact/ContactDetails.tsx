@@ -74,7 +74,7 @@ const ContactDetails: React.FC<Props> = ({
   const definitionVersions = useSelector((state: RootState) => selectDefinitionVersions(state));
   const draftCsamReport = useSelector((state: RootState) => state[namespace]['csam-report'].contacts[contactId]);
 
-  const { loadingStatus } = savedContactState?.metadata ?? {};
+  const loadingStatus = savedContactState?.metadata?.loadingStatus;
   const updateDraftForm = (draftContactId: string, form: Partial<ContactRawJson>) =>
     dispatch(updateDraft(draftContactId, { rawJson: form }));
   const closeModal = () => dispatch(newCloseModalAction(task.taskSid));
