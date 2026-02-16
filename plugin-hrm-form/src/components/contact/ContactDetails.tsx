@@ -107,7 +107,7 @@ const ContactDetails: React.FC<Props> = ({
     if (version && !definitionVersions[version]) {
       fetchDefinitionVersions();
     }
-  }, [definitionVersions, version, savedContactState?.savedContact, dispatch]);
+  }, [definitionVersions, version, dispatch]);
 
   const definitionVersion = definitionVersions[version];
 
