@@ -297,24 +297,6 @@ const applyProfileSectionSpecificConditions = (conditions: ProfileSectionSpecifi
       return accum;
     }, {});
 
-const applyContactFieldSpecificConditions = (conditions: ContactFieldSpecificCondition[]) => (
-    field: ContactFieldSpecificCondition['field'],
-) =>
-    conditions
-        .map(c => Object.entries(c)[0])
-        .reduce<Record<string, boolean>>((accum, [cond, param]) => {
-          // use the stringified cond-param as key, e.g. '{ "sectionType": "summary" }'
-          if (cond === 'field') {
-            const key = JSON.stringify({ [cond]: param });
-            return {
-              ...accum,
-              [key]: field === param,
-            };
-          }
-
-          return accum;
-        }, {});
-
 const setupAllow = <T extends TargetKind>(kind: T, conditionsSets: TKConditionsSets<T>) => {
   // We could do type validation on target depending on targetKind if we ever want to make sure the "allow" is called on a proper target (same as cancan used to do)
 
@@ -355,7 +337,13 @@ const setupAllow = <T extends TargetKind>(kind: T, conditionsSets: TKConditionsS
         const { contact, field } = target;
         // Filter out any condition sets that apply specivfically to a field other than this one
         // Keep only global conditions and ones that apply to this field
-        const applicableConditions = conditionsSets.filter(css => !css.some(cs => isContactFieldSpecificCondition(cs) && cs.field !== field));
+        const applicableConditionSets =
+            conditionsSets.filter(css => !css.some(cs => isContactFieldSpecificCondition(cs) && cs.field !== field));
+
+        // If there is not at least 1 condition set specific top this field, allow it.
+        // Fields that aren't specifically called out in the permissions are assumed permitted
+        const hasAnyFieldSpecificConditionSets = applicableConditionSets.some(acs => acs.some(isContactFieldSpecificCondition))
+        if (!hasAnyFieldSpecificConditionSets)  return true;
         const conditionsState: ConditionsState = {
           isSupervisor: performer.isSupervisor,
           isOwner: isContactOwner(performer, contact),
@@ -366,7 +354,7 @@ const setupAllow = <T extends TargetKind>(kind: T, conditionsSets: TKConditionsS
           [JSON.stringify({ field })]: true,
         };
 
-        return checkConditionsSets(conditionsState, applicableConditions);
+        return checkConditionsSets(conditionsState, applicableConditionSets);
       }
       case 'postSurvey':
       case 'profile': {
