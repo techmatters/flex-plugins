@@ -352,11 +352,10 @@ const setupAllow = <T extends TargetKind>(kind: T, conditionsSets: TKConditionsS
         return checkConditionsSets(conditionsState, conditionsSets);
       }
       case 'contactField': {
-        const specificConditions = conditionsSets.flatMap(cs =>
-          cs.map(c => (isContactFieldSpecificCondition(c) ? c : null)).filter(c => c !== null),
-        );
         const { contact, field } = target;
-        const appliedSpecificConditions = applyContactFieldSpecificConditions(specificConditions)(field);
+        // Filter out any condition sets that apply specivfically to a field other than this one
+        // Keep only global conditions and ones that apply to this field
+        const applicableConditions = conditionsSets.filter(css => !css.some(cs => isContactFieldSpecificCondition(cs) && cs.field !== field));
         const conditionsState: ConditionsState = {
           isSupervisor: performer.isSupervisor,
           isOwner: isContactOwner(performer, contact),
@@ -364,10 +363,10 @@ const setupAllow = <T extends TargetKind>(kind: T, conditionsSets: TKConditionsS
           createdDaysAgo: false,
           createdHoursAgo: false,
           ...appliedTimeBasedConditions,
-          ...appliedSpecificConditions,
+          [JSON.stringify({ field })]: true,
         };
 
-        return checkConditionsSets(conditionsState, conditionsSets);
+        return checkConditionsSets(conditionsState, applicableConditions);
       }
       case 'postSurvey':
       case 'profile': {
