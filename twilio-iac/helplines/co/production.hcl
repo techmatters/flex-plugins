@@ -14,6 +14,7 @@ locals {
       service_sid                  = "ZS70d962b047c1cd528ad2f2cae9f33b8b"
       environment_sid              = "ZE5dd6ef3cbb63cc2418c472cd51fb2d16"
       operating_hours_function_sid = "ZHb7ef5682d731ce326be6d61c8a2b2fcf"
+      widget_from                  = "Te Guío"
     }
 
     channels = {
@@ -43,7 +44,7 @@ locals {
         messaging_mode   = "conversations"
         channel_type     = "custom"
         contact_identity = "instagram"
-        templatefile     = "/app/twilio-iac/helplines/templates/studio-flows/messaging-no-chatbot-operating-hours-blocking-conv.tftpl"
+        templatefile     = "/app/twilio-iac/helplines/templates/studio-flows/messaging-no-chatbot-operating-hours-blocking-lambda-sd.tftpl"
         channel_flow_vars = {
           widget_from           = "Te Guío"
           chat_greeting_message = "¡Hola, te damos la bienvenida a Te Guío! Esta es la línea de ayuda dedicada a adolescentes como tú, donde escuchamos y orientamos  las inquietudes que puedes tener para lograr vivir una sexualidad saludable. Qué gusto que te contactes con nosotros. Por favor espéranos mientras te contactamos con un Guía."
@@ -54,7 +55,7 @@ locals {
       voice : {
         channel_type     = "voice"
         contact_identity = ""
-        templatefile     = "/app/twilio-iac/helplines/templates/studio-flows/voice-no-chatbot-operating-hours-blocking.tftpl"
+        templatefile     = "/app/twilio-iac/helplines/templates/studio-flows/voice-no-chatbot-operating-hours-blocking-lambda.tftpl"
         channel_flow_vars = {
           voice_ivr_greeting_message = "¡Hola, te damos la bienvenida a Te Guío! Esta es la línea de ayuda dedicada a adolescentes como tú, donde escuchamos y orientamos  las inquietudes que puedes tener para lograr vivir una sexualidad saludable. Qué gusto que te contactes con nosotros. Por favor espéranos mientras te contactamos con un Guía."
           voice_ivr_blocked_message  = "Lamentablemente el número del cual llamas se encuentra bloqueado en nuestro sistema."
