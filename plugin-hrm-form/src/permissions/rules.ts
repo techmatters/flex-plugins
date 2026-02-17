@@ -41,7 +41,7 @@ const isTimeBasedCondition = (c: any): c is TimeBasedCondition => {
   return false;
 };
 
-const userBasedConditions = ['isSupervisor', 'everyone'] as const;
+const userBasedConditions = ['isSupervisor', 'everyone', 'nobody'] as const;
 type UserBasedCondition = typeof userBasedConditions[number];
 
 const isUserBasedCondition = (c: any): c is UserBasedCondition =>
@@ -316,6 +316,7 @@ const setupAllow = <T extends TargetKind>(kind: T, conditionsSets: TKConditionsS
           isCaseOpen: isCaseOpen(target),
           isCaseContactOwner: isCaseContactOwner(target),
           everyone: true,
+          nobody: false,
           ...appliedTimeBasedConditions,
         };
 
@@ -326,6 +327,7 @@ const setupAllow = <T extends TargetKind>(kind: T, conditionsSets: TKConditionsS
           isSupervisor: performer.isSupervisor,
           isOwner: isContactOwner(performer, target),
           everyone: true,
+          nobody: false,
           createdDaysAgo: false,
           createdHoursAgo: false,
           ...appliedTimeBasedConditions,
@@ -348,6 +350,7 @@ const setupAllow = <T extends TargetKind>(kind: T, conditionsSets: TKConditionsS
           isSupervisor: performer.isSupervisor,
           isOwner: isContactOwner(performer, contact),
           everyone: true,
+          nobody: false,
           createdDaysAgo: false,
           createdHoursAgo: false,
           ...appliedTimeBasedConditions,
@@ -361,6 +364,7 @@ const setupAllow = <T extends TargetKind>(kind: T, conditionsSets: TKConditionsS
         const conditionsState: ConditionsState = {
           isSupervisor: performer.isSupervisor,
           everyone: true,
+          nobody: false,
           ...appliedTimeBasedConditions,
         };
 
@@ -376,6 +380,7 @@ const setupAllow = <T extends TargetKind>(kind: T, conditionsSets: TKConditionsS
         const conditionsState: ConditionsState = {
           isSupervisor: performer.isSupervisor,
           everyone: true,
+          nobody: false,
           ...appliedTimeBasedConditions,
           ...appliedSpecificConditions,
         };
@@ -386,6 +391,7 @@ const setupAllow = <T extends TargetKind>(kind: T, conditionsSets: TKConditionsS
         const conditionsState: ConditionsState = {
           isSupervisor: performer.isSupervisor,
           everyone: true,
+          nobody: false,
         };
 
         return checkConditionsSets(conditionsState, conditionsSets);
