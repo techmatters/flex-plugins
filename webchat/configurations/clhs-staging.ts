@@ -205,6 +205,10 @@ const preEngagementConfig: PreEngagementFormDefinition = {
           label: '',
         },
         {
+          value: 'Metropolitana de Santiago',
+          label: 'Metropolitana de Santiago',
+        },
+        {
           value: 'Arica y Parinacota',
           label: 'Arica y Parinacota',
         },
@@ -263,10 +267,6 @@ const preEngagementConfig: PreEngagementFormDefinition = {
         {
           value: 'Magallanes y Antártica Chilena',
           label: 'Magallanes y Antártica Chilena',
-        },
-        {
-          value: 'Metropolitana de Santiago',
-          label: 'Metropolitana de Santiago',
         },
       ],
     },
@@ -1926,12 +1926,12 @@ const preEngagementConfig: PreEngagementFormDefinition = {
           label: "",
         },
         {
-          value: "emergency",
-          label: "Necesito ayuda urgente",
-        },
-        {
           value: "helpAndOrientation",
           label: "Quiero recibir orientación",
+        },
+        {
+          value: "emergency",
+          label: "Necesito ayuda urgente",
         },
         {
           value: "Other",
