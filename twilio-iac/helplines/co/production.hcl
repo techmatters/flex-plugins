@@ -15,6 +15,7 @@ locals {
       environment_sid              = "ZE5dd6ef3cbb63cc2418c472cd51fb2d16"
       operating_hours_function_sid = "ZHb7ef5682d731ce326be6d61c8a2b2fcf"
       widget_from                  = "Te Guío"
+      chat_blocked_message            = "Lamentablemente no puedes utilizar nuestros servicios."
     }
 
     channels = {
