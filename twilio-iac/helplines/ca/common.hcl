@@ -24,7 +24,7 @@ locals {
         "friendly_name"  = "Aggregate"
       },
       khp_en : {
-        "target_workers" = "routing.skills HAS 'KHP English'",
+        "target_workers" = "routing.skills HAS 'KHP English' OR routing.skills HAS 'KHP EN'",
         "friendly_name"  = "KHP English"
       },
       khp_fr : { "target_workers" = "routing.skills HAS 'KHP French'",
