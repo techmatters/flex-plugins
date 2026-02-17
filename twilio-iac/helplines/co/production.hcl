@@ -65,7 +65,7 @@ locals {
       whatsapp : {
         messaging_mode   = "conversations"
         channel_type     = "whatsapp"
-        contact_identity = "whatsapp:+573148210435"
+        contact_identity = "whatsapp:+5742045220"
         templatefile     = "/app/twilio-iac/helplines/co/templates/studio-flows/whatsapp-templates.tftpl"
         channel_flow_vars = {
           widget_from                     = "Te Guío"
