@@ -11,11 +11,16 @@ locals {
 
     custom_task_routing_filter_expression = "OR channelType IN ['webchat', 'facebook', 'instagram', 'whatsapp'] OR  twilioNumber IN ['messenger:103538615719253', 'twitter:1532353002387931139', 'instagram:17841453197793547'] OR to == '+578005190690'"
     flow_vars = {
-      service_sid                  = "ZS70d962b047c1cd528ad2f2cae9f33b8b"
-      environment_sid              = "ZE5dd6ef3cbb63cc2418c472cd51fb2d16"
-      operating_hours_function_sid = "ZHb7ef5682d731ce326be6d61c8a2b2fcf"
-      widget_from                  = "Te Guío"
-      chat_blocked_message            = "Lamentablemente no puedes utilizar nuestros servicios."
+      service_sid                       = "ZS70d962b047c1cd528ad2f2cae9f33b8b"
+      environment_sid                   = "ZE5dd6ef3cbb63cc2418c472cd51fb2d16"
+      operating_hours_function_sid      = "ZHb7ef5682d731ce326be6d61c8a2b2fcf"
+      widget_from                       = "Te Guío"
+      chat_blocked_message              = "Lamentablemente no puedes utilizar nuestros servicios."
+      send_message_janitor_function_sid = "ZH1d6ed338c8ca9f49dfa0c084ef00b08b"
+      co_assets_url                     = "https://co-assets-9314.twil.io/"
+      co_assets_service_sid             = "ZS528a5c774818383d1438d7a52f6ffcc9"
+      co_assets_environment_sid         = "ZE827c023db67d4d68457d0bc81e7ee7ab"
+      wait_five_seconds_function_sid    = "ZHfa9b1b7988a479b0e2abeaf9ef6791cc"
     }
 
     channels = {
