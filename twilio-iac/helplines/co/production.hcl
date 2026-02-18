@@ -17,7 +17,7 @@ locals {
       widget_from                       = "Te Guío"
       chat_blocked_message              = "Lamentablemente no puedes utilizar nuestros servicios."
       send_message_janitor_function_sid = "ZH1d6ed338c8ca9f49dfa0c084ef00b08b"
-      co_assets_url                     = "https://co-assets-9314.twil.io/"
+      co_assets_url                     = "https://co-assets-9314.twil.io"
       co_assets_service_sid             = "ZS528a5c774818383d1438d7a52f6ffcc9"
       co_assets_environment_sid         = "ZE827c023db67d4d68457d0bc81e7ee7ab"
       wait_five_seconds_function_sid    = "ZHfa9b1b7988a479b0e2abeaf9ef6791cc"
