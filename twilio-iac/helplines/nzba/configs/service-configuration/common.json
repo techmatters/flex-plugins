@@ -8,7 +8,7 @@
         "feature_flags": {
             "use_prepopulate_mappings": true
         },
-        "helplineLanguage": "en-NZ",
+        "helplineLanguage": "en-US",
         "permissionConfig": "nzba"
     },
     "ui_attributes": {
