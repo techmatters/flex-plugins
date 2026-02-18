@@ -48,7 +48,7 @@
     "@types/validator": "^13.7.17",
     "@typescript-eslint/eslint-plugin": "^5.62.0",
     "@typescript-eslint/parser": "^5.4.0",
-    "axios": "^1.13.4",
+    "axios": "^1.13.5",
     "cors": "^2.8.5",
     "cross-env": "^10.1.0",
     "cypress": "15.10.0",
