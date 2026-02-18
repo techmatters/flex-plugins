@@ -1,8 +1,8 @@
 {
-    "slotName": "felt_better",
-    "slotTypeName": "five_level_assessment",
+    "slotName": "feedback",
+    "slotTypeName": "AMAZON.FreeFormInput",
     "intentName": "post_survey_yes",
-    "description": "Slot felt_better for intent post_survey_yes",
+    "description": "Slot feedback for intent post_survey_yes",
     "valueElicitationSetting": {
         "slotConstraint": "Required",
         "promptSpecification": {
@@ -10,7 +10,7 @@
                 {
                     "message": {
                         "plainTextMessage": {
-                            "value": "Al terminar la conversación, me sentí diferente a como empecé (mayor tranquilidad, claridad o con una nueva perspectiva sobre lo que vivía).\nResponde con un número del 1 al 5."
+                            "value": "¿Hay algo más que te gustaría contarnos sobre tu experiencia de hoy? \nRespuesta libre"
                         }
                     }
                 }
@@ -70,8 +70,7 @@
         "slotCaptureSetting": {
             "captureNextStep": {
                 "dialogAction": {
-                    "type": "ElicitSlot",
-                    "slotToElicit": "feedback"
+                    "type": "FulfillIntent"
                 },
                 "intent": {}
             },
