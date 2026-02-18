@@ -62,6 +62,7 @@ export const selfReportToIWFHandler: FlexValidatedHandler = async (
   accountSid,
 ) => {
   try {
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     const { user_age_range, case_number } = body;
 
     if (!user_age_range) return newMissingParameterResult('user_age_range');
@@ -103,7 +104,10 @@ export const selfReportToIWFHandler: FlexValidatedHandler = async (
     console.error('Error in self-report to IWF:', err);
     return newErr({
       message: err instanceof Error ? err.message : 'Unknown error occurred',
-      error: { statusCode: 500, cause: err instanceof Error ? err : new Error(String(err)) },
+      error: {
+        statusCode: 500,
+        cause: err instanceof Error ? err : new Error(String(err)),
+      },
     });
   }
 };

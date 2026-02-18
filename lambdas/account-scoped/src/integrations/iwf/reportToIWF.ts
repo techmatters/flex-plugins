@@ -17,7 +17,7 @@
 
 import { FlexValidatedHandler } from '../../validation/flexToken';
 import { newOk, newErr } from '../../Result';
-import { newMissingParameterResult, newMissingEnvironmentVariableResult } from '../../httpErrors';
+import { newMissingParameterResult } from '../../httpErrors';
 import { getSsmParameter } from '@tech-matters/ssm-cache';
 import type { AccountSID } from '@tech-matters/twilio-types';
 
@@ -50,14 +50,21 @@ type IWFCredentials = {
 const getIWFCredentials = async (accountSid: AccountSID): Promise<IWFCredentials> => {
   const environment = process.env.NODE_ENV!;
 
-  const [username, password, url, iwfEnvironment, countryCode, channelId] = await Promise.all([
-    getSsmParameter(`/${environment}/twilio/${accountSid}/iwf_api_username`),
-    getSsmParameter(`/${environment}/twilio/${accountSid}/iwf_api_password`),
-    getSsmParameter(`/${environment}/twilio/${accountSid}/iwf_api_url`),
-    getSsmParameter(`/${environment}/twilio/${accountSid}/iwf_api_environment`).catch(() => null),
-    getSsmParameter(`/${environment}/twilio/${accountSid}/iwf_api_country_code`).catch(() => null),
-    getSsmParameter(`/${environment}/twilio/${accountSid}/iwf_api_channel_id`).catch(() => null),
-  ]);
+  const [username, password, url, iwfEnvironment, countryCode, channelId] =
+    await Promise.all([
+      getSsmParameter(`/${environment}/twilio/${accountSid}/iwf_api_username`),
+      getSsmParameter(`/${environment}/twilio/${accountSid}/iwf_api_password`),
+      getSsmParameter(`/${environment}/twilio/${accountSid}/iwf_api_url`),
+      getSsmParameter(`/${environment}/twilio/${accountSid}/iwf_api_environment`).catch(
+        () => null,
+      ),
+      getSsmParameter(`/${environment}/twilio/${accountSid}/iwf_api_country_code`).catch(
+        () => null,
+      ),
+      getSsmParameter(`/${environment}/twilio/${accountSid}/iwf_api_channel_id`).catch(
+        () => null,
+      ),
+    ]);
 
   return {
     username,
@@ -69,10 +76,7 @@ const getIWFCredentials = async (accountSid: AccountSID): Promise<IWFCredentials
   };
 };
 
-export const reportToIWFHandler: FlexValidatedHandler = async (
-  { body },
-  accountSid,
-) => {
+export const reportToIWFHandler: FlexValidatedHandler = async ({ body }, accountSid) => {
   try {
     const {
       Reported_URL,
@@ -84,7 +88,10 @@ export const reportToIWFHandler: FlexValidatedHandler = async (
     } = body;
 
     if (!Reported_URL) return newMissingParameterResult('Reported_URL');
-    if (!Reporter_Anonymous || (Reporter_Anonymous !== 'Y' && Reporter_Anonymous !== 'N')) {
+    if (
+      !Reporter_Anonymous ||
+      (Reporter_Anonymous !== 'Y' && Reporter_Anonymous !== 'N')
+    ) {
       return newMissingParameterResult('Reporter_Anonymous');
     }
 
@@ -114,9 +121,9 @@ export const reportToIWFHandler: FlexValidatedHandler = async (
       Reporter_Country_ID: countryID,
     };
 
-    const authHash = Buffer.from(`${credentials.username}:${credentials.password}`).toString(
-      'base64',
-    );
+    const authHash = Buffer.from(
+      `${credentials.username}:${credentials.password}`,
+    ).toString('base64');
 
     const response = await fetch(credentials.url, {
       method: 'POST',
@@ -137,7 +144,10 @@ export const reportToIWFHandler: FlexValidatedHandler = async (
     console.error('Error reporting to IWF:', err);
     return newErr({
       message: err instanceof Error ? err.message : 'Unknown error occurred',
-      error: { statusCode: 500, cause: err instanceof Error ? err : new Error(String(err)) },
+      error: {
+        statusCode: 500,
+        cause: err instanceof Error ? err : new Error(String(err)),
+      },
     });
   }
 };
