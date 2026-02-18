@@ -21,7 +21,9 @@ import { FlexValidatedHttpRequest } from '../../../../src/validation/flexToken';
 
 jest.mock('@tech-matters/ssm-cache');
 
-const mockGetSsmParameter = getSsmParameter as jest.MockedFunction<typeof getSsmParameter>;
+const mockGetSsmParameter = getSsmParameter as jest.MockedFunction<
+  typeof getSsmParameter
+>;
 
 const TEST_ACCOUNT_SID = 'AC000000000000000000000000000000';
 

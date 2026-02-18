@@ -45,9 +45,9 @@ const getIWFSelfReportCredentials = async (
   const environment = process.env.NODE_ENV!;
 
   const [caseUrl, reportUrl, secretKey] = await Promise.all([
-    getSsmParameter(`/${environment}/twilio/${accountSid}/iwf_api_case_url`),
-    getSsmParameter(`/${environment}/twilio/${accountSid}/iwf_report_url`),
-    getSsmParameter(`/${environment}/twilio/${accountSid}/iwf_secret_key`),
+    getSsmParameter(`/${environment}/iwf/${accountSid}/api_case_url`),
+    getSsmParameter(`/${environment}/iwf/${accountSid}/report_url`),
+    getSsmParameter(`/${environment}/iwf/${accountSid}/secret_key`),
   ]);
 
   return {

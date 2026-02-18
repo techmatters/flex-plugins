@@ -52,16 +52,16 @@ const getIWFCredentials = async (accountSid: AccountSID): Promise<IWFCredentials
 
   const [username, password, url, iwfEnvironment, countryCode, channelId] =
     await Promise.all([
-      getSsmParameter(`/${environment}/twilio/${accountSid}/iwf_api_username`),
-      getSsmParameter(`/${environment}/twilio/${accountSid}/iwf_api_password`),
-      getSsmParameter(`/${environment}/twilio/${accountSid}/iwf_api_url`),
-      getSsmParameter(`/${environment}/twilio/${accountSid}/iwf_api_environment`).catch(
+      getSsmParameter(`/${environment}/iwf/${accountSid}/api_username`),
+      getSsmParameter(`/${environment}/iwf/${accountSid}/api_password`),
+      getSsmParameter(`/${environment}/iwf/${accountSid}/api_url`),
+      getSsmParameter(`/${environment}/iwf/${accountSid}/api_environment`).catch(
         () => null,
       ),
-      getSsmParameter(`/${environment}/twilio/${accountSid}/iwf_api_country_code`).catch(
+      getSsmParameter(`/${environment}/iwf/${accountSid}/api_country_code`).catch(
         () => null,
       ),
-      getSsmParameter(`/${environment}/twilio/${accountSid}/iwf_api_channel_id`).catch(
+      getSsmParameter(`/${environment}/iwf/${accountSid}/api_channel_id`).catch(
         () => null,
       ),
     ]);
