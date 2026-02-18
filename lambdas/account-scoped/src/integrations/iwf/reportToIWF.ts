@@ -77,6 +77,8 @@ const getIWFCredentials = async (accountSid: AccountSID): Promise<IWFCredentials
 };
 
 export const reportToIWFHandler: FlexValidatedHandler = async ({ body }, accountSid) => {
+  console.info(`reportToIWF invoked for account ${accountSid}`);
+
   try {
     const {
       Reported_URL,
@@ -103,6 +105,10 @@ export const reportToIWFHandler: FlexValidatedHandler = async ({ body }, account
       : null;
 
     const channelID = credentials.channelId ? parseInt(credentials.channelId, 10) : 51;
+
+    console.info(
+      `Submitting ${Reporter_Anonymous === 'Y' ? 'anonymous' : 'non-anonymous'} IWF report for account ${accountSid}, environment: ${liveReportFlag}`,
+    );
 
     const payload: IWFReportPayload = {
       Reporting_Type: 'R',
@@ -136,12 +142,20 @@ export const reportToIWFHandler: FlexValidatedHandler = async ({ body }, account
 
     const responseData = await response.json();
 
+    console.info(
+      `IWF report submitted successfully for account ${accountSid}, response status: ${response.status}`,
+    );
+
     return newOk({
       status: response.status,
       data: responseData,
     });
   } catch (err) {
-    console.error('Error reporting to IWF:', err);
+    console.error(
+      `Error reporting to IWF for account ${accountSid}:`,
+      err instanceof Error ? err.message : String(err),
+      err,
+    );
     return newErr({
       message: err instanceof Error ? err.message : 'Unknown error occurred',
       error: {

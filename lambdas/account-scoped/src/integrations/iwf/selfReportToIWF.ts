@@ -61,12 +61,18 @@ export const selfReportToIWFHandler: FlexValidatedHandler = async (
   { body },
   accountSid,
 ) => {
+  console.info(`selfReportToIWF invoked for account ${accountSid}`);
+
   try {
     // eslint-disable-next-line @typescript-eslint/naming-convention
     const { user_age_range, case_number } = body;
 
     if (!user_age_range) return newMissingParameterResult('user_age_range');
     if (!case_number) return newMissingParameterResult('case_number');
+
+    console.info(
+      `Processing IWF self-report for account ${accountSid}, case: ${case_number}, age range: ${user_age_range}`,
+    );
 
     const credentials = await getIWFSelfReportCredentials(accountSid);
 
@@ -86,6 +92,9 @@ export const selfReportToIWFHandler: FlexValidatedHandler = async (
     const data = (await response.json()) as IWFResponse;
 
     if (data?.result !== 'OK') {
+      console.warn(
+        `IWF self-report failed for account ${accountSid}, case: ${case_number}, result: ${data?.result}`,
+      );
       return newErr({
         message: data.message?.access_token || 'IWF self-report request failed',
         error: { statusCode: 400 },
@@ -94,6 +103,10 @@ export const selfReportToIWFHandler: FlexValidatedHandler = async (
 
     const reportUrl = `${credentials.reportUrl}/?t=${data.message?.access_token}`;
 
+    console.info(
+      `IWF self-report successful for account ${accountSid}, case: ${case_number}`,
+    );
+
     const responseData = {
       reportUrl,
       status: data?.result,
@@ -101,7 +114,11 @@ export const selfReportToIWFHandler: FlexValidatedHandler = async (
 
     return newOk(responseData);
   } catch (err) {
-    console.error('Error in self-report to IWF:', err);
+    console.error(
+      `Error in self-report to IWF for account ${accountSid}:`,
+      err instanceof Error ? err.message : String(err),
+      err,
+    );
     return newErr({
       message: err instanceof Error ? err.message : 'Unknown error occurred',
       error: {
