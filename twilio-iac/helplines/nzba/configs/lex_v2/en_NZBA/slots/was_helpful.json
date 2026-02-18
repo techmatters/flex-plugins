@@ -97,9 +97,5 @@
                 "enableCodeHookInvocation": true
             }
         }
-    },
-    
-    "obfuscationSetting": {
-        "obfuscationSettingType": "None"
     }
 }

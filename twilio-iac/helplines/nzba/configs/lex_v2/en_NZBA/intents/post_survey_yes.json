@@ -3,29 +3,44 @@
   "description": "Post Survey Intent - Yes",
   "sampleUtterances": [
     {
-      "utterance": "yah"
-    },
-    {
-      "utterance": "ya"
-    },
-    {
-      "utterance": "yeah"
-    },
-    {
-      "utterance": "y"
+      "utterance": "Yes"
     },
     {
       "utterance": "yes"
     },
     {
-      "utterance": "yep"
+      "utterance": "yeah"
     },
     {
-      "utterance": "yup"
+      "utterance": "1"
     }
   ],
   "dialogCodeHook": {
     "enabled": false
+  },
+  "fulfillmentCodeHook": {
+    "enabled": false,
+    "active": true,
+    "postFulfillmentStatusSpecification": {
+      "successNextStep": {
+        "dialogAction": {
+          "type": "CloseIntent"
+        },
+        "intent": {}
+      },
+      "failureNextStep": {
+        "dialogAction": {
+          "type": "CloseIntent"
+        },
+        "intent": {}
+      },
+      "timeoutNextStep": {
+        "dialogAction": {
+          "type": "CloseIntent"
+        },
+        "intent": {}
+      }
+    }
   },
   "slotPriorities": [
     {
@@ -52,10 +67,10 @@
     },
     "active": true,
     "nextStep": {
-        "dialogAction": {
-            "type": "EndConversation"
-        },
-        "intent": {}
+      "dialogAction": {
+        "type": "EndConversation"
+      },
+      "intent": {}
     }
   }
 }
