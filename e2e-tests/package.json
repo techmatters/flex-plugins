@@ -71,8 +71,8 @@
     "endOfLine": "auto"
   },
   "dependencies": {
-    "@aws-sdk/client-ssm": "^3.873.0",
-    "@aws-sdk/client-s3": "^3.873.0",
+    "@aws-sdk/client-ssm": "^3.993.0",
+    "@aws-sdk/client-s3": "^3.993.0",
     "@playwright/test": "^1.35.1",
     "@types/ws": "^8.5.4",
     "date-fns": "^2.28.0",

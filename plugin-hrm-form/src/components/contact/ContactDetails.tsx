@@ -74,7 +74,7 @@ const ContactDetails: React.FC<Props> = ({
   const definitionVersions = useSelector((state: RootState) => selectDefinitionVersions(state));
   const draftCsamReport = useSelector((state: RootState) => state[namespace]['csam-report'].contacts[contactId]);
 
-  const { loadingStatus } = savedContactState?.metadata;
+  const loadingStatus = savedContactState?.metadata?.loadingStatus;
   const updateDraftForm = (draftContactId: string, form: Partial<ContactRawJson>) =>
     dispatch(updateDraft(draftContactId, { rawJson: form }));
   const closeModal = () => dispatch(newCloseModalAction(task.taskSid));
@@ -90,7 +90,7 @@ const ContactDetails: React.FC<Props> = ({
     if (!savedContactState?.savedContact?.conversationMedia && loadingStatus !== 'loading') {
       dispatch(loadContactFromHrmByIdAsyncAction(contactId, `${task.taskSid}-viewing`));
     }
-  }, [contactId, dispatch, loadingStatus, savedContactState.savedContact, task.taskSid]);
+  }, [contactId, dispatch, loadingStatus, savedContactState?.savedContact, task.taskSid]);
   const version =
     savedContactState?.savedContact?.definitionVersion ?? savedContactState?.savedContact?.rawJson.definitionVersion;
 
@@ -107,7 +107,7 @@ const ContactDetails: React.FC<Props> = ({
     if (version && !definitionVersions[version]) {
       fetchDefinitionVersions();
     }
-  }, [definitionVersions, version, savedContactState.savedContact, dispatch]);
+  }, [definitionVersions, version, dispatch]);
 
   const definitionVersion = definitionVersions[version];
 

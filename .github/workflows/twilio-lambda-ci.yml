@@ -132,3 +132,4 @@ jobs:
           push: true
           # 'latest' is never used, but it keeps terraform happy
           tags: ${{ env.ECR_URL }}:${{ github.ref_type }}.${{ env.ref_name_for_docker }},${{ env.ECR_URL }}:${{ github.sha }},${{ env.ECR_URL }}:latest
+          provenance: false

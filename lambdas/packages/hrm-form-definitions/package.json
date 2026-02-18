@@ -40,7 +40,7 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.28.6",
-    "lodash": "^4.17.21"
+    "lodash": "^4.17.23"
   },
   "prettier": {
     "printWidth": 100,

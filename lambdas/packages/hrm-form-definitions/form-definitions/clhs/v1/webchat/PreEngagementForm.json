@@ -165,6 +165,10 @@
           "label": ""
         },
         {
+          "value": "Metropolitana de Santiago",
+          "label": "Metropolitana de Santiago"
+        },
+        {
           "value": "Arica y Parinacota",
           "label": "Arica y Parinacota"
         },
@@ -223,10 +227,6 @@
         {
           "value": "Magallanes y Antártica Chilena",
           "label": "Magallanes y Antártica Chilena"
-        },
-        {
-          "value": "Metropolitana de Santiago",
-          "label": "Metropolitana de Santiago"
         }
       ]
     },
@@ -237,6 +237,220 @@
       "dependsOn": "region",
       "required": true,
       "options": {
+        "Metropolitana de Santiago": [
+          {
+            "value": "",
+            "label": ""
+          },
+          {
+            "value": "Santiago",
+            "label": "Santiago"
+          },
+          {
+            "value": "Cerrillos",
+            "label": "Cerrillos"
+          },
+          {
+            "value": "Cerro Navia",
+            "label": "Cerro Navia"
+          },
+          {
+            "value": "Conchalí",
+            "label": "Conchalí"
+          },
+          {
+            "value": "El Bosque",
+            "label": "El Bosque"
+          },
+          {
+            "value": "Estación Central",
+            "label": "Estación Central"
+          },
+          {
+            "value": "Huechuraba",
+            "label": "Huechuraba"
+          },
+          {
+            "value": "Independencia",
+            "label": "Independencia"
+          },
+          {
+            "value": "La Cisterna",
+            "label": "La Cisterna"
+          },
+          {
+            "value": "La Florida",
+            "label": "La Florida"
+          },
+          {
+            "value": "La Granja",
+            "label": "La Granja"
+          },
+          {
+            "value": "La Pintana",
+            "label": "La Pintana"
+          },
+          {
+            "value": "La Reina",
+            "label": "La Reina"
+          },
+          {
+            "value": "Las Condes",
+            "label": "Las Condes"
+          },
+          {
+            "value": "Lo Barnechea",
+            "label": "Lo Barnechea"
+          },
+          {
+            "value": "Lo Espejo",
+            "label": "Lo Espejo"
+          },
+          {
+            "value": "Lo Prado",
+            "label": "Lo Prado"
+          },
+          {
+            "value": "Macul",
+            "label": "Macul"
+          },
+          {
+            "value": "Maipú",
+            "label": "Maipú"
+          },
+          {
+            "value": "Ñuñoa",
+            "label": "Ñuñoa"
+          },
+          {
+            "value": "Pedro Aguirre Cerda",
+            "label": "Pedro Aguirre Cerda"
+          },
+          {
+            "value": "Peñalolén",
+            "label": "Peñalolén"
+          },
+          {
+            "value": "Providencia",
+            "label": "Providencia"
+          },
+          {
+            "value": "Pudahuel",
+            "label": "Pudahuel"
+          },
+          {
+            "value": "Quilicura",
+            "label": "Quilicura"
+          },
+          {
+            "value": "Quinta Normal",
+            "label": "Quinta Normal"
+          },
+          {
+            "value": "Recoleta",
+            "label": "Recoleta"
+          },
+          {
+            "value": "Renca",
+            "label": "Renca"
+          },
+          {
+            "value": "San Joaquín",
+            "label": "San Joaquín"
+          },
+          {
+            "value": "San Miguel",
+            "label": "San Miguel"
+          },
+          {
+            "value": "San Ramón",
+            "label": "San Ramón"
+          },
+          {
+            "value": "Vitacura",
+            "label": "Vitacura"
+          },
+          {
+            "value": "Puente Alto",
+            "label": "Puente Alto"
+          },
+          {
+            "value": "Pirque",
+            "label": "Pirque"
+          },
+          {
+            "value": "San José de Maipo",
+            "label": "San José de Maipo"
+          },
+          {
+            "value": "Colina",
+            "label": "Colina"
+          },
+          {
+            "value": "Lampa",
+            "label": "Lampa"
+          },
+          {
+            "value": "Til Til",
+            "label": "Til Til"
+          },
+          {
+            "value": "San Bernardo",
+            "label": "San Bernardo"
+          },
+          {
+            "value": "Buin",
+            "label": "Buin"
+          },
+          {
+            "value": "Calera de Tango",
+            "label": "Calera de Tango"
+          },
+          {
+            "value": "Paine",
+            "label": "Paine"
+          },
+          {
+            "value": "Melipilla",
+            "label": "Melipilla"
+          },
+          {
+            "value": "Alhué",
+            "label": "Alhué"
+          },
+          {
+            "value": "Curacaví",
+            "label": "Curacaví"
+          },
+          {
+            "value": "María Pinto",
+            "label": "María Pinto"
+          },
+          {
+            "value": "San Pedro",
+            "label": "San Pedro"
+          },
+          {
+            "value": "Talagante",
+            "label": "Talagante"
+          },
+          {
+            "value": "El Monte",
+            "label": "El Monte"
+          },
+          {
+            "value": "Isla de Maipo",
+            "label": "Isla de Maipo"
+          },
+          {
+            "value": "Padre Hurtado",
+            "label": "Padre Hurtado"
+          },
+          {
+            "value": "Peñaflor",
+            "label": "Peñaflor"
+          }
+        ],
         "Arica y Parinacota": [
           {
             "value": "",
@@ -1501,220 +1715,6 @@
           {
             "value": "Torres del Paine",
             "label": "Torres del Paine"
-          }
-        ],
-        "Metropolitana de Santiago": [
-          {
-            "value": "",
-            "label": ""
-          },
-          {
-            "value": "Santiago",
-            "label": "Santiago"
-          },
-          {
-            "value": "Cerrillos",
-            "label": "Cerrillos"
-          },
-          {
-            "value": "Cerro Navia",
-            "label": "Cerro Navia"
-          },
-          {
-            "value": "Conchalí",
-            "label": "Conchalí"
-          },
-          {
-            "value": "El Bosque",
-            "label": "El Bosque"
-          },
-          {
-            "value": "Estación Central",
-            "label": "Estación Central"
-          },
-          {
-            "value": "Huechuraba",
-            "label": "Huechuraba"
-          },
-          {
-            "value": "Independencia",
-            "label": "Independencia"
-          },
-          {
-            "value": "La Cisterna",
-            "label": "La Cisterna"
-          },
-          {
-            "value": "La Florida",
-            "label": "La Florida"
-          },
-          {
-            "value": "La Granja",
-            "label": "La Granja"
-          },
-          {
-            "value": "La Pintana",
-            "label": "La Pintana"
-          },
-          {
-            "value": "La Reina",
-            "label": "La Reina"
-          },
-          {
-            "value": "Las Condes",
-            "label": "Las Condes"
-          },
-          {
-            "value": "Lo Barnechea",
-            "label": "Lo Barnechea"
-          },
-          {
-            "value": "Lo Espejo",
-            "label": "Lo Espejo"
-          },
-          {
-            "value": "Lo Prado",
-            "label": "Lo Prado"
-          },
-          {
-            "value": "Macul",
-            "label": "Macul"
-          },
-          {
-            "value": "Maipú",
-            "label": "Maipú"
-          },
-          {
-            "value": "Ñuñoa",
-            "label": "Ñuñoa"
-          },
-          {
-            "value": "Pedro Aguirre Cerda",
-            "label": "Pedro Aguirre Cerda"
-          },
-          {
-            "value": "Peñalolén",
-            "label": "Peñalolén"
-          },
-          {
-            "value": "Providencia",
-            "label": "Providencia"
-          },
-          {
-            "value": "Pudahuel",
-            "label": "Pudahuel"
-          },
-          {
-            "value": "Quilicura",
-            "label": "Quilicura"
-          },
-          {
-            "value": "Quinta Normal",
-            "label": "Quinta Normal"
-          },
-          {
-            "value": "Recoleta",
-            "label": "Recoleta"
-          },
-          {
-            "value": "Renca",
-            "label": "Renca"
-          },
-          {
-            "value": "San Joaquín",
-            "label": "San Joaquín"
-          },
-          {
-            "value": "San Miguel",
-            "label": "San Miguel"
-          },
-          {
-            "value": "San Ramón",
-            "label": "San Ramón"
-          },
-          {
-            "value": "Vitacura",
-            "label": "Vitacura"
-          },
-          {
-            "value": "Puente Alto",
-            "label": "Puente Alto"
-          },
-          {
-            "value": "Pirque",
-            "label": "Pirque"
-          },
-          {
-            "value": "San José de Maipo",
-            "label": "San José de Maipo"
-          },
-          {
-            "value": "Colina",
-            "label": "Colina"
-          },
-          {
-            "value": "Lampa",
-            "label": "Lampa"
-          },
-          {
-            "value": "Til Til",
-            "label": "Til Til"
-          },
-          {
-            "value": "San Bernardo",
-            "label": "San Bernardo"
-          },
-          {
-            "value": "Buin",
-            "label": "Buin"
-          },
-          {
-            "value": "Calera de Tango",
-            "label": "Calera de Tango"
-          },
-          {
-            "value": "Paine",
-            "label": "Paine"
-          },
-          {
-            "value": "Melipilla",
-            "label": "Melipilla"
-          },
-          {
-            "value": "Alhué",
-            "label": "Alhué"
-          },
-          {
-            "value": "Curacaví",
-            "label": "Curacaví"
-          },
-          {
-            "value": "María Pinto",
-            "label": "María Pinto"
-          },
-          {
-            "value": "San Pedro",
-            "label": "San Pedro"
-          },
-          {
-            "value": "Talagante",
-            "label": "Talagante"
-          },
-          {
-            "value": "El Monte",
-            "label": "El Monte"
-          },
-          {
-            "value": "Isla de Maipo",
-            "label": "Isla de Maipo"
-          },
-          {
-            "value": "Padre Hurtado",
-            "label": "Padre Hurtado"
-          },
-          {
-            "value": "Peñaflor",
-            "label": "Peñaflor"
           }
         ]
       }
