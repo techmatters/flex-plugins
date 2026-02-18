@@ -60,6 +60,10 @@
         {
             "priority": 3,
             "slotName": "felt_better"
+        },
+        {
+            "priority": 4,
+            "slotName": "feedback"
         }
     ],
     "intentClosingSetting": {
