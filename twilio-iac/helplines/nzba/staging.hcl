@@ -7,7 +7,7 @@ locals {
     enable_external_recordings            = true
     enable_post_survey                    = true
     enable_datadog_monitoring             = false
-    custom_task_routing_filter_expression = "channelType =='voice' OR 'web'"
+    custom_task_routing_filter_expression = "channelType IN ['web','voice']  OR isContactlessTask == true"
     permission_config                     = "nzba"
 
     #Studio flow
