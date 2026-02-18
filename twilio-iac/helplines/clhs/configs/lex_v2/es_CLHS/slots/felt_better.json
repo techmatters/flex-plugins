@@ -70,7 +70,8 @@
         "slotCaptureSetting": {
             "captureNextStep": {
                 "dialogAction": {
-                    "type": "FulfillIntent"
+                    "type": "ElicitSlot",
+                    "slotToElicit": "feedback"
                 },
                 "intent": {}
             },

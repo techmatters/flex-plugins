@@ -57,6 +57,16 @@ jobs:
           source-git-reference: ${{ github.ref_name }}
           target-git-tag: ${{ inputs.tag-name }}
 
+      - name: Copy aselo webchat react app to S3 release folders
+        uses: ./.github/actions/copy-aselo-webchat-react-app-to-release-location
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_DEFAULT_REGION }}
+          source-git-reference-type: ${{ github.ref_type }}
+          source-git-reference: ${{ github.ref_name }}
+          target-git-tag: ${{ steps.create_pre_release.outputs.generated-pre-release-tag }}
+
   tag-images:
     needs: generate-release
     runs-on: ubuntu-latest

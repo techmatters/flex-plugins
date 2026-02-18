@@ -1,6 +1,6 @@
 {
-  "EndChatButtonLabel": "Выход из чата",
-  "QuickExitButtonLabel": "Быстрый выход",
-  "QuickExitDescription": "Нужно быстро уйти?",
-  "ChatWithUs": "Kék Vonal"
+  "Header-CloseChatButtons-EndChatButtonLabel": "Выход из чата",
+  "Header-CloseChatButtons-QuickExitButtonLabel": "Быстрый выход",
+  "Header-CloseChatButtons-QuickExitDescription": "Нужно быстро уйти?",
+  "Header-TitleBar-Title": "Kék Vonal"
 }

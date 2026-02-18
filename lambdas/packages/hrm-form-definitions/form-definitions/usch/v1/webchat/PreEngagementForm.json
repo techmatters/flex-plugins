@@ -1,0 +1,432 @@
+{
+  "description": "PreEngagementConfigDescription",
+  "submitLabel": "StartChat",
+  "fields": [
+    {
+      "label": "How old are you?",
+      "type": "select",
+      "name": "ageRange",
+      "required": true,
+      "defaultValue": "",
+      "options": [
+        {
+          "value": "",
+          "label": ""
+        },
+        {
+          "value": "0-5",
+          "label": "0-5"
+        },
+        {
+          "value": "6-12",
+          "label": "6-12"
+        },
+        {
+          "value": "13-17",
+          "label": "13-17"
+        },
+        {
+          "value": "18-24",
+          "label": "18-24"
+        },
+        {
+          "value": "Adult 25+",
+          "label": "Adult 25+"
+        },
+        {
+          "value": "N/A",
+          "label": "Prefer not to answer"
+        }
+      ]
+    },
+    {
+      "type": "input-text",
+      "name": "genderInput",
+      "label": "What is your gender identity?",
+      "placeholder": "",
+      "required": true
+    },
+    {
+      "label": "What state are you chatting from?",
+      "type": "select",
+      "name": "state",
+      "required": true,
+      "defaultValue": "",
+      "options": [
+        {
+          "value": "",
+          "label": ""
+        },
+        {
+          "value": "Out of USA",
+          "label": "Out of USA"
+        },
+        {
+          "value": "Alabama",
+          "label": "Alabama"
+        },
+        {
+          "value": "Alaska",
+          "label": "Alaska"
+        },
+        {
+          "value": "Arizona",
+          "label": "Arizona"
+        },
+        {
+          "value": "Arkansas",
+          "label": "Arkansas"
+        },
+        {
+          "value": "California",
+          "label": "California"
+        },
+        {
+          "value": "Colorado",
+          "label": "Colorado"
+        },
+        {
+          "value": "Connecticut",
+          "label": "Connecticut"
+        },
+        {
+          "value": "Delaware",
+          "label": "Delaware"
+        },
+        {
+          "value": "Florida",
+          "label": "Florida"
+        },
+        {
+          "value": "Georgia",
+          "label": "Georgia"
+        },
+        {
+          "value": "Hawaii",
+          "label": "Hawaii"
+        },
+        {
+          "value": "Idaho",
+          "label": "Idaho"
+        },
+        {
+          "value": "Illinois",
+          "label": "Illinois"
+        },
+        {
+          "value": "Indiana",
+          "label": "Indiana"
+        },
+        {
+          "value": "Iowa",
+          "label": "Iowa"
+        },
+        {
+          "value": "Kansas",
+          "label": "Kansas"
+        },
+        {
+          "value": "Kentucky",
+          "label": "Kentucky"
+        },
+        {
+          "value": "Louisiana",
+          "label": "Louisiana"
+        },
+        {
+          "value": "Maine",
+          "label": "Maine"
+        },
+        {
+          "value": "Maryland",
+          "label": "Maryland"
+        },
+        {
+          "value": "Massachusetts",
+          "label": "Massachusetts"
+        },
+        {
+          "value": "Michigan",
+          "label": "Michigan"
+        },
+        {
+          "value": "Minnesota",
+          "label": "Minnesota"
+        },
+        {
+          "value": "Mississippi",
+          "label": "Mississippi"
+        },
+        {
+          "value": "Missouri",
+          "label": "Missouri"
+        },
+        {
+          "value": "Montana",
+          "label": "Montana"
+        },
+        {
+          "value": "Nebraska",
+          "label": "Nebraska"
+        },
+        {
+          "value": "Nevada",
+          "label": "Nevada"
+        },
+        {
+          "value": "New Hampshire",
+          "label": "New Hampshire"
+        },
+        {
+          "value": "New Jersey",
+          "label": "New Jersey"
+        },
+        {
+          "value": "New Mexico",
+          "label": "New Mexico"
+        },
+        {
+          "value": "New York",
+          "label": "New York"
+        },
+        {
+          "value": "North Carolina",
+          "label": "North Carolina"
+        },
+        {
+          "value": "North Dakota",
+          "label": "North Dakota"
+        },
+        {
+          "value": "Ohio",
+          "label": "Ohio"
+        },
+        {
+          "value": "Oklahoma",
+          "label": "Oklahoma"
+        },
+        {
+          "value": "Oregon",
+          "label": "Oregon"
+        },
+        {
+          "value": "Pennsylvania",
+          "label": "Pennsylvania"
+        },
+        {
+          "value": "Rhode Island",
+          "label": "Rhode Island"
+        },
+        {
+          "value": "South Carolina",
+          "label": "South Carolina"
+        },
+        {
+          "value": "South Dakota",
+          "label": "South Dakota"
+        },
+        {
+          "value": "Tennessee",
+          "label": "Tennessee"
+        },
+        {
+          "value": "Texas",
+          "label": "Texas"
+        },
+        {
+          "value": "Utah",
+          "label": "Utah"
+        },
+        {
+          "value": "Vermont",
+          "label": "Vermont"
+        },
+        {
+          "value": "Virginia",
+          "label": "Virginia"
+        },
+        {
+          "value": "Washington",
+          "label": "Washington"
+        },
+        {
+          "value": "Washington, D.C.",
+          "label": "Washington, D.C."
+        },
+        {
+          "value": "West Virginia",
+          "label": "West Virginia"
+        },
+        {
+          "value": "Wisconsin",
+          "label": "Wisconsin"
+        },
+        {
+          "value": "Wyoming",
+          "label": "Wyoming"
+        },
+        {
+          "value": "Unknown",
+          "label": "Unknown"
+        },
+        {
+          "value": "N/A",
+          "label": "Prefer not to answer"
+        }
+      ]
+    },
+    {
+      "label": "How did you hear about this hotline?",
+      "name": "howTheHelpseekerHeardAboutUs",
+      "type": "select",
+      "required": false,
+      "options": [
+        {
+          "value": "",
+          "label": ""
+        },
+        {
+          "value": "Google",
+          "label": "Google"
+        },
+        {
+          "value": "Chat GPT/AI",
+          "label": "Chat GPT/AI"
+        },
+        {
+          "value": "Family/Friend",
+          "label": "Family/Friend"
+        },
+        {
+          "value": "Internet/Website",
+          "label": "Internet/Website"
+        },
+        {
+          "value": "Professional (Counselor, Teacher, Doctor, etc)",
+          "label": "Professional (Counselor, Teacher, Doctor, etc)"
+        },
+        {
+          "value": "Hotline: 988 - National Suicide Prevention Lifeline",
+          "label": "Hotline: 988 - National Suicide Prevention Lifeline"
+        },
+        {
+          "value": "Hotline: NCMEC - National Center for Missing and Exploited Children",
+          "label": "Hotline: NCMEC - National Center for Missing and Exploited Children"
+        },
+        {
+          "value": "Hotline: NDVH - National Domestic Violence Hotline",
+          "label": "Hotline: NDVH - National Domestic Violence Hotline"
+        },
+        {
+          "value": "Hotline: NRS - National Runaway Safeline",
+          "label": "Hotline: NRS - National Runaway Safeline"
+        },
+        {
+          "value": "Hotline: RAINN - National Sexual Assault Hotline",
+          "label": "Hotline: RAINN - National Sexual Assault Hotline"
+        },
+        {
+          "value": "Other Hotline",
+          "label": "Other Hotline"
+        },
+        {
+          "value": "Other",
+          "label": "Other"
+        },
+        {
+          "value": "Repeat Caller/Called Before",
+          "label": "Repeat Caller/Called Before"
+        },
+        {
+          "value": "Social Media: Discord",
+          "label": "Social Media: Discord"
+        },
+        {
+          "value": "Social Media: Facebook",
+          "label": "Social Media: Facebook"
+        },
+        {
+          "value": "Social Media: Instagram",
+          "label": "Social Media: Instagram"
+        },
+        {
+          "value": "Social Media: Reddit",
+          "label": "Social Media: Reddit"
+        },
+        {
+          "value": "Social Media: Snapchat",
+          "label": "Social Media: Snapchat"
+        },
+        {
+          "value": "Social Media: TikTok",
+          "label": "Social Media: TikTok"
+        },
+        {
+          "value": "Social Media: X / (Twitter)",
+          "label": "Social Media: X / (Twitter)"
+        },
+        {
+          "value": "Social Media: Youtube",
+          "label": "Social Media: Youtube"
+        },
+        {
+          "value": "Social Media: Other",
+          "label": "Social Media: Other"
+        },
+        {
+          "value": "SUBS - Childhelp Speak Up Be Safe Program",
+          "label": "SUBS - Childhelp Speak Up Be Safe Program"
+        },
+        {
+          "value": "Television/Streaming Services",
+          "label": "Television/Streaming Services"
+        },
+        {
+          "value": "Unknown / Prefer Not to Answer",
+          "label": "Unknown / Prefer Not to Answer"
+        }
+      ]
+    },
+    {
+      "label": "Are you reaching out on behalf of yourself or another person?",
+      "type": "select",
+      "defaultValue": "Yes",
+      "name": "aboutSelf",
+      "options": [
+        {
+          "value": "Yes",
+          "label": "Myself"
+        },
+        {
+          "value": "No",
+          "label": "Someone else"
+        }
+      ]
+    },
+    {
+      "label": "What is your preferred language?",
+      "type": "select",
+      "defaultValue": "en-US",
+      "name": "language",
+      "options": [
+        {
+          "value": "en-US",
+          "label": "English"
+        },
+        {
+          "value": "en",
+          "label": "Other"
+        }
+      ]
+    },
+    {
+      "type": "checkbox",
+      "name": "termsAndConditions",
+      "label": "I've read and accept the <a href=\"https://www.childhelphotline.org/terms-of-service/\">Terms and Conditions</a>",
+      "required": {
+        "value": true,
+        "message": "Sorry, if you don't accept our terms and conditions we can't provide counseling to you."
+      }
+    }
+  ]
+}

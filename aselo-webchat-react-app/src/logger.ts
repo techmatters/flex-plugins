@@ -14,57 +14,59 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import log, { Logger, LogLevelDesc } from "loglevel";
+import log, { Logger, LogLevelDesc } from 'loglevel';
 
-const VALID_LOGLEVELS: Array<LogLevelDesc> = ["info", "warn", "error"];
+const VALID_LOGLEVELS: Array<LogLevelDesc> = ['info', 'warn', 'error'];
 
 export default class WebChatLogger {
-    className: string;
-    logger: Logger;
+  className: string;
 
-    constructor(className: string) {
-        this.className = className;
-        this.logger = log.getLogger(this.className);
-    }
+  logger: Logger;
 
-    info(message: string) {
-        this.logger.info(`[${this.className}]: ${message}`);
-    }
+  constructor(className: string) {
+    this.className = className;
+    this.logger = log.getLogger(this.className);
+  }
 
-    warn(message: string) {
-        this.logger.warn(`[${this.className}]: ${message}`);
-    }
+  info(message: string) {
+    this.logger.info(`[${this.className}]: ${message}`);
+  }
 
-    error(message: string) {
-        this.logger.error(`[${this.className}]: ${message}`);
-    }
+  warn(message: string) {
+    this.logger.warn(`[${this.className}]: ${message}`);
+  }
+
+  error(message: string) {
+    this.logger.error(`[${this.className}]: ${message}`);
+  }
 }
 
+// eslint-disable-next-line func-names
 export const { initialize: initLogger, getWebChatLogger: getLogger } = (function () {
-    const logDump: Map<string, WebChatLogger> = new Map();
+  const logDump: Map<string, WebChatLogger> = new Map();
 
-    function initialize(level: LogLevelDesc = "info") {
-        if (!VALID_LOGLEVELS.includes(level)) {
-            console.error(
-                `Invalid Log Level -> ${level}. Select level higher than INFO or more. Valid levels are INFO, WARN and ERROR.`
-            );
-            return;
-        }
-
-        log.setLevel(level);
-        log.info("Logger has been initialized.");
+  function initialize(level: LogLevelDesc = 'info') {
+    if (!VALID_LOGLEVELS.includes(level)) {
+      console.error(
+        `Invalid Log Level -> ${level}. Select level higher than INFO or more. Valid levels are INFO, WARN and ERROR.`,
+      );
+      return;
     }
 
-    function getWebChatLogger(className: string): WebChatLogger {
-        if (!logDump.has(className)) {
-            logDump.set(className, new WebChatLogger(className));
-        }
+    log.setLevel(level);
+    log.info('Logger has been initialized.');
+  }
 
-        return logDump.get(className) as WebChatLogger;
+  function getWebChatLogger(className: string): WebChatLogger {
+    if (!logDump.has(className)) {
+      logDump.set(className, new WebChatLogger(className));
     }
 
-    return {
-        initialize,
-        getWebChatLogger
-    };
+    return logDump.get(className) as WebChatLogger;
+  }
+
+  return {
+    initialize,
+    getWebChatLogger,
+  };
 })();

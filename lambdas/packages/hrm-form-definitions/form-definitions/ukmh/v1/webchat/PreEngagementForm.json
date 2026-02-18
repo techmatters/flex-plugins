@@ -1,0 +1,179 @@
+{
+  "description": "PreEngagementDescription",
+  "submitLabel": "LetsChat",
+  "fields": [
+    {
+      "type": "input-text",
+      "name": "friendlyName",
+      "label": "First Name",
+      "placeholder": "Your name",
+      "required": true
+    },
+    {
+      "type": "input-text",
+      "name": "lastName",
+      "label": "Last Name",
+      "placeholder": "Your last name",
+      "required": true
+    },
+    {
+      "type": "email",
+      "name": "contactIdentifier",
+      "label": "Email Address",
+      "required": true,
+      "placeholder": "Your Email"
+    },
+    {
+      "type": "input-text",
+      "name": "phone1",
+      "label": "Phone Number",
+      "placeholder": "Your phone number",
+      "required": true
+    },
+    {
+      "type": "input-text",
+      "name": "bookingReference",
+      "label": "Booking Reference",
+      "required": true
+    },
+    {
+      "label": "On a scale from 0 (not anxious at all) to 10 (completely anxious), how anxious did you feel yesterday?",
+      "type": "select",
+      "name": "anxietyScale",
+      "required": true,
+      "options": [
+        {
+          "value": "Unknown",
+          "label": ""
+        },
+        {
+          "value": "00",
+          "label": "0"
+        },
+        {
+          "value": "01",
+          "label": "1"
+        },
+        {
+          "value": "02",
+          "label": "2"
+        },
+        {
+          "value": "03",
+          "label": "3"
+        },
+        {
+          "value": "04",
+          "label": "4"
+        },
+        {
+          "value": "05",
+          "label": "5"
+        },
+        {
+          "value": "06",
+          "label": "6"
+        },
+        {
+          "value": "07",
+          "label": "7"
+        },
+        {
+          "value": "08",
+          "label": "8"
+        },
+        {
+          "value": "09",
+          "label": "9"
+        },
+        {
+          "value": "10",
+          "label": "10"
+        }
+      ]
+    },
+    {
+      "label": "On a scale from 1 (sad) to 5 (happy), what mood are you in currently?",
+      "type": "select",
+      "name": "moodhappinessBefore",
+      "required": true,
+      "options": [
+        {
+          "value": "Unknown",
+          "label": ""
+        },
+        {
+          "value": "01",
+          "label": "☹️ 1"
+        },
+        {
+          "value": "02",
+          "label": "🙁 2"
+        },
+        {
+          "value": "03",
+          "label": "😐 3"
+        },
+        {
+          "value": "04",
+          "label": "🙂 4"
+        },
+        {
+          "value": "05",
+          "label": "😀 5"
+        }
+      ]
+    },
+    {
+      "type": "select",
+      "name": "consentForResearchEvaluation",
+      "label": "I consent to being contacted for research or evaluation purposes.",
+      "defaultValue": "",
+      "options": [
+        {
+          "value": "",
+          "label": ""
+        },
+        {
+          "value": "Yes",
+          "label": "Yes"
+        },
+        {
+          "value": "No",
+          "label": "No"
+        }
+      ],
+      "required": {
+        "value": true,
+        "message": "Sorry, you need to select one of the options"
+      }
+    },
+    {
+      "type": "checkbox",
+      "name": "dataProcessingAndStorage",
+      "label": "I consent to the processing of my personal data (including sensitive data relating to matters such as my mental health and wellbeing) by MHI (parent organisation of The Mix and Shout) for the purpose of providing me with the PeerChat Service.",
+      "required": {
+        "value": true,
+        "message": "Sorry, if you do not consent to have your data being processed and stored we cannot provide the PeerChat service to you."
+      }
+    },
+    {
+      "type": "checkbox",
+      "name": "termsAndConditions",
+      "label": "I agree to the PeerChat Service <a href=\"https://www.themix.org.uk/about-us/privacy-centre/peerchat-terms-of-service/\">Terms & Conditions</a>.",
+      "required": {
+        "value": true,
+        "message": "Sorry, if you do not accept our terms and conditions we cannot provide the PeerChat service to you."
+      }
+    },
+    {
+      "type": "checkbox",
+      "name": "privacyPolicy",
+      "label": "I acknowledge that I have read and understand the PeerChat Service <a href=\"https://www.themix.org.uk/about-us/privacy-centre/peerchat-privacy-notice/\">Privacy Policy</a>.",
+      "required": {
+        "value": true,
+        "message": "Sorry, if you do not accept our privacy policy we cannot provide the PeerChat service to you."
+      }
+    }
+  ]
+}

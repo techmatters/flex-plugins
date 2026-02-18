@@ -13,13 +13,13 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
-import Mustache from "mustache";
+import Mustache from 'mustache';
 
-import { ConfigState } from "../store/definitions";
+import { ConfigState } from '../store/definitions';
 
 export const localizeKey =
-    (localeTranslations: ConfigState["translations"][keyof ConfigState["translations"]]) =>
-    (key: string, parameters: Record<string, string> = {}) => {
-        const lookedUpValue = localeTranslations[key] || key;
-        return Mustache.render(lookedUpValue, parameters);
-    };
+  (localeTranslations: ConfigState['translations'][keyof ConfigState['translations']]) =>
+  (key: string, parameters: Record<string, string> = {}) => {
+    const lookedUpValue = (localeTranslations && localeTranslations[key]) || key;
+    return Mustache.render(lookedUpValue, parameters);
+  };

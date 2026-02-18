@@ -28,6 +28,10 @@
             "utterance": "1"
           }
         ],
+         "initial_response": {
+          "message": "¡Gracias! A continuación te enviaremos 3 afirmaciones. Responde con un número del 1 al 5 cada una, donde: \n1 = muy en desacuerdo \n2 = en desacuerdo \n3 = ni en desacuerdo ni de acuerdo \n4 = de acuerdo \n5 = muy de acuerdo",
+          "slot_to_elicit": "felt_supported"
+        },
         "closing_response": {
           "message": "Gracias por contactarnos. No dudes en escribirnos de nuevo cuando necesites ayuda ❤️"
         },
@@ -48,6 +52,12 @@
             "slot_name": "felt_better",
             "slot_type_name": "five_level_assessment",
             "slot_question": "Al terminar la conversación, me sentí diferente a como empecé (mayor tranquilidad, claridad o con una nueva perspectiva sobre lo que vivía).\nResponde con un número del 1 al 5.",
+            "failure_response": "Gracias por contactarnos. No dudes en escribirnos de nuevo cuando necesites ayuda ❤️."
+          },
+          "4":  {
+            "slot_name": "feedback",
+            "slot_type_name": "AMAZON.FreeFormInput",
+            "slot_question": "¿Hay algo más que te gustaría contarnos sobre tu experiencia de hoy? \nRespuesta libre",
             "failure_response": "Gracias por contactarnos. No dudes en escribirnos de nuevo cuando necesites ayuda ❤️."
           }
                 }

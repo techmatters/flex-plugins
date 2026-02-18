@@ -1,0 +1,36 @@
+{
+  "extends": [
+    "twilio-react",
+    "plugin:react/jsx-runtime",
+    "plugin:sonarjs/recommended"
+  ],
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "ecmaVersion": 2019,
+    "sourceType": "module",
+    "ecmaFeatures": {
+      "jsx": true
+    }
+  },
+  "rules": {
+    "no-console": "off",
+    "no-warning-comments": "off",
+    "multiline-comment-style": "off",
+    "no-confusing-arrow": "off",
+    "no-alert": "off",
+    "no-shadow": "off",
+    "import/no-extraneous-dependencies": "off",
+    "jsx-a11y/tabindex-no-positive": "off",
+    "sonarjs/no-duplicate-string": "off",
+    "no-use-before-define": "off",
+    "react/prop-types": "off",
+    "react/display-name": "off",
+    "react/require-default-props": "off",
+    "react/no-unused-prop-types": "off",
+    "react/default-props-match-prop-types": "off",
+    "react/no-multi-comp": "off",
+    "react/jsx-no-bind": "off",
+    "sonarjs/no-nested-template-literals": "off",
+    "sonar/unused-import": "off"
+  }
+}
