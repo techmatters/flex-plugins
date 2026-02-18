@@ -15,11 +15,11 @@
   {
     "name": "referredTo",
     "label": "Referred To",
-    "type": "select",
+    "type": "listbox-multiselect",
     "options": [
       {
-        "value": "",
-        "label": ""
+        "value": "Unknown",
+        "label": "Unknown"
       },
       {
         "value": "OSC",
@@ -56,6 +56,10 @@
       {
         "value": "Chief/Head man",
         "label": "Chief/Head man"
+      },
+      {
+        "value": "Legal aid",
+        "label": "Legal Aid"
       },
       {
         "value": "Head teacher",
