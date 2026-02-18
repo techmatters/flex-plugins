@@ -12,7 +12,7 @@ locals {
 
     #Studio flow
     flow_vars = {
-      bot_language                          = "en-US"
+      bot_language                          = "en_NZBA"
       widget_from                           = "Barnardos"
       chat_blocked_message                  = "Sorry, you're not able to contact Barnardos from this device or account"
       error_message                         = "There has been an error with your message, please try writing us again."
