@@ -1,0 +1,89 @@
+{
+    "slotTypeName": "gender",
+    "slotTypeValues": [
+        {
+            "sampleValue": {
+                "value": "Boy"
+            },
+            "synonyms": [
+                {
+                    "value": "Boy"
+                },
+                {
+                    "value": "Male"
+                },
+                {
+                    "value": "Dude"
+                },
+                {
+                    "value": "Guy"
+                },
+                {
+                    "value": "Man"
+                },
+                {
+                    "value": "M"
+                },
+                {
+                    "value": "He"
+                }
+            ]
+        },
+        {
+            "sampleValue": {
+                "value": "Girl"
+            },
+            "synonyms": [
+                {
+                    "value": "Woman"
+                },
+                {
+                    "value": "Lady"
+                },
+                {
+                    "value": "Female"
+                },
+                {
+                    "value": "She"
+                },
+                {
+                    "value": "F"
+                }
+            ]
+        },
+        {
+            "sampleValue": {
+                "value": "Non-Binary"
+            },
+            "synonyms": [
+                {
+                    "value": "None"
+                },
+                {
+                    "value": "non binary"
+                }
+            ]
+        },
+        {
+            "sampleValue": {
+                "value": "Unknown"
+            },
+            "synonyms": [
+                {
+                    "value": "x"
+                },
+                {
+                    "value": "not sure"
+                }
+            ]
+        },
+        {
+            "sampleValue": {
+                "value": "prefer not to answer"
+            }
+        }
+    ],
+    "valueSelectionSetting": {
+        "resolutionStrategy": "TopResolution"
+    }
+}

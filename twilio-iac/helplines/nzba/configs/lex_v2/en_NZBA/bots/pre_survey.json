@@ -1,6 +1,6 @@
 {
   "pre_survey": {
-    "description": "Example configs/lex_v2/en_US/bots Pre Survey bot",
+    "description": "Example configs/lex_v2/en_NZBA/bots Pre Survey bot",
     "locale": "en_US",
     "child_directed": true,
     "idle_session_ttl_in_seconds": "600",
