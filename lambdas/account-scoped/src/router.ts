@@ -53,6 +53,8 @@ import { getAccountSid } from '@tech-matters/twilio-configuration';
 import { validateRequestWithTwilioJwtToken } from './validation/twilioJwt';
 import { transferStartHandler } from './transfer/transferStart';
 import { adjustChatCapacityHandler } from './conversation/adjustChatCapacity';
+import { reportToIWFHandler } from './integrations/iwf/reportToIWF';
+import { selfReportToIWFHandler } from './integrations/iwf/selfReportToIWF';
 
 /**
  * Super simple router sufficient for directly ported Twilio Serverless functions
@@ -173,6 +175,14 @@ const ACCOUNTSID_ROUTES: Record<
   updateWorkersSkills: {
     requestPipeline: [validateFlexTokenRequest({ tokenMode: 'supervisor' })],
     handler: handleUpdateWorkersSkills,
+  },
+  'integrations/iwf/reportToIWF': {
+    requestPipeline: [validateFlexTokenRequest({ tokenMode: 'agent' })],
+    handler: reportToIWFHandler,
+  },
+  'integrations/iwf/selfReportToIWF': {
+    requestPipeline: [validateFlexTokenRequest({ tokenMode: 'agent' })],
+    handler: selfReportToIWFHandler,
   },
 };
 

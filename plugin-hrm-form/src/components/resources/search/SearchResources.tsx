@@ -15,7 +15,7 @@
  */
 
 import React from 'react';
-import { connect, ConnectedProps } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import { RootState } from '../../../states';
 import { ResourceSearchStatus } from '../../../states/resources/search';
@@ -23,20 +23,8 @@ import SearchResourcesForm from './SearchResourcesForm';
 import SearchResourcesResults from './SearchResourcesResults';
 import { namespace, referrableResourcesBase } from '../../../states/storeNamespaces';
 
-type OwnProps = {};
-
-const mapStateToProps = (state: RootState) => {
-  const { status } = state[namespace][referrableResourcesBase].search;
-  return {
-    status,
-  };
-};
-
-const connector = connect(mapStateToProps);
-
-type Props = OwnProps & ConnectedProps<typeof connector>;
-
-const SearchResources: React.FC<Props> = ({ status }) => {
+const SearchResources: React.FC = () => {
+  const status = useSelector((state: RootState) => state[namespace][referrableResourcesBase].search.status);
   switch (status) {
     case ResourceSearchStatus.NotSearched:
       return <SearchResourcesForm />;
@@ -52,4 +40,4 @@ const SearchResources: React.FC<Props> = ({ status }) => {
 
 SearchResources.displayName = 'ViewResource';
 
-export default connector(SearchResources);
+export default SearchResources;

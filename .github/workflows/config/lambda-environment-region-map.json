@@ -8,7 +8,7 @@
   "lineSetup": { "development": ["us-east-1"], "staging": [], "production": ["us-east-1"] },
   "lineWebhook": { "development": ["us-east-1"], "staging": [], "production": ["us-east-1"] },
   "modicaWebhook": { "development": ["us-east-1"], "staging": [], "production": ["us-east-1"] },
-  "recaptchaVerify": { "development": ["us-east-1"], "staging": [], "production": ["us-east-1"] },
+  "recaptchaVerify": { "development": ["us-east-1"], "staging": [], "production": ["us-east-1", "ca-central-1"] },
   "savePendingContacts": { "development": ["us-east-1"], "staging": [], "production": ["us-east-1"] },
   "TwilioErrorReporter": { "development": ["us-east-1"], "staging": [], "production": ["us-east-1"] },
   "twilioEventStreams": { "development": ["us-east-1"], "staging": ["us-east-1"], "production": ["us-east-1"] }
