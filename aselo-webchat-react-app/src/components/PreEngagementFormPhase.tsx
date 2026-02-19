@@ -50,7 +50,6 @@ export const PreEngagementFormPhase = () => {
     e.preventDefault();
     dispatch(changeEngagementPhase({ phase: EngagementPhase.Loading }));
     try {
-
       const data = await sessionDataHandler.fetchAndStoreNewSession({
         formData: {
           ...preEngagementData,
