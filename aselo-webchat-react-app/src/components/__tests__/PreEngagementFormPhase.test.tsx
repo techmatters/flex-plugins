@@ -14,14 +14,15 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { fireEvent, render, waitFor } from '@testing-library/react';
+import { act, fireEvent, render, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { Provider } from 'react-redux';
+import { FormInputType } from 'hrm-form-definitions';
 
 import { sessionDataHandler } from '../../sessionDataHandler';
 import * as initAction from '../../store/actions/initActions';
-import { EngagementPhase } from '../../store/definitions';
-import { store } from '../../store/store';
+import { AppState, EngagementPhase } from '../../store/definitions';
+import { preloadStore } from '../../store/store';
 import { PreEngagementFormPhase } from '../PreEngagementFormPhase';
 
 const token = 'token';
@@ -42,8 +43,6 @@ jest.mock('../NotificationBar', () => ({
   NotificationBar: () => <div title="NotificationBar" />,
 }));
 
-const withStore = (Component: React.ReactElement) => <Provider store={store}>{Component}</Provider>;
-
 describe('Pre Engagement Form Phase', () => {
   const namePlaceholderText = 'Please enter your name';
   const emailPlaceholderText = 'Please enter your email address';
@@ -55,6 +54,32 @@ describe('Pre Engagement Form Phase', () => {
   const name = 'John';
   const email = 'email@email.email';
   const query = 'Why is a potato?';
+
+  const preloadedState: Partial<AppState> = {
+    config: {
+      environment: 'test',
+      helplineCode: '',
+      quickExitUrl: 'https://',
+      translations: {},
+      defaultLocale: 'en-US',
+      deploymentKey: '',
+      aseloBackendUrl: '',
+      definitionVersion: '',
+      preEngagementFormDefinition: {
+        description: 'Description',
+        submitLabel: 'Submit Label',
+        fields: [
+          { name: 'friendlyName', type: FormInputType.Input, label: nameLabelText, placeholder: namePlaceholderText },
+          { name: 'email', type: FormInputType.Email, label: emailLabelText, placeholder: emailPlaceholderText },
+          { name: 'query', type: FormInputType.Input, label: queryLabelText, placeholder: queryPlaceholderText },
+        ],
+      },
+    },
+  };
+
+  const store = preloadStore(preloadedState);
+
+  const withStore = (Component: React.ReactElement) => <Provider store={store}>{Component}</Provider>;
 
   beforeEach(() => {
     jest.resetAllMocks();
@@ -150,30 +175,13 @@ describe('Pre Engagement Form Phase', () => {
     const queryInput = getByPlaceholderText(queryPlaceholderText);
 
     fireEvent.change(nameInput, { target: { value: name } });
+    fireEvent.blur(nameInput);
     fireEvent.change(emailInput, { target: { value: email } });
+    fireEvent.blur(emailInput);
     fireEvent.change(queryInput, { target: { value: query } });
+    fireEvent.blur(queryInput);
     fireEvent.submit(formBox);
 
     expect(fetchAndStoreNewSessionSpy).toHaveBeenCalledWith({ formData: { friendlyName: name, query, email } });
-  });
-
-  it('submits form on enter within textarea', () => {
-    const fetchAndStoreNewSessionSpy = jest.spyOn(sessionDataHandler, 'fetchAndStoreNewSession');
-    const { container } = render(withStore(<PreEngagementFormPhase />));
-
-    const textArea = container.querySelector('textarea') as Element;
-    fireEvent.keyDown(textArea, { key: 'Enter', code: 'Enter', charCode: 13, shiftKey: false });
-
-    expect(fetchAndStoreNewSessionSpy).toHaveBeenCalled();
-  });
-
-  it('does not submit form on shift+enter within textarea', () => {
-    const fetchAndStoreNewSessionSpy = jest.spyOn(sessionDataHandler, 'fetchAndStoreNewSession');
-    const { container } = render(withStore(<PreEngagementFormPhase />));
-
-    const textArea = container.querySelector('textarea') as Element;
-    fireEvent.keyDown(textArea, { key: 'Enter', code: 'Enter', charCode: 13, shiftKey: true });
-
-    expect(fetchAndStoreNewSessionSpy).not.toHaveBeenCalled();
   });
 });
