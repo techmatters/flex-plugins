@@ -18,7 +18,7 @@
 import { FlexValidatedHandler } from '../../validation/flexToken';
 import { newOk, newErr } from '../../Result';
 import { newMissingParameterResult } from '../../httpErrors';
-import { getSsmParameter } from '@tech-matters/ssm-cache';
+import { getSsmParameter, SsmParameterNotFound } from '@tech-matters/ssm-cache';
 import type { AccountSID } from '@tech-matters/twilio-types';
 
 export type IWFReportPayload = {
@@ -50,21 +50,36 @@ type IWFCredentials = {
 const getIWFCredentials = async (accountSid: AccountSID): Promise<IWFCredentials> => {
   const environment = process.env.NODE_ENV!;
 
-  const [username, password, url, iwfEnvironment, countryCode, channelId] =
-    await Promise.all([
-      getSsmParameter(`/${environment}/iwf/${accountSid}/api_username`),
-      getSsmParameter(`/${environment}/iwf/${accountSid}/api_password`),
-      getSsmParameter(`/${environment}/iwf/${accountSid}/api_url`),
-      getSsmParameter(`/${environment}/iwf/${accountSid}/api_environment`).catch(
-        () => null,
-      ),
-      getSsmParameter(`/${environment}/iwf/${accountSid}/api_country_code`).catch(
-        () => null,
-      ),
-      getSsmParameter(`/${environment}/iwf/${accountSid}/api_channel_id`).catch(
-        () => null,
-      ),
-    ]);
+  // Fetch required parameters (not account-specific)
+  const [username, password, url] = await Promise.all([
+    getSsmParameter(`/${environment}/iwf/api_username`),
+    getSsmParameter(`/${environment}/iwf/api_password`),
+    getSsmParameter(`/${environment}/iwf/api_url`),
+  ]);
+
+  // Fetch optional account-specific parameters
+  const getOptionalParameter = async (paramName: string): Promise<string | null> => {
+    const paramPath = `/${environment}/iwf/${accountSid}/${paramName}`;
+    try {
+      return await getSsmParameter(paramPath);
+    } catch (error) {
+      if (error instanceof SsmParameterNotFound) {
+        console.debug(`Optional IWF parameter not found: ${paramPath}`);
+      } else {
+        console.error(
+          `Error fetching optional IWF parameter ${paramPath}:`,
+          error instanceof Error ? error.message : String(error),
+        );
+      }
+      return null;
+    }
+  };
+
+  const [iwfEnvironment, countryCode, channelId] = await Promise.all([
+    getOptionalParameter('api_environment'),
+    getOptionalParameter('api_country_code'),
+    getOptionalParameter('api_channel_id'),
+  ]);
 
   return {
     username,
