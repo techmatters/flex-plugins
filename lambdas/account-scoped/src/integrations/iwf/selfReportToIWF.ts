@@ -114,11 +114,7 @@ export const selfReportToIWFHandler: FlexValidatedHandler = async (
 
     return newOk(responseData);
   } catch (err) {
-    console.error(
-      `Error in self-report to IWF for account ${accountSid}:`,
-      err instanceof Error ? err.message : String(err),
-      err,
-    );
+    console.error(`Error in self-report to IWF for account ${accountSid}:`, err);
     return newErr({
       message: err instanceof Error ? err.message : 'Unknown error occurred',
       error: {

@@ -66,10 +66,7 @@ const getIWFCredentials = async (accountSid: AccountSID): Promise<IWFCredentials
       if (error instanceof SsmParameterNotFound) {
         console.debug(`Optional IWF parameter not found: ${paramPath}`);
       } else {
-        console.error(
-          `Error fetching optional IWF parameter ${paramPath}:`,
-          error instanceof Error ? error.message : String(error),
-        );
+        console.error(`Error fetching optional IWF parameter ${paramPath}:`, error);
       }
       return null;
     }
@@ -166,11 +163,7 @@ export const reportToIWFHandler: FlexValidatedHandler = async ({ body }, account
       data: responseData,
     });
   } catch (err) {
-    console.error(
-      `Error reporting to IWF for account ${accountSid}:`,
-      err instanceof Error ? err.message : String(err),
-      err,
-    );
+    console.error(`Error reporting to IWF for account ${accountSid}:`, err);
     return newErr({
       message: err instanceof Error ? err.message : 'Unknown error occurred',
       error: {
