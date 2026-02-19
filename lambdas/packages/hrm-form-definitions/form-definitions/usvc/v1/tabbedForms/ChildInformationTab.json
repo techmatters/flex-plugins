@@ -60,6 +60,34 @@
     }
   },
   {
+    "name": "typeOfVictim",
+    "label": "Type of Victim",
+    "type": "select",
+    "isPII": false,
+    "options": [
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "Primary Victim",
+        "label": "Primary Victim"
+      },
+      {
+        "value": "Secondary Victim",
+        "label": "Secondary Victim"
+      },
+      {
+        "value": "N/A",
+        "label": "N/A"
+      }
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
     "name": "gender",
     "label": "Sex of Visitor",
     "type": "select",
