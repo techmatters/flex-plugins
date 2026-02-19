@@ -38,11 +38,11 @@ export const buildFormDefinitionsBaseUrlGetter =
   (definitionVersionId: string) => {
     const helplineCode = getHelplineCodeFromDefinitionVersionId(definitionVersionId);
     const version = getVersionFromDefinitionVersionId(definitionVersionId);
-
-    if (configuredFormDefinitionsBaseUrl) {
-      return `${configuredFormDefinitionsBaseUrl}/${helplineCode}/${version}`;
+    let baseUrl: string =
+      configuredFormDefinitionsBaseUrl ||
+      `https://assets-${environment}.tl.techmatters.org/form-definitions/`;
+    if (!baseUrl.endsWith('/')) {
+      baseUrl = `${baseUrl}/`;
     }
-
-    const baseUrl = `https://assets-${environment}.tl.techmatters.org/form-definitions`;
-    return `${baseUrl}/${helplineCode}/${version}`;
+    return `${baseUrl}${helplineCode}/${version}`;
   };

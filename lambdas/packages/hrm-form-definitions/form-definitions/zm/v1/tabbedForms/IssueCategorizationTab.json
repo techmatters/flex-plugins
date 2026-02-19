@@ -52,9 +52,6 @@
             "label": "Online Addiction"
           },
           {
-            "label": "VAWIE"
-          },
-          {
             "label": "Other Online Harm"
           }
         ]
@@ -146,9 +143,6 @@
           },
           {
             "label": "Physical violence"
-          },
-          {
-            "label": "Political related GBV"
           },
           {
             "label": "Sexual violence"
@@ -462,51 +456,22 @@
         "color": "#47BA5E",
         "subcategories": [
           {
-            "label": "Violence Experienced During Election"
+            "label": "Physical"
           },
           {
-            "label": "VAWIE Confirmed GBV component"
+            "label": "Sexual"
           },
           {
-            "label": "VAWIE Possible GBV component"
+            "label": "Psychological/Emotional"
           },
           {
-            "label": "Unspecified/Other"
-          }
-        ]
-      },
-      "VAWIE Electoral Actor": {
-        "color": "#472A5E",
-        "subcategories": [
-          {
-            "label": "Voter/Individual"
+            "label": "Threats and Coercion"
           },
           {
-            "label": "Candidate/Aspiring candidate"
+            "label": "Economic"
           },
           {
-            "label": "Party activist/Member"
-          },
-          {
-            "label": "Party agent/Pollwatcher"
-          },
-          {
-            "label": "Nonpartisan election observer"
-          },
-          {
-            "label": "CSO Rep"
-          },
-          {
-            "label": "Security Agent"
-          },
-          {
-            "label": "Media"
-          },
-          {
-            "label": "Family/Community"
-          },
-          {
-            "label": "Election worker/official"
+            "label": "Information seeking about VAWIE services"
           },
           {
             "label": "Unspecified/Other"
@@ -617,9 +582,6 @@
             "label": "Hacking"
           },
           {
-            "label": "VAWIE" 
-          },
-          {
             "label": "Online Addiction"
           },
           {
@@ -722,9 +684,6 @@
           },
           {
             "label": "Physical violence"
-          },
-          {
-            "label": "Political related GBV"
           },
           {
             "label": "Sexual violence"
@@ -919,51 +878,22 @@
         "color": "#47BA5E",
         "subcategories": [
           {
-            "label": "Violence Experienced During Election"
+            "label": "Physical"
           },
           {
-            "label": "VAWIE Confirmed GBV component"
+            "label": "Sexual"
           },
           {
-            "label": "VAWIE Possible GBV component"
+            "label": "Psychological/Emotional"
           },
           {
-            "label": "Unspecified/Other"
-          }
-        ]
-      },
-      "VAWIE Electoral Actor": {
-        "color": "#472A5E",
-        "subcategories": [
-          {
-            "label": "Voter/Individual"
+            "label": "Threats and Coercion"
           },
           {
-            "label": "Candidate/Aspiring candidate"
+            "label": "Economic"
           },
           {
-            "label": "Party activist/Member"
-          },
-          {
-            "label": "Party agent/Pollwatcher"
-          },
-          {
-            "label": "Nonpartisan election observer"
-          },
-          {
-            "label": "CSO Rep"
-          },
-          {
-            "label": "Security Agent"
-          },
-          {
-            "label": "Media"
-          },
-          {
-            "label": "Family/Community"
-          },
-          {
-            "label": "Election worker/official"
+            "label": "Information seeking about VAWIE services"
           },
           {
             "label": "Unspecified/Other"

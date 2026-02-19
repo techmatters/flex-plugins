@@ -29,7 +29,6 @@ import { Header } from './Header';
 import { notifications } from '../notifications';
 import { NotificationBar } from './NotificationBar';
 import { fieldStyles, titleStyles, formStyles } from './styles/PreEngagementFormPhase.styles';
-import CloseChatButtons from './endChat/CloseChatButtons';
 import LocalizedTemplate from '../localization/LocalizedTemplate';
 import { generateForm } from './forms/formInputs';
 
@@ -78,7 +77,6 @@ export const PreEngagementFormPhase = () => {
   return (
     <>
       <Header />
-      <CloseChatButtons />
       <NotificationBar />
       <FormProvider {...methods}>
         <Box as="form" data-test="pre-engagement-chat-form" onSubmit={handleSubmit} {...formStyles}>

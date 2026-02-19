@@ -19,10 +19,10 @@ import { Template } from '@twilio/flex-ui';
 
 import { RootState } from '../../../states';
 import { Bold, FontOpenSans } from '../../../styles';
-import { CustomITask } from '../../../types/types';
+import { CustomITask, StandaloneITask } from '../../../types/types';
 
 type SearchResultsQueryTemplateProps = {
-  task: CustomITask;
+  task: CustomITask | StandaloneITask;
   searchContext: any;
   subroute: string;
   casesCount: number;

@@ -17,7 +17,6 @@
 import {
   Strings,
   TaskChannelDefinition,
-  MessagingCanvas,
   MessageList,
   StateHelper,
   ConversationHelper,
