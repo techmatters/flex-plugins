@@ -8,3 +8,9 @@
 **/__pycache__/
 
 **/junit.xml
+
+# Build artifacts
+*.tsbuildinfo
+
+# Root level package-lock (use workspace-specific ones)
+/package-lock.json
