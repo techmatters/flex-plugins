@@ -32,7 +32,6 @@ import { notifications } from '../notifications';
 import { NotificationBar } from './NotificationBar';
 import { introStyles, fieldStyles, titleStyles, formStyles } from './styles/PreEngagementFormPhase.styles';
 import { useSanitizer } from '../utils/useSanitizer';
-import CloseChatButtons from './endChat/CloseChatButtons';
 
 export const PreEngagementFormPhase = () => {
   const { name, email, query } = useSelector((state: AppState) => state.session.preEngagementData) || {};
@@ -72,7 +71,6 @@ export const PreEngagementFormPhase = () => {
   return (
     <>
       <Header />
-      <CloseChatButtons />
       <NotificationBar />
       <Box as="form" data-test="pre-engagement-chat-form" onSubmit={handleSubmit} {...formStyles}>
         <Text {...titleStyles} as="h3">
