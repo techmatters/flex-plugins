@@ -35,6 +35,11 @@ export const ContactActions = {
   REMOVE_CONTACT_FROM_CASE: 'removeContactFromCase',
 } as const;
 
+export const ContactFieldActions = {
+  VIEW_CONTACT_FIELD: 'viewContactField',
+  EDIT_CONTACT_FIELD: 'editContactField',
+} as const;
+
 export const ProfileActions = {
   VIEW_PROFILE: 'viewProfile',
   // EDIT_PROFILE: 'editProfile', // we don't need edit for now, will be needed when users can attach more identifiers or edit the name
@@ -55,6 +60,7 @@ export const ViewIdentifiersAction = {
 export const PermissionActions = {
   ...CaseActions,
   ...ContactActions,
+  ...ContactFieldActions,
   ...ProfileActions,
   ...ProfileSectionActions,
   ...ViewIdentifiersAction,
@@ -63,6 +69,7 @@ export const PermissionActions = {
 export const actionsMaps = {
   case: CaseActions,
   contact: ContactActions,
+  contactField: ContactFieldActions,
   profile: ProfileActions,
   profileSection: ProfileSectionActions,
   postSurvey: {

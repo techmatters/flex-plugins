@@ -18,7 +18,7 @@ import parseISO from 'date-fns/parseISO';
 import { differenceInDays, differenceInHours } from 'date-fns';
 
 import { getHrmConfig } from '../hrmConfig';
-import { ProfileSection } from '../types/types';
+import {ContactRawJson, ProfileSection} from '../types/types';
 import { fetchPermissionRules } from '../services/PermissionsService';
 import { actionsMaps, PermissionActions, TargetKind } from './actions';
 
@@ -41,7 +41,7 @@ const isTimeBasedCondition = (c: any): c is TimeBasedCondition => {
   return false;
 };
 
-const userBasedConditions = ['isSupervisor', 'everyone'] as const;
+const userBasedConditions = ['isSupervisor', 'everyone', 'nobody'] as const;
 type UserBasedCondition = typeof userBasedConditions[number];
 
 const isUserBasedCondition = (c: any): c is UserBasedCondition =>
@@ -52,6 +52,19 @@ type ContactSpecificCondition = typeof contactSpecificConditions[number];
 
 const isContactSpecificCondition = (c: any): c is ContactSpecificCondition =>
   typeof c === 'string' && contactSpecificConditions.includes(c as any);
+type ContactFieldSpecificCondition = {
+  // eslint-disable-next-line prettier/prettier
+  field: `rawJson.${keyof ContactRawJson}.${string}`;
+};
+
+const isContactFieldSpecificCondition = (c: any): c is ContactFieldSpecificCondition => {
+  if (typeof c?.field === 'string') {
+    const [root, ...path] = c.field.split('.');
+    return root === 'rawJson' && path.length === 2;
+  }
+
+  return false;
+};
 
 const caseSpecificConditions = ['isCreator', 'isCaseOpen', 'isCaseContactOwner'] as const;
 type CaseSpecificCondition = typeof caseSpecificConditions[number];
@@ -77,6 +90,11 @@ type SupportedContactCondition = TimeBasedCondition | UserBasedCondition | Conta
 const isSupportedContactCondition = (c: any): c is SupportedContactCondition =>
   isTimeBasedCondition(c) || isUserBasedCondition(c) || isContactSpecificCondition(c);
 
+
+type SupportedContactFieldCondition = SupportedContactCondition;
+const isSupportedContactFieldCondition = (c: any): c is SupportedContactFieldCondition =>
+    isSupportedContactCondition(c) || isContactFieldSpecificCondition(c);
+
 type SupportedCaseCondition = TimeBasedCondition | UserBasedCondition | CaseSpecificCondition;
 const isSupportedCaseCondition = (c: any): c is SupportedCaseCondition =>
   isTimeBasedCondition(c) || isUserBasedCondition(c) || isCaseSpecificCondition(c);
@@ -99,6 +117,7 @@ const isSupportedViewIdentifiersCondition = (c: any): c is SupportedPostSurveyCo
 // Defines which actions are supported on each TargetKind
 type SupportedTKCondition = {
   contact: SupportedContactCondition;
+  contactField: SupportedContactFieldCondition;
   case: SupportedCaseCondition;
   profile: SupportedProfileCondition;
   profileSection: SupportedProfileSectionCondition;
@@ -146,6 +165,9 @@ const isTKCondition = <T extends TargetKind>(kind: T) => (c: any): c is TKCondit
   switch (kind) {
     case 'contact': {
       return isSupportedContactCondition(c);
+    }
+    case 'contactField': {
+      return isSupportedContactFieldCondition(c);
     }
     case 'case': {
       return isSupportedCaseCondition(c);
@@ -294,6 +316,7 @@ const setupAllow = <T extends TargetKind>(kind: T, conditionsSets: TKConditionsS
           isCaseOpen: isCaseOpen(target),
           isCaseContactOwner: isCaseContactOwner(target),
           everyone: true,
+          nobody: false,
           ...appliedTimeBasedConditions,
         };
 
@@ -304,6 +327,7 @@ const setupAllow = <T extends TargetKind>(kind: T, conditionsSets: TKConditionsS
           isSupervisor: performer.isSupervisor,
           isOwner: isContactOwner(performer, target),
           everyone: true,
+          nobody: false,
           createdDaysAgo: false,
           createdHoursAgo: false,
           ...appliedTimeBasedConditions,
@@ -311,11 +335,36 @@ const setupAllow = <T extends TargetKind>(kind: T, conditionsSets: TKConditionsS
 
         return checkConditionsSets(conditionsState, conditionsSets);
       }
+      case 'contactField': {
+        const { contact, field } = target;
+        // Filter out any condition sets that apply specivfically to a field other than this one
+        // Keep only global conditions and ones that apply to this field
+        const applicableConditionSets =
+            conditionsSets.filter(css => !css.some(cs => isContactFieldSpecificCondition(cs) && cs.field !== field));
+
+        // If there is not at least 1 condition set specific top this field, allow it.
+        // Fields that aren't specifically called out in the permissions are assumed permitted
+        const hasAnyFieldSpecificConditionSets = applicableConditionSets.some(acs => acs.some(isContactFieldSpecificCondition))
+        if (!hasAnyFieldSpecificConditionSets)  return true;
+        const conditionsState: ConditionsState = {
+          isSupervisor: performer.isSupervisor,
+          isOwner: isContactOwner(performer, contact),
+          everyone: true,
+          nobody: false,
+          createdDaysAgo: false,
+          createdHoursAgo: false,
+          ...appliedTimeBasedConditions,
+          [JSON.stringify({ field })]: true,
+        };
+
+        return checkConditionsSets(conditionsState, applicableConditionSets);
+      }
       case 'postSurvey':
       case 'profile': {
         const conditionsState: ConditionsState = {
           isSupervisor: performer.isSupervisor,
           everyone: true,
+          nobody: false,
           ...appliedTimeBasedConditions,
         };
 
@@ -331,6 +380,7 @@ const setupAllow = <T extends TargetKind>(kind: T, conditionsSets: TKConditionsS
         const conditionsState: ConditionsState = {
           isSupervisor: performer.isSupervisor,
           everyone: true,
+          nobody: false,
           ...appliedTimeBasedConditions,
           ...appliedSpecificConditions,
         };
@@ -341,6 +391,7 @@ const setupAllow = <T extends TargetKind>(kind: T, conditionsSets: TKConditionsS
         const conditionsState: ConditionsState = {
           isSupervisor: performer.isSupervisor,
           everyone: true,
+          nobody: false,
         };
 
         return checkConditionsSets(conditionsState, conditionsSets);
