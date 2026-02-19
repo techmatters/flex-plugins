@@ -14,7 +14,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 import React from 'react';
-import { connect, ConnectedProps } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { getInitializedCan } from '../../permissions/rules';
 import { Case } from '../../types/types';
@@ -22,16 +22,14 @@ import CasePreview from '../search/CasePreview';
 import ProfileRelationshipList from './ProfileRelationshipList';
 import * as ProfileTypes from '../../states/profile/types';
 import * as RoutingActions from '../../states/routing/actions';
-import { namespace } from '../../states/storeNamespaces';
-import { RootState } from '../../states';
 import { ProfileCommonProps } from './types';
 import { PermissionActions } from '../../permissions/actions';
+import { selectCounselorsHash } from '../../states/configuration/selectCounselorsHash';
 
-type OwnProps = ProfileCommonProps;
+const ProfileCases: React.FC<ProfileCommonProps> = ({ profileId, task }) => {
+  const dispatch = useDispatch();
+  const counselorsHash = useSelector(selectCounselorsHash);
 
-type Props = OwnProps & ConnectedProps<typeof connector>;
-
-const ProfileCases: React.FC<Props> = ({ profileId, task, counselorsHash, viewCaseDetails }) => {
   const can = React.useMemo(() => {
     return getInitializedCan();
   }, []);
@@ -39,7 +37,12 @@ const ProfileCases: React.FC<Props> = ({ profileId, task, counselorsHash, viewCa
   const renderItem = (cas: Case) => {
     const handleClickViewCase = () => {
       if (can(PermissionActions.VIEW_CASE, cas)) {
-        viewCaseDetails(cas);
+        dispatch(
+          RoutingActions.newOpenModalAction(
+            { route: 'case', context: 'profile', subroute: 'home', caseId: cas.id, isCreating: false },
+            task.taskSid,
+          ),
+        );
       }
     };
 
@@ -63,25 +66,6 @@ const ProfileCases: React.FC<Props> = ({ profileId, task, counselorsHash, viewCa
   );
 };
 
-const mapStateToProps = ({ [namespace]: { configuration } }: RootState) => {
-  const { counselors } = configuration;
-  return {
-    counselorsHash: counselors.hash,
-  };
-};
+ProfileCases.displayName = 'ProfileCases';
 
-const mapDispatchToProps = (dispatch, { task: { taskSid } }) => {
-  return {
-    viewCaseDetails: ({ id }: Case) => {
-      dispatch(
-        RoutingActions.newOpenModalAction(
-          { route: 'case', context: 'profile', subroute: 'home', caseId: id, isCreating: false },
-          taskSid,
-        ),
-      );
-    },
-  };
-};
-
-const connector = connect(mapStateToProps, mapDispatchToProps);
-export default connector(ProfileCases);
+export default ProfileCases;

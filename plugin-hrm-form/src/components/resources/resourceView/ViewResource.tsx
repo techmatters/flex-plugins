@@ -15,8 +15,8 @@
  */
 
 /* eslint-disable react/jsx-max-depth */
-import React, { Dispatch } from 'react';
-import { connect, ConnectedProps } from 'react-redux';
+import React from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { AnyAction } from 'redux';
 import { Template } from '@twilio/flex-ui';
 
@@ -24,73 +24,63 @@ import { RootState } from '../../../states';
 import { Box, Column } from '../../../styles';
 import SearchResultsBackButton from '../../search/SearchResults/SearchResultsBackButton';
 import { ResourceTitle, ViewResourceArea, ResourceViewContainer } from '../styles';
-import { loadResourceAsyncAction, navigateToSearchAction, ResourceLoadStatus } from '../../../states/resources';
+import {
+  loadResourceAsyncAction,
+  navigateToSearchAction,
+  selectResourceData,
+  selectResourceError,
+} from '../../../states/resources';
 import asyncDispatch from '../../../states/asyncDispatch';
-import { namespace, referrableResourcesBase } from '../../../states/storeNamespaces';
 import { ResourceViewAttributes } from '../mappingComponents';
 
-type OwnProps = {
+type Props = {
   resourceId: string;
 };
 
-const mapStateToProps = (state: RootState, { resourceId }: OwnProps) => {
-  const resourceState = state[namespace][referrableResourcesBase].resources[resourceId];
-  if (!resourceState || resourceState.status === ResourceLoadStatus.Loading) {
-    return {};
+const ViewResource: React.FC<Props> = ({ resourceId }) => {
+  const dispatch = useDispatch();
+
+  const resource = useSelector((state: RootState) => selectResourceData(state, resourceId));
+  const error = useSelector((state: RootState) => selectResourceError(state, resourceId));
+
+  if (resource || error) {
+    const { name } = resource || {};
+
+    return (
+      <ResourceViewContainer>
+        <Column>
+          <Box marginTop="10px" marginBottom="10px">
+            <SearchResultsBackButton
+              text={<Template code="SearchResultsIndex-BackToResults" />}
+              // eslint-disable-next-line no-empty-function
+              handleBack={() => dispatch(navigateToSearchAction())}
+            />
+          </Box>
+          <ViewResourceArea>
+            {error && (
+              <>
+                <ResourceTitle>
+                  <Template code="Resources-LoadResourceError" />
+                </ResourceTitle>
+                <p>{error.message}</p>
+              </>
+            )}
+            {resource && (
+              <>
+                <ResourceTitle data-testid="resource-title">{name}</ResourceTitle>
+                <ResourceViewAttributes resource={resource} />
+              </>
+            )}
+          </ViewResourceArea>
+        </Column>
+      </ResourceViewContainer>
+    );
   }
-  return {
-    resource: resourceState.resource,
-    error: resourceState.error,
-  };
-};
 
-const mapDispatchToProps = (dispatch: Dispatch<AnyAction>, { resourceId }: OwnProps) => ({
-  loadViewedResource: () => asyncDispatch(dispatch)(loadResourceAsyncAction(resourceId)),
-  navigateToSearch: () => dispatch(navigateToSearchAction()),
-});
-
-const connector = connect(mapStateToProps, mapDispatchToProps);
-
-type Props = OwnProps & ConnectedProps<typeof connector>;
-
-const ViewResource: React.FC<Props> = ({ resource, error, loadViewedResource, navigateToSearch }) => {
-  if (!resource && !error) {
-    loadViewedResource();
-    return <div>Loading...</div>;
-  }
-  const { name } = resource;
-
-  return (
-    <ResourceViewContainer>
-      <Column>
-        <Box marginTop="10px" marginBottom="10px">
-          <SearchResultsBackButton
-            text={<Template code="SearchResultsIndex-BackToResults" />}
-            // eslint-disable-next-line no-empty-function
-            handleBack={() => navigateToSearch()}
-          />
-        </Box>
-        <ViewResourceArea>
-          {error && (
-            <>
-              <ResourceTitle>
-                <Template code="Resources-LoadResourceError" />
-              </ResourceTitle>
-              <p>{error.message}</p>
-            </>
-          )}
-          {resource && (
-            <>
-              <ResourceTitle data-testid="resource-title">{name}</ResourceTitle>
-              <ResourceViewAttributes resource={resource} />
-            </>
-          )}
-        </ViewResourceArea>
-      </Column>
-    </ResourceViewContainer>
-  );
+  asyncDispatch<AnyAction>(dispatch)(loadResourceAsyncAction(resourceId));
+  return <div>Loading...</div>;
 };
 
 ViewResource.displayName = 'ViewResource';
 
-export default connector(ViewResource);
+export default ViewResource;

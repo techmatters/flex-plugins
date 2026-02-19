@@ -14,7 +14,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 import React from 'react';
-import { connect, ConnectedProps } from 'react-redux';
+import { useDispatch } from 'react-redux';
 
 import { getInitializedCan } from '../../permissions/rules';
 import { Contact } from '../../types/types';
@@ -25,18 +25,23 @@ import ProfileRelationshipList from './ProfileRelationshipList';
 import { ProfileCommonProps } from './types';
 import { PermissionActions } from '../../permissions/actions';
 
-type OwnProps = ProfileCommonProps;
+const ProfileContacts: React.FC<ProfileCommonProps> = ({ profileId, task }) => {
+  const dispatch = useDispatch();
 
-type Props = OwnProps & ConnectedProps<typeof connector>;
-
-const ProfileContacts: React.FC<Props> = ({ profileId, viewContactDetails }) => {
   const can = React.useMemo(() => {
     return getInitializedCan();
   }, []);
 
   const renderItem = (contact: Contact) => {
     const handleViewDetails = () => {
-      if (can(PermissionActions.VIEW_CONTACT, contact)) viewContactDetails(contact);
+      if (can(PermissionActions.VIEW_CONTACT, contact)) {
+        dispatch(
+          RoutingActions.newOpenModalAction(
+            { route: 'contact', context: 'profile', subroute: 'view', id: contact.id.toString() },
+            task.taskSid,
+          ),
+        );
+      }
     };
 
     return (
@@ -53,19 +58,6 @@ const ProfileContacts: React.FC<Props> = ({ profileId, viewContactDetails }) => 
   );
 };
 
-const mapDispatchToProps = (dispatch, { task: { taskSid } }) => {
-  return {
-    viewContactDetails: ({ id }: Contact) => {
-      dispatch(
-        RoutingActions.newOpenModalAction(
-          { route: 'contact', context: 'profile', subroute: 'view', id: id.toString() },
-          taskSid,
-        ),
-      );
-    },
-  };
-};
+ProfileContacts.displayName = 'ProfileContacts';
 
-const connector = connect(null, mapDispatchToProps);
-
-export default connector(ProfileContacts);
+export default ProfileContacts;
