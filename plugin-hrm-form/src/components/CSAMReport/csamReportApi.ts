@@ -32,7 +32,7 @@ import {
 } from '../../states/csam-report/types';
 import { addExternalReportEntry } from '../../states/csam-report/existingContactExternalReport';
 import { acknowledgeCSAMReport, createCSAMReport } from '../../services/CSAMReportService';
-import { reportToIWF, selfReportToIWF } from '../../services/ServerlessService';
+import { reportToIWF, selfReportToIWF } from '../../services/iwfService';
 import { newCSAMReportActionForContact } from '../../states/csam-report/actions';
 import { csamReportBase, namespace } from '../../states/storeNamespaces';
 import { getCurrentTopmostRouteForTask } from '../../states/routing/getRoute';

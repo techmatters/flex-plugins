@@ -36,12 +36,12 @@ import {
 } from '../../../states/csam-report/actions';
 import { changeRoute } from '../../../states/routing/actions';
 import { CSAMReportEntry } from '../../../types/types';
-import { reportToIWF, selfReportToIWF } from '../../../services/ServerlessService';
+import { reportToIWF, selfReportToIWF } from '../../../services/iwfService';
 import { acknowledgeCSAMReport, createCSAMReport } from '../../../services/CSAMReportService';
 import { addExternalReportEntry } from '../../../states/csam-report/existingContactExternalReport';
 import { csamReportBase, namespace, routingBase } from '../../../states/storeNamespaces';
 
-jest.mock('../../../services/ServerlessService', () => ({
+jest.mock('../../../services/iwfService', () => ({
   reportToIWF: jest.fn(),
   selfReportToIWF: jest.fn(),
 }));
