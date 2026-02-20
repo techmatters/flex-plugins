@@ -3,7 +3,7 @@
   "submitLabel": "Start Chat!",
   "fields": [
     {
-      "type": "input-text",
+      "type": "input",
       "name": "friendlyName",
       "label": "WhatIsYourName",
       "placeholder": "Guest",

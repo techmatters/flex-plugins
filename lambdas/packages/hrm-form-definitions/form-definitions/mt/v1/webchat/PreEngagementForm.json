@@ -28,7 +28,7 @@
       ]
     },
     {
-      "type": "input-text",
+      "type": "input",
       "name": "friendlyName",
       "label": "Nickname",
       "placeholder": "GuestName",
