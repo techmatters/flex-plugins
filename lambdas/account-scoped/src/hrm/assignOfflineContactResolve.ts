@@ -18,7 +18,7 @@ import { FlexValidatedHandler } from '../validation/flexToken';
 import type { AccountSID, TaskSID } from '@tech-matters/twilio-types';
 import { getTwilioClient, getWorkspaceSid } from '@tech-matters/twilio-configuration';
 import { newMissingParameterResult } from '../httpErrors';
-import { newErr, newOk } from '../Result';
+import { newOk } from '../Result';
 import type { TaskInstance } from 'twilio/lib/rest/taskrouter/v1/workspace/task';
 
 type OfflineContactComplete = {
@@ -36,37 +36,28 @@ type OfflineContactResolvePayload = OfflineContactComplete | OfflineContactRemov
 
 export type Body = OfflineContactResolvePayload;
 
-type AssignmentResult =
-  | {
-      type: 'error';
-      payload: { message: string; attributes?: string };
-    }
-  | { type: 'success'; completedTask: TaskInstance };
-
 const updateAndCompleteTask = async (
   accountSid: AccountSID,
   event: Required<Pick<OfflineContactComplete, 'taskSid' | 'finalTaskAttributes'>>,
-): Promise<AssignmentResult> => {
+): Promise<TaskInstance> => {
   const client = await getTwilioClient(accountSid);
   const workspaceSid = await getWorkspaceSid(accountSid);
 
-  try {
-    const task = await client.taskrouter.v1
-      .workspaces(workspaceSid)
-      .tasks(event.taskSid)
-      .fetch();
+  const task = await client.taskrouter.v1
+    .workspaces(workspaceSid)
+    .tasks(event.taskSid)
+    .fetch();
 
-    await task.update({ attributes: event.finalTaskAttributes });
+  console.info(
+    `Updating attributes for task ${event.taskSid} in workspace ${workspaceSid}`,
+  );
+  await task.update({ attributes: event.finalTaskAttributes });
 
-    const completedTask = await task.update({ assignmentStatus: 'completed' });
+  console.info(`Completing task ${event.taskSid} in workspace ${workspaceSid}`);
+  const completedTask = await task.update({ assignmentStatus: 'completed' });
+  console.info(`Task ${event.taskSid} completed successfully`);
 
-    return { type: 'success', completedTask } as const;
-  } catch (err) {
-    return {
-      type: 'error',
-      payload: { message: String(err), attributes: event.finalTaskAttributes },
-    };
-  }
+  return completedTask;
 };
 
 export const assignOfflineContactResolveHandler: FlexValidatedHandler = async (
@@ -83,48 +74,36 @@ export const assignOfflineContactResolveHandler: FlexValidatedHandler = async (
     return newMissingParameterResult('taskSid');
   }
 
-  try {
-    // If action is "complete", we want to update the task attributes to its final form and complete it
-    if (action === 'complete') {
-      const { finalTaskAttributes } = event as OfflineContactComplete;
+  console.info(
+    `assignOfflineContactResolve: action=${action}, taskSid=${taskSid}, accountSid=${accountSid}`,
+  );
 
-      if (finalTaskAttributes === undefined) {
-        return newMissingParameterResult('finalTaskAttributes');
-      }
+  // If action is "complete", we want to update the task attributes to its final form and complete it
+  if (action === 'complete') {
+    const { finalTaskAttributes } = event as OfflineContactComplete;
 
-      const result = await updateAndCompleteTask(accountSid, {
-        taskSid,
-        finalTaskAttributes,
-      });
-
-      if (result.type === 'error') {
-        return newErr({
-          message: result.payload.message,
-          error: { statusCode: 500 },
-        });
-      }
-
-      return newOk(result.completedTask);
+    if (finalTaskAttributes === undefined) {
+      return newMissingParameterResult('finalTaskAttributes');
     }
 
-    // If action is "remove", we want to cleanup the stuck task
-    if (action === 'remove') {
-      const client = await getTwilioClient(accountSid);
-      const workspaceSid = await getWorkspaceSid(accountSid);
-
-      const removed = await client.taskrouter.v1
-        .workspaces(workspaceSid)
-        .tasks(taskSid)
-        .remove();
-
-      return newOk({ removed, taskSid });
-    }
-
-    return newMissingParameterResult('action');
-  } catch (err: any) {
-    return newErr({
-      message: err.message,
-      error: { statusCode: 500, cause: err },
+    const completedTask = await updateAndCompleteTask(accountSid, {
+      taskSid,
+      finalTaskAttributes,
     });
+
+    return newOk(completedTask);
   }
+
+  // If action is "remove", we want to cleanup the stuck task
+  const client = await getTwilioClient(accountSid);
+  const workspaceSid = await getWorkspaceSid(accountSid);
+
+  console.info(`Removing task ${taskSid} from workspace ${workspaceSid}`);
+  const removed = await client.taskrouter.v1
+    .workspaces(workspaceSid)
+    .tasks(taskSid)
+    .remove();
+  console.info(`Task ${taskSid} removed: ${removed}`);
+
+  return newOk({ removed, taskSid });
 };

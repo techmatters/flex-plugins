@@ -210,18 +210,16 @@ describe('assignOfflineContactInitHandler', () => {
     }
   });
 
-  it('should return 500 when an unexpected error occurs', async () => {
+  it('should throw when an unexpected error occurs', async () => {
     mockGetTwilioClient.mockRejectedValue(new Error('Connection error'));
 
     const request = createMockRequest({
       targetSid: TARGET_SID,
       taskAttributes: TASK_ATTRIBUTES,
     });
-    const result = await assignOfflineContactInitHandler(request, TEST_ACCOUNT_SID);
 
-    expect(isErr(result)).toBe(true);
-    if (isErr(result)) {
-      expect(result.error.statusCode).toBe(500);
-    }
+    await expect(
+      assignOfflineContactInitHandler(request, TEST_ACCOUNT_SID),
+    ).rejects.toThrow('Connection error');
   });
 });

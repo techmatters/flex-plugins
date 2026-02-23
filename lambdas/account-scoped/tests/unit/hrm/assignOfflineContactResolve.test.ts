@@ -136,7 +136,7 @@ describe('assignOfflineContactResolveHandler', () => {
     expect(mockTask.update).toHaveBeenCalledWith({ assignmentStatus: 'completed' });
   });
 
-  it('should return 500 when completing task fails', async () => {
+  it('should throw when completing task fails', async () => {
     mockTask.update.mockRejectedValue(new Error('Task update failed'));
 
     const request = createMockRequest({
@@ -144,12 +144,10 @@ describe('assignOfflineContactResolveHandler', () => {
       taskSid: TEST_TASK_SID,
       finalTaskAttributes: JSON.stringify({ finalAttr: 'value' }),
     });
-    const result = await assignOfflineContactResolveHandler(request, TEST_ACCOUNT_SID);
 
-    expect(isErr(result)).toBe(true);
-    if (isErr(result)) {
-      expect(result.error.statusCode).toBe(500);
-    }
+    await expect(
+      assignOfflineContactResolveHandler(request, TEST_ACCOUNT_SID),
+    ).rejects.toThrow('Task update failed');
   });
 
   it('should remove the task successfully', async () => {
@@ -162,15 +160,13 @@ describe('assignOfflineContactResolveHandler', () => {
     }
   });
 
-  it('should return 500 when an unexpected error occurs', async () => {
+  it('should throw when an unexpected error occurs', async () => {
     mockGetTwilioClient.mockRejectedValue(new Error('Connection error'));
 
     const request = createMockRequest({ action: 'remove', taskSid: TEST_TASK_SID });
-    const result = await assignOfflineContactResolveHandler(request, TEST_ACCOUNT_SID);
 
-    expect(isErr(result)).toBe(true);
-    if (isErr(result)) {
-      expect(result.error.statusCode).toBe(500);
-    }
+    await expect(
+      assignOfflineContactResolveHandler(request, TEST_ACCOUNT_SID),
+    ).rejects.toThrow('Connection error');
   });
 });

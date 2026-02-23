@@ -50,7 +50,9 @@ const wait = (ms: number): Promise<void> =>
 
 const cleanUpTask = async (task: TaskInstance, message: string) => {
   const { attributes } = task;
+  console.info(`Cleaning up task ${task.sid}: ${message}`);
   const taskRemoved = await task.remove();
+  console.info(`Task ${task.sid} removed: ${taskRemoved}`);
 
   return {
     type: 'error',
@@ -77,16 +79,26 @@ const assignToAvailableWorker = async (
       return assignToAvailableWorker(targetSid, newTask, retry + 1);
     }
 
+    console.error(
+      `No reservation found for task ${newTask.sid} and worker ${targetSid} after ${retry} retries`,
+    );
     return cleanUpTask(newTask, 'Error: reservation for task not created.');
   }
 
   const accepted = await reservation.update({ reservationStatus: 'accepted' });
 
   if (accepted.reservationStatus !== 'accepted') {
+    console.error(
+      `Reservation ${reservation.sid} for task ${newTask.sid} and worker ${targetSid} could not be accepted, status: ${accepted.reservationStatus}`,
+    );
     return cleanUpTask(newTask, 'Error: reservation for task not accepted.');
   }
 
-  if (retry) console.warn(`Needed ${retry} retries to get reservation`);
+  if (retry)
+    console.warn(
+      `Needed ${retry} retries to get reservation for task ${newTask.sid} and worker ${targetSid}`,
+    );
+  console.info(`Task ${newTask.sid} successfully assigned to worker ${targetSid}`);
 
   return { type: 'success', newTask } as const;
 };
@@ -109,10 +121,13 @@ const assignToOfflineWorker = async (
 
   if (availableActivity.length > 1) {
     console.warn(
-      `There are ${availableActivity.length} available worker activities, but there should only be one.`,
+      `There are ${availableActivity.length} available worker activities for workspace ${workspaceSid}, but there should only be one.`,
     );
   }
 
+  console.info(
+    `Setting offline worker ${targetSid} to available activity ${availableActivity[0].sid} to accept task ${newTask.sid}`,
+  );
   await targetWorker.update({
     activitySid: availableActivity[0].sid,
     attributes: JSON.stringify({ ...previousAttributes, waitingOfflineContact: true }), // waitingOfflineContact is used to avoid other tasks to be assigned during this window of time (workflow rules)
@@ -120,6 +135,9 @@ const assignToOfflineWorker = async (
 
   const result = await assignToAvailableWorker(targetSid, newTask);
 
+  console.info(
+    `Restoring worker ${targetSid} to previous activity ${previousActivity} after offline contact assignment`,
+  );
   await targetWorker.update({
     activitySid: previousActivity,
     attributes: JSON.stringify(previousAttributes),
@@ -146,6 +164,9 @@ const assignOfflineContact = async (
   const targetWorkerAttributes = JSON.parse(targetWorker.attributes);
 
   if (targetWorkerAttributes.helpline === undefined) {
+    console.error(
+      `Worker ${targetSid} does not have helpline attribute set in workspace ${workspaceSid}`,
+    );
     return {
       type: 'error',
       payload: {
@@ -158,6 +179,7 @@ const assignOfflineContact = async (
   }
 
   if (targetWorkerAttributes.waitingOfflineContact) {
+    console.error(`Worker ${targetSid} is already waiting for an offline contact`);
     return {
       type: 'error',
       payload: {
@@ -183,6 +205,9 @@ const assignOfflineContact = async (
     priority: 100,
     timeout: 120, // 2 minutes should be more than enough.
   });
+  console.info(
+    `Created offline contact task ${newTask.sid} for worker ${targetSid} in workspace ${workspaceSid}`,
+  );
 
   const newTaskAttributes = JSON.parse(newTask.attributes);
   const parsedFinalAttributes = JSON.parse(taskAttributes);
@@ -230,25 +255,22 @@ export const assignOfflineContactInitHandler: FlexValidatedHandler = async (
     return newMissingParameterResult('taskAttributes');
   }
 
-  try {
-    const assignmentResult = await assignOfflineContact(accountSid, {
-      targetSid,
-      taskAttributes,
-    });
+  console.info(
+    `assignOfflineContactInit: assigning offline contact to worker ${targetSid} for account ${accountSid}`,
+  );
 
-    if (assignmentResult.type === 'error') {
-      const { payload } = assignmentResult;
-      return newErr({
-        message: payload.message,
-        error: { statusCode: payload.status },
-      });
-    }
+  const assignmentResult = await assignOfflineContact(accountSid, {
+    targetSid,
+    taskAttributes,
+  });
 
-    return newOk(assignmentResult.newTask);
-  } catch (err: any) {
+  if (assignmentResult.type === 'error') {
+    const { payload } = assignmentResult;
     return newErr({
-      message: err.message,
-      error: { statusCode: 500, cause: err },
+      message: payload.message,
+      error: { statusCode: payload.status },
     });
   }
+
+  return newOk(assignmentResult.newTask);
 };
