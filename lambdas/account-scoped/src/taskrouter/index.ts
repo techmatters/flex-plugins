@@ -20,7 +20,10 @@ import '../hrm/conversationDurationTaskRouterListener';
 import '../task/addCustomerExternalIdTaskRouterListener';
 import '../task/addInitialHangUpByTaskRouterListener';
 import '../conversation/addTaskSidToChannelAttributesTaskRouterListener';
+import '../conversation/adjustCapacityTaskRouterListener';
 import '../channelCapture/postSurveyListener';
+import '../transfer/janitorTaskRouterListener';
+import '../transfer/transfersTaskRouterListener';
 
 export { handleTaskRouterEvent } from './taskrouterEventHandler';
 

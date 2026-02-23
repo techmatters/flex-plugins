@@ -82,6 +82,9 @@ export enum AseloCustomChannel {
   Telegram = 'telegram',
 }
 
+export const isAseloCustomChannel = (channelType?: string): boolean =>
+  Object.values(AseloCustomChannel).includes(channelType as AseloCustomChannel);
+
 type CreateFlexConversationParams = {
   studioFlowSid: string;
   channelType: AseloCustomChannel; // The chat channel being used
