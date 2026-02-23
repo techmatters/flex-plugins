@@ -24,7 +24,6 @@ import { ITask, Notifications } from '@twilio/flex-ui';
 import { DefinitionVersion, loadDefinition } from 'hrm-form-definitions';
 
 import fetchProtectedApi from './fetchProtectedApi';
-import type { ChildCSAMReportForm, CounselorCSAMReportForm } from '../states/csam-report/types';
 import { getHrmConfig } from '../hrmConfig';
 
 type TransferChatStartBody = {
@@ -87,37 +86,10 @@ export const getExternalRecordingS3Location = async (callSid: string) => {
   return response;
 };
 
-/**
- * Send a CSAM report to IWF
- */
-export const reportToIWF = async (form: CounselorCSAMReportForm) => {
-  const body = {
-    Reported_URL: form.webAddress,
-    Reporter_Description: form.description,
-    Reporter_Anonymous: form.anonymous === 'anonymous' ? 'Y' : 'N',
-    Reporter_First_Name: form.firstName,
-    Reporter_Last_Name: form.lastName,
-    Reporter_Email_ID: form.email,
-  };
-
-  const response = await fetchProtectedApi('/reportToIWF', body);
-  return response;
-};
-
 export const saveContactToSaferNet = async (payload: any): Promise<string> => {
   const body = { payload: JSON.stringify(payload) };
   const postSurveyUrl = await fetchProtectedApi('/saveContactToSaferNet', body);
   return postSurveyUrl;
-};
-
-export const selfReportToIWF = async (form: ChildCSAMReportForm, caseNumber: string) => {
-  const body = {
-    user_age_range: form.childAge,
-    case_number: caseNumber,
-  };
-
-  const response = await fetchProtectedApi('/selfReportToIWF', body);
-  return response;
 };
 
 export const getMediaUrl = async (serviceSid: string, mediaSid: string) => {

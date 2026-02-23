@@ -47,4 +47,5 @@ export type FeatureFlags = {
   use_prepopulate_mappings: boolean; // Use PrepopulateMappings.json instead of PrepopulateKeys.json
   use_twilio_lambda_for_conference_functions: boolean; // Use the twilio account scoped lambda for conferencing functions
   use_twilio_lambda_for_conversation_duration: boolean; // Use the twilio account scoped lambda to calculate conversationDuration
+  use_twilio_lambda_for_task_assignment: boolean; // Use the twilio account scoped lambda for getTasksAndReservations, checkTaskAssignment, completeTaskAssignment
 };

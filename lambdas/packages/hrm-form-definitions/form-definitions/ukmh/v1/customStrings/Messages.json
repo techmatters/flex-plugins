@@ -1,7 +1,7 @@
 {
   "en": {
     "WelcomeMsg": "You’re now connected to The PeerChat Service. Your PeerChat Supporter will be with you shortly.",
-    "GoodbyeMsg": "The PeerChat Supporter has left the chat. Thank you for reaching out. Please contact us again if you need more help.",
+    "GoodbyeMsg": "Thank you for reaching out to us today, we hope you found it useful. If you find you need further support, please take a look at our website:  https://www.themix.org.uk/",
     "EndChatMsg": "The Young person left the conversation.",
     "UnsupportedMediaErrorMsg": "Sorry, the message you just sent is unsupported and could not be delivered."
   }
