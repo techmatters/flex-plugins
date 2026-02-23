@@ -7,7 +7,7 @@ ${
       "type": "trigger",
       "transitions": [
         {
-          "next": "getProfileFlagsForIdentifier",
+          "next": "f_getProfileFlagsForIdentifier",
           "event": "incomingMessage"
         },
         {
@@ -31,11 +31,11 @@ ${
       }
     },
     {
-      "name": "getProfileFlagsForIdentifier",
+      "name": "f_getProfileFlagsForIdentifier",
       "type": "make-http-request",
       "transitions": [
         {
-          "next": "contact_routing",
+          "next": "split_contact_routing",
           "event": "success"
         },
         {
@@ -51,11 +51,11 @@ ${
         "method": "POST",
         "content_type": "application/json;charset=utf-8",
         "body": "{ \"trigger\": {{trigger | to_json}}, \"channelType\": \"{% if trigger.conversation.ChannelAttributes.channel_type %}{{trigger.conversation.ChannelAttributes.channel_type}}{% else %}{{trigger.conversation.Source | downcase}}{% endif %}\"}",
-        "url": "${get_profile_flags_for_identifier_base_url}/getProfileFlagsForIdentifier"
+        "url": "${get_profile_flags_for_identifier_base_url}/f_getProfileFlagsForIdentifier"
       }
     },
     {
-      "name": "send_blocked_message",
+      "name": "send_message_blocked",
       "type": "send-message",
       "transitions": [
         {
@@ -78,7 +78,7 @@ ${
       }
     },
     {
-      "name": "contact_routing",
+      "name": "split_contact_routing",
       "type": "split-based-on",
       "transitions": [
         {
@@ -86,13 +86,13 @@ ${
           "event": "noMatch"
         },
         {
-          "next": "send_blocked_message",
+          "next": "send_message_blocked",
           "event": "match",
           "conditions": [
             {
               "friendly_name": "If value contains blocked",
               "arguments": [
-                "{{widgets.getProfileFlagsForIdentifier.parsed.flags}}"
+                "{{widgets.f_getProfileFlagsForIdentifier.parsed.flags}}"
               ],
               "type": "contains",
               "value": "blocked"
@@ -101,7 +101,7 @@ ${
         }
       ],
       "properties": {
-        "input": "{{widgets.getProfileFlagsForIdentifier.parsed.flags}}",
+        "input": "{{widgets.f_getProfileFlagsForIdentifier.parsed.flags}}",
         "offset": {
           "x": -690,
           "y": -60
@@ -109,7 +109,7 @@ ${
       }
     },
     {
-      "name": "smsAttributes",
+      "name": "send_to_queue",
       "type": "send-to-flex",
       "transitions": [
         {
@@ -133,7 +133,7 @@ ${
       }
     },
     {
-      "name": "defaultAttributes",
+      "name": "send_to_queue",
       "type": "send-to-flex",
       "transitions": [
         {
@@ -157,7 +157,7 @@ ${
       }
     },
     {
-      "name": "whatsappAttributes",
+      "name": "send_to_queue",
       "type": "send-to-flex",
       "transitions": [
         {
@@ -181,7 +181,7 @@ ${
       }
     },
     {
-      "name": "facebookAttributes",
+      "name": "send_to_queue",
       "type": "send-to-flex",
       "transitions": [
         {
@@ -205,7 +205,7 @@ ${
       }
     },
     {
-      "name": "webAttributes",
+      "name": "send_to_queue",
       "type": "send-to-flex",
       "transitions": [
         {
@@ -229,15 +229,15 @@ ${
       }
     },
     {
-      "name": "AdjustAttributes",
+      "name": "split_AdjustAttributes",
       "type": "split-based-on",
       "transitions": [
         {
-          "next": "defaultAttributes",
+          "next": "send_to_queue",
           "event": "noMatch"
         },
         {
-          "next": "whatsappAttributes",
+          "next": "send_to_queue",
           "event": "match",
           "conditions": [
             {
@@ -251,7 +251,7 @@ ${
           ]
         },
         {
-          "next": "facebookAttributes",
+          "next": "send_to_queue",
           "event": "match",
           "conditions": [
             {
@@ -265,7 +265,7 @@ ${
           ]
         },
         {
-          "next": "smsAttributes",
+          "next": "send_to_queue",
           "event": "match",
           "conditions": [
             {
@@ -279,7 +279,7 @@ ${
           ]
         },
         {
-          "next": "webAttributes",
+          "next": "send_to_queue",
           "event": "match",
           "conditions": [
             {
@@ -302,14 +302,14 @@ ${
       }
     },
     {
-      "name": "check_image",
+      "name": "split_image_check",
       "type": "split-based-on",
       "transitions": [
         {
           "event": "noMatch"
         },
         {
-          "next": "pre_survey_complete",
+          "next": "split_pre_survey_complete",
           "event": "match",
           "conditions": [
             {
@@ -323,7 +323,7 @@ ${
           ]
         },
         {
-          "next": "send_message_1",
+          "next": "f_sendMessageAndRunJanitor_no_image",
           "event": "match",
           "conditions": [
             {
@@ -346,7 +346,7 @@ ${
       }
     },
     {
-      "name": "send_message_1",
+      "name": "f_sendMessageAndRunJanitor_no_image",
       "type": "send-message",
       "transitions": [
         {
@@ -376,7 +376,7 @@ ${
           "event": "noMatch"
         },
         {
-          "next": "pre_survey_complete",
+          "next": "split_pre_survey_complete",
           "event": "match",
           "conditions": [
             {
@@ -390,7 +390,7 @@ ${
           ]
         },
         {
-          "next": "check_image",
+          "next": "split_image_check",
           "event": "match",
           "conditions": [
             {
@@ -413,15 +413,15 @@ ${
       }
     },
     {
-      "name": "pre_survey_complete",
+      "name": "split_pre_survey_complete",
       "type": "split-based-on",
       "transitions": [
         {
-          "next": "captureChannelBot",
+          "next": "f_captureChannelWithBot",
           "event": "noMatch"
         },
         {
-          "next": "AdjustAttributes",
+          "next": "split_AdjustAttributes",
           "event": "match",
           "conditions": [
             {
@@ -444,7 +444,7 @@ ${
       }
     },
     {
-      "name": "captureChannelBot",
+      "name": "f_captureChannelWithBot",
       "type": "make-http-request",
       "transitions": [
         {
@@ -463,7 +463,7 @@ ${
         "content_type": "application/json;charset=utf-8",
         "add_twilio_auth": false,
         "body": "{\"channelSid\": \"{{flow.channel.address}}\", \"message\": \"trigger_pre_survey\", \"studioFlowSid\": \"{{flow.flow_sid}}\", \"language\": \"${flow_vars.bot_language}\", \"botSuffix\": \"pre_survey\", \"triggerType\": \"withUserMessage\", \"releaseType\": \"triggerStudioFlow\", \"releaseFlag\": \"preSurveyComplete\", \"channelType\": \"{{trigger.message.ChannelAttributes.channel_type | downcase}}\", \"isConversation\": \"false\"}",
-        "url": "${lambda_twilio_account_scoped_url}/channelCapture/captureChannelWithBot"
+        "url": "${lambda_twilio_account_scoped_url}/channelCapture/f_captureChannelWithBot"
       }
     }
   ],
