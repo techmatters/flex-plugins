@@ -15,22 +15,27 @@
  */
 
 import React from 'react';
+import type { ITask } from '@twilio/flex-ui';
 
-/**
- * @type {{ manager: any; isCallTask: (task: import('@twilio/flex-ui').ITask) => boolean }}
- */
-const initialState = {
-  manager: { strings: null },
-  isCallTask: () => null,
+type LocalizationContextValue = {
+  manager: any;
+  isCallTask: (task: ITask) => boolean;
 };
 
-const LocalizationContext = React.createContext(initialState);
+const initialState: LocalizationContextValue = {
+  manager: { strings: null },
+  isCallTask: () => false,
+};
+
+const LocalizationContext = React.createContext<LocalizationContextValue>(initialState);
 LocalizationContext.displayName = 'LocalizationContext';
 
-export const withLocalization = Component => {
-  const LocalizedComponent = props => (
+export const withLocalization = <P extends { localization: LocalizationContextValue }>(
+  Component: React.ComponentType<P>,
+) => {
+  const LocalizedComponent: React.FC<Omit<P, 'localization'>> = props => (
     <LocalizationContext.Consumer>
-      {context => <Component {...props} localization={context} />}
+      {context => <Component {...(props as P)} localization={context} />}
     </LocalizationContext.Consumer>
   );
   LocalizedComponent.displayName = 'LocalizedComponent';

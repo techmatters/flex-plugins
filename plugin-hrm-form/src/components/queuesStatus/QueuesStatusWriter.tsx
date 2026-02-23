@@ -15,7 +15,6 @@
  */
 
 import React, { useCallback } from 'react';
-import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { omit } from 'lodash';
 
@@ -23,30 +22,45 @@ import { queuesStatusUpdate, queuesStatusFailure } from '../../states/queuesStat
 import * as h from './helpers';
 import { namespace, queuesStatusBase } from '../../states/storeNamespaces';
 import { listWorkerQueues } from '../../services/twilioWorkerService';
+import type { QueuesStatus } from '../../states/queuesStatus/types';
+import type { RootState } from '../../states';
 
-export class InnerQueuesStatusWriter extends React.Component {
+type InsightsClient = {
+  liveQuery: (table: string, query: string) => Promise<any>;
+};
+
+type QueuesStatusState = {
+  queuesStatus: QueuesStatus;
+  error?: string;
+  loading: boolean;
+};
+
+type Props = {
+  insightsClient: InsightsClient;
+  workerSid: string;
+};
+
+type InnerProps = Props & {
+  queuesStatusState: QueuesStatusState;
+  queuesStatusUpdate: (queuesStatus: QueuesStatus) => void;
+  queuesStatusFailure: (error: string) => void;
+};
+
+type State = {
+  tasksQuery: any;
+  workerQuery: any;
+  trackedTasks: Record<string, boolean> | null;
+};
+
+export class InnerQueuesStatusWriter extends React.Component<InnerProps, State> {
   static displayName = 'QueuesStatusWriter';
 
-  static propTypes = {
-    insightsClient: PropTypes.shape({
-      liveQuery: PropTypes.func,
-    }).isRequired,
-    workerSid: PropTypes.string.isRequired,
-    queuesStatusState: PropTypes.shape({
-      queuesStatus: PropTypes.shape({}),
-      error: PropTypes.string,
-      loading: PropTypes.bool,
-    }).isRequired,
-    queuesStatusUpdate: PropTypes.func.isRequired,
-    queuesStatusFailure: PropTypes.func.isRequired,
-  };
-
-  constructor(props) {
+  constructor(props: InnerProps) {
     super(props);
     this.updateQueuesState = this.updateQueuesState.bind(this);
   }
 
-  state = {
+  state: State = {
     tasksQuery: null,
     workerQuery: null,
     trackedTasks: null,
@@ -62,7 +76,7 @@ export class InnerQueuesStatusWriter extends React.Component {
       );
       this.setState({ workerQuery });
 
-      workerQuery.on('itemUpdated', async _args => {
+      workerQuery.on('itemUpdated', async (_args: any) => {
         await this.subscribeToQueuesUpdates();
       });
     } catch (err) {
@@ -96,10 +110,10 @@ export class InnerQueuesStatusWriter extends React.Component {
       this.updateQueuesState(tasksItems, cleanQueuesStatus);
       this.setState({ tasksQuery, trackedTasks });
 
-      const shouldUpdate = status =>
+      const shouldUpdate = (status: string) =>
         h.isPending(status) || h.isReserved(status) || h.isAssigned(status) || h.isCanceled(status);
 
-      tasksQuery.on('itemUpdated', args => {
+      tasksQuery.on('itemUpdated', (args: any) => {
         // eslint-disable-next-line camelcase
         const { status, queue_name } = args.value;
         if (counselorQueues.includes(queue_name) && shouldUpdate(status)) {
@@ -108,7 +122,7 @@ export class InnerQueuesStatusWriter extends React.Component {
         }
       });
 
-      tasksQuery.on('itemRemoved', args => {
+      tasksQuery.on('itemRemoved', (args: any) => {
         if (this.state.trackedTasks[args.key]) {
           this.updateQueuesState(tasksQuery.getItems(), cleanQueuesStatus);
           this.setState(prev => ({ trackedTasks: omit(prev.trackedTasks, args.key) }));
@@ -119,19 +133,19 @@ export class InnerQueuesStatusWriter extends React.Component {
     }
   }
 
-  handleSubscribeError(err) {
+  handleSubscribeError(err: unknown) {
     const error = "Error, couldn't subscribe to live updates";
     this.props.queuesStatusFailure(error);
     console.error(error, err);
   }
 
-  updateQueuesState(tasks, prevQueuesStatus) {
+  updateQueuesState(tasks: any, prevQueuesStatus: QueuesStatus) {
     const queuesStatus = h.getNewQueuesStatus(prevQueuesStatus, tasks);
     this.props.queuesStatusUpdate(queuesStatus);
   }
 
-  waitingInCounselorQueues = (tasksItems, counselorQueues) =>
-    Object.entries(tasksItems).reduce(
+  waitingInCounselorQueues = (tasksItems: Record<string, any>, counselorQueues: string[]) =>
+    Object.entries(tasksItems).reduce<Record<string, boolean>>(
       (acc, [sid, task]) =>
         h.isWaiting(task.status) && counselorQueues.includes(task.queue_name) ? { ...acc, [sid]: true } : acc,
       {},
@@ -142,15 +156,16 @@ export class InnerQueuesStatusWriter extends React.Component {
   }
 }
 
-const QueuesStatusWriter = props => {
+const QueuesStatusWriter: React.FC<Props> = props => {
   const dispatch = useDispatch();
-  const queuesStatusState = useSelector(state => state[namespace][queuesStatusBase]);
+  const queuesStatusState = useSelector((state: RootState) => state[namespace][queuesStatusBase]);
 
-  const queuesStatusUpdateCallback = useCallback(queuesStatus => dispatch(queuesStatusUpdate(queuesStatus)), [
-    dispatch,
-  ]);
+  const queuesStatusUpdateCallback = useCallback(
+    (queuesStatus: QueuesStatus) => dispatch(queuesStatusUpdate(queuesStatus)),
+    [dispatch],
+  );
 
-  const queuesStatusFailureCallback = useCallback(error => dispatch(queuesStatusFailure(error)), [dispatch]);
+  const queuesStatusFailureCallback = useCallback((error: string) => dispatch(queuesStatusFailure(error)), [dispatch]);
 
   return (
     <InnerQueuesStatusWriter
