@@ -14,16 +14,20 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import '../hrm/createHrmContactTaskRouterListener';
-import '../hrm/addHangupByTaskRouterListener';
-import '../hrm/conversationDurationTaskRouterListener';
-import '../task/addCustomerExternalIdTaskRouterListener';
-import '../task/addInitialHangUpByTaskRouterListener';
-import '../conversation/addTaskSidToChannelAttributesTaskRouterListener';
-import '../channelCapture/postSurveyListener';
-import '../transfer/transferTaskRouterListener';
+import fetchProtectedApi from './fetchProtectedApi';
+import { TaskSID, WorkerSID } from '../types/twilio';
 
-export { handleTaskRouterEvent } from './taskrouterEventHandler';
+type TransferChatStartBody = {
+  taskSid: TaskSID;
+  targetSid: string;
+  ignoreAgent: WorkerSID;
+  mode: 'WARM' | 'COLD';
+};
 
-export { eventTypes, EventType } from './eventTypes';
-export { EventFields } from './eventFields';
+type TransferChatStartReturn = { closed: string; kept: string };
+
+export const transferStart = async (body: TransferChatStartBody): Promise<TransferChatStartReturn> =>
+  fetchProtectedApi('transfer/transferStart', body, { useTwilioLambda: true });
+
+export const serverlessChatTransferStart = async (body: TransferChatStartBody): Promise<TransferChatStartReturn> =>
+  fetchProtectedApi('transferChatStart', body, { useTwilioLambda: false });
