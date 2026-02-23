@@ -13,7 +13,7 @@ ${
           "event": "incomingCall"
         },
         {
-          "next": "getProfileFlagsForIdentifier",
+          "next": "f_getProfileFlagsForIdentifier",
           "event": "incomingConversationMessage"
         },
         {
@@ -31,15 +31,15 @@ ${
       }
     },
     {
-      "name": "getProfileFlagsForIdentifier",
+      "name": "f_getProfileFlagsForIdentifier",
       "type": "make-http-request",
       "transitions": [
         {
-          "next": "contact_routing",
+          "next": "split_contact_routing",
           "event": "success"
         },
         {
-          "next": "pre_survey_complete_en",
+          "next": "split_pre_survey_complete_en",
           "event": "failed"
         }
       ],
@@ -51,11 +51,11 @@ ${
         "method": "POST",
         "content_type": "application/json;charset=utf-8",
         "body": "{ \"trigger\": {{trigger | to_json}}, \"channelType\": \"{% if trigger.conversation.ChannelAttributes.channel_type %}{{trigger.conversation.ChannelAttributes.channel_type}}{% else %}{{trigger.conversation.Source | downcase}}{% endif %}\"}",
-        "url": "${get_profile_flags_for_identifier_base_url}/getProfileFlagsForIdentifier"
+        "url": "${get_profile_flags_for_identifier_base_url}/f_getProfileFlagsForIdentifier"
       }
     },
     {
-      "name": "send_blocked_message",
+      "name": "send_message_blocked",
       "type": "send-message",
       "transitions": [
         {
@@ -78,21 +78,21 @@ ${
       }
     },
     {
-      "name": "contact_routing",
+      "name": "split_contact_routing",
       "type": "split-based-on",
       "transitions": [
         {
-          "next": "pre_survey_complete_en",
+          "next": "split_pre_survey_complete_en",
           "event": "noMatch"
         },
         {
-          "next": "send_blocked_message",
+          "next": "send_message_blocked",
           "event": "match",
           "conditions": [
             {
               "friendly_name": "If value contains blocked",
               "arguments": [
-                "{{widgets.getProfileFlagsForIdentifier.parsed.flags}}"
+                "{{widgets.f_getProfileFlagsForIdentifier.parsed.flags}}"
               ],
               "type": "contains",
               "value": "blocked"
@@ -101,7 +101,7 @@ ${
         }
       ],
       "properties": {
-        "input": "{{widgets.getProfileFlagsForIdentifier.parsed.flags}}",
+        "input": "{{widgets.f_getProfileFlagsForIdentifier.parsed.flags}}",
         "offset": {
           "x": -1690,
           "y": -2560
@@ -109,7 +109,7 @@ ${
       }
     },
     {
-      "name": "facebook_attributes_en",
+      "name": "send_to_queue_ecpat",
       "type": "send-to-flex",
       "transitions": [
         {
@@ -137,17 +137,17 @@ ${
       "type": "split-based-on",
       "transitions": [
         {
-          "next": "set_language_attempt",
+          "next": "set_var_language_attempt",
           "event": "noMatch"
         },
         {
-          "next": "get_contact_reason_en",
+          "next": "send_wait_contact_reason_en",
           "event": "match",
           "conditions": [
             {
               "friendly_name": "If value matches_any_of either,any,1,e,eng,english",
               "arguments": [
-                "{{widgets.get_language.inbound.Body}}"
+                "{{widgets.send_wait_get_language.inbound.Body}}"
               ],
               "type": "matches_any_of",
               "value": "either,any,1,e,eng,english"
@@ -155,13 +155,13 @@ ${
           ]
         },
         {
-          "next": "get_contact_reason_fil",
+          "next": "send_wait_contact_reason_fil",
           "event": "match",
           "conditions": [
             {
               "friendly_name": "If value matches_any_of 2,f",
               "arguments": [
-                "{{widgets.get_language.inbound.Body}}"
+                "{{widgets.send_wait_get_language.inbound.Body}}"
               ],
               "type": "matches_any_of",
               "value": "2,f"
@@ -170,7 +170,7 @@ ${
         }
       ],
       "properties": {
-        "input": "{{widgets.get_language.inbound.Body}}",
+        "input": "{{widgets.send_wait_get_language.inbound.Body}}",
         "offset": {
           "x": -1080,
           "y": -1490
@@ -182,17 +182,17 @@ ${
       "type": "split-based-on",
       "transitions": [
         {
-          "next": "set_permission_attempt_en",
+          "next": "set_var_permission_attempt_en",
           "event": "noMatch"
         },
         {
-          "next": "captureChannelWithBotEn",
+          "next": "f_captureChannelWithBot_en",
           "event": "match",
           "conditions": [
             {
               "friendly_name": "If value matches any yes",
               "arguments": [
-                "{{widgets.get_permission_en.inbound.Body}}"
+                "{{widgets.send_wait_get_permission_en.inbound.Body}}"
               ],
               "type": "matches_any_of",
               "value": "yes,1,yeah,y,yes!"
@@ -200,13 +200,13 @@ ${
           ]
         },
         {
-          "next": "send_message_en_NO",
+          "next": "send_message_en_no",
           "event": "match",
           "conditions": [
             {
               "friendly_name": "If value matches any no",
               "arguments": [
-                "{{widgets.get_permission_en.inbound.Body}}"
+                "{{widgets.send_wait_get_permission_en.inbound.Body}}"
               ],
               "type": "matches_any_of",
               "value": "2,no,nope,no!"
@@ -215,7 +215,7 @@ ${
         }
       ],
       "properties": {
-        "input": "{{widgets.get_permission_en.inbound.Body}}",
+        "input": "{{widgets.send_wait_get_permission_en.inbound.Body}}",
         "offset": {
           "x": -1570,
           "y": 460
@@ -223,7 +223,7 @@ ${
       }
     },
     {
-      "name": "send_message_en_NO",
+      "name": "send_message_en_no",
       "type": "send-message",
       "transitions": [
         {
@@ -247,7 +247,7 @@ ${
       }
     },
     {
-      "name": "no_permission_msg_fil",
+      "name": "send_message_fil_no",
       "type": "send-message",
       "transitions": [
         {
@@ -271,7 +271,7 @@ ${
       }
     },
     {
-      "name": "facebook_attributes_fil",
+      "name": "send_to_queue_ecpat",
       "type": "send-to-flex",
       "transitions": [
         {
@@ -295,11 +295,11 @@ ${
       }
     },
     {
-      "name": "send_message_234_fil",
+      "name": "send_message_replied234_fil",
       "type": "send-message",
       "transitions": [
         {
-          "next": "ncFacebookAttributes_fil",
+          "next": "send_to_queue_non_counselling",
           "event": "sent"
         },
         {
@@ -319,11 +319,11 @@ ${
       }
     },
     {
-      "name": "checkOperatinghrsEn",
+      "name": "f_operatingHours_en",
       "type": "make-http-request",
       "transitions": [
         {
-          "next": "split_operating_en",
+          "next": "split_operating_hours_en",
           "event": "success"
         },
         {
@@ -343,20 +343,20 @@ ${
       }
     },
     {
-      "name": "split_operating_en",
+      "name": "split_operating_hours_en",
       "type": "split-based-on",
       "transitions": [
         {
           "event": "noMatch"
         },
         {
-          "next": "get_permission_en",
+          "next": "send_wait_get_permission_en",
           "event": "match",
           "conditions": [
             {
               "friendly_name": "If value contains open",
               "arguments": [
-                "{{widgets.checkOperatinghrsEn.body}}"
+                "{{widgets.f_operatingHours_en.body}}"
               ],
               "type": "contains",
               "value": "open"
@@ -364,13 +364,13 @@ ${
           ]
         },
         {
-          "next": "send_message_closed",
+          "next": "send_message_closed_en",
           "event": "match",
           "conditions": [
             {
               "friendly_name": "If value contains closed",
               "arguments": [
-                "{{widgets.checkOperatinghrsEn.body}}"
+                "{{widgets.f_operatingHours_en.body}}"
               ],
               "type": "contains",
               "value": "closed"
@@ -378,13 +378,13 @@ ${
           ]
         },
         {
-          "next": "send_message_closed",
+          "next": "send_message_closed_en",
           "event": "match",
           "conditions": [
             {
               "friendly_name": "If value contains holiday",
               "arguments": [
-                "{{widgets.checkOperatinghrsEn.body}}"
+                "{{widgets.f_operatingHours_en.body}}"
               ],
               "type": "contains",
               "value": "holiday"
@@ -393,7 +393,7 @@ ${
         }
       ],
       "properties": {
-        "input": "{{widgets.checkOperatinghrsEn.body}}",
+        "input": "{{widgets.f_operatingHours_en.body}}",
         "offset": {
           "x": -1250,
           "y": -190
@@ -401,11 +401,11 @@ ${
       }
     },
     {
-      "name": "send_message_closed",
+      "name": "send_message_closed_en",
       "type": "send-message",
       "transitions": [
         {
-          "next": "oohFacebookAttributes_en",
+          "next": "send_to_queue_outside_operating_hours",
           "event": "sent"
         },
         {
@@ -425,11 +425,11 @@ ${
       }
     },
     {
-      "name": "send_and_reply_234",
+      "name": "send_wait_reason_reply_en",
       "type": "send-and-wait-for-reply",
       "transitions": [
         {
-          "next": "send_message_replied",
+          "next": "send_message_replied234_en",
           "event": "incomingMessage"
         },
         {
@@ -452,11 +452,11 @@ ${
       }
     },
     {
-      "name": "send_message_replied",
+      "name": "send_message_replied234_en",
       "type": "send-message",
       "transitions": [
         {
-          "next": "ncFacebookAttributes_en",
+          "next": "send_to_queue_non_counselling",
           "event": "sent"
         },
         {
@@ -476,11 +476,11 @@ ${
       }
     },
     {
-      "name": "send_and_reply_234fil",
+      "name": "send_wait_reason_reply_fil",
       "type": "send-and-wait-for-reply",
       "transitions": [
         {
-          "next": "send_message_234_fil",
+          "next": "send_message_replied234_fil",
           "event": "incomingMessage"
         },
         {
@@ -503,11 +503,11 @@ ${
       }
     },
     {
-      "name": "checkOperatinghrsFil",
+      "name": "f_operatingHours_facebook_fil",
       "type": "make-http-request",
       "transitions": [
         {
-          "next": "split_operating_fil",
+          "next": "split_operating_hours_fil",
           "event": "success"
         },
         {
@@ -531,7 +531,7 @@ ${
       "type": "send-message",
       "transitions": [
         {
-          "next": "oohFacebookAttributes_fil",
+          "next": "send_to_queue_outside_operating_hours",
           "event": "sent"
         },
         {
@@ -551,20 +551,20 @@ ${
       }
     },
     {
-      "name": "split_operating_fil",
+      "name": "split_operating_hours_fil",
       "type": "split-based-on",
       "transitions": [
         {
           "event": "noMatch"
         },
         {
-          "next": "get_permission_fil",
+          "next": "send_wait_get_permission_fil",
           "event": "match",
           "conditions": [
             {
               "friendly_name": "If value contains open",
               "arguments": [
-                "{{widgets.checkOperatinghrsFil.body}}"
+                "{{widgets.f_operatingHours_facebook_fil.body}}"
               ],
               "type": "contains",
               "value": "open"
@@ -578,7 +578,7 @@ ${
             {
               "friendly_name": "If value contains closed",
               "arguments": [
-                "{{widgets.checkOperatinghrsFil.body}}"
+                "{{widgets.f_operatingHours_facebook_fil.body}}"
               ],
               "type": "contains",
               "value": "closed"
@@ -592,7 +592,7 @@ ${
             {
               "friendly_name": "If value contains holiday",
               "arguments": [
-                "{{widgets.checkOperatinghrsFil.body}}"
+                "{{widgets.f_operatingHours_facebook_fil.body}}"
               ],
               "type": "contains",
               "value": "holiday"
@@ -601,7 +601,7 @@ ${
         }
       ],
       "properties": {
-        "input": "{{widgets.checkOperatinghrsFil.body}}",
+        "input": "{{widgets.f_operatingHours_facebook_fil.body}}",
         "offset": {
           "x": -60,
           "y": -190
@@ -609,7 +609,7 @@ ${
       }
     },
     {
-      "name": "oohFacebookAttributes_en",
+      "name": "send_to_queue_outside_operating_hours",
       "type": "send-to-flex",
       "transitions": [
         {
@@ -634,7 +634,7 @@ ${
       }
     },
     {
-      "name": "ncFacebookAttributes_en",
+      "name": "send_to_queue_non_counselling",
       "type": "send-to-flex",
       "transitions": [
         {
@@ -659,7 +659,7 @@ ${
       }
     },
     {
-      "name": "oohFacebookAttributes_fil",
+      "name": "send_to_queue_outside_operating_hours",
       "type": "send-to-flex",
       "transitions": [
         {
@@ -684,7 +684,7 @@ ${
       }
     },
     {
-      "name": "ncFacebookAttributes_fil",
+      "name": "send_to_queue_non_counselling",
       "type": "send-to-flex",
       "transitions": [
         {
@@ -709,7 +709,7 @@ ${
       }
     },
     {
-      "name": "get_language",
+      "name": "send_wait_get_language",
       "type": "send-and-wait-for-reply",
       "transitions": [
         {
@@ -736,7 +736,7 @@ ${
       }
     },
     {
-      "name": "set_language_attempt",
+      "name": "set_var_language_attempt",
       "type": "set-variables",
       "transitions": [
         {
@@ -762,11 +762,11 @@ ${
       "type": "split-based-on",
       "transitions": [
         {
-          "next": "get_language",
+          "next": "send_wait_get_language",
           "event": "noMatch"
         },
         {
-          "next": "get_contact_reason_en",
+          "next": "send_wait_contact_reason_en",
           "event": "match",
           "conditions": [
             {
@@ -789,7 +789,7 @@ ${
       }
     },
     {
-      "name": "get_contact_reason_en",
+      "name": "send_wait_contact_reason_en",
       "type": "send-and-wait-for-reply",
       "transitions": [
         {
@@ -816,7 +816,7 @@ ${
       }
     },
     {
-      "name": "set_reason_attempt_en",
+      "name": "set_var_reason_attempt_en",
       "type": "set-variables",
       "transitions": [
         {
@@ -842,11 +842,11 @@ ${
       "type": "split-based-on",
       "transitions": [
         {
-          "next": "get_contact_reason_en",
+          "next": "send_wait_contact_reason_en",
           "event": "noMatch"
         },
         {
-          "next": "send_transfer_message_en",
+          "next": "send_message_transfer_en",
           "event": "match",
           "conditions": [
             {
@@ -873,17 +873,17 @@ ${
       "type": "split-based-on",
       "transitions": [
         {
-          "next": "set_reason_attempt_en",
+          "next": "set_var_reason_attempt_en",
           "event": "noMatch"
         },
         {
-          "next": "send_and_reply_234",
+          "next": "send_wait_reason_reply_en",
           "event": "match",
           "conditions": [
             {
               "friendly_name": "If value matches_any_of 2,3,4",
               "arguments": [
-                "{{widgets.get_contact_reason_en.inbound.Body}}"
+                "{{widgets.send_wait_contact_reason_en.inbound.Body}}"
               ],
               "type": "matches_any_of",
               "value": "2,3,4,assist,volunteer,mag-volunteer,donate,iba pang impormasyon,info,resources"
@@ -891,13 +891,13 @@ ${
           ]
         },
         {
-          "next": "checkOperatinghrsEn",
+          "next": "f_operatingHours_en",
           "event": "match",
           "conditions": [
             {
               "friendly_name": "If value equal_to 1",
               "arguments": [
-                "{{widgets.get_contact_reason_en.inbound.Body}}"
+                "{{widgets.send_wait_contact_reason_en.inbound.Body}}"
               ],
               "type": "matches_any_of",
               "value": "1,sa eprotect,report,eprotectkids,reach out,eprotect,help,mag-report,mag report"
@@ -906,7 +906,7 @@ ${
         }
       ],
       "properties": {
-        "input": "{{widgets.get_contact_reason_en.inbound.Body}}",
+        "input": "{{widgets.send_wait_contact_reason_en.inbound.Body}}",
         "offset": {
           "x": -1230,
           "y": -910
@@ -914,7 +914,7 @@ ${
       }
     },
     {
-      "name": "get_permission_en",
+      "name": "send_wait_get_permission_en",
       "type": "send-and-wait-for-reply",
       "transitions": [
         {
@@ -941,7 +941,7 @@ ${
       }
     },
     {
-      "name": "set_permission_attempt_en",
+      "name": "set_var_permission_attempt_en",
       "type": "set-variables",
       "transitions": [
         {
@@ -967,11 +967,11 @@ ${
       "type": "split-based-on",
       "transitions": [
         {
-          "next": "get_permission_en",
+          "next": "send_wait_get_permission_en",
           "event": "noMatch"
         },
         {
-          "next": "send_transfer_message_en",
+          "next": "send_message_transfer_en",
           "event": "match",
           "conditions": [
             {
@@ -994,7 +994,7 @@ ${
       }
     },
     {
-      "name": "get_contact_reason_fil",
+      "name": "send_wait_contact_reason_fil",
       "type": "send-and-wait-for-reply",
       "transitions": [
         {
@@ -1025,11 +1025,11 @@ ${
       "type": "split-based-on",
       "transitions": [
         {
-          "next": "get_contact_reason_fil",
+          "next": "send_wait_contact_reason_fil",
           "event": "noMatch"
         },
         {
-          "next": "send_transfer_message_fil",
+          "next": "send_message_transfer_fil",
           "event": "match",
           "conditions": [
             {
@@ -1052,7 +1052,7 @@ ${
       }
     },
     {
-      "name": "set_reason_attempt_fil",
+      "name": "set_var_reason_attempt_fil",
       "type": "set-variables",
       "transitions": [
         {
@@ -1078,17 +1078,17 @@ ${
       "type": "split-based-on",
       "transitions": [
         {
-          "next": "set_reason_attempt_fil",
+          "next": "set_var_reason_attempt_fil",
           "event": "noMatch"
         },
         {
-          "next": "send_and_reply_234fil",
+          "next": "send_wait_reason_reply_fil",
           "event": "match",
           "conditions": [
             {
               "friendly_name": "If value matches_any_of 2,3,4",
               "arguments": [
-                "{{widgets.get_contact_reason_fil.inbound.Body}}"
+                "{{widgets.send_wait_contact_reason_fil.inbound.Body}}"
               ],
               "type": "matches_any_of",
               "value": "2,3,4,assist,volunteer,mag-volunteer,donate,iba pang impormasyon,info,resources"
@@ -1096,13 +1096,13 @@ ${
           ]
         },
         {
-          "next": "checkOperatinghrsFil",
+          "next": "f_operatingHours_facebook_fil",
           "event": "match",
           "conditions": [
             {
               "friendly_name": "If value matches_any_of 1",
               "arguments": [
-                "{{widgets.get_contact_reason_fil.inbound.Body}}"
+                "{{widgets.send_wait_contact_reason_fil.inbound.Body}}"
               ],
               "type": "matches_any_of",
               "value": "1,sa eprotect,report,eprotectkids,reach out,eprotect,help,mag-report,mag report"
@@ -1111,7 +1111,7 @@ ${
         }
       ],
       "properties": {
-        "input": "{{widgets.get_contact_reason_fil.inbound.Body}}",
+        "input": "{{widgets.send_wait_contact_reason_fil.inbound.Body}}",
         "offset": {
           "x": -610,
           "y": -930
@@ -1119,7 +1119,7 @@ ${
       }
     },
     {
-      "name": "get_permission_fil",
+      "name": "send_wait_get_permission_fil",
       "type": "send-and-wait-for-reply",
       "transitions": [
         {
@@ -1150,11 +1150,11 @@ ${
       "type": "split-based-on",
       "transitions": [
         {
-          "next": "get_permission_fil",
+          "next": "send_wait_get_permission_fil",
           "event": "noMatch"
         },
         {
-          "next": "send_transfer_message_fil",
+          "next": "send_message_transfer_fil",
           "event": "match",
           "conditions": [
             {
@@ -1177,7 +1177,7 @@ ${
       }
     },
     {
-      "name": "set_permission_attempt_fil",
+      "name": "set_var_permission_attempt_fil",
       "type": "set-variables",
       "transitions": [
         {
@@ -1203,17 +1203,17 @@ ${
       "type": "split-based-on",
       "transitions": [
         {
-          "next": "set_permission_attempt_fil",
+          "next": "set_var_permission_attempt_fil",
           "event": "noMatch"
         },
         {
-          "next": "captureChannelWithBotFil",
+          "next": "f_captureChannelWithBot_fil",
           "event": "match",
           "conditions": [
             {
               "friendly_name": "If value matches any oo",
               "arguments": [
-                "{{widgets.get_permission_fil.inbound.Body}}"
+                "{{widgets.send_wait_get_permission_fil.inbound.Body}}"
               ],
               "type": "matches_any_of",
               "value": "oo,1"
@@ -1221,13 +1221,13 @@ ${
           ]
         },
         {
-          "next": "no_permission_msg_fil",
+          "next": "send_message_fil_no",
           "event": "match",
           "conditions": [
             {
               "friendly_name": "If value matches any hindi",
               "arguments": [
-                "{{widgets.get_permission_fil.inbound.Body}}"
+                "{{widgets.send_wait_get_permission_fil.inbound.Body}}"
               ],
               "type": "matches_any_of",
               "value": "hindi,2"
@@ -1236,7 +1236,7 @@ ${
         }
       ],
       "properties": {
-        "input": "{{widgets.get_permission_fil.inbound.Body}}",
+        "input": "{{widgets.send_wait_get_permission_fil.inbound.Body}}",
         "offset": {
           "x": 200,
           "y": 500
@@ -1244,7 +1244,7 @@ ${
       }
     },
     {
-      "name": "captureChannelWithBotEn",
+      "name": "f_captureChannelWithBot_en",
       "type": "make-http-request",
       "transitions": [
         {
@@ -1263,19 +1263,19 @@ ${
         "content_type": "application/json;charset=utf-8",
         "add_twilio_auth": false,
         "body": "{\"channelSid\": \"{{flow.channel.address}}\", \"conversationSid\": \"{{flow.channel.address}}\", \"message\": \"trigger_pre_survey\", \"studioFlowSid\": \"{{flow.flow_sid}}\", \"language\": \"en-PH\", \"botSuffix\": \"pre_survey\", \"triggerType\": \"withUserMessage\", \"releaseType\": \"triggerStudioFlow\", \"releaseFlag\": \"preSurveyCompleteEn\", \"channelType\": \"{% if trigger.conversation.ChannelAttributes.channel_type %}{{trigger.conversation.ChannelAttributes.channel_type | downcase}}{% else %}{{trigger.conversation.Source | downcase}}{% endif %}\", \"isConversation\": \"true\"}",
-        "url": "${lambda_twilio_account_scoped_url}/channelCapture/captureChannelWithBot"
+        "url": "${lambda_twilio_account_scoped_url}/channelCapture/f_captureChannelWithBot_en"
       }
     },
     {
-      "name": "pre_survey_complete_en",
+      "name": "split_pre_survey_complete_en",
       "type": "split-based-on",
       "transitions": [
         {
-          "next": "pre_survey_complete_fil",
+          "next": "split_pre_survey_complete_fil",
           "event": "noMatch"
         },
         {
-          "next": "facebook_attributes_en",
+          "next": "send_to_queue_ecpat",
           "event": "match",
           "conditions": [
             {
@@ -1298,15 +1298,15 @@ ${
       }
     },
     {
-      "name": "pre_survey_complete_fil",
+      "name": "split_pre_survey_complete_fil",
       "type": "split-based-on",
       "transitions": [
         {
-          "next": "get_language",
+          "next": "send_wait_get_language",
           "event": "noMatch"
         },
         {
-          "next": "facebook_attributes_fil",
+          "next": "send_to_queue_ecpat",
           "event": "match",
           "conditions": [
             {
@@ -1329,7 +1329,7 @@ ${
       }
     },
     {
-      "name": "captureChannelWithBotFil",
+      "name": "f_captureChannelWithBot_fil",
       "type": "make-http-request",
       "transitions": [
         {
@@ -1348,15 +1348,15 @@ ${
         "content_type": "application/json;charset=utf-8",
         "add_twilio_auth": false,
         "body": "{\"channelSid\": \"{{flow.channel.address}}\", \"conversationSid\": \"{{flow.channel.address}}\", \"message\": \"trigger_pre_survey\", \"studioFlowSid\": \"{{flow.flow_sid}}\", \"language\": \"fil-PH\", \"botSuffix\": \"pre_survey\", \"triggerType\": \"withUserMessage\", \"releaseType\": \"triggerStudioFlow\", \"releaseFlag\": \"preSurveyCompleteFil\", \"channelType\": \"{% if trigger.conversation.ChannelAttributes.channel_type %}{{trigger.conversation.ChannelAttributes.channel_type | downcase}}{% else %}{{trigger.conversation.Source | downcase}}{% endif %}\", \"isConversation\": \"true\"}",
-        "url": "${lambda_twilio_account_scoped_url}/channelCapture/captureChannelWithBot"
+        "url": "${lambda_twilio_account_scoped_url}/channelCapture/f_captureChannelWithBot_fil"
       }
     },
     {
-      "name": "send_transfer_message_en",
+      "name": "send_message_transfer_en",
       "type": "send-message",
       "transitions": [
         {
-          "next": "facebook_attributes_en",
+          "next": "send_to_queue_ecpat",
           "event": "sent"
         },
         {
@@ -1376,11 +1376,11 @@ ${
       }
     },
     {
-      "name": "send_transfer_message_fil",
+      "name": "send_message_transfer_fil",
       "type": "send-message",
       "transitions": [
         {
-          "next": "facebook_attributes_fil",
+          "next": "send_to_queue_ecpat",
           "event": "sent"
         },
         {
