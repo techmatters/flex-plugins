@@ -35,7 +35,7 @@ type UseFormFromDefinition = {
   };
 };
 
-const alwaysEnabled = () => true;
+const alwaysEnabled = (item: FormItemDefinition) => !((item as any).isDisabled ?? false);
 
 const useCreateFormFromDefinition = ({
   definition,
