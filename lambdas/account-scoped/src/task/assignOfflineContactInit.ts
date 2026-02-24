@@ -17,7 +17,7 @@
 import { FlexValidatedHandler } from '../validation/flexToken';
 import type { AccountSID } from '@tech-matters/twilio-types';
 import {
-  getConversationsTransferWorkflow,
+  getMasterWorkflowSid,
   getTwilioClient,
   getWorkspaceSid,
 } from '@tech-matters/twilio-configuration';
@@ -153,7 +153,7 @@ const assignOfflineContact = async (
 ): Promise<AssignmentResult> => {
   const client = await getTwilioClient(accountSid);
   const workspaceSid = await getWorkspaceSid(accountSid);
-  const chatTransferWorkflowSid = await getConversationsTransferWorkflow(accountSid);
+  const chatTransferWorkflowSid = await getMasterWorkflowSid(accountSid);
   const { targetSid, taskAttributes } = body;
 
   const targetWorker = await client.taskrouter.v1

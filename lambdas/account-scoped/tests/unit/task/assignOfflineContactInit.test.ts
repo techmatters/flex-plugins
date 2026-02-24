@@ -18,7 +18,7 @@ import { assignOfflineContactInitHandler } from '../../../src/task/assignOffline
 import {
   getTwilioClient,
   getWorkspaceSid,
-  getConversationsTransferWorkflow,
+  getMasterWorkflowSid,
 } from '@tech-matters/twilio-configuration';
 import { isErr, isOk } from '../../../src/Result';
 import { FlexValidatedHttpRequest } from '../../../src/validation/flexToken';
@@ -31,7 +31,7 @@ import {
 jest.mock('@tech-matters/twilio-configuration', () => ({
   getTwilioClient: jest.fn(),
   getWorkspaceSid: jest.fn(),
-  getConversationsTransferWorkflow: jest.fn(),
+  getMasterWorkflowSid: jest.fn(),
 }));
 
 const mockGetTwilioClient = getTwilioClient as jest.MockedFunction<
@@ -40,10 +40,9 @@ const mockGetTwilioClient = getTwilioClient as jest.MockedFunction<
 const mockGetWorkspaceSid = getWorkspaceSid as jest.MockedFunction<
   typeof getWorkspaceSid
 >;
-const mockGetConversationsTransferWorkflow =
-  getConversationsTransferWorkflow as jest.MockedFunction<
-    typeof getConversationsTransferWorkflow
-  >;
+const mockGetMasterWorkflowSid = getMasterWorkflowSid as jest.MockedFunction<
+  typeof getMasterWorkflowSid
+>;
 
 const TEST_WORKFLOW_SID = 'WW00000000000000000000000000000000';
 const TARGET_SID = TEST_WORKER_SID;
@@ -88,7 +87,7 @@ describe('assignOfflineContactInitHandler', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockGetWorkspaceSid.mockResolvedValue(TEST_WORKSPACE_SID as any);
-    mockGetConversationsTransferWorkflow.mockResolvedValue(TEST_WORKFLOW_SID);
+    mockGetMasterWorkflowSid.mockResolvedValue(TEST_WORKFLOW_SID);
 
     mockTask = createMockTask(
       'WT_NEW_TASK',
