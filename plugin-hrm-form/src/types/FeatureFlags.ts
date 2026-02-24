@@ -47,5 +47,6 @@ export type FeatureFlags = {
   use_prepopulate_mappings: boolean; // Use PrepopulateMappings.json instead of PrepopulateKeys.json
   use_twilio_lambda_for_conference_functions: boolean; // Use the twilio account scoped lambda for conferencing functions
   use_twilio_lambda_for_conversation_duration: boolean; // Use the twilio account scoped lambda to calculate conversationDuration
-  use_twilio_lambda_for_iwf_reporting: boolean; // Use the twilio account scoped lambda for reporting to IWF
+  use_twilio_lambda_for_iwf_reporting: boolean; // Use the twilio account scoped lambda for reportToIWF and selfReportToIWF
+  use_twilio_lambda_for_offline_contact_tasks: boolean; // Use the twilio account scoped lambda for assignOfflineContactInit and assignOfflineContactResolve
 };
