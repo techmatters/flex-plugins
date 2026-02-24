@@ -15,8 +15,7 @@
  */
 
 import * as React from 'react';
-import { act } from 'react-dom/test-utils';
-import { getByTestId, render, screen, fireEvent } from '@testing-library/react';
+import { act, getByTestId, render, screen, fireEvent } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import '@testing-library/jest-dom/extend-expect';
 

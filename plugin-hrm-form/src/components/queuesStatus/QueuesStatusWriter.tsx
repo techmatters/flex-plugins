@@ -86,6 +86,12 @@ export const InnerQueuesStatusWriter: React.FC<InnerProps> = ({
       );
 
     const subscribeToQueuesUpdates = async () => {
+      // Close the previous tasks query before resubscribing
+      if (tasksQueryRef.current) {
+        tasksQueryRef.current.close();
+        tasksQueryRef.current = null;
+      }
+
       try {
         // fetch the array of queues the counselor matches (excluding "Everyone")
         const { workerQueues } = await listWorkerQueues({ workerSid });
