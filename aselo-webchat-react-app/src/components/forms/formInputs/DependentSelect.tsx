@@ -48,9 +48,10 @@ const DependentSelect: React.FC<Props> = ({ getItem, setItemValue, definition, h
   // Resets <select> when dependsOn value changes
   useEffect(() => {
     if (shouldClear) {
-      setItemValue({ name, value: '' });
+      const value = options[dependsOnValue]?.length ? options[dependsOnValue][0]?.value : '';
+      setItemValue({ name, value });
     }
-  }, [name, dependsOnValue, shouldClear, setItemValue]);
+  }, [name, dependsOnValue, shouldClear, setItemValue, options]);
 
   const buildOptions = () =>
     dependsOnValue && options[dependsOnValue]
