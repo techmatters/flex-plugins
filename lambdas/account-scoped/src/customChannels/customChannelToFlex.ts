@@ -17,6 +17,7 @@
 import { AccountSID, ConversationSID } from '@tech-matters/twilio-types';
 import { Twilio } from 'twilio';
 import { getTwilioClient } from '@tech-matters/twilio-configuration';
+import { AseloCustomChannel } from './aseloCustomChannels';
 
 const CONVERSATION_CLOSE_TIMEOUT = 'P3D'; // ISO 8601 duration format https://en.wikipedia.org/wiki/ISO_8601
 
@@ -75,15 +76,7 @@ export const removeConversation = async (
   },
 ) => client.conversations.v1.conversations(conversationSid).remove();
 
-export enum AseloCustomChannel {
-  Instagram = 'instagram',
-  Line = 'line',
-  Modica = 'modica',
-  Telegram = 'telegram',
-}
-
-export const isAseloCustomChannel = (channelType?: string): boolean =>
-  Object.values(AseloCustomChannel).includes(channelType as AseloCustomChannel);
+export { AseloCustomChannel, isAseloCustomChannel } from './aseloCustomChannels';
 
 type CreateFlexConversationParams = {
   studioFlowSid: string;

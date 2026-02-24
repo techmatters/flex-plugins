@@ -33,18 +33,25 @@ const adjustCapacityHandler: TaskRouterEventHandler = async (
   const featureFlags = await retrieveFeatureFlags(client);
 
   if (!featureFlags.use_twilio_lambda_adjust_capacity) {
-    console.log(
-      '===== AdjustCapacityTaskRouterListener skipped - use_twilio_lambda_adjust_capacity flag not enabled =====',
+    console.debug(
+      `AdjustCapacityTaskRouterListener skipped for account ${accountSid} - use_twilio_lambda_adjust_capacity flag not enabled`,
     );
     return;
   }
 
-  const { WorkerSid: workerSid, TaskChannelUniqueName: taskChannelUniqueName } = event;
+  const {
+    WorkerSid: workerSid,
+    TaskSid: taskSid,
+    TaskChannelUniqueName: taskChannelUniqueName,
+    EventType: eventType,
+  } = event;
 
   if (taskChannelUniqueName !== 'chat') return;
 
   if (!featureFlags.enable_manual_pulling) {
-    console.log('===== AdjustCapacityListener skipped - flag not enabled =====');
+    console.debug(
+      `AdjustCapacityListener skipped for account ${accountSid}, task ${taskSid} - enable_manual_pulling flag not enabled`,
+    );
     return;
   }
 
@@ -52,10 +59,12 @@ const adjustCapacityHandler: TaskRouterEventHandler = async (
     workerSid: workerSid as WorkerSID,
     adjustment: 'setTo1',
   });
-  console.log(
-    `===== AdjustCapacityListener completed: status ${status}, '${message}' =====`,
+  console.info(
+    `AdjustCapacityListener completed for account ${accountSid}, task ${taskSid}, worker ${workerSid}, event ${eventType}: status ${status}, '${message}'`,
   );
 };
+
+export { adjustCapacityHandler as handleEvent };
 
 registerTaskRouterEventHandler(
   [RESERVATION_ACCEPTED, RESERVATION_REJECTED],

@@ -33,7 +33,7 @@ import { retrieveFeatureFlags } from '../configuration/aseloConfiguration';
 import { chatChannelJanitor } from '../conversation/chatChannelJanitor';
 import { hasTaskControl } from './hasTaskControl';
 import { isChatCaptureControlTask } from '../channelCapture/channelCaptureHandlers';
-import { isAseloCustomChannel } from '../customChannels/customChannelToFlex';
+import { isAseloCustomChannel } from '../customChannels/aseloCustomChannels';
 import { getWorkspaceSid } from '@tech-matters/twilio-configuration';
 import { ChatChannelSID, ConversationSID } from '@tech-matters/twilio-types';
 
@@ -135,8 +135,8 @@ const janitorHandler: TaskRouterEventHandler = async (
   const featureFlags = await retrieveFeatureFlags(client);
 
   if (!featureFlags.use_twilio_lambda_janitor) {
-    console.log(
-      '===== JanitorTaskRouterListener skipped - use_twilio_lambda_janitor flag not enabled =====',
+    console.debug(
+      `JanitorTaskRouterListener skipped for account ${accountSid} - use_twilio_lambda_janitor flag not enabled`,
     );
     return;
   }
@@ -151,12 +151,13 @@ const janitorHandler: TaskRouterEventHandler = async (
 
     if (!['chat', 'survey'].includes(taskChannelUniqueName)) return;
 
-    console.log(`===== Executing JanitorListener for event: ${eventType} =====`);
+    console.info(
+      `JanitorListener executing for account ${accountSid}, task ${taskSid}, event: ${eventType}`,
+    );
 
     if (taskChannelUniqueName === 'survey' && eventType !== TASK_CANCELED) {
-      console.log(
-        'Survey tasks are only handled by the channel janitor on task cancelled events skipping this one.',
-        eventType,
+      console.debug(
+        `Survey task ${taskSid} (account ${accountSid}) skipped on event ${eventType} - only handled on ${TASK_CANCELED}`,
       );
       return;
     }
@@ -173,7 +174,9 @@ const janitorHandler: TaskRouterEventHandler = async (
         conversationSid: conversationSid as ConversationSID,
       });
 
-      console.log('Finished handling clean up.');
+      console.info(
+        `JanitorListener: bot capture clean up finished for account ${accountSid}, task ${taskSid}`,
+      );
       return;
     }
 
@@ -186,13 +189,17 @@ const janitorHandler: TaskRouterEventHandler = async (
         taskAttributes,
       )
     ) {
-      console.log('Handling clean up custom channel...');
+      console.info(
+        `JanitorListener: handling custom channel clean up for account ${accountSid}, task ${taskSid}`,
+      );
 
       await chatChannelJanitor(accountSid, {
         channelSid: taskAttributes.channelSid as ChatChannelSID,
       });
 
-      console.log('Finished handling clean up custom channel.');
+      console.info(
+        `JanitorListener: custom channel clean up finished for account ${accountSid}, task ${taskSid}`,
+      );
       return;
     }
 
@@ -206,25 +213,35 @@ const janitorHandler: TaskRouterEventHandler = async (
       )
     ) {
       if (!featureFlags.enable_post_survey) {
-        console.log('Handling DeactivateConversationOrchestration...');
+        console.info(
+          `JanitorListener: deactivating conversation orchestration for account ${accountSid}, task ${taskSid}`,
+        );
 
         await chatChannelJanitor(accountSid, {
           channelSid: channelSid as ChatChannelSID,
           conversationSid: conversationSid as ConversationSID,
         });
 
-        console.log('Finished DeactivateConversationOrchestration.');
+        console.info(
+          `JanitorListener: conversation orchestration deactivated for account ${accountSid}, task ${taskSid}`,
+        );
         return;
       }
     }
 
-    console.log('===== JanitorListener finished successfully =====');
+    console.info(
+      `JanitorListener finished successfully for account ${accountSid}, task ${taskSid}, event: ${eventType}`,
+    );
   } catch (err) {
-    console.log('===== JanitorListener has failed =====');
-    console.log(String(err));
+    console.error(
+      `JanitorListener failed for account ${accountSid}, task ${event.TaskSid}`,
+      err,
+    );
     throw err;
   }
 };
+
+export { janitorHandler as handleEvent };
 
 registerTaskRouterEventHandler(
   [TASK_CANCELED, TASK_WRAPUP, TASK_COMPLETED, TASK_DELETED, TASK_SYSTEM_DELETED],

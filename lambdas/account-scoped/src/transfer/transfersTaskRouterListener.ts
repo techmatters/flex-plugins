@@ -157,7 +157,7 @@ const updateWarmVoiceTransferAttributes = async (
   taskSid: string,
 ) => {
   console.info(
-    `Handling warm voice transfer ${transferStatus} with taskSid ${taskSid}...`,
+    `TransfersListener: updating warm voice transfer ${transferStatus} attributes for task ${taskSid}...`,
   );
 
   const updatedAttributes = {
@@ -175,7 +175,7 @@ const updateWarmVoiceTransferAttributes = async (
     .update({ attributes: JSON.stringify(updatedAttributes) });
 
   console.info(
-    `Finished handling warm voice transfer ${transferStatus} with taskSid ${taskSid}.`,
+    `TransfersListener: warm voice transfer ${transferStatus} attributes updated for task ${taskSid}.`,
   );
 };
 
@@ -187,8 +187,8 @@ const transfersHandler: TaskRouterEventHandler = async (
   const featureFlags = await retrieveFeatureFlags(client);
 
   if (!featureFlags.use_twilio_lambda_transfers) {
-    console.log(
-      '===== TransfersTaskRouterListener skipped - use_twilio_lambda_transfers flag not enabled =====',
+    console.debug(
+      `TransfersTaskRouterListener skipped for account ${accountSid} - use_twilio_lambda_transfers flag not enabled`,
     );
     return;
   }
@@ -201,7 +201,9 @@ const transfersHandler: TaskRouterEventHandler = async (
       TaskAttributes: taskAttributesString,
     } = event;
 
-    console.log(`===== Executing TransfersListener for event: ${eventType} =====`);
+    console.info(
+      `TransfersListener executing for account ${accountSid}, task ${taskSid}, event: ${eventType}`,
+    );
 
     const taskAttributes: TransferTaskAttributes = JSON.parse(taskAttributesString);
     const workspaceSid = await getWorkspaceSid(accountSid);
@@ -209,7 +211,9 @@ const transfersHandler: TaskRouterEventHandler = async (
     if (
       isChatTransferToWorkerAccepted(eventType, taskChannelUniqueName, taskAttributes)
     ) {
-      console.log('Handling chat transfer accepted...');
+      console.info(
+        `TransfersListener: handling chat transfer accepted for account ${accountSid}, task ${taskSid}`,
+      );
 
       const { originalTask: originalTaskSid } = taskAttributes.transferMeta!;
 
@@ -229,12 +233,16 @@ const transfersHandler: TaskRouterEventHandler = async (
         taskAttributes.originalParticipantSid,
       );
 
-      console.log('Finished handling chat transfer accepted.');
+      console.info(
+        `TransfersListener: chat transfer accepted handled for account ${accountSid}, task ${taskSid}, original task ${originalTaskSid}`,
+      );
       return;
     }
 
     if (isChatTransferToQueueComplete(eventType, taskChannelUniqueName, taskAttributes)) {
-      console.log('Handling chat transfer to queue entering target queue...');
+      console.info(
+        `TransfersListener: handling chat transfer to queue for account ${accountSid}, task ${taskSid}`,
+      );
 
       const { originalTask: originalTaskSid } = taskAttributes.transferMeta!;
 
@@ -257,20 +265,24 @@ const transfersHandler: TaskRouterEventHandler = async (
           );
         } catch (err) {
           console.error(
-            `Error closing original participant ${taskAttributes.originalParticipantSid}`,
+            `TransfersListener: error closing original participant ${taskAttributes.originalParticipantSid} for account ${accountSid}, task ${taskSid}`,
             err,
           );
         }
       }
 
-      console.log('Finished handling chat queue transfer initiated.');
+      console.info(
+        `TransfersListener: chat transfer to queue handled for account ${accountSid}, task ${taskSid}, original task ${originalTaskSid}`,
+      );
       return;
     }
 
     if (
       isChatTransferToWorkerRejected(eventType, taskChannelUniqueName, taskAttributes)
     ) {
-      console.log('Handling chat transfer to worker rejected...');
+      console.info(
+        `TransfersListener: handling chat transfer to worker rejected for account ${accountSid}, task ${taskSid}`,
+      );
 
       const { originalTask: originalTaskSid } = taskAttributes.transferMeta!;
       const workspace = client.taskrouter.v1.workspaces.get(workspaceSid);
@@ -315,7 +327,9 @@ const transfersHandler: TaskRouterEventHandler = async (
         reason: 'task transferred rejected',
       });
 
-      console.log('Finished handling chat transfer to worker rejected.');
+      console.info(
+        `TransfersListener: chat transfer to worker rejected handled for account ${accountSid}, task ${taskSid}, original task ${originalTaskSid}`,
+      );
       return;
     }
 
@@ -350,7 +364,9 @@ const transfersHandler: TaskRouterEventHandler = async (
     if (
       isVoiceTransferOriginalInWrapup(eventType, taskChannelUniqueName, taskAttributes)
     ) {
-      console.log('Handling voice transfer wrapup...');
+      console.info(
+        `TransfersListener: handling voice transfer wrapup for account ${accountSid}, task ${taskSid}`,
+      );
 
       const { originalTask: originalTaskSid, originalReservation } =
         taskAttributes.transferMeta!;
@@ -361,17 +377,25 @@ const transfersHandler: TaskRouterEventHandler = async (
         .reservations.get(originalReservation)
         .update({ reservationStatus: 'completed' });
 
-      console.log('Finished handling voice transfer wrapup.');
+      console.info(
+        `TransfersListener: voice transfer wrapup handled for account ${accountSid}, task ${taskSid}, original task ${originalTaskSid}`,
+      );
       return;
     }
 
-    console.log('===== TransfersListener finished successfully =====');
+    console.info(
+      `TransfersListener finished successfully for account ${accountSid}, task ${taskSid}, event: ${eventType}`,
+    );
   } catch (err) {
-    console.log('===== TransfersListener has failed =====');
-    console.log(String(err));
+    console.error(
+      `TransfersListener failed for account ${accountSid}, task ${event.TaskSid}`,
+      err,
+    );
     throw err;
   }
 };
+
+export { transfersHandler as handleEvent };
 
 registerTaskRouterEventHandler(
   [
