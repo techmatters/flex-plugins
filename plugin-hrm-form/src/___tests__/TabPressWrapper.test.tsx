@@ -15,16 +15,13 @@
  */
 
 import * as React from 'react';
-import renderer from 'react-test-renderer';
-import { getByTestId, render, screen } from '@testing-library/react';
+import { act } from 'react-dom/test-utils';
+import { getByTestId, render, screen, fireEvent } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import '@testing-library/jest-dom/extend-expect';
 
 import './mockStyled';
 import TabPressWrapper from '../components/TabPressWrapper';
-
-const getFirstElement = component => component.getInstance().firstElementRef.current;
-const getLastElement = component => component.getInstance().lastElementRef.current;
 
 /**
  * firstElement and lastElement tests
@@ -244,94 +241,78 @@ test('<TabPressWrapper> complex children structure. Tabbing through each element
  * tab and shift+tab tests
  */
 
-const setActiveElement = element => jest.spyOn(document, 'activeElement', 'get').mockReturnValue(element);
-const event = {
-  preventDefault: jest.fn(),
-  stopPropagation: jest.fn(),
-};
-const pressTab = component => component.getInstance().handleTab('tab', event);
-const pressShiftTab = component => component.getInstance().handleTab('shift+tab', event);
-
-const assertCalledFocusElementWith = (component, element) => {
-  const focusElementMethod = component.getInstance().focusElement;
-  const firstArgument = focusElementMethod.mock.calls[0][0];
-
-  expect(focusElementMethod).toHaveBeenCalled();
-  expect(firstArgument.current).toEqual(element);
-};
-
 test('<TabPressWrapper> lastElement focused and hit "tab"', async () => {
-  const component = renderer.create(
+  const { container } = render(
     <TabPressWrapper>
-      <button id="firstElement" type="button" tabIndex={1} />
-      <button id="secondElement" type="button" tabIndex={2} />
+      <button id="firstElement" data-testid="firstElement" type="button" tabIndex={1} />
+      <button id="secondElement" data-testid="secondElement" type="button" tabIndex={2} />
     </TabPressWrapper>,
   );
 
-  const lastElement = getLastElement(component);
-  setActiveElement(lastElement);
+  await act(() => Promise.resolve());
 
-  // Mock TabPressWrapper.focusElement()
-  component.getInstance().focusElement = jest.fn();
+  const lastElement = getByTestId(container, 'secondElement');
+  lastElement.focus();
+  expect(lastElement).toHaveFocus();
 
-  pressTab(component);
+  fireEvent.keyDown(lastElement, { key: 'Tab', code: 'Tab', keyCode: 9, which: 9, bubbles: true });
 
-  const firstElement = getFirstElement(component);
-  assertCalledFocusElementWith(component, firstElement);
+  const firstElement = getByTestId(container, 'firstElement');
+  expect(firstElement).toHaveFocus();
 });
 
 test('<TabPressWrapper> firstElement focused and hit "shift+tab"', async () => {
-  const component = renderer.create(
+  const { container } = render(
     <TabPressWrapper>
-      <button id="firstElement" type="button" tabIndex={1} />
-      <button id="secondElement" type="button" tabIndex={2} />
+      <button id="firstElement" data-testid="firstElement" type="button" tabIndex={1} />
+      <button id="secondElement" data-testid="secondElement" type="button" tabIndex={2} />
     </TabPressWrapper>,
   );
 
-  const firstElement = getFirstElement(component);
-  setActiveElement(firstElement);
+  await act(() => Promise.resolve());
 
-  // Mock TabPressWrapper.focusElement()
-  component.getInstance().focusElement = jest.fn();
+  const firstElement = getByTestId(container, 'firstElement');
+  firstElement.focus();
+  expect(firstElement).toHaveFocus();
 
-  pressShiftTab(component);
+  fireEvent.keyDown(firstElement, { key: 'Tab', shiftKey: true, code: 'Tab', keyCode: 9, which: 9, bubbles: true });
 
-  const lastElement = getLastElement(component);
-  assertCalledFocusElementWith(component, lastElement);
+  const lastElement = getByTestId(container, 'secondElement');
+  expect(lastElement).toHaveFocus();
 });
 
 test('<TabPressWrapper> single element hit "tab"', async () => {
-  const component = renderer.create(
+  const { container } = render(
     <TabPressWrapper>
-      <button id="singleElement" type="button" tabIndex={1} />
+      <button id="singleElement" data-testid="singleElement" type="button" tabIndex={1} />
     </TabPressWrapper>,
   );
 
-  const firstElement = getFirstElement(component);
-  setActiveElement(firstElement);
+  await act(() => Promise.resolve());
 
-  // Mock TabPressWrapper.focusElement()
-  component.getInstance().focusElement = jest.fn();
+  const singleElement = getByTestId(container, 'singleElement');
+  singleElement.focus();
+  expect(singleElement).toHaveFocus();
 
-  pressTab(component);
+  fireEvent.keyDown(singleElement, { key: 'Tab', code: 'Tab', keyCode: 9, which: 9, bubbles: true });
 
-  assertCalledFocusElementWith(component, firstElement);
+  expect(singleElement).toHaveFocus();
 });
 
 test('<TabPressWrapper> single element hit "shift+tab"', async () => {
-  const component = renderer.create(
+  const { container } = render(
     <TabPressWrapper>
-      <button id="singleElement" type="button" tabIndex={2} />
+      <button id="singleElement" data-testid="singleElement" type="button" tabIndex={2} />
     </TabPressWrapper>,
   );
 
-  const firstElement = getFirstElement(component);
-  setActiveElement(firstElement);
+  await act(() => Promise.resolve());
 
-  // Mock TabPressWrapper.focusElement()
-  component.getInstance().focusElement = jest.fn();
+  const singleElement = getByTestId(container, 'singleElement');
+  singleElement.focus();
+  expect(singleElement).toHaveFocus();
 
-  pressShiftTab(component);
+  fireEvent.keyDown(singleElement, { key: 'Tab', shiftKey: true, code: 'Tab', keyCode: 9, which: 9, bubbles: true });
 
-  assertCalledFocusElementWith(component, firstElement);
+  expect(singleElement).toHaveFocus();
 });

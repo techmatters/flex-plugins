@@ -14,7 +14,6 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-/* eslint-disable react/no-find-dom-node */
 /**
  * Component that handles element navigation with 'tab' or 'shift+tab', so that
  * it will only navigate between the desired elements.
@@ -35,7 +34,7 @@
  *    b) If it's on the firstElement and listens a 'shif+tab', it focus the lastElement
  *    c) Otherwise, it lets the browser handle it
  */
-import React, { Component, createRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import KeyboardEventHandler from 'react-keyboard-event-handler';
 
 import { isNullOrUndefined } from '../utils/checkers';
@@ -44,172 +43,139 @@ type Props = {
   children?: React.ReactNode;
 };
 
-type State = {
-  tabIndexCount: number;
-  childrenWithRef: React.ReactNode;
-};
+const reduceChildren = (
+  children: React.ReactNode,
+  comparator: (tabIndex: number, result: number) => boolean,
+  initialValue: number | null,
+): number | null =>
+  React.Children.toArray(children).reduce<number | null>((result, element) => {
+    if (!React.isValidElement(element)) return result;
+    const hasTabIndex = Boolean(element.props && !isNullOrUndefined(element.props.tabIndex));
+    const hasChildren = Boolean(element.props && !isNullOrUndefined(element.props.children));
 
-class TabPressWrapper extends Component<Props, State> {
-  static displayName = 'TabPressWrapper';
+    if (hasTabIndex) {
+      const { tabIndex } = element.props;
 
-  static defaultProps: Props = {
-    children: null,
-  };
-
-  state: State = {
-    tabIndexCount: 0,
-    childrenWithRef: null,
-  };
-
-  componentDidMount() {
-    const { children } = this.props;
-
-    const minTabIndex = this.findMinTabIndex(children);
-    const maxTabIndex = this.findMaxTabIndex(children);
-
-    const childrenWithRef = this.addRefToFirstAndLastElement(children, minTabIndex, maxTabIndex);
-
-    this.setState({ childrenWithRef });
-  }
-
-  firstElementRef = createRef<HTMLElement>();
-
-  lastElementRef = createRef<HTMLElement>();
-
-  foundFirstElement = false;
-
-  incrementTabIndexCount = () => this.setState(prevState => ({ tabIndexCount: prevState.tabIndexCount + 1 }));
-
-  isSingleElement = () => this.state.tabIndexCount === 1;
-
-  handleTab = (key: string, event: KeyboardEvent) => {
-    const { activeElement } = document;
-    const isFirstElement = activeElement === this.firstElementRef.current;
-    const isLastElement = activeElement === this.lastElementRef.current;
-
-    if (isFirstElement && this.isSingleElement()) {
-      this.focusElement(this.firstElementRef, event);
-    } else if (isLastElement && key === 'tab') {
-      this.focusElement(this.firstElementRef, event);
-    } else if (isFirstElement && key === 'shift+tab') {
-      this.focusElement(this.lastElementRef, event);
-    }
-  };
-
-  focusElement = (elementRef: React.RefObject<HTMLElement>, event: KeyboardEvent) => {
-    event.preventDefault();
-    event.stopPropagation();
-    elementRef.current.focus();
-  };
-
-  reduceChildren = (
-    children: React.ReactNode,
-    comparator: (tabIndex: number, result: number) => boolean,
-    initialValue: number | null,
-  ): number | null =>
-    React.Children.toArray(children).reduce<number | null>((result, element) => {
-      if (!React.isValidElement(element)) return result;
-      const hasTabIndex = Boolean(element.props && !isNullOrUndefined(element.props.tabIndex));
-      const hasChildren = Boolean(element.props && !isNullOrUndefined(element.props.children));
-
-      if (hasTabIndex) {
-        const { tabIndex } = element.props;
-
-        if (result === null || comparator(tabIndex, result)) {
-          return tabIndex;
-        }
-
-        return result;
-      } else if (hasChildren) {
-        return this.reduceChildren(element.props.children, comparator, result);
+      if (result === null || comparator(tabIndex, result)) {
+        return tabIndex;
       }
 
       return result;
-    }, initialValue);
+    } else if (hasChildren) {
+      return reduceChildren(element.props.children, comparator, result);
+    }
 
-  findMinTabIndex = (children: React.ReactNode) =>
-    this.reduceChildren(children, (tabIndex, minTabIndex) => tabIndex < minTabIndex, null);
+    return result;
+  }, initialValue);
 
-  findMaxTabIndex = (children: React.ReactNode) =>
-    this.reduceChildren(children, (tabIndex, maxTabIndex) => tabIndex > maxTabIndex, null);
+const countTabIndexElements = (children: React.ReactNode): number => {
+  let childrenCount = 0;
 
-  countTabIndexElements = (children: React.ReactNode): number => {
-    let childrenCount = 0;
+  React.Children.forEach(children, element => {
+    if (!React.isValidElement(element)) return;
+    const hasTabIndex = Boolean(element.props && !isNullOrUndefined(element.props.tabIndex));
+    const hasChildren = Boolean(element.props && !isNullOrUndefined(element.props.children));
 
-    React.Children.forEach(children, element => {
-      if (!React.isValidElement(element)) return;
-      const hasTabIndex = Boolean(element.props && !isNullOrUndefined(element.props.tabIndex));
-      const hasChildren = Boolean(element.props && !isNullOrUndefined(element.props.children));
+    if (hasTabIndex) {
+      childrenCount += 1;
+    } else if (hasChildren) {
+      childrenCount += countTabIndexElements(element.props.children);
+    }
+  });
 
-      if (hasTabIndex) {
-        childrenCount += 1;
-      } else if (hasChildren) {
-        childrenCount += this.countTabIndexElements(element.props.children);
+  return childrenCount;
+};
+
+const addRefsToElements = (
+  children: React.ReactNode,
+  minTabIndex: number | null,
+  maxTabIndex: number | null,
+  firstRef: React.RefObject<HTMLElement>,
+  lastRef: React.RefObject<HTMLElement>,
+  state: { foundFirstElement: boolean },
+): React.ReactNode =>
+  React.Children.map(children, element => {
+    if (!React.isValidElement(element)) return element;
+    const hasTabIndex = Boolean(element.props && !isNullOrUndefined(element.props.tabIndex));
+    const hasChildren = Boolean(element.props && !isNullOrUndefined(element.props.children));
+
+    if (hasTabIndex) {
+      const { tabIndex } = element.props;
+      const isFirstElement = tabIndex === minTabIndex;
+      const isLastElement = tabIndex === maxTabIndex;
+
+      if (isFirstElement && !state.foundFirstElement) {
+        state.foundFirstElement = true;
+        return React.cloneElement(element, { ref: firstRef });
       }
-    });
 
-    return childrenCount;
-  };
-
-  addRefToFirstAndLastElement = (
-    children: React.ReactNode,
-    minTabIndex: number | null,
-    maxTabIndex: number | null,
-  ): React.ReactNode =>
-    React.Children.map(children, element => {
-      if (!React.isValidElement(element)) return element;
-      const hasTabIndex = Boolean(element.props && !isNullOrUndefined(element.props.tabIndex));
-      const hasChildren = Boolean(element.props && !isNullOrUndefined(element.props.children));
-
-      if (hasTabIndex) {
-        this.incrementTabIndexCount();
-
-        const { tabIndex } = element.props;
-        const isFirstElement = tabIndex === minTabIndex;
-        const isLastElement = tabIndex === maxTabIndex;
-
-        if (isFirstElement && !this.foundFirstElement) {
-          this.foundFirstElement = true;
-          return this.addRef(element, this.firstElementRef);
-        }
-
-        if (isLastElement) {
-          return this.addRef(element, this.lastElementRef);
-        }
-
-        return element;
-      } else if (hasChildren) {
-        const updatedChildren = this.addRefToFirstAndLastElement(element.props.children, minTabIndex, maxTabIndex);
-        return React.cloneElement(element, {}, updatedChildren);
+      if (isLastElement) {
+        return React.cloneElement(element, { ref: lastRef });
       }
 
       return element;
-    });
+    } else if (hasChildren) {
+      const updatedChildren = addRefsToElements(
+        element.props.children,
+        minTabIndex,
+        maxTabIndex,
+        firstRef,
+        lastRef,
+        state,
+      );
+      return React.cloneElement(element, {}, updatedChildren);
+    }
 
-  /*
-   * addRef = (node, elementRef) => (
-   *   <RootRef rootRef={elementRef}>{React.cloneElement(node, { ref: elementRef })}</RootRef>
-   * );
-   */
+    return element;
+  });
 
-  addRef = (node: React.ReactElement, elementRef: React.RefObject<HTMLElement>) => {
-    return React.cloneElement(node, { ref: elementRef });
+const TabPressWrapper: React.FC<Props> = ({ children = null }) => {
+  const firstElementRef = useRef<HTMLElement>(null);
+  const lastElementRef = useRef<HTMLElement>(null);
+  const tabIndexCountRef = useRef<number>(0);
+  const [childrenWithRef, setChildrenWithRef] = useState<React.ReactNode>(null);
+
+  useEffect(() => {
+    const minTabIndex = reduceChildren(children, (tabIndex, minTabIndex) => tabIndex < minTabIndex, null);
+    const maxTabIndex = reduceChildren(children, (tabIndex, maxTabIndex) => tabIndex > maxTabIndex, null);
+
+    tabIndexCountRef.current = countTabIndexElements(children);
+
+    const refState = { foundFirstElement: false };
+    setChildrenWithRef(
+      addRefsToElements(children, minTabIndex, maxTabIndex, firstElementRef, lastElementRef, refState),
+    );
+  }, [children]);
+
+  const handleTab = (key: string, event: KeyboardEvent) => {
+    const { activeElement } = document;
+    const isFirstElement = activeElement === firstElementRef.current;
+    const isLastElement = activeElement === lastElementRef.current;
+    const isSingleElement = tabIndexCountRef.current === 1;
+
+    if ((isFirstElement && isSingleElement) || (isLastElement && key === 'tab')) {
+      event.preventDefault();
+      event.stopPropagation();
+      firstElementRef.current.focus();
+    } else if (isFirstElement && key === 'shift+tab') {
+      event.preventDefault();
+      event.stopPropagation();
+      lastElementRef.current.focus();
+    }
   };
 
-  render() {
-    const { childrenWithRef } = this.state;
+  return (
+    <KeyboardEventHandler
+      id="KeyboardEventHandler"
+      handleKeys={['tab', 'shift+tab']}
+      onKeyEvent={handleTab}
+      handleFocusableElements
+    >
+      {childrenWithRef}
+    </KeyboardEventHandler>
+  );
+};
 
-    return (
-      <KeyboardEventHandler
-        id="KeyboardEventHandler"
-        handleKeys={['tab', 'shift+tab']}
-        onKeyEvent={this.handleTab}
-        handleFocusableElements
-      >
-        {childrenWithRef}
-      </KeyboardEventHandler>
-    );
-  }
-}
+TabPressWrapper.displayName = 'TabPressWrapper';
 
 export default TabPressWrapper;
