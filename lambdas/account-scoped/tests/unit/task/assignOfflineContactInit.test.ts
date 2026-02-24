@@ -14,7 +14,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { assignOfflineContactInitHandler } from '../../../src/hrm/assignOfflineContactInit';
+import { assignOfflineContactInitHandler } from '../../../src/task/assignOfflineContactInit';
 import {
   getTwilioClient,
   getWorkspaceSid,

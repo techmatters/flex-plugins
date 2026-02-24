@@ -14,7 +14,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { assignOfflineContactResolveHandler } from '../../../src/hrm/assignOfflineContactResolve';
+import { assignOfflineContactResolveHandler } from '../../../src/task/assignOfflineContactResolve';
 import { getTwilioClient, getWorkspaceSid } from '@tech-matters/twilio-configuration';
 import { isErr, isOk } from '../../../src/Result';
 import { FlexValidatedHttpRequest } from '../../../src/validation/flexToken';
