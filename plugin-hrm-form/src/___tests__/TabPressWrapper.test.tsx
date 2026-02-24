@@ -15,7 +15,7 @@
  */
 
 import * as React from 'react';
-import { act, getByTestId, render, screen, fireEvent } from '@testing-library/react';
+import { getByTestId, render, screen, fireEvent } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import '@testing-library/jest-dom/extend-expect';
 
@@ -248,8 +248,6 @@ test('<TabPressWrapper> lastElement focused and hit "tab"', async () => {
     </TabPressWrapper>,
   );
 
-  await act(() => Promise.resolve());
-
   const lastElement = getByTestId(container, 'secondElement');
   lastElement.focus();
   expect(lastElement).toHaveFocus();
@@ -268,8 +266,6 @@ test('<TabPressWrapper> firstElement focused and hit "shift+tab"', async () => {
     </TabPressWrapper>,
   );
 
-  await act(() => Promise.resolve());
-
   const firstElement = getByTestId(container, 'firstElement');
   firstElement.focus();
   expect(firstElement).toHaveFocus();
@@ -287,8 +283,6 @@ test('<TabPressWrapper> single element hit "tab"', async () => {
     </TabPressWrapper>,
   );
 
-  await act(() => Promise.resolve());
-
   const singleElement = getByTestId(container, 'singleElement');
   singleElement.focus();
   expect(singleElement).toHaveFocus();
@@ -304,8 +298,6 @@ test('<TabPressWrapper> single element hit "shift+tab"', async () => {
       <button id="singleElement" data-testid="singleElement" type="button" tabIndex={2} />
     </TabPressWrapper>,
   );
-
-  await act(() => Promise.resolve());
 
   const singleElement = getByTestId(container, 'singleElement');
   singleElement.focus();

@@ -34,7 +34,7 @@
  *    b) If it's on the firstElement and listens a 'shif+tab', it focus the lastElement
  *    c) Otherwise, it lets the browser handle it
  */
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useMemo, useRef } from 'react';
 import KeyboardEventHandler from 'react-keyboard-event-handler';
 
 import { isNullOrUndefined } from '../utils/checkers';
@@ -133,18 +133,16 @@ const TabPressWrapper: React.FC<Props> = ({ children = null }) => {
   const firstElementRef = useRef<HTMLElement>(null);
   const lastElementRef = useRef<HTMLElement>(null);
   const tabIndexCountRef = useRef<number>(0);
-  const [childrenWithRef, setChildrenWithRef] = useState<React.ReactNode>(null);
 
-  useEffect(() => {
+  const childrenWithRef = useMemo(() => {
     const minTabIndex = reduceChildren(children, (tabIndex, minTabIndex) => tabIndex < minTabIndex, null);
     const maxTabIndex = reduceChildren(children, (tabIndex, maxTabIndex) => tabIndex > maxTabIndex, null);
 
     tabIndexCountRef.current = countTabIndexElements(children);
 
     const refState = { foundFirstElement: false };
-    setChildrenWithRef(
-      addRefsToElements(children, minTabIndex, maxTabIndex, firstElementRef, lastElementRef, refState),
-    );
+    return addRefsToElements(children, minTabIndex, maxTabIndex, firstElementRef, lastElementRef, refState);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [children]);
 
   const handleTab = (key: string, event: KeyboardEvent) => {
