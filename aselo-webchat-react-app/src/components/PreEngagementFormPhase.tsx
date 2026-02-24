@@ -19,10 +19,9 @@ import { FormEvent } from 'react';
 import { Button } from '@twilio-paste/core/button';
 import { useDispatch, useSelector } from 'react-redux';
 import { Text } from '@twilio-paste/core/text';
-import { FormProvider, useForm } from 'react-hook-form';
 
 import { sessionDataHandler } from '../sessionDataHandler';
-import { addNotification, changeEngagementPhase, updatePreEngagementData } from '../store/actions/genericActions';
+import { addNotification, changeEngagementPhase, updatePreEngagementDataField } from '../store/actions/genericActions';
 import { initSession } from '../store/actions/initActions';
 import { AppState, EngagementPhase } from '../store/definitions';
 import { Header } from './Header';
@@ -35,14 +34,15 @@ import { generateForm } from './forms/formInputs';
 export const PreEngagementFormPhase = () => {
   const { preEngagementData } = useSelector((state: AppState) => state.session ?? {});
   const { preEngagementFormDefinition } = useSelector((state: AppState) => state.config);
-  const methods = useForm({ defaultValues: preEngagementData, mode: 'onChange' });
   const dispatch = useDispatch();
 
   const { friendlyName } = preEngagementData;
 
-  const handleChange = () => {
-    const formData = methods.getValues();
-    dispatch(updatePreEngagementData(formData));
+  const getItem = (inputName: string) => preEngagementData[inputName] ?? {};
+  const setItemValue = (payload: { name: string; value: string | boolean }) =>
+    dispatch(updatePreEngagementDataField(payload));
+  const handleChange: (inputName: string) => React.ChangeEventHandler<HTMLInputElement> = inputName => e => {
+    setItemValue({ name: inputName, value: e.target.value });
   };
 
   const handleSubmit = async (e: FormEvent) => {
@@ -78,21 +78,18 @@ export const PreEngagementFormPhase = () => {
     <>
       <Header />
       <NotificationBar />
-      <FormProvider {...methods}>
-        <Box as="form" data-test="pre-engagement-chat-form" onSubmit={handleSubmit} {...formStyles}>
-          <Text {...titleStyles} as="h3">
-            <LocalizedTemplate code={titleText} />
-          </Text>
-          {/* <Text {...introStyles} as="p"> */}
-          {/*   We&#39;re here to help. Please give us some info to get started. */}
-          {/* </Text> */}
-          <Box {...fieldStyles}>{generateForm({ form: preEngagementFormDefinition.fields, handleChange })}</Box>
-
-          <Button variant="primary" type="submit" data-test="pre-engagement-start-chat-button">
-            <LocalizedTemplate code={submitText} />
-          </Button>
+      <Box as="form" data-test="pre-engagement-chat-form" onSubmit={handleSubmit} {...formStyles}>
+        <Text {...titleStyles} as="h3">
+          <LocalizedTemplate code={titleText} />
+        </Text>
+        <Box {...fieldStyles}>
+          {generateForm({ form: preEngagementFormDefinition.fields, handleChange, getItem, setItemValue })}
         </Box>
-      </FormProvider>
+
+        <Button variant="primary" type="submit" data-test="pre-engagement-start-chat-button">
+          <LocalizedTemplate code={submitText} />
+        </Button>
+      </Box>
     </>
   );
 };

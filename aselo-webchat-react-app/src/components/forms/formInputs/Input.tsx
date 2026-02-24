@@ -16,44 +16,45 @@
 
 /* eslint-disable react/require-default-props */
 import React from 'react';
-import { UseControllerOptions } from 'react-hook-form';
 import { Box, Input, Label } from '@twilio-paste/core';
+import { FormInputType, PreEngagementFormItem } from 'hrm-form-definitions';
 
 import LocalizedTemplate from '../../../localization/LocalizedTemplate';
-import { useFormController } from './useFormController';
+import { PreEngagementDataItem } from '../../../store/definitions';
 
 type OwnProps = {
-  label: string;
-  placeholder?: string;
-  handleChange: () => void;
+  definition: PreEngagementFormItem & { type: FormInputType.Input | FormInputType.Email };
+  pattern?: RegExp;
+  getItem: (inptuName: string) => PreEngagementDataItem;
+  handleChange: (inputName: string) => React.ChangeEventHandler<HTMLInputElement>;
   defaultValue?: string;
 };
 
-type Props = OwnProps & UseControllerOptions;
+type Props = OwnProps;
 
-const InputText: React.FC<Props> = ({ name, label, placeholder, rules, handleChange, defaultValue }) => {
-  const { field, isRequired, error, errorMessage } = useFormController({
-    name,
-    rules,
-    defaultValue,
-  });
+const InputText: React.FC<Props> = ({ definition, handleChange, getItem, defaultValue }) => {
+  const { name, label, placeholder, required } = definition;
+  const { error } = getItem(name);
 
   return (
     <Box style={{ marginBottom: '20px' }}>
       <Label htmlFor={name}>
         <span style={{ display: 'block', marginBottom: '10px' }}>
-          <LocalizedTemplate code={label} /> {isRequired && '*'}
+          <LocalizedTemplate code={label} /> {Boolean(required) && '*'}
         </span>
         <Input
-          {...field}
           type="text"
           id={name}
           placeholder={placeholder}
           hasError={Boolean(error)}
-          onBlur={handleChange}
+          onChange={handleChange(name)}
         />
       </Label>
-      {error && <span style={{ color: 'rgb(203, 50, 50)' }}>{errorMessage}</span>}
+      {error && (
+        <span style={{ color: 'rgb(203, 50, 50)' }}>
+          <LocalizedTemplate code={error} />
+        </span>
+      )}
     </Box>
   );
 };

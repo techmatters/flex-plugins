@@ -16,43 +16,29 @@
 
 /* eslint-disable react/require-default-props */
 import React, { useEffect, useRef } from 'react';
-import { useFormContext, UseControllerOptions } from 'react-hook-form';
 import { Box, Label, Select as SelectInput } from '@twilio-paste/core';
+import { FormInputType, PreEngagementFormItem } from 'hrm-form-definitions';
 
 import LocalizedTemplate from '../../../localization/LocalizedTemplate';
-import { useFormController } from './useFormController';
-
-type Options = {
-  [key: string]: {
-    value: any;
-    label: string;
-  }[];
-};
+import { PreEngagementDataItem } from '../../../store/definitions';
 
 type OwnProps = {
-  label: string;
-  dependsOn: string;
-  options: Options;
-  handleChange: () => void;
+  definition: PreEngagementFormItem & { type: FormInputType.DependentSelect };
+  getItem: (inptuName: string) => PreEngagementDataItem;
+  setItemValue: (payload: { name: string; value: string | boolean }) => void;
+  handleChange: (inputName: string) => React.ChangeEventHandler<HTMLSelectElement>;
+  defaultValue?: string;
 };
 
-type Props = OwnProps & UseControllerOptions;
+type Props = OwnProps;
 
-const DependentSelect: React.FC<Props> = ({ name, label, rules, dependsOn, options, handleChange }) => {
-  const { field, isRequired, error, errorMessage } = useFormController({
-    name,
-    rules,
-  });
-  const {
-    watch,
-    setValue,
-    formState: { dirtyFields },
-  } = useFormContext();
-  const currentValue = watch(name);
-  const dependsOnValue = watch(dependsOn);
-  const prevValueRef = useRef();
+const DependentSelect: React.FC<Props> = ({ getItem, setItemValue, definition, handleChange }) => {
+  const { dependsOn, name, label, required, options } = definition;
+  const thisItem = getItem(name);
+  // const currentValue = thisItem.value;
+  const dependsOnValue = getItem(dependsOn).value as string;
+  const prevValueRef = useRef<string | boolean>();
 
-  const isDirty = currentValue || dirtyFields[name];
   const shouldClear = prevValueRef.current && dependsOnValue !== prevValueRef.current;
 
   useEffect(() => {
@@ -62,10 +48,9 @@ const DependentSelect: React.FC<Props> = ({ name, label, rules, dependsOn, optio
   // Resets <select> when dependsOn value changes
   useEffect(() => {
     if (shouldClear) {
-      setValue(name, '', { shouldValidate: isDirty }); // isDirty here prevents displaying errors too soon
-      handleChange();
+      setItemValue({ name, value: '' });
     }
-  }, [name, dependsOnValue, shouldClear, isDirty, setValue, handleChange]);
+  }, [name, dependsOnValue, shouldClear, setItemValue]);
 
   const buildOptions = () =>
     dependsOnValue && options[dependsOnValue]
@@ -81,13 +66,22 @@ const DependentSelect: React.FC<Props> = ({ name, label, rules, dependsOn, optio
     <Box style={{ marginBottom: '20px' }}>
       <Label htmlFor={name}>
         <span style={{ display: 'block', marginBottom: '10px' }}>
-          <LocalizedTemplate code={label} /> {isRequired && '*'}
+          <LocalizedTemplate code={label} /> {Boolean(required) && '*'}
         </span>
-        <SelectInput {...field} id={name} hasError={Boolean(error)} onBlur={handleChange} disabled={!dependsOnValue}>
+        <SelectInput
+          id={name}
+          hasError={Boolean(thisItem.error)}
+          onBlur={handleChange(name)}
+          disabled={!dependsOnValue}
+        >
           {buildOptions()}
         </SelectInput>
       </Label>
-      {error && <span style={{ color: 'rgb(203, 50, 50)' }}>{errorMessage}</span>}
+      {thisItem.error && (
+        <span style={{ color: 'rgb(203, 50, 50)' }}>
+          <LocalizedTemplate code={thisItem.error} />
+        </span>
+      )}
     </Box>
   );
 };

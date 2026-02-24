@@ -71,10 +71,7 @@ export const SessionReducer: Reducer<SessionState, AnyAction> = (
     case ACTION_UPDATE_PRE_ENGAGEMENT_DATA: {
       return {
         ...state,
-        preEngagementData: {
-          ...state.preEngagementData,
-          ...action.payload.preEngagementData,
-        },
+        preEngagementData: action.payload,
       };
     }
 

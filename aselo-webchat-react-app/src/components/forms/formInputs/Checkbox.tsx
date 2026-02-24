@@ -16,45 +16,47 @@
 
 /* eslint-disable react/require-default-props */
 import React from 'react';
-import { UseControllerOptions } from 'react-hook-form';
 import { Box, Checkbox as CheckboxInput, Label } from '@twilio-paste/core';
+import { FormInputType, PreEngagementFormItem } from 'hrm-form-definitions';
 
 import LocalizedTemplate from '../../../localization/LocalizedTemplate';
-import { useFormController } from './useFormController';
+import { PreEngagementDataItem } from '../../../store/definitions';
 
 type OwnProps = {
-  label: string;
-  handleChange: () => void;
-  defaultValue?: boolean;
+  definition: PreEngagementFormItem & { type: FormInputType.Checkbox };
+  getItem: (inptuName: string) => PreEngagementDataItem;
+  handleChange: (inputName: string) => React.ChangeEventHandler<HTMLInputElement>;
+  defaultValue?: string;
 };
 
-type Props = OwnProps & UseControllerOptions;
+type Props = OwnProps;
 
-const Checkbox: React.FC<Props> = ({ name, label, rules, handleChange, defaultValue }) => {
-  const { field, isRequired, error, errorMessage } = useFormController({
-    name,
-    rules,
-    defaultValue: Boolean(defaultValue),
-  });
+const Checkbox: React.FC<Props> = ({ definition, getItem, handleChange, defaultValue }) => {
+  const { required, name, label, initialChecked } = definition;
+  const { error } = getItem(name);
 
   return (
     <Box style={{ marginBottom: '20px' }}>
       <Label htmlFor={name}>
         <CheckboxInput
-          {...field}
           id={name}
           hasError={Boolean(error)}
-          onBlur={handleChange}
-          onChange={(e: any) => field.onChange(e.target.checked)}
+          onChange={handleChange(name)}
+          // onChange={(e: any) => field.onChange(e.target.checked)}
           // ref={inputRef as any}
           type="checkbox"
-          checked={field.value}
+          defaultChecked={Boolean(defaultValue || initialChecked)}
+          // checked={field.value}
           css={{ display: 'flex', alignItems: 'center' }}
         >
-          <LocalizedTemplate code={label} /> {isRequired && '*'}
+          <LocalizedTemplate code={label} /> {Boolean(required) && '*'}
         </CheckboxInput>
       </Label>
-      {error && <span style={{ color: 'rgb(203, 50, 50)' }}>{errorMessage}</span>}
+      {error && (
+        <span style={{ color: 'rgb(203, 50, 50)' }}>
+          <LocalizedTemplate code={error} />
+        </span>
+      )}
     </Box>
   );
 };

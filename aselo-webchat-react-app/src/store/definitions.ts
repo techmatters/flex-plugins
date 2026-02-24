@@ -42,7 +42,8 @@ export type ChatState = {
   participantNames?: { [key: string]: string };
 };
 
-export type PreEngagementData = { [key: string]: string };
+export type PreEngagementDataItem = { value: string | boolean; error: string | null; dirty: boolean };
+export type PreEngagementData = { [key: string]: PreEngagementDataItem };
 
 export type SessionState = {
   currentPhase: EngagementPhase;

@@ -16,27 +16,24 @@
 
 /* eslint-disable react/require-default-props */
 import React from 'react';
-import { UseControllerOptions } from 'react-hook-form';
 import { Box, Label, Select as SelectInput } from '@twilio-paste/core';
+import { FormInputType, PreEngagementFormItem } from 'hrm-form-definitions';
 
 import LocalizedTemplate from '../../../localization/LocalizedTemplate';
-import { useFormController } from './useFormController';
-
-type Option = {
-  value: any;
-  label: string;
-};
+import { PreEngagementDataItem } from '../../../store/definitions';
 
 type OwnProps = {
-  label: string;
-  options: Option[];
+  definition: PreEngagementFormItem & { type: FormInputType.Select };
+  getItem: (inptuName: string) => PreEngagementDataItem;
+  handleChange: (inputName: string) => React.ChangeEventHandler<HTMLSelectElement>;
   defaultValue?: string;
-  handleChange: () => void;
 };
 
-type Props = OwnProps & UseControllerOptions;
+type Props = OwnProps;
 
-const Select: React.FC<Props> = ({ name, label, rules, options, defaultValue, handleChange }) => {
+const Select: React.FC<Props> = ({ definition, getItem, defaultValue, handleChange }) => {
+  const { name, label, required, options } = definition;
+  const { error } = getItem(name);
   const buildOptions = () =>
     options.map(option => (
       <option key={option.value} value={option.value}>
@@ -44,23 +41,21 @@ const Select: React.FC<Props> = ({ name, label, rules, options, defaultValue, ha
       </option>
     ));
 
-  const { field, isRequired, error, errorMessage } = useFormController({
-    name,
-    rules,
-    defaultValue,
-  });
-
   return (
     <Box style={{ marginBottom: '20px' }}>
       <Label htmlFor={name}>
         <span style={{ display: 'block', marginBottom: '10px' }}>
-          <LocalizedTemplate code={label} /> {isRequired && '*'}
+          <LocalizedTemplate code={label} /> {Boolean(required) && '*'}
         </span>
-        <SelectInput {...field} id={name} hasError={Boolean(error)} onBlur={handleChange}>
+        <SelectInput id={name} hasError={Boolean(error)} onChange={handleChange(name)} defaultValue={defaultValue}>
           {buildOptions()}
         </SelectInput>
       </Label>
-      {error && <span style={{ color: 'rgb(203, 50, 50)' }}>{errorMessage}</span>}
+      {error && (
+        <span style={{ color: 'rgb(203, 50, 50)' }}>
+          <LocalizedTemplate code={error} />
+        </span>
+      )}
     </Box>
   );
 };
