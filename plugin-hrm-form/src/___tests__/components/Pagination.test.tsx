@@ -14,7 +14,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import React from 'react';
+import * as React from 'react';
 import renderer from 'react-test-renderer';
 import { StorelessThemeProvider } from '@twilio/flex-ui';
 import { range } from 'lodash';
