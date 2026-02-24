@@ -48,12 +48,12 @@ const updateAndCompleteTask = async (
     .tasks(event.taskSid)
     .fetch();
 
-  console.info(
+  console.debug(
     `Updating attributes for task ${event.taskSid} in workspace ${workspaceSid}`,
   );
   await task.update({ attributes: event.finalTaskAttributes });
 
-  console.info(`Completing task ${event.taskSid} in workspace ${workspaceSid}`);
+  console.debug(`Completing task ${event.taskSid} in workspace ${workspaceSid}`);
   const completedTask = await task.update({ assignmentStatus: 'completed' });
   console.info(`Task ${event.taskSid} completed successfully`);
 

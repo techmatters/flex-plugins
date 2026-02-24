@@ -50,9 +50,9 @@ const wait = (ms: number): Promise<void> =>
 
 const cleanUpTask = async (task: TaskInstance, message: string) => {
   const { attributes } = task;
-  console.info(`Cleaning up task ${task.sid}: ${message}`);
+  console.debug(`Cleaning up task ${task.sid}: ${message}`);
   const taskRemoved = await task.remove();
-  console.info(`Task ${task.sid} removed: ${taskRemoved}`);
+  console.debug(`Task ${task.sid} removed: ${taskRemoved}`);
 
   return {
     type: 'error',
