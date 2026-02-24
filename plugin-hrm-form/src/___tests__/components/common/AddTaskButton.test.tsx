@@ -14,40 +14,56 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import React from 'react';
+import * as React from 'react';
 import { configureAxe, toHaveNoViolations } from 'jest-axe';
+import { render, screen } from '@testing-library/react';
 import { mount } from 'enzyme';
 import { StorelessThemeProvider, withTheme } from '@twilio/flex-ui';
-import { Provider } from 'react-redux';
-import configureMockStore from 'redux-mock-store';
+import '@testing-library/jest-dom/extend-expect';
 
 import HrmTheme from '../../../styles/HrmTheme';
-import AcceptTransferButton from '../../../components/transfer/AcceptTransferButton';
-import { transferStatuses } from '../../../states/DomainConstants';
+import AddTaskButton from '../../../components/common/AddTaskButton';
+
+const themeConf = {
+  colorTheme: HrmTheme,
+};
 
 expect.extend(toHaveNoViolations);
 
-const mockStore = configureMockStore([]);
-const store = mockStore({});
+test('click on button', () => {
+  const onClick = jest.fn();
 
-const task = {
-  attributes: {
-    transferMeta: { transferStatus: transferStatuses.accepted },
-  },
-};
+  render(
+    <StorelessThemeProvider themeConf={themeConf}>
+      <AddTaskButton disabled={false} label="Testing Button" onClick={onClick} />
+    </StorelessThemeProvider>,
+  );
 
-const Wrapped = withTheme(props => <AcceptTransferButton task={task} {...props} />);
+  screen.getByTestId('AddTaskButton').click();
+
+  expect(onClick).toHaveBeenCalled();
+});
+
+test('click on disabled button', () => {
+  const onClick = jest.fn();
+
+  render(
+    <StorelessThemeProvider themeConf={themeConf}>
+      <AddTaskButton disabled={true} label="Testing Button" onClick={onClick} />
+    </StorelessThemeProvider>,
+  );
+
+  screen.getByTestId('AddTaskButton').click();
+
+  expect(onClick).not.toHaveBeenCalled();
+});
+
+const Wrapped = withTheme(props => <AddTaskButton disabled={false} label="Testing Button" {...props} />);
 
 test('a11y', async () => {
-  const themeConf = {
-    colorTheme: HrmTheme,
-  };
-
   const wrapper = mount(
     <StorelessThemeProvider themeConf={themeConf}>
-      <Provider store={store}>
-        <Wrapped />
-      </Provider>
+      <Wrapped />
     </StorelessThemeProvider>,
   );
 
