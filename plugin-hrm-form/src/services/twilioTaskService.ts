@@ -17,6 +17,7 @@
 import fetchProtectedApi from './fetchProtectedApi';
 import { TaskSID } from '../types/twilio';
 import { FetchOptions } from './fetchApi';
+import { getAseloFeatureFlags } from '../hrmConfig';
 
 /**
  * Creates a new task (offline contact) in behalf of targetSid worker with attributes. Other attributes for routing are added to the task in the implementation of assignOfflineContact serverless function
