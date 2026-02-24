@@ -50,7 +50,7 @@ export const MessagingCanvasPhase = () => {
 
   useEffect(() => {
     dispatch(removeNotification(notifications.failedToInitSessionNotification('ds').id));
-    sendInitialUserQuery(conversation as Conversation, preEngagmentData?.query);
+    sendInitialUserQuery(conversation as Conversation, 'TODO: trigger message');
   }, [dispatch, conversation, preEngagmentData]);
 
   const Wrapper = conversationState === 'active' ? AttachFileDropArea : Fragment;

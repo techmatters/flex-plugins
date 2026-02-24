@@ -158,6 +158,6 @@ describe('Conversation Ended', () => {
     const newChatButton = queryByText(newChatButtonText) as Element;
     fireEvent.click(newChatButton);
 
-    expect(updatePreEngagementDataSpy).toHaveBeenCalledWith({ email: '', name: '', query: '' });
+    expect(updatePreEngagementDataSpy).toHaveBeenCalledWith({});
   });
 });

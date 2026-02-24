@@ -19,93 +19,46 @@ import InputText from './Input';
 import Select from './Select';
 import DependentSelect from './DependentSelect';
 import Checkbox from './Checkbox';
-
-const EMAIL_PATTERN = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i;
+import { PreEngagementDataItem } from '../../../store/definitions';
 
 const generateFormItem = ({
   definition,
   defaultValue = '',
   handleChange,
+  getItem,
+  setItemValue,
 }: {
   definition: PreEngagementFormItem;
   defaultValue?: string | boolean;
-  handleChange: () => void;
+  handleChange: (payload: { name: string; value: string | boolean }) => void;
+  getItem: (inptuName: string) => PreEngagementDataItem;
+  setItemValue: (payload: { name: string; value: string | boolean }) => void;
 }) => {
-  const rules = {
-    required: definition.required,
-    min: definition.min,
-    max: definition.max,
-    maxLength: definition.maxLength,
-    minLength: definition.minLength,
-    validate: definition.validate,
-  };
-
   switch (definition.type) {
     case FormInputType.Input:
-      return (
-        <InputText
-          key={definition.name}
-          name={definition.name}
-          label={definition.label}
-          placeholder={definition.placeholder}
-          rules={rules}
-          handleChange={handleChange}
-        />
-      );
     case FormInputType.Email:
-      return (
-        <InputText
-          key={definition.name}
-          name={definition.name}
-          label={definition.label}
-          placeholder={definition.placeholder}
-          rules={{
-            ...rules,
-            pattern: EMAIL_PATTERN,
-          }}
-          handleChange={handleChange}
-        />
-      );
+      return <InputText key={definition.name} definition={definition} handleChange={handleChange} getItem={getItem} />;
     case FormInputType.Select:
-      return (
-        <Select
-          key={definition.name}
-          name={definition.name}
-          label={definition.label}
-          rules={rules}
-          options={definition.options}
-          defaultValue={defaultValue as string}
-          handleChange={handleChange}
-        />
-      );
+      return <Select key={definition.name} definition={definition} handleChange={handleChange} getItem={getItem} />;
     case FormInputType.DependentSelect:
       return (
         <DependentSelect
           key={definition.name}
-          name={definition.name}
-          label={definition.label}
-          rules={rules}
-          dependsOn={definition.dependsOn}
-          options={definition.options}
+          definition={definition}
           handleChange={handleChange}
+          getItem={getItem}
+          setItemValue={setItemValue}
         />
       );
     case FormInputType.Checkbox:
-      return (
-        <Checkbox
-          key={definition.name}
-          name={definition.name}
-          label={definition.label}
-          rules={rules}
-          handleChange={handleChange}
-        />
-      );
+      return <Checkbox key={definition.name} definition={definition} handleChange={handleChange} getItem={getItem} />;
     default:
       return <div>Invalid form definition: {JSON.stringify(definition)}</div>;
   }
 };
 
-const getDefaultValue = (def: PreEngagementFormItem) => {
+// eslint-disable-next-line
+export const getDefaultValue = (def: PreEngagementFormItem) => {
   switch (def.type) {
     case FormInputType.Input:
     case FormInputType.Email:
@@ -115,19 +68,25 @@ const getDefaultValue = (def: PreEngagementFormItem) => {
     case FormInputType.Checkbox:
       return false;
     default:
-      return undefined;
+      return '';
   }
 };
 
 export const generateForm = ({
   form,
   handleChange,
+  getItem,
+  setItemValue,
 }: {
   form: PreEngagementForm['fields'];
-  handleChange: () => void;
+  handleChange: (payload: { name: string; value: string | boolean }) => void;
+  getItem: (inptuName: string) => PreEngagementDataItem;
+  setItemValue: (payload: { name: string; value: string | boolean }) => void;
 }) => {
   return (
     form &&
-    form.map(definition => generateFormItem({ definition, handleChange, defaultValue: getDefaultValue(definition) }))
+    form.map(definition =>
+      generateFormItem({ definition, handleChange, defaultValue: getDefaultValue(definition), getItem, setItemValue }),
+    )
   );
 };

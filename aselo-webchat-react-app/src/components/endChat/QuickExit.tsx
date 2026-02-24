@@ -47,7 +47,7 @@ export default function QuickExit(props: Props) {
   const handleExit = async () => {
     // Clear chat history and open a new location
     sessionDataHandler.clear();
-    dispatch(updatePreEngagementData({ email: '', name: '', query: '' }));
+    dispatch(updatePreEngagementData({}));
     dispatch(changeEngagementPhase({ phase: EngagementPhase.PreEngagementForm }));
     if (props.action === 'finishTask') {
       // Only if we started a task

@@ -52,7 +52,7 @@ describe('Pre Engagement Form Phase', () => {
   const queryLabelText = 'How can we help you?';
 
   const name = 'John';
-  const email = 'email@email.email';
+  const email = 'email@email.com';
   const query = 'Why is a potato?';
 
   const preloadedState: Partial<AppState> = {
@@ -182,6 +182,12 @@ describe('Pre Engagement Form Phase', () => {
     fireEvent.blur(queryInput);
     fireEvent.submit(formBox);
 
-    expect(fetchAndStoreNewSessionSpy).toHaveBeenCalledWith({ formData: { friendlyName: name, query, email } });
+    expect(fetchAndStoreNewSessionSpy).toHaveBeenCalledWith({
+      formData: {
+        friendlyName: { value: name, error: null, dirty: true },
+        query: { value: query, error: null, dirty: true },
+        email: { value: email, error: null, dirty: true },
+      },
+    });
   });
 });
