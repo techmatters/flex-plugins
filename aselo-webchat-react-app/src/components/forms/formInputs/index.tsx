@@ -30,7 +30,7 @@ const generateFormItem = ({
 }: {
   definition: PreEngagementFormItem;
   defaultValue?: string | boolean;
-  handleChange: (inputName: string) => React.ChangeEventHandler<HTMLElement>;
+  handleChange: (payload: { name: string; value: string | boolean }) => void;
   getItem: (inptuName: string) => PreEngagementDataItem;
   setItemValue: (payload: { name: string; value: string | boolean }) => void;
 }) => {
@@ -79,7 +79,7 @@ export const generateForm = ({
   setItemValue,
 }: {
   form: PreEngagementForm['fields'];
-  handleChange: (inputName: string) => React.ChangeEventHandler<HTMLInputElement>;
+  handleChange: (payload: { name: string; value: string | boolean }) => void;
   getItem: (inptuName: string) => PreEngagementDataItem;
   setItemValue: (payload: { name: string; value: string | boolean }) => void;
 }) => {

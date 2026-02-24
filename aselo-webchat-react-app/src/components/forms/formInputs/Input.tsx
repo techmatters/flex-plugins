@@ -26,7 +26,7 @@ type OwnProps = {
   definition: PreEngagementFormItem & { type: FormInputType.Input | FormInputType.Email };
   pattern?: RegExp;
   getItem: (inptuName: string) => PreEngagementDataItem;
-  handleChange: (inputName: string) => React.ChangeEventHandler<HTMLInputElement>;
+  handleChange: (payload: { name: string; value: string | boolean }) => void;
   defaultValue?: string;
 };
 
@@ -47,7 +47,7 @@ const InputText: React.FC<Props> = ({ definition, handleChange, getItem, default
           id={name}
           placeholder={placeholder}
           hasError={Boolean(error)}
-          onChange={handleChange(name)}
+          onBlur={e => handleChange({ name, value: e.target.value })}
         />
       </Label>
       {error && (

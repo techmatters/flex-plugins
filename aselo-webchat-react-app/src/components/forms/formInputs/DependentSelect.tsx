@@ -26,7 +26,7 @@ type OwnProps = {
   definition: PreEngagementFormItem & { type: FormInputType.DependentSelect };
   getItem: (inptuName: string) => PreEngagementDataItem;
   setItemValue: (payload: { name: string; value: string | boolean }) => void;
-  handleChange: (inputName: string) => React.ChangeEventHandler<HTMLSelectElement>;
+  handleChange: (payload: { name: string; value: string | boolean }) => void;
   defaultValue?: string;
 };
 
@@ -34,8 +34,7 @@ type Props = OwnProps;
 
 const DependentSelect: React.FC<Props> = ({ getItem, setItemValue, definition, handleChange }) => {
   const { dependsOn, name, label, required, options } = definition;
-  const thisItem = getItem(name);
-  // const currentValue = thisItem.value;
+  const { value, error } = getItem(name);
   const dependsOnValue = getItem(dependsOn).value as string;
   const prevValueRef = useRef<string | boolean>();
 
@@ -71,16 +70,17 @@ const DependentSelect: React.FC<Props> = ({ getItem, setItemValue, definition, h
         </span>
         <SelectInput
           id={name}
-          hasError={Boolean(thisItem.error)}
-          onBlur={handleChange(name)}
+          hasError={Boolean(error)}
+          onBlur={e => handleChange({ name, value: e.target.value })}
           disabled={!dependsOnValue}
+          value={value as string}
         >
           {buildOptions()}
         </SelectInput>
       </Label>
-      {thisItem.error && (
+      {error && (
         <span style={{ color: 'rgb(203, 50, 50)' }}>
-          <LocalizedTemplate code={thisItem.error} />
+          <LocalizedTemplate code={error} />
         </span>
       )}
     </Box>

@@ -39,11 +39,10 @@ export const PreEngagementFormPhase = () => {
   const { friendlyName } = preEngagementData;
 
   const getItem = (inputName: string) => preEngagementData[inputName] ?? {};
-  const setItemValue = (payload: { name: string; value: string | boolean }) =>
+  const setItemValue = (payload: { name: string; value: string | boolean }) => {
     dispatch(updatePreEngagementDataField(payload));
-  const handleChange: (inputName: string) => React.ChangeEventHandler<HTMLInputElement> = inputName => e => {
-    setItemValue({ name: inputName, value: e.target.value });
   };
+  const handleChange = setItemValue;
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();

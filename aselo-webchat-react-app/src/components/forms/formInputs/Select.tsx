@@ -25,7 +25,7 @@ import { PreEngagementDataItem } from '../../../store/definitions';
 type OwnProps = {
   definition: PreEngagementFormItem & { type: FormInputType.Select };
   getItem: (inptuName: string) => PreEngagementDataItem;
-  handleChange: (inputName: string) => React.ChangeEventHandler<HTMLSelectElement>;
+  handleChange: (payload: { name: string; value: string | boolean }) => void;
   defaultValue?: string;
 };
 
@@ -47,7 +47,12 @@ const Select: React.FC<Props> = ({ definition, getItem, defaultValue, handleChan
         <span style={{ display: 'block', marginBottom: '10px' }}>
           <LocalizedTemplate code={label} /> {Boolean(required) && '*'}
         </span>
-        <SelectInput id={name} hasError={Boolean(error)} onChange={handleChange(name)} defaultValue={defaultValue}>
+        <SelectInput
+          id={name}
+          hasError={Boolean(error)}
+          onBlur={e => handleChange({ name, value: e.target.value })}
+          defaultValue={defaultValue}
+        >
           {buildOptions()}
         </SelectInput>
       </Label>

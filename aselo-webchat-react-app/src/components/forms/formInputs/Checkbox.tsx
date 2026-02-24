@@ -25,7 +25,7 @@ import { PreEngagementDataItem } from '../../../store/definitions';
 type OwnProps = {
   definition: PreEngagementFormItem & { type: FormInputType.Checkbox };
   getItem: (inptuName: string) => PreEngagementDataItem;
-  handleChange: (inputName: string) => React.ChangeEventHandler<HTMLInputElement>;
+  handleChange: (payload: { name: string; value: string | boolean }) => void;
   defaultValue?: string;
 };
 
@@ -41,12 +41,10 @@ const Checkbox: React.FC<Props> = ({ definition, getItem, handleChange, defaultV
         <CheckboxInput
           id={name}
           hasError={Boolean(error)}
-          onChange={handleChange(name)}
-          // onChange={(e: any) => field.onChange(e.target.checked)}
-          // ref={inputRef as any}
-          type="checkbox"
+          onBlur={e => {
+            handleChange({ name, value: e.target.checked });
+          }}
           defaultChecked={Boolean(defaultValue || initialChecked)}
-          // checked={field.value}
           css={{ display: 'flex', alignItems: 'center' }}
         >
           <LocalizedTemplate code={label} /> {Boolean(required) && '*'}
