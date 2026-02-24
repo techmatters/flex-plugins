@@ -36,31 +36,27 @@
  *    c) Otherwise, it lets the browser handle it
  */
 import React, { Component, createRef } from 'react';
-import PropTypes from 'prop-types';
 import KeyboardEventHandler from 'react-keyboard-event-handler';
 
 import { isNullOrUndefined } from '../utils/checkers';
 
-class TabPressWrapper extends Component {
+type Props = {
+  children?: React.ReactNode;
+};
+
+type State = {
+  tabIndexCount: number;
+  childrenWithRef: React.ReactNode;
+};
+
+class TabPressWrapper extends Component<Props, State> {
   static displayName = 'TabPressWrapper';
 
-  static propTypes = {
-    children: PropTypes.node,
-  };
-
-  static defaultProps = {
+  static defaultProps: Props = {
     children: null,
   };
 
-  constructor(props) {
-    super(props);
-
-    this.firstElementRef = createRef();
-    this.lastElementRef = createRef();
-    this.foundFirstElement = false;
-  }
-
-  state = {
+  state: State = {
     tabIndexCount: 0,
     childrenWithRef: null,
   };
@@ -76,11 +72,17 @@ class TabPressWrapper extends Component {
     this.setState({ childrenWithRef });
   }
 
+  firstElementRef = createRef<HTMLElement>();
+
+  lastElementRef = createRef<HTMLElement>();
+
+  foundFirstElement = false;
+
   incrementTabIndexCount = () => this.setState(prevState => ({ tabIndexCount: prevState.tabIndexCount + 1 }));
 
   isSingleElement = () => this.state.tabIndexCount === 1;
 
-  handleTab = (key, event) => {
+  handleTab = (key: string, event: KeyboardEvent) => {
     const { activeElement } = document;
     const isFirstElement = activeElement === this.firstElementRef.current;
     const isLastElement = activeElement === this.lastElementRef.current;
@@ -94,14 +96,19 @@ class TabPressWrapper extends Component {
     }
   };
 
-  focusElement = (elementRef, event) => {
+  focusElement = (elementRef: React.RefObject<HTMLElement>, event: KeyboardEvent) => {
     event.preventDefault();
     event.stopPropagation();
     elementRef.current.focus();
   };
 
-  reduceChildren = (children, comparator, initialValue) =>
-    React.Children.toArray(children).reduce((result, element) => {
+  reduceChildren = (
+    children: React.ReactNode,
+    comparator: (tabIndex: number, result: number) => boolean,
+    initialValue: number | null,
+  ): number | null =>
+    React.Children.toArray(children).reduce<number | null>((result, element) => {
+      if (!React.isValidElement(element)) return result;
       const hasTabIndex = Boolean(element.props && !isNullOrUndefined(element.props.tabIndex));
       const hasChildren = Boolean(element.props && !isNullOrUndefined(element.props.children));
 
@@ -120,14 +127,17 @@ class TabPressWrapper extends Component {
       return result;
     }, initialValue);
 
-  findMinTabIndex = children => this.reduceChildren(children, (tabIndex, minTabIndex) => tabIndex < minTabIndex, null);
+  findMinTabIndex = (children: React.ReactNode) =>
+    this.reduceChildren(children, (tabIndex, minTabIndex) => tabIndex < minTabIndex, null);
 
-  findMaxTabIndex = children => this.reduceChildren(children, (tabIndex, maxTabIndex) => tabIndex > maxTabIndex, null);
+  findMaxTabIndex = (children: React.ReactNode) =>
+    this.reduceChildren(children, (tabIndex, maxTabIndex) => tabIndex > maxTabIndex, null);
 
-  countTabIndexElements = children => {
+  countTabIndexElements = (children: React.ReactNode): number => {
     let childrenCount = 0;
 
     React.Children.forEach(children, element => {
+      if (!React.isValidElement(element)) return;
       const hasTabIndex = Boolean(element.props && !isNullOrUndefined(element.props.tabIndex));
       const hasChildren = Boolean(element.props && !isNullOrUndefined(element.props.children));
 
@@ -141,8 +151,13 @@ class TabPressWrapper extends Component {
     return childrenCount;
   };
 
-  addRefToFirstAndLastElement = (children, minTabIndex, maxTabIndex) =>
+  addRefToFirstAndLastElement = (
+    children: React.ReactNode,
+    minTabIndex: number | null,
+    maxTabIndex: number | null,
+  ): React.ReactNode =>
     React.Children.map(children, element => {
+      if (!React.isValidElement(element)) return element;
       const hasTabIndex = Boolean(element.props && !isNullOrUndefined(element.props.tabIndex));
       const hasChildren = Boolean(element.props && !isNullOrUndefined(element.props.children));
 
@@ -177,7 +192,7 @@ class TabPressWrapper extends Component {
    * );
    */
 
-  addRef = (node, elementRef) => {
+  addRef = (node: React.ReactElement, elementRef: React.RefObject<HTMLElement>) => {
     return React.cloneElement(node, { ref: elementRef });
   };
 

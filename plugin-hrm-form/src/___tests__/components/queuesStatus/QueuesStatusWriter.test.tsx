@@ -15,7 +15,7 @@
  */
 
 /* eslint-disable camelcase */
-import React from 'react';
+import * as React from 'react';
 import { mount } from 'enzyme';
 
 import { InnerQueuesStatusWriter as QueuesStatusWriter } from '../../../components/queuesStatus/QueuesStatusWriter';
