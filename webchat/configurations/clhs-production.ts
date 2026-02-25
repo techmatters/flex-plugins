@@ -15,7 +15,7 @@
  */
 
 import { Configuration } from '../types';
-import { config as clhsStaging } from './clhs-staging';
+import { config as clhsStaging } from '../configurations/clhs-staging';
 
 const accountSid = 'AC5f192876c9b9fcf526b418786f278ea0';
 const flexFlowSid = 'FO37ff9d5f1bb8f9bd0b2969013c73b54f';
