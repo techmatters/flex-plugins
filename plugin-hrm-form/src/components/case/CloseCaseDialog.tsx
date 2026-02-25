@@ -47,12 +47,16 @@ const CloseCaseDialog: React.FC<Props> = ({ setDialog, handleDontSaveClose, hand
             <Template code="BottomBar-SaveOnClose" />
           </CloseDialogText>
           <Row style={{ justifyContent: 'space-evenly' }}>
-            <SecondaryButton tabIndex={1} onClick={handleDontSaveClose}>
-              <Template code="BottomBar-DontSave" />
-            </SecondaryButton>
-            <PrimaryButton tabIndex={2} onClick={handleSaveUpdate} style={{ margin: '15px 0' }}>
-              <Template code="BottomBar-Save" />
-            </PrimaryButton>
+            <Box tabIndex={1} onClick={handleDontSaveClose}>
+              <SecondaryButton>
+                <Template code="BottomBar-DontSave" />
+              </SecondaryButton>
+            </Box>
+            <Box tabIndex={2} onClick={handleSaveUpdate}>
+              <PrimaryButton style={{ margin: '15px 0' }}>
+                <Template code="BottomBar-Save" />
+              </PrimaryButton>
+            </Box>
           </Row>
           <Box marginBottom="25px" />
         </TabPressWrapper>
