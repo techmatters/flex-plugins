@@ -32,6 +32,10 @@ import {
 } from './actionTypes';
 import { MESSAGES_LOAD_COUNT } from '../../constants';
 import { validateInput } from '../../components/forms/formInputs/validation';
+import { sessionDataHandler } from '../../sessionDataHandler';
+import { getDefaultValue } from '../../components/forms/formInputs';
+import { initSession } from './initActions';
+import { notifications } from '../../notifications';
 
 export function changeEngagementPhase({ phase }: { phase: EngagementPhase }) {
   return {
@@ -134,5 +138,51 @@ export const updatePreEngagementDataField = ({
       type: ACTION_UPDATE_PRE_ENGAGEMENT_DATA,
       payload: data,
     });
+  };
+};
+
+const getInitialItem = (definition: PreEngagementFormItem): PreEngagementDataItem => ({
+  error: null,
+  dirty: false,
+  value: getDefaultValue(definition),
+});
+
+export const submitAndInitChatThunk = (): ThunkAction<void, AppState, unknown, AnyAction> => {
+  return async (dispatch, getState) => {
+    const state = getState();
+    const definition = state.config.preEngagementFormDefinition?.fields || [];
+    const data = definition.reduce<PreEngagementData>((accum, def) => {
+      const item = state.session.preEngagementData[def.name];
+      const error = validateInput({ definition: def, value: item?.value });
+      return { ...accum, [def.name]: { ...(item || getInitialItem(def)), error } };
+    }, {});
+
+    dispatch(updatePreEngagementData(data));
+
+    const hasError = Object.values(data).some(i => Boolean(i.error));
+    if (hasError) {
+      dispatch(addNotification(notifications.formValidationErrorNotification()));
+      return;
+    }
+
+    dispatch(changeEngagementPhase({ phase: EngagementPhase.Loading }));
+    try {
+      const preEngagementDataValues = Object.entries(data).reduce(
+        (accum, [name, { value }]) => ({ ...accum, [name]: value }),
+        {},
+      );
+      const sessionData = await sessionDataHandler.fetchAndStoreNewSession({
+        formData: preEngagementDataValues,
+      });
+      dispatch(
+        initSession({
+          token: sessionData.token,
+          conversationSid: sessionData.conversationSid,
+        }),
+      );
+    } catch (err) {
+      dispatch(addNotification(notifications.failedToInitSessionNotification((err as Error).message)));
+      dispatch(changeEngagementPhase({ phase: EngagementPhase.PreEngagementForm }));
+    }
   };
 };

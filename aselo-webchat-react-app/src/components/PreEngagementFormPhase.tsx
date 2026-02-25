@@ -20,12 +20,9 @@ import { Button } from '@twilio-paste/core/button';
 import { useDispatch, useSelector } from 'react-redux';
 import { Text } from '@twilio-paste/core/text';
 
-import { sessionDataHandler } from '../sessionDataHandler';
-import { addNotification, changeEngagementPhase, updatePreEngagementDataField } from '../store/actions/genericActions';
-import { initSession } from '../store/actions/initActions';
-import { AppState, EngagementPhase } from '../store/definitions';
+import { submitAndInitChatThunk, updatePreEngagementDataField } from '../store/actions/genericActions';
+import { AppState } from '../store/definitions';
 import { Header } from './Header';
-import { notifications } from '../notifications';
 import { NotificationBar } from './NotificationBar';
 import { fieldStyles, titleStyles, formStyles } from './styles/PreEngagementFormPhase.styles';
 import LocalizedTemplate from '../localization/LocalizedTemplate';
@@ -36,8 +33,6 @@ export const PreEngagementFormPhase = () => {
   const { preEngagementFormDefinition } = useSelector((state: AppState) => state.config);
   const dispatch = useDispatch();
 
-  const { friendlyName } = preEngagementData;
-
   const getItem = (inputName: string) => preEngagementData[inputName] ?? {};
   const setItemValue = (payload: { name: string; value: string | boolean }) => {
     dispatch(updatePreEngagementDataField(payload));
@@ -46,24 +41,7 @@ export const PreEngagementFormPhase = () => {
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    dispatch(changeEngagementPhase({ phase: EngagementPhase.Loading }));
-    try {
-      const data = await sessionDataHandler.fetchAndStoreNewSession({
-        formData: {
-          ...preEngagementData,
-          friendlyName,
-        },
-      });
-      dispatch(
-        initSession({
-          token: data.token,
-          conversationSid: data.conversationSid,
-        }),
-      );
-    } catch (err) {
-      dispatch(addNotification(notifications.failedToInitSessionNotification((err as Error).message)));
-      dispatch(changeEngagementPhase({ phase: EngagementPhase.PreEngagementForm }));
-    }
+    await dispatch(submitAndInitChatThunk() as any);
   };
 
   if (!preEngagementFormDefinition) {
