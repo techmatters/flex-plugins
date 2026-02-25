@@ -47,6 +47,8 @@ const CloseCaseDialog: React.FC<Props> = ({ setDialog, handleDontSaveClose, hand
             <Template code="BottomBar-SaveOnClose" />
           </CloseDialogText>
           <Row style={{ justifyContent: 'space-evenly' }}>
+            {/* The design system buttons don't focus when inside a material dialog for some reason, even with tabIndex set
+              The containing Box elements with a tabIndex are, so this is a workaround. */}
             <Box tabIndex={1} onClick={handleDontSaveClose}>
               <SecondaryButton>
                 <Template code="BottomBar-DontSave" />
