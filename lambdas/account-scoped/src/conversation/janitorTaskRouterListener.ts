@@ -88,40 +88,6 @@ const isCleanupCustomChannel = async (
   );
 };
 
-const isDeactivateConversationOrchestration = async (
-  eventType: EventType,
-  client: Twilio,
-  workspaceSid: string,
-  taskSid: string,
-  taskAttributes: { isChatCaptureControl?: boolean },
-) => {
-  console.debug('isDeactivateConversationOrchestration?');
-  if (
-    ![
-      TASK_WRAPUP,
-      TASK_COMPLETED,
-      TASK_DELETED,
-      TASK_SYSTEM_DELETED,
-      TASK_CANCELED,
-    ].includes(eventType as any)
-  ) {
-    console.debug(
-      'isDeactivateConversationOrchestration? - No, wrong event type:',
-      eventType,
-    );
-    return false;
-  }
-
-  if (await isHandledByOtherListener(client, workspaceSid, taskSid, taskAttributes)) {
-    console.debug(
-      'isDeactivateConversationOrchestration? - No, handled by other listener',
-    );
-    return false;
-  }
-
-  return true;
-};
-
 const wait = (ms: number): Promise<void> =>
   new Promise(resolve => {
     setTimeout(resolve, ms);
@@ -204,13 +170,7 @@ const janitorHandler: TaskRouterEventHandler = async (
     }
 
     if (
-      await isDeactivateConversationOrchestration(
-        eventType,
-        client,
-        workspaceSid,
-        taskSid,
-        taskAttributes,
-      )
+      !(await isHandledByOtherListener(client, workspaceSid, taskSid, taskAttributes))
     ) {
       if (!featureFlags.enable_post_survey) {
         console.info(
