@@ -21,8 +21,8 @@ import '../task/addCustomerExternalIdTaskRouterListener';
 import '../task/addInitialHangUpByTaskRouterListener';
 import '../conversation/addTaskSidToChannelAttributesTaskRouterListener';
 import '../conversation/adjustCapacityTaskRouterListener';
+import '../conversation/janitorTaskRouterListener';
 import '../channelCapture/postSurveyListener';
-import '../transfer/janitorTaskRouterListener';
 import '../transfer/transfersTaskRouterListener';
 
 export { handleTaskRouterEvent } from './taskrouterEventHandler';
