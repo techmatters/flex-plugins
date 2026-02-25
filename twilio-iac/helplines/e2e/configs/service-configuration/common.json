@@ -8,7 +8,10 @@
             "enable_csam_report": true,
             "enable_external_transcripts": false,
             "enable_lex": true,
-            "enable_save_insights": true
+            "enable_save_insights": true,
+            "use_twilio_lambda_adjust_capacity": true,
+            "use_twilio_lambda_transfers": true,
+            "use_twilio_lambda_janitor": true
         },
         "permissionConfig": "e2e",
         "previous_ui_version": {
