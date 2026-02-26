@@ -21,13 +21,32 @@ import { isErr, newErr, newOk, Result } from '../Result';
 
 import { createToken, TOKEN_TTL_IN_SECONDS } from './createToken';
 
-const contactWebchatOrchestrator = async (
-  accountSid: AccountSID,
-  addressSid: string,
-  formData: any,
-  customerFriendlyName: string,
-): Promise<Result<HttpError, { conversationSid: ConversationSID; identity: string }>> => {
+const contactWebchatOrchestrator = async ({
+  addressSid,
+  accountSid,
+  formData,
+  customerFriendlyName,
+}: {
+  accountSid: AccountSID;
+  addressSid: string;
+  formData: any;
+  customerFriendlyName: string;
+}): Promise<
+  Result<HttpError, { conversationSid: ConversationSID; identity: string }>
+> => {
   console.info('Calling Webchat Orchestrator');
+  console.info(
+    JSON.stringify(
+      {
+        addressSid,
+        accountSid,
+        formData,
+        customerFriendlyName,
+      },
+      null,
+      2,
+    ),
+  );
   try {
     const client = await getTwilioClient(accountSid);
     const orchestratorResponse = await client.flexApi.v2.webChannels.create({
@@ -102,12 +121,12 @@ export const initWebchatHandler: AccountScopedHandler = async (request, accountS
   let identity;
 
   // Hit Webchat Orchestration endpoint to generate conversation and get customer participant sid
-  const result = await contactWebchatOrchestrator(
+  const result = await contactWebchatOrchestrator({
     accountSid,
-    'IG1ba46f2d6828b42ddd363f5045138044', // Obvs needs to be SSM parameter
-    request.body?.formData,
+    addressSid: 'IG1ba46f2d6828b42ddd363f5045138044', // Obvs needs to be SSM parameter
+    formData: request.body?.formData,
     customerFriendlyName,
-  );
+  });
   if (isErr(result)) {
     return result;
   }
