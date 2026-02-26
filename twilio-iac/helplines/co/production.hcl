@@ -46,7 +46,7 @@ locals {
         }
         chatbot_unique_names = []
       },
-      /*instagram : {
+      instagram : {
         messaging_mode   = "conversations"
         channel_type     = "custom"
         contact_identity = "instagram"
@@ -57,7 +57,7 @@ locals {
           chat_blocked_message  = "Lamentablemente el número del cual llamas se encuentra bloqueado en nuestro sistema."
         }
         chatbot_unique_names = []
-      },*/
+      },
       voice : {
         channel_type     = "voice"
         contact_identity = ""
