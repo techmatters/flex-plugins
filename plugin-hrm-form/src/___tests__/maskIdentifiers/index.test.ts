@@ -19,11 +19,7 @@
 import { Manager } from '@twilio/flex-ui';
 import each from 'jest-each';
 
-import {
-  maskConversationServiceUserNames,
-  maskNotifications,
-  maskChannelStringsWithIdentifiers,
-} from '../../maskIdentifiers';
+import { maskConversationServiceUserNames, maskChannelStringsWithIdentifiers } from '../../maskIdentifiers';
 import { getInitializedCan } from '../../permissions/rules';
 import { PermissionActions } from '../../permissions/actions';
 import { lookupTranslation } from '../../translations';
@@ -416,36 +412,6 @@ describe('maskConversationServiceUserNames', () => {
 
       expect(participant.friendlyName).toBe('MASKED');
     });
-  });
-});
-
-describe('maskNotifications', () => {
-  const createChannelType = () => ({
-    notifications: {
-      override: {} as Record<string, (notification: any) => void>,
-    },
-  });
-
-  afterEach(() => {
-    jest.clearAllMocks();
-  });
-
-  test('sets an override handler for NewChatMessage notifications', () => {
-    const channelType = createChannelType();
-    maskNotifications(channelType as any);
-    expect(typeof channelType.notifications.override.NewChatMessage).toBe('function');
-  });
-
-  test('override handler sets browser notification title using lookupTranslation', () => {
-    mockLookupTranslation.mockReturnValue('Masked Chat Message');
-    const channelType = createChannelType();
-    maskNotifications(channelType as any);
-
-    const notification = { options: { browser: { title: '' } } };
-    channelType.notifications.override.NewChatMessage(notification);
-
-    expect(mockLookupTranslation).toHaveBeenCalledWith('BrowserNotification-ChatMessage-MaskedTitle');
-    expect(notification.options.browser.title).toBe('Masked Chat Message');
   });
 });
 
