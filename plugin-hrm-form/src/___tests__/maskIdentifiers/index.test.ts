@@ -19,15 +19,42 @@
 import { Manager } from '@twilio/flex-ui';
 import each from 'jest-each';
 
-import { maskConversationServiceUserNames } from '../../maskIdentifiers';
+import {
+  maskConversationServiceUserNames,
+  maskNotifications,
+  maskChannelStringsWithIdentifiers,
+} from '../../maskIdentifiers';
 import { getInitializedCan } from '../../permissions/rules';
 import { PermissionActions } from '../../permissions/actions';
+import { lookupTranslation } from '../../translations';
 
 jest.mock('../../permissions/rules', () => ({
   getInitializedCan: jest.fn(),
 }));
 
+jest.mock('../../translations', () => ({
+  lookupTranslation: jest.fn(),
+}));
+
+jest.mock('@twilio/flex-ui', () => ({
+  Manager: {
+    getInstance: jest.fn(),
+  },
+  NotificationIds: {
+    NewChatMessage: 'NewChatMessage',
+  },
+  DefaultTaskChannels: {
+    ChatSms: { name: 'ChatSms' },
+  },
+  MessageList: {
+    Content: { remove: jest.fn() },
+  },
+}));
+
+const mockLookupTranslation = lookupTranslation as jest.MockedFunction<typeof lookupTranslation>;
+
 const mockGetInitializedCan = getInitializedCan as jest.MockedFunction<typeof getInitializedCan>;
+const mockManagerGetInstance = Manager.getInstance as jest.MockedFunction<typeof Manager.getInstance>;
 
 describe('maskConversationServiceUserNames', () => {
   let mockManager: any;
@@ -388,6 +415,104 @@ describe('maskConversationServiceUserNames', () => {
       storeSubscribeCallback();
 
       expect(participant.friendlyName).toBe('MASKED');
+    });
+  });
+});
+
+describe('maskNotifications', () => {
+  const createChannelType = () => ({
+    notifications: {
+      override: {} as Record<string, (notification: any) => void>,
+    },
+  });
+
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
+  test('sets an override handler for NewChatMessage notifications', () => {
+    const channelType = createChannelType();
+    maskNotifications(channelType as any);
+    expect(typeof channelType.notifications.override.NewChatMessage).toBe('function');
+  });
+
+  test('override handler sets browser notification title using lookupTranslation', () => {
+    mockLookupTranslation.mockReturnValue('Masked Chat Message');
+    const channelType = createChannelType();
+    maskNotifications(channelType as any);
+
+    const notification = { options: { browser: { title: '' } } };
+    channelType.notifications.override.NewChatMessage(notification);
+
+    expect(mockLookupTranslation).toHaveBeenCalledWith('BrowserNotification-ChatMessage-MaskedTitle');
+    expect(notification.options.browser.title).toBe('Masked Chat Message');
+  });
+});
+
+describe('maskChannelStringsWithIdentifiers', () => {
+  let mockCan: jest.Mock;
+
+  const createChannelType = (name = 'default') => ({
+    name,
+    templates: {
+      IncomingTaskCanvas: { firstLine: '' },
+      TaskListItem: { firstLine: '', secondLine: '' },
+      CallCanvas: { firstLine: '' },
+      TaskCanvasHeader: { title: '' },
+      Supervisor: {
+        TaskCanvasHeader: { title: '' },
+        TaskOverviewCanvas: { firstLine: '' },
+      },
+      TaskCard: { firstLine: '' },
+    },
+    notifications: {
+      override: {} as Record<string, (notification: any) => void>,
+    },
+  });
+
+  beforeEach(() => {
+    mockCan = jest.fn();
+    mockGetInitializedCan.mockReturnValue(mockCan);
+    mockManagerGetInstance.mockReturnValue({ strings: { MaskIdentifiers: 'MASKED' } } as any);
+    mockLookupTranslation.mockReturnValue('Masked Title');
+  });
+
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
+  describe('when VIEW_IDENTIFIERS permission is denied', () => {
+    beforeEach(() => {
+      mockCan.mockImplementation((action: string) => action !== PermissionActions.VIEW_IDENTIFIERS);
+    });
+
+    test('sets notification override for NewChatMessage', () => {
+      const channelType = createChannelType();
+      maskChannelStringsWithIdentifiers(channelType as any);
+      expect(typeof channelType.notifications.override.NewChatMessage).toBe('function');
+    });
+
+    test('notification override handler sets browser title using lookupTranslation', () => {
+      const channelType = createChannelType();
+      maskChannelStringsWithIdentifiers(channelType as any);
+
+      const notification = { options: { browser: { title: '' } } };
+      channelType.notifications.override.NewChatMessage(notification);
+
+      expect(mockLookupTranslation).toHaveBeenCalledWith('BrowserNotification-ChatMessage-MaskedTitle');
+      expect(notification.options.browser.title).toBe('Masked Title');
+    });
+  });
+
+  describe('when VIEW_IDENTIFIERS permission is granted', () => {
+    beforeEach(() => {
+      mockCan.mockReturnValue(true);
+    });
+
+    test('does not set notification override', () => {
+      const channelType = createChannelType();
+      maskChannelStringsWithIdentifiers(channelType as any);
+      expect(channelType.notifications.override.NewChatMessage).toBeUndefined();
     });
   });
 });
