@@ -33,6 +33,12 @@ import { getInitializedCan } from '../permissions/rules';
 import { PermissionActions } from '../permissions/actions';
 import { lookupTranslation } from '../translations';
 
+const maskNotifications = (channelType: TaskChannelDefinition) => {
+  channelType.notifications.override[NotificationIds.NewChatMessage] = notification => {
+    notification.options.browser.title = lookupTranslation('BrowserNotification-ChatMessage-MaskedTitle');
+  };
+};
+
 // Mask identifiers in the channel strings
 export const maskChannelStringsWithIdentifiers = (channelType: TaskChannelDefinition) => {
   const can = getInitializedCan();
@@ -83,12 +89,6 @@ export const maskChannelStringsWithIdentifiers = (channelType: TaskChannelDefini
 
   Supervisor.TaskOverviewCanvas.firstLine = 'MaskIdentifiers';
   maskNotifications(channelType);
-};
-
-export const maskNotifications = (channelType: TaskChannelDefinition) => {
-  channelType.notifications.override[NotificationIds.NewChatMessage] = notification => {
-    notification.options.browser.title = lookupTranslation('BrowserNotification-ChatMessage-MaskedTitle');
-  };
 };
 
 // Mask identifiers in the manager strings & messaging canvas
