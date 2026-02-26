@@ -94,3 +94,27 @@ export const getChannelStudioFlowSid = (
   getSsmParameter(
     `/${process.env.NODE_ENV}/twilio/${accountSid}/${channelName}_studio_flow_sid`,
   );
+
+export const getTelegramBotApiSecretToken = (accountSid: AccountSID): Promise<string> =>
+  getSsmParameter(
+    `/${process.env.NODE_ENV}/twilio/${accountSid}/telegram_bot_api_secret_token`,
+  );
+
+export const getTelegramFlexBotToken = (accountSid: AccountSID): Promise<string> =>
+  getSsmParameter(
+    `/${process.env.NODE_ENV}/twilio/${accountSid}/telegram_flex_bot_token`,
+  );
+
+export const getModicaAppName = (accountSid: AccountSID): Promise<string> =>
+  getSsmParameter(`/${process.env.NODE_ENV}/twilio/${accountSid}/modica_app_name`);
+
+export const getModicaAppPassword = (accountSid: AccountSID): Promise<string> =>
+  getSsmParameter(`/${process.env.NODE_ENV}/twilio/${accountSid}/modica_app_password`);
+
+export const getLineChannelSecret = (accountSid: AccountSID): Promise<string> =>
+  getSsmParameter(`/${process.env.NODE_ENV}/twilio/${accountSid}/line_channel_secret`);
+
+export const getLineChannelAccessToken = (accountSid: AccountSID): Promise<string> =>
+  getSsmParameter(
+    `/${process.env.NODE_ENV}/twilio/${accountSid}/line_channel_access_token`,
+  );
