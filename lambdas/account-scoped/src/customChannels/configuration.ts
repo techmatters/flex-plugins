@@ -96,14 +96,10 @@ export const getChannelStudioFlowSid = (
   );
 
 export const getTelegramBotApiSecretToken = (accountSid: AccountSID): Promise<string> =>
-  getSsmParameter(
-    `/${process.env.NODE_ENV}/telegram/${accountSid}/bot_api_secret_token`,
-  );
+  getSsmParameter(`/${process.env.NODE_ENV}/telegram/${accountSid}/bot_api_secret_token`);
 
 export const getTelegramFlexBotToken = (accountSid: AccountSID): Promise<string> =>
-  getSsmParameter(
-    `/${process.env.NODE_ENV}/telegram/${accountSid}/flex_bot_token`,
-  );
+  getSsmParameter(`/${process.env.NODE_ENV}/telegram/${accountSid}/flex_bot_token`);
 
 export const getModicaAppName = (accountSid: AccountSID): Promise<string> =>
   getSsmParameter(`/${process.env.NODE_ENV}/modica/${accountSid}/app_name`);
@@ -115,6 +111,4 @@ export const getLineChannelSecret = (accountSid: AccountSID): Promise<string> =>
   getSsmParameter(`/${process.env.NODE_ENV}/line/${accountSid}/channel_secret`);
 
 export const getLineChannelAccessToken = (accountSid: AccountSID): Promise<string> =>
-  getSsmParameter(
-    `/${process.env.NODE_ENV}/line/${accountSid}/channel_access_token`,
-  );
+  getSsmParameter(`/${process.env.NODE_ENV}/line/${accountSid}/channel_access_token`);
