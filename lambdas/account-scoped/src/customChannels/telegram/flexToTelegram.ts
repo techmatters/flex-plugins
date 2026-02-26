@@ -78,7 +78,7 @@ export const flexToTelegramHandler: AccountScopedHandler = async (
   accountSid: AccountSID,
 ) => {
   console.info('==== FlexToTelegram handler ====');
-  console.info('Received event:', event);
+  console.debug('FlexToTelegram: received event:', event);
 
   if (!recipientId) {
     return newMissingParameterResult('recipientId');
@@ -99,12 +99,14 @@ export const flexToTelegramHandler: AccountScopedHandler = async (
 
   const telegramFlexBotToken = await getTelegramFlexBotToken(accountSid);
   const client = await getTwilioClient(accountSid);
+  console.debug('FlexToTelegram: redirecting message to recipientId:', recipientId);
   result = await redirectConversationMessageToExternalChat(client, {
     event,
     recipientId,
     sendExternalMessage: sendTelegramMessage(telegramFlexBotToken),
   });
 
+  console.debug('FlexToTelegram: result status:', result.status);
   switch (result.status) {
     case 'sent':
       return newOk(result.response);

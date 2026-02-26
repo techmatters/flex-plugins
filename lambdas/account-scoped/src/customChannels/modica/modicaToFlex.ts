@@ -34,7 +34,7 @@ export const modicaToFlexHandler: AccountScopedHandler = async (
   accountSid: AccountSID,
 ) => {
   console.info('==== ModicaToFlex handler ====');
-  console.info('Received event:', body);
+  console.debug('ModicaToFlex: received event:', body);
 
   const event: Body = body;
   const { source, destination, content } = event;
@@ -51,6 +51,12 @@ export const modicaToFlexHandler: AccountScopedHandler = async (
     accountSid,
     AseloCustomChannel.Modica,
   );
+  console.debug(
+    'ModicaToFlex: sending message from',
+    uniqueUserName,
+    'to studio flow',
+    studioFlowSid,
+  );
 
   const result = await sendConversationMessageToFlex(accountSid, {
     studioFlowSid,
@@ -64,6 +70,7 @@ export const modicaToFlexHandler: AccountScopedHandler = async (
     conversationFriendlyName: chatFriendlyName,
   });
 
+  console.debug('ModicaToFlex: result status:', result.status);
   switch (result.status) {
     case 'sent':
       return newOk(result.response);

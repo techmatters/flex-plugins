@@ -91,7 +91,7 @@ export const flexToLineHandler: AccountScopedHandler = async (
   accountSid: AccountSID,
 ) => {
   console.info('==== FlexToLine handler ====');
-  console.info('Received event:', event);
+  console.debug('FlexToLine: received event:', event);
 
   if (!recipientId) {
     return newMissingParameterResult('recipientId');
@@ -112,12 +112,14 @@ export const flexToLineHandler: AccountScopedHandler = async (
 
   const lineChannelAccessToken = await getLineChannelAccessToken(accountSid);
   const client = await getTwilioClient(accountSid);
+  console.debug('FlexToLine: redirecting message to recipientId:', recipientId);
   result = await redirectConversationMessageToExternalChat(client, {
     event,
     recipientId,
     sendExternalMessage: sendLineMessage(lineChannelAccessToken),
   });
 
+  console.debug('FlexToLine: result status:', result.status);
   switch (result.status) {
     case 'sent':
       return newOk(result.response);

@@ -54,6 +54,7 @@ export const telegramToFlexHandler: AccountScopedHandler = async (
   }
 
   const event: Body = body;
+  console.debug('TelegramToFlex: validated event body:', event);
   const {
     text: messageText,
     chat: { id: senderExternalId, username, first_name: firstName },
@@ -68,6 +69,12 @@ export const telegramToFlexHandler: AccountScopedHandler = async (
     accountSid,
     AseloCustomChannel.Telegram,
   );
+  console.debug(
+    'TelegramToFlex: sending message from',
+    uniqueUserName,
+    'to studio flow',
+    studioFlowSid,
+  );
 
   const result = await sendConversationMessageToFlex(accountSid, {
     studioFlowSid,
@@ -80,6 +87,7 @@ export const telegramToFlexHandler: AccountScopedHandler = async (
     conversationFriendlyName: chatFriendlyName,
   });
 
+  console.debug('TelegramToFlex: result status:', result.status);
   switch (result.status) {
     case 'sent':
       return newOk(result.response);

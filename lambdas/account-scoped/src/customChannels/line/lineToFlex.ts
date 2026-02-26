@@ -105,9 +105,18 @@ export const lineToFlexHandler: AccountScopedHandler = async (
   }
 
   const event: Body = body;
+  console.debug('LineToFlex: validated event body:', event);
   const { destination, events } = event;
 
   const messageEvents = events.filter(e => e.type === 'message');
+  console.debug(
+    'LineToFlex: destination:',
+    destination,
+    '- message events count:',
+    messageEvents.length,
+    '/ total events:',
+    events.length,
+  );
 
   if (messageEvents.length === 0) {
     return newOk({ message: 'No messages to send' });
@@ -128,6 +137,12 @@ export const lineToFlexHandler: AccountScopedHandler = async (
     const uniqueUserName = `${channelType}:${senderExternalId}`;
     const senderScreenName = 'child';
     const onMessageSentWebhookUrl = `${process.env.WEBHOOK_BASE_URL}/lambda/twilio/account-scoped/${accountSid}/customChannels/line/flexToLine?recipientId=${senderExternalId}`;
+    console.debug(
+      'LineToFlex: sending message from',
+      uniqueUserName,
+      'to studio flow',
+      studioFlowSid,
+    );
 
     // eslint-disable-next-line no-await-in-loop
     const result = await sendConversationMessageToFlex(accountSid, {
@@ -142,6 +157,12 @@ export const lineToFlexHandler: AccountScopedHandler = async (
       conversationFriendlyName: chatFriendlyName,
     });
 
+    console.debug(
+      'LineToFlex: result status:',
+      result.status,
+      'for sender',
+      uniqueUserName,
+    );
     switch (result.status) {
       case 'sent':
         responses.push(result.response);
