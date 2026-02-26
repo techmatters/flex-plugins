@@ -14,6 +14,8 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
+import { Manager } from '@twilio/flex-ui';
+
 import { getDefinitionVersions } from '../hrmConfig';
 
 // default language to initialize plugin
@@ -116,4 +118,9 @@ export const initLocalization = (localizationConfig: LocalizationConfig, helplin
   }
 
   return { translateUI, getMessage };
+};
+
+export const lookupTranslation = (code: string, parameters: Record<string, string> = {}): string => {
+  const { strings } = Manager.getInstance();
+  return Handlebars.compile(strings[code] ?? code)(parameters);
 };

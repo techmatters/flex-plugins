@@ -660,5 +660,6 @@
 
   "Modals-ConfirmDialog-ConfirmButton": "OK",
   "Modals-CloseDialog-CancelButton": "Cancel",
-  "Modals-CloseDialog-DiscardButton": "Discard"
+  "Modals-CloseDialog-DiscardButton": "Discard",
+  "BrowserNotification-ChatMessage-MaskedTitle": "New message"
 }
