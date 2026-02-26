@@ -34,7 +34,7 @@ const contactWebchatOrchestrator = async (
   params.append('ChatFriendlyName', 'Webchat widget');
   params.append('CustomerFriendlyName', customerFriendlyName);
   params.append(
-    'PreEngagementData',
+    'preEngagementData',
     JSON.stringify({
       ...formData,
       friendlyName: customerFriendlyName,
