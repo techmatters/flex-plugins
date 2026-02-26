@@ -171,15 +171,6 @@ describe('Hierarchical Translations', () => {
 describe('lookupTranslation', () => {
   const mockManagerGetInstance = Manager.getInstance as jest.MockedFunction<typeof Manager.getInstance>;
 
-  beforeAll(() => {
-    // eslint-disable-next-line global-require
-    (global as any).Handlebars = require('handlebars');
-  });
-
-  afterAll(() => {
-    delete (global as any).Handlebars;
-  });
-
   afterEach(() => {
     jest.clearAllMocks();
   });
