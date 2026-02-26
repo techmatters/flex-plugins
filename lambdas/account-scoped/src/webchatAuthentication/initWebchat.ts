@@ -29,24 +29,13 @@ const contactWebchatOrchestrator = async ({
 }: {
   accountSid: AccountSID;
   addressSid: string;
-  formData: any;
+  formData: Record<string, any>;
   customerFriendlyName: string;
 }): Promise<
   Result<HttpError, { conversationSid: ConversationSID; identity: string }>
 > => {
   console.info('Calling Webchat Orchestrator');
-  console.info(
-    JSON.stringify(
-      {
-        addressSid,
-        accountSid,
-        formData,
-        customerFriendlyName,
-      },
-      null,
-      2,
-    ),
-  );
+
   try {
     const client = await getTwilioClient(accountSid);
     const orchestratorResponse = await client.flexApi.v2.webChannels.create({
@@ -116,8 +105,9 @@ export const initWebchatHandler: AccountScopedHandler = async (request, accountS
   console.info('Initiating webchat', accountSid);
   console.log('>>>>>>>     formData: request.body', request.body);
 
-  const formData = request.body?.PreEngagementData;
-  const customerFriendlyName = formData?.friendlyName || 'Customer';
+  const formData = JSON.parse(request.body?.PreEngagementData);
+  const customerFriendlyName =
+    formData?.friendlyName || request.body?.CustomerFriendlyName || 'Customer';
 
   let conversationSid: ConversationSID;
   let identity;
