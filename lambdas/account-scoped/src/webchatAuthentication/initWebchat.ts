@@ -77,21 +77,21 @@ const contactWebchatOrchestrator = async ({
   }
 };
 
-const sendUserMessage = async (
-  accountSid: AccountSID,
-  conversationSid: ConversationSID,
-  identity: string,
-  messageBody: string,
-) => {
-  console.debug('Sending user message');
-  const client = await getTwilioClient(accountSid);
-  await client.conversations.v1.conversations(conversationSid).messages.create({
-    body: messageBody,
-    author: identity,
-    xTwilioWebhookEnabled: 'true', // trigger webhook
-  });
-  console.info('(async) User message sent');
-};
+// const sendUserMessage = async (
+//   accountSid: AccountSID,
+//   conversationSid: ConversationSID,
+//   identity: string,
+//   messageBody: string,
+// ) => {
+//   console.debug('Sending user message');
+//   const client = await getTwilioClient(accountSid);
+//   await client.conversations.v1.conversations(conversationSid).messages.create({
+//     body: messageBody,
+//     author: identity,
+//     xTwilioWebhookEnabled: 'true', // trigger webhook
+//   });
+//   console.info('(async) User message sent');
+// };
 
 const sendWelcomeMessage = async (
   accountSid: AccountSID,
@@ -114,8 +114,10 @@ const sendWelcomeMessage = async (
 
 export const initWebchatHandler: AccountScopedHandler = async (request, accountSid) => {
   console.info('Initiating webchat', accountSid);
+  console.log('>>>>>>>     formData: request.body', request.body);
 
-  const customerFriendlyName = request.body?.formData?.friendlyName || 'Customer';
+  const formData = request.body?.PreEngagementData;
+  const customerFriendlyName = formData?.friendlyName || 'Customer';
 
   let conversationSid: ConversationSID;
   let identity;
@@ -124,7 +126,7 @@ export const initWebchatHandler: AccountScopedHandler = async (request, accountS
   const result = await contactWebchatOrchestrator({
     accountSid,
     addressSid: 'IG1ba46f2d6828b42ddd363f5045138044', // Obvs needs to be SSM parameter
-    formData: request.body?.formData,
+    formData,
     customerFriendlyName,
   });
   if (isErr(result)) {
@@ -136,18 +138,20 @@ export const initWebchatHandler: AccountScopedHandler = async (request, accountS
   const token = await createToken(accountSid, identity);
 
   // OPTIONAL — if user query is defined
-  if (request.body?.formData?.query) {
-    // use it to send a message in behalf of the user with the query as body
-    sendUserMessage(
-      accountSid,
-      conversationSid,
-      identity,
-      request.body.formData.query,
-    ).then(() =>
-      // and then send another message from Concierge, letting the user know that an agent will help them soon
-      sendWelcomeMessage(accountSid, conversationSid, customerFriendlyName),
-    );
-  }
+  // if (request.body?.formData?.query) {
+  //   // use it to send a message in behalf of the user with the query as body
+  //   sendUserMessage(
+  //     accountSid,
+  //     conversationSid,
+  //     identity,
+  //     request.body.formData.query,
+  //   ).then(() =>
+  //     // and then send another message from Concierge, letting the user know that an agent will help them soon
+  //     sendWelcomeMessage(accountSid, conversationSid, customerFriendlyName),
+  //   );
+  //     sendWelcomeMessage(accountSid, conversationSid, customerFriendlyName),
+  // }
+  await sendWelcomeMessage(accountSid, conversationSid, customerFriendlyName);
 
   console.info('Webchat successfully initiated', accountSid);
   return newOk({
