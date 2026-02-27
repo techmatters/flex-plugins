@@ -36,6 +36,12 @@ const contactWebchatOrchestrator = async ({
 > => {
   console.info('Calling Webchat Orchestrator');
 
+  console.log('>>>>>>>>>>>> ', {
+    addressSid,
+    accountSid,
+    formData,
+    customerFriendlyName,
+  });
   try {
     const client = await getTwilioClient(accountSid);
     const orchestratorResponse = await client.flexApi.v2.webChannels.create({
@@ -65,22 +71,6 @@ const contactWebchatOrchestrator = async ({
     });
   }
 };
-
-// const sendUserMessage = async (
-//   accountSid: AccountSID,
-//   conversationSid: ConversationSID,
-//   identity: string,
-//   messageBody: string,
-// ) => {
-//   console.debug('Sending user message');
-//   const client = await getTwilioClient(accountSid);
-//   await client.conversations.v1.conversations(conversationSid).messages.create({
-//     body: messageBody,
-//     author: identity,
-//     xTwilioWebhookEnabled: 'true', // trigger webhook
-//   });
-//   console.info('(async) User message sent');
-// };
 
 const sendWelcomeMessage = async (
   accountSid: AccountSID,

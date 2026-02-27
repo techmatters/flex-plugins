@@ -50,7 +50,7 @@ const validateEmailPattern = ({
     return null;
   }
 
-  if (!Boolean(definition.required) && !value) {
+  if (!value) {
     return null;
   }
 

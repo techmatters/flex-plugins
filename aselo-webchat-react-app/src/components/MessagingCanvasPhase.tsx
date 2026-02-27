@@ -29,16 +29,6 @@ import { notifications } from '../notifications';
 import { AttachFileDropArea } from './AttachFileDropArea';
 import CloseChatButtons from './endChat/CloseChatButtons';
 
-const sendInitialUserQuery = async (conv?: Conversation, query?: string): Promise<void> => {
-  if (!query || !conv) return;
-
-  const totalMessagesCount = await conv.getMessagesCount();
-
-  if (!totalMessagesCount) {
-    conv.prepareMessage().setBody(query).build().send();
-  }
-};
-
 export const MessagingCanvasPhase = () => {
   const dispatch = useDispatch();
 
@@ -50,7 +40,6 @@ export const MessagingCanvasPhase = () => {
 
   useEffect(() => {
     dispatch(removeNotification(notifications.failedToInitSessionNotification('ds').id));
-    sendInitialUserQuery(conversation as Conversation, 'TODO: trigger message');
   }, [dispatch, conversation, preEngagmentData]);
 
   const Wrapper = conversationState === 'active' ? AttachFileDropArea : Fragment;
