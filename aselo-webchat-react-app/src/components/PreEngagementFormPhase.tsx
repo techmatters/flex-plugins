@@ -23,13 +23,14 @@ import { Text } from '@twilio-paste/core/text';
 import { sessionDataHandler } from '../sessionDataHandler';
 import { addNotification, changeEngagementPhase, updatePreEngagementDataField } from '../store/actions/genericActions';
 import { initSession } from '../store/actions/initActions';
-import { AppState, EngagementPhase } from '../store/definitions';
+import { AppState, EngagementPhase, PreEngagementDataItem } from '../store/definitions';
 import { Header } from './Header';
 import { notifications } from '../notifications';
 import { NotificationBar } from './NotificationBar';
 import { fieldStyles, titleStyles, formStyles } from './styles/PreEngagementFormPhase.styles';
 import LocalizedTemplate from '../localization/LocalizedTemplate';
-import { generateForm } from './forms/formInputs';
+import { generateForm, getDefaultValue } from './forms/formInputs';
+import { validateInput } from './forms/formInputs/validation';
 
 export const PreEngagementFormPhase = () => {
   const { preEngagementData } = useSelector((state: AppState) => state.session ?? {});
@@ -46,6 +47,15 @@ export const PreEngagementFormPhase = () => {
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
+    const fields = preEngagementFormDefinition.fields ?? [];
+    const hasErrors = fields.some(field => {
+      const item = getItem(field.name) as Partial<PreEngagementDataItem>;
+      const value = item.value ?? getDefaultValue(field);
+      return validateInput({ value, definition: field }) !== null;
+    });
+    if (hasErrors) {
+      return;
+    }
     dispatch(changeEngagementPhase({ phase: EngagementPhase.Loading }));
     try {
       const data = await sessionDataHandler.fetchAndStoreNewSession({

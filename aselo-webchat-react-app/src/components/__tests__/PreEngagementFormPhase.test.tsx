@@ -190,4 +190,114 @@ describe('Pre Engagement Form Phase', () => {
       },
     });
   });
+
+  describe('form validation', () => {
+    const withCustomStore = (fields: AppState['config']['preEngagementFormDefinition']['fields']) => {
+      const customState: Partial<AppState> = {
+        config: {
+          ...preloadedState.config,
+          preEngagementFormDefinition: {
+            description: 'Description',
+            submitLabel: 'Submit Label',
+            fields,
+          },
+        },
+      };
+      const customStore = preloadStore(customState);
+      return (Component: React.ReactElement) => <Provider store={customStore}>{Component}</Provider>;
+    };
+
+    it('does not submit if a required Input field is empty', () => {
+      const fetchAndStoreNewSessionSpy = jest.spyOn(sessionDataHandler, 'fetchAndStoreNewSession');
+      const renderWithStore = withCustomStore([
+        { name: 'friendlyName', type: FormInputType.Input, label: 'Name', required: true },
+      ]);
+      const { container } = render(renderWithStore(<PreEngagementFormPhase />));
+      const formBox = container.querySelector('form') as HTMLFormElement;
+      fireEvent.submit(formBox);
+      expect(fetchAndStoreNewSessionSpy).not.toHaveBeenCalled();
+    });
+
+    it('does not submit if a required Email field is empty', () => {
+      const fetchAndStoreNewSessionSpy = jest.spyOn(sessionDataHandler, 'fetchAndStoreNewSession');
+      const renderWithStore = withCustomStore([
+        { name: 'email', type: FormInputType.Email, label: 'Email', required: true },
+      ]);
+      const { container } = render(renderWithStore(<PreEngagementFormPhase />));
+      const formBox = container.querySelector('form') as HTMLFormElement;
+      fireEvent.submit(formBox);
+      expect(fetchAndStoreNewSessionSpy).not.toHaveBeenCalled();
+    });
+
+    it('does not submit if an Email field value does not match the email pattern', () => {
+      const fetchAndStoreNewSessionSpy = jest.spyOn(sessionDataHandler, 'fetchAndStoreNewSession');
+      const renderWithStore = withCustomStore([{ name: 'email', type: FormInputType.Email, label: 'Email' }]);
+      const { container, getByLabelText } = render(renderWithStore(<PreEngagementFormPhase />));
+      const emailInput = getByLabelText(/Email/);
+      fireEvent.blur(emailInput, { target: { value: 'not-an-email' } });
+      const formBox = container.querySelector('form') as HTMLFormElement;
+      fireEvent.submit(formBox);
+      expect(fetchAndStoreNewSessionSpy).not.toHaveBeenCalled();
+    });
+
+    it('does not submit if a required Select field is empty', () => {
+      const fetchAndStoreNewSessionSpy = jest.spyOn(sessionDataHandler, 'fetchAndStoreNewSession');
+      const renderWithStore = withCustomStore([
+        {
+          name: 'category',
+          type: FormInputType.Select,
+          label: 'Category',
+          required: true,
+          options: [
+            { value: '', label: 'Select...' },
+            { value: 'opt1', label: 'Option 1' },
+          ],
+        },
+      ]);
+      const { container } = render(renderWithStore(<PreEngagementFormPhase />));
+      const formBox = container.querySelector('form') as HTMLFormElement;
+      fireEvent.submit(formBox);
+      expect(fetchAndStoreNewSessionSpy).not.toHaveBeenCalled();
+    });
+
+    it('does not submit if a required DependentSelect field is empty', () => {
+      const fetchAndStoreNewSessionSpy = jest.spyOn(sessionDataHandler, 'fetchAndStoreNewSession');
+      const renderWithStore = withCustomStore([
+        {
+          name: 'country',
+          type: FormInputType.Select,
+          label: 'Country',
+          options: [{ value: 'US', label: 'United States' }],
+        },
+        {
+          name: 'state',
+          type: FormInputType.DependentSelect,
+          label: 'State',
+          required: true,
+          dependsOn: 'country',
+          options: { US: [{ value: 'CA', label: 'California' }] },
+        },
+      ]);
+      const { container } = render(renderWithStore(<PreEngagementFormPhase />));
+      const formBox = container.querySelector('form') as HTMLFormElement;
+      fireEvent.submit(formBox);
+      expect(fetchAndStoreNewSessionSpy).not.toHaveBeenCalled();
+    });
+
+    it('does not submit if a required Checkbox field is unchecked', () => {
+      const fetchAndStoreNewSessionSpy = jest.spyOn(sessionDataHandler, 'fetchAndStoreNewSession');
+      const renderWithStore = withCustomStore([
+        {
+          name: 'terms',
+          type: FormInputType.Checkbox,
+          label: 'Accept terms',
+          required: { value: true, message: 'You must accept' },
+        },
+      ]);
+      const { container } = render(renderWithStore(<PreEngagementFormPhase />));
+      const formBox = container.querySelector('form') as HTMLFormElement;
+      fireEvent.submit(formBox);
+      expect(fetchAndStoreNewSessionSpy).not.toHaveBeenCalled();
+    });
+  });
 });
