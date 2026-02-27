@@ -1,11 +1,9 @@
 {
   "pre_survey": {
-    "description": "Example configs/lex_v2/en_US/bots Pre Survey bot",
+    "description": "Example configs/lex_v2/en_NZBA/bots Pre Survey bot",
     "locale": "en_US",
     "child_directed": true,
-    "idle_session_ttl_in_seconds": "600",
-    "staging_bot_alias_id": "QUIVYKVF4P",
-    "production_bot_alias_id": "AHEY3RKT3F",
+    "idle_session_ttl_in_seconds": "300",
     "type": "Bot",
     "intents": {
       "pre_survey": {

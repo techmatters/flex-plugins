@@ -6,10 +6,13 @@ locals {
 
 
   local_config = {
-    helpline                          = "Barnardos"
-    default_autopilot_chatbot_enabled = false
-    task_language                     = "en-NZ"
-    helpline_region                   = "eu-west-1"
+    helpline        = "Barnardos"
+    task_language   = "en-NZ"
+    helpline_region = "eu-west-1"
+
+    lex_v2_bot_languages = {
+      en_NZBA : ["pre_survey", "post_survey"]
+    }
 
     workflows = {
       master : {
