@@ -98,6 +98,14 @@ const failedToInitSessionNotification = (error: string): Notification => ({
   type: 'error',
 });
 
+const formValidationErrorNotification = (): Notification => ({
+  id: `FailedToInitSessionNotification`,
+  dismissible: true,
+  message: 'Some fields contain errors',
+  type: 'error',
+  timeout: 5000,
+});
+
 export const notifications = {
   fileAttachmentAlreadyAttachedNotification,
   fileAttachmentInvalidSizeNotification,
@@ -106,4 +114,5 @@ export const notifications = {
   fileDownloadInvalidTypeNotification,
   noConnectionNotification,
   failedToInitSessionNotification,
+  formValidationErrorNotification,
 };

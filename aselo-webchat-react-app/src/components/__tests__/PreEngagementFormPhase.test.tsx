@@ -184,9 +184,9 @@ describe('Pre Engagement Form Phase', () => {
 
     expect(fetchAndStoreNewSessionSpy).toHaveBeenCalledWith({
       formData: {
-        friendlyName: { value: name, error: null, dirty: true },
-        query: { value: query, error: null, dirty: true },
-        email: { value: email, error: null, dirty: true },
+        friendlyName: name,
+        query,
+        email,
       },
     });
   });
