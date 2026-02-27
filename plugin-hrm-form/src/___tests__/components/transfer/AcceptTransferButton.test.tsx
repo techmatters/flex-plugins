@@ -14,16 +14,21 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import React from 'react';
+import * as React from 'react';
 import { configureAxe, toHaveNoViolations } from 'jest-axe';
 import { mount } from 'enzyme';
 import { StorelessThemeProvider, withTheme } from '@twilio/flex-ui';
+import { Provider } from 'react-redux';
+import configureMockStore from 'redux-mock-store';
 
 import HrmTheme from '../../../styles/HrmTheme';
-import RejectTransferButton from '../../../components/transfer/RejectTransferButton';
+import AcceptTransferButton from '../../../components/transfer/AcceptTransferButton';
 import { transferStatuses } from '../../../states/DomainConstants';
 
 expect.extend(toHaveNoViolations);
+
+const mockStore = configureMockStore([]);
+const store = mockStore({});
 
 const task = {
   attributes: {
@@ -31,7 +36,7 @@ const task = {
   },
 };
 
-const Wrapped = withTheme(props => <RejectTransferButton task={task} {...props} />);
+const Wrapped = withTheme(props => <AcceptTransferButton task={task} {...props} />);
 
 test('a11y', async () => {
   const themeConf = {
@@ -40,7 +45,9 @@ test('a11y', async () => {
 
   const wrapper = mount(
     <StorelessThemeProvider themeConf={themeConf}>
-      <Wrapped />
+      <Provider store={store}>
+        <Wrapped />
+      </Provider>
     </StorelessThemeProvider>,
   );
 

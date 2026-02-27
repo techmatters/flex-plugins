@@ -28,7 +28,9 @@ export const assignOfflineContactInit = async (targetSid: string, taskAttributes
     taskAttributes: JSON.stringify(taskAttributes),
   };
 
-  return fetchProtectedApi('/assignOfflineContactInit', body);
+  const { use_twilio_lambda_for_offline_contact_tasks: useTwilioLambda } = getAseloFeatureFlags();
+  const pathRoot = useTwilioLambda ? '/task' : '';
+  return fetchProtectedApi(`${pathRoot}/assignOfflineContactInit`, body, { useTwilioLambda });
 };
 
 type OfflineContactComplete = {
@@ -53,7 +55,9 @@ export const assignOfflineContactResolve = async (payload: OfflineContactComplet
         }
       : payload;
 
-  return fetchProtectedApi('/assignOfflineContactResolve', body);
+  const { use_twilio_lambda_for_offline_contact_tasks: useTwilioLambda } = getAseloFeatureFlags();
+  const pathRoot = useTwilioLambda ? '/task' : '';
+  return fetchProtectedApi(`${pathRoot}/assignOfflineContactResolve`, body, { useTwilioLambda });
 };
 
 /**
@@ -71,11 +75,9 @@ export const completeConversationTask = async (taskSid: TaskSID) =>
   fetchProtectedApi('/interaction/transitionAgentParticipants', { taskSid, targetStatus: 'closed' });
 
 export const checkTaskAssignment = async (taskSid: string) => {
-  const { use_twilio_lambda_for_task_assignment: useTwilioLambda } = getAseloFeatureFlags();
   const body = { taskSid };
-  const pathRoot = useTwilioLambda ? '/task' : '';
-  return fetchProtectedApi(`${pathRoot}/checkTaskAssignment`, body, {
-    useTwilioLambda,
+  return fetchProtectedApi(`/task/checkTaskAssignment`, body, {
+    useTwilioLambda: true,
   });
 };
 
@@ -86,13 +88,11 @@ type GetTaskAndReservationsResponse = {
 
 export const getTaskAndReservations = async (taskSid: string): Promise<GetTaskAndReservationsResponse> => {
   const body = { taskSid };
-  const { use_twilio_lambda_for_task_assignment: useTwilioLambda } = getAseloFeatureFlags();
-  const pathRoot = useTwilioLambda ? '/task' : '';
   const options: FetchOptions = {
     returnNullFor404: true,
   };
   try {
-    const res = await fetchProtectedApi(`${pathRoot}/getTaskAndReservations`, body, { ...options, useTwilioLambda });
+    const res = await fetchProtectedApi(`/task/getTaskAndReservations`, body, { ...options, useTwilioLambda: true });
     if (res?.task) {
       res.task.status = res.task.status ?? res.task.assignmentStatus;
     }
@@ -106,10 +106,7 @@ export const getTaskAndReservations = async (taskSid: string): Promise<GetTaskAn
 export const completeTaskAssignment = async (taskSid: string) => {
   const body = { taskSid };
 
-  const { use_twilio_lambda_for_task_assignment: useTwilioLambda } = getAseloFeatureFlags();
-  const pathRoot = useTwilioLambda ? '/task' : '';
-
-  return fetchProtectedApi(`${pathRoot}/completeTaskAssignment`, body, { useTwilioLambda });
+  return fetchProtectedApi(`/task/completeTaskAssignment`, body, { useTwilioLambda: true });
 };
 
 export const cancelOrRemoveTask = async (taskSid: string) => {

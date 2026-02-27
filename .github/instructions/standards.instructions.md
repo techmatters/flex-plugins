@@ -1,0 +1,1 @@
+Always refer to the documentation in https://github.com/techmatters/aselo-coding-standards for guidance on standards when producing or reviewing code in this repository.

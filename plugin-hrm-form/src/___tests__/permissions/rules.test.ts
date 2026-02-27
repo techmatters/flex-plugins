@@ -25,6 +25,7 @@ import {
   actionsMaps,
   CaseActions,
   ContactActions,
+  ContactFieldActions,
   PermissionActions,
   ProfileActions,
   ProfileSectionActions,
@@ -207,6 +208,30 @@ describe('CasesActions', () => {
           expectedDescription: 'created less than 1 day ago',
           createdAt: subDays(new Date(), 2).toISOString(),
         },
+        {
+          action,
+          conditionsSets: [['nobody']],
+          workerSid: NOT_CREATOR_WORKER_SID,
+          isSupervisor: false,
+          expectedResult: false,
+          expectedDescription: 'nobody condition always denies',
+        },
+        {
+          action,
+          conditionsSets: [['nobody'], ['isSupervisor']],
+          workerSid: NOT_CREATOR_WORKER_SID,
+          isSupervisor: true,
+          expectedResult: true,
+          expectedDescription: 'nobody in first set, but isSupervisor in second set allows',
+        },
+        {
+          action,
+          conditionsSets: [['nobody', 'isCreator']],
+          workerSid: 'creator',
+          isSupervisor: false,
+          expectedResult: false,
+          expectedDescription: 'nobody combined with isCreator still denies',
+        },
       ])
       .map(addPrettyPrintConditions),
   ).test(
@@ -337,6 +362,30 @@ describe('ContactActions', () => {
           expectedDescription: 'created more than 1 day ago',
           createdAt: subDays(new Date(), 2).toISOString(),
         },
+        {
+          action,
+          conditionsSets: [['nobody']],
+          workerSid: 'owner',
+          isSupervisor: true,
+          expectedResult: false,
+          expectedDescription: 'nobody condition always denies',
+        },
+        {
+          action,
+          conditionsSets: [['nobody'], ['isOwner']],
+          workerSid: 'owner',
+          isSupervisor: false,
+          expectedResult: true,
+          expectedDescription: 'nobody in first set, but isOwner in second set allows',
+        },
+        {
+          action,
+          conditionsSets: [['nobody', 'isOwner']],
+          workerSid: 'owner',
+          isSupervisor: false,
+          expectedResult: false,
+          expectedDescription: 'nobody combined with isOwner still denies',
+        },
       ])
       .map(addPrettyPrintConditions),
   ).test(
@@ -419,6 +468,27 @@ describe('ProfileActions', () => {
           expectedResult: false,
           expectedDescription: 'created more than 1 day ago',
           createdAt: subDays(new Date(), 2).toISOString(),
+        },
+        {
+          action,
+          conditionsSets: [['nobody']],
+          isSupervisor: true,
+          expectedResult: false,
+          expectedDescription: 'nobody condition always denies',
+        },
+        {
+          action,
+          conditionsSets: [['nobody'], ['isSupervisor']],
+          isSupervisor: true,
+          expectedResult: true,
+          expectedDescription: 'nobody in first set, but isSupervisor in second set allows',
+        },
+        {
+          action,
+          conditionsSets: [['nobody', 'isSupervisor']],
+          isSupervisor: true,
+          expectedResult: false,
+          expectedDescription: 'nobody combined with isSupervisor still denies',
         },
       ])
       .map(addPrettyPrintConditions),
@@ -519,6 +589,27 @@ describe('ProfileSectionActions', () => {
           expectedDescription: 'sectionType does not matches',
           sectionType: 'something else',
         },
+        {
+          action,
+          conditionsSets: [['nobody']],
+          isSupervisor: true,
+          expectedResult: false,
+          expectedDescription: 'nobody condition always denies',
+        },
+        {
+          action,
+          conditionsSets: [['nobody'], ['isSupervisor']],
+          isSupervisor: true,
+          expectedResult: true,
+          expectedDescription: 'nobody in first set, but isSupervisor in second set allows',
+        },
+        {
+          action,
+          conditionsSets: [['nobody', 'isSupervisor']],
+          isSupervisor: true,
+          expectedResult: false,
+          expectedDescription: 'nobody combined with isSupervisor still denies',
+        },
       ])
       .map(addPrettyPrintConditions),
   ).test(
@@ -591,6 +682,27 @@ describe('ViewIdentifiersAction', () => {
           expectedResult: false,
           expectedDescription: 'user is not a supervisor',
         },
+        {
+          action,
+          conditionsSets: [['nobody']],
+          isSupervisor: true,
+          expectedResult: false,
+          expectedDescription: 'nobody condition always denies',
+        },
+        {
+          action,
+          conditionsSets: [['nobody'], ['isSupervisor']],
+          isSupervisor: true,
+          expectedResult: true,
+          expectedDescription: 'nobody in first set, but isSupervisor in second set allows',
+        },
+        {
+          action,
+          conditionsSets: [['nobody', 'isSupervisor']],
+          isSupervisor: true,
+          expectedResult: false,
+          expectedDescription: 'nobody combined with isSupervisor still denies',
+        },
       ])
       .map(addPrettyPrintConditions),
   ).test(
@@ -609,6 +721,267 @@ describe('ViewIdentifiersAction', () => {
       const can = getInitializedCan();
 
       expect(can(action)).toBe(expectedResult);
+    },
+  );
+});
+
+describe('ContactFieldActions', () => {
+  afterEach(() => {
+    cleanupInitializedCan();
+  });
+
+  const mockContact = { twilioWorkerId: 'owner', createdAt: new Date().toISOString() };
+  const testField = 'rawJson.childInformation.name';
+  const otherField = 'rawJson.childInformation.age';
+
+  each(
+    Object.values(ContactFieldActions)
+      .flatMap(action => [
+        // Test 1: Fields not specified by a 'field' condition in any condition set are always allowed
+        {
+          action,
+          conditionsSets: [['isSupervisor'], [{ field: otherField }]],
+          workerSid: 'not owner',
+          isSupervisor: false,
+          field: testField,
+          expectedResult: true,
+          expectedDescription: 'field is not specified in any condition set - should be allowed',
+        },
+        {
+          action,
+          conditionsSets: [[{ field: otherField }]],
+          workerSid: 'not owner',
+          isSupervisor: false,
+          field: testField,
+          expectedResult: true,
+          expectedDescription: 'field is not specified (only other field specified) - should be allowed',
+        },
+        // Test 2: Condition sets with no field condition will allow any field if they evaluate to true
+        {
+          action,
+          conditionsSets: [['everyone']],
+          workerSid: 'not owner',
+          isSupervisor: false,
+          field: testField,
+          expectedResult: true,
+          expectedDescription: 'no field condition, everyone condition evaluates to true',
+        },
+        {
+          action,
+          conditionsSets: [['isSupervisor']],
+          workerSid: 'not owner',
+          isSupervisor: true,
+          field: testField,
+          expectedResult: true,
+          expectedDescription: 'no field condition, isSupervisor condition evaluates to true',
+        },
+        {
+          action,
+          conditionsSets: [['isOwner']],
+          workerSid: 'owner',
+          isSupervisor: false,
+          field: testField,
+          expectedResult: true,
+          expectedDescription: 'no field condition, isOwner condition evaluates to true',
+        },
+        // Test 3: If condition sets with no field condition evaluate to false, but there are no condition sets
+        // with a field condition matching the field being checked, the action should be allowed
+        {
+          action,
+          conditionsSets: [['isSupervisor']],
+          workerSid: 'not owner',
+          isSupervisor: false,
+          field: testField,
+          expectedResult: true,
+          expectedDescription:
+            'no field-specific conditions exist, so field is allowed even though isSupervisor is false',
+        },
+        {
+          action,
+          conditionsSets: [['isOwner'], ['isSupervisor']],
+          workerSid: 'not owner',
+          isSupervisor: false,
+          field: testField,
+          expectedResult: true,
+          expectedDescription: 'no field-specific conditions exist, field is allowed even though conditions are false',
+        },
+        {
+          action,
+          conditionsSets: [['isSupervisor'], [{ field: otherField }]],
+          workerSid: 'not owner',
+          isSupervisor: false,
+          field: testField,
+          expectedResult: true,
+          expectedDescription:
+            'field has no specific conditions (only other field specified), allowed even though isSupervisor is false',
+        },
+        // Test 4: Multiple field conditions in the same set specifying different fields means
+        // that condition set will be filtered out, demonstrating it can't restrict a field on its own
+        {
+          action,
+          conditionsSets: [[{ field: testField }, { field: otherField }]],
+          workerSid: 'not owner',
+          isSupervisor: false,
+          field: testField,
+          expectedResult: true,
+          expectedDescription:
+            'multiple different field conditions in same set gets filtered out, no field-specific conditions remain, so allowed',
+        },
+        {
+          action,
+          conditionsSets: [[{ field: testField }, { field: otherField }], ['everyone']],
+          workerSid: 'not owner',
+          isSupervisor: false,
+          field: testField,
+          expectedResult: true,
+          expectedDescription: 'conflicting field conditions get filtered out, everyone condition allows',
+        },
+        {
+          action,
+          conditionsSets: [[{ field: testField }, { field: otherField }], ['isSupervisor']],
+          workerSid: 'not owner',
+          isSupervisor: true,
+          field: testField,
+          expectedResult: true,
+          expectedDescription: 'conflicting field conditions get filtered out, isSupervisor allows',
+        },
+        {
+          action,
+          conditionsSets: [[{ field: testField }, { field: otherField }], ['isSupervisor']],
+          workerSid: 'not owner',
+          isSupervisor: false,
+          field: testField,
+          expectedResult: true,
+          expectedDescription:
+            'conflicting field conditions get filtered out, no field-specific conditions remain even though isSupervisor is false, so allowed',
+        },
+        {
+          action,
+          conditionsSets: [
+            [{ field: testField }, { field: otherField }],
+            [{ field: testField }, 'isOwner'],
+          ],
+          workerSid: 'owner',
+          isSupervisor: false,
+          field: testField,
+          expectedResult: true,
+          expectedDescription:
+            'conflicting field conditions filtered out, but valid field condition with isOwner passes',
+        },
+        {
+          action,
+          conditionsSets: [
+            [{ field: testField }, { field: otherField }],
+            [{ field: testField }, 'isOwner'],
+          ],
+          workerSid: 'not owner',
+          isSupervisor: false,
+          field: testField,
+          expectedResult: false,
+          expectedDescription:
+            'conflicting field conditions filtered out, valid field condition exists but isOwner is false',
+        },
+        // Additional comprehensive tests
+        {
+          action,
+          conditionsSets: [[{ field: testField }, 'isOwner']],
+          workerSid: 'owner',
+          isSupervisor: false,
+          field: testField,
+          expectedResult: true,
+          expectedDescription: 'field condition matches and isOwner is true',
+        },
+        {
+          action,
+          conditionsSets: [[{ field: testField }, 'isOwner']],
+          workerSid: 'not owner',
+          isSupervisor: false,
+          field: testField,
+          expectedResult: false,
+          expectedDescription: 'field condition matches but isOwner is false',
+        },
+        {
+          action,
+          conditionsSets: [[{ field: testField }], ['isSupervisor']],
+          workerSid: 'not owner',
+          isSupervisor: true,
+          field: testField,
+          expectedResult: true,
+          expectedDescription: 'field condition in first set, isSupervisor in second set evaluates to true',
+        },
+        {
+          action,
+          conditionsSets: [[{ field: testField }]],
+          workerSid: 'not owner',
+          isSupervisor: false,
+          field: testField,
+          expectedResult: true,
+          expectedDescription: 'only field condition with no additional conditions - always true',
+        },
+        {
+          action,
+          conditionsSets: [[{ field: otherField }, 'everyone']],
+          workerSid: 'not owner',
+          isSupervisor: false,
+          field: testField,
+          expectedResult: true,
+          expectedDescription: 'other field condition with everyone - field not specified so allowed',
+        },
+        // Test 5: 'nobody' condition tests
+        {
+          action,
+          conditionsSets: [['nobody']],
+          workerSid: 'owner',
+          isSupervisor: true,
+          field: testField,
+          expectedResult: true,
+          expectedDescription: 'nobody with no field condition - field not restricted so allowed',
+        },
+        {
+          action,
+          conditionsSets: [[{ field: testField }, 'nobody']],
+          workerSid: 'owner',
+          isSupervisor: true,
+          field: testField,
+          expectedResult: false,
+          expectedDescription: 'nobody combined with field condition denies',
+        },
+        {
+          action,
+          conditionsSets: [[{ field: testField }, 'nobody'], ['isSupervisor']],
+          workerSid: 'not owner',
+          isSupervisor: true,
+          field: testField,
+          expectedResult: true,
+          expectedDescription: 'nobody with field in first set, but isSupervisor in second set allows',
+        },
+        {
+          action,
+          conditionsSets: [[{ field: testField }, 'nobody'], ['isOwner']],
+          workerSid: 'not owner',
+          isSupervisor: false,
+          field: testField,
+          expectedResult: false,
+          expectedDescription: 'nobody with field in first set denies, isOwner false in second set',
+        },
+      ])
+      .map(addPrettyPrintConditions),
+  ).test(
+    `Should return $expectedResult for action $action when $expectedDescription and conditionsSets are $prettyConditionsSets`,
+    async ({ action, conditionsSets, workerSid, isSupervisor, field, expectedResult }) => {
+      const rules = buildRules(conditionsSets, 'contactField');
+      fetchPermissionRulesSpy.mockResolvedValue(rules);
+
+      mockPartialConfiguration({
+        workerSid,
+        isSupervisor,
+      });
+
+      await validateAndSetPermissionRules();
+
+      const can = getInitializedCan();
+
+      expect(can(action, { contact: mockContact, field })).toBe(expectedResult);
     },
   );
 });

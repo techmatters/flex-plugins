@@ -11,7 +11,8 @@
             "enable_save_insights": true,
             "use_twilio_lambda_adjust_capacity": true,
             "use_twilio_lambda_transfers": true,
-            "use_twilio_lambda_janitor": true
+            "use_twilio_lambda_janitor": true,
+            "use_twilio_lambda_for_conversation_duration": true
         },
         "permissionConfig": "e2e",
         "previous_ui_version": {

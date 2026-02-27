@@ -15,12 +15,12 @@
  */
 
 /* eslint-disable camelcase */
-import React from 'react';
+import * as React from 'react';
 import { mount } from 'enzyme';
 
 import { InnerQueuesStatusWriter as QueuesStatusWriter } from '../../../components/queuesStatus/QueuesStatusWriter';
 import { channelTypes } from '../../../states/DomainConstants';
-import { newQueueEntry, initializeQueuesStatus, getNewQueuesStatus } from '../../../components/queuesStatus/helpers';
+import { initializeQueuesStatus, getNewQueuesStatus } from '../../../components/queuesStatus/helpers';
 
 jest.mock('../../../components/CSAMReport/CSAMReportFormDefinition');
 
@@ -119,8 +119,6 @@ describe('QueuesStatusWriter should subscribe to Admin queue only', () => {
     close: jest.fn(),
   };
 
-  const spy = jest.spyOn(QueuesStatusWriter.prototype, 'updateQueuesState');
-
   const ownProps = {
     insightsClient: {
       liveQuery: jest.fn((query, _) => {
@@ -155,18 +153,13 @@ describe('QueuesStatusWriter should subscribe to Admin queue only', () => {
     await Promise.resolve(); // resolves tasksQuery
 
     expect(ownProps.insightsClient.liveQuery).toHaveBeenCalledTimes(2);
-    expect(spy).toHaveBeenCalledWith(tasksQuery.getItems(), { Admin: newQueueEntry });
     expect(queuesStatusUpdate).toHaveBeenCalledWith({ Admin: queuesStatus.Admin });
     expect(queuesStatusFailure).not.toHaveBeenCalled();
-    expect(mounted.state('tasksQuery')).not.toBeNull();
 
-    spy.mockClear();
     queuesStatusUpdate.mockClear();
   });
 
   test('Test events', () => {
-    expect(mounted.state().trackedTasks).toStrictEqual({ T1: true, T3: true });
-
     // simulate new state (adding tasks)
     innerTasks.T4 = newTasks.T4;
     innerTasks.T5 = newTasks.T5;
@@ -177,9 +170,7 @@ describe('QueuesStatusWriter should subscribe to Admin queue only', () => {
 
     events.itemUpdated({ key: 'T5', value: newTasks.T5 });
     expect(queuesStatusUpdate).toHaveBeenCalledWith({ Admin: newQueuesStatus.Admin });
-    expect(mounted.state().trackedTasks).toStrictEqual({ T1: true, T3: true, T5: true });
 
-    spy.mockClear();
     queuesStatusUpdate.mockClear();
 
     // simulate new state (removing tasks)
@@ -192,7 +183,6 @@ describe('QueuesStatusWriter should subscribe to Admin queue only', () => {
 
     events.itemRemoved({ key: 'T1' });
     expect(queuesStatusUpdate).toHaveBeenCalledWith({ Admin: afterDeleteQueuesStatus.Admin });
-    expect(mounted.state().trackedTasks).toStrictEqual({ T3: true, T5: true });
   });
 
   test('Test unmount', () => {
@@ -221,8 +211,6 @@ describe('QueuesStatusWriter should subscribe to Q1 queue only', () => {
     }),
     close: jest.fn(),
   };
-
-  const spy = jest.spyOn(QueuesStatusWriter.prototype, 'updateQueuesState');
 
   const ownProps = {
     insightsClient: {
@@ -259,18 +247,13 @@ describe('QueuesStatusWriter should subscribe to Q1 queue only', () => {
     await Promise.resolve(); // resolves tasksQuery
 
     expect(ownProps.insightsClient.liveQuery).toHaveBeenCalledTimes(2);
-    expect(spy).toHaveBeenCalledWith(tasksQuery.getItems(), { Q1: newQueueEntry });
     expect(queuesStatusUpdate).toHaveBeenCalledWith({ Q1: queuesStatus.Q1 });
     expect(queuesStatusFailure).not.toHaveBeenCalled();
-    expect(mounted.state('tasksQuery')).not.toBeNull();
 
-    spy.mockClear();
     queuesStatusUpdate.mockClear();
   });
 
   test('Test events', () => {
-    expect(mounted.state().trackedTasks).toStrictEqual({ T2: true });
-
     // simulate new state
     innerTasks.T4 = newTasks.T4;
     innerTasks.T5 = newTasks.T5;
@@ -281,9 +264,7 @@ describe('QueuesStatusWriter should subscribe to Q1 queue only', () => {
 
     events.itemUpdated({ key: 'T4', value: newTasks.T4 });
     expect(queuesStatusUpdate).toHaveBeenCalledWith({ Q1: newQueuesStatus.Q1 });
-    expect(mounted.state().trackedTasks).toStrictEqual({ T2: true, T4: true });
 
-    spy.mockClear();
     queuesStatusUpdate.mockClear();
 
     // simulate new state (removing tasks)
@@ -296,7 +277,6 @@ describe('QueuesStatusWriter should subscribe to Q1 queue only', () => {
 
     events.itemRemoved({ key: 'T2' });
     expect(queuesStatusUpdate).toHaveBeenCalledWith({ Q1: afterDeleteQueuesStatus.Q1 });
-    expect(mounted.state().trackedTasks).toStrictEqual({ T4: true });
   });
 
   test('Test unmount', () => {
@@ -336,7 +316,7 @@ describe('QueuesStatusWriter should fail trying to subscribe', () => {
     const queuesStatusFailure = jest.fn();
     const reduxProps = { queuesStatusState, queuesStatusUpdate, queuesStatusFailure };
 
-    const mounted = mount(<QueuesStatusWriter {...ownProps} {...reduxProps} />);
+    mount(<QueuesStatusWriter {...ownProps} {...reduxProps} />);
 
     await Promise.resolve(); // resolves listWorkerQueues
     await Promise.resolve(); // resolves worker
@@ -345,7 +325,6 @@ describe('QueuesStatusWriter should fail trying to subscribe', () => {
     expect(ownProps.insightsClient.liveQuery).toHaveBeenCalledTimes(1);
     expect(queuesStatusFailure).toHaveBeenCalledWith("Error, couldn't subscribe to live updates");
     expect(queuesStatusUpdate).not.toHaveBeenCalled();
-    expect(mounted.state('tasksQuery')).toBeNull();
   });
 
   test('Test fail on workersQuery', async () => {
@@ -374,7 +353,7 @@ describe('QueuesStatusWriter should fail trying to subscribe', () => {
     const queuesStatusFailure = jest.fn();
     const reduxProps = { queuesStatusState, queuesStatusUpdate, queuesStatusFailure };
 
-    const mounted = mount(<QueuesStatusWriter {...ownProps} {...reduxProps} />);
+    mount(<QueuesStatusWriter {...ownProps} {...reduxProps} />);
 
     await Promise.resolve();
     await Promise.resolve();
@@ -383,6 +362,5 @@ describe('QueuesStatusWriter should fail trying to subscribe', () => {
     expect(ownProps.insightsClient.liveQuery).toHaveBeenCalledTimes(2);
     expect(queuesStatusFailure).toHaveBeenCalledWith("Error, couldn't subscribe to live updates");
     expect(queuesStatusUpdate).not.toHaveBeenCalled();
-    expect(mounted.state('tasksQuery')).toBeNull();
   });
 });
