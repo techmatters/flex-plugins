@@ -16,7 +16,7 @@
 
 /* eslint-disable camelcase */
 
-import { Manager } from '@twilio/flex-ui';
+import { Manager, Notifications } from '@twilio/flex-ui';
 import each from 'jest-each';
 
 import { maskConversationServiceUserNames, maskChannelStringsWithIdentifiers } from '../../maskIdentifiers';
@@ -36,8 +36,12 @@ jest.mock('@twilio/flex-ui', () => ({
   Manager: {
     getInstance: jest.fn(),
   },
+  Notifications: {
+    registeredNotifications: new Map(),
+  },
   NotificationIds: {
     NewChatMessage: 'NewChatMessage',
+    IncomingTask: 'IncomingTask',
   },
   DefaultTaskChannels: {
     ChatSms: { name: 'ChatSms' },
@@ -46,6 +50,8 @@ jest.mock('@twilio/flex-ui', () => ({
     Content: { remove: jest.fn() },
   },
 }));
+
+const mockRegisteredNotifications = Notifications.registeredNotifications as Map<string, any>;
 
 const mockLookupTranslation = lookupTranslation as jest.MockedFunction<typeof lookupTranslation>;
 
@@ -441,6 +447,8 @@ describe('maskChannelStringsWithIdentifiers', () => {
     mockGetInitializedCan.mockReturnValue(mockCan);
     mockManagerGetInstance.mockReturnValue({ strings: { MaskIdentifiers: 'MASKED' } } as any);
     mockLookupTranslation.mockReturnValue('Masked Title');
+    mockRegisteredNotifications.clear();
+    mockRegisteredNotifications.set('IncomingTask', {});
   });
 
   afterEach(() => {
@@ -468,6 +476,12 @@ describe('maskChannelStringsWithIdentifiers', () => {
       expect(mockLookupTranslation).toHaveBeenCalledWith('BrowserNotification-ChatMessage-MaskedTitle');
       expect(notification.options.browser.title).toBe('Masked Title');
     });
+
+    test('deletes IncomingTask notification', () => {
+      const channelType = createChannelType();
+      maskChannelStringsWithIdentifiers(channelType as any);
+      expect(mockRegisteredNotifications.has('IncomingTask')).toBe(false);
+    });
   });
 
   describe('when VIEW_IDENTIFIERS permission is granted', () => {
@@ -479,6 +493,12 @@ describe('maskChannelStringsWithIdentifiers', () => {
       const channelType = createChannelType();
       maskChannelStringsWithIdentifiers(channelType as any);
       expect(channelType.notifications.override.NewChatMessage).toBeUndefined();
+    });
+
+    test('does not delete IncomingTask notification', () => {
+      const channelType = createChannelType();
+      maskChannelStringsWithIdentifiers(channelType as any);
+      expect(mockRegisteredNotifications.has('IncomingTask')).toBe(true);
     });
   });
 });
