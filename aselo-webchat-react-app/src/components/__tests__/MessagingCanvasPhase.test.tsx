@@ -56,7 +56,7 @@ const conversationMock = {
   getMessagesCount: jest.fn(),
   prepareMessage: jest.fn(),
 };
-const TEST_QUERY = 'test query';
+const TEST_QUERY = 'TODO: trigger message';
 const baseReduxState = {
   chat: { conversationState: 'closed', ...BASE_MOCK_REDUX.chat },
   session: { token: 'token', ...BASE_MOCK_REDUX.session },
@@ -127,7 +127,7 @@ describe('Messaging Canvas Phase', () => {
     resetMockRedux({
       ...baseReduxState,
       chat: { ...baseReduxState.chat, conversation: conversationMock },
-      session: { ...baseReduxState.session, preEngagementData: { query: TEST_QUERY, email: '', name: '' } },
+      session: { ...baseReduxState.session, preEngagementData: {} },
     });
 
     await waitFor(() => render(<MessagingCanvasPhase />));
@@ -143,7 +143,7 @@ describe('Messaging Canvas Phase', () => {
     resetMockRedux({
       ...baseReduxState,
       chat: { ...baseReduxState.chat, conversationState: 'closed', conversation: conversationMock },
-      session: { ...baseReduxState.session, preEngagementData: { query: TEST_QUERY, email: '', name: '' } },
+      session: { ...baseReduxState.session, preEngagementData: {} },
     });
     conversationMock.getMessagesCount.mockResolvedValue(1);
     await waitFor(() => render(<MessagingCanvasPhase />));
@@ -165,7 +165,7 @@ describe('Messaging Canvas Phase', () => {
   it('Should not trigger conversation if conversation is not initialised', async () => {
     resetMockRedux({
       ...baseReduxState,
-      session: { ...baseReduxState.session, preEngagementData: { query: TEST_QUERY, email: '', name: '' } },
+      session: { ...baseReduxState.session, preEngagementData: {} },
     });
     conversationMock.getMessagesCount.mockResolvedValue(1);
     await waitFor(() => render(<MessagingCanvasPhase />));

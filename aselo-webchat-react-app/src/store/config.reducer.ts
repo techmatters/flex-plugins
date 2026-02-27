@@ -25,7 +25,7 @@ const initialState: ConfigState = {
   aseloBackendUrl: '',
   environment: '',
   definitionVersion: '',
-  preEngagementForm: null,
+  preEngagementFormDefinition: null,
   helplineCode: '',
   deploymentKey: '',
   quickExitUrl: 'https://www.google.com',

@@ -35,7 +35,7 @@ describe('Session Reducer', () => {
   const initialState: SessionState = {
     currentPhase: EngagementPhase.Loading,
     expanded: false,
-    preEngagementData: initialPreEngagementData,
+    preEngagementData: {},
   };
 
   it('should return initial state', () => {

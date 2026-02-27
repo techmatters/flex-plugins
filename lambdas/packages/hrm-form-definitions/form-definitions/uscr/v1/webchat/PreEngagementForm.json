@@ -28,14 +28,14 @@
       "placeholder": "Email"
     },
     {
-      "type": "input-text",
+      "type": "input",
       "name": "friendlyName",
       "label": "Your Name",
       "placeholder": "Name",
       "required": true
     },
     {
-      "type": "input-text",
+      "type": "input",
       "name": "phone",
       "label": "Callback Phone Number",
       "placeholder": "Phone Number",
@@ -123,7 +123,7 @@
       ]
     },
     {
-      "type": "input-text",
+      "type": "input",
       "name": "otherBID",
       "label": "If BID/Other, please specify:",
       "placeholder": ""
@@ -138,14 +138,14 @@
       }
     },
     {
-      "type": "input-text",
+      "type": "input",
       "name": "specificLocation",
       "label": "What is the specific location of the individual or encampment?",
       "placeholder": "Specific location",
       "required": true
     },
     {
-      "type": "input-text",
+      "type": "input",
       "name": "incidentSummary",
       "label": "Please provide a description of the situation, encampment, or individual(s) and any particular issues/needs and any relevant history or upcoming operations that will impact the location",
       "placeholder": "Please provide a description",
