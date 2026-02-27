@@ -57,6 +57,9 @@ import { transferStartHandler } from './transfer/transferStart';
 import { adjustChatCapacityHandler } from './conversation/adjustChatCapacity';
 import { reportToIWFHandler } from './integrations/iwf/reportToIWF';
 import { selfReportToIWFHandler } from './integrations/iwf/selfReportToIWF';
+import { sendSystemMessageHandler } from './conversation/sendSystemMessage';
+import { sendStudioMessageHandler } from './conversation/sendStudioMessage';
+import { sendMessageAndRunJanitorHandler } from './conversation/sendMessageAndRunJanitor';
 
 /**
  * Super simple router sufficient for directly ported Twilio Serverless functions
@@ -193,6 +196,18 @@ const ACCOUNTSID_ROUTES: Record<
   'integrations/iwf/selfReportToIWF': {
     requestPipeline: [validateFlexTokenRequest({ tokenMode: 'agent' })],
     handler: selfReportToIWFHandler,
+  },
+  'conversation/sendSystemMessage': {
+    requestPipeline: [validateFlexTokenRequest({ tokenMode: 'agent' })],
+    handler: sendSystemMessageHandler,
+  },
+  'conversation/sendStudioMessage': {
+    requestPipeline: [validateWebhookRequest],
+    handler: sendStudioMessageHandler,
+  },
+  'conversation/sendMessageAndRunJanitor': {
+    requestPipeline: [validateWebhookRequest],
+    handler: sendMessageAndRunJanitorHandler,
   },
 };
 
