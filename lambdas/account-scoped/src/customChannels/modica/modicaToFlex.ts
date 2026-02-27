@@ -27,6 +27,7 @@ export type Body = {
   source: string; // The child's phone number
   destination: string; // The helpline short code
   content: string; // The message text
+  testSessionId?: string; // Only used in Aselo integration tests, not sent from Modica
 };
 
 export const modicaToFlexHandler: AccountScopedHandler = async (
@@ -68,6 +69,7 @@ export const modicaToFlexHandler: AccountScopedHandler = async (
     senderExternalId,
     customSubscribedExternalId: subscribedExternalId,
     conversationFriendlyName: chatFriendlyName,
+    testSessionId: event.testSessionId,
   });
 
   console.debug('ModicaToFlex: result status:', result.status);
