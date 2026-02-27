@@ -30,6 +30,7 @@ export type Body = {
     chat: { id: string; first_name?: string; username?: string };
     text: string;
   };
+  testSessionId?: string; // Only used in Aselo integration tests, not sent from Telegram
 };
 
 const isValidTelegramPayload = (
@@ -85,6 +86,7 @@ export const telegramToFlexHandler: AccountScopedHandler = async (
     messageText,
     senderExternalId,
     conversationFriendlyName: chatFriendlyName,
+    testSessionId: event.testSessionId,
   });
 
   console.debug('TelegramToFlex: result status:', result.status);

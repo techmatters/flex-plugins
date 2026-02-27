@@ -264,4 +264,53 @@ describe('FlexToModica', () => {
       }),
     );
   });
+
+  test('Should send to TEST_SEND_URL with testSessionId header when testSessionId is set in conversation attributes', async () => {
+    const TEST_SESSION_ID = 'test-session-123';
+    const TEST_SEND_URL = `${process.env.WEBHOOK_BASE_URL}/lambda/integrationTestRunner`;
+
+    mockTwilioClient.conversations.v1.conversations.get = () => ({
+      fetch: async () => ({
+        ...conversations.CONVERSATION_SID,
+        attributes: JSON.stringify({ testSessionId: TEST_SESSION_ID }),
+      }),
+      ...conversations.CONVERSATION_SID,
+    });
+
+    mockFetch.mockClear();
+    mockFetch.mockResolvedValue({
+      status: 200,
+      ok: true,
+      text: async () => Promise.resolve(JSON.stringify({ success: true })),
+      headers: {} as any,
+    } as any);
+
+    await flexToModicaHandler(
+      {
+        body: validEvent(),
+        query: { recipientId: '+64211234567' } as Record<string, string>,
+      } as HttpRequest,
+      ACCOUNT_SID,
+    );
+
+    const expectedBase64Credentials = Buffer.from(
+      `${MODICA_APP_NAME}:${MODICA_APP_PASSWORD}`,
+    ).toString('base64');
+
+    expect(mockFetch).toBeCalledWith(
+      TEST_SEND_URL,
+      expect.objectContaining({
+        method: 'POST',
+        body: JSON.stringify({
+          destination: '+64211234567',
+          content: validEvent().Body,
+        }),
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Basic ${expectedBase64Credentials}`,
+          'x-webhook-receiver-session-id': TEST_SESSION_ID,
+        },
+      }),
+    );
+  });
 });

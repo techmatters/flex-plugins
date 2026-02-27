@@ -19,6 +19,7 @@ import {
   ExternalSendResult,
   redirectConversationMessageToExternalChat,
   RedirectResult,
+  TEST_SEND_URL,
 } from '../flexToCustomChannel';
 import { AccountScopedHandler, HttpError, HttpRequest } from '../../httpTypes';
 import { isErr, newOk, Result } from '../../Result';
@@ -46,18 +47,24 @@ const sanitizeRecipientId = (recipientIdRaw: string) => {
 
 const sendModicaMessage =
   (appName: string, appPassword: string) =>
-  async (recipientId: string, messageText: string): Promise<ExternalSendResult> => {
+  async (
+    recipientId: string,
+    messageText: string,
+    testSessionId?: string,
+  ): Promise<ExternalSendResult> => {
     const payload = {
       destination: sanitizeRecipientId(recipientId),
       content: messageText,
     };
 
     const base64Credentials = Buffer.from(`${appName}:${appPassword}`).toString('base64');
-    const response = await fetch(DEFAULT_MODICA_SEND_MESSAGE_URL, {
+    const sendUrl = testSessionId ? TEST_SEND_URL : DEFAULT_MODICA_SEND_MESSAGE_URL;
+    const response = await fetch(sendUrl, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         Authorization: `Basic ${base64Credentials}`,
+        ...(testSessionId ? { 'x-webhook-receiver-session-id': testSessionId } : {}),
       },
       body: JSON.stringify(payload),
     });

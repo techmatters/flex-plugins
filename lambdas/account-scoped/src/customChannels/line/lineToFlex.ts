@@ -48,6 +48,7 @@ type LineEvent = {
 export type Body = {
   destination: string;
   events: LineEvent[];
+  testSessionId?: string; // Only used in Aselo integration tests, not sent from Line
 };
 
 // Line seems to have generated signatures using escaped unicode for emoji characters
@@ -155,6 +156,7 @@ export const lineToFlexHandler: AccountScopedHandler = async (
       senderExternalId,
       customSubscribedExternalId: subscribedExternalId,
       conversationFriendlyName: chatFriendlyName,
+      testSessionId: event.testSessionId,
     });
 
     console.debug(
