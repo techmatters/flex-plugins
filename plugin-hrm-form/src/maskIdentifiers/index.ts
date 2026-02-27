@@ -20,6 +20,7 @@ import {
   DefaultTaskChannels,
   Manager,
   MessageList,
+  Notifications,
   NotificationIds,
   StateHelper,
   Strings,
@@ -37,6 +38,8 @@ const maskNotifications = (channelType: TaskChannelDefinition) => {
   channelType.notifications.override[NotificationIds.NewChatMessage] = notification => {
     notification.options.browser.title = lookupTranslation('BrowserNotification-ChatMessage-MaskedTitle');
   };
+  // Trying to modify this notification doesn't appear to work so remove it
+  Notifications.registeredNotifications.delete(NotificationIds.IncomingTask);
 };
 
 // Mask identifiers in the channel strings
