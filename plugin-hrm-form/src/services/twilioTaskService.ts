@@ -17,6 +17,7 @@
 import fetchProtectedApi from './fetchProtectedApi';
 import { TaskSID } from '../types/twilio';
 import { FetchOptions } from './fetchApi';
+import { getAseloFeatureFlags } from '../hrmConfig';
 
 /**
  * Creates a new task (offline contact) in behalf of targetSid worker with attributes. Other attributes for routing are added to the task in the implementation of assignOfflineContact serverless function
@@ -27,7 +28,9 @@ export const assignOfflineContactInit = async (targetSid: string, taskAttributes
     taskAttributes: JSON.stringify(taskAttributes),
   };
 
-  return fetchProtectedApi('/assignOfflineContactInit', body);
+  const { use_twilio_lambda_for_offline_contact_tasks: useTwilioLambda } = getAseloFeatureFlags();
+  const pathRoot = useTwilioLambda ? '/task' : '';
+  return fetchProtectedApi(`${pathRoot}/assignOfflineContactInit`, body, { useTwilioLambda });
 };
 
 type OfflineContactComplete = {
@@ -52,7 +55,9 @@ export const assignOfflineContactResolve = async (payload: OfflineContactComplet
         }
       : payload;
 
-  return fetchProtectedApi('/assignOfflineContactResolve', body);
+  const { use_twilio_lambda_for_offline_contact_tasks: useTwilioLambda } = getAseloFeatureFlags();
+  const pathRoot = useTwilioLambda ? '/task' : '';
+  return fetchProtectedApi(`${pathRoot}/assignOfflineContactResolve`, body, { useTwilioLambda });
 };
 
 /**
