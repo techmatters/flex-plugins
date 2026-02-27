@@ -15,21 +15,32 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 import {
-  Strings,
-  TaskChannelDefinition,
-  MessageList,
-  StateHelper,
+  AppState,
   ConversationHelper,
-  TaskHelper,
   DefaultTaskChannels,
   Manager,
-  AppState,
+  MessageList,
+  Notifications,
+  NotificationIds,
+  StateHelper,
+  Strings,
+  TaskChannelDefinition,
+  TaskHelper,
 } from '@twilio/flex-ui';
 // Weird type to pull in, but I can't see how it can be inferred from the public API, so it's this or 'any' xD
 import type { ChatProperties } from '@twilio/flex-ui/src/internal-flex-commons/src';
 
 import { getInitializedCan } from '../permissions/rules';
 import { PermissionActions } from '../permissions/actions';
+import { lookupTranslation } from '../translations';
+
+const maskNotifications = (channelType: TaskChannelDefinition) => {
+  channelType.notifications.override[NotificationIds.NewChatMessage] = notification => {
+    notification.options.browser.title = lookupTranslation('BrowserNotification-ChatMessage-MaskedTitle');
+  };
+  // Trying to modify this notification doesn't appear to work so remove it
+  Notifications.registeredNotifications.delete(NotificationIds.IncomingTask);
+};
 
 // Mask identifiers in the channel strings
 export const maskChannelStringsWithIdentifiers = (channelType: TaskChannelDefinition) => {
@@ -80,6 +91,7 @@ export const maskChannelStringsWithIdentifiers = (channelType: TaskChannelDefini
   TaskCard.firstLine = 'MaskIdentifiers';
 
   Supervisor.TaskOverviewCanvas.firstLine = 'MaskIdentifiers';
+  maskNotifications(channelType);
 };
 
 // Mask identifiers in the manager strings & messaging canvas
