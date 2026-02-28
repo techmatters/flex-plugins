@@ -44,6 +44,12 @@ import { conferenceStatusCallbackHandler } from './conference/conferenceStatusCa
 import './conference/stopRecordingWhenLastAgentLeaves';
 import { instagramToFlexHandler } from './customChannels/instagram/instagramToFlex';
 import { flexToInstagramHandler } from './customChannels/instagram/flexToInstagram';
+import { telegramToFlexHandler } from './customChannels/telegram/telegramToFlex';
+import { flexToTelegramHandler } from './customChannels/telegram/flexToTelegram';
+import { modicaToFlexHandler } from './customChannels/modica/modicaToFlex';
+import { flexToModicaHandler } from './customChannels/modica/flexToModica';
+import { lineToFlexHandler } from './customChannels/line/lineToFlex';
+import { flexToLineHandler } from './customChannels/line/flexToLine';
 import { handleConversationEvent } from './conversation';
 import { getTaskAndReservationsHandler } from './task/getTaskAndReservations';
 import { checkTaskAssignmentHandler } from './task/checkTaskAssignment';
@@ -133,6 +139,30 @@ const ACCOUNTSID_ROUTES: Record<
   'customChannels/instagram/flexToInstagram': {
     requestPipeline: [validateWebhookRequest],
     handler: flexToInstagramHandler,
+  },
+  'customChannels/telegram/telegramToFlex': {
+    requestPipeline: [],
+    handler: telegramToFlexHandler,
+  },
+  'customChannels/telegram/flexToTelegram': {
+    requestPipeline: [validateWebhookRequest],
+    handler: flexToTelegramHandler,
+  },
+  'customChannels/modica/modicaToFlex': {
+    requestPipeline: [],
+    handler: modicaToFlexHandler,
+  },
+  'customChannels/modica/flexToModica': {
+    requestPipeline: [validateWebhookRequest],
+    handler: flexToModicaHandler,
+  },
+  'customChannels/line/lineToFlex': {
+    requestPipeline: [],
+    handler: lineToFlexHandler,
+  },
+  'customChannels/line/flexToLine': {
+    requestPipeline: [validateWebhookRequest],
+    handler: flexToLineHandler,
   },
   'webchatAuth/initWebchat': {
     requestPipeline: [],
