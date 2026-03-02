@@ -17,7 +17,7 @@
 import { act, fireEvent, render, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { Provider } from 'react-redux';
-import { FormInputType } from 'hrm-form-definitions';
+import { FormInputType, PreEngagementFormItem } from 'hrm-form-definitions';
 
 import { sessionDataHandler } from '../../sessionDataHandler';
 import * as initAction from '../../store/actions/initActions';
@@ -188,6 +188,131 @@ describe('Pre Engagement Form Phase', () => {
         query,
         email,
       },
+    });
+  });
+
+  describe('form validation', () => {
+    const createStoreWithFields = (fields: PreEngagementFormItem[]) =>
+      preloadStore({
+        config: {
+          ...preloadedState.config!,
+          preEngagementFormDefinition: {
+            description: 'Description',
+            submitLabel: 'Submit',
+            fields,
+          },
+        },
+        session: {
+          currentPhase: EngagementPhase.PreEngagementForm,
+          expanded: false,
+          preEngagementData: {},
+        },
+      });
+
+    it('does not submit if a required Input field is empty', () => {
+      const testStore = createStoreWithFields([
+        { name: 'requiredInput', type: FormInputType.Input, label: 'Required Input', required: true },
+      ]);
+      const { container } = render(
+        <Provider store={testStore}>
+          <PreEngagementFormPhase />
+        </Provider>,
+      );
+      fireEvent.submit(container.querySelector('form') as HTMLFormElement);
+      expect(testStore.getState().session.currentPhase).toBe(EngagementPhase.PreEngagementForm);
+    });
+
+    it('does not submit if a required Email field is empty', () => {
+      const testStore = createStoreWithFields([
+        { name: 'requiredEmail', type: FormInputType.Email, label: 'Required Email', required: true },
+      ]);
+      const { container } = render(
+        <Provider store={testStore}>
+          <PreEngagementFormPhase />
+        </Provider>,
+      );
+      fireEvent.submit(container.querySelector('form') as HTMLFormElement);
+      expect(testStore.getState().session.currentPhase).toBe(EngagementPhase.PreEngagementForm);
+    });
+
+    it('does not submit if an Email field does not match the EMAIL_PATTERN regex', () => {
+      const testStore = createStoreWithFields([
+        { name: 'emailField', type: FormInputType.Email, label: 'Email', placeholder: 'Enter email' },
+      ]);
+      const { container, getByPlaceholderText } = render(
+        <Provider store={testStore}>
+          <PreEngagementFormPhase />
+        </Provider>,
+      );
+      const emailInput = getByPlaceholderText('Enter email');
+      fireEvent.change(emailInput, { target: { value: 'not-a-valid-email' } });
+      fireEvent.blur(emailInput);
+      fireEvent.submit(container.querySelector('form') as HTMLFormElement);
+      expect(testStore.getState().session.currentPhase).toBe(EngagementPhase.PreEngagementForm);
+    });
+
+    it('does not submit if a required Select field is empty', () => {
+      const testStore = createStoreWithFields([
+        {
+          name: 'selectField',
+          type: FormInputType.Select,
+          label: 'Select Field',
+          required: true,
+          options: [{ value: 'option1', label: 'Option 1' }],
+        },
+      ]);
+      const { container } = render(
+        <Provider store={testStore}>
+          <PreEngagementFormPhase />
+        </Provider>,
+      );
+      fireEvent.submit(container.querySelector('form') as HTMLFormElement);
+      expect(testStore.getState().session.currentPhase).toBe(EngagementPhase.PreEngagementForm);
+    });
+
+    it('does not submit if a required DependentSelect field is empty', () => {
+      const testStore = createStoreWithFields([
+        {
+          name: 'parentField',
+          type: FormInputType.Select,
+          label: 'Parent Field',
+          options: [{ value: 'parent1', label: 'Parent 1' }],
+        },
+        {
+          name: 'dependentField',
+          type: FormInputType.DependentSelect,
+          label: 'Dependent Field',
+          required: true,
+          dependsOn: 'parentField',
+          defaultOption: { value: '', label: 'Select...' },
+          options: { parent1: [{ value: 'dep1', label: 'Dep 1' }] },
+        },
+      ]);
+      const { container } = render(
+        <Provider store={testStore}>
+          <PreEngagementFormPhase />
+        </Provider>,
+      );
+      fireEvent.submit(container.querySelector('form') as HTMLFormElement);
+      expect(testStore.getState().session.currentPhase).toBe(EngagementPhase.PreEngagementForm);
+    });
+
+    it('does not submit if a required Checkbox is unchecked', () => {
+      const testStore = createStoreWithFields([
+        {
+          name: 'checkboxField',
+          type: FormInputType.Checkbox,
+          label: 'Checkbox Field',
+          required: { value: true, message: 'RequiredFieldError' },
+        },
+      ]);
+      const { container } = render(
+        <Provider store={testStore}>
+          <PreEngagementFormPhase />
+        </Provider>,
+      );
+      fireEvent.submit(container.querySelector('form') as HTMLFormElement);
+      expect(testStore.getState().session.currentPhase).toBe(EngagementPhase.PreEngagementForm);
     });
   });
 });

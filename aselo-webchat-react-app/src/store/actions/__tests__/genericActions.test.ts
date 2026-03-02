@@ -15,6 +15,7 @@
  */
 
 import { Message, Conversation } from '@twilio/conversations';
+import { FormInputType } from 'hrm-form-definitions';
 import { applyMiddleware, combineReducers, createStore, compose } from 'redux';
 import thunk from 'redux-thunk';
 
@@ -27,6 +28,8 @@ import {
   detachFiles,
   getMoreMessages,
   removeNotification,
+  submitAndInitChatThunk,
+  updatePreEngagementData,
 } from '../genericActions';
 import { EngagementPhase, Notification } from '../../definitions';
 import {
@@ -37,8 +40,17 @@ import {
   ACTION_REMOVE_NOTIFICATION,
 } from '../actionTypes';
 import { SessionReducer } from '../../session.reducer';
+import { sessionDataHandler } from '../../../sessionDataHandler';
+import * as initActions from '../initActions';
+import { notifications } from '../../../notifications';
 
 jest.mock('@twilio/conversations');
+
+jest.mock('../../../sessionDataHandler', () => ({
+  sessionDataHandler: {
+    fetchAndStoreNewSession: jest.fn(),
+  },
+}));
 
 const createSessionStore = () =>
   createStore(
@@ -143,6 +155,61 @@ describe('Actions', () => {
           id: notification.id,
         },
       });
+    });
+  });
+
+  describe('submitAndInitChatThunk', () => {
+    const token = 'token';
+    const conversationSid = 'sid';
+
+    const formDefinition = {
+      fields: [
+        { name: 'friendlyName', type: FormInputType.Input, label: 'Name' },
+        { name: 'email', type: FormInputType.Email, label: 'Email' },
+      ],
+    };
+
+    const validPreEngagementData = {
+      friendlyName: { value: 'John', error: null, dirty: true },
+      email: { value: 'john@example.com', error: null, dirty: true },
+    };
+
+    const getState = () =>
+      ({
+        config: { preEngagementFormDefinition: formDefinition },
+        session: { preEngagementData: validPreEngagementData },
+      } as any);
+
+    beforeEach(() => {
+      jest.spyOn(sessionDataHandler, 'fetchAndStoreNewSession').mockResolvedValue({ token, conversationSid } as any);
+      jest.spyOn(initActions, 'initSession').mockReturnValue(jest.fn() as any);
+    });
+
+    it('success scenario dispatches updatePreEngagementData, changeEngagementPhase and initSession', async () => {
+      const dispatch = jest.fn();
+      await submitAndInitChatThunk()(dispatch, getState, {});
+
+      expect(dispatch).toHaveBeenCalledWith(
+        updatePreEngagementData(
+          expect.objectContaining({
+            friendlyName: expect.objectContaining({ value: 'John', error: null }),
+            email: expect.objectContaining({ value: 'john@example.com', error: null }),
+          }),
+        ),
+      );
+      expect(dispatch).toHaveBeenCalledWith(changeEngagementPhase({ phase: EngagementPhase.Loading }));
+      expect(initActions.initSession).toHaveBeenCalledWith({ token, conversationSid });
+    });
+
+    it('error scenario dispatches addNotification and changeEngagementPhase', async () => {
+      const errMessage = 'Network error';
+      jest.spyOn(sessionDataHandler, 'fetchAndStoreNewSession').mockRejectedValue(new Error(errMessage));
+
+      const dispatch = jest.fn();
+      await submitAndInitChatThunk()(dispatch, getState, {});
+
+      expect(dispatch).toHaveBeenCalledWith(addNotification(notifications.failedToInitSessionNotification(errMessage)));
+      expect(dispatch).toHaveBeenCalledWith(changeEngagementPhase({ phase: EngagementPhase.PreEngagementForm }));
     });
   });
 });
