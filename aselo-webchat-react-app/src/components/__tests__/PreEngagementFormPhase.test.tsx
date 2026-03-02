@@ -17,7 +17,7 @@
 import { act, fireEvent, render, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { Provider } from 'react-redux';
-import { FormInputType } from 'hrm-form-definitions';
+import { FormInputType, PreEngagementFormItem } from 'hrm-form-definitions';
 
 import { sessionDataHandler } from '../../sessionDataHandler';
 import * as initAction from '../../store/actions/initActions';
@@ -189,5 +189,292 @@ describe('Pre Engagement Form Phase', () => {
         email,
       },
     });
+  });
+});
+
+describe('Pre Engagement Form Phase - validation', () => {
+  const createValidationStore = (fields: PreEngagementFormItem[], preEngagementData: Record<string, any> = {}) =>
+    preloadStore({
+      config: {
+        environment: 'test',
+        helplineCode: '',
+        quickExitUrl: 'https://',
+        translations: {},
+        defaultLocale: 'en-US',
+        deploymentKey: '',
+        aseloBackendUrl: '',
+        definitionVersion: '',
+        preEngagementFormDefinition: {
+          description: 'Description',
+          submitLabel: 'Submit',
+          fields,
+        },
+      },
+      session: {
+        currentPhase: EngagementPhase.PreEngagementForm,
+        expanded: false,
+        preEngagementData,
+      },
+    });
+
+  const submitForm = async (container: HTMLElement) => {
+    const formBox = container.querySelector('form') as HTMLFormElement;
+    await act(async () => {
+      fireEvent.submit(formBox);
+    });
+  };
+
+  beforeEach(() => {
+    jest.resetAllMocks();
+    jest.spyOn(sessionDataHandler, 'fetchAndStoreNewSession').mockReturnValue({ token, conversationSid } as any);
+    jest.spyOn(initAction, 'initSession').mockImplementation((data: any) => data);
+  });
+
+  it('Input: form is not valid when a "required" input is empty', async () => {
+    const store = createValidationStore([
+      { name: 'name', type: FormInputType.Input, label: 'Name', required: true } as PreEngagementFormItem,
+    ]);
+    const { container } = render(
+      <Provider store={store}>
+        <PreEngagementFormPhase />
+      </Provider>,
+    );
+    await submitForm(container);
+    expect(store.getState().session.currentPhase).toBe(EngagementPhase.PreEngagementForm);
+    expect(sessionDataHandler.fetchAndStoreNewSession).not.toHaveBeenCalled();
+    expect(initAction.initSession).not.toHaveBeenCalled();
+  });
+
+  it('Input: form is valid when a "required" input has a value', async () => {
+    const store = createValidationStore(
+      [{ name: 'name', type: FormInputType.Input, label: 'Name', required: true } as PreEngagementFormItem],
+      { name: { value: 'John', error: null, dirty: true } },
+    );
+    const { container } = render(
+      <Provider store={store}>
+        <PreEngagementFormPhase />
+      </Provider>,
+    );
+    await submitForm(container);
+    expect(sessionDataHandler.fetchAndStoreNewSession).toHaveBeenCalled();
+    expect(initAction.initSession).toHaveBeenCalled();
+  });
+
+  it('Email: form is not valid when a "required" email input is empty', async () => {
+    const store = createValidationStore([
+      { name: 'email', type: FormInputType.Email, label: 'Email', required: true } as PreEngagementFormItem,
+    ]);
+    const { container } = render(
+      <Provider store={store}>
+        <PreEngagementFormPhase />
+      </Provider>,
+    );
+    await submitForm(container);
+    expect(store.getState().session.currentPhase).toBe(EngagementPhase.PreEngagementForm);
+    expect(sessionDataHandler.fetchAndStoreNewSession).not.toHaveBeenCalled();
+    expect(initAction.initSession).not.toHaveBeenCalled();
+  });
+
+  it('Email: form is valid when a "required" email input has a valid email', async () => {
+    const store = createValidationStore(
+      [{ name: 'email', type: FormInputType.Email, label: 'Email', required: true } as PreEngagementFormItem],
+      { email: { value: 'test@test.com', error: null, dirty: true } },
+    );
+    const { container } = render(
+      <Provider store={store}>
+        <PreEngagementFormPhase />
+      </Provider>,
+    );
+    await submitForm(container);
+    expect(sessionDataHandler.fetchAndStoreNewSession).toHaveBeenCalled();
+    expect(initAction.initSession).toHaveBeenCalled();
+  });
+
+  it('Email: form is not valid when email does not match EMAIL_PATTERN', async () => {
+    const emailPlaceholder = 'Enter email';
+    const store = createValidationStore([
+      {
+        name: 'email',
+        type: FormInputType.Email,
+        label: 'Email',
+        placeholder: emailPlaceholder,
+      } as PreEngagementFormItem,
+    ]);
+    const { container, getByPlaceholderText } = render(
+      <Provider store={store}>
+        <PreEngagementFormPhase />
+      </Provider>,
+    );
+    const emailInput = getByPlaceholderText(emailPlaceholder);
+    fireEvent.change(emailInput, { target: { value: 'not-an-email' } });
+    fireEvent.blur(emailInput);
+    await submitForm(container);
+    expect(store.getState().session.currentPhase).toBe(EngagementPhase.PreEngagementForm);
+    expect(sessionDataHandler.fetchAndStoreNewSession).not.toHaveBeenCalled();
+    expect(initAction.initSession).not.toHaveBeenCalled();
+  });
+
+  it('Email: form is valid when email matches EMAIL_PATTERN', async () => {
+    const store = createValidationStore(
+      [{ name: 'email', type: FormInputType.Email, label: 'Email' } as PreEngagementFormItem],
+      { email: { value: 'test@test.com', error: null, dirty: true } },
+    );
+    const { container } = render(
+      <Provider store={store}>
+        <PreEngagementFormPhase />
+      </Provider>,
+    );
+    await submitForm(container);
+    expect(sessionDataHandler.fetchAndStoreNewSession).toHaveBeenCalled();
+    expect(initAction.initSession).toHaveBeenCalled();
+  });
+
+  it('Select: form is not valid when a "required" select input is empty', async () => {
+    const store = createValidationStore([
+      {
+        name: 'choice',
+        type: FormInputType.Select,
+        label: 'Choice',
+        required: true,
+        options: [{ value: 'opt1', label: 'Option 1' }],
+      } as PreEngagementFormItem,
+    ]);
+    const { container } = render(
+      <Provider store={store}>
+        <PreEngagementFormPhase />
+      </Provider>,
+    );
+    await submitForm(container);
+    expect(store.getState().session.currentPhase).toBe(EngagementPhase.PreEngagementForm);
+    expect(sessionDataHandler.fetchAndStoreNewSession).not.toHaveBeenCalled();
+    expect(initAction.initSession).not.toHaveBeenCalled();
+  });
+
+  it('Select: form is valid when a "required" select input has a value', async () => {
+    const store = createValidationStore(
+      [
+        {
+          name: 'choice',
+          type: FormInputType.Select,
+          label: 'Choice',
+          required: true,
+          options: [{ value: 'opt1', label: 'Option 1' }],
+        } as PreEngagementFormItem,
+      ],
+      { choice: { value: 'opt1', error: null, dirty: true } },
+    );
+    const { container } = render(
+      <Provider store={store}>
+        <PreEngagementFormPhase />
+      </Provider>,
+    );
+    await submitForm(container);
+    expect(sessionDataHandler.fetchAndStoreNewSession).toHaveBeenCalled();
+    expect(initAction.initSession).toHaveBeenCalled();
+  });
+
+  it('DependentSelect: form is not valid when a "required" dependent select input is empty', async () => {
+    const store = createValidationStore([
+      {
+        name: 'parent',
+        type: FormInputType.Select,
+        label: 'Parent',
+        options: [{ value: 'parentVal', label: 'Parent Option' }],
+      },
+      {
+        name: 'child',
+        type: FormInputType.DependentSelect,
+        label: 'Child',
+        required: true,
+        dependsOn: 'parent',
+        defaultOption: { value: '', label: '' },
+        options: { parentVal: [{ value: 'childVal', label: 'Child Option' }] },
+      },
+    ] as PreEngagementFormItem[]);
+    const { container } = render(
+      <Provider store={store}>
+        <PreEngagementFormPhase />
+      </Provider>,
+    );
+    await submitForm(container);
+    expect(store.getState().session.currentPhase).toBe(EngagementPhase.PreEngagementForm);
+    expect(sessionDataHandler.fetchAndStoreNewSession).not.toHaveBeenCalled();
+    expect(initAction.initSession).not.toHaveBeenCalled();
+  });
+
+  it('DependentSelect: form is valid when a "required" dependent select input has a value', async () => {
+    const store = createValidationStore(
+      [
+        {
+          name: 'parent',
+          type: FormInputType.Select,
+          label: 'Parent',
+          options: [{ value: 'parentVal', label: 'Parent Option' }],
+        },
+        {
+          name: 'child',
+          type: FormInputType.DependentSelect,
+          label: 'Child',
+          required: true,
+          dependsOn: 'parent',
+          defaultOption: { value: '', label: '' },
+          options: { parentVal: [{ value: 'childVal', label: 'Child Option' }] },
+        },
+      ] as PreEngagementFormItem[],
+      {
+        parent: { value: 'parentVal', error: null, dirty: true },
+        child: { value: 'childVal', error: null, dirty: true },
+      },
+    );
+    const { container } = render(
+      <Provider store={store}>
+        <PreEngagementFormPhase />
+      </Provider>,
+    );
+    await submitForm(container);
+    expect(sessionDataHandler.fetchAndStoreNewSession).toHaveBeenCalled();
+    expect(initAction.initSession).toHaveBeenCalled();
+  });
+
+  it('Checkbox: form is not valid when a "required" checkbox is unchecked', async () => {
+    const store = createValidationStore([
+      {
+        name: 'agree',
+        type: FormInputType.Checkbox,
+        label: 'I agree',
+        required: { value: true, message: 'RequiredFieldError' },
+      } as PreEngagementFormItem,
+    ]);
+    const { container } = render(
+      <Provider store={store}>
+        <PreEngagementFormPhase />
+      </Provider>,
+    );
+    await submitForm(container);
+    expect(store.getState().session.currentPhase).toBe(EngagementPhase.PreEngagementForm);
+    expect(sessionDataHandler.fetchAndStoreNewSession).not.toHaveBeenCalled();
+    expect(initAction.initSession).not.toHaveBeenCalled();
+  });
+
+  it('Checkbox: form is valid when a "required" checkbox is checked', async () => {
+    const store = createValidationStore(
+      [
+        {
+          name: 'agree',
+          type: FormInputType.Checkbox,
+          label: 'I agree',
+          required: { value: true, message: 'RequiredFieldError' },
+        } as PreEngagementFormItem,
+      ],
+      { agree: { value: true, error: null, dirty: true } },
+    );
+    const { container } = render(
+      <Provider store={store}>
+        <PreEngagementFormPhase />
+      </Provider>,
+    );
+    await submitForm(container);
+    expect(sessionDataHandler.fetchAndStoreNewSession).toHaveBeenCalled();
+    expect(initAction.initSession).toHaveBeenCalled();
   });
 });
