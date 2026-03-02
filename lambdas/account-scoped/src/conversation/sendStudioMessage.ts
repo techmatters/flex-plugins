@@ -41,14 +41,18 @@ export const sendStudioMessageHandler: AccountScopedHandler = async (
 ) => {
   try {
     const { channelSid } = body;
+    console.debug('sendStudioMessage execution', { accountSid, channelSid });
 
     /**
      * We need to remove the studio webhook before calling sendSystemMessage
      * because it would trigger another execution of studio.
      */
+    console.debug(`Removing studio webhook from channel ${channelSid}`);
     await removeStudioWebhook(accountSid, channelSid);
+    console.info(`Studio webhook removed from channel ${channelSid}`);
     return await sendSystemMessage(accountSid, body);
   } catch (err: any) {
+    console.error('sendStudioMessage failed', err);
     return newErr({ message: err.message, error: { statusCode: 500, cause: err } });
   }
 };

@@ -27,6 +27,11 @@ export const sendMessageAndRunJanitorHandler: AccountScopedHandler = async (
 ) => {
   try {
     const { channelSid, conversationSid } = body;
+    console.debug('sendMessageAndRunJanitor execution', {
+      accountSid,
+      conversationSid,
+      channelSid,
+    });
 
     if (channelSid === undefined && conversationSid === undefined) {
       return newErr({
@@ -42,6 +47,7 @@ export const sendMessageAndRunJanitorHandler: AccountScopedHandler = async (
         .get(conversationSid)
         .webhooks.list();
 
+      console.debug(`Removing studio webhooks from conversation ${conversationSid}`);
       // Remove the studio trigger webhooks to prevent this channel from triggering subsequent Studio flows executions
       await Promise.all(
         conversationWebhooks.map(async w => {
@@ -50,6 +56,7 @@ export const sendMessageAndRunJanitorHandler: AccountScopedHandler = async (
           }
         }),
       );
+      console.info(`Studio webhooks removed from conversation ${conversationSid}`);
 
       const result = await sendSystemMessage(accountSid, body);
 
@@ -63,6 +70,7 @@ export const sendMessageAndRunJanitorHandler: AccountScopedHandler = async (
         .channels.get(channelSid)
         .webhooks.list();
 
+      console.debug(`Removing studio webhooks from channel ${channelSid}`);
       // Remove the studio trigger webhooks to prevent this channel from triggering subsequent Studio flows executions
       await Promise.all(
         channelWebhooks.map(async w => {
@@ -71,6 +79,7 @@ export const sendMessageAndRunJanitorHandler: AccountScopedHandler = async (
           }
         }),
       );
+      console.info(`Studio webhooks removed from channel ${channelSid}`);
 
       const result = await sendSystemMessage(accountSid, body);
 
@@ -79,6 +88,7 @@ export const sendMessageAndRunJanitorHandler: AccountScopedHandler = async (
       return result;
     }
   } catch (err: any) {
+    console.error('sendMessageAndRunJanitor failed', err);
     return newErr({ message: err.message, error: { statusCode: 500, cause: err } });
   }
 };

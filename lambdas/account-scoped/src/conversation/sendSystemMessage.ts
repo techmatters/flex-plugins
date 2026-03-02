@@ -44,7 +44,12 @@ export const sendSystemMessage = async (
 ): Promise<Result<HttpError, any>> => {
   const { taskSid, channelSid, conversationSid, message, from } = event;
 
-  console.log('------ sendSystemMessage execution ------');
+  console.debug('sendSystemMessage execution', {
+    accountSid,
+    conversationSid,
+    channelSid,
+    taskSid,
+  });
 
   if (!channelSid && !taskSid && !conversationSid) {
     return newErr({
@@ -81,9 +86,7 @@ export const sendSystemMessage = async (
   }
 
   if (conversationSidToMessage) {
-    console.log(
-      `Adding message "${message}" to conversation ${conversationSidToMessage}`,
-    );
+    console.info(`Sending system message to conversation ${conversationSidToMessage}`);
     const messageResult = await client.conversations.v1.conversations
       .get(conversationSidToMessage)
       .messages.create({
@@ -91,11 +94,14 @@ export const sendSystemMessage = async (
         author: from,
         xTwilioWebhookEnabled: 'true',
       });
+    console.info(
+      `System message sent successfully to conversation ${conversationSidToMessage}`,
+    );
     return newOk(messageResult);
   }
 
   if (channelSidToMessage) {
-    console.log(`Sending message "${message}" to channel ${channelSidToMessage}`);
+    console.info(`Sending system message to channel ${channelSidToMessage}`);
     const chatServiceSid = await getChatServiceSid(accountSid);
     const messageResult = await client.chat.v2.services
       .get(chatServiceSid)
@@ -105,6 +111,7 @@ export const sendSystemMessage = async (
         from,
         xTwilioWebhookEnabled: 'true',
       });
+    console.info(`System message sent successfully to channel ${channelSidToMessage}`);
     return newOk(messageResult);
   }
 
@@ -122,6 +129,7 @@ export const sendSystemMessageHandler: FlexValidatedHandler = async (
   try {
     return await sendSystemMessage(accountSid, body as SendSystemMessageBody);
   } catch (err: any) {
+    console.error('sendSystemMessage failed', err);
     return newErr({ message: err.message, error: { statusCode: 500, cause: err } });
   }
 };
