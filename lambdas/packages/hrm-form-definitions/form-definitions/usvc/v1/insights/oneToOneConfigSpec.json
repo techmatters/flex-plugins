@@ -14,10 +14,6 @@
         "insights": ["customers", "acquisition_date"]
       },
       {
-        "name": "typeOfVictim",
-        "insights": ["customers", "customer_attribute_2"]
-      },
-      {
         "name": "preferredLanguage",
         "insights": ["conversations", "conversation_attribute_6"]
       }
@@ -30,6 +26,10 @@
       {
         "name": "frequencyOfAccess",
         "insights": ["customers", "category"]
+      },
+      {
+        "name": "typeOfVictim",
+        "insights": ["customers", "customer_attribute_2"]
       },
       {
         "name": "race",

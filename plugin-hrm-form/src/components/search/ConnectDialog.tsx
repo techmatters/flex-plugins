@@ -16,7 +16,7 @@
 
 import React from 'react';
 import CheckIcon from '@material-ui/icons/Check';
-import { Button, Popover } from '@material-ui/core';
+import { Box, Button, Popover } from '@material-ui/core';
 import { Template } from '@twilio/flex-ui';
 
 import { Row } from '../../styles';
@@ -62,21 +62,24 @@ const ConnectDialog: React.FC<Props> = ({
             <Template code={textTemplateCode} />
           </ConfirmText>
           <Row>
-            <CancelButton tabIndex={2} variant="text" size="medium" onClick={handleClose}>
-              <Template code="CaseHeader-Cancel" />
-            </CancelButton>
-            <Button
-              autoFocus
-              tabIndex={1}
-              variant="contained"
-              size="medium"
-              onClick={handleConfirm}
-              style={{ backgroundColor: '#000', color: '#fff', marginLeft: 20 }}
-              disabled={disabled}
-            >
-              <CheckIcon />
-              <Template code="CaseHeader-Copy" />
-            </Button>
+            {/* The design system buttons don't focus when inside a material dialog for some reason, even with tabIndex set
+              The containing Box elements with a tabIndex are, so this is a workaround. */}
+            <Box tabIndex={2} onClick={handleClose}>
+              <CancelButton variant="text" size="medium">
+                <Template code="CaseHeader-Cancel" />
+              </CancelButton>
+            </Box>
+            <Box autoFocus tabIndex={1} onClick={handleConfirm}>
+              <Button
+                variant="contained"
+                size="medium"
+                style={{ backgroundColor: '#000', color: '#fff', marginLeft: 20 }}
+                disabled={disabled}
+              >
+                <CheckIcon />
+                <Template code="CaseHeader-Copy" />
+              </Button>
+            </Box>
           </Row>
         </ConfirmContainer>
       </TabPressWrapper>

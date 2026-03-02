@@ -14,7 +14,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { omit } from 'lodash';
 
@@ -46,115 +46,122 @@ type InnerProps = Props & {
   queuesStatusFailure: (error: string) => void;
 };
 
-type State = {
-  tasksQuery: any;
-  workerQuery: any;
-  trackedTasks: Record<string, boolean> | null;
+export const InnerQueuesStatusWriter: React.FC<InnerProps> = ({
+  insightsClient,
+  workerSid,
+  queuesStatusUpdate: queuesStatusUpdateProp,
+  queuesStatusFailure: queuesStatusFailureProp,
+}) => {
+  const tasksQueryRef = useRef<any>(null);
+  const workerQueryRef = useRef<any>(null);
+  const trackedTasksRef = useRef<Record<string, boolean>>({});
+
+  // Keep refs to the latest callbacks to avoid stale closures in the effect
+  const queuesStatusUpdateRef = useRef(queuesStatusUpdateProp);
+  queuesStatusUpdateRef.current = queuesStatusUpdateProp;
+  const queuesStatusFailureRef = useRef(queuesStatusFailureProp);
+  queuesStatusFailureRef.current = queuesStatusFailureProp;
+
+  // eslint-disable-next-line sonarjs/cognitive-complexity
+  useEffect(() => {
+    const handleSubscribeError = (err: unknown) => {
+      const error = "Error, couldn't subscribe to live updates";
+      queuesStatusFailureRef.current(error);
+      console.error(error, err);
+    };
+
+    const updateQueuesState = (tasks: any, prevQueuesStatus: QueuesStatus) => {
+      const queuesStatus = h.getNewQueuesStatus(prevQueuesStatus, tasks);
+      queuesStatusUpdateRef.current(queuesStatus);
+    };
+
+    const waitingInCounselorQueues = (
+      tasksItems: Record<string, any>,
+      counselorQueues: string[],
+    ): Record<string, boolean> =>
+      Object.entries(tasksItems).reduce<Record<string, boolean>>(
+        (acc, [sid, task]) =>
+          h.isWaiting(task.status) && counselorQueues.includes(task.queue_name) ? { ...acc, [sid]: true } : acc,
+        {},
+      );
+
+    const subscribeToQueuesUpdates = async () => {
+      // Close the previous tasks query before resubscribing
+      if (tasksQueryRef.current) {
+        tasksQueryRef.current.close();
+        tasksQueryRef.current = null;
+      }
+
+      try {
+        // fetch the array of queues the counselor matches (excluding "Everyone")
+        const { workerQueues } = await listWorkerQueues({ workerSid });
+        const counselorQueues = workerQueues.map(q => q.friendlyName).filter(q => q !== 'Everyone');
+
+        const cleanQueuesStatus = h.initializeQueuesStatus(counselorQueues);
+
+        const tasksQuery = await insightsClient.liveQuery('tr-task', '');
+
+        const tasksItems = tasksQuery.getItems();
+
+        // tasks that are waiting and belong to a queue the counselor cares about, at the moment of this component mount
+        const trackedTasks = waitingInCounselorQueues(tasksItems, counselorQueues);
+
+        updateQueuesState(tasksItems, cleanQueuesStatus);
+        tasksQueryRef.current = tasksQuery;
+        trackedTasksRef.current = trackedTasks;
+
+        const shouldUpdate = (status: string) =>
+          h.isPending(status) || h.isReserved(status) || h.isAssigned(status) || h.isCanceled(status);
+
+        tasksQuery.on('itemUpdated', (args: any) => {
+          // eslint-disable-next-line camelcase
+          const { status, queue_name } = args.value;
+          if (counselorQueues.includes(queue_name) && shouldUpdate(status)) {
+            updateQueuesState(tasksQuery.getItems(), cleanQueuesStatus);
+            trackedTasksRef.current = { ...trackedTasksRef.current, [args.key]: true };
+          }
+        });
+
+        tasksQuery.on('itemRemoved', (args: any) => {
+          if (trackedTasksRef.current[args.key]) {
+            updateQueuesState(tasksQuery.getItems(), cleanQueuesStatus);
+            trackedTasksRef.current = omit(trackedTasksRef.current, args.key);
+          }
+        });
+      } catch (err) {
+        handleSubscribeError(err);
+      }
+    };
+
+    const init = async () => {
+      try {
+        await subscribeToQueuesUpdates();
+
+        const workerQuery = await insightsClient.liveQuery('tr-worker', `data.worker_sid == "${workerSid}"`);
+        workerQueryRef.current = workerQuery;
+
+        workerQuery.on('itemUpdated', async (_args: any) => {
+          await subscribeToQueuesUpdates();
+        });
+      } catch (err) {
+        handleSubscribeError(err);
+      }
+    };
+
+    init();
+
+    return () => {
+      // unsubscribe
+      if (tasksQueryRef.current) tasksQueryRef.current.close();
+      if (workerQueryRef.current) workerQueryRef.current.close();
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  return null;
 };
 
-export class InnerQueuesStatusWriter extends React.Component<InnerProps, State> {
-  static displayName = 'QueuesStatusWriter';
-
-  constructor(props: InnerProps) {
-    super(props);
-    this.updateQueuesState = this.updateQueuesState.bind(this);
-  }
-
-  state: State = {
-    tasksQuery: null,
-    workerQuery: null,
-    trackedTasks: null,
-  };
-
-  async componentDidMount() {
-    try {
-      await this.subscribeToQueuesUpdates();
-
-      const workerQuery = await this.props.insightsClient.liveQuery(
-        'tr-worker',
-        `data.worker_sid == "${this.props.workerSid}"`,
-      );
-      this.setState({ workerQuery });
-
-      workerQuery.on('itemUpdated', async (_args: any) => {
-        await this.subscribeToQueuesUpdates();
-      });
-    } catch (err) {
-      this.handleSubscribeError(err);
-    }
-  }
-
-  componentWillUnmount() {
-    const { tasksQuery, workerQuery } = this.state;
-    // unsubscribe
-    if (tasksQuery) tasksQuery.close();
-    if (workerQuery) workerQuery.close();
-  }
-
-  async subscribeToQueuesUpdates() {
-    const { workerSid } = this.props;
-    try {
-      // fetch the array of queues the counselor matches (excluding "Everyone")
-      const { workerQueues } = await listWorkerQueues({ workerSid });
-      const counselorQueues = workerQueues.map(q => q.friendlyName).filter(q => q !== 'Everyone');
-
-      const cleanQueuesStatus = h.initializeQueuesStatus(counselorQueues);
-
-      const tasksQuery = await this.props.insightsClient.liveQuery('tr-task', '');
-
-      const tasksItems = tasksQuery.getItems();
-
-      // tasks that are waiting and belong to a queue the counselor cares about, at the moment of this component mount
-      const trackedTasks = this.waitingInCounselorQueues(tasksItems, counselorQueues);
-
-      this.updateQueuesState(tasksItems, cleanQueuesStatus);
-      this.setState({ tasksQuery, trackedTasks });
-
-      const shouldUpdate = (status: string) =>
-        h.isPending(status) || h.isReserved(status) || h.isAssigned(status) || h.isCanceled(status);
-
-      tasksQuery.on('itemUpdated', (args: any) => {
-        // eslint-disable-next-line camelcase
-        const { status, queue_name } = args.value;
-        if (counselorQueues.includes(queue_name) && shouldUpdate(status)) {
-          this.updateQueuesState(tasksQuery.getItems(), cleanQueuesStatus);
-          this.setState(prev => ({ trackedTasks: { ...prev.trackedTasks, [args.key]: true } }));
-        }
-      });
-
-      tasksQuery.on('itemRemoved', (args: any) => {
-        if (this.state.trackedTasks[args.key]) {
-          this.updateQueuesState(tasksQuery.getItems(), cleanQueuesStatus);
-          this.setState(prev => ({ trackedTasks: omit(prev.trackedTasks, args.key) }));
-        }
-      });
-    } catch (err) {
-      this.handleSubscribeError(err);
-    }
-  }
-
-  handleSubscribeError(err: unknown) {
-    const error = "Error, couldn't subscribe to live updates";
-    this.props.queuesStatusFailure(error);
-    console.error(error, err);
-  }
-
-  updateQueuesState(tasks: any, prevQueuesStatus: QueuesStatus) {
-    const queuesStatus = h.getNewQueuesStatus(prevQueuesStatus, tasks);
-    this.props.queuesStatusUpdate(queuesStatus);
-  }
-
-  waitingInCounselorQueues = (tasksItems: Record<string, any>, counselorQueues: string[]) =>
-    Object.entries(tasksItems).reduce<Record<string, boolean>>(
-      (acc, [sid, task]) =>
-        h.isWaiting(task.status) && counselorQueues.includes(task.queue_name) ? { ...acc, [sid]: true } : acc,
-      {},
-    );
-
-  render() {
-    return null;
-  }
-}
+InnerQueuesStatusWriter.displayName = 'QueuesStatusWriter';
 
 const QueuesStatusWriter: React.FC<Props> = props => {
   const dispatch = useDispatch();

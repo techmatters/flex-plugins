@@ -54,7 +54,7 @@ const validateEmailPattern = ({
     return null;
   }
 
-  const matches = (value as string)?.match(EMAIL_PATTERN);
+  const matches = (value as string).match(EMAIL_PATTERN);
 
   if (Boolean(matches?.length)) {
     return null;

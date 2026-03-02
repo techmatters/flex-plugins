@@ -22,6 +22,8 @@ import { handleTaskRouterEvent } from './taskrouter';
 import { handleUpdateWorkersSkills } from './taskrouter/updateWorkersSkills';
 import { handleGetProfileFlagsForIdentifier } from './hrm/getProfileFlagsForIdentifier';
 import { handleToggleSwitchboardQueue } from './hrm/toggleSwitchboardQueue';
+import { assignOfflineContactInitHandler } from './task/assignOfflineContactInit';
+import { assignOfflineContactResolveHandler } from './task/assignOfflineContactResolve';
 import {
   handleCaptureChannelWithBot,
   handleChatbotCallback,
@@ -143,6 +145,14 @@ const ACCOUNTSID_ROUTES: Record<
   toggleSwitchboardQueue: {
     requestPipeline: [validateFlexTokenRequest({ tokenMode: 'supervisor' })],
     handler: handleToggleSwitchboardQueue,
+  },
+  'task/assignOfflineContactInit': {
+    requestPipeline: [validateFlexTokenRequest({ tokenMode: 'agent' })],
+    handler: assignOfflineContactInitHandler,
+  },
+  'task/assignOfflineContactResolve': {
+    requestPipeline: [validateFlexTokenRequest({ tokenMode: 'agent' })],
+    handler: assignOfflineContactResolveHandler,
   },
   endChat: {
     requestPipeline: [validateFlexTokenRequest({ tokenMode: 'guest' })],
