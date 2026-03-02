@@ -1945,7 +1945,7 @@ const preEngagementConfig: PreEngagementFormDefinition = {
       type: "checkbox",
       name: "termsAndConditions",
       label:
-        'Declaro que he leído y acepto los <a href="https://www.google.cl">Términos y Condiciones</a> del programa',
+        'Declaro que he leído y acepto los <a href="https://todomejora.org/terminos-y-condiciones-programa-horasegura">Términos y Condiciones</a> del programa',
       required: {
         value: true,
         message: "Tienes que approbar los términos y condiciones para poder iniciar un chat.",
