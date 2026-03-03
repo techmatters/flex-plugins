@@ -31,13 +31,30 @@ resource "aws_s3_bucket" "docs" {
 }
 
 resource "aws_s3_bucket_versioning" "docs" {
-  bucket = aws_s3_bucket.docs.bucket
+  bucket   = aws_s3_bucket.docs.bucket
   provider = aws.bucket
   versioning_configuration {
     status = "Enabled"
   }
 }
 
+resource "aws_s3_bucket_lifecycle_configuration" "docs" {
+  bucket   = aws_s3_bucket.docs.id
+  provider = aws.bucket
+
+  rule {
+    id     = "expire-noncurrent-versions-and-abort-multipart-uploads"
+    status = "Enabled"
+
+    noncurrent_version_expiration {
+      noncurrent_days = 365
+    }
+
+    abort_incomplete_multipart_upload {
+      days_after_initiation = 7
+    }
+  }
+}
 resource "aws_s3_bucket_public_access_block" "docs" {
   bucket                  = aws_s3_bucket.docs.id
   block_public_acls       = true
