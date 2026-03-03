@@ -141,7 +141,7 @@ export const updatePreEngagementDataField = ({
   };
 };
 
-const getInitialItem = (definition: PreEngagementFormItem): PreEngagementDataItem => ({
+const newInitialItem = (definition: PreEngagementFormItem): PreEngagementDataItem => ({
   error: null,
   dirty: false,
   value: getDefaultValue(definition),
@@ -154,7 +154,7 @@ export const submitAndInitChatThunk = (): ThunkAction<void, AppState, unknown, A
     const data = definition.reduce<PreEngagementData>((accum, def) => {
       const item = state.session.preEngagementData[def.name];
       const error = validateInput({ definition: def, value: item?.value });
-      return { ...accum, [def.name]: { ...(item || getInitialItem(def)), error } };
+      return { ...accum, [def.name]: { ...(item || newInitialItem(def)), error } };
     }, {});
 
     dispatch(updatePreEngagementData(data));
