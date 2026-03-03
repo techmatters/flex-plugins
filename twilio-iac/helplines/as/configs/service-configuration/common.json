@@ -20,7 +20,11 @@
             "enable_configurable_max_categories": true,
             "enable_llm_summary": true,
             "enable_lambda_post_survey_processing": true,
-            "enable_select_agents_teams_view": true
+            "enable_select_agents_teams_view": true,
+            "use_twilio_lambda_adjust_capacity": true,
+            "use_twilio_lambda_transfers": true,
+            "use_twilio_lambda_janitor": true
+
         },
         "helplineLanguage": "en-US"
     }

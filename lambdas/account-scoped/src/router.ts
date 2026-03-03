@@ -54,7 +54,6 @@ import { refreshTokenHandler } from './webchatAuthentication/refreshToken';
 import { getAccountSid } from '@tech-matters/twilio-configuration';
 import { validateRequestWithTwilioJwtToken } from './validation/twilioJwt';
 import { transferStartHandler } from './transfer/transferStart';
-import { adjustChatCapacityHandler } from './conversation/adjustChatCapacity';
 import { reportToIWFHandler } from './integrations/iwf/reportToIWF';
 import { selfReportToIWFHandler } from './integrations/iwf/selfReportToIWF';
 
@@ -121,10 +120,6 @@ const ACCOUNTSID_ROUTES: Record<
   'conversations/serviceScopedConversationEventHandler': {
     requestPipeline: [validateWebhookRequest],
     handler: handleConversationEvent,
-  },
-  'conversation/adjustChatCapacity': {
-    requestPipeline: [validateFlexTokenRequest({ tokenMode: 'agent' })],
-    handler: adjustChatCapacityHandler,
   },
   'customChannels/instagram/instagramToFlex': {
     requestPipeline: [],

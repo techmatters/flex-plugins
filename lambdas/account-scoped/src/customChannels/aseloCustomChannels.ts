@@ -14,18 +14,12 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import '../hrm/createHrmContactTaskRouterListener';
-import '../hrm/addHangupByTaskRouterListener';
-import '../hrm/conversationDurationTaskRouterListener';
-import '../task/addCustomerExternalIdTaskRouterListener';
-import '../task/addInitialHangUpByTaskRouterListener';
-import '../conversation/addTaskSidToChannelAttributesTaskRouterListener';
-import '../conversation/adjustCapacityTaskRouterListener';
-import '../conversation/janitorTaskRouterListener';
-import '../channelCapture/postSurveyListener';
-import '../transfer/transfersTaskRouterListener';
+export enum AseloCustomChannel {
+  Instagram = 'instagram',
+  Line = 'line',
+  Modica = 'modica',
+  Telegram = 'telegram',
+}
 
-export { handleTaskRouterEvent } from './taskrouterEventHandler';
-
-export { eventTypes, EventType } from './eventTypes';
-export { EventFields } from './eventFields';
+export const isAseloCustomChannel = (channelType?: string): boolean =>
+  Object.values(AseloCustomChannel).includes(channelType as AseloCustomChannel);
