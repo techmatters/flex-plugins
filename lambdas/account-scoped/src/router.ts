@@ -44,6 +44,12 @@ import { conferenceStatusCallbackHandler } from './conference/conferenceStatusCa
 import './conference/stopRecordingWhenLastAgentLeaves';
 import { instagramToFlexHandler } from './customChannels/instagram/instagramToFlex';
 import { flexToInstagramHandler } from './customChannels/instagram/flexToInstagram';
+import { telegramToFlexHandler } from './customChannels/telegram/telegramToFlex';
+import { flexToTelegramHandler } from './customChannels/telegram/flexToTelegram';
+import { modicaToFlexHandler } from './customChannels/modica/modicaToFlex';
+import { flexToModicaHandler } from './customChannels/modica/flexToModica';
+import { lineToFlexHandler } from './customChannels/line/lineToFlex';
+import { flexToLineHandler } from './customChannels/line/flexToLine';
 import { handleConversationEvent } from './conversation';
 import { getTaskAndReservationsHandler } from './task/getTaskAndReservations';
 import { checkTaskAssignmentHandler } from './task/checkTaskAssignment';
@@ -54,7 +60,6 @@ import { refreshTokenHandler } from './webchatAuthentication/refreshToken';
 import { getAccountSid } from '@tech-matters/twilio-configuration';
 import { validateRequestWithTwilioJwtToken } from './validation/twilioJwt';
 import { transferStartHandler } from './transfer/transferStart';
-import { adjustChatCapacityHandler } from './conversation/adjustChatCapacity';
 import { reportToIWFHandler } from './integrations/iwf/reportToIWF';
 import { selfReportToIWFHandler } from './integrations/iwf/selfReportToIWF';
 
@@ -122,10 +127,6 @@ const ACCOUNTSID_ROUTES: Record<
     requestPipeline: [validateWebhookRequest],
     handler: handleConversationEvent,
   },
-  'conversation/adjustChatCapacity': {
-    requestPipeline: [validateFlexTokenRequest({ tokenMode: 'agent' })],
-    handler: adjustChatCapacityHandler,
-  },
   'customChannels/instagram/instagramToFlex': {
     requestPipeline: [],
     handler: instagramToFlexHandler,
@@ -133,6 +134,30 @@ const ACCOUNTSID_ROUTES: Record<
   'customChannels/instagram/flexToInstagram': {
     requestPipeline: [validateWebhookRequest],
     handler: flexToInstagramHandler,
+  },
+  'customChannels/telegram/telegramToFlex': {
+    requestPipeline: [],
+    handler: telegramToFlexHandler,
+  },
+  'customChannels/telegram/flexToTelegram': {
+    requestPipeline: [validateWebhookRequest],
+    handler: flexToTelegramHandler,
+  },
+  'customChannels/modica/modicaToFlex': {
+    requestPipeline: [],
+    handler: modicaToFlexHandler,
+  },
+  'customChannels/modica/flexToModica': {
+    requestPipeline: [validateWebhookRequest],
+    handler: flexToModicaHandler,
+  },
+  'customChannels/line/lineToFlex': {
+    requestPipeline: [],
+    handler: lineToFlexHandler,
+  },
+  'customChannels/line/flexToLine': {
+    requestPipeline: [validateWebhookRequest],
+    handler: flexToLineHandler,
   },
   'webchatAuth/initWebchat': {
     requestPipeline: [],

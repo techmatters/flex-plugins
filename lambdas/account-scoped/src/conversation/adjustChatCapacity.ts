@@ -16,11 +16,8 @@
 
 import '@twilio-labs/serverless-runtime-types';
 import { WorkerChannelInstance } from 'twilio/lib/rest/taskrouter/v1/workspace/worker/workerChannel';
-import { AccountScopedHandler, HttpRequest } from '../httpTypes';
-import { newMissingParameterResult } from '../httpErrors';
 import type { AccountSID, WorkerSID } from '@tech-matters/twilio-types';
 import { getTwilioClient, getWorkspaceSid } from '@tech-matters/twilio-configuration';
-import { newOk } from '../Result';
 
 export type AdjustChatCapacityParameters = {
   workerSid: WorkerSID;
@@ -124,20 +121,4 @@ export const adjustChatCapacity = async (
   }
 
   return { status: 400, message: 'Invalid adjustment argument' };
-};
-
-export const adjustChatCapacityHandler: AccountScopedHandler = async (
-  { body: event }: HttpRequest,
-  accountSid: AccountSID,
-) => {
-  const { workerSid, adjustment } = event;
-
-  if (workerSid === undefined) return newMissingParameterResult('workerSid');
-  if (adjustment === undefined) return newMissingParameterResult('adjustment');
-
-  const validBody = { workerSid, adjustment };
-
-  const { status, message } = await adjustChatCapacity(accountSid, validBody);
-
-  return newOk({ message, status });
 };
