@@ -29,7 +29,6 @@ import {
   ACTION_LOAD_CONFIG_REQUEST,
   ACTION_LOAD_CONFIG_SUCCESS,
   ACTION_LOAD_CONFIG_FAILURE,
-  ACTION_UPDATE_PRE_ENGAGEMENT_DATA,
 } from './actionTypes';
 import { addNotification, changeEngagementPhase } from './genericActions';
 import { MESSAGES_LOAD_COUNT } from '../../constants';
@@ -38,7 +37,6 @@ import { sessionDataHandler } from '../../sessionDataHandler';
 import { createParticipantNameMap } from '../../utils/participantNameMap';
 import { getDefinitionVersion } from '../../services/configService';
 import type { AppState } from '../store';
-import { getDefaultValue } from '../../components/forms/formInputs';
 
 export const initConfigThunk = (
   config: Omit<ConfigState, 'preEngagementForm'>,
