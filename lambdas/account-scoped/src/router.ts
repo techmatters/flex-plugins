@@ -62,6 +62,8 @@ import { validateRequestWithTwilioJwtToken } from './validation/twilioJwt';
 import { transferStartHandler } from './transfer/transferStart';
 import { reportToIWFHandler } from './integrations/iwf/reportToIWF';
 import { selfReportToIWFHandler } from './integrations/iwf/selfReportToIWF';
+import { getExternalRecordingS3LocationHandler } from './conversation/getExternalRecordingS3Location';
+import { getMediaUrlHandler } from './conversation/getMediaUrl';
 
 /**
  * Super simple router sufficient for directly ported Twilio Serverless functions
@@ -218,6 +220,14 @@ const ACCOUNTSID_ROUTES: Record<
   'integrations/iwf/selfReportToIWF': {
     requestPipeline: [validateFlexTokenRequest({ tokenMode: 'agent' })],
     handler: selfReportToIWFHandler,
+  },
+  'conversation/getExternalRecordingS3Location': {
+    requestPipeline: [validateFlexTokenRequest({ tokenMode: 'agent' })],
+    handler: getExternalRecordingS3LocationHandler,
+  },
+  'conversation/getMediaUrl': {
+    requestPipeline: [validateFlexTokenRequest({ tokenMode: 'agent' })],
+    handler: getMediaUrlHandler,
   },
 };
 

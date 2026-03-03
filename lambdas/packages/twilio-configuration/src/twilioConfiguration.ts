@@ -105,6 +105,9 @@ export const getConversationsTransferWorkflow = (
 export const getServerlessBaseUrl = (accountSid: AccountSID): Promise<string> =>
   getSsmParameter(`/${process.env.NODE_ENV}/serverless/${accountSid}/base_url`);
 
+export const getDocsBucketName = (accountSid: AccountSID): Promise<string> =>
+  getSsmParameter(`/${process.env.NODE_ENV}/s3/${accountSid}/docs_bucket_name`);
+
 export const getTwilioClient = async (accountSid: AccountSID): Promise<Twilio> => {
   const authToken = await getAccountAuthToken(accountSid);
   return twilio(accountSid, authToken);
