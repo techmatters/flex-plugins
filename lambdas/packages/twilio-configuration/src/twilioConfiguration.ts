@@ -102,6 +102,9 @@ export const getConversationsTransferWorkflow = (
     `/${process.env.NODE_ENV}/twilio/${accountSid}/conversations_chat_transfer_workflow_sid`,
   );
 
+export const getBlockListKey = (accountSid: AccountSID): Promise<string> =>
+  getSsmParameter(`/${process.env.NODE_ENV}/twilio/${accountSid}/block_list_key`);
+
 export const getServerlessBaseUrl = (accountSid: AccountSID): Promise<string> =>
   getSsmParameter(`/${process.env.NODE_ENV}/serverless/${accountSid}/base_url`);
 
