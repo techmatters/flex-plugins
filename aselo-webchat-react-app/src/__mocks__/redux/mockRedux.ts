@@ -54,6 +54,7 @@ export const BASE_MOCK_REDUX: AppState = {
   session: {
     expanded: false,
     currentPhase: EngagementPhase.Loading,
+    preEngagementData: {},
   },
 };
 

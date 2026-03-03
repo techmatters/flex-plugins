@@ -42,7 +42,8 @@ export type ChatState = {
   participantNames?: { [key: string]: string };
 };
 
-export type PreEngagementData = { name: string; email: string; query: string };
+export type PreEngagementDataItem = { value: string | boolean; error: string | null; dirty: boolean };
+export type PreEngagementData = { [key: string]: PreEngagementDataItem };
 
 export type SessionState = {
   currentPhase: EngagementPhase;
@@ -55,7 +56,7 @@ export type SessionState = {
   participants?: Participant[];
   messages?: Message[];
   conversationState?: 'active' | 'inactive' | 'closed';
-  preEngagementData?: PreEngagementData;
+  preEngagementData: PreEngagementData;
 };
 
 export type ConfigState = {
@@ -71,7 +72,7 @@ export type ConfigState = {
   aseloBackendUrl: string;
   definitionVersion: string;
   environment: string;
-  preEngagementForm: PreEngagementForm | null;
+  preEngagementFormDefinition: PreEngagementForm | null;
   translations: Record<string, Record<string, string>>;
   defaultLocale: LocaleString;
   currentLocale?: LocaleString;

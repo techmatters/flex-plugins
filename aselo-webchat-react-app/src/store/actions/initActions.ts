@@ -15,13 +15,13 @@
  */
 
 import { Client, ConnectionState } from '@twilio/conversations';
-import { Dispatch } from 'redux';
-import { ThunkAction, ThunkActionDispatch } from 'redux-thunk';
+import { AnyAction, Dispatch } from 'redux';
+import { ThunkAction } from 'redux-thunk';
 
 import { initMessagesListener } from './listeners/messagesListener';
 import { initParticipantsListener } from './listeners/participantsListener';
 import { initConversationListener } from './listeners/conversationListener';
-import { ConfigState, EngagementPhase } from '../definitions';
+import { ConfigState, EngagementPhase, PreEngagementData } from '../definitions';
 import { initClientListeners } from './listeners/clientListener';
 import { notifications } from '../../notifications';
 import {
@@ -29,6 +29,7 @@ import {
   ACTION_LOAD_CONFIG_REQUEST,
   ACTION_LOAD_CONFIG_SUCCESS,
   ACTION_LOAD_CONFIG_FAILURE,
+  ACTION_UPDATE_PRE_ENGAGEMENT_DATA,
 } from './actionTypes';
 import { addNotification, changeEngagementPhase } from './genericActions';
 import { MESSAGES_LOAD_COUNT } from '../../constants';
@@ -37,10 +38,11 @@ import { sessionDataHandler } from '../../sessionDataHandler';
 import { createParticipantNameMap } from '../../utils/participantNameMap';
 import { getDefinitionVersion } from '../../services/configService';
 import type { AppState } from '../store';
+import { getDefaultValue } from '../../components/forms/formInputs';
 
 export const initConfigThunk = (
   config: Omit<ConfigState, 'preEngagementForm'>,
-): ThunkAction<void, AppState, unknown, any> => {
+): ThunkAction<void, AppState, unknown, AnyAction> => {
   return async dispatch => {
     dispatch({ type: ACTION_LOAD_CONFIG_REQUEST });
     try {
@@ -51,7 +53,7 @@ export const initConfigThunk = (
 
       dispatch({
         type: ACTION_LOAD_CONFIG_SUCCESS,
-        payload: { ...config, preEngagementForm },
+        payload: { ...config, preEngagementFormDefinition: preEngagementForm },
       });
     } catch (err) {
       dispatch({
