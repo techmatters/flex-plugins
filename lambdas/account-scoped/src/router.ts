@@ -62,6 +62,9 @@ import { validateRequestWithTwilioJwtToken } from './validation/twilioJwt';
 import { transferStartHandler } from './transfer/transferStart';
 import { reportToIWFHandler } from './integrations/iwf/reportToIWF';
 import { selfReportToIWFHandler } from './integrations/iwf/selfReportToIWF';
+import { populateCounselorsHandler } from './worker/populateCounselors';
+import { getWorkerAttributesHandler } from './worker/getWorkerAttributes';
+import { listWorkerQueuesHandler } from './worker/listWorkerQueues';
 
 /**
  * Super simple router sufficient for directly ported Twilio Serverless functions
@@ -218,6 +221,18 @@ const ACCOUNTSID_ROUTES: Record<
   'integrations/iwf/selfReportToIWF': {
     requestPipeline: [validateFlexTokenRequest({ tokenMode: 'agent' })],
     handler: selfReportToIWFHandler,
+  },
+  'worker/populateCounselors': {
+    requestPipeline: [validateFlexTokenRequest({ tokenMode: 'agent' })],
+    handler: populateCounselorsHandler,
+  },
+  'worker/getWorkerAttributes': {
+    requestPipeline: [validateFlexTokenRequest({ tokenMode: 'agent' })],
+    handler: getWorkerAttributesHandler,
+  },
+  'worker/listWorkerQueues': {
+    requestPipeline: [validateFlexTokenRequest({ tokenMode: 'agent' })],
+    handler: listWorkerQueuesHandler,
   },
 };
 
