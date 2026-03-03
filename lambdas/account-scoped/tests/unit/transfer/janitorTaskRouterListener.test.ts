@@ -14,18 +14,8 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import '../hrm/createHrmContactTaskRouterListener';
-import '../hrm/addHangupByTaskRouterListener';
-import '../hrm/conversationDurationTaskRouterListener';
-import '../task/addCustomerExternalIdTaskRouterListener';
-import '../task/addInitialHangUpByTaskRouterListener';
-import '../conversation/addTaskSidToChannelAttributesTaskRouterListener';
-import '../conversation/adjustCapacityTaskRouterListener';
-import '../conversation/janitorTaskRouterListener';
-import '../channelCapture/postSurveyListener';
-import '../transfer/transfersTaskRouterListener';
+// Tests for janitorTaskRouterListener have been moved to
+// tests/unit/conversation/janitorTaskRouterListener.test.ts
 
-export { handleTaskRouterEvent } from './taskrouterEventHandler';
-
-export { eventTypes, EventType } from './eventTypes';
-export { EventFields } from './eventFields';
+// eslint-disable-next-line jest/no-disabled-tests
+test.todo('see tests/unit/conversation/janitorTaskRouterListener.test.ts');

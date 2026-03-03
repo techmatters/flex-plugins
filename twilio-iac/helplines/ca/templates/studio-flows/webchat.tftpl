@@ -356,7 +356,7 @@ ${
           "event": "noMatch"
         },
         {
-          "next": "check_counsellors_fr_post_queue",
+          "next": "split_language_post_queue",
           "event": "match",
           "conditions": [
             {
@@ -1738,6 +1738,50 @@ ${
         "message_type": "custom",
         "to": "{{contact.channel.address}}",
         "body": "Bonjour. Merci de nous avoir contactés. De manière inattendue, nous ne sommes pas en mesure de répondre à ton clavardage en direct. Toutefois, nous aimerions te proposer quelques alternatives, afin de pouvoir t'offrir du soutien. Si tu souhaites parler à un·e intervenant·e, appelle le 1-800-668-6868. Si tu préfères texter avec un·e répondant·e en situation de crise, envoyez le mot « Parler » par texto au 686868 ou connecte-toi via notre site web : https://jeunessejecoute.ca/besoin-daide-maintenant-envoie-nous-un-texto. Notre service de clavardage en français sera de nouveau disponible demain à 19 h(HE). En cas d’urgence, compose le 911. Merci. Prends soin de toi."
+      }
+    },
+    {
+      "name": "split_language_post_queue",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "event": "noMatch"
+        },
+        {
+          "next": "engagement",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value contains en-CA",
+              "arguments": [
+                "{{trigger.message.ChannelAttributes.pre_engagement_data.language}}"
+              ],
+              "type": "contains",
+              "value": "en-CA"
+            }
+          ]
+        },
+        {
+          "next": "check_counsellors_fr_post_queue",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value contains fr-CA",
+              "arguments": [
+                "{{trigger.message.ChannelAttributes.pre_engagement_data.language}}"
+              ],
+              "type": "contains",
+              "value": "fr-CA"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{trigger.message.ChannelAttributes.pre_engagement_data.language}}",
+        "offset": {
+          "x": 2100,
+          "y": 1760
+        }
       }
     }
   ],
