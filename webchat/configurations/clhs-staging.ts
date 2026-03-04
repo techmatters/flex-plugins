@@ -1992,7 +1992,7 @@ const translations: Translations = {
     MessageInputDisabledReasonHold:
       'Muchas gracias por la información. Lo transferiremos ahora. Por favor espere for un agente.',
     AutoFirstMessage: 'Nuevo contacto del webchat de',
-    TypingIndicator: '{0} está escribiendo ... ',
+    TypingIndicator: 'Voluntarie está escribiendo ... ',
     StartChat: 'Comenzar Nuevo Chat!',
     MessageCanvasTrayButton: 'Comenzar Nuevo Chat',
     EntryPointTagline: 'Chatea con nosotros',
