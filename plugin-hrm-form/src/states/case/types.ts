@@ -125,7 +125,7 @@ export type CaseStateEntry = {
   connectedCase: t.Case;
   caseWorkingCopy: CaseWorkingCopy;
   availableStatusTransitions: StatusInfo[];
-  references: Set<string>;
+  references: Record<string, true>;
   timelines: Record<string, (ContactIdentifierTimelineActivity | CaseSectionIdentifierTimelineActivity)[]>;
   sections: Record<string, { [sectionId: string]: FullCaseSection }>;
   loading?: boolean;

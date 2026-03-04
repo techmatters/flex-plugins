@@ -73,10 +73,11 @@ export const loadContactIntoRedux = (
   newMetadata?: ContactMetadata,
 ): ContactsState => {
   const { existingContacts } = state;
-  const references = existingContacts[contact.id]?.references ?? new Set();
-  if (reference) {
-    references.add(reference);
-  }
+  const references = {
+    ...(existingContacts[contact.id]?.references ?? {}),
+    ...(reference ? ({ [reference]: true } as const) : {}),
+  };
+
   const metadata = {
     ...newContactMetaData({ createdAt: contact?.createdAt }),
     ...(newMetadata ?? existingContacts[contact.id]?.metadata),
@@ -98,7 +99,7 @@ export const loadContactIntoRedux = (
           ...existingAssociations,
           ...contact,
         },
-        references: references ?? existingContacts[contact.id]?.references,
+        references,
       },
     },
   };

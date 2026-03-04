@@ -83,7 +83,7 @@ describe('Search Results', () => {
                   },
                 },
               },
-              references: [],
+              references: {},
               metadata: { ...VALID_EMPTY_METADATA },
             },
           },

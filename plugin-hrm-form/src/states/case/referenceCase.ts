@@ -33,12 +33,12 @@ export const referenceCase = ({
   const existingCase = state.cases[caseId];
 
   // If there's no "new case" and the reference is already there, avoid triggering re-renders
-  if (existingCase.references.has(referenceId) && !newCase) {
+  if (existingCase.references[referenceId] && !newCase) {
     return state;
   }
 
   // If the reference does not exists, or if there's a "new case" (actually new or updated version), rebuild the state to trigger appropriate re-renders
-  const updatedReferences = existingCase.references.add(referenceId);
+  const updatedReferences = { ...existingCase.references, [referenceId]: true } as const;
   return {
     ...state,
     cases: {
@@ -57,9 +57,9 @@ export const dereferenceCase = (state: CaseState, caseId: Case['id'], referenceI
   if (!caseState) {
     return state;
   }
-  const references = caseState.references ?? new Set<string>();
-  references.delete(referenceId);
-  if (references.size === 0) {
+  const references = caseState.references ?? {};
+  delete references[referenceId];
+  if (Object.keys(references).length === 0) {
     return {
       ...state,
       cases: omit(state.cases, caseId),

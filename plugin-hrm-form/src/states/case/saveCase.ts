@@ -112,7 +112,7 @@ const updateConnectedCase = (state: HrmState, connectedCase: Case): HrmState => 
           availableStatusTransitions: caseDefinitionVersion
             ? getAvailableCaseStatusTransitions(connectedCase, caseDefinitionVersion)
             : [],
-          references: stateCase?.references ?? new Set(),
+          references: stateCase?.references ?? {},
           sections: stateCase?.sections ?? {},
           timelines: stateCase?.timelines ?? {},
           outstandingUpdateCount,

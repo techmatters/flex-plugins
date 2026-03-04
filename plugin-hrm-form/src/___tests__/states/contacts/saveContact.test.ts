@@ -104,7 +104,7 @@ const baseState: ContactsState = {
   existingContacts: {
     [baseContact.id]: {
       savedContact: baseContact,
-      references: new Set('x'),
+      references: { x: true },
       metadata: VALID_EMPTY_METADATA,
     },
   },
@@ -131,12 +131,12 @@ describe('actions', () => {
       const state = getState();
       expect(state.contactsBeingCreated.has('WT-load-me')).toBe(false);
       expect(state.existingContacts['666'].savedContact).toEqual(taskContact);
-      expect(state.existingContacts['666'].references.has('mock-ref')).toBe(true);
+      expect(state.existingContacts['666'].references['mock-ref']).toBe(true);
       expect(mockGetCase).not.toHaveBeenCalled();
       expect(mockGetContactByTaskSid).toHaveBeenCalledWith('WT-load-me');
     });
   });
-  test('Calls the updateContactsFormInHrmAsyncAction action, and update a contact', async () => {
+  test('Calls the updateContactsFormInHrm, and update a contact', async () => {
     const { dispatch, getState } = testStore(baseState);
     const startingState = getState();
     const startingContactState = startingState.existingContacts[baseContact.id];

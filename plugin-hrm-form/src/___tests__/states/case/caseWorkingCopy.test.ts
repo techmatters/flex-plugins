@@ -48,7 +48,6 @@ const partialRootState: RecursivePartial<RootState['plugin-hrm-form']> = {
   configuration: {
     counselors: { hash: {}, list: undefined },
     definitionVersions: {},
-    language: '',
     workerInfo: { chatChannelCapacity: 0 },
     currentDefinitionVersion: {
       caseSectionTypes: {
@@ -75,7 +74,7 @@ beforeEach(() => {
 
 describe('Working copy reducers', () => {
   const caseStateEntry: RecursivePartial<CaseStateEntry> = {
-    connectedCase: { info: { definitionVersion: 'as-v1' } },
+    connectedCase: { definitionVersion: 'as-v1', info: {} },
   };
   const state: CaseState = { cases: { 1: caseStateEntry as CaseStateEntry } };
   let mockV1;
@@ -182,7 +181,6 @@ describe('Working copy reducers', () => {
           info: null,
           createdAt: '2020-07-31T20:39:37.408Z',
           updatedAt: '2020-07-31T20:39:37.408Z',
-          categories: {},
         },
         caseWorkingCopy: {
           sections: {},
@@ -190,7 +188,7 @@ describe('Working copy reducers', () => {
         sections: {},
         timelines: {},
         availableStatusTransitions: [],
-        references: new Set(['x']),
+        references: { x: true },
         outstandingUpdateCount: 0,
       };
 
@@ -420,7 +418,7 @@ describe('Working copy reducers', () => {
               sections: {},
             },
             availableStatusTransitions: [],
-            references: new Set(['x']),
+            references: { x: true },
             timelines: {},
             outstandingUpdateCount: 0,
             sections: {},
@@ -476,7 +474,7 @@ describe('Working copy reducers', () => {
               sections: {},
             },
             availableStatusTransitions: [],
-            references: new Set(['x']),
+            references: { x: true },
             timelines: {},
             outstandingUpdateCount: 0,
             sections: {},
@@ -549,7 +547,7 @@ describe('Working copy reducers', () => {
               sections: {},
             },
             availableStatusTransitions: [],
-            references: new Set(['x']),
+            references: { x: true },
             timelines: {},
             outstandingUpdateCount: 0,
             sections: {},
@@ -612,7 +610,7 @@ describe('Working copy reducers', () => {
               sections: {},
             },
             availableStatusTransitions: [],
-            references: new Set(['x']),
+            references: { x: true },
             timelines: {},
             outstandingUpdateCount: 0,
             sections: {},

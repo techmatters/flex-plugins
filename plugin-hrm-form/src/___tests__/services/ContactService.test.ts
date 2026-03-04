@@ -101,7 +101,7 @@ const createContactState = ({ callType, childFirstName }, contactlessTaskInfo = 
         contactlessTask,
       },
     },
-    references: new Set(),
+    references: {},
   };
 };
 

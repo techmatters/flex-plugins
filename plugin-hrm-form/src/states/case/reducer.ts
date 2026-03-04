@@ -88,8 +88,10 @@ const contactUpdatingReducer = (hrmState: HrmState, action: ContactUpdatingActio
     if (contactCase) {
       const caseDefinitionVersion =
         configuration.definitionVersions[contactCase.definitionVersion ?? contactCase.info.definitionVersion];
-      const references = connectedCase.cases[contactCase.id]?.references ?? new Set<string>();
-      references.add(`contact-${contact.id}`);
+      const references = {
+        ...(connectedCase.cases[contactCase.id]?.references ?? {}),
+        [`contact-${contact.id}`]: true,
+      } as const;
       return {
         ...hrmState,
         connectedCase: {

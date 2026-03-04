@@ -56,12 +56,10 @@ export const loadCaseIntoState = ({
           connectedCase: newCase,
           caseWorkingCopy: preserveWorkingCopy && existingWorkingCopy ? existingWorkingCopy : { sections: {} },
           availableStatusTransitions: getAvailableCaseStatusTransitions(newCase, definitionVersion),
-          // eslint-disable-next-line no-nested-ternary
-          references: existingReferences
-            ? existingReferences.add(referenceId)
-            : referenceId
-            ? new Set([referenceId])
-            : new Set<string>(),
+          references: {
+            ...(existingReferences || {}),
+            ...(referenceId ? { referenceId: true } : {}),
+          },
           sections: {},
           timelines: {},
           outstandingUpdateCount: 0,

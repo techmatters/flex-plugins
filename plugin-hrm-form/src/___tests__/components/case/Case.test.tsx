@@ -148,12 +148,11 @@ describe('useState mocked', () => {
       helpline: 'helpline',
     },
     availableStatusTransitions: [],
-    references: new Set(['x']),
+    references: { x: true },
     caseWorkingCopy: undefined,
     sections: {},
     timelines: {},
     outstandingUpdateCount: 0,
-    definitionVersion: 'as-v1',
   };
 
   beforeEach(() => {
@@ -236,7 +235,7 @@ describe('useState mocked', () => {
         existingContacts: {
           contact1: {
             savedContact: connectedContact,
-            references: ['case-case1'],
+            references: { 'case-case1': true },
           },
         },
       },

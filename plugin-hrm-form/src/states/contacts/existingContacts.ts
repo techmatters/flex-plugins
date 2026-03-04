@@ -85,7 +85,7 @@ export type TranscriptResult = {
 };
 
 export type ContactState = {
-  references: Set<string>;
+  references: Record<string, true>;
   savedContact: Contact;
   draftContact?: ContactDraftChanges;
   metadata: ContactMetadata;
@@ -128,12 +128,10 @@ export const initialState: ExistingContactsState = {};
 export const loadContactReducer = (state = initialState, action: LoadContactAction) => {
   const updateEntries = action.contacts
     .filter(c => {
-      return (
-        (action.reference && !(state[c.id]?.references ?? new Set()).has(action.reference)) || action.replaceExisting
-      );
+      return (action.reference && !state[c.id]?.references?.[action.reference]) || action.replaceExisting;
     })
     .map(c => {
-      const current = state[c.id] ?? { references: new Set() };
+      const current = state[c.id] ?? { references: {} };
       const { draftContact, ...currentContact } = state[c.id] ?? {
         categories: {
           expanded: {},
@@ -141,14 +139,15 @@ export const loadContactReducer = (state = initialState, action: LoadContactActi
         },
       };
 
-      const savedContact = action.replaceExisting || !current.references.size ? c : state[c.id].savedContact;
+      const savedContact =
+        action.replaceExisting || !Object.keys(current.references).length ? c : state[c.id].savedContact;
       return [
         c.id,
         {
           metadata: newContactMetaData({ createdAt: savedContact?.createdAt }),
           ...currentContact,
           savedContact,
-          references: action.reference ? current.references.add(action.reference) : current.references,
+          references: action.reference ? { ...current.references, [action.reference]: true } : current.references,
           draftContact: action.replaceExisting ? undefined : draftContact,
         },
       ];
@@ -181,10 +180,10 @@ const releaseContactStatesById = (
         );
         return [id, undefined];
       }
-      current.references.delete(reference);
+      delete current.references[reference];
       return [id, current];
     })
-    .filter(([, ecs]) => typeof ecs === 'object' && ecs.references.size > 0);
+    .filter(([, ecs]) => typeof ecs === 'object' && Object.keys(ecs.references).length > 0);
   return {
     ...omit(state, ...ids),
     ...Object.fromEntries(updateKvps),

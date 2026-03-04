@@ -34,7 +34,7 @@ import { CaseItemAction } from '../../../states/routing/types';
 import { newGoBackAction } from '../../../states/routing/actions';
 import { ReferralLookupStatus } from '../../../states/contacts/resourceReferral';
 import { VALID_EMPTY_CONTACT } from '../../testContacts';
-import { connectedCaseBase, namespace } from '../../../states/storeNamespaces';
+import { namespace } from '../../../states/storeNamespaces';
 import { CaseState } from '../../../states/case/types';
 import { RecursivePartial } from '../../RecursivePartial';
 import { TaskSID, WorkerSID } from '../../../types/twilio';
@@ -102,7 +102,7 @@ const addingNewHouseholdCaseState: CaseState = {
       },
       sections: {},
       timelines: {},
-      references: new Set(),
+      references: {},
       availableStatusTransitions: [],
     },
   },
@@ -123,7 +123,7 @@ const hrmState: Partial<RootState[typeof namespace]> = {
     contactDetails: { contactSearch: { detailsExpanded: {} }, caseDetails: { detailsExpanded: {} } },
     existingContacts: {
       1234: {
-        references: new Set(),
+        references: {},
         savedContact: {
           ...VALID_EMPTY_CONTACT,
           id: '1234',
@@ -192,12 +192,6 @@ const state2: RecursivePartial<RootState> = {
 };
 const store2 = mockStore(state2);
 store2.dispatch = jest.fn();
-
-const routing3: RootState[typeof namespace]['routing'] = {
-  tasks: {
-    [TASK_SID]: [{ route: 'case', subroute: 'household', action: CaseItemAction.Add }],
-  },
-};
 
 const themeConf: ThemeConfigProps = {};
 
