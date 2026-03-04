@@ -234,6 +234,7 @@ export async function loadDefinition(baseUrl: string): Promise<DefinitionVersion
     profileFlagDurations,
     messages,
     substitutions,
+    postSurveyMessages,
     flexUiLocales,
     customLinks,
   ] = await Promise.all([
@@ -267,6 +268,7 @@ export async function loadDefinition(baseUrl: string): Promise<DefinitionVersion
     fetchDefinition<ProfileFlagDurationDefinition[]>('profileForms/FlagDurations.json', []),
     fetchDefinition<LocalizedStringMap>('customStrings/Messages.json', {}),
     fetchDefinition<LocalizedStringMap>('customStrings/Substitutions.json', {}),
+    fetchDefinition<Record<string, string>>('customStrings/postSurveyMessages.json', {}),
     fetchDefinition<FlexUILocaleEntry[]>('FlexUiLocales.json', []),
     fetchDefinition<DefinitionVersion['customLinks']>('CustomLinks.json', []),
   ] as const);
@@ -312,6 +314,7 @@ export async function loadDefinition(baseUrl: string): Promise<DefinitionVersion
     customStrings: {
       Messages: messages,
       Substitutions: substitutions,
+      postSurveyMessages,
     },
     flexUiLocales,
     customLinks,

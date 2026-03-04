@@ -31,10 +31,10 @@ import {
 import {
   getChatServiceSid,
   getHelplineCode,
-  getServerlessBaseUrl,
   getSurveyWorkflowSid,
   getTwilioWorkspaceSid,
 } from '@tech-matters/twilio-configuration';
+import { getPostSurveyTranslation } from './postSurveyTranslationLookup';
 
 const GLOBAL_DEFAULT_LANGUAGE = 'en-US';
 
@@ -72,33 +72,6 @@ const isTriggerPostSurvey = ({
   return !isChatCaptureControlTask(taskAttributes);
 };
 
-const getTriggerMessage = async ({
-  taskLanguage,
-  serverlessBaseUrl,
-}: {
-  taskLanguage: string;
-  serverlessBaseUrl: string;
-}): Promise<string> => {
-  // Try to retrieve the triggerMessage for the approapriate language (if any)
-  if (taskLanguage) {
-    try {
-      // TODO: factor out to "get translations"
-      const response = await fetch(
-        `${serverlessBaseUrl}/translations/${taskLanguage}/postSurveyMessages.json`,
-      );
-      const translation = (await response.json()) as { [k: string]: string };
-
-      console.log('translation', translation);
-
-      if (translation.triggerMessage) return translation.triggerMessage;
-    } catch {
-      console.info(`Couldn't retrieve triggerMessage translation for ${taskLanguage}`);
-    }
-  }
-
-  return 'Before you leave, would you be willing to answer a few questions about the service you received today? Please answer Yes or No.';
-};
-
 export const postSurveyInitHandler = async ({
   accountSid,
   channelType,
@@ -106,7 +79,6 @@ export const postSurveyInitHandler = async ({
   client,
   environment,
   helplineCode,
-  serverlessBaseUrl,
   surveyWorkflowSid,
   taskLanguage,
   taskSid,
@@ -122,7 +94,6 @@ export const postSurveyInitHandler = async ({
   channelType: string;
   environment: string;
   webhookBaseUrl: string;
-  serverlessBaseUrl: string;
   chatServiceSid: string;
   helplineCode: string;
   surveyWorkflowSid: string;
@@ -137,7 +108,11 @@ export const postSurveyInitHandler = async ({
       conversationSid: string;
     }
 )) => {
-  const triggerMessage = await getTriggerMessage({ serverlessBaseUrl, taskLanguage });
+  const triggerMessage = await getPostSurveyTranslation(
+    accountSid,
+    taskLanguage,
+    'triggerMessage',
+  );
 
   const params: HandleChannelCaptureParams = {
     accountSid,
@@ -202,7 +177,6 @@ const triggerPostSurvey: TaskRouterEventHandler = async (
 
         const environment = process.env.NODE_ENV!;
         const webhookBaseUrl = process.env.WEBHOOK_BASE_URL!;
-        const serverlessBaseUrl = await getServerlessBaseUrl(accountSid);
         const chatServiceSid = await getChatServiceSid(accountSid);
         const helplineCode = await getHelplineCode(accountSid);
         const surveyWorkflowSid = await getSurveyWorkflowSid(accountSid);
@@ -219,7 +193,6 @@ const triggerPostSurvey: TaskRouterEventHandler = async (
           client,
           environment,
           helplineCode,
-          serverlessBaseUrl,
           surveyWorkflowSid,
           twilioWorkspaceSid,
           webhookBaseUrl,

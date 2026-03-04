@@ -469,6 +469,7 @@ export type DefinitionVersion = {
   customStrings?: {
     Messages: LocalizedStringMap;
     Substitutions: LocalizedStringMap;
+    postSurveyMessages: Record<string, string>;
   };
   flexUiLocales?: FlexUILocaleEntry[];
   customLinks?: CustomLink[];
