@@ -27,6 +27,7 @@ export const markCaseAsUpdating = (state: HrmState, caseId: Case['id'], updating
         ? {
             [caseId]: {
               ...state.connectedCase.cases[caseId],
+              lastReferencedDate: new Date(),
               outstandingUpdateCount:
                 (state.connectedCase.cases[caseId]?.outstandingUpdateCount || 0) + (updating ? 1 : -1),
             },

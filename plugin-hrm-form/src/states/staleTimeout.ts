@@ -14,27 +14,10 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import type { CaseState } from './types';
-import type { Case } from '../../types/types';
+export const STALE_CONTACT_CASE_MINUTES = 120;
 
-export const updateCaseLastReferenced = (
-  state: CaseState,
-  caseId: Case['id'],
-  newCase?: Case,
-): CaseState => {
-  const existingCase = state.cases[caseId];
-  if (!existingCase) {
-    return state;
-  }
-  return {
-    ...state,
-    cases: {
-      ...state.cases,
-      [caseId]: {
-        ...existingCase,
-        lastReferencedDate: new Date(),
-        connectedCase: newCase || existingCase.connectedCase,
-      },
-    },
-  };
+export const isStale = (lastReferencedDate: Date): boolean => {
+  const diffMs = Date.now() - lastReferencedDate.getTime();
+  const diffMinutes = diffMs / (1000 * 60);
+  return diffMinutes > STALE_CONTACT_CASE_MINUTES;
 };

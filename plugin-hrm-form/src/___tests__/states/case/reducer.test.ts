@@ -22,6 +22,7 @@ import * as GeneralActions from '../../../states/actions';
 import { Case } from '../../../types/types';
 import { REMOVE_CONTACT_STATE } from '../../../states/types';
 import { HrmState } from '../../../states';
+import { STALE_CONTACT_CASE_MINUTES } from '../../../states/staleTimeout';
 
 const task = { taskSid: 'task1' };
 const stubRootState = { configuration: { definitionVersions: {} }, connectedCase: { cases: {} } } as HrmState;
@@ -69,7 +70,8 @@ describe('test reducer', () => {
     expect(result).toStrictEqual(stubRootState);
   });
 
-  test('should remove any cases referenced via the specified task', async () => {
+  test('REMOVE_CONTACT_STATE - does not immediately remove cases (GC handles removal)', async () => {
+    const recentDate = new Date();
     const state = {
       ...stubRootState,
       connectedCase: {
@@ -78,17 +80,22 @@ describe('test reducer', () => {
             connectedCase,
             caseWorkingCopy: { sections: {} },
             availableStatusTransitions: Object.values(mockV1.caseStatus),
-            references: new Set(['task-task1']),
+            lastReferencedDate: recentDate,
+            sections: {},
+            timelines: {},
+            outstandingUpdateCount: 0,
           },
         },
       },
-    };
+    } as HrmState;
 
     const result = reduce(state, GeneralActions.removeContactState(task.taskSid, undefined));
-    expect(result).toStrictEqual(stubRootState);
+    // Case still present because it's not stale
+    expect(result.connectedCase.cases[1]).toBeDefined();
   });
 
-  test('should remove any cases referenced via the specified contact', async () => {
+  test('GC - removes stale cases without draft updates', async () => {
+    const staleDate = new Date(Date.now() - (STALE_CONTACT_CASE_MINUTES + 1) * 60 * 1000);
     const state = {
       ...stubRootState,
       connectedCase: {
@@ -97,13 +104,75 @@ describe('test reducer', () => {
             connectedCase,
             caseWorkingCopy: { sections: {} },
             availableStatusTransitions: Object.values(mockV1.caseStatus),
-            references: new Set(['contact-contact1']),
+            lastReferencedDate: staleDate,
+            sections: {},
+            timelines: {},
+            outstandingUpdateCount: 0,
           },
         },
       },
-    };
+    } as HrmState;
 
-    const result = reduce(state, GeneralActions.removeContactState(task.taskSid, 'contact1'));
-    expect(result).toStrictEqual(stubRootState);
+    const result = reduce(state, GeneralActions.removeContactState(task.taskSid, undefined));
+    // Stale case with no drafts should be removed by GC
+    expect(result.connectedCase.cases[1]).toBeUndefined();
+  });
+
+  test('GC - preserves stale cases that have draft updates in sections', async () => {
+    const staleDate = new Date(Date.now() - (STALE_CONTACT_CASE_MINUTES + 1) * 60 * 1000);
+    const state = {
+      ...stubRootState,
+      connectedCase: {
+        cases: {
+          1: {
+            connectedCase,
+            caseWorkingCopy: {
+              sections: {
+                household: {
+                  new: { age: 10 },
+                  existing: {},
+                },
+              },
+            },
+            availableStatusTransitions: Object.values(mockV1.caseStatus),
+            lastReferencedDate: staleDate,
+            sections: {},
+            timelines: {},
+            outstandingUpdateCount: 0,
+          },
+        },
+      },
+    } as HrmState;
+
+    const result = reduce(state, GeneralActions.removeContactState(task.taskSid, undefined));
+    // Case with draft updates should NOT be removed even if stale
+    expect(result.connectedCase.cases[1]).toBeDefined();
+  });
+
+  test('GC - preserves stale cases that have a case summary draft', async () => {
+    const staleDate = new Date(Date.now() - (STALE_CONTACT_CASE_MINUTES + 1) * 60 * 1000);
+    const state = {
+      ...stubRootState,
+      connectedCase: {
+        cases: {
+          1: {
+            connectedCase,
+            caseWorkingCopy: {
+              sections: {},
+              caseSummary: { status: 'open', summary: 'draft summary' },
+            },
+            availableStatusTransitions: Object.values(mockV1.caseStatus),
+            lastReferencedDate: staleDate,
+            sections: {},
+            timelines: {},
+            outstandingUpdateCount: 0,
+          },
+        },
+      },
+    } as HrmState;
+
+    const result = reduce(state, GeneralActions.removeContactState(task.taskSid, undefined));
+    // Case with caseSummary draft should NOT be removed even if stale
+    expect(result.connectedCase.cases[1]).toBeDefined();
   });
 });

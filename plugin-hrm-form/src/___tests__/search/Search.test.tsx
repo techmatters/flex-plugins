@@ -119,7 +119,7 @@ function createState(
       c.id,
       {
         savedContact: c,
-        references: new Set(['x']),
+        lastReferencedDate: new Date(),
         metadata: VALID_EMPTY_METADATA,
       },
     ]),

@@ -28,9 +28,6 @@ import {
   loadContacts,
   loadTranscript,
   loadTranscriptReducer,
-  releaseContact,
-  releaseContactReducer,
-  releaseContacts,
   setCategoriesGridView,
   setCategoriesGridViewReducer,
   toggleCategoryExpanded,
@@ -65,40 +62,21 @@ const baseContact: Contact = {
 const baseState: ExistingContactsState = {
   [baseContact.id]: {
     savedContact: baseContact,
-    references: new Set('x'),
+    lastReferencedDate: new Date(),
     metadata: VALID_EMPTY_METADATA,
   },
 } as const;
 
 describe('loadContactReducer', () => {
   describe('replaceExisting set to false', () => {
-    test('Nothing currently for that ID - adds the contact with provided reference and blank categories state', () => {
+    test('Nothing currently for that ID - adds the contact and sets lastReferencedDate', () => {
       const newState = loadContactReducer({}, loadContact(baseContact, 'TEST_REFERENCE'));
       expect(newState[baseContact.id].savedContact).toStrictEqual(baseContact);
-      expect(newState[baseContact.id].references.size).toStrictEqual(1);
-      expect(newState[baseContact.id].references.has('TEST_REFERENCE')).toBeTruthy();
+      expect(newState[baseContact.id].lastReferencedDate).toBeInstanceOf(Date);
       expect(newState[baseContact.id].categories).toStrictEqual({ gridView: false, expanded: {} });
     });
 
-    test('Same contact currently loaded for that ID with a different reference - leaves contact the same and adds the reference', () => {
-      const newState = loadContactReducer(
-        {
-          [baseContact.id]: {
-            savedContact: baseContact,
-            references: new Set(['TEST_REFERENCE']),
-            metadata: VALID_EMPTY_METADATA,
-          },
-        },
-        loadContact(baseContact, 'ANOTHER_TEST_REFERENCE'),
-      );
-      expect(newState[baseContact.id].savedContact).toStrictEqual(baseContact);
-      expect(newState[baseContact.id].references.size).toStrictEqual(2);
-      expect([...newState[baseContact.id].references]).toEqual(
-        expect.arrayContaining(['TEST_REFERENCE', 'ANOTHER_TEST_REFERENCE']),
-      );
-    });
-
-    test('Different contact currently for that ID - leaves contact the same and adds the reference', () => {
+    test('Contact already loaded for that ID - does not overwrite existing contact', () => {
       const changedContact = {
         ...baseContact,
         rawJson: {
@@ -114,20 +92,17 @@ describe('loadContactReducer', () => {
         {
           [baseContact.id]: {
             savedContact: baseContact,
-            references: new Set(['TEST_REFERENCE']),
+            lastReferencedDate: new Date(),
             metadata: VALID_EMPTY_METADATA,
           },
         },
         loadContact(changedContact, 'ANOTHER_TEST_REFERENCE'),
       );
+      // replaceExisting is false and contact already exists, so it should NOT be updated
       expect(newState[baseContact.id].savedContact).toStrictEqual(baseContact);
-      expect(newState[baseContact.id].references.size).toStrictEqual(2);
-      expect([...newState[baseContact.id].references]).toEqual(
-        expect.arrayContaining(['TEST_REFERENCE', 'ANOTHER_TEST_REFERENCE']),
-      );
     });
 
-    test('Same reference as a contact already loaded - does nothing', () => {
+    test('Multiple contacts - applies rules to each contact separately', () => {
       const changedContact = {
         ...baseContact,
         rawJson: {
@@ -143,86 +118,39 @@ describe('loadContactReducer', () => {
         {
           [baseContact.id]: {
             savedContact: baseContact,
-            references: new Set(['TEST_REFERENCE']),
-            metadata: VALID_EMPTY_METADATA,
-          },
-        },
-        loadContact(changedContact, 'TEST_REFERENCE'),
-      );
-      expect(newState[baseContact.id].savedContact).toStrictEqual(baseContact);
-      expect(newState[baseContact.id].references.size).toStrictEqual(1);
-      expect(newState[baseContact.id].references.has('TEST_REFERENCE')).toBeTruthy();
-    });
-    test('Multiple contacts in different states - applies rules to each contact separately', () => {
-      const changedContact = {
-        ...baseContact,
-        rawJson: {
-          ...baseContact.rawJson,
-          childInformation: {
-            ...baseContact.rawJson.childInformation,
-            firstName: 'Charlotte',
-            lastName: 'Ballantyne',
-          },
-        },
-      };
-      const newState = loadContactReducer(
-        {
-          [baseContact.id]: {
-            savedContact: baseContact,
-            references: new Set(['TEST_REFERENCE']),
+            lastReferencedDate: new Date(),
             metadata: VALID_EMPTY_METADATA,
           },
           '666': {
             savedContact: { ...baseContact, id: '666' },
-            references: new Set(['ANOTHER_TEST_REFERENCE']),
+            lastReferencedDate: new Date(),
             metadata: VALID_EMPTY_METADATA,
           },
         },
         {
           type: LOAD_CONTACT_ACTION,
-          reference: 'TEST_REFERENCE',
           contacts: [changedContact, { ...changedContact, id: '666' }, { ...changedContact, id: '42' }],
           replaceExisting: false,
         },
       );
+      // Already loaded contacts not replaced when replaceExisting=false
       expect(newState[baseContact.id].savedContact).toStrictEqual(baseContact);
-      expect([...newState[baseContact.id].references]).toStrictEqual(['TEST_REFERENCE']);
-      expect(newState['42'].savedContact).toStrictEqual({ ...changedContact, id: '42' });
-      expect([...newState['42'].references]).toStrictEqual(['TEST_REFERENCE']);
       expect(newState['666'].savedContact).toStrictEqual({ ...baseContact, id: '666' });
-      expect([...newState['666'].references]).toMatchObject(['ANOTHER_TEST_REFERENCE', 'TEST_REFERENCE']);
-      expect(newState['666'].references.size).toEqual(2);
+      // New contact added
+      expect(newState['42'].savedContact).toStrictEqual({ ...changedContact, id: '42' });
+      expect(newState['42'].lastReferencedDate).toBeInstanceOf(Date);
     });
   });
 
   describe('replaceExisting set to true', () => {
-    test('Nothing currently for that ID - adds the contact with provided reference and blank categories state', () => {
+    test('Nothing currently for that ID - adds the contact and sets lastReferencedDate', () => {
       const newState = loadContactReducer({}, loadContact(baseContact, 'TEST_REFERENCE', true));
       expect(newState[baseContact.id].savedContact).toStrictEqual(baseContact);
-      expect(newState[baseContact.id].references.size).toStrictEqual(1);
-      expect(newState[baseContact.id].references.has('TEST_REFERENCE')).toBeTruthy();
+      expect(newState[baseContact.id].lastReferencedDate).toBeInstanceOf(Date);
       expect(newState[baseContact.id].categories).toStrictEqual({ gridView: false, expanded: {} });
     });
 
-    test('Same contact currently for that ID, with different reference - adds reference', () => {
-      const newState = loadContactReducer(
-        {
-          [baseContact.id]: {
-            savedContact: baseContact,
-            references: new Set(['TEST_REFERENCE']),
-            metadata: VALID_EMPTY_METADATA,
-          },
-        },
-        loadContact(baseContact, 'ANOTHER_TEST_REFERENCE', true),
-      );
-      expect(newState[baseContact.id].savedContact).toStrictEqual(baseContact);
-      expect(newState[baseContact.id].references.size).toStrictEqual(2);
-      expect([...newState[baseContact.id].references]).toEqual(
-        expect.arrayContaining(['TEST_REFERENCE', 'ANOTHER_TEST_REFERENCE']),
-      );
-    });
-
-    test('Different contact currently for that ID - replaces and adds the reference', () => {
+    test('Different contact currently for that ID - replaces the contact and updates lastReferencedDate', () => {
       const changedContact = {
         ...baseContact,
         rawJson: {
@@ -238,20 +166,17 @@ describe('loadContactReducer', () => {
         {
           [baseContact.id]: {
             savedContact: baseContact,
-            references: new Set(['TEST_REFERENCE']),
+            lastReferencedDate: new Date(),
             metadata: VALID_EMPTY_METADATA,
           },
         },
         loadContact(changedContact, 'ANOTHER_TEST_REFERENCE', true),
       );
       expect(newState[baseContact.id].savedContact).toStrictEqual(changedContact);
-      expect(newState[baseContact.id].references.size).toStrictEqual(2);
-      expect([...newState[baseContact.id].references]).toEqual(
-        expect.arrayContaining(['TEST_REFERENCE', 'ANOTHER_TEST_REFERENCE']),
-      );
+      expect(newState[baseContact.id].lastReferencedDate).toBeInstanceOf(Date);
     });
 
-    test('Same reference as a contact already loaded - replaces contact but leaves references the same', () => {
+    test('Multiple contacts - replaces all existing contacts', () => {
       const changedContact = {
         ...baseContact,
         rawJson: {
@@ -267,56 +192,24 @@ describe('loadContactReducer', () => {
         {
           [baseContact.id]: {
             savedContact: baseContact,
-            references: new Set(['TEST_REFERENCE']),
-            metadata: VALID_EMPTY_METADATA,
-          },
-        },
-        loadContact(changedContact, 'TEST_REFERENCE', true),
-      );
-      expect(newState[baseContact.id].savedContact).toStrictEqual(changedContact);
-      expect(newState[baseContact.id].references.size).toStrictEqual(1);
-      expect(newState[baseContact.id].references.has('TEST_REFERENCE')).toBeTruthy();
-    });
-
-    test('Multiple contacts in different states - applies rules to each contact separately', () => {
-      const changedContact = {
-        ...baseContact,
-        rawJson: {
-          ...baseContact.rawJson,
-          childInformation: {
-            ...baseContact.rawJson.childInformation,
-            firstName: 'Charlotte',
-            lastName: 'Ballantyne',
-          },
-        },
-      };
-      const newState = loadContactReducer(
-        {
-          [baseContact.id]: {
-            savedContact: baseContact,
-            references: new Set(['TEST_REFERENCE']),
+            lastReferencedDate: new Date(),
             metadata: VALID_EMPTY_METADATA,
           },
           '666': {
             savedContact: { ...baseContact, id: '666' },
-            references: new Set(['ANOTHER_TEST_REFERENCE']),
+            lastReferencedDate: new Date(),
             metadata: VALID_EMPTY_METADATA,
           },
         },
         {
           type: LOAD_CONTACT_ACTION,
-          reference: 'TEST_REFERENCE',
           contacts: [changedContact, { ...changedContact, id: '666' }, { ...changedContact, id: '42' }],
           replaceExisting: true,
         },
       );
       expect(newState[baseContact.id].savedContact).toStrictEqual(changedContact);
-      expect([...newState[baseContact.id].references]).toStrictEqual(['TEST_REFERENCE']);
       expect(newState['42'].savedContact).toStrictEqual({ ...changedContact, id: '42' });
-      expect([...newState['42'].references]).toStrictEqual(['TEST_REFERENCE']);
       expect(newState['666'].savedContact).toStrictEqual({ ...changedContact, id: '666' });
-      expect([...newState['666'].references]).toMatchObject(['ANOTHER_TEST_REFERENCE', 'TEST_REFERENCE']);
-      expect(newState['666'].references.size).toEqual(2);
     });
   });
 
@@ -325,7 +218,6 @@ describe('loadContactReducer', () => {
     const outAction = loadContact(input, 'TEST_REFERENCE');
     expect(outAction.contacts.length).toEqual(1);
     expect(outAction.contacts[0]).toStrictEqual(baseContact);
-    expect(outAction.reference).toEqual('TEST_REFERENCE');
   });
 
   test('loadContacts', () => {
@@ -335,133 +227,6 @@ describe('loadContactReducer', () => {
     expect(outAction.contacts.length).toEqual(2);
     expect(outAction.contacts[0]).toStrictEqual(baseContact);
     expect(outAction.contacts[1]).toStrictEqual({ ...baseContact, id: '42' });
-    expect(outAction.reference).toEqual('TEST_REFERENCE');
-  });
-});
-
-describe('releaseContactReducer', () => {
-  test('Nothing currently for that ID - noop', () => {
-    const newState = releaseContactReducer({}, releaseContact(baseContact.id, 'TEST_REFERENCE'));
-    expect(newState).toStrictEqual({});
-  });
-  test('Contact loaded for that ID with that reference and others - removes that reference', () => {
-    const newState = releaseContactReducer(
-      {
-        [baseContact.id]: {
-          savedContact: baseContact,
-          references: new Set(['TEST_REFERENCE', 'ANOTHER_TEST_REFERENCE']),
-
-          metadata: VALID_EMPTY_METADATA,
-        },
-      },
-      releaseContact(baseContact.id, 'TEST_REFERENCE'),
-    );
-    expect(newState[baseContact.id].savedContact).toStrictEqual(baseContact);
-    expect(newState[baseContact.id].references.size).toStrictEqual(1);
-    expect(newState[baseContact.id].references.has('ANOTHER_TEST_REFERENCE')).toBeTruthy();
-  });
-  test('Contact loaded for that ID with just that reference - removes contact from state', () => {
-    const newState = releaseContactReducer(
-      {
-        [baseContact.id]: {
-          savedContact: baseContact,
-          references: new Set(['TEST_REFERENCE']),
-          metadata: {
-            ...VALID_EMPTY_METADATA,
-            categories: { gridView: false, expanded: {} },
-          },
-        },
-      },
-      releaseContact(baseContact.id, 'TEST_REFERENCE'),
-    );
-    expect(newState[baseContact.id]).toBeUndefined();
-  });
-  test('Contact loaded for that ID but not the specified reference - does nothing', () => {
-    const newState = releaseContactReducer(
-      {
-        [baseContact.id]: {
-          savedContact: baseContact,
-          references: new Set(['ANOTHER_REFERENCE']),
-          metadata: {
-            ...VALID_EMPTY_METADATA,
-            categories: { gridView: false, expanded: {} },
-          },
-        },
-      },
-      releaseContact(baseContact.id, 'TEST_REFERENCE'),
-    );
-    expect(newState[baseContact.id].savedContact).toStrictEqual(baseContact);
-    expect(newState[baseContact.id].references.size).toStrictEqual(1);
-    expect(newState[baseContact.id].references.has('ANOTHER_REFERENCE')).toBeTruthy();
-  });
-  test('Contact loaded for that ID with no references - should never be in this state but removes contact from state', () => {
-    const newState = releaseContactReducer(
-      {
-        [baseContact.id]: {
-          savedContact: baseContact,
-          references: new Set(),
-          metadata: {
-            ...VALID_EMPTY_METADATA,
-            categories: { gridView: false, expanded: {} },
-          },
-        },
-      },
-      releaseContact(baseContact.id, 'ANYTHING'),
-    );
-    expect(newState[baseContact.id]).toBeUndefined();
-  });
-  test('Multiple contacts that are all present - removes references and removes contacts left with no references', () => {
-    const newState = releaseContactReducer(
-      {
-        [baseContact.id]: {
-          savedContact: baseContact,
-          references: new Set(['TEST_REFERENCE', 'ANOTHER_TEST_REFERENCE']),
-          metadata: VALID_EMPTY_METADATA,
-        },
-        '666': {
-          savedContact: { ...baseContact, id: '666' },
-          references: new Set(['TEST_REFERENCE']),
-
-          metadata: {
-            ...VALID_EMPTY_METADATA,
-            categories: { gridView: false, expanded: {} },
-          },
-        },
-      },
-      releaseContacts([baseContact.id, '666'], 'TEST_REFERENCE'),
-    );
-    expect(newState[baseContact.id].savedContact).toStrictEqual(baseContact);
-    expect(newState[baseContact.id].references.size).toStrictEqual(1);
-    expect(newState[baseContact.id].references.has('ANOTHER_TEST_REFERENCE')).toBeTruthy();
-    expect(newState['666']).toBeUndefined();
-  });
-  test('Multiple contacts that are not all present - removes references and removes contacts left with no references', () => {
-    const newState = releaseContactReducer(
-      {
-        [baseContact.id]: {
-          savedContact: baseContact,
-          references: new Set(['ANOTHER_TEST_REFERENCE']),
-          metadata: {
-            ...VALID_EMPTY_METADATA,
-            categories: { gridView: false, expanded: {} },
-          },
-        },
-        '666': {
-          savedContact: { ...baseContact, id: '666' },
-          references: new Set(['TEST_REFERENCE']),
-
-          metadata: {
-            ...VALID_EMPTY_METADATA,
-            categories: { gridView: false, expanded: {} },
-          },
-        },
-      },
-      releaseContacts([baseContact.id, '666', '42'], 'TEST_REFERENCE'),
-    );
-    expect(newState[baseContact.id].savedContact).toStrictEqual(baseContact);
-    expect(newState[baseContact.id].references.size).toStrictEqual(1);
-    expect(newState[baseContact.id].references.has('ANOTHER_TEST_REFERENCE')).toBeTruthy();
-    expect(newState['666']).toBeUndefined();
   });
 });
 
@@ -493,7 +258,7 @@ describe('loadTranscriptReducer', () => {
       {
         [baseContact.id]: {
           savedContact: baseContact,
-          references: new Set(['x']),
+          lastReferencedDate: new Date(),
           metadata: {
             ...VALID_EMPTY_METADATA,
             categories: {
@@ -517,7 +282,7 @@ describe('toggleCategoryExpandedReducer', () => {
       {
         [baseContact.id]: {
           savedContact: baseContact,
-          references: new Set(['x']),
+          lastReferencedDate: new Date(),
           metadata: {
             ...VALID_EMPTY_METADATA,
             categories: {
@@ -542,7 +307,7 @@ describe('toggleCategoryExpandedReducer', () => {
       {
         [baseContact.id]: {
           savedContact: baseContact,
-          references: new Set('x'),
+          lastReferencedDate: new Date(),
           metadata: VALID_EMPTY_METADATA,
         },
       },
@@ -563,7 +328,7 @@ describe('setCategoriesGridViewReducer', () => {
       {
         [baseContact.id]: {
           savedContact: baseContact,
-          references: new Set('x'),
+          lastReferencedDate: new Date(),
           metadata: {
             ...VALID_EMPTY_METADATA,
             categories: {

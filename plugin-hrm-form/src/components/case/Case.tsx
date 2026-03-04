@@ -41,7 +41,6 @@ import { recordBackendError } from '../../fullStory';
 import { getInitializedCan } from '../../permissions/rules';
 import { CenteredContainer } from './styles';
 import EditCaseOverview from './caseOverview/EditCaseOverview';
-import * as ContactActions from '../../states/contacts/existingContacts';
 import { getHrmConfig, getTemplateStrings } from '../../hrmConfig';
 import { selectCurrentTopmostRouteForTask } from '../../states/routing/getRoute';
 import { selectCurrentDefinitionVersion, selectDefinitionVersions } from '../../states/configuration/selectDefinitions';
@@ -88,7 +87,6 @@ const Case: React.FC<Props> = ({ task, handleClose, onNewCaseSaved = () => Promi
   const openPrintModal = (caseId: CaseType['id']) => {
     dispatch(RoutingActions.newOpenModalAction({ route: 'case', subroute: 'case-print-view', caseId }, task.taskSid));
   };
-  const releaseAllContacts = (referenceId: string) => dispatch(ContactActions.releaseAllContacts(referenceId));
 
   const { connectedCase, loading: loadingCase } = useCase({
     caseId: connectedCaseId,
@@ -154,7 +152,6 @@ const Case: React.FC<Props> = ({ task, handleClose, onNewCaseSaved = () => Promi
     setLoading(true);
 
     try {
-      releaseAllContacts(`case-${connectedCase.id}`);
       closeModal();
       // Validating that task isn't a StandaloneITask.
       if (isStandaloneITask(task)) return;
@@ -169,7 +166,6 @@ const Case: React.FC<Props> = ({ task, handleClose, onNewCaseSaved = () => Promi
   };
 
   const handleCloseCase = async () => {
-    releaseAllContacts(`case-${connectedCase.id}`);
     actualHandleClose();
   };
 

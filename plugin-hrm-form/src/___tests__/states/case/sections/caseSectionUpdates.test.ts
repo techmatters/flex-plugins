@@ -177,7 +177,7 @@ describe('createCaseSectionAsyncAction', () => {
           cases: {
             [CASE_ID]: {
               availableStatusTransitions: [],
-              references: new Set(),
+              lastReferencedDate: new Date(),
               caseWorkingCopy: null,
               connectedCase: { ...VALID_EMPTY_CASE },
               timelines: {},
@@ -326,7 +326,7 @@ describe('updateCaseSectionAsyncAction', () => {
           cases: {
             [CASE_ID]: {
               availableStatusTransitions: [],
-              references: new Set(),
+              lastReferencedDate: new Date(),
               caseWorkingCopy: null,
               connectedCase: { ...VALID_EMPTY_CASE },
               timelines: {},

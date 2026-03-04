@@ -23,7 +23,7 @@ import { CSAMReportEntry } from '../../../types/types';
 
 const BASELINE_STATE: ExistingContactsState = {
   exists: {
-    references: new Set([]),
+    lastReferencedDate: new Date(),
     categories: { gridView: false, expanded: {} },
     savedContact: {
       contactId: '',

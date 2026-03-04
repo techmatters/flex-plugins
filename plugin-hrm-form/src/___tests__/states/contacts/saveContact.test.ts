@@ -104,7 +104,7 @@ const baseState: ContactsState = {
   existingContacts: {
     [baseContact.id]: {
       savedContact: baseContact,
-      references: new Set('x'),
+      lastReferencedDate: new Date(),
       metadata: VALID_EMPTY_METADATA,
     },
   },
@@ -131,7 +131,7 @@ describe('actions', () => {
       const state = getState();
       expect(state.contactsBeingCreated.has('WT-load-me')).toBe(false);
       expect(state.existingContacts['666'].savedContact).toEqual(taskContact);
-      expect(state.existingContacts['666'].references.has('mock-ref')).toBe(true);
+      expect(state.existingContacts['666'].lastReferencedDate).toBeInstanceOf(Date);
       expect(mockGetCase).not.toHaveBeenCalled();
       expect(mockGetContactByTaskSid).toHaveBeenCalledWith('WT-load-me');
     });
@@ -194,7 +194,7 @@ describe('actions', () => {
         connectedCase: baseCase,
         sections: {},
         timelines: {},
-        references: new Set<string>(),
+        lastReferencedDate: new Date(),
         availableStatusTransitions: [],
         caseWorkingCopy: undefined,
         outstandingUpdateCount: 0,
@@ -213,7 +213,7 @@ describe('actions', () => {
         connectedCase: baseCase,
         sections: {},
         timelines: {},
-        references: new Set<string>(),
+        lastReferencedDate: new Date(),
         availableStatusTransitions: [],
         caseWorkingCopy: undefined,
         outstandingUpdateCount: 0,
