@@ -14,39 +14,57 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { AccountScopedHandler } from '../httpTypes';
-import { AccountSID } from '@tech-matters/twilio-types';
+import { AccountSID, TaskSID } from '@tech-matters/twilio-types';
 import { getTwilioClient } from '@tech-matters/twilio-configuration';
-import { newMissingParameterResult } from '../httpErrors';
-import { newErr, newOk } from '../Result';
+import { newHttpErrorResult, newMissingParameterResult } from '../httpErrors';
+import { newErr, newOk, isErr } from '../Result';
+import { FlexValidatedHandler, isSupervisor } from '../validation/flexToken';
+import {
+  getTaskAndReservations,
+  isTaskNotFoundErrorResult,
+  VALID_RESERVATION_STATUSES_FOR_TASK_OWNER,
+} from '../task/getTaskAndReservations';
 import { transitionAgentParticipants } from './interactionChannelParticipants';
 
-export const transitionAgentParticipantsHandler: AccountScopedHandler = async (
-  { body: event },
+export const transitionAgentParticipantsHandler: FlexValidatedHandler = async (
+  { body: event, tokenResult },
   accountSid: AccountSID,
 ) => {
-  const {
-    flexInteractionSid,
-    flexInteractionChannelSid,
-    targetStatus,
-    interactionChannelParticipantSid,
-  } = event;
+  const { taskSid, targetStatus, interactionChannelParticipantSid } = event as {
+    taskSid: TaskSID;
+    targetStatus: string;
+    interactionChannelParticipantSid?: string;
+  };
 
-  if (!flexInteractionSid) {
-    return newMissingParameterResult('flexInteractionSid');
-  }
-  if (!flexInteractionChannelSid) {
-    return newMissingParameterResult('flexInteractionChannelSid');
+  if (!taskSid) {
+    return newMissingParameterResult('taskSid');
   }
   if (!targetStatus) {
     return newMissingParameterResult('targetStatus');
   }
 
+  const lookupResult = await getTaskAndReservations(accountSid, taskSid, tokenResult);
+  if (isErr(lookupResult)) {
+    return newHttpErrorResult(
+      lookupResult.error.cause,
+      isTaskNotFoundErrorResult(lookupResult) ? 404 : 500,
+    );
+  }
+
+  const { task, reservations } = lookupResult.unwrap();
+  if (!isSupervisor(tokenResult) && !reservations?.length) {
+    return newHttpErrorResult(
+      `Unauthorized: Endpoint cannot be invoked unless the calling worker is a supervisor or has a reservation on the target task with one of these statuses: ${VALID_RESERVATION_STATUSES_FOR_TASK_OWNER}`,
+      403,
+    );
+  }
+
   try {
+    const taskAttributes = JSON.parse(task.attributes || '{}');
     const client = await getTwilioClient(accountSid);
     await transitionAgentParticipants(
       client,
-      { flexInteractionSid, flexInteractionChannelSid },
+      taskAttributes,
       targetStatus,
       interactionChannelParticipantSid,
     );

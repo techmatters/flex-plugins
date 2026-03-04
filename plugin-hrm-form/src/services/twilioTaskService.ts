@@ -62,25 +62,16 @@ export const assignOfflineContactResolve = async (payload: OfflineContactComplet
   return fetchProtectedApi(`${pathRoot}/assignOfflineContactResolve`, body, { useTwilioLambda });
 };
 
-type InteractionTaskAttributes = {
-  flexInteractionSid?: string;
-  flexInteractionChannelSid?: string;
-};
-
 /**
  * Wraps up a conversations task using the interactions API rather than the default actions API.
  * This prevents the underlying conversation being closed so a post survey can be performed.
  */
-export const wrapupConversationTask = async (taskSid: TaskSID, taskAttributes?: InteractionTaskAttributes) => {
+export const wrapupConversationTask = async (taskSid: TaskSID) => {
   const { use_twilio_lambda_to_transition_participants: useTwilioLambda } = getAseloFeatureFlags();
   if (useTwilioLambda) {
     return fetchProtectedApi(
       '/conversation/transitionAgentParticipants',
-      {
-        flexInteractionSid: taskAttributes?.flexInteractionSid,
-        flexInteractionChannelSid: taskAttributes?.flexInteractionChannelSid,
-        targetStatus: 'wrapup',
-      },
+      { taskSid, targetStatus: 'wrapup' },
       { useTwilioLambda: true },
     );
   }
@@ -91,16 +82,12 @@ export const wrapupConversationTask = async (taskSid: TaskSID, taskAttributes?: 
  * Completes a conversations task using the interactions API rather than the default actions API.
  * This prevents the underlying conversation being closed so a post survey can be performed.
  */
-export const completeConversationTask = async (taskSid: TaskSID, taskAttributes?: InteractionTaskAttributes) => {
+export const completeConversationTask = async (taskSid: TaskSID) => {
   const { use_twilio_lambda_to_transition_participants: useTwilioLambda } = getAseloFeatureFlags();
   if (useTwilioLambda) {
     return fetchProtectedApi(
       '/conversation/transitionAgentParticipants',
-      {
-        flexInteractionSid: taskAttributes?.flexInteractionSid,
-        flexInteractionChannelSid: taskAttributes?.flexInteractionChannelSid,
-        targetStatus: 'closed',
-      },
+      { taskSid, targetStatus: 'closed' },
       { useTwilioLambda: true },
     );
   }
