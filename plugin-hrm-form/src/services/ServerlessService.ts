@@ -20,7 +20,7 @@
 
 /* eslint-disable sonarjs/prefer-immediate-return */
 /* eslint-disable camelcase */
-import { ITask, Notifications } from '@twilio/flex-ui';
+import { Notifications } from '@twilio/flex-ui';
 import { DefinitionVersion, loadDefinition } from 'hrm-form-definitions';
 
 import fetchProtectedApi from './fetchProtectedApi';
@@ -53,15 +53,6 @@ export const issueSyncToken = async (): Promise<string> => {
   const res = await fetchProtectedApi('/issueSyncToken');
   const syncToken = res.token;
   return syncToken;
-};
-
-/**
- * Sends a new message to the channel bounded to the provided taskSid. Optionally you can change the "from" value (defaul is "system").
- */
-export const sendSystemMessage = async (body: { taskSid: ITask['taskSid']; message: string; from?: string }) => {
-  const response = await fetchProtectedApi('/sendSystemMessage', body);
-
-  return response;
 };
 
 export const getDefinitionVersion = async (version: string): Promise<DefinitionVersion> => {
