@@ -40,7 +40,7 @@
       ]
     },
     {
-      "type": "input-text",
+      "type": "input",
       "name": "genderInput",
       "label": "What is your gender identity?",
       "placeholder": "",

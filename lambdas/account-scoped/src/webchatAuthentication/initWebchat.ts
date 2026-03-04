@@ -14,50 +14,48 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { getAccountAuthToken, getTwilioClient } from '@tech-matters/twilio-configuration';
+import { getTwilioClient } from '@tech-matters/twilio-configuration';
 import type { AccountScopedHandler, HttpError } from '../httpTypes';
 import type { AccountSID, ConversationSID } from '@tech-matters/twilio-types';
 import { isErr, newErr, newOk, Result } from '../Result';
 
 import { createToken, TOKEN_TTL_IN_SECONDS } from './createToken';
 
-const contactWebchatOrchestrator = async (
-  accountSid: AccountSID,
-  addressSid: string,
-  formData: any,
-  customerFriendlyName: string,
-): Promise<Result<HttpError, { conversationSid: ConversationSID; identity: string }>> => {
+const contactWebchatOrchestrator = async ({
+  addressSid,
+  accountSid,
+  formData,
+  customerFriendlyName,
+}: {
+  accountSid: AccountSID;
+  addressSid: string;
+  formData: Record<string, any>;
+  customerFriendlyName: string;
+}): Promise<
+  Result<HttpError, { conversationSid: ConversationSID; identity: string }>
+> => {
   console.info('Calling Webchat Orchestrator');
 
-  const params = new URLSearchParams();
-  params.append('AddressSid', addressSid);
-  params.append('ChatFriendlyName', 'Webchat widget');
-  params.append('CustomerFriendlyName', customerFriendlyName);
-  params.append(
-    'PreEngagementData',
-    JSON.stringify({
-      ...formData,
-      friendlyName: customerFriendlyName,
-    }),
-  );
-  const authToken = await getAccountAuthToken(accountSid);
+  try {
+    const client = await getTwilioClient(accountSid);
+    const orchestratorResponse = await client.flexApi.v2.webChannels.create({
+      customerFriendlyName,
+      addressSid,
+      preEngagementData: JSON.stringify(formData),
+      uiVersion: process.env.WEBCHAT_VERSION || '1.0.0',
+      chatFriendlyName: 'Webchat widget',
+    });
+    console.info('Webchat Orchestrator successfully called', orchestratorResponse);
 
-  const res = await fetch(`https://flex-api.twilio.com/v2/WebChats`, {
-    method: 'POST',
-    headers: {
-      Authorization:
-        'Basic ' + Buffer.from(accountSid + ':' + authToken).toString('base64'),
-      'ui-version': process.env.WEBCHAT_VERSION || '1.0.0',
-    },
-    body: params,
-  });
-  if (!res.ok) {
-    const bodyError = await res.text();
-    console.error(
-      'Error calling https://flex-api.twilio.com/v2/WebChats',
-      accountSid,
-      bodyError,
-    );
+    const { conversationSid, identity } = orchestratorResponse;
+
+    return newOk({
+      conversationSid: conversationSid as ConversationSID,
+      identity,
+    });
+  } catch (err) {
+    const bodyError = err instanceof Error ? err.message : String(err);
+    console.error('Error creating web channel', accountSid, bodyError);
     return newErr({
       message: bodyError,
       error: {
@@ -66,16 +64,6 @@ const contactWebchatOrchestrator = async (
       },
     });
   }
-  const orchestratorResponse = (await res.json()) as any;
-
-  console.info('Webchat Orchestrator successfully called', orchestratorResponse);
-
-  const { conversation_sid: conversationSid, identity } = orchestratorResponse;
-
-  return newOk({
-    conversationSid,
-    identity,
-  });
 };
 
 const sendUserMessage = async (
@@ -116,18 +104,20 @@ const sendWelcomeMessage = async (
 export const initWebchatHandler: AccountScopedHandler = async (request, accountSid) => {
   console.info('Initiating webchat', accountSid);
 
-  const customerFriendlyName = request.body?.formData?.friendlyName || 'Customer';
+  const formData = JSON.parse(request.body?.PreEngagementData);
+  const customerFriendlyName =
+    formData?.friendlyName || request.body?.CustomerFriendlyName || 'Customer';
 
   let conversationSid: ConversationSID;
   let identity;
 
   // Hit Webchat Orchestration endpoint to generate conversation and get customer participant sid
-  const result = await contactWebchatOrchestrator(
+  const result = await contactWebchatOrchestrator({
     accountSid,
-    'IG1ba46f2d6828b42ddd363f5045138044', // Obvs needs to be SSM parameter
-    request.body?.formData,
+    addressSid: 'IG1ba46f2d6828b42ddd363f5045138044', // Obvs needs to be SSM parameter
+    formData,
     customerFriendlyName,
-  );
+  });
   if (isErr(result)) {
     return result;
   }

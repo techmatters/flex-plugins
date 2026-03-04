@@ -39,3 +39,7 @@ export const store = createStore(reducers, composeEnhancers(applyMiddleware(thun
 
 // eslint-disable-next-line import/no-unused-modules
 export type AppState = ReturnType<typeof store.getState>;
+
+// eslint-disable-next-line import/no-unused-modules
+export const preloadStore = (preloadedState: Partial<AppState>) =>
+  createStore(reducers, preloadedState, composeEnhancers(applyMiddleware(thunk)));
