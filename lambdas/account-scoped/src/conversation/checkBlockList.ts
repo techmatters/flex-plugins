@@ -15,10 +15,7 @@
  */
 
 import { AccountScopedHandler, HttpError } from '../httpTypes';
-import { AccountSID } from '@tech-matters/twilio-types';
 import { newErr, newOk, Result } from '../Result';
-import { getBlockListKey } from '@tech-matters/twilio-configuration';
-import { SsmParameterNotFound } from '@tech-matters/ssm-cache';
 
 export type CheckBlockListRequestBody = {
   callFrom: string;
@@ -28,10 +25,9 @@ type BlockList = {
   numbers: string[];
 };
 
-export const checkBlockListHandler: AccountScopedHandler = async (
-  { body },
-  accountSid: AccountSID,
-): Promise<Result<HttpError, any>> => {
+export const checkBlockListHandler: AccountScopedHandler = async ({
+  body,
+}): Promise<Result<HttpError, any>> => {
   const { callFrom } = body as CheckBlockListRequestBody;
 
   if (!callFrom) {
@@ -41,23 +37,12 @@ export const checkBlockListHandler: AccountScopedHandler = async (
     });
   }
 
-  let blockListKey: string;
-  try {
-    blockListKey = await getBlockListKey(accountSid);
-  } catch (err) {
-    if (err instanceof SsmParameterNotFound) {
-      // No block list configured for this account, allow the call through
-      return newOk({ blocked: false });
-    }
-    throw err;
-  }
-
   let blockList: BlockList;
   try {
     // eslint-disable-next-line import/no-dynamic-require, global-require
-    blockList = require(`./blockList/${blockListKey}.json`);
+    blockList = require('./blockList.json');
   } catch {
-    // No block list file found for this key, allow the call through
+    // No block list file found, allow the call through
     return newOk({ blocked: false });
   }
 

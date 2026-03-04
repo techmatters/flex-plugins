@@ -14,20 +14,9 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { checkBlockListHandler } from '../../../src/conversation/checkBlockList';
-import { getBlockListKey } from '@tech-matters/twilio-configuration';
-import { SsmParameterNotFound } from '@tech-matters/ssm-cache';
 import { isErr, isOk } from '../../../src/Result';
 import { TEST_ACCOUNT_SID } from '../../testTwilioValues';
 import { HttpRequest } from '../../../src/httpTypes';
-
-jest.mock('@tech-matters/twilio-configuration', () => ({
-  getBlockListKey: jest.fn(),
-}));
-
-const mockGetBlockListKey = getBlockListKey as jest.MockedFunction<
-  typeof getBlockListKey
->;
 
 const createMockRequest = (body: any): HttpRequest => ({
   method: 'POST',
@@ -37,16 +26,18 @@ const createMockRequest = (body: any): HttpRequest => ({
   body,
 });
 
-const TEST_BLOCK_LIST_KEY = 'test-helpline';
-
 describe('checkBlockListHandler', () => {
   beforeEach(() => {
-    jest.clearAllMocks();
     jest.resetModules();
-    mockGetBlockListKey.mockResolvedValue(TEST_BLOCK_LIST_KEY);
   });
 
   it('should return 400 when callFrom is missing', async () => {
+    jest.mock('../../../src/conversation/blockList.json', () => ({ numbers: [] }), {
+      virtual: true,
+    });
+    const { checkBlockListHandler } = await import(
+      '../../../src/conversation/checkBlockList'
+    );
     const request = createMockRequest({});
     const result = await checkBlockListHandler(request, TEST_ACCOUNT_SID);
 
@@ -57,30 +48,10 @@ describe('checkBlockListHandler', () => {
     }
   });
 
-  it('should return not-blocked when no block list key is configured in SSM', async () => {
-    mockGetBlockListKey.mockRejectedValue(
-      new SsmParameterNotFound('Parameter not found'),
-    );
-    const request = createMockRequest({ callFrom: '+12345678901' });
-    const result = await checkBlockListHandler(request, TEST_ACCOUNT_SID);
-
-    expect(isOk(result)).toBe(true);
-    if (isOk(result)) {
-      expect(result.data.blocked).toBe(false);
-    }
-  });
-
-  it('should rethrow unexpected errors from getBlockListKey', async () => {
-    mockGetBlockListKey.mockRejectedValue(new Error('Unexpected SSM error'));
-    const request = createMockRequest({ callFrom: '+12345678901' });
-
-    await expect(checkBlockListHandler(request, TEST_ACCOUNT_SID)).rejects.toThrow(
-      'Unexpected SSM error',
-    );
-  });
-
   it('should return not-blocked when block list file does not exist', async () => {
-    mockGetBlockListKey.mockResolvedValue('nonexistent-key');
+    const { checkBlockListHandler } = await import(
+      '../../../src/conversation/checkBlockList'
+    );
     const request = createMockRequest({ callFrom: '+12345678901' });
     const result = await checkBlockListHandler(request, TEST_ACCOUNT_SID);
 
@@ -91,12 +62,14 @@ describe('checkBlockListHandler', () => {
   });
 
   it('should return 403 when caller is on the block list', async () => {
-    jest.doMock(
-      '../../../src/conversation/blockList/test-helpline.json',
+    jest.mock(
+      '../../../src/conversation/blockList.json',
       () => ({ numbers: ['+12345678901', '+19876543210'] }),
       { virtual: true },
     );
-
+    const { checkBlockListHandler } = await import(
+      '../../../src/conversation/checkBlockList'
+    );
     const request = createMockRequest({ callFrom: '+12345678901' });
     const result = await checkBlockListHandler(request, TEST_ACCOUNT_SID);
 
@@ -108,12 +81,14 @@ describe('checkBlockListHandler', () => {
   });
 
   it('should return not-blocked when caller is not on the block list', async () => {
-    jest.doMock(
-      '../../../src/conversation/blockList/test-helpline.json',
+    jest.mock(
+      '../../../src/conversation/blockList.json',
       () => ({ numbers: ['+19876543210'] }),
       { virtual: true },
     );
-
+    const { checkBlockListHandler } = await import(
+      '../../../src/conversation/checkBlockList'
+    );
     const request = createMockRequest({ callFrom: '+12345678901' });
     const result = await checkBlockListHandler(request, TEST_ACCOUNT_SID);
 
