@@ -196,7 +196,7 @@ export const wrapupTask = (setupObject: SetupObject, getMessage: GetMessage) => 
   }
   await saveEndMillis(payload);
   if (payload.task.attributes.conversationSid) {
-    return wrapupConversationTask(payload.task.taskSid);
+    return wrapupConversationTask(payload.task.taskSid, payload.task.attributes);
   }
   return original(payload);
 };
@@ -206,7 +206,7 @@ export const wrapupTask = (setupObject: SetupObject, getMessage: GetMessage) => 
  */
 export const completeTaskOverride = async (payload: ActionPayload, original: ActionFunction): Promise<any> => {
   if (payload.task.attributes.conversationSid) {
-    return completeConversationTask(payload.task.taskSid);
+    return completeConversationTask(payload.task.taskSid, payload.task.attributes);
   }
   return original(payload);
 };
