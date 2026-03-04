@@ -28,7 +28,7 @@ import asyncDispatch from '../states/asyncDispatch';
 import { newClearContactAsyncAction, removeFromCaseAsyncAction } from '../states/contacts/saveContact';
 import { getOfflineContactTaskSid } from '../states/contacts/offlineContactTask';
 import { CaseStateEntry } from '../states/case/types';
-import { getExternalRecordingInfo } from './getExternalRecordingInfo';
+import { getExternalRecordingInfo } from './recordingsService';
 import { assignOfflineContactInit, assignOfflineContactResolve } from './twilioTaskService';
 
 const FINISHED_TASK_STATES: TaskReservationStatus[] = ['completed', 'canceled'];

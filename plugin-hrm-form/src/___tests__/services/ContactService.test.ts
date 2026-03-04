@@ -43,14 +43,16 @@ jest.mock('../../services/formSubmissionHelpers', () => ({
   }),
 }));
 
-jest.mock('../../services/ServerlessService', () => ({
-  getExternalRecordingS3Location: () =>
+jest.mock('../../services/recordingsService', () => ({
+  getExternalRecordingInfo: () =>
     Promise.resolve({
       status: 'success',
       recordingSid: 'recordingSid',
       bucket: 'bucket',
       key: 'key',
     }),
+  isFailureExternalRecordingInfo: (r: any) => r && r.status === 'failure',
+  shouldGetExternalRecordingInfo: () => true,
 }));
 
 jest.mock('@twilio/flex-ui', () => ({
