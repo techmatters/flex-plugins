@@ -17,6 +17,7 @@
 import {
   CaseActionType,
   CaseState,
+  CaseStateEntry,
   LOAD_CASE_ACTION_FULFILLED,
   LOAD_CASE_ACTION_PENDING,
   LOAD_CASE_ACTION_REJECTED,
@@ -44,7 +45,6 @@ import {
 import { loadCaseIntoState } from './loadCaseIntoState';
 import { SEARCH_CASES_SUCCESS_ACTION, SearchCasesSuccessAction } from '../search/results';
 import { isStale } from '../staleTimeout';
-import { CaseSectionTypeSpecificData } from '../../services/caseSectionService';
 
 const initialState: CaseState = {
   cases: {},
@@ -56,7 +56,7 @@ const boundCaseSectionUpdateReducer = caseSectionUpdateReducer({
 } as HrmState);
 const boundTimelineReducer = timelineReducer({ connectedCase: initialState } as HrmState);
 
-const hasCaseDraftUpdates = (caseEntry: { caseWorkingCopy?: { sections?: Record<string, { new?: CaseSectionTypeSpecificData; existing?: Record<string, CaseSectionTypeSpecificData> }>; caseSummary?: unknown } }): boolean => {
+const hasCaseDraftUpdates = (caseEntry: Pick<CaseStateEntry, 'caseWorkingCopy'>): boolean => {
   const { caseWorkingCopy } = caseEntry;
   if (!caseWorkingCopy) return false;
   if (caseWorkingCopy.caseSummary !== undefined) return true;

@@ -102,7 +102,12 @@ type LoadContactAction = {
   replaceExisting: boolean;
 };
 
-export const loadContact = (contact: Partial<Contact>, _reference?: string, replaceExisting = false): LoadContactAction => ({
+export const loadContact = (
+  contact: Partial<Contact>,
+  /** @deprecated No longer used; contacts are managed via garbage collection */
+  _reference?: string,
+  replaceExisting = false,
+): LoadContactAction => ({
   type: LOAD_CONTACT_ACTION,
   contacts: [contact],
   replaceExisting,
@@ -110,6 +115,7 @@ export const loadContact = (contact: Partial<Contact>, _reference?: string, repl
 
 export const loadContacts = (
   contacts: Partial<Contact>[],
+  /** @deprecated No longer used; contacts are managed via garbage collection */
   _reference?: string,
   replaceExisting = false,
 ): LoadContactAction => ({

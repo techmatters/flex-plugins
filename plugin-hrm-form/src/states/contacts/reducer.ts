@@ -128,14 +128,14 @@ const loadContactListIntoState = (
   contactsState: ContactsState,
   configurationState: ConfigurationState,
   contacts: Contact[],
-  referenceId: string,
+  _referenceId: string,
   releaseExisting: boolean = true,
 ): ContactsState => {
   if (contacts?.length) {
     return contacts.reduce((acc, newContact) => {
       // TODO: strip the totalCount property in HRM
       const { totalCount, ...contactToAdd } = newContact as Contact & { totalCount: number };
-      return loadContactIntoRedux(acc, contactToAdd, referenceId);
+      return loadContactIntoRedux(acc, contactToAdd);
     }, contactsState);
   }
   return contactsState;

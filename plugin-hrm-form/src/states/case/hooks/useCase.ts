@@ -71,11 +71,12 @@ const useCaseLoader = ({
 // eslint-disable-next-line import/no-unused-modules
 export const useCase = ({
   caseId,
-  referenceId: _referenceId,
+  referenceId: _referenceId, // Kept for backward compatibility; no longer used with GC-based state management
   autoload = true,
   refresh = false,
 }: {
   caseId: Case['id'];
+  /** @deprecated No longer used; cases are managed via garbage collection */
   referenceId?: string;
   autoload?: boolean;
   refresh?: boolean;

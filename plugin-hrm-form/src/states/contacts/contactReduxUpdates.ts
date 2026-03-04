@@ -70,7 +70,6 @@ export const markContactAsNotCreatingInRedux = (state: ContactsState, taskSid: s
 export const loadContactIntoRedux = (
   state: ContactsState,
   contact: Contact,
-  _reference?: string,
   newMetadata?: ContactMetadata,
 ): ContactsState => {
   const { existingContacts } = state;
