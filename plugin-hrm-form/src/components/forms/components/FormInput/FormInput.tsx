@@ -24,7 +24,7 @@ import { FormError, FormLabel, RequiredAsterisk } from '../styles';
 import { FormInputBaseProps } from '../types';
 import { StyledFormInput } from './styles';
 
-export type FormInputUIProps = {
+type FormInputUIProps = {
   inputId: string;
   updateCallback: () => void;
   refFunction: (ref: any) => void;
