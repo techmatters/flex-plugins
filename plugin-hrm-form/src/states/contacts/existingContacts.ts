@@ -180,8 +180,10 @@ const releaseContactStatesById = (
         );
         return [id, undefined];
       }
-      delete current.references[reference];
-      return [id, current];
+      const updatedReferences = { ...current.references };
+      delete updatedReferences[reference];
+      const updatedCurrent = { ...current, references: updatedReferences };
+      return [id, updatedCurrent];
     })
     .filter(([, ecs]) => typeof ecs === 'object' && Object.keys(ecs.references).length > 0);
   return {
