@@ -58,7 +58,7 @@ export const loadCaseIntoState = ({
           availableStatusTransitions: getAvailableCaseStatusTransitions(newCase, definitionVersion),
           references: {
             ...(existingReferences || {}),
-            ...(referenceId ? { referenceId: true } : {}),
+            ...(referenceId ? { [referenceId]: true } : {}),
           },
           sections: {},
           timelines: {},
