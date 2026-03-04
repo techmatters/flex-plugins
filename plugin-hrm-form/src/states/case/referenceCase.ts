@@ -57,7 +57,7 @@ export const dereferenceCase = (state: CaseState, caseId: Case['id'], referenceI
   if (!caseState) {
     return state;
   }
-  const references = caseState.references ?? {};
+  const references = { ...(caseState.references ?? {}) };
   delete references[referenceId];
   if (Object.keys(references).length === 0) {
     return {
