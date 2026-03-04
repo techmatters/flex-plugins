@@ -69,7 +69,7 @@ type InteractionTaskAttributes = {
 
 /**
  * Wraps up a conversations task using the interactions API rather than the default actions API.
- * This prevents the underlying conversation being closed so a post survey can vbe performed.
+ * This prevents the underlying conversation being closed so a post survey can be performed.
  */
 export const wrapupConversationTask = async (taskSid: TaskSID, taskAttributes?: InteractionTaskAttributes) => {
   const { use_twilio_lambda_to_transition_participants: useTwilioLambda } = getAseloFeatureFlags();
@@ -89,7 +89,7 @@ export const wrapupConversationTask = async (taskSid: TaskSID, taskAttributes?: 
 
 /**
  * Completes a conversations task using the interactions API rather than the default actions API.
- * This prevents the underlying conversation being closed so a post survey can vbe performed.
+ * This prevents the underlying conversation being closed so a post survey can be performed.
  */
 export const completeConversationTask = async (taskSid: TaskSID, taskAttributes?: InteractionTaskAttributes) => {
   const { use_twilio_lambda_to_transition_participants: useTwilioLambda } = getAseloFeatureFlags();
