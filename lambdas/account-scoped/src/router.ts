@@ -65,6 +65,7 @@ import { selfReportToIWFHandler } from './integrations/iwf/selfReportToIWF';
 import { populateCounselorsHandler } from './worker/populateCounselors';
 import { getWorkerAttributesHandler } from './worker/getWorkerAttributes';
 import { listWorkerQueuesHandler } from './worker/listWorkerQueues';
+import { pullTaskHandler } from './worker/pullTask';
 import { sendSystemMessageHandler } from './conversation/sendSystemMessage';
 import { sendStudioMessageHandler } from './conversation/sendStudioMessage';
 import { sendMessageAndRunJanitorHandler } from './conversation/sendMessageAndRunJanitor';
@@ -236,6 +237,10 @@ const ACCOUNTSID_ROUTES: Record<
   'worker/listWorkerQueues': {
     requestPipeline: [validateFlexTokenRequest({ tokenMode: 'agent' })],
     handler: listWorkerQueuesHandler,
+  },
+  'worker/pullTask': {
+    requestPipeline: [validateFlexTokenRequest({ tokenMode: 'agent' })],
+    handler: pullTaskHandler,
   },
   'conversation/sendSystemMessage': {
     requestPipeline: [validateFlexTokenRequest({ tokenMode: 'agent' })],

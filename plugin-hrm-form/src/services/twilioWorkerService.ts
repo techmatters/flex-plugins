@@ -43,12 +43,14 @@ export const populateCounselors = async (): Promise<PopulateCounselorsReturn> =>
 
 export const pullNextTask = async (): Promise<TaskSID | undefined> => {
   const { workerSid } = getHrmConfig();
+  const useTwilioLambda = getAseloFeatureFlags().use_twilio_lambda_for_worker_endpoints;
 
   const body = {
     workerSid,
   };
   try {
-    return (await fetchProtectedApi('/pullTask', body)).taskPulled;
+    return (await fetchProtectedApi(useTwilioLambda ? '/worker/pullTask' : '/pullTask', body, { useTwilioLambda }))
+      .taskPulled;
   } catch (e) {
     if (e instanceof ApiError && e.response.status === 404) {
       console.warn('No eligible queued task found to pull');
