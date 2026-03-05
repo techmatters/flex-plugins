@@ -33,6 +33,7 @@ import { EventFields } from '../taskrouter';
 import { retrieveFeatureFlags } from '../configuration/aseloConfiguration';
 import { getWorkspaceSid } from '@tech-matters/twilio-configuration';
 import { TransferMeta } from './hasTaskControl';
+import { transitionAgentParticipants } from '../conversation/interactionChannelParticipants';
 
 const DUMMY_CHANNEL_SID = 'CH00000000000000000000000000000000';
 
@@ -117,37 +118,6 @@ const isWarmVoiceTransferTimedOut = (
   taskChannelUniqueName === 'voice' &&
   taskAttributes.transferMeta &&
   taskAttributes.transferMeta.mode === 'WARM';
-
-const transitionAgentParticipants = async (
-  client: Twilio,
-  taskAttributes: { flexInteractionSid?: string; flexInteractionChannelSid?: string },
-  targetStatus: string,
-  interactionChannelParticipantSid?: string,
-) => {
-  const { flexInteractionSid, flexInteractionChannelSid } = taskAttributes;
-
-  if (!flexInteractionSid || !flexInteractionChannelSid) {
-    console.warn(
-      'transitionAgentParticipants called without flexInteractionSid or flexInteractionChannelSid - is it a Programmable Chat task?',
-    );
-    return;
-  }
-
-  const participants = await client.flexApi.v1.interaction
-    .get(flexInteractionSid)
-    .channels.get(flexInteractionChannelSid)
-    .participants.list();
-
-  const agentParticipants = participants.filter(
-    p =>
-      p.type === 'agent' &&
-      (!interactionChannelParticipantSid || p.sid === interactionChannelParticipantSid),
-  );
-
-  await Promise.allSettled(
-    agentParticipants.map(p => p.update({ status: targetStatus as any })),
-  );
-};
 
 const updateWarmVoiceTransferAttributes = async (
   transferStatus: string,

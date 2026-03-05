@@ -17,6 +17,7 @@
 import { Message, Conversation } from '@twilio/conversations';
 import { applyMiddleware, combineReducers, createStore, compose } from 'redux';
 import thunk from 'redux-thunk';
+import { FormInputType } from 'hrm-form-definitions';
 
 import { MockedPaginator } from '../../../test-utils';
 import {
@@ -27,6 +28,8 @@ import {
   detachFiles,
   getMoreMessages,
   removeNotification,
+  submitAndInitChatThunk,
+  updatePreEngagementData,
 } from '../genericActions';
 import { EngagementPhase, Notification } from '../../definitions';
 import {
@@ -37,8 +40,23 @@ import {
   ACTION_REMOVE_NOTIFICATION,
 } from '../actionTypes';
 import { SessionReducer } from '../../session.reducer';
+import * as initActionsModule from '../initActions';
+import { sessionDataHandler } from '../../../sessionDataHandler';
+import { notifications } from '../../../notifications';
 
 jest.mock('@twilio/conversations');
+
+jest.mock('../../../sessionDataHandler', () => ({
+  sessionDataHandler: {
+    fetchAndStoreNewSession: jest.fn(),
+    getRegion: jest.fn(),
+  },
+}));
+
+jest.mock('../initActions', () => ({
+  initSession: jest.fn(),
+  initConfigThunk: jest.fn(),
+}));
 
 const createSessionStore = () =>
   createStore(
@@ -144,5 +162,51 @@ describe('Actions', () => {
         },
       });
     });
+  });
+});
+
+describe('submitAndInitChatThunk', () => {
+  const token = 'token';
+  const conversationSid = 'sid';
+
+  const formFields = [{ name: 'friendlyName', type: FormInputType.Input, label: 'Name' }];
+  const preEngagementData = { friendlyName: { value: 'John', error: null, dirty: true } };
+  const getState = jest.fn(() => ({
+    config: { preEngagementFormDefinition: { fields: formFields } },
+    session: { preEngagementData },
+  }));
+
+  beforeEach(() => {
+    jest.resetAllMocks();
+    getState.mockReturnValue({
+      config: { preEngagementFormDefinition: { fields: formFields } },
+      session: { preEngagementData },
+    });
+  });
+
+  it('should dispatch actions and initialize session on successful submission', async () => {
+    const mockInitSessionResult = { type: 'MOCK_INIT_SESSION' } as any;
+    (initActionsModule.initSession as jest.Mock).mockReturnValue(mockInitSessionResult);
+    (sessionDataHandler.fetchAndStoreNewSession as jest.Mock).mockResolvedValue({ token, conversationSid });
+
+    const dispatch = jest.fn();
+    await submitAndInitChatThunk()(dispatch as any, getState as any, undefined);
+
+    const expectedData = { friendlyName: { value: 'John', error: null, dirty: true } };
+    expect(dispatch).toHaveBeenCalledWith(updatePreEngagementData(expectedData));
+    expect(dispatch).toHaveBeenCalledWith(changeEngagementPhase({ phase: EngagementPhase.Loading }));
+    expect(initActionsModule.initSession).toHaveBeenCalledWith({ token, conversationSid });
+    expect(dispatch).toHaveBeenCalledWith(mockInitSessionResult);
+  });
+
+  it('should dispatch error notification and reset phase on session init failure', async () => {
+    const errorMessage = 'Session init failed';
+    (sessionDataHandler.fetchAndStoreNewSession as jest.Mock).mockRejectedValue(new Error(errorMessage));
+
+    const dispatch = jest.fn();
+    await submitAndInitChatThunk()(dispatch as any, getState as any, undefined);
+
+    expect(dispatch).toHaveBeenCalledWith(addNotification(notifications.failedToInitSessionNotification(errorMessage)));
+    expect(dispatch).toHaveBeenCalledWith(changeEngagementPhase({ phase: EngagementPhase.PreEngagementForm }));
   });
 });

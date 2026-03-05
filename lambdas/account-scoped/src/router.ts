@@ -41,6 +41,7 @@ import { participantStatusCallbackHandler } from './conference/participantStatus
 import { handleOperatingHours } from './operatingHours';
 import { handleEndChat } from './conversation/endChat';
 import { checkBlockListHandler } from './conversation/checkBlockList';
+import { transitionAgentParticipantsHandler } from './conversation/transitionAgentParticipants';
 import { conferenceStatusCallbackHandler } from './conference/conferenceStatusCallback';
 import './conference/stopRecordingWhenLastAgentLeaves';
 import { instagramToFlexHandler } from './customChannels/instagram/instagramToFlex';
@@ -63,6 +64,9 @@ import { validateRequestWithTwilioJwtToken } from './validation/twilioJwt';
 import { transferStartHandler } from './transfer/transferStart';
 import { reportToIWFHandler } from './integrations/iwf/reportToIWF';
 import { selfReportToIWFHandler } from './integrations/iwf/selfReportToIWF';
+import { sendSystemMessageHandler } from './conversation/sendSystemMessage';
+import { sendStudioMessageHandler } from './conversation/sendStudioMessage';
+import { sendMessageAndRunJanitorHandler } from './conversation/sendMessageAndRunJanitor';
 
 /**
  * Super simple router sufficient for directly ported Twilio Serverless functions
@@ -131,6 +135,10 @@ const ACCOUNTSID_ROUTES: Record<
   'conversation/checkBlockList': {
     requestPipeline: [validateWebhookRequest],
     handler: checkBlockListHandler,
+  },
+  'conversation/transitionAgentParticipants': {
+    requestPipeline: [validateFlexTokenRequest({ tokenMode: 'agent' })],
+    handler: transitionAgentParticipantsHandler,
   },
   'customChannels/instagram/instagramToFlex': {
     requestPipeline: [],
@@ -223,6 +231,18 @@ const ACCOUNTSID_ROUTES: Record<
   'integrations/iwf/selfReportToIWF': {
     requestPipeline: [validateFlexTokenRequest({ tokenMode: 'agent' })],
     handler: selfReportToIWFHandler,
+  },
+  'conversation/sendSystemMessage': {
+    requestPipeline: [validateFlexTokenRequest({ tokenMode: 'agent' })],
+    handler: sendSystemMessageHandler,
+  },
+  'conversation/sendStudioMessage': {
+    requestPipeline: [validateWebhookRequest],
+    handler: sendStudioMessageHandler,
+  },
+  'conversation/sendMessageAndRunJanitor': {
+    requestPipeline: [validateWebhookRequest],
+    handler: sendMessageAndRunJanitorHandler,
   },
 };
 
