@@ -14,6 +14,8 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
+import { Notifications } from '@twilio/flex-ui';
+
 import fetchProtectedApi from './fetchProtectedApi';
 import { TaskSID } from '../types/twilio';
 import { FetchOptions } from './fetchApi';
@@ -62,17 +64,35 @@ export const assignOfflineContactResolve = async (payload: OfflineContactComplet
 
 /**
  * Wraps up a conversations task using the interactions API rather than the default actions API.
- * This prevents the underlying conversation being closed so a post survey can vbe performed.
+ * This prevents the underlying conversation being closed so a post survey can be performed.
  */
-export const wrapupConversationTask = async (taskSid: TaskSID) =>
-  fetchProtectedApi('/interaction/transitionAgentParticipants', { taskSid, targetStatus: 'wrapup' });
+export const wrapupConversationTask = async (taskSid: TaskSID) => {
+  const { use_twilio_lambda_to_transition_participants: useTwilioLambda } = getAseloFeatureFlags();
+  if (useTwilioLambda) {
+    return fetchProtectedApi(
+      '/conversation/transitionAgentParticipants',
+      { taskSid, targetStatus: 'wrapup' },
+      { useTwilioLambda: true },
+    );
+  }
+  return fetchProtectedApi('/interaction/transitionAgentParticipants', { taskSid, targetStatus: 'wrapup' });
+};
 
 /**
  * Completes a conversations task using the interactions API rather than the default actions API.
- * This prevents the underlying conversation being closed so a post survey can vbe performed.
+ * This prevents the underlying conversation being closed so a post survey can be performed.
  */
-export const completeConversationTask = async (taskSid: TaskSID) =>
-  fetchProtectedApi('/interaction/transitionAgentParticipants', { taskSid, targetStatus: 'closed' });
+export const completeConversationTask = async (taskSid: TaskSID) => {
+  const { use_twilio_lambda_to_transition_participants: useTwilioLambda } = getAseloFeatureFlags();
+  if (useTwilioLambda) {
+    return fetchProtectedApi(
+      '/conversation/transitionAgentParticipants',
+      { taskSid, targetStatus: 'closed' },
+      { useTwilioLambda: true },
+    );
+  }
+  return fetchProtectedApi('/interaction/transitionAgentParticipants', { taskSid, targetStatus: 'closed' });
+};
 
 export const checkTaskAssignment = async (taskSid: string) => {
   const body = { taskSid };
@@ -112,4 +132,28 @@ export const completeTaskAssignment = async (taskSid: string) => {
 export const cancelOrRemoveTask = async (taskSid: string) => {
   const body = { taskSid };
   return fetchProtectedApi(`task/cancelOrRemoveTask`, body, { useTwilioLambda: true });
+};
+
+type TransferChatStartBody = {
+  taskSid: string;
+  targetSid: string;
+  ignoreAgent: string;
+  mode: string;
+};
+
+type TransferChatStartReturn = { closed: string; kept: string };
+
+export const transferChatStart = async (body: TransferChatStartBody): Promise<TransferChatStartReturn> => {
+  const { use_twilio_lambda_transfers: useTwilioLambda } = getAseloFeatureFlags();
+  const path = useTwilioLambda ? '/transfer/transferStart' : '/transferChatStart';
+  try {
+    return await fetchProtectedApi(path, body, useTwilioLambda ? { useTwilioLambda: true } : undefined);
+  } catch (err) {
+    Notifications.showNotification('TransferFailed', {
+      reason: `Worker ${body.targetSid} is not available.`,
+    });
+
+    // propagate the error
+    throw err;
+  }
 };
