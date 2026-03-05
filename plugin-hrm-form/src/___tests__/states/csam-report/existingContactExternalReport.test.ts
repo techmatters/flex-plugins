@@ -63,6 +63,7 @@ describe('addExternalReportEntryReducer', () => {
       ...BASELINE_STATE,
       exists: {
         ...BASELINE_STATE.exists,
+        lastReferencedDate: expect.any(Date),
         savedContact: { ...BASELINE_STATE.exists.savedContact, csamReports: [entry] },
       },
     });
@@ -83,6 +84,7 @@ describe('addExternalReportEntryReducer', () => {
       ...BASELINE_STATE,
       exists: {
         ...BASELINE_STATE.exists,
+        lastReferencedDate: expect.any(Date),
         savedContact: { ...BASELINE_STATE.exists.savedContact, csamReports: [entry, { ...entry, id: 1234 }] },
       },
     });

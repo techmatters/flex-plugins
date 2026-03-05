@@ -409,6 +409,7 @@ describe('updateDraftReducer', () => {
       expect(newState).toEqual<ExistingContactsState>({
         [baseContact.id]: {
           ...baseState[baseContact.id],
+          lastReferencedDate: expect.any(Date),
           draftContact: {
             rawJson: {
               childInformation: {
@@ -469,6 +470,7 @@ describe('createDraftReducer', () => {
       ...baseState,
       [baseContact.id]: {
         ...baseState[baseContact.id],
+        lastReferencedDate: expect.any(Date),
         draftContact: {
           rawJson: {
             childInformation: baseContact.rawJson.childInformation,
@@ -487,6 +489,7 @@ describe('createDraftReducer', () => {
       ...baseState,
       [baseContact.id]: {
         ...baseState[baseContact.id],
+        lastReferencedDate: expect.any(Date),
         draftContact: {
           rawJson: {
             callerInformation: baseContact.rawJson.callerInformation,
@@ -505,6 +508,7 @@ describe('createDraftReducer', () => {
       ...baseState,
       [baseContact.id]: {
         ...baseState[baseContact.id],
+        lastReferencedDate: expect.any(Date),
         draftContact: {
           rawJson: {
             caseInformation: baseContact.rawJson.caseInformation,
@@ -523,6 +527,7 @@ describe('createDraftReducer', () => {
       ...baseState,
       [baseContact.id]: {
         ...baseState[baseContact.id],
+        lastReferencedDate: expect.any(Date),
         draftContact: {
           rawJson: {
             categories: baseContact.rawJson.categories,

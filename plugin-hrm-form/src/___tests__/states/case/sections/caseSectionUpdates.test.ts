@@ -212,7 +212,7 @@ describe('createCaseSectionAsyncAction', () => {
     test(`Case doesn't exist on backend - noop`, async () => {
       mockUpdateSection.mockRejectedValue({});
       const { dispatch, getState } = testStore({});
-      const oldState = getState();
+      const oldCaseState = getState().connectedCase.cases[CASE_ID];
 
       try {
         await ((dispatch(
@@ -221,8 +221,10 @@ describe('createCaseSectionAsyncAction', () => {
       } catch (e) {
         // Error still bubbles up so need to swallow it
       }
-      const state = getState();
-      expect(state).toStrictEqual(oldState);
+      const { lastReferencedDate, ...newCaseState } = getState().connectedCase.cases[CASE_ID];
+      const { lastReferencedDate: _oldLRD, ...oldCaseStateWithoutLRD } = oldCaseState;
+      expect(newCaseState).toStrictEqual(oldCaseStateWithoutLRD);
+      expect(lastReferencedDate).toBeInstanceOf(Date);
     });
   });
 });
@@ -362,7 +364,7 @@ describe('updateCaseSectionAsyncAction', () => {
     test(`Case doesn't exist on backend - noop`, async () => {
       mockUpdateSection.mockRejectedValue({});
       const { dispatch, getState } = testStore({});
-      const oldState = getState();
+      const oldCaseState = getState().connectedCase.cases[CASE_ID];
       try {
         await ((dispatch(
           updateCaseSectionAsyncAction(CASE_ID, 'referral', 'EXISTING_NOTE_ID', payload, definitionVersion),
@@ -370,8 +372,10 @@ describe('updateCaseSectionAsyncAction', () => {
       } catch (e) {
         // Error still bubbles up so need to swallow it
       }
-      const state = getState();
-      expect(state).toStrictEqual(oldState);
+      const { lastReferencedDate, ...newCaseState } = getState().connectedCase.cases[CASE_ID];
+      const { lastReferencedDate: _oldLRD, ...oldCaseStateWithoutLRD } = oldCaseState;
+      expect(newCaseState).toStrictEqual(oldCaseStateWithoutLRD);
+      expect(lastReferencedDate).toBeInstanceOf(Date);
     });
   });
 });

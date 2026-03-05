@@ -154,6 +154,7 @@ describe('actions', () => {
       existingContacts: {
         [baseContact.id]: {
           ...startingContactState,
+          lastReferencedDate: expect.any(Date),
           draftContact: undefined,
           savedContact: {
             ...startingContactState.savedContact,
