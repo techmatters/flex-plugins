@@ -17,34 +17,34 @@
 import { AccountSID } from '@tech-matters/twilio-types';
 import { getCurrentDefinitionVersion } from '../hrm/formDefinitionsCache';
 
-export type PostSurveyMessages = Record<string, string>;
+export type TranslationMessages = Record<string, string>;
 
 const GLOBAL_DEFAULT_LANGUAGE = 'en';
 
-export const loadTranslationFile = (locale: string): PostSurveyMessages | undefined => {
+export const loadTranslationFile = (locale: string): TranslationMessages | undefined => {
   try {
     // eslint-disable-next-line @typescript-eslint/no-require-imports
-    return require(`../translations/${locale}.json`) as PostSurveyMessages;
+    return require(`./${locale}.json`) as TranslationMessages;
   } catch {
     return undefined;
   }
 };
 
 /**
- * Looks up a post survey translation key using the following priority:
+ * Looks up a translation key using the following priority:
  * 1. customStrings.postSurveyMessages from the helpline's form definitions
  * 2. Account-scoped translations file matching the full task language (e.g. en-US.json)
  * 3. Account-scoped translations file matching the language portion (e.g. en.json)
  * 4. Account-scoped translations file for the global default language (en.json)
  * 5. Throws a configuration error if no translation is found
  */
-export const getPostSurveyTranslation = async (
+export const getTranslation = async (
   accountSid: AccountSID,
   taskLanguage: string,
   key: string,
   translationLoader: (
     locale: string,
-  ) => PostSurveyMessages | undefined = loadTranslationFile,
+  ) => TranslationMessages | undefined = loadTranslationFile,
 ): Promise<string> => {
   // Step 1: Check customStrings in helpline's form definitions
   const definitionVersion = await getCurrentDefinitionVersion({ accountSid });

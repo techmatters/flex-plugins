@@ -34,7 +34,7 @@ import {
   getSurveyWorkflowSid,
   getTwilioWorkspaceSid,
 } from '@tech-matters/twilio-configuration';
-import { getPostSurveyTranslation } from './postSurveyTranslationLookup';
+import { getTranslation } from '../translations/translationLookup';
 
 const GLOBAL_DEFAULT_LANGUAGE = 'en-US';
 
@@ -108,7 +108,7 @@ export const postSurveyInitHandler = async ({
       conversationSid: string;
     }
 )) => {
-  const triggerMessage = await getPostSurveyTranslation(
+  const triggerMessage = await getTranslation(
     accountSid,
     taskLanguage,
     'triggerMessage',

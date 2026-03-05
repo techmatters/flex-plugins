@@ -14,9 +14,9 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { getPostSurveyTranslation } from '../../../src/channelCapture/postSurveyTranslationLookup';
+import { getTranslation } from '../../../src/translations/translationLookup';
 import { getCurrentDefinitionVersion } from '../../../src/hrm/formDefinitionsCache';
-import type { PostSurveyMessages } from '../../../src/channelCapture/postSurveyTranslationLookup';
+import type { TranslationMessages } from '../../../src/translations/translationLookup';
 
 jest.mock('../../../src/hrm/formDefinitionsCache', () => ({
   getCurrentDefinitionVersion: jest.fn(),
@@ -42,11 +42,11 @@ const makeDefinitionVersion = (postSurveyMessages?: Record<string, string>) =>
   }) as any;
 
 const makeTranslationLoader =
-  (files: Record<string, PostSurveyMessages | undefined>) =>
-  (locale: string): PostSurveyMessages | undefined =>
+  (files: Record<string, TranslationMessages | undefined>) =>
+  (locale: string): TranslationMessages | undefined =>
     files[locale];
 
-describe('getPostSurveyTranslation', () => {
+describe('getTranslation', () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
@@ -58,7 +58,7 @@ describe('getPostSurveyTranslation', () => {
       );
       const loader = makeTranslationLoader({});
 
-      const result = await getPostSurveyTranslation(
+      const result = await getTranslation(
         TEST_ACCOUNT_SID,
         'en-US',
         TEST_TRIGGER_MESSAGE_KEY,
@@ -76,7 +76,7 @@ describe('getPostSurveyTranslation', () => {
         en: { [TEST_TRIGGER_MESSAGE_KEY]: EN_TRIGGER_MESSAGE },
       });
 
-      const result = await getPostSurveyTranslation(
+      const result = await getTranslation(
         TEST_ACCOUNT_SID,
         'en',
         TEST_TRIGGER_MESSAGE_KEY,
@@ -92,7 +92,7 @@ describe('getPostSurveyTranslation', () => {
         en: { [TEST_TRIGGER_MESSAGE_KEY]: EN_TRIGGER_MESSAGE },
       });
 
-      const result = await getPostSurveyTranslation(
+      const result = await getTranslation(
         TEST_ACCOUNT_SID,
         'en',
         TEST_TRIGGER_MESSAGE_KEY,
@@ -110,7 +110,7 @@ describe('getPostSurveyTranslation', () => {
         en: { [TEST_TRIGGER_MESSAGE_KEY]: EN_TRIGGER_MESSAGE },
       });
 
-      const result = await getPostSurveyTranslation(
+      const result = await getTranslation(
         TEST_ACCOUNT_SID,
         'en',
         TEST_TRIGGER_MESSAGE_KEY,
@@ -129,7 +129,7 @@ describe('getPostSurveyTranslation', () => {
         en: { [TEST_TRIGGER_MESSAGE_KEY]: EN_TRIGGER_MESSAGE },
       });
 
-      const result = await getPostSurveyTranslation(
+      const result = await getTranslation(
         TEST_ACCOUNT_SID,
         'en-US',
         TEST_TRIGGER_MESSAGE_KEY,
@@ -147,7 +147,7 @@ describe('getPostSurveyTranslation', () => {
         es: { [TEST_TRIGGER_MESSAGE_KEY]: ES_TRIGGER_MESSAGE },
       });
 
-      const result = await getPostSurveyTranslation(
+      const result = await getTranslation(
         TEST_ACCOUNT_SID,
         'es-CO',
         TEST_TRIGGER_MESSAGE_KEY,
@@ -164,7 +164,7 @@ describe('getPostSurveyTranslation', () => {
         es: { [TEST_TRIGGER_MESSAGE_KEY]: ES_TRIGGER_MESSAGE },
       });
 
-      const result = await getPostSurveyTranslation(
+      const result = await getTranslation(
         TEST_ACCOUNT_SID,
         'es-CO',
         TEST_TRIGGER_MESSAGE_KEY,
@@ -180,7 +180,7 @@ describe('getPostSurveyTranslation', () => {
         .fn()
         .mockReturnValue({ [TEST_TRIGGER_MESSAGE_KEY]: EN_TRIGGER_MESSAGE });
 
-      const result = await getPostSurveyTranslation(
+      const result = await getTranslation(
         TEST_ACCOUNT_SID,
         'en',
         TEST_TRIGGER_MESSAGE_KEY,
@@ -201,7 +201,7 @@ describe('getPostSurveyTranslation', () => {
         en: { [TEST_TRIGGER_MESSAGE_KEY]: EN_TRIGGER_MESSAGE },
       });
 
-      const result = await getPostSurveyTranslation(
+      const result = await getTranslation(
         TEST_ACCOUNT_SID,
         'fr-CA',
         TEST_TRIGGER_MESSAGE_KEY,
@@ -218,7 +218,7 @@ describe('getPostSurveyTranslation', () => {
         en: { [TEST_TRIGGER_MESSAGE_KEY]: EN_TRIGGER_MESSAGE },
       });
 
-      const result = await getPostSurveyTranslation(
+      const result = await getTranslation(
         TEST_ACCOUNT_SID,
         'fr-CA',
         TEST_TRIGGER_MESSAGE_KEY,
@@ -235,7 +235,7 @@ describe('getPostSurveyTranslation', () => {
       const loader = makeTranslationLoader({});
 
       await expect(
-        getPostSurveyTranslation(
+        getTranslation(
           TEST_ACCOUNT_SID,
           'fr-CA',
           TEST_TRIGGER_MESSAGE_KEY,
@@ -249,7 +249,7 @@ describe('getPostSurveyTranslation', () => {
       const loader = makeTranslationLoader({});
 
       await expect(
-        getPostSurveyTranslation(
+        getTranslation(
           TEST_ACCOUNT_SID,
           'fr-CA',
           TEST_TRIGGER_MESSAGE_KEY,
@@ -265,7 +265,7 @@ describe('getPostSurveyTranslation', () => {
       const loader = jest.fn().mockReturnValue(undefined);
 
       await expect(
-        getPostSurveyTranslation(
+        getTranslation(
           TEST_ACCOUNT_SID,
           'en',
           TEST_TRIGGER_MESSAGE_KEY,
@@ -283,7 +283,7 @@ describe('getPostSurveyTranslation', () => {
       const loader = jest.fn().mockReturnValue(undefined);
 
       await expect(
-        getPostSurveyTranslation(
+        getTranslation(
           TEST_ACCOUNT_SID,
           'en-US',
           TEST_TRIGGER_MESSAGE_KEY,
@@ -302,7 +302,7 @@ describe('getPostSurveyTranslation', () => {
       const loader = jest.fn().mockReturnValue(undefined);
 
       await expect(
-        getPostSurveyTranslation(
+        getTranslation(
           TEST_ACCOUNT_SID,
           'es-CO',
           TEST_TRIGGER_MESSAGE_KEY,
