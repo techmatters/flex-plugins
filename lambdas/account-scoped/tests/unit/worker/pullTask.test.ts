@@ -87,7 +87,10 @@ describe('pullTaskHandler', () => {
   });
 
   it('should return 404 when no pending reservations are found', async () => {
-    mockClient.taskrouter.v1.workspaces().workers().reservations.list.mockResolvedValue([]);
+    mockClient.taskrouter.v1
+      .workspaces()
+      .workers()
+      .reservations.list.mockResolvedValue([]);
 
     const request = createMockRequest({ workerSid: TEST_WORKER_SID });
     const result = await pullTaskHandler(request, TEST_ACCOUNT_SID);
@@ -106,7 +109,9 @@ describe('pullTaskHandler', () => {
     if (isOk(result)) {
       expect(result.data.taskPulled).toBe(TEST_TASK_SID);
     }
-    expect(mockReservation.update).toHaveBeenCalledWith({ reservationStatus: 'accepted' });
+    expect(mockReservation.update).toHaveBeenCalledWith({
+      reservationStatus: 'accepted',
+    });
   });
 
   it('should return 500 when Twilio client throws an error', async () => {
@@ -134,8 +139,12 @@ describe('pullTaskHandler', () => {
 
     expect(mockGetWorkspaceSid).toHaveBeenCalledWith(TEST_ACCOUNT_SID);
     expect(mockClient.taskrouter.v1.workspaces).toHaveBeenCalledWith(TEST_WORKSPACE_SID);
-    expect(mockClient.taskrouter.v1.workspaces().workers).toHaveBeenCalledWith(TEST_WORKER_SID);
-    expect(mockClient.taskrouter.v1.workspaces().workers().reservations.list).toHaveBeenCalledWith({
+    expect(mockClient.taskrouter.v1.workspaces().workers).toHaveBeenCalledWith(
+      TEST_WORKER_SID,
+    );
+    expect(
+      mockClient.taskrouter.v1.workspaces().workers().reservations.list,
+    ).toHaveBeenCalledWith({
       reservationStatus: 'pending',
     });
   });
