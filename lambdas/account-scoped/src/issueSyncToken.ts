@@ -53,13 +53,6 @@ export const issueSyncTokenHandler: FlexValidatedHandler = async (
     });
   }
 
-  try {
-    const token = await issueSyncToken(accountSid, identity);
-    return newOk({ token });
-  } catch (err: any) {
-    return newErr({
-      message: err.message,
-      error: { statusCode: 500, cause: err },
-    });
-  }
+  const token = await issueSyncToken(accountSid, identity);
+  return newOk({ token });
 };

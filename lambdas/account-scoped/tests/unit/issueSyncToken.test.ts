@@ -19,7 +19,11 @@ import { getSyncServiceSid } from '@tech-matters/twilio-configuration';
 import { getApiKey, getApiSecret } from '../../src/webchatAuthentication/createToken';
 import { isErr, isOk } from '../../src/Result';
 import { FlexValidatedHttpRequest } from '../../src/validation/flexToken';
-import { TEST_ACCOUNT_SID, TEST_CHAT_SERVICE_SID, TEST_WORKER_SID } from '../testTwilioValues';
+import {
+  TEST_ACCOUNT_SID,
+  TEST_CHAT_SERVICE_SID,
+  TEST_WORKER_SID,
+} from '../testTwilioValues';
 
 jest.mock('@tech-matters/twilio-configuration', () => ({
   getSyncServiceSid: jest.fn(),
@@ -117,7 +121,7 @@ describe('issueSyncTokenHandler', () => {
     }
   });
 
-  it('should return 500 when an unexpected error occurs', async () => {
+  it('should throw when an unexpected error occurs', async () => {
     mockGetSyncServiceSid.mockRejectedValue(new Error('SSM lookup failed'));
 
     const request = createMockRequest({
@@ -125,12 +129,9 @@ describe('issueSyncTokenHandler', () => {
       roles: ['agent'],
       identity: TEST_IDENTITY,
     });
-    const result = await issueSyncTokenHandler(request, TEST_ACCOUNT_SID);
 
-    expect(isErr(result)).toBe(true);
-    if (isErr(result)) {
-      expect(result.error.statusCode).toBe(500);
-      expect(result.message).toContain('SSM lookup failed');
-    }
+    await expect(issueSyncTokenHandler(request, TEST_ACCOUNT_SID)).rejects.toThrow(
+      'SSM lookup failed',
+    );
   });
 });
