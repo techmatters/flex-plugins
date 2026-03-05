@@ -175,4 +175,62 @@ describe('test reducer', () => {
     // Case with caseSummary draft should NOT be removed even if stale
     expect(result.connectedCase.cases[1]).toBeDefined();
   });
+
+  test('GC - removes stale cases with empty caseSummary object (no meaningful data)', async () => {
+    const staleDate = new Date(Date.now() - (STALE_CONTACT_CASE_MINUTES + 1) * 60 * 1000);
+    const state = {
+      ...stubRootState,
+      connectedCase: {
+        cases: {
+          1: {
+            connectedCase,
+            caseWorkingCopy: {
+              sections: {},
+              caseSummary: {},
+            },
+            availableStatusTransitions: Object.values(mockV1.caseStatus),
+            lastReferencedDate: staleDate,
+            sections: {},
+            timelines: {},
+            outstandingUpdateCount: 0,
+          },
+        },
+      },
+    } as HrmState;
+
+    const result = reduce(state, GeneralActions.removeContactState(task.taskSid, undefined));
+    // Case with only empty caseSummary should be removed by GC
+    expect(result.connectedCase.cases[1]).toBeUndefined();
+  });
+
+  test('GC - removes stale cases with empty section new object (no meaningful data)', async () => {
+    const staleDate = new Date(Date.now() - (STALE_CONTACT_CASE_MINUTES + 1) * 60 * 1000);
+    const state = {
+      ...stubRootState,
+      connectedCase: {
+        cases: {
+          1: {
+            connectedCase,
+            caseWorkingCopy: {
+              sections: {
+                household: {
+                  new: {},
+                  existing: {},
+                },
+              },
+            },
+            availableStatusTransitions: Object.values(mockV1.caseStatus),
+            lastReferencedDate: staleDate,
+            sections: {},
+            timelines: {},
+            outstandingUpdateCount: 0,
+          },
+        },
+      },
+    } as HrmState;
+
+    const result = reduce(state, GeneralActions.removeContactState(task.taskSid, undefined));
+    // Case with only empty section.new should be removed by GC
+    expect(result.connectedCase.cases[1]).toBeUndefined();
+  });
 });

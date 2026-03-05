@@ -118,6 +118,7 @@ describe('Working copy reducers', () => {
         cases: {
           1: {
             ...state.cases[1],
+            lastReferencedDate: expect.any(Date),
             caseWorkingCopy: stubUpdateWorkingCopy,
           },
         },
@@ -150,6 +151,7 @@ describe('Working copy reducers', () => {
         cases: {
           1: {
             ...state.cases[1],
+            lastReferencedDate: expect.any(Date),
             caseWorkingCopy: stubUpdateWorkingCopy,
           },
         },
@@ -222,6 +224,7 @@ describe('Working copy reducers', () => {
           cases: {
             1: {
               ...initialState.cases[1],
+              lastReferencedDate: expect.any(Date),
               caseWorkingCopy: stubUpdateWorkingCopy,
             },
           },
@@ -277,6 +280,7 @@ describe('Working copy reducers', () => {
           cases: {
             1: {
               ...initialState.cases[1],
+              lastReferencedDate: expect.any(Date),
               caseWorkingCopy: stubUpdateWorkingCopy,
             },
           },
@@ -306,6 +310,7 @@ describe('Working copy reducers', () => {
           cases: {
             1: {
               ...initialState.cases[1],
+              lastReferencedDate: expect.any(Date),
               caseWorkingCopy: stubUpdateWorkingCopy,
             },
           },
@@ -360,6 +365,7 @@ describe('Working copy reducers', () => {
         cases: {
           1: {
             ...initialState.cases[1],
+            lastReferencedDate: expect.any(Date),
             caseWorkingCopy: stubUpdateWorkingCopy,
           },
         },
@@ -561,6 +567,7 @@ describe('Working copy reducers', () => {
         cases: {
           1: {
             ...initialState.cases[1],
+            lastReferencedDate: expect.any(Date),
             caseWorkingCopy: {
               ...initialState.cases[1].caseWorkingCopy,
               caseSummary: workingCopy,

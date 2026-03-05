@@ -21,3 +21,17 @@ export const isStale = (lastReferencedDate: Date): boolean => {
   const diffMinutes = diffMs / (1000 * 60);
   return diffMinutes > STALE_CONTACT_CASE_MINUTES;
 };
+
+/**
+ * Returns true if the value contains any meaningful data.
+ * - null and undefined are considered empty
+ * - Primitive values (including falsy primitives like `false`, `0`, empty string `''`) are considered non-empty
+ * - Empty arrays and arrays containing only empty values are considered empty
+ * - Empty objects and objects containing only empty values are considered empty
+ */
+export const hasNonEmptyValue = (value: unknown): boolean => {
+  if (value === null || value === undefined) return false;
+  if (typeof value !== 'object') return true;
+  if (Array.isArray(value)) return value.some(v => hasNonEmptyValue(v));
+  return Object.values(value as object).some(v => hasNonEmptyValue(v));
+};

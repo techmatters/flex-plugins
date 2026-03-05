@@ -39,6 +39,10 @@ import {
 import { Contact } from '../../../types/types';
 import { ConfigurationState } from '../../../states/configuration/reducer';
 import { VALID_EMPTY_CONTACT, VALID_EMPTY_METADATA } from '../../testContacts';
+import { reduce } from '../../../states/contacts/reducer';
+import { HrmState } from '../../../states';
+import { REMOVE_CONTACT_STATE } from '../../../states/types';
+import { STALE_CONTACT_CASE_MINUTES } from '../../../states/staleTimeout';
 
 const baseContact: Contact = {
   ...VALID_EMPTY_CONTACT,
@@ -526,5 +530,127 @@ describe('createDraftReducer', () => {
         },
       },
     });
+  });
+});
+
+const stubRootState = ({
+  configuration: { definitionVersions: {} },
+  activeContacts: { existingContacts: {}, contactsBeingCreated: new Set<string>(), contactDetails: {} },
+} as unknown) as HrmState;
+
+describe('contact garbage collection (GC)', () => {
+  const staleDate = new Date(Date.now() - (STALE_CONTACT_CASE_MINUTES + 1) * 60 * 1000);
+  const recentDate = new Date();
+
+  const contactEntry = {
+    savedContact: baseContact,
+    metadata: VALID_EMPTY_METADATA,
+  };
+
+  test('GC - removes stale contacts with no draftContact', () => {
+    const state = ({
+      ...stubRootState,
+      activeContacts: {
+        ...stubRootState.activeContacts,
+        existingContacts: {
+          [baseContact.id]: { ...contactEntry, lastReferencedDate: staleDate },
+        },
+      },
+    } as unknown) as HrmState;
+
+    const result = reduce(state, state.activeContacts, {
+      type: REMOVE_CONTACT_STATE,
+      taskId: 'task1',
+      contactId: baseContact.id,
+    });
+    expect(result.existingContacts[baseContact.id]).toBeUndefined();
+  });
+
+  test('GC - does not remove recent contacts with no draftContact', () => {
+    const state = ({
+      ...stubRootState,
+      activeContacts: {
+        ...stubRootState.activeContacts,
+        existingContacts: {
+          [baseContact.id]: { ...contactEntry, lastReferencedDate: recentDate },
+        },
+      },
+    } as unknown) as HrmState;
+
+    const result = reduce(state, state.activeContacts, {
+      type: REMOVE_CONTACT_STATE,
+      taskId: 'task1',
+      contactId: baseContact.id,
+    });
+    expect(result.existingContacts[baseContact.id]).toBeDefined();
+  });
+
+  test('GC - does not remove stale contacts with meaningful draftContact data', () => {
+    const state = ({
+      ...stubRootState,
+      activeContacts: {
+        ...stubRootState.activeContacts,
+        existingContacts: {
+          [baseContact.id]: {
+            ...contactEntry,
+            lastReferencedDate: staleDate,
+            draftContact: { rawJson: { childInformation: { firstName: 'Draft Name' } } },
+          },
+        },
+      },
+    } as unknown) as HrmState;
+
+    const result = reduce(state, state.activeContacts, {
+      type: REMOVE_CONTACT_STATE,
+      taskId: 'task1',
+      contactId: baseContact.id,
+    });
+    expect(result.existingContacts[baseContact.id]).toBeDefined();
+  });
+
+  test('GC - removes stale contacts with empty draftContact object', () => {
+    const state = ({
+      ...stubRootState,
+      activeContacts: {
+        ...stubRootState.activeContacts,
+        existingContacts: {
+          [baseContact.id]: {
+            ...contactEntry,
+            lastReferencedDate: staleDate,
+            draftContact: {},
+          },
+        },
+      },
+    } as unknown) as HrmState;
+
+    const result = reduce(state, state.activeContacts, {
+      type: REMOVE_CONTACT_STATE,
+      taskId: 'task1',
+      contactId: baseContact.id,
+    });
+    expect(result.existingContacts[baseContact.id]).toBeUndefined();
+  });
+
+  test('GC - removes stale contacts with draftContact containing only empty nested objects', () => {
+    const state = ({
+      ...stubRootState,
+      activeContacts: {
+        ...stubRootState.activeContacts,
+        existingContacts: {
+          [baseContact.id]: {
+            ...contactEntry,
+            lastReferencedDate: staleDate,
+            draftContact: { rawJson: { childInformation: {}, callerInformation: {} } },
+          },
+        },
+      },
+    } as unknown) as HrmState;
+
+    const result = reduce(state, state.activeContacts, {
+      type: REMOVE_CONTACT_STATE,
+      taskId: 'task1',
+      contactId: baseContact.id,
+    });
+    expect(result.existingContacts[baseContact.id]).toBeUndefined();
   });
 });

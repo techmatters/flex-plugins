@@ -124,6 +124,7 @@ export const loadContacts = (
   replaceExisting,
 });
 
+// eslint-disable-next-line import/no-unused-modules
 export const initialState: ExistingContactsState = {};
 
 export const loadContactReducer = (state = initialState, action: LoadContactAction) => {

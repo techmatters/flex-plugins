@@ -34,6 +34,7 @@ import {
   EXISTING_CONTACT_TOGGLE_CATEGORY_EXPANDED_ACTION,
   EXISTING_CONTACT_UPDATE_DRAFT_ACTION,
   ExistingContactAction,
+  ExistingContactsState,
   LOAD_CONTACT_ACTION,
   loadContactReducer,
   loadTranscriptReducer,
@@ -66,8 +67,7 @@ import { GetTimelineAsyncAction } from '../case/timeline';
 import {llmAssistantReducer} from "./llmAssistant";
 import {loadContactIntoRedux} from "./contactReduxUpdates";
 import {SEARCH_CONTACTS_SUCCESS_ACTION, SearchCasesSuccessAction, SearchContactsSuccessAction} from "../search/results";
-import { ExistingContactsState } from './existingContacts';
-import { isStale } from '../staleTimeout';
+import { isStale, hasNonEmptyValue } from '../staleTimeout';
 
 export const emptyCategories = [];
 
@@ -118,7 +118,7 @@ const newCaseReducer = createReducer(initialState, handleAction => [
 const garbageCollectContacts = (existingContacts: ExistingContactsState): ExistingContactsState => {
   return Object.fromEntries(
     Object.entries(existingContacts).filter(([, contactEntry]) => {
-      if (contactEntry.draftContact !== undefined) return true;
+      if (hasNonEmptyValue(contactEntry.draftContact)) return true;
       return !isStale(contactEntry.lastReferencedDate);
     }),
   );

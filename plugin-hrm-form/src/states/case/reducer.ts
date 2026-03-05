@@ -37,14 +37,10 @@ import type { Case } from '../../types/types';
 import type { ConfigurationState } from '../configuration/reducer';
 import { caseSectionUpdateReducer } from './sections/caseSectionUpdates';
 import { timelineReducer } from './timeline';
-import {
-  handleLoadCaseFulfilledAction,
-  handleLoadCasePendingAction,
-  handleLoadCaseRejectedAction,
-} from './singleCase';
+import { handleLoadCaseFulfilledAction, handleLoadCasePendingAction, handleLoadCaseRejectedAction } from './singleCase';
 import { loadCaseIntoState } from './loadCaseIntoState';
 import { SEARCH_CASES_SUCCESS_ACTION, SearchCasesSuccessAction } from '../search/results';
-import { isStale } from '../staleTimeout';
+import { isStale, hasNonEmptyValue } from '../staleTimeout';
 
 const initialState: CaseState = {
   cases: {},
@@ -59,9 +55,9 @@ const boundTimelineReducer = timelineReducer({ connectedCase: initialState } as 
 const hasCaseDraftUpdates = (caseEntry: Pick<CaseStateEntry, 'caseWorkingCopy'>): boolean => {
   const { caseWorkingCopy } = caseEntry;
   if (!caseWorkingCopy) return false;
-  if (caseWorkingCopy.caseSummary !== undefined) return true;
+  if (hasNonEmptyValue(caseWorkingCopy.caseSummary)) return true;
   return Object.values(caseWorkingCopy.sections ?? {}).some(
-    section => section.new !== undefined || Object.keys(section.existing ?? {}).length > 0,
+    section => hasNonEmptyValue(section.new) || Object.keys(section.existing ?? {}).length > 0,
   );
 };
 

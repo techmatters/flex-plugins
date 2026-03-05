@@ -313,7 +313,7 @@ describe('updateCaseOverviewAsyncAction', () => {
       const {
         connectedCase: { cases: updatedCases },
       } = getState() as HrmState;
-      const newCase = updatedCases['ANOTHER_CASE'];
+      const newCase = updatedCases.ANOTHER_CASE;
       expect(newCase).toMatchObject({
         connectedCase: {
           ...VALID_EMPTY_CASE,

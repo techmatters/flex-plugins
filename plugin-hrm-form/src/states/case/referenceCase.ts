@@ -17,11 +17,8 @@
 import type { CaseState } from './types';
 import type { Case } from '../../types/types';
 
-export const updateCaseLastReferenced = (
-  state: CaseState,
-  caseId: Case['id'],
-  newCase?: Case,
-): CaseState => {
+// eslint-disable-next-line import/no-unused-modules
+export const updateCaseLastReferenced = (state: CaseState, caseId: Case['id'], newCase?: Case): CaseState => {
   const existingCase = state.cases[caseId];
   if (!existingCase) {
     return state;
