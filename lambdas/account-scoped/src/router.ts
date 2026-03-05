@@ -66,6 +66,7 @@ import { selfReportToIWFHandler } from './integrations/iwf/selfReportToIWF';
 import { sendSystemMessageHandler } from './conversation/sendSystemMessage';
 import { sendStudioMessageHandler } from './conversation/sendStudioMessage';
 import { sendMessageAndRunJanitorHandler } from './conversation/sendMessageAndRunJanitor';
+import { issueSyncTokenHandler } from './issueSyncToken';
 
 /**
  * Super simple router sufficient for directly ported Twilio Serverless functions
@@ -238,6 +239,10 @@ const ACCOUNTSID_ROUTES: Record<
   'conversation/sendMessageAndRunJanitor': {
     requestPipeline: [validateWebhookRequest],
     handler: sendMessageAndRunJanitorHandler,
+  },
+  issueSyncToken: {
+    requestPipeline: [validateFlexTokenRequest({ tokenMode: 'agent' })],
+    handler: issueSyncTokenHandler,
   },
 };
 
