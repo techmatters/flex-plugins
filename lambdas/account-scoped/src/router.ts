@@ -65,6 +65,9 @@ import { selfReportToIWFHandler } from './integrations/iwf/selfReportToIWF';
 import { populateCounselorsHandler } from './worker/populateCounselors';
 import { getWorkerAttributesHandler } from './worker/getWorkerAttributes';
 import { listWorkerQueuesHandler } from './worker/listWorkerQueues';
+import { sendSystemMessageHandler } from './conversation/sendSystemMessage';
+import { sendStudioMessageHandler } from './conversation/sendStudioMessage';
+import { sendMessageAndRunJanitorHandler } from './conversation/sendMessageAndRunJanitor';
 
 /**
  * Super simple router sufficient for directly ported Twilio Serverless functions
@@ -233,6 +236,18 @@ const ACCOUNTSID_ROUTES: Record<
   'worker/listWorkerQueues': {
     requestPipeline: [validateFlexTokenRequest({ tokenMode: 'agent' })],
     handler: listWorkerQueuesHandler,
+  },
+  'conversation/sendSystemMessage': {
+    requestPipeline: [validateFlexTokenRequest({ tokenMode: 'agent' })],
+    handler: sendSystemMessageHandler,
+  },
+  'conversation/sendStudioMessage': {
+    requestPipeline: [validateWebhookRequest],
+    handler: sendStudioMessageHandler,
+  },
+  'conversation/sendMessageAndRunJanitor': {
+    requestPipeline: [validateWebhookRequest],
+    handler: sendMessageAndRunJanitorHandler,
   },
 };
 

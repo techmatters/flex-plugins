@@ -3,7 +3,7 @@
   "submitLabel": "StartChat",
   "fields": [
     {
-      "type": "input-text",
+      "type": "input",
       "name": "firstName",
       "label": "Preferred Name",
       "placeholder": "Name",
@@ -112,13 +112,13 @@
       ]
     },
     {
-      "type": "input-text",
+      "type": "input",
       "name": "email",
       "label": "Email Address",
       "placeholder": "Email Address"
     },
     {
-      "type": "input-text",
+      "type": "input",
       "name": "contactNumber",
       "label": "Contact Number",
       "placeholder": "Contact No"

@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2021-2026 Technology Matters
+ * Copyright (C) 2021-2023 Technology Matters
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
  * by the Free Software Foundation, either version 3 of the License, or
@@ -14,24 +14,14 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { BoxStyleProps } from '@twilio-paste/core/box';
-import { TextStyleProps } from '@twilio-paste/core/text';
+import { getAseloFeatureFlags } from '../hrmConfig';
+import fetchProtectedApi from './fetchProtectedApi';
 
-export const formStyles: BoxStyleProps = {
-  padding: 'space40',
-  paddingTop: 'space80',
-  overflow: 'auto',
-};
-
-export const titleStyles: TextStyleProps = {
-  fontSize: 'fontSize70',
-  marginBottom: 'space60',
-};
-
-// export const introStyles: TextStyleProps = {
-//   marginBottom: 'space70',
-// };
-
-export const fieldStyles: BoxStyleProps = {
-  marginBottom: 'space70',
+/**
+ * Sends a new message to the channel bounded to the provided taskSid. Optionally you can change the "from" value (default is "system").
+ */
+export const sendSystemMessage = async (body: { taskSid: ITask['taskSid']; message: string; from?: string }) => {
+  const { use_twilio_lambda_to_send_messages: useTwilioLambda } = getAseloFeatureFlags();
+  const pathRoot = useTwilioLambda ? '/conversation' : '';
+  return fetchProtectedApi(`${pathRoot}/sendSystemMessage`, body, { useTwilioLambda });
 };

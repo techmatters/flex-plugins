@@ -29,7 +29,7 @@ import type { AppState } from './store';
 const initialState: SessionState = {
   currentPhase: EngagementPhase.Loading,
   expanded: false,
-  preEngagementData: { name: '', query: '', email: '' },
+  preEngagementData: {},
 };
 
 export const SessionReducer: Reducer<SessionState, AnyAction> = (
@@ -71,10 +71,7 @@ export const SessionReducer: Reducer<SessionState, AnyAction> = (
     case ACTION_UPDATE_PRE_ENGAGEMENT_DATA: {
       return {
         ...state,
-        preEngagementData: {
-          ...state.preEngagementData,
-          ...action.payload.preEngagementData,
-        },
+        preEngagementData: action.payload,
       };
     }
 
