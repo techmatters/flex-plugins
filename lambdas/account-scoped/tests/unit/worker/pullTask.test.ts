@@ -114,7 +114,7 @@ describe('pullTaskHandler', () => {
     });
   });
 
-  it('should return 500 when Twilio client throws an error', async () => {
+  it('should throw when Twilio client throws an error', async () => {
     mockClient.taskrouter.v1.workspaces.mockReturnValue({
       workers: jest.fn().mockReturnValue({
         reservations: {
@@ -124,13 +124,9 @@ describe('pullTaskHandler', () => {
     });
 
     const request = createMockRequest({ workerSid: TEST_WORKER_SID });
-    const result = await pullTaskHandler(request, TEST_ACCOUNT_SID);
-
-    expect(isErr(result)).toBe(true);
-    if (isErr(result)) {
-      expect(result.error.statusCode).toBe(500);
-      expect(result.message).toContain('Twilio error');
-    }
+    await expect(pullTaskHandler(request, TEST_ACCOUNT_SID)).rejects.toThrow(
+      'Twilio error',
+    );
   });
 
   it('should use the workspace SID from configuration and query pending reservations for the worker', async () => {

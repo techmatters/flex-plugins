@@ -17,7 +17,7 @@
 import { AccountSID } from '@tech-matters/twilio-types';
 import { getTwilioClient, getWorkspaceSid } from '@tech-matters/twilio-configuration';
 import { FlexValidatedHandler } from '../validation/flexToken';
-import { newErr, newOk } from '../Result';
+import { newOk } from '../Result';
 
 export const populateCounselorsHandler: FlexValidatedHandler = async (
   { body: event },
@@ -25,32 +25,28 @@ export const populateCounselorsHandler: FlexValidatedHandler = async (
 ) => {
   const { helpline } = event as { helpline?: string };
 
-  try {
-    const client = await getTwilioClient(accountSid);
-    const workspaceSid = await getWorkspaceSid(accountSid);
+  const client = await getTwilioClient(accountSid);
+  const workspaceSid = await getWorkspaceSid(accountSid);
 
-    const workers = await client.taskrouter.v1.workspaces(workspaceSid).workers.list();
+  const workers = await client.taskrouter.v1.workspaces(workspaceSid).workers.list();
 
-    const withHelpline = workers.map(w => {
-      const attributes = JSON.parse(w.attributes);
-      return {
-        sid: w.sid,
-        fullName: attributes.full_name as string,
-        helpline: attributes.helpline as string,
-      };
-    });
+  const withHelpline = workers.map(w => {
+    const attributes = JSON.parse(w.attributes);
+    return {
+      sid: w.sid,
+      fullName: attributes.full_name as string,
+      helpline: attributes.helpline as string,
+    };
+  });
 
-    if (helpline) {
-      const filtered = withHelpline.filter(
-        w => w.helpline === helpline || w.helpline === '' || w.helpline === undefined,
-      );
-      const workerSummaries = filtered.map(({ fullName, sid }) => ({ fullName, sid }));
-      return newOk({ workerSummaries });
-    }
-
-    const workerSummaries = withHelpline.map(({ fullName, sid }) => ({ fullName, sid }));
+  if (helpline) {
+    const filtered = withHelpline.filter(
+      w => w.helpline === helpline || w.helpline === '' || w.helpline === undefined,
+    );
+    const workerSummaries = filtered.map(({ fullName, sid }) => ({ fullName, sid }));
     return newOk({ workerSummaries });
-  } catch (err: any) {
-    return newErr({ message: err.message, error: { statusCode: 500, cause: err } });
   }
+
+  const workerSummaries = withHelpline.map(({ fullName, sid }) => ({ fullName, sid }));
+  return newOk({ workerSummaries });
 };

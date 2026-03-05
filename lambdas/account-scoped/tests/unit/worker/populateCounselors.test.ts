@@ -16,7 +16,7 @@
 
 import { populateCounselorsHandler } from '../../../src/worker/populateCounselors';
 import { getTwilioClient, getWorkspaceSid } from '@tech-matters/twilio-configuration';
-import { isErr, isOk } from '../../../src/Result';
+import { isOk } from '../../../src/Result';
 import { FlexValidatedHttpRequest } from '../../../src/validation/flexToken';
 import {
   TEST_ACCOUNT_SID,
@@ -111,7 +111,7 @@ describe('populateCounselorsHandler', () => {
     }
   });
 
-  it('should return 500 when Twilio client throws an error', async () => {
+  it('should throw when Twilio client throws an error', async () => {
     mockClient.taskrouter.v1.workspaces.mockReturnValue({
       workers: {
         list: jest.fn().mockRejectedValue(new Error('Twilio error')),
@@ -119,13 +119,9 @@ describe('populateCounselorsHandler', () => {
     });
 
     const request = createMockRequest({});
-    const result = await populateCounselorsHandler(request, TEST_ACCOUNT_SID);
-
-    expect(isErr(result)).toBe(true);
-    if (isErr(result)) {
-      expect(result.error.statusCode).toBe(500);
-      expect(result.message).toContain('Twilio error');
-    }
+    await expect(populateCounselorsHandler(request, TEST_ACCOUNT_SID)).rejects.toThrow(
+      'Twilio error',
+    );
   });
 
   it('should use the workspace SID from configuration', async () => {

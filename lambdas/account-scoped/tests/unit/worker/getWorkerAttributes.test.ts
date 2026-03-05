@@ -90,7 +90,7 @@ describe('getWorkerAttributesHandler', () => {
     }
   });
 
-  it('should return 500 when worker does not have helpline attribute', async () => {
+  it('should throw when worker does not have helpline attribute', async () => {
     mockClient.taskrouter.v1.workspaces.mockReturnValue({
       workers: jest.fn().mockReturnValue({
         fetch: jest.fn().mockResolvedValue({
@@ -100,16 +100,12 @@ describe('getWorkerAttributesHandler', () => {
     });
 
     const request = createMockRequest({ workerSid: TEST_WORKER_SID });
-    const result = await getWorkerAttributesHandler(request, TEST_ACCOUNT_SID);
-
-    expect(isErr(result)).toBe(true);
-    if (isErr(result)) {
-      expect(result.error.statusCode).toBe(500);
-      expect(result.message).toContain('helpline');
-    }
+    await expect(getWorkerAttributesHandler(request, TEST_ACCOUNT_SID)).rejects.toThrow(
+      'helpline',
+    );
   });
 
-  it('should return 500 when Twilio client throws an error', async () => {
+  it('should throw when Twilio client throws an error', async () => {
     mockClient.taskrouter.v1.workspaces.mockReturnValue({
       workers: jest.fn().mockReturnValue({
         fetch: jest.fn().mockRejectedValue(new Error('Twilio error')),
@@ -117,13 +113,9 @@ describe('getWorkerAttributesHandler', () => {
     });
 
     const request = createMockRequest({ workerSid: TEST_WORKER_SID });
-    const result = await getWorkerAttributesHandler(request, TEST_ACCOUNT_SID);
-
-    expect(isErr(result)).toBe(true);
-    if (isErr(result)) {
-      expect(result.error.statusCode).toBe(500);
-      expect(result.message).toContain('Twilio error');
-    }
+    await expect(getWorkerAttributesHandler(request, TEST_ACCOUNT_SID)).rejects.toThrow(
+      'Twilio error',
+    );
   });
 
   it('should use the workspace SID from configuration', async () => {

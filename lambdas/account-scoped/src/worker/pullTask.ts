@@ -17,7 +17,7 @@
 import { AccountSID } from '@tech-matters/twilio-types';
 import { getTwilioClient, getWorkspaceSid } from '@tech-matters/twilio-configuration';
 import { FlexValidatedHandler } from '../validation/flexToken';
-import { newErr, newOk } from '../Result';
+import { newOk } from '../Result';
 import { newHttpErrorResult, newMissingParameterResult } from '../httpErrors';
 
 export const pullTaskHandler: FlexValidatedHandler = async (
@@ -30,24 +30,20 @@ export const pullTaskHandler: FlexValidatedHandler = async (
     return newMissingParameterResult('workerSid');
   }
 
-  try {
-    const client = await getTwilioClient(accountSid);
-    const workspaceSid = await getWorkspaceSid(accountSid);
+  const client = await getTwilioClient(accountSid);
+  const workspaceSid = await getWorkspaceSid(accountSid);
 
-    const reservations = await client.taskrouter.v1
-      .workspaces(workspaceSid)
-      .workers(workerSid)
-      .reservations.list({ reservationStatus: 'pending' });
+  const reservations = await client.taskrouter.v1
+    .workspaces(workspaceSid)
+    .workers(workerSid)
+    .reservations.list({ reservationStatus: 'pending' });
 
-    if (reservations.length === 0) {
-      return newHttpErrorResult('No eligible queued task found to pull', 404);
-    }
-
-    const reservation = reservations[0];
-    await reservation.update({ reservationStatus: 'accepted' });
-
-    return newOk({ taskPulled: reservation.taskSid });
-  } catch (err: any) {
-    return newErr({ message: err.message, error: { statusCode: 500, cause: err } });
+  if (reservations.length === 0) {
+    return newHttpErrorResult('No eligible queued task found to pull', 404);
   }
+
+  const reservation = reservations[0];
+  await reservation.update({ reservationStatus: 'accepted' });
+
+  return newOk({ taskPulled: reservation.taskSid });
 };

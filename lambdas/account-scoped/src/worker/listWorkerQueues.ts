@@ -17,7 +17,7 @@
 import { AccountSID } from '@tech-matters/twilio-types';
 import { getTwilioClient, getWorkspaceSid } from '@tech-matters/twilio-configuration';
 import { FlexValidatedHandler } from '../validation/flexToken';
-import { newErr, newOk } from '../Result';
+import { newOk } from '../Result';
 import { newMissingParameterResult } from '../httpErrors';
 
 export const listWorkerQueuesHandler: FlexValidatedHandler = async (
@@ -30,16 +30,12 @@ export const listWorkerQueuesHandler: FlexValidatedHandler = async (
     return newMissingParameterResult('workerSid');
   }
 
-  try {
-    const client = await getTwilioClient(accountSid);
-    const workspaceSid = await getWorkspaceSid(accountSid);
+  const client = await getTwilioClient(accountSid);
+  const workspaceSid = await getWorkspaceSid(accountSid);
 
-    const workerQueues = await client.taskrouter.v1
-      .workspaces(workspaceSid)
-      .taskQueues.list({ workerSid });
+  const workerQueues = await client.taskrouter.v1
+    .workspaces(workspaceSid)
+    .taskQueues.list({ workerSid });
 
-    return newOk({ workerQueues });
-  } catch (err: any) {
-    return newErr({ message: err.message, error: { statusCode: 500, cause: err } });
-  }
+  return newOk({ workerQueues });
 };

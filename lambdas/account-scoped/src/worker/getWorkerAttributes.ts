@@ -17,7 +17,7 @@
 import { AccountSID } from '@tech-matters/twilio-types';
 import { getTwilioClient, getWorkspaceSid } from '@tech-matters/twilio-configuration';
 import { FlexValidatedHandler } from '../validation/flexToken';
-import { newErr, newOk } from '../Result';
+import { newOk } from '../Result';
 import { newMissingParameterResult } from '../httpErrors';
 
 export const getWorkerAttributesHandler: FlexValidatedHandler = async (
@@ -30,29 +30,25 @@ export const getWorkerAttributesHandler: FlexValidatedHandler = async (
     return newMissingParameterResult('workerSid');
   }
 
-  try {
-    const client = await getTwilioClient(accountSid);
-    const workspaceSid = await getWorkspaceSid(accountSid);
+  const client = await getTwilioClient(accountSid);
+  const workspaceSid = await getWorkspaceSid(accountSid);
 
-    const worker = await client.taskrouter.v1
-      .workspaces(workspaceSid)
-      .workers(workerSid)
-      .fetch();
+  const worker = await client.taskrouter.v1
+    .workspaces(workspaceSid)
+    .workers(workerSid)
+    .fetch();
 
-    const workerAttributes = JSON.parse(worker.attributes);
+  const workerAttributes = JSON.parse(worker.attributes);
 
-    if (workerAttributes.helpline === undefined) {
-      throw new Error(
-        'Error: the target worker does not have helpline attribute set, check the worker configuration.',
-      );
-    }
-
-    const allowedAttributes = {
-      helpline: workerAttributes.helpline,
-    };
-
-    return newOk(allowedAttributes);
-  } catch (err: any) {
-    return newErr({ message: err.message, error: { statusCode: 500, cause: err } });
+  if (workerAttributes.helpline === undefined) {
+    throw new Error(
+      'Error: the target worker does not have helpline attribute set, check the worker configuration.',
+    );
   }
+
+  const allowedAttributes = {
+    helpline: workerAttributes.helpline,
+  };
+
+  return newOk(allowedAttributes);
 };
