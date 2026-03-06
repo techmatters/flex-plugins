@@ -37,7 +37,7 @@ import {
   ExternalRecordingInfo,
   ExternalRecordingInfoSuccess,
   isSuccessfulExternalRecordingInfo,
-} from './getExternalRecordingInfo';
+} from './recordingsService';
 import { generateUrl } from './fetchApi';
 import { generateSignedURLPath } from './fetchHrmApi';
 import { shouldSendInsightsData } from '../utils/shouldSendInsightsData';

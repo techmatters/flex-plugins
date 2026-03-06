@@ -43,14 +43,16 @@ jest.mock('../../services/formSubmissionHelpers', () => ({
   }),
 }));
 
-jest.mock('../../services/ServerlessService', () => ({
-  getExternalRecordingS3Location: () =>
-    Promise.resolve({
-      status: 'success',
-      recordingSid: 'recordingSid',
-      bucket: 'bucket',
-      key: 'key',
-    }),
+jest.mock('../../services/recordingsService', () => ({
+  getExternalRecordingInfo: (task: any) => {
+    const { conference } = task?.attributes ?? {};
+    if (!conference) {
+      return Promise.resolve({ status: 'failure', name: 'NoConference', error: 'Could not find a conference' });
+    }
+    return Promise.resolve({ status: 'success', recordingSid: 'recordingSid', bucket: 'bucket', key: 'key' });
+  },
+  isFailureExternalRecordingInfo: (r: any) => r && r.status === 'failure',
+  shouldGetExternalRecordingInfo: () => true,
 }));
 
 jest.mock('@twilio/flex-ui', () => ({
