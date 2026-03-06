@@ -16,16 +16,14 @@
 
 import { styled } from '@twilio/flex-ui';
 
-import ExpandableTextBlock, { ExpandableTextBlockProps } from './ExpandableTextBlock';
+import ExpandableTextBlock, { ExpandableTextBlockProps } from '../ExpandableTextBlock';
 
 export const PreviewDescription = styled(ExpandableTextBlock)<ExpandableTextBlockProps>`
   font-size: 13px;
   font-weight: 400;
-  line-height: 1.5em;
   color: #000000;
   font-family: Open Sans, serif;
   text-align: left;
-  padding-top: 6px;
   width: 100%;
 `;
 

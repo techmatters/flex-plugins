@@ -47,6 +47,8 @@ FormError.displayName = 'FormError';
 
 type FormInputBaseProps = { error?: boolean; width?: number | string; fullWidth?: boolean };
 
+export const FORM_INPUT_DEFAULT_WITH = 217;
+
 export const FormInputBase = styled('input')<FormInputBaseProps>`
   /* ---------- Input ---------- */
   & {
@@ -57,14 +59,14 @@ export const FormInputBase = styled('input')<FormInputBaseProps>`
     line-height: 1.33;
     letter-spacing: normal;
     box-sizing: border-box; /* Tells the browser to account for any border and padding in the values you specify for an element's width and height. https://developer.mozilla.org/en-US/docs/Web/CSS/box-sizing*/
-    width: 217px;
+    width: ${FORM_INPUT_DEFAULT_WITH}px;
     height: 36px;
     border-radius: 4px;
     background-color: ${HrmTheme.colors.inputBackgroundColor};
     color: ${HrmTheme.colors.darkTextColor};
     border: ${props => (props.error ? '1px solid #CB3232' : 'none')};
     box-shadow: ${props => (props.error ? '0px 0px 0px 2px rgba(234,16,16,0.2)' : 'none')};
-    padding: 0 7px;
+    padding: 0 8px;
   }
   &:focus {
     background-color: ${HrmTheme.colors.inputBackgroundColor};

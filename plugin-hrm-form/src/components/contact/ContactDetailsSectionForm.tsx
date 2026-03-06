@@ -21,7 +21,7 @@ import { useFormContext } from 'react-hook-form';
 import { useSelector } from 'react-redux';
 
 import { ColumnarBlock, TwoColumnLayout, Box, BottomButtonBarHeight, ColumnarContent, Container } from '../../styles';
-import { disperseInputs, splitAt, splitInHalf } from '../common/forms/formGenerators';
+import { splitAt, splitInHalf } from '../common/forms/formGenerators';
 import { useCreateFormFromDefinition } from '../forms';
 import { ContactRawJson } from '../../types/types';
 import { RootState } from '../../states';
@@ -80,12 +80,9 @@ const ContactDetailsSectionForm: React.FC<Props> = ({
   });
 
   const [l, r] = React.useMemo(() => {
-    const margin = 12;
+    if (layoutDefinition && layoutDefinition.splitFormAt) return splitAt(layoutDefinition.splitFormAt)(form);
 
-    if (layoutDefinition && layoutDefinition.splitFormAt)
-      return splitAt(layoutDefinition.splitFormAt)(disperseInputs(7)(form));
-
-    return splitInHalf(disperseInputs(margin)(form));
+    return splitInHalf(form);
   }, [layoutDefinition, form]);
 
   return (

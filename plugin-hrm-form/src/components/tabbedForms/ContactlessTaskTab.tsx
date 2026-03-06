@@ -22,7 +22,6 @@ import { format, isFuture, parse } from 'date-fns';
 import { get } from 'lodash';
 import type { DefinitionVersion } from 'hrm-form-definitions';
 
-import { disperseInputs } from '../common/forms/formGenerators';
 import { useCreateFormFromDefinition } from '../forms';
 import { Container, ColumnarBlock, TwoColumnLayout, ColumnarContent } from '../../styles';
 import { RootState } from '../../states';
@@ -96,8 +95,6 @@ const ContactlessTaskTab: React.FC<Props> = ({ display, helplineInformation, def
     shouldFocusFirstElement: display && autoFocus,
   });
 
-  const contactlessTaskForm = disperseInputs(5)(form);
-
   // Add invisible field that errors if date + time are future (triggered by validation)
   React.useEffect(() => {
     register('contactlessTask.isFutureAux', {
@@ -131,7 +128,7 @@ const ContactlessTaskTab: React.FC<Props> = ({ display, helplineInformation, def
     <Container formContainer={true}>
       <TwoColumnLayout>
         <ColumnarBlock>
-          <ColumnarContent>{contactlessTaskForm}</ColumnarContent>
+          <ColumnarContent>{form}</ColumnarContent>
         </ColumnarBlock>
         <ColumnarBlock />
       </TwoColumnLayout>

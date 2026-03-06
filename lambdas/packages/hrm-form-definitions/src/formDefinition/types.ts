@@ -60,6 +60,10 @@ type ItemBase = {
   name: string;
   label: string;
   type: FormInputType;
+  description?: {
+    title: string;
+    content: string;
+  };
   placeholder?: string;
   metadata?: Record<string, any>;
   required?: { value: boolean; message: string } | boolean;
