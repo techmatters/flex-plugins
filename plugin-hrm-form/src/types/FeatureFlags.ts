@@ -51,9 +51,10 @@ export type FeatureFlags = {
   use_twilio_lambda_for_offline_contact_tasks: boolean; // Use the twilio account scoped lambda for assignOfflineContactInit and assignOfflineContactResolve
   use_twilio_lambda_for_recordings_lookup: boolean; // Use the twilio account scoped lambda for getMediaUrl and getExternalRecordingS3Location
   use_twilio_lambda_for_worker_endpoints: boolean; // Use the twilio account scoped lambda for getWorkerAttributes, populateCounselors and listWorkerQueues
+  use_twilio_lambda_to_issue_sync_token: boolean; // Use the twilio account scoped lambda for issueSyncToken
+  use_twilio_lambda_to_send_messages: boolean; // Use the twilio account scoped lambda for sendSystemMessage
   use_twilio_lambda_to_transition_participants: boolean; // Use the twilio account scoped lambda for wrapupConversationTask and completeConversationTask
   use_twilio_lambda_transfers: boolean; // Use the twilio account scoped lambda for transferChatStart
-  use_twilio_lambda_to_send_messages: boolean; // Use the twilio account scoped lambda for sendSystemMessage
   // use_twilio_lambda_adjust_capacity: boolean; // Use the twilio account scoped lambda for handling adjusting capacity on task router events
   // use_twilio_lambda_janitor: boolean; // Use the twilio account scoped lambda for handling channel janitor jobs on task router events
 };

@@ -26,12 +26,6 @@ import { DefinitionVersion, loadDefinition } from 'hrm-form-definitions';
 import fetchProtectedApi from './fetchProtectedApi';
 import { getHrmConfig } from '../hrmConfig';
 
-export const issueSyncToken = async (): Promise<string> => {
-  const res = await fetchProtectedApi('/issueSyncToken');
-  const syncToken = res.token;
-  return syncToken;
-};
-
 export const getDefinitionVersion = async (version: string): Promise<DefinitionVersion> => {
   const { getFormDefinitionsBaseUrl } = getHrmConfig();
   return loadDefinition(getFormDefinitionsBaseUrl(version));
