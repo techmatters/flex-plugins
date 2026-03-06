@@ -50,7 +50,7 @@ const partialState: RecursivePartial<HrmState> = {
       [TEST_CASE_ID]: {
         connectedCase: VALID_EMPTY_CASE,
         timelines: {},
-        references: {},
+        lastReferencedDate: new Date(),
         caseWorkingCopy: undefined,
         sections: {},
       },
@@ -193,7 +193,12 @@ describe('newGetTimelineAsyncAction', () => {
         const {
           connectedCase: {
             cases: {
-              [TEST_CASE_ID]: { timelines: startingTimeline, sections: startingSections, ...startingRest },
+              [TEST_CASE_ID]: {
+                timelines: startingTimeline,
+                sections: startingSections,
+                lastReferencedDate: _startingLRD,
+                ...startingRest
+              },
             },
           },
         } = getState() as HrmState;
@@ -211,13 +216,14 @@ describe('newGetTimelineAsyncAction', () => {
         const {
           connectedCase: {
             cases: {
-              [TEST_CASE_ID]: { timelines: updatedTimeline, sections, ...rest },
+              [TEST_CASE_ID]: { timelines: updatedTimeline, sections, lastReferencedDate: updatedLRD, ...rest },
             },
           },
         } = getState() as HrmState;
         expect(updatedTimeline).toEqual(expectedTimelines);
         expect(sections).toEqual(expectedSections);
         expect(rest).toEqual(startingRest);
+        expect(updatedLRD).toBeInstanceOf(Date);
       },
     );
   });

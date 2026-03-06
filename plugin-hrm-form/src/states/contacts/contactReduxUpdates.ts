@@ -36,6 +36,7 @@ export const contactReduxUpdates = (
         ...existingContacts[id],
         draftContact: undefined,
         savedContact,
+        lastReferencedDate: new Date(),
         metadata: {
           ...newContactMetaData({ createdAt: savedContact?.createdAt }),
           ...existingContacts[id]?.metadata,
@@ -69,14 +70,9 @@ export const markContactAsNotCreatingInRedux = (state: ContactsState, taskSid: s
 export const loadContactIntoRedux = (
   state: ContactsState,
   contact: Contact,
-  reference?: string,
   newMetadata?: ContactMetadata,
 ): ContactsState => {
   const { existingContacts } = state;
-  const references = existingContacts[contact.id]?.references ?? new Set();
-  if (reference) {
-    references.add(reference);
-  }
   const metadata = {
     ...newContactMetaData({ createdAt: contact?.createdAt }),
     ...(newMetadata ?? existingContacts[contact.id]?.metadata),
@@ -98,7 +94,7 @@ export const loadContactIntoRedux = (
           ...existingAssociations,
           ...contact,
         },
-        references: references ?? existingContacts[contact.id]?.references,
+        lastReferencedDate: new Date(),
       },
     },
   };
@@ -118,6 +114,7 @@ export const rollbackSavingStateInRedux = (
         ...existingContacts[contact.id],
         draftContact: changes,
         savedContact: contact,
+        lastReferencedDate: new Date(),
         metadata: { ...existingContacts[contact.id]?.metadata, loadingStatus: LoadingStatus.LOADED },
       },
     },

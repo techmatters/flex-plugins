@@ -131,7 +131,7 @@ const nonInitialPartialState: RecursivePartial<HrmState> = {
           },
         },
         availableStatusTransitions: [],
-        references: new Set(['x']),
+        lastReferencedDate: new Date(),
       },
     },
   },
@@ -192,29 +192,21 @@ describe('createCaseAsyncAction', () => {
     const startingState = getState();
     await ((dispatch(createCaseAsyncAction(contact, workerSid, definitionVersion)) as unknown) as Promise<void>);
     const state = getState();
-    expect(state).toStrictEqual({
-      ...startingState,
-      connectedCase: {
-        ...startingState.connectedCase,
-        cases: {
-          ...state.connectedCase.cases,
-          234: {
-            availableStatusTransitions: [],
-            caseWorkingCopy: {
-              sections: {},
-            },
-            connectedCase: {
-              id: '234',
-              info: {},
-            },
-            references: new Set(['contact-contact-1']),
-            sections: {},
-            timelines: {},
-            outstandingUpdateCount: 0,
-          },
-        },
+    const newCase = state.connectedCase.cases[234];
+    expect(newCase).toMatchObject({
+      availableStatusTransitions: [],
+      caseWorkingCopy: {
+        sections: {},
       },
+      connectedCase: {
+        id: '234',
+        info: {},
+      },
+      sections: {},
+      timelines: {},
+      outstandingUpdateCount: 0,
     });
+    expect(newCase.lastReferencedDate).toBeInstanceOf(Date);
   });
 });
 
@@ -321,22 +313,20 @@ describe('updateCaseOverviewAsyncAction', () => {
       const {
         connectedCase: { cases: updatedCases },
       } = getState() as HrmState;
-      expect(updatedCases).toStrictEqual({
-        ...originalCases,
-        ANOTHER_CASE: {
-          connectedCase: {
-            ...VALID_EMPTY_CASE,
-            id: 'ANOTHER_CASE',
-            info: { ...overview, definitionVersion },
-          },
-          references: new Set(),
-          availableStatusTransitions: [],
-          caseWorkingCopy: { sections: {} },
-          sections: {},
-          timelines: {},
-          outstandingUpdateCount: 0,
+      const newCase = updatedCases.ANOTHER_CASE;
+      expect(newCase).toMatchObject({
+        connectedCase: {
+          ...VALID_EMPTY_CASE,
+          id: 'ANOTHER_CASE',
+          info: { ...overview, definitionVersion },
         },
+        availableStatusTransitions: [],
+        caseWorkingCopy: { sections: {} },
+        sections: {},
+        timelines: {},
+        outstandingUpdateCount: 0,
       });
+      expect(newCase.lastReferencedDate).toBeInstanceOf(Date);
     });
 
     test('merges case working copy summary into info', async () => {

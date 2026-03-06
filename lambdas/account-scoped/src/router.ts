@@ -64,9 +64,15 @@ import { validateRequestWithTwilioJwtToken } from './validation/twilioJwt';
 import { transferStartHandler } from './transfer/transferStart';
 import { reportToIWFHandler } from './integrations/iwf/reportToIWF';
 import { selfReportToIWFHandler } from './integrations/iwf/selfReportToIWF';
+import { populateCounselorsHandler } from './worker/populateCounselors';
+import { getWorkerAttributesHandler } from './worker/getWorkerAttributes';
+import { listWorkerQueuesHandler } from './worker/listWorkerQueues';
+import { pullTaskHandler } from './worker/pullTask';
 import { sendSystemMessageHandler } from './conversation/sendSystemMessage';
 import { sendStudioMessageHandler } from './conversation/sendStudioMessage';
 import { sendMessageAndRunJanitorHandler } from './conversation/sendMessageAndRunJanitor';
+import { getExternalRecordingS3LocationHandler } from './conversation/getExternalRecordingS3Location';
+import { getMediaUrlHandler } from './conversation/getMediaUrl';
 
 /**
  * Super simple router sufficient for directly ported Twilio Serverless functions
@@ -231,6 +237,30 @@ const ACCOUNTSID_ROUTES: Record<
   'integrations/iwf/selfReportToIWF': {
     requestPipeline: [validateFlexTokenRequest({ tokenMode: 'agent' })],
     handler: selfReportToIWFHandler,
+  },
+  'conversation/getExternalRecordingS3Location': {
+    requestPipeline: [validateFlexTokenRequest({ tokenMode: 'agent' })],
+    handler: getExternalRecordingS3LocationHandler,
+  },
+  'conversation/getMediaUrl': {
+    requestPipeline: [validateFlexTokenRequest({ tokenMode: 'agent' })],
+    handler: getMediaUrlHandler,
+  },
+  'worker/populateCounselors': {
+    requestPipeline: [validateFlexTokenRequest({ tokenMode: 'agent' })],
+    handler: populateCounselorsHandler,
+  },
+  'worker/getWorkerAttributes': {
+    requestPipeline: [validateFlexTokenRequest({ tokenMode: 'agent' })],
+    handler: getWorkerAttributesHandler,
+  },
+  'worker/listWorkerQueues': {
+    requestPipeline: [validateFlexTokenRequest({ tokenMode: 'agent' })],
+    handler: listWorkerQueuesHandler,
+  },
+  'worker/pullTask': {
+    requestPipeline: [validateFlexTokenRequest({ tokenMode: 'agent' })],
+    handler: pullTaskHandler,
   },
   'conversation/sendSystemMessage': {
     requestPipeline: [validateFlexTokenRequest({ tokenMode: 'agent' })],

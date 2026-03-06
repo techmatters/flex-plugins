@@ -20,15 +20,13 @@ import type * as t from '../../types/types';
 import type { Contact } from '../../types/types';
 import type { CaseSectionTypeSpecificData, FullCaseSection } from '../../services/caseSectionService';
 import type { ParseFetchErrorResult } from '../parseFetchError';
-import type { DereferenceCaseAction, LoadCaseAsync, ReferenceCaseAction } from './singleCase';
+import type { LoadCaseAsync } from './singleCase';
 
 // Action types
 export const LOAD_CASE_ACTION = 'case-action/load-case';
 export const LOAD_CASE_ACTION_PENDING = `${LOAD_CASE_ACTION}_PENDING` as const;
 export const LOAD_CASE_ACTION_FULFILLED = `${LOAD_CASE_ACTION}_FULFILLED` as const;
 export const LOAD_CASE_ACTION_REJECTED = `${LOAD_CASE_ACTION}_REJECTED` as const;
-export const REFERENCE_CASE_ACTION = 'case-action/reference-case';
-export const DEREFERENCE_CASE_ACTION = 'case-action/dereference-case';
 export const CREATE_CASE_ACTION = 'case-action/create-case';
 export const CREATE_CASE_ACTION_FULFILLED = `${CREATE_CASE_ACTION}_FULFILLED` as const;
 export const CANCEL_CASE_ACTION = 'case-action/cancel-case';
@@ -66,9 +64,7 @@ export type CaseActionType =
   | CreateCaseAction
   | LoadCaseActionPending
   | LoadCaseActionFulfilled
-  | LoadCaseActionRejected
-  | ReferenceCaseAction
-  | DereferenceCaseAction;
+  | LoadCaseActionRejected;
 
 export type GenericTimelineActivity<T, TDate extends string | Date> = {
   timestamp: TDate;
@@ -125,7 +121,7 @@ export type CaseStateEntry = {
   connectedCase: t.Case;
   caseWorkingCopy: CaseWorkingCopy;
   availableStatusTransitions: StatusInfo[];
-  references: Set<string>;
+  lastReferencedDate: Date;
   timelines: Record<string, (ContactIdentifierTimelineActivity | CaseSectionIdentifierTimelineActivity)[]>;
   sections: Record<string, { [sectionId: string]: FullCaseSection }>;
   loading?: boolean;

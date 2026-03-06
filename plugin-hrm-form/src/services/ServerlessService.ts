@@ -45,24 +45,8 @@ export const getDefinitionVersionsList = async (missingDefinitionVersions: strin
     }),
   );
 
-/**
- * Gets a recording s3 information from the corresponding call sid
- */
-export const getExternalRecordingS3Location = async (callSid: string) => {
-  const body = { callSid };
-  const response = await fetchProtectedApi('/getExternalRecordingS3Location', body);
-  return response;
-};
-
 export const saveContactToSaferNet = async (payload: any): Promise<string> => {
   const body = { payload: JSON.stringify(payload) };
   const postSurveyUrl = await fetchProtectedApi('/saveContactToSaferNet', body);
   return postSurveyUrl;
-};
-
-export const getMediaUrl = async (serviceSid: string, mediaSid: string) => {
-  const body = { serviceSid, mediaSid };
-
-  const response = await fetchProtectedApi('/getMediaUrl', body);
-  return response;
 };

@@ -38,7 +38,7 @@ import {
 import { TranscriptMessage } from '../../../states/contacts/existingContacts';
 import { abbreviateMediaFilename, displayMediaSize, selectMediaIcon } from '../../../utils/selectMediaIcon';
 import OpenPageIcon from '../../common/icons/OpenPageIcon';
-import { getMediaUrl } from '../../../services/ServerlessService';
+import { getMediaUrl } from '../../../services/recordingsService';
 
 export type GroupedMessage = TranscriptMessage & {
   friendlyName: string;

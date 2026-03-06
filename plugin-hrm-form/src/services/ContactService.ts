@@ -29,7 +29,7 @@ import {
   getExternalRecordingInfo,
   isFailureExternalRecordingInfo,
   shouldGetExternalRecordingInfo,
-} from './getExternalRecordingInfo';
+} from './recordingsService';
 import { ApiSearchParams } from '../states/search/types';
 import { ContactDraftChanges } from '../states/contacts/existingContacts';
 import { newContact } from '../states/contacts/contactState';
