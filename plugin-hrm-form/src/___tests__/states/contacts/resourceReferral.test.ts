@@ -100,7 +100,7 @@ describe('resourceReferralReducer', () => {
             resourceReferralList: { resourceReferralIdToAdd: '', lookupStatus: ReferralLookupStatus.NOT_STARTED },
           },
         },
-        references: new Set(),
+        lastReferencedDate: new Date(),
       },
     },
   };

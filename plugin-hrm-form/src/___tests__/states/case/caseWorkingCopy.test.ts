@@ -118,6 +118,7 @@ describe('Working copy reducers', () => {
         cases: {
           1: {
             ...state.cases[1],
+            lastReferencedDate: expect.any(Date),
             caseWorkingCopy: stubUpdateWorkingCopy,
           },
         },
@@ -150,6 +151,7 @@ describe('Working copy reducers', () => {
         cases: {
           1: {
             ...state.cases[1],
+            lastReferencedDate: expect.any(Date),
             caseWorkingCopy: stubUpdateWorkingCopy,
           },
         },
@@ -190,7 +192,7 @@ describe('Working copy reducers', () => {
         sections: {},
         timelines: {},
         availableStatusTransitions: [],
-        references: new Set(['x']),
+        lastReferencedDate: new Date(),
         outstandingUpdateCount: 0,
       };
 
@@ -222,6 +224,7 @@ describe('Working copy reducers', () => {
           cases: {
             1: {
               ...initialState.cases[1],
+              lastReferencedDate: expect.any(Date),
               caseWorkingCopy: stubUpdateWorkingCopy,
             },
           },
@@ -277,6 +280,7 @@ describe('Working copy reducers', () => {
           cases: {
             1: {
               ...initialState.cases[1],
+              lastReferencedDate: expect.any(Date),
               caseWorkingCopy: stubUpdateWorkingCopy,
             },
           },
@@ -306,6 +310,7 @@ describe('Working copy reducers', () => {
           cases: {
             1: {
               ...initialState.cases[1],
+              lastReferencedDate: expect.any(Date),
               caseWorkingCopy: stubUpdateWorkingCopy,
             },
           },
@@ -360,6 +365,7 @@ describe('Working copy reducers', () => {
         cases: {
           1: {
             ...initialState.cases[1],
+            lastReferencedDate: expect.any(Date),
             caseWorkingCopy: stubUpdateWorkingCopy,
           },
         },
@@ -420,7 +426,7 @@ describe('Working copy reducers', () => {
               sections: {},
             },
             availableStatusTransitions: [],
-            references: new Set(['x']),
+            lastReferencedDate: new Date(),
             timelines: {},
             outstandingUpdateCount: 0,
             sections: {},
@@ -476,7 +482,7 @@ describe('Working copy reducers', () => {
               sections: {},
             },
             availableStatusTransitions: [],
-            references: new Set(['x']),
+            lastReferencedDate: new Date(),
             timelines: {},
             outstandingUpdateCount: 0,
             sections: {},
@@ -499,6 +505,7 @@ describe('Working copy reducers', () => {
           cases: {
             1: {
               ...initialState.cases[1],
+              lastReferencedDate: expect.any(Date),
               caseWorkingCopy: {
                 ...initialState.cases[1].caseWorkingCopy,
                 caseSummary: {
@@ -549,7 +556,7 @@ describe('Working copy reducers', () => {
               sections: {},
             },
             availableStatusTransitions: [],
-            references: new Set(['x']),
+            lastReferencedDate: new Date(),
             timelines: {},
             outstandingUpdateCount: 0,
             sections: {},
@@ -561,6 +568,7 @@ describe('Working copy reducers', () => {
         cases: {
           1: {
             ...initialState.cases[1],
+            lastReferencedDate: expect.any(Date),
             caseWorkingCopy: {
               ...initialState.cases[1].caseWorkingCopy,
               caseSummary: workingCopy,
@@ -612,7 +620,7 @@ describe('Working copy reducers', () => {
               sections: {},
             },
             availableStatusTransitions: [],
-            references: new Set(['x']),
+            lastReferencedDate: new Date(),
             timelines: {},
             outstandingUpdateCount: 0,
             sections: {},
@@ -625,6 +633,7 @@ describe('Working copy reducers', () => {
         cases: {
           1: {
             ...initialState.cases[1],
+            lastReferencedDate: expect.any(Date),
             caseWorkingCopy: workingCopyWithoutSummary,
           },
         },
