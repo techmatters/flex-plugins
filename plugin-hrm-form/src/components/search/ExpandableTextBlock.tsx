@@ -20,18 +20,34 @@ import { Template } from '@twilio/flex-ui';
 
 import { useExpandableOnOverflow } from '../../hooks/useExpandableOnOverflow';
 import { StyledLink } from './styles';
+import HrmTheme from '../../styles/HrmTheme';
+import { Column } from '../../styles/layout';
 
 export type ExpandableTextBlockProps = {
   expandLinkText: string;
   collapseLinkText: string;
+  collapsedOverrides?: Partial<{
+    linesPreview: number;
+    whiteSpace: string;
+    backgroundColor: string;
+  }>;
+  fontSize?: number;
   style?: CSSProperties;
 };
 
+const defaultCollapsedStyles = {
+  linesPreview: 1,
+  whiteSpace: 'nowrap',
+  backgroundColor: HrmTheme.colors.base1,
+};
+
+const LINE_HEIGHT = 18;
 const ExpandableTextBlock: React.FC<ExpandableTextBlockProps & Partial<StyledProps>> = ({
   children,
   expandLinkText,
   collapseLinkText,
   className,
+  collapsedOverrides = {},
   style = {},
 }) => {
   const {
@@ -50,43 +66,66 @@ const ExpandableTextBlock: React.FC<ExpandableTextBlockProps & Partial<StyledPro
   if (isExpanded) {
     classes.push('expanded');
   }
+
+  const collapsedStyles = { ...defaultCollapsedStyles, ...collapsedOverrides };
+
   return (
     <div
       className={`${classes.join(' ')}`}
-      style={{ display: 'flex', flexFlow: 'row', justifyContent: 'stretch', textOverflow: 'ellipsis', ...style }}
+      style={{
+        position: 'relative',
+        display: 'flex',
+        flexFlow: 'row',
+        justifyContent: 'stretch',
+        textOverflow: 'ellipsis',
+        ...style,
+      }}
       ref={overflowingRef}
     >
       <div
         style={{
           textOverflow: 'inherit',
-          whiteSpace: isOverflowing && !isExpanded ? 'nowrap' : 'inherit',
+          whiteSpace: isOverflowing && !isExpanded ? collapsedStyles.whiteSpace : 'inherit',
           overflow: isOverflowing && !isExpanded ? 'hidden' : 'inherit',
-          height: isExpanded ? 'inherit' : '1.6em',
-          lineHeight: '1.5em',
+          height: isExpanded ? 'inherit' : `${collapsedStyles.linesPreview * LINE_HEIGHT}px`,
+          fontSize: `13px`,
+          lineHeight: `${LINE_HEIGHT}px`,
           wordBreak: isExpanded ? 'break-word' : 'inherit',
         }}
       >
-        {children}
-        <StyledLink
-          underline={true}
-          type="button"
-          onClick={handleCollapse}
-          ref={collapseButtonElementRef}
-          style={{ display: isExpanded ? 'inline' : 'none', lineHeight: '1.5em', fontSize: '13px' }}
-        >
-          <Template code={collapseLinkText} />
-        </StyledLink>
+        <Column>
+          {children}
+          <StyledLink
+            underline={true}
+            type="button"
+            onClick={handleCollapse}
+            ref={collapseButtonElementRef}
+            style={{
+              display: isExpanded ? 'inline' : 'none',
+              lineHeight: `${LINE_HEIGHT}px`,
+              fontSize: `13px`,
+              marginRight: 'auto',
+            }}
+          >
+            <Template code={collapseLinkText} />
+          </StyledLink>
+        </Column>
       </div>
       <div
         style={{
+          position: 'absolute',
+          bottom: 0,
+          right: 0,
+          backgroundColor: collapsedStyles.backgroundColor,
+          opacity: 1,
           whiteSpace: 'nowrap',
           display: isOverflowing && !isExpanded ? 'inherit' : 'none',
-          height: '1.5em',
-          lineHeight: '1.5em',
-          marginLeft: '5px',
+          lineHeight: `${LINE_HEIGHT}px`,
+          paddingLeft: '8px',
         }}
       >
-        <StyledLink underline={true} onClick={handleExpand} ref={expandButtonElementRef} style={{ fontSize: '13px' }}>
+        <StyledLink underline={true} onClick={handleExpand} ref={expandButtonElementRef} style={{ fontSize: `13px` }}>
+          ...
           <Template code={expandLinkText} />
         </StyledLink>
       </div>
