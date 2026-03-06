@@ -108,11 +108,7 @@ export const postSurveyInitHandler = async ({
       conversationSid: string;
     }
 )) => {
-  const triggerMessage = await getTranslation(
-    accountSid,
-    taskLanguage,
-    'triggerMessage',
-  );
+  const triggerMessage = await getTranslation(accountSid, taskLanguage, 'triggerMessage');
 
   const params: HandleChannelCaptureParams = {
     accountSid,
