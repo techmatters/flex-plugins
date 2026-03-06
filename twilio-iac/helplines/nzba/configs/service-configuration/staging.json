@@ -9,7 +9,13 @@
             "enable_lex_v2": true,
             "enable_lex": true,
             "enable_conferencing": true,
-            "use_twilio_lambda_for_conference_functions": true
+            "use_twilio_lambda_adjust_capacity": true,
+            "use_twilio_lambda_for_conference_functions": true,
+            "use_twilio_lambda_for_conversation_duration": true,
+            "use_twilio_lambda_for_iwf_reporting": true,
+            "use_twilio_lambda_for_offline_contact_tasks": true,
+            "use_twilio_lambda_janitor": true,
+            "use_twilio_lambda_transfers": true
         }
     }
 }
