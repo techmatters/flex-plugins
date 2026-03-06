@@ -70,7 +70,7 @@ const translations: Translations = {
     MessageInputDisabledReasonHold:
       'Muchas gracias por la información. Lo transferiremos ahora. Por favor espere for un guía.',
     AutoFirstMessage: 'Nuevo contacto del webchat de',
-    TypingIndicator: '{0} está escribiendo ... ',
+    TypingIndicator: 'Guía está escribiendo ... ',
     StartChat: 'Comienza a Chatear!',
     MessageCanvasTrayButton: 'Comenzar Nuevo Chat',
     EntryPointTagline: 'Chatea con nosotros',

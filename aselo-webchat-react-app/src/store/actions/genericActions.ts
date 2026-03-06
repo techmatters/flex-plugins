@@ -14,10 +14,12 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { Dispatch } from 'redux';
+import { AnyAction, Dispatch } from 'redux';
 import { Conversation } from '@twilio/conversations';
+import { ThunkAction } from 'redux-thunk';
+import { PreEngagementFormItem } from 'hrm-form-definitions';
 
-import { EngagementPhase, Notification, PreEngagementData } from '../definitions';
+import { AppState, EngagementPhase, Notification, PreEngagementData, PreEngagementDataItem } from '../definitions';
 import {
   ACTION_ADD_MULTIPLE_MESSAGES,
   ACTION_ADD_NOTIFICATION,
@@ -29,6 +31,11 @@ import {
   ACTION_UPDATE_PRE_ENGAGEMENT_DATA,
 } from './actionTypes';
 import { MESSAGES_LOAD_COUNT } from '../../constants';
+import { validateInput } from '../../components/forms/formInputs/validation';
+import { sessionDataHandler } from '../../sessionDataHandler';
+import { getDefaultValue } from '../../components/forms/formInputs';
+import { initSession } from './initActions';
+import { notifications } from '../../notifications';
 
 export function changeEngagementPhase({ phase }: { phase: EngagementPhase }) {
   return {
@@ -94,11 +101,88 @@ export function detachFiles(files: File[]) {
   };
 }
 
-export function updatePreEngagementData(data: Partial<PreEngagementData>) {
-  return {
-    type: ACTION_UPDATE_PRE_ENGAGEMENT_DATA,
-    payload: {
-      preEngagementData: data,
-    },
+export const updatePreEngagementData = (data: PreEngagementData) => ({
+  type: ACTION_UPDATE_PRE_ENGAGEMENT_DATA,
+  payload: data,
+});
+
+const updateDataItem = ({
+  value,
+  definition,
+}: {
+  value: string | boolean;
+  definition: PreEngagementFormItem;
+}): PreEngagementDataItem => {
+  const error = validateInput({ value, definition });
+  return { error, value, dirty: true };
+};
+
+export const updatePreEngagementDataField = ({
+  name,
+  value,
+}: {
+  name: string;
+  value: PreEngagementDataItem['value'];
+}): ThunkAction<void, AppState, unknown, AnyAction> => {
+  return (dispatch, getState) => {
+    const state = getState();
+    const definition = state.config.preEngagementFormDefinition?.fields?.find(fd => fd.name === name);
+    const updatedItem = updateDataItem({ definition: definition as PreEngagementFormItem, value });
+
+    const data = {
+      ...state.session.preEngagementData,
+      [name]: updatedItem,
+    };
+
+    dispatch({
+      type: ACTION_UPDATE_PRE_ENGAGEMENT_DATA,
+      payload: data,
+    });
   };
-}
+};
+
+const newInitialItem = (definition: PreEngagementFormItem): PreEngagementDataItem => ({
+  error: null,
+  dirty: false,
+  value: getDefaultValue(definition),
+});
+
+export const submitAndInitChatThunk = (): ThunkAction<void, AppState, unknown, AnyAction> => {
+  return async (dispatch, getState) => {
+    const state = getState();
+    const definition = state.config.preEngagementFormDefinition?.fields || [];
+    const data = definition.reduce<PreEngagementData>((accum, def) => {
+      const item = state.session.preEngagementData[def.name];
+      const error = validateInput({ definition: def, value: item?.value });
+      return { ...accum, [def.name]: { ...(item || newInitialItem(def)), error } };
+    }, {});
+
+    dispatch(updatePreEngagementData(data));
+
+    const hasError = Object.values(data).some(i => Boolean(i.error));
+    if (hasError) {
+      dispatch(addNotification(notifications.formValidationErrorNotification()));
+      return;
+    }
+
+    dispatch(changeEngagementPhase({ phase: EngagementPhase.Loading }));
+    try {
+      const preEngagementDataValues = Object.entries(data).reduce(
+        (accum, [name, { value }]) => ({ ...accum, [name]: value }),
+        {},
+      );
+      const sessionData = await sessionDataHandler.fetchAndStoreNewSession({
+        formData: preEngagementDataValues,
+      });
+      dispatch(
+        initSession({
+          token: sessionData.token,
+          conversationSid: sessionData.conversationSid,
+        }),
+      );
+    } catch (err) {
+      dispatch(addNotification(notifications.failedToInitSessionNotification((err as Error).message)));
+      dispatch(changeEngagementPhase({ phase: EngagementPhase.PreEngagementForm }));
+    }
+  };
+};

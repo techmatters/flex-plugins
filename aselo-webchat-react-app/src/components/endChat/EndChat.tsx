@@ -59,7 +59,7 @@ export default function EndChat(props: Props) {
             setDisabled(true);
             await configuredBackend('/endChat', { channelSid, token, language });
             sessionDataHandler.clear();
-            dispatch(updatePreEngagementData({ email: '', name: '', query: '' }));
+            dispatch(updatePreEngagementData({}));
             dispatch(changeEngagementPhase({ phase: EngagementPhase.PreEngagementForm }));
           } catch (error) {
             console.error(error);
@@ -72,7 +72,7 @@ export default function EndChat(props: Props) {
       default:
         if (confirm(configuredLocalizeKey('Header-CloseChatButtons-EndChatConfirmDialogMessageFromPreEngagement'))) {
           sessionDataHandler.clear();
-          dispatch(updatePreEngagementData({ email: '', name: '', query: '' }));
+          dispatch(updatePreEngagementData({}));
           dispatch(changeEngagementPhase({ phase: EngagementPhase.PreEngagementForm }));
         }
     }

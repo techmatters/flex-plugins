@@ -20,6 +20,7 @@ import { FormInputType, FormItemDefinition } from './types';
 export type PreEngagementFormItem = FormItemDefinition & {
   type:
     | FormInputType.Input
+    | FormInputType.Email
     | FormInputType.Select
     | FormInputType.DependentSelect
     | FormInputType.Checkbox;
