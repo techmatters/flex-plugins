@@ -17,11 +17,10 @@
 import {
   CaseActionType,
   CaseState,
-  DEREFERENCE_CASE_ACTION,
+  CaseStateEntry,
   LOAD_CASE_ACTION_FULFILLED,
   LOAD_CASE_ACTION_PENDING,
   LOAD_CASE_ACTION_REJECTED,
-  REFERENCE_CASE_ACTION,
 } from './types';
 import { REMOVE_CONTACT_STATE, RemoveContactStateAction } from '../types';
 import { CaseWorkingCopyActionType, caseWorkingCopyReducer } from './caseWorkingCopy';
@@ -38,16 +37,10 @@ import type { Case } from '../../types/types';
 import type { ConfigurationState } from '../configuration/reducer';
 import { caseSectionUpdateReducer } from './sections/caseSectionUpdates';
 import { timelineReducer } from './timeline';
-import {
-  handleDereferenceCaseAction,
-  handleLoadCaseFulfilledAction,
-  handleLoadCasePendingAction,
-  handleLoadCaseRejectedAction,
-  handleReferenceCaseAction,
-} from './singleCase';
+import { handleLoadCaseFulfilledAction, handleLoadCasePendingAction, handleLoadCaseRejectedAction } from './singleCase';
 import { loadCaseIntoState } from './loadCaseIntoState';
-import { dereferenceCase } from './referenceCase';
 import { SEARCH_CASES_SUCCESS_ACTION, SearchCasesSuccessAction } from '../search/results';
+import { isStale, hasNonEmptyValue } from '../staleTimeout';
 
 const initialState: CaseState = {
   cases: {},
@@ -59,23 +52,23 @@ const boundCaseSectionUpdateReducer = caseSectionUpdateReducer({
 } as HrmState);
 const boundTimelineReducer = timelineReducer({ connectedCase: initialState } as HrmState);
 
-const dereferenceAllCases = (state: CaseState, referenceId: string): CaseState => {
-  const { cases } = state;
-  const caseIds = Object.keys(cases);
-  if (caseIds.length === 0) {
-    return state;
-  }
-  const updatedCases = caseIds.reduce((acc, caseId) => {
-    const updatedCase = dereferenceCase(state, caseId, referenceId);
-    if (updatedCase.cases[caseId]) {
-      acc[caseId] = updatedCase.cases[caseId];
-    }
-    return acc;
-  }, {} as CaseState['cases']);
-  return {
-    ...state,
-    cases: updatedCases,
-  };
+const hasCaseDraftUpdates = (caseEntry: Pick<CaseStateEntry, 'caseWorkingCopy'>): boolean => {
+  const { caseWorkingCopy } = caseEntry;
+  if (!caseWorkingCopy) return false;
+  if (hasNonEmptyValue(caseWorkingCopy.caseSummary)) return true;
+  return Object.values(caseWorkingCopy.sections ?? {}).some(
+    section => hasNonEmptyValue(section.new) || Object.keys(section.existing ?? {}).length > 0,
+  );
+};
+
+const garbageCollectCases = (state: CaseState): CaseState => {
+  const updatedCases = Object.fromEntries(
+    Object.entries(state.cases).filter(([, caseEntry]) => {
+      if (hasCaseDraftUpdates(caseEntry)) return true;
+      return !isStale(caseEntry.lastReferencedDate);
+    }),
+  );
+  return { ...state, cases: updatedCases };
 };
 
 const contactUpdatingReducer = (hrmState: HrmState, action: ContactUpdatingAction): HrmState => {
@@ -88,8 +81,6 @@ const contactUpdatingReducer = (hrmState: HrmState, action: ContactUpdatingActio
     if (contactCase) {
       const caseDefinitionVersion =
         configuration.definitionVersions[contactCase.definitionVersion ?? contactCase.info.definitionVersion];
-      const references = connectedCase.cases[contactCase.id]?.references ?? new Set<string>();
-      references.add(`contact-${contact.id}`);
       return {
         ...hrmState,
         connectedCase: {
@@ -100,7 +91,7 @@ const contactUpdatingReducer = (hrmState: HrmState, action: ContactUpdatingActio
               connectedCase: contactCase,
               caseWorkingCopy: { sections: {} },
               availableStatusTransitions: getAvailableCaseStatusTransitions(contactCase, caseDefinitionVersion),
-              references,
+              lastReferencedDate: new Date(),
               sections: {},
               timelines: {},
               outstandingUpdateCount: 0,
@@ -117,9 +108,7 @@ const loadCaseListIntoState = (
   casesState: CaseState,
   configurationState: ConfigurationState,
   cases: Case[],
-  referenceId: string,
 ): CaseState => {
-  const withoutOldSearchResults = dereferenceAllCases(casesState, referenceId);
   if (cases?.length) {
     return cases.reduce((acc, newCase) => {
       // TODO: strip the totalCount property in HRM
@@ -131,13 +120,12 @@ const loadCaseListIntoState = (
         caseId: newCase.id,
         definitionVersion: caseDefinitionVersion,
         newCase: caseToAdd,
-        referenceId,
         // Any cases being worked on elsewhere when the list is loaded should have in-progress edits preserved
         preserveWorkingCopy: true,
       });
-    }, withoutOldSearchResults);
+    }, casesState);
   }
-  return withoutOldSearchResults;
+  return casesState;
 };
 
 // eslint-disable-next-line import/no-unused-modules
@@ -163,24 +151,28 @@ export function reduce(
     ),
   };
   const { connectedCase: state, configuration } = hrmState;
+  let updatedState: HrmState;
   switch (action.type) {
     case LOAD_CASE_ACTION_PENDING: {
-      return handleLoadCasePendingAction(hrmState, action);
+      updatedState = handleLoadCasePendingAction(hrmState, action);
+      break;
     }
     case LOAD_CASE_ACTION_FULFILLED: {
-      return handleLoadCaseFulfilledAction(hrmState, action);
+      updatedState = handleLoadCaseFulfilledAction(hrmState, action);
+      break;
     }
     case LOAD_CASE_ACTION_REJECTED: {
-      return handleLoadCaseRejectedAction(hrmState, action);
+      updatedState = handleLoadCaseRejectedAction(hrmState, action);
+      break;
     }
     case CREATE_CONTACT_ACTION_FULFILLED:
     case LOAD_CONTACT_FROM_HRM_FOR_TASK_ACTION_FULFILLED: {
-      return contactUpdatingReducer(hrmState, action as ContactUpdatingAction);
+      updatedState = contactUpdatingReducer(hrmState, action as ContactUpdatingAction);
+      break;
     }
     case REMOVE_CONTACT_STATE: {
-      const { contactId, taskId } = action as RemoveContactStateAction;
-      const contactReferenceRemoved = dereferenceAllCases(state, `contact-${contactId}`);
-      return { ...hrmState, connectedCase: dereferenceAllCases(contactReferenceRemoved, `task-${taskId}`) };
+      updatedState = hrmState;
+      break;
     }
     case FETCH_CASE_LIST_FULFILLED_ACTION: {
       const {
@@ -188,26 +180,22 @@ export function reduce(
           result: { cases },
         },
       } = action as FetchCaseListFulfilledAction;
-      return {
+      updatedState = {
         ...hrmState,
-        connectedCase: loadCaseListIntoState(state, configuration, cases, `case-list`),
+        connectedCase: loadCaseListIntoState(state, configuration, cases),
       };
+      break;
     }
     case SEARCH_CASES_SUCCESS_ACTION: {
-      const { searchResult, taskSid } = action.payload;
-      const referenceId = `search-${taskSid}`;
-      return {
+      const { searchResult } = action.payload;
+      updatedState = {
         ...hrmState,
-        connectedCase: loadCaseListIntoState(state, configuration, searchResult?.cases, referenceId),
+        connectedCase: loadCaseListIntoState(state, configuration, searchResult?.cases),
       };
-    }
-    case REFERENCE_CASE_ACTION: {
-      return handleReferenceCaseAction(hrmState, action);
-    }
-    case DEREFERENCE_CASE_ACTION: {
-      return handleDereferenceCaseAction(hrmState, action);
+      break;
     }
     default:
-      return hrmState;
+      updatedState = hrmState;
   }
+  return { ...updatedState, connectedCase: garbageCollectCases(updatedState.connectedCase) };
 }

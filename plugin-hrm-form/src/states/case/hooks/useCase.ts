@@ -14,7 +14,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { useCallback, useEffect } from 'react';
+import { useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import asyncDispatch from '../../asyncDispatch';
@@ -26,12 +26,10 @@ import { useLoadWithRetry } from '../../hooks/useLoadWithRetry';
 
 const useCaseLoader = ({
   caseId,
-  referenceId,
   autoload = true,
   refresh = true,
 }: {
   caseId: Case['id'];
-  referenceId: string;
   autoload?: boolean;
   refresh?: boolean;
 }) => {
@@ -44,27 +42,14 @@ const useCaseLoader = ({
   const exists = Boolean(connectedCase);
 
   const loadCase = useCallback(() => {
-    if (!caseId || !referenceId) {
+    if (!caseId) {
       return;
     }
 
-    if (exists && !refresh) {
-      dispatch(CaseActions.referenceCaseAction({ caseId, referenceId }));
-      return;
-    }
+    asyncDispatch(dispatch)(CaseActions.loadCaseAsync({ caseId }));
+  }, [caseId, dispatch]);
 
-    asyncDispatch(dispatch)(CaseActions.loadCaseAsync({ caseId, referenceId }));
-  }, [caseId, dispatch, exists, referenceId, refresh]);
-
-  const unloadCase = useCallback(() => {
-    if (!caseId || !referenceId) {
-      return;
-    }
-
-    dispatch(CaseActions.dereferenceCaseAction({ caseId, referenceId }));
-  }, [caseId, dispatch, referenceId]);
-
-  const safeToLoad = Boolean(caseId) && Boolean(referenceId);
+  const safeToLoad = Boolean(caseId);
   const shouldLoad = autoload || refresh;
 
   const loader = useLoadWithRetry({
@@ -76,14 +61,6 @@ const useCaseLoader = ({
     shouldLoad,
   });
 
-  // Cleanup case reference on unmount. This is done in a separate effect since the cleanup is triggered every time an effect is triggered, and this should happen only on "unmount"
-  useEffect(() => {
-    return () => {
-      // setImmediate allows for computing next state before derefencing, preventing concurrently trying to ref/deref in transitions between two components that consume the same case
-      setImmediate(() => unloadCase());
-    };
-  }, [unloadCase]);
-
   return {
     ...loader,
     error,
@@ -94,23 +71,20 @@ const useCaseLoader = ({
 // eslint-disable-next-line import/no-unused-modules
 export const useCase = ({
   caseId,
-  referenceId,
+  referenceId: _referenceId, // Kept for backward compatibility; no longer used with GC-based state management
   autoload = true,
   refresh = false,
 }: {
   caseId: Case['id'];
-  referenceId: string;
+  /** @deprecated No longer used; cases are managed via garbage collection */
+  referenceId?: string;
   autoload?: boolean;
   refresh?: boolean;
 }) => {
-  // const can = useMemo(() => {
-  //   return getInitializedCan();
-  // }, []);
-
   const connectedCase = useSelector((state: RootState) => selectCaseByCaseId(state, caseId)?.connectedCase);
 
   return {
     connectedCase,
-    ...useCaseLoader({ caseId, referenceId, autoload, refresh }),
+    ...useCaseLoader({ caseId, autoload, refresh }),
   };
 };

@@ -14,64 +14,23 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { omit } from 'lodash';
-
 import type { CaseState } from './types';
 import type { Case } from '../../types/types';
 
-export const referenceCase = ({
-  caseId,
-  referenceId,
-  state,
-  newCase,
-}: {
-  state: CaseState;
-  caseId: Case['id'];
-  referenceId: string;
-  newCase?: Case;
-}): CaseState => {
+// eslint-disable-next-line import/no-unused-modules
+export const updateCaseLastReferenced = (state: CaseState, caseId: Case['id'], newCase?: Case): CaseState => {
   const existingCase = state.cases[caseId];
-
-  // If there's no "new case" and the reference is already there, avoid triggering re-renders
-  if (existingCase.references.has(referenceId) && !newCase) {
+  if (!existingCase) {
     return state;
   }
-
-  // If the reference does not exists, or if there's a "new case" (actually new or updated version), rebuild the state to trigger appropriate re-renders
-  const updatedReferences = existingCase.references.add(referenceId);
   return {
     ...state,
     cases: {
       ...state.cases,
       [caseId]: {
         ...existingCase,
-        references: updatedReferences,
+        lastReferencedDate: new Date(),
         connectedCase: newCase || existingCase.connectedCase,
-      },
-    },
-  };
-};
-
-export const dereferenceCase = (state: CaseState, caseId: Case['id'], referenceId: string): CaseState => {
-  const caseState = state.cases[caseId];
-  if (!caseState) {
-    return state;
-  }
-  const references = caseState.references ?? new Set<string>();
-  references.delete(referenceId);
-  if (references.size === 0) {
-    return {
-      ...state,
-      cases: omit(state.cases, caseId),
-    };
-  }
-  return {
-    ...state,
-    cases: {
-      ...state.cases,
-      [caseId]: {
-        ...state.cases[caseId],
-        references,
       },
     },
   };

@@ -20,14 +20,12 @@ import type { CaseState } from './types';
 import type { Case } from '../../types/types';
 import type { ParseFetchErrorResult } from '../parseFetchError';
 import { getAvailableCaseStatusTransitions } from './caseStatus';
-import { referenceCase } from './referenceCase';
 
 export const loadCaseIntoState = ({
   state,
   caseId,
   definitionVersion,
   newCase,
-  referenceId,
   error = null,
   loading = false,
   preserveWorkingCopy = false,
@@ -36,7 +34,6 @@ export const loadCaseIntoState = ({
   caseId: Case['id'];
   definitionVersion: DefinitionVersion;
   newCase: Case;
-  referenceId: string;
   loading?: boolean;
   error?: ParseFetchErrorResult;
   preserveWorkingCopy?: boolean;
@@ -44,7 +41,6 @@ export const loadCaseIntoState = ({
   const existingCase = state.cases[caseId];
   const statusUpdates = { loading, error };
 
-  const existingReferences = existingCase?.references;
   const existingWorkingCopy = existingCase?.caseWorkingCopy;
 
   if (!existingCase || !existingCase.connectedCase) {
@@ -56,12 +52,7 @@ export const loadCaseIntoState = ({
           connectedCase: newCase,
           caseWorkingCopy: preserveWorkingCopy && existingWorkingCopy ? existingWorkingCopy : { sections: {} },
           availableStatusTransitions: getAvailableCaseStatusTransitions(newCase, definitionVersion),
-          // eslint-disable-next-line no-nested-ternary
-          references: existingReferences
-            ? existingReferences.add(referenceId)
-            : referenceId
-            ? new Set([referenceId])
-            : new Set<string>(),
+          lastReferencedDate: new Date(),
           sections: {},
           timelines: {},
           outstandingUpdateCount: 0,
@@ -71,5 +62,16 @@ export const loadCaseIntoState = ({
     };
   }
 
-  return referenceCase({ state, caseId, referenceId, newCase });
+  return {
+    ...state,
+    cases: {
+      ...state.cases,
+      [caseId]: {
+        ...existingCase,
+        lastReferencedDate: new Date(),
+        connectedCase: newCase || existingCase.connectedCase,
+        ...statusUpdates,
+      },
+    },
+  };
 };

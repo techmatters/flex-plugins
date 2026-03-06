@@ -76,7 +76,7 @@ console.error = () => null;
 const mockedCases: Record<string, CaseStateEntry> = {
   '1': {
     caseWorkingCopy: undefined,
-    references: new Set(['x']),
+    lastReferencedDate: new Date(),
     availableStatusTransitions: [],
     connectedCase: {
       id: '1',
@@ -96,7 +96,7 @@ const mockedCases: Record<string, CaseStateEntry> = {
   },
   '2': {
     caseWorkingCopy: undefined,
-    references: new Set(['x']),
+    lastReferencedDate: new Date(),
     availableStatusTransitions: [],
     connectedCase: {
       id: '2',

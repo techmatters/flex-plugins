@@ -110,7 +110,7 @@ export const loadTimelineIntoRedux = (
       ...state.connectedCase,
       cases: {
         ...state.connectedCase.cases,
-        [caseId]: caseEntry,
+        [caseId]: { ...caseEntry, lastReferencedDate: new Date() },
       },
     },
   };
