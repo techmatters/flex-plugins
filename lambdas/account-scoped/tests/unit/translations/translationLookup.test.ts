@@ -235,12 +235,7 @@ describe('getTranslation', () => {
       const loader = makeTranslationLoader({});
 
       await expect(
-        getTranslation(
-          TEST_ACCOUNT_SID,
-          'fr-CA',
-          TEST_TRIGGER_MESSAGE_KEY,
-          loader,
-        ),
+        getTranslation(TEST_ACCOUNT_SID, 'fr-CA', TEST_TRIGGER_MESSAGE_KEY, loader),
       ).rejects.toThrow(/Configuration error/);
     });
 
@@ -249,12 +244,7 @@ describe('getTranslation', () => {
       const loader = makeTranslationLoader({});
 
       await expect(
-        getTranslation(
-          TEST_ACCOUNT_SID,
-          'fr-CA',
-          TEST_TRIGGER_MESSAGE_KEY,
-          loader,
-        ),
+        getTranslation(TEST_ACCOUNT_SID, 'fr-CA', TEST_TRIGGER_MESSAGE_KEY, loader),
       ).rejects.toThrow(`"${TEST_TRIGGER_MESSAGE_KEY}"`);
     });
   });
@@ -265,12 +255,7 @@ describe('getTranslation', () => {
       const loader = jest.fn().mockReturnValue(undefined);
 
       await expect(
-        getTranslation(
-          TEST_ACCOUNT_SID,
-          'en',
-          TEST_TRIGGER_MESSAGE_KEY,
-          loader,
-        ),
+        getTranslation(TEST_ACCOUNT_SID, 'en', TEST_TRIGGER_MESSAGE_KEY, loader),
       ).rejects.toThrow(/Configuration error/);
 
       // Should only call loader once with 'en' (deduplicated: 'en' is both taskLanguage and global default)
@@ -283,12 +268,7 @@ describe('getTranslation', () => {
       const loader = jest.fn().mockReturnValue(undefined);
 
       await expect(
-        getTranslation(
-          TEST_ACCOUNT_SID,
-          'en-US',
-          TEST_TRIGGER_MESSAGE_KEY,
-          loader,
-        ),
+        getTranslation(TEST_ACCOUNT_SID, 'en-US', TEST_TRIGGER_MESSAGE_KEY, loader),
       ).rejects.toThrow(/Configuration error/);
 
       // en-US and en (global default is also en)
@@ -302,12 +282,7 @@ describe('getTranslation', () => {
       const loader = jest.fn().mockReturnValue(undefined);
 
       await expect(
-        getTranslation(
-          TEST_ACCOUNT_SID,
-          'es-CO',
-          TEST_TRIGGER_MESSAGE_KEY,
-          loader,
-        ),
+        getTranslation(TEST_ACCOUNT_SID, 'es-CO', TEST_TRIGGER_MESSAGE_KEY, loader),
       ).rejects.toThrow(/Configuration error/);
 
       expect(loader).toHaveBeenCalledTimes(3);
