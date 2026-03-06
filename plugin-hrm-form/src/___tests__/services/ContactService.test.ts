@@ -44,13 +44,13 @@ jest.mock('../../services/formSubmissionHelpers', () => ({
 }));
 
 jest.mock('../../services/recordingsService', () => ({
-  getExternalRecordingInfo: () =>
-    Promise.resolve({
-      status: 'success',
-      recordingSid: 'recordingSid',
-      bucket: 'bucket',
-      key: 'key',
-    }),
+  getExternalRecordingInfo: (task: any) => {
+    const { conference } = task?.attributes ?? {};
+    if (!conference) {
+      return Promise.resolve({ status: 'failure', name: 'NoConference', error: 'Could not find a conference' });
+    }
+    return Promise.resolve({ status: 'success', recordingSid: 'recordingSid', bucket: 'bucket', key: 'key' });
+  },
   isFailureExternalRecordingInfo: (r: any) => r && r.status === 'failure',
   shouldGetExternalRecordingInfo: () => true,
 }));
