@@ -14,7 +14,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { getHrmConfig } from '../hrmConfig';
+import { getHrmConfig, getAseloFeatureFlags } from '../hrmConfig';
 import fetchProtectedApi from './fetchProtectedApi';
 import { TaskSID } from '../types/twilio';
 import { ApiError } from './fetchApi';
@@ -27,24 +27,30 @@ type PopulateCounselorsReturn = { sid: string; fullName: string }[];
  */
 export const populateCounselors = async (): Promise<PopulateCounselorsReturn> => {
   const { helpline, currentWorkspace } = getHrmConfig();
-  const body = {
-    workspaceSID: currentWorkspace,
-    helpline: helpline || '',
-  };
+  const useTwilioLambda = getAseloFeatureFlags().use_twilio_lambda_for_worker_endpoints;
+  const body = useTwilioLambda
+    ? { helpline: helpline || '' }
+    : { workspaceSID: currentWorkspace, helpline: helpline || '' };
 
-  const { workerSummaries } = await fetchProtectedApi('/populateCounselors', body);
+  const { workerSummaries } = await fetchProtectedApi(
+    useTwilioLambda ? '/worker/populateCounselors' : '/populateCounselors',
+    body,
+    { useTwilioLambda },
+  );
 
   return workerSummaries;
 };
 
 export const pullNextTask = async (): Promise<TaskSID | undefined> => {
   const { workerSid } = getHrmConfig();
+  const useTwilioLambda = getAseloFeatureFlags().use_twilio_lambda_for_worker_endpoints;
 
   const body = {
     workerSid,
   };
   try {
-    return (await fetchProtectedApi('/pullTask', body)).taskPulled;
+    return (await fetchProtectedApi(useTwilioLambda ? '/worker/pullTask' : '/pullTask', body, { useTwilioLambda }))
+      .taskPulled;
   } catch (e) {
     if (e instanceof ApiError && e.response.status === 404) {
       console.warn('No eligible queued task found to pull');
@@ -60,7 +66,10 @@ export const pullNextTask = async (): Promise<TaskSID | undefined> => {
 export const listWorkerQueues = async (body: {
   workerSid: string;
 }): Promise<{ workerQueues: { friendlyName: string }[] }> => {
-  return fetchProtectedApi('/listWorkerQueues', body);
+  const useTwilioLambda = getAseloFeatureFlags().use_twilio_lambda_for_worker_endpoints;
+  return fetchProtectedApi(useTwilioLambda ? '/worker/listWorkerQueues' : '/listWorkerQueues', body, {
+    useTwilioLambda,
+  });
 };
 
 /**
@@ -68,8 +77,10 @@ export const listWorkerQueues = async (body: {
  */
 export const getWorkerAttributes = async (workerSid: string) => {
   const body = { workerSid };
-
-  return fetchProtectedApi('/getWorkerAttributes', body);
+  const useTwilioLambda = getAseloFeatureFlags().use_twilio_lambda_for_worker_endpoints;
+  return fetchProtectedApi(useTwilioLambda ? '/worker/getWorkerAttributes' : '/getWorkerAttributes', body, {
+    useTwilioLambda,
+  });
 };
 
 export const updateWorkersSkills = async (payload: {

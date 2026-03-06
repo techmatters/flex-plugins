@@ -49,6 +49,7 @@ export type FeatureFlags = {
   use_twilio_lambda_for_conversation_duration: boolean; // Use the twilio account scoped lambda to calculate conversationDuration
   use_twilio_lambda_for_iwf_reporting: boolean; // Use the twilio account scoped lambda for reportToIWF and selfReportToIWF
   use_twilio_lambda_for_offline_contact_tasks: boolean; // Use the twilio account scoped lambda for assignOfflineContactInit and assignOfflineContactResolve
+  use_twilio_lambda_for_worker_endpoints: boolean; // Use the twilio account scoped lambda for getWorkerAttributes, populateCounselors and listWorkerQueues
   use_twilio_lambda_to_transition_participants: boolean; // Use the twilio account scoped lambda for wrapupConversationTask and completeConversationTask
   use_twilio_lambda_transfers: boolean; // Use the twilio account scoped lambda for transferChatStart
   use_twilio_lambda_to_send_messages: boolean; // Use the twilio account scoped lambda for sendSystemMessage
