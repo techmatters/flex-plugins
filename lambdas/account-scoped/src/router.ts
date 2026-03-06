@@ -40,6 +40,7 @@ import { removeParticipantHandler } from './conference/removeParticipant';
 import { participantStatusCallbackHandler } from './conference/participantStatusCallback';
 import { handleOperatingHours } from './operatingHours';
 import { handleEndChat } from './conversation/endChat';
+import { checkBlockListHandler } from './conversation/checkBlockList';
 import { transitionAgentParticipantsHandler } from './conversation/transitionAgentParticipants';
 import { conferenceStatusCallbackHandler } from './conference/conferenceStatusCallback';
 import './conference/stopRecordingWhenLastAgentLeaves';
@@ -136,6 +137,10 @@ const ACCOUNTSID_ROUTES: Record<
   'conversations/serviceScopedConversationEventHandler': {
     requestPipeline: [validateWebhookRequest],
     handler: handleConversationEvent,
+  },
+  'conversation/checkBlockList': {
+    requestPipeline: [validateWebhookRequest],
+    handler: checkBlockListHandler,
   },
   'conversation/transitionAgentParticipants': {
     requestPipeline: [validateFlexTokenRequest({ tokenMode: 'agent' })],
