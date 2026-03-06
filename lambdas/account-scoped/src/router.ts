@@ -71,6 +71,7 @@ import { pullTaskHandler } from './worker/pullTask';
 import { sendSystemMessageHandler } from './conversation/sendSystemMessage';
 import { sendStudioMessageHandler } from './conversation/sendStudioMessage';
 import { sendMessageAndRunJanitorHandler } from './conversation/sendMessageAndRunJanitor';
+import { issueSyncTokenHandler } from './issueSyncToken';
 import { getExternalRecordingS3LocationHandler } from './conversation/getExternalRecordingS3Location';
 import { getMediaUrlHandler } from './conversation/getMediaUrl';
 
@@ -273,6 +274,10 @@ const ACCOUNTSID_ROUTES: Record<
   'conversation/sendMessageAndRunJanitor': {
     requestPipeline: [validateWebhookRequest],
     handler: sendMessageAndRunJanitorHandler,
+  },
+  issueSyncToken: {
+    requestPipeline: [validateFlexTokenRequest({ tokenMode: 'agent' })],
+    handler: issueSyncTokenHandler,
   },
 };
 

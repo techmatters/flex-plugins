@@ -20,7 +20,11 @@ import { newErr, newOk } from '../Result';
 import { newMissingParameterResult } from '../httpErrors';
 import { getAccountAuthToken } from '@tech-matters/twilio-configuration';
 
-export type TokenValidatorResponse = { worker_sid: string; roles: string[] };
+export type TokenValidatorResponse = {
+  worker_sid: string;
+  roles: string[];
+  identity?: string;
+};
 
 const isWorker = (tokenResult: TokenValidatorResponse) =>
   Boolean(tokenResult.worker_sid) && tokenResult.worker_sid.startsWith('WK');
