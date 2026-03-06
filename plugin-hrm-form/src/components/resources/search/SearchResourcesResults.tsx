@@ -14,12 +14,11 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { AnyAction } from 'redux';
 import { Template } from '@twilio/flex-ui';
 
-import { RootState } from '../../../states';
 import { Box, Column, SearchFormTopRule } from '../../../styles';
 import SearchResultsBackButton from '../../search/SearchResults/SearchResultsBackButton';
 import {
@@ -30,35 +29,47 @@ import {
   ResourcesSearchTitle,
   ResourceTitle,
 } from '../styles';
+import type { RootState } from '../../../states';
 import {
   changeResultPageAction,
-  getCurrentPageResults,
-  getPageCount,
+  selectResourceSearchCurrentPageResults,
   returnToSearchFormAction,
   searchResourceAsyncAction,
-  SearchSettings,
+  selectResourceSearchCurrentPage,
+  selectResourceSearchParameters,
+  selectResourceSearchResultsTotal,
+  selectResourceSearchPageCount,
+  selectResourceSearchError,
+  selectFilterSelections,
 } from '../../../states/resources/search';
 import { viewResourceAction } from '../../../states/resources';
 import Pagination from '../../pagination';
 import asyncDispatch from '../../../states/asyncDispatch';
 import ResourcePreview from './ResourcePreview';
-import { namespace, referrableResourcesBase } from '../../../states/storeNamespaces';
 import { ResourcesSearchResultsDescriptionDetails } from '../mappingComponents';
 
 const SearchResourcesResults: React.FC = () => {
   const dispatch = useDispatch();
 
-  const searchState = useSelector((state: RootState) => state[namespace][referrableResourcesBase].search);
-  const { error, status, currentPage, parameters } = searchState;
-  const currentPageResults = getCurrentPageResults(searchState);
-  const resultPageCount = getPageCount(searchState);
-  const resultCount = searchState.results.length;
+  const error = useSelector(selectResourceSearchError);
+  const currentPage = useSelector(selectResourceSearchCurrentPage);
+  const filterSelections = useSelector(selectFilterSelections);
+  const pageSize = useSelector((state: RootState) => selectResourceSearchParameters(state).pageSize);
+  const generalSearchTerm = useSelector((state: RootState) => selectResourceSearchParameters(state).generalSearchTerm);
+  const currentPageResults = useSelector(selectResourceSearchCurrentPageResults);
+  const resultPageCount = useSelector(selectResourceSearchPageCount);
+  const resultCount = useSelector(selectResourceSearchResultsTotal);
   // If any results for the current page are undefined (i.e. expected to exist given the total result count but not in  redux yet) query the back end
+  useEffect(() => {
+    if (!currentPageResults.every(res => res)) {
+      asyncDispatch<AnyAction>(dispatch)(
+        searchResourceAsyncAction({ pageSize, filterSelections, generalSearchTerm }, currentPage, false),
+      );
+    }
+  }, [currentPage, currentPageResults, dispatch, filterSelections, generalSearchTerm, pageSize]);
   if (!currentPageResults.every(res => res)) {
-    asyncDispatch<AnyAction>(dispatch)(searchResourceAsyncAction(parameters, currentPage, false));
     return null;
   }
-
   return (
     <ResourcesSearchArea>
       <Column>
@@ -76,10 +87,10 @@ const SearchResourcesResults: React.FC = () => {
           </ResourcesSearchTitle>
           <ResourcesSearchResultsDescription>
             <Template code="Resources-Search-ResultsDescription" count={resultCount} />
-            {parameters.generalSearchTerm && (
+            {generalSearchTerm && (
               <Template
                 code="Resources-Search-ResultsDescription-GeneralSearchTerm"
-                generalSearchTerm={parameters.generalSearchTerm}
+                generalSearchTerm={generalSearchTerm}
               />
             )}
             <ResourcesSearchResultsDescriptionDetails />
