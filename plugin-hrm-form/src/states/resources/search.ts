@@ -21,7 +21,7 @@ import { loadReferenceLocationsAsyncAction, ReferenceLocationState } from './ref
 import { FilterOption } from './types';
 import { getFilterSelectionState } from '../../components/resources/mappingComponents';
 import { RootState } from '..';
-import { namespace, referrableResourcesBase } from '../storeNamespaces';
+import { namespace } from '../storeNamespaces';
 
 export type SearchSettings = Omit<Partial<ReferrableResourceSearchState['parameters']>, 'filterSelections'> & {
   filterSelections?: Partial<ReferrableResourceSearchState['parameters']['filterSelections']>;
@@ -244,14 +244,30 @@ export const resourceSearchReducer = createReducer(initialState, handleAction =>
   ),
 ]);
 
-export const getCurrentPageResults = ({
-  results,
-  currentPage,
-  parameters: { pageSize },
-}: ReferrableResourceSearchState) => results.slice(currentPage * pageSize, (currentPage + 1) * pageSize);
+const selectSearchState = (state: RootState): ReferrableResourceSearchState =>
+  state[namespace].referrableResources.search;
 
-export const getPageCount = ({ results, parameters: { pageSize } }: ReferrableResourceSearchState) =>
-  Math.ceil(results.length / pageSize);
+export const selectResourceSearchCurrentPageResults = (state: RootState) => {
+  const {
+    results,
+    currentPage,
+    parameters: { pageSize },
+  } = state[namespace].referrableResources.search;
+  return results.slice(currentPage * pageSize, (currentPage + 1) * pageSize);
+};
 
-export const selectFilterSelections = <T extends FilterSelections>(state: RootState): T =>
-  state[namespace][referrableResourcesBase].search.parameters.filterSelections as T;
+export const selectFilterSelections = (state: RootState): FilterSelections =>
+  selectSearchState(state).parameters.filterSelections;
+
+export const selectResourceSearchPageCount = (state: RootState) => {
+  const {
+    results,
+    parameters: { pageSize },
+  } = selectSearchState(state);
+  return Math.ceil(results.length / pageSize);
+};
+
+export const selectResourceSearchError = (state: RootState) => selectSearchState(state).error;
+export const selectResourceSearchCurrentPage = (state: RootState) => selectSearchState(state).currentPage;
+export const selectResourceSearchParameters = (state: RootState) => selectSearchState(state).parameters;
+export const selectResourceSearchResultsTotal = (state: RootState) => selectSearchState(state).results.length;
