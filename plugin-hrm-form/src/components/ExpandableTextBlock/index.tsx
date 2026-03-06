@@ -19,9 +19,9 @@ import type { StyledProps } from '@material-ui/core';
 import { Template } from '@twilio/flex-ui';
 
 import { useExpandableOnOverflow } from '../../hooks/useExpandableOnOverflow';
-import { StyledLink } from './styles';
 import HrmTheme from '../../styles/HrmTheme';
 import { Column } from '../../styles/layout';
+import { StyledLink } from '../../styles/buttons';
 
 export type ExpandableTextBlockProps = {
   expandLinkText: string;
