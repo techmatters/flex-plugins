@@ -19,7 +19,8 @@ import React from 'react';
 
 import { Flex } from '../../../styles';
 import { ResourcePreviewHeaderText, ResourcePreviewWrapper } from '../styles';
-import { PreviewRow, StyledLink } from '../../search/styles';
+import { PreviewRow } from '../../search/styles';
+import { StyledLink } from '../../../styles/buttons';
 import { isMissingResource, ReferrableResourceResult } from '../../../states/resources/search';
 import ResourceIdCopyButton from '../ResourceIdCopyButton';
 import { ResourcePreviewAttributes } from '../mappingComponents';

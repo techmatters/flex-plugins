@@ -23,7 +23,7 @@ import { Flex, ChipText } from '../../styles';
 import { SilentText, SubtitleLabel, SummaryText, TagsWrapper } from './styles';
 import CategoryWithTooltip from '../common/CategoryWithTooltip';
 import { getContactTags } from '../../utils/categories';
-import ExpandableTextBlock from './ExpandableTextBlock';
+import ExpandableTextBlock from '../ExpandableTextBlock';
 
 type DataCallProps = {
   counselor: string;

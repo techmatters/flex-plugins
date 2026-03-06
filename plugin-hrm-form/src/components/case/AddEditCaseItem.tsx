@@ -37,7 +37,7 @@ import {
 import { CaseActionFormContainer } from './styles';
 import ActionHeader from './ActionHeader';
 import { RootState } from '../../states';
-import { CustomHandlers, disperseInputs, splitAt, splitInHalf } from '../common/forms/formGenerators';
+import { CustomHandlers, splitAt, splitInHalf } from '../common/forms/formGenerators';
 import { useCreateFormFromDefinition } from '../forms';
 import type { Case, CustomITask, StandaloneITask } from '../../types/types';
 import {
@@ -177,9 +177,7 @@ const AddEditCaseItem: React.FC<AddEditCaseItemProps> = ({
 
   const { caseId } = currentRoute;
 
-  const [l, r] = layout.splitFormAt
-    ? splitAt(layout.splitFormAt)(disperseInputs(7)(form))
-    : splitInHalf(disperseInputs(7)(form));
+  const [l, r] = layout.splitFormAt ? splitAt(layout.splitFormAt)(form) : splitInHalf(form);
 
   const closeActions = (caseId: Case['id'], id: string, action: DismissAction) => {
     dispatch(removeCaseSectionWorkingCopy(caseId, sectionTypeName, id));
