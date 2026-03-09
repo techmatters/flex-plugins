@@ -37,6 +37,8 @@ import MixedCheckbox from './components/MixedCheckbox/MixedCheckbox';
 import DateInput from './components/DateInput/DateInput';
 import TimeInput from './components/DateInput/TimeInput';
 import FileUpload from './components/FileUpload/FileUpload';
+import { Column } from '../../styles/layout';
+import { FormInputDescription } from './components/FormInputDescription/FormInputDescription';
 
 const getRegisterOptions = (formItemDefinition: FormItemDefinition): RegisterOptions =>
   pick(formItemDefinition, ['max', 'maxLength', 'min', 'minLength', 'pattern', 'required', 'validate']);
@@ -55,7 +57,7 @@ export type CreateInputParams = {
   };
 };
 
-export const createInput = ({
+const createFormInput = ({
   formItemDefinition,
   parentsPath,
   updateCallback,
@@ -288,4 +290,16 @@ export const createInput = ({
     default:
       return <div>INVALID FORM INPUT: {inputId}</div>;
   }
+};
+
+export const createInput = (params: CreateInputParams): JSX.Element => {
+  return (
+    <Column
+      key={`created-input-${params.parentsPath}-${params.formItemDefinition.name}`}
+      style={{ marginTop: 8, marginBottom: 8 }}
+    >
+      {createFormInput(params)}
+      <FormInputDescription definition={params.formItemDefinition} />
+    </Column>
+  );
 };

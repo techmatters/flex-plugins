@@ -40,7 +40,6 @@ import {
   TwoColumnLayoutResponsive,
   SearchFormTopRule,
 } from '../../../styles';
-import { addMargin } from '../../common/forms/formGenerators';
 import { SearchFormValues } from '../../../states/search/types';
 
 type OwnProps = {
@@ -117,20 +116,18 @@ export const SearchForm: React.FC<OwnProps> = ({
   });
 
   const arrangeSearchFormItems = (margin: number) => (formItems: JSX.Element[]) => {
-    const itemsWithMargin = formItems.map(item => addMargin(margin)(item));
-
     return [
-      <div key="searchTerm">{itemsWithMargin[0]}</div>,
+      <div key="searchTerm">{formItems[0]}</div>,
       <FontOpenSans key="filter-subtitle " style={{ margin: '10px' }}>
         <Bold>
           <Template id="GeneralizedSearchForm-OptionalFilters" />
         </Bold>
       </FontOpenSans>,
-      <div key="counselor">{itemsWithMargin[1]}</div>,
+      <div key="counselor">{formItems[1]}</div>,
       <TwoColumnLayoutResponsive key="dateRange" width={containerWidth}>
-        <ColumnarBlock style={{ paddingRight: '5px' }}>{itemsWithMargin[2]}</ColumnarBlock>
+        <ColumnarBlock style={{ paddingRight: '5px' }}>{formItems[2]}</ColumnarBlock>
         <DateRangeSpacer width={containerWidth}>-</DateRangeSpacer>
-        <ColumnarBlock>{itemsWithMargin[3]}</ColumnarBlock>
+        <ColumnarBlock>{formItems[3]}</ColumnarBlock>
       </TwoColumnLayoutResponsive>,
     ];
   };

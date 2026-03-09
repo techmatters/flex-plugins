@@ -20,7 +20,7 @@ import { Template } from '@twilio/flex-ui';
 
 import FormNotEditable from './FormNotEditable';
 import { HeaderContainer, Row } from '../styles';
-import { StyledLink } from './search/styles';
+import { StyledLink } from '../styles/buttons';
 
 type OwnProps = {
   onReload: () => Promise<void>;

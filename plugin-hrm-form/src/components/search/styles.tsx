@@ -18,11 +18,9 @@ import React from 'react';
 import { Collapse, FormControlLabel, Paper, Switch, withStyles } from '@material-ui/core';
 import { styled, Tabs, TabsProps } from '@twilio/flex-ui';
 import ChevronLeft from '@material-ui/icons/ChevronLeft';
-import { ButtonProps } from '@material-ui/core/Button';
 import { TransitionProps } from '@material-ui/core/transitions/transition';
 
 import { Flex, FontOpenSans, Row, SecondaryButton, TertiaryButton } from '../../styles';
-import HrmTheme from '../../styles/HrmTheme';
 import { BannerContainerProps, colors } from '../../styles/banners';
 
 // CaseViewer Styles
@@ -49,48 +47,6 @@ export const ContactButtonsWrapper = styled('div')`
   align-self: flex-start;
   margin-left: auto;
   align-items: center;
-`;
-
-type StyledLinkProps = ButtonProps & { underline?: boolean };
-
-const UnstyledLinkButton = React.forwardRef<HTMLButtonElement, StyledLinkProps>(
-  ({ onClick, underline, ...rest }, ref) => (
-    <TertiaryButton
-      size="small"
-      onClick={onClick}
-      disableFocusRipple={underline}
-      disableRipple={underline}
-      ref={ref}
-      {...rest}
-    />
-  ),
-);
-
-export const StyledLink = styled(UnstyledLinkButton)<StyledLinkProps>`
-  && {
-    padding: 0;
-    line-height: normal;
-    letter-spacing: normal;
-
-    :hover {
-      text-decoration: ${props => (props.underline ? 'underline' : 'none')};
-      text-decoration-color: ${props => (props.underline ? '#1874e1' : 'transparent')};
-      background-color: ${props => (props.underline ? 'transparent' : HrmTheme.colors.hyperlinkHoverBackgroundColor)};
-    }
-
-    :focus {
-      outline: auto;
-      background-color: ${props => (props.underline ? 'transparent' : HrmTheme.colors.hyperlinkHoverBackgroundColor)};
-    }
-  }
-
-  span {
-    padding: 0px;
-    line-height: normal;
-    letter-spacing: normal;
-    text-transform: none;
-    color: #1874e1;
-  }
 `;
 
 const PopoverText = styled(FontOpenSans)`
