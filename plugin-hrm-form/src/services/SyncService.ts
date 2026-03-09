@@ -17,12 +17,18 @@
 import SyncClient from 'twilio-sync';
 import { SWITCHBOARD_NOTIFY_DOCUMENT, SWITCHBOARD_STATE_DOCUMENT, SwitchboardSyncState } from 'hrm-types';
 
-import { issueSyncToken } from './ServerlessService';
+import fetchProtectedApi from './fetchProtectedApi';
 import { getAseloFeatureFlags, getTemplateStrings } from '../hrmConfig';
 import { isErr, newErr, newOk } from '../types/Result';
 
 // eslint-disable-next-line import/no-mutable-exports
 let sharedSyncClient: SyncClient;
+
+const issueSyncToken = async (): Promise<string> => {
+  const { use_twilio_lambda_to_issue_sync_token: useTwilioLambda } = getAseloFeatureFlags();
+  const res = await fetchProtectedApi('/issueSyncToken', {}, { useTwilioLambda });
+  return res.token;
+};
 
 export const setUpSyncClient = async () => {
   const updateSharedStateToken = async () => {
