@@ -1955,10 +1955,10 @@ const preEngagementConfig: PreEngagementFormDefinition = {
       type: "checkbox",
       name: "authorization",
       label:
-        'Declaro que tengo 14 años o más. En caso de ser menor de 14 años, confirmo que cuento con la autorización de mi madre, padre o persona adulta responsable para ingresar',
+        'Declaro que tengo 16 años o más. En caso de ser menor de 16 años, confirmo que cuento con la autorización de mi madre, padre o persona adulta responsable para ingresar',
       required: {
         value: true,
-        message: "Tienes que approbar los términos y condiciones para poder iniciar un chat.",
+        message: "Tienes que declarar que eres mayor de 16 años o que tienes autorización de un adulto para ingresar.",
       },
     },
   ],
