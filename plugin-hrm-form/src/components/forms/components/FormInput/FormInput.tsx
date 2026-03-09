@@ -17,7 +17,7 @@
 import React from 'react';
 import { Template } from '@twilio/flex-ui';
 import { get } from 'lodash';
-import { useFormContext } from 'react-hook-form';
+import { RegisterOptions, useFormContext } from 'react-hook-form';
 
 import { Box, Row } from '../../../../styles';
 import { FormError, FormLabel, RequiredAsterisk } from '../styles';
@@ -42,7 +42,7 @@ type FormInputUIProps = {
  * and the outer one will be a wrapper that "binds" the inner one with our custom logic (rhf, Twilio Template and all of the dependecies should be injected into it).
  * This way, moving the actual UI components to a component library will be feacible (if we ever want to)
  */
-export const FormInputUI: React.FC<FormInputUIProps> = ({
+const FormInputUI: React.FC<FormInputUIProps> = ({
   inputId,
   updateCallback,
   refFunction,
@@ -80,7 +80,7 @@ export const FormInputUI: React.FC<FormInputUIProps> = ({
   );
 };
 
-type Props = FormInputBaseProps;
+type Props = FormInputBaseProps & { pattern?: RegisterOptions['pattern'] };
 
 const FormInput: React.FC<Props> = ({
   inputId,
@@ -90,6 +90,7 @@ const FormInput: React.FC<Props> = ({
   updateCallback,
   htmlElRef,
   isEnabled,
+  pattern,
 }) => {
   // TODO factor out into a custom hook to make easier sharing this chunk of code
   const { errors, register } = useFormContext();
@@ -106,9 +107,10 @@ const FormInput: React.FC<Props> = ({
         htmlElRef.current = ref;
       }
 
-      register(registerOptions)(ref);
+      const options = pattern ? { ...registerOptions, pattern } : registerOptions;
+      register(options)(ref);
     },
-    [htmlElRef, register, registerOptions],
+    [htmlElRef, register, registerOptions, pattern],
   );
   // ====== //
 

@@ -15,62 +15,14 @@
  */
 
 import React from 'react';
-import { Template } from '@twilio/flex-ui';
-import { get } from 'lodash';
-import { useFormContext } from 'react-hook-form';
 
 import { FormInputBaseProps } from '../types';
-import { FormInputUI } from './FormInput';
+import FormInput from './FormInput';
 
 const EMAIL_PATTERN = { value: /\S+@\S+\.\S+/, message: 'Entered value does not match email format' };
 
 type Props = FormInputBaseProps;
 
-const Email: React.FC<Props> = ({
-  inputId,
-  label,
-  initialValue,
-  registerOptions,
-  updateCallback,
-  htmlElRef,
-  isEnabled,
-}) => {
-  const { errors, register } = useFormContext();
-  const error = get(errors, inputId);
-  const labelTextComponent = React.useMemo(() => <Template code={`${label}`} className=".fullstory-unmask" />, [label]);
-  const errorId = `${inputId}-error`;
-  const errorTextComponent = React.useMemo(() => (error ? <Template id={errorId} code={error.message} /> : null), [
-    error,
-    errorId,
-  ]);
-  const refFunction = React.useCallback(
-    ref => {
-      if (htmlElRef && ref) {
-        htmlElRef.current = ref;
-      }
-
-      register({ ...registerOptions, pattern: EMAIL_PATTERN })(ref);
-    },
-    [htmlElRef, register, registerOptions],
-  );
-
-  const defaultValue = typeof initialValue === 'boolean' ? initialValue.toString() : initialValue;
-  const disabled = !isEnabled;
-
-  return (
-    <FormInputUI
-      inputId={inputId}
-      updateCallback={updateCallback}
-      refFunction={refFunction}
-      defaultValue={defaultValue}
-      labelTextComponent={labelTextComponent}
-      required={Boolean(registerOptions.required)}
-      disabled={disabled}
-      isErrorState={Boolean(error)}
-      errorId={errorId}
-      errorTextComponent={errorTextComponent}
-    />
-  );
-};
+const Email: React.FC<Props> = props => <FormInput {...props} pattern={EMAIL_PATTERN} />;
 
 export default Email;
