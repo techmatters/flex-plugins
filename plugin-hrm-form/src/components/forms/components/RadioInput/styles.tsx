@@ -14,7 +14,6 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-
 import { styled } from '@twilio/flex-ui';
 
 import HrmTheme from '../../../../styles/HrmTheme';
