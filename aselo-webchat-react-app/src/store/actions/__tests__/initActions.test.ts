@@ -19,7 +19,7 @@ import { applyMiddleware, combineReducers, createStore, compose } from 'redux';
 import thunk from 'redux-thunk';
 
 import { MockedPaginator } from '../../../test-utils';
-import { initConfigThunk, initSession } from '../initActions';
+import * as initActions from '../initActions';
 import { initClientListeners } from '../listeners/clientListener';
 import { initConversationListener } from '../listeners/conversationListener';
 import { EngagementPhase } from '../../definitions';
@@ -57,6 +57,8 @@ jest.mock('../listeners/participantsListener', () => ({
 }));
 jest.mock('../../../logger');
 jest.mock('../../../services/configService');
+
+const { initSession, initConfigThunk } = initActions;
 
 const createSessionStore = () =>
   createStore(
@@ -162,8 +164,12 @@ describe('Actions', () => {
 
   describe('initConfigThunk', () => {
     it('success case calls ACTION_LOAD_CONFIG_SUCCESS', async () => {
-      jest.spyOn(configService, 'getDefinitionVersion').mockResolvedValueOnce({} as any);
-      const thunk = initConfigThunk({} as any);
+      jest.spyOn(initActions, 'getHelplineConfig').mockResolvedValueOnce({
+        status: 'ok',
+        data: { deploymentKey: 'deploymentKey' },
+      });
+      jest.spyOn(configService, 'getDefinitionVersion').mockResolvedValueOnce({ preEngagementForm: {} } as any);
+      const thunk = initConfigThunk({ configUrl: 'some-url', overrides: {} });
 
       const dispatch = jest.fn();
       const getState = jest.fn();
@@ -174,11 +180,19 @@ describe('Actions', () => {
       });
       expect(dispatch).toHaveBeenCalledWith({
         type: ACTION_LOAD_CONFIG_SUCCESS,
-        payload: {},
+        payload: {
+          currentLocale: undefined,
+          deploymentKey: 'deploymentKey',
+          preEngagementFormDefinition: {},
+        },
       });
     });
 
     it('failure case calls ACTION_LOAD_CONFIG_FAILURE', async () => {
+      jest.spyOn(initActions, 'getHelplineConfig').mockResolvedValueOnce({
+        status: 'ok',
+        data: { deploymentKey: 'deploymentKey' },
+      });
       const err = new Error('kaboom!');
       jest.spyOn(configService, 'getDefinitionVersion').mockImplementationOnce(() => {
         throw err;
