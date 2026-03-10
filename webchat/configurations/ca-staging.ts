@@ -345,7 +345,7 @@ const preEngagementConfig: PreEngagementFormDefinition = {
     },
     {
       type: 'select',
-      name: 'region',
+      name: 'livingSituation',
       label: 'TellMoreAboutLive',
       defaultValue: 'Unknown',
       required: true,
@@ -388,7 +388,7 @@ const preEngagementConfig: PreEngagementFormDefinition = {
         { value: 'First Nations', label: 'FirstNationsToNorthAmerica' },
         { value: 'Latin American', label: 'LatinAmerican' },
         { value: 'Middle Eastern', label: 'MiddleEastern' },
-        { value: 'South, East, or Southeast Asia', label: 'Asian' },
+        { value: 'South, East, or Southeast Asian', label: 'Asian' },
         { value: 'White', label: 'WhiteEuropeanDescent' },
         { value: 'Other', label: 'Other' },
         { value: 'Unknown', label: 'PreferNotToAnswer' },
