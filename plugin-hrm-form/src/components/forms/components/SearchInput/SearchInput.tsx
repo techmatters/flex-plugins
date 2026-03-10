@@ -51,44 +51,50 @@ const SearchInputUI: React.FC<SearchInputUIProps> = ({
   errorTextComponent,
 }) => {
   return (
-    <FormLabel htmlFor={inputId} data-testid={`SearchInput-${inputId}`}>
-      <Row>
-        <Box marginBottom="8px">
-          {/* visually hidden but still accessible to screen readers */}
-          <span
-            style={{
-              position: 'absolute',
-              width: '1px',
-              height: '1px',
-              overflow: 'hidden',
-            }}
-          >
-            {labelTextComponent}
-          </span>
-          {required && <RequiredAsterisk />}
-        </Box>
-      </Row>
-      <SearchIconContainer>
-        <SearchIcon style={{ fontSize: '20px' }} />
-      </SearchIconContainer>
-      <StyledSearchInput
-        id={inputId}
-        data-testid={inputId}
-        name={inputId}
-        error={isErrorState}
-        aria-describedby={`${inputId}-label`}
-        role="search"
-        aria-label="Search"
-        onBlur={updateCallback}
-        ref={refFunction}
-        defaultValue={defaultValue}
-        disabled={disabled}
-      />
-      <span id={`${inputId}-label`} style={{ display: 'none' }}>
-        {labelTextComponent}
-      </span>
+    <>
+      <FormLabel htmlFor={inputId} data-testid={`SearchInput-${inputId}`}>
+        <Row>
+          <Box marginBottom="8px">
+            {/* visually hidden but still accessible to screen readers */}
+            <span
+              style={{
+                position: 'absolute',
+                width: '1px',
+                height: '1px',
+                overflow: 'hidden',
+              }}
+            >
+              {labelTextComponent}
+            </span>
+            {required && <RequiredAsterisk />}
+          </Box>
+        </Row>
+      </FormLabel>
+      <div>
+        <SearchIconContainer>
+          <SearchIcon style={{ fontSize: '20px' }} />
+        </SearchIconContainer>
+        <StyledSearchInput
+          id={inputId}
+          data-testid={inputId}
+          name={inputId}
+          error={isErrorState}
+          aria-describedby={`${inputId}-label`}
+          role="search"
+          aria-label="Search"
+          onBlur={updateCallback}
+          ref={refFunction}
+          defaultValue={defaultValue}
+          disabled={disabled}
+        />
+      </div>
+      {labelTextComponent && (
+        <span id={`${inputId}-label`} style={{ display: 'none' }}>
+          {labelTextComponent}
+        </span>
+      )}
       {isErrorState && <FormError>{errorTextComponent}</FormError>}
-    </FormLabel>
+    </>
   );
 };
 

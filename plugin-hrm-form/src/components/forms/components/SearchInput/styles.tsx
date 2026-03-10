@@ -14,7 +14,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import styled from '@emotion/styled';
+import { styled } from '@twilio/flex-ui';
 
 import { FormInputBase } from '../styles';
 
@@ -26,10 +26,13 @@ export const SearchIconContainer = styled('div')`
 `;
 SearchIconContainer.displayName = 'SearchIconContainer';
 
+// export const StyledSearchInput = styled(FormInputBase)`
 export const StyledSearchInput = styled(FormInputBase)`
   position: relative;
-  width: 100%;
-  min-width: 217px;
-  padding-left: 30px;
+  & {
+    width: 100%;
+    min-width: 217px;
+    padding-left: 30px;
+  }
 `;
 StyledSearchInput.displayName = 'FormSearchInput';
