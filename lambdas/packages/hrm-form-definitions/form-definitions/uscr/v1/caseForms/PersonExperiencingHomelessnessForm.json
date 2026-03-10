@@ -1,5 +1,26 @@
 [
   {
+    "name": "repeatEngagement",
+    "label": "Repeat Engagement",
+    "unknownOption": "Unknown",
+    "type": "select",
+      "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "Yes",
+        "label": "Yes"
+      },
+      {
+        "value": "No",
+        "label": "No"
+      }
+    ],
+    "isPII": false
+  },
+  {
     "name": "firstName",
     "label": "First Name",
     "type": "input",
