@@ -14,7 +14,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import styled from '@emotion/styled';
+import { styled } from '@twilio/flex-ui';
 
 import { FormInputBase } from '../styles';
 

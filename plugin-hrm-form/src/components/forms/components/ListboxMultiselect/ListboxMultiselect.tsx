@@ -204,6 +204,7 @@ const ListboxMultiselect: React.FC<Props> = ({
     }
   };
 
+  // If this element lost "focus-within" (none of it's childrens is focused), reset focus controls and recompute next tab
   const handleOnBlur: React.FocusEventHandler<HTMLUListElement> = event => {
     if (!event.currentTarget.contains(event.relatedTarget)) {
       setOptionsTabIndexes(calculateOptionsTabIndexes(get(getValues(), inputId), options));
