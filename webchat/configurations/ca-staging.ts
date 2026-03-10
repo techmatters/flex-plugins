@@ -384,7 +384,7 @@ const preEngagementConfig: PreEngagementFormDefinition = {
       options: [
         { value: '', label: '' },
         { value: 'Black', label: 'BlackEthnicity' },
-        { value: 'Indigenous', label: 'Indigenou' },
+        { value: 'Indigenous', label: 'Indigenous' },
         { value: 'First Nations', label: 'FirstNationsToNorthAmerica' },
         { value: 'Latin American', label: 'LatinAmerican' },
         { value: 'Middle Eastern', label: 'MiddleEastern' },
