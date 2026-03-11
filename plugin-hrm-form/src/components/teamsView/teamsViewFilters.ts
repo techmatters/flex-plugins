@@ -101,8 +101,9 @@ const generateFilterDefinitionFactoryForInputExpression = ({
 }): FilterDefinitionFactory => (state, teamsViewProps) => {
   const values = state.flex.supervisor.appliedFilters.find(af => af.name === id)?.values ?? [];
   const selections = Array.isArray(values) ? values : [values];
+  const selectionStrings = (selections as string[]).filter(s => typeof s === 'string');
   if (selections.length) {
-    filterInputExpressionStrings[id] = queryGenerator(selections);
+    filterInputExpressionStrings[id] = queryGenerator(selectionStrings);
   } else {
     // Assume nothing is selected if no values are set in the state, therefore we don't apply any filtering for this filter
     delete filterInputExpressionStrings[id];
