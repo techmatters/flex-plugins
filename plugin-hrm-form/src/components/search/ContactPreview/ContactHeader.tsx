@@ -22,14 +22,8 @@ import { CallType } from 'hrm-types';
 
 import { Flex } from '../../../styles';
 import { BannerText } from '../../../styles/banners';
-import {
-  ContactButtonsWrapper,
-  PreviewHeaderText,
-  PreviewRow,
-  StyledLink,
-  SubtitleLabel,
-  SubtitleValue,
-} from '../styles';
+import { ContactButtonsWrapper, PreviewHeaderText, PreviewRow, SubtitleLabel, SubtitleValue } from '../styles';
+import { StyledLink } from '../../../styles/buttons';
 import { isNonDataCallType } from '../../../states/validationRules';
 import CallTypeIcon from '../../common/icons/CallTypeIcon';
 import { channelTypes, ChannelTypes } from '../../../states/DomainConstants';

@@ -19,15 +19,18 @@ import type { StyledProps } from '@material-ui/core';
 import { Template } from '@twilio/flex-ui';
 
 import { useExpandableOnOverflow } from '../../hooks/useExpandableOnOverflow';
-import { StyledLink } from './styles';
+import { StyledLink } from '../../styles/buttons';
 
-export type ExpandableTextBlockProps = {
+type ExpandableComponentProps = {
   expandLinkText: string;
   collapseLinkText: string;
   style?: CSSProperties;
 };
 
-const ExpandableTextBlock: React.FC<ExpandableTextBlockProps & Partial<StyledProps>> = ({
+/**
+ * Collapse/expand container intended to be used when the children component is a collection of React components.
+ * */
+const ExpandableComponent: React.FC<ExpandableComponentProps & Partial<StyledProps>> = ({
   children,
   expandLinkText,
   collapseLinkText,
@@ -53,6 +56,7 @@ const ExpandableTextBlock: React.FC<ExpandableTextBlockProps & Partial<StyledPro
   return (
     <div
       className={`${classes.join(' ')}`}
+      // style={{ display: 'flex', flexFlow: 'row', justifyContent: 'stretch' }}
       style={{ display: 'flex', flexFlow: 'row', justifyContent: 'stretch', textOverflow: 'ellipsis', ...style }}
       ref={overflowingRef}
     >
@@ -86,7 +90,8 @@ const ExpandableTextBlock: React.FC<ExpandableTextBlockProps & Partial<StyledPro
           marginLeft: '5px',
         }}
       >
-        <StyledLink underline={true} onClick={handleExpand} ref={expandButtonElementRef} style={{ fontSize: '13px' }}>
+        <StyledLink underline={true} onClick={handleExpand} ref={expandButtonElementRef} style={{ fontSize: `13px` }}>
+          ...
           <Template code={expandLinkText} />
         </StyledLink>
       </div>
@@ -94,6 +99,6 @@ const ExpandableTextBlock: React.FC<ExpandableTextBlockProps & Partial<StyledPro
   );
 };
 
-ExpandableTextBlock.displayName = 'ExpandableTextBlock';
+ExpandableComponent.displayName = 'ExpandableComponent';
 
-export default ExpandableTextBlock;
+export default ExpandableComponent;

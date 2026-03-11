@@ -18,7 +18,7 @@ import React from 'react';
 import type { StyledProps } from '@material-ui/core';
 import { Template } from '@twilio/flex-ui';
 
-import { StyledLink } from '../../search/styles';
+import { StyledLink } from '../../../styles/buttons';
 import { useExpandableOnOverflow } from '../../../hooks/useExpandableOnOverflow';
 
 type ExpandableAttributeContentProps = {

@@ -117,9 +117,9 @@ test.describe.serial('Case View', () => {
       { selector: '#childIsAtRisk', type: 'checkbox' },
       { selector: '#followUpDate', type: 'date' },
       { selector: '#reportDate', type: 'date' },
+      { selector: '#summary', type: 'textarea' },
       { selector: '#operatingArea', type: 'select' },
       { selector: '#priority', type: 'select' },
-      { selector: '#summary', type: 'textarea' },
       { selector: '[data-testid="Case-EditCaseScreen-SaveItem"]', type: 'button' },
     ];
 

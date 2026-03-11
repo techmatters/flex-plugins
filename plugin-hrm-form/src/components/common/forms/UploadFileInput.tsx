@@ -22,8 +22,7 @@ import AttachFileIcon from '@material-ui/icons/AttachFile';
 import { CircularProgress } from '@material-ui/core';
 
 import { Box, FormError, Row, FormInput, UploadFileLabel, UploadFileFileName } from '../../../styles';
-import { PrimaryButton } from '../../../styles/buttons';
-import { StyledLink } from '../../search/styles';
+import { PrimaryButton, StyledLink } from '../../../styles/buttons';
 import UploadIcon from '../icons/UploadIcon';
 import { formatFileNameAtAws } from '../../../utils/formatters';
 import type { HTMLElementRef } from './types';
