@@ -2,13 +2,13 @@
     "attributes": {
         "feature_flags": {
             "enable_external_transcripts": false,
-            "use_twilio_lambda_adjust_capacity": true,
+            "use_twilio_lambda_adjust_capacity": false,
             "use_twilio_lambda_for_conference_functions": false,
             "use_twilio_lambda_for_conversation_duration": true,
             "use_twilio_lambda_for_iwf_reporting": true,
             "use_twilio_lambda_for_offline_contact_tasks": true,
-            "use_twilio_lambda_janitor": true,
-            "use_twilio_lambda_transfers": true
+            "use_twilio_lambda_janitor": false,
+            "use_twilio_lambda_transfers": false
         },
         "pdfImagesSource": "https://tl-public-chat-mw-stg.s3.amazonaws.com",
         "previous_ui_version": {
