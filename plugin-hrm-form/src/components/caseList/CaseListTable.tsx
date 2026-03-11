@@ -58,7 +58,7 @@ const CaseListTable: React.FC<OwnProps> = ({ loading, caseList, caseCount, handl
   }, []);
 
   const pagesCount = Math.ceil(caseCount / CASES_PER_PAGE);
-
+  const spinnerTitle = lookupTranslation('CaseList-LoadingPlaceholder-ProgressBarTitle');
   return (
     <>
       <Filters caseCount={caseCount} currentDefinitionVersion={currentDefinitionVersion} />
@@ -76,10 +76,7 @@ const CaseListTable: React.FC<OwnProps> = ({ loading, caseList, caseCount, handl
                 }}
               >
                 <LoadingCell>
-                  <CircularProgress
-                    title={lookupTranslation('CaseList-LoadingPlaceholder-ProgressBarTitle')}
-                    size={50}
-                  />
+                  <CircularProgress title={spinnerTitle} aria-label={spinnerTitle} size={50} />
                 </LoadingCell>
               </DataTableRow>
             </TableBody>
