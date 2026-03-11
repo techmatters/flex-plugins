@@ -20,9 +20,9 @@ import '@testing-library/jest-dom/extend-expect';
 import { FormProvider, useForm } from 'react-hook-form';
 import { StorelessThemeProvider } from '@twilio/flex-ui';
 
-import FileUpload from './FileUpload';
-import { getInputType } from '../../../common/forms/formGenerators';
-import HrmTheme from '../../../../styles/HrmTheme';
+import FileUpload from '../../../../../components/forms/components/FileUpload/FileUpload';
+import { getInputType } from '../../../../../components/common/forms/formGenerators';
+import HrmTheme from '../../../../../styles/HrmTheme';
 
 // Mocked to avoid loadDefinition.js requiring @babel/runtime (infrastructure gap)
 jest.mock('hrm-form-definitions', () => ({

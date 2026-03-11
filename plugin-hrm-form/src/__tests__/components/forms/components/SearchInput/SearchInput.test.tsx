@@ -15,12 +15,12 @@
  */
 
 import * as React from 'react';
-import { render, screen, fireEvent, getByRole } from '@testing-library/react';
+import { render, screen, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
 
-import NumericInput from './NumericInput';
-import { getInputType } from '../../../common/forms/formGenerators';
-import { createFormMethods, wrapperFormProvider } from '../../test-utils';
+import SearchInput from '../../../../../components/forms/components/SearchInput/SearchInput';
+import { getInputType } from '../../../../../components/common/forms/formGenerators';
+import { createFormMethods, wrapperFormProvider } from '../../../../../components/forms/test-utils';
 
 // Mocked to avoid loadDefinition.js requiring @babel/runtime (infrastructure gap)
 jest.mock('hrm-form-definitions', () => ({
@@ -57,60 +57,40 @@ const defaultProps = {
   htmlElRef: null,
 };
 
-describe('NumericInput', () => {
+describe('SearchInput', () => {
   test('errors if not wrapped in FormProvider', () => {
-    expect(() => render(<NumericInput {...defaultProps} />)).toThrow();
+    expect(() => render(<SearchInput {...defaultProps} />)).toThrow();
   });
 
   test('on render, implementation is accessible', () => {
     const methods = createFormMethods();
     const updateCallback = jest.fn();
 
-    render(<NumericInput {...defaultProps} updateCallback={updateCallback} />, {
+    render(<SearchInput {...defaultProps} updateCallback={updateCallback} />, {
       wrapper: wrapperFormProvider(methods),
     });
 
     expect(methods.register).toHaveBeenCalled();
 
-    // NumericInput reuses FormInputUI, so testid is "FormInput-{inputId}"
-    const formItem = screen.getByTestId(`FormInput-${inputId}`);
+    const formItem = screen.getByTestId(`SearchInput-${inputId}`);
     expect(formItem).toBeInTheDocument();
 
-    const input = screen.getByLabelText(label);
+    // Search input has an explicit aria-label="Search"
+    const input = screen.getByRole('search');
     expect(input).toBeInTheDocument();
-
-    expect(getByRole(formItem, 'textbox', { hidden: true })).toBeInTheDocument();
-
-    expect(input).toHaveAttribute('aria-required', 'false');
-    expect(input).toHaveAttribute('aria-invalid', 'false');
-    expect(input).not.toHaveAttribute('aria-errormessage');
-  });
-
-  test('register is called with numeric pattern', () => {
-    const methods = createFormMethods();
-
-    render(<NumericInput {...defaultProps} />, {
-      wrapper: wrapperFormProvider(methods),
-    });
-
-    const registerCallArgs = (methods.register as jest.Mock).mock.calls;
-    expect(registerCallArgs.length).toBeGreaterThan(0);
-    const registeredOptions = registerCallArgs[0][0];
-    expect(registeredOptions.pattern).toBeDefined();
-    expect(registeredOptions.pattern.value).toEqual(/^[0-9]+$/g);
   });
 
   test('updateCallback is invoked on blur', () => {
     const methods = createFormMethods();
     const updateCallback = jest.fn();
 
-    render(<NumericInput {...defaultProps} updateCallback={updateCallback} />, {
+    render(<SearchInput {...defaultProps} updateCallback={updateCallback} />, {
       wrapper: wrapperFormProvider(methods),
     });
 
-    const input = screen.getByLabelText(label);
+    const input = screen.getByRole('search');
+
     fireEvent.focus(input);
-    fireEvent.change(input, { target: { value: '123' } });
     expect(updateCallback).not.toHaveBeenCalled();
 
     fireEvent.blur(input);
@@ -121,46 +101,40 @@ describe('NumericInput', () => {
     test('if marked as required, asterisk is shown', () => {
       const methods = createFormMethods();
 
-      render(<NumericInput {...defaultProps} registerOptions={{ required: true }} />, {
+      const { container } = render(<SearchInput {...defaultProps} registerOptions={{ required: true }} />, {
         wrapper: wrapperFormProvider(methods),
       });
 
-      expect(() => screen.getByLabelText(label)).toThrow();
-      const input = screen.getByLabelText(`${label}*`);
-      expect(input).toBeInTheDocument();
-      expect(input).toHaveAttribute('aria-required', 'true');
+      // RequiredAsterisk renders aria-hidden span with "*"
+      expect(container.querySelector('[aria-hidden="true"]')).toBeInTheDocument();
     });
 
-    test('if marked as disabled, inner input is disabled', () => {
+    test('if marked as disabled, search input is disabled', () => {
       const methods = createFormMethods();
 
-      render(<NumericInput {...defaultProps} isEnabled={false} />, {
+      render(<SearchInput {...defaultProps} isEnabled={false} />, {
         wrapper: wrapperFormProvider(methods),
       });
 
-      expect(screen.getByLabelText(label)).toBeDisabled();
+      expect(screen.getByRole('search')).toBeDisabled();
     });
 
     test('if in error state, error message is displayed', () => {
       const errors = { [inputId]: { message: 'some error message' } };
       const methods = createFormMethods();
 
-      render(<NumericInput {...defaultProps} />, {
+      render(<SearchInput {...defaultProps} />, {
         wrapper: wrapperFormProvider({ ...methods, errors }),
       });
 
       expect(screen.getByText('some error message')).toBeInTheDocument();
-
-      const input = screen.getByRole('textbox', { hidden: true });
-      expect(input).toHaveAttribute('aria-invalid', 'true');
-      expect(input).toHaveAttribute('aria-errormessage');
     });
   });
 });
 
-describe('NumericInput via getInputType (parity)', () => {
+describe('SearchInput via getInputType (parity)', () => {
   const def = {
-    type: 'numeric-input' as any,
+    type: 'search-input' as any,
     name: inputId,
     label,
   };
@@ -172,9 +146,8 @@ describe('NumericInput via getInputType (parity)', () => {
 
     render(input, { wrapper: wrapperFormProvider({ ...methods, register: () => jest.fn() }) });
 
-    const textbox = screen.getByRole('textbox', { hidden: true });
-    expect(textbox).toBeInTheDocument();
-    expect(screen.getByLabelText(label)).toBeInTheDocument();
+    // Old search input also has role="search" and aria-label="Search"
+    expect(screen.getByRole('search')).toBeInTheDocument();
   });
 
   test('updateCallback is invoked on blur', () => {
@@ -185,12 +158,11 @@ describe('NumericInput via getInputType (parity)', () => {
 
     render(input, { wrapper: wrapperFormProvider({ ...methods, register: () => jest.fn() }) });
 
-    const textbox = screen.getByLabelText(label);
-    fireEvent.focus(textbox);
-    fireEvent.change(textbox, { target: { value: '123' } });
+    const searchInput = screen.getByRole('search');
+    fireEvent.focus(searchInput);
     expect(updateCallback).not.toHaveBeenCalled();
 
-    fireEvent.blur(textbox);
+    fireEvent.blur(searchInput);
     expect(updateCallback).toHaveBeenCalled();
   });
 
@@ -201,22 +173,29 @@ describe('NumericInput via getInputType (parity)', () => {
 
       const input = getInputType([], jest.fn())(requiredDef)('');
 
-      render(input, { wrapper: wrapperFormProvider({ ...methods, register: () => jest.fn() }) });
+      const { container } = render(input, {
+        wrapper: wrapperFormProvider({ ...methods, register: () => jest.fn() }),
+      });
 
-      expect(screen.getByLabelText(`${label}*`)).toBeInTheDocument();
+      expect(container.querySelector('[aria-hidden="true"]')).toBeInTheDocument();
     });
 
-    test('if marked as disabled, inner input is disabled', () => {
+    test('if marked as disabled, search input is disabled', () => {
       const methods = createFormMethods();
 
       const input = getInputType([], jest.fn())(def)('', null, false);
 
       render(input, { wrapper: wrapperFormProvider({ ...methods, register: () => jest.fn() }) });
 
-      expect(screen.getByLabelText(label)).toBeDisabled();
+      expect(screen.getByRole('search')).toBeDisabled();
     });
 
-    test('if in error state, error message is displayed', () => {
+    /**
+     * NOTE: The old SearchInput (getInputType) does not render an error message text element.
+     * The new SearchInput adds this behavior as an improvement. This test verifies
+     * the component still renders without errors when in error state.
+     */
+    test('if in error state, component still renders', () => {
       const errors = { [inputId]: { message: 'some error message' } };
       const methods = createFormMethods();
 
@@ -224,7 +203,7 @@ describe('NumericInput via getInputType (parity)', () => {
 
       render(input, { wrapper: wrapperFormProvider({ ...methods, errors, register: () => jest.fn() }) });
 
-      expect(screen.getByText('some error message')).toBeInTheDocument();
+      expect(screen.getByRole('search')).toBeInTheDocument();
     });
   });
 });

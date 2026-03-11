@@ -19,10 +19,10 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
 import each from 'jest-each';
 
-import DateInput from './DateInput';
-import TimeInput from './TimeInput';
-import { getInputType } from '../../../common/forms/formGenerators';
-import { createFormMethods, wrapperFormProvider } from '../../test-utils';
+import DateInput from '../../../../../components/forms/components/DateInput/DateInput';
+import TimeInput from '../../../../../components/forms/components/DateInput/TimeInput';
+import { getInputType } from '../../../../../components/common/forms/formGenerators';
+import { createFormMethods, wrapperFormProvider } from '../../../../../components/forms/test-utils';
 
 // Mocked to avoid loadDefinition.js requiring @babel/runtime (infrastructure gap)
 jest.mock('hrm-form-definitions', () => ({

@@ -18,9 +18,9 @@ import * as React from 'react';
 import { render, screen, fireEvent, getByRole } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
 
-import Email from './Email';
-import { getInputType } from '../../../common/forms/formGenerators';
-import { createFormMethods, wrapperFormProvider } from '../../test-utils';
+import Email from '../../../../../components/forms/components/FormInput/Email';
+import { getInputType } from '../../../../../components/common/forms/formGenerators';
+import { createFormMethods, wrapperFormProvider } from '../../../../../components/forms/test-utils';
 
 // Mocked to avoid loadDefinition.js requiring @babel/runtime (infrastructure gap)
 jest.mock('hrm-form-definitions', () => ({

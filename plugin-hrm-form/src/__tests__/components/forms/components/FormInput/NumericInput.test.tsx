@@ -15,12 +15,12 @@
  */
 
 import * as React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, getByRole } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
 
-import MixedCheckbox from './MixedCheckbox';
-import { getInputType } from '../../../common/forms/formGenerators';
-import { createFormMethods, wrapperFormProvider } from '../../test-utils';
+import NumericInput from '../../../../../components/forms/components/FormInput/NumericInput';
+import { getInputType } from '../../../../../components/common/forms/formGenerators';
+import { createFormMethods, wrapperFormProvider } from '../../../../../components/forms/test-utils';
 
 // Mocked to avoid loadDefinition.js requiring @babel/runtime (infrastructure gap)
 jest.mock('hrm-form-definitions', () => ({
@@ -50,73 +50,70 @@ const label = 'input label';
 const defaultProps = {
   inputId,
   label,
-  initialValue: undefined,
+  initialValue: '',
   isEnabled: true,
   updateCallback: jest.fn(),
   registerOptions: {},
   htmlElRef: null,
 };
 
-describe('MixedCheckbox', () => {
+describe('NumericInput', () => {
   test('errors if not wrapped in FormProvider', () => {
-    expect(() => render(<MixedCheckbox {...defaultProps} />)).toThrow();
+    expect(() => render(<NumericInput {...defaultProps} />)).toThrow();
   });
 
-  test('on render, is in mixed state by default', () => {
+  test('on render, implementation is accessible', () => {
     const methods = createFormMethods();
+    const updateCallback = jest.fn();
 
-    render(<MixedCheckbox {...defaultProps} />, {
+    render(<NumericInput {...defaultProps} updateCallback={updateCallback} />, {
       wrapper: wrapperFormProvider(methods),
     });
 
     expect(methods.register).toHaveBeenCalled();
 
-    const formItem = screen.getByTestId(`MixedCheckbox-${inputId}`);
+    // NumericInput reuses FormInputUI, so testid is "FormInput-{inputId}"
+    const formItem = screen.getByTestId(`FormInput-${inputId}`);
     expect(formItem).toBeInTheDocument();
 
-    const checkbox = screen.getByTestId(inputId);
-    expect(checkbox).toBeInTheDocument();
-    expect(checkbox).toHaveAttribute('aria-checked', 'mixed');
+    const input = screen.getByLabelText(label);
+    expect(input).toBeInTheDocument();
+
+    expect(getByRole(formItem, 'textbox', { hidden: true })).toBeInTheDocument();
+
+    expect(input).toHaveAttribute('aria-required', 'false');
+    expect(input).toHaveAttribute('aria-invalid', 'false');
+    expect(input).not.toHaveAttribute('aria-errormessage');
   });
 
-  test('clicking cycles state: mixed → true → false → mixed', () => {
+  test('register is called with numeric pattern', () => {
     const methods = createFormMethods();
 
-    render(<MixedCheckbox {...defaultProps} />, {
+    render(<NumericInput {...defaultProps} />, {
       wrapper: wrapperFormProvider(methods),
     });
 
-    const checkbox = screen.getByTestId(inputId);
-
-    // Initial state: mixed
-    expect(checkbox).toHaveAttribute('aria-checked', 'mixed');
-
-    // Click: mixed → true
-    fireEvent.click(checkbox);
-    expect(checkbox).toHaveAttribute('aria-checked', 'true');
-
-    // Click: true → false
-    fireEvent.click(checkbox);
-    expect(checkbox).toHaveAttribute('aria-checked', 'false');
-
-    // Click: false → mixed
-    fireEvent.click(checkbox);
-    expect(checkbox).toHaveAttribute('aria-checked', 'mixed');
+    const registerCallArgs = (methods.register as jest.Mock).mock.calls;
+    expect(registerCallArgs.length).toBeGreaterThan(0);
+    const registeredOptions = registerCallArgs[0][0];
+    expect(registeredOptions.pattern).toBeDefined();
+    expect(registeredOptions.pattern.value).toEqual(/^[0-9]+$/g);
   });
 
   test('updateCallback is invoked on blur', () => {
     const methods = createFormMethods();
     const updateCallback = jest.fn();
 
-    render(<MixedCheckbox {...defaultProps} updateCallback={updateCallback} />, {
+    render(<NumericInput {...defaultProps} updateCallback={updateCallback} />, {
       wrapper: wrapperFormProvider(methods),
     });
 
-    const checkbox = screen.getByTestId(inputId);
-    fireEvent.focus(checkbox);
+    const input = screen.getByLabelText(label);
+    fireEvent.focus(input);
+    fireEvent.change(input, { target: { value: '123' } });
     expect(updateCallback).not.toHaveBeenCalled();
 
-    fireEvent.blur(checkbox);
+    fireEvent.blur(input);
     expect(updateCallback).toHaveBeenCalled();
   });
 
@@ -124,93 +121,76 @@ describe('MixedCheckbox', () => {
     test('if marked as required, asterisk is shown', () => {
       const methods = createFormMethods();
 
-      const { container } = render(<MixedCheckbox {...defaultProps} registerOptions={{ required: true }} />, {
+      render(<NumericInput {...defaultProps} registerOptions={{ required: true }} />, {
         wrapper: wrapperFormProvider(methods),
       });
 
-      expect(container.querySelector('[aria-hidden="true"]')).toBeInTheDocument();
+      expect(() => screen.getByLabelText(label)).toThrow();
+      const input = screen.getByLabelText(`${label}*`);
+      expect(input).toBeInTheDocument();
+      expect(input).toHaveAttribute('aria-required', 'true');
     });
 
-    test('if marked as disabled, checkbox is disabled', () => {
+    test('if marked as disabled, inner input is disabled', () => {
       const methods = createFormMethods();
 
-      render(<MixedCheckbox {...defaultProps} isEnabled={false} />, {
+      render(<NumericInput {...defaultProps} isEnabled={false} />, {
         wrapper: wrapperFormProvider(methods),
       });
 
-      expect(screen.getByTestId(inputId)).toBeDisabled();
+      expect(screen.getByLabelText(label)).toBeDisabled();
     });
 
     test('if in error state, error message is displayed', () => {
       const errors = { [inputId]: { message: 'some error message' } };
       const methods = createFormMethods();
 
-      render(<MixedCheckbox {...defaultProps} />, {
+      render(<NumericInput {...defaultProps} />, {
         wrapper: wrapperFormProvider({ ...methods, errors }),
       });
 
       expect(screen.getByText('some error message')).toBeInTheDocument();
+
+      const input = screen.getByRole('textbox', { hidden: true });
+      expect(input).toHaveAttribute('aria-invalid', 'true');
+      expect(input).toHaveAttribute('aria-errormessage');
     });
   });
 });
 
-describe('MixedCheckbox via getInputType (parity)', () => {
+describe('NumericInput via getInputType (parity)', () => {
   const def = {
-    type: 'mixed-checkbox' as any,
+    type: 'numeric-input' as any,
     name: inputId,
     label,
   };
 
-  test('on render, is in mixed state by default', () => {
+  test('on render, implementation is accessible', () => {
     const methods = createFormMethods();
 
-    const input = getInputType([], jest.fn())(def)(undefined);
+    const input = getInputType([], jest.fn())(def)('');
 
     render(input, { wrapper: wrapperFormProvider({ ...methods, register: () => jest.fn() }) });
 
-    const checkbox = screen.getByTestId(inputId);
-    expect(checkbox).toBeInTheDocument();
-    expect(checkbox).toHaveAttribute('aria-checked', 'mixed');
-  });
-
-  test('clicking cycles state: mixed → true → false → mixed', () => {
-    const methods = createFormMethods();
-
-    const input = getInputType([], jest.fn())(def)(undefined);
-
-    render(input, { wrapper: wrapperFormProvider({ ...methods, register: () => jest.fn() }) });
-
-    const checkbox = screen.getByTestId(inputId);
-
-    // Initial: mixed
-    expect(checkbox).toHaveAttribute('aria-checked', 'mixed');
-
-    // Click: mixed → true
-    fireEvent.click(checkbox);
-    expect(checkbox).toHaveAttribute('aria-checked', 'true');
-
-    // Click: true → false
-    fireEvent.click(checkbox);
-    expect(checkbox).toHaveAttribute('aria-checked', 'false');
-
-    // Click: false → mixed
-    fireEvent.click(checkbox);
-    expect(checkbox).toHaveAttribute('aria-checked', 'mixed');
+    const textbox = screen.getByRole('textbox', { hidden: true });
+    expect(textbox).toBeInTheDocument();
+    expect(screen.getByLabelText(label)).toBeInTheDocument();
   });
 
   test('updateCallback is invoked on blur', () => {
     const updateCallback = jest.fn();
     const methods = createFormMethods();
 
-    const input = getInputType([], updateCallback)(def)(undefined);
+    const input = getInputType([], updateCallback)(def)('');
 
     render(input, { wrapper: wrapperFormProvider({ ...methods, register: () => jest.fn() }) });
 
-    const checkbox = screen.getByTestId(inputId);
-    fireEvent.focus(checkbox);
+    const textbox = screen.getByLabelText(label);
+    fireEvent.focus(textbox);
+    fireEvent.change(textbox, { target: { value: '123' } });
     expect(updateCallback).not.toHaveBeenCalled();
 
-    fireEvent.blur(checkbox);
+    fireEvent.blur(textbox);
     expect(updateCallback).toHaveBeenCalled();
   });
 
@@ -219,30 +199,28 @@ describe('MixedCheckbox via getInputType (parity)', () => {
       const methods = createFormMethods();
       const requiredDef = { ...def, required: true };
 
-      const input = getInputType([], jest.fn())(requiredDef)(undefined);
-
-      const { container } = render(input, {
-        wrapper: wrapperFormProvider({ ...methods, register: () => jest.fn() }),
-      });
-
-      expect(container.querySelector('[aria-hidden="true"]')).toBeInTheDocument();
-    });
-
-    test('if marked as disabled, checkbox is disabled', () => {
-      const methods = createFormMethods();
-
-      const input = getInputType([], jest.fn())(def)(undefined, null, false);
+      const input = getInputType([], jest.fn())(requiredDef)('');
 
       render(input, { wrapper: wrapperFormProvider({ ...methods, register: () => jest.fn() }) });
 
-      expect(screen.getByTestId(inputId)).toBeDisabled();
+      expect(screen.getByLabelText(`${label}*`)).toBeInTheDocument();
+    });
+
+    test('if marked as disabled, inner input is disabled', () => {
+      const methods = createFormMethods();
+
+      const input = getInputType([], jest.fn())(def)('', null, false);
+
+      render(input, { wrapper: wrapperFormProvider({ ...methods, register: () => jest.fn() }) });
+
+      expect(screen.getByLabelText(label)).toBeDisabled();
     });
 
     test('if in error state, error message is displayed', () => {
       const errors = { [inputId]: { message: 'some error message' } };
       const methods = createFormMethods();
 
-      const input = getInputType([], jest.fn())(def)(undefined);
+      const input = getInputType([], jest.fn())(def)('');
 
       render(input, { wrapper: wrapperFormProvider({ ...methods, errors, register: () => jest.fn() }) });
 

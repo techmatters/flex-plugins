@@ -18,9 +18,9 @@ import * as React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
 
-import RadioInput from './RadioInput';
-import { getInputType } from '../../../common/forms/formGenerators';
-import { createFormMethods, wrapperFormProvider } from '../../test-utils';
+import MixedCheckbox from '../../../../../components/forms/components/MixedCheckbox/MixedCheckbox';
+import { getInputType } from '../../../../../components/common/forms/formGenerators';
+import { createFormMethods, wrapperFormProvider } from '../../../../../components/forms/test-utils';
 
 // Mocked to avoid loadDefinition.js requiring @babel/runtime (infrastructure gap)
 jest.mock('hrm-form-definitions', () => ({
@@ -47,58 +47,76 @@ jest.mock('hrm-form-definitions', () => ({
 
 const inputId = 'inputID';
 const label = 'input label';
-const options = [
-  { value: 'option-a', label: 'Option A' },
-  { value: 'option-b', label: 'Option B' },
-];
 const defaultProps = {
   inputId,
   label,
-  initialValue: '',
+  initialValue: undefined,
   isEnabled: true,
   updateCallback: jest.fn(),
   registerOptions: {},
   htmlElRef: null,
-  options,
 };
 
-describe('RadioInput', () => {
+describe('MixedCheckbox', () => {
   test('errors if not wrapped in FormProvider', () => {
-    expect(() => render(<RadioInput {...defaultProps} />)).toThrow();
+    expect(() => render(<MixedCheckbox {...defaultProps} />)).toThrow();
   });
 
-  test('on render, all options are accessible', () => {
+  test('on render, is in mixed state by default', () => {
     const methods = createFormMethods();
 
-    render(<RadioInput {...defaultProps} />, {
+    render(<MixedCheckbox {...defaultProps} />, {
       wrapper: wrapperFormProvider(methods),
     });
 
     expect(methods.register).toHaveBeenCalled();
 
-    const formItem = screen.getByTestId(`RadioInput-${inputId}`);
+    const formItem = screen.getByTestId(`MixedCheckbox-${inputId}`);
     expect(formItem).toBeInTheDocument();
 
-    const radioButtons = screen.getAllByRole('radio');
-    expect(radioButtons).toHaveLength(options.length);
-
-    options.forEach(option => {
-      expect(screen.getByTestId(`${inputId}-${option.value}`)).toBeInTheDocument();
-    });
+    const checkbox = screen.getByTestId(inputId);
+    expect(checkbox).toBeInTheDocument();
+    expect(checkbox).toHaveAttribute('aria-checked', 'mixed');
   });
 
-  test('updateCallback is invoked on change', () => {
+  test('clicking cycles state: mixed → true → false → mixed', () => {
     const methods = createFormMethods();
-    const updateCallback = jest.fn();
 
-    render(<RadioInput {...defaultProps} updateCallback={updateCallback} />, {
+    render(<MixedCheckbox {...defaultProps} />, {
       wrapper: wrapperFormProvider(methods),
     });
 
-    const firstRadio = screen.getAllByRole('radio')[0];
+    const checkbox = screen.getByTestId(inputId);
+
+    // Initial state: mixed
+    expect(checkbox).toHaveAttribute('aria-checked', 'mixed');
+
+    // Click: mixed → true
+    fireEvent.click(checkbox);
+    expect(checkbox).toHaveAttribute('aria-checked', 'true');
+
+    // Click: true → false
+    fireEvent.click(checkbox);
+    expect(checkbox).toHaveAttribute('aria-checked', 'false');
+
+    // Click: false → mixed
+    fireEvent.click(checkbox);
+    expect(checkbox).toHaveAttribute('aria-checked', 'mixed');
+  });
+
+  test('updateCallback is invoked on blur', () => {
+    const methods = createFormMethods();
+    const updateCallback = jest.fn();
+
+    render(<MixedCheckbox {...defaultProps} updateCallback={updateCallback} />, {
+      wrapper: wrapperFormProvider(methods),
+    });
+
+    const checkbox = screen.getByTestId(inputId);
+    fireEvent.focus(checkbox);
     expect(updateCallback).not.toHaveBeenCalled();
 
-    fireEvent.click(firstRadio);
+    fireEvent.blur(checkbox);
     expect(updateCallback).toHaveBeenCalled();
   });
 
@@ -106,31 +124,28 @@ describe('RadioInput', () => {
     test('if marked as required, asterisk is shown', () => {
       const methods = createFormMethods();
 
-      const { container } = render(<RadioInput {...defaultProps} registerOptions={{ required: true }} />, {
+      const { container } = render(<MixedCheckbox {...defaultProps} registerOptions={{ required: true }} />, {
         wrapper: wrapperFormProvider(methods),
       });
 
-      // RequiredAsterisk renders aria-hidden span with "*"
       expect(container.querySelector('[aria-hidden="true"]')).toBeInTheDocument();
     });
 
-    test('if marked as disabled, radio inputs are disabled', () => {
+    test('if marked as disabled, checkbox is disabled', () => {
       const methods = createFormMethods();
 
-      render(<RadioInput {...defaultProps} isEnabled={false} />, {
+      render(<MixedCheckbox {...defaultProps} isEnabled={false} />, {
         wrapper: wrapperFormProvider(methods),
       });
 
-      // The fieldset is disabled, which disables all radio inputs within it
-      const fieldset = screen.getByTestId(`RadioInput-${inputId}`);
-      expect(fieldset).toBeDisabled();
+      expect(screen.getByTestId(inputId)).toBeDisabled();
     });
 
     test('if in error state, error message is displayed', () => {
       const errors = { [inputId]: { message: 'some error message' } };
       const methods = createFormMethods();
 
-      render(<RadioInput {...defaultProps} />, {
+      render(<MixedCheckbox {...defaultProps} />, {
         wrapper: wrapperFormProvider({ ...methods, errors }),
       });
 
@@ -139,41 +154,63 @@ describe('RadioInput', () => {
   });
 });
 
-describe('RadioInput via getInputType (parity)', () => {
+describe('MixedCheckbox via getInputType (parity)', () => {
   const def = {
-    type: 'radio-input' as any,
+    type: 'mixed-checkbox' as any,
     name: inputId,
     label,
-    options,
   };
 
-  test('on render, all options are accessible', () => {
+  test('on render, is in mixed state by default', () => {
     const methods = createFormMethods();
 
-    const input = getInputType([], jest.fn())(def)('');
+    const input = getInputType([], jest.fn())(def)(undefined);
 
     render(input, { wrapper: wrapperFormProvider({ ...methods, register: () => jest.fn() }) });
 
-    const radioButtons = screen.getAllByRole('radio');
-    expect(radioButtons).toHaveLength(options.length);
-
-    options.forEach(option => {
-      expect(screen.getByTestId(`${inputId}-${option.value}`)).toBeInTheDocument();
-    });
+    const checkbox = screen.getByTestId(inputId);
+    expect(checkbox).toBeInTheDocument();
+    expect(checkbox).toHaveAttribute('aria-checked', 'mixed');
   });
 
-  test('updateCallback is invoked on change', () => {
+  test('clicking cycles state: mixed → true → false → mixed', () => {
+    const methods = createFormMethods();
+
+    const input = getInputType([], jest.fn())(def)(undefined);
+
+    render(input, { wrapper: wrapperFormProvider({ ...methods, register: () => jest.fn() }) });
+
+    const checkbox = screen.getByTestId(inputId);
+
+    // Initial: mixed
+    expect(checkbox).toHaveAttribute('aria-checked', 'mixed');
+
+    // Click: mixed → true
+    fireEvent.click(checkbox);
+    expect(checkbox).toHaveAttribute('aria-checked', 'true');
+
+    // Click: true → false
+    fireEvent.click(checkbox);
+    expect(checkbox).toHaveAttribute('aria-checked', 'false');
+
+    // Click: false → mixed
+    fireEvent.click(checkbox);
+    expect(checkbox).toHaveAttribute('aria-checked', 'mixed');
+  });
+
+  test('updateCallback is invoked on blur', () => {
     const updateCallback = jest.fn();
     const methods = createFormMethods();
 
-    const input = getInputType([], updateCallback)(def)('');
+    const input = getInputType([], updateCallback)(def)(undefined);
 
     render(input, { wrapper: wrapperFormProvider({ ...methods, register: () => jest.fn() }) });
 
-    const firstRadio = screen.getAllByRole('radio')[0];
+    const checkbox = screen.getByTestId(inputId);
+    fireEvent.focus(checkbox);
     expect(updateCallback).not.toHaveBeenCalled();
 
-    fireEvent.click(firstRadio);
+    fireEvent.blur(checkbox);
     expect(updateCallback).toHaveBeenCalled();
   });
 
@@ -182,7 +219,7 @@ describe('RadioInput via getInputType (parity)', () => {
       const methods = createFormMethods();
       const requiredDef = { ...def, required: true };
 
-      const input = getInputType([], jest.fn())(requiredDef)('');
+      const input = getInputType([], jest.fn())(requiredDef)(undefined);
 
       const { container } = render(input, {
         wrapper: wrapperFormProvider({ ...methods, register: () => jest.fn() }),
@@ -191,23 +228,21 @@ describe('RadioInput via getInputType (parity)', () => {
       expect(container.querySelector('[aria-hidden="true"]')).toBeInTheDocument();
     });
 
-    test('if marked as disabled, radio inputs are disabled', () => {
+    test('if marked as disabled, checkbox is disabled', () => {
       const methods = createFormMethods();
 
-      const input = getInputType([], jest.fn())(def)('', null, false);
+      const input = getInputType([], jest.fn())(def)(undefined, null, false);
 
       render(input, { wrapper: wrapperFormProvider({ ...methods, register: () => jest.fn() }) });
 
-      // The fieldset is disabled
-      const fieldset = screen.getByRole('group');
-      expect(fieldset).toBeDisabled();
+      expect(screen.getByTestId(inputId)).toBeDisabled();
     });
 
     test('if in error state, error message is displayed', () => {
       const errors = { [inputId]: { message: 'some error message' } };
       const methods = createFormMethods();
 
-      const input = getInputType([], jest.fn())(def)('');
+      const input = getInputType([], jest.fn())(def)(undefined);
 
       render(input, { wrapper: wrapperFormProvider({ ...methods, errors, register: () => jest.fn() }) });
 

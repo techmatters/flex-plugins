@@ -18,9 +18,9 @@ import * as React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
 
-import SearchInput from './SearchInput';
-import { getInputType } from '../../../common/forms/formGenerators';
-import { createFormMethods, wrapperFormProvider } from '../../test-utils';
+import RadioInput from '../../../../../components/forms/components/RadioInput/RadioInput';
+import { getInputType } from '../../../../../components/common/forms/formGenerators';
+import { createFormMethods, wrapperFormProvider } from '../../../../../components/forms/test-utils';
 
 // Mocked to avoid loadDefinition.js requiring @babel/runtime (infrastructure gap)
 jest.mock('hrm-form-definitions', () => ({
@@ -47,6 +47,10 @@ jest.mock('hrm-form-definitions', () => ({
 
 const inputId = 'inputID';
 const label = 'input label';
+const options = [
+  { value: 'option-a', label: 'Option A' },
+  { value: 'option-b', label: 'Option B' },
+];
 const defaultProps = {
   inputId,
   label,
@@ -55,45 +59,46 @@ const defaultProps = {
   updateCallback: jest.fn(),
   registerOptions: {},
   htmlElRef: null,
+  options,
 };
 
-describe('SearchInput', () => {
+describe('RadioInput', () => {
   test('errors if not wrapped in FormProvider', () => {
-    expect(() => render(<SearchInput {...defaultProps} />)).toThrow();
+    expect(() => render(<RadioInput {...defaultProps} />)).toThrow();
   });
 
-  test('on render, implementation is accessible', () => {
+  test('on render, all options are accessible', () => {
     const methods = createFormMethods();
-    const updateCallback = jest.fn();
 
-    render(<SearchInput {...defaultProps} updateCallback={updateCallback} />, {
+    render(<RadioInput {...defaultProps} />, {
       wrapper: wrapperFormProvider(methods),
     });
 
     expect(methods.register).toHaveBeenCalled();
 
-    const formItem = screen.getByTestId(`SearchInput-${inputId}`);
+    const formItem = screen.getByTestId(`RadioInput-${inputId}`);
     expect(formItem).toBeInTheDocument();
 
-    // Search input has an explicit aria-label="Search"
-    const input = screen.getByRole('search');
-    expect(input).toBeInTheDocument();
+    const radioButtons = screen.getAllByRole('radio');
+    expect(radioButtons).toHaveLength(options.length);
+
+    options.forEach(option => {
+      expect(screen.getByTestId(`${inputId}-${option.value}`)).toBeInTheDocument();
+    });
   });
 
-  test('updateCallback is invoked on blur', () => {
+  test('updateCallback is invoked on change', () => {
     const methods = createFormMethods();
     const updateCallback = jest.fn();
 
-    render(<SearchInput {...defaultProps} updateCallback={updateCallback} />, {
+    render(<RadioInput {...defaultProps} updateCallback={updateCallback} />, {
       wrapper: wrapperFormProvider(methods),
     });
 
-    const input = screen.getByRole('search');
-
-    fireEvent.focus(input);
+    const firstRadio = screen.getAllByRole('radio')[0];
     expect(updateCallback).not.toHaveBeenCalled();
 
-    fireEvent.blur(input);
+    fireEvent.click(firstRadio);
     expect(updateCallback).toHaveBeenCalled();
   });
 
@@ -101,7 +106,7 @@ describe('SearchInput', () => {
     test('if marked as required, asterisk is shown', () => {
       const methods = createFormMethods();
 
-      const { container } = render(<SearchInput {...defaultProps} registerOptions={{ required: true }} />, {
+      const { container } = render(<RadioInput {...defaultProps} registerOptions={{ required: true }} />, {
         wrapper: wrapperFormProvider(methods),
       });
 
@@ -109,21 +114,23 @@ describe('SearchInput', () => {
       expect(container.querySelector('[aria-hidden="true"]')).toBeInTheDocument();
     });
 
-    test('if marked as disabled, search input is disabled', () => {
+    test('if marked as disabled, radio inputs are disabled', () => {
       const methods = createFormMethods();
 
-      render(<SearchInput {...defaultProps} isEnabled={false} />, {
+      render(<RadioInput {...defaultProps} isEnabled={false} />, {
         wrapper: wrapperFormProvider(methods),
       });
 
-      expect(screen.getByRole('search')).toBeDisabled();
+      // The fieldset is disabled, which disables all radio inputs within it
+      const fieldset = screen.getByTestId(`RadioInput-${inputId}`);
+      expect(fieldset).toBeDisabled();
     });
 
     test('if in error state, error message is displayed', () => {
       const errors = { [inputId]: { message: 'some error message' } };
       const methods = createFormMethods();
 
-      render(<SearchInput {...defaultProps} />, {
+      render(<RadioInput {...defaultProps} />, {
         wrapper: wrapperFormProvider({ ...methods, errors }),
       });
 
@@ -132,25 +139,30 @@ describe('SearchInput', () => {
   });
 });
 
-describe('SearchInput via getInputType (parity)', () => {
+describe('RadioInput via getInputType (parity)', () => {
   const def = {
-    type: 'search-input' as any,
+    type: 'radio-input' as any,
     name: inputId,
     label,
+    options,
   };
 
-  test('on render, implementation is accessible', () => {
+  test('on render, all options are accessible', () => {
     const methods = createFormMethods();
 
     const input = getInputType([], jest.fn())(def)('');
 
     render(input, { wrapper: wrapperFormProvider({ ...methods, register: () => jest.fn() }) });
 
-    // Old search input also has role="search" and aria-label="Search"
-    expect(screen.getByRole('search')).toBeInTheDocument();
+    const radioButtons = screen.getAllByRole('radio');
+    expect(radioButtons).toHaveLength(options.length);
+
+    options.forEach(option => {
+      expect(screen.getByTestId(`${inputId}-${option.value}`)).toBeInTheDocument();
+    });
   });
 
-  test('updateCallback is invoked on blur', () => {
+  test('updateCallback is invoked on change', () => {
     const updateCallback = jest.fn();
     const methods = createFormMethods();
 
@@ -158,11 +170,10 @@ describe('SearchInput via getInputType (parity)', () => {
 
     render(input, { wrapper: wrapperFormProvider({ ...methods, register: () => jest.fn() }) });
 
-    const searchInput = screen.getByRole('search');
-    fireEvent.focus(searchInput);
+    const firstRadio = screen.getAllByRole('radio')[0];
     expect(updateCallback).not.toHaveBeenCalled();
 
-    fireEvent.blur(searchInput);
+    fireEvent.click(firstRadio);
     expect(updateCallback).toHaveBeenCalled();
   });
 
@@ -180,22 +191,19 @@ describe('SearchInput via getInputType (parity)', () => {
       expect(container.querySelector('[aria-hidden="true"]')).toBeInTheDocument();
     });
 
-    test('if marked as disabled, search input is disabled', () => {
+    test('if marked as disabled, radio inputs are disabled', () => {
       const methods = createFormMethods();
 
       const input = getInputType([], jest.fn())(def)('', null, false);
 
       render(input, { wrapper: wrapperFormProvider({ ...methods, register: () => jest.fn() }) });
 
-      expect(screen.getByRole('search')).toBeDisabled();
+      // The fieldset is disabled
+      const fieldset = screen.getByRole('group');
+      expect(fieldset).toBeDisabled();
     });
 
-    /**
-     * NOTE: The old SearchInput (getInputType) does not render an error message text element.
-     * The new SearchInput adds this behavior as an improvement. This test verifies
-     * the component still renders without errors when in error state.
-     */
-    test('if in error state, component still renders', () => {
+    test('if in error state, error message is displayed', () => {
       const errors = { [inputId]: { message: 'some error message' } };
       const methods = createFormMethods();
 
@@ -203,7 +211,7 @@ describe('SearchInput via getInputType (parity)', () => {
 
       render(input, { wrapper: wrapperFormProvider({ ...methods, errors, register: () => jest.fn() }) });
 
-      expect(screen.getByRole('search')).toBeInTheDocument();
+      expect(screen.getByText('some error message')).toBeInTheDocument();
     });
   });
 });
