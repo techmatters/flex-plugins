@@ -19,13 +19,14 @@ import { applyMiddleware, combineReducers, createStore, compose } from 'redux';
 import thunk from 'redux-thunk';
 
 import { MockedPaginator } from '../../../test-utils';
-import { initConfigThunk, initSession } from '../initActions';
+import * as initActions from '../initActions';
 import { initClientListeners } from '../listeners/clientListener';
 import { initConversationListener } from '../listeners/conversationListener';
 import { EngagementPhase } from '../../definitions';
 import {
   ACTION_ADD_NOTIFICATION,
   ACTION_CHANGE_ENGAGEMENT_PHASE,
+  ACTION_CHANGE_EXPANDED_STATUS,
   ACTION_LOAD_CONFIG_FAILURE,
   ACTION_LOAD_CONFIG_REQUEST,
   ACTION_LOAD_CONFIG_SUCCESS,
@@ -37,6 +38,7 @@ import { SessionReducer } from '../../session.reducer';
 import { notifications } from '../../../notifications';
 import WebChatLogger from '../../../logger';
 import * as configService from '../../../services/configService';
+import { sessionDataHandler } from '../../../sessionDataHandler';
 
 jest.mock('@twilio/conversations', () => {
   return {
@@ -57,6 +59,15 @@ jest.mock('../listeners/participantsListener', () => ({
 }));
 jest.mock('../../../logger');
 jest.mock('../../../services/configService');
+jest.mock('../../../sessionDataHandler', () => ({
+  sessionDataHandler: {
+    setRegion: jest.fn(),
+    setDeploymentKey: jest.fn(),
+    getRegion: jest.fn(),
+  },
+}));
+
+const { initSession, initConfigThunk } = initActions;
 
 const createSessionStore = () =>
   createStore(
@@ -85,18 +96,20 @@ describe('Actions', () => {
   } as unknown as Client;
 
   let mockStore: any;
+  let mockLogger: WebChatLogger;
 
   beforeAll(() => {
     Object.defineProperty(window, 'Twilio', {
       value: {
-        getLogger(className: string) {
-          return new WebChatLogger(className);
+        getLogger(_className: string) {
+          return mockLogger;
         },
       },
     });
   });
 
   beforeEach(() => {
+    mockLogger = new WebChatLogger('test');
     mockStore = createSessionStore();
   });
 
@@ -161,24 +174,39 @@ describe('Actions', () => {
   });
 
   describe('initConfigThunk', () => {
-    it('success case calls ACTION_LOAD_CONFIG_SUCCESS', async () => {
-      jest.spyOn(configService, 'getDefinitionVersion').mockResolvedValueOnce({} as any);
-      const thunk = initConfigThunk({} as any);
-
+    const runConfigThunk = async (configData: object, overrides = {}) => {
+      jest.spyOn(initActions, 'getHelplineConfig').mockResolvedValueOnce({
+        status: 'ok',
+        data: configData,
+      });
+      jest.spyOn(configService, 'getDefinitionVersion').mockResolvedValueOnce({ preEngagementForm: {} } as any);
+      const thunk = initConfigThunk({ configUrl: 'some-url', overrides });
       const dispatch = jest.fn();
       const getState = jest.fn();
-
       await thunk(dispatch, getState, {});
+      return dispatch;
+    };
+
+    it('success case calls ACTION_LOAD_CONFIG_SUCCESS', async () => {
+      const dispatch = await runConfigThunk({ deploymentKey: 'deploymentKey' });
       expect(dispatch).toHaveBeenCalledWith({
         type: ACTION_LOAD_CONFIG_REQUEST,
       });
       expect(dispatch).toHaveBeenCalledWith({
         type: ACTION_LOAD_CONFIG_SUCCESS,
-        payload: {},
+        payload: {
+          currentLocale: undefined,
+          deploymentKey: 'deploymentKey',
+          preEngagementFormDefinition: {},
+        },
       });
     });
 
     it('failure case calls ACTION_LOAD_CONFIG_FAILURE', async () => {
+      jest.spyOn(initActions, 'getHelplineConfig').mockResolvedValueOnce({
+        status: 'ok',
+        data: { deploymentKey: 'deploymentKey' },
+      });
       const err = new Error('kaboom!');
       jest.spyOn(configService, 'getDefinitionVersion').mockImplementationOnce(() => {
         throw err;
@@ -195,6 +223,60 @@ describe('Actions', () => {
       expect(dispatch).toHaveBeenCalledWith({
         type: ACTION_LOAD_CONFIG_FAILURE,
         payload: err,
+      });
+    });
+
+    it('sets region correctly', async () => {
+      const region = 'Foo';
+      await runConfigThunk({ deploymentKey: 'CV000000', region });
+      expect(sessionDataHandler.setRegion).toHaveBeenCalledWith(region);
+    });
+
+    it('sets deployment key correctly', async () => {
+      const deploymentKey = 'CV000000';
+      await runConfigThunk({ deploymentKey });
+      expect(sessionDataHandler.setDeploymentKey).toHaveBeenCalledWith(deploymentKey);
+    });
+
+    it('gives error when deploymentKey is missing', async () => {
+      jest.spyOn(initActions, 'getHelplineConfig').mockResolvedValueOnce({
+        status: 'ok',
+        data: {},
+      });
+      const errorLoggerSpy = jest.spyOn(mockLogger, 'error');
+
+      const thunk = initConfigThunk({ configUrl: 'some-url', overrides: {} });
+      const dispatch = jest.fn();
+      const getState = jest.fn();
+
+      await thunk(dispatch, getState, {});
+
+      expect(errorLoggerSpy).toHaveBeenCalledTimes(1);
+      expect(errorLoggerSpy).toHaveBeenCalledWith('deploymentKey must exist to connect to Webchat servers');
+      expect(dispatch).toHaveBeenCalledWith(expect.objectContaining({ type: ACTION_LOAD_CONFIG_FAILURE }));
+    });
+
+    it('triggers expanded true if alwaysOpen is set', async () => {
+      const dispatch = await runConfigThunk({ deploymentKey: 'CV000000', alwaysOpen: true });
+      expect(dispatch).toHaveBeenCalledWith({
+        type: ACTION_CHANGE_EXPANDED_STATUS,
+        payload: { expanded: true },
+      });
+    });
+
+    it('triggers expanded false if alwaysOpen is not set', async () => {
+      const dispatch = await runConfigThunk({ deploymentKey: 'CV000000', alwaysOpen: false });
+      expect(dispatch).toHaveBeenCalledWith({
+        type: ACTION_CHANGE_EXPANDED_STATUS,
+        payload: { expanded: false },
+      });
+    });
+
+    it('triggers expanded false with default appStatus', async () => {
+      const dispatch = await runConfigThunk({ deploymentKey: 'CV000000' });
+      expect(dispatch).toHaveBeenCalledWith({
+        type: ACTION_CHANGE_EXPANDED_STATUS,
+        payload: { expanded: false },
       });
     });
   });

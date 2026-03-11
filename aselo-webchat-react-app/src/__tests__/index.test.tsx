@@ -18,11 +18,9 @@ import { Provider } from 'react-redux';
 import * as reactDom from 'react-dom';
 
 import '..';
-import { sessionDataHandler } from '../sessionDataHandler';
 import { WebchatWidget } from '../components/WebchatWidget';
 import { store } from '../store/store';
 import * as initActions from '../store/actions/initActions';
-import * as genericActions from '../store/actions/genericActions';
 import WebChatLogger from '../logger';
 
 jest.mock('react-dom');
@@ -69,80 +67,24 @@ describe('Index', () => {
       );
     });
 
-    it('sets region correctly', async () => {
-      const setRegionSpy = jest.spyOn(sessionDataHandler, 'setRegion');
-      mockFetch.mockResolvedValueOnce(new Response(JSON.stringify({}), { status: 200 }));
-
-      const region = 'Foo';
-      await initWebchat(undefined, { deploymentKey: 'CV000000', region });
-
-      expect(setRegionSpy).toHaveBeenCalledWith(region);
-    });
-
-    it('sets deployment key correctly', async () => {
-      const setDeploymentKeySpy = jest.spyOn(sessionDataHandler, 'setDeploymentKey');
-      mockFetch.mockResolvedValueOnce(new Response(JSON.stringify({}), { status: 200 }));
-
-      const deploymentKey = 'Foo';
-      await initWebchat(undefined, { deploymentKey });
-
-      expect(setDeploymentKeySpy).toHaveBeenCalledWith(deploymentKey);
-    });
-
-    it('initializes config', async () => {
+    it('calls initConfigThunk and renders the app if setup is correct', async () => {
       const initConfigSpy = jest.spyOn(initActions, 'initConfigThunk');
-      mockFetch.mockResolvedValueOnce(new Response(JSON.stringify({}), { status: 200 }));
-
-      await initWebchat(undefined, { deploymentKey: 'CV000000' });
-
-      expect(initConfigSpy).toHaveBeenCalled();
-    });
-
-    it('initializes config with provided config merged with default config', async () => {
-      const initConfigSpy = jest.spyOn(initActions, 'initConfigThunk');
-      mockFetch.mockResolvedValueOnce(new Response(JSON.stringify({}), { status: 200 }));
+      const renderSpy = jest.spyOn(reactDom, 'render');
 
       const deploymentKey = 'CV000000';
       await initWebchat(undefined, { deploymentKey });
 
-      expect(initConfigSpy).toHaveBeenCalledWith(expect.objectContaining({ deploymentKey }));
-    });
-
-    it('gives error when deploymentKey is missing', async () => {
-      const logger = window.Twilio.getLogger('InitWebChat');
-      const errorLoggerSpy = jest.spyOn(logger, 'error');
-      mockFetch.mockResolvedValueOnce(new Response(JSON.stringify({}), { status: 200 }));
-
-      await initWebchat();
-      expect(errorLoggerSpy).toHaveBeenCalledTimes(1);
-      expect(errorLoggerSpy).toHaveBeenCalledWith('deploymentKey must exist to connect to Webchat servers');
-    });
-
-    it('triggers expanded true if alwaysOpen is set', async () => {
-      const changeExpandedStatusSpy = jest.spyOn(genericActions, 'changeExpandedStatus');
-      mockFetch.mockResolvedValueOnce(new Response(JSON.stringify({}), { status: 200 }));
-
-      await initWebchat(undefined, { deploymentKey: 'CV000000', alwaysOpen: true });
-      expect(changeExpandedStatusSpy).toHaveBeenCalledWith({ expanded: true });
-    });
-
-    it('triggers expanded false if alwaysOpen is not set', async () => {
-      const changeExpandedStatusSpy = jest.spyOn(genericActions, 'changeExpandedStatus');
-      mockFetch.mockResolvedValueOnce(new Response(JSON.stringify({}), { status: 200 }));
-
-      await initWebchat(undefined, { deploymentKey: 'CV000000', alwaysOpen: false });
-      expect(changeExpandedStatusSpy).toHaveBeenCalledWith({ expanded: false });
-
-      await initWebchat(undefined, { deploymentKey: 'CV000000', alwaysOpen: 'some nonsense' as any });
-      expect(changeExpandedStatusSpy).toHaveBeenCalledWith({ expanded: false });
-    });
-
-    it('triggers expanded false with default appStatus', async () => {
-      const changeExpandedStatusSpy = jest.spyOn(genericActions, 'changeExpandedStatus');
-      mockFetch.mockResolvedValueOnce(new Response(JSON.stringify({}), { status: 200 }));
-
-      await initWebchat(undefined, { deploymentKey: 'CV000000' });
-      expect(changeExpandedStatusSpy).toHaveBeenCalledWith({ expanded: false });
+      expect(initConfigSpy).toHaveBeenCalledWith(
+        expect.objectContaining({
+          overrides: expect.objectContaining({ deploymentKey }),
+        }),
+      );
+      expect(renderSpy).toHaveBeenCalledWith(
+        <Provider store={store}>
+          <WebchatWidget />
+        </Provider>,
+        expect.any(HTMLElement),
+      );
     });
   });
 });
