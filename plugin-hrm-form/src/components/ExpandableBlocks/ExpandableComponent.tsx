@@ -19,35 +19,22 @@ import type { StyledProps } from '@material-ui/core';
 import { Template } from '@twilio/flex-ui';
 
 import { useExpandableOnOverflow } from '../../hooks/useExpandableOnOverflow';
-import HrmTheme from '../../styles/HrmTheme';
-import { Column } from '../../styles/layout';
 import { StyledLink } from '../../styles/buttons';
 
-export type ExpandableTextBlockProps = {
+type ExpandableComponentProps = {
   expandLinkText: string;
   collapseLinkText: string;
-  collapsedOverrides?: Partial<{
-    linesPreview: number;
-    whiteSpace: string;
-    backgroundColor: string;
-  }>;
-  fontSize?: number;
   style?: CSSProperties;
 };
 
-const defaultCollapsedStyles = {
-  linesPreview: 1,
-  whiteSpace: 'nowrap',
-  backgroundColor: HrmTheme.colors.base1,
-};
-
-const LINE_HEIGHT = 18;
-const ExpandableTextBlock: React.FC<ExpandableTextBlockProps & Partial<StyledProps>> = ({
+/**
+ * Collapse/expand container intended to be used when the children component is a collection of React components.
+ * */
+const ExpandableComponent: React.FC<ExpandableComponentProps & Partial<StyledProps>> = ({
   children,
   expandLinkText,
   collapseLinkText,
   className,
-  collapsedOverrides = {},
   style = {},
 }) => {
   const {
@@ -66,62 +53,41 @@ const ExpandableTextBlock: React.FC<ExpandableTextBlockProps & Partial<StyledPro
   if (isExpanded) {
     classes.push('expanded');
   }
-
-  const collapsedStyles = { ...defaultCollapsedStyles, ...collapsedOverrides };
-
   return (
     <div
       className={`${classes.join(' ')}`}
-      style={{
-        position: 'relative',
-        display: 'flex',
-        flexFlow: 'row',
-        justifyContent: 'stretch',
-        textOverflow: 'ellipsis',
-        ...style,
-      }}
+      // style={{ display: 'flex', flexFlow: 'row', justifyContent: 'stretch' }}
+      style={{ display: 'flex', flexFlow: 'row', justifyContent: 'stretch', textOverflow: 'ellipsis', ...style }}
       ref={overflowingRef}
     >
       <div
         style={{
           textOverflow: 'inherit',
-          whiteSpace: isOverflowing && !isExpanded ? collapsedStyles.whiteSpace : 'inherit',
+          whiteSpace: isOverflowing && !isExpanded ? 'nowrap' : 'inherit',
           overflow: isOverflowing && !isExpanded ? 'hidden' : 'inherit',
-          height: isExpanded ? 'inherit' : `${collapsedStyles.linesPreview * LINE_HEIGHT}px`,
-          fontSize: `13px`,
-          lineHeight: `${LINE_HEIGHT}px`,
+          height: isExpanded ? 'inherit' : '1.6em',
+          lineHeight: '1.5em',
           wordBreak: isExpanded ? 'break-word' : 'inherit',
         }}
       >
-        <Column>
-          {children}
-          <StyledLink
-            underline={true}
-            type="button"
-            onClick={handleCollapse}
-            ref={collapseButtonElementRef}
-            style={{
-              display: isExpanded ? 'inline' : 'none',
-              lineHeight: `${LINE_HEIGHT}px`,
-              fontSize: `13px`,
-              marginRight: 'auto',
-            }}
-          >
-            <Template code={collapseLinkText} />
-          </StyledLink>
-        </Column>
+        {children}
+        <StyledLink
+          underline={true}
+          type="button"
+          onClick={handleCollapse}
+          ref={collapseButtonElementRef}
+          style={{ display: isExpanded ? 'inline' : 'none', lineHeight: '1.5em', fontSize: '13px' }}
+        >
+          <Template code={collapseLinkText} />
+        </StyledLink>
       </div>
       <div
         style={{
-          position: 'absolute',
-          bottom: 0,
-          right: 0,
-          backgroundColor: collapsedStyles.backgroundColor,
-          opacity: 1,
           whiteSpace: 'nowrap',
           display: isOverflowing && !isExpanded ? 'inherit' : 'none',
-          lineHeight: `${LINE_HEIGHT}px`,
-          paddingLeft: '8px',
+          height: '1.5em',
+          lineHeight: '1.5em',
+          marginLeft: '5px',
         }}
       >
         <StyledLink underline={true} onClick={handleExpand} ref={expandButtonElementRef} style={{ fontSize: `13px` }}>
@@ -133,6 +99,6 @@ const ExpandableTextBlock: React.FC<ExpandableTextBlockProps & Partial<StyledPro
   );
 };
 
-ExpandableTextBlock.displayName = 'ExpandableTextBlock';
+ExpandableComponent.displayName = 'ExpandableComponent';
 
-export default ExpandableTextBlock;
+export default ExpandableComponent;

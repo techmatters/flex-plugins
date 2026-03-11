@@ -19,7 +19,7 @@ import { styled } from '@twilio/flex-ui';
 import { FontOpenSans } from '../../../../styles/typography';
 import { Column } from '../../../../styles/layout';
 import { FORM_INPUT_DEFAULT_WITH } from '../styles';
-import ExpandableTextBlock, { ExpandableTextBlockProps } from '../../../ExpandableTextBlock';
+import ExpandableText, { ExpandableTextProps } from '../../../ExpandableBlocks/ExpandableText';
 
 export const BACKROUND_COLOR = '#fffeef';
 export const FieldInputDescriptionContainer = styled(Column)`
@@ -39,4 +39,4 @@ export const FieldInputDescriptionTitle = styled(FieldInputDescriptionText)`
   font-weight: 700;
 `;
 
-export const FieldInputDescriptionExpandableText = styled(ExpandableTextBlock)<ExpandableTextBlockProps>``;
+export const FieldInputDescriptionExpandableText = styled(ExpandableText)<ExpandableTextProps>``;

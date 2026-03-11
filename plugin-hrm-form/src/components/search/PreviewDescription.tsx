@@ -16,9 +16,9 @@
 
 import { styled } from '@twilio/flex-ui';
 
-import ExpandableTextBlock, { ExpandableTextBlockProps } from '../ExpandableTextBlock';
+import ExpandableText, { ExpandableTextProps } from '../ExpandableBlocks/ExpandableText';
 
-export const PreviewDescription = styled(ExpandableTextBlock)<ExpandableTextBlockProps>`
+export const PreviewDescription = styled(ExpandableText)<ExpandableTextProps>`
   font-size: 13px;
   font-weight: 400;
   color: #000000;

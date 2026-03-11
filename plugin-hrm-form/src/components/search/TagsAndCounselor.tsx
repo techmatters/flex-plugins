@@ -23,7 +23,7 @@ import { Flex, ChipText } from '../../styles';
 import { SilentText, SubtitleLabel, SummaryText, TagsWrapper } from './styles';
 import CategoryWithTooltip from '../common/CategoryWithTooltip';
 import { getContactTags } from '../../utils/categories';
-import ExpandableTextBlock from '../ExpandableTextBlock';
+import ExpandableComponent from '../ExpandableBlocks/ExpandableComponent';
 
 type DataCallProps = {
   counselor: string;
@@ -48,10 +48,10 @@ const TagsAndCounselor: React.FC<Props> = props => {
     if (isDataCallProps(props)) {
       const categories = getContactTags(definitionVersion, props.categories);
       return (
-        <ExpandableTextBlock
+        <ExpandableComponent
           collapseLinkText="ReadLess"
           expandLinkText="ReadMore"
-          style={{ maxWidth: '500px', textOverflow: 'clip' }}
+          style={{ maxWidth: '500px', textOverflow: 'wrap', paddingRight: '10px' }}
         >
           {categories.map(({ label, color, fullyQualifiedName }) => (
             <CategoryWithTooltip
@@ -61,7 +61,7 @@ const TagsAndCounselor: React.FC<Props> = props => {
               color={color}
             />
           ))}
-        </ExpandableTextBlock>
+        </ExpandableComponent>
       );
     }
 
