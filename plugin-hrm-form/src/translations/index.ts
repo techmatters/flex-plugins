@@ -15,9 +15,8 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 import Handlebars from 'handlebars';
-import { Manager } from '@twilio/flex-ui';
 
-import { getDefinitionVersions } from '../hrmConfig';
+import { getDefinitionVersions, getTemplateStrings } from '../hrmConfig';
 
 // default language to initialize plugin
 export const defaultLocale = 'en-US';
@@ -122,6 +121,5 @@ export const initLocalization = (localizationConfig: LocalizationConfig, helplin
 };
 
 export const lookupTranslation = (code: string, parameters: Record<string, string> = {}): string => {
-  const { strings } = Manager.getInstance();
-  return Handlebars.compile(strings[code] ?? code)(parameters);
+  return Handlebars.compile(getTemplateStrings()[code] ?? code)(parameters);
 };
