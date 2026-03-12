@@ -21,13 +21,24 @@ import { FormInputType, FormItemDefinition } from 'hrm-form-definitions';
 
 import { FormInputBaseProps } from './components/types';
 import { FormInput } from './components';
-import { CustomHandlers, getInputType } from '../common/forms/formGenerators';
+import { CustomHandlers } from '../common/forms/formGenerators';
 import { generateCustomContactFormItem } from './components/customContactComponent';
 import FormTextArea from './components/FormTextArea/FormTextArea';
 import { TaskSID } from '../../types/twilio';
 import FormSelect from './components/FormSelect/FormSelect';
 import DependentFormSelect from './components/FormSelect/DependentFormSelect';
 import FormCheckbox from './components/FormCheckbox/FormCheckbox';
+import SearchInput from './components/SearchInput/SearchInput';
+import NumericInput from './components/FormInput/NumericInput';
+import Email from './components/FormInput/Email';
+import RadioInput from './components/RadioInput/RadioInput';
+import ListboxMultiselect from './components/ListboxMultiselect/ListboxMultiselect';
+import MixedCheckbox from './components/MixedCheckbox/MixedCheckbox';
+import DateInput from './components/DateInput/DateInput';
+import TimeInput from './components/DateInput/TimeInput';
+import FileUpload from './components/FileUpload/FileUpload';
+import { Column } from '../../styles/layout';
+import { FormInputDescription } from './components/FormInputDescription/FormInputDescription';
 
 const getRegisterOptions = (formItemDefinition: FormItemDefinition): RegisterOptions =>
   pick(formItemDefinition, ['max', 'maxLength', 'min', 'minLength', 'pattern', 'required', 'validate']);
@@ -46,7 +57,7 @@ export type CreateInputParams = {
   };
 };
 
-export const createInput = ({
+const createFormInput = ({
   formItemDefinition,
   parentsPath,
   updateCallback,
@@ -60,7 +71,6 @@ export const createInput = ({
   const inputId = [parentsPath, formItemDefinition.name].filter(Boolean).join('.');
   const registerOptions = getRegisterOptions(formItemDefinition);
 
-  // eslint-disable-next-line sonarjs/no-small-switch
   switch (formItemDefinition.type) {
     case FormInputType.Input: {
       return (
@@ -144,13 +154,152 @@ export const createInput = ({
     case FormInputType.CustomContactComponent: {
       return generateCustomContactFormItem(formItemDefinition, inputId, context);
     }
-    // Until all the "FormInputType"s are migrated, default to using the old getInputType
-    default:
-      // return <div>INVALID FORM INPUT: {inputId}</div>;
-      return getInputType(parentsPath.split('.').filter(Boolean), updateCallback, customHandlers)(formItemDefinition)(
-        initialValue,
-        htmlElRef,
-        isEnabled,
+    case FormInputType.SearchInput: {
+      return (
+        <SearchInput
+          key={inputId}
+          inputId={inputId}
+          initialValue={initialValue}
+          updateCallback={updateCallback}
+          label={formItemDefinition.label}
+          registerOptions={registerOptions}
+          isEnabled={isEnabled}
+          htmlElRef={htmlElRef}
+        />
       );
+    }
+    case FormInputType.NumericInput: {
+      return (
+        <NumericInput
+          key={inputId}
+          inputId={inputId}
+          initialValue={initialValue}
+          updateCallback={updateCallback}
+          label={formItemDefinition.label}
+          registerOptions={registerOptions}
+          isEnabled={isEnabled}
+          htmlElRef={htmlElRef}
+        />
+      );
+    }
+    case FormInputType.Email: {
+      return (
+        <Email
+          key={inputId}
+          inputId={inputId}
+          initialValue={initialValue}
+          updateCallback={updateCallback}
+          label={formItemDefinition.label}
+          registerOptions={registerOptions}
+          isEnabled={isEnabled}
+          htmlElRef={htmlElRef}
+        />
+      );
+    }
+    case FormInputType.RadioInput: {
+      return (
+        <RadioInput
+          key={inputId}
+          inputId={inputId}
+          initialValue={initialValue}
+          updateCallback={updateCallback}
+          label={formItemDefinition.label}
+          registerOptions={registerOptions}
+          isEnabled={isEnabled}
+          htmlElRef={htmlElRef}
+          options={formItemDefinition.options}
+          defaultOption={formItemDefinition.defaultOption}
+        />
+      );
+    }
+    case FormInputType.ListboxMultiselect: {
+      return (
+        <ListboxMultiselect
+          key={inputId}
+          inputId={inputId}
+          initialValue={initialValue}
+          updateCallback={updateCallback}
+          label={formItemDefinition.label}
+          registerOptions={registerOptions}
+          isEnabled={isEnabled}
+          htmlElRef={htmlElRef}
+          options={formItemDefinition.options}
+          height={formItemDefinition.height}
+          width={formItemDefinition.width}
+        />
+      );
+    }
+    case FormInputType.MixedCheckbox: {
+      return (
+        <MixedCheckbox
+          key={inputId}
+          inputId={inputId}
+          initialValue={initialValue}
+          updateCallback={updateCallback}
+          label={formItemDefinition.label}
+          registerOptions={registerOptions}
+          isEnabled={isEnabled}
+          htmlElRef={htmlElRef}
+        />
+      );
+    }
+    case FormInputType.DateInput: {
+      return (
+        <DateInput
+          key={inputId}
+          inputId={inputId}
+          initialValue={initialValue}
+          updateCallback={updateCallback}
+          label={formItemDefinition.label}
+          registerOptions={registerOptions}
+          isEnabled={isEnabled}
+          htmlElRef={htmlElRef}
+        />
+      );
+    }
+    case FormInputType.TimeInput: {
+      return (
+        <TimeInput
+          key={inputId}
+          inputId={inputId}
+          initialValue={initialValue}
+          updateCallback={updateCallback}
+          label={formItemDefinition.label}
+          registerOptions={registerOptions}
+          isEnabled={isEnabled}
+          htmlElRef={htmlElRef}
+        />
+      );
+    }
+    case FormInputType.FileUpload: {
+      return (
+        <FileUpload
+          key={inputId}
+          inputId={inputId}
+          initialValue={initialValue}
+          updateCallback={updateCallback}
+          label={formItemDefinition.label}
+          registerOptions={registerOptions}
+          isEnabled={isEnabled}
+          htmlElRef={htmlElRef}
+          description={formItemDefinition.description}
+          customHandlers={customHandlers}
+        />
+      );
+    }
+    default:
+      return <div>INVALID FORM INPUT: {inputId}</div>;
   }
+};
+
+export const createInput = (params: CreateInputParams): JSX.Element => {
+  return (
+    <Column
+      key={`created-input-${params.parentsPath}-${params.formItemDefinition.name}`}
+      style={{ marginTop: 8, marginBottom: 8 }}
+    >
+      {createFormInput(params)}
+      <FormInputDescription definition={params.formItemDefinition} />
+    </Column>
+  );
 };

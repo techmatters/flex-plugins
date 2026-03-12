@@ -14,9 +14,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import styled from '@emotion/styled';
 import { withStyles } from '@material-ui/core';
-import Send from '@material-ui/icons/Send';
 import CheckCircle from '@material-ui/icons/CheckCircle';
 
 const styleIcon = withStyles({

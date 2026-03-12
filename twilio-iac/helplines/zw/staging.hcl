@@ -20,7 +20,7 @@ locals {
         contact_identity = ""
         templatefile     = "/app/twilio-iac/helplines/zw/templates/studio-flows/messaging-greeting-message-blocking.tftpl"
         channel_flow_vars = {
-          chat_greeting_message = "Thank you for contacting Childline Zimbabwe, a counsellor will be with you shortly. If this is an emergency or you wait longer than 30 min, we recommend you call us for free at 116."
+          chat_greeting_message = "Thank you for contacting Childline Zimbabwe, a counsellor will be with you shortly. If this is an emergency or you wait longer than 30 min, we recommend you call us for free at 116. You can also contact us on WhatsApp at +263 732 116 116."
 
         }
         chatbot_unique_names = []
