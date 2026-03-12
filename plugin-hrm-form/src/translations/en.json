@@ -309,6 +309,7 @@
   "CaseList-Filters-DateFilterOptions-NextXDays": "Next {{days}} days",
   "CaseList-Filters-DateFilterOptions-WithoutDate": "No {{labelKey}}",
   "CaseList-Filters-DateFilterOptions-CustomRange": "Custom",
+  "CaseList-LoadingPlaceholder-ProgressBarTitle": "Loading Cases",
   "ContactPreview-CopyButton": "Copy information",
   "ContactPreview-ExpandButton": "Open case details",
   "ContactPreview-MoreOptionsButton": "More options",

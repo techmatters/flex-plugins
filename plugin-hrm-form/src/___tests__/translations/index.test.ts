@@ -13,29 +13,22 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
-
-import { Manager } from '@twilio/flex-ui';
-
 import { loadTranslations, initLocalization, lookupTranslation } from '../../translations';
 
 jest.mock('../../translations/en.json', () => ({}), { virtual: true });
 jest.mock('../../translations/en-US.json', () => ({}), { virtual: true });
 jest.mock('../../translations/en-GB.json', () => ({}), { virtual: true });
 
-jest.mock('@twilio/flex-ui', () => ({
-  Manager: {
-    getInstance: jest.fn(),
-  },
-}));
-
 const mockGetAseloFeatureFlags = jest.fn();
 const mockGetHrmConfig = jest.fn();
 const mockGetDefinitionVersions = jest.fn();
+const mockGetTemplateStrings = jest.fn();
 
 jest.mock('../../hrmConfig', () => ({
   getAseloFeatureFlags: () => mockGetAseloFeatureFlags(),
   getHrmConfig: () => mockGetHrmConfig(),
   getDefinitionVersions: () => mockGetDefinitionVersions(),
+  getTemplateStrings: () => mockGetTemplateStrings(),
 }));
 
 describe('Hierarchical Translations', () => {
@@ -169,29 +162,27 @@ describe('Hierarchical Translations', () => {
 });
 
 describe('lookupTranslation', () => {
-  const mockManagerGetInstance = Manager.getInstance as jest.MockedFunction<typeof Manager.getInstance>;
-
   afterEach(() => {
     jest.clearAllMocks();
   });
 
   test('returns compiled string for a key that exists in Manager strings', () => {
-    mockManagerGetInstance.mockReturnValue({ strings: { MyKey: 'Hello World' } } as any);
+    mockGetTemplateStrings.mockReturnValue({ MyKey: 'Hello World' });
     expect(lookupTranslation('MyKey')).toBe('Hello World');
   });
 
   test('falls back to using the code itself as template when key does not exist in Manager strings', () => {
-    mockManagerGetInstance.mockReturnValue({ strings: {} } as any);
+    mockGetTemplateStrings.mockReturnValue({});
     expect(lookupTranslation('FallbackKey')).toBe('FallbackKey');
   });
 
   test('passes parameters to the Handlebars template', () => {
-    mockManagerGetInstance.mockReturnValue({ strings: { Greeting: 'Hello {{name}}!' } } as any);
+    mockGetTemplateStrings.mockReturnValue({ Greeting: 'Hello {{name}}!' });
     expect(lookupTranslation('Greeting', { name: 'World' })).toBe('Hello World!');
   });
 
   test('uses empty parameters object by default', () => {
-    mockManagerGetInstance.mockReturnValue({ strings: { SimpleMsg: 'No params here' } } as any);
+    mockGetTemplateStrings.mockReturnValue({ SimpleMsg: 'No params here' });
     expect(lookupTranslation('SimpleMsg')).toBe('No params here');
   });
 });
