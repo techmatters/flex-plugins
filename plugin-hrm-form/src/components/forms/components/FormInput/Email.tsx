@@ -14,16 +14,15 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { withStyles } from '@material-ui/core';
-import CheckCircle from '@material-ui/icons/CheckCircle';
+import React from 'react';
 
-const styleIcon = withStyles({
-  root: {
-    width: '24px',
-    height: '24px',
-    fill: '#00884C',
-  },
-});
+import { FormInputBaseProps } from '../types';
+import FormInput from './FormInput';
 
-export const CheckCircleIcon = styleIcon(CheckCircle);
-CheckCircleIcon.displayName = 'CheckCircleIcon';
+const EMAIL_PATTERN = { value: /\S+@\S+\.\S+/, message: 'Entered value does not match email format' };
+
+type Props = FormInputBaseProps;
+
+const Email: React.FC<Props> = props => <FormInput {...props} pattern={EMAIL_PATTERN} />;
+
+export default Email;

@@ -14,16 +14,25 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { withStyles } from '@material-ui/core';
-import CheckCircle from '@material-ui/icons/CheckCircle';
+import { styled } from '@twilio/flex-ui';
 
-const styleIcon = withStyles({
-  root: {
-    width: '24px',
-    height: '24px',
-    fill: '#00884C',
-  },
-});
+import { FormInputBase } from '../styles';
 
-export const CheckCircleIcon = styleIcon(CheckCircle);
-CheckCircleIcon.displayName = 'CheckCircleIcon';
+export const SearchIconContainer = styled('div')`
+  position: absolute;
+  transform: translateX(35%) translateY(30%);
+  opacity: 0.4;
+  z-index: 2;
+`;
+SearchIconContainer.displayName = 'SearchIconContainer';
+
+// export const StyledSearchInput = styled(FormInputBase)`
+export const StyledSearchInput = styled(FormInputBase)`
+  position: relative;
+  & {
+    width: 100%;
+    min-width: 217px;
+    padding-left: 30px;
+  }
+`;
+StyledSearchInput.displayName = 'FormSearchInput';
