@@ -1,0 +1,8 @@
+{
+  "name": "Copilot Debugging Env",
+  "remoteEnv": {
+    "SITE_USER": "${localEnv:AS_DEV_FLEX_AUTOMATION_USER}",
+    "SITE_PASS": "${localEnv:AS_DEV_FLEX_AUTOMATION_PASSWORD}",
+    "SITE_ACCOUNT_SID": "${localEnv:AS_DEV_FLEX_AUTOMATION_SID}"
+  }
+}
