@@ -7,7 +7,7 @@
         ],
         "enforceZeroTranscriptRetention": false,
         "enableConferencing": true,
-        "enableUnmaskingCalls": false,
+        "enableUnmaskingCalls": true,
         "hideAddToNewCaseButton": true,
         "enableExternalRecordings": false,
         "enableClientProfiles": false,   
