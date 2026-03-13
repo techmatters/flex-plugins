@@ -120,7 +120,7 @@ export const initLocalization = (localizationConfig: LocalizationConfig, helplin
   return { translateUI, getMessage };
 };
 
-export const lookupTranslation = (code: string | undefined, parameters: Record<string, string> = {}): string => {
+export const lookupTranslation = (code: string, parameters: Record<string, string> = {}): string => {
   const strings = getTemplateStrings();
-  return Handlebars.compile(strings?.[code] ?? code ?? '')(parameters);
+  return Handlebars.compile(strings[code] ?? code)(parameters);
 };
