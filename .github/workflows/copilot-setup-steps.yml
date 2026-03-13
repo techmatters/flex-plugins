@@ -22,9 +22,13 @@ on:
   pull_request:
     paths:
       - .github/workflows/copilot-setup-steps.yml
-
+env:
+  SITE_USER: ${{ secrets.AS_DEV_FLEX_AUTOMATION_USER }}
+  SITE_PASS: ${{ secrets.AS_DEV_FLEX_AUTOMATION_PASSWORD }}
+  SITE_ACCOUNT_SID: ${{ secrets.AS_DEV_FLEX_AUTOMATION_SID }}
 jobs:
   copilot-setup-steps:
+
     runs-on: ubuntu-latest
     permissions:
       contents: read
