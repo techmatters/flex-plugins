@@ -46,6 +46,12 @@ jobs:
             aselo-webchat-react-app/package-lock.json
             lambdas/package-lock.json
 
+      - name: Export debugging credentials
+        run: |
+          echo "AS_DEV_FLEX_AUTOMATION_USER=$SITE_USER" >> $GITHUB_ENV
+          echo "AS_DEV_FLEX_AUTOMATION_PASSWORD=$SITE_PASS" >> $GITHUB_ENV
+          echo "AS_DEV_FLEX_AUTOMATION_SID=$SITE_ACCOUNT_SID" >> $GITHUB_ENV
+
       # aselo-webchat-react-app
       - name: Install dependencies for aselo-webchat-react-app
         run: npm ci
