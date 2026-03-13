@@ -16,11 +16,11 @@
 import { useForm, useFormContext } from 'react-hook-form';
 
 import { recordingErrorHandler } from '../../../fullStory';
-import { getTemplateStrings } from '../../../hrmConfig';
+import { lookupTranslation } from '../../../translations';
 
 const newSubmitHandlerFactory = (methods: ReturnType<typeof useFormContext>) => {
   const onError = recordingErrorHandler('Tabbed HRM Form', () => {
-    window.alert(getTemplateStrings()['Error-Form']);
+    window.alert(lookupTranslation('Error-Form'));
   });
 
   return (successHandler: () => Promise<void>) => {
