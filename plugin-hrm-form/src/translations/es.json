@@ -98,6 +98,7 @@
   "TabbedForms-ContactNotLoaded-Header": "Contacto no cargado, no se pueden registrar datos",
   "TabbedForms-ContactNotLoaded-Retry": "Reintentar",
   "TabbedForms-ContactNotLoaded-Finish": "Terminar sin guardar",
+  "TabbedForms-ContactNotLoaded-Loading": "Cargando contacto",
   "CancelOfflineContact": "Cancelar Contacto ",
   "BottomBar-SendReport": "Enviar Reporte",
   "BottomBar-SendAnotherReport": "Enviar Otro Reporte",
