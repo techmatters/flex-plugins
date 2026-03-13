@@ -1,50 +1,27 @@
 {
     "attributes": {
         "contacts_waiting_channels": [
-            "web",
             "voice",
+            "web",
             "sms"
         ],
-        "definitionVersion": "usnc-v1",
+        "enforceZeroTranscriptRetention": false,
+        "enableConferencing": true,
+        "enableUnmaskingCalls": false,
+        "hideAddToNewCaseButton": true,
+        "enableExternalRecordings": false,
+        "enableClientProfiles": false,   
         "feature_flags": {
-            "use_prepopulate_mappings": true
+            "use_prepopulate_mappings": true,
+            "enable_client_profiles": false,
+            "enable_previous_contacts": false,
+            "enable_hang_up_by_hrm_saving": true,
+            "enable_custom_links" : true
         },
+        "definitionVersion": "usnc-v1",
+        "external_recordings_enabled": false,
         "helplineLanguage": "en-US",
         "permissionConfig": "usnc"
-    },
-    "ui_attributes": {
-        "colorTheme": {
-            "baseName": "GreyLight",
-            "overrides": {
-                "MainHeader": {
-                    "Button": {
-                        "color": "#000000"
-                    },
-                    "Container": {
-                        "background": "#FFFFFF",
-                        "color": "#000000"
-                    },
-                    "Icon": {
-                        "color": "#000000"
-                    }
-                },
-                "SideNav": {
-                    "Button": {
-                        "background": "#FFFFFF"
-                    },
-                    "Container": {
-                        "background": "#FFFFFF"
-                    },
-                    "Icon": {
-                        "color": "#000000"
-                    }
-                }
-            },
-            "preset": {
-                "id": "mono-light",
-                "name": "Simple Light"
-            }
-        },
-        "theme": null
     }
+
 }

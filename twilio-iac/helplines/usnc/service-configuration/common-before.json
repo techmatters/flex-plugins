@@ -1,0 +1,15 @@
+{
+    "attributes": {
+        "contacts_waiting_channels": [
+            "web",
+            "voice",
+            "sms"
+        ],
+        "definitionVersion": "usnc-v1",
+        "helplineLanguage": "en-US",
+        "permissionConfig": "usnc",
+        "feature_flags": {
+            "use_prepopulate_mappings": true
+        }   
+    }
+}
