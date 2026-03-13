@@ -1,0 +1,45 @@
+[
+  {
+    "name": "callSummary",
+    "label": "Contact Summary",
+    "type": "textarea",
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "repeatCaller",
+    "label": "Repeat Caller?",
+    "type": "mixed-checkbox"
+  },
+  {
+    "name": "actionTaken",
+    "label": "Action Taken",
+    "type": "select",
+    "options": [
+      {
+        "value": "Unknown",
+        "label": " "
+      },
+      {
+        "value": "Action taken",
+        "label": "Action taken"
+      },
+      {
+        "value": "Other",
+        "label": "Other"
+      }
+    ]
+  },
+  {
+    "name": "okForCaseWorkerToCall",
+    "label": "Ok for case worker to call?",
+    "type": "mixed-checkbox"
+  },
+  {
+    "name": "didYouDiscussRightsWithTheChild",
+    "label": "Did you discuss rights with the child?",
+    "type": "mixed-checkbox"
+  }
+]
