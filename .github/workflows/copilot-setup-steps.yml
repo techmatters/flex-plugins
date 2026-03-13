@@ -22,10 +22,6 @@ on:
   pull_request:
     paths:
       - .github/workflows/copilot-setup-steps.yml
-env:
-  SITE_USER: ${{ secrets.AS_DEV_FLEX_AUTOMATION_USER }}
-  SITE_PASS: ${{ secrets.AS_DEV_FLEX_AUTOMATION_PASSWORD }}
-  SITE_ACCOUNT_SID: ${{ secrets.AS_DEV_FLEX_AUTOMATION_SID }}
 jobs:
   copilot-setup-steps:
 
@@ -45,12 +41,6 @@ jobs:
           cache-dependency-path: |
             aselo-webchat-react-app/package-lock.json
             lambdas/package-lock.json
-
-      - name: Export debugging credentials
-        run: |
-          echo "SITE_USER=${{ secrets.AS_DEV_FLEX_AUTOMATION_USER }}" >> $GITHUB_ENV
-          echo "SITE_PASS=${{ secrets.AS_DEV_FLEX_AUTOMATION_PASSWORD }}" >> $GITHUB_ENV
-          echo "SITE_ACCOUNT_SID=${{ secrets.AS_DEV_FLEX_AUTOMATION_SID }}" >> $GITHUB_ENV
 
       # aselo-webchat-react-app
       - name: Install dependencies for aselo-webchat-react-app
