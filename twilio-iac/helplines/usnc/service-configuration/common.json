@@ -10,7 +10,7 @@
             "use_prepopulate_mappings": true
         },
         "helplineLanguage": "en-US",
-        "permissionConfig": "demo"
+        "permissionConfig": "usnc"
     },
     "ui_attributes": {
         "colorTheme": {

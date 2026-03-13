@@ -6,7 +6,7 @@ locals {
 
 
   local_config = {
-    helpline        = "USNC"
+    helpline        = "Promise Resource Network"
     task_language   = "en-US"
 
     workflows = {

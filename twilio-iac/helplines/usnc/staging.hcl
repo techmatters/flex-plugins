@@ -5,7 +5,7 @@ locals {
 
   local_config = {
     custom_task_routing_filter_expression = "channelType IN ['web','voice','sms']  OR isContactlessTask == true"
-    permission_config                     = "demo"
+    permission_config                     = "usnc"
 
     #Studio flow
     flow_vars = {
