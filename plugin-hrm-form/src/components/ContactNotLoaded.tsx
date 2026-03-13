@@ -35,7 +35,7 @@ const ContactNotLoaded: React.FC<Props> = ({ onReload, onFinish }: Props) => {
   const [finishDisabled, setFinishDisabled] = React.useState(false);
   const strings = getTemplateStrings();
   return (
-    <Box style={{ padding: '20px', position: 'relative' }}>
+    <Box style={{ padding: '20px', position: 'relative', height: '100%' }}>
       <Box
         style={{
           position: 'absolute',
