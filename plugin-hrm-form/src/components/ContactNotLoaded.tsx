@@ -49,7 +49,7 @@ const ContactNotLoaded: React.FC<Props> = ({ onReload, onFinish }: Props) => {
           pointerEvents: 'none',
         }}
       >
-        <CircularProgress aria-label={strings['TabbedForms-ContactNotLoaded-Loading']} />
+        <CircularProgress size={80} aria-label={strings['TabbedForms-ContactNotLoaded-Loading']} />
       </Box>
       <HeaderContainer style={{ marginBottom: '10px' }}>
         <Template code="TabbedForms-ContactNotLoaded-Header" />
