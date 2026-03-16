@@ -42,6 +42,7 @@ jobs:
           cache-dependency-path: |
             aselo-webchat-react-app/package-lock.json
             lambdas/package-lock.json
+            plugin-hrm-form/package-lock.json
 
       - name: Export debugging credentials
         run: |
@@ -55,3 +56,21 @@ jobs:
       - name: Install dependencies for aselo-webchat-react-app
         run: npm ci
         working-directory: aselo-webchat-react-app
+
+      # lambdas (needed as preinstall dependency for plugin-hrm-form)
+      - name: Install dependencies for lambdas
+        run: npm ci
+        working-directory: lambdas
+
+      - name: Build hrm-form-definitions
+        run: npm ci && npm run build
+        working-directory: lambdas/packages/hrm-form-definitions
+
+      - name: Build hrm-types
+        run: npm ci && npm run build
+        working-directory: lambdas/packages/hrm-types
+
+      # plugin-hrm-form (skip preinstall since we handle it above)
+      - name: Install dependencies for plugin-hrm-form
+        run: npm ci --ignore-scripts
+        working-directory: plugin-hrm-form
