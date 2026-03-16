@@ -37,7 +37,7 @@ const holidayHours: PreEngagementFormDefinition = {
 };
 
 const preEngagementConfig: PreEngagementFormDefinition = {
-  description: "PreEngagementDescription",
+  description: "PreEngagementConfigDescription",
   submitLabel: "LetsChat",
   fields: [
     {
