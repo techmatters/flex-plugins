@@ -505,7 +505,6 @@ describe('Working copy reducers', () => {
           cases: {
             1: {
               ...initialState.cases[1],
-              lastReferencedDate: expect.any(Date),
               caseWorkingCopy: {
                 ...initialState.cases[1].caseWorkingCopy,
                 caseSummary: {
@@ -640,7 +639,10 @@ describe('Working copy reducers', () => {
       };
 
       const removeResult = reduce({ ...stubRootState, connectedCase: initialState }, removeCaseSummaryWorkingCopy('1'));
-      expect(removeResult).toStrictEqual({ ...stubRootState, connectedCase: expectedResult });
+      expect(removeResult).toStrictEqual({
+        ...stubRootState,
+        connectedCase: expectedResult,
+      });
       delete initialState.cases[1].caseWorkingCopy.caseSummary;
 
       const noopResult = reduce({ ...stubRootState, connectedCase: initialState }, removeCaseSummaryWorkingCopy('1'));

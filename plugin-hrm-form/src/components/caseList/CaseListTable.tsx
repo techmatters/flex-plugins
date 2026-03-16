@@ -21,6 +21,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Template } from '@twilio/flex-ui';
 import InfoIcon from '@material-ui/icons/Info';
 
+import { lookupTranslation } from '../../translations';
 import { DataCell, DataTableRow, LoadingCell, StandardTable, TableContainer } from '../../styles';
 import Filters from './filters/Filters';
 import CaseListTableHead from './CaseListTableHead';
@@ -57,7 +58,7 @@ const CaseListTable: React.FC<OwnProps> = ({ loading, caseList, caseCount, handl
   }, []);
 
   const pagesCount = Math.ceil(caseCount / CASES_PER_PAGE);
-
+  const spinnerTitle = lookupTranslation('CaseList-LoadingPlaceholder-ProgressBarTitle');
   return (
     <>
       <Filters caseCount={caseCount} currentDefinitionVersion={currentDefinitionVersion} />
@@ -75,7 +76,7 @@ const CaseListTable: React.FC<OwnProps> = ({ loading, caseList, caseCount, handl
                 }}
               >
                 <LoadingCell>
-                  <CircularProgress size={50} />
+                  <CircularProgress title={spinnerTitle} aria-label={spinnerTitle} size={50} />
                 </LoadingCell>
               </DataTableRow>
             </TableBody>
