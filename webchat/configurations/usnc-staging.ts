@@ -15,360 +15,303 @@
  */
 
 import { Translations, Configuration, MapHelplineLanguage, ContactType } from '../types';
-import { PreEngagementFormDefinition, EMAIL_PATTERN } from '../src/pre-engagement-form';
+import { PreEngagementFormDefinition } from '../src/pre-engagement-form';
 
-const accountSid = 'ACaa9a5ca4395d1fdeb394c5c176bc5b40';
-const flexFlowSid = 'FOe92d0154e36ef683c6569e03e6515d99';
+const accountSid = "ACaa9a5ca4395d1fdeb394c5c176bc5b40";
+const flexFlowSid = "FOe92d0154e36ef683c6569e03e6515d99";
 const defaultLanguage = 'en-US';
 const captureIp = true;
+const checkOpenHours = false;
 const contactType: ContactType = 'ip';
 
-const translations: Translations = {
-  ar: {
-    MessageCanvasTrayContent: '',
-    AutoFirstMessage: '',
-  },
-  el: {
-    MessageCanvasTrayContent: '',
-    AutoFirstMessage: '',
-  },
-  'en-US': {
-    WelcomeMessage: 'Welcome to Aselo!',
-    MessageCanvasTrayContent: '',
-    MessageInputDisabledReasonHold: 'Please hold for a counsellor.',
-    AutoFirstMessage: 'Incoming webchat contact from',
-    PreEngagementDescription: `Let's get started`,
-    WhatIsYourHelpline: 'What is your helpline?',
-    SelectHelpline: 'Select helpline',
-    LetsChat: "Let's chat!",
-  },
-  es: {
-    EntryPointTagline: 'Chatea con nosotros',
-    MessageCanvasTrayButton: 'EMPEZAR NUEVO CHAT',
-    InvalidPreEngagementMessage:
-      'Los formularios previos al compromiso no se han establecido y son necesarios para iniciar el chat web. Por favor configúrelos ahora en la configuración.',
-    InvalidPreEngagementButton: 'Aprende más',
-    PredefinedChatMessageAuthorName: 'Bot',
-    PredefinedChatMessageBody: '¡Hola! ¿Cómo podemos ayudarte hoy?',
-    InputPlaceHolder: 'Escribe un mensaje',
-    TypingIndicator: '{0} está escribiendo ... ',
-    Read: 'Visto',
-    MessageSendingDisabled: 'El envío de mensajes ha sido desactivado',
-    Today: 'HOY',
-    Yesterday: 'AYER',
-    Save: 'GUARDAR',
-    Reset: 'RESETEAR',
-    MessageCharacterCountStatus: '{{currentCharCount}} / {{maxCharCount}}',
-    SendMessageTooltip: 'Enviar Mensaje',
-    FieldValidationRequiredField: 'Campo requerido',
-    FieldValidationInvalidEmail: 'Por favor provea una dirección válida de email',
+const closedHours: PreEngagementFormDefinition = {
+  description:
+    'Closed offices message',
+  fields: [],
+};
 
-    PreEngagementDescription: 'Comencemos',
-
-    BotGreeting: '¿Cómo puedo ayudar?',
-    WelcomeMessage: '¡Bienvenido a Aselo!',
-    MessageCanvasTrayContent: '',
-    AutoFirstMessage: '',
-
-    // Needs to be translated
-    WhatIsYourHelpline: 'What is your helpline?',
-    SelectHelpline: 'Select helpline',
-    FakeHelpline: 'Fake Helpline',
-    LetsChat: "Let's chat!",
-  },
-  da: {
-    MessageCanvasTrayContent: '',
-    AutoFirstMessage: '',
-  },
-  it: {
-    MessageCanvasTrayContent: '',
-    AutoFirstMessage: '',
-  },
-  km: {
-    MessageCanvasTrayContent: '',
-    AutoFirstMessage: '',
-  },
-  sv: {
-    MessageCanvasTrayContent: '',
-    AutoFirstMessage: '',
-  },
+const holidayHours: PreEngagementFormDefinition = {
+  description:
+    'Closed holidays message',
+  fields: [],
 };
 
 const preEngagementConfig: PreEngagementFormDefinition = {
-  description: 'PreEngagementDescription',
-  submitLabel: 'LetsChat',
+  description: "PreEngagementDescription",
+  submitLabel: "LetsChat",
   fields: [
     {
-      type: 'input-text',
-      name: 'firstName',
-      label: 'First Name',
-      placeholder: 'GuestName',
-      required: true,
-    },
-    {
-      type: 'input-text',
-      name: 'contactIdentifier',
-      label: 'Email',
-      required: true,
-      placeholder: 'Email',
-      pattern: {
-        value: EMAIL_PATTERN,
-        message: 'FieldValidationInvalidEmail',
-      },
-    },
-    {
-      label: 'Age',
-      type: 'select',
-      name: 'age',
-      required: true,
-      defaultValue: '',
+      type: "select",
+      name: "race",
+      label: "Which race do you identify with?",
+      defaultValue: "",
       options: [
         {
           value: "",
-          label: ""
+          label: "",
         },
         {
-          value: "Unborn",
-          label: "Unborn"
+          value: "White",
+          label: "White",
         },
         {
-          value: "00",
-          label: "0"
+          value: "Black/African American",
+          label: "Black/African American",
         },
         {
-          value: "01",
-          label: "1"
+          value: "Asian",
+          label: "Asian",
         },
         {
-          value: "02",
-          label: "2"
+          value: "American Indian",
+          label: "American Indian",
         },
         {
-          value: "03",
-          label: "3"
+          value: "Native Hawaiian or Other Pacific Islander",
+          label: "Native Hawaiian or Other Pacific Islander",
         },
         {
-          value: "04",
-          label: "4"
+          value: "Two or More Races",
+          label: "Two or More Races",
         },
         {
-          value: "05",
-          label: "5"
+          value: "Other",
+          label: "Other",
         },
-        {
-          value: "06",
-          label: "6"
-        },
-        {
-          value: "07",
-          label: "7"
-        },
-        {
-          value: "08",
-          label: "8"
-        },
-        {
-          value: "09",
-          label: "9"
-        },
-        {
-          value: "10",
-          label: "10"
-        },
-        {
-          value: "11",
-          label: "11"
-        },
-        {
-          value: "12",
-          label: "12"
-        },
-        {
-          value: "13",
-          label: "13"
-        },
-        {
-          value: "14",
-          label: "14"
-        },
-        {
-          value: "15",
-          label: "15"
-        },
-        {
-          value: "16",
-          label: "16"
-        },
-        {
-          value: "17",
-          label: "17"
-        },
-        {
-          value: "18",
-          label: "18"
-        },
-        {
-          value: "19",
-          label: "19"
-        },
-        {
-          value: "20",
-          label: "20"
-        },
-        {
-          value: "21",
-          label: "21"
-        },
-        {
-          value: "22",
-          label: "22"
-        },
-        {
-          value: "23",
-          label: "23"
-        },
-        {
-          value: "24",
-          label: "24"
-        },
-        {
-          value: ">25",
-          label: ">25"
-        },
-        {
-          value: "Unknown",
-          label: "Unknown"
-        }
       ],
+      required: true,
     },
     {
-      label: 'Gender',
-      type: 'select',
-      name: 'gender',
-      required: true,
-      defaultValue: '',
+      type: "select",
+      name: "ethnicity",
+      label: "What is your ethnicity?",
+      defaultValue: "",
       options: [
         {
           value: "",
-          label: ""
+          label: "",
         },
         {
-          value: 'Girl',
-          label: 'Girl',
-        },
-        {
-          value: 'Boy',
-          label: 'Boy',
-        },
-        {
-          value: 'Non-Binary',
-          label: 'Non-Binary',
-        },
-        {
-          value: 'Unknown',
-          label: 'Unknown',
+          value: "",
+          label: "",
         },
       ],
+      required: true,
     },
     {
-      type: 'select',
-      name: 'province',
-      label: 'Province',
-      required: false,
-      defaultValue: '',
+      type: "select",
+      name: "ageRange",
+      label: "Which age range are you in?",
+      defaultValue: "",
       options: [
-        { 'value': '', 'label': '' },
-        { 'value': 'Northern', 'label': 'Northern' },
-        { 'value': 'Eastern', 'label': 'Eastern' },
-        { 'value': 'Western', 'label': 'Western' },
-        { 'value': 'Southern', 'label': 'Southern' },
-        { 'value': 'Unknown', 'label': 'Unknown'}
+        {
+          value: "",
+          label: "",
+        },
+        {
+          value: "18-24",
+          label: "18-24",
+        },
+        {
+          value: "25-34",
+          label: "25-34",
+        },
+        {
+          value: "35-44",
+          label: "35-44",
+        },
+        {
+          value: "45-54",
+          label: "45-54",
+        },
+        {
+          value: "55+",
+          label: "55+",
+        },
       ],
+      required: true,
     },
     {
-      name: 'district',
-      label: 'District',
-      type: 'dependent-select',
-      dependsOn: 'province',
-      required: false,
-      options: {
-       'Northern': [
-        { 'value': 'District A', 'label': 'District A' },
-        { 'value': 'District B', 'label': 'District B' },
-        { 'value': 'District C', 'label': 'District C' },
-        { 'value': 'Unknown', 'label': 'Unknown'}
-      ],
-      'Eastern': [
-        { 'value': 'District A', 'label': 'District A' },
-        { 'value': 'District B', 'label': 'District B' },
-        { 'value': 'District C', 'label': 'District C' },
-        { 'value': 'Unknown', 'label': 'Unknown'}
-      ],
-      'Western': [
-        { 'value': 'District A', 'label': 'District A' },
-        { 'value': 'District B', 'label': 'District B' },
-        { 'value': 'District C', 'label': 'District C' },
-        { 'value': 'Unknown', 'label': 'Unknown'}
-      ],
-      'Southern': [
-        { 'value': 'District A', 'label': 'District A' },
-        { 'value': 'District B', 'label': 'District B' },
-        { 'value': 'District C', 'label': 'District C' },
-        { 'value': 'Unknown', 'label': 'Unknown'}
-      ]
-      },
-    },
-    {
-      label: 'How urgent is your situation?',
-      type: 'select',
-      name: 'urgencyLevel',
-      required: false,
-      defaultValue: '',
+      type: "select",
+      name: "gender",
+      label: "What is your gender?",
+      defaultValue: "",
       options: [
-        { 'value': '', 'label': '' },
-        { 'value': 'Urgent', 'label': 'Urgent' },
-        { 'value': 'Critical', 'label': 'Critical' },
-        { 'value': 'Non-critical', 'label': 'Non-critical' },
-        { 'value': 'Other', 'label': 'Other' }
+        {
+          value: "",
+          label: "",
+        },
+        {
+          value: "Male",
+          label: "Male",
+        },
+        {
+          value: "Female",
+          label: "Female",
+        },
+        {
+          value: "Non-binary",
+          label: "Non-binary",
+        },
+        {
+          value: "Two-Spirit",
+          label: "Two-Spirit",
+        },
+        {
+          value: "TransMasc",
+          label: "TransMasc",
+        },
+        {
+          value: "TransFemme",
+          label: "TransFemme",
+        },
+        {
+          value: "Other",
+          label: "Other",
+        },
       ],
+      required: true,
     },
     {
-      type: 'checkbox',
-      name: 'termsAndConditions',
-      label:
-        'I\'ve read and accept the <a href="https://en.wikipedia.org/wiki/Terms_of_service">Terms and Conditions</a>',
+      type: "select",
+      name: "pronouns",
+      label: "What pronouns do you use?",
+      defaultValue: "",
+      options: [
+        {
+          value: "",
+          label: "",
+        },
+        {
+          value: "He/Him/His",
+          label: "He/Him/His",
+        },
+        {
+          value: "She/Her/Hers",
+          label: "She/Her/Hers",
+        },
+        {
+          value: "They/Them/Theirs",
+          label: "They/Them/Theirs",
+        },
+        {
+          value: "Other",
+          label: "Other",
+        },
+      ],
+      required: true,
+    },
+    {
+      type: "select",
+      name: "militaryStatus",
+      label: "What is your military status?",
+      defaultValue: "",
+      options: [
+        {
+          value: "",
+          label: "",
+        },
+        {
+          value: "Active Duty",
+          label: "Active Duty",
+        },
+        {
+          value: "Retired",
+          label: "Retired",
+        },
+        {
+          value: "Veteran (non-career)",
+          label: "Veteran (non-career)",
+        },
+        {
+          value: "Non-Military",
+          label: "Non-Military",
+        },
+        {
+          value: "National Guard/Reserves",
+          label: "National Guard/Reserves",
+        },
+        {
+          value: "Military Partner",
+          label: "Military Partner",
+        },
+        {
+          value: "Military Family Member",
+          label: "Military Family Member",
+        },
+      ],
+      required: true,
+    },
+    {
+      type: "checkbox",
+      name: "988Referral",
+      label: "I was referred here by 988",
+      required: true,
+    },
+    {
+      type: "checkbox",
+      name: "termsAndConditions",
+      label: 'I\'ve read and accept the <a href="https://www.google.com">Terms and Conditions</a>',
       required: {
         value: true,
-        message: "Sorry, if you don't accept our terms and conditions we can't provide counselling to you.",
-      }, 
+        message: "<message>",
+      },
     },
-   
   ],
 };
 
+const translations: Translations = {
+  'en-US': {
+    WelcomeMessage: 'Welcome to PRN Warm Line',
+    PreEngagementConfigDescription : 'Welcome! Thank you for reaching out. To best serve you, please answer the questions below before we connect you to a Peer Supporter.',
+    MessageCanvasTrayContent: '',
+    MessageInputDisabledReasonHold:
+      "Thank you very much for this information. We'll transfer you now. Please hold for a supporter.",
+    AutoFirstMessage: 'Incoming webchat contact from',
+    TypingIndicator: 'Supporter is typing',
+    StartChat: 'Start Chat!',
+    MessageCanvasTrayButton: 'Start New Chat',
+    Nickname: 'Nickname',
+  },
+  'Other': {
+    WelcomeMessage: 'Welcome to PRN Warm Line',
+    PreEngagementConfigDescription : 'Welcome! Thank you for reaching out. To best serve you, please answer the questions below before we connect you to a Peer Supporter.',
+    MessageCanvasTrayContent: '',
+    MessageInputDisabledReasonHold:
+      "Thank you very much for this information. We'll transfer you now. Please hold for a supporter.",
+    AutoFirstMessage: 'Incoming webchat contact from',
+    TypingIndicator: 'Supporter is typing',
+    StartChat: 'Start Chat!',
+    MessageCanvasTrayButton: 'Start New Chat',
+    Nickname: 'Nickname',
+  },
+};
+
+
+
 const memberDisplayOptions = {
-  yourDefaultName: 'You',
+  yourDefaultName: "You",
   yourFriendlyNameOverride: false,
   theirFriendlyNameOverride: false,
-  theirDefaultName: 'Counsellor',
+  theirDefaultName: "supporter",
 };
 
 const mapHelplineLanguage: MapHelplineLanguage = (helpline) => {
   switch (helpline) {
-    case 'Børns Vilkår (DK)':
-      return 'da';
-    case 'BRIS (SE)':
-      return 'sv';
-    case 'Child Helpline Cambodia (KH)':
-      return 'km';
-    case 'Jordan River 110 (JO)':
-      return 'ar';
-    case 'Palo Alto Testing (Text)':
-      return 'en-US';
-    case 'SMILE OF THE CHILD (GR)':
-      return 'el';
-    case 'Telefono Azzurro (IT)':
-      return 'it';
+    case "Børns Vilkår (DK)":
+      return "da";
+    case "BRIS (SE)":
+      return "sv";
+    case "Child Helpline Cambodia (KH)":
+      return "km";
+    case "Jordan River 110 (JO)":
+      return "ar";
+    case "Palo Alto Testing (Text)":
+      return "en-US";
+    case "SMILE OF THE CHILD (GR)":
+      return "el";
+    case "Telefono Azzurro (IT)":
+      return "it";
     default:
       return defaultLanguage;
   }
@@ -384,5 +327,7 @@ export const config: Configuration = {
   memberDisplayOptions,
   captureIp,
   contactType,
-  twilioServicesUrl: new URL(`https://hrm-staging.tl.techmatters.org/lambda/twilio/account-scoped/${accountSid}`),
+  twilioServicesUrl: new URL(
+    `https://hrm-staging.tl.techmatters.org/lambda/twilio/account-scoped/${accountSid}`,
+  ),
 };
