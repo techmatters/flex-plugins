@@ -16,7 +16,6 @@ name: "Copilot Setup Steps"
 
 on:
   workflow_dispatch:
-  workflow_run:
   push:
     paths:
       - .github/workflows/copilot-setup-steps.yml
@@ -49,6 +48,8 @@ jobs:
           echo "SITE_USER=${{ secrets.SITE_USER }}" >> $GITHUB_ENV
           echo "SITE_PASS=${{ secrets.SITE_PASS }}" >> $GITHUB_ENV
           echo "SITE_ACCOUNT_SID=${{ secrets.SITE_ACCOUNT_SID }}" >> $GITHUB_ENV
+          echo "SITE_CONNECTION_SID=${{ secrets.SITE_CONNECTION_SID }}" >> $GITHUB_ENV
+          echo "SITE_CLIENT_ID=${{ secrets.SITE_CLIENT_ID }}" >> $GITHUB_ENV
 
       # aselo-webchat-react-app
       - name: Install dependencies for aselo-webchat-react-app
