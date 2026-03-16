@@ -25,7 +25,7 @@ locals {
       voice : {
         channel_type     = "voice"
         contact_identity = ""
-        templatefile     = "/app/twilio-iac/helplines/templates/studio-flows/voice-basic.tftpl"
+        templatefile     = "/app/twilio-iac/helplines/templates/studio-flows/voice-blocking-no-op-hours-sd.tftpl"
         channel_flow_vars = {
           play_message_voice_blocked = "Thank you for calling the Promise Resource Network Warm Line. We provide compassionate, peer-based support to individuals across North Carolina. Important notice: Beginning May 1, our Warm Line can be reached by dialing 1-855-733-7762. The number 1-833-390-7728 will no longer be available after that date. Please remain on the line while you wait. If you hang up, you may lose your place in line. A peer listener will be with you as soon as possible to offer understanding and support based on lived experience."
           play_message_voice_blocked = "Due to repeated use of the service in ways that did not align with Warm Line participation guidelines, access to the Promise Resource Network NC Warm Line has been restricted for this number/account."
