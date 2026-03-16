@@ -36,4 +36,4 @@ export const versionId = 'local';
 export const githubSha = null;
 ```
 3. Run `npm run dev` from plugin-hrm-form
-3. To login run the oktaSsoLoginViaApi function under in e2e-tests/okta/ssoLogin.ts. You should pass in the parameters from variables set in the chrome devtools MCP environment, SITE_PASS for password, SITE_USER for username, SITE_ACCOUNT_SID for accountSid and 'https://localhost:3000' as the homeUrl
+4. To login run the oktaSsoLoginViaApi function under in e2e-tests/okta/ssoLogin.ts. You should pass in the parameters from variables set in the chrome devtools MCP environment, SITE_PASS for password, SITE_USER for username, SITE_ACCOUNT_SID for accountSid and 'https://localhost:3000' as the homeUrl
