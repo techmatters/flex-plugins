@@ -1,283 +1,298 @@
 {
   "Promise Resource Network": {
+    "maxSelections": 10,
     "categories": {
-      "Missing children": {
-        "color": "#BBE3FF",
+      "Emotional/Mental": {
+        "color": "#085f63",
         "subcategories": [
           {
-            "label": "Child abduction"
+            "label": "Anxiety, depression, low mood"
           },
           {
-            "label": "Lost, unaccounted for or otherwise missing child"
+            "label": "Coping skills and self care"
           },
           {
-            "label": "Runaway"
+            "label": "Emotional regulation (anger, frustration, mood swings)"
           },
           {
-            "label": "Unspecified/Other"
+            "label": "Feeling emotionally unsupported"
+          },
+          {
+            "label": "Grief, loss, sadness"
+          },
+          {
+            "label": "Motivation, hope, and outlook"
+          },
+          {
+            "label": "Seeking or accepting support"
+          },
+          {
+            "label": "Stress, overwhelm, or burnout"
+          },
+          {
+            "label": "Unspecified/Other - EM"
           }
         ]
       },
-      "Violence": {
-        "color": "#F5A623",
+      "Environmental": {
+        "color": "#14919b",
         "subcategories": [
           {
-            "label": "Bullying"
+            "label": "Access to basic needs (food, utilities, transportation)"
           },
           {
-            "label": "Child/Early/Forced marriage"
+            "label": "Community or neighborhood stressors"
           },
           {
-            "label": "Child labour"
+            "label": "Connection to nature, pets, or animals"
           },
           {
-            "label": "Commercial sexual exploitation (offline)"
+            "label": "Environmental stressors or triggers"
           },
           {
-            "label": "Female Genital Mutilation (FGM)"
+            "label": "Housing or living situation"
           },
           {
-            "label": "Gender-based harmful traditional practices (other than FGM)"
+            "label": "Justice or system involvement"
           },
           {
-            "label": "Harmful traditional practices other than child marriage and FGM"
+            "label": "Safety or stability concerns"
           },
           {
-            "label": "Mental/Emotional violence"
+            "label": "Social or peer environment challenges"
           },
           {
-            "label": "Neglect (or negligent treatment)"
+            "label": "Weather or external disruptions"
           },
           {
-            "label": "Online sexual abuse"
-          },
-          {
-            "label": "Online sexual exploitation"
-          },
-          {
-            "label": "Physical violence"
-          },
-          {
-            "label": "Sexual violence"
-          },
-          {
-            "label": "Unspecified/Other"
+            "label": "Unspecified/Other - E"
           }
         ]
       },
-      "Mental Health": {
-        "color": "#F8E900",
+      "Financial": {
+        "color": "#fac05e",
         "subcategories": [
           {
-            "label": "Addictive behaviours and substance use"
+            "label": "Benefits or financial assistance (SSI, SSDI, Veterans, SNAP, etc.)"
           },
           {
-            "label": "Behavioural problems"
+            "label": "Budgeting, bills, or expenses"
           },
           {
-            "label": "Concerns about the self"
+            "label": "Employment-related financial strain"
           },
           {
-            "label": "Emotional distress – anger problems"
+            "label": "Financial stress or uncertainty "
           },
           {
-            "label": "Emotional distress – fear and anxiety problems"
+            "label": "Financial gains or rewards"
           },
           {
-            "label": "Emotional distress – mood problems"
+            "label": "Food insecurity or essential needs"
           },
           {
-            "label": "Neurodevelopmental concerns"
+            "label": "Income loss or unemployment"
           },
           {
-            "label": "Problems with eating behaviour"
+            "label": "Planning for the future"
           },
           {
-            "label": "Self-harming behaviour"
+            "label": "Spending or shopping concerns"
           },
           {
-            "label": "Suicidal thoughts and suicide attempts"
-          },
-          {
-            "label": "Traumatic distress"
-          },
-          {
-            "label": "Unspecified/Other"
+            "label": "Unspecified/Other - F"
           }
         ]
       },
-      "Physical Health": {
-        "color": "#E86B6B",
+      "Intellectual": {
+        "color": "#f79d8f",
         "subcategories": [
           {
-            "label": "COVID-19"
+            "label": "Creative outlets or hobbies"
           },
           {
-            "label": "General medical or lifestyle concerns"
+            "label": "Feeling mentally 'stuck'"
           },
           {
-            "label": "Medical or lifestyle information about HIV/AIDS"
+            "label": "Foucs, concentration, or memory challenges"
           },
           {
-            "label": "Male circumcision"
+            "label": "Learning, curiosity, or personal growth"
           },
           {
-            "label": "Pregnancy and maternal care"
+            "label": "Media consumption (TV, sports, current events)"
           },
           {
-            "label": "Sexual and reproductive health"
+            "label": "Mental boredom or feeling 'stuck'"
           },
           {
-            "label": "Nutrition"
+            "label": "Problem solving or decision making"
           },
           {
-            "label": "Unspecified/Other"
+            "label": "Research, reading, or mental engagemnet"
+          },
+          {
+            "label": "School or academic concerns"
+          },
+          {
+            "label": "Unspecified/Other - I"
           }
         ]
       },
-      "Accessibility": {
-        "color": "#8055BA",
+      "Occupational": {
+        "color": "#f0817c",
         "subcategories": [
           {
-            "label": "Education"
+            "label": "Career goals or professional growth"
           },
           {
-            "label": "Essential needs"
+            "label": "Caregiving or unpaid labor responsibilities"
           },
           {
-            "label": "General healthcare services"
+            "label": "Feeling undervalued or unrecognized"
           },
           {
-            "label": "Legal services and advice"
+            "label": "Job dissatisfaction or lack of fulfillment"
           },
           {
-            "label": "Mental health services"
+            "label": "Job seeking or unemployment"
           },
           {
-            "label": "Sexual health services"
+            "label": "Sense of purpose or contribution"
           },
           {
-            "label": "Socio-economical services"
+            "label": "Work stress or burnout"
           },
           {
-            "label": "Unspecified/Other"
+            "label": "Work-life balance challenges"
+          },
+          {
+            "label": "Workplace conflict or dynamics"
+          },
+          {
+            "label": "Unspecified/Other - O"
           }
         ]
       },
-      "Discrimination and Exclusion": {
-        "color": "#B971AF",
+      "Physical": {
+        "color": "#4d92c2",
         "subcategories": [
           {
-            "label": "Ethnicity/nationality"
+            "label": "Exercise or physical activity"
           },
           {
-            "label": "Financial situation"
+            "label": "Fatigue or low energy"
           },
           {
-            "label": "Gender"
+            "label": "Health related stress or anxiety"
           },
           {
-            "label": "Gender identity or expression and sexual orientation"
+            "label": "Medication related concerns"
           },
           {
-            "label": "Health"
+            "label": "Nutrition or eating concerns"
           },
           {
-            "label": "Philosophical or religious beliefs"
+            "label": "Pain, illness, or chronic conditions"
           },
           {
-            "label": "Unspecified/Other"
+            "label": "Physical discomfort or limitations"
+          },
+          {
+            "label": "Physical workload or labor strain"
+          },
+          {
+            "label": "Sleep concerns"
+          },
+          {
+            "label": "Unspecified/Other - P"
           }
         ]
       },
-      "Family Relationships": {
-        "color": "#239613",
+      "Social": {
+        "color": "#c99f7d",
         "subcategories": [
           {
-            "label": "Adoption, fostering, and extended family placement"
+            "label": "Boundary-setting with others or self"
           },
           {
-            "label": "Relationship to caregiver"
+            "label": "Communication challenges"
           },
           {
-            "label": "Family health and wellbeing"
+            "label": "Feeling disconnected or excluded"
           },
           {
-            "label": "Relationship with sibling(s)"
+            "label": "Lack of support"
           },
           {
-            "label": "Unspecified/Other"
+            "label": "Loneliness or isolation"
+          },
+          {
+            "label": "Relationship challenges (family or friends)"
+          },
+          {
+            "label": "Romantic or intimate relationships"
+          },
+          {
+            "label": "Sense of belonging or connection"
+          },
+          {
+            "label": "Social engagement or events"
+          },
+          {
+            "label": "Unspecified/Other - S"
           }
         ]
       },
-      "Peer Relationships": {
-        "color": "#9AD703",
+      "Spiritual": {
+        "color": "#db7a34",
         "subcategories": [
           {
-            "label": "Friends and friendships"
+            "label": "Existential concerns (mortality, freedom, responsibility, etc.)"
           },
           {
-            "label": "Partner relationships"
+            "label": "Feeling ungrounded or disconnected"
           },
           {
-            "label": "Classmates/colleagues relationships"
+            "label": "Identity or self-understanding"
           },
           {
-            "label": "Unspecified/Other"
+            "label": "Life transitions or reflection"
+          },
+          {
+            "label": "Living according to one's values and beliefs"
+          },
+          {
+            "label": "Loss of hope or faith"
+          },
+          {
+            "label": "Meaning, purpose, or direction"
+          },
+          {
+            "label": "Religion/Spirituality practices (attending services/events, etc.)"
+          },
+          {
+            "label": "Values or belief struggles"
+          },
+          {
+            "label": "Unspecified/Other - SP"
           }
         ]
       },
-      "Education and Occupation": {
-        "color": "#55AFAF",
+      "Does not apply": {
+        "color": "#e7c582",
         "subcategories": [
           {
             "label": "Academic issues"
           },
           {
-            "label": "Teacher and school problems"
-          },
-          {
             "label": "Problems at work"
           },
           {
-            "label": "Unspecified/Other"
-          }
-        ]
-      },
-      "Sexuality": {
-        "color": "#506BA5",
-        "subcategories": [
-          {
-            "label": "Sexual orientation and gender identity"
+            "label": "Teacher and school problems"
           },
           {
-            "label": "Sexual behaviours"
-          },
-          {
-            "label": "Unspecified/Other"
-          }
-        ]
-      },
-      "Non-Counselling contacts": {
-        "color": "#767777",
-        "subcategories": [
-          {
-            "label": "Complaints about the child helpline"
-          },
-          {
-            "label": "Questions by parents"
-          },
-          {
-            "label": "Questions about the child helpline"
-          },
-          {
-            "label": "Questions about other services"
-          },
-          {
-            "label": "\"Thank you for your assistance\""
-          },
-          {
-            "label": "Unspecified/Other"
+            "label": "Unspecified/Other - NA"
           }
         ]
       }
