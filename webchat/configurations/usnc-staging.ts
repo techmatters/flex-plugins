@@ -92,8 +92,8 @@ const preEngagementConfig: PreEngagementFormDefinition = {
           label: "",
         },
         {
-          value: "",
-          label: "",
+          value: "Value",
+          label: "Value",
         },
       ],
       required: true,
