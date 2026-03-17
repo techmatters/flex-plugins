@@ -20,10 +20,18 @@ locals {
       error_message                         = "There has been an error with your message, please try writing us again."
     }
     channels = {
-      webchat : {
+      legacyWebchat : {
         channel_type         = "web"
         contact_identity     = ""
         templatefile         = "/app/twilio-iac/helplines/templates/studio-flows/messaging-lex-v2-blocking-lambda.tftpl"
+        channel_flow_vars    = {}
+        chatbot_unique_names = []
+      }
+      webchat : {
+        channel_type         = "web"
+        messaging_mode       = "conversations"
+        contact_identity     = ""
+        templatefile         = "/app/twilio-iac/helplines/templates/studio-flows/messaging-lex-v3-blocking-lambda-sd.tftpl"
         channel_flow_vars    = {}
         chatbot_unique_names = []
       }
