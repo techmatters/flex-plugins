@@ -1,0 +1,162 @@
+[
+  {
+    "name": "datePlanPrepared",
+    "type": "date-input",
+    "isPII": false,
+    "label": "Date plan prepared"
+  },
+  {
+    "name": "frequencyOfContact",
+    "label": "Frequency of contact",
+    "type": "select",
+    "isPII": false,
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "Every day",
+        "label": "Every day"
+      },
+      {
+        "value": "4x per week",
+        "label": "4x per week"
+      },
+      {
+        "value": "3x per week",
+        "label": "3x per week"
+      },
+      {
+        "value": "2x per week",
+        "label": "2x per week"
+      },
+      {
+        "value": "1x per week",
+        "label": "1x per week"
+      },
+      {
+        "value": "Fortnightly",
+        "label": "Fortnightly"
+      },
+      {
+        "value": "Monthly",
+        "label": "Monthly"
+      },
+      {
+        "value": "Sporadic",
+        "label": "Sporadic"
+      }
+    ]
+  },
+  {
+    "name": "keyInformation",
+    "label": "Key Information for working with this client",
+    "type": "input",
+    "isPII": false
+  },
+  {
+    "name": "contactedSince",
+    "type": "date-input",
+    "isPII": false,
+    "label": "Contacted since"
+  },
+  {
+    "name": "mainContactPhoneemail",
+    "label": "Main contact phone/email",
+    "type": "input",
+    "isPII": false
+  },
+  {
+    "name": "presentationformulationSummary",
+    "label": "Presentation/Formulation Summary:",
+    "type": "textarea",
+    "isPII": false,
+    "rows": 10,
+    "width": 150
+  },
+  {
+    "name": "pastBriefDetail",
+    "label": "Past - brief detail",
+    "type": "textarea",
+    "isPII": false,
+    "rows": 10,
+    "width": 150
+  },
+  {
+    "name": "presentBriefDetail",
+    "label": "Present - brief detail",
+    "type": "textarea",
+    "isPII": false,
+    "rows": 10,
+    "width": 150
+  },
+  {
+    "name": "history",
+    "label": "History",
+    "type": "textarea",
+    "isPII": false,
+    "rows": 10,
+    "width": 150
+  },
+  {
+    "name": "presentation",
+    "label": "Presentation",
+    "type": "textarea",
+    "isPII": false,
+    "rows": 10,
+    "width": 150
+  },
+  {
+    "name": "formulation",
+    "label": "Formulation",
+    "type": "textarea",
+    "isPII": false,
+    "rows": 10,
+    "width": 150
+  },
+  {
+    "name": "goals",
+    "label": "Goals",
+    "type": "textarea",
+    "isPII": false,
+    "rows": 10,
+    "width": 150
+  },
+  {
+    "name": "bestSupportForClient",
+    "label": "How can we best support/work with this client",
+    "type": "textarea",
+    "isPII": false,
+    "rows": 10,
+    "width": 150
+  },
+  {
+    "name": "limitationsForWorkingWithClient",
+    "label": "What are our limitations/boundaries/challenges for working with this client",
+    "type": "textarea",
+    "isPII": false,
+    "rows": 10,
+    "width": 150
+  },
+  {
+    "name": "otherConsiderations",
+    "label": "Other considerations",
+    "type": "textarea",
+    "isPII": false,
+    "rows": 10,
+    "width": 150
+  },
+  {
+    "name": "reviewDate",
+    "type": "date-input",
+    "isPII": false,
+    "label": "Review date"
+  },
+  {
+    "name": "closedDate",
+    "type": "date-input",
+    "isPII": false,
+    "label": "Closed date"
+  }
+]
