@@ -35,6 +35,15 @@ locals {
         }
         chatbot_unique_names = []
       },
+      sms : {
+        messaging_mode   = "conversations"
+        channel_type     = "sms"
+        contact_identity = "+16082004843"
+        templatefile     = "/app/twilio-iac/helplines/templates/studio-flows/messaging-blocking-lambda-sd.tftpl"
+        channel_flow_vars = {
+        }
+        chatbot_unique_names = []
+      }
     }
     system_down_templatefile = "/app/twilio-iac/helplines/templates/studio-flows/system-down.tftpl"
     enable_system_down       = true
