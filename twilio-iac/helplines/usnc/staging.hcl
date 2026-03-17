@@ -11,9 +11,7 @@ locals {
     flow_vars = {
       widget_from          = "Promise Resource Network"
       chat_blocked_message = "Sorry, you're not able to contact Promise Resource Network from this device or account"
-      error_message        = "There has been an error with your message, please try writing us again.",
-      play_message_voice_prequeue = "Thank you for calling the Promise Resource Network Warm Line. We provide compassionate, peer-based support to individuals across North Carolina. Important notice: Beginning May 1, our Warm Line can be reached by dialing 1-855-733-7762. The number 1-833-390-7728 will no longer be available after that date. Please remain on the line while you wait. If you hang up, you may lose your place in line. A peer listener will be with you as soon as possible to offer understanding and support based on lived experience."
-      play_message_voice_blocked = "Due to repeated use of the service in ways that did not align with Warm Line participation guidelines, access to the Promise Resource Network NC Warm Line has been restricted for this number/account."
+      error_message        = "There has been an error with your message, please try writing us again."
     }
 
     channels = {
@@ -27,11 +25,11 @@ locals {
       voice : {
         channel_type     = "voice"
         contact_identity = ""
-        templatefile     = "/app/twilio-iac/helplines/templates/studio-flows/voice-blocking-no-op-hours-sd.tftpl"
+        templatefile     = "/app/twilio-iac/helplines/templates/studio-flows/voice-blocking-no-op-hours-rec-sd.tftpl"
         channel_flow_vars = {
-          play_message_voice_prequeue = "Thank you for calling the Promise Resource Network Warm Line. We provide compassionate, peer-based support to individuals across North Carolina. Important notice: Beginning May 1, our Warm Line can be reached by dialing 1-855-733-7762. The number 1-833-390-7728 will no longer be available after that date. Please remain on the line while you wait. If you hang up, you may lose your place in line. A peer listener will be with you as soon as possible to offer understanding and support based on lived experience."
-          play_message_voice_blocked = "Due to repeated use of the service in ways that did not align with Warm Line participation guidelines, access to the Promise Resource Network NC Warm Line has been restricted for this number/account."
-          voice_ivr_language         = "en-US"
+          play_message_voice_prequeue = "https://usnc-assets-3228.twil.io/play_message_voice_prequeue.mp3"
+          play_message_voice_blocked  = "Due to repeated use of the service in ways that did not align with Warm Line participation guidelines, access to the Promise Resource Network NC Warm Line has been restricted for this number/account."
+          voice_ivr_language          = "en-US"
         }
         chatbot_unique_names = []
       },
@@ -41,7 +39,7 @@ locals {
         contact_identity = "+16082004843"
         templatefile     = "/app/twilio-iac/helplines/templates/studio-flows/messaging-blocking-conv-lambda-sd.tftpl"
         channel_flow_vars = {
-          widget_from          = "Warm Line"
+          widget_from           = "Warm Line"
           send_message_prequeue = "Hello"
 
         }
