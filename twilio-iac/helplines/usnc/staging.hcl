@@ -41,6 +41,9 @@ locals {
         contact_identity = "+16082004843"
         templatefile     = "/app/twilio-iac/helplines/templates/studio-flows/messaging-blocking-lambda-sd.tftpl"
         channel_flow_vars = {
+          widget_from          = "Warm Line"
+          send_message_prequeue = "Hello"
+
         }
         chatbot_unique_names = []
       }

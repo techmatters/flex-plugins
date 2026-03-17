@@ -82,7 +82,7 @@ ${
       "type": "split-based-on",
       "transitions": [
         {
-          "next": "send_to_queue",
+          "next": "send_message_prequeue",
           "event": "noMatch"
         },
         {
@@ -108,13 +108,38 @@ ${
         }
       }
     },
+    {
+      "name": "send_message_prequeue",
+      "type": "send-message",
+      "transitions": [
+        {
+          "next": "send_to_queue",
+          "event": "sent"
+        },
+        {
+          "next": "http_post_webhook_notify_error",
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 420,
+          "y": 1110
+        },
+        "service": "{{trigger.message.InstanceSid}}",
+        "channel": "{{trigger.message.ChannelSid}}",
+        "from": "${channel_flow_vars.widget_from}",
+        "to": "{{contact.channel.address}}",
+        "body": "${channel_flow_vars.send_message_prequeue}"
+      }
+    },
       {
         "transitions": [
           {
             "event": "callComplete"
           },
           {
-            "next": "http_post_notify_failed_to_enqueue",
+            "next": "http_post_webhook_notify_error",
             "event": "failedToEnqueue"
           },
           {
@@ -134,7 +159,7 @@ ${
         }
       },
     {
-        "name": "http_post_notify_failed_to_enqueue",
+        "name": "http_post_webhook_notify_error",
         "type": "make-http-request",
         "transitions": [
           {
@@ -151,7 +176,7 @@ ${
           },
           "method": "POST",
           "content_type": "application/json;charset=utf-8",
-          "body": "{ \"text\": \"Issue detected [Failed to Enqueue] on ${short_helpline} ${short_environment} Flow SID: {{flow.flow_sid}} Execution SID: {{flow.sid}}  \" }",
+          "body": "{ \"text\": \"Issue detected on ${short_helpline} ${short_environment} Flow SID: {{flow.flow_sid}} Execution SID: {{flow.sid}}  \" }",
           "add_twilio_auth": false,
           "url": "${webhook_url_studio_errors}"
         }
