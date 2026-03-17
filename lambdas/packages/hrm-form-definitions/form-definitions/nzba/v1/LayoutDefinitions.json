@@ -11,7 +11,7 @@
   "case": {
     "sectionTypes": {
       "cpm": {
-        "splitFormAt": 7,
+        "splitFormAt": 10,
         "caseHomeOrder": 1,
         "printOrder": 1,
         "previewFields": [
@@ -43,11 +43,9 @@
       },
       "dutyOfCare": {
          "previewFields": [
-           "referredTo"
+           "date",
+           "location"
          ],
-         "layout": {
-           "referredTo": {}
-         },
          "splitFormAt": 2,
          "printOrder": 3,
          "caseHomeLocation": "timeline"

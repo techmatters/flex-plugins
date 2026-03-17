@@ -72,80 +72,80 @@
     "label": "Presentation/Formulation Summary:",
     "type": "textarea",
     "isPII": false,
-    "rows": 10,
-    "width": 150
+    "rows": 8,
+    "width": 250
   },
   {
     "name": "pastBriefDetail",
     "label": "Past - brief detail",
     "type": "textarea",
     "isPII": false,
-    "rows": 10,
-    "width": 150
+    "rows": 8,
+    "width": 250
   },
   {
     "name": "presentBriefDetail",
     "label": "Present - brief detail",
     "type": "textarea",
     "isPII": false,
-    "rows": 10,
-    "width": 150
+    "rows": 8,
+    "width": 250
   },
   {
     "name": "history",
     "label": "History",
     "type": "textarea",
     "isPII": false,
-    "rows": 10,
-    "width": 150
+    "rows": 8,
+    "width": 250
   },
   {
     "name": "presentation",
     "label": "Presentation",
     "type": "textarea",
     "isPII": false,
-    "rows": 10,
-    "width": 150
+    "rows": 8,
+    "width": 250
   },
   {
     "name": "formulation",
     "label": "Formulation",
     "type": "textarea",
     "isPII": false,
-    "rows": 10,
-    "width": 150
+    "rows": 8,
+    "width": 250
   },
   {
     "name": "goals",
     "label": "Goals",
     "type": "textarea",
     "isPII": false,
-    "rows": 10,
-    "width": 150
+    "rows": 8,
+    "width": 250
   },
   {
     "name": "bestSupportForClient",
     "label": "How can we best support/work with this client",
     "type": "textarea",
     "isPII": false,
-    "rows": 10,
-    "width": 150
+    "rows": 8,
+    "width": 250
   },
   {
     "name": "limitationsForWorkingWithClient",
     "label": "What are our limitations/boundaries/challenges for working with this client",
     "type": "textarea",
     "isPII": false,
-    "rows": 10,
-    "width": 150
+    "rows": 8,
+    "width": 250
   },
   {
     "name": "otherConsiderations",
     "label": "Other considerations",
     "type": "textarea",
     "isPII": false,
-    "rows": 10,
-    "width": 150
+    "rows": 8,
+    "width": 250
   },
   {
     "name": "reviewDate",

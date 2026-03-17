@@ -22,8 +22,8 @@
     "label": "Worker's contact details",
     "type": "textarea",
     "isPII": false,
-    "rows": 10,
-    "width": 50
+    "rows": 8,
+    "width": 250
   },
   {
     "name": "permissionToContact",
@@ -56,7 +56,7 @@
     "label": "Notes",
     "type": "textarea",
     "isPII": false,
-    "rows": 10,
-    "width": 150
+    "rows": 8,
+    "width": 250
   }
 ]
