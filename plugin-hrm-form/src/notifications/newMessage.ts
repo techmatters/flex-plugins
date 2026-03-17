@@ -55,7 +55,10 @@ const notifyNewMessage = messageInstance => {
 
     const notificationTone = 'bell';
 
-    const isCounsellor = manager.conversationsClient != null && manager.conversationsClient.user.identity === messageInstance.author;
+    const isCounsellor =
+      manager.conversationsClient !== null &&
+      manager.conversationsClient !== undefined &&
+      manager.conversationsClient.user.identity === messageInstance.author;
 
     if (!isCounsellor && document.visibilityState === 'hidden') {
       playNotification(notificationTone);

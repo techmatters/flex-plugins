@@ -93,6 +93,10 @@ export function flexChat(page: Page) {
             console.log('Sent message in flex:', text);
             await dismissReactErrorOverlayIfPresent();
             break;
+          case ChatStatementOrigin.COUNSELOR_AUTO:
+            await selectors.messageWithText(type, text).waitFor({ timeout: 60000, state: 'attached' });
+            await dismissReactErrorOverlayIfPresent();
+            break;
           case ChatStatementOrigin.CALLER:
             try {
               await selectors
