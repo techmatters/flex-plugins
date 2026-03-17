@@ -30,10 +30,6 @@
     "isPII": false,
     "options": [
       {
-        "value": "Unknown",
-        "label": ""
-      },
-      {
         "value": "Emergency housing",
         "label": "Emergency housing"
       },
@@ -90,12 +86,8 @@
         "label": "Physical health (GP or other)"
       },
       {
-        "value": "School (e.g. Counsellor",
-        "label": "School (e.g. Counsellor"
-      },
-      {
-        "value": "teacher etc)",
-        "label": "teacher etc)"
+        "value": "School (e.g. Counsellor, teacher etc)",
+        "label": "School (e.g. Counsellor, teacher etc)"
       },
       {
         "value": "Sexual health",
@@ -112,6 +104,10 @@
       {
         "value": "Other",
         "label": "Other"
+      },
+      {
+        "value": "Unknown",
+        "label": "Unknown"
       }
     ]
   },
@@ -121,7 +117,7 @@
     "type": "textarea",
     "isPII": false,
     "rows": 10,
-    "width": 250
+    "width": 150
   },
   {
     "name": "overallOutcome",
@@ -129,10 +125,6 @@
     "type": "listbox-multiselect",
     "isPII": false,
     "options": [
-      {
-        "value": "Unknown",
-        "label": ""
-      },
       {
         "value": "1. The client’s distress reduced",
         "label": "1. The client’s distress reduced"
@@ -148,6 +140,10 @@
       {
         "value": "4. Something else (+ a free text box)",
         "label": "4. Something else (+ a free text box)"
+      },
+      {
+        "value": "Unknown",
+        "label": "Unknown"
       }
     ]
   },
@@ -239,7 +235,7 @@
     "type": "textarea",
     "isPII": false,
     "rows": 10,
-    "width": 250
+    "width": 150
   },
   {
     "name": "presentation",
@@ -247,7 +243,7 @@
     "type": "textarea",
     "isPII": false,
     "rows": 10,
-    "width": 250
+    "width": 150
   },
   {
     "name": "formulation",
@@ -255,7 +251,7 @@
     "type": "textarea",
     "isPII": false,
     "rows": 10,
-    "width": 250
+    "width": 150
   },
   {
     "name": "goalsIdentified",
@@ -263,7 +259,7 @@
     "type": "textarea",
     "isPII": false,
     "rows": 10,
-    "width": 250
+    "width": 150
   },
   {
     "name": "actionsOrOutcomes",
@@ -271,7 +267,7 @@
     "type": "textarea",
     "isPII": false,
     "rows": 10,
-    "width": 250
+    "width": 150
   },
   {
     "name": "other",
@@ -279,6 +275,6 @@
     "type": "textarea",
     "isPII": false,
     "rows": 10,
-    "width": 250
+    "width": 150
   }
 ]
