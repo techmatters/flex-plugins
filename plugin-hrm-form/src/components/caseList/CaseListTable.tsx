@@ -33,6 +33,7 @@ import { getInitializedCan } from '../../permissions/rules';
 import { namespace } from '../../states/storeNamespaces';
 import { RootState } from '../../states';
 import { PermissionActions } from '../../permissions/actions';
+import { lookupTranslation } from '../../translations';
 
 const ROW_HEIGHT = 89;
 
@@ -75,7 +76,7 @@ const CaseListTable: React.FC<OwnProps> = ({ loading, caseList, caseCount, handl
                 }}
               >
                 <LoadingCell>
-                  <CircularProgress size={50} />
+                  <CircularProgress size={50} aria-label={lookupTranslation('CaseList-Loading')} />
                 </LoadingCell>
               </DataTableRow>
             </TableBody>

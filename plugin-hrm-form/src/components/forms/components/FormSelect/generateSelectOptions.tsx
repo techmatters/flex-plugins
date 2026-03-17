@@ -18,11 +18,11 @@ import { SelectOption } from 'hrm-form-definitions';
 import React from 'react';
 
 import { FormOption } from '../../../../styles';
-import { getTemplateStrings } from '../../../../hrmConfig';
+import { lookupTranslation } from '../../../../translations';
 
 const bindCreateSelectOptions = (path: string) => (o: SelectOption, selected: boolean) => (
   <FormOption key={`${path}-${o.label}-${o.value}`} value={o.value} isEmptyValue={o.value === ''} selected={selected}>
-    {getTemplateStrings()[o.label] ?? o.label}
+    {lookupTranslation(o.label)}
   </FormOption>
 );
 

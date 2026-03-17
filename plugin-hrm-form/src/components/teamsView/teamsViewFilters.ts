@@ -100,7 +100,8 @@ const generateFilterDefinitionFactoryForInputExpression = ({
   fieldName?: string;
 }): FilterDefinitionFactory => (state, teamsViewProps) => {
   const values = state.flex.supervisor.appliedFilters.find(af => af.name === id)?.values ?? [];
-  const selections = Array.isArray(values) ? values : [values];
+  const rawSelections: unknown[] = Array.isArray(values) ? values : [values];
+  const selections = rawSelections.filter((v): v is string => typeof v === 'string');
   if (selections.length) {
     filterInputExpressionStrings[id] = queryGenerator(selections);
   } else {

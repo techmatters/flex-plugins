@@ -21,7 +21,13 @@ import { playNotification } from './playNotification';
 
 export const subscribeAlertOnConversationJoined = task => {
   const manager = Manager.getInstance();
-  manager.conversationsClient?.once('conversationJoined', () => trySubscribeAudioAlerts(task, 0, 0));
+  if (!manager.conversationsClient) {
+    console.warn(
+      'conversationsClient not available in subscribeAlertOnConversationJoined, audio alerts will not be set up for this task',
+    );
+    return;
+  }
+  manager.conversationsClient.once('conversationJoined', () => trySubscribeAudioAlerts(task, 0, 0));
 };
 
 export const subscribeNewMessageAlertOnPluginInit = () => {
