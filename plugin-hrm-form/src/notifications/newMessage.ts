@@ -21,7 +21,7 @@ import { playNotification } from './playNotification';
 
 export const subscribeAlertOnConversationJoined = task => {
   const manager = Manager.getInstance();
-  manager.conversationsClient.once('conversationJoined', () => trySubscribeAudioAlerts(task, 0, 0));
+  manager.conversationsClient?.once('conversationJoined', () => trySubscribeAudioAlerts(task, 0, 0));
 };
 
 export const subscribeNewMessageAlertOnPluginInit = () => {
@@ -49,7 +49,7 @@ const notifyNewMessage = messageInstance => {
 
     const notificationTone = 'bell';
 
-    const isCounsellor = manager.conversationsClient.user.identity === messageInstance.author;
+    const isCounsellor = manager.conversationsClient != null && manager.conversationsClient.user.identity === messageInstance.author;
 
     if (!isCounsellor && document.visibilityState === 'hidden') {
       playNotification(notificationTone);
