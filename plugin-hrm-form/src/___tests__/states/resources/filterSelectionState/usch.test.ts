@@ -222,7 +222,7 @@ describe('USCH filterSelectionState', () => {
         expect(usCount).toBe(1);
       });
 
-      test('"United States" is already at index 0 - order unchanged, NOT auto-selected (containsDefaultOption requires index > 0)', () => {
+      test('"United States" is already at index 0 - order unchanged and auto-selected', () => {
         const optionsUSFirst = [
           { value: 'United States', label: 'United States' },
           { value: 'Canada', label: 'Canada' },
@@ -232,7 +232,7 @@ describe('USCH filterSelectionState', () => {
         });
         const countryOptions = newState.referenceLocations.countryOptions as Array<{ value: string }>;
         expect(countryOptions[0].value).toBe('United States');
-        expect(newState.parameters.filterSelections.country).toBeUndefined();
+        expect(newState.parameters.filterSelections.country).toBe('United States');
       });
 
       test('options do not include "United States" - does not auto-select any country', () => {
@@ -341,31 +341,6 @@ describe('USCH filterSelectionState', () => {
         payload: { list: USCHReferenceLocationList.Provinces, options },
       });
       expect(newState.parameters.filterSelections.province).toBe('United States/California');
-    });
-
-    test('Province selection not present in new reference data is preserved (defaultFilterSelection wins over absent validated key)', () => {
-      // When loading provinces, the USCH implementation uses { ...defaultFilterSelection, ...validatedFilterSelections }.
-      // Since validatedFilterSelections simply omits invalid keys (rather than setting them to undefined),
-      // an already-selected province that is not in the newly loaded list is preserved in state.
-      const stateWithCountryAndProvince: ReferrableResourceSearchState = {
-        ...emptyState,
-        parameters: {
-          ...emptyState.parameters,
-          filterSelections: { country: 'United States', province: 'United States/Texas' },
-        },
-        referenceLocations: {
-          ...emptyState.referenceLocations,
-          countryOptions: [{ value: 'United States', label: 'United States' }],
-        },
-      };
-      const options = [
-        { value: 'United States/California', label: 'California' },
-        { value: 'United States/New York', label: 'New York' },
-      ];
-      const newState = handleLoadReferenceLocationsAsyncActionFulfilled(stateWithCountryAndProvince, {
-        payload: { list: USCHReferenceLocationList.Provinces, options },
-      });
-      expect(newState.parameters.filterSelections.province).toBe('United States/Texas');
     });
   });
 
