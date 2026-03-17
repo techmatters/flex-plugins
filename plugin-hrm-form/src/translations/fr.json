@@ -174,6 +174,7 @@
 "TabbedForms-ContactNotLoaded-Header": "Contact non chargé, aucune donnée ne peut être enregistrée",
 "TabbedForms-ContactNotLoaded-Retry": "Réessayer",
 "TabbedForms-ContactNotLoaded-Finish": "Finir sans enregistrer",
+"TabbedForms-ContactNotLoaded-Loading": "Chargement du contact",
 "NotImplemented": "Pas encore implémenté!",
 "Error-Backend": "Erreur du système backend.",
 "Error-ContinueWithoutRecording": "Erreur du système backend. Voulez-vous vraiment terminer la tâche sans enregistrer ?",
