@@ -39,7 +39,7 @@ locals {
         messaging_mode   = "conversations"
         channel_type     = "sms"
         contact_identity = "+16082004843"
-        templatefile     = "/app/twilio-iac/helplines/templates/studio-flows/messaging-blocking-lambda-sd.tftpl"
+        templatefile     = "/app/twilio-iac/helplines/templates/studio-flows/messaging-blocking-conv-lambda-sd.tftpl"
         channel_flow_vars = {
           widget_from          = "Warm Line"
           send_message_prequeue = "Hello"
