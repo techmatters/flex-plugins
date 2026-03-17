@@ -41,6 +41,28 @@ export function flexChat(page: Page) {
         : taskCanvas.locator(`p:text-is("${text}")`),
   };
 
+  /**
+   * In local dev mode with Flex 2.16.0+, a React runtime error overlay (rendered inside a
+   * webpack-dev-server iframe) may appear after a message is sent via programmable chat.
+   * The error is harmless and only occurs locally. This helper dismisses the overlay if present
+   * so the test can continue, and silently does nothing when running against deployed versions.
+   */
+  const dismissReactErrorOverlayIfPresent = async (): Promise<void> => {
+    try {
+      await page
+        .locator('#webpack-dev-server-client-overlay')
+        .waitFor({ state: 'visible', timeout: 500 });
+      console.log('React dev error overlay detected, dismissing...');
+      await page
+        .frameLocator('#webpack-dev-server-client-overlay')
+        .locator('button')
+        .first()
+        .click();
+    } catch {
+      // No overlay present - this is expected when running against deployed versions of Flex
+    }
+  };
+
   return {
     /**
      * This function runs the 'counselor side' of a webchat conversation.
@@ -69,6 +91,7 @@ export function flexChat(page: Page) {
             console.log('Sending message in flex:', text);
             await selectors.chatSendButton(type).click();
             console.log('Sent message in flex:', text);
+            await dismissReactErrorOverlayIfPresent();
             break;
           case ChatStatementOrigin.CALLER:
             try {
