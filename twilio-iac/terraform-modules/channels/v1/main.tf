@@ -100,7 +100,15 @@ resource "twilio_flex_flex_flows_v1" "channel_flow" {
 resource "twilio_conversations_configuration_addresses_v1" "conversations_address" {
   for_each = {
     for idx, channel in var.channels :
-    idx => channel if(channel.channel_type != "voice" && channel.channel_type != "custom" && channel.messaging_mode == "conversations")
+    idx => channel if(
+      channel.channel_type != "voice" &&
+      # The terraform provider won't create the configuration with a deployment key as an address
+      # https://github.com/twilio/terraform-provider-twilio/issues/152
+      # Must be created manually in Twilio Console for now
+      channel.channel_type != "chat" &&
+      channel.channel_type != "custom" &&
+      channel.messaging_mode == "conversations"
+    )
   }
   type                                   = each.value.channel_type
   address                                = each.value.contact_identity
