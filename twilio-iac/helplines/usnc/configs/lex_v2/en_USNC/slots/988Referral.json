@@ -1,6 +1,6 @@
 {
     "slotName": "988Referral",
-    "slotTypeName": "yes_no",
+    "slotTypeName": "true_false",
     "intentName": "pre_survey",
     "description": "Slot 988Referral for intent pre_survey",
     "valueElicitationSetting": {
