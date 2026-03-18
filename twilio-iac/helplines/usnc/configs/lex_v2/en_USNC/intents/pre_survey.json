@@ -114,7 +114,7 @@
                 "successNextStep": {
                     "dialogAction": {
                         "type": "ElicitSlot",
-                        "slotToElicit": "aboutSelf"
+                        "slotToElicit": "ageRange"
                     },
                     "intent": {}
                 },
