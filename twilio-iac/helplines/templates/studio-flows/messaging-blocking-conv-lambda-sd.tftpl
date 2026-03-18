@@ -1,18 +1,19 @@
 ${
-  jsonencode({
+  jsonencode(
+    {
   "states": [
     {
       "name": "Trigger",
       "type": "trigger",
       "transitions": [
         {
-          "next": "run_subflow_system_down",
           "event": "incomingMessage"
         },
         {
           "event": "incomingCall"
         },
         {
+          "next": "f_getProfileFlagsForIdentifier",
           "event": "incomingConversationMessage"
         },
         {
@@ -24,8 +25,8 @@ ${
       ],
       "properties": {
         "offset": {
-          "x": -160,
-          "y": -460
+          "x": -150,
+          "y": -580
         }
       }
     },
@@ -34,18 +35,18 @@ ${
       "type": "make-http-request",
       "transitions": [
         {
-          "next": "split_based_on_client_flag",
+          "next": "split_contact_routing",
           "event": "success"
         },
         {
-          "next": "send_to_queue",
+          "next": "send_message_prequeue",
           "event": "failed"
         }
       ],
       "properties": {
         "offset": {
-          "x": -350,
-          "y": -280
+          "x": -270,
+          "y": -240
         },
         "method": "POST",
         "content_type": "application/json;charset=utf-8",
@@ -61,27 +62,28 @@ ${
           "event": "sent"
         },
         {
-          "event": "failed"
+          "event": "failed",
+          "next": "http_post_webhook_notify_error"
         }
       ],
       "properties": {
         "offset": {
-          "x": -640,
-          "y": 210
+          "x": 550,
+          "y": 320
         },
-        "service": "{{trigger.message.InstanceSid}}",
-        "channel": "{{trigger.message.ChannelSid}}",
+        "service": "{{trigger.conversation.InstanceSid}}",
+        "channel": "{{trigger.conversation.ChannelSid}}",
         "from": "${flow_vars.widget_from}",
         "to": "{{contact.channel.address}}",
         "body": "${flow_vars.chat_blocked_message}"
       }
     },
     {
-      "name": "split_based_on_client_flag",
+      "name": "split_contact_routing",
       "type": "split-based-on",
       "transitions": [
         {
-          "next": "send_to_queue",
+          "next": "send_message_prequeue",
           "event": "noMatch"
         },
         {
@@ -102,9 +104,34 @@ ${
       "properties": {
         "input": "{{widgets.f_getProfileFlagsForIdentifier.parsed.flags}}",
         "offset": {
-          "x": -690,
-          "y": -60
+          "x": 50,
+          "y": 10
         }
+      }
+    },
+    {
+      "name": "send_message_prequeue",
+      "type": "send-message",
+      "transitions": [
+        {
+          "next": "send_to_queue",
+          "event": "sent"
+        },
+        {
+          "next": "http_post_webhook_notify_error",
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": -260,
+          "y": 460
+        },
+        "service": "{{trigger.message.InstanceSid}}",
+        "channel": "{{trigger.message.ChannelSid}}",
+        "from": "${channel_flow_vars.widget_from}",
+        "to": "{{contact.channel.address}}",
+        "body": "${channel_flow_vars.send_message_prequeue}"
       }
     },
     {
@@ -113,7 +140,7 @@ ${
           "event": "callComplete"
         },
         {
-          "next": "http_post_notify_failed_to_enqueue",
+          "next": "http_post_webhook_notify_error",
           "event": "failedToEnqueue"
         },
         {
@@ -127,13 +154,13 @@ ${
         "workflow": "${workflow_sids.master}",
         "channel": "${task_channel_sids.chat}",
         "offset": {
-          "y": 250,
-          "x": 80
+          "y": 670,
+          "x": 200
         }
       }
     },
     {
-      "name": "http_post_notify_failed_to_enqueue",
+      "name": "http_post_webhook_notify_error",
       "type": "make-http-request",
       "transitions": [
         {
@@ -145,43 +172,14 @@ ${
       ],
       "properties": {
         "offset": {
-          "x": 540,
-          "y": 1250
+          "x": 10,
+          "y": 1020
         },
         "method": "POST",
         "content_type": "application/json;charset=utf-8",
-        "body": "{ \"text\": \"Issue detected [Failed to Enqueue] on ${short_helpline} ${short_environment} Flow SID: {{flow.flow_sid}} Execution SID: {{flow.sid}}  \" }",
+        "body": "{ \"text\": \"Issue detected on ${short_helpline} ${short_environment} Flow SID: {{flow.flow_sid}} Execution SID: {{flow.sid}}  \" }",
         "add_twilio_auth": false,
         "url": "${webhook_url_studio_errors}"
-      }
-    },
-    {
-      "name": "run_subflow_system_down",
-      "type": "run-subflow",
-      "transitions": [
-        {
-          "next": "f_getProfileFlagsForIdentifier",
-          "event": "completed"
-        },
-        {
-          "next": "f_getProfileFlagsForIdentifier",
-          "event": "failed"
-        }
-      ],
-      "properties": {
-        "flow_sid": "${system_down_studio_subflow_sid}",
-        "flow_revision": "LatestPublished",
-        "offset": {
-          "x": 110,
-          "y": -270
-        },
-        "parameters": [
-          {
-            "type": "string",
-            "value": "true",
-            "key": "system_down"
-          }
-        ]
       }
     }
   ],
@@ -190,5 +188,6 @@ ${
     "allow_concurrent_calls": true
   },
   "description": "${flow_description}"
-})
+}
+    )
   }
