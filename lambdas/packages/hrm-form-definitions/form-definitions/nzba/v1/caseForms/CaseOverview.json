@@ -6,8 +6,8 @@
       "isPII": false
     },
     {
-      "name": "clientIsAtRisk",
-      "label": "Client is at risk",
+      "name": "childIsAtRisk",
+      "label": "Child is at risk",
       "type": "checkbox",
       "isPII": false
     },

@@ -116,8 +116,8 @@
     "label": "Contact Summary",
     "type": "textarea",
     "isPII": false,
-    "rows": 8,
-    "width": 250
+    "rows": 10,
+    "width": 150
   },
   {
     "name": "overallOutcome",
@@ -234,47 +234,47 @@
     "label": "Background",
     "type": "textarea",
     "isPII": false,
-    "rows": 8,
-    "width": 250
+    "rows": 10,
+    "width": 150
   },
   {
     "name": "presentation",
     "label": "Presentation",
     "type": "textarea",
     "isPII": false,
-    "rows": 8,
-    "width": 250
+    "rows": 10,
+    "width": 150
   },
   {
     "name": "formulation",
     "label": "Formulation",
     "type": "textarea",
     "isPII": false,
-    "rows": 8,
-    "width": 250
+    "rows": 10,
+    "width": 150
   },
   {
     "name": "goalsIdentified",
     "label": "Goals Identified",
     "type": "textarea",
     "isPII": false,
-    "rows": 8,
-    "width": 250
+    "rows": 10,
+    "width": 150
   },
   {
     "name": "actionsOrOutcomes",
     "label": "Actions or Outcomes",
     "type": "textarea",
     "isPII": false,
-    "rows": 8,
-    "width": 250
+    "rows": 10,
+    "width": 150
   },
   {
     "name": "other",
     "label": "Other",
     "type": "textarea",
     "isPII": false,
-    "rows": 8,
-    "width": 250
+    "rows": 10,
+    "width": 150
   }
 ]
