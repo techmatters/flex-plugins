@@ -39,7 +39,7 @@ locals {
       },
     }
     lex_v2_bot_languages = {
-      en_USCH : ["pre_survey", "post_survey"]
+      en_USNC : ["pre_survey", "post_survey"]
     }
 
     task_channels = {
