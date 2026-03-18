@@ -16,10 +16,14 @@ locals {
 
     channels = {
       webchat : {
-        channel_type         = "web"
-        contact_identity     = ""
-        templatefile         = "/app/twilio-iac/helplines/templates/studio-flows/messaging-blocking-lambda.tftpl"
-        channel_flow_vars    = {}
+        channel_type     = "web"
+        contact_identity = ""
+        templatefile     = "/app/twilio-iac/helplines/templates/studio-flows/messaging-blocking-preq-lambda-sd.tftpl"
+        channel_flow_vars = {
+          widget_from                   = "Warm Line"
+          chat_blocked_message          = "Due to repeated use of the service in ways that did not align with Warm Line participation guidelines, access to the Promise Resource Network NC Warm Line has been restricted for this number/account."
+          send_message_webchat_prequeue = "Welcome to the Promise Resource Network Warm Line. We offer compassionate peer support to residents of North Carolina.\nPlease stay in the chat while you wait so you don’t lose your place in line. A Peer Supporter will join you as soon as they are available."
+        }
         chatbot_unique_names = []
       },
       voice : {
@@ -41,7 +45,6 @@ locals {
         channel_flow_vars = {
           widget_from           = "Warm Line"
           send_message_prequeue = "Hello"
-
         }
         chatbot_unique_names = []
       }
@@ -57,8 +60,6 @@ locals {
       forward_number                   = "+123"
       recording_url                    = "https://<place_holder>.mp3"
     }
-
-    get_profile_flags_for_identifier_base_url = "https://hrm-staging.tl.techmatters.org/lambda/twilio/account-scoped"
 
   }
 }
