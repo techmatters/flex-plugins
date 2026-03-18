@@ -293,7 +293,7 @@ const memberDisplayOptions = {
   yourDefaultName: "You",
   yourFriendlyNameOverride: false,
   theirFriendlyNameOverride: false,
-  theirDefaultName: "supporter",
+  theirDefaultName: "Supporter",
 };
 
 const mapHelplineLanguage: MapHelplineLanguage = (helpline) => {

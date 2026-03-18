@@ -1,0 +1,113 @@
+{
+    "slotName": "ethnicity",
+    "slotTypeName": "ethnicity",
+    "intentName": "pre_survey",
+    "description": "Slot ethnicity for intent pre_survey",
+    "valueElicitationSetting": {
+        "slotConstraint": "Required",
+        "promptSpecification": {
+            "messageGroups": [
+                {
+                    "message": {
+                        "plainTextMessage": {
+                            "value": "Please enter the number that corresponds to your ethnicity:\n1 - Hispanic or Latino\n2 - Not Hispanic or Latino"
+                        }
+                    },
+                    "variations": [
+                        {
+                            "plainTextMessage": {
+                                "value": "What is your ethnicity? Please enter the number."
+                            }
+                        },
+                        {
+                            "plainTextMessage": {
+                                "value": "Enter the number that corresponds to your ethnicity."
+                            }
+                        }
+                    ]
+                }
+            ],
+            "maxRetries": 1,
+            "allowInterrupt": true,
+            "messageSelectionStrategy": "Ordered",
+            "promptAttemptsSpecification": {
+                "Initial": {
+                    "allowInterrupt": true,
+                    "allowedInputTypes": {
+                        "allowAudioInput": true,
+                        "allowDTMFInput": true
+                    },
+                    "audioAndDTMFInputSpecification": {
+                        "startTimeoutMs": 4000,
+                        "audioSpecification": {
+                            "maxLengthMs": 15000,
+                            "endTimeoutMs": 640
+                        },
+                        "dtmfSpecification": {
+                            "maxLength": 513,
+                            "endTimeoutMs": 5000,
+                            "deletionCharacter": "*",
+                            "endCharacter": "#"
+                        }
+                    },
+                    "textInputSpecification": {
+                        "startTimeoutMs": 30000
+                    }
+                },
+                "Retry1": {
+                    "allowInterrupt": true,
+                    "allowedInputTypes": {
+                        "allowAudioInput": true,
+                        "allowDTMFInput": true
+                    },
+                    "audioAndDTMFInputSpecification": {
+                        "startTimeoutMs": 4000,
+                        "audioSpecification": {
+                            "maxLengthMs": 15000,
+                            "endTimeoutMs": 640
+                        },
+                        "dtmfSpecification": {
+                            "maxLength": 513,
+                            "endTimeoutMs": 5000,
+                            "deletionCharacter": "*",
+                            "endCharacter": "#"
+                        }
+                    },
+                    "textInputSpecification": {
+                        "startTimeoutMs": 30000
+                    }
+                }
+            }
+        },
+        "slotCaptureSetting": {
+            "captureNextStep": {
+                "dialogAction": {
+                    "type": "ElicitSlot",
+                    "slotToElicit": "race"
+                },
+                "intent": {}
+            },
+            "failureResponse": {
+                "messageGroups": [
+                    {
+                        "message": {
+                            "plainTextMessage": {
+                                "value": "We're having trouble understanding your response."
+                            }
+                        }
+                    }
+                ],
+                "allowInterrupt": true
+            },
+            "failureNextStep": {
+                "dialogAction": {
+                    "type": "CloseIntent"
+                },
+                "intent": {}
+            },
+            "elicitationCodeHook": {
+                "enableCodeHookInvocation": true
+            }
+        }
+    }
+}
