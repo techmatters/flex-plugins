@@ -53,11 +53,11 @@ export function flexChat(page: Page) {
         .locator('#webpack-dev-server-client-overlay')
         .waitFor({ state: 'visible', timeout: 500 });
       console.log('React dev error overlay detected, dismissing...');
-      await page
-        .frameLocator('#webpack-dev-server-client-overlay')
-        .locator('button')
-        .first()
-        .click();
+      // Remove the overlay element directly — this clears all errors at once,
+      // regardless of how many error entries the overlay contains.
+      await page.evaluate(() =>
+        document.getElementById('webpack-dev-server-client-overlay')?.remove(),
+      );
     } catch {
       // No overlay present - this is expected when running against deployed versions of Flex
     }
@@ -94,7 +94,9 @@ export function flexChat(page: Page) {
             await dismissReactErrorOverlayIfPresent();
             break;
           case ChatStatementOrigin.COUNSELOR_AUTO:
-            await selectors.messageWithText(type, text).waitFor({ timeout: 60000, state: 'attached' });
+            await selectors
+              .messageWithText(type, text)
+              .waitFor({ timeout: 60000, state: 'attached' });
             await dismissReactErrorOverlayIfPresent();
             break;
           case ChatStatementOrigin.CALLER:
