@@ -21,12 +21,13 @@ import { RootState } from '../../states';
 import { Contact } from '../../types/types';
 import AddTaskButton from '../common/AddTaskButton';
 import { getOfflineContactTask } from '../../states/contacts/offlineContactTask';
-import { getHrmConfig, getTemplateStrings } from '../../hrmConfig';
+import { getHrmConfig } from '../../hrmConfig';
 import { newContact } from '../../states/contacts/contactState';
 import asyncDispatch from '../../states/asyncDispatch';
 import { createOfflineContactAsyncAction } from '../../states/contacts/saveContact';
 import selectCurrentOfflineContact from '../../states/contacts/selectCurrentOfflineContact';
 import { selectCurrentDefinitionVersion } from '../../states/configuration/selectDefinitions';
+import { lookupTranslation } from '../../translations';
 
 const AddOfflineContactButton: React.FC = () => {
   const dispatch = useDispatch();
@@ -71,7 +72,7 @@ const AddOfflineContactButton: React.FC = () => {
     // Temporary hack: show an error if no offline contact opens after 5 seconds
     setErrorTimer(
       setTimeout(() => {
-        alert(getTemplateStrings()['TaskList-AddOfflineContact-CreateError']);
+        alert(lookupTranslation('TaskList-AddOfflineContact-CreateError'));
         setErrorTimer(null);
       }, 5000),
     );
