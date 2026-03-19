@@ -188,5 +188,11 @@
     "label": "Is the individual out of state?",
     "type": "checkbox",
     "isPII": false
+  },
+  {
+    "name": "wasTheCallerSatisfiedWithTheSupportProvided",
+    "label": "Was the caller satisfied with the support provided?",
+    "type": "checkbox",
+    "isPII": false
   }
 ]

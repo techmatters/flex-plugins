@@ -87,7 +87,7 @@
           },
           "7": {
             "slot_name": "988Referral",
-            "slot_type_name": "true_false",
+            "slot_type_name": "yes_no",
             "slot_question": "Were you referred or transferred from 988? Please enter the number:\n1 - Yes\n2 - No",
             "variations": [
               "Did 988 refer or transfer you? Enter the number.",
