@@ -98,7 +98,7 @@ export async function open(browser: Browser | BrowserContext): Promise<AseloWebC
     /**
      * This function runs the 'caller side' of an aselo webchat conversation.
      * It will loop through a list of chat statements, typing and sending caller statements in the webchat client
-     * As soon as it hits a caller statement in the list, it will yield execution back to the calling code, so it can action the caller statement(s)
+     * As soon as it hits a non-caller statement in the list (e.g. counselor-side), it will yield execution back to the calling code, so it can action those statement(s)
      *
      * A similar function exists in flexChat.ts to handle actioning the counselor side of the conversation.
      * This means that they can both be looping through the same conversation, yielding control when they hit a statement the other chat function needs to handle
