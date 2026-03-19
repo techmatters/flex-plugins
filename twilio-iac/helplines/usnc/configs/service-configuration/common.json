@@ -1,0 +1,24 @@
+{
+    "attributes": {
+        "contacts_waiting_channels": [
+            "voice",
+            "web",
+            "sms"
+        ],
+        "enforceZeroTranscriptRetention": false,
+        "enableConferencing": true,
+        "enableUnmaskingCalls": false,
+        "hideAddToNewCaseButton": false,
+        "enableExternalRecordings": false, 
+        "feature_flags": {
+            "use_prepopulate_mappings": true,
+            "enable_hang_up_by_hrm_saving": true,
+            "enable_custom_links" : false
+        },
+        "definitionVersion": "usnc-v1",
+        "external_recordings_enabled": false,
+        "helplineLanguage": "en-US",
+        "permissionConfig": "usnc"
+    }
+
+}

@@ -1,0 +1,192 @@
+[
+  {
+    "name": "contactSummary",
+    "label": "Contact Summary",
+    "type": "textarea",
+    "isPII": false,
+    "rows": 10,
+    "width": 250
+  },
+  {
+    "name": "repeatCaller",
+    "label": "Repeat Caller?",
+    "type": "checkbox",
+    "isPII": false
+  },
+  {
+    "name": "actionTaken",
+    "label": "Action Taken",
+    "type": "listbox-multiselect",
+    "isPII": false,
+    "options": [
+      {
+        "value": "Active listening",
+        "label": "Active listening"
+      },
+      {
+        "value": "Validation",
+        "label": "Validation"
+      },
+      {
+        "value": "Empathy",
+        "label": "Empathy"
+      },
+      {
+        "value": "Reflective responding",
+        "label": "Reflective responding"
+      },
+      {
+        "value": "Normalization",
+        "label": "Normalization"
+      },
+      {
+        "value": "Open-ended questions",
+        "label": "Open-ended questions"
+      },
+      {
+        "value": "Strengths identification",
+        "label": "Strengths identification"
+      },
+      {
+        "value": "Emotional containment",
+        "label": "Emotional containment"
+      },
+      {
+        "value": "Supportive silence",
+        "label": "Supportive silence"
+      },
+      {
+        "value": "Encouragement",
+        "label": "Encouragement"
+      },
+      {
+        "value": "Sharing Information",
+        "label": "Sharing Information"
+      },
+      {
+        "value": "Boundary setting",
+        "label": "Boundary setting"
+      },
+      {
+        "value": "Hope-oriented language",
+        "label": "Hope-oriented language"
+      },
+      {
+        "value": "Collaborative problem exploration",
+        "label": "Collaborative problem exploration"
+      },
+      {
+        "value": "Respecting autonomy",
+        "label": "Respecting autonomy"
+      },
+      {
+        "value": "Sharing resources",
+        "label": "Sharing resources"
+      },
+      {
+        "value": "Other",
+        "label": "Other"
+      }
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "howDidYouHearAboutTheWarmLine",
+    "label": "How did you hear about the Warm Line?",
+    "type": "select",
+    "isPII": false,
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "Previously contacted",
+        "label": "Previously contacted"
+      },
+      {
+        "value": "Another Warm/Crisis Line",
+        "label": "Another Warm/Crisis Line"
+      },
+      {
+        "value": "Social Service Agency",
+        "label": "Social Service Agency"
+      },
+      {
+        "value": "Hospital/Health Practitioner",
+        "label": "Hospital/Health Practitioner"
+      },
+      {
+        "value": "Mental Health Provider",
+        "label": "Mental Health Provider"
+      },
+      {
+        "value": "Family/Friend",
+        "label": "Family/Friend"
+      },
+      {
+        "value": "Internet Search",
+        "label": "Internet Search"
+      },
+      {
+        "value": "Social Media",
+        "label": "Social Media"
+      },
+      {
+        "value": "Printed Materials",
+        "label": "Printed Materials"
+      },
+      {
+        "value": "Radio/TV/Billboard",
+        "label": "Radio/TV/Billboard"
+      },
+      {
+        "value": "Other",
+        "label": "Other"
+      },
+      {
+        "value": "Does Not Apply N/A",
+        "label": "Does Not Apply N/A"
+      }
+    ]
+  },
+  {
+    "name": "doWeHaveTheirPermissionToLiveMonitorCalls",
+    "label": "Do we have their permission to live monitor calls.",
+    "type": "checkbox",
+    "isPII": false
+  },
+  {
+    "name": "doWeHaveTheirPermissionToCallBack",
+    "label": "Do we have their permission to call back?",
+    "type": "checkbox",
+    "isPII": false
+  },
+  {
+    "name": "wasTheIndividualAbusive",
+    "label": "Was the individual abusive?",
+    "type": "checkbox",
+    "isPII": false
+  },
+  {
+    "name": "didTheIndividualWantToFileAComplaint",
+    "label": "Did the individual want to file a complaint?",
+    "type": "checkbox",
+    "isPII": false
+  },
+  {
+    "name": "isTheIndividualAMinor",
+    "label": "Is the individual a minor?",
+    "type": "checkbox",
+    "isPII": false
+  },
+  {
+    "name": "isTheIndividualOutOfState",
+    "label": "Is the individual out of state?",
+    "type": "checkbox",
+    "isPII": false
+  }
+]

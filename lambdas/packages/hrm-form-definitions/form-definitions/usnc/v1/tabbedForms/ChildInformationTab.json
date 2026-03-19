@@ -1,0 +1,1570 @@
+[
+  {
+    "name": "name",
+    "label": "Name",
+    "type": "input",
+    "isPII": true,
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "city",
+    "label": "City",
+    "type": "select",
+    "isPII": true,
+    "options": [
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "Aberdeen",
+        "label": "Aberdeen"
+      },
+      {
+        "value": "Advance",
+        "label": "Advance"
+      },
+      {
+        "value": "Ahoskie",
+        "label": "Ahoskie"
+      },
+      {
+        "value": "Alamance",
+        "label": "Alamance"
+      },
+      {
+        "value": "Albemarle",
+        "label": "Albemarle"
+      },
+      {
+        "value": "Albertson",
+        "label": "Albertson"
+      },
+      {
+        "value": "Alexander",
+        "label": "Alexander"
+      },
+      {
+        "value": "Alexis",
+        "label": "Alexis"
+      },
+      {
+        "value": "Alliance",
+        "label": "Alliance"
+      },
+      {
+        "value": "Almond",
+        "label": "Almond"
+      },
+      {
+        "value": "Altamahaw",
+        "label": "Altamahaw"
+      },
+      {
+        "value": "Andrews",
+        "label": "Andrews"
+      },
+      {
+        "value": "Angier",
+        "label": "Angier"
+      },
+      {
+        "value": "Ansonville",
+        "label": "Ansonville"
+      },
+      {
+        "value": "Apex",
+        "label": "Apex"
+      },
+      {
+        "value": "Arapahoe",
+        "label": "Arapahoe"
+      },
+      {
+        "value": "Ararat",
+        "label": "Ararat"
+      },
+      {
+        "value": "Arden",
+        "label": "Arden"
+      },
+      {
+        "value": "Ash",
+        "label": "Ash"
+      },
+      {
+        "value": "Asheboro",
+        "label": "Asheboro"
+      },
+      {
+        "value": "Asheville",
+        "label": "Asheville"
+      },
+      {
+        "value": "Askewville",
+        "label": "Askewville"
+      },
+      {
+        "value": "Atkinson",
+        "label": "Atkinson"
+      },
+      {
+        "value": "Atlantic",
+        "label": "Atlantic"
+      },
+      {
+        "value": "Atlantic Beach",
+        "label": "Atlantic Beach"
+      },
+      {
+        "value": "Aulander",
+        "label": "Aulander"
+      },
+      {
+        "value": "Aurora",
+        "label": "Aurora"
+      },
+      {
+        "value": "Autryville",
+        "label": "Autryville"
+      },
+      {
+        "value": "Ayden",
+        "label": "Ayden"
+      },
+      {
+        "value": "Badin",
+        "label": "Badin"
+      },
+      {
+        "value": "Bailey",
+        "label": "Bailey"
+      },
+      {
+        "value": "Bakersville",
+        "label": "Bakersville"
+      },
+      {
+        "value": "Banner Elk",
+        "label": "Banner Elk"
+      },
+      {
+        "value": "Bath",
+        "label": "Bath"
+      },
+      {
+        "value": "Bayboro",
+        "label": "Bayboro"
+      },
+      {
+        "value": "Beaufort",
+        "label": "Beaufort"
+      },
+      {
+        "value": "Belhaven",
+        "label": "Belhaven"
+      },
+      {
+        "value": "Belmont",
+        "label": "Belmont"
+      },
+      {
+        "value": "Benson",
+        "label": "Benson"
+      },
+      {
+        "value": "Bermuda Run",
+        "label": "Bermuda Run"
+      },
+      {
+        "value": "Bessemer City",
+        "label": "Bessemer City"
+      },
+      {
+        "value": "Bethania",
+        "label": "Bethania"
+      },
+      {
+        "value": "Bethel",
+        "label": "Bethel"
+      },
+      {
+        "value": "Beulaville",
+        "label": "Beulaville"
+      },
+      {
+        "value": "Biltmore Forest",
+        "label": "Biltmore Forest"
+      },
+      {
+        "value": "Biscoe",
+        "label": "Biscoe"
+      },
+      {
+        "value": "Black Creek",
+        "label": "Black Creek"
+      },
+      {
+        "value": "Black Mountain",
+        "label": "Black Mountain"
+      },
+      {
+        "value": "Bladenboro",
+        "label": "Bladenboro"
+      },
+      {
+        "value": "Blowing Rock",
+        "label": "Blowing Rock"
+      },
+      {
+        "value": "Boiling Spring Lakes",
+        "label": "Boiling Spring Lakes"
+      },
+      {
+        "value": "Boiling Springs",
+        "label": "Boiling Springs"
+      },
+      {
+        "value": "Bolivia",
+        "label": "Bolivia"
+      },
+      {
+        "value": "Bolton",
+        "label": "Bolton"
+      },
+      {
+        "value": "Boone",
+        "label": "Boone"
+      },
+      {
+        "value": "Boonville",
+        "label": "Boonville"
+      },
+      {
+        "value": "Bostic",
+        "label": "Bostic"
+      },
+      {
+        "value": "Brevard",
+        "label": "Brevard"
+      },
+      {
+        "value": "Bridgeton",
+        "label": "Bridgeton"
+      },
+      {
+        "value": "Broadway",
+        "label": "Broadway"
+      },
+      {
+        "value": "Brookford",
+        "label": "Brookford"
+      },
+      {
+        "value": "Bryson City",
+        "label": "Bryson City"
+      },
+      {
+        "value": "Buies Creek",
+        "label": "Buies Creek"
+      },
+      {
+        "value": "Bunn",
+        "label": "Bunn"
+      },
+      {
+        "value": "Burgaw",
+        "label": "Burgaw"
+      },
+      {
+        "value": "Burlington",
+        "label": "Burlington"
+      },
+      {
+        "value": "Burnsville",
+        "label": "Burnsville"
+      },
+      {
+        "value": "Butner",
+        "label": "Butner"
+      },
+      {
+        "value": "Calabash",
+        "label": "Calabash"
+      },
+      {
+        "value": "Calypso",
+        "label": "Calypso"
+      },
+      {
+        "value": "Cameron",
+        "label": "Cameron"
+      },
+      {
+        "value": "Candor",
+        "label": "Candor"
+      },
+      {
+        "value": "Canton",
+        "label": "Canton"
+      },
+      {
+        "value": "Cape Carteret",
+        "label": "Cape Carteret"
+      },
+      {
+        "value": "Carolina Beach",
+        "label": "Carolina Beach"
+      },
+      {
+        "value": "Carolina Shores",
+        "label": "Carolina Shores"
+      },
+      {
+        "value": "Carrboro",
+        "label": "Carrboro"
+      },
+      {
+        "value": "Carthage",
+        "label": "Carthage"
+      },
+      {
+        "value": "Cary",
+        "label": "Cary"
+      },
+      {
+        "value": "Casar",
+        "label": "Casar"
+      },
+      {
+        "value": "Cashiers",
+        "label": "Cashiers"
+      },
+      {
+        "value": "Castalia",
+        "label": "Castalia"
+      },
+      {
+        "value": "Catawba",
+        "label": "Catawba"
+      },
+      {
+        "value": "Cedar Point",
+        "label": "Cedar Point"
+      },
+      {
+        "value": "Cerro Gordo",
+        "label": "Cerro Gordo"
+      },
+      {
+        "value": "Chadbourn",
+        "label": "Chadbourn"
+      },
+      {
+        "value": "Chapel Hill",
+        "label": "Chapel Hill"
+      },
+      {
+        "value": "Charlotte",
+        "label": "Charlotte"
+      },
+      {
+        "value": "Cherryville",
+        "label": "Cherryville"
+      },
+      {
+        "value": "China Grove",
+        "label": "China Grove"
+      },
+      {
+        "value": "Chocowinity",
+        "label": "Chocowinity"
+      },
+      {
+        "value": "Claremont",
+        "label": "Claremont"
+      },
+      {
+        "value": "Clarkton",
+        "label": "Clarkton"
+      },
+      {
+        "value": "Clayton",
+        "label": "Clayton"
+      },
+      {
+        "value": "Clemmons",
+        "label": "Clemmons"
+      },
+      {
+        "value": "Clinton",
+        "label": "Clinton"
+      },
+      {
+        "value": "Clyde",
+        "label": "Clyde"
+      },
+      {
+        "value": "Coats",
+        "label": "Coats"
+      },
+      {
+        "value": "Colerain",
+        "label": "Colerain"
+      },
+      {
+        "value": "Columbia",
+        "label": "Columbia"
+      },
+      {
+        "value": "Columbus",
+        "label": "Columbus"
+      },
+      {
+        "value": "Concord",
+        "label": "Concord"
+      },
+      {
+        "value": "Conetoe",
+        "label": "Conetoe"
+      },
+      {
+        "value": "Connelly Springs",
+        "label": "Connelly Springs"
+      },
+      {
+        "value": "Conover",
+        "label": "Conover"
+      },
+      {
+        "value": "Conway",
+        "label": "Conway"
+      },
+      {
+        "value": "Cooleemee",
+        "label": "Cooleemee"
+      },
+      {
+        "value": "Cornelius",
+        "label": "Cornelius"
+      },
+      {
+        "value": "Cove City",
+        "label": "Cove City"
+      },
+      {
+        "value": "Cramerton",
+        "label": "Cramerton"
+      },
+      {
+        "value": "Creedmoor",
+        "label": "Creedmoor"
+      },
+      {
+        "value": "Creswell",
+        "label": "Creswell"
+      },
+      {
+        "value": "Crossnore",
+        "label": "Crossnore"
+      },
+      {
+        "value": "Cullowhee",
+        "label": "Cullowhee"
+      },
+      {
+        "value": "Dallas",
+        "label": "Dallas"
+      },
+      {
+        "value": "Danbury",
+        "label": "Danbury"
+      },
+      {
+        "value": "Davidson",
+        "label": "Davidson"
+      },
+      {
+        "value": "Denton",
+        "label": "Denton"
+      },
+      {
+        "value": "Denver",
+        "label": "Denver"
+      },
+      {
+        "value": "Dobson",
+        "label": "Dobson"
+      },
+      {
+        "value": "Dover",
+        "label": "Dover"
+      },
+      {
+        "value": "Drexel",
+        "label": "Drexel"
+      },
+      {
+        "value": "Dublin",
+        "label": "Dublin"
+      },
+      {
+        "value": "Dunn",
+        "label": "Dunn"
+      },
+      {
+        "value": "Durham",
+        "label": "Durham"
+      },
+      {
+        "value": "Earl",
+        "label": "Earl"
+      },
+      {
+        "value": "Eden",
+        "label": "Eden"
+      },
+      {
+        "value": "Edenton",
+        "label": "Edenton"
+      },
+      {
+        "value": "Elizabeth City",
+        "label": "Elizabeth City"
+      },
+      {
+        "value": "Elizabethtown",
+        "label": "Elizabethtown"
+      },
+      {
+        "value": "Elkin",
+        "label": "Elkin"
+      },
+      {
+        "value": "Elon",
+        "label": "Elon"
+      },
+      {
+        "value": "Emerald Isle",
+        "label": "Emerald Isle"
+      },
+      {
+        "value": "Enfield",
+        "label": "Enfield"
+      },
+      {
+        "value": "Erwin",
+        "label": "Erwin"
+      },
+      {
+        "value": "Etowah",
+        "label": "Etowah"
+      },
+      {
+        "value": "Eureka",
+        "label": "Eureka"
+      },
+      {
+        "value": "Fair Bluff",
+        "label": "Fair Bluff"
+      },
+      {
+        "value": "Fairmont",
+        "label": "Fairmont"
+      },
+      {
+        "value": "Farmville",
+        "label": "Farmville"
+      },
+      {
+        "value": "Fayetteville",
+        "label": "Fayetteville"
+      },
+      {
+        "value": "Flat Rock",
+        "label": "Flat Rock"
+      },
+      {
+        "value": "Fletcher",
+        "label": "Fletcher"
+      },
+      {
+        "value": "Forest City",
+        "label": "Forest City"
+      },
+      {
+        "value": "Four Oaks",
+        "label": "Four Oaks"
+      },
+      {
+        "value": "Franklin",
+        "label": "Franklin"
+      },
+      {
+        "value": "Franklinton",
+        "label": "Franklinton"
+      },
+      {
+        "value": "Fremont",
+        "label": "Fremont"
+      },
+      {
+        "value": "Fuquay-Varina",
+        "label": "Fuquay-Varina"
+      },
+      {
+        "value": "Garland",
+        "label": "Garland"
+      },
+      {
+        "value": "Garner",
+        "label": "Garner"
+      },
+      {
+        "value": "Gastonia",
+        "label": "Gastonia"
+      },
+      {
+        "value": "Gibson",
+        "label": "Gibson"
+      },
+      {
+        "value": "Gibsonville",
+        "label": "Gibsonville"
+      },
+      {
+        "value": "Glen Alpine",
+        "label": "Glen Alpine"
+      },
+      {
+        "value": "Goldsboro",
+        "label": "Goldsboro"
+      },
+      {
+        "value": "Graham",
+        "label": "Graham"
+      },
+      {
+        "value": "Granite Falls",
+        "label": "Granite Falls"
+      },
+      {
+        "value": "Greensboro",
+        "label": "Greensboro"
+      },
+      {
+        "value": "Greenville",
+        "label": "Greenville"
+      },
+      {
+        "value": "Grifton",
+        "label": "Grifton"
+      },
+      {
+        "value": "Havelock",
+        "label": "Havelock"
+      },
+      {
+        "value": "Haw River",
+        "label": "Haw River"
+      },
+      {
+        "value": "Hayesville",
+        "label": "Hayesville"
+      },
+      {
+        "value": "Henderson",
+        "label": "Henderson"
+      },
+      {
+        "value": "Hendersonville",
+        "label": "Hendersonville"
+      },
+      {
+        "value": "Hertford",
+        "label": "Hertford"
+      },
+      {
+        "value": "Hickory",
+        "label": "Hickory"
+      },
+      {
+        "value": "High Point",
+        "label": "High Point"
+      },
+      {
+        "value": "Highlands",
+        "label": "Highlands"
+      },
+      {
+        "value": "Hillsborough",
+        "label": "Hillsborough"
+      },
+      {
+        "value": "Holly Ridge",
+        "label": "Holly Ridge"
+      },
+      {
+        "value": "Hope Mills",
+        "label": "Hope Mills"
+      },
+      {
+        "value": "Huntersville",
+        "label": "Huntersville"
+      },
+      {
+        "value": "Iredell",
+        "label": "Iredell"
+      },
+      {
+        "value": "Indian Beach",
+        "label": "Indian Beach"
+      },
+      {
+        "value": "Jacksonville",
+        "label": "Jacksonville"
+      },
+      {
+        "value": "Jamestown",
+        "label": "Jamestown"
+      },
+      {
+        "value": "Jamesville",
+        "label": "Jamesville"
+      },
+      {
+        "value": "Kannapolis",
+        "label": "Kannapolis"
+      },
+      {
+        "value": "Kernersville",
+        "label": "Kernersville"
+      },
+      {
+        "value": "Kill Devil Hills",
+        "label": "Kill Devil Hills"
+      },
+      {
+        "value": "King",
+        "label": "King"
+      },
+      {
+        "value": "Kings Mountain",
+        "label": "Kings Mountain"
+      },
+      {
+        "value": "Kinston",
+        "label": "Kinston"
+      },
+      {
+        "value": "La Grange",
+        "label": "La Grange"
+      },
+      {
+        "value": "Lake Lure",
+        "label": "Lake Lure"
+      },
+      {
+        "value": "Landis",
+        "label": "Landis"
+      },
+      {
+        "value": "Leland",
+        "label": "Leland"
+      },
+      {
+        "value": "Lexington",
+        "label": "Lexington"
+      },
+      {
+        "value": "Lincolnton",
+        "label": "Lincolnton"
+      },
+      {
+        "value": "Littleton",
+        "label": "Littleton"
+      },
+      {
+        "value": "Louisburg",
+        "label": "Louisburg"
+      },
+      {
+        "value": "Lowell",
+        "label": "Lowell"
+      },
+      {
+        "value": "Lumberton",
+        "label": "Lumberton"
+      },
+      {
+        "value": "Maggie Valley",
+        "label": "Maggie Valley"
+      },
+      {
+        "value": "Maiden",
+        "label": "Maiden"
+      },
+      {
+        "value": "Manteo",
+        "label": "Manteo"
+      },
+      {
+        "value": "Marion",
+        "label": "Marion"
+      },
+      {
+        "value": "Marshall",
+        "label": "Marshall"
+      },
+      {
+        "value": "Matthews",
+        "label": "Matthews"
+      },
+      {
+        "value": "Mayodan",
+        "label": "Mayodan"
+      },
+      {
+        "value": "Mebane",
+        "label": "Mebane"
+      },
+      {
+        "value": "Middlesex",
+        "label": "Middlesex"
+      },
+      {
+        "value": "Midland",
+        "label": "Midland"
+      },
+      {
+        "value": "Milton",
+        "label": "Milton"
+      },
+      {
+        "value": "Mocksville",
+        "label": "Mocksville"
+      },
+      {
+        "value": "Monroe",
+        "label": "Monroe"
+      },
+      {
+        "value": "Montreat",
+        "label": "Montreat"
+      },
+      {
+        "value": "Morehead City",
+        "label": "Morehead City"
+      },
+      {
+        "value": "Morrisville",
+        "label": "Morrisville"
+      },
+      {
+        "value": "Mount Airy",
+        "label": "Mount Airy"
+      },
+      {
+        "value": "Mount Holly",
+        "label": "Mount Holly"
+      },
+      {
+        "value": "Mount Olive",
+        "label": "Mount Olive"
+      },
+      {
+        "value": "Murfreesboro",
+        "label": "Murfreesboro"
+      },
+      {
+        "value": "Nags Head",
+        "label": "Nags Head"
+      },
+      {
+        "value": "Nashville",
+        "label": "Nashville"
+      },
+      {
+        "value": "New Bern",
+        "label": "New Bern"
+      },
+      {
+        "value": "New London",
+        "label": "New London"
+      },
+      {
+        "value": "Newport",
+        "label": "Newport"
+      },
+      {
+        "value": "Newton",
+        "label": "Newton"
+      },
+      {
+        "value": "Norlina",
+        "label": "Norlina"
+      },
+      {
+        "value": "North Wilkesboro",
+        "label": "North Wilkesboro"
+      },
+      {
+        "value": "Oak Island",
+        "label": "Oak Island"
+      },
+      {
+        "value": "Oakboro",
+        "label": "Oakboro"
+      },
+      {
+        "value": "Ocean Isle Beach",
+        "label": "Ocean Isle Beach"
+      },
+      {
+        "value": "Old Fort",
+        "label": "Old Fort"
+      },
+      {
+        "value": "Oriental",
+        "label": "Oriental"
+      },
+      {
+        "value": "Oxford",
+        "label": "Oxford"
+      },
+      {
+        "value": "Pinehurst",
+        "label": "Pinehurst"
+      },
+      {
+        "value": "Pine Level",
+        "label": "Pine Level"
+      },
+      {
+        "value": "Pinetops",
+        "label": "Pinetops"
+      },
+      {
+        "value": "Pittsboro",
+        "label": "Pittsboro"
+      },
+      {
+        "value": "Plain View",
+        "label": "Plain View"
+      },
+      {
+        "value": "Plymouth",
+        "label": "Plymouth"
+      },
+      {
+        "value": "Polkton",
+        "label": "Polkton"
+      },
+      {
+        "value": "Princeton",
+        "label": "Princeton"
+      },
+      {
+        "value": "Raleigh",
+        "label": "Raleigh"
+      },
+      {
+        "value": "Ramseur",
+        "label": "Ramseur"
+      },
+      {
+        "value": "Red Springs",
+        "label": "Red Springs"
+      },
+      {
+        "value": "Reidsville",
+        "label": "Reidsville"
+      },
+      {
+        "value": "Rex",
+        "label": "Rex"
+      },
+      {
+        "value": "Roanoke Rapids",
+        "label": "Roanoke Rapids"
+      },
+      {
+        "value": "Robbins",
+        "label": "Robbins"
+      },
+      {
+        "value": "Rockingham",
+        "label": "Rockingham"
+      },
+      {
+        "value": "Rockwell",
+        "label": "Rockwell"
+      },
+      {
+        "value": "Rocky Mount",
+        "label": "Rocky Mount"
+      },
+      {
+        "value": "Rolesville",
+        "label": "Rolesville"
+      },
+      {
+        "value": "Roxboro",
+        "label": "Roxboro"
+      },
+      {
+        "value": "Rutherfordton",
+        "label": "Rutherfordton"
+      },
+      {
+        "value": "Salem",
+        "label": "Salem"
+      },
+      {
+        "value": "Salisbury",
+        "label": "Salisbury"
+      },
+      {
+        "value": "Sanford",
+        "label": "Sanford"
+      },
+      {
+        "value": "Scotland Neck",
+        "label": "Scotland Neck"
+      },
+      {
+        "value": "Seagrove",
+        "label": "Seagrove"
+      },
+      {
+        "value": "Selma",
+        "label": "Selma"
+      },
+      {
+        "value": "Shallotte",
+        "label": "Shallotte"
+      },
+      {
+        "value": "Shelby",
+        "label": "Shelby"
+      },
+      {
+        "value": "Smithfield",
+        "label": "Smithfield"
+      },
+      {
+        "value": "Southern Pines",
+        "label": "Southern Pines"
+      },
+      {
+        "value": "Southport",
+        "label": "Southport"
+      },
+      {
+        "value": "Sparta",
+        "label": "Sparta"
+      },
+      {
+        "value": "Spring Hope",
+        "label": "Spring Hope"
+      },
+      {
+        "value": "Spruce Pine",
+        "label": "Spruce Pine"
+      },
+      {
+        "value": "Stallings",
+        "label": "Stallings"
+      },
+      {
+        "value": "Stanley",
+        "label": "Stanley"
+      },
+      {
+        "value": "Statesville",
+        "label": "Statesville"
+      },
+      {
+        "value": "Stokesdale",
+        "label": "Stokesdale"
+      },
+      {
+        "value": "Stoneville",
+        "label": "Stoneville"
+      },
+      {
+        "value": "Summerfield",
+        "label": "Summerfield"
+      },
+      {
+        "value": "Sunset Beach",
+        "label": "Sunset Beach"
+      },
+      {
+        "value": "Surf City",
+        "label": "Surf City"
+      },
+      {
+        "value": "Swansboro",
+        "label": "Swansboro"
+      },
+      {
+        "value": "Sylva",
+        "label": "Sylva"
+      },
+      {
+        "value": "Tarboro",
+        "label": "Tarboro"
+      },
+      {
+        "value": "Taylorsville",
+        "label": "Taylorsville"
+      },
+      {
+        "value": "Thomasville",
+        "label": "Thomasville"
+      },
+      {
+        "value": "Trenton",
+        "label": "Trenton"
+      },
+      {
+        "value": "Trinity",
+        "label": "Trinity"
+      },
+      {
+        "value": "Troy",
+        "label": "Troy"
+      },
+      {
+        "value": "Tryon",
+        "label": "Tryon"
+      },
+      {
+        "value": "Unionville",
+        "label": "Unionville"
+      },
+      {
+        "value": "Valdese",
+        "label": "Valdese"
+      },
+      {
+        "value": "Vanceboro",
+        "label": "Vanceboro"
+      },
+      {
+        "value": "Wadesboro",
+        "label": "Wadesboro"
+      },
+      {
+        "value": "Wake Forest",
+        "label": "Wake Forest"
+      },
+      {
+        "value": "Wallace",
+        "label": "Wallace"
+      },
+      {
+        "value": "Walnut Cove",
+        "label": "Walnut Cove"
+      },
+      {
+        "value": "Warsaw",
+        "label": "Warsaw"
+      },
+      {
+        "value": "Washington",
+        "label": "Washington"
+      },
+      {
+        "value": "Waynesville",
+        "label": "Waynesville"
+      },
+      {
+        "value": "Weaverville",
+        "label": "Weaverville"
+      },
+      {
+        "value": "Wendell",
+        "label": "Wendell"
+      },
+      {
+        "value": "Whiteville",
+        "label": "Whiteville"
+      },
+      {
+        "value": "Whitsett",
+        "label": "Whitsett"
+      },
+      {
+        "value": "Wilkesboro",
+        "label": "Wilkesboro"
+      },
+      {
+        "value": "Williamston",
+        "label": "Williamston"
+      },
+      {
+        "value": "Wilmington",
+        "label": "Wilmington"
+      },
+      {
+        "value": "Wilson",
+        "label": "Wilson"
+      },
+      {
+        "value": "Windsor",
+        "label": "Windsor"
+      },
+      {
+        "value": "Winterville",
+        "label": "Winterville"
+      },
+      {
+        "value": "Woodfin",
+        "label": "Woodfin"
+      },
+      {
+        "value": "Yadkinville",
+        "label": "Yadkinville"
+      },
+      {
+        "value": "Youngsville",
+        "label": "Youngsville"
+      },
+      {
+        "value": "Zebulon",
+        "label": "Zebulon"
+      }
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "988Referral",
+    "label": "988 Referral",
+    "type": "checkbox",
+    "isPII": false,
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "race",
+    "label": "Race",
+    "type": "select",
+    "isPII": false,
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "White",
+        "label": "White"
+      },
+      {
+        "value": "Black/African American",
+        "label": "Black/African American"
+      },
+      {
+        "value": "Asian",
+        "label": "Asian"
+      },
+      {
+        "value": "American Indian",
+        "label": "American Indian"
+      },
+      {
+        "value": "Native Hawaiian or Other Pacific Islander",
+        "label": "Native Hawaiian or Other Pacific Islander"
+      },
+      {
+        "value": "Two or More Races",
+        "label": "Two or More Races"
+      },
+      {
+        "value": "Other",
+        "label": "Other"
+      }
+    ]
+  },
+  {
+    "name": "ethnicity",
+    "label": "Ethnicity",
+    "type": "select",
+    "isPII": false,
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "Unknown",
+        "label": ""
+      }
+    ]
+  },
+  {
+    "name": "ageRange",
+    "label": "Age Range",
+    "type": "select",
+    "isPII": false,
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "18-24",
+        "label": "18-24"
+      },
+      {
+        "value": "25-34",
+        "label": "25-34"
+      },
+      {
+        "value": "35-44",
+        "label": "35-44"
+      },
+      {
+        "value": "45-54",
+        "label": "45-54"
+      },
+      {
+        "value": "55+",
+        "label": "55+"
+      }
+    ]
+  },
+  {
+    "name": "gender",
+    "label": "Gender",
+    "type": "select",
+    "isPII": false,
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "Male",
+        "label": "Male"
+      },
+      {
+        "value": "Female",
+        "label": "Female"
+      },
+      {
+        "value": "Non-binary",
+        "label": "Non-binary"
+      },
+      {
+        "value": "Two-Spirit",
+        "label": "Two-Spirit"
+      },
+      {
+        "value": "TransMasc",
+        "label": "TransMasc"
+      },
+      {
+        "value": "TransFemme",
+        "label": "TransFemme"
+      },
+      {
+        "value": "Other",
+        "label": "Other"
+      }
+    ]
+  },
+  {
+    "name": "pronouns",
+    "label": "Pronouns",
+    "type": "select",
+    "isPII": false,
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "He/Him/His",
+        "label": "He/Him/His"
+      },
+      {
+        "value": "She/Her/Hers",
+        "label": "She/Her/Hers"
+      },
+      {
+        "value": "They/Them/Theirs",
+        "label": "They/Them/Theirs"
+      },
+      {
+        "value": "Other",
+        "label": "Other"
+      }
+    ]
+  },
+  {
+    "name": "militaryStatus",
+    "label": "Military Status",
+    "type": "select",
+    "isPII": false,
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "Active Duty",
+        "label": "Active Duty"
+      },
+      {
+        "value": "Retired",
+        "label": "Retired"
+      },
+      {
+        "value": "Veteran (non-career)",
+        "label": "Veteran (non-career)"
+      },
+      {
+        "value": "Non-Military",
+        "label": "Non-Military"
+      },
+      {
+        "value": "National Guard/Reserves",
+        "label": "National Guard/Reserves"
+      },
+      {
+        "value": "Military Partner",
+        "label": "Military Partner"
+      },
+      {
+        "value": "Military Family Member",
+        "label": "Military Family Member"
+      }
+    ]
+  },
+  {
+    "name": "livingSituation",
+    "label": "Living Situation",
+    "type": "select",
+    "isPII": false,
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "Living independently",
+        "label": "Living independently"
+      },
+      {
+        "value": "Living with family/friends",
+        "label": "Living with family/friends"
+      },
+      {
+        "value": "Homeless or marginally housed",
+        "label": "Homeless or marginally housed"
+      },
+      {
+        "value": "Supportive Housing",
+        "label": "Supportive Housing"
+      },
+      {
+        "value": "Senior Facility",
+        "label": "Senior Facility"
+      },
+      {
+        "value": "Hospice",
+        "label": "Hospice"
+      },
+      {
+        "value": "Group Residential Facility",
+        "label": "Group Residential Facility"
+      },
+      {
+        "value": "Safety-restricted Environment",
+        "label": "Safety-restricted Environment"
+      },
+      {
+        "value": "Other",
+        "label": "Other"
+      }
+    ]
+  },
+  {
+    "name": "vulnerableGroups",
+    "label": "Vulnerable Groups",
+    "type": "listbox-multiselect",
+    "isPII": false,
+    "options": [
+      {
+        "value": "Justice Involved",
+        "label": "Justice Involved"
+      },
+      {
+        "value": "Experiencing financial insecurity",
+        "label": "Experiencing financial insecurity"
+      },
+      {
+        "value": "Ethnic, racial, or religious minority",
+        "label": "Ethnic, racial, or religious minority"
+      },
+      {
+        "value": "Experiencing homelessness",
+        "label": "Experiencing homelessness"
+      },
+      {
+        "value": "Disability",
+        "label": "Disability"
+      },
+      {
+        "value": "Involuntarily hospitalized",
+        "label": "Involuntarily hospitalized"
+      },
+      {
+        "value": "LGBTQI+/SOGIESC ",
+        "label": "LGBTQI+/SOGIESC "
+      },
+      {
+        "value": "Other",
+        "label": "Other"
+      }
+    ]
+  },
+  {
+    "name": "otherVulnerableGroup",
+    "label": "Other Vulnerable Group",
+    "type": "input",
+    "isPII": false
+  },
+  {
+    "name": "phone1",
+    "label": "Phone #1",
+    "type": "input",
+    "isPII": true,
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "phone2",
+    "label": "Phone #2",
+    "type": "input",
+    "isPII": false
+  },
+  {
+    "name": "phone3",
+    "label": "Phone #3",
+    "type": "input",
+    "isPII": false
+  }
+]

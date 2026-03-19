@@ -1,0 +1,10 @@
+{
+  "en": {
+    "WelcomeMsg": "Hi, you're connected with a Peer Supporter at the Promise Resource Network NC Warm Line. I'm glad you reached out. How can I support you today?",
+    "GoodbyeMsg": "Thank you for spending this time with the Promise Resource Network NC Warm Line. We appreciate you reaching out today. Please take care and know you're welcome to connect with us again.",
+    "EndChatMsg": "It looks like the chat has ended. Thank you for reaching out to the Promise Resource Network NC Warm Line. If you need support again, you're always welcome to reconnect after two hours has passed.",
+    "ClosedOutOfShift": "The helpline is out of shift, please reach us later.",
+    "ClosedHolidays": "The helpline is closed due to a holiday.",
+    "UnsupportedMediaErrorMsg": "Sorry, the message you just sent is unsupported and could not be delivered."
+  }
+}
