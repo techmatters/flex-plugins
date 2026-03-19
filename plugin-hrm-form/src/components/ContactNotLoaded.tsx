@@ -15,12 +15,13 @@
  */
 
 import React from 'react';
-import { Box } from '@material-ui/core';
+import { Box, CircularProgress } from '@material-ui/core';
 import { Template } from '@twilio/flex-ui';
 
 import FormNotEditable from './FormNotEditable';
 import { HeaderContainer, Row } from '../styles';
-import { StyledLink } from './search/styles';
+import { StyledLink } from '../styles/buttons';
+import { getTemplateStrings } from '../hrmConfig';
 
 type OwnProps = {
   onReload: () => Promise<void>;
@@ -32,8 +33,24 @@ type Props = OwnProps;
 const ContactNotLoaded: React.FC<Props> = ({ onReload, onFinish }: Props) => {
   const [reloadDisabled, setReloadDisabled] = React.useState(false);
   const [finishDisabled, setFinishDisabled] = React.useState(false);
+  const strings = getTemplateStrings();
   return (
-    <Box style={{ padding: '20px' }}>
+    <Box style={{ padding: '20px', position: 'relative', height: '100%' }}>
+      <Box
+        style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          pointerEvents: 'none',
+        }}
+      >
+        <CircularProgress size={80} aria-label={strings['TabbedForms-ContactNotLoaded-Loading']} />
+      </Box>
       <HeaderContainer style={{ marginBottom: '10px' }}>
         <Template code="TabbedForms-ContactNotLoaded-Header" />
       </HeaderContainer>
