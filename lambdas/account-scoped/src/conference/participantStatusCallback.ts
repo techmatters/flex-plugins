@@ -24,6 +24,9 @@ export const participantStatusCallbackHandler: AccountScopedHandler = async (
   accountSid,
 ) => {
   const { callStatusSyncDocumentSid, CallStatus } = body;
+  console.debug(
+    `Call Status changed: ${accountSid} / ${callStatusSyncDocumentSid} - new status: ${CallStatus}, updating sync document`,
+  );
 
   const client = await getTwilioClient(accountSid);
   if (!callStatusSyncDocumentSid)
@@ -34,5 +37,8 @@ export const participantStatusCallbackHandler: AccountScopedHandler = async (
     .documents.get(callStatusSyncDocumentSid)
     .update({ data: { CallStatus } });
 
+  console.debug(
+    `Call Status sync document updated to align with new call status: ${accountSid} / ${callStatusSyncDocumentSid} - new status: ${CallStatus}`,
+  );
   return newOk('Ok');
 };
