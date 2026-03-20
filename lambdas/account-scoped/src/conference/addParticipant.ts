@@ -21,10 +21,11 @@ import { getTwilioClient } from '@tech-matters/twilio-configuration';
 import { retrieveServiceConfigurationAttributes } from '../configuration/aseloConfiguration';
 
 export const addParticipantHandler: AccountScopedHandler = async (
-  { body },
+  { body, query },
   accountSid,
 ) => {
-  const { conferenceSid, from, to, label, callStatusSyncDocumentSid } = body;
+  const { conferenceSid, from, to, label } = body;
+  const { callStatusSyncDocumentSid } = query;
 
   if (!conferenceSid) return newMissingParameterResult('conferenceSid');
   if (!from) return newMissingParameterResult('from');
