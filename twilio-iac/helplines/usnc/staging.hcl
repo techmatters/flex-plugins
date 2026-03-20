@@ -20,7 +20,7 @@ locals {
       webchat : {
         channel_type     = "web"
         contact_identity = ""
-        templatefile     = "/app/twilio-iac/helplines/templates/studio-flows/messaging-blocking-preq-lambda-sd.tftpl"
+        templatefile     = "/app/twilio-iac/helplines/usnc/templates/studio-flows/messaging-blocking-preq-lambda-sd.tftpl"
         channel_flow_vars = {
           widget_from                   = "Warm Line"
           chat_blocked_message          = "Due to repeated use of the service in ways that did not align with Warm Line participation guidelines, access to the Promise Resource Network NC Warm Line has been restricted for this number/account."
@@ -31,7 +31,7 @@ locals {
       voice : {
         channel_type     = "voice"
         contact_identity = ""
-        templatefile     = "/app/twilio-iac/helplines/templates/studio-flows/voice-blocking-no-op-hours-rec-sd.tftpl"
+        templatefile     = "/app/twilio-iac/helplines/usnc/templates/studio-flows/voice-blocking-no-op-hours-rec-sd.tftpl"
         channel_flow_vars = {
           play_message_voice_prequeue = "https://usnc-assets-3228.twil.io/play_message_voice_prequeue.mp3"
           play_message_voice_blocked  = "Due to repeated use of the service in ways that did not align with Warm Line participation guidelines, access to the Promise Resource Network NC Warm Line has been restricted for this number/account."
@@ -43,7 +43,7 @@ locals {
         messaging_mode   = "conversations"
         channel_type     = "sms"
         contact_identity = "+16082004843"
-        templatefile     = "/app/twilio-iac/helplines/templates/studio-flows/messaging-lex-v3-blocking-lambda-sd.tftpl"
+        templatefile     = "/app/twilio-iac/helplines/usnc/templates/studio-flows/messaging-lex-v3-blocking-lambda-sd.tftpl"
         channel_flow_vars = {
           widget_from           = "Warm Line"
           send_message_prequeue = "Hello"
