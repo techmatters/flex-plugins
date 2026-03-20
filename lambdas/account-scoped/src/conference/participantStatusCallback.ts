@@ -20,10 +20,11 @@ import { newMissingParameterResult } from '../httpErrors';
 import { newOk } from '../Result';
 
 export const participantStatusCallbackHandler: AccountScopedHandler = async (
-  { body },
+  { body, query },
   accountSid,
 ) => {
-  const { callStatusSyncDocumentSid, CallStatus } = body;
+  const { CallStatus } = body;
+  const { callStatusSyncDocumentSid } = query;
   console.debug(
     `Call Status changed: ${accountSid} / ${callStatusSyncDocumentSid} - new status: ${CallStatus}, updating sync document`,
   );
