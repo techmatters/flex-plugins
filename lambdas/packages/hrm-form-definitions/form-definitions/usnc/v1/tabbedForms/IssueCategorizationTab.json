@@ -1,6 +1,6 @@
 {
   "Promise Resource Network": {
-    "maxSelections": 10,
+    "maxSelections": 16,
     "categories": {
       "Emotional/Mental": {
         "color": "#085f63",
@@ -276,23 +276,6 @@
           },
           {
             "label": "Unspecified/Other - SP"
-          }
-        ]
-      },
-      "Does not apply": {
-        "color": "#e7c582",
-        "subcategories": [
-          {
-            "label": "Academic issues"
-          },
-          {
-            "label": "Problems at work"
-          },
-          {
-            "label": "Teacher and school problems"
-          },
-          {
-            "label": "Unspecified/Other - NA"
           }
         ]
       }

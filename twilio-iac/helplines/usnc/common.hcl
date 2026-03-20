@@ -38,6 +38,9 @@ locals {
         "friendly_name"  = "E2E Test Queue"
       },
     }
+    lex_v2_bot_languages = {
+      en_USNC : ["pre_survey", "post_survey"]
+    }
 
     task_channels = {
       default : "Default"

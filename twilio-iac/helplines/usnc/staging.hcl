@@ -9,9 +9,11 @@ locals {
 
     #Studio flow
     flow_vars = {
-      widget_from          = "Promise Resource Network"
-      chat_blocked_message = "Sorry, you're not able to contact Promise Resource Network from this device or account"
-      error_message        = "There has been an error with your message, please try writing us again."
+      widget_from                       = "Promise Resource Network"
+      chat_blocked_message              = "Sorry, you're not able to contact Promise Resource Network from this device or account"
+      error_message                     = "There has been an error with your message, please try writing us again."
+      send_message_janitor_function_sid = "ZH12353d1c76792d7d5b2e721006af349d"
+      bot_language                      = "en-USNC"
     }
 
     channels = {
@@ -41,7 +43,7 @@ locals {
         messaging_mode   = "conversations"
         channel_type     = "sms"
         contact_identity = "+16082004843"
-        templatefile     = "/app/twilio-iac/helplines/templates/studio-flows/messaging-blocking-conv-lambda-sd.tftpl"
+        templatefile     = "/app/twilio-iac/helplines/templates/studio-flows/messaging-lex-v3-blocking-lambda-sd.tftpl"
         channel_flow_vars = {
           widget_from           = "Warm Line"
           send_message_prequeue = "Hello"
