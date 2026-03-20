@@ -10,7 +10,7 @@
                 {
                     "message": {
                         "plainTextMessage": {
-                            "value": "Please enter the number that corresponds to your ethnicity:\n1 - Hispanic or Latino\n2 - Not Hispanic or Latino"
+                            "value": "Please enter the number that corresponds to your ethnicity:\n1 - Hispanic/Latino\n2 - Not Hispanic or Latino"
                         }
                     },
                     "variations": [
