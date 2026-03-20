@@ -37,6 +37,11 @@ locals {
         "target_workers" = "email=='aselo-alerts+production@techmatters.org'",
         "friendly_name"  = "E2E Test Queue"
       },
+      ,
+      switchboard : {
+        "target_workers" = "routing.skills HAS 'Supervisor'",
+        "friendly_name"  = "Switchboard Queue"
+      },
     }
     lex_v2_bot_languages = {
       en_USNC : ["pre_survey", "post_survey"]
