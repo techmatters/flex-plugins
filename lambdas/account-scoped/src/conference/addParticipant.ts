@@ -30,9 +30,9 @@ export const addParticipantHandler: AccountScopedHandler = async (
   if (!to) return newMissingParameterResult('to');
   if (!callStatusSyncDocumentSid)
     return newMissingParameterResult('callStatusSyncDocumentSid');
-
+  const statusCallback = `${process.env.INTERNAL_HRM_URL}/lambda/twilio/account-scoped/${accountSid}/conference/participantStatusCallback?callStatusSyncDocumentSid=${callStatusSyncDocumentSid}`;
   console.debug(
-    `Adding participant added to conference ${accountSid} / ${conferenceSid}, from: ${from}, to: ${to}, callback URL: ${process.env.INTERNAL_HRM_URL}/lambda/twilio/account-scoped/conference/participantStatusCallback?callStatusSyncDocumentSid=${callStatusSyncDocumentSid}`,
+    `Adding participant added to conference ${accountSid} / ${conferenceSid}, from: ${from}, to: ${to}, callback URL: ${statusCallback}`,
   );
   const client = await getTwilioClient(accountSid);
   const participant = await client.conferences(conferenceSid).participants.create({
@@ -42,10 +42,10 @@ export const addParticipantHandler: AccountScopedHandler = async (
     endConferenceOnExit: false,
     label: label || 'external party', // Probably want to pass this from the caller
     statusCallbackEvent: ['initiated', 'ringing', 'answered', 'completed'],
-    statusCallback: `${process.env.INTERNAL_HRM_URL}/lambda/twilio/account-scoped/${accountSid}/conference/participantStatusCallback?callStatusSyncDocumentSid=${callStatusSyncDocumentSid}`,
+    statusCallback,
   });
   console.info(
-    `Participant added to conference ${accountSid} / ${conferenceSid}, from: ${from}, to: ${to}, callback URL: ${process.env.INTERNAL_HRM_URL}/lambda/twilio/account-scoped/conference/participantStatusCallback?callStatusSyncDocumentSid=${callStatusSyncDocumentSid}`,
+    `Participant added to conference ${accountSid} / ${conferenceSid}, from: ${from}, to: ${to}, callback URL: ${statusCallback}`,
     participant,
   );
 
