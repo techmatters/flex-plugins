@@ -12,12 +12,12 @@ locals {
     workflows = {
       master : {
         friendly_name = "Master Workflow"
-        templatefile  = "/app/twilio-iac/helplines/templates/workflows/master.tftpl"
+        templatefile  = "/app/twilio-iac/helplines/usnc/templates/workflows/master.tftpl"
         task_reservation_timeout = 20
       },
       webchat_sms : {
         friendly_name = "Webchat SMS Workflow"
-        templatefile  = "/app/twilio-iac/helplines/templates/workflows/webchat-sms.tftpl"
+        templatefile  = "/app/twilio-iac/helplines/usnc/templates/workflows/webchat-sms.tftpl"
         task_reservation_timeout = 20
       },
       queue_transfers : {
