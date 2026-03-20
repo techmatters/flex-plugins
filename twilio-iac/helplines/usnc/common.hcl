@@ -13,6 +13,12 @@ locals {
       master : {
         friendly_name = "Master Workflow"
         templatefile  = "/app/twilio-iac/helplines/templates/workflows/master.tftpl"
+        task_reservation_timeout = 20
+      },
+      webchat_sms : {
+        friendly_name = "Webchat SMS Workflow"
+        templatefile  = "/app/twilio-iac/helplines/templates/workflows/webchat-sms.tftpl"
+        task_reservation_timeout = 20
       },
       queue_transfers : {
         friendly_name = "Queue Transfers Workflow"
@@ -54,6 +60,44 @@ locals {
       video : "Video"
       email : "Email"
       survey : "Survey"
+    }
+    activities = {
+      scheduled_break : {
+        friendly_name = "Scheduled Break"
+        available     = false
+      },
+      unscheduled_break : {
+        friendly_name = "Unscheduled Break"
+        available     = false
+      },
+      meal_break : {
+        friendly_name = "Meal Break"
+        available     = false
+      },
+      refused : {
+        friendly_name = "Refused"
+        available     = false
+      },
+      meeting : {
+        friendly_name = "Meeting"
+        available     = false
+      },
+      documentation : {
+        friendly_name = "Documentation"
+        available     = false
+      },
+      training : {
+        friendly_name = "Training"
+        available     = false
+      },
+      leadership : {
+        friendly_name = "Leadership Admin Tasks"
+        available     = false
+      },
+      supervision : {
+        friendly_name = "Supervision"
+        available     = false
+      }
     }
 
   }
