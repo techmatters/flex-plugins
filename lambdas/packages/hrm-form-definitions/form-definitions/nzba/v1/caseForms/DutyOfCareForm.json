@@ -1,101 +1,184 @@
 [
   {
-    "name": "date",
-    "label": "Date",
-    "type": "date-input",
-    "required": {
-      "value": true,
-      "message": "RequiredFieldError"
-    }
+    "name": "otherInformationAboutTheClient",
+    "label": "Other Information about the Client",
+    "type": "textarea",
+    "isPII": false,
+    "rows": 7,
+    "width": 250
   },
   {
-    "name": "duration",
-    "label": "Duration",
-    "type": "select",
-    "options": [
-      {
-        "value": "",
-        "label": ""
-      },
-      {
-        "value": "Ongoing",
-        "label": "Ongoing"
-      },
-      {
-        "value": "Once Off",
-        "label": "Once Off"
-      },
-      {
-        "value": "Other",
-        "label": "Other"
-      }
-    ],
-    "required": {
-      "value": true,
-      "message": "RequiredFieldError"
-    }
+    "name": "clientPresentation",
+    "label": "Client presentation",
+    "type": "textarea",
+    "isPII": false,
+    "rows": 7,
+    "width": 250
   },
   {
-    "name": "location",
-    "label": "Location",
+    "name": "assessmentOfRisk",
+    "label": "Assessment of Risk",
     "type": "select",
+    "isPII": false,
     "options": [
-      {
-        "value": "",
-        "label": ""
-      },
       {
         "value": "Unknown",
-        "label": "Unknown"
+        "label": ""
       },
       {
-        "value": "School",
-        "label": "School"
+        "value": "Urgent",
+        "label": "Urgent"
       },
       {
-        "value": "Home",
-        "label": "Home"
+        "value": "High",
+        "label": "High"
       },
       {
-        "value": "Institution",
-        "label": "Institution"
+        "value": "Medium",
+        "label": "Medium"
       },
       {
-        "value": "Online",
-        "label": "Online"
-      },
-      {
-        "value": "Public Place",
-        "label": "Public Place"
-      },
-      {
-        "value": "Other",
-        "label": "Other"
+        "value": "Low",
+        "label": "Low"
       }
-    ],
-    "required": {
-      "value": true,
-      "message": "RequiredFieldError"
-    }
+    ]
   },
   {
-    "name": "isCaregiverAware",
-    "label": "Is caregiver aware?",
-    "type": "mixed-checkbox"
+    "name": "supervisorsAnalysis",
+    "label": "Supervisor's Analysis",
+    "type": "textarea",
+    "isPII": false,
+    "rows": 7,
+    "width": 250
   },
   {
-    "name": "incidentWitnessed",
-    "label": "Was the incident witnessed by anyone?",
-    "type": "mixed-checkbox"
+    "name": "planOfAction",
+    "label": "Plan of Action",
+    "type": "textarea",
+    "isPII": false,
+    "rows": 7,
+    "width": 250
   },
   {
-    "name": "abuseReportedElsewhere",
-    "label": "Has abuse been reported elsewhere?",
-    "type": "mixed-checkbox"
+    "name": "immediateOutcome",
+    "label": "Immediate outcome (from Duty of Care process)",
+    "type": "textarea",
+    "isPII": false,
+    "rows": 7,
+    "width": 250
   },
   {
-    "name": "whereElseBeenReported",
-    "label": "Where else the incident has been reported?",
-    "type": "mixed-checkbox"
+    "name": "consultationDetails",
+    "label": "Barnardos Consultation - Date, Time and who consulted",
+    "type": "textarea",
+    "isPII": false,
+    "rows": 7,
+    "width": 250
+  },
+  {
+    "name": "agenciesInvolved",
+    "label": "Agencies Involved",
+    "type": "textarea",
+    "isPII": false,
+    "rows": 7,
+    "width": 250
+  },
+  {
+    "name": "informedUnitManager",
+    "label": "Informed unit manager?",
+    "type": "select",
+    "isPII": false,
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "Yes",
+        "label": "Yes"
+      },
+      {
+        "value": "No",
+        "label": "No"
+      }
+    ]
+  },
+  {
+    "name": "whyNot",
+    "label": "Why not?",
+    "type": "input",
+    "isPII": false
+  },
+  {
+    "name": "methodOfInforming",
+    "label": "Method of informing",
+    "type": "listbox-multiselect",
+    "isPII": false,
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "Conversation",
+        "label": "Conversation"
+      },
+      {
+        "value": "Email",
+        "label": "Email"
+      },
+      {
+        "value": "Instant Message",
+        "label": "Instant Message"
+      },
+      {
+        "value": "Phone Call",
+        "label": "Phone Call"
+      }
+    ]
+  },
+  {
+    "name": "furtherActionNeeded",
+    "label": "Further action needed",
+    "type": "textarea",
+    "isPII": false,
+    "rows": 7,
+    "width": 250
+  },
+  {
+    "name": "followUpRequired",
+    "label": "This D.o.C requires further follow up",
+    "type": "select",
+    "isPII": false,
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "Yes",
+        "label": "Yes"
+      },
+      {
+        "value": "No",
+        "label": "No"
+      }
+    ]
+  },
+  {
+    "name": "notesFromFollowupAction",
+    "label": "Notes from follow-up action",
+    "type": "textarea",
+    "isPII": false,
+    "rows": 7,
+    "width": 250
+  },
+  {
+    "name": "furtherContactWithClientOrAgency",
+    "label": "Further contact with client or agency",
+    "type": "textarea",
+    "isPII": false,
+    "rows": 7,
+    "width": 250
   }
 ]
