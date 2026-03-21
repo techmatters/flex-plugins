@@ -5,7 +5,7 @@
     "childInformation": {
     },
     "caseInformation": {
-      "splitFormAt": 8
+      "splitFormAt": 12
     }
   },
   "case": {
@@ -43,10 +43,10 @@
       },
       "dutyOfCare": {
          "previewFields": [
-           "date",
-           "location"
+           "assessmentOfRisk",
+           "followUpRequired"
          ],
-         "splitFormAt": 2,
+         "splitFormAt": 8,
          "printOrder": 3,
          "caseHomeLocation": "timeline"
        },
