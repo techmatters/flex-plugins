@@ -283,7 +283,7 @@
   },
   {
     "name": "otherInformationAboutTheClient",
-    "label": "DOC - Other Information about the Client",
+    "label": "Other Information about the Client",
     "type": "textarea",
     "isPII": false,
     "rows": 7,
@@ -398,10 +398,6 @@
     "isPII": false,
     "options": [
       {
-        "value": "Unknown",
-        "label": ""
-      },
-      {
         "value": "Conversation",
         "label": "Conversation"
       },
@@ -429,7 +425,7 @@
   },
   {
     "name": "followUpRequired",
-    "label": "This D.o.C requires further follow up",
+    "label": "This D.O.C requires further follow up",
     "type": "select",
     "isPII": false,
     "options": [
