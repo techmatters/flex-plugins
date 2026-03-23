@@ -53,6 +53,7 @@ const contactWebchatOrchestrator = async ({
       uniqueUserName: senderId,
       additionalConversationAttributes: {
         pre_engagement_data: formData,
+        from: customerFriendlyName,
       },
     });
 
@@ -118,7 +119,7 @@ export const initWebchatHandler: AccountScopedHandler = async (request, accountS
 
   const formData = JSON.parse(request.body?.PreEngagementData);
   const customerFriendlyName =
-    formData?.friendlyName || request.body?.CustomerFriendlyName || 'Customer';
+    formData?.friendlyName || request.body?.CustomerFriendlyName || 'Anonymous';
 
   let conversationSid: ConversationSID;
   let identity;
