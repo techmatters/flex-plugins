@@ -20,6 +20,7 @@ import type { AccountSID, ConversationSID } from '@tech-matters/twilio-types';
 import { isErr, newErr, newOk, Result } from '../Result';
 
 import { createToken, TOKEN_TTL_IN_SECONDS } from './createToken';
+import { patchConversationAttributes } from '../conversation/patchConversationAttributes';
 
 const contactWebchatOrchestrator = async ({
   addressSid,
@@ -38,6 +39,8 @@ const contactWebchatOrchestrator = async ({
 
   try {
     const client = await getTwilioClient(accountSid);
+    // TODO: This strikes me as an API that might get deprecated along with Webchat 2?
+    // We should consider replacing it with creating the conversation directly via the conversation APIs
     const orchestratorResponse = await client.flexApi.v2.webChannels.create({
       customerFriendlyName,
       addressSid,
@@ -48,6 +51,11 @@ const contactWebchatOrchestrator = async ({
     console.info('Webchat Orchestrator successfully called', orchestratorResponse);
 
     const { conversationSid, identity } = orchestratorResponse;
+    // This is a workaround for th fact that many studio flows check for channel_type as a channel attribute
+    // We might be able to remove this if we refactor those flows to check for the flow variable instead?
+    await patchConversationAttributes(client, conversationSid as ConversationSID, {
+      channel_type: 'web',
+    });
 
     return newOk({
       conversationSid: conversationSid as ConversationSID,
