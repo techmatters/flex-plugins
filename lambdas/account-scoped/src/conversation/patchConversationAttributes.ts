@@ -41,6 +41,6 @@ export const patchConversationAttributes = async (
   const conversationAttributes = JSON.parse(conversationInstance.attributes);
   const patchedAttributes = { ...conversationAttributes, ...attributePatch };
   return client.conversations.v1.conversations
-    .get(conversation.sid)
+    .get(conversationInstance.sid)
     .update({ attributes: patchedAttributes });
 };
