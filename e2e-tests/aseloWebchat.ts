@@ -77,8 +77,8 @@ export async function open(browser: Browser | BrowserContext): Promise<AseloWebC
         await selectors.genderSelect.selectOption('Girl');
         await selectors.genderSelect.blur();
       }
-      if (await selectors.termsAndConditionsCheckbox.isVisible()) {
-        await selectors.termsAndConditionsCheckbox.check();
+      if ((await selectors.termsAndConditionsCheckbox.count()) > 0) {
+        await selectors.termsAndConditionsCheckbox.check({ force: true });
         await selectors.termsAndConditionsCheckbox.blur();
       }
     },
