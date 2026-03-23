@@ -20,46 +20,50 @@ import type { AccountSID, ConversationSID } from '@tech-matters/twilio-types';
 import { isErr, newErr, newOk, Result } from '../Result';
 
 import { createToken, TOKEN_TTL_IN_SECONDS } from './createToken';
-import { patchConversationAttributes } from '../conversation/patchConversationAttributes';
+import { createConversation } from '../conversation/createConversation';
+import { getChannelStudioFlowSid } from '../customChannels/configuration';
 
 const contactWebchatOrchestrator = async ({
-  addressSid,
+  studioFlowSid,
   accountSid,
   formData,
   customerFriendlyName,
+  testSessionId,
 }: {
   accountSid: AccountSID;
-  addressSid: string;
+  studioFlowSid: string;
   formData: Record<string, any>;
   customerFriendlyName: string;
+  testSessionId?: string;
 }): Promise<
   Result<HttpError, { conversationSid: ConversationSID; identity: string }>
 > => {
-  console.info('Calling Webchat Orchestrator');
+  const senderId = `web:${accountSid}`;
+  console.info(`Creating new conversation via the API with sender ID: ${senderId}`);
 
   try {
     const client = await getTwilioClient(accountSid);
-    // TODO: This strikes me as an API that might get deprecated along with Webchat 2?
-    // We should consider replacing it with creating the conversation directly via the conversation APIs
-    const orchestratorResponse = await client.flexApi.v2.webChannels.create({
-      customerFriendlyName,
-      addressSid,
-      preEngagementData: JSON.stringify(formData),
-      uiVersion: process.env.WEBCHAT_VERSION || '1.0.0',
-      chatFriendlyName: 'Webchat widget',
+    const conversation = await createConversation(client, {
+      channelType: 'web',
+      conversationFriendlyName: senderId,
+      senderScreenName: customerFriendlyName,
+      studioFlowSid,
+      testSessionId,
+      twilioNumber: senderId,
+      uniqueUserName: senderId,
+      additionalConversationAttributes: {
+        pre_engagement_data: formData,
+      },
     });
-    console.info('Webchat Orchestrator successfully called', orchestratorResponse);
 
-    const { conversationSid, identity } = orchestratorResponse;
-    // This is a workaround for th fact that many studio flows check for channel_type as a channel attribute
-    // We might be able to remove this if we refactor those flows to check for the flow variable instead?
-    await patchConversationAttributes(client, conversationSid as ConversationSID, {
-      channel_type: 'web',
-    });
+    const { conversationSid } = conversation;
+    console.info(
+      `Created new conversation ${conversationSid} via the API with sender ID: ${senderId}`,
+    );
 
     return newOk({
       conversationSid: conversationSid as ConversationSID,
-      identity,
+      identity: senderId,
     });
   } catch (err) {
     const bodyError = err instanceof Error ? err.message : String(err);
@@ -122,7 +126,7 @@ export const initWebchatHandler: AccountScopedHandler = async (request, accountS
   // Hit Webchat Orchestration endpoint to generate conversation and get customer participant sid
   const result = await contactWebchatOrchestrator({
     accountSid,
-    addressSid: 'IG1ba46f2d6828b42ddd363f5045138044', // Obvs needs to be SSM parameter
+    studioFlowSid: await getChannelStudioFlowSid(accountSid, 'web'),
     formData,
     customerFriendlyName,
   });

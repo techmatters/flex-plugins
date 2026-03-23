@@ -17,9 +17,10 @@
 import { AccountSID, ConversationSID } from '@tech-matters/twilio-types';
 import { Twilio } from 'twilio';
 import { getTwilioClient } from '@tech-matters/twilio-configuration';
-import { AseloCustomChannel } from './aseloCustomChannels';
-
-const CONVERSATION_CLOSE_TIMEOUT = 'P3D'; // ISO 8601 duration format https://en.wikipedia.org/wiki/ISO_8601
+import {
+  createConversation,
+  CreateFlexConversationParams,
+} from '../conversation/createConversation';
 
 export const findExistingConversation = async (
   client: Twilio,
@@ -78,90 +79,6 @@ export const removeConversation = async (
 
 export { AseloCustomChannel, isAseloCustomChannel } from './aseloCustomChannels';
 
-type CreateFlexConversationParams = {
-  studioFlowSid: string;
-  channelType: AseloCustomChannel; // The chat channel being used
-  uniqueUserName: string; // Unique identifier for this user
-  senderScreenName: string; // Friendly info to show in the Flex UI (like Telegram handle)
-  onMessageSentWebhookUrl: string; // The url that must be used as the onMessageSent event webhook.
-  conversationFriendlyName: string; // A name for the Flex conversation (typically same as uniqueUserName)
-  testSessionId?: string; // A session identifier to identify the test run if this is part of an integration test.
-  twilioNumber: string; // The target Twilio number (usually have the shape <channel>:<id>, e.g. telegram:1234567)
-};
-
-/**
- * Creates a new Flex conversation in the provided Flex Flow and subscribes webhooks to it's events.
- * Adds to the channel attributes the provided twilioNumber used for routing.
- */
-const createConversation = async (
-  client: Twilio,
-  {
-    conversationFriendlyName,
-    channelType,
-    twilioNumber,
-    uniqueUserName,
-    senderScreenName,
-    onMessageSentWebhookUrl,
-    studioFlowSid,
-    testSessionId,
-  }: CreateFlexConversationParams,
-): Promise<{ conversationSid: ConversationSID; error?: Error }> => {
-  if (testSessionId) {
-    console.info(
-      'testSessionId specified. All outgoing messages will be sent to the test API.',
-    );
-  }
-
-  const conversationInstance = await client.conversations.v1.conversations.create({
-    xTwilioWebhookEnabled: 'true',
-    friendlyName: conversationFriendlyName,
-    uniqueName: `${channelType}/${uniqueUserName}/${Date.now()}`,
-  });
-  const conversationSid = conversationInstance.sid as ConversationSID;
-
-  try {
-    const conversationContext =
-      client.conversations.v1.conversations.get(conversationSid);
-    await conversationContext.participants.create({
-      identity: uniqueUserName,
-    });
-    const channelAttributes = JSON.parse((await conversationContext.fetch()).attributes);
-
-    console.debug('channelAttributes prior to update', channelAttributes);
-
-    await conversationContext.update({
-      'timers.closed': CONVERSATION_CLOSE_TIMEOUT,
-      state: 'active',
-      attributes: JSON.stringify({
-        ...channelAttributes,
-        channel_type: channelType,
-        channelType,
-        senderScreenName,
-        twilioNumber,
-        testSessionId,
-      }),
-    });
-
-    await conversationContext.webhooks.create({
-      target: 'studio',
-      'configuration.flowSid': studioFlowSid,
-      'configuration.filters': ['onMessageAdded'],
-    });
-
-    /* const onMessageAdded = */
-    await conversationContext.webhooks.create({
-      target: 'webhook',
-      'configuration.method': 'POST',
-      'configuration.url': onMessageSentWebhookUrl,
-      'configuration.filters': ['onMessageAdded'],
-    });
-  } catch (err) {
-    return { conversationSid, error: err as Error };
-  }
-
-  return { conversationSid };
-};
-
 type SendConversationMessageToFlexParams = Omit<
   CreateFlexConversationParams,
   'twilioNumber'
@@ -188,7 +105,7 @@ export const sendConversationMessageToFlex = async (
     customTwilioNumber,
     uniqueUserName,
     senderScreenName,
-    onMessageSentWebhookUrl,
+    onMessageAddedWebhookUrl,
     messageText,
     messageAttributes = undefined,
     senderExternalId,
@@ -216,7 +133,7 @@ export const sendConversationMessageToFlex = async (
         twilioNumber,
         uniqueUserName,
         senderScreenName,
-        onMessageSentWebhookUrl,
+        onMessageAddedWebhookUrl,
         conversationFriendlyName,
         testSessionId,
       },
