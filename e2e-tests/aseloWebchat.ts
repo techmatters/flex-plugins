@@ -78,6 +78,7 @@ export async function open(browser: Browser | BrowserContext): Promise<AseloWebC
         await selectors.genderSelect.blur();
       }
       if ((await selectors.termsAndConditionsCheckbox.count()) > 0) {
+        await selectors.termsAndConditionsCheckbox.scrollIntoViewIfNeeded();
         await selectors.termsAndConditionsCheckbox.check({ force: true });
         await selectors.termsAndConditionsCheckbox.blur();
       }
