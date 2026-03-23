@@ -38,18 +38,18 @@ const contactWebchatOrchestrator = async ({
 }): Promise<
   Result<HttpError, { conversationSid: ConversationSID; identity: string }>
 > => {
-  const senderId = `web:${accountSid}`;
+  const senderId = `web:${crypto.randomUUID()}`;
   console.info(`Creating new conversation via the API with sender ID: ${senderId}`);
 
   try {
     const client = await getTwilioClient(accountSid);
     const conversation = await createConversation(client, {
       channelType: 'web',
-      conversationFriendlyName: senderId,
+      conversationFriendlyName: customerFriendlyName,
       senderScreenName: customerFriendlyName,
       studioFlowSid,
       testSessionId,
-      twilioNumber: senderId,
+      twilioNumber: `web:${accountSid}`,
       uniqueUserName: senderId,
       additionalConversationAttributes: {
         pre_engagement_data: formData,
