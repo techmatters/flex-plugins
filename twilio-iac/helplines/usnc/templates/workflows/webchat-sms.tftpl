@@ -32,6 +32,16 @@
             "queue": "${task_queues.master}"
           }
         ]
+      }, 
+      {
+        "filter_friendly_name": "Chat (not conversations) Queue Transfers",
+        "expression": "transferTargetType == 'queue' AND targetSid == '${task_queues.master}'",
+        "targets": [
+          {
+            "queue": "${task_queues.master}",
+            "expression": "'ChatText' IN worker.routing.skills AND (worker.waitingOfflineContact != true AND ((task.channelType == 'voice' AND worker.channel.chat.assigned_tasks == 0) OR (task.channelType != 'voice' AND worker.channel.voice.assigned_tasks == 0)) AND ((task.transferTargetType == 'worker' AND task.targetSid == worker.sid) OR (task.transferTargetType != 'worker' AND worker.sid != task.ignoreAgent)))"
+          }
+        ]
       },
       {
         "filter_friendly_name": "E2E Test",
