@@ -1,0 +1,91 @@
+<!--
+  Copyright (C) 2021-2023 Technology Matters
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program.  If not, see https://www.gnu.org/licenses/.
+-->
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Modica to Flex test page</title>
+  <style>
+    input {
+      width: 333px;
+    }
+    #message-history {
+      font-family: 'Courier New', Courier, monospace;
+    }
+  </style>
+</head>
+<body>
+<div id="message-history">
+</div>
+<form name="modica-message-input" onsubmit="sendMessage(event); return false">
+  <div>
+    <label for="url">URL</label>
+    <input id="url" type="text" name="url" />
+  </div>
+  <div>
+    <label for="source">Source</label>
+    <input id="source" type="text" name="source" />
+  </div>
+  <div>
+    <label for="destination">Destination</label>
+    <input id="destination" type="text" name="destination" />
+  </div>
+  <div>
+    <label for="content">Content</label>
+    <input id="content" type="text" name="content" />
+  </div>
+  <div>
+    <input type="submit" value="Send message" />
+  </div>
+</form>
+<div id="message-response"></div>
+
+<script>
+  const messageHistoryElement = document.getElementById("message-history");
+  const messageResponseElement = document.getElementById("message-response");
+  const sendMessage = async (e) => {
+    e.preventDefault();
+    const form = document.forms["modica-message-input"];
+    const url = form.url.value;
+    const source = form.source.value;
+    const destination = form.destination.value;
+    const content = form.content.value;
+    const messageEntry = document.createElement("div");
+    messageEntry.textContent = `[${source} -> ${destination}]: ${content}`;
+    messageHistoryElement.appendChild(messageEntry);
+    try {
+      const response = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ source, destination, content }),
+      });
+      let responseBody;
+      try {
+        responseBody = await response.json();
+      } catch (parseErr) {
+        messageResponseElement.textContent = `Response parse error (HTTP ${response.status}): ${parseErr.message}`;
+        return;
+      }
+      messageResponseElement.textContent = JSON.stringify(responseBody, null, 2);
+    } catch (err) {
+      messageResponseElement.textContent = `Network error: ${err.message}`;
+    }
+  };
+</script>
+</body>
+</html>
