@@ -32,8 +32,8 @@
   "SectionName-CaseSummary": "Nature of Crisis",
   "BottomBar-CancelNewCaseAndClose": "Cancel",
   "Case-AddCaseSummaryHere": "Add details here...",
-  "NoCaseSummary": "Please add details on weapon(s), accessibility, targets, suicide details, medication, crime",
-  "CaseSummary-None": "Please add details on weapon(s), accessibility, targets, suicide details, medication, crime",
+  "NoCaseSummary": "Summarize who you contacted, why the Emergency Referral was initiated, key person(s) identifying details, disclosed risks, relevant context, and any safety planning provided.",
+  "CaseSummary-None": "Summarize who you contacted, why the Emergency Referral was initiated, key person(s) identifying details, disclosed risks, relevant context, and any safety planning provided.",
   "Case-CaseSummarySection": "Nature of Crisis",
   "Case-CaseOverviewLabel": "Overview",
   "Case-CaseNumber": "Emergency Referral #",
@@ -140,7 +140,7 @@
   "otherTools":"If Other tools, please specify:",
   "Referrals": "Resources Shared:",
   "LegalHold": "Legal Hold", 
-  "NatureofCrisis": "Nature of Crisis",
+  "NatureofCrisis": "Nature of Crisis (Provide a summary of the contact.)",
   "referredTo": "Name of Agency",
   "contactName": "Contact Name", 
   "contactLocation": "Contact Address/Location",
@@ -203,7 +203,8 @@
   "Emergency Referral Police - Description": "Set the Stage \nIf high risk and service user agrees to calling EMS together: \n1. Determine if they would prefer to: \n-be on hold while you make the report \n-bring them back into the call once you have contacted EMS \n2. Gather identifying information and details of risk/incident \nMake the Call \n1. Search for local backdoor number to EMS via Emergency Services in Canada doc, Aselo, or icarol (as backup) \n2. Make Conference Call \n-Click Conference \n-Enter 3rd party phone number and click Dial \n-While service user is on hold: share your real name and KHP's call back number (416-581-8979) and ask dispatch for their name and badge number \n-To bring service user into call (if agreed to prior): click the hold button below the service user’s icon \n-Make report together or on behalf of the service user \n-Disconnect from EMS by clicking on Leave call button located under their icon \n3. Debrief with service user and remain on the line until EMS arrives \n4. Complete Emergency Referral form \n5. Let COM know a report has been made and Emergency Referral Form has been filled out (if you haven’t done so by this point).",
   "Emergency Referral CPS - Title": "Emergency Referral Provided - CPS",
   "Emergency Referral CPS - Description": "Set the Stage \nIf caller agrees to call CPS:\n1. Determine if they would like to remain anonymous or report an incident. \n2. If making report: Gather identifying information and details of risk/incident\nMake the Call \n1. Search for local number to “Child Abuse Reporting/Emergency Response” in either Aselo or iCarol (as backup) \n2. Make Conference Call \n-Click Conference \n-Enter the 3rd party phone number and click Dial \n-While service user is on hold: share your real name and KHP’s call back number (416-581-8979) and ask intake worker for their name and badge number (if applicable)\n*If service user is not wishing to report and you do not have PII, let the intake worker know this*\n-To bring service user into call (if agreed to prior): click the hold button below the service user’s icon\n-If making report: Make report together or on behalf of the service user \n-Disconnect from CPS by clicking on Leave call button located under their icon\n3. Debrief with service user and bring call to collaborative close when appropriate\n4. Complete Emergency Referral form \n5. Let COM know a report has been made and Emergency Referral Form has been filled out (if you haven’t done so by this point)."
-
+  "Nature of Crisis - Title": "Nature of Crisis should include: ",
+  "Nature of Crisis - Description": "-Reason for initiating the ER\n-Risks present and safety plans created, if any\n-Identifying information of all parties involved\n-Agencies contacted and location (e.g., Peel Regional Police)\n-Include: Badge/operator number, Event/incident number, Intake worker name + Reference/File # (if MR)\n-(Optional) Share additional supporting details or historical context relevant to the report. \nAfter completing this section, ensure you complete other sections of the Emergency Referral Form."
   
   },
   "fr": {
@@ -243,8 +244,8 @@
   "SectionName-CaseSummary": "Nature de la crise",
   "BottomBar-CancelNewCaseAndClose": "Annuler",
   "Case-AddCaseSummaryHere": "Ajouter des détails ici...",
-  "NoCaseSummary": "Fournir des renseignements sur les sujets suivants : armes, accessibilité, cibles, suicide, médicaments et crimes",
-  "CaseSummary-None": "Fournir des renseignements sur les sujets suivants : armes, accessibilité, cibles, suicide, médicaments et crimes",
+  "NoCaseSummary": "Résumer qui a été contacté, les raisons ayant mené à la référence d’urgence, les renseignements d’identification des personnes clés, les risques divulgués, le contexte pertinent ainsi que toute plan de sécurité mise en place.",
+  "CaseSummary-None": "Résumer qui a été contacté, les raisons ayant mené à la référence d’urgence, les renseignements d’identification des personnes clés, les risques divulgués, le contexte pertinent ainsi que toute plan de sécurité mise en place.",
   "Case-CaseSummarySection": "Nature de la crise",
   "Case-CaseOverviewLabel": "Aperçu",
   "Case-CaseNumber": "Référence d'urgence #",
@@ -390,7 +391,7 @@
   "otherTools":"Si autres outils, veuillez préciser:",
   "Referrals": "Ressources partagées :",
   "LegalHold": "Retención Legal", 
-  "NatureofCrisis": "Naturaleza de la crisis",
+  "NatureofCrisis": "Nature de la crise (Fournir un résumé du contact)",
   "Case Status": "Statut",
   "referredTo": "Nom de l'agence",
   "contactName": "Nom du contact", 
@@ -457,5 +458,6 @@
   "Emergency Referral Police - Description": "Donner le ton\nSi le risque est élevé et que l'appelant est d'accord pour appeler les premiers répondants (EMS) ensemble\n1. Déterminez s'il/elle préfère : \n* être mis.e en attente pendant que vous faites le rapport\n* les inclure dans l'appel une fois que vous êtes en contact avec les premiers répondants\n2. recceuilliez les informations identifiantes et les détails du risque et/ou de l'incident\nFaire l'appel\n1. Recherchez pour le numéro direct pour les premiers répondants via le doccument Services d'urgence au Canada, Aselo, ou iCarol (en tant que backup)\n2. Faire un appel conférence \n* Appuyez sur Conférence\n* Entrez le numéro à rejoindre et appuyez Composer\n* Pendant que l'appelant est en attente : partagez votre vrai prénom et le numéro de rappel de JJ ( 416-581-8979), et demandez au répartiteur.trice son nom et numéro de badge. \n* Ajoutez l'appelant à l'appel (si convenu avant l'appel) : appuyez sur la mise en attente sous le bouton de l'appelant. \n* Faites le rapport ensemble, ou en le nom de l'appelant\n* Déconnectez avec les premiers répondants en appuyant sur Quitter l'appel sous leur bouton\n3. Débreifez avec l'appelant et rester en ligne jusqu'à l'arriver des premiers répondants. \n4. Complétez le formulaire de référence d'urgence\n5. Laissez savoir un COM qu'un rapport a été fait, et qu'un formulaire de référence d'urgence a été complété (si ce n'est pas fait jusqu'à ce point)",
   "Emergency Referral CPS - Title": "Rapport d'urgence - Service de Protection de la Jeunesse",
   "Emergency Referral CPS - Description": "Donner le ton\nSi l'appelant consent à appeler CPS :\n1. Déterminez s'ils veulent rester anonyme, ou rapporter un incident.\n2. S'il veulent rapporter : recueillez les informations identifiantes et les détails du risque et/ou de l'incident. \nFaites l'appel\n1. Recherchez pour le numéro local pour 'Signalement et intervention d'urgence en cas de violence envers les enfants' dans Aselo, ou iCarol (en tant que backup)\n2. Faire un appel conférence \n* Appuyez sur Conférence\n* Entrez le numéro à rejoindre et appuyez Composer\n* Pendant que l'appelant est en attente : partagez votre vrai prénom et le numéro de rappel de JJ ( 416-581-8979), et demandez à l'intervenant.e son nom et numéro de badge (si applicable). \n* Si l'appelant ne veut pas rapporter et que vous n'avez pas d'information personnelles identifiantes, laissez-le savoir à l'intervenant.e *\n* Ajoutez l'appelant à l'appel (si convenu avant l'appel) : appuyez sur la mise en attente sous le bouton de l'appelant. \n* Faites le rapport ensemble, ou en le nom de l'appelant\n* Déconnectez avec CPS en appuyant sur Quitter l'appel sous leur bouton\n3. Débreifez avec l'appelant et terminez l'appel de manière collaborative lorsque cela est cliniquement approprié. \n4. Complétez le formulaire de référence d'urgence\n5. Laissez savoir un COM qu'un rapport a été fait, et qu'un formulaire de référence d'urgence a été complété (si ce n'est pas fait jusqu'à ce point)"
-  }
+  "Nature of Crisis - Title": "Nature de la crise devrait inclure :",
+  "Nature of Crisis - Description": "-La raison ayant mené à la référence d’urgence.\n-Les risques présents et les plans de sécurité élaborées, s’il y a lieu.\n-Les renseignements d’identification de toutes les parties concernées.\n-Les services contactés et leur emplacement (p. ex. : Service de police régional de Peel).\n-Inclure : numéro de badge/opérateur, numéro d’événement/d’incident, nom de la personne responsable à l’accueil, et/ou numéro de référence/dossier (si applicable, p. ex. MR).\n-(Optionnel) Ajouter tout renseignement supplémentaire ou tout contexte historique pertinent au rapport.\nUne fois cette section remplie, assurez-vous de compléter les autres sections du formulaire de référence d’urgence"  }
 }
