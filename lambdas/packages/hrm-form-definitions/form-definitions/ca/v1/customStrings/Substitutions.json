@@ -185,7 +185,11 @@
   "Switchboard-ActivateSwitchboarding": "Activate switchboarding",
   "Switchboard-PleaseSelectQueue": "Please select a queue",
 
-  "QueuesStatsHeaderAvgWaitTime": "ASA"
+  "QueuesStatsHeaderAvgWaitTime": "ASA",
+
+  "Suicidal Thoughts - Title": "Suicidal Thoughts",
+  "Suicidal Thoughts - Description": "When a service user reports thoughts of suicide (current or within the past 2 weeks), counsellors will assess the following: \nHas the service user already taken action intended to have a lethal effect? \n- If yes → encourage immediate intervention. \nIdentify immediate risks (e.g., standing on a bridge, possession of a knife.) \n-	Ask about willingness to move or remove means. \nAssess presence of a suicide plan \n-	Do they have a plan? \n-	Do they have access to the means? \nAssess imminence  \n-	How soon might they act? \n-	Do they expect to still be alive in 24–48 hours? \nOptional (not required but may be useful) \n-	Substance use concerns (alcohol/drugs/medication) \n-	Past suicidal behaviours \n-	Recency of prior suicide-related events \n-	Frequency of suicidal thoughts/behaviours \n-	Exposure to suicide (family, friends, etc.) \n-	Presence of mental health diagnoses"
+
   
   },
   "fr": {
@@ -420,6 +424,10 @@
   "Switchboard-ButtonTurnOffSwitchboard": "Désactiver",
   "Switchboard-ActivateSwitchboarding": "Activer la commutation",
 
-  "QueuesStatsHeaderAvgWaitTime": "ASA"
+  "QueuesStatsHeaderAvgWaitTime": "ASA",
+
+  
+  "Suicidal Thoughts - Title": "Suicidal Thoughts",
+  "Suicidal Thoughts - Description": "La personne a-t-elle déjà pris des mesures destinées à avoir un effet mortel? Dans l’affirmative, encouragez une intervention immédiate. Si ce n’est pas le cas, continuez à évaluer le niveau de risque. \nLa personne a-t-elle déjà pris des mesures destinées à avoir un effet mortel? Dans l’affirmative, encouragez une intervention immédiate. Si ce n’est pas le cas, continuez à évaluer le niveau de risque. \nLa personne a-t-elle un plan pour mettre fin à ses jours? A-t-elle accès à des moyens pour mettre son plan en œuvre? \nPosez-lui des questions sur l’imminence. Dans quel délai la personne pourrait-elle tenter de mettre fin à ses jours? Pense-t-elle qu’elle sera encore en vie dans 24 ou 48 heures? \nLignes directrices en matière de questions d’évaluation supplémentaires (à utiliser au besoin) \n- La personne a-t-elle des problèmes liés à l’alcool, aux drogues ou aux médicaments? \n-A-t-elle déjà eu des comportements suicidaires? \n-À quand remonte la dernière fois?  \n-Quelle est la fréquence des pensées ou des comportements suicidaires?  \n-La personne a-t-elle déjà été exposée au suicide (membre de la famille, ami, etc.)?  \n-A-t-elle des problèmes de santé mentale ou un diagnostic?"
   }
 }
