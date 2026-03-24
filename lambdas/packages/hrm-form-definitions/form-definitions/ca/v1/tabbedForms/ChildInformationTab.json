@@ -694,6 +694,10 @@
       }
     ]
     },
+    "description": {
+      "title": "Suicidal Thoughts Safety Plan - Title",
+      "content": "Suicidal Thoughts Safety Plan - Description"
+    },
     "isPII": false
   },
   {
@@ -745,6 +749,10 @@
       }
     ]
     },
+    "description": {
+      "title": "Homicide Risk Assessment - Title",
+      "content": "Homicide Risk Assessment- Description"
+    },
     "isPII": false
   },
   {
@@ -767,6 +775,10 @@
         "label": "No"
       }
     ]
+    },
+    "description": {
+      "title": "Homicide Safety Plan - Title",
+      "content": "Homicide Safety Plan - Description"
     },
     "isPII": false
   },
@@ -819,6 +831,10 @@
       }
       ]
     },
+    "description": {
+      "title": "Abuse Risk Assessment - Title",
+      "content": "Abuse Risk Assessment - Description"
+    },
     "isPII": false
   },
   {
@@ -841,6 +857,10 @@
         "label": "No"
       }
     ]
+    },
+    "description": {
+      "title": "Abuse Safety Plan - Title",
+      "content": "Abuse Safety Plan - Description"
     },
     "isPII": false
   }
