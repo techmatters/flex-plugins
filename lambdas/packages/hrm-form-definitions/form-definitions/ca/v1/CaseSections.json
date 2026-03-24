@@ -7,13 +7,13 @@
     "label": "Referral",
     "formPath": "caseForms/ReferralForm.json"
   },
-  "household": {
-    "label": "Household Member",
-    "formPath": "caseForms/HouseholdForm.json"
-  },
   "perpetrator": {
     "label": "Perpetrator",
     "formPath": "caseForms/PerpetratorForm.json"
+  },
+  "household": {
+    "label": "Household Member",
+    "formPath": "caseForms/HouseholdForm.json"
   },
   "incident": {
     "label": "Incident",
