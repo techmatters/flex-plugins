@@ -35,7 +35,7 @@
       }, 
       {
         "filter_friendly_name": "Chat (not conversations) Queue Transfers",
-        "expression": "transferTargetType == 'queue' AND targetSid == '${task_queues.master}'",
+        "expression": "channelType IN ['web','sms'] AND transferTargetType == 'queue' AND targetSid == '${task_queues.master}'",
         "targets": [
           {
             "queue": "${task_queues.master}",

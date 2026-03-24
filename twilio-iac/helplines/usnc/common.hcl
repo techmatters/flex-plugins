@@ -22,7 +22,7 @@ locals {
       },
       queue_transfers : {
         friendly_name = "Queue Transfers Workflow"
-        templatefile  = "/app/twilio-iac/helplines/templates/workflows/queue-transfers.tftpl"
+        templatefile  = "/app/twilio-iac/helplines/usnc/templates/workflows/queue-transfers.tftpl"
       },
       survey : {
         friendly_name = "Survey Workflow"
