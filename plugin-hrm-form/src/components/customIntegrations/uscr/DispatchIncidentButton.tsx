@@ -77,9 +77,8 @@ const DispatchIncidentButton: React.FC<Props> = ({ contactId }) => {
     return `dispatch-incident-button-${savedContact.id}-${rand}`;
   }, [savedContact.id]);
 
-  const { connectedCase, loading: caseLoading } = useCase({
+  const { loading: caseLoading } = useCase({
     caseId: savedContact.caseId,
-    referenceId,
   });
   const { sections } = useCaseSections({
     caseId: savedContact.caseId,
@@ -107,7 +106,7 @@ const DispatchIncidentButton: React.FC<Props> = ({ contactId }) => {
       if (valid) {
         await saveDraft();
         // We use a regular dispatch here because we handle the error from where it is called.
-        await dispatch(newIncidentDispatchAction(savedContact));
+        dispatch(newIncidentDispatchAction(savedContact));
         Notifications.showNotificationSingle(dispatchSuccessNotification);
       }
     } catch (err) {
