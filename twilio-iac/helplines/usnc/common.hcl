@@ -12,11 +12,17 @@ locals {
     workflows = {
       master : {
         friendly_name = "Master Workflow"
-        templatefile  = "/app/twilio-iac/helplines/templates/workflows/master.tftpl"
+        templatefile  = "/app/twilio-iac/helplines/usnc/templates/workflows/master.tftpl"
+        task_reservation_timeout = 20
+      },
+      webchat_sms : {
+        friendly_name = "Webchat SMS Workflow"
+        templatefile  = "/app/twilio-iac/helplines/usnc/templates/workflows/webchat-sms.tftpl"
+        task_reservation_timeout = 20
       },
       queue_transfers : {
         friendly_name = "Queue Transfers Workflow"
-        templatefile  = "/app/twilio-iac/helplines/templates/workflows/queue-transfers.tftpl"
+        templatefile  = "/app/twilio-iac/helplines/usnc/templates/workflows/queue-transfers.tftpl"
       },
       survey : {
         friendly_name = "Survey Workflow"
@@ -37,6 +43,10 @@ locals {
         "target_workers" = "email=='aselo-alerts+production@techmatters.org'",
         "friendly_name"  = "E2E Test Queue"
       },
+      switchboard : {
+        "target_workers" = "roles HAS 'supervisor'",
+        "friendly_name"  = "Switchboard Queue"
+      }
     }
     lex_v2_bot_languages = {
       en_USNC : ["pre_survey", "post_survey"]
@@ -50,6 +60,44 @@ locals {
       video : "Video"
       email : "Email"
       survey : "Survey"
+    }
+    activities = {
+      scheduled_break : {
+        friendly_name = "Scheduled Break"
+        available     = false
+      },
+      unscheduled_break : {
+        friendly_name = "Unscheduled Break"
+        available     = false
+      },
+      meal_break : {
+        friendly_name = "Meal Break"
+        available     = false
+      },
+      refused : {
+        friendly_name = "Refused"
+        available     = false
+      },
+      meeting : {
+        friendly_name = "Meeting"
+        available     = false
+      },
+      documentation : {
+        friendly_name = "Documentation"
+        available     = false
+      },
+      training : {
+        friendly_name = "Training"
+        available     = false
+      },
+      leadership : {
+        friendly_name = "Leadership Admin Tasks"
+        available     = false
+      },
+      supervision : {
+        friendly_name = "Supervision"
+        available     = false
+      }
     }
 
   }
