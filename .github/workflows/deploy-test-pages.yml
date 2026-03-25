@@ -1,0 +1,67 @@
+# Copyright (C) 2021-2023 Technology Matters
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Affero General Public License as published
+# by the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Affero General Public License for more details.
+#
+# You should have received a copy of the GNU Affero General Public License
+# along with this program.  If not, see https://www.gnu.org/licenses/.
+
+name: Deploy test pages to S3
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - master
+    paths:
+      - 'lambdas/testPages/**'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v6
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+
+      - name: Upload test pages to S3
+        run: |
+          aws s3 sync lambdas/testPages/ s3://assets-development.tl.techmatters.org/testPages/ --acl public-read --delete
+
+      - name: Invalidate CloudFront cache
+        run: |
+          CF_DISTRO=$(aws cloudfront list-distributions --query "DistributionList.Items[*].{id:Id,origin:Origins.Items[0].DomainName}[?origin=='assets-development.tl.techmatters.org.s3-website.us-east-1.amazonaws.com'].id" --output text)
+          aws cloudfront create-invalidation --distribution-id $CF_DISTRO --paths '/testPages/*'
+
+      - name: Set GITHUB_ACTIONS_SLACK_BOT_TOKEN
+        uses: 'marvinpinto/action-inject-ssm-secrets@latest'
+        with:
+          ssm_parameter: 'GITHUB_ACTIONS_SLACK_BOT_TOKEN'
+          env_variable_name: 'GITHUB_ACTIONS_SLACK_BOT_TOKEN'
+
+      - name: Set ASELO_DEPLOYS_CHANNEL_ID
+        uses: 'marvinpinto/action-inject-ssm-secrets@latest'
+        with:
+          ssm_parameter: 'ASELO_DEPLOYS_CHANNEL_ID'
+          env_variable_name: 'ASELO_DEPLOYS_CHANNEL_ID'
+
+      - name: Slack Aselo channel
+        uses: slackapi/slack-github-action@v2.1.1
+        with:
+          method: chat.postMessage
+          token: ${{ env.GITHUB_ACTIONS_SLACK_BOT_TOKEN }}
+          payload: |
+            channel: ${{ env.ASELO_DEPLOYS_CHANNEL_ID }}
+            text: '`[TEST PAGES]` Deployment to `assets-development.tl.techmatters.org/testPages/` from ${{ github.ref_type }} `${{ github.ref_name }}` requested by `${{ github.triggering_actor }}` completed with SHA `${{ github.sha }}` :rocket:.'
