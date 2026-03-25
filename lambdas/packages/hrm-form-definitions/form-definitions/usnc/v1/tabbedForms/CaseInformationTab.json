@@ -155,12 +155,12 @@
   },
   {
     "name": "liveMonitoringConsent",
-    "label": "liveMonitoringConsent Test",
+    "label": "Do we have their permission to live monitor calls.",
     "type": "select",
     "isPII": false,
     "options": [
       {
-        "value": "",
+        "value": "Unknown",
         "label": ""
       },
       {
@@ -171,17 +171,7 @@
         "value": "No",
         "label": "No"
       }
-    ],
-    "required": {
-      "value": true,
-      "message": "RequiredFieldError"
-    }
-  },
-  {
-    "name": "doWeHaveTheirPermissionToLiveMonitorCalls",
-    "label": "Do we have their permission to live monitor calls.",
-    "type": "checkbox",
-    "isPII": false
+    ]
   },
   {
     "name": "doWeHaveTheirPermissionToCallBack",
