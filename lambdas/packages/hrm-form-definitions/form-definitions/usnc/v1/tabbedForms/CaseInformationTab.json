@@ -154,6 +154,30 @@
     ]
   },
   {
+    "name": "liveMonitoringConsent",
+    "label": "liveMonitoringConsent Test",
+    "type": "select",
+    "isPII": false,
+    "options": [
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "Yes",
+        "label": "Yes"
+      },
+      {
+        "value": "No",
+        "label": "No"
+      }
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
     "name": "doWeHaveTheirPermissionToLiveMonitorCalls",
     "label": "Do we have their permission to live monitor calls.",
     "type": "checkbox",
