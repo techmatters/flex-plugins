@@ -16,7 +16,7 @@
     "formPath": "caseForms/HouseholdForm.json"
   },
   "incident": {
-    "label": "Incident",
+    "label": "Person(s) Involved, Type of Risk and Safety",
     "formPath": "caseForms/IncidentForm.json"
   }
 }
