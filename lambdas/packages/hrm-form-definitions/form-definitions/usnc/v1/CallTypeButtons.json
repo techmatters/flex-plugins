@@ -18,6 +18,12 @@
     "category": "non-data"
   },
   {
+    "name": "test",
+    "label": "Test",
+    "type": "button",
+    "category": "non-data"
+  },
+  {
     "name": "wrongNumber",
     "label": "Wrong  Number",
     "type": "button",

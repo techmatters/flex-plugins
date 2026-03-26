@@ -365,6 +365,10 @@
         "value": "N/A - Not Applicable",
         "label": "N/A - Not Applicable"
       }
-    ]
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
   }
 ]
