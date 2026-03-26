@@ -105,8 +105,7 @@ const DispatchIncidentButton: React.FC<Props> = ({ contactId }) => {
       const valid = await trigger();
       if (valid) {
         await saveDraft();
-        // We use a regular dispatch here because we handle the error from where it is called.
-        dispatch(newIncidentDispatchAction(savedContact));
+        await dispatch(newIncidentDispatchAction(savedContact));
         Notifications.showNotificationSingle(dispatchSuccessNotification);
       }
     } catch (err) {
