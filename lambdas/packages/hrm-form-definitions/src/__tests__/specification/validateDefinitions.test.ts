@@ -34,6 +34,7 @@ import {
 import { mockFetchDefinitions } from '../fetchDefinitionsMock';
 import { loadLocalJson } from '../loadLocalJson';
 import { DefinitionVersionId } from '../definitionVersionId';
+import {AssertionError} from "node:assert";
 
 const { mockFetchImplementation, mockReset, buildBaseURL } = mockFetchDefinitions(loadLocalJson);
 
@@ -165,14 +166,18 @@ describe('Validate form definitions', () => {
             },
           },
         } = layoutDefinition;
-        expect(Array.isArray(previewFields)).toBe(true);
-        previewFields.forEach((pf) => expect(typeof pf).toBe('string'));
-        expect(Array.isArray(previewFields)).toBe(true);
-        if (previewFields.length) {
-          expect(layout).toBeDefined();
-          previewFields.forEach((pf) => {
-            expect(typeof layout[pf]).toBe('object');
-          });
+        if (previewFields) {
+            expect(Array.isArray(previewFields)).toBe(true);
+            previewFields.forEach((pf) => expect(typeof pf).toBe('string'));
+            expect(Array.isArray(previewFields)).toBe(true);
+            if (previewFields.length) {
+                expect(layout).toBeDefined();
+                previewFields.forEach((pf) => {
+                    expect(typeof layout?.[pf]).toBe('object');
+                });
+            }
+        } else {
+            throw new AssertionError({ message: `previewFields is ${previewFields}` })
         }
       });
 
