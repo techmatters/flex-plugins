@@ -50,7 +50,7 @@ ${
         "method": "POST",
         "content_type": "application/json;charset=utf-8",
         "body": "{ \"trigger\": {{trigger | to_json}}, \"channelType\": \"{% if trigger.conversation.ChannelAttributes.channel_type %}{{trigger.conversation.ChannelAttributes.channel_type}}{% else %}{{trigger.conversation.Source | downcase}}{% endif %}\"}",
-        "url": "${get_profile_flags_for_identifier_base_url}/getProfileFlagsForIdentifier"
+        "url": "${lambda_twilio_account_scoped_url}/getProfileFlagsForIdentifier"
       }
     },
     {
@@ -71,9 +71,9 @@ ${
         },
         "service": "{{trigger.message.InstanceSid}}",
         "channel": "{{trigger.message.ChannelSid}}",
-        "from": "${flow_vars.widget_from}",
+        "from": "${channel_flow_vars.widget_from}",
         "to": "{{contact.channel.address}}",
-        "body": "${flow_vars.chat_blocked_message}"
+        "body": "${channel_flow_vars.chat_blocked_message}"
       }
     },
     {
@@ -81,7 +81,7 @@ ${
       "type": "split-based-on",
       "transitions": [
         {
-          "next": "send_message_webchat_welcome_prequeue",
+          "next": "send_message_webchat_prequeue",
           "event": "noMatch"
         },
         {
@@ -108,7 +108,7 @@ ${
       }
     },
     {
-      "name": "send_message_webchat_welcome_prequeue",
+      "name": "send_message_webchat_prequeue",
       "type": "send-message",
       "transitions": [
         {
@@ -126,9 +126,9 @@ ${
         },
         "service": "{{trigger.message.InstanceSid}}",
         "channel": "{{trigger.message.ChannelSid}}",
-        "from": "${flow_vars.widget_from}",
+        "from": "${channel_flow_vars.widget_from}",
         "to": "{{contact.channel.address}}",
-        "body": "${flow_vars.send_message_webchat_welcome_prequeue}"
+        "body": "${channel_flow_vars.send_message_webchat_prequeue}"
       }
     },
     {
@@ -137,7 +137,7 @@ ${
           "event": "callComplete"
         },
         {
-          "next": "http_post_notify_failed_to_enqueue",
+          "next": "http_post_webhook_notify_error",
           "event": "failedToEnqueue"
         },
         {
@@ -148,7 +148,7 @@ ${
       "name": "send_to_queue",
       "properties": {
         "attributes": "${channel_attributes.default}",
-        "workflow": "${workflow_sids.master}",
+        "workflow": "${workflow_sids.webchat_sms}",
         "channel": "${task_channel_sids.chat}",
         "offset": {
           "y": 250,
@@ -157,7 +157,7 @@ ${
       }
     },
     {
-      "name": "http_post_notify_failed_to_enqueue",
+      "name": "http_post_webhook_notify_error",
       "type": "make-http-request",
       "transitions": [
         {

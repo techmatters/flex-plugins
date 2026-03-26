@@ -85,7 +85,7 @@ const state: RecursivePartial<RootState> = {
             status: 'open',
             info: {},
           },
-          availableStatusTransitions: [{}],
+          availableStatusTransitions: [{ value: 'open', label: 'Open', color: 'green', transitions: [] }],
         },
       },
     },

@@ -359,6 +359,7 @@
   "TabbedForms-ContactNotLoaded-Header": "ไม่ได้โหลดรายชื่อติดต่อ ไม่สามารถบันทึกข้อมูลได้",
   "TabbedForms-ContactNotLoaded-Retry": "ลองอีกครั้ง",
   "TabbedForms-ContactNotLoaded-Finish": "สิ้นสุดโดยไม่บันทึก",
+  "TabbedForms-ContactNotLoaded-Loading": "กำลังโหลดรายชื่อติดต่อ",
   "TaskFilterActive": "ระหว่างดำเนินการ",
   "TaskFilterAll": "ทั้งหมด",
   "TaskFilterWrapping": "สำเร็จ",

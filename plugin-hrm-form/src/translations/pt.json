@@ -97,6 +97,7 @@
   "TabbedForms-ContactNotLoaded-Header": "Contato não carregado, nenhum dado pode ser registrado",
   "TabbedForms-ContactNotLoaded-Retry": "Tentar novamente",
   "TabbedForms-ContactNotLoaded-Finish": "Terminar sem salvar",
+  "TabbedForms-ContactNotLoaded-Loading": "Carregando contato",
   "CancelOfflineContact": "Cancelar contato offline",
   "BottomBar-Next": "Próximo",
   "TabbedForms-BackButton": "Categorizar tipo de contato",
