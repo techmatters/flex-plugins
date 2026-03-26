@@ -19,71 +19,61 @@
   <meta charset="UTF-8">
   <title>Modica to Flex test page</title>
   <style>
-    input {
-      width: 333px;
-    }
     #message-history {
       font-family: 'Courier New', Courier, monospace;
     }
   </style>
 </head>
 <body>
-<div id="message-history">
+<div style="font-family: courier" id="message-history">
 </div>
-<form name="modica-message-input" onsubmit="sendMessage(event); return false">
-  <div>
-    <label for="url">URL</label>
-    <input id="url" type="text" name="url" />
-  </div>
-  <div>
-    <label for="source">Source</label>
-    <input id="source" type="text" name="source" />
-  </div>
-  <div>
-    <label for="destination">Destination</label>
-    <input id="destination" type="text" name="destination" />
-  </div>
-  <div>
-    <label for="content">Content</label>
-    <input id="content" type="text" name="content" />
-  </div>
-  <div>
-    <input type="submit" value="Send message" />
-  </div>
+<form name="modica-message-input" onsubmit="sendMessage(event); return false;">
+  <select name="destination-drop-down">
+    <option value="5770">NZ_STG</option>
+    <option value="234">NZ_PROD</option>
+    <option value="+12052704607">AS_DEV</option>
+    <option value="+15375688305">AS_STG</option>
+    <option value="+12165428033">AS_PROD</option>
+  </select>
+  <label for="message-sender-textbox">Sender Number</label> <input type="number" name="message-sender-textbox" value="1111111"/>
+  <br/>
+  <textarea name="message-input-box"></textarea>
+  <input type="submit" name="message-input-send" />
 </form>
-<div id="message-response"></div>
+<pre style="font-family: courier" id="message-response">
+</pre>
 
 <script>
+  const WEBHOOK_URL = "https://hrm-production.tl.techmatters.org/lambda/modicaWebhook";
   const messageHistoryElement = document.getElementById("message-history");
   const messageResponseElement = document.getElementById("message-response");
   const sendMessage = async (e) => {
     e.preventDefault();
-    const form = document.forms["modica-message-input"];
-    const url = form.url.value;
-    const source = form.source.value;
-    const destination = form.destination.value;
-    const content = form.content.value;
-    const messageEntry = document.createElement("div");
-    messageEntry.textContent = `[${source} -> ${destination}]: ${content}`;
-    messageHistoryElement.appendChild(messageEntry);
-    try {
-      const response = await fetch(url, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ source, destination, content }),
-      });
-      let responseBody;
+    const sendForm = document.forms["modica-message-input"];
+    const content = sendForm.elements["message-input-box"].value;
+    const destination = sendForm.elements["destination-drop-down"].value;
+    const source = sendForm.elements["message-sender-textbox"].value;
+    if (content) {
+      sendForm.elements["message-input-box"].value = "";
+      const messageElement = document.createElement("pre");
+      messageElement.append(`[${destination}] ${(new Date()).toISOString()}: ${content}`);
+      messageResponseElement.innerText = "Sending....";
+      messageResponseElement.style.color = '#000000FF';
       try {
-        responseBody = await response.json();
-      } catch (parseErr) {
-        messageResponseElement.textContent = `Response parse error (HTTP ${response.status}): ${parseErr.message}`;
-        return;
+        const response = await fetch(WEBHOOK_URL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ destination, source, content, useTestApi: true, testSessionId: 'JSFIDDLE' }),
+        });
+        messageHistoryElement.append(messageElement);
+        messageResponseElement.innerText = `status: ${response.status} [${response.statusText}]
+    ${await response.text()}
+    `;
+        messageResponseElement.style.color = response.ok ? '#006600FF' : '#660000FF';
+      } catch (err) {
+        messageResponseElement.innerText = `Network error: ${err.message}`;
+        messageResponseElement.style.color = '#660000FF';
       }
-      messageResponseElement.textContent = JSON.stringify(responseBody, null, 2);
-    } catch (err) {
-      messageResponseElement.textContent = `Network error: ${err.message}`;
     }
   };
 </script>
