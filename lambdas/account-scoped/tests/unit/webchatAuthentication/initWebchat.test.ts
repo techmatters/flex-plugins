@@ -37,11 +37,12 @@ jest.mock('../../../src/conversation/patchConversationAttributes', () => ({
 import { getTwilioClient } from '@tech-matters/twilio-configuration';
 import { createToken } from '../../../src/webchatAuthentication/createToken';
 
-const mockGetTwilioClient = getTwilioClient as jest.MockedFunction<typeof getTwilioClient>;
-const mockCreateToken = createToken as jest.MockedFunction<typeof createToken>;
-const mockPatchConversationAttributes = patchConversationAttributes as jest.MockedFunction<
-  typeof patchConversationAttributes
+const mockGetTwilioClient = getTwilioClient as jest.MockedFunction<
+  typeof getTwilioClient
 >;
+const mockCreateToken = createToken as jest.MockedFunction<typeof createToken>;
+const mockPatchConversationAttributes =
+  patchConversationAttributes as jest.MockedFunction<typeof patchConversationAttributes>;
 
 const TEST_IDENTITY = 'customer_identity';
 const TEST_TOKEN = 'mock.jwt.token';
