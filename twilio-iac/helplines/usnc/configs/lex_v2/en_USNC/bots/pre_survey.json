@@ -38,7 +38,7 @@
           "2": {
             "slot_name": "gender",
             "slot_type_name": "gender",
-            "slot_question": "Please enter the number that corresponds to your gender:\n1 - Male\n2 - Female\n3 - Non-binary\n4 - Transmasculine\n5 - Transfeminine\n6 - Other\n7 - Prefer not to say",
+            "slot_question": "Please enter the number that corresponds to your gender:\n1 - Male\n2 - Female\n3 - Non-binary\n4 - Transmasculine\n5 - Transfeminine\n6 - Other",
             "variations": [
               "What is your gender? Please enter the number that matches your answer.",
               "Enter the number that corresponds to your gender."
@@ -58,7 +58,7 @@
           "4": {
             "slot_name": "ethnicity",
             "slot_type_name": "ethnicity",
-            "slot_question": "Please enter the number that corresponds to your ethnicity:\n1 - Hispanic or Latino\n2 - Not Hispanic or Latino",
+            "slot_question": "Please enter the number that corresponds to your ethnicity:\n1 - Hispanic/Latino\n2 - Not Hispanic/Latino",
             "variations": [
               "What is your ethnicity? Please enter the number.",
               "Enter the number that corresponds to your ethnicity."
