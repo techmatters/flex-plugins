@@ -14,10 +14,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import twilio from 'twilio';
 import { initWebchatHandler } from '../../../src/webchatAuthentication/initWebchat';
-import { patchConversationAttributes } from '../../../src/conversation/patchConversationAttributes';
-import { RecursivePartial } from '../RecursivePartial';
 import { TEST_ACCOUNT_SID, TEST_CONVERSATION_SID } from '../../testTwilioValues';
 import { isErr, isOk } from '../../../src/Result';
 
@@ -25,28 +22,37 @@ jest.mock('@tech-matters/twilio-configuration', () => ({
   getTwilioClient: jest.fn(),
 }));
 
+jest.mock('../../../src/customChannels/configuration', () => ({
+  getChannelStudioFlowSid: jest.fn(),
+}));
+
+jest.mock('../../../src/conversation/createConversation', () => ({
+  createConversation: jest.fn(),
+}));
+
 jest.mock('../../../src/webchatAuthentication/createToken', () => ({
   createToken: jest.fn(),
   TOKEN_TTL_IN_SECONDS: 3600,
 }));
 
-jest.mock('../../../src/conversation/patchConversationAttributes', () => ({
-  patchConversationAttributes: jest.fn(),
-}));
-
 import { getTwilioClient } from '@tech-matters/twilio-configuration';
+import { getChannelStudioFlowSid } from '../../../src/customChannels/configuration';
+import { createConversation } from '../../../src/conversation/createConversation';
 import { createToken } from '../../../src/webchatAuthentication/createToken';
 
 const mockGetTwilioClient = getTwilioClient as jest.MockedFunction<
   typeof getTwilioClient
 >;
+const mockGetChannelStudioFlowSid = getChannelStudioFlowSid as jest.MockedFunction<
+  typeof getChannelStudioFlowSid
+>;
+const mockCreateConversation = createConversation as jest.MockedFunction<
+  typeof createConversation
+>;
 const mockCreateToken = createToken as jest.MockedFunction<typeof createToken>;
-const mockPatchConversationAttributes =
-  patchConversationAttributes as jest.MockedFunction<typeof patchConversationAttributes>;
 
-const TEST_IDENTITY = 'customer_identity';
+const TEST_STUDIO_FLOW_SID = 'FWtest_studio_flow_sid';
 const TEST_TOKEN = 'mock.jwt.token';
-const TEST_ADDRESS_SID = 'IG1ba46f2d6828b42ddd363f5045138044';
 
 const createMockRequest = (body: Record<string, any> = {}) => ({
   method: 'POST',
@@ -60,54 +66,49 @@ const createMockRequest = (body: Record<string, any> = {}) => ({
 });
 
 describe('initWebchatHandler', () => {
-  let mockWebChannelsCreate: jest.Mock;
-  let mockTwilioClient: RecursivePartial<twilio.Twilio>;
+  const mockTwilioClient = {} as any;
 
   beforeEach(() => {
     jest.clearAllMocks();
-
-    mockWebChannelsCreate = jest.fn().mockResolvedValue({
-      conversationSid: TEST_CONVERSATION_SID,
-      identity: TEST_IDENTITY,
-    });
-
-    mockTwilioClient = {
-      flexApi: {
-        v2: {
-          webChannels: {
-            create: mockWebChannelsCreate,
-          },
-        },
-      },
-    };
-
-    mockGetTwilioClient.mockResolvedValue(mockTwilioClient as twilio.Twilio);
+    mockGetTwilioClient.mockResolvedValue(mockTwilioClient);
+    mockGetChannelStudioFlowSid.mockResolvedValue(TEST_STUDIO_FLOW_SID);
+    mockCreateConversation.mockResolvedValue({ conversationSid: TEST_CONVERSATION_SID });
     mockCreateToken.mockResolvedValue(TEST_TOKEN);
-    mockPatchConversationAttributes.mockResolvedValue({} as any);
   });
 
-  it('calls client.flexApi.v2.webChannels.create with the correct parameters', async () => {
+  it('calls getChannelStudioFlowSid with accountSid and "web" channel', async () => {
     const request = createMockRequest();
     await initWebchatHandler(request, TEST_ACCOUNT_SID);
 
-    expect(mockWebChannelsCreate).toHaveBeenCalledWith({
-      customerFriendlyName: 'Test Customer',
-      addressSid: TEST_ADDRESS_SID,
-      preEngagementData: JSON.stringify({ friendlyName: 'Test Customer' }),
-      uiVersion: expect.any(String),
-      chatFriendlyName: 'Webchat widget',
+    expect(mockGetChannelStudioFlowSid).toHaveBeenCalledWith(TEST_ACCOUNT_SID, 'web');
+  });
+
+  it('calls createConversation with correct parameters', async () => {
+    const request = createMockRequest();
+    await initWebchatHandler(request, TEST_ACCOUNT_SID);
+
+    expect(mockCreateConversation).toHaveBeenCalledWith(mockTwilioClient, {
+      channelType: 'web',
+      conversationFriendlyName: 'Test Customer',
+      senderScreenName: 'Test Customer',
+      studioFlowSid: TEST_STUDIO_FLOW_SID,
+      testSessionId: undefined,
+      twilioNumber: `web:${TEST_ACCOUNT_SID}`,
+      uniqueUserName: expect.stringMatching(/^web:/),
+      additionalConversationAttributes: {
+        pre_engagement_data: { friendlyName: 'Test Customer' },
+        from: 'Test Customer',
+      },
     });
   });
 
-  it('calls patchConversationAttributes to set channel_type to web', async () => {
+  it('calls createToken with accountSid and the generated sender identity', async () => {
     const request = createMockRequest();
     await initWebchatHandler(request, TEST_ACCOUNT_SID);
 
-    expect(mockPatchConversationAttributes).toHaveBeenCalledWith(
-      mockTwilioClient,
-      TEST_CONVERSATION_SID,
-      { channel_type: 'web' },
-    );
+    const createConversationCall = mockCreateConversation.mock.calls[0];
+    const identity = createConversationCall[1].uniqueUserName;
+    expect(mockCreateToken).toHaveBeenCalledWith(TEST_ACCOUNT_SID, identity);
   });
 
   it('returns a success result with token, conversationSid and expiration', async () => {
@@ -122,30 +123,17 @@ describe('initWebchatHandler', () => {
     }
   });
 
-  it('returns an error result when webChannels.create throws', async () => {
-    mockWebChannelsCreate.mockRejectedValue(new Error('Orchestrator error'));
+  it('returns an error result when createConversation throws', async () => {
+    mockCreateConversation.mockRejectedValue(new Error('Conversation creation failed'));
     const request = createMockRequest();
     const result = await initWebchatHandler(request, TEST_ACCOUNT_SID);
 
     expect(isErr(result)).toBe(true);
     if (isErr(result)) {
       expect(result.error.statusCode).toBe(500);
-      expect(result.message).toBe('Orchestrator error');
+      expect(result.message).toBe('Conversation creation failed');
     }
-
-    expect(mockPatchConversationAttributes).not.toHaveBeenCalled();
-  });
-
-  it('returns an error result when patchConversationAttributes throws', async () => {
-    mockPatchConversationAttributes.mockRejectedValue(new Error('Patch failed'));
-    const request = createMockRequest();
-    const result = await initWebchatHandler(request, TEST_ACCOUNT_SID);
-
-    expect(isErr(result)).toBe(true);
-    if (isErr(result)) {
-      expect(result.error.statusCode).toBe(500);
-      expect(result.message).toBe('Patch failed');
-    }
+    expect(mockCreateToken).not.toHaveBeenCalled();
   });
 
   it('uses CustomerFriendlyName from body when friendlyName is absent in form data', async () => {
@@ -155,19 +143,51 @@ describe('initWebchatHandler', () => {
     });
     await initWebchatHandler(request, TEST_ACCOUNT_SID);
 
-    expect(mockWebChannelsCreate).toHaveBeenCalledWith(
-      expect.objectContaining({ customerFriendlyName: 'Fallback Customer' }),
+    expect(mockCreateConversation).toHaveBeenCalledWith(
+      mockTwilioClient,
+      expect.objectContaining({
+        conversationFriendlyName: 'Fallback Customer',
+        senderScreenName: 'Fallback Customer',
+        additionalConversationAttributes: expect.objectContaining({
+          from: 'Fallback Customer',
+        }),
+      }),
     );
   });
 
-  it('falls back to "Customer" when no friendly name is available', async () => {
+  it('falls back to "Anonymous" when no friendly name is available', async () => {
     const request = createMockRequest({
       PreEngagementData: JSON.stringify({}),
     });
     await initWebchatHandler(request, TEST_ACCOUNT_SID);
 
-    expect(mockWebChannelsCreate).toHaveBeenCalledWith(
-      expect.objectContaining({ customerFriendlyName: 'Customer' }),
+    expect(mockCreateConversation).toHaveBeenCalledWith(
+      mockTwilioClient,
+      expect.objectContaining({
+        conversationFriendlyName: 'Anonymous',
+        senderScreenName: 'Anonymous',
+        additionalConversationAttributes: expect.objectContaining({
+          from: 'Anonymous',
+        }),
+      }),
+    );
+  });
+
+  it('passes the pre-engagement form data as additionalConversationAttributes.pre_engagement_data', async () => {
+    const formData = { friendlyName: 'Test Customer', question: 'Help with account' };
+    const request = createMockRequest({
+      PreEngagementData: JSON.stringify(formData),
+    });
+    await initWebchatHandler(request, TEST_ACCOUNT_SID);
+
+    expect(mockCreateConversation).toHaveBeenCalledWith(
+      mockTwilioClient,
+      expect.objectContaining({
+        additionalConversationAttributes: {
+          pre_engagement_data: formData,
+          from: 'Test Customer',
+        },
+      }),
     );
   });
 });
