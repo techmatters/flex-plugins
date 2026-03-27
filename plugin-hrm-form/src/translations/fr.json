@@ -787,7 +787,7 @@
 "Thank you":"Merci",
 "Testing":"Test",
 "Wrong Number":"Mauvais numéro",
-"Direct Abusive to Counsellor":"Abus directe à l'intervenant",
+"Direct Abusive to Counsellor":"Abus directe à l'intervenant·e",
 "Sexually Inappropriate/Arousal Caller":"Comportement sexuellement innaproprié",
 "Arabic Interpreter Service (BSCC)":"Service d'interprétation en arabe (BSCC)",
 "Arabic Interpreter Service (LLS)":"Service d'interprétation en arabe (LLS)",
@@ -800,8 +800,8 @@
 "Dropped Contact - VPN Outage":"Contact coupé - Panne de VPN",
 "Dropped Contact - Connection Issue":"Contact coupé - Problème de connexion",
 "Headset Issue - Unable to hear caller":"Problème de casque - Incapable d'entendre l'appelant",
-"Headset Issue - Caller unable to hear counsellor":"Problème de casque - L'appelant est incapable d'entendre l'intervenant",
-"Chat Issue - Chatter unable to see counsellor responses":"Problème de clavardage - L'appelant ne voit pas la réponse de l'intervenant",
+"Headset Issue - Caller unable to hear counsellor":"Problème de casque - L'appelant est incapable d'entendre l'intervenant·e",
+"Chat Issue - Chatter unable to see counsellor responses":"Problème de clavardage - L'appelant ne voit pas la réponse de l'intervenant·e",
 "Not Applicable/Nothing":"Non applicable/Rien",
 "Suicide/Suicidality":"Suicide/Idées suicidaires",
 "Self-Injury":"Automutilation",
@@ -888,5 +888,12 @@
 "Contact Ended Prematurely":"Contact terminé prématurément",
 "N/A - Call": "N/A - Appel",
 "5 years or less": "5 ans ou moins",
-"6 or more years": "6 ans ou plus"
+"6 or more years": "6 ans ou plus",
+"Free": "Gratuit",
+"Cost Unknown": "Coût inconnu",
+"Cost for Service": "Coût du service",
+"Sliding Scale": "Coût variable",
+"Membership Fee": "Cotisation",
+"One Time Small Fee": "Frais uniques minimes",
+"Covered by Health Insurance": "Couvert par l'assurance maladie"
 }
