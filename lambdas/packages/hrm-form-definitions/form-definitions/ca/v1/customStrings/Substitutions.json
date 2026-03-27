@@ -283,7 +283,7 @@
   "Error-CategoryRequired": "Minimum de #{{minSelections}} étiquette de problème, maximum de #{{maxSelections}}. Il suffit de cliquer sur l’icône à côté d’une étiquette de problème pour consulter la fiche dans une nouvelle fenêtre.",
   "CaseList-Filters-Counselor": "Intervenant·e",
   "CaseList-Filters-SearchForCounselor": "Rechercher par Intervenant·e",
-  "CaseList-THChildName": "Jeuene",
+  "CaseList-THChildName": "Jeune",
 
   "CallSummary-Counselor": "Intervenant·e: ",
   "SearchForm-Counselor": "Intervenant·e",
