@@ -37,6 +37,7 @@ import {
   readStatusStyles,
   bubbleAndAvatarContainerStyles,
 } from './styles/MessageBubble.styles';
+import LocalizedTemplate from '../localization/LocalizedTemplate';
 
 const doubleDigit = (number: number) => `${number < 10 ? 0 : ''}${number}`;
 
@@ -56,14 +57,12 @@ export const MessageBubble = ({
 }) => {
   const [read, setRead] = useState(false);
   const [isMouseDown, setIsMouseDown] = useState(false);
-  const { conversationsClient, participants, fileAttachmentConfig, participantNames } = useSelector(
-    (state: AppState) => ({
-      conversationsClient: state.chat.conversationsClient,
-      participants: state.chat.participants,
-      fileAttachmentConfig: state.config.fileAttachment,
-      participantNames: state.chat.participantNames,
-    }),
-  );
+  const { conversationsClient, participants, fileAttachmentConfig } = useSelector((state: AppState) => ({
+    conversationsClient: state.chat.conversationsClient,
+    participants: state.chat.participants,
+    fileAttachmentConfig: state.config.fileAttachment,
+    participantNames: state.chat.participantNames,
+  }));
   const messageRef = useRef<HTMLDivElement>(null);
 
   const belongsToCurrentUser = message.author === conversationsClient?.user.identity;
@@ -129,7 +128,14 @@ export const MessageBubble = ({
   };
 
   // const author = users?.find((u) => u.identity === message.author)?.friendlyName || message.author;
-  const name = participantNames ? participantNames[message.participantSid] : '';
+  let name: string;
+  if (belongsToCurrentUser) {
+    name = 'MessagePhase-MessageBubble-OwnMessageSenderName';
+  } else if (message.participantSid) {
+    name = 'MessagePhase-MessageBubble-OtherParticipantMessageSenderName';
+  } else {
+    name = message.author;
+  }
 
   return (
     <Box
@@ -152,7 +158,7 @@ export const MessageBubble = ({
         <Box {...getInnerContainerStyles(belongsToCurrentUser)}>
           <Flex hAlignContent="between" width="100%" vAlignContent="center" marginBottom="space20">
             <Text {...authorStyles} as="p" aria-hidden style={{ textOverflow: 'ellipsis' }} title={name}>
-              {name}
+              <LocalizedTemplate code={name} />
             </Text>
             <ScreenReaderOnly as="p">{belongsToCurrentUser ? 'You sent at' : `${name} sent at`}</ScreenReaderOnly>
             <Text {...timeStampStyles} as="p">

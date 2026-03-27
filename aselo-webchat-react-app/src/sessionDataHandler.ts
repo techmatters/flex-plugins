@@ -19,9 +19,10 @@ import { LocalStorageUtil } from './utils/LocalStorage';
 import { generateMixPanelHeaders, generateSecurityHeaders } from './utils/generateHeaders';
 import { ConfigState } from './store/definitions';
 import { store } from './store/store';
+import { localizeKey } from './localization/localizeKey';
 
 export const LOCALSTORAGE_SESSION_ITEM_ID = 'TWILIO_WEBCHAT_WIDGET';
-const CUSTOMER_DEFAULT_NAME = 'Customer';
+const CUSTOMER_DEFAULT_NAME_KEY = 'Conversation-Participants-CustomerDefaultName';
 
 type SessionDataStorage = TokenResponse & {
   loginTimestamp: string | null;
@@ -189,19 +190,19 @@ class SessionDataHandler {
     });
 
     try {
+      const { config } = store.getState();
       const payload: InitWebchatAPIPayload = {
         DeploymentKey: this.getDeploymentKey(),
-        CustomerFriendlyName: (formData?.friendlyName as string) || CUSTOMER_DEFAULT_NAME,
+        CustomerFriendlyName:
+          (formData?.friendlyName as string) ||
+          localizeKey(config.translations[config.currentLocale ?? config.defaultLocale])(CUSTOMER_DEFAULT_NAME_KEY),
         PreEngagementData: JSON.stringify(formData),
       };
 
       if (customerIdentity) {
         payload.Identity = customerIdentity;
       }
-      newTokenData = await contactBackend(store.getState().config)<TokenResponse>(
-        '/webchatAuthentication/initWebchat',
-        payload,
-      );
+      newTokenData = await contactBackend(config)<TokenResponse>('/webchatAuthentication/initWebchat', payload);
     } catch (e) {
       logger.error('No results from server');
       throw Error('No results from server');
