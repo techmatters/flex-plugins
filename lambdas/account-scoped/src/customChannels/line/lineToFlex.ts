@@ -151,7 +151,7 @@ export const lineToFlexHandler: AccountScopedHandler = async (
       channelType,
       uniqueUserName,
       senderScreenName,
-      onMessageSentWebhookUrl,
+      onMessageAddedWebhookUrl: onMessageSentWebhookUrl,
       messageText,
       senderExternalId,
       customSubscribedExternalId: subscribedExternalId,

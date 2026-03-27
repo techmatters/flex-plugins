@@ -173,7 +173,7 @@ export const instagramToFlexHandler: AccountScopedHandler = async (
     channelType,
     uniqueUserName,
     senderScreenName,
-    onMessageSentWebhookUrl,
+    onMessageAddedWebhookUrl: onMessageSentWebhookUrl,
     messageText,
     messageAttributes,
     senderExternalId,
