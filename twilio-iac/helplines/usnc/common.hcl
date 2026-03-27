@@ -6,18 +6,18 @@ locals {
 
 
   local_config = {
-    helpline        = "Promise Resource Network"
-    task_language   = "en-US"
+    helpline      = "Promise Resource Network"
+    task_language = "en-US"
 
     workflows = {
       master : {
-        friendly_name = "Master Workflow"
-        templatefile  = "/app/twilio-iac/helplines/usnc/templates/workflows/master.tftpl"
+        friendly_name            = "Master Workflow"
+        templatefile             = "/app/twilio-iac/helplines/usnc/templates/workflows/master.tftpl"
         task_reservation_timeout = 20
       },
       webchat_sms : {
-        friendly_name = "Webchat SMS Workflow"
-        templatefile  = "/app/twilio-iac/helplines/usnc/templates/workflows/webchat-sms.tftpl"
+        friendly_name            = "Webchat SMS Workflow"
+        templatefile             = "/app/twilio-iac/helplines/usnc/templates/workflows/webchat-sms.tftpl"
         task_reservation_timeout = 20
       },
       queue_transfers : {
@@ -50,6 +50,16 @@ locals {
     }
     lex_v2_bot_languages = {
       en_USNC : ["pre_survey", "post_survey"]
+    }
+
+    channel_attributes = {
+      webchat : "/app/twilio-iac/helplines/templates/channel-attributes/webchat.tftpl"
+      voice : "/app/twilio-iac/helplines/usnc/templates/channel-attributes/voice.tftpl"
+      default : "/app/twilio-iac/helplines/templates/channel-attributes/default.tftpl"
+      default-conversations : "/app/twilio-iac/helplines/templates/channel-attributes/default-conversations.tftpl"
+      line-conversations : "/app/twilio-iac/helplines/templates/channel-attributes/custom-channel-conversations.tftpl"
+      telegram-conversations : "/app/twilio-iac/helplines/templates/channel-attributes/custom-channel-conversations.tftpl"
+      instagram-conversations : "/app/twilio-iac/helplines/templates/channel-attributes/custom-channel-conversations.tftpl"
     }
 
     task_channels = {
