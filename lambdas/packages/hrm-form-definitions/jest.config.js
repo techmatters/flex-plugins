@@ -21,6 +21,14 @@ module.exports = (config) => {
   return (
     config || {
       ...defaults,
+      testTimeout: 30000,
+      preset: 'ts-jest',
+      globals: {
+        'ts-jest': {
+            // to give support to const enum. Not working, conflicting with module resolution
+            useExperimentalLanguageServer: true,
+        }
+      },
       rootDir: './src',
       // Only run tests in files that end in .test.ts or .spec.ts AND are under the __tests__ directory
       testMatch: ["**/__tests__/**/?(*.)+(spec|test).[jt]s?(x)"],

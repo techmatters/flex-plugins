@@ -14,7 +14,10 @@
             "use_prepopulate_mappings": true,
             "enable_hang_up_by_hrm_saving": true,
             "enable_custom_links" : false,
-            "enable_emoji_picker": false
+            "enable_emoji_picker": false,
+            "enable_switchboarding": true,
+            "enable_switchboarding_move_tasks": true,
+            "enable_lex_v2": true
         },
         "definitionVersion": "usnc-v1",
         "external_recordings_enabled": false,
