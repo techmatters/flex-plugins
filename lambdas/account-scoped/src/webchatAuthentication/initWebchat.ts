@@ -41,42 +41,38 @@ const contactWebchatOrchestrator = async ({
   const senderId = `web:${crypto.randomUUID()}`;
   console.info(`Creating new conversation via the API with sender ID: ${senderId}`);
 
-  try {
-    const client = await getTwilioClient(accountSid);
-    const conversation = await createConversation(client, {
-      channelType: 'web',
-      conversationFriendlyName: customerFriendlyName,
-      senderScreenName: customerFriendlyName,
-      studioFlowSid,
-      testSessionId,
-      twilioNumber: `web:${accountSid}`,
-      uniqueUserName: senderId,
-      additionalConversationAttributes: {
-        pre_engagement_data: formData,
-        from: customerFriendlyName,
-      },
-    });
-
-    const { conversationSid } = conversation;
-    console.info(
-      `Created new conversation ${conversationSid} via the API with sender ID: ${senderId}`,
-    );
-
-    return newOk({
-      conversationSid: conversationSid as ConversationSID,
-      identity: senderId,
-    });
-  } catch (err) {
-    const bodyError = err instanceof Error ? err.message : String(err);
-    console.error('Error creating web channel', accountSid, bodyError);
+  const client = await getTwilioClient(accountSid);
+  const { conversationSid, error } = await createConversation(client, {
+    channelType: 'web',
+    conversationFriendlyName: customerFriendlyName,
+    senderScreenName: customerFriendlyName,
+    studioFlowSid,
+    testSessionId,
+    twilioNumber: `web:${accountSid}`,
+    uniqueUserName: senderId,
+    additionalConversationAttributes: {
+      pre_engagement_data: formData,
+      from: customerFriendlyName,
+    },
+  });
+  if (error) {
+    console.error('Error creating web conversation', accountSid, error);
     return newErr({
-      message: bodyError,
+      message: error.message,
       error: {
         statusCode: 500,
-        cause: new Error(bodyError),
+        cause: error,
       },
     });
   }
+  console.info(
+    `Created new conversation ${conversationSid} via the API with sender ID: ${senderId}`,
+  );
+
+  return newOk({
+    conversationSid: conversationSid as ConversationSID,
+    identity: senderId,
+  });
 };
 
 const sendUserMessage = async (

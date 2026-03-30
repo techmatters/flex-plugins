@@ -23,7 +23,7 @@ import { ConversationSID } from '@tech-matters/twilio-types';
  *
  * @param client - Twilio client
  * @param conversation - either the instance of the conversation which must have been fetched prior to calling, or the sid to fetch
- * @param attributePatch - attributes to update. Will add these if they don't exist or overwrite them if they do. Setting attributes undefined will NOT remove them, there will be an attribute e
+ * @param attributePatch - attributes to update. Will add these if they don't exist or overwrite them if they do. Setting attribute values to `undefined` or `null` will NOT remove those keys; there will still be an attribute entry for each such key. This helper only supports adding or overwriting attributes, not removing them.
  */
 export const patchConversationAttributes = async (
   client: Twilio,
@@ -42,5 +42,5 @@ export const patchConversationAttributes = async (
   const patchedAttributes = { ...conversationAttributes, ...attributePatch };
   return client.conversations.v1.conversations
     .get(conversationInstance.sid)
-    .update({ attributes: patchedAttributes });
+    .update({ attributes: JSON.stringify(patchedAttributes) });
 };
