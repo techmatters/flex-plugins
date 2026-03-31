@@ -21,6 +21,7 @@ import {
   createConversation,
   CreateFlexConversationParams,
 } from '../conversation/createConversation';
+import { isErr } from '../Result';
 
 export const findExistingConversation = async (
   client: Twilio,
@@ -75,7 +76,7 @@ export const removeConversation = async (
   }: {
     conversationSid: ConversationSID;
   },
-) => client.conversations.v1.conversations(conversationSid).remove();
+) => client.conversations.v1.conversations.get(conversationSid).remove();
 
 export { AseloCustomChannel, isAseloCustomChannel } from './aseloCustomChannels';
 
@@ -125,26 +126,28 @@ export const sendConversationMessageToFlex = async (
   let conversationSid = await findExistingConversation(client, uniqueUserName);
 
   if (!conversationSid) {
-    const { conversationSid: newConversationSid, error } = await createConversation(
-      client,
-      {
-        studioFlowSid,
-        channelType,
-        twilioNumber,
-        uniqueUserName,
-        senderScreenName,
-        onMessageAddedWebhookUrl,
-        conversationFriendlyName,
-        testSessionId,
-      },
-    );
+    const createConverationResult = await createConversation(client, {
+      studioFlowSid,
+      channelType,
+      twilioNumber,
+      uniqueUserName,
+      senderScreenName,
+      onMessageAddedWebhookUrl,
+      conversationFriendlyName,
+      testSessionId,
+    });
 
-    if (error) {
-      await removeConversation(client, {
-        conversationSid: newConversationSid,
-      });
-      throw error;
+    if (isErr(createConverationResult)) {
+      const { conversationSid: newConversationSid, cause } =
+        createConverationResult.error;
+      if (newConversationSid) {
+        await removeConversation(client, {
+          conversationSid: newConversationSid,
+        });
+      }
+      throw cause;
     }
+    const { conversationSid: newConversationSid } = createConverationResult.data;
 
     conversationSid = newConversationSid;
   }

@@ -25,7 +25,10 @@ export const getDefinitionVersion = async ({
 }): Promise<{
   preEngagementForm: PreEngagementForm;
 }> => {
-  const formDefinitionsBaseUrl = buildFormDefinitionsBaseUrlGetter({ environment })(definitionVersionId);
+  const formDefinitionsBaseUrl = buildFormDefinitionsBaseUrlGetter({
+    environment,
+    configuredFormDefinitionsBaseUrl: process.env.REACT_APP_FORM_DEFINITIONS_BASE_URL,
+  })(definitionVersionId);
   // eslint-disable-next-line
   const definition = await loadWebchatDefinition(formDefinitionsBaseUrl);
   return definition;

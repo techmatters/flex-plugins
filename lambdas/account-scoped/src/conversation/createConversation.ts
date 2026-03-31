@@ -17,6 +17,7 @@
 import { Twilio } from 'twilio';
 import { ConversationSID } from '@tech-matters/twilio-types';
 import { AseloCustomChannel } from '../customChannels/aseloCustomChannels';
+import { newErr, newOk, Result } from '../Result';
 
 const CONVERSATION_CLOSE_TIMEOUT = 'P3D'; // ISO 8601 duration format https://en.wikipedia.org/wiki/ISO_8601
 export type CreateFlexConversationParams = {
@@ -47,7 +48,12 @@ export const createConversation = async (
     additionalConversationAttributes,
     testSessionId,
   }: CreateFlexConversationParams,
-): Promise<{ conversationSid: ConversationSID; error?: Error }> => {
+): Promise<
+  Result<
+    { conversationSid?: ConversationSID; cause: Error },
+    { conversationSid: ConversationSID }
+  >
+> => {
   if (testSessionId) {
     console.info(
       'testSessionId specified. All outgoing messages will be sent to the test API.',
@@ -67,6 +73,9 @@ export const createConversation = async (
     await conversationContext.participants.create({
       identity: uniqueUserName,
     });
+    await client.conversations.v1.users
+      .get(uniqueUserName)
+      .update({ friendlyName: senderScreenName });
     const channelAttributes = JSON.parse((await conversationContext.fetch()).attributes);
 
     console.debug('channelAttributes prior to update', channelAttributes);
@@ -91,7 +100,6 @@ export const createConversation = async (
       'configuration.filters': ['onMessageAdded'],
     });
     if (onMessageAddedWebhookUrl) {
-      /* const onMessageAdded = */
       await conversationContext.webhooks.create({
         target: 'webhook',
         'configuration.method': 'POST',
@@ -100,8 +108,11 @@ export const createConversation = async (
       });
     }
   } catch (err) {
-    return { conversationSid, error: err as Error };
+    return newErr({
+      message: `Create conversation failed: ${(err as Error)?.message}`,
+      error: { conversationSid, cause: err as Error },
+    });
   }
 
-  return { conversationSid };
+  return newOk({ conversationSid });
 };
