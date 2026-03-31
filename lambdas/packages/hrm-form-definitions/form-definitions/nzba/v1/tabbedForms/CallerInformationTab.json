@@ -468,10 +468,6 @@
         "label": "Taupo district"
       },
       {
-        "value": "Unknown",
-        "label": "Unknown"
-      },
-      {
         "value": "Hauraki district",
         "label": "Hauraki district"
       },
@@ -550,6 +546,10 @@
       {
         "value": "Wanganui district",
         "label": "Wanganui district"
+      },
+      {
+        "value": "Unknown",
+        "label": "Unknown"
       }
     ]
   },
@@ -1041,10 +1041,6 @@
         "label": "New Zealand European"
       },
       {
-        "value": "New Zealand European",
-        "label": "New Zealand European"
-      },
-      {
         "value": "British and Irish",
         "label": "British and Irish"
       },
@@ -1245,10 +1241,6 @@
         "label": "New Zealand European"
       },
       {
-        "value": "New Zealand European",
-        "label": "New Zealand European"
-      },
-      {
         "value": "British and Irish",
         "label": "British and Irish"
       },
@@ -1429,10 +1421,6 @@
   {
     "name": "phone1",
     "label": "Phone",
-    "type": "input",
-    "required": {
-      "value": true,
-      "message": "RequiredFieldError"
-    }
+    "type": "input"
   }
 ]

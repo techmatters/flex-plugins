@@ -46,19 +46,217 @@ const preEngagementConfig: PreEngagementFormDefinition = {
       name: 'firstName',
       label: 'First Name',
       required: true,
+    }, ,
+    {
+      name: "ethnicity1",
+      label: "Ethnicity",
+      type: "select",
+      isPII: false,
+      "options": [
+        {
+          value: "",
+          label: ""
+        },
+        {
+          value: "European (Unspecified)",
+          label: "European (Unspecified)"
+        },
+        {
+          value: "New Zealand European",
+          label: "New Zealand European"
+        },
+        {
+          value: "British and Irish",
+          label: "British and Irish"
+        },
+        {
+          value: "Dutch",
+          label: "Dutch"
+        },
+        {
+          value: "Greek",
+          label: "Greek"
+        },
+        {
+          value: "Polish",
+          label: "Polish"
+        },
+        {
+          value: "South Slav",
+          label: "South Slav"
+        },
+        {
+          value: "Italian",
+          label: "Italian"
+        },
+        {
+          value: "German",
+          label: "German"
+        },
+        {
+          value: "Australian",
+          label: "Australian"
+        },
+        {
+          value: "Other European",
+          label: "Other European"
+        },
+        {
+          value: "Māori",
+          label: "Māori"
+        },
+        {
+          value: "Pacific Peoples (unspecified)",
+          label: "Pacific Peoples (unspecified)"
+        },
+        {
+          value: "Samoan",
+          label: "Samoan"
+        },
+        {
+          value: "Cook Islands Maori",
+          label: "Cook Islands Maori"
+        },
+        {
+          value: "Tongan",
+          label: "Tongan"
+        },
+        {
+          value: "Niuean",
+          label: "Niuean"
+        },
+        {
+          value: "Tokelauan",
+          label: "Tokelauan"
+        },
+        {
+          value: "Fijian",
+          label: "Fijian"
+        },
+        {
+          value: "French Polynesian",
+          label: "French Polynesian"
+        },
+        {
+          value: "Indigenous Australian",
+          label: "Indigenous Australian"
+        },
+        {
+          value: "Kiribati",
+          label: "Kiribati"
+        },
+        {
+          value: "Micronesian",
+          label: "Micronesian"
+        },
+        {
+          value: "Papua New Guinea",
+          label: "Papua New Guinea"
+        },
+        {
+          value: "Solomon Islander",
+          label: "Solomon Islander"
+        },
+        {
+          value: "Tuvalu Islander",
+          label: "Tuvalu Islander"
+        },
+        {
+          value: "Other Pacific Peoples",
+          label: "Other Pacific Peoples"
+        },
+        {
+          value: "Asian (unspecified)",
+          label: "Asian (unspecified)"
+        },
+        {
+          value: "Southeast Asian (unspecified)",
+          label: "Southeast Asian (unspecified)"
+        },
+        {
+          value: "Filipino",
+          label: "Filipino"
+        },
+        {
+          value: "Cambodian",
+          label: "Cambodian"
+        },
+        {
+          value: "Vietnamese",
+          label: "Vietnamese"
+        },
+        {
+          value: "Other Southeast Asian",
+          label: "Other Southeast Asian"
+        },
+        {
+          value: "Chinese",
+          label: "Chinese"
+        },
+        {
+          value: "Indian",
+          label: "Indian"
+        },
+        {
+          value: "Sri Lankan",
+          label: "Sri Lankan"
+        },
+        {
+          value: "Japanese",
+          label: "Japanese"
+        },
+        {
+          value: "Korean",
+          label: "Korean"
+        },
+        {
+          value: "Other Asian",
+          label: "Other Asian"
+        },
+        {
+          value: "Middle Eastern",
+          label: "Middle Eastern"
+        },
+        {
+          value: "Latin American",
+          label: "Latin American"
+        },
+        {
+          value: "African",
+          label: "African"
+        },
+        {
+          value: "Indian Ocean Peoples",
+          label: "Indian Ocean Peoples"
+        },
+        {
+          value: "Indigenous American",
+          label: "Indigenous American"
+        },
+        {
+          value: "Other Ethnicity",
+          label: "Other Ethnicity"
+        },
+        {
+          value: "Not Stated",
+          label: "Not Stated"
+        }
+      ],
+      "required": {
+        value: true,
+        "message": "RequiredFieldError"
+      }
     },
     {
-      label: 'How urgent is your situation?',
+      label: 'Is this your first contact?',
       type: 'select',
-      name: 'urgencyLevel',
+      name: 'firstContact',
       required: false,
       defaultValue: '',
       options: [
-        { 'value': '', 'label': '' },
-        { 'value': 'Urgent', 'label': 'Urgent' },
-        { 'value': 'Critical', 'label': 'Critical' },
-        { 'value': 'Non-critical', 'label': 'Non-critical' },
-        { 'value': 'Other', 'label': 'Other' }
+        { value: '', label: '' },
+        { value: 'Yes', label: 'Yes' },
+        { value: 'No', label: 'No' }
       ],
     },
     {
@@ -69,9 +267,9 @@ const preEngagementConfig: PreEngagementFormDefinition = {
       required: {
         value: true,
         message: "Sorry, if you don't accept our terms and conditions we can't provide counselling to you.",
-      }, 
+      },
     },
-   
+
   ],
 };
 

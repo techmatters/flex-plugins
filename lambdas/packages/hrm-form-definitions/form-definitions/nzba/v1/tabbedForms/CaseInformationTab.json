@@ -1,5 +1,156 @@
 [
   {
+    "name": "theme",
+    "label": "Risk Theme",
+    "type": "select",
+    "isPII": false,
+    "defaultOption": {
+      "value": "Unknown",
+      "label": ""
+    },
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "Violence",
+        "label": "Violence"
+      },
+      {
+        "value": "Self-harming behaviour",
+        "label": "Self-harming behaviour"
+      },
+      {
+        "value": "Suicide",
+        "label": "Suicide"
+      }
+    ]
+  },
+  {
+    "name": "severity",
+    "label": "Risk Theme Severity",
+    "type": "dependent-select",
+    "isPII": false,
+    "dependsOn": "theme",
+    "defaultOption": {
+      "value": "Unknown",
+      "label": ""
+    },
+    "options": {
+      "Violence": [
+        {
+          "value": "1. Concern for other ",
+          "label": "1. Concern for other "
+        },
+        {
+          "value": "2. Seeking information ",
+          "label": "2. Seeking information "
+        },
+        {
+          "value": "3. Historic",
+          "label": "3. Historic"
+        },
+        {
+          "value": "4. Isolated incident",
+          "label": "4. Isolated incident"
+        },
+        {
+          "value": "5. Occasional violence",
+          "label": "5. Occasional violence"
+        },
+        {
+          "value": "6. Regular violence",
+          "label": "6. Regular violence"
+        },
+        {
+          "value": "7. Severe distress/harm",
+          "label": "7. Severe distress/harm"
+        },
+        {
+          "value": "8. Other",
+          "label": "8. Other"
+        },
+        {
+          "value": "9. Unknown",
+          "label": "9. Unknown"
+        }
+      ],
+      "Self-harming behaviour": [
+        {
+          "value": "1. Concern for other",
+          "label": "1. Concern for other"
+        },
+        {
+          "value": "2. Seeking info/thinking about SH",
+          "label": "2. Seeking info/thinking about SH"
+        },
+        {
+          "value": "3. Contacted WU to reduce current urge",
+          "label": "3. Contacted WU to reduce current urge"
+        },
+        {
+          "value": "4. Isolated incident ",
+          "label": "4. Isolated incident "
+        },
+        {
+          "value": "5. Occasional",
+          "label": "5. Occasional"
+        },
+        {
+          "value": "6. Frequent but not severe",
+          "label": "6. Frequent but not severe"
+        },
+        {
+          "value": "7. Chronic/severe ",
+          "label": "7. Chronic/severe "
+        },
+        {
+          "value": "8. Other ",
+          "label": "8. Other "
+        },
+        {
+          "value": "9. Unknown",
+          "label": "9. Unknown"
+        }
+      ],
+      "Suicide": [
+        {
+          "value": "1. Concern for other ",
+          "label": "1. Concern for other "
+        },
+        {
+          "value": "2. Seeking information ",
+          "label": "2. Seeking information "
+        },
+        {
+          "value": "3. Suicidal thoughts or fears ",
+          "label": "3. Suicidal thoughts or fears "
+        },
+        {
+          "value": "4. Chronic Suicidal thoughts or fears",
+          "label": "4. Chronic Suicidal thoughts or fears"
+        },
+        {
+          "value": "5. Immediate intention ",
+          "label": "5. Immediate intention "
+        },
+        {
+          "value": "6. Current attempt ",
+          "label": "6. Current attempt "
+        },
+        {
+          "value": "7. Recent/Frequent attempts",
+          "label": "7. Recent/Frequent attempts"
+        },
+        {
+          "value": "8. Other",
+          "label": "8. Other"
+        }
+      ]
+    }
+  },
+  {
     "name": "otherActions",
     "label": "Other Actions",
     "type": "select",
@@ -110,14 +261,6 @@
         "label": "Unknown"
       }
     ]
-  },
-  {
-    "name": "contactSummary",
-    "label": "Contact Summary",
-    "type": "textarea",
-    "isPII": false,
-    "rows": 8,
-    "width": 250
   },
   {
     "name": "overallOutcome",
@@ -234,7 +377,7 @@
     "label": "Background",
     "type": "textarea",
     "isPII": false,
-    "rows": 8,
+    "rows": 5,
     "width": 250
   },
   {
@@ -242,7 +385,7 @@
     "label": "Presentation",
     "type": "textarea",
     "isPII": false,
-    "rows": 8,
+    "rows": 5,
     "width": 250
   },
   {
@@ -250,7 +393,7 @@
     "label": "Formulation",
     "type": "textarea",
     "isPII": false,
-    "rows": 8,
+    "rows": 5,
     "width": 250
   },
   {
@@ -258,7 +401,7 @@
     "label": "Goals Identified",
     "type": "textarea",
     "isPII": false,
-    "rows": 8,
+    "rows": 5,
     "width": 250
   },
   {
@@ -266,7 +409,7 @@
     "label": "Actions or Outcomes",
     "type": "textarea",
     "isPII": false,
-    "rows": 8,
+    "rows": 5,
     "width": 250
   },
   {
@@ -274,7 +417,7 @@
     "label": "Other",
     "type": "textarea",
     "isPII": false,
-    "rows": 8,
+    "rows": 5,
     "width": 250,
     "description": {
       "title": "Duty of Care",
@@ -286,7 +429,7 @@
     "label": "Other Information about the Client",
     "type": "textarea",
     "isPII": false,
-    "rows": 7,
+    "rows": 5,
     "width": 250
   },
   {
@@ -294,7 +437,7 @@
     "label": "Client presentation",
     "type": "textarea",
     "isPII": false,
-    "rows": 7,
+    "rows": 5,
     "width": 250
   },
   {
@@ -330,7 +473,7 @@
     "label": "Supervisor's Analysis",
     "type": "textarea",
     "isPII": false,
-    "rows": 7,
+    "rows": 5,
     "width": 250
   },
   {
@@ -338,7 +481,7 @@
     "label": "Plan of Action",
     "type": "textarea",
     "isPII": false,
-    "rows": 7,
+    "rows": 5,
     "width": 250
   },
   {
@@ -346,7 +489,7 @@
     "label": "Immediate outcome (from Duty of Care process)",
     "type": "textarea",
     "isPII": false,
-    "rows": 7,
+    "rows": 5,
     "width": 250
   },
   {
@@ -354,7 +497,7 @@
     "label": "Barnardos Consultation - Date, Time and who consulted",
     "type": "textarea",
     "isPII": false,
-    "rows": 7,
+    "rows": 5,
     "width": 250
   },
   {
@@ -362,7 +505,7 @@
     "label": "Agencies Involved",
     "type": "textarea",
     "isPII": false,
-    "rows": 7,
+    "rows": 5,
     "width": 250
   },
   {
@@ -420,7 +563,7 @@
     "label": "Further action needed",
     "type": "textarea",
     "isPII": false,
-    "rows": 7,
+    "rows": 5,
     "width": 250
   },
   {
@@ -448,7 +591,7 @@
     "label": "Notes from follow-up action",
     "type": "textarea",
     "isPII": false,
-    "rows": 7,
+    "rows": 5,
     "width": 250
   },
   {
@@ -456,8 +599,7 @@
     "label": "Further contact with client or agency",
     "type": "textarea",
     "isPII": false,
-    "rows": 7,
+    "rows": 5,
     "width": 250
   }
-
 ]
