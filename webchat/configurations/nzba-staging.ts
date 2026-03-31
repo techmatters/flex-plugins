@@ -46,7 +46,7 @@ const preEngagementConfig: PreEngagementFormDefinition = {
       name: 'firstName',
       label: 'First Name',
       required: true,
-    }, ,
+    },
     {
       name: "ethnicity1",
       label: "Ethnicity",
