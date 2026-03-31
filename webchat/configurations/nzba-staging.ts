@@ -52,7 +52,7 @@ const preEngagementConfig: PreEngagementFormDefinition = {
       label: "Ethnicity",
       type: "select",
       isPII: false,
-      "options": [
+      options: [
         {
           value: "",
           label: ""
@@ -242,9 +242,9 @@ const preEngagementConfig: PreEngagementFormDefinition = {
           label: "Not Stated"
         }
       ],
-      "required": {
+      required: {
         value: true,
-        "message": "RequiredFieldError"
+        message: "RequiredFieldError"
       }
     },
     {
