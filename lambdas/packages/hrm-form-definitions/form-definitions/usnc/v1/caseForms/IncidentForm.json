@@ -2,69 +2,321 @@
   {
     "name": "date",
     "type": "date-input",
-    "label": "Date of Incident",
-    "required": { "value": true, "message": "RequiredFieldError" },
-    "isPII": false
+    "isPII": false,
+    "label": "Date",
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
   },
   {
-    "name": "duration",
-    "label": "Duration",
+    "name": "time",
+    "label": "Time",
     "type": "select",
+    "isPII": false,
     "options": [
-      { "value": "", "label": "" },
-      { "value": "Ongoing", "label": "Ongoing" },
-      { "value": "Once Off", "label": "Once Off" },
-      { "value": "Other", "label": "Other" }
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "12:00 AM",
+        "label": "12:00 AM"
+      },
+      {
+        "value": "12:30 AM",
+        "label": "12:30 AM"
+      },
+      {
+        "value": "1:00 AM",
+        "label": "1:00 AM"
+      },
+      {
+        "value": "1:30 AM",
+        "label": "1:30 AM"
+      },
+      {
+        "value": "2:00 AM",
+        "label": "2:00 AM"
+      },
+      {
+        "value": "2:30 AM",
+        "label": "2:30 AM"
+      },
+      {
+        "value": "3:00 AM",
+        "label": "3:00 AM"
+      },
+      {
+        "value": "3:30 AM",
+        "label": "3:30 AM"
+      },
+      {
+        "value": "4:00 AM",
+        "label": "4:00 AM"
+      },
+      {
+        "value": "4:30 AM",
+        "label": "4:30 AM"
+      },
+      {
+        "value": "5:00 AM",
+        "label": "5:00 AM"
+      },
+      {
+        "value": "5:30 AM",
+        "label": "5:30 AM"
+      },
+      {
+        "value": "6:00 AM",
+        "label": "6:00 AM"
+      },
+      {
+        "value": "6:30 AM",
+        "label": "6:30 AM"
+      },
+      {
+        "value": "7:00 AM",
+        "label": "7:00 AM"
+      },
+      {
+        "value": "7:30 AM",
+        "label": "7:30 AM"
+      },
+      {
+        "value": "8:00 AM",
+        "label": "8:00 AM"
+      },
+      {
+        "value": "8:30 AM",
+        "label": "8:30 AM"
+      },
+      {
+        "value": "9:00 AM",
+        "label": "9:00 AM"
+      },
+      {
+        "value": "9:30 AM",
+        "label": "9:30 AM"
+      },
+      {
+        "value": "10:00 AM",
+        "label": "10:00 AM"
+      },
+      {
+        "value": "10:30 AM",
+        "label": "10:30 AM"
+      },
+      {
+        "value": "11:00 AM",
+        "label": "11:00 AM"
+      },
+      {
+        "value": "11:30 AM",
+        "label": "11:30 AM"
+      },
+      {
+        "value": "12:00 PM",
+        "label": "12:00 PM"
+      },
+      {
+        "value": "12:30 PM",
+        "label": "12:30 PM"
+      },
+      {
+        "value": "1:00 PM",
+        "label": "1:00 PM"
+      },
+      {
+        "value": "1:30 PM",
+        "label": "1:30 PM"
+      },
+      {
+        "value": "2:00 PM",
+        "label": "2:00 PM"
+      },
+      {
+        "value": "2:30 PM",
+        "label": "2:30 PM"
+      },
+      {
+        "value": "3:00 PM",
+        "label": "3:00 PM"
+      },
+      {
+        "value": "3:30 PM",
+        "label": "3:30 PM"
+      },
+      {
+        "value": "4:00 PM",
+        "label": "4:00 PM"
+      },
+      {
+        "value": "4:30 PM",
+        "label": "4:30 PM"
+      },
+      {
+        "value": "5:00 PM",
+        "label": "5:00 PM"
+      },
+      {
+        "value": "5:30 PM",
+        "label": "5:30 PM"
+      },
+      {
+        "value": "6:00 PM",
+        "label": "6:00 PM"
+      },
+      {
+        "value": "6:30 PM",
+        "label": "6:30 PM"
+      },
+      {
+        "value": "7:00 PM",
+        "label": "7:00 PM"
+      },
+      {
+        "value": "7:30 PM",
+        "label": "7:30 PM"
+      },
+      {
+        "value": "8:00 PM",
+        "label": "8:00 PM"
+      },
+      {
+        "value": "8:30 PM",
+        "label": "8:30 PM"
+      },
+      {
+        "value": "9:00 PM",
+        "label": "9:00 PM"
+      },
+      {
+        "value": "9:30 PM",
+        "label": "9:30 PM"
+      },
+      {
+        "value": "10:00 PM",
+        "label": "10:00 PM"
+      },
+      {
+        "value": "10:30 PM",
+        "label": "10:30 PM"
+      },
+      {
+        "value": "11:00 PM",
+        "label": "11:00 PM"
+      },
+      {
+        "value": "11:30 PM",
+        "label": "11:30 PM"
+      }
     ],
-    "required": { "value": true, "message": "RequiredFieldError" },
-    "isPII": false
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
   },
   {
-    "name": "location",
-    "label": "Location",
+    "name": "serviceChannel",
+    "label": "Service Channel",
     "type": "select",
+    "isPII": false,
     "options": [
-      { "value": "", "label": "" },
-      { "value": "HomeOwn", "label": "Home (own)" },
-      { "value": "HomeOther", "label": "Home (other)" },
-      { "value": "EducationalEstablishment", "label": "Educational establishment" },
-      { "value": "Institution", "label": "Institution" },
-      { "value": "Public place", "label": "Public place" },
-      { "value": "Online", "label": "Online" },
-      { "value": "Other", "label": "Other" },
-      { "value": "Unknown", "label": "Unknown" }
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "Phone",
+        "label": "Phone"
+      },
+      {
+        "value": "Text",
+        "label": "Text"
+      }
     ],
-    "required": { "value": true, "message": "RequiredFieldError" },
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "incidentType",
+    "label": "Incident Type",
+    "type": "listbox-multiselect",
+    "isPII": false,
+    "options": [
+      {
+        "value": "Multiple Hangups",
+        "label": "Multiple Hangups"
+      },
+      {
+        "value": "Excessive Calling",
+        "label": "Excessive Calling"
+      },
+      {
+        "value": "Verbal Abuse",
+        "label": "Verbal Abuse"
+      },
+      {
+        "value": "Inappropriate Sexual Content",
+        "label": "Inappropriate Sexual Content"
+      },
+      {
+        "value": "Sexual Gratification",
+        "label": "Sexual Gratification"
+      },
+      {
+        "value": "Under 18",
+        "label": "Under 18"
+      },
+      {
+        "value": "Currently Blocked On Another Number",
+        "label": "Currently Blocked On Another Number"
+      },
+      {
+        "value": "Other",
+        "label": "Other"
+      }
+    ]
+  },
+  {
+    "name": "wasIncidentReportedToLeadership",
+    "label": "Was incident reported to leadership? ",
+    "type": "checkbox",
     "isPII": false
   },
   {
-    "name": "isCaregiverAware",
-    "label": "Is caregiver aware?",
-    "type": "mixed-checkbox",
-    "isPII": false
-  },
-  {
-    "name": "incidentWitnessed",
-    "label": "Was the incident witnessed by anyone?",
-    "type": "mixed-checkbox",
-    "isPII": false
-  },
-  {
-    "name": "abuseReportedElsewhere",
-    "label": "Has abuse been reported elsewhere?",
-    "type": "mixed-checkbox",
-    "isPII": false
-  },
-  {
-    "name": "whereElseBeenReported",
-    "label": "Where else the incident has been reported?",
-    "type": "input",
-    "isPII": false
+    "name": "agentResponse",
+    "label": "Agent Response",
+    "type": "listbox-multiselect",
+    "isPII": false,
+    "options": [
+      {
+        "value": "Set Strong & Specific Boundaries",
+        "label": "Set Strong & Specific Boundaries"
+      },
+      {
+        "value": "Redirect Conversation",
+        "label": "Redirect Conversation"
+      },
+      {
+        "value": "Provided Warnings for Inappropriate Behavior(s)",
+        "label": "Provided Warnings for Inappropriate Behavior(s)"
+      },
+      {
+        "value": "Provided Resources",
+        "label": "Provided Resources"
+      },
+      {
+        "value": "Terminated Call",
+        "label": "Terminated Call"
+      },
+      {
+        "value": "Blocked Caller",
+        "label": "Blocked Caller"
+      }
+    ]
   }
 ]
-
-
-
-
-
-
