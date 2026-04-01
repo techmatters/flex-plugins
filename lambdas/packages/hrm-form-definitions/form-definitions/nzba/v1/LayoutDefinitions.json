@@ -1,9 +1,7 @@
 {
   "contact": {
-    "callerInformation": {
-    },
-    "childInformation": {
-    },
+    "callerInformation": {},
+    "childInformation": {},
     "caseInformation": {
       "splitFormAt": 10
     }
@@ -28,28 +26,41 @@
           "personsName",
           "position",
           "agency"
-        ]
+        ],
+        "layout": {
+          "personsName": {
+            "includeLabel": true
+          },
+          "position": {
+            "includeLabel": true
+          },
+          "agency": {
+            "includeLabel": true
+          }
+        }
       },
-     "referral": {
+      "referral": {
         "previewFields": [
           "referredTo"
         ],
         "layout": {
-          "referredTo": {}
+          "referredTo": {
+            "includeLabel": true
+          }
         },
         "splitFormAt": 2,
         "printOrder": 4,
         "caseHomeLocation": "timeline"
       },
       "dutyOfCare": {
-         "previewFields": [
-           "date",
-           "location"
-         ],
-         "splitFormAt": 2,
-         "printOrder": 3,
-         "caseHomeLocation": "timeline"
-       },
+        "previewFields": [
+          "date",
+          "location"
+        ],
+        "splitFormAt": 2,
+        "printOrder": 3,
+        "caseHomeLocation": "timeline"
+      },
       "document": {
         "splitFormAt": 1,
         "caseHomeOrder": 4,
@@ -79,7 +90,9 @@
         "printOrder": 5,
         "caseHomeLocation": "timeline",
         "printFormat": "list",
-        "previewFields": ["note"],
+        "previewFields": [
+          "note"
+        ],
         "layout": {
           "note": {}
         }
