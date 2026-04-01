@@ -18,20 +18,20 @@
     "isPII": false
   },
   {
-    "name": "summary",
-    "label": "Summary",
-    "type": "textarea",
-    "rows": 5,
-    "width": 300,
-    "isPII": true
-  },
-  {
     "name": "linkedProfileName",
     "label": "Linked Profile Name",
     "type": "textarea",
     "rows": 1,
     "width": 300,
     "isPII": false
+  },
+  {
+    "name": "summary",
+    "label": "Summary",
+    "type": "textarea",
+    "rows": 5,
+    "width": 300,
+    "isPII": true
   },
   {
     "name": "priority",
