@@ -17,7 +17,7 @@
       },
       "dutyOfCare": {
         "label": "Duty of Care",
-        "formPath": "caseForms/dutyOfCareForm.json"
+        "formPath": "caseForms/DutyOfCareForm.json"
       },
       "document": {
         "label": "Document",
