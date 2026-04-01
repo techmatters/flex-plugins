@@ -18,45 +18,11 @@
     "isPII": false
   },
   {
-    "name": "name",
-    "label": "Name ",
-    "type": "input",
-    "isPII": false,
-    "required": {
-      "value": true,
-      "message": "RequiredFieldError"
-    }
-  },
-  {
     "name": "summary",
     "label": "Summary",
     "type": "textarea",
     "rows": 5,
     "width": 300,
     "isPII": true
-  },
-  {
-    "name": "priority",
-    "label": "Priority",
-    "type": "select",
-    "isPII": false,
-    "options": [
-      {
-        "value": "Unknown",
-        "label": ""
-      },
-      {
-        "value": "High",
-        "label": "High"
-      },
-      {
-        "value": "Medium",
-        "label": "Medium"
-      },
-      {
-        "value": "Low",
-        "label": "Low"
-      }
-    ]
   }
 ]
