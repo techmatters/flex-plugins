@@ -1,0 +1,1741 @@
+[
+  {
+    "name": "firstName",
+    "label": "First Name",
+    "type": "input",
+    "isPII": true,
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "lastName",
+    "label": "Last Name",
+    "type": "input",
+    "isPII": true,
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "gender",
+    "label": "Gender",
+    "type": "select",
+    "isPII": false,
+    "options": [
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "Male",
+        "label": "Male"
+      },
+      {
+        "value": "Female",
+        "label": "Female"
+      },
+      {
+        "value": "Non-binary",
+        "label": "Non-binary"
+      },
+      {
+        "value": "Genderfluid",
+        "label": "Genderfluid"
+      },
+      {
+        "value": "Trans (M to F)",
+        "label": "Trans (M to F)"
+      },
+      {
+        "value": "Trans (F to M)",
+        "label": "Trans (F to M)"
+      },
+      {
+        "value": "Unknown",
+        "label": "Unknown"
+      }
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "pronouns",
+    "label": "Pronouns",
+    "type": "input",
+    "isPII": false
+  },
+  {
+    "name": "dateOfBirth",
+    "type": "date-input",
+    "isPII": false,
+    "label": "Date of Birth"
+  },
+  {
+    "name": "age",
+    "label": "Age",
+    "type": "select",
+    "isPII": false,
+    "options": [
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "05",
+        "label": "5"
+      },
+      {
+        "value": "06",
+        "label": "6"
+      },
+      {
+        "value": "07",
+        "label": "7"
+      },
+      {
+        "value": "08",
+        "label": "8"
+      },
+      {
+        "value": "09",
+        "label": "9"
+      },
+      {
+        "value": "10",
+        "label": "10"
+      },
+      {
+        "value": "11",
+        "label": "11"
+      },
+      {
+        "value": "12",
+        "label": "12"
+      },
+      {
+        "value": "13",
+        "label": "13"
+      },
+      {
+        "value": "14",
+        "label": "14"
+      },
+      {
+        "value": "15",
+        "label": "15"
+      },
+      {
+        "value": "16",
+        "label": "16"
+      },
+      {
+        "value": "17",
+        "label": "17"
+      },
+      {
+        "value": "18",
+        "label": "18"
+      },
+      {
+        "value": "19",
+        "label": "19"
+      },
+      {
+        "value": "20",
+        "label": "20"
+      },
+      {
+        "value": "21",
+        "label": "21"
+      },
+      {
+        "value": "22",
+        "label": "22"
+      },
+      {
+        "value": "23",
+        "label": "23"
+      },
+      {
+        "value": "24",
+        "label": "24"
+      },
+      {
+        "value": "25",
+        "label": "25"
+      },
+      {
+        "value": ">25 (Adult)",
+        "label": ">25 (Adult)"
+      },
+      {
+        "value": "Unknown",
+        "label": "Unknown"
+      }
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "ethnicity1",
+    "label": "Ethnicity 1",
+    "type": "select",
+    "isPII": false,
+    "options": [
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "European (Unspecified)",
+        "label": "European (Unspecified)"
+      },
+      {
+        "value": "New Zealand European",
+        "label": "New Zealand European"
+      },
+      {
+        "value": "British and Irish",
+        "label": "British and Irish"
+      },
+      {
+        "value": "Dutch",
+        "label": "Dutch"
+      },
+      {
+        "value": "Greek",
+        "label": "Greek"
+      },
+      {
+        "value": "Polish",
+        "label": "Polish"
+      },
+      {
+        "value": "South Slav",
+        "label": "South Slav"
+      },
+      {
+        "value": "Italian",
+        "label": "Italian"
+      },
+      {
+        "value": "German",
+        "label": "German"
+      },
+      {
+        "value": "Australian",
+        "label": "Australian"
+      },
+      {
+        "value": "Other European",
+        "label": "Other European"
+      },
+      {
+        "value": "Māori",
+        "label": "Māori"
+      },
+      {
+        "value": "Pacific Peoples (unspecified)",
+        "label": "Pacific Peoples (unspecified)"
+      },
+      {
+        "value": "Samoan",
+        "label": "Samoan"
+      },
+      {
+        "value": "Cook Islands Maori",
+        "label": "Cook Islands Maori"
+      },
+      {
+        "value": "Tongan",
+        "label": "Tongan"
+      },
+      {
+        "value": "Niuean",
+        "label": "Niuean"
+      },
+      {
+        "value": "Tokelauan",
+        "label": "Tokelauan"
+      },
+      {
+        "value": "Fijian",
+        "label": "Fijian"
+      },
+      {
+        "value": "French Polynesian",
+        "label": "French Polynesian"
+      },
+      {
+        "value": "Indigenous Australian",
+        "label": "Indigenous Australian"
+      },
+      {
+        "value": "Kiribati",
+        "label": "Kiribati"
+      },
+      {
+        "value": "Micronesian",
+        "label": "Micronesian"
+      },
+      {
+        "value": "Papua New Guinea",
+        "label": "Papua New Guinea"
+      },
+      {
+        "value": "Solomon Islander",
+        "label": "Solomon Islander"
+      },
+      {
+        "value": "Tuvalu Islander",
+        "label": "Tuvalu Islander"
+      },
+      {
+        "value": "Other Pacific Peoples",
+        "label": "Other Pacific Peoples"
+      },
+      {
+        "value": "Asian (unspecified)",
+        "label": "Asian (unspecified)"
+      },
+      {
+        "value": "Southeast Asian (unspecified)",
+        "label": "Southeast Asian (unspecified)"
+      },
+      {
+        "value": "Filipino",
+        "label": "Filipino"
+      },
+      {
+        "value": "Cambodian",
+        "label": "Cambodian"
+      },
+      {
+        "value": "Vietnamese",
+        "label": "Vietnamese"
+      },
+      {
+        "value": "Other Southeast Asian",
+        "label": "Other Southeast Asian"
+      },
+      {
+        "value": "Chinese",
+        "label": "Chinese"
+      },
+      {
+        "value": "Indian",
+        "label": "Indian"
+      },
+      {
+        "value": "Sri Lankan",
+        "label": "Sri Lankan"
+      },
+      {
+        "value": "Japanese",
+        "label": "Japanese"
+      },
+      {
+        "value": "Korean",
+        "label": "Korean"
+      },
+      {
+        "value": "Other Asian",
+        "label": "Other Asian"
+      },
+      {
+        "value": "Middle Eastern",
+        "label": "Middle Eastern"
+      },
+      {
+        "value": "Latin American",
+        "label": "Latin American"
+      },
+      {
+        "value": "African",
+        "label": "African"
+      },
+      {
+        "value": "Indian Ocean Peoples",
+        "label": "Indian Ocean Peoples"
+      },
+      {
+        "value": "Indigenous American",
+        "label": "Indigenous American"
+      },
+      {
+        "value": "Other Ethnicity",
+        "label": "Other Ethnicity"
+      },
+      {
+        "value": "Not Stated",
+        "label": "Not Stated"
+      }
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "ethnicity2",
+    "label": "Ethnicity 2",
+    "type": "select",
+    "isPII": false,
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "European (Unspecified)",
+        "label": "European (Unspecified)"
+      },
+      {
+        "value": "New Zealand European",
+        "label": "New Zealand European"
+      },
+      {
+        "value": "British and Irish",
+        "label": "British and Irish"
+      },
+      {
+        "value": "Dutch",
+        "label": "Dutch"
+      },
+      {
+        "value": "Greek",
+        "label": "Greek"
+      },
+      {
+        "value": "Polish",
+        "label": "Polish"
+      },
+      {
+        "value": "South Slav",
+        "label": "South Slav"
+      },
+      {
+        "value": "Italian",
+        "label": "Italian"
+      },
+      {
+        "value": "German",
+        "label": "German"
+      },
+      {
+        "value": "Australian",
+        "label": "Australian"
+      },
+      {
+        "value": "Other European",
+        "label": "Other European"
+      },
+      {
+        "value": "Māori",
+        "label": "Māori"
+      },
+      {
+        "value": "Pacific Peoples (unspecified)",
+        "label": "Pacific Peoples (unspecified)"
+      },
+      {
+        "value": "Samoan",
+        "label": "Samoan"
+      },
+      {
+        "value": "Cook Islands Maori",
+        "label": "Cook Islands Maori"
+      },
+      {
+        "value": "Tongan",
+        "label": "Tongan"
+      },
+      {
+        "value": "Niuean",
+        "label": "Niuean"
+      },
+      {
+        "value": "Tokelauan",
+        "label": "Tokelauan"
+      },
+      {
+        "value": "Fijian",
+        "label": "Fijian"
+      },
+      {
+        "value": "French Polynesian",
+        "label": "French Polynesian"
+      },
+      {
+        "value": "Indigenous Australian",
+        "label": "Indigenous Australian"
+      },
+      {
+        "value": "Kiribati",
+        "label": "Kiribati"
+      },
+      {
+        "value": "Micronesian",
+        "label": "Micronesian"
+      },
+      {
+        "value": "Papua New Guinea",
+        "label": "Papua New Guinea"
+      },
+      {
+        "value": "Solomon Islander",
+        "label": "Solomon Islander"
+      },
+      {
+        "value": "Tuvalu Islander",
+        "label": "Tuvalu Islander"
+      },
+      {
+        "value": "Other Pacific Peoples",
+        "label": "Other Pacific Peoples"
+      },
+      {
+        "value": "Asian (unspecified)",
+        "label": "Asian (unspecified)"
+      },
+      {
+        "value": "Southeast Asian (unspecified)",
+        "label": "Southeast Asian (unspecified)"
+      },
+      {
+        "value": "Filipino",
+        "label": "Filipino"
+      },
+      {
+        "value": "Cambodian",
+        "label": "Cambodian"
+      },
+      {
+        "value": "Vietnamese",
+        "label": "Vietnamese"
+      },
+      {
+        "value": "Other Southeast Asian",
+        "label": "Other Southeast Asian"
+      },
+      {
+        "value": "Chinese",
+        "label": "Chinese"
+      },
+      {
+        "value": "Indian",
+        "label": "Indian"
+      },
+      {
+        "value": "Sri Lankan",
+        "label": "Sri Lankan"
+      },
+      {
+        "value": "Japanese",
+        "label": "Japanese"
+      },
+      {
+        "value": "Korean",
+        "label": "Korean"
+      },
+      {
+        "value": "Other Asian",
+        "label": "Other Asian"
+      },
+      {
+        "value": "Middle Eastern",
+        "label": "Middle Eastern"
+      },
+      {
+        "value": "Latin American",
+        "label": "Latin American"
+      },
+      {
+        "value": "African",
+        "label": "African"
+      },
+      {
+        "value": "Indian Ocean Peoples",
+        "label": "Indian Ocean Peoples"
+      },
+      {
+        "value": "Indigenous American",
+        "label": "Indigenous American"
+      },
+      {
+        "value": "Other Ethnicity",
+        "label": "Other Ethnicity"
+      },
+      {
+        "value": "Not Stated",
+        "label": "Not Stated"
+      }
+    ]
+  },
+  {
+    "name": "streetAddress",
+    "label": "Street Address",
+    "type": "input",
+    "isPII": false
+  },
+  {
+    "name": "city",
+    "label": "City",
+    "type": "select",
+    "isPII": false,
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "Auckland",
+        "label": "Auckland"
+      },
+      {
+        "value": "Wellington",
+        "label": "Wellington"
+      },
+      {
+        "value": "Christchurch",
+        "label": "Christchurch"
+      },
+      {
+        "value": "Hamilton",
+        "label": "Hamilton"
+      },
+      {
+        "value": "Napier-Hastings",
+        "label": "Napier-Hastings"
+      },
+      {
+        "value": "Tauranga",
+        "label": "Tauranga"
+      },
+      {
+        "value": "Dunedin",
+        "label": "Dunedin"
+      },
+      {
+        "value": "Palmerston North",
+        "label": "Palmerston North"
+      },
+      {
+        "value": "Nelson",
+        "label": "Nelson"
+      },
+      {
+        "value": "Rotorua",
+        "label": "Rotorua"
+      },
+      {
+        "value": "New Plymouth",
+        "label": "New Plymouth"
+      },
+      {
+        "value": "Whangārei",
+        "label": "Whangārei"
+      },
+      {
+        "value": "Invercargill",
+        "label": "Invercargill"
+      },
+      {
+        "value": "Whanganui",
+        "label": "Whanganui"
+      },
+      {
+        "value": "Gisborne",
+        "label": "Gisborne"
+      }
+    ]
+  },
+  {
+    "name": "district",
+    "label": "District",
+    "type": "select",
+    "isPII": false,
+    "defaultOption": {
+      "value": "Unknown",
+      "label": ""
+    },
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "Auckland City",
+        "label": "Auckland City"
+      },
+      {
+        "value": "Franklin district",
+        "label": "Franklin district"
+      },
+      {
+        "value": "Manukau",
+        "label": "Manukau"
+      },
+      {
+        "value": "North Shore",
+        "label": "North Shore"
+      },
+      {
+        "value": "Papakura district",
+        "label": "Papakura district"
+      },
+      {
+        "value": "Rodney district",
+        "label": "Rodney district"
+      },
+      {
+        "value": "Waitakere",
+        "label": "Waitakere"
+      },
+      {
+        "value": "Kawerau district",
+        "label": "Kawerau district"
+      },
+      {
+        "value": "Opotiki district",
+        "label": "Opotiki district"
+      },
+      {
+        "value": "Tauranga district",
+        "label": "Tauranga district"
+      },
+      {
+        "value": "Western Bay of Plenty district",
+        "label": "Western Bay of Plenty district"
+      },
+      {
+        "value": "Whakatane district",
+        "label": "Whakatane district"
+      },
+      {
+        "value": "Ashburton district",
+        "label": "Ashburton district"
+      },
+      {
+        "value": "Hurunui district",
+        "label": "Hurunui district"
+      },
+      {
+        "value": "Kaikoura district",
+        "label": "Kaikoura district"
+      },
+      {
+        "value": "Mackenzie district",
+        "label": "Mackenzie district"
+      },
+      {
+        "value": "Selwyn district",
+        "label": "Selwyn district"
+      },
+      {
+        "value": "Timaru district",
+        "label": "Timaru district"
+      },
+      {
+        "value": "Waimakariri district",
+        "label": "Waimakariri district"
+      },
+      {
+        "value": "Waimate district",
+        "label": "Waimate district"
+      },
+      {
+        "value": "Central Otago district",
+        "label": "Central Otago district"
+      },
+      {
+        "value": "Chatham Islands district",
+        "label": "Chatham Islands district"
+      },
+      {
+        "value": "Banks Peninsula district",
+        "label": "Banks Peninsula district"
+      },
+      {
+        "value": "Christchurch City",
+        "label": "Christchurch City"
+      },
+      {
+        "value": "Clutha district",
+        "label": "Clutha district"
+      },
+      {
+        "value": "Thames-Coromandel district",
+        "label": "Thames-Coromandel district"
+      },
+      {
+        "value": "Dunedin City",
+        "label": "Dunedin City"
+      },
+      {
+        "value": "Gisborne district",
+        "label": "Gisborne district"
+      },
+      {
+        "value": "Hamilton City",
+        "label": "Hamilton City"
+      },
+      {
+        "value": "Central Hawke's Bay district",
+        "label": "Central Hawke's Bay district"
+      },
+      {
+        "value": "Hastings district",
+        "label": "Hastings district"
+      },
+      {
+        "value": "Napier City",
+        "label": "Napier City"
+      },
+      {
+        "value": "Wairoa district",
+        "label": "Wairoa district"
+      },
+      {
+        "value": "International",
+        "label": "International"
+      },
+      {
+        "value": "Horowhenua district",
+        "label": "Horowhenua district"
+      },
+      {
+        "value": "Manawatu district",
+        "label": "Manawatu district"
+      },
+      {
+        "value": "Palmerston North City",
+        "label": "Palmerston North City"
+      },
+      {
+        "value": "Rangitikei district",
+        "label": "Rangitikei district"
+      },
+      {
+        "value": "Tararua district",
+        "label": "Tararua district"
+      },
+      {
+        "value": "Marlborough district",
+        "label": "Marlborough district"
+      },
+      {
+        "value": "Nelson City",
+        "label": "Nelson City"
+      },
+      {
+        "value": "Far North district",
+        "label": "Far North district"
+      },
+      {
+        "value": "Kaipara district",
+        "label": "Kaipara district"
+      },
+      {
+        "value": "Whangarei district",
+        "label": "Whangarei district"
+      },
+      {
+        "value": "Queenstown-Lakes district",
+        "label": "Queenstown-Lakes district"
+      },
+      {
+        "value": "Rotorua district",
+        "label": "Rotorua district"
+      },
+      {
+        "value": "Ruapehu district",
+        "label": "Ruapehu district"
+      },
+      {
+        "value": "Gore district",
+        "label": "Gore district"
+      },
+      {
+        "value": "Invercargill City",
+        "label": "Invercargill City"
+      },
+      {
+        "value": "Southland district",
+        "label": "Southland district"
+      },
+      {
+        "value": "New Plymouth district",
+        "label": "New Plymouth district"
+      },
+      {
+        "value": "South Taranaki district",
+        "label": "South Taranaki district"
+      },
+      {
+        "value": "Stratford district",
+        "label": "Stratford district"
+      },
+      {
+        "value": "Tasman district",
+        "label": "Tasman district"
+      },
+      {
+        "value": "Taupo district",
+        "label": "Taupo district"
+      },
+      {
+        "value": "Hauraki district",
+        "label": "Hauraki district"
+      },
+      {
+        "value": "Matamata-Piako district",
+        "label": "Matamata-Piako district"
+      },
+      {
+        "value": "Otorohanga district",
+        "label": "Otorohanga district"
+      },
+      {
+        "value": "South Waikato district",
+        "label": "South Waikato district"
+      },
+      {
+        "value": "Waikato district",
+        "label": "Waikato district"
+      },
+      {
+        "value": "Waipa district",
+        "label": "Waipa district"
+      },
+      {
+        "value": "Waitomo district",
+        "label": "Waitomo district"
+      },
+      {
+        "value": "Carterton district",
+        "label": "Carterton district"
+      },
+      {
+        "value": "Masterton district",
+        "label": "Masterton district"
+      },
+      {
+        "value": "South Wairarapa district",
+        "label": "South Wairarapa district"
+      },
+      {
+        "value": "Waitaki district",
+        "label": "Waitaki district"
+      },
+      {
+        "value": "Kapiti Coast district",
+        "label": "Kapiti Coast district"
+      },
+      {
+        "value": "Lower Hutt city",
+        "label": "Lower Hutt city"
+      },
+      {
+        "value": "Porirua City",
+        "label": "Porirua City"
+      },
+      {
+        "value": "Upper Hutt City",
+        "label": "Upper Hutt City"
+      },
+      {
+        "value": "Wellington City",
+        "label": "Wellington City"
+      },
+      {
+        "value": "Buller district",
+        "label": "Buller district"
+      },
+      {
+        "value": "Grey district",
+        "label": "Grey district"
+      },
+      {
+        "value": "Westland district",
+        "label": "Westland district"
+      },
+      {
+        "value": "Wanganui district",
+        "label": "Wanganui district"
+      },
+      {
+        "value": "Unknown",
+        "label": "Unknown"
+      }
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "region",
+    "label": "Region",
+    "type": "dependent-select",
+    "isPII": false,
+    "dependsOn": "district",
+    "defaultOption": {
+      "value": "Unknown",
+      "label": ""
+    },
+    "options": {
+      "Auckland City": [
+        {
+          "value": "Auckland",
+          "label": "Auckland"
+        }
+      ],
+      "Franklin district": [
+        {
+          "value": "Auckland",
+          "label": "Auckland"
+        }
+      ],
+      "Manukau": [
+        {
+          "value": "Auckland",
+          "label": "Auckland"
+        }
+      ],
+      "North Shore": [
+        {
+          "value": "Auckland",
+          "label": "Auckland"
+        }
+      ],
+      "Papakura district": [
+        {
+          "value": "Auckland",
+          "label": "Auckland"
+        }
+      ],
+      "Rodney district": [
+        {
+          "value": "Auckland",
+          "label": "Auckland"
+        }
+      ],
+      "Waitakere": [
+        {
+          "value": "Auckland",
+          "label": "Auckland"
+        }
+      ],
+      "Kawerau district": [
+        {
+          "value": "Bay of Plenty",
+          "label": "Bay of Plenty"
+        }
+      ],
+      "Opotiki district": [
+        {
+          "value": "Bay of Plenty",
+          "label": "Bay of Plenty"
+        }
+      ],
+      "Tauranga district": [
+        {
+          "value": "Bay of Plenty",
+          "label": "Bay of Plenty"
+        }
+      ],
+      "Western Bay of Plenty district": [
+        {
+          "value": "Bay of Plenty",
+          "label": "Bay of Plenty"
+        }
+      ],
+      "Whakatane district": [
+        {
+          "value": "Bay of Plenty",
+          "label": "Bay of Plenty"
+        }
+      ],
+      "Ashburton district": [
+        {
+          "value": "Canterbury",
+          "label": "Canterbury"
+        }
+      ],
+      "Hurunui district": [
+        {
+          "value": "Canterbury",
+          "label": "Canterbury"
+        }
+      ],
+      "Kaikoura district": [
+        {
+          "value": "Canterbury",
+          "label": "Canterbury"
+        }
+      ],
+      "Mackenzie district": [
+        {
+          "value": "Canterbury",
+          "label": "Canterbury"
+        }
+      ],
+      "Selwyn district": [
+        {
+          "value": "Canterbury",
+          "label": "Canterbury"
+        }
+      ],
+      "Timaru district": [
+        {
+          "value": "Canterbury",
+          "label": "Canterbury"
+        }
+      ],
+      "Waimakariri district": [
+        {
+          "value": "Canterbury",
+          "label": "Canterbury"
+        }
+      ],
+      "Waimate district": [
+        {
+          "value": "Canterbury",
+          "label": "Canterbury"
+        }
+      ],
+      "Central Otago district": [
+        {
+          "value": "Central Otago",
+          "label": "Central Otago"
+        }
+      ],
+      "Chatham Islands district": [
+        {
+          "value": "Chatham Islands",
+          "label": "Chatham Islands"
+        }
+      ],
+      "Banks Peninsula district": [
+        {
+          "value": "Christchurch",
+          "label": "Christchurch"
+        }
+      ],
+      "Christchurch City": [
+        {
+          "value": "Christchurch",
+          "label": "Christchurch"
+        }
+      ],
+      "Clutha district": [
+        {
+          "value": "Clutha",
+          "label": "Clutha"
+        }
+      ],
+      "Thames-Coromandel district": [
+        {
+          "value": "Coromandel",
+          "label": "Coromandel"
+        }
+      ],
+      "Dunedin City": [
+        {
+          "value": "Dunedin",
+          "label": "Dunedin"
+        }
+      ],
+      "Gisborne district": [
+        {
+          "value": "Gisborne/Tairāwhiti",
+          "label": "Gisborne/Tairāwhiti"
+        }
+      ],
+      "Hamilton City": [
+        {
+          "value": "Hamilton",
+          "label": "Hamilton"
+        }
+      ],
+      "Central Hawke's Bay district": [
+        {
+          "value": "Hawkes Bay",
+          "label": "Hawkes Bay"
+        }
+      ],
+      "Hastings district": [
+        {
+          "value": "Hawkes Bay",
+          "label": "Hawkes Bay"
+        }
+      ],
+      "Napier City": [
+        {
+          "value": "Hawkes Bay",
+          "label": "Hawkes Bay"
+        }
+      ],
+      "Wairoa district": [
+        {
+          "value": "Hawkes Bay",
+          "label": "Hawkes Bay"
+        }
+      ],
+      "International": [
+        {
+          "value": "International",
+          "label": "International"
+        }
+      ],
+      "Horowhenua district": [
+        {
+          "value": "Manawatu",
+          "label": "Manawatu"
+        }
+      ],
+      "Manawatu district": [
+        {
+          "value": "Manawatu",
+          "label": "Manawatu"
+        }
+      ],
+      "Palmerston North City": [
+        {
+          "value": "Manawatu",
+          "label": "Manawatu"
+        }
+      ],
+      "Rangitikei district": [
+        {
+          "value": "Manawatu",
+          "label": "Manawatu"
+        }
+      ],
+      "Tararua district": [
+        {
+          "value": "Manawatu",
+          "label": "Manawatu"
+        }
+      ],
+      "Marlborough district": [
+        {
+          "value": "Marlborough",
+          "label": "Marlborough"
+        }
+      ],
+      "Nelson City": [
+        {
+          "value": "Nelson",
+          "label": "Nelson"
+        }
+      ],
+      "Far North district": [
+        {
+          "value": "Northland",
+          "label": "Northland"
+        }
+      ],
+      "Kaipara district": [
+        {
+          "value": "Northland",
+          "label": "Northland"
+        }
+      ],
+      "Whangarei district": [
+        {
+          "value": "Northland",
+          "label": "Northland"
+        }
+      ],
+      "Queenstown-Lakes district": [
+        {
+          "value": "Queenstown",
+          "label": "Queenstown"
+        }
+      ],
+      "Rotorua district": [
+        {
+          "value": "Rotorua",
+          "label": "Rotorua"
+        }
+      ],
+      "Ruapehu district": [
+        {
+          "value": "Ruapehu",
+          "label": "Ruapehu"
+        }
+      ],
+      "Gore district": [
+        {
+          "value": "Southland",
+          "label": "Southland"
+        }
+      ],
+      "Invercargill City": [
+        {
+          "value": "Southland",
+          "label": "Southland"
+        }
+      ],
+      "Southland district": [
+        {
+          "value": "Southland",
+          "label": "Southland"
+        }
+      ],
+      "New Plymouth district": [
+        {
+          "value": "Taranaki",
+          "label": "Taranaki"
+        }
+      ],
+      "South Taranaki district": [
+        {
+          "value": "Taranaki",
+          "label": "Taranaki"
+        }
+      ],
+      "Stratford district": [
+        {
+          "value": "Taranaki",
+          "label": "Taranaki"
+        }
+      ],
+      "Tasman district": [
+        {
+          "value": "Tasman District",
+          "label": "Tasman District"
+        }
+      ],
+      "Taupo district": [
+        {
+          "value": "Taupo",
+          "label": "Taupo"
+        }
+      ],
+      "Unknown": [
+        {
+          "value": "Unknown",
+          "label": "Unknown"
+        }
+      ],
+      "Hauraki district": [
+        {
+          "value": "Waikato",
+          "label": "Waikato"
+        }
+      ],
+      "Matamata-Piako district": [
+        {
+          "value": "Waikato",
+          "label": "Waikato"
+        }
+      ],
+      "Otorohanga district": [
+        {
+          "value": "Waikato",
+          "label": "Waikato"
+        }
+      ],
+      "South Waikato district": [
+        {
+          "value": "Waikato",
+          "label": "Waikato"
+        }
+      ],
+      "Waikato district": [
+        {
+          "value": "Waikato",
+          "label": "Waikato"
+        }
+      ],
+      "Waipa district": [
+        {
+          "value": "Waikato",
+          "label": "Waikato"
+        }
+      ],
+      "Waitomo district": [
+        {
+          "value": "Waikato",
+          "label": "Waikato"
+        }
+      ],
+      "Carterton district": [
+        {
+          "value": "Wairarapa",
+          "label": "Wairarapa"
+        }
+      ],
+      "Masterton district": [
+        {
+          "value": "Wairarapa",
+          "label": "Wairarapa"
+        }
+      ],
+      "South Wairarapa district": [
+        {
+          "value": "Wairarapa",
+          "label": "Wairarapa"
+        }
+      ],
+      "Waitaki district": [
+        {
+          "value": "Waitaki",
+          "label": "Waitaki"
+        }
+      ],
+      "Kapiti Coast district": [
+        {
+          "value": "Wellington",
+          "label": "Wellington"
+        }
+      ],
+      "Lower Hutt city": [
+        {
+          "value": "Wellington",
+          "label": "Wellington"
+        }
+      ],
+      "Porirua City": [
+        {
+          "value": "Wellington",
+          "label": "Wellington"
+        }
+      ],
+      "Upper Hutt City": [
+        {
+          "value": "Wellington",
+          "label": "Wellington"
+        }
+      ],
+      "Wellington City": [
+        {
+          "value": "Wellington",
+          "label": "Wellington"
+        }
+      ],
+      "Buller district": [
+        {
+          "value": "West Coast",
+          "label": "West Coast"
+        }
+      ],
+      "Grey district": [
+        {
+          "value": "West Coast",
+          "label": "West Coast"
+        }
+      ],
+      "Westland district": [
+        {
+          "value": "West Coast",
+          "label": "West Coast"
+        }
+      ],
+      "Wanganui district": [
+        {
+          "value": "Whanganui",
+          "label": "Whanganui"
+        }
+      ]
+    },
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "personalEmail",
+    "label": "Personal Email",
+    "type": "input",
+    "isPII": false
+  },
+  {
+    "name": "phoneNumber",
+    "label": "Phone Number",
+    "type": "input",
+    "isPII": false
+  },
+  {
+    "name": "additionalContactInformation",
+    "label": "Additional contact information",
+    "type": "textarea",
+    "isPII": false,
+    "rows": 5,
+    "width": 250
+  },
+  {
+    "name": "howHeardAboutWu",
+    "label": "How you heard about WU",
+    "type": "select",
+    "isPII": false,
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "Athletic NZ/Sports Coach",
+        "label": "Athletic NZ/Sports Coach"
+      },
+      {
+        "value": "Barnardos service/media",
+        "label": "Barnardos service/media"
+      },
+      {
+        "value": "Branded material (e.g. cards/pens)",
+        "label": "Branded material (e.g. cards/pens)"
+      },
+      {
+        "value": "Event (e.g. Polyfest etc)",
+        "label": "Event (e.g. Polyfest etc)"
+      },
+      {
+        "value": "Facebook",
+        "label": "Facebook"
+      },
+      {
+        "value": "Family/whanau",
+        "label": "Family/whanau"
+      },
+      {
+        "value": "Friend",
+        "label": "Friend"
+      },
+      {
+        "value": "Health Services (e.g. MH, GP)",
+        "label": "Health Services (e.g. MH, GP)"
+      },
+      {
+        "value": "Instagram",
+        "label": "Instagram"
+      },
+      {
+        "value": "Internet search",
+        "label": "Internet search"
+      },
+      {
+        "value": "Life Education",
+        "label": "Life Education"
+      },
+      {
+        "value": "Other",
+        "label": "Other"
+      },
+      {
+        "value": "Other helplines",
+        "label": "Other helplines"
+      },
+      {
+        "value": "Out-of-home media (e.g. billboard)",
+        "label": "Out-of-home media (e.g. billboard)"
+      },
+      {
+        "value": "Poster",
+        "label": "Poster"
+      },
+      {
+        "value": "Print media (e.g. mag/newspaper)",
+        "label": "Print media (e.g. mag/newspaper)"
+      },
+      {
+        "value": "Radio",
+        "label": "Radio"
+      },
+      {
+        "value": "School (Counsellor/Teacher)",
+        "label": "School (Counsellor/Teacher)"
+      },
+      {
+        "value": "Social media",
+        "label": "Social media"
+      },
+      {
+        "value": "Stroke Foundation NZ",
+        "label": "Stroke Foundation NZ"
+      },
+      {
+        "value": "Tiktok",
+        "label": "Tiktok"
+      },
+      {
+        "value": "TV",
+        "label": "TV"
+      },
+      {
+        "value": "Unknown",
+        "label": "Unknown"
+      },
+      {
+        "value": "Website/App",
+        "label": "Website/App"
+      },
+      {
+        "value": "Work",
+        "label": "Work"
+      },
+      {
+        "value": "AI/Chatbot",
+        "label": "AI/Chatbot"
+      }
+    ]
+  },
+  {
+    "name": "schoolStatus",
+    "label": "School Status",
+    "type": "select",
+    "isPII": false,
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "Home schooled/correspondence",
+        "label": "Home schooled/correspondence"
+      },
+      {
+        "value": "Intermediate school",
+        "label": "Intermediate school"
+      },
+      {
+        "value": "Not at school",
+        "label": "Not at school"
+      },
+      {
+        "value": "Pre-school",
+        "label": "Pre-school"
+      },
+      {
+        "value": "Primary school",
+        "label": "Primary school"
+      },
+      {
+        "value": "Secondary school",
+        "label": "Secondary school"
+      },
+      {
+        "value": "Special school",
+        "label": "Special school"
+      },
+      {
+        "value": "Tertiary / Apprentice",
+        "label": "Tertiary / Apprentice"
+      }
+    ]
+  },
+  {
+    "name": "isClientInOtOrFc",
+    "label": "Is client in OT or FC?",
+    "type": "select",
+    "isPII": false,
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "Yes",
+        "label": "Yes"
+      },
+      {
+        "value": "No",
+        "label": "No"
+      },
+      {
+        "value": "Historical",
+        "label": "Historical"
+      }
+    ]
+  },
+  {
+    "name": "contactedFrom",
+    "label": "Contacted from",
+    "type": "select",
+    "isPII": false,
+    "options": [
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "Friend/Family",
+        "label": "Friend/Family"
+      },
+      {
+        "value": "Home",
+        "label": "Home"
+      },
+      {
+        "value": "Other",
+        "label": "Other"
+      },
+      {
+        "value": "Out and about",
+        "label": "Out and about"
+      },
+      {
+        "value": "Public phone",
+        "label": "Public phone"
+      },
+      {
+        "value": "School",
+        "label": "School"
+      }
+    ]
+  },
+  {
+    "name": "firstContact",
+    "label": "First contact?",
+    "type": "select",
+    "isPII": false,
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "Yes",
+        "label": "Yes"
+      },
+      {
+        "value": "No",
+        "label": "No"
+      }
+    ]
+  },
+  {
+    "name": "clientInConflictWithTheLaw",
+    "label": "Client in conflict with the law",
+    "type": "checkbox",
+    "isPII": false
+  },
+  {
+    "name": "clientLivingInPoverty",
+    "label": "Client living in poverty",
+    "type": "checkbox",
+    "isPII": false
+  },
+  {
+    "name": "clientWithDisability",
+    "label": "Client with disability",
+    "type": "checkbox",
+    "isPII": false
+  },
+  {
+    "name": "lgbtClient",
+    "label": "LGBTQI+ / SOGIESC client",
+    "type": "checkbox",
+    "isPII": false
+  }
+]
