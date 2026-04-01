@@ -242,6 +242,12 @@
     }
   },
   {
+    "name": "wasIncidentReportedToLeadership",
+    "label": "Was incident reported to leadership? ",
+    "type": "checkbox",
+    "isPII": false
+  },
+  {
     "name": "incidentType",
     "label": "Incident Type",
     "type": "listbox-multiselect",
@@ -280,12 +286,6 @@
         "label": "Other"
       }
     ]
-  },
-  {
-    "name": "wasIncidentReportedToLeadership",
-    "label": "Was incident reported to leadership? ",
-    "type": "checkbox",
-    "isPII": false
   },
   {
     "name": "agentResponse",
