@@ -7,17 +7,17 @@
         "label": "Referral",
         "formPath": "caseForms/ReferralForm.json"
       },
-      "household": {
-        "label": "Household Member",
-        "formPath": "caseForms/HouseholdForm.json"
+      "agency": {
+        "label": "Agency",
+        "formPath": "caseForms/AgencyForm.json"
       },
-      "perpetrator": {
-        "label": "Perpetrator",
-        "formPath": "caseForms/PerpetratorForm.json"
+      "caseManagementPlan": {
+        "label": "Case Management Plan",
+        "formPath": "caseForms/CaseManagementPlanForm.json"
       },
-      "incident": {
-        "label": "Incident",
-        "formPath": "caseForms/IncidentForm.json"
+      "dutyOfCare": {
+        "label": "Duty of Care",
+        "formPath": "caseForms/dutyOfCareForm.json"
       },
       "document": {
         "label": "Document",
