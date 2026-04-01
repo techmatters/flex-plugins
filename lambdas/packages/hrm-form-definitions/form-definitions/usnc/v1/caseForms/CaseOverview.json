@@ -28,7 +28,9 @@
   {
     "name": "linkedProfileName",
     "label": "Linked Profile Name",
-    "type": "input",
+    "type": "textarea",
+    "rows": 1,
+    "width": 300,
     "isPII": false
   },
   {
