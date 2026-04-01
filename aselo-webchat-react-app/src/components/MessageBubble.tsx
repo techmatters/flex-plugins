@@ -63,7 +63,6 @@ export const MessageBubble = ({
       conversationsClient: state.chat.conversationsClient,
       participants: state.chat.participants,
       fileAttachmentConfig: state.config.fileAttachment,
-      participantNames: state.chat.participantNames,
       currentTranslations: selectCurrentTranslations(state),
     }),
   );
