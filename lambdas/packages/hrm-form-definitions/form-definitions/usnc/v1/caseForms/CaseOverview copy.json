@@ -1,0 +1,90 @@
+[
+  {
+    "name": "status",
+    "label": "Status",
+    "type": "select",
+    "isPII": false,
+    "options": [
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "Open",
+        "label": "Open"
+      },
+      {
+        "value": "Closed",
+        "label": "Closed"
+      },
+      {
+        "value": "In Progress",
+        "label": "In Progress"
+      }
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "childIsAtRisk",
+    "label": "Child is at risk",
+    "type": "checkbox",
+    "isPII": false
+  },
+  {
+    "name": "followUpDate",
+    "label": "Follow Up Date",
+    "type": "date-input",
+    "isPII": false
+  },
+  {
+    "name": "name",
+    "label": "Name ",
+    "type": "input",
+    "isPII": false,
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "dateOfReport",
+    "type": "date-input",
+    "isPII": false,
+    "label": "Date of Report"
+  },
+  {
+    "name": "summary",
+    "label": "Summary",
+    "type": "textarea",
+    "isPII": false,
+    "rows": 20,
+    "width": 250
+  },
+  {
+    "name": "priority",
+    "label": "Priority",
+    "type": "select",
+    "isPII": false,
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "High",
+        "label": "High"
+      },
+      {
+        "value": "Medium",
+        "label": "Medium"
+      },
+      {
+        "value": "Low",
+        "label": "Low"
+      }
+    ]
+  }
+]
