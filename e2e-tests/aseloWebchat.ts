@@ -44,6 +44,7 @@ export async function open(browser: Browser | BrowserContext): Promise<AseloWebC
     ageSelect: page.locator('select#age'),
     genderSelect: page.locator('select#gender'),
     termsAndConditionsCheckbox: page.locator('input#termsAndConditions'),
+    termsAndConditionsLabel: page.locator('[data-testid="termsAndConditions-label"]'),
 
     // Chatting
     chatInput: page.locator('[data-test="message-input-textarea"]'),
@@ -77,9 +78,8 @@ export async function open(browser: Browser | BrowserContext): Promise<AseloWebC
         await selectors.genderSelect.selectOption('Girl');
         await selectors.genderSelect.blur();
       }
-      if ((await selectors.termsAndConditionsCheckbox.count()) > 0) {
-        await selectors.termsAndConditionsCheckbox.scrollIntoViewIfNeeded();
-        await selectors.termsAndConditionsCheckbox.check({ force: true });
+      if ((await selectors.termsAndConditionsLabel.count()) > 0) {
+        await selectors.termsAndConditionsLabel.click();
         await selectors.termsAndConditionsCheckbox.blur();
       }
     },
