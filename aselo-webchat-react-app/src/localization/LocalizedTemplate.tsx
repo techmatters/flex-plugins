@@ -18,14 +18,18 @@ import { useSelector } from 'react-redux';
 import { localizeKey } from './localizeKey';
 import { selectCurrentTranslations } from '../store/config.reducer';
 
-const LocalizedTemplate: React.FC<{ code: string; renderAsHtml?: string } & Record<string, string>> = ({
+const LocalizedTemplate: React.FC<{ code: string; renderAsHtml?: string | boolean } & Record<string, string>> = ({
   code,
   renderAsHtml,
   ...parameters
 }) => {
   const translations = useSelector(selectCurrentTranslations);
   const translateForCurrentLocale = localizeKey(translations);
-  if (renderAsHtml?.toLowerCase() === 'true') {
+  const shouldRenderAsHtml =
+    typeof renderAsHtml === 'string'
+      ? renderAsHtml.trim().toLowerCase() === 'true'
+      : Boolean(renderAsHtml);
+  if (shouldRenderAsHtml) {
     // eslint-disable-next-line react/no-danger
     return <span dangerouslySetInnerHTML={{ __html: translateForCurrentLocale(code, parameters) }} />;
   }
