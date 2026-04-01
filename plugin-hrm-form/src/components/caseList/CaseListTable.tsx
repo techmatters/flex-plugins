@@ -33,6 +33,7 @@ import { getInitializedCan } from '../../permissions/rules';
 import { namespace } from '../../states/storeNamespaces';
 import { RootState } from '../../states';
 import { PermissionActions } from '../../permissions/actions';
+import { lookupTranslation } from '../../translations';
 
 const ROW_HEIGHT = 89;
 
@@ -65,7 +66,7 @@ const CaseListTable: React.FC<OwnProps> = ({ loading, caseList, caseCount, handl
         <StandardTable tabIndex={0} aria-labelledby="CaseList-Cases-label" data-testid="CaseList-Table">
           <CaseListTableHead />
           {loading && (
-            <TableBody>
+            <TableBody aria-busy={true} aria-describedby="case-table-progress-bar">
               <DataTableRow
                 data-testid="CaseList-Table-Loading"
                 style={{
@@ -75,7 +76,11 @@ const CaseListTable: React.FC<OwnProps> = ({ loading, caseList, caseCount, handl
                 }}
               >
                 <LoadingCell>
-                  <CircularProgress size={50} />
+                  <CircularProgress
+                    id="case-table-progress-bar"
+                    size={50}
+                    aria-label={lookupTranslation('CaseList-Loading')}
+                  />
                 </LoadingCell>
               </DataTableRow>
             </TableBody>

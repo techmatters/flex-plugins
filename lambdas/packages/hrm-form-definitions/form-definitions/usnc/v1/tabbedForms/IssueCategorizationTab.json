@@ -1,0 +1,284 @@
+{
+  "Promise Resource Network": {
+    "maxSelections": 16,
+    "categories": {
+      "Emotional/Mental": {
+        "color": "#085f63",
+        "subcategories": [
+          {
+            "label": "Anxiety, depression, low mood"
+          },
+          {
+            "label": "Coping skills and self care"
+          },
+          {
+            "label": "Emotional regulation (anger, frustration, mood swings)"
+          },
+          {
+            "label": "Feeling emotionally unsupported"
+          },
+          {
+            "label": "Grief, loss, sadness"
+          },
+          {
+            "label": "Motivation, hope, and outlook"
+          },
+          {
+            "label": "Seeking or accepting support"
+          },
+          {
+            "label": "Stress, overwhelm, or burnout"
+          },
+          {
+            "label": "Unspecified/Other - EM"
+          }
+        ]
+      },
+      "Environmental": {
+        "color": "#14919b",
+        "subcategories": [
+          {
+            "label": "Access to basic needs (food, utilities, transportation)"
+          },
+          {
+            "label": "Community or neighborhood stressors"
+          },
+          {
+            "label": "Connection to nature, pets, or animals"
+          },
+          {
+            "label": "Environmental stressors or triggers"
+          },
+          {
+            "label": "Housing or living situation"
+          },
+          {
+            "label": "Justice or system involvement"
+          },
+          {
+            "label": "Safety or stability concerns"
+          },
+          {
+            "label": "Social or peer environment challenges"
+          },
+          {
+            "label": "Weather or external disruptions"
+          },
+          {
+            "label": "Unspecified/Other - E"
+          }
+        ]
+      },
+      "Financial": {
+        "color": "#fac05e",
+        "subcategories": [
+          {
+            "label": "Benefits or financial assistance (SSI, SSDI, Veterans, SNAP, etc.)"
+          },
+          {
+            "label": "Budgeting, bills, or expenses"
+          },
+          {
+            "label": "Employment-related financial strain"
+          },
+          {
+            "label": "Financial stress or uncertainty "
+          },
+          {
+            "label": "Financial gains or rewards"
+          },
+          {
+            "label": "Food insecurity or essential needs"
+          },
+          {
+            "label": "Income loss or unemployment"
+          },
+          {
+            "label": "Planning for the future"
+          },
+          {
+            "label": "Spending or shopping concerns"
+          },
+          {
+            "label": "Unspecified/Other - F"
+          }
+        ]
+      },
+      "Intellectual": {
+        "color": "#f79d8f",
+        "subcategories": [
+          {
+            "label": "Creative outlets or hobbies"
+          },
+          {
+            "label": "Feeling mentally 'stuck'"
+          },
+          {
+            "label": "Foucs, concentration, or memory challenges"
+          },
+          {
+            "label": "Learning, curiosity, or personal growth"
+          },
+          {
+            "label": "Media consumption (TV, sports, current events)"
+          },
+          {
+            "label": "Mental boredom or feeling 'stuck'"
+          },
+          {
+            "label": "Problem solving or decision making"
+          },
+          {
+            "label": "Research, reading, or mental engagemnet"
+          },
+          {
+            "label": "School or academic concerns"
+          },
+          {
+            "label": "Unspecified/Other - I"
+          }
+        ]
+      },
+      "Occupational": {
+        "color": "#f0817c",
+        "subcategories": [
+          {
+            "label": "Career goals or professional growth"
+          },
+          {
+            "label": "Caregiving or unpaid labor responsibilities"
+          },
+          {
+            "label": "Feeling undervalued or unrecognized"
+          },
+          {
+            "label": "Job dissatisfaction or lack of fulfillment"
+          },
+          {
+            "label": "Job seeking or unemployment"
+          },
+          {
+            "label": "Sense of purpose or contribution"
+          },
+          {
+            "label": "Work stress or burnout"
+          },
+          {
+            "label": "Work-life balance challenges"
+          },
+          {
+            "label": "Workplace conflict or dynamics"
+          },
+          {
+            "label": "Unspecified/Other - O"
+          }
+        ]
+      },
+      "Physical": {
+        "color": "#4d92c2",
+        "subcategories": [
+          {
+            "label": "Exercise or physical activity"
+          },
+          {
+            "label": "Fatigue or low energy"
+          },
+          {
+            "label": "Health related stress or anxiety"
+          },
+          {
+            "label": "Medication related concerns"
+          },
+          {
+            "label": "Nutrition or eating concerns"
+          },
+          {
+            "label": "Pain, illness, or chronic conditions"
+          },
+          {
+            "label": "Physical discomfort or limitations"
+          },
+          {
+            "label": "Physical workload or labor strain"
+          },
+          {
+            "label": "Sleep concerns"
+          },
+          {
+            "label": "Unspecified/Other - P"
+          }
+        ]
+      },
+      "Social": {
+        "color": "#c99f7d",
+        "subcategories": [
+          {
+            "label": "Boundary-setting with others or self"
+          },
+          {
+            "label": "Communication challenges"
+          },
+          {
+            "label": "Feeling disconnected or excluded"
+          },
+          {
+            "label": "Lack of support"
+          },
+          {
+            "label": "Loneliness or isolation"
+          },
+          {
+            "label": "Relationship challenges (family or friends)"
+          },
+          {
+            "label": "Romantic or intimate relationships"
+          },
+          {
+            "label": "Sense of belonging or connection"
+          },
+          {
+            "label": "Social engagement or events"
+          },
+          {
+            "label": "Unspecified/Other - S"
+          }
+        ]
+      },
+      "Spiritual": {
+        "color": "#db7a34",
+        "subcategories": [
+          {
+            "label": "Existential concerns (mortality, freedom, responsibility, etc.)"
+          },
+          {
+            "label": "Feeling ungrounded or disconnected"
+          },
+          {
+            "label": "Identity or self-understanding"
+          },
+          {
+            "label": "Life transitions or reflection"
+          },
+          {
+            "label": "Living according to one's values and beliefs"
+          },
+          {
+            "label": "Loss of hope or faith"
+          },
+          {
+            "label": "Meaning, purpose, or direction"
+          },
+          {
+            "label": "Religion/Spirituality practices (attending services/events, etc.)"
+          },
+          {
+            "label": "Values or belief struggles"
+          },
+          {
+            "label": "Unspecified/Other - SP"
+          }
+        ]
+      }
+    }
+  }
+}

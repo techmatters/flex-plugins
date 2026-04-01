@@ -53,6 +53,8 @@ export const setUpConferenceActions = () => {
   Actions.addListener('beforeHangupCall', async (payload: { task: ITask }, abortFunction) => {
     const { conference } = payload.task;
 
+    if (!conference) return;
+
     const someParticipantIsOnHold =
       conference.participants.filter(p => p.status === 'joined').length > 2 &&
       conference.participants.some(p => p.onHold && p.status === 'joined');
@@ -68,13 +70,16 @@ export const setUpConferenceActions = () => {
     }
   });
 
-  Flex.Actions.addListener('beforeAcceptTask', ({ conferenceOptions }) => {
+  Flex.Actions.addListener('beforeAcceptTask', payload => {
     if (getAseloFeatureFlags().enable_conference_status_event_handler) {
-      conferenceOptions.conferenceStatusCallback = `${
-        getHrmConfig().accountScopedLambdaBaseUrl
-      }/conference/conferenceStatusCallback`;
-      conferenceOptions.conferenceStatusCallbackMethod = 'POST';
-      conferenceOptions.conferenceStatusCallbackEvent = 'leave';
+      const { conferenceOptions } = payload;
+      if (conferenceOptions) {
+        conferenceOptions.conferenceStatusCallback = `${
+          getHrmConfig().accountScopedLambdaBaseUrl
+        }/conference/conferenceStatusCallback`;
+        conferenceOptions.conferenceStatusCallbackMethod = 'POST';
+        conferenceOptions.conferenceStatusCallbackEvent = 'leave';
+      }
     }
   });
 };

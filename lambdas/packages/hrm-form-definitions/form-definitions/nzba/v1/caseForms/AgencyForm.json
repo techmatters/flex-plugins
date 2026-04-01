@@ -1,0 +1,62 @@
+[
+  {
+    "name": "personsName",
+    "label": "Person's name",
+    "type": "input",
+    "isPII": false
+  },
+  {
+    "name": "position",
+    "label": "Position",
+    "type": "input",
+    "isPII": false
+  },
+  {
+    "name": "agency",
+    "label": "Agency",
+    "type": "input",
+    "isPII": false
+  },
+  {
+    "name": "workersContactDetails",
+    "label": "Worker's contact details",
+    "type": "textarea",
+    "isPII": false,
+    "rows": 8,
+    "width": 250
+  },
+  {
+    "name": "permissionToContact",
+    "label": "Permission to contact",
+    "type": "select",
+    "isPII": false,
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "Yes",
+        "label": "Yes"
+      },
+      {
+        "value": "No",
+        "label": "No"
+      }
+    ]
+  },
+  {
+    "name": "dateEntered",
+    "type": "date-input",
+    "isPII": false,
+    "label": "Date entered"
+  },
+  {
+    "name": "notes",
+    "label": "Notes",
+    "type": "textarea",
+    "isPII": false,
+    "rows": 8,
+    "width": 250
+  }
+]

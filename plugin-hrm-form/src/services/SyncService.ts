@@ -18,8 +18,9 @@ import SyncClient from 'twilio-sync';
 import { SWITCHBOARD_NOTIFY_DOCUMENT, SWITCHBOARD_STATE_DOCUMENT, SwitchboardSyncState } from 'hrm-types';
 
 import fetchProtectedApi from './fetchProtectedApi';
-import { getAseloFeatureFlags, getTemplateStrings } from '../hrmConfig';
+import { getAseloFeatureFlags } from '../hrmConfig';
 import { isErr, newErr, newOk } from '../types/Result';
+import { lookupTranslation } from '../translations';
 
 // eslint-disable-next-line import/no-mutable-exports
 let sharedSyncClient: SyncClient;
@@ -92,7 +93,7 @@ const copyError = error => ({
 const validateSyncConnection = (): void => {
   if (!isSyncClientConnected(sharedSyncClient)) {
     console.error('Error with Sync Client connection. Sync Client object is: ', sharedSyncClient);
-    console.error(getTemplateStrings().SharedStateSaveContactError);
+    console.error(lookupTranslation('SharedStateSaveContactError'));
     throw new Error('Sync client not connected');
   }
 };
@@ -129,7 +130,7 @@ export const savePendingContactToSharedState = async (task, payload, error) => {
 export const createCallStatusSyncDocument = async (onUpdateCallback: ({ data }: any) => void) => {
   if (!isSyncClientConnected(sharedSyncClient)) {
     console.error('Error with Sync Client connection. Sync Client object is: ', sharedSyncClient);
-    console.error(getTemplateStrings().SharedStateSaveContactError);
+    console.error(lookupTranslation('SharedStateSaveContactError'));
     return { status: 'failure', callStatusSyncDocument: null } as const;
   }
 

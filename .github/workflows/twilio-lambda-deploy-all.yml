@@ -75,3 +75,13 @@ jobs:
       send-slack-message: 'false'
       environment: ${{ inputs.environment }}
       lambda_path: ${{ matrix.lambda_path }}
+
+  deploy_test_pages:
+    name: Deploy test pages
+    uses: ./.github/workflows/deploy-test-pages.yml
+    secrets:
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+    with:
+      environment: ${{ inputs.environment }}
+      send-slack-message: 'false'

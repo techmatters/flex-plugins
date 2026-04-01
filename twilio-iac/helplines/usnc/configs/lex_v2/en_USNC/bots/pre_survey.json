@@ -1,0 +1,102 @@
+{
+  "pre_survey": {
+    "description": "Specific usnc/configs/lex_v2/en_USNC/bots Pre Survey bot",
+    "locale": "en_US",
+    "child_directed": true,
+    "idle_session_ttl_in_seconds": "350",
+    "staging_bot_alias_id": "TSTALIASID",
+    "production_bot_alias_id": "TSTALIASID",
+    "type": "Bot",
+    "intents": {
+      "pre_survey": {
+        "utterances": [
+          {
+            "utterance": "trigger_pre_survey"
+          },
+          {
+            "utterance": "Incoming webchat contact"
+          }
+        ],
+        "initial_response": {
+          "message": "Hello! Welcome to Warmline. Please answer the following questions. You can type '0' if you prefer not to answer.",
+          "slot_to_elicit": "ageRange"
+        },
+        "closing_response": {
+          "message": "Thank you. A Peer Supporter will join you as soon as they are available."
+        },
+        "slot_priorities": {
+          "1": {
+            "slot_name": "ageRange",
+            "slot_type_name": "ageRange",
+            "slot_question": "How old are you? Please enter your age as a number (for example: 25).",
+            "variations": [
+              "Enter your age as a number only (for example: 25).",
+              "What is your age? Please type only the number."
+            ],
+            "failure_response": "We're having trouble understanding your response."
+          },
+          "2": {
+            "slot_name": "gender",
+            "slot_type_name": "gender",
+            "slot_question": "Please enter the number that corresponds to your gender:\n1 - Male\n2 - Female\n3 - Non-binary\n4 - Transmasculine\n5 - Transfeminine\n6 - Other",
+            "variations": [
+              "What is your gender? Please enter the number that matches your answer.",
+              "Enter the number that corresponds to your gender."
+            ],
+            "failure_response": "We're having trouble understanding your response."
+          },
+          "3": {
+            "slot_name": "pronouns",
+            "slot_type_name": "pronouns",
+            "slot_question": "Please enter the number that corresponds to your pronouns:\n1 - He/Him/His\n2 - She/Her/Hers\n3 - They/Them/Theirs\n4 - Other",
+            "variations": [
+              "What pronouns do you use? Enter the number that matches your answer.",
+              "Please type the number that corresponds to your pronouns."
+            ],
+            "failure_response": "We're having trouble understanding your response."
+          },
+          "4": {
+            "slot_name": "ethnicity",
+            "slot_type_name": "ethnicity",
+            "slot_question": "Please enter the number that corresponds to your ethnicity:\n1 - Hispanic/Latino\n2 - Not Hispanic/Latino",
+            "variations": [
+              "What is your ethnicity? Please enter the number.",
+              "Enter the number that corresponds to your ethnicity."
+            ],
+            "failure_response": "We're having trouble understanding your response."
+          },
+          "5": {
+            "slot_name": "race",
+            "slot_type_name": "race",
+            "slot_question": "Please enter the number that corresponds to your race:\n1 - White\n2 - Black or African American\n3 - Asian\n4 - American Indian or Alaska Native\n5 - Native Hawaiian or Other Pacific Islander\n6 - Two or More Races\n7 - Other",
+            "variations": [
+              "What is your race? Please enter the number.",
+              "Enter the number that corresponds to your race."
+            ],
+            "failure_response": "We're having trouble understanding your response."
+          },
+          "6": {
+            "slot_name": "militaryStatus",
+            "slot_type_name": "militaryStatus",
+            "slot_question": "Please enter the number that corresponds to your military status:\n1 - Active Duty\n2 - Retired\n3 - Veteran (non-career)\n4 - Non-military\n5 - National Guard or Reserves\n6 - Military Partner\n7 - Military Family Member",
+            "variations": [
+              "What is your military status? Enter the number that matches your answer.",
+              "Please type the number that corresponds to your military status."
+            ],
+            "failure_response": "We're having trouble understanding your response."
+          },
+          "7": {
+            "slot_name": "988Referral",
+            "slot_type_name": "yes_no",
+            "slot_question": "Were you referred or transferred from 988? Please enter the number:\n1 - Yes\n2 - No",
+            "variations": [
+              "Did 988 refer or transfer you? Enter the number.",
+              "Please type the number that corresponds to your answer."
+            ],
+            "failure_response": "We're having trouble understanding your response."
+          }
+        }
+      }
+    }
+  }
+}

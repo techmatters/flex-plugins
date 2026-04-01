@@ -38,7 +38,9 @@ export const validateWebhookRequest: HttpRequestPipelineStep = async (
   const queryString = Object.entries(query)
     .map(
       ([key, value]) =>
-        `${encodeURIComponent(key)}=${encodeURIComponent(value?.toString() ?? 'undefined')}`,
+        // The ALB sends these values raw, not URL decoded, so they can be used 'as is'
+        // If we switch to an API Gateway or a function URL (?), we need to encode the key and value with encodeURIComponent
+        `${key}=${value?.toString() ?? 'undefined'}`,
     )
     .join('&');
   const urlForValidation =

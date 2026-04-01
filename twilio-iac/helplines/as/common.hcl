@@ -52,7 +52,7 @@ locals {
       switchboard : {
         "target_workers" = "1==1",
         "friendly_name"  = "Switchboard Queue"
-      },
+      }
     }
     task_channels = {
       default : "Default"

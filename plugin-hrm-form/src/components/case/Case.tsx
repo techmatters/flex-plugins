@@ -135,7 +135,7 @@ const Case: React.FC<Props> = ({ task, handleClose, onNewCaseSaved = () => Promi
   if (loading || loadingCase) {
     return (
       <CenteredContainer>
-        <CircularProgress size={50} />
+        <CircularProgress size={50} aria-label={strings['Case-Loading']} />
       </CenteredContainer>
     );
   }
