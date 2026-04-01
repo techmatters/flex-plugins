@@ -60,12 +60,20 @@ export const createConversation = async (
     );
   }
 
-  const conversationInstance = await client.conversations.v1.conversations.create({
-    xTwilioWebhookEnabled: 'true',
-    friendlyName: conversationFriendlyName,
-    uniqueName: `${channelType}/${uniqueUserName}/${Date.now()}`,
-  });
-  const conversationSid = conversationInstance.sid as ConversationSID;
+  let conversationSid: ConversationSID;
+  try {
+    const conversationInstance = await client.conversations.v1.conversations.create({
+      xTwilioWebhookEnabled: 'true',
+      friendlyName: conversationFriendlyName,
+      uniqueName: `${channelType}/${uniqueUserName}/${Date.now()}`,
+    });
+    conversationSid = conversationInstance.sid as ConversationSID;
+  } catch (err) {
+    return newErr({
+      message: `Create conversation failed: ${(err as Error)?.message}`,
+      error: { cause: err as Error },
+    });
+  }
 
   try {
     const conversationContext =
