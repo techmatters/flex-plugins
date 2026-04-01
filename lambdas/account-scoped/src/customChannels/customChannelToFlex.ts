@@ -126,7 +126,7 @@ export const sendConversationMessageToFlex = async (
   let conversationSid = await findExistingConversation(client, uniqueUserName);
 
   if (!conversationSid) {
-    const createConverationResult = await createConversation(client, {
+    const createConversationResult = await createConversation(client, {
       studioFlowSid,
       channelType,
       twilioNumber,
@@ -137,9 +137,9 @@ export const sendConversationMessageToFlex = async (
       testSessionId,
     });
 
-    if (isErr(createConverationResult)) {
+    if (isErr(createConversationResult)) {
       const { conversationSid: newConversationSid, cause } =
-        createConverationResult.error;
+        createConversationResult.error;
       if (newConversationSid) {
         await removeConversation(client, {
           conversationSid: newConversationSid,
@@ -147,7 +147,7 @@ export const sendConversationMessageToFlex = async (
       }
       throw cause;
     }
-    const { conversationSid: newConversationSid } = createConverationResult.data;
+    const { conversationSid: newConversationSid } = createConversationResult.data;
 
     conversationSid = newConversationSid;
   }

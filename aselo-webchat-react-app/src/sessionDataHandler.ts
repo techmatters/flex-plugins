@@ -193,9 +193,15 @@ class SessionDataHandler {
       const { config } = store.getState();
       const payload: InitWebchatAPIPayload = {
         DeploymentKey: this.getDeploymentKey(),
-        CustomerFriendlyName:
-          (formData?.friendlyName as string) ||
-          localizeKey(config.translations[config.currentLocale ?? config.defaultLocale])(CUSTOMER_DEFAULT_NAME_KEY),
+        CustomerFriendlyName: (() => {
+          const localizedName = localizeKey(config.translations[config.currentLocale ?? config.defaultLocale])(
+            CUSTOMER_DEFAULT_NAME_KEY,
+          );
+          return (
+            (formData?.friendlyName as string) ||
+            (localizedName === CUSTOMER_DEFAULT_NAME_KEY ? 'Anonymous' : localizedName)
+          );
+        })(),
         PreEngagementData: JSON.stringify(formData),
       };
 
