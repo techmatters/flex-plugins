@@ -13,10 +13,22 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
+import DOMPurify from 'dompurify';
 import { useSelector } from 'react-redux';
 
 import { localizeKey } from './localizeKey';
 import { selectCurrentTranslations } from '../store/config.reducer';
+
+/**
+ * Sanitization config that only allows links and text decoration tags.
+ * Blocks scripts, event handlers, javascript: URLs and all other unsafe content.
+ */
+const SANITIZE_CONFIG: DOMPurify.Config = {
+  ALLOWED_TAGS: ['a', 'b', 'i', 'em', 'strong', 'u', 's', 'span', 'br'],
+  ALLOWED_ATTR: ['href', 'rel'],
+};
+
+const sanitizeHtml = (html: string): string => DOMPurify.sanitize(html, SANITIZE_CONFIG) as string;
 
 const LocalizedTemplate: React.FC<{ code: string; renderAsHtml?: string | boolean } & Record<string, string>> = ({
   code,
@@ -26,12 +38,11 @@ const LocalizedTemplate: React.FC<{ code: string; renderAsHtml?: string | boolea
   const translations = useSelector(selectCurrentTranslations);
   const translateForCurrentLocale = localizeKey(translations);
   const shouldRenderAsHtml =
-    typeof renderAsHtml === 'string'
-      ? renderAsHtml.trim().toLowerCase() === 'true'
-      : Boolean(renderAsHtml);
+    typeof renderAsHtml === 'string' ? renderAsHtml.trim().toLowerCase() === 'true' : Boolean(renderAsHtml);
   if (shouldRenderAsHtml) {
+    const safeHtml = sanitizeHtml(translateForCurrentLocale(code, parameters));
     // eslint-disable-next-line react/no-danger
-    return <span dangerouslySetInnerHTML={{ __html: translateForCurrentLocale(code, parameters) }} />;
+    return <span dangerouslySetInnerHTML={{ __html: safeHtml }} />;
   }
   return <>{translateForCurrentLocale(code, parameters)}</>;
 };
