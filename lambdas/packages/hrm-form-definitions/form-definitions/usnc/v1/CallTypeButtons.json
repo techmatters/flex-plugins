@@ -1,7 +1,7 @@
 [
   {
     "name": "child",
-    "label": "Inbound",
+    "label": "Inbound/Outbound",
     "type": "button",
     "category": "data"
   },

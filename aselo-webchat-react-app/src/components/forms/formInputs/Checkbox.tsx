@@ -47,7 +47,8 @@ const Checkbox: React.FC<Props> = ({ definition, getItem, handleChange, defaultV
           defaultChecked={Boolean(defaultValue || initialChecked)}
           css={{ display: 'flex', alignItems: 'center' }}
         >
-          <LocalizedTemplate code={label} /> {Boolean(required) && '*'}
+          <LocalizedTemplate code={label} renderAsHtml="true" />
+          {Boolean(required) && '*'}
         </CheckboxInput>
       </Label>
       {error && (
