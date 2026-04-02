@@ -26,16 +26,25 @@
         },
         "slot_priorities": {
           "1": {
-            "slot_name": "ageRange",
-            "slot_type_name": "ageRange",
-            "slot_question": "How old are you? Please enter your age as a number (for example: 25).",
+            "slot_name": "friendlyName",
+            "slot_type_name": "AMAZON.FreeFormInput",
+            "slot_question": "What is your name or alias?",
             "variations": [
-              "Enter your age as a number only (for example: 25).",
-              "What is your age? Please type only the number."
+              "Enter just a name or alias like: John"
             ],
             "failure_response": "We're having trouble understanding your response."
           },
           "2": {
+            "slot_name": "ageRange",
+            "slot_type_name": "ageRange",
+            "slot_question": "How old are you? Please enter your age as a number (for example: 25).",
+            "variations": [
+              "Please note that this service is restricted to individuals who are 18 years of age or older.  Please enter your age as a number (for example: 25).",
+              "Before we continue, please note that this service is available only for people aged 18 or older. Please enter your age as a number (for example: 25)."
+            ],
+            "failure_response": "We're having trouble understanding your response."
+          },
+          "3": {
             "slot_name": "gender",
             "slot_type_name": "gender",
             "slot_question": "Please enter the number that corresponds to your gender:\n1 - Male\n2 - Female\n3 - Non-binary\n4 - Transmasculine\n5 - Transfeminine\n6 - Other",
@@ -45,7 +54,7 @@
             ],
             "failure_response": "We're having trouble understanding your response."
           },
-          "3": {
+          "4": {
             "slot_name": "pronouns",
             "slot_type_name": "pronouns",
             "slot_question": "Please enter the number that corresponds to your pronouns:\n1 - He/Him/His\n2 - She/Her/Hers\n3 - They/Them/Theirs\n4 - Other",
@@ -55,7 +64,7 @@
             ],
             "failure_response": "We're having trouble understanding your response."
           },
-          "4": {
+          "5": {
             "slot_name": "ethnicity",
             "slot_type_name": "ethnicity",
             "slot_question": "Please enter the number that corresponds to your ethnicity:\n1 - Hispanic/Latino\n2 - Not Hispanic/Latino",
@@ -65,7 +74,7 @@
             ],
             "failure_response": "We're having trouble understanding your response."
           },
-          "5": {
+          "6": {
             "slot_name": "race",
             "slot_type_name": "race",
             "slot_question": "Please enter the number that corresponds to your race:\n1 - White\n2 - Black or African American\n3 - Asian\n4 - American Indian or Alaska Native\n5 - Native Hawaiian or Other Pacific Islander\n6 - Two or More Races\n7 - Other",
@@ -75,7 +84,7 @@
             ],
             "failure_response": "We're having trouble understanding your response."
           },
-          "6": {
+          "7": {
             "slot_name": "militaryStatus",
             "slot_type_name": "militaryStatus",
             "slot_question": "Please enter the number that corresponds to your military status:\n1 - Active Duty\n2 - Retired\n3 - Veteran (non-career)\n4 - Non-military\n5 - National Guard or Reserves\n6 - Military Partner\n7 - Military Family Member",
@@ -85,7 +94,7 @@
             ],
             "failure_response": "We're having trouble understanding your response."
           },
-          "7": {
+          "8": {
             "slot_name": "988Referral",
             "slot_type_name": "yes_no",
             "slot_question": "Were you referred or transferred from 988? Please enter the number:\n1 - Yes\n2 - No",

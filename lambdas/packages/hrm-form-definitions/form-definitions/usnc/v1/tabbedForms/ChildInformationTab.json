@@ -1,13 +1,13 @@
 [
   {
-    "name": "name",
+    "name": "friendlyName",
     "label": "Name",
     "type": "input",
-    "isPII": true,
     "required": {
       "value": true,
       "message": "RequiredFieldError"
-    }
+    },
+    "isPII": true
   },
   {
     "name": "state",

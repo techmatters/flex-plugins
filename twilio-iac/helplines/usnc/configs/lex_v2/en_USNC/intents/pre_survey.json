@@ -39,30 +39,34 @@
     "slotPriorities": [
         {
             "priority": 1,
-            "slotName": "ageRange"
+            "slotName": "friendlyName"
         },
         {
             "priority": 2,
-            "slotName": "gender"
+            "slotName": "ageRange"
         },
         {
             "priority": 3,
-            "slotName": "pronouns"
+            "slotName": "gender"
         },
         {
             "priority": 4,
-            "slotName": "ethnicity"
+            "slotName": "pronouns"
         },
         {
             "priority": 5,
-            "slotName": "race"
+            "slotName": "ethnicity"
         },
         {
             "priority": 6,
-            "slotName": "militaryStatus"
+            "slotName": "race"
         },
         {
             "priority": 7,
+            "slotName": "militaryStatus"
+        },
+        {
+            "priority": 8,
             "slotName": "988Referral"
         }
     ],
