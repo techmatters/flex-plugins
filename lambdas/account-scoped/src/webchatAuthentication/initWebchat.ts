@@ -42,7 +42,7 @@ const contactWebchatOrchestrator = async ({
   console.info(`Creating new conversation via the API with sender ID: ${senderId}`);
 
   const client = await getTwilioClient(accountSid);
-  const { conversationSid, error } = await createConversation(client, {
+  const result = await createConversation(client, {
     channelType: 'web',
     conversationFriendlyName: customerFriendlyName,
     senderScreenName: customerFriendlyName,
@@ -55,16 +55,22 @@ const contactWebchatOrchestrator = async ({
       from: customerFriendlyName,
     },
   });
-  if (error) {
-    console.error('Error creating web conversation', accountSid, error);
+  if (isErr(result)) {
+    const { conversationSid, cause } = result.error;
+    console.error(
+      `Error creating web conversation ${conversationSid}`,
+      accountSid,
+      cause,
+    );
     return newErr({
-      message: error.message,
+      message: result.message,
       error: {
         statusCode: 500,
-        cause: error,
+        cause,
       },
     });
   }
+  const { conversationSid } = result.data;
   console.info(
     `Created new conversation ${conversationSid} via the API with sender ID: ${senderId}`,
   );

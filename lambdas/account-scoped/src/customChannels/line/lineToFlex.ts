@@ -136,7 +136,7 @@ export const lineToFlexHandler: AccountScopedHandler = async (
     const senderExternalId = messageEvent.source.userId; // The child ID on Line
     const chatFriendlyName = `${channelType}:${senderExternalId}`;
     const uniqueUserName = `${channelType}:${senderExternalId}`;
-    const senderScreenName = 'child';
+    const senderScreenName = senderExternalId;
     const onMessageSentWebhookUrl = `${process.env.WEBHOOK_BASE_URL}/lambda/twilio/account-scoped/${accountSid}/customChannels/line/flexToLine?recipientId=${senderExternalId}`;
     console.debug(
       'LineToFlex: sending message from',

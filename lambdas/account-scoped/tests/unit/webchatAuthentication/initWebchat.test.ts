@@ -16,7 +16,7 @@
 
 import { initWebchatHandler } from '../../../src/webchatAuthentication/initWebchat';
 import { TEST_ACCOUNT_SID, TEST_CONVERSATION_SID } from '../../testTwilioValues';
-import { isErr, isOk } from '../../../src/Result';
+import { isErr, isOk, newErr, newOk } from '../../../src/Result';
 
 jest.mock('@tech-matters/twilio-configuration', () => ({
   getTwilioClient: jest.fn(),
@@ -72,7 +72,9 @@ describe('initWebchatHandler', () => {
     jest.clearAllMocks();
     mockGetTwilioClient.mockResolvedValue(mockTwilioClient);
     mockGetChannelStudioFlowSid.mockResolvedValue(TEST_STUDIO_FLOW_SID);
-    mockCreateConversation.mockResolvedValue({ conversationSid: TEST_CONVERSATION_SID });
+    mockCreateConversation.mockResolvedValue(
+      newOk({ conversationSid: TEST_CONVERSATION_SID }),
+    );
     mockCreateToken.mockResolvedValue(TEST_TOKEN);
   });
 
@@ -123,15 +125,17 @@ describe('initWebchatHandler', () => {
     }
   });
 
-  it('returns an error result when createConversation throws', async () => {
-    mockCreateConversation.mockRejectedValue(new Error('Conversation creation failed'));
+  it('returns an error result when createConversation returns error result', async () => {
+    mockCreateConversation.mockResolvedValue(
+      newErr({ message: 'Boom', error: { cause: new Error('Shakalakka') } }),
+    );
     const request = createMockRequest();
     const result = await initWebchatHandler(request, TEST_ACCOUNT_SID);
 
     expect(isErr(result)).toBe(true);
     if (isErr(result)) {
       expect(result.error.statusCode).toBe(500);
-      expect(result.message).toBe('Conversation creation failed');
+      expect(result.message).toBe('Boom');
     }
     expect(mockCreateToken).not.toHaveBeenCalled();
   });
