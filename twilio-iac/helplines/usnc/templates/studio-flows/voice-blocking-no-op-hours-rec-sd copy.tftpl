@@ -124,11 +124,11 @@ ${
         }
       ],
       "properties": {
-        "voice": "Polly.Danielle-Neural",
         "offset": {
-          "x": -820,
-          "y": 340
+          "x": -610,
+          "y": 330
         },
+        "voice": "Polly.Mia-Neural",
         "say": "${channel_flow_vars.play_message_voice_blocked}",
         "language": "en-US"
       }
@@ -141,18 +141,18 @@ ${
           "event": "callComplete"
         },
         {
-          "next": "http_post_webhook_notify_error",
+          "name": "http_post_webhook_notify_error",
           "event": "failedToEnqueue"
         },
         {
-          "next": "http_post_webhook_notify_error",
-          "event": "callFailure"
+          "event": "http_post_webhook_notify_error",
+          "event": "failedToEnqueue"
         }
       ],
       "properties": {
         "offset": {
           "x": 80,
-          "y": 1810
+          "y": 460
         },
         "attributes": "${channel_attributes.default}",
         "workflow": "${workflow_sids.master}",
@@ -164,17 +164,17 @@ ${
       "type": "say-play",
       "transitions": [
         {
-          "next": "gather_live_monitoring_consent",
+          "next": "send_to_queue",
           "event": "audioComplete"
         }
       ],
       "properties": {
-        "play": "${channel_flow_vars.play_message_voice_prequeue}",
         "offset": {
-          "x": -350,
-          "y": 460
+          "x": 80,
+          "y": 210
         },
-        "loop": 1
+        "loop": 1,
+        "play": "${channel_flow_vars.play_message_voice_prequeue}"
       }
     },
     {
@@ -191,136 +191,12 @@ ${
       "properties": {
         "offset": {
           "x": 380,
-          "y": 2090
+          "y": 760
         },
         "method": "POST",
         "content_type": "application/json;charset=utf-8",
-        "add_twilio_auth": false,
-        "body": "{ \"text\": \"Issue detected [Failed to Enqueue] on USNC STG Flow SID: {{flow.flow_sid}} Execution SID: {{flow.sid}}  \" }",
+        "body": "{ \"text\": \"Issue detected [Failed to Enqueue] on ${short_helpline} ${short_environment} Flow SID: {{flow.flow_sid}} Execution SID: {{flow.sid}}  \" }",
         "url": "${webhook_url_studio_errors}"
-      }
-    },
-    {
-      "name": "gather_live_monitoring_consent",
-      "type": "gather-input-on-call",
-      "transitions": [
-        {
-          "next": "split_live_monitoring_consent",
-          "event": "keypress"
-        },
-        {
-          "next": "gather_live_monitoring_consent",
-          "event": "speech"
-        },
-        {
-          "next": "gather_live_monitoring_consent",
-          "event": "timeout"
-        }
-      ],
-      "properties": {
-        "play": "${channel_flow_vars.gather_live_monitoring_consent}",
-        "number_of_digits": 1,
-        "speech_timeout": "5",
-        "offset": {
-          "x": -330,
-          "y": 820
-        },
-        "loop": 1,
-        "finish_on_key": "#",
-        "stop_gather": true,
-        "gather_language": "en",
-        "speech_model": "default"
-      }
-    },
-    {
-      "name": "split_live_monitoring_consent",
-      "type": "split-based-on",
-      "transitions": [
-        {
-          "next": "gather_live_monitoring_consent",
-          "event": "noMatch"
-        },
-        {
-          "next": "set_var_live_monitoring_consent_yes",
-          "event": "match",
-          "conditions": [
-            {
-              "friendly_name": "If value equal_to 1",
-              "arguments": [
-                "{{widgets.gather_live_monitoring_consent.Digits}}"
-              ],
-              "type": "equal_to",
-              "value": "1"
-            }
-          ]
-        },
-        {
-          "next": "set_var_live_monitoring_consent_no",
-          "event": "match",
-          "conditions": [
-            {
-              "friendly_name": "If value equal_to 2",
-              "arguments": [
-                "{{widgets.gather_live_monitoring_consent.Digits}}"
-              ],
-              "type": "equal_to",
-              "value": "2"
-            }
-          ]
-        }
-      ],
-      "properties": {
-        "input": "{{widgets.gather_live_monitoring_consent.Digits}}",
-        "offset": {
-          "x": -240,
-          "y": 1110
-        }
-      }
-    },
-    {
-      "name": "set_var_live_monitoring_consent_yes",
-      "type": "set-variables",
-      "transitions": [
-        {
-          "next": "send_to_queue",
-          "event": "next"
-        }
-      ],
-      "properties": {
-        "variables": [
-          {
-            "type": "string",
-            "value": "Yes",
-            "key": "liveMonitorConsent"
-          }
-        ],
-        "offset": {
-          "x": -300,
-          "y": 1400
-        }
-      }
-    },
-    {
-      "name": "set_var_live_monitoring_consent_no",
-      "type": "set-variables",
-      "transitions": [
-        {
-          "next": "send_to_queue",
-          "event": "next"
-        }
-      ],
-      "properties": {
-        "variables": [
-          {
-            "type": "string",
-            "value": "No",
-            "key": "liveMonitorConsent"
-          }
-        ],
-        "offset": {
-          "x": 90,
-          "y": 1390
-        }
       }
     }
   ],

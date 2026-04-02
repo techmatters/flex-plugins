@@ -54,6 +54,14 @@ jest.mock('../AttachFileButton', () => ({
   AttachFileButton: () => <div title="AttachFileButton" />,
 }));
 
+jest.mock('../EmojiPicker', () => ({
+  EmojiPicker: ({ isOpen, onEmojiSelect }: { isOpen: boolean; onEmojiSelect: (emoji: string) => void }) =>
+    isOpen ? (
+      // eslint-disable-next-line jsx-a11y/no-static-element-interactions
+      <div title="EmojiPicker" data-testid="emoji-picker" onClick={() => onEmojiSelect('😊')} />
+    ) : null,
+}));
+
 jest.mock('../../logger');
 
 function FormDataMock(this: any) {
@@ -326,5 +334,60 @@ describe('Message Input', () => {
     const charLimit = 1024 * 32;
 
     expect(textArea).toHaveAttribute('maxLength', charLimit.toString());
+  });
+
+  it('renders the emoji picker button if enabled in config', () => {
+    (useSelector as jest.Mock).mockImplementationOnce((callback: any) =>
+      callback({ ...defaultState, config: { ...defaultState.config, emojiPicker: { enabled: true } } }),
+    );
+
+    const { container } = render(<MessageInput />);
+
+    expect(container.querySelector('[data-test="emoji-picker-button"]')).toBeInTheDocument();
+  });
+
+  it('does not render the emoji picker button if disabled in config', () => {
+    (useSelector as jest.Mock).mockImplementationOnce((callback: any) =>
+      callback({ ...defaultState, config: { ...defaultState.config, emojiPicker: { enabled: false } } }),
+    );
+
+    const { container } = render(<MessageInput />);
+
+    expect(container.querySelector('[data-test="emoji-picker-button"]')).not.toBeInTheDocument();
+  });
+
+  it('does not render the emoji picker button if emojiPicker config is absent', () => {
+    const { container } = render(<MessageInput />);
+
+    expect(container.querySelector('[data-test="emoji-picker-button"]')).not.toBeInTheDocument();
+  });
+
+  it('opens emoji picker when emoji button is clicked', () => {
+    const stateWithEmoji = { ...defaultState, config: { ...defaultState.config, emojiPicker: { enabled: true } } };
+    (useSelector as jest.Mock).mockImplementation((callback: any) => callback(stateWithEmoji));
+
+    const { container, queryByTitle } = render(<MessageInput />);
+    const emojiButton = container.querySelector('[data-test="emoji-picker-button"]') as Element;
+
+    expect(queryByTitle('EmojiPicker')).not.toBeInTheDocument();
+
+    fireEvent.click(emojiButton);
+
+    expect(queryByTitle('EmojiPicker')).toBeInTheDocument();
+  });
+
+  it('appends selected emoji to text input', () => {
+    const stateWithEmoji = { ...defaultState, config: { ...defaultState.config, emojiPicker: { enabled: true } } };
+    (useSelector as jest.Mock).mockImplementation((callback: any) => callback(stateWithEmoji));
+
+    const { container, queryByTitle } = render(<MessageInput />);
+    const textArea = container.querySelector('textarea') as HTMLTextAreaElement;
+    const emojiButton = container.querySelector('[data-test="emoji-picker-button"]') as Element;
+
+    fireEvent.change(textArea, { target: { value: 'Hello ' } });
+    fireEvent.click(emojiButton);
+    fireEvent.click(queryByTitle('EmojiPicker') as Element);
+
+    expect(textArea).toHaveValue('Hello 😊');
   });
 });
