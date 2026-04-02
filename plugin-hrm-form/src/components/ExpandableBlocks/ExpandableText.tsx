@@ -89,7 +89,7 @@ const ExpandableText: React.FC<ExpandableTextProps & Partial<StyledProps>> = ({
       <div
         style={{
           textOverflow: 'inherit',
-          whiteSpace: isOverflowing && !isExpanded ? collapsedStyles.whiteSpace : 'inherit',
+          whiteSpace: isOverflowing && !isExpanded ? collapsedStyles.whiteSpace : 'pre-wrap',
           overflow: isOverflowing && !isExpanded ? 'hidden' : 'inherit',
           height: isExpanded ? 'inherit' : `${collapsedStyles.linesPreview * LINE_HEIGHT}px`,
           fontSize: `13px`,
