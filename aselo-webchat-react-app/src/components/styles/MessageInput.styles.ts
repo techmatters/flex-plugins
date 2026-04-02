@@ -61,7 +61,7 @@ export const filePreviewContainerStyles: BoxStyleProps = {
 
 export const emojiPickerPopupStyles: BoxStyleProps = {
   position: 'absolute',
-  bottom: 'space160',
-  left: 'space0',
+  bottom: '100%',
+  right: 'space0',
   zIndex: 'zIndex10',
 };
