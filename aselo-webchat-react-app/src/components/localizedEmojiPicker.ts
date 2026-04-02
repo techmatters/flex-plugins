@@ -14,20 +14,22 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-export type TokenResponse = {
-  token: string;
-  conversationSid: string;
-  identity: string;
-  expiration: string;
+type LocaleMap = {
+  [key: string]: string;
 };
 
-export type FileAttachmentConfig = {
-  enabled?: boolean;
-  maxFileSize?: number;
-  acceptedExtensions?: string[];
+const localeMap: LocaleMap = {
+  'en-US': 'en',
+  'en-CA': 'en',
+  es: 'es',
+  'es-CL': 'es',
+  'es-CO': 'es',
+  'fr-CA': 'fr',
+  'hu-HU': 'hu',
+  'ukr-HU': 'uk',
+  'ukr-MT': 'uk',
+  'ru-HU': 'ru',
 };
 
-export type EmojiPickerConfig = {
-  enabled?: boolean;
-  blockedEmojis?: string[];
-};
+// https://github.com/missive/emoji-mart#options--props
+export const getLocale = (language: string) => localeMap[language];
