@@ -97,12 +97,8 @@ const deactivateConversation = async (
   const conversation = await client.conversations.v1.conversations
     .get(conversationSid)
     .fetch();
-  const attributes = JSON.parse(conversation.attributes);
 
   if (conversation.state !== 'closed') {
-    if (attributes.proxySession) {
-      await deleteProxySession(accountSid, attributes.proxySession);
-    }
     console.info('Attempting to deactivate active conversation', conversationSid);
     const updated = await conversation.update({
       state: 'closed',
