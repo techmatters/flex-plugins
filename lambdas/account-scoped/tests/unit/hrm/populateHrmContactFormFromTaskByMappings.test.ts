@@ -304,10 +304,10 @@ describe('populateHrmContactFormFromTaskByMappings', () => {
       },
       {
         description:
-          'preEngagement with dependent-select fields - populates both province (select) and district (dependent-select) in childInformation',
+          'preEngagement with dependent-select fields mapped to both tabs (child about self / default) - populates province and district in childInformation',
         preEngagementData: {
-          province: 'Ontario',
-          district: 'Toronto',
+          province: 'Northern',
+          district: 'District A',
         },
         formDefinitionSet: {
           tabbedForms: {
@@ -323,8 +323,8 @@ describe('populateHrmContactFormFromTaskByMappings', () => {
                 type: FormInputType.Select,
                 options: [
                   { value: '', label: '' },
-                  { value: 'Ontario', label: 'Ontario' },
-                  { value: 'Alberta', label: 'Alberta' },
+                  { value: 'Northern', label: 'Northern' },
+                  { value: 'Southern', label: 'Southern' },
                 ],
               },
               {
@@ -334,28 +334,150 @@ describe('populateHrmContactFormFromTaskByMappings', () => {
                 dependsOn: 'province',
                 defaultOption: { value: '', label: '' },
                 options: {
-                  Ontario: [
-                    { value: 'Toronto', label: 'Toronto' },
-                    { value: 'Ottawa', label: 'Ottawa' },
+                  Northern: [
+                    { value: 'District A', label: 'District A' },
+                    { value: 'District B', label: 'District B' },
                   ],
-                  Alberta: [{ value: 'Calgary', label: 'Calgary' }],
+                  Southern: [{ value: 'District C', label: 'District C' }],
+                },
+              },
+            ] as any,
+            CallerInformationTab: [
+              {
+                label: '',
+                name: 'firstName',
+                type: FormInputType.Input,
+              },
+              {
+                label: '',
+                name: 'province',
+                type: FormInputType.Select,
+                options: [
+                  { value: '', label: '' },
+                  { value: 'Northern', label: 'Northern' },
+                  { value: 'Southern', label: 'Southern' },
+                ],
+              },
+              {
+                label: '',
+                name: 'district',
+                type: FormInputType.DependentSelect,
+                dependsOn: 'province',
+                defaultOption: { value: '', label: '' },
+                options: {
+                  Northern: [
+                    { value: 'District A', label: 'District A' },
+                    { value: 'District B', label: 'District B' },
+                  ],
+                  Southern: [{ value: 'District C', label: 'District C' }],
                 },
               },
             ] as any,
           },
           prepopulateMappings: {
             preEngagement: {
-              province: [['ChildInformationTab.province']],
-              district: [['ChildInformationTab.district']],
+              // Maps to both tabs so province/district are populated regardless of contact type
+              province: [['ChildInformationTab.province'], ['CallerInformationTab.province']],
+              district: [['ChildInformationTab.district'], ['CallerInformationTab.district']],
             },
           },
         },
         expectedChildInformation: {
           firstName: '',
-          province: 'Ontario',
-          district: 'Toronto',
+          province: 'Northern',
+          district: 'District A',
         },
         expectedCallType: callTypes.child,
+      },
+      {
+        description:
+          'preEngagement with dependent-select fields mapped to both tabs (caller about child) - populates province and district in callerInformation',
+        preEngagementData: {
+          province: 'Northern',
+          district: 'District A',
+        },
+        memory: {
+          aboutSelf: 'No',
+        },
+        formDefinitionSet: {
+          tabbedForms: {
+            ChildInformationTab: [
+              {
+                label: '',
+                name: 'firstName',
+                type: FormInputType.Input,
+              },
+              {
+                label: '',
+                name: 'province',
+                type: FormInputType.Select,
+                options: [
+                  { value: '', label: '' },
+                  { value: 'Northern', label: 'Northern' },
+                  { value: 'Southern', label: 'Southern' },
+                ],
+              },
+              {
+                label: '',
+                name: 'district',
+                type: FormInputType.DependentSelect,
+                dependsOn: 'province',
+                defaultOption: { value: '', label: '' },
+                options: {
+                  Northern: [
+                    { value: 'District A', label: 'District A' },
+                    { value: 'District B', label: 'District B' },
+                  ],
+                  Southern: [{ value: 'District C', label: 'District C' }],
+                },
+              },
+            ] as any,
+            CallerInformationTab: [
+              {
+                label: '',
+                name: 'firstName',
+                type: FormInputType.Input,
+              },
+              {
+                label: '',
+                name: 'province',
+                type: FormInputType.Select,
+                options: [
+                  { value: '', label: '' },
+                  { value: 'Northern', label: 'Northern' },
+                  { value: 'Southern', label: 'Southern' },
+                ],
+              },
+              {
+                label: '',
+                name: 'district',
+                type: FormInputType.DependentSelect,
+                dependsOn: 'province',
+                defaultOption: { value: '', label: '' },
+                options: {
+                  Northern: [
+                    { value: 'District A', label: 'District A' },
+                    { value: 'District B', label: 'District B' },
+                  ],
+                  Southern: [{ value: 'District C', label: 'District C' }],
+                },
+              },
+            ] as any,
+          },
+          prepopulateMappings: {
+            preEngagement: {
+              // Maps to both tabs so province/district are populated regardless of contact type
+              province: [['ChildInformationTab.province'], ['CallerInformationTab.province']],
+              district: [['ChildInformationTab.district'], ['CallerInformationTab.district']],
+            },
+          },
+        },
+        expectedCallerInformation: {
+          firstName: '',
+          province: 'Northern',
+          district: 'District A',
+        },
+        expectedCallType: callTypes.caller,
       },
     ];
 

@@ -18,8 +18,8 @@
     "age": "ChildInformationTab.age",
     "gender": "ChildInformationTab.gender",
     "firstName": "ChildInformationTab.firstName",
-    "province": "CallerInformationTab.province",
-    "district": "CallerInformationTab.district",
+    "province": ["ChildInformationTab.province", "CallerInformationTab.province"],
+    "district": ["ChildInformationTab.district", "CallerInformationTab.district"],
     "urgencyLevel": "CaseInformationTab.urgencyLevel"
   }
 }
