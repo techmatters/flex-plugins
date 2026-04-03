@@ -29,15 +29,17 @@ const ReCaptcha: React.FC<Props> = ({ siteKey, recaptchaVerifyUrl, onRecaptchaCh
   const recaptchaRef = useRef<ReCAPTCHA>(null);
 
   const onChange = async (token: string | null) => {
-    const verified = token !== null;
-    onRecaptchaChange(verified);
+    if (token === null) {
+      onRecaptchaChange(false);
+      return;
+    }
 
-    if (verified) {
-      try {
-        await validateUser(token ?? '', recaptchaVerifyUrl);
-      } catch (error) {
-        console.log(error);
-      }
+    try {
+      const verified = await validateUser(token, recaptchaVerifyUrl);
+      onRecaptchaChange(verified);
+    } catch (error) {
+      console.log(error);
+      onRecaptchaChange(false);
     }
   };
 
