@@ -19,6 +19,7 @@ import { FormEvent } from 'react';
 import { Button } from '@twilio-paste/core/button';
 import { useDispatch, useSelector } from 'react-redux';
 import { Text } from '@twilio-paste/core/text';
+import { FormInputType } from 'hrm-form-definitions';
 
 import { submitAndInitChatThunk, updatePreEngagementDataField } from '../store/actions/genericActions';
 import { AppState } from '../store/definitions';
@@ -39,8 +40,22 @@ export const PreEngagementFormPhase = () => {
   };
   const handleChange = setItemValue;
 
-  const handleSubmit = async (e: FormEvent) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    const form = e.currentTarget;
+
+    // Sync every form element's current DOM value to Redux before validation runs.
+    // This ensures fields that have been filled but not yet blurred are still captured.
+    preEngagementFormDefinition?.fields?.forEach(field => {
+      const element = form.querySelector<HTMLInputElement | HTMLSelectElement>(`#${field.name}`);
+      if (!element) return;
+      if (field.type === FormInputType.Checkbox) {
+        setItemValue({ name: field.name, value: (element as HTMLInputElement).checked });
+      } else {
+        setItemValue({ name: field.name, value: element.value });
+      }
+    });
+
     await dispatch(submitAndInitChatThunk() as any);
   };
 

@@ -230,6 +230,31 @@ describe('Pre Engagement Form Phase - validation', () => {
     jest.spyOn(initAction, 'initSession').mockImplementation((data: any) => data);
   });
 
+  it('Input: form is valid when a "required" input has a DOM value but has not been blurred', async () => {
+    const namePlaceholder = 'Enter name';
+    const store = createValidationStore([
+      {
+        name: 'name',
+        type: FormInputType.Input,
+        label: 'Name',
+        required: true,
+        placeholder: namePlaceholder,
+      } as PreEngagementFormItem,
+    ]);
+    const { container, getByPlaceholderText } = render(
+      <Provider store={store}>
+        <PreEngagementFormPhase />
+      </Provider>,
+    );
+    const nameInput = getByPlaceholderText(namePlaceholder);
+    // Fill the input but do NOT blur — Redux has no value yet
+    fireEvent.change(nameInput, { target: { value: 'John' } });
+    await submitForm(container);
+    // DOM sync on submit should have pushed the value into Redux before validation
+    expect(sessionDataHandler.fetchAndStoreNewSession).toHaveBeenCalledWith({ formData: { name: 'John' } });
+    expect(initAction.initSession).toHaveBeenCalled();
+  });
+
   it('Input: form is not valid when a "required" input is empty', async () => {
     const store = createValidationStore([
       { name: 'name', type: FormInputType.Input, label: 'Name', required: true } as PreEngagementFormItem,
@@ -246,15 +271,23 @@ describe('Pre Engagement Form Phase - validation', () => {
   });
 
   it('Input: form is valid when a "required" input has a value', async () => {
-    const store = createValidationStore(
-      [{ name: 'name', type: FormInputType.Input, label: 'Name', required: true } as PreEngagementFormItem],
-      { name: { value: 'John', error: null, dirty: true } },
-    );
-    const { container } = render(
+    const namePlaceholder = 'Enter name';
+    const store = createValidationStore([
+      {
+        name: 'name',
+        type: FormInputType.Input,
+        label: 'Name',
+        required: true,
+        placeholder: namePlaceholder,
+      } as PreEngagementFormItem,
+    ]);
+    const { container, getByPlaceholderText } = render(
       <Provider store={store}>
         <PreEngagementFormPhase />
       </Provider>,
     );
+    // Fill the input but do NOT blur — DOM sync on submit will capture the value
+    fireEvent.change(getByPlaceholderText(namePlaceholder), { target: { value: 'John' } });
     await submitForm(container);
     expect(sessionDataHandler.fetchAndStoreNewSession).toHaveBeenCalled();
     expect(initAction.initSession).toHaveBeenCalled();
@@ -276,15 +309,23 @@ describe('Pre Engagement Form Phase - validation', () => {
   });
 
   it('Email: form is valid when a "required" email input has a valid email', async () => {
-    const store = createValidationStore(
-      [{ name: 'email', type: FormInputType.Email, label: 'Email', required: true } as PreEngagementFormItem],
-      { email: { value: 'test@test.com', error: null, dirty: true } },
-    );
-    const { container } = render(
+    const emailPlaceholder = 'Enter email';
+    const store = createValidationStore([
+      {
+        name: 'email',
+        type: FormInputType.Email,
+        label: 'Email',
+        required: true,
+        placeholder: emailPlaceholder,
+      } as PreEngagementFormItem,
+    ]);
+    const { container, getByPlaceholderText } = render(
       <Provider store={store}>
         <PreEngagementFormPhase />
       </Provider>,
     );
+    // Fill the input but do NOT blur — DOM sync on submit will capture the value
+    fireEvent.change(getByPlaceholderText(emailPlaceholder), { target: { value: 'test@test.com' } });
     await submitForm(container);
     expect(sessionDataHandler.fetchAndStoreNewSession).toHaveBeenCalled();
     expect(initAction.initSession).toHaveBeenCalled();
@@ -336,7 +377,11 @@ describe('Pre Engagement Form Phase - validation', () => {
         type: FormInputType.Select,
         label: 'Choice',
         required: true,
-        options: [{ value: 'opt1', label: 'Option 1' }],
+        // Empty placeholder option ensures the select defaults to an empty value in the DOM
+        options: [
+          { value: '', label: 'Please select...' },
+          { value: 'opt1', label: 'Option 1' },
+        ],
       } as PreEngagementFormItem,
     ]);
     const { container } = render(
@@ -457,22 +502,22 @@ describe('Pre Engagement Form Phase - validation', () => {
   });
 
   it('Checkbox: form is valid when a "required" checkbox is checked', async () => {
-    const store = createValidationStore(
-      [
-        {
-          name: 'agree',
-          type: FormInputType.Checkbox,
-          label: 'I agree',
-          required: { value: true, message: 'RequiredFieldError' },
-        } as PreEngagementFormItem,
-      ],
-      { agree: { value: true, error: null, dirty: true } },
-    );
+    const store = createValidationStore([
+      {
+        name: 'agree',
+        type: FormInputType.Checkbox,
+        label: 'I agree',
+        required: { value: true, message: 'RequiredFieldError' },
+      } as PreEngagementFormItem,
+    ]);
     const { container } = render(
       <Provider store={store}>
         <PreEngagementFormPhase />
       </Provider>,
     );
+    // Check the checkbox in the DOM but do NOT blur — DOM sync on submit will capture the state
+    const checkbox = container.querySelector('#agree') as HTMLInputElement;
+    fireEvent.click(checkbox);
     await submitForm(container);
     expect(sessionDataHandler.fetchAndStoreNewSession).toHaveBeenCalled();
     expect(initAction.initSession).toHaveBeenCalled();
