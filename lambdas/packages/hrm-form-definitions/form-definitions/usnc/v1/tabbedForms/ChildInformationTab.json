@@ -125417,17 +125417,5 @@
       "value": true,
       "message": "RequiredFieldError"
     }
-  },
-  {
-    "name": "phone2",
-    "label": "Phone #2",
-    "type": "input",
-    "isPII": false
-  },
-  {
-    "name": "phone3",
-    "label": "Phone #3",
-    "type": "input",
-    "isPII": false
   }
 ]
