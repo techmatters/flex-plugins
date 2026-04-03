@@ -23,7 +23,7 @@ import { isErr } from '../../../src/Result';
 import { AssertionError } from 'node:assert';
 import { getCurrentDefinitionVersion } from '../../../src/hrm/formDefinitionsCache';
 import { RecursivePartial } from '../RecursivePartial';
-import { DefinitionVersion } from '@tech-matters/hrm-form-definitions';
+import { DefinitionVersion, FormInputType } from '@tech-matters/hrm-form-definitions';
 
 jest.mock('../../../src/hrm/formDefinitionsCache', () => ({
   getCurrentDefinitionVersion: jest.fn(),
@@ -301,6 +301,61 @@ describe('populateHrmContactFormFromTaskByMappings', () => {
           otherGender: '',
         },
         expectedCallType: callTypes.caller,
+      },
+      {
+        description:
+          'preEngagement with dependent-select fields - populates both province (select) and district (dependent-select) in childInformation',
+        preEngagementData: {
+          province: 'Ontario',
+          district: 'Toronto',
+        },
+        formDefinitionSet: {
+          tabbedForms: {
+            ChildInformationTab: [
+              {
+                label: '',
+                name: 'firstName',
+                type: FormInputType.Input,
+              },
+              {
+                label: '',
+                name: 'province',
+                type: FormInputType.Select,
+                options: [
+                  { value: '', label: '' },
+                  { value: 'Ontario', label: 'Ontario' },
+                  { value: 'Alberta', label: 'Alberta' },
+                ],
+              },
+              {
+                label: '',
+                name: 'district',
+                type: FormInputType.DependentSelect,
+                dependsOn: 'province',
+                defaultOption: { value: '', label: '' },
+                options: {
+                  Ontario: [
+                    { value: 'Toronto', label: 'Toronto' },
+                    { value: 'Ottawa', label: 'Ottawa' },
+                  ],
+                  Alberta: [{ value: 'Calgary', label: 'Calgary' }],
+                },
+              },
+            ] as any,
+          },
+          prepopulateMappings: {
+            preEngagement: {
+              province: [['ChildInformationTab.province']],
+              district: [['ChildInformationTab.district']],
+            },
+          },
+        },
+        expectedChildInformation: {
+          firstName: '',
+          province: 'Ontario',
+          district: 'Toronto',
+        },
+        expectedCallType: callTypes.child,
       },
     ];
 

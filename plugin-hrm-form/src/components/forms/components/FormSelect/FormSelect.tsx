@@ -34,7 +34,7 @@ const FormSelect: React.FC<FormSelectProps> = ({
   selectOptions,
 }) => {
   // TODO factor out into a custom hook to make easier sharing this chunk of code
-  const { errors, register } = useFormContext();
+  const { errors, register, setValue } = useFormContext();
   const error = get(errors, inputId);
   const labelTextComponent = React.useMemo(() => <Template code={`${label}`} className=".fullstory-unmask" />, [label]);
   const errorId = `${inputId}-error`;
@@ -53,6 +53,19 @@ const FormSelect: React.FC<FormSelectProps> = ({
     [htmlElRef, register, registerOptions],
   );
   // ====== //
+
+  // When initialValues change (e.g. contact is pre-populated after initial render), sync the form value.
+  // This is needed because react-hook-form tracks uncontrolled field values from DOM registration and doesn't
+  // automatically detect programmatic DOM updates (via option.selected). Without this, watch() still returns
+  // the old value, preventing dependent selects from computing hasOptions correctly.
+  const prevInitialValueRef = React.useRef<string | undefined>(undefined);
+  React.useEffect(() => {
+    const currentValue = (initialValue ?? '').toString();
+    if (prevInitialValueRef.current !== undefined && currentValue !== prevInitialValueRef.current) {
+      setValue(inputId, currentValue);
+    }
+    prevInitialValueRef.current = currentValue;
+  }, [inputId, initialValue, setValue]);
 
   const defaultValue = (initialValue ?? '').toString();
   const disabled = !isEnabled;

@@ -75,13 +75,25 @@ const DependentFormSelect: React.FC<DependentFormSelectProps> = ({
 
   React.useEffect(() => {
     if (isMounted.current && prevDependeeValue.current && dependeeValue !== prevDependeeValue.current) {
-      setValue(inputId, defaultOption, { shouldValidate: true });
+      setValue(inputId, defaultOption.value, { shouldValidate: true });
     } else {
       isMounted.current = true;
     }
 
     prevDependeeValue.current = dependeeValue;
   }, [setValue, dependeeValue, inputId, defaultOption]);
+
+  // When initialValues change (e.g. contact is pre-populated after initial render), sync the form value.
+  // This handles the case where hasOptions is already true (parent already registered) but the dependent
+  // select's own value hasn't been updated in react-hook-form's internal state.
+  const prevInitialValueRef = React.useRef<string | undefined>(undefined);
+  React.useEffect(() => {
+    const currentValue = (initialValue ?? '').toString();
+    if (prevInitialValueRef.current !== undefined && currentValue !== prevInitialValueRef.current) {
+      setValue(inputId, currentValue);
+    }
+    prevInitialValueRef.current = currentValue;
+  }, [inputId, initialValue, setValue]);
 
   // eslint-disable-next-line no-nested-ternary
   const options: SelectOption[] = hasOptions
