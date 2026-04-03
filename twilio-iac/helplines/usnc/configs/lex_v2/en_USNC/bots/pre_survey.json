@@ -19,7 +19,7 @@
         ],
         "initial_response": {
           "message": "Hello! Welcome to Warmline. Please answer the following questions. You can type '0' if you prefer not to answer.",
-          "slot_to_elicit": "ageRange"
+          "slot_to_elicit": "friendlyName"
         },
         "closing_response": {
           "message": "Thank you. A Peer Supporter will join you as soon as they are available."
