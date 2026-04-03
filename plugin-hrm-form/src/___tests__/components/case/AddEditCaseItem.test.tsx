@@ -102,7 +102,7 @@ const addingNewHouseholdCaseState: CaseState = {
       },
       sections: {},
       timelines: {},
-      references: new Set(),
+      lastReferencedDate: new Date(),
       availableStatusTransitions: [],
     },
   },
@@ -123,7 +123,7 @@ const hrmState: Partial<RootState[typeof namespace]> = {
     contactDetails: { contactSearch: { detailsExpanded: {} }, caseDetails: { detailsExpanded: {} } },
     existingContacts: {
       1234: {
-        references: new Set(),
+        lastReferencedDate: new Date(),
         savedContact: {
           ...VALID_EMPTY_CONTACT,
           id: '1234',

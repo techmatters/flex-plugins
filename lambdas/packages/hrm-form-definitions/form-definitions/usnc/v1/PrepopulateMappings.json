@@ -1,0 +1,21 @@
+{
+  "survey": {
+    "ageRange": [["ChildInformationTab.ageRange"]],
+    "gender": [["ChildInformationTab.gender"]],
+    "pronouns": [["ChildInformationTab.pronouns"]],
+    "ethnicity": [["ChildInformationTab.ethnicity"]],
+    "race": [["ChildInformationTab.race"]],
+    "militaryStatus": [["ChildInformationTab.militaryStatus"]],
+    "988Referral": [["ChildInformationTab.988Referral"]],
+    "liveMonitoringConsent": [["CaseInformationTab.liveMonitoringConsent"]]
+  },
+  "preEngagement": {
+    "ageRange": [["ChildInformationTab.ageRange"]],
+    "gender": [["ChildInformationTab.gender"]],
+    "pronouns": [["ChildInformationTab.pronouns"]],
+    "ethnicity": [["ChildInformationTab.ethnicity"]],
+    "race": [["ChildInformationTab.race"]],
+    "militaryStatus": [["ChildInformationTab.militaryStatus"]],
+    "988Referral": [["ChildInformationTab.988Referral"]]
+  }
+}

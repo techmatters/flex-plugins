@@ -72,7 +72,7 @@ jobs:
         uses: aws-actions/amazon-ecr-login@v2
 
       - name: Build and Push Docker Image
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v7
         with:
           context: ./
           file: ./e2e-tests/Dockerfile
@@ -149,7 +149,7 @@ jobs:
       # Send Slack notifying success
       - name: Slack Aselo channel
         id: slack
-        uses: slackapi/slack-github-action@v2.1.1
+        uses: slackapi/slack-github-action@v3.0.1
         with:
           method: chat.postMessage
           token: ${{ env.GITHUB_ACTIONS_SLACK_BOT_TOKEN }}

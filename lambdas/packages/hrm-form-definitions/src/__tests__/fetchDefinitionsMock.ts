@@ -56,6 +56,7 @@ const files = [
   'profileForms/FlagDurations.json',
   'customStrings/Messages.json',
   'customStrings/Substitutions.json',
+  'customStrings/postSurveyMessages.json',
   'FlexUiLocales.json',
   'CustomLinks.json',
 ];

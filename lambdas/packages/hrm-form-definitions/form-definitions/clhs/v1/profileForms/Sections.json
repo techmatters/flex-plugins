@@ -1,12 +1,12 @@
 [
   {
     "name": "summary",
-    "label": "Resumen",
-    "editLabel": "Editar Resumen",
+    "label": "Atributos",
+    "editLabel": "Editar Atributos",
     "type": "textarea",
     "rows": 20,
     "width": 500,
-    "placeholder": "Ingrese un resumen del cliente",
+    "placeholder": "Ingrese un resumen del usuarie",
     "isPII": true
   },
   {

@@ -1,0 +1,71 @@
+{
+  "slotTypeName": "pronouns",
+  "slotTypeValues": [
+    {
+      "sampleValue": {
+        "value": "He/Him/His"
+      },
+      "synonyms": [
+        { "value": "1" },
+        { "value": "he/him" },
+        { "value": "he him" },
+        { "value": "he" },
+        { "value": "him" },
+        { "value": "his" }
+      ]
+    },
+    {
+      "sampleValue": {
+        "value": "She/Her/Hers"
+      },
+      "synonyms": [
+        { "value": "2" },
+        { "value": "she/her" },
+        { "value": "she her" },
+        { "value": "she" },
+        { "value": "her" },
+        { "value": "hers" }
+      ]
+    },
+    {
+      "sampleValue": {
+        "value": "They/Them/Theirs"
+      },
+      "synonyms": [
+        { "value": "3" },
+        { "value": "they/them" },
+        { "value": "they them" },
+        { "value": "they" },
+        { "value": "them" },
+        { "value": "theirs" }
+      ]
+    },
+    {
+      "sampleValue": {
+        "value": "Other"
+      },
+      "synonyms": [
+        { "value": "4" },
+        { "value": "other" },
+        { "value": "different pronouns" }
+      ]
+    },
+    {
+      "sampleValue": {
+        "value": "Unknown"
+      },
+      "synonyms": [
+        { "value": "0" },
+        { "value": "unknown" },
+        { "value": "prefer not to say" },
+        { "value": "rather not say" },
+        { "value": "prefer not to answer" },
+        { "value": "x" },
+        { "value": "X" }
+      ]
+    }
+  ],
+  "valueSelectionSetting": {
+    "resolutionStrategy": "TopResolution"
+  }
+}

@@ -26,44 +26,6 @@ import { DefinitionVersion, loadDefinition } from 'hrm-form-definitions';
 import fetchProtectedApi from './fetchProtectedApi';
 import { getHrmConfig } from '../hrmConfig';
 
-type TransferChatStartBody = {
-  taskSid: string;
-  targetSid: string;
-  ignoreAgent: string;
-  mode: string;
-};
-
-type TrasferChatStartReturn = { closed: string; kept: string };
-
-export const transferChatStart = async (body: TransferChatStartBody): Promise<TrasferChatStartReturn> => {
-  try {
-    const result = await fetchProtectedApi('/transferChatStart', body);
-    return result;
-  } catch (err) {
-    Notifications.showNotification('TransferFailed', {
-      reason: `Worker ${body.targetSid} is not available.`,
-    });
-
-    // propagate the error
-    throw err;
-  }
-};
-
-export const issueSyncToken = async (): Promise<string> => {
-  const res = await fetchProtectedApi('/issueSyncToken');
-  const syncToken = res.token;
-  return syncToken;
-};
-
-/**
- * Sends a new message to the channel bounded to the provided taskSid. Optionally you can change the "from" value (defaul is "system").
- */
-export const sendSystemMessage = async (body: { taskSid: ITask['taskSid']; message: string; from?: string }) => {
-  const response = await fetchProtectedApi('/sendSystemMessage', body);
-
-  return response;
-};
-
 export const getDefinitionVersion = async (version: string): Promise<DefinitionVersion> => {
   const { getFormDefinitionsBaseUrl } = getHrmConfig();
   return loadDefinition(getFormDefinitionsBaseUrl(version));
@@ -77,24 +39,8 @@ export const getDefinitionVersionsList = async (missingDefinitionVersions: strin
     }),
   );
 
-/**
- * Gets a recording s3 information from the corresponding call sid
- */
-export const getExternalRecordingS3Location = async (callSid: string) => {
-  const body = { callSid };
-  const response = await fetchProtectedApi('/getExternalRecordingS3Location', body);
-  return response;
-};
-
 export const saveContactToSaferNet = async (payload: any): Promise<string> => {
   const body = { payload: JSON.stringify(payload) };
   const postSurveyUrl = await fetchProtectedApi('/saveContactToSaferNet', body);
   return postSurveyUrl;
-};
-
-export const getMediaUrl = async (serviceSid: string, mediaSid: string) => {
-  const body = { serviceSid, mediaSid };
-
-  const response = await fetchProtectedApi('/getMediaUrl', body);
-  return response;
 };

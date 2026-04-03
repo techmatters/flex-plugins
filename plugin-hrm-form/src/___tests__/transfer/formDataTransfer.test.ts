@@ -59,7 +59,7 @@ const metadata = {} as ContactMetadata;
 const contactState: ContactState = {
   savedContact: contact,
   metadata,
-  references: new Set(),
+  lastReferencedDate: new Date(),
 };
 const task = createTask();
 

@@ -64,6 +64,7 @@ const updateCaseSectionWorkingCopyReducer = (
       ...state.cases,
       [caseId]: {
         ...state.cases[caseId],
+        lastReferencedDate: new Date(),
         caseWorkingCopy: setWorkingCopy(caseSectionType)(
           state.cases[caseId]?.caseWorkingCopy,
           transformedSectionItem,
@@ -106,6 +107,7 @@ const initialiseCaseSectionWorkingCopyReducer = (
       ...state.cases,
       [caseId]: {
         ...state.cases[caseId],
+        lastReferencedDate: new Date(),
         caseWorkingCopy: setWorkingCopy(caseSectionType)(
           state.cases[caseId]?.caseWorkingCopy,
           sectionTypeSpecificData,
@@ -146,6 +148,7 @@ const initialiseNewCaseSectionWorkingCopyReducer = (
       ...state.cases,
       [action.caseId]: {
         ...state.cases[action.caseId],
+        lastReferencedDate: new Date(),
         caseWorkingCopy: setWorkingCopy(action.caseSectionType)(
           state.cases[action.caseId]?.caseWorkingCopy,
           action.form,
@@ -188,6 +191,7 @@ const removeCaseSectionWorkingCopyReducer = (
         ...state.cases,
         [caseId]: {
           ...state.cases[caseId],
+          lastReferencedDate: new Date(),
           caseWorkingCopy: setWorkingCopy(caseSectionType)(caseWorkingCopy, undefined, id),
         },
       },
@@ -239,6 +243,7 @@ const initialiseCaseSummaryWorkingCopyReducer = (
       ...state.cases,
       [action.caseId]: {
         ...caseState,
+        lastReferencedDate: new Date(),
         caseWorkingCopy: {
           caseSummary,
           ...caseState.caseWorkingCopy,
@@ -277,6 +282,7 @@ const updateCaseSummaryWorkingCopyReducer = (
       ...state.cases,
       [action.caseId]: {
         ...state.cases[action.caseId],
+        lastReferencedDate: new Date(),
         caseWorkingCopy: {
           ...state.cases[action.caseId]?.caseWorkingCopy,
           caseSummary: action.caseSummary,
@@ -314,6 +320,7 @@ const removeCaseSummaryWorkingCopyReducer = (
         ...state.cases,
         [action.caseId]: {
           ...state.cases[action.caseId],
+          lastReferencedDate: new Date(),
           caseWorkingCopy: caseWorkingCopyWithoutSummary,
         },
       },

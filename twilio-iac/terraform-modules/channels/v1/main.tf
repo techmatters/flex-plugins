@@ -16,9 +16,9 @@ locals {
   webhook_url_studio_errors = nonsensitive(data.aws_ssm_parameter.webhook_url_studio_errors.value)
   custom_lambda_channels = {for key, val in var.channels:
   key => val if val.lambda_channel == true}
-lambda_twilio_account_scoped_url = nonsensitive(
- "https://hrm-${var.environment}${var.region == "eu-west-1" ? "-eu" : ""}.tl.techmatters.org/lambda/twilio/account-scoped/${var.twilio_account_sid}"
-)
+  lambda_twilio_account_scoped_url = nonsensitive(
+  "https://hrm-${var.environment}${var.region == "eu-west-1" ? "-eu" : ""}.tl.techmatters.org/lambda/twilio/account-scoped/${var.twilio_account_sid}"
+  )
   get_profile_flags_for_identifier_base_url = nonsensitive(var.get_profile_flags_for_identifier_base_url == "" ? var.serverless_url : var.get_profile_flags_for_identifier_base_url)
 }
 
@@ -100,7 +100,15 @@ resource "twilio_flex_flex_flows_v1" "channel_flow" {
 resource "twilio_conversations_configuration_addresses_v1" "conversations_address" {
   for_each = {
     for idx, channel in var.channels :
-    idx => channel if(channel.channel_type != "voice" && channel.channel_type != "custom" && channel.messaging_mode == "conversations")
+    idx => channel if(
+      channel.channel_type != "voice" &&
+      # The terraform provider won't create the configuration with a deployment key as an address
+      # https://github.com/twilio/terraform-provider-twilio/issues/152
+      # Must be created manually in Twilio Console for now
+      channel.channel_type != "chat" &&
+      channel.channel_type != "custom" &&
+      channel.messaging_mode == "conversations"
+    )
   }
   type                                   = each.value.channel_type
   address                                = each.value.contact_identity

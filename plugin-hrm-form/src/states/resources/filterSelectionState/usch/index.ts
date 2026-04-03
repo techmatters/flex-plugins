@@ -142,6 +142,33 @@ export const handlerUpdateSearchFormAction = (
   };
 };
 
+const moveDefaultOptionToHead = ({
+  options,
+  defaultOptionValue,
+}: {
+  options: FilterOption<string>[];
+  defaultOptionValue: string;
+}) => {
+  const defaultOptionIndex = options.findIndex(o => o.value === defaultOptionValue);
+  const containsDefaultOption = defaultOptionIndex > -1;
+  if (!containsDefaultOption) {
+    return { sortedOptions: options, containsDefaultOption };
+  }
+
+  const defaultOption = options[defaultOptionIndex];
+  const sortedOptions = [defaultOption];
+
+  options.forEach((option, index) => {
+    if (index === defaultOptionIndex) {
+      return;
+    }
+
+    sortedOptions.push(option);
+  });
+
+  return { sortedOptions, containsDefaultOption };
+};
+
 export const handleLoadReferenceLocationsAsyncActionFulfilled = (
   state: ReferrableResourceSearchState,
   { payload }: { payload: { list: string; options: FilterOption[] } },
@@ -152,9 +179,17 @@ export const handleLoadReferenceLocationsAsyncActionFulfilled = (
 
   switch (list) {
     case USCHReferenceLocationList.Country:
-      referenceLocations = { ...referenceLocations, countryOptions: options };
       const defaultCountryTarget = 'United States';
-      if (options.some(o => o.value === defaultCountryTarget)) {
+
+      // sort the list, moving defaultCountryTarget to the top, if present
+      const { sortedOptions, containsDefaultOption } = moveDefaultOptionToHead({
+        options,
+        defaultOptionValue: defaultCountryTarget,
+      });
+      referenceLocations = { ...referenceLocations, countryOptions: sortedOptions };
+
+      // select defaultCountryTarget filter upon load
+      if (containsDefaultOption) {
         defaultFilterSelection = { ...defaultFilterSelection, country: defaultCountryTarget };
       }
       break;

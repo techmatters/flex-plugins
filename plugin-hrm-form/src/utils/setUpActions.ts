@@ -18,7 +18,8 @@ import { ActionFunction, ChatOrchestrator, ChatOrchestratorEvent, Manager, TaskH
 import { Conversation } from '@twilio/conversations';
 import type { ChatOrchestrationsEvents } from '@twilio/flex-ui/src/ChatOrchestrator';
 
-import { getDefinitionVersion, sendSystemMessage } from '../services/ServerlessService';
+import { getDefinitionVersion } from '../services/ServerlessService';
+import { sendSystemMessage } from '../services/twilioConversationService';
 import * as Actions from '../states/contacts/actions';
 import { populateCurrentDefinitionVersion, updateDefinitionVersion } from '../states/configuration/actions';
 import { clearCustomGoodbyeMessage } from '../states/dualWrite/actions';
@@ -140,6 +141,12 @@ const sendWelcomeMessageOnConversationJoined = (
     }, ms);
   };
   // Ignore event payload as we already have everything we want in afterAcceptTask arguments. Start at 0ms as many users are able to send the message right away
+  if (!manager.conversationsClient) {
+    console.warn(
+      'conversationsClient not available in sendWelcomeMessageOnConversationJoined, welcome message will not be sent for this task',
+    );
+    return;
+  }
   manager.conversationsClient.once('conversationJoined', (c: Conversation) => trySendWelcomeMessage(c, 0, 0));
 };
 

@@ -15,6 +15,7 @@
  */
 import React from 'react';
 import { FormItemDefinition } from 'hrm-form-definitions';
+import { Template } from '@twilio/flex-ui';
 
 import {
   BACKROUND_COLOR,
@@ -35,13 +36,17 @@ export const FormInputDescription: React.FC<Props> = ({ definition }) => {
 
   return (
     <FieldInputDescriptionContainer>
-      <FieldInputDescriptionTitle>{definition.description.title}</FieldInputDescriptionTitle>
+      <FieldInputDescriptionTitle>
+        <Template code={definition.description.title} />
+      </FieldInputDescriptionTitle>
       <FieldInputDescriptionExpandableText
         expandLinkText="ReadMore"
         collapseLinkText="ReadLess"
         collapsedOverrides={{ whiteSpace: 'wrap', linesPreview: 2, backgroundColor: BACKROUND_COLOR }}
       >
-        <FieldInputDescriptionText>{definition.description.content}</FieldInputDescriptionText>
+        <FieldInputDescriptionText>
+          <Template code={definition.description.content} />
+        </FieldInputDescriptionText>
       </FieldInputDescriptionExpandableText>
     </FieldInputDescriptionContainer>
   );

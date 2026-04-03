@@ -13,5 +13,10 @@
     "insightsObject": "customers",
     "attributeName": "customer_attribute_3", 
     "questions": ["felt_better"]
+  },
+  {
+    "insightsObject": "conversations",
+    "attributeName": "followed_by", 
+    "questions": ["feedback"]
   }
 ]

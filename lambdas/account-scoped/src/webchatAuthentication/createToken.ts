@@ -38,13 +38,16 @@ const lookupLegacySsmParameter = async (accountSid: AccountSID, suffix: string) 
   return getSsmParameter(`${shortEnv}_TWILIO_${shortCode}_${suffix}`);
 };
 
+export const getApiKey = async (accountSid: AccountSID): Promise<string> =>
+  lookupLegacySsmParameter(accountSid, 'API_KEY');
+
 export const getApiSecret = async (accountSid: AccountSID): Promise<string> =>
   lookupLegacySsmParameter(accountSid, 'SECRET');
 
 export const createToken = async (accountSid: AccountSID, identity: string) => {
   console.debug('Creating new token', accountSid);
 
-  const apiKey = await lookupLegacySsmParameter(accountSid, 'API_KEY');
+  const apiKey = await getApiKey(accountSid);
   const apiSecret = await getApiSecret(accountSid);
 
   const { AccessToken } = TwilioJwt;

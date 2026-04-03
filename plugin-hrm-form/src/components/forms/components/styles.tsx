@@ -15,7 +15,7 @@
  */
 
 import React from 'react';
-import styled from '@emotion/styled';
+import { styled } from '@twilio/flex-ui';
 
 import HrmTheme from '../../../styles/HrmTheme';
 import { Row } from '../../../styles';

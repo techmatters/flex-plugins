@@ -173,6 +173,7 @@
   "TabbedForms-ContactNotLoaded-Header": "Contact not loaded, no data can be recorded",
   "TabbedForms-ContactNotLoaded-Retry": "Retry",
   "TabbedForms-ContactNotLoaded-Finish": "End Without Saving",
+  "TabbedForms-ContactNotLoaded-Loading": "Loading contact",
   "NotImplemented": "Not implemented yet!",
   "Error-Backend": "Error from backend system.",
   "Error-ContinueWithoutRecording": "Error from backend system.  Are you sure you want to end the task without recording?",
@@ -182,6 +183,7 @@
   "Forms-FileUpload-InvalidFileTypeError": "Invalid file type. Only PNG, JPG, JPEG, PDF, DOC, and DOCX files are allowed.",
   "Forms-FileUpload-FileSizeError": "File exceeds max size.",
   "Case-CaseNumber": "Case #",
+  "Case-Loading": "Loading case",
   "Case-Timeline-RecentTitle": "Recent Timeline",
   "Case-Timeline-Title": "Timeline",
   "Case-Timeline-PaginationDescription": "Showing {{from}}-{{to}} of {{total}}",
@@ -271,6 +273,7 @@
   "SideNavCaseList": "Case List",
   "CaseList-Cases": "Cases",
   "CaseList-NoCases": "No cases found.",
+  "CaseList-Loading": "Loading case",
   "CaseList-Filters-CaseCount-Singular": "{{count}} case",
   "CaseList-Filters-CaseCount-Plural": "{{count}} cases",
   "CaseList-THCase": "Case",
@@ -661,5 +664,8 @@
   "Modals-ConfirmDialog-ConfirmButton": "OK",
   "Modals-CloseDialog-CancelButton": "Cancel",
   "Modals-CloseDialog-DiscardButton": "Discard",
-  "BrowserNotification-ChatMessage-MaskedTitle": "New message"
+  "BrowserNotification-ChatMessage-MaskedTitle": "New message",
+
+  "AsV1-ChildInformationTab-FirstName-Title": "First Name description",
+  "AsV1-ChildInformationTab-FirstName-Content": "Lorem \n ipsum dolor \n sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
 }

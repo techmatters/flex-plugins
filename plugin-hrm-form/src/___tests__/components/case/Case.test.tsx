@@ -148,7 +148,7 @@ describe('useState mocked', () => {
       helpline: 'helpline',
     },
     availableStatusTransitions: [],
-    references: new Set(['x']),
+    lastReferencedDate: new Date(),
     caseWorkingCopy: undefined,
     sections: {},
     timelines: {},

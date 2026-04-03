@@ -18,6 +18,7 @@ import { AccountScopedHandler } from '../httpTypes';
 import { newOk } from '../Result';
 import { newMissingParameterResult } from '../httpErrors';
 import { getTwilioClient } from '@tech-matters/twilio-configuration';
+import { retrieveServiceConfigurationAttributes } from '../configuration/aseloConfiguration';
 
 export const addParticipantHandler: AccountScopedHandler = async (
   { body },
@@ -31,6 +32,12 @@ export const addParticipantHandler: AccountScopedHandler = async (
   if (!callStatusSyncDocumentSid)
     return newMissingParameterResult('callStatusSyncDocumentSid');
   const client = await getTwilioClient(accountSid);
+  const { hrm_base_url: hrmBaseUrl } =
+    await retrieveServiceConfigurationAttributes(client);
+  const statusCallback = `${hrmBaseUrl}/lambda/twilio/account-scoped/${accountSid}/conference/participantStatusCallback?callStatusSyncDocumentSid=${callStatusSyncDocumentSid}`;
+  console.debug(
+    `Adding participant added to conference ${accountSid} / ${conferenceSid}, from: ${from}, to: ${to}, callback URL: ${statusCallback}`,
+  );
   const participant = await client.conferences(conferenceSid).participants.create({
     from,
     to,
@@ -38,10 +45,10 @@ export const addParticipantHandler: AccountScopedHandler = async (
     endConferenceOnExit: false,
     label: label || 'external party', // Probably want to pass this from the caller
     statusCallbackEvent: ['initiated', 'ringing', 'answered', 'completed'],
-    statusCallback: `${process.env.INTERNAL_HRM_URL}/lambda/twilio/account-scoped/conference/participantStatusCallback?callStatusSyncDocumentSid=${callStatusSyncDocumentSid}`,
+    statusCallback,
   });
-  console.debug(
-    `Participant added to conference ${conferenceSid}, from ${from}, to ${to}`,
+  console.info(
+    `Participant added to conference ${accountSid} / ${conferenceSid}, from: ${from}, to: ${to}, callback URL: ${statusCallback}`,
     participant,
   );
 

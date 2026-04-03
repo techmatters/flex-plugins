@@ -21,6 +21,12 @@ import { playNotification } from './playNotification';
 
 export const subscribeAlertOnConversationJoined = task => {
   const manager = Manager.getInstance();
+  if (!manager.conversationsClient) {
+    console.warn(
+      'conversationsClient not available in subscribeAlertOnConversationJoined, audio alerts will not be set up for this task',
+    );
+    return;
+  }
   manager.conversationsClient.once('conversationJoined', () => trySubscribeAudioAlerts(task, 0, 0));
 };
 
@@ -49,7 +55,10 @@ const notifyNewMessage = messageInstance => {
 
     const notificationTone = 'bell';
 
-    const isCounsellor = manager.conversationsClient.user.identity === messageInstance.author;
+    const isCounsellor =
+      manager.conversationsClient !== null &&
+      manager.conversationsClient !== undefined &&
+      manager.conversationsClient.user.identity === messageInstance.author;
 
     if (!isCounsellor && document.visibilityState === 'hidden') {
       playNotification(notificationTone);

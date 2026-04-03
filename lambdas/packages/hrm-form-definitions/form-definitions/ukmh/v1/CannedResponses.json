@@ -1,7 +1,7 @@
 [
   {
-    "label": "Remit",
-    "text": "Thank you for reaching out to The Mix’s PeerChat. Today, you’ll have 45 minutes to talk to a trained supporter about what’s been going on for you and why you have reached out. If its suitable, we can also look for other options that may be able to help you further. If you become disconnected at any time during the chat, please rejoin the link in your confirmation email.\n\nPeerChat is unable to provide urgent or crisis mental health support. If you need urgent help, please visit https://www.themix.org.uk/get-support/urgent-help/\n\nOur PeerChat conversation will not be shared with anyone outside of the organisation. However, if we feel that you or someone else may be in danger, then we may pass this information onto Emergency or Social Services. Wherever possible, we will always try and let you know we will be doing this.\n\nFor further information, please visit \nhttps://www.themix.org.uk/about-us/privacy-centre/privacy-policy/"
+    "label": "Welcome",
+    "text": "Hello and thank you for reaching out to us on PeerChat. .  My name is xxxxx and I will be chatting with you today. Our chat will last approximately 45 mins and if you get disconnected at any time during the chat, please rejoin the link in your confirmation email. Please help me understand what's going on for you and the reason behind you reaching out, I’m listening…."
   },
   {
     "label": "Silent - Check In",
@@ -58,5 +58,9 @@
   {
     "label": "Pre-signposting questions",
     "text": "Just before I take a look on our resource data-base, could you confirm your age, gender identity, as well as your nearest city or town? This could help us locate services more suited to you and your situation. \n\nIf you do not wish me to look for local services, or you don't want to share your nearest city or town, sharing the name of the county you live in or the wider area (either England, Wales, Scotland, or Northern Ireland) would be helpful."
+  },
+  {
+  "label": "PeerChatter DNA",
+  "text": "Thank you for attending your PeerChat appointment with us today. Unfortunately, due to unforeseen circumstances, the person you have selected to have a PeerChat with will no longer be able to take your conversation. We sincerely apologise for this inconvenience and would ask that you rebook a further appointment with us. Alternatively you can find further support on our web page: https://www.themix.org.uk/.\n\nAgain, we apologise for this inconvenience but look forward to chatting to you soon.\nBest wishes\nThe PeerChat Team"
   }
 ]

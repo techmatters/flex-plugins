@@ -16,10 +16,10 @@
 
 import { TaskHelper } from '@twilio/flex-ui';
 
-import { getHrmConfig } from '../hrmConfig';
+import fetchProtectedApi from './fetchProtectedApi';
+import { getAseloFeatureFlags, getHrmConfig } from '../hrmConfig';
 import { isVoiceChannel } from '../states/DomainConstants';
 import { CustomITask, InMyBehalfITask, isOfflineContactTask, isTwilioTask } from '../types/types';
-import { getExternalRecordingS3Location } from './ServerlessService';
 import { recordEvent } from '../fullStory';
 
 export type ExternalRecordingInfoSuccess = {
@@ -56,6 +56,7 @@ export const shouldGetExternalRecordingInfo = (task: CustomITask): task is InMyB
   return Boolean(externalRecordingsEnabled);
 };
 /* eslint-enable sonarjs/prefer-single-boolean-return */
+
 const recordDebugEvent = (task: InMyBehalfITask, message: string, recordingInfo: ExternalRecordingInfo | {} = {}) => {
   recordEvent(`[Temporary Debug Event] Getting External Recording Info: ${message}`, {
     ...recordingInfo,
@@ -68,6 +69,22 @@ const recordDebugEvent = (task: InMyBehalfITask, message: string, recordingInfo:
     conversationAttributes: JSON.stringify(task.attributes.conversations),
     taskAttributes: JSON.stringify(task.attributes),
   });
+};
+
+const getExternalRecordingS3Location = async (callSid: string) => {
+  const useTwilioLambda = getAseloFeatureFlags().use_twilio_lambda_for_recordings_lookup;
+  const body = { callSid };
+  return fetchProtectedApi(
+    useTwilioLambda ? '/conversation/getExternalRecordingS3Location' : '/getExternalRecordingS3Location',
+    body,
+    { useTwilioLambda },
+  );
+};
+
+export const getMediaUrl = async (serviceSid: string, mediaSid: string) => {
+  const useTwilioLambda = getAseloFeatureFlags().use_twilio_lambda_for_recordings_lookup;
+  const body = { serviceSid, mediaSid };
+  return fetchProtectedApi(useTwilioLambda ? '/conversation/getMediaUrl' : '/getMediaUrl', body, { useTwilioLambda });
 };
 
 export const getExternalRecordingInfo = async (task: CustomITask): Promise<ExternalRecordingInfo> => {

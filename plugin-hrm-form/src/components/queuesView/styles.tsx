@@ -14,8 +14,8 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import styled from '@emotion/styled';
 import { Paper, FormControl } from '@material-ui/core';
+import { styled } from '@twilio/flex-ui';
 
 import { Box } from '../../styles';
 

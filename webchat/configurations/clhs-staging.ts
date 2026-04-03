@@ -1761,7 +1761,7 @@ const preEngagementConfig: PreEngagementFormDefinition = {
     },
     {
       type: "select",
-      label: "¿Con cuál género te identificas?",
+      label: "¿Con cuál género te identificas?  (vivencia interna y personal, la cual podría corresponder o no con el sexo y género asignado al nacer)",
       name: "gender",
       defaultValue: "",
       options: [
@@ -1807,7 +1807,7 @@ const preEngagementConfig: PreEngagementFormDefinition = {
     },
     {
       type: "select",
-      label: "Actualmente te identificas como:",
+      label: "Actualmente te identificas como (atracción emocional, afectiva y/o sexual hacia otras personas):",
       name: "sexualAndAffectiveOrientation",
       defaultValue: "",
       options: [
@@ -1857,7 +1857,7 @@ const preEngagementConfig: PreEngagementFormDefinition = {
     },
     {
       type: "select",
-      label: "¿Eres una persona intersexual?",
+      label: "¿Eres una persona intersexual? (variaciones en características sexuales biológicas como cromosomas, hormonas o anatomía)",
       name: "intersexuality",
       defaultValue: "",
       options: [
@@ -1887,7 +1887,7 @@ const preEngagementConfig: PreEngagementFormDefinition = {
     },
     {
       type: "select",
-      label: "¿Eres una persona neurodivergente?",
+      label: "¿Eres una persona neurodivergente? (formas de funcionamiento neurológico que difieren de lo considerado típico, como autismo o TDAH)",
       name: "neurodivergence",
       defaultValue: "",
       options: [
@@ -1945,10 +1945,20 @@ const preEngagementConfig: PreEngagementFormDefinition = {
       type: "checkbox",
       name: "termsAndConditions",
       label:
-        'He leído y acepto los <a href="https://www.google.cl">términos y condiciones</a>',
+        'Declaro que he leído y acepto los <a href="https://todomejora.org/terminos-y-condiciones-programa-horasegura">Términos y Condiciones</a> del programa',
       required: {
         value: true,
         message: "Tienes que approbar los términos y condiciones para poder iniciar un chat.",
+      },
+    },
+    {
+      type: "checkbox",
+      name: "authorization",
+      label:
+        'Declaro que tengo 16 años o más. En caso de ser menor de 16 años, confirmo que cuento con la autorización de mi madre, padre o persona adulta responsable para ingresar',
+      required: {
+        value: true,
+        message: "Tienes que declarar que eres mayor de 16 años o que tienes autorización de un adulto para ingresar.",
       },
     },
   ],
@@ -1982,7 +1992,7 @@ const translations: Translations = {
     MessageInputDisabledReasonHold:
       'Muchas gracias por la información. Lo transferiremos ahora. Por favor espere for un agente.',
     AutoFirstMessage: 'Nuevo contacto del webchat de',
-    TypingIndicator: '{0} está escribiendo ... ',
+    TypingIndicator: 'Voluntarie está escribiendo ... ',
     StartChat: 'Comenzar Nuevo Chat!',
     MessageCanvasTrayButton: 'Comenzar Nuevo Chat',
     EntryPointTagline: 'Chatea con nosotros',
