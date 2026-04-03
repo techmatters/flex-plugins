@@ -15,7 +15,7 @@
  */
 
 import { Box } from '@twilio-paste/core/box';
-import { FormEvent } from 'react';
+import { FormEvent, useState } from 'react';
 import { Button } from '@twilio-paste/core/button';
 import { useDispatch, useSelector } from 'react-redux';
 import { Text } from '@twilio-paste/core/text';
@@ -27,11 +27,16 @@ import { NotificationBar } from './NotificationBar';
 import { fieldStyles, titleStyles, formStyles } from './styles/PreEngagementFormPhase.styles';
 import LocalizedTemplate from '../localization/LocalizedTemplate';
 import { generateForm } from './forms/formInputs';
+import ReCaptcha from './ReCaptcha';
 
 export const PreEngagementFormPhase = () => {
   const { preEngagementData } = useSelector((state: AppState) => state.session ?? {});
-  const { preEngagementFormDefinition } = useSelector((state: AppState) => state.config);
+  const { preEngagementFormDefinition, enableRecaptcha, recaptchaSiteKey, aseloBackendUrl } = useSelector(
+    (state: AppState) => state.config,
+  );
   const dispatch = useDispatch();
+
+  const [isRecaptchaVerified, setIsRecaptchaVerified] = useState<boolean>(false);
 
   const getItem = (inputName: string) => preEngagementData[inputName] ?? {};
   const setItemValue = (payload: { name: string; value: string | boolean }) => {
@@ -41,6 +46,9 @@ export const PreEngagementFormPhase = () => {
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
+    if (enableRecaptcha && !isRecaptchaVerified) {
+      return;
+    }
     await dispatch(submitAndInitChatThunk() as any);
   };
 
@@ -50,6 +58,7 @@ export const PreEngagementFormPhase = () => {
 
   const titleText = preEngagementFormDefinition.description ?? 'Hi there!';
   const submitText = preEngagementFormDefinition.submitLabel ?? 'Start chat';
+  const recaptchaVerifyUrl = `${aseloBackendUrl}/lambda/recaptchaVerify`;
 
   return (
     <>
@@ -63,7 +72,20 @@ export const PreEngagementFormPhase = () => {
           {generateForm({ form: preEngagementFormDefinition.fields, handleChange, getItem, setItemValue })}
         </Box>
 
-        <Button variant="primary" type="submit" data-test="pre-engagement-start-chat-button">
+        {enableRecaptcha && recaptchaSiteKey && (
+          <ReCaptcha
+            siteKey={recaptchaSiteKey}
+            recaptchaVerifyUrl={recaptchaVerifyUrl}
+            onRecaptchaChange={setIsRecaptchaVerified}
+          />
+        )}
+
+        <Button
+          variant="primary"
+          type="submit"
+          disabled={enableRecaptcha ? !isRecaptchaVerified : false}
+          data-test="pre-engagement-start-chat-button"
+        >
           <LocalizedTemplate code={submitText} />
         </Button>
       </Box>
