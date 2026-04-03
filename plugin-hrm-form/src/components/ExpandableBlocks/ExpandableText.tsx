@@ -53,6 +53,7 @@ const ExpandableText: React.FC<ExpandableTextProps & Partial<StyledProps>> = ({
   className,
   collapsedOverrides = {},
   style = {},
+  // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const {
     collapseButtonElementRef,
@@ -84,18 +85,18 @@ const ExpandableText: React.FC<ExpandableTextProps & Partial<StyledProps>> = ({
         textOverflow: 'ellipsis',
         ...style,
       }}
-      ref={overflowingRef}
     >
       <div
         style={{
           textOverflow: 'inherit',
-          whiteSpace: isOverflowing && !isExpanded ? collapsedStyles.whiteSpace : 'inherit',
+          whiteSpace: isOverflowing && !isExpanded ? collapsedStyles.whiteSpace : 'pre-wrap',
           overflow: isOverflowing && !isExpanded ? 'hidden' : 'inherit',
           height: isExpanded ? 'inherit' : `${collapsedStyles.linesPreview * LINE_HEIGHT}px`,
           fontSize: `13px`,
           lineHeight: `${LINE_HEIGHT}px`,
           wordBreak: isExpanded ? 'break-word' : 'inherit',
         }}
+        ref={overflowingRef}
       >
         <Column>
           {children}
