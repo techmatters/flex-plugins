@@ -141,6 +141,26 @@ export const updatePreEngagementDataField = ({
   };
 };
 
+export const updatePreEngagementDataFields = (
+  fields: { name: string; value: PreEngagementDataItem['value'] }[],
+): ThunkAction<void, AppState, unknown, AnyAction> => {
+  return (dispatch, getState) => {
+    const state = getState();
+    const formFields = state.config.preEngagementFormDefinition?.fields ?? [];
+
+    const updatedData = fields.reduce<PreEngagementData>((accum, { name, value }) => {
+      const definition = formFields.find(fd => fd.name === name);
+      const updatedItem = updateDataItem({ definition: definition as PreEngagementFormItem, value });
+      return { ...accum, [name]: updatedItem };
+    }, state.session.preEngagementData);
+
+    dispatch({
+      type: ACTION_UPDATE_PRE_ENGAGEMENT_DATA,
+      payload: updatedData,
+    });
+  };
+};
+
 const newInitialItem = (definition: PreEngagementFormItem): PreEngagementDataItem => ({
   error: null,
   dirty: false,
