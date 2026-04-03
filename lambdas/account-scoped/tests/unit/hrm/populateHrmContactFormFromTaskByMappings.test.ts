@@ -85,7 +85,7 @@ describe('populateHrmContactFormFromTaskByMappings', () => {
         ...(firstName ? { firstName } : {}),
         ...(language ? { language } : {}),
       },
-      contact: BLANK_CONTACT,
+      contact: JSON.parse(JSON.stringify(BLANK_CONTACT)),
       accountSid,
     });
     if (isErr(populatedContactResult)) {
