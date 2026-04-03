@@ -30,6 +30,7 @@ import {
   removeNotification,
   submitAndInitChatThunk,
   updatePreEngagementData,
+  updatePreEngagementDataFields,
 } from '../genericActions';
 import { EngagementPhase, Notification } from '../../definitions';
 import {
@@ -162,6 +163,57 @@ describe('Actions', () => {
         },
       });
     });
+  });
+});
+
+describe('updatePreEngagementDataFields', () => {
+  const formFields = [
+    { name: 'firstName', type: FormInputType.Input, label: 'First name' },
+    { name: 'email', type: FormInputType.Email, label: 'Email' },
+  ];
+
+  const emptyPreEngagementData = {};
+  const getState = jest.fn();
+
+  beforeEach(() => {
+    jest.resetAllMocks();
+    getState.mockReturnValue({
+      config: { preEngagementFormDefinition: { fields: formFields } },
+      session: { preEngagementData: emptyPreEngagementData },
+    });
+  });
+
+  it('dispatches a single ACTION_UPDATE_PRE_ENGAGEMENT_DATA action with all fields updated', () => {
+    const dispatch = jest.fn();
+    const fieldsToUpdate = [
+      { name: 'firstName', value: 'Alice' },
+      { name: 'email', value: 'alice@example.com' },
+    ];
+    updatePreEngagementDataFields(fieldsToUpdate)(dispatch as any, getState as any, undefined);
+
+    expect(dispatch).toHaveBeenCalledTimes(1);
+    const dispatched = dispatch.mock.calls[0][0];
+    expect(dispatched.type).toBe('ACTION_UPDATE_PRE_ENGAGEMENT_DATA');
+    expect(dispatched.payload.firstName.value).toBe('Alice');
+    expect(dispatched.payload.email.value).toBe('alice@example.com');
+  });
+
+  it('merges updated fields with existing pre-engagement data', () => {
+    getState.mockReturnValue({
+      config: { preEngagementFormDefinition: { fields: formFields } },
+      session: { preEngagementData: { firstName: { value: 'Old', error: null, dirty: true } } },
+    });
+    const dispatch = jest.fn();
+    updatePreEngagementDataFields([{ name: 'email', value: 'new@example.com' }])(
+      dispatch as any,
+      getState as any,
+      undefined,
+    );
+
+    expect(dispatch).toHaveBeenCalledTimes(1);
+    const dispatched = dispatch.mock.calls[0][0];
+    expect(dispatched.payload.firstName.value).toBe('Old');
+    expect(dispatched.payload.email.value).toBe('new@example.com');
   });
 });
 
