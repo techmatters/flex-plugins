@@ -88,7 +88,7 @@
   "scripts": {
     "preinstall": "cd ../lambdas/packages/hrm-form-definitions && npm ci && npm run build && cd ../hrm-types && npm ci && npm run build",
     "start": "react-app-rewired start",
-    "start:as_dev": "cross-env REACT_APP_CONFIG_URL='http://localhost:9090/as/development.json' run-p dev:merge-configs dev:local-config-server start",
+    "start:as_dev": "cross-env REACT_APP_CONFIG_URL='http://localhost:9090/as/development.json' REACT_APP_FORM_DEFINITIONS_BASE_URL='http://localhost:8091' run-p dev:merge-configs dev:local-config-server dev:local-form-definition-server start",
     "build": "react-app-rewired build",
     "lint": "eslint --ext js --ext jsx --ext ts --ext tsx src/",
     "lint:fix": "npm run lint -- --fix",
@@ -101,7 +101,8 @@
     "eject": "react-app-rewired eject",
     "test:e2e": "cypress open",
     "dev:merge-configs": "npm run mergeConfigs development as",
-    "dev:local-config-server": "npx http-server ./mergedConfigs -p 9090 --cors -c-1"
+    "dev:local-config-server": "npx http-server ./mergedConfigs -p 9090 --cors -c-1",
+    "dev:local-form-definition-server": "npx http-server ../lambdas/packages/hrm-form-definitions/form-definitions -p 8091 --cors -c-1"
   },
   "browserslist": [
     ">0.2%",

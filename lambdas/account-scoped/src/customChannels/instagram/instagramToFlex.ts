@@ -120,7 +120,7 @@ export const instagramToFlexHandler: AccountScopedHandler = async (
   const channelType = AseloCustomChannel.Instagram;
   const chatFriendlyName = `${channelType}:${senderExternalId}`;
   const uniqueUserName = `${channelType}:${senderExternalId}`;
-  const senderScreenName = uniqueUserName; // TODO: see if we can use ig handle somehow
+  const senderScreenName = senderExternalId; // TODO: see if we can use ig handle somehow
   const messageAttributes = JSON.stringify({ messageExternalId });
   const onMessageSentWebhookUrl = `${process.env.WEBHOOK_BASE_URL}/lambda/twilio/account-scoped/${accountSid}/customChannels/instagram/flexToInstagram?recipientId=${senderExternalId}`;
   const studioFlowSid = await getChannelStudioFlowSid(
@@ -173,7 +173,7 @@ export const instagramToFlexHandler: AccountScopedHandler = async (
     channelType,
     uniqueUserName,
     senderScreenName,
-    onMessageSentWebhookUrl,
+    onMessageAddedWebhookUrl: onMessageSentWebhookUrl,
     messageText,
     messageAttributes,
     senderExternalId,
