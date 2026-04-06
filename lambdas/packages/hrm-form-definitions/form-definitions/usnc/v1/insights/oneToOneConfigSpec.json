@@ -12,6 +12,10 @@
         "insights": ["conversations", "conversation_attribute_4"]
       },
       {
+        "name": "city",
+        "insights": ["conversations", "campaign"]
+      },
+      {
         "name": "ethnicity",
         "insights": ["conversations", "conversation_attribute_9"]
       },
