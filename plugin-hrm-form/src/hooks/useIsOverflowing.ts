@@ -17,7 +17,7 @@
 // https://www.robinwieruch.de/react-custom-hook-check-if-overflow/
 import React from 'react';
 
-export const useIsOverflowing = (ref, callback?: (isOverflowing: boolean) => void) => {
+export const useIsOverflowing = ({ ref, callback }: { ref: any; callback?: (isOverflowing: boolean) => void }) => {
   const [isOverflow, setOverflow] = React.useState(undefined);
 
   React.useLayoutEffect(() => {
