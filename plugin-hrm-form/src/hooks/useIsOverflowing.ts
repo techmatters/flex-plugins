@@ -21,10 +21,13 @@ export const useIsOverflowing = ({ ref, callback }: { ref: any; callback?: (isOv
   const [isOverflow, setOverflow] = React.useState(undefined);
 
   React.useLayoutEffect(() => {
-    const { current } = ref;
-
     const trigger = () => {
-      const hasOverflow = current.scrollHeight > current.clientHeight || current.scrollWidth > current.clientWidth;
+      if (!ref.current) {
+        return;
+      }
+
+      const hasOverflow =
+        ref.current.scrollHeight > ref.current.clientHeight || ref.current.scrollWidth > ref.current.clientWidth;
 
       setOverflow(hasOverflow);
 
@@ -34,9 +37,14 @@ export const useIsOverflowing = ({ ref, callback }: { ref: any; callback?: (isOv
       }
     };
 
-    if (current) {
-      trigger();
+    trigger();
+
+    const observer = new ResizeObserver(trigger);
+    if (ref.current) {
+      observer.observe(ref.current);
     }
+
+    return () => observer.disconnect();
   }, [callback, ref]);
 
   return isOverflow;
