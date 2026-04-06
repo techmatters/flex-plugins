@@ -1,0 +1,19 @@
+{
+  "survey":{
+  },
+  "preEngagement":{
+    "nickname": "ChildInformationTab.nickname",
+    "age": "ChildInformationTab.age",
+    "gender": "ChildInformationTab.gender",
+    "sexualOrientation": "ChildInformationTab.sexualOrientation",
+    "province": "ChildInformationTab.province",
+    "Newcomer": "ChildInformationTab.Newcomer",
+    "region": "ChildInformationTab.region",
+    "ethnicity": "ChildInformationTab.ethnicity",
+    "school": "ChildInformationTab.school",
+    "livingSituation": "ChildInformationTab.livingSituation",
+    "upset": "ChildInformationTab.upset",
+    "supportType": "ChildInformationTab.supportType",
+    "suicidalThoughts": "ChildInformationTab.suicidalThoughts"
+  }
+}
