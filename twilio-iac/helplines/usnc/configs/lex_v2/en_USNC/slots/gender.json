@@ -10,7 +10,7 @@
                 {
                     "message": {
                         "plainTextMessage": {
-                            "value": "Please enter the number that corresponds to your gender:\n1 - Male\n2 - Female\n3 - Non-binary\n4 - Transmasculine\n5 - Transfeminine\n6 - Other\n7 - Prefer not to say"
+                            "value": "Please enter the number that corresponds to your gender:\n1 - Male\n2 - Female\n3 - Non-binary\n4 - Transmasculine\n5 - Transfeminine\n6 - Other"
                         }
                     },
                     "variations": [

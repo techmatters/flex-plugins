@@ -1,8 +1,8 @@
 {
-    "slotName": "ethnicity",
-    "slotTypeName": "ethnicity",
+    "slotName": "friendlyName",
+    "slotTypeName": "AMAZON.FreeFormInput",
     "intentName": "pre_survey",
-    "description": "Slot ethnicity for intent pre_survey",
+    "description": "Slot friendlyName for intent pre_survey",
     "valueElicitationSetting": {
         "slotConstraint": "Required",
         "promptSpecification": {
@@ -10,18 +10,13 @@
                 {
                     "message": {
                         "plainTextMessage": {
-                            "value": "Please enter the number that corresponds to your ethnicity:\n1 - Hispanic/Latino\n2 - Not Hispanic/Latino"
+                            "value": "What is your name or alias?"
                         }
                     },
                     "variations": [
                         {
                             "plainTextMessage": {
-                                "value": "What is your ethnicity? Please enter the number."
-                            }
-                        },
-                        {
-                            "plainTextMessage": {
-                                "value": "Enter the number that corresponds to your ethnicity."
+                                "value": "Enter just a name or alias like: John"
                             }
                         }
                     ]
@@ -83,7 +78,7 @@
             "captureNextStep": {
                 "dialogAction": {
                     "type": "ElicitSlot",
-                    "slotToElicit": "race"
+                    "slotToElicit": "ageRange"
                 },
                 "intent": {}
             },

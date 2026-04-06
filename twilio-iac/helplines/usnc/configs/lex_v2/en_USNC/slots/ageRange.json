@@ -16,12 +16,12 @@
                     "variations": [
                         {
                             "plainTextMessage": {
-                                "value": "Enter your age as a number only (for example: 25)."
+                                "value": "Please note that this service is restricted to individuals who are 18 years of age or older.  Please enter your age as a number (for example: 25)."
                             }
                         },
                         {
                             "plainTextMessage": {
-                                "value": "What is your age? Please type only the number."
+                                "value": "Before we continue, please note that this service is available only for people aged 18 or older. Please enter your age as a number (for example: 25)."
                             }
                         }
                     ]
