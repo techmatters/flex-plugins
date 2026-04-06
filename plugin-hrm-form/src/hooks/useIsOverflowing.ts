@@ -15,6 +15,7 @@
  */
 
 // https://www.robinwieruch.de/react-custom-hook-check-if-overflow/
+import { debounce } from 'lodash';
 import React from 'react';
 
 export const useIsOverflowing = ({ ref, callback }: { ref: any; callback?: (isOverflowing: boolean) => void }) => {
@@ -39,7 +40,12 @@ export const useIsOverflowing = ({ ref, callback }: { ref: any; callback?: (isOv
 
     trigger();
 
-    const observer = new ResizeObserver(trigger);
+    const observer = new ResizeObserver(
+      // debounce with no parameter delays the execution until the repaint is completed, to avoid triggering multiple resize events
+      debounce(() => {
+        trigger();
+      }),
+    );
     if (ref.current) {
       observer.observe(ref.current);
     }
