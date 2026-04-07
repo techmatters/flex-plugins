@@ -20,6 +20,7 @@
     "firstName": "ChildInformationTab.firstName",
     "province": ["ChildInformationTab.province", "CallerInformationTab.province"],
     "district": ["ChildInformationTab.district", "CallerInformationTab.district"],
-    "urgencyLevel": "CaseInformationTab.urgencyLevel"
+    "urgencyLevel": "CaseInformationTab.urgencyLevel",
+    "vulnerableGroups": "CaseInformationTab.vulnerableGroups"
   }
 }
