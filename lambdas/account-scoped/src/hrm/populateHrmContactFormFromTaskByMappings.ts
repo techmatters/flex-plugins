@@ -214,7 +214,7 @@ const getValuesFromPreEngagementData = (
   preEngagementData: Record<string, string>,
 ) => {
   // Get values from task attributes
-  const values: Record<string, string | boolean | string[]> = {};
+  const values: Record<string, FormValue> = {};
   const prepopulateKeys = Array.from(prepopulateKeySet);
   const specifiedKeys = Object.keys(preEngagementData);
   tabFormDefinition
@@ -291,7 +291,7 @@ const populateContactSection = async (
     keys: Set<string>,
     formTabDefinition: FormItemDefinition[],
     values: Record<string, string>,
-  ) => Record<string, string | boolean | string[]>,
+  ) => Record<string, FormValue>,
 ) => {
   const targetFormName: ContactFormName = FORM_DEFINITION_MAP[targetFormDefinitionName];
   console.debug('Populating', targetFormName);
@@ -324,7 +324,7 @@ const populateContactSection = async (
       contactFormDefinition,
       valuesToPopulate,
     );
-    const mapped: Record<string, string | boolean | string[]> = {};
+    const mapped: Record<string, FormValue> = {};
 
     for (const [sourceField, formFields] of Object.entries(formMappings)) {
       for (const formField of formFields) {
