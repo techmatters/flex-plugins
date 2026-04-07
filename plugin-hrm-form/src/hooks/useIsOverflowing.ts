@@ -19,25 +19,36 @@ import React from 'react';
 
 export const useIsOverflowing = ({ ref, callback }: { ref: any; callback?: (isOverflowing: boolean) => void }) => {
   const [isOverflow, setOverflow] = React.useState(undefined);
+  const [mounted, setMounted] = React.useState(false);
+
+  const trigger = React.useCallback(() => {
+    if (!ref.current) {
+      return;
+    }
+
+    const hasOverflow =
+      ref.current.scrollHeight > ref.current.clientHeight || ref.current.scrollWidth > ref.current.clientWidth;
+
+    setOverflow(hasOverflow);
+
+    if (callback) {
+      // eslint-disable-next-line callback-return
+      callback(hasOverflow);
+    }
+  }, [callback, ref]);
 
   React.useLayoutEffect(() => {
     const { current } = ref;
 
-    const trigger = () => {
-      const hasOverflow = current.scrollHeight > current.clientHeight || current.scrollWidth > current.clientWidth;
-
-      setOverflow(hasOverflow);
-
-      if (callback) {
-        // eslint-disable-next-line callback-return
-        callback(hasOverflow);
-      }
-    };
-
     if (current) {
       trigger();
     }
-  }, [callback, ref]);
+  }, [trigger, ref]);
+
+  React.useEffect(() => {
+    trigger();
+    setMounted(true);
+  }, [trigger]);
 
   return isOverflow;
 };
