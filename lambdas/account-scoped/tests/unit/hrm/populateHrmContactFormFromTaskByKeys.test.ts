@@ -268,10 +268,6 @@ describe('populateHrmContactFormFromTask', () => {
               label: '',
               name: 'gender',
               type: FormInputType.ListboxMultiselect,
-              options: [
-                { label: '', value: 'Agender' },
-                { label: '', value: 'Non-Binary/Genderqueer/Gender fluid' },
-              ],
             },
           ],
         },
@@ -282,7 +278,10 @@ describe('populateHrmContactFormFromTask', () => {
         },
       },
       expectedChildInformation: {
+        firstName: '',
+        age: '',
         gender: ['Agender'],
+        otherGender: '',
       },
       expectedCallType: callTypes.child,
     },
@@ -299,10 +298,6 @@ describe('populateHrmContactFormFromTask', () => {
               label: '',
               name: 'gender',
               type: FormInputType.ListboxMultiselect,
-              options: [
-                { label: '', value: 'Agender' },
-                { label: '', value: 'Non-Binary/Genderqueer/Gender fluid' },
-              ],
             },
           ],
         },
@@ -313,7 +308,10 @@ describe('populateHrmContactFormFromTask', () => {
         },
       },
       expectedChildInformation: {
+        firstName: '',
+        age: '',
         gender: [],
+        otherGender: '',
       },
       expectedCallType: callTypes.child,
     },
