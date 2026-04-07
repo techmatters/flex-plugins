@@ -15,11 +15,11 @@
  */
 
 // https://www.robinwieruch.de/react-custom-hook-check-if-overflow/
+import { debounce } from 'lodash';
 import React from 'react';
 
 export const useIsOverflowing = ({ ref, callback }: { ref: any; callback?: (isOverflowing: boolean) => void }) => {
   const [isOverflow, setOverflow] = React.useState(undefined);
-  const [mounted, setMounted] = React.useState(false);
 
   const trigger = React.useCallback(() => {
     if (!ref.current) {
@@ -38,17 +38,9 @@ export const useIsOverflowing = ({ ref, callback }: { ref: any; callback?: (isOv
   }, [callback, ref]);
 
   React.useLayoutEffect(() => {
-    const { current } = ref;
-
-    if (current) {
-      trigger();
-    }
-  }, [trigger, ref]);
-
-  React.useEffect(() => {
     trigger();
-    setMounted(true);
-  }, [trigger]);
+  });
+  // }, [trigger, ref, display]);
 
   return isOverflow;
 };
