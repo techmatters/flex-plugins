@@ -85,7 +85,7 @@ describe('populateHrmContactFormFromTaskByMappings', () => {
         ...(firstName ? { firstName } : {}),
         ...(language ? { language } : {}),
       },
-      contact: BLANK_CONTACT,
+      contact: JSON.parse(JSON.stringify(BLANK_CONTACT)),
       accountSid,
     });
     if (isErr(populatedContactResult)) {
@@ -798,10 +798,7 @@ describe('populateHrmContactFormFromTaskByMappings', () => {
           },
         },
         expectedChildInformation: {
-          firstName: '',
-          age: '',
           gender: ['Agender'],
-          otherGender: '',
         },
         expectedCallType: callTypes.child,
       },
@@ -835,10 +832,7 @@ describe('populateHrmContactFormFromTaskByMappings', () => {
           },
         },
         expectedChildInformation: {
-          firstName: '',
-          age: '',
           gender: [],
-          otherGender: '',
         },
         expectedCallType: callTypes.child,
       },
