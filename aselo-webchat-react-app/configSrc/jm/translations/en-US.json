@@ -1,0 +1,8 @@
+{
+    WelcomeMessage: "Welcome to SafeSpot",
+    MessageCanvasTrayContent: "",
+    MessageInputDisabledReasonHold: "Thank you very much for this information. We'll transfer you now. Please hold for a counsellor.",
+    AutoFirstMessage: "Incoming webchat contact from",
+    PreEngagementConfigDescription: "Thank you for contacting SafeSpot. To chat with a counsellor, please type your name and select the Start Chat button.",
+    WhatIsYourName: "What is your name?"
+}
