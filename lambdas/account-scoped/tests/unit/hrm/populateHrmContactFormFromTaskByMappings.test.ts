@@ -23,7 +23,7 @@ import { isErr } from '../../../src/Result';
 import { AssertionError } from 'node:assert';
 import { getCurrentDefinitionVersion } from '../../../src/hrm/formDefinitionsCache';
 import { RecursivePartial } from '../RecursivePartial';
-import { DefinitionVersion } from '@tech-matters/hrm-form-definitions';
+import { DefinitionVersion, FormInputType } from '@tech-matters/hrm-form-definitions';
 
 jest.mock('../../../src/hrm/formDefinitionsCache', () => ({
   getCurrentDefinitionVersion: jest.fn(),
@@ -767,6 +767,82 @@ describe('populateHrmContactFormFromTaskByMappings', () => {
           otherGender: '',
         },
         expectedCallType: callTypes.caller,
+      },
+      {
+        description:
+          'preEngagement with listbox-multiselect field - converts string value to array for listbox-multiselect type',
+        preEngagementData: {
+          gender: 'Agender',
+        },
+        formDefinitionSet: {
+          tabbedForms: {
+            ChildInformationTab: [
+              {
+                label: '',
+                name: 'gender',
+                type: FormInputType.ListboxMultiselect,
+                options: [
+                  { label: '', value: 'Agender' },
+                  { label: '', value: 'Non-Binary/Genderqueer/Gender fluid' },
+                ],
+              },
+            ],
+          },
+          prepopulateMappings: {
+            formSelector: {
+              selectorType: 'staticSelector',
+              parameter: {
+                callType: callTypes.child,
+                availableTabs: ['ChildInformationTab'],
+              } as any,
+            },
+            preEngagement: {
+              gender: [['ChildInformationTab.gender']],
+            },
+          },
+        },
+        expectedChildInformation: {
+          gender: ['Agender'],
+        },
+        expectedCallType: callTypes.child,
+      },
+      {
+        description:
+          'preEngagement with empty listbox-multiselect field value - sets empty array',
+        preEngagementData: {
+          gender: '',
+        },
+        formDefinitionSet: {
+          tabbedForms: {
+            ChildInformationTab: [
+              {
+                label: '',
+                name: 'gender',
+                type: FormInputType.ListboxMultiselect,
+                options: [
+                  { label: '', value: 'Agender' },
+                  { label: '', value: 'Non-Binary/Genderqueer/Gender fluid' },
+                ],
+              },
+            ],
+          },
+          prepopulateMappings: {
+            formSelector: {
+              selectorType: 'staticSelector',
+              parameter: {
+                callType: callTypes.child,
+                availableTabs: ['ChildInformationTab'],
+              } as any,
+            },
+            preEngagement: {
+              gender: [['ChildInformationTab.gender']],
+            },
+          },
+        },
+        expectedChildInformation: {
+          gender: [],
+        },
+        expectedCallType: callTypes.child,
       },
     ];
 
