@@ -87,6 +87,67 @@ const preEngagementConfig: PreEngagementFormDefinition = {
       required: true,
     },
     {
+      name: 'province',
+      label: 'Province',
+      type: 'select',
+      options: [
+        { value: '', label: '' },
+        { value: 'Northern', label: 'Northern' },
+        { value: 'Eastern', label: 'Eastern' },
+        { value: 'Western', label: 'Western' },
+        { value: 'Southern', label: 'Southern' },
+        { value: 'Unknown', label: 'Unknown' },
+      ],
+      required: { value: true, message: 'RequiredFieldError' },
+    },
+    {
+      name: 'vulnerableGroups',
+      label: 'Vulnerable Groups',
+      type: 'select',
+      options: [
+        {
+          value: 'Child in conflict with the law',
+          label: 'Child in conflict with the law',
+        },
+        {
+          value: 'Child living in conflict zone',
+          label: 'Child living in conflict zone',
+        },
+        {
+          value: 'Child living in poverty',
+          label: 'Child living in poverty',
+        },
+        {
+          value: 'Child member of an ethnic, racial or religious minority',
+          label: 'Child member of an ethnic, racial or religious minority',
+        },
+        {
+          value: 'Child on the move (involuntarily)',
+          label: 'Child on the move (involuntarily)',
+        },
+        {
+          value: 'Child on the move (voluntarily)',
+          label: 'Child on the move (voluntarily)',
+        },
+        {
+          value: 'Child with disability',
+          label: 'Child with disability',
+        },
+        {
+          value: 'LGBTQI+/SOGIESC child',
+          label: 'LGBTQI+/SOGIESC child',
+        },
+        {
+          value: 'Out-of-school child',
+          label: 'Out-of-school child',
+        },
+        {
+          value: 'Other',
+          label: 'Other',
+        },
+      ],
+    },
+    {
       label: 'Are you reaching out on behalf of yourself or another person?',
       type: 'select',
       defaultValue: 'myself',
