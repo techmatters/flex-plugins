@@ -278,10 +278,7 @@ describe('populateHrmContactFormFromTask', () => {
         },
       },
       expectedChildInformation: {
-        firstName: '',
-        age: '',
         gender: ['Agender'],
-        otherGender: '',
       },
       expectedCallType: callTypes.child,
     },
@@ -308,10 +305,7 @@ describe('populateHrmContactFormFromTask', () => {
         },
       },
       expectedChildInformation: {
-        firstName: '',
-        age: '',
         gender: [],
-        otherGender: '',
       },
       expectedCallType: callTypes.child,
     },
@@ -339,7 +333,7 @@ describe('populateHrmContactFormFromTask', () => {
           ...(firstName ? { firstName } : {}),
           ...(language ? { language } : {}),
         },
-        contact: BLANK_CONTACT,
+        contact: JSON.parse(JSON.stringify(BLANK_CONTACT)),
         accountSid,
       });
       if (isErr(populatedContactResult)) {
