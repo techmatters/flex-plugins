@@ -19,25 +19,26 @@ import { debounce } from 'lodash';
 import React from 'react';
 
 export const useIsOverflowing = ({ ref, callback }: { ref: any; callback?: (isOverflowing: boolean) => void }) => {
-  const [isOverflow, setOverflow] = React.useState(undefined);
+  const [isOverflowing, setOverflowing] = React.useState<boolean | undefined>(undefined);
+  const [mounted, setMounted] = React.useState(false);
+
+  const trigger = React.useCallback(() => {
+    if (!ref.current) {
+      return;
+    }
+
+    const hasOverflow =
+      ref.current.scrollHeight > ref.current.clientHeight || ref.current.scrollWidth > ref.current.clientWidth;
+
+    setOverflowing(hasOverflow);
+
+    if (callback) {
+      // eslint-disable-next-line callback-return
+      callback(hasOverflow);
+    }
+  }, [callback, ref]);
 
   React.useLayoutEffect(() => {
-    const trigger = () => {
-      if (!ref.current) {
-        return;
-      }
-
-      const hasOverflow =
-        ref.current.scrollHeight > ref.current.clientHeight || ref.current.scrollWidth > ref.current.clientWidth;
-
-      setOverflow(hasOverflow);
-
-      if (callback) {
-        // eslint-disable-next-line callback-return
-        callback(hasOverflow);
-      }
-    };
-
     trigger();
 
     const observer = new ResizeObserver(
@@ -51,7 +52,12 @@ export const useIsOverflowing = ({ ref, callback }: { ref: any; callback?: (isOv
     }
 
     return () => observer.disconnect();
-  }, [callback, ref]);
+  }, [trigger, ref]);
 
-  return isOverflow;
+  React.useEffect(() => {
+    trigger();
+    setMounted(true);
+  }, [trigger]);
+
+  return { isOverflowing, overflowMounted: mounted };
 };

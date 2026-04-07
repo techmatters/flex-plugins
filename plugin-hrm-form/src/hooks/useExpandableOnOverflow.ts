@@ -19,8 +19,8 @@ import React from 'react';
 import { useIsOverflowing } from './useIsOverflowing';
 
 export const useExpandableOnOverflow = ({ callback }: { callback?: (isOverflowing: boolean) => void }) => {
-  const overflowingRef = React.useRef();
-  const isOverflowing = useIsOverflowing({ ref: overflowingRef, callback });
+  const overflowingRef = React.useRef(null);
+  const { isOverflowing, overflowMounted } = useIsOverflowing({ ref: overflowingRef, callback });
   const [isExpanded, setExpanded] = React.useState(false);
   const expandButtonElementRef = React.useRef<HTMLButtonElement>(undefined);
   const collapseButtonElementRef = React.useRef<HTMLButtonElement>(undefined);
@@ -44,6 +44,7 @@ export const useExpandableOnOverflow = ({ callback }: { callback?: (isOverflowin
   return {
     overflowingRef,
     isOverflowing,
+    overflowMounted,
     isExpanded,
     expandButtonElementRef,
     collapseButtonElementRef,

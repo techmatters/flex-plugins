@@ -50,7 +50,6 @@ const ExpandableText: React.FC<ExpandableTextProps & Partial<StyledProps>> = ({
   children,
   expandLinkText,
   collapseLinkText,
-  className,
   collapsedOverrides = {},
   style = {},
   // eslint-disable-next-line sonarjs/cognitive-complexity
@@ -64,19 +63,13 @@ const ExpandableText: React.FC<ExpandableTextProps & Partial<StyledProps>> = ({
     isOverflowing,
     overflowingRef,
   } = useExpandableOnOverflow({});
-  const classes = [];
-  if (className) {
-    classes.push(className);
-  }
-  if (isExpanded) {
-    classes.push('expanded');
-  }
 
   const collapsedStyles = { ...defaultCollapsedStyles, ...collapsedOverrides };
 
+  const isHiddenOverflowState = isOverflowing && !isExpanded;
+
   return (
     <div
-      className={`${classes.join(' ')}`}
       style={{
         position: 'relative',
         display: 'flex',
@@ -89,8 +82,8 @@ const ExpandableText: React.FC<ExpandableTextProps & Partial<StyledProps>> = ({
       <div
         style={{
           textOverflow: 'inherit',
-          whiteSpace: isOverflowing && !isExpanded ? collapsedStyles.whiteSpace : 'pre-wrap',
-          overflow: isOverflowing && !isExpanded ? 'hidden' : 'inherit',
+          whiteSpace: isHiddenOverflowState ? collapsedStyles.whiteSpace : 'pre-wrap',
+          overflow: isHiddenOverflowState ? 'hidden' : 'inherit',
           height: isExpanded ? 'inherit' : `${collapsedStyles.linesPreview * LINE_HEIGHT}px`,
           fontSize: `13px`,
           lineHeight: `${LINE_HEIGHT}px`,
@@ -119,7 +112,7 @@ const ExpandableText: React.FC<ExpandableTextProps & Partial<StyledProps>> = ({
       <div
         style={{
           whiteSpace: 'nowrap',
-          display: isOverflowing && !isExpanded ? 'inherit' : 'none',
+          display: isHiddenOverflowState ? 'inherit' : 'none',
           lineHeight: `${LINE_HEIGHT}px`,
           paddingLeft: '8px',
           position: 'absolute',
