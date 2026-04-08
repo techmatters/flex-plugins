@@ -39,8 +39,7 @@ export const useIsOverflowing = ({ ref, callback }: { ref: any; callback?: (isOv
 
   React.useLayoutEffect(() => {
     trigger();
-  });
-  // }, [trigger, ref, display]);
+  }, [trigger, ref]);
 
-  return isOverflow;
+  return { trigger, isOverflowing: isOverflow };
 };
