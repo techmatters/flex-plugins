@@ -223,6 +223,10 @@ export const initWebchat = async () => {
       sortOrder: -2,
     },
   );
+  for (const [name, settings] of Array.from(FlexWebChat.Notifications.registeredNotifications.entries())) {
+    console.debug('Registered notification:', name, settings);
+  }
+
 
   // Replace pre engagement form
   FlexWebChat.PreEngagementCanvas.Content.replace(

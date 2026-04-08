@@ -91,6 +91,13 @@ export const getChangeLanguageWebChat = (manager: FlexWebChat.Manager, config: C
       setConfigLanguage(defaultLanguage);
       setNewStrings({ ...twilioStrings, ...defaultLanguageTranslations, ...configTranslations[defaultLanguage] });
       setMainHeaderTitle(manager, defaultLanguage);
+
+
+    }
+    const msgNotification = FlexWebChat.Notifications.registeredNotifications.get('NewChatMessage');
+
+    if (msgNotification) {
+      msgNotification.options!.browser!.title = manager.strings.NewChatMessageNotificationTitle;
     }
   };
 

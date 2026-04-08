@@ -4,6 +4,7 @@
   "main": "index.js",
   "scripts": {
     "start": "cross-env MODE=development CONFIG=as-development webpack serve",
+    "start:ca_stg": "cross-env MODE=development CONFIG=ca-staging webpack serve",
     "build": "cross-env webpack",
     "build:dev": "cross-env MODE=development CONFIG=as-development webpack",
     "lint": "eslint --ext js --ext jsx --ext ts --ext tsx src/",
