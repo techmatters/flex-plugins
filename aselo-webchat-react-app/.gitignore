@@ -16,3 +16,4 @@ artifacts
 coverage
 src/coverage
 mergedConfigs
+configSrc/local-secrets.json

@@ -51,12 +51,19 @@ runs:
       with:
         script: |
           core.setFailed('Bundle was not built!')
+    - name: Set RECAPTCHA_SITE_KEY
+      uses: "marvinpinto/action-inject-ssm-secrets@latest"
+      with:
+        ssm_parameter: "/global/google/recaptcha/site_key"
+        env_variable_name: "RECAPTCHA_SITE_KEY"
     - name: Merge configs for helplines and copy to build
       run: |
         npm run mergeConfigs
         mv mergedConfigs build/mergedConfigs
       working-directory: ./aselo-webchat-react-app
       shell: bash
+      env:
+        RECAPTCHA_SITE_KEY: ${{ env.RECAPTCHA_SITE_KEY }}
     # Zip files recursively
     # Cloudfront only zips files under 10000000 bytes on the fly, so we need to store these zipped
     - name: Zip files
