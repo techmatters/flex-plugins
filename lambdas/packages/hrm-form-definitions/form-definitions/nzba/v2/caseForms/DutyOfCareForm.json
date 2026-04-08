@@ -1,0 +1,180 @@
+[
+  {
+    "name": "otherInformationAboutTheClient",
+    "label": "Other Information about the Client",
+    "type": "textarea",
+    "isPII": false,
+    "rows": 7,
+    "width": 250
+  },
+  {
+    "name": "clientPresentation",
+    "label": "Client presentation",
+    "type": "textarea",
+    "isPII": false,
+    "rows": 7,
+    "width": 250
+  },
+  {
+    "name": "assessmentOfRisk",
+    "label": "Assessment of Risk",
+    "type": "select",
+    "isPII": false,
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "Urgent",
+        "label": "Urgent"
+      },
+      {
+        "value": "High",
+        "label": "High"
+      },
+      {
+        "value": "Medium",
+        "label": "Medium"
+      },
+      {
+        "value": "Low",
+        "label": "Low"
+      }
+    ]
+  },
+  {
+    "name": "supervisorsAnalysis",
+    "label": "Supervisor's Analysis",
+    "type": "textarea",
+    "isPII": false,
+    "rows": 7,
+    "width": 250
+  },
+  {
+    "name": "planOfAction",
+    "label": "Plan of Action",
+    "type": "textarea",
+    "isPII": false,
+    "rows": 7,
+    "width": 250
+  },
+  {
+    "name": "immediateOutcome",
+    "label": "Immediate outcome (from Duty of Care process)",
+    "type": "textarea",
+    "isPII": false,
+    "rows": 7,
+    "width": 250
+  },
+  {
+    "name": "consultationDetails",
+    "label": "Barnardos Consultation - Date, Time and who consulted",
+    "type": "textarea",
+    "isPII": false,
+    "rows": 7,
+    "width": 250
+  },
+  {
+    "name": "agenciesInvolved",
+    "label": "Agencies Involved",
+    "type": "textarea",
+    "isPII": false,
+    "rows": 7,
+    "width": 250
+  },
+  {
+    "name": "informedUnitManager",
+    "label": "Informed unit manager?",
+    "type": "select",
+    "isPII": false,
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "Yes",
+        "label": "Yes"
+      },
+      {
+        "value": "No",
+        "label": "No"
+      }
+    ]
+  },
+  {
+    "name": "whyNot",
+    "label": "If no, why not?",
+    "type": "input",
+    "isPII": false
+  },
+  {
+    "name": "methodOfInforming",
+    "label": "Method of informing",
+    "type": "listbox-multiselect",
+    "isPII": false,
+    "options": [
+      {
+        "value": "Conversation",
+        "label": "Conversation"
+      },
+      {
+        "value": "Email",
+        "label": "Email"
+      },
+      {
+        "value": "Instant Message",
+        "label": "Instant Message"
+      },
+      {
+        "value": "Phone Call",
+        "label": "Phone Call"
+      }
+    ]
+  },
+  {
+    "name": "furtherActionNeeded",
+    "label": "Further action needed",
+    "type": "textarea",
+    "isPII": false,
+    "rows": 7,
+    "width": 250
+  },
+  {
+    "name": "followUpRequired",
+    "label": "This D.O.C requires further follow up",
+    "type": "select",
+    "isPII": false,
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "Yes",
+        "label": "Yes"
+      },
+      {
+        "value": "No",
+        "label": "No"
+      }
+    ]
+  },
+  {
+    "name": "notesFromFollowupAction",
+    "label": "Notes from follow-up action",
+    "type": "textarea",
+    "isPII": false,
+    "rows": 7,
+    "width": 250
+  },
+  {
+    "name": "furtherContactWithClientOrAgency",
+    "label": "Further contact with client or agency",
+    "type": "textarea",
+    "isPII": false,
+    "rows": 7,
+    "width": 250
+  }
+]
