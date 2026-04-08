@@ -3,11 +3,11 @@ data "aws_ssm_parameter" "secrets" {
 }
 
 data "aws_ssm_parameter" "datadog_app_key" {
-  name ="/terraform/infrastructure-config/datadog/app_key"
+  name ="/flex-plugins/twilio-iac/datadog/app_key"
 }
 
 data "aws_ssm_parameter" "datadog_api_key" {
-  name ="/terraform/infrastructure-config/datadog/api_key"
+  name ="/flex-plugins/twilio-iac/datadog/api_key"
 }
 
 provider "datadog" {
