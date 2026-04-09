@@ -1,5 +1,8 @@
 [
   { "label": "Warm Line Teams Chat", "type": "new-window", "url": "https://teams.cloud.microsoft/l/chat/19:de4fa6cb85904231b5abf2e67e838b5d@thread.v2/conversations?context=%7B%22contextType%22%3A%22chat%22%7D",
     "icon": "info"
+  },
+  { "label": "Resources", "type": "new-window", "url": "https://teams.microsoft.com/l/channel/19%3AHRNCmNVVCqEM61sQBFCmNPb13ccM5ZsAsCZHb9jm1OE1%40thread.tacv2/Resources?groupId=830e47c8-0041-46d3-aee8-baff4415c69e&tenantId=45585204-380a-42bf-833a-bce2dc621257",
+    "icon": "map"
   }
 ]
