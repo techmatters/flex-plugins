@@ -56,7 +56,7 @@ jobs:
           github_sha_hash=${{ github.sha }}  
           echo "MERGE_BRANCH_NAME=merge-${{ github.ref_name }}-${{ matrix.target-branch }}-${github_sha_hash:0:7}" >> $GITHUB_ENV
       - id: check-branch-exists
-        uses: GuillaumeFalourd/branch-exists@v1.1
+        uses: GuillaumeFalourd/branch-exists@v1.2
         with:
           branch: ${{ env.MERGE_BRANCH_NAME }}
       - name: Create Merge Branch
