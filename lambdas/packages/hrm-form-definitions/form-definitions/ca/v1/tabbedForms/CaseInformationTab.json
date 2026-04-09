@@ -93,12 +93,20 @@
     "name": "emergencyReferralPolice",
     "label": "emergencyReferralPolice",
     "type": "checkbox",
+    "description": {
+      "title": "Emergency Referral Police - Title",
+      "content": "Emergency Referral Police - Description"
+    },
     "isPII": false
   },
   {
     "name": "emergencyReferralCPS",
     "label": "emergencyReferralCPS",
     "type": "checkbox",
+    "description": {
+      "title": "Emergency Referral CPS - Title",
+      "content": "Emergency Referral CPS - Description"
+    },
     "isPII": false
   },
   {

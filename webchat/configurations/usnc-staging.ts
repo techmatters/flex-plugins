@@ -44,6 +44,13 @@ const preEngagementConfig: PreEngagementFormDefinition = {
   submitLabel: "StartChat",
   fields: [
     {
+      type: 'input-text',
+      name: 'friendlyName',
+      label: 'Name or Alias',
+      placeholder: 'Name or Alias',
+      required: true,
+    },
+    {
       type: "select",
       name: "ageRange",
       label: "Which age range are you in?",
