@@ -19,7 +19,7 @@ import { GenericThemeShape } from '@twilio-paste/theme';
 import { AlertProps } from '@twilio-paste/core/alert';
 import { PreEngagementForm } from 'hrm-form-definitions';
 
-import { FileAttachmentConfig } from '../definitions';
+import { FileAttachmentConfig, EmojiPickerConfig } from '../definitions';
 import { TaskState } from '../task';
 
 // eslint-disable-next-line import/no-unused-modules
@@ -61,6 +61,7 @@ export type SessionState = {
 
 export type ConfigState = {
   fileAttachment?: FileAttachmentConfig;
+  emojiPicker?: EmojiPickerConfig;
   deploymentKey: string;
   region?: string;
   alwaysOpen?: boolean;

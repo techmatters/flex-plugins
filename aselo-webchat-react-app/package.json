@@ -7,12 +7,16 @@
   "license": "MIT",
   "homepage": ".",
   "dependencies": {
+    "@emoji-mart/react": "^1.1.1",
     "@emotion/core": "^10.0.28",
     "@twilio-paste/core": "^21.5.0",
     "@twilio-paste/icons": "^13.1.0",
     "@twilio-paste/theme": "^12.0.1",
     "@twilio/conversations": "2.1.0-rc.0",
+    "@types/dompurify": "^3.0.5",
     "@types/file-saver": "2.0.5",
+    "dompurify": "^3.3.3",
+    "emoji-mart": "^5.6.0",
     "file-saver": "2.0.5",
     "google-auth-library": "8.5.1",
     "googleapis": "107.0.0",
@@ -84,7 +88,7 @@
   "scripts": {
     "preinstall": "cd ../lambdas/packages/hrm-form-definitions && npm ci && npm run build && cd ../hrm-types && npm ci && npm run build",
     "start": "react-app-rewired start",
-    "start:as_dev": "cross-env REACT_APP_CONFIG_URL='http://localhost:9090/as/development.json' run-p dev:merge-configs dev:local-config-server start",
+    "start:as_dev": "cross-env REACT_APP_CONFIG_URL='http://localhost:9090/as/development.json' REACT_APP_FORM_DEFINITIONS_BASE_URL='http://localhost:8091' run-p dev:merge-configs dev:local-config-server dev:local-form-definition-server start",
     "build": "react-app-rewired build",
     "lint": "eslint --ext js --ext jsx --ext ts --ext tsx src/",
     "lint:fix": "npm run lint -- --fix",
@@ -97,7 +101,8 @@
     "eject": "react-app-rewired eject",
     "test:e2e": "cypress open",
     "dev:merge-configs": "npm run mergeConfigs development as",
-    "dev:local-config-server": "npx http-server ./mergedConfigs -p 9090 --cors -c-1"
+    "dev:local-config-server": "npx http-server ./mergedConfigs -p 9090 --cors -c-1",
+    "dev:local-form-definition-server": "npx http-server ../lambdas/packages/hrm-form-definitions/form-definitions -p 8091 --cors -c-1"
   },
   "browserslist": [
     ">0.2%",

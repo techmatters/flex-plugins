@@ -14,7 +14,7 @@
   along with this program.  If not, see https://www.gnu.org/licenses/.
 -->
 <!DOCTYPE html>
-<html>
+<html lang="en-US">
 <head>
   <meta charset="UTF-8">
   <title>Modica to Flex test page</title>
@@ -25,7 +25,7 @@
   </style>
 </head>
 <body>
-<div style="font-family: courier" id="message-history">
+<div style="font-family: courier,serif" id="message-history">
 </div>
 <form name="modica-message-input" onsubmit="sendMessage(event); return false;">
   <select name="destination-drop-down">
@@ -35,12 +35,12 @@
     <option value="+15375688305">AS_STG</option>
     <option value="+12165428033">AS_PROD</option>
   </select>
-  <label for="message-sender-textbox">Sender Number</label> <input type="number" name="message-sender-textbox" value="1111111"/>
+  <label for="message-sender-textbox">Sender Number</label> <input type="text" id="message-sender-textbox" name="message-sender-textbox" value="1111111"/>
   <br/>
   <textarea name="message-input-box"></textarea>
   <input type="submit" name="message-input-send" />
 </form>
-<pre style="font-family: courier" id="message-response">
+<pre style="font-family: courier,serif" id="message-response">
 </pre>
 
 <script>
@@ -63,7 +63,7 @@
         const response = await fetch(WEBHOOK_URL, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ destination, source, content, useTestApi: true, testSessionId: 'JSFIDDLE' }),
+          body: JSON.stringify({ destination, source, content, useTestApi: true, testSessionId: 'TESTPAGE' }),
         });
         messageHistoryElement.append(messageElement);
         messageResponseElement.innerText = `status: ${response.status} [${response.statusText}]
