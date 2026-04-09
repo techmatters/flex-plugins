@@ -56,7 +56,6 @@ const ExpandableComponent: React.FC<ExpandableComponentProps & Partial<StyledPro
   return (
     <div
       className={`${classes.join(' ')}`}
-      // style={{ display: 'flex', flexFlow: 'row', justifyContent: 'stretch' }}
       style={{ display: 'flex', flexFlow: 'row', justifyContent: 'stretch', textOverflow: 'ellipsis', ...style }}
       ref={overflowingRef}
     >

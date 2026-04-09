@@ -46,7 +46,7 @@ export const modicaToFlexHandler: AccountScopedHandler = async (
   const senderExternalId = source; // The child phone number
   const chatFriendlyName = senderExternalId;
   const uniqueUserName = `${channelType}:${senderExternalId}`;
-  const senderScreenName = 'child';
+  const senderScreenName = senderExternalId;
   const onMessageSentWebhookUrl = `${process.env.WEBHOOK_BASE_URL}/lambda/twilio/account-scoped/${accountSid}/customChannels/modica/flexToModica?recipientId=${senderExternalId}`;
   const studioFlowSid = await getChannelStudioFlowSid(
     accountSid,
@@ -64,7 +64,7 @@ export const modicaToFlexHandler: AccountScopedHandler = async (
     channelType,
     uniqueUserName,
     senderScreenName,
-    onMessageSentWebhookUrl,
+    onMessageAddedWebhookUrl: onMessageSentWebhookUrl,
     messageText,
     senderExternalId,
     customSubscribedExternalId: subscribedExternalId,

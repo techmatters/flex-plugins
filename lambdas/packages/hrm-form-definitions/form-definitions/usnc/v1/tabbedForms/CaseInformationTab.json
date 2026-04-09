@@ -154,10 +154,24 @@
     ]
   },
   {
-    "name": "doWeHaveTheirPermissionToLiveMonitorCalls",
+    "name": "liveMonitoringConsent",
     "label": "Do we have their permission to live monitor calls.",
-    "type": "checkbox",
-    "isPII": false
+    "type": "select",
+    "isPII": false,
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "Yes",
+        "label": "Yes"
+      },
+      {
+        "value": "No",
+        "label": "No"
+      }
+    ]
   },
   {
     "name": "doWeHaveTheirPermissionToCallBack",

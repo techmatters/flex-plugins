@@ -117,6 +117,13 @@ describe('LineToFlex', () => {
           participantConversations: {
             list: () => [{ conversationState: 'active' }],
           },
+          users: {
+            get: (identifier: string) => {
+              return {
+                update: jest.fn().mockResolvedValue({ identifier }),
+              };
+            },
+          },
         },
       },
     };
