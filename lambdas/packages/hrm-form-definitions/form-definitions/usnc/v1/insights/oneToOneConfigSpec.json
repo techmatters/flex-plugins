@@ -1,1 +1,59 @@
-{}
+{
+  "contactForm": {
+    "callerInformation": [
+    ],
+    "childInformation": [
+     {
+        "name": "988Referral",
+        "insights": ["conversations", "initiated_by"]
+      },
+      {
+        "name": "state",
+        "insights": ["conversations", "conversation_attribute_4"]
+      },
+      {
+        "name": "city",
+        "insights": ["conversations", "campaign"]
+      },
+      {
+        "name": "ethnicity",
+        "insights": ["conversations", "conversation_attribute_9"]
+      },
+      {
+        "name": "race",
+        "insights": ["conversations", "conversation_attribute_6"]
+      },
+        {
+        "name": "militaryStatus",
+        "insights": ["conversations", "in_business_hours"]
+      },
+      {
+        "name": "livingSituation",
+        "insights": ["conversations", "productive"]
+      },
+        {
+        "name": "vulnerableGroups",
+        "insights": ["conversations", "content"]
+      }
+    ],
+    "caseInformation": [
+      {
+        "name": "actionTaken",
+        "insights": ["conversations", "initiative"]
+      },
+      {
+        "name": "howDidYouHearAboutTheWarmLine",
+        "insights": ["conversations", "conversation_attribute_7"]
+      }
+    ]
+  },
+  "caseForm": {
+    "topLevel": [
+      {
+        "name": "id",
+        "insights": ["conversations", "case"]
+      }
+    
+    ]
+  }
+}

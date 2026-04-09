@@ -20,50 +20,65 @@ import type { AccountSID, ConversationSID } from '@tech-matters/twilio-types';
 import { isErr, newErr, newOk, Result } from '../Result';
 
 import { createToken, TOKEN_TTL_IN_SECONDS } from './createToken';
+import { createConversation } from '../conversation/createConversation';
+import { getChannelStudioFlowSid } from '../customChannels/configuration';
 
 const contactWebchatOrchestrator = async ({
-  addressSid,
+  studioFlowSid,
   accountSid,
   formData,
   customerFriendlyName,
+  testSessionId,
 }: {
   accountSid: AccountSID;
-  addressSid: string;
+  studioFlowSid: string;
   formData: Record<string, any>;
   customerFriendlyName: string;
+  testSessionId?: string;
 }): Promise<
   Result<HttpError, { conversationSid: ConversationSID; identity: string }>
 > => {
-  console.info('Calling Webchat Orchestrator');
+  const senderId = `web:${crypto.randomUUID()}`;
+  console.info(`Creating new conversation via the API with sender ID: ${senderId}`);
 
-  try {
-    const client = await getTwilioClient(accountSid);
-    const orchestratorResponse = await client.flexApi.v2.webChannels.create({
-      customerFriendlyName,
-      addressSid,
-      preEngagementData: JSON.stringify(formData),
-      uiVersion: process.env.WEBCHAT_VERSION || '1.0.0',
-      chatFriendlyName: 'Webchat widget',
-    });
-    console.info('Webchat Orchestrator successfully called', orchestratorResponse);
-
-    const { conversationSid, identity } = orchestratorResponse;
-
-    return newOk({
-      conversationSid: conversationSid as ConversationSID,
-      identity,
-    });
-  } catch (err) {
-    const bodyError = err instanceof Error ? err.message : String(err);
-    console.error('Error creating web channel', accountSid, bodyError);
+  const client = await getTwilioClient(accountSid);
+  const result = await createConversation(client, {
+    channelType: 'web',
+    conversationFriendlyName: customerFriendlyName,
+    senderScreenName: customerFriendlyName,
+    studioFlowSid,
+    testSessionId,
+    twilioNumber: `web:${accountSid}`,
+    uniqueUserName: senderId,
+    additionalConversationAttributes: {
+      pre_engagement_data: formData,
+      from: customerFriendlyName,
+    },
+  });
+  if (isErr(result)) {
+    const { conversationSid, cause } = result.error;
+    console.error(
+      `Error creating web conversation ${conversationSid}`,
+      accountSid,
+      cause,
+    );
     return newErr({
-      message: bodyError,
+      message: result.message,
       error: {
         statusCode: 500,
-        cause: new Error(bodyError),
+        cause,
       },
     });
   }
+  const { conversationSid } = result.data;
+  console.info(
+    `Created new conversation ${conversationSid} via the API with sender ID: ${senderId}`,
+  );
+
+  return newOk({
+    conversationSid: conversationSid as ConversationSID,
+    identity: senderId,
+  });
 };
 
 const sendUserMessage = async (
@@ -106,7 +121,7 @@ export const initWebchatHandler: AccountScopedHandler = async (request, accountS
 
   const formData = JSON.parse(request.body?.PreEngagementData);
   const customerFriendlyName =
-    formData?.friendlyName || request.body?.CustomerFriendlyName || 'Customer';
+    formData?.friendlyName || request.body?.CustomerFriendlyName || 'Anonymous';
 
   let conversationSid: ConversationSID;
   let identity;
@@ -114,7 +129,7 @@ export const initWebchatHandler: AccountScopedHandler = async (request, accountS
   // Hit Webchat Orchestration endpoint to generate conversation and get customer participant sid
   const result = await contactWebchatOrchestrator({
     accountSid,
-    addressSid: 'IG1ba46f2d6828b42ddd363f5045138044', // Obvs needs to be SSM parameter
+    studioFlowSid: await getChannelStudioFlowSid(accountSid, 'web'),
     formData,
     customerFriendlyName,
   });

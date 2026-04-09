@@ -37,7 +37,16 @@ const user2 = {
   sid: '62563cwqdc213cec23',
 };
 const defaultState = {
-  config: { fileAttachment: fileAttachmentConfig },
+  config: {
+    fileAttachment: fileAttachmentConfig,
+    translations: {
+      'en-US': {
+        'MessagePhase-MessageBubble-OwnMessageSenderName': 'You',
+        'MessagePhase-MessageBubble-OtherParticipantMessageSenderName': 'Counsellor',
+      },
+    },
+    defaultLocale: 'en-US',
+  },
   chat: {
     conversationsClient: { user: user1 },
     participants: [{ identity: user1.identity }, { identity: user2.identity }],
@@ -115,7 +124,7 @@ describe('Message Bubble', () => {
       />,
     );
 
-    expect(queryByText(user1.friendlyName)).toBeInTheDocument();
+    expect(queryByText('You')).toBeInTheDocument();
   });
 
   it('renders the message body', () => {
@@ -172,7 +181,7 @@ describe('Message Bubble', () => {
       />,
     );
 
-    expect(getByText(`${user2.friendlyName} sent at`)).toBeInTheDocument();
+    expect(getByText('Counsellor sent at')).toBeInTheDocument();
   });
 
   it("renders 'is read' and icon when message read by other participant", () => {

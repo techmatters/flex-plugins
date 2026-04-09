@@ -76,6 +76,11 @@ export const submitContactForm = async (
     try {
       const savedContact = await saveContact(task, contact, workerSid, inBehalfTask.sid);
       const finalAttributes = buildInsightsData(inBehalfTask, contact, caseState, savedContact);
+      // TODO: temporary console.warn for FS visibility
+      console.warn(
+        `[submitContactForm]: finalAttributes for task ${inBehalfTask.sid}`,
+        JSON.stringify(finalAttributes, null, 2),
+      );
       await assignOfflineContactResolve({
         action: 'complete',
         taskSid: inBehalfTask.sid,
@@ -101,6 +106,8 @@ export const submitContactForm = async (
   if (!FINISHED_TASK_STATES.includes(task.status) && typeof task.setAttributes === 'function') {
     const recordingsIfAvailable = await getExternalRecordingInfo(task);
     const finalAttributes = buildInsightsData(task, contact, caseState, savedContact, recordingsIfAvailable);
+    // TODO: temporary console.warn for FS visibility
+    console.warn(`[submitContactForm]: finalAttributes for task ${task.sid}`, JSON.stringify(finalAttributes, null, 2));
     await task.setAttributes(finalAttributes);
   }
   return savedContact;
