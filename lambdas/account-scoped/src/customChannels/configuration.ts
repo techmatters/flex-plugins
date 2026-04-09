@@ -46,7 +46,7 @@ const LEGACY_FACEBOOK_PAGE_ACCESS_TOKEN_PARAMETERS: Record<
   },
   nz: {
     staging: 'FACEBOOK_PAGE_ACCESS_TOKEN_453194187877367_NZ-Staging',
-    production: 'FACEBOOK_PAGE_ACCESS_TOKEN_103538615719253_Te-Gu-o---L-nea-de-ayuda',
+    production: 'FACEBOOK_PAGE_ACCESS_TOKEN_134818612864_Youthline',
   },
   th: {
     staging: 'FACEBOOK_PAGE_ACCESS_TOKEN_100136349533502_Childline-TH-Staging',
@@ -89,7 +89,7 @@ export const getFacebookAppSecret = (): Promise<string> =>
 
 export const getChannelStudioFlowSid = (
   accountSid: AccountSID,
-  channelName: AseloCustomChannel,
+  channelName: AseloCustomChannel | 'web',
 ): Promise<string> =>
   getSsmParameter(
     `/${process.env.NODE_ENV}/twilio/${accountSid}/${channelName}_studio_flow_sid`,

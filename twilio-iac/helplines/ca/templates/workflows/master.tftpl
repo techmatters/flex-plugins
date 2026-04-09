@@ -111,30 +111,42 @@
               {
                 "queue": "${task_queues.khp_en}",
                 "priority": 2,
-                "expression": "((worker.waitingOfflineContact != true AND ((task.channelType == 'voice' AND worker.channel.chat.assigned_tasks == 0) OR (task.channelType != 'voice' AND worker.channel.voice.assigned_tasks == 0)) AND ((task.transferTargetType == 'worker' AND task.targetSid == worker.sid) OR (task.transferTargetType != 'worker' AND worker.sid != task.ignoreAgent))) OR (worker.waitingOfflineContact == true AND task.targetSid == worker.sid AND task.isContactlessTask == true)) AND (worker.department =='english') AND ('Priority 988/Int' NOT IN worker.routing.skills AND 'Hold for Transfers' NOT IN worker.routing.skills)",
-                "timeout": 600
+                "expression": "((worker.waitingOfflineContact != true AND ((task.channelType == 'voice' AND worker.channel.chat.assigned_tasks == 0) OR (task.channelType != 'voice' AND worker.channel.voice.assigned_tasks == 0)) AND ((task.transferTargetType == 'worker' AND task.targetSid == worker.sid) OR (task.transferTargetType != 'worker' AND worker.sid != task.ignoreAgent))) OR (worker.waitingOfflineContact == true AND task.targetSid == worker.sid AND task.isContactlessTask == true)) AND (worker.routing.levels.KHPEN > 5) AND ('Hold for Transfers' NOT IN worker.routing.skills)",
+                "order_by": "worker.routing.levels.KHPEN DESC",
+                "timeout": 210
               },
                 {
                 "queue": "${task_queues.khp_en}",
-                "priority": 3,
-                "expression": "((worker.waitingOfflineContact != true AND ((task.channelType == 'voice' AND worker.channel.chat.assigned_tasks == 0) OR (task.channelType != 'voice' AND worker.channel.voice.assigned_tasks == 0)) AND ((task.transferTargetType == 'worker' AND task.targetSid == worker.sid) OR (task.transferTargetType != 'worker' AND worker.sid != task.ignoreAgent))) OR (worker.waitingOfflineContact == true AND task.targetSid == worker.sid AND task.isContactlessTask == true)) AND ('Priority 988/Int' NOT IN worker.routing.skills AND 'Hold for Transfers' NOT IN worker.routing.skills)",
-                "timeout": 240
-              },
-              {
-                "queue": "${task_queues.khp_en}",
+                "priority": 2,
                 "expression": "((worker.waitingOfflineContact != true AND ((task.channelType == 'voice' AND worker.channel.chat.assigned_tasks == 0) OR (task.channelType != 'voice' AND worker.channel.voice.assigned_tasks == 0)) AND ((task.transferTargetType == 'worker' AND task.targetSid == worker.sid) OR (task.transferTargetType != 'worker' AND worker.sid != task.ignoreAgent))) OR (worker.waitingOfflineContact == true AND task.targetSid == worker.sid AND task.isContactlessTask == true)) AND ('Hold for Transfers' NOT IN worker.routing.skills)",
-                "timeout": 360,
-                "priority": 4
+                "order_by": "worker.routing.levels.KHPEN DESC",
+                "timeout": 390
               },
               {
                 "queue": "${task_queues.khp_en}",
                 "expression": "((worker.waitingOfflineContact != true AND ((task.channelType == 'voice' AND worker.channel.chat.assigned_tasks == 0) OR (task.channelType != 'voice' AND worker.channel.voice.assigned_tasks == 0)) AND ((task.transferTargetType == 'worker' AND task.targetSid == worker.sid) OR (task.transferTargetType != 'worker' AND worker.sid != task.ignoreAgent))) OR (worker.waitingOfflineContact == true AND task.targetSid == worker.sid AND task.isContactlessTask == true)) AND ('Hold for Transfers' NOT IN worker.routing.skills)",
                 "timeout": 300,
-                "priority": 5
+                "order_by": "worker.routing.levels.KHPEN DESC",
+                "priority": 3
               },
               {
                 "queue": "${task_queues.khp_en}",
                 "expression": "((worker.waitingOfflineContact != true AND ((task.channelType == 'voice' AND worker.channel.chat.assigned_tasks == 0) OR (task.channelType != 'voice' AND worker.channel.voice.assigned_tasks == 0)) AND ((task.transferTargetType == 'worker' AND task.targetSid == worker.sid) OR (task.transferTargetType != 'worker' AND worker.sid != task.ignoreAgent))) OR (worker.waitingOfflineContact == true AND task.targetSid == worker.sid AND task.isContactlessTask == true)) AND ('Hold for Transfers' NOT IN worker.routing.skills)",
+                "timeout": 300,
+                "order_by": "worker.routing.levels.KHPEN DESC",
+                "priority": 4
+              },
+              {
+                "queue": "${task_queues.khp_en}",
+                "expression": "((worker.waitingOfflineContact != true AND ((task.channelType == 'voice' AND worker.channel.chat.assigned_tasks == 0) OR (task.channelType != 'voice' AND worker.channel.voice.assigned_tasks == 0)) AND ((task.transferTargetType == 'worker' AND task.targetSid == worker.sid) OR (task.transferTargetType != 'worker' AND worker.sid != task.ignoreAgent))) OR (worker.waitingOfflineContact == true AND task.targetSid == worker.sid AND task.isContactlessTask == true)) AND ('Hold for Transfers' NOT IN worker.routing.skills)",
+                "order_by": "worker.routing.levels.KHPEN DESC",
+                "priority": 5,
+                "timeout": 300
+              },
+              {
+                "queue": "${task_queues.khp_en}",
+                "expression": "((worker.waitingOfflineContact != true AND ((task.channelType == 'voice' AND worker.channel.chat.assigned_tasks == 0) OR (task.channelType != 'voice' AND worker.channel.voice.assigned_tasks == 0)) AND ((task.transferTargetType == 'worker' AND task.targetSid == worker.sid) OR (task.transferTargetType != 'worker' AND worker.sid != task.ignoreAgent))) OR (worker.waitingOfflineContact == true AND task.targetSid == worker.sid AND task.isContactlessTask == true)) AND ('Hold for Transfers' NOT IN worker.routing.skills)",
+                "order_by": "worker.routing.levels.KHPEN DESC",
                 "priority": 6
               }
           ]
