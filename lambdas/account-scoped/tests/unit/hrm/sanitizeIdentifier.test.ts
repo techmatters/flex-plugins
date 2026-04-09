@@ -456,11 +456,12 @@ describe('sanitizeIdentifierFromTrigger', () => {
     },
     {
       channelType: 'web',
-      description: 'conversation - returns error (not supported)',
+      description: 'conversation - returns unmodified',
       trigger: {
-        conversation: { Author: 'not this!' },
+        conversation: { Author: 'this!' },
       },
-      expectErr: true,
+      expected: 'this!',
+      expectErr: false,
     },
   ];
   each(testCases).test(

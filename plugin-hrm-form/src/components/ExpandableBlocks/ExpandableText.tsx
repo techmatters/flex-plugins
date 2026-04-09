@@ -50,9 +50,9 @@ const ExpandableText: React.FC<ExpandableTextProps & Partial<StyledProps>> = ({
   children,
   expandLinkText,
   collapseLinkText,
-  className,
   collapsedOverrides = {},
   style = {},
+  // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const {
     collapseButtonElementRef,
@@ -61,21 +61,17 @@ const ExpandableText: React.FC<ExpandableTextProps & Partial<StyledProps>> = ({
     handleExpand,
     isExpanded,
     isOverflowing,
+    trigger: triggerOverflowing,
     overflowingRef,
   } = useExpandableOnOverflow({});
-  const classes = [];
-  if (className) {
-    classes.push(className);
-  }
-  if (isExpanded) {
-    classes.push('expanded');
-  }
-
   const collapsedStyles = { ...defaultCollapsedStyles, ...collapsedOverrides };
+
+  React.useLayoutEffect(() => {
+    triggerOverflowing();
+  });
 
   return (
     <div
-      className={`${classes.join(' ')}`}
       style={{
         position: 'relative',
         display: 'flex',
@@ -84,18 +80,18 @@ const ExpandableText: React.FC<ExpandableTextProps & Partial<StyledProps>> = ({
         textOverflow: 'ellipsis',
         ...style,
       }}
-      ref={overflowingRef}
     >
       <div
         style={{
           textOverflow: 'inherit',
-          whiteSpace: isOverflowing && !isExpanded ? collapsedStyles.whiteSpace : 'inherit',
+          whiteSpace: isOverflowing && !isExpanded ? collapsedStyles.whiteSpace : 'pre-wrap',
           overflow: isOverflowing && !isExpanded ? 'hidden' : 'inherit',
           height: isExpanded ? 'inherit' : `${collapsedStyles.linesPreview * LINE_HEIGHT}px`,
           fontSize: `13px`,
           lineHeight: `${LINE_HEIGHT}px`,
           wordBreak: isExpanded ? 'break-word' : 'inherit',
         }}
+        ref={overflowingRef}
       >
         <Column>
           {children}
