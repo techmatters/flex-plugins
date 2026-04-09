@@ -13,7 +13,7 @@
         "feature_flags": {
             "use_prepopulate_mappings": true,
             "enable_hang_up_by_hrm_saving": true,
-            "enable_custom_links" : false,
+            "enable_custom_links" : true,
             "enable_emoji_picker": false,
             "enable_switchboarding": true,
             "enable_switchboarding_move_tasks": true,
