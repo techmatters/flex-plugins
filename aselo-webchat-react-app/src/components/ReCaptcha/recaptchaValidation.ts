@@ -21,14 +21,11 @@ export async function validateUser(token: string, recaptchaVerifyUrl: string) {
       headers: {
         'Content-Type': 'application/json',
       },
-      body: `response=${token}`,
+      body: JSON.stringify({ response: token }),
     });
     const data = await response.json();
 
-    if (data.success) {
-      return true;
-    }
-    return false;
+    return Boolean(data.success);
   } catch (error) {
     console.log('>>> error', error);
     return false;

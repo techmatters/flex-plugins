@@ -40,13 +40,14 @@ export const handler = async (event: ALBEvent): Promise<ALBResult> => {
         '/global/google/recaptcha/secret_key',
       );
 
-      const userResponse = event;
+      const body = JSON.parse(event.body ?? '{}');
+      const token = body.response;
 
-      if (!userResponse) {
+      if (!token) {
         return {
           statusCode: 400,
           headers,
-          body: JSON.stringify({ message: 'Error: Missing reCAPTCHA token' }),
+          body: JSON.stringify({ success: false, message: 'Error: Missing reCAPTCHA token' }),
         };
       }
 
@@ -55,23 +56,23 @@ export const handler = async (event: ALBEvent): Promise<ALBResult> => {
         {
           method: 'POST',
           headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-          body: `secret=${RECAPTCHA_SECRET}&response=${userResponse}`,
+          body: `secret=${RECAPTCHA_SECRET}&response=${token}`,
         },
       );
 
       const recaptchaResult = await recaptchaResponse.json();
 
-      if (recaptchaResult) {
+      if (recaptchaResult.success) {
         return {
           statusCode: 200,
           headers,
-          body: JSON.stringify({ message: 'reCAPTCHA verified successfully' }),
+          body: JSON.stringify({ success: true, message: 'reCAPTCHA verified successfully' }),
         };
       } else {
         return {
           statusCode: 400,
           headers,
-          body: JSON.stringify({ message: 'Error: Invalid reCAPTCHA response' }),
+          body: JSON.stringify({ success: false, message: 'Error: Invalid reCAPTCHA response' }),
         };
       }
     } catch (err) {
