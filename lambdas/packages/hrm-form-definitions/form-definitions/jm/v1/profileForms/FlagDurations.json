@@ -3,5 +3,10 @@
     "flag": "blocked",
     "label": "Short Term Block (24 Hours)",
     "durationInHours": "24"
+  },
+  {
+    "flag": "blocked",
+    "label": "Long Term Block (10 Years)",
+    "durationInHours": "87600"
   }
 ]

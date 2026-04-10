@@ -180,6 +180,12 @@
     "isPII": false
   },
   {
+    "name": "substanceUseLivedExperience",
+    "label": "Substance use lived experience identified",
+    "type": "checkbox",
+    "isPII": false
+  },
+  {
     "name": "wasTheIndividualAbusive",
     "label": "Was the individual abusive?",
     "type": "checkbox",
