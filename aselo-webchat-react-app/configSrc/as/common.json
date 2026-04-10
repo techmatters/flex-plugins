@@ -9,5 +9,6 @@
     "blockedEmojis": []
   },
   "alwaysOpen": false,
-  "helplineCode": "as"
+  "helplineCode": "as",
+  "enableRecaptcha": true
 }
