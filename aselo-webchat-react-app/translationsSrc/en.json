@@ -1,4 +1,5 @@
 {
+  "AutoFirstMessage": "Incoming webchat contact from",
   "Conversation-Participants-CustomerDefaultName": "Anonymous",
   "Header-CloseChatButtons-EndChatButtonLabel": "End Chat",
   "Header-CloseChatButtons-EndChatConfirmDialogMessageFromChat": "End the current chat? Your messages will be lost.",

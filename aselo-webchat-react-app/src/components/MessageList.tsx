@@ -70,6 +70,7 @@ export const MessageList = () => {
     conversation: state.chat.conversation,
     conversationsClient: state.chat.conversationsClient,
   }));
+
   const dispatch = useDispatch();
   const messageListRef = useRef<HTMLDivElement>(null);
   const isLoadingMessages = useRef(false);
@@ -77,6 +78,11 @@ export const MessageList = () => {
   const [hasLoadedAllMessages, setHasLoadedAllMessages] = useState(true);
   const [focusIndex, setFocusIndex] = useState(messages && messages.length ? messages[messages?.length - 1].index : -1);
   const [shouldFocusLatest, setShouldFocusLatest] = useState(false);
+
+  useEffect(() => {
+    console.log('>>>>> messages', messages);
+    console.log('>>>>> hasLoadedAllMessages', hasLoadedAllMessages);
+  }, [messages, hasLoadedAllMessages]);
 
   const updateFocus = (newFocus: number) => {
     if (newFocus < 0 || !messages || !messages.length || newFocus > messages[messages.length - 1].index) {
@@ -223,8 +229,15 @@ export const MessageList = () => {
           </Box>
         );
       }
+
       // Discount loading spinner from indices
       i -= 1;
+
+      const belongsToCurrentUser = message.author === conversationsClient?.user.identity;
+      // Remove the auto first message sent in MessagingCanvasPhase
+      if (message.index === 0 && hasLoadedAllMessages && belongsToCurrentUser) {
+        return null;
+      }
 
       return (
         <Box data-test="all-message-bubbles" key={message.index}>
