@@ -79,11 +79,6 @@ export const MessageList = () => {
   const [focusIndex, setFocusIndex] = useState(messages && messages.length ? messages[messages?.length - 1].index : -1);
   const [shouldFocusLatest, setShouldFocusLatest] = useState(false);
 
-  useEffect(() => {
-    console.log('>>>>> messages', messages);
-    console.log('>>>>> hasLoadedAllMessages', hasLoadedAllMessages);
-  }, [messages, hasLoadedAllMessages]);
-
   const updateFocus = (newFocus: number) => {
     if (newFocus < 0 || !messages || !messages.length || newFocus > messages[messages.length - 1].index) {
       return;
