@@ -36,6 +36,7 @@ import { sessionDataHandler } from '../../sessionDataHandler';
 import { getDefaultValue } from '../../components/forms/formInputs';
 import { initSession } from './initActions';
 import { notifications } from '../../notifications';
+import { getUserIp } from '../../ip-tracker';
 
 export function changeEngagementPhase({ phase }: { phase: EngagementPhase }) {
   return {
@@ -169,8 +170,13 @@ export const submitAndInitChatThunk = (): ThunkAction<void, AppState, unknown, A
     try {
       const preEngagementDataValues = Object.entries(data).reduce(
         (accum, [name, { value }]) => ({ ...accum, [name]: value }),
-        {},
+        {} as Record<string, unknown>,
       );
+
+      if (state.config.captureIp && state.config.ipFindApiKey) {
+        preEngagementDataValues.ip = await getUserIp(state.config.ipFindApiKey);
+      }
+
       const sessionData = await sessionDataHandler.fetchAndStoreNewSession({
         formData: preEngagementDataValues,
       });
