@@ -12,10 +12,6 @@
         "insights": ["conversations", "conversation_attribute_4"]
       },
       {
-        "name": "city",
-        "insights": ["conversations", "campaign"]
-      },
-      {
         "name": "ethnicity",
         "insights": ["conversations", "conversation_attribute_9"]
       },
@@ -44,6 +40,18 @@
       {
         "name": "howDidYouHearAboutTheWarmLine",
         "insights": ["conversations", "conversation_attribute_7"]
+      },
+        {
+        "name": "repeatCaller",
+        "insights": ["conversations", "disposition"]
+      },
+      {
+        "name": "substanceUseLivedExperience",
+        "insights": ["conversations", "language"]
+      },
+      {
+        "name": "wasTheCallerSatisfiedWithTheSupportProvided",
+        "insights": ["conversations", "outcome"]
       }
     ]
   },
