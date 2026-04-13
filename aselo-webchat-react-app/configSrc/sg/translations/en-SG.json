@@ -1,0 +1,9 @@
+{
+    "WelcomeMessage": "Welcome to Tinkle Friend",
+    "MessageCanvasTrayContent": "",
+    "MessageInputDisabledReasonHold":
+      "Thank you very much for this information. We'll transfer you now. Please hold for a Tinkle Friend.",
+    "AutoFirstMessage": "Incoming webchat contact from",
+    "TypingIndicator": "Tinkle Friend is typing",
+    "StartChat": "Start Chat!"
+  }
