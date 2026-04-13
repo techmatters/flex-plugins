@@ -20,7 +20,8 @@ import React from 'react';
 // Walks up the DOM tree and returns all ancestors that have display:none
 const getHiddenAncestors = (node: Element): Element[] => {
   const hiddenAncestors: Element[] = [];
-  let current = node.parentElement;
+
+  let current = node?.parentElement;
 
   while (current) {
     if (getComputedStyle(current).display === 'none') {
