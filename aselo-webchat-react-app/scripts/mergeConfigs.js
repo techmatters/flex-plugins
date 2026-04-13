@@ -51,14 +51,26 @@ const loadSecrets = async () => {
   if (process.env.RECAPTCHA_SITE_KEY) {
     secrets.recaptchaSiteKey = process.env.RECAPTCHA_SITE_KEY;
     console.info('Using RECAPTCHA_SITE_KEY from environment variable');
+  }
+
+  if (process.env.IP_LOOKUP_SERVICE_API_KEY) {
+    secrets.ipLookupServiceApiKey = process.env.IP_LOOKUP_SERVICE_API_KEY;
+    console.info('Using IP_LOOKUP_SERVICE_API_KEY from environment variable');
+  }
+
+  if (secrets.recaptchaSiteKey && secrets.ipLookupServiceApiKey) {
     return secrets;
   }
 
   try {
     const localSecrets = JSON.parse(await fs.readFile(LOCAL_SECRETS_PATH, { encoding: 'utf8' }));
-    if (localSecrets.recaptchaSiteKey) {
+    if (!secrets.recaptchaSiteKey && localSecrets.recaptchaSiteKey) {
       secrets.recaptchaSiteKey = localSecrets.recaptchaSiteKey;
       console.info(`Using recaptchaSiteKey from ${LOCAL_SECRETS_PATH}`);
+    }
+    if (!secrets.ipLookupServiceApiKey && localSecrets.ipLookupServiceApiKey) {
+      secrets.ipLookupServiceApiKey = localSecrets.ipLookupServiceApiKey;
+      console.info(`Using ipLookupServiceApiKey from ${LOCAL_SECRETS_PATH}`);
     }
   } catch (err) {
     if (err.code !== 'ENOENT') {
