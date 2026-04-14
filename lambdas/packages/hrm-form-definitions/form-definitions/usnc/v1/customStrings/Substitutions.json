@@ -644,6 +644,6 @@
     "BrowserNotification-ChatMessage-MaskedTitle": "New message",
     "AsV1-ChildInformationTab-FirstName-Title": "First Name description",
     "AsV1-ChildInformationTab-FirstName-Content": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-    "Toolkit-ConfirmTextOne": "Clicking on this icon will open up Warm Line Teams Chat in a new tab in your browser"
+    "Toolkit-ConfirmTextOne": "Clicking on this icon will either open up Warm Line Teams Chat (i) or Resources (map) in a new tab in your browser"
   }
 }
