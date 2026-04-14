@@ -56,8 +56,6 @@ const ContactAddedToCaseBanner: React.FC<Props> = ({ taskId, contactId }) => {
   };
   const { connectedCase } = useCase({
     caseId: contact.caseId,
-    referenceId: `contact-added-to-case-banner-${contact.id}`,
-    refresh: false,
   });
 
   /*
