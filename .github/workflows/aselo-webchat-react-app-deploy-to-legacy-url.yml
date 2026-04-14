@@ -42,6 +42,9 @@ on:
         default: 'true'
         type: string
 
+permissions:
+  contents: read
+
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   deploy:
@@ -104,6 +107,15 @@ jobs:
         run: |
           mv './mergedConfigs/${{ steps.helpline_code.outputs.lowercase }}/production.json' 'config.json'
           rm -rf ./mergedConfigs 
+        working-directory: aselo-webchat-react-app/temp
+        shell: bash
+
+      - name: Validate config does not contain placeholder values
+        run: |
+          if grep -q "REPLACE_WITH_" config.json; then
+            echo "ERROR: config.json contains placeholder values. Please update aselo-webchat-react-app/configSrc/${{ steps.helpline_code.outputs.lowercase }}/production.json with the actual production values before deploying."
+            exit 1
+          fi
         working-directory: aselo-webchat-react-app/temp
         shell: bash
 
