@@ -43,6 +43,7 @@ import { SessionReducer } from '../../session.reducer';
 import * as initActionsModule from '../initActions';
 import { sessionDataHandler } from '../../../sessionDataHandler';
 import { notifications } from '../../../notifications';
+import * as ipTracker from '../../../ipTracker';
 
 jest.mock('@twilio/conversations');
 
@@ -208,5 +209,75 @@ describe('submitAndInitChatThunk', () => {
 
     expect(dispatch).toHaveBeenCalledWith(addNotification(notifications.failedToInitSessionNotification(errorMessage)));
     expect(dispatch).toHaveBeenCalledWith(changeEngagementPhase({ phase: EngagementPhase.PreEngagementForm }));
+  });
+
+  it('should include ip in form data when captureIp is enabled and ipLookupServiceApiKey is set', async () => {
+    const mockIp = '192.168.1.1';
+    const apiKey = 'test-api-key';
+    jest.spyOn(ipTracker, 'getUserIp').mockResolvedValue(mockIp);
+    (sessionDataHandler.fetchAndStoreNewSession as jest.Mock).mockResolvedValue({ token, conversationSid });
+    (initActionsModule.initSession as jest.Mock).mockReturnValue({ type: 'MOCK_INIT_SESSION' });
+
+    const getStateWithIp = jest.fn(() => ({
+      config: {
+        preEngagementFormDefinition: { fields: formFields },
+        captureIp: true,
+        ipLookupServiceApiKey: apiKey,
+      },
+      session: { preEngagementData },
+    }));
+
+    const dispatch = jest.fn();
+    await submitAndInitChatThunk()(dispatch as any, getStateWithIp as any, undefined);
+
+    expect(ipTracker.getUserIp).toHaveBeenCalledWith(apiKey);
+    expect(sessionDataHandler.fetchAndStoreNewSession).toHaveBeenCalledWith({
+      formData: { friendlyName: 'John', ip: mockIp },
+    });
+  });
+
+  it('should not fetch ip when captureIp is false', async () => {
+    jest.spyOn(ipTracker, 'getUserIp').mockResolvedValue('1.2.3.4');
+    (sessionDataHandler.fetchAndStoreNewSession as jest.Mock).mockResolvedValue({ token, conversationSid });
+    (initActionsModule.initSession as jest.Mock).mockReturnValue({ type: 'MOCK_INIT_SESSION' });
+
+    const getStateWithoutIp = jest.fn(() => ({
+      config: {
+        preEngagementFormDefinition: { fields: formFields },
+        captureIp: false,
+        ipLookupServiceApiKey: 'test-api-key',
+      },
+      session: { preEngagementData },
+    }));
+
+    const dispatch = jest.fn();
+    await submitAndInitChatThunk()(dispatch as any, getStateWithoutIp as any, undefined);
+
+    expect(ipTracker.getUserIp).not.toHaveBeenCalled();
+    expect(sessionDataHandler.fetchAndStoreNewSession).toHaveBeenCalledWith({
+      formData: { friendlyName: 'John' },
+    });
+  });
+
+  it('should not fetch ip when captureIp is true but ipLookupServiceApiKey is not set', async () => {
+    jest.spyOn(ipTracker, 'getUserIp').mockResolvedValue('1.2.3.4');
+    (sessionDataHandler.fetchAndStoreNewSession as jest.Mock).mockResolvedValue({ token, conversationSid });
+    (initActionsModule.initSession as jest.Mock).mockReturnValue({ type: 'MOCK_INIT_SESSION' });
+
+    const getStateWithoutApiKey = jest.fn(() => ({
+      config: {
+        preEngagementFormDefinition: { fields: formFields },
+        captureIp: true,
+      },
+      session: { preEngagementData },
+    }));
+
+    const dispatch = jest.fn();
+    await submitAndInitChatThunk()(dispatch as any, getStateWithoutApiKey as any, undefined);
+
+    expect(ipTracker.getUserIp).not.toHaveBeenCalled();
+    expect(sessionDataHandler.fetchAndStoreNewSession).toHaveBeenCalledWith({
+      formData: { friendlyName: 'John' },
+    });
   });
 });

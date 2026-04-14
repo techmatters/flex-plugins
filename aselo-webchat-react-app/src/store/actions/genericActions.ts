@@ -20,6 +20,7 @@ import { ThunkAction } from 'redux-thunk';
 import { PreEngagementFormItem } from 'hrm-form-definitions';
 
 import { AppState, EngagementPhase, Notification, PreEngagementData, PreEngagementDataItem } from '../definitions';
+import { getUserIp } from '../../ipTracker';
 import {
   ACTION_ADD_MULTIPLE_MESSAGES,
   ACTION_ADD_NOTIFICATION,
@@ -169,8 +170,13 @@ export const submitAndInitChatThunk = (): ThunkAction<void, AppState, unknown, A
     try {
       const preEngagementDataValues = Object.entries(data).reduce(
         (accum, [name, { value }]) => ({ ...accum, [name]: value }),
-        {},
+        {} as Record<string, unknown>,
       );
+
+      if (state.config.captureIp && state.config.ipLookupServiceApiKey) {
+        preEngagementDataValues.ip = await getUserIp(state.config.ipLookupServiceApiKey);
+      }
+
       const sessionData = await sessionDataHandler.fetchAndStoreNewSession({
         formData: preEngagementDataValues,
       });

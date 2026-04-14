@@ -80,6 +80,8 @@ export type ConfigState = {
   quickExitUrl: `https://${string}`;
   enableRecaptcha?: boolean;
   recaptchaSiteKey?: string;
+  captureIp?: boolean;
+  ipLookupServiceApiKey?: string;
 };
 
 export type Notification = {
