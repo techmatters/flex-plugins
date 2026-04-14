@@ -44,7 +44,7 @@ locals {
       sms : {
         messaging_mode   = "conversations"
         channel_type     = "sms"
-        contact_identity = "+"
+        contact_identity = ""
         templatefile     = "/app/twilio-iac/helplines/usnc/templates/studio-flows/messaging-lex-v3-blocking-lambda-sd.tftpl"
         channel_flow_vars = {
           widget_from           = "Warm Line"
