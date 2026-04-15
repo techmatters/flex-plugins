@@ -15,13 +15,13 @@
  */
 
 import { Configuration } from '../types';
-import { config as usvcStaging } from './usnc-staging';
+import { config as usncStaging } from '../configurations/usnc-staging';
 
 const accountSid = 'AC959fee6ecad2e08486fa6cb6d40fcbf9';
 const flexFlowSid = 'FOf90d0f4c521fb590ed0ec595ec517a48';
 
 export const config: Configuration = {
-  ...usvcStaging,
+  ...usncStaging,
   checkOpenHours: false,
   accountSid,
   flexFlowSid,
