@@ -1,0 +1,156 @@
+[
+  {
+    "name": "referralDate",
+    "type": "date-input",
+    "isPII": false,
+    "label": "Referral Date",
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "referredTo",
+    "label": "Referred To",
+    "type": "select",
+    "isPII": false,
+    "options": [
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "Police",
+        "label": "Police"
+      },
+      {
+        "value": "105 Police Non-Emergency",
+        "label": "105 Police Non-Emergency"
+      },
+      {
+        "value": "Ambulance",
+        "label": "Ambulance"
+      },
+      {
+        "value": "Mental Health Crisis Teams",
+        "label": "Mental Health Crisis Teams"
+      },
+      {
+        "value": "Oranga Tamariki (OT)",
+        "label": "Oranga Tamariki (OT)"
+      },
+      {
+        "value": "Barnardos Aotearoa",
+        "label": "Barnardos Aotearoa"
+      },
+      {
+        "value": "Other Social Service(s)",
+        "label": "Other Social Service(s)"
+      },
+      {
+        "value": "Client's Social Worker",
+        "label": "Client's Social Worker"
+      },
+      {
+        "value": "Parent(s)",
+        "label": "Parent(s)"
+      },
+      {
+        "value": "School",
+        "label": "School"
+      },
+      {
+        "value": "Netsafe",
+        "label": "Netsafe"
+      },
+      {
+        "value": "What's Up",
+        "label": "What's Up"
+      },
+      {
+        "value": "Other",
+        "label": "Other"
+      }
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "referredFrom",
+    "label": "Referred From",
+    "type": "select",
+    "isPII": false,
+    "options": [
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "Police",
+        "label": "Police"
+      },
+      {
+        "value": "105 Police Non-Emergency",
+        "label": "105 Police Non-Emergency"
+      },
+      {
+        "value": "Ambulance",
+        "label": "Ambulance"
+      },
+      {
+        "value": "Mental Health Crisis Teams",
+        "label": "Mental Health Crisis Teams"
+      },
+      {
+        "value": "Oranga Tamariki (OT)",
+        "label": "Oranga Tamariki (OT)"
+      },
+      {
+        "value": "Barnardos Aotearoa",
+        "label": "Barnardos Aotearoa"
+      },
+      {
+        "value": "Other Social Service(s)",
+        "label": "Other Social Service(s)"
+      },
+      {
+        "value": "Client's Social Worker",
+        "label": "Client's Social Worker"
+      },
+      {
+        "value": "Parent(s)",
+        "label": "Parent(s)"
+      },
+      {
+        "value": "School",
+        "label": "School"
+      },
+      {
+        "value": "Netsafe",
+        "label": "Netsafe"
+      },
+      {
+        "value": "What's Up",
+        "label": "What's Up"
+      },
+      {
+        "value": "Other",
+        "label": "Other"
+      }
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "comments",
+    "label": "Comments",
+    "type": "textarea",
+    "isPII": false,
+    "rows": 10,
+    "width": 250
+  }
+]
