@@ -111,7 +111,7 @@ const ContactPreview: React.FC<ContactPreviewProps> = ({ contact, handleViewDeta
         />
         {callSummary && (
           <PreviewRow>
-            <PreviewDescription expandLinkText="ReadMore" collapseLinkText="ReadLess">
+            <PreviewDescription expandLinkText="ReadMore" collapseLinkText="ReadLess" style={{ width: '100%' }}>
               {callSummary}
             </PreviewDescription>
           </PreviewRow>

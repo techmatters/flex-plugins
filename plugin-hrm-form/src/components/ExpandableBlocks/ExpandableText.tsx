@@ -66,10 +66,6 @@ const ExpandableText: React.FC<ExpandableTextProps & Partial<StyledProps>> = ({
   } = useExpandableOnOverflow({});
   const collapsedStyles = { ...defaultCollapsedStyles, ...collapsedOverrides };
 
-  React.useLayoutEffect(() => {
-    triggerOverflowing();
-  });
-
   return (
     <div
       style={{
@@ -77,7 +73,6 @@ const ExpandableText: React.FC<ExpandableTextProps & Partial<StyledProps>> = ({
         display: 'flex',
         flexFlow: 'row',
         justifyContent: 'stretch',
-        textOverflow: 'ellipsis',
         ...style,
       }}
     >

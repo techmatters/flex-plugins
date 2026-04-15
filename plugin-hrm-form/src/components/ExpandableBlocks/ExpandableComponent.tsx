@@ -56,18 +56,18 @@ const ExpandableComponent: React.FC<ExpandableComponentProps & Partial<StyledPro
   return (
     <div
       className={`${classes.join(' ')}`}
-      style={{ display: 'flex', flexFlow: 'row', justifyContent: 'stretch', textOverflow: 'ellipsis', ...style }}
-      ref={overflowingRef}
+      style={{ display: 'flex', flexFlow: 'row', justifyContent: 'stretch', ...style }}
     >
       <div
         style={{
-          textOverflow: 'inherit',
+          textOverflow: 'hidden',
           whiteSpace: isOverflowing && !isExpanded ? 'nowrap' : 'inherit',
           overflow: isOverflowing && !isExpanded ? 'hidden' : 'inherit',
           height: isExpanded ? 'inherit' : '1.6em',
           lineHeight: '1.5em',
           wordBreak: isExpanded ? 'break-word' : 'inherit',
         }}
+        ref={overflowingRef}
       >
         {children}
         <StyledLink

@@ -25,21 +25,26 @@ export const useExpandableOnOverflow = ({ callback }: { callback?: (isOverflowin
   const expandButtonElementRef = React.useRef<HTMLButtonElement>(undefined);
   const collapseButtonElementRef = React.useRef<HTMLButtonElement>(undefined);
 
-  const handleExpand = () => {
+  const handleExpand = React.useCallback(() => {
     setExpanded(true);
-  };
+  }, [setExpanded]);
 
-  const handleCollapse = () => {
+  const handleCollapse = React.useCallback(() => {
     setExpanded(false);
-  };
+  }, [setExpanded]);
 
   React.useEffect(() => {
+    // Recompute when component is collapsed
+    if (!isExpanded) {
+      trigger();
+    }
+
     if (isExpanded) {
       collapseButtonElementRef.current?.focus();
     } else {
       expandButtonElementRef.current?.focus();
     }
-  }, [isExpanded]);
+  }, [isExpanded, trigger]);
 
   return {
     overflowingRef,
