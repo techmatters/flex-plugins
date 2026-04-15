@@ -122,41 +122,22 @@ jobs:
       # Create aselo-chat.min.js so the new Aselo Webchat can be loaded via the same single-file
       # script tag that the legacy Webchat 2 used (<script src="aselo-chat.min.js">).
       # The new webchat bundle (webchat.min.js) is stored gzip-encoded on S3, so we decompress it,
-      # append a self-initializing wrapper that creates the widget root element and calls
-      # Twilio.initWebchat('./config.json'), then re-compress to form aselo-chat.min.js.
+      # append a self-initializing wrapper that calls the window.Twilio.initChat function exposed
+      # by the bundle, then re-compress to form aselo-chat.min.js.
       - name: Create aselo-chat.min.js entrypoint for legacy URL compatibility
         run: |
           # Decompress the webchat bundle (files are gzip-encoded on S3)
           gunzip -c static/js/webchat.min.js > aselo-chat-uncompressed.js
 
-          # Append a self-initializing wrapper so the combined file behaves like the legacy
-          # aselo-chat.min.js: creates the widget root element if absent, then initialises the
-          # webchat using ./config.json as the default config URL.
+          # Append a self-initializing wrapper that calls window.Twilio.initChat() once the DOM
+          # is ready. initChat is defined in the bundle itself (src/initChat.ts) and handles
+          # creating the widget root element, reading URL params, and invoking initWebchat.
           cat >> aselo-chat-uncompressed.js << 'INIT_SCRIPT'
           ;(function () {
-            function initChat() {
-              var urlParams = new URLSearchParams(window.location.search);
-              var configUrl = urlParams.get('configUrl') || './config.json';
-              var theme = urlParams.get('theme');
-              var isLightTheme = theme !== 'dark';
-              var alwaysOpen = urlParams.get('alwaysOpen');
-              var defaultLocale = urlParams.get('locale');
-              if (!document.getElementById('aselo-webchat-widget-root')) {
-                var root = document.createElement('div');
-                root.id = 'aselo-webchat-widget-root';
-                document.body.appendChild(root);
-              }
-              window.Twilio.initLogger('info');
-              window.Twilio.initWebchat(configUrl, {
-                theme: { isLight: isLightTheme },
-                ...(alwaysOpen ? { alwaysOpen: alwaysOpen.toLowerCase() === 'true' } : {}),
-                ...(defaultLocale ? { defaultLocale } : {}),
-              });
-            }
             if (document.readyState === 'loading') {
-              document.addEventListener('DOMContentLoaded', initChat);
+              document.addEventListener('DOMContentLoaded', function () { window.Twilio.initChat(); });
             } else {
-              initChat();
+              window.Twilio.initChat();
             }
           })();
           INIT_SCRIPT
