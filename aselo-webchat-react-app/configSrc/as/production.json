@@ -1,0 +1,6 @@
+{
+  "deploymentKey": "REPLACE_WITH_AS_PRODUCTION_CONVERSATIONS_SERVICE_SID",
+  "environment": "production",
+  "aseloBackendUrl": "https://hrm-production.tl.techmatters.org",
+  "definitionVersion": "as-v1"
+}
