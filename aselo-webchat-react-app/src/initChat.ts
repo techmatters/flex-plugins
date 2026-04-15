@@ -26,11 +26,12 @@ import { LocaleString } from './store/definitions';
  */
 export const initChat = () => {
   const urlParams = new URLSearchParams(window.location.search);
-  const theme = urlParams.get('theme');
+  const scriptEl = document.currentScript;
+  const theme = urlParams.get('theme') ?? scriptEl?.getAttribute('theme');
   const isLightTheme = theme !== 'dark';
   const alwaysOpen = urlParams.get('alwaysOpen');
   const defaultLocale = urlParams.get('locale');
-  const configUrl = urlParams.get('configUrl') ?? undefined;
+  const configUrl = urlParams.get('configUrl') ?? scriptEl?.getAttribute('config-url') ?? undefined;
 
   const themeEl = document.querySelector('[data-theme-pref]');
   themeEl?.setAttribute('data-theme-pref', isLightTheme ? 'light-theme' : 'dark-theme');
