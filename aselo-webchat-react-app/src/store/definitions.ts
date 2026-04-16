@@ -78,6 +78,10 @@ export type ConfigState = {
   defaultLocale: LocaleString;
   currentLocale?: LocaleString;
   quickExitUrl: `https://${string}`;
+  enableRecaptcha?: boolean;
+  recaptchaSiteKey?: string;
+  captureIp?: boolean;
+  ipLookupServiceApiKey?: string;
 };
 
 export type Notification = {

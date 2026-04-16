@@ -8,12 +8,6 @@
     "width": 250
   },
   {
-    "name": "repeatCaller",
-    "label": "Repeat Caller?",
-    "type": "checkbox",
-    "isPII": false
-  },
-  {
     "name": "actionTaken",
     "label": "Action Taken",
     "type": "listbox-multiselect",
@@ -94,66 +88,6 @@
     }
   },
   {
-    "name": "howDidYouHearAboutTheWarmLine",
-    "label": "How did you hear about the Warm Line?",
-    "type": "select",
-    "isPII": false,
-    "options": [
-      {
-        "value": "Unknown",
-        "label": ""
-      },
-      {
-        "value": "Previously contacted",
-        "label": "Previously contacted"
-      },
-      {
-        "value": "Another Warm/Crisis Line",
-        "label": "Another Warm/Crisis Line"
-      },
-      {
-        "value": "Social Service Agency",
-        "label": "Social Service Agency"
-      },
-      {
-        "value": "Hospital/Health Practitioner",
-        "label": "Hospital/Health Practitioner"
-      },
-      {
-        "value": "Mental Health Provider",
-        "label": "Mental Health Provider"
-      },
-      {
-        "value": "Family/Friend",
-        "label": "Family/Friend"
-      },
-      {
-        "value": "Internet Search",
-        "label": "Internet Search"
-      },
-      {
-        "value": "Social Media",
-        "label": "Social Media"
-      },
-      {
-        "value": "Printed Materials",
-        "label": "Printed Materials"
-      },
-      {
-        "value": "Radio/TV/Billboard",
-        "label": "Radio/TV/Billboard"
-      },
-      {
-        "value": "Other",
-        "label": "Other"
-      },
-      {
-        "value": "Does Not Apply N/A",
-        "label": "Does Not Apply N/A"
-      }
-    ]
-  },
-  {
     "name": "liveMonitoringConsent",
     "label": "Do we have their permission to live monitor calls.",
     "type": "select",
@@ -176,6 +110,12 @@
   {
     "name": "doWeHaveTheirPermissionToCallBack",
     "label": "Do we have their permission to call back?",
+    "type": "checkbox",
+    "isPII": false
+  },
+  {
+    "name": "substanceUseLivedExperience",
+    "label": "Substance use lived experience identified",
     "type": "checkbox",
     "isPII": false
   },

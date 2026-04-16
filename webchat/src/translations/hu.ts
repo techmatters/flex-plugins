@@ -16,6 +16,7 @@
 
 // eslint-disable-next-line global-require
 export default {
+  NewChatMessageNotificationTitle: 'Új üzenet a tanácsadótól',
   EndChatButtonLabel: 'Csevegés befejezése',
   QuickExitButtonLabel: 'Gyors kilépés',
   QuickExitDescription: 'Gyorsan el kell menni?',

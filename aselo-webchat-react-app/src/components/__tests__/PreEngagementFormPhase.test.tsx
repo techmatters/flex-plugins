@@ -43,6 +43,25 @@ jest.mock('../NotificationBar', () => ({
   NotificationBar: () => <div title="NotificationBar" />,
 }));
 
+let mockRecaptchaOnChange: ((verified: boolean) => void) | undefined;
+jest.mock('../ReCaptcha', () => {
+  // eslint-disable-next-line global-require
+  const React = require('react');
+  return {
+    __esModule: true,
+    default: ({
+      onRecaptchaChange,
+    }: {
+      siteKey: string;
+      recaptchaVerifyUrl: string;
+      onRecaptchaChange: (verified: boolean) => void;
+    }) => {
+      mockRecaptchaOnChange = onRecaptchaChange;
+      return React.createElement('div', { 'data-testid': 'recaptcha-mock' });
+    },
+  };
+});
+
 describe('Pre Engagement Form Phase', () => {
   const namePlaceholderText = 'Please enter your name';
   const emailPlaceholderText = 'Please enter your email address';
@@ -476,5 +495,125 @@ describe('Pre Engagement Form Phase - validation', () => {
     await submitForm(container);
     expect(sessionDataHandler.fetchAndStoreNewSession).toHaveBeenCalled();
     expect(initAction.initSession).toHaveBeenCalled();
+  });
+});
+
+describe('Pre Engagement Form Phase - ReCaptcha', () => {
+  const recaptchaSiteKey = 'test-recaptcha-site-key';
+  const aseloBackendUrl = 'https://hrm-test.tl.techmatters.org';
+
+  const createRecaptchaStore = (enableRecaptcha: boolean) =>
+    preloadStore({
+      config: {
+        environment: 'test',
+        helplineCode: '',
+        quickExitUrl: 'https://',
+        translations: {},
+        defaultLocale: 'en-US',
+        deploymentKey: '',
+        aseloBackendUrl,
+        definitionVersion: '',
+        preEngagementFormDefinition: {
+          description: 'Description',
+          submitLabel: 'Submit',
+          fields: [{ name: 'name', type: FormInputType.Input, label: 'Name' } as PreEngagementFormItem],
+        },
+        enableRecaptcha,
+        recaptchaSiteKey,
+      },
+      session: {
+        currentPhase: EngagementPhase.PreEngagementForm,
+        expanded: false,
+        preEngagementData: {},
+      },
+    });
+
+  beforeEach(() => {
+    jest.resetAllMocks();
+    mockRecaptchaOnChange = undefined;
+    jest.spyOn(sessionDataHandler, 'fetchAndStoreNewSession').mockReturnValue({ token, conversationSid } as any);
+    jest.spyOn(initAction, 'initSession').mockImplementation((data: any) => data);
+  });
+
+  it('renders ReCaptcha widget when enableRecaptcha is true and recaptchaSiteKey is set', () => {
+    const store = createRecaptchaStore(true);
+    const { getByTestId } = render(
+      <Provider store={store}>
+        <PreEngagementFormPhase />
+      </Provider>,
+    );
+    expect(getByTestId('recaptcha-mock')).toBeInTheDocument();
+  });
+
+  it('does not render ReCaptcha widget when enableRecaptcha is false', () => {
+    const store = createRecaptchaStore(false);
+    const { queryByTestId } = render(
+      <Provider store={store}>
+        <PreEngagementFormPhase />
+      </Provider>,
+    );
+    expect(queryByTestId('recaptcha-mock')).not.toBeInTheDocument();
+  });
+
+  it('submit button is disabled when enableRecaptcha is true and ReCaptcha is not verified', () => {
+    const store = createRecaptchaStore(true);
+    const { getByTestId, container } = render(
+      <Provider store={store}>
+        <PreEngagementFormPhase />
+      </Provider>,
+    );
+    expect(getByTestId('recaptcha-mock')).toBeInTheDocument();
+    const submitButton = container.querySelector('[data-test="pre-engagement-start-chat-button"]');
+    expect(submitButton).toBeDisabled();
+  });
+
+  it('submit button is enabled after ReCaptcha is verified', async () => {
+    const store = createRecaptchaStore(true);
+    const { getByTestId, container } = render(
+      <Provider store={store}>
+        <PreEngagementFormPhase />
+      </Provider>,
+    );
+    expect(getByTestId('recaptcha-mock')).toBeInTheDocument();
+    const submitButton = container.querySelector('[data-test="pre-engagement-start-chat-button"]');
+    expect(submitButton).toBeDisabled();
+
+    await act(async () => {
+      mockRecaptchaOnChange?.(true);
+    });
+
+    expect(submitButton).not.toBeDisabled();
+  });
+
+  it('form can be submitted after ReCaptcha is verified', async () => {
+    const store = createRecaptchaStore(true);
+    const { container } = render(
+      <Provider store={store}>
+        <PreEngagementFormPhase />
+      </Provider>,
+    );
+    await act(async () => {
+      mockRecaptchaOnChange?.(true);
+    });
+
+    const formBox = container.querySelector('form') as HTMLFormElement;
+    fireEvent.submit(formBox);
+
+    expect(store.getState().session.currentPhase).toBe(EngagementPhase.Loading);
+    expect(sessionDataHandler.fetchAndStoreNewSession).toHaveBeenCalled();
+  });
+
+  it('form cannot be submitted when ReCaptcha is enabled but not verified', () => {
+    const store = createRecaptchaStore(true);
+    const { container } = render(
+      <Provider store={store}>
+        <PreEngagementFormPhase />
+      </Provider>,
+    );
+    const formBox = container.querySelector('form') as HTMLFormElement;
+    fireEvent.submit(formBox);
+
+    expect(store.getState().session.currentPhase).toBe(EngagementPhase.PreEngagementForm);
+    expect(sessionDataHandler.fetchAndStoreNewSession).not.toHaveBeenCalled();
   });
 });

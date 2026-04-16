@@ -12,10 +12,6 @@
         "insights": ["conversations", "conversation_attribute_4"]
       },
       {
-        "name": "city",
-        "insights": ["conversations", "campaign"]
-      },
-      {
         "name": "ethnicity",
         "insights": ["conversations", "conversation_attribute_9"]
       },
@@ -34,6 +30,14 @@
         {
         "name": "vulnerableGroups",
         "insights": ["conversations", "content"]
+      },
+      {
+        "name": "repeatCaller",
+        "insights": ["conversations", "disposition"]
+      },
+        {
+        "name": "howDidYouHearAboutTheWarmLine",
+        "insights": ["conversations", "conversation_attribute_7"]
       }
     ],
     "caseInformation": [
@@ -42,8 +46,12 @@
         "insights": ["conversations", "initiative"]
       },
       {
-        "name": "howDidYouHearAboutTheWarmLine",
-        "insights": ["conversations", "conversation_attribute_7"]
+        "name": "substanceUseLivedExperience",
+        "insights": ["conversations", "language"]
+      },
+      {
+        "name": "wasTheCallerSatisfiedWithTheSupportProvided",
+        "insights": ["conversations", "outcome"]
       }
     ]
   },

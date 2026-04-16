@@ -24,22 +24,12 @@ import type { Case } from '../../../types/types';
 import type { RootState } from '../..';
 import { useLoadWithRetry } from '../../hooks/useLoadWithRetry';
 
-const useCaseLoader = ({
-  caseId,
-  autoload = true,
-  refresh = true,
-}: {
-  caseId: Case['id'];
-  autoload?: boolean;
-  refresh?: boolean;
-}) => {
+const useCaseLoader = ({ caseId, autoload = true }: { caseId: Case['id']; autoload?: boolean }) => {
   const dispatch = useDispatch();
 
   const error = useSelector((state: RootState) => selectCaseByCaseId(state, caseId)?.error);
   const loading = useSelector((state: RootState) => selectCaseByCaseId(state, caseId)?.loading);
-  const connectedCase = useSelector((state: RootState) => selectCaseByCaseId(state, caseId)?.connectedCase);
-
-  const exists = Boolean(connectedCase);
+  const isAlreadyInState = useSelector((state: RootState) => Boolean(selectCaseByCaseId(state, caseId)?.connectedCase));
 
   const loadCase = useCallback(() => {
     if (!caseId) {
@@ -50,7 +40,7 @@ const useCaseLoader = ({
   }, [caseId, dispatch]);
 
   const safeToLoad = Boolean(caseId);
-  const shouldLoad = autoload || refresh;
+  const shouldLoad = autoload && !isAlreadyInState;
 
   const loader = useLoadWithRetry({
     error,
@@ -69,22 +59,11 @@ const useCaseLoader = ({
 };
 
 // eslint-disable-next-line import/no-unused-modules
-export const useCase = ({
-  caseId,
-  referenceId: _referenceId, // Kept for backward compatibility; no longer used with GC-based state management
-  autoload = true,
-  refresh = false,
-}: {
-  caseId: Case['id'];
-  /** @deprecated No longer used; cases are managed via garbage collection */
-  referenceId?: string;
-  autoload?: boolean;
-  refresh?: boolean;
-}) => {
+export const useCase = ({ caseId, autoload = true }: { caseId: Case['id']; autoload?: boolean }) => {
   const connectedCase = useSelector((state: RootState) => selectCaseByCaseId(state, caseId)?.connectedCase);
 
   return {
     connectedCase,
-    ...useCaseLoader({ caseId, autoload, refresh }),
+    ...useCaseLoader({ caseId, autoload }),
   };
 };

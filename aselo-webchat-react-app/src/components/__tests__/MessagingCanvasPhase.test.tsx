@@ -56,9 +56,20 @@ const conversationMock = {
   getMessagesCount: jest.fn(),
   prepareMessage: jest.fn(),
 };
-const TEST_QUERY = 'TODO: trigger message';
+const TEST_AUTO_FIRST_MESSAGE = 'Incoming webchat contact from';
+const TEST_CUSTOMER_DEFAULT_NAME = 'Anonymous';
+const TEST_QUERY = `${TEST_AUTO_FIRST_MESSAGE} ${TEST_CUSTOMER_DEFAULT_NAME}`;
 const baseReduxState = {
   chat: { conversationState: 'closed', ...BASE_MOCK_REDUX.chat },
+  config: {
+    ...BASE_MOCK_REDUX.config,
+    translations: {
+      'ut-UT': {
+        AutoFirstMessage: TEST_AUTO_FIRST_MESSAGE,
+        'Conversation-Participants-CustomerDefaultName': TEST_CUSTOMER_DEFAULT_NAME,
+      },
+    },
+  },
   session: { token: 'token', ...BASE_MOCK_REDUX.session },
   task: { tasksSids: ['tasksSids'], ...BASE_MOCK_REDUX.task },
 };

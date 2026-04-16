@@ -17,27 +17,87 @@
 // https://www.robinwieruch.de/react-custom-hook-check-if-overflow/
 import React from 'react';
 
+// Walks up the DOM tree and returns all ancestors that have display:none
+const getHiddenAncestors = (node: Element): Element[] => {
+  const hiddenAncestors: Element[] = [];
+
+  let current = node?.parentElement;
+
+  while (current) {
+    if (getComputedStyle(current).display === 'none') {
+      hiddenAncestors.push(current);
+    }
+    current = current.parentElement;
+  }
+
+  return hiddenAncestors;
+};
+
+/**
+ * Computes if a given component (via ref) has overflow, i.e. if it's child content does not fit within the component.
+ *
+ * **IMPORTANT:** if a callback is given, it **MUST** be a stable reference (e.g. wrapped within React.useCallback).
+ */
 export const useIsOverflowing = ({ ref, callback }: { ref: any; callback?: (isOverflowing: boolean) => void }) => {
   const [isOverflow, setOverflow] = React.useState(undefined);
+  const mutationObserversRef = React.useRef<MutationObserver[]>([]);
 
-  React.useLayoutEffect(() => {
-    const { current } = ref;
+  const trigger = React.useCallback(() => {
+    if (!ref.current) {
+      return;
+    }
 
-    const trigger = () => {
-      const hasOverflow = current.scrollHeight > current.clientHeight || current.scrollWidth > current.clientWidth;
+    const hasOverflow =
+      ref.current.scrollHeight > ref.current.clientHeight || ref.current.scrollWidth > ref.current.clientWidth;
 
-      setOverflow(hasOverflow);
+    setOverflow(hasOverflow);
 
-      if (callback) {
-        // eslint-disable-next-line callback-return
-        callback(hasOverflow);
-      }
-    };
-
-    if (current) {
-      trigger();
+    if (callback) {
+      // eslint-disable-next-line callback-return
+      callback(hasOverflow);
     }
   }, [callback, ref]);
 
-  return isOverflow;
+  const cleanupMutationObservers = React.useCallback(() => {
+    mutationObserversRef.current.forEach(obs => obs.disconnect());
+    mutationObserversRef.current = [];
+  }, []);
+
+  const setupObservers = React.useCallback(() => {
+    // Check if any ancestor is hidden — if so, we need MutationObservers as a fallback
+    const hiddenAncestors = getHiddenAncestors(ref.current);
+
+    if (hiddenAncestors.length > 0) {
+      hiddenAncestors.forEach(ancestor => {
+        const mutationObserver = new MutationObserver(() => {
+          // Once the ancestor is no longer hidden, check overflow and clean up
+          // mutation observers since ResizeObserver will take over from here
+          if (getComputedStyle(ancestor).display !== 'none') {
+            trigger();
+          }
+        });
+
+        mutationObserver.observe(ancestor, {
+          attributes: true,
+          attributeFilter: ['style', 'class'], // only watch style/class changes since those are what typically toggle display
+        });
+
+        mutationObserversRef.current.push(mutationObserver);
+      });
+    }
+  }, [trigger, ref]);
+
+  React.useLayoutEffect(() => {
+    trigger();
+  }, [trigger, ref]);
+
+  React.useEffect(() => {
+    setupObservers();
+
+    return () => {
+      cleanupMutationObservers();
+    };
+  }, [ref, setupObservers, cleanupMutationObservers]);
+
+  return { trigger, isOverflowing: isOverflow };
 };

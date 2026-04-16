@@ -50,7 +50,6 @@ const ExpandableText: React.FC<ExpandableTextProps & Partial<StyledProps>> = ({
   children,
   expandLinkText,
   collapseLinkText,
-  className,
   collapsedOverrides = {},
   style = {},
   // eslint-disable-next-line sonarjs/cognitive-complexity
@@ -62,27 +61,18 @@ const ExpandableText: React.FC<ExpandableTextProps & Partial<StyledProps>> = ({
     handleExpand,
     isExpanded,
     isOverflowing,
+    trigger: triggerOverflowing,
     overflowingRef,
   } = useExpandableOnOverflow({});
-  const classes = [];
-  if (className) {
-    classes.push(className);
-  }
-  if (isExpanded) {
-    classes.push('expanded');
-  }
-
   const collapsedStyles = { ...defaultCollapsedStyles, ...collapsedOverrides };
 
   return (
     <div
-      className={`${classes.join(' ')}`}
       style={{
         position: 'relative',
         display: 'flex',
         flexFlow: 'row',
         justifyContent: 'stretch',
-        textOverflow: 'ellipsis',
         ...style,
       }}
     >

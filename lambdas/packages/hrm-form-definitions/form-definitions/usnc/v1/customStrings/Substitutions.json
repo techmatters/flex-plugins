@@ -343,7 +343,7 @@
     "ContactDetails-GeneralDetails-DateTime": "Date/Time",
     "ContactDetails-GeneralDetails-AddedBy": "Added By",
     "ContactDetails-GeneralDetails-HangUpBy": "Who Hung Up",
-    "ContactDetails-GeneralDetails-HangUpBy/Customer": "Service User",
+    "ContactDetails-GeneralDetails-HangUpBy/Customer": "Support Seeker",
     "ContactDetails-GeneralDetails-HangUpBy/Agent": "Supporter",
     "ContactDetails-GeneralDetails-HangUpBy/Consult": "Consulting Supporter",
     "ContactDetails-GeneralDetails-HangUpBy/Warm Transfer": "Transfer",
@@ -577,7 +577,7 @@
     "Conference-Actions-Dial": "Dial",
     "Conference-Participant-Remove": "Remove Participant",
     "Conference-Participant-Hold": "Hold Participant",
-    "Conference-Wrapping-HangupBy/Customer": "Call Ended by Service User",
+    "Conference-Wrapping-HangupBy/Customer": "Call Ended by Support Seeker",
     "Conference-Wrapping-HangupBy/Agent": "Call Ended by Supporter",
     "Conference-Wrapping-HangupBy/Consult": "Call Ended by Consulting Supporter",
     "Conference-Wrapping-HangupBy/Warm Transfer": "Call Ended by Transfer",
@@ -643,6 +643,7 @@
     "Modals-CloseDialog-DiscardButton": "Discard",
     "BrowserNotification-ChatMessage-MaskedTitle": "New message",
     "AsV1-ChildInformationTab-FirstName-Title": "First Name description",
-    "AsV1-ChildInformationTab-FirstName-Content": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+    "AsV1-ChildInformationTab-FirstName-Content": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+    "Toolkit-ConfirmTextOne": "Clicking on this icon will either open up Warm Line Teams Chat (i) or Resources (map) in a new tab in your browser"
   }
 }

@@ -11,13 +11,16 @@
         "hideAddToNewCaseButton": false,
         "enableExternalRecordings": false, 
         "feature_flags": {
-            "use_prepopulate_mappings": true,
+            "enable_assigned_skill_teams_view_filters": true,
+            "enable_conference_status_event_handler": true,
+            "enable_custom_links" : true,
             "enable_hang_up_by_hrm_saving": true,
-            "enable_custom_links" : false,
+            "enable_lex_v2": true,
             "enable_emoji_picker": false,
+            "enable_select_agents_teams_view": true,
             "enable_switchboarding": true,
             "enable_switchboarding_move_tasks": true,
-            "enable_lex_v2": true
+            "use_prepopulate_mappings": true  
         },
         "definitionVersion": "usnc-v1",
         "external_recordings_enabled": false,
