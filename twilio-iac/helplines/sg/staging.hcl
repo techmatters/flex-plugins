@@ -23,7 +23,7 @@ locals {
     channels = {
       webchat : {
         messaging_mode   = "conversations"
-        channel_type     = "web"
+        channel_type     = "chat"
         contact_identity = ""
         templatefile     = "/app/twilio-iac/helplines/templates/studio-flows/messaging-no-chatbot-operating-hours-blocking-lambda-conv-sd.tftpl"
         channel_flow_vars = {
