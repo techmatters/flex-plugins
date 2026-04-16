@@ -21,8 +21,14 @@ locals {
     #Channels
     channels = {
       webchat : {
-        messaging_mode       = "conversations"
         channel_type         = "web"
+        contact_identity     = ""
+        templatefile         = "/app/twilio-iac/helplines/templates/studio-flows/messaging-lex-v2-blocking-lambda-sd.tftpl"
+        channel_flow_vars    = {}
+        chatbot_unique_names = []
+      },
+      chat : {
+        channel_type         = "chat"
         contact_identity     = ""
         templatefile         = "/app/twilio-iac/helplines/templates/studio-flows/messaging-lex-v3-blocking-lambda-sd.tftpl"
         channel_flow_vars    = {}
