@@ -11,4 +11,5 @@
   "alwaysOpen": true,
   "helplineCode": "uscr",
   "enableRecaptcha": false
+  "captureIp": true
 }
