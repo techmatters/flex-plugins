@@ -9,5 +9,6 @@
     "blockedEmojis": []
   },
   "alwaysOpen": false,
-  "helplineCode": "sg"
+  "helplineCode": "sg",
+  "captureIp": true
 }
