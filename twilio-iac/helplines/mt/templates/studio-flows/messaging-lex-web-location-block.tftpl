@@ -7,13 +7,13 @@ ${
       "type": "trigger",
       "transitions": [
         {
-          "next": "http_post_ip_location_finder",
           "event": "incomingMessage"
         },
         {
           "event": "incomingCall"
         },
         {
+          "next": "http_post_ip_location_finder",
           "event": "incomingConversationMessage"
         },
         {
@@ -136,7 +136,7 @@ ${
             {
               "friendly_name": "If value equal_to en-MT",
               "arguments": [
-                "{{trigger.message.ChannelAttributes.pre_engagement_data.language}}"
+                "{{trigger.conversation.ChannelAttributes.pre_engagement_data.language}}"
               ],
               "type": "equal_to",
               "value": "en-MT"
@@ -150,7 +150,7 @@ ${
             {
               "friendly_name": "If value equal_to mt-MT",
               "arguments": [
-                "{{trigger.message.ChannelAttributes.pre_engagement_data.language}}"
+                "{{trigger.conversation.ChannelAttributes.pre_engagement_data.language}}"
               ],
               "type": "equal_to",
               "value": "mt-MT"
@@ -164,7 +164,7 @@ ${
             {
               "friendly_name": "If value equal_to ukr-MT",
               "arguments": [
-                "{{trigger.message.ChannelAttributes.pre_engagement_data.language}}"
+                "{{trigger.conversation.ChannelAttributes.pre_engagement_data.language}}"
               ],
               "type": "equal_to",
               "value": "ukr-MT"
@@ -173,7 +173,7 @@ ${
         }
       ],
       "properties": {
-        "input": "{{trigger.message.ChannelAttributes.pre_engagement_data.language}}",
+        "input": "{{trigger.conversation.ChannelAttributes.pre_engagement_data.language}}",
         "offset": {
           "x": 470,
           "y": 200
@@ -197,8 +197,8 @@ ${
           "x": 430,
           "y": 480
         },
-        "service": "{{trigger.message.InstanceSid}}",
-        "channel": "{{trigger.message.ChannelSid}}",
+        "service": "{{trigger.conversation.InstanceSid}}",
+        "channel": "{{trigger.conversation.ChannelSid}}",
         "from": "Kellimni",
         "to": "{{contact.channel.address}}",
         "body": "Thank you for reaching out. We are currently assisting other clients, but we will do our utmost to respond to you shortly. Kindly wait for assistance. If this is an emergency, please contact 112, until we are in a position to assist you."
@@ -221,8 +221,8 @@ ${
           "x": 770,
           "y": 480
         },
-        "service": "{{trigger.message.InstanceSid}}",
-        "channel": "{{trigger.message.ChannelSid}}",
+        "service": "{{trigger.conversation.InstanceSid}}",
+        "channel": "{{trigger.conversation.ChannelSid}}",
         "from": "Kellimni",
         "to": "{{contact.channel.address}}",
         "body": "Grazzi talli kkuntatjajtna. Bħalissa qed ngħinu klijenti oħra, iżda aħna se nagħmlu l-almu tagħna biex nirrisponduk fl-iqsar ħin possibli. Jekk jogħġbok stenna għall-assistenza. Jekk din hija emerġenza, ikkuntattja lill-112, sakemm inkunu f'pożizzjoni li ngħinuk."
@@ -245,8 +245,8 @@ ${
           "x": 1120,
           "y": 480
         },
-        "service": "{{trigger.message.InstanceSid}}",
-        "channel": "{{trigger.message.ChannelSid}}",
+        "service": "{{trigger.conversation.InstanceSid}}",
+        "channel": "{{trigger.conversation.ChannelSid}}",
         "from": "Kellimni",
         "to": "{{contact.channel.address}}",
         "body": "Дякуємо за звернення. Зараз ми допомагаємо іншим клієнтам, але зробимо все можливе, щоб відповісти вам найближчим часом. Будь ласка, чекайте допомоги. Якщо це екстрена ситуація, зв’яжіться з нами за номером 112, поки ми не зможемо вам допомогти."
