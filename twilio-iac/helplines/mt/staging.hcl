@@ -25,6 +25,7 @@ locals {
 
     channels = {
       webchat : {
+        messaging_mode       = "conversations"
         channel_type         = "web"
         contact_identity     = ""
         templatefile         = "/app/twilio-iac/helplines/mt/templates/studio-flows/messaging-lex-web-location-block.tftpl"
