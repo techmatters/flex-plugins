@@ -11,4 +11,5 @@
   "alwaysOpen": true,
   "helplineCode": "mt",
   "enableRecaptcha": false
+  "captureIp": true
 }
