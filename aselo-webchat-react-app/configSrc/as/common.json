@@ -10,5 +10,6 @@
   },
   "alwaysOpen": false,
   "helplineCode": "as",
-  "enableRecaptcha": true
+  "enableRecaptcha": true,
+  "captureIp": true
 }
