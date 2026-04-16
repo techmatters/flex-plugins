@@ -84,10 +84,6 @@ locals {
         friendly_name = "Meal Break"
         available     = false
       },
-      refused : {
-        friendly_name = "Refused"
-        available     = false
-      },
       meeting : {
         friendly_name = "Meeting"
         available     = false
