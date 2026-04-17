@@ -28,6 +28,8 @@ RUN curl -fsSL https://deb.nodesource.com/setup_22.x | bash - && \
         make \
         cmake \
         unzip \
+        xz-utils \
+        ca-certificates \
         libcurl4-openssl-dev && \
     # aws-lambda-rie provides the scaffolding to run the lambda in a container
     npm install aws-lambda-ric -g && \

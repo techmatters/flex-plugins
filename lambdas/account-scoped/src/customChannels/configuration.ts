@@ -89,7 +89,7 @@ export const getFacebookAppSecret = (): Promise<string> =>
 
 export const getChannelStudioFlowSid = (
   accountSid: AccountSID,
-  channelName: AseloCustomChannel | 'web',
+  channelName: AseloCustomChannel | 'chat',
 ): Promise<string> =>
   getSsmParameter(
     `/${process.env.NODE_ENV}/twilio/${accountSid}/${channelName}_studio_flow_sid`,
