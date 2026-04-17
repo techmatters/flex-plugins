@@ -34,6 +34,7 @@ import LocalizedTemplate from '../localization/LocalizedTemplate';
 import { generateForm } from './forms/formInputs';
 import ReCaptcha from './ReCaptcha';
 
+// eslint-disable-next-line sonarjs/cognitive-complexity
 export const PreEngagementFormPhase = () => {
   const { preEngagementData } = useSelector((state: AppState) => state.session ?? {});
   const { preEngagementFormDefinition, enableRecaptcha, recaptchaSiteKey, aseloBackendUrl } = useSelector(
