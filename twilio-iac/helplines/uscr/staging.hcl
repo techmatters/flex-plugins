@@ -17,6 +17,7 @@ locals {
     #Channels
     channels = {
       webchat : {
+        messaging_mode       = "conversations"
         channel_type         = "web"
         contact_identity     = ""
         templatefile         = "/app/twilio-iac/helplines/uscr/templates/studio-flows/webchat-lambda-sd.tftpl"

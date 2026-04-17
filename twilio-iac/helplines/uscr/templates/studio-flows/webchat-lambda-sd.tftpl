@@ -8,13 +8,13 @@ ${
       "type": "trigger",
       "transitions": [
         {
-          "next": "run_subflow_system_down",
           "event": "incomingMessage"
         },
         {
           "event": "incomingCall"
         },
         {
+          "next": "run_subflow_system_down",
           "event": "incomingConversationMessage"
         },
         {
@@ -72,8 +72,8 @@ ${
           "x": -640,
           "y": 210
         },
-        "service": "{{trigger.message.InstanceSid}}",
-        "channel": "{{trigger.message.ChannelSid}}",
+        "service": "{{trigger.conversation.InstanceSid}}",
+        "channel": "{{trigger.conversation.ChannelSid}}",
         "from": "${flow_vars.widget_from}",
         "to": "{{contact.channel.address}}",
         "body": "${flow_vars.chat_blocked_message}"
@@ -133,7 +133,7 @@ ${
         },
         "workflow": "${workflow_sids.master}",
         "channel": "${task_channel_sids.chat}",
-        "attributes": "{\n  \"e2eTestMode\": \"{{trigger.message.ChannelAttributes.pre_engagement_data.e2eTestMode}}\",\n  \"ip\": \"{{trigger.message.ChannelAttributes.pre_engagement_data.ip}}\",\n  \"firstName\": \"{{trigger.message.ChannelAttributes.from}}\",\n  \"channelType\": \"{{trigger.message.ChannelAttributes.channel_type}}\",\n  \"channelSid\": \"{{trigger.message.ChannelSid}}\",\n  \"helpline\": \"{{trigger.message.ChannelAttributes.pre_engagement_data.helpline}}\",\n  \"language\":\"en-US\",\n  \"ignoreAgent\": \"\",\n  \"transferTargetType\": \"\",\n  \"preEngagementData\": {{trigger.message.ChannelAttributes.pre_engagement_data | to_json}},\n  \"memory\": {{trigger.message.ChannelAttributes.memory | to_json}}\n}\n"
+        "attributes": "{\n  \"e2eTestMode\": \"{{trigger.conversation.ChannelAttributes.pre_engagement_data.e2eTestMode}}\",\n  \"ip\": \"{{trigger.conversation.ChannelAttributes.pre_engagement_data.ip}}\",\n  \"firstName\": \"{{trigger.conversation.ChannelAttributes.from}}\",\n  \"channelType\": \"{{trigger.conversation.ChannelAttributes.channel_type}}\",\n  \"channelSid\": \"{{trigger.conversation.ChannelSid}}\",\n  \"helpline\": \"{{trigger.conversation.ChannelAttributes.pre_engagement_data.helpline}}\",\n  \"language\":\"en-US\",\n  \"ignoreAgent\": \"\",\n  \"transferTargetType\": \"\",\n  \"preEngagementData\": {{trigger.conversation.ChannelAttributes.pre_engagement_data | to_json}},\n  \"memory\": {{trigger.conversation.ChannelAttributes.memory | to_json}}\n}\n"
       }
     },
     {
@@ -175,8 +175,8 @@ ${
           "x": -170,
           "y": 520
         },
-        "service": "{{trigger.message.InstanceSid}}",
-        "channel": "{{trigger.message.ChannelSid}}",
+        "service": "{{trigger.conversation.InstanceSid}}",
+        "channel": "{{trigger.conversation.ChannelSid}}",
         "from": "Bot",
         "message_type": "custom",
         "to": "{{contact.channel.address}}",
