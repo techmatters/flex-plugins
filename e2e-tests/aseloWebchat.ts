@@ -24,7 +24,6 @@ const E2E_ASELO_CHAT_URL = getConfigValue('aseloWebchatUrl') as string;
 export type AseloWebChatPage = {
   fillPreEngagementForm: () => Promise<void>;
   openChat: () => Promise<void>;
-  selectHelpline: (helpline: string) => Promise<void>;
   chat: (statements: ChatStatement[]) => AsyncIterable<ChatStatement>;
   close: () => Promise<void>;
 };
@@ -37,14 +36,8 @@ export async function open(browser: Browser | BrowserContext): Promise<AseloWebC
 
     // Pre-engagement
     preEngagementForm: page.locator('[data-test="pre-engagement-chat-form"]'),
-    helplineSelect: page.locator('select#helpline'),
     startChatButton: page.locator('[data-test="pre-engagement-start-chat-button"]'),
-    firstNameInput: page.locator('input#firstName'),
-    contactIdentifierInput: page.locator('input#contactIdentifier'),
-    ageSelect: page.locator('select#age'),
-    genderSelect: page.locator('select#gender'),
-    termsAndConditionsCheckbox: page.locator('input#termsAndConditions'),
-    termsAndConditionsLabel: page.locator('[data-testid="termsAndConditions-label"]'),
+    nickNameInput: page.locator('input#nickname'),
 
     // Chatting
     chatInput: page.locator('[data-test="message-input-textarea"]'),
@@ -62,25 +55,9 @@ export async function open(browser: Browser | BrowserContext): Promise<AseloWebC
   return {
     fillPreEngagementForm: async () => {
       await selectors.preEngagementForm.waitFor();
-      if (await selectors.firstNameInput.isVisible()) {
-        await selectors.firstNameInput.fill('Test');
-        await selectors.firstNameInput.blur();
-      }
-      if (await selectors.contactIdentifierInput.isVisible()) {
-        await selectors.contactIdentifierInput.fill('test@example.com');
-        await selectors.contactIdentifierInput.blur();
-      }
-      if (await selectors.ageSelect.isVisible()) {
-        await selectors.ageSelect.selectOption('10');
-        await selectors.ageSelect.blur();
-      }
-      if (await selectors.genderSelect.isVisible()) {
-        await selectors.genderSelect.selectOption('Girl');
-        await selectors.genderSelect.blur();
-      }
-      if ((await selectors.termsAndConditionsLabel.count()) > 0) {
-        await selectors.termsAndConditionsLabel.click();
-        await selectors.termsAndConditionsCheckbox.blur();
+      if (await selectors.nickNameInput.isVisible()) {
+        await selectors.nickNameInput.fill('Test');
+        await selectors.nickNameInput.blur();
       }
     },
 
@@ -88,12 +65,6 @@ export async function open(browser: Browser | BrowserContext): Promise<AseloWebC
       await expect(selectors.rootContainer).toHaveCount(0, { timeout: 500 });
       await selectors.entryPointButton.click();
       await expect(selectors.rootContainer).toBeVisible();
-    },
-
-    selectHelpline: async (helpline: string) => {
-      await selectors.preEngagementForm.waitFor();
-      await selectors.helplineSelect.selectOption(helpline);
-      await selectors.helplineSelect.blur();
     },
 
     /**

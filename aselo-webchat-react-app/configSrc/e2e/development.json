@@ -1,6 +1,6 @@
 {
-  "deploymentKey": "CVc98e0e891d4978f80754c43fe328291e",
+  "deploymentKey": "CV1a03787212e74ad21d1df5c0d0f9813c",
   "environment": "development",
   "aseloBackendUrl": "https://hrm-development.tl.techmatters.org",
-  "definitionVersion": "as-v1"
+  "definitionVersion": "e2e-v1"
 }
