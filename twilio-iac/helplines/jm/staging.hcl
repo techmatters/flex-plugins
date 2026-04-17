@@ -27,6 +27,14 @@ locals {
         channel_flow_vars    = {}
         chatbot_unique_names = []
       },
+      chat : {
+        messaging_mode       = "conversations"
+        channel_type         = "chat"
+        contact_identity     = ""
+        templatefile         = "/app/twilio-iac/helplines/templates/studio-flows/messaging-lex-v3-blocking-lambda-sd.tftpl"
+        channel_flow_vars    = {}
+        chatbot_unique_names = []
+      },
       instagram : {
         messaging_mode       = "conversations"
         channel_type         = "custom"
