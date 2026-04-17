@@ -133,7 +133,8 @@ jobs:
           # is ready. initChat is defined in the bundle itself (src/initChat.ts) and handles
           # creating the widget root element, reading URL params, and invoking initWebchat.
           cat >> aselo-chat-uncompressed.js << 'INIT_SCRIPT'
-          ;(function () {
+          ;
+          (function () {
             if (document.readyState === 'loading') {
               document.addEventListener('DOMContentLoaded', function () { window.Twilio.initChat(); });
             } else {
