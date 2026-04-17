@@ -21,7 +21,7 @@ const initWebchat = async (configLocation?: string | URL, overrides: Partial<Con
 
   await store.dispatch(initConfigThunk({ configUrl, overrides }) as any);
 
-  const rootElement = document.getElementById('aselo-webchat-widget-root');
+  const rootElement = document.body;
   logger.info('Now rendering the webchat');
 
   render(
