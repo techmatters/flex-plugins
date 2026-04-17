@@ -1,0 +1,17 @@
+{
+    "MessageInputDisabledReasonHold": "We'll transfer you now. Please hold for a professional.",
+    "EntryPointTagLine": "Chat with us",
+    "PreEngagementDescription": "Let's get started",
+    "Today": "Today",
+    "InputPlaceHolder": "Type Message",
+    "WelcomeMessage": "Welcome to Kellimni!",
+    "Yesterday": "Yesterday",
+    "TypingIndicator": "Professional is typing",
+    "MessageCanvasTrayButton": "Start New Chat",
+    "MessageCanvasTrayContent": "",
+    "AutoFirstMessage": "Incoming webchat contact from",
+    "StartChat": "Start Chat!",
+    "Nickname": "Nickname",
+    "GuestName": "Guest's name. Please enter only your name.",
+    "MessagePhase-MessageBubble-OtherParticipantMessageSenderName": "Professional"
+}
