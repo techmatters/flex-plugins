@@ -8,8 +8,7 @@
     "enabled": true,
     "blockedEmojis": []
   },
-  "alwaysOpen": false,
-  "helplineCode": "as",
-  "enableRecaptcha": true,
+  "alwaysOpen": true,
+  "helplineCode": "jm"
   "captureIp": true
 }
