@@ -69,8 +69,8 @@ ${
           "x": 0,
           "y": 630
         },
-        "service": "{{trigger.incomingConversationMessage.InstanceSid}}",
-        "channel": "{{trigger.incomingConversationMessage.ChannelSid}}",
+        "service": "{{trigger.conversation.InstanceSid}}",
+        "channel": "{{trigger.conversation.ChannelSid}}",
         "from": "${flow_vars.widget_from}",
         "to": "{{contact.channel.address}}",
         "body": "${flow_vars.chat_blocked_message}"
