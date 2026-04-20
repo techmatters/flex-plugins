@@ -30,7 +30,7 @@ locals {
         templatefile         = "
         channel_flow_vars    = {}
         chatbot_unique_names = []
-      }
+      },
       webchat : {
         channel_type         = "web"
         contact_identity     = ""
