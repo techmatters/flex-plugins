@@ -48,12 +48,12 @@ runs:
         aws-secret-access-key: ${{ inputs.aws-secret-access-key }}
         aws-region: ${{ inputs.aws-region }}
     - name: Set Google Sheets credentials
-      uses: "marvinpinto/action-inject-ssm-secrets@latest"
+      uses: ./.github/actions/inject-ssm-secrets
       with:
         ssm_parameter: "GOOGLE_SHEETS_CREDENTIALS"
         env_variable_name: "GOOGLE_SHEETS_CREDENTIALS"
     - name: Set Google Sheets ID
-      uses: "marvinpinto/action-inject-ssm-secrets@latest"
+      uses: ./.github/actions/inject-ssm-secrets
       with:
         ssm_parameter: "CD_GOOGLE_SHEET_ID"
         env_variable_name: "GOOGLE_SHEET_ID"

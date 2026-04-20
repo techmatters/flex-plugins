@@ -36,12 +36,12 @@ runs:
           aws-region: ${{ inputs.aws-region }}
       # Set env vars for Slack action
       - name: Set GITHUB_ACTIONS_SLACK_BOT_TOKEN
-        uses: "marvinpinto/action-inject-ssm-secrets@latest"
+        uses: ./.github/actions/inject-ssm-secrets
         with:
           ssm_parameter: "GITHUB_ACTIONS_SLACK_BOT_TOKEN"
           env_variable_name: "GITHUB_ACTIONS_SLACK_BOT_TOKEN"
       - name: Set ASELO_TRANSLATIONS_CHANNEL_ID
-        uses: "marvinpinto/action-inject-ssm-secrets@latest"
+        uses: ./.github/actions/inject-ssm-secrets
         with:
           ssm_parameter: "ASELO_TRANSLATIONS_CHANNEL_ID"
           env_variable_name: "ASELO_TRANSLATIONS_CHANNEL_ID"

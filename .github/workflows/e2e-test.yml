@@ -39,13 +39,13 @@ jobs:
           aws-region: us-east-1
 
       - name: Set Twilio account SID
-        uses: "marvinpinto/action-inject-ssm-secrets@latest"
+        uses: ./.github/actions/inject-ssm-secrets
         with:
           ssm_parameter: "/development/twilio/E2E/account_sid"
           env_variable_name: "TWILIO_ACCOUNT_SID"
       
       - name: Set Twilio Auth Token
-        uses: "marvinpinto/action-inject-ssm-secrets@latest"
+        uses: ./.github/actions/inject-ssm-secrets
         with:
           ssm_parameter: "/development/twilio/${{env.TWILIO_ACCOUNT_SID}}/auth_token"
           env_variable_name: "TWILIO_AUTH_TOKEN"

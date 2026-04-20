@@ -147,7 +147,7 @@ jobs:
         uses: aws-actions/amazon-ecr-login@v2
 
       - name: Read ECR url from SSM
-        uses: "marvinpinto/action-inject-ssm-secrets@latest"
+        uses: ./.github/actions/inject-ssm-secrets
         with:
           ssm_parameter: /global/lambda/${{ matrix.lambda_path }}/ecr-url
           env_variable_name: ECR_URL

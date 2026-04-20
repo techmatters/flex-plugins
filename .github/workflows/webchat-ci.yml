@@ -31,19 +31,19 @@ jobs:
           aws-region: "us-east-1"
 
       - name: Set ACCOUNT_SID
-        uses: "marvinpinto/action-inject-ssm-secrets@latest"
+        uses: ./.github/actions/inject-ssm-secrets
         with:
           ssm_parameter: "/development/twilio/AS/account_sid"
           env_variable_name: "ACCOUNT_SID"
 
       - name: Set IP_FIND_API_KEY
-        uses: "marvinpinto/action-inject-ssm-secrets@latest"
+        uses: ./.github/actions/inject-ssm-secrets
         with:
           ssm_parameter: "IP_FIND_API_KEY"
           env_variable_name: "IP_FIND_API_KEY"
 
       - name: Set RECAPTCHA_KEY
-        uses: "marvinpinto/action-inject-ssm-secrets@latest"
+        uses: ./.github/actions/inject-ssm-secrets
         with:
           ssm_parameter: "/global/google/recaptcha/site_key"
           env_variable_name: "RECAPTCHA_KEY"
