@@ -82,10 +82,13 @@ COPY e2e-tests /app/e2e-tests
 COPY --chmod=0755 e2e-tests/docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
 COPY e2e-tests/lambda/handler.js /app/e2e-tests/handler.js
 
+# AWS Lambda always sets LAMBDA_TASK_ROOT=/var/task at runtime, overriding any Dockerfile ENV.
+# Symlinking /var/task -> /app/e2e-tests ensures aws-lambda-ric finds handler.js at the expected path.
+RUN ln -sf /app/e2e-tests /var/task
+
 ENV TEST_IN_LAMBDA=true
 ENV XDG_CONFIG_HOME=/tmp/.config
 ENV PLAYWRIGHT_BROWSERS_PATH=/tmp
-ENV LAMBDA_TASK_ROOT=/app/e2e-tests
 
 ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
 CMD ["handler.handler"]
