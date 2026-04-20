@@ -1,1 +1,6 @@
-{}
+{
+  "deploymentKey": "",
+  "environment": "staging",
+  "aseloBackendUrl": "https://hrm-staging.tl.techmatters.org",
+  "definitionVersion": "uscr-v1"
+}
