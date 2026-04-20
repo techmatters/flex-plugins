@@ -1,0 +1,10 @@
+{
+  "WelcomeMessage": "Welcome to The PeerChat Service",
+  "EntryPointTagLine": "The PeerChat Service",
+  "TypingIndicator": "PeerChat Supporter is typing",
+  "MessageCanvasTrayContent": "",
+  "MessageInputDisabledReasonHold": "Please hold for a PeerChat Supporter.",
+  "AutoFirstMessage": "Incoming webchat contact from",
+  "PreEngagementDescription": "Let's get started",
+  "LetsChat": "Let's chat!"
+  }
