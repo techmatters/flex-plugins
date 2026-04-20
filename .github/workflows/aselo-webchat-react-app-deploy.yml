@@ -70,6 +70,9 @@ jobs:
         with:
           string: "${{ inputs.helpline_code }}"
 
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v6
+
       # Setup credentials to access AWS for parameters
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v6
@@ -96,9 +99,6 @@ jobs:
         with:
           ssm_parameter: "/${{ inputs.environment }}/twilio/${{ inputs.helpline_code }}/account_sid"
           env_variable_name: "ACCOUNT_SID"
-
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v6
 
       - name: Use Node.js
         uses: actions/setup-node@v6

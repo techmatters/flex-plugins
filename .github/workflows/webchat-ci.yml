@@ -22,6 +22,9 @@ jobs:
     runs-on: ubuntu-latest
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
       # Setup credentials to access AWS for parameters
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v6
@@ -47,9 +50,6 @@ jobs:
         with:
           ssm_parameter: "/global/google/recaptcha/site_key"
           env_variable_name: "RECAPTCHA_KEY"
-
-      - name: Checkout code
-        uses: actions/checkout@v6
 
       - name: Use Node.js
         uses: actions/setup-node@v6

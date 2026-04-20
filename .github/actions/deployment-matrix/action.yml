@@ -47,6 +47,8 @@ runs:
         aws-access-key-id: ${{ inputs.aws-access-key-id }}
         aws-secret-access-key: ${{ inputs.aws-secret-access-key }}
         aws-region: ${{ inputs.aws-region }}
+    - name: Checkout code
+      uses: actions/checkout@v4
     - name: Set Google Sheets credentials
       uses: ./.github/actions/inject-ssm-secrets
       with:
@@ -57,8 +59,6 @@ runs:
       with:
         ssm_parameter: "CD_GOOGLE_SHEET_ID"
         env_variable_name: "GOOGLE_SHEET_ID"
-    - name: Checkout code
-      uses: actions/checkout@v4
     # Setup python for running the script
     - name: Set up Python
       uses: actions/setup-python@v3
