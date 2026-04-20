@@ -18,7 +18,7 @@ import { Translations, Configuration, MapHelplineLanguage, ContactType } from '.
 import { PreEngagementFormDefinition, EMAIL_PATTERN } from '../src/pre-engagement-form';
 
 const accountSid = 'ACa00e3e32f7ba405cc0f5906906d88e97';
-const flexFlowSid = 'FO468b62cdd84da623f50059a50f01ff92';
+const flexFlowSid = 'FO66f283b916eadebfe4cc5feab7a70521';
 const defaultLanguage = 'en-SG';
 const captureIp = true;
 const checkOpenHours = true;
