@@ -1,6 +1,6 @@
 {
-  "deploymentKey": "CVa52ec437088141bb1de970e9d7cc2c09",
+  "deploymentKey": "",
   "environment": "staging",
   "aseloBackendUrl": "https://hrm-staging.tl.techmatters.org",
-  "definitionVersion": "jm-v1"
+  "definitionVersion": "uscr-v1"
 }

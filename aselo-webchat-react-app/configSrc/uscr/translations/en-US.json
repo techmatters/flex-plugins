@@ -1,0 +1,11 @@
+{
+    "WelcomeMessage": "CIRCLE is an unarmed civilian crisis response alternative to law enforcement, and serves people experiencing homelessness. \nIf violence or weapons are present, call 911 for LAPD response.",
+    "EntryPointTagline": "CIRCLE Response Request",
+    "MessageCanvasTrayContent": "",
+    "MessageInputDisabledReasonHold": "Thank you very much for this information. We'll transfer you now. Please hold for an operator.",
+    "AutoFirstMessage": "Incoming webchat contact from",
+    "PreEngagementConfigDescription": "Thank you for contacting SafeSpot. To chat with a counsellor, please type your name and select the Start Chat button.",
+    "StartChat": "Submit",
+    "TypingIndicator": "CIRCLE Operator is typing",
+    "MessagePhase-MessageBubble-OtherParticipantMessageSenderName": "CIRCLE Operator"
+}
