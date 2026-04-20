@@ -171,7 +171,7 @@ const generateMergedConfigs = async (environment, helplineCode) => {
     for (const env of environments) {
       let environmentSpecific = {};
       try {
-        JSON.parse(
+        environmentSpecific = JSON.parse(
             await fs.readFile(`./configSrc/${shortCode}/${env}.json`, { encoding: 'utf8' }),
         );
       } catch (err) {
