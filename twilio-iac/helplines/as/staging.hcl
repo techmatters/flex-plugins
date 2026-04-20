@@ -23,6 +23,14 @@ locals {
     }
 
     channels = {
+      chat : {
+        messaging_mode       = "conversations"
+        channel_type         = "chat"
+        contact_identity     = ""
+        templatefile         = INSERT APPROPRIATE STUDIO TF FILE HERE
+        channel_flow_vars    = {}
+        chatbot_unique_names = []
+      }
       webchat : {
         channel_type         = "web"
         contact_identity     = ""
