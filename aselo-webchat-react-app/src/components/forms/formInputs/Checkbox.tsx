@@ -37,7 +37,7 @@ const Checkbox: React.FC<Props> = ({ definition, getItem, handleChange, defaultV
 
   return (
     <Box style={{ marginBottom: '20px' }}>
-      <Label htmlFor={name}>
+      <Label htmlFor={name} data-testid={`${name}-label`}>
         <CheckboxInput
           id={name}
           hasError={Boolean(error)}
