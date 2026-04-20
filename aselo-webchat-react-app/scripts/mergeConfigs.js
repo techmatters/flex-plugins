@@ -171,7 +171,7 @@ const generateMergedConfigs = async (environment, helplineCode) => {
         await fs.readFile(`./configSrc/${shortCode}/${env}.json`, { encoding: 'utf8' }),
       );
 
-      const mergedConfig = merge(defaults, helplineCommon, environmentSpecific, { translations: mergedTranslations }, secrets);
+      const mergedConfig = merge({}, defaults, helplineCommon, environmentSpecific, { translations: mergedTranslations }, secrets);
       await fs.mkdir(`./mergedConfigs/${shortCode}`, { recursive: true });
       await fs.writeFile(`./mergedConfigs/${shortCode}/${env}.json`, JSON.stringify(mergedConfig, null, 2));
       console.info(`Merged configs generated for ${shortCode}/${env}`);

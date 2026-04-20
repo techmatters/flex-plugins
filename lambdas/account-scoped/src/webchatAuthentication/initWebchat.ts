@@ -129,7 +129,7 @@ export const initWebchatHandler: AccountScopedHandler = async (request, accountS
   // Hit Webchat Orchestration endpoint to generate conversation and get customer participant sid
   const result = await contactWebchatOrchestrator({
     accountSid,
-    studioFlowSid: await getChannelStudioFlowSid(accountSid, 'web'),
+    studioFlowSid: await getChannelStudioFlowSid(accountSid, 'chat'),
     formData,
     customerFriendlyName,
   });
