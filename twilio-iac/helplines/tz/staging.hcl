@@ -7,7 +7,7 @@ locals {
     enable_post_survey                    = true
     lex_v2_bot_languages                  = { }
     enable_datadog_monitoring             = false
-    custom_task_routing_filter_expression = "channelType IN [ 'whatsapp', 'instagram'] OR (channelType IN ['web', 'chat'] AND preEngagementData.area == 'Main Land') OR (channelType IN ['web', 'chat'] AND preEngagementData.language == 'sw_TZ' AND worker.routing.skills HAS 'Swahili') OR (channelType IN ['messenger'] AND facebookPage == 'mainland') OR twilioNumber == 'instagram:17841472327571934'"
+    custom_task_routing_filter_expression = "channelType IN [ 'whatsapp', 'instagram'] OR (channelType IN ['web'] AND preEngagementData.area == 'Main Land') OR (channelType IN ['web'] AND preEngagementData.language == 'sw_TZ' AND worker.routing.skills HAS 'Swahili') OR (channelType IN ['messenger'] AND facebookPage == 'mainland') OR twilioNumber == 'instagram:17841472327571934'"
 
     #Studio flow
     flow_vars = {
