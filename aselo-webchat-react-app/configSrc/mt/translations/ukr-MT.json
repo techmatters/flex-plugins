@@ -13,5 +13,6 @@
     "AutoFirstMessage": "Вхідний чат",
     "StartChat": "Почати чат!",
     "Nickname": "нікнейм",
+    "RequiredFieldError": "Будь ласка, заповніть обов'язкові поля.",
     "MessagePhase-MessageBubble-OtherParticipantMessageSenderName": "Professional"
 }
