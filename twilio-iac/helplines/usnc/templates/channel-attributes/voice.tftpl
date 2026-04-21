@@ -1,0 +1,14 @@
+{
+  "type": "inbound",
+  "name": "{{trigger.call.From}}",
+  "ignoreAgent": "",
+  "helpline":"${helpline}",
+  "transferTargetType": "",
+  "memory": {
+    "liveMonitoringConsent":"{{flow.variables.liveMonitorConsent}}"
+  },
+  "channelType": "voice",
+   "conversations": {
+    "hang_up_by": "Customer"
+  }
+}

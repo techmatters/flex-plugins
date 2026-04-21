@@ -20,7 +20,15 @@ locals {
       error_message                         = "There has been an error with your message, please try writing us again."
     }
     channels = {
-      webchat : {
+      aselo_webchat : {
+        channel_type         = "chat"
+        messaging_mode       = "conversations"
+        contact_identity     = "CV1a03787212e74ad21d1df5c0d0f9813c"
+        templatefile         = "/app/twilio-iac/helplines/templates/studio-flows/messaging-lex-v3-blocking-lambda.tftpl"
+        channel_flow_vars    = {}
+        chatbot_unique_names = []
+      }
+      legacy_webchat : {
         channel_type         = "web"
         contact_identity     = ""
         templatefile         = "/app/twilio-iac/helplines/templates/studio-flows/messaging-lex-v2-blocking-lambda.tftpl"
@@ -29,5 +37,18 @@ locals {
       }
     }
     get_profile_flags_for_identifier_base_url = "https://hrm-development.tl.techmatters.org/lambda/twilio/account-scoped"
+    #System Down Configuration
+    system_down_templatefile = "/app/twilio-iac/helplines/templates/studio-flows/system-down.tftpl"
+    enable_system_down    = true
+    system_down_flow_vars    = {
+      is_system_down   = "false"
+      message = "We're currently experiencing technical issues, and your message may not be delivered. We're working to resolve the problem and will be back online shortly. We apologize for the inconvenience."
+      voice_message = "We're currently experiencing technical issues, and your call may not reach us. We're working to resolve the problem and will be back online shortly. We apologize for the inconvenience."
+      send_studio_message_function_sid= "ZH685b490234930c08ac7d34cfc2c2285c"
+      call_action = "message"
+      forward_number = "+123"
+      recording_url = "https://<place_holder>.mp3"
+
+    }
   }
 }

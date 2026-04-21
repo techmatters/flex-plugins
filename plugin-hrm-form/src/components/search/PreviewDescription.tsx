@@ -24,7 +24,6 @@ export const PreviewDescription = styled(ExpandableText)<ExpandableTextProps>`
   color: #000000;
   font-family: Open Sans, serif;
   text-align: left;
-  width: 100%;
 `;
 
 PreviewDescription.displayName = 'PreviewDescription';

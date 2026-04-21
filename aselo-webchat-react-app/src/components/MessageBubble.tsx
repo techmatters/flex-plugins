@@ -37,6 +37,8 @@ import {
   readStatusStyles,
   bubbleAndAvatarContainerStyles,
 } from './styles/MessageBubble.styles';
+import { selectCurrentTranslations } from '../store/config.reducer';
+import { localizeKey } from '../localization/localizeKey';
 
 const doubleDigit = (number: number) => `${number < 10 ? 0 : ''}${number}`;
 
@@ -56,12 +58,12 @@ export const MessageBubble = ({
 }) => {
   const [read, setRead] = useState(false);
   const [isMouseDown, setIsMouseDown] = useState(false);
-  const { conversationsClient, participants, fileAttachmentConfig, participantNames } = useSelector(
+  const { conversationsClient, participants, fileAttachmentConfig, currentTranslations } = useSelector(
     (state: AppState) => ({
       conversationsClient: state.chat.conversationsClient,
       participants: state.chat.participants,
       fileAttachmentConfig: state.config.fileAttachment,
-      participantNames: state.chat.participantNames,
+      currentTranslations: selectCurrentTranslations(state),
     }),
   );
   const messageRef = useRef<HTMLDivElement>(null);
@@ -129,7 +131,15 @@ export const MessageBubble = ({
   };
 
   // const author = users?.find((u) => u.identity === message.author)?.friendlyName || message.author;
-  const name = participantNames ? participantNames[message.participantSid] : '';
+  let name: string;
+  if (belongsToCurrentUser) {
+    name = 'MessagePhase-MessageBubble-OwnMessageSenderName';
+  } else if (message.participantSid) {
+    name = 'MessagePhase-MessageBubble-OtherParticipantMessageSenderName';
+  } else {
+    name = message.author || '';
+  }
+  const translatedName = localizeKey(currentTranslations)(name);
 
   return (
     <Box
@@ -151,10 +161,10 @@ export const MessageBubble = ({
         )}
         <Box {...getInnerContainerStyles(belongsToCurrentUser)}>
           <Flex hAlignContent="between" width="100%" vAlignContent="center" marginBottom="space20">
-            <Text {...authorStyles} as="p" aria-hidden style={{ textOverflow: 'ellipsis' }} title={name}>
-              {name}
+            <Text {...authorStyles} as="p" aria-hidden style={{ textOverflow: 'ellipsis' }} title={translatedName}>
+              {translatedName}
             </Text>
-            <ScreenReaderOnly as="p">{belongsToCurrentUser ? 'You sent at' : `${name} sent at`}</ScreenReaderOnly>
+            <ScreenReaderOnly as="p">{`${translatedName} sent at`}</ScreenReaderOnly>
             <Text {...timeStampStyles} as="p">
               {`${doubleDigit(message.dateCreated.getHours())}:${doubleDigit(message.dateCreated.getMinutes())}`}
             </Text>

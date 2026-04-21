@@ -72,6 +72,7 @@ const validBody = ({
 });
 
 describe('ModicaToFlex', () => {
+  const userUpdate = jest.fn();
   beforeEach(() => {
     mockTwilioClient = {
       conversations: {
@@ -88,6 +89,13 @@ describe('ModicaToFlex', () => {
           },
           participantConversations: {
             list: () => [{ conversationState: 'active' }],
+          },
+          users: {
+            get: (identifier: string) => {
+              return {
+                update: userUpdate.mockResolvedValue({ identifier }),
+              };
+            },
           },
         },
       },
@@ -116,7 +124,6 @@ describe('ModicaToFlex', () => {
       { body: validBody() } as HttpRequest,
       ACCOUNT_SID,
     );
-
     expect(result).toBeDefined();
     expect(isOk(result)).toBe(true);
   });

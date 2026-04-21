@@ -20,6 +20,7 @@ import { ThunkAction } from 'redux-thunk';
 import { PreEngagementFormItem } from 'hrm-form-definitions';
 
 import { AppState, EngagementPhase, Notification, PreEngagementData, PreEngagementDataItem } from '../definitions';
+import { getUserIp } from '../../ipTracker';
 import {
   ACTION_ADD_MULTIPLE_MESSAGES,
   ACTION_ADD_NOTIFICATION,
@@ -141,6 +142,26 @@ export const updatePreEngagementDataField = ({
   };
 };
 
+export const updatePreEngagementDataFields = (
+  fields: { name: string; value: PreEngagementDataItem['value'] }[],
+): ThunkAction<void, AppState, unknown, AnyAction> => {
+  return (dispatch, getState) => {
+    const state = getState();
+    const formFields = state.config.preEngagementFormDefinition?.fields ?? [];
+
+    const updatedData = fields.reduce<PreEngagementData>((accum, { name, value }) => {
+      const definition = formFields.find(fd => fd.name === name);
+      const updatedItem = updateDataItem({ definition: definition as PreEngagementFormItem, value });
+      return { ...accum, [name]: updatedItem };
+    }, state.session.preEngagementData);
+
+    dispatch({
+      type: ACTION_UPDATE_PRE_ENGAGEMENT_DATA,
+      payload: updatedData,
+    });
+  };
+};
+
 const newInitialItem = (definition: PreEngagementFormItem): PreEngagementDataItem => ({
   error: null,
   dirty: false,
@@ -169,8 +190,13 @@ export const submitAndInitChatThunk = (): ThunkAction<void, AppState, unknown, A
     try {
       const preEngagementDataValues = Object.entries(data).reduce(
         (accum, [name, { value }]) => ({ ...accum, [name]: value }),
-        {},
+        {} as Record<string, unknown>,
       );
+
+      if (state.config.captureIp && state.config.ipLookupServiceApiKey) {
+        preEngagementDataValues.ip = await getUserIp(state.config.ipLookupServiceApiKey);
+      }
+
       const sessionData = await sessionDataHandler.fetchAndStoreNewSession({
         formData: preEngagementDataValues,
       });

@@ -26,7 +26,7 @@
     "isPII": true,
     "options": [
       {
-        "value": "Unknown",
+        "value": "",
         "label": ""
       },
       {
@@ -90,7 +90,7 @@
     "unknownOption": "Unknown",
     "options": [
       {
-        "value": "Unknown",
+        "value": "",
         "label": ""
       },
       {
@@ -170,7 +170,7 @@
     "type": "select",
     "options": [
       {
-        "value": "Unknown",
+        "value": "",
         "label": ""
       },
       {
@@ -967,7 +967,7 @@
     "type": "select",
     "options": [
       {
-        "value": "Unknown",
+        "value": "",
         "label": ""
       },
       {
@@ -991,7 +991,7 @@
     "type": "select",
     "options": [
       {
-        "value": "Unknown",
+        "value": "",
         "label": ""
       },
       {
@@ -1039,7 +1039,7 @@
     "type": "select",
     "options": [
       {
-        "value": "Unknown",
+        "value": "",
         "label": ""
       },
       {
@@ -1381,7 +1381,7 @@
     "type": "select",
     "options": [
       {
-        "value": "Unknown",
+        "value": "",
         "label": ""
       },
       {
@@ -1413,7 +1413,7 @@
     "type": "select",
     "options": [
       {
-        "value": "Unknown",
+        "value": "",
         "label": ""
       },
       {
@@ -1671,7 +1671,7 @@
     "type": "select",
     "options": [
       {
-        "value": "Unknown",
+        "value": "",
         "label": ""
       },
       {
@@ -1751,7 +1751,7 @@
     "type": "select",
     "options": [
       {
-        "value": "Unknown",
+        "value": "",
         "label": ""
       },
       {

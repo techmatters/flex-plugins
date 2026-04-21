@@ -35,7 +35,7 @@ import {
 } from '../../../styles';
 import { RootState } from '../../../states';
 import { newCloseModalAction, newGoBackAction } from '../../../states/routing/actions';
-import type { Case, CaseOverview, CustomITask, StandaloneITask } from '../../../types/types';
+import type { CustomITask, StandaloneITask } from '../../../types/types';
 import { recordingErrorHandler } from '../../../fullStory';
 import { CaseSummaryWorkingCopy } from '../../../states/case/types';
 import CloseCaseDialog from '../CloseCaseDialog';
@@ -146,9 +146,10 @@ const EditCaseOverview: React.FC<EditCaseOverviewProps> = ({ task, can }) => {
     return {
       status: connectedCase.status,
       ...connectedCase.info,
+      ...(workingCopy ?? {}),
       ...formValues,
     };
-  }, [connectedCase.info, connectedCase.status, getValues]);
+  }, [connectedCase.info, connectedCase.status, getValues, workingCopy]);
 
   useEffect(() => {
     if (!workingCopy) {

@@ -21,6 +21,7 @@ export const formStyles: BoxStyleProps = {
   borderTopWidth: 'borderWidth10',
   borderTopStyle: 'solid',
   padding: 'space20',
+  position: 'relative',
 };
 
 export const innerInputStyles: BoxStyleProps = {
@@ -56,4 +57,11 @@ export const filePreviewContainerStyles: BoxStyleProps = {
   position: 'relative',
   paddingLeft: 'space30',
   paddingRight: 'space30',
+};
+
+export const emojiPickerPopupStyles: BoxStyleProps = {
+  position: 'absolute',
+  bottom: '100%',
+  right: 'space0',
+  zIndex: 'zIndex10',
 };

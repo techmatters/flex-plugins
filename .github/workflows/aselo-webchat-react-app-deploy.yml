@@ -66,7 +66,7 @@ jobs:
       # Change String Case for Helpline Code
       - name: Change String Case for Helpline Code
         id: helpline_code
-        uses: "ASzc/change-string-case-action@v6"
+        uses: "ASzc/change-string-case-action@v8"
         with:
           string: "${{ inputs.helpline_code }}"
 
@@ -141,7 +141,7 @@ jobs:
       # Send Slack notifying success
       - name: Slack Aselo channel
         id: slack
-        uses: slackapi/slack-github-action@v2.1.1
+        uses: slackapi/slack-github-action@v3.0.1
         if: ${{ inputs.send-slack-message != 'false' }}
         with:
           method: chat.postMessage

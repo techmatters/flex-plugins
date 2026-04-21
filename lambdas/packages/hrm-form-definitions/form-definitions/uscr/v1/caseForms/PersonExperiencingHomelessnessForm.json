@@ -1,5 +1,11 @@
 [
   {
+    "name": "repeatEngagement",
+    "label": "Repeat Engagement",
+    "type": "checkbox",
+    "isPII": false
+  },
+  {
     "name": "firstName",
     "label": "First Name",
     "type": "input",

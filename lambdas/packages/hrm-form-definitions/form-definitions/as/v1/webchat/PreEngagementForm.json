@@ -4,6 +4,13 @@
   "fields": [
     {
       "type": "input",
+      "name": "friendlyName",
+      "label": "Nickname",
+      "placeholder": "GuestName",
+      "required": true
+    },
+    {
+      "type": "input",
       "name": "firstName",
       "label": "First Name",
       "placeholder": "GuestName",

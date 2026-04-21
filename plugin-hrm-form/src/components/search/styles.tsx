@@ -112,11 +112,13 @@ export const SummaryText = styled(FontOpenSans)`
 `;
 
 export const PreviewRow = styled(Row)<Partial<BannerContainerProps>>`
+  width: 100%;
   ${({ color }) => (color ? `background-color: ${colors.background[color]}` : '')};
   ${({ color }) => (color ? `border-bottom: 2px solid ${colors.border[color]}` : '')};
   margin-top: 10px;
   padding: 0 20px 5px 20px;
 `;
+PreviewRow.displayName = 'PreviewRow';
 
 export const SubtitleValue = styled(SummaryText)`
   padding-inline-end: 10px;

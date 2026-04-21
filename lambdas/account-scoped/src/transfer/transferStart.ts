@@ -18,14 +18,13 @@ import { AccountScopedHandler, HttpRequest } from '../httpTypes';
 import { AccountSID, TaskSID, WorkerSID } from '@tech-matters/twilio-types';
 import {
   getConversationsTransferWorkflow,
+  getMasterWorkflowSid,
   getTwilioClient,
   getWorkspaceSid,
 } from '@tech-matters/twilio-configuration';
 import { newMissingParameterResult } from '../httpErrors';
 import { isErr, newErr, newOk, Result } from '../Result';
 import { WorkerInstance } from 'twilio/lib/rest/taskrouter/v1/workspace/worker';
-import { getSsmParameter } from '@tech-matters/ssm-cache';
-import { retrieveServiceConfigurationAttributes } from '../configuration/aseloConfiguration';
 
 export type Body = {
   taskSid: TaskSID;
@@ -37,26 +36,6 @@ export type Body = {
 // Only used for direct transfers of conversations, not programmable chat channels
 const DIRECT_TRANSFER_QUEUE_FRIENDLY_NAME = 'Everyone';
 
-// Annoying having to get the legacy name, but we can remove it as soon as programmable chat is gone
-export const getProgrammableChatTransferWorkflowSid = async (
-  accountSid: AccountSID,
-): Promise<string> => {
-  const environment = process.env.NODE_ENV!;
-  let shortEnv = 'DEV';
-  switch (environment.toLowerCase()) {
-    case 'production':
-      shortEnv = 'PROD';
-      break;
-    case 'staging':
-      shortEnv = 'STG';
-      break;
-  }
-  const attributes = await retrieveServiceConfigurationAttributes(
-    await getTwilioClient(accountSid),
-  );
-
-  return getSsmParameter(`${shortEnv}_TWILIO_${attributes.helpline_code.toUpperCase()}`);
-};
 async function setDummyChannelToTask(
   accountSid: AccountSID,
   sid: string,
@@ -349,8 +328,7 @@ export const transferStartHandler: AccountScopedHandler = async (
       });
     }
   } else {
-    const programmableChatTransferWorkflowSid =
-      await getProgrammableChatTransferWorkflowSid(accountSid);
+    const programmableChatTransferWorkflowSid = await getMasterWorkflowSid(accountSid);
     // Edit channel attributes so that original task won't cause issues with the transferred one
     await setDummyChannel(accountSid, {
       mode,

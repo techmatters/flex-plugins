@@ -1,0 +1,64 @@
+{
+    "slotTypeName": "true_false",
+    "slotTypeValues": [
+        {
+            "sampleValue": {
+                "value": "TRUE"
+            },
+            "synonyms": [
+                {
+                    "value": "Yah"
+                },
+                {
+                    "value": "Y"
+                },
+                {
+                    "value": "Yeah"
+                },
+                {
+                    "value": "Ya"
+                },
+                {
+                    "value": "1"
+                },
+                {
+                    "value": "One"
+                },
+                {
+                    "value": "True"
+                }
+            ]
+        },
+        {
+            "sampleValue": {
+                "value": "FALSE"
+            },
+            "synonyms": [
+                {
+                    "value": "Na"
+                },
+                {
+                    "value": "Nah"
+                },
+                {
+                    "value": "Noo"
+                },
+                {
+                    "value": "N"
+                },
+                {
+                    "value": "2"
+                },
+                {
+                    "value": "Two"
+                },
+                {
+                    "value": "False"
+                }
+            ]
+        }
+    ],
+    "valueSelectionSetting": {
+        "resolutionStrategy": "TopResolution"
+    }
+}

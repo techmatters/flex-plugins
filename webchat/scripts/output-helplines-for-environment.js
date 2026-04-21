@@ -23,6 +23,15 @@ const path = require('path');
 
 const CONFIGURATIONS_PATH = path.join(__dirname, '../configurations');
 
+/**
+ * Helplines that have been fully migrated to the new Aselo Webchat React App
+ * and should no longer be deployed to via the legacy Webchat 2 production deploy workflow.
+ * Add a helpline code (uppercase) to this list once it has been migrated and there
+ * is no intention to roll back to legacy Webchat 2.
+ * This is a temporary measure while the migration is ongoing.
+ */
+const PRODUCTION_MIGRATION_EXCLUSION_LIST = [];
+
 const getEnvironment = () => {
   const ENVIRONMENTS = ['development', 'staging', 'production'];
   const environment = process.argv[2];
@@ -43,7 +52,8 @@ function main() {
   const environment = getEnvironment();
   const helplinesForEnvironment = configFilenames
     .filter((filename) => filename.includes(environment))
-    .map((filename) => filename.split('-')[0].toUpperCase());
+    .map((filename) => filename.split('-')[0].toUpperCase())
+    .filter((helpline) => environment !== 'production' || !PRODUCTION_MIGRATION_EXCLUSION_LIST.includes(helpline));
   console.log(JSON.stringify(helplinesForEnvironment));
 }
 

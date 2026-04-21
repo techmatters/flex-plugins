@@ -1,0 +1,332 @@
+${
+  jsonencode({
+  "description": "${flow_description}",
+  "states": [
+    {
+      "name": "Trigger",
+      "type": "trigger",
+      "transitions": [
+        {
+          "event": "incomingMessage"
+        },
+        {
+          "next": "run_subflow_system_down",
+          "event": "incomingCall"
+        },
+        {
+          "event": "incomingConversationMessage"
+        },
+        {
+          "event": "incomingRequest"
+        },
+        {
+          "event": "incomingParent"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": -70,
+          "y": -770
+        }
+      }
+    },
+    {
+      "name": "run_subflow_system_down",
+      "type": "run-subflow",
+      "transitions": [
+        {
+          "next": "f_getProfileFlagsForIdentifier",
+          "event": "completed"
+        },
+        {
+          "next": "f_getProfileFlagsForIdentifier",
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "flow_sid": "${system_down_studio_subflow_sid}",
+        "flow_revision": "LatestPublished",
+        "offset": {
+          "x": 20,
+          "y": -530
+        },
+        "parameters": [
+          {
+            "type": "string",
+            "value": "true",
+            "key": "system_down"
+          }
+        ]
+      }
+    },
+    {
+      "name": "f_getProfileFlagsForIdentifier",
+      "type": "make-http-request",
+      "transitions": [
+        {
+          "next": "split_contact_routing",
+          "event": "success"
+        },
+        {
+          "next": "play_message_voice_prequeue",
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": -350,
+          "y": -280
+        },
+        "method": "POST",
+        "content_type": "application/json;charset=utf-8",
+        "add_twilio_auth": false,
+        "body": "{ \"trigger\": {{trigger | to_json}}}",
+        "url": "${lambda_twilio_account_scoped_url}/getProfileFlagsForIdentifier"
+      }
+    },
+    {
+      "name": "split_contact_routing",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "play_message_voice_prequeue",
+          "event": "noMatch"
+        },
+        {
+          "next": "play_message_voice_blocked",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value contains blocked",
+              "arguments": [
+                "{{widgets.f_getProfileFlagsForIdentifier.parsed.flags}}"
+              ],
+              "type": "contains",
+              "value": "blocked"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{widgets.f_getProfileFlagsForIdentifier.parsed.flags}}",
+        "offset": {
+          "x": -690,
+          "y": -60
+        }
+      }
+    },
+    {
+      "name": "play_message_voice_blocked",
+      "type": "say-play",
+      "transitions": [
+        {
+          "event": "audioComplete"
+        }
+      ],
+      "properties": {
+        "voice": "Polly.Danielle-Neural",
+        "offset": {
+          "x": -820,
+          "y": 340
+        },
+        "say": "${channel_flow_vars.play_message_voice_blocked}",
+        "language": "en-US"
+      }
+    },
+    {
+      "name": "send_to_queue",
+      "type": "send-to-flex",
+      "transitions": [
+        {
+          "event": "callComplete"
+        },
+        {
+          "next": "http_post_webhook_notify_error",
+          "event": "failedToEnqueue"
+        },
+        {
+          "next": "http_post_webhook_notify_error",
+          "event": "callFailure"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 80,
+          "y": 1810
+        },
+        "attributes": "${channel_attributes.default}",
+        "workflow": "${workflow_sids.master}",
+        "channel": "${task_channel_sids.voice}"
+      }
+    },
+    {
+      "name": "play_message_voice_prequeue",
+      "type": "say-play",
+      "transitions": [
+        {
+          "next": "gather_live_monitoring_consent",
+          "event": "audioComplete"
+        }
+      ],
+      "properties": {
+        "play": "${channel_flow_vars.play_message_voice_prequeue}",
+        "offset": {
+          "x": -350,
+          "y": 460
+        },
+        "loop": 1
+      }
+    },
+    {
+      "name": "http_post_webhook_notify_error",
+      "type": "make-http-request",
+      "transitions": [
+        {
+          "event": "success"
+        },
+        {
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 380,
+          "y": 2090
+        },
+        "method": "POST",
+        "content_type": "application/json;charset=utf-8",
+        "add_twilio_auth": false,
+        "body": "{ \"text\": \"Issue detected [Failed to Enqueue] on USNC STG Flow SID: {{flow.flow_sid}} Execution SID: {{flow.sid}}  \" }",
+        "url": "${webhook_url_studio_errors}"
+      }
+    },
+    {
+      "name": "gather_live_monitoring_consent",
+      "type": "gather-input-on-call",
+      "transitions": [
+        {
+          "next": "split_live_monitoring_consent",
+          "event": "keypress"
+        },
+        {
+          "next": "gather_live_monitoring_consent",
+          "event": "speech"
+        },
+        {
+          "next": "gather_live_monitoring_consent",
+          "event": "timeout"
+        }
+      ],
+      "properties": {
+        "play": "${channel_flow_vars.gather_live_monitoring_consent}",
+        "number_of_digits": 1,
+        "speech_timeout": "5",
+        "offset": {
+          "x": -330,
+          "y": 820
+        },
+        "loop": 1,
+        "finish_on_key": "#",
+        "stop_gather": true,
+        "gather_language": "en",
+        "speech_model": "default"
+      }
+    },
+    {
+      "name": "split_live_monitoring_consent",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "gather_live_monitoring_consent",
+          "event": "noMatch"
+        },
+        {
+          "next": "set_var_live_monitoring_consent_yes",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to 1",
+              "arguments": [
+                "{{widgets.gather_live_monitoring_consent.Digits}}"
+              ],
+              "type": "equal_to",
+              "value": "1"
+            }
+          ]
+        },
+        {
+          "next": "set_var_live_monitoring_consent_no",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to 2",
+              "arguments": [
+                "{{widgets.gather_live_monitoring_consent.Digits}}"
+              ],
+              "type": "equal_to",
+              "value": "2"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{widgets.gather_live_monitoring_consent.Digits}}",
+        "offset": {
+          "x": -240,
+          "y": 1110
+        }
+      }
+    },
+    {
+      "name": "set_var_live_monitoring_consent_yes",
+      "type": "set-variables",
+      "transitions": [
+        {
+          "next": "send_to_queue",
+          "event": "next"
+        }
+      ],
+      "properties": {
+        "variables": [
+          {
+            "type": "string",
+            "value": "Yes",
+            "key": "liveMonitorConsent"
+          }
+        ],
+        "offset": {
+          "x": -300,
+          "y": 1400
+        }
+      }
+    },
+    {
+      "name": "set_var_live_monitoring_consent_no",
+      "type": "set-variables",
+      "transitions": [
+        {
+          "next": "send_to_queue",
+          "event": "next"
+        }
+      ],
+      "properties": {
+        "variables": [
+          {
+            "type": "string",
+            "value": "No",
+            "key": "liveMonitorConsent"
+          }
+        ],
+        "offset": {
+          "x": 90,
+          "y": 1390
+        }
+      }
+    }
+  ],
+  "initial_state": "Trigger",
+  "flags": {
+    "allow_concurrent_calls": true
+  }
+})
+}

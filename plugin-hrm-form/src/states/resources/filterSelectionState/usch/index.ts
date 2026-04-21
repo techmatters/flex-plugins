@@ -150,7 +150,7 @@ const moveDefaultOptionToHead = ({
   defaultOptionValue: string;
 }) => {
   const defaultOptionIndex = options.findIndex(o => o.value === defaultOptionValue);
-  const containsDefaultOption = defaultOptionIndex > 0;
+  const containsDefaultOption = defaultOptionIndex > -1;
   if (!containsDefaultOption) {
     return { sortedOptions: options, containsDefaultOption };
   }

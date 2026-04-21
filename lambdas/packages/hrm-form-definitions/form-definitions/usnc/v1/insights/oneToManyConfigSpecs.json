@@ -1,0 +1,24 @@
+[
+    {
+    "attributeName": "campaign",
+    "insightsObject": "conversation",
+    "paths": [
+      "contactForm.childInformation.state",
+      "contactForm.childInformation.city"
+    ]
+  },
+  {
+    "attributeName": "conversation_attribute_10",
+    "insightsObject": "conversations",
+    "paths": [
+      "savedContact.id"
+    ],
+    "saveForNonDataContacts": true
+  },
+  {
+    "attributeName": "conversation_attribute_5",
+    "insightsObject": "conversations",
+    "paths": ["savedContact.profileId"],
+    "saveForNonDataContacts": true
+  }
+]

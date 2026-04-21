@@ -1,0 +1,100 @@
+{
+  "slotTypeName": "militaryStatus",
+  "slotTypeValues": [
+    {
+      "sampleValue": {
+        "value": "Active Duty"
+      },
+      "synonyms": [
+        { "value": "1" },
+        { "value": "active duty" },
+        { "value": "active" },
+        { "value": "currently serving" },
+        { "value": "in the military" }
+      ]
+    },
+    {
+      "sampleValue": {
+        "value": "Retired"
+      },
+      "synonyms": [
+        { "value": "2" },
+        { "value": "retired" },
+        { "value": "military retired" }
+      ]
+    },
+    {
+      "sampleValue": {
+        "value": "Veteran (non-career)"
+      },
+      "synonyms": [
+        { "value": "3" },
+        { "value": "veteran" },
+        { "value": "vet" },
+        { "value": "former military" }
+      ]
+    },
+    {
+      "sampleValue": {
+        "value": "Non-Military"
+      },
+      "synonyms": [
+        { "value": "4" },
+        { "value": "non military" },
+        { "value": "civilian" },
+        { "value": "not military" },
+        { "value": "no military" }
+      ]
+    },
+    {
+      "sampleValue": {
+        "value": "National Guard/Reserves"
+      },
+      "synonyms": [
+        { "value": "5" },
+        { "value": "national guard" },
+        { "value": "reserves" },
+        { "value": "guard" }
+      ]
+    },
+    {
+      "sampleValue": {
+        "value": "Military Partner"
+      },
+      "synonyms": [
+        { "value": "6" },
+        { "value": "military spouse" },
+        { "value": "partner in military" },
+        { "value": "spouse military" }
+      ]
+    },
+    {
+      "sampleValue": {
+        "value": "Military Family Member"
+      },
+      "synonyms": [
+        { "value": "7" },
+        { "value": "military family" },
+        { "value": "family in military" },
+        { "value": "family member military" }
+      ]
+    },
+    {
+      "sampleValue": {
+        "value": "Unknown"
+      },
+      "synonyms": [
+        { "value": "0" },
+        { "value": "unknown" },
+        { "value": "prefer not to say" },
+        { "value": "rather not say" },
+        { "value": "prefer not to answer" },
+        { "value": "x" },
+        { "value": "X" }
+      ]
+    }
+  ],
+  "valueSelectionSetting": {
+    "resolutionStrategy": "TopResolution"
+  }
+}

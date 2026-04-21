@@ -24,6 +24,10 @@
     "placeholder": "NoCaseSummary",
     "rows": 5,
     "width": 300,
+    "description": {
+      "title": "Nature of Crisis - Title",
+      "content": "Nature of Crisis - Description"
+    },
     "isPII": true
   }
 ]

@@ -23,6 +23,14 @@ locals {
     }
 
     channels = {
+      chat : {
+        messaging_mode       = "conversations"
+        channel_type         = "chat"
+        contact_identity     = "/app/twilio-iac/helplines/as/templates/studio-flows/messaging-blocking-lambda-location-block-sd-v2.tftpl"
+        templatefile         = "
+        channel_flow_vars    = {}
+        chatbot_unique_names = []
+      }
       webchat : {
         channel_type         = "web"
         contact_identity     = ""

@@ -336,7 +336,7 @@ describe('handleGetProfileFlagsForIdentifier', () => {
       expect(result.error.statusCode).toEqual(400);
       expect(mockGetFromInternalHrmEndpoint).not.toBeCalled();
     });
-    test('web conversations channel returns 400 error result', async () => {
+    test('web conversations channel returns 200 unmodified result', async () => {
       // Act
       const result = await handleGetProfileFlagsForIdentifier(
         newProfileFlagsForIdentifierRequest(
@@ -345,14 +345,18 @@ describe('handleGetProfileFlagsForIdentifier', () => {
         TEST_ACCOUNT_SID,
       );
       // Assert
-      if (isOk(result)) {
+      if (isErr(result)) {
         throw new AssertionError({
-          message: 'Expected an error response',
+          message: 'Expected a successful response',
           actual: result,
         });
       }
-      expect(result.error.statusCode).toEqual(400);
-      expect(mockGetFromInternalHrmEndpoint).not.toBeCalled();
+      expect(result.data).toEqual({ flags: ['fish in microwave', 'too cheerful'] });
+      expect(mockGetFromInternalHrmEndpoint).toHaveBeenCalledWith(
+        TEST_ACCOUNT_SID,
+        'v1',
+        `profiles/identifier/speedy geraldine/flags`,
+      );
     });
 
     test('Invalid trigger returns 400 error result', async () => {
