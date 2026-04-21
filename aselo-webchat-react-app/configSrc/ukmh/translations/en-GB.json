@@ -6,5 +6,6 @@
   "MessageInputDisabledReasonHold": "Please hold for a PeerChat Supporter.",
   "AutoFirstMessage": "Incoming webchat contact from",
   "PreEngagementDescription": "Let's get started",
-  "LetsChat": "Let's chat!"
+  "LetsChat": "Let's chat!",
+  "MessagePhase-MessageBubble-OtherParticipantMessageSenderName": "PeerChat Supporter"
   }

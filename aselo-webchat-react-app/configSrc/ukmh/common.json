@@ -10,5 +10,6 @@
   },
   "alwaysOpen": true,
   "helplineCode": "ukmh",
-  "captureIp": true
+  "captureIp": true,
+  "definitionVersion": "ukmh-v1"
 }
