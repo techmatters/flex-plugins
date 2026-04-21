@@ -1,0 +1,32 @@
+# Copyright (C) 2021-2025 Technology Matters
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Affero General Public License as published
+# by the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Affero General Public License for more details.
+#
+# You should have received a copy of the GNU Affero General Public License
+# along with this program.  If not, see https://www.gnu.org/licenses/.
+
+name: 'inject-ssm-secrets'
+description: 'Fetch an AWS SSM parameter and set it as a masked environment variable. Requires AWS credentials to already be configured.'
+inputs:
+  ssm_parameter:
+    description: 'The SSM parameter name or path to fetch (e.g. "/development/twilio/AS/account_sid" or "MY_PARAM")'
+    required: true
+  env_variable_name:
+    description: 'The environment variable name to set with the fetched SSM parameter value'
+    required: true
+runs:
+  using: "composite"
+  steps:
+    - name: Fetch SSM parameter and set env variable
+      shell: bash
+      run: |
+        VALUE=$(aws ssm get-parameter --name "${{ inputs.ssm_parameter }}" --with-decryption --query "Parameter.Value" --output text)
+        echo "::add-mask::$VALUE"
+        echo "${{ inputs.env_variable_name }}=$VALUE" >> $GITHUB_ENV
