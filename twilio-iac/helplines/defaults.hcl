@@ -15,6 +15,7 @@ locals {
   enable_external_recordings = false
 
   channel_attributes = {
+    chat : "/app/twilio-iac/helplines/templates/channel-attributes/chat-conversations.tftpl"
     webchat : "/app/twilio-iac/helplines/templates/channel-attributes/webchat.tftpl"
     voice : "/app/twilio-iac/helplines/templates/channel-attributes/voice.tftpl"
     default : "/app/twilio-iac/helplines/templates/channel-attributes/default.tftpl"
