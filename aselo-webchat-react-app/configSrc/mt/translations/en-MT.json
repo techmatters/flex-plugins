@@ -14,5 +14,6 @@
     "StartChat": "Start Chat!",
     "Nickname": "Nickname",
     "GuestName": "Guest's name. Please enter only your name.",
+    "RequiredFieldError": "Please fill out required fields.",
     "MessagePhase-MessageBubble-OtherParticipantMessageSenderName": "Professional"
 }
