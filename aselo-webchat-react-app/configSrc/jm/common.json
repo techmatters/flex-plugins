@@ -8,7 +8,7 @@
     "enabled": true,
     "blockedEmojis": []
   },
-  "alwaysOpen": true,
+  "alwaysOpen": false,
   "helplineCode": "jm",
   "captureIp": true
 }
