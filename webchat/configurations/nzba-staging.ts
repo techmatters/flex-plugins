@@ -202,9 +202,21 @@ const preEngagementConfig: PreEngagementFormDefinition = {
       label: 'How are you feeling right now? (0 = calm / okay → 10 = extremely upset or distressed)',
     },
     {
-      label: 'n the past year, have you been on a waitlist for 1 month or longer for professional mental health services?',
+      label: 'In the past year, have you been on a waitlist for 1 month or longer for professional mental health services?',
       type: 'select',
       name: 'onWaitinglist',
+      required: true,
+      defaultValue: '',
+      options: [
+        { value: "", label: "" }, 
+        { value: "Yes", label: "Yes" }, 
+        { value: "No", label: "No" }
+      ],
+    },
+    {
+      label: 'Is this the first time you have chatted with us?',
+      type: 'select',
+      name: 'firstTime',
       required: true,
       defaultValue: '',
       options: [
