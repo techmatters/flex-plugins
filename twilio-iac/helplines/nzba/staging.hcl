@@ -23,7 +23,7 @@ locals {
       webchat : {
         channel_type         = "web"
         contact_identity     = ""
-        templatefile         = "/app/twilio-iac/helplines/templates/studio-flows/messaging-lex-v2-blocking-lambda.tftpl"
+        templatefile         = "/app/twilio-iac/helplines/templates/studio-flows/messaging-blocking-preq-lambda-sd.tftpl"
         channel_flow_vars    = {}
         chatbot_unique_names = []
       },
@@ -38,6 +38,18 @@ locals {
         }
         chatbot_unique_names = []
       },
+    }
+
+    system_down_templatefile = "/app/twilio-iac/helplines/templates/studio-flows/system-down.tftpl"
+    enable_system_down       = true
+    system_down_flow_vars = {
+      is_system_down                   = "false"
+      message                          = "We're sorry — we're experiencing technical difficulties and may not be able to respond right now. Your message is important and we hope to reconnect soon. If you'd like support in the meantime, you can call or text 988, or call 911 if you are in immediate danger. Thank you for your patience."
+      voice_message                    = "Hello. You have reached the North Carolina Warm Line. Unfortunately, we are experiencing technical difficulties and cannot take your call right now. We're sorry for the inconvenience. If you would like immediate support, you can call or text 988 to reach the Suicide & Crisis Lifeline, or call 911 if you are in immediate danger. Please try again later. Thank you for your understanding."
+      send_studio_message_function_sid = "ZHbbf0fb1ec68a5aacc31e8c50415b97bb"
+      call_action                      = "message"
+      forward_number                   = "+123"
+      recording_url                    = "https://<place_holder>.mp3"
     }
 
     get_profile_flags_for_identifier_base_url = "https://hrm-staging-eu.tl.techmatters.org/lambda/twilio/account-scoped"
