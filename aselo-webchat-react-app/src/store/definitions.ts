@@ -82,6 +82,7 @@ export type ConfigState = {
   recaptchaSiteKey?: string;
   captureIp?: boolean;
   ipLookupServiceApiKey?: string;
+  contactIdentifierField?: string;
 };
 
 export type Notification = {
