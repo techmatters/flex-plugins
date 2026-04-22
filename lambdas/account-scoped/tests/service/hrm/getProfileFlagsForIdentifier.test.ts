@@ -78,6 +78,13 @@ describe('getProfileFlagsForIdentifier endpoint', () => {
     trigger: {
       conversation: {
         Author: 'telegram:bobs-address',
+        ChannelAttributes: {
+          pre_engagement_data: {
+            contactIdentifier: '1.2.3.4',
+          },
+          from: 'bob',
+          channel_type: 'telegram',
+        },
       },
     },
   };
