@@ -191,12 +191,16 @@ class SessionDataHandler {
 
     try {
       const { config } = store.getState();
+      const preEngagementData = {
+        ...formData,
+        ...(config.contactIdentifierField ? { contactIdentifier: formData[config.contactIdentifierField] } : {}),
+      };
       const payload: InitWebchatAPIPayload = {
         DeploymentKey: this.getDeploymentKey(),
         CustomerFriendlyName:
           (formData?.friendlyName as string) ||
           localizeKey(config.translations[config.currentLocale ?? config.defaultLocale])(CUSTOMER_DEFAULT_NAME_KEY),
-        PreEngagementData: JSON.stringify(formData),
+        PreEngagementData: JSON.stringify(preEngagementData),
       };
 
       if (customerIdentity) {

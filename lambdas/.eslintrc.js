@@ -24,7 +24,7 @@ module.exports = {
     '@typescript-eslint/quotes': 'off',
     'import/prefer-default-export': 'off',
     // This rule gives false positives in CI for some reason.
-    // When getSsmParameter was moved to a separate library, calling it with 'return await getSssmParameter'
+    // When getSsmParameter was moved to a separate library, calling it with 'return await getSsmParameter'
     '@typescript-eslint/return-await': 'warn',
   },
   settings: {

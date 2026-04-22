@@ -14,7 +14,12 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
+// eslint-disable-next-line import/order
+import { resetMockRedux } from '../../__mocks__/redux/mockRedux';
+
+// eslint-disable-next-line import/order
 import { render, fireEvent } from '@testing-library/react';
+
 import '@testing-library/jest-dom';
 import { useSelector } from 'react-redux';
 
@@ -23,12 +28,6 @@ import * as genericActions from '../../store/actions/genericActions';
 import { sessionDataHandler } from '../../sessionDataHandler';
 import { EngagementPhase } from '../../store/definitions';
 import WebChatLogger from '../../logger';
-
-jest.mock('react-redux', () => ({
-  ...jest.requireActual('react-redux'),
-  useDispatch: () => jest.fn(),
-  useSelector: jest.fn(),
-}));
 
 jest.mock('../../sessionDataHandler', () => ({
   sessionDataHandler: {
@@ -97,7 +96,7 @@ const defaultState = {
 };
 
 describe('Conversation Ended', () => {
-  const newChatButtonText = 'Start new chat';
+  const newChatButtonTestId = 'start-new-chat-button';
 
   beforeAll(() => {
     Object.defineProperty(window, 'Twilio', {
@@ -111,6 +110,7 @@ describe('Conversation Ended', () => {
 
   beforeEach(() => {
     (useSelector as jest.Mock).mockImplementation((callback: any) => callback(defaultState));
+    resetMockRedux({});
   });
 
   afterEach(() => {
@@ -124,8 +124,8 @@ describe('Conversation Ended', () => {
   });
 
   it('renders the new chat button', () => {
-    const { queryByText } = render(<ConversationEnded />);
-    const newChatButton = queryByText(newChatButtonText);
+    const { queryByTestId } = render(<ConversationEnded />);
+    const newChatButton = queryByTestId(newChatButtonTestId);
 
     expect(newChatButton).toBeInTheDocument();
   });
@@ -133,8 +133,8 @@ describe('Conversation Ended', () => {
   it('clears session data on new chat button click', () => {
     const clearSessionDataSpy = jest.spyOn(sessionDataHandler, 'clear');
 
-    const { queryByText } = render(<ConversationEnded />);
-    const newChatButton = queryByText(newChatButtonText) as Element;
+    const { queryByTestId } = render(<ConversationEnded />);
+    const newChatButton = queryByTestId(newChatButtonTestId) as Element;
 
     fireEvent.click(newChatButton);
 
@@ -144,8 +144,8 @@ describe('Conversation Ended', () => {
   it('changes engagement phase to engagement form on new chat button click', () => {
     const changeEngagementPhaseSpy = jest.spyOn(genericActions, 'changeEngagementPhase');
 
-    const { queryByText } = render(<ConversationEnded />);
-    const newChatButton = queryByText(newChatButtonText) as Element;
+    const { queryByTestId } = render(<ConversationEnded />);
+    const newChatButton = queryByTestId(newChatButtonTestId) as Element;
     fireEvent.click(newChatButton);
 
     expect(changeEngagementPhaseSpy).toHaveBeenCalledWith({ phase: EngagementPhase.PreEngagementForm });
@@ -154,8 +154,8 @@ describe('Conversation Ended', () => {
   it('resets pre-engagement data on new chat button click', () => {
     const updatePreEngagementDataSpy = jest.spyOn(genericActions, 'updatePreEngagementData');
 
-    const { queryByText } = render(<ConversationEnded />);
-    const newChatButton = queryByText(newChatButtonText) as Element;
+    const { queryByTestId } = render(<ConversationEnded />);
+    const newChatButton = queryByTestId(newChatButtonTestId) as Element;
     fireEvent.click(newChatButton);
 
     expect(updatePreEngagementDataSpy).toHaveBeenCalledWith({});

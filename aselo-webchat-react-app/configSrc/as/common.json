@@ -11,5 +11,6 @@
   "alwaysOpen": false,
   "helplineCode": "as",
   "enableRecaptcha": true,
-  "captureIp": true
+  "captureIp": true,
+  "contactIdentifierField": "ip"
 }
