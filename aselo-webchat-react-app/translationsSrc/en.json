@@ -9,5 +9,8 @@
   "Header-TitleBar-Title": "Live Chat",
   "MessagePhase-MessageList-ChatStartMessage": "Chat Started",
   "MessagePhase-MessageBubble-OtherParticipantMessageSenderName": "Counsellor",
-  "MessagePhase-MessageBubble-OwnMessageSenderName": "You"
+  "MessagePhase-MessageBubble-OwnMessageSenderName": "You",
+  "MessagePhase-ConversationEnded-Heading": "Thanks for chatting with us!",
+  "MessagePhase-ConversationEnded-Detail": "If you have any more questions, feel free to reach out again.",
+  "MessagePhase-ConversationEnded-Button": "Start new chat"
 }
