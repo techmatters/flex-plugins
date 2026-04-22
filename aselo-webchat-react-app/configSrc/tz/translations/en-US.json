@@ -6,5 +6,6 @@
   "PreEngagementDescription": "Thank you for contacting National Child Helpline (116). To chat with a counsellor, please type your name and select the Start Chat button.",
   "WhatIsYourName": "What is your name?",
   "StartChat": "Start Chat!",
-  "SelectLanguage": "Select your language"
+  "SelectLanguage": "Select your language",
+  "MessagePhase-MessageBubble-OtherParticipantMessageSenderName": "Counsellor"
 }

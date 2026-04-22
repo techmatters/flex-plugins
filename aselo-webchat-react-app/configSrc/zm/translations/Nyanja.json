@@ -11,5 +11,6 @@
   "MessageCanvasTrayContent": "",
   "AutoFirstMessage": "",
   "StartChat": "Yambani kulankhula!",
-  "SelectLanguage": "Select your language"
+  "SelectLanguage": "Select your language",
+  "MessagePhase-MessageBubble-OtherParticipantMessageSenderName": "Counsellor"
 }

@@ -11,5 +11,6 @@
   "MessageCanvasTrayContent": "",
   "AutoFirstMessage": "",
   "StartChat": "Twayayi twisambe!",
-  "SelectLanguage": "Select your language"
+  "SelectLanguage": "Select your language",
+  "MessagePhase-MessageBubble-OtherParticipantMessageSenderName": "Counsellor"
 }

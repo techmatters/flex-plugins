@@ -6,5 +6,6 @@
   "PreEngagementDescription": "Asante kwa kuwasiliana na National Child Helpline (116). Ili kuzungumza na mshauri, tafadhali andika jina lako na bonyeza kitufe cha Anza Gumzo.",
   "WhatIsYourName": "Jina lako ni nani?",
   "StartChat": "Anza Gumzo!",
-  "SelectLanguage": "Chagua lugha yako"
+  "SelectLanguage": "Chagua lugha yako",
+  "MessagePhase-MessageBubble-OtherParticipantMessageSenderName": "Counsellor"
 }

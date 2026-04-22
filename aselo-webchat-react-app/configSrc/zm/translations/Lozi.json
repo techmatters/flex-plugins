@@ -11,5 +11,6 @@
   "MessageCanvasTrayContent": "",
   "AutoFirstMessage": "Incoming webchat contact from",
   "StartChat": "Alukalise kwa mbola!",
-  "SelectLanguage": "Select your language"
+  "SelectLanguage": "Select your language",
+  "MessagePhase-MessageBubble-OtherParticipantMessageSenderName": "Counsellor"
 }
