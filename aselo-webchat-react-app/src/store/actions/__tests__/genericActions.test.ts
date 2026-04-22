@@ -30,6 +30,7 @@ import {
   removeNotification,
   submitAndInitChatThunk,
   updatePreEngagementData,
+  updatePreEngagementDataFields,
 } from '../genericActions';
 import { EngagementPhase, Notification } from '../../definitions';
 import {
@@ -43,6 +44,7 @@ import { SessionReducer } from '../../session.reducer';
 import * as initActionsModule from '../initActions';
 import { sessionDataHandler } from '../../../sessionDataHandler';
 import { notifications } from '../../../notifications';
+import * as ipTracker from '../../../ipTracker';
 
 jest.mock('@twilio/conversations');
 
@@ -165,6 +167,57 @@ describe('Actions', () => {
   });
 });
 
+describe('updatePreEngagementDataFields', () => {
+  const formFields = [
+    { name: 'firstName', type: FormInputType.Input, label: 'First name' },
+    { name: 'email', type: FormInputType.Email, label: 'Email' },
+  ];
+
+  const emptyPreEngagementData = {};
+  const getState = jest.fn();
+
+  beforeEach(() => {
+    jest.resetAllMocks();
+    getState.mockReturnValue({
+      config: { preEngagementFormDefinition: { fields: formFields } },
+      session: { preEngagementData: emptyPreEngagementData },
+    });
+  });
+
+  it('dispatches a single ACTION_UPDATE_PRE_ENGAGEMENT_DATA action with all fields updated', () => {
+    const dispatch = jest.fn();
+    const fieldsToUpdate = [
+      { name: 'firstName', value: 'Alice' },
+      { name: 'email', value: 'alice@example.com' },
+    ];
+    updatePreEngagementDataFields(fieldsToUpdate)(dispatch as any, getState as any, undefined);
+
+    expect(dispatch).toHaveBeenCalledTimes(1);
+    const dispatched = dispatch.mock.calls[0][0];
+    expect(dispatched.type).toBe('ACTION_UPDATE_PRE_ENGAGEMENT_DATA');
+    expect(dispatched.payload.firstName.value).toBe('Alice');
+    expect(dispatched.payload.email.value).toBe('alice@example.com');
+  });
+
+  it('merges updated fields with existing pre-engagement data', () => {
+    getState.mockReturnValue({
+      config: { preEngagementFormDefinition: { fields: formFields } },
+      session: { preEngagementData: { firstName: { value: 'Old', error: null, dirty: true } } },
+    });
+    const dispatch = jest.fn();
+    updatePreEngagementDataFields([{ name: 'email', value: 'new@example.com' }])(
+      dispatch as any,
+      getState as any,
+      undefined,
+    );
+
+    expect(dispatch).toHaveBeenCalledTimes(1);
+    const dispatched = dispatch.mock.calls[0][0];
+    expect(dispatched.payload.firstName.value).toBe('Old');
+    expect(dispatched.payload.email.value).toBe('new@example.com');
+  });
+});
+
 describe('submitAndInitChatThunk', () => {
   const token = 'token';
   const conversationSid = 'sid';
@@ -208,5 +261,75 @@ describe('submitAndInitChatThunk', () => {
 
     expect(dispatch).toHaveBeenCalledWith(addNotification(notifications.failedToInitSessionNotification(errorMessage)));
     expect(dispatch).toHaveBeenCalledWith(changeEngagementPhase({ phase: EngagementPhase.PreEngagementForm }));
+  });
+
+  it('should include ip in form data when captureIp is enabled and ipLookupServiceApiKey is set', async () => {
+    const mockIp = '192.168.1.1';
+    const apiKey = 'test-api-key';
+    jest.spyOn(ipTracker, 'getUserIp').mockResolvedValue(mockIp);
+    (sessionDataHandler.fetchAndStoreNewSession as jest.Mock).mockResolvedValue({ token, conversationSid });
+    (initActionsModule.initSession as jest.Mock).mockReturnValue({ type: 'MOCK_INIT_SESSION' });
+
+    const getStateWithIp = jest.fn(() => ({
+      config: {
+        preEngagementFormDefinition: { fields: formFields },
+        captureIp: true,
+        ipLookupServiceApiKey: apiKey,
+      },
+      session: { preEngagementData },
+    }));
+
+    const dispatch = jest.fn();
+    await submitAndInitChatThunk()(dispatch as any, getStateWithIp as any, undefined);
+
+    expect(ipTracker.getUserIp).toHaveBeenCalledWith(apiKey);
+    expect(sessionDataHandler.fetchAndStoreNewSession).toHaveBeenCalledWith({
+      formData: { friendlyName: 'John', ip: mockIp },
+    });
+  });
+
+  it('should not fetch ip when captureIp is false', async () => {
+    jest.spyOn(ipTracker, 'getUserIp').mockResolvedValue('1.2.3.4');
+    (sessionDataHandler.fetchAndStoreNewSession as jest.Mock).mockResolvedValue({ token, conversationSid });
+    (initActionsModule.initSession as jest.Mock).mockReturnValue({ type: 'MOCK_INIT_SESSION' });
+
+    const getStateWithoutIp = jest.fn(() => ({
+      config: {
+        preEngagementFormDefinition: { fields: formFields },
+        captureIp: false,
+        ipLookupServiceApiKey: 'test-api-key',
+      },
+      session: { preEngagementData },
+    }));
+
+    const dispatch = jest.fn();
+    await submitAndInitChatThunk()(dispatch as any, getStateWithoutIp as any, undefined);
+
+    expect(ipTracker.getUserIp).not.toHaveBeenCalled();
+    expect(sessionDataHandler.fetchAndStoreNewSession).toHaveBeenCalledWith({
+      formData: { friendlyName: 'John' },
+    });
+  });
+
+  it('should not fetch ip when captureIp is true but ipLookupServiceApiKey is not set', async () => {
+    jest.spyOn(ipTracker, 'getUserIp').mockResolvedValue('1.2.3.4');
+    (sessionDataHandler.fetchAndStoreNewSession as jest.Mock).mockResolvedValue({ token, conversationSid });
+    (initActionsModule.initSession as jest.Mock).mockReturnValue({ type: 'MOCK_INIT_SESSION' });
+
+    const getStateWithoutApiKey = jest.fn(() => ({
+      config: {
+        preEngagementFormDefinition: { fields: formFields },
+        captureIp: true,
+      },
+      session: { preEngagementData },
+    }));
+
+    const dispatch = jest.fn();
+    await submitAndInitChatThunk()(dispatch as any, getStateWithoutApiKey as any, undefined);
+
+    expect(ipTracker.getUserIp).not.toHaveBeenCalled();
+    expect(sessionDataHandler.fetchAndStoreNewSession).toHaveBeenCalledWith({
+      formData: { friendlyName: 'John' },
+    });
   });
 });

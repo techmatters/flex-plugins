@@ -61,6 +61,15 @@
         "printOrder": 3,
         "caseHomeLocation": "timeline"
       },
+      "dutyOfCare": {
+         "previewFields": [
+           "date",
+           "location"
+         ],
+         "splitFormAt": 2,
+         "printOrder": 3,
+         "caseHomeLocation": "timeline"
+       },
       "document": {
         "splitFormAt": 1,
         "caseHomeOrder": 4,

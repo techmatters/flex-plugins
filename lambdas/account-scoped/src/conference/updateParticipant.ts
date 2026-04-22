@@ -53,18 +53,17 @@ export const updateParticipantHandler: AccountScopedHandler = async (
   }
 
   const client = await getTwilioClient(accountSid);
-  const participant = await client
-    .conferences(conferenceSid)
-    .participants(callSid)
-    .fetch();
   try {
+    const participant = await client.conferences
+      .get(conferenceSid)
+      .participants(callSid)
+      .fetch();
     await participant.update(parsedUpdates);
   } catch (error) {
     const restError = error as RestException;
     if (restError.status === 404) {
-      const message = `Participant with call sid ${callSid} not found on ${accountSid}/${conferenceSid}`;
-      // Often errors of this type are thrown but the recording appears to pause at the correct point.
-      console.warn(message, error);
+      const message = `Participant with call sid ${callSid} not found on ${accountSid}/${conferenceSid}, cannot update`;
+      console.error(message, error);
       return newErr({
         message,
         error: {

@@ -6,7 +6,7 @@ locals {
   local_config = {
     enable_post_survey                    = true
     enable_datadog_monitoring             = false
-    custom_task_routing_filter_expression = "channelType IN ['web']"
+    custom_task_routing_filter_expression = "channelType IN ['web','chat']"
     use_prepopulate_mappings              = true
 
     #Studio flow
@@ -20,6 +20,14 @@ locals {
         channel_type         = "web"
         contact_identity     = ""
         templatefile         = "/app/twilio-iac/helplines/ukmh/templates/studio-flows/messaging-greeting-message-blocking.tftpl"
+        channel_flow_vars    = {}
+        chatbot_unique_names = []
+      },
+      chat : {
+        channel_type         = "chat"
+        messaging_mode = "conversations"
+        contact_identity     = ""
+        templatefile         = "/app/twilio-iac/helplines/ukmh/templates/studio-flows/messaging-greeting-message-blocking-conv.tftpl"
         channel_flow_vars    = {}
         chatbot_unique_names = []
       }

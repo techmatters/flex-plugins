@@ -1,18 +1,20 @@
 ${
-  jsonencode({
+  jsonencode(
+    {
+  "description": "${flow_description}"
   "states": [
     {
       "name": "Trigger",
       "type": "trigger",
       "transitions": [
         {
-          "next": "run_subflow_system_down",
           "event": "incomingMessage"
         },
         {
           "event": "incomingCall"
         },
         {
+          "next": "run_subflow_system_down",
           "event": "incomingConversationMessage"
         },
         {
@@ -30,15 +32,15 @@ ${
       }
     },
     {
-      "name": "f_getProfileFlagsForIdentifier",
+      "name": "getProfileFlagsForIdentifier",
       "type": "make-http-request",
       "transitions": [
         {
-          "next": "split_based_on_client_flag",
+          "next": "contact_routing",
           "event": "success"
         },
         {
-          "next": "send_to_queue",
+          "next": "attributes",
           "event": "failed"
         }
       ],
@@ -49,12 +51,13 @@ ${
         },
         "method": "POST",
         "content_type": "application/json;charset=utf-8",
+        "add_twilio_auth": false,
         "body": "{ \"trigger\": {{trigger | to_json}}, \"channelType\": \"{% if trigger.conversation.ChannelAttributes.channel_type %}{{trigger.conversation.ChannelAttributes.channel_type}}{% else %}{{trigger.conversation.Source | downcase}}{% endif %}\"}",
         "url": "${get_profile_flags_for_identifier_base_url}/getProfileFlagsForIdentifier"
       }
     },
     {
-      "name": "send_message_blocked",
+      "name": "send_blocked_message",
       "type": "send-message",
       "transitions": [
         {
@@ -69,29 +72,29 @@ ${
           "x": -640,
           "y": 210
         },
-        "service": "{{trigger.message.InstanceSid}}",
-        "channel": "{{trigger.message.ChannelSid}}",
+        "service": "{{trigger.conversation.InstanceSid}}",
+        "channel": "{{trigger.conversation.ChannelSid}}",
         "from": "${flow_vars.widget_from}",
         "to": "{{contact.channel.address}}",
         "body": "${flow_vars.chat_blocked_message}"
       }
     },
     {
-      "name": "split_based_on_client_flag",
+      "name": "contact_routing",
       "type": "split-based-on",
       "transitions": [
         {
-          "next": "send_message_webchat_welcome_prequeue",
+          "next": "attributes",
           "event": "noMatch"
         },
         {
-          "next": "send_message_blocked",
+          "next": "send_blocked_message",
           "event": "match",
           "conditions": [
             {
               "friendly_name": "If value contains blocked",
               "arguments": [
-                "{{widgets.f_getProfileFlagsForIdentifier.parsed.flags}}"
+                "{{widgets.getProfileFlagsForIdentifier.parsed.flags}}"
               ],
               "type": "contains",
               "value": "blocked"
@@ -100,7 +103,7 @@ ${
         }
       ],
       "properties": {
-        "input": "{{widgets.f_getProfileFlagsForIdentifier.parsed.flags}}",
+        "input": "{{widgets.getProfileFlagsForIdentifier.parsed.flags}}",
         "offset": {
           "x": -690,
           "y": -60
@@ -108,56 +111,33 @@ ${
       }
     },
     {
-      "name": "send_message_webchat_welcome_prequeue",
-      "type": "send-message",
+      "name": "attributes",
+      "type": "send-to-flex",
       "transitions": [
         {
-          "event": "sent",
-          "next": "send_to_queue"
-        },
-        {
-          "event": "failed"
-        }
-      ],
-      "properties": {
-        "offset": {
-          "x": -640,
-          "y": 210
-        },
-        "service": "{{trigger.message.InstanceSid}}",
-        "channel": "{{trigger.message.ChannelSid}}",
-        "from": "${flow_vars.widget_from}",
-        "to": "{{contact.channel.address}}",
-        "body": "${flow_vars.send_message_webchat_welcome_prequeue}"
-      }
-    },
-    {
-      "transitions": [
-        {
+          "next": "send_confirmation",
           "event": "callComplete"
         },
         {
-          "next": "http_post_notify_failed_to_enqueue",
+          "next": "webhook_notify_failed_to_enqueue",
           "event": "failedToEnqueue"
         },
         {
           "event": "callFailure"
         }
       ],
-      "type": "send-to-flex",
-      "name": "send_to_queue",
       "properties": {
-        "attributes": "${channel_attributes.default}",
+        "offset": {
+          "x": 80,
+          "y": 250
+        },
         "workflow": "${workflow_sids.master}",
         "channel": "${task_channel_sids.chat}",
-        "offset": {
-          "y": 250,
-          "x": 80
-        }
+        "attributes": "{\n  \"e2eTestMode\": \"{{trigger.conversation.ChannelAttributes.pre_engagement_data.e2eTestMode}}\",\n  \"ip\": \"{{trigger.conversation.ChannelAttributes.pre_engagement_data.ip}}\",\n  \"firstName\": \"{{trigger.conversation.ChannelAttributes.from}}\",\n  \"channelType\": \"{{trigger.conversation.ChannelAttributes.channel_type}}\",\n  \"channelSid\": \"{{trigger.conversation.ChannelSid}}\",\n  \"helpline\": \"{{trigger.conversation.ChannelAttributes.pre_engagement_data.helpline}}\",\n  \"language\":\"en-US\",\n  \"ignoreAgent\": \"\",\n  \"transferTargetType\": \"\",\n  \"preEngagementData\": {{trigger.conversation.ChannelAttributes.pre_engagement_data | to_json}},\n  \"memory\": {{trigger.conversation.ChannelAttributes.memory | to_json}}\n}\n"
       }
     },
     {
-      "name": "http_post_notify_failed_to_enqueue",
+      "name": "webhook_notify_failed_to_enqueue",
       "type": "make-http-request",
       "transitions": [
         {
@@ -174,9 +154,33 @@ ${
         },
         "method": "POST",
         "content_type": "application/json;charset=utf-8",
-        "body": "{ \"text\": \"Issue detected [Failed to Enqueue] on ${short_helpline} ${short_environment} Flow SID: {{flow.flow_sid}} Execution SID: {{flow.sid}}  \" }",
         "add_twilio_auth": false,
+        "body": "{ \"text\": \"Issue detected [Failed to Enqueue] on ${short_helpline} ${short_environment} Flow SID: {{flow.flow_sid}} Execution SID: {{flow.sid}}  \" }",
         "url": "${webhook_url_studio_errors}"
+      }
+    },
+    {
+      "name": "send_confirmation",
+      "type": "send-message",
+      "transitions": [
+        {
+          "event": "sent"
+        },
+        {
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": -170,
+          "y": 520
+        },
+        "service": "{{trigger.conversation.InstanceSid}}",
+        "channel": "{{trigger.conversation.ChannelSid}}",
+        "from": "Bot",
+        "message_type": "custom",
+        "to": "{{contact.channel.address}}",
+        "body": "Your request is being sent to the CIRCLE call center. Please wait to be connected to a CIRCLE operator."
       }
     },
     {
@@ -184,11 +188,11 @@ ${
       "type": "run-subflow",
       "transitions": [
         {
-          "next": "f_getProfileFlagsForIdentifier",
+          "next": "getProfileFlagsForIdentifier",
           "event": "completed"
         },
         {
-          "next": "f_getProfileFlagsForIdentifier",
+          "next": "getProfileFlagsForIdentifier",
           "event": "failed"
         }
       ],
@@ -207,12 +211,12 @@ ${
           }
         ]
       }
-    }
+    } 
   ],
   "initial_state": "Trigger",
   "flags": {
     "allow_concurrent_calls": true
-  },
-  "description": "${flow_description}"
-})
   }
+}  
+)
+}

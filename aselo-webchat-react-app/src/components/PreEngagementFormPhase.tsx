@@ -15,23 +15,34 @@
  */
 
 import { Box } from '@twilio-paste/core/box';
-import { FormEvent } from 'react';
+import { FormEvent, useState } from 'react';
 import { Button } from '@twilio-paste/core/button';
 import { useDispatch, useSelector } from 'react-redux';
 import { Text } from '@twilio-paste/core/text';
+import { FormInputType } from 'hrm-form-definitions';
 
-import { submitAndInitChatThunk, updatePreEngagementDataField } from '../store/actions/genericActions';
+import {
+  submitAndInitChatThunk,
+  updatePreEngagementDataField,
+  updatePreEngagementDataFields,
+} from '../store/actions/genericActions';
 import { AppState } from '../store/definitions';
 import { Header } from './Header';
 import { NotificationBar } from './NotificationBar';
 import { fieldStyles, titleStyles, formStyles } from './styles/PreEngagementFormPhase.styles';
 import LocalizedTemplate from '../localization/LocalizedTemplate';
 import { generateForm } from './forms/formInputs';
+import ReCaptcha from './ReCaptcha';
 
+// eslint-disable-next-line sonarjs/cognitive-complexity
 export const PreEngagementFormPhase = () => {
   const { preEngagementData } = useSelector((state: AppState) => state.session ?? {});
-  const { preEngagementFormDefinition } = useSelector((state: AppState) => state.config);
+  const { preEngagementFormDefinition, enableRecaptcha, recaptchaSiteKey, aseloBackendUrl } = useSelector(
+    (state: AppState) => state.config,
+  );
   const dispatch = useDispatch();
+
+  const [isRecaptchaVerified, setIsRecaptchaVerified] = useState<boolean>(false);
 
   const getItem = (inputName: string) => preEngagementData[inputName] ?? {};
   const setItemValue = (payload: { name: string; value: string | boolean }) => {
@@ -39,8 +50,29 @@ export const PreEngagementFormPhase = () => {
   };
   const handleChange = setItemValue;
 
-  const handleSubmit = async (e: FormEvent) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    const form = e.currentTarget;
+
+    // Collect current DOM values for all form fields and sync them to Redux in a
+    // single dispatch before validation runs. This ensures fields that have been
+    // filled but not yet blurred are still captured.
+    const domFieldValues = (preEngagementFormDefinition?.fields ?? []).reduce<
+      { name: string; value: string | boolean }[]
+    >((accum, field) => {
+      const element = form.querySelector<HTMLInputElement | HTMLSelectElement>(`#${field.name}`);
+      if (!element) return accum;
+      const value = field.type === FormInputType.Checkbox ? (element as HTMLInputElement).checked : element.value;
+      return [...accum, { name: field.name, value }];
+    }, []);
+
+    if (domFieldValues.length > 0) {
+      dispatch(updatePreEngagementDataFields(domFieldValues) as any);
+    }
+
+    if (enableRecaptcha && !isRecaptchaVerified) {
+      return;
+    }
     await dispatch(submitAndInitChatThunk() as any);
   };
 
@@ -50,6 +82,7 @@ export const PreEngagementFormPhase = () => {
 
   const titleText = preEngagementFormDefinition.description ?? 'Hi there!';
   const submitText = preEngagementFormDefinition.submitLabel ?? 'Start chat';
+  const recaptchaVerifyUrl = `${aseloBackendUrl}/lambda/recaptchaVerify`;
 
   return (
     <>
@@ -63,7 +96,20 @@ export const PreEngagementFormPhase = () => {
           {generateForm({ form: preEngagementFormDefinition.fields, handleChange, getItem, setItemValue })}
         </Box>
 
-        <Button variant="primary" type="submit" data-test="pre-engagement-start-chat-button">
+        {enableRecaptcha && recaptchaSiteKey && (
+          <ReCaptcha
+            siteKey={recaptchaSiteKey}
+            recaptchaVerifyUrl={recaptchaVerifyUrl}
+            onRecaptchaChange={setIsRecaptchaVerified}
+          />
+        )}
+
+        <Button
+          variant="primary"
+          type="submit"
+          disabled={enableRecaptcha ? !isRecaptchaVerified : false}
+          data-test="pre-engagement-start-chat-button"
+        >
           <LocalizedTemplate code={submitText} />
         </Button>
       </Box>

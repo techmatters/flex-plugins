@@ -26,3 +26,8 @@ export type FileAttachmentConfig = {
   maxFileSize?: number;
   acceptedExtensions?: string[];
 };
+
+export type EmojiPickerConfig = {
+  enabled?: boolean;
+  blockedEmojis?: string[];
+};

@@ -155,14 +155,6 @@ export const sanitizeIdentifierFromTrigger = ({
         });
       }
 
-      if (channelType === 'web') {
-        console.error(`Channel type ${channelType} is not supported in conversations`);
-        return newErr({
-          message: `Channel type ${channelType} is not supported in conversations`,
-          error: { type: 'unsupported-channel', channelType },
-        });
-      }
-
       const transformed = applyTransformations({
         channelType,
         identifier: trigger.conversation.Author,
