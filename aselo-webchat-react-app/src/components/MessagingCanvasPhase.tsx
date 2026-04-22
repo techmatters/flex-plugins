@@ -35,7 +35,7 @@ const DEFAULT_AUTO_FIRST_MESSAGE = 'Incoming webchat contact from';
 const DEFAULT_CUSTOMER_DEFAULT_NAME = 'Anonymous';
 
 const sendInitialUserQuery = async (conv?: Conversation, query?: string): Promise<void> => {
-  if (!query || !conv) return;
+  if (!query || !conv || conv.status !== 'joined') return;
 
   const totalMessagesCount = await conv.getMessagesCount();
 
@@ -76,7 +76,7 @@ export const MessagingCanvasPhase = () => {
       <CloseChatButtons />
       <NotificationBar />
       <MessageList />
-      {conversationState === 'active' ? <MessageInput /> : <ConversationEnded />}
+      {conversationState === 'active' && conversation?.status === 'joined' ? <MessageInput /> : <ConversationEnded />}
     </Wrapper>
   );
 };
