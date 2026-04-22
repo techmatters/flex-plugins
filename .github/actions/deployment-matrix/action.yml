@@ -50,7 +50,7 @@ runs:
     - name: Checkout code
       uses: actions/checkout@v6
     - name: Set Google Sheets credentials
-      uses: ./.github/actions/inject-ssm-secrets
+      uses: marvinpinto/action-inject-ssm-secrets@latest
       with:
         ssm_parameter: "GOOGLE_SHEETS_CREDENTIALS"
         env_variable_name: "GOOGLE_SHEETS_CREDENTIALS"
