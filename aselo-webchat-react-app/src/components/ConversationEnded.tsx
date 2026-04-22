@@ -46,7 +46,7 @@ export const ConversationEnded = () => {
         <LocalizedTemplate code="MessagePhase-ConversationEnded-Detail" />
       </Text>
       <Button variant="primary" data-test="start-new-chat-button" onClick={handleStartNewChat}>
-        <LocalizedTemplate code="MessagePhase-ConversationEnded-Button" />
+        <LocalizedTemplate code="MessagePhase-ConversationEnded-ButtonText" />
       </Button>
     </Box>
   );
