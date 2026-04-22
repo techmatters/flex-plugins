@@ -33,7 +33,7 @@ export const initChat = () => {
   const defaultLocale =
     // data-language attribute is supported for backwards compatibility, remove once webchat is fully migrated
     urlParams.get('locale') || scriptEl?.getAttribute('data-locale') || scriptEl?.getAttribute('data-language');
-  const configUrl = urlParams.get('configUrl') ?? scriptEl?.getAttribute('config-url') ?? undefined;
+  const configUrl = urlParams.get('configUrl') ?? scriptEl?.getAttribute('data-config-url') ?? undefined;
 
   const themeEl = document.querySelector('[data-theme-pref]');
   themeEl?.setAttribute('data-theme-pref', isLightTheme ? 'light-theme' : 'dark-theme');
