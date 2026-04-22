@@ -154,7 +154,9 @@ export const sanitizeIdentifierFromTrigger = ({
           preEngagementData: trigger.conversation.ChannelAttributes.pre_engagement_data,
         });
 
-        console.debug(`Found Aselo Webchat identifier ${identifier} from contactIdentifier field in preEngagement data`);
+        console.debug(
+          `Found Aselo Webchat identifier ${identifier} from contactIdentifier field in preEngagement data`,
+        );
         return newOk(identifier);
       }
       if (!channelTransformations[channelType] || !channelType) {
