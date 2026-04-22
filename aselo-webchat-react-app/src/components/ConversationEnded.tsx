@@ -45,7 +45,7 @@ export const ConversationEnded = () => {
       <Text as="p" {...textStyles}>
         <LocalizedTemplate code="MessagePhase-ConversationEnded-Detail" />
       </Text>
-      <Button variant="primary" data-test="start-new-chat-button" onClick={handleStartNewChat}>
+      <Button variant="primary" data-testid="start-new-chat-button" onClick={handleStartNewChat}>
         <LocalizedTemplate code="MessagePhase-ConversationEnded-ButtonText" />
       </Button>
     </Box>
