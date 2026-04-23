@@ -25,20 +25,20 @@
       },
       {
         "filter_friendly_name": "Returning Client",
-        "expression": "task.preEngagementData.firstTime == 'no'",
+        "expression": "preEngagementData.firstTime == 'No'",
         "targets": [
           {
-            "expression": "worker.waitingOfflineContact != true AND ((task.channelType == 'voice' AND worker.routing.skills HAS 'calls' AND worker.channel.chat.assigned_tasks == 0) OR (task.channelType != 'voice' AND worker.routing.skills HAS 'chat' AND worker.channel.voice.assigned_tasks == 0)) AND ((task.transferTargetType == 'worker' AND task.targetSid == worker.sid) OR (task.transferTargetType != 'worker' AND worker.sid != task.ignoreAgent))",
+            "expression": "worker.waitingOfflineContact != true AND ((task.channelType == 'voice' AND worker.routing.skills HAS 'Call' AND worker.channel.chat.assigned_tasks == 0) OR (task.channelType != 'voice' AND worker.routing.skills HAS 'Chat' AND worker.channel.voice.assigned_tasks == 0)) AND ((task.transferTargetType == 'worker' AND task.targetSid == worker.sid) OR (task.transferTargetType != 'worker' AND worker.sid != task.ignoreAgent))",
             "queue": "${task_queues.returning_client}"
           }
         ]
       },
       {
         "filter_friendly_name": "First-Time Client",
-        "expression": "task.preEngagementData.firstTime == 'yes'",
+        "expression": "preEngagementData.firstTime == 'Yes'",
         "targets": [
           {
-            "expression": "worker.waitingOfflineContact != true AND ((task.channelType == 'voice' AND worker.routing.skills HAS 'calls' AND worker.channel.chat.assigned_tasks == 0) OR (task.channelType != 'voice' AND worker.routing.skills HAS 'chat' AND worker.channel.voice.assigned_tasks == 0)) AND ((task.transferTargetType == 'worker' AND task.targetSid == worker.sid) OR (task.transferTargetType != 'worker' AND worker.sid != task.ignoreAgent))",
+            "expression": "worker.waitingOfflineContact != true AND ((task.channelType == 'voice' AND worker.routing.skills HAS 'Call' AND worker.channel.chat.assigned_tasks == 0) OR (task.channelType != 'voice' AND worker.routing.skills HAS 'Chat' AND worker.channel.voice.assigned_tasks == 0)) AND ((task.transferTargetType == 'worker' AND task.targetSid == worker.sid) OR (task.transferTargetType != 'worker' AND worker.sid != task.ignoreAgent))",
             "queue": "${task_queues.first_time_client}"
           }
         ]
