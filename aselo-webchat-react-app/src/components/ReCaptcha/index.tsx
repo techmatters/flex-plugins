@@ -34,14 +34,9 @@ const ReCaptcha: React.FC<Props> = ({ siteKey, recaptchaVerifyUrl, onRecaptchaCh
       return;
     }
 
-    try {
-      onRecaptchaChange('pending');
-      const verified = await validateUser(token, recaptchaVerifyUrl);
-      onRecaptchaChange(verified ? 'verified' : 'unverified');
-    } catch (error) {
-      console.log(error);
-      onRecaptchaChange('unverified');
-    }
+    onRecaptchaChange('pending');
+    const verified = await validateUser(token, recaptchaVerifyUrl);
+    onRecaptchaChange(verified ? 'verified' : 'unverified');
   };
 
   return <ReCAPTCHA sitekey={siteKey} size="normal" ref={recaptchaRef} onChange={onChange} />;
