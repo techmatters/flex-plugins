@@ -100,14 +100,16 @@ export const PreEngagementFormPhase = () => {
         </Box>
 
         {enableRecaptcha && recaptchaSiteKey && (
-          <ReCaptcha
-            siteKey={recaptchaSiteKey}
-            recaptchaVerifyUrl={recaptchaVerifyUrl}
-            onRecaptchaChange={state => {
-              setRecaptchaVerifyPending(state === 'pending');
-              dispatch(newUpdateRecaptchaValidityAction({ recaptchaValid: state === 'verified' }));
-            }}
-          />
+          <Box {...fieldStyles}>
+            <ReCaptcha
+              siteKey={recaptchaSiteKey}
+              recaptchaVerifyUrl={recaptchaVerifyUrl}
+              onRecaptchaChange={state => {
+                setRecaptchaVerifyPending(state === 'pending');
+                dispatch(newUpdateRecaptchaValidityAction({ recaptchaValid: state === 'verified' }));
+              }}
+            />
+          </Box>
         )}
 
         <Button
