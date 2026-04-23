@@ -102,7 +102,7 @@ const failedToInitSessionNotification = (error: string): Notification => ({
 });
 
 const formValidationErrorNotification = (state: AppState): Notification => ({
-  id: `FailedToInitSessionNotification`,
+  id: `FormValidationErrorNotification`,
   dismissible: true,
   message: localizeKey(selectCurrentTranslations(state))('PreEngagementPhase-Notifications-FormInvalid'),
   type: 'error',
@@ -110,7 +110,7 @@ const formValidationErrorNotification = (state: AppState): Notification => ({
 });
 
 const recaptchaInvalidNotification = (state: AppState): Notification => ({
-  id: `FailedToInitSessionNotification`,
+  id: `RecaptchaInvalidNotification`,
   dismissible: true,
   message: localizeKey(selectCurrentTranslations(state))('PreEngagementPhase-Notifications-RecaptchaInvalid'),
   type: 'error',
