@@ -13,6 +13,7 @@
     "AutoFirstMessage": "Вхідний чат",
     "StartChat": "Почати чат!",
     "Nickname": "нікнейм",
+    "GuestName": "Ім'я гостя. Будь ласка, введіть лише своє ім'я.",
     "RequiredFieldError": "Будь ласка, заповніть обов'язкові поля.",
     "MessagePhase-MessageBubble-OtherParticipantMessageSenderName": "Professional",
   "Header-CloseChatButtons-EndChatButtonLabel": "Завершити чат",

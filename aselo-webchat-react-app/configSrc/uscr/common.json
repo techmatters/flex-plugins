@@ -5,7 +5,7 @@
     "acceptedExtensions": ["jpg", "jpeg", "png", "amr", "mp3", "mp4", "pdf", "txt"]
   },
   "emojiPicker": {
-    "enabled": false,
+    "enabled": true,
     "blockedEmojis": []
   },
   "alwaysOpen": false,
