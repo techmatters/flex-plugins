@@ -41,8 +41,8 @@ const Checkbox: React.FC<Props> = ({ definition, getItem, handleChange, defaultV
         <CheckboxInput
           id={name}
           hasError={Boolean(error)}
-          onBlur={e => {
-            handleChange({ name, value: e.target.checked });
+          onClick={e => {
+            handleChange({ name, value: (e.target as HTMLInputElement).checked });
           }}
           defaultChecked={Boolean(defaultValue || initialChecked)}
           css={{ display: 'flex', alignItems: 'center' }}

@@ -22,7 +22,7 @@ import { validateUser } from './recaptchaValidation';
 type Props = {
   siteKey: string;
   recaptchaVerifyUrl: string;
-  onRecaptchaChange: (verified: boolean) => void;
+  onRecaptchaChange: (state: 'verified' | 'unverified' | 'pending') => void;
 };
 
 const ReCaptcha: React.FC<Props> = ({ siteKey, recaptchaVerifyUrl, onRecaptchaChange }) => {
@@ -30,17 +30,13 @@ const ReCaptcha: React.FC<Props> = ({ siteKey, recaptchaVerifyUrl, onRecaptchaCh
 
   const onChange = async (token: string | null) => {
     if (token === null) {
-      onRecaptchaChange(false);
+      onRecaptchaChange('unverified');
       return;
     }
 
-    try {
-      const verified = await validateUser(token, recaptchaVerifyUrl);
-      onRecaptchaChange(verified);
-    } catch (error) {
-      console.log(error);
-      onRecaptchaChange(false);
-    }
+    onRecaptchaChange('pending');
+    const verified = await validateUser(token, recaptchaVerifyUrl);
+    onRecaptchaChange(verified ? 'verified' : 'unverified');
   };
 
   return <ReCAPTCHA sitekey={siteKey} size="normal" ref={recaptchaRef} onChange={onChange} />;

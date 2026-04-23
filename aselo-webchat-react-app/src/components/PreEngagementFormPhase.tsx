@@ -17,11 +17,13 @@
 import { Box } from '@twilio-paste/core/box';
 import { FormEvent, useState } from 'react';
 import { Button } from '@twilio-paste/core/button';
+import { Spinner } from '@twilio-paste/core/spinner';
 import { useDispatch, useSelector } from 'react-redux';
 import { Text } from '@twilio-paste/core/text';
 import { FormInputType } from 'hrm-form-definitions';
 
 import {
+  newUpdateRecaptchaValidityAction,
   submitAndInitChatThunk,
   updatePreEngagementDataField,
   updatePreEngagementDataFields,
@@ -33,16 +35,20 @@ import { fieldStyles, titleStyles, formStyles } from './styles/PreEngagementForm
 import LocalizedTemplate from '../localization/LocalizedTemplate';
 import { generateForm } from './forms/formInputs';
 import ReCaptcha from './ReCaptcha';
+import { selectPreEngagementData, selectPreEngagementDataValid, selectRecaptchaValid } from '../store/session.reducer';
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
 export const PreEngagementFormPhase = () => {
-  const { preEngagementData } = useSelector((state: AppState) => state.session ?? {});
+  const preEngagementData = useSelector(selectPreEngagementData);
+  const preEngagementDataValid = useSelector(selectPreEngagementDataValid);
+
   const { preEngagementFormDefinition, enableRecaptcha, recaptchaSiteKey, aseloBackendUrl } = useSelector(
     (state: AppState) => state.config,
   );
+  const recaptchaValid = useSelector(selectRecaptchaValid);
   const dispatch = useDispatch();
 
-  const [isRecaptchaVerified, setIsRecaptchaVerified] = useState<boolean>(false);
+  const [isRecaptchaVerifyPending, setRecaptchaVerifyPending] = useState(false);
 
   const getItem = (inputName: string) => preEngagementData[inputName] ?? {};
   const setItemValue = (payload: { name: string; value: string | boolean }) => {
@@ -70,9 +76,6 @@ export const PreEngagementFormPhase = () => {
       dispatch(updatePreEngagementDataFields(domFieldValues) as any);
     }
 
-    if (enableRecaptcha && !isRecaptchaVerified) {
-      return;
-    }
     await dispatch(submitAndInitChatThunk() as any);
   };
 
@@ -97,20 +100,32 @@ export const PreEngagementFormPhase = () => {
         </Box>
 
         {enableRecaptcha && recaptchaSiteKey && (
-          <ReCaptcha
-            siteKey={recaptchaSiteKey}
-            recaptchaVerifyUrl={recaptchaVerifyUrl}
-            onRecaptchaChange={setIsRecaptchaVerified}
-          />
+          <Box {...fieldStyles}>
+            <ReCaptcha
+              siteKey={recaptchaSiteKey}
+              recaptchaVerifyUrl={recaptchaVerifyUrl}
+              onRecaptchaChange={state => {
+                setRecaptchaVerifyPending(state === 'pending');
+                dispatch(newUpdateRecaptchaValidityAction({ recaptchaValid: state === 'verified' }));
+              }}
+            />
+          </Box>
         )}
 
         <Button
           variant="primary"
           type="submit"
-          disabled={enableRecaptcha ? !isRecaptchaVerified : false}
+          disabled={!recaptchaValid || !preEngagementDataValid}
           data-test="pre-engagement-start-chat-button"
         >
-          <LocalizedTemplate code={submitText} />
+          <span style={isRecaptchaVerifyPending ? { visibility: 'hidden' } : {}}>
+            <LocalizedTemplate code={submitText} />
+          </span>
+          {isRecaptchaVerifyPending && (
+            <span style={{ position: 'absolute' }}>
+              <Spinner decorative={true} />
+            </span>
+          )}
         </Button>
       </Box>
     </>

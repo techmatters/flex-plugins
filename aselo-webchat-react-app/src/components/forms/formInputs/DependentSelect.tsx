@@ -71,7 +71,7 @@ const DependentSelect: React.FC<Props> = ({ getItem, setItemValue, definition, h
         <SelectInput
           id={name}
           hasError={Boolean(error)}
-          onBlur={e => handleChange({ name, value: e.target.value })}
+          onChange={e => handleChange({ name, value: e.target.value })}
           disabled={!dependsOnValue}
           value={value as string}
         >

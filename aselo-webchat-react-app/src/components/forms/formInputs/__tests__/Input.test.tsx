@@ -73,4 +73,27 @@ describe('Input component', () => {
     fireEvent.blur(input, { target: { value: 'John' } });
     expect(handleChange).toHaveBeenCalledWith({ name: 'friendlyName', value: 'John' });
   });
+
+  describe('debounced onChange', () => {
+    beforeEach(() => {
+      jest.useFakeTimers();
+    });
+
+    afterEach(() => {
+      jest.useRealTimers();
+    });
+
+    it('calls handleChange after debounce delay on change with name and value', () => {
+      const { getByPlaceholderText } = render(
+        <InputText definition={definition} handleChange={handleChange} getItem={getItem(noError)} />,
+      );
+      const input = getByPlaceholderText('Enter your name');
+      fireEvent.change(input, { target: { value: 'John' } });
+      // handleChange should not be called immediately due to debounce
+      expect(handleChange).not.toHaveBeenCalled();
+      // After the debounce delay elapses, handleChange should be called
+      jest.advanceTimersByTime(500);
+      expect(handleChange).toHaveBeenCalledWith({ name: 'friendlyName', value: 'John' });
+    });
+  });
 });

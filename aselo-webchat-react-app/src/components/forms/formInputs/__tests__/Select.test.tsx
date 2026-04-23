@@ -69,12 +69,12 @@ describe('Select component', () => {
     expect(getByText('Please select a category')).toBeInTheDocument();
   });
 
-  it('calls handleChange on blur with name and selected value', () => {
+  it('calls handleChange on change with name and selected value', () => {
     const { getByRole } = render(
       <Select definition={definition} handleChange={handleChange} getItem={getItem(noError)} />,
     );
     const select = getByRole('combobox');
-    fireEvent.blur(select, { target: { value: 'opt1' } });
+    fireEvent.change(select, { target: { value: 'opt1' } });
     expect(handleChange).toHaveBeenCalledWith({ name: 'category', value: 'opt1' });
   });
 });

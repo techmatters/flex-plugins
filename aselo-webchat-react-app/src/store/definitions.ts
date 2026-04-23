@@ -57,6 +57,7 @@ export type SessionState = {
   messages?: Message[];
   conversationState?: 'active' | 'inactive' | 'closed';
   preEngagementData: PreEngagementData;
+  recaptchaValid?: boolean;
 };
 
 export type ConfigState = {

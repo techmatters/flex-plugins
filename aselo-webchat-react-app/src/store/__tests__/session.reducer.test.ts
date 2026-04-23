@@ -17,7 +17,7 @@
 import { AnyAction } from 'redux';
 
 import { SessionReducer } from '../session.reducer';
-import { EngagementPhase, SessionState, PreEngagementData } from '../definitions';
+import { EngagementPhase, SessionState } from '../definitions';
 import {
   ACTION_CHANGE_ENGAGEMENT_PHASE,
   ACTION_CHANGE_EXPANDED_STATUS,
@@ -26,16 +26,11 @@ import {
 } from '../actions/actionTypes';
 
 describe('Session Reducer', () => {
-  const initialPreEngagementData: PreEngagementData = {
-    email: '',
-    name: '',
-    query: '',
-  };
-
   const initialState: SessionState = {
     currentPhase: EngagementPhase.Loading,
     expanded: false,
     preEngagementData: {},
+    recaptchaValid: false,
   };
 
   it('should return initial state', () => {
