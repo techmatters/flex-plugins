@@ -1,7 +1,5 @@
 {
   "name": "{{trigger.conversation.ChannelAttributes.from}}",
-  "ip": "{{trigger.conversation.ChannelAttributes.pre_engagement_data.ip}}",
-  "firstName": "{{trigger.conversation.ChannelAttributes.pre_engagement_data.friendlyName}}",
   "channelType": "{% if trigger.conversation.ChannelAttributes.channel_type %}{{trigger.conversation.ChannelAttributes.channel_type}}{% else %}{{trigger.conversation.Source | downcase}}{% endif %}",
   "customChannelType": "{{trigger.conversation.ChannelAttributes.channelType}}", 
   "channelSid": "{{trigger.conversation.ChannelSid}}",
@@ -10,6 +8,5 @@
   "helpline":"${helpline}",
   "language":"${task_language}",
   "transferTargetType": "",
-  "preEngagementData": {{trigger.conversation.ChannelAttributes.pre_engagement_data | to_json}},
   "memory": {{trigger.conversation.ChannelAttributes.memory | to_json}}
 }
