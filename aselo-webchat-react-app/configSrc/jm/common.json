@@ -10,5 +10,6 @@
   },
   "alwaysOpen": false,
   "helplineCode": "jm",
-  "captureIp": true
+  "captureIp": true,
+  "contactIdentifierField": "ip"
 }

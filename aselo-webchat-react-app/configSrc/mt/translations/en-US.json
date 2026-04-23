@@ -15,5 +15,14 @@
     "Nickname": "Nickname",
     "GuestName": "Guest's name. Please enter only your name.",
     "RequiredFieldError": "Please fill out required fields.",
-    "MessagePhase-MessageBubble-OtherParticipantMessageSenderName": "Professional"
+    "MessagePhase-MessageBubble-OtherParticipantMessageSenderName": "Professional",
+  "Header-CloseChatButtons-EndChatButtonLabel": "End Chat",
+  "Header-CloseChatButtons-EndChatConfirmDialogMessageFromChat": "End the current chat? This will disconnect you from the service.",
+  "Header-CloseChatButtons-EndChatConfirmDialogMessageFromPreEngagement": "End the current chat?",
+  "Header-CloseChatButtons-QuickExitButtonLabel": "Quick Exit",
+  "Header-CloseChatButtons-QuickExitDescription": "Need to leave immediately?",
+  "MessagePhase-MessageList-ChatStartMessage": "Chat Started",
+  "MessagePhase-ConversationEnded-Heading": "Thanks for chatting with us.",
+  "MessagePhase-ConversationEnded-Detail": "Feel free to reach out to us again if you need more support.",
+  "MessagePhase-ConversationEnded-ButtonText": "Start new chat"
 }
