@@ -194,16 +194,14 @@ describe('Message List', () => {
       },
     });
 
-    let queryByTitle: ReturnType<typeof render>['queryByTitle'];
+    const { queryByTitle } = render(<MessageList />);
+    // Wait longer than the 200ms noop delay in checkIfAllMessagesLoaded to ensure effects ran
     await act(async () => {
-      const result = render(<MessageList />);
-      queryByTitle = result.queryByTitle;
-      // Wait longer than the 200ms noop delay in checkIfAllMessagesLoaded to ensure effects ran
       await new Promise(resolve => setTimeout(resolve, 300));
     });
 
     expect(getMessagesCountMock).not.toHaveBeenCalled();
-    expect(queryByTitle!('Spinner')).not.toBeInTheDocument();
+    expect(queryByTitle('Spinner')).not.toBeInTheDocument();
   });
 
   it('correctly loads more messages when scrolled to top', async () => {
