@@ -43,7 +43,15 @@ jest.mock('../NotificationBar', () => ({
   NotificationBar: () => <div title="NotificationBar" />,
 }));
 
-let mockRecaptchaOnChange: ((verified: boolean) => void) | undefined;
+jest.mock('@twilio-paste/core/spinner', () => {
+  // eslint-disable-next-line global-require
+  const React = require('react');
+  return {
+    Spinner: () => React.createElement('span', { 'data-testid': 'spinner' }),
+  };
+});
+
+let mockRecaptchaOnChange: ((state: 'verified' | 'unverified' | 'pending') => void) | undefined;
 jest.mock('../ReCaptcha', () => {
   // eslint-disable-next-line global-require
   const React = require('react');
@@ -54,7 +62,7 @@ jest.mock('../ReCaptcha', () => {
     }: {
       siteKey: string;
       recaptchaVerifyUrl: string;
-      onRecaptchaChange: (verified: boolean) => void;
+      onRecaptchaChange: (state: 'verified' | 'unverified' | 'pending') => void;
     }) => {
       mockRecaptchaOnChange = onRecaptchaChange;
       return React.createElement('div', { 'data-testid': 'recaptcha-mock' });
@@ -653,5 +661,55 @@ describe('Pre Engagement Form Phase - ReCaptcha', () => {
 
     expect(store.getState().session.currentPhase).toBe(EngagementPhase.PreEngagementForm);
     expect(sessionDataHandler.fetchAndStoreNewSession).not.toHaveBeenCalled();
+  });
+
+  it('shows spinner (hides submit label) when recaptcha verification is in progress', async () => {
+    const store = createRecaptchaStore(true);
+    const { getByText, queryByTestId, container } = render(
+      <Provider store={store}>
+        <PreEngagementFormPhase />
+      </Provider>,
+    );
+
+    // Before pending: submit label is visible and no spinner
+    expect(getByText('Submit')).not.toHaveStyle({ visibility: 'hidden' });
+    expect(queryByTestId('spinner')).not.toBeInTheDocument();
+
+    // Simulate recaptcha pending state via the captured callback
+    await act(async () => {
+      mockRecaptchaOnChange!('pending');
+    });
+
+    // Submit label should now be hidden and spinner visible
+    expect(getByText('Submit')).toHaveStyle({ visibility: 'hidden' });
+    expect(queryByTestId('spinner')).toBeInTheDocument();
+    // Button remains disabled while pending (recaptcha not yet verified)
+    const submitButton = container.querySelector('[data-test="pre-engagement-start-chat-button"]');
+    expect(submitButton).toBeDisabled();
+  });
+
+  it('hides spinner when recaptcha verification completes', async () => {
+    const store = createRecaptchaStore(true);
+    const { getByText, queryByTestId, container } = render(
+      <Provider store={store}>
+        <PreEngagementFormPhase />
+      </Provider>,
+    );
+
+    await act(async () => {
+      mockRecaptchaOnChange!('pending');
+    });
+    expect(getByText('Submit')).toHaveStyle({ visibility: 'hidden' });
+    expect(queryByTestId('spinner')).toBeInTheDocument();
+
+    await act(async () => {
+      mockRecaptchaOnChange!('verified');
+    });
+
+    // Submit label visible again, spinner gone, and button enabled
+    expect(getByText('Submit')).not.toHaveStyle({ visibility: 'hidden' });
+    expect(queryByTestId('spinner')).not.toBeInTheDocument();
+    const submitButton = container.querySelector('[data-test="pre-engagement-start-chat-button"]');
+    expect(submitButton).not.toBeDisabled();
   });
 });

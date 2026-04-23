@@ -94,7 +94,7 @@ describe('DependentSelect component', () => {
     expect(getByText('Please select a state')).toBeInTheDocument();
   });
 
-  it('calls handleChange on blur with name and selected value', () => {
+  it('calls handleChange on change with name and selected value', () => {
     const { getByRole } = render(
       <DependentSelect
         definition={definition}
@@ -104,7 +104,7 @@ describe('DependentSelect component', () => {
       />,
     );
     const select = getByRole('combobox');
-    fireEvent.blur(select, { target: { value: 'NY' } });
+    fireEvent.change(select, { target: { value: 'NY' } });
     expect(handleChange).toHaveBeenCalledWith({ name: 'state', value: 'NY' });
   });
 
