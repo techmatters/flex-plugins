@@ -76,9 +76,6 @@ export const PreEngagementFormPhase = () => {
       dispatch(updatePreEngagementDataFields(domFieldValues) as any);
     }
 
-    if (!recaptchaValid) {
-      return;
-    }
     await dispatch(submitAndInitChatThunk() as any);
   };
 
