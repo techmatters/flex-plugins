@@ -14,7 +14,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { fireEvent, render, waitFor } from '@testing-library/react';
+import { act, fireEvent, render, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
 
 import { resetMockRedux } from '../../__mocks__/redux/mockRedux';
@@ -48,6 +48,7 @@ const message2 = {
 const defaultChatState = {
   conversation: {
     dateCreated: message1.dateCreated,
+    status: 'joined',
     getMessagesCount: jest.fn(),
     addListener: jest.fn(),
     removeListener: jest.fn(),
@@ -178,6 +179,31 @@ describe('Message List', () => {
       expect(getMessagesCountSpy).toHaveBeenCalled();
       expect(queryByTitle('Spinner')).not.toBeInTheDocument();
     });
+  });
+
+  it('does not call getMessagesCount and does not render loading spinner when conversation is not joined', async () => {
+    const getMessagesCountMock = jest.fn().mockResolvedValue(4);
+    resetMockRedux({
+      chat: {
+        ...defaultChatState,
+        conversation: {
+          ...defaultChatState.conversation,
+          status: 'notParticipating',
+          getMessagesCount: getMessagesCountMock,
+        },
+      },
+    });
+
+    let queryByTitle: ReturnType<typeof render>['queryByTitle'];
+    await act(async () => {
+      const result = render(<MessageList />);
+      queryByTitle = result.queryByTitle;
+      // Wait longer than the 200ms noop delay in checkIfAllMessagesLoaded to ensure effects ran
+      await new Promise(resolve => setTimeout(resolve, 300));
+    });
+
+    expect(getMessagesCountMock).not.toHaveBeenCalled();
+    expect(queryByTitle!('Spinner')).not.toBeInTheDocument();
   });
 
   it('correctly loads more messages when scrolled to top', async () => {
