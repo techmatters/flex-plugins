@@ -21,7 +21,7 @@ locals {
       webchat : {
         channel_type     = "web"
         contact_identity = ""
-        templatefile     = "/app/twilio-iac/helplines/usnc/templates/studio-flows/messaging-blocking-preq-lambda-sd.tftpl"
+        templatefile     = "/app/twilio-iac/helplines/usnc/templates/studio-flows/messaging-blocking-v2-preq-lambda-sd.tftpl"
         channel_flow_vars = {
           widget_from                   = "Warm Line"
           chat_blocked_message          = "Due to repeated use of the service in ways that did not align with Warm Line participation guidelines, access to the Promise Resource Network NC Warm Line has been restricted for this number/account."
