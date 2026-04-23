@@ -10,5 +10,6 @@
   },
   "alwaysOpen": false,
   "helplineCode": "sg",
-  "captureIp": true
+  "captureIp": true,
+  "contactIdentifierField": "ip"
 }
