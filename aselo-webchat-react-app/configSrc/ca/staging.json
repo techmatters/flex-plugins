@@ -1,3 +1,5 @@
 {
-  "alwaysOpen": true
+  "environment": "staging",
+  "aseloBackendUrl": "https://hrm-staging.tl.techmatters.org",
+  "definitionVersion": "ca-v1"
 }
