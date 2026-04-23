@@ -1793,5 +1793,6 @@
   },
   "helplineCode": "ca",
   "enableRecaptcha": true,
-  "captureIp": false
+  "captureIp": false,
+  "alwaysOpen": false
 }
