@@ -547,7 +547,7 @@ describe('Pre Engagement Form Phase - ReCaptcha', () => {
   const recaptchaSiteKey = 'test-recaptcha-site-key';
   const aseloBackendUrl = 'https://hrm-test.tl.techmatters.org';
 
-  const createRecaptchaStore = (enableRecaptcha: boolean) =>
+  const createRecaptchaStore = (enableRecaptcha: boolean, recaptchaValid: boolean = false) =>
     preloadStore({
       config: {
         environment: 'test',
@@ -570,6 +570,7 @@ describe('Pre Engagement Form Phase - ReCaptcha', () => {
         currentPhase: EngagementPhase.PreEngagementForm,
         expanded: false,
         preEngagementData: {},
+        recaptchaValid,
       },
     });
 
@@ -613,7 +614,7 @@ describe('Pre Engagement Form Phase - ReCaptcha', () => {
   });
 
   it('submit button is enabled after ReCaptcha is verified', async () => {
-    const store = createRecaptchaStore(true);
+    const store = createRecaptchaStore(true, true);
     const { getByTestId, container } = render(
       <Provider store={store}>
         <PreEngagementFormPhase />
@@ -621,25 +622,17 @@ describe('Pre Engagement Form Phase - ReCaptcha', () => {
     );
     expect(getByTestId('recaptcha-mock')).toBeInTheDocument();
     const submitButton = container.querySelector('[data-test="pre-engagement-start-chat-button"]');
-    expect(submitButton).toBeDisabled();
-
-    await act(async () => {
-      mockRecaptchaOnChange?.(true);
-    });
 
     expect(submitButton).not.toBeDisabled();
   });
 
   it('form can be submitted after ReCaptcha is verified', async () => {
-    const store = createRecaptchaStore(true);
+    const store = createRecaptchaStore(true, true);
     const { container } = render(
       <Provider store={store}>
         <PreEngagementFormPhase />
       </Provider>,
     );
-    await act(async () => {
-      mockRecaptchaOnChange?.(true);
-    });
 
     const formBox = container.querySelector('form') as HTMLFormElement;
     fireEvent.submit(formBox);

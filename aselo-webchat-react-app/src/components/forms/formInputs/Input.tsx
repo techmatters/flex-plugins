@@ -18,6 +18,7 @@
 import React from 'react';
 import { Box, Input, Label } from '@twilio-paste/core';
 import { FormInputType, PreEngagementFormItem } from 'hrm-form-definitions';
+import debounce from 'lodash.debounce';
 
 import LocalizedTemplate from '../../../localization/LocalizedTemplate';
 import { PreEngagementDataItem } from '../../../store/definitions';
@@ -32,9 +33,10 @@ type OwnProps = {
 
 type Props = OwnProps;
 
-const InputText: React.FC<Props> = ({ definition, handleChange, getItem, defaultValue }) => {
+const InputText: React.FC<Props> = ({ definition, handleChange, getItem }) => {
   const { name, label, placeholder, required } = definition;
   const { error } = getItem(name);
+  const debouncedHandleChange = debounce(handleChange, 500);
 
   return (
     <Box style={{ marginBottom: '20px' }}>
@@ -48,6 +50,7 @@ const InputText: React.FC<Props> = ({ definition, handleChange, getItem, default
           placeholder={placeholder}
           hasError={Boolean(error)}
           onBlur={e => handleChange({ name, value: e.target.value })}
+          onChange={e => debouncedHandleChange({ name, value: e.target.value })}
         />
       </Label>
       {error && (

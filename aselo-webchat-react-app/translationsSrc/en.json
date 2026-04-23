@@ -12,5 +12,7 @@
   "MessagePhase-MessageBubble-OwnMessageSenderName": "You",
   "MessagePhase-ConversationEnded-Heading": "Thanks for chatting with us!",
   "MessagePhase-ConversationEnded-Detail": "If you have any more questions, feel free to reach out again.",
-  "MessagePhase-ConversationEnded-ButtonText": "Start new chat"
+  "MessagePhase-ConversationEnded-ButtonText": "Start new chat",
+  "PreEngagementPhase-Notifications-RecaptchaInvalid": "You need to be verified by Recaptcha before proceeding",
+  "PreEngagementPhase-Notifications-FormInvalid": "Some fields contain errors"
 }

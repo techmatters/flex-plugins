@@ -16,6 +16,9 @@
 
 import { Notification } from './store/definitions';
 import { shortenFileName } from './utils/file';
+import { localizeKey } from './localization/localizeKey';
+import { selectCurrentTranslations } from './store/config.reducer';
+import { AppState } from './store/store';
 
 /*
  * const exampleNotification: Notification = {
@@ -98,10 +101,18 @@ const failedToInitSessionNotification = (error: string): Notification => ({
   type: 'error',
 });
 
-const formValidationErrorNotification = (): Notification => ({
+const formValidationErrorNotification = (state: AppState): Notification => ({
   id: `FailedToInitSessionNotification`,
   dismissible: true,
-  message: 'Some fields contain errors',
+  message: localizeKey(selectCurrentTranslations(state))('PreEngagementPhase-Notifications-FormInvalid'),
+  type: 'error',
+  timeout: 5000,
+});
+
+const recaptchaInvalidNotification = (state: AppState): Notification => ({
+  id: `FailedToInitSessionNotification`,
+  dismissible: true,
+  message: localizeKey(selectCurrentTranslations(state))('PreEngagementPhase-Notifications-RecaptchaInvalid'),
   type: 'error',
   timeout: 5000,
 });
@@ -115,4 +126,5 @@ export const notifications = {
   noConnectionNotification,
   failedToInitSessionNotification,
   formValidationErrorNotification,
+  recaptchaInvalidNotification,
 };

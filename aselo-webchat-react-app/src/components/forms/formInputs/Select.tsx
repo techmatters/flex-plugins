@@ -50,7 +50,7 @@ const Select: React.FC<Props> = ({ definition, getItem, defaultValue, handleChan
         <SelectInput
           id={name}
           hasError={Boolean(error)}
-          onBlur={e => handleChange({ name, value: e.target.value })}
+          onChange={e => handleChange({ name, value: e.target.value })}
           defaultValue={defaultValue}
         >
           {buildOptions()}

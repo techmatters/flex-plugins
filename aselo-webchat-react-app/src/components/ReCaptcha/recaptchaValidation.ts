@@ -27,7 +27,7 @@ export async function validateUser(token: string, recaptchaVerifyUrl: string) {
 
     return Boolean(data.success);
   } catch (error) {
-    console.log('>>> error', error);
+    console.error('Failed to verify Recaptcha', error);
     return false;
   }
 }

@@ -23,13 +23,16 @@ import {
   ACTION_START_SESSION,
   ACTION_UPDATE_SESSION_DATA,
   ACTION_UPDATE_PRE_ENGAGEMENT_DATA,
+  ACTION_UPDATE_RECAPTCHA_VALIDITY,
 } from './actions/actionTypes';
 import type { AppState } from './store';
+import { validateInput } from '../components/forms/formInputs/validation';
 
 const initialState: SessionState = {
   currentPhase: EngagementPhase.Loading,
   expanded: false,
   preEngagementData: {},
+  recaptchaValid: false,
 };
 
 export const SessionReducer: Reducer<SessionState, AnyAction> = (
@@ -75,9 +78,32 @@ export const SessionReducer: Reducer<SessionState, AnyAction> = (
       };
     }
 
+    case ACTION_UPDATE_RECAPTCHA_VALIDITY: {
+      return {
+        ...state,
+        recaptchaValid: action.payload.recaptchaValid,
+      };
+    }
+
     default:
       return state;
   }
 };
 
 export const selectToken = (state: AppState) => state.session.token;
+export const selectPreEngagementData = (state: AppState) => state.session?.preEngagementData ?? {};
+export const selectPreEngagementDataValid = (state: AppState) => {
+  const definition = state.config.preEngagementFormDefinition?.fields || [];
+  const preEngagementData = selectPreEngagementData(state);
+  for (const def of definition) {
+    const item = preEngagementData[def.name];
+    if (validateInput({ definition: def, value: item?.value })) {
+      return false;
+    }
+  }
+
+  return true;
+};
+
+export const selectRecaptchaValid = (state: AppState) =>
+  Boolean(!state.config.enableRecaptcha || state.session?.recaptchaValid);
