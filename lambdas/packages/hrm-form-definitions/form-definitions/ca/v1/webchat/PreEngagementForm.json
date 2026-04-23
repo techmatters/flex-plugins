@@ -134,15 +134,15 @@
       "required": true,
       "options": [
         {
-          "value": "Agender",
-          "label": "Agender"
+          "value": "Girl/Woman",
+          "label": "GirlWoman"
         },
         {
-          "value": "Cis Male/Man",
-          "label": "CisMaleMan"
+          "value": "Boy/Man",
+          "label": "BoyMan"
         },
         {
-          "value": "Cis Female/Woman",
+          "value": "Non-Binary, Trans, Genderqueer, Genderfluid, Two-Spirit",
           "label": "CisFemaleWoman"
         },
         {
@@ -150,57 +150,12 @@
           "label": "NonBinaryGenderqueerGenderFluid"
         },
         {
-          "value": "Two-Spirit",
-          "label": "TwoSpirit"
+          "value": "Heterosexual (Straight)",
+          "label": "Heterosexual"
         },
         {
-          "value": "Trans Female/Woman",
-          "label": "TransFemaleWoman"
-        },
-        {
-          "value": "Trans Male/Man",
-          "label": "TransMaleMan"
-        },
-        {
-          "value": "Other",
-          "label": "Other"
-        },
-        {
-          "value": "Unknown",
-          "label": "PreferNotToAnswer"
-        }
-      ]
-    },
-    {
-      "type": "select",
-      "name": "sexualOrientation",
-      "label": "DoYouConsiderYourselfToBe",
-      "defaultValue": "Unknown",
-      "required": true,
-      "options": [
-        {
-          "value": "Asexual",
-          "label": "Asexual"
-        },
-        {
-          "value": "Bisexual or Pansexual",
-          "label": "BisexualOrPansexual"
-        },
-        {
-          "value": "Gay or Lesbian",
-          "label": "GayOrLesbian"
-        },
-        {
-          "value": "Queer",
-          "label": "Queer"
-        },
-        {
-          "value": "Heterosexual or Straight",
-          "label": "HeterosexualOrStraight"
-        },
-        {
-          "value": "Questioning or Unsure",
-          "label": "QuestioningOrUnsure"
+          "value": "Homosexual (Gay or Lesbian), Asexual, Bisexual, Pansexual, Two-Spirit",
+          "label": "HomosexualAsexualBisexualPansexual"
         },
         {
           "value": "Other",
@@ -226,6 +181,10 @@
         {
           "value": "no",
           "label": "No"
+        },
+        {
+          "value": "maybe",
+          "label": "Maybe"
         },
         {
           "value": "Unknown",
@@ -326,20 +285,20 @@
           "label": "RuralArea"
         },
         {
-          "value": "Small city/town",
-          "label": "SmallCityTown"
-        },
-        {
-          "value": "Medium city",
-          "label": "MediumCity"
-        },
-        {
-          "value": "Large city/urban centre",
-          "label": "LargeCityUrbanCentre"
+          "value": "Urban area",
+          "label": "UrbanArea"
         },
         {
           "value": "First Nations reserve",
           "label": "FirstNationsreserve"
+        },
+        {
+          "value": "Military family",
+          "label": "MilitaryFamily"
+        },
+        {
+          "value": "Homeless (e.g., Living in a Shelter, On the Streets, Staying with People Temporarily)",
+          "label": "Homeless"
         },
         {
           "value": "Other",
@@ -404,32 +363,12 @@
           "label": "BlackEthnicity"
         },
         {
-          "value": "East Asian",
-          "label": "EastAsian"
-        },
-        {
           "value": "Indigenous",
-          "label": "IndigenousToNorthAmerica"
+          "label": "Indigenous"
         },
         {
           "value": "First Nations",
           "label": "FirstNationsToNorthAmerica"
-        },
-        {
-          "value": "Métis",
-          "label": "MetisToNorthAmerica"
-        },
-        {
-          "value": "Inuit",
-          "label": "Inuit"
-        },
-        {
-          "value": "Indigenous (non-specified)",
-          "label": "IndigenousNonSpecified"
-        },
-        {
-          "value": "Indigenous (Not to North America)",
-          "label": "IndigenousNotToNorthAmerica"
         },
         {
           "value": "Latin American",
@@ -440,12 +379,8 @@
           "label": "MiddleEastern"
         },
         {
-          "value": "Southeast Asian",
-          "label": "SoutheastAsian"
-        },
-        {
-          "value": "South Asian",
-          "label": "SouthAsian"
+          "value": "South, East, or Southeast Asian",
+          "label": "Asian"
         },
         {
           "value": "White",
@@ -507,67 +442,6 @@
         {
           "value": "Not a student",
           "label": "NotAStudent"
-        },
-        {
-          "value": "Unknown",
-          "label": "PreferNotToAnswer"
-        }
-      ]
-    },
-    {
-      "type": "select",
-      "name": "livingSituation",
-      "label": "LabelLivingSituation",
-      "defaultValue": "Unknown",
-      "required": false,
-      "options": [
-        {
-          "value": "",
-          "label": ""
-        },
-        {
-          "value": "Living with family members/guardians",
-          "label": "LivingWithFamilyMembersGuardians"
-        },
-        {
-          "value": "Member of a military family",
-          "label": "MemberMilitaryFamily"
-        },
-        {
-          "value": "Living independently/with peers",
-          "label": "LivingIndependentlyWithPeers"
-        },
-        {
-          "value": "Living in a School residence",
-          "label": "LivingSchoolResidence"
-        },
-        {
-          "value": "In hospital",
-          "label": "InHospital"
-        },
-        {
-          "value": "Treatment centre",
-          "label": "TreatmentCentre"
-        },
-        {
-          "value": "Recovery home",
-          "label": "RecoveryHome"
-        },
-        {
-          "value": "Assisted living centre",
-          "label": "AssistedLivingCentre"
-        },
-        {
-          "value": "Homeless",
-          "label": "Homeless"
-        },
-        {
-          "value": "In care",
-          "label": "InCare"
-        },
-        {
-          "value": "Other",
-          "label": "Other"
         },
         {
           "value": "Unknown",
