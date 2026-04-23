@@ -109,6 +109,12 @@ jobs:
       matrix:
         include: ${{ fromJson(needs.determine_deployments.outputs.matrix_json) }}
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            .github/actions
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v6
         with:

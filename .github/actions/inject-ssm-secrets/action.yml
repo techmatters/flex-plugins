@@ -28,5 +28,14 @@ runs:
       shell: bash
       run: |
         VALUE=$(aws ssm get-parameter --name "${{ inputs.ssm_parameter }}" --with-decryption --query "Parameter.Value" --output text)
-        echo "::add-mask::$VALUE"
-        echo "${{ inputs.env_variable_name }}=$VALUE" >> $GITHUB_ENV
+        while IFS= read -r line; do
+          if [ -n "$line" ]; then
+            echo "::add-mask::$line"
+          fi
+        done <<< "$VALUE"
+        DELIMITER=$(openssl rand -hex 16)
+        {
+          echo "${{ inputs.env_variable_name }}<<${DELIMITER}"
+          echo "${VALUE}"
+          echo "${DELIMITER}"
+        } >> $GITHUB_ENV
