@@ -15,7 +15,7 @@
  */
 
 /* eslint-disable react/require-default-props */
-import React, { useCallback, useEffect } from 'react';
+import React, { useMemo, useEffect } from 'react';
 import { Box, Input, Label } from '@twilio-paste/core';
 import { FormInputType, PreEngagementFormItem } from 'hrm-form-definitions';
 import debounce from 'lodash.debounce';
@@ -37,7 +37,7 @@ const InputText: React.FC<Props> = ({ definition, handleChange, getItem }) => {
   const { name, label, placeholder, required } = definition;
   const { error } = getItem(name);
 
-  const debouncedHandleChange = useCallback(debounce(handleChange, 500), [handleChange]);
+  const debouncedHandleChange = useMemo(() => debounce(handleChange, 500), [handleChange]);
 
   useEffect(() => {
     return () => {

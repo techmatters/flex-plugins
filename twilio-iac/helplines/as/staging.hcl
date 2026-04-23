@@ -26,8 +26,8 @@ locals {
       chat : {
         messaging_mode       = "conversations"
         channel_type         = "chat"
-        contact_identity     = "/app/twilio-iac/helplines/as/templates/studio-flows/messaging-blocking-lambda-location-block-sd-v2.tftpl"
-        templatefile         = "
+        contact_identity     = ""
+        templatefile         = "/app/twilio-iac/helplines/as/templates/studio-flows/messaging-blocking-lambda-location-block-sd-v2.tftpl"
         channel_flow_vars    = {}
         chatbot_unique_names = []
       }
