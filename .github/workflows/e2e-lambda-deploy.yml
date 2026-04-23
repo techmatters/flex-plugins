@@ -101,6 +101,12 @@ jobs:
       DOCKER_IMAGE: ${{ needs.build_lambda.outputs.docker_image }}
 
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            .github/actions
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v6
         with:
