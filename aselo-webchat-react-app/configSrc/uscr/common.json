@@ -11,5 +11,6 @@
   "alwaysOpen": false,
   "helplineCode": "uscr",
   "enableRecaptcha": false,
-  "captureIp": true
+  "captureIp": true,
+  "contactIdentifierField": "email"
 }

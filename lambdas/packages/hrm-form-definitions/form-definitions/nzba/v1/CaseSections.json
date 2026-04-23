@@ -7,13 +7,13 @@
         "label": "Referral",
         "formPath": "caseForms/ReferralForm.json"
       },
-      "cpm": {
+      "agency": {
+        "label": "Agency",
+        "formPath": "caseForms/AgencyForm.json"
+      },
+      "caseManagementPlan": {
         "label": "Case Management Plan",
         "formPath": "caseForms/CaseManagementPlanForm.json"
-      },
-      "agency": {
-        "label": "Agencies",
-        "formPath": "caseForms/AgencyForm.json"
       },
       "dutyOfCare": {
         "label": "Duty of Care",

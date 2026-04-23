@@ -11,5 +11,6 @@
   "alwaysOpen": false,
   "helplineCode": "ukmh",
   "captureIp": true,
-  "definitionVersion": "ukmh-v1"
+  "definitionVersion": "ukmh-v1",
+  "contactIdentifierField": "email"
 }

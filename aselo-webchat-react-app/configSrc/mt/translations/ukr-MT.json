@@ -14,5 +14,14 @@
     "StartChat": "Почати чат!",
     "Nickname": "нікнейм",
     "RequiredFieldError": "Будь ласка, заповніть обов'язкові поля.",
-    "MessagePhase-MessageBubble-OtherParticipantMessageSenderName": "Professional"
+    "MessagePhase-MessageBubble-OtherParticipantMessageSenderName": "Professional",
+  "Header-CloseChatButtons-EndChatButtonLabel": "Завершити чат",
+  "Header-CloseChatButtons-EndChatConfirmDialogMessageFromChat": "Завершити поточний чат? Це призведе до відключення вас від сервісу.",
+  "Header-CloseChatButtons-EndChatConfirmDialogMessageFromPreEngagement": "Завершити поточний чат?",
+  "Header-CloseChatButtons-QuickExitButtonLabel": "Швидкий вихід",
+  "Header-CloseChatButtons-QuickExitDescription": "Потрібно негайно виїхати?",
+  "MessagePhase-MessageList-ChatStartMessage": "Чат розпочато",
+  "MessagePhase-ConversationEnded-Heading": "Дякуємо, що поспілкувалися з нами.",
+  "MessagePhase-ConversationEnded-Detail": "Не соромтеся звертатися до нас знову, якщо вам потрібна додаткова підтримка.",
+  "MessagePhase-ConversationEnded-ButtonText": "Почніть новий чат"
 }
