@@ -161,6 +161,7 @@ const generateMergedConfigs = async (environment, helplineCode) => {
         }
       }
       mergedTranslations[translationFilename.split('.')[0]] = merge(
+        {},
         defaultTranslations,
         languageTranslations,
         localeTranslations,
