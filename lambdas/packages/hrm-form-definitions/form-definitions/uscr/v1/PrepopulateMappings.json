@@ -11,7 +11,7 @@
   },
   "survey":{},
   "preEngagement":{
-    "contactIdentifier": "CallerInformationTab.contactIdentifier",
+    "email": "CallerInformationTab.contactIdentifier",
     "friendlyName": "CallerInformationTab.friendlyName",
     "phone": "CallerInformationTab.phone",
     "officeDepartmentBid": "CallerInformationTab.officeDepartmentBid",
