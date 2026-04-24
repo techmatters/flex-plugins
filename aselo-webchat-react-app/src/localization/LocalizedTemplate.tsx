@@ -24,8 +24,8 @@ import { selectCurrentTranslations } from '../store/config.reducer';
  * Blocks scripts, event handlers, javascript: URLs and all other unsafe content.
  */
 const SANITIZE_CONFIG: DOMPurify.Config = {
-  ADD_ATTR: ['href', 'rel', 'target'],
-  KEEP_CONTENT: true,
+  ALLOWED_TAGS: ['a', 'b', 'i', 'em', 'strong', 'u', 's', 'span', 'br'],
+  ALLOWED_ATTR: ['href', 'rel', 'target'],
 };
 
 const sanitizeHtml = (html: string): string => DOMPurify.sanitize(html, SANITIZE_CONFIG) as string;
@@ -38,9 +38,9 @@ const LocalizedTemplate: React.FC<{ code: string; renderAsHtml?: string } & Reco
   const translations = useSelector(selectCurrentTranslations);
   const translateForCurrentLocale = localizeKey(translations);
   if (renderAsHtml?.toLowerCase() === 'true') {
-    // const safeHtml = sanitizeHtml(translateForCurrentLocale(code, parameters));
+    const safeHtml = sanitizeHtml(translateForCurrentLocale(code, parameters));
     // eslint-disable-next-line react/no-danger
-    return <span dangerouslySetInnerHTML={{ __html: translateForCurrentLocale(code, parameters) }} />;
+    return <span dangerouslySetInnerHTML={{ __html: safeHtml }} />;
   }
   return <>{translateForCurrentLocale(code, parameters)}</>;
 };
