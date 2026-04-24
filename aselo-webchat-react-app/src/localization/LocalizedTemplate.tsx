@@ -26,6 +26,7 @@ import { selectCurrentTranslations } from '../store/config.reducer';
 const SANITIZE_CONFIG: DOMPurify.Config = {
   ALLOWED_TAGS: ['a', 'b', 'i', 'em', 'strong', 'u', 's', 'span', 'br'],
   ALLOWED_ATTR: ['href', 'rel', 'target'],
+  KEEP_CONTENT: true,
 };
 
 const sanitizeHtml = (html: string): string => DOMPurify.sanitize(html, SANITIZE_CONFIG) as string;
