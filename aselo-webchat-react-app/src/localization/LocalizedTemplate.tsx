@@ -24,8 +24,7 @@ import { selectCurrentTranslations } from '../store/config.reducer';
  * Blocks scripts, event handlers, javascript: URLs and all other unsafe content.
  */
 const SANITIZE_CONFIG: DOMPurify.Config = {
-  ALLOWED_TAGS: ['a', 'b', 'i', 'em', 'strong', 'u', 's', 'span', 'br'],
-  ALLOWED_ATTR: ['href', 'rel', 'target'],
+  ADD_ATTR: ['href', 'rel', 'target'],
   KEEP_CONTENT: true,
 };
 
