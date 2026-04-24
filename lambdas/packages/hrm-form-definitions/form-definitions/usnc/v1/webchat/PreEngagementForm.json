@@ -1,0 +1,243 @@
+{
+  "description": "PreEngagementConfigDescription",
+  "submitLabel": "StartChat",
+  "fields": [
+    {
+      "type": "input",
+      "name": "friendlyName",
+      "label": "Name or Alias",
+      "placeholder": "Name or Alias",
+      "required": true
+    },
+    {
+      "label": "Which age range are you in?",
+      "type": "select",
+      "name": "ageRange",
+      "required": false,     
+      "options": [
+        {
+          "value": "Unknown",
+          "label": ""
+        },
+        {
+          "value": "18-24",
+          "label": "18-24"
+        },
+        {
+          "value": "25-34",
+          "label": "25-34"
+        },
+        {
+          "value": "35-44",
+          "label": "35-44"
+        },
+        {
+          "value": "45-54",
+          "label": "45-54"
+        },
+        {
+          "value": "55+",
+          "label": "55+"
+        }
+      ]
+    },
+    {
+      "type": "select",
+      "name": "gender",
+      "label": "What is your gender?",
+      "required": false,
+      "options": [
+        {
+          "value": "Unknown",
+          "label": "",
+        },
+        {
+          "value": "Male",
+          "label": "Male",
+        },
+        {
+          "value": "Female",
+          "label": "Female",
+        },
+        {
+          "value": "Non-binary",
+          "label": "Non-binary",
+        },
+        {
+          "value": "Two-Spirit",
+          "label": "Two-Spirit",
+        },
+        {
+          "value": "TransMasc",
+          "label": "TransMasc",
+        },
+        {
+          "value": "TransFemme",
+          "label": "TransFemme",
+        },
+        {
+          "value": "Other",
+          "label": "Other",
+        }
+      ]
+    },
+      {
+      "type": "select",
+      "name": "pronouns",
+      "label": "What pronouns do you use?",
+      "required": false,
+      "options": [
+        {
+          "value": "Unknown",
+          "label": "",
+        },
+        {
+          "value": "He/Him/His",
+          "label": "He/Him/His",
+        },
+        {
+          "value": "She/Her/Hers",
+          "label": "She/Her/Hers",
+        },
+        {
+          "value": "They/Them/Theirs",
+          "label": "They/Them/Theirs",
+        },
+        {
+          "value": "Other",
+          "label": "Other",
+        }
+      ]
+    },
+        {
+      "type": "select",
+      "name": "ethnicity",
+      "label": "What is your ethnicity?",
+      "required": false,
+      "options": [
+        {
+          "value": "Unknown",
+          "label": "",
+        },
+        {
+          "value": "Hispanic/Latino",
+          "label": "Hispanic/Latino",
+        },
+        {
+          "value": "Not Hispanic or Latino",
+          "label": "Not Hispanic or Latino",
+        }
+      ]
+    },
+      {
+      "type": "select",
+      "name": "race",
+      "label": "What is your race?",
+      "required": false,
+        "options": [
+        {
+          "value": "Unknown",
+          "label": "",
+        },
+        {
+          "value": "White",
+          "label": "White",
+        },
+        {
+          "value": "Black/African American",
+          "label": "Black/African American",
+        },
+        {
+          "value": "Asian",
+          "label": "Asian",
+        },
+        {
+          "value": "American Indian",
+          "label": "American Indian",
+        },
+        {
+          "value": "Native Hawaiian or Other Pacific Islande",
+          "label": "Native Hawaiian or Other Pacific Islande",
+        },
+        {
+          "value": "Two or More Races",
+          "label": "Two or More Races",
+        },
+        {
+          "value": "Other",
+          "label": "Other",
+        }
+      ]
+    },
+    {
+      "label": "What is your military status?",
+      "name": "militaryStatus",
+      "type": "select",
+      "required": false,
+      "options": [
+        {
+          "value": "Unknown",
+          "label": ""
+        },
+        {
+          "value": "Active Duty"",
+          "label": "Active Duty""
+        },
+        {
+          "value": "Retired",
+          "label": "Retired"
+        },
+        {
+          "value": "Veteran (non-career)",
+          "label": "Veteran (non-career)"
+        },
+        {
+          "value": "Non-Military",
+          "label": "Non-Military"
+        },
+        {
+          "value": "National Guard/Reserves",
+          "label": "National Guard/Reserves"
+        },
+        {
+          "value": "Military Partner",
+          "label": "Military Partner"
+        },
+        {
+          "value": "Military Family Member",
+          "label": "Military Family Member"
+        }
+      ]
+    },
+    {
+      "label": "I was referred here by 988",
+      "type": "select",
+      "defaultValue": "Yes",
+      "name": "988Referral",
+      "required": true,
+      "options": [
+        {
+          "value": "",
+          "label": "",
+        },
+        {
+          "value": "Yes",
+          "label": "Yes"
+        },
+        {
+          "value": "No",
+          "label": "No"
+        }
+      ]
+    },
+    {
+      "type": "checkbox",
+      "name": "termsAndConditions",
+      "label": "I accept the <a href=\"https://promiseresourcenetwork.org/\">Terms and Conditions</a>",
+      "required": {
+        "value": true,
+        "message": "Sorry, if you don't accept our terms and conditions we can't provide support to you."
+      }
+    }
+  ]
+}

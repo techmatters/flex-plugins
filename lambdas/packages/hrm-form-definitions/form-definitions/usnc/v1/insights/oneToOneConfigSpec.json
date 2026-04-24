@@ -52,6 +52,10 @@
       {
         "name": "wasTheCallerSatisfiedWithTheSupportProvided",
         "insights": ["conversations", "outcome"]
+      },
+      {
+        "name": "referrals",
+        "insights": ["conversations", "sentiment"]
       }
     ]
   },
