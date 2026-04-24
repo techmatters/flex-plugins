@@ -9,7 +9,7 @@
     "blockedEmojis": []
   },
   "alwaysOpen": false,
-  "defaultLocale": "en-MT",
+  "defaultLocale": "en-US",
   "helplineCode": "mt",
   "enableRecaptcha": false,
   "captureIp": true,
