@@ -90,7 +90,7 @@ describe('LocalizedTemplate', () => {
     });
   });
 
-  describe.skip('HTML rendering (renderAsHtml="true")', () => {
+  describe('HTML rendering (renderAsHtml="true")', () => {
     it('renders output in a span element', () => {
       const { container } = render(<LocalizedTemplate code="simple.text" renderAsHtml="true" />);
       expect(container.querySelector('span')).toBeInTheDocument();
@@ -182,6 +182,11 @@ describe('LocalizedTemplate', () => {
         expect(boldEl).not.toHaveAttribute('onclick');
       });
 
+      it('strips <img> tags with onerror handlers', () => {
+        const { container } = render(<LocalizedTemplate code="html.onerror" renderAsHtml="true" />);
+        expect(container.querySelector('img')).not.toBeInTheDocument();
+      });
+
       it('strips javascript: protocol from href attributes', () => {
         const { container } = render(<LocalizedTemplate code="html.javascript.href" renderAsHtml="true" />);
         const anchor = container.querySelector('a');
@@ -194,6 +199,12 @@ describe('LocalizedTemplate', () => {
           // Anchor tag was removed entirely - also acceptable sanitization
           expect(anchor).toBeNull();
         }
+      });
+
+      it('strips disallowed tags such as <p> but preserves text content', () => {
+        const { container } = render(<LocalizedTemplate code="html.disallowed.tag" renderAsHtml="true" />);
+        expect(container.querySelector('p')).not.toBeInTheDocument();
+        expect(container.textContent).toContain('paragraph text');
       });
     });
   });
