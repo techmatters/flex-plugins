@@ -38,9 +38,9 @@ const LocalizedTemplate: React.FC<{ code: string; renderAsHtml?: string } & Reco
   const translations = useSelector(selectCurrentTranslations);
   const translateForCurrentLocale = localizeKey(translations);
   if (renderAsHtml?.toLowerCase() === 'true') {
-    const safeHtml = sanitizeHtml(translateForCurrentLocale(code, parameters));
+    // const safeHtml = sanitizeHtml(translateForCurrentLocale(code, parameters));
     // eslint-disable-next-line react/no-danger
-    return <span dangerouslySetInnerHTML={{ __html: safeHtml }} />;
+    return <span dangerouslySetInnerHTML={{ __html: translateForCurrentLocale(code, parameters) }} />;
   }
   return <>{translateForCurrentLocale(code, parameters)}</>;
 };

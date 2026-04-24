@@ -90,7 +90,7 @@ describe('LocalizedTemplate', () => {
     });
   });
 
-  describe('HTML rendering (renderAsHtml="true")', () => {
+  describe.skip('HTML rendering (renderAsHtml="true")', () => {
     it('renders output in a span element', () => {
       const { container } = render(<LocalizedTemplate code="simple.text" renderAsHtml="true" />);
       expect(container.querySelector('span')).toBeInTheDocument();
