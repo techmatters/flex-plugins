@@ -15,6 +15,7 @@
     "Nickname": "Nickname",
     "GuestName": "Guest's name. Please enter only your name.",
     "RequiredFieldError": "Please fill out required fields.",
+    "MessageInputDisabledReasonHold": "We'll transfer you now. Please hold for a professional.",
     "MessagePhase-MessageBubble-OtherParticipantMessageSenderName": "Professional",
   "Header-CloseChatButtons-EndChatButtonLabel": "End Chat",
   "Header-CloseChatButtons-EndChatConfirmDialogMessageFromChat": "End the current chat? This will disconnect you from the service.",
