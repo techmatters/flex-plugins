@@ -271,7 +271,7 @@ export const MessageList = () => {
           {participants
             ?.filter(p => p.isTyping && p.identity !== conversationsClient?.user.identity)
             .map((p, idx) => (
-              <Text {...participantTypingStyles} as="p" key={`typer-${idx}`}>
+              <Text {...participantTypingStyles} as="p" data-testid={`typer-${idx}`} key={`typer-${idx}`}>
                 <LocalizedTemplate code="MessagePhase-MessageList-Typing" />
               </Text>
             ))}
