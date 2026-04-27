@@ -18,9 +18,12 @@
 import React from 'react';
 import { Box, Label, Select as SelectInput } from '@twilio-paste/core';
 import { FormInputType, PreEngagementFormItem } from 'hrm-form-definitions';
+import { useSelector } from 'react-redux';
 
+import { localizeKey } from '../../../localization/localizeKey';
 import LocalizedTemplate from '../../../localization/LocalizedTemplate';
 import { PreEngagementDataItem } from '../../../store/definitions';
+import { selectCurrentTranslations } from '../../../store/config.reducer';
 
 type OwnProps = {
   definition: PreEngagementFormItem & { type: FormInputType.Select };
@@ -32,12 +35,14 @@ type OwnProps = {
 type Props = OwnProps;
 
 const Select: React.FC<Props> = ({ definition, getItem, defaultValue, handleChange }) => {
+  const currentTranslations = useSelector(selectCurrentTranslations);
+  const configuredLocalizeKey = localizeKey(currentTranslations);
   const { name, label, required, options } = definition;
   const { error } = getItem(name);
   const buildOptions = () =>
     options.map(option => (
       <option key={option.value} value={option.value}>
-        <LocalizedTemplate code={option.label} />
+        {configuredLocalizeKey(option.label)}
       </option>
     ));
 
