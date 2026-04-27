@@ -1,0 +1,17 @@
+{
+  "fileAttachment": {
+    "enabled": false,
+    "maxFileSize": 16777216,
+    "acceptedExtensions": ["jpg", "jpeg", "png", "amr", "mp3", "mp4", "pdf", "txt"]
+  },
+  "emojiPicker": {
+    "enabled": true,
+    "blockedEmojis": []
+  },
+  "alwaysOpen": false,
+  "defaultLocale": "en-US",
+  "helplineCode": "nz",
+  "enableRecaptcha": false,
+  "captureIp": true,
+  "contactIdentifierField": "ip"
+}
