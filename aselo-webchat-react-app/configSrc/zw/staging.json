@@ -1,5 +1,5 @@
 {
-  "deploymentKey": "REPLACE_WITH_ZW_STAGING_CONVERSATIONS_SERVICE_SID",
+  "deploymentKey": "",
   "environment": "staging",
   "aseloBackendUrl": "https://hrm-staging.tl.techmatters.org",
   "definitionVersion": "zw-v1"
