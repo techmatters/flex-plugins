@@ -1,7 +1,7 @@
 {
   "MessageCanvasTrayContent": "",
   "AutoFirstMessage": "Nouveau contact de web",
-  "TypingIndicator": "{0} est écrit ... ",
+  "TypingIndicator": "Intervenant·e est écrit ... ",
   "StartChat": "Démarrer la chat!",
   "MessageCanvasTrayButton": "Démarrer une nouvelle chat",
   "EntryPointTagline": "Tape ici pour clavarder",
@@ -104,6 +104,5 @@
   "MessageSendingDisabled": "L'envoi de messages a été désactivé",
   "Today": "Aujourd'hui",
   "PreEngagementConfigDescription": "Bienvenue à Jeunesse, J'écoute. Pour nous aider à mieux vous servir, veuillez répondre aux questions suivantes. S'il s'agit d'une urgence, nous te prions d'appeler le 911.",
-  "MessagePhase-MessageBubble-OtherParticipantMessageSenderName": "Intervenant·e",
-  "MessagePhase-MessageList-Typing": "Intervenant·e est en train d'écrire..."
+  "MessagePhase-MessageBubble-OtherParticipantMessageSenderName": "Intervenant·e"
 }
