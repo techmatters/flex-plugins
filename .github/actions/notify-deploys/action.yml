@@ -39,12 +39,12 @@ runs:
         aws-region: ${{ inputs.aws-region }}
     # Set env vars to send slack message
     - name: Set GITHUB_ACTIONS_SLACK_BOT_TOKEN
-      uses: ./.github/actions/inject-ssm-secrets
+      uses: techmatters/flex-plugins/.github/actions/inject-ssm-secrets@master
       with:
         ssm_parameter: "GITHUB_ACTIONS_SLACK_BOT_TOKEN"
         env_variable_name: "GITHUB_ACTIONS_SLACK_BOT_TOKEN"
     - name: Set ASELO_DEPLOYS_CHANNEL_ID
-      uses: ./.github/actions/inject-ssm-secrets
+      uses: techmatters/flex-plugins/.github/actions/inject-ssm-secrets@master
       with:
         ssm_parameter: "ASELO_DEPLOYS_CHANNEL_ID"
         env_variable_name: "ASELO_DEPLOYS_CHANNEL_ID"
