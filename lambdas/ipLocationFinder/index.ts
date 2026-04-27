@@ -93,8 +93,8 @@ export const handler = async (event: ALBEvent): Promise<ALBResult> => {
           400,
         );
       }
-      const accountSid = body.trigger?.message?.AccountSid;
-      const ip = body.trigger?.message?.ChannelAttributes?.pre_engagement_data?.ip;
+      const accountSid = triggerPayload.AccountSid;
+      const ip = triggerPayload.ChannelAttributes?.pre_engagement_data?.ip;
 
       if (!accountSid) {
         return handleError('Account SID is missing in the event body', undefined, 400);
