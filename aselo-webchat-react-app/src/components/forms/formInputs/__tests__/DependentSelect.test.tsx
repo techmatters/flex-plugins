@@ -17,9 +17,15 @@
 import { render, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { FormInputType } from 'hrm-form-definitions';
+import { useSelector } from 'react-redux';
 
 import DependentSelect from '../DependentSelect';
 import { PreEngagementDataItem } from '../../../../store/definitions';
+import MockedFunction = jest.MockedFunction;
+
+jest.mock('react-redux', () => ({
+  useSelector: jest.fn(),
+}));
 
 jest.mock('../../../../localization/LocalizedTemplate', () => ({
   __esModule: true,
@@ -56,6 +62,7 @@ describe('DependentSelect component', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    (useSelector as MockedFunction<typeof useSelector>).mockReturnValue({});
   });
 
   it('renders with the correct label', () => {
