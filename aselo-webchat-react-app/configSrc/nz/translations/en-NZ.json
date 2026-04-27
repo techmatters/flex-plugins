@@ -4,7 +4,7 @@
     "MessageInputDisabledReasonHold":
       "Thank you very much for this information. We'll transfer you now. Please hold for a practitioner.",
     "AutoFirstMessage": "Incoming webchat contact from",
-    "TypingIndicator": "Youthline is typing",
+    "MessagePhase-MessageList-Typing": "Youthline is typing...",
     "StartChat": "Start Chat!",
     "MessageCanvasTrayButton": "Start New Chat",
     "Email": "Email",
