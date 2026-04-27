@@ -104,5 +104,6 @@
   "MessageSendingDisabled": "L'envoi de messages a été désactivé",
   "Today": "Aujourd'hui",
   "PreEngagementConfigDescription": "Bienvenue à Jeunesse, J'écoute. Pour nous aider à mieux vous servir, veuillez répondre aux questions suivantes. S'il s'agit d'une urgence, nous te prions d'appeler le 911.",
-  "MessagePhase-MessageBubble-OtherParticipantMessageSenderName": "Intervenant·e"
+  "MessagePhase-MessageBubble-OtherParticipantMessageSenderName": "Intervenant·e",
+  "MessagePhase-MessageList-Typing": "Intervenant·e est en train d'écrire..."
 }
