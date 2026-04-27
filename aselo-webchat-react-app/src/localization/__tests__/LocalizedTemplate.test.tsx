@@ -35,7 +35,7 @@ const translations = {
   'html.strikethrough': '<s>Strikethrough text</s>',
   'html.span': '<span class="highlight">Span text</span>',
   'html.linebreak': 'Line one<br>Line two',
-  'html.link': '<a href="https://example.com" rel="noopener noreferrer">Click here</a>',
+  'html.link': '<a href="https://example.com" rel="noopener noreferrer" target="_blank">Click here</a>',
   'html.script': '<script>alert("xss")</script>malicious',
   'html.onerror': '<img src="x" onerror="alert(\'xss\')">',
   'html.onclick': '<b onclick="alert(\'xss\')">Bold</b>',
@@ -164,6 +164,7 @@ describe('LocalizedTemplate', () => {
         expect(anchor).toHaveTextContent('Click here');
         expect(anchor).toHaveAttribute('href', 'https://example.com');
         expect(anchor).toHaveAttribute('rel', 'noopener noreferrer');
+        expect(anchor).toHaveAttribute('target', '_blank');
       });
     });
 
@@ -174,16 +175,16 @@ describe('LocalizedTemplate', () => {
         expect(container.textContent).not.toContain('alert');
       });
 
-      it('strips <img> tags with onerror handlers', () => {
-        const { container } = render(<LocalizedTemplate code="html.onerror" renderAsHtml="true" />);
-        expect(container.querySelector('img')).not.toBeInTheDocument();
-      });
-
       it('strips on* event handler attributes from permitted tags', () => {
         const { container } = render(<LocalizedTemplate code="html.onclick" renderAsHtml="true" />);
         const boldEl = container.querySelector('b');
         expect(boldEl).toBeInTheDocument();
         expect(boldEl).not.toHaveAttribute('onclick');
+      });
+
+      it('strips <img> tags with onerror handlers', () => {
+        const { container } = render(<LocalizedTemplate code="html.onerror" renderAsHtml="true" />);
+        expect(container.querySelector('img')).not.toBeInTheDocument();
       });
 
       it('strips javascript: protocol from href attributes', () => {
