@@ -166,6 +166,6 @@ jobs:
     secrets: inherit
     with:
       helpline_code: ${{ inputs.helpline_code }}
-      environment: ${{ inputs.environment_code }}
+      environment: ${{ inputs.environment }}
       send-slack-message: 'false'
       invalidate-cache: ${{ inputs.invalidate-cache }}
