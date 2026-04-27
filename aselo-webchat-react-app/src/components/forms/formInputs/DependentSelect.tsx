@@ -56,8 +56,7 @@ const DependentSelect: React.FC<Props> = ({ getItem, setItemValue, definition, h
     dependsOnValue && options[dependsOnValue]
       ? options[dependsOnValue].map(option => (
           <option key={option.value} value={option.value}>
-            {/* {<LocalizedTemplate code={option.label} />} */}
-            {option.label}
+            <LocalizedTemplate code={option.label} />
           </option>
         ))
       : [];

@@ -136,9 +136,9 @@ describe('Message List', () => {
       },
     });
 
-    const { queryByText } = render(<MessageList />);
+    const { queryByTestId } = render(<MessageList />);
 
-    expect(queryByText(`${user2.friendlyName} is typing...`)).toBeInTheDocument();
+    expect(queryByTestId(`typer-0`)).toBeInTheDocument();
   });
 
   it('does not render client participant typing', () => {
@@ -149,9 +149,9 @@ describe('Message List', () => {
       },
     });
 
-    const { queryByText } = render(<MessageList />);
+    const { queryByTestId } = render(<MessageList />);
 
-    expect(queryByText(`${user1.friendlyName} is typing...`)).not.toBeInTheDocument();
+    expect(queryByTestId(`typer-0`)).not.toBeInTheDocument();
   });
 
   it('renders loading spinner when there are non-loaded messages', async () => {
