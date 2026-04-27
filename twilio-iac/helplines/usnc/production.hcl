@@ -34,8 +34,8 @@ locals {
         contact_identity = ""
         templatefile     = "/app/twilio-iac/helplines/usnc/templates/studio-flows/voice-blocking-no-op-hours-rec-sd.tftpl"
         channel_flow_vars = {
-          play_message_voice_prequeue    = "https://usnc-assets-3228.twil.io/play_message_voice_prequeue.mp3"
-          gather_live_monitoring_consent = "https://usnc-assets-3228.twil.io/gather_live_monitoring_consent.mp3"
+          play_message_voice_prequeue    = "https://usnc-assets-7869.twil.io/play_message_voice_prequeue.mp3"
+          gather_live_monitoring_consent = "https://usnc-assets-7869.twil.io/gather_live_monitoring_consent.mp3"
           play_message_voice_blocked     = "Due to repeated use of the service in ways that did not align with Warm Line participation guidelines, access to the Promise Resource Network NC Warm Line has been restricted for this number/account."
           voice_ivr_language             = "en-US"
         }
