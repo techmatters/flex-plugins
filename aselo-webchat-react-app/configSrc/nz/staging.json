@@ -1,5 +1,4 @@
 {
-  "deploymentKey": "REPLACE_WITH_NZ_STAGING_CONVERSATIONS_SERVICE_SID",
   "environment": "staging",
   "aseloBackendUrl": "https://hrm-staging.tl.techmatters.org",
   "definitionVersion": "nz-v1"
