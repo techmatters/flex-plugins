@@ -33,7 +33,7 @@ inputs:
 outputs:
   generated-pre-release-tag:
     description: "The generated pre-release tag"
-    value: ${{ steps.create_pre_release.outputs.automatic_releases_tag }}
+    value: ${{ steps.generate_next_tag.outputs.generated-tag }}
 
 runs:
   using: "composite"
