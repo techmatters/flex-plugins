@@ -9,8 +9,7 @@
     "blockedEmojis": []
   },
   "alwaysOpen": false,
-  "helplineCode": "sg",
-  "captureIp": true,
-  "defaultLocale": "en-SG",
-  "contactIdentifierField": "ip"
+  "helplineCode": "et",
+  "enableRecaptcha": false,
+  "captureIp": true
 }

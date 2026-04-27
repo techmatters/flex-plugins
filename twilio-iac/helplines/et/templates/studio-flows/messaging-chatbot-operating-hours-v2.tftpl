@@ -8,13 +8,13 @@ ${
       "type": "trigger",
       "transitions": [
         {
-          "next": "getProfileFlagsForIdentifier",
           "event": "incomingMessage"
         },
         {
           "event": "incomingCall"
         },
         {
+          "next": "getProfileFlagsForIdentifier",
           "event": "incomingConversationMessage"
         },
         {
@@ -71,8 +71,8 @@ ${
           "x": -640,
           "y": 210
         },
-        "service": "{{trigger.message.InstanceSid}}",
-        "channel": "{{trigger.message.ChannelSid}}",
+        "service": "{{trigger.conversation.InstanceSid}}",
+        "channel": "{{trigger.conversation.ChannelSid}}",
         "from": channel_flow_vars["widget_from"],
         "to": "{{contact.channel.address}}",
         "body":  channel_flow_vars["chat_blocked_message"]
@@ -237,8 +237,8 @@ ${
           "x": 710,
           "y": 990
         },
-        "service": "{{trigger.message.InstanceSid}}",
-        "channel": "{{trigger.message.ChannelSid}}",
+        "service": "{{trigger.conversation.InstanceSid}}",
+        "channel": "{{trigger.conversation.ChannelSid}}",
         "from": "Bot",
         "to": "{{contact.channel.address}}",
         "body": "Thank you for contacting us. We are not here right now. Our services are available Monday - Saturday, from 8am to 6pm."
@@ -259,7 +259,7 @@ ${
             {
               "friendly_name": "If value equal_to true",
               "arguments": [
-                "{{trigger.message.ChannelAttributes.preSurveyComplete}}"
+                "{{trigger.conversation.ChannelAttributes.preSurveyComplete}}"
               ],
               "type": "equal_to",
               "value": "true"
@@ -268,7 +268,7 @@ ${
         }
       ],
       "properties": {
-        "input": "{{trigger.message.ChannelAttributes.preSurveyComplete}}",
+        "input": "{{trigger.conversation.ChannelAttributes.preSurveyComplete}}",
         "offset": {
           "x": -30,
           "y": 150
@@ -328,7 +328,7 @@ ${
             "key": "releaseFlag"
           },
           {
-            "value": "{{trigger.message.ChannelAttributes.channel_type | downcase}}",
+            "value": "{{trigger.conversation.ChannelAttributes.channel_type | downcase}}",
             "key": "channelType"
           },
           {

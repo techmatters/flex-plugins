@@ -7,7 +7,7 @@
     "InputPlaceHolder": "Введіть повідомлення",
     "WelcomeMessage": "Привіт, це Блакитна Лінія!",
     "Yesterday": "вчора",
-    "TypingIndicator": "набір тексту...",
+    "MessagePhase-MessageList-Typing": "набір тексту...",
     "MessageCanvasTrayButton": "Почати чат",
     "MessageCanvasTrayContent": "",
     "AutoFirstMessage": "Вхідний чат",
