@@ -160,4 +160,12 @@ jobs:
           environment: ${{ inputs.environment}}
           service_repo: 'aselo-webchat-react-app'
           version_tag: ${{ github.ref_name }}
-
+  deploy_form_definitions:
+    uses: ./.github/workflows/\deploy-form-definitions.yml
+    needs: deploy
+    secrets: inherit
+    with:
+      helpline_code: ${{ inputs.helpline_code }}
+      environment: ${{ inputs.environment_code }}
+      send-slack-message: 'false'
+      invalidate-cache: ${{ inputs.invalidate-cache }}

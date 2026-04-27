@@ -138,7 +138,7 @@ jobs:
           version_tag: ${{ github.ref_name }}
 
   deploy_form_definitions:
-    uses: ./.github/workflows/deploy-form-definitions.yml
+    uses: ./.github/workflows/\deploy-form-definitions.yml
     needs: deploy
     secrets: inherit
     with:
