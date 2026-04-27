@@ -30,7 +30,7 @@ locals {
         templatefile         = "/app/twilio-iac/helplines/as/templates/studio-flows/messaging-blocking-lambda-location-block-sd-v2.tftpl"
         channel_flow_vars    = {}
         chatbot_unique_names = []
-      }
+      },
       webchat : {
         channel_type         = "web"
         contact_identity     = ""
