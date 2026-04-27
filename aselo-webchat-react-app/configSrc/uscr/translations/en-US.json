@@ -6,7 +6,7 @@
     "MessageInputDisabledReasonHold": "Thank you very much for this information. We'll transfer you now. Please hold for an operator.",
     "AutoFirstMessage": "Incoming webchat contact from",
     "StartChat": "Submit",
-    "TypingIndicator": "CIRCLE Operator is typing",
+    "MessagePhase-MessageList-Typing": "CIRCLE Operator is typing",
     "MessagePhase-MessageBubble-OtherParticipantMessageSenderName": "CIRCLE Operator",
   "Header-CloseChatButtons-EndChatButtonLabel": "End Chat",
   "Header-CloseChatButtons-EndChatConfirmDialogMessageFromChat": "End the current chat? This will disconnect you from the service.",
