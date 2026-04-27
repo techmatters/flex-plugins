@@ -37,7 +37,7 @@ const Select: React.FC<Props> = ({ definition, getItem, defaultValue, handleChan
   const buildOptions = () =>
     options.map(option => (
       <option key={option.value} value={option.value}>
-        {option.label}
+        <LocalizedTemplate code={option.label} />
       </option>
     ));
 

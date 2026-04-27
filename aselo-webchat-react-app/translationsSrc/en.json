@@ -8,6 +8,7 @@
   "Header-CloseChatButtons-QuickExitDescription": "Need to leave immediately?",
   "Header-TitleBar-Title": "Live Chat",
   "MessagePhase-MessageList-ChatStartMessage": "Chat Started",
+  "MessagePhase-MessageList-Typing": "Counsellor is typing...",
   "MessagePhase-MessageBubble-OtherParticipantMessageSenderName": "Counsellor",
   "MessagePhase-MessageBubble-OwnMessageSenderName": "You",
   "MessagePhase-ConversationEnded-Heading": "Thanks for chatting with us!",
