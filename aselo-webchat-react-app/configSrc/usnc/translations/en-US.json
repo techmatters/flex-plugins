@@ -7,7 +7,7 @@
     "InputPlaceHolder": "Type Message",
     "WelcomeMessage": "Welcome to PRN Warm Line",
     "Yesterday": "Yesterday",
-    "TypingIndicator": "Supporter is typing",
+    "MessagePhase-MessageList-Typing": "Supporter is typing",
     "MessageCanvasTrayButton": "Start New Chat",
     "MessageCanvasTrayContent": "",
     "AutoFirstMessage": "Incoming webchat contact from",
