@@ -19,7 +19,14 @@ import { Conversation } from '@twilio/conversations';
 import { ThunkAction } from 'redux-thunk';
 import { PreEngagementFormItem } from 'hrm-form-definitions';
 
-import { AppState, EngagementPhase, LocaleString, Notification, PreEngagementData, PreEngagementDataItem } from '../definitions';
+import {
+  AppState,
+  EngagementPhase,
+  LocaleString,
+  Notification,
+  PreEngagementData,
+  PreEngagementDataItem,
+} from '../definitions';
 import { getUserIp } from '../../ipTracker';
 import {
   ACTION_ADD_MULTIPLE_MESSAGES,
