@@ -47,8 +47,11 @@ type EndChatPayload = {
   token: string;
 };
 
+export const getAccountScopedBaseUrl = (aseloBackendUrl: string, helplineCode: string) =>
+  `${aseloBackendUrl}/lambda/twilio/account-scoped/${helplineCode.toUpperCase()}`;
+
 export const contactBackend = ({ aseloBackendUrl, helplineCode }: ConfigState) => {
-  const lambdaUrl = `${aseloBackendUrl}/lambda/twilio/account-scoped/${helplineCode.toUpperCase()}`;
+  const lambdaUrl = getAccountScopedBaseUrl(aseloBackendUrl, helplineCode);
   return async <T>(
     endpointRoute: string,
     body: InitWebchatAPIPayload | RefreshTokenAPIPayload | EndChatPayload,

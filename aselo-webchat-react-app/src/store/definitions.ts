@@ -87,7 +87,6 @@ export type ConfigState = {
   ipLookupServiceApiKey?: string;
   contactIdentifierField?: string;
   checkOpenHours?: boolean;
-  operatingHoursServiceUrl?: string;
 };
 
 export type Notification = {

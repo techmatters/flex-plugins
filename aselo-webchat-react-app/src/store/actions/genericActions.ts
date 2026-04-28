@@ -35,7 +35,7 @@ import {
 } from './actionTypes';
 import { MESSAGES_LOAD_COUNT } from '../../constants';
 import { validateInput } from '../../components/forms/formInputs/validation';
-import { sessionDataHandler } from '../../sessionDataHandler';
+import { getAccountScopedBaseUrl, sessionDataHandler } from '../../sessionDataHandler';
 import { getDefaultValue } from '../../components/forms/formInputs';
 import { initSession } from './initActions';
 import { notifications } from '../../notifications';
@@ -248,11 +248,12 @@ const isOperatingHoursHoliday = (operatingState: Awaited<ReturnType<typeof getOp
 export const initPhaseThunk = (): ThunkAction<void, AppState, unknown, AnyAction> => {
   return async (dispatch, getState) => {
     const state = getState();
-    const { checkOpenHours, operatingHoursServiceUrl, currentLocale, defaultLocale } = state.config;
+    const { checkOpenHours, aseloBackendUrl, helplineCode, currentLocale, defaultLocale } = state.config;
 
-    if (checkOpenHours && operatingHoursServiceUrl) {
+    if (checkOpenHours && aseloBackendUrl && helplineCode) {
+      const baseUrl = getAccountScopedBaseUrl(aseloBackendUrl, helplineCode);
       try {
-        const operatingState = await getOperatingHours(operatingHoursServiceUrl, currentLocale || defaultLocale);
+        const operatingState = await getOperatingHours(baseUrl, currentLocale || defaultLocale);
         const isClosed = isOperatingHoursClosed(operatingState);
         const isHoliday = isOperatingHoursHoliday(operatingState);
 

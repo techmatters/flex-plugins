@@ -56,6 +56,8 @@ jest.mock('../../../sessionDataHandler', () => ({
     fetchAndStoreNewSession: jest.fn(),
     getRegion: jest.fn(),
   },
+  getAccountScopedBaseUrl: (aseloBackendUrl: string, helplineCode: string) =>
+    `${aseloBackendUrl}/lambda/twilio/account-scoped/${helplineCode.toUpperCase()}`,
 }));
 
 jest.mock('../initActions', () => ({
@@ -340,7 +342,8 @@ describe('submitAndInitChatThunk', () => {
 describe('initPhaseThunk', () => {
   const checkOpenHoursConfig = {
     checkOpenHours: true,
-    operatingHoursServiceUrl: 'http://service',
+    aseloBackendUrl: 'http://backend',
+    helplineCode: 'as',
     currentLocale: 'en-US',
     defaultLocale: 'en-US',
   };
@@ -365,8 +368,18 @@ describe('initPhaseThunk', () => {
     expect(dispatch).toHaveBeenCalledTimes(1);
   });
 
-  it('dispatches PreEngagementForm phase when checkOpenHours is true but no serviceUrl', async () => {
-    const getState = makeGetState({ operatingHoursServiceUrl: undefined });
+  it('dispatches PreEngagementForm phase when checkOpenHours is true but aseloBackendUrl is missing', async () => {
+    const getState = makeGetState({ aseloBackendUrl: '' });
+    const dispatch = jest.fn();
+
+    await initPhaseThunk()(dispatch as any, getState as any, undefined);
+
+    expect(dispatch).toHaveBeenCalledWith(changeEngagementPhase({ phase: EngagementPhase.PreEngagementForm }));
+    expect(dispatch).toHaveBeenCalledTimes(1);
+  });
+
+  it('dispatches PreEngagementForm phase when checkOpenHours is true but helplineCode is missing', async () => {
+    const getState = makeGetState({ helplineCode: '' });
     const dispatch = jest.fn();
 
     await initPhaseThunk()(dispatch as any, getState as any, undefined);
@@ -376,7 +389,7 @@ describe('initPhaseThunk', () => {
   });
 
   it('dispatches OperatingHours phase when status is closed', async () => {
-    jest.spyOn(operatingHoursService, 'getOperatingHours').mockResolvedValue({
+    const getOperatingHoursSpy = jest.spyOn(operatingHoursService, 'getOperatingHours').mockResolvedValue({
       status: 'closed',
       message: 'We are closed.',
     });
@@ -385,6 +398,10 @@ describe('initPhaseThunk', () => {
 
     await initPhaseThunk()(dispatch as any, makeGetState() as any, undefined);
 
+    expect(getOperatingHoursSpy).toHaveBeenCalledWith(
+      'http://backend/lambda/twilio/account-scoped/AS',
+      expect.anything(),
+    );
     expect(dispatch).toHaveBeenCalledWith(setOperatingHoursMessage('We are closed.'));
     expect(dispatch).toHaveBeenCalledWith(changeEngagementPhase({ phase: EngagementPhase.OperatingHours }));
     expect(dispatch).toHaveBeenCalledTimes(2);

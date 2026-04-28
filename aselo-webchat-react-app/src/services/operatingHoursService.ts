@@ -17,7 +17,7 @@
 type OperatingHoursStatus = 'open' | 'closed' | 'holiday';
 export type OperatingHoursResponse = OperatingHoursStatus | { status: OperatingHoursStatus; message: string };
 
-export const getOperatingHours = async (serviceUrl: string, language: string): Promise<OperatingHoursResponse> => {
+export const getOperatingHours = async (baseUrl: string, language: string): Promise<OperatingHoursResponse> => {
   const body = {
     channel: 'webchat',
     includeMessageTextInResponse: 'true',
@@ -32,7 +32,7 @@ export const getOperatingHours = async (serviceUrl: string, language: string): P
     },
   };
 
-  const response = await fetch(`${serviceUrl}/operatingHours`, options);
+  const response = await fetch(`${baseUrl}/operatingHours`, options);
 
   if (response.status === 403) {
     throw new Error('Server responded with 403 status (Forbidden)');
