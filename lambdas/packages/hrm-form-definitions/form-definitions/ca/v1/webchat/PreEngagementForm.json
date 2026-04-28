@@ -147,10 +147,6 @@
         },
         {
           "value": "Non-Binary, Trans, Genderqueer, Genderfluid, Two-Spirit",
-          "label": "CisFemaleWoman"
-        },
-        {
-          "value": "Non-Binary/Genderqueer/Gender fluid",
           "label": "NonBinaryGenderqueerGenderFluid"
         },
         {
