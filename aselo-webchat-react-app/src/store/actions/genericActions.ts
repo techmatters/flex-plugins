@@ -19,7 +19,7 @@ import { Conversation } from '@twilio/conversations';
 import { ThunkAction } from 'redux-thunk';
 import { PreEngagementFormItem } from 'hrm-form-definitions';
 
-import { AppState, EngagementPhase, Notification, PreEngagementData, PreEngagementDataItem } from '../definitions';
+import { AppState, EngagementPhase, LocaleString, Notification, PreEngagementData, PreEngagementDataItem } from '../definitions';
 import { getUserIp } from '../../ipTracker';
 import {
   ACTION_ADD_MULTIPLE_MESSAGES,
@@ -49,7 +49,7 @@ export function changeEngagementPhase({ phase }: { phase: EngagementPhase }) {
     },
   };
 }
-export function newChangeLocaleAction(locale: `${string}-${string}`) {
+export function newChangeLocaleAction(locale: LocaleString) {
   return {
     type: ACTION_CHANGE_LOCALE,
     payload: {
@@ -208,8 +208,8 @@ export const submitAndInitChatThunk = (): ThunkAction<void, AppState, unknown, A
       return;
     }
     const preEngagementLocale = preEngagementData.locale?.value || preEngagementData.language?.value;
-    if (preEngagementLocale) {
-      dispatch(newChangeLocaleAction(preEngagementLocale as `${string}-${string}`));
+    if (typeof preEngagementLocale === 'string' && preEngagementLocale.trim() && state.config.translations[preEngagementLocale]) {
+      dispatch(newChangeLocaleAction(preEngagementLocale as LocaleString));
     }
     dispatch(changeEngagementPhase({ phase: EngagementPhase.Loading }));
     try {
