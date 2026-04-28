@@ -17,9 +17,15 @@
 import { render, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { FormInputType } from 'hrm-form-definitions';
+import { useSelector } from 'react-redux';
 
 import DependentSelect from '../DependentSelect';
 import { PreEngagementDataItem } from '../../../../store/definitions';
+import MockedFunction = jest.MockedFunction;
+
+jest.mock('react-redux', () => ({
+  useSelector: jest.fn(),
+}));
 
 jest.mock('../../../../localization/LocalizedTemplate', () => ({
   __esModule: true,
@@ -56,6 +62,7 @@ describe('DependentSelect component', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    (useSelector as MockedFunction<typeof useSelector>).mockReturnValue({});
   });
 
   it('renders with the correct label', () => {
@@ -94,7 +101,7 @@ describe('DependentSelect component', () => {
     expect(getByText('Please select a state')).toBeInTheDocument();
   });
 
-  it('calls handleChange on blur with name and selected value', () => {
+  it('calls handleChange on change with name and selected value', () => {
     const { getByRole } = render(
       <DependentSelect
         definition={definition}
@@ -104,7 +111,7 @@ describe('DependentSelect component', () => {
       />,
     );
     const select = getByRole('combobox');
-    fireEvent.blur(select, { target: { value: 'NY' } });
+    fireEvent.change(select, { target: { value: 'NY' } });
     expect(handleChange).toHaveBeenCalledWith({ name: 'state', value: 'NY' });
   });
 

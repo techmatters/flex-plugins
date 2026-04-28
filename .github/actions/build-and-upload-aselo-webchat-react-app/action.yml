@@ -52,12 +52,12 @@ runs:
         script: |
           core.setFailed('Bundle was not built!')
     - name: Set RECAPTCHA_SITE_KEY
-      uses: "marvinpinto/action-inject-ssm-secrets@latest"
+      uses: ./.github/actions/inject-ssm-secrets
       with:
         ssm_parameter: "/global/google/recaptcha/site_key"
         env_variable_name: "RECAPTCHA_SITE_KEY"
     - name: Set IP_LOOKUP_SERVICE_API_KEY
-      uses: "marvinpinto/action-inject-ssm-secrets@latest"
+      uses: ./.github/actions/inject-ssm-secrets
       with:
         ssm_parameter: "/global/webchat/ip_find/api_key"
         env_variable_name: "IP_LOOKUP_SERVICE_API_KEY"

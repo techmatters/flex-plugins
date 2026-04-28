@@ -5,11 +5,12 @@
     "acceptedExtensions": ["jpg", "jpeg", "png", "amr", "mp3", "mp4", "pdf", "txt"]
   },
   "emojiPicker": {
-    "enabled": false,
+    "enabled": true,
     "blockedEmojis": []
   },
-  "alwaysOpen": true,
+  "alwaysOpen": false,
   "helplineCode": "uscr",
   "enableRecaptcha": false,
-  "captureIp": true
+  "captureIp": true,
+  "contactIdentifierField": "email"
 }

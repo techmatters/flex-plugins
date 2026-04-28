@@ -66,5 +66,5 @@ jobs:
       - name: Clear cloudfront cache
         run: |
           CF_DISTRO=$(aws cloudfront list-distributions --query "DistributionList.Items[*].{id:Id,origin:Origins.Items[0].DomainName}[?origin=='assets-${{ inputs.environment }}.tl.techmatters.org.s3-website.us-east-1.amazonaws.com'].id" --output text)
-          aws cloudfront create-invalidation --distribution-id $CF_DISTRO --paths /aselo-webchat-react-app/${{ steps.helpline_code.outputs.lowercase }}/*
+          aws cloudfront create-invalidation --distribution-id $CF_DISTRO --paths /aselo-webchat-react-app/${{ steps.helpline_code.outputs.lowercase }}/* --paths /form-definitions/*
 

@@ -1,1 +1,5 @@
-{}
+{
+  "environment": "staging",
+  "aseloBackendUrl": "https://hrm-staging.tl.techmatters.org",
+  "definitionVersion": "sg-v1"
+}

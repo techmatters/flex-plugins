@@ -42,37 +42,37 @@ runs:
         aws-region: ${{ inputs.aws-region }}
     # Get AWS parameters
     - name: Set Twilio account SID for AS DEV
-      uses: "marvinpinto/action-inject-ssm-secrets@latest"
+      uses: ./.github/actions/inject-ssm-secrets
       with:
         ssm_parameter: "/development/twilio/AS/account_sid"
         env_variable_name: "TWILIO_ACCOUNT_SID"
     - name: Set Twilio Auth Token for AS DEV
-      uses: "marvinpinto/action-inject-ssm-secrets@latest"
+      uses: ./.github/actions/inject-ssm-secrets
       with:
         ssm_parameter: "/development/twilio/${{env.TWILIO_ACCOUNT_SID}}/auth_token"
         env_variable_name: "TWILIO_AUTH_TOKEN"
     - name: Set Datadog Application ID
-      uses: "marvinpinto/action-inject-ssm-secrets@latest"
+      uses: ./.github/actions/inject-ssm-secrets
       with:
         ssm_parameter: "DEV_DATADOG_AS_APP_ID"
         env_variable_name: "DATADOG_APP_ID"
     - name: Set Datadog Client Access token
-      uses: "marvinpinto/action-inject-ssm-secrets@latest"
+      uses: ./.github/actions/inject-ssm-secrets
       with:
         ssm_parameter: "DEV_DATADOG_AS_ACCESS_TOKEN"
         env_variable_name: "DATADOG_ACCESS_TOKEN"
     - name: Set Fullstory org id
-      uses: "marvinpinto/action-inject-ssm-secrets@latest"
+      uses: ./.github/actions/inject-ssm-secrets
       with:
         ssm_parameter: "FULLSTORY_ID"
         env_variable_name: "FULLSTORY_ID"
     - name: Set GITHUB_ACTIONS_SLACK_BOT_TOKEN
-      uses: "marvinpinto/action-inject-ssm-secrets@latest"
+      uses: ./.github/actions/inject-ssm-secrets
       with:
         ssm_parameter: "GITHUB_ACTIONS_SLACK_BOT_TOKEN"
         env_variable_name: "GITHUB_ACTIONS_SLACK_BOT_TOKEN"
     - name: Set ASELO_DEPLOYS_CHANNEL_ID
-      uses: "marvinpinto/action-inject-ssm-secrets@latest"
+      uses: ./.github/actions/inject-ssm-secrets
       with:
         ssm_parameter: "ASELO_DEPLOYS_CHANNEL_ID"
         env_variable_name: "ASELO_DEPLOYS_CHANNEL_ID"

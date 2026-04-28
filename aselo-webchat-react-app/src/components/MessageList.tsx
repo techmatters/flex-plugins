@@ -63,10 +63,9 @@ const isFirstOfDateGroup = (message: Message, i: number, messages: Message[]) =>
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
 export const MessageList = () => {
-  const { messages, participants, users, conversation, conversationsClient } = useSelector((state: AppState) => ({
+  const { messages, participants, conversation, conversationsClient } = useSelector((state: AppState) => ({
     messages: state.chat.messages,
     participants: state.chat.participants,
-    users: state.chat.users,
     conversation: state.chat.conversation,
     conversationsClient: state.chat.conversationsClient,
   }));
@@ -271,9 +270,9 @@ export const MessageList = () => {
           {renderChatItems()}
           {participants
             ?.filter(p => p.isTyping && p.identity !== conversationsClient?.user.identity)
-            .map(p => (
-              <Text {...participantTypingStyles} as="p" key={p.identity}>
-                {users?.find(u => u.identity === p.identity)?.friendlyName} is typing...
+            .map((p, idx) => (
+              <Text {...participantTypingStyles} as="p" data-testid={`typer-${idx}`} key={`typer-${idx}`}>
+                <LocalizedTemplate code="MessagePhase-MessageList-Typing" />
               </Text>
             ))}
         </Box>

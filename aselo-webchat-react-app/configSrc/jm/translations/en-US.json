@@ -5,5 +5,7 @@
     "AutoFirstMessage": "Incoming webchat contact from",
     "PreEngagementConfigDescription": "Thank you for contacting SafeSpot. To chat with a counsellor, please type your name and select the Start Chat button.",
     "WhatIsYourName": "What is your name?",
+    "RequiredFieldError": "Please fill out required fields.",
+    "MessagePhase-MessageList-Typing": "SafeSpot Counsellor is typing...",
     "MessagePhase-MessageBubble-OtherParticipantMessageSenderName": "SafeSpot Counsellor"
 }

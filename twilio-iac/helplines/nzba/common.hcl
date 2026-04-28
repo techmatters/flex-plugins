@@ -17,7 +17,7 @@ locals {
     workflows = {
       master : {
         friendly_name = "Master Workflow"
-        templatefile  = "/app/twilio-iac/helplines/templates/workflows/master.tftpl"
+        templatefile  = "/app/twilio-iac/helplines/nzba/templates/workflows/master.tftpl"
       },
       queue_transfers : {
         friendly_name = "Queue Transfers Workflow"
@@ -33,6 +33,14 @@ locals {
       master : {
         "target_workers" = "1==1",
         "friendly_name"  = "Aselo"
+      },
+      returning_client : {
+        "target_workers" = "1==1",
+        "friendly_name"  = "Returning Client"
+      },
+      first_time_client : {
+        "target_workers" = "1==1",
+        "friendly_name"  = "First-Time Client"
       },
       survey : {
         "target_workers" = "1==0",

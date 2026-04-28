@@ -300,7 +300,10 @@ describe('sanitizeIdentifierFromTrigger', () => {
       channelType: 'sms',
       description: 'conversation - sanitizes conversation "Author"',
       trigger: {
-        conversation: { Author: '+123 456-789' },
+        conversation: {
+          Author: '+123 456-789',
+          ChannelAttributes: { channel_type: 'sms', from: '+123 456-789' },
+        },
       },
       expected: '+123456789',
     },
@@ -318,7 +321,10 @@ describe('sanitizeIdentifierFromTrigger', () => {
       channelType: 'whatsapp',
       description: 'conversation - sanitizes conversation "Author"',
       trigger: {
-        conversation: { Author: 'whatsapp:+123456789' },
+        conversation: {
+          Author: 'whatsapp:+123456789',
+          ChannelAttributes: { from: '', channel_type: 'whatsapp' },
+        },
       },
       expected: '+123456789',
     },
@@ -336,7 +342,10 @@ describe('sanitizeIdentifierFromTrigger', () => {
       channelType: 'modica',
       description: 'conversation - sanitizes conversation "Author"',
       trigger: {
-        conversation: { Author: 'modica:+123456789' },
+        conversation: {
+          Author: 'modica:+123456789',
+          ChannelAttributes: { from: '', channel_type: 'modica' },
+        },
       },
       expected: '+123456789',
     },
@@ -354,7 +363,10 @@ describe('sanitizeIdentifierFromTrigger', () => {
       channelType: 'messenger',
       description: 'conversation - sanitizes conversation "Author"',
       trigger: {
-        conversation: { Author: 'messenger:123456789' },
+        conversation: {
+          Author: 'messenger:123456789',
+          ChannelAttributes: { from: '', channel_type: 'messenger' },
+        },
       },
       expected: '123456789',
     },
@@ -372,7 +384,10 @@ describe('sanitizeIdentifierFromTrigger', () => {
       channelType: 'instagram',
       description: 'conversation - sanitizes conversation "Author"',
       trigger: {
-        conversation: { Author: 'instagram:123456789' },
+        conversation: {
+          Author: 'instagram:123456789',
+          ChannelAttributes: { channel_type: 'instagram', from: 'instagram:123456789' },
+        },
       },
       expected: '123456789',
     },
@@ -390,7 +405,10 @@ describe('sanitizeIdentifierFromTrigger', () => {
       channelType: 'line',
       description: 'conversation - sanitizes conversation "Author"',
       trigger: {
-        conversation: { Author: 'line:123456789' },
+        conversation: {
+          Author: 'line:123456789',
+          ChannelAttributes: { channel_type: 'line', from: 'line:123456789' },
+        },
       },
       expected: 'line:123456789',
     },
@@ -408,7 +426,10 @@ describe('sanitizeIdentifierFromTrigger', () => {
       channelType: 'telegram',
       description: 'conversation - sanitizes conversation "Author"',
       trigger: {
-        conversation: { Author: 'telegram:123456789' },
+        conversation: {
+          Author: 'telegram:123456789',
+          ChannelAttributes: { from: '', channel_type: 'telegram' },
+        },
       },
       expected: '123456789',
     },
@@ -456,12 +477,48 @@ describe('sanitizeIdentifierFromTrigger', () => {
     },
     {
       channelType: 'web',
-      description: 'conversation - returns unmodified',
+      description: 'chat - sanitizes ip',
       trigger: {
-        conversation: { Author: 'this!' },
+        conversation: {
+          ChannelAttributes: {
+            channel_type: 'web',
+            from: 'not this!',
+            pre_engagement_data: { contactIdentifier: '1.2.3.4' },
+          },
+          Author: 'not this!',
+        },
       },
-      expected: 'this!',
-      expectErr: false,
+      expected: '1.2.3.4',
+    },
+    {
+      channelType: 'web',
+      description: 'chat - sanitizes email',
+      trigger: {
+        conversation: {
+          ChannelAttributes: {
+            channel_type: 'web',
+            from: 'not this!',
+            pre_engagement_data: { contactIdentifier: 'example@example.com' },
+          },
+          Author: 'not this!',
+        },
+      },
+      expected: 'example@example.com',
+    },
+    {
+      channelType: 'web',
+      description: 'chat - sanitizes number',
+      trigger: {
+        conversation: {
+          ChannelAttributes: {
+            channel_type: 'web',
+            from: 'not this!',
+            pre_engagement_data: { contactIdentifier: '+1 234 56789' },
+          },
+          Author: 'not this!',
+        },
+      },
+      expected: '+1 234 56789',
     },
   ];
   each(testCases).test(

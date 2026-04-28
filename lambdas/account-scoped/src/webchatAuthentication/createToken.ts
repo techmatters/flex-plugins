@@ -23,18 +23,18 @@ export const TOKEN_TTL_IN_SECONDS = 60 * 60 * 6;
 
 const lookupLegacySsmParameter = async (accountSid: AccountSID, suffix: string) => {
   const shortCode = (await getHelplineCode(accountSid)).toUpperCase();
-  //const { NODE_ENV } = process.env!;
-  const shortEnv: string = 'DEV';
-  /*switch (NODE_ENV) {
+  const { NODE_ENV } = process.env!;
+  let shortEnv: string;
+  switch (NODE_ENV) {
     case 'production':
       shortEnv = 'PROD';
       break;
     case 'staging':
-      shortEnv = 'STAGING';
+      shortEnv = 'STG';
       break;
     default:
       shortEnv = 'DEV';
-  }*/
+  }
   return getSsmParameter(`${shortEnv}_TWILIO_${shortCode}_${suffix}`);
 };
 

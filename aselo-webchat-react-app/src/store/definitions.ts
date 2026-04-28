@@ -57,6 +57,7 @@ export type SessionState = {
   messages?: Message[];
   conversationState?: 'active' | 'inactive' | 'closed';
   preEngagementData: PreEngagementData;
+  recaptchaValid?: boolean;
 };
 
 export type ConfigState = {
@@ -82,6 +83,7 @@ export type ConfigState = {
   recaptchaSiteKey?: string;
   captureIp?: boolean;
   ipLookupServiceApiKey?: string;
+  contactIdentifierField?: string;
 };
 
 export type Notification = {

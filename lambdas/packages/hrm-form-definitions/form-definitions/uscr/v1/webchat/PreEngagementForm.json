@@ -14,7 +14,7 @@
     {
       "type": "checkbox",
       "name": "locationWithinServiceArea",
-      "label": "Incident location is within the service area. Check <a href=\"https://lahub.maps.arcgis.com/apps/instant/lookup/index.html?appid=66eb7ffa6da84d1bb787b828410abc04\">CIRCLE map</a> to confirm.",
+      "label": "Incident location is within the service area. Check <a href=\"https://lahub.maps.arcgis.com/apps/instant/lookup/index.html?appid=66eb7ffa6da84d1bb787b828410abc04\" target=\"_blank\">CIRCLE map</a> to confirm.",
       "required": {
         "value": true,
         "message": "Confirm that the incident location is within the service area."
@@ -22,7 +22,7 @@
     },
     {
       "type": "email",
-      "name": "contactIdentifier",
+      "name": "email",
       "label": "Your email address",
       "required": true,
       "placeholder": "Email"

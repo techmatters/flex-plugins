@@ -30,6 +30,7 @@ import {
   ACTION_DETACH_FILES,
   ACTION_REMOVE_NOTIFICATION,
   ACTION_UPDATE_PRE_ENGAGEMENT_DATA,
+  ACTION_UPDATE_RECAPTCHA_VALIDITY,
 } from './actionTypes';
 import { MESSAGES_LOAD_COUNT } from '../../constants';
 import { validateInput } from '../../components/forms/formInputs/validation';
@@ -37,6 +38,7 @@ import { sessionDataHandler } from '../../sessionDataHandler';
 import { getDefaultValue } from '../../components/forms/formInputs';
 import { initSession } from './initActions';
 import { notifications } from '../../notifications';
+import { selectPreEngagementData, selectRecaptchaValid } from '../session.reducer';
 
 export function changeEngagementPhase({ phase }: { phase: EngagementPhase }) {
   return {
@@ -162,6 +164,11 @@ export const updatePreEngagementDataFields = (
   };
 };
 
+export const newUpdateRecaptchaValidityAction = (recaptchaState: { recaptchaValid: boolean }) => ({
+  type: ACTION_UPDATE_RECAPTCHA_VALIDITY,
+  payload: recaptchaState,
+});
+
 const newInitialItem = (definition: PreEngagementFormItem): PreEngagementDataItem => ({
   error: null,
   dirty: false,
@@ -173,7 +180,7 @@ export const submitAndInitChatThunk = (): ThunkAction<void, AppState, unknown, A
     const state = getState();
     const definition = state.config.preEngagementFormDefinition?.fields || [];
     const data = definition.reduce<PreEngagementData>((accum, def) => {
-      const item = state.session.preEngagementData[def.name];
+      const item = selectPreEngagementData(state)[def.name];
       const error = validateInput({ definition: def, value: item?.value });
       return { ...accum, [def.name]: { ...(item || newInitialItem(def)), error } };
     }, {});
@@ -182,7 +189,12 @@ export const submitAndInitChatThunk = (): ThunkAction<void, AppState, unknown, A
 
     const hasError = Object.values(data).some(i => Boolean(i.error));
     if (hasError) {
-      dispatch(addNotification(notifications.formValidationErrorNotification()));
+      dispatch(addNotification(notifications.formValidationErrorNotification(state)));
+      return;
+    }
+
+    if (!selectRecaptchaValid(state)) {
+      dispatch(addNotification(notifications.recaptchaInvalidNotification(state)));
       return;
     }
 

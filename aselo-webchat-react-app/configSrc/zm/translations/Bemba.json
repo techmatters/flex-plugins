@@ -1,0 +1,16 @@
+{
+  "MessageInputDisabledReasonHold": "Twalamutuma nomba kuli Chimbusa, pembeleni ichimpusa nomba.",
+  "EntryPointTagLine": "Landeni naifwe",
+  "PreEngagementDescription": "tiyeni twambeko ilyashi",
+  "Today": "Lelo",
+  "InputPlaceHolder": "Taipeni ilyashi",
+  "WelcomeMessage": "Mwaiseni kuli ChildLine Zambia!",
+  "Yesterday": "Mailo",
+  "TypingIndicator": "Ichimbusa chile taipa ilyashi",
+  "MessageCanvasTrayButton": "Yambeni kutaipa ilyashi imbi",
+  "MessageCanvasTrayContent": "",
+  "AutoFirstMessage": "",
+  "StartChat": "Yambeni ukulanda mukwai!",
+  "SelectLanguage": "Select your language",
+  "MessagePhase-MessageBubble-OtherParticipantMessageSenderName": "Counsellor"
+}

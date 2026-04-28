@@ -18,9 +18,12 @@
 import React, { useEffect, useRef } from 'react';
 import { Box, Label, Select as SelectInput } from '@twilio-paste/core';
 import { FormInputType, PreEngagementFormItem } from 'hrm-form-definitions';
+import { useSelector } from 'react-redux';
 
 import LocalizedTemplate from '../../../localization/LocalizedTemplate';
+import { localizeKey } from '../../../localization/localizeKey';
 import { PreEngagementDataItem } from '../../../store/definitions';
+import { selectCurrentTranslations } from '../../../store/config.reducer';
 
 type OwnProps = {
   definition: PreEngagementFormItem & { type: FormInputType.DependentSelect };
@@ -33,6 +36,8 @@ type OwnProps = {
 type Props = OwnProps;
 
 const DependentSelect: React.FC<Props> = ({ getItem, setItemValue, definition, handleChange }) => {
+  const currentTranslations = useSelector(selectCurrentTranslations);
+  const configuredLocalizeKey = localizeKey(currentTranslations);
   const { dependsOn, name, label, required, options } = definition;
   const { value, error } = getItem(name);
   const dependsOnValue = getItem(dependsOn).value as string;
@@ -56,8 +61,7 @@ const DependentSelect: React.FC<Props> = ({ getItem, setItemValue, definition, h
     dependsOnValue && options[dependsOnValue]
       ? options[dependsOnValue].map(option => (
           <option key={option.value} value={option.value}>
-            {/* {<LocalizedTemplate code={option.label} />} */}
-            {option.label}
+            {configuredLocalizeKey(option.label)}
           </option>
         ))
       : [];
@@ -71,7 +75,7 @@ const DependentSelect: React.FC<Props> = ({ getItem, setItemValue, definition, h
         <SelectInput
           id={name}
           hasError={Boolean(error)}
-          onBlur={e => handleChange({ name, value: e.target.value })}
+          onChange={e => handleChange({ name, value: e.target.value })}
           disabled={!dependsOnValue}
           value={value as string}
         >

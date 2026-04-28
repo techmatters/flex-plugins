@@ -33,6 +33,16 @@ locals {
         }
         chatbot_unique_names = []
       },
+      chat : {
+        messaging_mode       = "conversations"
+        channel_type         = "chat"
+        contact_identity     = ""
+        templatefile         = "/app/twilio-iac/helplines/mt/templates/studio-flows/messaging-lex-web-location-block-v2.tftpl"
+        channel_flow_vars    = {
+          allowed_shortcode_locations = "MT,US,CL,ZA,IE,AR"
+        }
+        chatbot_unique_names = []
+      },
       facebook : {
         messaging_mode       = "conversations"
         channel_type         = "messenger"

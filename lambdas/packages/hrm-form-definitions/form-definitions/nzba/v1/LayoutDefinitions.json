@@ -1,16 +1,14 @@
 {
   "contact": {
-    "callerInformation": {
-    },
-    "childInformation": {
-    },
+    "callerInformation": {},
+    "childInformation": {},
     "caseInformation": {
-      "splitFormAt": 8
+      "splitFormAt": 10
     }
   },
   "case": {
     "sectionTypes": {
-      "cpm": {
+      "caseManagementPlan": {
         "splitFormAt": 10,
         "caseHomeOrder": 1,
         "printOrder": 1,
@@ -28,17 +26,39 @@
           "personsName",
           "position",
           "agency"
-        ]
+        ],
+        "layout": {
+          "personsName": {
+            "includeLabel": true
+          },
+          "position": {
+            "includeLabel": true
+          },
+          "agency": {
+            "includeLabel": true
+          }
+        }
       },
-     "referral": {
+      "referral": {
         "previewFields": [
           "referredTo"
         ],
         "layout": {
-          "referredTo": {}
+          "referredTo": {
+            "includeLabel": true
+          }
         },
         "splitFormAt": 2,
         "printOrder": 4,
+        "caseHomeLocation": "timeline"
+      },
+      "dutyOfCare": {
+        "previewFields": [
+          "date",
+          "location"
+        ],
+        "splitFormAt": 2,
+        "printOrder": 3,
         "caseHomeLocation": "timeline"
       },
       "dutyOfCare": {
@@ -79,7 +99,9 @@
         "printOrder": 5,
         "caseHomeLocation": "timeline",
         "printFormat": "list",
-        "previewFields": ["note"],
+        "previewFields": [
+          "note"
+        ],
         "layout": {
           "note": {}
         }

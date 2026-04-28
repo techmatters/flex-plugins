@@ -169,7 +169,7 @@
     {
       "type": "checkbox",
       "name": "privacyPolicy",
-      "label": "I acknowledge that I have read and understand the PeerChat Service <a href=\"https://www.themix.org.uk/about-us/privacy-centre/peerchat-privacy-notice/\">Privacy Policy</a>.",
+      "label": "I acknowledge that I have read and understand the PeerChat Service <a href=\"https://www.themix.org.uk/about-us/privacy-centre/peerchat-privacy-notice/\" target=\"_blank\">Privacy Policy</a>.",
       "required": {
         "value": true,
         "message": "Sorry, if you do not accept our privacy policy we cannot provide the PeerChat service to you."

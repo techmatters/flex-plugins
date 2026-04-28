@@ -17,6 +17,10 @@
       "required": true,
       "options": [
         {
+          "value": "Unknown",
+          "label": "PreferNotToAnswer"
+        },
+        {
           "value": "5 or younger",
           "label": "FiveOrYounger"
         },
@@ -119,10 +123,6 @@
         {
           "value": ">30",
           "label": ">30"
-        },
-        {
-          "value": "Unknown",
-          "label": "PreferNotToAnswer"
         }
       ]
     },
@@ -134,81 +134,32 @@
       "required": true,
       "options": [
         {
-          "value": "Agender",
-          "label": "Agender"
+          "value": "Unknown",
+          "label": "PreferNotToAnswer"
         },
         {
-          "value": "Cis Male/Man",
-          "label": "CisMaleMan"
+          "value": "Girl/Woman",
+          "label": "GirlWoman"
         },
         {
-          "value": "Cis Female/Woman",
-          "label": "CisFemaleWoman"
+          "value": "Boy/Man",
+          "label": "BoyMan"
         },
         {
-          "value": "Non-Binary/Genderqueer/Gender fluid",
+          "value": "Non-Binary, Trans, Genderqueer, Genderfluid, Two-Spirit",
           "label": "NonBinaryGenderqueerGenderFluid"
         },
         {
-          "value": "Two-Spirit",
-          "label": "TwoSpirit"
+          "value": "Heterosexual (Straight)",
+          "label": "Heterosexual"
         },
         {
-          "value": "Trans Female/Woman",
-          "label": "TransFemaleWoman"
-        },
-        {
-          "value": "Trans Male/Man",
-          "label": "TransMaleMan"
+          "value": "Homosexual (Gay or Lesbian), Asexual, Bisexual, Pansexual, Two-Spirit",
+          "label": "HomosexualAsexualBisexualPansexual"
         },
         {
           "value": "Other",
           "label": "Other"
-        },
-        {
-          "value": "Unknown",
-          "label": "PreferNotToAnswer"
-        }
-      ]
-    },
-    {
-      "type": "select",
-      "name": "sexualOrientation",
-      "label": "DoYouConsiderYourselfToBe",
-      "defaultValue": "Unknown",
-      "required": true,
-      "options": [
-        {
-          "value": "Asexual",
-          "label": "Asexual"
-        },
-        {
-          "value": "Bisexual or Pansexual",
-          "label": "BisexualOrPansexual"
-        },
-        {
-          "value": "Gay or Lesbian",
-          "label": "GayOrLesbian"
-        },
-        {
-          "value": "Queer",
-          "label": "Queer"
-        },
-        {
-          "value": "Heterosexual or Straight",
-          "label": "HeterosexualOrStraight"
-        },
-        {
-          "value": "Questioning or Unsure",
-          "label": "QuestioningOrUnsure"
-        },
-        {
-          "value": "Other",
-          "label": "Other"
-        },
-        {
-          "value": "Unknown",
-          "label": "PreferNotToAnswer"
         }
       ]
     },
@@ -220,6 +171,10 @@
       "required": true,
       "options": [
         {
+          "value": "Unknown",
+          "label": "PreferNotToAnswer"
+        },
+        {
           "value": "yes",
           "label": "Yes"
         },
@@ -228,8 +183,8 @@
           "label": "No"
         },
         {
-          "value": "Unknown",
-          "label": "PreferNotToAnswer"
+          "value": "maybe",
+          "label": "Maybe"
         }
       ]
     },
@@ -240,6 +195,10 @@
       "defaultValue": "Unknown",
       "required": true,
       "options": [
+        {
+          "value": "Unknown",
+          "label": "PreferNotToAnswer"
+        },
         {
           "value": "Alberta",
           "label": "Alberta"
@@ -307,10 +266,6 @@
         {
           "value": "Contacting us from outside of Canada",
           "label": "ContactingOutsideCanada"
-        },
-        {
-          "value": "Unknown",
-          "label": "PreferNotToAnswer"
         }
       ]
     },
@@ -322,32 +277,32 @@
       "required": true,
       "options": [
         {
+          "value": "Unknown",
+          "label": "PreferNotToAnswer"
+        },
+        {
           "value": "Rural area",
           "label": "RuralArea"
         },
         {
-          "value": "Small city/town",
-          "label": "SmallCityTown"
-        },
-        {
-          "value": "Medium city",
-          "label": "MediumCity"
-        },
-        {
-          "value": "Large city/urban centre",
-          "label": "LargeCityUrbanCentre"
+          "value": "Urban area",
+          "label": "UrbanArea"
         },
         {
           "value": "First Nations reserve",
           "label": "FirstNationsreserve"
         },
         {
-          "value": "Other",
-          "label": "Other"
+          "value": "Military family",
+          "label": "MilitaryFamily"
         },
         {
-          "value": "Unknown",
-          "label": "PreferNotToAnswer"
+          "value": "Homeless (e.g., Living in a Shelter, On the Streets, Staying with People Temporarily)",
+          "label": "Homeless"
+        },
+        {
+          "value": "Other",
+          "label": "Other"
         }
       ]
     },
@@ -404,32 +359,12 @@
           "label": "BlackEthnicity"
         },
         {
-          "value": "East Asian",
-          "label": "EastAsian"
-        },
-        {
           "value": "Indigenous",
-          "label": "IndigenousToNorthAmerica"
+          "label": "Indigenous"
         },
         {
           "value": "First Nations",
           "label": "FirstNationsToNorthAmerica"
-        },
-        {
-          "value": "Métis",
-          "label": "MetisToNorthAmerica"
-        },
-        {
-          "value": "Inuit",
-          "label": "Inuit"
-        },
-        {
-          "value": "Indigenous (non-specified)",
-          "label": "IndigenousNonSpecified"
-        },
-        {
-          "value": "Indigenous (Not to North America)",
-          "label": "IndigenousNotToNorthAmerica"
         },
         {
           "value": "Latin American",
@@ -440,12 +375,8 @@
           "label": "MiddleEastern"
         },
         {
-          "value": "Southeast Asian",
-          "label": "SoutheastAsian"
-        },
-        {
-          "value": "South Asian",
-          "label": "SouthAsian"
+          "value": "South, East, or Southeast Asian",
+          "label": "Asian"
         },
         {
           "value": "White",
@@ -507,67 +438,6 @@
         {
           "value": "Not a student",
           "label": "NotAStudent"
-        },
-        {
-          "value": "Unknown",
-          "label": "PreferNotToAnswer"
-        }
-      ]
-    },
-    {
-      "type": "select",
-      "name": "livingSituation",
-      "label": "LabelLivingSituation",
-      "defaultValue": "Unknown",
-      "required": false,
-      "options": [
-        {
-          "value": "",
-          "label": ""
-        },
-        {
-          "value": "Living with family members/guardians",
-          "label": "LivingWithFamilyMembersGuardians"
-        },
-        {
-          "value": "Member of a military family",
-          "label": "MemberMilitaryFamily"
-        },
-        {
-          "value": "Living independently/with peers",
-          "label": "LivingIndependentlyWithPeers"
-        },
-        {
-          "value": "Living in a School residence",
-          "label": "LivingSchoolResidence"
-        },
-        {
-          "value": "In hospital",
-          "label": "InHospital"
-        },
-        {
-          "value": "Treatment centre",
-          "label": "TreatmentCentre"
-        },
-        {
-          "value": "Recovery home",
-          "label": "RecoveryHome"
-        },
-        {
-          "value": "Assisted living centre",
-          "label": "AssistedLivingCentre"
-        },
-        {
-          "value": "Homeless",
-          "label": "Homeless"
-        },
-        {
-          "value": "In care",
-          "label": "InCare"
-        },
-        {
-          "value": "Other",
-          "label": "Other"
         },
         {
           "value": "Unknown",
