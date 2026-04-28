@@ -393,7 +393,7 @@ describe('submitAndInitChatThunk', () => {
       session: {
         preEngagementData: {
           ...preEngagementData,
-          locale: { value: 'en-MT', error: null, dirty: true },
+          locale: { value: 'zz-ZZ', error: null, dirty: true },
         },
       },
     }));

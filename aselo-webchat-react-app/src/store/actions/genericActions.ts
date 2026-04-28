@@ -208,8 +208,9 @@ export const submitAndInitChatThunk = (): ThunkAction<void, AppState, unknown, A
       return;
     }
     const preEngagementLocale = preEngagementData.locale?.value || preEngagementData.language?.value;
-    if (typeof preEngagementLocale === 'string' && preEngagementLocale.trim() && state.config.translations[preEngagementLocale]) {
-      dispatch(newChangeLocaleAction(preEngagementLocale as LocaleString));
+    const trimmedLocale = typeof preEngagementLocale === 'string' ? preEngagementLocale.trim() : '';
+    if (trimmedLocale && state.config.translations[trimmedLocale]) {
+      dispatch(newChangeLocaleAction(trimmedLocale as LocaleString));
     }
     dispatch(changeEngagementPhase({ phase: EngagementPhase.Loading }));
     try {
