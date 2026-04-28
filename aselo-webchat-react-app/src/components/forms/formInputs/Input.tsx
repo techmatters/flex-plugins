@@ -19,9 +19,12 @@ import React, { useMemo, useEffect } from 'react';
 import { Box, Input, Label } from '@twilio-paste/core';
 import { FormInputType, PreEngagementFormItem } from 'hrm-form-definitions';
 import debounce from 'lodash.debounce';
+import { useSelector } from 'react-redux';
 
 import LocalizedTemplate from '../../../localization/LocalizedTemplate';
 import { PreEngagementDataItem } from '../../../store/definitions';
+import { selectCurrentTranslations } from '../../../store/config.reducer';
+import { localizeKey } from '../../../localization/localizeKey';
 
 type OwnProps = {
   definition: PreEngagementFormItem & { type: FormInputType.Input | FormInputType.Email };
@@ -34,6 +37,8 @@ type OwnProps = {
 type Props = OwnProps;
 
 const InputText: React.FC<Props> = ({ definition, handleChange, getItem }) => {
+  const currentTranslations = useSelector(selectCurrentTranslations);
+  const configuredLocalizeKey = localizeKey(currentTranslations);
   const { name, label, placeholder, required } = definition;
   const { error } = getItem(name);
 
@@ -54,7 +59,7 @@ const InputText: React.FC<Props> = ({ definition, handleChange, getItem }) => {
         <Input
           type="text"
           id={name}
-          placeholder={placeholder}
+          placeholder={placeholder === undefined ? undefined : configuredLocalizeKey(placeholder)}
           hasError={Boolean(error)}
           onBlur={e => handleChange({ name, value: e.target.value })}
           onChange={e => debouncedHandleChange({ name, value: e.target.value })}
