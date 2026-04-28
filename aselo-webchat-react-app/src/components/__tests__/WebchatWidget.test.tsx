@@ -42,6 +42,7 @@ jest.mock('../../store/actions/initActions', () => ({
 
 jest.mock('../../store/actions/genericActions', () => ({
   changeEngagementPhase: jest.fn(),
+  initPhaseThunk: jest.fn(() => jest.fn()),
 }));
 
 jest.mock('../RootContainer', () => ({
@@ -99,13 +100,13 @@ describe('Webchat Lite', () => {
     });
   });
 
-  it('start pre-engagement form if no pre-existing session data', () => {
+  it('calls initPhaseThunk if no pre-existing session data', () => {
     (sessionDataHandler.tryResumeExistingSession as jest.Mock).mockReturnValueOnce(null);
-    const changeEngagementPhaseSpy = jest.spyOn(genericActions, 'changeEngagementPhase');
+    const initPhaseThunkSpy = jest.spyOn(genericActions, 'initPhaseThunk');
 
     render(<WebchatWidget />);
 
-    expect(changeEngagementPhaseSpy).toHaveBeenCalledWith({ phase: EngagementPhase.PreEngagementForm });
+    expect(initPhaseThunkSpy).toHaveBeenCalled();
   });
 
   it('start pre-engagement form if session initialization failed', () => {

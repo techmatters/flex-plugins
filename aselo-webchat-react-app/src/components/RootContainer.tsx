@@ -21,6 +21,7 @@ import { MessagingCanvasPhase } from './MessagingCanvasPhase';
 import { AppState, EngagementPhase } from '../store/definitions';
 import { PreEngagementFormPhase } from './PreEngagementFormPhase';
 import { LoadingPhase } from './LoadingPhase';
+import { OperatingHoursPhase } from './OperatingHoursPhase';
 import { innerContainerStyles, outerContainerStyles } from './styles/RootContainer.styles';
 import { EntryPoint } from './EntryPoint';
 
@@ -30,6 +31,8 @@ const getPhaseComponent = (phase: EngagementPhase) => {
       return <LoadingPhase />;
     case EngagementPhase.MessagingCanvas:
       return <MessagingCanvasPhase />;
+    case EngagementPhase.OperatingHours:
+      return <OperatingHoursPhase />;
     case EngagementPhase.PreEngagementForm:
     default:
       return <PreEngagementFormPhase />;

@@ -27,7 +27,9 @@ import {
   changeExpandedStatus,
   detachFiles,
   getMoreMessages,
+  initPhaseThunk,
   removeNotification,
+  setOperatingHoursMessage,
   submitAndInitChatThunk,
   updatePreEngagementData,
   updatePreEngagementDataFields,
@@ -45,6 +47,7 @@ import * as initActionsModule from '../initActions';
 import { sessionDataHandler } from '../../../sessionDataHandler';
 import { notifications } from '../../../notifications';
 import * as ipTracker from '../../../ipTracker';
+import * as operatingHoursService from '../../../services/operatingHoursService';
 
 jest.mock('@twilio/conversations');
 
@@ -331,5 +334,117 @@ describe('submitAndInitChatThunk', () => {
     expect(sessionDataHandler.fetchAndStoreNewSession).toHaveBeenCalledWith({
       formData: { friendlyName: 'John' },
     });
+  });
+});
+
+describe('initPhaseThunk', () => {
+  const checkOpenHoursConfig = {
+    checkOpenHours: true,
+    operatingHoursServiceUrl: 'http://service',
+    currentLocale: 'en-US',
+    defaultLocale: 'en-US',
+  };
+
+  const makeGetState = (configOverride = {}) =>
+    jest.fn(() => ({
+      config: { ...checkOpenHoursConfig, ...configOverride },
+      session: {},
+    }));
+
+  beforeEach(() => {
+    jest.resetAllMocks();
+  });
+
+  it('dispatches PreEngagementForm phase when checkOpenHours is false', async () => {
+    const getState = makeGetState({ checkOpenHours: false });
+    const dispatch = jest.fn();
+
+    await initPhaseThunk()(dispatch as any, getState as any, undefined);
+
+    expect(dispatch).toHaveBeenCalledWith(changeEngagementPhase({ phase: EngagementPhase.PreEngagementForm }));
+    expect(dispatch).toHaveBeenCalledTimes(1);
+  });
+
+  it('dispatches PreEngagementForm phase when checkOpenHours is true but no serviceUrl', async () => {
+    const getState = makeGetState({ operatingHoursServiceUrl: undefined });
+    const dispatch = jest.fn();
+
+    await initPhaseThunk()(dispatch as any, getState as any, undefined);
+
+    expect(dispatch).toHaveBeenCalledWith(changeEngagementPhase({ phase: EngagementPhase.PreEngagementForm }));
+    expect(dispatch).toHaveBeenCalledTimes(1);
+  });
+
+  it('dispatches OperatingHours phase when status is closed', async () => {
+    jest.spyOn(operatingHoursService, 'getOperatingHours').mockResolvedValue({
+      status: 'closed',
+      message: 'We are closed.',
+    });
+
+    const dispatch = jest.fn();
+
+    await initPhaseThunk()(dispatch as any, makeGetState() as any, undefined);
+
+    expect(dispatch).toHaveBeenCalledWith(setOperatingHoursMessage('We are closed.'));
+    expect(dispatch).toHaveBeenCalledWith(changeEngagementPhase({ phase: EngagementPhase.OperatingHours }));
+    expect(dispatch).toHaveBeenCalledTimes(2);
+  });
+
+  it('dispatches OperatingHours phase when status is holiday', async () => {
+    jest.spyOn(operatingHoursService, 'getOperatingHours').mockResolvedValue({
+      status: 'holiday',
+      message: 'We are on holiday.',
+    });
+
+    const dispatch = jest.fn();
+
+    await initPhaseThunk()(dispatch as any, makeGetState() as any, undefined);
+
+    expect(dispatch).toHaveBeenCalledWith(setOperatingHoursMessage('We are on holiday.'));
+    expect(dispatch).toHaveBeenCalledWith(changeEngagementPhase({ phase: EngagementPhase.OperatingHours }));
+  });
+
+  it('uses fallback translation key for closed when no message in response', async () => {
+    jest.spyOn(operatingHoursService, 'getOperatingHours').mockResolvedValue('closed');
+
+    const dispatch = jest.fn();
+
+    await initPhaseThunk()(dispatch as any, makeGetState() as any, undefined);
+
+    expect(dispatch).toHaveBeenCalledWith(setOperatingHoursMessage('OperatingHours-Closed-Message'));
+    expect(dispatch).toHaveBeenCalledWith(changeEngagementPhase({ phase: EngagementPhase.OperatingHours }));
+  });
+
+  it('uses fallback translation key for holiday when no message in response', async () => {
+    jest.spyOn(operatingHoursService, 'getOperatingHours').mockResolvedValue('holiday');
+
+    const dispatch = jest.fn();
+
+    await initPhaseThunk()(dispatch as any, makeGetState() as any, undefined);
+
+    expect(dispatch).toHaveBeenCalledWith(setOperatingHoursMessage('OperatingHours-Holiday-Message'));
+    expect(dispatch).toHaveBeenCalledWith(changeEngagementPhase({ phase: EngagementPhase.OperatingHours }));
+  });
+
+  it('dispatches PreEngagementForm when status is open', async () => {
+    jest.spyOn(operatingHoursService, 'getOperatingHours').mockResolvedValue({ status: 'open', message: '' });
+
+    const dispatch = jest.fn();
+
+    await initPhaseThunk()(dispatch as any, makeGetState() as any, undefined);
+
+    expect(dispatch).toHaveBeenCalledWith(changeEngagementPhase({ phase: EngagementPhase.PreEngagementForm }));
+    expect(dispatch).toHaveBeenCalledTimes(1);
+  });
+
+  it('falls back to PreEngagementForm when operating hours check throws an error', async () => {
+    jest.spyOn(operatingHoursService, 'getOperatingHours').mockRejectedValue(new Error('Network error'));
+
+    const dispatch = jest.fn();
+
+    await initPhaseThunk()(dispatch as any, makeGetState() as any, undefined);
+
+    expect(dispatch).toHaveBeenCalledWith(changeEngagementPhase({ phase: EngagementPhase.PreEngagementForm }));
+    expect(dispatch).toHaveBeenCalledTimes(1);
   });
 });
