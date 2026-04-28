@@ -18,7 +18,7 @@ locals {
 
     channel_attributes = {
       webchat                            = "/app/twilio-iac/helplines/usch/templates/channel-attributes/webchat.tftpl",
-      chat-conversations                 = "/app/twilio-iac/helplines/templates/channel-attributes/chat-conversations.tftpl"
+      chat-conversations                 = "/app/twilio-iac/helplines/templates/channel-attributes/chat-conversations.tftpl",
       voice                              = "/app/twilio-iac/helplines/usch/templates/channel-attributes/voice.tftpl",
       sms_courage_first-conversations    = "/app/twilio-iac/helplines/usch/templates/channel-attributes/sms_courage_first-conversations.tftpl",
       sms_childhelp-conversations        = "/app/twilio-iac/helplines/usch/templates/channel-attributes/sms_childhelp-conversations.tftpl",
