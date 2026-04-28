@@ -41,8 +41,8 @@ export const getOperatingHours = async (serviceUrl: string, language: string): P
   const responseJson = await response.json();
 
   if (!response.ok) {
-    const option = responseJson.stack ? { cause: responseJson.stack } : null;
-    console.log('Error:', option);
+    const errorOptions = responseJson.stack ? { cause: responseJson.stack } : null;
+    console.log('Error:', errorOptions);
     throw new Error(responseJson.message);
   }
 

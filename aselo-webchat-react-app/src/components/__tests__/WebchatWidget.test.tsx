@@ -109,7 +109,7 @@ describe('Webchat Lite', () => {
     expect(initPhaseThunkSpy).toHaveBeenCalled();
   });
 
-  it('start pre-engagement form if session initialization failed', () => {
+  it('goes directly to pre-engagement form if session initialization failed', () => {
     (initActions.initSession as jest.Mock).mockImplementationOnce(() => {
       throw new Error('Failed Initialization');
     });
