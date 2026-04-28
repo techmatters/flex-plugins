@@ -17,6 +17,10 @@
       "required": true,
       "options": [
         {
+          "value": "Unknown",
+          "label": "PreferNotToAnswer"
+        },
+        {
           "value": "5 or younger",
           "label": "FiveOrYounger"
         },
@@ -119,10 +123,6 @@
         {
           "value": ">30",
           "label": ">30"
-        },
-        {
-          "value": "Unknown",
-          "label": "PreferNotToAnswer"
         }
       ]
     },
@@ -133,6 +133,10 @@
       "defaultValue": "Unknown",
       "required": true,
       "options": [
+        {
+          "value": "Unknown",
+          "label": "PreferNotToAnswer"
+        },
         {
           "value": "Girl/Woman",
           "label": "GirlWoman"
@@ -160,10 +164,6 @@
         {
           "value": "Other",
           "label": "Other"
-        },
-        {
-          "value": "Unknown",
-          "label": "PreferNotToAnswer"
         }
       ]
     },
@@ -175,6 +175,10 @@
       "required": true,
       "options": [
         {
+          "value": "Unknown",
+          "label": "PreferNotToAnswer"
+        },
+        {
           "value": "yes",
           "label": "Yes"
         },
@@ -185,10 +189,6 @@
         {
           "value": "maybe",
           "label": "Maybe"
-        },
-        {
-          "value": "Unknown",
-          "label": "PreferNotToAnswer"
         }
       ]
     },
@@ -199,6 +199,10 @@
       "defaultValue": "Unknown",
       "required": true,
       "options": [
+        {
+          "value": "Unknown",
+          "label": "PreferNotToAnswer"
+        },
         {
           "value": "Alberta",
           "label": "Alberta"
@@ -266,10 +270,6 @@
         {
           "value": "Contacting us from outside of Canada",
           "label": "ContactingOutsideCanada"
-        },
-        {
-          "value": "Unknown",
-          "label": "PreferNotToAnswer"
         }
       ]
     },
@@ -280,6 +280,10 @@
       "defaultValue": "Unknown",
       "required": true,
       "options": [
+        {
+          "value": "Unknown",
+          "label": "PreferNotToAnswer"
+        },
         {
           "value": "Rural area",
           "label": "RuralArea"
@@ -303,10 +307,6 @@
         {
           "value": "Other",
           "label": "Other"
-        },
-        {
-          "value": "Unknown",
-          "label": "PreferNotToAnswer"
         }
       ]
     },
