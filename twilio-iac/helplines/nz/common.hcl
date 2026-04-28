@@ -15,6 +15,7 @@ locals {
       webchat                 = "/app/twilio-iac/helplines/nz/templates/channel-attributes/webchat.tftpl",
       voice                   = "/app/twilio-iac/helplines/nz/templates/channel-attributes/voice.tftpl",
       modica                  = "/app/twilio-iac/helplines/nz/templates/channel-attributes/modica.tftpl",
+      chat-conversations      = "/app/twilio-iac/helplines/nz/templates/channel-attributes/chat-conversations.tftpl",
       modica-conversations    = "/app/twilio-iac/helplines/nz/templates/channel-attributes/custom-conversations.tftpl",
       instagram-conversations = "/app/twilio-iac/helplines/nz/templates/channel-attributes/custom-conversations.tftpl",
       whatsapp-conversations  = "/app/twilio-iac/helplines/nz/templates/channel-attributes/whatsapp-conversations.tftpl",
