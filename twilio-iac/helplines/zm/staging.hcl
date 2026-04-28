@@ -13,6 +13,14 @@ locals {
         channel_flow_vars    = {}
         chatbot_unique_names = []
       },
+      chat : {
+        channel_type         = "chat"
+        messaging_mode       = "conversations"
+        contact_identity     = ""
+        templatefile         = "/app/twilio-iac/helplines/zm/templates/studio-flows/messaging-webchat-conv-lambda-sd.tftpl"
+        channel_flow_vars    = {}
+        chatbot_unique_names = []
+      },
       facebook : {
         messaging_mode       = "conversations"
         channel_type         = "messenger"
