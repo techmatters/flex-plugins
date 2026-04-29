@@ -39,14 +39,16 @@ import {
   ACTION_REMOVE_NOTIFICATION,
   ACTION_UPDATE_PRE_ENGAGEMENT_DATA,
   ACTION_UPDATE_RECAPTCHA_VALIDITY,
+  ACTION_SET_OPERATING_HOURS_MESSAGE,
 } from './actionTypes';
 import { MESSAGES_LOAD_COUNT } from '../../constants';
 import { validateInput } from '../../components/forms/formInputs/validation';
-import { sessionDataHandler } from '../../sessionDataHandler';
+import { getAccountScopedBaseUrl, sessionDataHandler } from '../../sessionDataHandler';
 import { getDefaultValue } from '../../components/forms/formInputs';
 import { initSession } from './initActions';
 import { notifications } from '../../notifications';
 import { selectPreEngagementData, selectRecaptchaValid } from '../session.reducer';
+import { getOperatingHours } from '../../services/operatingHoursService';
 
 export function changeEngagementPhase({ phase }: { phase: EngagementPhase }) {
   return {
@@ -243,5 +245,49 @@ export const submitAndInitChatThunk = (): ThunkAction<void, AppState, unknown, A
       dispatch(addNotification(notifications.failedToInitSessionNotification((err as Error).message)));
       dispatch(changeEngagementPhase({ phase: EngagementPhase.PreEngagementForm }));
     }
+  };
+};
+
+export const setOperatingHoursMessage = (operatingHoursMessage: string) => ({
+  type: ACTION_SET_OPERATING_HOURS_MESSAGE,
+  payload: { operatingHoursMessage },
+});
+
+const getOperatingHoursMessage = (
+  operatingState: Awaited<ReturnType<typeof getOperatingHours>>,
+  isClosed: boolean,
+): string =>
+  (typeof operatingState !== 'string' && operatingState.message) ||
+  (isClosed ? 'OperatingHours-Closed-Message' : 'OperatingHours-Holiday-Message');
+
+const isOperatingHoursClosed = (operatingState: Awaited<ReturnType<typeof getOperatingHours>>): boolean =>
+  operatingState === 'closed' || (typeof operatingState !== 'string' && operatingState.status === 'closed');
+
+const isOperatingHoursHoliday = (operatingState: Awaited<ReturnType<typeof getOperatingHours>>): boolean =>
+  operatingState === 'holiday' || (typeof operatingState !== 'string' && operatingState.status === 'holiday');
+
+export const initPhaseThunk = (): ThunkAction<void, AppState, unknown, AnyAction> => {
+  return async (dispatch, getState) => {
+    const state = getState();
+    const { checkOpenHours, aseloBackendUrl, helplineCode, currentLocale, defaultLocale } = state.config;
+
+    if (checkOpenHours && aseloBackendUrl && helplineCode) {
+      const baseUrl = getAccountScopedBaseUrl(aseloBackendUrl, helplineCode);
+      try {
+        const operatingState = await getOperatingHours(baseUrl, currentLocale || defaultLocale);
+        const isClosed = isOperatingHoursClosed(operatingState);
+        const isHoliday = isOperatingHoursHoliday(operatingState);
+
+        if (isClosed || isHoliday) {
+          dispatch(setOperatingHoursMessage(getOperatingHoursMessage(operatingState, isClosed)));
+          dispatch(changeEngagementPhase({ phase: EngagementPhase.OperatingHours }));
+          return;
+        }
+      } catch (error) {
+        console.log('Failed to check operating hours:', error);
+      }
+    }
+
+    dispatch(changeEngagementPhase({ phase: EngagementPhase.PreEngagementForm }));
   };
 };

@@ -12,5 +12,6 @@
   "helplineCode": "as",
   "enableRecaptcha": true,
   "captureIp": true,
-  "contactIdentifierField": "ip"
+  "contactIdentifierField": "ip",
+  "checkOpenHours": true
 }
