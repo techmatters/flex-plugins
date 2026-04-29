@@ -284,7 +284,7 @@ describe('submitAndInitChatThunk', () => {
 
     expect(ipTracker.getUserIp).toHaveBeenCalledWith(apiKey);
     expect(sessionDataHandler.fetchAndStoreNewSession).toHaveBeenCalledWith({
-      formData: { friendlyName: 'John', ip: mockIp },
+      formData: { friendlyName: 'John', ip: mockIp, location: 'http://localhost/' },
     });
   });
 
@@ -307,7 +307,7 @@ describe('submitAndInitChatThunk', () => {
 
     expect(ipTracker.getUserIp).not.toHaveBeenCalled();
     expect(sessionDataHandler.fetchAndStoreNewSession).toHaveBeenCalledWith({
-      formData: { friendlyName: 'John' },
+      formData: { friendlyName: 'John', location: 'http://localhost/' },
     });
   });
 
@@ -329,7 +329,48 @@ describe('submitAndInitChatThunk', () => {
 
     expect(ipTracker.getUserIp).not.toHaveBeenCalled();
     expect(sessionDataHandler.fetchAndStoreNewSession).toHaveBeenCalledWith({
-      formData: { friendlyName: 'John' },
+      formData: { friendlyName: 'John', location: 'http://localhost/' },
     });
+  });
+
+  it('should include window.location.href as location when not already in preEngagementData', async () => {
+    (sessionDataHandler.fetchAndStoreNewSession as jest.Mock).mockResolvedValue({ token, conversationSid });
+    (initActionsModule.initSession as jest.Mock).mockReturnValue({ type: 'MOCK_INIT_SESSION' });
+
+    const dispatch = jest.fn();
+    await submitAndInitChatThunk()(dispatch as any, getState as any, undefined);
+
+    expect(sessionDataHandler.fetchAndStoreNewSession).toHaveBeenCalledWith(
+      expect.objectContaining({
+        formData: expect.objectContaining({ location: 'http://localhost/' }),
+      }),
+    );
+  });
+
+  it('should preserve location field value when a "location" field exists in the form definition', async () => {
+    const customLocation = 'https://example.com/some-page?ref=chatbot';
+    (sessionDataHandler.fetchAndStoreNewSession as jest.Mock).mockResolvedValue({ token, conversationSid });
+    (initActionsModule.initSession as jest.Mock).mockReturnValue({ type: 'MOCK_INIT_SESSION' });
+
+    const fieldsWithLocation = [...formFields, { name: 'location', type: FormInputType.Input, label: 'Location' }];
+
+    const getStateWithLocation = jest.fn(() => ({
+      config: { preEngagementFormDefinition: { fields: fieldsWithLocation } },
+      session: {
+        preEngagementData: {
+          ...preEngagementData,
+          location: { value: customLocation, error: null, dirty: true },
+        },
+      },
+    }));
+
+    const dispatch = jest.fn();
+    await submitAndInitChatThunk()(dispatch as any, getStateWithLocation as any, undefined);
+
+    expect(sessionDataHandler.fetchAndStoreNewSession).toHaveBeenCalledWith(
+      expect.objectContaining({
+        formData: expect.objectContaining({ location: customLocation }),
+      }),
+    );
   });
 });
