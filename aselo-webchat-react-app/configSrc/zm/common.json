@@ -9,8 +9,7 @@
     "blockedEmojis": []
   },
   "alwaysOpen": false,
-  "helplineCode": "zw",
-  "enableRecaptcha": false,
+  "helplineCode": "zm",
   "captureIp": true,
-  "contactIdentifierField": "ip"
+  "definitionVersion": "zm-v1"
 }

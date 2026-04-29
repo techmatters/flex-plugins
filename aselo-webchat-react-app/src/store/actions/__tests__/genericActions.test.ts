@@ -28,6 +28,7 @@ import {
   detachFiles,
   getMoreMessages,
   initPhaseThunk,
+  newChangeLocaleAction,
   removeNotification,
   setOperatingHoursMessage,
   submitAndInitChatThunk,
@@ -39,6 +40,7 @@ import {
   ACTION_ADD_MULTIPLE_MESSAGES,
   ACTION_ADD_NOTIFICATION,
   ACTION_ATTACH_FILES,
+  ACTION_CHANGE_LOCALE,
   ACTION_DETACH_FILES,
   ACTION_REMOVE_NOTIFICATION,
 } from '../actionTypes';
@@ -336,6 +338,98 @@ describe('submitAndInitChatThunk', () => {
     expect(sessionDataHandler.fetchAndStoreNewSession).toHaveBeenCalledWith({
       formData: { friendlyName: 'John' },
     });
+  });
+
+  it('should dispatch ACTION_CHANGE_LOCALE when locale is in pre-engagement data and exists in translations', async () => {
+    (sessionDataHandler.fetchAndStoreNewSession as jest.Mock).mockResolvedValue({ token, conversationSid });
+    (initActionsModule.initSession as jest.Mock).mockReturnValue({ type: 'MOCK_INIT_SESSION' });
+
+    const getStateWithLocale = jest.fn(() => ({
+      config: {
+        preEngagementFormDefinition: { fields: formFields },
+        translations: { 'en-US': { hello: 'Hello' }, 'fr-FR': { hello: 'Bonjour' } },
+      },
+      session: {
+        preEngagementData: {
+          ...preEngagementData,
+          locale: { value: 'en-US', error: null, dirty: true },
+        },
+      },
+    }));
+
+    const dispatch = jest.fn();
+    await submitAndInitChatThunk()(dispatch as any, getStateWithLocale as any, undefined);
+
+    expect(dispatch).toHaveBeenCalledWith(newChangeLocaleAction('en-US'));
+  });
+
+  it('should dispatch ACTION_CHANGE_LOCALE using language field when locale field is absent', async () => {
+    (sessionDataHandler.fetchAndStoreNewSession as jest.Mock).mockResolvedValue({ token, conversationSid });
+    (initActionsModule.initSession as jest.Mock).mockReturnValue({ type: 'MOCK_INIT_SESSION' });
+
+    const getStateWithLanguage = jest.fn(() => ({
+      config: {
+        preEngagementFormDefinition: { fields: formFields },
+        translations: { 'fr-FR': { hello: 'Bonjour' } },
+      },
+      session: {
+        preEngagementData: {
+          ...preEngagementData,
+          language: { value: 'fr-FR', error: null, dirty: true },
+        },
+      },
+    }));
+
+    const dispatch = jest.fn();
+    await submitAndInitChatThunk()(dispatch as any, getStateWithLanguage as any, undefined);
+
+    expect(dispatch).toHaveBeenCalledWith(newChangeLocaleAction('fr-FR'));
+  });
+
+  it('should not dispatch ACTION_CHANGE_LOCALE when locale value is not a key in translations', async () => {
+    (sessionDataHandler.fetchAndStoreNewSession as jest.Mock).mockResolvedValue({ token, conversationSid });
+    (initActionsModule.initSession as jest.Mock).mockReturnValue({ type: 'MOCK_INIT_SESSION' });
+
+    const getStateWithUnknownLocale = jest.fn(() => ({
+      config: {
+        preEngagementFormDefinition: { fields: formFields },
+        translations: { 'en-US': { hello: 'Hello' } },
+      },
+      session: {
+        preEngagementData: {
+          ...preEngagementData,
+          locale: { value: 'zz-ZZ', error: null, dirty: true },
+        },
+      },
+    }));
+
+    const dispatch = jest.fn();
+    await submitAndInitChatThunk()(dispatch as any, getStateWithUnknownLocale as any, undefined);
+
+    expect(dispatch).not.toHaveBeenCalledWith(expect.objectContaining({ type: ACTION_CHANGE_LOCALE }));
+  });
+
+  it('should not dispatch ACTION_CHANGE_LOCALE when locale value is not a string', async () => {
+    (sessionDataHandler.fetchAndStoreNewSession as jest.Mock).mockResolvedValue({ token, conversationSid });
+    (initActionsModule.initSession as jest.Mock).mockReturnValue({ type: 'MOCK_INIT_SESSION' });
+
+    const getStateWithBooleanLocale = jest.fn(() => ({
+      config: {
+        preEngagementFormDefinition: { fields: formFields },
+        translations: { 'en-US': { hello: 'Hello' } },
+      },
+      session: {
+        preEngagementData: {
+          ...preEngagementData,
+          locale: { value: true, error: null, dirty: true },
+        },
+      },
+    }));
+
+    const dispatch = jest.fn();
+    await submitAndInitChatThunk()(dispatch as any, getStateWithBooleanLocale as any, undefined);
+
+    expect(dispatch).not.toHaveBeenCalledWith(expect.objectContaining({ type: ACTION_CHANGE_LOCALE }));
   });
 });
 

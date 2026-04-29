@@ -9,8 +9,7 @@
     "blockedEmojis": []
   },
   "alwaysOpen": false,
-  "helplineCode": "zw",
-  "enableRecaptcha": false,
+  "helplineCode": "tz",
   "captureIp": true,
-  "contactIdentifierField": "ip"
+  "definitionVersion": "tz-v1"
 }
