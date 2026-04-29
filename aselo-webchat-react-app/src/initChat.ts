@@ -29,6 +29,8 @@ export const initChat = () => {
   const scriptEl = document.currentScript;
   const theme = urlParams.get('theme') ?? scriptEl?.getAttribute('theme');
   const isLightTheme = theme !== 'dark';
+  const color = urlParams.get('color') || scriptEl?.getAttribute('data-color');
+  const backgroundColor = urlParams.get('backgroundColor') || scriptEl?.getAttribute('data-background-color');
   const alwaysOpen = urlParams.get('alwaysOpen');
   const defaultLocale = urlParams.get('locale');
   const configUrl = urlParams.get('configUrl') ?? scriptEl?.getAttribute('config-url') ?? undefined;
@@ -44,7 +46,15 @@ export const initChat = () => {
 
   window.Twilio.initLogger('info');
   window.Twilio.initWebchat(configUrl, {
-    theme: { isLight: isLightTheme },
+    theme: {
+      isLight: isLightTheme,
+      overrides: {
+        backgroundColors: {
+          ...(backgroundColor && { colorBackgroundPrimary: backgroundColor }),
+        },
+        textColors: { ...(color && { colorTextWeakest: color }) },
+      },
+    },
     ...(alwaysOpen ? { alwaysOpen: alwaysOpen.toLowerCase() === 'true' } : {}),
     ...(defaultLocale ? { defaultLocale: defaultLocale as LocaleString } : {}),
   });
