@@ -47,6 +47,7 @@ const message2 = {
 
 const defaultChatState = {
   conversation: {
+    status: 'joined',
     dateCreated: message1.dateCreated,
     getMessagesCount: jest.fn(),
     addListener: jest.fn(),
@@ -176,6 +177,26 @@ describe('Message List', () => {
 
     await waitFor(() => {
       expect(getMessagesCountSpy).toHaveBeenCalled();
+      expect(queryByTitle('Spinner')).not.toBeInTheDocument();
+    });
+  });
+
+  it('does not render loading spinner when conversation is not joined', async () => {
+    resetMockRedux({
+      chat: {
+        ...defaultChatState,
+        conversation: {
+          ...defaultChatState.conversation,
+          status: 'notJoined',
+        },
+      },
+    });
+
+    jest.spyOn(defaultChatState.conversation, 'getMessagesCount').mockImplementation(() => 4);
+
+    const { queryByTitle } = render(<MessageList />);
+
+    await waitFor(() => {
       expect(queryByTitle('Spinner')).not.toBeInTheDocument();
     });
   });

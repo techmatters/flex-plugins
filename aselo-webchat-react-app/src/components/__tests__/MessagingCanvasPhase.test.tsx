@@ -53,6 +53,7 @@ const messageMock = {
   send: jest.fn(),
 };
 const conversationMock = {
+  status: 'joined',
   getMessagesCount: jest.fn(),
   prepareMessage: jest.fn(),
 };
@@ -118,13 +119,28 @@ describe('Messaging Canvas Phase', () => {
   });
 
   it('renders message input (and file drop area wrapper) when conversation state is active', () => {
-    resetMockRedux({ ...baseReduxState, chat: { conversationState: 'active', ...baseReduxState } });
+    resetMockRedux({
+      ...baseReduxState,
+      chat: { ...baseReduxState.chat, conversationState: 'active', conversation: conversationMock },
+    });
 
     const { queryByTitle } = render(<MessagingCanvasPhase />);
 
     expect(queryByTitle('AttachFileDropArea')).toBeInTheDocument();
     expect(queryByTitle('MessageInput')).toBeInTheDocument();
     expect(queryByTitle('ConversationEnded')).not.toBeInTheDocument();
+  });
+
+  it('does not render message input when conversation state is active but conversation is not joined', () => {
+    resetMockRedux({
+      ...baseReduxState,
+      chat: { ...baseReduxState.chat, conversationState: 'active', conversation: { status: 'notJoined' } },
+    });
+
+    const { queryByTitle } = render(<MessagingCanvasPhase />);
+
+    expect(queryByTitle('MessageInput')).not.toBeInTheDocument();
+    expect(queryByTitle('ConversationEnded')).toBeInTheDocument();
   });
 
   it('renders conversation ended when conversation state is closed', () => {
@@ -147,6 +163,19 @@ describe('Messaging Canvas Phase', () => {
     expect(conversationMock.prepareMessage().setBody).toHaveBeenCalledWith(TEST_QUERY);
     expect(conversationMock.prepareMessage().setBody().build).toHaveBeenCalled();
     expect(conversationMock.prepareMessage().setBody().build().send).toHaveBeenCalled();
+  });
+
+  it("Should not trigger conversation if conversation is not joined", async () => {
+    resetMockRedux({
+      ...baseReduxState,
+      chat: { ...baseReduxState.chat, conversation: { ...conversationMock, status: 'notJoined' } },
+      session: { ...baseReduxState.session, preEngagementData: {} },
+    });
+    conversationMock.getMessagesCount.mockResolvedValue(0);
+
+    await waitFor(() => render(<MessagingCanvasPhase />));
+
+    expect(conversationMock.prepareMessage).toHaveBeenCalledTimes(0);
   });
 
   it('Should not trigger conversation if messages exists', async () => {
