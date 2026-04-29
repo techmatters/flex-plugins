@@ -214,6 +214,7 @@ describe('Pre Engagement Form Phase', () => {
         friendlyName: name,
         query,
         email,
+        location: 'http://localhost/',
       },
     });
   });
@@ -278,7 +279,9 @@ describe('Pre Engagement Form Phase - validation', () => {
     fireEvent.change(nameInput, { target: { value: 'John' } });
     await submitForm(container);
     // DOM sync on submit should have pushed the value into Redux before validation
-    expect(sessionDataHandler.fetchAndStoreNewSession).toHaveBeenCalledWith({ formData: { name: 'John' } });
+    expect(sessionDataHandler.fetchAndStoreNewSession).toHaveBeenCalledWith({
+      formData: { name: 'John', location: 'http://localhost/' },
+    });
     expect(initAction.initSession).toHaveBeenCalled();
   });
 
@@ -547,6 +550,58 @@ describe('Pre Engagement Form Phase - validation', () => {
     fireEvent.click(checkbox);
     await submitForm(container);
     expect(sessionDataHandler.fetchAndStoreNewSession).toHaveBeenCalled();
+    expect(initAction.initSession).toHaveBeenCalled();
+  });
+
+  it('Select: form is valid when a "required" select is changed to a non-empty option via the DOM', async () => {
+    const store = createValidationStore([
+      {
+        name: 'choice',
+        type: FormInputType.Select,
+        label: 'Choice',
+        required: true,
+        options: [
+          { value: '', label: 'Please select...' },
+          { value: 'opt1', label: 'Option 1' },
+        ],
+      } as PreEngagementFormItem,
+    ]);
+    const { container } = render(
+      <Provider store={store}>
+        <PreEngagementFormPhase />
+      </Provider>,
+    );
+    const selectEl = container.querySelector('#choice') as HTMLSelectElement;
+    fireEvent.change(selectEl, { target: { value: 'opt1' } });
+    await submitForm(container);
+    expect(sessionDataHandler.fetchAndStoreNewSession).toHaveBeenCalled();
+    expect(initAction.initSession).toHaveBeenCalled();
+  });
+
+  it('onChange syncs field values to Redux so validation reflects the current DOM state', async () => {
+    const namePlaceholder = 'Your name';
+    const store = createValidationStore([
+      {
+        name: 'name',
+        type: FormInputType.Input,
+        label: 'Name',
+        required: true,
+        placeholder: namePlaceholder,
+      } as PreEngagementFormItem,
+    ]);
+    const { container, getByPlaceholderText } = render(
+      <Provider store={store}>
+        <PreEngagementFormPhase />
+      </Provider>,
+    );
+    const nameInput = getByPlaceholderText(namePlaceholder);
+    // Trigger onChange without blur — setItemValue calls setPreEngagementDataFromDom which reads all DOM values
+    fireEvent.change(nameInput, { target: { value: 'Alice' } });
+    // Verify the value is captured during submission (not just on blur), confirming onChange syncs the DOM
+    await submitForm(container);
+    expect(sessionDataHandler.fetchAndStoreNewSession).toHaveBeenCalledWith(
+      expect.objectContaining({ formData: expect.objectContaining({ name: 'Alice' }) }),
+    );
     expect(initAction.initSession).toHaveBeenCalled();
   });
 });

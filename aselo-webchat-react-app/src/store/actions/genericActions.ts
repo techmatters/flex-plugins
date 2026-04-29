@@ -232,6 +232,8 @@ export const submitAndInitChatThunk = (): ThunkAction<void, AppState, unknown, A
         preEngagementDataValues.ip = await getUserIp(state.config.ipLookupServiceApiKey);
       }
 
+      preEngagementDataValues.location = preEngagementDataValues.location ?? window.location.href;
+
       const sessionData = await sessionDataHandler.fetchAndStoreNewSession({
         formData: preEngagementDataValues,
       });
