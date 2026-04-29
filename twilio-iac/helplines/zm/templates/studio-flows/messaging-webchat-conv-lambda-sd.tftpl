@@ -45,7 +45,7 @@ ${
             {
               "friendly_name": "If value equal_to English",
               "arguments": [
-                "{{trigger.conversations.ChannelAttributes.pre_engagement_data.language}}"
+                "{{trigger.conversation.ChannelAttributes.pre_engagement_data.language}}"
               ],
               "type": "equal_to",
               "value": "English"
@@ -59,7 +59,7 @@ ${
             {
               "friendly_name": "If value equal_to Bemba",
               "arguments": [
-                "{{trigger.conversations.ChannelAttributes.pre_engagement_data.language}}"
+                "{{trigger.conversation.ChannelAttributes.pre_engagement_data.language}}"
               ],
               "type": "equal_to",
               "value": "Bemba"
@@ -73,7 +73,7 @@ ${
             {
               "friendly_name": "If value equal_to Tonga",
               "arguments": [
-                "{{trigger.conversations.ChannelAttributes.pre_engagement_data.language}}"
+                "{{trigger.conversation.ChannelAttributes.pre_engagement_data.language}}"
               ],
               "type": "equal_to",
               "value": "Tonga"
@@ -87,7 +87,7 @@ ${
             {
               "friendly_name": "If value equal_to Lunda",
               "arguments": [
-                "{{trigger.conversations.ChannelAttributes.pre_engagement_data.language}}"
+                "{{trigger.conversation.ChannelAttributes.pre_engagement_data.language}}"
               ],
               "type": "equal_to",
               "value": "Lunda"
@@ -101,7 +101,7 @@ ${
             {
               "friendly_name": "If value equal_to Nyanja",
               "arguments": [
-                "{{trigger.conversations.ChannelAttributes.pre_engagement_data.language}}"
+                "{{trigger.conversation.ChannelAttributes.pre_engagement_data.language}}"
               ],
               "type": "equal_to",
               "value": "Nyanja"
@@ -115,7 +115,7 @@ ${
             {
               "friendly_name": "If value equal_to Kaonde",
               "arguments": [
-                "{{trigger.conversations.ChannelAttributes.pre_engagement_data.language}}"
+                "{{trigger.conversation.ChannelAttributes.pre_engagement_data.language}}"
               ],
               "type": "equal_to",
               "value": "Kaonde"
@@ -129,7 +129,7 @@ ${
             {
               "friendly_name": "If value equal_to Lozi",
               "arguments": [
-                "{{trigger.conversations.ChannelAttributes.pre_engagement_data.language}}"
+                "{{trigger.conversation.ChannelAttributes.pre_engagement_data.language}}"
               ],
               "type": "equal_to",
               "value": "Lozi"
@@ -138,7 +138,7 @@ ${
         }
       ],
       "properties": {
-        "input": "{{trigger.conversations.ChannelAttributes.pre_engagement_data.language}}",
+        "input": "{{trigger.conversation.ChannelAttributes.pre_engagement_data.language}}",
         "offset": {
           "x": -670,
           "y": -90
@@ -166,7 +166,7 @@ ${
         },
         "workflow": "${workflow_sids.master}",
         "channel": "${task_channel_sids.chat}",
-        "attributes": "{\n  \"ip\": \"{{trigger.conversations.ChannelAttributes.pre_engagement_data.ip}}\",\n  \"name\": \"{{trigger.conversations.ChannelAttributes.from}}\",\n  \"channelType\": \"{{trigger.conversations.ChannelAttributes.channel_type}}\",\n  \"channelSid\": \"{{trigger.conversations.ChannelSid}}\",\n  \"helpline\": \"{{ trigger.conversations.ChannelAttributes.memory .helpline}}\",\n  \"ignoreAgent\": \"\",\n  \"transferTargetType\": \"\",\n  \"language\": \"{{trigger.conversations.ChannelAttributes.pre_engagement_data.language | default: 'en-US' }}\",\n \"memory\": {{ trigger.conversations.ChannelAttributes.memory | to_json }},\n \"preEngagementData\": {{trigger.conversations.ChannelAttributes.pre_engagement_data | to_json}} \n}"
+        "attributes": "{\n  \"ip\": \"{{trigger.conversation.ChannelAttributes.pre_engagement_data.ip}}\",\n  \"name\": \"{{trigger.conversation.ChannelAttributes.from}}\",\n  \"channelType\": \"{{trigger.conversation.ChannelAttributes.channel_type}}\",\n  \"channelSid\": \"{{trigger.conversation.ChannelSid}}\",\n  \"helpline\": \"{{ trigger.conversation.ChannelAttributes.memory .helpline}}\",\n  \"ignoreAgent\": \"\",\n  \"transferTargetType\": \"\",\n  \"language\": \"{{trigger.conversation.ChannelAttributes.pre_engagement_data.language | default: 'en-US' }}\",\n \"memory\": {{ trigger.conversation.ChannelAttributes.memory | to_json }},\n \"preEngagementData\": {{trigger.conversation.ChannelAttributes.pre_engagement_data | to_json}} \n}"
       }
     },
     {
@@ -342,7 +342,7 @@ ${
         "method": "POST",
         "content_type": "application/json;charset=utf-8",
         "add_twilio_auth": false,
-        "body": "{\"channelSid\": \"{{flow.channel.address}}\", \"message\": \"trigger_pre_survey\", \"studioFlowSid\": \"{{flow.flow_sid}}\", \"language\": \"{{flow.variables.language}}\", \"botSuffix\": \"pre_survey\", \"triggerType\": \"withUserMessage\", \"releaseType\": \"triggerStudioFlow\", \"releaseFlag\": \"preSurveyComplete\", \"channelType\": \"{{trigger.conversations.ChannelAttributes.channel_type | downcase}}\", \"isConversation\": \"false\"}",
+        "body": "{\"channelSid\": \"{{flow.channel.address}}\", \"message\": \"trigger_pre_survey\", \"studioFlowSid\": \"{{flow.flow_sid}}\", \"language\": \"{{flow.variables.language}}\", \"botSuffix\": \"pre_survey\", \"triggerType\": \"withUserMessage\", \"releaseType\": \"triggerStudioFlow\", \"releaseFlag\": \"preSurveyComplete\", \"channelType\": \"{{trigger.conversation.ChannelAttributes.channel_type | downcase}}\", \"isConversation\": \"false\"}",
         "url": "${lambda_twilio_account_scoped_url}/channelCapture/captureChannelWithBot"
       }
     },
@@ -361,7 +361,7 @@ ${
             {
               "friendly_name": "If value equal_to true",
               "arguments": [
-                "{{trigger.conversations.ChannelAttributes.preSurveyComplete}}"
+                "{{trigger.conversation.ChannelAttributes.preSurveyComplete}}"
               ],
               "type": "equal_to",
               "value": "true"
@@ -370,7 +370,7 @@ ${
         }
       ],
       "properties": {
-        "input": "{{trigger.conversations.ChannelAttributes.preSurveyComplete}}",
+        "input": "{{trigger.conversation.ChannelAttributes.preSurveyComplete}}",
         "offset": {
           "x": 20,
           "y": -380
@@ -449,8 +449,8 @@ ${
           "x": 620,
           "y": -470
         },
-        "service": "{{trigger.conversations.InstanceSid}}",
-        "channel": "{{trigger.conversations.ChannelSid}}",
+        "service": "{{trigger.conversation.InstanceSid}}",
+        "channel": "{{trigger.conversation.ChannelSid}}",
         "from": "${flow_vars.widget_from}",
         "to": "{{contact.channel.address}}",
         "body": "${flow_vars.chat_blocked_message}"
