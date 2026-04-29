@@ -362,6 +362,20 @@ describe('submitAndInitChatThunk', () => {
         preEngagementData: {
           ...preEngagementData,
           location: { value: customLocation, error: null, dirty: true },
+        },
+      },
+    }));
+
+    const dispatch = jest.fn();
+    await submitAndInitChatThunk()(dispatch as any, getStateWithLocation as any, undefined);
+
+    expect(sessionDataHandler.fetchAndStoreNewSession).toHaveBeenCalledWith(
+      expect.objectContaining({
+        formData: expect.objectContaining({ location: customLocation }),
+      }),
+    );
+  });
+
   it('should dispatch ACTION_CHANGE_LOCALE when locale is in pre-engagement data and exists in translations', async () => {
     (sessionDataHandler.fetchAndStoreNewSession as jest.Mock).mockResolvedValue({ token, conversationSid });
     (initActionsModule.initSession as jest.Mock).mockReturnValue({ type: 'MOCK_INIT_SESSION' });
@@ -449,13 +463,7 @@ describe('submitAndInitChatThunk', () => {
     }));
 
     const dispatch = jest.fn();
-    await submitAndInitChatThunk()(dispatch as any, getStateWithLocation as any, undefined);
-
-    expect(sessionDataHandler.fetchAndStoreNewSession).toHaveBeenCalledWith(
-      expect.objectContaining({
-        formData: expect.objectContaining({ location: customLocation }),
-      }),
-    );
+    await submitAndInitChatThunk()(dispatch as any, getStateWithBooleanLocale as any, undefined);
 
     expect(dispatch).not.toHaveBeenCalledWith(expect.objectContaining({ type: ACTION_CHANGE_LOCALE }));
   });
