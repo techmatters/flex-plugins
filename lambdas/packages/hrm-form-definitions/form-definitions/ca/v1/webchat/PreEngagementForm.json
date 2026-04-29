@@ -175,15 +175,15 @@
           "label": "PreferNotToAnswer"
         },
         {
-          "value": "yes",
+          "value": "Yes",
           "label": "Yes"
         },
         {
-          "value": "no",
+          "value": "No",
           "label": "No"
         },
         {
-          "value": "maybe",
+          "value": "Maybe",
           "label": "Maybe"
         }
       ]
@@ -271,7 +271,7 @@
     },
     {
       "type": "select",
-      "name": "region",
+      "name": "livingSituation",
       "label": "TellMoreAboutLive",
       "defaultValue": "Unknown",
       "required": true,
