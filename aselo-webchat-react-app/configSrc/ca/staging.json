@@ -3,5 +3,5 @@
   "aseloBackendUrl": "https://hrm-staging.tl.techmatters.org",
   "definitionVersion": "ca-v1",
   "defaultLocale": "en-CA",
-  "checkOpenHours": true
+  "checkOpenHours": false
 }
