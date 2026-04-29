@@ -19,7 +19,14 @@ import { Conversation } from '@twilio/conversations';
 import { ThunkAction } from 'redux-thunk';
 import { PreEngagementFormItem } from 'hrm-form-definitions';
 
-import { AppState, EngagementPhase, Notification, PreEngagementData, PreEngagementDataItem } from '../definitions';
+import {
+  AppState,
+  EngagementPhase,
+  LocaleString,
+  Notification,
+  PreEngagementData,
+  PreEngagementDataItem,
+} from '../definitions';
 import { getUserIp } from '../../ipTracker';
 import {
   ACTION_ADD_MULTIPLE_MESSAGES,
@@ -27,6 +34,7 @@ import {
   ACTION_ATTACH_FILES,
   ACTION_CHANGE_ENGAGEMENT_PHASE,
   ACTION_CHANGE_EXPANDED_STATUS,
+  ACTION_CHANGE_LOCALE,
   ACTION_DETACH_FILES,
   ACTION_REMOVE_NOTIFICATION,
   ACTION_UPDATE_PRE_ENGAGEMENT_DATA,
@@ -45,6 +53,14 @@ export function changeEngagementPhase({ phase }: { phase: EngagementPhase }) {
     type: ACTION_CHANGE_ENGAGEMENT_PHASE,
     payload: {
       currentPhase: phase,
+    },
+  };
+}
+export function newChangeLocaleAction(locale: LocaleString) {
+  return {
+    type: ACTION_CHANGE_LOCALE,
+    payload: {
+      currentLocale: locale,
     },
   };
 }
@@ -179,8 +195,9 @@ export const submitAndInitChatThunk = (): ThunkAction<void, AppState, unknown, A
   return async (dispatch, getState) => {
     const state = getState();
     const definition = state.config.preEngagementFormDefinition?.fields || [];
+    const preEngagementData = selectPreEngagementData(state);
     const data = definition.reduce<PreEngagementData>((accum, def) => {
-      const item = selectPreEngagementData(state)[def.name];
+      const item = preEngagementData[def.name];
       const error = validateInput({ definition: def, value: item?.value });
       return { ...accum, [def.name]: { ...(item || newInitialItem(def)), error } };
     }, {});
@@ -197,7 +214,11 @@ export const submitAndInitChatThunk = (): ThunkAction<void, AppState, unknown, A
       dispatch(addNotification(notifications.recaptchaInvalidNotification(state)));
       return;
     }
-
+    const preEngagementLocale = preEngagementData.locale?.value || preEngagementData.language?.value;
+    const trimmedLocale = typeof preEngagementLocale === 'string' ? preEngagementLocale.trim() : '';
+    if (trimmedLocale && state.config.translations[trimmedLocale]) {
+      dispatch(newChangeLocaleAction(trimmedLocale as LocaleString));
+    }
     dispatch(changeEngagementPhase({ phase: EngagementPhase.Loading }));
     try {
       const preEngagementDataValues = Object.entries(data).reduce(
