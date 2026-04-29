@@ -1,14 +1,15 @@
 {
-  "e2eTestMode": "{{trigger.conversations.ChannelAttributes.pre_engagement_data.e2eTestMode}}",
-  "ip": "{{trigger.conversations.ChannelAttributes.pre_engagement_data.ip}}",
-  "firstName": "{{trigger.conversations.ChannelAttributes.from}}",
-  "channelType": "{{trigger.conversations.ChannelAttributes.channel_type}}",
-  "channelSid": "{{trigger.conversations.ChannelSid}}",
-  "helpline": "{{trigger.conversations.ChannelAttributes.pre_engagement_data.helpline}}",
+  "e2eTestMode": "{{trigger.conversation.ChannelAttributes.pre_engagement_data.e2eTestMode}}",
+  "name": "{{trigger.conversation.ChannelAttributes.from}}",
+  "ip": "{{trigger.conversation.ChannelAttributes.pre_engagement_data.ip}}",
+  "firstName": "{{trigger.conversation.ChannelAttributes.from}}",
+  "channelType": "{{trigger.conversation.ChannelAttributes.channel_type}}",
+  "channelSid": "{{trigger.conversation.ChannelSid}}",
+  "helpline": "{{trigger.conversation.ChannelAttributes.pre_engagement_data.helpline}}",
   "language":"${task_language}",
   "ignoreAgent": "",
   "transferTargetType": "",
-  "preEngagementData": {{trigger.conversations.ChannelAttributes.pre_engagement_data | to_json}},
-  "memory": {{trigger.conversations.ChannelAttributes.memory | to_json}},
+  "preEngagementData": {{trigger.conversation.ChannelAttributes.pre_engagement_data | to_json}},
+  "memory": {{trigger.conversation.ChannelAttributes.memory | to_json}},
   "clinical":  "{{flow.variables.clinical}}" 
 }
