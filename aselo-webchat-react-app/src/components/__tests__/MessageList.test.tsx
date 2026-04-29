@@ -192,8 +192,6 @@ describe('Message List', () => {
       },
     });
 
-    jest.spyOn(defaultChatState.conversation, 'getMessagesCount').mockImplementation(() => 4);
-
     const { queryByTitle } = render(<MessageList />);
 
     await waitFor(() => {

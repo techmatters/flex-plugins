@@ -134,7 +134,7 @@ describe('Messaging Canvas Phase', () => {
   it('does not render message input when conversation state is active but conversation is not joined', () => {
     resetMockRedux({
       ...baseReduxState,
-      chat: { ...baseReduxState.chat, conversationState: 'active', conversation: { status: 'notJoined' } },
+      chat: { ...baseReduxState.chat, conversationState: 'active', conversation: { ...conversationMock, status: 'notJoined' } },
     });
 
     const { queryByTitle } = render(<MessagingCanvasPhase />);
