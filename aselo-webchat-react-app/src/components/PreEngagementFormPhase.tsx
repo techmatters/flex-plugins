@@ -52,30 +52,38 @@ export const PreEngagementFormPhase = () => {
   const [wasSubmitAttempted, setSubmitAttempted] = useState(false);
   const [fieldsTouched, setFieldsTouched] = useState(new Set<string>());
 
-  const setPreEngagementDataFromDom = useCallback(() => {
-    const form = formRef.current;
-    if (!form) return;
-    // Collect current DOM values for all form fields and sync them to Redux in a
-    // single dispatch before validation runs. This ensures fields that have been
-    // filled but not yet blurred are still captured.
-    const domFieldValues = (preEngagementFormDefinition?.fields ?? []).reduce<
-      { name: string; value: string | boolean }[]
-    >((accum, field) => {
-      const element = form.querySelector<HTMLInputElement | HTMLSelectElement>(`#${field.name}`);
-      if (!element) return accum;
-      const value = field.type === FormInputType.Checkbox ? (element as HTMLInputElement).checked : element.value;
-      return [...accum, { name: field.name, value }];
-    }, []);
+  const setPreEngagementDataFromDom = useCallback(
+    (updates: Record<string, string | boolean> = {}) => {
+      const form = formRef.current;
+      if (!form) return;
+      // Collect current DOM values for all form fields and sync them to Redux in a
+      // single dispatch before validation runs. This ensures fields that have been
+      // filled but not yet blurred are still captured.
+      const domFieldValues = (preEngagementFormDefinition?.fields ?? []).reduce<
+        { name: string; value: string | boolean }[]
+      >((accum, field) => {
+        const element = form.querySelector<HTMLInputElement | HTMLSelectElement>(`#${field.name}`);
+        if (!element) return accum;
+        let value: string | boolean;
+        if (updates[field.name]) {
+          value = updates[field.name];
+        } else {
+          value = field.type === FormInputType.Checkbox ? (element as HTMLInputElement).checked : element.value;
+        }
+        return [...accum, { name: field.name, value }];
+      }, []);
 
-    if (domFieldValues.length > 0) {
-      dispatch(updatePreEngagementDataFields(domFieldValues) as any);
-    }
-  }, [dispatch, preEngagementFormDefinition?.fields]);
+      if (domFieldValues.length > 0) {
+        dispatch(updatePreEngagementDataFields(domFieldValues) as any);
+      }
+    },
+    [dispatch, preEngagementFormDefinition?.fields],
+  );
 
   const getItem = (inputName: string) => preEngagementData[inputName] ?? {};
-  const setItemValue = ({ name }: { name: string }) => {
+  const setItemValue = ({ name, value }: { name: string; value: string | boolean }) => {
     setFieldsTouched(fieldsTouched.add(name));
-    setPreEngagementDataFromDom();
+    setPreEngagementDataFromDom({ name, value });
   };
   const handleChange = setItemValue;
 
