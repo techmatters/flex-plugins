@@ -82,7 +82,11 @@ export const PreEngagementFormPhase = () => {
 
   const getItem = (inputName: string) => preEngagementData[inputName] ?? {};
   const setItemValue = ({ name, value }: { name: string; value: string | boolean }) => {
-    setFieldsTouched(fieldsTouched.add(name));
+    setFieldsTouched(prevFieldsTouched => {
+      const nextFieldsTouched = new Set(prevFieldsTouched);
+      nextFieldsTouched.add(name);
+      return nextFieldsTouched;
+    });
     setPreEngagementDataFromDom({ name, value });
   };
   const handleChange = setItemValue;
