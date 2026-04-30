@@ -104,13 +104,13 @@ export const generateForm = ({
   handleChange,
   getItem,
   setItemValue,
-  showError = true,
+  showError = () => true,
 }: {
   form: PreEngagementForm['fields'];
   handleChange: (payload: { name: string; value: string | boolean }) => void;
   getItem: (inptuName: string) => PreEngagementDataItem;
   setItemValue: (payload: { name: string; value: string | boolean }) => void;
-  showError?: boolean;
+  showError?: (name: string) => boolean;
 }) => {
   return (
     form &&
@@ -121,7 +121,7 @@ export const generateForm = ({
         defaultValue: getDefaultValue(definition),
         getItem,
         setItemValue,
-        showError,
+        showError: showError(definition.name),
       }),
     )
   );

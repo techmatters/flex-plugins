@@ -50,6 +50,7 @@ export const PreEngagementFormPhase = () => {
 
   const [isRecaptchaVerifyPending, setRecaptchaVerifyPending] = useState(false);
   const [wasSubmitAttempted, setSubmitAttempted] = useState(false);
+  const [fieldsTouched, setFieldsTouched] = useState(new Set<string>());
 
   const setPreEngagementDataFromDom = useCallback(() => {
     const form = formRef.current;
@@ -72,7 +73,8 @@ export const PreEngagementFormPhase = () => {
   }, [dispatch, preEngagementFormDefinition?.fields]);
 
   const getItem = (inputName: string) => preEngagementData[inputName] ?? {};
-  const setItemValue = () => {
+  const setItemValue = ({ name }: { name: string }) => {
+    setFieldsTouched(fieldsTouched.add(name));
     setPreEngagementDataFromDom();
   };
   const handleChange = setItemValue;
@@ -106,7 +108,7 @@ export const PreEngagementFormPhase = () => {
             handleChange,
             getItem,
             setItemValue,
-            showError: wasSubmitAttempted,
+            showError: name => wasSubmitAttempted || fieldsTouched.has(name),
           })}
         </Box>
 
