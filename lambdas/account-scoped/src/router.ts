@@ -294,6 +294,10 @@ const ENV_SHORTCODE_ROUTES: Record<string, FunctionRoute> = {
     requestPipeline: [validateRequestWithTwilioJwtToken],
     handler: handleEndChat,
   },
+  operatingHours: {
+    requestPipeline: [],
+    handler: handleOperatingHours,
+  },
 };
 
 export const lookupRoute = async (

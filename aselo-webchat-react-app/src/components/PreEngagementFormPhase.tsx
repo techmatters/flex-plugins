@@ -15,7 +15,7 @@
  */
 
 import { Box } from '@twilio-paste/core/box';
-import { FormEvent, useState } from 'react';
+import { FormEvent, useCallback, useRef, useState } from 'react';
 import { Button } from '@twilio-paste/core/button';
 import { Spinner } from '@twilio-paste/core/spinner';
 import { useDispatch, useSelector } from 'react-redux';
@@ -25,7 +25,6 @@ import { FormInputType } from 'hrm-form-definitions';
 import {
   newUpdateRecaptchaValidityAction,
   submitAndInitChatThunk,
-  updatePreEngagementDataField,
   updatePreEngagementDataFields,
 } from '../store/actions/genericActions';
 import { AppState } from '../store/definitions';
@@ -41,6 +40,7 @@ import { selectPreEngagementData, selectPreEngagementDataValid, selectRecaptchaV
 export const PreEngagementFormPhase = () => {
   const preEngagementData = useSelector(selectPreEngagementData);
   const preEngagementDataValid = useSelector(selectPreEngagementDataValid);
+  const formRef = useRef<HTMLFormElement>(null);
 
   const { preEngagementFormDefinition, enableRecaptcha, recaptchaSiteKey, aseloBackendUrl } = useSelector(
     (state: AppState) => state.config,
@@ -50,16 +50,9 @@ export const PreEngagementFormPhase = () => {
 
   const [isRecaptchaVerifyPending, setRecaptchaVerifyPending] = useState(false);
 
-  const getItem = (inputName: string) => preEngagementData[inputName] ?? {};
-  const setItemValue = (payload: { name: string; value: string | boolean }) => {
-    dispatch(updatePreEngagementDataField(payload));
-  };
-  const handleChange = setItemValue;
-
-  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const form = e.currentTarget;
-
+  const setPreEngagementDataFromDom = useCallback(() => {
+    const form = formRef.current;
+    if (!form) return;
     // Collect current DOM values for all form fields and sync them to Redux in a
     // single dispatch before validation runs. This ensures fields that have been
     // filled but not yet blurred are still captured.
@@ -75,6 +68,17 @@ export const PreEngagementFormPhase = () => {
     if (domFieldValues.length > 0) {
       dispatch(updatePreEngagementDataFields(domFieldValues) as any);
     }
+  }, [dispatch, preEngagementFormDefinition?.fields]);
+
+  const getItem = (inputName: string) => preEngagementData[inputName] ?? {};
+  const setItemValue = () => {
+    setPreEngagementDataFromDom();
+  };
+  const handleChange = setItemValue;
+
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setPreEngagementDataFromDom();
 
     await dispatch(submitAndInitChatThunk() as any);
   };
@@ -91,7 +95,7 @@ export const PreEngagementFormPhase = () => {
     <>
       <Header />
       <NotificationBar />
-      <Box as="form" data-test="pre-engagement-chat-form" onSubmit={handleSubmit} {...formStyles}>
+      <Box as="form" data-test="pre-engagement-chat-form" onSubmit={handleSubmit} {...formStyles} ref={formRef}>
         <Text {...titleStyles} as="h3">
           <LocalizedTemplate code={titleText} />
         </Text>

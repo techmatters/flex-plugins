@@ -164,7 +164,20 @@ jobs:
           AWS_REGION: "${{ secrets.AWS_DEFAULT_REGION }}"
           SOURCE_DIR: "aselo-webchat-react-app/temp"
           DEST_DIR: "webchat/${{ steps.helpline_code.outputs.lowercase }}"
-
+      # Upload Aselo Webchat code to the legacy webchat 2 S3 path.
+      # Only JS, CSS, JSON and index.html are uploaded - the legacy test pages
+      # (test-chat.html, e2e-chat.html) are intentionally excluded so they remain
+      # available for verifying the new webchat on the legacy URL.
+      - name: Upload Aselo Webchat to legacy legacy webchat S3 path
+        uses: jakejarvis/s3-sync-action@master
+        with:
+          args: --acl public-read --follow-symlinks --exclude '*' --include '*.js' --include '*.js.map' --include '*.json' --include '*.css' --include 'index.html' --content-encoding 'gzip'
+        env:
+          AWS_S3_BUCKET: tl-public-chat-${{ steps.helpline_code.outputs.lowercase }}-prod
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: "${{ secrets.AWS_DEFAULT_REGION }}"
+          SOURCE_DIR: "aselo-webchat-react-app/temp"
       - name: Clear cloudfront cache
         if: ${{ inputs.invalidate-cache != 'false' }}
         run: |

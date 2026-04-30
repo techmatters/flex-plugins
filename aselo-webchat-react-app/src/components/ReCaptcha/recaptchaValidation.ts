@@ -23,9 +23,8 @@ export async function validateUser(token: string, recaptchaVerifyUrl: string) {
       },
       body: JSON.stringify({ response: token }),
     });
-    const data = await response.json();
 
-    return Boolean(data.success);
+    return response.ok;
   } catch (error) {
     console.error('Failed to verify Recaptcha', error);
     return false;
