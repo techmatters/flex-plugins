@@ -29,9 +29,12 @@ export function updateViewport() {
     document.head.appendChild(viewportMeta);
   }
 
-  const previousViewportContent = viewportMeta.getAttribute('content');
-  const updatedViewportContent = [previousViewportContent, REQUIRED_VIEWPORT_CONTENT].join(', ');
-  viewportMeta.setAttribute('content', updatedViewportContent);
+  const previousViewportContent = viewportMeta.getAttribute('content') ?? '';
+
+  if (!previousViewportContent.includes(REQUIRED_VIEWPORT_CONTENT)) {
+    const updatedViewportContent = [previousViewportContent, REQUIRED_VIEWPORT_CONTENT].filter(Boolean).join(', ');
+    viewportMeta.setAttribute('content', updatedViewportContent);
+  }
 }
 
 /**

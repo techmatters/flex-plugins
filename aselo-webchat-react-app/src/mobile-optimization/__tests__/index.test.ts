@@ -55,12 +55,14 @@ describe('isMobileDevice', () => {
 });
 
 describe('updateViewport', () => {
-  it('creates a viewport meta tag when one does not exist', () => {
+  beforeEach(() => {
     const existingMeta = document.querySelector('meta[name="viewport"]');
     if (existingMeta) {
       existingMeta.remove();
     }
+  });
 
+  it('creates a viewport meta tag when one does not exist', () => {
     updateViewport();
 
     const meta = document.querySelector('meta[name="viewport"]');
@@ -70,13 +72,10 @@ describe('updateViewport', () => {
   });
 
   it('appends to an existing viewport meta tag', () => {
-    let meta = document.querySelector('meta[name="viewport"]');
-    if (!meta) {
-      meta = document.createElement('meta');
-      meta.setAttribute('name', 'viewport');
-      document.head.appendChild(meta);
-    }
+    const meta = document.createElement('meta');
+    meta.setAttribute('name', 'viewport');
     meta.setAttribute('content', 'width=device-width');
+    document.head.appendChild(meta);
 
     updateViewport();
 
@@ -85,5 +84,15 @@ describe('updateViewport', () => {
     expect(updatedMeta?.getAttribute('content')).toContain('initial-scale=1.0');
     expect(updatedMeta?.getAttribute('content')).toContain('maximum-scale=1');
     expect(updatedMeta?.getAttribute('content')).toContain('user-scalable=yes');
+  });
+
+  it('does not duplicate viewport content when called multiple times', () => {
+    updateViewport();
+    updateViewport();
+
+    const meta = document.querySelector('meta[name="viewport"]');
+    const content = meta?.getAttribute('content') ?? '';
+    const occurrences = content.split('initial-scale=1.0').length - 1;
+    expect(occurrences).toBe(1);
   });
 });
