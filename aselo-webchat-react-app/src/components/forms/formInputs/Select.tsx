@@ -30,11 +30,12 @@ type OwnProps = {
   getItem: (inptuName: string) => PreEngagementDataItem;
   handleChange: (payload: { name: string; value: string | boolean }) => void;
   defaultValue?: string;
+  showError?: boolean;
 };
 
 type Props = OwnProps;
 
-const Select: React.FC<Props> = ({ definition, getItem, defaultValue, handleChange }) => {
+const Select: React.FC<Props> = ({ definition, getItem, defaultValue, handleChange, showError = true }) => {
   const currentTranslations = useSelector(selectCurrentTranslations);
   const configuredLocalizeKey = localizeKey(currentTranslations);
   const { name, label, required, options } = definition;
@@ -54,14 +55,14 @@ const Select: React.FC<Props> = ({ definition, getItem, defaultValue, handleChan
         </span>
         <SelectInput
           id={name}
-          hasError={Boolean(error)}
+          hasError={Boolean(error && showError)}
           onChange={e => handleChange({ name, value: e.target.value })}
           defaultValue={defaultValue}
         >
           {buildOptions()}
         </SelectInput>
       </Label>
-      {error && (
+      {error && showError && (
         <span style={{ color: 'rgb(203, 50, 50)' }}>
           <LocalizedTemplate code={error} />
         </span>

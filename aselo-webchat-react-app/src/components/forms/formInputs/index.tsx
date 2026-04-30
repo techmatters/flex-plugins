@@ -27,19 +27,37 @@ const generateFormItem = ({
   handleChange,
   getItem,
   setItemValue,
+  showError,
 }: {
   definition: PreEngagementFormItem;
   defaultValue?: string | boolean;
   handleChange: (payload: { name: string; value: string | boolean }) => void;
   getItem: (inptuName: string) => PreEngagementDataItem;
   setItemValue: (payload: { name: string; value: string | boolean }) => void;
+  showError?: boolean;
 }) => {
   switch (definition.type) {
     case FormInputType.Input:
     case FormInputType.Email:
-      return <InputText key={definition.name} definition={definition} handleChange={handleChange} getItem={getItem} />;
+      return (
+        <InputText
+          key={definition.name}
+          definition={definition}
+          handleChange={handleChange}
+          getItem={getItem}
+          showError={showError}
+        />
+      );
     case FormInputType.Select:
-      return <Select key={definition.name} definition={definition} handleChange={handleChange} getItem={getItem} />;
+      return (
+        <Select
+          key={definition.name}
+          definition={definition}
+          handleChange={handleChange}
+          getItem={getItem}
+          showError={showError}
+        />
+      );
     case FormInputType.DependentSelect:
       return (
         <DependentSelect
@@ -48,10 +66,19 @@ const generateFormItem = ({
           handleChange={handleChange}
           getItem={getItem}
           setItemValue={setItemValue}
+          showError={showError}
         />
       );
     case FormInputType.Checkbox:
-      return <Checkbox key={definition.name} definition={definition} handleChange={handleChange} getItem={getItem} />;
+      return (
+        <Checkbox
+          key={definition.name}
+          definition={definition}
+          handleChange={handleChange}
+          getItem={getItem}
+          showError={showError}
+        />
+      );
     default:
       return <div>Invalid form definition: {JSON.stringify(definition)}</div>;
   }
@@ -77,16 +104,25 @@ export const generateForm = ({
   handleChange,
   getItem,
   setItemValue,
+  showError = true,
 }: {
   form: PreEngagementForm['fields'];
   handleChange: (payload: { name: string; value: string | boolean }) => void;
   getItem: (inptuName: string) => PreEngagementDataItem;
   setItemValue: (payload: { name: string; value: string | boolean }) => void;
+  showError?: boolean;
 }) => {
   return (
     form &&
     form.map(definition =>
-      generateFormItem({ definition, handleChange, defaultValue: getDefaultValue(definition), getItem, setItemValue }),
+      generateFormItem({
+        definition,
+        handleChange,
+        defaultValue: getDefaultValue(definition),
+        getItem,
+        setItemValue,
+        showError,
+      }),
     )
   );
 };

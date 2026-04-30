@@ -49,6 +49,7 @@ export const PreEngagementFormPhase = () => {
   const dispatch = useDispatch();
 
   const [isRecaptchaVerifyPending, setRecaptchaVerifyPending] = useState(false);
+  const [wasSubmitAttempted, setSubmitAttempted] = useState(false);
 
   const setPreEngagementDataFromDom = useCallback(() => {
     const form = formRef.current;
@@ -79,7 +80,7 @@ export const PreEngagementFormPhase = () => {
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setPreEngagementDataFromDom();
-
+    setSubmitAttempted(true);
     await dispatch(submitAndInitChatThunk() as any);
   };
 
@@ -100,7 +101,13 @@ export const PreEngagementFormPhase = () => {
           <LocalizedTemplate code={titleText} />
         </Text>
         <Box {...fieldStyles}>
-          {generateForm({ form: preEngagementFormDefinition.fields, handleChange, getItem, setItemValue })}
+          {generateForm({
+            form: preEngagementFormDefinition.fields,
+            handleChange,
+            getItem,
+            setItemValue,
+            showError: wasSubmitAttempted,
+          })}
         </Box>
 
         {enableRecaptcha && recaptchaSiteKey && (
