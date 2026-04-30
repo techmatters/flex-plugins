@@ -65,7 +65,7 @@ export const PreEngagementFormPhase = () => {
         const element = form.querySelector<HTMLInputElement | HTMLSelectElement>(`#${field.name}`);
         if (!element) return accum;
         let value: string | boolean;
-        if (updates[field.name]) {
+        if (field.name in updates) {
           value = updates[field.name];
         } else {
           value = field.type === FormInputType.Checkbox ? (element as HTMLInputElement).checked : element.value;
@@ -87,7 +87,7 @@ export const PreEngagementFormPhase = () => {
       nextFieldsTouched.add(name);
       return nextFieldsTouched;
     });
-    setPreEngagementDataFromDom({ name, value });
+    setPreEngagementDataFromDom({ [name]: value });
   };
   const handleChange = setItemValue;
 
