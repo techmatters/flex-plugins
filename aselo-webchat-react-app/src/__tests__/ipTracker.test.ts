@@ -36,6 +36,17 @@ describe('getUserIp', () => {
     expect(fetch).toHaveBeenCalledWith(`https://api.ipfind.co/me?auth=${TEST_API_KEY}`);
   });
 
+  it('returns "0.0.0.0" when apiKey is not provided', async () => {
+    // eslint-disable-next-line no-empty-function
+    const consoleSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+
+    const result = await getUserIp(undefined);
+
+    expect(result).toBe('0.0.0.0');
+    expect(fetch).not.toHaveBeenCalled();
+    consoleSpy.mockRestore();
+  });
+
   it('returns "0.0.0.0" when the fetch throws an error', async () => {
     global.fetch = jest.fn().mockRejectedValue(new Error('Network error'));
     // eslint-disable-next-line no-empty-function

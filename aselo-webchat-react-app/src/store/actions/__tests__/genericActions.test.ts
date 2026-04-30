@@ -318,8 +318,9 @@ describe('submitAndInitChatThunk', () => {
     });
   });
 
-  it('should not fetch ip when captureIp is true but ipLookupServiceApiKey is not set', async () => {
-    jest.spyOn(ipTracker, 'getUserIp').mockResolvedValue('1.2.3.4');
+  it('should call getUserIp with undefined and include fallback ip in form data when captureIp is true but ipLookupServiceApiKey is not set', async () => {
+    const fallbackIp = '0.0.0.0';
+    jest.spyOn(ipTracker, 'getUserIp').mockResolvedValue(fallbackIp);
     (sessionDataHandler.fetchAndStoreNewSession as jest.Mock).mockResolvedValue({ token, conversationSid });
     (initActionsModule.initSession as jest.Mock).mockReturnValue({ type: 'MOCK_INIT_SESSION' });
 
@@ -334,9 +335,9 @@ describe('submitAndInitChatThunk', () => {
     const dispatch = jest.fn();
     await submitAndInitChatThunk()(dispatch as any, getStateWithoutApiKey as any, undefined);
 
-    expect(ipTracker.getUserIp).not.toHaveBeenCalled();
+    expect(ipTracker.getUserIp).toHaveBeenCalledWith(undefined);
     expect(sessionDataHandler.fetchAndStoreNewSession).toHaveBeenCalledWith({
-      formData: { friendlyName: 'John', location: 'http://localhost/' },
+      formData: { friendlyName: 'John', ip: fallbackIp, location: 'http://localhost/' },
     });
   });
 
