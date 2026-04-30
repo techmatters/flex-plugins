@@ -53,6 +53,7 @@ const messageMock = {
   send: jest.fn(),
 };
 const conversationMock = {
+  status: 'joined',
   getMessagesCount: jest.fn(),
   prepareMessage: jest.fn(),
 };
@@ -118,13 +119,32 @@ describe('Messaging Canvas Phase', () => {
   });
 
   it('renders message input (and file drop area wrapper) when conversation state is active', () => {
-    resetMockRedux({ ...baseReduxState, chat: { conversationState: 'active', ...baseReduxState } });
+    resetMockRedux({
+      ...baseReduxState,
+      chat: { ...baseReduxState.chat, conversationState: 'active', conversation: conversationMock },
+    });
 
     const { queryByTitle } = render(<MessagingCanvasPhase />);
 
     expect(queryByTitle('AttachFileDropArea')).toBeInTheDocument();
     expect(queryByTitle('MessageInput')).toBeInTheDocument();
     expect(queryByTitle('ConversationEnded')).not.toBeInTheDocument();
+  });
+
+  it('renders conversation ended when conversation state is active but conversation is not joined', () => {
+    resetMockRedux({
+      ...baseReduxState,
+      chat: {
+        ...baseReduxState.chat,
+        conversationState: 'active',
+        conversation: { ...conversationMock, status: 'notParticipating' },
+      },
+    });
+
+    const { queryByTitle } = render(<MessagingCanvasPhase />);
+
+    expect(queryByTitle('ConversationEnded')).toBeInTheDocument();
+    expect(queryByTitle('MessageInput')).not.toBeInTheDocument();
   });
 
   it('renders conversation ended when conversation state is closed', () => {
