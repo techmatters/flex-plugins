@@ -87,6 +87,7 @@ export const flexToInstagramHandler: AccountScopedHandler = async (
 ) => {
   console.info('==== FlexToInstagram handler ====');
   console.info('Received event:', event);
+  console.info('GRAPH_FACEBOOK_API_VERSION', GRAPH_FACEBOOK_API_VERSION);
 
   if (!recipientId) {
     return newMissingParameterResult('recipientId');

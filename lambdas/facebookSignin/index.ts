@@ -48,6 +48,7 @@ export const putSsmParameter = async (request: PutParameterCommandInput) => {
 };
 
 export const handler = async (event: ALBEvent): Promise<ALBResult> => {
+  console.info('GRAPH_FACEBOOK_API_VERSION', GRAPH_FACEBOOK_API_VERSION);
   if (event.httpMethod === 'GET') {
     try {
       // Get params from SSM
