@@ -21,6 +21,7 @@ import {
   PutParameterCommand,
 } from '@aws-sdk/client-ssm';
 import type { ALBEvent, ALBResult } from 'aws-lambda';
+import { GRAPH_FACEBOOK_API_VERSION } from '@tech-matters/configuration'
 
 const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
 const getRandomChar = () =>
@@ -84,7 +85,7 @@ export const handler = async (event: ALBEvent): Promise<ALBResult> => {
       });
 
       const redirectTo =
-        'https://www.facebook.com/v19.0/dialog/oauth?' +
+        `https://www.facebook.com/${GRAPH_FACEBOOK_API_VERSION}/dialog/oauth?` +
         'response_type=code%20granted_scopes' +
         `&client_id=${FACEBOOK_APP_ID}` +
         `&redirect_uri=${LAMBDAS_BASE_URL}/lambda/facebookCallback` +
