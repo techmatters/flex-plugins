@@ -12,5 +12,6 @@
   "helplineCode": "usnc",
   "enableRecaptcha": false,
   "captureIp": true,
+  "defaultLocale": "en-US",
   "contactIdentifierField": "ip"
 }
