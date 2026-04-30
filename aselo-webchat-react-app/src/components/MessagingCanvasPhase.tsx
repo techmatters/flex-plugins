@@ -47,7 +47,7 @@ const sendInitialUserQuery = async (conv?: Conversation, query?: string): Promis
 export const MessagingCanvasPhase = () => {
   const dispatch = useDispatch();
 
-  const { currentTranslations,ipAddress } = useSelector((state: AppState) => ({
+  const { currentTranslations, ipAddress } = useSelector((state: AppState) => ({
     currentTranslations: selectCurrentTranslations(state),
     ipAddress: state.session.ipAddress,
   }));
