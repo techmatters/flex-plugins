@@ -125301,7 +125301,7 @@
     }
   },
   {
-    "name": "988Referral",
+    "name": "Referral988",
     "label": "988 Referral/Transfer",
     "type": "select",
     "isPII": false,

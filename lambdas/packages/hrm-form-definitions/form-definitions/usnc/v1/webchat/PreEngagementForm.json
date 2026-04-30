@@ -213,7 +213,7 @@
       "label": "I was referred here by 988",
       "type": "select",
       "defaultValue": "Yes",
-      "name": "988Referral",
+      "name": "Referral988",
       "required": true,
       "options": [
         {
