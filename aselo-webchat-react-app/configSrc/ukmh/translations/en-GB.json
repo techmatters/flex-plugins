@@ -7,5 +7,6 @@
   "AutoFirstMessage": "Incoming webchat contact from",
   "PreEngagementDescription": "Let's get started",
   "LetsChat": "Let's chat!",
-  "MessagePhase-MessageBubble-OtherParticipantMessageSenderName": "PeerChat Supporter"
+  "MessagePhase-MessageBubble-OtherParticipantMessageSenderName": "PeerChat Supporter",
+  "Header-TitleBar-Title": "The PeerChat Service"
   }
