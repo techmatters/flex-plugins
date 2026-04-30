@@ -21,7 +21,7 @@ import {
   PutParameterCommand,
 } from '@aws-sdk/client-ssm';
 import type { ALBEvent, ALBResult } from 'aws-lambda';
-import { GRAPH_FACEBOOK_API_VERSION } from '@tech-matters/configuration'
+import { GRAPH_FACEBOOK_API_VERSION } from '@tech-matters/configuration';
 
 const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
 const getRandomChar = () =>

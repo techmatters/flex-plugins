@@ -15,4 +15,3 @@
  */
 
 export const GRAPH_FACEBOOK_API_VERSION = 'v25.0';
-
