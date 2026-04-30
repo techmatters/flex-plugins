@@ -47,15 +47,18 @@ const sendInitialUserQuery = async (conv?: Conversation, query?: string): Promis
 export const MessagingCanvasPhase = () => {
   const dispatch = useDispatch();
 
-  const { currentTranslations } = useSelector((state: AppState) => ({
+  const { currentTranslations,ipAddress } = useSelector((state: AppState) => ({
     currentTranslations: selectCurrentTranslations(state),
+    ipAddress: state.session.ipAddress,
   }));
   const autoFirstMessage = localizeKey(currentTranslations)('AutoFirstMessage') || DEFAULT_AUTO_FIRST_MESSAGE;
-  // TODO: fill contact contactIdentifier with ip once that is ported
-  // const message = `${autoFirstMessage} ${contactIdentifier}`;
-  const contactIdentifier =
-    localizeKey(currentTranslations)('Conversation-Participants-CustomerDefaultName') || DEFAULT_CUSTOMER_DEFAULT_NAME;
-  const message = `${autoFirstMessage} ${contactIdentifier}`;
+  const contactIdentifierWithDefaults =
+    // // TODO: this is set in session storage but not in Redux. Lift? fetchAndStoreNewSession
+    // contactIdentifier?.value ||
+    ipAddress ||
+    localizeKey(currentTranslations)('Conversation-Participants-CustomerDefaultName') ||
+    DEFAULT_CUSTOMER_DEFAULT_NAME;
+  const message = `${autoFirstMessage} ${contactIdentifierWithDefaults}`;
 
   const { conversation, conversationState, preEngagmentData } = useSelector((state: AppState) => ({
     conversationState: state.chat.conversationState,

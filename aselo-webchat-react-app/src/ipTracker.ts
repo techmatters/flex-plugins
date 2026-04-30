@@ -16,8 +16,12 @@
 
 const IP_LOOKUP_URL = 'https://api.ipfind.co/me?auth='; // Free Tier is 100 requests/day
 
-export const getUserIp = async (apiKey: string): Promise<string> => {
+export const getUserIp = async (apiKey?: string): Promise<string> => {
   try {
+    if (!apiKey) {
+      throw new Error('getUserIp: missing API key');
+    }
+
     const response = await fetch(`${IP_LOOKUP_URL}${apiKey}`);
     const responseBody = await response.json();
     return responseBody.ip_address;
