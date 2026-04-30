@@ -4,6 +4,7 @@
   "files": [],
   "references": [
     { "path": "packages/ssm-cache" },
+    { "path": "packages/configuration" },
     { "path": "packages/hrm-types" },
     { "path": "packages/hrm-form-definitions" },
     { "path": "packages/twilio-types" },
