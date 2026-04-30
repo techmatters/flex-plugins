@@ -87,6 +87,7 @@ export type ConfigState = {
   ipLookupServiceApiKey?: string;
   contactIdentifierField?: string;
   checkOpenHours?: boolean;
+  enableMobileOptimizations?: boolean;
 };
 
 export type Notification = {

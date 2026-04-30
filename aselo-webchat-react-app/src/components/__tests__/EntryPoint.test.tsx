@@ -20,10 +20,15 @@ import { useSelector } from 'react-redux';
 
 import { EntryPoint } from '../EntryPoint';
 import * as genericActions from '../../store/actions/genericActions';
+import * as useMobileOptimizationsModule from '../../hooks/useMobileOptimizations';
 
 jest.mock('react-redux', () => ({
   useDispatch: () => jest.fn(),
   useSelector: jest.fn(),
+}));
+
+jest.mock('../../hooks/useMobileOptimizations', () => ({
+  useMobileOptimizations: jest.fn(() => ({ isMobileFullscreen: false })),
 }));
 
 describe('Entry Point', () => {
@@ -69,5 +74,36 @@ describe('Entry Point', () => {
     fireEvent.click(button);
 
     expect(changeExpandedStatusSpy).toHaveBeenCalledWith({ expanded: true });
+  });
+
+  describe('mobile optimizations', () => {
+    it('does not render button when on mobile (isMobileFullscreen) and expanded', () => {
+      (useMobileOptimizationsModule.useMobileOptimizations as jest.Mock).mockReturnValue({ isMobileFullscreen: true });
+      (useSelector as jest.Mock).mockImplementation((callback: any) => callback({ session: { expanded: true } }));
+
+      const { queryByTestId } = render(<EntryPoint />);
+
+      expect(queryByTestId('entry-point-button')).not.toBeInTheDocument();
+    });
+
+    it('renders button when on mobile (isMobileFullscreen) but not expanded', () => {
+      (useMobileOptimizationsModule.useMobileOptimizations as jest.Mock).mockReturnValue({ isMobileFullscreen: true });
+      (useSelector as jest.Mock).mockImplementation((callback: any) => callback({ session: { expanded: false } }));
+
+      const { queryByTestId } = render(<EntryPoint />);
+
+      expect(queryByTestId('entry-point-button')).toBeInTheDocument();
+    });
+
+    it('renders button when not mobile (isMobileFullscreen false) even when expanded', () => {
+      (useMobileOptimizationsModule.useMobileOptimizations as jest.Mock).mockReturnValue({
+        isMobileFullscreen: false,
+      });
+      (useSelector as jest.Mock).mockImplementation((callback: any) => callback({ session: { expanded: true } }));
+
+      const { queryByTestId } = render(<EntryPoint />);
+
+      expect(queryByTestId('entry-point-button')).toBeInTheDocument();
+    });
   });
 });

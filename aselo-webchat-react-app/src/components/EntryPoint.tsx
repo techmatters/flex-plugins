@@ -22,10 +22,16 @@ import { useDispatch, useSelector } from 'react-redux';
 import { changeExpandedStatus } from '../store/actions/genericActions';
 import { AppState } from '../store/definitions';
 import { containerStyles } from './styles/EntryPoint.styles';
+import { useMobileOptimizations } from '../hooks/useMobileOptimizations';
 
 export const EntryPoint = () => {
   const dispatch = useDispatch();
   const expanded = useSelector((state: AppState) => state.session.expanded);
+  const { isMobileFullscreen } = useMobileOptimizations();
+
+  if (isMobileFullscreen && expanded) {
+    return null;
+  }
 
   return (
     <Box

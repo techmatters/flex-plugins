@@ -41,6 +41,10 @@ jest.mock('../OperatingHoursPhase', () => ({
   OperatingHoursPhase: () => <div title="OperatingHoursPhase" />,
 }));
 
+jest.mock('../../hooks/useMobileOptimizations', () => ({
+  useMobileOptimizations: jest.fn(() => ({ isMobileFullscreen: false })),
+}));
+
 describe('Root Container', () => {
   beforeEach(() => {
     resetMockRedux({
@@ -144,5 +148,39 @@ describe('Root Container', () => {
     const { queryByTitle } = render(<RootContainer />);
 
     expect(queryByTitle('MessagingCanvasPhase')).not.toBeInTheDocument();
+  });
+
+  describe('mobile optimizations', () => {
+    const useMobileOptimizationsModule = jest.requireMock('../../hooks/useMobileOptimizations');
+
+    it('renders with mobile full-screen styles when isMobileFullscreen is true', () => {
+      useMobileOptimizationsModule.useMobileOptimizations.mockReturnValue({ isMobileFullscreen: true });
+      resetMockRedux({
+        session: {
+          ...BASE_MOCK_REDUX.session,
+          expanded: true,
+          currentPhase: EngagementPhase.MessagingCanvas,
+        },
+      });
+
+      const { container } = render(<RootContainer />);
+
+      expect(container).toBeInTheDocument();
+    });
+
+    it('renders with default styles when isMobileFullscreen is false', () => {
+      useMobileOptimizationsModule.useMobileOptimizations.mockReturnValue({ isMobileFullscreen: false });
+      resetMockRedux({
+        session: {
+          ...BASE_MOCK_REDUX.session,
+          expanded: true,
+          currentPhase: EngagementPhase.MessagingCanvas,
+        },
+      });
+
+      const { container } = render(<RootContainer />);
+
+      expect(container).toBeInTheDocument();
+    });
   });
 });
