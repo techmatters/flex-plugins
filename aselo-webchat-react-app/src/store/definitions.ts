@@ -60,6 +60,7 @@ export type SessionState = {
   preEngagementData: PreEngagementData;
   recaptchaValid?: boolean;
   operatingHoursMessage?: string;
+  ipAddress?: string;
 };
 
 export type ConfigState = {
