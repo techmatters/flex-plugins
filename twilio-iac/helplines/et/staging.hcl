@@ -39,7 +39,7 @@ locals {
           chat_blocked_message = "Sorry, you're not able to contact Adama Child Helpline from this device or account"
         }
         chatbot_unique_names = []
-      },
+      }/*,
       facebook : {
         channel_type     = "facebook"
         contact_identity = "messenger:110628727963549"
@@ -49,7 +49,7 @@ locals {
           chat_blocked_message = "Sorry, you're not able to contact Adama Child Helpline from this device or account"
         }
         chatbot_unique_names = []
-      }
+      }*/
     }
 
 

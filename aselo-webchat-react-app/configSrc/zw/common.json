@@ -11,5 +11,6 @@
   "alwaysOpen": false,
   "helplineCode": "zw",
   "enableRecaptcha": false,
-  "captureIp": false
+  "captureIp": true,
+  "contactIdentifierField": "ip"
 }

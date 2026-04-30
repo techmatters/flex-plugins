@@ -37,6 +37,10 @@ jest.mock('../PreEngagementFormPhase', () => ({
   PreEngagementFormPhase: () => <div title="PreEngagementFormPhase" />,
 }));
 
+jest.mock('../OperatingHoursPhase', () => ({
+  OperatingHoursPhase: () => <div title="OperatingHoursPhase" />,
+}));
+
 describe('Root Container', () => {
   beforeEach(() => {
     resetMockRedux({
@@ -99,6 +103,20 @@ describe('Root Container', () => {
     const { queryByTitle } = render(<RootContainer />);
 
     expect(queryByTitle('PreEngagementFormPhase')).toBeInTheDocument();
+  });
+
+  it('renders the operating hours phase when supplied as phase', () => {
+    resetMockRedux({
+      session: {
+        ...BASE_MOCK_REDUX.session,
+        expanded: true,
+        currentPhase: EngagementPhase.OperatingHours,
+      },
+    });
+
+    const { queryByTitle } = render(<RootContainer />);
+
+    expect(queryByTitle('OperatingHoursPhase')).toBeInTheDocument();
   });
 
   it('renders the re-engagement form phase as default phase', () => {

@@ -1,7 +1,5 @@
 {
   "environment": "staging",
   "aseloBackendUrl": "https://hrm-staging.tl.techmatters.org",
-  "definitionVersion": "ca-v1",
-  "defaultLocale": "en-CA",
-  "checkOpenHours": false
+  "definitionVersion": "nz-v1"
 }

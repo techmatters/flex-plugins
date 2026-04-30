@@ -1,6 +1,20 @@
 {
   "slotTypeName": "ageRange",
   "slotTypeValues": [
+    {
+      "sampleValue":{
+        "value": "Unknown"
+      },
+      "synonyms": [
+        { "value": "Unknown" },
+        { "value": "prefer not" },
+        { "value": "Rather not say" },
+        { "value": "prefer not to" },
+        { "value": "X" },
+        { "value": "x" },
+        { "value": "Prefer not to answer" }
+      ]
+    },
      {
       "sampleValue": {
         "value": "Adult 25+"
@@ -157,14 +171,7 @@
         { "value": "99" },
         { "value": "ninety nine" },
         { "value": "100" },
-        { "value": "one hundred" },
-        { "value": "Unknown" },
-        { "value": "prefer not" },
-        { "value": "Rather not say" },
-        { "value": "prefer not to" },
-        { "value": "X" },
-        { "value": "x" },
-        { "value": "Prefer not to answer" }
+        { "value": "one hundred" }
       ]
     },
     {
