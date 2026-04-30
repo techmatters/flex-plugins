@@ -26,6 +26,7 @@ import {
   ACTION_UPDATE_RECAPTCHA_VALIDITY,
   ACTION_SET_OPERATING_HOURS_MESSAGE,
   ACTION_SET_IP_ADDRESS,
+  ACTION_SET_CONTACT_IDENTIFIER,
 } from './actions/actionTypes';
 import type { AppState } from './store';
 import { validateInput } from '../components/forms/formInputs/validation';
@@ -98,6 +99,13 @@ export const SessionReducer: Reducer<SessionState, AnyAction> = (
       return {
         ...state,
         ipAddress: action.payload,
+      };
+    }
+
+    case ACTION_SET_CONTACT_IDENTIFIER: {
+      return {
+        ...state,
+        contactIdentifier: action.payload,
       };
     }
 

@@ -41,6 +41,7 @@ import {
   ACTION_UPDATE_RECAPTCHA_VALIDITY,
   ACTION_SET_OPERATING_HOURS_MESSAGE,
   ACTION_SET_IP_ADDRESS,
+  ACTION_SET_CONTACT_IDENTIFIER,
 } from './actionTypes';
 import { MESSAGES_LOAD_COUNT } from '../../constants';
 import { validateInput } from '../../components/forms/formInputs/validation';
@@ -235,6 +236,12 @@ export const submitAndInitChatThunk = (): ThunkAction<void, AppState, unknown, A
         dispatch(setIpAddress(ipAddress));
       }
 
+      if (state.config.contactIdentifierField) {
+        const contactIdentifier = preEngagementDataValues[state.config.contactIdentifierField] as string;
+        preEngagementDataValues.contactIdentifier = contactIdentifier;
+        dispatch(setContactIdentifier(contactIdentifier));
+      }
+
       preEngagementDataValues.location = preEngagementDataValues.location ?? window.location.href;
 
       const sessionData = await sessionDataHandler.fetchAndStoreNewSession({
@@ -260,6 +267,11 @@ export const setOperatingHoursMessage = (operatingHoursMessage: string) => ({
 
 export const setIpAddress = (payload: string) => ({
   type: ACTION_SET_IP_ADDRESS,
+  payload,
+});
+
+export const setContactIdentifier = (payload: string) => ({
+  type: ACTION_SET_CONTACT_IDENTIFIER,
   payload,
 });
 

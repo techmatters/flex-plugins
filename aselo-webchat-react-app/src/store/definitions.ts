@@ -61,6 +61,7 @@ export type SessionState = {
   recaptchaValid?: boolean;
   operatingHoursMessage?: string;
   ipAddress?: string;
+  contactIdentifier?: string;
 };
 
 export type ConfigState = {
