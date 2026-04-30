@@ -230,7 +230,7 @@ export const submitAndInitChatThunk = (): ThunkAction<void, AppState, unknown, A
         {} as Record<string, unknown>,
       );
 
-      if (state.config.captureIp) {
+      if (state.config.captureIp && state.config.ipLookupServiceApiKey) {
         const ipAddress = await getUserIp(state.config.ipLookupServiceApiKey);
         preEngagementDataValues.ip = ipAddress;
         dispatch(setIpAddress(ipAddress));
