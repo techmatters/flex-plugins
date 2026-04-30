@@ -5,8 +5,18 @@
   "MessageCanvasTrayContent": "",
   "MessageInputDisabledReasonHold": "Please hold for a PeerChat Supporter.",
   "AutoFirstMessage": "Incoming webchat contact from",
-  "PreEngagementDescription": "Let's get started",
+  "PreEngagementDescription": "Welcome to The PeerChat Service.",
   "LetsChat": "Let's chat!",
   "MessagePhase-MessageBubble-OtherParticipantMessageSenderName": "PeerChat Supporter",
-  "Header-TitleBar-Title": "The PeerChat Service"
+  "Header-TitleBar-Title": "The PeerChat Service",
+  "Header-CloseChatButtons-EndChatButtonLabel": "End Chat",
+  "Header-CloseChatButtons-EndChatConfirmDialogMessageFromChat": "End the current chat? This will disconnect you from the service.",
+  "Header-CloseChatButtons-EndChatConfirmDialogMessageFromPreEngagement": "End the current chat?",
+  "Header-CloseChatButtons-QuickExitButtonLabel": "Quick Exit",
+  "Header-CloseChatButtons-QuickExitDescription": "Need to leave immediately?",
+  "MessagePhase-MessageList-ChatStartMessage": "Chat Started",
+  "MessagePhase-ConversationEnded-Heading": "Thanks for chatting with us.",
+  "MessagePhase-ConversationEnded-Detail": "Feel free to reach out to us again if you need more support.",
+  "MessagePhase-ConversationEnded-ButtonText": "Start new chat",
+  "RequiredFieldError": "Please fill out required fields."
   }
