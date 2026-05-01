@@ -42,7 +42,7 @@ export const mobileOuterContainerStyles: BoxStyleProps = {
   position: 'fixed',
   top: 'space0',
   left: 'space0',
-  minHeight: '100%',
+  height: '100%',
   minWidth: '100%',
   display: 'flex',
   flexDirection: 'column',
@@ -54,7 +54,8 @@ export const mobileInnerContainerStyles: BoxStyleProps = {
   boxShadow: 'shadow',
   display: 'flex',
   flexDirection: 'column',
-  minHeight: '100%',
+  height: '100%',
   minWidth: '100%',
+  overflowY: 'auto',
   backgroundColor: 'colorBackgroundBody',
 };
