@@ -32,11 +32,12 @@ type OwnProps = {
   getItem: (inptuName: string) => PreEngagementDataItem;
   handleChange: (payload: { name: string; value: string | boolean }) => void;
   defaultValue?: string;
+  showError?: boolean;
 };
 
 type Props = OwnProps;
 
-const InputText: React.FC<Props> = ({ definition, handleChange, getItem }) => {
+const InputText: React.FC<Props> = ({ definition, handleChange, getItem, showError = true }) => {
   const currentTranslations = useSelector(selectCurrentTranslations);
   const configuredLocalizeKey = localizeKey(currentTranslations);
   const { name, label, placeholder, required } = definition;
@@ -60,12 +61,12 @@ const InputText: React.FC<Props> = ({ definition, handleChange, getItem }) => {
           type="text"
           id={name}
           placeholder={placeholder === undefined ? undefined : configuredLocalizeKey(placeholder)}
-          hasError={Boolean(error)}
+          hasError={Boolean(error && showError)}
           onBlur={e => handleChange({ name, value: e.target.value })}
           onChange={e => debouncedHandleChange({ name, value: e.target.value })}
         />
       </Label>
-      {error && (
+      {error && showError && (
         <span style={{ color: 'rgb(203, 50, 50)' }}>
           <LocalizedTemplate code={error} />
         </span>
