@@ -84,6 +84,7 @@ describe('Header', () => {
       fireEvent.click(getByTestId('header-minimize-button'));
 
       expect(changeExpandedStatusSpy).toHaveBeenCalledWith({ expanded: false });
+      expect(mockDispatch).toHaveBeenCalledWith(changeExpandedStatusSpy.mock.results[0].value);
     });
   });
 });
