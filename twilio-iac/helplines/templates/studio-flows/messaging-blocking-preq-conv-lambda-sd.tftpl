@@ -6,13 +6,13 @@ ${
       "type": "trigger",
       "transitions": [
         {
-          "next": "run_subflow_system_down",
           "event": "incomingMessage"
         },
         {
           "event": "incomingCall"
         },
         {
+          "next": "run_subflow_system_down",
           "event": "incomingConversationMessage"
         },
         {
@@ -69,8 +69,8 @@ ${
           "x": -640,
           "y": 210
         },
-        "service": "{{trigger.message.InstanceSid}}",
-        "channel": "{{trigger.message.ChannelSid}}",
+        "service": "{{trigger.conversation.InstanceSid}}",
+        "channel": "{{trigger.conversation.ChannelSid}}",
         "from": "${channel_flow_vars.widget_from}",
         "to": "{{contact.channel.address}}",
         "body": "${channel_flow_vars.chat_blocked_message}"
@@ -124,8 +124,8 @@ ${
           "x": -640,
           "y": 210
         },
-        "service": "{{trigger.message.InstanceSid}}",
-        "channel": "{{trigger.message.ChannelSid}}",
+        "service": "{{trigger.conversation.InstanceSid}}",
+        "channel": "{{trigger.conversation.ChannelSid}}",
         "from": "${channel_flow_vars.widget_from}",
         "to": "{{contact.channel.address}}",
         "body": "${channel_flow_vars.send_message_webchat_prequeue}"
