@@ -34,24 +34,24 @@ locals {
         contact_identity = ""
         templatefile     = "/app/twilio-iac/helplines/usnc/templates/studio-flows/voice-blocking-no-op-hours-rec-sd.tftpl"
         channel_flow_vars = {
-          play_message_voice_prequeue    = "https://usnc-assets-3228.twil.io/play_message_voice_prequeue.mp3"
-          gather_live_monitoring_consent = "https://usnc-assets-3228.twil.io/gather_live_monitoring_consent.mp3"
-          play_message_voice_blocked     = "Due to repeated use of the service in ways that did not align with Warm Line participation guidelines, access to the Promise Resource Network NC Warm Line has been restricted for this number/account."
+          play_message_voice_prequeue    = "https://usnc-assets-7869.twil.io/play_message_voice_prequeue.mp3"
+          gather_live_monitoring_consent = "https://usnc-assets-7869.twil.io/gather_live_monitoring_consent.mp3"
+          play_message_voice_blocked     = "https://usnc-assets-7869.twil.io/play_message_voice_blocked.mp3"
           voice_ivr_language             = "en-US"
         }
         chatbot_unique_names = []
-      },
+      }/*, AFTER PORTING IS COMPLETE
       sms : {
         messaging_mode   = "conversations"
         channel_type     = "sms"
-        contact_identity = ""
+        contact_identity = "<PENDING>"
         templatefile     = "/app/twilio-iac/helplines/usnc/templates/studio-flows/messaging-lex-v3-blocking-lambda-sd.tftpl"
         channel_flow_vars = {
           widget_from           = "Warm Line"
           send_message_prequeue = "Hello"
         }
         chatbot_unique_names = []
-      }
+      }*/
     }
     system_down_templatefile = "/app/twilio-iac/helplines/templates/studio-flows/system-down.tftpl"
     enable_system_down       = true
