@@ -21,6 +21,7 @@ import { getTwilioClient } from '@tech-matters/twilio-configuration';
 import { HttpRequest } from '../../../../src/httpTypes';
 import { isErr, isOk } from '../../../../src/Result';
 import { AssertionError } from 'node:assert';
+import { GRAPH_FACEBOOK_API_VERSION } from '@tech-matters/configuration';
 
 global.fetch = jest.fn();
 
@@ -208,7 +209,7 @@ describe('FlexToInstagram', () => {
         expect(mockFetch).not.toHaveBeenCalled();
       } else {
         expect(mockFetch).toBeCalledWith(
-          `https://graph.facebook.com/v19.0/me/messages?access_token=${FACEBOOK_PAGE_ACCESS_TOKEN}`,
+          `https://graph.facebook.com/${GRAPH_FACEBOOK_API_VERSION}/me/messages?access_token=${FACEBOOK_PAGE_ACCESS_TOKEN}`,
           expect.objectContaining({
             method: 'post',
             body: JSON.stringify({
