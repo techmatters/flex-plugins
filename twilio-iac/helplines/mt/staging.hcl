@@ -9,7 +9,7 @@ locals {
     custom_task_routing_filter_expression = "channelType IN ['web','messenger', 'telegram'] OR  twilioNumber == 'messenger:111279668497853'"
 
     workflow_vars = {
-      helpline_webchat_location = "https://tl-public-chat-mt-stg.s3.eu-west-1.amazonaws.com/mt-chat-staging.html"
+      helpline_webchat_location = "https://assets-staging.tl.techmatters.org/aselo-webchat-react-app/mt/index.html"
       ecpm_webchat_location     = "https://empoweringchildren.gov.mt/"
     }
 

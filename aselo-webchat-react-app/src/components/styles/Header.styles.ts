@@ -33,3 +33,24 @@ export const titleStyles: TextStyleProps = {
   color: 'colorTextWeakest',
   paddingLeft: 'space30',
 };
+
+export const minimizeButtonStyles: BoxStyleProps = {
+  border: 'none',
+  backgroundColor: 'colorBackgroundPrimary',
+  color: 'colorTextWeakest',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  cursor: 'pointer',
+  padding: 'space20',
+  marginRight: 'space10',
+  borderRadius: 'borderRadius20',
+  outline: '0px',
+  _hover: {
+    backgroundColor: 'colorBackgroundPrimaryStronger',
+  },
+  _focusVisible: {
+    backgroundColor: 'colorBackgroundPrimaryStronger',
+    boxShadow: 'shadowFocus',
+  },
+};

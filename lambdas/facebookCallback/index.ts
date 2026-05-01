@@ -20,6 +20,7 @@ import {
   PutParameterCommand,
   PutParameterCommandInput,
 } from '@aws-sdk/client-ssm';
+import { GRAPH_FACEBOOK_API_VERSION } from '@tech-matters/configuration';
 
 import type { ALBEvent, ALBResult } from 'aws-lambda';
 
@@ -47,6 +48,7 @@ export const putSsmParameter = async (request: PutParameterCommandInput) => {
 };
 
 export const handler = async (event: ALBEvent): Promise<ALBResult> => {
+  console.info('GRAPH_FACEBOOK_API_VERSION', GRAPH_FACEBOOK_API_VERSION);
   if (event.httpMethod === 'GET') {
     try {
       // Get params from SSM
@@ -118,7 +120,7 @@ export const handler = async (event: ALBEvent): Promise<ALBResult> => {
 
       // Generate short lived auth token
       const code2sltEndpoint =
-        'https://graph.facebook.com/v19.0/oauth/access_token?' +
+        `https://graph.facebook.com/${GRAPH_FACEBOOK_API_VERSION}/oauth/access_token?` +
         `&redirect_uri=${LAMBDAS_BASE_URL}/lambda/facebookCallback` +
         `&client_id=${FACEBOOK_APP_ID}` +
         `&client_secret=${FACEBOOK_APP_SECRET}` +
@@ -138,7 +140,7 @@ export const handler = async (event: ALBEvent): Promise<ALBResult> => {
 
       // Generate long lived auth token
       const slt2lltEndpoint =
-        'https://graph.facebook.com/v19.0/oauth/access_token?' +
+        `https://graph.facebook.com/${GRAPH_FACEBOOK_API_VERSION}/oauth/access_token?` +
         '&grant_type=fb_exchange_token' +
         `&client_id=${FACEBOOK_APP_ID}` +
         `&client_secret=${FACEBOOK_APP_SECRET}` +
@@ -157,7 +159,7 @@ export const handler = async (event: ALBEvent): Promise<ALBResult> => {
       const { access_token: longLivedToken } = lltResult;
 
       // Validate that the user can actually manage the target page
-      const pagesInfoEndpoint = `https://graph.facebook.com/v19.0/me/accounts?access_token=${shortLivedToken}`;
+      const pagesInfoEndpoint = `https://graph.facebook.com/${GRAPH_FACEBOOK_API_VERSION}/me/accounts?access_token=${shortLivedToken}`;
       const pagesInfoResponse = await fetch(pagesInfoEndpoint);
       const pagesInfoResult: any = await pagesInfoResponse.json();
 

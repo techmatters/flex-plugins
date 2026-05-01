@@ -60,6 +60,8 @@ export type SessionState = {
   preEngagementData: PreEngagementData;
   recaptchaValid?: boolean;
   operatingHoursMessage?: string;
+  ipAddress?: string;
+  contactIdentifier?: string;
 };
 
 export type ConfigState = {
@@ -87,6 +89,7 @@ export type ConfigState = {
   ipLookupServiceApiKey?: string;
   contactIdentifierField?: string;
   checkOpenHours?: boolean;
+  enableMobileOptimizations?: boolean;
 };
 
 export type Notification = {

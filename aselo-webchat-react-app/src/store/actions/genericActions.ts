@@ -40,6 +40,8 @@ import {
   ACTION_UPDATE_PRE_ENGAGEMENT_DATA,
   ACTION_UPDATE_RECAPTCHA_VALIDITY,
   ACTION_SET_OPERATING_HOURS_MESSAGE,
+  ACTION_SET_IP_ADDRESS,
+  ACTION_SET_CONTACT_IDENTIFIER,
 } from './actionTypes';
 import { MESSAGES_LOAD_COUNT } from '../../constants';
 import { validateInput } from '../../components/forms/formInputs/validation';
@@ -229,7 +231,15 @@ export const submitAndInitChatThunk = (): ThunkAction<void, AppState, unknown, A
       );
 
       if (state.config.captureIp && state.config.ipLookupServiceApiKey) {
-        preEngagementDataValues.ip = await getUserIp(state.config.ipLookupServiceApiKey);
+        const ipAddress = await getUserIp(state.config.ipLookupServiceApiKey);
+        preEngagementDataValues.ip = ipAddress;
+        dispatch(setIpAddress(ipAddress));
+      }
+
+      if (state.config.contactIdentifierField) {
+        const contactIdentifier = preEngagementDataValues[state.config.contactIdentifierField] as string;
+        preEngagementDataValues.contactIdentifier = contactIdentifier;
+        dispatch(setContactIdentifier(contactIdentifier));
       }
 
       preEngagementDataValues.location = preEngagementDataValues.location ?? window.location.href;
@@ -253,6 +263,16 @@ export const submitAndInitChatThunk = (): ThunkAction<void, AppState, unknown, A
 export const setOperatingHoursMessage = (operatingHoursMessage: string) => ({
   type: ACTION_SET_OPERATING_HOURS_MESSAGE,
   payload: { operatingHoursMessage },
+});
+
+export const setIpAddress = (payload: string) => ({
+  type: ACTION_SET_IP_ADDRESS,
+  payload,
+});
+
+export const setContactIdentifier = (payload: string) => ({
+  type: ACTION_SET_CONTACT_IDENTIFIER,
+  payload,
 });
 
 const getOperatingHoursMessage = (
