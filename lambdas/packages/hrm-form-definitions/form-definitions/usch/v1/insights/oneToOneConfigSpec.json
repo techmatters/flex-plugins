@@ -25,7 +25,7 @@
     "childInformation": [
       {
         "name": "childIs",
-        "insights": ["customers", "preceded_by"] 
+        "insights": ["conversations", "outcome"] 
       },
       {
         "name": "ageRange",
