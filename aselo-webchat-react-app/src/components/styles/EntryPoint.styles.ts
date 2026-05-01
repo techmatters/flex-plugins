@@ -32,7 +32,7 @@ export const containerStyles: BoxStyleProps = {
   outline: '0px',
   padding: 'space0',
   _hover: {
-    backgroundColor: 'colorBackgroundPrimaryStronger',
+    opacity: 0.5,
   },
   _focusVisible: {
     backgroundColor: 'colorBackgroundPrimaryStronger',

@@ -477,15 +477,48 @@ describe('sanitizeIdentifierFromTrigger', () => {
     },
     {
       channelType: 'web',
-      description: 'conversation - returns unmodified',
+      description: 'chat - sanitizes ip',
       trigger: {
         conversation: {
-          Author: 'this!',
-          ChannelAttributes: { channel_type: 'web', from: '0.0.0.0' },
+          ChannelAttributes: {
+            channel_type: 'web',
+            from: 'not this!',
+            pre_engagement_data: { contactIdentifier: '1.2.3.4' },
+          },
+          Author: 'not this!',
         },
       },
-      expected: 'this!',
-      expectErr: false,
+      expected: '1.2.3.4',
+    },
+    {
+      channelType: 'web',
+      description: 'chat - sanitizes email',
+      trigger: {
+        conversation: {
+          ChannelAttributes: {
+            channel_type: 'web',
+            from: 'not this!',
+            pre_engagement_data: { contactIdentifier: 'example@example.com' },
+          },
+          Author: 'not this!',
+        },
+      },
+      expected: 'example@example.com',
+    },
+    {
+      channelType: 'web',
+      description: 'chat - sanitizes number',
+      trigger: {
+        conversation: {
+          ChannelAttributes: {
+            channel_type: 'web',
+            from: 'not this!',
+            pre_engagement_data: { contactIdentifier: '+1 234 56789' },
+          },
+          Author: 'not this!',
+        },
+      },
+      expected: '+1 234 56789',
     },
   ];
   each(testCases).test(

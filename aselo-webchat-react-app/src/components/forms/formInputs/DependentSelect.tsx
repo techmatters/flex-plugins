@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2021-2023 Technology Matters
+ * Copyright (C) 2021-2026 Technology Matters
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
  * by the Free Software Foundation, either version 3 of the License, or
@@ -18,9 +18,12 @@
 import React, { useEffect, useRef } from 'react';
 import { Box, Label, Select as SelectInput } from '@twilio-paste/core';
 import { FormInputType, PreEngagementFormItem } from 'hrm-form-definitions';
+import { useSelector } from 'react-redux';
 
 import LocalizedTemplate from '../../../localization/LocalizedTemplate';
+import { localizeKey } from '../../../localization/localizeKey';
 import { PreEngagementDataItem } from '../../../store/definitions';
+import { selectCurrentTranslations } from '../../../store/config.reducer';
 
 type OwnProps = {
   definition: PreEngagementFormItem & { type: FormInputType.DependentSelect };
@@ -28,11 +31,14 @@ type OwnProps = {
   setItemValue: (payload: { name: string; value: string | boolean }) => void;
   handleChange: (payload: { name: string; value: string | boolean }) => void;
   defaultValue?: string;
+  showError?: boolean;
 };
 
 type Props = OwnProps;
 
-const DependentSelect: React.FC<Props> = ({ getItem, setItemValue, definition, handleChange }) => {
+const DependentSelect: React.FC<Props> = ({ getItem, setItemValue, definition, handleChange, showError = true }) => {
+  const currentTranslations = useSelector(selectCurrentTranslations);
+  const configuredLocalizeKey = localizeKey(currentTranslations);
   const { dependsOn, name, label, required, options } = definition;
   const { value, error } = getItem(name);
   const dependsOnValue = getItem(dependsOn).value as string;
@@ -56,8 +62,7 @@ const DependentSelect: React.FC<Props> = ({ getItem, setItemValue, definition, h
     dependsOnValue && options[dependsOnValue]
       ? options[dependsOnValue].map(option => (
           <option key={option.value} value={option.value}>
-            {/* {<LocalizedTemplate code={option.label} />} */}
-            {option.label}
+            {configuredLocalizeKey(option.label)}
           </option>
         ))
       : [];
@@ -70,7 +75,7 @@ const DependentSelect: React.FC<Props> = ({ getItem, setItemValue, definition, h
         </span>
         <SelectInput
           id={name}
-          hasError={Boolean(error)}
+          hasError={Boolean(error && showError)}
           onChange={e => handleChange({ name, value: e.target.value })}
           disabled={!dependsOnValue}
           value={value as string}
@@ -78,7 +83,7 @@ const DependentSelect: React.FC<Props> = ({ getItem, setItemValue, definition, h
           {buildOptions()}
         </SelectInput>
       </Label>
-      {error && (
+      {error && showError && (
         <span style={{ color: 'rgb(203, 50, 50)' }}>
           <LocalizedTemplate code={error} />
         </span>

@@ -33,7 +33,7 @@ inputs:
 outputs:
   generated-pre-release-tag:
     description: "The generated pre-release tag"
-    value: ${{ steps.create_pre_release.outputs.automatic_releases_tag }}
+    value: ${{ steps.generate_next_tag.outputs.generated-tag }}
 
 runs:
   using: "composite"
@@ -67,14 +67,12 @@ runs:
       shell: bash
 
     # Create a pre-release
-    - name: Create a pre-release
-      uses: "marvinpinto/action-automatic-releases@v1.2.1"
+    - name: Create QA pre-release
+      uses: softprops/action-gh-release@v2
       with:
-        repo_token: ${{ inputs.repo_token }}
-        automatic_release_tag: ${{ steps.generate_next_tag.outputs.generated-tag }}
+        tag_name: "${{ steps.generate_next_tag.outputs.generated-tag }}"
+        name: "${{ inputs.title }}"
         prerelease: true
-        title: ${{ inputs.title }}
-        # files: |
-        #   LICENSE.txt
-        #   *.jar
-      id: create_pre_release
+        generate_release_notes: true
+      env:
+        GITHUB_TOKEN: ${{ inputs.repo_token }}

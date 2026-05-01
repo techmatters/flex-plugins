@@ -22,6 +22,7 @@ import '@testing-library/jest-dom';
 import { MessagingCanvasPhase } from '../MessagingCanvasPhase';
 import { notifications } from '../../notifications';
 import * as genericActions from '../../store/actions/genericActions';
+import * as localizeKeyModule from '../../localization/localizeKey';
 
 jest.mock('../Header', () => ({
   Header: () => <div title="Header" />,
@@ -53,6 +54,7 @@ const messageMock = {
   send: jest.fn(),
 };
 const conversationMock = {
+  status: 'joined',
   getMessagesCount: jest.fn(),
   prepareMessage: jest.fn(),
 };
@@ -118,13 +120,32 @@ describe('Messaging Canvas Phase', () => {
   });
 
   it('renders message input (and file drop area wrapper) when conversation state is active', () => {
-    resetMockRedux({ ...baseReduxState, chat: { conversationState: 'active', ...baseReduxState } });
+    resetMockRedux({
+      ...baseReduxState,
+      chat: { ...baseReduxState.chat, conversationState: 'active', conversation: conversationMock },
+    });
 
     const { queryByTitle } = render(<MessagingCanvasPhase />);
 
     expect(queryByTitle('AttachFileDropArea')).toBeInTheDocument();
     expect(queryByTitle('MessageInput')).toBeInTheDocument();
     expect(queryByTitle('ConversationEnded')).not.toBeInTheDocument();
+  });
+
+  it('renders conversation ended when conversation state is active but conversation is not joined', () => {
+    resetMockRedux({
+      ...baseReduxState,
+      chat: {
+        ...baseReduxState.chat,
+        conversationState: 'active',
+        conversation: { ...conversationMock, status: 'notParticipating' },
+      },
+    });
+
+    const { queryByTitle } = render(<MessagingCanvasPhase />);
+
+    expect(queryByTitle('ConversationEnded')).toBeInTheDocument();
+    expect(queryByTitle('MessageInput')).not.toBeInTheDocument();
   });
 
   it('renders conversation ended when conversation state is closed', () => {
@@ -147,6 +168,65 @@ describe('Messaging Canvas Phase', () => {
     expect(conversationMock.prepareMessage().setBody).toHaveBeenCalledWith(TEST_QUERY);
     expect(conversationMock.prepareMessage().setBody().build).toHaveBeenCalled();
     expect(conversationMock.prepareMessage().setBody().build().send).toHaveBeenCalled();
+  });
+
+  it('Should use contactIdentifier in auto first message when present', async () => {
+    const contactIdentifier = 'user@example.com';
+    resetMockRedux({
+      ...baseReduxState,
+      chat: { ...baseReduxState.chat, conversation: conversationMock },
+      session: { ...baseReduxState.session, preEngagementData: {}, contactIdentifier },
+    });
+
+    await waitFor(() => render(<MessagingCanvasPhase />));
+
+    expect(conversationMock.prepareMessage().setBody).toHaveBeenCalledWith(
+      `${TEST_AUTO_FIRST_MESSAGE} ${contactIdentifier}`,
+    );
+  });
+
+  it('Should use ipAddress in auto first message when contactIdentifier is absent', async () => {
+    const ipAddress = '192.168.1.1';
+    resetMockRedux({
+      ...baseReduxState,
+      chat: { ...baseReduxState.chat, conversation: conversationMock },
+      session: { ...baseReduxState.session, preEngagementData: {}, ipAddress },
+    });
+
+    await waitFor(() => render(<MessagingCanvasPhase />));
+
+    expect(conversationMock.prepareMessage().setBody).toHaveBeenCalledWith(`${TEST_AUTO_FIRST_MESSAGE} ${ipAddress}`);
+  });
+
+  it('Should prefer contactIdentifier over ipAddress in auto first message when both are present', async () => {
+    const contactIdentifier = 'user@example.com';
+    const ipAddress = '192.168.1.1';
+    resetMockRedux({
+      ...baseReduxState,
+      chat: { ...baseReduxState.chat, conversation: conversationMock },
+      session: { ...baseReduxState.session, preEngagementData: {}, contactIdentifier, ipAddress },
+    });
+
+    await waitFor(() => render(<MessagingCanvasPhase />));
+
+    expect(conversationMock.prepareMessage().setBody).toHaveBeenCalledWith(
+      `${TEST_AUTO_FIRST_MESSAGE} ${contactIdentifier}`,
+    );
+  });
+
+  it('Should use DEFAULT_CUSTOMER_DEFAULT_NAME when no contactIdentifier, ipAddress or localization is available', async () => {
+    const localizeKeySpy = jest.spyOn(localizeKeyModule, 'localizeKey').mockImplementation(() => () => '');
+    resetMockRedux({
+      ...baseReduxState,
+      chat: { ...baseReduxState.chat, conversation: conversationMock },
+      session: { ...baseReduxState.session, preEngagementData: {} },
+    });
+
+    await waitFor(() => render(<MessagingCanvasPhase />));
+
+    expect(conversationMock.prepareMessage().setBody).toHaveBeenCalledWith(`${TEST_AUTO_FIRST_MESSAGE} Anonymous`);
+
+    localizeKeySpy.mockRestore();
   });
 
   it('Should not trigger conversation if messages exists', async () => {

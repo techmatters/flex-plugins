@@ -29,6 +29,7 @@ export enum EngagementPhase {
   PreEngagementForm = 'PreEngagementForm',
   MessagingCanvas = 'MessagingCanvas',
   Loading = 'Loading',
+  OperatingHours = 'OperatingHours',
 }
 
 export type ChatState = {
@@ -58,6 +59,9 @@ export type SessionState = {
   conversationState?: 'active' | 'inactive' | 'closed';
   preEngagementData: PreEngagementData;
   recaptchaValid?: boolean;
+  operatingHoursMessage?: string;
+  ipAddress?: string;
+  contactIdentifier?: string;
 };
 
 export type ConfigState = {
@@ -84,6 +88,8 @@ export type ConfigState = {
   captureIp?: boolean;
   ipLookupServiceApiKey?: string;
   contactIdentifierField?: string;
+  checkOpenHours?: boolean;
+  enableMobileOptimizations?: boolean;
 };
 
 export type Notification = {

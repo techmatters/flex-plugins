@@ -149,7 +149,7 @@ export const sanitizeIdentifierFromTrigger = ({
 
     if (isConversationTrigger(trigger) && channelType) {
       // webchat is a special case since it does not only depends on channel but in the task attributes too
-      if (trigger.conversation.ChannelAttributes.channel_type === 'chat') {
+      if (['chat', 'web'].includes(trigger.conversation.ChannelAttributes.channel_type)) {
         const identifier = getContactValueFromWebchat({
           preEngagementData: trigger.conversation.ChannelAttributes.pre_engagement_data,
         });

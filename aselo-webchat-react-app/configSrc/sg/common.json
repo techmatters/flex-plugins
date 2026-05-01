@@ -11,5 +11,6 @@
   "alwaysOpen": false,
   "helplineCode": "sg",
   "captureIp": true,
+  "defaultLocale": "en-SG",
   "contactIdentifierField": "ip"
 }

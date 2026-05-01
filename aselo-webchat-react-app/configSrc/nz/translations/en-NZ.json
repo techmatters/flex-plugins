@@ -1,0 +1,16 @@
+{
+    "WelcomeMessage": "Welcome to the Youthline Helpline",
+    "MessageCanvasTrayContent": "",
+    "MessageInputDisabledReasonHold":
+      "Thank you very much for this information. We'll transfer you now. Please hold for a practitioner.",
+    "AutoFirstMessage": "Incoming webchat contact from",
+    "MessagePhase-MessageList-Typing": "Youthline is typing...",
+    "StartChat": "Start Chat!",
+    "MessageCanvasTrayButton": "Start New Chat",
+    "Email": "Email",
+    "Age": "What is your age?",
+    "Gender": "What is your gender?",
+    "Region": "Select your region",
+    "Ethnicity": "Select your ethnicity",
+    "MessagePhase-MessageBubble-OtherParticipantMessageSenderName": "Youthline"
+  }

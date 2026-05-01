@@ -8,6 +8,7 @@
   "Header-CloseChatButtons-QuickExitDescription": "Need to leave immediately?",
   "Header-TitleBar-Title": "Live Chat",
   "MessagePhase-MessageList-ChatStartMessage": "Chat Started",
+  "MessagePhase-MessageList-Typing": "Counsellor is typing...",
   "MessagePhase-MessageBubble-OtherParticipantMessageSenderName": "Counsellor",
   "MessagePhase-MessageBubble-OwnMessageSenderName": "You",
   "MessagePhase-ConversationEnded-Heading": "Thanks for chatting with us!",
@@ -15,5 +16,7 @@
   "MessagePhase-ConversationEnded-ButtonText": "Start new chat",
   "PreEngagementPhase-Notifications-RecaptchaInvalid": "You need to be verified by Recaptcha before proceeding",
   "PreEngagementPhase-Notifications-FormInvalid": "Some fields contain errors",
-  "RequiredFieldError": "Please fill out required fields."
+  "RequiredFieldError": "Please fill out required fields.",
+  "OperatingHours-Closed-Message": "We are currently closed. Please check back during our operating hours.",
+  "OperatingHours-Holiday-Message": "We are currently closed for the holiday. Please check back during our operating hours."
 }

@@ -18,26 +18,32 @@
 import React from 'react';
 import { Box, Label, Select as SelectInput } from '@twilio-paste/core';
 import { FormInputType, PreEngagementFormItem } from 'hrm-form-definitions';
+import { useSelector } from 'react-redux';
 
+import { localizeKey } from '../../../localization/localizeKey';
 import LocalizedTemplate from '../../../localization/LocalizedTemplate';
 import { PreEngagementDataItem } from '../../../store/definitions';
+import { selectCurrentTranslations } from '../../../store/config.reducer';
 
 type OwnProps = {
   definition: PreEngagementFormItem & { type: FormInputType.Select };
   getItem: (inptuName: string) => PreEngagementDataItem;
   handleChange: (payload: { name: string; value: string | boolean }) => void;
   defaultValue?: string;
+  showError?: boolean;
 };
 
 type Props = OwnProps;
 
-const Select: React.FC<Props> = ({ definition, getItem, defaultValue, handleChange }) => {
+const Select: React.FC<Props> = ({ definition, getItem, defaultValue, handleChange, showError = true }) => {
+  const currentTranslations = useSelector(selectCurrentTranslations);
+  const configuredLocalizeKey = localizeKey(currentTranslations);
   const { name, label, required, options } = definition;
   const { error } = getItem(name);
   const buildOptions = () =>
     options.map(option => (
       <option key={option.value} value={option.value}>
-        {option.label}
+        {configuredLocalizeKey(option.label)}
       </option>
     ));
 
@@ -49,14 +55,14 @@ const Select: React.FC<Props> = ({ definition, getItem, defaultValue, handleChan
         </span>
         <SelectInput
           id={name}
-          hasError={Boolean(error)}
+          hasError={Boolean(error && showError)}
           onChange={e => handleChange({ name, value: e.target.value })}
           defaultValue={defaultValue}
         >
           {buildOptions()}
         </SelectInput>
       </Label>
-      {error && (
+      {error && showError && (
         <span style={{ color: 'rgb(203, 50, 50)' }}>
           <LocalizedTemplate code={error} />
         </span>

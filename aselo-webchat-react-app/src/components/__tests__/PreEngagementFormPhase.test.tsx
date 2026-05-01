@@ -214,6 +214,7 @@ describe('Pre Engagement Form Phase', () => {
         friendlyName: name,
         query,
         email,
+        location: 'http://localhost/',
       },
     });
   });
@@ -278,7 +279,9 @@ describe('Pre Engagement Form Phase - validation', () => {
     fireEvent.change(nameInput, { target: { value: 'John' } });
     await submitForm(container);
     // DOM sync on submit should have pushed the value into Redux before validation
-    expect(sessionDataHandler.fetchAndStoreNewSession).toHaveBeenCalledWith({ formData: { name: 'John' } });
+    expect(sessionDataHandler.fetchAndStoreNewSession).toHaveBeenCalledWith({
+      formData: { name: 'John', location: 'http://localhost/' },
+    });
     expect(initAction.initSession).toHaveBeenCalled();
   });
 
@@ -548,6 +551,116 @@ describe('Pre Engagement Form Phase - validation', () => {
     await submitForm(container);
     expect(sessionDataHandler.fetchAndStoreNewSession).toHaveBeenCalled();
     expect(initAction.initSession).toHaveBeenCalled();
+  });
+
+  it('Select: form is valid when a "required" select is changed to a non-empty option via the DOM', async () => {
+    const store = createValidationStore([
+      {
+        name: 'choice',
+        type: FormInputType.Select,
+        label: 'Choice',
+        required: true,
+        options: [
+          { value: '', label: 'Please select...' },
+          { value: 'opt1', label: 'Option 1' },
+        ],
+      } as PreEngagementFormItem,
+    ]);
+    const { container } = render(
+      <Provider store={store}>
+        <PreEngagementFormPhase />
+      </Provider>,
+    );
+    const selectEl = container.querySelector('#choice') as HTMLSelectElement;
+    fireEvent.change(selectEl, { target: { value: 'opt1' } });
+    await submitForm(container);
+    expect(sessionDataHandler.fetchAndStoreNewSession).toHaveBeenCalled();
+    expect(initAction.initSession).toHaveBeenCalled();
+  });
+
+  it('onChange syncs field values to Redux so validation reflects the current DOM state', async () => {
+    const namePlaceholder = 'Your name';
+    const store = createValidationStore([
+      {
+        name: 'name',
+        type: FormInputType.Input,
+        label: 'Name',
+        required: true,
+        placeholder: namePlaceholder,
+      } as PreEngagementFormItem,
+    ]);
+    const { container, getByPlaceholderText } = render(
+      <Provider store={store}>
+        <PreEngagementFormPhase />
+      </Provider>,
+    );
+    const nameInput = getByPlaceholderText(namePlaceholder);
+    // Trigger onChange without blur — setItemValue calls setPreEngagementDataFromDom which reads all DOM values
+    fireEvent.change(nameInput, { target: { value: 'Alice' } });
+    // Verify the value is captured during submission (not just on blur), confirming onChange syncs the DOM
+    await submitForm(container);
+    expect(sessionDataHandler.fetchAndStoreNewSession).toHaveBeenCalledWith(
+      expect.objectContaining({ formData: expect.objectContaining({ name: 'Alice' }) }),
+    );
+    expect(initAction.initSession).toHaveBeenCalled();
+  });
+
+  it('validation errors are hidden before the first submit attempt even when the Redux state has an error', () => {
+    // Pre-populate the store with a field that already has a validation error
+    const store = createValidationStore(
+      [{ name: 'name', type: FormInputType.Input, label: 'Name', required: true } as PreEngagementFormItem],
+      { name: { value: '', error: 'RequiredFieldError', dirty: true } },
+    );
+    const { queryByText } = render(
+      <Provider store={store}>
+        <PreEngagementFormPhase />
+      </Provider>,
+    );
+    // showError is false before any submit or field touch, so the error span must not render
+    expect(queryByText('RequiredFieldError')).not.toBeInTheDocument();
+  });
+
+  it('validation errors become visible after the first submit attempt', async () => {
+    const store = createValidationStore([
+      { name: 'name', type: FormInputType.Input, label: 'Name', required: true } as PreEngagementFormItem,
+    ]);
+    const { container, queryByText } = render(
+      <Provider store={store}>
+        <PreEngagementFormPhase />
+      </Provider>,
+    );
+    // No error visible before submit
+    expect(queryByText('RequiredFieldError')).not.toBeInTheDocument();
+    // Submit with the required field empty — validation fails and wasSubmitAttempted becomes true
+    await submitForm(container);
+    // showError is now true for all fields, so the error span must be rendered
+    expect(queryByText('RequiredFieldError')).toBeInTheDocument();
+  });
+
+  it('validation error for a field becomes visible after that field is touched without a submit', async () => {
+    const namePlaceholder = 'Enter name';
+    const store = createValidationStore([
+      {
+        name: 'name',
+        type: FormInputType.Input,
+        label: 'Name',
+        required: true,
+        placeholder: namePlaceholder,
+      } as PreEngagementFormItem,
+    ]);
+    const { getByPlaceholderText, queryByText } = render(
+      <Provider store={store}>
+        <PreEngagementFormPhase />
+      </Provider>,
+    );
+    // No error visible before any interaction
+    expect(queryByText('RequiredFieldError')).not.toBeInTheDocument();
+    // Blur the empty required field — this adds it to fieldsTouched and syncs the empty value to Redux
+    await act(async () => {
+      fireEvent.blur(getByPlaceholderText(namePlaceholder));
+    });
+    // showError is now true for this field (fieldsTouched.has('name')), so the error must be rendered
+    expect(queryByText('RequiredFieldError')).toBeInTheDocument();
   });
 });
 

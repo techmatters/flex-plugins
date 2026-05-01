@@ -1,0 +1,16 @@
+{
+  "MessageInputDisabledReasonHold": "Chuna kuitemesha ahembeleliku chanti kundi ankhong'u.",
+  "EntryPointTagLine": "Tuhanjiki mwani",
+  "PreEngagementDescription": "Tutachikiku",
+  "Today": "Lelu",
+  "InputPlaceHolder": "Sonekenu Muzhimbu",
+  "WelcomeMessage": "Shikenu mwani kuchota cha ChildLine Zambia!",
+  "Yesterday": "Haloshi",
+  "TypingIndicator": "Nkhong'u nakusoneka Muzhimbu",
+  "MessageCanvasTrayButton": "Tachikenu kuhanjika",
+  "MessageCanvasTrayContent": "",
+  "AutoFirstMessage": "",
+  "StartChat": "Tachikenu kuhanjeka!",
+  "SelectLanguage": "Select your language",
+  "MessagePhase-MessageBubble-OtherParticipantMessageSenderName": "Counsellor"
+}
