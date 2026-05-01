@@ -28,8 +28,8 @@ export const initChat = (scriptTagData: Record<string, string | undefined>) => {
   const urlParams = new URLSearchParams(window.location.search);
   const theme = urlParams.get('theme') ?? scriptTagData.theme;
   const isLightTheme = theme !== 'dark';
-  const color = urlParams.get('color') || scriptEl?.getAttribute('data-color');
-  const backgroundColor = urlParams.get('backgroundColor') || scriptEl?.getAttribute('data-background-color');
+  const color = urlParams.get('color') || scriptTagData.color;
+  const backgroundColor = urlParams.get('backgroundColor') || scriptTagData.backgroundColor;
   const alwaysOpen = urlParams.get('alwaysOpen');
   const defaultLocale =
     // data-language attribute is supported for backwards compatibility, remove once webchat is fully migrated
