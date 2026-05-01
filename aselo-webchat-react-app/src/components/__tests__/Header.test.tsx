@@ -13,14 +13,24 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
-import { render } from '@testing-library/react';
+import { render, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
 
 import { resetMockRedux } from '../../__mocks__/redux/mockRedux';
 import { Header } from '../Header';
+import * as useMobileOptimizationsModule from '../../hooks/useMobileOptimizations';
+import * as genericActions from '../../store/actions/genericActions';
+
+jest.mock('../../hooks/useMobileOptimizations', () => ({
+  useMobileOptimizations: jest.fn(() => ({ isMobileFullscreen: false })),
+}));
 
 describe('Header', () => {
-  beforeEach(() => resetMockRedux());
+  beforeEach(() => {
+    resetMockRedux();
+    (useMobileOptimizationsModule.useMobileOptimizations as jest.Mock).mockReturnValue({ isMobileFullscreen: false });
+  });
+
   it('renders the header', () => {
     const { container } = render(<Header />);
 
@@ -38,5 +48,42 @@ describe('Header', () => {
     const { queryByText } = render(<Header />);
 
     expect(queryByText('Header-TitleBar-Title')).toBeInTheDocument();
+  });
+
+  describe('mobile minimize button', () => {
+    it('does not render minimize button when not in mobile full-screen mode', () => {
+      (useMobileOptimizationsModule.useMobileOptimizations as jest.Mock).mockReturnValue({ isMobileFullscreen: false });
+
+      const { queryByTestId } = render(<Header />);
+
+      expect(queryByTestId('header-minimize-button')).not.toBeInTheDocument();
+    });
+
+    it('renders minimize button when in mobile full-screen mode', () => {
+      (useMobileOptimizationsModule.useMobileOptimizations as jest.Mock).mockReturnValue({ isMobileFullscreen: true });
+
+      const { queryByTestId } = render(<Header />);
+
+      expect(queryByTestId('header-minimize-button')).toBeInTheDocument();
+    });
+
+    it('renders minimize chat icon title when in mobile full-screen mode', () => {
+      (useMobileOptimizationsModule.useMobileOptimizations as jest.Mock).mockReturnValue({ isMobileFullscreen: true });
+
+      const { queryByTitle } = render(<Header />);
+
+      expect(queryByTitle('Minimize chat')).toBeInTheDocument();
+    });
+
+    it('dispatches changeExpandedStatus with expanded false when minimize button is clicked', () => {
+      (useMobileOptimizationsModule.useMobileOptimizations as jest.Mock).mockReturnValue({ isMobileFullscreen: true });
+      const { mockDispatch } = resetMockRedux();
+      const changeExpandedStatusSpy = jest.spyOn(genericActions, 'changeExpandedStatus');
+
+      const { getByTestId } = render(<Header />);
+      fireEvent.click(getByTestId('header-minimize-button'));
+
+      expect(changeExpandedStatusSpy).toHaveBeenCalledWith({ expanded: false });
+    });
   });
 });

@@ -47,6 +47,7 @@ export const mobileOuterContainerStyles: BoxStyleProps = {
   display: 'flex',
   flexDirection: 'column',
   alignItems: 'flex-end',
+  zIndex: 'zIndex90',
 };
 
 export const mobileInnerContainerStyles: BoxStyleProps = {
