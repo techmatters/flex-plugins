@@ -135,10 +135,11 @@ jobs:
           cat >> aselo-chat-uncompressed.js << 'INIT_SCRIPT'
           ;
           (function () {
+            const scriptTagData = document.currentScript.element.dataset;
             if (document.readyState === 'loading') {
-              document.addEventListener('DOMContentLoaded', function () { window.Twilio.initChat(); });
+              document.addEventListener('DOMContentLoaded', function () { window.Twilio.initChat(scriptTagData); });
             } else {
-              window.Twilio.initChat();
+              window.Twilio.initChat(scriptTagData);
             }
           })();
           INIT_SCRIPT

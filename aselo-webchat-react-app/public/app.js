@@ -13,7 +13,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
-
+const scriptTagData = document.currentScript.element.dataset;
 window.addEventListener('DOMContentLoaded', () => {
-  Twilio.initChat();
+  Twilio.initChat(scriptTagData);
 });
