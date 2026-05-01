@@ -39,12 +39,14 @@ export function updateViewport() {
 
 /**
  * Returns true if the current device is a mobile/touch device.
- * Uses the same media query logic as the legacy webchat:
- * pointer: coarse and hover: none matches phones/tablets.
+ * Uses pointer: coarse to detect touchscreen/stylus devices (phones/tablets).
+ * We intentionally avoid checking hover: none because Chrome on Android may
+ * report hover: hover or hover: on-demand even on touch-only devices (e.g. Samsung S23),
+ * which would cause the combined query to fail on real devices.
  */
 export function isMobileDevice(): boolean {
   if (typeof window === 'undefined' || !window.matchMedia) {
     return false;
   }
-  return window.matchMedia('(pointer: coarse) and (hover: none)').matches;
+  return window.matchMedia('(pointer: coarse)').matches;
 }
