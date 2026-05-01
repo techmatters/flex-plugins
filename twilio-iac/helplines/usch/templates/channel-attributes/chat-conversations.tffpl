@@ -1,6 +1,6 @@
 {
   "name": "{{trigger.conversation.ChannelAttributes.from}}",
-  "ip": "{{trigger.message.ChannelAttributes.pre_engagement_data.ip}}",
+  "ip": "{{trigger.conversation.ChannelAttributes.pre_engagement_data.ip}}",
   "firstName": "{{trigger.message.ChannelAttributes.from}}",
   "channelType": "{% if trigger.conversation.ChannelAttributes.channel_type %}{{trigger.conversation.ChannelAttributes.channel_type}}{% else %}{{trigger.conversation.Source | downcase}}{% endif %}",
   "customChannelType": "{{trigger.conversation.ChannelAttributes.channelType}}", 
@@ -10,6 +10,6 @@
   "helpline":"${helpline}",
   "language":"${task_language}",
   "transferTargetType": "",
-  "preEngagementData": {{trigger.message.ChannelAttributes.pre_engagement_data | to_json}},
+  "preEngagementData": {{trigger.conversation.ChannelAttributes.pre_engagement_data | to_json}},
   "memory": {{trigger.conversation.ChannelAttributes.memory | to_json}}
 }
