@@ -15,12 +15,18 @@
  */
 
 import { Box } from '@twilio-paste/core/box';
-import { FormEvent, useState } from 'react';
+import { FormEvent, useCallback, useRef, useState } from 'react';
 import { Button } from '@twilio-paste/core/button';
+import { Spinner } from '@twilio-paste/core/spinner';
 import { useDispatch, useSelector } from 'react-redux';
 import { Text } from '@twilio-paste/core/text';
+import { FormInputType } from 'hrm-form-definitions';
 
-import { submitAndInitChatThunk, updatePreEngagementDataField } from '../store/actions/genericActions';
+import {
+  newUpdateRecaptchaValidityAction,
+  submitAndInitChatThunk,
+  updatePreEngagementDataFields,
+} from '../store/actions/genericActions';
 import { AppState } from '../store/definitions';
 import { Header } from './Header';
 import { NotificationBar } from './NotificationBar';
@@ -28,27 +34,67 @@ import { fieldStyles, titleStyles, formStyles } from './styles/PreEngagementForm
 import LocalizedTemplate from '../localization/LocalizedTemplate';
 import { generateForm } from './forms/formInputs';
 import ReCaptcha from './ReCaptcha';
+import { selectPreEngagementData, selectPreEngagementDataValid, selectRecaptchaValid } from '../store/session.reducer';
 
+// eslint-disable-next-line sonarjs/cognitive-complexity
 export const PreEngagementFormPhase = () => {
-  const { preEngagementData } = useSelector((state: AppState) => state.session ?? {});
+  const preEngagementData = useSelector(selectPreEngagementData);
+  const preEngagementDataValid = useSelector(selectPreEngagementDataValid);
+  const formRef = useRef<HTMLFormElement>(null);
+
   const { preEngagementFormDefinition, enableRecaptcha, recaptchaSiteKey, aseloBackendUrl } = useSelector(
     (state: AppState) => state.config,
   );
+  const recaptchaValid = useSelector(selectRecaptchaValid);
   const dispatch = useDispatch();
 
-  const [isRecaptchaVerified, setIsRecaptchaVerified] = useState<boolean>(false);
+  const [isRecaptchaVerifyPending, setRecaptchaVerifyPending] = useState(false);
+  const [wasSubmitAttempted, setSubmitAttempted] = useState(false);
+  const [fieldsTouched, setFieldsTouched] = useState(new Set<string>());
+
+  const setPreEngagementDataFromDom = useCallback(
+    (updates: Record<string, string | boolean> = {}) => {
+      const form = formRef.current;
+      if (!form) return;
+      // Collect current DOM values for all form fields and sync them to Redux in a
+      // single dispatch before validation runs. This ensures fields that have been
+      // filled but not yet blurred are still captured.
+      const domFieldValues = (preEngagementFormDefinition?.fields ?? []).reduce<
+        { name: string; value: string | boolean }[]
+      >((accum, field) => {
+        const element = form.querySelector<HTMLInputElement | HTMLSelectElement>(`#${field.name}`);
+        if (!element) return accum;
+        let value: string | boolean;
+        if (field.name in updates) {
+          value = updates[field.name];
+        } else {
+          value = field.type === FormInputType.Checkbox ? (element as HTMLInputElement).checked : element.value;
+        }
+        return [...accum, { name: field.name, value }];
+      }, []);
+
+      if (domFieldValues.length > 0) {
+        dispatch(updatePreEngagementDataFields(domFieldValues) as any);
+      }
+    },
+    [dispatch, preEngagementFormDefinition?.fields],
+  );
 
   const getItem = (inputName: string) => preEngagementData[inputName] ?? {};
-  const setItemValue = (payload: { name: string; value: string | boolean }) => {
-    dispatch(updatePreEngagementDataField(payload));
+  const setItemValue = ({ name, value }: { name: string; value: string | boolean }) => {
+    setFieldsTouched(prevFieldsTouched => {
+      const nextFieldsTouched = new Set(prevFieldsTouched);
+      nextFieldsTouched.add(name);
+      return nextFieldsTouched;
+    });
+    setPreEngagementDataFromDom({ [name]: value });
   };
   const handleChange = setItemValue;
 
-  const handleSubmit = async (e: FormEvent) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (enableRecaptcha && !isRecaptchaVerified) {
-      return;
-    }
+    setPreEngagementDataFromDom();
+    setSubmitAttempted(true);
     await dispatch(submitAndInitChatThunk() as any);
   };
 
@@ -64,29 +110,47 @@ export const PreEngagementFormPhase = () => {
     <>
       <Header />
       <NotificationBar />
-      <Box as="form" data-test="pre-engagement-chat-form" onSubmit={handleSubmit} {...formStyles}>
+      <Box as="form" data-test="pre-engagement-chat-form" onSubmit={handleSubmit} {...formStyles} ref={formRef}>
         <Text {...titleStyles} as="h3">
           <LocalizedTemplate code={titleText} />
         </Text>
         <Box {...fieldStyles}>
-          {generateForm({ form: preEngagementFormDefinition.fields, handleChange, getItem, setItemValue })}
+          {generateForm({
+            form: preEngagementFormDefinition.fields,
+            handleChange,
+            getItem,
+            setItemValue,
+            showError: name => wasSubmitAttempted || fieldsTouched.has(name),
+          })}
         </Box>
 
         {enableRecaptcha && recaptchaSiteKey && (
-          <ReCaptcha
-            siteKey={recaptchaSiteKey}
-            recaptchaVerifyUrl={recaptchaVerifyUrl}
-            onRecaptchaChange={setIsRecaptchaVerified}
-          />
+          <Box {...fieldStyles}>
+            <ReCaptcha
+              siteKey={recaptchaSiteKey}
+              recaptchaVerifyUrl={recaptchaVerifyUrl}
+              onRecaptchaChange={state => {
+                setRecaptchaVerifyPending(state === 'pending');
+                dispatch(newUpdateRecaptchaValidityAction({ recaptchaValid: state === 'verified' }));
+              }}
+            />
+          </Box>
         )}
 
         <Button
           variant="primary"
           type="submit"
-          disabled={enableRecaptcha ? !isRecaptchaVerified : false}
+          disabled={!recaptchaValid || !preEngagementDataValid}
           data-test="pre-engagement-start-chat-button"
         >
-          <LocalizedTemplate code={submitText} />
+          <span style={isRecaptchaVerifyPending ? { visibility: 'hidden' } : {}}>
+            <LocalizedTemplate code={submitText} />
+          </span>
+          {isRecaptchaVerifyPending && (
+            <span style={{ position: 'absolute' }}>
+              <Spinner decorative={true} />
+            </span>
+          )}
         </Button>
       </Box>
     </>

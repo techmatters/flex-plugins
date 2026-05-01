@@ -9,7 +9,7 @@ locals {
     custom_task_routing_filter_expression = "channelType IN ['web','messenger', 'telegram'] OR  twilioNumber == 'messenger:111279668497853'"
 
     workflow_vars = {
-      helpline_webchat_location = "https://tl-public-chat-mt-stg.s3.eu-west-1.amazonaws.com/mt-chat-staging.html"
+      helpline_webchat_location = "https://assets-staging.tl.techmatters.org/aselo-webchat-react-app/mt/index.html"
       ecpm_webchat_location     = "https://empoweringchildren.gov.mt/"
     }
 
@@ -28,6 +28,16 @@ locals {
         channel_type         = "web"
         contact_identity     = ""
         templatefile         = "/app/twilio-iac/helplines/mt/templates/studio-flows/messaging-lex-web-location-block.tftpl"
+        channel_flow_vars    = {
+          allowed_shortcode_locations = "MT,US,CL,ZA,IE,AR"
+        }
+        chatbot_unique_names = []
+      },
+      chat : {
+        messaging_mode       = "conversations"
+        channel_type         = "chat"
+        contact_identity     = ""
+        templatefile         = "/app/twilio-iac/helplines/mt/templates/studio-flows/messaging-lex-web-location-block-v2.tftpl"
         channel_flow_vars    = {
           allowed_shortcode_locations = "MT,US,CL,ZA,IE,AR"
         }

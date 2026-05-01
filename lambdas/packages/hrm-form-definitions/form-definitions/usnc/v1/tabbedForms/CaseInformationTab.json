@@ -87,6 +87,86 @@
       "message": "RequiredFieldError"
     }
   },
+    {
+    "name": "referrals",
+    "label": "Type of Resource Provided",
+    "type": "listbox-multiselect",
+    "isPII": false,
+    "options": [
+      {
+        "value": "Hub",
+        "label": "Hub"
+      },
+      {
+        "value": "Peer Support Specialist",
+        "label": "Peer Support Specialist"
+      },
+      {
+        "value": "PRN",
+        "label": "PRN"
+      },
+      {
+        "value": "Respite",
+        "label": "Respite"
+      },
+      {
+        "value": "Behavioral Health",
+        "label": "Behavioral Health"
+      },
+      {
+        "value": "Dental",
+        "label": "Dental"
+      },
+      {
+        "value": "Employment",
+        "label": "Employment"
+      },
+      {
+        "value": "Food",
+        "label": "Food"
+      },
+      {
+        "value": "Medical",
+        "label": "Medical"
+      },
+      {
+        "value": "Shelter",
+        "label": "Shelter"
+      },
+      {
+        "value": "Vision",
+        "label": "Vision"
+      },
+      {
+        "value": "988",
+        "label": "988"
+      },
+      {
+        "value": "FindHelp",
+        "label": "FindHelp"
+      },
+      {
+        "value": "TeenLine",
+        "label": "TeenLine"
+      },
+      {
+        "value": "Some Other Phone Line",
+        "label": "Some Other Phone Line"
+      },
+      {
+        "value": "Some Other Website",
+        "label": "Some Other Website"
+      },
+      {
+        "value": "Warmline.org",
+        "label": "Warmline.org"
+      },
+      {
+        "value": "Other",
+        "label": "Other"
+      }
+    ]
+  },
   {
     "name": "liveMonitoringConsent",
     "label": "Do we have their permission to live monitor calls.",

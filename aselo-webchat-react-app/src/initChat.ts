@@ -24,14 +24,17 @@ import { LocaleString } from './store/definitions';
  * standard app.js bootstrap and the aselo-chat.min.js wrapper used for legacy URL
  * compatibility deploys.
  */
-export const initChat = () => {
+export const initChat = (scriptTagData: Record<string, string | undefined>) => {
   const urlParams = new URLSearchParams(window.location.search);
-  const scriptEl = document.currentScript;
-  const theme = urlParams.get('theme') ?? scriptEl?.getAttribute('theme');
+  const theme = urlParams.get('theme') ?? scriptTagData.theme;
   const isLightTheme = theme !== 'dark';
+  const color = urlParams.get('color') || scriptTagData.color;
+  const backgroundColor = urlParams.get('backgroundColor') || scriptTagData.backgroundColor;
   const alwaysOpen = urlParams.get('alwaysOpen');
-  const defaultLocale = urlParams.get('locale');
-  const configUrl = urlParams.get('configUrl') ?? scriptEl?.getAttribute('config-url') ?? undefined;
+  const defaultLocale =
+    // data-language attribute is supported for backwards compatibility, remove once webchat is fully migrated
+    urlParams.get('locale') || scriptTagData.locale || scriptTagData.language;
+  const configUrl = urlParams.get('configUrl') ?? scriptTagData.configUrl ?? undefined;
 
   const themeEl = document.querySelector('[data-theme-pref]');
   themeEl?.setAttribute('data-theme-pref', isLightTheme ? 'light-theme' : 'dark-theme');
@@ -44,7 +47,15 @@ export const initChat = () => {
 
   window.Twilio.initLogger('info');
   window.Twilio.initWebchat(configUrl, {
-    theme: { isLight: isLightTheme },
+    theme: {
+      isLight: isLightTheme,
+      overrides: {
+        backgroundColors: {
+          ...(backgroundColor && { colorBackgroundPrimary: backgroundColor }),
+        },
+        textColors: { ...(color && { colorTextWeakest: color }) },
+      },
+    },
     ...(alwaysOpen ? { alwaysOpen: alwaysOpen.toLowerCase() === 'true' } : {}),
     ...(defaultLocale ? { defaultLocale: defaultLocale as LocaleString } : {}),
   });

@@ -80,9 +80,15 @@ jobs:
     if: ${{ inputs.send_final_slack_message == 'true' }}
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            .github/actions
       # Setup credentials to access AWS for parameters
       - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v2
+        uses: aws-actions/configure-aws-credentials@v6
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
@@ -90,12 +96,12 @@ jobs:
       # Set any env vars needed from Parameter Store here
       # Slack env
       - name: Set GITHUB_ACTIONS_SLACK_BOT_TOKEN
-        uses: "marvinpinto/action-inject-ssm-secrets@latest"
+        uses: ./.github/actions/inject-ssm-secrets
         with:
           ssm_parameter: "GITHUB_ACTIONS_SLACK_BOT_TOKEN"
           env_variable_name: "GITHUB_ACTIONS_SLACK_BOT_TOKEN"
       - name: Set ASELO_DEPLOYS_CHANNEL_ID
-        uses: "marvinpinto/action-inject-ssm-secrets@latest"
+        uses: ./.github/actions/inject-ssm-secrets
         with:
           ssm_parameter: "ASELO_DEPLOYS_CHANNEL_ID"
           env_variable_name: "ASELO_DEPLOYS_CHANNEL_ID"
@@ -110,7 +116,7 @@ jobs:
 
       - name: Slack Aselo channel
         id: slack
-        uses: slackapi/slack-github-action@v2.1.0
+        uses: slackapi/slack-github-action@v3.0.1
         with:
           method: chat.postMessage
           token: ${{ env.GITHUB_ACTIONS_SLACK_BOT_TOKEN }}

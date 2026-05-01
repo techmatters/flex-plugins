@@ -21,8 +21,15 @@ import { MessagingCanvasPhase } from './MessagingCanvasPhase';
 import { AppState, EngagementPhase } from '../store/definitions';
 import { PreEngagementFormPhase } from './PreEngagementFormPhase';
 import { LoadingPhase } from './LoadingPhase';
-import { innerContainerStyles, outerContainerStyles } from './styles/RootContainer.styles';
+import { OperatingHoursPhase } from './OperatingHoursPhase';
+import {
+  innerContainerStyles,
+  mobileInnerContainerStyles,
+  mobileOuterContainerStyles,
+  outerContainerStyles,
+} from './styles/RootContainer.styles';
 import { EntryPoint } from './EntryPoint';
+import { useMobileOptimizations } from '../hooks/useMobileOptimizations';
 
 const getPhaseComponent = (phase: EngagementPhase) => {
   switch (phase) {
@@ -30,6 +37,8 @@ const getPhaseComponent = (phase: EngagementPhase) => {
       return <LoadingPhase />;
     case EngagementPhase.MessagingCanvas:
       return <MessagingCanvasPhase />;
+    case EngagementPhase.OperatingHours:
+      return <OperatingHoursPhase />;
     case EngagementPhase.PreEngagementForm:
     default:
       return <PreEngagementFormPhase />;
@@ -46,12 +55,13 @@ export function RootContainer() {
     expanded: session.expanded,
   }));
   const alwaysOpen = useSelector((state: AppState) => state.config.alwaysOpen);
+  const { isMobileFullscreen } = useMobileOptimizations();
 
   return (
     <Box style={defaultFont}>
-      <Box {...outerContainerStyles}>
+      <Box {...(isMobileFullscreen && expanded ? mobileOuterContainerStyles : outerContainerStyles)}>
         {expanded && (
-          <Box data-test="root-container" {...innerContainerStyles}>
+          <Box data-test="root-container" {...(isMobileFullscreen ? mobileInnerContainerStyles : innerContainerStyles)}>
             {getPhaseComponent(currentPhase)}
           </Box>
         )}

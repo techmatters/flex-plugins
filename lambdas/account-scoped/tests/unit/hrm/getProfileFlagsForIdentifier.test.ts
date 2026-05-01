@@ -79,6 +79,7 @@ const newConversationEvent = (channelType: string, from: string): TriggerEvent =
   trigger: {
     conversation: {
       Author: from,
+      ChannelAttributes: { from: '', channel_type: 'telegram' },
     },
   },
   channelType,

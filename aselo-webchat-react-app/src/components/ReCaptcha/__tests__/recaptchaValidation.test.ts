@@ -26,10 +26,8 @@ describe('validateUser', () => {
     jest.restoreAllMocks();
   });
 
-  it('returns true when the server responds with { success: true }', async () => {
-    global.fetch = jest.fn().mockResolvedValue({
-      json: () => Promise.resolve({ success: true, message: 'reCAPTCHA verified successfully' }),
-    } as any);
+  it('returns true when the server responds with HTTP 200 OK', async () => {
+    global.fetch = jest.fn().mockResolvedValue({ ok: true } as any);
 
     const result = await validateUser('valid-token', VERIFY_URL);
 
@@ -44,10 +42,8 @@ describe('validateUser', () => {
     );
   });
 
-  it('returns false when the server responds with { success: false }', async () => {
-    global.fetch = jest.fn().mockResolvedValue({
-      json: () => Promise.resolve({ success: false, message: 'Error: Invalid reCAPTCHA response' }),
-    } as any);
+  it('returns false when the server responds with a non-200 HTTP status', async () => {
+    global.fetch = jest.fn().mockResolvedValue({ ok: false } as any);
 
     const result = await validateUser('bad-token', VERIFY_URL);
 
@@ -63,9 +59,7 @@ describe('validateUser', () => {
   });
 
   it('sends the token as JSON body', async () => {
-    global.fetch = jest.fn().mockResolvedValue({
-      json: () => Promise.resolve({ success: true }),
-    } as any);
+    global.fetch = jest.fn().mockResolvedValue({ ok: true } as any);
 
     await validateUser('my-captcha-token', VERIFY_URL);
 

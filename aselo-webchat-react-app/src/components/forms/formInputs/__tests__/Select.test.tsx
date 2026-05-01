@@ -17,9 +17,15 @@
 import { render, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { FormInputType } from 'hrm-form-definitions';
+import { useSelector } from 'react-redux';
 
 import Select from '../Select';
 import { PreEngagementDataItem } from '../../../../store/definitions';
+import MockedFunction = jest.MockedFunction;
+
+jest.mock('react-redux', () => ({
+  useSelector: jest.fn(),
+}));
 
 jest.mock('../../../../localization/LocalizedTemplate', () => ({
   __esModule: true,
@@ -46,6 +52,7 @@ describe('Select component', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    (useSelector as MockedFunction<typeof useSelector>).mockReturnValue({});
   });
 
   it('renders with the correct label', () => {
@@ -69,12 +76,12 @@ describe('Select component', () => {
     expect(getByText('Please select a category')).toBeInTheDocument();
   });
 
-  it('calls handleChange on blur with name and selected value', () => {
+  it('calls handleChange on change with name and selected value', () => {
     const { getByRole } = render(
       <Select definition={definition} handleChange={handleChange} getItem={getItem(noError)} />,
     );
     const select = getByRole('combobox');
-    fireEvent.blur(select, { target: { value: 'opt1' } });
+    fireEvent.change(select, { target: { value: 'opt1' } });
     expect(handleChange).toHaveBeenCalledWith({ name: 'category', value: 'opt1' });
   });
 });

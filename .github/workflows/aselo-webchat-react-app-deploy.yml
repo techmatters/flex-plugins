@@ -70,6 +70,9 @@ jobs:
         with:
           string: "${{ inputs.helpline_code }}"
 
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v6
+
       # Setup credentials to access AWS for parameters
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v6
@@ -80,25 +83,22 @@ jobs:
 
       # Get AWS parameters
       - name: Set GITHUB_ACTIONS_SLACK_BOT_TOKEN
-        uses: "marvinpinto/action-inject-ssm-secrets@latest"
+        uses: ./.github/actions/inject-ssm-secrets
         with:
           ssm_parameter: "GITHUB_ACTIONS_SLACK_BOT_TOKEN"
           env_variable_name: "GITHUB_ACTIONS_SLACK_BOT_TOKEN"
 
       - name: Set ASELO_DEPLOYS_CHANNEL_ID
-        uses: "marvinpinto/action-inject-ssm-secrets@latest"
+        uses: ./.github/actions/inject-ssm-secrets
         with:
           ssm_parameter: "ASELO_DEPLOYS_CHANNEL_ID"
           env_variable_name: "ASELO_DEPLOYS_CHANNEL_ID"
 
       - name: Set ACCOUNT_SID
-        uses: "marvinpinto/action-inject-ssm-secrets@latest"
+        uses: ./.github/actions/inject-ssm-secrets
         with:
           ssm_parameter: "/${{ inputs.environment }}/twilio/${{ inputs.helpline_code }}/account_sid"
           env_variable_name: "ACCOUNT_SID"
-
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v6
 
       - name: Use Node.js
         uses: actions/setup-node@v6
@@ -160,4 +160,12 @@ jobs:
           environment: ${{ inputs.environment}}
           service_repo: 'aselo-webchat-react-app'
           version_tag: ${{ github.ref_name }}
-
+  deploy_form_definitions:
+    uses: ./.github/workflows/deploy-form-definitions.yml
+    needs: deploy
+    secrets: inherit
+    with:
+      helpline_code: ${{ inputs.helpline_code }}
+      environment: ${{ inputs.environment }}
+      send-slack-message: 'false'
+      invalidate-cache: ${{ inputs.invalidate-cache }}

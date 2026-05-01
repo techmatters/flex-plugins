@@ -212,7 +212,7 @@
     {
       "type": "checkbox",
       "name": "clientPrivacyStatement",
-      "label": "I agree with the <a href=\"https://tinklefriend.sg/terms\">Terms of Use</a>",
+      "label": "I agree with the <a href=\"https://tinklefriend.sg/terms\" target=\"_blank\">Terms of Use</a>",
       "required": {
         "value": true,
         "message": "You need to agree with our terms of use to start a chat "

@@ -78,11 +78,11 @@ describe('initWebchatHandler', () => {
     mockCreateToken.mockResolvedValue(TEST_TOKEN);
   });
 
-  it('calls getChannelStudioFlowSid with accountSid and "web" channel', async () => {
+  it('calls getChannelStudioFlowSid with accountSid and "chat" channel', async () => {
     const request = createMockRequest();
     await initWebchatHandler(request, TEST_ACCOUNT_SID);
 
-    expect(mockGetChannelStudioFlowSid).toHaveBeenCalledWith(TEST_ACCOUNT_SID, 'web');
+    expect(mockGetChannelStudioFlowSid).toHaveBeenCalledWith(TEST_ACCOUNT_SID, 'chat');
   });
 
   it('calls createConversation with correct parameters', async () => {

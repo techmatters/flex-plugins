@@ -63,10 +63,9 @@ const isFirstOfDateGroup = (message: Message, i: number, messages: Message[]) =>
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
 export const MessageList = () => {
-  const { messages, participants, users, conversation, conversationsClient } = useSelector((state: AppState) => ({
+  const { messages, participants, conversation, conversationsClient } = useSelector((state: AppState) => ({
     messages: state.chat.messages,
     participants: state.chat.participants,
-    users: state.chat.users,
     conversation: state.chat.conversation,
     conversationsClient: state.chat.conversationsClient,
   }));
@@ -114,6 +113,8 @@ export const MessageList = () => {
       }
     };
 
+    if (conversation?.status !== 'joined') return () => undefined;
+
     conversation?.addListener('messageAdded', messageListener);
 
     return () => {
@@ -123,21 +124,28 @@ export const MessageList = () => {
 
   useEffect(() => {
     const checkIfAllMessagesLoaded = async () => {
-      if (!messages) return;
+      try {
+        if (!messages) return;
 
-      await noop(200);
+        if (conversation?.status !== 'joined') return;
 
-      const totalMessagesCount = await conversation?.getMessagesCount();
-      if (totalMessagesCount) {
-        setHasLoadedAllMessages(totalMessagesCount === messages.length);
-      }
+        await noop(200);
 
-      // if messages were added to state, loading is complete
-      if (messages && oldMessagesLength.current < messages?.length) {
-        isLoadingMessages.current = false;
-        oldMessagesLength.current = messages.length;
+        const totalMessagesCount = await conversation?.getMessagesCount();
+        if (totalMessagesCount) {
+          setHasLoadedAllMessages(totalMessagesCount === messages.length);
+        }
+
+        // if messages were added to state, loading is complete
+        if (messages && oldMessagesLength.current < messages?.length) {
+          isLoadingMessages.current = false;
+          oldMessagesLength.current = messages.length;
+        }
+      } catch (err) {
+        console.error('checkIfAllMessagesLoaded', err);
       }
     };
+
     checkIfAllMessagesLoaded();
   }, [messages, conversation]);
 
@@ -145,6 +153,8 @@ export const MessageList = () => {
     const element = event.target as HTMLDivElement;
     const hasReachedTop =
       element.scrollHeight + element.scrollTop - MESSAGES_SPINNER_BOX_HEIGHT <= element.clientHeight;
+
+    if (conversation?.status !== 'joined') return;
 
     // When reaching the top of all messages, load the next chunk
     if (hasReachedTop && conversation && messages && !hasLoadedAllMessages && !isLoadingMessages.current) {
@@ -271,9 +281,9 @@ export const MessageList = () => {
           {renderChatItems()}
           {participants
             ?.filter(p => p.isTyping && p.identity !== conversationsClient?.user.identity)
-            .map(p => (
-              <Text {...participantTypingStyles} as="p" key={p.identity}>
-                {users?.find(u => u.identity === p.identity)?.friendlyName} is typing...
+            .map((p, idx) => (
+              <Text {...participantTypingStyles} as="p" data-testid={`typer-${idx}`} key={`typer-${idx}`}>
+                <LocalizedTemplate code="MessagePhase-MessageList-Typing" />
               </Text>
             ))}
         </Box>

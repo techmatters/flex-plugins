@@ -35,4 +35,11 @@ export const initConversationListener = (conversation: Conversation, dispatch: D
       });
     }
   });
+
+  conversation.addListener('removed', payload => {
+    dispatch({
+      type: ACTION_UPDATE_CONVERSATION_ATTRIBUTES,
+      payload: { conversation: payload },
+    });
+  });
 };

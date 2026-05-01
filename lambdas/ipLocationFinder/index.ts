@@ -80,19 +80,27 @@ const handleError = (message: string, error?: Error, statusCode = 500): ALBResul
 export const handler = async (event: ALBEvent): Promise<ALBResult> => {
   if (event.httpMethod === 'POST') {
     if (!event.body) {
-      return handleError('Event body is null or undefined');
+      return handleError('Event body is null or undefined', undefined, 400);
     }
 
     try {
       const body = JSON.parse(event.body);
-      const accountSid = body.trigger?.message?.AccountSid;
-      const ip = body.trigger?.message?.ChannelAttributes?.pre_engagement_data?.ip;
+      const triggerPayload = body.trigger?.conversation || body.trigger?.message;
+      if (!triggerPayload) {
+        return handleError(
+          'No conversation or message property found on trigger payload, are you sure this is a text based contact?',
+          undefined,
+          400,
+        );
+      }
+      const accountSid = triggerPayload.AccountSid;
+      const ip = triggerPayload.ChannelAttributes?.pre_engagement_data?.ip;
 
       if (!accountSid) {
-        return handleError('Account SID is missing in the event body');
+        return handleError('Account SID is missing in the event body', undefined, 400);
       }
       if (!ip) {
-        return handleError('IP is missing in the event body');
+        return handleError('IP is missing in the event body', undefined, 400);
       }
 
       // Retrieve the parameter name and get the auth token

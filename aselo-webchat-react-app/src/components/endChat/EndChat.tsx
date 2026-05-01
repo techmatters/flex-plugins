@@ -59,8 +59,6 @@ export default function EndChat(props: Props) {
             setDisabled(true);
             await configuredBackend('/endChat', { channelSid, token, language });
             sessionDataHandler.clear();
-            dispatch(updatePreEngagementData({}));
-            dispatch(changeEngagementPhase({ phase: EngagementPhase.PreEngagementForm }));
           } catch (error) {
             console.error(error);
           } finally {

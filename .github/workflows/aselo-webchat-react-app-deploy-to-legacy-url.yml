@@ -60,6 +60,9 @@ jobs:
         with:
           string: "${{ inputs.helpline_code }}"
 
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v6
+
       # Setup credentials to access AWS for parameters
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v6
@@ -70,25 +73,22 @@ jobs:
 
       # Get AWS parameters
       - name: Set GITHUB_ACTIONS_SLACK_BOT_TOKEN
-        uses: "marvinpinto/action-inject-ssm-secrets@latest"
+        uses: ./.github/actions/inject-ssm-secrets
         with:
           ssm_parameter: "GITHUB_ACTIONS_SLACK_BOT_TOKEN"
           env_variable_name: "GITHUB_ACTIONS_SLACK_BOT_TOKEN"
 
       - name: Set ASELO_DEPLOYS_CHANNEL_ID
-        uses: "marvinpinto/action-inject-ssm-secrets@latest"
+        uses: ./.github/actions/inject-ssm-secrets
         with:
           ssm_parameter: "ASELO_DEPLOYS_CHANNEL_ID"
           env_variable_name: "ASELO_DEPLOYS_CHANNEL_ID"
 
       - name: Set ACCOUNT_SID
-        uses: "marvinpinto/action-inject-ssm-secrets@latest"
+        uses: ./.github/actions/inject-ssm-secrets
         with:
           ssm_parameter: "/production/twilio/${{ inputs.helpline_code }}/account_sid"
           env_variable_name: "ACCOUNT_SID"
-
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v6
 
       - name: Use Node.js
         uses: actions/setup-node@v6
@@ -135,10 +135,11 @@ jobs:
           cat >> aselo-chat-uncompressed.js << 'INIT_SCRIPT'
           ;
           (function () {
+            const scriptTagData = document.currentScript.dataset;
             if (document.readyState === 'loading') {
-              document.addEventListener('DOMContentLoaded', function () { window.Twilio.initChat(); });
+              document.addEventListener('DOMContentLoaded', function () { window.Twilio.initChat(scriptTagData); });
             } else {
-              window.Twilio.initChat();
+              window.Twilio.initChat(scriptTagData);
             }
           })();
           INIT_SCRIPT
@@ -164,7 +165,20 @@ jobs:
           AWS_REGION: "${{ secrets.AWS_DEFAULT_REGION }}"
           SOURCE_DIR: "aselo-webchat-react-app/temp"
           DEST_DIR: "webchat/${{ steps.helpline_code.outputs.lowercase }}"
-
+      # Upload Aselo Webchat code to the legacy webchat 2 S3 path.
+      # Only JS, CSS, JSON and index.html are uploaded - the legacy test pages
+      # (test-chat.html, e2e-chat.html) are intentionally excluded so they remain
+      # available for verifying the new webchat on the legacy URL.
+      - name: Upload Aselo Webchat to legacy legacy webchat S3 path
+        uses: jakejarvis/s3-sync-action@master
+        with:
+          args: --acl public-read --follow-symlinks --exclude '*' --include '*.js' --include '*.js.map' --include '*.json' --include '*.css' --include 'index.html' --content-encoding 'gzip'
+        env:
+          AWS_S3_BUCKET: tl-public-chat-${{ steps.helpline_code.outputs.lowercase }}-prod
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: "${{ secrets.AWS_DEFAULT_REGION }}"
+          SOURCE_DIR: "aselo-webchat-react-app/temp"
       - name: Clear cloudfront cache
         if: ${{ inputs.invalidate-cache != 'false' }}
         run: |

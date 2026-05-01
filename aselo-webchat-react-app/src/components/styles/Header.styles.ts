@@ -21,7 +21,7 @@ export const containerStyles: BoxStyleProps = {
   display: 'flex',
   justifyContent: 'space-between',
   alignItems: 'center',
-  backgroundColor: 'colorBackgroundPrimaryStronger',
+  backgroundColor: 'colorBackgroundPrimary',
   padding: 'space20',
   paddingTop: 'space40',
   paddingBottom: 'space40',
@@ -32,4 +32,25 @@ export const containerStyles: BoxStyleProps = {
 export const titleStyles: TextStyleProps = {
   color: 'colorTextWeakest',
   paddingLeft: 'space30',
+};
+
+export const minimizeButtonStyles: BoxStyleProps = {
+  border: 'none',
+  backgroundColor: 'colorBackgroundPrimary',
+  color: 'colorTextWeakest',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  cursor: 'pointer',
+  padding: 'space20',
+  marginRight: 'space10',
+  borderRadius: 'borderRadius20',
+  outline: '0px',
+  _hover: {
+    backgroundColor: 'colorBackgroundPrimaryStronger',
+  },
+  _focusVisible: {
+    backgroundColor: 'colorBackgroundPrimaryStronger',
+    boxShadow: 'shadowFocus',
+  },
 };

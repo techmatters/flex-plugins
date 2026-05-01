@@ -22,7 +22,7 @@ import { RootContainer } from './RootContainer';
 import { AppState, EngagementPhase } from '../store/definitions';
 import { sessionDataHandler } from '../sessionDataHandler';
 import { initSession } from '../store/actions/initActions';
-import { changeEngagementPhase } from '../store/actions/genericActions';
+import { changeEngagementPhase, initPhaseThunk } from '../store/actions/genericActions';
 
 const AnyCustomizationProvider: FC<CustomizationProviderProps> = CustomizationProvider;
 
@@ -42,9 +42,9 @@ export const WebchatWidget: FC = () => {
         dispatch(changeEngagementPhase({ phase: EngagementPhase.PreEngagementForm }));
       }
     } else {
-      // if no token is stored, got engagement form
-      logger.warn('Found no token. Going to Engagement form.');
-      dispatch(changeEngagementPhase({ phase: EngagementPhase.PreEngagementForm }));
+      // if no token is stored, check operating hours and go to engagement form
+      logger.warn('Found no token. Checking operating hours then going to Engagement form.');
+      dispatch(initPhaseThunk() as any);
     }
   }, [dispatch]);
 

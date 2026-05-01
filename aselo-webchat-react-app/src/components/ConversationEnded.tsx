@@ -24,6 +24,7 @@ import { changeEngagementPhase, updatePreEngagementData } from '../store/actions
 import { EngagementPhase } from '../store/definitions';
 import { containerStyles, textStyles, titleStyles } from './styles/ConversationEnded.styles';
 import { useClearParticipantNameMap } from '../hooks/useClearParticipantNameMap';
+import LocalizedTemplate from '../localization/LocalizedTemplate';
 
 export const ConversationEnded = () => {
   const dispatch = useDispatch();
@@ -39,13 +40,13 @@ export const ConversationEnded = () => {
   return (
     <Box {...containerStyles}>
       <Text as="h3" {...titleStyles}>
-        Thanks for chatting with us!
+        <LocalizedTemplate code="MessagePhase-ConversationEnded-Heading" />
       </Text>
       <Text as="p" {...textStyles}>
-        If you have any more questions, feel free to reach out again.
+        <LocalizedTemplate code="MessagePhase-ConversationEnded-Detail" />
       </Text>
-      <Button variant="primary" data-test="start-new-chat-button" onClick={handleStartNewChat}>
-        Start new chat
+      <Button variant="primary" data-testid="start-new-chat-button" onClick={handleStartNewChat}>
+        <LocalizedTemplate code="MessagePhase-ConversationEnded-ButtonText" />
       </Button>
     </Box>
   );

@@ -18,6 +18,7 @@ locals {
     webchat : "/app/twilio-iac/helplines/templates/channel-attributes/webchat.tftpl"
     voice : "/app/twilio-iac/helplines/templates/channel-attributes/voice.tftpl"
     default : "/app/twilio-iac/helplines/templates/channel-attributes/default.tftpl"
+    chat-conversations : "/app/twilio-iac/helplines/templates/channel-attributes/chat-conversations.tftpl"
     default-conversations : "/app/twilio-iac/helplines/templates/channel-attributes/default-conversations.tftpl"
     line-conversations : "/app/twilio-iac/helplines/templates/channel-attributes/custom-channel-conversations.tftpl"
     telegram-conversations : "/app/twilio-iac/helplines/templates/channel-attributes/custom-channel-conversations.tftpl"

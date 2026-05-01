@@ -43,7 +43,15 @@ jest.mock('../NotificationBar', () => ({
   NotificationBar: () => <div title="NotificationBar" />,
 }));
 
-let mockRecaptchaOnChange: ((verified: boolean) => void) | undefined;
+jest.mock('@twilio-paste/core/spinner', () => {
+  // eslint-disable-next-line global-require
+  const React = require('react');
+  return {
+    Spinner: () => React.createElement('span', { 'data-testid': 'spinner' }),
+  };
+});
+
+let mockRecaptchaOnChange: ((state: 'verified' | 'unverified' | 'pending') => void) | undefined;
 jest.mock('../ReCaptcha', () => {
   // eslint-disable-next-line global-require
   const React = require('react');
@@ -54,7 +62,7 @@ jest.mock('../ReCaptcha', () => {
     }: {
       siteKey: string;
       recaptchaVerifyUrl: string;
-      onRecaptchaChange: (verified: boolean) => void;
+      onRecaptchaChange: (state: 'verified' | 'unverified' | 'pending') => void;
     }) => {
       mockRecaptchaOnChange = onRecaptchaChange;
       return React.createElement('div', { 'data-testid': 'recaptcha-mock' });
@@ -206,6 +214,7 @@ describe('Pre Engagement Form Phase', () => {
         friendlyName: name,
         query,
         email,
+        location: 'http://localhost/',
       },
     });
   });
@@ -249,6 +258,33 @@ describe('Pre Engagement Form Phase - validation', () => {
     jest.spyOn(initAction, 'initSession').mockImplementation((data: any) => data);
   });
 
+  it('Input: form is valid when a "required" input has a DOM value but has not been blurred', async () => {
+    const namePlaceholder = 'Enter name';
+    const store = createValidationStore([
+      {
+        name: 'name',
+        type: FormInputType.Input,
+        label: 'Name',
+        required: true,
+        placeholder: namePlaceholder,
+      } as PreEngagementFormItem,
+    ]);
+    const { container, getByPlaceholderText } = render(
+      <Provider store={store}>
+        <PreEngagementFormPhase />
+      </Provider>,
+    );
+    const nameInput = getByPlaceholderText(namePlaceholder);
+    // Fill the input but do NOT blur — Redux has no value yet
+    fireEvent.change(nameInput, { target: { value: 'John' } });
+    await submitForm(container);
+    // DOM sync on submit should have pushed the value into Redux before validation
+    expect(sessionDataHandler.fetchAndStoreNewSession).toHaveBeenCalledWith({
+      formData: { name: 'John', location: 'http://localhost/' },
+    });
+    expect(initAction.initSession).toHaveBeenCalled();
+  });
+
   it('Input: form is not valid when a "required" input is empty', async () => {
     const store = createValidationStore([
       { name: 'name', type: FormInputType.Input, label: 'Name', required: true } as PreEngagementFormItem,
@@ -265,15 +301,23 @@ describe('Pre Engagement Form Phase - validation', () => {
   });
 
   it('Input: form is valid when a "required" input has a value', async () => {
-    const store = createValidationStore(
-      [{ name: 'name', type: FormInputType.Input, label: 'Name', required: true } as PreEngagementFormItem],
-      { name: { value: 'John', error: null, dirty: true } },
-    );
-    const { container } = render(
+    const namePlaceholder = 'Enter name';
+    const store = createValidationStore([
+      {
+        name: 'name',
+        type: FormInputType.Input,
+        label: 'Name',
+        required: true,
+        placeholder: namePlaceholder,
+      } as PreEngagementFormItem,
+    ]);
+    const { container, getByPlaceholderText } = render(
       <Provider store={store}>
         <PreEngagementFormPhase />
       </Provider>,
     );
+    // Fill the input but do NOT blur — DOM sync on submit will capture the value
+    fireEvent.change(getByPlaceholderText(namePlaceholder), { target: { value: 'John' } });
     await submitForm(container);
     expect(sessionDataHandler.fetchAndStoreNewSession).toHaveBeenCalled();
     expect(initAction.initSession).toHaveBeenCalled();
@@ -295,15 +339,23 @@ describe('Pre Engagement Form Phase - validation', () => {
   });
 
   it('Email: form is valid when a "required" email input has a valid email', async () => {
-    const store = createValidationStore(
-      [{ name: 'email', type: FormInputType.Email, label: 'Email', required: true } as PreEngagementFormItem],
-      { email: { value: 'test@test.com', error: null, dirty: true } },
-    );
-    const { container } = render(
+    const emailPlaceholder = 'Enter email';
+    const store = createValidationStore([
+      {
+        name: 'email',
+        type: FormInputType.Email,
+        label: 'Email',
+        required: true,
+        placeholder: emailPlaceholder,
+      } as PreEngagementFormItem,
+    ]);
+    const { container, getByPlaceholderText } = render(
       <Provider store={store}>
         <PreEngagementFormPhase />
       </Provider>,
     );
+    // Fill the input but do NOT blur — DOM sync on submit will capture the value
+    fireEvent.change(getByPlaceholderText(emailPlaceholder), { target: { value: 'test@test.com' } });
     await submitForm(container);
     expect(sessionDataHandler.fetchAndStoreNewSession).toHaveBeenCalled();
     expect(initAction.initSession).toHaveBeenCalled();
@@ -355,7 +407,11 @@ describe('Pre Engagement Form Phase - validation', () => {
         type: FormInputType.Select,
         label: 'Choice',
         required: true,
-        options: [{ value: 'opt1', label: 'Option 1' }],
+        // Empty placeholder option ensures the select defaults to an empty value in the DOM
+        options: [
+          { value: '', label: 'Please select...' },
+          { value: 'opt1', label: 'Option 1' },
+        ],
       } as PreEngagementFormItem,
     ]);
     const { container } = render(
@@ -476,25 +532,135 @@ describe('Pre Engagement Form Phase - validation', () => {
   });
 
   it('Checkbox: form is valid when a "required" checkbox is checked', async () => {
-    const store = createValidationStore(
-      [
-        {
-          name: 'agree',
-          type: FormInputType.Checkbox,
-          label: 'I agree',
-          required: { value: true, message: 'RequiredFieldError' },
-        } as PreEngagementFormItem,
-      ],
-      { agree: { value: true, error: null, dirty: true } },
-    );
+    const store = createValidationStore([
+      {
+        name: 'agree',
+        type: FormInputType.Checkbox,
+        label: 'I agree',
+        required: { value: true, message: 'RequiredFieldError' },
+      } as PreEngagementFormItem,
+    ]);
     const { container } = render(
       <Provider store={store}>
         <PreEngagementFormPhase />
       </Provider>,
     );
+    // Check the checkbox in the DOM but do NOT blur — DOM sync on submit will capture the state
+    const checkbox = container.querySelector('#agree') as HTMLInputElement;
+    fireEvent.click(checkbox);
     await submitForm(container);
     expect(sessionDataHandler.fetchAndStoreNewSession).toHaveBeenCalled();
     expect(initAction.initSession).toHaveBeenCalled();
+  });
+
+  it('Select: form is valid when a "required" select is changed to a non-empty option via the DOM', async () => {
+    const store = createValidationStore([
+      {
+        name: 'choice',
+        type: FormInputType.Select,
+        label: 'Choice',
+        required: true,
+        options: [
+          { value: '', label: 'Please select...' },
+          { value: 'opt1', label: 'Option 1' },
+        ],
+      } as PreEngagementFormItem,
+    ]);
+    const { container } = render(
+      <Provider store={store}>
+        <PreEngagementFormPhase />
+      </Provider>,
+    );
+    const selectEl = container.querySelector('#choice') as HTMLSelectElement;
+    fireEvent.change(selectEl, { target: { value: 'opt1' } });
+    await submitForm(container);
+    expect(sessionDataHandler.fetchAndStoreNewSession).toHaveBeenCalled();
+    expect(initAction.initSession).toHaveBeenCalled();
+  });
+
+  it('onChange syncs field values to Redux so validation reflects the current DOM state', async () => {
+    const namePlaceholder = 'Your name';
+    const store = createValidationStore([
+      {
+        name: 'name',
+        type: FormInputType.Input,
+        label: 'Name',
+        required: true,
+        placeholder: namePlaceholder,
+      } as PreEngagementFormItem,
+    ]);
+    const { container, getByPlaceholderText } = render(
+      <Provider store={store}>
+        <PreEngagementFormPhase />
+      </Provider>,
+    );
+    const nameInput = getByPlaceholderText(namePlaceholder);
+    // Trigger onChange without blur — setItemValue calls setPreEngagementDataFromDom which reads all DOM values
+    fireEvent.change(nameInput, { target: { value: 'Alice' } });
+    // Verify the value is captured during submission (not just on blur), confirming onChange syncs the DOM
+    await submitForm(container);
+    expect(sessionDataHandler.fetchAndStoreNewSession).toHaveBeenCalledWith(
+      expect.objectContaining({ formData: expect.objectContaining({ name: 'Alice' }) }),
+    );
+    expect(initAction.initSession).toHaveBeenCalled();
+  });
+
+  it('validation errors are hidden before the first submit attempt even when the Redux state has an error', () => {
+    // Pre-populate the store with a field that already has a validation error
+    const store = createValidationStore(
+      [{ name: 'name', type: FormInputType.Input, label: 'Name', required: true } as PreEngagementFormItem],
+      { name: { value: '', error: 'RequiredFieldError', dirty: true } },
+    );
+    const { queryByText } = render(
+      <Provider store={store}>
+        <PreEngagementFormPhase />
+      </Provider>,
+    );
+    // showError is false before any submit or field touch, so the error span must not render
+    expect(queryByText('RequiredFieldError')).not.toBeInTheDocument();
+  });
+
+  it('validation errors become visible after the first submit attempt', async () => {
+    const store = createValidationStore([
+      { name: 'name', type: FormInputType.Input, label: 'Name', required: true } as PreEngagementFormItem,
+    ]);
+    const { container, queryByText } = render(
+      <Provider store={store}>
+        <PreEngagementFormPhase />
+      </Provider>,
+    );
+    // No error visible before submit
+    expect(queryByText('RequiredFieldError')).not.toBeInTheDocument();
+    // Submit with the required field empty — validation fails and wasSubmitAttempted becomes true
+    await submitForm(container);
+    // showError is now true for all fields, so the error span must be rendered
+    expect(queryByText('RequiredFieldError')).toBeInTheDocument();
+  });
+
+  it('validation error for a field becomes visible after that field is touched without a submit', async () => {
+    const namePlaceholder = 'Enter name';
+    const store = createValidationStore([
+      {
+        name: 'name',
+        type: FormInputType.Input,
+        label: 'Name',
+        required: true,
+        placeholder: namePlaceholder,
+      } as PreEngagementFormItem,
+    ]);
+    const { getByPlaceholderText, queryByText } = render(
+      <Provider store={store}>
+        <PreEngagementFormPhase />
+      </Provider>,
+    );
+    // No error visible before any interaction
+    expect(queryByText('RequiredFieldError')).not.toBeInTheDocument();
+    // Blur the empty required field — this adds it to fieldsTouched and syncs the empty value to Redux
+    await act(async () => {
+      fireEvent.blur(getByPlaceholderText(namePlaceholder));
+    });
+    // showError is now true for this field (fieldsTouched.has('name')), so the error must be rendered
+    expect(queryByText('RequiredFieldError')).toBeInTheDocument();
   });
 });
 
@@ -502,7 +668,7 @@ describe('Pre Engagement Form Phase - ReCaptcha', () => {
   const recaptchaSiteKey = 'test-recaptcha-site-key';
   const aseloBackendUrl = 'https://hrm-test.tl.techmatters.org';
 
-  const createRecaptchaStore = (enableRecaptcha: boolean) =>
+  const createRecaptchaStore = (enableRecaptcha: boolean, recaptchaValid: boolean = false) =>
     preloadStore({
       config: {
         environment: 'test',
@@ -525,6 +691,7 @@ describe('Pre Engagement Form Phase - ReCaptcha', () => {
         currentPhase: EngagementPhase.PreEngagementForm,
         expanded: false,
         preEngagementData: {},
+        recaptchaValid,
       },
     });
 
@@ -568,7 +735,7 @@ describe('Pre Engagement Form Phase - ReCaptcha', () => {
   });
 
   it('submit button is enabled after ReCaptcha is verified', async () => {
-    const store = createRecaptchaStore(true);
+    const store = createRecaptchaStore(true, true);
     const { getByTestId, container } = render(
       <Provider store={store}>
         <PreEngagementFormPhase />
@@ -576,25 +743,17 @@ describe('Pre Engagement Form Phase - ReCaptcha', () => {
     );
     expect(getByTestId('recaptcha-mock')).toBeInTheDocument();
     const submitButton = container.querySelector('[data-test="pre-engagement-start-chat-button"]');
-    expect(submitButton).toBeDisabled();
-
-    await act(async () => {
-      mockRecaptchaOnChange?.(true);
-    });
 
     expect(submitButton).not.toBeDisabled();
   });
 
   it('form can be submitted after ReCaptcha is verified', async () => {
-    const store = createRecaptchaStore(true);
+    const store = createRecaptchaStore(true, true);
     const { container } = render(
       <Provider store={store}>
         <PreEngagementFormPhase />
       </Provider>,
     );
-    await act(async () => {
-      mockRecaptchaOnChange?.(true);
-    });
 
     const formBox = container.querySelector('form') as HTMLFormElement;
     fireEvent.submit(formBox);
@@ -615,5 +774,55 @@ describe('Pre Engagement Form Phase - ReCaptcha', () => {
 
     expect(store.getState().session.currentPhase).toBe(EngagementPhase.PreEngagementForm);
     expect(sessionDataHandler.fetchAndStoreNewSession).not.toHaveBeenCalled();
+  });
+
+  it('shows spinner (hides submit label) when recaptcha verification is in progress', async () => {
+    const store = createRecaptchaStore(true);
+    const { getByText, queryByTestId, container } = render(
+      <Provider store={store}>
+        <PreEngagementFormPhase />
+      </Provider>,
+    );
+
+    // Before pending: submit label is visible and no spinner
+    expect(getByText('Submit')).not.toHaveStyle({ visibility: 'hidden' });
+    expect(queryByTestId('spinner')).not.toBeInTheDocument();
+
+    // Simulate recaptcha pending state via the captured callback
+    await act(async () => {
+      mockRecaptchaOnChange!('pending');
+    });
+
+    // Submit label should now be hidden and spinner visible
+    expect(getByText('Submit')).toHaveStyle({ visibility: 'hidden' });
+    expect(queryByTestId('spinner')).toBeInTheDocument();
+    // Button remains disabled while pending (recaptcha not yet verified)
+    const submitButton = container.querySelector('[data-test="pre-engagement-start-chat-button"]');
+    expect(submitButton).toBeDisabled();
+  });
+
+  it('hides spinner when recaptcha verification completes', async () => {
+    const store = createRecaptchaStore(true);
+    const { getByText, queryByTestId, container } = render(
+      <Provider store={store}>
+        <PreEngagementFormPhase />
+      </Provider>,
+    );
+
+    await act(async () => {
+      mockRecaptchaOnChange!('pending');
+    });
+    expect(getByText('Submit')).toHaveStyle({ visibility: 'hidden' });
+    expect(queryByTestId('spinner')).toBeInTheDocument();
+
+    await act(async () => {
+      mockRecaptchaOnChange!('verified');
+    });
+
+    // Submit label visible again, spinner gone, and button enabled
+    expect(getByText('Submit')).not.toHaveStyle({ visibility: 'hidden' });
+    expect(queryByTestId('spinner')).not.toBeInTheDocument();
+    const submitButton = container.querySelector('[data-test="pre-engagement-start-chat-button"]');
+    expect(submitButton).not.toBeDisabled();
   });
 });

@@ -19,7 +19,14 @@ import { Conversation } from '@twilio/conversations';
 import { ThunkAction } from 'redux-thunk';
 import { PreEngagementFormItem } from 'hrm-form-definitions';
 
-import { AppState, EngagementPhase, Notification, PreEngagementData, PreEngagementDataItem } from '../definitions';
+import {
+  AppState,
+  EngagementPhase,
+  LocaleString,
+  Notification,
+  PreEngagementData,
+  PreEngagementDataItem,
+} from '../definitions';
 import { getUserIp } from '../../ipTracker';
 import {
   ACTION_ADD_MULTIPLE_MESSAGES,
@@ -27,22 +34,35 @@ import {
   ACTION_ATTACH_FILES,
   ACTION_CHANGE_ENGAGEMENT_PHASE,
   ACTION_CHANGE_EXPANDED_STATUS,
+  ACTION_CHANGE_LOCALE,
   ACTION_DETACH_FILES,
   ACTION_REMOVE_NOTIFICATION,
   ACTION_UPDATE_PRE_ENGAGEMENT_DATA,
+  ACTION_UPDATE_RECAPTCHA_VALIDITY,
+  ACTION_SET_OPERATING_HOURS_MESSAGE,
 } from './actionTypes';
 import { MESSAGES_LOAD_COUNT } from '../../constants';
 import { validateInput } from '../../components/forms/formInputs/validation';
-import { sessionDataHandler } from '../../sessionDataHandler';
+import { getAccountScopedBaseUrl, sessionDataHandler } from '../../sessionDataHandler';
 import { getDefaultValue } from '../../components/forms/formInputs';
 import { initSession } from './initActions';
 import { notifications } from '../../notifications';
+import { selectPreEngagementData, selectRecaptchaValid } from '../session.reducer';
+import { getOperatingHours } from '../../services/operatingHoursService';
 
 export function changeEngagementPhase({ phase }: { phase: EngagementPhase }) {
   return {
     type: ACTION_CHANGE_ENGAGEMENT_PHASE,
     payload: {
       currentPhase: phase,
+    },
+  };
+}
+export function newChangeLocaleAction(locale: LocaleString) {
+  return {
+    type: ACTION_CHANGE_LOCALE,
+    payload: {
+      currentLocale: locale,
     },
   };
 }
@@ -142,6 +162,31 @@ export const updatePreEngagementDataField = ({
   };
 };
 
+export const updatePreEngagementDataFields = (
+  fields: { name: string; value: PreEngagementDataItem['value'] }[],
+): ThunkAction<void, AppState, unknown, AnyAction> => {
+  return (dispatch, getState) => {
+    const state = getState();
+    const formFields = state.config.preEngagementFormDefinition?.fields ?? [];
+
+    const updatedData = fields.reduce<PreEngagementData>((accum, { name, value }) => {
+      const definition = formFields.find(fd => fd.name === name);
+      const updatedItem = updateDataItem({ definition: definition as PreEngagementFormItem, value });
+      return { ...accum, [name]: updatedItem };
+    }, state.session.preEngagementData);
+
+    dispatch({
+      type: ACTION_UPDATE_PRE_ENGAGEMENT_DATA,
+      payload: updatedData,
+    });
+  };
+};
+
+export const newUpdateRecaptchaValidityAction = (recaptchaState: { recaptchaValid: boolean }) => ({
+  type: ACTION_UPDATE_RECAPTCHA_VALIDITY,
+  payload: recaptchaState,
+});
+
 const newInitialItem = (definition: PreEngagementFormItem): PreEngagementDataItem => ({
   error: null,
   dirty: false,
@@ -152,8 +197,9 @@ export const submitAndInitChatThunk = (): ThunkAction<void, AppState, unknown, A
   return async (dispatch, getState) => {
     const state = getState();
     const definition = state.config.preEngagementFormDefinition?.fields || [];
+    const preEngagementData = selectPreEngagementData(state);
     const data = definition.reduce<PreEngagementData>((accum, def) => {
-      const item = state.session.preEngagementData[def.name];
+      const item = preEngagementData[def.name];
       const error = validateInput({ definition: def, value: item?.value });
       return { ...accum, [def.name]: { ...(item || newInitialItem(def)), error } };
     }, {});
@@ -162,10 +208,19 @@ export const submitAndInitChatThunk = (): ThunkAction<void, AppState, unknown, A
 
     const hasError = Object.values(data).some(i => Boolean(i.error));
     if (hasError) {
-      dispatch(addNotification(notifications.formValidationErrorNotification()));
+      dispatch(addNotification(notifications.formValidationErrorNotification(state)));
       return;
     }
 
+    if (!selectRecaptchaValid(state)) {
+      dispatch(addNotification(notifications.recaptchaInvalidNotification(state)));
+      return;
+    }
+    const preEngagementLocale = preEngagementData.locale?.value || preEngagementData.language?.value;
+    const trimmedLocale = typeof preEngagementLocale === 'string' ? preEngagementLocale.trim() : '';
+    if (trimmedLocale && state.config.translations[trimmedLocale]) {
+      dispatch(newChangeLocaleAction(trimmedLocale as LocaleString));
+    }
     dispatch(changeEngagementPhase({ phase: EngagementPhase.Loading }));
     try {
       const preEngagementDataValues = Object.entries(data).reduce(
@@ -176,6 +231,8 @@ export const submitAndInitChatThunk = (): ThunkAction<void, AppState, unknown, A
       if (state.config.captureIp && state.config.ipLookupServiceApiKey) {
         preEngagementDataValues.ip = await getUserIp(state.config.ipLookupServiceApiKey);
       }
+
+      preEngagementDataValues.location = preEngagementDataValues.location ?? window.location.href;
 
       const sessionData = await sessionDataHandler.fetchAndStoreNewSession({
         formData: preEngagementDataValues,
@@ -190,5 +247,49 @@ export const submitAndInitChatThunk = (): ThunkAction<void, AppState, unknown, A
       dispatch(addNotification(notifications.failedToInitSessionNotification((err as Error).message)));
       dispatch(changeEngagementPhase({ phase: EngagementPhase.PreEngagementForm }));
     }
+  };
+};
+
+export const setOperatingHoursMessage = (operatingHoursMessage: string) => ({
+  type: ACTION_SET_OPERATING_HOURS_MESSAGE,
+  payload: { operatingHoursMessage },
+});
+
+const getOperatingHoursMessage = (
+  operatingState: Awaited<ReturnType<typeof getOperatingHours>>,
+  isClosed: boolean,
+): string =>
+  (typeof operatingState !== 'string' && operatingState.message) ||
+  (isClosed ? 'OperatingHours-Closed-Message' : 'OperatingHours-Holiday-Message');
+
+const isOperatingHoursClosed = (operatingState: Awaited<ReturnType<typeof getOperatingHours>>): boolean =>
+  operatingState === 'closed' || (typeof operatingState !== 'string' && operatingState.status === 'closed');
+
+const isOperatingHoursHoliday = (operatingState: Awaited<ReturnType<typeof getOperatingHours>>): boolean =>
+  operatingState === 'holiday' || (typeof operatingState !== 'string' && operatingState.status === 'holiday');
+
+export const initPhaseThunk = (): ThunkAction<void, AppState, unknown, AnyAction> => {
+  return async (dispatch, getState) => {
+    const state = getState();
+    const { checkOpenHours, aseloBackendUrl, helplineCode, currentLocale, defaultLocale } = state.config;
+
+    if (checkOpenHours && aseloBackendUrl && helplineCode) {
+      const baseUrl = getAccountScopedBaseUrl(aseloBackendUrl, helplineCode);
+      try {
+        const operatingState = await getOperatingHours(baseUrl, currentLocale || defaultLocale);
+        const isClosed = isOperatingHoursClosed(operatingState);
+        const isHoliday = isOperatingHoursHoliday(operatingState);
+
+        if (isClosed || isHoliday) {
+          dispatch(setOperatingHoursMessage(getOperatingHoursMessage(operatingState, isClosed)));
+          dispatch(changeEngagementPhase({ phase: EngagementPhase.OperatingHours }));
+          return;
+        }
+      } catch (error) {
+        console.log('Failed to check operating hours:', error);
+      }
+    }
+
+    dispatch(changeEngagementPhase({ phase: EngagementPhase.PreEngagementForm }));
   };
 };

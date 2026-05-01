@@ -99,6 +99,8 @@ const generateMergedConfigs = async (environment, helplineCode) => {
     helplineCodes.push(...directories);
   }
 
+  console.debug(helplineCodes)
+
   for (const shortCode of helplineCodes) {
     const helplineCommon = JSON.parse(await fs.readFile(`./configSrc/${shortCode}/common.json`, { encoding: 'utf8' }));
 
@@ -159,6 +161,7 @@ const generateMergedConfigs = async (environment, helplineCode) => {
         }
       }
       mergedTranslations[translationFilename.split('.')[0]] = merge(
+        {},
         defaultTranslations,
         languageTranslations,
         localeTranslations,
@@ -167,11 +170,16 @@ const generateMergedConfigs = async (environment, helplineCode) => {
     }
 
     for (const env of environments) {
-      const environmentSpecific = JSON.parse(
-        await fs.readFile(`./configSrc/${shortCode}/${env}.json`, { encoding: 'utf8' }),
-      );
+      let environmentSpecific = {};
+      try {
+        environmentSpecific = JSON.parse(
+            await fs.readFile(`./configSrc/${shortCode}/${env}.json`, { encoding: 'utf8' }),
+        );
+      } catch (err) {
+        console.debug(`Failed to load & parse environment specific config json file for ./configSrc/${shortCode}/${env}.json`, err)
+      }
 
-      const mergedConfig = merge(defaults, helplineCommon, environmentSpecific, { translations: mergedTranslations }, secrets);
+      const mergedConfig = merge({}, defaults, helplineCommon, environmentSpecific, { translations: mergedTranslations }, secrets);
       await fs.mkdir(`./mergedConfigs/${shortCode}`, { recursive: true });
       await fs.writeFile(`./mergedConfigs/${shortCode}/${env}.json`, JSON.stringify(mergedConfig, null, 2));
       console.info(`Merged configs generated for ${shortCode}/${env}`);

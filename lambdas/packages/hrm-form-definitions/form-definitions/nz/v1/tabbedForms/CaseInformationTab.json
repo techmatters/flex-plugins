@@ -331,14 +331,14 @@
     "name": "riskScale",
     "label": "Risk Scale",
     "defaultOption": {
-      "value": "Unknown",
+      "value": "",
       "label": ""
     },
     "type": "select",
     "isPII": false,
     "options": [
       {
-        "value": "Unknown",
+        "value": "",
         "label": ""
       },
       {

@@ -1,0 +1,21 @@
+{
+    "WelcomeMessage": "CIRCLE is an unarmed civilian crisis response alternative to law enforcement, and serves people experiencing homelessness. \nIf violence or weapons are present, call 911 for LAPD response.",
+    "EntryPointTagline": "CIRCLE Response Request",
+    "Header-TitleBar-Title": "CIRCLE Response Request",
+    "MessageCanvasTrayContent": "",
+    "MessageInputDisabledReasonHold": "Thank you very much for this information. We'll transfer you now. Please hold for an operator.",
+    "AutoFirstMessage": "Incoming webchat contact from",
+    "StartChat": "Submit",
+    "MessagePhase-MessageList-Typing": "CIRCLE Operator is typing",
+    "MessagePhase-MessageBubble-OtherParticipantMessageSenderName": "CIRCLE Operator",
+  "Header-CloseChatButtons-EndChatButtonLabel": "End Chat",
+  "Header-CloseChatButtons-EndChatConfirmDialogMessageFromChat": "End the current chat? This will disconnect you from the service.",
+  "Header-CloseChatButtons-EndChatConfirmDialogMessageFromPreEngagement": "End the current chat?",
+  "Header-CloseChatButtons-QuickExitButtonLabel": "Quick Exit",
+  "Header-CloseChatButtons-QuickExitDescription": "Need to leave immediately?",
+  "MessagePhase-MessageList-ChatStartMessage": "Chat Started",
+  "MessagePhase-ConversationEnded-Heading": "Thanks for submitting a request with us.",
+  "MessagePhase-ConversationEnded-Detail": "If you have any questions or would like to submit another request, please reach out again.",
+  "MessagePhase-ConversationEnded-ButtonText": "Start new request",
+  "RequiredFieldError": "Please fill out required fields."
+}
