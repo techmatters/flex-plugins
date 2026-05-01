@@ -1,6 +1,7 @@
 {
   "formSelector": {
     "selectorType": "staticSelector",
+    "callType": "Child calling about self",
     "parameter": {
       "availableTabs": ["ChildInformationTab", "CaseInformationTab"]
     }
