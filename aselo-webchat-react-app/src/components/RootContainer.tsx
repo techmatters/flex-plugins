@@ -59,7 +59,7 @@ export function RootContainer() {
 
   return (
     <Box style={defaultFont}>
-      <Box {...(isMobileFullscreen ? mobileOuterContainerStyles : outerContainerStyles)}>
+      <Box {...(isMobileFullscreen && expanded ? mobileOuterContainerStyles : outerContainerStyles)}>
         {expanded && (
           <Box data-test="root-container" {...(isMobileFullscreen ? mobileInnerContainerStyles : innerContainerStyles)}>
             {getPhaseComponent(currentPhase)}

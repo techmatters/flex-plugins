@@ -153,7 +153,7 @@ describe('Root Container', () => {
   describe('mobile optimizations', () => {
     const useMobileOptimizationsModule = jest.requireMock('../../hooks/useMobileOptimizations');
 
-    it('renders with mobile full-screen styles when isMobileFullscreen is true', () => {
+    it('renders with mobile full-screen styles when isMobileFullscreen is true and expanded', () => {
       useMobileOptimizationsModule.useMobileOptimizations.mockReturnValue({ isMobileFullscreen: true });
       resetMockRedux({
         session: {
@@ -174,6 +174,21 @@ describe('Root Container', () => {
         session: {
           ...BASE_MOCK_REDUX.session,
           expanded: true,
+          currentPhase: EngagementPhase.MessagingCanvas,
+        },
+      });
+
+      const { container } = render(<RootContainer />);
+
+      expect(container).toBeInTheDocument();
+    });
+
+    it('renders with default (desktop) styles when isMobileFullscreen is true but not expanded', () => {
+      useMobileOptimizationsModule.useMobileOptimizations.mockReturnValue({ isMobileFullscreen: true });
+      resetMockRedux({
+        session: {
+          ...BASE_MOCK_REDUX.session,
+          expanded: false,
           currentPhase: EngagementPhase.MessagingCanvas,
         },
       });
