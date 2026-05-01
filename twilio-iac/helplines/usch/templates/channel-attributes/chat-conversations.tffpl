@@ -1,7 +1,7 @@
 {
   "name": "{{trigger.conversation.ChannelAttributes.from}}",
   "ip": "{{trigger.conversation.ChannelAttributes.pre_engagement_data.ip}}",
-  "firstName": "{{trigger.message.ChannelAttributes.from}}",
+  "firstName": "{{trigger.conversation.ChannelAttributes.from}}",
   "channelType": "{% if trigger.conversation.ChannelAttributes.channel_type %}{{trigger.conversation.ChannelAttributes.channel_type}}{% else %}{{trigger.conversation.Source | downcase}}{% endif %}",
   "customChannelType": "{{trigger.conversation.ChannelAttributes.channelType}}", 
   "channelSid": "{{trigger.conversation.ChannelSid}}",
