@@ -5,7 +5,7 @@
             "web",
             "sms"
         ],
-        "enforceZeroTranscriptRetention": false,
+        "enforceZeroTranscriptRetention": true,
         "enableConferencing": true,
         "enableUnmaskingCalls": false,
         "hideAddToNewCaseButton": false,
@@ -14,6 +14,7 @@
             "enable_assigned_skill_teams_view_filters": true,
             "enable_conference_status_event_handler": true,
             "enable_custom_links" : true,
+            "enable_external_transcripts": false,
             "enable_hang_up_by_hrm_saving": true,
             "enable_lex_v2": true,
             "enable_emoji_picker": false,

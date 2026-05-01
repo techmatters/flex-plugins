@@ -1,4 +1,11 @@
 {
+  "formSelector": {
+    "selectorType": "staticSelector",
+    "callType": "Child calling about self",
+    "parameter": {
+      "availableTabs": ["ChildInformationTab", "CaseInformationTab"]
+    }
+  },
   "survey": {
     "friendlyName": [["ChildInformationTab.friendlyName"]],
     "ageRange": [["ChildInformationTab.ageRange"]],
