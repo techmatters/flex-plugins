@@ -49,35 +49,35 @@
       "options": [
         {
           "value": "Unknown",
-          "label": "",
+          "label": ""
         },
         {
           "value": "Male",
-          "label": "Male",
+          "label": "Male"
         },
         {
           "value": "Female",
-          "label": "Female",
+          "label": "Female"
         },
         {
           "value": "Non-binary",
-          "label": "Non-binary",
+          "label": "Non-binary"
         },
         {
           "value": "Two-Spirit",
-          "label": "Two-Spirit",
+          "label": "Two-Spirit"
         },
         {
           "value": "TransMasc",
-          "label": "TransMasc",
+          "label": "TransMasc"
         },
         {
           "value": "TransFemme",
-          "label": "TransFemme",
+          "label": "TransFemme"
         },
         {
           "value": "Other",
-          "label": "Other",
+          "label": "Other"
         }
       ]
     },
@@ -89,23 +89,23 @@
       "options": [
         {
           "value": "Unknown",
-          "label": "",
+          "label": ""
         },
         {
           "value": "He/Him/His",
-          "label": "He/Him/His",
+          "label": "He/Him/His"
         },
         {
           "value": "She/Her/Hers",
-          "label": "She/Her/Hers",
+          "label": "She/Her/Hers"
         },
         {
           "value": "They/Them/Theirs",
-          "label": "They/Them/Theirs",
+          "label": "They/Them/Theirs"
         },
         {
           "value": "Other",
-          "label": "Other",
+          "label": "Other"
         }
       ]
     },
@@ -117,15 +117,15 @@
       "options": [
         {
           "value": "Unknown",
-          "label": "",
+          "label": ""
         },
         {
           "value": "Hispanic/Latino",
-          "label": "Hispanic/Latino",
+          "label": "Hispanic/Latino"
         },
         {
           "value": "Not Hispanic or Latino",
-          "label": "Not Hispanic or Latino",
+          "label": "Not Hispanic or Latino"
         }
       ]
     },
@@ -137,35 +137,35 @@
         "options": [
         {
           "value": "Unknown",
-          "label": "",
+          "label": ""
         },
         {
           "value": "White",
-          "label": "White",
+          "label": "White"
         },
         {
           "value": "Black/African American",
-          "label": "Black/African American",
+          "label": "Black/African American"
         },
         {
           "value": "Asian",
-          "label": "Asian",
+          "label": "Asian"
         },
         {
           "value": "American Indian",
-          "label": "American Indian",
+          "label": "American Indian"
         },
         {
           "value": "Native Hawaiian or Other Pacific Islande",
-          "label": "Native Hawaiian or Other Pacific Islande",
+          "label": "Native Hawaiian or Other Pacific Islande"
         },
         {
           "value": "Two or More Races",
-          "label": "Two or More Races",
+          "label": "Two or More Races"
         },
         {
           "value": "Other",
-          "label": "Other",
+          "label": "Other"
         }
       ]
     },
@@ -180,8 +180,8 @@
           "label": ""
         },
         {
-          "value": "Active Duty"",
-          "label": "Active Duty""
+          "value": "Active Duty",
+          "label": "Active Duty"
         },
         {
           "value": "Retired",
@@ -213,12 +213,12 @@
       "label": "I was referred here by 988",
       "type": "select",
       "defaultValue": "Yes",
-      "name": "988Referral",
+      "name": "Referral988",
       "required": true,
       "options": [
         {
           "value": "",
-          "label": "",
+          "label": ""
         },
         {
           "value": "Yes",
@@ -233,7 +233,7 @@
     {
       "type": "checkbox",
       "name": "termsAndConditions",
-      "label": "I accept the <a href=\"https://promiseresourcenetwork.org/\">Terms and Conditions</a>",
+      "label": "I accept the <a href=\"https://promiseresourcenetwork.org/\" target=\"_blank\">Terms and Conditions</a>",
       "required": {
         "value": true,
         "message": "Sorry, if you don't accept our terms and conditions we can't provide support to you."

@@ -11,5 +11,6 @@
   "alwaysOpen": false,
   "helplineCode": "tz",
   "captureIp": true,
-  "definitionVersion": "tz-v1"
+  "definitionVersion": "tz-v1",
+  "defaultLocale": "en-US"
 }
