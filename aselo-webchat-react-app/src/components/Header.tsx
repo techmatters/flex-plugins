@@ -16,16 +16,33 @@
 
 import { Box } from '@twilio-paste/core/box';
 import { Text } from '@twilio-paste/core/text';
+import { ChevronDownIcon } from '@twilio-paste/icons/cjs/ChevronDownIcon';
+import { useDispatch } from 'react-redux';
 
-import { containerStyles, titleStyles } from './styles/Header.styles';
+import { containerStyles, minimizeButtonStyles, titleStyles } from './styles/Header.styles';
 import LocalizedTemplate from '../localization/LocalizedTemplate';
+import { useMobileOptimizations } from '../hooks/useMobileOptimizations';
+import { changeExpandedStatus } from '../store/actions/genericActions';
 
 export const Header = ({ customTitle }: { customTitle?: string }) => {
+  const dispatch = useDispatch();
+  const { isMobileFullscreen } = useMobileOptimizations();
+
   return (
     <Box as="header" {...containerStyles}>
       <Text as="h2" {...titleStyles}>
         <LocalizedTemplate code={customTitle || 'Header-TitleBar-Title'} />
       </Text>
+      {isMobileFullscreen && (
+        <Box
+          as="button"
+          {...minimizeButtonStyles}
+          onClick={() => dispatch(changeExpandedStatus({ expanded: false }))}
+          data-testid="header-minimize-button"
+        >
+          <ChevronDownIcon decorative={false} title="Minimize chat" size="sizeIcon60" />
+        </Box>
+      )}
     </Box>
   );
 };

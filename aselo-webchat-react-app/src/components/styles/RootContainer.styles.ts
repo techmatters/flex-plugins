@@ -37,3 +37,25 @@ export const innerContainerStyles: BoxStyleProps = {
   borderRadius: 'borderRadius30',
   backgroundColor: 'colorBackgroundBody',
 };
+
+export const mobileOuterContainerStyles: BoxStyleProps = {
+  position: 'fixed',
+  top: 'space0',
+  left: 'space0',
+  height: '100%',
+  minWidth: '100%',
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'flex-end',
+  zIndex: 'zIndex90',
+};
+
+export const mobileInnerContainerStyles: BoxStyleProps = {
+  boxShadow: 'shadow',
+  display: 'flex',
+  flexDirection: 'column',
+  height: '100%',
+  minWidth: '100%',
+  overflowY: 'auto',
+  backgroundColor: 'colorBackgroundBody',
+};
