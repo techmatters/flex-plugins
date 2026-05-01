@@ -16,29 +16,33 @@
 
 import { Conversation } from '../../../../__mocks__/@twilio/conversations/conversation';
 import { initConversationListener } from '../conversationListener';
+import { ACTION_UPDATE_CONVERSATION_ATTRIBUTES } from '../../actionTypes';
+
+const buildConversation = () =>
+  new Conversation(
+    {
+      channel: 'chat',
+      entityName: '',
+      uniqueName: '',
+      attributes: {},
+      lastConsumedMessageIndex: 0,
+      dateCreated: new Date(),
+      dateUpdated: new Date(),
+    },
+    'sid',
+    {
+      self: '',
+      messages: '',
+      participants: '',
+    },
+    {} as any,
+    {} as any,
+  );
 
 describe('initConversationListener', () => {
   it('adds a listener for the "update" event subset', () => {
     const dispatch = jest.fn();
-    const conversation = new Conversation(
-      {
-        channel: 'chat',
-        entityName: '',
-        uniqueName: '',
-        attributes: {},
-        lastConsumedMessageIndex: 0,
-        dateCreated: new Date(),
-        dateUpdated: new Date(),
-      },
-      'sid',
-      {
-        self: '',
-        messages: '',
-        participants: '',
-      },
-      {} as any,
-      {} as any,
-    );
+    const conversation = buildConversation();
 
     initConversationListener(conversation, dispatch);
     conversation.emit('updated', {
@@ -53,5 +57,19 @@ describe('initConversationListener', () => {
       updateReasons: ['status'],
     });
     expect(dispatch).toHaveBeenCalledTimes(1);
+  });
+
+  it('dispatches ACTION_UPDATE_CONVERSATION_ATTRIBUTES upon "removed" event', () => {
+    const dispatch = jest.fn();
+    const conversation = buildConversation();
+
+    initConversationListener(conversation, dispatch);
+    conversation.emit('removed', conversation);
+
+    expect(dispatch).toHaveBeenCalledTimes(1);
+    expect(dispatch).toHaveBeenCalledWith({
+      type: ACTION_UPDATE_CONVERSATION_ATTRIBUTES,
+      payload: { conversation },
+    });
   });
 });

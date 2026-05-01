@@ -604,6 +604,64 @@ describe('Pre Engagement Form Phase - validation', () => {
     );
     expect(initAction.initSession).toHaveBeenCalled();
   });
+
+  it('validation errors are hidden before the first submit attempt even when the Redux state has an error', () => {
+    // Pre-populate the store with a field that already has a validation error
+    const store = createValidationStore(
+      [{ name: 'name', type: FormInputType.Input, label: 'Name', required: true } as PreEngagementFormItem],
+      { name: { value: '', error: 'RequiredFieldError', dirty: true } },
+    );
+    const { queryByText } = render(
+      <Provider store={store}>
+        <PreEngagementFormPhase />
+      </Provider>,
+    );
+    // showError is false before any submit or field touch, so the error span must not render
+    expect(queryByText('RequiredFieldError')).not.toBeInTheDocument();
+  });
+
+  it('validation errors become visible after the first submit attempt', async () => {
+    const store = createValidationStore([
+      { name: 'name', type: FormInputType.Input, label: 'Name', required: true } as PreEngagementFormItem,
+    ]);
+    const { container, queryByText } = render(
+      <Provider store={store}>
+        <PreEngagementFormPhase />
+      </Provider>,
+    );
+    // No error visible before submit
+    expect(queryByText('RequiredFieldError')).not.toBeInTheDocument();
+    // Submit with the required field empty — validation fails and wasSubmitAttempted becomes true
+    await submitForm(container);
+    // showError is now true for all fields, so the error span must be rendered
+    expect(queryByText('RequiredFieldError')).toBeInTheDocument();
+  });
+
+  it('validation error for a field becomes visible after that field is touched without a submit', async () => {
+    const namePlaceholder = 'Enter name';
+    const store = createValidationStore([
+      {
+        name: 'name',
+        type: FormInputType.Input,
+        label: 'Name',
+        required: true,
+        placeholder: namePlaceholder,
+      } as PreEngagementFormItem,
+    ]);
+    const { getByPlaceholderText, queryByText } = render(
+      <Provider store={store}>
+        <PreEngagementFormPhase />
+      </Provider>,
+    );
+    // No error visible before any interaction
+    expect(queryByText('RequiredFieldError')).not.toBeInTheDocument();
+    // Blur the empty required field — this adds it to fieldsTouched and syncs the empty value to Redux
+    await act(async () => {
+      fireEvent.blur(getByPlaceholderText(namePlaceholder));
+    });
+    // showError is now true for this field (fieldsTouched.has('name')), so the error must be rendered
+    expect(queryByText('RequiredFieldError')).toBeInTheDocument();
+  });
 });
 
 describe('Pre Engagement Form Phase - ReCaptcha', () => {

@@ -49,37 +49,52 @@ export const PreEngagementFormPhase = () => {
   const dispatch = useDispatch();
 
   const [isRecaptchaVerifyPending, setRecaptchaVerifyPending] = useState(false);
+  const [wasSubmitAttempted, setSubmitAttempted] = useState(false);
+  const [fieldsTouched, setFieldsTouched] = useState(new Set<string>());
 
-  const setPreEngagementDataFromDom = useCallback(() => {
-    const form = formRef.current;
-    if (!form) return;
-    // Collect current DOM values for all form fields and sync them to Redux in a
-    // single dispatch before validation runs. This ensures fields that have been
-    // filled but not yet blurred are still captured.
-    const domFieldValues = (preEngagementFormDefinition?.fields ?? []).reduce<
-      { name: string; value: string | boolean }[]
-    >((accum, field) => {
-      const element = form.querySelector<HTMLInputElement | HTMLSelectElement>(`#${field.name}`);
-      if (!element) return accum;
-      const value = field.type === FormInputType.Checkbox ? (element as HTMLInputElement).checked : element.value;
-      return [...accum, { name: field.name, value }];
-    }, []);
+  const setPreEngagementDataFromDom = useCallback(
+    (updates: Record<string, string | boolean> = {}) => {
+      const form = formRef.current;
+      if (!form) return;
+      // Collect current DOM values for all form fields and sync them to Redux in a
+      // single dispatch before validation runs. This ensures fields that have been
+      // filled but not yet blurred are still captured.
+      const domFieldValues = (preEngagementFormDefinition?.fields ?? []).reduce<
+        { name: string; value: string | boolean }[]
+      >((accum, field) => {
+        const element = form.querySelector<HTMLInputElement | HTMLSelectElement>(`#${field.name}`);
+        if (!element) return accum;
+        let value: string | boolean;
+        if (field.name in updates) {
+          value = updates[field.name];
+        } else {
+          value = field.type === FormInputType.Checkbox ? (element as HTMLInputElement).checked : element.value;
+        }
+        return [...accum, { name: field.name, value }];
+      }, []);
 
-    if (domFieldValues.length > 0) {
-      dispatch(updatePreEngagementDataFields(domFieldValues) as any);
-    }
-  }, [dispatch, preEngagementFormDefinition?.fields]);
+      if (domFieldValues.length > 0) {
+        dispatch(updatePreEngagementDataFields(domFieldValues) as any);
+      }
+    },
+    [dispatch, preEngagementFormDefinition?.fields],
+  );
 
   const getItem = (inputName: string) => preEngagementData[inputName] ?? {};
-  const setItemValue = () => {
-    setPreEngagementDataFromDom();
+  const setItemValue = ({ name, value }: { name: string; value: string | boolean }) => {
+    setFieldsTouched(prevFieldsTouched => {
+      const nextFieldsTouched = new Set(prevFieldsTouched);
+      nextFieldsTouched.add(name);
+      return nextFieldsTouched;
+    });
+    setPreEngagementDataFromDom({ [name]: value });
   };
   const handleChange = setItemValue;
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setPreEngagementDataFromDom();
-
+    setSubmitAttempted(true);
     await dispatch(submitAndInitChatThunk() as any);
   };
 
@@ -100,7 +115,13 @@ export const PreEngagementFormPhase = () => {
           <LocalizedTemplate code={titleText} />
         </Text>
         <Box {...fieldStyles}>
-          {generateForm({ form: preEngagementFormDefinition.fields, handleChange, getItem, setItemValue })}
+          {generateForm({
+            form: preEngagementFormDefinition.fields,
+            handleChange,
+            getItem,
+            setItemValue,
+            showError: name => wasSubmitAttempted || fieldsTouched.has(name),
+          })}
         </Box>
 
         {enableRecaptcha && recaptchaSiteKey && (

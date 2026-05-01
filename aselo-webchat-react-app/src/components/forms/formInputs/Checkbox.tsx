@@ -27,11 +27,12 @@ type OwnProps = {
   getItem: (inptuName: string) => PreEngagementDataItem;
   handleChange: (payload: { name: string; value: string | boolean }) => void;
   defaultValue?: string;
+  showError?: boolean;
 };
 
 type Props = OwnProps;
 
-const Checkbox: React.FC<Props> = ({ definition, getItem, handleChange, defaultValue }) => {
+const Checkbox: React.FC<Props> = ({ definition, getItem, handleChange, defaultValue, showError = true }) => {
   const { required, name, label, initialChecked } = definition;
   const { error } = getItem(name);
 
@@ -40,7 +41,7 @@ const Checkbox: React.FC<Props> = ({ definition, getItem, handleChange, defaultV
       <Label htmlFor={name} data-testid={`${name}-label`}>
         <CheckboxInput
           id={name}
-          hasError={Boolean(error)}
+          hasError={Boolean(error && showError)}
           onClick={e => {
             handleChange({ name, value: (e.target as HTMLInputElement).checked });
           }}
@@ -51,7 +52,7 @@ const Checkbox: React.FC<Props> = ({ definition, getItem, handleChange, defaultV
           {Boolean(required) && '*'}
         </CheckboxInput>
       </Label>
-      {error && (
+      {error && showError && (
         <span style={{ color: 'rgb(203, 50, 50)' }}>
           <LocalizedTemplate code={error} />
         </span>

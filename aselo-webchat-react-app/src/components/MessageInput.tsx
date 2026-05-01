@@ -39,6 +39,7 @@ import {
 import { useSanitizer } from '../utils/useSanitizer';
 import { selectCurrentLocale } from '../store/config.reducer';
 
+// eslint-disable-next-line sonarjs/cognitive-complexity
 export const MessageInput = () => {
   const dispatch = useDispatch();
   const [text, setText] = useState('');

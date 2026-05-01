@@ -113,6 +113,8 @@ export const MessageList = () => {
       }
     };
 
+    if (conversation?.status !== 'joined') return () => undefined;
+
     conversation?.addListener('messageAdded', messageListener);
 
     return () => {
@@ -122,21 +124,28 @@ export const MessageList = () => {
 
   useEffect(() => {
     const checkIfAllMessagesLoaded = async () => {
-      if (!messages) return;
+      try {
+        if (!messages) return;
 
-      await noop(200);
+        if (conversation?.status !== 'joined') return;
 
-      const totalMessagesCount = await conversation?.getMessagesCount();
-      if (totalMessagesCount) {
-        setHasLoadedAllMessages(totalMessagesCount === messages.length);
-      }
+        await noop(200);
 
-      // if messages were added to state, loading is complete
-      if (messages && oldMessagesLength.current < messages?.length) {
-        isLoadingMessages.current = false;
-        oldMessagesLength.current = messages.length;
+        const totalMessagesCount = await conversation?.getMessagesCount();
+        if (totalMessagesCount) {
+          setHasLoadedAllMessages(totalMessagesCount === messages.length);
+        }
+
+        // if messages were added to state, loading is complete
+        if (messages && oldMessagesLength.current < messages?.length) {
+          isLoadingMessages.current = false;
+          oldMessagesLength.current = messages.length;
+        }
+      } catch (err) {
+        console.error('checkIfAllMessagesLoaded', err);
       }
     };
+
     checkIfAllMessagesLoaded();
   }, [messages, conversation]);
 
@@ -144,6 +153,8 @@ export const MessageList = () => {
     const element = event.target as HTMLDivElement;
     const hasReachedTop =
       element.scrollHeight + element.scrollTop - MESSAGES_SPINNER_BOX_HEIGHT <= element.clientHeight;
+
+    if (conversation?.status !== 'joined') return;
 
     // When reaching the top of all messages, load the next chunk
     if (hasReachedTop && conversation && messages && !hasLoadedAllMessages && !isLoadingMessages.current) {

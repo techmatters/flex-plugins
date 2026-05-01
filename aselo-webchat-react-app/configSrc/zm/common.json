@@ -11,5 +11,6 @@
   "alwaysOpen": false,
   "helplineCode": "zm",
   "captureIp": true,
+  "defaultLocale": "en-US",
   "definitionVersion": "zm-v1"
 }
