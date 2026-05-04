@@ -81,7 +81,7 @@ locals {
         }
       },
       chat : {
-        messagin_mode    = "conversations"
+        messaging_mode   = "conversations"
         channel_type     = "chat"
         contact_identity = ""
         templatefile     = "/app/twilio-iac/helplines/templates/studio-flows/messaging-blocking-preq-conv-lambda-sd.tftpl"
