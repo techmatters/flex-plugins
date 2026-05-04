@@ -2,6 +2,7 @@
   "Header-CloseChatButtons-EndChatButtonLabel": "Finalizar Chat",
   "Header-CloseChatButtons-QuickExitButtonLabel": "Salida Rápida",
   "Header-CloseChatButtons-QuickExitDescription": "¿Necesitas irte rápido?",
+  "MessagePhase-MessageList-ChatStartMessage": "Chat Iniciado",
   "Header-TitleBar-Title": "Chatea Con Nosotros",
   "RequiredFieldError": "Por favor, complete los campos obligatorios."
 }
