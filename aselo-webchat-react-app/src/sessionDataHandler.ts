@@ -196,7 +196,6 @@ class SessionDataHandler {
       const { config } = store.getState();
       const preEngagementData = {
         ...formData,
-        ...(config.contactIdentifierField ? { contactIdentifier: formData[config.contactIdentifierField] } : {}),
       };
       const payload: InitWebchatAPIPayload = {
         DeploymentKey: this.getDeploymentKey(),
