@@ -20,22 +20,15 @@
     "label": "State",
     "type": "select",
     "isPII": true,
-    "defaultOption": {
-      "value": "North Carolina",
-      "label": "North Carolina"
-    },
+
     "options": [
       {
-        "value": "",
-        "label": ""
+        "value": "North Carolina",
+        "label": "North Carolina"
       },
       {
         "value": "Unknown",
         "label": "Unknown"
-      },
-      {
-        "value": "North Carolina",
-        "label": "North Carolina"
       },
       {
         "value": "Alabama",
