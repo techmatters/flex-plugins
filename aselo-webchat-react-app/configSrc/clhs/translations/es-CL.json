@@ -31,5 +31,7 @@
   "PrefieroNoDecir": "Prefiero no decir",
   "Email": "Email",
   "Edad": "Edad",
-  "Nickname": "Nickname"
+  "Nickname": "Nickname",
+  "MessagePhase-MessageList-Typing": "Voluntarie está escribiendo ...",
+  "MessagePhase-MessageBubble-OtherParticipantMessageSenderName": "Volutarie"
 }
