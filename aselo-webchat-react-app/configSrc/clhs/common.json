@@ -10,6 +10,7 @@
   },
   "alwaysOpen": false,
   "defaultLocale": "es-CL",
+  "definitionVersion": "clhs-v1",
   "helplineCode": "clhs",
   "enableRecaptcha": false,
   "captureIp": true,
