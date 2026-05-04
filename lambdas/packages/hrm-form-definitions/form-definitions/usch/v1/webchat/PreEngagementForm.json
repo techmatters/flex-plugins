@@ -422,7 +422,7 @@
     {
       "type": "checkbox",
       "name": "termsAndConditions",
-      "label": "I've read and accept the <a href=\"https://www.childhelphotline.org/terms-of-service/\">Terms and Conditions</a>",
+      "label": "I've read and accept the <a href=\"https://www.childhelphotline.org/terms-of-service/\" target=\"_blank\">Terms and Conditions</a>",
       "required": {
         "value": true,
         "message": "Sorry, if you don't accept our terms and conditions we can't provide counseling to you."
