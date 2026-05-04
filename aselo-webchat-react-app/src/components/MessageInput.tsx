@@ -38,6 +38,7 @@ import {
 } from './styles/MessageInput.styles';
 import { useSanitizer } from '../utils/useSanitizer';
 import { selectCurrentLocale } from '../store/config.reducer';
+import { useMobileOptimizations } from '../hooks/useMobileOptimizations';
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
 export const MessageInput = () => {
@@ -71,6 +72,7 @@ export const MessageInput = () => {
     [conversation],
   );
   const { onUserInputSubmit } = useSanitizer();
+  const { isMobileFullscreen } = useMobileOptimizations();
 
   const logger = window.Twilio.getLogger('MessageInput');
   const isSubmitDisabled = (!text.trim() && !attachedFiles?.length) || isSending;
@@ -171,7 +173,7 @@ export const MessageInput = () => {
               maxLength={CHAR_LIMIT}
             />
           </Box>
-          {emojiPickerConfig?.enabled && (
+          {emojiPickerConfig?.enabled && !isMobileFullscreen && (
             <Box {...messageOptionContainerStyles}>
               <Button
                 data-test="emoji-picker-button"
