@@ -37,7 +37,7 @@
       },
       {
         "name": "repeatCaller",
-        "insights": ["conversations", "disposition"]
+         "insights": ["conversations", "followed_by"]
       },
         {
         "name": "howDidYouHearAboutTheWarmLine",
@@ -59,7 +59,7 @@
       },
       {
         "name": "referrals",
-        "insights": ["conversations", "sentiment"]
+        "insights": ["conversations", "preceded_by"]
       }
     ]
   },
