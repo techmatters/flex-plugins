@@ -1824,7 +1824,7 @@ const translations: Translations = {
     TypingIndicator: '{0} está escribiendo ... ',
     StartChat: 'Comenzar Nuevo Chat!',
     MessageCanvasTrayButton: 'Comenzar Nuevo Chat',
-    EntryPointTagline: 'Conversemos en Hora Segura',
+    EntryPointTagline: 'Chatea con nosotros',
     InvalidPreEngagementMessage:
       'Los formularios previos al compromiso no se han establecido y son necesarios para iniciar el chat web. Por favor configúrelos ahora en la configuración.',
     InvalidPreEngagementButton: 'Aprende más',
