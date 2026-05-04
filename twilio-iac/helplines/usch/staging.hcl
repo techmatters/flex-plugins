@@ -79,8 +79,8 @@ locals {
         contact_identity = ""
         templatefile     = "/app/twilio-iac/helplines/usch/templates/studio-flows/webchat-no-lex-conv-sd.tftpl"
         channel_flow_vars = {
-          courage_first_url = "https://assets-staging.tl.techmatters.org/webchat/usch/usch_courage_first.html"
-          childhelp_url     = "https://assets-staging.tl.techmatters.org/webchat/usch/usch_childhelp_hotline.html"
+          courage_first_url = "https://assets-staging.tl.techmatters.org/aselo-webchat-react-app/usch/usch_courage_first.html"
+          childhelp_url     = "https://assets-staging.tl.techmatters.org/aselo-webchat-react-app/usch/usch_childhelp_hotline.html"
         }
         chatbot_unique_names = []
       },
