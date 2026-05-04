@@ -141,7 +141,7 @@ jobs:
       # Send Slack notifying success
       - name: Slack Aselo channel
         id: slack
-        uses: slackapi/slack-github-action@v3.0.2
+        uses: slackapi/slack-github-action@v3.0.3
         if: ${{ inputs.send-slack-message != 'false' }}
         with:
           method: chat.postMessage
