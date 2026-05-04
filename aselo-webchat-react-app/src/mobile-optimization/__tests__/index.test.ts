@@ -26,6 +26,22 @@ describe('isMobileDevice', () => {
     });
   });
 
+  it('uses pointer: coarse query (without hover: none) to detect touch devices', () => {
+    const mockMatchMedia = jest.fn().mockReturnValue({ matches: true });
+    Object.defineProperty(window, 'matchMedia', {
+      writable: true,
+      value: mockMatchMedia,
+    });
+
+    isMobileDevice();
+
+    // Must use pointer: coarse alone — NOT combined with hover: none,
+    // because Chrome on Android (e.g. Samsung S23) may report hover: hover
+    // even on touch-only devices, causing the combined query to incorrectly return false.
+    expect(mockMatchMedia).toHaveBeenCalledWith('(pointer: coarse)');
+    expect(mockMatchMedia).not.toHaveBeenCalledWith('(pointer: coarse) and (hover: none)');
+  });
+
   it('returns true when matchMedia matches mobile query', () => {
     Object.defineProperty(window, 'matchMedia', {
       writable: true,
