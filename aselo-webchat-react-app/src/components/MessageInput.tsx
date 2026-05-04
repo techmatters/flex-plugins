@@ -173,7 +173,7 @@ export const MessageInput = () => {
               maxLength={CHAR_LIMIT}
             />
           </Box>
-          {emojiPickerConfig?.enabled && isMobileFullscreen && (
+          {emojiPickerConfig?.enabled && !isMobileFullscreen && (
             <Box {...messageOptionContainerStyles}>
               <Button
                 data-test="emoji-picker-button"
