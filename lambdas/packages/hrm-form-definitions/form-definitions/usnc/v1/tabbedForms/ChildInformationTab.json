@@ -23,6 +23,10 @@
 
     "options": [
       {
+        "value": "",
+        "label": ""
+      },
+      {
         "value": "North Carolina",
         "label": "North Carolina"
       },
