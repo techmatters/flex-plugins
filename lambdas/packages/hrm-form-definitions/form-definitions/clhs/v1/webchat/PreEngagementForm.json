@@ -11,7 +11,7 @@
     },
     {
       "type": "email",
-      "name": "contactIdentifier",
+      "name": "email",
       "label": "Email",
       "required": true,
       "placeholder": "Email"
