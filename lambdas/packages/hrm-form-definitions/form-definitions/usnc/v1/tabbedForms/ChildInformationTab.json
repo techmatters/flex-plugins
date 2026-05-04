@@ -20,7 +20,10 @@
     "label": "State",
     "type": "select",
     "isPII": true,
-
+    "defaultOption": {
+      "value": "",
+      "label": ""
+    },
     "options": [
       {
         "value": "",
