@@ -1899,11 +1899,20 @@
     {
       "type": "checkbox",
       "name": "termsAndConditions",
-      "label": "He leído y acepto los <a href=\"https://www.google.cl\" target=\"_blank\">términos y condiciones</a>",
+      "label": "Declaro que he leído y acepto los <a href=\"https://todomejora.org/terminos-y-condiciones-programa-horasegura\" target=\"_blank\">Términos y Condiciones</a> del programa",
       "required": {
         "value": true,
         "message": "Tienes que approbar los términos y condiciones para poder iniciar un chat."
       }
-    }
+    },
+    {
+      "type": "checkbox",
+      "name": "authorization",
+      "label": "Declaro que tengo 16 años o más. En caso de ser menor de 16 años, confirmo que cuento con la autorización de mi madre, padre o persona adulta responsable para ingresar",
+      "required": {
+        "value": true,
+        "message": "Tienes que declarar que eres mayor de 16 años o que tienes autorización de un adulto para ingresar."
+      }
+    }    
   ]
 }
