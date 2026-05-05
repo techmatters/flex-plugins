@@ -119,6 +119,42 @@ describe('session data handler', () => {
         `${TEST_CONFIG_STATE.aseloBackendUrl}/lambda/twilio/account-scoped/XX/Webchat/Tokens/Refresh`,
       );
     });
+
+    describe('deferredRequest', () => {
+      afterEach(() => {
+        delete (window as any).fetchLater;
+      });
+
+      it('should use fetchLater when available and not call fetch', async () => {
+        const fetchLaterMock = jest.fn();
+        (window as any).fetchLater = fetchLaterMock;
+
+        await contactBackend(TEST_CONFIG_STATE).deferredRequest('/endChat', {
+          channelSid: 'CH123',
+          token: 'token',
+        });
+
+        expect(fetchLaterMock).toHaveBeenCalledWith(
+          `${TEST_CONFIG_STATE.aseloBackendUrl}/lambda/twilio/account-scoped/XX/endChat`,
+          expect.objectContaining({ method: 'POST' }),
+        );
+        expect(fetchMock).not.toHaveBeenCalled();
+      });
+
+      it('should fall back to fetch when fetchLater is not available', async () => {
+        fetchMock.mockResolvedValue(okFetchResponse({}));
+
+        await contactBackend(TEST_CONFIG_STATE).deferredRequest('/endChat', {
+          channelSid: 'CH123',
+          token: 'token',
+        });
+
+        expect(fetchMock).toHaveBeenCalledWith(
+          `${TEST_CONFIG_STATE.aseloBackendUrl}/lambda/twilio/account-scoped/XX/endChat`,
+          expect.objectContaining({ method: 'POST' }),
+        );
+      });
+    });
   });
 
   describe('fetch and store new session', () => {
