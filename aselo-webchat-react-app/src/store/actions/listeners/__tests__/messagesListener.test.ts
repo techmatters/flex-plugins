@@ -129,13 +129,13 @@ describe('initMessagesListener', () => {
       const getState = jest.fn().mockReturnValue(buildState({ expanded: false }));
 
       initMessagesListener(conversation, dispatch, LOCAL_IDENTITY, getState);
-      const message = { author: COUNSELLOR_IDENTITY } as unknown as Message;
+      const message = { author: COUNSELLOR_IDENTITY, body: 'Hello there' } as unknown as Message;
       conversation.emit('messageAdded', message);
 
       expect(newMessageNotification.playNotificationSound).toHaveBeenCalledWith(
         'https://assets-test.tl.techmatters.org/plugins/hrm',
       );
-      expect(newMessageNotification.showBrowserNotification).toHaveBeenCalledWith('Test notification');
+      expect(newMessageNotification.showBrowserNotification).toHaveBeenCalledWith('Test notification', 'Hello there');
     });
 
     it('plays sound and shows browser notification when message is from counsellor and document is hidden', () => {
@@ -144,11 +144,11 @@ describe('initMessagesListener', () => {
       const getState = jest.fn().mockReturnValue(buildState({ expanded: true }));
 
       initMessagesListener(conversation, dispatch, LOCAL_IDENTITY, getState);
-      const message = { author: COUNSELLOR_IDENTITY } as unknown as Message;
+      const message = { author: COUNSELLOR_IDENTITY, body: 'A message' } as unknown as Message;
       conversation.emit('messageAdded', message);
 
       expect(newMessageNotification.playNotificationSound).toHaveBeenCalled();
-      expect(newMessageNotification.showBrowserNotification).toHaveBeenCalled();
+      expect(newMessageNotification.showBrowserNotification).toHaveBeenCalledWith('Test notification', 'A message');
     });
 
     it('does not play notification when message is from local user', () => {
@@ -191,7 +191,7 @@ describe('initMessagesListener', () => {
       const message = { author: COUNSELLOR_IDENTITY } as unknown as Message;
       conversation.emit('messageAdded', message);
 
-      expect(newMessageNotification.showBrowserNotification).toHaveBeenCalledWith('New message from counsellor');
+      expect(newMessageNotification.showBrowserNotification).toHaveBeenCalledWith('New message from counsellor', '');
     });
   });
 });

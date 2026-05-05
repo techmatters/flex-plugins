@@ -22,13 +22,13 @@ export const requestNotificationPermission = async (): Promise<void> => {
   }
 };
 
-export const showBrowserNotification = (message: string): void => {
+export const showBrowserNotification = (title: string, body: string): void => {
   if (typeof Notification === 'undefined' || Notification.permission !== 'granted') {
     return;
   }
   try {
     // eslint-disable-next-line no-new
-    new Notification(message);
+    new Notification(title, { body });
   } catch (err) {
     console.error('Failed to show browser notification:', err);
   }

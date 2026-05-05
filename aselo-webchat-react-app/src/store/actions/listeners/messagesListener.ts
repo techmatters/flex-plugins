@@ -46,7 +46,7 @@ export const initMessagesListener = (
           (translations && translations.NewMessageNotification) || 'New message from counsellor';
         const assetsBucketUrl = getAssetsBucketUrl(state.config.environment);
         playNotificationSound(assetsBucketUrl);
-        showBrowserNotification(notificationMessage);
+        showBrowserNotification(notificationMessage, message.body ?? '');
       }
     }
   });
