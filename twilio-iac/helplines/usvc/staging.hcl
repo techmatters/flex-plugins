@@ -62,6 +62,15 @@ locals {
         }
         chatbot_unique_names = []
       },
+      chat : {
+        messaging_mode   = "messaging_mode"
+        channel_type     = "chat"
+        contact_identity = ""
+        templatefile     = "/app/twilio-iac/helplines/usvc/templates/studio-flows/webchat-conv-sd.tftpl"
+        channel_flow_vars = {
+        }
+        chatbot_unique_names = []
+      },
       voice_vc : {
         channel_type     = "voice"
         contact_identity = ""
