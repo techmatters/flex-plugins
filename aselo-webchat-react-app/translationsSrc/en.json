@@ -18,5 +18,6 @@
   "PreEngagementPhase-Notifications-FormInvalid": "Some fields contain errors",
   "RequiredFieldError": "Please fill out required fields.",
   "OperatingHours-Closed-Message": "We are currently closed. Please check back during our operating hours.",
-  "OperatingHours-Holiday-Message": "We are currently closed for the holiday. Please check back during our operating hours."
+  "OperatingHours-Holiday-Message": "We are currently closed for the holiday. Please check back during our operating hours.",
+  "NewMessageNotification": "New message from counselor"
 }
