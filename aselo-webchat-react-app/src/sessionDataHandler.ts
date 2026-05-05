@@ -95,8 +95,9 @@ export const contactBackend = ({ aseloBackendUrl, helplineCode }: ConfigState) =
 
     if (!response.ok) {
       const body = await response.text();
-      logger.error(`Request to backend failed (status ${response.status})`, body);
-      throw new Error(`Request to backend failed (status ${response.status}). ${body}`);
+      const errorMessage = `Request to backend failed (status ${response.status}). ${body}`;
+      logger.error(errorMessage);
+      throw new Error(errorMessage);
     }
 
     return response.json();
