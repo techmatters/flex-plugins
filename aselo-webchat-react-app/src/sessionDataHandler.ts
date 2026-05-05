@@ -77,7 +77,7 @@ export const contactBackend = ({ aseloBackendUrl, helplineCode }: ConfigState) =
       // eslint-disable-next-line dot-notation
       const { fetchLater } = window as any;
       if (fetchLater) {
-        console.info(`fetchLater support detected, using that.`);
+        logger.info(`fetchLater support detected, using that.`);
         fetchLater(fullUrl, {
           method: 'POST',
           headers,
@@ -85,7 +85,7 @@ export const contactBackend = ({ aseloBackendUrl, helplineCode }: ConfigState) =
         });
         return undefined;
       }
-      console.info(`No fetchLater support detected, falling back to fetch`);
+      logger.warn(`No fetchLater support detected, falling back to fetch`);
     }
     const response = await fetch(fullUrl, {
       method: 'POST',
