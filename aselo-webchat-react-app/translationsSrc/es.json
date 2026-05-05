@@ -8,5 +8,5 @@
   "RequiredFieldError": "Por favor, complete los campos obligatorios.",
   "MessagePhase-ConversationEnded-Heading": "¡Gracias por ponerte en contacto!",
   "MessagePhase-ConversationEnded-Detail": "Si tiene alguna otra pregunta, no dude en volver a contactarnos.",
-  "MessagePhase-ConversationEnded-ButtonText": "Iniciar nuevo chat"
+  "MessagePhase-ConversationEnded-ButtonText": "Comenzar nuevo chat"
 }
