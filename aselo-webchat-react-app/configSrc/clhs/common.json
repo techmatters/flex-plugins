@@ -13,6 +13,6 @@
   "definitionVersion": "clhs-v1",
   "helplineCode": "clhs",
   "enableRecaptcha": false,
-  "captureIp": true,
+  "captureIp": false,
   "contactIdentifierField": "email"
 }
