@@ -9,9 +9,10 @@
     "blockedEmojis": []
   },
   "alwaysOpen": false,
-  "helplineCode": "ukmh",
+  "defaultLocale": "es-CL",
+  "definitionVersion": "clhs-v1",
+  "helplineCode": "clhs",
+  "enableRecaptcha": false,
   "captureIp": true,
-  "definitionVersion": "ukmh-v1",
-  "contactIdentifierField": "email",
-  "defaultLocale": "en-GB"
+  "contactIdentifierField": "email"
 }

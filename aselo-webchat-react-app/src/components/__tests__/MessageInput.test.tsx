@@ -22,6 +22,10 @@ import { MessageInput } from '../MessageInput';
 import * as genericActions from '../../store/actions/genericActions';
 import WebChatLogger from '../../logger';
 
+jest.mock('../../hooks/useMobileOptimizations', () => ({
+  useMobileOptimizations: jest.fn(() => ({ isMobileFullscreen: false })),
+}));
+
 const fileAttachmentConfig = {
   enabled: true,
   maxFileSize: 16777216,

@@ -7,8 +7,9 @@
   "channelSid": "{{trigger.conversation.ChannelSid}}",
   "twilioNumber": "{{trigger.conversation.ChannelAttributes.twilioNumber}}",
   "ignoreAgent": "",
-  "helpline":"${helpline}",
-  "language":"${task_language}",
+  "helpline": "{{trigger.conversation.ChannelAttributes.pre_engagement_data.helpline}}",
+  "language":"en-USCH",
+  "service":"{{flow.variables.service}}",
   "transferTargetType": "",
   "preEngagementData": {{trigger.conversation.ChannelAttributes.pre_engagement_data | to_json}},
   "memory": {{trigger.conversation.ChannelAttributes.memory | to_json}}

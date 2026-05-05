@@ -11,7 +11,7 @@
     },
     {
       "type": "email",
-      "name": "contactIdentifier",
+      "name": "email",
       "label": "Email",
       "required": true,
       "placeholder": "Email"
@@ -1899,7 +1899,7 @@
     {
       "type": "checkbox",
       "name": "termsAndConditions",
-      "label": "He leído y acepto los <a href=\"https://www.google.cl\">términos y condiciones</a>",
+      "label": "He leído y acepto los <a href=\"https://www.google.cl\" target=\"_blank\">términos y condiciones</a>",
       "required": {
         "value": true,
         "message": "Tienes que approbar los términos y condiciones para poder iniciar un chat."
