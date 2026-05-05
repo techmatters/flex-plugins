@@ -57,7 +57,7 @@ export const contactBackend = ({ aseloBackendUrl, helplineCode }: ConfigState) =
     body: InitWebchatAPIPayload | RefreshTokenAPIPayload | EndChatPayload,
     attemptToDefer: boolean,
   ): Promise<T | undefined> => {
-    const securityHeaders = await generateSecurityHeaders();
+    const securityHeaders = generateSecurityHeaders();
     const mixpanelHeaders = generateMixPanelHeaders();
     const logger = window.Twilio.getLogger('SessionDataHandler');
     const urlEncodedBody = new URLSearchParams();
