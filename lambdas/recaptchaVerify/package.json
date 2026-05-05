@@ -16,6 +16,6 @@
     "ts-node": "^10.9.1"
   },
   "dependencies": {
-    "@aws-sdk/client-ssm": "^3.716.0"
+    "@aws-sdk/client-ssm": "^3.1042.0"
   }
 }
