@@ -191,7 +191,7 @@ describe('initMessagesListener', () => {
       const message = { author: COUNSELLOR_IDENTITY } as unknown as Message;
       conversation.emit('messageAdded', message);
 
-      expect(newMessageNotification.showBrowserNotification).toHaveBeenCalledWith('New message from counselor');
+      expect(newMessageNotification.showBrowserNotification).toHaveBeenCalledWith('New message from counsellor');
     });
   });
 });

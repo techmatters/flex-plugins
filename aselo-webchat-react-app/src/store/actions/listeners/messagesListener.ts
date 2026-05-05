@@ -43,7 +43,7 @@ export const initMessagesListener = (
       if (!state.session.expanded || document.visibilityState === 'hidden') {
         const translations = selectCurrentTranslations(state);
         const notificationMessage =
-          (translations && translations.NewMessageNotification) || 'New message from counselor';
+          (translations && translations.NewMessageNotification) || 'New message from counsellor';
         const assetsBucketUrl = getAssetsBucketUrl(state.config.environment);
         playNotificationSound(assetsBucketUrl);
         showBrowserNotification(notificationMessage);
