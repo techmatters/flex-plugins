@@ -97,7 +97,10 @@ describe('session data handler', () => {
     it('should call correct stage url', async () => {
       fetchMock.mockResolvedValue(okFetchResponse({}));
       sessionDataHandler.setRegion('stage');
-      await contactBackend(TEST_CONFIG_STATE)('/Webchat/Tokens/Refresh', { DeploymentKey: 'dk', token: 'token' });
+      await contactBackend(TEST_CONFIG_STATE).request('/Webchat/Tokens/Refresh', {
+        DeploymentKey: 'dk',
+        token: 'token',
+      });
       expect(fetchMock.mock.calls[0][0]).toEqual(
         `${TEST_CONFIG_STATE.aseloBackendUrl}/lambda/twilio/account-scoped/XX/Webchat/Tokens/Refresh`,
       );
@@ -108,7 +111,10 @@ describe('session data handler', () => {
       const fetchSpy = jest
         .spyOn(window, 'fetch')
         .mockImplementation(async (): Promise<never> => mockFetch as Promise<never>);
-      await contactBackend(TEST_CONFIG_STATE)('/Webchat/Tokens/Refresh', { DeploymentKey: 'dk', token: 'token' });
+      await contactBackend(TEST_CONFIG_STATE).request('/Webchat/Tokens/Refresh', {
+        DeploymentKey: 'dk',
+        token: 'token',
+      });
       expect(fetchSpy.mock.calls[0][0]).toEqual(
         `${TEST_CONFIG_STATE.aseloBackendUrl}/lambda/twilio/account-scoped/XX/Webchat/Tokens/Refresh`,
       );
