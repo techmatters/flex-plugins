@@ -45,5 +45,4 @@ export const playNotificationSound = (assetsBucketUrl: string): void => {
   }
 };
 
-export const getAssetsBucketUrl = (environment: string): string =>
-  `https://assets-${environment}.tl.techmatters.org/plugins/hrm`;
+export const getAssetsBucketUrl = (environment: string): string => `https://assets-${environment}.tl.techmatters.org`;
