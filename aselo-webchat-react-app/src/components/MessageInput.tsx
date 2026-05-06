@@ -37,8 +37,9 @@ import {
   textAreaContainerStyles,
 } from './styles/MessageInput.styles';
 import { useSanitizer } from '../utils/useSanitizer';
-import { selectCurrentLocale } from '../store/config.reducer';
+import { selectCurrentLocale, selectCurrentTranslations } from '../store/config.reducer';
 import { useMobileOptimizations } from '../hooks/useMobileOptimizations';
+import { localizeKey } from '../localization/localizeKey';
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
 export const MessageInput = () => {
@@ -55,6 +56,7 @@ export const MessageInput = () => {
       currentLocale: selectCurrentLocale(state),
     }),
   );
+  const currentTranslations = useSelector(selectCurrentTranslations);
   const oldAttachmentsLength = useRef((attachedFiles || []).length);
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
   const attachmentsBoxRef = useRef<HTMLDivElement>(null);
@@ -76,7 +78,9 @@ export const MessageInput = () => {
 
   const logger = window.Twilio.getLogger('MessageInput');
   const isSubmitDisabled = (!text.trim() && !attachedFiles?.length) || isSending;
-
+  const localize = localizeKey(currentTranslations);
+  const sendTitle = localize('MessagePhase-MessageInput-SendButtonTitle');
+  const inputPlaceholder = localize('MessagePhase-MessageInput-PlaceholderText');
   const send = async () => {
     if (isSubmitDisabled) {
       return;
@@ -163,7 +167,7 @@ export const MessageInput = () => {
             <TextArea
               ref={textAreaRef}
               data-test="message-input-textarea"
-              placeholder="Type your message"
+              placeholder={inputPlaceholder}
               value={text}
               element="MESSAGE_INPUT"
               onChange={onChange}
@@ -217,7 +221,7 @@ export const MessageInput = () => {
               type="submit"
               aria-disabled={isSubmitDisabled}
             >
-              <SendIcon decorative={false} title="Send message" size="sizeIcon30" />
+              <SendIcon decorative={false} title={sendTitle} size="sizeIcon30" />
             </Button>
           </Box>
         </Box>

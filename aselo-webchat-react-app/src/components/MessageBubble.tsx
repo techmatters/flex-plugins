@@ -39,6 +39,7 @@ import {
 } from './styles/MessageBubble.styles';
 import { selectCurrentTranslations } from '../store/config.reducer';
 import { localizeKey } from '../localization/localizeKey';
+import LocalizedTemplate from '../localization/LocalizedTemplate';
 
 const doubleDigit = (number: number) => `${number < 10 ? 0 : ''}${number}`;
 
@@ -178,7 +179,7 @@ export const MessageBubble = ({
       {read && (
         <Flex hAlignContent="right" vAlignContent="center" marginTop="space20">
           <Text as="p" {...readStatusStyles}>
-            Read
+            <LocalizedTemplate code="MessagePhase-MessageBubble-ReadIndicator" />
           </Text>
           <SuccessIcon decorative={true} size="sizeIcon10" color="colorTextWeak" />
         </Flex>
