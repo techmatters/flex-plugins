@@ -177,7 +177,7 @@ export const MessageBubble = ({
         </Box>
       </Box>
       {read && (
-        <Flex hAlignContent="right" vAlignContent="center" marginTop="space20">
+        <Flex data-testid="ReadIndicator" hAlignContent="right" vAlignContent="center" marginTop="space20">
           <Text as="p" {...readStatusStyles}>
             <LocalizedTemplate code="MessagePhase-MessageBubble-ReadIndicator" />
           </Text>

@@ -102,8 +102,6 @@ export const PreEngagementFormPhase = () => {
     return null;
   }
 
-  const titleText = preEngagementFormDefinition.description ?? 'Hi there!';
-  const submitText = preEngagementFormDefinition.submitLabel ?? 'Start chat';
   const recaptchaVerifyUrl = `${aseloBackendUrl}/lambda/recaptchaVerify`;
 
   return (
@@ -112,7 +110,10 @@ export const PreEngagementFormPhase = () => {
       <NotificationBar />
       <Box as="form" data-test="pre-engagement-chat-form" onSubmit={handleSubmit} {...formStyles} ref={formRef}>
         <Text {...titleStyles} as="h3">
-          <LocalizedTemplate code={titleText} />
+          <LocalizedTemplate code="PreEngagementPhase-Form-Title" />
+        </Text>{' '}
+        <Text {...titleStyles} as="p">
+          <LocalizedTemplate code="PreEngagementPhase-Form-Description" />
         </Text>
         <Box {...fieldStyles}>
           {generateForm({
@@ -123,7 +124,6 @@ export const PreEngagementFormPhase = () => {
             showError: name => wasSubmitAttempted || fieldsTouched.has(name),
           })}
         </Box>
-
         {enableRecaptcha && recaptchaSiteKey && (
           <Box {...fieldStyles}>
             <ReCaptcha
@@ -136,15 +136,14 @@ export const PreEngagementFormPhase = () => {
             />
           </Box>
         )}
-
         <Button
           variant="primary"
           type="submit"
           disabled={!recaptchaValid || !preEngagementDataValid}
           data-test="pre-engagement-start-chat-button"
         >
-          <span style={isRecaptchaVerifyPending ? { visibility: 'hidden' } : {}}>
-            <LocalizedTemplate code={submitText} />
+          <span data-testid="pre-engagement-start-chat-button-label" style={isRecaptchaVerifyPending ? { visibility: 'hidden' } : {}}>
+            <LocalizedTemplate code="PreEngagementPhase-Form-SubmitButtonLabel" />
           </span>
           {isRecaptchaVerifyPending && (
             <span style={{ position: 'absolute' }}>

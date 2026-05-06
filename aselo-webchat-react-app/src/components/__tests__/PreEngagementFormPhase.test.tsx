@@ -778,14 +778,14 @@ describe('Pre Engagement Form Phase - ReCaptcha', () => {
 
   it('shows spinner (hides submit label) when recaptcha verification is in progress', async () => {
     const store = createRecaptchaStore(true);
-    const { getByText, queryByTestId, container } = render(
+    const { queryByTestId, container } = render(
       <Provider store={store}>
         <PreEngagementFormPhase />
       </Provider>,
     );
 
     // Before pending: submit label is visible and no spinner
-    expect(getByText('Submit')).not.toHaveStyle({ visibility: 'hidden' });
+    expect(queryByTestId('pre-engagement-start-chat-button-label')).not.toHaveStyle({ visibility: 'hidden' });
     expect(queryByTestId('spinner')).not.toBeInTheDocument();
 
     // Simulate recaptcha pending state via the captured callback
@@ -794,7 +794,7 @@ describe('Pre Engagement Form Phase - ReCaptcha', () => {
     });
 
     // Submit label should now be hidden and spinner visible
-    expect(getByText('Submit')).toHaveStyle({ visibility: 'hidden' });
+    expect(queryByTestId('pre-engagement-start-chat-button-label')).toHaveStyle({ visibility: 'hidden' });
     expect(queryByTestId('spinner')).toBeInTheDocument();
     // Button remains disabled while pending (recaptcha not yet verified)
     const submitButton = container.querySelector('[data-test="pre-engagement-start-chat-button"]');
@@ -803,7 +803,7 @@ describe('Pre Engagement Form Phase - ReCaptcha', () => {
 
   it('hides spinner when recaptcha verification completes', async () => {
     const store = createRecaptchaStore(true);
-    const { getByText, queryByTestId, container } = render(
+    const { queryByTestId, container } = render(
       <Provider store={store}>
         <PreEngagementFormPhase />
       </Provider>,
@@ -812,7 +812,7 @@ describe('Pre Engagement Form Phase - ReCaptcha', () => {
     await act(async () => {
       mockRecaptchaOnChange!('pending');
     });
-    expect(getByText('Submit')).toHaveStyle({ visibility: 'hidden' });
+    expect(queryByTestId('pre-engagement-start-chat-button-label')).toHaveStyle({ visibility: 'hidden' });
     expect(queryByTestId('spinner')).toBeInTheDocument();
 
     await act(async () => {
@@ -820,7 +820,7 @@ describe('Pre Engagement Form Phase - ReCaptcha', () => {
     });
 
     // Submit label visible again, spinner gone, and button enabled
-    expect(getByText('Submit')).not.toHaveStyle({ visibility: 'hidden' });
+    expect(queryByTestId('pre-engagement-start-chat-button-label')).not.toHaveStyle({ visibility: 'hidden' });
     expect(queryByTestId('spinner')).not.toBeInTheDocument();
     const submitButton = container.querySelector('[data-test="pre-engagement-start-chat-button"]');
     expect(submitButton).not.toBeDisabled();
