@@ -7,13 +7,13 @@ ${
       "type": "trigger",
       "transitions": [
         {
-          "next": "run_subflow_system_down",
           "event": "incomingMessage"
         },
         {
           "event": "incomingCall"
         },
         {
+          "next": "run_subflow_system_down",
           "event": "incomingConversationMessage"
         },
         {
@@ -94,7 +94,7 @@ ${
             {
               "friendly_name": "If value starts_with vc_url",
               "arguments": [
-                "{{trigger.message.ChannelAttributes.pre_engagement_data.location}}"
+                "{{trigger.conversation.ChannelAttributes.pre_engagement_data.location}}"
               ],
               "type": "starts_with",
               "value": "${channel_flow_vars.vc_url}"
@@ -108,7 +108,7 @@ ${
             {
               "friendly_name": "If value starts_with dcvh_url",
               "arguments": [
-                "{{trigger.message.ChannelAttributes.pre_engagement_data.location}}"
+                "{{trigger.conversation.ChannelAttributes.pre_engagement_data.location}}"
               ],
               "type": "starts_with",
               "value": "${channel_flow_vars.dcvh_url}"
@@ -117,7 +117,7 @@ ${
         }
       ],
       "properties": {
-        "input": "{{trigger.message.ChannelAttributes.pre_engagement_data.location}}",
+        "input": "{{trigger.conversation.ChannelAttributes.pre_engagement_data.location}}",
         "offset": {
           "x": -150,
           "y": 450
@@ -198,8 +198,8 @@ ${
           "x": -280,
           "y": 1060
         },
-        "service": "{{trigger.message.InstanceSid}}",
-        "channel": "{{trigger.message.ChannelSid}}",
+        "service": "{{trigger.conversation.InstanceSid}}",
+        "channel": "{{trigger.conversation.ChannelSid}}",
         "from": "Bot",
         "message_type": "custom",
         "to": "{{contact.channel.address}}",
@@ -224,8 +224,8 @@ ${
           "x": 220,
           "y": 1070
         },
-        "service": "{{trigger.message.InstanceSid}}",
-        "channel": "{{trigger.message.ChannelSid}}",
+        "service": "{{trigger.conversation.InstanceSid}}",
+        "channel": "{{trigger.conversation.ChannelSid}}",
         "from": "Bot",
         "message_type": "custom",
         "to": "{{contact.channel.address}}",

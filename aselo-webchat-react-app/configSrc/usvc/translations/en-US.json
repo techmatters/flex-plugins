@@ -1,0 +1,14 @@
+{
+  "WelcomeMessage": "Welcome to NCVC",
+  "EntryPointTagline": "Chat Live Now",
+  "EntryPoint-ClosedState-OpenWidgetButtonLabel": "Chat Live Now",
+  "PreEngagementConfigDescription": "Welcome! Thank you for reaching out. To best serve you, please answer the questions below before we connect you to a Victim Assistance Specialist. You can select \"Prefer not to answer\" for any question.",
+  "MessageCanvasTrayContent": "",
+  "MessageInputDisabledReasonHold": "Thank you very much for this information. We'll transfer you now. Please hold for a Victim Assistance Specialist.",
+  "AutoFirstMessage": "Incoming webchat contact from",
+  "MessagePhase-MessageList-Typing": "Specialist is typing",
+  "StartChat": "Start Chat!",
+  "MessageCanvasTrayButton": "Start New Chat",
+  "Nickname": "Nickname",
+  "MessagePhase-MessageBubble-OtherParticipantMessageSenderName": "Specialist"
+}

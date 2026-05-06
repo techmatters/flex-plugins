@@ -1,0 +1,26 @@
+{
+  "name": "{{trigger.conversation.ChannelAttributes.from}}",
+  "e2eTestMode": "{{trigger.conversation.ChannelAttributes.pre_engagement_data.e2eTestMode}}",
+  "ip": "{{trigger.conversation.ChannelAttributes.pre_engagement_data.ip}}",
+  "firstName": "{{trigger.conversation.ChannelAttributes.from}}",
+  "channelType": "{% if trigger.conversation.ChannelAttributes.channel_type %}{{trigger.conversation.ChannelAttributes.channel_type}}{% else %}{{trigger.conversation.Source | downcase}}{% endif %}",
+  "customChannelType": "{{trigger.conversation.ChannelAttributes.channelType}}", 
+  "channelSid": "{{trigger.conversation.ChannelSid}}",
+  "twilioNumber": "{{trigger.conversation.ChannelAttributes.twilioNumber}}",
+  "helpline": "{{trigger.conversation.ChannelAttributes.pre_engagement_data.helpline}}",
+  "language":"{{flow.variables.language}}",
+  "service":"{{flow.variables.service}}",
+  "serviceLanguage":"English",
+  "ignoreAgent": "",
+  "transferTargetType": "",
+  "preEngagementData": {{trigger.conversation.ChannelAttributes.pre_engagement_data | to_json}},
+  "memory": { 
+    "e2eTestMode": "{{trigger.conversation.ChannelAttributes.pre_engagement_data.e2eTestMode}}",
+    "contactIdentifier": "{{trigger.conversation.ChannelAttributes.pre_engagement_data.contactIdentifier}}",
+    "ip": "{{trigger.conversation.ChannelAttributes.pre_engagement_data.ip}}",
+    "contactType": "{{trigger.conversation.ChannelAttributes.pre_engagement_data.contactType}}",
+    "location": "{{trigger.conversation.ChannelAttributes.pre_engagement_data.location}}",
+    "friendlyName": "{{trigger.conversation.ChannelAttributes.pre_engagement_data.friendlyName}}",
+    "startForm": "HotlineInteractions"
+  }
+}

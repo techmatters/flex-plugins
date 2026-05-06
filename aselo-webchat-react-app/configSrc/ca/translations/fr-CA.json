@@ -5,6 +5,7 @@
   "StartChat": "Démarrer la chat!",
   "MessageCanvasTrayButton": "Démarrer une nouvelle chat",
   "EntryPointTagline": "Tape ici pour clavarder",
+  "EntryPoint-ClosedState-OpenWidgetButtonLabel": "Tape ici pour clavarder",
   "InvalidPreEngagementButton": "Apprendre encore plus",
   "PredefinedChatMessageAuthorName": "Bot",
   "InputPlaceHolder": "Écrire un message",
@@ -104,5 +105,8 @@
   "MessageSendingDisabled": "L'envoi de messages a été désactivé",
   "Today": "Aujourd'hui",
   "PreEngagementConfigDescription": "Bienvenue à Jeunesse, J'écoute. Pour nous aider à mieux vous servir, veuillez répondre aux questions suivantes. S'il s'agit d'une urgence, nous te prions d'appeler le 911.",
-  "MessagePhase-MessageBubble-OtherParticipantMessageSenderName": "Intervenant·e"
+  "MessagePhase-MessageBubble-OtherParticipantMessageSenderName": "Intervenant·e",
+  "MessagePhase-MessageBubble-ReadIndicator": "Lire",
+  "MessagePhase-MessageInput-PlaceholderText": "Écrivez votre message.",
+  "MessagePhase-MessageInput-SendButtonTitle": "Envoyer un message"
 }

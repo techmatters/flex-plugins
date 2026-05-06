@@ -1,6 +1,7 @@
 {
   "MessageInputDisabledReasonHold": "Thank you! Please hold for a counsellor.",
   "EntryPointTagLine": "Tap to Chat",
+  "EntryPoint-ClosedState-OpenWidgetButtonLabel": "Tap to Chat",
   "Today": "Today",
   "InputPlaceHolder": "Type Message",
   "WelcomeMessage": "Welcome to Kids Help Phone. ",
