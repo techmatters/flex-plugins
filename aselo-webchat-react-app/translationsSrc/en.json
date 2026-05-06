@@ -1,6 +1,7 @@
 {
   "AutoFirstMessage": "Incoming webchat contact from",
   "Conversation-Participants-CustomerDefaultName": "Anonymous",
+  "EntryPoint-ClosedState-OpenWidgetButtonLabel": "Chat with us",
   "Header-CloseChatButtons-EndChatButtonLabel": "End Chat",
   "Header-CloseChatButtons-EndChatConfirmDialogMessageFromChat": "End the current chat? This will disconnect you from the service.",
   "Header-CloseChatButtons-EndChatConfirmDialogMessageFromPreEngagement": "End the current chat?",

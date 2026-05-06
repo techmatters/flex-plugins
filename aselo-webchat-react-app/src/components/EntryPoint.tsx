@@ -23,15 +23,20 @@ import { changeExpandedStatus } from '../store/actions/genericActions';
 import { AppState } from '../store/definitions';
 import { containerStyles } from './styles/EntryPoint.styles';
 import { useMobileOptimizations } from '../hooks/useMobileOptimizations';
+import { localizeKey } from '../localization/localizeKey';
+import { selectCurrentTranslations } from '../store/config.reducer';
 
 export const EntryPoint = () => {
   const dispatch = useDispatch();
   const expanded = useSelector((state: AppState) => state.session.expanded);
+  const currentTranslations = useSelector(selectCurrentTranslations);
   const { isMobileFullscreen } = useMobileOptimizations();
 
   if (isMobileFullscreen && expanded) {
     return null;
   }
+
+  const openWidgetLabel = localizeKey(currentTranslations)('EntryPoint-ClosedState-OpenWidgetButtonLabel');
 
   return (
     <Box
@@ -39,11 +44,15 @@ export const EntryPoint = () => {
       data-testid="entry-point-button"
       onClick={() => dispatch(changeExpandedStatus({ expanded: !expanded }))}
       {...containerStyles}
+      padding={openWidgetLabel ? 'space40' : 'space0'}
     >
       {expanded ? (
         <ChevronDownIcon decorative={false} title="Minimize chat" size="sizeIcon80" />
       ) : (
-        <ChatIcon decorative={false} title="Open chat" size="sizeIcon60" />
+        <>
+          {openWidgetLabel && <span style={{ marginRight: '10px' }}>{openWidgetLabel}</span>}
+          <ChatIcon decorative={false} title="Open chat" size="sizeIcon60" />
+        </>
       )}
     </Box>
   );
