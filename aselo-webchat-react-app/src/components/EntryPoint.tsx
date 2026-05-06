@@ -44,7 +44,7 @@ export const EntryPoint = () => {
       data-testid="entry-point-button"
       onClick={() => dispatch(changeExpandedStatus({ expanded: !expanded }))}
       {...containerStyles}
-      padding={openWidgetLabel ? 'space40' : 'space0'}
+      padding={openWidgetLabel && !expanded ? 'space40' : 'space0'}
     >
       {expanded ? (
         <ChevronDownIcon decorative={false} title="Minimize chat" size="sizeIcon80" />
