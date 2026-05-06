@@ -59,6 +59,19 @@ locals {
         contact_identity = ""
         templatefile     = "/app/twilio-iac/helplines/usvc/templates/studio-flows/webchat-sd.tftpl"
         channel_flow_vars = {
+          vc_url   = "https://assets-staging.tl.techmatters.org/webchat/usvc/vc-test-chat.html"
+          dcvh_url = "https://assets-staging.tl.techmatters.org/webchat/usvc/dcvh-test-chat.html"
+        }
+        chatbot_unique_names = []
+      },
+      chat : {
+        messaging_mode   = "messaging_mode"
+        channel_type     = "chat"
+        contact_identity = ""
+        templatefile     = "/app/twilio-iac/helplines/usvc/templates/studio-flows/webchat-conv-sd.tftpl"
+        channel_flow_vars = {
+          vc_url   = "https://assets-staging.tl.techmatters.org/aselo-webchat-react-app/usvc/vc-test-chat.html"
+          dcvh_url = "https://assets-staging.tl.techmatters.org/aselo-webchat-react-app/usvc/dcvh-test-chat.html"
         }
         chatbot_unique_names = []
       },
