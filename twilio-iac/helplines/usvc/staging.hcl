@@ -65,7 +65,7 @@ locals {
         chatbot_unique_names = []
       },
       chat : {
-        messaging_mode   = "messaging_mode"
+        messaging_mode   = "conversations"
         channel_type     = "chat"
         contact_identity = ""
         templatefile     = "/app/twilio-iac/helplines/usvc/templates/studio-flows/webchat-conv-sd.tftpl"
