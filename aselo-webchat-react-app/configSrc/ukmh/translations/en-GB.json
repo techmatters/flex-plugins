@@ -1,6 +1,7 @@
 {
   "WelcomeMessage": "Welcome to The PeerChat Service",
   "EntryPointTagLine": "The PeerChat Service",
+  "EntryPoint-ClosedState-OpenWidgetButtonLabel": "The PeerChat Service",
   "MessagePhase-MessageList-Typing": "PeerChat Supporter is typing...",
   "MessageCanvasTrayContent": "",
   "MessageInputDisabledReasonHold": "Please hold for a PeerChat Supporter.",
