@@ -57,7 +57,7 @@ export default function EndChat(props: Props) {
           try {
             const { token, channelSid, language } = props;
             setDisabled(true);
-            await configuredBackend('/endChat', { channelSid, token, language });
+            await configuredBackend.request('/endChat', { channelSid, token, language });
           } catch (error) {
             console.error(error);
           } finally {
