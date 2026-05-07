@@ -605,6 +605,51 @@ describe('Pre Engagement Form Phase - validation', () => {
     expect(initAction.initSession).toHaveBeenCalled();
   });
 
+  it('uses preloaded redux values as form default values through getItem', () => {
+    const namePlaceholder = 'Your name';
+    const emailPlaceholder = 'Your email';
+    const store = createValidationStore(
+      [
+        {
+          name: 'name',
+          type: FormInputType.Input,
+          label: 'Name',
+          placeholder: namePlaceholder,
+        } as PreEngagementFormItem,
+        {
+          name: 'email',
+          type: FormInputType.Email,
+          label: 'Email',
+          placeholder: emailPlaceholder,
+        } as PreEngagementFormItem,
+        {
+          name: 'choice',
+          type: FormInputType.Select,
+          label: 'Choice',
+          options: [
+            { value: '', label: 'Please select...' },
+            { value: 'opt1', label: 'Option 1' },
+          ],
+        } as PreEngagementFormItem,
+      ],
+      {
+        name: { value: 'Alice', error: null, dirty: true },
+        email: { value: 'alice@example.com', error: null, dirty: true },
+        choice: { value: 'opt1', error: null, dirty: true },
+      },
+    );
+
+    const { getByPlaceholderText, getByRole } = render(
+      <Provider store={store}>
+        <PreEngagementFormPhase />
+      </Provider>,
+    );
+
+    expect(getByPlaceholderText(namePlaceholder)).toHaveValue('Alice');
+    expect(getByPlaceholderText(emailPlaceholder)).toHaveValue('alice@example.com');
+    expect(getByRole('combobox')).toHaveValue('opt1');
+  });
+
   it('validation errors are hidden before the first submit attempt even when the Redux state has an error', () => {
     // Pre-populate the store with a field that already has a validation error
     const store = createValidationStore(
