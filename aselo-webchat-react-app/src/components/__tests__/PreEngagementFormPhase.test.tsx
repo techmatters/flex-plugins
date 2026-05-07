@@ -605,9 +605,12 @@ describe('Pre Engagement Form Phase - validation', () => {
     expect(initAction.initSession).toHaveBeenCalled();
   });
 
-  it('uses preloaded redux values as form default values through getItem', () => {
+  it('uses preloaded redux values as form default values through getItem for all form input types', () => {
     const namePlaceholder = 'Your name';
     const emailPlaceholder = 'Your email';
+    const categoryPlaceholderLabel = 'Please select...';
+    const parentLabel = 'Country';
+    const dependentLabel = 'State';
     const store = createValidationStore(
       [
         {
@@ -627,19 +630,50 @@ describe('Pre Engagement Form Phase - validation', () => {
           type: FormInputType.Select,
           label: 'Choice',
           options: [
-            { value: '', label: 'Please select...' },
+            { value: '', label: categoryPlaceholderLabel },
             { value: 'opt1', label: 'Option 1' },
           ],
+        } as PreEngagementFormItem,
+        {
+          name: 'country',
+          type: FormInputType.Select,
+          label: parentLabel,
+          options: [
+            { value: '', label: 'Select country' },
+            { value: 'US', label: 'United States' },
+            { value: 'UK', label: 'United Kingdom' },
+          ],
+        } as PreEngagementFormItem,
+        {
+          name: 'state',
+          type: FormInputType.DependentSelect,
+          label: dependentLabel,
+          dependsOn: 'country',
+          options: {
+            US: [
+              { value: 'CA', label: 'California' },
+              { value: 'NY', label: 'New York' },
+            ],
+            UK: [{ value: 'ENG', label: 'England' }],
+          },
+        } as PreEngagementFormItem,
+        {
+          name: 'terms',
+          type: FormInputType.Checkbox,
+          label: 'Accept terms',
         } as PreEngagementFormItem,
       ],
       {
         name: { value: 'Alice', error: null, dirty: true },
         email: { value: 'alice@example.com', error: null, dirty: true },
         choice: { value: 'opt1', error: null, dirty: true },
+        country: { value: 'US', error: null, dirty: true },
+        state: { value: 'NY', error: null, dirty: true },
+        terms: { value: true, error: null, dirty: true },
       },
     );
 
-    const { getByPlaceholderText, getByRole } = render(
+    const { container, getByPlaceholderText } = render(
       <Provider store={store}>
         <PreEngagementFormPhase />
       </Provider>,
@@ -647,7 +681,10 @@ describe('Pre Engagement Form Phase - validation', () => {
 
     expect(getByPlaceholderText(namePlaceholder)).toHaveValue('Alice');
     expect(getByPlaceholderText(emailPlaceholder)).toHaveValue('alice@example.com');
-    expect(getByRole('combobox')).toHaveValue('opt1');
+    expect(container.querySelector('#choice')).toHaveValue('opt1');
+    expect(container.querySelector('#country')).toHaveValue('US');
+    expect(container.querySelector('#state')).toHaveValue('NY');
+    expect(container.querySelector('#terms')).toBeChecked();
   });
 
   it('validation errors are hidden before the first submit attempt even when the Redux state has an error', () => {
