@@ -130,7 +130,7 @@ describe('session data handler', () => {
         (window as any).fetchLater = fetchLaterMock;
 
         await contactBackend(TEST_CONFIG_STATE).deferredRequest('/endChat', {
-          channelSid: 'CH123',
+          conversationSid: 'CH123',
           token: 'token',
         });
 
@@ -145,7 +145,7 @@ describe('session data handler', () => {
         fetchMock.mockResolvedValue(okFetchResponse({}));
 
         await contactBackend(TEST_CONFIG_STATE).deferredRequest('/endChat', {
-          channelSid: 'CH123',
+          conversationSid: 'CH123',
           token: 'token',
         });
 

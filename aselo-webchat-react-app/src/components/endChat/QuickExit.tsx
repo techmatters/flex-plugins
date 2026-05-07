@@ -26,7 +26,7 @@ import LocalizedTemplate from '../../localization/LocalizedTemplate';
 
 type Props =
   | {
-      channelSid: string;
+      conversationSid: string;
       token: string;
       language?: string;
       action: 'finishTask';
