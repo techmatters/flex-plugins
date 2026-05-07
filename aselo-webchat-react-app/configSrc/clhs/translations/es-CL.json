@@ -1,6 +1,9 @@
 {
   "WelcomeMessage": "¡Hola! te damos la bienvenida a Hora Segura ❤️",
   "PreEngagementDescription": "¡Hola! te damos la bienvenida a Hora Segura ❤️ Completa esta información para saber más de ti y poder ayudarte.",
+   "PreEngagementPhase-Form-Title": "¡Hola! te damos la bienvenida a Hora Segura ❤️",
+  "PreEngagementPhase-Form-Description": "Completa esta información para saber más de ti y poder ayudarte.",
+  "PreEngagementPhase-Form-SubmitButtonLabel": "Comenzar Nuevo Chat!",
   "MessageCanvasTrayContent": "",
   "MessageInputDisabledReasonHold": "Muchas gracias por la información. Lo transferiremos ahora. Por favor espere for un agente.",
   "AutoFirstMessage": "Nuevo contacto del webchat de",
