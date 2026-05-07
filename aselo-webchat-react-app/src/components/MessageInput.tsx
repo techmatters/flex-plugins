@@ -197,7 +197,7 @@ export const MessageInput = () => {
                   aria-labelledby="EmojiIcon"
                 >
                   <title id="EmojiIcon">
-                    <LocalizedTemplate code="MessageingPhase-MessageInput-EmojiPickerTitle" />
+                    <LocalizedTemplate code="MessagePhase-MessageInput-EmojiPickerTitle" />
                   </title>
                   <path
                     fill="currentColor"
