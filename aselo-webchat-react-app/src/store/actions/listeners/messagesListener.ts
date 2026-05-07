@@ -18,13 +18,37 @@ import { Conversation, Message } from '@twilio/conversations';
 import { Dispatch } from 'redux';
 
 import { ACTION_ADD_MESSAGE, ACTION_REMOVE_MESSAGE, ACTION_UPDATE_MESSAGE } from '../actionTypes';
+import {
+  getAssetsBucketUrl,
+  playNotificationSound,
+  showBrowserNotification,
+} from '../../../utils/newMessageNotification';
+import { selectCurrentTranslations } from '../../config.reducer';
+import type { AppState } from '../../store';
 
-export const initMessagesListener = (conversation: Conversation, dispatch: Dispatch) => {
+export const initMessagesListener = (
+  conversation: Conversation,
+  dispatch: Dispatch,
+  localUserIdentity: string,
+  getState: () => AppState,
+) => {
   conversation.addListener('messageAdded', (message: Message) => {
     dispatch({
       type: ACTION_ADD_MESSAGE,
       payload: { message },
     });
+
+    if (message.author !== localUserIdentity) {
+      const state = getState();
+      if (!state.session.expanded || document.visibilityState === 'hidden') {
+        const translations = selectCurrentTranslations(state);
+        const notificationMessage =
+          (translations && translations.NewMessageNotification) || 'New message from counsellor';
+        const assetsBucketUrl = getAssetsBucketUrl(state.config.environment);
+        playNotificationSound(assetsBucketUrl);
+        showBrowserNotification(notificationMessage, message.body ?? '');
+      }
+    }
   });
   conversation.addListener('messageRemoved', (message: Message) => {
     dispatch({

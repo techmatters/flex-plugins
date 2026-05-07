@@ -38,6 +38,7 @@ import { parseRegionForConversations } from '../../utils/regionUtil';
 import { sessionDataHandler } from '../../sessionDataHandler';
 import { createParticipantNameMap } from '../../utils/participantNameMap';
 import { getDefinitionVersion } from '../../services/configService';
+import { requestNotificationPermission } from '../../utils/newMessageNotification';
 import type { AppState } from '../store';
 
 // export for testing
@@ -127,7 +128,7 @@ const newInitialisedConversationsClient = async (token: string): Promise<Client>
 
 export function initSession({ token, conversationSid }: InitSessionPayload) {
   const logger = window.Twilio.getLogger('initSession');
-  return async (dispatch: Dispatch) => {
+  return async (dispatch: Dispatch, getState: () => AppState) => {
     let conversationsClient: Client;
     let conversation;
     let participants;
@@ -171,9 +172,12 @@ export function initSession({ token, conversationSid }: InitSessionPayload) {
       },
     });
 
+    await requestNotificationPermission();
+
+    const localUserIdentity = conversationsClient.user.identity;
     initClientListeners(conversationsClient, dispatch);
     initConversationListener(conversation, dispatch);
-    initMessagesListener(conversation, dispatch);
+    initMessagesListener(conversation, dispatch, localUserIdentity, getState);
     initParticipantsListener(conversation, dispatch);
   };
 }
