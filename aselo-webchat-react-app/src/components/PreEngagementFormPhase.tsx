@@ -142,7 +142,10 @@ export const PreEngagementFormPhase = () => {
           disabled={!recaptchaValid || !preEngagementDataValid}
           data-test="pre-engagement-start-chat-button"
         >
-          <span data-testid="pre-engagement-start-chat-button-label" style={isRecaptchaVerifyPending ? { visibility: 'hidden' } : {}}>
+          <span
+            data-testid="pre-engagement-start-chat-button-label"
+            style={isRecaptchaVerifyPending ? { visibility: 'hidden' } : {}}
+          >
             <LocalizedTemplate code="PreEngagementPhase-Form-SubmitButtonLabel" />
           </span>
           {isRecaptchaVerifyPending && (
