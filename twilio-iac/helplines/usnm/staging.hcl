@@ -26,5 +26,19 @@ locals {
         chatbot_unique_names = []
       }
     }
+
+    system_down_templatefile = "/app/twilio-iac/helplines/templates/studio-flows/system-down.tftpl"
+    enable_system_down       = true
+    system_down_flow_vars = {
+      is_system_down                   = "false"
+      message                          = "We're currently experiencing technical issues, and your message may not be delivered. We're working to resolve the problem and will be back online shortly. We apologize for the inconvenience."
+      voice_message                    = "We're currently experiencing technical issues, and your call may not reach us. We're working to resolve the problem and will be back online shortly. We apologize for the inconvenience."
+      send_studio_message_function_sid = "ZHbbf0fb1ec68a5aacc31e8c50415b97bb"
+      call_action                      = "message"
+      forward_number                   = "+123"
+      recording_url                    = "https://<place_holder>.mp3"
+    }
+
+    get_profile_flags_for_identifier_base_url = "https://hrm-staging-us.tl.techmatters.org/lambda/twilio/account-scoped"
   }
 }
