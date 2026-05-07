@@ -42,7 +42,7 @@ type RefreshTokenAPIPayload = {
 };
 
 type EndChatPayload = {
-  channelSid: string;
+  conversationSid: string;
   language?: string;
   token: string;
 };
