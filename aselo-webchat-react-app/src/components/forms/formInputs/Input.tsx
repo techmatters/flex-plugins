@@ -31,13 +31,13 @@ type OwnProps = {
   pattern?: RegExp;
   getItem: (inptuName: string) => PreEngagementDataItem;
   handleChange: (payload: { name: string; value: string | boolean }) => void;
-  defaultValue?: string;
+  defaultValue?: PreEngagementDataItem['value'];
   showError?: boolean;
 };
 
 type Props = OwnProps;
 
-const InputText: React.FC<Props> = ({ definition, handleChange, getItem, showError = true }) => {
+const InputText: React.FC<Props> = ({ definition, defaultValue, handleChange, getItem, showError = true }) => {
   const currentTranslations = useSelector(selectCurrentTranslations);
   const configuredLocalizeKey = localizeKey(currentTranslations);
   const { name, label, placeholder, required } = definition;
@@ -64,6 +64,7 @@ const InputText: React.FC<Props> = ({ definition, handleChange, getItem, showErr
           hasError={Boolean(error && showError)}
           onBlur={e => handleChange({ name, value: e.target.value })}
           onChange={e => debouncedHandleChange({ name, value: e.target.value })}
+          defaultValue={typeof defaultValue === 'string' ? defaultValue : ''}
         />
       </Label>
       {error && showError && (
