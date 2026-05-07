@@ -195,7 +195,7 @@ describe('Message Bubble', () => {
       }),
     );
 
-    const { queryByText } = render(
+    const { queryByTestId } = render(
       <MessageBubble
         message={messageCurrentUser}
         isLast={true}
@@ -205,7 +205,7 @@ describe('Message Bubble', () => {
       />,
     );
 
-    expect(queryByText('Read')).toBeInTheDocument();
+    expect(queryByTestId('ReadIndicator')).toBeInTheDocument();
   });
 
   it("does not render 'is read' and icon when message unread by other participant", () => {
