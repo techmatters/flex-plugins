@@ -2,6 +2,8 @@
     "MessageInputDisabledReasonHold": "Thank you very much for this information. We'll transfer you now. Please hold for a counselor.",
     "EntryPointTagLine": "Chat with us",
     "Header-TitleBar-Title": "Chat with us",
+   "PreEngagementPhase-Form-Title": "Welcome to ChildHelp",
+  "PreEngagementPhase-Form-Description": "To best serve you, answer 6 short questions and you will then be connected to a counselor. You can select 'Prefer not to answer' for any question.",
     "PreEngagementConfigDescription": "To best serve you, answer 6 short questions and you will then be connected to a counselor. You can select 'Prefer not to answer' for any question.",
     "Today": "Today",
     "InputPlaceHolder": "Type Message",
