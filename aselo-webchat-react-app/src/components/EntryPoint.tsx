@@ -50,7 +50,11 @@ export const EntryPoint = () => {
         <ChevronDownIcon decorative={false} title="Minimize chat" size="sizeIcon80" />
       ) : (
         <>
-          {openWidgetLabel && <span style={{ marginRight: '10px' }}>{openWidgetLabel}</span>}
+          {openWidgetLabel && (
+            <Box as="span" marginRight="space30">
+              {openWidgetLabel}
+            </Box>
+          )}
           <ChatIcon decorative={false} title="Open chat" size="sizeIcon60" />
         </>
       )}
