@@ -3,5 +3,8 @@
   "Header-CloseChatButtons-QuickExitButtonLabel": "Sortie Rapide",
   "Header-CloseChatButtons-QuickExitDescription": "Besoin de Partir Rapidement?",
    "Header-CloseChatButtons-EndChatConfirmDialogMessageFromChat": "Mettre fin à la conversation actuelle ? Cela vous déconnectera du service.",
-  "Header-TitleBar-Title": "Discute avec nous"
+  "Header-TitleBar-Title": "Discute avec nous",
+  "PreEngagementPhase-Form-Title": "",
+  "PreEngagementPhase-Form-Description": "",
+  "PreEngagementPhase-Form-SubmitButtonLabel": "Commencer chat"
 }
