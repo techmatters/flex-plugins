@@ -21,7 +21,7 @@
   "MessagePhase-ConversationEnded-ButtonText": "Start new chat",
   "PreEngagementPhase-Notifications-RecaptchaInvalid": "You need to be verified by Recaptcha before proceeding",
   "PreEngagementPhase-Notifications-FormInvalid": "Some fields contain errors",
-  "PreEngagementPhase-Form-Title": "Hi there!",
+  "PreEngagementPhase-Form-Title": "",
   "PreEngagementPhase-Form-Description": "",
   "PreEngagementPhase-Form-SubmitButtonLabel": "Start chat",
   "RequiredFieldError": "Please fill out required fields.",

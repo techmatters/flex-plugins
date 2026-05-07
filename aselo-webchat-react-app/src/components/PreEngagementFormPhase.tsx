@@ -30,16 +30,21 @@ import {
 import { AppState } from '../store/definitions';
 import { Header } from './Header';
 import { NotificationBar } from './NotificationBar';
-import { fieldStyles, titleStyles, formStyles } from './styles/PreEngagementFormPhase.styles';
+import { fieldStyles, titleStyles, formStyles, descriptionStyles } from './styles/PreEngagementFormPhase.styles';
 import LocalizedTemplate from '../localization/LocalizedTemplate';
 import { generateForm } from './forms/formInputs';
 import ReCaptcha from './ReCaptcha';
 import { selectPreEngagementData, selectPreEngagementDataValid, selectRecaptchaValid } from '../store/session.reducer';
+import { localizeKey } from '../localization/localizeKey';
+import { selectCurrentTranslations } from '../store/config.reducer';
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
 export const PreEngagementFormPhase = () => {
   const preEngagementData = useSelector(selectPreEngagementData);
   const preEngagementDataValid = useSelector(selectPreEngagementDataValid);
+  const currentTranslations = useSelector(selectCurrentTranslations);
+  const localize = localizeKey(currentTranslations);
+
   const formRef = useRef<HTMLFormElement>(null);
 
   const { preEngagementFormDefinition, enableRecaptcha, recaptchaSiteKey, aseloBackendUrl } = useSelector(
@@ -104,17 +109,25 @@ export const PreEngagementFormPhase = () => {
 
   const recaptchaVerifyUrl = `${aseloBackendUrl}/lambda/recaptchaVerify`;
 
+  const title = localize('PreEngagementPhase-Form-Title');
+
+  const description = localize('PreEngagementPhase-Form-Description');
+
   return (
     <>
       <Header />
       <NotificationBar />
       <Box as="form" data-test="pre-engagement-chat-form" onSubmit={handleSubmit} {...formStyles} ref={formRef}>
-        <Text {...titleStyles} as="h3">
-          <LocalizedTemplate code="PreEngagementPhase-Form-Title" />
-        </Text>{' '}
-        <Text {...titleStyles} as="p">
-          <LocalizedTemplate code="PreEngagementPhase-Form-Description" />
-        </Text>
+        {title && (
+          <Text {...titleStyles} as="h3">
+            {title}
+          </Text>
+        )}
+        {description && (
+          <Text {...descriptionStyles} as="p">
+            {description}
+          </Text>
+        )}
         <Box {...fieldStyles}>
           {generateForm({
             form: preEngagementFormDefinition.fields,
