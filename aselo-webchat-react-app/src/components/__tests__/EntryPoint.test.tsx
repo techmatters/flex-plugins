@@ -84,6 +84,41 @@ describe('Entry Point', () => {
     expect(changeExpandedStatusSpy).toHaveBeenCalledWith({ expanded: true });
   });
 
+  describe('open widget label', () => {
+    it('renders the label when the translation key resolves to a non-empty string', () => {
+      (useSelector as jest.Mock).mockImplementation((callback: any) =>
+        callback({
+          session: { expanded: false },
+          config: {
+            defaultLocale: 'en',
+            translations: { en: { 'EntryPoint-ClosedState-OpenWidgetButtonLabel': 'Chat with us' } },
+          },
+        }),
+      );
+
+      const { queryByTestId } = render(<EntryPoint />);
+
+      expect(queryByTestId('open-widget-label')).toBeInTheDocument();
+      expect(queryByTestId('open-widget-label')).toHaveTextContent('Chat with us');
+    });
+
+    it('does not render the label when the translation key resolves to an explicit empty string', () => {
+      (useSelector as jest.Mock).mockImplementation((callback: any) =>
+        callback({
+          session: { expanded: false },
+          config: {
+            defaultLocale: 'en',
+            translations: { en: { 'EntryPoint-ClosedState-OpenWidgetButtonLabel': '' } },
+          },
+        }),
+      );
+
+      const { queryByTestId } = render(<EntryPoint />);
+
+      expect(queryByTestId('open-widget-label')).not.toBeInTheDocument();
+    });
+  });
+
   describe('mobile optimizations', () => {
     it('does not render button when on mobile (isMobileFullscreen) and expanded', () => {
       (useMobileOptimizationsModule.useMobileOptimizations as jest.Mock).mockReturnValue({ isMobileFullscreen: true });

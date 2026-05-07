@@ -51,7 +51,7 @@ export const EntryPoint = () => {
       ) : (
         <>
           {openWidgetLabel && (
-            <Box as="span" marginRight="space30">
+            <Box as="span" data-testid="open-widget-label" marginRight="space30">
               {openWidgetLabel}
             </Box>
           )}
