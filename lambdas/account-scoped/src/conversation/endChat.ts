@@ -221,8 +221,13 @@ export const handleEndChat: AccountScopedHandler = async (
         .fetch();
       const conversationAttributes = JSON.parse(attributes);
       console.debug(
-        `[endChat - ${accountSid} / ${conversationSid}] Parsed conversation attributes:`,
-        attributes,
+        `[endChat - ${accountSid} / ${conversationSid}] Parsed conversation attributes summary:`,
+        {
+          hasSurveyTaskSid: conversationAttributes?.surveyTaskSid !== undefined,
+          tasksSidsCount: Array.isArray(conversationAttributes?.tasksSids)
+            ? conversationAttributes.tasksSids.length
+            : 0,
+        },
       );
       channelCleanupRequired = await endContactOrPostSurvey(
         accountSid,
