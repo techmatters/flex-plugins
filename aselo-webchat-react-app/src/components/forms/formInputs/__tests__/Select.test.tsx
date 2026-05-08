@@ -84,4 +84,12 @@ describe('Select component', () => {
     fireEvent.change(select, { target: { value: 'opt1' } });
     expect(handleChange).toHaveBeenCalledWith({ name: 'category', value: 'opt1' });
   });
+
+  it('uses defaultValue as the initial selected value', () => {
+    const { getByRole } = render(
+      <Select definition={definition} handleChange={handleChange} getItem={getItem(noError)} defaultValue="opt2" />,
+    );
+
+    expect(getByRole('combobox')).toHaveValue('opt2');
+  });
 });
