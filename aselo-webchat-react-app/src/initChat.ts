@@ -16,6 +16,21 @@
 
 import { LocaleString } from './store/definitions';
 
+const extractBooleanFromUrlParamOrScriptDataAttributeSet = (
+  name: string,
+  scriptTagData: Record<string, string | undefined>,
+): boolean | undefined => {
+  const urlParam = new URLSearchParams(window.location.search).get(name);
+  if (urlParam) {
+    return Boolean(urlParam.toLowerCase() === 'true');
+  }
+  const scriptDataAttributeValue = scriptTagData[name];
+  if (scriptDataAttributeValue) {
+    return Boolean(scriptDataAttributeValue.toLowerCase() === 'true');
+  }
+  return undefined;
+};
+
 /**
  * Initialises the Aselo Webchat widget by reading configuration from URL parameters,
  * ensuring the widget root element exists, and calling Twilio.initWebchat.
@@ -24,20 +39,17 @@ import { LocaleString } from './store/definitions';
  * standard app.js bootstrap and the aselo-chat.min.js wrapper used for legacy URL
  * compatibility deploys.
  */
-export const initChat = (scriptTagData: Record<string, string | boolean | undefined>) => {
+export const initChat = (scriptTagData: Record<string, string | undefined>) => {
   const urlParams = new URLSearchParams(window.location.search);
   const theme = urlParams.get('theme') ?? scriptTagData.theme;
   const isLightTheme = theme !== 'dark';
   const color = urlParams.get('color') || scriptTagData.color;
-  const enableMobileOptimizationsUrlParam = urlParams.get('enableMobileOptimizations');
-  const enableMobileOptimizations = enableMobileOptimizationsUrlParam
-    ? Boolean(enableMobileOptimizationsUrlParam.toLowerCase() === 'true')
-    : scriptTagData.enableMobileOptimizations;
+  const enableMobileOptimizations = extractBooleanFromUrlParamOrScriptDataAttributeSet(
+    'enableMobileOptimizations',
+    scriptTagData,
+  );
   const backgroundColor = urlParams.get('backgroundColor') || scriptTagData.backgroundColor;
-  const widgetAlwaysOpenUrlParam = urlParams.get('widgetAlwaysOpen');
-  const widgetAlwaysOpen = widgetAlwaysOpenUrlParam
-    ? Boolean(widgetAlwaysOpenUrlParam.toLowerCase() === 'true')
-    : scriptTagData.widgetAlwaysOpen;
+  const widgetAlwaysOpen = extractBooleanFromUrlParamOrScriptDataAttributeSet('widgetAlwaysOpenUrl', scriptTagData);
   const defaultLocale =
     // data-language attribute is supported for backwards compatibility, remove once webchat is fully migrated
     urlParams.get('locale') || scriptTagData.locale || scriptTagData.language;
