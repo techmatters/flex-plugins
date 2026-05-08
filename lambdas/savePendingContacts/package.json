@@ -10,8 +10,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@aws-sdk/client-ssm": "^3.716.0",
-    "@aws-sdk/client-s3": "^3.716.0"
+    "@aws-sdk/client-ssm": "^3.1045.0",
+    "@aws-sdk/client-s3": "^3.1045.0"
   },
   "devDependencies": {
     "@tsconfig/node22": "^22.0.0",
