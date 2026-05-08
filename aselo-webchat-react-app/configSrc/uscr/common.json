@@ -8,7 +8,7 @@
     "enabled": true,
     "blockedEmojis": []
   },
-  "alwaysOpen": false,
+  "widgetAlwaysOpen": false,
   "helplineCode": "uscr",
   "enableRecaptcha": false,
   "captureIp": true,

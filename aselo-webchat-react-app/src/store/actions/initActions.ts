@@ -18,7 +18,6 @@ import { Client, ConnectionState } from '@twilio/conversations';
 import { AnyAction, Dispatch } from 'redux';
 import { ThunkAction } from 'redux-thunk';
 import merge from 'lodash.merge';
-import { Logger } from 'loglevel';
 
 import { initMessagesListener } from './listeners/messagesListener';
 import { initParticipantsListener } from './listeners/participantsListener';
@@ -44,7 +43,7 @@ import type { AppState } from '../store';
 // export for testing
 export const getHelplineConfig = async ({ configUrl }: { configUrl: string | URL }) => {
   try {
-    const helplineConfigResponse = await fetch(configUrl);
+    const helplineConfigResponse = await fetch(configUrl.toString());
     if (!helplineConfigResponse.ok) {
       const errMsg = `Failed to load helpline specific config for Aselo Webchat from ${configUrl}, aborting load`;
       return { status: 'error', message: errMsg } as const;
@@ -82,7 +81,7 @@ export const initConfigThunk = ({
         throw new Error(message);
       }
 
-      dispatch(changeExpandedStatus({ expanded: Boolean(webchatConfig.alwaysOpen) }));
+      dispatch(changeExpandedStatus({ expanded: Boolean(webchatConfig.widgetAlwaysOpen) }));
 
       sessionDataHandler.setRegion(webchatConfig.region);
       sessionDataHandler.setDeploymentKey(webchatConfig.deploymentKey);
