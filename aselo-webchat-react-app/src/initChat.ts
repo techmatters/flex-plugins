@@ -34,7 +34,10 @@ export const initChat = (scriptTagData: Record<string, string | boolean | undefi
     ? Boolean(enableMobileOptimizationsUrlParam.toLowerCase() === 'true')
     : scriptTagData.enableMobileOptimizations;
   const backgroundColor = urlParams.get('backgroundColor') || scriptTagData.backgroundColor;
-  const alwaysOpen = urlParams.get('alwaysOpen');
+  const widgetAlwaysOpenUrlParam = urlParams.get('widgetAlwaysOpen');
+  const widgetAlwaysOpen = widgetAlwaysOpenUrlParam
+    ? Boolean(widgetAlwaysOpenUrlParam.toLowerCase() === 'true')
+    : scriptTagData.widgetAlwaysOpen;
   const defaultLocale =
     // data-language attribute is supported for backwards compatibility, remove once webchat is fully migrated
     urlParams.get('locale') || scriptTagData.locale || scriptTagData.language;
@@ -64,7 +67,7 @@ export const initChat = (scriptTagData: Record<string, string | boolean | undefi
         textColors: { ...(color && { colorTextWeakest: color }) },
       },
     },
-    ...(alwaysOpen ? { alwaysOpen: alwaysOpen.toLowerCase() === 'true' } : {}),
+    ...(widgetAlwaysOpen === undefined ? {} : { widgetAlwaysOpen: widgetAlwaysOpen as boolean }),
     ...(defaultLocale ? { defaultLocale: defaultLocale as LocaleString } : {}),
     ...(enableMobileOptimizations === undefined
       ? {}

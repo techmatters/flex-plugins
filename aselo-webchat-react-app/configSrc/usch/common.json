@@ -1771,7 +1771,7 @@
   "helplineCode": "usch",
   "enableRecaptcha": false,
   "captureIp": true,
-  "alwaysOpen": false,
+  "widgetAlwaysOpen": false,
   "contactIdentifierField": "ip",
   "definitionVersion": "usch-v1"
 }

@@ -54,7 +54,7 @@ export function RootContainer() {
     currentPhase: session.currentPhase,
     expanded: session.expanded,
   }));
-  const alwaysOpen = useSelector((state: AppState) => state.config.alwaysOpen);
+  const widgetAlwaysOpen = useSelector((state: AppState) => state.config.widgetAlwaysOpen);
   const { isMobileFullscreen } = useMobileOptimizations();
 
   return (
@@ -65,7 +65,7 @@ export function RootContainer() {
             {getPhaseComponent(currentPhase)}
           </Box>
         )}
-        {!alwaysOpen && <EntryPoint />}
+        {!widgetAlwaysOpen && <EntryPoint />}
       </Box>
     </Box>
   );

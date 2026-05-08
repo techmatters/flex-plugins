@@ -18,7 +18,6 @@ import { Client, ConnectionState } from '@twilio/conversations';
 import { AnyAction, Dispatch } from 'redux';
 import { ThunkAction } from 'redux-thunk';
 import merge from 'lodash.merge';
-import { Logger } from 'loglevel';
 
 import { initMessagesListener } from './listeners/messagesListener';
 import { initParticipantsListener } from './listeners/participantsListener';
@@ -81,7 +80,7 @@ export const initConfigThunk = ({
         throw new Error(message);
       }
 
-      dispatch(changeExpandedStatus({ expanded: Boolean(webchatConfig.alwaysOpen) }));
+      dispatch(changeExpandedStatus({ expanded: Boolean(webchatConfig.widgetAlwaysOpen) }));
 
       sessionDataHandler.setRegion(webchatConfig.region);
       sessionDataHandler.setDeploymentKey(webchatConfig.deploymentKey);

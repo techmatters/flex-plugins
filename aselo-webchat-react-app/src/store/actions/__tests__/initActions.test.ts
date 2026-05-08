@@ -256,16 +256,16 @@ describe('Actions', () => {
       expect(dispatch).toHaveBeenCalledWith(expect.objectContaining({ type: ACTION_LOAD_CONFIG_FAILURE }));
     });
 
-    it('triggers expanded true if alwaysOpen is set', async () => {
-      const dispatch = await runConfigThunk({ deploymentKey: 'CV000000', alwaysOpen: true });
+    it('triggers expanded true if widgetAlwaysOpen is set', async () => {
+      const dispatch = await runConfigThunk({ deploymentKey: 'CV000000', widgetAlwaysOpen: true });
       expect(dispatch).toHaveBeenCalledWith({
         type: ACTION_CHANGE_EXPANDED_STATUS,
         payload: { expanded: true },
       });
     });
 
-    it('triggers expanded false if alwaysOpen is not set', async () => {
-      const dispatch = await runConfigThunk({ deploymentKey: 'CV000000', alwaysOpen: false });
+    it('triggers expanded false if widgetAlwaysOpen is not set', async () => {
+      const dispatch = await runConfigThunk({ deploymentKey: 'CV000000', widgetAlwaysOpen: false });
       expect(dispatch).toHaveBeenCalledWith({
         type: ACTION_CHANGE_EXPANDED_STATUS,
         payload: { expanded: false },

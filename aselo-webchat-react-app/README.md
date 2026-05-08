@@ -133,7 +133,7 @@ Here's an example of how to use this config object in your `index.html` template
 window.addEventListener("load", () => {
     Twilio.initWebchat({
         deploymentKey: "CVAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
-        alwaysOpen: true,
+        widgetAlwaysOpen: true,
         theme: {
             isLight: true
         }
@@ -142,7 +142,7 @@ window.addEventListener("load", () => {
 ```
 
 1. `deploymentKey` is a UUID with a fixed length. As a security enhancement, we have encapsulated **AccountSid** with **DeploymentKey**. An **AccountSid** has one-to-many relationship with **DeploymentKey**. This means, **AccountSid** is not any public entity anymore for webchat. Customers are to use **DeploymentKey** to initiate Webchat UI. For more info on how to create a **Deployment Key** refer to [this section](https://www.twilio.com/docs/flex/developer/conversations/webchat/security#deployment-key-shields-your-account-information)
-2. `alwaysOpen` Set this if you want the widget to only render in its open state, without the 'open / close' button. For more information refer to [this section](https://www.twilio.com/docs/flex/developer/conversations/webchat/setup#customize-webchat)
+2. `widgetAlwaysOpen` Set this if you want the widget to only render in its open state, without the 'open / close' button. For more information refer to [this section](https://www.twilio.com/docs/flex/developer/conversations/webchat/setup#customize-webchat)
 3. `theme` can be used to quickly customise the look and feel of the app. `theme.isLight` is a boolean to quickly toggle between the light and dark theme of Paste. For more information refer to [this section]([this section](https://www.twilio.com/docs/flex/developer/conversations/webchat/setup#customize-webchat)
 
 
