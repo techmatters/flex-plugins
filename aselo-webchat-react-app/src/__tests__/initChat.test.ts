@@ -49,6 +49,19 @@ describe('initChat', () => {
     expect(document.getElementById('aselo-webchat-widget-root')?.style.zIndex).toBe('777');
   });
 
+  it('parses z-index input variants safely', () => {
+    initChat({ zIndex: 'not-a-number' });
+    expect(document.getElementById('aselo-webchat-widget-root')?.style.zIndex).toBe('');
+
+    window.history.replaceState({}, '', '/?zIndex=-12.8');
+    initChat({});
+    expect(document.getElementById('aselo-webchat-widget-root')?.style.zIndex).toBe('-12');
+
+    window.history.replaceState({}, '', '/?zIndex=%20%2042%20');
+    initChat({});
+    expect(document.getElementById('aselo-webchat-widget-root')?.style.zIndex).toBe('42');
+  });
+
   it('parses boolean values from script attributes', () => {
     initChat({
       enableMobileOptimizations: 'false',
@@ -58,5 +71,27 @@ describe('initChat', () => {
     const [, initOptions] = initWebchatMock.mock.calls[0];
     expect(initOptions.enableMobileOptimizations).toBe(false);
     expect(initOptions.widgetAlwaysOpen).toBe(false);
+  });
+
+  it('parses truthy/falsey boolean option variants and ignores invalid values', () => {
+    window.history.replaceState({}, '', '/?enableMobileOptimizations=TRUE&widgetAlwaysOpen=%20False%20');
+    initChat({
+      enableMobileOptimizations: true,
+      widgetAlwaysOpen: true,
+    });
+
+    let [, initOptions] = initWebchatMock.mock.calls[0];
+    expect(initOptions.enableMobileOptimizations).toBe(true);
+    expect(initOptions.widgetAlwaysOpen).toBe(false);
+
+    window.history.replaceState({}, '', '/');
+    initChat({
+      enableMobileOptimizations: 'invalid',
+      widgetAlwaysOpen: 'invalid',
+    });
+
+    [, initOptions] = initWebchatMock.mock.calls[1];
+    expect(initOptions.enableMobileOptimizations).toBeUndefined();
+    expect(initOptions.widgetAlwaysOpen).toBeUndefined();
   });
 });
