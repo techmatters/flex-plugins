@@ -26,7 +26,7 @@ type OwnProps = {
   definition: PreEngagementFormItem & { type: FormInputType.Checkbox };
   getItem: (inptuName: string) => PreEngagementDataItem;
   handleChange: (payload: { name: string; value: string | boolean }) => void;
-  defaultValue?: string;
+  defaultValue?: PreEngagementDataItem['value'];
   showError?: boolean;
 };
 
