@@ -136,7 +136,12 @@ jobs:
           ;
           (function () {
             const legacyDisableMobileOptimizationAttribute = document.currentScript?.getAttribute('disable-mobile-optimization');
-            const enableMobileOptimizations = typeof legacyDisableMobileOptimizationAttribute === 'string' ? (!['', true, 'true'].some(value => value === legacyDisableMobileOptimizationAttribute)).toString() : undefined;
+            const normalizedLegacyDisableMobileOptimizationAttribute = typeof legacyDisableMobileOptimizationAttribute === 'string'
+              ? legacyDisableMobileOptimizationAttribute.trim().toLowerCase()
+              : undefined;
+            const enableMobileOptimizations = typeof normalizedLegacyDisableMobileOptimizationAttribute === 'string'
+              ? (!['', 'true'].includes(normalizedLegacyDisableMobileOptimizationAttribute)).toString()
+              : undefined;
             const scriptTagData = { enableMobileOptimizations, ...document.currentScript.dataset };
             if (document.readyState === 'loading') {
               document.addEventListener('DOMContentLoaded', function () { window.Twilio.initChat(scriptTagData); });
