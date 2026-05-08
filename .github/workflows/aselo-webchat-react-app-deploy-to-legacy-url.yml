@@ -136,7 +136,7 @@ jobs:
           ;
           (function () {
             const legacyDisableMobileOptimizationAttribute = document.currentScript?.getAttribute('disable-mobile-optimization');
-            const enableMobileOptimizations = typeof enableMobileOptimizations === 'string' ? !['', true, 'true'].some(value => value === legacyDisableMobileOptimizationAttribute) : undefined;
+            const enableMobileOptimizations = typeof legacyDisableMobileOptimizationAttribute === 'string' ? !['', true, 'true'].some(value => value === legacyDisableMobileOptimizationAttribute) : undefined;
             const scriptTagData = { enableMobileOptimizations, ...document.currentScript.dataset };
             if (document.readyState === 'loading') {
               document.addEventListener('DOMContentLoaded', function () { window.Twilio.initChat(scriptTagData); });
