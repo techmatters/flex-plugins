@@ -24,25 +24,33 @@ import { LocaleString } from './store/definitions';
  * standard app.js bootstrap and the aselo-chat.min.js wrapper used for legacy URL
  * compatibility deploys.
  */
-export const initChat = (scriptTagData: Record<string, string | undefined>) => {
+export const initChat = (scriptTagData: Record<string, string | boolean | undefined>) => {
   const urlParams = new URLSearchParams(window.location.search);
   const theme = urlParams.get('theme') ?? scriptTagData.theme;
   const isLightTheme = theme !== 'dark';
   const color = urlParams.get('color') || scriptTagData.color;
+  const enableMobileOptimizationsUrlParam = urlParams.get('enableMobileOptimizations');
+  const enableMobileOptimizations = enableMobileOptimizationsUrlParam
+    ? Boolean(enableMobileOptimizationsUrlParam.toLowerCase() === 'true')
+    : scriptTagData.enableMobileOptimizations;
   const backgroundColor = urlParams.get('backgroundColor') || scriptTagData.backgroundColor;
   const alwaysOpen = urlParams.get('alwaysOpen');
   const defaultLocale =
     // data-language attribute is supported for backwards compatibility, remove once webchat is fully migrated
     urlParams.get('locale') || scriptTagData.locale || scriptTagData.language;
-  const configUrl = urlParams.get('configUrl') ?? scriptTagData.configUrl ?? undefined;
+  const configUrl = urlParams.get('configUrl') ?? scriptTagData.configUrl?.toString() ?? undefined;
 
   const themeEl = document.querySelector('[data-theme-pref]');
   themeEl?.setAttribute('data-theme-pref', isLightTheme ? 'light-theme' : 'dark-theme');
-
-  if (!document.getElementById('aselo-webchat-widget-root')) {
-    const root = document.createElement('div');
+  let root = document.getElementById('aselo-webchat-widget-root');
+  if (!root) {
+    root = document.createElement('div');
     root.id = 'aselo-webchat-widget-root';
+
     document.body.appendChild(root);
+  }
+  if (scriptTagData.zIndex) {
+    document.getElementById('aselo-webchat-widget-root')?.setAttribute('style', `z-index: ${scriptTagData.zIndex};`);
   }
 
   window.Twilio.initLogger('info');
@@ -58,5 +66,8 @@ export const initChat = (scriptTagData: Record<string, string | undefined>) => {
     },
     ...(alwaysOpen ? { alwaysOpen: alwaysOpen.toLowerCase() === 'true' } : {}),
     ...(defaultLocale ? { defaultLocale: defaultLocale as LocaleString } : {}),
+    ...(enableMobileOptimizations === undefined
+      ? {}
+      : { enableMobileOptimizations: enableMobileOptimizations as boolean }),
   });
 };
