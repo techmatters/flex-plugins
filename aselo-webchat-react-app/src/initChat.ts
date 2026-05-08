@@ -44,6 +44,10 @@ const parseZIndex = (value: string | boolean | null | undefined): number | undef
   return Number.isFinite(parsedZIndex) ? parsedZIndex : undefined;
 };
 
+const parseString = (value: string | boolean | null | undefined): string | undefined => {
+  return typeof value === 'string' ? value : undefined;
+};
+
 const getOrCreateRootElement = () => {
   let root = document.getElementById('aselo-webchat-widget-root');
   if (root) {
@@ -58,10 +62,10 @@ const getOrCreateRootElement = () => {
 
 const createInitOptions = (
   isLightTheme: boolean,
-  backgroundColor: string | boolean | undefined,
-  color: string | boolean | undefined,
+  backgroundColor: string | undefined,
+  color: string | undefined,
   widgetAlwaysOpen: boolean | undefined,
-  defaultLocale: string | boolean | undefined,
+  defaultLocale: string | undefined,
   enableMobileOptimizations: boolean | undefined,
 ) => {
   const initOptions: {
@@ -80,9 +84,9 @@ const createInitOptions = (
       isLight: isLightTheme,
       overrides: {
         backgroundColors: {
-          ...(typeof backgroundColor === 'string' && { colorBackgroundPrimary: backgroundColor }),
+          ...(backgroundColor && { colorBackgroundPrimary: backgroundColor }),
         },
-        textColors: { ...(typeof color === 'string' && { colorTextWeakest: color }) },
+        textColors: { ...(color && { colorTextWeakest: color }) },
       },
     },
   };
@@ -112,15 +116,15 @@ export const initChat = (scriptTagData: Record<string, string | boolean | undefi
   const urlParams = new URLSearchParams(window.location.search);
   const theme = urlParams.get('theme') ?? scriptTagData.theme;
   const isLightTheme = theme !== 'dark';
-  const color = urlParams.get('color') || scriptTagData.color;
+  const color = parseString(urlParams.get('color') || scriptTagData.color);
   const enableMobileOptimizations =
     parseBoolean(urlParams.get('enableMobileOptimizations')) ?? parseBoolean(scriptTagData.enableMobileOptimizations);
-  const backgroundColor = urlParams.get('backgroundColor') || scriptTagData.backgroundColor;
+  const backgroundColor = parseString(urlParams.get('backgroundColor') || scriptTagData.backgroundColor);
   const widgetAlwaysOpen =
     parseBoolean(urlParams.get('widgetAlwaysOpen')) ?? parseBoolean(scriptTagData.widgetAlwaysOpen);
   const defaultLocale =
     // data-language attribute is supported for backwards compatibility, remove once webchat is fully migrated
-    urlParams.get('locale') || scriptTagData.locale || scriptTagData.language;
+    parseString(urlParams.get('locale') || scriptTagData.locale || scriptTagData.language);
   const configUrl = urlParams.get('configUrl') ?? scriptTagData.configUrl?.toString() ?? undefined;
   const zIndex = parseZIndex(urlParams.get('zIndex') ?? urlParams.get('z-index')) ?? parseZIndex(scriptTagData.zIndex);
 
