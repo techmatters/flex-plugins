@@ -52,8 +52,11 @@ export const initChat = (scriptTagData: Record<string, string | boolean | undefi
 
     document.body.appendChild(root);
   }
-  if (scriptTagData.zIndex) {
-    document.getElementById('aselo-webchat-widget-root')?.setAttribute('style', `z-index: ${scriptTagData.zIndex};`);
+  if (scriptTagData.zIndex !== undefined) {
+    const parsedZIndex = Number.parseInt(String(scriptTagData.zIndex).trim(), 10);
+    if (Number.isFinite(parsedZIndex)) {
+      root.style.zIndex = String(parsedZIndex);
+    }
   }
 
   window.Twilio.initLogger('info');
