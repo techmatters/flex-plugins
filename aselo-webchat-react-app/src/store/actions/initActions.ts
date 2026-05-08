@@ -42,7 +42,7 @@ import type { AppState } from '../store';
 // export for testing
 export const getHelplineConfig = async ({ configUrl }: { configUrl: string | URL }) => {
   try {
-    const helplineConfigResponse = await fetch(configUrl);
+    const helplineConfigResponse = await fetch(configUrl.toString());
     if (!helplineConfigResponse.ok) {
       const errMsg = `Failed to load helpline specific config for Aselo Webchat from ${configUrl}, aborting load`;
       return { status: 'error', message: errMsg } as const;
