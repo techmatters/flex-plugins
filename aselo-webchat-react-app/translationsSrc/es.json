@@ -13,5 +13,8 @@
   "MessagePhase-MessageBubble-OwnMessageSenderName": "Usted",
   "MessagePhase-MessageBubble-ReadIndicator": "Leer",
   "MessagePhase-MessageInput-PlaceholderText": "Escribe tu mensaje",
-  "MessagePhase-MessageInput-SendButtonTitle": "Enviar mensaje"
+  "MessagePhase-MessageInput-SendButtonTitle": "Enviar mensaje",
+  "PreEngagementPhase-Form-Title": "",
+  "PreEngagementPhase-Form-Description": "",
+  "PreEngagementPhase-Form-SubmitButtonLabel": "Iniciar chat"
 }

@@ -1,5 +1,6 @@
 {
   "WelcomeMessage": "Welcome to The PeerChat Service",
+   "PreEngagementPhase-Form-Title": "Welcome to The PeerChat Service",
   "EntryPointTagLine": "The PeerChat Service",
   "EntryPoint-ClosedState-OpenWidgetButtonLabel": "The PeerChat Service",
   "MessagePhase-MessageList-Typing": "PeerChat Supporter is typing...",
