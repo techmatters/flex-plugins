@@ -49,7 +49,7 @@ export const initChat = (scriptTagData: Record<string, string | undefined>) => {
     scriptTagData,
   );
   const backgroundColor = urlParams.get('backgroundColor') || scriptTagData.backgroundColor;
-  const widgetAlwaysOpen = extractBooleanFromUrlParamOrScriptDataAttributeSet('widgetAlwaysOpenUrl', scriptTagData);
+  const widgetAlwaysOpen = extractBooleanFromUrlParamOrScriptDataAttributeSet('widgetAlwaysOpen', scriptTagData);
   const defaultLocale =
     // data-language attribute is supported for backwards compatibility, remove once webchat is fully migrated
     urlParams.get('locale') || scriptTagData.locale || scriptTagData.language;
