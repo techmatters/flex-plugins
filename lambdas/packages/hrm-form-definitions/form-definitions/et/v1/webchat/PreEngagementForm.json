@@ -1,5 +1,13 @@
 {
   "description": "PreEngagementDescription",
   "submitLabel": "StartChat",
-  "fields": []
+  "fields": [
+    {
+      "type": "input",
+      "name": "friendlyName",
+      "label": "WhatIsYourName",
+      "placeholder": "Guest",
+      "required": true
+    }
+  ]
 }
