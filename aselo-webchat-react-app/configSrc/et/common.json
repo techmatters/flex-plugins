@@ -11,5 +11,6 @@
   "widgetAlwaysOpen": false,
   "helplineCode": "et",
   "enableRecaptcha": false,
-  "captureIp": true
+  "captureIp": true,
+  "contactIdentifierField": "ip"
 }
