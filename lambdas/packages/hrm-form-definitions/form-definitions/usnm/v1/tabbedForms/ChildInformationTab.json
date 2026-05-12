@@ -193,59 +193,50 @@
     "label": "Province",
     "type": "select",
     "options": [
-      {
-        "value": "",
-        "label": ""
-      },
-      {
-        "value": "Central",
-        "label": "Central"
-      },
-      {
-        "value": "Unknown",
-        "label": "Unknown"
-      }
+      { "value": "", "label": "" },
+      { "value": "Northern", "label": "Northern" },
+      { "value": "Eastern", "label": "Eastern" },
+      { "value": "Western", "label": "Western" },
+      { "value": "Southern", "label": "Southern" },
+      { "value": "Unknown", "label": "Unknown"}
     ],
-    "required": {
-      "value": true,
-      "message": "RequiredFieldError"
-    }
+    "required": { "value": true, "message": "RequiredFieldError" },
+    "isPII": false
   },
   {
     "name": "district",
     "label": "District",
     "type": "dependent-select",
     "dependsOn": "province",
-    "defaultOption": {
-      "value": "",
-      "label": ""
-    },
+    "defaultOption": { "value": "", "label": "" },
     "options": {
-      "District1": [
-        {
-          "value": "Subdistrict1",
-          "label": "Subdistrict1"
-        },
-        {
-          "value": "Unknown",
-          "label": "Unknown"
-        }
+      "Northern": [
+        { "value": "District A", "label": "District A" },
+        { "value": "District B", "label": "District B" },
+        { "value": "District C", "label": "District C" },
+        { "value": "Unknown", "label": "Unknown"}
       ],
-      "District2": [
-        {
-          "value": "Subdistrict1",
-          "label": "Subdistrict1"
-        },
-        {
-          "value": "Unknown",
-          "label": "Unknown"
-        }
+      "Eastern": [
+        { "value": "District A", "label": "District A" },
+        { "value": "District B", "label": "District B" },
+        { "value": "District C", "label": "District C" },
+        { "value": "Unknown", "label": "Unknown"}
+      ],
+      "Western": [
+        { "value": "District A", "label": "District A" },
+        { "value": "District B", "label": "District B" },
+        { "value": "District C", "label": "District C" },
+        { "value": "Unknown", "label": "Unknown"}
+      ],
+      "Southern": [
+        { "value": "District A", "label": "District A" },
+        { "value": "District B", "label": "District B" },
+        { "value": "District C", "label": "District C" },
+        { "value": "Unknown", "label": "Unknown"}
       ]
     },
-    "required": {
-      "value": true,
-      "message": "RequiredFieldError"
-    }
+    "required": { "value": true, "message": "RequiredFieldError" },
+    "isPII": false
   },
   {
     "name": "phone1",
