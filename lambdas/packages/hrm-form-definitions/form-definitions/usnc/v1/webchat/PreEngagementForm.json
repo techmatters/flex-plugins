@@ -233,7 +233,7 @@
     {
       "type": "checkbox",
       "name": "termsAndConditions",
-      "label": "I accept the <a href=\"https://promiseresourcenetwork.org/\" target=\"_blank\">Terms and Conditions</a>",
+      "label": "I accept the <a href=\"https://promiseresourcenetwork.org/warmline-terms-of-service/\" target=\"_blank\">Terms and Conditions</a>",
       "required": {
         "value": true,
         "message": "Sorry, if you don't accept our terms and conditions we can't provide support to you."
