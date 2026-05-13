@@ -33,6 +33,7 @@ global.fetch = mockFetch;
 const mockLogger = new WebChatLogger('InitWebChat');
 describe('Index', () => {
   const { initWebchat } = window.Twilio;
+  const originalConfigUrlEnv = process.env.REACT_APP_CONFIG_URL;
   beforeAll(() => {
     global.fetch = mockFetch;
 
@@ -47,6 +48,7 @@ describe('Index', () => {
 
   afterEach(() => {
     jest.clearAllMocks();
+    process.env.REACT_APP_CONFIG_URL = originalConfigUrlEnv;
   });
 
   describe('initWebchat', () => {
@@ -83,6 +85,58 @@ describe('Index', () => {
           <WebchatWidget />
         </Provider>,
         expect.any(HTMLElement),
+      );
+    });
+
+    it('uses URL config param over environment and document config values', async () => {
+      const initConfigSpy = jest.spyOn(initActions, 'initConfigThunk');
+      process.env.REACT_APP_CONFIG_URL = '/env-config.json';
+
+      await initWebchat('/url-config.json', '/document-config.json', {});
+
+      expect(initConfigSpy).toHaveBeenCalledWith(
+        expect.objectContaining({
+          configUrl: '/url-config.json',
+        }),
+      );
+    });
+
+    it('uses environment config URL when URL config param is empty', async () => {
+      const initConfigSpy = jest.spyOn(initActions, 'initConfigThunk');
+      process.env.REACT_APP_CONFIG_URL = '/env-config.json';
+
+      await initWebchat('', '/document-config.json', {});
+
+      expect(initConfigSpy).toHaveBeenCalledWith(
+        expect.objectContaining({
+          configUrl: '/env-config.json',
+        }),
+      );
+    });
+
+    it('uses document config URL when environment config URL is empty', async () => {
+      const initConfigSpy = jest.spyOn(initActions, 'initConfigThunk');
+      process.env.REACT_APP_CONFIG_URL = '';
+
+      await initWebchat(null, '/document-config.json', {});
+
+      expect(initConfigSpy).toHaveBeenCalledWith(
+        expect.objectContaining({
+          configUrl: '/document-config.json',
+        }),
+      );
+    });
+
+    it('uses default config URL when higher-precedence values are unset', async () => {
+      const initConfigSpy = jest.spyOn(initActions, 'initConfigThunk');
+      delete process.env.REACT_APP_CONFIG_URL;
+
+      await initWebchat(null, undefined, {});
+
+      expect(initConfigSpy).toHaveBeenCalledWith(
+        expect.objectContaining({
+          configUrl: './config.json',
+        }),
       );
     });
   });
