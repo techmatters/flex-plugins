@@ -148,8 +148,9 @@ describe('Message Bubble', () => {
         updateFocus={jest.fn}
       />,
     );
-    const timestampText = '00:00'; // 0:0 is what getHours():getMinutes() will be
-
+    // This is a bit meh testing with the same code that generates the string in prod code
+    // But otherwise the test will fail if run in different locales
+    const timestampText = dateCreated.toLocaleTimeString([], { timeStyle: 'short' });
     expect(queryByText(timestampText)).toBeInTheDocument();
   });
 
