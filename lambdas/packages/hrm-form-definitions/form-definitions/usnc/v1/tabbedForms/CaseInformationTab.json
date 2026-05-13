@@ -4,8 +4,7 @@
     "label": "Contact Summary",
     "type": "textarea",
     "isPII": false,
-    "rows": 10,
-    "width": 250
+    "rows": 10
   },
   {
     "name": "actionTaken",
