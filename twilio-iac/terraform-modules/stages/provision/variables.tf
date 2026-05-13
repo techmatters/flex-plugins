@@ -43,6 +43,12 @@ variable "s3_lifecycle_rules" {
   }))
 }
 
+variable "s3_use_kms_key" {
+  description = "S3 Docs Bucket to use KMS key for encryption (will use AWS managed key by default)"
+  type        = bool
+  default     = false
+}
+
 variable "manage_github_secrets" {
   type        = bool
   description = "Whether to manage the github secrets for the helpline."

@@ -84,6 +84,7 @@ module "aws" {
   bucket_region       = var.helpline_region
   helpline_region     = var.helpline_region
   s3_lifecycle_rules  = var.s3_lifecycle_rules
+  s3_use_kms_key      = var.s3_use_kms_key
 
   enable_integration_tests         = var.enable_integration_tests
   integration_test_lambda_schedule = "rate(3 hours)"
@@ -97,4 +98,10 @@ provider "github" {
 moved {
   from = module.github
   to   = module.github[0]
+}
+
+
+import {
+  to = module.aws.aws_kms_key.s3_docs[0]
+  id = "059a680a-6c0e-48f6-96e4-b3048adc4ba2"
 }

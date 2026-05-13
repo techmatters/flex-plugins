@@ -100,6 +100,11 @@ variable "s3_lifecycle_rules" {
   }))
 }
 
+variable "s3_use_kms_key" {
+  description = "Create a KMS key for encrypting the docs s3 bucket"
+  type        = bool
+}
+
 variable "queue_transfers_workflow_sid" {
   description = "queue_transfers_workflow_sid"
   type        = string

@@ -43,6 +43,34 @@ resource "aws_ssm_parameter" "s3_docs_bucket_id" {
   }
 }
 
+resource "aws_ssm_parameter" "s3_docs_bucket_key_id" {
+  count       = var.s3_use_kms_key ? 1 : 0
+  name        = "/${lower(var.environment)}/s3/${nonsensitive(var.twilio_account_sid)}/docs_bucket_key_id"
+  type        = "SecureString"
+  value       = aws_kms_key.s3_docs[0].id
+  description = "S3 - Docs bucket KMS key ID"
+
+  tags = {
+    Environment = lower(var.environment)
+    Name        = "/${lower(var.environment)}/s3/${nonsensitive(var.twilio_account_sid)}/docs_bucket_key_id"
+    Terraform   = true
+  }
+}
+
+resource "aws_ssm_parameter" "s3_docs_bucket_key_arn" {
+  count       = var.s3_use_kms_key ? 1 : 0
+  name        = "/${lower(var.environment)}/s3/${nonsensitive(var.twilio_account_sid)}/docs_bucket_key_arn"
+  type        = "SecureString"
+  value       = aws_kms_key.s3_docs[0].arn
+  description = "S3 - Docs bucket KMS key ARN"
+
+  tags = {
+    Environment = lower(var.environment)
+    Name        = "/${lower(var.environment)}/s3/${nonsensitive(var.twilio_account_sid)}/docs_bucket_key_arn"
+    Terraform   = true
+  }
+}
+
 resource "aws_ssm_parameter" "serverless_base_url" {
   name        = "/${lower(var.environment)}/serverless/${nonsensitive(var.twilio_account_sid)}/base_url"
   type        = "SecureString"

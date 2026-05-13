@@ -6,7 +6,7 @@ terraform {
     }
     aws = {
       source  = "hashicorp/aws"
-      version = "~> 4.26.0"
+      version = "~> 6.44.0"
     }
   }
 }
@@ -38,23 +38,7 @@ resource "aws_s3_bucket_versioning" "docs" {
   }
 }
 
-resource "aws_s3_bucket_lifecycle_configuration" "docs" {
-  bucket   = aws_s3_bucket.docs.id
-  provider = aws.bucket
 
-  rule {
-    id     = "expire-noncurrent-versions-and-abort-multipart-uploads"
-    status = "Enabled"
-
-    noncurrent_version_expiration {
-      noncurrent_days = 365
-    }
-
-    abort_incomplete_multipart_upload {
-      days_after_initiation = 7
-    }
-  }
-}
 resource "aws_s3_bucket_public_access_block" "docs" {
   bucket                  = aws_s3_bucket.docs.id
   block_public_acls       = true
@@ -75,6 +59,53 @@ resource "aws_s3_bucket_cors_configuration" "docs" {
   }
 }
 
+resource "aws_s3_bucket_lifecycle_configuration" "docs" {
+  bucket   = aws_s3_bucket.docs.id
+  provider = aws.bucket
+
+  rule {
+    id     = "expire-noncurrent-versions-and-abort-multipart-uploads"
+    status = "Enabled"
+
+    noncurrent_version_expiration {
+      noncurrent_days = 365
+    }
+
+    abort_incomplete_multipart_upload {
+      days_after_initiation = 7
+    }
+  }
+}
+resource "aws_kms_key" "s3_docs" {
+  count                   =  var.s3_use_kms_key ? 1 : 0
+  description             = "An symmetric encryption KMS key"
+  policy                  = aws_kms_key_policy[0]
+  enable_key_rotation     = true
+  deletion_window_in_days = 20
+}
+
+
+data "aws_iam_policy_document" "kms_key" {
+  statement {
+
+    actions   = [
+      "kms:*",
+    ]
+    resources = ["*"]
+    effect    = "Allow"
+    principals {
+      type        = "AWS"
+      identifiers = ["arn:aws:iam::${data.aws_caller_identity.current.account_id}:root"]
+    }
+  }
+}
+
+resource "aws_kms_key_policy" "s3_docs" {
+  count  = var.s3_use_kms_key ? 1 : 0
+  key_id = aws_kms_key.s3_docs[0].id
+  policy = data.aws_iam_policy_document.kms_key.json
+}
+
 resource "aws_s3_bucket_server_side_encryption_configuration" "docs" {
 
   bucket   = aws_s3_bucket.docs.bucket
@@ -82,6 +113,7 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "docs" {
   rule {
     apply_server_side_encryption_by_default {
       sse_algorithm = "AES256"
+      kms_master_key_id = var.s3_use_kms_key ? aws_kms_key.s3_docs[0].id : null
     }
   }
 }

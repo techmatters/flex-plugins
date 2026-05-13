@@ -102,6 +102,8 @@ locals {
     }
   }
 
+  s3_use_kms_key     = true
+
   subscriptions = {
     studio_flow : {
       events = [

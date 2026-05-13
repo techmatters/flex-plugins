@@ -12,6 +12,7 @@ locals {
     enable_lex_v2      = true
     permission_config  = "ukmh"
     helpline_region    = "eu-west-1"
+    s3_use_kms_key     = true
 
 
     workflows = {
@@ -55,5 +56,6 @@ locals {
     lex_v2_bot_languages = {
       en_GB : ["post_survey"]
     }
+
   }
 }
