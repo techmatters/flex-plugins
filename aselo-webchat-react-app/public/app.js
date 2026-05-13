@@ -13,7 +13,11 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
-const scriptTagData = document.currentScript.dataset;
+// preserve relative path if one is used by pulling it with getAttribute not the src property
+const rawSrc = document.currentScript.getAttribute('src');
+const configUrl =
+  rawSrc.lastIndexOf('/') > -1 ? `${rawSrc.substring(0, rawSrc.lastIndexOf('/'))}/config.json` : './config.json';
+const scriptTagData = { configUrl, ...document.currentScript.dataset };
 window.addEventListener('DOMContentLoaded', () => {
   Twilio.initChat(scriptTagData);
 });
