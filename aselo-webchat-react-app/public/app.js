@@ -15,7 +15,8 @@
  */
 // preserve relative path if one is used by pulling it with getAttribute not the src property
 const rawSrc = document.currentScript.getAttribute('src');
-const configUrl = `${rawSrc.substring(0, rawSrc.lastIndexOf('/'))}/config.json`;
+const configUrl =
+  rawSrc.lastIndexOf('/') > -1 ? `${rawSrc.substring(0, rawSrc.lastIndexOf('/'))}/config.json` : './config.json';
 const scriptTagData = { configUrl, ...document.currentScript.dataset };
 window.addEventListener('DOMContentLoaded', () => {
   Twilio.initChat(scriptTagData);

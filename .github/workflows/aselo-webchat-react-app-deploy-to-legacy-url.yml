@@ -136,8 +136,7 @@ jobs:
           ;
           (function () {
             const rawSrc = document.currentScript.getAttribute('src');
-            const configUrl = `${rawSrc.substring(0, rawSrc.lastIndexOf('/'))}/config.json`;
-            const scriptTagData = { ...document.currentScript.dataset };
+            const configUrl = rawSrc.lastIndexOf('/') > -1 ? `${rawSrc.substring(0, rawSrc.lastIndexOf('/'))}/config.json` : './config.json';
             const legacyDisableMobileOptimizationAttribute = document.currentScript?.getAttribute('disable-mobile-optimization');
             const normalizedLegacyDisableMobileOptimizationAttribute = typeof legacyDisableMobileOptimizationAttribute === 'string'
               ? legacyDisableMobileOptimizationAttribute.trim().toLowerCase()
