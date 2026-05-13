@@ -75,10 +75,7 @@ jest.mock('../FilePreview', () => ({
 describe('Message Bubble', () => {
   const media = { filename: 'filename.jpg', contentType: 'image/jpeg', size: 1 } as Media;
   const media2 = { filename: 'filename2.jpg', contentType: 'image/jpeg', size: 1 } as Media;
-  const dateCreated = {
-    getHours: () => 0,
-    getMinutes: () => 0,
-  };
+  const dateCreated = new Date(2000, 0, 1, 0, 0);
   const messageCurrentUser = {
     index: 0,
     author: user1.identity,
