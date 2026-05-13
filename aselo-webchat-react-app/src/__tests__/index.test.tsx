@@ -57,7 +57,7 @@ describe('Index', () => {
       const root = document.createElement('div');
       root.id = 'aselo-webchat-widget-root';
       document.body.appendChild(root);
-      await initWebchat(undefined, { deploymentKey: 'CV000000' });
+      await initWebchat(null, undefined, {});
 
       expect(renderSpy).toHaveBeenCalledWith(
         <Provider store={store}>
@@ -71,12 +71,11 @@ describe('Index', () => {
       const initConfigSpy = jest.spyOn(initActions, 'initConfigThunk');
       const renderSpy = jest.spyOn(reactDom, 'render');
 
-      const deploymentKey = 'CV000000';
-      await initWebchat(undefined, { deploymentKey });
+      await initWebchat(null, undefined, { defaultLocale: 'fr-FR' });
 
       expect(initConfigSpy).toHaveBeenCalledWith(
         expect.objectContaining({
-          overrides: expect.objectContaining({ deploymentKey }),
+          overrides: expect.objectContaining({ defaultLocale: 'fr-FR' }),
         }),
       );
       expect(renderSpy).toHaveBeenCalledWith(

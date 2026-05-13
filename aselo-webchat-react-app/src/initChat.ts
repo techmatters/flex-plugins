@@ -53,7 +53,6 @@ export const initChat = (scriptTagData: Record<string, string | undefined>) => {
   const defaultLocale =
     // data-language attribute is supported for backwards compatibility, remove once webchat is fully migrated
     urlParams.get('locale') || scriptTagData.locale || scriptTagData.language;
-  const configUrl = urlParams.get('configUrl') ?? scriptTagData.configUrl?.toString() ?? undefined;
 
   const themeEl = document.querySelector('[data-theme-pref]');
   themeEl?.setAttribute('data-theme-pref', isLightTheme ? 'light-theme' : 'dark-theme');
@@ -72,7 +71,7 @@ export const initChat = (scriptTagData: Record<string, string | undefined>) => {
   }
 
   window.Twilio.initLogger('info');
-  window.Twilio.initWebchat(configUrl, {
+  window.Twilio.initWebchat(urlParams.get('configUrl'), scriptTagData.configUrl?.toString(), {
     theme: {
       isLight: isLightTheme,
       overrides: {
