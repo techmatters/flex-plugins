@@ -125326,11 +125326,26 @@
     "type": "select",
     "isPII": false,
     "options": [
-      { "value": "Unknown", "label": "" },
-      { "value": "18-24", "label": "18-24" },
-      { "value": "25-40", "label": "25-40" },
-      { "value": "41-54", "label": "41-54" },
-      { "value": "55+", "label": "55+" }
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "18-24",
+        "label": "18-24"
+      },
+      {
+        "value": "25-40",
+        "label": "25-40"
+      },
+      {
+        "value": "41-54",
+        "label": "41-54"
+      },
+      {
+        "value": "55+",
+        "label": "55+"
+      }
     ]
   },
   {
