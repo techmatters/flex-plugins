@@ -39,9 +39,20 @@ export const handler = async (event: ALBEvent): Promise<ALBResult> => {
       const RECAPTCHA_SECRET = await getSsmParameter(
         '/global/google/recaptcha/secret_key',
       );
-
-      const body = JSON.parse(event.body ?? '{}');
-      const token = body.response;
+      let token: string;
+      try {
+        const body = JSON.parse(event.body ?? '{}');
+        token = body.response;
+      } catch (e) {
+        return {
+          statusCode: 400,
+          headers,
+          body: JSON.stringify({
+            success: false,
+            message: `Error: Failed to parse Recaptcha verify JSON payload: ${event.body}`,
+          }),
+        };
+      }
 
       if (!token) {
         return {
