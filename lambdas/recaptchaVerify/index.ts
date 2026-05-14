@@ -45,14 +45,13 @@ export const handler = async (event: ALBEvent): Promise<ALBResult> => {
         token = body.response;
       } catch (e) {
         return {
-        statusCode: 400,
-        headers,
-        body: JSON.stringify({
-          success: false,
-          message: `Error: Failed to parse Recaptcha verify JSON payload: ${event.body}`,
-        }),
-      };
-
+          statusCode: 400,
+          headers,
+          body: JSON.stringify({
+            success: false,
+            message: `Error: Failed to parse Recaptcha verify JSON payload: ${event.body}`,
+          }),
+        };
       }
 
       if (!token) {
