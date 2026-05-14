@@ -92,10 +92,9 @@ const ContactDetailsHome: React.FC<Props> = function ({
 }) {
   // Redux selectors
   const savedContact = useSelector((state: RootState) => selectContactStateByContactId(state, contactId)?.savedContact);
-  const isProfileRoute = useSelector((state: RootState) => {
-    const currentRoute = selectCurrentTopmostRouteForTask(state, task.taskSid);
-    return isRouteWithContext(currentRoute) && currentRoute?.context === 'profile';
-  });
+
+  const currentRoute = useSelector((state: RootState) => selectCurrentTopmostRouteForTask(state, task.taskSid));
+  const isProfileRoute = isRouteWithContext(currentRoute) && currentRoute?.context === 'profile';
   const definitionVersion = useSelector((state: RootState) => selectDefinitionVersionForContact(state, savedContact));
   const counselorsHash = useSelector((state: RootState) => selectCounselorsHash(state));
   const showRemovedFromCaseBanner = useSelector(
@@ -114,7 +113,19 @@ const ContactDetailsHome: React.FC<Props> = function ({
   const dispatch = useDispatch();
   const navigate = (
     form: keyof Pick<ContactRawJson, 'caseInformation' | 'callerInformation' | 'categories' | 'childInformation'>,
-  ) => dispatch(changeRoute({ route: 'contact', subroute: 'edit', id: contactId, form }, task.taskSid));
+  ) =>
+    dispatch(
+      changeRoute(
+        {
+          route: 'contact',
+          subroute: 'edit',
+          id: contactId,
+          form,
+          ...(isRouteWithContext(currentRoute) ? { context: currentRoute.context } : {}),
+        },
+        task.taskSid,
+      ),
+    );
   const createDraftCsamReport = () => dispatch(newCSAMReportActionForContact(contactId));
   const openProfileModal = id => {
     dispatch(newOpenModalAction({ route: 'profile', profileId: id, subroute: 'details' }, task.taskSid));
