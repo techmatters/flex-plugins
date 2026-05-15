@@ -286,10 +286,13 @@ const updateWorkerSkills = async ({
       operation,
     });
 
+    console.log('>>>>> workerAttributes', workerAttributes);
+    console.log('>>>>> updatedAttributes', updatedAttributes);
     await worker.update({ attributes: JSON.stringify(updatedAttributes) });
 
     return newOk(workerSid);
   } catch (err) {
+    console.error(err);
     return newErr({
       error: err,
       message: 'Failed to update worker skills',
