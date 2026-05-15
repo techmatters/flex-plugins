@@ -45,6 +45,9 @@ const rotateRoutingSkills = ({
   updatedFrom: WorkerRoutingSkills;
   updatedTo: WorkerRoutingSkills;
 } => {
+  console.log('rotateRoutingSkills: ', from);
+  console.log('rotateRoutingSkills: ', to);
+  console.log('rotateRoutingSkills: ', elements);
   const levelsEntries = Object.entries(from.levels || {});
   const updatedToSkills = Array.from(new Set([...to.skills, ...Object.keys(elements)]));
   const previousLevels = Object.fromEntries(
@@ -60,7 +63,8 @@ const rotateRoutingSkills = ({
     ),
   };
 
-  const updatedFromSkills = from.skills.filter(skill => Object.hasOwn(elements, skill));
+  const updatedFromSkills =
+    from.skills?.filter(skill => Object.hasOwn(elements, skill)) || [];
   const updatedFromLevels = Object.fromEntries(
     levelsEntries.filter(([skill]) => !Object.hasOwn(elements, skill)),
   );
