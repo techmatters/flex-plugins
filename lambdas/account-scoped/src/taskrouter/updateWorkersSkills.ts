@@ -84,7 +84,7 @@ const mergeAttributes = ({
     ...attributes,
     routing: {
       ...attributes?.routing,
-      skills: enabledSkills,
+      ...enabledSkills,
     },
     disabled_skills: disabledSkills,
   };
@@ -106,6 +106,11 @@ const setSkillsEnable = ({
     to: enabledSkills,
     elements: skills,
   });
+
+  console.log('>>>>> from', enabledSkills);
+  console.log('>>>>> updatedFrom', updatedFrom);
+  console.log('>>>>> to', disabledSkills);
+  console.log('>>>>> from', updatedTo);
 
   return mergeAttributes({
     attributes,
@@ -366,7 +371,7 @@ export const handleUpdateWorkersSkills: AccountScopedHandler = async (
     const validateSkillsResults = await validateSkills({ client, skills, operation });
     const errors = validateSkillsResults
       .filter(r => isErr(r))
-      .map(e => `${e.error}: e.message`);
+      .map(e => `${e.error}: ${e.message}`);
     if (errors.length) {
       return newHttpErrorResult('InvalidSkills', 400, errors.join('\n'));
     }
