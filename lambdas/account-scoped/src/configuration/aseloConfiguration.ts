@@ -29,3 +29,24 @@ export const retrieveFeatureFlags = async (
 ): Promise<Record<string, boolean | undefined>> => {
   return (await retrieveServiceConfigurationAttributes(client)).feature_flags;
 };
+
+export type TaskRouterSKill =
+  | {
+      multivalue: false;
+      name: string;
+      maximum: null;
+      minimum: null;
+    }
+  | {
+      multivalue: true;
+      name: string;
+      maximum: number;
+      minimum: number;
+    };
+
+export const retrieveServiceConfigurationTaskRouterSkills = async (
+  client: Twilio,
+): Promise<TaskRouterSKill[]> => {
+  const serviceConfig = await client.flexApi.v1.configuration.get().fetch();
+  return serviceConfig.taskrouterSkills;
+};

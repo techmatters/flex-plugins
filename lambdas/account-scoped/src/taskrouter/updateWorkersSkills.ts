@@ -15,29 +15,60 @@
  */
 
 import { AccountScopedHandler } from '../httpTypes';
-import { newErr, newOk } from '../Result';
-import { newMissingParameterResult } from '../httpErrors';
+import { isErr, newErr, newOk, Result } from '../Result';
+import { newHttpErrorResult, newMissingParameterResult } from '../httpErrors';
 import {
+  Twilio,
   getTwilioClient,
-  getTwilioWorkspaceSid,
+  getWorkspaceSid,
 } from '@tech-matters/twilio-configuration';
+import {
+  retrieveServiceConfigurationTaskRouterSkills,
+  TaskRouterSKill,
+} from '../configuration/aseloConfiguration';
+import { isObject } from 'lodash';
 
 const validOperations = ['enable', 'disable', 'assign', 'unassign'] as const;
 type ValidOperations = (typeof validOperations)[number];
 
-const moveElementsBetweenArrays = ({
+const isInteger = (n: any): n is number => Number.isInteger(n);
+
+const rotateRoutingSkills = ({
   from,
   to,
   elements,
 }: {
-  from: string[];
-  to: string[];
-  elements: string[];
-}) => {
-  const updatedFrom = from.filter(e => !elements.includes(e));
-  const updatedTo = Array.from(new Set([...to, ...elements]));
+  from: WorkerRoutingSkills;
+  to: WorkerRoutingSkills;
+  elements: SkillsParam;
+}): {
+  updatedFrom: WorkerRoutingSkills;
+  updatedTo: WorkerRoutingSkills;
+} => {
+  const levelsEntries = Object.entries(from.levels);
+  const updatedToSkills = Array.from(new Set([...to.skills, ...Object.keys(elements)]));
+  const previousLevels = Object.fromEntries(
+    levelsEntries.filter(([skill]) => Object.hasOwn(elements, skill)),
+  );
+  const updatedToLevels = {
+    ...to.levels,
+    ...previousLevels,
+    ...Object.entries(elements).reduce(
+      (accum, [skill, entry]) =>
+        entry && isInteger(entry.level) ? { ...accum, [skill]: entry.level } : accum,
+      {},
+    ),
+  };
 
-  return { updatedFrom, updatedTo };
+  const updatedFromSkills = from.skills.filter(skill => Object.hasOwn(elements, skill));
+  const updatedFromLevels = Object.fromEntries(
+    levelsEntries.filter(([skill]) => !Object.hasOwn(elements, skill)),
+  );
+
+  return {
+    updatedFrom: { skills: updatedFromSkills, levels: updatedFromLevels },
+    updatedTo: { skills: updatedToSkills, levels: updatedToLevels },
+  };
 };
 
 const mergeAttributes = ({
@@ -46,8 +77,8 @@ const mergeAttributes = ({
   disabledSkills,
 }: {
   attributes: { [k: string]: any };
-  enabledSkills: string[];
-  disabledSkills: string[];
+  enabledSkills: WorkerRoutingSkills;
+  disabledSkills: WorkerRoutingSkills;
 }) => {
   return {
     ...attributes,
@@ -55,10 +86,7 @@ const mergeAttributes = ({
       ...attributes?.routing,
       skills: enabledSkills,
     },
-    disabled_skills: {
-      ...attributes.disabled_skills,
-      skills: disabledSkills,
-    },
+    disabled_skills: disabledSkills,
   };
 };
 
@@ -69,11 +97,11 @@ const setSkillsEnable = ({
   skills,
 }: {
   attributes: { [k: string]: any };
-  enabledSkills: string[];
-  disabledSkills: string[];
-  skills: string[];
+  enabledSkills: WorkerRoutingSkills;
+  disabledSkills: WorkerRoutingSkills;
+  skills: SkillsParam;
 }) => {
-  const { updatedFrom, updatedTo } = moveElementsBetweenArrays({
+  const { updatedFrom, updatedTo } = rotateRoutingSkills({
     from: disabledSkills,
     to: enabledSkills,
     elements: skills,
@@ -93,11 +121,11 @@ const setSkillsDisable = ({
   skills,
 }: {
   attributes: { [k: string]: any };
-  enabledSkills: string[];
-  disabledSkills: string[];
-  skills: string[];
+  enabledSkills: WorkerRoutingSkills;
+  disabledSkills: WorkerRoutingSkills;
+  skills: SkillsParam;
 }) => {
-  const { updatedFrom, updatedTo } = moveElementsBetweenArrays({
+  const { updatedFrom, updatedTo } = rotateRoutingSkills({
     from: enabledSkills,
     to: disabledSkills,
     elements: skills,
@@ -117,23 +145,34 @@ const setSkillsAssign = ({
   skills,
 }: {
   attributes: { [k: string]: any };
-  enabledSkills: string[];
-  disabledSkills: string[];
-  skills: string[];
+  enabledSkills: WorkerRoutingSkills;
+  disabledSkills: WorkerRoutingSkills;
+  skills: SkillsParam;
 }) => {
-  const assignedSkills = new Set([...enabledSkills, ...disabledSkills]);
+  const assignedSkills = new Set([...enabledSkills.skills, ...disabledSkills.skills]);
 
-  const updatedEnabledSkills = skills.reduce((accum, skill) => {
+  const entries = Object.entries(skills);
+  const updatedEnabledSkills = entries.reduce((accum, [skill]) => {
+    if (assignedSkills.has(skill)) {
+      return accum;
+    }
+    return [...accum, skill];
+  }, enabledSkills.skills);
+
+  const updatedEnabledSkillsLevels = entries.reduce((accum, [skill, entry]) => {
     if (assignedSkills.has(skill)) {
       return accum;
     }
 
-    return [...accum, skill];
-  }, enabledSkills);
+    if (!entry || !isInteger(entry.level)) {
+      return accum;
+    }
+    return { ...accum, [skill]: entry.level };
+  }, enabledSkills.levels);
 
   return mergeAttributes({
     attributes,
-    enabledSkills: updatedEnabledSkills,
+    enabledSkills: { skills: updatedEnabledSkills, levels: updatedEnabledSkillsLevels },
     disabledSkills,
   });
 };
@@ -145,17 +184,32 @@ const setSkillsUnassign = ({
   skills,
 }: {
   attributes: { [k: string]: any };
-  enabledSkills: string[];
-  disabledSkills: string[];
-  skills: string[];
+  enabledSkills: WorkerRoutingSkills;
+  disabledSkills: WorkerRoutingSkills;
+  skills: SkillsParam;
 }) => {
-  const updatedEnabledSkills = enabledSkills.filter(s => !skills.includes(s));
-  const updatedDisabledSkills = disabledSkills.filter(s => !skills.includes(s));
+  const updatedEnabledSkills = enabledSkills.skills.filter(s => Object.hasOwn(skills, s));
+  const updatedEnabledSkillsLevels = Object.fromEntries(
+    Object.entries(enabledSkills.levels).filter(
+      ([skill]) => !Object.hasOwn(skills, skill),
+    ),
+  );
+  const updatedDisabledSkills = disabledSkills.skills.filter(s =>
+    Object.hasOwn(skills, s),
+  );
+  const updatedDisabledSkillsLevels = Object.fromEntries(
+    Object.entries(disabledSkills.levels).filter(
+      ([skill]) => !Object.hasOwn(skills, skill),
+    ),
+  );
 
   return mergeAttributes({
     attributes,
-    enabledSkills: updatedEnabledSkills,
-    disabledSkills: updatedDisabledSkills,
+    enabledSkills: { skills: updatedEnabledSkills, levels: updatedEnabledSkillsLevels },
+    disabledSkills: {
+      skills: updatedDisabledSkills,
+      levels: updatedDisabledSkillsLevels,
+    },
   });
 };
 
@@ -165,11 +219,17 @@ const updateSkillsOperation = ({
   skills,
 }: {
   attributes: { [k: string]: any };
-  skills: string[];
+  skills: SkillsParam;
   operation: ValidOperations;
 }) => {
-  const enabledSkills = attributes?.routing?.skills || [];
-  const disabledSkills = attributes?.disabled_skills?.skills || [];
+  const enabledSkills: WorkerRoutingSkills = attributes?.routing || {
+    skills: [],
+    levels: {},
+  };
+  const disabledSkills: WorkerRoutingSkills = attributes?.disabled_skills?.skills || {
+    skills: [],
+    levels: {},
+  };
   const params = {
     attributes,
     enabledSkills,
@@ -204,7 +264,7 @@ const updateWorkerSkills = async ({
 }: {
   workerSid: string;
   workspaceSid: string;
-  skills: string[];
+  skills: SkillsParam;
   operation: ValidOperations;
   client: Awaited<ReturnType<typeof getTwilioClient>>;
 }) => {
@@ -233,6 +293,62 @@ const updateWorkerSkills = async ({
   }
 };
 
+const validateSkills = async ({
+  client,
+  skills,
+  operation,
+}: {
+  client: Twilio;
+  skills: Partial<SkillsParam>;
+  operation: ValidOperations;
+}): Promise<Result<'InvalidSkill' | 'InvalidLevel', undefined>[]> => {
+  const taskrouterSkills = (
+    await retrieveServiceConfigurationTaskRouterSkills(client)
+  ).reduce<Record<string, TaskRouterSKill>>(
+    (accum, curr) => ({ ...accum, [curr.name]: curr }),
+    {} as any,
+  );
+
+  const results = Object.entries(skills).map(([name, entry]) => {
+    const trs = taskrouterSkills[name];
+    // validate that the skill exists
+    if (!trs) {
+      return newErr({
+        error: 'InvalidSkill' as const,
+        message: `${name} skill does not exists`,
+      });
+    }
+
+    if (operation === 'unassign' || operation === 'disable') {
+      return newOk(undefined);
+    }
+
+    // validate skills that require a level
+    if (trs.multivalue) {
+      const { level } = entry || {};
+      if (!isInteger(level)) {
+        return newErr({
+          error: 'InvalidLevel' as const,
+          message: `${name} level is not an integer`,
+        });
+      }
+
+      if (level < trs.minimum || level > trs.maximum) {
+        return newErr({
+          error: 'InvalidLevel' as const,
+          message: `${name} level is not within the valid range`,
+        });
+      }
+    }
+
+    return newOk(undefined);
+  });
+
+  return results;
+};
+
+type SkillsParam = { [name: string]: { level: number | null } };
+type WorkerRoutingSkills = { skills: string[]; levels: Record<string, number> };
 export const handleUpdateWorkersSkills: AccountScopedHandler = async (
   { body },
   accountSid,
@@ -241,17 +357,31 @@ export const handleUpdateWorkersSkills: AccountScopedHandler = async (
     const { workers, skills, operation } = body;
 
     if (!workers || !Array.isArray(workers)) return newMissingParameterResult('workers');
-    if (!skills || !Array.isArray(skills)) return newMissingParameterResult('skills');
+    if (!skills || !isObject(skills)) return newMissingParameterResult('skills');
     if (!operation || !validOperations.includes(operation))
       return newMissingParameterResult('operation');
 
-    const workspaceSid = await getTwilioWorkspaceSid(accountSid);
-
     const client = await getTwilioClient(accountSid);
+
+    const validateSkillsResults = await validateSkills({ client, skills, operation });
+    const errors = validateSkillsResults
+      .filter(r => isErr(r))
+      .map(e => `${e.error}: e.message`);
+    if (errors.length) {
+      return newHttpErrorResult('InvalidSkills', 400, errors.join('\n'));
+    }
+
+    const workspaceSid = await getWorkspaceSid(accountSid);
 
     const result = await Promise.all(
       workers.map(workerSid =>
-        updateWorkerSkills({ operation, skills, workerSid, workspaceSid, client }),
+        updateWorkerSkills({
+          operation,
+          skills: skills as SkillsParam,
+          workerSid,
+          workspaceSid,
+          client,
+        }),
       ),
     );
 
