@@ -74,6 +74,6 @@ runs:
         name: "${{ inputs.title }}"
         prerelease: true
         generate_release_notes: true
-        target_commitish: {{ github.sha }}
+        target_commitish: ${{ github.sha }}
       env:
         GITHUB_TOKEN: ${{ inputs.repo_token }}
