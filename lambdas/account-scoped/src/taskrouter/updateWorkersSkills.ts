@@ -235,7 +235,7 @@ const updateSkillsOperation = ({
     skills: [],
     levels: {},
   };
-  const disabledSkills: WorkerRoutingSkills = attributes?.disabled_skills?.skills || {
+  const disabledSkills: WorkerRoutingSkills = attributes?.disabled_skills || {
     skills: [],
     levels: {},
   };
