@@ -37,8 +37,10 @@ import {
   textAreaContainerStyles,
 } from './styles/MessageInput.styles';
 import { useSanitizer } from '../utils/useSanitizer';
-import { selectCurrentLocale } from '../store/config.reducer';
+import { selectCurrentLocale, selectCurrentTranslations } from '../store/config.reducer';
 import { useMobileOptimizations } from '../hooks/useMobileOptimizations';
+import { localizeKey } from '../localization/localizeKey';
+import LocalizedTemplate from '../localization/LocalizedTemplate';
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
 export const MessageInput = () => {
@@ -55,6 +57,7 @@ export const MessageInput = () => {
       currentLocale: selectCurrentLocale(state),
     }),
   );
+  const currentTranslations = useSelector(selectCurrentTranslations);
   const oldAttachmentsLength = useRef((attachedFiles || []).length);
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
   const attachmentsBoxRef = useRef<HTMLDivElement>(null);
@@ -76,7 +79,9 @@ export const MessageInput = () => {
 
   const logger = window.Twilio.getLogger('MessageInput');
   const isSubmitDisabled = (!text.trim() && !attachedFiles?.length) || isSending;
-
+  const localize = localizeKey(currentTranslations);
+  const sendTitle = localize('MessagePhase-MessageInput-SendButtonTitle');
+  const inputPlaceholder = localize('MessagePhase-MessageInput-PlaceholderText');
   const send = async () => {
     if (isSubmitDisabled) {
       return;
@@ -163,7 +168,7 @@ export const MessageInput = () => {
             <TextArea
               ref={textAreaRef}
               data-test="message-input-textarea"
-              placeholder="Type your message"
+              placeholder={inputPlaceholder}
               value={text}
               element="MESSAGE_INPUT"
               onChange={onChange}
@@ -191,7 +196,9 @@ export const MessageInput = () => {
                   fill="none"
                   aria-labelledby="EmojiIcon"
                 >
-                  <title id="EmojiIcon">Select emoji</title>
+                  <title id="EmojiIcon">
+                    <LocalizedTemplate code="MessagePhase-MessageInput-EmojiPickerTitle" />
+                  </title>
                   <path
                     fill="currentColor"
                     d="M6.674 11.02a.5.5 0 00-.964.268c.653 2.35 3.241 3.766 5.577 3.117a.531.531 0 00.037-.012c1.403-.51 2.572-1.663 2.966-3.108a.5.5 0 00-.965-.263c-.297 1.089-1.197 2.008-2.324 2.425-1.813.492-3.828-.629-4.327-2.427zm.787-3.885a.788.788 0 100 1.577.788.788 0 000-1.577zm5.077 0a.788.788 0 000 1.577.789.789 0 100-1.577z"
@@ -217,7 +224,7 @@ export const MessageInput = () => {
               type="submit"
               aria-disabled={isSubmitDisabled}
             >
-              <SendIcon decorative={false} title="Send message" size="sizeIcon30" />
+              <SendIcon decorative={false} title={sendTitle} size="sizeIcon30" />
             </Button>
           </Box>
         </Box>

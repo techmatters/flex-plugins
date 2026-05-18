@@ -22,7 +22,8 @@
             "enable_lex_v2": true,
             "enable_hang_up_by_hrm_saving": true,
             "use_twilio_lambda_for_conference_functions": true,
-            "use_twilio_lambda_for_conversation_duration": true
+            "use_twilio_lambda_for_conversation_duration": true,
+            "enable_twilio_transcripts": true
         },
         "contact_save_frequency": "onTabChange",
         "multipleOfficeSupport": true,
@@ -33,7 +34,7 @@
             "version": "2.2.0"
         },
         "resources_base_url": "https://hrm-development.tl.techmatters.org",
-        "enforceZeroTranscriptRetention": true
+        "enforceZeroTranscriptRetention": false
     },
     "ui_attributes": {
         "colorTheme": {

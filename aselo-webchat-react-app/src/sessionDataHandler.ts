@@ -42,7 +42,7 @@ type RefreshTokenAPIPayload = {
 };
 
 type EndChatPayload = {
-  channelSid: string;
+  conversationSid: string;
   language?: string;
   token: string;
 };
@@ -52,11 +52,12 @@ export const getAccountScopedBaseUrl = (aseloBackendUrl: string, helplineCode: s
 
 export const contactBackend = ({ aseloBackendUrl, helplineCode }: ConfigState) => {
   const lambdaUrl = getAccountScopedBaseUrl(aseloBackendUrl, helplineCode);
-  return async <T>(
+  const doRequest = async <T>(
     endpointRoute: string,
     body: InitWebchatAPIPayload | RefreshTokenAPIPayload | EndChatPayload,
-  ): Promise<T> => {
-    const securityHeaders = await generateSecurityHeaders();
+    attemptToDefer: boolean,
+  ): Promise<T | undefined> => {
+    const securityHeaders = generateSecurityHeaders();
     const mixpanelHeaders = generateMixPanelHeaders();
     const logger = window.Twilio.getLogger('SessionDataHandler');
     const urlEncodedBody = new URLSearchParams();
@@ -65,23 +66,48 @@ export const contactBackend = ({ aseloBackendUrl, helplineCode }: ConfigState) =
         urlEncodedBody.append(key, (body as Record<string, string>)[key].toString());
       }
     }
-    const response = await fetch(lambdaUrl + endpointRoute, {
+    const headers = {
+      Accept: 'application/json',
+      'Content-Type': 'application/x-www-form-urlencoded',
+      ...securityHeaders,
+      ...mixpanelHeaders,
+    };
+    const fullUrl = lambdaUrl + endpointRoute;
+    if (attemptToDefer) {
+      // eslint-disable-next-line dot-notation
+      const { fetchLater } = window as any;
+      if (fetchLater) {
+        logger.info(`fetchLater support detected, using that.`);
+        fetchLater(fullUrl, {
+          method: 'POST',
+          headers,
+          body: urlEncodedBody.toString(),
+        });
+        return undefined;
+      }
+      logger.warn(`No fetchLater support detected, falling back to fetch`);
+    }
+    const response = await fetch(fullUrl, {
       method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/x-www-form-urlencoded',
-        ...securityHeaders,
-        ...mixpanelHeaders,
-      },
+      headers,
       body: urlEncodedBody.toString(),
     });
 
     if (!response.ok) {
-      logger.error('Request to backend failed');
-      throw new Error('Request to backend failed');
+      const body = await response.text();
+      const errorMessage = `Request to backend failed (status ${response.status}). ${body}`;
+      logger.error(errorMessage);
+      throw new Error(errorMessage);
     }
 
     return response.json();
+  };
+  return {
+    request: <T>(endpointRoute: string, body: InitWebchatAPIPayload | RefreshTokenAPIPayload | EndChatPayload) =>
+      doRequest(endpointRoute, body, false) as Promise<T>,
+    deferredRequest: async (endpointRoute: string, body: EndChatPayload) => {
+      await doRequest(endpointRoute, body, true);
+    },
   };
 };
 function storeSessionData(data: SessionDataStorage) {
@@ -155,7 +181,7 @@ class SessionDataHandler {
 
     let newTokenData: TokenResponse;
     try {
-      newTokenData = await contactBackend(store.getState().config)<TokenResponse>(
+      newTokenData = await contactBackend(store.getState().config).request<TokenResponse>(
         '/webchatAuthentication/refreshToken',
         {
           DeploymentKey: this._deploymentKey,
@@ -208,7 +234,7 @@ class SessionDataHandler {
       if (customerIdentity) {
         payload.Identity = customerIdentity;
       }
-      newTokenData = await contactBackend(config)<TokenResponse>('/webchatAuthentication/initWebchat', payload);
+      newTokenData = await contactBackend(config).request<TokenResponse>('/webchatAuthentication/initWebchat', payload);
     } catch (e) {
       logger.error('No results from server');
       throw Error('No results from server');

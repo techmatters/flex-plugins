@@ -16,6 +16,21 @@
 
 import { LocaleString } from './store/definitions';
 
+const extractBooleanFromUrlParamOrScriptDataAttributeSet = (
+  name: string,
+  scriptTagData: Record<string, string | undefined>,
+): boolean | undefined => {
+  const urlParam = new URLSearchParams(window.location.search).get(name);
+  if (urlParam) {
+    return Boolean(urlParam.toLowerCase() === 'true');
+  }
+  const scriptDataAttributeValue = scriptTagData[name];
+  if (scriptDataAttributeValue) {
+    return Boolean(scriptDataAttributeValue.toLowerCase() === 'true');
+  }
+  return undefined;
+};
+
 /**
  * Initialises the Aselo Webchat widget by reading configuration from URL parameters,
  * ensuring the widget root element exists, and calling Twilio.initWebchat.
@@ -29,24 +44,34 @@ export const initChat = (scriptTagData: Record<string, string | undefined>) => {
   const theme = urlParams.get('theme') ?? scriptTagData.theme;
   const isLightTheme = theme !== 'dark';
   const color = urlParams.get('color') || scriptTagData.color;
+  const enableMobileOptimizations = extractBooleanFromUrlParamOrScriptDataAttributeSet(
+    'enableMobileOptimizations',
+    scriptTagData,
+  );
   const backgroundColor = urlParams.get('backgroundColor') || scriptTagData.backgroundColor;
-  const alwaysOpen = urlParams.get('alwaysOpen');
+  const widgetAlwaysOpen = extractBooleanFromUrlParamOrScriptDataAttributeSet('widgetAlwaysOpen', scriptTagData);
   const defaultLocale =
     // data-language attribute is supported for backwards compatibility, remove once webchat is fully migrated
     urlParams.get('locale') || scriptTagData.locale || scriptTagData.language;
-  const configUrl = urlParams.get('configUrl') ?? scriptTagData.configUrl ?? undefined;
 
   const themeEl = document.querySelector('[data-theme-pref]');
   themeEl?.setAttribute('data-theme-pref', isLightTheme ? 'light-theme' : 'dark-theme');
-
-  if (!document.getElementById('aselo-webchat-widget-root')) {
-    const root = document.createElement('div');
+  let root = document.getElementById('aselo-webchat-widget-root');
+  if (!root) {
+    root = document.createElement('div');
     root.id = 'aselo-webchat-widget-root';
+
     document.body.appendChild(root);
+  }
+  if (scriptTagData.zIndex !== undefined) {
+    const parsedZIndex = Number.parseInt(String(scriptTagData.zIndex).trim(), 10);
+    if (Number.isFinite(parsedZIndex)) {
+      root.style.zIndex = String(parsedZIndex);
+    }
   }
 
   window.Twilio.initLogger('info');
-  window.Twilio.initWebchat(configUrl, {
+  window.Twilio.initWebchat(urlParams.get('configUrl'), scriptTagData.configUrl?.toString(), {
     theme: {
       isLight: isLightTheme,
       overrides: {
@@ -56,7 +81,10 @@ export const initChat = (scriptTagData: Record<string, string | undefined>) => {
         textColors: { ...(color && { colorTextWeakest: color }) },
       },
     },
-    ...(alwaysOpen ? { alwaysOpen: alwaysOpen.toLowerCase() === 'true' } : {}),
+    ...(widgetAlwaysOpen === undefined ? {} : { widgetAlwaysOpen: widgetAlwaysOpen as boolean }),
     ...(defaultLocale ? { defaultLocale: defaultLocale as LocaleString } : {}),
+    ...(enableMobileOptimizations === undefined
+      ? {}
+      : { enableMobileOptimizations: enableMobileOptimizations as boolean }),
   });
 };

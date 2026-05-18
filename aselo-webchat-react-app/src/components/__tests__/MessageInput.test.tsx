@@ -32,7 +32,7 @@ const fileAttachmentConfig = {
   acceptedExtensions: ['jpg', 'jpeg', 'png', 'amr', 'mp3', 'mp4', 'pdf'],
 };
 const defaultState = {
-  config: { fileAttachment: fileAttachmentConfig },
+  config: { fileAttachment: fileAttachmentConfig, translations: {} },
   chat: {
     conversation: { prepareMessage: jest.fn(), setAllMessagesRead: jest.fn(), typing: jest.fn() },
     attachedFiles: [],

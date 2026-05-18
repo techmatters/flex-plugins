@@ -26,7 +26,7 @@ import { newErr, newOk, Result } from '../Result';
 import {
   getChatServiceSid,
   getTwilioClient,
-  getTwilioWorkspaceSid,
+  getWorkspaceSid,
 } from '@tech-matters/twilio-configuration';
 import { lookupCustomMessage } from '../hrm/formDefinitionsCache';
 import { chatChannelJanitor } from './chatChannelJanitor';
@@ -71,32 +71,52 @@ const getEndChatMessage = async (
 const updateTaskAssignmentStatus = async (
   accountSid: AccountSID,
   taskSid: string,
-  channelSid: string,
   event: EndChatRequestBody,
 ) => {
+  const { conversationSid, channelSid } = event;
   try {
     const client = await getTwilioClient(accountSid);
-    const workspaceSid = await getTwilioWorkspaceSid(accountSid);
+    const workspaceSid = await getWorkspaceSid(accountSid);
     // Fetch the Task to 'cancel' or 'wrapup'
     const task = await client.taskrouter.v1.workspaces
       .get(workspaceSid)
       .tasks(taskSid)
       .fetch();
-
+    console.debug(
+      `[endChat - ${accountSid} / ${conversationSid ?? channelSid}] Task ${taskSid} assignment status:`,
+      task.assignmentStatus,
+    );
     // Send a Message indicating user left the conversation
     if (task.assignmentStatus === 'assigned') {
       const endChatMessage = await getEndChatMessage(accountSid, event);
-      await client.chat.v2
-        .services(await getChatServiceSid(accountSid))
-        .channels(channelSid)
-        .messages.create({
+      if (conversationSid) {
+        console.debug(
+          `[endChat - ${accountSid} / ${conversationSid ?? channelSid}] Sent ending conversation message to task ${taskSid}`,
+        );
+        await client.conversations.v1.conversations(conversationSid).messages.create({
           body: endChatMessage,
-          from: 'Bot',
+          author: 'Bot',
           xTwilioWebhookEnabled: 'true',
         });
+      } else if (channelSid) {
+        await client.chat.v2
+          .services(await getChatServiceSid(accountSid))
+          .channels(channelSid)
+          .messages.create({
+            body: endChatMessage,
+            from: 'Bot',
+            xTwilioWebhookEnabled: 'true',
+          });
+      } else {
+        // Validation should prevent it getting here
+        console.error(
+          'Assertion error. updateTaskAssignmentStatus run without conversationSid or channelSid',
+        );
+      }
     }
 
     // Update the task assignmentStatus
+
     const updateAssignmentStatus = (assignmentStatus: TaskInstance['assignmentStatus']) =>
       client.taskrouter.v1
         .workspaces(workspaceSid)
@@ -106,16 +126,25 @@ const updateTaskAssignmentStatus = async (
     switch (task.assignmentStatus) {
       case 'reserved':
       case 'pending': {
+        console.debug(
+          `[endChat - ${accountSid} / ${conversationSid ?? channelSid}] cancelling ${task.assignmentStatus} task ${taskSid} and returning a 'cleanup' state`,
+        );
         await updateAssignmentStatus('canceled');
         return 'cleanup'; // indicate that there's cleanup needed
       }
       case 'assigned': {
+        console.debug(
+          `[endChat - ${accountSid} / ${conversationSid ?? channelSid}] wrapping up ${task.assignmentStatus} task ${taskSid} and returning a 'keep-alive' state`,
+        );
         await updateAssignmentStatus('wrapping');
         return 'keep-alive'; // keep the channel alive for post survey
       }
       // If the task is wrapping / complete, we assume the user is trying to end the post survey
       case 'wrapping':
       case 'completed': {
+        console.debug(
+          `[endChat - ${accountSid} / ${conversationSid ?? channelSid}] returning a 'cleanup' state for ${task.assignmentStatus} task ${taskSid}`,
+        );
         return 'cleanup'; // only clean up, task doesn't need cancelling
       }
       default:
@@ -123,7 +152,10 @@ const updateTaskAssignmentStatus = async (
 
     return 'noop'; // no action needed
   } catch (err) {
-    console.warn(`Unable to end task ${taskSid}:`, err);
+    console.warn(
+      `[endChat - ${accountSid} / ${conversationSid ?? channelSid}] Unable to end task ${taskSid}, returning noop state:`,
+      err,
+    );
     return 'noop'; // no action needed
   }
 };
@@ -140,13 +172,13 @@ const endContactOrPostSurvey = async (
 ) => {
   const { tasksSids, surveyTaskSid } = channelAttributes;
 
-  const { channelSid } = event;
+  console.debug(
+    `[endChat - ${accountSid}] Task SIDs: ${tasksSids}, Survey Task SID: ${surveyTaskSid}`,
+  );
   const actionsOnChannel = await Promise.allSettled(
     [...tasksSids, surveyTaskSid]
       .filter(Boolean)
-      .map(tSid =>
-        updateTaskAssignmentStatus(accountSid, tSid, channelSid as string, event),
-      ),
+      .map(tSid => updateTaskAssignmentStatus(accountSid, tSid, event)),
   );
 
   // Cleanup the channel if there's no keep-alive and at least one cleanup
@@ -181,14 +213,30 @@ export const handleEndChat: AccountScopedHandler = async (
     let channelCleanupRequired;
 
     if (conversationSid) {
+      console.debug(
+        `[endChat - ${accountSid} / ${conversationSid}] Identified as conversation.`,
+      );
       const { attributes, participants } = await client.conversations.v1.conversations
         .get(conversationSid)
         .fetch();
       const conversationAttributes = JSON.parse(attributes);
+      console.debug(
+        `[endChat - ${accountSid} / ${conversationSid}] Parsed conversation attributes summary:`,
+        {
+          hasSurveyTaskSid: conversationAttributes?.surveyTaskSid !== undefined,
+          tasksSidsCount: Array.isArray(conversationAttributes?.tasksSids)
+            ? conversationAttributes.tasksSids.length
+            : 0,
+        },
+      );
       channelCleanupRequired = await endContactOrPostSurvey(
         accountSid,
         conversationAttributes,
         body,
+      );
+      console.debug(
+        `[endChat - ${accountSid} / ${conversationSid}] Conversation cleanup required:`,
+        channelCleanupRequired,
       );
       const participantsList = await participants().list();
       await Promise.all(
@@ -215,17 +263,20 @@ export const handleEndChat: AccountScopedHandler = async (
 
       const channelMembers = await channelContext.members.list();
       await Promise.all(
-        channelMembers.map(m => {
+        channelMembers.map(async m => {
           if (JSON.parse(m.attributes).member_type !== 'guest') {
             return m.remove();
           }
 
-          return Promise.resolve();
+          return false;
         }),
       );
     }
 
     if (channelCleanupRequired) {
+      console.debug(
+        `[endChat - ${accountSid} / ${conversationSid ?? channelSid}] Running channel janitor to clean up conversation.`,
+      );
       // Deactivate channel and proxy
       await chatChannelJanitor(accountSid, {
         channelSid,
@@ -233,6 +284,9 @@ export const handleEndChat: AccountScopedHandler = async (
       });
     }
 
+    console.info(
+      `[endChat - ${accountSid} / ${conversationSid ?? channelSid}] Completed`,
+    );
     return newOk({ message: 'End Chat OK!' });
   } catch (error: any) {
     return newErr({ message: error.message, error: { statusCode: 500, cause: error } });

@@ -69,7 +69,7 @@ export type ConfigState = {
   emojiPicker?: EmojiPickerConfig;
   deploymentKey: string;
   region?: string;
-  alwaysOpen?: boolean;
+  widgetAlwaysOpen?: boolean;
   theme?: {
     isLight?: boolean;
     overrides?: Partial<GenericThemeShape>;

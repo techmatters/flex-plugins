@@ -17,7 +17,7 @@
   },
   "dependencies": {
     "zod": "^3.22.3",
-    "@aws-sdk/client-ssm": "^3.716.0",
-    "@aws-sdk/client-s3": "^3.716.0"
+    "@aws-sdk/client-ssm": "^3.1045.0",
+    "@aws-sdk/client-s3": "^3.1045.0"
   }
 }

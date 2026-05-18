@@ -25,13 +25,19 @@
   },
   {
     "name": "soft",
-    "label": "Soft",
+    "label": "Soft - bored/chat/joke",
     "type": "button",
     "category": "non-data"
   },
   {
     "name": "hard",
-    "label": "Hard",
+    "label": "Hard - sexual",
+    "type": "button",
+    "category": "non-data"
+  },
+  {
+    "name": "hard",
+    "label": "Hard - general",
     "type": "button",
     "category": "non-data"
   },

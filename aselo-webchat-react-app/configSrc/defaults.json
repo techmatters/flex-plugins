@@ -1,6 +1,6 @@
 {
   "deploymentKey": "CVxxx",
-  "alwaysOpen": false,
+  "widgetAlwaysOpen": false,
   "defaultLocale": "en-US",
   "quickExitUrl": "https://www.google.com"
 }

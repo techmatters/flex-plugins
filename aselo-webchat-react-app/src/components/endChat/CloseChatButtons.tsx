@@ -38,13 +38,13 @@ const CloseChatButtons = () => {
 
   const endChatButton =
     conversation && token && tasksSids?.length ? (
-      <EndChat channelSid={conversation.sid} token={token} language={locale} action="finishTask" />
+      <EndChat conversationSid={conversation.sid} token={token} language={locale} action="finishTask" />
     ) : (
       <EndChat action="restartEngagement" />
     );
   const quickExitButton =
     conversation && token && tasksSids?.length ? (
-      <QuickExit channelSid={conversation.sid} token={token} language={locale} action="finishTask" />
+      <QuickExit conversationSid={conversation.sid} token={token} language={locale} action="finishTask" />
     ) : (
       <QuickExit action="restartEngagement" />
     );

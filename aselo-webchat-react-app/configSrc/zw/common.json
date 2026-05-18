@@ -8,9 +8,10 @@
     "enabled": true,
     "blockedEmojis": []
   },
-  "alwaysOpen": false,
+  "widgetAlwaysOpen": false,
   "helplineCode": "zw",
   "enableRecaptcha": false,
+  "defaultLocale": "en-US",
   "captureIp": true,
   "contactIdentifierField": "ip"
 }

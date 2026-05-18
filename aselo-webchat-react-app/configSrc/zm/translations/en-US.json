@@ -5,6 +5,7 @@
   "Today": "Today",
   "InputPlaceHolder": "Type Message",
   "WelcomeMessage": "Welcome to ChildLine Zambia!",
+  "PreEngagementPhase-Form-Description": "Let's get started",
   "Yesterday": "Yesterday",
   "TypingIndicator": "Counselor is typing",
   "MessageCanvasTrayButton": "Start New Chat",
@@ -12,5 +13,5 @@
   "AutoFirstMessage": "Incoming webchat contact from",
   "StartChat": "Start Chat!",
   "SelectLanguage": "Select your language",
-  "MessagePhase-MessageBubble-OtherParticipantMessageSenderName": "Counsellor"
+  "MessagePhase-MessageBubble-OtherParticipantMessageSenderName": "Childline/Lifeline Zambia Counsellor"
 }

@@ -97,7 +97,10 @@ describe('session data handler', () => {
     it('should call correct stage url', async () => {
       fetchMock.mockResolvedValue(okFetchResponse({}));
       sessionDataHandler.setRegion('stage');
-      await contactBackend(TEST_CONFIG_STATE)('/Webchat/Tokens/Refresh', { DeploymentKey: 'dk', token: 'token' });
+      await contactBackend(TEST_CONFIG_STATE).request('/Webchat/Tokens/Refresh', {
+        DeploymentKey: 'dk',
+        token: 'token',
+      });
       expect(fetchMock.mock.calls[0][0]).toEqual(
         `${TEST_CONFIG_STATE.aseloBackendUrl}/lambda/twilio/account-scoped/XX/Webchat/Tokens/Refresh`,
       );
@@ -108,10 +111,49 @@ describe('session data handler', () => {
       const fetchSpy = jest
         .spyOn(window, 'fetch')
         .mockImplementation(async (): Promise<never> => mockFetch as Promise<never>);
-      await contactBackend(TEST_CONFIG_STATE)('/Webchat/Tokens/Refresh', { DeploymentKey: 'dk', token: 'token' });
+      await contactBackend(TEST_CONFIG_STATE).request('/Webchat/Tokens/Refresh', {
+        DeploymentKey: 'dk',
+        token: 'token',
+      });
       expect(fetchSpy.mock.calls[0][0]).toEqual(
         `${TEST_CONFIG_STATE.aseloBackendUrl}/lambda/twilio/account-scoped/XX/Webchat/Tokens/Refresh`,
       );
+    });
+
+    describe('deferredRequest', () => {
+      afterEach(() => {
+        delete (window as any).fetchLater;
+      });
+
+      it('should use fetchLater when available and not call fetch', async () => {
+        const fetchLaterMock = jest.fn();
+        (window as any).fetchLater = fetchLaterMock;
+
+        await contactBackend(TEST_CONFIG_STATE).deferredRequest('/endChat', {
+          conversationSid: 'CH123',
+          token: 'token',
+        });
+
+        expect(fetchLaterMock).toHaveBeenCalledWith(
+          `${TEST_CONFIG_STATE.aseloBackendUrl}/lambda/twilio/account-scoped/XX/endChat`,
+          expect.objectContaining({ method: 'POST' }),
+        );
+        expect(fetchMock).not.toHaveBeenCalled();
+      });
+
+      it('should fall back to fetch when fetchLater is not available', async () => {
+        fetchMock.mockResolvedValue(okFetchResponse({}));
+
+        await contactBackend(TEST_CONFIG_STATE).deferredRequest('/endChat', {
+          conversationSid: 'CH123',
+          token: 'token',
+        });
+
+        expect(fetchMock).toHaveBeenCalledWith(
+          `${TEST_CONFIG_STATE.aseloBackendUrl}/lambda/twilio/account-scoped/XX/endChat`,
+          expect.objectContaining({ method: 'POST' }),
+        );
+      });
     });
   });
 

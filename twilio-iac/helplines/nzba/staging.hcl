@@ -34,10 +34,10 @@ locals {
       voice : {
         channel_type     = "voice"
         contact_identity = ""
-        templatefile     = "/app/twilio-iac/helplines/templates/studio-flows/voice-basic.tftpl"
+        templatefile     = "/app/twilio-iac/helplines/templates/studio-flows/voice-blocking-no-op-hours-sd.tftpl"
         channel_flow_vars = {
-          voice_ivr_greeting_message = "Hello, you are contacting Barnardos. Please hold for a counsellor."
-          voice_ivr_blocked_message  = "I'm sorry your number has been blocked."
+          play_message_voice_prequeue = "Hello. Please hold on for a while and we will attend to you as soon as we can. Thank you for your patience!."
+          play_message_voice_blocked  = "Sorry, you're not able to contact Barnardos from this number"
           voice_ivr_language         = "en-US"
         }
         chatbot_unique_names = []

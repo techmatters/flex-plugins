@@ -81,6 +81,19 @@ describe('Input component', () => {
     expect(handleChange).toHaveBeenCalledWith({ name: 'friendlyName', value: 'John' });
   });
 
+  it('uses defaultValue as the initial input value', () => {
+    const { getByPlaceholderText } = render(
+      <InputText
+        definition={definition}
+        handleChange={handleChange}
+        getItem={getItem(noError)}
+        defaultValue="Prefilled name"
+      />,
+    );
+
+    expect(getByPlaceholderText('Enter your name')).toHaveValue('Prefilled name');
+  });
+
   describe('debounced onChange', () => {
     beforeEach(() => {
       jest.useFakeTimers();

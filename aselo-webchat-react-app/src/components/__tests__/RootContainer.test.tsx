@@ -50,7 +50,7 @@ describe('Root Container', () => {
     resetMockRedux({
       config: {
         ...BASE_MOCK_REDUX.config,
-        alwaysOpen: false,
+        widgetAlwaysOpen: false,
       },
     });
   });

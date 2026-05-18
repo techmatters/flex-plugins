@@ -1,6 +1,9 @@
 {
   "WelcomeMessage": "¡Hola! te damos la bienvenida a Hora Segura ❤️",
-  "PreEngagementConfigDescription": "¡Hola! te damos la bienvenida a Hora Segura ❤️ Completa esta información para saber más de ti y poder ayudarte.",
+  "PreEngagementDescription": "¡Hola! te damos la bienvenida a Hora Segura ❤️ Completa esta información para saber más de ti y poder ayudarte.",
+   "PreEngagementPhase-Form-Title": "¡Hola! te damos la bienvenida a Hora Segura ❤️",
+  "PreEngagementPhase-Form-Description": "Completa esta información para saber más de ti y poder ayudarte.",
+  "PreEngagementPhase-Form-SubmitButtonLabel": "Comenzar Nuevo Chat!",
   "MessageCanvasTrayContent": "",
   "MessageInputDisabledReasonHold": "Muchas gracias por la información. Lo transferiremos ahora. Por favor espere for un agente.",
   "AutoFirstMessage": "Nuevo contacto del webchat de",
@@ -8,6 +11,7 @@
   "StartChat": "Comenzar Nuevo Chat!",
   "MessageCanvasTrayButton": "Comenzar Nuevo Chat",
   "EntryPointTagline": "Chatea con nosotros",
+  "EntryPoint-ClosedState-OpenWidgetButtonLabel": "Conversemos en Hora Segura",
   "InvalidPreEngagementMessage": "Los formularios previos al compromiso no se han establecido y son necesarios para iniciar el chat web. Por favor configúrelos ahora en la configuración.",
   "InvalidPreEngagementButton": "Aprende más",
   "PredefinedChatMessageAuthorName": "Bot",
@@ -31,5 +35,7 @@
   "PrefieroNoDecir": "Prefiero no decir",
   "Email": "Email",
   "Edad": "Edad",
-  "Nickname": "Nickname"
+  "Nickname": "Nickname",
+  "MessagePhase-MessageList-Typing": "Voluntarie está escribiendo ...",
+  "MessagePhase-MessageBubble-OtherParticipantMessageSenderName": "Volutarie"
 }

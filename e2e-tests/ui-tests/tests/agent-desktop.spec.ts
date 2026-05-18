@@ -25,8 +25,9 @@ import hrmPermissions from '../aselo-service-mocks/hrm/permissions';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { preload, useUnminifiedFlex } from '../flex-in-a-box/local-resources';
 import { aseloPage } from '../aselo-service-mocks/aselo-page';
-import { delay } from 'mockttp/dist/util/util';
 import { navigateToAgentDesktop } from '../ui-global-setup';
+
+const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 test.describe.serial('Agent Desktop', () => {
   let page: Page;

@@ -23,14 +23,14 @@ import { PreEngagementDataItem } from '../../../store/definitions';
 
 const generateFormItem = ({
   definition,
-  defaultValue = '',
+  defaultValue,
   handleChange,
   getItem,
   setItemValue,
   showError,
 }: {
   definition: PreEngagementFormItem;
-  defaultValue?: string | boolean;
+  defaultValue?: PreEngagementDataItem['value'];
   handleChange: (payload: { name: string; value: string | boolean }) => void;
   getItem: (inptuName: string) => PreEngagementDataItem;
   setItemValue: (payload: { name: string; value: string | boolean }) => void;
@@ -46,6 +46,7 @@ const generateFormItem = ({
           handleChange={handleChange}
           getItem={getItem}
           showError={showError}
+          defaultValue={defaultValue}
         />
       );
     case FormInputType.Select:
@@ -56,6 +57,7 @@ const generateFormItem = ({
           handleChange={handleChange}
           getItem={getItem}
           showError={showError}
+          defaultValue={defaultValue}
         />
       );
     case FormInputType.DependentSelect:
@@ -67,6 +69,7 @@ const generateFormItem = ({
           getItem={getItem}
           setItemValue={setItemValue}
           showError={showError}
+          defaultValue={defaultValue}
         />
       );
     case FormInputType.Checkbox:
@@ -77,6 +80,7 @@ const generateFormItem = ({
           handleChange={handleChange}
           getItem={getItem}
           showError={showError}
+          defaultValue={defaultValue}
         />
       );
     default:
@@ -84,7 +88,6 @@ const generateFormItem = ({
   }
 };
 
-// eslint-disable-next-line
 export const getDefaultValue = (def: PreEngagementFormItem) => {
   switch (def.type) {
     case FormInputType.Input:
@@ -114,15 +117,16 @@ export const generateForm = ({
 }) => {
   return (
     form &&
-    form.map(definition =>
-      generateFormItem({
+    form.map(definition => {
+      const defaultValue = getItem(definition.name).value ?? getDefaultValue(definition);
+      return generateFormItem({
         definition,
         handleChange,
-        defaultValue: getDefaultValue(definition),
+        defaultValue,
         getItem,
         setItemValue,
         showError: showError(definition.name),
-      }),
-    )
+      });
+    })
   );
 };

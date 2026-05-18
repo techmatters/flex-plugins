@@ -28,6 +28,10 @@ export const titleStyles: TextStyleProps = {
   marginBottom: 'space60',
 };
 
+export const descriptionStyles: TextStyleProps = {
+  marginBottom: 'space30',
+};
+
 // export const introStyles: TextStyleProps = {
 //   marginBottom: 'space70',
 // };
