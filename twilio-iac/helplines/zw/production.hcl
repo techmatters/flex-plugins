@@ -17,6 +17,16 @@ locals {
 
 
     channels = {
+      chat : {
+        messaging_mode       = "conversations"
+        channel_type         = "chat"
+        contact_identity     = ""
+        templatefile         = "/app/twilio-iac/helplines/zw/templates/studio-flows/messaging-greeting-message-blocking-v2.tftpl"
+        channel_flow_vars    = {
+          chat_greeting_message = "Thank you for contacting Childline Zimbabwe, a counsellor will be with you shortly. If this is an emergency or you wait longer than 30 min, we recommend you call us for free at 116. You can also contact us on WhatsApp at +263 732 116 116."
+        }
+        chatbot_unique_names = []
+      },
       webchat : {
         channel_type     = "web"
         contact_identity = ""
