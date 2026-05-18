@@ -18,7 +18,7 @@
   "scripts": {
     "docker:build": "docker build -t account-scoped --build-arg lambda_name=account-scoped --build-arg lambda_dir=. -f ../Dockerfile ../",
     "test:unit": "jest tests/unit",
-    "test:service": "jest tests/service",
+    "test:service": "cross-env NODE_OPTIONS=\"$NODE_OPTIONS --experimental-vm-modules\" jest tests/service",
     "test": "jest"
   },
   "dependencies": {
