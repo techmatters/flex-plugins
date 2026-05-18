@@ -29,7 +29,7 @@ type OwnProps = {
   definition: PreEngagementFormItem & { type: FormInputType.Select };
   getItem: (inptuName: string) => PreEngagementDataItem;
   handleChange: (payload: { name: string; value: string | boolean }) => void;
-  defaultValue?: string;
+  defaultValue?: PreEngagementDataItem['value'];
   showError?: boolean;
 };
 
@@ -57,7 +57,7 @@ const Select: React.FC<Props> = ({ definition, getItem, defaultValue, handleChan
           id={name}
           hasError={Boolean(error && showError)}
           onChange={e => handleChange({ name, value: e.target.value })}
-          defaultValue={defaultValue}
+          defaultValue={typeof defaultValue === 'string' ? defaultValue : ''}
         >
           {buildOptions()}
         </SelectInput>

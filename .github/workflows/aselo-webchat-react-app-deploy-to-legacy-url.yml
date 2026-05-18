@@ -135,7 +135,16 @@ jobs:
           cat >> aselo-chat-uncompressed.js << 'INIT_SCRIPT'
           ;
           (function () {
-            const scriptTagData = document.currentScript.dataset;
+            const rawSrc = document.currentScript.getAttribute('src');
+            const configUrl = rawSrc.lastIndexOf('/') > -1 ? `${rawSrc.substring(0, rawSrc.lastIndexOf('/'))}/config.json` : './config.json';
+            const legacyDisableMobileOptimizationAttribute = document.currentScript?.getAttribute('disable-mobile-optimization');
+            const normalizedLegacyDisableMobileOptimizationAttribute = typeof legacyDisableMobileOptimizationAttribute === 'string'
+              ? legacyDisableMobileOptimizationAttribute.trim().toLowerCase()
+              : undefined;
+            const enableMobileOptimizations = typeof normalizedLegacyDisableMobileOptimizationAttribute === 'string'
+              ? (!['', 'true'].includes(normalizedLegacyDisableMobileOptimizationAttribute)).toString()
+              : undefined;
+            const scriptTagData = { configUrl, enableMobileOptimizations, ...document.currentScript.dataset };
             if (document.readyState === 'loading') {
               document.addEventListener('DOMContentLoaded', function () { window.Twilio.initChat(scriptTagData); });
             } else {

@@ -19,41 +19,71 @@ import { Message } from '@twilio/conversations';
 import { Conversation } from '../../../../__mocks__/@twilio/conversations/conversation';
 import { initMessagesListener } from '../messagesListener';
 import { ACTION_ADD_MESSAGE, ACTION_REMOVE_MESSAGE, ACTION_UPDATE_MESSAGE } from '../../actionTypes';
+import * as newMessageNotification from '../../../../utils/newMessageNotification';
+import { AppState } from '../../../store';
+
+jest.mock('../../../../utils/newMessageNotification', () => ({
+  playNotificationSound: jest.fn(),
+  showBrowserNotification: jest.fn(),
+  getAssetsBucketUrl: jest.fn().mockReturnValue('https://assets-test.tl.techmatters.org/plugins/hrm'),
+}));
+
+const buildConversation = () =>
+  new Conversation(
+    {
+      channel: 'chat',
+      entityName: '',
+      uniqueName: '',
+      attributes: {},
+      lastConsumedMessageIndex: 0,
+      dateCreated: new Date(),
+      dateUpdated: new Date(),
+    },
+    'sid',
+    {
+      self: '',
+      messages: '',
+      participants: '',
+    },
+    {} as any,
+    {} as any,
+  );
+
+const LOCAL_IDENTITY = 'local-user';
+const COUNSELLOR_IDENTITY = 'counsellor-user';
+
+const buildState = (overrides: Partial<AppState['session']> = {}): AppState =>
+  ({
+    session: {
+      expanded: false,
+      ...overrides,
+    },
+    config: {
+      environment: 'test',
+      translations: { 'xx-XX': { NewMessageNotification: 'Test notification' } },
+      defaultLocale: 'xx-XX',
+    },
+  } as unknown as AppState);
 
 describe('initMessagesListener', () => {
   let conversation: Conversation;
 
   beforeEach(() => {
-    conversation = new Conversation(
-      {
-        channel: 'chat',
-        entityName: '',
-        uniqueName: '',
-        attributes: {},
-        lastConsumedMessageIndex: 0,
-        dateCreated: new Date(),
-        dateUpdated: new Date(),
-      },
-      'sid',
-      {
-        self: '',
-        messages: '',
-        participants: '',
-      },
-      {} as any,
-      {} as any,
-    );
+    conversation = buildConversation();
+    Object.defineProperty(document, 'visibilityState', { value: 'visible', configurable: true });
   });
 
   afterEach(() => {
     conversation.removeAllListeners();
+    jest.clearAllMocks();
   });
 
   it('adds a listener for the "messageAdded" event', () => {
     const dispatch = jest.fn();
+    const getState = jest.fn().mockReturnValue(buildState({ expanded: true }));
 
-    initMessagesListener(conversation, dispatch);
-    const message = {} as Message;
+    initMessagesListener(conversation, dispatch, LOCAL_IDENTITY, getState);
+    const message = { author: COUNSELLOR_IDENTITY } as unknown as Message;
     conversation.emit('messageAdded', message);
     expect(dispatch).toHaveBeenCalledTimes(1);
     expect(dispatch).toHaveBeenCalledWith({
@@ -64,8 +94,9 @@ describe('initMessagesListener', () => {
 
   it('adds a listener for the "messageUpdated" event', () => {
     const dispatch = jest.fn();
+    const getState = jest.fn().mockReturnValue(buildState({ expanded: true }));
 
-    initMessagesListener(conversation, dispatch);
+    initMessagesListener(conversation, dispatch, LOCAL_IDENTITY, getState);
     const message = {} as Message;
     conversation.emit('messageUpdated', {
       message,
@@ -80,14 +111,87 @@ describe('initMessagesListener', () => {
 
   it('adds a listener for the "messageRemoved" event subset', () => {
     const dispatch = jest.fn();
+    const getState = jest.fn().mockReturnValue(buildState({ expanded: true }));
 
-    initMessagesListener(conversation, dispatch);
+    initMessagesListener(conversation, dispatch, LOCAL_IDENTITY, getState);
     const message = {} as Message;
     conversation.emit('messageRemoved', message);
     expect(dispatch).toHaveBeenCalledTimes(1);
     expect(dispatch).toHaveBeenCalledWith({
       type: ACTION_REMOVE_MESSAGE,
       payload: expect.objectContaining({ message }),
+    });
+  });
+
+  describe('new message notifications', () => {
+    it('plays sound and shows browser notification when message is from counsellor and widget is collapsed', () => {
+      const dispatch = jest.fn();
+      const getState = jest.fn().mockReturnValue(buildState({ expanded: false }));
+
+      initMessagesListener(conversation, dispatch, LOCAL_IDENTITY, getState);
+      const message = { author: COUNSELLOR_IDENTITY, body: 'Hello there' } as unknown as Message;
+      conversation.emit('messageAdded', message);
+
+      expect(newMessageNotification.playNotificationSound).toHaveBeenCalledWith(
+        'https://assets-test.tl.techmatters.org/plugins/hrm',
+      );
+      expect(newMessageNotification.showBrowserNotification).toHaveBeenCalledWith('Test notification', 'Hello there');
+    });
+
+    it('plays sound and shows browser notification when message is from counsellor and document is hidden', () => {
+      Object.defineProperty(document, 'visibilityState', { value: 'hidden', configurable: true });
+      const dispatch = jest.fn();
+      const getState = jest.fn().mockReturnValue(buildState({ expanded: true }));
+
+      initMessagesListener(conversation, dispatch, LOCAL_IDENTITY, getState);
+      const message = { author: COUNSELLOR_IDENTITY, body: 'A message' } as unknown as Message;
+      conversation.emit('messageAdded', message);
+
+      expect(newMessageNotification.playNotificationSound).toHaveBeenCalled();
+      expect(newMessageNotification.showBrowserNotification).toHaveBeenCalledWith('Test notification', 'A message');
+    });
+
+    it('does not play notification when message is from local user', () => {
+      const dispatch = jest.fn();
+      const getState = jest.fn().mockReturnValue(buildState({ expanded: false }));
+
+      initMessagesListener(conversation, dispatch, LOCAL_IDENTITY, getState);
+      const message = { author: LOCAL_IDENTITY } as unknown as Message;
+      conversation.emit('messageAdded', message);
+
+      expect(newMessageNotification.playNotificationSound).not.toHaveBeenCalled();
+      expect(newMessageNotification.showBrowserNotification).not.toHaveBeenCalled();
+    });
+
+    it('does not play notification when message is from counsellor but widget is expanded and document is visible', () => {
+      const dispatch = jest.fn();
+      const getState = jest.fn().mockReturnValue(buildState({ expanded: true }));
+
+      initMessagesListener(conversation, dispatch, LOCAL_IDENTITY, getState);
+      const message = { author: COUNSELLOR_IDENTITY } as unknown as Message;
+      conversation.emit('messageAdded', message);
+
+      expect(newMessageNotification.playNotificationSound).not.toHaveBeenCalled();
+      expect(newMessageNotification.showBrowserNotification).not.toHaveBeenCalled();
+    });
+
+    it('uses fallback notification message when translation key is missing', () => {
+      const dispatch = jest.fn();
+      const stateWithoutTranslation = {
+        session: { expanded: false },
+        config: {
+          environment: 'test',
+          translations: { 'xx-XX': {} },
+          defaultLocale: 'xx-XX',
+        },
+      } as unknown as AppState;
+      const getState = jest.fn().mockReturnValue(stateWithoutTranslation);
+
+      initMessagesListener(conversation, dispatch, LOCAL_IDENTITY, getState);
+      const message = { author: COUNSELLOR_IDENTITY } as unknown as Message;
+      conversation.emit('messageAdded', message);
+
+      expect(newMessageNotification.showBrowserNotification).toHaveBeenCalledWith('New message from counsellor', '');
     });
   });
 });

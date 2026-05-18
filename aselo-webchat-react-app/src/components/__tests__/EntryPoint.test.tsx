@@ -31,7 +31,13 @@ jest.mock('../../hooks/useMobileOptimizations', () => ({
   useMobileOptimizations: jest.fn(() => ({ isMobileFullscreen: false })),
 }));
 
+const mockState = (expanded: boolean) => ({ session: { expanded }, config: { translations: {} } });
+
 describe('Entry Point', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
   it('renders the entry point', () => {
     const { container } = render(<EntryPoint />);
 
@@ -39,7 +45,7 @@ describe('Entry Point', () => {
   });
 
   it('renders the minimize chat button when expanded', () => {
-    (useSelector as jest.Mock).mockImplementation((callback: any) => callback({ session: { expanded: true } }));
+    (useSelector as jest.Mock).mockImplementation((callback: any) => callback(mockState(true)));
 
     const { queryByTitle } = render(<EntryPoint />);
 
@@ -47,7 +53,9 @@ describe('Entry Point', () => {
   });
 
   it('renders the open chat button when un-expanded', () => {
-    (useSelector as jest.Mock).mockImplementation((callback: any) => callback({ session: { expanded: false } }));
+    (useSelector as jest.Mock).mockImplementation((callback: any) =>
+      callback({ session: { expanded: false }, config: { translations: {} } }),
+    );
 
     const { queryByTitle } = render(<EntryPoint />);
 
@@ -55,7 +63,7 @@ describe('Entry Point', () => {
   });
 
   it('changes expanded status to false when clicked and already true', () => {
-    (useSelector as jest.Mock).mockImplementation((callback: any) => callback({ session: { expanded: true } }));
+    (useSelector as jest.Mock).mockImplementation((callback: any) => callback(mockState(true)));
     const changeExpandedStatusSpy = jest.spyOn(genericActions, 'changeExpandedStatus');
 
     const { container } = render(<EntryPoint />);
@@ -66,7 +74,7 @@ describe('Entry Point', () => {
   });
 
   it('changes expanded status to true when clicked and already false', () => {
-    (useSelector as jest.Mock).mockImplementation((callback: any) => callback({ session: { expanded: false } }));
+    (useSelector as jest.Mock).mockImplementation((callback: any) => callback(mockState(false)));
     const changeExpandedStatusSpy = jest.spyOn(genericActions, 'changeExpandedStatus');
 
     const { container } = render(<EntryPoint />);
@@ -76,10 +84,45 @@ describe('Entry Point', () => {
     expect(changeExpandedStatusSpy).toHaveBeenCalledWith({ expanded: true });
   });
 
+  describe('open widget label', () => {
+    it('renders the label when the translation key resolves to a non-empty string', () => {
+      (useSelector as jest.Mock).mockImplementation((callback: any) =>
+        callback({
+          session: { expanded: false },
+          config: {
+            defaultLocale: 'en',
+            translations: { en: { 'EntryPoint-ClosedState-OpenWidgetButtonLabel': 'Chat with us' } },
+          },
+        }),
+      );
+
+      const { queryByTestId } = render(<EntryPoint />);
+
+      expect(queryByTestId('open-widget-label')).toBeInTheDocument();
+      expect(queryByTestId('open-widget-label')).toHaveTextContent('Chat with us');
+    });
+
+    it('does not render the label when the translation key resolves to an explicit empty string', () => {
+      (useSelector as jest.Mock).mockImplementation((callback: any) =>
+        callback({
+          session: { expanded: false },
+          config: {
+            defaultLocale: 'en',
+            translations: { en: { 'EntryPoint-ClosedState-OpenWidgetButtonLabel': '' } },
+          },
+        }),
+      );
+
+      const { queryByTestId } = render(<EntryPoint />);
+
+      expect(queryByTestId('open-widget-label')).not.toBeInTheDocument();
+    });
+  });
+
   describe('mobile optimizations', () => {
     it('does not render button when on mobile (isMobileFullscreen) and expanded', () => {
       (useMobileOptimizationsModule.useMobileOptimizations as jest.Mock).mockReturnValue({ isMobileFullscreen: true });
-      (useSelector as jest.Mock).mockImplementation((callback: any) => callback({ session: { expanded: true } }));
+      (useSelector as jest.Mock).mockImplementation((callback: any) => callback(mockState(true)));
 
       const { queryByTestId } = render(<EntryPoint />);
 
@@ -88,7 +131,7 @@ describe('Entry Point', () => {
 
     it('renders button when on mobile (isMobileFullscreen) but not expanded', () => {
       (useMobileOptimizationsModule.useMobileOptimizations as jest.Mock).mockReturnValue({ isMobileFullscreen: true });
-      (useSelector as jest.Mock).mockImplementation((callback: any) => callback({ session: { expanded: false } }));
+      (useSelector as jest.Mock).mockImplementation((callback: any) => callback(mockState(false)));
 
       const { queryByTestId } = render(<EntryPoint />);
 
@@ -99,7 +142,7 @@ describe('Entry Point', () => {
       (useMobileOptimizationsModule.useMobileOptimizations as jest.Mock).mockReturnValue({
         isMobileFullscreen: false,
       });
-      (useSelector as jest.Mock).mockImplementation((callback: any) => callback({ session: { expanded: true } }));
+      (useSelector as jest.Mock).mockImplementation((callback: any) => callback(mockState(true)));
 
       const { queryByTestId } = render(<EntryPoint />);
 

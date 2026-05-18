@@ -1,4 +1,5 @@
 {
+  "EntryPoint-ClosedState-OpenWidgetButtonLabel": "Chatea con nosotros",
   "Header-CloseChatButtons-EndChatButtonLabel": "Finalizar Chat",
   "Header-CloseChatButtons-QuickExitButtonLabel": "Salida Rápida",
   "Header-CloseChatButtons-QuickExitDescription": "¿Necesitas irte rápido?",
@@ -7,5 +8,14 @@
   "Header-TitleBar-Title": "Chatea Con Nosotros",
   "RequiredFieldError": "Por favor, complete los campos obligatorios.",
   "MessagePhase-ConversationEnded-Heading": "¡Gracias por ponerte en contacto!",
-  "MessagePhase-ConversationEnded-Detail": "Si tiene alguna otra pregunta, no dude en volver a contactarnos."
+  "MessagePhase-ConversationEnded-Detail": "Si tiene alguna otra pregunta, no dude en volver a contactarnos.",
+  "MessagePhase-ConversationEnded-ButtonText": "Comenzar nuevo chat",
+  "MessagePhase-MessageBubble-OwnMessageSenderName": "Usted",
+  "MessagePhase-MessageBubble-ReadIndicator": "Leer",
+  "MessagePhase-MessageInput-PlaceholderText": "Escribe tu mensaje",
+  "MessagePhase-MessageInput-SendButtonTitle": "Enviar mensaje",
+  "PreEngagementPhase-Form-Title": "",
+  "PreEngagementPhase-Form-Description": "",
+  "PreEngagementPhase-Form-SubmitButtonLabel": "Iniciar chat",
+  "NewMessageNotification": "Nuevo mensaje"
 }

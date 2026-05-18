@@ -53,8 +53,8 @@ const deleteProxySession = async (accountSid: AccountSID, proxySession: string) 
       console.log(`Tried to remove proxy session ${proxySession} but couldn't find it.`);
       return false;
     }
-    const removeResult = await ps.remove();
-    return removeResult;
+
+    return await ps.remove();
   } catch (err) {
     // eslint-disable-next-line no-console
     console.log('deleteProxySession error: ', err);
@@ -99,16 +99,25 @@ const deactivateConversation = async (
     .fetch();
 
   if (conversation.state !== 'closed') {
-    console.info('Attempting to deactivate active conversation', conversationSid);
+    console.info(
+      `[chatChannelJanitor - ${accountSid} / ${conversationSid}] Attempting to deactivate ${conversation.state} conversation`,
+      conversationSid,
+    );
     const updated = await conversation.update({
       state: 'closed',
       xTwilioWebhookEnabled: 'true',
     });
-
+    console.debug(
+      `[chatChannelJanitor - ${accountSid} / ${conversationSid}] Completed deactivating conversation`,
+    );
     return { message: 'Conversation deactivated', updated };
   }
 
-  return { message: 'Conversation already closed, event ignored' };
+  console.debug(
+    `[chatChannelJanitor - ${accountSid} / ${conversationSid}] Conversation already closed, no deactivation required`,
+    conversationSid,
+  );
+  return { message: `Conversation already closed, event ignored` };
 };
 
 export const chatChannelJanitor = async (
@@ -122,8 +131,15 @@ export const chatChannelJanitor = async (
       message: `Deactivation attempted for conversation ${conversationSid}`,
       result,
     };
-  }
-  const result = await deactivateChannel(accountSid, channelSid);
+  } else if (channelSid) {
+    const result = await deactivateChannel(accountSid, channelSid);
 
-  return { message: `Deactivation attempted for channel ${channelSid}`, result };
+    return { message: `Deactivation attempted for channel ${channelSid}`, result };
+  }
+  console.error(
+    `[chatChannelJanitor - ${accountSid}] Attempted to deactivate something but no channelSid or conversationSid was provided`,
+  );
+  return {
+    message: `Attempted to deactivate something on ${accountSid} but no channelSid or conversationSid was provided`,
+  };
 };

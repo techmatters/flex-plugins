@@ -8,11 +8,11 @@
     "enabled": true,
     "blockedEmojis": []
   },
-  "alwaysOpen": false,
+  "widgetAlwaysOpen": false,
   "defaultLocale": "es-CL",
   "definitionVersion": "clhs-v1",
   "helplineCode": "clhs",
   "enableRecaptcha": false,
-  "captureIp": true,
+  "captureIp": false,
   "contactIdentifierField": "email"
 }

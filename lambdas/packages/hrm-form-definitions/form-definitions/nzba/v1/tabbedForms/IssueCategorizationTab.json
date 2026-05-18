@@ -156,23 +156,36 @@
         "color": "#e7c582",
         "subcategories": [
           {
-            "label": "Complaints about the child helpline"
+            "label": "Soft - complaints - inform supervisor"
           },
           {
-            "label": "Questions by parents"
+            "label": "Soft - asks for counsellors/WU info/asked to return"
           },
           {
-            "label": "Questions about the child helpline"
+            "label": "Soft - bored/chat/joke but not lonely"
           },
           {
-            "label": "Questions about other services"
+            "label": "Soft - Requests info about other services"
           },
           {
-            "label": "\"Thank you for your assistance\""
+            "label": "Soft - silent/minimal conversation/disconnects"
           },
           {
-            "label": "Unspecified/Other"
-          }]
+            "label": "Soft - thank you for your help/positive feedback"
+          },
+          {
+            "label": "Connecting"
+          },
+          {
+            "label": "Hard - general"
+          },
+          {
+            "label": "Hard - sexual nature"
+          },
+          {
+            "label": "Other/unknown"
+          }
+        ]
       },
       "Online activity": {
         "color": "#c99f7d",

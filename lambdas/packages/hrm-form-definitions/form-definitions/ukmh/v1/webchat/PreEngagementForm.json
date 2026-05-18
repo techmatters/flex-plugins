@@ -1,6 +1,6 @@
 {
-  "description": "Welcome to The PeerChat Service",
-  "submitLabel": "LetsChat",
+  "description": "Welcome to PeerChat Service",
+  "submitLabel": "Let's Chat",
   "fields": [
     {
       "type": "input",

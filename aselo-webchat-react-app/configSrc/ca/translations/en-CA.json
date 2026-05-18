@@ -1,8 +1,12 @@
 {
   "MessageInputDisabledReasonHold": "Thank you! Please hold for a counsellor.",
   "EntryPointTagLine": "Tap to Chat",
+  "EntryPoint-ClosedState-OpenWidgetButtonLabel": "Tap to Chat",
   "Today": "Today",
   "InputPlaceHolder": "Type Message",
+   "PreEngagementPhase-Form-Title": "Welcome to Kids Help Phone.",
+  "PreEngagementPhase-Form-Description": "To help us serve you better, please answer the following questions. If this is an emergency, please call 911.",
+  "PreEngagementPhase-Form-SubmitButtonLabel": "Start Chat!",
   "WelcomeMessage": "Welcome to Kids Help Phone. ",
   "Yesterday": "Yesterday",
   "TypingIndicator": "Counsellor is typing",

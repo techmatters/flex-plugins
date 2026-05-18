@@ -605,6 +605,88 @@ describe('Pre Engagement Form Phase - validation', () => {
     expect(initAction.initSession).toHaveBeenCalled();
   });
 
+  it('uses preloaded redux values as form default values through getItem for all form input types', () => {
+    const namePlaceholder = 'Your name';
+    const emailPlaceholder = 'Your email';
+    const categoryPlaceholderLabel = 'Please select...';
+    const parentLabel = 'Country';
+    const dependentLabel = 'State';
+    const store = createValidationStore(
+      [
+        {
+          name: 'name',
+          type: FormInputType.Input,
+          label: 'Name',
+          placeholder: namePlaceholder,
+        } as PreEngagementFormItem,
+        {
+          name: 'email',
+          type: FormInputType.Email,
+          label: 'Email',
+          placeholder: emailPlaceholder,
+        } as PreEngagementFormItem,
+        {
+          name: 'choice',
+          type: FormInputType.Select,
+          label: 'Choice',
+          options: [
+            { value: '', label: categoryPlaceholderLabel },
+            { value: 'opt1', label: 'Option 1' },
+          ],
+        } as PreEngagementFormItem,
+        {
+          name: 'country',
+          type: FormInputType.Select,
+          label: parentLabel,
+          options: [
+            { value: '', label: 'Select country' },
+            { value: 'US', label: 'United States' },
+            { value: 'UK', label: 'United Kingdom' },
+          ],
+        } as PreEngagementFormItem,
+        {
+          name: 'state',
+          type: FormInputType.DependentSelect,
+          label: dependentLabel,
+          dependsOn: 'country',
+          options: {
+            US: [
+              { value: 'CA', label: 'California' },
+              { value: 'NY', label: 'New York' },
+            ],
+            UK: [{ value: 'ENG', label: 'England' }],
+          },
+        } as PreEngagementFormItem,
+        {
+          name: 'terms',
+          type: FormInputType.Checkbox,
+          label: 'Accept terms',
+        } as PreEngagementFormItem,
+      ],
+      {
+        name: { value: 'Alice', error: null, dirty: true },
+        email: { value: 'alice@example.com', error: null, dirty: true },
+        choice: { value: 'opt1', error: null, dirty: true },
+        country: { value: 'US', error: null, dirty: true },
+        state: { value: 'NY', error: null, dirty: true },
+        terms: { value: true, error: null, dirty: true },
+      },
+    );
+
+    const { container, getByPlaceholderText } = render(
+      <Provider store={store}>
+        <PreEngagementFormPhase />
+      </Provider>,
+    );
+
+    expect(getByPlaceholderText(namePlaceholder)).toHaveValue('Alice');
+    expect(getByPlaceholderText(emailPlaceholder)).toHaveValue('alice@example.com');
+    expect(container.querySelector('#choice')).toHaveValue('opt1');
+    expect(container.querySelector('#country')).toHaveValue('US');
+    expect(container.querySelector('#state')).toHaveValue('NY');
+    expect(container.querySelector('#terms')).toBeChecked();
+  });
+
   it('validation errors are hidden before the first submit attempt even when the Redux state has an error', () => {
     // Pre-populate the store with a field that already has a validation error
     const store = createValidationStore(
@@ -778,14 +860,14 @@ describe('Pre Engagement Form Phase - ReCaptcha', () => {
 
   it('shows spinner (hides submit label) when recaptcha verification is in progress', async () => {
     const store = createRecaptchaStore(true);
-    const { getByText, queryByTestId, container } = render(
+    const { queryByTestId, container } = render(
       <Provider store={store}>
         <PreEngagementFormPhase />
       </Provider>,
     );
 
     // Before pending: submit label is visible and no spinner
-    expect(getByText('Submit')).not.toHaveStyle({ visibility: 'hidden' });
+    expect(queryByTestId('pre-engagement-start-chat-button-label')).not.toHaveStyle({ visibility: 'hidden' });
     expect(queryByTestId('spinner')).not.toBeInTheDocument();
 
     // Simulate recaptcha pending state via the captured callback
@@ -794,7 +876,7 @@ describe('Pre Engagement Form Phase - ReCaptcha', () => {
     });
 
     // Submit label should now be hidden and spinner visible
-    expect(getByText('Submit')).toHaveStyle({ visibility: 'hidden' });
+    expect(queryByTestId('pre-engagement-start-chat-button-label')).toHaveStyle({ visibility: 'hidden' });
     expect(queryByTestId('spinner')).toBeInTheDocument();
     // Button remains disabled while pending (recaptcha not yet verified)
     const submitButton = container.querySelector('[data-test="pre-engagement-start-chat-button"]');
@@ -803,7 +885,7 @@ describe('Pre Engagement Form Phase - ReCaptcha', () => {
 
   it('hides spinner when recaptcha verification completes', async () => {
     const store = createRecaptchaStore(true);
-    const { getByText, queryByTestId, container } = render(
+    const { queryByTestId, container } = render(
       <Provider store={store}>
         <PreEngagementFormPhase />
       </Provider>,
@@ -812,7 +894,7 @@ describe('Pre Engagement Form Phase - ReCaptcha', () => {
     await act(async () => {
       mockRecaptchaOnChange!('pending');
     });
-    expect(getByText('Submit')).toHaveStyle({ visibility: 'hidden' });
+    expect(queryByTestId('pre-engagement-start-chat-button-label')).toHaveStyle({ visibility: 'hidden' });
     expect(queryByTestId('spinner')).toBeInTheDocument();
 
     await act(async () => {
@@ -820,7 +902,7 @@ describe('Pre Engagement Form Phase - ReCaptcha', () => {
     });
 
     // Submit label visible again, spinner gone, and button enabled
-    expect(getByText('Submit')).not.toHaveStyle({ visibility: 'hidden' });
+    expect(queryByTestId('pre-engagement-start-chat-button-label')).not.toHaveStyle({ visibility: 'hidden' });
     expect(queryByTestId('spinner')).not.toBeInTheDocument();
     const submitButton = container.querySelector('[data-test="pre-engagement-start-chat-button"]');
     expect(submitButton).not.toBeDisabled();

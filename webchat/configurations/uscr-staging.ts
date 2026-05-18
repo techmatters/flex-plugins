@@ -100,6 +100,10 @@ const preEngagementConfig: PreEngagementFormDefinition = {
           label: "LAPD",
           value: "LAPD"
         },
+          {
+          label: "LAFD",
+          value: "LAFD"
+        },
         {
           label: "CD1",
           value: "CD1"

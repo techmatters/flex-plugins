@@ -115,6 +115,19 @@ describe('DependentSelect component', () => {
     expect(handleChange).toHaveBeenCalledWith({ name: 'state', value: 'NY' });
   });
 
+  it('uses redux-backed item value as the initial selected value', () => {
+    const { getByRole } = render(
+      <DependentSelect
+        definition={definition}
+        handleChange={handleChange}
+        getItem={makeGetItem(noError, 'US')}
+        setItemValue={setItemValue}
+      />,
+    );
+
+    expect(getByRole('combobox')).toHaveValue('CA');
+  });
+
   it('calls setItemValue to blank the dependent select when the dependee value changes', () => {
     const getItemWithUS = makeGetItem({ value: 'CA', error: null, dirty: false }, 'US');
     const getItemWithUK = makeGetItem({ value: 'CA', error: null, dirty: false }, 'UK');
