@@ -20,6 +20,7 @@ import {
   newTeamsViewSelectWorkers,
   newTeamsViewUnselectWorkers,
   newTeamsViewSelectSkills,
+  newTeamsViewSelectSkillLevel,
   newTeamsViewSelectOperation,
   TeamsViewState,
 } from '../../../states/teamsView';
@@ -262,6 +263,36 @@ describe('test reducer', () => {
     },
   ]).test('TEAMSVIEW_SELECT_SKILLS - $description', async ({ state, skills, expected }) => {
     const result = reduce(state, newTeamsViewSelectSkills(skills));
+    expect(result).toStrictEqual(expected);
+  });
+
+  each([
+    {
+      state: {
+        selectedWorkers: new Set(),
+        selectedSkills: { 'skill-1': {} },
+      },
+      skill: { skill: 'skill-1', level: 3 },
+      expected: {
+        selectedWorkers: new Set(),
+        selectedSkills: { 'skill-1': { level: 3 } },
+      },
+      description: 'set selected skill level',
+    },
+    {
+      state: {
+        selectedWorkers: new Set(),
+        selectedSkills: { 'skill-1': { level: 2 }, 'skill-2': {} },
+      },
+      skill: { skill: 'skill-2', level: 4 },
+      expected: {
+        selectedWorkers: new Set(),
+        selectedSkills: { 'skill-1': { level: 2 }, 'skill-2': { level: 4 } },
+      },
+      description: 'set selected skill level without changing other skills',
+    },
+  ]).test('TEAMSVIEW_SELECT_SKILL_LEVEL - $description', async ({ state, skill, expected }) => {
+    const result = reduce(state, newTeamsViewSelectSkillLevel(skill));
     expect(result).toStrictEqual(expected);
   });
 
