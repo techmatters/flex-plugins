@@ -29,7 +29,7 @@ import { localizeKey } from '../../localization/localizeKey';
 
 type Props =
   | {
-      channelSid: string;
+      conversationSid: string;
       token: string;
       language?: string;
       action: 'finishTask';
@@ -55,10 +55,10 @@ export default function EndChat(props: Props) {
       case 'finishTask':
         if (confirm(configuredLocalizeKey('Header-CloseChatButtons-EndChatConfirmDialogMessageFromChat'))) {
           try {
-            const { token, channelSid, language } = props;
+            const { token, conversationSid, language } = props;
             setDisabled(true);
-            await configuredBackend('/endChat', { channelSid, token, language });
-            sessionDataHandler.clear();
+            // TODO: Move to redux
+            await configuredBackend.request('/endChat', { conversationSid, token, language });
           } catch (error) {
             console.error(error);
           } finally {

@@ -8,9 +8,10 @@
     "enabled": true,
     "blockedEmojis": []
   },
-  "alwaysOpen": false,
+  "widgetAlwaysOpen": false,
   "helplineCode": "ukmh",
   "captureIp": true,
   "definitionVersion": "ukmh-v1",
-  "contactIdentifierField": "email"
+  "contactIdentifierField": "email",
+  "defaultLocale": "en-GB"
 }

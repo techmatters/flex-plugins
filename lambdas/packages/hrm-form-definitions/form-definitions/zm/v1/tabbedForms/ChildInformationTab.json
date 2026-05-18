@@ -37,6 +37,14 @@
         "label": "Girl"
       },
       {
+        "value": "Male",
+        "label": "Male"
+      },
+      {
+        "value": "Female",
+        "label": "Female"
+      },
+      {
         "value": "Non-Binary",
         "label": "Non-Binary"
       },

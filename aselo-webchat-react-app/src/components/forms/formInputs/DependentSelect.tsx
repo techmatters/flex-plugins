@@ -30,13 +30,20 @@ type OwnProps = {
   getItem: (inptuName: string) => PreEngagementDataItem;
   setItemValue: (payload: { name: string; value: string | boolean }) => void;
   handleChange: (payload: { name: string; value: string | boolean }) => void;
-  defaultValue?: string;
+  defaultValue?: PreEngagementDataItem['value'];
   showError?: boolean;
 };
 
 type Props = OwnProps;
 
-const DependentSelect: React.FC<Props> = ({ getItem, setItemValue, definition, handleChange, showError = true }) => {
+const DependentSelect: React.FC<Props> = ({
+  getItem,
+  // defaultValue,
+  setItemValue,
+  definition,
+  handleChange,
+  showError = true,
+}) => {
   const currentTranslations = useSelector(selectCurrentTranslations);
   const configuredLocalizeKey = localizeKey(currentTranslations);
   const { dependsOn, name, label, required, options } = definition;
@@ -79,6 +86,8 @@ const DependentSelect: React.FC<Props> = ({ getItem, setItemValue, definition, h
           onChange={e => handleChange({ name, value: e.target.value })}
           disabled={!dependsOnValue}
           value={value as string}
+          // value takes precedence and should be used
+          // defaultValue={typeof defaultValue === 'string' ? defaultValue : ''}
         >
           {buildOptions()}
         </SelectInput>

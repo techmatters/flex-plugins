@@ -11,6 +11,10 @@
         "name": "state",
         "insights": ["conversations", "conversation_attribute_4"]
       },
+      {
+        "name": "ageRange",
+        "insights": ["conversations", "conversation_attribute_3"]
+      },
        {
         "name": "city",
         "insights": ["conversations", "campaign"]
@@ -37,7 +41,7 @@
       },
       {
         "name": "repeatCaller",
-        "insights": ["conversations", "disposition"]
+         "insights": ["conversations", "followed_by"]
       },
         {
         "name": "howDidYouHearAboutTheWarmLine",
@@ -59,7 +63,7 @@
       },
       {
         "name": "referrals",
-        "insights": ["conversations", "sentiment"]
+        "insights": ["conversations", "preceded_by"]
       }
     ]
   },

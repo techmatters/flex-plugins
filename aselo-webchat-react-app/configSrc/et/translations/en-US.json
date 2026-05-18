@@ -1,5 +1,7 @@
 {
     "WelcomeMessage": "Adama Child Helpline",
+    "PreEngagementPhase-Form-Title": "Adama Child Helpline",
+  "PreEngagementPhase-Form-Description": "Thank you for contacting Adama Child Helpline. To chat with a counsellor, please type your name and select the Start Chat button.",
     "MessageCanvasTrayContent": "",
     "MessageInputDisabledReasonHold":
       "Thank you very much for this information. We'll transfer you now. Please hold for a counsellor.",
@@ -7,5 +9,6 @@
     "PreEngagementDescription":
       "Thank you for contacting Adama Child Helpline. To chat with a counsellor, please type your name and select the Start Chat button.",
     "StartChat": "Start Chat!",
+    "WhatIsYourName": "What is your name?",
     "MessagePhase-MessageBubble-OtherParticipantMessageSenderName": "Adama Helpline Counsellor"
 }

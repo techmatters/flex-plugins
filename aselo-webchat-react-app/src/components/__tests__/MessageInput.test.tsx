@@ -22,13 +22,17 @@ import { MessageInput } from '../MessageInput';
 import * as genericActions from '../../store/actions/genericActions';
 import WebChatLogger from '../../logger';
 
+jest.mock('../../hooks/useMobileOptimizations', () => ({
+  useMobileOptimizations: jest.fn(() => ({ isMobileFullscreen: false })),
+}));
+
 const fileAttachmentConfig = {
   enabled: true,
   maxFileSize: 16777216,
   acceptedExtensions: ['jpg', 'jpeg', 'png', 'amr', 'mp3', 'mp4', 'pdf'],
 };
 const defaultState = {
-  config: { fileAttachment: fileAttachmentConfig },
+  config: { fileAttachment: fileAttachmentConfig, translations: {} },
   chat: {
     conversation: { prepareMessage: jest.fn(), setAllMessagesRead: jest.fn(), typing: jest.fn() },
     attachedFiles: [],

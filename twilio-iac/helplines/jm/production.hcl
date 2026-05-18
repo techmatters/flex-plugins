@@ -9,6 +9,22 @@ locals {
     custom_task_routing_filter_expression = "helpline=='SafeSpot' OR channelType=='web' OR to=='+14244147346' OR to=='+18767287042' OR twilioNumber=='instagram:17841444523369053' OR twilioNumber=='messenger:107246798170317'"
 
     channels = {
+      chat : {
+        messaging_mode         = "conversations"
+        channel_type           = "chat"
+        contact_identity       = ""
+        templatefile           = "/app/twilio-iac/helplines/templates/studio-flows/messaging-lex-v3-blocking-lambda-sd.tftpl"
+        channel_flow_vars      = {}
+        chatbot_unique_names   = []
+        enable_datadog_monitor = true
+        custom_monitor = {
+          query = "sum(last_1w):sum:<metric>{*}.as_count() == 0"
+          custom_schedule = {
+            rrule    = "FREQ=WEEKLY;INTERVAL=1;BYHOUR=10;BYMINUTE=0;BYDAY=MO"
+            timezone = "America/Santiago"
+          }
+        }
+      },
       webchat : {
         channel_type           = "web"
         contact_identity       = ""

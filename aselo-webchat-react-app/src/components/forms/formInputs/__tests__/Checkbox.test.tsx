@@ -72,4 +72,12 @@ describe('Checkbox component', () => {
     fireEvent.click(checkbox);
     expect(handleChange).toHaveBeenCalledWith({ name: 'terms', value: true });
   });
+
+  it('uses defaultValue as the initial checked state', () => {
+    const { getByRole } = render(
+      <Checkbox definition={definition} handleChange={handleChange} getItem={getItem(noError)} defaultValue={true} />,
+    );
+
+    expect(getByRole('checkbox')).toBeChecked();
+  });
 });

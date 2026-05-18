@@ -73,6 +73,17 @@ locals {
         }
         chatbot_unique_names = []
       },
+      chat : {
+        messaging_mode   = "conversations"
+        channel_type     = "chat"
+        contact_identity = ""
+        templatefile     = "/app/twilio-iac/helplines/usch/templates/studio-flows/webchat-no-lex-conv-sd.tftpl"
+        channel_flow_vars = {
+          courage_first_url = "https://assets-staging.tl.techmatters.org/aselo-webchat-react-app/usch/usch_courage_first.html"
+          childhelp_url     = "https://assets-staging.tl.techmatters.org/aselo-webchat-react-app/usch/usch_childhelp_hotline.html"
+        }
+        chatbot_unique_names = []
+      },
       voice_childhelp : {
         channel_type     = "voice"
         contact_identity = ""

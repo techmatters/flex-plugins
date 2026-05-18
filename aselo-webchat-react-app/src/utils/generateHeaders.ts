@@ -61,8 +61,11 @@ const getWebchatInfo = () => {
   };
 };
 
+let audio: MediaCapabilitiesInfo = DEFAULT_CODEC_INFO;
+let video: MediaCapabilitiesInfo = DEFAULT_CODEC_INFO;
+
 const getAudioVideoDecoders = async () => {
-  const audioDecorder = navigator.mediaCapabilities?.decodingInfo({
+  const audioDecoder = navigator.mediaCapabilities?.decodingInfo({
     type: 'file',
     audio: {
       contentType: 'audio/mp3',
@@ -71,7 +74,7 @@ const getAudioVideoDecoders = async () => {
       samplerate: 5200,
     },
   });
-  const videoDecorder = navigator.mediaCapabilities?.decodingInfo({
+  const videoDecoder = navigator.mediaCapabilities?.decodingInfo({
     type: 'file',
     audio: {
       contentType: 'audio/mp4',
@@ -80,42 +83,29 @@ const getAudioVideoDecoders = async () => {
       samplerate: 5200,
     },
   });
+  const [audioCapabilitiesResult, videoCapabilitiesResult]: Array<PromiseSettledResult<MediaCapabilitiesInfo>> =
+    await Promise.allSettled([audioDecoder, videoDecoder]);
 
-  return Promise.allSettled([audioDecorder, videoDecorder]).then(
-    (results: Array<PromiseSettledResult<MediaCapabilitiesInfo>>) => {
-      const allFullfied = results.every(result => result.status === 'fulfilled' && Boolean(result.value));
+  if (audioCapabilitiesResult.status === 'fulfilled' && Boolean(audioCapabilitiesResult.value)) {
+    audio = audioCapabilitiesResult.value;
+  }
 
-      let audio: MediaCapabilitiesInfo = DEFAULT_CODEC_INFO;
-      let video: MediaCapabilitiesInfo = DEFAULT_CODEC_INFO;
-
-      if (allFullfied) {
-        const _res = results as Array<PromiseFulfilledResult<MediaCapabilitiesInfo>>;
-
-        audio = _res[0].value;
-        video = _res[1].value;
-      }
-
-      return {
-        audio,
-        video,
-      };
-    },
-  );
+  if (videoCapabilitiesResult.status === 'fulfilled' && Boolean(videoCapabilitiesResult.value)) {
+    video = videoCapabilitiesResult.value;
+  }
 };
 
-// eslint-disable-next-line import/no-unused-modules
-export const generateSecurityHeaders = async (): Promise<SecurityHeadersType> => {
+getAudioVideoDecoders().then(() => null);
+
+export const generateSecurityHeaders = (): SecurityHeadersType => {
   const headers = {} as SecurityHeadersType;
-  return getAudioVideoDecoders().then(decoders => {
-    headers[HEADER_SEC_WEBCHAT] = JSON.stringify(getWebchatInfo());
-    headers[HEADER_SEC_USERSETTINGS] = JSON.stringify(getUserSpecificSettings());
-    headers[HEADER_SEC_DECODER] = JSON.stringify(decoders);
+  headers[HEADER_SEC_WEBCHAT] = JSON.stringify(getWebchatInfo());
+  headers[HEADER_SEC_USERSETTINGS] = JSON.stringify(getUserSpecificSettings());
+  headers[HEADER_SEC_DECODER] = JSON.stringify({ audio, video });
 
-    return headers;
-  });
+  return headers;
 };
 
-// eslint-disable-next-line import/no-unused-modules
 export const generateMixPanelHeaders = (): MixPanelHeadersType => {
   return {
     [HEADER_APP_VERSION]: process.env.APP_VERSION ?? '1.0.0',

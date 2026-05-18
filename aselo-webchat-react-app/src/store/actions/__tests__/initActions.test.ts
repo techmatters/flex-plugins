@@ -66,6 +66,9 @@ jest.mock('../../../sessionDataHandler', () => ({
     getRegion: jest.fn(),
   },
 }));
+jest.mock('../../../utils/newMessageNotification', () => ({
+  requestNotificationPermission: jest.fn().mockResolvedValue(undefined),
+}));
 
 const { initSession, initConfigThunk } = initActions;
 
@@ -93,6 +96,7 @@ describe('Actions', () => {
     onWithReplay: (_event, handler) => {
       handler('connected');
     },
+    user: { identity: 'test-identity' },
   } as unknown as Client;
 
   let mockStore: any;
@@ -121,8 +125,9 @@ describe('Actions', () => {
     it('dispatches start session action with fetched state as payload', async () => {
       (Client as any).mockReturnValueOnce(conversationsClient);
       const mockDispatch = jest.fn();
+      const mockGetState = jest.fn().mockReturnValue({ session: {}, config: {} });
 
-      await initSession({ token, conversationSid })(mockDispatch);
+      await initSession({ token, conversationSid })(mockDispatch, mockGetState);
 
       expect(mockDispatch).toHaveBeenCalled();
       const dispatchArgs = mockDispatch.mock.calls[0][0];
@@ -149,7 +154,12 @@ describe('Actions', () => {
 
       expect(initClientListeners).toHaveBeenCalledWith(conversationsClient, expect.any(Function));
       expect(initConversationListener).toHaveBeenCalledWith(conversation, expect.any(Function));
-      expect(initMessagesListener).toHaveBeenCalledWith(conversation, expect.any(Function));
+      expect(initMessagesListener).toHaveBeenCalledWith(
+        conversation,
+        expect.any(Function),
+        conversationsClient.user.identity,
+        expect.any(Function),
+      );
       expect(initParticipantsListener).toHaveBeenCalledWith(conversation, expect.any(Function));
     });
 
@@ -256,16 +266,16 @@ describe('Actions', () => {
       expect(dispatch).toHaveBeenCalledWith(expect.objectContaining({ type: ACTION_LOAD_CONFIG_FAILURE }));
     });
 
-    it('triggers expanded true if alwaysOpen is set', async () => {
-      const dispatch = await runConfigThunk({ deploymentKey: 'CV000000', alwaysOpen: true });
+    it('triggers expanded true if widgetAlwaysOpen is set', async () => {
+      const dispatch = await runConfigThunk({ deploymentKey: 'CV000000', widgetAlwaysOpen: true });
       expect(dispatch).toHaveBeenCalledWith({
         type: ACTION_CHANGE_EXPANDED_STATUS,
         payload: { expanded: true },
       });
     });
 
-    it('triggers expanded false if alwaysOpen is not set', async () => {
-      const dispatch = await runConfigThunk({ deploymentKey: 'CV000000', alwaysOpen: false });
+    it('triggers expanded false if widgetAlwaysOpen is not set', async () => {
+      const dispatch = await runConfigThunk({ deploymentKey: 'CV000000', widgetAlwaysOpen: false });
       expect(dispatch).toHaveBeenCalledWith({
         type: ACTION_CHANGE_EXPANDED_STATUS,
         payload: { expanded: false },

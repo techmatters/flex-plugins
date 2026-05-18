@@ -20,15 +20,23 @@ import { useDispatch, useSelector } from 'react-redux';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import format from 'date-fns/format';
 
-import type { TwilioStoredMedia, S3StoredTranscript } from '../../../types/types';
-import { RootState } from '../../../states';
+import type { TwilioStoredMedia, S3StoredTranscript, Contact } from '../../../types/types';
+import type { RootState } from '../../../states';
 import { fetchHrmApi, generateSignedURLPath } from '../../../services/fetchHrmApi';
-import { loadTranscript, TranscriptMessage, TranscriptResult } from '../../../states/contacts/existingContacts';
+import {
+  loadTranscript,
+  Transcript,
+  TranscriptMessage,
+  TranscriptResult,
+} from '../../../states/contacts/existingContacts';
+import type { GroupedMessage } from '../../Messaging/MessageItem';
 import { Box } from '../../../styles';
-import { GroupedMessage } from '../../Messaging/MessageItem';
 import { MessageList } from '../../Messaging/MessageList';
 import { ErrorFont, ItalicFont, LoadMediaButton, LoadMediaButtonText } from './styles';
 import { contactFormsBase, namespace } from '../../../states/storeNamespaces';
+import { PermissionActions } from '../../../permissions/actions';
+import { getInitializedCan } from '../../../permissions/rules';
+import selectContactStateByContactId from '../../../states/contacts/selectContactStateByContactId';
 
 type Props = {
   contactId: string;
@@ -77,21 +85,40 @@ const groupMessagesByDate = (m: MessageWithSenderInfo, index: number, ms: Messag
 const groupMessagesAndAddSenderInfo = (transcript: TranscriptResult['transcript']): GroupedMessage[] =>
   transcript.messages.map(addSenderInfoToMessage(transcript.participants)).map(groupMessagesByDate);
 
+const filterTranscript = ({
+  channel,
+  transcript,
+}: {
+  channel: Contact['channel'];
+  transcript: Transcript;
+}): Transcript => {
+  let filteredMessages = transcript.messages;
+
+  if (channel === 'web') {
+    const can = getInitializedCan();
+    const maskIdentifiers = !can(PermissionActions.VIEW_IDENTIFIERS);
+    // first message is filtered in webchat, following the logic from maskManagerStringsWithIdentifiers (plugin-hrm-form/src/maskIdentifiers/index.ts)
+    if (maskIdentifiers) {
+      filteredMessages = filteredMessages.splice(1);
+    }
+  }
+
+  return { ...transcript, messages: filteredMessages };
+};
+
 const TranscriptSection: React.FC<Props> = ({
   contactId,
   twilioStoredTranscript,
   externalStoredTranscript,
   loadConversationIntoOverlay,
-
-  // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const dispatch = useDispatch();
+  const { channel } = useSelector((state: RootState) => selectContactStateByContactId(state, contactId)?.savedContact);
   const transcript = useSelector(
     (state: RootState) => state[namespace][contactFormsBase].existingContacts[contactId]?.transcript,
   );
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState(null);
-  const [updatedGroupMessages, setUpdatedGroupMessages] = useState<GroupedMessage[]>([]);
 
   // Currently this should only really catch errors when we try to download the file from the signed link.
   const isErrTemporary = err => {
@@ -176,7 +203,8 @@ const TranscriptSection: React.FC<Props> = ({
   }
 
   if (transcript) {
-    const groupedMessages = groupMessagesAndAddSenderInfo(transcript);
+    const filteredTranscript = filterTranscript({ channel, transcript });
+    const groupedMessages = groupMessagesAndAddSenderInfo(filteredTranscript);
     const updatedMessages = groupedMessages.map(message => {
       if (message.media) {
         // This updates the message object with the media data to be used on transcript
