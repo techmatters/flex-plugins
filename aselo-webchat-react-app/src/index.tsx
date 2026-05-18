@@ -15,9 +15,14 @@ import { ConfigState } from './store/definitions';
 import { initLogger, getLogger } from './logger';
 import { initChat } from './initChat';
 
-const initWebchat = async (configLocation?: string | URL, overrides: Partial<ConfigState> = {}) => {
+const initWebchat = async (
+  paramConfigLocation: string | null,
+  documentConfigLocation?: string,
+  overrides: Partial<ConfigState> = {},
+) => {
   const logger = window.Twilio.getLogger(`InitWebChat`);
-  const configUrl = configLocation || process.env.REACT_APP_CONFIG_URL || './config.json';
+  const configUrl =
+    paramConfigLocation || process.env.REACT_APP_CONFIG_URL || documentConfigLocation || './config.json';
 
   await store.dispatch(initConfigThunk({ configUrl, overrides }) as any);
 

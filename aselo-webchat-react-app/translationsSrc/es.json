@@ -16,5 +16,6 @@
   "MessagePhase-MessageInput-SendButtonTitle": "Enviar mensaje",
   "PreEngagementPhase-Form-Title": "",
   "PreEngagementPhase-Form-Description": "",
-  "PreEngagementPhase-Form-SubmitButtonLabel": "Iniciar chat"
+  "PreEngagementPhase-Form-SubmitButtonLabel": "Iniciar chat",
+  "NewMessageNotification": "Nuevo mensaje"
 }

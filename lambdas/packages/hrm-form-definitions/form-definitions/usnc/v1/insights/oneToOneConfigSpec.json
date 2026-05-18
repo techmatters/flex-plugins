@@ -11,6 +11,10 @@
         "name": "state",
         "insights": ["conversations", "conversation_attribute_4"]
       },
+      {
+        "name": "ageRange",
+        "insights": ["conversations", "conversation_attribute_3"]
+      },
        {
         "name": "city",
         "insights": ["conversations", "campaign"]
