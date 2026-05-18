@@ -30,6 +30,18 @@
     "category": "non-data"
   },
   {
+    "name": "prankCall",
+    "label": "Prank Call",
+    "type": "button",
+    "category": "non-data"
+  },
+  {
+    "name": "sexualGratifierCall",
+    "label": "Sexual Gratifier",
+    "type": "button",
+    "category": "non-data"
+  },
+  {
     "name": "questions",
     "label": "Questions/Resources",
     "type": "button",

@@ -4,8 +4,8 @@
     "locale": "en_US",
     "child_directed": true,
     "idle_session_ttl_in_seconds": "600",
-    "staging_bot_alias_id":"PM0SMMRXBM",
-    "production_bot_alias_id":"GQ86H0NUJZ",
+    "staging_bot_alias_id":"OULK64J2VH",
+    "production_bot_alias_id":"KMB1TU5NBN",
     "type": "Bot",
     "intents": {
       "language_selector_intent": {
@@ -21,7 +21,7 @@
           }
         ],
         "initial_response": {
-          "message": "What language do you speak? ",
+          "message": "Before we begin, please note that the following questions are automatically generated for record-keeping and safety purposes. Once completed, you will be connected with one of our qualified professionals who will support you throughout the conversation.",
           "slot_to_elicit": "language"
         },
         "closing_response": {
@@ -31,7 +31,7 @@
           "1": {
             "slot_name": "language",
             "slot_type_name": "language",
-            "slot_question": "Please select from the below supported languages: \n 1. English \n 2. Maltese \n 3. Ukrainian",
+            "slot_question": "What language do you speak?\nPlease reply with the number of your preferred language: \n 1. English \n 2. Maltese \n 3. Ukrainian",
             "failure_response": "We are having trouble understanding your response."
           }
         }
