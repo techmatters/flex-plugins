@@ -48,25 +48,29 @@ const rotateRoutingSkills = ({
   console.log('rotateRoutingSkills: ', from);
   console.log('rotateRoutingSkills: ', to);
   console.log('rotateRoutingSkills: ', elements);
-  const levelsEntries = Object.entries(from.levels || {});
-  const updatedToSkills = Array.from(new Set([...to.skills, ...Object.keys(elements)]));
-  const previousLevels = Object.fromEntries(
-    levelsEntries.filter(([skill]) => Object.hasOwn(elements, skill)),
+
+  const elementsHas = (skill: string) => Object.hasOwn(elements, skill);
+  const prevSkills = from.skills || [];
+  const prevLevels = Object.entries(from.levels || {});
+
+  // const updatedToSkills = Array.from(new Set([...to.skills, ...Object.keys(elements)]));
+  const updatedToSkills = Array.from(
+    new Set([...to.skills, ...prevSkills.filter(s => elementsHas(s))]),
   );
+  const levelsToRotate = Object.fromEntries(prevLevels.filter(([s]) => elementsHas(s)));
   const updatedToLevels = {
     ...to.levels,
-    ...previousLevels,
+    ...levelsToRotate,
     ...Object.entries(elements).reduce(
-      (accum, [skill, entry]) =>
-        entry && isInteger(entry.level) ? { ...accum, [skill]: entry.level } : accum,
+      (accum, [s, entry]) =>
+        entry && isInteger(entry.level) ? { ...accum, [s]: entry.level } : accum,
       {},
     ),
   };
 
-  const updatedFromSkills =
-    from.skills?.filter(skill => Object.hasOwn(elements, skill)) || [];
+  const updatedFromSkills = prevSkills.filter(s => !elementsHas(s));
   const updatedFromLevels = Object.fromEntries(
-    levelsEntries.filter(([skill]) => !Object.hasOwn(elements, skill)),
+    prevLevels.filter(([s]) => !elementsHas(s)),
   );
 
   return {
@@ -86,10 +90,7 @@ const mergeAttributes = ({
 }) => {
   return {
     ...attributes,
-    routing: {
-      ...attributes?.routing,
-      ...enabledSkills,
-    },
+    routing: enabledSkills,
     disabled_skills: disabledSkills,
   };
 };
@@ -110,11 +111,6 @@ const setSkillsEnable = ({
     to: enabledSkills,
     elements: skills,
   });
-
-  console.log('>>>>> from', enabledSkills);
-  console.log('>>>>> updatedFrom', updatedFrom);
-  console.log('>>>>> to', disabledSkills);
-  console.log('>>>>> from', updatedTo);
 
   return mergeAttributes({
     attributes,
@@ -161,22 +157,22 @@ const setSkillsAssign = ({
   const assignedSkills = new Set([...enabledSkills.skills, ...disabledSkills.skills]);
 
   const entries = Object.entries(skills);
-  const updatedEnabledSkills = entries.reduce((accum, [skill]) => {
-    if (assignedSkills.has(skill)) {
+  const updatedEnabledSkills = entries.reduce((accum, [s]) => {
+    if (assignedSkills.has(s)) {
       return accum;
     }
-    return [...accum, skill];
+    return [...accum, s];
   }, enabledSkills.skills);
 
-  const updatedEnabledSkillsLevels = entries.reduce((accum, [skill, entry]) => {
-    if (assignedSkills.has(skill)) {
+  const updatedEnabledSkillsLevels = entries.reduce((accum, [s, entry]) => {
+    if (assignedSkills.has(s)) {
       return accum;
     }
 
     if (!entry || !isInteger(entry.level)) {
       return accum;
     }
-    return { ...accum, [skill]: entry.level };
+    return { ...accum, [s]: entry.level };
   }, enabledSkills.levels);
 
   return mergeAttributes({
@@ -197,19 +193,17 @@ const setSkillsUnassign = ({
   disabledSkills: WorkerRoutingSkills;
   skills: SkillsParam;
 }) => {
-  const updatedEnabledSkills = enabledSkills.skills.filter(s => Object.hasOwn(skills, s));
-  const updatedEnabledSkillsLevels = Object.fromEntries(
-    Object.entries(enabledSkills.levels).filter(
-      ([skill]) => !Object.hasOwn(skills, skill),
-    ),
+  const updatedEnabledSkills = enabledSkills.skills.filter(
+    s => !Object.hasOwn(skills, s),
   );
-  const updatedDisabledSkills = disabledSkills.skills.filter(s =>
-    Object.hasOwn(skills, s),
+  const updatedEnabledSkillsLevels = Object.fromEntries(
+    Object.entries(enabledSkills.levels).filter(([s]) => !Object.hasOwn(skills, s)),
+  );
+  const updatedDisabledSkills = disabledSkills.skills.filter(
+    s => !Object.hasOwn(skills, s),
   );
   const updatedDisabledSkillsLevels = Object.fromEntries(
-    Object.entries(disabledSkills.levels).filter(
-      ([skill]) => !Object.hasOwn(skills, skill),
-    ),
+    Object.entries(disabledSkills.levels).filter(([s]) => !Object.hasOwn(skills, s)),
   );
 
   return mergeAttributes({
