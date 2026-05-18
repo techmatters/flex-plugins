@@ -14,13 +14,19 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { StatusInfo } from 'hrm-form-definitions';
+import type { StatusInfo } from 'hrm-form-definitions';
 
 import type * as t from '../../types/types';
-import { Contact, WellKnownCaseSection } from '../../types/types';
-import { CaseSectionTypeSpecificData, FullCaseSection } from '../../services/caseSectionService';
+import type { Contact } from '../../types/types';
+import type { CaseSectionTypeSpecificData, FullCaseSection } from '../../services/caseSectionService';
+import type { ParseFetchErrorResult } from '../parseFetchError';
+import type { LoadCaseAsync } from './singleCase';
 
 // Action types
+export const LOAD_CASE_ACTION = 'case-action/load-case';
+export const LOAD_CASE_ACTION_PENDING = `${LOAD_CASE_ACTION}_PENDING` as const;
+export const LOAD_CASE_ACTION_FULFILLED = `${LOAD_CASE_ACTION}_FULFILLED` as const;
+export const LOAD_CASE_ACTION_REJECTED = `${LOAD_CASE_ACTION}_REJECTED` as const;
 export const CREATE_CASE_ACTION = 'case-action/create-case';
 export const CREATE_CASE_ACTION_FULFILLED = `${CREATE_CASE_ACTION}_FULFILLED` as const;
 export const CANCEL_CASE_ACTION = 'case-action/cancel-case';
@@ -35,6 +41,18 @@ export enum SavedCaseStatus {
   Error,
 }
 
+type LoadCaseActionPending = {
+  type: typeof LOAD_CASE_ACTION_PENDING;
+} & ReturnType<LoadCaseAsync['pending']>;
+
+type LoadCaseActionFulfilled = {
+  type: typeof LOAD_CASE_ACTION_FULFILLED;
+} & ReturnType<LoadCaseAsync['fulfilled']>;
+
+type LoadCaseActionRejected = {
+  type: typeof LOAD_CASE_ACTION_REJECTED;
+} & ReturnType<LoadCaseAsync['rejected']>;
+
 type CreateCaseAction = {
   type: typeof CREATE_CASE_ACTION;
   payload: Promise<{ taskSid: string; case: t.Case }>;
@@ -42,7 +60,11 @@ type CreateCaseAction = {
   meta: unknown;
 };
 
-export type CaseActionType = CreateCaseAction;
+export type CaseActionType =
+  | CreateCaseAction
+  | LoadCaseActionPending
+  | LoadCaseActionFulfilled
+  | LoadCaseActionRejected;
 
 export type GenericTimelineActivity<T, TDate extends string | Date> = {
   timestamp: TDate;
@@ -54,17 +76,21 @@ export type TimelineActivity<T> = GenericTimelineActivity<T, Date>;
 
 export const isCaseSectionTimelineActivity = (
   activity: TimelineActivity<any>,
-): activity is TimelineActivity<FullCaseSection> => activity.activityType === 'case-section';
+): activity is TimelineActivity<FullCaseSection> => activity?.activityType === 'case-section';
 
 export const isContactTimelineActivity = (activity: TimelineActivity<any>): activity is TimelineActivity<Contact> =>
-  activity.activityType === 'contact';
+  activity?.activityType === 'contact';
 
 export type ContactIdentifierTimelineActivity = TimelineActivity<{ contactId: Contact['id'] }> & {
   activityType: 'contact-id';
 };
 
+export const isContactIdentifierTimelineActivity = (
+  activity: TimelineActivity<any>,
+): activity is CaseSectionIdentifierTimelineActivity => activity?.activityType === 'contact-id';
+
 export type CaseSectionIdentifierTimelineActivity = TimelineActivity<{
-  sectionType: WellKnownCaseSection;
+  sectionType: string;
   sectionId: string;
 }> & {
   activityType: 'case-section-id';
@@ -72,22 +98,22 @@ export type CaseSectionIdentifierTimelineActivity = TimelineActivity<{
 
 export const isCaseSectionIdentifierTimelineActivity = (
   activity: TimelineActivity<any>,
-): activity is CaseSectionIdentifierTimelineActivity => activity.activityType === 'case-section-id';
+): activity is CaseSectionIdentifierTimelineActivity => activity?.activityType === 'case-section-id';
 
 export type CaseSummaryWorkingCopy = {
   status: string;
-  followUpDate: string;
-  childIsAtRisk: boolean;
-  summary: string;
+  [key: string]: string | boolean;
 };
 
 export type CaseWorkingCopy = {
-  sections: {
-    [section in WellKnownCaseSection]?: {
+  sections: Record<
+    string,
+    {
       new?: CaseSectionTypeSpecificData;
       existing: { [id: string]: CaseSectionTypeSpecificData };
-    };
-  };
+    }
+  >;
+
   caseSummary?: CaseSummaryWorkingCopy;
 };
 
@@ -95,14 +121,17 @@ export type CaseStateEntry = {
   connectedCase: t.Case;
   caseWorkingCopy: CaseWorkingCopy;
   availableStatusTransitions: StatusInfo[];
-  references: Set<string>;
+  lastReferencedDate: Date;
   timelines: Record<string, (ContactIdentifierTimelineActivity | CaseSectionIdentifierTimelineActivity)[]>;
-  sections: { [sectionType in WellKnownCaseSection]?: { [sectionId: string]: FullCaseSection } };
+  sections: Record<string, { [sectionId: string]: FullCaseSection }>;
+  loading?: boolean;
+  outstandingUpdateCount: number;
+  error?: ParseFetchErrorResult;
 };
 
 export type CaseState = {
   cases: {
-    [caseId: string]: CaseStateEntry;
+    [caseId: t.Case['id']]: CaseStateEntry;
   };
 };
 

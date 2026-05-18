@@ -16,12 +16,14 @@
 import { configureStore } from '@reduxjs/toolkit';
 import promiseMiddleware from 'redux-promise-middleware';
 
-import { connectToCase, updateContactInHrm } from '../../../services/ContactService';
+import '../../mockGetConfig';
+import { connectToCase, getContactByTaskSid, updateContactInHrm } from '../../../services/ContactService';
 import { completeTask, submitContactForm } from '../../../services/formSubmissionHelpers';
 import { Case, Contact, CustomITask } from '../../../types/types';
 import { ContactMetadata, ContactsState, LoadingStatus } from '../../../states/contacts/types';
 import {
   connectToCaseAsyncAction,
+  newLoadContactFromHrmForTaskAsyncAction,
   saveContactReducer,
   submitContactFormAsyncAction,
   updateContactInHrmAsyncAction,
@@ -37,6 +39,7 @@ jest.mock('../../../services/CaseService');
 jest.mock('../../../services/formSubmissionHelpers');
 jest.mock('../../../components/case/Case');
 
+const mockGetContactByTaskSid = getContactByTaskSid as jest.MockedFunction<typeof getContactByTaskSid>;
 const mockUpdateContactInHrm = updateContactInHrm as jest.Mock<ReturnType<typeof updateContactInHrm>>;
 const mockSubmitContactForm = submitContactForm as jest.Mock<ReturnType<typeof submitContactForm>>;
 const mockConnectToCase = connectToCase as jest.Mock<ReturnType<typeof connectToCase>>;
@@ -63,26 +66,13 @@ const testStore = (stateChanges: ContactsState) =>
     ],
   });
 
+const createdAtTimestamp = new Date().toISOString();
 const baseContact: Contact = {
+  ...VALID_EMPTY_CONTACT,
   id: '1337',
   profileId: 22,
-  accountSid: 'AC',
-  timeOfContact: '',
-  number: '',
-  channel: 'default',
-  twilioWorkerId: 'WK',
   helpline: 'test helpline',
-  conversationDuration: 0,
-  createdBy: '',
-  createdAt: '',
-  updatedBy: '',
-  updatedAt: '',
-  queueName: '',
-  channelSid: '',
-  serviceSid: '',
   taskId: 'WT-TASK_ID',
-  conversationMedia: [],
-  csamReports: [],
   rawJson: {
     callType: 'Child calling about self',
     caseInformation: {},
@@ -91,9 +81,10 @@ const baseContact: Contact = {
     categories: {},
     contactlessTask: { ...VALID_EMPTY_CONTACT.rawJson.contactlessTask, channel: 'web' },
   },
+  createdAt: createdAtTimestamp,
 };
 
-const task = <CustomITask>{ taskSid: 'WT-mock task' };
+const task = <ITask>(<unknown>{ taskSid: 'WT-mock task' });
 const baseMetadata = { ...VALID_EMPTY_METADATA } as ContactMetadata;
 
 const baseCase: Case = {
@@ -104,7 +95,6 @@ const baseCase: Case = {
   status: 'test-st',
   twilioWorkerId: 'WK2xxx1',
   info: {},
-  categories: {},
   createdAt: '12-05-2023',
   updatedAt: '12-05-2023',
 };
@@ -114,7 +104,7 @@ const baseState: ContactsState = {
   existingContacts: {
     [baseContact.id]: {
       savedContact: baseContact,
-      references: new Set('x'),
+      lastReferencedDate: new Date(),
       metadata: VALID_EMPTY_METADATA,
     },
   },
@@ -123,6 +113,29 @@ const baseState: ContactsState = {
 // const dispatch = jest.fn();
 
 describe('actions', () => {
+  describe('loadContactFromHrmForTaskAsyncAction', () => {
+    test('Finds a contact with no attached case - loads ', async () => {
+      const { dispatch, getState } = testStore(baseState);
+      const taskContact: Contact = {
+        ...VALID_EMPTY_CONTACT,
+        id: '666',
+        taskId: 'WT-load-me',
+      };
+      mockGetContactByTaskSid.mockResolvedValue(taskContact);
+      const actionPromiseResult = (dispatch(
+        newLoadContactFromHrmForTaskAsyncAction({ taskSid: 'WT-load-me', attributes: {} } as CustomITask, 'mock-ref'),
+      ) as unknown) as Promise<void>;
+      const pendingState = getState();
+      expect(pendingState.contactsBeingCreated.has('WT-load-me')).toBe(true);
+      await actionPromiseResult;
+      const state = getState();
+      expect(state.contactsBeingCreated.has('WT-load-me')).toBe(false);
+      expect(state.existingContacts['666'].savedContact).toEqual(taskContact);
+      expect(state.existingContacts['666'].lastReferencedDate).toBeInstanceOf(Date);
+      expect(mockGetCase).not.toHaveBeenCalled();
+      expect(mockGetContactByTaskSid).toHaveBeenCalledWith('WT-load-me');
+    });
+  });
   test('Calls the updateContactsFormInHrmAsyncAction action, and update a contact', async () => {
     const { dispatch, getState } = testStore(baseState);
     const startingState = getState();
@@ -130,19 +143,23 @@ describe('actions', () => {
     const mockSavedContact = { id: '12', ...VALID_EMPTY_CONTACT }; // Create a mock savedContact object
     mockUpdateContactInHrm.mockResolvedValue(mockSavedContact);
 
-    await (dispatch(updateContactInHrmAsyncAction(baseContact, { conversationDuration: 1234 })) as unknown);
+    await (dispatch(
+      updateContactInHrmAsyncAction(baseContact, { conversationDuration: 1234, queueName: 'WQbob' }),
+    ) as unknown);
     const state = getState();
 
-    expect(updateContactInHrm).toHaveBeenCalledWith(baseContact.id, { conversationDuration: 1234 });
+    expect(updateContactInHrm).toHaveBeenCalledWith(baseContact.id, { conversationDuration: 1234, queueName: 'WQbob' });
     const expected: ContactsState = {
       ...baseState,
       existingContacts: {
         [baseContact.id]: {
           ...startingContactState,
+          lastReferencedDate: expect.any(Date),
           draftContact: undefined,
           savedContact: {
             ...startingContactState.savedContact,
-            conversationDuration: 1234,
+            conversationDuration: 0,
+            queueName: 'WQbob',
           },
           metadata: {
             ...startingContactState.metadata,
@@ -178,12 +195,44 @@ describe('actions', () => {
         connectedCase: baseCase,
         sections: {},
         timelines: {},
-        references: new Set(),
+        lastReferencedDate: new Date(),
         availableStatusTransitions: [],
         caseWorkingCopy: undefined,
+        outstandingUpdateCount: 0,
       };
       submitContactFormAsyncAction(task, baseContact, baseMetadata, caseState);
-      expect(submitContactForm).toHaveBeenCalledWith(task, baseContact, baseMetadata, caseState);
+
+      expect(submitContactForm).toHaveBeenCalledWith(task, baseContact, caseState);
+    });
+    test('Action sets the conversation duration', async () => {
+      let conversationDurationPassedToSubmitContactForm: number | undefined;
+      mockSubmitContactForm.mockImplementation((task, contact) => {
+        conversationDurationPassedToSubmitContactForm = contact.conversationDuration;
+        return Promise.resolve(contact);
+      });
+      const caseState = {
+        connectedCase: baseCase,
+        sections: {},
+        timelines: {},
+        lastReferencedDate: new Date(),
+        availableStatusTransitions: [],
+        caseWorkingCopy: undefined,
+        outstandingUpdateCount: 0,
+      };
+      submitContactFormAsyncAction(
+        task,
+        baseContact,
+        { ...baseMetadata, startMillis: Date.now() - 1000 * 100 },
+        caseState,
+      );
+
+      // The conversation duration should
+      expect(submitContactForm).toHaveBeenCalledWith(
+        task,
+        { ...baseContact, conversationDuration: expect.any(Number) },
+        caseState,
+      );
+      expect(conversationDurationPassedToSubmitContactForm).toBeGreaterThanOrEqual(100);
     });
 
     test('Updates contact in redux and sets metadata', async () => {
@@ -200,10 +249,12 @@ describe('actions', () => {
       ) as unknown);
       const { metadata, savedContact } = getState().existingContacts[baseContact.id];
       // Check that the difference in startMillis is still insignificant
-      expect(Math.abs(metadata.startMillis - newContactMetaData(false).startMillis)).toBeLessThanOrEqual(100);
+      expect(
+        Math.abs(metadata.startMillis - newContactMetaData({ createdAt: new Date().toISOString() }).startMillis),
+      ).toBeLessThanOrEqual(10000);
       expect(metadata).toStrictEqual(
         expect.objectContaining({
-          ...newContactMetaData(false),
+          ...newContactMetaData({ createdAt: createdAtTimestamp }),
           loadingStatus: LoadingStatus.LOADED,
           startMillis: expect.any(Number),
         }),

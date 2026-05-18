@@ -32,7 +32,7 @@ export const mockFormDefinitions = async (page: Page) => {
       .url()
       .substring(context.FORM_DEFINITIONS_BASE_URL.toString().length);
     const definitionFilePath = path.join(
-      '../hrm-form-definitions/form-definitions',
+      '../lambdas/packages/hrm-form-definitions/form-definitions',
       definitionFile,
     );
     console.log('Loading form def file:', definitionFilePath);

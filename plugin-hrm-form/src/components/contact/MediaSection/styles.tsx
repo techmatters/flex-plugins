@@ -36,7 +36,7 @@ ItalicFont.displayName = 'ItalicFont';
 export const LoadMediaButton = styled('button')`
   height: 28px;
   width: 30%;
-  background-color: ${props => (HrmTheme.colors as any).secondaryButtonColor};
+  background-color: ${props => (HrmTheme.colors as any).Color};
   border-radius: 4px;
   border-style: none;
 `;

@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
-import { styled, Button } from '@twilio/flex-ui';
+import { styled } from '@twilio/flex-ui';
 
 export const CannedResponsesContainer = styled('div')`
   margin-bottom: 15px;

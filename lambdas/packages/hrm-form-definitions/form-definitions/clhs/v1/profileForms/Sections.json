@@ -1,0 +1,22 @@
+[
+  {
+    "name": "summary",
+    "label": "Atributos",
+    "editLabel": "Editar Atributos",
+    "type": "textarea",
+    "rows": 20,
+    "width": 500,
+    "placeholder": "Ingrese un resumen del usuarie",
+    "isPII": true
+  },
+  {
+    "name": "blockReasons",
+    "label": "Motivo del Bloqueo",
+    "editLabel": "Editar motivo del bloqueo",
+    "type": "textarea",
+    "rows": 20,
+    "width": 500,
+    "placeholder": "Ingrese un motivo del bloqueo",
+    "isPII": true
+  }
+]

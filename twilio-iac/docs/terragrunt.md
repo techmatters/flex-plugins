@@ -57,7 +57,9 @@ terraform {
     key            = "twilio/${local.short_helpline}/${local.stage}/terraform.tfstate"
     dynamodb_table = "terraform-locks"
     encrypt        = true
-    role_arn       = "arn:aws:iam::712893914485:role/tf-twilio-iac-${local.environment}"
+    assume_role {
+      role_arn       = "arn:aws:iam::712893914485:role/tf-twilio-iac-${local.environment}"
+    }
   }
 }
 EOF

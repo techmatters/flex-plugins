@@ -10,7 +10,7 @@ locals {
     task_language                     = "{{trigger.message.ChannelAttributes.pre_engagement_data.language}}"
     enable_external_recordings        = true
     contacts_waiting_channels         = ["voice", "web"]
-
+    permission_config                 = "ca"
     workflows = {
       master : {
         friendly_name = "Master Workflow"
@@ -24,7 +24,7 @@ locals {
         "friendly_name"  = "Aggregate"
       },
       khp_en : {
-        "target_workers" = "routing.skills HAS 'KHP English'",
+        "target_workers" = "routing.skills HAS 'KHP English' OR routing.skills HAS 'KHPEN'",
         "friendly_name"  = "KHP English"
       },
       khp_fr : { "target_workers" = "routing.skills HAS 'KHP French'",
@@ -74,14 +74,6 @@ locals {
         "target_workers" = "routing.skills HAS 'Training'",
         "friendly_name"  = "Training"
       },
-      hc_en : {
-        "target_workers" = "routing.skills HAS 'HCENG'",
-        "friendly_name"  = "Health Canada English"
-      },
-      hc_fr : {
-        "target_workers" = "routing.skills HAS 'HCFR'",
-        "friendly_name"  = "Health Canada French"
-      },
       chat_en : {
         "target_workers" = "routing.skills HAS 'Chat English'",
         "friendly_name"  = "Chat English"
@@ -106,9 +98,30 @@ locals {
         "target_workers" = "routing.skills HAS '988NSFr'",
         "friendly_name"  = "988 NS French"
       },
+      "switchboard" : {
+        "target_workers" = "routing.skills HAS 'Supervisor'",
+        "friendly_name"  = "Switchboard Queue"
+      },
       e2e_test : {
         "target_workers" = "email=='aselo-alerts+production@techmatters.org'",
         "friendly_name"  = "E2E Test Queue"
+      }
+    }
+    s3_lifecycle_rules = {
+      hrm_export_expiry : {
+        id                 = "HRM Exported Data Expiration Rule"
+        expiration_in_days = 30
+        prefix             = "hrm-data/"
+      },
+      transcripts_expiry : {
+        id                 = "Transcripts Data Expiration Rule"
+        expiration_in_days = 90
+        prefix             = "transcripts/"
+      },
+      voice_recordings_expiry : {
+        id                 = "Voice Recordings Data Expiration Rule"
+        expiration_in_days = 90
+        prefix             = "voice-recordings/"
       }
     }
   }

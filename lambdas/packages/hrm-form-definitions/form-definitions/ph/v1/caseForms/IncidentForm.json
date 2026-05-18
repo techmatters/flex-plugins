@@ -1,0 +1,141 @@
+[
+  {
+    "name": "date",
+    "label": "Date",
+    "type": "date-input",
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    },
+    "isPII": false
+  },
+  {
+    "name": "duration",
+    "label": "Duration",
+    "type": "select",
+    "options": [
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "Ongoing",
+        "label": "Ongoing"
+      },
+      {
+        "value": "Once Off",
+        "label": "Once Off"
+      },
+      {
+        "value": "Other",
+        "label": "Other"
+      }
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    },
+    "isPII": false
+  },
+  {
+    "name": "otherSpecify",
+    "label": "If other, specify years/months",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "location",
+    "label": "Location",
+    "type": "select",
+    "options": [
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "Unknown",
+        "label": "Unknown"
+      },
+      {
+        "value": "School",
+        "label": "School"
+      },
+      {
+        "value": "HomeOwn",
+        "label": "Home (own)"
+      },
+      {
+        "value": "HomeOther",
+        "label": "Home (other)"
+      },
+      {
+        "value": "Institution",
+        "label": "Institution"
+      },
+      {
+        "value": "Online",
+        "label": "Online"
+      },
+      {
+        "value": "Public Place",
+        "label": "Public Place"
+      },
+      {
+        "value": "Community",
+        "label": "Community"
+      },
+      {
+        "value": "Travel & Tourism Establishment",
+        "label": "Travel & Tourism Establishment"
+      },
+      {
+        "value": "Other",
+        "label": "Other"
+      }
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    },
+    "isPII": false
+  },
+  {
+    "name": "establishmentSpecify",
+    "label": "Specify name of Establishment",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "note",
+    "label": "Note",
+    "type": "textarea",
+    "placeholder": "Type here to add note...",
+    "rows": 10,
+    "width": 250,
+    "isPII": true
+  },
+  {
+    "name": "isCaregiverAware",
+    "label": "Is caregiver aware?",
+    "type": "mixed-checkbox",
+    "isPII": false
+  },
+  {
+    "name": "incidentWitnessed",
+    "label": "Was the incident witnessed by anyone?",
+    "type": "mixed-checkbox",
+    "isPII": false
+  },
+  {
+    "name": "abuseReportedElsewhere",
+    "label": "Has abuse been reported elsewhere?",
+    "type": "mixed-checkbox",
+    "isPII": false
+  },
+  {
+    "name": "whereElseBeenReported",
+    "label": "Where else the incident has been reported?",
+    "type": "mixed-checkbox",
+    "isPII": false
+  }
+]

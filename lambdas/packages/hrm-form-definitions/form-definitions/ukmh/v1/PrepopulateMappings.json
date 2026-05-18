@@ -1,0 +1,14 @@
+{
+  "preEngagement":{
+    "contactIdentifier": "CaseInformationTab.contactIdentifier",
+    "friendlyName": "ChildInformationTab.friendlyName",
+    "lastName": "CaseInformationTab.lastName",
+    "phone1": "CaseInformationTab.phone1",
+    "anxietyScale": "ChildInformationTab.anxietyScale",
+    "moodhappinessBefore": "ChildInformationTab.moodhappinessBefore",
+    "bookingReference": "ChildInformationTab.bookingReference",
+    "consentForResearchEvaluation": "CaseInformationTab.consentForResearchEvaluation",
+    "ip": "CaseInformationTab.ip"
+  },
+  "survey":{}
+}

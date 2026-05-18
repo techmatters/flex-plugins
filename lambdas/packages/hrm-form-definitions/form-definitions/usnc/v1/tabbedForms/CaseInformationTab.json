@@ -1,0 +1,231 @@
+[
+  {
+    "name": "contactSummary",
+    "label": "Contact Summary",
+    "type": "textarea",
+    "isPII": false,
+    "rows": 10
+  },
+  {
+    "name": "actionTaken",
+    "label": "Action Taken",
+    "type": "listbox-multiselect",
+    "isPII": false,
+    "options": [
+      {
+        "value": "Active listening",
+        "label": "Active listening"
+      },
+      {
+        "value": "Validation",
+        "label": "Validation"
+      },
+      {
+        "value": "Empathy",
+        "label": "Empathy"
+      },
+      {
+        "value": "Reflective responding",
+        "label": "Reflective responding"
+      },
+      {
+        "value": "Normalization",
+        "label": "Normalization"
+      },
+      {
+        "value": "Open-ended questions",
+        "label": "Open-ended questions"
+      },
+      {
+        "value": "Strengths identification",
+        "label": "Strengths identification"
+      },
+      {
+        "value": "Emotional containment",
+        "label": "Emotional containment"
+      },
+      {
+        "value": "Supportive silence",
+        "label": "Supportive silence"
+      },
+      {
+        "value": "Encouragement",
+        "label": "Encouragement"
+      },
+      {
+        "value": "Sharing Information",
+        "label": "Sharing Information"
+      },
+      {
+        "value": "Boundary setting",
+        "label": "Boundary setting"
+      },
+      {
+        "value": "Hope-oriented language",
+        "label": "Hope-oriented language"
+      },
+      {
+        "value": "Collaborative problem exploration",
+        "label": "Collaborative problem exploration"
+      },
+      {
+        "value": "Respecting autonomy",
+        "label": "Respecting autonomy"
+      },
+      {
+        "value": "Sharing resources",
+        "label": "Sharing resources"
+      },
+      {
+        "value": "Other",
+        "label": "Other"
+      }
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+    {
+    "name": "referrals",
+    "label": "Type of Resource Provided",
+    "type": "listbox-multiselect",
+    "isPII": false,
+    "options": [
+      {
+        "value": "Hub",
+        "label": "Hub"
+      },
+      {
+        "value": "Peer Support Specialist",
+        "label": "Peer Support Specialist"
+      },
+      {
+        "value": "PRN",
+        "label": "PRN"
+      },
+      {
+        "value": "Respite",
+        "label": "Respite"
+      },
+      {
+        "value": "Behavioral Health",
+        "label": "Behavioral Health"
+      },
+      {
+        "value": "Dental",
+        "label": "Dental"
+      },
+      {
+        "value": "Employment",
+        "label": "Employment"
+      },
+      {
+        "value": "Food",
+        "label": "Food"
+      },
+      {
+        "value": "Medical",
+        "label": "Medical"
+      },
+      {
+        "value": "Shelter",
+        "label": "Shelter"
+      },
+      {
+        "value": "Vision",
+        "label": "Vision"
+      },
+      {
+        "value": "988",
+        "label": "988"
+      },
+      {
+        "value": "FindHelp",
+        "label": "FindHelp"
+      },
+      {
+        "value": "TeenLine",
+        "label": "TeenLine"
+      },
+      {
+        "value": "Some Other Phone Line",
+        "label": "Some Other Phone Line"
+      },
+      {
+        "value": "Some Other Website",
+        "label": "Some Other Website"
+      },
+      {
+        "value": "Warmline.org",
+        "label": "Warmline.org"
+      },
+      {
+        "value": "Other",
+        "label": "Other"
+      }
+    ]
+  },
+  {
+    "name": "liveMonitoringConsent",
+    "label": "Do we have their permission to live monitor calls.",
+    "type": "select",
+    "isPII": false,
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "Yes",
+        "label": "Yes"
+      },
+      {
+        "value": "No",
+        "label": "No"
+      }
+    ]
+  },
+  {
+    "name": "doWeHaveTheirPermissionToCallBack",
+    "label": "Do we have their permission to call back?",
+    "type": "checkbox",
+    "isPII": false
+  },
+  {
+    "name": "substanceUseLivedExperience",
+    "label": "Substance use lived experience identified",
+    "type": "checkbox",
+    "isPII": false
+  },
+  {
+    "name": "wasTheIndividualAbusive",
+    "label": "Was the individual abusive?",
+    "type": "checkbox",
+    "isPII": false
+  },
+  {
+    "name": "didTheIndividualWantToFileAComplaint",
+    "label": "Did the individual want to file a complaint?",
+    "type": "checkbox",
+    "isPII": false
+  },
+  {
+    "name": "isTheIndividualAMinor",
+    "label": "Is the individual a minor?",
+    "type": "checkbox",
+    "isPII": false
+  },
+  {
+    "name": "isTheIndividualOutOfState",
+    "label": "Is the individual out of state?",
+    "type": "checkbox",
+    "isPII": false
+  },
+  {
+    "name": "wasTheCallerSatisfiedWithTheSupportProvided",
+    "label": "Was the caller satisfied with the support provided?",
+    "type": "checkbox",
+    "isPII": false
+  }
+]

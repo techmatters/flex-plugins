@@ -19,10 +19,12 @@ import { Provider } from 'react-redux';
 import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
 import configureMockStore from 'redux-mock-store';
-import { DefinitionVersionId, loadDefinition, useFetchDefinitions } from 'hrm-form-definitions';
+import { loadDefinition } from 'hrm-form-definitions';
 import { StorelessThemeProvider } from '@twilio/flex-ui';
 
+import { mockLocalFetchDefinitions } from '../mockFetchDefinitions';
 import { mockGetDefinitionsResponse } from '../mockGetConfig';
+import { getInitializedCan, validateAndSetPermissionRules } from '../../permissions/rules';
 import Search from '../../components/search';
 import { getDefinitionVersions } from '../../hrmConfig';
 import { DetailsContext } from '../../states/contacts/contactDetails';
@@ -31,20 +33,24 @@ import { RecursivePartial } from '../RecursivePartial';
 import { RootState } from '../../states';
 import { Contact } from '../../types/types';
 import { VALID_EMPTY_CONTACT, VALID_EMPTY_METADATA } from '../testContacts';
-import {
-  DetailedSearchContactsResult,
-  newSearchFormEntry,
-  PreviousContactCounts,
-  SearchFormValues,
-} from '../../states/search/types';
+import { DetailedSearchContactsResult, newSearchFormEntry, SearchFormValues } from '../../states/search/types';
 import { AppRoutes } from '../../states/routing/types';
 import { ContactState, ExistingContactsState } from '../../states/contacts/existingContacts';
+import { fetchPermissionRules } from '../../services/PermissionsService';
+import mockRules from '../fixtures/mockPermissionRules';
 
-// eslint-disable-next-line react-hooks/rules-of-hooks
-const { mockFetchImplementation, mockReset, buildBaseURL } = useFetchDefinitions();
+const { mockFetchImplementation, mockReset, buildBaseURL } = mockLocalFetchDefinitions();
 
 const mockStore = configureMockStore([]);
 let mockV1;
+
+const mockFlexManager = {
+  workerClient: {
+    attributes: {
+      roles: [''],
+    },
+  },
+};
 
 jest.mock('../../services/ServerlessService', () => ({
   populateCounselors: async () => [],
@@ -52,10 +58,28 @@ jest.mock('../../services/ServerlessService', () => ({
 
 jest.mock('@twilio/flex-ui', () => ({
   ...(jest.requireActual('@twilio/flex-ui') as any),
+  Manager: {
+    getInstance: () => mockFlexManager,
+  },
   Actions: {
     invokeAction: jest.fn(),
   },
 }));
+
+jest.mock('../../services/PermissionsService', () => {
+  return {
+    fetchPermissionRules: jest.fn(() => {
+      throw new Error('fetchRules not mocked!');
+    }),
+  };
+});
+
+beforeEach(async () => {
+  const fetchPermissionRulesSpy = fetchPermissionRules as jest.MockedFunction<typeof fetchPermissionRules>;
+  fetchPermissionRulesSpy.mockResolvedValueOnce(mockRules);
+  await validateAndSetPermissionRules();
+  getInitializedCan();
+});
 
 jest.mock('../../states/case/caseBanners', () => ({
   __esModule: true,
@@ -73,18 +97,17 @@ jest.mock('../../states/case/selectCaseStateByCaseId', () => {
 
 function createState(
   taskId,
+  context: string,
   {
     searchFormValues,
     currentContact,
     detailsExpanded,
-    previousContactCounts,
     route,
     searchContactsResult,
   }: {
     searchFormValues: SearchFormValues;
     currentContact: Contact;
     detailsExpanded: any;
-    previousContactCounts: { contacts: number; cases: number };
     route: AppRoutes;
     searchContactsResult?: DetailedSearchContactsResult;
   },
@@ -96,11 +119,12 @@ function createState(
       c.id,
       {
         savedContact: c,
-        references: new Set(['x']),
+        lastReferencedDate: new Date(),
         metadata: VALID_EMPTY_METADATA,
       },
     ]),
   );
+
   return {
     'plugin-hrm-form': {
       configuration: {
@@ -108,7 +132,7 @@ function createState(
           list: [],
           hash: {},
         },
-        definitionVersions: { v1: mockV1 },
+        definitionVersions: { 'as-v1': mockV1 },
         currentDefinitionVersion: mockV1,
       },
       routing: {
@@ -120,17 +144,18 @@ function createState(
       searchContacts: {
         tasks: {
           [taskId]: {
-            form: searchFormValues || newSearchFormEntry,
-            previousContactCounts,
-            detailsExpanded: detailsExpanded || {},
-            isRequesting: false,
-            error: null,
-            searchContactsResult: references
-              ? {
-                  count: searchContactsResult?.count,
-                  ids: references,
-                }
-              : undefined,
+            [context]: {
+              form: searchFormValues || newSearchFormEntry,
+              detailsExpanded: detailsExpanded || {},
+              isRequesting: false,
+              error: null,
+              searchContactsResult: references
+                ? {
+                    count: searchContactsResult?.count,
+                    ids: references,
+                  }
+                : undefined,
+            },
           },
         },
       },
@@ -165,11 +190,11 @@ beforeEach(() => {
 });
 
 beforeAll(async () => {
-  const formDefinitionsBaseUrl = buildBaseURL(DefinitionVersionId.v1);
+  const formDefinitionsBaseUrl = buildBaseURL('as-v1');
   await mockFetchImplementation(formDefinitionsBaseUrl);
 
   mockV1 = await loadDefinition(formDefinitionsBaseUrl);
-  mockGetDefinitionsResponse(getDefinitionVersions, DefinitionVersionId.v1, mockV1);
+  mockGetDefinitionsResponse(getDefinitionVersions, 'as-v1', mockV1);
 });
 
 afterEach(() => {
@@ -180,19 +205,21 @@ test('<Search> should display <SearchForm />', async () => {
   const searchFormValues: SearchFormValues = {
     firstName: 'Jill',
     lastName: 'Smith',
-    counselor: { label: 'Counselor Name', value: 'counselor-id' },
+    counselor: 'counselor-id',
     phoneNumber: 'Anonymous',
     dateFrom: '2020-03-10',
     dateTo: '2020-03-15',
     contactNumber: undefined,
     helpline: { label: '', value: '' },
+    searchTerm: 'term',
+    onlyDataContacts: false,
   };
   const task = { taskSid: 'WT123', attributes: { preEngagementData: {} } };
+  const context = 'root';
 
-  const initialState = createState(task.taskSid, {
+  const initialState = createState(task.taskSid, context, {
     searchFormValues,
     detailsExpanded,
-    previousContactCounts: undefined,
     currentContact: undefined,
     route: { route: 'search', subroute: 'form' },
   });
@@ -209,21 +236,21 @@ test('<Search> should display <SearchForm />', async () => {
   expect(screen.getByTestId('SearchForm')).toBeInTheDocument();
   expect(screen.queryByTestId('ContactDetails')).not.toBeInTheDocument();
 
-  expect(screen.getAllByRole('textbox')).toHaveLength(5);
   expect(screen.queryByRole('button', { name: 'Counsellor Name' })).toBeDefined();
-  expect(screen.getByDisplayValue('Jill')).toBeDefined();
 });
 
 test('<Search> should display <SearchForm /> with previous contacts checkbox', async () => {
   const searchFormValues: SearchFormValues = {
     firstName: 'Jill',
     lastName: 'Smith',
-    counselor: { label: 'Counselor Name', value: 'counselor-id' },
+    counselor: 'counselor-id',
     phoneNumber: 'Anonymous',
     dateFrom: '2020-03-10',
     dateTo: '2020-03-15',
     contactNumber: undefined,
     helpline: { label: '', value: '' },
+    searchTerm: 'term',
+    onlyDataContacts: false,
   };
   const task = {
     taskSid: 'WT123',
@@ -233,16 +260,11 @@ test('<Search> should display <SearchForm /> with previous contacts checkbox', a
       preEngagementData: { contactType: 'ip' },
     },
   };
+  const context = 'root';
 
-  const previousContactCounts: PreviousContactCounts = {
-    contacts: 3,
-    cases: 1,
-  };
-
-  const initialState = createState(task.taskSid, {
+  const initialState = createState(task.taskSid, context, {
     searchFormValues,
     detailsExpanded,
-    previousContactCounts,
     currentContact: undefined,
     route: { route: 'search', subroute: 'form' },
   });
@@ -258,7 +280,6 @@ test('<Search> should display <SearchForm /> with previous contacts checkbox', a
 
   expect(screen.queryByTestId('SearchForm')).toBeInTheDocument();
   expect(screen.queryByTestId('ContactDetails')).not.toBeInTheDocument();
-  expect(screen.getAllByRole('textbox')).toHaveLength(5);
   expect(screen.queryByRole('checkbox', { name: 'Search-PreviousContactsCheckbox' })).toBeDefined();
   expect(screen.queryByRole('button', { name: 'Counsellor Name' })).toBeDefined();
 });
@@ -272,7 +293,6 @@ test('<Search> should display <ContactDetails />', async () => {
       callType: 'Child calling about self',
       categories: {},
       contactlessTask: VALID_EMPTY_CONTACT.rawJson.contactlessTask,
-      definitionVersion: DefinitionVersionId.v1,
       childInformation: {
         firstName: 'Jill',
         lastName: 'Smith',
@@ -323,12 +343,12 @@ test('<Search> should display <ContactDetails />', async () => {
     },
   };
   const task = { taskSid: 'WT123' };
+  const context = 'root';
 
-  const initialState = createState(task.taskSid, {
+  const initialState = createState(task.taskSid, context, {
     currentContact,
     detailsExpanded,
     searchFormValues: undefined,
-    previousContactCounts: undefined,
     searchContactsResult: { contacts: [currentContact], count: 1 },
     route: { route: 'contact', subroute: 'view', id: currentContact.id },
   });

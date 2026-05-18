@@ -17,7 +17,7 @@
 /* eslint-disable react/prop-types */
 import React from 'react';
 import { CircularProgress, TableBody } from '@material-ui/core';
-import { connect, ConnectedProps } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Template } from '@twilio/flex-ui';
 import InfoIcon from '@material-ui/icons/Info';
 
@@ -29,9 +29,11 @@ import Pagination from '../pagination';
 import { CASES_PER_PAGE } from './CaseList';
 import type { Case } from '../../types/types';
 import * as CaseListSettingsActions from '../../states/caseList/settings';
-import { getInitializedCan, PermissionActions } from '../../permissions';
+import { getInitializedCan } from '../../permissions/rules';
 import { namespace } from '../../states/storeNamespaces';
 import { RootState } from '../../states';
+import { PermissionActions } from '../../permissions/actions';
+import { lookupTranslation } from '../../translations';
 
 const ROW_HEIGHT = 89;
 
@@ -42,21 +44,15 @@ type OwnProps = {
   handleClickViewCase: (currentCase: Case) => () => void;
 };
 
-// eslint-disable-next-line no-use-before-define
-type Props = OwnProps & ConnectedProps<typeof connector>;
-
 /**
  * This component is split to make it easier to read, but is basically a 8 columns Table (8 for data, 1 for the "expand" button)
  */
-const CaseListTable: React.FC<Props> = ({
-  loading,
-  caseList,
-  caseCount,
-  currentPage,
-  updateCaseListPage,
-  handleClickViewCase,
-  currentDefinitionVersion,
-}) => {
+const CaseListTable: React.FC<OwnProps> = ({ loading, caseList, caseCount, handleClickViewCase }) => {
+  const dispatch = useDispatch();
+  const currentDefinitionVersion = useSelector(
+    (state: RootState) => state[namespace].configuration.currentDefinitionVersion,
+  );
+  const currentPage = useSelector((state: RootState) => state[namespace].caseList.currentSettings.page);
   const can = React.useMemo(() => {
     return getInitializedCan();
   }, []);
@@ -70,7 +66,7 @@ const CaseListTable: React.FC<Props> = ({
         <StandardTable tabIndex={0} aria-labelledby="CaseList-Cases-label" data-testid="CaseList-Table">
           <CaseListTableHead />
           {loading && (
-            <TableBody>
+            <TableBody aria-busy={true} aria-describedby="case-table-progress-bar">
               <DataTableRow
                 data-testid="CaseList-Table-Loading"
                 style={{
@@ -80,7 +76,11 @@ const CaseListTable: React.FC<Props> = ({
                 }}
               >
                 <LoadingCell>
-                  <CircularProgress size={50} />
+                  <CircularProgress
+                    id="case-table-progress-bar"
+                    size={50}
+                    aria-label={lookupTranslation('CaseList-Loading')}
+                  />
                 </LoadingCell>
               </DataTableRow>
             </TableBody>
@@ -117,7 +117,7 @@ const CaseListTable: React.FC<Props> = ({
             transparent
             page={currentPage}
             pagesCount={pagesCount}
-            handleChangePage={updateCaseListPage}
+            handleChangePage={page => dispatch(CaseListSettingsActions.updateCaseListPage(page))}
             disabled={loading}
           />
         </div>
@@ -128,16 +128,4 @@ const CaseListTable: React.FC<Props> = ({
 
 CaseListTable.displayName = 'CaseListTable';
 
-const mapStateToProps = ({ [namespace]: { configuration, caseList } }: RootState) => ({
-  currentDefinitionVersion: configuration.currentDefinitionVersion,
-  currentPage: caseList.currentSettings.page,
-});
-
-const mapDispatchToProps = {
-  updateCaseListPage: CaseListSettingsActions.updateCaseListPage,
-};
-
-const connector = connect(mapStateToProps, mapDispatchToProps);
-const connected = connector(CaseListTable);
-
-export default connected;
+export default CaseListTable;

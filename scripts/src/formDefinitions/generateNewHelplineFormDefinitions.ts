@@ -37,7 +37,7 @@ async function main() {
     })
     .help()
     .parseSync();
-  const rootFolder = `${args.root ?? '../hrm-form-definitions/form-definitions'}/${
+  const rootFolder = `${args.root ?? '../lambdas/packages/hrm-form-definitions/form-definitions'}/${
     args.definitionVersion
   }`;
   const rootDir = path.resolve(process.cwd(), rootFolder);

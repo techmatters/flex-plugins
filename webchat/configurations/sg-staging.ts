@@ -18,7 +18,7 @@ import { Translations, Configuration, MapHelplineLanguage, ContactType } from '.
 import { PreEngagementFormDefinition, EMAIL_PATTERN } from '../src/pre-engagement-form';
 
 const accountSid = 'ACa00e3e32f7ba405cc0f5906906d88e97';
-const flexFlowSid = 'FO468b62cdd84da623f50059a50f01ff92';
+const flexFlowSid = 'FO66f283b916eadebfe4cc5feab7a70521';
 const defaultLanguage = 'en-SG';
 const captureIp = true;
 const checkOpenHours = true;
@@ -67,10 +67,6 @@ const preEngagementConfig: PreEngagementFormDefinition = {
         {
           value: "Other",
           label: "Other"
-        },
-        {
-          value: "Unknown",
-          label: "Unknown"
         }
       ],
     },
@@ -84,10 +80,6 @@ const preEngagementConfig: PreEngagementFormDefinition = {
         {
           value: "",
           label: ""
-        },
-        {
-          value: "Unknown",
-          label: "Unknown"
         },
         {
           value: "06",
@@ -172,10 +164,10 @@ const preEngagementConfig: PreEngagementFormDefinition = {
       type: 'select',
       name: 'reason',
       required: true,
-      defaultValue: 'Unknown',
+      defaultValue: '',
       options: [
         {
-          value: "Unknown",
+          value: "",
           label: ""
         },
         {
@@ -205,6 +197,47 @@ const preEngagementConfig: PreEngagementFormDefinition = {
         {
           value: "more",
           label: "More than one of the above"
+        },
+        {
+          value: "other",
+          label: "Other"
+        },
+        {
+          value: "Unknown",
+          label: "Unknown"
+        }
+      ],
+    },
+    {
+      label: 'How did you hear about Tinkle Friend?',
+      type: 'select',
+      name: 'howDidYouHearAboutUs',
+      required: true,
+      defaultValue: '',
+      options: [
+        {
+          value: "",
+          label: ""
+        },
+        {
+          value: "eAssemblyTalk",
+          label: "E-assembly talk"
+        },
+        {
+          value: "school",
+          label: "School - Tinkle Friend Poster / Student Handbook"
+        },
+        {
+          value: "familyFriend",
+          label: "Family / Friend"
+        },
+        {
+          value: "teacherCounsellor",
+          label: "Teacher/ school counsellor"
+        },
+        {
+          value: "news",
+          label: "News article"
         },
         {
           value: "other",
@@ -266,4 +299,5 @@ export const config: Configuration = {
   memberDisplayOptions,
   captureIp,
   contactType,
+  twilioServicesUrl: new URL(`https://hrm-staging-eu.tl.techmatters.org/lambda/twilio/account-scoped/${accountSid}`),
 };

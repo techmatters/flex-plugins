@@ -14,15 +14,15 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { connect, ConnectedProps } from 'react-redux';
-import React, { Dispatch, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import React, { useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { Template } from '@twilio/flex-ui';
 import { CircularProgress } from '@material-ui/core';
 import { AnyAction } from 'redux';
 
 import { RootState } from '../../states';
-import { BottomButtonBar, Box, StyledNextStepButton } from '../../styles';
+import { BottomButtonBar, Box, PrimaryButton } from '../../styles';
 import { EditContactContainer } from '../case/styles';
 import { recordBackendError, recordingErrorHandler } from '../../fullStory';
 import { DetailsContext } from '../../states/contacts/contactDetails';
@@ -36,10 +36,11 @@ import { getTemplateStrings } from '../../hrmConfig';
 import { Contact, ContactRawJson, CustomITask, StandaloneITask } from '../../types/types';
 import asyncDispatch from '../../states/asyncDispatch';
 import { updateContactInHrmAsyncAction } from '../../states/contacts/saveContact';
-import { namespace } from '../../states/storeNamespaces';
 import { newGoBackAction } from '../../states/routing/actions';
+import selectContactStateByContactId from '../../states/contacts/selectContactStateByContactId';
+import { selectDefinitionVersions } from '../../states/configuration/selectDefinitions';
 
-type OwnProps = {
+type Props = {
   context: DetailsContext;
   contactId: string;
   task: CustomITask | StandaloneITask;
@@ -48,29 +49,31 @@ type OwnProps = {
   onClose: () => void;
 };
 
-// eslint-disable-next-line no-use-before-define
-type Props = OwnProps & ConnectedProps<typeof connector>;
+const EditContactSection: React.FC<Props> = ({ contactId, task, children, tabPath, onClose }) => {
+  const dispatch = useDispatch();
+  const contactState = useSelector((state: RootState) => selectContactStateByContactId(state, contactId));
+  const definitionVersions = useSelector(selectDefinitionVersions);
+  const savedContact = contactState?.savedContact;
+  const draftContact = contactState?.draftContact;
+  const confirmCloseDialogOpen = Boolean(contactState?.metadata?.draft?.dialogsOpen?.[`${tabPath}-confirm-close`]);
+  const confirmBackDialogOpen = Boolean(contactState?.metadata?.draft?.dialogsOpen?.[`${tabPath}-confirm-back`]);
 
-const EditContactSection: React.FC<Props> = ({
-  savedContact,
-  draftContact,
-  definitionVersions,
-  children,
-  clearContactDraft,
-  goBack,
-  onClose,
-  updateContactsFormInHrmAsyncAction,
-  confirmCloseDialogOpen,
-  confirmBackDialogOpen,
-  closeDialog,
-}) => {
+  const goBack = () => dispatch(newGoBackAction(task.taskSid));
+  const updateContactsFormInHrmAsyncAction = async (contact: Contact, changes: ContactDraftChanges) => {
+    await asyncDispatch<AnyAction>(dispatch)(updateContactInHrmAsyncAction(contact, changes));
+  };
+  const closeDialog = (dismissAction: 'close' | 'back') =>
+    dispatch(newSetContactDialogStateAction(contactId, `${tabPath}-confirm-${dismissAction}`, false));
+  const clearContactDraft = () => {
+    dispatch(clearDraft(contactId));
+  };
   const methods = useForm({
     shouldFocusError: false,
     mode: 'onSubmit',
   });
   const strings = getTemplateStrings();
 
-  const version = savedContact?.rawJson.definitionVersion;
+  const version = savedContact?.definitionVersion ?? savedContact?.rawJson.definitionVersion;
 
   const definitionVersion = definitionVersions[version];
 
@@ -122,7 +125,7 @@ const EditContactSection: React.FC<Props> = ({
             />
           </Box>
           <Box marginRight="15px">
-            <StyledNextStepButton
+            <PrimaryButton
               roundCorners={true}
               onClick={onSubmitForm}
               disabled={isSubmitting}
@@ -134,7 +137,7 @@ const EditContactSection: React.FC<Props> = ({
                 <Template code="BottomBar-SaveContact" />
               </span>
               {isSubmitting ? <CircularProgress size={12} style={{ position: 'absolute' }} /> : null}
-            </StyledNextStepButton>
+            </PrimaryButton>
           </Box>
         </BottomButtonBar>
       </FormProvider>
@@ -142,40 +145,4 @@ const EditContactSection: React.FC<Props> = ({
   );
 };
 
-const mapDispatchToProps = (
-  dispatch: Dispatch<{ type: string } & Record<string, any>>,
-  { contactId, task, tabPath }: OwnProps,
-) => {
-  const updateContactAsyncDispatch = asyncDispatch<AnyAction>(dispatch);
-  return {
-    goBack: () => dispatch(newGoBackAction(task.taskSid)),
-    updateContactsFormInHrmAsyncAction: async (contact: Contact, changes: ContactDraftChanges) => {
-      await updateContactAsyncDispatch(updateContactInHrmAsyncAction(contact, changes));
-    },
-    closeDialog: (dismissAction: 'close' | 'back') =>
-      dispatch(newSetContactDialogStateAction(contactId, `${tabPath}-confirm-${dismissAction}`, false)),
-    clearContactDraft: () => {
-      dispatch(clearDraft(contactId));
-    },
-  };
-};
-
-const mapStateToProps = (
-  { [namespace]: { activeContacts, configuration } }: RootState,
-  { contactId, tabPath }: OwnProps,
-) => {
-  const contactState = activeContacts.existingContacts[contactId];
-  return {
-    definitionVersions: configuration.definitionVersions,
-    counselorsHash: configuration.counselors.hash,
-    savedContact: contactState?.savedContact,
-    draftContact: contactState?.draftContact,
-    confirmCloseDialogOpen: Boolean(contactState?.metadata?.draft?.dialogsOpen?.[`${tabPath}-confirm-close`]),
-    confirmBackDialogOpen: Boolean(contactState?.metadata?.draft?.dialogsOpen?.[`${tabPath}-confirm-back`]),
-  };
-};
-
-const connector = connect(mapStateToProps, mapDispatchToProps);
-const connected = connector(EditContactSection);
-
-export default connected;
+export default EditContactSection;

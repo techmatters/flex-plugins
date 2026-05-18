@@ -16,7 +16,6 @@
 
 import { DefinitionVersion, FormDefinition, FormItemDefinition } from 'hrm-form-definitions';
 
-import { CaseSectionApi } from './api';
 import { CaseSectionTypeSpecificData } from '../../../services/caseSectionService';
 
 type FormValue = string | boolean | number | string[];
@@ -75,16 +74,16 @@ const createCopyForDifferentSection = (
 export const copyCaseSectionItem = ({
   definition,
   fromSection,
-  fromApi,
-  toApi,
+  fromSectionType,
+  toSectionType,
 }: {
   definition: DefinitionVersion;
   fromSection: CaseSectionTypeSpecificData;
-  fromApi: CaseSectionApi;
-  toApi: CaseSectionApi;
+  fromSectionType: string;
+  toSectionType: string;
 }) =>
   createCopyForDifferentSection(
     fromSection,
-    fromApi.getSectionFormDefinition(definition),
-    toApi.getSectionFormDefinition(definition),
+    definition.caseSectionTypes[fromSectionType].form,
+    definition.caseSectionTypes[toSectionType].form,
   );

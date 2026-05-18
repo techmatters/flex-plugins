@@ -15,7 +15,7 @@
  */
 
 import React from 'react';
-import { connect, ConnectedProps } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { Template } from '@twilio/flex-ui';
 import ProfileIcon from '@material-ui/icons/AccountCircleOutlined';
 
@@ -26,24 +26,10 @@ import useProfileSectionTypes from '../../states/configuration/hooks/useProfileS
 import { ProfileCommonProps } from './types';
 import { DetailsWrapper, SectionHeader } from './styles';
 import ProfileFlagSection from './profileFlag/ProfileFlagSection';
-import { getInitializedCan, PermissionActions } from '../../permissions';
+import { getInitializedCan } from '../../permissions/rules';
 import ProfileDetailsSection from './section/ProfileDetailsSection';
 import ProfileSectionGroup from './section/ProfileSectionGroup';
-
-type OwnProps = ProfileCommonProps;
-
-const mapDispatchToProps = (dispatch, ownProps: OwnProps) => {
-  const { profileId, task } = ownProps;
-  const taskId = task.taskSid;
-  return {
-    openSectionEditModal: (type: string) => {
-      dispatch(newOpenModalAction({ route: 'profileSectionEdit', type, profileId }, taskId));
-    },
-  };
-};
-
-const connector = connect(null, mapDispatchToProps);
-type Props = OwnProps & ConnectedProps<typeof connector>;
+import { PermissionActions } from '../../permissions/actions';
 
 type Section = {
   titleCode: string;
@@ -52,7 +38,8 @@ type Section = {
   inInlineEditMode?: boolean;
 };
 
-const ProfileDetails: React.FC<Props> = ({ profileId, task, openSectionEditModal }) => {
+const ProfileDetails: React.FC<ProfileCommonProps> = ({ profileId, task }) => {
+  const dispatch = useDispatch();
   const { profile } = useProfile({ profileId });
   const sectionTypesForms = useProfileSectionTypes();
 
@@ -110,7 +97,9 @@ const ProfileDetails: React.FC<Props> = ({ profileId, task, openSectionEditModal
         {sectionTypesForms.map(s => (
           <ProfileSectionGroup
             key={s.label}
-            handleEdit={() => openSectionEditModal(s.name)}
+            handleEdit={() =>
+              dispatch(newOpenModalAction({ route: 'profileSectionEdit', type: s.name, profileId }, task.taskSid))
+            }
             profileId={profileId}
             sectionType={s}
             task={task}
@@ -123,4 +112,4 @@ const ProfileDetails: React.FC<Props> = ({ profileId, task, openSectionEditModal
   );
 };
 
-export default connector(ProfileDetails);
+export default ProfileDetails;

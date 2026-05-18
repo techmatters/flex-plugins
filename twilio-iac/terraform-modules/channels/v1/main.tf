@@ -14,6 +14,12 @@ data "aws_ssm_parameter" "webhook_url_studio_errors" {
 locals {
   #Marking this as non sensitive since we need to see the studio flow definition when running a plan to validate changes.
   webhook_url_studio_errors = nonsensitive(data.aws_ssm_parameter.webhook_url_studio_errors.value)
+  custom_lambda_channels = {for key, val in var.channels:
+  key => val if val.lambda_channel == true}
+  lambda_twilio_account_scoped_url = nonsensitive(
+  "https://hrm-${var.environment}${var.region == "eu-west-1" ? "-eu" : ""}.tl.techmatters.org/lambda/twilio/account-scoped/${var.twilio_account_sid}"
+  )
+  get_profile_flags_for_identifier_base_url = nonsensitive(var.get_profile_flags_for_identifier_base_url == "" ? var.serverless_url : var.get_profile_flags_for_identifier_base_url)
 }
 
 #I'm not sure about this resource, the idea is to have 1 studio flow json template and also as few as possible
@@ -37,37 +43,39 @@ resource "twilio_studio_flows_v2" "channel_studio_flow" {
   definition = templatefile(
     each.value.templatefile,
     {
-      flow_description           = "${title(replace(each.key, "_", " "))} Studio Flow",
-      channel_name               = each.key,
-      helpline                   = var.helpline,
-      task_language              = var.task_language,
-      flow_vars                  = var.flow_vars,
-      serverless_service_sid     = var.serverless_service_sid,
-      serverless_environment_sid = var.serverless_environment_sid,
-      serverless_url             = var.serverless_url,
-      channel_flow_vars          = each.value.channel_flow_vars,
+      flow_description                           = "${title(replace(each.key, "_", " "))} Studio Flow",
+      channel_name                               = each.key,
+      helpline                                   = var.helpline,
+      task_language                              = var.task_language,
+      flow_vars                                  = var.flow_vars,
+      serverless_service_sid                     = var.serverless_service_sid,
+      serverless_environment_sid                 = var.serverless_environment_sid,
+      serverless_url                             = var.serverless_url,
+      lambda_twilio_account_scoped_url           = local.lambda_twilio_account_scoped_url,
+      get_profile_flags_for_identifier_base_url  = local.get_profile_flags_for_identifier_base_url,
+      channel_flow_vars                          = each.value.channel_flow_vars,
       channel_chatbots = {
         for chatbot_name in each.value.chatbot_unique_names :
         chatbot_name => var.chatbots[chatbot_name]
       }
-      workflow_sids             = var.workflow_sids,
-      task_channel_sids         = var.task_channel_sids,
-      webhook_url_studio_errors = local.webhook_url_studio_errors,
-      short_helpline            = var.short_helpline,
-      short_environment         = var.short_environment,
-      channel_attributes = merge(
-        {
-          for chatbot_name in each.value.chatbot_unique_names :
-          chatbot_name => templatefile(
-            lookup(var.channel_attributes, each.key, var.channel_attributes["default"]),
-          { chatbot_name = chatbot_name })
-        },
-        {
-          default : templatefile(
-            lookup(var.channel_attributes, each.key, var.channel_attributes["default"]),
-          { task_language = var.task_language, helpline = var.helpline })
-        }
-      )
+      workflow_sids                              = var.workflow_sids,
+      task_channel_sids                          = var.task_channel_sids,
+      webhook_url_studio_errors                  = local.webhook_url_studio_errors,
+      short_helpline                             = var.short_helpline,
+      short_environment                          = var.short_environment,
+      environment                                = var.environment,
+      system_down_studio_subflow_sid             = var.system_down_studio_subflow_sid
+      debug_studio_subflow_sid                   = var.debug_studio_subflow_sid
+      channel_attributes = {
+        default : templatefile(
+          lookup(
+            var.channel_attributes,
+            each.value.messaging_mode == "conversations" ? "${each.key}-conversations" : each.key,
+            var.channel_attributes[each.value.messaging_mode == "conversations" ? "default-conversations" : "default"]
+          ),
+          { task_language = var.task_language, helpline = var.helpline }
+        )
+      }
 
 
     }
@@ -77,7 +85,7 @@ resource "twilio_studio_flows_v2" "channel_studio_flow" {
 resource "twilio_flex_flex_flows_v1" "channel_flow" {
   for_each = {
     for idx, channel in var.channels :
-    idx => channel if(channel.channel_type != "voice")
+    idx => channel if(channel.channel_type != "voice" && channel.messaging_mode == "programmable-chat")
   }
   channel_type         = each.value.channel_type
   chat_service_sid     = var.flex_chat_service_sid
@@ -89,13 +97,88 @@ resource "twilio_flex_flex_flows_v1" "channel_flow" {
   enabled              = true
 }
 
+resource "twilio_conversations_configuration_addresses_v1" "conversations_address" {
+  for_each = {
+    for idx, channel in var.channels :
+    idx => channel if(
+      channel.channel_type != "voice" &&
+      # The terraform provider won't create the configuration with a deployment key as an address
+      # https://github.com/twilio/terraform-provider-twilio/issues/152
+      # Must be created manually in Twilio Console for now
+      channel.channel_type != "chat" &&
+      channel.channel_type != "custom" &&
+      channel.messaging_mode == "conversations"
+    )
+  }
+  type                                   = each.value.channel_type
+  address                                = each.value.contact_identity
+  friendly_name                          = "${title(replace(each.key, "_", " "))} Conversation Address"
+  auto_creation_enabled                  = true
+  auto_creation_type                     = "studio"
+  auto_creation_conversation_service_sid = var.flex_chat_service_sid
+  auto_creation_studio_flow_sid          = twilio_studio_flows_v2.channel_studio_flow[each.key].sid
+}
+
+# Legacy format, remove once serverless & webchat are migrated to the new format below
 resource "aws_ssm_parameter" "channel_flex_flow_sid_parameter" {
   for_each = {
     for idx, channel in var.channels :
-    idx => channel if(channel.channel_type == "custom")
+    idx => channel if(channel.channel_type == "custom" && channel.messaging_mode == "programmable-chat")
   }
   name        = "${var.short_environment}_TWILIO_${var.short_helpline}_${upper(each.key)}_FLEX_FLOW_SID"
   type        = "SecureString"
   value       = twilio_flex_flex_flows_v1.channel_flow[each.key].sid
   description = "${title(replace(each.key, "_", " "))} Flex Flow SID"
+}
+
+
+resource "aws_ssm_parameter" "channel_flex_flow_sid" {
+  for_each = {
+  for idx, channel in var.channels :
+  idx => channel if(channel.channel_type == "custom" && channel.messaging_mode == "programmable-chat")
+  }
+  name        = "/${lower(var.environment)}/twilio/${nonsensitive(var.twilio_account_sid)}/${each.key}_flex_flow_sid"
+  type        = "SecureString"
+  value       = twilio_flex_flex_flows_v1.channel_flow[each.key].sid
+  description = "${title(replace(each.key, "_", " "))} Flex Flow SID"
+}
+
+
+resource "aws_ssm_parameter" "channel_studio_flow_sid" {
+  for_each = {
+  for idx, channel in var.channels :
+  idx => channel if((channel.channel_type == "custom" || channel.channel_type == "chat") && channel.messaging_mode == "conversations")
+  }
+  name        = "/${lower(var.environment)}/twilio/${nonsensitive(var.twilio_account_sid)}/${each.value.channel_type == "chat" ? "chat" : each.key}_studio_flow_sid"
+  type        = "SecureString"
+  value       = twilio_studio_flows_v2.channel_studio_flow[each.key].sid
+  description = "${title(replace(each.key, "_", " "))} Studio Flow SID"
+}
+
+#This will need to be removed after the conversations migration
+resource "aws_ssm_parameter" "messaging_mode" {
+  for_each = {
+  for idx, channel in var.channels :
+  idx => channel if(channel.channel_type == "custom")
+  }
+  name        = "/${lower(var.environment)}/${each.key}/${nonsensitive(var.twilio_account_sid)}/messaging_mode"
+  type        = "SecureString"
+  value       = each.value.messaging_mode
+  description = "${title(replace(each.key, "_", " "))} Messaging Mode"
+}
+
+
+
+
+
+module "custom_lambdas" {
+  source = "../custom-lambdas"
+  for_each = local.custom_lambda_channels
+
+  channel  = each.key
+  helpline = var.helpline
+  short_helpline = var.short_helpline
+  region = var.region
+  environment = var.environment
+  base_priority = var.base_priority + index(keys(local.custom_lambda_channels), each.key)
 }

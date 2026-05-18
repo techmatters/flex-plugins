@@ -1,0 +1,66 @@
+[
+  {
+    "name": "date",
+    "type": "date-input",
+    "label": "Date",
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    },
+    "metadata": {
+      "eventTimestampSource": true
+    },
+    "isPII": false
+  },
+  {
+    "name": "followUpDate",
+    "type": "date-input",
+    "label": "Follow Up Date",
+    "isPII": false
+  },
+  {
+    "name": "responseDate",
+    "type": "date-input",
+    "label": "Response Date",
+    "isPII": false
+  },
+  {
+    "name": "referredTo",
+    "label": "Referred To",
+    "type": "select",
+    "unknownOption": "",
+    "options": [
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "ReferralsToDutyBearer",
+        "label": "การส่งต่อไปยังหน่วยงานรับผิดชอบ"
+      },
+      {
+        "value": "ReferralsToCivilSociety",
+        "label": "การส่งต่อไปยังหน่วยงานประชาสังคม"
+      },
+      {
+        "value": "ReportsToCSAMAutority",
+        "label": "รายงาน CSAM"
+      },
+      {
+        "value": "อื่นๆ",
+        "label": "อื่นๆ"
+      }
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    },
+    "isPII": false
+  },
+  {
+    "name": "comments",
+    "label": "Comments",
+    "type": "textarea",
+    "isPII": true
+  }
+]

@@ -15,13 +15,11 @@
  */
 /* eslint-disable sonarjs/cognitive-complexity */
 import React from 'react';
-import { connect } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Template } from '@twilio/flex-ui';
 import { CircularProgress } from '@material-ui/core';
-import FolderIcon from '@material-ui/icons/CreateNewFolderOutlined';
-import { DefinitionVersionId } from 'hrm-form-definitions';
 
-import { BottomButtonBar, Box, SaveAndEndButton, StyledNextStepButton } from '../../styles';
+import { BottomButtonBar, Box, DestructiveButton, PrimaryButton, SecondaryButton } from '../../styles';
 import { AddedToCaseButton } from './styles';
 import * as RoutingActions from '../../states/routing/actions';
 import { completeTask } from '../../services/formSubmissionHelpers';
@@ -30,14 +28,12 @@ import { RootState } from '../../states';
 import { isNonDataCallType } from '../../states/validationRules';
 import { recordBackendError } from '../../fullStory';
 import { Contact, CustomITask, RouterTask } from '../../types/types';
-import { getAseloFeatureFlags, getTemplateStrings } from '../../hrmConfig';
-import { createCaseAsyncAction } from '../../states/case/saveCase';
+import { getTemplateStrings } from '../../hrmConfig';
 import { getUnsavedContact } from '../../states/contacts/getUnsavedContact';
 import { submitContactFormAsyncAction } from '../../states/contacts/saveContact';
 import { ContactMetadata, LoadingStatus } from '../../states/contacts/types';
 import { AppRoutes } from '../../states/routing/types';
-import AddCaseButton from '../AddCaseButton';
-import asyncDispatch from '../../states/asyncDispatch';
+import AddCaseButton from './AddCaseButton';
 import { selectCaseByCaseId } from '../../states/case/selectCaseStateByCaseId';
 import selectContactStateByContactId from '../../states/contacts/selectContactStateByContactId';
 import { SuccessReportIcon } from '../CSAMReport/styles';
@@ -55,25 +51,37 @@ type BottomBarProps = {
   saveUpdates: () => Promise<void>;
 };
 
-const BottomBar: React.FC<
-  BottomBarProps & ReturnType<typeof mapDispatchToProps> & ReturnType<typeof mapStateToProps>
-> = ({
+const BottomBar: React.FC<BottomBarProps> = ({
   showNextButton,
   showSubmitButton,
   handleSubmitIfValid,
   optionalButtons,
-  contact,
-  metadata,
   task,
-  openModal,
   nextTab,
-  caseState,
-  submitContactForm,
   saveUpdates,
-  savedContact,
-  contactIsSaving,
-  createNewCase,
+  contactId,
 }) => {
+  const dispatch = useDispatch();
+  const contactStateById = useSelector((state: RootState) => selectContactStateByContactId(state, contactId));
+  const draftContact = contactStateById?.draftContact;
+  const savedContact = contactStateById?.savedContact;
+  const metadata = contactStateById?.metadata;
+  const caseState = useSelector((state: RootState) => selectCaseByCaseId(state, savedContact?.caseId ?? ''));
+  const contactIsSaving = metadata?.loadingStatus === LoadingStatus.LOADING || savedContact?.finalizedAt !== null;
+  const contact = getUnsavedContact(savedContact, draftContact);
+
+  const openModal = (route: AppRoutes) => dispatch(RoutingActions.newOpenModalAction(route, task.taskSid));
+  const submitContactForm = (
+    task: CustomITask,
+    contact: Contact,
+    metadata: ContactMetadata,
+    caseState: CaseStateEntry,
+  ) =>
+    // Deliberately using dispatch rather than asyncDispatch here, because we still handle the error from where the action is dispatched.
+    // TODO: Rework error handling to be based on redux state set by the _REJECTED action
+    dispatch(submitContactFormAsyncAction(task, contact, metadata, caseState));
+  const createNewCase = async (task: RouterTask, savedContact: Contact, contact: Contact) =>
+    openNewCase(task, savedContact, contact, dispatch);
   const strings = getTemplateStrings();
 
   const isAddedToCase = savedContact?.caseId;
@@ -100,7 +108,6 @@ const BottomBar: React.FC<
   };
 
   const showBottomBar = showNextButton || showSubmitButton;
-  const featureFlags = getAseloFeatureFlags();
 
   if (!showBottomBar) return null;
 
@@ -109,42 +116,25 @@ const BottomBar: React.FC<
   };
 
   const renderCaseButton = () => {
-    if (featureFlags.enable_case_merging) {
-      if (isAddedToCase) {
-        return (
-          <Box marginRight="25px">
-            <AddedToCaseButton>
-              <Box marginRight="10px">
-                <SuccessReportIcon style={{ verticalAlign: 'middle' }} />
-              </Box>
-              <Template code="BottomBar-AddedToCase" />
-            </AddedToCaseButton>
-          </Box>
-        );
-      } else if (!isNonDataCallType(contact.rawJson.callType)) {
-        return (
-          <Box marginRight="15px">
-            <AddCaseButton handleNewCaseType={handleOpenNewCase} handleExistingCaseType={openSearchModal} />
-          </Box>
-        );
-      }
-      return null;
+    if (isAddedToCase) {
+      return (
+        <Box marginRight="25px">
+          <AddedToCaseButton>
+            <Box marginRight="10px">
+              <SuccessReportIcon style={{ verticalAlign: 'middle' }} />
+            </Box>
+            <Template code="BottomBar-AddedToCase" />
+          </AddedToCaseButton>
+        </Box>
+      );
+    } else if (!isNonDataCallType(contact.rawJson.callType)) {
+      return (
+        <Box marginRight="15px">
+          <AddCaseButton handleNewCaseType={handleOpenNewCase} handleExistingCaseType={openSearchModal} />
+        </Box>
+      );
     }
-    return isAddedToCase ? null : (
-      <Box marginRight="15px">
-        <StyledNextStepButton
-          type="button"
-          roundCorners
-          secondary="true"
-          onClick={handleSubmitIfValid(handleOpenNewCase)}
-          data-fs-id="Contact-SaveAndAddToCase-Button"
-          data-testid="BottomBar-SaveAndAddToCase-Button"
-        >
-          <FolderIcon style={{ fontSize: '16px', marginRight: '10px', width: '24px', height: '24px' }} />
-          <Template code="BottomBar-AddContactToNewCase" />
-        </StyledNextStepButton>
-      </Box>
-    );
+    return null;
   };
 
   return (
@@ -152,28 +142,22 @@ const BottomBar: React.FC<
       {optionalButtons &&
         optionalButtons.map((i, index) => (
           <Box key={`optional-button-${index}`} marginRight="15px">
-            <StyledNextStepButton
-              type="button"
-              roundCorners
-              secondary="true"
-              onClick={i.onClick}
-              disabled={contactIsSaving}
-            >
+            <SecondaryButton type="button" roundCorners onClick={i.onClick} disabled={contactIsSaving}>
               <Template code={i.label} />
-            </StyledNextStepButton>
+            </SecondaryButton>
           </Box>
         ))}
 
       {showNextButton && (
-        <StyledNextStepButton type="button" roundCorners={true} onClick={nextTab}>
+        <PrimaryButton type="button" roundCorners={true} onClick={nextTab}>
           <Template code="BottomBar-Next" />
-        </StyledNextStepButton>
+        </PrimaryButton>
       )}
       {showSubmitButton && (
         <>
           {renderCaseButton()}
 
-          <SaveAndEndButton
+          <DestructiveButton
             roundCorners={true}
             onClick={handleSubmitIfValid(handleSubmit)}
             disabled={contactIsSaving}
@@ -184,7 +168,7 @@ const BottomBar: React.FC<
               <Template code="BottomBar-SaveAndEnd" />
             </span>
             {contactIsSaving ? <CircularProgress size={12} style={{ position: 'absolute' }} /> : null}
-          </SaveAndEndButton>
+          </DestructiveButton>
         </>
       )}
     </BottomButtonBar>
@@ -193,30 +177,4 @@ const BottomBar: React.FC<
 
 BottomBar.displayName = 'BottomBar';
 
-const mapStateToProps = (state: RootState, { contactId }: BottomBarProps) => {
-  const { draftContact, savedContact, metadata } = selectContactStateByContactId(state, contactId) ?? {};
-  const caseState = selectCaseByCaseId(state, savedContact.caseId ?? '');
-  const contactIsSaving = metadata.loadingStatus === LoadingStatus.LOADING || savedContact.finalizedAt !== null;
-  return {
-    contact: getUnsavedContact(savedContact, draftContact),
-    metadata,
-    caseState,
-    savedContact,
-    contactIsSaving,
-  };
-};
-
-const mapDispatchToProps = (dispatch, { task }: BottomBarProps) => {
-  return {
-    changeRoute: (route: AppRoutes) => dispatch(RoutingActions.changeRoute(route, task.taskSid)),
-    openModal: (route: AppRoutes) => dispatch(RoutingActions.newOpenModalAction(route, task.taskSid)),
-    submitContactForm: (task: CustomITask, contact: Contact, metadata: ContactMetadata, caseState: CaseStateEntry) =>
-      // Deliberately using dispatch rather than asyncDispatch here, because we still handle the error from where the action is dispatched.
-      // TODO: Rework error handling to be based on redux state set by the _REJECTED action
-      dispatch(submitContactFormAsyncAction(task, contact, metadata, caseState)),
-    createNewCase: async (task: RouterTask, savedContact: Contact, contact: Contact) =>
-      openNewCase(task, savedContact, contact, dispatch),
-  };
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(BottomBar);
+export default BottomBar;

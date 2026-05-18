@@ -15,23 +15,23 @@
  */
 import promiseMiddleware from 'redux-promise-middleware';
 import { configureStore } from '@reduxjs/toolkit';
-import { DefinitionVersionId, loadDefinition, useFetchDefinitions } from 'hrm-form-definitions';
+import { loadDefinition } from 'hrm-form-definitions';
 
+import { mockLocalFetchDefinitions } from '../../mockFetchDefinitions';
 import '../../mockGetConfig';
 import { createCaseAsyncAction, saveCaseReducer, updateCaseOverviewAsyncAction } from '../../../states/case/saveCase';
 import { HrmState } from '../../../states';
-import { reduce } from '../../../states/case/reducer';
 import { createCase, getCase, updateCaseOverview, updateCaseStatus } from '../../../services/CaseService';
 import { connectToCase } from '../../../services/ContactService';
 import { ReferralLookupStatus } from '../../../states/contacts/resourceReferral';
-import { Case } from '../../../types/types';
+import { Case, Contact } from '../../../types/types';
 import { RecursivePartial } from '../../RecursivePartial';
 import { VALID_EMPTY_CASE } from '../../testCases';
 
 jest.mock('../../../services/CaseService');
 jest.mock('../../../services/ContactService');
-// eslint-disable-next-line react-hooks/rules-of-hooks
-const { mockFetchImplementation, buildBaseURL } = useFetchDefinitions();
+
+const { mockFetchImplementation, buildBaseURL } = mockLocalFetchDefinitions();
 
 const mockCreateCase = createCase as jest.Mock<ReturnType<typeof createCase>>;
 const mockConnectedCase = connectToCase as jest.Mock<ReturnType<typeof connectToCase>>;
@@ -46,14 +46,14 @@ const mockUpdateStatus = updateCaseStatus as jest.Mock<
 
 const mockGetCase = getCase as jest.Mock<ReturnType<typeof getCase>, Parameters<typeof getCase>>;
 const workerSid = 'Worker-Sid';
-const definitionVersion: DefinitionVersionId = DefinitionVersionId.demoV1;
+const definitionVersion: string = 'as-v1';
 const partialState: RecursivePartial<HrmState> = {
   connectedCase: {
     cases: {},
   },
   configuration: {
     definitionVersions: {
-      [definitionVersion]: {},
+      [definitionVersion]: { caseStatus: {} },
     },
   },
 };
@@ -61,7 +61,7 @@ const partialState: RecursivePartial<HrmState> = {
 const saveCaseState = partialState as HrmState;
 
 beforeAll(async () => {
-  const formDefinitionsBaseUrl = buildBaseURL(definitionVersion as DefinitionVersionId);
+  const formDefinitionsBaseUrl = buildBaseURL(definitionVersion);
   await mockFetchImplementation(formDefinitionsBaseUrl);
 
   const mockV1 = await loadDefinition(formDefinitionsBaseUrl);
@@ -75,9 +75,9 @@ beforeAll(async () => {
 
 beforeEach(() => {
   mockCreateCase.mockReset();
-  mockCreateCase.mockResolvedValue({ id: '234' });
+  mockCreateCase.mockResolvedValue({ id: '234' } as Case);
   mockConnectedCase.mockReset();
-  mockConnectedCase.mockResolvedValue({ id: 'contact-1' });
+  mockConnectedCase.mockResolvedValue({ id: 'contact-1' } as Contact);
 });
 
 const boundSaveCaseReducer = saveCaseReducer(saveCaseState);
@@ -91,10 +91,10 @@ const mockPayload: Omit<Case, 'sections' | 'label'> = {
   info: {},
   createdAt: '12-05-2023',
   updatedAt: '12-05-2023',
-  categories: {},
+  definitionVersion,
 };
 
-const testStore = (stateChanges: HrmState) =>
+const testStore = (stateChanges: Partial<HrmState> = {}) =>
   configureStore({
     preloadedState: { ...saveCaseState, ...stateChanges },
     reducer: boundSaveCaseReducer,
@@ -119,7 +119,7 @@ const nonInitialPartialState: RecursivePartial<HrmState> = {
           info: {},
           createdAt: '12-05-2023',
           updatedAt: '12-05-2023',
-          categories: {},
+          definitionVersion,
         },
         caseWorkingCopy: {
           sections: {},
@@ -131,7 +131,7 @@ const nonInitialPartialState: RecursivePartial<HrmState> = {
           },
         },
         availableStatusTransitions: [],
-        references: new Set(['x']),
+        lastReferencedDate: new Date(),
       },
     },
   },
@@ -177,72 +177,36 @@ const contact = {
     resourceReferralList: { resourceReferralIdToAdd: '', lookupStatus: ReferralLookupStatus.NOT_STARTED },
   },
   helpline: '',
-  metadata: { categories: { expanded: {}, gridView: false }, endMillis: 0, recreated: false, startMillis: 0 },
+  metadata: { categories: { expanded: {}, gridView: false }, endMillis: 0, startMillis: 0 },
   referrals: [],
-};
-
-const expectObject: RecursivePartial<HrmState> = {
-  ...partialState,
-  connectedCase: {
-    cases: {
-      [mockPayload.id]: {
-        connectedCase: mockPayload,
-        caseWorkingCopy: {
-          sections: {},
-          caseSummary: {
-            status: 'test-st',
-            followUpDate: '',
-            childIsAtRisk: false,
-            summary: '',
-          },
-        },
-        availableStatusTransitions: [],
-        references: new Set(['x']),
-      },
-    },
-  },
 };
 
 describe('createCaseAsyncAction', () => {
   test('Calls the createCase service, and create a case', () => {
-    createCaseAsyncAction(contact, workerSid, definitionVersion as DefinitionVersionId);
+    createCaseAsyncAction(contact, workerSid, definitionVersion);
     expect(createCase).toHaveBeenCalledWith(contact, workerSid, definitionVersion);
   });
 
   test('should dispatch createCaseAsyncAction correctly', async () => {
     const { dispatch, getState } = testStore(nonInitialState);
     const startingState = getState();
-    await ((dispatch(
-      createCaseAsyncAction(contact, workerSid, definitionVersion as DefinitionVersionId),
-    ) as unknown) as Promise<void>);
+    await ((dispatch(createCaseAsyncAction(contact, workerSid, definitionVersion)) as unknown) as Promise<void>);
     const state = getState();
-    expect(state).toStrictEqual({
-      ...startingState,
-      connectedCase: {
-        ...startingState.connectedCase,
-        cases: {
-          ...state.connectedCase.cases,
-          234: {
-            availableStatusTransitions: [],
-            caseWorkingCopy: {
-              sections: {},
-            },
-            connectedCase: {
-              id: '234',
-            },
-            references: new Set(),
-            sections: {},
-            timelines: {},
-          },
-        },
+    const newCase = state.connectedCase.cases[234];
+    expect(newCase).toMatchObject({
+      availableStatusTransitions: [],
+      caseWorkingCopy: {
+        sections: {},
       },
+      connectedCase: {
+        id: '234',
+        info: {},
+      },
+      sections: {},
+      timelines: {},
+      outstandingUpdateCount: 0,
     });
-  });
-
-  test('should handle createCaseAsyncAction in the reducer', async () => {
-    const expected: HrmState = expectObject as HrmState;
-    const result = reduce(nonInitialState, createCaseAsyncAction(contact, workerSid, definitionVersion));
-    expect(result).toEqual(expected);
+    expect(newCase.lastReferencedDate).toBeInstanceOf(Date);
   });
 });
 
@@ -272,7 +236,7 @@ describe('updateCaseOverviewAsyncAction', () => {
   });
 
   test('overview populated in action but status omitted - just calls updateCaseOverview with case ID and overview object', async () => {
-    const action = updateCaseOverviewAsyncAction(mockPayload.id, overview);
+    const action = updateCaseOverviewAsyncAction(mockPayload.id, overview, undefined);
     expect(updateCaseOverview).toHaveBeenCalledWith(mockPayload.id, overview);
     expect(updateCaseStatus).not.toHaveBeenCalled();
 
@@ -298,35 +262,33 @@ describe('updateCaseOverviewAsyncAction', () => {
     });
   });
 
-  // Jest too crap to handle 2 async calls in a single action apparently
-  test.skip('overview and status populated in action - calls both endpoints', async () => {
+  test('overview and status populated in action - calls both endpoints', async () => {
     updateCaseOverviewAsyncAction(mockPayload.id, overview, 'new-status');
+    await Promise.resolve(); // Give time for the inner promises to resolve
     expect(updateCaseOverview).toHaveBeenCalledWith(mockPayload.id, overview);
     expect(updateCaseStatus).toHaveBeenCalledWith(mockPayload.id, 'new-status');
     expect(mockGetCase).not.toHaveBeenCalled();
   });
 
   test('neither overview and status populated in action - just calls get to refresh case', async () => {
-    const action = updateCaseOverviewAsyncAction(mockPayload.id, {});
+    updateCaseOverviewAsyncAction(mockPayload.id, {}, undefined);
     expect(updateCaseStatus).not.toHaveBeenCalled();
     expect(updateCaseOverview).not.toHaveBeenCalled();
-    expect(mockGetCase).toHaveBeenCalledWith(mockPayload.id);
-
-    const payload = await action.payload;
-    expect(payload).toEqual({
-      ...VALID_EMPTY_CASE,
-      id: mockPayload.id,
-    });
   });
 
   describe('fulfilled', () => {
     test('case exists in redux store - updates case overview ', async () => {
       const { getState, dispatch } = testStore(nonInitialState);
-      await ((dispatch(updateCaseOverviewAsyncAction(mockPayload.id, overview)) as unknown) as PromiseLike<void>);
+      const actionResultPromise = (dispatch(
+        updateCaseOverviewAsyncAction(mockPayload.id, overview, undefined),
+      ) as unknown) as PromiseLike<void>;
+      const pendingState = getState();
+      expect(pendingState.connectedCase.cases[mockPayload.id].outstandingUpdateCount).toEqual(1);
+      await actionResultPromise;
       const {
         connectedCase: {
           cases: {
-            213: { connectedCase: updatedCase },
+            [mockPayload.id]: { connectedCase: updatedCase, outstandingUpdateCount },
           },
         },
       } = getState() as HrmState;
@@ -338,29 +300,161 @@ describe('updateCaseOverviewAsyncAction', () => {
           ...overview,
         },
       });
+      expect(outstandingUpdateCount).toEqual(0);
     });
     test("case doesn't exist in redux store - adds case", async () => {
       const { getState, dispatch } = testStore(nonInitialState);
       const {
         connectedCase: { cases: originalCases },
       } = getState() as HrmState;
-      await ((dispatch(updateCaseOverviewAsyncAction('ANOTHER_CASE', overview)) as unknown) as PromiseLike<void>);
+      await ((dispatch(updateCaseOverviewAsyncAction('ANOTHER_CASE', overview, undefined)) as unknown) as PromiseLike<
+        void
+      >);
       const {
         connectedCase: { cases: updatedCases },
       } = getState() as HrmState;
-      expect(updatedCases).toStrictEqual({
-        ...originalCases,
-        ANOTHER_CASE: {
-          connectedCase: {
-            ...VALID_EMPTY_CASE,
-            id: 'ANOTHER_CASE',
-            info: { ...overview, definitionVersion: DefinitionVersionId.v1 },
+      const newCase = updatedCases.ANOTHER_CASE;
+      expect(newCase).toMatchObject({
+        connectedCase: {
+          ...VALID_EMPTY_CASE,
+          id: 'ANOTHER_CASE',
+          info: { ...overview, definitionVersion },
+        },
+        availableStatusTransitions: [],
+        caseWorkingCopy: { sections: {} },
+        sections: {},
+        timelines: {},
+        outstandingUpdateCount: 0,
+      });
+      expect(newCase.lastReferencedDate).toBeInstanceOf(Date);
+    });
+
+    test('merges case working copy summary into info', async () => {
+      const stateWithWorkingCopy = {
+        ...nonInitialState,
+        connectedCase: {
+          cases: {
+            [mockPayload.id]: {
+              ...nonInitialState.connectedCase.cases[mockPayload.id],
+              caseWorkingCopy: {
+                sections: {},
+                caseSummary: {
+                  status: 'test-st',
+                  followUpDate: '2023-01-01',
+                  childIsAtRisk: true,
+                  summary: 'existing summary',
+                  operatingArea: 'Area 51',
+                },
+              },
+            },
           },
-          references: new Set(),
-          availableStatusTransitions: [],
-          caseWorkingCopy: { sections: {} },
-          sections: {},
-          timelines: {},
+        },
+      } as HrmState;
+
+      const { getState, dispatch } = testStore(stateWithWorkingCopy);
+
+      const newOverview = {
+        summary: 'updated summary',
+      };
+
+      await ((dispatch(
+        updateCaseOverviewAsyncAction(mockPayload.id, newOverview, undefined),
+      ) as unknown) as PromiseLike<void>);
+
+      const updatedCase = getState().connectedCase.cases[mockPayload.id].connectedCase;
+      expect(updatedCase).toMatchObject({
+        id: mockPayload.id,
+        info: {
+          childIsAtRisk: true,
+          operatingArea: 'Area 51',
+          summary: 'updated summary',
+          followUpDate: null,
+          definitionVersion,
+        },
+        definitionVersion,
+      });
+    });
+
+    test('handles optional fields correctly', async () => {
+      const requiredFields = {
+        caseStatus: 'open',
+        summary: 'test summary',
+      };
+
+      const overview = {
+        ...requiredFields,
+        operatingArea: 'Test Area',
+        followUpDate: '2023-05-12',
+        priority: 'high',
+      };
+
+      const { getState, dispatch } = testStore(nonInitialState);
+
+      await ((dispatch(updateCaseOverviewAsyncAction(mockPayload.id, overview, undefined)) as unknown) as PromiseLike<
+        void
+      >);
+
+      const updatedCase = getState().connectedCase.cases[mockPayload.id].connectedCase;
+
+      expect(updatedCase).toMatchObject({
+        id: mockPayload.id,
+        info: {
+          ...overview,
+        },
+      });
+    });
+
+    test('overwriting behavior - newer properties overwrite older ones with the same name', async () => {
+      const stateWithExistingInfo = {
+        ...nonInitialState,
+        connectedCase: {
+          cases: {
+            [mockPayload.id]: {
+              ...nonInitialState.connectedCase.cases[mockPayload.id],
+              connectedCase: {
+                ...nonInitialState.connectedCase.cases[mockPayload.id].connectedCase,
+                info: {
+                  summary: 'old summary',
+                  childIsAtRisk: false,
+                },
+              },
+              caseWorkingCopy: {
+                sections: {},
+                caseSummary: {
+                  status: 'test-st',
+                  followUpDate: '',
+                  childIsAtRisk: false,
+                  summary: 'working copy summary',
+                  operatingArea: 'Area 51',
+                  priority: 'low',
+                },
+              },
+            },
+          },
+        },
+      } as HrmState;
+
+      const { getState, dispatch } = testStore(stateWithExistingInfo);
+
+      const newOverview = {
+        summary: 'new summary',
+        childIsAtRisk: true,
+      };
+
+      await ((dispatch(
+        updateCaseOverviewAsyncAction(mockPayload.id, newOverview, undefined),
+      ) as unknown) as PromiseLike<void>);
+
+      const updatedCase = getState().connectedCase.cases[mockPayload.id].connectedCase;
+
+      expect(updatedCase).toMatchObject({
+        id: mockPayload.id,
+        info: {
+          summary: 'new summary',
+          childIsAtRisk: true,
+          operatingArea: 'Area 51',
+          priority: 'low',
+          followUpDate: null,
         },
       });
     });

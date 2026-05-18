@@ -14,9 +14,10 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { getInitializedCan, PermissionActions } from '.';
+import { getInitializedCan } from './rules';
 import { Contact } from '../types/types';
 import { getHrmConfig } from '../hrmConfig';
+import { PermissionActions } from './actions';
 
 const getCanEditContact = (contact: Contact): (() => boolean) => {
   if (!contact.finalizedAt) {

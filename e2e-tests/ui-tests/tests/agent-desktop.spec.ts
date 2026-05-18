@@ -20,17 +20,23 @@ import { expect, Page, test } from '@playwright/test';
 import * as mockServer from '../flex-in-a-box/proxied-endpoints';
 import AxeBuilder from '@axe-core/playwright';
 import { addTaskToWorker } from '../aselo-service-mocks/task';
+import hrmPermissions from '../aselo-service-mocks/hrm/permissions';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { preload, useUnminifiedFlex } from '../flex-in-a-box/local-resources';
 import { aseloPage } from '../aselo-service-mocks/aselo-page';
-import { delay } from 'mockttp/dist/util/util';
+import { navigateToAgentDesktop } from '../ui-global-setup';
+
+const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 test.describe.serial('Agent Desktop', () => {
   let page: Page;
+  const permissions = hrmPermissions();
+
   test.beforeAll(async ({ browser }) => {
     await mockServer.start();
     page = await aseloPage(browser);
+    await permissions.mockPermissionEndpoint(page);
   });
 
   test.afterAll(async () => {
@@ -39,11 +45,7 @@ test.describe.serial('Agent Desktop', () => {
   });
 
   test('Agent Desktop loads', async () => {
-    await page.goto('/agent-desktop', { waitUntil: 'networkidle' });
-    const callsWaitingLabel = page.locator(
-      "div.Twilio-AgentDesktopView-default div[data-testid='Fake Queue-voice']",
-    );
-    await callsWaitingLabel.waitFor({ state: 'visible' });
+    await navigateToAgentDesktop(page);
   });
 
   test('Contacts waiting passes AXE scan', async () => {

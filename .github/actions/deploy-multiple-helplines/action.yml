@@ -36,11 +36,6 @@ inputs:
     description: Send a slack message confirming each deploy
     required: false
     default: true
-  # Change log is only used for deploying Flex
-  changelog:
-    description: Release Changelog - Add a comment about the changes to be included in this release.
-    type: string
-    required: false
   # Recaptcha Verify URL is only used for deploying Webchat
   recaptcha_verify_url:
     description: Recaptcha Verify URL
@@ -60,7 +55,6 @@ jobs:
     with:
       helpline_code: ${{ matrix.short_helplines }}
       environment_code: ${{ matrix.environment }}
-      changelog: ${{ inputs.changelog }}
       send-slack-message: ${{ inputs.send_slack_message_per_deploy }}
 
   deploy-web-chat-helplines:
@@ -86,9 +80,15 @@ jobs:
     if: ${{ inputs.send_final_slack_message == 'true' }}
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            .github/actions
       # Setup credentials to access AWS for parameters
       - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v2
+        uses: aws-actions/configure-aws-credentials@v6
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
@@ -96,12 +96,12 @@ jobs:
       # Set any env vars needed from Parameter Store here
       # Slack env
       - name: Set GITHUB_ACTIONS_SLACK_BOT_TOKEN
-        uses: "marvinpinto/action-inject-ssm-secrets@latest"
+        uses: ./.github/actions/inject-ssm-secrets
         with:
           ssm_parameter: "GITHUB_ACTIONS_SLACK_BOT_TOKEN"
           env_variable_name: "GITHUB_ACTIONS_SLACK_BOT_TOKEN"
       - name: Set ASELO_DEPLOYS_CHANNEL_ID
-        uses: "marvinpinto/action-inject-ssm-secrets@latest"
+        uses: ./.github/actions/inject-ssm-secrets
         with:
           ssm_parameter: "ASELO_DEPLOYS_CHANNEL_ID"
           env_variable_name: "ASELO_DEPLOYS_CHANNEL_ID"
@@ -116,9 +116,10 @@ jobs:
 
       - name: Slack Aselo channel
         id: slack
-        uses: slackapi/slack-github-action@v1.14.0
+        uses: slackapi/slack-github-action@v3.0.1
         with:
-          channel-id: ${{ env.ASELO_DEPLOYS_CHANNEL_ID }}
-          slack-message: "${{ env.SLACK_MESSAGE_PREFIX }} helplines ${{ inputs.helplines }} successfully deployed to the following environments: ${{ inputs.environments }} from ${{ github.ref_type }} `${{ github.ref_name }}` requested by `${{ github.triggering_actor }}` with SHA ${{ github.sha }} :rocket:."
-        env:
-          SLACK_BOT_TOKEN: ${{ env.GITHUB_ACTIONS_SLACK_BOT_TOKEN }}
+          method: chat.postMessage
+          token: ${{ env.GITHUB_ACTIONS_SLACK_BOT_TOKEN }}
+          payload: |
+            channel: ${{ env.ASELO_DEPLOYS_CHANNEL_ID }}
+            text: '${{ env.SLACK_MESSAGE_PREFIX }} helplines ${{ inputs.helplines }} successfully deployed to the following environments: ${{ inputs.environments }} from ${{ github.ref_type }} `${{ github.ref_name }}` requested by `${{ github.triggering_actor }}` with SHA ${{ github.sha }} :rocket:.'

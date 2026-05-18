@@ -21,13 +21,13 @@ import { useForm } from 'react-hook-form';
 import Close from '@material-ui/icons/Close';
 
 import ActionHeader from '../case/ActionHeader';
-import { BottomButtonBar, Box, HeaderCloseButton, HiddenText, Row, StyledNextStepButton } from '../../styles';
+import { BottomButtonBar, Box, HeaderCloseButton, HiddenText, Row, PrimaryButton, SecondaryButton } from '../../styles';
 import { BoldDescriptionText, CSAMReportContainer, CSAMReportLayout } from './styles';
-import { addMargin, getInputType } from '../common/forms/formGenerators';
 import { CSAMReportType } from '../../states/csam-report/types';
 import { externalReportDefinition } from './CSAMReportFormDefinition';
 import { CaseActionTitle } from '../case/styles';
 import useFocus from '../../utils/useFocus';
+import { createInput } from '../forms/inputGenerator';
 
 type Props = {
   renderContactDetails?: boolean;
@@ -50,11 +50,12 @@ const CSAMReportTypePicker: React.FC<Props> = ({
 }) => {
   const { getValues } = methods;
   const formElement = React.useMemo(() => {
-    return addMargin(5)(
-      getInputType([], () => pickReportType(getValues(['reportType']).reportType))(externalReportDefinition[0])(
-        reportType,
-      ),
-    );
+    return createInput({
+      parentsPath: '',
+      updateCallback: () => pickReportType(getValues(['reportType']).reportType),
+      formItemDefinition: externalReportDefinition[0],
+      initialValue: reportType,
+    });
   }, [getValues, pickReportType, reportType]);
 
   const focusElementRef = useFocus();
@@ -90,13 +91,13 @@ const CSAMReportTypePicker: React.FC<Props> = ({
 
       <BottomButtonBar>
         <Box marginRight="15px">
-          <StyledNextStepButton secondary="true" roundCorners onClick={onClickClose}>
+          <SecondaryButton roundCorners onClick={onClickClose}>
             <Template code="BottomBar-Cancel" />
-          </StyledNextStepButton>
+          </SecondaryButton>
         </Box>
-        <StyledNextStepButton roundCorners onClick={onSubmit} data-testid="CSAMReport-PickerSubmitButton">
+        <PrimaryButton roundCorners onClick={onSubmit} data-testid="CSAMReport-PickerSubmitButton">
           <Template code="BottomBar-Next" />
-        </StyledNextStepButton>
+        </PrimaryButton>
       </BottomButtonBar>
     </CSAMReportContainer>
   );

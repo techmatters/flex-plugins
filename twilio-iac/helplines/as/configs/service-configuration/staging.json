@@ -1,5 +1,6 @@
 {
     "attributes": {
+        "system_down" : false,
         "contacts_waiting_channels": [
             "voice",
             "sms",
@@ -7,28 +8,36 @@
             "whatsapp",
             "facebook",
             "instagram",
-            "line"
+            "line",
+            "telegram"
         ],
         "feature_flags": {
-            "enable_aselo_messaging_ui": false,    
-            "enable_client_profiles": true,
-            "enable_counselor_toolkits": false,
-            "enable_csam_clc_report": false,
+            "enable_active_contact_header": true,
+            "enable_assigned_skill_teams_view_filters": true,
+            "enable_configurable_max_categories": true,
             "enable_csam_report": true,
+            "enable_lambda_post_survey_processing": true,
+            "enable_language_selector": true,
+            "enable_llm_summary": true,
             "enable_lex": true,
-            "enable_save_insights": true,
-            "enable_teams_view_enhancements": true,
-            "enable_voice_recordings": true
+            "enable_post_survey": true,
+            "enable_voice_recordings": true,
+            "enable_lex_v2": true,
+            "enable_select_agents_teams_view": true,
+            "use_twilio_lambda_adjust_capacity": false,
+            "use_twilio_lambda_for_conference_functions": false,
+            "use_twilio_lambda_for_conversation_duration": true,
+            "use_twilio_lambda_for_iwf_reporting": true,
+            "use_twilio_lambda_for_offline_contact_tasks": true,
+            "use_twilio_lambda_janitor": false,
+            "use_twilio_lambda_transfers": false
         },
-        "hrm_base_url": "https://hrm-test.tl.techmatters.org",
         "multipleOfficeSupport": true,
         "pdfImagesSource": "https://tl-public-chat-as-stg.s3.amazonaws.com",
         "permissionConfig": "demo",
-        "previous_ui_version": {
-            "date": "2022-12-07T21:41:43.160Z",
-            "semver": "~2.0.0",
-            "version": "2.0.0"
-        }
+        "previous_ui_version": {"date": "2024-06-07T15:24:53.590Z", "semver": "~2.5.2", "version": "2.5.2"},
+        "logo_url" : "https://aselo-logo.s3.amazonaws.com/200+transparent+background+no+TM+staging.png",
+        "form_definitions_base_url": "https://assets-staging.tl.techmatters.org/form-definitions/"
     },
     "ui_attributes": {
         "colorTheme": {
@@ -37,6 +46,7 @@
             "overrides": null,
             "preset": null
         },
+        "internalChatServerlessUrl": "serverless-internal-chat-3216.twil.io",
         "showRealtimeQueuesStats": true
     }
 }

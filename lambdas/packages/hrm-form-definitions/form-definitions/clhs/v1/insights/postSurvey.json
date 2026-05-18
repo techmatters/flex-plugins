@@ -1,0 +1,22 @@
+[
+  {
+    "insightsObject": "customers",
+    "attributeName": "customer_attribute_1",
+    "questions": ["felt_supported"]
+  },
+  {
+    "insightsObject": "customers",
+    "attributeName": "customer_attribute_2",
+    "questions": ["able_to_express"]
+  },
+  {
+    "insightsObject": "customers",
+    "attributeName": "customer_attribute_3", 
+    "questions": ["felt_better"]
+  },
+  {
+    "insightsObject": "conversations",
+    "attributeName": "followed_by", 
+    "questions": ["feedback"]
+  }
+]

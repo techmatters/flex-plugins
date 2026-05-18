@@ -17,12 +17,14 @@
 import * as React from 'react';
 import renderer from 'react-test-renderer';
 import { StorelessThemeProvider } from '@twilio/flex-ui';
-import { DefinitionVersionId, loadDefinition, useFetchDefinitions } from 'hrm-form-definitions';
+import { loadDefinition } from 'hrm-form-definitions';
 import { Provider } from 'react-redux';
 import configureMockStore from 'redux-mock-store';
 import { DeepPartial } from 'redux';
 
+import { mockLocalFetchDefinitions } from '../mockFetchDefinitions';
 import { mockGetDefinitionsResponse } from '../mockGetConfig';
+import { getInitializedCan, RulesFile, validateAndSetPermissionRules } from '../../permissions/rules';
 import ContactPreview from '../../components/search/ContactPreview';
 import ContactHeader from '../../components/search/ContactPreview/ContactHeader';
 import TagsAndCounselor from '../../components/search/TagsAndCounselor';
@@ -31,25 +33,39 @@ import { Contact } from '../../types/types';
 import { RootState } from '../../states';
 import { configurationBase, namespace } from '../../states/storeNamespaces';
 import { VALID_EMPTY_CONTACT } from '../testContacts';
+import { fetchPermissionRules } from '../../services/PermissionsService';
+import mockRules from '../fixtures/mockPermissionRules';
 
-// eslint-disable-next-line react-hooks/rules-of-hooks
-const { mockFetchImplementation, mockReset, buildBaseURL } = useFetchDefinitions();
+const { mockFetchImplementation, mockReset, buildBaseURL } = mockLocalFetchDefinitions();
 
 const mockStore = configureMockStore([]);
 
 const NonExisting = () => <>NonExisting</>;
 NonExisting.displayName = 'NonExisting';
 
-beforeEach(() => {
+jest.mock('../../services/PermissionsService', () => {
+  return {
+    fetchPermissionRules: jest.fn(() => {
+      throw new Error('fetchRules not mocked!');
+    }),
+  };
+});
+
+beforeEach(async () => {
+  const fetchPermissionRulesSpy = fetchPermissionRules as jest.MockedFunction<typeof fetchPermissionRules>;
+  fetchPermissionRulesSpy.mockResolvedValue(mockRules as RulesFile);
+  await validateAndSetPermissionRules();
+  getInitializedCan();
+
   mockReset();
 });
 
 test('<ContactPreview> should mount', async () => {
-  const formDefinitionsBaseUrl = buildBaseURL(DefinitionVersionId.v1);
+  const formDefinitionsBaseUrl = buildBaseURL('as-v1');
   await mockFetchImplementation(formDefinitionsBaseUrl);
 
   const defaultDef = await loadDefinition(formDefinitionsBaseUrl);
-  mockGetDefinitionsResponse(getDefinitionVersions, DefinitionVersionId.v1, defaultDef);
+  mockGetDefinitionsResponse(getDefinitionVersions, 'as-v1', defaultDef);
 
   const counselorsHash = {
     WKxxxx: 'John Doe',
@@ -59,7 +75,7 @@ test('<ContactPreview> should mount', async () => {
     [namespace]: {
       [configurationBase]: {
         definitionVersions: {
-          [DefinitionVersionId.v1]: defaultDef,
+          'as-v1': defaultDef,
         },
         counselors: {
           hash: counselorsHash,
@@ -70,16 +86,14 @@ test('<ContactPreview> should mount', async () => {
   const contact: Contact = {
     ...VALID_EMPTY_CONTACT,
     id: '123',
-    accountSid: '',
     timeOfContact: '2019-01-01T00:00:00.000Z',
     number: '+12025550440',
     channel: 'whatsapp',
     twilioWorkerId: 'WKxxxx',
     helpline: 'test helpline',
     conversationDuration: 0,
-    taskId: 'TASK_ID',
     rawJson: {
-      definitionVersion: DefinitionVersionId.v1,
+      definitionVersion: 'as-v1',
       callType: 'Child calling about self',
       categories: { category1: ['Tag1', 'Tag2'] },
       childInformation: {

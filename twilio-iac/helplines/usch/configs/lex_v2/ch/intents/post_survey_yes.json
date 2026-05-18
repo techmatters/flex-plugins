@@ -1,0 +1,80 @@
+{
+    "intentName": "post_survey_yes",
+    "description": "Specific en_USCH/bots Post Survey bot",
+    "sampleUtterances": [
+        {
+            "utterance": "Yes"
+        },
+        {
+            "utterance": "yes"
+        },
+        {
+            "utterance": "yeah"
+        },
+        {
+            "utterance": "1"
+        }
+    ],
+    "dialogCodeHook": {
+        "enabled": false
+    },
+    "fulfillmentCodeHook": {
+        "enabled": false,
+        "active": true,
+        "postFulfillmentStatusSpecification": {
+            "successNextStep": {
+                "dialogAction": {
+                    "type": "CloseIntent"
+                },
+                "intent": {}
+            },
+            "failureNextStep": {
+                "dialogAction": {
+                    "type": "CloseIntent"
+                },
+                "intent": {}
+            },
+            "timeoutNextStep": {
+                "dialogAction": {
+                    "type": "CloseIntent"
+                },
+                "intent": {}
+            }
+        }
+    },
+    "slotPriorities": [
+        {
+            "priority": 1,
+            "slotName": "experience_rating"
+        },
+        {
+            "priority": 2,
+            "slotName": "feel_supported"
+        },
+        {
+            "priority": 3,
+            "slotName": "better_prepared"
+        }
+    ],
+    "intentClosingSetting": {
+        "closingResponse": {
+            "messageGroups": [
+                {
+                    "message": {
+                        "plainTextMessage": {
+                            "value": "Thank you for contacting the hotline.  Feel free to reach out again if you need additional support."
+                        }
+                    }
+                }
+            ],
+            "allowInterrupt": true
+        },
+        "active": true,
+        "nextStep": {
+            "dialogAction": {
+                "type": "EndConversation"
+            },
+            "intent": {}
+        }
+    }
+}

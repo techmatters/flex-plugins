@@ -4,14 +4,23 @@ locals {
   config              = merge(local.defaults_config, local.local_config)
 
   local_config = {
-    helpline                          = "Youthline"
-    task_language                     = "en-NZ"
+    helpline                   = "Youthline"
+    task_language              = "en-NZ"
+    enable_external_recordings = true
+    enable_datadog_monitoring  = false
+    permission_config          = "nz"
+    enable_lex_v2              = true
 
     channel_attributes = {
-      webchat : "/app/twilio-iac/helplines/nz/templates/channel-attributes/webchat.tftpl"
-      voice   : "/app/twilio-iac/helplines/nz/templates/channel-attributes/voice.tftpl"
-      modica  : "/app/twilio-iac/helplines/nz/templates/channel-attributes/modica.tftpl",
-      default : "/app/twilio-iac/helplines/templates/channel-attributes/default.tftpl",
+      webchat                 = "/app/twilio-iac/helplines/nz/templates/channel-attributes/webchat.tftpl",
+      voice                   = "/app/twilio-iac/helplines/nz/templates/channel-attributes/voice.tftpl",
+      modica                  = "/app/twilio-iac/helplines/nz/templates/channel-attributes/modica.tftpl",
+      chat-conversations      = "/app/twilio-iac/helplines/nz/templates/channel-attributes/chat-conversations.tftpl",
+      modica-conversations    = "/app/twilio-iac/helplines/nz/templates/channel-attributes/custom-conversations.tftpl",
+      instagram-conversations = "/app/twilio-iac/helplines/nz/templates/channel-attributes/custom-conversations.tftpl",
+      whatsapp-conversations  = "/app/twilio-iac/helplines/nz/templates/channel-attributes/whatsapp-conversations.tftpl",
+      default                 = "/app/twilio-iac/helplines/templates/channel-attributes/default.tftpl",
+      default-conversations   = "/app/twilio-iac/helplines/templates/channel-attributes/default-conversations.tftpl"
     }
     workflows = {
       master : {
@@ -24,28 +33,28 @@ locals {
         templatefile             = "/app/twilio-iac/helplines/nz/templates/workflows/master_calls.tftpl",
         task_reservation_timeout = 30
       },
+      queue_transfers : {
+        friendly_name = "Queue Transfers Workflow"
+        templatefile  = "/app/twilio-iac/helplines/nz/templates/workflows/queue-transfers.tftpl"
+      },
       survey : {
-        friendly_name : "Survey Workflow"
-        templatefile : "/app/twilio-iac/helplines/templates/workflows/lex.tftpl"
+        friendly_name = "Survey Workflow"
+        templatefile  = "/app/twilio-iac/helplines/templates/workflows/lex.tftpl"
       }
     }
 
     task_queues = {
       youthline_helpline : {
-        "target_workers" = "(roles HAS 'agent' OR roles HAS 'supervisor') AND email != 'alnrivera@gmail.com'",
+        "target_workers" = "(roles HAS 'agent' OR roles HAS 'supervisor')",
         "friendly_name"  = "Youthline Helpline"
       },
       priority : {
-        "target_workers" = "(roles HAS 'agent' OR roles HAS 'supervisor') AND email != 'alnrivera@gmail.com'" ,
+        "target_workers" = "(roles HAS 'agent' OR roles HAS 'supervisor')",
         "friendly_name"  = "Priority Youthline Helpline"
       },
       clinical : {
-        "target_workers" = "(routing.skills HAS 'Clinical' OR roles HAS 'supervisor') AND email != 'alnrivera@gmail.com'",
+        "target_workers" = "(routing.skills HAS 'Clinical')",
         "friendly_name"  = "Clinical"
-      },
-      counselling : {
-        "target_workers" = "(roles HAS 'agent' OR roles HAS 'supervisor') AND email == 'alnrivera@gmail.com'",
-        "friendly_name"  = "YL Other Services"
       },
       survey : {
         "target_workers" = "1==0",
@@ -54,9 +63,10 @@ locals {
     }
 
     lex_bot_languages = {
-      en_NZ : ["pre_survey"]
+      en_NZ : ["pre_survey", "pre_survey_ig", "counsel_check"]
     }
-
-
+    lex_v2_bot_languages = {
+       en_NZ : ["pre_survey", "pre_survey_ig","counsel_check"]
+    }
   }
 }

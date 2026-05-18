@@ -15,14 +15,12 @@
  */
 
 import React from 'react';
-import { Button, ButtonBase, Collapse, FormControlLabel, Paper, Switch, withStyles } from '@material-ui/core';
+import { Collapse, FormControlLabel, Paper, Switch, withStyles } from '@material-ui/core';
 import { styled, Tabs, TabsProps } from '@twilio/flex-ui';
 import ChevronLeft from '@material-ui/icons/ChevronLeft';
-import { ButtonProps } from '@material-ui/core/Button';
 import { TransitionProps } from '@material-ui/core/transitions/transition';
 
-import { BottomButtonBar, Flex, FontOpenSans, ChipBase, Row, StyledNextStepButton } from '../../styles';
-import HrmTheme from '../../styles/HrmTheme';
+import { Flex, FontOpenSans, Row, SecondaryButton, TertiaryButton } from '../../styles';
 import { BannerContainerProps, colors } from '../../styles/banners';
 
 // CaseViewer Styles
@@ -51,53 +49,6 @@ export const ContactButtonsWrapper = styled('div')`
   align-items: center;
 `;
 
-type StyledLinkProps = ButtonProps & { underline?: boolean };
-
-const UnstyledLinkButton = React.forwardRef<HTMLButtonElement, StyledLinkProps>(
-  ({ onClick, underline, ...rest }, ref) => (
-    <Button
-      size="small"
-      onClick={onClick}
-      disableFocusRipple={underline}
-      disableRipple={underline}
-      ref={ref}
-      {...rest}
-    />
-  ),
-);
-
-export const StyledLink = styled(UnstyledLinkButton)<StyledLinkProps>`
-  && {
-    padding: 0;
-    line-height: normal;
-    letter-spacing: normal;
-
-    :hover {
-      text-decoration: ${props => (props.underline ? 'underline' : 'none')};
-      text-decoration-color: ${props => (props.underline ? '#1874e1' : 'transparent')};
-      background-color: ${props => (props.underline ? 'transparent' : HrmTheme.colors.hyperlinkHoverBackgroundColor)};
-    }
-
-    :focus {
-      outline: auto;
-      background-color: ${props => (props.underline ? 'transparent' : HrmTheme.colors.hyperlinkHoverBackgroundColor)};
-    }
-  }
-
-  span {
-    padding: 0px;
-    line-height: normal;
-    letter-spacing: normal;
-    text-transform: none;
-    color: #1874e1;
-  }
-`;
-
-const Tag = styled('div')`
-  border-radius: 6px;
-  padding: 5px 15px;
-`;
-
 const PopoverText = styled(FontOpenSans)`
   font-size: 20px;
   font-weight: 600;
@@ -108,7 +59,7 @@ export const ConfirmText = styled(PopoverText)`
   margin-bottom: 20px;
 `;
 
-export const CancelButton = styled(Button)`
+export const CancelButton = styled(SecondaryButton)`
   &:focus {
     background-color: rgba(34, 34, 34, 0.08);
   }
@@ -152,28 +103,6 @@ export const StyledTabs = styled((props: Partial<TabsProps> & { children?: any }
 `;
 StyledTabs.displayName = 'StyledTabs';
 
-export const StyledResultsContainer = styled('div')`
-  display: flex;
-  align-items: center;
-  width: 100%;
-  margin-top: 10px;
-`;
-StyledResultsContainer.displayName = 'StyledResultsContainer';
-
-export const StyledResultsText = styled('div')`
-  display: flex;
-  padding-right: 5px;
-`;
-StyledResultsText.displayName = 'StyledResultsText';
-
-export const EmphasisedText = styled('div')`
-  font-weight: 600;
-  color: #000000;
-  font-family: Open Sans;
-  text-align: left;
-`;
-EmphasisedText.displayName = 'EmphasisedText';
-
 export const SummaryText = styled(FontOpenSans)`
   font-size: 13px;
   font-weight: 400;
@@ -183,11 +112,13 @@ export const SummaryText = styled(FontOpenSans)`
 `;
 
 export const PreviewRow = styled(Row)<Partial<BannerContainerProps>>`
+  width: 100%;
   ${({ color }) => (color ? `background-color: ${colors.background[color]}` : '')};
   ${({ color }) => (color ? `border-bottom: 2px solid ${colors.border[color]}` : '')};
   margin-top: 10px;
   padding: 0 20px 5px 20px;
 `;
+PreviewRow.displayName = 'PreviewRow';
 
 export const SubtitleValue = styled(SummaryText)`
   padding-inline-end: 10px;
@@ -202,14 +133,13 @@ export const TagsWrapper = styled(Flex)`
   min-width: 0;
   margin-right: 5px;
   overflow: hidden;
-
+  height: 1.6em;
   div:last-child {
     min-width: 0;
 
     p {
       overflow: hidden;
       white-space: nowrap;
-      text-overflow: ellipsis;
     }
   }
 `;
@@ -240,7 +170,7 @@ export const SectionTitleContainer = styled(Row)<ColorProps>`
 `;
 SectionTitleContainer.displayName = 'SectionTitleContainer';
 
-export const SectionTitleButton = styled(ButtonBase)`
+export const SectionTitleButton = styled(TertiaryButton)`
   width: 100%;
   padding: 0;
   &:focus {
@@ -248,30 +178,6 @@ export const SectionTitleButton = styled(ButtonBase)`
   }
 `;
 SectionTitleButton.displayName = 'SectionTitleButton';
-
-type SectionActionButton = {
-  padding?: string;
-};
-
-export const SectionActionButton = styled('button')<SectionActionButton>`
-  display: flex;
-  border: none;
-  background-color: transparent;
-  font-size: 13px;
-  font-weight: 600;
-  color: #1976d2;
-  padding: ${props => (props.padding ? props.padding : '0 6px')};
-  font-family: 'Open Sans';
-  cursor: pointer;
-  white-space: nowrap;
-  align-items: center;
-
-  :focus {
-    outline: auto;
-    outline-color: black;
-  }
-`;
-SectionActionButton.displayName = 'SectionActionButton';
 
 type CollapseProps = {
   expanded: boolean;
@@ -361,22 +267,10 @@ export const ResultsHeader = styled('div')`
   flex-grow: 0;
 `;
 
-export const ListContainer = styled(BottomButtonBar)`
-  box-shadow: none;
-  background-color: #ffffff;
-  flex-basis: 0;
-  flex-grow: 1;
-  padding-top: 10px;
-  padding-bottom: 10px;
-  padding-left: 0;
-  padding-right: 0;
-  margin: 2px 5px 0 5px;
-`;
-
-export const ScrollableList = styled('div')`
+export const ResultsSubheader = styled('div')`
   display: flex;
   flex-direction: column;
-  align-items: center;
+  /* align-items: center; */
   width: 100%;
   height: 100%;
   overflow-y: auto;
@@ -388,17 +282,10 @@ export const StyledFormControlLabel = styled(FormControlLabel)`
 `;
 StyledFormControlLabel.displayName = 'StyledFormControlLabel';
 
-export const StyledCount = styled('p')`
-  font-weight: 600;
-`;
-StyledCount.displayName = 'StyledCount';
-
 export const StyledResultsHeader = styled('div')`
   display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
-  width: 600px;
+  flex-flow: column;
+  padding: 0 20px;
 `;
 
 StyledResultsHeader.displayName = 'StyledCaseResultsHeader';
@@ -414,11 +301,6 @@ export const SwitchLabel = styled(SummaryText)`
   margin-right: 5px;
 `;
 SwitchLabel.displayName = 'SwitchLabel';
-
-export const PreviewActionButton = styled(StyledNextStepButton)`
-  padding: 5px 17px 5px 12px;
-`;
-PreviewActionButton.displayName = 'PreviewActionButton';
 
 export const SearchResultWarningContainer = styled('div')`
   width: 100%;

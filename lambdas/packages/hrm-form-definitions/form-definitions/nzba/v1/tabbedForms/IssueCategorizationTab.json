@@ -1,0 +1,350 @@
+{
+  "Barnardos": {
+    "categories": {
+      "Adult contact (20+)": {
+        "color": "#085f63",
+        "subcategories": [
+          {
+            "label": "Counselling"
+          },
+          {
+            "label": "Inquiry"
+          },
+          {
+            "label": "Seeking support for child/young person"
+          },
+          {
+            "label": "Unspecified/Other - AC"
+          }
+        ]
+      },
+      "Discrimination and Exclusion": {
+        "color": "#4d92c2",
+        "subcategories": [
+          {
+            "label": "Ethnicity/nationality"
+          },
+          {
+            "label": "Financial/Socio-economic status"
+          },
+          {
+            "label": "Gender"
+          },
+          {
+            "label": "Gender identity or expression and sexual orientation"
+          },
+          {
+            "label": "Health"
+          },
+          {
+            "label": "Philosophical or religious beliefs"
+          },
+          {
+            "label": "Unspecified/Other - DE"
+          }
+        ]
+      },
+      "Education and Occupation": {
+        "color": "#e7c582",
+        "subcategories": [
+          {
+            "label": "Academic issues"
+          },
+          {
+            "label": "Academic pressure"
+          },
+          {
+            "label": "Change of education provider"
+          },
+          {
+            "label": "Employment/financial issues"
+          },
+          {
+            "label": "Problems at work"
+          },
+          {
+            "label": "Teacher and school problems"
+          },
+          {
+            "label": "Unspecified/Other - EO"
+          }
+        ]
+      },
+      "Family Relationships": {
+        "color": "#c99f7d",
+        "subcategories": [
+          {
+            "label": "Adoption, fostering, and extended family placement"
+          },
+          {
+            "label": "Family breakdown/separation/divorce"
+          },
+          {
+            "label": "Family health and wellbeing"
+          },
+          {
+            "label": "General family issues"
+          },
+          {
+            "label": "Relationship to caregiver"
+          },
+          {
+            "label": "Relationship with extended whanau/family"
+          },
+          {
+            "label": "Relationship with sibling(s)"
+          },
+          {
+            "label": "Unspecified/Other - FR"
+          }
+        ]
+      },
+      "Mental Health": {
+        "color": "#fac05e",
+        "subcategories": [
+          {
+            "label": "Addictive behaviours"
+          },
+          {
+            "label": "Behavioural issues"
+          },
+          {
+            "label": "Eating behaviours"
+          },
+          {
+            "label": "Emotional distress – anger problems"
+          },
+          {
+            "label": "Emotional distress – fear and anxiety problems"
+          },
+          {
+            "label": "Emotional distress – mood problems"
+          },
+          {
+            "label": "Grief/loss"
+          },
+          {
+            "label": "Loneliness / Isolation"
+          },
+          {
+            "label": "Neurodevelopmental concerns"
+          },
+          {
+            "label": "Psychosis"
+          },
+          {
+            "label": "Self-harming behaviour"
+          },
+          {
+            "label": "Self-image (incl. body-image)"
+          },
+          {
+            "label": "Shame"
+          },
+          {
+            "label": "Suicidal thoughts and suicide attempts"
+          },
+          {
+            "label": "Traumatic distress"
+          },
+          {
+            "label": "Unspecified/Other - MH"
+          }
+        ]
+      },
+      "Non Counselling Contacts": {
+        "color": "#e7c582",
+        "subcategories": [
+          {
+            "label": "Soft - complaints - inform supervisor"
+          },
+          {
+            "label": "Soft - asks for counsellors/WU info/asked to return"
+          },
+          {
+            "label": "Soft - bored/chat/joke but not lonely"
+          },
+          {
+            "label": "Soft - Requests info about other services"
+          },
+          {
+            "label": "Soft - silent/minimal conversation/disconnects"
+          },
+          {
+            "label": "Soft - thank you for your help/positive feedback"
+          },
+          {
+            "label": "Connecting"
+          },
+          {
+            "label": "Hard - general"
+          },
+          {
+            "label": "Hard - sexual nature"
+          },
+          {
+            "label": "Other/unknown"
+          }
+        ]
+      },
+      "Online activity": {
+        "color": "#c99f7d",
+        "subcategories": [
+          {
+            "label": "Gaming"
+          },
+          {
+            "label": "Social media"
+          },
+          {
+            "label": "Unspecified/Other - OA"
+          }
+        ]
+      },
+      "Other": {
+        "color": "#db7a34",
+        "subcategories": [
+          {
+            "label": "Leaving home/homelessness"
+          },
+          {
+            "label": "Legal problems"
+          },
+          {
+            "label": "Life skills"
+          },
+          {
+            "label": "News/events/disasters"
+          },
+          {
+            "label": "Poverty"
+          },
+          {
+            "label": "Recreational drugs (incl. alcohol and cigarette)"
+          },
+          {
+            "label": "None of the above (check w/ supervisor before using this)"
+          }
+        ]
+      },
+      "Peer Relationships": {
+        "color": "#db7a34",
+        "subcategories": [
+          {
+            "label": "Classmates/colleagues relationships"
+          },
+          {
+            "label": "Friends and friendships"
+          },
+          {
+            "label": "Partner relationships"
+          },
+          {
+            "label": "Unspecified/Other - PR"
+          }
+        ]
+      },
+      "Physical Health": {
+        "color": "#f79d8f",
+        "subcategories": [
+          {
+            "label": "COVID-19"
+          },
+          {
+            "label": "General medical concerns"
+          },
+          {
+            "label": "Medical or lifestyle information about HIV/AIDS"
+          },
+          {
+            "label": "Nutrition"
+          },
+          {
+            "label": "Pregnancy and maternal care"
+          },
+          {
+            "label": "Sexual and reproductive health"
+          },
+          {
+            "label": "Other / Unknown - PH"
+          }
+        ]
+      },
+      "Relationships - Other": {
+        "color": "#f8b595",
+        "subcategories": [
+          {
+            "label": "Therapeutic relationship"
+          },
+          {
+            "label": "Unspecified/Other - RO"
+          }
+        ]
+      },
+      "Sexuality": {
+        "color": "#037971",
+        "subcategories": [
+          {
+            "label": "Sexual behaviours"
+          },
+          {
+            "label": "Sexual orientation and gender identity"
+          },
+          {
+            "label": "Unspecified/Other - S"
+          }
+        ]
+      },
+      "Violence": {
+        "color": "#14919b",
+        "subcategories": [
+          {
+            "label": "Bullying"
+          },
+          {
+            "label": "Emotional violence"
+          },
+          {
+            "label": "Family violence - between caregivers"
+          },
+          {
+            "label": "Family violence - emotional"
+          },
+          {
+            "label": "Family violence - intimate partner violence"
+          },
+          {
+            "label": "Family violence - neglect"
+          },
+          {
+            "label": "Family Violence - other/a comination"
+          },
+          {
+            "label": "Family violence - physical"
+          },
+          {
+            "label": "Family violence - sexual"
+          },
+          {
+            "label": "Gangs/cults"
+          },
+          {
+            "label": "Online sexual abuse and exploitation"
+          },
+          {
+            "label": "Physical violence"
+          },
+          {
+            "label": "Sexual offender/predator"
+          },
+          {
+            "label": "Sexual violence (incl. Grooming)"
+          },
+          {
+            "label": "Unspecified/Other - V"
+          }
+        ]
+      }
+    }
+  }
+}

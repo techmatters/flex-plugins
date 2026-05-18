@@ -23,10 +23,12 @@ import React from 'react';
 import { Text, View } from '@react-pdf/renderer';
 
 import styles from './styles';
-import { mapChannel, mapChannelForInsights, formatStringToDateAndTime } from '../../../utils';
-import { getInitializedCan, PermissionActions } from '../../../permissions';
+import { mapChannel, mapChannelForInsights } from '../../../utils/mappers';
+import { formatStringToDateAndTime } from '../../../utils/formatters';
+import { getInitializedCan } from '../../../permissions/rules';
 import { presentValueFromStrings } from './presentValuesFromStrings';
 import { getTemplateStrings } from '../../../hrmConfig';
+import { PermissionActions } from '../../../permissions/actions';
 
 type OwnProps = {
   sectionName: string;

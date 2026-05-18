@@ -9,35 +9,67 @@ locals {
       webchat : {
         channel_type         = "web"
         contact_identity     = ""
-        templatefile         = "/app/twilio-iac/helplines/zm/templates/studio-flows/messaging-webchat.tftpl"
+        templatefile         = "/app/twilio-iac/helplines/zm/templates/studio-flows/messaging-webchat-lambda-sd.tftpl"
+        channel_flow_vars    = {}
+        chatbot_unique_names = []
+      },
+      chat : {
+        channel_type         = "chat"
+        messaging_mode       = "conversations"
+        contact_identity     = ""
+        templatefile         = "/app/twilio-iac/helplines/zm/templates/studio-flows/messaging-webchat-conv-lambda-sd.tftpl"
         channel_flow_vars    = {}
         chatbot_unique_names = []
       },
       facebook : {
-        channel_type         = "facebook"
+        messaging_mode       = "conversations"
+        channel_type         = "messenger"
         contact_identity     = "messenger:106338277501244"
-        templatefile         = "/app/twilio-iac/helplines/zm/templates/studio-flows/messaging.tftpl"
+        templatefile         = "/app/twilio-iac/helplines/zm/templates/studio-flows/messaging-conv-lambda-sd.tftpl"
         channel_flow_vars    = {}
         chatbot_unique_names = []
       },
       whatsapp : {
+        messaging_mode       = "conversations"
         channel_type         = "whatsapp"
-        contact_identity     = "whatsapp:+447450769014"
-        templatefile         = "/app/twilio-iac/helplines/zm/templates/studio-flows/messaging.tftpl"
+        contact_identity     = "whatsapp:+17035961454"
+        templatefile         = "/app/twilio-iac/helplines/zm/templates/studio-flows/messaging-conv-lambda-sd.tftpl"
         channel_flow_vars    = {}
+        chatbot_unique_names = []
+      },
+      voice : {
+        channel_type     = "voice"
+        contact_identity = ""
+        templatefile     = "/app/twilio-iac/helplines/zm/templates/studio-flows/voice-ac.tftpl"
+        channel_flow_vars = {
+        }
         chatbot_unique_names = []
       }
     }
     #Studio flow
     flow_vars = {
-      service_sid                   = "ZSe4567a77a4d25e4d539aa715c46f0202"
-      environment_sid               = "ZEb5f4d53708997b098f3c7456435c2083"
-      send_message_janitor_function_sid = "ZH0b9f111cb63b53f265d487aa63bb4818"
+      send_message_janitor_function_sid     = "ZH0b9f111cb63b53f265d487aa63bb4818"
       capture_channel_with_bot_function_sid = "ZHca6a97b33320c5efd5430fb9f1a5480b"
-
+      chatbot_callback_cleanup_function_sid = "ZHc633e352ec3541df3eea9f9ae4af1ad4"
+      widget_from                           = "Lifeline/Childline Zambia"
+      chat_blocked_message                  = "Hi, you've been blocked from accessing Childline/Lifeline services and we are not able to read or receive further messages from you."
+      voice_ivr_language                    = "en-US",
+      voice_ivr_blocked_message             = "Hi, you've been blocked from accessing Childline/Lifeline services and we are not able to receive further calls from you."
     }
+    get_profile_flags_for_identifier_base_url = "https://hrm-staging.tl.techmatters.org/lambda/twilio/account-scoped"
+    ui_editable                               = true
 
-    ui_editable = true
-    #Chatbots
+    #System Down Configuration
+    system_down_templatefile = "/app/twilio-iac/helplines/templates/studio-flows/system-down.tftpl"
+    enable_system_down       = true
+    system_down_flow_vars = {
+      is_system_down                   = "false"
+      message                          = "Our chat system is currently experiencing technical difficulties. We apologize for the inconvenience and are working to get it back online as soon as possible. If this is an emergency, please call +260955065373. Please note that this is not a toll-free line so you may incur costs."
+      voice_message                    = "Our chat system is currently experiencing technical difficulties. We apologize for the inconvenience and are working to get it back online as soon as possible. If this is an emergency, please call +260955065373. Please note that this is not a toll-free line so you may incur costs."
+      send_studio_message_function_sid = "ZH4958d28a21898fa32e4b656635475f33"
+      call_action                      = "message"
+      forward_number                   = "+123"
+      recording_url                    = "https://<place_holder>.mp3"
+    }
   }
 }

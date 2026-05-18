@@ -17,44 +17,32 @@
 /* eslint-disable react/prop-types */
 import React, { useState } from 'react';
 import { Notifications } from '@twilio/flex-ui';
-import { connect } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import { RootState } from '../../states';
 import { isAnyChatPending } from '../queuesStatus/helpers';
-import { adjustChatCapacity } from '../../services/ServerlessService';
 import AddTaskButton from '../common/AddTaskButton';
 import { configurationBase, namespace, queuesStatusBase } from '../../states/storeNamespaces';
+import { pullNextTask } from '../../services/twilioWorkerService';
 
-type OwnProps = {
-  workerClient: import('@twilio/flex-ui').Manager['workerClient'];
-};
-
-// eslint-disable-next-line no-use-before-define
-type Props = OwnProps & ReturnType<typeof mapStateToProps>;
-
-const ManualPullButton: React.FC<Props> = ({ queuesStatusState, chatChannelCapacity, worker, workerClient }) => {
+const ManualPullButton: React.FC = () => {
+  const queuesStatusState = useSelector((state: RootState) => state[namespace][queuesStatusBase]);
+  const chatChannelCapacity = useSelector(
+    (state: RootState) => state[namespace][configurationBase].workerInfo.chatChannelCapacity,
+  );
+  const worker = useSelector((state: RootState) => state.flex.worker);
   const [isWaitingNewTask, setWaitingNewTask] = useState(false);
 
-  // Increase chat capacity, if no reservation is created within 5 seconds, capacity is decreased and shows a notification.
-  const increaseChatCapacity = async () => {
+  const pullTask = async () => {
     setWaitingNewTask(true);
-    let alertTimeout = null;
-
-    const cancelTimeout = () => {
+    try {
+      const nextTaskSid = await pullNextTask();
+      if (!nextTaskSid) {
+        Notifications.showNotification('NoTaskAssignableNotification');
+      }
+    } finally {
       setWaitingNewTask(false);
-      clearTimeout(alertTimeout);
-    };
-
-    alertTimeout = setTimeout(async () => {
-      setWaitingNewTask(false);
-      workerClient.removeListener('reservationCreated', cancelTimeout);
-      Notifications.showNotification('NoTaskAssignableNotification');
-      await adjustChatCapacity('decrease');
-    }, 5000);
-
-    workerClient.once('reservationCreated', cancelTimeout);
-
-    await adjustChatCapacity('increase');
+    }
   };
 
   const { maxMessageCapacity } = worker.attributes;
@@ -72,7 +60,7 @@ const ManualPullButton: React.FC<Props> = ({ queuesStatusState, chatChannelCapac
   return (
     <AddTaskButton
       id="ManualPullButton"
-      onClick={increaseChatCapacity}
+      onClick={pullTask}
       disabled={disabled}
       isLoading={isWaitingNewTask}
       label="ManualPullButtonText"
@@ -83,12 +71,4 @@ const ManualPullButton: React.FC<Props> = ({ queuesStatusState, chatChannelCapac
 
 ManualPullButton.displayName = 'ManualPullButton';
 
-const mapStateToProps = (state: RootState) => {
-  const queuesStatusState = state[namespace][queuesStatusBase];
-  const { chatChannelCapacity } = state[namespace][configurationBase].workerInfo;
-  const { worker } = state.flex;
-
-  return { queuesStatusState, chatChannelCapacity, worker };
-};
-
-export default connect(mapStateToProps, null)(ManualPullButton);
+export default ManualPullButton;

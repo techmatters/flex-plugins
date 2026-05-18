@@ -18,7 +18,7 @@ import { Translations, Configuration, MapHelplineLanguage, ContactType } from '.
 import type { PreEngagementFormDefinition } from '../src/pre-engagement-form';
 
 const accountSid = 'ACbc27263c18e621f3deb57cf1998a4e04';
-const flexFlowSid = 'FOfe4a6c70afb6460dff8a7c2b1503b7aa';
+const flexFlowSid = 'FOf66a924194074464fd92b56ad394f8ea';
 const defaultLanguage = 'en-US';
 const captureIp = true;
 const contactType: ContactType = 'ip';
@@ -74,4 +74,5 @@ export const config: Configuration = {
   memberDisplayOptions,
   captureIp,
   contactType,
+  twilioServicesUrl: new URL(`https://hrm-staging.tl.techmatters.org/lambda/twilio/account-scoped/${accountSid}`),
 };

@@ -15,16 +15,16 @@
  */
 
 import { createAsyncAction, createReducer } from 'redux-promise-middleware-actions';
-import { DefinitionVersionId } from 'hrm-form-definitions';
 import { CreateHandlerMap } from 'redux-promise-middleware-actions/lib/reducers';
 
-import { cancelCase, createCase, getCase, updateCaseOverview, updateCaseStatus } from '../../services/CaseService';
+import { cancelCase, createCase, updateCaseOverview, updateCaseStatus } from '../../services/CaseService';
 import { Case, CaseOverview, Contact } from '../../types/types';
-import { CANCEL_CASE_ACTION, CREATE_CASE_ACTION } from './types';
+import { CANCEL_CASE_ACTION, CREATE_CASE_ACTION, CREATE_CASE_ACTION_FULFILLED } from './types';
 import type { HrmState } from '..';
 import { getAvailableCaseStatusTransitions } from './caseStatus';
 import { connectToCase } from '../../services/ContactService';
 import { connectToCaseAsyncAction } from '../contacts/saveContact';
+import { markCaseAsUpdating } from './markCaseAsUpdating';
 
 const UPDATE_CASE_OVERVIEW_ACTION = 'case-action/update-overview';
 
@@ -33,21 +33,25 @@ export const createCaseAsyncAction = createAsyncAction(
   async (
     contact,
     workerSid: string,
-    definitionVersion: DefinitionVersionId,
+    definitionVersion: string,
   ): Promise<{ newCase: Case; connectedContact: Contact }> => {
     // We should probably update the case POST endpoint to accept a connected contact to simplify this and avoid extra calls and inconsistent state
     const newCase = await createCase(contact, workerSid, definitionVersion);
-    await connectToCase(contact.id, newCase.id);
+    const newContact = await connectToCase(contact.id, newCase.id);
     return {
       newCase,
-      connectedContact: contact,
+      connectedContact: newContact,
     };
   },
 );
 
+export type CreateCaseAsyncActionFulfilled = ReturnType<typeof createCaseAsyncAction.fulfilled> & {
+  type: typeof CREATE_CASE_ACTION_FULFILLED;
+};
+
 export const updateCaseOverviewAsyncAction = createAsyncAction(
   UPDATE_CASE_OVERVIEW_ACTION,
-  async (caseId: Case['id'], overview?: CaseOverview, status?: Case['status']): Promise<Case> => {
+  async (caseId: Case['id'], overview: CaseOverview, status: Case['status']): Promise<Case> => {
     let updatedCase;
     if (Object.keys(overview ?? {}).length) {
       overview.followUpDate = overview.followUpDate || null;
@@ -56,11 +60,10 @@ export const updateCaseOverviewAsyncAction = createAsyncAction(
     if (status) {
       updatedCase = await updateCaseStatus(caseId, status);
     }
-    if (!updatedCase) {
-      updatedCase = await getCase(caseId); // If the update is empty, just refresh the case from the backend.
-    }
+
     return updatedCase;
   },
+  (caseId, overview, status) => ({ caseId, overview, status }),
 );
 
 export const cancelCaseAsyncAction = createAsyncAction(
@@ -72,15 +75,20 @@ export const cancelCaseAsyncAction = createAsyncAction(
 );
 
 // We need to return a state object of the same type as we are passed, so we need to return the rootState even though we don't change it.
-const handlePendingAction = (handleAction, asyncAction) =>
-  handleAction(asyncAction as typeof asyncAction, rootState => {
+const handlePendingAction = <T extends Parameters<CreateHandlerMap<HrmState>>[0]>(
+  handleAction: CreateHandlerMap<HrmState>,
+  asyncAction: T,
+) =>
+  handleAction(asyncAction, rootState => {
     return rootState;
   });
 
 const updateConnectedCase = (state: HrmState, connectedCase: Case): HrmState => {
-  const caseDefinitionVersion = state.configuration.definitionVersions[connectedCase?.info?.definitionVersion];
-  const stateCase = state.connectedCase.cases[connectedCase.id]?.connectedCase;
-  const stateInfo = stateCase?.info;
+  const caseDefinitionVersion =
+    state.configuration.definitionVersions[connectedCase?.definitionVersion ?? connectedCase?.info?.definitionVersion];
+  const stateCase = state.connectedCase.cases[connectedCase?.id];
+  const outstandingUpdateCount = (stateCase?.outstandingUpdateCount ?? 1) - 1;
+  const { status, ...restCaseSummary } = stateCase?.caseWorkingCopy?.caseSummary || {};
 
   return {
     ...state,
@@ -89,26 +97,31 @@ const updateConnectedCase = (state: HrmState, connectedCase: Case): HrmState => 
       cases: {
         ...state.connectedCase.cases,
         [connectedCase.id]: {
+          ...stateCase,
           connectedCase: {
+            ...stateCase?.connectedCase,
             ...connectedCase,
-            ...((stateInfo || connectedCase.info) && {
-              info: { ...stateInfo, ...connectedCase.info },
-            }),
+            info: {
+              ...(stateCase?.connectedCase?.info || {}),
+              ...restCaseSummary,
+              ...connectedCase.info,
+            },
           },
           caseWorkingCopy: { sections: {} },
           availableStatusTransitions: caseDefinitionVersion
             ? getAvailableCaseStatusTransitions(connectedCase, caseDefinitionVersion)
             : [],
-          references: state.connectedCase.cases[connectedCase.id]?.references ?? new Set(),
-          sections: state.connectedCase.cases[connectedCase.id]?.sections ?? {},
-          timelines: state.connectedCase.cases[connectedCase.id]?.timelines ?? {},
+          lastReferencedDate: new Date(),
+          sections: stateCase?.sections ?? {},
+          timelines: stateCase?.timelines ?? {},
+          outstandingUpdateCount,
         },
       },
     },
   };
 };
 
-const handleFulfilledAction = (
+const handleUpdateCaseOverviewFulfilledAction = (
   handleAction: CreateHandlerMap<HrmState>,
   asyncAction: typeof updateCaseOverviewAsyncAction.fulfilled,
 ) => handleAction(asyncAction, (state, { payload }): HrmState => updateConnectedCase(state, payload));
@@ -116,13 +129,22 @@ const handleFulfilledAction = (
 const handleCreateCaseFulfilledAction = (
   handleAction: CreateHandlerMap<HrmState>,
   asyncAction: typeof createCaseAsyncAction.fulfilled,
-) => handleAction(asyncAction, (state, { payload }): HrmState => updateConnectedCase(state, payload.newCase));
+) =>
+  handleAction(
+    asyncAction,
+    (state, { payload }): HrmState => {
+      const { newCase } = payload;
+      return updateConnectedCase(state, newCase);
+    },
+  );
 
 const handleConnectToCaseFulfilledAction = (
   handleAction: CreateHandlerMap<HrmState>,
   asyncAction: typeof connectToCaseAsyncAction.fulfilled,
 ) =>
-  handleAction(asyncAction, (state, { payload: { contact, contactCase } }) => updateConnectedCase(state, contactCase));
+  handleAction(asyncAction, (state, { payload: { contactCase } }) => {
+    return updateConnectedCase(state, contactCase);
+  });
 
 const handleCancelCaseFulfilledAction = (
   handleAction: CreateHandlerMap<HrmState>,
@@ -155,9 +177,14 @@ export const saveCaseReducer = (initialState: HrmState): ((state: HrmState, acti
     handlePendingAction(handleAction, createCaseAsyncAction.pending),
     handleCreateCaseFulfilledAction(handleAction, createCaseAsyncAction.fulfilled),
     handleRejectedAction(handleAction, createCaseAsyncAction.rejected),
-    handlePendingAction(handleAction, updateCaseOverviewAsyncAction.pending),
-    handleFulfilledAction(handleAction, updateCaseOverviewAsyncAction.fulfilled),
-    handleRejectedAction(handleAction, updateCaseOverviewAsyncAction.rejected),
+
+    handleAction(updateCaseOverviewAsyncAction.pending, (state, { meta: { caseId } }: any) =>
+      markCaseAsUpdating(state, caseId, true),
+    ),
+    handleUpdateCaseOverviewFulfilledAction(handleAction, updateCaseOverviewAsyncAction.fulfilled),
+    handleAction(updateCaseOverviewAsyncAction.rejected, (state, { meta: { caseId } }: any) =>
+      markCaseAsUpdating(state, caseId, false),
+    ),
 
     handlePendingAction(handleAction, cancelCaseAsyncAction.pending),
     handleCancelCaseFulfilledAction(handleAction, cancelCaseAsyncAction.fulfilled),

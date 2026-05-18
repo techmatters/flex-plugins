@@ -11,7 +11,7 @@ ${
           "event": "incomingMessage"
         },
         {
-          "next": "split_keys_lang",
+          "next": "run_subflow_system_down",
           "event": "incomingCall"
         },
         {
@@ -111,7 +111,7 @@ ${
         },
         "workflow": workflow_sids["master"],
         "channel": task_channel_sids["voice"],
-        "attributes": "{\"language\": \"en-CA\",\n\"type\": \"inbound\", \"name\": \"{{trigger.call.From}}\",\"ignoreAgent\":\"\", \"transferTargetType\":\"\",\"channelType\":\"voice\"}",
+        "attributes": "{\"language\": \"en-CA\",\n\"type\": \"inbound\", \"name\": \"{{trigger.call.From}}\",\"ignoreAgent\":\"\", \"transferTargetType\":\"\",\"channelType\":\"voice\", \"conversations\": {\"ivr_path\" : \"Good2Talk ON English\", \"hang_up_by\": \"Customer\"}}",
         "waitUrlMethod": "GET"
       }
     },
@@ -137,7 +137,7 @@ ${
         },
         "workflow": workflow_sids["master"],
         "channel": task_channel_sids["voice"],
-        "attributes": "{\"language\": \"fr-CA\",\n\"type\": \"inbound\", \"name\": \"{{trigger.call.From}}\",\"ignoreAgent\":\"\", \"transferTargetType\":\"\",\"channelType\":\"voice\"}",
+        "attributes": "{\"language\": \"fr-CA\",\n\"type\": \"inbound\", \"name\": \"{{trigger.call.From}}\",\"ignoreAgent\":\"\", \"transferTargetType\":\"\",\"channelType\":\"voice\", \"conversations\": {\"ivr_path\" : \"Good2Talk ON French\", \"hang_up_by\": \"Customer\"}}",
         "waitUrlMethod": "GET"
       }
     },
@@ -163,7 +163,7 @@ ${
         },
         "workflow": workflow_sids["master"],
         "channel": task_channel_sids["voice"],
-        "attributes": "{\"type\": \"inbound\", \"name\": \"{{trigger.call.From}}\",\"ignoreAgent\":\"\", \"transferTargetType\":\"\",\"channelType\":\"voice\"}",
+        "attributes": "{\"type\": \"inbound\", \"name\": \"{{trigger.call.From}}\",\"ignoreAgent\":\"\", \"transferTargetType\":\"\",\"channelType\":\"voice\", \"conversations\": {\"ivr_path\" : \"Good2Talk Interpreter\", \"hang_up_by\": \"Customer\"}}",
         "waitUrlMethod": "GET"
       }
     },
@@ -1205,6 +1205,35 @@ ${
           "x": -650,
           "y": 140
         }
+      }
+    },
+    {
+      "name": "run_subflow_system_down",
+      "type": "run-subflow",
+      "transitions": [
+        {
+          "next": "split_keys_lang",
+          "event": "completed"
+        },
+        {
+          "next": "split_keys_lang",
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "flow_sid": "${system_down_studio_subflow_sid}",
+        "flow_revision": "LatestPublished",
+        "offset": {
+          "x": 110,
+          "y": -270
+        },
+        "parameters": [
+          {
+            "type": "string",
+            "value": "true",
+            "key": "system_down"
+          }
+        ]
       }
     }
   ],

@@ -19,7 +19,7 @@ import { get } from 'lodash';
 
 import { createInput, CreateInputParams } from '../inputGenerator';
 import useFocus from '../../../utils/useFocus';
-import { getInitialValue } from '../../common/forms/formGenerators';
+import { getInitialValue } from '../../common/forms/formValues';
 
 type UseFormFromDefinition = {
   definition: FormDefinition;
@@ -30,7 +30,6 @@ type UseFormFromDefinition = {
   customHandlers?: CreateInputParams['customHandlers'];
   isItemEnabled?: (item: FormItemDefinition) => boolean;
   context?: {
-    taskSid?: string;
     contactId?: string;
     caseId?: string;
   };
@@ -49,9 +48,7 @@ const useCreateFormFromDefinition = ({
   context = {},
 }: UseFormFromDefinition) => {
   const firstElementRef = useFocus(shouldFocusFirstElement);
-
   if (!initialValues) return [];
-
   return definition.map((e: FormItemDefinition, index: number) => {
     const elementRef = index === 0 ? firstElementRef : null;
     const maybeValue = get(initialValues, e.name);

@@ -16,7 +16,7 @@
 
 import { ITask } from '@twilio/flex-ui';
 
-import { savePendingContactToSharedState } from '../utils/sharedState';
+import { savePendingContactToSharedState } from '../services/SyncService';
 import saveContactToSaferNet from './br';
 import { getAseloFeatureFlags, getHrmConfig } from '../hrmConfig';
 

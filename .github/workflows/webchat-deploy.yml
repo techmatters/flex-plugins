@@ -49,6 +49,11 @@ on:
         description: If set to false a slack message will not be sent - useful for E2E test deploys.
         default: 'true'
         type: string
+      invalidate-cache:
+        description: 'Specifies if should invalidate CloudFront cache for form data. Defaults to true, set to false if the caller will handle cache invalidation.'
+        required: false
+        default: 'true'
+        type: string
 
 env:
   recaptcha_verify_url_default: https://hrm-${{ inputs.environment }}.tl.techmatters.org/lambda/recaptchaVerify
@@ -67,7 +72,7 @@ jobs:
       # Change String Case for Helpline Code
       - name: Change String Case for Helpline Code
         id: helpline_code
-        uses: "ASzc/change-string-case-action@v6"
+        uses: "ASzc/change-string-case-action@v8"
         with:
           string: "${{ inputs.helpline_code }}"
       # Set SHORT_ENVIRONMENT_CODE
@@ -83,9 +88,12 @@ jobs:
         if: inputs.environment == 'development'
         run: echo "SHORT_ENVIRONMENT_CODE=dev" >> $GITHUB_ENV
 
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v6
+
       # Setup credentials to access AWS for parameters
       - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v4
+        uses: aws-actions/configure-aws-credentials@v6
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
@@ -93,48 +101,39 @@ jobs:
 
       # Get AWS parameters
       - name: Set GITHUB_ACTIONS_SLACK_BOT_TOKEN
-        uses: "marvinpinto/action-inject-ssm-secrets@latest"
+        uses: ./.github/actions/inject-ssm-secrets
         with:
           ssm_parameter: "GITHUB_ACTIONS_SLACK_BOT_TOKEN"
           env_variable_name: "GITHUB_ACTIONS_SLACK_BOT_TOKEN"
 
       - name: Set ASELO_DEPLOYS_CHANNEL_ID
-        uses: "marvinpinto/action-inject-ssm-secrets@latest"
+        uses: ./.github/actions/inject-ssm-secrets
         with:
           ssm_parameter: "ASELO_DEPLOYS_CHANNEL_ID"
           env_variable_name: "ASELO_DEPLOYS_CHANNEL_ID"
 
       - name: Set IP_FIND_API_KEY
-        uses: "marvinpinto/action-inject-ssm-secrets@latest"
+        uses: ./.github/actions/inject-ssm-secrets
         with:
           ssm_parameter: "IP_FIND_API_KEY"
           env_variable_name: "IP_FIND_API_KEY"
 
       - name: Set ACCOUNT_SID
-        uses: "marvinpinto/action-inject-ssm-secrets@latest"
+        uses: ./.github/actions/inject-ssm-secrets
         with:
           ssm_parameter: "/${{ inputs.environment }}/twilio/${{ inputs.helpline_code }}/account_sid"
           env_variable_name: "ACCOUNT_SID"
 
-      - name: Set SERVERLESS_URL
-        uses: "marvinpinto/action-inject-ssm-secrets@latest"
-        with:
-          ssm_parameter: "/${{ inputs.environment }}/serverless/${{ env.ACCOUNT_SID }}/base_url"
-          env_variable_name: "SERVERLESS_URL"
-
       - name: Set RECAPTCHA_KEY
-        uses: "marvinpinto/action-inject-ssm-secrets@latest"
+        uses: ./.github/actions/inject-ssm-secrets
         with:
           ssm_parameter: "/global/google/recaptcha/site_key"
           env_variable_name: "RECAPTCHA_KEY"
 
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v4
-
       - name: Use Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
-          node-version: "18.x"
+          node-version: "22.x"
 
       # Create and fill secret.ts
       - name: Create secret.ts
@@ -225,17 +224,29 @@ jobs:
           DEST_DIR: "webchat/${{ steps.helpline_code.outputs.lowercase }}"
 
       - name: Clear cloudfront cache
+        if: ${{ inputs.invalidate-cache != 'false' }}
         run: |
           CF_DISTRO=$(aws cloudfront list-distributions --query "DistributionList.Items[*].{id:Id,origin:Origins.Items[0].DomainName}[?origin=='assets-${{ inputs.environment }}.tl.techmatters.org.s3-website.us-east-1.amazonaws.com'].id" --output text)
           aws cloudfront create-invalidation --distribution-id $CF_DISTRO --paths /webchat/${{ steps.helpline_code.outputs.lowercase }}/*
-
       # Send Slack notifying success
       - name: Slack Aselo channel
         id: slack
-        uses: slackapi/slack-github-action@v1.14.0
+        uses: slackapi/slack-github-action@v3.0.2
         if: ${{ inputs.send-slack-message != 'false' }}
         with:
-          channel-id: ${{ env.ASELO_DEPLOYS_CHANNEL_ID }}
-          slack-message: "`[WEBCHAT]` Deployment to `${{inputs.helpline_code}}-${{inputs.environment}}` of ${{ github.ref_type }} `${{ github.ref_name }}` requested by `${{ github.triggering_actor }}` completed using workflow '${{ github.workflow }}' with SHA ${{ github.sha }} :rocket:."
-        env:
-          SLACK_BOT_TOKEN: ${{ env.GITHUB_ACTIONS_SLACK_BOT_TOKEN }}
+          method: chat.postMessage
+          token: ${{ env.GITHUB_ACTIONS_SLACK_BOT_TOKEN }}
+          payload: |
+            channel: ${{ env.ASELO_DEPLOYS_CHANNEL_ID }}
+            text: '`[WEBCHAT]` Deployment to `${{inputs.helpline_code}}-${{inputs.environment}}` of ${{ github.ref_type }} `${{ github.ref_name }}` requested by `${{ github.triggering_actor }}` completed using workflow `${{ github.workflow }}` with SHA ${{ github.sha }} :rocket:.'
+      # Update deployment matrix 
+      - name: Update deployment matrix
+        uses: ./.github/actions/deployment-matrix
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_DEFAULT_REGION }}
+          identifier: ${{ inputs.helpline_code }}
+          environment: ${{ inputs.environment}}
+          service_repo: 'webchat'
+          version_tag: ${{ github.ref_name }}

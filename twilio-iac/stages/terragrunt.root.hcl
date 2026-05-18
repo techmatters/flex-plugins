@@ -30,7 +30,7 @@ locals {
   // These are values that will be added to the generated master config that are derived from other locals.
   computed_config = {
     stage              = local.stage
-    environment        = local.environment
+    environment        = lower(local.environment)
     short_environment  = local.short_env_map[local.environment]
     short_helpline     = local.short_helpline
     operating_info_key = local.short_helpline

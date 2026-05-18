@@ -1,0 +1,10 @@
+[
+  {
+    "name": "summary",
+    "label": "Resumen",
+    "type": "textarea",
+    "isPII": false,
+    "rows": 10,
+    "width": 250
+  }
+]

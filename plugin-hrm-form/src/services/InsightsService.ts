@@ -16,8 +16,8 @@
 
 /* eslint-disable camelcase */
 import { cloneDeep, get } from 'lodash';
+import { callTypes, FormValue } from 'hrm-types';
 import {
-  callTypes,
   DefinitionVersion,
   FieldType,
   InsightsFieldSpec,
@@ -26,21 +26,22 @@ import {
   OneToManyConfigSpecs,
   OneToOneConfigSpec,
 } from 'hrm-form-definitions';
+import { parseISO } from 'date-fns';
 
 import { isNonDataCallType } from '../states/validationRules';
-import { formatCategories, mapChannelForInsights } from '../utils';
-import { getDateTime } from '../utils/helpers';
-import { Case, Contact, ContactRawJson, CustomITask, WellKnownCaseSection } from '../types/types';
+import { formatCategories } from '../utils/formatters';
+import { mapChannelForInsights } from '../utils/mappers';
+import { Case, Contact, ContactRawJson, CustomITask } from '../types/types';
 import { getDefinitionVersions, getHrmConfig } from '../hrmConfig';
 import {
   ExternalRecordingInfo,
   ExternalRecordingInfoSuccess,
   isSuccessfulExternalRecordingInfo,
-} from './getExternalRecordingInfo';
+} from './recordingsService';
 import { generateUrl } from './fetchApi';
 import { generateSignedURLPath } from './fetchHrmApi';
 import { shouldSendInsightsData } from '../utils/shouldSendInsightsData';
-import { ApiCaseSection, CaseSectionTypeSpecificData } from './caseSectionService';
+import { ApiCaseSection, CaseSectionTypeSpecificData, FullCaseSection } from './caseSectionService';
 import { CaseStateEntry } from '../states/case/types';
 
 /*
@@ -59,11 +60,11 @@ const delimiter = ';';
 type InsightsUpdateFunction = (
   attributes: TaskAttributes,
   contactForm: Contact,
-  caseForm: CaseStateEntry,
+  caseForm: Pick<CaseStateEntry, 'sections' | 'connectedCase'>,
   savedContact: Contact,
 ) => InsightsAttributes;
 
-const sanitizeInsightsValue = (value: string | boolean) => {
+const sanitizeInsightsValue = (value: FormValue) => {
   if (typeof value === 'string' && value) return value;
 
   if (typeof value === 'boolean') return value.toString();
@@ -126,7 +127,7 @@ const baseUpdates: InsightsUpdateFunction = (
 ): CoreAttributes => {
   const communication_channel = taskAttributes.isContactlessTask
     ? mapChannelForInsights(contactlessTask.channel)
-    : mapChannelForInsights(taskAttributes.channelType);
+    : mapChannelForInsights(taskAttributes.customChannelType || taskAttributes.channelType);
 
   // First add the data we add whether or not there's contact form data
   const coreAttributes: CoreAttributes = {
@@ -169,13 +170,12 @@ const baseUpdates: InsightsUpdateFunction = (
 
 const contactlessTaskUpdates: InsightsUpdateFunction = (
   attributes: TaskAttributes,
-  { rawJson: { contactlessTask } }: Contact,
+  { timeOfContact }: Contact,
 ): InsightsAttributes => {
   if (!attributes.isContactlessTask) {
     return {};
   }
-  const { date, time } = contactlessTask;
-  const dateTime = getDateTime({ date: date as string, time: time as string });
+  const dateTime = parseISO(timeOfContact).getTime();
 
   return {
     conversations: {
@@ -196,34 +196,27 @@ const convertMixedCheckbox = (v: string | boolean): number => {
   return null;
 };
 
-type InsightsCaseForm = {
-  topLevel?: { [key: string]: string };
-  perpetrator?: { [key: string]: string | boolean };
-  incident?: { [key: string]: string | boolean };
-  referral?: { [key: string]: string | boolean };
-  household?: { [key: string]: string | boolean };
-};
+type InsightsCaseForm = Record<string, { [key: string]: string | boolean }>;
 
 const flattenFirstCaseSection = (
-  sections: CaseStateEntry['sections'],
-  section: WellKnownCaseSection,
+  sections: Record<string, FullCaseSection>,
 ): Omit<ApiCaseSection, 'sectionTypeSpecificData'> & CaseSectionTypeSpecificData => {
-  if (sections?.[section] && Object.values(sections[section]).length > 0) {
+  if (sections) {
     /*
      * Flatten out the section object. This can be changed after this is using the
      * customization framework.
      */
-    const sortedList = Object.values(sections[section]).sort(
-      (a, b) => a.eventTimestamp.getTime() - b.createdAt.getTime(),
-    );
-    const { sectionTypeSpecificData, createdAt, updatedAt, eventTimestamp, ...theRest } = sortedList[0];
-    return {
-      ...theRest,
-      createdAt: createdAt.toISOString(),
-      updatedAt: updatedAt?.toISOString(),
-      eventTimestamp: eventTimestamp?.toISOString(),
-      ...sectionTypeSpecificData,
-    };
+    const sortedList = Object.values(sections).sort((a, b) => a.eventTimestamp.getTime() - b.createdAt.getTime());
+    if (sortedList.length) {
+      const { sectionTypeSpecificData, createdAt, updatedAt, eventTimestamp, ...theRest } = sortedList[0];
+      return {
+        ...theRest,
+        createdAt: createdAt.toISOString(),
+        updatedAt: updatedAt?.toISOString(),
+        eventTimestamp: eventTimestamp?.toISOString(),
+        ...sectionTypeSpecificData,
+      };
+    }
   }
   return undefined;
 };
@@ -242,12 +235,9 @@ const convertCaseFormForInsights = (caseForm: Case, sections: CaseStateEntry['se
     twilioWorkerId: caseForm.twilioWorkerId,
   };
   try {
-    const perpetrator = flattenFirstCaseSection(sections, 'perpetrator');
-    delete perpetrator?.name;
-    delete perpetrator?.location;
-    const incident = flattenFirstCaseSection(sections, 'incident');
-    const referral = flattenFirstCaseSection(sections, 'referral');
-    const household = flattenFirstCaseSection(sections, 'household');
+    const flattenedSectionEntries = Object.entries(sections).map(
+      ([sectionTypeName, sectionsForType]) => [sectionTypeName, flattenFirstCaseSection(sectionsForType)] as const,
+    );
     const topLevel = {
       id: caseForm.id.toString(),
     };
@@ -255,11 +245,8 @@ const convertCaseFormForInsights = (caseForm: Case, sections: CaseStateEntry['se
     console.warn(`[InsightsService] converting case form:`, logObject);
 
     return {
+      ...Object.fromEntries(flattenedSectionEntries),
       topLevel,
-      perpetrator,
-      incident,
-      household,
-      referral,
     };
   } catch (error) {
     logObject.message = error;
@@ -270,7 +257,7 @@ const convertCaseFormForInsights = (caseForm: Case, sections: CaseStateEntry['se
 
 const processHelplineConfig = (
   contact: Contact,
-  caseState: CaseStateEntry,
+  caseState: Pick<CaseStateEntry, 'sections' | 'connectedCase'>,
   oneToOneConfigSpec: OneToOneConfigSpec,
 ): InsightsAttributes => {
   const { connectedCase: caseForm, sections } = caseState ?? {};
@@ -427,7 +414,7 @@ const generateUrlProviderBlock = (externalRecordingInfo: ExternalRecordingInfoSu
 export const buildInsightsData = (
   task: CustomITask,
   contact: Contact,
-  caseState: CaseStateEntry,
+  caseState: Pick<CaseStateEntry, 'sections' | 'connectedCase'>,
   savedContact: Contact,
   externalRecordingInfo?: ExternalRecordingInfo,
 ) => {

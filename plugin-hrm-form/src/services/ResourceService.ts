@@ -17,7 +17,7 @@
  */
 import fetchResourceApi from './fetchResourcesApi';
 import { getReferrableResourceConfig } from '../hrmConfig';
-import { TaxonomyLevelNameCompletion } from '../states/resources/search';
+import { SuggestSearch } from '../states/resources/search';
 
 export type AttributeData<T = any> = {
   language?: string;
@@ -29,16 +29,23 @@ export type Attributes = {
   [key: string]: AttributeData[] | Attributes;
 };
 
-export type ReferrableResourceAttributeValue =
-  | string
-  | string[]
-  | { id: string; value: string }[]
-  | { info: string; value: string; language: string }[];
-
 export type ReferrableResource = {
   id: string;
   name: string;
   attributes: Record<string, Attributes>;
+};
+
+export type ListAttributeStringValue = {
+  value: string;
+  info: any;
+  language: string;
+};
+
+export type ReferenceAttributeStringValue = {
+  value: string;
+  id: string;
+  info: any;
+  language: string;
 };
 
 export const referrableResourcesEnabled = () => Boolean(getReferrableResourceConfig().resourcesBaseUrl);
@@ -67,6 +74,35 @@ export const searchResources = async (
   };
 };
 
-export const suggestSearch = async (prefix: string): Promise<TaxonomyLevelNameCompletion> => {
+export const suggestSearch = async (prefix: string): Promise<SuggestSearch['suggestions']> => {
   return fetchResourceApi(`suggest?prefix=${prefix}`);
+};
+
+const convertObjectToQueryString = (input: Record<string, any>): string => {
+  const queryItems = Object.entries(input).filter(([, value]) => value);
+  return queryItems.map(([k, v]) => `${k}=${v}`).join('&');
+};
+
+export const getReferenceAttributeList = async (
+  list: string,
+  language?: string,
+  valueStartsWith?: string,
+): Promise<ReferenceAttributeStringValue[]> => {
+  // Lists can contain slashes, as soon as HRM v1.42.0 is deployed
+  return fetchResourceApi(
+    `reference-attributes/${encodeURIComponent(list)}?${convertObjectToQueryString({ valueStartsWith, language })}`,
+  );
+};
+
+export const getDistinctStringAttributes = async ({
+  key,
+  language,
+  valueStartsWith,
+}: {
+  key: string;
+  language?: string;
+  valueStartsWith?: string;
+}): Promise<ListAttributeStringValue[]> => {
+  // Keys can contain slashes, it's ok for them to be more path sections
+  return fetchResourceApi(`list-string-attributes/${key}?${convertObjectToQueryString({ valueStartsWith, language })}`);
 };

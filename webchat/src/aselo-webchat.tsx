@@ -184,7 +184,7 @@ export const initWebchat = async () => {
 
   // Hide message input and send button if disabledReason is not undefined
   FlexWebChat.MessageInput.Content.remove('textarea', {
-    if: (props) => (manager.chatClient.user.attributes as any).lockInput,
+    if: () => (manager.chatClient.user.attributes as any).lockInput,
   });
 
   // Hide first message ("AutoFirstMessage", sent to create a new task)

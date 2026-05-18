@@ -17,7 +17,11 @@
 import { createAction, createAsyncAction, createReducer } from 'redux-promise-middleware-actions';
 
 import { ReferrableResource, searchResources, suggestSearch } from '../../services/ResourceService';
-import { cityOptions, provinceOptions } from './locations';
+import { loadReferenceLocationsAsyncAction, ReferenceLocationState } from './referenceLocations';
+import { FilterOption } from './types';
+import { getFilterSelectionState } from '../../components/resources/mappingComponents';
+import { RootState } from '..';
+import { namespace } from '../storeNamespaces';
 
 export type SearchSettings = Omit<Partial<ReferrableResourceSearchState['parameters']>, 'filterSelections'> & {
   filterSelections?: Partial<ReferrableResourceSearchState['parameters']['filterSelections']>;
@@ -42,38 +46,18 @@ export enum ResourceSearchStatus {
   Error,
 }
 
-export type FilterOption<T extends string | number = string> = { value: T; label?: string };
+type FilterSelections = {
+  [filter: string]: number | string | boolean | string[];
+};
 
-const minAgeOptions: FilterOption<number>[] = [
-  { label: '0', value: undefined },
-  ...Array.from({ length: 30 }, (_, i) => i + 1).map(age => ({ value: age })),
-];
-
-const maxAgeOptions: FilterOption<number>[] = [
-  ...Array.from({ length: 30 }, (_, i) => i).map(age => ({ value: age })),
-  { value: undefined, label: '30+' },
-];
 export type ReferrableResourceSearchState = {
-  // eslint-disable-next-line prettier/prettier
+  referenceLocations: ReferenceLocationState;
   filterOptions: {
-    feeStructure: FilterOption[];
-    howServiceIsOffered: FilterOption[];
-    province: FilterOption[];
-    city?: FilterOption[];
-    minEligibleAge: FilterOption<number>[];
-    maxEligibleAge: FilterOption<number>[];
+    [filter: string]: FilterOption<string | number>[];
   };
   parameters: {
     generalSearchTerm: string;
-    filterSelections: {
-      city?: string;
-      province?: string;
-      interpretationTranslationServicesAvailable?: true;
-      minEligibleAge?: number;
-      maxEligibleAge?: number;
-      feeStructure?: string[];
-      howServiceIsOffered?: string[];
-    };
+    filterSelections: FilterSelections;
     pageSize: number;
   };
   currentPage: number;
@@ -83,36 +67,24 @@ export type ReferrableResourceSearchState = {
   error?: Error;
 };
 
-export type TaxonomyLevelNameCompletion = {
-  taxonomyLevelNameCompletion: Array<{
-    text: string;
-    score: number;
-  }>;
+export type SuggestSearch = {
+  status: ResourceSearchStatus;
+  suggestions: {
+    [completionKey: string]: Array<{
+      text: string;
+      score: number;
+    }>;
+  };
 };
 
-export const suggestSearchInitialState: TaxonomyLevelNameCompletion = {
-  taxonomyLevelNameCompletion: [],
+export const suggestSearchInitialState: SuggestSearch = {
+  status: ResourceSearchStatus.NotSearched,
+  suggestions: {},
 };
-
-const allCities: FilterOption[] = [{ label: '', value: undefined }, ...cityOptions];
 
 export const initialState: ReferrableResourceSearchState = {
-  filterOptions: {
-    feeStructure: [
-      { value: 'Free' },
-      { value: 'Cost Unknown' },
-      { value: 'Membership Fee' },
-      { value: 'Cost for Service' },
-      { value: 'Sliding Scale' },
-      { value: 'One Time Small Fee' },
-      { value: 'Covered by Health Insurance' },
-    ],
-    howServiceIsOffered: [{ value: 'In-person Support' }, { value: 'Online Support' }, { value: 'Phone Support' }],
-    province: [{ label: '', value: undefined }, ...provinceOptions],
-    city: [],
-    minEligibleAge: minAgeOptions,
-    maxEligibleAge: maxAgeOptions,
-  },
+  referenceLocations: {},
+  filterOptions: {},
   parameters: {
     filterSelections: {},
     generalSearchTerm: '',
@@ -171,7 +143,6 @@ export const searchResourceAsyncAction = createAsyncAction(
 export const sanitizeInputForSuggestions = (input: string): string =>
   input.trim().replaceAll(/"/g, '').toLocaleLowerCase();
 
-// eslint-disable-next-line import/no-unused-modules
 export const suggestSearchAsyncAction = createAsyncAction(SUGGEST_ACTION, async (prefix: string) => {
   return { ...(await suggestSearch(sanitizeInputForSuggestions(prefix))) };
 });
@@ -182,43 +153,6 @@ export const suggestSearchAsyncAction = createAsyncAction(SUGGEST_ACTION, async 
  * (most users don't care about much beyond the 10th search result)
  */
 const HARD_SEARCH_RESULT_LIMIT = 10000;
-
-const getFilterOptionsBasedOnSelections = (
-  filterSelections: ReferrableResourceSearchState['parameters']['filterSelections'],
-): ReferrableResourceSearchState['filterOptions'] => {
-  return {
-    ...initialState.filterOptions,
-    minEligibleAge: minAgeOptions.filter(opt => {
-      const maxSelection = filterSelections.maxEligibleAge ?? 1000;
-      return opt.value === undefined || opt.value <= maxSelection;
-    }),
-    maxEligibleAge: maxAgeOptions.filter(opt => {
-      const minSelection = filterSelections.minEligibleAge ?? 0;
-      return opt.value === undefined || opt.value >= minSelection;
-    }),
-    city: allCities.filter(
-      ({ value }) => filterSelections.province && (!value || value.startsWith(filterSelections.province)),
-    ),
-  };
-};
-
-const ensureFilterSelectionsAreValid = (
-  filterSelections: ReferrableResourceSearchState['parameters']['filterSelections'],
-  filterOptions: ReferrableResourceSearchState['filterOptions'],
-): ReferrableResourceSearchState['parameters']['filterSelections'] => {
-  return {
-    // Don't add undefined values to the filter selections
-    ...Object.fromEntries(
-      Object.entries({
-        ...filterSelections,
-        minEligibleAge: filterOptions.minEligibleAge.find(opt => opt.value === filterSelections.minEligibleAge)?.value,
-        maxEligibleAge: filterOptions.maxEligibleAge.find(opt => opt.value === filterSelections.maxEligibleAge)?.value,
-        province: filterOptions.province.find(opt => opt.value === filterSelections.province)?.value,
-        city: filterOptions.city.find(opt => opt.value === filterSelections.city)?.value,
-      }).filter(([, value]) => value !== undefined),
-    ),
-  };
-};
 
 const rejectedAsyncAction = (handleAction, asyncAction) =>
   handleAction(asyncAction, (state, { payload }) => {
@@ -233,7 +167,7 @@ export const suggestSearchReducer = createReducer(suggestSearchInitialState, han
   handleAction(suggestSearchAsyncAction.pending, state => {
     return {
       ...state,
-      taxonomyLevelNameCompletion: [],
+      suggestions: {},
       status: ResourceSearchStatus.ResultPending,
     };
   }),
@@ -241,7 +175,10 @@ export const suggestSearchReducer = createReducer(suggestSearchInitialState, han
   handleAction(suggestSearchAsyncAction.fulfilled, (state, { payload }) => {
     return {
       ...state,
-      taxonomyLevelNameCompletion: payload.taxonomyLevelNameCompletion,
+      suggestions: {
+        ...state.suggestions,
+        ...payload,
+      },
       status: ResourceSearchStatus.ResultReceived,
     };
   }),
@@ -252,7 +189,7 @@ export const suggestSearchReducer = createReducer(suggestSearchInitialState, han
 export const resourceSearchReducer = createReducer(initialState, handleAction => [
   /*
    * Cast is a workaround for https://github.com/omichelsen/redux-promise-middleware-actions/issues/13
-   * TODO: create a generalised type to put meta property back into all 3 actions for any async action set
+   * TODO: create a generalized type to put meta property back into all 3 actions for any async action set
    */
   handleAction(searchResourceAsyncAction.pending as typeof searchResourceAsyncAction, (state, action) => {
     return {
@@ -280,25 +217,6 @@ export const resourceSearchReducer = createReducer(initialState, handleAction =>
 
   rejectedAsyncAction(handleAction, searchResourceAsyncAction.rejected),
 
-  handleAction(updateSearchFormAction, (state, { payload }) => {
-    const updatedFilterOptions = getFilterOptionsBasedOnSelections({
-      ...state.parameters.filterSelections,
-      ...(payload.filterSelections ?? {}),
-    });
-    const validatedFilterSelections = ensureFilterSelectionsAreValid(
-      { ...state.parameters.filterSelections, ...payload.filterSelections },
-      updatedFilterOptions,
-    );
-    return {
-      ...state,
-      filterOptions: updatedFilterOptions,
-      parameters: {
-        ...state.parameters,
-        ...payload,
-        filterSelections: validatedFilterSelections,
-      },
-    };
-  }),
   handleAction(resetSearchFormAction, state => {
     return {
       ...state,
@@ -318,13 +236,38 @@ export const resourceSearchReducer = createReducer(initialState, handleAction =>
       currentPage: 0,
     };
   }),
+  handleAction(updateSearchFormAction, (...params) =>
+    getFilterSelectionState().handlerUpdateSearchFormAction(...params),
+  ),
+  handleAction(loadReferenceLocationsAsyncAction.fulfilled, (...params) =>
+    getFilterSelectionState().handleLoadReferenceLocationsAsyncActionFulfilled(...params),
+  ),
 ]);
 
-export const getCurrentPageResults = ({
-  results,
-  currentPage,
-  parameters: { pageSize },
-}: ReferrableResourceSearchState) => results.slice(currentPage * pageSize, (currentPage + 1) * pageSize);
+const selectSearchState = (state: RootState): ReferrableResourceSearchState =>
+  state[namespace].referrableResources.search;
 
-export const getPageCount = ({ results, parameters: { pageSize } }: ReferrableResourceSearchState) =>
-  Math.ceil(results.length / pageSize);
+export const selectResourceSearchCurrentPageResults = (state: RootState) => {
+  const {
+    results,
+    currentPage,
+    parameters: { pageSize },
+  } = state[namespace].referrableResources.search;
+  return results.slice(currentPage * pageSize, (currentPage + 1) * pageSize);
+};
+
+export const selectFilterSelections = (state: RootState): FilterSelections =>
+  selectSearchState(state).parameters.filterSelections;
+
+export const selectResourceSearchPageCount = (state: RootState) => {
+  const {
+    results,
+    parameters: { pageSize },
+  } = selectSearchState(state);
+  return Math.ceil(results.length / pageSize);
+};
+
+export const selectResourceSearchError = (state: RootState) => selectSearchState(state).error;
+export const selectResourceSearchCurrentPage = (state: RootState) => selectSearchState(state).currentPage;
+export const selectResourceSearchParameters = (state: RootState) => selectSearchState(state).parameters;
+export const selectResourceSearchResultsTotal = (state: RootState) => selectSearchState(state).results.length;

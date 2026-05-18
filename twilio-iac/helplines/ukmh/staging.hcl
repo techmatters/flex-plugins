@@ -1,0 +1,37 @@
+locals {
+  common_config_hcl = read_terragrunt_config("common.hcl")
+  common_config     = local.common_config_hcl.locals.config
+  config            = merge(local.common_config, local.local_config)
+
+  local_config = {
+    enable_post_survey                    = true
+    enable_datadog_monitoring             = false
+    custom_task_routing_filter_expression = "channelType IN ['web','chat']"
+    use_prepopulate_mappings              = true
+
+    #Studio flow
+    flow_vars = {
+      widget_from          = "MHI"
+      chat_blocked_message = "Hi, you've been blocked from accessing our services and we are not able to read or receive further messages from you."
+    }
+
+    channels = {
+      webchat : {
+        channel_type         = "web"
+        contact_identity     = ""
+        templatefile         = "/app/twilio-iac/helplines/ukmh/templates/studio-flows/messaging-greeting-message-blocking.tftpl"
+        channel_flow_vars    = {}
+        chatbot_unique_names = []
+      },
+      chat : {
+        channel_type         = "chat"
+        messaging_mode = "conversations"
+        contact_identity     = ""
+        templatefile         = "/app/twilio-iac/helplines/ukmh/templates/studio-flows/messaging-greeting-message-blocking-conv.tftpl"
+        channel_flow_vars    = {}
+        chatbot_unique_names = []
+      }
+    }
+    get_profile_flags_for_identifier_base_url = "https://hrm-staging-eu.tl.techmatters.org/lambda/twilio/account-scoped"
+  }
+}

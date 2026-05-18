@@ -15,47 +15,44 @@
  */
 
 /* eslint-disable sonarjs/prefer-immediate-return */
-import { DefinitionVersionId } from 'hrm-form-definitions';
-
+import type { ApiSearchParams } from '../states/search/types';
+import type { Case, CaseOverview, Contact, SearchCaseResult } from '../types/types';
+import type { FetchOptions } from './fetchApi';
+import type { GenericTimelineActivity } from '../states/case/types';
 import { fetchHrmApi } from './fetchHrmApi';
 import { getQueryParams } from './PaginationParams';
-import { Case, CaseOverview, Contact, SearchCaseResult, WellKnownCaseSection } from '../types/types';
-import { FetchOptions } from './fetchApi';
-import { GenericTimelineActivity } from '../states/case/types';
 import { convertApiCaseSectionToCaseSection, FullGenericCaseSection } from './caseSectionService';
-import { convertApiContactToFlexContact } from './ContactService';
 
-type ApiCase = Omit<Case, 'firstContact'> & { connectedContacts: Contact[] };
-
-const convertApiCaseToFlexCase = (apiCase: ApiCase): Case => {
-  if (!apiCase) {
-    return apiCase;
-  }
-  const { connectedContacts, ...withoutConnectedContacts } = apiCase;
-  const firstContact = connectedContacts?.[0];
-  return {
-    ...(firstContact ? { firstContact: convertApiContactToFlexContact(firstContact) } : {}),
-    ...withoutConnectedContacts,
-    id: apiCase.id.toString(), // coerce to string type, can be removed once API is aligned
-  };
-};
-
-export async function createCase(contact: Contact, creatingWorkerSid: string, definitionVersion: DefinitionVersionId) {
+const convertApiCaseToFlexCase = (apiCase: Case): Case => ({
+  ...apiCase,
+  id: apiCase.id.toString(), // coerce to string type, can be removed once API is aligned
+});
+export const getCasePayload = (contact: Contact, creatingWorkerSid: string, definitionVersion: string) => {
   const { helpline, rawJson: contactForm } = contact;
+  const label =
+    `${contactForm.childInformation.firstName || ''} ${contactForm.childInformation.lastName || ''}`.trim() || null;
 
-  const caseRecord = contactForm.contactlessTask?.createdOnBehalfOf
+  return contactForm.contactlessTask?.createdOnBehalfOf
     ? {
         helpline,
         status: 'open',
         twilioWorkerId: contactForm.contactlessTask.createdOnBehalfOf,
         info: { definitionVersion, offlineContactCreator: creatingWorkerSid },
+        definitionVersion,
+        label,
       }
     : {
         helpline,
         status: 'open',
         twilioWorkerId: creatingWorkerSid,
         info: { definitionVersion },
+        definitionVersion,
+        label,
       };
+};
+
+export async function createCase(contact: Contact, creatingWorkerSid: string, definitionVersion: string) {
+  const caseRecord = getCasePayload(contact, creatingWorkerSid, definitionVersion);
 
   const options = {
     method: 'POST',
@@ -96,7 +93,7 @@ export async function getCase(caseId: Case['id']): Promise<Case> {
     method: 'GET',
     returnNullFor404: true,
   };
-  const fromApi: ApiCase = await fetchHrmApi(`/cases/${caseId}`, options);
+  const fromApi: Case = await fetchHrmApi(`/cases/${caseId}`, options);
   return convertApiCaseToFlexCase(fromApi);
 }
 
@@ -110,13 +107,9 @@ const isApiCaseSectionTimelineActivity = (
 ): activity is GenericTimelineActivity<FullGenericCaseSection<string>, string> =>
   activity.activityType === 'case-section';
 
-const isApiContactTimelineActivity = (
-  activity: GenericTimelineActivity<any, string>,
-): activity is GenericTimelineActivity<Contact, string> => activity.activityType === 'contact';
-
 export async function getCaseTimeline(
   caseId: Case['id'],
-  sectionTypes: WellKnownCaseSection[],
+  sectionTypes: string[],
   includeContacts: boolean,
   paginationSettings: { offset: number; limit: number },
 ): Promise<TimelineResult<Date>> {
@@ -130,14 +123,13 @@ export async function getCaseTimeline(
     )}`,
     options,
   );
+
   return {
     ...rawResult,
     activities: rawResult.activities.map(timelineActivity => {
       let { activity } = timelineActivity;
       if (isApiCaseSectionTimelineActivity(timelineActivity)) {
         activity = convertApiCaseSectionToCaseSection(activity);
-      } else if (isApiContactTimelineActivity(timelineActivity)) {
-        activity = convertApiContactToFlexContact(activity);
       }
       return {
         ...timelineActivity,
@@ -146,10 +138,6 @@ export async function getCaseTimeline(
       };
     }),
   };
-}
-
-export async function searchCases(searchParams, limit, offset): Promise<SearchCaseResult> {
-  return listCases({ limit, offset }, searchParams);
 }
 
 export async function listCases(queryParams, listCasesPayload): Promise<SearchCaseResult> {
@@ -161,6 +149,30 @@ export async function listCases(queryParams, listCasesPayload): Promise<SearchCa
   };
 
   const fromApi: SearchCaseResult = await fetchHrmApi(`/cases/search${queryParamsString}`, options);
+
+  return {
+    ...fromApi,
+    cases: fromApi.cases.map(convertApiCaseToFlexCase),
+  };
+}
+
+export async function searchCases({
+  searchParameters,
+  limit,
+  offset,
+}: {
+  searchParameters: ApiSearchParams;
+  limit: number;
+  offset: number;
+}): Promise<SearchCaseResult> {
+  const queryParamsString = getQueryParams({ limit, offset });
+
+  const options = {
+    method: 'POST',
+    body: JSON.stringify({ searchParameters }),
+  };
+
+  const fromApi: SearchCaseResult = await fetchHrmApi(`/cases/generalizedSearch${queryParamsString}`, options);
 
   return {
     ...fromApi,

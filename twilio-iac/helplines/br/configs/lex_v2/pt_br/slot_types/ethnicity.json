@@ -1,0 +1,81 @@
+{
+    "slotTypeName": "ethnicity",
+    "slotTypeValues": [
+        {
+            "sampleValue": {
+                "value": "Desconhecido"
+            },
+            "synonyms": [
+                {
+                    "value": "Preferia não dizer"
+                },
+                {
+                    "value": "X"
+                },
+                {
+                    "value": "Gostaria de não dizer"
+                },
+                {
+                    "value": "prefiro não responder"
+                },
+                {
+                    "value": "prefiro não"
+                }
+            ]
+        },
+        {
+            "sampleValue": {
+                "value": "Parda"
+            },
+            "synonyms": [
+                {
+                    "value": "Pardo"
+                }
+            ]
+        },
+        {
+            "sampleValue": {
+                "value": "Indígena"
+            },
+            "synonyms": [
+                {
+                    "value": "Indigenous"
+                }
+            ]
+        },
+        {
+            "sampleValue": {
+                "value": "Preta"
+            },
+            "synonyms": [
+                {
+                    "value": "Preto"
+                }
+            ]
+        },
+        {
+            "sampleValue": {
+                "value": "Amarela"
+            },
+            "synonyms": [
+                {
+                    "value": "Amarelo"
+                }
+            ]
+        },
+        {
+            "sampleValue": {
+                "value": "Branca"
+            },
+            "synonyms": [
+                {
+                    "value": "Branco"
+                }
+            ]
+        }
+
+    ],
+    "valueSelectionSetting": {
+        "resolutionStrategy": "TopResolution"
+    }
+}

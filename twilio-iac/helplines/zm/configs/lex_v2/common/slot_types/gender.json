@@ -1,0 +1,318 @@
+{
+    "slotTypeName": "gender",
+    "slotTypeValues": [
+      {
+        "sampleValue": {
+          "value": "Unknown"
+        },
+        "synonyms": [
+          {
+            "value": "X"
+          },
+          {
+            "value": "prefer not to"
+          },
+          {
+            "value": "prefer not"
+          },
+          {
+            "value": "none of your business"
+          },
+          {
+            "value": "prefer not to answer"
+          }
+        ]
+      },
+      {
+        "sampleValue": {
+          "value": "Non-Binary"
+        },
+        "synonyms": [
+          {
+            "value": "blonse biywanga pamo"
+          },
+          {
+            "value": "kimazwi afi a bunolo a yitusisizwe mwa ngambolo"
+          },
+          {
+            "value": "blonse biywanga pamo"
+          },
+          {
+            "value": "zonse zigwiritsana"
+          },
+          {
+            "value": "Yakazhima yina dikwatishi"
+          },
+          {
+            "value": "nb"
+          },
+          {
+            "value": "agender"
+          },
+          {
+            "value": "nonbinary"
+          }
+        ]
+      },
+      {
+        "sampleValue": {
+          "value": "Girl"
+        },
+        "synonyms": [
+          {
+            "value": "kazhi"
+          },
+          {
+            "value": "woman"
+          },
+          {
+            "value": "female"
+          },
+          {
+            "value": "wamukazhi"
+          },
+          {
+            "value": "inetu"
+          },
+          {
+            "value": "wamukazhi inetu"
+          },
+          {
+            "value": "nsongwa kazhi"
+          },
+          {
+            "value": "wa musali"
+          },
+          {
+            "value": "Musali wa muna"
+          },
+          {
+            "value": "Musizana"
+          },
+          {
+            "value": "kazhi"
+          },
+          {
+            "value": "woman"
+          },
+          {
+            "value": "female"
+          },
+          {
+            "value": "wamukazhi"
+          },
+          {
+            "value": "inetu"
+          },
+          {
+            "value": "wamukazhi inetu"
+          },
+          {
+            "value": "nsongwa kazhi"
+          },
+          {
+            "value": "m'tsikana"
+          },
+          {
+            "value": "woman"
+          },
+          {
+            "value": "female"
+          },
+          {
+            "value": "mkazi"
+          },
+          {
+            "value": "Mtsikana"
+          },
+          {
+            "value": "mukamama"
+          },
+          {
+            "value": "mukulumpi"
+          },
+          {
+            "value": "wamumbanda"
+          },
+          {
+            "value": "kansi wamumbanda"
+          },
+          {
+            "value": "mwanakasi"
+          },
+          {
+            "value": "mulibasimbi"
+          },
+          {
+            "value": "mukaintu"
+          },
+          {
+            "value": "musimbi"
+          },
+          {
+            "value": "banakashi"
+          },
+          {
+            "value": "umwankashi"
+          },
+          {
+            "value": "Umwanakashi"
+          },
+          {
+            "value": "namayo"
+          },
+          {
+            "value": "Umukashana"
+          },
+          {
+            "value": "g"
+          },
+          {
+            "value": "females"
+          },
+          {
+            "value": "lady"
+          },
+          {
+            "value": "f"
+          },
+          {
+            "value": "w"
+          }
+        ]
+      },
+      {
+        "sampleValue": {
+          "value": "Boy"
+        },
+        "synonyms": [
+          {
+            "value": "lume"
+          },
+          {
+            "value": "shetu"
+          },
+          {
+            "value": "kwamba"
+          },
+          {
+            "value": "mwakonsha"
+          },
+          {
+            "value": "mukwipipisha"
+          },
+          {
+            "value": "mwakonsha kwamba"
+          },
+          {
+            "value": "wamulume shetu"
+          },
+          {
+            "value": "nsogwa lume"
+          },
+          {
+            "value": "muna"
+          },
+          {
+            "value": "mushimani"
+          },
+          {
+            "value": "lume"
+          },
+          {
+            "value": "shetu"
+          },
+          {
+            "value": "kwamba"
+          },
+          {
+            "value": "mwakonsha"
+          },
+          {
+            "value": "mukwipipisha"
+          },
+          {
+            "value": "mwakonsha kwamba"
+          },
+          {
+            "value": "wamulume shetu"
+          },
+          {
+            "value": "nsogwa lume"
+          },
+          {
+            "value": "mnyamata"
+          },
+          {
+            "value": "male"
+          },
+          {
+            "value": "man"
+          },
+          {
+            "value": "mukwihihisha"
+          },
+          {
+            "value": "kuzatisha mazu"
+          },
+          {
+            "value": "munachweshi"
+          },
+          {
+            "value": "mukatata"
+          },
+          {
+            "value": "mukulumpi weyala"
+          },
+          {
+            "value": "kansi weyala"
+          },
+          {
+            "value": "ndimusankwa"
+          },
+          {
+            "value": "mulombe"
+          },
+          {
+            "value": "Mulibasankwa"
+          },
+          {
+            "value": "mwaalumi"
+          },
+          {
+            "value": "musankwa"
+          },
+          {
+            "value": "baume"
+          },
+          {
+            "value": "Umwaume"
+          },
+          {
+            "value": "Shibantu"
+          },
+          {
+            "value": "Umulumendo"
+          },
+          {
+            "value": "b"
+          },
+          {
+            "value": "males"
+          },
+          {
+            "value": "dude"
+          },
+          {
+            "value": "guy"
+          },
+          {
+            "value": "m"
+          }
+        ]
+      }
+    ],
+    "valueSelectionSetting": {
+      "resolutionStrategy": "TopResolution"
+    }
+  }

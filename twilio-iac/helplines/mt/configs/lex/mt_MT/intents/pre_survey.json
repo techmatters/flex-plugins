@@ -8,7 +8,7 @@
       "type": "ReturnIntent"
     },
     "conclusion_statement": {
-      "content": "Ha nittrasferuk lil wieħed Proffesjonist/a tagħna.",
+      "content": "Grazzi talli kkuntatjajtna. Bħalissa qed ngħinu klijenti oħra, iżda aħna se nagħmlu l-almu tagħna biex nirrisponduk fl-iqsar ħin possibli. Jekk jogħġbok stenna għall-assistenza. Jekk din hija emerġenza, ikkuntattja lill-112, sakemm inkunu f'pożizzjoni li ngħinuk.",
       "content_type": "PlainText"
     },
     "rejection_statement": {

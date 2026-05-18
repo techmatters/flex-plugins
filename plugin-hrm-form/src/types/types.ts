@@ -16,12 +16,14 @@
 
 /* eslint-disable import/no-unused-modules */
 import type { ITask as ITaskOriginalType, TaskContextProps as TaskContextPropsOriginalType } from '@twilio/flex-ui';
-import type { CallTypes, DefinitionVersionId } from 'hrm-form-definitions';
+import type { HrmContactRawJson } from 'hrm-types';
 
 import type { ChannelTypes } from '../states/DomainConstants';
 import type { ResourceReferral } from '../states/contacts/resourceReferral';
 import { DateFilterValue } from '../states/caseList/dateFilters';
 import { AccountSID, TaskSID, WorkerSID } from './twilio';
+
+export type { HrmContactRawJson as ContactRawJson } from 'hrm-types';
 
 declare global {
   export interface ITask<T = Record<string, any>> extends ITaskOriginalType<T> {
@@ -42,28 +44,6 @@ export type EntryInfo = {
 
 export type CaseItemFormValues = { [key: string]: string | boolean };
 
-export type CaseItemEntry = { form: CaseItemFormValues } & EntryInfo;
-
-export type Household = { [key: string]: string | boolean };
-
-export type Perpetrator = { [key: string]: string | boolean };
-
-export type Incident = { [key: string]: string | boolean };
-
-export type IncidentEntry = { incident: Incident } & EntryInfo;
-
-export type Note = { [key: string]: string | boolean };
-
-export type NoteEntry = Note & EntryInfo;
-
-export type Referral = { date: string; referredTo: string; [key: string]: string | boolean };
-
-export type ReferralEntry = Referral & EntryInfo;
-
-export type Document = { [key: string]: string | boolean };
-
-export type DocumentEntry = { document: Document; id: string | undefined } & EntryInfo;
-
 export type CSAMReportEntry = {
   csamReportId: string;
   id: number;
@@ -73,22 +53,22 @@ export type CSAMReportEntry = {
 } & Omit<EntryInfo, 'id'>;
 
 export type CaseOverview = {
-
   followUpDate?: string;
   childIsAtRisk?: boolean;
   summary?: string;
+  [key: string]: any;
 }
 
 export type CaseInfo = CaseOverview & {
-  definitionVersion?: DefinitionVersionId;
+  definitionVersion?: string;
   offlineContactCreator?: string;
 };
-
-export type WellKnownCaseSection = 'note' | 'referral' | 'household' | 'perpetrator' | 'incident' | 'document';
 
 export type Case = {
   accountSid: AccountSID;
   id: string;
+  definitionVersion: string;
+  label: string;
   status: string;
   helpline: string;
   twilioWorkerId: WorkerSID;
@@ -99,9 +79,6 @@ export type Case = {
   statusUpdatedAt?: string;
   statusUpdatedBy?: WorkerSID;
   previousStatus?: string;
-  categories: Record<string, string[]>;
-  firstContact?: Contact;
-
 };
 
 export type TwilioStoredMedia = {
@@ -146,9 +123,6 @@ export type S3StoredRecording = {
 
 export type S3StoredMedia = S3StoredTranscript | S3StoredRecording;
 
-// Extract the 'type' property from S3StoredMedia to create ContactMediaType
-export type ContactMediaType = S3StoredMedia['storeTypeSpecificData']['type'];
-
 export type ConversationMedia = TwilioStoredMedia | S3StoredMedia;
 
 export const isTwilioStoredMedia = (m: ConversationMedia): m is TwilioStoredMedia => m.storeType === 'twilio';
@@ -156,23 +130,6 @@ export const isS3StoredTranscript = (m: ConversationMedia): m is S3StoredTranscr
   m.storeType === 'S3' && m.storeTypeSpecificData.type === 'transcript';
 export const isS3StoredRecording = (m: ConversationMedia): m is S3StoredRecording =>
   m.storeType === 'S3' && m.storeTypeSpecificData.type === 'recording';
-
-// Information about a single contact, as expected from DB (we might want to reuse this type in backend) - (is this a correct placement for this?)
-export type ContactRawJson = {
-  definitionVersion?: DefinitionVersionId;
-  callType: CallTypes | '';
-  childInformation: Record<string, boolean | string>;
-  callerInformation: Record<string, boolean | string>;
-  caseInformation: Record<string, boolean | string>;
-  categories: Record<string, string[]>;
-  contactlessTask: {
-    channel: ChannelTypes;
-    date: string;
-    time: string;
-    createdOnBehalfOf: WorkerSID;
-    [key: string]: string | boolean;
-  };
-};
 
 export type Contact = {
   id: string;
@@ -187,17 +144,20 @@ export type Contact = {
   createdBy: string;
   helpline: string;
   taskId: TaskSID;
+  // taskReservationSid: string;
   profileId: Profile['id'] | null;
+  identifierId: Identifier['id'] | null;
   channel: ChannelTypes | 'default';
   updatedBy: string;
   updatedAt?: string;
   finalizedAt?: string;
-  rawJson: ContactRawJson;
+  rawJson: HrmContactRawJson;
   timeOfContact: string;
   queueName: string;
   channelSid: string;
   serviceSid: string;
   caseId?: string;
+  definitionVersion: string;
 };
 
 
@@ -215,7 +175,7 @@ export enum ListCasesSortBy {
   ID = 'id',
   CREATED_AT = 'createdAt',
   UPDATED_AT = 'updatedAt',
-  CHILD_NAME = 'childName',
+  LABEL = 'label',
   FOLLOW_UP_DATE = 'info.followUpDate',
 }
 
@@ -249,74 +209,12 @@ export type ListCasesFilters = {
   updatedAt?: DateFilterValue;
   followUpDate?: DateFilterValue;
   categories?: CategoryFilter[];
+  caseInfoFilters?: Record<string, string[] | DateFilterValue>;
 };
 
 export type CounselorHash = {
   [sid: string]: string;
 };
-
-export type ConfigFlags = {
-  enableExternalRecordings: boolean;
-  enableUnmaskingCalls: boolean;
-};
-
-/* eslint-disable camelcase */
-export type FeatureFlags = {
-  // Please keep this in alphabetical order!
-  backend_handled_chat_janitor: boolean; // [Temporary flag until all accounts are migrated] Enables handling the janitor from taskrouter event listeners
-  enable_aselo_messaging_ui: boolean; // Enables Aselo Messaging UI iinstead of the default Twilio one - reduced functionality for low spec clients.
-  enable_canned_responses: boolean; // Enables Canned Responses
-  enable_case_merging: boolean; // Enables adding contacts to existing cases
-  enable_client_profiles: boolean; // Enables Client Profiles
-  enable_conferencing: boolean; // Enables Conferencing UI and replaces default Twilio components and behavior  
-  enable_confirm_on_browser_close: boolean; // Enables confirmation dialog on browser close when there are unsaved changes
-  enable_contact_editing: boolean; // Enables Editing Contacts
-  enable_counselor_toolkits: boolean; // Enables Counselor Toolkits
-  enable_csam_clc_report: boolean; // Enables CSAM child Reports
-  enable_csam_report: boolean; // Enables CSAM Reports
-  enable_dual_write: boolean; // Enables Saving Contacts on External Backends
-  enable_emoji_picker: boolean; // Enables Emoji Picker
-  enable_external_transcripts: boolean; // Enables Viewing Transcripts Stored Outside of Twilio
-  enable_filter_cases: boolean; // Enables Filters at Case List
-  enable_fullstory_monitoring: boolean; // Enables Full Story
-  enable_last_case_status_update_info: boolean; // Enables showing the time, user and changed status of the most recent case status update on the 'Edit Case Summary' page
-  enable_lex: boolean; // Enables consuming from Lex bots
-  enable_manual_pulling: boolean; // Enables Adding Another Task
-  enable_offline_contact: boolean; // Enables Creating Offline Contacts  
-  enable_post_survey: boolean; // Enables Post-Survey
-  enable_previous_contacts: boolean; // Enables Previous Contacts Yellow Banner
-  enable_save_insights: boolean; // Enables Saving Aditional Data on Insights
-  enable_separate_timeline_view: boolean; // Enables a limited inline case timelinbe with a link to the full timeline
-  enable_sort_cases: boolean; // Enables Sorting at Case List
-  enable_teams_view_enhancements: boolean; // Enables custom Teams View UI
-  enable_transfers: boolean; // Enables Transfering Contacts
-  enable_twilio_transcripts: boolean; // Enables Viewing Transcripts Stored at Twilio
-  enable_upload_documents: boolean; // Enables Case Documents
-  enable_voice_recordings: boolean; // Enables Loading Voice Recordings
-};
-/* eslint-enable camelcase */
-
-export type LexMemory = {
-  aboutSelf?: 'Yes' | 'No';
-  [key: string]: string;
-};
-
-/* eslint-disable camelcase */
-export type AutopilotMemory = {
-  twilio: {
-    collected_data: {
-      collect_survey: {
-        answers: {
-          [key: string]: {
-            answer: string;
-            error: string;
-          };
-        };
-      };
-    };
-  };
-};
-/* eslint-enable camelcase */
 
 /**
  * Custom tasks
@@ -330,6 +228,7 @@ export type OfflineContactTask = {
     helplineToSave?: string;
     preEngagementData?: Record<string, string>;
     skipInsights?: boolean;
+    customChannelType?: string;
   };
   channelType: 'default';
 };
@@ -343,10 +242,20 @@ export type StandaloneITask = {
   };
 };
 
+export const standaloneTask: StandaloneITask = {
+  taskSid: 'standalone-task-sid',
+  attributes: { isContactlessTask: false },
+};
+
+
+export function isStandaloneTask(task: RouterTask): task is StandaloneITask {
+  return task.taskSid === standaloneTaskSid;
+}
+
 // Whilst this is the same as ITask<{ isContactlessTask: true; isInMyBehalf: true }>, TS can distinguish this one from a Twilio ITask
 export type InMyBehalfITask = ITask & { attributes: { isContactlessTask: true; isInMyBehalf: true } };
 
-export type CustomITask = ITask | OfflineContactTask | InMyBehalfITask;
+export type CustomITask = ITask | OfflineContactTask | InMyBehalfITask
 
 export type RouterTask = CustomITask | StandaloneITask
 
@@ -362,7 +271,7 @@ export function isOfflineContact(contact: Contact): boolean {
  * Checks if the task is issued by someone else to avoid showing certain things in the UI. This is done by checking isInMyBehalf task attribute (attached while creating offline contacts)
  */
 export function isInMyBehalfITask(task: RouterTask): task is InMyBehalfITask {
-  return task.attributes && task.attributes.isContactlessTask && (task.attributes as any).isInMyBehalf;
+  return task?.attributes && task.attributes.isContactlessTask && (task.attributes as any).isInMyBehalf;
 }
 
 export function isTwilioTask(task: RouterTask): task is ITask {
@@ -393,11 +302,15 @@ export type ProfileSection = {
 export type Profile = {
   id: number;
   name: string;
+  definitionVersion: string;
   createdAt?: string;
   updatedAt?: string;
   identifiers?: Identifier[];
   profileFlags?: {id: ProfileFlag['id'], name: ProfileFlag['name'], validUntil: ProfileFlag['validUntil']}[];
   profileSections?: ProfileSection[];
+  // This is a flag to indicate if the profile has contacts or not. It will be set to 'true' even if the user as no permission to view any of the contacts.
+  // It is a hack to work around the fact we don't support limited contact view permission. Once we do, this property along with its backend logic should be removed.
+  hasContacts?: boolean;
 };
 
 
@@ -408,8 +321,6 @@ export type ProfileFlag = {
   updatedAt?: string;
   validUntil?: Date;
 };
-
-export type ProfilesList = Profile[];
 
 export enum ProfilesListSortBy {
   ID = 'id',

@@ -14,21 +14,16 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { CaseSectionApi } from './api';
 import { RootState } from '../..';
 import { Case } from '../../../types/types';
 import { selectCounselorName } from '../../configuration/selectCounselorsHash';
 import { selectCaseByCaseId } from '../selectCaseStateByCaseId';
+import { getSectionItemById } from './get';
 
-const selectCaseItemHistory = (
-  state: RootState,
-  caseId: Case['id'],
-  caseSectionApi: CaseSectionApi,
-  caseItemId: string,
-) => {
+const selectCaseItemHistory = (state: RootState, caseId: Case['id'], caesSectionType: string, caseItemId: string) => {
   const caseState = selectCaseByCaseId(state, caseId);
   const { createdBy, createdAt, updatedAt, updatedBy } =
-    caseSectionApi.getSectionItemById(caseState?.sections, caseItemId) ?? {};
+    getSectionItemById(caesSectionType)(caseState?.sections, caseItemId) ?? {};
   const addingCounsellorName = selectCounselorName(state, createdBy);
   const updatingCounsellorName = selectCounselorName(state, updatedBy);
   return { addingCounsellorName, added: createdAt, updatingCounsellorName, updated: updatedAt };

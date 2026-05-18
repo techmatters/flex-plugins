@@ -14,17 +14,16 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import React, { useEffect, useState, useCallback, Dispatch } from 'react';
-import { connect, ConnectedProps } from 'react-redux';
+import React, { useEffect, useState, useCallback, useMemo } from 'react';
+import { useSelector } from 'react-redux';
 import { Actions, ActionPayload, withTaskContext, Manager } from '@twilio/flex-ui';
 import { EmojiIcon } from '@twilio-paste/icons/cjs/EmojiIcon';
 import Picker from '@emoji-mart/react';
+import pickerData from '@emoji-mart/data';
 
 import { Relative, Popup, SelectEmojiButton } from './styles';
 import { RootState } from '../../states';
-import { newUpdateDraftMessageTextAction } from '../../states/conversations';
-import { getAseloFeatureFlags } from '../../hrmConfig';
-import { configurationBase, namespace } from '../../states/storeNamespaces';
+import { selectCurrentDefinitionVersion } from '../../states/configuration/selectDefinitions';
 
 type onEmojiSelectPayload = {
   native: string;
@@ -47,32 +46,9 @@ const concatEmoji = (inputText: string, emoji: string) => {
   return `${inputText}${inputText.endsWith(' ') ? '' : ' '}${emoji}`;
 };
 
-const mapStateToProps = (state: RootState, { conversationSid }: MyProps) => ({
-  definitionVersion: state[namespace][configurationBase].currentDefinitionVersion,
-  aseloUiDraftText: state[namespace].conversations[conversationSid]?.draftMessageText ?? '',
-});
+const EmojiPicker: React.FC<MyProps> = ({ conversationSid }) => {
+  const definitionVersion = useSelector((state: RootState) => selectCurrentDefinitionVersion(state));
 
-const mapDispatchToProps = (
-  dispatch: Dispatch<{ type: string } & Record<string, any>>,
-  { conversationSid }: MyProps,
-) => {
-  return {
-    updateDraftMessageText: (text: string) => {
-      dispatch(newUpdateDraftMessageTextAction(conversationSid, text));
-    },
-  };
-};
-
-const connector = connect(mapStateToProps, mapDispatchToProps);
-
-const EmojiPicker: React.FC<MyProps & ConnectedProps<typeof connector>> = ({
-  conversationSid,
-  definitionVersion,
-  aseloUiDraftText,
-  updateDraftMessageText,
-}) => {
-  // Could do something fancier here with dependency injection, but doesn't seem worth it for now, especially if the default messaging UI gets fixed
-  const isAseloMessagingUi = Boolean(getAseloFeatureFlags().enable_aselo_messaging_ui);
   const [inputText, setInputText] = useState('');
   const [isOpen, setIsOpen] = useState(false);
   const [emojisPerLine, setEmojisPerLine] = useState(EMOJIS_PER_LINE_DEFAULT);
@@ -141,24 +117,28 @@ const EmojiPicker: React.FC<MyProps & ConnectedProps<typeof connector>> = ({
    */
   const handleSelectEmoji = useCallback(
     (payload: onEmojiSelectPayload) => {
-      if (isAseloMessagingUi) {
-        updateDraftMessageText(concatEmoji(aseloUiDraftText, payload.native));
-      } else {
-        const body = concatEmoji(inputText, payload.native);
-        Actions.invokeAction('SetInputText', {
-          body,
-          conversationSid,
-        });
-      }
+      const body = concatEmoji(inputText, payload.native);
+      Actions.invokeAction('SetInputText', {
+        body,
+        conversationSid,
+      });
       setIsOpen(false);
     },
-    [isAseloMessagingUi, updateDraftMessageText, aseloUiDraftText, inputText, conversationSid],
+    [inputText, conversationSid],
   );
+
+  const sanitizedPickerData = useMemo(() => {
+    const emojis = Object.fromEntries(
+      Object.entries((pickerData as any).emojis).filter(([key]) => !blockedEmojis.includes(key)),
+    );
+    return { ...pickerData, emojis };
+  }, [blockedEmojis]);
 
   return (
     <Relative>
       <Popup isOpen={isOpen}>
         <Picker
+          data={sanitizedPickerData}
           onEmojiSelect={handleSelectEmoji}
           onClickOutside={handleClickOutside}
           exceptEmojis={blockedEmojis}
@@ -173,4 +153,4 @@ const EmojiPicker: React.FC<MyProps & ConnectedProps<typeof connector>> = ({
 };
 
 EmojiPicker.displayName = 'EmojiPicker';
-export default withTaskContext(connector(EmojiPicker));
+export default withTaskContext(EmojiPicker);

@@ -14,10 +14,6 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-/*
- * Currently, unsaved contacts are references by their taskSid. Once the contact is saved, it is referenced by its contactId.
- * Until we rationalise this, this API allows custom components to be registered that can handle both cases.
- */
 type ContactComponentGeneratorParameters = {
   contactId: string;
   name: string;

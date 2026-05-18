@@ -18,16 +18,15 @@ import { addDays } from 'date-fns';
 import { RecursivePartial } from '../../../RecursivePartial';
 import { HrmState, RootState } from '../../../../states';
 import { Case } from '../../../../types/types';
+import '../../../mockGetConfig';
 import selectCaseItemHistory from '../../../../states/case/sections/selectCaseItemHistory';
 import { namespace } from '../../../../states/storeNamespaces';
-import { noteSectionApi } from '../../../../states/case/sections/note';
 import { CaseStateEntry } from '../../../../states/case/types';
 
 const BASELINE_DATE = new Date('2021-01-01T00:00:00Z');
 const CASE_ID = 'case123';
 
 let rootState: RootState;
-let sampleCase: Case;
 let sampleSections: CaseStateEntry['sections'];
 
 beforeEach(() => {
@@ -75,14 +74,13 @@ beforeEach(() => {
     },
   };
   rootState = { [namespace]: partialState } as RootState;
-  sampleCase = partialCase as Case;
 });
 
 test('Case section exists, and createdBy & updatedBy exist in the counselor map state', () => {
   const { added, updated, addingCounsellorName, updatingCounsellorName } = selectCaseItemHistory(
     rootState,
     CASE_ID,
-    noteSectionApi,
+    'note',
     'this one',
   );
   expect(added).toEqual(BASELINE_DATE);
@@ -96,7 +94,7 @@ test('Case section exists, without updatedAt - leaves updatedAt undefined', () =
   const { added, updated, addingCounsellorName, updatingCounsellorName } = selectCaseItemHistory(
     rootState,
     'case123',
-    noteSectionApi,
+    'note',
     'this one',
   );
   expect(added).toEqual(BASELINE_DATE);
@@ -110,7 +108,7 @@ test('Case section exists, without createdAt - returns undefined for createdAt',
   const { added, updated, addingCounsellorName, updatingCounsellorName } = selectCaseItemHistory(
     rootState,
     CASE_ID,
-    noteSectionApi,
+    'note',
     'this one',
   );
   expect(added).not.toBeDefined();
@@ -124,7 +122,7 @@ test("Case section doesn't exist, without createdAt - returns object with undefi
   const { added, updated, addingCounsellorName, updatingCounsellorName } = selectCaseItemHistory(
     rootState,
     CASE_ID,
-    noteSectionApi,
+    'note',
     'never seen this one',
   );
   expect(added).not.toBeDefined();

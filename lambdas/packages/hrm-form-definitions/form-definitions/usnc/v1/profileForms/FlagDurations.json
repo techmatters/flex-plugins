@@ -1,0 +1,47 @@
+[
+  {
+    "flag": "blocked",
+    "label": "2-hour block",
+    "durationInHours": "2"
+  },
+  {
+    "flag": "blocked",
+    "label": "24-hour block",
+    "durationInHours": "24"
+  },
+  {
+    "flag": "blocked",
+    "label": "7-days block",
+    "durationInHours": "168"
+  },
+  {
+    "flag": "blocked",
+    "label": "30-days block",
+    "durationInHours": "720"
+  },
+  {
+    "flag": "blocked",
+    "label": "60-days block",
+    "durationInHours": "1440"
+  },
+  {
+    "flag": "blocked",
+    "label": "90-days block",
+    "durationInHours": "2160"
+  },
+  {
+    "flag": "blocked",
+    "label": "180-days block",
+    "durationInHours": "4320"
+  },
+  {
+    "flag": "blocked",
+    "label": "365-days block",
+    "durationInHours": "8760"
+  },
+  {
+    "flag": "blocked",
+    "label": "Permanent",
+    "durationInHours": "87600"
+  }
+]

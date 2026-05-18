@@ -1,0 +1,25 @@
+{
+  "name": "ip-location-finder",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test:e2e": "jest tests/e2e",
+    "docker:build": "docker build -t iplocationfinder --build-arg lambda_name=ipLocationFinder --build-arg lambda_dir=. -f ../Dockerfile ../"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "aws-lambda": "^1.0.7",
+    "twilio": "^5.3.0",
+    "@aws-sdk/client-ssm": "^3.1045.0",
+    "@tech-matters/ssm-cache": "^1.0.0"
+  },
+  "description": "",
+  "devDependencies": {
+    "@tsconfig/node22": "^22.0.0",
+    "@types/node": "^22.13.11",
+    "@types/aws-lambda": "^8.10.108",
+    "ts-node": "^10.9.1",
+    "@types/twilio": "^3.19.3"
+  }
+}

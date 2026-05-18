@@ -1,0 +1,375 @@
+${
+  jsonencode({
+  "description": "${flow_description}",
+  "states": [
+    {
+      "name": "Trigger",
+      "type": "trigger",
+      "transitions": [
+        {
+          "event": "incomingMessage"
+        },
+        {
+          "event": "incomingCall"
+        },
+        {
+          "next": "run_subflow_system_down",
+          "event": "incomingConversationMessage"
+        },
+        {
+          "event": "incomingRequest"
+        },
+        {
+          "event": "incomingParent"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 60,
+          "y": -340
+        }
+      }
+    },
+    {
+      "name": "send_to_queue_courage_first",
+      "type": "send-to-flex",
+      "transitions": [
+        {
+          "event": "callComplete"
+        },
+        {
+          "next": "http_post_webhook_notify_failed_to_enqueue",
+          "event": "failedToEnqueue"
+        },
+        {
+          "event": "callFailure"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 1290,
+          "y": 2270
+        },
+        "workflow": "${workflow_sids.master}",
+        "channel": "${task_channel_sids.chat}",
+        "attributes": "${channel_attributes.default}"
+      }
+    },
+    {
+      "name": "http_post_webhook_notify_failed_to_enqueue",
+      "type": "make-http-request",
+      "transitions": [
+        {
+          "event": "success"
+        },
+        {
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 1640,
+          "y": 2700
+        },
+        "method": "POST",
+        "content_type": "application/json;charset=utf-8",
+        "add_twilio_auth": false,
+        "body": "{ \"text\": \"Issue detected [Failed to Enqueue] on ${short_helpline} ${short_environment} Flow SID: {{flow.flow_sid}} Execution SID: {{flow.sid}}  \" }",
+        "url": "${webhook_url_studio_errors}"
+      }
+    },
+    {
+      "name": "f_getProfileFlagsForIdentifier",
+      "type": "make-http-request",
+      "transitions": [
+        {
+          "next": "split_contact_routing",
+          "event": "success"
+        },
+        {
+          "next": "split_contact_routing",
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 120,
+          "y": 250
+        },
+        "method": "POST",
+        "content_type": "application/json;charset=utf-8",
+        "add_twilio_auth": false,
+        "body": "{ \"trigger\": {{trigger | to_json}}, \"channelType\": \"sms\"}",
+        "url": "${lambda_twilio_account_scoped_url}/getProfileFlagsForIdentifier"
+      }
+    },
+    {
+      "name": "send_message_sms_blocked_client",
+      "type": "send-message",
+      "transitions": [
+        {
+          "event": "sent"
+        },
+        {
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 660,
+          "y": 730
+        },
+        "service": "{{trigger.message.InstanceSid}}",
+        "channel": "{{trigger.message.ChannelSid}}",
+        "from": "Bot",
+        "message_type": "custom",
+        "to": "{{contact.channel.address}}",
+        "body": "${flow_vars.sms_blocked_client_message}"
+      }
+    },
+    {
+      "name": "split_contact_routing",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "send_message_courage_first_sms_welcome",
+          "event": "noMatch"
+        },
+        {
+          "next": "send_message_sms_blocked_client",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to blocked",
+              "arguments": [
+                "{{widgets.f_getProfileFlagsForIdentifier.parsed.flags}}"
+              ],
+              "type": "equal_to",
+              "value": "blocked"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{widgets.f_getProfileFlagsForIdentifier.parsed.flags}}",
+        "offset": {
+          "x": 290,
+          "y": 450
+        }
+      }
+    },
+    {
+      "name": "split_pre_survey_complete",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "f_getProfileFlagsForIdentifier",
+          "event": "noMatch"
+        },
+        {
+          "next": "send_message_courage_first_sms_prequeue",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to true",
+              "arguments": [
+                "{{trigger.conversation.ChannelAttributes.preSurveyComplete}}"
+              ],
+              "type": "equal_to",
+              "value": "true"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{trigger.conversation.ChannelAttributes.preSurveyComplete}}",
+        "offset": {
+          "x": 440,
+          "y": 60
+        }
+      }
+    },
+    {
+      "name": "f_captureChannelWithBot",
+      "type": "make-http-request",
+      "transitions": [
+        {
+          "event": "success"
+        },
+        {
+          "next": "http_post_webhook_notify_error_chatbot",
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 490,
+          "y": 1650
+        },
+        "method": "POST",
+        "content_type": "application/json;charset=utf-8",
+        "add_twilio_auth": false,
+        "body": "{\n  \"channelSid\": \"{{flow.channel.address}}\",\n  \"conversationSid\": \"{{flow.channel.address}}\",\n  \"message\": \"trigger_pre_survey\",\n  \"studioFlowSid\": \"{{flow.flow_sid}}\",\n  \"language\": \"en-USCH\",\n  \"botSuffix\": \"pre_survey\",\n  \"triggerType\": \"withUserMessage\",\n  \"releaseType\": \"triggerStudioFlow\",\n  \"releaseFlag\": \"preSurveyComplete\",\n  \"channelType\": \"{% if trigger.conversation.ChannelAttributes.channel_type %}{{trigger.conversation.ChannelAttributes.channel_type}}{% else %}{{trigger.conversation.Source | downcase}}{% endif %}\",\n  \"isConversation\": \"true\"\n}",
+        "url": "${lambda_twilio_account_scoped_url}/channelCapture/captureChannelWithBot"
+      }
+    },
+    {
+      "name": "send_message_courage_first_sms_welcome",
+      "type": "send-message",
+      "transitions": [
+        {
+          "next": "f_captureChannelWithBot",
+          "event": "sent"
+        },
+        {
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 410,
+          "y": 1350
+        },
+        "service": "{{trigger.message.InstanceSid}}",
+        "channel": "{{trigger.message.ChannelSid}}",
+        "from": "Bot",
+        "message_type": "custom",
+        "to": "{{contact.channel.address}}",
+        "body": "${flow_vars.courage_first_sms_welcome_message}"
+      }
+    },
+    {
+      "name": "f_chatbotCallbackCleanup",
+      "type": "make-http-request",
+      "transitions": [
+        {
+          "next": "send_message_courage_first_sms_prequeue",
+          "event": "success"
+        },
+        {
+          "next": "send_message_courage_first_sms_failure",
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 800,
+          "y": 2110
+        },
+        "method": "POST",
+        "content_type": "application/json;charset=utf-8",
+        "add_twilio_auth": false,
+        "body": "{\"channelSid\": \"{{flow.channel.address}}\", \"conversationSid\": \"{{flow.channel.address}}\"}",
+        "url": "${lambda_twilio_account_scoped_url}/channelCapture/chatbotCallbackCleanup"
+      }
+    },
+    {
+      "name": "http_post_webhook_notify_error_chatbot",
+      "type": "make-http-request",
+      "transitions": [
+        {
+          "next": "f_chatbotCallbackCleanup",
+          "event": "success"
+        },
+        {
+          "next": "f_chatbotCallbackCleanup",
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 630,
+          "y": 1890
+        },
+        "method": "POST",
+        "content_type": "application/json;charset=utf-8",
+        "add_twilio_auth": false,
+        "body": "{ \"text\": \"Issue detected [Chabot Failure] on ${short_helpline} ${short_environment} Flow SID: {{flow.flow_sid}} Execution SID: {{flow.sid}}  \" }",
+        "url": "${webhook_url_studio_errors}"
+      }
+    },
+    {
+      "name": "send_message_courage_first_sms_failure",
+      "type": "send-message",
+      "transitions": [
+        {
+          "event": "sent"
+        },
+        {
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 930,
+          "y": 2440
+        },
+        "service": "{{trigger.message.InstanceSid}}",
+        "channel": "{{trigger.message.ChannelSid}}",
+        "from": "Bot",
+        "message_type": "custom",
+        "to": "{{contact.channel.address}}",
+        "body": "${flow_vars.courage_first_sms_failure_message}"
+      }
+    },
+    {
+      "name": "send_message_courage_first_sms_prequeue",
+      "type": "send-message",
+      "transitions": [
+        {
+          "next": "send_to_queue_courage_first",
+          "event": "sent"
+        },
+        {
+          "event": "failed",
+          "next": "send_to_queue_courage_first"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 1240,
+          "y": 1640
+        },
+        "service": "{{trigger.message.InstanceSid}}",
+        "channel": "{{trigger.message.ChannelSid}}",
+        "from": "Bot",
+        "message_type": "custom",
+        "to": "{{contact.channel.address}}",
+        "body": "${flow_vars.courage_first_sms_prequeue_message}"
+      }
+    },
+    {
+      "name": "run_subflow_system_down",
+      "type": "run-subflow",
+      "transitions": [
+        {
+          "next": "split_pre_survey_complete",
+          "event": "completed"
+        },
+        {
+          "next": "split_pre_survey_complete",
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "flow_sid": "${system_down_studio_subflow_sid}",
+        "flow_revision": "LatestPublished",
+        "offset": {
+          "x": -90,
+          "y": -130
+        },
+        "parameters": [
+          {
+            "type": "string",
+            "value": "true",
+            "key": "system_down"
+          }
+        ]
+      }
+    }
+  ],
+  "initial_state": "Trigger",
+  "flags": {
+    "allow_concurrent_calls": true
+  }
+})}

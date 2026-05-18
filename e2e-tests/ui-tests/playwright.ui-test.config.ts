@@ -29,8 +29,10 @@ const config: PlaywrightTestConfig = {
     // Browser proxy option is required for Chromium on Windows
     launchOptions: { proxy: { server: `https://per-context` } },
     ignoreHTTPSErrors: true,
+    // headless: false, // For local debugging
   },
   testDir: './tests',
   timeout: 60000,
+  reporter: [['junit', { outputFile: 'junit.xml' }]],
 };
 export default config;

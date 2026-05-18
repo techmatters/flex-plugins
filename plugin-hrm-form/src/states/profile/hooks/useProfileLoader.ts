@@ -23,6 +23,7 @@ import * as ProfileActions from '../profiles';
 import * as ProfileSelectors from '../selectors';
 import { UseProfileCommonParams } from './types';
 import useFeatureFlags from '../../../hooks/useFeatureFlags';
+import { getHrmConfig } from '../../../hrmConfig';
 
 type UseProfileLoaderParams = UseProfileCommonParams & { autoload?: boolean; refresh?: boolean };
 
@@ -54,7 +55,7 @@ export const useProfileLoader = ({
     asyncDispatch(dispatch)(ProfileActions.loadProfileAsync(profileId));
   }, [dispatch, profileId]);
 
-  const { enable_client_profiles: enableClientProfiles } = useFeatureFlags();
+  const { enableClientProfiles } = getHrmConfig();
 
   const firstFetch = autoload && !loading && !data && !error;
   const safeToLoad = enableClientProfiles && Boolean(profileId); // prevent load if there's no profile id

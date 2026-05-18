@@ -17,7 +17,7 @@
 import { omit } from 'lodash';
 
 import * as t from './types';
-import { newSearchFormEntry, PreviousContactCounts, SearchResultReferences } from './types';
+import { newSearchFormEntry, SearchResultReferences } from './types';
 import { REMOVE_CONTACT_STATE, RemoveContactStateAction } from '../types';
 import { Contact, standaloneTaskSid } from '../../types/types';
 import { ContactDetailsSections, ContactDetailsSectionsType } from '../../components/common/ContactDetails';
@@ -26,10 +26,11 @@ import {
   ContactConnectingAction,
   ContactUpdatingAction,
   CREATE_CONTACT_ACTION_FULFILLED,
-  LOAD_CONTACT_FROM_HRM_BY_TASK_ID_ACTION_FULFILLED,
+  LOAD_CONTACT_FROM_HRM_FOR_TASK_ACTION_FULFILLED,
   UPDATE_CONTACT_ACTION_FULFILLED,
 } from '../contacts/types';
 import { CaseUpdatingAction, CREATE_CASE_ACTION_FULFILLED } from '../case/types';
+import { resultsReducer } from './results';
 
 export type SearchStateTaskEntry = {
   form: t.SearchFormValues;
@@ -38,7 +39,6 @@ export type SearchStateTaskEntry = {
   };
   searchContactsResult: SearchResultReferences;
   searchCasesResult: SearchResultReferences;
-  previousContactCounts?: PreviousContactCounts;
   isRequesting: boolean;
   isRequestingCases: boolean;
   error: any;
@@ -48,9 +48,11 @@ export type SearchStateTaskEntry = {
   searchExistingCaseStatus: boolean;
 };
 
-type SearchState = {
+export type SearchState = {
   tasks: {
-    [taskId: string]: SearchStateTaskEntry;
+    [taskId: string]: {
+      [context: string]: SearchStateTaskEntry;
+    };
   };
 };
 
@@ -77,9 +79,11 @@ export const newTaskEntry: SearchStateTaskEntry = {
   searchExistingCaseStatus: false,
 };
 
-export const initialState: SearchState = {
+const initialState: SearchState = {
   tasks: {
-    [standaloneTaskSid]: newTaskEntry,
+    [standaloneTaskSid]: {
+      root: newTaskEntry,
+    },
   },
 };
 
@@ -99,11 +103,11 @@ const contactUpdatingReducer = (state: SearchState, action: ContactUpdatingActio
     ...updatedState,
     tasks: {
       ...updatedState.tasks,
-      [contact.taskId]: newTaskEntry,
+      [contact.taskId]: {},
     },
   };
 };
-
+const boundResultsReducer = resultsReducer(initialState);
 // eslint-disable-next-line complexity
 export function reduce(
   startingState = initialState,
@@ -114,12 +118,17 @@ export function reduce(
     | ContactConnectingAction
     | CaseUpdatingAction,
 ): SearchState {
-  let state = startingState;
+  let state = boundResultsReducer(startingState, action);
   if ((<string[]>[UPDATE_CONTACT_ACTION_FULFILLED, CREATE_CONTACT_ACTION_FULFILLED]).includes(action.type)) {
     state = {
       ...state,
       tasks: Object.fromEntries(
-        Object.entries(state.tasks).map(([key, value]) => [key, { ...value, contactRefreshRequired: true }]),
+        Object.entries(state.tasks).map(([key, value]) => [
+          key,
+          Object.fromEntries(
+            Object.entries(value).map(([key, context]) => [key, { ...context, contactRefreshRequired: true }]),
+          ),
+        ]),
       ),
     };
   }
@@ -128,13 +137,18 @@ export function reduce(
     state = {
       ...state,
       tasks: Object.fromEntries(
-        Object.entries(state.tasks).map(([key, value]) => [key, { ...value, caseRefreshRequired: true }]),
+        Object.entries(state.tasks).map(([key, value]) => [
+          key,
+          Object.fromEntries(
+            Object.entries(value).map(([key, context]) => [key, { ...context, caseRefreshRequired: true }]),
+          ),
+        ]),
       ),
     };
   }
   switch (action.type) {
     case CREATE_CONTACT_ACTION_FULFILLED:
-    case LOAD_CONTACT_FROM_HRM_BY_TASK_ID_ACTION_FULFILLED:
+    case LOAD_CONTACT_FROM_HRM_FOR_TASK_ACTION_FULFILLED:
     case UPDATE_CONTACT_ACTION_FULFILLED: {
       return contactUpdatingReducer(state, action as ContactUpdatingAction);
     }
@@ -145,137 +159,59 @@ export function reduce(
       };
     case t.HANDLE_SEARCH_FORM_CHANGE: {
       const task = state.tasks[action.taskId];
+      const context = state.tasks[action.taskId][action.context];
+
       return {
         ...state,
         tasks: {
           ...state.tasks,
-          [action.taskId]: { ...task, form: { ...task.form, [action.name]: action.value } },
+          [action.taskId]: {
+            ...task,
+            [action.context]: {
+              ...context,
+              form: {
+                ...context?.form,
+                [action.name]: action.value,
+              },
+            },
+          },
         },
       };
     }
-    case t.SEARCH_CONTACTS_REQUEST: {
+    case t.HANDLE_FORM_UPDATE: {
       const task = state.tasks[action.taskId];
+      const context = state.tasks[action.taskId][action.context];
+
       return {
         ...state,
         tasks: {
           ...state.tasks,
           [action.taskId]: {
             ...task,
-            isRequesting: true,
-            contactRefreshRequired: false,
+            [action.context]: {
+              ...context,
+              form: {
+                ...context?.form,
+                ...action.values,
+              },
+            },
           },
         },
       };
     }
-    case t.SEARCH_CONTACTS_SUCCESS: {
-      const {
-        searchResult: { contacts, ...searchResult },
-        taskId,
-        dispatchedFromPreviousContacts,
-      } = action;
-      const task = state.tasks[taskId];
-      const newContactsResult = {
-        ids: contacts.map(c => c.id),
-        count: searchResult.count,
-      };
-      const previousContactCounts = dispatchedFromPreviousContacts
-        ? { ...task.previousContactCounts, contacts: searchResult.count }
-        : task.previousContactCounts;
-      return {
-        ...state,
-        tasks: {
-          ...state.tasks,
-          [taskId]: {
-            ...task,
-            searchContactsResult: newContactsResult,
-            previousContactCounts,
-            isRequesting: false,
-            error: null,
-          },
-        },
-      };
-    }
-    case t.SEARCH_CONTACTS_FAILURE: {
-      const task = state.tasks[action.taskId];
+    case t.CREATE_NEW_SEARCH: {
+      const task = state.tasks[action.taskId] || {};
+      const context = state.tasks[action.taskId][action.context];
+
       return {
         ...state,
         tasks: {
           ...state.tasks,
           [action.taskId]: {
             ...task,
-            isRequesting: false,
-            error: action.error,
-          },
-        },
-      };
-    }
-    case t.SEARCH_CASES_REQUEST: {
-      const task = state.tasks[action.taskId];
-      return {
-        ...state,
-        tasks: {
-          ...state.tasks,
-          [action.taskId]: {
-            ...task,
-            isRequestingCases: true,
-            caseRefreshRequired: false,
-          },
-        },
-      };
-    }
-    case t.SEARCH_CASES_SUCCESS: {
-      const {
-        searchResult: { cases, count },
-        taskId,
-        dispatchedFromPreviousContacts,
-      } = action;
-      const task = state.tasks[taskId];
-      const newCasesResult = {
-        ids: cases.map(c => c.id),
-        count,
-      };
-      const previousContactCounts = dispatchedFromPreviousContacts
-        ? { ...task.previousContactCounts, cases: newCasesResult.count }
-        : task.previousContactCounts;
-      return {
-        ...state,
-        tasks: {
-          ...state.tasks,
-          [action.taskId]: {
-            ...task,
-            searchCasesResult: newCasesResult,
-            previousContactCounts,
-            isRequestingCases: false,
-            casesError: null,
-          },
-        },
-      };
-    }
-    case t.SEARCH_CASES_FAILURE: {
-      const task = state.tasks[action.taskId];
-      return {
-        ...state,
-        tasks: {
-          ...state.tasks,
-          [action.taskId]: {
-            ...task,
-            isRequestingCases: false,
-            casesError: action.error,
-          },
-        },
-      };
-    }
-    case t.VIEW_PREVIOUS_CONTACTS: {
-      const task = state.tasks[action.taskId];
-      return {
-        ...state,
-        tasks: {
-          ...state.tasks,
-          [action.taskId]: {
-            ...task,
-            form: {
-              ...task.form,
-              contactNumber: action.contactNumber,
+            [action.context]: {
+              ...context,
+              ...newTaskEntry,
             },
           },
         },

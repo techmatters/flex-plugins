@@ -25,12 +25,12 @@ const checkOpenHours = true;
 const contactType: ContactType = 'ip';
 
 const closedHours: PreEngagementFormDefinition = {
-  description: "We're closed at the moment. Operating hours are 8am-6pm",
+  description: "You've reached the Helpline outside our webchat hours. If you'd like to talk to us now, please txt us for free on 234 or call us for free on 0800376633",
   fields: [],
 };
 
 const holidayHours: PreEngagementFormDefinition = {
-  description: 'We are closed because it is a holiday. Please come back tomorrow',
+  description: 'The helpline is closed due to a holiday.',
   fields: [],
 };
 
@@ -348,7 +348,7 @@ const preEngagementConfig: PreEngagementFormDefinition = {
      {
       type: 'select',
       name: 'reason',
-      label: 'What kind of support are you looking for?',
+      label: 'Do you need urgent support?',
       defaultValue: '',
       options: [
         {
@@ -357,25 +357,30 @@ const preEngagementConfig: PreEngagementFormDefinition = {
         },
         {
           value: "emergency",
-          label: "I'm in need of urgent support"
+          label: "Yes"
         },
         {
           value: "counselling",
-          label: "I'm looking for support"
-        },
-        {
-          value: "Unknown",
-          label: "Other"
+          label: "No"
         }
       ],
     },
     {
       type: 'checkbox',
       name: 'clientPrivacyStatement',
-      label: 'I agree with the <a href="https://www.youthline.co.nz/privacy-statement-for-children-and-young-people.html">client privacy statement</a>',
+      label: 'I agree with the <a href="https://youthline.co.nz/privacy-statements/">client privacy statement</a> and understand that my conversation will be recorded and may be monitored for quality purposes.',
       required: {
         value: true,
         message: 'You need to agree with our client privacy statement to start a chat ',
+      },
+    },
+    {
+      type: 'checkbox',
+      name: 'inNZ',
+      label: 'I am in New Zealand',
+      required: {
+        value: true,
+        message: 'You need to be in New Zealand to receive our service',
       },
     },
   ],
@@ -383,7 +388,7 @@ const preEngagementConfig: PreEngagementFormDefinition = {
 
 const translations: Translations = {
   'en-NZ': {
-    WelcomeMessage: 'Welcome to Youthline',
+    WelcomeMessage: 'Welcome to the Youthline Helpline',
     MessageCanvasTrayContent: '',
     MessageInputDisabledReasonHold:
       "Thank you very much for this information. We'll transfer you now. Please hold for a practitioner.",
@@ -403,7 +408,7 @@ const memberDisplayOptions = {
   yourDefaultName: 'You',
   yourFriendlyNameOverride: false,
   theirFriendlyNameOverride: false,
-  theirDefaultName: 'Helpline Counsellor',
+  theirDefaultName: 'Youthline',
 };
 
 const mapHelplineLanguage: MapHelplineLanguage = (helpline) => {
@@ -419,8 +424,12 @@ export const config: Configuration = {
   defaultLanguage,
   translations,
   preEngagementConfig,
+  closedHours,
+  holidayHours,
+  checkOpenHours,
   mapHelplineLanguage,
   memberDisplayOptions,
   captureIp,
   contactType,
+  twilioServicesUrl: new URL(`https://hrm-staging.tl.techmatters.org/lambda/twilio/account-scoped/${accountSid}`),
 };

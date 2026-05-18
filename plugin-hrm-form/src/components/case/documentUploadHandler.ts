@@ -15,10 +15,12 @@
  */
 
 import { CustomHandlers } from '../common/forms/formGenerators';
-import { getHrmConfig } from '../../hrmConfig';
+import { getHrmConfig, getTemplateStrings } from '../../hrmConfig';
 import { fetchHrmApi, generateSignedURLPath } from '../../services/fetchHrmApi';
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024;
+const ALLOWED_FILE_TYPES = ['.png', '.jpg', '.jpeg', '.pdf', '.doc', '.docx'];
+
 /**
  * This function calls an HTTP PUT to upload the document
  * @param file Document
@@ -47,11 +49,21 @@ const uploadDocument = async (file: File, preSignedUrl: string, mimeType: string
 const bindOnFileChange = (caseId: string) => async event => {
   const file = event.target.files[0];
   const { name, size, type } = file;
+  const strings = getTemplateStrings();
 
   if (size > MAX_FILE_SIZE) {
-    alert('File exceeds max size.');
+    // Should this string be localizable?
+    alert(strings['Forms-FileUpload-FileSizeError']);
     return '';
   }
+
+  // Validate file extension
+  const extension = name.toLowerCase().substring(name.lastIndexOf('.'));
+  if (!ALLOWED_FILE_TYPES.includes(extension)) {
+    alert(strings['Forms-FileUpload-InvalidFileTypeError']);
+    return '';
+  }
+
   const mimeType = type;
   const { docsBucket: bucket } = getHrmConfig();
 

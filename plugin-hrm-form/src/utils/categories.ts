@@ -19,19 +19,19 @@ import { DefinitionVersion } from 'hrm-form-definitions';
 import HrmTheme from '../styles/HrmTheme';
 import { getHrmConfig } from '../hrmConfig';
 
-const getCategoryColor = (definitionVersion: DefinitionVersion, category: string) => {
+const getCategoryColor = (definitionVersion: DefinitionVersion, category: string): string => {
   const { helpline } = getHrmConfig();
 
-  const categories = definitionVersion?.tabbedForms?.IssueCategorizationTab(helpline) ?? {};
+  const { categories } = definitionVersion?.tabbedForms?.IssueCategorizationTab(helpline) ?? {};
 
-  return categories[category] ? categories[category].color : HrmTheme.colors.defaultCategoryColor;
+  return categories?.[category]?.color ?? HrmTheme.colors.defaultCategoryColor;
 };
 
 type ContactCategories = {
   [category: string]: string[];
 };
 
-const getCategoryLabel = (category, subcategory) =>
+const getCategoryLabel = (category, subcategory): string =>
   subcategory === 'Unspecified/Other' ? `${subcategory} - ${category}` : subcategory;
 
 export const getContactTags = (definitionVersion: DefinitionVersion, contactCategories: ContactCategories) =>
@@ -39,5 +39,6 @@ export const getContactTags = (definitionVersion: DefinitionVersion, contactCate
     subcategories.map(subcategory => ({
       label: getCategoryLabel(category, subcategory),
       color: getCategoryColor(definitionVersion, category),
+      fullyQualifiedName: `${category} - ${subcategory}`,
     })),
   );

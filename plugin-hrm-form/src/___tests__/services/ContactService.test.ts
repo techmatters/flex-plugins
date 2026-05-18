@@ -14,18 +14,18 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import {
-  callTypes,
-  CategoriesDefinition,
-  CategoryEntry,
-  DefinitionVersionId,
-  loadDefinition,
-  useFetchDefinitions,
-} from 'hrm-form-definitions';
+import { callTypes } from 'hrm-types';
+import { loadDefinition } from 'hrm-form-definitions';
 import { TaskHelper } from '@twilio/flex-ui';
 
+import { mockLocalFetchDefinitions } from '../mockFetchDefinitions';
 import { baseMockConfig as mockBaseConfig, mockGetDefinitionsResponse } from '../mockGetConfig';
-import { finalizeContact, handleTwilioTask, saveContact, updateContactInHrm } from '../../services/ContactService';
+import {
+  finalizeContact,
+  determineConversationMedia,
+  saveContact,
+  updateContactInHrm,
+} from '../../services/ContactService';
 import { channelTypes } from '../../states/DomainConstants';
 import { getDefinitionVersions, getHrmConfig } from '../../hrmConfig';
 import { VALID_EMPTY_CONTACT, VALID_EMPTY_METADATA } from '../testContacts';
@@ -43,14 +43,16 @@ jest.mock('../../services/formSubmissionHelpers', () => ({
   }),
 }));
 
-jest.mock('../../services/ServerlessService', () => ({
-  getExternalRecordingS3Location: () =>
-    Promise.resolve({
-      status: 'success',
-      recordingSid: 'recordingSid',
-      bucket: 'bucket',
-      key: 'key',
-    }),
+jest.mock('../../services/recordingsService', () => ({
+  getExternalRecordingInfo: (task: any) => {
+    const { conference } = task?.attributes ?? {};
+    if (!conference) {
+      return Promise.resolve({ status: 'failure', name: 'NoConference', error: 'Could not find a conference' });
+    }
+    return Promise.resolve({ status: 'success', recordingSid: 'recordingSid', bucket: 'bucket', key: 'key' });
+  },
+  isFailureExternalRecordingInfo: (r: any) => r && r.status === 'failure',
+  shouldGetExternalRecordingInfo: () => true,
 }));
 
 jest.mock('@twilio/flex-ui', () => ({
@@ -61,20 +63,11 @@ jest.mock('@twilio/flex-ui', () => ({
   },
 }));
 
-// eslint-disable-next-line react-hooks/rules-of-hooks
-const { mockFetchImplementation, mockReset, buildBaseURL } = useFetchDefinitions();
+jest.mock('../../authentication', () => ({
+  getValidToken: () => 'valid token',
+}));
 
-/**
- * Adds a category with the corresponding subcategories set to false to the provided object (obj)
- */
-const createCategory = <T extends {}>(obj: T, [category, { subcategories }]: [string, CategoryEntry]) => ({
-  ...obj,
-  [category]: subcategories.reduce((acc, subcategory) => ({ ...acc, [subcategory.label]: false }), {}),
-});
-
-const createCategoriesObject = (
-  categoriesFormDefinition: CategoriesDefinition,
-): Record<string, Record<string, boolean>> => Object.entries(categoriesFormDefinition).reduce(createCategory, {});
+const { mockFetchImplementation, mockReset, buildBaseURL } = mockLocalFetchDefinitions();
 
 let mockV1;
 
@@ -82,16 +75,14 @@ beforeEach(() => {
   mockReset();
 });
 
-let EMPTY_API_CATEGORIES: Record<string, Record<string, boolean>>;
 const offlineContactTaskSid = 'offline-contact-task-workerSid';
 
 beforeAll(async () => {
-  const formDefinitionsBaseUrl = buildBaseURL(DefinitionVersionId.v1);
+  const formDefinitionsBaseUrl = buildBaseURL('as-v1');
   await mockFetchImplementation(formDefinitionsBaseUrl);
 
   mockV1 = await loadDefinition(formDefinitionsBaseUrl);
-  mockGetDefinitionsResponse(getDefinitionVersions, DefinitionVersionId.v1, mockV1);
-  EMPTY_API_CATEGORIES = createCategoriesObject(mockV1.tabbedForms.IssueCategorizationTab(helpline));
+  mockGetDefinitionsResponse(getDefinitionVersions, 'as-v1', mockV1);
 });
 
 const createContactState = ({ callType, childFirstName }, contactlessTaskInfo = undefined): ContactState => {
@@ -112,12 +103,11 @@ const createContactState = ({ callType, childFirstName }, contactlessTaskInfo = 
         contactlessTask,
       },
     },
-    references: new Set(),
+    lastReferencedDate: new Date(),
   };
 };
 
 const getFormFromPATCH = mockedFetch => JSON.parse(mockedFetch.mock.calls[0][1].body).rawJson;
-const getTimeOfContactFromPATCH = mockedFetch => JSON.parse(mockedFetch.mock.calls[0][1].body).timeOfContact;
 const getNumberFromPATCH = mockedFetch => JSON.parse(mockedFetch.mock.calls[0][1].body).number;
 
 describe('saveContact()', () => {
@@ -132,10 +122,10 @@ describe('saveContact()', () => {
   const fetchSuccess = Promise.resolve(<any>{ ok: true, json: jest.fn(), text: jest.fn() });
 
   test('data calltype saves form data', async () => {
-    const { savedContact, metadata } = createContactState({ callType: callTypes.child, childFirstName: 'Jill' });
+    const { savedContact } = createContactState({ callType: callTypes.child, childFirstName: 'Jill' });
     const mockedFetch = jest.spyOn(global, 'fetch').mockImplementation(() => fetchSuccess);
 
-    await saveContact(task, savedContact, metadata, workerSid, uniqueIdentifier);
+    await saveContact(task, savedContact, workerSid, uniqueIdentifier);
 
     const formFromPOST = getFormFromPATCH(mockedFetch);
     expect(formFromPOST.callType).toEqual(callTypes.child);
@@ -145,10 +135,10 @@ describe('saveContact()', () => {
   });
 
   test('non-data calltype do not save form data', async () => {
-    const { savedContact, metadata } = createContactState({ callType: 'hang up', childFirstName: 'Jill' });
+    const { savedContact } = createContactState({ callType: 'hang up', childFirstName: 'Jill' });
     const mockedFetch = jest.spyOn(global, 'fetch').mockImplementation(() => fetchSuccess);
 
-    await saveContact(task, savedContact, metadata, workerSid, uniqueIdentifier);
+    await saveContact(task, savedContact, workerSid, uniqueIdentifier);
 
     const formFromPOST = getFormFromPATCH(mockedFetch);
     expect(formFromPOST.callType).toEqual('hang up');
@@ -188,26 +178,19 @@ describe('saveContact() (isContactlessTask)', () => {
   });
 
   test('data calltype saves form data', async () => {
-    const { savedContact, metadata } = createContactState(
-      { callType: callTypes.child, childFirstName: 'Jill' },
-      { channel: '', date: '2020-11-24', time: '12:00' },
-    );
+    const { savedContact } = createContactState({ callType: callTypes.child, childFirstName: 'Jill' }, { channel: '' });
     fetchJson.mockResolvedValue([]).mockResolvedValue({ ...savedContact, id: 'contact-id' });
-    await saveContact(task, savedContact, metadata, workerSid, uniqueIdentifier);
+    await saveContact(task, savedContact, workerSid, uniqueIdentifier);
 
     const formFromPOST = getFormFromPATCH(mockedFetch);
     expect(formFromPOST.callType).toEqual(callTypes.child);
     expect(formFromPOST.childInformation.firstName).toEqual('Jill');
-    expect(getTimeOfContactFromPATCH(mockedFetch)).toEqual(new Date(2020, 10, 24, 12, 0).toISOString());
   });
 
   test('non-data calltype do not save form data (but captures contactlessTask info)', async () => {
-    const contactlessTask = { channel: 'web', date: '2020-11-24', time: '12:00', createdOnBehalfOf: 'someone else' };
-    const { savedContact, metadata } = createContactState(
-      { callType: 'hang up', childFirstName: 'Jill' },
-      contactlessTask,
-    );
-    await saveContact({ ...task, taskSid: offlineContactTaskSid }, savedContact, metadata, workerSid, uniqueIdentifier);
+    const contactlessTask = { channel: 'web', createdOnBehalfOf: 'someone else' };
+    const { savedContact } = createContactState({ callType: 'hang up', childFirstName: 'Jill' }, contactlessTask);
+    await saveContact({ ...task, taskSid: offlineContactTaskSid }, savedContact, workerSid, uniqueIdentifier);
 
     const expected = { ...contactlessTask };
 
@@ -215,7 +198,6 @@ describe('saveContact() (isContactlessTask)', () => {
     expect(formFromPOST.callType).toEqual('hang up');
     expect(formFromPOST.childInformation.firstName).toEqual('');
     expect(formFromPOST.contactlessTask).toStrictEqual(expected);
-    expect(getTimeOfContactFromPATCH(mockedFetch)).toEqual(new Date(2020, 10, 24, 12, 0).toISOString());
   });
 
   test('save IP from web calltype', async () => {
@@ -230,9 +212,9 @@ describe('saveContact() (isContactlessTask)', () => {
         preEngagementData: { contactType: 'ip', contactIdentifier: ip },
       },
     };
-    const { savedContact, metadata } = createContactState({ callType: callTypes.child, childFirstName: 'Jill' });
+    const { savedContact } = createContactState({ callType: callTypes.child, childFirstName: 'Jill' });
 
-    await saveContact(webTaskWithIP, savedContact, metadata, workerSid, uniqueIdentifier);
+    await saveContact(webTaskWithIP, savedContact, workerSid, uniqueIdentifier);
 
     const numberFromPOST = getNumberFromPATCH(mockedFetch);
     expect(numberFromPOST).toEqual(ip);
@@ -250,11 +232,11 @@ describe('saveContact() (isContactlessTask)', () => {
         preEngagementData: { contactType: 'email', contactIdentifier: email },
       },
     };
-    const { savedContact, metadata } = createContactState({ callType: callTypes.child, childFirstName: 'Jill' });
+    const { savedContact } = createContactState({ callType: callTypes.child, childFirstName: 'Jill' });
 
     const mockedFetch = jest.spyOn(global, 'fetch').mockImplementation(() => fetchSuccess);
 
-    await saveContact(webTaskWithIP, savedContact, metadata, workerSid, uniqueIdentifier);
+    await saveContact(webTaskWithIP, savedContact, workerSid, uniqueIdentifier);
 
     const numberFromPOST = getNumberFromPATCH(mockedFetch);
     expect(numberFromPOST).toEqual(email);
@@ -273,9 +255,9 @@ describe('saveContact() (isContactlessTask)', () => {
         ip: '', // Studio makes it empty string
       },
     };
-    const { savedContact, metadata } = createContactState({ callType: callTypes.child, childFirstName: 'Jill' });
+    const { savedContact } = createContactState({ callType: callTypes.child, childFirstName: 'Jill' });
 
-    await saveContact(webTaskWithoutIP, savedContact, metadata, workerSid, uniqueIdentifier);
+    await saveContact(webTaskWithoutIP, savedContact, workerSid, uniqueIdentifier);
 
     const numberFromPOST = getNumberFromPATCH(mockedFetch);
     expect(numberFromPOST).toEqual('');
@@ -345,7 +327,7 @@ describe('finalizeContact() (externalRecording)', () => {
 });
 
 test('updateContactInHrm - calls a PATCH HRM endpoint using the supplied contact ID in the route', async () => {
-  const responseBody = { id: 1234, rawJson: { caseInformation: {}, categories: {} } };
+  const responseBody = { id: '1234', rawJson: { caseInformation: {}, categories: {} } };
   const mockedFetch = jest.spyOn(global, 'fetch').mockResolvedValue(<Response>(<unknown>{
     ok: true,
     json: () => Promise.resolve(responseBody),
@@ -402,7 +384,7 @@ describe('handleTwilioTask() (externalRecording)', () => {
       },
     };
 
-    const result = await handleTwilioTask(task);
+    const result = await determineConversationMedia(task);
     expect(result).toStrictEqual({
       conversationMedia: [
         {
@@ -438,7 +420,7 @@ describe('handleTwilioTask() (externalRecording)', () => {
       attributes: {},
     };
 
-    const returnData = await handleTwilioTask(task);
+    const returnData = await determineConversationMedia(task);
     expect(returnData).toStrictEqual({
       conversationMedia: [{ storeType: 'twilio', storeTypeSpecificData: { reservationSid: undefined } }],
     });

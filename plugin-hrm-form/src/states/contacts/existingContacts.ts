@@ -14,8 +14,6 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { omit } from 'lodash';
-
 import { Contact, ContactRawJson } from '../../types/types';
 import { AddExternalReportEntryAction } from '../csam-report/existingContactExternalReport';
 import { ConfigurationState } from '../configuration/reducer';
@@ -85,7 +83,7 @@ export type TranscriptResult = {
 };
 
 export type ContactState = {
-  references: Set<string>;
+  lastReferencedDate: Date;
   savedContact: Contact;
   draftContact?: ContactDraftChanges;
   metadata: ContactMetadata;
@@ -101,52 +99,55 @@ export const LOAD_CONTACT_ACTION = 'LOAD_CONTACT_ACTION';
 type LoadContactAction = {
   type: typeof LOAD_CONTACT_ACTION;
   contacts: Partial<Contact>[];
-  reference?: string;
   replaceExisting: boolean;
 };
 
-export const loadContact = (contact: Partial<Contact>, reference, replaceExisting = false): LoadContactAction => ({
+export const loadContact = (
+  contact: Partial<Contact>,
+  /** @deprecated No longer used; contacts are managed via garbage collection */
+  _reference?: string,
+  replaceExisting = false,
+): LoadContactAction => ({
   type: LOAD_CONTACT_ACTION,
   contacts: [contact],
-  reference,
   replaceExisting,
 });
 
 export const loadContacts = (
   contacts: Partial<Contact>[],
-  reference: string,
+  /** @deprecated No longer used; contacts are managed via garbage collection */
+  _reference?: string,
   replaceExisting = false,
 ): LoadContactAction => ({
   type: LOAD_CONTACT_ACTION,
   contacts,
-  reference,
   replaceExisting,
 });
 
+// eslint-disable-next-line import/no-unused-modules
 export const initialState: ExistingContactsState = {};
 
 export const loadContactReducer = (state = initialState, action: LoadContactAction) => {
   const updateEntries = action.contacts
     .filter(c => {
-      return (
-        (action.reference && !(state[c.id]?.references ?? new Set()).has(action.reference)) || action.replaceExisting
-      );
+      return action.replaceExisting || !state[c.id];
     })
     .map(c => {
-      const current = state[c.id] ?? { references: new Set() };
       const { draftContact, ...currentContact } = state[c.id] ?? {
         categories: {
           expanded: {},
           gridView: false,
         },
       };
+
+      const savedContact = action.replaceExisting || !state[c.id] ? c : state[c.id].savedContact;
       return [
         c.id,
         {
-          metadata: newContactMetaData(true),
+          metadata: newContactMetaData({ createdAt: savedContact?.createdAt }),
           ...currentContact,
-          savedContact: action.replaceExisting || !current.references.size ? c : state[c.id].savedContact,
-          references: action.reference ? current.references.add(action.reference) : current.references,
+          savedContact,
+          lastReferencedDate: new Date(),
           draftContact: action.replaceExisting ? undefined : draftContact,
         },
       ];
@@ -156,61 +157,6 @@ export const loadContactReducer = (state = initialState, action: LoadContactActi
     ...Object.fromEntries(updateEntries),
   };
 };
-
-export const RELEASE_CONTACT_ACTION = 'RELEASE_CONTACT_ACTION';
-
-type ReleaseContactAction = {
-  type: typeof RELEASE_CONTACT_ACTION;
-  ids?: string[];
-  reference: string;
-};
-
-const releaseContactStatesById = (
-  state: ExistingContactsState,
-  ids: string[],
-  reference: string,
-): ExistingContactsState => {
-  const updateKvps = ids
-    .map(id => {
-      const current = state[id];
-      if (!current) {
-        console.warn(
-          `Tried to release contact id ${id} but wasn't in the redux state. You should only release previously loaded contacts once`,
-        );
-        return [id, undefined];
-      }
-      current.references.delete(reference);
-      return [id, current];
-    })
-    .filter(([, ecs]) => typeof ecs === 'object' && ecs.references.size > 0);
-  return {
-    ...omit(state, ...ids),
-    ...Object.fromEntries(updateKvps),
-  };
-};
-
-export const releaseAllContactStates = (state: ExistingContactsState, reference: string) =>
-  releaseContactStatesById(state, Object.keys(state), reference);
-
-export const releaseContact = (id: string, reference: string): ReleaseContactAction => ({
-  type: RELEASE_CONTACT_ACTION,
-  ids: [id],
-  reference,
-});
-
-export const releaseContacts = (ids: string[], reference: string): ReleaseContactAction => ({
-  type: RELEASE_CONTACT_ACTION,
-  ids,
-  reference,
-});
-
-export const releaseAllContacts = (reference: string): ReleaseContactAction => ({
-  type: RELEASE_CONTACT_ACTION,
-  reference,
-});
-
-export const releaseContactReducer = (state: ExistingContactsState, { ids, reference }: ReleaseContactAction) =>
-  ids ? releaseContactStatesById(state, ids, reference) : releaseAllContactStates(state, reference);
 
 export const EXISTING_CONTACT_LOAD_TRANSCRIPT = 'EXISTING_CONTACT_LOAD_TRANSCRIPT';
 
@@ -241,6 +187,7 @@ export const loadTranscriptReducer = (
     ...state,
     [action.contactId]: {
       ...state[action.contactId],
+      lastReferencedDate: new Date(),
       transcript: action.transcript,
     },
   };
@@ -271,6 +218,7 @@ export const toggleCategoryExpandedReducer = (state: ExistingContactsState, acti
     ...state,
     [action.contactId]: {
       ...state[action.contactId],
+      lastReferencedDate: new Date(),
       metadata: {
         ...state[action.contactId].metadata,
         categories: {
@@ -310,6 +258,7 @@ export const setCategoriesGridViewReducer = (state: ExistingContactsState, actio
     ...state,
     [action.contactId]: {
       ...state[action.contactId],
+      lastReferencedDate: new Date(),
       metadata: {
         ...state[action.contactId].metadata,
         categories: {
@@ -355,6 +304,7 @@ export const setContactDialogStateReducer = (
     ...state,
     [contactId]: {
       ...state[contactId],
+      lastReferencedDate: new Date(),
       metadata: {
         ...state[contactId].metadata,
         draft: {
@@ -377,11 +327,13 @@ type UpdateDraftAction = {
   draft?: ContactDraftChanges;
 };
 
-export const updateDraft = (contactId: string, draft: ContactDraftChanges): UpdateDraftAction => ({
-  type: EXISTING_CONTACT_UPDATE_DRAFT_ACTION,
-  contactId,
-  draft,
-});
+export const updateDraft = (contactId: string, draft: ContactDraftChanges): UpdateDraftAction => {
+  return {
+    type: EXISTING_CONTACT_UPDATE_DRAFT_ACTION,
+    contactId,
+    draft,
+  };
+};
 
 export const clearDraft = (contactId: string): UpdateDraftAction => ({
   type: EXISTING_CONTACT_UPDATE_DRAFT_ACTION,
@@ -402,8 +354,9 @@ export const updateDraftReducer = (
   }
 
   const definition =
-    configState.definitionVersions[state[contactId].savedContact.rawJson.definitionVersion] ??
-    configState.currentDefinitionVersion;
+    configState.definitionVersions[
+      state[contactId].savedContact.definitionVersion ?? state[contactId].savedContact.rawJson.definitionVersion
+    ] ?? configState.currentDefinitionVersion;
 
   if (draft?.rawJson) {
     // Transform from RHF friendly values to the state we want in redux
@@ -412,6 +365,7 @@ export const updateDraftReducer = (
       ...state,
       [contactId]: {
         ...state[contactId],
+        lastReferencedDate: new Date(),
         draftContact: {
           ...state[contactId].draftContact,
           ...draft,
@@ -428,6 +382,7 @@ export const updateDraftReducer = (
     ...state,
     [contactId]: {
       ...state[contactId],
+      lastReferencedDate: new Date(),
       draftContact: draft,
     },
   };
@@ -494,6 +449,7 @@ export const createDraftReducer = (state: ExistingContactsState, action: CreateD
     ...state,
     [action.contactId]: {
       ...state[action.contactId],
+      lastReferencedDate: new Date(),
       draftContact: newDraft,
     },
   };
@@ -501,7 +457,6 @@ export const createDraftReducer = (state: ExistingContactsState, action: CreateD
 
 export type ExistingContactAction =
   | LoadContactAction
-  | ReleaseContactAction
   | LoadTranscriptAction
   | ToggleCategoryExpandedAction
   | SetCategoriesGridViewAction

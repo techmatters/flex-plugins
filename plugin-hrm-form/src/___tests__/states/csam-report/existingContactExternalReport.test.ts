@@ -23,7 +23,7 @@ import { CSAMReportEntry } from '../../../types/types';
 
 const BASELINE_STATE: ExistingContactsState = {
   exists: {
-    references: new Set([]),
+    lastReferencedDate: new Date(),
     categories: { gridView: false, expanded: {} },
     savedContact: {
       contactId: '',
@@ -63,6 +63,7 @@ describe('addExternalReportEntryReducer', () => {
       ...BASELINE_STATE,
       exists: {
         ...BASELINE_STATE.exists,
+        lastReferencedDate: expect.any(Date),
         savedContact: { ...BASELINE_STATE.exists.savedContact, csamReports: [entry] },
       },
     });
@@ -83,6 +84,7 @@ describe('addExternalReportEntryReducer', () => {
       ...BASELINE_STATE,
       exists: {
         ...BASELINE_STATE.exists,
+        lastReferencedDate: expect.any(Date),
         savedContact: { ...BASELINE_STATE.exists.savedContact, csamReports: [entry, { ...entry, id: 1234 }] },
       },
     });

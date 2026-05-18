@@ -2,6 +2,18 @@ data "aws_ssm_parameter" "secrets" {
   name = "/terraform/twilio-iac/${var.environment}/${var.short_helpline}/secrets.json"
 }
 
+data "aws_ssm_parameter" "datadog_app_key" {
+  name ="/flex-plugins/twilio-iac/datadog/app_key"
+}
+
+data "aws_ssm_parameter" "datadog_api_key" {
+  name ="/flex-plugins/twilio-iac/datadog/api_key"
+}
+
+provider "datadog" {
+  api_key = data.aws_ssm_parameter.datadog_api_key.value
+  app_key = data.aws_ssm_parameter.datadog_app_key.value
+}
 data "aws_caller_identity" "current" {}
 
 locals {
@@ -17,7 +29,10 @@ locals {
   services_flex_chat_service_sid        = local.provision_config.services_flex_chat_service_sid
   task_router_workflow_sids             = local.provision_config.task_router_workflow_sids
   task_router_task_channel_sids         = local.provision_config.task_router_task_channel_sids
-
+  task_router_task_queue_sids           = local.provision_config.task_router_task_queue_sids
+  system_down_config = var.enable_system_down ? data.terraform_remote_state.system_down[0].outputs : {}
+  system_down_studio_subflow_sid = var.enable_system_down ? local.system_down_config.system_down_studio_subflow_sid : ""
+  debug_studio_subflow_sid = var.enable_system_down ? local.system_down_config.debug_studio_subflow_sid : ""
 
   stage = "configure"
 }
@@ -29,7 +44,23 @@ data "terraform_remote_state" "provision" {
     bucket   = "tl-terraform-state-${var.environment}"
     key      = "twilio/${var.short_helpline}/provision/terraform.tfstate"
     region   = "us-east-1"
-    role_arn = "arn:aws:iam::${local.aws_account_id}:role/tf-twilio-iac-${var.environment}"
+    assume_role = {
+      role_arn = "arn:aws:iam::${local.aws_account_id}:role/tf-twilio-iac-${var.environment}"
+    }
+  }
+}
+
+data "terraform_remote_state" "system_down" {
+  count   = var.enable_system_down ? 1 : 0
+  backend = "s3"
+  
+  config = {
+    bucket   = "tl-terraform-state-${var.environment}"
+    key      = "twilio/${var.short_helpline}/system-down/terraform.tfstate"
+    region   = "us-east-1"
+    assume_role = {
+      role_arn = "arn:aws:iam::${local.aws_account_id}:role/tf-twilio-iac-${var.environment}"
+    }
   }
 }
 
@@ -44,6 +75,8 @@ module "channel" {
   flex_chat_service_sid      = local.services_flex_chat_service_sid
   workflow_sids              = local.task_router_workflow_sids
   task_channel_sids          = local.task_router_task_channel_sids
+  system_down_studio_subflow_sid = local.system_down_studio_subflow_sid
+  debug_studio_subflow_sid   = local.debug_studio_subflow_sid
   channel_attributes         = var.channel_attributes
   channels                   = var.channels
   enable_post_survey         = var.enable_post_survey
@@ -53,12 +86,35 @@ module "channel" {
   task_language              = var.task_language
   helpline                   = var.helpline
   short_helpline             = upper(var.short_helpline)
-  serverless_url             = local.serverless_url
-  serverless_service_sid     = local.serverless_service_sid
-  serverless_environment_sid = local.serverless_environment_production_sid
+  twilio_account_sid                         = local.secrets.twilio_account_sid
+  serverless_url                             = local.serverless_url
+  get_profile_flags_for_identifier_base_url = var.get_profile_flags_for_identifier_base_url == "" ? local.serverless_url : "${var.get_profile_flags_for_identifier_base_url}/${local.secrets.twilio_account_sid}"
+  serverless_service_sid                     = local.serverless_service_sid
+  serverless_environment_sid                 = local.serverless_environment_production_sid
+  region                                     = var.helpline_region
+  base_priority                              = 500
 }
 
+module "datadog" {
+  source = "../../datadog/v1"
+  enable_datadog_monitoring = var.enable_datadog_monitoring
+  short_helpline    = upper(var.short_helpline)
+  short_environment = var.short_environment
+  channel_studio_flow_sids = module.channel.channel_studio_flows_sids
+}
 
+resource "aws_ssm_parameter" "permission_config" {
+  name        = "/${lower(var.environment)}/config/${nonsensitive(local.secrets.twilio_account_sid)}/permission_config"
+  type        = "SecureString"
+  value       = var.permission_config
+  description = "Twilio account - permission config to use for the given account"
+
+  tags = {
+    Environment = lower(var.environment)
+    Name        = "/${lower(var.environment)}/config/${nonsensitive(local.secrets.twilio_account_sid)}/permission_config"
+    Terraform   = true
+  }
+}
 
 resource "aws_ssm_parameter" "transcript_retention_override" {
   count = var.hrm_transcript_retention_days_override >= 0 ? 1 : 0
@@ -68,7 +124,21 @@ resource "aws_ssm_parameter" "transcript_retention_override" {
   value = var.hrm_transcript_retention_days_override
 }
 
+resource "aws_ssm_parameter" "index_transcripts_for_search" {
+  count = var.hrm_index_transcripts_for_search == true ? 0 : 1
 
+  name  = "/${var.environment}/hrm/${local.secrets.twilio_account_sid}/index_transcripts_for_search"
+  type  = "String"
+  value = var.hrm_index_transcripts_for_search
+}
+
+resource "aws_ssm_parameter" "operating_hours_enforced_override" {
+  count = var.environment == "staging" ? 1 : 0
+
+  name  = "/${var.environment}/twilio/${local.secrets.twilio_account_sid}/operating_hours_enforced_override"
+  type  = "SecureString"
+  value = var.operating_hours_enforced_override
+}
 
 resource "aws_ssm_parameter" "case_status_transition" {
   count       = var.case_status_transition_rules != null ? 1 : 0
@@ -83,4 +153,60 @@ resource "aws_ssm_parameter" "case_status_transition" {
     env         = var.environment
     Terraform   = true
   }
+}
+
+data "aws_ssm_parameter" "hrm_static_api_key_legacy" {
+  name     = "${var.short_environment}_TWILIO_${upper(var.short_helpline)}_HRM_STATIC_KEY"
+  #depends_on = [ module.hrmServiceIntegration.null_resource.hrm_static_api_key]
+}
+
+// Legacy, can be removed once HRM v1.45.x and Flex v2.44.x are fully deployed
+resource "aws_ssm_parameter" "hrm_static_api_key_v2" {
+  name        = "/${lower(var.environment)}/twilio/${local.secrets.twilio_account_sid}/static_key"
+  type        = "SecureString"
+  value       = data.aws_ssm_parameter.hrm_static_api_key_legacy.value
+  description = "Twilio API Key"
+
+  tags = {
+    Environment = lower(var.environment)
+    Name        = "/${lower(var.environment)}/twilio/${local.secrets.twilio_account_sid}/static_key"
+    Terraform   = true
+  }
+}
+
+resource "aws_ssm_parameter" "hrm_internal_api_static_key" {
+  name        = "/${lower(var.environment)}/hrm/service/${lower(var.helpline_region)}/static_key/${nonsensitive(local.secrets.twilio_account_sid)}"
+  type        = "SecureString"
+  value       = data.aws_ssm_parameter.hrm_static_api_key_legacy.value
+  description = "Static key for internal HRM API access"
+
+  tags = {
+    Environment = lower(var.environment)
+    Name        = "/${lower(var.environment)}/hrm/service/${lower(var.helpline_region)}/static_key/${nonsensitive(local.secrets.twilio_account_sid)}"
+    Terraform   = true
+  }
+}
+
+
+resource "aws_ssm_parameter" "twilio_switchboard_queue_sid" {
+  count       = contains(keys(local.task_router_task_queue_sids), "switchboard") ? 1 : 0
+  name        = "/${lower(var.environment)}/twilio/${nonsensitive(local.secrets.twilio_account_sid)}/switchboard_queue_sid"
+  type        = "SecureString"
+  value       = local.task_router_task_queue_sids["switchboard"]
+  description = "Twilio account - Switchboard Queue SID"
+
+  tags = {
+    Environment = lower(var.environment)
+    Name        = "/${lower(var.environment)}/twilio/${nonsensitive(local.secrets.twilio_account_sid)}/switchboard_queue_sid"
+    Terraform   = true
+  }
+}
+
+
+module event {
+  source              = "../../events/v1"
+  default_webhook_url = "https://hrm-${lower(var.environment)}.tl.techmatters.org/lambda/twilioEventStreams" 
+  subscriptions       = var.subscriptions
+  short_helpline      = var.short_helpline
+  short_environment   = var.short_environment
 }

@@ -16,21 +16,29 @@
 
 import { Template } from '@twilio/flex-ui';
 import React, { useState } from 'react';
-import { connect } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import format from 'date-fns/format';
 
-import type { TwilioStoredMedia, S3StoredTranscript } from '../../../types/types';
-import { RootState } from '../../../states';
+import type { TwilioStoredMedia, S3StoredTranscript, Contact } from '../../../types/types';
+import type { RootState } from '../../../states';
 import { fetchHrmApi, generateSignedURLPath } from '../../../services/fetchHrmApi';
-import { loadTranscript, TranscriptMessage, TranscriptResult } from '../../../states/contacts/existingContacts';
+import {
+  loadTranscript,
+  Transcript,
+  TranscriptMessage,
+  TranscriptResult,
+} from '../../../states/contacts/existingContacts';
+import type { GroupedMessage } from '../../Messaging/MessageItem';
 import { Box } from '../../../styles';
-import { GroupedMessage } from '../../Messaging/MessageItem';
 import { MessageList } from '../../Messaging/MessageList';
 import { ErrorFont, ItalicFont, LoadMediaButton, LoadMediaButtonText } from './styles';
 import { contactFormsBase, namespace } from '../../../states/storeNamespaces';
+import { PermissionActions } from '../../../permissions/actions';
+import { getInitializedCan } from '../../../permissions/rules';
+import selectContactStateByContactId from '../../../states/contacts/selectContactStateByContactId';
 
-type OwnProps = {
+type Props = {
   contactId: string;
   twilioStoredTranscript?: TwilioStoredMedia;
   externalStoredTranscript?: S3StoredTranscript;
@@ -77,19 +85,38 @@ const groupMessagesByDate = (m: MessageWithSenderInfo, index: number, ms: Messag
 const groupMessagesAndAddSenderInfo = (transcript: TranscriptResult['transcript']): GroupedMessage[] =>
   transcript.messages.map(addSenderInfoToMessage(transcript.participants)).map(groupMessagesByDate);
 
-// eslint-disable-next-line no-use-before-define
-type Props = OwnProps & ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps;
+const filterTranscript = ({
+  channel,
+  transcript,
+}: {
+  channel: Contact['channel'];
+  transcript: Transcript;
+}): Transcript => {
+  let filteredMessages = transcript.messages;
+
+  if (channel === 'web') {
+    const can = getInitializedCan();
+    const maskIdentifiers = !can(PermissionActions.VIEW_IDENTIFIERS);
+    // first message is filtered in webchat, following the logic from maskManagerStringsWithIdentifiers (plugin-hrm-form/src/maskIdentifiers/index.ts)
+    if (maskIdentifiers) {
+      filteredMessages = filteredMessages.splice(1);
+    }
+  }
+
+  return { ...transcript, messages: filteredMessages };
+};
 
 const TranscriptSection: React.FC<Props> = ({
   contactId,
   twilioStoredTranscript,
   externalStoredTranscript,
   loadConversationIntoOverlay,
-  transcript,
-  loadTranscript,
-
-  // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
+  const dispatch = useDispatch();
+  const { channel } = useSelector((state: RootState) => selectContactStateByContactId(state, contactId)?.savedContact);
+  const transcript = useSelector(
+    (state: RootState) => state[namespace][contactFormsBase].existingContacts[contactId]?.transcript,
+  );
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState(null);
 
@@ -142,7 +169,7 @@ const TranscriptSection: React.FC<Props> = ({
       validateFetchResponse(transcriptResponse);
       const transcriptJson: TranscriptResult = await transcriptResponse.json();
 
-      loadTranscript(contactId, transcriptJson.transcript);
+      dispatch(loadTranscript(contactId, transcriptJson.transcript));
 
       setLoading(false);
     } catch (err) {
@@ -175,13 +202,28 @@ const TranscriptSection: React.FC<Props> = ({
     );
   }
 
-  // Preferred case, external transcript is already in local state
   if (transcript) {
-    const groupedMessages = groupMessagesAndAddSenderInfo(transcript);
+    const filteredTranscript = filterTranscript({ channel, transcript });
+    const groupedMessages = groupMessagesAndAddSenderInfo(filteredTranscript);
+    const updatedMessages = groupedMessages.map(message => {
+      if (message.media) {
+        // This updates the message object with the media data to be used on transcript
+        const mediaType = message.media.content_type?.split('/')[1];
+        message.serviceSid = transcript.serviceSid;
+        message.mediaType = mediaType;
+
+        if (message.media.filename) {
+          message.body = message.media.filename;
+        } else {
+          message.body = `untitled.${mediaType}`;
+        }
+      }
+      return message;
+    });
 
     return (
       <Box padding="0 3.75% 50px 3.75%" width="100%">
-        <MessageList messages={groupedMessages} />
+        <MessageList messages={updatedMessages} />
       </Box>
     );
   }
@@ -225,12 +267,4 @@ const TranscriptSection: React.FC<Props> = ({
   );
 };
 
-const mapStateToProps = (state: RootState, ownProps: OwnProps) => ({
-  transcript: state[namespace][contactFormsBase].existingContacts[ownProps.contactId]?.transcript,
-});
-
-const mapDispatchToProps = {
-  loadTranscript,
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(TranscriptSection);
+export default TranscriptSection;

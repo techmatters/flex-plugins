@@ -1,0 +1,45 @@
+{
+    "gender": {
+        "description": "Helpline Specific zm/configs/lex/common/slot_types Gender Slot Type",
+        "value_selection_strategy": "TOP_RESOLUTION",
+        "values": {
+            "Unknown": {
+                "synonyms": [
+                    "haijulikani",
+                    "sijui",
+                    "bila kujulikana",
+                    "mgeni",
+                    "asiyejulikana",
+                    "other",
+                    "don't know"
+                ]
+            },
+            "Female": {
+                "synonyms": [
+                    "mwanamke",
+                    "msichana",
+                    "binti",
+                    "ke",
+                    "dada",
+                    "woman",
+                    "girl",
+                    "lady",
+                    "female"
+                ]
+            },
+            "Male": {
+                "synonyms": [
+                    "mwanamume",
+                    "mvulana",
+                    "kijana",
+                    "me",
+                    "ndugu",
+                    "man",
+                    "boy",
+                    "gentleman",
+                    "male"
+                ]
+            }
+        }
+    }
+}

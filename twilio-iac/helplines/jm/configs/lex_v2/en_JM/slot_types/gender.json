@@ -1,0 +1,108 @@
+{
+    "slotTypeName": "gender",
+    "slotTypeValues": [
+        {
+            "sampleValue": {
+                "value": "Unknown"
+            },
+            "synonyms": [
+                {
+                    "value": "prefer not"
+                },
+                {
+                    "value": "i dont know"
+                },
+                {
+                    "value": "don't want to say"
+                },
+                {
+                    "value": "i don't know"
+                },
+                {
+                    "value": "dont want to say"
+                },
+                {
+                    "value": "prefer not to say"
+                },
+                {
+                    "value": "x"
+                },
+                {
+                    "value": "no thank you"
+                },
+                {
+                    "value": "no"
+                },
+                {
+                    "value": "idk"
+                }
+            ]
+        },
+        {
+            "sampleValue": {
+                "value": "Male"
+            },
+            "synonyms": [
+                {
+                    "value": "b"
+                },
+                {
+                    "value": "boy"
+                },
+                {
+                    "value": "male"
+                },
+                {
+                    "value": "man"
+                },
+                {
+                    "value": "men"
+                },
+                {
+                    "value": "m"
+                }
+            ]
+        },
+        {
+            "sampleValue": {
+                "value": "Female"
+            },
+            "synonyms": [
+                {
+                    "value": "women"
+                },
+                {
+                    "value": "woman"
+                },
+                {
+                    "value": "girl"
+                },
+                {
+                    "value": "fem"
+                },
+                {
+                    "value": "gal"
+                },
+                {
+                    "value": "f"
+                },
+                {
+                    "value": "g"
+                },
+                {
+                    "value": "fe"
+                },
+                {
+                    "value": "femme"
+                },
+                {
+                    "value": "female"
+                }
+            ]
+        }
+
+    ],
+    "valueSelectionSetting": {
+        "resolutionStrategy": "TopResolution"
+    }
+}

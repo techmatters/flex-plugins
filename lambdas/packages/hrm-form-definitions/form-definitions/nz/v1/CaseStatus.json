@@ -1,0 +1,57 @@
+{
+  "open": {
+    "value": "open",
+    "label": "Open",
+    "color": "green",
+    "transitions": [
+      "cdmrNeeded",
+      "readyForReview",
+      "forHelplineLeadershipReview",
+      "closed"
+    ]
+  },
+  "cdmrNeeded": {
+    "value": "cdmrNeeded",
+    "label": "CDMR Needed",
+    "color": "blue",
+    "transitions": [
+      "open",
+      "readyForReview",
+      "forHelplineLeadershipReview",
+      "closed"
+    ]
+  },
+  "readyForReview": {
+    "value": "readyForReview",
+    "label": "Ready for Review",
+    "color": "yellow",
+    "transitions": [
+      "open",
+      "cdmrNeeded",
+      "forHelplineLeadershipReview",
+      "closed"
+    ]
+  },
+  "forHelplineLeadershipReview": {
+    "value": "forHelplineLeadershipReview",
+    "label": "For Helpline Leadership review",
+    "color": "orange",
+    "transitions": [
+      "open",
+      "cdmrNeeded",
+      "readyForReview",
+      "closed"
+    ]
+  },
+  "closed": {
+    "value": "closed",
+    "label": "Closed",
+    "color": "red",
+    "transitions": [
+      "open",
+      "cdmrNeeded",
+      "readyForReview",
+      "forHelplineLeadershipReview"
+    ]
+  }
+}

@@ -1,0 +1,124 @@
+[
+  {
+    "name": "date",
+    "type": "date-input",
+    "label": "Data do incidente",
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    },
+    "isPII": false
+  },
+  {
+    "name": "duration",
+    "label": "Duração",
+    "type": "select",
+    "options": [
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "Em andamento",
+        "label": "Em andamento"
+      },
+      {
+        "value": "Uma vez",
+        "label": "Uma vez"
+      },
+      {
+        "value": "Outros",
+        "label": "Outros"
+      }
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    },
+    "isPII": false
+  },
+  {
+    "name": "location",
+    "label": "Ambiente",
+    "type": "select",
+    "options": [
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "Desconhecido",
+        "label": "Desconhecido"
+      },
+      {
+        "value": "Aplicativos de mensagens",
+        "label": "Aplicativos de mensagens"
+      },
+      {
+        "value": "Casa (própria)",
+        "label": "Casa (própria)"
+      },
+      {
+        "value": "Casa (terceiros)",
+        "label": "Casa (terceiros)"
+      },
+      {
+        "value": "Escola/Instituição de Ensino",
+        "label": "Escola/Instituição de Ensino"
+      },
+      {
+        "value": "Redes Sociais",
+        "label": "Redes Sociais"
+      },
+      {
+        "value": "Email",
+        "label": "Email"
+      },
+      {
+        "value": "Sites de jogos",
+        "label": "Sites de jogos"
+      },
+      {
+        "value": "Rua/Espaços Públicos",
+        "label": "Rua/Espaços Públicos"
+      },
+      {
+        "value": "Outros",
+        "label": "Outros"
+      },
+      {
+        "value": "N/A",
+        "label": "N/A"
+      }
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    },
+    "isPII": false
+  },
+  {
+    "name": "isCaregiverAware",
+    "label": "Responsável/cuidador esrá ciente?",
+    "type": "mixed-checkbox",
+    "isPII": false
+  },
+  {
+    "name": "incidentWitnessed",
+    "label": "O incidente foi testemunhado por alguém?",
+    "type": "mixed-checkbox",
+    "isPII": false
+  },
+  {
+    "name": "abuseReportedElsewhere",
+    "label": "O abuso foi reportado em algum lugar?",
+    "type": "mixed-checkbox",
+    "isPII": false
+  },
+  {
+    "name": "whereElseBeenReported",
+    "label": "Onde mais o abuso foi reportado?",
+    "type": "input",
+    "isPII": true
+  }
+]

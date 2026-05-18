@@ -30,6 +30,31 @@ resource "aws_s3_bucket" "docs" {
   provider = aws.bucket
 }
 
+resource "aws_s3_bucket_versioning" "docs" {
+  bucket   = aws_s3_bucket.docs.bucket
+  provider = aws.bucket
+  versioning_configuration {
+    status = "Enabled"
+  }
+}
+
+resource "aws_s3_bucket_lifecycle_configuration" "docs" {
+  bucket   = aws_s3_bucket.docs.id
+  provider = aws.bucket
+
+  rule {
+    id     = "expire-noncurrent-versions-and-abort-multipart-uploads"
+    status = "Enabled"
+
+    noncurrent_version_expiration {
+      noncurrent_days = 365
+    }
+
+    abort_incomplete_multipart_upload {
+      days_after_initiation = 7
+    }
+  }
+}
 resource "aws_s3_bucket_public_access_block" "docs" {
   bucket                  = aws_s3_bucket.docs.id
   block_public_acls       = true
@@ -51,6 +76,7 @@ resource "aws_s3_bucket_cors_configuration" "docs" {
 }
 
 resource "aws_s3_bucket_server_side_encryption_configuration" "docs" {
+
   bucket   = aws_s3_bucket.docs.bucket
   provider = aws.bucket
   rule {
@@ -68,21 +94,27 @@ resource "aws_s3_bucket_ownership_controls" "docs" {
   }
 }
 
-resource "aws_s3_bucket_lifecycle_configuration" "hrm_export_expiry" {
+resource "aws_s3_bucket_lifecycle_configuration" "s3_lifecycle_rules" {
   bucket = aws_s3_bucket.docs.bucket
   provider = aws.bucket
-  rule {
-    expiration {
-      days = 30
-    }
-    filter {
-      prefix = "hrm-data/"
-    }
-    id = "HRM Exported Data Expiration Policy"
-    status = "Enabled"
-  }
 
+  dynamic "rule" {
+    for_each = var.s3_lifecycle_rules
+    content {
+      id     = rule.value.id
+      status = "Enabled"
+      
+      filter {
+        prefix = rule.value.prefix
+      }
+
+      expiration {
+        days = rule.value.expiration_in_days
+      }
+    }
+  }
 }
+
 
 resource "aws_s3_bucket" "chat" {
   bucket   = local.chat_s3_location
@@ -143,7 +175,7 @@ locals {
     OPERATING_INFO_KEY = jsonencode(["TWILIO", var.operating_info_key, "Twilio account - Operating Key info"])
     APP_ID             = jsonencode(["DATADOG", var.datadog_app_id, "Datadog - Application ID"])
     ACCESS_TOKEN       = jsonencode(["DATADOG", var.datadog_access_token, "Datadog - Access Token"])
-    }
+  }
 }
 
 /****************************************************************

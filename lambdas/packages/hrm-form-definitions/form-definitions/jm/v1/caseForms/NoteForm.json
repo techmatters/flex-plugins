@@ -1,0 +1,47 @@
+[
+  {
+    "name": "subjective",
+    "label": "Subjective",
+    "type": "textarea",
+    "placeholder": "",
+    "rows": 10,
+    "width": 250,
+    "isPII": true
+  },
+  {
+    "name": "objective",
+    "label": "Objective",
+    "type": "textarea",
+    "placeholder": "",
+    "rows": 10,
+    "width": 250,
+    "isPII": true
+  },
+  {
+    "name": "assessment",
+    "label": "Assessment",
+    "type": "textarea",
+    "placeholder": "",
+    "rows": 10,
+    "width": 250,
+    "isPII": true
+  },
+  {
+    "name": "plan",
+    "label": "Plan",
+    "type": "textarea",
+    "placeholder": "",
+    "rows": 10,
+    "width": 250,
+    "isPII": true
+  },
+  {
+    "name": "notes",
+    "label": "General Comments (Interns)",
+    "type": "textarea",
+    "placeholder": "",
+    "rows": 10,
+    "width": 250,
+    "isPII": true
+  }
+]

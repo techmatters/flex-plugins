@@ -15,10 +15,9 @@
  */
 
 import React from 'react';
-import { Button, IconButton, styled } from '@twilio/flex-ui';
-import { ButtonBase } from '@material-ui/core';
+import { IconButton, styled } from '@twilio/flex-ui';
 
-import { Column, FontOpenSans, FormInput, Row } from '../../styles';
+import { Column, FontOpenSans, FormInput, Row, TertiaryButton } from '../../styles';
 import HrmTheme from '../../styles/HrmTheme';
 
 export const CaseLayout = styled('div')`
@@ -82,31 +81,11 @@ export const DetailDescription = styled(DetailEntryText)`
 `;
 DetailDescription.displayName = 'DetailDescription';
 
-type ViewButtonProps = {
-  onClick: () => void;
-};
-
-export const ViewButton = styled(props => <Button roundCorners={false} {...props} />)<ViewButtonProps>`
-  color: ${HrmTheme.colors.categoryTextColor};
-  background-color: #ecedf1;
-  height: 28px;
-  border-radius: 4px;
-  letter-spacing: normal;
-  font-size: 13px;
-  box-shadow: none;
-  border: none;
-
-  :focus {
-    outline: auto;
-  }
-`;
-ViewButton.displayName = 'ViewButton';
-
 type CaseAddButtonProps = {
   withDivider: boolean;
 };
 
-export const CaseAddButton = styled(ButtonBase)<CaseAddButtonProps>`
+export const CaseAddButton = styled(TertiaryButton)<CaseAddButtonProps>`
   && {
     margin-left: auto;
     padding-left: ${props => (props.withDivider ? '12px' : '0px')};
@@ -196,12 +175,6 @@ export const TimelineText = styled(FontOpenSans)`
 `;
 TimelineText.displayName = 'TimelineText';
 
-export const TimelineFileName = styled(TimelineText)`
-  max-width: 100px;
-  min-width: 100px;
-`;
-TimelineFileName.displayName = 'TimelineFileName';
-
 export const TimelineLabel = styled(TimelineText)`
   color: #9b9b9b;
 `;
@@ -213,11 +186,6 @@ export const TimelineCallTypeIcon = styled('div')`
   flex-direction: row;
 `;
 TimelineCallTypeIcon.displayName = 'TimelineCallTypeIcon';
-
-export const InformationBoldText = styled(TimelineDate)`
-  text-align: left;
-`;
-InformationBoldText.displayName = 'InformationBoldText';
 
 export const PlaceHolderText = styled(TimelineText)`
   ${placeHolderTextStyle}
@@ -234,7 +202,7 @@ export const TimelineIconContainer = styled('div')`
 `;
 TimelineIconContainer.displayName = 'TimelineIconContainer';
 
-export const CaseSummaryTextArea = styled(BaseTextArea)`
+export const CaseStyledTextArea = styled(BaseTextArea)`
   background-color: #f6f6f67d;
   height: 100%;
   width: 100%;
@@ -244,7 +212,7 @@ export const CaseSummaryTextArea = styled(BaseTextArea)`
   -moz-box-sizing: border-box;
   box-sizing: border-box;
 `;
-CaseSummaryTextArea.displayName = 'CaseSummaryTextArea';
+CaseStyledTextArea.displayName = 'CaseStyledTextArea';
 
 export const RowItemContainer = styled(Row)`
   white-space: nowrap;
@@ -359,10 +327,12 @@ type CaseDetailsBorderProps = {
   paddingBottom?: string;
   sectionTypeId?: boolean;
   marginBottom?: string;
+  marginTop?: string;
 };
 
 export const CaseDetailsBorder = styled('div')<CaseDetailsBorderProps>`
   border-bottom: ${props => (props.sectionTypeId ? 'none' : '1px solid #e5e6e7')};
   margin-bottom: ${props => (props.marginBottom ? props.marginBottom : '')};
   padding-bottom: ${props => (props.paddingBottom ? props.paddingBottom : '25px')};
+  margin-top: ${props => (props.marginTop ? props.marginTop : '')};
 `;

@@ -26,7 +26,6 @@ import { newGetTimelineAsyncAction, PaginationSettings, timelineReducer } from '
 import { RecursivePartial } from '../../RecursivePartial';
 import { CaseSectionIdentifierTimelineActivity, CaseStateEntry, TimelineActivity } from '../../../states/case/types';
 import { FullCaseSection } from '../../../services/caseSectionService';
-import { WellKnownCaseSection } from '../../../types/types';
 
 jest.mock('../../../services/CaseService', () => ({
   getCaseTimeline: jest.fn(),
@@ -51,7 +50,7 @@ const partialState: RecursivePartial<HrmState> = {
       [TEST_CASE_ID]: {
         connectedCase: VALID_EMPTY_CASE,
         timelines: {},
-        references: {},
+        lastReferencedDate: new Date(),
         caseWorkingCopy: undefined,
         sections: {},
       },
@@ -76,7 +75,7 @@ const testStore = (stateChanges: HrmState) =>
 const mockGetCaseTimeline = getCaseTimeline as jest.MockedFunction<typeof getCaseTimeline>;
 
 const newSampleCaseSection = (
-  sectionType: WellKnownCaseSection,
+  sectionType: string,
   sectionId: string,
   eventTimestampHoursAfterBaseline: number = 0,
 ): FullCaseSection => ({
@@ -93,14 +92,10 @@ const wrapCaseSectionInTimelineActivity = (section: FullCaseSection): TimelineAc
   activityType: 'case-section',
   activity: section,
 });
-const newCaseSectionIdTimelineActivity = ({
-  sectionType,
-  sectionId,
-  eventTimestamp,
-}: FullCaseSection): CaseSectionIdentifierTimelineActivity => ({
-  timestamp: eventTimestamp,
+const newCaseSectionIdTimelineActivity = (activity: FullCaseSection): CaseSectionIdentifierTimelineActivity => ({
+  timestamp: activity.eventTimestamp,
   activityType: 'case-section-id',
-  activity: { sectionType, sectionId },
+  activity,
 });
 
 describe('newGetTimelineAsyncAction', () => {
@@ -116,6 +111,7 @@ describe('newGetTimelineAsyncAction', () => {
       ['note', 'household'],
       true,
       SAMPLE_PAGINATION,
+      'test-reference',
     );
     expect(getCaseTimeline).toHaveBeenCalledWith(TEST_CASE_ID, ['note', 'household'], true, SAMPLE_PAGINATION);
 
@@ -125,6 +121,7 @@ describe('newGetTimelineAsyncAction', () => {
       timelineId: TEST_TIMELINE_ID,
       caseId: TEST_CASE_ID,
       pagination: SAMPLE_PAGINATION,
+      reference: 'test-reference',
     });
   });
 
@@ -196,24 +193,37 @@ describe('newGetTimelineAsyncAction', () => {
         const {
           connectedCase: {
             cases: {
-              [TEST_CASE_ID]: { timelines: startingTimeline, sections: startingSections, ...startingRest },
+              [TEST_CASE_ID]: {
+                timelines: startingTimeline,
+                sections: startingSections,
+                lastReferencedDate: _startingLRD,
+                ...startingRest
+              },
             },
           },
         } = getState() as HrmState;
         mockGetCaseTimeline.mockResolvedValue(apiResponse);
         await ((dispatch(
-          newGetTimelineAsyncAction(TEST_CASE_ID, TEST_TIMELINE_ID, ['note', 'household'], true, pagination),
+          newGetTimelineAsyncAction(
+            TEST_CASE_ID,
+            TEST_TIMELINE_ID,
+            ['note', 'household'],
+            true,
+            pagination,
+            'test-reference',
+          ),
         ) as unknown) as PromiseLike<void>);
         const {
           connectedCase: {
             cases: {
-              [TEST_CASE_ID]: { timelines: updatedTimeline, sections, ...rest },
+              [TEST_CASE_ID]: { timelines: updatedTimeline, sections, lastReferencedDate: updatedLRD, ...rest },
             },
           },
         } = getState() as HrmState;
         expect(updatedTimeline).toEqual(expectedTimelines);
         expect(sections).toEqual(expectedSections);
         expect(rest).toEqual(startingRest);
+        expect(updatedLRD).toBeInstanceOf(Date);
       },
     );
   });

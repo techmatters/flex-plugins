@@ -25,7 +25,7 @@ export type SetupPageReturn = {
 
 // Sometimes the browser is not ready when we try to launch a page in a lambda
 const waitForBrowser = async (browser: Browser): Promise<void> => {
-  console.log('Waiting for browser to be ready');
+  console.info('Waiting for browser to be ready');
   let count = 0;
   while (!browser.isConnected()) {
     if (count > 20) {
@@ -39,29 +39,42 @@ const waitForBrowser = async (browser: Browser): Promise<void> => {
     await new Promise((resolve) => setTimeout(resolve, 1000));
     count++;
   }
-  console.log('Browser is ready');
+  console.info('Browser is ready');
 };
 
 export const setupContextAndPage = async (browser: Browser): Promise<SetupPageReturn> => {
   await waitForBrowser(browser);
 
-  console.log('Launching page');
+  console.info('Launching page');
   const context = await browser.newContext({
     storageState: getConfigValue('storageStatePath') as string,
   });
   const page = await context.newPage();
 
   logPageTelemetry(page);
+  if (process.env.TWILIO_RUNTIME_DOMAIN) {
+    console.debug(
+      `Visiting /${process.env.TWILIO_RUNTIME_DOMAIN} to ensure future requests route to correct account`,
+    );
+    await page.goto(`/${process.env.TWILIO_RUNTIME_DOMAIN}`, { waitUntil: 'domcontentloaded' });
+    console.debug(
+      `Visited /${process.env.TWILIO_RUNTIME_DOMAIN} - waiting for logged in page element to load`,
+    );
+  } else {
+    await page.goto(`/`, { waitUntil: 'domcontentloaded' });
+  }
+  // There are multiple elements so we need to use waitForSelector instead of a locator/waitFor
+  await page.waitForSelector('h2[data-testid="side-nav-header"]', { timeout: 1200000 });
 
-  console.log('Plugin page browser session launched');
+  console.info('Plugin page browser session launched');
   return { page, context };
 };
 
 export const closePage = async (page: Page): Promise<void> => {
-  console.log('Closing page');
+  console.info('Closing page');
   try {
     await page.close();
   } catch (e) {
-    console.log('Error closing page' + e);
+    console.warn('Error closing page: ' + e);
   }
 };

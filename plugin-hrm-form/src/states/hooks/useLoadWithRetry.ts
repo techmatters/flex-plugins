@@ -13,7 +13,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
-import { useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { ParseFetchErrorResult } from '../parseFetchError';
 
@@ -41,14 +41,20 @@ export const useLoadWithRetry = ({
   shouldLoad: boolean;
   retry: boolean;
 }) => {
+  const [sholdRefresh, setShouldRefresh] = useState(true);
+  const forceRefresh = useCallback(() => {
+    setShouldRefresh(true);
+  }, []);
+
   // effect to trigger loading, if conditions are met
   useEffect(() => {
     if (!safeToLoad) return;
 
-    if (shouldLoad) {
+    if (shouldLoad && sholdRefresh) {
       loadFunction();
+      setShouldRefresh(false);
     }
-  }, [loadFunction, safeToLoad, shouldLoad]);
+  }, [loadFunction, sholdRefresh, safeToLoad, shouldLoad]);
 
   // vars used to handle the retry and backoff logic
   const retryCount = useRef(0);
@@ -86,4 +92,6 @@ export const useLoadWithRetry = ({
   useEffect(() => {
     return () => clearTimeout(timerId.current);
   }, []);
+
+  return { forceRefresh };
 };

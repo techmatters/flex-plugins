@@ -1,0 +1,10 @@
+{
+  "en": {
+    "WelcomeMsg": "Hi, this is the counsellor. How can I help you?",
+    "GoodbyeMsg": "The counselor has left the chat. Thank you for reaching out. Please contact us again if you need more help.",
+    "EndChatMsg": "You ended the chat. Thank you for reaching out. Please contact us again if you need more help.",
+    "ClosedOutOfShift": "Our counsellors are currently offline. We are here Monday – Friday, 11am-1pm & 2pm-6pm. Please note that messages sent on this platform out of these hours are not received by our team and if you need to speak to a Counsellor, call our 24 hour Tollfree Number on 116.If you feel you are in immediate danger, please call the Police on 10111.",
+    "ClosedHolidays": "Our counsellors are currently offline for the Public Holiday today. We are here on normal working days: Monday – Friday, 11am-1pm & 2pm-6pm. Please note that messages sent on this platform out of these hours are not received by our team and if you need to speak to a Counsellor, call our 24 hour Tollfree Number on 116. If you feel you are in immediate danger, please call the Police on 10111.",
+    "UnsupportedMediaErrorMsg": "Sorry, the message you just sent is unsupported and could not be delivered."
+  }
+}

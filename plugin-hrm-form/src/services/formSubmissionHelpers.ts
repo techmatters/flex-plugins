@@ -15,24 +15,23 @@
  */
 
 /* eslint-disable import/no-unused-modules */
-import { Actions, Manager } from '@twilio/flex-ui';
+import { Actions, Manager, TaskReservationStatus } from '@twilio/flex-ui';
 import { Dispatch } from 'react';
 
 import { Contact, CustomITask, isOfflineContact, isOfflineContactTask, isTwilioTask, RouterTask } from '../types/types';
 import { channelTypes } from '../states/DomainConstants';
 import { buildInsightsData } from './InsightsService';
-import { saveContact } from './ContactService';
-import { assignOfflineContactInit, assignOfflineContactResolve } from './ServerlessService';
+import { finalizeContact, saveContact } from './ContactService';
 import { getHrmConfig } from '../hrmConfig';
-import { ContactMetadata } from '../states/contacts/types';
 import * as GeneralActions from '../states/actions';
 import asyncDispatch from '../states/asyncDispatch';
 import { newClearContactAsyncAction, removeFromCaseAsyncAction } from '../states/contacts/saveContact';
 import { getOfflineContactTaskSid } from '../states/contacts/offlineContactTask';
-import '../types';
 import { CaseStateEntry } from '../states/case/types';
-import { getExternalRecordingInfo } from './getExternalRecordingInfo';
+import { getExternalRecordingInfo } from './recordingsService';
+import { assignOfflineContactInit, assignOfflineContactResolve } from './twilioTaskService';
 
+const FINISHED_TASK_STATES: TaskReservationStatus[] = ['completed', 'canceled'];
 /**
  * Function used to manually complete a task (making sure it transitions to wrapping state first).
  */
@@ -67,8 +66,7 @@ export const completeTask = (task: RouterTask, contact: Contact) =>
 export const submitContactForm = async (
   task: CustomITask,
   contact: Contact,
-  metadata: ContactMetadata,
-  caseState: CaseStateEntry,
+  caseState: Pick<CaseStateEntry, 'sections' | 'connectedCase'>,
 ) => {
   const { workerSid } = getHrmConfig();
 
@@ -76,30 +74,41 @@ export const submitContactForm = async (
     const targetWorkerSid = contact.rawJson.contactlessTask.createdOnBehalfOf as string;
     const inBehalfTask = await assignOfflineContactInit(targetWorkerSid, task.attributes);
     try {
-      const savedContact = await saveContact(task, contact, metadata, workerSid, inBehalfTask.sid);
+      const savedContact = await saveContact(task, contact, workerSid, inBehalfTask.sid);
       const finalAttributes = buildInsightsData(inBehalfTask, contact, caseState, savedContact);
+      // TODO: temporary console.warn for FS visibility
+      console.warn(
+        `[submitContactForm]: finalAttributes for task ${inBehalfTask.sid}`,
+        JSON.stringify(finalAttributes, null, 2),
+      );
       await assignOfflineContactResolve({
         action: 'complete',
         taskSid: inBehalfTask.sid,
         finalTaskAttributes: finalAttributes,
       });
-      return savedContact;
+      return finalizeContact(task, savedContact);
     } catch (err) {
       // If something went wrong remove the task for this offline contact
       assignOfflineContactResolve({
         action: 'remove',
         taskSid: inBehalfTask.sid,
       });
-      // TODO: should we do this? Should we care about removing the savedContact if it succeded? This step could break our "idempotence on contacts"
+      // TODO: should we do this? Should we care about removing the savedContact if it succeeded? This step could break our "idempotence on contacts"
 
       // Raise error to caller
       throw err;
     }
   }
 
-  const savedContact = await saveContact(task, contact, metadata, workerSid, task.taskSid);
-  const recordingsIfAvailable = await getExternalRecordingInfo(task);
-  const finalAttributes = buildInsightsData(task, contact, caseState, savedContact, recordingsIfAvailable);
-  await task.setAttributes(finalAttributes);
+  const savedContact = await saveContact(task, contact, workerSid, task.taskSid);
+  // Need to check setAttributes is a function because it won't be if it's not a current task in Flex (i.e. it was retrived by 'getTask' to be finished by a supervisor)
+  // This is a quick fix, we should add a setAttributes serverless function to use here instead so we can save the attributes in the contact
+  if (!FINISHED_TASK_STATES.includes(task.status) && typeof task.setAttributes === 'function') {
+    const recordingsIfAvailable = await getExternalRecordingInfo(task);
+    const finalAttributes = buildInsightsData(task, contact, caseState, savedContact, recordingsIfAvailable);
+    // TODO: temporary console.warn for FS visibility
+    console.warn(`[submitContactForm]: finalAttributes for task ${task.sid}`, JSON.stringify(finalAttributes, null, 2));
+    await task.setAttributes(finalAttributes);
+  }
   return savedContact;
 };

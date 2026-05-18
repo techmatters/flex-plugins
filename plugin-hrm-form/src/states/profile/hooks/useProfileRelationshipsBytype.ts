@@ -61,7 +61,7 @@ export const useProfileRelationshipsLoaderByType = ({ profileId, type, page }: U
 };
 
 export const useProfileRelationshipsByType = ({ profileId, type, page }: UseProfileRelationsByType) => {
-  // Triggerr a load on the profile relationships
+  // Trigger a load on the profile relationships
   useProfileRelationshipsLoaderByType({ profileId, type, page });
 
   const data = useSelector((state: RootState) => selectProfileRelationshipsByType(state, profileId, type))?.data;

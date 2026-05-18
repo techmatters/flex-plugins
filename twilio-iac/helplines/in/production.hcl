@@ -4,12 +4,13 @@ locals {
   config            = merge(local.common_config, local.local_config)
 
   local_config = {
-    custom_task_routing_filter_expression = "isContactlessTask==true"
+    custom_task_routing_filter_expression = "channelType IN []"
 
 
     flow_vars = {}
 
 
     channels = {}
+    get_profile_flags_for_identifier_base_url = "https://hrm-production.tl.techmatters.org/lambda/twilio/account-scoped"
   }
 }

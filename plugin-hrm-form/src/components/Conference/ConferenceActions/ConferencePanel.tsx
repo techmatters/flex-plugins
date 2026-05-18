@@ -19,17 +19,18 @@ import { Manager, Notifications, TaskContextProps, TaskHelper, Template, withTas
 import AddIcCallRounded from '@material-ui/icons/AddIcCallRounded';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { createCallStatusSyncDocument } from '../../../utils/sharedState';
+import { createCallStatusSyncDocument } from '../../../services/SyncService';
 import { ConferenceNotifications } from '../../../conference/setUpConferenceActions';
-import { conferenceApi } from '../../../services/ServerlessService';
 import PhoneInputDialog from './PhoneInputDialog';
 import { ConferenceButtonWrapper, ConferenceButton } from './styles';
 import { RootState } from '../../../states';
 import { setCallStatusAction, setIsDialogOpenAction, setPhoneNumberAction } from '../../../states/conferencing';
 import { CallStatus, isCallStatusLoading } from '../../../states/conferencing/callStatus';
 import { conferencingBase, namespace } from '../../../states/storeNamespaces';
+import * as conferenceApi from '../../../services/conferenceService';
 
 type Props = TaskContextProps;
+const ADD_TO_CONFERENCE_KEY = 'Conference-Actions-Add';
 
 const ConferencePanel: React.FC<Props> = ({ task, conference }) => {
   const taskFromRedux = useSelector((state: RootState) => state[namespace][conferencingBase].tasks[task.taskSid]);
@@ -102,28 +103,28 @@ const ConferencePanel: React.FC<Props> = ({ task, conference }) => {
 
   return (
     <ConferenceButtonWrapper>
-      <>
-        <ConferenceButton
-          disabled={
-            !isLiveCall ||
-            (participants && participants.filter(participant => participant.status === 'joined').length >= 4)
-          }
-          onClick={toggleDialog}
-        >
-          <AddIcCallRounded />
-        </ConferenceButton>
-        {isDialogOpen && (
-          <PhoneInputDialog
-            targetNumber={phoneNumber}
-            setTargetNumber={setPhoneNumber}
-            handleClick={handleClick}
-            setIsDialogOpen={setIsDialogOpen}
-            isLoading={isCallStatusLoading(callStatus)}
-          />
-        )}
-      </>
+      <ConferenceButton
+        disabled={
+          !isLiveCall ||
+          (participants && participants.filter(participant => participant.status === 'joined').length >= 4)
+        }
+        onClick={toggleDialog}
+        aria-label={Manager.getInstance().strings[ADD_TO_CONFERENCE_KEY]}
+      >
+        <AddIcCallRounded />
+      </ConferenceButton>
+      {isDialogOpen && (
+        <PhoneInputDialog
+          targetNumber={phoneNumber}
+          setTargetNumber={setPhoneNumber}
+          handleClick={handleClick}
+          setIsDialogOpen={setIsDialogOpen}
+          isLoading={isCallStatusLoading(callStatus)}
+        />
+      )}
+
       <span>
-        <Template code="Conference" />
+        <Template code={ADD_TO_CONFERENCE_KEY} />
       </span>
     </ConferenceButtonWrapper>
   );

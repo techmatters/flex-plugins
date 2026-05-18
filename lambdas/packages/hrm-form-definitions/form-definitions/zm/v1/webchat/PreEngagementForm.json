@@ -1,0 +1,43 @@
+{
+  "description": "PreEngagementDescription",
+  "submitLabel": "StartChat",
+  "fields": [
+    {
+      "type": "select",
+      "name": "language",
+      "label": "SelectLanguage",
+      "defaultValue": "en-US",
+      "required": true,
+      "options": [
+        {
+          "value": "en-US",
+          "label": "1. English"
+        },
+        {
+          "value": "Bemba",
+          "label": "2. Bemba"
+        },
+        {
+          "value": "Tonga",
+          "label": "3. Tonga"
+        },
+        {
+          "value": "Lunda",
+          "label": "4. Lunda"
+        },
+        {
+          "value": "Nyanja",
+          "label": "5. Nyanja"
+        },
+        {
+          "value": "Kaonde",
+          "label": "6. Kaonde"
+        },
+        {
+          "value": "Lozi",
+          "label": "7. Lozi"
+        }
+      ]
+    }
+  ]
+}

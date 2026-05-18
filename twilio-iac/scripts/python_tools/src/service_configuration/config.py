@@ -13,6 +13,7 @@ ACTIONS = {
     'PLAN': 'plan',
     'SHOW': 'show',
     'SHOW_REMOTE': 'show_remote',
+    'SHOW_FLAGS': 'show_flags',
     'SHOW_LOCAL': 'show_local',
     'SHOW_NEW': 'show_new',
     'SHOW_DIFF': 'show_diff',
@@ -20,6 +21,7 @@ ACTIONS = {
     'SYNC_APPLY': 'sync_apply',
     'UNLOCK': 'unlock',
     'UPDATE_PROP': 'update_prop',
+    'GENERATE_FLAGS_MATRIX': 'generate_flags_matrix',
 }
 
 
@@ -45,6 +47,9 @@ ACTION_CONFIGS: dict[str, ActionConfigsDict] = {
     ACTIONS['SHOW_REMOTE']: {
         'json_available': True,
         'skip_local_config': True,
+    },
+    ACTIONS['SHOW_FLAGS']: {
+        'json_available': True,
     },
     ACTIONS['SHOW_LOCAL']: {
         'json_available': True,
@@ -74,6 +79,7 @@ ACTION_CONFIGS: dict[str, ActionConfigsDict] = {
         'skip_lock': True,
     },
     ACTIONS['UPDATE_PROP']: {},
+    ACTIONS['GENERATE_FLAGS_MATRIX']: {},
 }
 
 ENVIRONMENTS = [

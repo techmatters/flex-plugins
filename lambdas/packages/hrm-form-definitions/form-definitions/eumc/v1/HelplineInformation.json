@@ -1,0 +1,15 @@
+{
+  "label": "Helpline",
+  "helplines": [
+    {
+      "label": "Missing Children Europe",
+      "value": "Missing Children Europe",
+      "default": true,
+      "manager": {
+        "name": " Alyona Samar",
+        "phone": "+123 45 678",
+        "email": "alyona.samar@missingchildreneurope.eu"
+      }
+    }
+  ]
+}

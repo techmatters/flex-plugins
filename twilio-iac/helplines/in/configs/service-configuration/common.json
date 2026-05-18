@@ -2,17 +2,8 @@
     "attributes": {
         "definitionVersion": "in-v1",
         "feature_flags": {
-            "enable_aselo_messaging_ui": false,
-            "enable_conferencing": false,
-            "enable_counselor_toolkits": false,
             "enable_csam_clc_report": true,
-            "enable_csam_report": true,
-            "enable_lex": false,
-            "enable_post_survey": false,
-            "enable_save_insights": true,
-            "enable_transcripts": false,
-            "enable_twilio_transcripts": false,
-            "enable_voice_recordings": false
+            "enable_csam_report": true
         },
         "helplineLanguage": "en-IN",
         "permissionConfig": "in"

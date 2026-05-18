@@ -1,0 +1,15 @@
+{
+  "SideNavSettings": "Configuración",
+  "TaskFilterWrapping": "Tareas en Cierre",
+  "TaskHeaderStatusWrapup": "En Cierre",
+  "TaskHeaderEndCall": "Cortar",
+  "TabbedForms-ContactNotLoaded-Retry": "Reintentar",
+  "CaseSection-Add/note": "Agregar una Nota",
+  "ContactDetails-GeneralDetails-AddedBy": "Agregado Por",
+  "ContactDetails-AddedBy": "Agregado Por",
+  "CaseMerging-ContactAddedTo": "Contacto agregado a",
+  "OfflineContactButtonText": "Registro de Contacto Offline",
+  "OfflineContacts-Header": "Contactos Offline",
+  "ResumeContactButtonText": "Reanudar el Contacto Offline",
+  "OfflineContactFirstLine": "Contacto Offline"
+}

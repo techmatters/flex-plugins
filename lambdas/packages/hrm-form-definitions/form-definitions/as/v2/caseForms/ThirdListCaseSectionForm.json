@@ -1,0 +1,34 @@
+[
+  {
+    "name": "thirdListCaseSectionConfig",
+    "label": "Here is how this is configured",
+    "type": "textarea",
+    "rows": 20,
+    "width": 289
+  },
+  {
+    "name": "thirdListCaseSectionTranslations",
+    "label": "Here are the translations",
+    "type": "textarea",
+    "rows": 20,
+    "width": 289
+  },
+  {
+    "name": "checkbox",
+    "label": "checkbox",
+    "type": "checkbox",
+    "isPII": false
+  },
+  {
+    "name": "mixedCheckbox",
+    "label": "mixed-checkbox",
+    "type": "mixed-checkbox",
+    "isPII": false
+  }
+]
+
+
+
+
+
+

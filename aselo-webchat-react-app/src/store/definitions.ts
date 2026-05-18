@@ -1,0 +1,112 @@
+/**
+ * Copyright (C) 2021-2026 Technology Matters
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see https://www.gnu.org/licenses/.
+ */
+
+import { Client, Conversation, Participant, Message, User } from '@twilio/conversations';
+import { GenericThemeShape } from '@twilio-paste/theme';
+import { AlertProps } from '@twilio-paste/core/alert';
+import { PreEngagementForm } from 'hrm-form-definitions';
+
+import { FileAttachmentConfig, EmojiPickerConfig } from '../definitions';
+import { TaskState } from '../task';
+
+// eslint-disable-next-line import/no-unused-modules
+export type LocaleString = `${Lowercase<string>}-${Uppercase<string>}`;
+
+export enum EngagementPhase {
+  PreEngagementForm = 'PreEngagementForm',
+  MessagingCanvas = 'MessagingCanvas',
+  Loading = 'Loading',
+  OperatingHours = 'OperatingHours',
+}
+
+export type ChatState = {
+  conversationsClient?: Client;
+  conversation?: Conversation;
+  participants?: Participant[];
+  users?: User[];
+  messages?: Message[];
+  attachedFiles?: File[];
+  conversationState?: string;
+  participantNames?: { [key: string]: string };
+};
+
+export type PreEngagementDataItem = { value: string | boolean; error: string | null; dirty: boolean };
+export type PreEngagementData = { [key: string]: PreEngagementDataItem };
+
+export type SessionState = {
+  currentPhase: EngagementPhase;
+  expanded: boolean;
+  token?: string;
+  conversationSid?: string;
+  conversationsClient?: Client;
+  conversation?: Conversation;
+  users?: User[];
+  participants?: Participant[];
+  messages?: Message[];
+  conversationState?: 'active' | 'inactive' | 'closed';
+  preEngagementData: PreEngagementData;
+  recaptchaValid?: boolean;
+  operatingHoursMessage?: string;
+  ipAddress?: string;
+  contactIdentifier?: string;
+};
+
+export type ConfigState = {
+  fileAttachment?: FileAttachmentConfig;
+  emojiPicker?: EmojiPickerConfig;
+  deploymentKey: string;
+  region?: string;
+  widgetAlwaysOpen?: boolean;
+  theme?: {
+    isLight?: boolean;
+    overrides?: Partial<GenericThemeShape>;
+  };
+  helplineCode: string;
+  aseloBackendUrl: string;
+  definitionVersion: string;
+  environment: string;
+  preEngagementFormDefinition: PreEngagementForm | null;
+  translations: Record<string, Record<string, string>>;
+  defaultLocale: LocaleString;
+  currentLocale?: LocaleString;
+  quickExitUrl: `https://${string}`;
+  enableRecaptcha?: boolean;
+  recaptchaSiteKey?: string;
+  captureIp?: boolean;
+  ipLookupServiceApiKey?: string;
+  contactIdentifierField?: string;
+  checkOpenHours?: boolean;
+  enableMobileOptimizations?: boolean;
+};
+
+export type Notification = {
+  dismissible: boolean;
+  id: string;
+  onDismiss?: () => void;
+  message: string;
+  timeout?: number;
+  type: AlertProps['variant'];
+};
+
+export type NotificationState = Notification[];
+
+export type AppState = {
+  chat: ChatState;
+  config: ConfigState;
+  session: SessionState;
+  notifications: NotificationState;
+  task: TaskState;
+};

@@ -15,7 +15,7 @@
  */
 
 import React, { useState } from 'react';
-import { connect, ConnectedProps } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { namespace } from '../../../states/storeNamespaces';
 import { RootState } from '../../../states';
@@ -25,33 +25,21 @@ import type { ProfileSectionEditRoute } from '../../../states/routing/types';
 import { ProfileSection } from '../../../types/types';
 import NavigableContainer from '../../NavigableContainer';
 import { Flex, Container, Box, ColumnarBlock, ColumnarContent, FormTextArea } from '../../../styles';
-import { StyledNextStepButton } from '../../../styles/buttons';
+import { PrimaryButton } from '../../../styles/buttons';
 import { useEditProfileSection } from '../../../states/profile/hooks';
 import useProfileSectionTypes from '../../../states/configuration/hooks/useProfileSectionTypes';
 import { ProfileCommonProps } from '../types';
 
-type OwnProps = ProfileCommonProps;
+type Props = ProfileCommonProps;
 
-const mapStateToProps = (state: RootState, { task: { taskSid } }: OwnProps) => {
-  const routingState = state[namespace].routing;
-  const currentRouteStack = getCurrentTopmostRouteForTask(routingState, taskSid);
-  const sectionType = (currentRouteStack as ProfileSectionEditRoute)?.type;
+const ProfileSectionEdit = ({ task, profileId }: Props) => {
+  const dispatch = useDispatch();
 
-  return {
-    sectionType,
-  };
-};
-
-const mapDispatchToProps = (dispatch, { task }: OwnProps) => {
-  return {
-    closeModal: () => dispatch(RoutingActions.newCloseModalAction(task.taskSid)),
-  };
-};
-
-const connector = connect(mapStateToProps, mapDispatchToProps);
-type Props = OwnProps & ConnectedProps<typeof connector>;
-
-const ProfileSectionEdit = ({ task, profileId, sectionType, closeModal }: Props) => {
+  const sectionType = useSelector((state: RootState) => {
+    const routingState = state[namespace].routing;
+    const currentRouteStack = getCurrentTopmostRouteForTask(routingState, task.taskSid);
+    return (currentRouteStack as ProfileSectionEditRoute)?.type;
+  });
   const { section, createProfileSection, updateProfileSection } = useEditProfileSection({ profileId, sectionType });
   const sectionTypesForms = useProfileSectionTypes();
   const sectionTypesForm = sectionTypesForms.find(sectionTypesForm => sectionTypesForm.name === sectionType);
@@ -62,11 +50,11 @@ const ProfileSectionEdit = ({ task, profileId, sectionType, closeModal }: Props)
   const handleEdit = () => {
     if (!sectionId) {
       createProfileSection({ profileId, sectionType, content });
-      closeModal();
+      dispatch(RoutingActions.newCloseModalAction(task.taskSid));
       return;
     }
     updateProfileSection({ profileId, sectionType, content, sectionId });
-    closeModal();
+    dispatch(RoutingActions.newCloseModalAction(task.taskSid));
   };
 
   return (
@@ -87,12 +75,12 @@ const ProfileSectionEdit = ({ task, profileId, sectionType, closeModal }: Props)
         </Box>
       </Container>
       <Flex justifyContent="flex-end" flexDirection="row">
-        <StyledNextStepButton roundCorners onClick={handleEdit}>
+        <PrimaryButton roundCorners onClick={handleEdit}>
           Save
-        </StyledNextStepButton>
+        </PrimaryButton>
       </Flex>
     </NavigableContainer>
   );
 };
 
-export default connector(ProfileSectionEdit);
+export default ProfileSectionEdit;

@@ -20,7 +20,7 @@ import { Template } from '@twilio/flex-ui';
 import Close from '@material-ui/icons/Close';
 
 import { BottomButtonBar, Box, HiddenText, Row } from '../../styles';
-import { StyledNextStepButton, HeaderCloseButton } from '../../styles/buttons';
+import { PrimaryButton, SecondaryButton, HeaderCloseButton } from '../../styles/buttons';
 import {
   BoldDescriptionText,
   ButtonText,
@@ -106,7 +106,6 @@ const CSAMReportStatusScreen: React.FC<Props> = ({ reportStatus, onClickClose, o
               </Box>
               <CopyCodeButton
                 style={{ padding: '5px 17px 5px 12px' }}
-                secondary="true"
                 roundCorners
                 onClick={onCopyCode}
                 data-testid="CSAMReport-CopyCodeButton"
@@ -124,15 +123,15 @@ const CSAMReportStatusScreen: React.FC<Props> = ({ reportStatus, onClickClose, o
 
       <BottomButtonBar>
         <Box marginRight="15px">
-          <StyledNextStepButton secondary="true" roundCorners onClick={onSendAnotherReport}>
+          <SecondaryButton roundCorners onClick={onSendAnotherReport}>
             <Template
               code={csamType === CSAMReportTypes.CHILD ? 'BottomBar-SendAnotherLink' : 'BottomBar-SendAnotherReport'}
             />
-          </StyledNextStepButton>
+          </SecondaryButton>
         </Box>
-        <StyledNextStepButton roundCorners onClick={onClickClose}>
+        <PrimaryButton roundCorners onClick={onClickClose}>
           <Template code="CloseButton" />
-        </StyledNextStepButton>
+        </PrimaryButton>
       </BottomButtonBar>
     </CSAMReportContainer>
   );

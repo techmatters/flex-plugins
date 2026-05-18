@@ -14,7 +14,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { callTypes } from 'hrm-form-definitions';
+import { callTypes } from 'hrm-types';
 
 import { channelTypes } from '../states/DomainConstants';
 
@@ -36,6 +36,7 @@ export const mapChannel = (channel: string) => {
     return channel;
   }
   switch (channel) {
+    case channelTypes.messenger:
     case channelTypes.facebook:
       return 'Facebook Messenger';
     case channelTypes.web:
@@ -47,8 +48,8 @@ export const mapChannel = (channel: string) => {
       return 'SMS';
     case channelTypes.whatsapp:
       return 'WhatsApp';
-    case channelTypes.twitter:
-      return 'Twitter';
+    case channelTypes.telegram:
+      return 'Telegram';
     case channelTypes.instagram:
       return 'Instagram';
     case channelTypes.line:
@@ -90,14 +91,4 @@ export const mapAge = (ageOptions: string[]) => (age: string) => {
   }
 
   return 'Unknown';
-};
-
-export const mapGenericOption = (options: string[]) => (value: string) => {
-  const validOption = options.find(e => e.toLowerCase() === value.toLowerCase());
-
-  if (!validOption) {
-    return 'Unknown';
-  }
-
-  return validOption;
 };

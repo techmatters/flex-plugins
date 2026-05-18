@@ -4,7 +4,7 @@ locals {
   config            = merge(local.common_config, local.local_config)
 
   local_config = {
-
+    enable_datadog_monitoring = true
     #Studio flow
     flow_vars = {
       service_sid                   = "ZSe84c8040f76f6e331310f132b88c25d8"
@@ -12,5 +12,6 @@ locals {
       operating_hours_function_sid  = "ZHb02706803df7458aebd679967beb1005"
       operating_hours_function_name = "operatingHours"
     }
+    get_profile_flags_for_identifier_base_url = "https://hrm-production.tl.techmatters.org/lambda/twilio/account-scoped"
   }
 }

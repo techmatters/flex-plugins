@@ -3,26 +3,27 @@
         "attributeUpdates": {
             "assets_bucket_url": "https://assets-development.tl.techmatters.org"
         },
-        "external_recordings_enabled": true,
-        "config_flags": {
-            "enableExternalRecordings": true,
-            "enableUnmaskingCalls": true
-        },
+        "external_recordings_enabled": false,
+        "enableUnmaskingCalls": true,
         "feature_flags": {
-            "backend_handled_chat_janitor": false,
-            "enable_aselo_messaging_ui": true,
+            "enable_configurable_max_categories": true,
             "enable_counselor_toolkits": true,
             "enable_csam_clc_report": true,
             "enable_csam_report": true,
             "enable_client_profiles": true,
+            "enable_language_selector": true,
             "enable_lex": true,
-            "enable_post_survey": false,
-            "enable_resources": true,
-            "enable_resources_elastic_search": true,
+            "enable_llm_summary": true,
+            "enable_post_survey": true,
+            "enable_save_in_progress_contacts": true,
             "enable_save_insights": true,
-            "enable_teams_view_enhancements": true,
-            "enable_transcripts": true,
-            "enable_voice_recordings": false
+            "enable_voice_recordings": false,
+            "enable_lambda_post_survey_processing": true,
+            "enable_lex_v2": true,
+            "enable_hang_up_by_hrm_saving": true,
+            "use_twilio_lambda_for_conference_functions": true,
+            "use_twilio_lambda_for_conversation_duration": true,
+            "enable_twilio_transcripts": true
         },
         "contact_save_frequency": "onTabChange",
         "multipleOfficeSupport": true,
@@ -32,7 +33,8 @@
             "semver": "2.n",
             "version": "2.2.0"
         },
-        "resources_base_url": "https://hrm-development.tl.techmatters.org"
+        "resources_base_url": "https://hrm-development.tl.techmatters.org",
+        "enforceZeroTranscriptRetention": false
     },
     "ui_attributes": {
         "colorTheme": {

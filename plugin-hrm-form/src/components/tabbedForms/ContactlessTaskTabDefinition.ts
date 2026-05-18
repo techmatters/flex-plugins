@@ -14,12 +14,11 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { isFuture } from 'date-fns';
+import { isFuture, parse } from 'date-fns';
 import { DefinitionVersion, FormDefinition, FormInputType } from 'hrm-form-definitions';
 
 import { coreChannelTypes } from '../../states/DomainConstants';
 import { mapChannelForInsights } from '../../utils/mappers';
-import { splitDate } from '../../utils/helpers';
 import type { CounselorsList } from '../../states/configuration/types';
 
 const defaultChannelOptions = [{ value: '', label: '' }].concat(
@@ -46,9 +45,8 @@ export const createContactlessTaskTabDefinition = ({
   const helplineLabel = helplineInformation.label;
   const mapHelplineEntriesToOptions = ({ value, label }) => ({ value, label });
   const helplineOptions = helplineInformation.helplines.map(mapHelplineEntriesToOptions);
-  const defaultHelplineOption = (
-    helplineInformation.helplines.find(helpline => helpline.default) || helplineInformation.helplines[0]
-  ).value;
+  const defaultHelplineOption =
+    helplineInformation.helplines.find(helpline => helpline.default) || helplineInformation.helplines[0];
 
   const channelOptions = definition.offlineChannels
     ? defaultChannelOptions.concat(definition.offlineChannels.map(c => ({ value: c, label: c })))
@@ -77,8 +75,7 @@ export const createContactlessTaskTabDefinition = ({
       initializeWithCurrent: true,
       required: { value: true, message: 'RequiredFieldError' },
       validate: date => {
-        const [y, m, d] = splitDate(date);
-        const inputDate = new Date(y, m - 1, d);
+        const inputDate = parse(date, 'yyyy-MM-dd', new Date());
 
         // Date is lesser than Unix epoch (00:00:00 UTC on 1 January 1970)
         if (inputDate.getTime() < 0) return 'DateCantBeLesserThanEpoch';

@@ -14,7 +14,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { DataCallTypes } from 'hrm-form-definitions';
+import { DataCallTypes } from 'hrm-types';
 
 import { Case, Contact } from '../../types/types';
 import { DraftResourceReferralState } from './resourceReferral';
@@ -23,29 +23,22 @@ import { ContactDetailsState } from './contactDetails';
 
 // Action types
 export const SAVE_END_MILLIS = 'SAVE_END_MILLIS';
-export const SET_CATEGORIES_GRID_VIEW = 'SET_CATEGORIES_GRID_VIEW';
-export const HANDLE_EXPAND_CATEGORY = 'HANDLE_EXPAND_CATEGORY';
-export const HANDLE_SELECT_SEARCH_RESULT = 'HANDLE_SELECT_SEARCH_RESULT';
 export const PREPOPULATE_FORM = 'PREPOPULATE_FORM';
-export const RESTORE_ENTIRE_FORM = 'RESTORE_ENTIRE_FORM';
-export const UPDATE_HELPLINE = 'UPDATE_HELPLINE';
-export const ADD_CSAM_REPORT_ENTRY = 'contacts/ADD_CSAM_REPORT_ENTRY';
-export const SET_EDITING_CONTACT = 'SET_EDITING_CONTACT';
-export const SET_CALL_TYPE = 'SET_CALL_TYPE';
 export const CREATE_CONTACT_ACTION = 'contact-action/create-contact' as const;
 export const CREATE_CONTACT_ACTION_FULFILLED = `${CREATE_CONTACT_ACTION}_FULFILLED` as const;
 export const UPDATE_CONTACT_ACTION = 'contact-action/update-contact' as const;
 export const UPDATE_CONTACT_ACTION_FULFILLED = `${UPDATE_CONTACT_ACTION}_FULFILLED` as const;
 export const LOAD_CONTACT_FROM_HRM_BY_ID_ACTION = 'contact-action/load-contact-from-hrm-by-id' as const;
-export const LOAD_CONTACT_FROM_HRM_BY_ID_ACTION_FULFILLED = `${LOAD_CONTACT_FROM_HRM_BY_ID_ACTION}_FULFILLED` as const;
-export const LOAD_CONTACT_FROM_HRM_BY_TASK_ID_ACTION = 'contact-action/load-contact-from-hrm-by-task-id' as const;
-export const LOAD_CONTACT_FROM_HRM_BY_TASK_ID_ACTION_FULFILLED = `${LOAD_CONTACT_FROM_HRM_BY_TASK_ID_ACTION}_FULFILLED` as const;
+
+export const LOAD_CONTACT_FROM_HRM_FOR_TASK_ACTION = 'contact-action/load-contact-from-hrm-for-task' as const;
+export const LOAD_CONTACT_FROM_HRM_FOR_TASK_ACTION_FULFILLED = `${LOAD_CONTACT_FROM_HRM_FOR_TASK_ACTION}_FULFILLED` as const;
 export const CONNECT_TO_CASE = 'contact-action/connect-to-case' as const;
 export const REMOVE_FROM_CASE = 'contact-action/remove-from-case' as const;
 export const CONNECT_TO_CASE_ACTION_FULFILLED = `${CONNECT_TO_CASE}_FULFILLED` as const;
 export const REMOVE_FROM_CASE_ACTION_FULFILLED = `${REMOVE_FROM_CASE}_FULFILLED` as const;
 export const SET_SAVED_CONTACT = 'contact-action/set-saved-contact' as const;
 export const FINALIZE_CONTACT = 'contact-action/finalize-contact' as const;
+export const SUBMIT_AND_FINALIZE_CONTACT_FROM_OUTSIDE_TASK_CONTEXT = 'contact-action/submit-and-finalize-contact-from-outside-task-context' as const;
 export const CASE_CONNECTED_TO_CONTACT = 'CASE_CONNECTED_TO_CONTACT' as const;
 
 export const LoadingStatus = {
@@ -55,10 +48,17 @@ export const LoadingStatus = {
 
 export type LoadingStatus = typeof LoadingStatus[keyof typeof LoadingStatus];
 
+export const LlmAssistantStatus = {
+  READY: 'ready',
+  WORKING: 'working',
+  ERROR: 'error',
+} as const;
+
+export type LlmAssistantStatus = typeof LlmAssistantStatus[keyof typeof LlmAssistantStatus];
+
 export type ContactMetadata = {
   startMillis: number;
   endMillis: number;
-  recreated: boolean;
   categories: {
     gridView: boolean;
     expanded: { [key: string]: boolean };
@@ -68,6 +68,13 @@ export type ContactMetadata = {
     dialogsOpen: { [key: string]: boolean };
   };
   loadingStatus: LoadingStatus;
+  finalizeStatus: {
+    error?: Error;
+  };
+  llmAssistant: {
+    status: LlmAssistantStatus;
+    lastError?: Error;
+  };
 };
 
 export type ContactsState = {
@@ -109,16 +116,7 @@ export type ContactUpdatingAction = {
     | typeof UPDATE_CONTACT_ACTION_FULFILLED
     | typeof CONNECT_TO_CASE_ACTION_FULFILLED
     | typeof REMOVE_FROM_CASE_ACTION_FULFILLED
-    | typeof LOAD_CONTACT_FROM_HRM_BY_ID_ACTION_FULFILLED
-    | typeof LOAD_CONTACT_FROM_HRM_BY_TASK_ID_ACTION_FULFILLED;
-  payload: { contact: Contact; contactCase?: Case; previousContact?: Contact };
-};
-
-export type ContactCreatingAction = {
-  type:
-    | typeof CREATE_CONTACT_ACTION_FULFILLED
-    | typeof UPDATE_CONTACT_ACTION_FULFILLED
-    | typeof LOAD_CONTACT_FROM_HRM_BY_TASK_ID_ACTION_FULFILLED;
+    | typeof LOAD_CONTACT_FROM_HRM_FOR_TASK_ACTION_FULFILLED;
   payload: { contact: Contact; contactCase?: Case; previousContact?: Contact };
 };
 

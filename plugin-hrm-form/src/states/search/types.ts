@@ -14,30 +14,29 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { Contact, SearchCaseResult } from '../../types/types';
+import { Contact } from '../../types/types';
 
 // Action types
 export const HANDLE_SEARCH_FORM_CHANGE = 'HANDLE_SEARCH_FORM_CHANGE';
-export const CHANGE_SEARCH_PAGE = 'CHANGE_SEARCH_PAGE';
-export const VIEW_CONTACT_DETAILS = 'VIEW_CONTACT_DETAILS';
+export const HANDLE_FORM_UPDATE = 'HANDLE_FORM_UPDATE';
 export const SEARCH_CONTACTS_REQUEST = 'SEARCH_CONTACTS_REQUEST';
 export const SEARCH_CONTACTS_SUCCESS = 'SEARCH_CONTACTS_SUCCESS';
-export const SEARCH_CONTACTS_FAILURE = 'SEARCH_CONTACTS_FAILURE';
-export const SEARCH_CASES_REQUEST = 'SEARCH_CASES_REQUEST';
-export const SEARCH_CASES_SUCCESS = 'SEARCH_CASES_SUCCESS';
-export const SEARCH_CASES_FAILURE = 'SEARCH_CASES_FAILURE';
+export const SEARCH_CASES = 'search/cases';
 export const VIEW_PREVIOUS_CONTACTS = 'VIEW_PREVIOUS_CONTACTS';
+export const CREATE_NEW_SEARCH = 'CREATE_NEW_SEARCH';
 
 // types and constants used to construct search form
 export const newSearchFormEntry = {
   firstName: '',
   lastName: '',
-  counselor: { label: '', value: '' },
+  counselor: '',
   phoneNumber: '',
   dateFrom: '',
   dateTo: '',
   contactNumber: '',
   helpline: { label: '', value: '' },
+  searchTerm: '',
+  onlyDataContacts: false,
 };
 
 export type SearchFormValues = {
@@ -46,6 +45,10 @@ export type SearchFormValues = {
 
 export type SearchParams = Partial<SearchFormValues> & {
   taskSid?: string;
+};
+
+export type ApiSearchParams = {
+  [K in keyof SearchParams]: SearchParams[K] extends { value: infer U } ? U : SearchParams[K];
 };
 
 export type DetailedSearchContactsResult = {
@@ -59,57 +62,36 @@ type SearchFormChangeAction = {
     name: K;
     value: SearchFormValues[K];
   };
-}[keyof SearchFormValues] & { type: typeof HANDLE_SEARCH_FORM_CHANGE; taskId: string };
+}[keyof SearchFormValues] & { type: typeof HANDLE_SEARCH_FORM_CHANGE; taskId: string; context: string };
 
-type SearchContactsRequestAction = { type: typeof SEARCH_CONTACTS_REQUEST; taskId: string };
+type SearchFormUpdate = {
+  values: Partial<SearchFormValues>;
+} & { type: typeof HANDLE_FORM_UPDATE; taskId: string; context: string };
+
+type CreateNewSearchAction = { type: typeof CREATE_NEW_SEARCH; taskId: string; context: string };
 
 export type SearchContactsSuccessAction = {
   type: typeof SEARCH_CONTACTS_SUCCESS;
   searchResult: DetailedSearchContactsResult;
   taskId: string;
   dispatchedFromPreviousContacts?: boolean;
+  context: string;
 };
-
-type SearchContactsFailureAction = {
-  type: typeof SEARCH_CONTACTS_FAILURE;
-  error: any;
-  taskId: string;
-  dispatchedFromPreviousContacts?: boolean;
-};
-
-type SearchCasesRequestAction = { type: typeof SEARCH_CASES_REQUEST; taskId: string };
-
-export type SearchCasesSuccessAction = {
-  type: typeof SEARCH_CASES_SUCCESS;
-  searchResult: SearchCaseResult;
-  taskId: string;
-  dispatchedFromPreviousContacts?: boolean;
-};
-
-type SearchCasesFailureAction = { type: typeof SEARCH_CASES_FAILURE; error: any; taskId: string };
 
 type ViewPreviousContactsAction = {
   type: typeof VIEW_PREVIOUS_CONTACTS;
   taskId: string;
   contactNumber: string;
+  context: string;
 };
 
 export type SearchActionType =
   | SearchFormChangeAction
-  | SearchContactsRequestAction
-  | SearchContactsSuccessAction
-  | SearchContactsFailureAction
-  | SearchCasesRequestAction
-  | SearchCasesSuccessAction
-  | SearchCasesFailureAction
-  | ViewPreviousContactsAction;
+  | SearchFormUpdate
+  | ViewPreviousContactsAction
+  | CreateNewSearchAction;
 
 export type SearchResultReferences = {
   count: number;
   ids: string[];
-};
-
-export type PreviousContactCounts = {
-  contacts: number;
-  cases: number;
 };

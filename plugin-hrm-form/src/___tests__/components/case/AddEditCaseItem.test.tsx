@@ -22,15 +22,15 @@ import { mount } from 'enzyme';
 import { StorelessThemeProvider, ThemeConfigProps } from '@twilio/flex-ui';
 import { Provider } from 'react-redux';
 import configureMockStore from 'redux-mock-store';
-import { DefinitionVersionId, loadDefinition, useFetchDefinitions } from 'hrm-form-definitions';
+import { loadDefinition } from 'hrm-form-definitions';
 
+import { mockLocalFetchDefinitions } from '../../mockFetchDefinitions';
 import { mockGetDefinitionsResponse } from '../../mockGetConfig';
 import { RootState } from '../../../states';
 import AddEditCaseItem, { AddEditCaseItemProps } from '../../../components/case/AddEditCaseItem';
 import { getDefinitionVersions } from '../../../hrmConfig';
 import { CustomITask } from '../../../types/types';
 import { CaseItemAction } from '../../../states/routing/types';
-import { householdSectionApi } from '../../../states/case/sections/household';
 import { newGoBackAction } from '../../../states/routing/actions';
 import { ReferralLookupStatus } from '../../../states/contacts/resourceReferral';
 import { VALID_EMPTY_CONTACT } from '../../testContacts';
@@ -39,8 +39,7 @@ import { CaseState } from '../../../states/case/types';
 import { RecursivePartial } from '../../RecursivePartial';
 import { TaskSID, WorkerSID } from '../../../types/twilio';
 
-// eslint-disable-next-line react-hooks/rules-of-hooks
-const { mockFetchImplementation, mockReset, buildBaseURL } = useFetchDefinitions();
+const { mockFetchImplementation, mockReset, buildBaseURL } = mockLocalFetchDefinitions();
 
 let mockV1;
 
@@ -49,11 +48,11 @@ beforeEach(() => {
 });
 
 beforeAll(async () => {
-  const formDefinitionsBaseUrl = buildBaseURL(DefinitionVersionId.v1);
+  const formDefinitionsBaseUrl = buildBaseURL('as-v1');
   await mockFetchImplementation(formDefinitionsBaseUrl);
 
   mockV1 = await loadDefinition(formDefinitionsBaseUrl);
-  mockGetDefinitionsResponse(getDefinitionVersions, DefinitionVersionId.v1, mockV1);
+  mockGetDefinitionsResponse(getDefinitionVersions, 'as-v1', mockV1);
 });
 
 jest.mock('../../../services/CaseService');
@@ -84,7 +83,7 @@ const addingNewHouseholdCaseState: CaseState = {
               province: '',
               relationshipToChild: '',
               streetAddress: '',
-              village: '',
+              copyToPerpetrator: false,
             },
             existing: {},
           },
@@ -103,7 +102,7 @@ const addingNewHouseholdCaseState: CaseState = {
       },
       sections: {},
       timelines: {},
-      references: new Set(),
+      lastReferencedDate: new Date(),
       availableStatusTransitions: [],
     },
   },
@@ -124,7 +123,7 @@ const hrmState: Partial<RootState[typeof namespace]> = {
     contactDetails: { contactSearch: { detailsExpanded: {} }, caseDetails: { detailsExpanded: {} } },
     existingContacts: {
       1234: {
-        references: new Set(),
+        lastReferencedDate: new Date(),
         savedContact: {
           ...VALID_EMPTY_CONTACT,
           id: '1234',
@@ -150,7 +149,6 @@ const hrmState: Partial<RootState[typeof namespace]> = {
           startMillis: 0,
           endMillis: 0,
           categories: { gridView: false, expanded: {} },
-          recreated: false,
           draft: {
             dialogsOpen: {},
             resourceReferralList: {
@@ -167,7 +165,6 @@ const hrmState: Partial<RootState[typeof namespace]> = {
     tasks: {
       [TASK_SID]: [{ route: 'case', subroute: 'household', caseId: 'case1', action: CaseItemAction.Add }],
     },
-    isAddingOfflineContact: false,
   },
 };
 
@@ -200,18 +197,7 @@ const routing3: RootState[typeof namespace]['routing'] = {
   tasks: {
     [TASK_SID]: [{ route: 'case', subroute: 'household', action: CaseItemAction.Add }],
   },
-  isAddingOfflineContact: true,
 };
-
-const state3 = {
-  [namespace]: {
-    ...state1[namespace],
-    [connectedCaseBase]: addingNewHouseholdCaseState,
-    routing: routing3,
-  },
-};
-const store3 = mockStore(state3);
-store3.dispatch = jest.fn();
 
 const themeConf: ThemeConfigProps = {};
 
@@ -221,8 +207,8 @@ describe('Test AddHousehold', () => {
     () =>
       (ownProps = {
         task: { taskSid: TASK_SID } as CustomITask,
-        sectionApi: householdSectionApi,
         definitionVersion: mockV1,
+        sectionTypeName: 'household',
       }),
   );
   test('Test close functionality', async () => {

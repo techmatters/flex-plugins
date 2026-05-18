@@ -1,7 +1,6 @@
 {
     "attributes": {
         "feature_flags": {
-            "enable_fullstory_monitoring": false
         }
     },
     "ui_attributes": {

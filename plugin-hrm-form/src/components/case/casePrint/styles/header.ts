@@ -14,7 +14,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import ReactPDF from '@react-pdf/renderer';
+import * as ReactPDF from '@react-pdf/renderer';
 
 const headerStyles: ReactPDF.Styles = {
   headerContainer: {

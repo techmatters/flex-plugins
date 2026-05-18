@@ -1,0 +1,689 @@
+[
+  {
+    "name": "passiveDeathWish",
+    "label": "SUICIDALIDAD | La persona usuaria, ¿ha deseado estar muerta o quedarse dormida y no despertar? (Respuesta Si = Riesgo leve)",
+    "type": "select",
+    "isPII": false,
+    "options": [
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "No",
+        "label": "No"
+      },
+      {
+        "value": "Sí",
+        "label": "Sí"
+      }
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "suicideThoughts",
+    "label": "SUICIDALIDAD | La persona usuaria, ¿ha pensado realmente en matarse? (Respuesta Sí = Riesgo leve)",
+    "type": "select",
+    "isPII": false,
+    "defaultOption": {
+      "value": "",
+      "label": ""
+    },
+    "options": [
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "No",
+        "label": "No"
+      },
+      {
+        "value": "Sí",
+        "label": "Sí"
+      }
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "suicideIdeation",
+    "label": "SUICIDALIDAD | La persona usuaria, ¿ha pensado en cómo podría hacerlo? (Respuesta Sí = Riesgo moderado)",
+    "type": "dependent-select",
+    "isPII": false,
+    "dependsOn": "suicideThoughts",
+    "defaultOption": {
+      "value": "",
+      "label": ""
+    },
+    "options": {
+      "No": [
+        {
+          "value": "N/A",
+          "label": "N/A"
+        }
+      ],
+      "Sí": [
+        {
+          "value": "No",
+          "label": "No"
+        },
+        {
+          "value": "Sí",
+          "label": "Sí"
+        }
+      ]
+    },
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "suicideIntention",
+    "label": "SUICIDALIDAD | La persona usuaria, ¿ha tenido estos pensamientos y alguna intención de llevarlos a cabo? (Respuesta Sí = Riesgo alto)",
+    "type": "dependent-select",
+    "isPII": false,
+    "dependsOn": "suicideThoughts",
+    "defaultOption": {
+      "value": "",
+      "label": ""
+    },
+    "options": {
+      "No": [
+        {
+          "value": "N/A",
+          "label": "N/A"
+        }
+      ],
+      "Sí": [
+        {
+          "value": "No",
+          "label": "No"
+        },
+        {
+          "value": "Sí",
+          "label": "Sí"
+        }
+      ]
+    },
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "suicidePlan",
+    "label": "SUICIDALIDAD | La persona usuaria, ¿ha empezado a elaborar o ya tiene elaborados los detalles de cómo se va a matar? ¿Tiene la intención de llevar a cabo este plan? (Respuesta Sí = Riesgo alto)",
+    "type": "dependent-select",
+    "isPII": false,
+    "dependsOn": "suicideThoughts",
+    "defaultOption": {
+      "value": "",
+      "label": ""
+    },
+    "options": {
+      "No": [
+        {
+          "value": "N/A",
+          "label": "N/A"
+        }
+      ],
+      "Sí": [
+        {
+          "value": "No",
+          "label": "No"
+        },
+        {
+          "value": "Sí",
+          "label": "Sí"
+        }
+      ]
+    },
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "suicideActions",
+    "label": "SUICIDALIDAD | La persona usuaria, ¿reporta alguna vez haber hecho algo, comenzado a hacer algo o preparado para hacer algo para terminar su vida? (Respuesta Sí = Riesgo alto)",
+    "type": "select",
+    "isPII": false,
+    "options": [
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "No",
+        "label": "No"
+      },
+      {
+        "value": "Sí",
+        "label": "Sí"
+      }
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "suicideBehaviors",
+    "label": "SUICIDALIDAD | ¿La persona usuaria manifiesta comportamientos autolesivos con intención suicida?",
+    "type": "select",
+    "isPII": false,
+    "options": [
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "No",
+        "label": "No"
+      },
+      {
+        "value": "Sí",
+        "label": "Sí"
+      }
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "mentalHealthServiceUse",
+    "label": "ATENCIÓN SALUD MENTAL | ¿La persona usuaria ha mencionado tratarse, o querer tratarse, con profesionales de la salud mental (psicoterapeuta y/o psiquiatra)?",
+    "type": "select",
+    "isPII": false,
+    "options": [
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "No",
+        "label": "No"
+      },
+      {
+        "value": "Sí, ha querido tratarse pero no lo ha hecho",
+        "label": "Sí, ha querido tratarse pero no lo ha hecho"
+      },
+      {
+        "value": "Sí, se ha tratado con profesional de la salud mental",
+        "label": "Sí, se ha tratado con profesional de la salud mental"
+      }
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "noTreatmentReason",
+    "label": "ATENCIÓN SALUD MENTAL | ¿Por qué no se ha tratado con profesional de la salud mental?",
+    "type": "listbox-multiselect",
+    "isPII": false,
+    "options": [
+      {
+        "value": "N/A",
+        "label": "N/A"
+      },
+      {
+        "value": "No lo reporta",
+        "label": "No lo reporta"
+      },
+      {
+        "value": "No le es accesible económicamente",
+        "label": "No le es accesible económicamente"
+      },
+      {
+        "value": "Escasez de profesionales en el territorio",
+        "label": "Escasez de profesionales en el territorio"
+      },
+      {
+        "value": "Su padre/madre/tutor legal no se lo permite",
+        "label": "Su padre/madre/tutor legal no se lo permite"
+      },
+      {
+        "value": "Miedo de no encontrar profesionales competentes en temáticas LGBTIQA+",
+        "label": "Miedo de no encontrar profesionales competentes en temáticas LGBTIQA+"
+      }
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "hasSupport",
+    "label": "APOYO SOCIAL | ¿Existen indicios de que alguien pueda apoyar, contener emocionalmente y/u orientar a la persona usuaria?",
+    "type": "select",
+    "isPII": false,
+    "options": [
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "No",
+        "label": "No"
+      },
+      {
+        "value": "Sí",
+        "label": "Sí"
+      }
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "whoProvidesSupport",
+    "label": "APOYO SOCIAL | ¿De parte de quién o quiénes podría recibir apoyo, contención emocional y/u orientación?",
+    "type": "listbox-multiselect",
+    "isPII": false,
+    "options": [
+      {
+        "value": "N/A",
+        "label": "N/A"
+      },
+      {
+        "value": "No lo reporta",
+        "label": "No lo reporta"
+      },
+      {
+        "value": "Familiar",
+        "label": "Familiar"
+      },
+      {
+        "value": "Amistad",
+        "label": "Amistad"
+      },
+      {
+        "value": "Pareja",
+        "label": "Pareja"
+      },
+      {
+        "value": "Otro",
+        "label": "Otro"
+      }
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "abused",
+    "label": "POLIVICTIMIZACIÓN | ¿Existen indicios de que alguien haya acosado o maltratado a la persona usuaria?",
+    "type": "select",
+    "isPII": false,
+    "options": [
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "No",
+        "label": "No"
+      },
+      {
+        "value": "Sí",
+        "label": "Sí"
+      }
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "typeOfAbuse",
+    "label": "POLIVICTIMIZACIÓN | ¿Qué tipo de violencia identificas en la persona usuaria?",
+    "type": "listbox-multiselect",
+    "isPII": false,
+    "options": [
+      {
+        "value": "N/A",
+        "label": "N/A"
+      },
+      {
+        "value": "No lo reporta",
+        "label": "No lo reporta"
+      },
+      {
+        "value": "Violencia psicológica",
+        "label": "Violencia psicológica"
+      },
+      {
+        "value": "Violencia física",
+        "label": "Violencia física"
+      },
+      {
+        "value": "Violencia sexual",
+        "label": "Violencia sexual"
+      },
+      {
+        "value": "Violencia económica",
+        "label": "Violencia económica"
+      }
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "location",
+    "label": "POLIVICTIMIZACIÓN | ¿Dónde identificas que ocurrió la(s) victimización(es)?",
+    "type": "listbox-multiselect",
+    "isPII": false,
+    "options": [
+      {
+        "value": "N/A",
+        "label": "N/A"
+      },
+      {
+        "value": "No lo reporta",
+        "label": "No lo reporta"
+      },
+      {
+        "value": "Hogar",
+        "label": "Hogar"
+      },
+      {
+        "value": "Establecimiento educacional",
+        "label": "Establecimiento educacional"
+      },
+      {
+        "value": "Lugar de trabajo",
+        "label": "Lugar de trabajo"
+      },
+      {
+        "value": "Plataformas online (rrss, foros, juegos, etc.)",
+        "label": "Plataformas online (rrss, foros, juegos, etc.)"
+      },
+      {
+        "value": "Otros espacios públicos",
+        "label": "Otros espacios públicos"
+      }
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "motive",
+    "label": "POLIVICTIMIZACIÓN | ¿A qué motivo le atribuye la(s) victimización(es) la persona usuaria?",
+    "type": "listbox-multiselect",
+    "isPII": false,
+    "options": [
+      {
+        "value": "N/A",
+        "label": "N/A"
+      },
+      {
+        "value": "No lo reporta",
+        "label": "No lo reporta"
+      },
+      {
+        "value": "Orientación sexual",
+        "label": "Orientación sexual"
+      },
+      {
+        "value": "Identidad o expresión de género",
+        "label": "Identidad o expresión de género"
+      },
+      {
+        "value": "Físico",
+        "label": "Físico"
+      },
+      {
+        "value": "Neurodivergencia",
+        "label": "Neurodivergencia"
+      },
+      {
+        "value": "Situación de discapacidad",
+        "label": "Situación de discapacidad"
+      },
+      {
+        "value": "Otro",
+        "label": "Otro"
+      }
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "perpetrator",
+    "label": "POLIVICTIMIZACIÓN | ¿Quién fue la persona que realizó el acoso o maltrato?",
+    "type": "listbox-multiselect",
+    "isPII": false,
+    "options": [
+      {
+        "value": "N/A",
+        "label": "N/A"
+      },
+      {
+        "value": "No lo reporta",
+        "label": "No lo reporta"
+      },
+      {
+        "value": "Familiar",
+        "label": "Familiar"
+      },
+      {
+        "value": "Amistad",
+        "label": "Amistad"
+      },
+      {
+        "value": "Pareja",
+        "label": "Pareja"
+      },
+      {
+        "value": "Persona del lugar de estudio",
+        "label": "Persona del lugar de estudio"
+      },
+      {
+        "value": "Persona del lugar de trabajo",
+        "label": "Persona del lugar de trabajo"
+      },
+      {
+        "value": "Autoridad pública",
+        "label": "Autoridad pública"
+      },
+      {
+        "value": "Persona desconocida",
+        "label": "Persona desconocida"
+      },
+      {
+        "value": "Otro",
+        "label": "Otro"
+      }
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "perpetratorType",
+    "label": "POLIVICTIMIZACIÓN | ¿Esta persona agresora era una...?",
+    "type": "listbox-multiselect",
+    "isPII": false,
+    "options": [
+      {
+        "value": "N/A",
+        "label": "N/A"
+      },
+      {
+        "value": "No lo reporta",
+        "label": "No lo reporta"
+      },
+      {
+        "value": "Persona adolescente o niñez",
+        "label": "Persona adolescente o niñez"
+      },
+      {
+        "value": "Persona adulta",
+        "label": "Persona adulta"
+      },
+      {
+        "value": "Otro",
+        "label": "Otro"
+      }
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "affectedSocialization",
+    "label": "CONSECUENCIAS | ¿Existen indicios de que la victimización haya afectado la socialización de la persona usuaria?",
+    "type": "select",
+    "isPII": false,
+    "options": [
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "No",
+        "label": "No"
+      },
+      {
+        "value": "Sí",
+        "label": "Sí"
+      }
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "affectedWhere",
+    "label": "CONSECUENCIAS | La victimización ¿En qué espacios ha traído consecuencias?",
+    "type": "listbox-multiselect",
+    "isPII": false,
+    "options": [
+      {
+        "value": "N/A",
+        "label": "N/A"
+      },
+      {
+        "value": "No lo reporta",
+        "label": "No lo reporta"
+      },
+      {
+        "value": "Hogar",
+        "label": "Hogar"
+      },
+      {
+        "value": "Escuela",
+        "label": "Escuela"
+      },
+      {
+        "value": "Trabajo",
+        "label": "Trabajo"
+      },
+      {
+        "value": "Espacios online",
+        "label": "Espacios online"
+      },
+      {
+        "value": "Otro",
+        "label": "Otro"
+      }
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "affectedHow",
+    "label": "CONSECUENCIAS | La victimización ¿De qué manera interna ha afectado a la persona usuaria?",
+    "type": "listbox-multiselect",
+    "isPII": false,
+    "options": [
+      {
+        "value": "N/A",
+        "label": "N/A"
+      },
+      {
+        "value": "No lo reporta",
+        "label": "No lo reporta"
+      },
+      {
+        "value": "Autoestima",
+        "label": "Autoestima"
+      },
+      {
+        "value": "Autoaceptación",
+        "label": "Autoaceptación"
+      },
+      {
+        "value": "Ocultamiento de la identidad",
+        "label": "Ocultamiento de la identidad"
+      },
+      {
+        "value": "Otro",
+        "label": "Otro"
+      }
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "risk",
+    "label": "CONSECUENCIAS | La victimización ¿Ha conllevado alguna conducta de riesgo?",
+    "type": "listbox-multiselect",
+    "isPII": false,
+    "options": [
+      {
+        "value": "N/A",
+        "label": "N/A"
+      },
+      {
+        "value": "No lo reporta",
+        "label": "No lo reporta"
+      },
+      {
+        "value": "Consumo problemático de sustancias",
+        "label": "Consumo problemático de sustancias"
+      },
+      {
+        "value": "Trastorno de conducta alimentaria",
+        "label": "Trastorno de conducta alimentaria"
+      },
+      {
+        "value": "Comportamiento autolesivo",
+        "label": "Comportamiento autolesivo"
+      },
+      {
+        "value": "Otro",
+        "label": "Otro"
+      }
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  }
+]

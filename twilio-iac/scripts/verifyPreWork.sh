@@ -13,10 +13,5 @@ fi
 
 echo "You are working on the following environment: $hl_info"
 printf "\n\n"
-read -p "Have you checked/updated the terraform spreadsheet (https://techmatters.app.box.com/file/1109527438079)? (y/N)" -n 1 -r
-if [[ $REPLY =~ ^[Yy]$ ]]; then
-    printf "\n\n"
-    exit 0
-fi
 
-exit 1
+exit 0

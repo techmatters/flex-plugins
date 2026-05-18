@@ -1,0 +1,142 @@
+[
+  {
+    "name": "referralStatus",
+    "label": "Referral Status",
+    "type": "select",
+    "isPII": false,
+    "options": [
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "Referred",
+        "label": "Referred"
+      },
+      {
+        "value": "No Referral Needed",
+        "label": "No Referral Needed"
+      },
+      {
+        "value": "Referral Refused",
+        "label": "Referral Refused"
+      }
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "referralTo",
+    "label": "Referral to",
+    "type": "listbox-multiselect",
+    "isPII": false,
+    "options": [
+      {
+        "value": "Referral to victim services program",
+        "label": "Referral to victim services program"
+      },
+      {
+        "value": "Referral to Crime Victim Compensation",
+        "label": "Referral to Crime Victim Compensation"
+      },
+      {
+        "value": "Referral to substance abuse treatment and support",
+        "label": "Referral to substance abuse treatment and support"
+      },
+      {
+        "value": "Referral to other service support and resources",
+        "label": "Referral to other service support and resources"
+      },
+      {
+        "value": "Referral to MPD",
+        "label": "Referral to MPD"
+      },
+      {
+        "value": "Referral to Dept. of Human Services",
+        "label": "Referral to Dept. of Human Services"
+      },
+      {
+        "value": "Referral to PCRC",
+        "label": "Referral to PCRC"
+      },
+      {
+        "value": "N/A",
+        "label": "N/A"
+      }
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "howDidYouHearAboutUs",
+    "label": "How did you hear about us?",
+    "type": "listbox-multiselect",
+    "isPII": false,
+    "options": [
+      {
+        "value": "Unknown",
+        "label": "Unknown"
+      },
+      {
+        "value": "DC VAN",
+        "label": "DC VAN"
+      },
+      {
+        "value": "In-person outreach event",
+        "label": "In-person outreach event"
+      },
+      {
+        "value": "Internet search",
+        "label": "Internet search"
+      },
+      {
+        "value": "Law Enforcement Referral (VC)",
+        "label": "Law Enforcement Referral (VC)"
+      },
+      {
+        "value": "Outreach/Marketing Campaign",
+        "label": "Outreach/Marketing Campaign"
+      },
+      {
+        "value": "Professional (VC only)",
+        "label": "Professional (VC only)"
+      },
+      {
+        "value": "Social Media",
+        "label": "Social Media"
+      },
+      {
+        "value": "Word of Mouth",
+        "label": "Word of Mouth"
+      },
+      {
+        "value": "Other",
+        "label": "Other"
+      },
+      {
+        "value": "Other Hotline",
+        "label": "Other Hotline"
+      },
+      {
+        "value": "N/A",
+        "label": "N/A"
+      }
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "caseNotes",
+    "label": "Case notes ",
+    "type": "textarea",
+    "isPII": false,
+    "rows": 10,
+    "width": 250
+  }
+]

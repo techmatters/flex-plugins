@@ -13,15 +13,15 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
+/* eslint-disable dot-notation */
 
-/* eslint-disable react/prop-types */
 import React from 'react';
 import { Text, View } from '@react-pdf/renderer';
 import { DefinitionVersion } from 'hrm-form-definitions';
 
 import styles from './styles';
-import CaseTags from '../CaseTags';
 import { getTemplateStrings } from '../../../hrmConfig';
+import { getContactTags } from '../../../utils/categories';
 
 type OwnProps = {
   categories?: {
@@ -36,9 +36,18 @@ const CasePrintCategories: React.FC<Props> = ({ categories, definitionVersion })
   const strings = getTemplateStrings();
 
   return (
-    <View style={styles.flexColumn}>
+    <View>
       <Text style={{ marginBottom: '10px' }}>{strings['TabbedForms-CategoriesTab']}</Text>
-      <CaseTags printPDF={true} categories={categories} definitionVersion={definitionVersion} />
+      <View style={{ ...styles['flexRow'], flexWrap: 'wrap' }}>
+        {getContactTags(definitionVersion, categories).map(category => (
+          <View
+            key={category.fullyQualifiedName}
+            style={{ ...styles['flexColumn'], ...styles['categoryView'], backgroundColor: category.color }}
+          >
+            <Text style={styles['categoryText']}>{category.label}</Text>
+          </View>
+        ))}
+      </View>
     </View>
   );
 };

@@ -1,0 +1,199 @@
+{
+    "slotTypeName": "parish",
+    "slotTypeValues": [
+          {
+            "sampleValue": {
+                "value": "Hanover"
+            }
+        },
+        {
+            "sampleValue": {
+                "value": "St. Ann"
+            },
+            "synonyms": [
+                {
+                    "value": "s ann"
+                },
+                {
+                    "value": "st ann"
+                },
+                {
+                    "value": "stann"
+                },
+                {
+                    "value": "sta nn"
+                },
+                {
+                    "value": "st.ann"
+                }
+            ]
+        },
+        {
+            "sampleValue": {
+                "value": "St. Thomas"
+            },
+            "synonyms": [
+                {
+                    "value": "thomas"
+                },
+                {
+                    "value": "st thomas"
+                },
+                {
+                    "value": "st homas"
+                },
+                {
+                    "value": "stthomas"
+                },
+                {
+                    "value": "s thomas"
+                }
+            ]
+        },
+        {
+            "sampleValue": {
+                "value": "Portland"
+            }
+        },
+        {
+            "sampleValue": {
+                "value": "St. James"
+            },
+            "synonyms": [
+                {
+                    "value": "stjames"
+                },
+                {
+                    "value": "s james"
+                },
+                {
+                    "value": "stj ames"
+                },
+                {
+                    "value": "st james"
+                }
+            ]
+        },
+        {
+            "sampleValue": {
+                "value": "St. Catherine"
+            },
+            "synonyms": [
+                {
+                    "value": "st catherine"
+                },
+                {
+                    "value": "stcatherine"
+                },
+                {
+                    "value": "sc atherine"
+                },
+                {
+                    "value": "s catherine"
+                }
+            ]
+        },
+        {
+            "sampleValue": {
+                "value": "Trelawny"
+            }
+        },
+        {
+            "sampleValue": {
+                "value": "Kingston"
+            }
+        },
+        {
+            "sampleValue": {
+                "value": "Clarendon"
+            }
+        },
+        {
+            "sampleValue": {
+                "value": "St. Mary"
+            },
+            "synonyms": [
+                {
+                    "value": "st mary"
+                },
+                {
+                    "value": "stm ary"
+                },
+                {
+                    "value": "s mary"
+                },
+                {
+                    "value": "stmary"
+                }
+            ]
+        },
+        {
+            "sampleValue": {
+                "value": "Unknown"
+            },
+            "synonyms": [
+                {
+                    "value": "x"
+                },
+                {
+                    "value": "no"
+                }
+            ]
+        },
+        {
+            "sampleValue": {
+                "value": "St. Andrew"
+            },
+            "synonyms": [
+                {
+                    "value": "st andrew"
+                },
+                {
+                    "value": "andrew"
+                },
+                {
+                    "value": "s andrew"
+                },
+                {
+                    "value": "sa ndrew"
+                },
+                {
+                    "value": "standrew"
+                }
+            ]
+        },
+        {
+            "sampleValue": {
+                "value": "Manchester"
+            }
+        },
+        {
+            "sampleValue": {
+                "value": "Westmoreland"
+            }
+        },
+        {
+            "sampleValue": {
+                "value": "St. Elizabeth"
+            },
+            "synonyms": [
+                {
+                    "value": "stelizabeth"
+                },
+                {
+                    "value": "st elizabeth"
+                },
+                {
+                    "value": "s elizabeth"
+                },
+                {
+                    "value": "se lizabeth"
+                }
+            ]
+        }
+
+    ],
+    "valueSelectionSetting": {
+        "resolutionStrategy": "TopResolution"
+    }
+}

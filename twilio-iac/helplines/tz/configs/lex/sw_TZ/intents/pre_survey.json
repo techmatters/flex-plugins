@@ -1,0 +1,54 @@
+{
+  "pre_survey": {
+    "description": "Helpline Specific helplines/tz/configs/lex//intents Pre Survey Intent",
+    "sample_utterances": [
+      "trigger_pre_survey"
+    ],
+    "fulfillment_activity": {
+      "type": "ReturnIntent"
+    },
+    "conclusion_statement": {
+      "content": "Tutakuunganisha sasa. Tafadhali subiri ili kuzungumza na mshauri.",
+      "content_type": "PlainText"
+    },
+    "rejection_statement": {
+      "content": "Samahani, sikuweza kuelewa hilo. Nitakuunganisha kwa mshauri sasa.",
+      "content_type": "PlainText"
+    },
+    "slots": {
+      "aboutSelf": {
+        "priority": 0,
+        "description": "Imported from question 'about_self'",
+        "slot_type": "yes_no",
+        "slot_constraint": "Required",
+        "value_elicitation_prompt": {
+          "content": "Je, unapiga simu kwa ajili yako mwenyewe? Tafadhali jibu Ndiyo au Hapana.",
+          "content_type": "PlainText",
+          "max_attempts": 2
+        }
+      },
+      "age": {
+        "priority": 1,
+        "description": "Imported from question 'age'",
+        "slot_type": "age",
+        "slot_constraint": "Required",
+        "value_elicitation_prompt": {
+          "content": "Asante. Unaweza kusema 'napendelea kutokujibu' (au andika X) kwa swali lolote. \nUna umri gani?",
+          "content_type": "PlainText",
+          "max_attempts": 2
+        }
+      },
+      "gender": {
+        "priority": 2,
+        "description": "Imported from question 'gender'",
+        "slot_type": "gender",
+        "slot_constraint": "Required",
+        "value_elicitation_prompt": {
+          "content": "Jinsia yako ni ipi?",
+          "content_type": "PlainText",
+          "max_attempts": 2
+        }
+      }
+    }
+  }
+}

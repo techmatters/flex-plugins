@@ -14,8 +14,9 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { ApiError, fetchApi } from './fetchApi';
+import { ApiError, fetchApi, FetchOptions } from './fetchApi';
 import { getHrmConfig } from '../hrmConfig';
+import { getValidToken } from '../authentication';
 
 export class ProtectedApiError extends ApiError {
   constructor(message, options: Pick<ApiError, 'body' | 'response'>, cause?: Error) {
@@ -23,6 +24,8 @@ export class ProtectedApiError extends ApiError {
 
     this.name = 'ProtectedApiError';
     this.serverStack = this.body?.stack;
+
+    Object.setPrototypeOf(this, ProtectedApiError.prototype);
   }
 
   serverStack: any;
@@ -33,19 +36,36 @@ export class ProtectedApiError extends ApiError {
  * Will throw Error if server responses with and http error code.
  * @param {string} endPoint endpoint to fetch from (withouth the host part of url, e.g. "/cases/contacts").
  * @param {{ [k: string]: any }} body Same options object that will be passed to the fetch function (here you can include the BODY of the request)
+ * @param {FetchOptions & { useTwilioLambda?: boolean }} allOptions
  * @returns {Promise<any>} the api response (if not error)
  */
-const fetchProtectedApi = async (endPoint, body: Record<string, string> = {}) => {
-  const { serverlessBaseUrl, token } = getHrmConfig();
+const fetchProtectedApi = async (
+  endPoint,
+  body: Record<string, any> = {},
+  allOptions?: FetchOptions & { useTwilioLambda?: boolean; useJsonEncode?: boolean },
+) => {
+  const { serverlessBaseUrl, accountScopedLambdaBaseUrl } = getHrmConfig();
+  const { useTwilioLambda, useJsonEncode, ...fetchOptions } = allOptions ?? {};
+  const token = getValidToken();
+  if (token instanceof Error) throw new ApiError(`Aborting request due to token issue: ${token.message}`, {}, token);
+
+  const { contentType, encodedBody } = useJsonEncode
+    ? { contentType: 'application/json', encodedBody: JSON.stringify({ ...body, Token: token }) }
+    : {
+        contentType: 'application/x-www-form-urlencoded;charset=UTF-8',
+        encodedBody: new URLSearchParams({ ...body, Token: token }),
+      };
+
   const options: RequestInit = {
     method: 'POST',
-    body: new URLSearchParams({ ...body, Token: token }),
+    body: encodedBody,
     headers: {
-      'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
+      'Content-Type': contentType,
     },
+    ...fetchOptions,
   };
   try {
-    return await fetchApi(new URL(serverlessBaseUrl), endPoint, options);
+    return await fetchApi(new URL(useTwilioLambda ? accountScopedLambdaBaseUrl : serverlessBaseUrl), endPoint, options);
   } catch (error) {
     if (error instanceof ApiError) {
       const message = error.response?.status === 403 ? 'Server responded with 403 status (Forbidden)' : error.message;

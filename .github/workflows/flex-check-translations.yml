@@ -24,20 +24,16 @@ jobs:
 
     runs-on: ubuntu-latest
 
-    strategy:
-      matrix:
-        node-version: [16.x]
-
     steps:
       - name: Checkout Branch
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0
       
       # Check if localizable strings changed
       - name: Get changed files (plugin-hrm-form/src/translations/en-US)
         id: translations-changed
-        uses: tj-actions/changed-files@v44
+        uses: tj-actions/changed-files@v47
         with:
           files: |
             plugin-hrm-form/src/translations/en-US/*.json   

@@ -14,10 +14,14 @@ locals {
     voice_ivr_language                = ""
     contacts_waiting_channels         = ["facebook", "instagram"]
     enable_post_survey                = false
-
+    permission_config                 = "br"
+    enable_lex_v2                     = true
 
     lex_bot_languages = {
       pt_br : ["pre_survey", "contact_reason"]
+    }
+    lex_v2_bot_languages = {
+      pt_br : ["contact_reason", "pre_survey"]
     }
 
 
@@ -26,6 +30,10 @@ locals {
         friendly_name            = "Master Workflow"
         templatefile             = "/app/twilio-iac/helplines/templates/workflows/master.tftpl"
         task_reservation_timeout = 300
+      },
+      queue_transfers : {
+        friendly_name = "Queue Transfers Workflow"
+        templatefile  = "/app/twilio-iac/helplines/templates/workflows/queue-transfers.tftpl"
       },
       survey : {
         friendly_name = "Survey Workflow"

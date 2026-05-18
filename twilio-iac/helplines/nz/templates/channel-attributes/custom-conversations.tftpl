@@ -1,0 +1,13 @@
+{
+  "name": "{{trigger.conversation.ChannelAttributes.from}}",
+  "channelType": "{{trigger.conversation.ChannelAttributes.channelType}}",
+  "customChannelType": "{{trigger.conversation.ChannelAttributes.channelType}}",
+  "channelSid": "{{trigger.conversation.ChannelSid}}",
+  "twilioNumber": "{{trigger.conversation.ChannelAttributes.twilioNumber}}",
+  "ignoreAgent": "",
+  "helpline":"${helpline}",
+  "language":"${task_language}",
+  "transferTargetType": "",
+  "memory": {{trigger.conversation.ChannelAttributes.memory | to_json}},
+  "clinical":  "{{flow.variables.clinical}}" 
+}

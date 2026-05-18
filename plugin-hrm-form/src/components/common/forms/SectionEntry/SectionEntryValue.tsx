@@ -16,45 +16,50 @@
 
 import React from 'react';
 import type { FormItemDefinition, LayoutValue } from 'hrm-form-definitions';
+import type { FormValue } from 'hrm-types';
 import { Template } from '@twilio/flex-ui';
 
-import { formatValue } from '../helpers';
 import { FormTargetObject } from '../types';
-import { presentValue } from '../../../../utils';
+import { presentValue } from '../../../../utils/formatters';
 import DownloadFile from '../DownloadFile';
 import { SectionValueText } from '../../../search/styles';
 import { Flex } from '../../../../styles';
+import formatFormValue from '../../../forms/formatFormValue';
 
 type Props = {
-  value?: string | number | boolean;
+  value?: FormValue;
   notBold?: boolean;
   definition?: FormItemDefinition;
   layout?: LayoutValue;
   targetObject?: FormTargetObject;
+  form?: Record<string, FormValue>;
 };
 
 /**
  * Presentational component used to nicely consume the form values in SectionEntry
  */
 
-const SectionEntryValue: React.FC<Props> = ({ value, definition, layout, notBold, targetObject }) => {
+const SectionEntryValue: React.FC<Props> = ({ value, definition, layout, notBold, targetObject, form }) => {
   if (definition && definition.type === 'file-upload' && typeof value === 'string') {
     return <DownloadFile fileNameAtAws={value} targetObject={targetObject} />;
   }
 
-  const presentValueTemplate = presentValue(
-    code => (
-      <SectionValueText notBold={notBold}>
-        <Template code={code} />
-      </SectionValueText>
-    ),
-    codes => (
-      <Flex flexDirection="column">
-        <SectionValueText notBold={notBold}>{codes}</SectionValueText>
-      </Flex>
-    ),
-  );
-  return <>{presentValueTemplate(formatValue(layout)(value))(definition)}</>;
+  const renderValue = (layoutValue: LayoutValue, value: FormValue) => {
+    const formattedValue = formatFormValue(value, layoutValue, form);
+    return presentValue(
+      code => (
+        <SectionValueText notBold={notBold}>
+          <Template code={code} />
+        </SectionValueText>
+      ),
+      codes => (
+        <Flex flexDirection="column">
+          <SectionValueText notBold={notBold}>{codes}</SectionValueText>
+        </Flex>
+      ),
+    )(formattedValue)(definition);
+  };
+  return <>{renderValue(layout, value)}</>;
 };
 
 export default SectionEntryValue;

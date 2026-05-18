@@ -11,7 +11,7 @@ ${
             "event": "incomingMessage"
           },
           {
-            "next": "MainMenu",
+            "next": "run_subflow_system_down",
             "event": "incomingCall"
           },
           {
@@ -140,7 +140,7 @@ ${
           },
           "workflow": workflow_sids["master"],
           "channel": task_channel_sids["voice"],
-          "attributes": "{\"language\": \"en-CA\",\n\"type\": \"inbound\", \"name\": \"{{trigger.call.From}}\",\"ignoreAgent\":\"\", \"transferTargetType\":\"\",\"channelType\":\"voice\"}",
+          "attributes": "{\"language\": \"en-CA\",\n\"type\": \"inbound\", \"name\": \"{{trigger.call.From}}\",\"ignoreAgent\":\"\", \"transferTargetType\":\"\",\"channelType\":\"voice\", \"conversations\": {\"ivr_path\" : \"KHP English\", \"hang_up_by\": \"Customer\"}}",
           "waitUrlMethod": "GET"
         }
       },
@@ -166,7 +166,7 @@ ${
           },
           "workflow": workflow_sids["master"],
           "channel": task_channel_sids["voice"],
-          "attributes": "{\"language\": \"fr-CA\",\n\"type\": \"inbound\", \"name\": \"{{trigger.call.From}}\",\"ignoreAgent\":\"\", \"transferTargetType\":\"\",\"channelType\":\"voice\"}",
+          "attributes": "{\"language\": \"fr-CA\",\n\"type\": \"inbound\", \"name\": \"{{trigger.call.From}}\",\"ignoreAgent\":\"\", \"transferTargetType\":\"\",\"channelType\":\"voice\", \"conversations\": {\"ivr_path\" : \"KHP French\", \"hang_up_by\": \"Customer\"}}",
           "waitUrlMethod": "GET"
         }
       },
@@ -192,7 +192,7 @@ ${
           },
           "workflow": workflow_sids["master"],
           "channel": task_channel_sids["voice"],
-          "attributes": "{\"type\": \"inbound\", \"name\": \"{{trigger.call.From}}\",\"ignoreAgent\":\"\", \"transferTargetType\":\"\",\"channelType\":\"voice\", \"interpreter\": \"main\"}",
+          "attributes": "{\"type\": \"inbound\", \"name\": \"{{trigger.call.From}}\",\"ignoreAgent\":\"\", \"transferTargetType\":\"\",\"channelType\":\"voice\", \"interpreter\": \"main\", \"conversations\": {\"ivr_path\" : \"KHP Interpreter\", \"hang_up_by\": \"Customer\"}}",
           "waitUrlMethod": "GET"
         }
       },
@@ -696,7 +696,8 @@ ${
         "type": "split-based-on",
         "transitions": [
           {
-            "event": "noMatch"
+            "event": "noMatch",
+            "next": "split_Inflight_retry"
           },
           {
             "next": "Msg60011E-Inflight",
@@ -727,7 +728,7 @@ ${
             ]
           },
           {
-            "next": "SubIntro_Indigenous",
+            "next": "Msg60011E-Inflight",
             "event": "match",
             "conditions": [
               {
@@ -1219,7 +1220,7 @@ ${
           "stop_gather": true,
           "gather_language": "en",
           "profanity_filter": "true",
-          "timeout": 2
+          "timeout": 5
         }
       },
       {
@@ -1249,7 +1250,7 @@ ${
         "type": "split-based-on",
         "transitions": [
           {
-            "next": "main_disconnect",
+            "next": "Msg10006E-Info",
             "event": "noMatch"
           },
           {
@@ -1262,7 +1263,7 @@ ${
                   "{{flow.variables.retry_counter}}"
                 ],
                 "type": "less_than",
-                "value": "3"
+                "value": "2"
               }
             ]
           }
@@ -1280,7 +1281,7 @@ ${
         "type": "say-play",
         "transitions": [
           {
-            "next": "MainMenu",
+            "next": "MainMenuB_Retry",
             "event": "audioComplete"
           }
         ],
@@ -1289,23 +1290,6 @@ ${
           "offset": {
             "x": -1060,
             "y": -1780
-          },
-          "loop": 1
-        }
-      },
-      {
-        "name": "main_disconnect",
-        "type": "say-play",
-        "transitions": [
-          {
-            "event": "audioComplete"
-          }
-        ],
-        "properties": {
-          "play": channel_flow_vars["en_disconnect_url"],
-          "offset": {
-            "x": -1840,
-            "y": -1540
           },
           "loop": 1
         }
@@ -1332,7 +1316,7 @@ ${
           },
           "workflow": workflow_sids["master"],
           "channel": task_channel_sids["voice"],
-          "attributes": "{\"type\": \"inbound\", \"name\": \"{{trigger.call.From}}\",\"ignoreAgent\":\"\", \"transferTargetType\":\"\",\"channelType\":\"voice\", \"interpreter\": \"fr\"}",
+          "attributes": "{\"type\": \"inbound\", \"name\": \"{{trigger.call.From}}\",\"ignoreAgent\":\"\", \"transferTargetType\":\"\",\"channelType\":\"voice\", \"interpreter\": \"fr\", \"conversations\": {\"ivr_path\" : \"French Interpreter\", \"hang_up_by\": \"Customer\"}}",
           "waitUrlMethod": "GET"
         }
       },
@@ -1359,7 +1343,8 @@ ${
         "type": "split-based-on",
         "transitions": [
           {
-            "event": "noMatch"
+            "event": "noMatch",
+            "next": "retry_split_Inflight_2"
           },
           {
             "next": "sendToQ6001_English",
@@ -1420,10 +1405,248 @@ ${
           },
           "workflow": workflow_sids["master"],
           "channel": task_channel_sids["voice"],
-          "attributes": "{\"language\": \"en-CA\",\n\"type\": \"inbound\", \"name\": \"{{trigger.call.From}}\",\"ignoreAgent\":\"\", \"transferTargetType\":\"\",\"channelType\":\"voice\", \"interpreter\": \"indigenous\"}",
+          "attributes": "{\"type\": \"inbound\", \"name\": \"{{trigger.call.From}}\",\"ignoreAgent\":\"\", \"transferTargetType\":\"\",\"channelType\":\"voice\", \"interpreter\": \"indigenous\", \"conversations\": {\"ivr_path\" : \"Indigenous/Interpreter\", \"hang_up_by\": \"Customer\"}}",
           "waitUrlMethod": "GET"
         }
+      },
+    {
+      "name": "MainMenuB_Retry",
+      "type": "gather-input-on-call",
+      "transitions": [
+        {
+          "next": "retry_split_main_menu",
+          "event": "keypress"
+        },
+        {
+          "event": "speech"
+        },
+        {
+          "next": "main_set_retry",
+          "event": "timeout"
+        }
+      ],
+      "properties": {
+        "play": "https://twilio-service-4854.twil.io/MSG10000B.mp3",
+        "number_of_digits": 1,
+        "speech_timeout": "auto",
+        "offset": {
+          "x": -1070,
+          "y": -1810
+        },
+        "loop": 1,
+        "finish_on_key": "#",
+        "stop_gather": true,
+        "gather_language": "en",
+        "profanity_filter": "true",
+        "timeout": 5
       }
+    },
+    {
+      "name": "retry_split_main_menu",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "main_set_retry",
+          "event": "noMatch"
+        },
+        {
+          "next": "Msg10006E-Info",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value contains en_number",
+              "arguments": [
+                "{{widgets.MainMenuB_Retry.Digits}}"
+              ],
+              "type": "equal_to",
+              "value": "1"
+            }
+          ]
+        },
+        {
+          "next": "Msg10006E-InfoOtherLanguages",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value contains tr_number",
+              "arguments": [
+                "{{widgets.MainMenuB_Retry.Digits}}"
+              ],
+              "type": "equal_to",
+              "value": "4"
+            }
+          ]
+        },
+        {
+          "next": "Msg10006F-InfoMessage2",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value contains fr_number",
+              "arguments": [
+                "{{widgets.MainMenuB_Retry.Digits}}"
+              ],
+              "type": "equal_to",
+              "value": "2"
+            }
+          ]
+        },
+        {
+          "next": "Msg10006E-Info",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to 4",
+              "arguments": [
+                "{{widgets.MainMenuB_Retry.Digits}}"
+              ],
+              "type": "equal_to",
+              "value": "3"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{widgets.MainMenuB_Retry.Digits}}",
+        "offset": {
+          "x": -1700,
+          "y": -1730
+        }
+      }
+    },
+    {
+      "name": "split_Inflight_retry",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "Msg60011E-Inflight",
+          "event": "noMatch"
+        },
+        {
+          "next": "Msg60011E-Inflight",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value contains 2",
+              "arguments": [
+                "{{widgets.MainMenuB_Retry.Digits}}"
+              ],
+              "type": "contains",
+              "value": "1"
+            }
+          ]
+        },
+        {
+          "next": "Msg60011I-Inflight",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value contains 3",
+              "arguments": [
+                "{{widgets.MainMenuB_Retry.Digits}}"
+              ],
+              "type": "contains",
+              "value": "4"
+            }
+          ]
+        },
+        {
+          "next": "Msg60011E-Inflight",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value contains 4",
+              "arguments": [
+                "{{widgets.MainMenuB_Retry.Digits}}"
+              ],
+              "type": "contains",
+              "value": "3"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{widgets.MainMenuB_Retry.Digits}}",
+        "offset": {
+          "x": -2310,
+          "y": 0
+        }
+      }
+    },
+    {
+      "name": "retry_split_Inflight_2",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "sendToQ6001_English",
+          "event": "noMatch"
+        },
+        {
+          "next": "sendToQ6001_English",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value contains 2",
+              "arguments": [
+                "{{widgets.MainMenuB_Retry.Digits}}"
+              ],
+              "type": "contains",
+              "value": "1"
+            }
+          ]
+        },
+        {
+          "next": "sendToQ6005_Indigenous",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value contains 4",
+              "arguments": [
+                "{{widgets.MainMenuB_Retry.Digits}}"
+              ],
+              "type": "contains",
+              "value": "3"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{widgets.MainMenuB_Retry.Digits}}",
+        "offset": {
+          "x": -2550,
+          "y": 1120
+        }
+      }
+    },
+    {
+      "name": "run_subflow_system_down",
+      "type": "run-subflow",
+      "transitions": [
+        {
+          "next": "MainMenu",
+          "event": "completed"
+        },
+        {
+          "next": "MainMenu",
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "flow_sid": "${system_down_studio_subflow_sid}",
+        "flow_revision": "LatestPublished",
+        "offset": {
+          "x": 110,
+          "y": -270
+        },
+        "parameters": [
+          {
+            "type": "string",
+            "value": "true",
+            "key": "system_down"
+          }
+        ]
+      }
+    }
     ],
     "initial_state": "Trigger",
     "flags": {

@@ -16,7 +16,7 @@
 
 // @ts-ignore
 import React from 'react';
-import { DefinitionVersionId, loadDefinition, useFetchDefinitions } from 'hrm-form-definitions';
+import { loadDefinition } from 'hrm-form-definitions';
 import { render, screen } from '@testing-library/react';
 import { StorelessThemeProvider } from '@twilio/flex-ui';
 import { Provider } from 'react-redux';
@@ -24,6 +24,7 @@ import configureMockStore from 'redux-mock-store';
 import each from 'jest-each';
 
 import { mockGetDefinitionsResponse } from '../../mockGetConfig';
+import { mockLocalFetchDefinitions } from '../../mockFetchDefinitions';
 import CaseHome, { CaseHomeProps } from '../../../components/case/CaseHome';
 import { Case, CustomITask } from '../../../types/types';
 import { getDefinitionVersions } from '../../../hrmConfig';
@@ -37,18 +38,16 @@ import { FullCaseSection } from '../../../services/caseSectionService';
 import { TaskSID } from '../../../types/twilio';
 import { CaseStateEntry } from '../../../states/case/types';
 
-jest.mock('../../../permissions', () => ({
-  ...jest.requireActual('../../../permissions'),
+jest.mock('../../../permissions/rules', () => ({
   getInitializedCan: jest.fn(() => () => true),
+  PermissionActions: {},
 }));
-
 // Called by the <Timeline/> subcomponent
 jest.mock('../../../services/CaseService', () => ({
   getCaseTimeline: jest.fn(() => Promise.resolve({ activities: [], count: 0 })),
 }));
 
-// eslint-disable-next-line react-hooks/rules-of-hooks
-const { mockFetchImplementation, mockReset, buildBaseURL } = useFetchDefinitions();
+const { mockFetchImplementation, mockReset, buildBaseURL } = mockLocalFetchDefinitions();
 const TASK_SID: TaskSID = 'WT-task1';
 const mockStore = configureMockStore([]);
 
@@ -102,11 +101,11 @@ let timelines: CaseStateEntry['timelines'];
 
 describe('useState mocked', () => {
   beforeAll(async () => {
-    const formDefinitionsBaseUrl = buildBaseURL(DefinitionVersionId.v1);
+    const formDefinitionsBaseUrl = buildBaseURL('as-v1');
     await mockFetchImplementation(formDefinitionsBaseUrl);
 
     mockV1 = await loadDefinition(formDefinitionsBaseUrl);
-    mockGetDefinitionsResponse(getDefinitionVersions, DefinitionVersionId.v1, mockV1);
+    mockGetDefinitionsResponse(getDefinitionVersions, 'as-v1', mockV1);
   });
 
   beforeEach(() => {
@@ -141,7 +140,7 @@ describe('useState mocked', () => {
           list: [],
           hash: { worker1: 'worker1 name' },
         },
-        definitionVersions: { v1: mockV1 },
+        definitionVersions: { 'as-v1': mockV1 },
         currentDefinitionVersion: mockV1,
       },
       activeContacts: {
@@ -219,12 +218,12 @@ describe('useState mocked', () => {
       </StorelessThemeProvider>,
     );
 
-    screen.getByText('Case-Note').click();
+    screen.getByText('Case-SectionList-Add/note').click();
     expect(store.dispatch).toHaveBeenCalledWith({
       routing: {
         route: 'case',
         caseId: 'case123',
-        subroute: NewCaseSubroutes.Note,
+        subroute: 'section/note',
         action: CaseItemAction.Add,
       },
       taskId: TASK_SID,
@@ -244,12 +243,12 @@ describe('useState mocked', () => {
       </StorelessThemeProvider>,
     );
 
-    screen.getByText('Case-Referral').click();
+    screen.getByText('Case-SectionList-Add/referral').click();
     expect(store.dispatch).toHaveBeenCalledWith({
       routing: {
         route: 'case',
         caseId: 'case123',
-        subroute: NewCaseSubroutes.Referral,
+        subroute: 'section/referral',
         action: CaseItemAction.Add,
       },
       taskId: TASK_SID,
@@ -269,12 +268,12 @@ describe('useState mocked', () => {
       </StorelessThemeProvider>,
     );
 
-    screen.getByText('Case-Household').click();
+    screen.getByText('Case-SectionList-Add/household').click();
     expect(store.dispatch).toHaveBeenCalledWith({
       routing: {
         route: 'case',
         caseId: 'case123',
-        subroute: NewCaseSubroutes.Household,
+        subroute: 'section/household',
         action: CaseItemAction.Add,
       },
       taskId: TASK_SID,
@@ -294,12 +293,12 @@ describe('useState mocked', () => {
       </StorelessThemeProvider>,
     );
 
-    screen.getByText('Case-Perpetrator').click();
+    screen.getByText('Case-SectionList-Add/perpetrator').click();
     expect(store.dispatch).toHaveBeenCalledWith({
       routing: {
         route: 'case',
         caseId: 'case123',
-        subroute: NewCaseSubroutes.Perpetrator,
+        subroute: 'section/perpetrator',
         action: CaseItemAction.Add,
       },
       taskId: TASK_SID,
@@ -333,7 +332,7 @@ describe('useState mocked', () => {
       routing: {
         route: 'case',
         caseId: 'case123',
-        subroute: NewCaseSubroutes.Household,
+        subroute: 'section/household',
         action: CaseItemAction.View,
         id: 'HOUSEHOLD_ID',
       },
@@ -368,7 +367,7 @@ describe('useState mocked', () => {
       routing: {
         route: 'case',
         caseId: 'case123',
-        subroute: NewCaseSubroutes.Perpetrator,
+        subroute: 'section/perpetrator',
         action: CaseItemAction.View,
         id: 'PERPETRATOR_ID',
       },
@@ -395,7 +394,7 @@ describe('useState mocked', () => {
       routing: {
         route: 'case',
         caseId: 'case123',
-        subroute: NewCaseSubroutes.CaseSummary,
+        subroute: NewCaseSubroutes.CaseOverview,
         action: CaseItemAction.Edit,
         id: '',
       },

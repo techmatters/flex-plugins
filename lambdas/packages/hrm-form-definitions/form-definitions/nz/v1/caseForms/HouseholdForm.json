@@ -1,0 +1,286 @@
+[
+  {
+    "name": "firstName",
+    "label": "Who is at risk from themselves?",
+    "type": "listbox-multiselect",
+    "options": [
+      {
+        "value": "The person I talked with",
+        "label": "The person I talked with"
+      },
+      {
+        "value": "Someone else",
+        "label": "Someone else"
+      }
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    },
+    "isPII": false
+  },
+  {
+    "name": "gender",
+    "label": "Have they already acted to take their own life?",
+    "type": "select",
+    "defaultOption": {
+      "value": "",
+      "label": ""
+    },
+    "optionsReferenceKey": "responseOptions",
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    },
+    "isPII": false
+  },
+  {
+    "name": "actionDetails",
+    "label": "Details of any actions they have already taken",
+    "type": "textarea",
+    "placeholder": "",
+    "isPII": true
+  },
+  {
+    "name": "relationshipToChild",
+    "label": "Have they expressed thoughts or feelings of wanting to end their life?",
+    "type": "select",
+    "defaultOption": {
+      "value": "",
+      "label": ""
+    },
+    "optionsReferenceKey": "responseOptions",
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    },
+    "isPII": false
+  },
+  {
+    "name": "feelingDetails",
+    "label": "Details of any thoughts or feelings",
+    "type": "textarea",
+    "placeholder": "",
+    "isPII": true
+  },
+  {
+    "name": "age",
+    "label": "Do they have a specific plan to end their life?",
+    "type": "select",
+    "defaultOption": {
+      "value": "",
+      "label": ""
+    },
+    "optionsReferenceKey": "responseOptions",
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    },
+    "isPII": false
+  },
+  {
+    "name": "planDetails",
+    "label": "Details of any plan",
+    "type": "textarea",
+    "placeholder": "",
+    "isPII": true
+  },
+  {
+    "name": "previouslyActed",
+    "label": "Have they previously acted to end their life?",
+    "type": "select",
+    "defaultOption": {
+      "value": "",
+      "label": ""
+    },
+    "optionsReferenceKey": "responseOptions",
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    },
+    "isPII": false
+  },
+  {
+    "name": "previousActionsDetails",
+    "label": "Details of previous actions",
+    "type": "textarea",
+    "placeholder": "",
+    "isPII": true
+  },
+  {
+    "name": "accessToMeans",
+    "label": "Do they have access to means of acting to end their life?",
+    "type": "select",
+    "defaultOption": {
+      "value": "",
+      "label": ""
+    },
+    "optionsReferenceKey": "responseOptions",
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    },
+    "isPII": false
+  },
+  {
+    "name": "accessToMeansDetails",
+    "label": "Details of means",
+    "type": "textarea",
+    "placeholder": "",
+    "isPII": true
+  },
+  {
+    "name": "timeframe",
+    "label": "Have they described a timeframe for acting to end their life?",
+    "type": "select",
+    "defaultOption": {
+      "value": "",
+      "label": ""
+    },
+    "optionsReferenceKey": "responseOptions",
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    },
+    "isPII": false
+  },
+  {
+    "name": "timeframeDetails",
+    "label": "Details of timeframe",
+    "type": "textarea",
+    "placeholder": "",
+    "isPII": true
+  },
+  {
+    "name": "recentlySelfHarmed",
+    "label": "Have they recently self-harmed?",
+    "type": "select",
+    "defaultOption": {
+      "value": "",
+      "label": ""
+    },
+    "optionsReferenceKey": "responseOptions",
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    },
+    "isPII": false
+  },
+  {
+    "name": "selfHarmDetails",
+    "label": "Details of self-harm",
+    "type": "textarea",
+    "placeholder": "",
+    "isPII": true
+  },
+  {
+    "name": "medicalAttentionRequired",
+    "label": "Was medical attention required?",
+    "type": "select",
+    "defaultOption": {
+      "value": "",
+      "label": ""
+    },
+    "optionsReferenceKey": "responseOptions",
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    },
+    "isPII": false
+  },
+  {
+    "name": "medicalAttentionDetails",
+    "label": "Details of medical attention",
+    "type": "textarea",
+    "placeholder": "",
+    "isPII": true
+  },
+  {
+    "name": "selfHarmThoughts",
+    "label": "Have they expressed thoughts or feelings about self-harming?",
+    "type": "select",
+    "defaultOption": {
+      "value": "",
+      "label": ""
+    },
+    "optionsReferenceKey": "responseOptions",
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    },
+    "isPII": false
+  },
+  {
+    "name": "selfHarmFeelingsDetails",
+    "label": "Details of any thoughts or feelings",
+    "type": "textarea",
+    "placeholder": "",
+    "isPII": true
+  },
+  {
+    "name": "selfHarmPlan",
+    "label": "Do they have a specific plan to self-harm?",
+    "type": "select",
+    "defaultOption": {
+      "value": "",
+      "label": ""
+    },
+    "optionsReferenceKey": "responseOptions",
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    },
+    "isPII": false
+  },
+  {
+    "name": "selfHarmPlanDetails",
+    "label": "Details of any plan",
+    "type": "textarea",
+    "placeholder": "",
+    "isPII": true
+  },
+  {
+    "name": "accessToSelfHarm",
+    "label": "Do they have access to means of self-harming?",
+    "type": "select",
+    "defaultOption": {
+      "value": "",
+      "label": ""
+    },
+    "optionsReferenceKey": "responseOptions",
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    },
+    "isPII": false
+  },
+  {
+    "name": "accessToSelfHarmDetails",
+    "label": "Details of means",
+    "type": "textarea",
+    "placeholder": "",
+    "isPII": true
+  },
+  {
+    "name": "selfHarmTimeframe",
+    "label": "Have they described a timeframe for self-harming?",
+    "type": "select",
+    "defaultOption": {
+      "value": "",
+      "label": ""
+    },
+    "optionsReferenceKey": "responseOptions",
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    },
+    "isPII": false
+  },
+  {
+    "name": "selfHarmTimeframeDetails",
+    "label": "Details of timeframe",
+    "type": "textarea",
+    "placeholder": "",
+    "isPII": true
+  }
+]

@@ -15,26 +15,53 @@
  */
 
 import * as Flex from '@twilio/flex-ui';
+import { buildFormDefinitionsBaseUrlGetter } from 'hrm-form-definitions';
 
-import { buildFormDefinitionsBaseUrlGetter, inferConfiguredFormDefinitionsBaseUrl } from './definitionVersions';
-import { ConfigFlags, FeatureFlags } from './types/types';
 import type { RootState } from './states';
 import { namespace } from './states/storeNamespaces';
 import { WorkerSID } from './types/twilio';
+import { FeatureFlags } from './types/FeatureFlags';
 
 const featureFlagEnvVarPrefix = 'REACT_APP_FF_';
 type ContactSaveFrequency = 'onTabChange' | 'onFinalSaveAndTransfer';
 
+const getEnvironmentFromHrmBaseUrl = (manager: Flex.Manager) => {
+  const hrmBaseUrl = `${process.env.REACT_APP_HRM_BASE_URL || manager.serviceConfiguration.attributes.hrm_base_url}`;
+  const prefix = 'https://hrm-';
+  const suffix = '.tl.techmatters.org';
+  const environment = hrmBaseUrl.substring(prefix.length, hrmBaseUrl.indexOf(suffix)).replace('-eu', '');
+
+  /*
+   * hrm-test is an alias of hrm-staging that we should deprecate & remove, but some accounts are still configured to point at it
+   * This ensures any accounts still pointing at hrm-test go to the right bucket for their assets
+   */
+  if (environment === 'test') {
+    return 'staging';
+  }
+
+  return environment;
+};
+
+// eslint-disable-next-line sonarjs/cognitive-complexity
 const readConfig = () => {
   const manager = Flex.Manager.getInstance();
-
+  const { identity } = manager.user;
+  // This is a really hacky test, need a better way to determine if the user is one of our bots
+  const userIsAseloBot = /aselo.+(?:@|_40)techmatters(?:\.|_2E)org/.test(identity);
   const accountSid = manager.serviceConfiguration.account_sid;
+  const baseUrl = process.env.REACT_APP_HRM_BASE_URL || manager.serviceConfiguration.attributes.hrm_base_url;
   const hrmBaseUrl = `${process.env.REACT_APP_HRM_BASE_URL || manager.serviceConfiguration.attributes.hrm_base_url}/${
     manager.serviceConfiguration.attributes.hrm_api_version
-  }/accounts/${accountSid}`;
+  }/accounts/${accountSid}${userIsAseloBot ? '-aselo_test' : ''}`;
   const hrmMicroserviceBaseUrl = process.env.REACT_APP_HRM_MICROSERVICE_BASE_URL
     ? `${process.env.REACT_APP_HRM_MICROSERVICE_BASE_URL}${manager.serviceConfiguration.attributes.hrm_api_version}/accounts/${accountSid}`
     : hrmBaseUrl;
+  const accountScopedLambdaBaseUrl = `${
+    process.env.REACT_APP_HRM_BASE_URL || manager.serviceConfiguration.attributes.hrm_base_url
+  }/lambda/twilio/account-scoped/${accountSid}`;
+  const llmAssistantBaseUrl = `${
+    process.env.REACT_APP_HRM_BASE_URL || manager.serviceConfiguration.attributes.hrm_base_url
+  }/lambda/ai/llm-service/${accountSid}`;
   const resourcesConfiguredBaseUrl =
     process.env.REACT_APP_RESOURCES_BASE_URL || manager.serviceConfiguration.attributes.resources_base_url;
   const resourcesBaseUrl = resourcesConfiguredBaseUrl
@@ -42,16 +69,18 @@ const readConfig = () => {
     : undefined;
   const serverlessBaseUrl =
     process.env.REACT_APP_SERVERLESS_BASE_URL || manager.serviceConfiguration.attributes.serverless_base_url;
-  const configuredFormDefinitionsBaseUrl =
-    process.env.REACT_APP_FORM_DEFINITIONS_BASE_URL ||
-    manager.serviceConfiguration.attributes.form_definitions_base_url ||
-    inferConfiguredFormDefinitionsBaseUrl(manager);
   const logoUrl = manager.serviceConfiguration.attributes.logo_url;
   const assetsBucketUrl = manager.serviceConfiguration.attributes.assets_bucket_url;
-  const getFormDefinitionsBaseUrl = buildFormDefinitionsBaseUrlGetter(new URL(configuredFormDefinitionsBaseUrl));
 
   const { helpline_code: helplineCode, environment } = manager.serviceConfiguration.attributes;
   const docsBucket = `tl-aselo-docs-${helplineCode}-${environment}`;
+  const configuredFormDefinitionsBaseUrl =
+    process.env.REACT_APP_FORM_DEFINITIONS_BASE_URL ||
+    manager.serviceConfiguration.attributes.form_definitions_base_url;
+  const getFormDefinitionsBaseUrl = buildFormDefinitionsBaseUrlGetter({
+    environment: getEnvironmentFromHrmBaseUrl(manager),
+    configuredFormDefinitionsBaseUrl,
+  });
 
   const externalRecordingsEnabled = manager.serviceConfiguration.attributes.external_recordings_enabled || false;
   const contactSaveFrequency: ContactSaveFrequency =
@@ -61,7 +90,6 @@ const readConfig = () => {
   const workerSid = manager.workerClient.sid as WorkerSID;
   const { helpline, counselorLanguage, full_name: counselorName, roles } = manager.workerClient.attributes as any;
   const currentWorkspace = manager.serviceConfiguration.taskrouter_workspace_sid;
-  const { identity, token } = manager.user;
   const isSupervisor = roles.includes('supervisor');
   const {
     helplineLanguage,
@@ -69,11 +97,16 @@ const readConfig = () => {
     pdfImagesSource,
     multipleOfficeSupport,
     permissionConfig,
-  } = manager.serviceConfiguration.attributes;
+    enableExternalRecordings,
+    enableUnmaskingCalls,
+    hideAddToNewCaseButton,
+    enforceZeroTranscriptRetention,
+  } = {
+    // Deprecated, remove when service configurations changes have applied 2025-09-30
+    ...manager.serviceConfiguration.attributes.config_flags,
+    ...manager.serviceConfiguration.attributes,
+  } as any;
   const contactsWaitingChannels = manager.serviceConfiguration.attributes.contacts_waiting_channels || null;
-
-  const configFlags: ConfigFlags = manager.serviceConfiguration.attributes.config_flags || {};
-
   const featureFlagsFromEnvEntries = Object.entries(process.env)
     .filter(([varName]) => varName.startsWith(featureFlagEnvVarPrefix))
     .map(([name, value]) => [
@@ -86,18 +119,28 @@ const readConfig = () => {
     ...featureFlagsFromServiceConfig,
     ...featureFlagsFromEnv,
   };
+  // Compatibility, remove feature flag check when service configurations changes have applied 2025-09-30
+  const enableClientProfiles =
+    manager.serviceConfiguration.attributes.enableClientProfiles ?? featureFlags.enable_client_profiles ?? true;
+  // Compatibility, remove feature flag check when service configurations changes have applied 2025-09-30
+  const enableConferencing =
+    manager.serviceConfiguration.attributes.enableConferencing ?? featureFlags.enable_conferencing ?? false;
   const { strings } = (manager as unknown) as {
     strings: { [key: string]: string };
   };
 
   return {
-    configFlags,
     featureFlags,
     strings,
+    llm: {
+      assistantBaseUrl: llmAssistantBaseUrl,
+    },
     hrm: {
       accountSid,
+      baseUrl,
       hrmBaseUrl,
       hrmMicroserviceBaseUrl,
+      accountScopedLambdaBaseUrl,
       serverlessBaseUrl,
       logoUrl,
       assetsBucketUrl,
@@ -109,7 +152,6 @@ const readConfig = () => {
       counselorLanguage,
       helplineLanguage,
       identity,
-      token,
       counselorName,
       isSupervisor,
       definitionVersion,
@@ -118,14 +160,19 @@ const readConfig = () => {
       permissionConfig,
       contactsWaitingChannels,
       externalRecordingsEnabled,
+      enforceZeroTranscriptRetention,
       helplineCode,
       environment,
       docsBucket,
       contactSaveFrequency,
+      enableExternalRecordings,
+      enableUnmaskingCalls,
+      enableClientProfiles,
+      enableConferencing,
+      hideAddToNewCaseButton,
     },
     referrableResources: {
       resourcesBaseUrl,
-      token,
     },
   };
 };
@@ -155,8 +202,9 @@ export const subscribeToConfigUpdates = (manager: Flex.Manager) => {
 
 export const getHrmConfig = () => cachedConfig.hrm;
 export const getReferrableResourceConfig = () => cachedConfig.referrableResources;
+export const getLlmConfig = () => cachedConfig.llm;
+
 export const getTemplateStrings = () => cachedConfig.strings;
-export const getAseloConfigFlags = (): ConfigFlags => cachedConfig.configFlags;
 export const getAseloFeatureFlags = (): FeatureFlags => cachedConfig.featureFlags;
 
 /**

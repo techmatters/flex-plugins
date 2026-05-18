@@ -1,12 +1,25 @@
 {
-    "attributes": {
-        "feature_flags": {
-            "enable_teams_view_enhancements": true
-        },
-        "form_definitions_base_url": "https://assets-staging.tl.techmatters.org/form-definitions/",
-        "resources_base_url": "https://hrm-staging.tl.techmatters.org"
+  "attributes": {
+    "system_down" : false,
+    "feature_flags": {
+      "enable_resouorces_updates": true,
+      "enable_switchboarding_move_tasks": true,
+      "use_twilio_lambda_adjust_capacity": true,
+      "use_twilio_lambda_for_conference_functions": false,
+      "use_twilio_lambda_for_conversation_duration": true,
+      "use_twilio_lambda_for_iwf_reporting": true,
+      "use_twilio_lambda_for_offline_contact_tasks": true,
+      "use_twilio_lambda_janitor": true,
+      "use_twilio_lambda_transfers": false
     },
-    "ui_attributes": {
-        "theme": null
-    }
+    "form_definitions_base_url": "https://assets-staging.tl.techmatters.org/form-definitions/",
+    "resources_base_url": "https://hrm-staging.tl.techmatters.org",
+    "logo_url": "https://aselo-logo.s3.amazonaws.com/200+transparent+background+no+TM+staging.png"
+  },
+  "ui_attributes": {
+    "theme": null,
+    "internalChatServerlessUrl": "serverless-internal-chat-6272.twil.io",
+    "appianAddonUrl": "vps.appiancloud.com/suite/webapi"
+
+  }
 }

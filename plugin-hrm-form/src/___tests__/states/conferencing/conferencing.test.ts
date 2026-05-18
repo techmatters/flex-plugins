@@ -16,8 +16,9 @@
 
 import each from 'jest-each';
 import { pipe } from 'lodash/fp';
-import { DefinitionVersion, DefinitionVersionId, loadDefinition, useFetchDefinitions } from 'hrm-form-definitions';
+import { DefinitionVersion, loadDefinition } from 'hrm-form-definitions';
 
+import { mockLocalFetchDefinitions } from '../../mockFetchDefinitions';
 import {
   reduce,
   setIsDialogOpenAction,
@@ -30,16 +31,15 @@ import { removeContactState } from '../../../states/actions';
 import { VALID_EMPTY_CONTACT, VALID_EMPTY_METADATA } from '../../testContacts';
 import {
   CREATE_CONTACT_ACTION_FULFILLED,
-  LOAD_CONTACT_FROM_HRM_BY_TASK_ID_ACTION_FULFILLED,
+  LOAD_CONTACT_FROM_HRM_FOR_TASK_ACTION_FULFILLED,
 } from '../../../states/contacts/types';
 
-// eslint-disable-next-line react-hooks/rules-of-hooks
-const { mockFetchImplementation, buildBaseURL } = useFetchDefinitions();
+const { mockFetchImplementation, buildBaseURL } = mockLocalFetchDefinitions();
 
 let mockV1: DefinitionVersion;
 
 beforeAll(async () => {
-  const formDefinitionsBaseUrl = buildBaseURL(DefinitionVersionId.v1);
+  const formDefinitionsBaseUrl = buildBaseURL('as-v1');
   await mockFetchImplementation(formDefinitionsBaseUrl);
 
   mockV1 = await loadDefinition(formDefinitionsBaseUrl);
@@ -56,12 +56,12 @@ const MOCK_99999_CREATE_ACTION: any = {
 };
 
 const MOCK_LOAD_ACTION: any = {
-  type: LOAD_CONTACT_FROM_HRM_BY_TASK_ID_ACTION_FULFILLED,
+  type: LOAD_CONTACT_FROM_HRM_FOR_TASK_ACTION_FULFILLED,
   payload: { contact: { ...VALID_EMPTY_CONTACT, taskId: 'WT12345', id: 12345 } },
 };
 
 const MOCK_99999_LOAD_ACTION: any = {
-  type: LOAD_CONTACT_FROM_HRM_BY_TASK_ID_ACTION_FULFILLED,
+  type: LOAD_CONTACT_FROM_HRM_FOR_TASK_ACTION_FULFILLED,
   payload: { contact: { ...VALID_EMPTY_CONTACT, taskId: 'WT99999', id: 99999 } },
 };
 

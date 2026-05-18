@@ -16,21 +16,14 @@
 /* eslint-disable react/jsx-max-depth */
 /* eslint-disable react/prop-types */
 import React from 'react';
-import { Template } from '@twilio/flex-ui';
 
-import { Box, Column, Flex } from '../../../styles';
-import {
-  ResourceAttributesColumn,
-  ResourcePreviewAttributeContent,
-  ResourcePreviewAttributeDescription,
-  ResourcePreviewHeaderText,
-  ResourcePreviewWrapper,
-} from '../styles';
-import { PreviewRow, StyledLink } from '../../search/styles';
+import { Flex } from '../../../styles';
+import { ResourcePreviewHeaderText, ResourcePreviewWrapper } from '../styles';
+import { PreviewRow } from '../../search/styles';
+import { StyledLink } from '../../../styles/buttons';
 import { isMissingResource, ReferrableResourceResult } from '../../../states/resources/search';
 import ResourceIdCopyButton from '../ResourceIdCopyButton';
-import { convertKHPResourceAttributes } from '../convertKHPResourceAttributes';
-import OperatingHours from '../resourceView/OperatingHours';
+import { ResourcePreviewAttributes } from '../mappingComponents';
 
 type OwnProps = {
   resourceResult: ReferrableResourceResult;
@@ -44,11 +37,7 @@ const ResourcePreview: React.FC<Props> = ({ resourceResult, onClickViewResource 
     // We could put a placeholder here, but it's probably better to just not show anything
     return <hr style={{ width: '100%', height: '3px', opacity: 0.3 }} />;
   }
-  const { id, name, attributes } = resourceResult;
-
-  const resourceAttributes = convertKHPResourceAttributes(attributes, 'en');
-
-  const { operations, ageRange, primaryLocation } = resourceAttributes;
+  const { id, name } = resourceResult;
 
   // type Category = { id: string; value: string; color: string };
   return (
@@ -72,44 +61,7 @@ const ResourcePreview: React.FC<Props> = ({ resourceResult, onClickViewResource 
             </Flex>
           </PreviewRow>
         </div>
-        <PreviewRow>
-          <ResourceAttributesColumn style={{ paddingLeft: 0, marginLeft: 0, alignSelf: 'baseline' }}>
-            <Box marginTop="8px" marginBottom="8px">
-              <Column>
-                <Box marginBottom="6px">
-                  <ResourcePreviewAttributeDescription>
-                    <Template code="Resources-Search-Preview-OperatingHours" />
-                  </ResourcePreviewAttributeDescription>
-                </Box>
-                <OperatingHours operations={operations} showDescriptionOfHours={false} />
-              </Column>
-            </Box>
-          </ResourceAttributesColumn>
-          <ResourceAttributesColumn style={{ alignSelf: 'baseline' }}>
-            <Box marginTop="8px" marginBottom="8px">
-              <Column>
-                <Box marginBottom="6px">
-                  <ResourcePreviewAttributeDescription>
-                    <Template code="Resources-Search-Preview-PrimaryAddress" />
-                  </ResourcePreviewAttributeDescription>
-                  <ResourcePreviewAttributeContent>{primaryLocation}</ResourcePreviewAttributeContent>
-                  <br />
-                  <ResourcePreviewAttributeDescription>
-                    <Template code="Resources-Search-Preview-AgesServed" />
-                  </ResourcePreviewAttributeDescription>
-                  <ResourcePreviewAttributeContent>{ageRange}</ResourcePreviewAttributeContent>
-                </Box>
-              </Column>
-            </Box>
-          </ResourceAttributesColumn>
-        </PreviewRow>
-        {/* <ResourceCategoriesContainer>
-          {(ServiceCategories as Category[]).map(c => (
-            <Box key={`category-tag-${c.value}`} marginRight="8px" marginBottom="8px">
-              <CategoryWithTooltip category={c.value} color={c.color} fitTag={false} />
-            </Box>
-          ))}
-        </ResourceCategoriesContainer> */}
+        <ResourcePreviewAttributes resource={resourceResult} />
       </ResourcePreviewWrapper>
     </Flex>
   );

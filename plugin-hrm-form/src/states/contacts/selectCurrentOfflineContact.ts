@@ -21,7 +21,8 @@ import { ContactState } from './existingContacts';
 
 const selectCurrentOfflineContact = ({ [namespace]: { activeContacts } }: RootState): ContactState | undefined =>
   Object.values(activeContacts.existingContacts).find(
-    contact => contact.savedContact?.taskId === getOfflineContactTaskSid(),
+    ({ savedContact }) =>
+      savedContact?.taskId === getOfflineContactTaskSid() && savedContact.rawJson.contactlessTask.createdOnBehalfOf,
   );
 
 export default selectCurrentOfflineContact;

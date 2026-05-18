@@ -26,18 +26,24 @@ export const caseHome = (page: Page) => {
   // const caseHomeArea = page.locator('div.Twilio-CRMContainer');
   const selectors = {
     addSectionButton: (sectionTypeId: string) =>
-      page.locator(
-        `//button[@data-testid='Case-${
-          sectionTypeId.charAt(0).toUpperCase() + sectionTypeId.slice(1)
-        }-AddButton']`,
-      ),
+      page.locator(`//button[@data-testid='Case-SectionList-Add/${sectionTypeId}-AddButton']`),
     formItem: (itemId: string) => page.locator(`#${itemId}`),
     formInput: (itemId: string) => page.locator(`input#${itemId}`),
     formSelect: (itemId: string) => page.locator(`select#${itemId}`),
     formTextarea: (itemId: string) => page.locator(`textarea#${itemId}`),
     saveCaseItemButton: page.locator(`//button[@data-testid='Case-AddEditItemScreen-SaveItem']`),
+    saveCaseOverviewButton: page.locator('//button[@data-testid="Case-EditCaseScreen-SaveItem"]'),
     saveCaseAndEndButton: page.locator(`//button[@data-testid='BottomBar-SaveCaseAndEnd']`),
     getNewCaseId: page.locator(`//p[@data-testid='Case-DetailsHeaderCaseId']`),
+    printButton: page.locator('[data-testid="CasePrint-Button"]'),
+    modalCloseButton: page.locator('[data-testid="NavigableContainer-CloseCross"]'),
+
+    caseSummaryText: page.locator(`//textarea[@data-testid='Case-summary-TextArea']`),
+    caseSummaryTextArea: page.locator(`//textarea[@data-testid='summary']`),
+    updateCaseButton: page.locator(`//button[@data-testid='Case-EditCaseScreen-SaveItem']`),
+    caseEditButton: page.locator(`//button[@data-testid='Case-EditButton']`),
+    //Case Section view
+    categoryTooltip: page.locator(`//div[@data-testid='CaseDetails-CategoryTooltip']`),
   };
 
   async function fillSectionForm({ items }: CaseSectionForm) {
@@ -55,11 +61,8 @@ export const caseHome = (page: Page) => {
   }
 
   async function addCaseSection(section: CaseSectionForm) {
-    const sectionId =
-      section.sectionTypeId.charAt(0).toUpperCase() + section.sectionTypeId.slice(1);
-    const newSectionButton = selectors.addSectionButton(sectionId);
-    await newSectionButton.waitFor({ state: 'visible' });
-    await expect(newSectionButton).toContainText(sectionId);
+    const newSectionButton = selectors.addSectionButton(section.sectionTypeId);
+    await expect(newSectionButton).toBeEnabled();
     await newSectionButton.click();
     await fillSectionForm(section);
 
@@ -81,9 +84,57 @@ export const caseHome = (page: Page) => {
 
   const { getNewCaseId } = selectors;
 
+  // Add utility functions moved from caseList.ts
+  async function viewClosePrintView() {
+    await expect(selectors.printButton).toBeVisible();
+    await selectors.printButton.click();
+    console.debug('Opened Case Print');
+    await expect(selectors.modalCloseButton).toBeVisible();
+    await selectors.modalCloseButton.click();
+    console.debug('Close Case Print');
+  }
+
+  async function clickEditCase() {
+    await expect(selectors.caseEditButton).toBeVisible();
+    await selectors.caseEditButton.click();
+  }
+
+  async function updateCaseSummary() {
+    const summaryInput = selectors.formTextarea('summary');
+    await expect(summaryInput).toBeVisible();
+    await summaryInput.fill('Updated summary');
+    await expect(selectors.saveCaseOverviewButton).toBeVisible();
+    await selectors.saveCaseOverviewButton.click();
+  }
+
+  async function verifyCaseSummaryUpdated() {
+    await expect(selectors.caseSummaryText).toBeVisible();
+    await expect(selectors.caseSummaryText).toContainText('Updated summary');
+  }
+
+  async function verifyCasePrintButtonIsVisible() {
+    await expect(selectors.printButton).toBeVisible();
+  }
+
+  async function verifyCategoryTooltipIsVisible() {
+    await expect(selectors.categoryTooltip).toBeVisible({ timeout: 10000 });
+  }
+
+  async function closeModal() {
+    await expect(selectors.modalCloseButton).toBeVisible();
+    await selectors.modalCloseButton.click();
+  }
+
   return {
     getNewCaseId,
     addCaseSection,
     saveCaseAndEnd,
+    viewClosePrintView,
+    clickEditCase,
+    updateCaseSummary,
+    verifyCaseSummaryUpdated,
+    verifyCasePrintButtonIsVisible,
+    verifyCategoryTooltipIsVisible,
+    closeModal,
   };
 };

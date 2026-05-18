@@ -1,0 +1,45 @@
+{
+  "timezone": "Africa/Johannesburg",
+  "holidays": {
+    "01/02/2023":"New Years Day",
+    "03/21/2023":"Human Rights Day",
+    "04/07/2023":"Good Friday",
+    "04/10/2023":"Family Day",
+    "04/27/2023":"Freedom Day",
+    "05/01/2023":"Workers Day",
+    "06/16/2023":"Youth Day",
+    "08/09/2023":"National Womens Day",
+    "09/20/2023":"Staff shortage",
+    "09/24/2023":"Heritage Day",
+    "09/25/2023":"Heritage Day Holiday",
+    "09/26/2023":"Staff shortage",
+    "12/14/2023":"No capacity",
+    "12/15/2023":"No capacity",
+    "12/16/2023":"Day of Reconciliation",
+    "12/25/2023":"Christmas",
+    "12/26/2023":"Boxing Day",
+    "12/27/2023":"No capacity",
+    "01/01/2024":"New Years Day"
+
+  },
+  "operatingHours": {
+    "webchat": {
+      "1": [{ "open": 1100, "close": 1245 }, { "open": 1400, "close": 1745 }],
+      "2": [{ "open": 1100, "close": 1245 }, { "open": 1400, "close": 1745 }],
+      "3": [{ "open": 1100, "close": 1245 }, { "open": 1400, "close": 1745 }],
+      "4": [{ "open": 1100, "close": 1245 }, { "open": 1400, "close": 1745 }],
+      "5": [{ "open": 1100, "close": 1245 }, { "open": 1400, "close": 1745 }],
+      "6": [],
+      "7": []
+    },
+    "facebook": {
+      "1": [{ "open": 1000, "close": 1800 }],
+      "2": [{ "open": 1000, "close": 1800 }],
+      "3": [{ "open": 1000, "close": 1800 }],
+      "4": [{ "open": 1000, "close": 1800 }],
+      "5": [{ "open": 1000, "close": 1800 }],
+      "6": [],
+      "7": []
+    }
+  }
+}

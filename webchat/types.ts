@@ -29,6 +29,7 @@ export type MapHelplineLanguage = (helpline: string) => string;
 export type Configuration = {
   accountSid: string;
   flexFlowSid: string;
+  twilioServicesUrl: URL;
   defaultLanguage: string;
   translations: Translations;
   preEngagementConfig: PreEngagementFormDefinition;

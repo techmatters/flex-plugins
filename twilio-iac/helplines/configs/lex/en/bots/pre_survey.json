@@ -7,7 +7,7 @@
     "idle_session_ttl_in_seconds": "600",
     "enable_model_improvements": true,
     "abort_statement": {
-      "content": "Sorry, I am not able to assist at this time.",
+      "content": "Sorry, I didn't get that. I'll connect you to a counsellor now.",
       "content_type": "PlainText"
     },
     "clarification_prompt": {

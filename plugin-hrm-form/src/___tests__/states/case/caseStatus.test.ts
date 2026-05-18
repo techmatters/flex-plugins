@@ -14,19 +14,15 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import {
-  DefinitionVersion,
-  DefinitionVersionId,
-  loadDefinition,
-  StatusInfo,
-  useFetchDefinitions,
-} from 'hrm-form-definitions';
+import { DefinitionVersion, loadDefinition, StatusInfo } from 'hrm-form-definitions';
 
-import { getInitializedCan, PermissionActions } from '../../../permissions';
+import { mockLocalFetchDefinitions } from '../../mockFetchDefinitions';
+import { getInitializedCan } from '../../../permissions/rules';
 import { Case } from '../../../types/types';
 import { getAvailableCaseStatusTransitions } from '../../../states/case/caseStatus';
+import { PermissionActions } from '../../../permissions/actions';
 
-jest.mock('../../../permissions', () => ({
+jest.mock('../../../permissions/rules', () => ({
   // Tried using jest.requireActual for this & it didn't work
   PermissionActions: {
     CLOSE_CASE: 'closeCase',
@@ -36,8 +32,7 @@ jest.mock('../../../permissions', () => ({
   getInitializedCan: jest.fn(),
 }));
 
-// eslint-disable-next-line react-hooks/rules-of-hooks
-const { mockFetchImplementation, mockReset, buildBaseURL } = useFetchDefinitions();
+const { mockFetchImplementation, mockReset, buildBaseURL } = mockLocalFetchDefinitions();
 
 let mockV1: DefinitionVersion;
 const baselineDate = new Date(2010, 1, 1);
@@ -74,7 +69,7 @@ function createDefinition(statuses: StatusInfo[]): DefinitionVersion {
 describe('getAvailableCaseStatusTransitions', () => {
   beforeEach(async () => {
     mockReset();
-    const formDefinitionsBaseUrl = buildBaseURL(DefinitionVersionId.v1);
+    const formDefinitionsBaseUrl = buildBaseURL('as-v1');
     await mockFetchImplementation(formDefinitionsBaseUrl);
 
     mockV1 = await loadDefinition(formDefinitionsBaseUrl);

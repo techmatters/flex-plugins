@@ -1,0 +1,92 @@
+{
+  "ECPAT Philippines": {
+    "categories": {
+      "Violence": {
+        "color": "#F5A623",
+        "subcategories": [
+          {
+            "label": "Bullying"
+          },
+          {
+            "label": "Child/Early/Forced marriage"
+          },
+          {
+            "label": "Child labour"
+          },
+          {
+            "label": "Gender-based harmful traditional practices (other than FGM)"
+          },
+          {
+            "label": "Mental/Emotional violence"
+          },
+          {
+            "label": "Neglect (or negligent treatment)"
+          },
+          {
+            "label": "Physical violence"
+          },
+          {
+            "label": "Sexual abuse (Rape / sexual molestation)"
+          },
+          {
+            "label": "Unspecified/Other - Physical or Sexual Violence"
+          }
+        ]
+      },
+      "Trafficking": {
+        "color": "#F8E900",
+        "subcategories": [
+          {
+            "label": "SEC in Travel and Tourism"
+          },
+          {
+            "label": "SEC in Community / Street"
+          }
+        ]
+      },
+      "OSEC": {
+        "color": "#E86B6B",
+        "subcategories": [
+          {
+            "label": "CSAM (Production, Distribution, and Possession)"
+          },
+          {
+            "label": "Online Grooming"
+          },
+          {
+            "label": "Online Trafficking"
+          },
+          {
+            "label": "Sextortion"
+          },
+          {
+            "label": "Live Streaming"
+          },
+          {
+            "label": "Online Prostitution"
+          }
+        ]
+      },
+      "Information & Other Non-Counselling contacts": {
+        "color": "#767777",
+        "subcategories": [
+          {
+            "label": "Complaints about the child helpline"
+          },
+          {
+            "label": "Questions about the child helpline"
+          },
+          {
+            "label": "Questions about other services"
+          },
+          {
+            "label": "\"Thank you for your assistance\""
+          },
+          {
+            "label": "Unspecified/Other - Information & Other Non-counselling Contacts"
+          }
+        ]
+      }
+    }
+  }
+}

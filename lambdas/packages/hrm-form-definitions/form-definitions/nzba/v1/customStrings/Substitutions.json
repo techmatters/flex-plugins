@@ -1,0 +1,57 @@
+{
+  "en": {
+    "CallType-child": "Client calling about self",
+    "CallType-caller": "Someone calling about a client",
+    "ConnectDialog-Child": "Copy client information from this record to new contact?",
+      
+    "CaseHeader-CopyChildInfo": "Copy Client Information into Current Contact",
+   
+    "CaseSection-BottomBar-SaveAndAddAnother/agency": "Save and Add Another Agency",
+    "CaseSection-BottomBar-Save/agency": "Save Agency",
+    "CaseSection-BottomBar-SaveAndAddAnother/caseManagementPlan": "Save and Add Another Case Management Plan",
+    "CaseSection-BottomBar-Save/caseManagementPlan": "Save Case Management Plan",
+    "CaseSection-BottomBar-SaveAndAddAnother/dutyOfCare": "Save and Add Another Duty of Care",
+    "CaseSection-BottomBar-Save/dutyOfCare": "Save Duty of Care",
+
+    "TabbedForms-AddChildInfoTab": "Client",
+
+    "TabbedForms-ReportsChildLink": "Create link for client",
+ 
+    "Case-CaseDetailsChildName": "Client Name",
+
+    "Case-SectionList-Title/agency": "Agencies",
+    "Case-SectionList-Title/dutyOfCare": "Duty of Care",
+    "Case-SectionList-Title/caseManagementPlan": "Case Management Plan",
+
+    "Case-SectionList-Add/caseManagementPlan": "Case Management Plan",
+    "Case-SectionList-Add/agency": "Agency",
+    "Case-SectionList-Add/dutyOfCare": "Duty of Care",
+
+
+    "CaseSection-Add/caseManagementPlan": "Add Case Management Plan",
+    "CaseSection-Add/agency": "Add Agency",
+    "CaseSection-Add/dutyOfCare": "Add Duty of Care",
+
+    "CaseSection-Edit/caseManagementPlan": "Edit Case Management Plan",
+    "CaseSection-Edit/agency": "Edit Agency",
+    "CaseSection-Edit/dutyOfCare": "Edit Duty of Care",
+
+    "Case-SectionList-NoItems/agency": "No Agencies Listed",
+    "Case-SectionList-NoItems/caseManagementPlan": "No Case Management Plan Listed",
+    "Case-SectionList-NoItems/dutyOfCare": "No Duty of Care Listed",
+
+    "CaseSection-View-Title/caseManagementPlan": "View Case Management Plan",
+    "CaseSection-View-Title/dutyOfCare": "View Duty of Care",
+    "CaseSection-View-Title/agency": "View Agency",
+
+    "Case-ChildIsAtRisk": "Client is at risk",
+    "CaseList-THChildName": "Client",
+    "CallerForm-RelationshipToChild": "Relationship to Client",
+    "CallerSection-RelationshipToChild": "Relationship to Client",
+    "ContactDetails-GeneralDetails-DiscussRights": "Did you discuss rights with the client?",
+    "ContactDetails-GeneralDetails-SolvedProblem": "Did the client feel we solved their problem?",
+    "ContactDetails-GeneralDetails-WouldRecommend": "Would the client recommend us to a friend?",
+    "SectionName-ChildInformation": "Client Information {{sectionNo}} of {{sectionCount}}",
+    "Contact-EditChild": "Edit Client Information"
+  }
+}

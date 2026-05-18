@@ -13,11 +13,15 @@ locals {
     helpline_language                 = "en"
     voice_ivr_language                = ""
     enable_post_survey                = false
+    permission_config                 = "et"
 
 
     lex_bot_languages = {
       en : ["pre_survey"]
     }
+    lex_v2_bot_languages = {
+          en : ["pre_survey"]
+        }
 
 
     workflows = {

@@ -50,8 +50,8 @@ const skipDataUpdateEnvs = ['staging', 'production'];
 // These are environments where we want to hit remote flex instead of localhost
 const flexEnvs = ['development', 'staging', 'production'];
 
-// This is kindof a hack to get the correct default remote webchat url and twilio account info for the local env
-export const localOverrideEnv = helplineEnv == 'local' ? 'development' : helplineEnv;
+// This is kind of a hack to get the correct default remote webchat url and twilio account info for the local env
+export const localOverrideEnv = helplineEnv === 'local' ? 'development' : helplineEnv;
 
 export const config: Config = {};
 
@@ -152,7 +152,11 @@ const configOptions: ConfigOptions = {
   },
   isDevelopment: {
     envKey: 'IS_DEVELOPMENT',
-    default: helplineEnv === 'staging',
+    default: helplineEnv === 'development',
+  },
+  isLocal: {
+    envKey: 'IS_DEVELOPMENT',
+    default: helplineEnv === 'local',
   },
 
   // We can skip data updates in certain environments to keep from impacting real data
@@ -170,6 +174,12 @@ const configOptions: ConfigOptions = {
     default: `https://s3.amazonaws.com/assets-${localOverrideEnv}.tl.techmatters.org/webchat/${helplineShortCode}/e2e-chat.html`,
   },
 
+  // The url of the aselo webchat react app is used to navigate to the new aselo webchat client
+  aseloWebchatUrl: {
+    envKey: 'ASELO_WEBCHAT_URL',
+    default: `https://assets-${localOverrideEnv}.tl.techmatters.org/aselo-webchat-react-app/${helplineShortCode}/`,
+  },
+
   // inLambda is used to determine if we are running in a lambda or not and set other config values accordingly
   inLambda: {
     envKey: 'TEST_IN_LAMBDA',
@@ -179,7 +189,7 @@ const configOptions: ConfigOptions = {
   // The storage state path is used to store the state of the browser between tests
   storageStatePath: {
     envKey: 'STORAGE_STATE_PATH',
-    default: () => (getConfigValue('inLambda') ? '/tmp/state.json' : 'temp/state.json'),
+    default: () => (getConfigValue('inLambda') ? '/tmp/storage/state.json' : 'temp/state.json'),
   },
 
   // Specifying a test name will cause only the matching test file to be run.
@@ -191,6 +201,12 @@ const configOptions: ConfigOptions = {
   hrmRoot: {
     envKey: 'HRM_ROOT',
     default: '', // Default cannot be set up front due to the account sid might not calculated.
+  },
+
+  legacyOktaSso: {
+    envKey: 'LEGACY_OKTA_SSO',
+    ssmPath: () => `/${localOverrideEnv}/twilio/${getConfigValue('twilioAccountSid')}/legacy_sso`,
+    default: 'false',
   },
 };
 
@@ -241,6 +257,8 @@ const setConfigValueFromSsm = async (key: string) => {
     }
 
     console.log(`Failed to load config value from SSM at ${option.ssmPath}. Using default value`);
+
+    setConfigValue(key, typeof option.default === 'function' ? option.default() : option.default);
   }
 };
 
@@ -252,9 +270,10 @@ const initSsmConfigValues = async () => {
   if (!helplineShortCode) {
     throw new Error('Trying to load config from SSM, but HELPLINE_SHORT_CODE is not set');
   }
-
+  console.info('Setting config values from AWS SSM', Object.keys(configOptions));
   // This must be done in series because some config options depend on others
   for (const key of Object.keys(configOptions)) {
+    console.info('Setting config value from AWS SSM', key);
     await setConfigValueFromSsm(key);
   }
 };

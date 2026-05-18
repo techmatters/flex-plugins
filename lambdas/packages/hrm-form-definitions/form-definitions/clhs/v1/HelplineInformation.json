@@ -1,0 +1,14 @@
+{
+    "label": "Helpline",
+    "helplines": [
+      {
+        "label": "Hora Segura",
+        "value": "Hora Segura",
+        "default": true,
+        "manager": {
+          "name": "Helpline Manager",
+          "phone": "+12345678910",
+          "email": "info@helpline.org"
+        }
+      }
+    ]}

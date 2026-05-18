@@ -13,8 +13,8 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
-import React, { Dispatch } from 'react';
-import { connect, ConnectedProps } from 'react-redux';
+import React from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { recordBackendError } from '../../fullStory';
 import { completeTask } from '../../services/formSubmissionHelpers';
@@ -33,31 +33,20 @@ import { CaseStateEntry } from '../../states/case/types';
 import { selectCaseByCaseId } from '../../states/case/selectCaseStateByCaseId';
 import TabbedFormsTabs from './TabbedFormsTabs';
 
-type OwnProps = TabbedFormsCommonProps;
-
-const mapStateToProps = (state: RootState, { task: { taskSid } }: OwnProps) => {
-  const { metadata, savedContact } = selectContactByTaskSid(state, taskSid);
-  const caseState = selectCaseByCaseId(state, savedContact?.caseId);
-  return {
-    metadata,
-    savedContact,
-    caseState,
-  };
-};
-
-const mapDispatchToProps = (dispatch: Dispatch<any>, { task }: OwnProps) => ({
-  finaliseContact: (contact: Contact, metadata: ContactMetadata, caseState: CaseStateEntry) =>
-    dispatch(submitContactFormAsyncAction(task as CustomITask, contact, metadata, caseState)),
-  closeModal: () => dispatch(newCloseModalAction(task.taskSid, 'tabbed-forms')),
-});
-
-const connector = connect(mapStateToProps, mapDispatchToProps);
-type Props = OwnProps & ConnectedProps<typeof connector>;
+type Props = TabbedFormsCommonProps;
 
 const TabbedFormsCase: React.FC<Props> = props => {
-  const { task, metadata, savedContact, caseState, closeModal, finaliseContact } = props;
+  const { task } = props;
+  const dispatch = useDispatch();
+  const { metadata, savedContact } = useSelector((state: RootState) => selectContactByTaskSid(state, task.taskSid));
+  const caseState = useSelector((state: RootState) => selectCaseByCaseId(state, savedContact?.caseId));
   const strings = getTemplateStrings();
   const { newSubmitHandler } = useTabbedFormContext();
+
+  const closeModal = () => dispatch(newCloseModalAction(task.taskSid, 'tabbed-forms'));
+
+  const finaliseContact = (contact: Contact, metadata: ContactMetadata, caseState: CaseStateEntry) =>
+    dispatch(submitContactFormAsyncAction(task as CustomITask, contact, metadata, caseState));
 
   const submit = async () => {
     try {
@@ -92,4 +81,4 @@ const TabbedFormsCase: React.FC<Props> = props => {
 
 TabbedFormsCase.displayName = 'TabbedFormsCase';
 
-export default connector(TabbedFormsCase);
+export default TabbedFormsCase;

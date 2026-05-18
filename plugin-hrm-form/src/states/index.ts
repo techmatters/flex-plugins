@@ -27,9 +27,10 @@ import { reduce as RoutingReducer } from './routing/reducer';
 import { reduce as CSAMReportReducer } from './csam-report/reducer';
 import { reduce as DualWriteReducer } from './dualWrite/reducer';
 import { reduce as ReferrableResourcesReducer } from './resources';
-import { reduce as ConversationsReducer } from './conversations';
 import { reduce as ConferencingReducer } from './conferencing';
 import { reduce as ProfileReducer } from './profile/reducer';
+import { reduce as SwitchboardReducer } from './switchboard/reducer';
+import { reduce as TeamsViewReducer } from './teamsView';
 import { CaseState } from './case/types';
 import { ContactsState } from './contacts/types';
 import {
@@ -38,7 +39,6 @@ import {
   conferencingBase,
   configurationBase,
   contactFormsBase,
-  conversationsBase,
   csamReportBase,
   dualWriteBase,
   namespace,
@@ -46,8 +46,11 @@ import {
   queuesStatusBase,
   referrableResourcesBase,
   routingBase,
+  switchboardBase,
+  teamsViewBase,
 } from './storeNamespaces';
 import { reduce as CaseMergingBannersReducer } from './case/caseBanners';
+import { customIntegrationsReducer } from './customIntegrations';
 
 const reducers = {
   searchContacts: SearchFormReducer,
@@ -58,10 +61,11 @@ const reducers = {
   [csamReportBase]: CSAMReportReducer,
   [dualWriteBase]: DualWriteReducer,
   [referrableResourcesBase]: ReferrableResourcesReducer,
-  [conversationsBase]: ConversationsReducer,
   [conferencingBase]: ConferencingReducer,
   [caseMergingBannersBase]: CaseMergingBannersReducer,
   [profileBase]: ProfileReducer,
+  [switchboardBase]: SwitchboardReducer,
+  [teamsViewBase]: TeamsViewReducer,
 
   /*
    * [csamClcReportBase]: CSAMCLCReportReducer,
@@ -79,7 +83,8 @@ const combinedReducers = combineReducers(reducers);
 // Combine the reducers
 const reducer = (state: HrmState, action): HrmState => {
   const stateWithCaseUpdates: HrmState = ConnectedCaseReducer(state, action);
-  return {
+
+  const stateWithAllStandardReducerUpdates = {
     ...combinedReducers(stateWithCaseUpdates, action),
     connectedCase: stateWithCaseUpdates.connectedCase,
     /*
@@ -88,6 +93,7 @@ const reducer = (state: HrmState, action): HrmState => {
      */
     activeContacts: ContactStateReducer(state, (state ?? {})[contactFormsBase], action),
   };
+  return customIntegrationsReducer(stateWithAllStandardReducerUpdates, action);
 };
 
 export default reducer;

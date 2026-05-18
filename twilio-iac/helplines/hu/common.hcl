@@ -14,6 +14,7 @@ locals {
     contacts_waiting_channels         = ["web", "voice"]
     enable_post_survey                = false
     helpline_region                   = "eu-west-1"
+    permission_config                 = "hu"
 
     lex_bot_languages = {
       uk : ["pre_survey"],

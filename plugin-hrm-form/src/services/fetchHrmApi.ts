@@ -14,10 +14,23 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { fetchApi, FetchOptions } from './fetchApi';
+import { ApiError, fetchApi, FetchOptions } from './fetchApi';
 import { getHrmConfig } from '../hrmConfig';
 import { GenerateSignedUrlPathParams } from '../types/types';
+import { getValidToken } from '../authentication';
 
+const fetchProtectedApi = (baseUrl: string, endPoint: string, options: Partial<FetchOptions> = {}): Promise<any> => {
+  const token = getValidToken();
+  if (token instanceof Error) throw new ApiError(`Aborting request due to token issue: ${token.message}`, {}, token);
+
+  return fetchApi(new URL(baseUrl), endPoint, {
+    ...options,
+    headers: {
+      Authorization: `Bearer ${token}`,
+      ...options.headers,
+    },
+  });
+};
 /**
  * Factored out function that handles api calls hosted in HRM backend.
  * Will throw Error if server responses with http error code.
@@ -26,15 +39,15 @@ import { GenerateSignedUrlPathParams } from '../types/types';
  * @returns {Promise<any>} the api response (if not error)
  */
 export const fetchHrmApi = (endPoint: string, options: Partial<FetchOptions> = {}): Promise<any> => {
-  const { hrmBaseUrl, token } = getHrmConfig();
+  const { hrmBaseUrl } = getHrmConfig();
 
-  return fetchApi(new URL(hrmBaseUrl), endPoint, {
-    ...options,
-    headers: {
-      Authorization: `Bearer ${token}`,
-      ...options.headers,
-    },
-  });
+  return fetchProtectedApi(hrmBaseUrl, endPoint, options);
+};
+
+export const fetchBaseApi = (endPoint: string, options: Partial<FetchOptions> = {}): Promise<any> => {
+  const { baseUrl } = getHrmConfig();
+
+  return fetchProtectedApi(baseUrl, endPoint, options);
 };
 
 export const generateSignedURLPath = ({

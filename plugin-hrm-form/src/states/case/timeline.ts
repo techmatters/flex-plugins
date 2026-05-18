@@ -19,7 +19,7 @@ import { createAsyncAction, createReducer } from 'redux-promise-middleware-actio
 import { HrmState, RootState } from '..';
 import { namespace } from '../storeNamespaces';
 import { getContactActivityText, getSectionText } from './caseActivities';
-import { Case, Contact, WellKnownCaseSection } from '../../types/types';
+import { Case, Contact } from '../../types/types';
 import { getCaseTimeline, TimelineResult } from '../../services/CaseService';
 import {
   CaseSectionIdentifierTimelineActivity,
@@ -33,7 +33,9 @@ import {
 } from './types';
 import { FullCaseSection } from '../../services/caseSectionService';
 import { getTemplateStrings } from '../../hrmConfig';
-import { selectDefinitionVersionForCase } from '../configuration/selectDefinitions';
+import { selectDefinitionVersionForCase, selectDefinitionVersionForContact } from '../configuration/selectDefinitions';
+import { selectCaseByCaseId } from './selectCaseStateByCaseId';
+import { contactLabelFromHrmContact, ContactLabelOptions } from '../contacts/contactIdentifier';
 
 export type PaginationSettings = { offset: number; limit: number };
 
@@ -42,70 +44,84 @@ export const newGetTimelineAsyncAction = createAsyncAction(
   async (
     caseId: Case['id'],
     timelineId: string,
-    sectionTypes: WellKnownCaseSection[],
+    sectionTypes: string[],
     includeContacts: boolean,
     pagination: PaginationSettings,
+    reference: string,
   ): Promise<{
     timelineResult: TimelineResult<Date>;
     caseId: Case['id'];
     timelineId: string;
     pagination: PaginationSettings;
+    reference: string;
   }> => {
     return {
       timelineResult: await getCaseTimeline(caseId, sectionTypes, includeContacts, pagination),
       caseId,
       timelineId,
       pagination,
+      reference,
     };
   },
 );
+
+export const loadTimelineIntoRedux = (
+  state: HrmState,
+  caseId: Case['id'],
+  timelineResult: TimelineResult<Date>,
+  timelineId: string,
+  pagination: Partial<PaginationSettings> & Pick<PaginationSettings, 'offset'> = { offset: 0 },
+): HrmState => {
+  const caseEntry = state.connectedCase.cases[caseId];
+  if (!caseEntry) return state;
+  caseEntry.timelines = caseEntry.timelines ?? {};
+  caseEntry.sections = caseEntry.sections ?? {};
+  let timeline: (CaseSectionIdentifierTimelineActivity | ContactIdentifierTimelineActivity)[] =
+    caseEntry.timelines[timelineId] ?? [];
+  if (timeline.length !== timelineResult.count) {
+    timeline = [];
+    timeline.length = timelineResult.count;
+    timeline.fill(null, 0, timelineResult.count);
+  }
+  timelineResult.activities.forEach((timelineActivity, index) => {
+    if (isCaseSectionTimelineActivity(timelineActivity)) {
+      const { activity } = timelineActivity;
+      timeline[index + pagination.offset] = {
+        ...timelineActivity,
+        activityType: 'case-section-id',
+        activity,
+      } as CaseSectionIdentifierTimelineActivity;
+      caseEntry.sections[activity.sectionType] = caseEntry.sections[activity.sectionType] ?? {};
+      caseEntry.sections[activity.sectionType][activity.sectionId] = activity;
+    } else if (isContactTimelineActivity(timelineActivity)) {
+      const { activity } = timelineActivity;
+      timeline[index + pagination.offset] = {
+        ...timelineActivity,
+        activityType: 'contact-id',
+        activity: { contactId: activity.id },
+      } as ContactIdentifierTimelineActivity;
+    }
+  });
+  caseEntry.timelines[timelineId] = timeline;
+
+  return {
+    ...state,
+    connectedCase: {
+      ...state.connectedCase,
+      cases: {
+        ...state.connectedCase.cases,
+        [caseId]: { ...caseEntry, lastReferencedDate: new Date() },
+      },
+    },
+  };
+};
 
 export const timelineReducer = (initialState: HrmState): ((state: HrmState, action) => HrmState) =>
   createReducer(initialState, handleAction => [
     handleAction(
       newGetTimelineAsyncAction.fulfilled,
-      (state, { payload: { caseId, timelineId, timelineResult, pagination } }) => {
-        const caseEntry = state.connectedCase.cases[caseId];
-        if (!caseEntry) return state;
-        caseEntry.timelines = caseEntry.timelines ?? {};
-        caseEntry.sections = caseEntry.sections ?? {};
-        let timeline: (CaseSectionIdentifierTimelineActivity | ContactIdentifierTimelineActivity)[] =
-          caseEntry.timelines[timelineId] ?? [];
-        if (timeline.length !== timelineResult.count) {
-          timeline = [];
-          timeline.length = timelineResult.count;
-        }
-        timelineResult.activities.forEach((timelineActivity, index) => {
-          if (isCaseSectionTimelineActivity(timelineActivity)) {
-            const { activity } = timelineActivity;
-            timeline[index + pagination.offset] = {
-              ...timelineActivity,
-              activityType: 'case-section-id',
-              activity: { sectionType: activity.sectionType, sectionId: activity.sectionId },
-            } as CaseSectionIdentifierTimelineActivity;
-            caseEntry.sections[activity.sectionType] = caseEntry.sections[activity.sectionType] ?? {};
-            caseEntry.sections[activity.sectionType][activity.sectionId] = activity;
-          } else if (isContactTimelineActivity(timelineActivity)) {
-            const { activity } = timelineActivity;
-            timeline[index + pagination.offset] = {
-              ...timelineActivity,
-              activityType: 'contact-id',
-              activity: { contactId: activity.id },
-            } as ContactIdentifierTimelineActivity;
-          }
-        });
-        caseEntry.timelines[timelineId] = timeline;
-        return {
-          ...state,
-          connectedCase: {
-            ...state.connectedCase,
-            cases: {
-              ...state.connectedCase.cases,
-              [caseId]: caseEntry,
-            },
-          },
-        };
-      },
+      (state, { payload: { caseId, timelineId, timelineResult, pagination } }) =>
+        loadTimelineIntoRedux(state, caseId, timelineResult, timelineId, pagination),
     ),
   ]);
 
@@ -131,6 +147,7 @@ export const selectTimeline = (
   const timelineWindow = timeline.slice(offset, offset + limit);
   return timelineWindow
     .map(timelineActivity => {
+      if (!timelineActivity) return timelineActivity;
       if (isCaseSectionIdentifierTimelineActivity(timelineActivity)) {
         const { activity } = timelineActivity;
         const section = sections?.[activity.sectionType]?.[activity.sectionId];
@@ -158,5 +175,46 @@ export const selectTimeline = (
 };
 
 // eslint-disable-next-line import/no-unused-modules
-export const selectTimelineCount = (state: RootState, caseId: string, timelineId: string): number | undefined =>
-  state[namespace].connectedCase.cases[caseId]?.timelines?.[timelineId]?.length;
+export const selectTimelineCount = (
+  state: RootState,
+  caseId: string,
+  timelineId: string,
+  filter: (activity: ContactIdentifierTimelineActivity | CaseSectionIdentifierTimelineActivity) => boolean = () => true,
+): number | undefined => state[namespace].connectedCase.cases[caseId]?.timelines?.[timelineId]?.filter(filter)?.length;
+
+export const selectTimelineContactCategories = (state: RootState, caseId: string, timelineId: string) => {
+  const timeline = selectTimeline(state, caseId, timelineId, { offset: 0, limit: 10000 });
+  if (!timeline) {
+    return undefined;
+  }
+  const contactActivities = timeline.filter(isContactTimelineActivity) as TimelineActivity<Contact>[];
+  const timelineCategories: Record<string, string[]> = {};
+  for (const { activity } of contactActivities) {
+    const categoriesList = Object.entries(activity.rawJson?.categories ?? {});
+    for (const [newCategory, newSubcategories] of categoriesList) {
+      timelineCategories[newCategory] = Array.from(
+        new Set([...(timelineCategories[newCategory] ?? []), ...newSubcategories]),
+      );
+    }
+  }
+  return timelineCategories;
+};
+
+export const selectCaseLabel = (
+  state: RootState,
+  caseId: string,
+  timelineId: string,
+  contactLabelOptions?: ContactLabelOptions,
+) => {
+  const caseLabelFromCase = selectCaseByCaseId(state, caseId)?.connectedCase?.label;
+  if (caseLabelFromCase) return caseLabelFromCase;
+  const timeline = selectTimeline(state, caseId, timelineId, { offset: 0, limit: 10000 });
+  if (timeline) {
+    const firstContact = timeline.find(isContactTimelineActivity) as TimelineActivity<Contact>;
+    if (firstContact?.activity) {
+      const def = selectDefinitionVersionForContact(state, firstContact.activity);
+      return contactLabelFromHrmContact(def, firstContact.activity, contactLabelOptions);
+    }
+  }
+  return contactLabelOptions?.placeholder ?? '';
+};

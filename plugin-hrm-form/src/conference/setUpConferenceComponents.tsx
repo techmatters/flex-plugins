@@ -27,10 +27,13 @@ import RemoveParticipantButton from '../components/Conference/RemoveParticipantB
 import ConferenceMonitor from '../components/Conference/ConferenceMonitor';
 import ParticipantLabel from '../components/Conference/ParticipantLabel';
 import { getTemplateStrings } from '../hrmConfig';
+import { newHangUpByStateManager } from '../hangUpByState';
+import HangUpByLabel from '../components/HangUpByLabel';
 
 export const setupConferenceComponents = () => {
   const strings = getTemplateStrings();
   strings.HangupCallTooltip = strings.HangupCallLeaveTooltip;
+  const hangUpByStateManager = newHangUpByStateManager();
 
   CallCanvas.Content.add(<ConferenceMonitor key="conference-monitor" />);
   CallCanvasActions.Content.remove('toggleMute', {
@@ -85,5 +88,9 @@ export const setupConferenceComponents = () => {
     if: (props: ParticipantCanvasChildrenProps) =>
       props.participant?.participantType === 'external' || props.participant?.participantType === 'unknown',
     sortOrder: 2,
+  });
+  CallCanvas.Content.add(<HangUpByLabel key="call-hang-up-by" />, {
+    if: ({ task }: ParticipantCanvasChildrenProps) => Boolean(hangUpByStateManager.getForTask(task as ITask)),
+    sortOrder: 0,
   });
 };

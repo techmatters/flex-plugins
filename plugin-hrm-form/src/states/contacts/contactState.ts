@@ -17,19 +17,20 @@
 import type { DefinitionVersion } from 'hrm-form-definitions';
 import { TaskHelper } from '@twilio/flex-ui';
 
-import { ContactMetadata, LoadingStatus } from './types';
+import { ContactMetadata, LlmAssistantStatus, LoadingStatus } from './types';
 import { ReferralLookupStatus } from './resourceReferral';
-import type { ContactState } from './existingContacts';
 import { Contact, ContactRawJson, isOfflineContactTask, OfflineContactTask } from '../../types/types';
-import { createStateItem, getInitialValue } from '../../components/common/forms/formGenerators';
 import { createContactlessTaskTabDefinition } from '../../components/tabbedForms/ContactlessTaskTabDefinition';
 import { getHrmConfig } from '../../hrmConfig';
+import { createStateItem, getInitialValue } from '../../components/common/forms/formValues';
 
-export const newContactMetaData = (recreated: boolean): ContactMetadata => {
+export const newContactMetaData = ({ createdAt }: { createdAt: string }): ContactMetadata => {
   const categoriesMeta = {
     gridView: false,
     expanded: {},
   };
+
+  const startMillis = createdAt ? new Date(createdAt).getTime() : null;
 
   return {
     draft: {
@@ -39,11 +40,14 @@ export const newContactMetaData = (recreated: boolean): ContactMetadata => {
       },
       dialogsOpen: {},
     },
-    startMillis: recreated ? null : new Date().getTime(),
+    startMillis,
     endMillis: null,
-    recreated,
     categories: categoriesMeta,
     loadingStatus: LoadingStatus.LOADED,
+    finalizeStatus: {},
+    llmAssistant: {
+      status: LlmAssistantStatus.READY,
+    },
   };
 };
 
@@ -63,8 +67,6 @@ export const newContact = (definitions: DefinitionVersion, task?: ITask | Offlin
   });
   const contactlessTask: ContactRawJson['contactlessTask'] = {
     channel: 'web', // default, should be overwritten
-    date: new Date().toISOString(),
-    time: new Date().toTimeString(),
     createdOnBehalfOf: null,
     ...Object.fromEntries(initialContactlessTaskTabDefinition.map(d => [d.name, getInitialValue(d)])),
   };
@@ -80,6 +82,7 @@ export const newContact = (definitions: DefinitionVersion, task?: ITask | Offlin
   return {
     accountSid: null,
     id: '',
+    definitionVersion: '',
     twilioWorkerId: null,
     timeOfContact: new Date().toISOString(),
     taskId: null,
@@ -101,18 +104,9 @@ export const newContact = (definitions: DefinitionVersion, task?: ITask | Offlin
     queueName: '',
     number: '',
     conversationDuration: 0,
+    identifierId: null,
     profileId: null,
     csamReports: [],
     conversationMedia: [],
   };
 };
-
-// eslint-disable-next-line import/no-unused-modules
-export const newContactState = (definitions: DefinitionVersion, task?: ITask | OfflineContactTask) => (
-  recreated: boolean,
-): ContactState => ({
-  savedContact: newContact(definitions, task),
-  metadata: newContactMetaData(recreated),
-  draftContact: {},
-  references: new Set(),
-});

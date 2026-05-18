@@ -16,9 +16,11 @@
 
 import React from 'react';
 import { Actions, Notifications, NotificationType, Template } from '@twilio/flex-ui';
+import * as Flex from '@twilio/flex-ui';
 
 import { hasTaskControl, isTransferring } from '../transfer/transferTaskState';
 import { TransfersNotifications } from '../transfer/setUpTransferActions';
+import { getAseloFeatureFlags, getHrmConfig } from '../hrmConfig';
 
 export const ConferenceNotifications = {
   UnholdParticipantsNotification: 'ConferenceNotifications_UnholdParticipantsNotification',
@@ -30,21 +32,19 @@ const setupConferenceNotifications = () => {
   Notifications.registerNotification({
     id: ConferenceNotifications.UnholdParticipantsNotification,
     type: NotificationType.error,
-    content: (
-      <Template code="Can't leave conference because some participants are on hold. Please unhold and try again." />
-    ),
+    content: <Template code="Conference-Notifications-UnholdParticipants" />,
   });
 
   Notifications.registerNotification({
     id: ConferenceNotifications.ErrorAddingParticipantNotification,
     type: NotificationType.error,
-    content: <Template code="Something went wrong trying to add participant to the call, please try again." />,
+    content: <Template code="Conference-Notifications-ErrorAddingParticipant" />,
   });
 
   Notifications.registerNotification({
     id: ConferenceNotifications.ErrorUpdatingParticipantNotification,
     type: NotificationType.error,
-    content: <Template code="Something went wrong trying to update the participant, please try again." />,
+    content: <Template code="Conference-Notifications-ErrorUpdatingParticipantNotification" />,
   });
 };
 
@@ -52,6 +52,8 @@ export const setUpConferenceActions = () => {
   setupConferenceNotifications();
   Actions.addListener('beforeHangupCall', async (payload: { task: ITask }, abortFunction) => {
     const { conference } = payload.task;
+
+    if (!conference) return;
 
     const someParticipantIsOnHold =
       conference.participants.filter(p => p.status === 'joined').length > 2 &&
@@ -65,6 +67,19 @@ export const setUpConferenceActions = () => {
     if (someParticipantIsOnHold && hasTaskControl(payload.task)) {
       Notifications.showNotificationSingle(ConferenceNotifications.UnholdParticipantsNotification);
       abortFunction();
+    }
+  });
+
+  Flex.Actions.addListener('beforeAcceptTask', payload => {
+    if (getAseloFeatureFlags().enable_conference_status_event_handler) {
+      const { conferenceOptions } = payload;
+      if (conferenceOptions) {
+        conferenceOptions.conferenceStatusCallback = `${
+          getHrmConfig().accountScopedLambdaBaseUrl
+        }/conference/conferenceStatusCallback`;
+        conferenceOptions.conferenceStatusCallbackMethod = 'POST';
+        conferenceOptions.conferenceStatusCallbackEvent = 'leave';
+      }
     }
   });
 };

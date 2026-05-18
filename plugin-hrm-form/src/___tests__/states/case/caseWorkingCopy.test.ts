@@ -14,17 +14,10 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import {
-  DefinitionVersion,
-  DefinitionVersionId,
-  FormInputType,
-  loadDefinition,
-  useFetchDefinitions,
-} from 'hrm-form-definitions';
+import { FormInputType, loadDefinition } from 'hrm-form-definitions';
 
-import { CaseSectionApi } from '../../../states/case/sections/api';
+import { mockLocalFetchDefinitions } from '../../mockFetchDefinitions';
 import { CaseState, CaseStateEntry, CaseSummaryWorkingCopy, CaseWorkingCopy } from '../../../states/case/types';
-import { householdSectionApi } from '../../../states/case/sections/household';
 import { reduce } from '../../../states/case/reducer';
 import {
   initialiseCaseSummaryWorkingCopy,
@@ -39,27 +32,36 @@ import { RootState } from '../../../states';
 import { RecursivePartial } from '../../RecursivePartial';
 import { VALID_EMPTY_CASE } from '../../testCases';
 import { CaseSectionTypeSpecificData } from '../../../services/caseSectionService';
+import { setWorkingCopy } from '../../../states/case/sections/workingCopy';
 
-// eslint-disable-next-line react-hooks/rules-of-hooks
-const { mockFetchImplementation, mockReset, buildBaseURL } = useFetchDefinitions();
+jest.mock('../../../states/case/sections/workingCopy', () => ({
+  getWorkingCopy: jest.fn(),
+  setWorkingCopy: jest.fn(),
+}));
+
+const mockConfiguredSetWorkingCopy = jest.fn();
+const mockSetWorkingCopy = setWorkingCopy as jest.MockedFunction<typeof setWorkingCopy>;
+
+const { mockFetchImplementation, mockReset, buildBaseURL } = mockLocalFetchDefinitions();
 
 const partialRootState: RecursivePartial<RootState['plugin-hrm-form']> = {
   configuration: {
     counselors: { hash: {}, list: undefined },
     definitionVersions: {},
-    language: '',
     workerInfo: { chatChannelCapacity: 0 },
     currentDefinitionVersion: {
-      caseForms: {
-        HouseholdForm: [
-          {
-            label: 'Other Property',
-            name: 'otherProp',
-            type: FormInputType.Input,
-          },
-        ],
+      caseSectionTypes: {
+        household: {
+          form: [
+            {
+              label: 'Other Property',
+              name: 'otherProp',
+              type: FormInputType.Input,
+            },
+          ],
+        },
       },
-    } as DefinitionVersion,
+    },
   },
 };
 
@@ -67,17 +69,18 @@ const stubRootState = partialRootState as RootState['plugin-hrm-form'];
 
 beforeEach(() => {
   mockReset();
+  mockSetWorkingCopy.mockReturnValue(mockConfiguredSetWorkingCopy);
 });
 
 describe('Working copy reducers', () => {
   const caseStateEntry: RecursivePartial<CaseStateEntry> = {
-    connectedCase: { info: { definitionVersion: DefinitionVersionId.v1 } },
+    connectedCase: { info: {}, definitionVersion: 'as-v1' },
   };
   const state: CaseState = { cases: { 1: caseStateEntry as CaseStateEntry } };
   let mockV1;
 
   beforeAll(async () => {
-    const formDefinitionsBaseUrl = buildBaseURL(DefinitionVersionId.v1);
+    const formDefinitionsBaseUrl = buildBaseURL('as-v1');
     await mockFetchImplementation(formDefinitionsBaseUrl);
 
     mockV1 = await loadDefinition(formDefinitionsBaseUrl);
@@ -86,16 +89,11 @@ describe('Working copy reducers', () => {
   const baselineDate = new Date(2022, 1, 28);
   const updatedSection: CaseSectionTypeSpecificData = { otherProp: 'other-value' };
 
-  let stubApi: CaseSectionApi;
   const stubUpdateWorkingCopy: CaseWorkingCopy = { sections: { incident: { existing: { mockId: updatedSection } } } };
 
   beforeEach(() => {
-    stubApi = {
-      ...householdSectionApi,
-      updateWorkingCopy: jest.fn().mockReturnValue(stubUpdateWorkingCopy),
-    };
+    mockConfiguredSetWorkingCopy.mockReturnValue(stubUpdateWorkingCopy);
   });
-
   describe('UPDATE_CASE_WORKING_COPY', () => {
     test('Specifies id - updates case working copy using APIs updateWorkingCopy function', () => {
       const initialState: CaseState = {
@@ -119,6 +117,7 @@ describe('Working copy reducers', () => {
         cases: {
           1: {
             ...state.cases[1],
+            lastReferencedDate: expect.any(Date),
             caseWorkingCopy: stubUpdateWorkingCopy,
           },
         },
@@ -126,10 +125,10 @@ describe('Working copy reducers', () => {
 
       const result = reduce(
         { ...stubRootState, connectedCase: initialState },
-        updateCaseSectionWorkingCopy('1', stubApi, updatedSection, 'existingHousehold'),
+        updateCaseSectionWorkingCopy('1', 'household', updatedSection, 'existingHousehold'),
       );
       expect(result).toStrictEqual({ ...stubRootState, connectedCase: expected });
-      expect(stubApi.updateWorkingCopy).toHaveBeenCalledWith(
+      expect(mockConfiguredSetWorkingCopy).toHaveBeenCalledWith(
         initialState.cases[1].caseWorkingCopy,
         updatedSection,
         'existingHousehold',
@@ -151,6 +150,7 @@ describe('Working copy reducers', () => {
         cases: {
           1: {
             ...state.cases[1],
+            lastReferencedDate: expect.any(Date),
             caseWorkingCopy: stubUpdateWorkingCopy,
           },
         },
@@ -158,10 +158,11 @@ describe('Working copy reducers', () => {
 
       const result = reduce(
         { ...stubRootState, connectedCase: initialState },
-        updateCaseSectionWorkingCopy('1', stubApi, updatedSection),
+        updateCaseSectionWorkingCopy('1', 'household', updatedSection),
       );
       expect(result).toStrictEqual({ ...stubRootState, connectedCase: expected });
-      expect(stubApi.updateWorkingCopy).toHaveBeenCalledWith(
+      expect(mockSetWorkingCopy).toHaveBeenCalledWith('household');
+      expect(mockConfiguredSetWorkingCopy).toHaveBeenCalledWith(
         initialState.cases[1].caseWorkingCopy,
         updatedSection,
         undefined,
@@ -182,7 +183,6 @@ describe('Working copy reducers', () => {
           info: null,
           createdAt: '2020-07-31T20:39:37.408Z',
           updatedAt: '2020-07-31T20:39:37.408Z',
-          categories: {},
         },
         caseWorkingCopy: {
           sections: {},
@@ -190,7 +190,8 @@ describe('Working copy reducers', () => {
         sections: {},
         timelines: {},
         availableStatusTransitions: [],
-        references: new Set(['x']),
+        lastReferencedDate: new Date(),
+        outstandingUpdateCount: 0,
       };
 
       test('Specifies id that exists in case - updates case working copy using APIs updateWorkingCopy function, copying the section from the connected case', () => {
@@ -221,6 +222,7 @@ describe('Working copy reducers', () => {
           cases: {
             1: {
               ...initialState.cases[1],
+              lastReferencedDate: expect.any(Date),
               caseWorkingCopy: stubUpdateWorkingCopy,
             },
           },
@@ -228,10 +230,11 @@ describe('Working copy reducers', () => {
 
         const result = reduce(
           { ...stubRootState, connectedCase: initialState },
-          initialiseExistingCaseSectionWorkingCopy('1', stubApi, 'existingHousehold'),
+          initialiseExistingCaseSectionWorkingCopy('1', 'household', 'existingHousehold'),
         );
         expect(result).toStrictEqual({ ...stubRootState, connectedCase: expected });
-        expect(stubApi.updateWorkingCopy).toHaveBeenCalledWith(
+        expect(mockSetWorkingCopy).toHaveBeenCalledWith('household');
+        expect(mockConfiguredSetWorkingCopy).toHaveBeenCalledWith(
           initialState.cases[1].caseWorkingCopy,
           updatedSection,
           'existingHousehold',
@@ -253,7 +256,7 @@ describe('Working copy reducers', () => {
         expect(() =>
           reduce(
             { ...stubRootState, connectedCase: initialState },
-            initialiseExistingCaseSectionWorkingCopy('1', stubApi, 'existingHousehold'),
+            initialiseExistingCaseSectionWorkingCopy('1', 'household', 'existingHousehold'),
           ),
         ).toThrow();
       });
@@ -275,6 +278,7 @@ describe('Working copy reducers', () => {
           cases: {
             1: {
               ...initialState.cases[1],
+              lastReferencedDate: expect.any(Date),
               caseWorkingCopy: stubUpdateWorkingCopy,
             },
           },
@@ -282,10 +286,11 @@ describe('Working copy reducers', () => {
 
         const result = reduce(
           { ...stubRootState, connectedCase: initialState },
-          initialiseNewCaseSectionWorkingCopy('1', stubApi, {}),
+          initialiseNewCaseSectionWorkingCopy('1', 'household', {}),
         );
         expect(result).toStrictEqual({ ...stubRootState, connectedCase: expected });
-        expect(stubApi.updateWorkingCopy).toHaveBeenCalledWith(initialState.cases[1].caseWorkingCopy, {});
+        expect(mockSetWorkingCopy).toHaveBeenCalledWith('household');
+        expect(mockConfiguredSetWorkingCopy).toHaveBeenCalledWith(initialState.cases[1].caseWorkingCopy, {});
       });
       test('Specifies populated form - updates case working copy using APIs updateWorkingCopy function specifying provided CaseItemEntry with a random ID', () => {
         const initialState: CaseState = {
@@ -303,6 +308,7 @@ describe('Working copy reducers', () => {
           cases: {
             1: {
               ...initialState.cases[1],
+              lastReferencedDate: expect.any(Date),
               caseWorkingCopy: stubUpdateWorkingCopy,
             },
           },
@@ -310,10 +316,11 @@ describe('Working copy reducers', () => {
 
         const result = reduce(
           { ...stubRootState, connectedCase: initialState },
-          initialiseNewCaseSectionWorkingCopy('1', stubApi, { a: 'b', b: true, c: 'wakka wakka' }),
+          initialiseNewCaseSectionWorkingCopy('1', 'household', { a: 'b', b: true, c: 'wakka wakka' }),
         );
         expect(result).toStrictEqual({ ...stubRootState, connectedCase: expected });
-        expect(stubApi.updateWorkingCopy).toHaveBeenCalledWith(initialState.cases[1].caseWorkingCopy, {
+        expect(mockSetWorkingCopy).toHaveBeenCalledWith('household');
+        expect(mockConfiguredSetWorkingCopy).toHaveBeenCalledWith(initialState.cases[1].caseWorkingCopy, {
           a: 'b',
           b: true,
           c: 'wakka wakka',
@@ -330,13 +337,13 @@ describe('Working copy reducers', () => {
 
       const resultWithNoId = reduce(
         { ...stubRootState, connectedCase: initialState },
-        removeCaseSectionWorkingCopy('non existent task', stubApi),
+        removeCaseSectionWorkingCopy('non existent task', 'household'),
       );
       expect(resultWithNoId).toStrictEqual({ ...stubRootState, connectedCase: initialState });
 
       const resultWithId = reduce(
         { ...stubRootState, connectedCase: initialState },
-        removeCaseSectionWorkingCopy('non existent task', stubApi, 'non existent id'),
+        removeCaseSectionWorkingCopy('non existent task', 'household', 'non existent id'),
       );
       expect(resultWithId).toStrictEqual({ ...stubRootState, connectedCase: initialState });
     });
@@ -356,6 +363,7 @@ describe('Working copy reducers', () => {
         cases: {
           1: {
             ...initialState.cases[1],
+            lastReferencedDate: expect.any(Date),
             caseWorkingCopy: stubUpdateWorkingCopy,
           },
         },
@@ -363,10 +371,11 @@ describe('Working copy reducers', () => {
 
       const resultWithoutId = reduce(
         { ...stubRootState, connectedCase: initialState },
-        removeCaseSectionWorkingCopy('1', stubApi),
+        removeCaseSectionWorkingCopy('1', 'household'),
       );
       expect(resultWithoutId).toStrictEqual({ ...stubRootState, connectedCase: expected });
-      expect(stubApi.updateWorkingCopy).toHaveBeenCalledWith(
+      expect(mockSetWorkingCopy).toHaveBeenCalledWith('household');
+      expect(mockConfiguredSetWorkingCopy).toHaveBeenCalledWith(
         initialState.cases[1].caseWorkingCopy,
         undefined,
         undefined,
@@ -374,10 +383,15 @@ describe('Working copy reducers', () => {
 
       const resultWithId = reduce(
         { ...stubRootState, connectedCase: initialState },
-        removeCaseSectionWorkingCopy('1', stubApi, 'an id'),
+        removeCaseSectionWorkingCopy('1', 'household', 'an id'),
       );
       expect(resultWithId).toStrictEqual({ ...stubRootState, connectedCase: expected });
-      expect(stubApi.updateWorkingCopy).toHaveBeenCalledWith(initialState.cases[1].caseWorkingCopy, undefined, 'an id');
+      expect(mockSetWorkingCopy).toHaveBeenCalledWith('household');
+      expect(mockConfiguredSetWorkingCopy).toHaveBeenCalledWith(
+        initialState.cases[1].caseWorkingCopy,
+        undefined,
+        'an id',
+      );
     });
   });
   describe('INIT_CASE_SUMMARY_WORKING_COPY', () => {
@@ -410,7 +424,10 @@ describe('Working copy reducers', () => {
               sections: {},
             },
             availableStatusTransitions: [],
-            references: new Set(['x']),
+            lastReferencedDate: new Date(),
+            timelines: {},
+            outstandingUpdateCount: 0,
+            sections: {},
           },
         },
       };
@@ -430,13 +447,14 @@ describe('Working copy reducers', () => {
           cases: {
             1: {
               ...initialState.cases[1],
+              lastReferencedDate: expect.any(Date),
               caseWorkingCopy: {
                 ...initialState.cases[1].caseWorkingCopy,
                 caseSummary: {
-                  childIsAtRisk: initialStateInfo.childIsAtRisk,
-                  followUpDate: initialStateInfo.followUpDate,
-                  summary: initialStateInfo.summary,
                   status: initialState.cases[1].connectedCase.status,
+                  followUpDate: 'In a while',
+                  summary: 'Default summary',
+                  childIsAtRisk: false,
                 },
               },
             },
@@ -444,7 +462,7 @@ describe('Working copy reducers', () => {
         },
       });
     });
-    test('Task exists with connectedCase but uundefined case summary properties- uses provided defaults where case properties are undefined', () => {
+    test('Task exists with connectedCase but undefined case summary properties- uses provided defaults where case properties are undefined', () => {
       const initialStateInfo = {
         ...state.cases[1].connectedCase.info,
         followUpDate: undefined,
@@ -463,7 +481,10 @@ describe('Working copy reducers', () => {
               sections: {},
             },
             availableStatusTransitions: [],
-            references: new Set(['x']),
+            lastReferencedDate: new Date(),
+            timelines: {},
+            outstandingUpdateCount: 0,
+            sections: {},
           },
         },
       };
@@ -483,13 +504,14 @@ describe('Working copy reducers', () => {
           cases: {
             1: {
               ...initialState.cases[1],
+              lastReferencedDate: expect.any(Date),
               caseWorkingCopy: {
                 ...initialState.cases[1].caseWorkingCopy,
                 caseSummary: {
-                  childIsAtRisk: false,
-                  followUpDate: 'In a while',
-                  summary: initialStateInfo.summary,
                   status: initialState.cases[1].connectedCase.status,
+                  followUpDate: 'In a while',
+                  summary: 'Default summary',
+                  childIsAtRisk: false,
                 },
               },
             },
@@ -500,10 +522,10 @@ describe('Working copy reducers', () => {
   });
   describe('UPDATE_CASE_SUMMARY_WORKING_COPY', () => {
     const workingCopy: CaseSummaryWorkingCopy = {
+      status: 'mulching',
       summary: 'a new summary',
       followUpDate: 'Ragnarok',
       childIsAtRisk: false,
-      status: 'mulching',
     };
 
     test("Task doesn't exist - noop", () => {
@@ -533,7 +555,10 @@ describe('Working copy reducers', () => {
               sections: {},
             },
             availableStatusTransitions: [],
-            references: new Set(['x']),
+            lastReferencedDate: new Date(),
+            timelines: {},
+            outstandingUpdateCount: 0,
+            sections: {},
           },
         },
       };
@@ -542,6 +567,7 @@ describe('Working copy reducers', () => {
         cases: {
           1: {
             ...initialState.cases[1],
+            lastReferencedDate: expect.any(Date),
             caseWorkingCopy: {
               ...initialState.cases[1].caseWorkingCopy,
               caseSummary: workingCopy,
@@ -593,7 +619,10 @@ describe('Working copy reducers', () => {
               sections: {},
             },
             availableStatusTransitions: [],
-            references: new Set(['x']),
+            lastReferencedDate: new Date(),
+            timelines: {},
+            outstandingUpdateCount: 0,
+            sections: {},
           },
         },
       };
@@ -603,6 +632,7 @@ describe('Working copy reducers', () => {
         cases: {
           1: {
             ...initialState.cases[1],
+            lastReferencedDate: expect.any(Date),
             caseWorkingCopy: workingCopyWithoutSummary,
           },
         },

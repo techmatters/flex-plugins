@@ -1,0 +1,64 @@
+[
+  {
+    "name": "lastName",
+    "label": "Last Name",
+    "type": "input",
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    },
+    "isPII": true
+  },
+  {
+    "name": "dateOfBirth",
+    "type": "date-input",
+    "label": "Date of Birth",
+    "isPII": false
+  },
+  {
+    "name": "contactIdentifier",
+    "label": "Email Address",
+    "type": "input",
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    },
+    "isPII": true
+  },
+  {
+    "name": "phone1",
+    "label": "Phone Number",
+    "type": "input",
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    },
+    "isPII": true
+  },
+  {
+    "name": "ip",
+    "label": "IP Address",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "consentForResearchEvaluation",
+    "label": "Consent for Research/Evaluation",
+    "type": "select",
+    "options": [
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "Yes",
+        "label": "Yes"
+      },
+      {
+        "value": "No",
+        "label": "No"
+      }
+    ],
+    "isPII": false
+  }
+]

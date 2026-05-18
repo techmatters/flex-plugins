@@ -25,8 +25,10 @@ import {
   suggestSearchInitialState,
   suggestSearchReducer,
   resourceSearchReducer,
-  TaxonomyLevelNameCompletion,
+  SuggestSearch,
 } from './search';
+import { namespace } from '../storeNamespaces';
+import { RootState } from '..';
 
 export const enum ResourcePage {
   ViewResource = 'view-resource',
@@ -73,7 +75,7 @@ export type ReferrableResourcesState = {
     )
   >;
   search: ReferrableResourceSearchState;
-  suggestSearch: TaxonomyLevelNameCompletion;
+  suggestSearch: SuggestSearch;
 };
 
 const initialState: ReferrableResourcesState = {
@@ -145,3 +147,28 @@ export function reduce(inputState = initialState, action: AnyAction): Referrable
   };
   return resourceReducer(state, action as any);
 }
+
+export const selectResourceById = (
+  {
+    [namespace]: {
+      referrableResources: { resources },
+    },
+  }: RootState,
+  resourceId: string,
+) => resources[resourceId];
+
+export const selectResourceData = (state: RootState, resourceId: string): ReferrableResource | undefined => {
+  const resourceState = selectResourceById(state, resourceId);
+  if (!resourceState || resourceState.status === ResourceLoadStatus.Loading) {
+    return undefined;
+  }
+  return resourceState.resource;
+};
+
+export const selectResourceError = (state: RootState, resourceId: string): Error | undefined => {
+  const resourceState = selectResourceById(state, resourceId);
+  if (!resourceState || resourceState.status === ResourceLoadStatus.Loading) {
+    return undefined;
+  }
+  return resourceState.error;
+};

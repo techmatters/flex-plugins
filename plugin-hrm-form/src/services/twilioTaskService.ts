@@ -1,0 +1,159 @@
+/**
+ * Copyright (C) 2021-2023 Technology Matters
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see https://www.gnu.org/licenses/.
+ */
+
+import { Notifications } from '@twilio/flex-ui';
+
+import fetchProtectedApi from './fetchProtectedApi';
+import { TaskSID } from '../types/twilio';
+import { FetchOptions } from './fetchApi';
+import { getAseloFeatureFlags } from '../hrmConfig';
+
+/**
+ * Creates a new task (offline contact) in behalf of targetSid worker with attributes. Other attributes for routing are added to the task in the implementation of assignOfflineContact serverless function
+ */
+export const assignOfflineContactInit = async (targetSid: string, taskAttributes: ITask['attributes']) => {
+  const body = {
+    targetSid,
+    taskAttributes: JSON.stringify(taskAttributes),
+  };
+
+  const { use_twilio_lambda_for_offline_contact_tasks: useTwilioLambda } = getAseloFeatureFlags();
+  const pathRoot = useTwilioLambda ? '/task' : '';
+  return fetchProtectedApi(`${pathRoot}/assignOfflineContactInit`, body, { useTwilioLambda });
+};
+
+type OfflineContactComplete = {
+  action: 'complete';
+  taskSid: string;
+  finalTaskAttributes: ITask['attributes'];
+};
+type OfflineContactRemove = {
+  action: 'remove';
+  taskSid: string;
+};
+
+/**
+ * Completes or removes the task (offline contact) in behalf of targetSid worker updating with finalTaskAttributes.
+ */
+export const assignOfflineContactResolve = async (payload: OfflineContactComplete | OfflineContactRemove) => {
+  const body =
+    payload.action === 'complete'
+      ? {
+          ...payload,
+          finalTaskAttributes: JSON.stringify(payload.finalTaskAttributes),
+        }
+      : payload;
+
+  const { use_twilio_lambda_for_offline_contact_tasks: useTwilioLambda } = getAseloFeatureFlags();
+  const pathRoot = useTwilioLambda ? '/task' : '';
+  return fetchProtectedApi(`${pathRoot}/assignOfflineContactResolve`, body, { useTwilioLambda });
+};
+
+/**
+ * Wraps up a conversations task using the interactions API rather than the default actions API.
+ * This prevents the underlying conversation being closed so a post survey can be performed.
+ */
+export const wrapupConversationTask = async (taskSid: TaskSID) => {
+  const { use_twilio_lambda_to_transition_participants: useTwilioLambda } = getAseloFeatureFlags();
+  if (useTwilioLambda) {
+    return fetchProtectedApi(
+      '/conversation/transitionAgentParticipants',
+      { taskSid, targetStatus: 'wrapup' },
+      { useTwilioLambda: true },
+    );
+  }
+  return fetchProtectedApi('/interaction/transitionAgentParticipants', { taskSid, targetStatus: 'wrapup' });
+};
+
+/**
+ * Completes a conversations task using the interactions API rather than the default actions API.
+ * This prevents the underlying conversation being closed so a post survey can be performed.
+ */
+export const completeConversationTask = async (taskSid: TaskSID) => {
+  const { use_twilio_lambda_to_transition_participants: useTwilioLambda } = getAseloFeatureFlags();
+  if (useTwilioLambda) {
+    return fetchProtectedApi(
+      '/conversation/transitionAgentParticipants',
+      { taskSid, targetStatus: 'closed' },
+      { useTwilioLambda: true },
+    );
+  }
+  return fetchProtectedApi('/interaction/transitionAgentParticipants', { taskSid, targetStatus: 'closed' });
+};
+
+export const checkTaskAssignment = async (taskSid: string) => {
+  const body = { taskSid };
+  return fetchProtectedApi(`/task/checkTaskAssignment`, body, {
+    useTwilioLambda: true,
+  });
+};
+
+type GetTaskAndReservationsResponse = {
+  task?: ITask;
+  reservations?: any[] | undefined;
+} | null;
+
+export const getTaskAndReservations = async (taskSid: string): Promise<GetTaskAndReservationsResponse> => {
+  const body = { taskSid };
+  const options: FetchOptions = {
+    returnNullFor404: true,
+  };
+  try {
+    const res = await fetchProtectedApi(`/task/getTaskAndReservations`, body, { ...options, useTwilioLambda: true });
+    if (res?.task) {
+      res.task.status = res.task.status ?? res.task.assignmentStatus;
+    }
+    return res;
+  } catch (error) {
+    console.error('An error occurred while fetching task and reservations:', error);
+    throw error;
+  }
+};
+
+export const completeTaskAssignment = async (taskSid: string) => {
+  const body = { taskSid };
+
+  return fetchProtectedApi(`/task/completeTaskAssignment`, body, { useTwilioLambda: true });
+};
+
+export const cancelOrRemoveTask = async (taskSid: string) => {
+  const body = { taskSid };
+  return fetchProtectedApi(`task/cancelOrRemoveTask`, body, { useTwilioLambda: true });
+};
+
+type TransferChatStartBody = {
+  taskSid: string;
+  targetSid: string;
+  ignoreAgent: string;
+  mode: string;
+};
+
+type TransferChatStartReturn = { closed: string; kept: string };
+
+export const transferChatStart = async (body: TransferChatStartBody): Promise<TransferChatStartReturn> => {
+  const { use_twilio_lambda_transfers: useTwilioLambda } = getAseloFeatureFlags();
+  const path = useTwilioLambda ? '/transfer/transferStart' : '/transferChatStart';
+  try {
+    return await fetchProtectedApi(path, body, useTwilioLambda ? { useTwilioLambda: true } : undefined);
+  } catch (err) {
+    Notifications.showNotification('TransferFailed', {
+      reason: `Worker ${body.targetSid} is not available.`,
+    });
+
+    // propagate the error
+    throw err;
+  }
+};

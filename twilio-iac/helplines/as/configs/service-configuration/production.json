@@ -7,18 +7,16 @@
             "whatsapp",
             "facebook",
             "instagram",
-            "line"
+            "line",
+            "telegram"
         ],
         "feature_flags": {
-            "enable_aselo_messaging_ui": true,
-            "enable_counselor_toolkits": true,
             "enable_lex": true,
             "enable_voice_recordings": true,
-            "enable_resources": true,
             "enable_csam_report": true,
-            "enable_save_insights": true
+            "enable_post_survey": false,
+            "enable_lex_v2": true
         },
-        "helplineLanguage": "",
         "permissionConfig": "demo",
         "resources_base_url": "https://hrm-production.tl.techmatters.org"
     },

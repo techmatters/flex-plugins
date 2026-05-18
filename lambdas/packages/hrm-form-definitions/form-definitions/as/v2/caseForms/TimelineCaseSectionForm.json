@@ -1,0 +1,34 @@
+[
+  {
+    "name": "timelineCaseSectionConfig",
+    "label": "Here is how this is configured",
+    "type": "textarea",
+    "rows": 20,
+    "width": 289
+  },
+  {
+    "name": "timelineCaseSectionTranslations",
+    "label": "Here are the translations",
+    "type": "textarea",
+    "rows": 20,
+    "width": 289
+  },
+  {
+    "name": "printFormatList1",
+    "label": "printFormatList1",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "printFormatList2",
+    "label": "printFormatList2",
+    "type": "input",
+    "isPII": true
+  }
+]
+
+
+
+
+
+

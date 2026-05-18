@@ -22,12 +22,12 @@ import { Actions, StorelessThemeProvider, withTheme } from '@twilio/flex-ui';
 import { Provider } from 'react-redux';
 import configureMockStore from 'redux-mock-store';
 import '@testing-library/jest-dom/extend-expect';
-import { DefinitionVersionId, loadDefinition, useFetchDefinitions } from 'hrm-form-definitions';
+import { loadDefinition } from 'hrm-form-definitions';
 
+import { mockLocalFetchDefinitions } from '../../mockFetchDefinitions';
 import { mockPartialConfiguration } from '../../mockGetConfig';
 import { AddOfflineContactButton } from '../../../components/OfflineContact';
-import { rerenderAgentDesktop } from '../../../rerenderView';
-import { createContact } from '../../../services/ContactService';
+import { createOfflineContact } from '../../../services/ContactService';
 import { Contact } from '../../../types/types';
 import { namespace } from '../../../states/storeNamespaces';
 import { RootState } from '../../../states';
@@ -37,11 +37,9 @@ import { getOfflineContactTask } from '../../../states/contacts/offlineContactTa
 let mockV1;
 
 jest.mock('../../../services/ServerlessService');
-jest.mock('../../../rerenderView', () => ({
-  rerenderAgentDesktop: jest.fn(),
-}));
 jest.mock('../../../services/ContactService', () => ({
-  createContact: jest.fn(),
+  createOfflineContact: jest.fn(),
+  updateContactInHrm: jest.fn(),
 }));
 jest.mock('@twilio/flex-ui', () => ({
   ...jest.requireActual('@twilio/flex-ui'),
@@ -49,35 +47,31 @@ jest.mock('@twilio/flex-ui', () => ({
     invokeAction: jest.fn(),
   },
 }));
-// eslint-disable-next-line react-hooks/rules-of-hooks
-const { mockFetchImplementation, mockReset, buildBaseURL } = useFetchDefinitions();
+
+const { mockFetchImplementation, mockReset, buildBaseURL } = mockLocalFetchDefinitions();
 const mockInvokeAction = Actions.invokeAction as jest.MockedFunction<typeof Actions.invokeAction>;
-const mockRerenderAgentDesktop = rerenderAgentDesktop as jest.MockedFunction<typeof rerenderAgentDesktop>;
-const mockCreateContact = createContact as jest.MockedFunction<typeof createContact>;
+const mockCreateOfflineContact = createOfflineContact as jest.MockedFunction<typeof createOfflineContact>;
 
 beforeAll(async () => {
-  const formDefinitionsBaseUrl = buildBaseURL(DefinitionVersionId.v1);
+  const formDefinitionsBaseUrl = buildBaseURL('as-v1');
   await mockFetchImplementation(formDefinitionsBaseUrl);
 
   mockV1 = await loadDefinition(formDefinitionsBaseUrl);
-  mockPartialConfiguration({ workerSid: 'mock-worker' });
+  mockPartialConfiguration({ workerSid: 'WK123' });
   baseState = {
     flex: {
-      view: { selectedTaskSid: '123' },
+      view: { selectedTaskSid: 'WT123' },
     },
     [namespace]: {
       configuration: {
         currentDefinitionVersion: mockV1,
-      },
-      routing: {
-        isAddingOfflineContact: false,
       },
       activeContacts: {
         existingContacts: {
           contact1: {
             savedContact: {
               id: 'contact1',
-              taskId: '123',
+              taskId: 'WT123',
             },
           },
         },
@@ -89,7 +83,6 @@ beforeAll(async () => {
 beforeEach(async () => {
   mockReset();
   mockInvokeAction.mockClear();
-  mockRerenderAgentDesktop.mockClear();
 });
 
 expect.extend(toHaveNoViolations);
@@ -98,7 +91,7 @@ let baseState: RecursivePartial<RootState>;
 
 const mockStore = configureMockStore([]);
 test('click on button', async () => {
-  mockCreateContact.mockImplementation((contact: Contact) => {
+  mockCreateOfflineContact.mockImplementation((contact: Contact) => {
     console.log('Creating contact', contact);
     return Promise.resolve(contact);
   });
@@ -116,12 +109,11 @@ test('click on button', async () => {
   screen.getByText('OfflineContactButtonText').click();
   await waitFor(
     () => {
-      expect(mockCreateContact).toHaveBeenCalledWith(expect.anything(), 'mock-worker', getOfflineContactTask());
+      expect(mockCreateOfflineContact).toHaveBeenCalledWith(expect.anything(), 'WK123', getOfflineContactTask());
       expect(Actions.invokeAction).toHaveBeenCalledTimes(1);
     },
     { timeout: 1000 },
   );
-  // expect(rerenderAgentDesktop).toHaveBeenCalledTimes(1);
   /*
    * This is failing and couldn't fix it yet
    * expect(recreateContactState).toHaveBeenCalled();
@@ -137,9 +129,6 @@ test('button should be disabled (default task exists)', () => {
     },
     [namespace]: {
       ...baseState[namespace],
-      routing: {
-        isAddingOfflineContact: true,
-      },
     },
   };
 
@@ -158,7 +147,6 @@ test('button should be disabled (default task exists)', () => {
   screen.getByText('OfflineContactButtonText').click();
 
   expect(Actions.invokeAction).not.toHaveBeenCalled();
-  expect(rerenderAgentDesktop).not.toHaveBeenCalled();
   expect(recreateContactState).not.toHaveBeenCalled();
 });
 
@@ -168,7 +156,7 @@ test('a11y', async () => {
   const state: RecursivePartial<RootState> = {
     ...baseState,
     flex: {
-      view: { selectedTaskSid: '123', activeView: 'some-view' },
+      view: { selectedTaskSid: 'WT123', activeView: 'some-view' },
       ...baseState.flex,
     },
   };

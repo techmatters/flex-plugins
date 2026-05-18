@@ -15,179 +15,98 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 import React from 'react';
-import { ButtonBase, Tooltip, withStyles } from '@material-ui/core';
+import { ButtonBase, withStyles, IconButton, ButtonProps } from '@material-ui/core';
 import { styled, Button } from '@twilio/flex-ui';
-import { getBackgroundWithHoverCSS } from '@twilio/flex-ui-core';
-import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined';
+import ClearIcon from '@material-ui/icons/Clear';
 
 import HrmTheme from './HrmTheme';
 
-type TransferStyledButtonProps = {
-  background?: string;
-  color?: string;
-  taller?: boolean;
-};
-
-// This should be called SecondaryButton /TeritaryButton
-// Used in 4 instances - 3 for transfer (accept, reject, transfer) and 1 for unmasking identifiers
-export const TransferStyledButton = styled('button')<TransferStyledButtonProps>`
-  background: ${props => (props.background ? props.background : '#ccc')};
-  color: ${props => (props.color ? props.color : '#000')};
-  letter-spacing: 0px;
-  text-transform: none;
-  margin-right: 1em;
-  padding: 0px 16px;
-  height: ${props => (props.taller ? 35 : 28)}px;
-  font-size: 13px;
-  outline: none;
-  border-radius: 4px;
-  border: none;
-  align-self: center;
-  font-weight: 600;
-  &:hover:not([disabled]) {
-    cursor: pointer;
-    border: 1px solid gray;
-    padding: 0px 15px;
-  }
-  &:focus:not([disabled]) {
-    outline: auto;
-    outline-color: #1976d2;
-  }
-  &:active:not([disabled]) {
-    background: rgb(172, 179, 181);
-  }
-  &:disabled {
-    opacity: 50%;
-  }
-`;
-TransferStyledButton.displayName = 'TransferStyledButton';
-
-type StyledNextStepButtonProps = {
-  secondary?: string; // string to prevent console errors
+type AseloBaseButtonProps = {
   disabled?: boolean;
-  margin?: string;
+  buttonSize?: 'small' | 'large';
+  buttonType?: 'primary' | 'secondary' | 'destructive' | 'tertiary';
+  icon?: 'left' | 'right';
 };
 
-// Primary button
-export const StyledNextStepButton = styled(Button)<StyledNextStepButtonProps>`
+export const AseloBaseButton = styled(Button)<AseloBaseButtonProps>`
   display: flex;
   align-items: center;
-  font-size: 13px;
+  background-color: ${({ disabled, buttonType = 'primary' }) =>
+    disabled ? HrmTheme.buttonColors[buttonType].disabled : HrmTheme.buttonColors[buttonType].default};
+  font-size: ${({ buttonSize }) => (buttonSize === 'large' ? '16px' : '14px')};
+  padding: ${({ buttonSize }) => (buttonSize === 'large' ? '12px 24px' : '4px 10px')};
+
   letter-spacing: normal;
-  color: ${props =>
-    props.secondary?.toLowerCase() === 'true'
-      ? HrmTheme.colors.secondaryButtonTextColor
-      : HrmTheme.colors.buttonTextColor};
+  color: ${({ buttonType }) => HrmTheme.buttonColors[buttonType].textColor};
   border: none;
   border-radius: 4px;
-  margin: ${props => (props.margin ? props.margin : '0')};
-  padding: 4px 10px;
-  min-width: auto;
-  background-color: ${props =>
-    props.disabled
-      ? HrmTheme.colors.disabledColor
-      : props.secondary?.toLowerCase() === 'true'
-      ? HrmTheme.colors.secondaryButtonColor
-      : HrmTheme.colors.defaultButtonColor};
-  cursor: ${props => (props.disabled ? 'not-allowed' : 'pointer')};
-  ${p =>
-    getBackgroundWithHoverCSS(
-      p.disabled
-        ? HrmTheme.colors.base5
-        : p.secondary?.toLowerCase() === 'true'
-        ? HrmTheme.colors.secondaryButtonColor
-        : HrmTheme.colors.defaultButtonColor,
-      true,
-      false,
-      p.disabled,
-    )};
+  font-weight: 600;
+  cursor: ${({ disabled }) => (disabled ? 'not-allowed' : 'pointer')};
+  transition: background-color 0.2s ease;
+  opacity: 1 !important;
 
-  &&:focus {
-    outline-style: auto;
-    outline-width: initial;
+  &:focus {
+    outline: 2px solid #22a3fa;
   }
 
-  &&:active {
-    background-color: rgba(255, 255, 255, 0.3);
+  &:hover:not([disabled]) {
+    background: ${({ buttonType }) => HrmTheme.buttonColors[buttonType].hover};
+  }
+
+  &:active:not([disabled]) {
+    background: ${({ buttonType }) => HrmTheme.buttonColors[buttonType].pressed};
+  }
+
+  &:focus:not([disabled]) {
+    outline: 2px solid #22a3fa;
+    outline-offset: 2px;
   }
 `;
-StyledNextStepButton.displayName = 'StyledNextStepButton';
 
-type StyledAddNewCaseDropdown = {
-  position?: string;
-  dropdown?: boolean;
-};
+/**
+ * Primary Button: Highlights the most important action a user should take, often leading to a conversion or completion of a task.
+ * There is typically only one primary button per view, unless multiple actions are equally important,
+ * but that should be very rare, if ever in Aselo. We want the user to not have to think.
+ */
+export const PrimaryButton = (props: React.ComponentProps<typeof AseloBaseButton>) => (
+  <AseloBaseButton {...props} buttonType="primary" aria-disabled={props.disabled} role="button" />
+);
 
-export const StyledAddNewCaseDropdown = styled('ul')<StyledAddNewCaseDropdown>`
-  position: absolute;
-  right: -12%;
-  display: ${({ dropdown }) => (dropdown ? 'block' : 'none')};
-  ${({ position }) => (position === 'top' ? 'top: 110%;' : 'bottom: 110%;')}
-  box-shadow: 0px 4px 16px 0px rgba(18, 28, 45, 0.2);
-  -webkit-box-shadow: 0px 4px 16px 0px rgba(18, 28, 45, 0.2);
-  -moz-box-shadow: 0px 4px 16px 0px rgba(18, 28, 45, 0.2);
-  font-size: 0.875rem;
-  z-index: 9999;
-  width: 164px;
-  padding: 10px 0 10px 0;
-  flex-direction: column;
-  align-items: flex-start;
-  background: var(--background-color-background-body, #fff);
-  border: 1px solid var(--border-color-border-weaker, #e1e3ea);
-  border-radius: 8px;
-  margin-right: 20px;
-`;
-StyledAddNewCaseDropdown.displayName = 'StyledAddNewCaseDropdown';
+/**
+ * Secondary Button: Indicates a less important action, often an alternative to the primary action.
+ * Can be paired with a primary button to provide a negative action like "Cancel" or "Clear",
+ * or used independently for less crucial tasks.
+ */
+export const SecondaryButton = (props: React.ComponentProps<typeof AseloBaseButton>) => (
+  <AseloBaseButton {...props} buttonType="secondary" aria-disabled={props.disabled} role="button" />
+);
 
-export const StyledAddNewCaseDropdownList = styled('button')`
-  position: relative;
-  font-size: 14px;
-  display: flex;
-  color: inherit;
-  min-width: 10.1rem;
-  align-items: flex-start;
-  align-self: stretch;
-  padding: 7px 0 7px 18px;
-  text-decoration: none;
-  &:hover {
-    background-color: #f2f2f2;
-    cursor: pointer;
-  }
-  background: none;
-  border: none;
-`;
-StyledAddNewCaseDropdownList.displayName = 'StyledAddNewCaseDropdownList';
+/**
+ * Destructive Button: Used for potentially dangerous or destructive actions that require caution.
+ */
+export const DestructiveButton = (props: React.ComponentProps<typeof AseloBaseButton>) => (
+  <AseloBaseButton {...props} buttonType="destructive" aria-disabled={props.disabled} role="button" />
+);
 
-// Secondary/tertiary button
-export const SaveAndEndButton = styled(Button)<StyledNextStepButtonProps>`
-  display: flex;
-  align-items: center;
+/**
+ * Tertiary Button: Indicates a low-priority action or a supplemental action, often used for actions that are not critical for the main task.
+ * Used for Add, Edit, Delete, Skip, Close, More, etc.
+ */
+export const TertiaryButton = (props: React.ComponentProps<typeof AseloBaseButton>) => (
+  <AseloBaseButton {...props} buttonType="tertiary" aria-disabled={props.disabled} role="button" />
+);
+
+/**
+ * Transfer Button: Uses the secondary button style but slightly modified to match the flex-ui button style
+ */
+export const TransferButton = styled(SecondaryButton)`
+  margin-right: 1em;
+  padding: 4px 12px;
   font-size: 13px;
-  font-weight: 800;
-  letter-spacing: normal;
-  color: ${HrmTheme.colors.buttonTextColor};
-  background: linear-gradient(to top, ${HrmTheme.colors.declineColor}, ${HrmTheme.colors.declineColor});
-  border: none;
-  padding: 4px 10px;
-  min-width: auto;
-  cursor: ${props => (props.disabled ? 'not-allowed' : 'pointer')};
-
-  &&:focus {
-    outline-style: auto;
-    outline-width: initial;
-  }
-
-  &&:active {
-    background-color: #d61f1f;
-  }
-
-  &&:hover {
-    background-color: #4a0b0b;
-  }
 `;
-SaveAndEndButton.displayName = 'SaveAndEndButton';
+TransferButton.displayName = 'TransferButton';
 
-const TabbedFormsHeaderButton = styled(ButtonBase)`
+export const StyledBackButton = styled(ButtonBase)`
   &:focus {
     outline-color: ${HrmTheme.colors.focusColor};
     outline-style: solid;
@@ -199,13 +118,7 @@ const TabbedFormsHeaderButton = styled(ButtonBase)`
     cursor: pointer;
   }
 `;
-TabbedFormsHeaderButton.displayName = 'TabbedFormsHeaderButton';
-
-export const StyledBackButton = TabbedFormsHeaderButton;
 StyledBackButton.displayName = 'StyledBackButton';
-
-export const StyledCSAMReportButton = TabbedFormsHeaderButton;
-StyledCSAMReportButton.displayName = 'StyledCSAMReportButton';
 
 // Navigation close icon button
 export const HeaderCloseButton = styled(ButtonBase)`
@@ -274,31 +187,116 @@ export const ToggleViewButton = styled('button')<ToggleViewButtonProps>`
 `;
 ToggleViewButton.displayName = 'ToggleViewButton';
 
-export const InformationIconButton = withStyles({
-  root: {
-    width: '16px',
-    height: '16px',
-    color: '#b4babd',
-    margin: '13px 20px 0 5px',
-    cursor: 'pointer',
-  },
-})(InfoOutlinedIcon);
+type ConfirmButtonProps = {
+  disabled: boolean;
+};
 
-export const HtmlTooltip = withStyles(theme => ({
-  tooltip: {
-    backgroundColor: '#717171',
-    color: '#fff',
-    maxWidth: 400,
-    fontSize: '10pt',
-    fontStyle: 'open sans semibold',
-    border: '1px solid #dadde9',
-  },
-}))(Tooltip);
-
-export const CasePrintViewSpinner = styled('div')`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 100%;
+const CloseDialogButton = styled(Button)`
+  padding: 0px 16px;
+  border: none;
+  outline: none;
+  align-self: center;
+  height: 28px;
+  font-size: 10px;
+  font-weight: bold;
+  letter-spacing: 2px;
+  white-space: nowrap;
+  border-radius: 100px;
+  text-transform: uppercase;
 `;
-CasePrintViewSpinner.displayName = 'CasePrintViewSpinner';
+
+export const ConfirmButton = styled(CloseDialogButton)<ConfirmButtonProps>`
+  text-transform: uppercase;
+  color: ${props => HrmTheme.colors.declineTextColor};
+  background: linear-gradient(to top, ${HrmTheme.colors.declineColor}, ${HrmTheme.colors.declineColor});
+
+  &:hover {
+    background-color: ${HrmTheme.colors.declineColor}CC;
+    background-blend-mode: color;
+  }
+
+  &:focus {
+    outline-style: auto;
+    outline-width: initial;
+  }
+`;
+
+ConfirmButton.displayName = 'ConfirmButton';
+
+export const CancelButton = styled(CloseDialogButton)`
+  text-transform: uppercase;
+  margin-left: 30px;
+  color: rgb(0, 0, 0);
+  background: linear-gradient(to top, ${HrmTheme.colors.buttonTextColor}, ${HrmTheme.colors.buttonTextColor});
+
+  &:hover {
+    background-color: ${HrmTheme.colors.buttonHoverColor};
+    background-blend-mode: color;
+  }
+
+  &:focus {
+    outline: auto;
+  }
+`;
+
+export const CloseButton = styled(props => (
+  <IconButton {...props} aria-label="Close">
+    <ClearIcon />
+  </IconButton>
+))`
+  && .label {
+    color: ${HrmTheme.colors.defaultButtonColor};
+  }
+
+  &:hover {
+    background-color: rgba(0, 0, 0, 0.08);
+  }
+
+  &:focus {
+    outline: auto;
+  }
+`;
+
+CloseButton.displayName = 'CloseButton';
+
+type StyledLinkProps = ButtonProps & { underline?: boolean };
+
+const UnstyledLinkButton = React.forwardRef<HTMLButtonElement, StyledLinkProps>(
+  ({ onClick, underline, ...rest }, ref) => (
+    <TertiaryButton
+      size="small"
+      onClick={onClick}
+      disableFocusRipple={underline}
+      disableRipple={underline}
+      ref={ref}
+      {...rest}
+    />
+  ),
+);
+
+export const StyledLink = styled(UnstyledLinkButton)<StyledLinkProps>`
+  && {
+    padding: 0;
+    line-height: normal;
+    letter-spacing: normal;
+
+    :hover {
+      text-decoration: ${props => (props.underline ? 'underline' : 'none')};
+      text-decoration-color: ${props => (props.underline ? '#1874e1' : 'transparent')};
+      background-color: ${props => (props.underline ? 'transparent' : HrmTheme.colors.hyperlinkHoverBackgroundColor)};
+    }
+
+    :focus {
+      outline: auto;
+      background-color: ${props => (props.underline ? 'transparent' : HrmTheme.colors.hyperlinkHoverBackgroundColor)};
+    }
+  }
+
+  span {
+    padding: 0px;
+    line-height: normal;
+    letter-spacing: normal;
+    text-transform: none;
+    color: #1874e1;
+  }
+`;

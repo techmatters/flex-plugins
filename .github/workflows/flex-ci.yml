@@ -23,11 +23,11 @@ jobs:
 
     steps:
       - name: Checkout Branch
-        uses: actions/checkout@v4
-      - name: Use Node.js 16
-        uses: actions/setup-node@v4
+        uses: actions/checkout@v6
+      - name: Use Node.js
+        uses: actions/setup-node@v6
         with:
-          node-version: '16.x'
+          node-version: '20.x' # some twilio dev deps still complain about node 22 :-(
       - name: Create Temp Files
         run: |
           touch ./public/appConfig.js
@@ -35,12 +35,15 @@ jobs:
         working-directory: ./plugin-hrm-form
       - name: Install Flex Plugin
         uses: ./.github/actions/install-flex-plugin
-      - name: Run hrm-form-definitions Lint
-        run: npm run lint
-        working-directory: ./hrm-form-definitions
       - name: Run plugin-hrm-form code Lint
         run: npm run lint --if-present
         working-directory: ./plugin-hrm-form
+      - name: Install Lambdas
+        run: npm ci
+        working-directory: ./lambdas
+      - name: Run Lambdas Lint
+        run: npm run lint
+        working-directory: ./lambdas
       - name: Install e2e-test Packages
         run: npm ci
         working-directory: ./e2e-tests
@@ -52,31 +55,28 @@ jobs:
 
     steps:
     - name: Checkout Branch
-      uses: actions/checkout@v4
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v4
+      uses: actions/checkout@v6
+    - name: Use Node.js
+      uses: actions/setup-node@v6
       with:
-        node-version: '16.x'
+        node-version: '20.x'
     - name: Install Flex Plugin
       uses: ./.github/actions/install-flex-plugin
-    - name: Run hrm-form-definitions Tests
-      run: npm run test
-      working-directory: ./hrm-form-definitions
     - name: Configure AWS credentials
-      uses: aws-actions/configure-aws-credentials@v4
+      uses: aws-actions/configure-aws-credentials@v6
       with:
         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: us-east-1
 
     - name: Set Twilio account SID for AS DEV
-      uses: "marvinpinto/action-inject-ssm-secrets@latest"
+      uses: ./.github/actions/inject-ssm-secrets
       with:
         ssm_parameter: "/development/twilio/AS/account_sid"
         env_variable_name: "TWILIO_ACCOUNT_SID"
   
     - name: Set Twilio Auth Token for AS DEV
-      uses: "marvinpinto/action-inject-ssm-secrets@latest"
+      uses: ./.github/actions/inject-ssm-secrets
       with:
         ssm_parameter: "/development/twilio/${{env.TWILIO_ACCOUNT_SID}}/auth_token"
         env_variable_name: "TWILIO_AUTH_TOKEN"
@@ -86,6 +86,14 @@ jobs:
       working-directory: ./plugin-hrm-form
       env:
         CI: true
+
+    - name: Publish Test Reports
+      uses: dorny/test-reporter@v3
+      if: success() || failure() # always run even if the previous step fails
+      with:
+        name: Plugin Unit Tests Report
+        path: '!(node_modules)/**/junit.xml'
+        reporter: jest-junit
   ui-test:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
@@ -94,28 +102,28 @@ jobs:
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - name: Checkout Branch
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Use Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
-          node-version: '16.x'
+          node-version: '20.x'
 
       - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v4
+        uses: aws-actions/configure-aws-credentials@v6
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
 
       - name: Set Twilio account SID for UI Tests
-        uses: "marvinpinto/action-inject-ssm-secrets@latest"
+        uses: ./.github/actions/inject-ssm-secrets
         with:
           ssm_parameter: "/development/twilio/E2E/account_sid"
           env_variable_name: "TWILIO_ACCOUNT_SID"
 
       - name: Set Twilio Auth Token for UI Tests
-        uses: "marvinpinto/action-inject-ssm-secrets@latest"
+        uses: ./.github/actions/inject-ssm-secrets
         with:
           ssm_parameter: "/development/twilio/${{env.TWILIO_ACCOUNT_SID}}/auth_token"
           env_variable_name: "TWILIO_AUTH_TOKEN"
@@ -125,8 +133,8 @@ jobs:
 
       # Create Configuration file to replace AS_DEV_ACCOUNT_SID with E2E_ACCOUNT_SID
       - name: Create appConfig.js
-        run: cp ./public/appConfig.template.e2e.js ./public/appConfig.js
-        working-directory: ./plugin-hrm-form
+        run: npm ci && npm run setAppConfigCreds -- -a AC_FAKE_UI_TEST_ACCOUNT -l
+        working-directory: ./scripts
         shell: bash
 
       - name: Create secret.js
@@ -158,3 +166,33 @@ jobs:
         uses: ./.github/actions/run-e2e-tests
         with:
           run-ui-tests: 'true'
+
+
+      - name: Publish Test Reports
+        uses: dorny/test-reporter@v3
+        if: success() || failure() # always run even if the previous step fails
+        with:
+          name: UI Tests Report
+          path: '!(node_modules)/**/junit.xml'
+          reporter: java-junit
+
+  upload-plugin:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Branch
+        uses: actions/checkout@v6
+      - name: Use Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: '20.x'
+      - name: Install Flex Plugin
+        uses: ./.github/actions/install-flex-plugin
+
+      - name: Build and Upload Flex Plugin
+        uses: ./.github/actions/build-and-upload-plugin
+        with:
+          git-reference-type: ${{ github.ref_type }}
+          git-reference: ${{ github.ref_name }}
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_DEFAULT_REGION }}

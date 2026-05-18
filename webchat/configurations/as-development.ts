@@ -87,6 +87,22 @@ const preEngagementConfig: PreEngagementFormDefinition = {
       required: true,
     },
     {
+      label: 'Are you reaching out on behalf of yourself or another person?',
+      type: 'select',
+      defaultValue: 'myself',
+      name: 'myselfOrOther',
+      options: [
+        {
+          value: 'myself',
+          label: 'Myself',
+        },
+        {
+          value: 'other',
+          label: 'Someone else',
+        },
+      ],
+    },
+    {
       type: 'checkbox',
       name: 'termsAndConditions',
       label:
@@ -165,4 +181,5 @@ export const config: Configuration = {
   blockedEmojis,
   memberDisplayOptions,
   enableRecaptcha,
+  twilioServicesUrl: new URL(`https://hrm-development.tl.techmatters.org/lambda/twilio/account-scoped/${accountSid}`),
 };

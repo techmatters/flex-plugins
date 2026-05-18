@@ -17,10 +17,7 @@
 import React from 'react';
 import '@emotion/react';
 import Dialog from '@material-ui/core/Dialog';
-import ClearIcon from '@material-ui/icons/Clear';
-import { IconButton } from '@material-ui/core';
 import { styled, Button } from '@twilio/flex-ui';
-import { getBackgroundWithHoverCSS } from '@twilio/flex-ui-core';
 
 import HrmTheme from '../../styles/HrmTheme';
 
@@ -73,8 +70,8 @@ type NonDataCallTypeButtonProps = {
 export const NonDataCallTypeButton = styled(Button)<NonDataCallTypeButtonProps>`
   white-space: normal;
   width: 140px;
-  height: 44px;
-  margin-bottom: 10px;
+  min-height: 44px;
+  padding: 0;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -114,68 +111,4 @@ export const CloseTaskDialogText = styled('p')`
   font-size: 14px;
   font-weight: 700;
   margin-bottom: 36px;
-`;
-
-type ConfirmButtonProps = {
-  disabled: boolean;
-};
-
-const CloseDialogButton = styled(Button)`
-  padding: 0px 16px;
-  border: none;
-  outline: none;
-  align-self: center;
-  height: 28px;
-  font-size: 10px;
-  font-weight: bold;
-  letter-spacing: 2px;
-  white-space: nowrap;
-  border-radius: 100px;
-  text-transform: uppercase;
-`;
-
-export const ConfirmButton = styled(CloseDialogButton)<ConfirmButtonProps>`
-  text-transform: uppercase;
-  color: ${props => HrmTheme.colors.declineTextColor};
-  background: linear-gradient(to top, ${HrmTheme.colors.declineColor}, ${HrmTheme.colors.declineColor});
-  ${p => getBackgroundWithHoverCSS(HrmTheme.colors.declineColor, true, false, p.disabled)};
-
-  &:focus {
-    outline-style: auto;
-    outline-width: initial;
-  }
-`;
-
-export const CancelButton = styled(CloseDialogButton)`
-  text-transform: uppercase;
-  margin-left: 30px;
-  color: rgb(0, 0, 0);
-  background: linear-gradient(to top, ${HrmTheme.colors.buttonTextColor}, ${HrmTheme.colors.buttonTextColor});
-
-  &:hover {
-    background-color: ${HrmTheme.colors.buttonHoverColor};
-    background-blend-mode: color;
-  }
-
-  &:focus {
-    outline: auto;
-  }
-`;
-
-export const CloseButton = styled(props => (
-  <IconButton {...props} classes={{ label: 'label' }}>
-    <ClearIcon />
-  </IconButton>
-))`
-  && .label {
-    color: ${HrmTheme.colors.defaultButtonColor};
-  }
-
-  &:hover {
-    background-color: rgba(0, 0, 0, 0.08);
-  }
-
-  &:focus {
-    outline: auto;
-  }
 `;

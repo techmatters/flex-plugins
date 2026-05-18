@@ -17,10 +17,9 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
 import { Template } from '@twilio/flex-ui';
-import { Tab } from '@material-ui/core';
 
 import ProfileFlagChip from '../profile/profileFlag/ProfileFlagChip';
-import { getShortSummary } from '../../utils';
+import { getShortSummary } from '../../utils/formatters';
 import { useProfile } from '../../states/profile/hooks/useProfile';
 import {
   DataTableRow,
@@ -35,7 +34,8 @@ import {
 } from '../../styles';
 import { newOpenModalAction } from '../../states/routing/actions';
 import { useProfileFlags, useProfileSectionByType } from '../../states/profile/hooks';
-import { PermissionActions, getInitializedCan } from '../../permissions';
+import { getInitializedCan } from '../../permissions/rules';
+import { PermissionActions } from '../../permissions/actions';
 
 const CHAR_LIMIT = 250;
 

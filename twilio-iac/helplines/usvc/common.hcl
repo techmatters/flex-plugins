@@ -1,0 +1,129 @@
+/**
+ * Basic Helpline configuration -- copy these files to begin setting up a new helpline
+ * Replace <helpline name> for the actual name of the helpline
+ **/
+locals {
+  defaults_config_hcl = read_terragrunt_config(find_in_parent_folders("defaults.hcl"))
+  defaults_config     = local.defaults_config_hcl.locals
+  config              = merge(local.defaults_config, local.local_config)
+
+
+  local_config = {
+    helpline                   = "NCVC"
+    task_language              = "en-US"
+    enable_post_survey         = false
+    enable_external_recordings = false
+    permission_config          = "usvc"
+    enable_lex_v2              = false
+
+    channel_attributes = {
+      chat                   = "/app/twilio-iac/helplines/usvc/templates/channel-attributes/chat-conversations.tftpl",
+      webchat                = "/app/twilio-iac/helplines/usvc/templates/channel-attributes/webchat.tftpl",
+      voice_dcvh             = "/app/twilio-iac/helplines/usvc/templates/channel-attributes/voice_dcvh.tftpl",
+      voice_vc               = "/app/twilio-iac/helplines/usvc/templates/channel-attributes/voice_vc.tftpl",
+      sms_vc-conversations   = "/app/twilio-iac/helplines/usvc/templates/channel-attributes/sms_vc-conversations.tftpl",
+      sms_dcvh-conversations = "/app/twilio-iac/helplines/usvc/templates/channel-attributes/sms_dcvh-conversations.tftpl",
+      sms_vc_toll_free-conversations   = "/app/twilio-iac/helplines/usvc/templates/channel-attributes/sms_vc-conversations.tftpl",
+      sms_dcvh_toll_free-conversations = "/app/twilio-iac/helplines/usvc/templates/channel-attributes/sms_dcvh-conversations.tftpl",
+      default                = "/app/twilio-iac/helplines/templates/channel-attributes/default.tftpl",
+      default-conversations  = "/app/twilio-iac/helplines/templates/channel-attributes/default-conversations.tftpl"
+    }
+    workflows = {
+      master : {
+        friendly_name            = "Master Workflow"
+        templatefile             = "/app/twilio-iac/helplines/usvc/templates/workflows/master.tftpl"
+        task_reservation_timeout = 90
+      },
+      //NOTE: MAKE SURE TO ADD THIS IF THE ACCOUNT USES A CONVERSATION CHANNEL
+      queue_transfers : {
+        friendly_name = "Queue Transfers Workflow"
+        templatefile  = "/app/twilio-iac/helplines/templates/workflows/queue-transfers.tftpl"
+      },
+      survey : {
+        friendly_name = "Survey Workflow"
+        templatefile  = "/app/twilio-iac/helplines/templates/workflows/lex.tftpl"
+      }
+    }
+    task_queues = {
+      vc : {
+        "target_workers" = "routing.skills HAS 'VC'",
+        "friendly_name"  = "VC English"
+      },
+      dcvh : {
+        "target_workers" = "routing.skills HAS 'DCVH'",
+        "friendly_name"  = "DCVH English"
+      },
+      vc_sp : {
+        "target_workers" = "routing.skills HAS 'VC' AND routing.skills HAS 'Spanish'",
+        "friendly_name"  = "VC Spanish"
+      },
+      dcvh_sp : {
+        "target_workers" = "routing.skills HAS 'DCVH' AND routing.skills HAS 'Spanish'",
+        "friendly_name"  = "DCVH Spanish"
+      },
+      dc_dispatch : {
+        "target_workers" = "routing.skills HAS 'DCVH'",
+        "friendly_name"  = "DCVH Dispatch"
+      },
+      direct_transfers : {
+        "target_workers" = "routing.skills HAS 'Transfers'",
+        "friendly_name"  = "Direct Transfers"
+      },
+      survey : {
+        "target_workers" = "1==0",
+        "friendly_name"  = "Survey"
+      },
+      e2e_test : {
+        "target_workers" = "email=='aselo-alerts+production@techmatters.org'",
+        "friendly_name"  = "E2E Test Queue"
+      }
+    }
+
+    activities = {
+      demographics : {
+        friendly_name = "Demographics"
+        available     = false
+      },
+      meal_break : {
+        friendly_name = "Meal Break"
+        available     = false
+      },
+      meeting : {
+        friendly_name = "Meeting"
+        available     = false
+      },
+      refused : {
+        friendly_name = "Refused"
+        available     = false
+      },
+      supervision : {
+        friendly_name = "Supervision"
+        available     = false
+      },
+      training : {
+        friendly_name = "Training"
+        available     = false
+      }
+    }
+
+    lex_bot_languages = {
+    }
+    lex_v2_bot_languages = {
+
+    }
+    s3_lifecycle_rules = {
+      transcripts_expiry : {
+        id                 = "Transcripts Data Expiration Rule"
+        expiration_in_days = 180
+        prefix             = "transcripts/"
+      },
+      hrm_data_expiry : {
+        id                 = "HRM Data Expiration Rule"
+        expiration_in_days = 180
+        prefix             = "hrm-data/"
+      }
+    }
+    hrm_transcript_retention_days_override = 180
+
+  }
+}

@@ -19,8 +19,7 @@ import { parseISO } from 'date-fns';
 import { RootState } from '..';
 import { ContactState } from './existingContacts';
 import { namespace } from '../storeNamespaces';
-import { Case, Contact } from '../../types/types';
-import selectContactStateByContactId from './selectContactStateByContactId';
+import { Case } from '../../types/types';
 
 export const selectContactsByCaseIdInCreatedOrder = (state: RootState, caseId: Case['id']): ContactState[] =>
   Object.values(state[namespace].activeContacts.existingContacts)
@@ -29,16 +28,3 @@ export const selectContactsByCaseIdInCreatedOrder = (state: RootState, caseId: C
 
 export const selectFirstContactByCaseId = (state: RootState, caseId: Case['id']): ContactState =>
   selectContactsByCaseIdInCreatedOrder(state, caseId)[0] || null;
-
-export const selectFirstCaseContact = (state: RootState, parentCase: Case): Contact => {
-  if (!parentCase.firstContact) return undefined;
-  const contactState = selectContactStateByContactId(state, parentCase.firstContact.id);
-  if (contactState) {
-    if (contactState.savedContact.caseId === parentCase.id) {
-      return contactState.savedContact; // Contact loaded into state and still connected to case, return this version
-    }
-    // If the contact in state is not connected to the case, try to find one that is.
-    return selectFirstContactByCaseId(state, parentCase.id)?.savedContact;
-  }
-  return parentCase.firstContact; // Contact not loaded into state, return this version, could be stale
-};

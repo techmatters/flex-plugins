@@ -19,10 +19,15 @@ import each from 'jest-each';
 import { fetchHrmApi } from '../../services/fetchHrmApi';
 import { ApiError } from '../../services/fetchApi';
 import { getHrmConfig } from '../../hrmConfig';
+import { getValidToken } from '../../authentication';
 
 global.fetch = jest.fn();
 
 jest.mock('../../hrmConfig');
+
+jest.mock('../../authentication', () => ({
+  getValidToken: jest.fn(() => 'of my appreciation'),
+}));
 
 describe('fetchHrmApi', () => {
   const mockFetch = fetch as jest.Mock<Promise<Partial<Response>>>;
@@ -32,7 +37,8 @@ describe('fetchHrmApi', () => {
   beforeEach(() => {
     mockFetch.mockClear();
     mockGetHrmConfig.mockClear();
-    mockGetHrmConfig.mockReturnValue({ token: 'of my appreciation', hrmBaseUrl: 'https://all.your/base' });
+    mockGetHrmConfig.mockReturnValue({ hrmBaseUrl: 'https://all.your/base' });
+    (getValidToken as jest.MockedFunction<typeof getValidToken>).mockReturnValue('of my appreciation');
   });
 
   describe('OK response', () => {
@@ -105,5 +111,13 @@ describe('fetchHrmApi', () => {
         response: mockResponse as Response,
       }),
     );
+  });
+  test('Invalid token - aborts request and throws ApiError', async () => {
+    const tokenError = new Error('not appreciated');
+    (getValidToken as jest.MockedFunction<typeof getValidToken>).mockReturnValue(tokenError);
+    expect(() => fetchHrmApi('/areBelongToUs')).toThrow(
+      new ApiError('Aborting request due to token issue: not appreciated', {}, tokenError),
+    );
+    expect(mockFetch).not.toHaveBeenCalled();
   });
 });

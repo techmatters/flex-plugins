@@ -1,0 +1,103 @@
+/**
+ * Copyright (C) 2021-2023 Technology Matters
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see https://www.gnu.org/licenses/.
+ */
+
+import React, { CSSProperties } from 'react';
+import type { StyledProps } from '@material-ui/core';
+import { Template } from '@twilio/flex-ui';
+
+import { useExpandableOnOverflow } from '../../hooks/useExpandableOnOverflow';
+import { StyledLink } from '../../styles/buttons';
+
+type ExpandableComponentProps = {
+  expandLinkText: string;
+  collapseLinkText: string;
+  style?: CSSProperties;
+};
+
+/**
+ * Collapse/expand container intended to be used when the children component is a collection of React components.
+ * */
+const ExpandableComponent: React.FC<ExpandableComponentProps & Partial<StyledProps>> = ({
+  children,
+  expandLinkText,
+  collapseLinkText,
+  className,
+  style = {},
+}) => {
+  const {
+    collapseButtonElementRef,
+    expandButtonElementRef,
+    handleCollapse,
+    handleExpand,
+    isExpanded,
+    isOverflowing,
+    overflowingRef,
+  } = useExpandableOnOverflow({});
+  const classes = [];
+  if (className) {
+    classes.push(className);
+  }
+  if (isExpanded) {
+    classes.push('expanded');
+  }
+  return (
+    <div
+      className={`${classes.join(' ')}`}
+      style={{ display: 'flex', flexFlow: 'row', justifyContent: 'stretch', ...style }}
+    >
+      <div
+        style={{
+          textOverflow: 'hidden',
+          whiteSpace: isOverflowing && !isExpanded ? 'nowrap' : 'inherit',
+          overflow: isOverflowing && !isExpanded ? 'hidden' : 'inherit',
+          height: isExpanded ? 'inherit' : '1.6em',
+          lineHeight: '1.5em',
+          wordBreak: isExpanded ? 'break-word' : 'inherit',
+        }}
+        ref={overflowingRef}
+      >
+        {children}
+        <StyledLink
+          underline={true}
+          type="button"
+          onClick={handleCollapse}
+          ref={collapseButtonElementRef}
+          style={{ display: isExpanded ? 'inline' : 'none', lineHeight: '1.5em', fontSize: '13px' }}
+        >
+          <Template code={collapseLinkText} />
+        </StyledLink>
+      </div>
+      <div
+        style={{
+          whiteSpace: 'nowrap',
+          display: isOverflowing && !isExpanded ? 'inherit' : 'none',
+          height: '1.5em',
+          lineHeight: '1.5em',
+          marginLeft: '5px',
+        }}
+      >
+        <StyledLink underline={true} onClick={handleExpand} ref={expandButtonElementRef} style={{ fontSize: `13px` }}>
+          ...
+          <Template code={expandLinkText} />
+        </StyledLink>
+      </div>
+    </div>
+  );
+};
+
+ExpandableComponent.displayName = 'ExpandableComponent';
+
+export default ExpandableComponent;

@@ -33,6 +33,16 @@ variable "aws_monitoring_region" {
   description = "The region for the AWS monitoring."
 }
 
+variable "s3_lifecycle_rules" {
+  description = "S3 Bucket Lifecycle Rules"
+  type = map(object({
+    id                 = string
+    expiration_in_days = number
+    prefix             = string
+    status             = optional(string)
+  }))
+}
+
 variable "manage_github_secrets" {
   type        = bool
   description = "Whether to manage the github secrets for the helpline."
@@ -41,6 +51,14 @@ variable "manage_github_secrets" {
 variable "events_filter" {
   description = "Events filter"
   type        = list(string)
+}
+
+variable "activities" {
+  description = "Activities"
+  type = map(object({
+    friendly_name   = string
+    available       = optional(bool)
+  }))
 }
 
 variable "task_queues" {
@@ -92,6 +110,12 @@ variable "enable_old_survey_module" {
 
 variable "ui_editable" {
   description = " Whether or not the service is editable in the console"
+  type        = bool
+  default     = false
+}
+
+variable "enable_integration_tests" {
+  description = "Enables integration tests to run on a schedule for this helpline"
   type        = bool
   default     = false
 }

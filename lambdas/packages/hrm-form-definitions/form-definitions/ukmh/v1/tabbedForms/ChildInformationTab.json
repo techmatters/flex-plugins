@@ -1,0 +1,1802 @@
+[
+  {
+    "name": "bookingReference",
+    "label": "Booking Reference",
+    "type": "input",
+    "isPII": false,
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "friendlyName",
+    "label": "First Name",
+    "type": "input",
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    },
+    "isPII": true
+  },
+  {
+    "name": "age",
+    "label": "Age",
+    "type": "select",
+    "isPII": true,
+    "options": [
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "16",
+        "label": "16"
+      },
+      {
+        "value": "17",
+        "label": "17"
+      },
+      {
+        "value": "18",
+        "label": "18"
+      },
+      {
+        "value": "19",
+        "label": "19"
+      },
+      {
+        "value": "20",
+        "label": "20"
+      },
+      {
+        "value": "21",
+        "label": "21"
+      },
+      {
+        "value": "22",
+        "label": "22"
+      },
+      {
+        "value": "23",
+        "label": "23"
+      },
+      {
+        "value": "24",
+        "label": "24"
+      },
+      {
+        "value": "25",
+        "label": "25"
+      },
+      {
+        "value": "26+",
+        "label": "26+"
+      },
+      {
+        "value": "Prefer not to say",
+        "label": "Prefer not to say"
+      },
+      {
+        "value": "Not specified",
+        "label": "Not specified"
+      }
+    ]
+  },
+  {
+    "name": "region",
+    "label": "Region",
+    "type": "select",
+    "unknownOption": "Unknown",
+    "options": [
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "Channel Islands",
+        "label": "Channel Islands"
+      },
+      {
+        "value": "East Midlands",
+        "label": "East Midlands"
+      },
+      {
+        "value": "East of England",
+        "label": "East of England"
+      },
+      {
+        "value": "Isle of Man",
+        "label": "Isle of Man"
+      },
+      {
+        "value": "London",
+        "label": "London"
+      },
+      {
+        "value": "North East England",
+        "label": "North East England"
+      },
+      {
+        "value": "North West England",
+        "label": "North West England"
+      },
+      {
+        "value": "Northern Ireland",
+        "label": "Northern Ireland"
+      },
+      {
+        "value": "Scotland",
+        "label": "Scotland"
+      },
+      {
+        "value": "South East England",
+        "label": "South East England"
+      },
+      {
+        "value": "South West England",
+        "label": "South West England"
+      },
+      {
+        "value": "Wales",
+        "label": "Wales"
+      },
+      {
+        "value": "West Midlands",
+        "label": "West Midlands"
+      },
+      {
+        "value": "Yorkshire and the Humber",
+        "label": "Yorkshire and the Humber"
+      },
+      {
+        "value": "Outside of the UK (Overseas)",
+        "label": "Outside of the UK (Overseas)"
+      },
+      {
+        "value": "Prefer not to say",
+        "label": "Prefer not to say"
+      },
+      {
+        "value": "Not specified",
+        "label": "Not specified"
+      }
+    ],
+    "isPII": false
+  },
+  {
+    "name": "county",
+    "label": "County",
+    "type": "select",
+    "options": [
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "Aberdeenshire",
+        "label": "Aberdeenshire"
+      },
+      {
+        "value": "Anglesey/Sir Fon",
+        "label": "Anglesey/Sir Fon"
+      },
+      {
+        "value": "Angus",
+        "label": "Angus"
+      },
+      {
+        "value": "Argyll and Bute",
+        "label": "Argyll and Bute"
+      },
+      {
+        "value": "Ayrshire",
+        "label": "Ayrshire"
+      },
+      {
+        "value": "Barking",
+        "label": "Barking"
+      },
+      {
+        "value": "Barnet",
+        "label": "Barnet"
+      },
+      {
+        "value": "Bath and North East Somerset",
+        "label": "Bath and North East Somerset"
+      },
+      {
+        "value": "Bedfordshire",
+        "label": "Bedfordshire"
+      },
+      {
+        "value": "Berkshire",
+        "label": "Berkshire"
+      },
+      {
+        "value": "Bexley",
+        "label": "Bexley"
+      },
+      {
+        "value": "Blackburn with Darwen",
+        "label": "Blackburn with Darwen"
+      },
+      {
+        "value": "Blackpool",
+        "label": "Blackpool"
+      },
+      {
+        "value": "Blaenau Gwent",
+        "label": "Blaenau Gwent"
+      },
+      {
+        "value": "Bournemouth",
+        "label": "Bournemouth"
+      },
+      {
+        "value": "Bracknell Forest",
+        "label": "Bracknell Forest"
+      },
+      {
+        "value": "Brent",
+        "label": "Brent"
+      },
+      {
+        "value": "Bridgend",
+        "label": "Bridgend"
+      },
+      {
+        "value": "Brighton and Hove",
+        "label": "Brighton and Hove"
+      },
+      {
+        "value": "Bristol",
+        "label": "Bristol"
+      },
+      {
+        "value": "Bromley",
+        "label": "Bromley"
+      },
+      {
+        "value": "Buckinghamshire",
+        "label": "Buckinghamshire"
+      },
+      {
+        "value": "Caerphilly",
+        "label": "Caerphilly"
+      },
+      {
+        "value": "Caithness",
+        "label": "Caithness"
+      },
+      {
+        "value": "Cambridgeshire",
+        "label": "Cambridgeshire"
+      },
+      {
+        "value": "Camden",
+        "label": "Camden"
+      },
+      {
+        "value": "Cardiff",
+        "label": "Cardiff"
+      },
+      {
+        "value": "Carmarthenshire",
+        "label": "Carmarthenshire"
+      },
+      {
+        "value": "Central Bedfordshire",
+        "label": "Central Bedfordshire"
+      },
+      {
+        "value": "Ceredigion",
+        "label": "Ceredigion"
+      },
+      {
+        "value": "Cheshire",
+        "label": "Cheshire"
+      },
+      {
+        "value": "Clackmannanshire",
+        "label": "Clackmannanshire"
+      },
+      {
+        "value": "Conwy",
+        "label": "Conwy"
+      },
+      {
+        "value": "Cornwall",
+        "label": "Cornwall"
+      },
+      {
+        "value": "County Antrim",
+        "label": "County Antrim"
+      },
+      {
+        "value": "County Armagh",
+        "label": "County Armagh"
+      },
+      {
+        "value": "County Down",
+        "label": "County Down"
+      },
+      {
+        "value": "County Fermanagh",
+        "label": "County Fermanagh"
+      },
+      {
+        "value": "County Londonderry",
+        "label": "County Londonderry"
+      },
+      {
+        "value": "County Tyrone",
+        "label": "County Tyrone"
+      },
+      {
+        "value": "Croydon",
+        "label": "Croydon"
+      },
+      {
+        "value": "Cumbria",
+        "label": "Cumbria"
+      },
+      {
+        "value": "Darlington",
+        "label": "Darlington"
+      },
+      {
+        "value": "Denbighshire",
+        "label": "Denbighshire"
+      },
+      {
+        "value": "Derby",
+        "label": "Derby"
+      },
+      {
+        "value": "Derbyshire",
+        "label": "Derbyshire"
+      },
+      {
+        "value": "Devon",
+        "label": "Devon"
+      },
+      {
+        "value": "Dorset",
+        "label": "Dorset"
+      },
+      {
+        "value": "Dumfries and Galloway",
+        "label": "Dumfries and Galloway"
+      },
+      {
+        "value": "Dunbartonshire",
+        "label": "Dunbartonshire"
+      },
+      {
+        "value": "Dundee",
+        "label": "Dundee"
+      },
+      {
+        "value": "Durham",
+        "label": "Durham"
+      },
+      {
+        "value": "Ealing",
+        "label": "Ealing"
+      },
+      {
+        "value": "East Ayrshire",
+        "label": "East Ayrshire"
+      },
+      {
+        "value": "East Dunbartonshire",
+        "label": "East Dunbartonshire"
+      },
+      {
+        "value": "East Lothian",
+        "label": "East Lothian"
+      },
+      {
+        "value": "East Riding of Yorkshire",
+        "label": "East Riding of Yorkshire"
+      },
+      {
+        "value": "East Sussex",
+        "label": "East Sussex"
+      },
+      {
+        "value": "Edinburgh",
+        "label": "Edinburgh"
+      },
+      {
+        "value": "Enfield",
+        "label": "Enfield"
+      },
+      {
+        "value": "Essex",
+        "label": "Essex"
+      },
+      {
+        "value": "Falkirk",
+        "label": "Falkirk"
+      },
+      {
+        "value": "Fife",
+        "label": "Fife"
+      },
+      {
+        "value": "Flintshire",
+        "label": "Flintshire"
+      },
+      {
+        "value": "Glamorgan",
+        "label": "Glamorgan"
+      },
+      {
+        "value": "Glasgow",
+        "label": "Glasgow"
+      },
+      {
+        "value": "Gloucestershire",
+        "label": "Gloucestershire"
+      },
+      {
+        "value": "Greater Manchester",
+        "label": "Greater Manchester"
+      },
+      {
+        "value": "Greenwich",
+        "label": "Greenwich"
+      },
+      {
+        "value": "Guernsey",
+        "label": "Guernsey"
+      },
+      {
+        "value": "Gwynedd",
+        "label": "Gwynedd"
+      },
+      {
+        "value": "Hackney",
+        "label": "Hackney"
+      },
+      {
+        "value": "Halton",
+        "label": "Halton"
+      },
+      {
+        "value": "Hammersmith",
+        "label": "Hammersmith"
+      },
+      {
+        "value": "Hampshire",
+        "label": "Hampshire"
+      },
+      {
+        "value": "Haringey",
+        "label": "Haringey"
+      },
+      {
+        "value": "Harrow",
+        "label": "Harrow"
+      },
+      {
+        "value": "Hartlepool",
+        "label": "Hartlepool"
+      },
+      {
+        "value": "Havering",
+        "label": "Havering"
+      },
+      {
+        "value": "Hereford and Worcester",
+        "label": "Hereford and Worcester"
+      },
+      {
+        "value": "Hertfordshire",
+        "label": "Hertfordshire"
+      },
+      {
+        "value": "Highland",
+        "label": "Highland"
+      },
+      {
+        "value": "Hillingdon",
+        "label": "Hillingdon"
+      },
+      {
+        "value": "Hounslow",
+        "label": "Hounslow"
+      },
+      {
+        "value": "Inverclyde",
+        "label": "Inverclyde"
+      },
+      {
+        "value": "Isle of Man",
+        "label": "Isle of Man"
+      },
+      {
+        "value": "Isle of Wight",
+        "label": "Isle of Wight"
+      },
+      {
+        "value": "Isles of Scilly",
+        "label": "Isles of Scilly"
+      },
+      {
+        "value": "Islington",
+        "label": "Islington"
+      },
+      {
+        "value": "Jersey",
+        "label": "Jersey"
+      },
+      {
+        "value": "Kensington and Chelsea",
+        "label": "Kensington and Chelsea"
+      },
+      {
+        "value": "Kent",
+        "label": "Kent"
+      },
+      {
+        "value": "Kingston",
+        "label": "Kingston"
+      },
+      {
+        "value": "Kingston upon Hull",
+        "label": "Kingston upon Hull"
+      },
+      {
+        "value": "Lambeth",
+        "label": "Lambeth"
+      },
+      {
+        "value": "Lanarkshire",
+        "label": "Lanarkshire"
+      },
+      {
+        "value": "Lancashire",
+        "label": "Lancashire"
+      },
+      {
+        "value": "Leicester",
+        "label": "Leicester"
+      },
+      {
+        "value": "Leicestershire",
+        "label": "Leicestershire"
+      },
+      {
+        "value": "Lewisham",
+        "label": "Lewisham"
+      },
+      {
+        "value": "Lincolnshire",
+        "label": "Lincolnshire"
+      },
+      {
+        "value": "London",
+        "label": "London"
+      },
+      {
+        "value": "Luton",
+        "label": "Luton"
+      },
+      {
+        "value": "Medway",
+        "label": "Medway"
+      },
+      {
+        "value": "Merseyside",
+        "label": "Merseyside"
+      },
+      {
+        "value": "Merthyr Tydfil",
+        "label": "Merthyr Tydfil"
+      },
+      {
+        "value": "Merton",
+        "label": "Merton"
+      },
+      {
+        "value": "Middlesbrough",
+        "label": "Middlesbrough"
+      },
+      {
+        "value": "Midlothian",
+        "label": "Midlothian"
+      },
+      {
+        "value": "Milton Keynes",
+        "label": "Milton Keynes"
+      },
+      {
+        "value": "Monmouthshire",
+        "label": "Monmouthshire"
+      },
+      {
+        "value": "Moray",
+        "label": "Moray"
+      },
+      {
+        "value": "Neath Port Talbot",
+        "label": "Neath Port Talbot"
+      },
+      {
+        "value": "Newham",
+        "label": "Newham"
+      },
+      {
+        "value": "Norfolk",
+        "label": "Norfolk"
+      },
+      {
+        "value": "North East Lincolnshire",
+        "label": "North East Lincolnshire"
+      },
+      {
+        "value": "North Lanarkshire",
+        "label": "North Lanarkshire"
+      },
+      {
+        "value": "North Lincolnshire",
+        "label": "North Lincolnshire"
+      },
+      {
+        "value": "North Somerset",
+        "label": "North Somerset"
+      },
+      {
+        "value": "North Yorkshire",
+        "label": "North Yorkshire"
+      },
+      {
+        "value": "Northamptonshire",
+        "label": "Northamptonshire"
+      },
+      {
+        "value": "Northumberland",
+        "label": "Northumberland"
+      },
+      {
+        "value": "Nottingham",
+        "label": "Nottingham"
+      },
+      {
+        "value": "Nottinghamshire",
+        "label": "Nottinghamshire"
+      },
+      {
+        "value": "Orkney",
+        "label": "Orkney"
+      },
+      {
+        "value": "Orkney Isles",
+        "label": "Orkney Isles"
+      },
+      {
+        "value": "Oxfordshire",
+        "label": "Oxfordshire"
+      },
+      {
+        "value": "Pembrokeshire",
+        "label": "Pembrokeshire"
+      },
+      {
+        "value": "Perth and Kinross",
+        "label": "Perth and Kinross"
+      },
+      {
+        "value": "Peterborough",
+        "label": "Peterborough"
+      },
+      {
+        "value": "Plymouth",
+        "label": "Plymouth"
+      },
+      {
+        "value": "Poole",
+        "label": "Poole"
+      },
+      {
+        "value": "Portsmouth",
+        "label": "Portsmouth"
+      },
+      {
+        "value": "Powys",
+        "label": "Powys"
+      },
+      {
+        "value": "Reading",
+        "label": "Reading"
+      },
+      {
+        "value": "Redbridge",
+        "label": "Redbridge"
+      },
+      {
+        "value": "Redcar and Cleveland",
+        "label": "Redcar and Cleveland"
+      },
+      {
+        "value": "Renfrewshire",
+        "label": "Renfrewshire"
+      },
+      {
+        "value": "Rhondda Cynon Taff",
+        "label": "Rhondda Cynon Taff"
+      },
+      {
+        "value": "Richmond",
+        "label": "Richmond"
+      },
+      {
+        "value": "Rutland",
+        "label": "Rutland"
+      },
+      {
+        "value": "Scottish Borders",
+        "label": "Scottish Borders"
+      },
+      {
+        "value": "Shetland Isles",
+        "label": "Shetland Isles"
+      },
+      {
+        "value": "Shropshire",
+        "label": "Shropshire"
+      },
+      {
+        "value": "Slough",
+        "label": "Slough"
+      },
+      {
+        "value": "Somerset",
+        "label": "Somerset"
+      },
+      {
+        "value": "South Ayrshire",
+        "label": "South Ayrshire"
+      },
+      {
+        "value": "South Gloucestershire",
+        "label": "South Gloucestershire"
+      },
+      {
+        "value": "South Lanarkshire",
+        "label": "South Lanarkshire"
+      },
+      {
+        "value": "South Yorkshire",
+        "label": "South Yorkshire"
+      },
+      {
+        "value": "Southampton",
+        "label": "Southampton"
+      },
+      {
+        "value": "Southend-on-Sea",
+        "label": "Southend-on-Sea"
+      },
+      {
+        "value": "Southwark",
+        "label": "Southwark"
+      },
+      {
+        "value": "Staffordshire",
+        "label": "Staffordshire"
+      },
+      {
+        "value": "Stirlingshire",
+        "label": "Stirlingshire"
+      },
+      {
+        "value": "Stockton-on-Tees",
+        "label": "Stockton-on-Tees"
+      },
+      {
+        "value": "Stoke-on-Trent",
+        "label": "Stoke-on-Trent"
+      },
+      {
+        "value": "Suffolk",
+        "label": "Suffolk"
+      },
+      {
+        "value": "Surrey",
+        "label": "Surrey"
+      },
+      {
+        "value": "Sutton",
+        "label": "Sutton"
+      },
+      {
+        "value": "Swansea",
+        "label": "Swansea"
+      },
+      {
+        "value": "Swindon",
+        "label": "Swindon"
+      },
+      {
+        "value": "Telford and Wrekin",
+        "label": "Telford and Wrekin"
+      },
+      {
+        "value": "Thurrock",
+        "label": "Thurrock"
+      },
+      {
+        "value": "Torbay",
+        "label": "Torbay"
+      },
+      {
+        "value": "Tower Hamlets",
+        "label": "Tower Hamlets"
+      },
+      {
+        "value": "Tyne and Wear",
+        "label": "Tyne and Wear"
+      },
+      {
+        "value": "Waltham Forest",
+        "label": "Waltham Forest"
+      },
+      {
+        "value": "Wandsworth",
+        "label": "Wandsworth"
+      },
+      {
+        "value": "Warrington",
+        "label": "Warrington"
+      },
+      {
+        "value": "Warwickshire",
+        "label": "Warwickshire"
+      },
+      {
+        "value": "West Dunbartonshire",
+        "label": "West Dunbartonshire"
+      },
+      {
+        "value": "West Lothian",
+        "label": "West Lothian"
+      },
+      {
+        "value": "West Midlands",
+        "label": "West Midlands"
+      },
+      {
+        "value": "West Sussex",
+        "label": "West Sussex"
+      },
+      {
+        "value": "West Yorkshire",
+        "label": "West Yorkshire"
+      },
+      {
+        "value": "Western Isles",
+        "label": "Western Isles"
+      },
+      {
+        "value": "Westminster",
+        "label": "Westminster"
+      },
+      {
+        "value": "Wigtownshire",
+        "label": "Wigtownshire"
+      },
+      {
+        "value": "Wiltshire",
+        "label": "Wiltshire"
+      },
+      {
+        "value": "Windsor and Maidenhead",
+        "label": "Windsor and Maidenhead"
+      },
+      {
+        "value": "Wokingham",
+        "label": "Wokingham"
+      },
+      {
+        "value": "Worcestershire",
+        "label": "Worcestershire"
+      },
+      {
+        "value": "Wrexham",
+        "label": "Wrexham"
+      },
+      {
+        "value": "York",
+        "label": "York"
+      },
+      {
+        "value": "Outside UK",
+        "label": "Outside UK"
+      },
+      {
+        "value": "Prefer not to say",
+        "label": "Prefer not to say"
+      },
+      {
+        "value": "Not specified",
+        "label": "Not specified"
+      }
+    ],
+    "isPII": false
+  },
+  {
+    "name": "gender",
+    "label": "Gender",
+    "type": "select",
+    "unknownOption": "",
+    "options": [
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "Man",
+        "label": "Man"
+      },
+      {
+        "value": "Woman",
+        "label": "Woman"
+      },
+      {
+        "value": "Non-Binary",
+        "label": "Non-Binary / Gender Non-Conforming"
+      },
+      {
+        "value": "Prefer to self-define",
+        "label": "Prefer to self-define"
+      },
+      {
+        "value": "Prefer not to say",
+        "label": "Prefer not to say"
+      }
+    ],
+    "isPII": false
+  },
+  {
+    "name": "isGenderSameAsSexAtBirth",
+    "label": "Is gender the same as registered sex at birth?",
+    "type": "select",
+    "options": [
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "Yes",
+        "label": "Yes"
+      },
+      {
+        "value": "No",
+        "label": "No"
+      },
+      {
+        "value": "Prefer not to say",
+        "label": "Prefer not to say"
+      }
+    ],
+    "isPII": false
+  },
+  {
+    "name": "sexuality",
+    "label": "Sexuality",
+    "type": "select",
+    "options": [
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "Heterosexual / straight",
+        "label": "Heterosexual / straight"
+      },
+      {
+        "value": "Bisexual",
+        "label": "Bisexual"
+      },
+      {
+        "value": "Gay or lesbian",
+        "label": "Gay or lesbian"
+      },
+      {
+        "value": "Queer",
+        "label": "Queer"
+      },
+      {
+        "value": "Pansexual",
+        "label": "Pansexual"
+      },
+      {
+        "value": "Asexual",
+        "label": "Asexual"
+      },
+      {
+        "value": "Questioning or unsure",
+        "label": "Questioning or unsure"
+      },
+      {
+        "value": "Prefer not to say",
+        "label": "Prefer not to say"
+      },
+      {
+        "value": "I identify in a different way",
+        "label": "I identify in a different way"
+      }
+    ],
+    "isPII": false
+  },
+  {
+    "name": "ethnicity",
+    "label": "Ethnicity",
+    "type": "select",
+    "options": [
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "Asian / Asian British",
+        "label": "Asian / Asian British"
+      },
+      {
+        "value": "Black / African / Caribbean / Black British",
+        "label": "Black / African / Caribbean / Black British"
+      },
+      {
+        "value": "Mixed / Multiple ethnic groups",
+        "label": "Mixed / Multiple ethnic groups"
+      },
+      {
+        "value": "White English, Welsh, Scottish, Northern Irish or British",
+        "label": "White English, Welsh, Scottish, Northern Irish or British"
+      },
+      {
+        "value": "Any other White background",
+        "label": "Any other White background"
+      },
+      {
+        "value": "Other ethnic group",
+        "label": "Other ethnic group"
+      },
+      {
+        "value": "Prefer not to say",
+        "label": "Prefer not to say"
+      }
+    ],
+    "isPII": false
+  },
+  {
+    "name": "employmentStatus",
+    "label": "Employment Status",
+    "type": "listbox-multiselect",
+    "options": [
+      {
+        "value": "Primary School",
+        "label": "Primary School"
+      },
+      {
+        "value": "Secondary School",
+        "label": "Secondary School"
+      },
+      {
+        "value": "Further or Higher education",
+        "label": "Further or Higher education"
+      },
+      {
+        "value": "Work part-time (less than 30 hours per week)",
+        "label": "Work part-time (less than 30 hours per week)"
+      },
+      {
+        "value": "Work full-time (30 hours or more per week)",
+        "label": "Work full-time (30 hours or more per week)"
+      },
+      {
+        "value": "Training or Apprenticeship",
+        "label": "Training or Apprenticeship"
+      },
+      {
+        "value": "Volunteering or Internship",
+        "label": "Volunteering or Internship"
+      },
+      {
+        "value": "Not in education, employment or training",
+        "label": "Not in education, employment or training"
+      },
+      {
+        "value": "Looking for work",
+        "label": "Looking for work"
+      },
+      {
+        "value": "Unable to work",
+        "label": "Unable to work"
+      },
+      {
+        "value": "Self-employed or Freelancer",
+        "label": "Self-employed or Freelancer"
+      },
+      {
+        "value": "Other",
+        "label": "Other"
+      },
+      {
+        "value": "Prefer not to say",
+        "label": "Prefer not to say"
+      },
+      {
+        "value": "Not specified",
+        "label": "Not specified"
+      }
+    ],
+    "isPII": false
+  },
+  {
+    "name": "preexistingConditionsdifficulties",
+    "label": "Pre-existing Conditions/Difficulties",
+    "type": "listbox-multiselect",
+    "options": [
+      {
+        "value": "ADHD",
+        "label": "ADHD"
+      },
+      {
+        "value": "Autism",
+        "label": "Autism"
+      },
+      {
+        "value": "Other neurodivergent conditions",
+        "label": "Other neurodivergent conditions"
+      },
+      {
+        "value": "Autoimmune, such as diabetes",
+        "label": "Autoimmune, such as diabetes"
+      },
+      {
+        "value": "Blind / Visual impairment",
+        "label": "Blind / Visual impairment"
+      },
+      {
+        "value": "Cognitive, such as acquired brain injury or declining brain functioning seen in conditions like dementia",
+        "label": "Cognitive, such as acquired brain injury or declining brain functioning seen in conditions like dementia"
+      },
+      {
+        "value": "Deaf / Hearing loss",
+        "label": "Deaf / Hearing loss"
+      },
+      {
+        "value": "Dyslexia",
+        "label": "Dyslexia"
+      },
+      {
+        "value": "Learning or concentrating or remembering",
+        "label": "Learning or concentrating or remembering"
+      },
+      {
+        "value": "Long term illness",
+        "label": "Long term illness"
+      },
+      {
+        "value": "Mental Health Illness",
+        "label": "Mental Health Illness"
+      },
+      {
+        "value": "Mobility, including fluctuating or reoccurring conditions",
+        "label": "Mobility, including fluctuating or reoccurring conditions"
+      },
+      {
+        "value": "Stamina or breathing difficulties",
+        "label": "Stamina or breathing difficulties"
+      },
+      {
+        "value": "Other",
+        "label": "Other"
+      },
+      {
+        "value": "None of the above",
+        "label": "None of the above"
+      },
+      {
+        "value": "Prefer not to say",
+        "label": "Prefer not to say"
+      }
+    ],
+    "isPII": false
+  },
+  {
+    "name": "appointmentTopic",
+    "label": "Appointment topic selected",
+    "type": "listbox-multiselect",
+    "options": [
+      {
+        "label": "A general chat",
+        "value": "A general chat"
+      },
+      {
+        "label": "Learning disabilities (including autism and ADHD)",
+        "value": "Learning disabilities (including autism and ADHD)"
+      },
+      {
+        "label": "Anger management",
+        "value": "Anger management"
+      },
+      {
+        "label": "Anxiety",
+        "value": "Anxiety"
+      },
+      {
+        "label": "Money and finance",
+        "value": "Money and finance"
+      },
+      {
+        "label": "Bereavement, Death, Loss & Grief",
+        "value": "Bereavement, Death, Loss & Grief"
+      },
+      {
+        "label": "Body image",
+        "value": "Body image"
+      },
+      {
+        "label": "Family relationships",
+        "value": "Family relationships"
+      },
+      {
+        "label": "Romantic relationships",
+        "value": "Romantic relationships"
+      },
+      {
+        "label": "Bullying",
+        "value": "Bullying"
+      },
+      {
+        "label": "Work",
+        "value": "Work"
+      },
+      {
+        "label": "School, university and education",
+        "value": "School, university and education"
+      },
+      {
+        "label": "LGBTQIA+ & sexual orientation",
+        "value": "LGBTQIA+ & sexual orientation"
+      },
+      {
+        "label": "Depression/low mood",
+        "value": "Depression/low mood"
+      },
+      {
+        "label": "Difficulty sleeping/insomnia",
+        "value": "Difficulty sleeping/insomnia"
+      },
+      {
+        "label": "Disability",
+        "value": "Disability"
+      },
+      {
+        "label": "Drugs or alcohol (not addiction)",
+        "value": "Drugs or alcohol (not addiction)"
+      },
+      {
+        "label": "Gambling (not addiction)",
+        "value": "Gambling (not addiction)"
+      },
+      {
+        "label": "Gender identity, gender dysphoria and transitioning",
+        "value": "Gender identity, gender dysphoria and transitioning"
+      },
+      {
+        "label": "Housing and homelessness",
+        "value": "Housing and homelessness"
+      },
+      {
+        "label": "Loneliness/isolation",
+        "value": "Loneliness/isolation"
+      },
+      {
+        "label": "Managing emotions",
+        "value": "Managing emotions"
+      },
+      {
+        "label": "Self esteem",
+        "value": "Self esteem"
+      },
+      {
+        "label": "Sex or sexual health",
+        "value": "Sex or sexual health"
+      },
+      {
+        "label": "Stress",
+        "value": "Stress"
+      },
+      {
+        "label": "Other",
+        "value": "Other"
+      }
+    ],
+    "rows": 5,
+    "isPII": false
+  },
+  {
+    "name": "anxietyScale",
+    "label": "Anxiety Scale",
+    "type": "select",
+    "unknownOption": "",
+    "options": [
+      {
+        "value": "00",
+        "label": "0"
+      },
+      {
+        "value": "01",
+        "label": "1"
+      },
+      {
+        "value": "02",
+        "label": "2"
+      },
+      {
+        "value": "03",
+        "label": "3"
+      },
+      {
+        "value": "04",
+        "label": "4"
+      },
+      {
+        "value": "05",
+        "label": "5"
+      },
+      {
+        "value": "06",
+        "label": "6"
+      },
+      {
+        "value": "07",
+        "label": "7"
+      },
+      {
+        "value": "08",
+        "label": "8"
+      },
+      {
+        "value": "09",
+        "label": "9"
+      },
+      {
+        "value": "10",
+        "label": "10"
+      }
+    ],
+    "isPII": false
+  },
+  {
+    "name": "moodhappinessBefore",
+    "label": "Mood/Happiness before ",
+    "type": "select",
+    "options": [
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "01",
+        "label": "☹️ 1"
+      },
+      {
+        "value": "02",
+        "label": "🙁 2"
+      },
+      {
+        "value": "03",
+        "label": "😐 3"
+      },
+      {
+        "value": "04",
+        "label": "🙂 4"
+      },
+      {
+        "value": "05",
+        "label": "😀 5"
+      }
+    ],
+    "isPII": false
+  },
+  {
+    "name": "howDidYouHearOfTheMixPeerSupportService",
+    "label": "How did you hear of the Mix PeerChat Service?",
+    "type": "select",
+    "options": [
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "A search engine",
+        "label": "A search engine"
+      },
+      {
+        "value": "Chatbot (e.g. ChatGPT, Gemini, Claude, Grok etc)",
+        "label": "Chatbot (e.g. ChatGPT, Gemini, Claude, Grok etc)"
+      },
+      {
+        "value": "Media (e.g. TV, radio, newspapers)",
+        "label": "Media (e.g. TV, radio, newspapers)"
+      },
+      {
+        "value": "Peers (e.g. friends / siblings)",
+        "label": "Peers (e.g. friends / siblings)"
+      },
+      {
+        "value": "Referral from another website or organisation",
+        "label": "Referral from another website or organisation"
+      },
+      {
+        "value": "Shout",
+        "label": "Shout"
+      },
+      {
+        "value": "Social media",
+        "label": "Social media"
+      },
+      {
+        "value": "Teacher / health professional / youth worker",
+        "label": "Teacher / health professional / youth worker"
+      },
+      {
+        "value": "The Mix",
+        "label": "The Mix"
+      },
+      {
+        "value": "I don't remember",
+        "label": "I don't remember"
+      },
+      {
+        "value": "Other (please specify):",
+        "label": "Other (please specify):"
+      }
+    ],
+    "isPII": false
+  },
+  {
+    "name": "whichOtherTheMixServicesUsed",
+    "label": "Which other The Mix services used?",
+    "type": "listbox-multiselect",
+    "options": [
+      {
+        "value": "Counselling",
+        "label": "Counselling"
+      },
+      {
+        "value": "Discussion boards",
+        "label": "Discussion boards"
+      },
+      {
+        "value": "Group chats",
+        "label": "Group chats"
+      },
+      {
+        "value": "Website",
+        "label": "Website"
+      },
+      {
+        "value": "Social media",
+        "label": "Social media"
+      },
+      {
+        "value": "None",
+        "label": "None"
+      }
+    ],
+    "isPII": false
+  },
+  {
+    "name": "groundingOrBreathingTechniquesUsed",
+    "label": "Were Grounding or breathing techniques used?",
+    "type": "checkbox",
+    "isPII": false
+  },
+  {
+    "name": "howDoTheyPreferHelp",
+    "label": "How do they prefer help?",
+    "type": "listbox-multiselect",
+    "options": [
+      {
+        "value": "Webchat",
+        "label": "Webchat"
+      },
+      {
+        "value": "Email",
+        "label": "Email"
+      },
+      {
+        "value": "Online information/resources",
+        "label": "Online information/resources"
+      },
+      {
+        "value": "Phone",
+        "label": "Phone"
+      },
+      {
+        "value": "Prefer not to say",
+        "label": "Prefer not to say"
+      },
+      {
+        "value": "Text/ SMS",
+        "label": "Text/ SMS"
+      },
+      {
+        "value": "Not specified",
+        "label": "Not specified"
+      },
+      {
+        "value": "Face to face",
+        "label": "Face to face"
+      },
+      {
+        "value": "Other",
+        "label": "Other"
+      }
+    ],
+    "isPII": false
+  },
+  {
+    "name": "currentCopingStrategies",
+    "label": "Current coping strategies",
+    "type": "listbox-multiselect",
+    "options": [
+      {
+        "value": "Breathing Techniques",
+        "label": "Breathing Techniques"
+      },
+      {
+        "value": "Grounding techniques",
+        "label": "Grounding techniques"
+      },
+      {
+        "value": "Focusing on the present moment (e.g describing an object)",
+        "label": "Focusing on the present moment (e.g describing an object)"
+      },
+      {
+        "value": "Visualisation of a safe space",
+        "label": "Visualisation of a safe space"
+      },
+      {
+        "value": "Distraction techniques (e.g. thinking in categories)",
+        "label": "Distraction techniques (e.g. thinking in categories)"
+      },
+      {
+        "value": "Playing games (e.g. phone, computer)",
+        "label": "Playing games (e.g. phone, computer)"
+      },
+      {
+        "value": "Writing",
+        "label": "Writing"
+      },
+      {
+        "value": "Drawing/colouring",
+        "label": "Drawing/colouring"
+      },
+      {
+        "value": "Watching TV/films",
+        "label": "Watching TV/films"
+      },
+      {
+        "value": "Using social media",
+        "label": "Using social media"
+      },
+      {
+        "value": "None",
+        "label": "None"
+      }
+    ],
+    "isPII": false
+  },
+  {
+    "name": "otherCurrentCopingStrategies",
+    "label": "Other current coping strategies",
+    "type": "textarea",
+    "rows": 8,
+    "width": 250,
+    "isPII": true
+  },
+  {
+    "name": "recommendedCopingStrategies",
+    "label": "Recommended coping strategies",
+    "type": "listbox-multiselect",
+    "options": [
+      {
+        "value": "Breathing Techniques",
+        "label": "Breathing Techniques"
+      },
+      {
+        "value": "Grounding techniques",
+        "label": "Grounding techniques"
+      },
+      {
+        "value": "Focusing on the present moment (e.g describing an object)",
+        "label": "Focusing on the present moment (e.g describing an object)"
+      },
+      {
+        "value": "Visualisation of a safe space",
+        "label": "Visualisation of a safe space"
+      },
+      {
+        "value": "Distraction techniques (e.g thinking in categories)",
+        "label": "Distraction techniques (e.g thinking in categories)"
+      },
+      {
+        "value": "Playing games (e.g. phone, computer)",
+        "label": "Playing games (e.g. phone, computer)"
+      },
+      {
+        "value": "Writing",
+        "label": "Writing"
+      },
+      {
+        "value": "Drawing/colouring",
+        "label": "Drawing/colouring"
+      },
+      {
+        "value": "Watching TV/films",
+        "label": "Watching TV/films"
+      },
+      {
+        "value": "Using social media",
+        "label": "Using social media"
+      },
+      {
+        "value": "None",
+        "label": "None"
+      }
+    ],
+    "isPII": false
+  },
+  {
+    "name": "otherRecommendedCopingStrategies",
+    "label": "Other recommended coping strategies",
+    "type": "textarea",
+    "rows": 8,
+    "width": 250,
+    "isPII": true
+  },
+  {
+    "name": "wereSignpostsOffered",
+    "label": "Were signposts offered?",
+    "type": "select",
+    "options": [
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "Yes",
+        "label": "Yes"
+      },
+      {
+        "value": "No",
+        "label": "No"
+      }
+    ],
+    "isPII": false
+  },
+  {
+    "name": "internalSignpostsOffered",
+    "label": "Internal signposts offered",
+    "type": "listbox-multiselect",
+    "options": [
+      {
+        "value": "Counselling",
+        "label": "Counselling"
+      },
+      {
+        "value": "Shout",
+        "label": "Shout"
+      },
+      {
+        "value": "Discussion boards",
+        "label": "Discussion boards"
+      },
+      {
+        "value": "Self-paced learning",
+        "label": "Self-paced learning"
+      },
+      {
+        "value": "The Mix website",
+        "label": "The Mix website"
+      },
+      {
+        "value": "Support Circle",
+        "label": "Support Circle"
+      },
+      {
+        "value": "Support Chat",
+        "label": "Support Chat"
+      },
+      {
+        "value": "General Chat",
+        "label": "General Chat"
+      },
+      {
+        "value": "None",
+        "label": "None"
+      }
+    ],
+    "isPII": false
+  },
+  {
+    "name": "signpostsOfferedOther",
+    "label": "Signposts offered - other",
+    "type": "textarea",
+    "rows": 8,
+    "width": 250,
+    "isPII": true
+  },
+  {
+    "name": "nextSteps",
+    "label": "Next Steps",
+    "type": "textarea",
+    "rows": 8,
+    "width": 250,
+    "isPII": true
+  },
+  {
+    "name": "sessionOutcome",
+    "label": "Session Outcome",
+    "type": "select",
+    "options": [
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "Completed",
+        "label": "Completed"
+      },
+      {
+        "value": "User did not attend (DNA)",
+        "label": "User did not attend (DNA)"
+      },
+      {
+        "value": "User cancelled - less than 24H notice",
+        "label": "User cancelled - less than 24H notice"
+      },
+      {
+        "value": "User cancelled - over 24H notice",
+        "label": "User cancelled - over 24H notice"
+      },
+      {
+        "value": "Agent cancelled",
+        "label": "Agent cancelled"
+      },
+      {
+        "value": "User disengaged during the session",
+        "label": "User disengaged during the session"
+      },
+      {
+        "value": "Session not delivered due to technical issues",
+        "label": "Session not delivered due to technical issues"
+      }
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    },
+    "isPII": false
+  },
+  {
+    "name": "isChatCompleted",
+    "label": "Have you finished the chat with YP?",
+    "type": "checkbox",
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    },
+    "isPII": false
+  }
+]

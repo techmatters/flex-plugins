@@ -45,7 +45,9 @@ export const newCloseModalAction = (taskId: string, topRoute?: AppRoutes['route'
   topRoute,
 });
 
-export const newGoBackAction = (taskId: string): RoutingActionType => ({
-  type: GO_BACK,
-  taskId,
-});
+export const newGoBackAction = (taskId: string): RoutingActionType => {
+  return {
+    type: GO_BACK,
+    taskId,
+  };
+};

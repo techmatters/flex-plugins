@@ -1,0 +1,67 @@
+/**
+ * Copyright (C) 2021-2023 Technology Matters
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see https://www.gnu.org/licenses/.
+ */
+import React, { useRef, useState } from 'react';
+import { Template, ThemeProps } from '@twilio/flex-ui';
+import { Paper, Popper } from '@material-ui/core';
+
+import { getFormattedNumberFromTask } from '../../utils/task';
+import EyeOpenIcon from './EyeOpenIcon';
+import EyeCloseIcon from './EyeCloseIcon';
+import { PhoneNumberPopperText, UnmaskStyledButton } from './styles';
+import { Box, HiddenText, CloseButton } from '../../styles';
+
+type Props = ThemeProps & { task?: ITask; isPositionModified?: boolean };
+
+const ViewTaskNumber = ({ task, isPositionModified }: Props) => {
+  const [viewNumber, setViewNumber] = useState(false);
+  const viewNumberRef = useRef(null);
+
+  const toggleViewNumber = () => {
+    setViewNumber(!viewNumber);
+  };
+
+  return (
+    <>
+      <UnmaskStyledButton
+        onClick={toggleViewNumber}
+        buttonRef={viewNumberRef}
+        // hack for positioning the button in Teams view page
+        style={isPositionModified ? { position: 'fixed', alignSelf: 'center', marginRight: '5rem' } : {}}
+      >
+        {viewNumber ? <EyeOpenIcon /> : <EyeCloseIcon />}
+      </UnmaskStyledButton>
+      {viewNumber ? (
+        <Popper open={viewNumber} anchorEl={viewNumberRef.current} placement="bottom" style={{ zIndex: 1 }}>
+          <Paper style={{ width: '250px', padding: '15px', backgroundColor: 'white', border: '1px solid black' }}>
+            <Box style={{ float: 'right' }}>
+              <HiddenText id="CloseButton">
+                <Template code="CloseButton" />
+              </HiddenText>
+              <CloseButton aria-label="CloseButton" fontSizeSmall onClick={toggleViewNumber} />
+            </Box>
+            <PhoneNumberPopperText>
+              <Template code="UnmaskPhoneNumber" />
+            </PhoneNumberPopperText>
+            <br />
+            {getFormattedNumberFromTask(task)}
+          </Paper>
+        </Popper>
+      ) : null}
+    </>
+  );
+};
+
+export default ViewTaskNumber;

@@ -1,0 +1,62 @@
+[
+  {
+    "label": "Welcome",
+    "text": "Hello and thank you for reaching out to us on PeerChat. My name is xxxxx and I will be chatting with you today. Our chat will last approximately 45 mins and if you get disconnected at any time during the chat, please rejoin the link in your confirmation email. Please help me understand what's going on for you and the reason behind you reaching out, I’m listening…."
+  },
+  {
+    "label": "Silent - Check In",
+    "text": "I noticed you’ve gone quiet, I just wanted to check if now is still a good time to talk. If you become disconnected at any time please rejoin the link sent in your confirmation email."
+  },
+  {
+    "label": "Signposting - save the resource",
+    "text": "Just a note about resources before I send them over to you. As this conversation we're having isn't saved anywhere, it would be a good idea to copy and paste the resource somewhere safe, so you can access it as and when you need it - it might be something you come back to again and again?"
+  },
+  {
+    "label": "Signposting - Types of help",
+    "text": "We can look for different types of support, such as advice, counselling, emotional support and practical help. Do you know which of these you would prefer?"
+  },
+  {
+    "label": "Signposting- How support can be accessed",
+    "text": "Support can be accessed in a few different ways such as face-to-face, over the phone or online. Do you know which of these you’d prefer?"
+  },
+  {
+    "label": "Signposting - Reminder to save",
+    "text": "Finally, Just a reminder... remember to copy and paste the resource link somewhere safe before you close this chat. "
+  },
+  {
+    "label": "Urge 999",
+    "text": "Here within PeerChat, we take your thoughts of suicide seriously. We hear you and your feelings are important. We wanted to let you know that if you did feel at any point that you were going to act on your thoughts of suicide, then we would urge you to call the emergency services on 999, or go to your local A&E department, so they can support you further."
+  },
+  {
+    "label": "Confidentiality 1 (Explanation)",
+    "text": "This is confidential which means we won't share information unless you're at risk of seriously harming yourself or being harmed by someone else. In that case, we may need to share this with other agencies, like the emergency or social services, to help keep you safe."
+  },
+  {
+    "label": "Confidentiality2 (How we work)",
+    "text": "I wanted to let you know a little about how we work, we are able to keep most things confidential unless we are concerned that your life or somebody elses life is in immediate danger, or we talk about a child at risk of serious harm."
+  },
+  {
+    "label": "Confidentiality 3 (May need to breach confidentiality)",
+    "text": "We care about your safety, and whilst we are here to support you through [INSERT ISSUE], we may need to tell another agency, like the emergency or social services, if you’re in danger. How does that feel to you?"
+  },
+  {
+    "label": "Breaking Confidentiality Part 1",
+    "text": "Thank you for sharing this with me, I have taken what you've shared seriously. As we are concerned about what you’ve told us and believe that [you/ someone/xxxx] is in danger. We are going to share this information with the emergency services to support you further. \n\nTo enable us to support you further, I will need to ask you some personal information (ie name, address, date of birth)\n\nThank you, we will now be passing the information you have provided us with onto Emergency/Social Services. I am going to bring this conversation to a close as they may need to get in touch to provide you with support. \n"
+  },
+  {
+    "label": "Breaking Confidentiality Part 2",
+    "text": "Thank you, we will now be passing the information you have provided us with onto Emergency Services. I am going to bring this conversation to a close as they may need to get in touch to provide you with support. "
+  },
+  {
+    "label": "Moving into signposting",
+    "text": "Thank you for everything you've shared today. Here on PeerChat, as well as offering emotional support and a space to talk, we can also offer to look for further resources or services that might be able to support you with some of the themes and topics we've explored today. Is that something you'd be interested in?"
+  },
+  {
+    "label": "Pre-signposting questions",
+    "text": "Just before I take a look on our resource data-base, could you confirm your age, gender identity, as well as your nearest city or town? This could help us locate services more suited to you and your situation. \n\nIf you do not wish me to look for local services, or you don't want to share your nearest city or town, sharing the name of the county you live in or the wider area (either England, Wales, Scotland, or Northern Ireland) would be helpful."
+  },
+  {
+  "label": "PeerChatter DNA",
+  "text": "Thank you for attending your PeerChat appointment with us today. Unfortunately, due to unforeseen circumstances, the person you have selected to have a PeerChat with will no longer be able to take your conversation. We sincerely apologise for this inconvenience and would ask that you rebook a further appointment with us. Alternatively you can find further support on our web page: https://www.themix.org.uk/.\n\nAgain, we apologise for this inconvenience but look forward to chatting to you soon.\nBest wishes\nThe PeerChat Team"
+  }
+]

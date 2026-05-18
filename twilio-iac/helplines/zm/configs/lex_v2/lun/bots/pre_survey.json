@@ -1,0 +1,53 @@
+{
+  "pre_survey": {
+    "description": "Specific configs/lex_v2/ZM/bots Pre Survey bot",
+    "locale": "en_US",
+    "child_directed": true,
+    "idle_session_ttl_in_seconds": "600",
+    "staging_bot_alias_id": "TSTALIASID",
+    "production_bot_alias_id": "WOJLGWELQ1",
+    "type": "Bot",
+    "intents": {
+      "pre_survey": {
+        "utterances": [
+          {
+            "utterance": "trigger_pre_survey"
+          }
+        ],
+        "initial_response": {
+          "message": "Welcome to the helpline. Please answer the following questions.",
+          "slot_to_elicit": "aboutSelf"
+        },
+        "closing_response": {
+          "message": "Chuna kuitemesha ahembeleliku chanti kundi ankhong'u."
+        },
+        "slot_priorities": {
+          "1": {
+            "slot_name": "aboutSelf",
+            "slot_type_name": "yes_no",
+            "slot_question": "Muna kuchumina enu aweni ndi? Mwakuli Eng'a hela Inehi.",
+            "failure_response": "We are having trouble understanding your response"
+          },
+          "3": {
+            "slot_name": "age",
+            "slot_type_name": "age",
+            "slot_question": "Kusakililaku mwani munachweshi kuhosha nemunakeng'a wanyi kuhosha shenuhu chilukilu cha x Hadi chihulu chidi chaka zhima.\nAdi Nayaka yakusemuka, ying'ai?",
+            "failure_response": "We are having trouble understanding your response"
+          },
+          "4": {
+            "slot_name": "gender",
+            "slot_type_name": "gender",
+            "slot_question": "Udi weyala ndi wamumbanda?",
+            "failure_response": "We are having trouble understanding your response"
+          },
+          "2": {
+            "slot_name": "helpline",
+            "slot_type_name": "helpline",
+            "slot_question": "Munachumi nenu tuyikwastiku ngal? \n 1.LifeLine 933 (older than 18) \n 2.ChildLine 116 (18 years old or younger)",
+            "failure_response": "We are having trouble understanding your response"
+          }
+        }
+      }
+    }
+  }
+}

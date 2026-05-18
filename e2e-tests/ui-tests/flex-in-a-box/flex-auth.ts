@@ -24,6 +24,26 @@ import context from './global-context';
  * @param accountSid
  */
 export const fakeAuthenticatedBrowser = async (page: Page, accountSid: string): Promise<Page> => {
+  await page.route('https://services.twilio.com/v1/Flex/Authorize', (route) => {
+    route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: '{}',
+    });
+  });
+  console.debug('https://services.twilio.com/v1/Flex/Authorize mocked');
+  await page.route(
+    `https://flex-api.twilio.com/v1/Accounts/${context.ACCOUNT_SID}/Tokens/Info`,
+    (route) => {
+      route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: '{}',
+      });
+    },
+  );
+  console.debug('https://services.twilio.com/v1/Flex/Authorize mocked');
+
   await page.context().addCookies([
     {
       name: 'flex-agent-account',

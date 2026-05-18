@@ -1,0 +1,105 @@
+{
+  "contact": {
+    "callerInformation": {
+      "splitFormAt": 4
+    },
+    "childInformation": {
+      "splitFormAt": 17
+    },
+    "caseInformation": {
+      "splitFormAt": 8
+    }
+  },
+  "case": {
+    "sectionTypes": {
+      "household": {
+        "splitFormAt": 7,
+        "caseHomeOrder": 2,
+        "printOrder": 1,
+        "previewFields": [
+          "name",
+          "gender",
+          "age",
+          "relationshipToChild"
+        ],
+        "layout": {
+          "name": {
+            "widthRatio": 1.5,
+            "labelTemplateCode": "Case-PerpetratorName",
+            "valueTemplateCode": "Case-SectionList-PreviewNameValue"
+          },
+          "age": {
+            "labelTemplateCode": "Case-PerpetratorAge"
+          },
+          "gender": {
+            "labelTemplateCode": "Case-PerpetratorGender"
+          },
+          "relationshipToChild": {
+            "labelTemplateCode": "Case-PerpetratorRelationship"
+          }
+        }
+      },
+      "perpetrator": {
+        "splitFormAt": 8,
+        "caseHomeOrder": 1,
+        "printOrder": 2,
+        "previewFields": [
+          "name",
+          "gender",
+          "age",
+          "relationshipToChild"
+        ],
+        "layout": {
+          "name": {
+            "labelTemplateCode": "Case-PerpetratorName",
+            "valueTemplateCode": "Case-SectionList-PreviewNameValue"
+          },
+          "age": {
+            "labelTemplateCode": "Case-PerpetratorAge"
+          },
+          "gender": {
+            "labelTemplateCode": "Case-PerpetratorGender"
+          },
+          "relationshipToChild": {
+            "labelTemplateCode": "Case-PerpetratorRelationship"
+          }
+        }
+      },
+      "incident": {
+        "previewFields": [
+          "date",
+          "location"
+        ],
+        "layout": {
+          "date": {
+            "includeLabel": false,
+            "format": "date"
+          },
+          "location": {
+            "includeLabel": true
+          }
+        },
+        "splitFormAt": 6,
+        "caseHomeOrder": 3,
+        "printOrder": 3
+      },
+      "referral": {
+        "previewFields": [
+          "referredTo"
+        ],
+        "splitFormAt": 5,
+        "printOrder": 4,
+        "caseHomeLocation": "timeline"
+      },
+      "note": {
+        "printOrder": 5,
+        "caseHomeLocation": "timeline",
+        "printFormat": "list",
+        "previewFields": ["note"],
+        "layout": {
+          "note": {}
+        }
+      }
+    }
+  }
+}

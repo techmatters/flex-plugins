@@ -69,3 +69,9 @@ build/
 
 #test file
 test.jsx
+junit.xml
+
+# Storybook
+.storybook
+storybook-static
+*storybook.log

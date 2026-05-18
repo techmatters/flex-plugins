@@ -11,7 +11,7 @@ ${
             "event": "incomingMessage"
           },
           {
-            "next": "HCIntro",
+            "next": "run_subflow_system_down",
             "event": "incomingCall"
           },
           {
@@ -967,7 +967,36 @@ ${
           "attributes": "{\"type\": \"inbound\", \"name\": \"{{trigger.call.From}}\",\"ignoreAgent\":\"\", \"transferTargetType\":\"\",\"channelType\":\"voice\", \"interpreter\": \"fr\"}",
           "waitUrlMethod": "GET"
         }
+      },
+    {
+      "name": "run_subflow_system_down",
+      "type": "run-subflow",
+      "transitions": [
+        {
+          "next": "HCIntro",
+          "event": "completed"
+        },
+        {
+          "next": "HCIntro",
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "flow_sid": "${system_down_studio_subflow_sid}",
+        "flow_revision": "LatestPublished",
+        "offset": {
+          "x": 110,
+          "y": -270
+        },
+        "parameters": [
+          {
+            "type": "string",
+            "value": "true",
+            "key": "system_down"
+          }
+        ]
       }
+    }
     ],
     "initial_state": "Trigger",
     "flags": {

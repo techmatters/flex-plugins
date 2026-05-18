@@ -16,73 +16,69 @@
 
 import { TaskHelper } from '@twilio/flex-ui';
 
+import { isChatChannel, isVoiceChannel } from '../states/DomainConstants';
 import { isNonDataCallType } from '../states/validationRules';
 import { getQueryParams } from './PaginationParams';
-import { fillEndMillis, getConversationDuration } from '../utils/conversationDuration';
 import { fetchHrmApi } from './fetchHrmApi';
-import { getDateTime } from '../utils/helpers';
-import { getDefinitionVersions, getHrmConfig } from '../hrmConfig';
-import {
-  Contact,
-  ConversationMedia,
-  CustomITask,
-  isInMyBehalfITask,
-  isOfflineContactTask,
-  isTwilioTask,
-} from '../types/types';
+import { getAseloFeatureFlags, getDefinitionVersions, getHrmConfig } from '../hrmConfig';
+import { Contact, ConversationMedia, isOfflineContactTask, isTwilioTask, OfflineContactTask } from '../types/types';
 import { saveContactToExternalBackend } from '../dualWrite';
-import { getNumberFromTask } from '../utils';
-import { ContactMetadata } from '../states/contacts/types';
+import { getNumberFromTask } from '../utils/task';
 import {
   ExternalRecordingInfoSuccess,
   getExternalRecordingInfo,
   isFailureExternalRecordingInfo,
   shouldGetExternalRecordingInfo,
-} from './getExternalRecordingInfo';
-import { SearchParams } from '../states/search/types';
+} from './recordingsService';
+import { ApiSearchParams } from '../states/search/types';
 import { ContactDraftChanges } from '../states/contacts/existingContacts';
-import { newContactState } from '../states/contacts/contactState';
+import { newContact } from '../states/contacts/contactState';
 import { ApiError, FetchOptions } from './fetchApi';
 import { TaskSID, WorkerSID } from '../types/twilio';
 import { recordEvent } from '../fullStory';
 
-export const convertApiContactToFlexContact = (contact: Contact): Contact =>
-  contact
-    ? {
-        ...contact,
-        id: contact.id.toString(),
-        ...(contact.caseId ? { caseId: contact.caseId.toString() } : {}),
-      }
+/**
+ * Strips the contact attributes out that should be set automatically on task router event handlers outside of Flex
+ * @param contact - original changes
+ */
+const convertFlexContactToUpdateApiContact = (contact: ContactDraftChanges): ContactDraftChanges => {
+  const { conversationDuration, ...contactWithoutConversationDuration } = contact ?? {};
+  return getAseloFeatureFlags().use_twilio_lambda_for_conversation_duration
+    ? contactWithoutConversationDuration
     : contact;
+};
 
-export async function searchContacts(
-  searchParams: SearchParams,
+export async function searchContacts({
+  searchParameters,
   limit,
   offset,
-): Promise<{
+}: {
+  searchParameters: ApiSearchParams;
+  limit: number;
+  offset: number;
+}): Promise<{
   count: number;
   contacts: Contact[];
 }> {
   const queryParams = getQueryParams({ limit, offset });
   const options = {
     method: 'POST',
-    body: JSON.stringify(searchParams),
+    body: JSON.stringify({ searchParameters }),
   };
-  const response = await fetchHrmApi(`/contacts/search${queryParams}`, options);
-  return {
-    ...response,
-    contacts: response.contacts.map(convertApiContactToFlexContact),
-  };
+
+  return fetchHrmApi(`/contacts/generalizedSearch${queryParams}`, options);
 }
 
 type HandleTwilioTaskResponse = {
-  channelSid?: string;
-  serviceSid?: string;
   conversationMedia: ConversationMedia[];
   externalRecordingInfo?: ExternalRecordingInfoSuccess;
 };
 
-export const handleTwilioTask = async (task): Promise<HandleTwilioTaskResponse> => {
+export const determineConversationMedia = async (
+  task,
+  contact?: Contact,
+  reservationSid?: string | undefined,
+): Promise<HandleTwilioTaskResponse> => {
   const returnData: HandleTwilioTaskResponse = {
     conversationMedia: [],
   };
@@ -90,10 +86,14 @@ export const handleTwilioTask = async (task): Promise<HandleTwilioTaskResponse> 
   if (!isTwilioTask(task)) {
     return returnData;
   }
+  const { enforceZeroTranscriptRetention } = getHrmConfig();
+  const finalReservationSid = reservationSid ?? task.sid;
+  const isChatTask = TaskHelper.isChatBasedTask(task) || (contact && isChatChannel(contact.channel));
+  const isVoiceTask = TaskHelper.isCallTask(task) || (contact && isVoiceChannel(contact.channel));
+  const isCallOrRetainedChatTask = (isChatTask && !enforceZeroTranscriptRetention) || isVoiceTask;
 
   try {
-    if (TaskHelper.isChatBasedTask(task)) {
-      // Store a pending transcript
+    if (isChatTask && !enforceZeroTranscriptRetention) {
       returnData.conversationMedia.push({
         storeType: 'S3',
         storeTypeSpecificData: {
@@ -103,12 +103,12 @@ export const handleTwilioTask = async (task): Promise<HandleTwilioTaskResponse> 
       });
     }
 
-    if (TaskHelper.isChatBasedTask(task) || TaskHelper.isCallTask(task)) {
-      // Store reservation sid to use Twilio insights overlay (recordings/transcript)
+    // Store reservation sid to use Twilio insights overlay (recordings/transcript)
+    if (isCallOrRetainedChatTask) {
       returnData.conversationMedia.push({
         storeType: 'twilio',
         storeTypeSpecificData: {
-          reservationSid: task.sid,
+          reservationSid: finalReservationSid,
         },
       });
     }
@@ -117,20 +117,14 @@ export const handleTwilioTask = async (task): Promise<HandleTwilioTaskResponse> 
 
     const externalRecordingInfo = await getExternalRecordingInfo(task);
     if (isFailureExternalRecordingInfo(externalRecordingInfo)) {
-      console.error(
-        'Failed to get external recording info',
-        externalRecordingInfo.error,
-        'Task:',
-        task,
-        'Return data captured so far:',
-        returnData,
-      );
+      const error = `Failed to get external recording info: ${externalRecordingInfo.error}`;
+      console.error(error, 'Task:', task);
       recordEvent('Backend Error: Get External Recording Info', {
         taskSid: task.taskSid,
-        reservationSid: task.sid,
+        reservationSid: finalReservationSid,
         recordingError: externalRecordingInfo.error,
-        isCallTask: TaskHelper.isCallTask(task),
-        isChatBasedTask: TaskHelper.isChatBasedTask(task),
+        isCallTask: isVoiceTask,
+        isChatBasedTask: isChatTask,
         attributes: JSON.stringify(task.attributes),
       });
       return returnData;
@@ -142,10 +136,7 @@ export const handleTwilioTask = async (task): Promise<HandleTwilioTaskResponse> 
       storeType: 'S3',
       storeTypeSpecificData: {
         type: 'recording',
-        location: {
-          bucket,
-          key,
-        },
+        location: { bucket, key },
       },
     });
   } catch (err) {
@@ -158,22 +149,25 @@ export const handleTwilioTask = async (task): Promise<HandleTwilioTaskResponse> 
       returnData,
     );
   }
+
   return returnData;
 };
 
-export const createContact = async (
+export const createOfflineContact = async (
   contact: Contact,
   twilioWorkerId: WorkerSID,
-  task: CustomITask,
+  task: OfflineContactTask,
 ): Promise<Contact> => {
-  const taskSid =
-    isOfflineContactTask(task) || isInMyBehalfITask(task)
-      ? task.taskSid
-      : task.attributes?.transferMeta?.originalTask ?? task.taskSid;
+  const { taskSid } = task;
+
+  const number = getNumberFromTask(task);
+
   const { definitionVersion } = getHrmConfig();
   const contactForApi: Contact = {
     ...contact,
-    channel: task.channelType as Contact['channel'],
+    number,
+    definitionVersion,
+    channel: ((task.attributes as any)?.customChannelType || task.channelType) as Contact['channel'],
     rawJson: {
       definitionVersion,
       ...contact.rawJson,
@@ -187,7 +181,7 @@ export const createContact = async (
     body: JSON.stringify(contactForApi),
   };
 
-  return convertApiContactToFlexContact(await fetchHrmApi(`/contacts?finalize=false`, options));
+  return fetchHrmApi(`/contacts?finalize=false`, options);
 };
 
 export const updateContactInHrm = async (
@@ -197,28 +191,24 @@ export const updateContactInHrm = async (
 ): Promise<Contact> => {
   const options = {
     method: 'PATCH',
-    body: JSON.stringify(body),
+    body: JSON.stringify(convertFlexContactToUpdateApiContact(body)),
   };
 
-  return convertApiContactToFlexContact(await fetchHrmApi(`/contacts/${contactId}?finalize=${finalize}`, options));
+  return fetchHrmApi(`/contacts/${contactId}?finalize=${finalize}`, options);
 };
 
 /**
  * Function that saves the form to Contacts table.
- * If you don't intend to complete the twilio task, set shouldFillEndMillis=false
  */
 const saveContactToHrm = async (
   task,
   contact: Contact,
-  metadata: ContactMetadata,
   workerSid: WorkerSID,
   uniqueIdentifier: TaskSID,
-  shouldFillEndMillis = true,
 ): Promise<Contact> => {
   // if we got this far, we assume the form is valid and ready to submit
-  const metadataForDuration = shouldFillEndMillis ? fillEndMillis(metadata) : metadata;
-  const conversationDuration = getConversationDuration(task, metadataForDuration);
   const { callType } = contact.rawJson;
+
   const number = getNumberFromTask(task);
 
   let form = contact.rawJson;
@@ -229,9 +219,9 @@ const saveContactToHrm = async (
   }
 
   if (isNonDataCallType(callType)) {
-    const newContactWithMetaData = newContactState(currentDefinitionVersion, task)(false);
+    const blankContact = newContact(currentDefinitionVersion, task);
     form = {
-      ...newContactWithMetaData.savedContact.rawJson,
+      ...blankContact.rawJson,
       callType,
       ...(isOfflineContactTask(task) && {
         contactlessTask: contact.rawJson.contactlessTask,
@@ -240,58 +230,45 @@ const saveContactToHrm = async (
   }
 
   // If isOfflineContactTask, send the target Sid as twilioWorkerId value and store workerSid (issuer) in rawForm
-  const twilioWorkerId = isOfflineContactTask(task) ? form.contactlessTask.createdOnBehalfOf : workerSid;
-
-  // This might change if isNonDataCallType, that's why we use rawForm
-  const timeOfContact = new Date(getDateTime(form.contactlessTask)).toISOString();
-
+  const twilioWorkerId =
+    isOfflineContactTask(task) && form.contactlessTask.createdOnBehalfOf
+      ? form.contactlessTask.createdOnBehalfOf
+      : workerSid;
   /*
    * We do a transform from the original and then add things.
    * Not sure if we should drop that all into one function or not.
    * Probably.  It would just require passing the task.
    */
 
-  const contactToSave: Contact = {
+  const contactToSave: Partial<Contact> = {
     ...contact,
     rawJson: form,
     twilioWorkerId,
     queueName: task.queueName,
     number,
-    conversationDuration,
-    timeOfContact,
     taskId: uniqueIdentifier,
   };
 
   return updateContactInHrm(contact.id, contactToSave, false);
 };
 
-export const finalizeContact = async (task, contact: Contact): Promise<Contact> => {
-  const twilioTaskResult = await handleTwilioTask(task);
-  const { channelSid, serviceSid } = twilioTaskResult;
-  await saveConversationMedia(contact.id, twilioTaskResult.conversationMedia);
-  const contactUpdates: ContactDraftChanges = {
-    channelSid,
-    serviceSid,
-  };
-  return updateContactInHrm(contact.id, contactUpdates, true);
-};
-
-export const saveContact = async (
+export const finalizeContact = async (
   task,
   contact: Contact,
-  metadata: ContactMetadata,
-  workerSid: WorkerSID,
-  uniqueIdentifier: TaskSID,
-  shouldFillEndMillis = true,
-) => {
-  const savedContact = await saveContactToHrm(
-    task,
-    contact,
-    metadata,
-    workerSid,
-    uniqueIdentifier,
-    shouldFillEndMillis,
-  );
+  reservationSid?: string | undefined,
+): Promise<Contact> => {
+  try {
+    const twilioTaskResult = await determineConversationMedia(task, contact, reservationSid);
+    await saveConversationMedia(contact.id, twilioTaskResult.conversationMedia);
+    return await updateContactInHrm(contact.id, {}, true);
+  } catch (error) {
+    console.error('Error finalizing contact:', error);
+    throw new Error('Failed to finalize contact');
+  }
+};
+
+export const saveContact = async (task, contact: Contact, workerSid: WorkerSID, uniqueIdentifier: TaskSID) => {
+  const savedContact = await saveContactToHrm(task, contact, workerSid, uniqueIdentifier);
   // TODO: add catch clause to handle saving to Sync Doc
   try {
     // Add the old category format back, but leave out all the explicit false values
@@ -327,7 +304,7 @@ export async function connectToCase(contactId: string, caseId: string) {
     body: JSON.stringify(body),
   };
 
-  return convertApiContactToFlexContact(await fetchHrmApi(`/contacts/${contactId}/connectToCase`, options));
+  return fetchHrmApi(`/contacts/${contactId}/connectToCase`, options);
 }
 
 export async function removeFromCase(contactId: string) {
@@ -335,10 +312,10 @@ export async function removeFromCase(contactId: string) {
     method: 'DELETE',
   };
 
-  return convertApiContactToFlexContact(await fetchHrmApi(`/contacts/${contactId}/connectToCase`, options));
+  return fetchHrmApi(`/contacts/${contactId}/connectToCase`, options);
 }
 
-async function saveConversationMedia(contactId, conversationMedia: ConversationMedia[]) {
+async function saveConversationMedia(contactId: string, conversationMedia: ConversationMedia[]) {
   const options = {
     method: 'POST',
     body: JSON.stringify(conversationMedia),
@@ -353,7 +330,7 @@ export const getContactByTaskSid = async (taskSid: string): Promise<Contact | un
     returnNullFor404: true,
   };
   try {
-    return convertApiContactToFlexContact(await fetchHrmApi(`/contacts/byTaskSid/${taskSid}`, options));
+    return await fetchHrmApi(`/contacts/byTaskSid/${taskSid}`, options);
   } catch (err) {
     if (err instanceof ApiError && err.response.status >= 404) {
       return null;
@@ -368,7 +345,7 @@ export const getContactById = async (contactId: string): Promise<Contact | undef
     returnNullFor404: true,
   };
   try {
-    return convertApiContactToFlexContact(await fetchHrmApi(`/contacts/${contactId}`, options));
+    return await fetchHrmApi(`/contacts/${contactId}`, options);
   } catch (err) {
     if (err instanceof ApiError && err.response.status >= 404) {
       return null;

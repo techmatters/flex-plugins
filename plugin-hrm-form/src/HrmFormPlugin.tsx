@@ -21,35 +21,34 @@ import './styles/global-overrides.css';
 
 import reducers from './states';
 import HrmTheme, { overrides } from './styles/HrmTheme';
-import { initLocalization } from './utils/pluginHelpers';
+import { defaultLocale, initLocalization } from './translations';
 import * as Providers from './utils/setUpProviders';
 import * as ActionFunctions from './utils/setUpActions';
 import { recordCallState } from './utils/setUpActions';
 import * as TaskRouterListeners from './utils/setUpTaskRouterListeners';
 import * as Components from './utils/setUpComponents';
 import * as Channels from './channels/setUpChannels';
-import setUpMonitoring from './utils/setUpMonitoring';
 import { changeLanguage } from './states/configuration/actions';
-import { getInitializedCan, PermissionActions } from './permissions';
-import {
-  getAseloFeatureFlags,
-  getHrmConfig,
-  getTemplateStrings,
-  initializeConfig,
-  subscribeToConfigUpdates,
-} from './hrmConfig';
-import { setUpSharedStateClient } from './utils/sharedState';
-import { FeatureFlags } from './types/types';
+import { getAseloFeatureFlags, getHrmConfig, initializeConfig, subscribeToConfigUpdates } from './hrmConfig';
+import { setUpSyncClient } from './services/SyncService';
 import { setUpReferrableResources } from './components/resources/setUpReferrableResources';
+import QueuesView from './components/queuesView';
+import TeamsView from './components/teamsView';
+import { setUpTransferComponents } from './components/transfer/setUpTransferComponents';
 import { subscribeNewMessageAlertOnPluginInit } from './notifications/newMessage';
 import { subscribeReservedTaskAlert } from './notifications/reservedTask';
-import { setUpCounselorToolkits } from './components/toolkits/setUpCounselorToolkits';
 import { setUpConferenceActions, setupConferenceComponents } from './conference';
 import { setUpTransferActions } from './transfer/setUpTransferActions';
 import { playNotification } from './notifications/playNotification';
 import { namespace } from './states/storeNamespaces';
-import { setUpTransferComponents } from './components/transfer/setUpTransferComponents';
-import TeamsView from './teamsView';
+import { maskConversationServiceUserNames, maskManagerStringsWithIdentifiers } from './maskIdentifiers';
+import { setUpViewMaskedVoiceNumber } from './maskIdentifiers/unmaskPhoneNumber';
+import { validateAndSetPermissionRules } from './permissions/rules';
+import { setupLlmNotifications } from './components/contact/GenerateSummaryButton/setUpLlmNotifications';
+import { FeatureFlags } from './types/FeatureFlags';
+import { setUpFullStory } from './fullStory/setUp';
+import { getPathFromUrl } from './states/routing/reducer';
+import { setUpCustomSideLinks } from './components/customSideLinks/setUpCustomSideLinks';
 
 const PLUGIN_NAME = 'HrmFormPlugin';
 
@@ -62,92 +61,91 @@ const setUpLocalization = (config: ReturnType<typeof getHrmConfig>) => {
   const { counselorLanguage, helplineLanguage } = config;
 
   const twilioStrings = { ...manager.strings }; // save the originals
-  const setNewStrings = (newStrings: typeof getTemplateStrings) =>
-    (manager.strings = { ...manager.strings, ...newStrings });
+
+  const setNewStrings = (newStrings: { [key: string]: string }) => {
+    const overrideStrings = { ...manager.strings, ...newStrings };
+    manager.strings = maskManagerStringsWithIdentifiers(overrideStrings);
+  };
+
   const afterNewStrings = (language: string) => {
     manager.store.dispatch(changeLanguage(language));
-    Flex.Actions.invokeAction('NavigateToView', { viewName: manager.store.getState().flex.view.activeView }); // force a re-render
+    Flex.Actions.invokeAction('NavigateToView', {
+      viewName: manager.store.getState().flex.view.activeView || getPathFromUrl(window.location) || 'agent-desktop',
+    }); // force a re-render
   };
-  const localizationConfig = { twilioStrings, setNewStrings, afterNewStrings };
-  const initialLanguage = counselorLanguage || helplineLanguage;
 
-  return initLocalization(localizationConfig, initialLanguage);
+  const localizationConfig = { twilioStrings, setNewStrings, afterNewStrings };
+
+  return initLocalization(
+    localizationConfig,
+    localStorage.getItem(`${getHrmConfig().accountSid}_ASELO_PLUGIN_USER_LOCALE`) ||
+      counselorLanguage ||
+      helplineLanguage ||
+      defaultLocale,
+  );
 };
 
-const setUpComponents = (
-  featureFlags: FeatureFlags,
-  setupObject: ReturnType<typeof getHrmConfig>,
-  translateUI: (language: string) => Promise<void>,
-) => {
-  const can = getInitializedCan();
-  const maskIdentifiers = !can(PermissionActions.VIEW_IDENTIFIERS);
-
+const setUpComponents = (featureFlags: FeatureFlags, setupObject: ReturnType<typeof getHrmConfig>) => {
+  const { enableClientProfiles, enableConferencing } = getHrmConfig();
   // setUp (add) dynamic components
   Components.setUpQueuesStatusWriter(setupObject);
   Components.setUpQueuesStatus(setupObject);
   Components.setUpAddButtons(featureFlags);
   Components.setUpNoTasksUI(featureFlags, setupObject);
   Components.setUpCustomCRMContainer();
+
+  // set up default and custom channels
   Channels.setupDefaultChannels();
-  Channels.setupTwitterChatChannel(maskIdentifiers);
-  Channels.setupInstagramChatChannel(maskIdentifiers);
-  Channels.setupLineChatChannel(maskIdentifiers);
+  Channels.setupTelegramChatChannel();
+  Channels.setupInstagramChatChannel();
+  Channels.setupLineChatChannel();
 
-  if (maskIdentifiers) {
-    // Masks TaskInfoPanelContent - TODO: refactor to use a react component
-    const strings = getTemplateStrings();
-    strings.TaskInfoPanelContent = strings.TaskInfoPanelContentMasked;
-    strings.SupervisorTaskInfoPanelContent = strings.TaskInfoPanelContentMasked;
+  setUpViewMaskedVoiceNumber();
 
-    strings.CallParticipantCustomerName = strings.MaskIdentifiers;
-
-    Channels.maskIdentifiersForDefaultChannels();
-
-    // Mask the username within the messable bubbles in an conversation
-    Flex.MessagingCanvas.defaultProps.memberDisplayOptions = {
-      theirDefaultName: 'XXXXXX',
-      theirFriendlyNameOverride: false,
-      yourFriendlyNameOverride: true,
-    };
-    Flex.MessageList.Content.remove('0');
-
-    Components.setUpViewMaskedVoiceNumber();
-  }
-
-  if (featureFlags.enable_transfers) {
-    setUpTransferComponents();
-    Channels.setUpIncomingTransferMessage();
-  }
+  setUpTransferComponents();
+  Channels.setUpIncomingTransferMessage();
 
   Components.setUpCaseList();
-  if (featureFlags.enable_client_profiles) Components.setUpClientProfileList();
-
-  if (!Boolean(setupObject.helpline)) Components.setUpDeveloperComponents(translateUI); // utilities for developers only
+  if (enableClientProfiles) Components.setUpClientProfileList();
 
   // remove dynamic components
   Components.removeTaskCanvasHeaderActions(featureFlags);
   Components.setLogo(setupObject.logoUrl);
-  if (featureFlags.enable_transfers) {
-    Components.removeDirectoryButton();
-    Components.removeActionsIfTransferring();
-  }
+  Components.removeDirectoryButton();
+  Components.removeActionsIfTransferring();
 
   Components.setUpStandaloneSearch();
   setUpReferrableResources();
-  setUpCounselorToolkits();
-  if (featureFlags.enable_aselo_messaging_ui) {
-    Components.replaceTwilioMessageInput();
-  } else {
-    if (featureFlags.enable_emoji_picker) Components.setupEmojiPicker();
-    if (featureFlags.enable_canned_responses) Components.setupCannedResponses();
-  }
 
+  if (featureFlags.enable_emoji_picker) Components.setupEmojiPicker();
+  if (featureFlags.enable_canned_responses) Components.setupCannedResponses();
+
+  TeamsView.setUpSelectAgentColumn();
+  TeamsView.setUpAgentColumn();
+  TeamsView.setUpStatusColumn();
   TeamsView.setUpSkillsColumn();
-  TeamsView.setUpSortingCallsAndChats();
-  TeamsView.setUpTeamViewFilters();
+  TeamsView.setUpTeamsViewSorting();
+  TeamsView.setUpTeamsViewFilters();
   TeamsView.setUpWorkerDirectoryFilters();
 
-  if (featureFlags.enable_conferencing) setupConferenceComponents();
+  if (featureFlags.enable_switchboarding) {
+    QueuesView.setUpSwitchboard();
+  }
+
+  if (enableConferencing) setupConferenceComponents();
+
+  const toggleDialpad = () => Flex.Actions.invokeAction('ToggleOutboundDialer');
+  Flex.KeyboardShortcutManager.addShortcuts({
+    V: {
+      action: toggleDialpad,
+      name: Flex.Manager.getInstance().strings['AgentDesktop-KeyboardShortcuts-ToggleDialpad'] ?? 'Toggle Dialpad',
+      throttle: 100,
+    },
+  });
+
+  if (featureFlags.enable_language_selector) Components.setupWorkerLanguageSelect();
+
+  setUpCustomSideLinks();
 };
 
 const setUpActions = (
@@ -155,15 +153,18 @@ const setUpActions = (
   setupObject: ReturnType<typeof getHrmConfig>,
   getMessage: (key: string) => (language: string) => Promise<string>,
 ) => {
-  ActionFunctions.excludeDeactivateConversationOrchestration(featureFlags);
+  ActionFunctions.excludeDeactivateConversationOrchestration();
+  const { enableConferencing } = getHrmConfig();
 
   // bind setupObject to the functions that requires some initialization
   const wrapupOverride = ActionFunctions.wrapupTask(setupObject, getMessage);
-  const beforeCompleteAction = ActionFunctions.beforeCompleteTask(featureFlags);
 
+  Flex.Actions.addListener('afterNavigateToView', ActionFunctions.afterNavigateToView);
+
+  Flex.Actions.addListener('beforeAcceptTask', ActionFunctions.beforeAcceptTask(setupObject, getMessage));
   Flex.Actions.addListener('afterAcceptTask', ActionFunctions.afterAcceptTask(featureFlags, setupObject, getMessage));
 
-  setUpTransferActions(featureFlags.enable_transfers, setupObject);
+  setUpTransferActions(setupObject);
 
   Flex.Actions.replaceAction('HangupCall', ActionFunctions.hangupCall);
   Flex.Manager.getInstance().workerClient.addListener('reservationCreated', reservation => {
@@ -173,11 +174,12 @@ const setUpActions = (
 
   Flex.Actions.replaceAction('WrapupTask', wrapupOverride);
 
-  Flex.Actions.addListener('beforeCompleteTask', beforeCompleteAction);
+  Flex.Actions.replaceAction('CompleteTask', ActionFunctions.completeTaskOverride);
 
   Flex.Actions.addListener('afterCompleteTask', ActionFunctions.afterCompleteTask);
 
-  if (featureFlags.enable_conferencing) setUpConferenceActions();
+  if (enableConferencing) setUpConferenceActions();
+  if (featureFlags.enable_llm_summary) setupLlmNotifications();
 };
 
 export default class HrmFormPlugin extends FlexPlugin {
@@ -189,10 +191,10 @@ export default class HrmFormPlugin extends FlexPlugin {
    * This code is run when your plugin is being started
    * Use this to modify any UI components or attach to the actions framework
    */
-  init(flex: typeof Flex, manager: Flex.Manager) {
+  async init(flex: typeof Flex, manager: Flex.Manager) {
     loadCSS('https://use.fontawesome.com/releases/v5.15.4/css/solid.css');
 
-    setUpMonitoring(manager.workerClient, manager.serviceConfiguration);
+    setUpFullStory(manager.workerClient, manager.serviceConfiguration);
 
     console.log(`Welcome to ${PLUGIN_NAME}`);
     this.registerReducers(manager);
@@ -202,15 +204,16 @@ export default class HrmFormPlugin extends FlexPlugin {
     const config = getHrmConfig();
     const featureFlags = getAseloFeatureFlags();
 
+    await validateAndSetPermissionRules();
+    await ActionFunctions.loadCurrentDefinitionVersion();
+
+    setUpSyncClient();
+
     /*
      * localization setup (translates the UI if necessary)
-     * WARNING: the way this is done right now is "hacky". More info in initLocalization declaration
      */
-    const { translateUI, getMessage } = setUpLocalization(config);
-    ActionFunctions.loadCurrentDefinitionVersion();
-
-    setUpSharedStateClient();
-    setUpComponents(featureFlags, config, translateUI);
+    const { getMessage } = setUpLocalization(config);
+    setUpComponents(featureFlags, config);
     setUpActions(featureFlags, config, getMessage);
 
     TaskRouterListeners.setTaskWrapupEventListeners(featureFlags);
@@ -257,6 +260,10 @@ export default class HrmFormPlugin extends FlexPlugin {
      * This is a workaround until we deprecate 'getConfig' in it's current form after we migrate to Flex 2.0
      */
     subscribeToConfigUpdates(manager);
+    /*
+     * This is ahack to try and mask the name of the service user without also masking the names of other agents in the conversation
+     */
+    maskConversationServiceUserNames(manager);
   }
 }
 

@@ -1,0 +1,127 @@
+[
+  {
+    "name": "firstName",
+    "label": "Nombre",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "lastName",
+    "label": "Apellido",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "relationshipToChild",
+    "label": "Relación con el adolescente",
+    "type": "select",
+    "options": [
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "Madre",
+        "label": "Madre"
+      },
+      {
+        "value": "Padre",
+        "label": "Padre"
+      },
+      {
+        "value": "Hermano/Hermana",
+        "label": "Hermano/Hermana"
+      },
+      {
+        "value": "Cuidador",
+        "label": "Cuidador"
+      },
+      {
+        "value": "Pareja",
+        "label": "Pareja"
+      },
+      {
+        "value": "Compañero/Compañera",
+        "label": "Compañero/Compañera"
+      },
+      {
+        "value": "Amigo/Amiga",
+        "label": "Amigo/Amiga"
+      },
+      {
+        "value": "Otra persona conocida por el adolescente",
+        "label": "Otra persona conocida por el adolescente"
+      },
+      {
+        "value": "Persona en posición de responsabilidad",
+        "label": "Persona en posición de responsabilidad"
+      },
+      {
+        "value": "Persona desconocida",
+        "label": "Persona desconocida"
+      },
+      {
+        "value": "Otro familiar",
+        "label": "Otro familiar"
+      }
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    },
+    "isPII": false
+  },
+  {
+    "name": "gender",
+    "label": "Género",
+    "type": "select",
+    "unknownOption": "Desconocido",
+    "options": [
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "Masculino",
+        "label": "Masculino"
+      },
+      {
+        "value": "Femenino",
+        "label": "Femenino"
+      },
+      {
+        "value": "No binario",
+        "label": "No binario"
+      },
+      {
+        "value": "Desconocido",
+        "label": "Desconocido"
+      }
+    ],
+    "isPII": false
+  },
+  {
+    "name": "age",
+    "label": "Edad",
+    "type": "select",
+    "options": [
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "<14",
+        "label": "<14"
+      },
+      {
+        "value": "Entre 14 y 18",
+        "label": "Entre 14 y 18"
+      },
+      {
+        "value": ">18",
+        "label": ">18"
+      }
+    ],
+    "isPII": false
+  }
+]

@@ -36,7 +36,6 @@ const stateWithRouteStack = (baseRoutes: AppRoutes[]): RoutingState => ({
     1: baseRoutes,
     [standaloneTaskSid]: initialState.tasks[standaloneTaskSid],
   },
-  isAddingOfflineContact: false,
 });
 
 describe('getCurrentTopmostRouteStackForTask', () => {

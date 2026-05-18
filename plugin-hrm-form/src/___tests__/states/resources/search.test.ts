@@ -19,10 +19,11 @@ import promiseMiddleware from 'redux-promise-middleware';
 import each from 'jest-each';
 
 import { searchResources } from '../../../services/ResourceService';
+import { getHrmConfig } from '../../../hrmConfig';
 import {
   changeResultPageAction,
-  getCurrentPageResults,
-  getPageCount,
+  selectResourceSearchCurrentPageResults,
+  selectResourceSearchPageCount,
   initialState,
   ReferrableResourceResult,
   ReferrableResourceSearchState,
@@ -34,9 +35,16 @@ import {
   SearchSettings,
   updateSearchFormAction,
 } from '../../../states/resources/search';
+import { initialFilterOptions } from '../../../states/resources/filterSelectionState/khp';
+import { namespace } from '../../../states/storeNamespaces';
 
 jest.mock('../../../services/ResourceService');
+jest.mock('../../../hrmConfig');
 
+const mockGetHrmConfig = getHrmConfig as jest.MockedFunction<typeof getHrmConfig>;
+mockGetHrmConfig.mockReturnValue({
+  helplineCode: 'E2E',
+} as any);
 const mockSearchResources = searchResources as jest.Mock<
   Promise<{ results: ReferrableResourceResult[]; totalCount: number }>
 >;
@@ -52,7 +60,11 @@ const testStore = (stateChanges: Partial<ReferrableResourceSearchState> = {}) =>
   });
 
 const nonInitialState: ReferrableResourceSearchState = {
-  filterOptions: initialState.filterOptions,
+  filterOptions: {
+    ...initialFilterOptions,
+    region: [{ label: '', value: undefined }],
+    city: [{ label: '', value: undefined }],
+  },
   currentPage: 2,
   status: ResourceSearchStatus.ResultPending,
   parameters: {
@@ -69,6 +81,19 @@ const nonInitialState: ReferrableResourceSearchState = {
     { name: '6', id: '6', attributes: {} },
   ],
   suggesters: { names: ['something else entirely'] },
+  referenceLocations: {
+    cityOptions: [],
+    provinceOptions: [],
+    regionOptions: [],
+  },
+};
+
+const fullNonInitialState = {
+  [namespace]: {
+    referrableResources: {
+      search: nonInitialState,
+    },
+  },
 };
 
 describe('actions', () => {
@@ -443,31 +468,49 @@ describe('actions', () => {
   });
 });
 
-describe('getCurrentPageResults', () => {
+const patchSearchState = (patch: Partial<ReferrableResourceSearchState>) => ({
+  ...fullNonInitialState,
+  [namespace]: {
+    ...fullNonInitialState[namespace],
+    referrableResources: {
+      ...fullNonInitialState[namespace].referrableResources,
+      search: {
+        ...nonInitialState,
+        ...patch,
+      },
+    },
+  },
+});
+
+describe('selectResourceSearchCurrentPageResults', () => {
   test('Returns a subset of the results from the current resources results, calculated based on the page and limit', () => {
-    const results = getCurrentPageResults(nonInitialState);
+    const results = selectResourceSearchCurrentPageResults(fullNonInitialState);
     expect(results).toStrictEqual([
       { name: '5', id: '5', attributes: {} },
       { name: '6', id: '6', attributes: {} },
     ]);
   });
   test('Current page out of range - Returns empty array', () => {
-    const results = getCurrentPageResults({ ...nonInitialState, currentPage: 20 });
+    const results = selectResourceSearchCurrentPageResults(patchSearchState({ currentPage: 20 }));
     expect(results).toStrictEqual([]);
   });
 });
 
-describe('getPageCount', () => {
+describe('selectResourceSearchPageCount', () => {
   test('Calculates number of result pages based on specified page size and total number of results', () => {
-    expect(getPageCount(nonInitialState)).toBe(3);
+    expect(selectResourceSearchPageCount(fullNonInitialState)).toBe(3);
   });
   test('Rounds up', () => {
-    expect(getPageCount({ ...nonInitialState, parameters: { ...nonInitialState.parameters, pageSize: 5 } })).toBe(2);
+    expect(
+      selectResourceSearchPageCount(patchSearchState({ parameters: { ...nonInitialState.parameters, pageSize: 5 } })),
+    ).toBe(2);
   });
   test('Counts nulls', () => {
-    expect(getPageCount({ ...nonInitialState, results: [null, null, null, null, null, null, null] })).toBe(4);
+    expect(
+      selectResourceSearchPageCount(patchSearchState({ results: [null, null, null, null, null, null, null] })),
+    ).toBe(4);
   });
   test('Returns zero for empty array', () => {
-    expect(getPageCount({ ...nonInitialState, results: [] })).toBe(0);
+    expect(selectResourceSearchPageCount(patchSearchState({ results: [] }))).toBe(0);
   });
 });

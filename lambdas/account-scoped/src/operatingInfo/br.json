@@ -1,0 +1,63 @@
+{
+  "timezone": "America/Sao_Paulo",
+  "holidays": {
+    "12/19/2024": "end of year recess",
+    "12/20/2024": "end of year recess",
+    "12/23/2024": "end of year recess",
+    "12/24/2024": "Christmas Eve",
+    "12/25/2024": "Christmas",
+    "12/26/2024": "end of year recess",
+    "12/27/2024": "end of year recess",
+    "12/30/2024": "end of year recess",
+    "01/01/2025": "national holiday",
+    "01/02/2025": "end of year recess",
+    "01/03/2025": "end of year recess",
+    "03/03/2025": "carnival",
+    "03/04/2025": "carnival",
+    "04/21/2025": "national holiday",
+    "05/01/2025": "national holiday",
+    "09/07/2025": "national holiday",
+    "10/12/2025": "national holiday",
+    "11/02/2025": "national holiday",
+    "11/15/2025": "national holiday",
+    "11/20/2025": "national holiday",
+    "12/24/2025": "Christmas Eve",
+    "12/25/2025": "Christmas"
+  },
+  "operatingHours": {
+    "facebook": {
+      "1": [
+        {
+          "open": 900,
+          "close": 1300
+        }
+      ],
+      "2": [
+        {
+          "open": 1400,
+          "close": 1800
+        }
+      ],
+      "3": [
+        {
+          "open": 900,
+          "close": 1300
+        }
+      ],
+      "4": [
+        {
+          "open": 1400,
+          "close": 1800
+        }
+      ],
+      "5": [
+        {
+          "open": 1400,
+          "close": 1800
+        }
+      ],
+      "6": [],
+      "7": []
+    }
+  }
+}

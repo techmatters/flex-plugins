@@ -23,6 +23,15 @@ resource "twilio_taskrouter_workspaces_v1" "flex_task_assignment" {
   events_filter      = join(",", var.events_filter)
 }
 
+// Activity
+resource "twilio_taskrouter_workspaces_activities_v1" "activity" {
+  for_each             = var.activities
+  workspace_sid        = twilio_taskrouter_workspaces_v1.flex_task_assignment.sid
+  friendly_name        = each.value.friendly_name
+  available            = try(each.value.available, false) 
+}
+
+
 // Task Queue
 resource "twilio_taskrouter_workspaces_task_queues_v1" "task_queue" {
   for_each             = var.task_queues

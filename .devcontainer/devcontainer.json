@@ -1,0 +1,8 @@
+{
+  "name": "Copilot Debugging Env",
+  "remoteEnv": {
+    "SITE_USER": "${localEnv:SITE_USER}",
+    "SITE_PASS": "${localEnv:SITE_PASS}",
+    "SITE_ACCOUNT_SID": "${localEnv:SITE_ACCOUNT_SID}"
+  }
+}

@@ -55,29 +55,30 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v4
+        uses: aws-actions/configure-aws-credentials@v6
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ env.PRIMARY_AWS_REGION }}
           # this plugin sets the AWS account ID to a secret which is not allowed in outputs
           # we have to disable that so repo output will work
-          mask-aws-account-id: 'no'
+          mask-aws-account-id: false
 
       - name: Login to Amazon ECR
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v2
 
       - name: Build and Push Docker Image
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v7
         with:
           context: ./
           file: ./e2e-tests/Dockerfile
           push: true
           tags: ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:live,${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:${{ github.sha }}
+          provenance: false
 
       - name: Generate output
         id: generate-output
@@ -100,15 +101,21 @@ jobs:
       DOCKER_IMAGE: ${{ needs.build_lambda.outputs.docker_image }}
 
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            .github/actions
       - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v4
+        uses: aws-actions/configure-aws-credentials@v6
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ matrix.region }}
           # this plugin sets the AWS account ID to a secret which is not allowed in outputs
           # we have to disable that so repo output will work
-          mask-aws-account-id: 'no'
+          mask-aws-account-id: false
 
       - name: Update Lambda and Publish
         run: |
@@ -123,10 +130,10 @@ jobs:
           done
 
       # reconfigure AWS credentials to use the default region for SSM Parameter Store.
-      # aws-actions/configure-aws-credentials@v4 overrides env.AWS_DEFAULT_REGION, so
+      # aws-actions/configure-aws-credentials@v6 overrides env.AWS_DEFAULT_REGION, so
       # we name our env var PRIMARY_AWS_REGION to avoid that.
       - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v4
+        uses: aws-actions/configure-aws-credentials@v6
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
@@ -134,13 +141,13 @@ jobs:
 
       # Set any env vars needed from Parameter Store here
       - name: Set GITHUB_ACTIONS_SLACK_BOT_TOKEN
-        uses: 'marvinpinto/action-inject-ssm-secrets@latest'
+        uses: ./.github/actions/inject-ssm-secrets
         with:
           ssm_parameter: 'GITHUB_ACTIONS_SLACK_BOT_TOKEN'
           env_variable_name: 'GITHUB_ACTIONS_SLACK_BOT_TOKEN'
 
       - name: Set ASELO_DEPLOYS_CHANNEL_ID
-        uses: 'marvinpinto/action-inject-ssm-secrets@latest'
+        uses: ./.github/actions/inject-ssm-secrets
         with:
           ssm_parameter: 'ASELO_DEPLOYS_CHANNEL_ID'
           env_variable_name: 'ASELO_DEPLOYS_CHANNEL_ID'
@@ -148,10 +155,11 @@ jobs:
       # Send Slack notifying success
       - name: Slack Aselo channel
         id: slack
-        uses: slackapi/slack-github-action@v1.14.0
+        uses: slackapi/slack-github-action@v3.0.2
         with:
-          channel-id: ${{ env.ASELO_DEPLOYS_CHANNEL_ID }}
-          slack-message: '`[E2E lambdas - ${{ matrix.region }}]` Deployment of ${{ github.ref_type }} `${{ github.ref_name }}` requested by `${{ github.triggering_actor }}` completed with SHA ${{ github.sha }}, environment `${{ inputs.environment }}` :rocket:.'
-        env:
-          SLACK_BOT_TOKEN: ${{ env.GITHUB_ACTIONS_SLACK_BOT_TOKEN }}
+          method: chat.postMessage
+          token: ${{ env.GITHUB_ACTIONS_SLACK_BOT_TOKEN }}
+          payload: |
+            channel: ${{ env.ASELO_DEPLOYS_CHANNEL_ID }}
+            text: '`[E2E lambdas - ${{ matrix.region }}]` Deployment of ${{ github.ref_type }} `${{ github.ref_name }}` requested by `${{ github.triggering_actor }}` completed with SHA ${{ github.sha }}, environment `${{ inputs.environment }}` :rocket:.'
         if: ${{ inputs.send-slack-message != 'false' }}

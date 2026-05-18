@@ -15,7 +15,7 @@
  */
 
 import { Page, request, test } from '@playwright/test';
-import { caseList } from '../caseList';
+import { caseList, navigateToCaseListUsingButton } from '../caseList';
 import { skipTestIfNotTargeted, skipTestIfDataUpdateDisabled } from '../skipTest';
 import { notificationBar } from '../notificationBar';
 import { setupContextAndPage, closePage } from '../browser';
@@ -37,8 +37,8 @@ test.describe.serial('Open and Edit a Case in Case List page', () => {
     );
 
     // Open Case List
-    await pluginPage.goto('/case-list', { waitUntil: 'networkidle', timeout: 20000 });
-    console.log('Case List plugin page visited.');
+    // 2025-09-11 - it became necessary to navigate using the button, because Flex has become less stable and often forces you back to the agent desktop when you try to navigate there directly using the URL route.
+    await navigateToCaseListUsingButton(pluginPage);
   });
 
   test.afterAll(async () => {
@@ -46,21 +46,33 @@ test.describe.serial('Open and Edit a Case in Case List page', () => {
   });
 
   test('Filter Cases and Update a Case', async () => {
-    console.log('Open Case List page');
+    console.debug('Open Case List page');
     let page = caseList(pluginPage);
 
-    await page.filterCases('Status', 'Open');
-    await page.filterCases('Counselor', 'Aselo Alerts');
+    // Wait for the case list to be fully loaded before applying filters
+    await pluginPage.waitForSelector('tr[data-testid="CaseList-TableRow"]', { timeout: 30000 });
+    console.debug('Case list rows are visible, proceeding with filtering');
 
-    //for Categories filter, 2 valid options are required
-    await page.filterCases('Categories', 'Accessibility', 'Education');
+    try {
+      await page.filterCases('status', 'Open');
+      console.debug('Successfully filtered by Open status');
+
+      // Add a short delay to ensure the first filter is fully applied
+      await pluginPage.waitForTimeout(1000);
+
+      await page.filterCases('counselor', 'Aselo Alerts');
+      console.debug('Successfully filtered by counselor Aselo Alerts');
+    } catch (error) {
+      console.error('Error during filtering:', error);
+      throw error;
+    }
 
     const caseHomePage = await page.openFirstCaseButton();
 
     // Open notifications cover up the print icon :facepalm
     await notificationBar(pluginPage).dismissAllNotifications();
 
-    await page.viewClosePrintView();
+    await caseHomePage.viewClosePrintView();
 
     await caseHomePage.addCaseSection({
       sectionTypeId: 'note',
@@ -82,13 +94,16 @@ test.describe.serial('Open and Edit a Case in Case List page', () => {
       },
     });
 
-    await page.editCase();
+    await caseHomePage.clickEditCase();
 
-    await page.updateCaseSummary();
+    await caseHomePage.updateCaseSummary();
 
-    await page.verifyCaseSummaryUpdated();
+    await caseHomePage.verifyCaseSummaryUpdated();
 
-    await page.closeModal();
-    console.log('Closed Case');
+    await caseHomePage.verifyCasePrintButtonIsVisible();
+    await caseHomePage.verifyCategoryTooltipIsVisible();
+
+    await caseHomePage.closeModal();
+    console.debug('Closed Case');
   });
 });

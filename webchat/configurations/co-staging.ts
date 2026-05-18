@@ -25,9 +25,20 @@ const checkOpenHours = false;
 const contactType: ContactType = 'ip';
 
 const preEngagementConfig: PreEngagementFormDefinition = {
-  description: 'PreEngagementDescription',
-  submitLabel: 'MessageCanvasTrayButton',
-  fields: [],
+  description: 'PreEngagementConfigDescription',
+  submitLabel: 'StartChat',
+  fields: [
+    {
+      type: 'checkbox',
+      name: 'termsAndConditions',
+      label:
+        'Para continuar, ¿aceptas los términos y condiciones de nuestra <a href="https://www.redpapaz.org/politica-de-tratamiento-de-datos-personales-de-la-corporacion-colombiana-de-padres-y-madres-red-papaz/">política de privacidad</a>?',
+      required: {
+        value: true,
+        message: 'Tienes que approbar los términos y condiciones para poder iniciar un chat.',
+      },
+    },
+  ],
 };
 
 const closedHours: PreEngagementFormDefinition = {
@@ -54,11 +65,12 @@ const translations: Translations = {
   },
   'es-CO': {
     WelcomeMessage: '¡Bienvenido a Te Guío!',
+    PreEngagementConfigDescription :'¡Bienvenido a Te Guío! \n Tu privacidad es nuestra prioridad: No pedimos datos personales y puedes hablar con nosotros de forma anónima.\n 🔹 Solo guardamos información estadística para mejorar el servicio. Los registros se eliminan en 15 días hábiles.\n ⚠️ Si hay riesgo para ti o alguien más, podríamos informar a las autoridades.',
     MessageCanvasTrayContent: '',
     MessageInputDisabledReasonHold:
       'Muchas gracias por la información. Lo transferiremos ahora. Por favor espere for un guía.',
     AutoFirstMessage: 'Nuevo contacto del webchat de',
-    TypingIndicator: '{0} está escribiendo ... ',
+    TypingIndicator: 'Guía está escribiendo ... ',
     StartChat: 'Comienza a Chatear!',
     MessageCanvasTrayButton: 'Comenzar Nuevo Chat',
     EntryPointTagline: 'Chatea con nosotros',
@@ -78,7 +90,7 @@ const translations: Translations = {
     SendMessageTooltip: 'Enviar Mensaje',
     FieldValidationRequiredField: 'Campo requerido',
     FieldValidationInvalidEmail: 'Por favor provea una dirección válida de email',
-    PreEngagementDescription: 'Comencemos',
+    PreEngagementDescription: '¡Bienvenido a Te Guío!',
     BotGreeting: '¿Cómo puedo ayudar?',
   },
 };
@@ -110,4 +122,5 @@ export const config: Configuration = {
   memberDisplayOptions,
   captureIp,
   contactType,
+  twilioServicesUrl: new URL(`https://hrm-staging.tl.techmatters.org/lambda/twilio/account-scoped/${accountSid}`),
 };

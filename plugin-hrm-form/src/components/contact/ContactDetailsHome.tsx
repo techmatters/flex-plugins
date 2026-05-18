@@ -15,20 +15,20 @@
  */
 
 /* eslint-disable react/prop-types */
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { format } from 'date-fns';
 import { Actions, Icon, Insights, Template } from '@twilio/flex-ui';
-import { connect } from 'react-redux';
-import { callTypes, DataCallTypes, DefinitionVersionId, isNonSaveable } from 'hrm-form-definitions';
+import { useDispatch, useSelector } from 'react-redux';
+import { callTypes, DataCallTypes } from 'hrm-types';
+import { isNonSaveable } from 'hrm-form-definitions';
 import { Edit } from '@material-ui/icons';
 import { Grid } from '@material-ui/core';
 
 import { useProfile } from '../../states/profile/hooks';
-import { Box, Flex, Row } from '../../styles';
+import { Box, Flex, TertiaryButton } from '../../styles';
 import {
   Contact,
   ContactRawJson,
-  CSAMReportEntry,
   CustomITask,
   isS3StoredRecording,
   isS3StoredTranscript,
@@ -36,72 +36,37 @@ import {
   RouterTask,
   StandaloneITask,
 } from '../../types/types';
-import { ContactAddedFont, ContactDetailsIcon, SectionActionButton, SectionValueText } from '../search/styles';
+import { ContactAddedFont, ContactDetailsIcon } from '../search/styles';
 import ContactDetailsSection from './ContactDetailsSection';
 import { SectionEntry, SectionEntryValue } from '../common/forms/SectionEntry';
 import { channelTypes, isChatChannel, isVoiceChannel } from '../../states/DomainConstants';
 import { isNonDataCallType } from '../../states/validationRules';
-import { formatCategories, formatDuration, mapChannelForInsights } from '../../utils';
+import { formatCategories, formatDuration } from '../../utils/formatters';
+import { mapChannelForInsights } from '../../utils/mappers';
 import { ContactDetailsSections, ContactDetailsSectionsType } from '../common/ContactDetails';
 import { RootState } from '../../states';
 import { DetailsContext, toggleDetailSectionExpanded } from '../../states/contacts/contactDetails';
-import { getInitializedCan, PermissionActions } from '../../permissions';
-import { ContactDetailsRoute, ContactDraftChanges, createDraft } from '../../states/contacts/existingContacts';
+import { getInitializedCan } from '../../permissions/rules';
 import { RecordingSection, TranscriptSection } from './MediaSection';
 import { newCSAMReportActionForContact } from '../../states/csam-report/actions';
-import type { ResourceReferral } from '../../states/contacts/resourceReferral';
-import { getAseloFeatureFlags, getTemplateStrings } from '../../hrmConfig';
-import { configurationBase, contactFormsBase, namespace } from '../../states/storeNamespaces';
+import { getAseloFeatureFlags, getHrmConfig, getTemplateStrings } from '../../hrmConfig';
 import { changeRoute, newOpenModalAction } from '../../states/routing/actions';
-import { getCurrentTopmostRouteForTask } from '../../states/routing/getRoute';
+import { selectCurrentTopmostRouteForTask } from '../../states/routing/getRoute';
 import { AppRoutes, isRouteWithContext } from '../../states/routing/types';
 import ContactAddedToCaseBanner from '../caseMergingBanners/ContactAddedToCaseBanner';
 import ContactRemovedFromCaseBanner from '../caseMergingBanners/ContactRemovedFromCaseBanner';
 import { selectCaseMergingBanners } from '../../states/case/caseBanners';
-import InfoIcon from '../caseMergingBanners/InfoIcon';
-import { BannerContainer, Text } from '../../styles/banners';
-import { isSmsChannelType } from '../../utils/smsChannels';
+import { isSmsChannelType } from '../../utils/groupedChannels';
 import getCanEditContact from '../../permissions/canEditContact';
-import { createCaseAsyncAction } from '../../states/case/saveCase';
-import asyncDispatch from '../../states/asyncDispatch';
-import { updateContactInHrmAsyncAction } from '../../states/contacts/saveContact';
-import AddCaseButton from '../AddCaseButton';
+import AddCaseButton from '../tabbedForms/AddCaseButton';
 import openNewCase from '../case/openNewCase';
-
-const formatResourceReferral = (referral: ResourceReferral) => {
-  return (
-    <Box marginBottom="5px">
-      <SectionValueText>
-        {referral.resourceName}
-        <br />
-        <Row>ID #{referral.resourceId}</Row>
-      </SectionValueText>
-    </Box>
-  );
-};
-
-const formatCsamReport = (report: CSAMReportEntry) => {
-  const template =
-    report.reportType === 'counsellor-generated' ? (
-      <Template code="CSAMReportForm-Counsellor-Attachment" />
-    ) : (
-      <Template code="CSAMReportForm-Self-Attachment" />
-    );
-
-  const date = `${format(new Date(report.createdAt), 'yyyy MM dd h:mm aaaaa')}m`;
-
-  return (
-    <Box marginBottom="5px">
-      <SectionValueText>
-        {template}
-        <br />
-        {date}
-        <br />
-        {`#${report.csamReportId}`}
-      </SectionValueText>
-    </Box>
-  );
-};
+import { formatCsamReport, formatResourceReferral } from './helpers';
+import ContactInProgressBanners from './ContactInProgressBanners';
+import selectContactStateByContactId from '../../states/contacts/selectContactStateByContactId';
+import { selectDefinitionVersionForContact } from '../../states/configuration/selectDefinitions';
+import { selectCounselorsHash } from '../../states/configuration/selectCounselorsHash';
+import selectContactDetailsByContext from '../../states/contacts/selectContactDetailsByContext';
+import { PermissionActions } from '../../permissions/actions';
 
 // TODO: complete this type
 type OwnProps = {
@@ -112,43 +77,72 @@ type OwnProps = {
   handleOpenConnectDialog?: (event: any, callType: DataCallTypes) => void;
   enableEditing: boolean;
 };
-// eslint-disable-next-line no-use-before-define
-type Props = OwnProps & ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>;
+
+type Props = OwnProps;
 
 /* eslint-disable complexity */
 // eslint-disable-next-line sonarjs/cognitive-complexity
 const ContactDetailsHome: React.FC<Props> = function ({
   contactId,
-  detailsExpanded,
   showActionIcons = false,
   handleOpenConnectDialog,
-  definitionVersions,
-  counselorsHash,
-  savedContact,
-  toggleSectionExpandedForContext,
-  navigate,
-  openProfileModal,
-  isProfileRoute,
+  context,
   enableEditing,
-  canViewTwilioTranscript,
-  createDraftCsamReport,
   task,
-  showRemovedFromCaseBanner,
-  openModal,
-  createNewCase,
 }) {
-  const version = savedContact?.rawJson.definitionVersion;
+  // Redux selectors
+  const savedContact = useSelector((state: RootState) => selectContactStateByContactId(state, contactId)?.savedContact);
 
-  const definitionVersion = definitionVersions[version];
+  const currentRoute = useSelector((state: RootState) => selectCurrentTopmostRouteForTask(state, task.taskSid));
+  const isProfileRoute = isRouteWithContext(currentRoute) && currentRoute?.context === 'profile';
+  const definitionVersion = useSelector((state: RootState) => selectDefinitionVersionForContact(state, savedContact));
+  const counselorsHash = useSelector((state: RootState) => selectCounselorsHash(state));
+  const showRemovedFromCaseBanner = useSelector(
+    (state: RootState) => selectCaseMergingBanners(state, contactId).showRemovedFromCaseBanner,
+  );
+  const detailsExpanded = useSelector(
+    (state: RootState) => selectContactDetailsByContext(state, context).detailsExpanded,
+  );
+  const canViewTwilioTranscript = useSelector((state: RootState) =>
+    (state.flex.worker.attributes.roles as string[]).some(
+      role => role.toLowerCase().startsWith('wfo') && role !== 'wfo.quality_process_manager',
+    ),
+  );
+
+  // Redux actions
+  const dispatch = useDispatch();
+  const navigate = (
+    form: keyof Pick<ContactRawJson, 'caseInformation' | 'callerInformation' | 'categories' | 'childInformation'>,
+  ) =>
+    dispatch(
+      changeRoute(
+        {
+          route: 'contact',
+          subroute: 'edit',
+          id: contactId,
+          form,
+          ...(isRouteWithContext(currentRoute) ? { context: currentRoute.context } : {}),
+        },
+        task.taskSid,
+      ),
+    );
+  const createDraftCsamReport = () => dispatch(newCSAMReportActionForContact(contactId));
+  const openProfileModal = id => {
+    dispatch(newOpenModalAction({ route: 'profile', profileId: id, subroute: 'details' }, task.taskSid));
+  };
+  const openModal = (route: AppRoutes) => dispatch(newOpenModalAction(route, task.taskSid));
+  const createNewCase = async (task: RouterTask, savedContact: Contact, contact: Contact) =>
+    openNewCase(task, savedContact, contact, dispatch);
 
   const featureFlags = getAseloFeatureFlags();
   const strings = getTemplateStrings();
 
   // Permission to edit is based the counselor who created the contact - identified by Twilio worker ID
-  const can = React.useMemo(() => {
+  const can = useMemo(() => {
     return action => getInitializedCan()(action, savedContact);
   }, [savedContact]);
-  const canEditContact = React.useMemo(() => getCanEditContact(savedContact), [savedContact]);
+
+  const canEditContact = useMemo(() => getCanEditContact(savedContact), [savedContact]);
 
   useEffect(
     () => () => {
@@ -178,7 +172,7 @@ const ContactDetailsHome: React.FC<Props> = function ({
 
   const isDraft = !savedContact.finalizedAt;
 
-  const { callType, categories } = rawJson;
+  const { callType, categories, hangUpBy } = rawJson;
 
   const auditMessage = (timestampText: string, workerSid: string, templateKey: string) => {
     if (timestampText && workerSid) {
@@ -227,17 +221,18 @@ const ContactDetailsHome: React.FC<Props> = function ({
   } = ContactDetailsSections;
   const addedBy = counselorsHash[createdBy];
   const counselorName = counselorsHash[twilioWorkerId];
-  const toggleSection = (section: ContactDetailsSectionsType) => toggleSectionExpandedForContext(section);
+  const toggleSection = (section: ContactDetailsSectionsType) =>
+    dispatch(toggleDetailSectionExpanded(context, section));
 
   const EditIcon = ContactDetailsIcon(Edit);
 
   const externalReportButton = () => (
-    <SectionActionButton padding="0" type="button" onClick={() => createDraftCsamReport()}>
+    <TertiaryButton type="button" onClick={() => createDraftCsamReport()}>
       <EditIcon style={{ fontSize: '14px', padding: '-1px 6px 0 6px', marginRight: '6px' }} />
       <Grid item xs={12}>
         <Template code="ContactDetails-GeneralDetails-externalReport" />
       </Grid>
-    </SectionActionButton>
+    </TertiaryButton>
   );
 
   const loadConversationIntoOverlay = async () => {
@@ -285,51 +280,48 @@ const ContactDetailsHome: React.FC<Props> = function ({
     await createNewCase(task, savedContact, savedContact);
   };
 
-  const profileLink = featureFlags.enable_client_profiles && !isProfileRoute && savedContact.profileId && canView && (
-    <SectionActionButton padding="0" type="button" onClick={() => openProfileModal(savedContact.profileId)}>
+  const profileLink = getHrmConfig().enableClientProfiles && !isProfileRoute && savedContact.profileId && canView && (
+    <TertiaryButton type="button" onClick={() => openProfileModal(savedContact.profileId)}>
       <Icon icon="DefaultAvatar" />
       <Template code="Profile-ViewClient" />
-    </SectionActionButton>
+    </TertiaryButton>
   );
 
   const addedToCaseBanner = () => <ContactAddedToCaseBanner taskId={task.taskSid} contactId={savedContact.id} />;
+  const showAddcaseButton = !isDraft && !showRemovedFromCaseBanner;
+
+  const renderCaseBanners = () => {
+    return (
+      <>
+        {caseId
+          ? addedToCaseBanner()
+          : showAddcaseButton && (
+              <Box display="flex" justifyContent="flex-end" marginBottom="4px">
+                <AddCaseButton
+                  position="top"
+                  handleNewCaseType={handleOpenNewCase}
+                  handleExistingCaseType={openSearchModal}
+                />
+              </Box>
+            )}
+
+        {showRemovedFromCaseBanner && (
+          <ContactRemovedFromCaseBanner
+            taskId={task.taskSid}
+            contactId={savedContact.id}
+            showUndoButton={showRemovedFromCaseBanner}
+          />
+        )}
+      </>
+    );
+  };
 
   return (
     <Box data-testid="ContactDetails-Container">
       {auditMessage(timeOfContact, createdBy, 'ContactDetails-ActionHeaderAdded')}
       {auditMessage(updatedAt, updatedBy, 'ContactDetails-ActionHeaderUpdated')}
-      {isDraft && (
-        <BannerContainer color="yellow" style={{ paddingTop: '12px', paddingBottom: '12px', marginTop: '10px' }}>
-          <Flex width="100%" justifyContent="space-between">
-            <Flex alignItems="center">
-              <InfoIcon color="#fed44b" />
-              <Text>
-                <Template code="Contact-DraftStatus" />
-              </Text>
-            </Flex>
-          </Flex>
-        </BannerContainer>
-      )}
-
-      {caseId
-        ? addedToCaseBanner()
-        : !showRemovedFromCaseBanner && (
-            <Box display="flex" justifyContent="flex-end">
-              <AddCaseButton
-                position="top"
-                handleNewCaseType={handleOpenNewCase}
-                handleExistingCaseType={openSearchModal}
-              />
-            </Box>
-          )}
-
-      {showRemovedFromCaseBanner && (
-        <ContactRemovedFromCaseBanner
-          taskId={task.taskSid}
-          contactId={savedContact.id}
-          showUndoButton={showRemovedFromCaseBanner}
-        />
-      )}
+      <ContactInProgressBanners contactId={contactId} />
+      {renderCaseBanners()}
 
       <ContactDetailsSection
         sectionTitle={<Template code="ContactDetails-GeneralDetails" />}
@@ -359,6 +351,11 @@ const ContactDetailsHome: React.FC<Props> = function ({
         {addedBy && addedBy !== twilioWorkerId && (
           <SectionEntry descriptionKey="ContactDetails-GeneralDetails-AddedBy">
             <SectionEntryValue value={addedBy} />
+          </SectionEntry>
+        )}
+        {hangUpBy && (
+          <SectionEntry descriptionKey="ContactDetails-GeneralDetails-HangUpBy">
+            <SectionEntryValue value={`ContactDetails-GeneralDetails-HangUpBy/${hangUpBy}`} />
           </SectionEntry>
         )}
       </ContactDetailsSection>
@@ -507,37 +504,4 @@ ContactDetailsHome.defaultProps = {
   showActionIcons: false,
 };
 
-const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
-  const currentRoute = getCurrentTopmostRouteForTask(state[namespace].routing, ownProps.task.taskSid);
-  const { showRemovedFromCaseBanner } = selectCaseMergingBanners(state, ownProps.contactId);
-  return {
-    definitionVersions: state[namespace][configurationBase].definitionVersions,
-    counselorsHash: state[namespace][configurationBase].counselors.hash,
-    savedContact: state[namespace][contactFormsBase].existingContacts[ownProps.contactId]?.savedContact,
-    draftContact: state[namespace][contactFormsBase].existingContacts[ownProps.contactId]?.draftContact,
-    detailsExpanded: state[namespace][contactFormsBase].contactDetails[ownProps.context].detailsExpanded,
-    canViewTwilioTranscript: (state.flex.worker.attributes.roles as string[]).some(
-      role => role.toLowerCase().startsWith('wfo') && role !== 'wfo.quality_process_manager',
-    ),
-    isProfileRoute: isRouteWithContext(currentRoute) && currentRoute?.context === 'profile',
-    showRemovedFromCaseBanner,
-  };
-};
-
-const mapDispatchToProps = (dispatch, { contactId, context, task }: OwnProps) => ({
-  toggleSectionExpandedForContext: (section: ContactDetailsSectionsType) =>
-    dispatch(toggleDetailSectionExpanded(context, section)),
-  createContactDraft: (draftRoute: ContactDetailsRoute) => dispatch(createDraft(contactId, draftRoute)),
-  createDraftCsamReport: () => dispatch(newCSAMReportActionForContact(contactId)),
-  navigate: (
-    form: keyof Pick<ContactRawJson, 'caseInformation' | 'callerInformation' | 'categories' | 'childInformation'>,
-  ) => dispatch(changeRoute({ route: 'contact', subroute: 'edit', id: contactId, form }, task.taskSid)),
-  openProfileModal: id => {
-    dispatch(newOpenModalAction({ route: 'profile', profileId: id, subroute: 'details' }, task.taskSid));
-  },
-  openModal: (route: AppRoutes) => dispatch(newOpenModalAction(route, task.taskSid)),
-  createNewCase: async (task: RouterTask, savedContact: Contact, contact: Contact) =>
-    openNewCase(task, savedContact, contact, dispatch),
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(ContactDetailsHome);
+export default ContactDetailsHome;

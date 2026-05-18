@@ -15,27 +15,25 @@
  */
 
 /* eslint-disable react/prop-types */
-import React, { Dispatch } from 'react';
-import { connect, ConnectedProps, useSelector } from 'react-redux';
+import React from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { FieldError, useFormContext } from 'react-hook-form';
-import { isFuture } from 'date-fns';
+import { format, isFuture, parse } from 'date-fns';
 import { get } from 'lodash';
 import type { DefinitionVersion } from 'hrm-form-definitions';
 
-import { disperseInputs } from '../common/forms/formGenerators';
 import { useCreateFormFromDefinition } from '../forms';
 import { Container, ColumnarBlock, TwoColumnLayout, ColumnarContent } from '../../styles';
 import { RootState } from '../../states';
 import { selectWorkerSid } from '../../states/selectors/flexSelectors';
 import { createContactlessTaskTabDefinition } from './ContactlessTaskTabDefinition';
-import { splitDate, splitTime } from '../../utils/helpers';
 import type { ContactRawJson, OfflineContactTask } from '../../types/types';
 import { updateDraft } from '../../states/contacts/existingContacts';
 import { configurationBase, namespace } from '../../states/storeNamespaces';
 import { getUnsavedContact } from '../../states/contacts/getUnsavedContact';
 import selectContactByTaskSid from '../../states/contacts/selectContactByTaskSid';
 
-type OwnProps = {
+type Props = {
   task: OfflineContactTask;
   display: boolean;
   helplineInformation: DefinitionVersion['helplineInformation'];
@@ -44,38 +42,20 @@ type OwnProps = {
   autoFocus: boolean;
 };
 
-const mapStateToProps = (state: RootState, { task }: OwnProps) => {
-  const { savedContact, draftContact } = selectContactByTaskSid(state, task.taskSid) ?? {};
-  return {
-    counselorsList: state[namespace][configurationBase].counselors.list,
-    unsavedContact: getUnsavedContact(savedContact, draftContact),
-  };
-};
+const ContactlessTaskTab: React.FC<Props> = ({ display, helplineInformation, definition, autoFocus, task }) => {
+  const dispatch = useDispatch();
+  const contactState = useSelector((state: RootState) => selectContactByTaskSid(state, task.taskSid));
+  const savedContact = contactState?.savedContact;
+  const draftContact = contactState?.draftContact;
+  const counselorsList = useSelector((state: RootState) => state[namespace][configurationBase].counselors.list);
+  const unsavedContact = getUnsavedContact(savedContact, draftContact);
 
-const mapDispatchToProps = (dispatch: Dispatch<any>) => {
-  return {
-    updateContactlessTaskDraft: (
-      contactId: string,
-      contactlessTask: ContactRawJson['contactlessTask'],
-      helpline: string,
-    ) => dispatch(updateDraft(contactId, { rawJson: { contactlessTask }, helpline })),
-  };
-};
-
-const connector = connect(mapStateToProps, mapDispatchToProps);
-
-type Props = OwnProps & ConnectedProps<typeof connector>;
-
-const ContactlessTaskTab: React.FC<Props> = ({
-  display,
-  helplineInformation,
-  definition,
-  initialValues,
-  counselorsList,
-  autoFocus,
-  unsavedContact,
-  updateContactlessTaskDraft,
-}) => {
+  const updateContactlessTaskDraft = (
+    contactId: string,
+    timeOfContact: string,
+    contactlessTask: ContactRawJson['contactlessTask'],
+    helpline: string,
+  ) => dispatch(updateDraft(contactId, { rawJson: { contactlessTask }, helpline, timeOfContact }));
   const { getValues, register, setError, setValue, watch, errors } = useFormContext();
 
   const workerSid = useSelector(selectWorkerSid);
@@ -85,36 +65,48 @@ const ContactlessTaskTab: React.FC<Props> = ({
     [counselorsList, definition, helplineInformation],
   );
 
+  const {
+    timeOfContact,
+    helpline,
+    rawJson: {
+      contactlessTask: { createdOnBehalfOf, channel },
+    },
+  } = unsavedContact;
+
+  const localTimeOfContact = new Date(timeOfContact);
+  const date = format(localTimeOfContact, 'yyyy-MM-dd');
+  const time = format(localTimeOfContact, 'HH:mm');
+
   const form = useCreateFormFromDefinition({
     definition: formDefinition,
     initialValues: {
-      ...initialValues,
-      createdOnBehalfOf: initialValues.createdOnBehalfOf || workerSid, // If no createdOnBehalfOf comming from state, we want the current counselor to be the default
+      date,
+      time,
+      channel,
+      helpline,
+      createdOnBehalfOf: createdOnBehalfOf || workerSid, // If no createdOnBehalfOf coming from state, we want the current counselor to be the default
     },
     parentsPath: 'contactlessTask',
     updateCallback: () => {
-      const { isFutureAux, helpline, ...contactlessTaskFields } = getValues().contactlessTask;
-      updateContactlessTaskDraft(unsavedContact.id, contactlessTaskFields, helpline);
+      const { isFutureAux, helpline, time, date, ...contactlessTaskFields } = getValues().contactlessTask;
+      const localTime = new Date(`${date}T${time}`);
+      updateContactlessTaskDraft(unsavedContact.id, localTime.toISOString(), contactlessTaskFields, helpline);
     },
     shouldFocusFirstElement: display && autoFocus,
   });
 
-  const contactlessTaskForm = disperseInputs(5)(form);
-
-  // Add invisible field that errors if date + time are future (triggered by validaiton)
+  // Add invisible field that errors if date + time are future (triggered by validation)
   React.useEffect(() => {
     register('contactlessTask.isFutureAux', {
       validate: () => {
         const { contactlessTask } = getValues();
         const { date, time } = contactlessTask;
         if (date && time) {
-          const [y, m, d] = splitDate(date);
-          const [mm, hh] = splitTime(time);
-          if (isFuture(new Date(y, m - 1, d, mm, hh))) {
+          const dateTime = parse(`${date}T${time}`, "yyyy-MM-dd'T'HH:mm", new Date());
+          if (isFuture(dateTime)) {
             return 'TimeCantBeGreaterThanNow'; // return non-null to generate an error, using the localized error key
           }
         }
-
         return null;
       },
     });
@@ -126,17 +118,17 @@ const ContactlessTaskTab: React.FC<Props> = ({
     if (isFutureError) setError('contactlessTask.time', { message: isFutureError.message, type: 'isFutureAux' });
   }, [isFutureError, setError]);
 
-  const time = watch('contactlessTask.time');
+  const timeFormValue = watch('contactlessTask.time');
   // Set isFutureAux (triggered by time onChange) so it's revalidated (this makes sense after 1st submission attempt)
   React.useEffect(() => {
-    setValue('contactlessTask.isFutureAux', time, { shouldValidate: true });
-  }, [setValue, time]);
+    setValue('contactlessTask.isFutureAux', timeFormValue, { shouldValidate: true });
+  }, [setValue, timeFormValue]);
 
   return (
     <Container formContainer={true}>
       <TwoColumnLayout>
         <ColumnarBlock>
-          <ColumnarContent>{contactlessTaskForm}</ColumnarContent>
+          <ColumnarContent>{form}</ColumnarContent>
         </ColumnarBlock>
         <ColumnarBlock />
       </TwoColumnLayout>
@@ -145,6 +137,5 @@ const ContactlessTaskTab: React.FC<Props> = ({
 };
 
 ContactlessTaskTab.displayName = 'ContactlessTaskTab';
-const connected = connector(ContactlessTaskTab);
 
-export default connected;
+export default ContactlessTaskTab;

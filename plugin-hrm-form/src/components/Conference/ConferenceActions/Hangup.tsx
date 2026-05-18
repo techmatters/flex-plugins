@@ -15,7 +15,7 @@
  */
 
 import React from 'react';
-import { Actions, TaskContextProps, TaskHelper, Template, withTaskContext } from '@twilio/flex-ui';
+import { Actions, TaskContextProps, TaskHelper, Template, withTaskContext, Manager } from '@twilio/flex-ui';
 import { CallEndOutlined as CallEndIcon } from '@material-ui/icons';
 
 import { ConferenceButtonWrapper, HangUpButton } from './styles';
@@ -34,19 +34,22 @@ const Hangup: React.FC<Props> = ({ call, task, conference }) => {
   };
 
   const isLiveCall = TaskHelper.isLiveCall(task);
+  const { strings } = Manager.getInstance();
+  const HANG_UP_KEY = 'Conference-Actions-Hangup';
+  const LEAVE_CALL_KEY = 'Conference-Actions-Leave';
+  const isMoreThan2CallParticipants =
+    participants && participants.filter(participant => participant.status === 'joined').length > 2;
 
   return (
     <ConferenceButtonWrapper>
-      <HangUpButton disabled={!isLiveCall} onClick={handleClick}>
+      <HangUpButton
+        aria-label={strings[isMoreThan2CallParticipants ? LEAVE_CALL_KEY : HANG_UP_KEY]}
+        disabled={!isLiveCall}
+        onClick={handleClick}
+      >
         <CallEndIcon />
       </HangUpButton>
-      <span>
-        {participants && participants.filter(participant => participant.status === 'joined').length > 2 ? (
-          <Template code="Leave Call" />
-        ) : (
-          <Template code="Hang Up" />
-        )}
-      </span>
+      <span>{isMoreThan2CallParticipants ? <Template code={HANG_UP_KEY} /> : <Template code={LEAVE_CALL_KEY} />}</span>
     </ConferenceButtonWrapper>
   );
 };

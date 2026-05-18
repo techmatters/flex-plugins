@@ -1,0 +1,15 @@
+{
+    "label": "Helpline",
+    "helplines": [
+      {
+        "label": "National Child Helpline",
+        "value": "National Child Helpline",
+        "default": true,
+        "manager": {
+          "name": "Helpline Manager",
+          "phone": "+255222936576",
+          "email": "info@sematanzania.org"
+        }
+      }
+    ]
+}

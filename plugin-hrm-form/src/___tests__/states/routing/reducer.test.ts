@@ -14,9 +14,10 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { DefinitionVersion, DefinitionVersionId, loadDefinition, useFetchDefinitions } from 'hrm-form-definitions';
+import { DefinitionVersion, loadDefinition } from 'hrm-form-definitions';
 import each from 'jest-each';
 
+import { mockLocalFetchDefinitions } from '../../mockFetchDefinitions';
 import { mockGetDefinitionsResponse, mockPartialConfiguration } from '../../mockGetConfig';
 import { getDefinitionVersions } from '../../../hrmConfig';
 import { initialState, newTaskEntry, reduce } from '../../../states/routing/reducer';
@@ -26,7 +27,7 @@ import { standaloneTaskSid } from '../../../types/types';
 import { VALID_EMPTY_CONTACT, VALID_EMPTY_METADATA } from '../../testContacts';
 import {
   CREATE_CONTACT_ACTION_FULFILLED,
-  LOAD_CONTACT_FROM_HRM_BY_TASK_ID_ACTION_FULFILLED,
+  LOAD_CONTACT_FROM_HRM_FOR_TASK_ACTION_FULFILLED,
 } from '../../../states/contacts/types';
 import {
   AppRoutes,
@@ -36,10 +37,9 @@ import {
   RoutingState,
 } from '../../../states/routing/types';
 
-// eslint-disable-next-line react-hooks/rules-of-hooks
-const { mockFetchImplementation, mockReset, buildBaseURL } = useFetchDefinitions();
+const { mockFetchImplementation, mockReset, buildBaseURL } = mockLocalFetchDefinitions();
 
-const task = { taskSid: 'task1' };
+const task = { taskSid: 'WT-task1' };
 
 const offlineContactTaskSid = 'offline-contact-task-workerSid';
 mockPartialConfiguration({ workerSid: 'workerSid' });
@@ -47,11 +47,11 @@ mockPartialConfiguration({ workerSid: 'workerSid' });
 let mockV1: DefinitionVersion;
 
 beforeAll(async () => {
-  const formDefinitionsBaseUrl = buildBaseURL(DefinitionVersionId.v1);
+  const formDefinitionsBaseUrl = buildBaseURL('as-v1');
   await mockFetchImplementation(formDefinitionsBaseUrl);
 
   mockV1 = await loadDefinition(formDefinitionsBaseUrl);
-  mockGetDefinitionsResponse(getDefinitionVersions, DefinitionVersionId.v1, mockV1);
+  mockGetDefinitionsResponse(getDefinitionVersions, 'as-v1', mockV1);
 });
 
 beforeEach(() => {
@@ -61,10 +61,9 @@ beforeEach(() => {
 describe('test reducer (specific actions)', () => {
   const stateWithTask: RoutingState = {
     tasks: {
-      task1: [{ route: 'tabbed-forms', subroute: 'childInformation' }],
+      'WT-task1': [{ route: 'tabbed-forms', subroute: 'childInformation' }],
       [standaloneTaskSid]: initialState.tasks[standaloneTaskSid],
     },
-    isAddingOfflineContact: false,
   };
 
   test('should return initial state', async () => {
@@ -77,10 +76,9 @@ describe('test reducer (specific actions)', () => {
   test('should handle CREATE_CONTACT_ACTION_FULFILLED', async () => {
     const expected = {
       tasks: {
-        task1: [{ route: 'tabbed-forms', subroute: 'childInformation' }],
+        'WT-task1': [{ route: 'tabbed-forms', subroute: 'childInformation' }],
         [standaloneTaskSid]: initialState.tasks[standaloneTaskSid],
       },
-      isAddingOfflineContact: false,
     };
 
     const result = reduce(initialState, {
@@ -110,10 +108,9 @@ describe('test reducer (specific actions)', () => {
 
   const stateWithRouteStack = (baseRoutes: AppRoutes[]): RoutingState => ({
     tasks: {
-      task1: baseRoutes,
+      'WT-task1': baseRoutes,
       [standaloneTaskSid]: initialState.tasks[standaloneTaskSid],
     },
-    isAddingOfflineContact: false,
   });
 
   describe('CHANGE_ROUTE action', () => {
@@ -121,11 +118,11 @@ describe('test reducer (specific actions)', () => {
       {
         startingState: stateGenerator([
           { route: 'tabbed-forms', subroute: 'childInformation' },
-          { route: 'case', subroute: 'home' },
+          { route: 'case', subroute: 'home', caseId: '' },
         ]),
         expected: stateGenerator([
           { route: 'tabbed-forms', subroute: 'childInformation' },
-          { route: 'case', subroute: 'home' },
+          { route: 'case', subroute: 'home', caseId: '' },
           { route: 'tabbed-forms' },
         ]),
         action: actions.changeRoute({ route: 'tabbed-forms' }, task.taskSid),
@@ -134,7 +131,7 @@ describe('test reducer (specific actions)', () => {
       {
         startingState: stateGenerator([
           { route: 'tabbed-forms', subroute: 'childInformation' },
-          { route: 'case', subroute: 'home' },
+          { route: 'case', subroute: 'home', caseId: '' },
         ]),
         expected: stateGenerator([{ route: 'tabbed-forms', subroute: 'childInformation' }, { route: 'tabbed-forms' }]),
         action: actions.changeRoute({ route: 'tabbed-forms' }, task.taskSid, ChangeRouteMode.Replace),
@@ -143,7 +140,7 @@ describe('test reducer (specific actions)', () => {
       {
         startingState: stateGenerator([
           { route: 'tabbed-forms', subroute: 'childInformation' },
-          { route: 'case', subroute: 'home' },
+          { route: 'case', subroute: 'home', caseId: '' },
         ]),
         expected: stateGenerator([{ route: 'tabbed-forms' }]),
         action: actions.changeRoute({ route: 'tabbed-forms' }, task.taskSid, ChangeRouteMode.ResetModal),
@@ -157,17 +154,15 @@ describe('test reducer (specific actions)', () => {
     describe('When modal is open', () => {
       const stateWithModal = (modalRoutes: AppRoutes[]): RoutingState => ({
         tasks: {
-          task1: [
+          'WT-task1': [
             {
               route: 'tabbed-forms',
               subroute: 'childInformation',
               activeModal: modalRoutes,
-              contextContactId: undefined,
             },
           ],
           [standaloneTaskSid]: initialState.tasks[standaloneTaskSid],
         },
-        isAddingOfflineContact: false,
       });
 
       each([...tests(stateWithModal, 'modal')]).test('$description', genericRoutingTest);
@@ -185,9 +180,13 @@ describe('test reducer (specific actions)', () => {
         ]),
         expected: stateWithRouteStack([
           { route: 'select-call-type' },
-          { route: 'tabbed-forms', subroute: 'childInformation', activeModal: [{ route: 'case', subroute: 'home' }] },
+          {
+            route: 'tabbed-forms',
+            subroute: 'childInformation',
+            activeModal: [{ route: 'case', subroute: 'home', caseId: '' }],
+          },
         ]),
-        action: actions.newOpenModalAction({ route: 'case', subroute: 'home' }, task.taskSid),
+        action: actions.newOpenModalAction({ route: 'case', subroute: 'home', caseId: '' }, task.taskSid),
       },
       {
         description:
@@ -199,7 +198,7 @@ describe('test reducer (specific actions)', () => {
             subroute: 'childInformation',
             activeModal: [
               { route: 'search', subroute: 'form' },
-              { route: 'search', subroute: 'case-results' },
+              { route: 'search', subroute: 'case-results', contactsPage: 0, casesPage: 0 },
             ],
           },
         ]),
@@ -210,24 +209,42 @@ describe('test reducer (specific actions)', () => {
             subroute: 'childInformation',
             activeModal: [
               { route: 'search', subroute: 'form' },
-              { route: 'search', subroute: 'case-results', activeModal: [{ route: 'case', subroute: 'home' }] },
+              {
+                route: 'search',
+                subroute: 'case-results',
+                contactsPage: 0,
+                casesPage: 0,
+                activeModal: [{ route: 'case', subroute: 'home', caseId: '' }],
+              },
             ],
           },
         ]),
-        action: actions.newOpenModalAction({ route: 'case', subroute: 'home' }, task.taskSid),
+        action: actions.newOpenModalAction({ route: 'case', subroute: 'home', caseId: '' }, task.taskSid),
       },
       {
         description:
           "Current route has active modal on a previous route (shouldn't happen) - should still create activeModal on latest route in base stack",
         startingState: stateWithRouteStack([
-          { route: 'tabbed-forms', subroute: 'childInformation', activeModal: [{ route: 'case', subroute: 'home' }] },
+          {
+            route: 'tabbed-forms',
+            subroute: 'childInformation',
+            activeModal: [{ route: 'case', subroute: 'home', caseId: '' }],
+          },
           { route: 'tabbed-forms', subroute: 'childInformation' },
         ]),
         expected: stateWithRouteStack([
-          { route: 'tabbed-forms', subroute: 'childInformation', activeModal: [{ route: 'case', subroute: 'home' }] },
-          { route: 'tabbed-forms', subroute: 'childInformation', activeModal: [{ route: 'case', subroute: 'home' }] },
+          {
+            route: 'tabbed-forms',
+            subroute: 'childInformation',
+            activeModal: [{ route: 'case', subroute: 'home', caseId: '' }],
+          },
+          {
+            route: 'tabbed-forms',
+            subroute: 'childInformation',
+            activeModal: [{ route: 'case', subroute: 'home', caseId: '' }],
+          },
         ]),
-        action: actions.newOpenModalAction({ route: 'case', subroute: 'home' }, task.taskSid),
+        action: actions.newOpenModalAction({ route: 'case', subroute: 'home', caseId: '' }, task.taskSid),
       },
     ];
 
@@ -254,7 +271,7 @@ describe('test reducer (specific actions)', () => {
             subroute: 'childInformation',
             activeModal: [
               { route: 'search', subroute: 'form' },
-              { route: 'search', subroute: 'case-results' },
+              { route: 'search', subroute: 'case-results', contactsPage: 0, casesPage: 0 },
             ],
           },
         ]),
@@ -280,9 +297,11 @@ describe('test reducer (specific actions)', () => {
               {
                 route: 'search',
                 subroute: 'case-results',
+                contactsPage: 0,
+                casesPage: 0,
                 activeModal: [
-                  { route: 'case', subroute: 'home' },
-                  { route: 'case', subroute: 'caseSummary', action: CaseItemAction.View, id: '' },
+                  { route: 'case', subroute: 'home', caseId: '' },
+                  { route: 'case', subroute: 'caseSummary', action: CaseItemAction.View, caseId: '', id: '' },
                 ],
               },
             ],
@@ -298,7 +317,9 @@ describe('test reducer (specific actions)', () => {
               {
                 route: 'search',
                 subroute: 'case-results',
-                activeModal: [{ route: 'case', subroute: 'home' }],
+                contactsPage: 0,
+                casesPage: 0,
+                activeModal: [{ route: 'case', subroute: 'home', caseId: '' }],
               },
             ],
           },
@@ -309,11 +330,19 @@ describe('test reducer (specific actions)', () => {
         description:
           "Current route has active modal on a previous route (shouldn't happen) - should still pop the latest route from the base stack",
         startingState: stateWithRouteStack([
-          { route: 'tabbed-forms', subroute: 'childInformation', activeModal: [{ route: 'case', subroute: 'home' }] },
+          {
+            route: 'tabbed-forms',
+            subroute: 'childInformation',
+            activeModal: [{ route: 'case', subroute: 'home', caseId: '' }],
+          },
           { route: 'tabbed-forms', subroute: 'childInformation' },
         ]),
         expected: stateWithRouteStack([
-          { route: 'tabbed-forms', subroute: 'childInformation', activeModal: [{ route: 'case', subroute: 'home' }] },
+          {
+            route: 'tabbed-forms',
+            subroute: 'childInformation',
+            activeModal: [{ route: 'case', subroute: 'home', caseId: '' }],
+          },
         ]),
         action: actions.newGoBackAction(task.taskSid),
       },
@@ -328,10 +357,20 @@ describe('test reducer (specific actions)', () => {
         action: actions.newGoBackAction(task.taskSid),
       },
       {
+        description: 'Current route is the only route in the base stack and supports modals - should do nothing',
+        startingState: stateWithRouteStack([{ route: 'tabbed-forms', subroute: 'childInformation' }]),
+        expected: stateWithRouteStack([{ route: 'tabbed-forms', subroute: 'childInformation' }]),
+        action: actions.newGoBackAction(task.taskSid),
+      },
+      {
         description: 'Current route is the only route in the modal stack - should close modal',
         startingState: stateWithRouteStack([
           { route: 'select-call-type' },
-          { route: 'tabbed-forms', subroute: 'childInformation', activeModal: [{ route: 'case', subroute: 'home' }] },
+          {
+            route: 'tabbed-forms',
+            subroute: 'childInformation',
+            activeModal: [{ route: 'case', subroute: 'home', caseId: '' }],
+          },
         ]),
         expected: stateWithRouteStack([
           { route: 'select-call-type' },
@@ -366,7 +405,7 @@ describe('test reducer (specific actions)', () => {
             subroute: 'childInformation',
             activeModal: [
               { route: 'search', subroute: 'form' },
-              { route: 'search', subroute: 'case-results' },
+              { route: 'search', subroute: 'case-results', contactsPage: 0, casesPage: 0 },
             ],
           },
         ]),
@@ -388,9 +427,11 @@ describe('test reducer (specific actions)', () => {
               {
                 route: 'search',
                 subroute: 'case-results',
+                contactsPage: 0,
+                casesPage: 0,
                 activeModal: [
-                  { route: 'case', subroute: 'home' },
-                  { route: 'case', subroute: 'caseSummary', action: CaseItemAction.View, id: '' },
+                  { route: 'case', subroute: 'home', caseId: '' },
+                  { route: 'case', subroute: 'caseSummary', action: CaseItemAction.View, id: '', caseId: '' },
                 ],
               },
             ],
@@ -403,7 +444,7 @@ describe('test reducer (specific actions)', () => {
             subroute: 'childInformation',
             activeModal: [
               { route: 'search', subroute: 'form' },
-              { route: 'search', subroute: 'case-results' },
+              { route: 'search', subroute: 'case-results', contactsPage: 0, casesPage: 0 },
             ],
           },
         ]),
@@ -422,9 +463,11 @@ describe('test reducer (specific actions)', () => {
               {
                 route: 'search',
                 subroute: 'case-results',
+                contactsPage: 0,
+                casesPage: 0,
                 activeModal: [
-                  { route: 'case', subroute: 'home' },
-                  { route: 'case', subroute: 'caseSummary', action: CaseItemAction.View, id: '' },
+                  { route: 'case', subroute: 'home', caseId: '' },
+                  { route: 'case', subroute: 'caseSummary', action: CaseItemAction.View, caseId: '', id: '' },
                 ],
               },
             ],
@@ -451,9 +494,11 @@ describe('test reducer (specific actions)', () => {
               {
                 route: 'search',
                 subroute: 'case-results',
+                contactsPage: 0,
+                casesPage: 0,
                 activeModal: [
-                  { route: 'case', subroute: 'home' },
-                  { route: 'case', subroute: 'caseSummary', action: CaseItemAction.View, id: '' },
+                  { route: 'case', subroute: 'home', caseId: '' },
+                  { route: 'case', subroute: 'caseSummary', action: CaseItemAction.View, caseId: '', id: '' },
                 ],
               },
             ],
@@ -469,9 +514,11 @@ describe('test reducer (specific actions)', () => {
               {
                 route: 'search',
                 subroute: 'case-results',
+                contactsPage: 0,
+                casesPage: 0,
                 activeModal: [
-                  { route: 'case', subroute: 'home' },
-                  { route: 'case', subroute: 'caseSummary', action: CaseItemAction.View, id: '' },
+                  { route: 'case', subroute: 'home', caseId: '' },
+                  { route: 'case', subroute: 'caseSummary', action: CaseItemAction.View, caseId: '', id: '' },
                 ],
               },
             ],
@@ -498,9 +545,11 @@ describe('test reducer (specific actions)', () => {
                   {
                     route: 'search',
                     subroute: 'case-results',
+                    contactsPage: 0,
+                    casesPage: 0,
                     activeModal: [
-                      { route: 'case', subroute: 'home' },
-                      { route: 'case', subroute: 'caseSummary', action: CaseItemAction.View, id: '' },
+                      { route: 'case', subroute: 'home', caseId: '' },
+                      { route: 'case', subroute: 'caseSummary', action: CaseItemAction.View, caseId: '', id: '' },
                     ],
                   },
                 ],
@@ -527,17 +576,16 @@ describe('test reducer (specific actions)', () => {
     expect(result).toStrictEqual(expected);
   });
 
-  test('should handle LOAD_CONTACT_FROM_HRM_BY_TASK_ID_ACTION_FULFILLED and recreate the state as loaded', async () => {
+  test('should handle LOAD_CONTACT_FROM_HRM_FOR_TASK_ACTION_FULFILLED and recreate the state as loaded', async () => {
     const expected = {
       tasks: {
-        task1: [{ route: 'tabbed-forms', subroute: 'childInformation' }],
+        'WT-task1': [{ route: 'tabbed-forms', subroute: 'childInformation' }],
         [standaloneTaskSid]: initialState.tasks[standaloneTaskSid],
       },
-      isAddingOfflineContact: false,
     };
 
     const result = reduce(initialState, {
-      type: LOAD_CONTACT_FROM_HRM_BY_TASK_ID_ACTION_FULFILLED,
+      type: LOAD_CONTACT_FROM_HRM_FOR_TASK_ACTION_FULFILLED,
       payload: {
         contact: { ...VALID_EMPTY_CONTACT, taskId: task.taskSid },
         metadata: VALID_EMPTY_METADATA,
@@ -546,22 +594,21 @@ describe('test reducer (specific actions)', () => {
     expect(result).toStrictEqual(expected);
   });
 
-  test('should handle LOAD_CONTACT_FROM_HRM_BY_TASK_ID_ACTION_FULFILLED and do nothing', async () => {
+  test('should handle LOAD_CONTACT_FROM_HRM_FOR_TASK_ACTION_FULFILLED and do nothing', async () => {
     const expected = {
       tasks: {
-        task1: [{ route: 'case', subroute: 'home' }],
+        'WT-task1': [{ route: 'case', subroute: 'home', caseId: '' }],
         [standaloneTaskSid]: initialState.tasks[standaloneTaskSid],
       },
-      isAddingOfflineContact: false,
     };
 
     const result1 = reduce(
       stateWithTask,
-      actions.changeRoute({ route: 'case', subroute: 'home' }, task.taskSid, ChangeRouteMode.Replace),
+      actions.changeRoute({ route: 'case', subroute: 'home', caseId: '' }, task.taskSid, ChangeRouteMode.Replace),
     );
 
     const result2 = reduce(result1, {
-      type: LOAD_CONTACT_FROM_HRM_BY_TASK_ID_ACTION_FULFILLED,
+      type: LOAD_CONTACT_FROM_HRM_FOR_TASK_ACTION_FULFILLED,
       payload: {
         contact: { ...VALID_EMPTY_CONTACT, taskId: task.taskSid },
         metadata: VALID_EMPTY_METADATA,
@@ -570,18 +617,17 @@ describe('test reducer (specific actions)', () => {
     expect(result2).toStrictEqual(expected);
   });
 
-  test('should handle LOAD_CONTACT_FROM_HRM_BY_TASK_ID_ACTION_FULFILLED and change isAddingOfflineContact to true', async () => {
+  test('should handle LOAD_CONTACT_FROM_HRM_FOR_TASK_ACTION_FULFILLED and change isAddingOfflineContact to true', async () => {
     const expected = {
       tasks: {
-        task1: [{ route: 'tabbed-forms', subroute: 'childInformation' }],
+        'WT-task1': [{ route: 'tabbed-forms', subroute: 'childInformation' }],
         [standaloneTaskSid]: initialState.tasks[standaloneTaskSid],
         [offlineContactTaskSid]: [{ ...newTaskEntry, route: 'tabbed-forms', subroute: 'childInformation' }],
       },
-      isAddingOfflineContact: true,
     };
 
     const result = reduce(stateWithTask, {
-      type: LOAD_CONTACT_FROM_HRM_BY_TASK_ID_ACTION_FULFILLED,
+      type: LOAD_CONTACT_FROM_HRM_FOR_TASK_ACTION_FULFILLED,
       payload: {
         contact: {
           ...VALID_EMPTY_CONTACT,
@@ -603,10 +649,9 @@ describe('test reducer (specific actions)', () => {
   test('should handle REMOVE_CONTACT_STATE', async () => {
     const expected = {
       tasks: {
-        task1: [{ route: 'tabbed-forms', subroute: 'childInformation' }],
+        'WT-task1': [{ route: 'tabbed-forms', subroute: 'childInformation' }],
         [standaloneTaskSid]: initialState.tasks[standaloneTaskSid],
       },
-      isAddingOfflineContact: false,
     };
 
     const result = reduce(
@@ -615,7 +660,6 @@ describe('test reducer (specific actions)', () => {
           ...stateWithTask.tasks,
           [offlineContactTaskSid]: [{ route: 'tabbed-forms', subroute: 'childInformation' }],
         },
-        isAddingOfflineContact: true,
       },
       GeneralActions.removeContactState(offlineContactTaskSid, ''),
     );

@@ -2,6 +2,8 @@
 
 These are scripts for provisioning some of the Aselo Twilio infrastructure.
 
+- View docs on how to [generate matrix of the feature & config flags](Flags-Matrix.md) for all accounts
+
 ## Note
 
 Try to keep track of the changes on the different accounts in [this spreadsheet](https://app.box.com/file/1109527438079) 🙏

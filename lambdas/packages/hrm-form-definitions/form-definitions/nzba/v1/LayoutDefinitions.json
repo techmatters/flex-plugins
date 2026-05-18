@@ -1,0 +1,111 @@
+{
+  "contact": {
+    "callerInformation": {},
+    "childInformation": {},
+    "caseInformation": {
+      "splitFormAt": 10
+    }
+  },
+  "case": {
+    "sectionTypes": {
+      "caseManagementPlan": {
+        "splitFormAt": 10,
+        "caseHomeOrder": 1,
+        "printOrder": 1,
+        "previewFields": [
+          "datePlanPrepared",
+          "frequencyOfContact",
+          "keyInformation"
+        ]
+      },
+      "agency": {
+        "splitFormAt": 7,
+        "caseHomeOrder": 2,
+        "printOrder": 2,
+        "previewFields": [
+          "personsName",
+          "position",
+          "agency"
+        ],
+        "layout": {
+          "personsName": {
+            "includeLabel": true
+          },
+          "position": {
+            "includeLabel": true
+          },
+          "agency": {
+            "includeLabel": true
+          }
+        }
+      },
+      "referral": {
+        "previewFields": [
+          "referredTo"
+        ],
+        "layout": {
+          "referredTo": {
+            "includeLabel": true
+          }
+        },
+        "splitFormAt": 2,
+        "printOrder": 4,
+        "caseHomeLocation": "timeline"
+      },
+      "dutyOfCare": {
+        "previewFields": [
+          "date",
+          "location"
+        ],
+        "splitFormAt": 2,
+        "printOrder": 3,
+        "caseHomeLocation": "timeline"
+      },
+      "dutyOfCare": {
+         "previewFields": [
+           "date",
+           "location"
+         ],
+         "splitFormAt": 2,
+         "printOrder": 3,
+         "caseHomeLocation": "timeline"
+       },
+      "document": {
+        "splitFormAt": 1,
+        "caseHomeOrder": 4,
+        "printFormat": "hidden",
+        "previewFields": [
+          "createdAt",
+          "fileName",
+          "comments"
+        ],
+        "layout": {
+          "createdAt": {
+            "labelTemplateCode": "Case-DocumentFileName",
+            "format": "date"
+          },
+          "fileName": {
+            "labelTemplateCode": "Case-DocumentDate",
+            "format": "file",
+            "widthRatio": 2
+          },
+          "comments": {
+            "labelTemplateCode": "Case-DocumentComments",
+            "widthRatio": 2
+          }
+        }
+      },
+      "note": {
+        "printOrder": 5,
+        "caseHomeLocation": "timeline",
+        "printFormat": "list",
+        "previewFields": [
+          "note"
+        ],
+        "layout": {
+          "note": {}
+        }
+      }
+    }
+  }
+}

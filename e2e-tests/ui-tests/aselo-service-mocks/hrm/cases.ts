@@ -14,21 +14,17 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import type { Case } from 'plugin-hrm-form/src/types/types';
 import flexContext from '../../flex-in-a-box/global-context';
 import { addSeconds, subHours } from 'date-fns';
-// eslint-disable-next-line import/no-extraneous-dependencies
-import { DefinitionVersionId } from 'hrm-form-definitions';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { Page } from '@playwright/test';
 import context from '../global-context';
 import * as path from 'path';
 
-const generateMockCases = (toGenerate: number): Case[] => {
+const generateMockCases = (toGenerate: number): any[] => {
   const hourAgo = subHours(new Date(), 10);
   return Object.keys(new Array(toGenerate).fill(null)).map((idx) => {
     const idxNumber = Number.parseInt(idx);
-    let sectionIdx = 0;
     const time = addSeconds(hourAgo, idxNumber);
     return {
       accountSid: flexContext.ACCOUNT_SID,
@@ -41,15 +37,7 @@ const generateMockCases = (toGenerate: number): Case[] => {
         'case category 2': ['subcategory3'],
       },
       info: {
-        definitionVersion: DefinitionVersionId.demoV1,
-        counsellorNotes: [
-          {
-            id: `note-${sectionIdx++}`,
-            createdAt: time.toISOString(),
-            twilioWorkerId: flexContext.LOGGED_IN_WORKER_SID,
-            text: `Note ${sectionIdx} (Case ${idxNumber})`,
-          },
-        ],
+        definitionVersion: 'demo-v1',
       },
       createdAt: time.toISOString(),
       updatedAt: time.toISOString(),
@@ -61,10 +49,10 @@ let newCaseId = 0;
 
 const hrmCases = () => {
   const PATH_PREFIX = `/v0/accounts/${flexContext.ACCOUNT_SID}/cases`;
-  const mockCases: Case[] = generateMockCases(55);
+  const mockCases: any[] = generateMockCases(55);
 
   return {
-    getMockCases: (): Case[] => mockCases,
+    getMockCases: (): any[] => mockCases,
     mockCaseEndpoints: async (page: Page) => {
       await page.route(
         new URL(path.join(PATH_PREFIX, '*'), context.HRM_BASE_URL).toString(),
@@ -108,6 +96,19 @@ const hrmCases = () => {
             body: JSON.stringify({
               cases: mockCases.slice(0, 10),
               count: mockCases.length,
+            }),
+          });
+        },
+      );
+      await page.route(
+        new URL(path.join(PATH_PREFIX, '*', 'timeline**'), context.HRM_BASE_URL).toString(),
+        async (route) => {
+          await route.fulfill({
+            status: 200,
+            contentType: 'application/json',
+            body: JSON.stringify({
+              activities: [],
+              count: 0,
             }),
           });
         },

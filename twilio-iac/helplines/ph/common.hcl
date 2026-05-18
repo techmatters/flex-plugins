@@ -12,22 +12,33 @@ locals {
     helpline_language                 = "en-US"
     voice_ivr_language                = ""
     enable_post_survey                = false
+    permission_config                 = "ph"
+    enable_lex_v2                     = true
 
 
     lex_bot_languages = {
       en_PH : ["pre_survey"],
       fil_PH : ["pre_survey"]
     }
+     lex_v2_bot_languages = {
+      en_PH : ["pre_survey"],
+      fil_PH : ["pre_survey"]
+    }
+
 
 
     workflows = {
       master : {
-        friendly_name : "Master Workflow"
-        templatefile : "/app/twilio-iac/helplines/ph/templates/workflows/master.tftpl"
+        friendly_name = "Master Workflow"
+        templatefile = "/app/twilio-iac/helplines/ph/templates/workflows/master.tftpl"
+      },
+      queue_transfers : {
+        friendly_name = "Queue Transfers Workflow"
+        templatefile = "/app/twilio-iac/helplines/templates/workflows/queue-transfers.tftpl"
       },
       survey : {
-        friendly_name : "Survey Workflow"
-        templatefile : "/app/twilio-iac/helplines/templates/workflows/lex.tftpl"
+        friendly_name = "Survey Workflow"
+        templatefile = "/app/twilio-iac/helplines/templates/workflows/lex.tftpl"
       }
     }
 

@@ -15,6 +15,7 @@
  */
 import React from 'react';
 import { CategoryEntry } from 'hrm-form-definitions';
+import { Template } from '@twilio/flex-ui';
 
 import {
   SubcategoriesWrapper,
@@ -37,12 +38,12 @@ const createSubcategoryCheckbox = (
   color: string,
   toggleCallback: (category: string, subcategory: string) => void,
   selected: boolean,
-  counselorToolkitsEnabled: boolean,
   selectedCount: number,
+  maxSelections: number,
 ) => {
   const { label, toolkitUrl } = subcategory;
   const lighterColor = `${color}99`; // Hex with alpha 0.6
-  const disabled = selectedCount >= 3 && !selected;
+  const disabled = selectedCount >= maxSelections && !selected;
 
   return (
     <CategoryCheckboxWrapper key={`${category}-${label}`}>
@@ -56,10 +57,10 @@ const createSubcategoryCheckbox = (
             checked={selected}
             data-testid={`categories.${category}.${label}`}
           />
-          {label}
+          <Template code={label} />
         </CategoryCheckboxField>
       </CategoryCheckboxLabel>
-      {counselorToolkitsEnabled && toolkitUrl && (
+      {toolkitUrl && (
         <HtmlTooltip title={`${label} - Tipsheet`} placement="bottom">
           <a href={toolkitUrl} target="_blank" rel="noreferrer">
             <InformationIconButton />
@@ -74,20 +75,20 @@ type Props = {
   category: string;
   categoryDefinition: CategoryEntry;
   toggleSubcategory: (category: string, subcategory: string) => void;
-  counselorToolkitsEnabled: boolean;
   selectedSubcategories: string[];
   gridView: boolean;
   selectedCount: number;
+  maxSelections: number;
 };
 
 const CategoryCheckboxes: React.FC<Props> = ({
   category,
   categoryDefinition: { subcategories, color },
   toggleSubcategory,
-  counselorToolkitsEnabled,
   selectedSubcategories,
   gridView,
   selectedCount,
+  maxSelections,
 }) => {
   return (
     <SubcategoriesWrapper gridView={gridView}>
@@ -98,8 +99,8 @@ const CategoryCheckboxes: React.FC<Props> = ({
           color,
           toggleSubcategory,
           selectedSubcategories.includes(subcategory.label),
-          counselorToolkitsEnabled,
           selectedCount,
+          maxSelections,
         ),
       )}
     </SubcategoriesWrapper>

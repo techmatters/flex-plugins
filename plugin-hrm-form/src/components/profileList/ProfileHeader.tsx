@@ -20,7 +20,8 @@ import { TableRow } from '@material-ui/core';
 import { TableHeader } from '../../styles';
 import ProfileHeaderCell from './ProfileHeaderCell';
 import { ProfilesListSortBy } from '../../types/types';
-import { PermissionActions, getInitializedCan } from '../../permissions';
+import { getInitializedCan } from '../../permissions/rules';
+import { PermissionActions } from '../../permissions/actions';
 
 const ProfileHeader: React.FC = () => {
   const can = React.useMemo(() => {

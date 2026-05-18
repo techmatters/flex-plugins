@@ -18,12 +18,12 @@
 import React from 'react';
 
 import { AutoCompleteDropdown, AutoCompleteDropdownRow } from '../styles';
-import { sanitizeInputForSuggestions, TaxonomyLevelNameCompletion } from '../../../states/resources/search';
+import { sanitizeInputForSuggestions, SuggestSearch } from '../../../states/resources/search';
 
 type OwnProps = {
   generalSearchTermBoxText: string;
   setGeneralSearchTermBoxText: (event: string) => void;
-  suggestSearch: TaxonomyLevelNameCompletion;
+  suggestSearch: SuggestSearch;
 };
 
 type Props = OwnProps;
@@ -40,26 +40,27 @@ const SearchAutoComplete: React.FC<Props> = ({
     setGeneralSearchTermBoxText(`"${searchTerm}"`);
   };
 
+  const suggestions = (Object.values(suggestSearch.suggestions).flatMap(s => s) || [])
+    .filter(item => {
+      const text = item.text.toLocaleLowerCase();
+      return searchTermLength && text.includes(searchTerm) && text !== searchTerm;
+    })
+    .slice(0, 9);
+
   return (
     <div style={{ position: 'relative', width: '100%' }}>
       <AutoCompleteDropdown>
-        {suggestSearch.taxonomyLevelNameCompletion
-          .filter(item => {
-            const text = item.text.toLocaleLowerCase();
-            return searchTermLength && text.includes(searchTerm) && text !== searchTerm;
-          })
-          .slice(0, 9)
-          .map((item, index) => {
-            const regex = new RegExp(searchTerm, 'gi');
-            const modifiedItem = item.text.replace(regex, match => `<span style="font-weight: bold">${match}</span>`);
-            return (
-              <AutoCompleteDropdownRow
-                onClick={() => onSearch(item.text)}
-                key={index}
-                dangerouslySetInnerHTML={{ __html: modifiedItem }}
-              />
-            );
-          })}
+        {suggestions.map((item, index) => {
+          const regex = new RegExp(searchTerm, 'gi');
+          const modifiedItem = item.text.replace(regex, match => `<span style="font-weight: bold">${match}</span>`);
+          return (
+            <AutoCompleteDropdownRow
+              onClick={() => onSearch(item.text)}
+              key={index}
+              dangerouslySetInnerHTML={{ __html: modifiedItem }}
+            />
+          );
+        })}
       </AutoCompleteDropdown>
     </div>
   );

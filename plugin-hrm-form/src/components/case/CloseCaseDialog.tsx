@@ -19,8 +19,8 @@ import { Template } from '@twilio/flex-ui';
 import WarningIcon from '@material-ui/icons/Warning';
 
 import TabPressWrapper from '../TabPressWrapper';
-import { Box, Row, HiddenText, StyledNextStepButton } from '../../styles';
-import { CloseButton, CloseTaskDialog } from '../callTypeButtons/styles';
+import { Box, Row, HiddenText, PrimaryButton, SecondaryButton, CloseButton } from '../../styles';
+import { CloseTaskDialog } from '../callTypeButtons/styles';
 import { CloseDialogText } from './styles';
 
 type OwnProps = {
@@ -47,18 +47,18 @@ const CloseCaseDialog: React.FC<Props> = ({ setDialog, handleDontSaveClose, hand
             <Template code="BottomBar-SaveOnClose" />
           </CloseDialogText>
           <Row style={{ justifyContent: 'space-evenly' }}>
-            <StyledNextStepButton
-              tabIndex={1}
-              secondary="true"
-              onClick={handleDontSaveClose}
-              margin="15px 0"
-              style={{ background: '#fff' }}
-            >
-              <Template code="BottomBar-DontSave" />
-            </StyledNextStepButton>
-            <StyledNextStepButton tabIndex={2} onClick={handleSaveUpdate} margin="15px 0">
-              <Template code="BottomBar-Save" />
-            </StyledNextStepButton>
+            {/* The design system buttons don't focus when inside a material dialog for some reason, even with tabIndex set
+              The containing Box elements with a tabIndex are, so this is a workaround. */}
+            <Box tabIndex={1} onClick={handleDontSaveClose}>
+              <SecondaryButton>
+                <Template code="BottomBar-DontSave" />
+              </SecondaryButton>
+            </Box>
+            <Box tabIndex={2} onClick={handleSaveUpdate}>
+              <PrimaryButton style={{ margin: '15px 0' }}>
+                <Template code="BottomBar-Save" />
+              </PrimaryButton>
+            </Box>
           </Row>
           <Box marginBottom="25px" />
         </TabPressWrapper>

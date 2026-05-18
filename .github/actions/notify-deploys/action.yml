@@ -32,28 +32,31 @@ runs:
   steps:
     # Setup credentials to access AWS for parameters
     - name: Configure AWS credentials
-      uses: aws-actions/configure-aws-credentials@v2
+      uses: aws-actions/configure-aws-credentials@v6
       with:
         aws-access-key-id: ${{ inputs.aws-access-key-id }}
         aws-secret-access-key: ${{ inputs.aws-secret-access-key }}
         aws-region: ${{ inputs.aws-region }}
     # Set env vars to send slack message
     - name: Set GITHUB_ACTIONS_SLACK_BOT_TOKEN
-      uses: "marvinpinto/action-inject-ssm-secrets@latest"
+      uses: techmatters/flex-plugins/.github/actions/inject-ssm-secrets@master
       with:
         ssm_parameter: "GITHUB_ACTIONS_SLACK_BOT_TOKEN"
         env_variable_name: "GITHUB_ACTIONS_SLACK_BOT_TOKEN"
     - name: Set ASELO_DEPLOYS_CHANNEL_ID
-      uses: "marvinpinto/action-inject-ssm-secrets@latest"
+      uses: techmatters/flex-plugins/.github/actions/inject-ssm-secrets@master
       with:
         ssm_parameter: "ASELO_DEPLOYS_CHANNEL_ID"
         env_variable_name: "ASELO_DEPLOYS_CHANNEL_ID"
     # Send Slack notifying success
     - name: Slack Aselo channel
       id: slack
-      uses: slackapi/slack-github-action@v1.14.0
+      uses: slackapi/slack-github-action@v3.0.1
       with:
-        channel-id: ${{ env.ASELO_DEPLOYS_CHANNEL_ID }}
-        slack-message: ${{ inputs.slack-message }}
-      env:
-        SLACK_BOT_TOKEN: ${{ env.GITHUB_ACTIONS_SLACK_BOT_TOKEN }}
+        method: chat.postMessage
+        token: ${{ env.GITHUB_ACTIONS_SLACK_BOT_TOKEN }}
+        payload: |
+          {
+            "channel": "${{ env.ASELO_DEPLOYS_CHANNEL_ID }}",
+            "text": "${{ inputs.slack-message }}"
+          }

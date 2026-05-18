@@ -22,8 +22,9 @@ import * as ProfileActions from '../profiles';
 import * as ProfileSelectors from '../selectors';
 import { RootState } from '../..';
 import { UseProfileCommonParams } from './types';
-import { PermissionActions, getInitializedCan } from '../../../permissions';
+import { getInitializedCan } from '../../../permissions/rules';
 import { useLoadWithRetry } from '../../hooks/useLoadWithRetry';
+import { PermissionActions } from '../../../permissions/actions';
 
 export type UseProfileSectionByType = UseProfileCommonParams & {
   sectionType: string;

@@ -24,7 +24,7 @@ export const apiHrmRequest =
       (getConfigValue('hrmRoot') as string) ||
       `https://hrm-${localOverrideEnv}.tl.techmatters.org/v0/accounts/${getConfigValue(
         'twilioAccountSid',
-      )}`.toString();
+      )}-aselo_test`;
     const resp = await apiRequest[method](new URL(`${hrmRoot}/${hrmPath}`).toString(), {
       data: body,
       headers: {

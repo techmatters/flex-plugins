@@ -17,14 +17,15 @@
 /* eslint-disable sonarjs/no-identical-functions */
 /* eslint-disable global-require */
 /* eslint-disable camelcase */
-import { DefinitionVersionId, loadDefinition, useFetchDefinitions } from 'hrm-form-definitions';
+import { loadDefinition } from 'hrm-form-definitions';
 import { Manager } from '@twilio/flex-ui';
 
-import { baseMockConfig, mockGetDefinitionsResponse } from '../mockGetConfig';
+import { mockLocalFetchDefinitions } from '../mockFetchDefinitions';
+import { mockGetDefinitionsResponse } from '../mockGetConfig';
 import { createTask } from '../helpers';
 import { getDefinitionVersions } from '../../hrmConfig';
 import { ContactState } from '../../states/contacts/existingContacts';
-import { Case, Contact } from '../../types/types';
+import { Contact } from '../../types/types';
 import { ContactMetadata } from '../../states/contacts/types';
 import { VALID_EMPTY_CONTACT } from '../testContacts';
 import { updateContactInHrmAsyncAction } from '../../states/contacts/saveContact';
@@ -58,7 +59,7 @@ const metadata = {} as ContactMetadata;
 const contactState: ContactState = {
   savedContact: contact,
   metadata,
-  references: new Set(),
+  lastReferencedDate: new Date(),
 };
 const task = createTask();
 
@@ -68,16 +69,15 @@ const mockUpdateContactInHrmAsyncAction = updateContactInHrmAsyncAction as jest.
   typeof updateContactInHrmAsyncAction
 >;
 
-// eslint-disable-next-line react-hooks/rules-of-hooks
-const { mockFetchImplementation, buildBaseURL } = useFetchDefinitions();
+const { mockFetchImplementation, buildBaseURL } = mockLocalFetchDefinitions();
 
 const mockGetState = jest.fn();
 
 beforeAll(async () => {
-  const formDefinitionsBaseUrl = buildBaseURL(DefinitionVersionId.v1);
+  const formDefinitionsBaseUrl = buildBaseURL('as-v1');
   await mockFetchImplementation(formDefinitionsBaseUrl);
   mockV1 = await loadDefinition(formDefinitionsBaseUrl);
-  mockGetDefinitionsResponse(getDefinitionVersions, DefinitionVersionId.v1, mockV1);
+  mockGetDefinitionsResponse(getDefinitionVersions, 'as-v1', mockV1);
 });
 
 beforeEach(async () => {
@@ -131,24 +131,9 @@ beforeEach(async () => {
       originalTask: 'transferred-task-id',
     },
   });
-  baseMockConfig.featureFlags.enable_transfers = true;
 });
 
 describe('saveFormSharedState', () => {
-  test('flag disabled - does nothing', async () => {
-    baseMockConfig.featureFlags.enable_transfers = false;
-
-    await saveFormSharedState(
-      {
-        ...contactState,
-        savedContact: { ...contactState.savedContact, caseId: '1234' },
-        draftContact: { channel: 'whatsapp' },
-      },
-      task,
-    );
-    expect(updateContactInHrmAsyncAction).not.toHaveBeenCalled();
-  });
-
   test('Has draft changes - should save them', async () => {
     await saveFormSharedState({ ...contactState, draftContact: { channel: 'whatsapp' } }, task);
     expect(updateContactInHrmAsyncAction).toHaveBeenCalledWith(

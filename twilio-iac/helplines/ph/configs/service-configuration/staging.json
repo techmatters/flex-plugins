@@ -1,12 +1,14 @@
 {
     "attributes": {
         "feature_flags": {
-            "enable_counselor_toolkits": false,
-            "enable_csam_clc_report": false,
-            "enable_external_transcripts": false,
-            "enable_fullstory_monitoring": true,
-            "enable_voice_recordings": false,
-            "post_survey_serverless_handled": false
-        }
+            "use_twilio_lambda_adjust_capacity": false,
+            "use_twilio_lambda_for_conference_functions": false,
+            "use_twilio_lambda_for_conversation_duration": true,
+            "use_twilio_lambda_for_iwf_reporting": true,
+            "use_twilio_lambda_for_offline_contact_tasks": true,
+            "use_twilio_lambda_janitor": false,
+            "use_twilio_lambda_transfers": false
+        },
+        "logo_url" : "https://aselo-logo.s3.amazonaws.com/200+transparent+background+no+TM+staging.png"
     }
 }

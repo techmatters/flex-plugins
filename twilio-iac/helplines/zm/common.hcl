@@ -10,17 +10,24 @@ locals {
     task_language                     = "en-US"
     voice_ivr_language                = ""
     enable_post_survey                = false
+    permission_config                 = "zm"
+    enable_lex_v2                     = true
 
     workflows = {
       master : {
         friendly_name : "Master Workflow"
         templatefile : "/app/twilio-iac/helplines/zm/templates/workflows/master.tftpl"
       },
+      queue_transfers : {
+        friendly_name : "Queue Transfers Workflow"
+        templatefile : "/app/twilio-iac/helplines/templates/workflows/queue-transfers.tftpl"
+      },
       survey : {
         friendly_name : "Survey Workflow"
         templatefile : "/app/twilio-iac/helplines/templates/workflows/lex.tftpl"
       }
     }
+
 
     task_queues = {
       lifeline : {
@@ -47,7 +54,7 @@ locals {
       survey : "Survey"
     }
 
-   
+
     lex_bot_languages = {
       en_US : ["pre_survey", "language_selector"],
       bem : ["pre_survey"],
@@ -58,5 +65,14 @@ locals {
       toi : ["pre_survey"]
     }
 
+    lex_v2_bot_languages = {
+      en_US : ["pre_survey", "language_selector"],
+      bem : ["pre_survey"],
+      kqn : ["pre_survey"],
+      loz : ["pre_survey"],
+      lun : ["pre_survey"],
+      nyz : ["pre_survey"],
+      toi : ["pre_survey"]
+    }
   }
 }

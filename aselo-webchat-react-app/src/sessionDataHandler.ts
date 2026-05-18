@@ -1,0 +1,258 @@
+/**
+ * Copyright (C) 2021-2026 Technology Matters
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see https://www.gnu.org/licenses/.
+ */
+
+import { TokenResponse } from './definitions';
+import { LocalStorageUtil } from './utils/LocalStorage';
+import { generateMixPanelHeaders, generateSecurityHeaders } from './utils/generateHeaders';
+import { ConfigState } from './store/definitions';
+import { store } from './store/store';
+import { localizeKey } from './localization/localizeKey';
+
+export const LOCALSTORAGE_SESSION_ITEM_ID = 'TWILIO_WEBCHAT_WIDGET';
+const CUSTOMER_DEFAULT_NAME_KEY = 'Conversation-Participants-CustomerDefaultName';
+
+type SessionDataStorage = TokenResponse & {
+  loginTimestamp: string | null;
+  participantNameMap?: Record<string, string>;
+};
+
+type InitWebchatAPIPayload = {
+  CustomerFriendlyName: string;
+  PreEngagementData: string;
+  DeploymentKey: string;
+  Identity?: string;
+};
+
+type RefreshTokenAPIPayload = {
+  DeploymentKey: string;
+  token: string;
+};
+
+type EndChatPayload = {
+  conversationSid: string;
+  language?: string;
+  token: string;
+};
+
+export const getAccountScopedBaseUrl = (aseloBackendUrl: string, helplineCode: string) =>
+  `${aseloBackendUrl}/lambda/twilio/account-scoped/${helplineCode.toUpperCase()}`;
+
+export const contactBackend = ({ aseloBackendUrl, helplineCode }: ConfigState) => {
+  const lambdaUrl = getAccountScopedBaseUrl(aseloBackendUrl, helplineCode);
+  const doRequest = async <T>(
+    endpointRoute: string,
+    body: InitWebchatAPIPayload | RefreshTokenAPIPayload | EndChatPayload,
+    attemptToDefer: boolean,
+  ): Promise<T | undefined> => {
+    const securityHeaders = generateSecurityHeaders();
+    const mixpanelHeaders = generateMixPanelHeaders();
+    const logger = window.Twilio.getLogger('SessionDataHandler');
+    const urlEncodedBody = new URLSearchParams();
+    for (const key in body) {
+      if (body.hasOwnProperty(key)) {
+        urlEncodedBody.append(key, (body as Record<string, string>)[key].toString());
+      }
+    }
+    const headers = {
+      Accept: 'application/json',
+      'Content-Type': 'application/x-www-form-urlencoded',
+      ...securityHeaders,
+      ...mixpanelHeaders,
+    };
+    const fullUrl = lambdaUrl + endpointRoute;
+    if (attemptToDefer) {
+      // eslint-disable-next-line dot-notation
+      const { fetchLater } = window as any;
+      if (fetchLater) {
+        logger.info(`fetchLater support detected, using that.`);
+        fetchLater(fullUrl, {
+          method: 'POST',
+          headers,
+          body: urlEncodedBody.toString(),
+        });
+        return undefined;
+      }
+      logger.warn(`No fetchLater support detected, falling back to fetch`);
+    }
+    const response = await fetch(fullUrl, {
+      method: 'POST',
+      headers,
+      body: urlEncodedBody.toString(),
+    });
+
+    if (!response.ok) {
+      const body = await response.text();
+      const errorMessage = `Request to backend failed (status ${response.status}). ${body}`;
+      logger.error(errorMessage);
+      throw new Error(errorMessage);
+    }
+
+    return response.json();
+  };
+  return {
+    request: <T>(endpointRoute: string, body: InitWebchatAPIPayload | RefreshTokenAPIPayload | EndChatPayload) =>
+      doRequest(endpointRoute, body, false) as Promise<T>,
+    deferredRequest: async (endpointRoute: string, body: EndChatPayload) => {
+      await doRequest(endpointRoute, body, true);
+    },
+  };
+};
+function storeSessionData(data: SessionDataStorage) {
+  LocalStorageUtil.set(LOCALSTORAGE_SESSION_ITEM_ID, data);
+}
+
+function getStoredSessionData() {
+  const item = LocalStorageUtil.get(LOCALSTORAGE_SESSION_ITEM_ID);
+
+  if (!item) {
+    return null;
+  }
+
+  return item;
+}
+
+class SessionDataHandler {
+  private _region = '';
+
+  private _deploymentKey = '';
+
+  getRegion() {
+    return this._region;
+  }
+
+  setRegion(region: string = '') {
+    this._region = region;
+  }
+
+  setDeploymentKey(key: string) {
+    this._deploymentKey = key;
+  }
+
+  getDeploymentKey(): string {
+    return this._deploymentKey;
+  }
+
+  tryResumeExistingSession(): TokenResponse | null {
+    const logger = window.Twilio.getLogger('SessionDataHandler');
+    logger.info('trying to refresh existing session');
+    const storedTokenData = getStoredSessionData();
+
+    if (!storedTokenData) {
+      logger.warn('no tokens stored, no session to refresh');
+      return null;
+    }
+
+    if (Date.now() >= new Date(storedTokenData.expiration).getTime()) {
+      logger.warn('token expired, ignoring existing sessions');
+      return null;
+    }
+
+    logger.info('existing token still valid, using existing session data');
+
+    storeSessionData({
+      ...storedTokenData,
+      loginTimestamp: storedTokenData.loginTimestamp ?? null,
+    });
+    return { ...storedTokenData };
+  }
+
+  async getUpdatedToken(): Promise<TokenResponse> {
+    const logger = window.Twilio.getLogger('SessionDataHandler');
+    logger.info('trying to get updated token from BE');
+    const storedTokenData = getStoredSessionData();
+
+    if (!storedTokenData) {
+      logger.error("Can't update token: current token doesn't exist");
+      throw Error("Can't update token: current token doesn't exist");
+    }
+
+    let newTokenData: TokenResponse;
+    try {
+      newTokenData = await contactBackend(store.getState().config).request<TokenResponse>(
+        '/webchatAuthentication/refreshToken',
+        {
+          DeploymentKey: this._deploymentKey,
+          token: storedTokenData.token,
+        },
+      );
+    } catch (e) {
+      logger.error(`Something went wrong when trying to get an updated token: ${e}`);
+      throw Error(`Something went wrong when trying to get an updated token: ${e}`);
+    }
+
+    // Server won't return a conversation SID, so we merge the existing data with the latest one
+    const updatedSessionData = {
+      ...storedTokenData,
+      ...newTokenData,
+    };
+
+    storeSessionData(updatedSessionData);
+    return { ...updatedSessionData };
+  }
+
+  async fetchAndStoreNewSession({ formData }: { formData: Record<string, unknown> }) {
+    const logger = window.Twilio.getLogger('SessionDataHandler');
+    logger.info('trying to create new session');
+    const loginTimestamp = Date.now().toString();
+    const customerIdentity = getStoredSessionData()?.identity;
+
+    let newTokenData;
+    storeSessionData({
+      token: '',
+      expiration: '',
+      identity: customerIdentity ?? '',
+      conversationSid: '',
+      loginTimestamp,
+    });
+
+    try {
+      const { config } = store.getState();
+      const preEngagementData = {
+        ...formData,
+      };
+      const payload: InitWebchatAPIPayload = {
+        DeploymentKey: this.getDeploymentKey(),
+        CustomerFriendlyName:
+          (formData?.friendlyName as string) ||
+          localizeKey(config.translations[config.currentLocale ?? config.defaultLocale])(CUSTOMER_DEFAULT_NAME_KEY),
+        PreEngagementData: JSON.stringify(preEngagementData),
+      };
+
+      if (customerIdentity) {
+        payload.Identity = customerIdentity;
+      }
+      newTokenData = await contactBackend(config).request<TokenResponse>('/webchatAuthentication/initWebchat', payload);
+    } catch (e) {
+      logger.error('No results from server');
+      throw Error('No results from server');
+    }
+
+    logger.info('new session successfully created');
+    storeSessionData({
+      ...newTokenData,
+      loginTimestamp,
+    });
+
+    return newTokenData as TokenResponse;
+  }
+
+  clear() {
+    const identity = getStoredSessionData()?.identity;
+    LocalStorageUtil.set(LOCALSTORAGE_SESSION_ITEM_ID, { identity });
+  }
+}
+
+export const sessionDataHandler = new SessionDataHandler();

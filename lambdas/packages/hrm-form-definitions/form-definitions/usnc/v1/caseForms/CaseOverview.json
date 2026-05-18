@@ -1,0 +1,60 @@
+[
+  {
+    "name": "status",
+    "label": "Status",
+    "type": "select",
+    "isPII": false
+  },
+  {
+    "name": "childIsAtRisk",
+    "label": "Profiles have been blocked",
+    "type": "checkbox",
+    "isPII": false
+  },
+  {
+    "name": "followUpDate",
+    "label": "Date of Report",
+    "type": "date-input",
+    "isPII": false
+  },
+  {
+    "name": "linkedProfileName",
+    "label": "Linked Profile Name",
+    "type": "textarea",
+    "rows": 1,
+    "width": 300,
+    "isPII": false
+  },
+  {
+    "name": "summary",
+    "label": "Summary",
+    "type": "textarea",
+    "rows": 5,
+    "width": 300,
+    "isPII": true
+  },
+  {
+    "name": "priority",
+    "label": "Priority",
+    "type": "select",
+    "isPII": false,
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "High",
+        "label": "High"
+      },
+      {
+        "value": "Medium",
+        "label": "Medium"
+      },
+      {
+        "value": "Low",
+        "label": "Low"
+      }
+    ]
+  }
+]

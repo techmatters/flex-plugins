@@ -14,23 +14,23 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import React, { Dispatch } from 'react';
-import { connect, ConnectedProps } from 'react-redux';
+import React from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import SearchIcon from '@material-ui/icons/Search';
 import { Template } from '@twilio/flex-ui';
-import { callTypes } from 'hrm-form-definitions';
+import { callTypes } from 'hrm-types';
+import { AnyAction } from 'redux';
 
 import { removeOfflineContact } from '../../services/formSubmissionHelpers';
 import { RootState } from '../../states';
 import asyncDispatch from '../../states/asyncDispatch';
 import { namespace } from '../../states/storeNamespaces';
 import { getCurrentTopmostRouteForTask } from '../../states/routing/getRoute';
-import { Contact, ContactRawJson, isOfflineContact, isOfflineContactTask } from '../../types/types';
+import { Contact, ContactRawJson, isOfflineContact, isOfflineContactTask, isStandaloneITask } from '../../types/types';
 import { isNonDataCallType } from '../../states/validationRules';
 import { selectCaseMergingBanners } from '../../states/case/caseBanners';
 import { ContactDraftChanges, updateDraft } from '../../states/contacts/existingContacts';
 import { getUnsavedContact } from '../../states/contacts/getUnsavedContact';
-import { forExistingContact } from '../../states/contacts/issueCategorizationStateApi';
 import { updateContactInHrmAsyncAction } from '../../states/contacts/saveContact';
 import selectContactByTaskSid from '../../states/contacts/selectContactByTaskSid';
 import { emptyCategories } from '../../states/contacts/reducer';
@@ -38,7 +38,7 @@ import { newCSAMReportActionForContact } from '../../states/csam-report/actions'
 import { CSAMReportType, CSAMReportTypes } from '../../states/csam-report/types';
 import { changeRoute, newOpenModalAction } from '../../states/routing/actions';
 import { AppRoutes, ChangeRouteMode, TabbedFormRoute, TabbedFormSubroutes } from '../../states/routing/types';
-import { Box, Row, StyledTabs } from '../../styles';
+import { Box, Row, StyledTabs, FontOpenSans, OpaqueText, Bold } from '../../styles';
 import { TabbedFormsContainer, TabbedFormTabContainer } from './styles';
 import { hasTaskControl } from '../../transfer/transferTaskState';
 import ContactAddedToCaseBanner from '../caseMergingBanners/ContactAddedToCaseBanner';
@@ -56,63 +56,10 @@ import { TabbedFormsCommonProps } from './types';
 import { useTabbedFormContext } from './hooks/useTabbedForm';
 // Ensure we import any custom components that might be used in a form
 import '../contact/ResourceReferralList';
-import selectContextContactId from '../../states/contacts/selectContextContactId';
+import '../contact/GenerateSummaryButton';
+import '../customIntegrations/uscr/DispatchIncidentButton';
 
-type OwnProps = TabbedFormsCommonProps;
-
-const mapStateToProps = (state: RootState, { task: { taskSid } }: OwnProps) => {
-  const {
-    [namespace]: { configuration, routing: routingState },
-  } = state;
-  const currentRoute = getCurrentTopmostRouteForTask(routingState, taskSid);
-  const { draftContact, savedContact } = selectContactByTaskSid(state, taskSid);
-  const contactId = savedContact.id;
-  const { showConnectedToCaseBanner, showRemovedFromCaseBanner } = selectCaseMergingBanners(state, contactId);
-  const { currentDefinitionVersion } = configuration;
-
-  return {
-    contactId,
-    currentDefinitionVersion,
-    currentRoute,
-    draftContact,
-    savedContact,
-    showConnectedToCaseBanner,
-    showRemovedFromCaseBanner,
-    updatedContact: getUnsavedContact(savedContact, draftContact),
-  };
-};
-
-const mapDispatchToProps = (dispatch: Dispatch<any>, { task }: OwnProps) => ({
-  backToCallTypeSelect: () =>
-    dispatch(changeRoute({ route: 'select-call-type' }, task.taskSid, ChangeRouteMode.Replace)),
-  clearCallType: (savedContact: Contact, otherChanges: ContactDraftChanges) =>
-    asyncDispatch(dispatch)(
-      updateContactInHrmAsyncAction(
-        savedContact,
-        { ...otherChanges, rawJson: { ...otherChanges?.rawJson, callType: '' } },
-        task.taskSid,
-      ),
-    ),
-  navigateToTab: (tab: TabbedFormSubroutes) =>
-    dispatch(
-      changeRoute({ route: 'tabbed-forms', subroute: tab, autoFocus: false }, task.taskSid, ChangeRouteMode.Replace),
-    ),
-  newCSAMReport: (contactId, csamReportType: CSAMReportType) =>
-    dispatch(newCSAMReportActionForContact(contactId, csamReportType, true)),
-  openCSAMReport: (previousRoute: AppRoutes) =>
-    dispatch(changeRoute({ route: 'csam-report', subroute: 'form', previousRoute }, task.taskSid)),
-  openSearchModal: (contextContactId: string) =>
-    dispatch(newOpenModalAction({ contextContactId, route: 'search', subroute: 'form' }, task.taskSid)),
-  removeIfOfflineContact: (contact: Contact) => removeOfflineContact(dispatch, contact),
-  saveDraft: (savedContact: Contact, draftContact: ContactDraftChanges) =>
-    asyncDispatch(dispatch)(updateContactInHrmAsyncAction(savedContact, draftContact, task.taskSid)),
-  updateDraftForm: (contactId: Contact['id'], form: Partial<ContactRawJson>) =>
-    dispatch(updateDraft(contactId, { rawJson: form })),
-});
-
-const connector = connect(mapStateToProps, mapDispatchToProps);
-
-type Props = OwnProps & ConnectedProps<typeof connector>;
+type Props = TabbedFormsCommonProps;
 
 const mapTabsComponents = (errors: any) => (t: TabbedFormSubroutes | 'search') => {
   switch (t) {
@@ -153,27 +100,57 @@ const mapTabsToIndex = (contact: Contact, contactForm: Partial<ContactRawJson>):
     : ['search', 'childInformation', 'categories', 'caseInformation'];
 };
 
-const TabbedFormsTabs: React.FC<Props> = ({
-  task,
-  savedContact,
-  contactId,
-  currentDefinitionVersion,
-  currentRoute,
-  draftContact,
-  showConnectedToCaseBanner,
-  showRemovedFromCaseBanner,
-  updatedContact,
-  backToCallTypeSelect,
-  clearCallType,
-  navigateToTab,
-  newCSAMReport,
-  openCSAMReport,
-  openSearchModal,
-  removeIfOfflineContact,
-  saveDraft,
-  updateDraftForm,
-}) => {
-  const { enable_csam_report: csamReportEnabled, enable_case_merging: caseMergingEnabled } = getAseloFeatureFlags();
+const TabbedFormsTabs: React.FC<Props> = ({ task }) => {
+  const dispatch = useDispatch();
+
+  const { taskSid } = task;
+  const {
+    [namespace]: { configuration, routing: routingState },
+  } = useSelector((state: RootState) => state);
+  const currentRoute = useSelector((state: RootState) => getCurrentTopmostRouteForTask(routingState, taskSid));
+  const { draftContact, savedContact } = useSelector((state: RootState) => selectContactByTaskSid(state, taskSid));
+  const contactId = savedContact.id;
+  const { showConnectedToCaseBanner, showRemovedFromCaseBanner } = useSelector((state: RootState) =>
+    selectCaseMergingBanners(state, contactId),
+  );
+  const { currentDefinitionVersion } = configuration;
+  const updatedContact = getUnsavedContact(savedContact, draftContact);
+
+  const backToCallTypeSelect = () =>
+    dispatch(changeRoute({ route: 'select-call-type' }, taskSid, ChangeRouteMode.Replace));
+
+  const clearCallType = async (savedContact: Contact, otherChanges: ContactDraftChanges) => {
+    await asyncDispatch<AnyAction>(dispatch)(
+      updateContactInHrmAsyncAction(
+        savedContact,
+        { ...otherChanges, rawJson: { ...otherChanges?.rawJson, callType: '' } },
+        taskSid,
+      ),
+    );
+  };
+
+  const navigateToTab = (tab: TabbedFormSubroutes) =>
+    dispatch(changeRoute({ route: 'tabbed-forms', subroute: tab, autoFocus: false }, taskSid, ChangeRouteMode.Replace));
+
+  const newCSAMReport = (contactId: string, csamReportType: CSAMReportType) =>
+    dispatch(newCSAMReportActionForContact(contactId, csamReportType, true));
+
+  const openCSAMReport = (previousRoute: AppRoutes) =>
+    dispatch(changeRoute({ route: 'csam-report', subroute: 'form', previousRoute }, taskSid));
+
+  const openSearchModal = (contextContactId: string) =>
+    dispatch(newOpenModalAction({ contextContactId, route: 'search', subroute: 'form' }, taskSid));
+
+  const removeIfOfflineContact = (contact: Contact) => removeOfflineContact(dispatch, contact);
+
+  const saveDraft = async (savedContact: Contact, draftContact: ContactDraftChanges) => {
+    await asyncDispatch<AnyAction>(dispatch)(updateContactInHrmAsyncAction(savedContact, draftContact, taskSid));
+  };
+
+  const updateDraftForm = (contactId: Contact['id'], form: Partial<ContactRawJson>) =>
+    dispatch(updateDraft(contactId, { rawJson: form }));
+
+  const { enable_csam_report: csamReportEnabled } = getAseloFeatureFlags();
   const { contactSaveFrequency } = getHrmConfig();
   const { subroute, autoFocus } = currentRoute as TabbedFormRoute;
 
@@ -244,7 +221,7 @@ const TabbedFormsTabs: React.FC<Props> = ({
   };
 
   const HeaderControlButtons = () => (
-    <Box marginTop="10px" marginBottom="10px" paddingLeft="20px">
+    <Box marginTop="10px" marginBottom="5px" paddingLeft="20px">
       <Row>
         <SearchResultsBackButton handleBack={handleBackButton} text={<Template code="TabbedForms-BackButton" />} />
         {csamReportEnabled && (
@@ -261,6 +238,14 @@ const TabbedFormsTabs: React.FC<Props> = ({
             />
           </Box>
         )}
+      </Row>
+      <Row style={{ paddingLeft: '9px', paddingTop: '3px' }}>
+        <FontOpenSans>
+          <Bold>#{contactId}</Bold>
+          {!isOfflineContactTask(task) && !isStandaloneITask(task) && (
+            <OpaqueText style={{ fontStyle: 'italic' }}>{` ${task.queueName}`}</OpaqueText>
+          )}
+        </FontOpenSans>
       </Row>
     </Box>
   );
@@ -279,13 +264,8 @@ const TabbedFormsTabs: React.FC<Props> = ({
         >
           {tabs}
         </StyledTabs>
-        {/* eslint-disable-next-line camelcase */}
-        {caseMergingEnabled && (
-          <>
-            {showConnectedToCaseBanner && <ContactAddedToCaseBanner taskId={task.taskSid} />}
-            {showRemovedFromCaseBanner && <ContactRemovedFromCaseBanner taskId={task.taskSid} />}
-          </>
-        )}
+        {showConnectedToCaseBanner && <ContactAddedToCaseBanner taskId={task.taskSid} />}
+        {showRemovedFromCaseBanner && <ContactRemovedFromCaseBanner taskId={task.taskSid} />}
         <div style={{ height: '100%', overflow: 'hidden' }}>
           {isOfflineContactTask(task) && (
             <TabbedFormTabContainer display={subroute === 'contactlessTask'}>
@@ -329,7 +309,7 @@ const TabbedFormsTabs: React.FC<Props> = ({
               </TabbedFormTabContainer>
               <TabbedFormTabContainer display={subroute === 'categories'}>
                 <IssueCategorizationSectionForm
-                  stateApi={forExistingContact(savedContact.id)}
+                  contactId={savedContact.id}
                   display={subroute === 'categories'}
                   definition={currentDefinitionVersion.tabbedForms.IssueCategorizationTab(helpline)}
                   autoFocus={autoFocus}
@@ -371,4 +351,4 @@ const TabbedFormsTabs: React.FC<Props> = ({
 
 TabbedFormsTabs.displayName = 'TabbedFormsTabs';
 
-export default connector(TabbedFormsTabs);
+export default TabbedFormsTabs;

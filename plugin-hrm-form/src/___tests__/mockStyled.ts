@@ -34,7 +34,7 @@ jest.mock('../styles/', () => ({
   StyledLabel: 'StyledLabel',
   StyledSelect: 'StyledSelect',
   StyledMenuItem: 'StyledMenuItem',
-  StyledNextStepButton: 'StyledNextStepButton',
+  PrimaryButton: 'PrimaryButton',
   CheckboxField: 'CheckboxField',
   StyledCheckboxLabel: 'StyledCheckboxLabel',
   StyledCategoryCheckboxLabel: 'StyledCategoryCheckboxLabel',
@@ -53,7 +53,7 @@ jest.mock('../styles/', () => ({
   Row: 'Row',
   FontOpenSans: 'FontOpenSans',
   HiddenText: 'HiddenText',
-  TransferStyledButton: 'TransferStyledButton',
+  SecondaryButton: 'SecondaryButton',
   HeaderContainer: 'HeaderContainer',
   StyledIcon: () => 'StyledIcon',
   addHover: () => 'addHover',
@@ -120,7 +120,7 @@ jest.mock('../components/search/styles', () => ({
   SectionValueText: 'SectionValueText',
   ResultsHeader: 'ResultsHeader',
   ListContainer: 'ListContainer',
-  ScrollableList: 'ScrollableList',
+  ResultsSubheader: 'ResultsSubheader',
   StyledButtonBase: 'StyledButtonBase',
   StyledFormControlLabel: 'StyledFormControlLabel',
   StyledSwitch: 'StyledSwitch',
@@ -201,7 +201,6 @@ jest.mock('../components/case/styles', () => ({
   StyledInputField: 'StyledInputField',
   StyledSelectWrapper: 'StyledSelectWrapper',
   StyledSelectField: 'StyledSelectField',
-  TimelineFileName: 'TimelineFileName',
 }));
 
 jest.mock('../components/profile/styles', () => ({

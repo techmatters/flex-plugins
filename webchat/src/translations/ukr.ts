@@ -16,8 +16,9 @@
 
 // eslint-disable-next-line global-require
 export default {
+  NewChatMessageNotificationTitle: 'Нове повідомлення від консультанта»',
   EndChatButtonLabel: 'Вийти із чату',
   QuickExitButtonLabel: 'Швидкий вихід',
   QuickExitDescription: 'Потрібно швидко піти?',
-  ChatWithUs: 'Kék Vonal',
+  ChatWithUs: 'Спілкуйтеся з нами',
 } as Record<string, string>;

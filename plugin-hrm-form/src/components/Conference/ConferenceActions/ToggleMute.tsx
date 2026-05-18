@@ -15,12 +15,12 @@
  */
 
 import React from 'react';
-import { TaskContextProps, TaskHelper, Template, withTaskContext } from '@twilio/flex-ui';
-import MicNoneOutlined from '@material-ui/icons/MicNoneOutlined';
+import { TaskContextProps, TaskHelper, Template, withTaskContext, Manager } from '@twilio/flex-ui';
 import MicOffOutlined from '@material-ui/icons/MicOffOutlined';
+import MicNoneOutlined from '@material-ui/icons/MicNoneOutlined';
 
-import { conferenceApi } from '../../../services/ServerlessService';
 import { ConferenceButtonWrapper, ConferenceButton } from './styles';
+import * as conferenceApi from '../../../services/conferenceService';
 
 type Props = TaskContextProps;
 
@@ -41,9 +41,10 @@ const ToggleMute: React.FC<Props> = ({ call, task, conference }) => {
       const currentMutedState = workerParticipant.muted;
       const toggleMute = !currentMutedState;
 
+      console.log(`conferenceSid from attributes: ${task?.attributes?.conference?.sid}`);
       await conferenceApi.updateParticipant({
         callSid: call?.parameters?.CallSid,
-        conferenceSid: task?.attributes?.conference?.sid,
+        conferenceSid: conference?.source?.conferenceSid,
         updates: { muted: toggleMute },
       });
 
@@ -52,15 +53,19 @@ const ToggleMute: React.FC<Props> = ({ call, task, conference }) => {
   };
 
   const isLiveCall = TaskHelper.isLiveCall(task);
-  const buttonText = `${isMuted ? 'Unmute' : 'Mute'}`;
+  const buttonTextKey = isMuted ? 'Conference-Actions-Unmute' : 'Conference-Actions-Mute';
 
   return (
     <ConferenceButtonWrapper>
-      <ConferenceButton disabled={!isLiveCall} onClick={handleClick}>
+      <ConferenceButton
+        disabled={!isLiveCall}
+        onClick={handleClick}
+        aria-label={Manager.getInstance().strings[buttonTextKey]}
+      >
         {isMuted ? <MicOffOutlined /> : <MicNoneOutlined />}
       </ConferenceButton>
       <span>
-        <Template code={buttonText} />
+        <Template code={buttonTextKey} />
       </span>
     </ConferenceButtonWrapper>
   );

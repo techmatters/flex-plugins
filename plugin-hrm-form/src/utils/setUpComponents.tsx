@@ -18,6 +18,8 @@
 /* eslint-disable react/no-multi-comp */
 import React from 'react';
 import * as Flex from '@twilio/flex-ui';
+import { CallCanvas, Notifications, NotificationType, Template } from '@twilio/flex-ui';
+import { ParticipantCanvasChildrenProps } from '@twilio/flex-ui/src/components/canvas/ParticipantCanvas/ParticipantCanvas.definitions';
 
 import * as TransferHelpers from '../transfer/transferTaskState';
 import EmojiPicker from '../components/emojiPicker';
@@ -29,11 +31,9 @@ import LocalizationContext from '../contexts/LocalizationContext';
 import Translator from '../components/translator';
 import CaseList from '../components/caseList';
 import StandaloneSearch from '../components/StandaloneSearch';
-import SettingsSideLink from '../components/sideLinks/SettingsSideLink';
 import CaseListSideLink from '../components/sideLinks/CaseListSideLink';
 import StandaloneSearchSideLink from '../components/sideLinks/StandaloneSearchSideLink';
 import ManualPullButton from '../components/ManualPullButton';
-import ViewTaskNumber from '../components/common/MaskingIdentifiers/ViewTaskNumber';
 import ProfileList from '../components/profileList';
 import ProfileListSideLink from '../components/sideLinks/ProfileListSideLink';
 import { AddOfflineContactButton, OfflineContactTask } from '../components/OfflineContact';
@@ -42,32 +42,36 @@ import { Box, Column, HeaderContainer, TaskCanvasOverride } from '../styles';
 import HrmTheme from '../styles/HrmTheme';
 import { TLHPaddingLeft } from '../styles/GlobalOverrides';
 import { Container } from '../components/queuesStatus/styles';
-import { FeatureFlags, isInMyBehalfITask, standaloneTaskSid, StandaloneITask } from '../types/types';
+import { standaloneTaskSid } from '../types/types';
 import { colors } from '../channels/colors';
-import { getAseloConfigFlags, getHrmConfig } from '../hrmConfig';
-import { AseloMessageInput, AseloMessageList } from '../components/AseloMessaging';
-import { namespace, routingBase } from '../states/storeNamespaces';
+import { getHrmConfig } from '../hrmConfig';
 import { changeRoute } from '../states/routing/actions';
-import { AppRoutes, ChangeRouteMode } from '../states/routing/types';
-import { selectCurrentBaseRoute } from '../states/routing/getRoute';
+import { ChangeRouteMode } from '../states/routing/types';
 import { RootState } from '../states';
+import selectCurrentOfflineContact from '../states/contacts/selectCurrentOfflineContact';
+import { REFRESH_BROWSER_REQUIRED_FOR_LANGUAGE_CHANGE_NOTIFICATION_ID } from '../states/configuration/changeLanguage';
+import { FeatureFlags } from '../types/FeatureFlags';
+import QueueNameLabel from './QueueNameLabel';
+import HangUpByLabel from '../components/HangUpByLabel';
 
 type SetupObject = ReturnType<typeof getHrmConfig>;
 /**
  * Returns the UI for the "Contacts Waiting" section
  */
-const queuesStatusUI = (setupObject: SetupObject) => (
-  <QueuesStatus
-    key="queue-status-task-list"
-    colors={colors}
-    contactsWaitingChannels={setupObject.contactsWaitingChannels}
-    paddingRight={false}
-  />
-);
+const queuesStatusUI = (setupObject: SetupObject) => {
+  console.log('setupObject', setupObject);
+
+  return (
+    <QueuesStatus
+      key="queue-status-task-list"
+      colors={colors}
+      contactsWaitingChannels={setupObject.contactsWaitingChannels}
+      paddingRight={false}
+    />
+  );
+};
 
 const addButtonsUI = (featureFlags: FeatureFlags) => {
-  const manager = Flex.Manager.getInstance();
-
   return (
     <Container key="add-buttons-section" backgroundColor={HrmTheme.colors.base2}>
       <HeaderContainer>
@@ -75,8 +79,8 @@ const addButtonsUI = (featureFlags: FeatureFlags) => {
           <Flex.Template code="AddButtons-Header" />
         </Box>
       </HeaderContainer>
-      {featureFlags.enable_manual_pulling && <ManualPullButton workerClient={manager.workerClient} />}
-      {featureFlags.enable_offline_contact && <AddOfflineContactButton />}
+      {featureFlags.enable_manual_pulling && <ManualPullButton />}
+      <AddOfflineContactButton />
     </Container>
   );
 };
@@ -103,13 +107,14 @@ const setUpRerenderOnReservation = () => {
 
   manager.workerClient.on('reservationCreated', reservation => {
     const { tasks } = manager.store.getState().flex.worker;
-    if (tasks.size === 1 && !isInMyBehalfITask(reservation.task))
+    const { attributes } = reservation.task;
+    if (tasks.size === 1 && !(attributes?.isContactlessTask && !attributes?.isInMyBehalf))
       Flex.Actions.invokeAction('SelectTask', { sid: reservation.sid });
   });
 };
 
 /**
- * Add a widget at the beginnig of the TaskListContainer, which shows the pending tasks in each channel (consumes from QueuesStatusWriter)
+ * Add a widget at the beginning of the TaskListContainer, which shows the pending tasks in each channel (consumes from QueuesStatusWriter)
  */
 export const setUpQueuesStatus = (setupObject: SetupObject) => {
   setUpRerenderOnReservation();
@@ -144,6 +149,7 @@ const isIncomingOfflineContact = task =>
 
 const setUpOfflineContact = () => {
   const manager = Flex.Manager.getInstance();
+
   Flex.ViewCollection.Content.add(
     <Flex.View name="empty-view" key="empty-view">
       <></>
@@ -164,20 +170,8 @@ const setUpOfflineContact = () => {
     if: props =>
       props.route.location.pathname === '/agent-desktop/' &&
       !props.selectedTaskSid &&
-      manager.store.getState()[namespace][routingBase].isAddingOfflineContact, // while this is inefficient because of calling getState several times in a short period of time (re-renders), the impact is minimized by the short-circuit evaluation of the AND operator
+      Boolean(selectCurrentOfflineContact(manager.store.getState() as RootState)), // while this is inefficient because of calling getState several times in a short period of time (re-renders), the impact is minimized by the short-circuit evaluation of the AND operator
   });
-};
-
-/**
- * Dispatch an action to route to the side link
- * Will reset standalone route to a starting target route if the standalone base route doesn't already match it
- * @param targetAppRoute
- */
-const routeToSideLink = (targetAppRoute: AppRoutes) => {
-  const { store } = Flex.Manager.getInstance();
-  const { route } = selectCurrentBaseRoute(store.getState() as RootState, standaloneTaskSid) ?? {};
-  if (route === targetAppRoute.route) return;
-  store.dispatch(changeRoute(targetAppRoute, standaloneTaskSid, ChangeRouteMode.ResetRoute));
 };
 
 /**
@@ -187,20 +181,17 @@ export const setUpAddButtons = (featureFlags: FeatureFlags) => {
   // setup for manual pulling
   if (featureFlags.enable_manual_pulling) setUpManualPulling();
   // setup for offline contact tasks
-  if (featureFlags.enable_offline_contact) setUpOfflineContact();
+  setUpOfflineContact();
 
-  // add UI
-  if (featureFlags.enable_manual_pulling || featureFlags.enable_offline_contact)
-    Flex.TaskList.Content.add(addButtonsUI(featureFlags), {
-      sortOrder: Infinity,
-      align: 'start',
-    });
+  Flex.TaskList.Content.add(addButtonsUI(featureFlags), {
+    sortOrder: Infinity,
+    align: 'start',
+  });
 
   // replace UI for task information
-  if (featureFlags.enable_offline_contact)
-    Flex.TaskCanvas.Content.replace(<TaskCanvasOverride key="TaskCanvas-empty" />, {
-      if: props => props.task.channelType === 'default',
-    });
+  Flex.TaskCanvas.Content.replace(<TaskCanvasOverride key="TaskCanvas-empty" />, {
+    if: props => props.task.channelType === 'default',
+  });
 };
 
 /**
@@ -241,46 +232,7 @@ export const setUpCustomCRMContainer = () => {
 };
 
 /**
- * Adds a custom button for voice channel to show the phone number in emergency situations
- */
-export const setUpViewMaskedVoiceNumber = () => {
-  if (!getAseloConfigFlags().enableUnmaskingCalls) return;
-
-  Flex.TaskCanvasHeader.Content.add(<ViewTaskNumber key="view-task-number" />, {
-    sortOrder: 1,
-    if: props => props.task.channelType === 'voice',
-  });
-};
-
-/**
- * Add components used only by developers
- */
-export const setUpDeveloperComponents = (translateUI: (language: string) => Promise<void>) => {
-  const manager = Flex.Manager.getInstance();
-
-  Flex.ViewCollection.Content.add(
-    <Flex.View name="settings" key="settings-view">
-      <div>
-        <Translator manager={manager} translateUI={translateUI} key="translator" />
-      </div>
-    </Flex.View>,
-  );
-
-  Flex.SideNav.Content.add(
-    <SettingsSideLink
-      key="SettingsSideLink"
-      onClick={() => Flex.Actions.invokeAction('NavigateToView', { viewName: 'settings' })}
-      reserveSpace={false}
-      showLabel={false}
-    />,
-    {
-      align: 'end',
-    },
-  );
-};
-
-/**
- * Add components used only by developers
+ * Add components for case list
  */
 export const setUpCaseList = () => {
   Flex.ViewCollection.Content.add(
@@ -294,7 +246,6 @@ export const setUpCaseList = () => {
       key="CaseListSideLink"
       onClick={() => {
         Flex.Actions.invokeAction('NavigateToView', { viewName: 'case-list' });
-        routeToSideLink({ route: 'case-list', subroute: 'case-list' });
       }}
       reserveSpace={false}
       showLabel={true}
@@ -318,7 +269,6 @@ export const setUpClientProfileList = () => {
       key="ProfileListSideLink"
       onClick={() => {
         Flex.Actions.invokeAction('NavigateToView', { viewName: 'profile-list' });
-        routeToSideLink({ route: 'profile-list', subroute: 'profile-list' });
         Flex.Manager.getInstance().store.dispatch(
           changeRoute(
             { route: 'profile-list', subroute: 'profile-list' },
@@ -344,8 +294,7 @@ export const setUpStandaloneSearch = () => {
     <StandaloneSearchSideLink
       key="StandaloneSearchSideLink"
       onClick={() => {
-        Flex.Actions.invokeAction('NavigateToView', { viewName: 'search' });
-        routeToSideLink({ route: 'search', subroute: 'form' });
+        Flex.Actions.invokeAction('NavigateToView', { viewName: 'search', subroute: 'form' });
       }}
       reserveSpace={false}
       showLabel={true}
@@ -401,14 +350,6 @@ export const removeActionsIfTransferring = () => {
 };
 
 /**
- *
- */
-export const replaceTwilioMessageInput = () => {
-  Flex.MessageInputV2.Content.replace(<AseloMessageInput key="textarea" />, { sortOrder: -1 });
-  Flex.MessageList.Content.replace(<AseloMessageList key="list" />);
-};
-
-/**
  * Canned responses
  */
 export const setupCannedResponses = () => {
@@ -421,4 +362,26 @@ export const setupCannedResponses = () => {
  */
 export const setupEmojiPicker = () => {
   Flex.MessageInputActions.Content.add(<EmojiPicker key="emoji-picker" />);
+};
+
+export const setupWorkerLanguageSelect = () => {
+  Flex.MainHeader.Content.add(<Translator key="locale-selector" />, { align: 'end', sortOrder: 0 });
+  const LanguageSelectedNotification: React.FC<{ notificationContext?: { localeSelection: string } }> = ({
+    notificationContext: { localeSelection },
+  }) => (
+    <span>
+      <Template code="MainHeader-Translator-SelectionNotification" localeSelection={localeSelection} />{' '}
+      <a href=".">
+        <Template code="MainHeader-Translator-RefreshRequiredNotification" />
+      </a>{' '}
+      <Template code="MainHeader-Translator-RefreshWarningNotification" />
+    </span>
+  );
+
+  Notifications.registerNotification({
+    id: REFRESH_BROWSER_REQUIRED_FOR_LANGUAGE_CHANGE_NOTIFICATION_ID,
+    type: NotificationType.information,
+    timeout: 0,
+    content: <LanguageSelectedNotification />,
+  });
 };

@@ -134,7 +134,7 @@ resource "aws_lex_bot" "this" {
 
 
   clarification_prompt {
-    max_attempts = 2
+    max_attempts = each.value.clarification_prompt.max_attempts
 
     message {
       content      = each.value.clarification_prompt.content

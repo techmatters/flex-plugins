@@ -1,0 +1,103 @@
+{
+    "intentName": "post_survey_yes",
+    "description": "General es/bots Post Survey bot",
+    "sampleUtterances": [
+        {
+            "utterance": "Correcto"
+        },
+        {
+            "utterance": "Por supuesto"
+        },
+        {
+            "utterance": "ok"
+        },
+        {
+            "utterance": "Si"
+        },
+        {
+            "utterance": "si"
+        },
+        {
+            "utterance": "Sí"
+        },
+        {
+            "utterance": "Afirmativo"
+        },
+        {
+            "utterance": "Claro"
+        },
+        {
+            "utterance": "¡Sí!"
+        },
+        {
+            "utterance": "s"
+        },
+        {
+            "utterance": "1"
+        }
+
+    ],
+    "dialogCodeHook": {
+        "enabled": false
+    },
+    "fulfillmentCodeHook": {
+        "enabled": false,
+        "active": true,
+        "postFulfillmentStatusSpecification": {
+            "successNextStep": {
+                "dialogAction": {
+                    "type": "CloseIntent"
+                },
+                "intent": {}
+            },
+            "failureNextStep": {
+                "dialogAction": {
+                    "type": "CloseIntent"
+                },
+                "intent": {}
+            },
+            "timeoutNextStep": {
+                "dialogAction": {
+                    "type": "CloseIntent"
+                },
+                "intent": {}
+            }
+        }
+    },
+    "slotPriorities": [
+        {
+            "priority": 1,
+            "slotName": "was_helpful"
+        },
+        {
+            "priority": 2,
+            "slotName": "felt_supported"
+        },
+        {
+            "priority": 3,
+            "slotName": "would_recommend"
+        }
+    ],
+    "intentClosingSetting": {
+        "closingResponse": {
+            "messageGroups": [
+                {
+                    "message": {
+                        "plainTextMessage": {
+                            "value": "Gracias por contactarnos. No dudes en escribirnos de nuevo cuando necesites ayuda."
+                        }
+                    }
+                }
+            ],
+            "allowInterrupt": true
+        },
+        "active": true,
+        "nextStep": {
+            "dialogAction": {
+                "type": "EndConversation"
+            },
+            "intent": {}
+        }
+    
+    }
+}

@@ -1,0 +1,23 @@
+[
+  {
+    "name": "note",
+    "label": "FollowUpDetails",
+    "type": "textarea",
+    "placeholder": "",
+    "rows": 20,
+    "width": 250,
+    "isPII": true
+  },
+  {
+    "name": "counsellingManagerInformed",
+    "label": "counsellingManagerInformed",
+    "type": "checkbox",
+    "isPII": false
+  },
+  {
+    "name": "cmSignOff",
+    "label": "cmSignOff",
+    "type": "input",
+    "isPII": true
+  }
+]

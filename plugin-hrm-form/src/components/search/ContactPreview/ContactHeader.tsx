@@ -18,27 +18,22 @@
 import React from 'react';
 import { format } from 'date-fns';
 import { Template } from '@twilio/flex-ui';
-import { CallTypes } from 'hrm-form-definitions';
+import { CallType } from 'hrm-types';
 
 import { Flex } from '../../../styles';
-import { Text as BannerText } from '../../../styles/banners';
-import {
-  ContactButtonsWrapper,
-  PreviewHeaderText,
-  PreviewRow,
-  StyledLink,
-  SubtitleLabel,
-  SubtitleValue,
-} from '../styles';
+import { BannerText } from '../../../styles/banners';
+import { ContactButtonsWrapper, PreviewHeaderText, PreviewRow, SubtitleLabel, SubtitleValue } from '../styles';
+import { StyledLink } from '../../../styles/buttons';
 import { isNonDataCallType } from '../../../states/validationRules';
 import CallTypeIcon from '../../common/icons/CallTypeIcon';
 import { channelTypes, ChannelTypes } from '../../../states/DomainConstants';
-import { getInitializedCan, PermissionActions } from '../../../permissions';
+import { getInitializedCan } from '../../../permissions/rules';
 import InfoIcon from '../../caseMergingBanners/InfoIcon';
+import { PermissionActions } from '../../../permissions/actions';
 
 type OwnProps = {
   channel: ChannelTypes | 'default';
-  callType: CallTypes;
+  callType: CallType;
   id: string;
   name?: string;
   callerName?: string;

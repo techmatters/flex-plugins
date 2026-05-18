@@ -18,7 +18,7 @@ import { RootState } from '..';
 import { selectCurrentTopmostRouteForTask } from '../routing/getRoute';
 
 type Route = 'case' | 'search';
-type SubRoute = 'form' | 'case-results' | 'home';
+type SubRoute = 'form' | 'case-results' | 'home' | 'contact-results';
 
 const selectContextContactId = (state: RootState, taskSid: string, route: Route, subroute: SubRoute) => {
   let contactId: string;

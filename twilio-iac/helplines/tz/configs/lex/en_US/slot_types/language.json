@@ -1,0 +1,26 @@
+{
+    "language": {
+        "description": "Helpline Specific tz/configs/lex/en_TZ/slot_types Language Slot Type",
+        "value_selection_strategy": "TOP_RESOLUTION",
+        "values": {
+          "en-US": {
+            "synonyms": [
+              "1english",
+              "eng",
+              "english",
+              "en-US",
+              "1"
+            ]
+          },
+          "KiSwahili": {
+            "synonyms": [
+              "swa",
+              "swahili",
+              "kiswa",
+              "2"
+            ]
+          }
+        }
+      }
+
+}

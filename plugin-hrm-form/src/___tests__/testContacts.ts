@@ -14,19 +14,21 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { callTypes } from 'hrm-form-definitions';
+import { callTypes } from 'hrm-types';
 
 import { Contact } from '../types/types';
-import { ContactMetadata, LoadingStatus } from '../states/contacts/types';
+import { ContactMetadata, LlmAssistantStatus, LoadingStatus } from '../states/contacts/types';
 import { ReferralLookupStatus } from '../states/contacts/resourceReferral';
 
 export const VALID_EMPTY_CONTACT: Contact = {
   accountSid: 'AC',
   id: '',
+  definitionVersion: 'as-v1',
   taskId: 'WT',
   serviceSid: '',
   channelSid: '',
   profileId: null,
+  identifierId: null,
   number: '',
   createdBy: '',
   createdAt: '',
@@ -41,8 +43,6 @@ export const VALID_EMPTY_CONTACT: Contact = {
     contactlessTask: {
       channel: 'voice',
       createdOnBehalfOf: undefined,
-      date: '',
-      time: '',
     },
     childInformation: {},
     callerInformation: {},
@@ -57,13 +57,16 @@ export const VALID_EMPTY_CONTACT: Contact = {
 };
 
 export const VALID_EMPTY_METADATA: ContactMetadata = {
-  startMillis: 0,
-  endMillis: 0,
+  startMillis: undefined,
+  endMillis: undefined,
   categories: { gridView: false, expanded: {} },
-  recreated: false,
   draft: {
     resourceReferralList: { resourceReferralIdToAdd: undefined, lookupStatus: ReferralLookupStatus.NOT_STARTED },
     dialogsOpen: {},
   },
+  finalizeStatus: {},
   loadingStatus: LoadingStatus.LOADED,
+  llmAssistant: {
+    status: LlmAssistantStatus.READY,
+  },
 };

@@ -1,0 +1,266 @@
+/**
+ * Copyright (C) 2021-2023 Technology Matters
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see https://www.gnu.org/licenses/.
+ */
+
+/* eslint-disable react/jsx-max-depth */
+/* eslint-disable react/prop-types */
+import React, { useEffect, useMemo } from 'react';
+import { Template } from '@twilio/flex-ui';
+import { useDispatch, useSelector } from 'react-redux';
+import { FieldValues, FormProvider, SubmitErrorHandler, useForm } from 'react-hook-form';
+import { FormDefinition, FormInputType } from 'hrm-form-definitions';
+import { isEqual } from 'lodash';
+import { AnyAction } from 'redux';
+
+import {
+  BottomButtonBar,
+  BottomButtonBarHeight,
+  Box,
+  ColumnarBlock,
+  Container,
+  PrimaryButton,
+  TwoColumnLayout,
+} from '../../../styles';
+import { RootState } from '../../../states';
+import { newCloseModalAction, newGoBackAction } from '../../../states/routing/actions';
+import type { CustomITask, StandaloneITask } from '../../../types/types';
+import { recordingErrorHandler } from '../../../fullStory';
+import { CaseSummaryWorkingCopy } from '../../../states/case/types';
+import CloseCaseDialog from '../CloseCaseDialog';
+import {
+  initialiseCaseSummaryWorkingCopy,
+  removeCaseSummaryWorkingCopy,
+  updateCaseSummaryWorkingCopy,
+} from '../../../states/case/caseWorkingCopy';
+import { PermissionActionType } from '../../../permissions/rules';
+import { useCreateFormFromDefinition } from '../../forms';
+import { getTemplateStrings } from '../../../hrmConfig';
+import { updateCaseOverviewAsyncAction } from '../../../states/case/saveCase';
+import asyncDispatch from '../../../states/asyncDispatch';
+import NavigableContainer from '../../NavigableContainer';
+import selectCurrentRouteCaseState from '../../../states/case/selectCurrentRouteCase';
+import CaseSummaryEditHistory from './CaseOverviewEditHistory';
+import { selectDefinitionVersionForCase } from '../../../states/configuration/selectDefinitions';
+import { selectCaseHistoryDetails } from '../../../states/case/selectCaseStateByCaseId';
+import { PermissionActions } from '../../../permissions/actions';
+
+export type EditCaseOverviewProps = {
+  task: CustomITask | StandaloneITask;
+  can: (action: PermissionActionType) => boolean;
+};
+
+const enum DialogState {
+  Closed,
+  OpenForBack,
+  OpenForClose,
+}
+
+const EditCaseOverview: React.FC<EditCaseOverviewProps> = ({ task, can }) => {
+  const dispatch = useDispatch();
+
+  const connectedCaseState = useSelector((state: RootState) => selectCurrentRouteCaseState(state, task.taskSid));
+  const historyDetails = useSelector((state: RootState) =>
+    selectCaseHistoryDetails(state, connectedCaseState?.connectedCase),
+  );
+  const workingCopy = connectedCaseState?.caseWorkingCopy.caseSummary;
+  const isUpdating = (connectedCaseState?.outstandingUpdateCount ?? 0) > 0;
+  const definitionVersion = useSelector((state: RootState) =>
+    selectDefinitionVersionForCase(state, connectedCaseState?.connectedCase),
+  );
+  const { connectedCase, availableStatusTransitions } = connectedCaseState ?? {};
+
+  const caseOverviewFields = definitionVersion?.caseOverview;
+
+  const formDefinition: FormDefinition = useMemo(() => {
+    try {
+      if (caseOverviewFields && Array.isArray(caseOverviewFields)) {
+        return caseOverviewFields.map(field => {
+          if (field.name === 'status') {
+            return {
+              ...field,
+              options: availableStatusTransitions,
+            };
+          }
+          return field;
+        });
+      }
+
+      return [
+        {
+          name: 'status',
+          label: 'Case-CaseStatus',
+          type: FormInputType.Select,
+          options: availableStatusTransitions,
+        },
+        {
+          name: 'followUpDate',
+          type: FormInputType.DateInput,
+          label: 'Case-CaseDetailsFollowUpDate',
+        },
+        {
+          name: 'childIsAtRisk',
+          label: 'Case-ChildIsAtRisk',
+          type: FormInputType.Checkbox,
+        },
+        {
+          name: 'summary',
+          label: 'SectionName-CaseSummary',
+          type: FormInputType.Textarea,
+        },
+      ];
+    } catch (e) {
+      console.error('Failed to render edit case summary form', e);
+      return [];
+    }
+  }, [availableStatusTransitions, caseOverviewFields]);
+
+  const savedForm = React.useMemo(() => {
+    const { status, info } = connectedCase;
+
+    return {
+      status,
+      ...(info || {}),
+    };
+  }, [connectedCase]);
+
+  const methods = useForm();
+
+  const [dialogState, setDialogState] = React.useState<DialogState>(DialogState.Closed);
+
+  const { getValues } = methods;
+
+  const initialValues = useMemo(() => {
+    const formValues = getValues() as CaseSummaryWorkingCopy;
+    return {
+      status: connectedCase.status,
+      ...connectedCase.info,
+      ...(workingCopy ?? {}),
+      ...formValues,
+    };
+  }, [connectedCase.info, connectedCase.status, getValues, workingCopy]);
+
+  useEffect(() => {
+    if (!workingCopy) {
+      dispatch(initialiseCaseSummaryWorkingCopy(connectedCase.id, initialValues));
+    }
+  }, [connectedCase.id, initialValues, dispatch, workingCopy]);
+
+  const form = useCreateFormFromDefinition({
+    definition: formDefinition,
+    initialValues,
+    parentsPath: '',
+    updateCallback: () =>
+      dispatch(updateCaseSummaryWorkingCopy(connectedCase.id, getValues() as CaseSummaryWorkingCopy)),
+    isItemEnabled: item => item.name === 'status' || can(PermissionActions.EDIT_CASE_OVERVIEW),
+    shouldFocusFirstElement: false,
+  });
+
+  const [l, r] = React.useMemo(() => {
+    const left: JSX.Element[] = [];
+    const right: JSX.Element[] = [];
+
+    form.forEach(field => {
+      const fieldDef = formDefinition.find(def => def.name === field.key);
+      if (fieldDef && fieldDef.type === FormInputType.Textarea) {
+        right.push(field);
+      } else {
+        left.push(field);
+      }
+    });
+
+    return [left, right];
+  }, [form, formDefinition]);
+
+  if (!connectedCaseState?.connectedCase) return null;
+
+  const save = async () => {
+    const { status: oldStatus, id } = connectedCaseState.connectedCase;
+    const { status, ...updatedInfoValues } = workingCopy;
+
+    await asyncDispatch<AnyAction>(dispatch)(
+      updateCaseOverviewAsyncAction(id, updatedInfoValues, status === oldStatus ? undefined : status),
+    );
+  };
+
+  const saveAndLeave = async () => {
+    await save();
+    dispatch(removeCaseSummaryWorkingCopy(connectedCase.id));
+    dispatch(newGoBackAction(task.taskSid));
+  };
+
+  const strings = getTemplateStrings();
+  const onError: SubmitErrorHandler<FieldValues> = recordingErrorHandler(`Case: EditCaseOverview`, () => {
+    window.alert(strings['Error-Form']);
+    if (dialogState) setDialogState(DialogState.Closed);
+  });
+
+  const checkForEdits = (closeModal: boolean) => {
+    if (isEqual(workingCopy, savedForm)) {
+      dispatch(removeCaseSummaryWorkingCopy(connectedCase.id));
+      dispatch(closeModal ? newCloseModalAction(task.taskSid) : newGoBackAction(task.taskSid));
+    } else setDialogState(closeModal ? DialogState.OpenForClose : DialogState.OpenForBack);
+  };
+
+  return (
+    <FormProvider {...methods}>
+      <NavigableContainer
+        task={task}
+        titleCode="Case-EditCaseOverview"
+        onGoBack={() => checkForEdits(false)}
+        onCloseModal={() => checkForEdits(true)}
+        data-testid="Case-EditCaseOverview"
+      >
+        <CaseSummaryEditHistory {...historyDetails} />
+        <Container formContainer={true}>
+          <Box paddingBottom={`${BottomButtonBarHeight}px`}>
+            <TwoColumnLayout>
+              <ColumnarBlock>{l}</ColumnarBlock>
+              <ColumnarBlock>{r}</ColumnarBlock>
+            </TwoColumnLayout>
+          </Box>
+        </Container>
+        <div style={{ width: '100%', height: 5, backgroundColor: '#ffffff' }} />
+        <BottomButtonBar>
+          <PrimaryButton
+            disabled={isUpdating}
+            data-testid="Case-EditCaseScreen-SaveItem"
+            roundCorners
+            onClick={methods.handleSubmit(saveAndLeave, onError)}
+          >
+            <Template code="BottomBar-SaveCaseSummary" />
+          </PrimaryButton>
+        </BottomButtonBar>
+        <CloseCaseDialog
+          data-testid="CloseCaseDialog"
+          openDialog={dialogState === DialogState.OpenForClose || dialogState === DialogState.OpenForBack}
+          setDialog={() => setDialogState(DialogState.Closed)}
+          handleDontSaveClose={() => {
+            dispatch(removeCaseSummaryWorkingCopy(connectedCase.id));
+            dispatch(
+              dialogState === DialogState.OpenForClose
+                ? newCloseModalAction(task.taskSid)
+                : newGoBackAction(task.taskSid),
+            );
+          }}
+          handleSaveUpdate={methods.handleSubmit(saveAndLeave, onError)}
+        />
+      </NavigableContainer>
+    </FormProvider>
+  );
+};
+
+EditCaseOverview.displayName = 'EditCaseOverview';
+
+export default EditCaseOverview;

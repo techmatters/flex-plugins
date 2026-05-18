@@ -15,14 +15,13 @@
  */
 
 import { omit } from 'lodash';
-import { callTypes } from 'hrm-form-definitions';
+import { callTypes } from 'hrm-types';
 import { createReducer } from 'redux-promise-middleware-actions';
 
 import * as t from './types';
 import {
   ContactsState,
   CREATE_CONTACT_ACTION,
-  LOAD_CONTACT_FROM_HRM_BY_TASK_ID_ACTION,
   SET_SAVED_CONTACT,
   UPDATE_CONTACT_ACTION,
 } from './types';
@@ -35,12 +34,10 @@ import {
   EXISTING_CONTACT_TOGGLE_CATEGORY_EXPANDED_ACTION,
   EXISTING_CONTACT_UPDATE_DRAFT_ACTION,
   ExistingContactAction,
+  ExistingContactsState,
   LOAD_CONTACT_ACTION,
   loadContactReducer,
   loadTranscriptReducer,
-  RELEASE_CONTACT_ACTION,
-  releaseAllContactStates,
-  releaseContactReducer,
   SET_CONTACT_DIALOG_STATE,
   setCategoriesGridViewReducer,
   setContactDialogStateReducer,
@@ -57,18 +54,20 @@ import { ADD_EXTERNAL_REPORT_ENTRY, addExternalReportEntryReducer } from '../csa
 import { resourceReferralReducer } from './resourceReferral';
 import { ContactCategoryAction, toggleSubCategoriesReducer } from './categories';
 import { HrmState } from '..';
-import { createCaseAsyncAction } from '../case/saveCase';
-import { loadContactIntoRedux, saveContactReducer } from './saveContact';
+import { createCaseAsyncAction, CreateCaseAsyncActionFulfilled } from '../case/saveCase';
+import { saveContactReducer } from './saveContact';
 import { ConfigurationState } from '../configuration/reducer';
 import { Contact } from '../../types/types';
 import {
-  SEARCH_CASES_SUCCESS,
-  SEARCH_CONTACTS_SUCCESS,
-  SearchCasesSuccessAction,
-  SearchContactsSuccessAction,
-} from '../search/types';
-import { GET_CASE_TIMELINE_ACTION_FULFILLED, isContactTimelineActivity } from '../case/types';
+  CREATE_CASE_ACTION_FULFILLED,
+  GET_CASE_TIMELINE_ACTION_FULFILLED,
+  isContactTimelineActivity
+} from '../case/types';
 import { GetTimelineAsyncAction } from '../case/timeline';
+import {llmAssistantReducer} from "./llmAssistant";
+import {loadContactIntoRedux} from "./contactReduxUpdates";
+import {SEARCH_CONTACTS_SUCCESS_ACTION, SearchCasesSuccessAction, SearchContactsSuccessAction} from "../search/results";
+import { isStale, hasNonEmptyValue } from '../staleTimeout';
 
 export const emptyCategories = [];
 
@@ -84,14 +83,17 @@ export const initialState: ContactsState = {
 
 const boundReferralReducer = resourceReferralReducer(initialState);
 const boundSaveContactReducer = saveContactReducer(initialState);
+const boundLlmAssistantReducer = llmAssistantReducer(initialState);
+
 type SaveContactReducerAction = Parameters<typeof boundSaveContactReducer>[1] &
   { type:
     // eslint-disable-next-line prettier/prettier
       `${typeof CREATE_CONTACT_ACTION
       | typeof UPDATE_CONTACT_ACTION
-      | typeof LOAD_CONTACT_FROM_HRM_BY_TASK_ID_ACTION
       | typeof SET_SAVED_CONTACT}_${string}`
   };
+
+type LlmAssistantReducerAction = Parameters<typeof boundLlmAssistantReducer>[1]
 
 const newCaseReducer = createReducer(initialState, handleAction => [
   handleAction(
@@ -113,23 +115,30 @@ const newCaseReducer = createReducer(initialState, handleAction => [
   ),
 ]);
 
+const garbageCollectContacts = (existingContacts: ExistingContactsState): ExistingContactsState => {
+  return Object.fromEntries(
+    Object.entries(existingContacts).filter(([, contactEntry]) => {
+      if (hasNonEmptyValue(contactEntry.draftContact)) return true;
+      return !isStale(contactEntry.lastReferencedDate);
+    }),
+  );
+};
+
 const loadContactListIntoState = (
   contactsState: ContactsState,
   configurationState: ConfigurationState,
   contacts: Contact[],
-  referenceId: string,
+  _referenceId: string,
   releaseExisting: boolean = true,
 ): ContactsState => {
-  // Release any contacts currently loaded with the same referenceId - they are being replaced
-  const withoutOldSearchResults = releaseExisting ? { ...contactsState, existingContacts: releaseAllContactStates(contactsState.existingContacts, referenceId) } : contactsState;
   if (contacts?.length) {
     return contacts.reduce((acc, newContact) => {
       // TODO: strip the totalCount property in HRM
       const { totalCount, ...contactToAdd } = newContact as Contact & { totalCount: number };
-      return loadContactIntoRedux(acc, contactToAdd, referenceId);
-    }, withoutOldSearchResults);
+      return loadContactIntoRedux(acc, contactToAdd);
+    }, contactsState);
   }
-  return withoutOldSearchResults;
+  return contactsState;
 };
 
 // eslint-disable-next-line import/no-unused-modules,complexity
@@ -146,52 +155,60 @@ export function reduce(
     | SaveContactReducerAction
     | SearchContactsSuccessAction
     | SearchCasesSuccessAction
-  | GetTimelineAsyncAction,
+  | GetTimelineAsyncAction
+  | CreateCaseAsyncActionFulfilled
 ): ContactsState {
   let state = boundReferralReducer(inputState, inputAction as any);
   state = toggleSubCategoriesReducer(state, inputAction as ContactCategoryAction);
   state = newCaseReducer(state, inputAction as any);
   state = boundSaveContactReducer(state, inputAction as SaveContactReducerAction);
+  state = boundLlmAssistantReducer(state, inputAction as LlmAssistantReducerAction);
+
   const action: Exclude<typeof inputAction, SaveContactReducerAction> = inputAction as any;
+  let updatedState: ContactsState;
   switch (action.type) {
     case REMOVE_CONTACT_STATE: {
       const contactId = Object.values(state.existingContacts).find(cs => cs.savedContact.taskId === action.taskId)
         ?.savedContact.id;
-      return {
+      updatedState = {
         ...state,
         existingContacts: omit(state.existingContacts, contactId),
       };
+      break;
     }
     case t.SAVE_END_MILLIS: {
       const currentContact = Object.values(state.existingContacts).find(cs => cs.savedContact.taskId === action.taskId);
       if (!currentContact) {
         console.warn(`No contact with task sid ${action.taskId} found in redux state`);
-        return state;
+        updatedState = state;
+        break;
       }
 
       const { metadata } = currentContact;
       const endedTask = { ...currentContact, metadata: { ...metadata, endMillis: new Date().getTime() } };
 
-      return {
+      updatedState = {
         ...state,
         existingContacts: {
           ...state.existingContacts,
           [currentContact.savedContact.id]: endedTask,
         },
       };
+      break;
     }
     case t.PREPOPULATE_FORM: {
       const currentContact = Object.values(state.existingContacts).find(cs => cs.savedContact.taskId === action.taskId)
         .savedContact;
       if (!currentContact) {
         console.warn(`No contact with task sid ${action.taskId} found in redux state`);
-        return state;
+        updatedState = state;
+        break;
       }
       const { callType, values, isCaseInfo } = action;
       let formName = callType === callTypes.child ? 'childInformation' : 'callerInformation';
       if (isCaseInfo) formName = 'caseInformation';
 
-      return {
+      updatedState = {
         ...state,
         existingContacts: {
           ...state.existingContacts,
@@ -210,52 +227,64 @@ export function reduce(
           },
         },
       };
+      break;
     }
     case LOAD_CONTACT_ACTION: {
-      return { ...state, existingContacts: loadContactReducer(state.existingContacts, action) };
-    }
-    case RELEASE_CONTACT_ACTION: {
-      return { ...state, existingContacts: releaseContactReducer(state.existingContacts, action) };
+      updatedState = { ...state, existingContacts: loadContactReducer(state.existingContacts, action) };
+      break;
     }
     case EXISTING_CONTACT_LOAD_TRANSCRIPT: {
-      return { ...state, existingContacts: loadTranscriptReducer(state.existingContacts, action) };
+      updatedState = { ...state, existingContacts: loadTranscriptReducer(state.existingContacts, action) };
+      break;
     }
     case EXISTING_CONTACT_TOGGLE_CATEGORY_EXPANDED_ACTION: {
-      return { ...state, existingContacts: toggleCategoryExpandedReducer(state.existingContacts, action) };
+      updatedState = { ...state, existingContacts: toggleCategoryExpandedReducer(state.existingContacts, action) };
+      break;
     }
     case EXISTING_CONTACT_SET_CATEGORIES_GRID_VIEW_ACTION: {
-      return { ...state, existingContacts: setCategoriesGridViewReducer(state.existingContacts, action) };
+      updatedState = { ...state, existingContacts: setCategoriesGridViewReducer(state.existingContacts, action) };
+      break;
     }
     case TOGGLE_DETAIL_EXPANDED_ACTION: {
-      return { ...state, contactDetails: sectionExpandedStateReducer(state.contactDetails, action) };
+      updatedState = { ...state, contactDetails: sectionExpandedStateReducer(state.contactDetails, action) };
+      break;
     }
     case SET_CONTACT_DIALOG_STATE: {
-      return { ...state, existingContacts: setContactDialogStateReducer(state.existingContacts, action) };
+      updatedState = { ...state, existingContacts: setContactDialogStateReducer(state.existingContacts, action) };
+      break;
     }
     case EXISTING_CONTACT_UPDATE_DRAFT_ACTION: {
-      return {
+      updatedState = {
         ...state,
         existingContacts: updateDraftReducer(state.existingContacts, rootState.configuration, action),
       };
+      break;
     }
     case EXISTING_CONTACT_CREATE_DRAFT_ACTION: {
-      return { ...state, existingContacts: createDraftReducer(state.existingContacts, action) };
+      updatedState = { ...state, existingContacts: createDraftReducer(state.existingContacts, action) };
+      break;
     }
     case ADD_EXTERNAL_REPORT_ENTRY: {
-      return { ...state, existingContacts: addExternalReportEntryReducer(state.existingContacts, action) };
+      updatedState = { ...state, existingContacts: addExternalReportEntryReducer(state.existingContacts, action) };
+      break;
     }
-    case SEARCH_CONTACTS_SUCCESS: {
-      return loadContactListIntoState(state, rootState.configuration, action.searchResult.contacts, `${action.taskId}-search-contact`);
-    }
-    case SEARCH_CASES_SUCCESS: {
-      return loadContactListIntoState(state, rootState.configuration, action.searchResult.cases.map(c => c.firstContact).filter(Boolean), `${action.taskId}-search-case`);
+    case SEARCH_CONTACTS_SUCCESS_ACTION: {
+      updatedState = loadContactListIntoState(state, rootState.configuration, action.payload.searchResult.contacts, `${action.payload.taskSid}-search-contact`);
+      break;
     }
     case GET_CASE_TIMELINE_ACTION_FULFILLED: {
-      const { payload: { caseId, timelineResult: { activities } } } = action;
+      const { payload: { timelineResult: { activities }, reference } } = action;
       const contacts = activities.filter(isContactTimelineActivity).map(({ activity })=> activity);
-      return loadContactListIntoState(state, rootState.configuration, contacts, `case-${caseId}`, false);
+      updatedState = loadContactListIntoState(state, rootState.configuration, contacts, reference, false);
+      break;
+    }
+    case CREATE_CASE_ACTION_FULFILLED: {
+      const { payload: { connectedContact } } = action as CreateCaseAsyncActionFulfilled;
+      updatedState = loadContactIntoRedux(state, connectedContact);
+      break;
     }
     default:
-      return state;
+      updatedState = state;
   }
+  return { ...updatedState, existingContacts: garbageCollectContacts(updatedState.existingContacts) };
 }

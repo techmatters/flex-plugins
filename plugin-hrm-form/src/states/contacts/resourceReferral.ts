@@ -18,6 +18,7 @@ import { createAction, createReducer } from 'redux-promise-middleware-actions';
 
 import { ContactsState } from './types';
 import { ReferrableResource } from '../../services/ResourceService';
+import { getUnsavedContactFromState } from './getUnsavedContact';
 
 export enum ReferralLookupStatus {
   NOT_STARTED = 'not started',
@@ -128,10 +129,11 @@ export const resourceReferralReducer = (initialState: ContactsState) =>
     handleAction(
       addResourceReferralForUnsavedContactAction,
       (state, { payload: { contactId, resource } }): ContactsState => {
-        if (!state.existingContacts[contactId]) {
+        const unsavedContact = getUnsavedContactFromState(state.existingContacts[contactId]);
+        if (!unsavedContact) {
           return state;
         }
-        if (state.existingContacts[contactId].draftContact?.referrals?.find(r => r.resourceId === resource.id)) {
+        if (unsavedContact.referrals?.find(r => r.resourceId === resource.id)) {
           // Don't add a referral if it already exists
           return patchUnsavedContactReferralResourceState(state, contactId, {
             lookupStatus: ReferralLookupStatus.NOT_STARTED,
@@ -146,7 +148,7 @@ export const resourceReferralReducer = (initialState: ContactsState) =>
               draftContact: {
                 ...state.existingContacts[contactId].draftContact,
                 referrals: [
-                  ...(state.existingContacts[contactId].draftContact?.referrals ?? []),
+                  ...(unsavedContact.referrals ?? []),
                   { resourceId: resource.id, referredAt: new Date().toISOString(), resourceName: resource.name },
                 ],
               },
@@ -168,7 +170,7 @@ export const resourceReferralReducer = (initialState: ContactsState) =>
     handleAction(
       removeResourceReferralForUnsavedContactAction,
       (state, { payload: { contactId, referralId } }): ContactsState => {
-        const referrals = state.existingContacts[contactId].draftContact?.referrals.filter(
+        const referrals = getUnsavedContactFromState(state.existingContacts[contactId])?.referrals?.filter(
           referral => referral.resourceId !== referralId,
         );
         return {

@@ -17,9 +17,9 @@
 import { Manager, StateHelper, TaskHelper } from '@twilio/flex-ui';
 import type { Conversation } from '@twilio/conversations';
 
-import { FeatureFlags } from '../types/types';
 import * as TransferHelpers from '../transfer/transferTaskState';
 import { deactivateAseloListeners } from '../conversationListeners';
+import { FeatureFlags } from '../types/FeatureFlags';
 
 const removeConversationListeners = (conversation: Conversation) => {
   const safelyRemoveListeners = (eventName: string) => {
@@ -85,7 +85,5 @@ export const setTaskWrapupEventListeners = (featureFlags: FeatureFlags) => {
   /**
    * If transfers are on, after a task is transferred remove all the conversation listeners to prevent message notifications
    */
-  if (featureFlags.enable_transfers) {
-    manager.events.addListener('taskCompleted', deactivateConversationListenersForTransferred);
-  }
+  manager.events.addListener('taskCompleted', deactivateConversationListenersForTransferred);
 };

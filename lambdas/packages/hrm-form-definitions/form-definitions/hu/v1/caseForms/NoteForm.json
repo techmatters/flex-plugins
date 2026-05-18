@@ -1,0 +1,11 @@
+[
+  {
+    "name": "note",
+    "label": "Megjegyzés",
+    "type": "textarea",
+    "placeholder": "",
+    "rows": 20,
+    "width": 500,
+    "isPII": true
+  }
+]

@@ -1,0 +1,67 @@
+{
+    "intentName": "post_survey_no",
+    "description": "Specific es_CLHS/bots Post Survey bot",
+    "sampleUtterances": [
+        {
+            "utterance": "No"
+        },
+        {
+            "utterance": "no"
+        },
+        {
+            "utterance": "nop"
+        },
+        {
+            "utterance": "2"
+        }
+    ],
+    "dialogCodeHook": {
+        "enabled": false
+    },
+    "fulfillmentCodeHook": {
+        "enabled": false,
+        "active": true,
+        "postFulfillmentStatusSpecification": {
+            "successNextStep": {
+                "dialogAction": {
+                    "type": "CloseIntent"
+                },
+                "intent": {}
+            },
+            "failureNextStep": {
+                "dialogAction": {
+                    "type": "CloseIntent"
+                },
+                "intent": {}
+            },
+            "timeoutNextStep": {
+                "dialogAction": {
+                    "type": "CloseIntent"
+                },
+                "intent": {}
+            }
+        }
+    },
+    "slotPriorities": [],
+    "intentClosingSetting": {
+        "closingResponse": {
+            "messageGroups": [
+                {
+                    "message": {
+                        "plainTextMessage": {
+                            "value": "Está bien, gracias por tu tiempo. Si en otro momento quieres compartir tu opinión, siempre puedes hacerlo ❤️"
+                        }
+                    }
+                }
+            ],
+            "allowInterrupt": true
+        },
+        "active": true,
+        "nextStep": {
+            "dialogAction": {
+                "type": "EndConversation"
+            },
+            "intent": {}
+        }
+    }
+}

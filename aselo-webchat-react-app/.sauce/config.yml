@@ -1,0 +1,79 @@
+# Copyright (C) 2021-2026 Technology Matters
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Affero General Public License as published
+# by the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Affero General Public License for more details.
+#
+# You should have received a copy of the GNU Affero General Public License
+# along with this program.  If not, see https://www.gnu.org/licenses/.
+
+version: 2.1
+apiVersion: v1
+kind: cypress
+showConsoleLog: false
+sauce:
+    region: us-west-1
+    concurrency: 5
+    sauceignore: .sauceignore
+rootDir: .
+cypress:
+    configFile: cypress.config.ts
+    version: 12.17.2
+suites:
+    - name: cypress - windows 10 - chrome latest
+      browser: chrome
+      browserVersion: latest
+      platformName: Windows 10
+      config:
+          specPattern:
+              - "cypress/e2e/**/*.*"
+    - name: cypress - windows 10 - chrome latest-1
+      browser: chrome
+      browserVersion: latest-1
+      platformName: Windows 10
+      config:
+          specPattern:
+              - "cypress/e2e/**/*.*"
+    #  COMMENTING FIREFOX 101 OUT AS THE SAUCELAB IMAGE IS BUGGY
+    #- name: cypress - windows 10 - firefox latest
+    #  browser: firefox
+    #  extendedDebugging: true
+    #  browserVersion: latest
+    #  platformName: windows 10
+    #  config:
+    #    testFiles:
+    #    - '**/*.*'
+    - name: cypress - windows 10 - firefox 100
+      browser: firefox
+      browserVersion: "100"
+      platformName: Windows 10
+      config:
+          specPattern:
+              - "cypress/e2e/**/*.*"
+    # TODO: Add MICROSOFT EDGE - WINDOWS 10 Browsers to the SauceLabs back again
+    # Check ticket: https://issues.corp.twilio.com/browse/FLEXIN-813
+    # - name: cypress - windows 10 - microsoftedge latest
+    #   browser: microsoftedge
+    #   browserVersion: latest
+    #   platformName: Windows 10
+    #   config:
+    #       specPattern:
+    #           - "cypress/e2e/**/*.*"
+    # - name: cypress - windows 10 - microsoftedge latest-1
+    #   browser: microsoftedge
+    #   browserVersion: latest-1
+    #   platformName: Windows 10
+    #   config:
+    #       specPattern:
+    #           - "cypress/e2e/**/*.*"
+artifacts:
+    download:
+        match:
+            - "*"
+        when: always
+        directory: ./artifacts

@@ -14,7 +14,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { customSmsChannelTypes } from '../utils/smsChannels';
+import { customSmsChannelTypes, customFacebookChannelTypes } from '../utils/groupedChannels';
 
 const defaultChannelTypes = {
   voice: 'voice',
@@ -24,8 +24,8 @@ const defaultChannelTypes = {
   web: 'web',
 } as const;
 
-export const customChannelTypes = {
-  twitter: 'twitter',
+const customChannelTypes = {
+  telegram: 'telegram',
   instagram: 'instagram',
   line: 'line',
 } as const;
@@ -48,6 +48,7 @@ export const coreChannelTypes = {
 export const channelTypes = {
   ...coreChannelTypes,
   ...customSmsChannelTypes,
+  ...customFacebookChannelTypes,
 };
 
 export type ChannelTypes = typeof channelTypes[keyof typeof channelTypes];
@@ -56,10 +57,11 @@ export type CoreChannelTypes = typeof coreChannelTypes[keyof typeof coreChannelT
 const chatChannels = [
   channelTypes.whatsapp,
   channelTypes.facebook,
+  channelTypes.messenger,
   channelTypes.web,
   channelTypes.modica,
   channelTypes.sms,
-  channelTypes.twitter,
+  channelTypes.telegram,
   channelTypes.instagram,
   channelTypes.line,
 ];

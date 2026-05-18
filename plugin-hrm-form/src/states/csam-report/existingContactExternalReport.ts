@@ -46,6 +46,7 @@ export const addExternalReportEntryReducer = (
     ...state,
     [action.contactId]: {
       ...state[action.contactId],
+      lastReferencedDate: new Date(),
       savedContact: {
         ...state[action.contactId].savedContact,
         csamReports: [...state[action.contactId].savedContact.csamReports, action.csamReportEntry],

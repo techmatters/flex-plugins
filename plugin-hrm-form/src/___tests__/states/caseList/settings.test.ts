@@ -169,6 +169,7 @@ test('clearFilterReducer - Replaces filter settings with defaults and resets pag
       statuses: [],
       categories: [],
       includeOrphans: false,
+      caseInfoFilters: {},
     },
     page: 0,
     sort: {

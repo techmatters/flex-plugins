@@ -15,17 +15,16 @@
  */
 
 /* eslint-disable react/prop-types */
-import React, { useState, useRef, ReactDOM } from 'react';
+import React, { useState, useRef } from 'react';
 import { get } from 'lodash';
 import { Template } from '@twilio/flex-ui';
 import AttachFileIcon from '@material-ui/icons/AttachFile';
 import { CircularProgress } from '@material-ui/core';
 
 import { Box, FormError, Row, FormInput, UploadFileLabel, UploadFileFileName } from '../../../styles';
-import { StyledNextStepButton } from '../../../styles/buttons';
-import { StyledLink } from '../../search/styles';
+import { PrimaryButton, StyledLink } from '../../../styles/buttons';
 import UploadIcon from '../icons/UploadIcon';
-import { formatFileNameAtAws } from '../../../utils';
+import { formatFileNameAtAws } from '../../../utils/formatters';
 import type { HTMLElementRef } from './types';
 
 type UploadFileInputProps = {
@@ -120,7 +119,7 @@ const UploadFileInput: React.FC<UploadFileInputProps> = ({
       </Row>
       {showUploadButton && (
         <>
-          <StyledNextStepButton
+          <PrimaryButton
             id="upload-button-styled"
             disabled={isLoading}
             onClick={() => fileUploadRef.current.click()}
@@ -139,7 +138,7 @@ const UploadFileInput: React.FC<UploadFileInputProps> = ({
             )}
             {!isLoading && <UploadIcon style={{ fontSize: '20px', marginRight: 5 }} />}
             <Template code="UploadFile-ButtonText" />
-          </StyledNextStepButton>
+          </PrimaryButton>
           <FormInput
             id="file-input"
             type="file"

@@ -1,0 +1,134 @@
+[
+  {
+    "name": "callSummary",
+    "label": "Resumo do contato",
+    "type": "textarea",
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    },
+    "isPII": true
+  },
+  {
+    "name": "actionTaken",
+    "label": "Providências tomadas",
+    "type": "select",
+    "options": [
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "Recomendações",
+        "label": "Recomendações"
+      },
+      {
+        "value": "Encaminhamento para orientação/coordenação Escola",
+        "label": "Encaminhamento para orientação/coordenação Escola"
+      },
+      {
+        "value": "Encaminhamento para Conselhos Tutelares",
+        "label": "Encaminhamento para Conselhos Tutelares"
+      },
+      {
+        "value": "Encaminhamento para Ministério Público Estadual",
+        "label": "Encaminhamento para Ministério Público Estadual"
+      },
+      {
+        "value": "Encaminhamento para Ministério Público Federal",
+        "label": "Encaminhamento para Ministério Público Federal"
+      },
+      {
+        "value": "Encaminhamento para plataformas como trusted partner/trusted flagger",
+        "label": "Encaminhamento para plataformas como trusted partner/trusted flagger"
+      },
+      {
+        "value": "Encaminhamento para Piloto do Facebook",
+        "label": "Encaminhamento para Piloto do Facebook"
+      },
+      {
+        "value": "Encaminhamento para CND da SaferNet",
+        "label": "Encaminhamento para CND da SaferNet"
+      },
+      {
+        "value": "Indicação de delegacia civil mais próxima",
+        "label": "Indicação de delegacia civil mais próxima"
+      },
+      {
+        "value": "Indicação de delegacias especializadas",
+        "label": "Indicação de delegacias especializadas"
+      },
+      {
+        "value": "Encaminhamento para outras organizações",
+        "label": "Encaminhamento para outras organizações"
+      },
+      {
+        "value": "Indicação de Serviços de Saúde Mental ou assistência",
+        "label": "Indicação de Serviços de Saúde Mental ou assistência"
+      },
+      {
+        "value": "Outros",
+        "label": "Outros"
+      }
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    },
+    "isPII": false
+  },
+  {
+    "name": "hasConversationEvolved",
+    "label": "Houve uma evolução da conversa?",
+    "type": "select",
+    "options": [
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "Não",
+        "label": "Não"
+      },
+      {
+        "value": "Pouco",
+        "label": "Pouco"
+      },
+      {
+        "value": "Médio",
+        "label": "Médio"
+      },
+      {
+        "value": "Muito",
+        "label": "Muito"
+      },
+      {
+        "value": "N/A",
+        "label": "N/A"
+      }
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    },
+    "isPII": false
+  },
+  {
+    "name": "okForCaseWorkerToCall",
+    "label": "Ok para alguém da equipe contatar?",
+    "type": "mixed-checkbox",
+    "isPII": false
+  },
+  {
+    "name": "didYouDiscussRightsWithTheChild",
+    "label": "Você discutiu sobre direitos com a criança ou adolescente?",
+    "type": "mixed-checkbox",
+    "isPII": false
+  },
+  {
+    "name": "didTheChildFeelWeSolvedTheirProblem",
+    "label": "A criança ou adolescente sentiu que o problema foi resolvido?",
+    "type": "mixed-checkbox",
+    "isPII": false
+  }
+]

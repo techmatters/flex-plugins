@@ -19,26 +19,40 @@ locals {
 
     #Channels
     channels = {
+      chat : {
+        messaging_mode   = "conversations"
+        channel_type     = "chat"
+        contact_identity = ""
+        templatefile     = "/app/twilio-iac/helplines/et/templates/studio-flows/messaging-chatbot-operating-hours-v2.tftpl"
+        channel_flow_vars = {
+          widget_from = "Adama Child Helpline"
+          chat_blocked_message = "Sorry, you're not able to contact Adama Child Helpline from this device or account"
+        }
+        chatbot_unique_names = []
+      },
       webchat : {
         channel_type     = "web"
         contact_identity = ""
         templatefile     = "/app/twilio-iac/helplines/et/templates/studio-flows/messaging-chatbot-operating-hours.tftpl"
         channel_flow_vars = {
-
+          widget_from = "Adama Child Helpline"
+          chat_blocked_message = "Sorry, you're not able to contact Adama Child Helpline from this device or account"
         }
         chatbot_unique_names = []
-      },
+      }/*,
       facebook : {
         channel_type     = "facebook"
         contact_identity = "messenger:110628727963549"
         templatefile     = "/app/twilio-iac/helplines/et/templates/studio-flows/messaging-chatbot-operating-hours.tftpl"
         channel_flow_vars = {
+          widget_from = "Adama Child Helpline"
+          chat_blocked_message = "Sorry, you're not able to contact Adama Child Helpline from this device or account"
         }
         chatbot_unique_names = []
-      }
+      }*/
     }
 
 
-
+  get_profile_flags_for_identifier_base_url = "https://hrm-staging.tl.techmatters.org/lambda/twilio/account-scoped"
   }
 }

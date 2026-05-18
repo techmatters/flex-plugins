@@ -1,0 +1,97 @@
+{
+  "slotTypeName": "race",
+  "slotTypeValues": [
+    {
+      "sampleValue": {
+        "value": "White"
+      },
+      "synonyms": [
+        { "value": "1" },
+        { "value": "white" },
+        { "value": "caucasian" }
+      ]
+    },
+    {
+      "sampleValue": {
+        "value": "Black/African American"
+      },
+      "synonyms": [
+        { "value": "2" },
+        { "value": "black" },
+        { "value": "african american" },
+        { "value": "african-american" },
+        { "value": "african" }
+      ]
+    },
+    {
+      "sampleValue": {
+        "value": "Asian"
+      },
+      "synonyms": [
+        { "value": "3" },
+        { "value": "asian" }
+      ]
+    },
+    {
+      "sampleValue": {
+        "value": "American Indian"
+      },
+      "synonyms": [
+        { "value": "4" },
+        { "value": "american indian" },
+        { "value": "native american" },
+        { "value": "indigenous" }
+      ]
+    },
+    {
+      "sampleValue": {
+        "value": "Native Hawaiian or Other Pacific Islander"
+      },
+      "synonyms": [
+        { "value": "5" },
+        { "value": "native hawaiian" },
+        { "value": "pacific islander" },
+        { "value": "hawaiian" }
+      ]
+    },
+    {
+      "sampleValue": {
+        "value": "Two or More Races"
+      },
+      "synonyms": [
+        { "value": "6" },
+        { "value": "mixed" },
+        { "value": "multiracial" },
+        { "value": "two or more" },
+        { "value": "multiple races" }
+      ]
+    },
+    {
+      "sampleValue": {
+        "value": "Other"
+      },
+      "synonyms": [
+        { "value": "7" },
+        { "value": "other" },
+        { "value": "different" }
+      ]
+    },
+    {
+      "sampleValue": {
+        "value": "Unknown"
+      },
+      "synonyms": [
+        { "value": "0" },
+        { "value": "unknown" },
+        { "value": "prefer not to say" },
+        { "value": "rather not say" },
+        { "value": "prefer not to answer" },
+        { "value": "x" },
+        { "value": "X" }
+      ]
+    }
+  ],
+  "valueSelectionSetting": {
+    "resolutionStrategy": "TopResolution"
+  }
+}

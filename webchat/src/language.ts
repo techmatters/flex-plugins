@@ -92,6 +92,11 @@ export const getChangeLanguageWebChat = (manager: FlexWebChat.Manager, config: C
       setNewStrings({ ...twilioStrings, ...defaultLanguageTranslations, ...configTranslations[defaultLanguage] });
       setMainHeaderTitle(manager, defaultLanguage);
     }
+    const msgNotification = FlexWebChat.Notifications.registeredNotifications.get('NewChatMessage');
+
+    if (msgNotification) {
+      msgNotification.options!.browser!.title = manager.strings.NewChatMessageNotificationTitle;
+    }
   };
 
   return (language: string) => {
@@ -99,7 +104,7 @@ export const getChangeLanguageWebChat = (manager: FlexWebChat.Manager, config: C
       setNewLanguage(language);
       overrideLanguageOnContext(manager, language);
     } catch (err) {
-      const translationErrorMsg = 'Could not translate, using default';
+      const translationErrorMsg = `Could not load translations for language "${language}", using default "${defaultLanguage}"`;
       window.alert(translationErrorMsg);
       console.error(translationErrorMsg, err);
       setNewLanguage(defaultLanguage);

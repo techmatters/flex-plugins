@@ -1,0 +1,59 @@
+{
+  "pre_survey": {
+    "description": "Specific configs/lex_v2/uk/bots/pre_survey",
+    "locale": "en_US",
+    "child_directed": true,
+    "idle_session_ttl_in_seconds": "600",
+    "staging_bot_alias_id":"TSTALIASID",
+    "production_bot_alias_id":"WSRHVKUCTV",
+    "type": "Bot",
+    "intents": {
+      "pre_survey_intent": {
+        "utterances": [
+          {
+            "utterance": "trigger_pre_survey"
+          },
+          {
+            "utterance": "Привіт"
+          },
+          {
+            "utterance": "Здравствуйте"
+          }
+        ],
+        "initial_response": {
+          "message": "You have reached Kellimni",
+          "slot_to_elicit": "aboutSelf"
+        },
+        "closing_response": {
+          "message": "Дякуємо за звернення. Зараз ми допомагаємо іншим клієнтам, але зробимо все можливе, щоб відповісти вам найближчим часом. Будь ласка, чекайте допомоги. Якщо це екстрена ситуація, зв’яжіться з нами за номером 112, поки ми не зможемо вам допомогти."
+        },
+        "slot_priorities": {
+          "1": {
+            "slot_name": "aboutSelf",
+            "slot_type_name": "yes_no",
+            "slot_question": "Ти звертаєшся з приводу себе? так або ні",
+            "failure_response": "Вибачте, на даний момент я не можу надати допомогу."
+          },
+          "2": {
+            "slot_name": "age",
+            "slot_type_name": "age",
+            "slot_question": "Скільки тобі років?",
+            "failure_response": "Вибачте, на даний момент я не можу надати допомогу."
+          },
+          "3": {
+            "slot_name": "gender",
+            "slot_type_name": "gender",
+            "slot_question": "Яка у вас стать? \n 1. Жінка \n 2. Чоловік \n 3. Інші \n 4. Не хочу відповідати",
+            "failure_response": "Вибачте, на даний момент я не можу надати допомогу."
+          },
+          "4": {
+            "slot_name": "feeling",
+            "slot_type_name": "feeling",
+            "slot_question": "HЯк ти себе почуваєш? \n 1. Щасливий \n 2. Збентежений \n 3. Злий \n 4. Шокований \n 5. Переляканий \n 6. Розгублений",
+            "failure_response": "Вибачте, на даний момент я не можу надати допомогу."
+          }
+        }
+      }
+    }
+  }
+}

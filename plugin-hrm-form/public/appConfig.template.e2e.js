@@ -16,6 +16,8 @@
 
 // your account sid
 const accountSid = '__TWILIO_ACCOUNT_SID__';
+const clientId = '__TWILIO_CLIENT_ID__';
+const connection = '__TWILIO_CONNECTION__';
 
 /*
  * set to /plugins.json for local dev
@@ -32,6 +34,11 @@ const appConfig = {
   },
   sso: {
     accountSid,
+  },
+  oauth: {
+    connection,
+    clientId,
+    redirectUrl: 'http://localhost:3000',
   },
   ytica: false,
   logLevel: 'debug',

@@ -15,23 +15,13 @@
  */
 
 import each from 'jest-each';
-import {
-  DefinitionVersion,
-  DefinitionVersionId,
-  FormDefinition,
-  FormInputType,
-  loadDefinition,
-  useFetchDefinitions,
-} from 'hrm-form-definitions';
+import { DefinitionVersion, FormDefinition, FormInputType, loadDefinition } from 'hrm-form-definitions';
 
+import { mockLocalFetchDefinitions } from '../../../mockFetchDefinitions';
 import { copyCaseSectionItem } from '../../../../states/case/sections/copySection';
-import { CaseSectionApi } from '../../../../states/case/sections/api';
-import { householdSectionApi } from '../../../../states/case/sections/household';
-import { perpetratorSectionApi } from '../../../../states/case/sections/perpetrator';
 import { CaseSectionTypeSpecificData } from '../../../../services/caseSectionService';
 
-// eslint-disable-next-line react-hooks/rules-of-hooks
-const { mockFetchImplementation, mockReset, buildBaseURL } = useFetchDefinitions();
+const { mockFetchImplementation, mockReset, buildBaseURL } = mockLocalFetchDefinitions();
 
 beforeEach(() => {
   mockReset();
@@ -43,7 +33,7 @@ describe('copyCaseSection', () => {
 
   let demoV1: DefinitionVersion;
   beforeAll(async () => {
-    const formDefinitionsBaseUrl = buildBaseURL(DefinitionVersionId.demoV1);
+    const formDefinitionsBaseUrl = buildBaseURL('as-v1');
     await mockFetchImplementation(formDefinitionsBaseUrl);
 
     demoV1 = await loadDefinition(formDefinitionsBaseUrl);
@@ -55,8 +45,6 @@ describe('copyCaseSection', () => {
     sourceDefinition: FormDefinition;
     targetDefinition: FormDefinition;
     fromId?: string;
-    fromApiOverrides?: Partial<CaseSectionApi>;
-    toApiOverrides?: Partial<CaseSectionApi>;
     description: string;
   };
 
@@ -267,19 +255,25 @@ describe('copyCaseSection', () => {
 
   each(testCaseParameters).test(
     '$description',
-    ({ sourceSection, expectedCopy, sourceDefinition, targetDefinition, fromApiOverrides, toApiOverrides }: Params) => {
+    ({ sourceSection, expectedCopy, sourceDefinition, targetDefinition }: Params) => {
       const result = copyCaseSectionItem({
         definition: {
           ...demoV1,
-          caseForms: {
-            ...demoV1.caseForms,
-            HouseholdForm: sourceDefinition,
-            PerpetratorForm: targetDefinition,
+          caseSectionTypes: {
+            ...demoV1.caseSectionTypes,
+            household: {
+              ...demoV1.caseSectionTypes.household,
+              form: sourceDefinition,
+            },
+            perpetrator: {
+              ...demoV1.caseSectionTypes.perpetrator,
+              form: targetDefinition,
+            },
           },
         },
         fromSection: sourceSection,
-        fromApi: { ...householdSectionApi, ...fromApiOverrides },
-        toApi: { ...perpetratorSectionApi, ...toApiOverrides },
+        fromSectionType: 'household',
+        toSectionType: 'perpetrator',
       });
       expect(result).toStrictEqual(expectedCopy);
     },

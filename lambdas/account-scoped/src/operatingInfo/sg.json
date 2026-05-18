@@ -1,0 +1,92 @@
+{
+  "timezone": "Asia/Singapore",
+  "holidays": {
+    "12/24/2024": "Christmas Eve Half Day",
+    "11/25/2024": "Christmas Day",
+    "12/31/2024": "New Years Eve Half Day ",
+    "01/01/2025": "New Year's Day",
+    "01/28/2025": "Chinese New Year's Eve Half Day",
+    "01/29/2025": "Chinese New Year",
+    "01/30/2025": "Chinese New Year",
+    "03/31/2025": "Hari Raya Puasa*",
+    "04/18/2025": "Good Friday",
+    "05/01/2025": "Labour Day",
+    "05/12/2025": "Vesak Day",
+    "06/07/2025": "Hari Raya Haji*",
+    "08/09/2025": "National Day",
+    "10/20/2025": "Deepavali",
+    "12/24/2025": "Christmas Eve Half Day",
+    "12/25/2025": "Christmas Day",
+    "12/31/2025": "New Year's Eve Half Day"
+  },
+  "operatingHours": {
+    "webchat": {
+      "1": [
+        {
+          "open": 1430,
+          "close": 1900
+        }
+      ],
+      "2": [
+        {
+          "open": 1430,
+          "close": 1900
+        }
+      ],
+      "3": [
+        {
+          "open": 1430,
+          "close": 1900
+        }
+      ],
+      "4": [
+        {
+          "open": 1430,
+          "close": 1900
+        }
+      ],
+      "5": [
+        {
+          "open": 1430,
+          "close": 1700
+        }
+      ],
+      "6": [],
+      "7": []
+    },
+    "voice": {
+      "1": [
+        {
+          "open": 1430,
+          "close": 1700
+        }
+      ],
+      "2": [
+        {
+          "open": 1430,
+          "close": 1700
+        }
+      ],
+      "3": [
+        {
+          "open": 1430,
+          "close": 1700
+        }
+      ],
+      "4": [
+        {
+          "open": 1430,
+          "close": 1700
+        }
+      ],
+      "5": [
+        {
+          "open": 1430,
+          "close": 1700
+        }
+      ],
+      "6": [],
+      "7": []
+    }
+  }
+}

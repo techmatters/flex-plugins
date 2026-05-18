@@ -10,8 +10,9 @@ locals {
     task_language                     = "es-CL"
     voice_ivr_language                = "es-MX"
     enable_post_survey                = true
-    enable_external_recordings = true
-    
+    enable_external_recordings        = true
+    permission_config                 = "cl"
+    enable_lex_v2                     = true
     workflows = {
       master : {
         friendly_name : "Master Workflow"
@@ -59,21 +60,39 @@ locals {
     #Channels
     channels = {
       webchat : {
-        channel_type     = "web"
+        channel_type           = "web"
+        enable_datadog_monitor = true
+        custom_monitor = {
+          query = "sum(last_1d):sum:<metric>{*}.as_count() == 0"
+          custom_schedule = {
+            rrule    = "FREQ=WEEKLY;INTERVAL=1;BYHOUR=23;BYMINUTE=0;BYDAY=MO,TU,WE,TH,FR"
+            timezone = "America/Santiago"
+          }
+        }
         contact_identity = ""
-        templatefile     = "/app/twilio-iac/helplines/templates/studio-flows/messaging-no-chatbot-operating-hours.tftpl"
+        templatefile     = "/app/twilio-iac/helplines/templates/studio-flows/messaging-no-chatbot-operating-hours-blocking-lambda.tftpl"
         channel_flow_vars = {
           chat_greeting_message = "Te damos la bienvenida a Línea Libre, tu mensaje fue recibido exitosamente, la conversación será asignada a uno/a de nuestros psicólogos/as en los próximos instantes."
+          chat_blocked_message  = "Hola, estás comunicándote con Línea Libre, un canal que ofrece una primera atención psicológica, y que busca apoyarte y orientarte en lo que sea que estés pasando. Lamentablemente el número del cual llamas se encuentra bloqueado en nuestro sistema. Si necesitas ayuda te recomendamos tomar contacto con Salud Responde al  6003607777. Si crees que tu número ha sido bloqueado por error, nos puedes escribir un mail a: contacto@paralaconfianza.com"
           widget_from           = "Linea Libre"
         }
         chatbot_unique_names = []
       },
       voice : {
         channel_type     = "voice"
+        enable_datadog_monitor = true
+        custom_monitor = {
+          query = "sum(last_1d):sum:<metric>{*}.as_count() == 0"
+          custom_schedule = {
+            rrule    = "FREQ=WEEKLY;INTERVAL=1;BYHOUR=23;BYMINUTE=0;BYDAY=MO,TU,WE,TH,FR"
+            timezone = "America/Santiago"
+          }
+        }
         contact_identity = ""
-        templatefile     = "/app/twilio-iac/helplines/templates/studio-flows/voice-no-chatbot-operating-hours.tftpl"
+        templatefile     = "/app/twilio-iac/helplines/templates/studio-flows/voice-no-chatbot-operating-hours-blocking-lambda.tftpl"
         channel_flow_vars = {
           voice_ivr_greeting_message = "Hola, estás comunicándote con Línea Libre, un canal que ofrece una primera atención psicológica, y que busca apoyarte y orientarte en lo que sea que estés pasando. Antes de conversar, nos gustaría contarte que trabajamos bajo el principio de protección. Si percibimos que tu integridad o la de un tercero puede estar en riesgo, haremos lo necesario para asegurar tu protección y bienestar. Por tu seguridad, esta llamada podría ser grabada."
+          voice_ivr_blocked_message  = "Hola, estás comunicándote con Línea Libre, un canal que ofrece una primera atención psicológica, y que busca apoyarte y orientarte en lo que sea que estés pasando. Lamentablemente el número del cual llamas se encuentra bloqueado en nuestro sistema. Si necesitas ayuda te recomendamos tomar contacto con Salud Responde al  6003607777. Si crees que tu número ha sido bloqueado por error, nos puedes escribir un mail a: contacto@paralaconfianza.com"
           voice_ivr_language         = "es-MX"
         }
         chatbot_unique_names = []
@@ -85,6 +104,9 @@ locals {
     }
 
     lex_bot_languages = {
+      es_CL : ["post_survey"]
+    }
+    lex_v2_bot_languages = {
       es_CL : ["post_survey"]
     }
 

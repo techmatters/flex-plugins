@@ -1,0 +1,907 @@
+{
+  "Kellimni": {
+    "categories": {
+      "Abuse and Technology": {
+        "color": "#ffbbbb",
+        "subcategories": [
+          {
+            "label": "Exposure to adult pornography online"
+          },
+          {
+            "label": "Exposure to online child pornography"
+          },
+          {
+            "label": "Online extortion or blackmail"
+          },
+          {
+            "label": "Online grooming for sexual purposes"
+          },
+          {
+            "label": "(A&T) Unspecified / Other"
+          },
+          {
+            "label": "Unwanted sexting"
+          },
+          {
+            "label": "Victim of online child pornography"
+          },
+          {
+            "label": "Victim of online sexual exploitation"
+          }
+        ]
+      },
+      "Abuse Violence": {
+        "color": "#ff8238",
+        "subcategories": [
+          {
+            "label": "Corporal punishment"
+          },
+          {
+            "label": "Domestic violence"
+          },
+          {
+            "label": "Emotional abuse"
+          },
+          {
+            "label": "Gang violence"
+          },
+          {
+            "label": "Neglect"
+          },
+          {
+            "label": "Physical abuse"
+          },
+          {
+            "label": "Economic abuse"
+          },
+          {
+            "label": "Psychological abuse"
+          },
+          {
+            "label": "(AV) Sexual abuse"
+          },
+          {
+            "label": "Rape"
+          },
+          {
+            "label": "Witness to violence"
+          },
+          {
+            "label": "(AV) Unspecified / Other"
+          }
+        ]
+      },
+      "Addiction": {
+        "color": "#ffeabb",
+        "subcategories": [
+          {
+            "label": "Addicted to social media or the Internet"
+          },
+          {
+            "label": "Addicted to pornography"
+          },
+          {
+            "label": "Advice and information about addiction"
+          },
+          {
+            "label": "Experimenting with or addicted to alcohol"
+          },
+          {
+            "label": "Experimenting with or addicted to drugs"
+          },
+          {
+            "label": "Food addiction"
+          },
+          {
+            "label": "Gambling addiction"
+          },
+          {
+            "label": "Gaming addiction"
+          },
+          {
+            "label": "Smoking addiction"
+          },
+          {
+            "label": "Spiritual obsession"
+          },
+          {
+            "label": "(A) Unspecified / Other"
+          }
+        ]
+      },
+      "Adult Related Issues": {
+        "color": "#fdffbb",
+        "subcategories": [
+          {
+            "label": "Coping with life transitions"
+          },
+          {
+            "label": "Financial difficulties"
+          },
+          {
+            "label": "Marital problems"
+          },
+          {
+            "label": "Separation / Divorce"
+          },
+          {
+            "label": "Work-relateded stress"
+          }
+        ]
+      },
+      "Basic Needs": {
+        "color": "#dfffbb",
+        "subcategories": [
+          {
+            "label": "Access to clean drinking water"
+          },
+          {
+            "label": "Access to sanitation"
+          },
+          {
+            "label": "Access to social/child care institutions"
+          },
+          {
+            "label": "Children calling for food"
+          },
+          {
+            "label": "Employment Opportunities"
+          },
+          {
+            "label": "Poor Living Conditions"
+          },
+          {
+            "label": "Resources and financial aid"
+          },
+          {
+            "label": "(BN) Unspecified / Other"
+          }
+        ]
+      },
+      "Bullying": {
+        "color": "#bbffce",
+        "subcategories": [
+          {
+            "label": "Emotional"
+          },
+          {
+            "label": "Exposure"
+          },
+          {
+            "label": "Physical"
+          },
+          {
+            "label": "Sexual"
+          },
+          {
+            "label": "Theft"
+          },
+          {
+            "label": "Stalking"
+          },
+          {
+            "label": "(B) Unspecified"
+          }
+        ]
+      },
+      "Child Migration / Children on the Move": {
+        "color": "#bbfff5",
+        "subcategories": [
+          {
+            "label": "(CM) Child trafficking"
+          },
+          {
+            "label": "Child without status / Undocumented"
+          },
+          {
+            "label": "Internally displaced child (domestic)"
+          },
+          {
+            "label": "Problems with adjusting to a new environment"
+          },
+          {
+            "label": "Refugee child (cross-border)"
+          },
+          {
+            "label": "Seeking job opportunities"
+          },
+          {
+            "label": "(CM) Unspecified / Other"
+          },
+          {
+            "label": "Voluntary child migration"
+          }
+        ]
+      },
+      "Commercial Exploitation": {
+        "color": "#bbe2ff",
+        "subcategories": [
+          {
+            "label": "Bonded child labour"
+          },
+          {
+            "label": "Child kidnapping"
+          },
+          {
+            "label": "(CE) Child marriage"
+          },
+          {
+            "label": "Child sexual exploitation/prostitution"
+          },
+          {
+            "label": "(CE) Child trafficking"
+          },
+          {
+            "label": "Children used for begging"
+          },
+          {
+            "label": "Children used for criminal activity"
+          },
+          {
+            "label": "Domestic child labour"
+          },
+          {
+            "label": "Organ harvesting"
+          },
+          {
+            "label": "Other child labour"
+          },
+          {
+            "label": "Sexual exploitation in the context of travel/tourism"
+          },
+          {
+            "label": "(CE) Unspecified / Other"
+          }
+        ]
+      },
+      "Cyberbullying": {
+        "color": "#bbcbff",
+        "subcategories": [
+          {
+            "label": "Abuse of child's personal information/photo/video"
+          },
+          {
+            "label": "Being excluded from an online group/forum"
+          },
+          {
+            "label": "Gossiping / Rumouring / Outing"
+          },
+          {
+            "label": "Harassment"
+          },
+          {
+            "label": "Inappropriate content"
+          },
+          {
+            "label": "Online flaming/fighting"
+          },
+          {
+            "label": "(CB) Revenge porn"
+          },
+          {
+            "label": "Sexual extortion"
+          },
+          {
+            "label": "(CB) Unspecified / Other"
+          },
+          {
+            "label": "Unwanted 'sexting'"
+          },
+          {
+            "label": "Victim of cyberstalking"
+          },
+          {
+            "label": "Victim of impersonation"
+          },
+          {
+            "label": "Victim of discrimination/hate speech"
+          }
+        ]
+      },
+      "Disability": {
+        "color": "#e2bbff",
+        "subcategories": [
+          {
+            "label": "ADHD"
+          },
+          {
+            "label": "Autism"
+          },
+          {
+            "label": "Intellectual disability"
+          },
+          {
+            "label": "Other disability"
+          },
+          {
+            "label": "Physical disability"
+          }
+        ]
+      },
+      "Discrimination": {
+        "color": "#ffbbe3",
+        "subcategories": [
+          {
+            "label": "(D) Access to education"
+          },
+          {
+            "label": "Age-related"
+          },
+          {
+            "label": "Criminal record / Ex-prisoner related"
+          },
+          {
+            "label": "Denial of opportunities/services"
+          },
+          {
+            "label": "Employment related"
+          },
+          {
+            "label": "Gender/Sex related"
+          },
+          {
+            "label": "HIV/AIDS-related"
+          },
+          {
+            "label": "Immigration related"
+          },
+          {
+            "label": "Marginalised or vulnerable groups"
+          },
+          {
+            "label": "Mental and physical health / Disability"
+          },
+          {
+            "label": "Racism related"
+          },
+          {
+            "label": "Sexual orientation related"
+          },
+          {
+            "label": "(D) Unspecified / Other"
+          }
+        ]
+      },
+      "Family Relationships": {
+        "color": "#ffbbbb",
+        "subcategories": [
+          {
+            "label": "Adoption / Fostering issues"
+          },
+          {
+            "label": "(FR) Bereavement"
+          },
+          {
+            "label": "Child custody and access"
+          },
+          {
+            "label": "Divorced / Separated parents / Parents in conflict"
+          },
+          {
+            "label": "Maintenance and child support"
+          },
+          {
+            "label": "New family / Blended family"
+          },
+          {
+            "label": "Parent/Child relationships"
+          },
+          {
+            "label": "Parental pressure"
+          },
+          {
+            "label": "Parents with addiction and/or mental health problems"
+          },
+          {
+            "label": "Sibling relationship"
+          },
+          {
+            "label": "(FR) Unspecified / Other"
+          }
+        ]
+      },
+      "Gender, Sexuality, Sexual Awareness": {
+        "color": "#f20000",
+        "subcategories": [
+          {
+            "label": "Abortion"
+          },
+          {
+            "label": "Contraception"
+          },
+          {
+            "label": "Gender identity"
+          },
+          {
+            "label": "Information about sexuality and facts of life"
+          },
+          {
+            "label": "Masturbation"
+          },
+          {
+            "label": "Pregnancy"
+          },
+          {
+            "label": "STIs / STDs"
+          },
+          {
+            "label": "Sexual fantasy"
+          },
+          {
+            "label": "Sexual identity"
+          },
+          {
+            "label": "Social Exclusion / Ostracism based on sexual Orientation"
+          },
+          {
+            "label": "(GSSA) Unspecified / Other"
+          }
+        ]
+      },
+      "General/Other": {
+        "color": "#ff9714",
+        "subcategories": [
+          {
+            "label": "Administration"
+          },
+          {
+            "label": "Positive feedback from service users"
+          },
+          {
+            "label": "Pranks"
+          }
+        ]
+      },
+      "Harmful Traditional Practices": {
+        "color": "#b8e800",
+        "subcategories": [
+          {
+            "label": "Acid attacks"
+          },
+          {
+            "label": "Amputations"
+          },
+          {
+            "label": "Breast ironing"
+          },
+          {
+            "label": "Burning and branding"
+          },
+          {
+            "label": "(HTP) Child marriage"
+          },
+          {
+            "label": "Cutting"
+          },
+          {
+            "label": "Dowry related issues"
+          },
+          {
+            "label": "Female genital mutilation (FMG)"
+          },
+          {
+            "label": "Force abortion/sterilisation"
+          },
+          {
+            "label": "Harmful adulthood initiations"
+          },
+          {
+            "label": "Honour killing"
+          },
+          {
+            "label": "Sex-Selective infanticide"
+          },
+          {
+            "label": "Virginity tests"
+          },
+          {
+            "label": "(HTP) Unspecified / Other"
+          }
+        ]
+      },
+      "HIV/AIDS infected/affected children": {
+        "color": "#14ffd6",
+        "subcategories": [
+          {
+            "label": "Access to medication"
+          },
+          {
+            "label": "(HIV) Bereavement"
+          },
+          {
+            "label": "Children living with HIV/AIDS"
+          },
+          {
+            "label": "Children orphaned due to HIV/AIDS"
+          },
+          {
+            "label": "HIV/AIDS prevention"
+          },
+          {
+            "label": "Information about AIDS"
+          },
+          {
+            "label": "Lifestyle choices after infection"
+          },
+          {
+            "label": "Parents (or family) with HIV/AIDS"
+          },
+          {
+            "label": "Pregnancy and HIV"
+          },
+          {
+            "label": "Sexual abuse / Rape in relation to HIV"
+          },
+          {
+            "label": "(HIV) Unspecified / Other"
+          }
+        ]
+      },
+      "Homelessness": {
+        "color": "#0093f9",
+        "subcategories": [
+          {
+            "label": "Abandoned"
+          },
+          {
+            "label": "Death of child on street"
+          },
+          {
+            "label": "Homeless children calling for food"
+          },
+          {
+            "label": "Missing children"
+          },
+          {
+            "label": "Orphaned"
+          },
+          {
+            "label": "Repatriation"
+          },
+          {
+            "label": "Seeking shelter"
+          },
+          {
+            "label": "(H) Unspecified / Other"
+          }
+        ]
+      },
+      "Information Requested": {
+        "color": "#1a14ff",
+        "subcategories": [
+          {
+            "label": "Information on other services"
+          },
+          {
+            "label": "Information on our therapy sessions"
+          },
+          {
+            "label": "Questions about the helpline"
+          },
+          {
+            "label": "Thank you for assistance"
+          },
+          {
+            "label": "Volunteering / Work"
+          }
+        ]
+      },
+      "Legal Matters and Juvenile Justice": {
+        "color": "#ae1cfc",
+        "subcategories": [
+          {
+            "label": "Birth registration"
+          },
+          {
+            "label": "Child incarcerated in an adult prison"
+          },
+          {
+            "label": "Child incarcerated / Imprisoned"
+          },
+          {
+            "label": "Child rights violations in juvenile institutions"
+          },
+          {
+            "label": "Child witness"
+          },
+          {
+            "label": "Children in conflict with law"
+          },
+          {
+            "label": "Children in need of legal representation"
+          },
+          {
+            "label": "Law in conflict with children’s rights"
+          },
+          {
+            "label": "(LM&JJ) Unspecified / Other"
+          }
+        ]
+      },
+      "Parenting and Child Rearing": {
+        "color": "#ff1770",
+        "subcategories": [
+          {
+            "label": "Child discipline and positive parenting"
+          },
+          {
+            "label": "Concerns about child's academic results"
+          },
+          {
+            "label": "Concerns about child being abused / Bullied"
+          },
+          {
+            "label": "Concerns about child's development"
+          },
+          {
+            "label": "Concerns about child's eating or sleeping problems"
+          },
+          {
+            "label": "Concerns about child's physical health"
+          },
+          {
+            "label": "Concerns about child's psychosocial well-being"
+          },
+          {
+            "label": "Coping with single parenthood"
+          },
+          {
+            "label": "Coping with a child's disability"
+          },
+          {
+            "label": "Information about service access for child with disability"
+          },
+          {
+            "label": "Parenting"
+          },
+          {
+            "label": "Pre-natal care"
+          },
+          {
+            "label": "Unmanageable children"
+          },
+          {
+            "label": "(P&CR) Unspecified / Other"
+          }
+        ]
+      },
+      "Peer Relationships": {
+        "color": "#9f9f9f",
+        "subcategories": [
+          {
+            "label": "(PR) Bereavement"
+          },
+          {
+            "label": "Bystander / Third-party concern"
+          },
+          {
+            "label": "Making friends"
+          },
+          {
+            "label": "Missing friends"
+          },
+          {
+            "label": "Partner relationships"
+          },
+          {
+            "label": "Peer exclusion"
+          },
+          {
+            "label": "Peer pressure"
+          },
+          {
+            "label": "Problems with friends"
+          },
+          {
+            "label": "Relationship difficulties"
+          },
+          {
+            "label": "Sexual pressure from partner"
+          },
+          {
+            "label": "(PR) Unspecified / Other"
+          }
+        ]
+      },
+      "Physical Abuse": {
+        "color": "#55d17a",
+        "subcategories": [
+          {
+            "label": "Forced abortion"
+          },
+          {
+            "label": "Forced pregnancy"
+          },
+          {
+            "label": "Forced sterilisation"
+          },
+          {
+            "label": "Physical assault"
+          },
+          {
+            "label": "Slavery"
+          },
+          {
+            "label": "Trafficking"
+          }
+        ]
+      },
+      "Physical Health and Healthcare": {
+        "color": "#3389c5",
+        "subcategories": [
+          {
+            "label": "Abortion and post-abortion care"
+          },
+          {
+            "label": "Access to health care"
+          },
+          {
+            "label": "Affected or infected by an epidemic"
+          },
+          {
+            "label": "Covid-19"
+          },
+          {
+            "label": "Concerns about illnesses"
+          },
+          {
+            "label": "General medical or lifestyle concerns"
+          },
+          {
+            "label": "Hospitalisation"
+          },
+          {
+            "label": "Nutrition"
+          },
+          {
+            "label": "In need of medical assistance"
+          },
+          {
+            "label": "(PH&H) Unspecified / Other"
+          }
+        ]
+      },
+      "Psycho-social, Mental Health": {
+        "color": "#d8c732",
+        "subcategories": [
+          {
+            "label": "Depression"
+          },
+          {
+            "label": "Eating disorders"
+          },
+          {
+            "label": "Fear and anxiety"
+          },
+          {
+            "label": "Feelings of Sadness"
+          },
+          {
+            "label": "Identity and purpose of life"
+          },
+          {
+            "label": "Lack of motivation"
+          },
+          {
+            "label": "Lack of confidence"
+          },
+          {
+            "label": "Loneliness"
+          },
+          {
+            "label": "Miscarriage"
+          },
+          {
+            "label": "Multiple psychiatric / Psychological issues"
+          },
+          {
+            "label": "Other psychiatric / Psychological issues"
+          },
+          {
+            "label": "Panic attacks"
+          },
+          {
+            "label": "Phobias and obsessions"
+          },
+          {
+            "label": "Post-natal depression"
+          },
+          {
+            "label": "Trauma / PTSD"
+          },
+          {
+            "label": "Self harm"
+          },
+          {
+            "label": "Stress"
+          },
+          {
+            "label": "Suicide"
+          },
+          {
+            "label": "(PS&MH) Unspecified / Other"
+          }
+        ]
+      },
+      "School-Related and Education": {
+        "color": "#e0ab4f",
+        "subcategories": [
+          {
+            "label": "Academic problems"
+          },
+          {
+            "label": "(SR&E) Access to education"
+          },
+          {
+            "label": "Homework"
+          },
+          {
+            "label": "Learning disorders"
+          },
+          {
+            "label": "Performance anxiety"
+          },
+          {
+            "label": "Problems with teachers and school authorities"
+          },
+          {
+            "label": "School drop-outs"
+          },
+          {
+            "label": "Teacher problems"
+          },
+          {
+            "label": "(SR&E) Unspecified / Other"
+          }
+        ]
+      },
+      "Sexual Abuse": {
+        "color": "#47d379",
+        "subcategories": [
+          {
+            "label": "Attempted rape or attempted forced sodomy/anal rape"
+          },
+          {
+            "label": "Child sexual abuse"
+          },
+          {
+            "label": "Defilement"
+          },
+          {
+            "label": "Forced prostitution"
+          },
+          {
+            "label": "Forced sodomy/anal rape"
+          },
+          {
+            "label": "Incest"
+          },
+          {
+            "label": "Marital rape"
+          },
+          {
+            "label": "Rape"
+          },
+          {
+            "label": "(SA) Revenge porn"
+          },
+          {
+            "label": "(SA) Sexual abuse"
+          },
+          {
+            "label": "Sexual exploitation"
+          },
+          {
+            "label": "Sexual harassment"
+          },
+          {
+            "label": "Sexual violence"
+          },
+          {
+            "label": "(SA) Unspecified / Other"
+          }
+        ]
+      }
+    }
+  }
+}

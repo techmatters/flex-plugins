@@ -16,14 +16,15 @@
 
 import { DefinitionVersion, StatusInfo } from 'hrm-form-definitions';
 
-import { getInitializedCan, PermissionActions } from '../../permissions';
+import { getInitializedCan } from '../../permissions/rules';
 import { Case } from '../../types/types';
+import { PermissionActions } from '../../permissions/actions';
 
 export const getAvailableCaseStatusTransitions = (
   connectedCase: Case,
   definitionVersion: DefinitionVersion,
 ): StatusInfo[] => {
-  if (definitionVersion) {
+  if (definitionVersion && connectedCase) {
     const can = getInitializedCan();
     const caseStatusList = Object.values<StatusInfo>(definitionVersion.caseStatus);
     const currentStatusItem = caseStatusList.find(cs => cs.value === connectedCase.status);

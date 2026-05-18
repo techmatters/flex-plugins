@@ -23,23 +23,30 @@ import '@testing-library/jest-dom/extend-expect';
 import { configureAxe, toHaveNoViolations } from 'jest-axe';
 import { mount } from 'enzyme';
 import { StorelessThemeProvider } from '@twilio/flex-ui';
-import { DefinitionVersion, DefinitionVersionId, loadDefinition, useFetchDefinitions } from 'hrm-form-definitions';
+import { DefinitionVersion, loadDefinition } from 'hrm-form-definitions';
 import { parseISO } from 'date-fns';
 
+import { mockLocalFetchDefinitions } from '../../mockFetchDefinitions';
 import { mockGetDefinitionsResponse } from '../../mockGetConfig';
 import ViewCaseItem, { ViewCaseItemProps } from '../../../components/case/ViewCaseItem';
 import { getDefinitionVersions } from '../../../hrmConfig';
 import { StandaloneITask } from '../../../types/types';
 import { CaseItemAction, NewCaseSubroutes } from '../../../states/routing/types';
-import { householdSectionApi } from '../../../states/case/sections/household';
 import { namespace } from '../../../states/storeNamespaces';
 import { newGoBackAction } from '../../../states/routing/actions';
 import { RecursivePartial } from '../../RecursivePartial';
 import { RootState } from '../../../states';
 import { VALID_EMPTY_CASE } from '../../testCases';
+import { getInitializedCan } from '../../../permissions/rules';
 
-// eslint-disable-next-line react-hooks/rules-of-hooks
-const { mockFetchImplementation, mockReset, buildBaseURL } = useFetchDefinitions();
+jest.mock('../../../permissions/rules', () => ({
+  getInitializedCan: jest.fn(),
+  PermissionActions: {},
+}));
+
+const mockGetInitializedCan = getInitializedCan as jest.MockedFunction<typeof getInitializedCan>;
+
+const { mockFetchImplementation, mockReset, buildBaseURL } = mockLocalFetchDefinitions();
 
 expect.extend(toHaveNoViolations);
 const mockStore = configureMockStore([]);
@@ -134,19 +141,19 @@ describe('Test ViewHousehold', () => {
 
   beforeAll(async () => {
     mockReset();
-    const formDefinitionsBaseUrl = buildBaseURL(DefinitionVersionId.v1);
+    const formDefinitionsBaseUrl = buildBaseURL('as-v1');
     await mockFetchImplementation(formDefinitionsBaseUrl);
 
     mockV1 = await loadDefinition(formDefinitionsBaseUrl);
-    mockGetDefinitionsResponse(getDefinitionVersions, DefinitionVersionId.v1, mockV1);
+    mockGetDefinitionsResponse(getDefinitionVersions, 'as-v1', mockV1);
+    mockGetInitializedCan.mockReturnValue(() => true);
   });
 
   beforeEach(async () => {
     ownProps = {
       definitionVersion: mockV1,
       task: task as StandaloneITask,
-      sectionApi: householdSectionApi,
-      canEdit: () => true,
+      sectionTypeName: 'household',
     };
   });
 
@@ -166,10 +173,11 @@ describe('Test ViewHousehold', () => {
     expect(store.dispatch).toHaveBeenCalledWith(newGoBackAction(task.taskSid));
   });
   test('Test no edit permissions', async () => {
+    mockGetInitializedCan.mockReturnValue(() => false);
     render(
       <StorelessThemeProvider themeConf={themeConf}>
         <Provider store={store}>
-          <ViewCaseItem {...ownProps} canEdit={() => false} />
+          <ViewCaseItem {...ownProps} />
         </Provider>
       </StorelessThemeProvider>,
     );

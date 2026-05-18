@@ -17,35 +17,39 @@
 /* eslint-disable react/prop-types */
 import React from 'react';
 import { View } from '@react-pdf/renderer';
-import { FormDefinition } from 'hrm-form-definitions';
+import { DefinitionVersion } from 'hrm-form-definitions';
 
 import CasePrintSection from './CasePrintSection';
 import { CaseSection } from '../../../services/caseSectionService';
 
 type OwnProps = {
-  sectionNameTemplateCode: string;
-  values: CaseSection[];
-  definitions: FormDefinition;
+  sectionType: string;
+  definition: DefinitionVersion;
+  sections: CaseSection[];
 };
 
 type Props = OwnProps;
 
-const CasePrintMultiSection: React.FC<Props> = ({ sectionNameTemplateCode, values, definitions }) => {
+const CasePrintMultiSection: React.FC<Props> = ({ sectionType, sections, definition }) => {
+  const { form, label } = definition.caseSectionTypes[sectionType];
+
   return (
     <View>
-      {values &&
-        values.length > 0 &&
-        values.map((value, i: number) => {
+      {sections &&
+        sections.length > 0 &&
+        sections.map((value, i: number) => {
           return (
             <CasePrintSection
-              key={`${sectionNameTemplateCode}_${i}`}
-              sectionNameTemplateCode={sectionNameTemplateCode}
+              key={`${sectionType}_${value.sectionId}`}
+              sectionNameTemplateCode={`CasePrint-TabularSection-Header/${sectionType}`}
               sectionNameTemplateValues={{
                 sectionNo: (i + 1).toString(),
-                sectionCount: values.length.toString(),
+                sectionCount: sections.length.toString(),
+                sectionLabel: label,
               }}
               values={value.sectionTypeSpecificData}
-              definitions={definitions}
+              definitions={form}
+              layoutDefinition={definition.layoutVersion.case.sectionTypes[sectionType]}
             />
           );
         })}

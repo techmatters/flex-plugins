@@ -14,13 +14,13 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { DefinitionVersionId, loadDefinition, useFetchDefinitions } from 'hrm-form-definitions';
+import { loadDefinition } from 'hrm-form-definitions';
 
+import { mockLocalFetchDefinitions } from '../../mockFetchDefinitions';
 import * as types from '../../../states/configuration/types';
 import * as actions from '../../../states/configuration/actions';
 
-// eslint-disable-next-line react-hooks/rules-of-hooks
-const { mockFetchImplementation, mockReset, buildBaseURL } = useFetchDefinitions();
+const { mockFetchImplementation, mockReset, buildBaseURL } = mockLocalFetchDefinitions();
 
 beforeEach(() => {
   mockReset();
@@ -30,7 +30,7 @@ describe('test action creators', () => {
   let mockV1;
 
   beforeAll(async () => {
-    const formDefinitionsBaseUrl = buildBaseURL(DefinitionVersionId.v1);
+    const formDefinitionsBaseUrl = buildBaseURL('as-v1');
     await mockFetchImplementation(formDefinitionsBaseUrl);
 
     mockV1 = await loadDefinition(formDefinitionsBaseUrl);
@@ -73,9 +73,9 @@ describe('test action creators', () => {
   });
 
   test('updateDefinitionVersion', async () => {
-    expect(actions.updateDefinitionVersion('v1', mockV1)).toStrictEqual({
+    expect(actions.updateDefinitionVersion('as-v1', mockV1)).toStrictEqual({
       type: types.UPDATE_DEFINITION_VERSION,
-      version: 'v1',
+      version: 'as-v1',
       definitions: mockV1,
     });
   });

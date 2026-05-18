@@ -1,0 +1,81 @@
+/**
+ * Copyright (C) 2021-2025 Technology Matters
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see https://www.gnu.org/licenses/.
+ */
+
+import { spawn } from 'child_process';
+import type { ALBEvent } from 'aws-lambda';
+
+export type IntegrationTestEvent = {
+  testFilter: string;
+  jestPathOverride?: string;
+};
+
+export const isIntegrationTestEvent = (
+  event: IntegrationTestEvent | ALBEvent,
+): event is IntegrationTestEvent => Boolean((event as IntegrationTestEvent).testFilter);
+
+export const runJestTests = async ({
+  testFilter,
+  jestPathOverride,
+}: IntegrationTestEvent) => {
+  const env = { ...process.env };
+
+  // Running jest via NPM or NPX causes issues with piping output through to this process when run in a lambda
+  // Both approaches work locally, but not in the lambda, there are no logs and we don't detect the test run finishing
+  const cmd = spawn(
+    'node',
+    [
+      jestPathOverride || './node_modules/jest/bin/jest.js',
+      '--roots',
+      '.',
+      '--testTimeout=60000',
+      '--verbose',
+      '--forceExit',
+      '--runInBand',
+      '--ci',
+      testFilter,
+    ],
+    {
+      stdio: 'inherit',
+      env,
+      shell: true,
+    },
+  );
+  let result,
+    isError = false;
+  try {
+    result = await new Promise((resolve, reject) => {
+      cmd.on('exit', code => {
+        if (code !== 0) {
+          reject(`Execution error: ${code}`);
+        } else {
+          resolve(`Exited with code: ${code}`);
+        }
+      });
+
+      cmd.on('error', error => {
+        reject(`Execution error: ${error}`);
+      });
+    });
+  } catch (error) {
+    result = error;
+    isError = true;
+  }
+
+  if (isError) {
+    throw result;
+  }
+  console.info(`Test run (${testFilter}) result: `, result);
+};

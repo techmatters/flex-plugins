@@ -14,190 +14,86 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import React, { Dispatch } from 'react';
-import { connect, ConnectedProps } from 'react-redux';
+import React, { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { AnyAction } from 'redux';
 import { Template } from '@twilio/flex-ui';
 
-import { RootState } from '../../../states';
-import { Box, Column } from '../../../styles';
+import { Box, Column, SearchFormTopRule } from '../../../styles';
 import SearchResultsBackButton from '../../search/SearchResults/SearchResultsBackButton';
 import {
   ResourcesSearchArea,
-  ResourcesSearchFormTopRule,
   ResourcesSearchResultsDescription,
-  ResourcesSearchResultsDescriptionItem,
   ResourcesSearchResultsHeader,
   ResourcesSearchResultsList,
   ResourcesSearchTitle,
   ResourceTitle,
 } from '../styles';
+import type { RootState } from '../../../states';
 import {
   changeResultPageAction,
-  getCurrentPageResults,
-  getPageCount,
+  selectResourceSearchCurrentPageResults,
   returnToSearchFormAction,
   searchResourceAsyncAction,
-  SearchSettings,
+  selectResourceSearchCurrentPage,
+  selectResourceSearchParameters,
+  selectResourceSearchResultsTotal,
+  selectResourceSearchPageCount,
+  selectResourceSearchError,
+  selectFilterSelections,
 } from '../../../states/resources/search';
 import { viewResourceAction } from '../../../states/resources';
 import Pagination from '../../pagination';
 import asyncDispatch from '../../../states/asyncDispatch';
 import ResourcePreview from './ResourcePreview';
-import { namespace, referrableResourcesBase } from '../../../states/storeNamespaces';
+import { ResourcesSearchResultsDescriptionDetails } from '../mappingComponents';
 
-type OwnProps = {};
+const SearchResourcesResults: React.FC = () => {
+  const dispatch = useDispatch();
 
-const mapStateToProps = (state: RootState) => {
-  const searchState = state[namespace][referrableResourcesBase].search;
-  const { error, status, currentPage, parameters, filterOptions } = searchState;
-  const currentPageResults = getCurrentPageResults(searchState);
-  return {
-    parameters,
-    filterOptions,
-    currentPageResults,
-    currentPage,
-    error,
-    status,
-    resultPageCount: getPageCount(searchState),
-    resultCount: searchState.results.length,
-  };
-};
-
-const mapDispatchToProps = (dispatch: Dispatch<AnyAction>) => {
-  const searchAsyncDispatch = asyncDispatch<AnyAction>(dispatch);
-  return {
-    returnToForm: () => dispatch(returnToSearchFormAction()),
-    viewResource: (id: string) => dispatch(viewResourceAction(id)),
-    changePage: (page: number) => dispatch(changeResultPageAction(page)),
-    retrievePageResults: (parameters: SearchSettings, page: number) =>
-      searchAsyncDispatch(searchResourceAsyncAction(parameters, page, false)),
-  };
-};
-
-const connector = connect(mapStateToProps, mapDispatchToProps);
-
-type Props = OwnProps & ConnectedProps<typeof connector>;
-
-const SearchResourcesResults: React.FC<Props> = ({
-  parameters,
-  currentPageResults,
-  error,
-  resultPageCount,
-  resultCount,
-  currentPage,
-  changePage,
-  retrievePageResults,
-  returnToForm,
-  viewResource,
-  filterOptions,
-}) => {
+  const error = useSelector(selectResourceSearchError);
+  const currentPage = useSelector(selectResourceSearchCurrentPage);
+  const filterSelections = useSelector(selectFilterSelections);
+  const pageSize = useSelector((state: RootState) => selectResourceSearchParameters(state).pageSize);
+  const generalSearchTerm = useSelector((state: RootState) => selectResourceSearchParameters(state).generalSearchTerm);
+  const currentPageResults = useSelector(selectResourceSearchCurrentPageResults);
+  const resultPageCount = useSelector(selectResourceSearchPageCount);
+  const resultCount = useSelector(selectResourceSearchResultsTotal);
   // If any results for the current page are undefined (i.e. expected to exist given the total result count but not in  redux yet) query the back end
+  useEffect(() => {
+    if (!currentPageResults.every(res => res)) {
+      asyncDispatch<AnyAction>(dispatch)(
+        searchResourceAsyncAction({ pageSize, filterSelections, generalSearchTerm }, currentPage, false),
+      );
+    }
+  }, [currentPage, currentPageResults, dispatch, filterSelections, generalSearchTerm, pageSize]);
   if (!currentPageResults.every(res => res)) {
-    retrievePageResults(parameters, currentPage);
     return null;
   }
-
-  const ageRangeDescription = () => {
-    const {
-      filterSelections: { minEligibleAge, maxEligibleAge },
-    } = parameters;
-    if (minEligibleAge && maxEligibleAge) {
-      return (
-        <ResourcesSearchResultsDescriptionItem>
-          <Template
-            code="Resources-Search-ResultsDescription-AgeRange"
-            minEligibleAge={minEligibleAge}
-            maxEligibleAge={maxEligibleAge}
-          />
-        </ResourcesSearchResultsDescriptionItem>
-      );
-    } else if (minEligibleAge) {
-      return (
-        <ResourcesSearchResultsDescriptionItem>
-          <Template code="Resources-Search-ResultsDescription-MinimumAge" minEligibleAge={minEligibleAge} />
-        </ResourcesSearchResultsDescriptionItem>
-      );
-    } else if (maxEligibleAge) {
-      return (
-        <ResourcesSearchResultsDescriptionItem>
-          <Template code="Resources-Search-ResultsDescription-MaximumAge" maxEligibleAge={maxEligibleAge} />
-        </ResourcesSearchResultsDescriptionItem>
-      );
-    }
-    return null;
-  };
-
-  const locationDescription = () => {
-    const {
-      filterSelections: { province, city },
-    } = parameters;
-    const location = [
-      filterOptions.city.find(({ value }) => value === city)?.label,
-      filterOptions.province.find(({ value }) => value === province)?.label,
-    ]
-      .filter(Boolean)
-      .join(', ');
-    if (location) {
-      return (
-        <ResourcesSearchResultsDescriptionItem>
-          <Template code="Resources-Search-ResultsDescription-Location" location={location} />
-        </ResourcesSearchResultsDescriptionItem>
-      );
-    }
-    return null;
-  };
-
-  const filterDescription = (code: string, selections: string[]) => {
-    const selectionsText = (selections ?? []).join(', ');
-    if (selectionsText) {
-      return (
-        <ResourcesSearchResultsDescriptionItem>
-          <Template code={code} selections={selectionsText} />
-        </ResourcesSearchResultsDescriptionItem>
-      );
-    }
-    return null;
-  };
-
   return (
     <ResourcesSearchArea>
       <Column>
         <Box margin="25px 0 0 25px" style={{ paddingBottom: '10px' }}>
           <SearchResultsBackButton
-            text={<Template code="Return to Search Criteria" />}
+            text={<Template code="SearchResultsIndex-Back" />}
             // eslint-disable-next-line no-empty-function
-            handleBack={returnToForm}
+            handleBack={() => dispatch(returnToSearchFormAction())}
           />
         </Box>
-        <ResourcesSearchFormTopRule />
+        <SearchFormTopRule />
         <ResourcesSearchResultsHeader>
           <ResourcesSearchTitle data-testid="SearchResources-Title">
             <Template code="Resources-Search-ResultsTitle" />
           </ResourcesSearchTitle>
           <ResourcesSearchResultsDescription>
             <Template code="Resources-Search-ResultsDescription" count={resultCount} />
-            {parameters.generalSearchTerm && (
+            {generalSearchTerm && (
               <Template
                 code="Resources-Search-ResultsDescription-GeneralSearchTerm"
-                generalSearchTerm={parameters.generalSearchTerm}
+                generalSearchTerm={generalSearchTerm}
               />
             )}
-            {locationDescription()}
-            {parameters.filterSelections.interpretationTranslationServicesAvailable && (
-              <ResourcesSearchResultsDescriptionItem>
-                <Template code="Resources-Search-ResultsDescription-InterpretationTranslationServicesAvailable" />
-              </ResourcesSearchResultsDescriptionItem>
-            )}
-            {ageRangeDescription()}
-            {filterDescription(
-              'Resources-Search-ResultsDescription-FeeStructure',
-              parameters.filterSelections.feeStructure,
-            )}
-            {filterDescription(
-              'Resources-Search-ResultsDescription-HowServiceIsOffered',
-              parameters.filterSelections.howServiceIsOffered,
-            )}
+            <ResourcesSearchResultsDescriptionDetails />
           </ResourcesSearchResultsDescription>
         </ResourcesSearchResultsHeader>
         {error && ( // TODO: translation / friendlyisation layer
@@ -211,7 +107,10 @@ const SearchResourcesResults: React.FC<Props> = ({
         <ResourcesSearchResultsList>
           {currentPageResults.map(result => (
             <li key={result.id}>
-              <ResourcePreview resourceResult={result} onClickViewResource={() => viewResource(result.id)} />
+              <ResourcePreview
+                resourceResult={result}
+                onClickViewResource={() => dispatch(viewResourceAction(result.id))}
+              />
             </li>
           ))}
         </ResourcesSearchResultsList>
@@ -221,7 +120,7 @@ const SearchResourcesResults: React.FC<Props> = ({
               transparent
               page={currentPage}
               pagesCount={resultPageCount}
-              handleChangePage={pageNumber => changePage(pageNumber)}
+              handleChangePage={pageNumber => dispatch(changeResultPageAction(pageNumber))}
             />
           </div>
         ) : null}
@@ -232,4 +131,4 @@ const SearchResourcesResults: React.FC<Props> = ({
 
 SearchResourcesResults.displayName = 'ViewResource';
 
-export default connector(SearchResourcesResults);
+export default SearchResourcesResults;

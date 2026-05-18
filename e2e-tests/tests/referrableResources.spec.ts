@@ -52,11 +52,11 @@ test.describe.serial('Resource Search', () => {
   });
 
   test('Search for a resource and refer it', async () => {
-    console.log('Open a new offline contact');
+    console.info('Open a new offline contact');
     const agentDesktopPage = agentDesktop(pluginPage);
     await agentDesktopPage.addOfflineContact();
 
-    console.log('Starting filling form');
+    console.info('Starting filling form');
     const form = contactForm(pluginPage);
     await form.selectChildCallType();
     await form.fill([
@@ -102,7 +102,7 @@ test.describe.serial('Resource Search', () => {
       },
     ]);
 
-    console.log('Search for a resource and add it to the contact');
+    console.info('Search for a resource and add it to the contact');
     const referrableResourcesPage = referableResources(pluginPage);
     await referrableResourcesPage.openReferrableResources();
     await referrableResourcesPage.searchResources('faketon');
@@ -115,7 +115,7 @@ test.describe.serial('Resource Search', () => {
     await referrableResourcesPage.openAgentDesktop();
     await referrableResourcesPage.addResourceToContact();
 
-    console.log('Saving form');
+    console.info('Saving form');
     await form.save();
   });
 });

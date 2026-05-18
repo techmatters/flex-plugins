@@ -89,3 +89,29 @@ variable "serverless_url" {
   description = "URL used to access Aselo Twilio serverless functions"
   type        = string
 }
+
+variable "s3_lifecycle_rules" {
+  description = "S3 Bucket Lifecycle Rules"
+  type = map(object({
+    id                 = string
+    expiration_in_days = number
+    prefix             = string
+    status             = optional(string)
+  }))
+}
+
+variable "queue_transfers_workflow_sid" {
+  description = "queue_transfers_workflow_sid"
+  type        = string
+  default     = "WWxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+}
+
+variable "enable_integration_tests" {
+  description = "Schedule Integration Tests"
+  type        = bool
+}
+
+variable "integration_test_lambda_schedule" {
+  description = "Integration Test Event Bridge Schedule Expression"
+  type        = string
+}

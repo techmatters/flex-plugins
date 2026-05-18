@@ -1,0 +1,15 @@
+{
+  "description": "PreEngagementConfigDescription",
+  "submitLabel": "StartChat",
+  "fields": [
+    {
+      "type": "checkbox",
+      "name": "termsAndConditions",
+      "label": "Para continuar, ¿aceptas los términos y condiciones de nuestra <a href=\"https://www.redpapaz.org/politica-de-tratamiento-de-datos-personales-de-la-corporacion-colombiana-de-padres-y-madres-red-papaz/\">política de privacidad</a>?",
+      "required": {
+        "value": true,
+        "message": "Tienes que approbar los términos y condiciones para poder iniciar un chat."
+      }
+    }
+  ]
+}

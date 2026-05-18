@@ -1,0 +1,139 @@
+/**
+ * Copyright (C) 2021-2026 Technology Matters
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see https://www.gnu.org/licenses/.
+ */
+
+html {
+  font-size: 16px;
+  height: 100%;
+}
+html > body {
+  height: 100%;
+  margin: 0;
+  position: relative;
+  background-size: cover;
+}
+[data-theme-pref] {
+  background-size: cover;
+  height: 100%;
+  width: 100%;
+  background-repeat: no-repeat;
+  background-size: cover; 
+  background-color: transparent;
+}
+[data-theme-pref]::after {
+  content: "";
+  position: absolute;
+  left: 1.25rem;
+  bottom: 1rem;
+  width: 8rem;
+  height: 3rem;
+  margin-left: 0rem;
+  margin-top: 0rem;  
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-color: transparent;
+}
+[data-theme-pref="light-theme"] {
+  background-image: url("https://media.twiliocdn.com/sdk/js/webchat-v3/assets/twilio-webchat-bg-light.jpg");
+}
+[data-theme-pref="light-theme"]::after {
+  background-color: transparent;
+  background-image: url("https://media.twiliocdn.com/sdk/js/webchat-v3/assets/twilio-flex-logo-light.svg");
+}
+[data-theme-pref="dark-theme"] {
+  background-image: url("https://media.twiliocdn.com/sdk/js/webchat-v3/assets/twilio-webchat-bg-dark.jpg");
+}
+[data-theme-pref="dark-theme"]::after {
+  background-color: transparent;
+  background-image: url("https://media.twiliocdn.com/sdk/js/webchat-v3/assets/twilio-flex-logo-dark.svg");
+}
+
+@font-face {
+  font-family: Oxygen;
+  src: url("https://media.twiliocdn.com/sdk/js/webchat-v3/assets/fonts/Oxygen-Bold.ttf") format("truetype");
+  font-weight: 700;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: Oxygen;
+  src: url("https://media.twiliocdn.com/sdk/js/webchat-v3/assets/fonts/Oxygen-Regular.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: Oxygen;
+  src: url("https://media.twiliocdn.com/sdk/js/webchat-v3/assets/fonts/Oxygen-Light.ttf") format("truetype");
+  font-weight: 300;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: Ubuntu;
+  src: url("https://media.twiliocdn.com/sdk/js/webchat-v3/assets/fonts/Ubuntu-Bold.ttf") format("truetype");
+  font-weight: 700;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: Ubuntu;
+  src: url("https://media.twiliocdn.com/sdk/js/webchat-v3/assets/fonts/Ubuntu-BoldItalic.ttf") format("truetype");
+  font-weight: 700;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: Ubuntu;
+  src: url("https://media.twiliocdn.com/sdk/js/webchat-v3/assets/fonts/Ubuntu-Italic.ttf") format("truetype");
+  font-weight: 400;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: Ubuntu;
+  src: url("https://media.twiliocdn.com/sdk/js/webchat-v3/assets/fonts/Ubuntu-Light.ttf") format("truetype");
+  font-weight: 300;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: Ubuntu;
+  src: url("https://media.twiliocdn.com/sdk/js/webchat-v3/assets/fonts/Ubuntu-LightItalic.ttf") format("truetype");
+  font-weight: 300;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: Ubuntu;
+  src: url("https://media.twiliocdn.com/sdk/js/webchat-v3/assets/fonts/Ubuntu-Medium.ttf") format("truetype");
+  font-weight: 500;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: Ubuntu;
+  src: url("https://media.twiliocdn.com/sdk/js/webchat-v3/assets/fonts/Ubuntu-MediumItalic.ttf") format("truetype");
+  font-weight: 500;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: Ubuntu;
+  src: url("https://media.twiliocdn.com/sdk/js/webchat-v3/assets/fonts/Ubuntu-Regular.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+}
+

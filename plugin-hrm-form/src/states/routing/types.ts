@@ -72,16 +72,11 @@ export type SearchRoute =
   | SearchResultRoute;
 
 export const NewCaseSectionSubroutes = {
-  Note: 'note',
-  Referral: 'referral',
-  Household: 'household',
-  Perpetrator: 'perpetrator',
-  Incident: 'incident',
-  Document: 'document',
-  CaseSummary: 'caseSummary',
+  CaseOverview: 'caseOverview',
 } as const;
 
-export type CaseSectionSubroute = typeof NewCaseSectionSubroutes[keyof typeof NewCaseSectionSubroutes];
+// eslint-disable-next-line prettier/prettier
+export type CaseSectionSubroute = 'caseOverview' | `section/${string}`;
 
 export const NewCaseSubroutes = Object.freeze({
   ...NewCaseSectionSubroutes,
@@ -226,6 +221,18 @@ export const isContactRoute = (route: AppRoutes): route is ContactRoute => {
   return route.route === 'contact';
 };
 
+
+type TeamsViewRoute = {
+  route: 'teams';
+  subroute?: 'select-skills' | 'confirm-update';
+}
+
+type CustomLinkRoute = {
+
+  route: 'custom-link';
+  subroute: string;
+}
+
 type OtherRoutes =
   | CSAMReportRoute
   | { route: 'select-call-type' }
@@ -236,13 +243,14 @@ type OtherRoutes =
   | ProfileListRoute
   | ProfileRoute
   | ProfileEditRoute
-  | ProfileSectionEditRoute;
+  | ProfileSectionEditRoute
+  | TeamsViewRoute
+    | CustomLinkRoute;
 
 // The different routes we have in our app
 export type AppRoutes = CaseRoute | ProfileHomeRoute | OtherRoutes;
 
-export function isRouteWithModalSupport(appRoute: any): appRoute is RouteWithModalSupport {
-  return [
+const routesWithModalSupport: AppRoutes['route'][] = [
     'tabbed-forms',
     'case',
     'case-list',
@@ -251,7 +259,10 @@ export function isRouteWithModalSupport(appRoute: any): appRoute is RouteWithMod
     'search',
     'select-call-type',
     'profile-list',
-  ].includes(appRoute.route);
+    'teams',
+  ]
+export function isRouteWithModalSupport(appRoute: any): appRoute is RouteWithModalSupport {
+  return routesWithModalSupport.includes(appRoute.route);
 }
 
 export const isCaseRoute = (route: AppRoutes): route is CaseRoute => route?.route === 'case';
@@ -292,5 +303,4 @@ export type RoutingState = {
   tasks: {
     [taskId in TaskSID]?: AppRoutes[];
   };
-  isAddingOfflineContact: boolean;
 };

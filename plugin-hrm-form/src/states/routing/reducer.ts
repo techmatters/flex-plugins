@@ -15,7 +15,7 @@
  */
 
 import { omit } from 'lodash';
-import { callTypes } from 'hrm-form-definitions';
+import { callTypes } from 'hrm-types';
 
 import {
   AppRoutes,
@@ -31,11 +31,10 @@ import {
 } from './types';
 import { REMOVE_CONTACT_STATE, RemoveContactStateAction } from '../types';
 import { standaloneTaskSid } from '../../types/types';
-import { getOfflineContactTaskSid } from '../contacts/offlineContactTask';
 import {
   ContactUpdatingAction,
   CREATE_CONTACT_ACTION_FULFILLED,
-  LOAD_CONTACT_FROM_HRM_BY_TASK_ID_ACTION_FULFILLED,
+  LOAD_CONTACT_FROM_HRM_FOR_TASK_ACTION_FULFILLED,
   UPDATE_CONTACT_ACTION_FULFILLED,
 } from '../contacts/types';
 
@@ -43,22 +42,21 @@ export const newTaskEntry = {
   route: 'select-call-type' as const,
 };
 
-const getPathFromUrl = url => {
-  return url.pathname.replace(/^\/|\/$/g, '');
+export const getPathFromUrl = (url: Location) => {
+  return url?.pathname?.replace(/^\/|\/$/g, '') || 'agent-desktop';
 };
 
-// eslint-disable-next-line import/no-unused-modules
 export const initialState: RoutingState = {
   tasks: {
-    [standaloneTaskSid]: [{ route: getPathFromUrl(window.location), subroute: getPathFromUrl(window.location) }],
+    [standaloneTaskSid]: [
+      { route: getPathFromUrl(window.location) as any, subroute: getPathFromUrl(window.location) as any },
+    ],
   },
-  isAddingOfflineContact: false,
 };
 
 const contactUpdatingReducer = (state: RoutingState, action: ContactUpdatingAction): RoutingState => {
   const recreated =
-    action.type === LOAD_CONTACT_FROM_HRM_BY_TASK_ID_ACTION_FULFILLED ||
-    action.type === UPDATE_CONTACT_ACTION_FULFILLED;
+    action.type === LOAD_CONTACT_FROM_HRM_FOR_TASK_ACTION_FULFILLED || action.type === UPDATE_CONTACT_ACTION_FULFILLED;
 
   const { contact, previousContact } = action.payload;
   if (!contact) {
@@ -69,8 +67,6 @@ const contactUpdatingReducer = (state: RoutingState, action: ContactUpdatingActi
     stateWithoutPreviousContact = {
       ...state,
       tasks: omit(state.tasks, previousContact.taskId),
-      isAddingOfflineContact:
-        previousContact.taskId === getOfflineContactTaskSid() ? false : state.isAddingOfflineContact,
     };
   }
   const { taskId, rawJson } = contact;
@@ -96,10 +92,6 @@ const contactUpdatingReducer = (state: RoutingState, action: ContactUpdatingActi
           ? stateWithoutPreviousContact.tasks[taskId]
           : [initialEntry],
     },
-    isAddingOfflineContact:
-      taskId === getOfflineContactTaskSid() && contact?.rawJson?.contactlessTask?.createdOnBehalfOf
-        ? true
-        : stateWithoutPreviousContact.isAddingOfflineContact,
   };
 };
 
@@ -142,17 +134,17 @@ const updateTopmostRoute = (baseRouteStack: AppRoutes[], newRoute, mode: ChangeR
   return [...(baseRouteStack ?? []), newRoute];
 };
 
-const popTopmostRoute = (baseRouteStack: AppRoutes[]): AppRoutes[] => {
+const popTopmostRoute = (baseRouteStack: AppRoutes[], bottomRouteStack = baseRouteStack): AppRoutes[] => {
   if (baseRouteStack?.length) {
     const currentRoute = baseRouteStack[baseRouteStack.length - 1];
     if (isRouteWithModalSupport(currentRoute) && currentRoute.activeModal) {
       return [
         ...baseRouteStack.slice(0, -1),
-        { ...currentRoute, activeModal: popTopmostRoute(currentRoute.activeModal) },
+        { ...currentRoute, activeModal: popTopmostRoute(currentRoute.activeModal, bottomRouteStack) },
       ];
     }
     // Don't empty the base route stack, this will result in Bad Things (TM)
-    if (baseRouteStack.length <= 1 && !isRouteWithModalSupport(currentRoute)) {
+    if (baseRouteStack.length <= 1 && baseRouteStack === bottomRouteStack) {
       console.warn(
         `Tried to go back in the base route stack but there was ${baseRouteStack.length} routes in the stack so doing nothing. This could indicate a routing logic issue in the components.`,
       );
@@ -224,14 +216,13 @@ export function reduce(
 ): RoutingState {
   switch (action.type) {
     case CREATE_CONTACT_ACTION_FULFILLED:
-    case LOAD_CONTACT_FROM_HRM_BY_TASK_ID_ACTION_FULFILLED:
+    case LOAD_CONTACT_FROM_HRM_FOR_TASK_ACTION_FULFILLED:
     case UPDATE_CONTACT_ACTION_FULFILLED:
       return contactUpdatingReducer(state, action);
     case REMOVE_CONTACT_STATE:
       return {
         ...state,
         tasks: omit(state.tasks, action.taskId),
-        isAddingOfflineContact: action.taskId === getOfflineContactTaskSid() ? false : state.isAddingOfflineContact,
       };
     case CHANGE_ROUTE: {
       const { routing, mode, taskId } = action;

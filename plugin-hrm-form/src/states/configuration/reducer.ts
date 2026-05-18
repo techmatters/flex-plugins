@@ -15,13 +15,24 @@
  */
 
 import type { DefinitionVersion } from 'hrm-form-definitions';
+import { Manager } from '@twilio/flex-ui';
 
 import * as t from './types';
-import { defaultLanguage } from '../../utils/pluginHelpers';
+import { defaultLocale } from '../../translations';
 import { FETCH_CASE_LIST_FULFILLED_ACTION, FetchCaseListFulfilledAction } from '../caseList/listContent';
+import { changeLanguageReducer } from './changeLanguage';
+import {
+  SEARCH_CONTACTS_SUCCESS_ACTION,
+  SEARCH_CASES_SUCCESS_ACTION,
+  SearchContactsSuccessAction,
+  SearchCasesSuccessAction,
+} from '../search/results';
 
 export type ConfigurationState = {
-  language: string;
+  locale: {
+    selected: string;
+    status: 'loading' | 'loaded';
+  };
   counselors: {
     list: t.CounselorsList;
     hash: { [sid: string]: string };
@@ -31,8 +42,13 @@ export type ConfigurationState = {
   currentDefinitionVersion?: DefinitionVersion;
 };
 
-const initialState: ConfigurationState = {
-  language: defaultLanguage,
+export const initialState: ConfigurationState = {
+  locale: {
+    selected:
+      localStorage.getItem(`${Manager.getInstance().serviceConfiguration.account_sid}_ASELO_PLUGIN_USER_LOCALE`) ||
+      defaultLocale,
+    status: 'loaded',
+  },
   counselors: {
     list: [],
     hash: {},
@@ -41,17 +57,20 @@ const initialState: ConfigurationState = {
   definitionVersions: {},
 };
 
+const boundChangeLanguageReducer = changeLanguageReducer(initialState);
+
 // eslint-disable-next-line import/no-unused-modules
 export function reduce(
-  state = initialState,
-  action: t.ConfigurationActionType | FetchCaseListFulfilledAction,
+  inputState = initialState,
+  action:
+    | t.ConfigurationActionType
+    | FetchCaseListFulfilledAction
+    | SearchCasesSuccessAction
+    | SearchContactsSuccessAction,
 ): ConfigurationState {
+  const state = boundChangeLanguageReducer(inputState, action as any);
+
   switch (action.type) {
-    case t.CHANGE_LANGUAGE:
-      return {
-        ...state,
-        language: action.language,
-      };
     case t.POPULATE_COUNSELORS: {
       const sortedList = action.counselorsList.sort((c1, c2) => c1.fullName.localeCompare(c2.fullName));
       const counselorsHash = Object.fromEntries(sortedList.map(({ sid, fullName }) => [sid, fullName]));
@@ -87,6 +106,8 @@ export function reduce(
         },
       };
     }
+    case SEARCH_CONTACTS_SUCCESS_ACTION:
+    case SEARCH_CASES_SUCCESS_ACTION:
     case FETCH_CASE_LIST_FULFILLED_ACTION: {
       const { missingDefinitions } = action.payload;
       const missingDefinitionsMap = Object.fromEntries(
