@@ -42,6 +42,27 @@ locals {
         }
         chatbot_unique_names = []
       },
+      chat : {
+        messaging_mode   = "conversations"
+        channel_type     = "chat"
+        contact_identity = ""
+        templatefile     = "/app/twilio-iac/helplines/templates/studio-flows/messaging-no-chatbot-operating-hours-blocking-lambda-conv-sd.tftpl"
+        channel_flow_vars = {
+          chat_greeting_message = "Hello, Tinkle Friend is engaged with other children at the moment. Please hold on for a while and we will attend to you as soon as we can. Thank you for your patience!\nWhile waiting, you can check out our BUZZ magazine at http://www.tinklefriend.sg/buzz-magazine/. Alternatively, you can email us at tinklefriend@childrensociety.org.sg and we will respond to you in 3 working days.\nIf you are experiencing mental health issues and need immediate support please call National Mindline 1771. In the event that you are facing a crisis and thinking about suicide, you can Whatsapp our friends from Samaritans of Singapore (SOS) at 9151 1767. If you are in immediate danger, please call the Police at 999."
+          widget_from           = "Tinkle Friend"
+          chat_blocked_message  = "Hello, Tinkle Friend is engaged with other children at the moment. Please hold on for a while and we will attend to you as soon as we can. Thank you for your patience!\nWhile waiting, you can check out our BUZZ magazine at http://www.tinklefriend.sg/buzz-magazine/. Alternatively, you can email us at tinklefriend@childrensociety.org.sg and we will respond to you in 3 working days.\nIf you are experiencing mental health issues and need immediate support please call National Mindline 1771. In the event that you are facing a crisis and thinking about suicide, you can Whatsapp our friends from Samaritans of Singapore (SOS) at 9151 1767. If you are in immediate danger, please call the Police at 999."
+
+        }
+        enable_datadog_monitor = true
+        custom_monitor = {
+          query = "sum(last_24h):sum:<metric>{*}.as_count() == 0"
+          custom_schedule = {
+            rrule    = "FREQ=DAILY;INTERVAL=1;BYHOUR=4;BYMINUTE=0;BYDAY=TU,WE,TH,FR,SA"
+            timezone = "Asia/Singapore"
+          }
+        }
+        chatbot_unique_names = []
+      },
       voice : {
         channel_type     = "voice"
         contact_identity = ""
