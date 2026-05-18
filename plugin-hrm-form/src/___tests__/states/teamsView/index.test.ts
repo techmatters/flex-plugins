@@ -29,7 +29,7 @@ describe('test reducer', () => {
     const state = undefined;
     const expected: TeamsViewState = {
       selectedWorkers: new Set(),
-      selectedSkills: new Set(),
+      selectedSkills: {},
       status: {
         loading: false,
         error: null,
@@ -43,7 +43,7 @@ describe('test reducer', () => {
   test('existing state with unrelated action - should return same state', async () => {
     const state: TeamsViewState = {
       selectedWorkers: new Set(['WK-123']),
-      selectedSkills: new Set<string>(),
+      selectedSkills: {},
       status: {
         loading: false,
         error: null,
@@ -59,72 +59,72 @@ describe('test reducer', () => {
     {
       state: {
         selectedWorkers: new Set(),
-        selectedSkills: new Set<string>(),
+        selectedSkills: {},
       },
       workersSids: ['WK-123'],
       expected: {
         selectedWorkers: new Set(['WK-123']),
-        selectedSkills: new Set<string>(),
+        selectedSkills: {},
       },
       description: 'add single worker to blank state',
     },
     {
       state: {
         selectedWorkers: new Set(['WK-xxx']),
-        selectedSkills: new Set<string>(),
+        selectedSkills: {},
       },
       workersSids: ['WK-123'],
       expected: {
         selectedWorkers: new Set(['WK-xxx', 'WK-123']),
-        selectedSkills: new Set<string>(),
+        selectedSkills: {},
       },
       description: 'add single worker to existing state merges them',
     },
     {
       state: {
         selectedWorkers: new Set(['WK-xxx']),
-        selectedSkills: new Set<string>(),
+        selectedSkills: {},
       },
       workersSids: ['WK-xxx'],
       expected: {
         selectedWorkers: new Set(['WK-xxx']),
-        selectedSkills: new Set<string>(),
+        selectedSkills: {},
       },
       description: 'add single worker already selected does nothing',
     },
     {
       state: {
         selectedWorkers: new Set(),
-        selectedSkills: new Set<string>(),
+        selectedSkills: {},
       },
       workersSids: ['WK-123', 'WK-999'],
       expected: {
         selectedWorkers: new Set(['WK-123', 'WK-999']),
-        selectedSkills: new Set<string>(),
+        selectedSkills: {},
       },
       description: 'add multiple workers to blank state',
     },
     {
       state: {
         selectedWorkers: new Set(['WK-xxx']),
-        selectedSkills: new Set<string>(),
+        selectedSkills: {},
       },
       workersSids: ['WK-123', 'WK-999'],
       expected: {
         selectedWorkers: new Set(['WK-xxx', 'WK-123', 'WK-999']),
-        selectedSkills: new Set<string>(),
+        selectedSkills: {},
       },
       description: 'add multiple workers to existing state merges them',
     },
     {
       state: {
         selectedWorkers: new Set(['WK-xxx', 'WK-yyy']),
-        selectedSkills: new Set<string>(),
+        selectedSkills: {},
       },
       workersSids: ['WK-xxx', 'WK-yyy'],
       expected: {
         selectedWorkers: new Set(['WK-xxx', 'WK-yyy']),
-        selectedSkills: new Set<string>(),
+        selectedSkills: {},
       },
       description: 'add multiple workers already selected does nothing',
     },
@@ -137,84 +137,84 @@ describe('test reducer', () => {
     {
       state: {
         selectedWorkers: new Set(),
-        selectedSkills: new Set<string>(),
+        selectedSkills: {},
       },
       workersSids: ['WK-123'],
       expected: {
         selectedWorkers: new Set(),
-        selectedSkills: new Set<string>(),
+        selectedSkills: {},
       },
       description: 'remove single worker to blank state does nothing',
     },
     {
       state: {
         selectedWorkers: new Set(['WK-xxx']),
-        selectedSkills: new Set<string>(),
+        selectedSkills: {},
       },
       workersSids: ['WK-123'],
       expected: {
         selectedWorkers: new Set(['WK-xxx']),
-        selectedSkills: new Set<string>(),
+        selectedSkills: {},
       },
       description: 'remove missing worker to existing state does nothing',
     },
     {
       state: {
         selectedWorkers: new Set(['WK-xxx']),
-        selectedSkills: new Set<string>(),
+        selectedSkills: {},
       },
       workersSids: ['WK-xxx'],
       expected: {
         selectedWorkers: new Set(),
-        selectedSkills: new Set<string>(),
+        selectedSkills: {},
       },
       description: 'remove selected worker to existing state results in blank state',
     },
     {
       state: {
         selectedWorkers: new Set(),
-        selectedSkills: new Set<string>(),
+        selectedSkills: {},
       },
       workersSids: ['WK-123', 'WK-999'],
       expected: {
         selectedWorkers: new Set(),
-        selectedSkills: new Set<string>(),
+        selectedSkills: {},
       },
       description: 'remove multiple workers to blank state does nothing',
     },
     {
       state: {
         selectedWorkers: new Set(['WK-xxx']),
-        selectedSkills: new Set<string>(),
+        selectedSkills: {},
       },
       workersSids: ['WK-123', 'WK-999'],
       expected: {
         selectedWorkers: new Set(['WK-xxx']),
-        selectedSkills: new Set<string>(),
+        selectedSkills: {},
       },
       description: 'remove multiple missing workers to existing state does nothing',
     },
     {
       state: {
         selectedWorkers: new Set(['WK-xxx', 'WK-yyy']),
-        selectedSkills: new Set<string>(),
+        selectedSkills: {},
       },
       workersSids: ['WK-xxx', 'WK-yyy'],
       expected: {
         selectedWorkers: new Set(),
-        selectedSkills: new Set<string>(),
+        selectedSkills: {},
       },
       description: 'remove all selected workers to existing state results in blank state',
     },
     {
       state: {
         selectedWorkers: new Set(['WK-xxx', 'WK-yyy', 'WK-zzz']),
-        selectedSkills: new Set<string>(),
+        selectedSkills: {},
       },
       workersSids: ['WK-xxx', 'WK-zzz'],
       expected: {
         selectedWorkers: new Set(['WK-yyy']),
-        selectedSkills: new Set<string>(),
+        selectedSkills: {},
       },
       description: 'remove multiple selected workers to existing state results in partial state',
     },
@@ -227,36 +227,36 @@ describe('test reducer', () => {
     {
       state: {
         selectedWorkers: new Set(),
-        selectedSkills: new Set<string>(),
+        selectedSkills: {},
       },
       skills: ['skill-1'],
       expected: {
         selectedWorkers: new Set(),
-        selectedSkills: new Set<string>(['skill-1']),
+        selectedSkills: { 'skill-1': {} },
       },
       description: 'set single skill',
     },
     {
       state: {
         selectedWorkers: new Set(),
-        selectedSkills: new Set<string>(),
+        selectedSkills: {},
       },
       skills: ['skill-1', 'skill-2'],
       expected: {
         selectedWorkers: new Set(),
-        selectedSkills: new Set<string>(['skill-1', 'skill-2']),
+        selectedSkills: { 'skill-1': {}, 'skill-2': {} },
       },
       description: 'set multiple skills',
     },
     {
       state: {
         selectedWorkers: new Set(),
-        selectedSkills: new Set<string>(),
+        selectedSkills: {},
       },
       skills: [],
       expected: {
         selectedWorkers: new Set(),
-        selectedSkills: new Set<string>([]),
+        selectedSkills: {},
       },
       description: 'set empty skills',
     },
@@ -269,12 +269,12 @@ describe('test reducer', () => {
     {
       state: {
         selectedWorkers: new Set(),
-        selectedSkills: new Set<string>(),
+        selectedSkills: {},
       },
       operation: 'enable',
       expected: {
         selectedWorkers: new Set(),
-        selectedSkills: new Set<string>(),
+        selectedSkills: {},
         operation: 'enable',
       },
       description: 'update operation',
