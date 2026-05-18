@@ -23,16 +23,7 @@
   ],
   "dependencies": {
     "dotenv": "^16.3.1",
-    "fast-xml-parser": "4.5.4",
     "twilio": "^5.4.0"
-  },
-  "overrides": {
-    "@aws-sdk/core@3.716.0": {
-      "fast-xml-parser": "4.5.4"
-    },
-    "@aws-sdk/core@3.775.0": {
-      "fast-xml-parser": "4.5.4"
-    }
   },
   "devDependencies": {
     "@tsconfig/node18": "^18.2.1",
