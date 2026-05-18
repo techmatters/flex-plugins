@@ -36,46 +36,40 @@ const isInteger = (n: any): n is number => Number.isInteger(n);
 const rotateRoutingSkills = ({
   from,
   to,
-  elements,
+  updates,
 }: {
   from: WorkerRoutingSkills;
   to: WorkerRoutingSkills;
-  elements: SkillsParam;
+  updates: SkillsParam;
 }): {
   updatedFrom: WorkerRoutingSkills;
   updatedTo: WorkerRoutingSkills;
 } => {
-  console.log('rotateRoutingSkills: ', from);
-  console.log('rotateRoutingSkills: ', to);
-  console.log('rotateRoutingSkills: ', elements);
-
-  const elementsHas = (skill: string) => Object.hasOwn(elements, skill);
+  const updatesHas = (skill: string) => Object.hasOwn(updates, skill);
   const prevSkills = from.skills || [];
   const prevLevels = Object.entries(from.levels || {});
 
-  // const updatedToSkills = Array.from(new Set([...to.skills, ...Object.keys(elements)]));
-  const updatedToSkills = Array.from(
-    new Set([...to.skills, ...prevSkills.filter(s => elementsHas(s))]),
-  );
-  const levelsToRotate = Object.fromEntries(prevLevels.filter(([s]) => elementsHas(s)));
-  const updatedToLevels = {
+  // update "to" WorkerRoutingSkills
+  const toSkills = new Set([...to.skills, ...prevSkills.filter(s => updatesHas(s))]);
+  const toLevels = {
     ...to.levels,
-    ...levelsToRotate,
-    ...Object.entries(elements).reduce(
+    ...Object.fromEntries(prevLevels.filter(([s]) => updatesHas(s))), // keep levels that were in "from" before the update
+    ...Object.entries(updates).reduce(
       (accum, [s, entry]) =>
-        entry && isInteger(entry.level) ? { ...accum, [s]: entry.level } : accum,
+        toSkills.has(s) && entry && isInteger(entry.level)
+          ? { ...accum, [s]: entry.level }
+          : accum,
       {},
-    ),
+    ), // override with new levels (if provided)
   };
 
-  const updatedFromSkills = prevSkills.filter(s => !elementsHas(s));
-  const updatedFromLevels = Object.fromEntries(
-    prevLevels.filter(([s]) => !elementsHas(s)),
-  );
+  // update "from" WorkerRoutingSkills
+  const fromSkills = prevSkills.filter(s => !updatesHas(s));
+  const fromLevels = Object.fromEntries(prevLevels.filter(([s]) => !updatesHas(s)));
 
   return {
-    updatedFrom: { skills: updatedFromSkills, levels: updatedFromLevels },
-    updatedTo: { skills: updatedToSkills, levels: updatedToLevels },
+    updatedFrom: { skills: fromSkills, levels: fromLevels },
+    updatedTo: { skills: Array.from(toSkills), levels: toLevels },
   };
 };
 
@@ -109,7 +103,7 @@ const setSkillsEnable = ({
   const { updatedFrom, updatedTo } = rotateRoutingSkills({
     from: disabledSkills,
     to: enabledSkills,
-    elements: skills,
+    updates: skills,
   });
 
   return mergeAttributes({
@@ -133,7 +127,7 @@ const setSkillsDisable = ({
   const { updatedFrom, updatedTo } = rotateRoutingSkills({
     from: enabledSkills,
     to: disabledSkills,
-    elements: skills,
+    updates: skills,
   });
 
   return mergeAttributes({
@@ -284,8 +278,6 @@ const updateWorkerSkills = async ({
       operation,
     });
 
-    console.log('>>>>> workerAttributes', workerAttributes);
-    console.log('>>>>> updatedAttributes', updatedAttributes);
     await worker.update({ attributes: JSON.stringify(updatedAttributes) });
 
     return newOk(workerSid);
