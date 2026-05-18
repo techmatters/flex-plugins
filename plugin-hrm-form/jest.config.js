@@ -27,7 +27,7 @@ module.exports = config => {
       url: 'http://localhost/',
     },
     testTimeout: 2 * 60 * 1000, // 2 minutes in ms
-    transformIgnorePatterns: ['/node_modules/(?!(uuid|axios|@twilio-paste/icons)/)'],
+    transformIgnorePatterns: ['/node_modules/(?!(uuid|axios|@twilio-paste/icons|@gooddata)/)'],
     moduleNameMapper: {
       '\\.css$': 'identity-obj-proxy',
     },
