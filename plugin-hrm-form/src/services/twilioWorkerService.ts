@@ -85,6 +85,6 @@ export const getWorkerAttributes = async (workerSid: string) => {
 
 export const updateWorkersSkills = async (payload: {
   workers: Array<string>;
-  skills: Array<string>;
+  skills: { [skill: string]: { level?: number | null } };
   operation: Required<TeamsViewState['operation']>;
 }) => fetchProtectedApi('/updateWorkersSkills', payload, { useTwilioLambda: true, useJsonEncode: true });

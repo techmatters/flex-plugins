@@ -222,9 +222,9 @@ export const isContactRoute = (route: AppRoutes): route is ContactRoute => {
 };
 
 
-type TeamsViewRoute = {
+export type TeamsViewRoute = {
   route: 'teams';
-  subroute?: 'select-skills' | 'confirm-update';
+  subroute?: 'select-skills' | 'add-skill-level' | 'confirm-update';
 }
 
 type CustomLinkRoute = {
