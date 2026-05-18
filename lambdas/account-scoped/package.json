@@ -18,13 +18,13 @@
   "scripts": {
     "docker:build": "docker build -t account-scoped --build-arg lambda_name=account-scoped --build-arg lambda_dir=. -f ../Dockerfile ../",
     "test:unit": "jest tests/unit",
-    "test:service": "jest tests/service",
+    "test:service": "cross-env NODE_OPTIONS=\"$NODE_OPTIONS --experimental-vm-modules\" jest tests/service",
     "test": "jest"
   },
   "dependencies": {
-    "@aws-sdk/client-lex-runtime-service": "^3.787.0",
-    "@aws-sdk/client-lex-runtime-v2": "^3.787.0",
-    "@aws-sdk/client-ssm": "^3.716.0",
+    "@aws-sdk/client-lex-runtime-service": "^3.1045.0",
+    "@aws-sdk/client-lex-runtime-v2": "^3.1045.0",
+    "@aws-sdk/client-ssm": "^3.1045.0",
     "@tech-matters/configuration": "^1.0.0",
     "@tech-matters/hrm-form-definitions": "^1.0.0",
     "@tech-matters/hrm-types": "^1.0.0",
