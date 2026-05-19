@@ -41,7 +41,7 @@ test('NZ/staging modica custom channel chatbot integration test', async () => {
     },
     {
       sender: 'flex',
-      text: `Kia ora, you've reached Youthline.`,
+      text: `Kia ora, you have reached Youthline.`,
     },
     {
       sender: 'flex',
