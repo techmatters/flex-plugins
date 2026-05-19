@@ -45,7 +45,7 @@ test('NZ/staging modica custom channel chatbot integration test', async () => {
     },
     {
       sender: 'flex',
-      text: `Your conversation is confidential, but if we feel that you or someone else is at serious risk of harm, we may have to link in with other services. We will let you know if that becomes necessary. \nDo you need urgent support?  \n1. Yes \n2. No`,
+      text: `Your conversation is confidential, but if we feel that you or someone else is at serious risk of harm, we may have to link in with other services. We will let you know if that becomes necessary. \nDo you need urgent support? \n1. Yes \n2. No`,
     },
     {
       sender: 'service-user',
