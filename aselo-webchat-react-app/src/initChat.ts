@@ -60,7 +60,7 @@ export const initChat = (scriptTagData: Record<string, string | undefined>) => {
   if (!root) {
     root = document.createElement('div');
     root.id = 'aselo-webchat-widget-root';
-
+    root.style.zIndex = '100';
     document.body.appendChild(root);
   }
   if (scriptTagData.zIndex !== undefined) {
