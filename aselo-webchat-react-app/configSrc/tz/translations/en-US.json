@@ -1,0 +1,13 @@
+{
+  "WelcomeMessage": "National Child Helpline (116)",
+   "PreEngagementPhase-Form-Title": "National Child Helpline (116)",
+  "PreEngagementPhase-Form-Description": "Thank you for contacting National Child Helpline (116). To chat with a counsellor, please type your name and select the Start Chat button.",
+  "MessageCanvasTrayContent": "",
+  "MessageInputDisabledReasonHold": "Thank you very much for this information. We'll transfer you now. Please hold for a counsellor.",
+  "AutoFirstMessage": "Incoming webchat contact from",
+  "PreEngagementDescription": "Thank you for contacting National Child Helpline (116). To chat with a counsellor, please type your name and select the Start Chat button.",
+  "WhatIsYourName": "What is your name?",
+  "StartChat": "Start Chat!",
+  "SelectLanguage": "Select your language",
+  "MessagePhase-MessageBubble-OtherParticipantMessageSenderName": "Counsellor"
+}

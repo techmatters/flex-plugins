@@ -22,6 +22,9 @@ jobs:
     runs-on: ubuntu-latest
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
       # Setup credentials to access AWS for parameters
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v6
@@ -31,25 +34,22 @@ jobs:
           aws-region: "us-east-1"
 
       - name: Set ACCOUNT_SID
-        uses: "marvinpinto/action-inject-ssm-secrets@latest"
+        uses: ./.github/actions/inject-ssm-secrets
         with:
           ssm_parameter: "/development/twilio/AS/account_sid"
           env_variable_name: "ACCOUNT_SID"
 
       - name: Set IP_FIND_API_KEY
-        uses: "marvinpinto/action-inject-ssm-secrets@latest"
+        uses: ./.github/actions/inject-ssm-secrets
         with:
           ssm_parameter: "IP_FIND_API_KEY"
           env_variable_name: "IP_FIND_API_KEY"
 
       - name: Set RECAPTCHA_KEY
-        uses: "marvinpinto/action-inject-ssm-secrets@latest"
+        uses: ./.github/actions/inject-ssm-secrets
         with:
           ssm_parameter: "/global/google/recaptcha/site_key"
           env_variable_name: "RECAPTCHA_KEY"
-
-      - name: Checkout code
-        uses: actions/checkout@v6
 
       - name: Use Node.js
         uses: actions/setup-node@v6
@@ -122,7 +122,7 @@ jobs:
         working-directory: ./webchat
 
       - name: Publish Test Reports
-        uses: dorny/test-reporter@v2
+        uses: dorny/test-reporter@v3
         if: success() || failure() # always run even if the previous step fails
         with:
           name: Webchat Unit Tests Report

@@ -15,6 +15,7 @@
  */
 
 export default {
+  NewChatMessageNotificationTitle: 'Messaġġ Ġdid mingħand il-konsulent',
   EndChatButtonLabel: 'Ħruġ mill-chat',
   QuickExitButtonLabel: 'Ħruġ malajr',
   QuickExitDescription: 'Għandek bżonn titlaq malajr?',

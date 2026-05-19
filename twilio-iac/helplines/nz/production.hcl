@@ -57,7 +57,7 @@ locals {
           blocked_url                = "https://nz-assets-6577.twil.io/blocked_number.mp3"
           initial_message_url        = "https://nz-assets-6577.twil.io/initial_message.mp3"
           external_parties_number    = "+6498867045"
-          regex_allowed_test_numbers = ""
+          regex_allowed_test_numbers = "\\+(country_code_here)\\d{6,20}"
         }
         enable_datadog_monitor = true
         custom_monitor = {
@@ -81,22 +81,6 @@ locals {
         enable_datadog_monitor = true
         custom_monitor = {
           query = "sum(last_24h):sum:<metric>{*}.as_count() == 0"
-          custom_schedule = {
-            rrule    = "FREQ=DAILY;INTERVAL=1;BYHOUR=4;BYMINUTE=0"
-            timezone = "Pacific/Auckland"
-          }
-        }
-      },
-      instagram : {
-        messaging_mode       = "conversations"
-        channel_type         = "custom"
-        contact_identity     = "instagram"
-        templatefile         = "/app/twilio-iac/helplines/nz/templates/studio-flows/instagram-lex-priority-v2-lambda-sd.tftpl"
-        channel_flow_vars    = {}
-        chatbot_unique_names = []
-        enable_datadog_monitor = true
-        custom_monitor = {
-          query = "sum(last_2d):sum:<metric>{*}.as_count() == 0"
           custom_schedule = {
             rrule    = "FREQ=DAILY;INTERVAL=1;BYHOUR=4;BYMINUTE=0"
             timezone = "Pacific/Auckland"

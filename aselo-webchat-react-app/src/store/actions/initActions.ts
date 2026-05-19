@@ -18,7 +18,6 @@ import { Client, ConnectionState } from '@twilio/conversations';
 import { AnyAction, Dispatch } from 'redux';
 import { ThunkAction } from 'redux-thunk';
 import merge from 'lodash.merge';
-import { Logger } from 'loglevel';
 
 import { initMessagesListener } from './listeners/messagesListener';
 import { initParticipantsListener } from './listeners/participantsListener';
@@ -38,12 +37,13 @@ import { parseRegionForConversations } from '../../utils/regionUtil';
 import { sessionDataHandler } from '../../sessionDataHandler';
 import { createParticipantNameMap } from '../../utils/participantNameMap';
 import { getDefinitionVersion } from '../../services/configService';
+import { requestNotificationPermission } from '../../utils/newMessageNotification';
 import type { AppState } from '../store';
 
 // export for testing
 export const getHelplineConfig = async ({ configUrl }: { configUrl: string | URL }) => {
   try {
-    const helplineConfigResponse = await fetch(configUrl);
+    const helplineConfigResponse = await fetch(configUrl.toString());
     if (!helplineConfigResponse.ok) {
       const errMsg = `Failed to load helpline specific config for Aselo Webchat from ${configUrl}, aborting load`;
       return { status: 'error', message: errMsg } as const;
@@ -81,7 +81,7 @@ export const initConfigThunk = ({
         throw new Error(message);
       }
 
-      dispatch(changeExpandedStatus({ expanded: Boolean(webchatConfig.alwaysOpen) }));
+      dispatch(changeExpandedStatus({ expanded: Boolean(webchatConfig.widgetAlwaysOpen) }));
 
       sessionDataHandler.setRegion(webchatConfig.region);
       sessionDataHandler.setDeploymentKey(webchatConfig.deploymentKey);
@@ -127,7 +127,7 @@ const newInitialisedConversationsClient = async (token: string): Promise<Client>
 
 export function initSession({ token, conversationSid }: InitSessionPayload) {
   const logger = window.Twilio.getLogger('initSession');
-  return async (dispatch: Dispatch) => {
+  return async (dispatch: Dispatch, getState: () => AppState) => {
     let conversationsClient: Client;
     let conversation;
     let participants;
@@ -171,9 +171,12 @@ export function initSession({ token, conversationSid }: InitSessionPayload) {
       },
     });
 
+    await requestNotificationPermission();
+
+    const localUserIdentity = conversationsClient.user.identity;
     initClientListeners(conversationsClient, dispatch);
     initConversationListener(conversation, dispatch);
-    initMessagesListener(conversation, dispatch);
+    initMessagesListener(conversation, dispatch, localUserIdentity, getState);
     initParticipantsListener(conversation, dispatch);
   };
 }

@@ -17,25 +17,22 @@
 import { AnyAction } from 'redux';
 
 import { SessionReducer } from '../session.reducer';
-import { EngagementPhase, SessionState, PreEngagementData } from '../definitions';
+import { EngagementPhase, SessionState } from '../definitions';
 import {
   ACTION_CHANGE_ENGAGEMENT_PHASE,
   ACTION_CHANGE_EXPANDED_STATUS,
+  ACTION_SET_CONTACT_IDENTIFIER,
+  ACTION_SET_IP_ADDRESS,
   ACTION_START_SESSION,
   ACTION_UPDATE_SESSION_DATA,
 } from '../actions/actionTypes';
 
 describe('Session Reducer', () => {
-  const initialPreEngagementData: PreEngagementData = {
-    email: '',
-    name: '',
-    query: '',
-  };
-
   const initialState: SessionState = {
     currentPhase: EngagementPhase.Loading,
     expanded: false,
     preEngagementData: {},
+    recaptchaValid: false,
   };
 
   it('should return initial state', () => {
@@ -108,6 +105,34 @@ describe('Session Reducer', () => {
     ).toEqual({
       ...initialState,
       currentPhase: EngagementPhase.PreEngagementForm,
+    });
+  });
+
+  it('should handle ACTION_SET_IP_ADDRESS action', () => {
+    const ipAddress = '192.168.1.1';
+
+    expect(
+      SessionReducer(initialState, {
+        type: ACTION_SET_IP_ADDRESS,
+        payload: ipAddress,
+      }),
+    ).toEqual({
+      ...initialState,
+      ipAddress,
+    });
+  });
+
+  it('should handle ACTION_SET_CONTACT_IDENTIFIER action', () => {
+    const contactIdentifier = 'user@example.com';
+
+    expect(
+      SessionReducer(initialState, {
+        type: ACTION_SET_CONTACT_IDENTIFIER,
+        payload: contactIdentifier,
+      }),
+    ).toEqual({
+      ...initialState,
+      contactIdentifier,
     });
   });
 });

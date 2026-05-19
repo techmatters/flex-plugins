@@ -4,6 +4,13 @@
   "fields": [
     {
       "type": "input",
+      "name": "friendlyName",
+      "label": "Nickname",
+      "placeholder": "GuestName",
+      "required": true
+    },
+    {
+      "type": "input",
       "name": "firstName",
       "label": "First Name",
       "placeholder": "GuestName",
@@ -316,7 +323,7 @@
     {
       "type": "checkbox",
       "name": "termsAndConditions",
-      "label": "I've read and accept the <a href=\"https://en.wikipedia.org/wiki/Terms_of_service\">Terms and Conditions</a>",
+      "label": "I've read and accept the <a href=\"https://en.wikipedia.org/wiki/Terms_of_service\" target=\"_blank\">Terms and Conditions</a>",
       "required": {
         "value": true,
         "message": "Sorry, if you don't accept our terms and conditions we can't provide counselling to you."

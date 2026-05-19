@@ -56,7 +56,7 @@ jobs:
           github_sha_hash=${{ github.sha }}  
           echo "MERGE_BRANCH_NAME=merge-${{ github.ref_name }}-${{ matrix.target-branch }}-${github_sha_hash:0:7}" >> $GITHUB_ENV
       - id: check-branch-exists
-        uses: GuillaumeFalourd/branch-exists@v1.1
+        uses: GuillaumeFalourd/branch-exists@v1.2
         with:
           branch: ${{ env.MERGE_BRANCH_NAME }}
       - name: Create Merge Branch
@@ -101,18 +101,18 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
       - name: Set GITHUB_ACTIONS_SLACK_BOT_TOKEN
-        uses: "marvinpinto/action-inject-ssm-secrets@latest"
+        uses: ./.github/actions/inject-ssm-secrets
         with:
           ssm_parameter: "/slack/bot/token/github-actions"
           env_variable_name: "GITHUB_ACTIONS_SLACK_BOT_TOKEN"
       - name: Set ASELO_DEPLOYS_CHANNEL_ID
-        uses: "marvinpinto/action-inject-ssm-secrets@latest"
+        uses: ./.github/actions/inject-ssm-secrets
         with:
           ssm_parameter: "/slack/channel/aselo-release-deploy/id"
           env_variable_name: "ASELO_RELEASE_DEPLOY_CHANNEL_ID"
       - name: Slack Aselo channel
         id: slack
-        uses: slackapi/slack-github-action@v2.1.1
+        uses: slackapi/slack-github-action@v3.0.3
         with:
           method: chat.postMessage
           token: ${{ env.GITHUB_ACTIONS_SLACK_BOT_TOKEN }}

@@ -18,32 +18,32 @@
     "category": "non-data"
   },
   {
-    "name": "blank",
-    "label": "Blank",
-    "type": "button",
-    "category": "non-data"
-  },
-  {
-    "name": "joke",
-    "label": "Joke",
-    "type": "button",
-    "category": "non-data"
-  },
-  {
     "name": "hangup",
     "label": "Hang up",
     "type": "button",
     "category": "non-data"
   },
   {
-    "name": "wrongnumber",
-    "label": "Wrong Number",
+    "name": "soft",
+    "label": "Soft - bored/chat/joke",
     "type": "button",
     "category": "non-data"
   },
   {
-    "name": "abusive",
-    "label": "Abusive",
+    "name": "hard",
+    "label": "Hard - sexual",
+    "type": "button",
+    "category": "non-data"
+  },
+  {
+    "name": "hard",
+    "label": "Hard - general",
+    "type": "button",
+    "category": "non-data"
+  },
+  {
+    "name": "connecting",
+    "label": "Connecting",
     "type": "button",
     "category": "non-data"
   }

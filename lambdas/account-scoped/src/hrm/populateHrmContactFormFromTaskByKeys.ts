@@ -213,7 +213,7 @@ const getValuesFromPreEngagementData = (
   preEngagementData: Record<string, string>,
 ) => {
   // Get values from task attributes
-  const values: Record<string, string | boolean> = {};
+  const values: Record<string, FormValue> = {};
   const prepopulateKeys = Array.from(prepopulateKeySet);
   const specifiedKeys = Object.keys(preEngagementData);
   tabFormDefinition
@@ -229,6 +229,11 @@ const getValuesFromPreEngagementData = (
         } else if (fieldValue === 'no' || field.type === 'checkbox') {
           values[field.name] = false;
         }
+        return;
+      }
+      if (field.type === FormInputType.ListboxMultiselect) {
+        const fieldValue = preEngagementData[field.name];
+        values[field.name] = fieldValue ? [fieldValue] : [];
         return;
       }
       values[field.name] = preEngagementData[field.name] || '';
@@ -283,9 +288,8 @@ const populateContactSection = async (
     keys: Set<string>,
     formTabDefinition: FormItemDefinition[],
     values: Record<string, string>,
-  ) => Record<string, string | boolean>,
+  ) => Record<string, FormValue>,
 ) => {
-  console.debug('Populating', tabbedFormsSection);
   console.debug('Keys', Array.from(keys));
   console.debug('Using Values', valuesToPopulate);
 

@@ -17,9 +17,15 @@
 import { render, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { FormInputType } from 'hrm-form-definitions';
+import { useSelector } from 'react-redux';
 
 import InputText from '../Input';
 import { PreEngagementDataItem } from '../../../../store/definitions';
+import MockedFunction = jest.MockedFunction;
+
+jest.mock('react-redux', () => ({
+  useSelector: jest.fn(),
+}));
 
 jest.mock('../../../../localization/LocalizedTemplate', () => ({
   __esModule: true,
@@ -42,6 +48,7 @@ describe('Input component', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    (useSelector as MockedFunction<typeof useSelector>).mockReturnValue({});
   });
 
   it('renders with the correct label', () => {
@@ -72,5 +79,41 @@ describe('Input component', () => {
     const input = getByPlaceholderText('Enter your name');
     fireEvent.blur(input, { target: { value: 'John' } });
     expect(handleChange).toHaveBeenCalledWith({ name: 'friendlyName', value: 'John' });
+  });
+
+  it('uses defaultValue as the initial input value', () => {
+    const { getByPlaceholderText } = render(
+      <InputText
+        definition={definition}
+        handleChange={handleChange}
+        getItem={getItem(noError)}
+        defaultValue="Prefilled name"
+      />,
+    );
+
+    expect(getByPlaceholderText('Enter your name')).toHaveValue('Prefilled name');
+  });
+
+  describe('debounced onChange', () => {
+    beforeEach(() => {
+      jest.useFakeTimers();
+    });
+
+    afterEach(() => {
+      jest.useRealTimers();
+    });
+
+    it('calls handleChange after debounce delay on change with name and value', () => {
+      const { getByPlaceholderText } = render(
+        <InputText definition={definition} handleChange={handleChange} getItem={getItem(noError)} />,
+      );
+      const input = getByPlaceholderText('Enter your name');
+      fireEvent.change(input, { target: { value: 'John' } });
+      // handleChange should not be called immediately due to debounce
+      expect(handleChange).not.toHaveBeenCalled();
+      // After the debounce delay elapses, handleChange should be called
+      jest.advanceTimersByTime(500);
+      expect(handleChange).toHaveBeenCalledWith({ name: 'friendlyName', value: 'John' });
+    });
   });
 });

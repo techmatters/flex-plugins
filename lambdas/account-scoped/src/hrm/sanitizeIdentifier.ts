@@ -73,6 +73,7 @@ export type TriggerEvent = {
 type ConversationTrigger = {
   conversation: {
     Author: string;
+    ChannelAttributes: ChannelAttributes;
   };
 };
 
@@ -147,18 +148,21 @@ export const sanitizeIdentifierFromTrigger = ({
     }
 
     if (isConversationTrigger(trigger) && channelType) {
+      // webchat is a special case since it does not only depends on channel but in the task attributes too
+      if (['chat', 'web'].includes(trigger.conversation.ChannelAttributes.channel_type)) {
+        const identifier = getContactValueFromWebchat({
+          preEngagementData: trigger.conversation.ChannelAttributes.pre_engagement_data,
+        });
+
+        console.debug(
+          `Found Aselo Webchat identifier ${identifier} from contactIdentifier field in preEngagement data`,
+        );
+        return newOk(identifier);
+      }
       if (!channelTransformations[channelType] || !channelType) {
         console.error(`Channel type ${channelType} is not supported`);
         return newErr({
           message: `Channel type ${channelType} is not supported`,
-          error: { type: 'unsupported-channel', channelType },
-        });
-      }
-
-      if (channelType === 'web') {
-        console.error(`Channel type ${channelType} is not supported in conversations`);
-        return newErr({
-          message: `Channel type ${channelType} is not supported in conversations`,
           error: { type: 'unsupported-channel', channelType },
         });
       }
@@ -186,7 +190,7 @@ export const sanitizeIdentifierFromTask = ({
   channelType,
   taskAttributes,
 }: {
-  channelType: HrmContact['channel'];
+  channelType: HrmContact['channel'] | 'chat';
   taskAttributes: any;
 }): Result<
   UnsupportedChannelResultPayload | InvalidTaskAttributesResultPayload | Error,
@@ -197,7 +201,7 @@ export const sanitizeIdentifierFromTask = ({
       return newOk('');
     }
 
-    if (channelType === 'web') {
+    if (channelType === 'web' || channelType === 'chat') {
       const identifier = getContactValueFromWebchat({
         preEngagementData: taskAttributes.preEngagementData,
       });

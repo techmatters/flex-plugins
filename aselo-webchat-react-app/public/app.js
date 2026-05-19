@@ -13,20 +13,11 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
-
+// preserve relative path if one is used by pulling it with getAttribute not the src property
+const rawSrc = document.currentScript.getAttribute('src');
+const configUrl =
+  rawSrc.lastIndexOf('/') > -1 ? `${rawSrc.substring(0, rawSrc.lastIndexOf('/'))}/config.json` : './config.json';
+const scriptTagData = { configUrl, ...document.currentScript.dataset };
 window.addEventListener('DOMContentLoaded', () => {
-  const urlParams = new URLSearchParams(window.location.search);
-  const theme = urlParams.get('theme') || document.currentScript?.getAttribute('theme');
-  const isLightTheme = theme !== 'dark';
-  const alwaysOpen = urlParams.get('alwaysOpen');
-  const defaultLocale = urlParams.get('locale');
-  const el = document.querySelector('[data-theme-pref]');
-  el?.setAttribute('data-theme-pref', isLightTheme ? 'light-theme' : 'dark-theme');
-
-  Twilio.initLogger('info');
-  Twilio.initWebchat(urlParams.get('configUrl') || document.currentScript?.getAttribute('config-url'), {
-    theme: { isLight: isLightTheme },
-    ...(alwaysOpen ? { alwaysOpen: alwaysOpen.toLowerCase() === 'true' } : {}),
-    ...(defaultLocale ? { defaultLocale } : {}),
-  });
+  Twilio.initChat(scriptTagData);
 });

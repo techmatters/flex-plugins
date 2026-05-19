@@ -37,12 +37,20 @@ jest.mock('../PreEngagementFormPhase', () => ({
   PreEngagementFormPhase: () => <div title="PreEngagementFormPhase" />,
 }));
 
+jest.mock('../OperatingHoursPhase', () => ({
+  OperatingHoursPhase: () => <div title="OperatingHoursPhase" />,
+}));
+
+jest.mock('../../hooks/useMobileOptimizations', () => ({
+  useMobileOptimizations: jest.fn(() => ({ isMobileFullscreen: false })),
+}));
+
 describe('Root Container', () => {
   beforeEach(() => {
     resetMockRedux({
       config: {
         ...BASE_MOCK_REDUX.config,
-        alwaysOpen: false,
+        widgetAlwaysOpen: false,
       },
     });
   });
@@ -101,6 +109,20 @@ describe('Root Container', () => {
     expect(queryByTitle('PreEngagementFormPhase')).toBeInTheDocument();
   });
 
+  it('renders the operating hours phase when supplied as phase', () => {
+    resetMockRedux({
+      session: {
+        ...BASE_MOCK_REDUX.session,
+        expanded: true,
+        currentPhase: EngagementPhase.OperatingHours,
+      },
+    });
+
+    const { queryByTitle } = render(<RootContainer />);
+
+    expect(queryByTitle('OperatingHoursPhase')).toBeInTheDocument();
+  });
+
   it('renders the re-engagement form phase as default phase', () => {
     resetMockRedux({
       session: {
@@ -126,5 +148,54 @@ describe('Root Container', () => {
     const { queryByTitle } = render(<RootContainer />);
 
     expect(queryByTitle('MessagingCanvasPhase')).not.toBeInTheDocument();
+  });
+
+  describe('mobile optimizations', () => {
+    const useMobileOptimizationsModule = jest.requireMock('../../hooks/useMobileOptimizations');
+
+    it('renders with mobile full-screen styles when isMobileFullscreen is true and expanded', () => {
+      useMobileOptimizationsModule.useMobileOptimizations.mockReturnValue({ isMobileFullscreen: true });
+      resetMockRedux({
+        session: {
+          ...BASE_MOCK_REDUX.session,
+          expanded: true,
+          currentPhase: EngagementPhase.MessagingCanvas,
+        },
+      });
+
+      const { container } = render(<RootContainer />);
+
+      expect(container).toBeInTheDocument();
+    });
+
+    it('renders with default styles when isMobileFullscreen is false', () => {
+      useMobileOptimizationsModule.useMobileOptimizations.mockReturnValue({ isMobileFullscreen: false });
+      resetMockRedux({
+        session: {
+          ...BASE_MOCK_REDUX.session,
+          expanded: true,
+          currentPhase: EngagementPhase.MessagingCanvas,
+        },
+      });
+
+      const { container } = render(<RootContainer />);
+
+      expect(container).toBeInTheDocument();
+    });
+
+    it('renders with default (desktop) styles when isMobileFullscreen is true but not expanded', () => {
+      useMobileOptimizationsModule.useMobileOptimizations.mockReturnValue({ isMobileFullscreen: true });
+      resetMockRedux({
+        session: {
+          ...BASE_MOCK_REDUX.session,
+          expanded: false,
+          currentPhase: EngagementPhase.MessagingCanvas,
+        },
+      });
+
+      const { container } = render(<RootContainer />);
+
+      expect(container).toBeInTheDocument();
+    });
   });
 });

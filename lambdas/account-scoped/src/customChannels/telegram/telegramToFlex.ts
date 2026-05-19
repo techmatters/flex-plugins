@@ -65,7 +65,7 @@ export const telegramToFlexHandler: AccountScopedHandler = async (
   const chatFriendlyName = username || `${channelType}:${senderExternalId}`;
   const uniqueUserName = `${channelType}:${senderExternalId}`;
   const senderScreenName = firstName || username || 'child';
-  const onMessageSentWebhookUrl = `${process.env.WEBHOOK_BASE_URL}/lambda/twilio/account-scoped/${accountSid}/customChannels/telegram/flexToTelegram?recipientId=${senderExternalId}`;
+  const onMessageAddedWebhookUrl = `${process.env.WEBHOOK_BASE_URL}/lambda/twilio/account-scoped/${accountSid}/customChannels/telegram/flexToTelegram?recipientId=${senderExternalId}`;
   const studioFlowSid = await getChannelStudioFlowSid(
     accountSid,
     AseloCustomChannel.Telegram,
@@ -82,7 +82,7 @@ export const telegramToFlexHandler: AccountScopedHandler = async (
     channelType,
     uniqueUserName,
     senderScreenName,
-    onMessageSentWebhookUrl,
+    onMessageAddedWebhookUrl,
     messageText,
     senderExternalId,
     conversationFriendlyName: chatFriendlyName,

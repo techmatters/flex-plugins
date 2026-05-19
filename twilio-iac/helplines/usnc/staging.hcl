@@ -6,19 +6,34 @@ locals {
   local_config = {
     custom_task_routing_filter_expression = "channelType IN ['web','voice','sms']  OR isContactlessTask == true"
     permission_config                     = "usnc"
+    ui_editable                           = true
 
     #Studio flow
     flow_vars = {
-      widget_from          = "Promise Resource Network"
-      chat_blocked_message = "Sorry, you're not able to contact Promise Resource Network from this device or account"
-      error_message        = "There has been an error with your message, please try writing us again."
+      widget_from                       = "Promise Resource Network"
+      chat_blocked_message              = "Sorry, you're not able to contact Promise Resource Network from this device or account"
+      error_message                     = "There has been an error with your message, please try writing us again."
+      send_message_janitor_function_sid = "ZH12353d1c76792d7d5b2e721006af349d"
+      bot_language                      = "en-USNC"
     }
 
     channels = {
       webchat : {
         channel_type     = "web"
         contact_identity = ""
-        templatefile     = "/app/twilio-iac/helplines/templates/studio-flows/messaging-blocking-preq-lambda-sd.tftpl"
+        templatefile     = "/app/twilio-iac/helplines/usnc/templates/studio-flows/messaging-blocking-preq-lambda-sd.tftpl"
+        channel_flow_vars = {
+          widget_from                   = "Warm Line"
+          chat_blocked_message          = "Due to repeated use of the service in ways that did not align with Warm Line participation guidelines, access to the Promise Resource Network NC Warm Line has been restricted for this number/account."
+          send_message_webchat_prequeue = "Welcome to the Promise Resource Network Warm Line. We offer compassionate peer support to residents of North Carolina.\nPlease stay in the chat while you wait so you don’t lose your place in line. A Peer Supporter will join you as soon as they are available."
+        }
+        chatbot_unique_names = []
+      },
+      chat : {
+        messaging_mode   = "conversations"
+        channel_type     = "chat"
+        contact_identity = ""
+        templatefile     = "/app/twilio-iac/helplines/usnc/templates/studio-flows/messaging-blocking-v2-preq-lambda-sd.tftpl"
         channel_flow_vars = {
           widget_from                   = "Warm Line"
           chat_blocked_message          = "Due to repeated use of the service in ways that did not align with Warm Line participation guidelines, access to the Promise Resource Network NC Warm Line has been restricted for this number/account."
@@ -29,11 +44,12 @@ locals {
       voice : {
         channel_type     = "voice"
         contact_identity = ""
-        templatefile     = "/app/twilio-iac/helplines/templates/studio-flows/voice-blocking-no-op-hours-rec-sd.tftpl"
+        templatefile     = "/app/twilio-iac/helplines/usnc/templates/studio-flows/voice-blocking-no-op-hours-rec-sd.tftpl"
         channel_flow_vars = {
-          play_message_voice_prequeue = "https://usnc-assets-3228.twil.io/play_message_voice_prequeue.mp3"
-          play_message_voice_blocked  = "Due to repeated use of the service in ways that did not align with Warm Line participation guidelines, access to the Promise Resource Network NC Warm Line has been restricted for this number/account."
-          voice_ivr_language          = "en-US"
+          play_message_voice_prequeue    = "https://usnc-assets-3228.twil.io/play_message_voice_prequeue.mp3"
+          gather_live_monitoring_consent = "https://usnc-assets-3228.twil.io/gather_live_monitoring_consent.mp3"
+          play_message_voice_blocked     = "https://usnc-assets-3228.twil.io/play_message_voice_blocked.mp3"
+          voice_ivr_language             = "en-US"
         }
         chatbot_unique_names = []
       },
@@ -41,7 +57,7 @@ locals {
         messaging_mode   = "conversations"
         channel_type     = "sms"
         contact_identity = "+16082004843"
-        templatefile     = "/app/twilio-iac/helplines/templates/studio-flows/messaging-blocking-conv-lambda-sd.tftpl"
+        templatefile     = "/app/twilio-iac/helplines/usnc/templates/studio-flows/messaging-lex-v3-blocking-lambda-sd.tftpl"
         channel_flow_vars = {
           widget_from           = "Warm Line"
           send_message_prequeue = "Hello"

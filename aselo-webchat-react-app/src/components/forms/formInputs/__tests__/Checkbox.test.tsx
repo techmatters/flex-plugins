@@ -64,12 +64,20 @@ describe('Checkbox component', () => {
     expect(getByText('You must accept the terms')).toBeInTheDocument();
   });
 
-  it('calls handleChange on blur with name and checked value', () => {
+  it('calls handleChange on click with name and checked value', () => {
     const { getByRole } = render(
       <Checkbox definition={definition} handleChange={handleChange} getItem={getItem(noError)} />,
     );
     const checkbox = getByRole('checkbox');
-    fireEvent.blur(checkbox, { target: { checked: true } });
+    fireEvent.click(checkbox);
     expect(handleChange).toHaveBeenCalledWith({ name: 'terms', value: true });
+  });
+
+  it('uses defaultValue as the initial checked state', () => {
+    const { getByRole } = render(
+      <Checkbox definition={definition} handleChange={handleChange} getItem={getItem(noError)} defaultValue={true} />,
+    );
+
+    expect(getByRole('checkbox')).toBeChecked();
   });
 });

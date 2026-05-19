@@ -37,7 +37,16 @@ const user2 = {
   sid: '62563cwqdc213cec23',
 };
 const defaultState = {
-  config: { fileAttachment: fileAttachmentConfig },
+  config: {
+    fileAttachment: fileAttachmentConfig,
+    translations: {
+      'en-US': {
+        'MessagePhase-MessageBubble-OwnMessageSenderName': 'You',
+        'MessagePhase-MessageBubble-OtherParticipantMessageSenderName': 'Counsellor',
+      },
+    },
+    defaultLocale: 'en-US',
+  },
   chat: {
     conversationsClient: { user: user1 },
     participants: [{ identity: user1.identity }, { identity: user2.identity }],
@@ -66,10 +75,7 @@ jest.mock('../FilePreview', () => ({
 describe('Message Bubble', () => {
   const media = { filename: 'filename.jpg', contentType: 'image/jpeg', size: 1 } as Media;
   const media2 = { filename: 'filename2.jpg', contentType: 'image/jpeg', size: 1 } as Media;
-  const dateCreated = {
-    getHours: () => 0,
-    getMinutes: () => 0,
-  };
+  const dateCreated = new Date(2000, 0, 1, 0, 0);
   const messageCurrentUser = {
     index: 0,
     author: user1.identity,
@@ -115,7 +121,7 @@ describe('Message Bubble', () => {
       />,
     );
 
-    expect(queryByText(user1.friendlyName)).toBeInTheDocument();
+    expect(queryByText('You')).toBeInTheDocument();
   });
 
   it('renders the message body', () => {
@@ -142,8 +148,9 @@ describe('Message Bubble', () => {
         updateFocus={jest.fn}
       />,
     );
-    const timestampText = '00:00'; // 0:0 is what getHours():getMinutes() will be
-
+    // This is a bit meh testing with the same code that generates the string in prod code
+    // But otherwise the test will fail if run in different locales
+    const timestampText = dateCreated.toLocaleTimeString([], { timeStyle: 'short' });
     expect(queryByText(timestampText)).toBeInTheDocument();
   });
 
@@ -172,7 +179,7 @@ describe('Message Bubble', () => {
       />,
     );
 
-    expect(getByText(`${user2.friendlyName} sent at`)).toBeInTheDocument();
+    expect(getByText('Counsellor sent at')).toBeInTheDocument();
   });
 
   it("renders 'is read' and icon when message read by other participant", () => {
@@ -186,7 +193,7 @@ describe('Message Bubble', () => {
       }),
     );
 
-    const { queryByText } = render(
+    const { queryByTestId } = render(
       <MessageBubble
         message={messageCurrentUser}
         isLast={true}
@@ -196,7 +203,7 @@ describe('Message Bubble', () => {
       />,
     );
 
-    expect(queryByText('Read')).toBeInTheDocument();
+    expect(queryByTestId('ReadIndicator')).toBeInTheDocument();
   });
 
   it("does not render 'is read' and icon when message unread by other participant", () => {

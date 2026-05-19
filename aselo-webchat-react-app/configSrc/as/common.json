@@ -4,6 +4,14 @@
     "maxFileSize": 16777216,
     "acceptedExtensions": ["jpg", "jpeg", "png", "amr", "mp3", "mp4", "pdf", "txt"]
   },
-  "alwaysOpen": false,
-  "helplineCode": "as"
+  "emojiPicker": {
+    "enabled": true,
+    "blockedEmojis": []
+  },
+  "widgetAlwaysOpen": false,
+  "helplineCode": "as",
+  "enableRecaptcha": true,
+  "captureIp": true,
+  "contactIdentifierField": "ip",
+  "checkOpenHours": true
 }

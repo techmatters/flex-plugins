@@ -30,6 +30,7 @@ import { isErr, newOk, Result } from '../../Result';
 import { newMissingParameterResult } from '../../httpErrors';
 import { getTwilioClient } from '@tech-matters/twilio-configuration';
 import { getFacebookPageAccessToken } from '../configuration';
+import { GRAPH_FACEBOOK_API_VERSION } from '@tech-matters/configuration';
 
 export type Body = ConversationWebhookEvent & {
   recipientId: string; // The IGSID of the user that started the conversation. Provided as query parameter
@@ -50,7 +51,7 @@ const sendInstagramMessage =
         text: messageText,
       },
     };
-    const sendUrl = `${testSessionId ? TEST_SEND_URL : 'https://graph.facebook.com/v19.0/me/messages'}?access_token=${facebookPageAccessToken}`;
+    const sendUrl = `${testSessionId ? TEST_SEND_URL : `https://graph.facebook.com/${GRAPH_FACEBOOK_API_VERSION}/me/messages`}?access_token=${facebookPageAccessToken}`;
     const response = await fetch(sendUrl, {
       method: 'post',
       body: JSON.stringify(body),
@@ -86,6 +87,7 @@ export const flexToInstagramHandler: AccountScopedHandler = async (
 ) => {
   console.info('==== FlexToInstagram handler ====');
   console.info('Received event:', event);
+  console.info('GRAPH_FACEBOOK_API_VERSION', GRAPH_FACEBOOK_API_VERSION);
 
   if (!recipientId) {
     return newMissingParameterResult('recipientId');

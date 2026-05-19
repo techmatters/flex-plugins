@@ -69,7 +69,6 @@ const Case: React.FC<Props> = ({ task, handleClose, onNewCaseSaved = () => Promi
   const contactId = useSelector((state: RootState) => selectContextContactId(state, task.taskSid, 'case', 'home'));
   const counselorsHash = useSelector(selectCounselorsHash);
   const definitionVersions = useSelector(selectDefinitionVersions);
-  const currentDefinitionVersion = useSelector(selectCurrentDefinitionVersion);
   const routing = currentRoute as CaseRoute;
   const contextContact = useSelector(
     (state: RootState) => selectContactStateByContactId(state, contactId)?.savedContact,
@@ -90,8 +89,6 @@ const Case: React.FC<Props> = ({ task, handleClose, onNewCaseSaved = () => Promi
 
   const { connectedCase, loading: loadingCase } = useCase({
     caseId: connectedCaseId,
-    referenceId: `case-details-${task.taskSid}`,
-    refresh: true, // force a reload
   });
 
   const can = React.useMemo(() => {

@@ -1,0 +1,97 @@
+{
+  "slotTypeName": "gender",
+  "slotTypeValues": [
+    {
+      "sampleValue": {
+        "value": "Male"
+      },
+      "synonyms": [
+        { "value": "1" },
+        { "value": "male" },
+        { "value": "man" },
+        { "value": "boy" }
+      ]
+    },
+    {
+      "sampleValue": {
+        "value": "Female"
+      },
+      "synonyms": [
+        { "value": "2" },
+        { "value": "female" },
+        { "value": "woman" },
+        { "value": "girl" }
+      ]
+    },
+    {
+      "sampleValue": {
+        "value": "Non-binary"
+      },
+      "synonyms": [
+        { "value": "3" },
+        { "value": "nonbinary" },
+        { "value": "non binary" },
+        { "value": "nb" }
+      ]
+    },
+    {
+      "sampleValue": {
+        "value": "Two-Spirit"
+      },
+      "synonyms": [
+        { "value": "4" },
+        { "value": "two spirit" },
+        { "value": "twospirit" }
+      ]
+    },
+    {
+      "sampleValue": {
+        "value": "TransMasc"
+      },
+      "synonyms": [
+        { "value": "5" },
+        { "value": "trans masc" },
+        { "value": "transmasc" },
+        { "value": "transmasculine" }
+      ]
+    },
+    {
+      "sampleValue": {
+        "value": "TransFemme"
+      },
+      "synonyms": [
+        { "value": "6" },
+        { "value": "trans femme" },
+        { "value": "transfemme" },
+        { "value": "transfeminine" }
+      ]
+    },
+    {
+      "sampleValue": {
+        "value": "Other"
+      },
+      "synonyms": [
+        { "value": "7" },
+        { "value": "other" },
+        { "value": "different" }
+      ]
+    },
+    {
+      "sampleValue": {
+        "value": "Unknown"
+      },
+      "synonyms": [
+        { "value": "0" },
+        { "value": "unknown" },
+        { "value": "prefer not to say" },
+        { "value": "rather not say" },
+        { "value": "prefer not to answer" },
+        { "value": "x" },
+        { "value": "X" }
+      ]
+    }
+  ],
+  "valueSelectionSetting": {
+    "resolutionStrategy": "TopResolution"
+  }
+}

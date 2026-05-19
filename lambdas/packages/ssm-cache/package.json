@@ -10,7 +10,7 @@
     "typescript": "^5.9.2"
   },
   "dependencies": {
-    "@aws-sdk/client-ssm": "^3.716.0"
+    "@aws-sdk/client-ssm": "^3.1045.0"
   },
   "scripts": {
     "build": "npx tsc",

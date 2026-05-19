@@ -491,6 +491,10 @@
           "value": "Armenia",
           "label": "Armenia"
         },
+         {
+          "value": "Australia",
+          "label": "Australia"
+        },
         {
           "value": "Austria",
           "label": "Austria"
@@ -958,6 +962,10 @@
         {
           "value": "Netherlands",
           "label": "Netherlands"
+        },
+        {
+          "value": "New Zealand",
+          "label": "New Zealand"
         },
         {
           "value": "Nicaragua",

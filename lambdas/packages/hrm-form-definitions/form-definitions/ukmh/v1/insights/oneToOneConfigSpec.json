@@ -91,21 +91,21 @@
                 "name": "wereSignpostsOffered",
                 "insights": [
                     "conversations",
-                    "conversation_measure_1"
+                    "productive"
                 ]
             },
             {
                 "name": "internalSignpostsOffered",
                 "insights": [
                     "conversations",
-                    "conversation_measure_2"
+                    "conversation_attribute_9"
                 ]
             },
             {
                 "name": "sessionOutcome",
                 "insights": [
                     "conversations",
-                    "conversation_measure_3"
+                    "language"
                 ]
             }
         ],
@@ -114,7 +114,7 @@
                 "name": "consentForResearchEvaluation",
                 "insights": [
                     "conversations",
-                    "conversation_measure_4"
+                    "outcome"
                 ]
             }
         ]

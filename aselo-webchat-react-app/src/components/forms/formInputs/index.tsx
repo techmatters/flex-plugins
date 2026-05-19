@@ -23,23 +23,43 @@ import { PreEngagementDataItem } from '../../../store/definitions';
 
 const generateFormItem = ({
   definition,
-  defaultValue = '',
+  defaultValue,
   handleChange,
   getItem,
   setItemValue,
+  showError,
 }: {
   definition: PreEngagementFormItem;
-  defaultValue?: string | boolean;
+  defaultValue?: PreEngagementDataItem['value'];
   handleChange: (payload: { name: string; value: string | boolean }) => void;
   getItem: (inptuName: string) => PreEngagementDataItem;
   setItemValue: (payload: { name: string; value: string | boolean }) => void;
+  showError?: boolean;
 }) => {
   switch (definition.type) {
     case FormInputType.Input:
     case FormInputType.Email:
-      return <InputText key={definition.name} definition={definition} handleChange={handleChange} getItem={getItem} />;
+      return (
+        <InputText
+          key={definition.name}
+          definition={definition}
+          handleChange={handleChange}
+          getItem={getItem}
+          showError={showError}
+          defaultValue={defaultValue}
+        />
+      );
     case FormInputType.Select:
-      return <Select key={definition.name} definition={definition} handleChange={handleChange} getItem={getItem} />;
+      return (
+        <Select
+          key={definition.name}
+          definition={definition}
+          handleChange={handleChange}
+          getItem={getItem}
+          showError={showError}
+          defaultValue={defaultValue}
+        />
+      );
     case FormInputType.DependentSelect:
       return (
         <DependentSelect
@@ -48,16 +68,26 @@ const generateFormItem = ({
           handleChange={handleChange}
           getItem={getItem}
           setItemValue={setItemValue}
+          showError={showError}
+          defaultValue={defaultValue}
         />
       );
     case FormInputType.Checkbox:
-      return <Checkbox key={definition.name} definition={definition} handleChange={handleChange} getItem={getItem} />;
+      return (
+        <Checkbox
+          key={definition.name}
+          definition={definition}
+          handleChange={handleChange}
+          getItem={getItem}
+          showError={showError}
+          defaultValue={defaultValue}
+        />
+      );
     default:
       return <div>Invalid form definition: {JSON.stringify(definition)}</div>;
   }
 };
 
-// eslint-disable-next-line
 export const getDefaultValue = (def: PreEngagementFormItem) => {
   switch (def.type) {
     case FormInputType.Input:
@@ -77,16 +107,26 @@ export const generateForm = ({
   handleChange,
   getItem,
   setItemValue,
+  showError = () => true,
 }: {
   form: PreEngagementForm['fields'];
   handleChange: (payload: { name: string; value: string | boolean }) => void;
   getItem: (inptuName: string) => PreEngagementDataItem;
   setItemValue: (payload: { name: string; value: string | boolean }) => void;
+  showError?: (name: string) => boolean;
 }) => {
   return (
     form &&
-    form.map(definition =>
-      generateFormItem({ definition, handleChange, defaultValue: getDefaultValue(definition), getItem, setItemValue }),
-    )
+    form.map(definition => {
+      const defaultValue = getItem(definition.name).value ?? getDefaultValue(definition);
+      return generateFormItem({
+        definition,
+        handleChange,
+        defaultValue,
+        getItem,
+        setItemValue,
+        showError: showError(definition.name),
+      });
+    })
   );
 };

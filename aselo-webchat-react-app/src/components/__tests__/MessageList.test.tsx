@@ -14,7 +14,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { fireEvent, render, waitFor } from '@testing-library/react';
+import { act, fireEvent, render, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
 
 import { resetMockRedux } from '../../__mocks__/redux/mockRedux';
@@ -48,6 +48,7 @@ const message2 = {
 const defaultChatState = {
   conversation: {
     dateCreated: message1.dateCreated,
+    status: 'joined',
     getMessagesCount: jest.fn(),
     addListener: jest.fn(),
     removeListener: jest.fn(),
@@ -84,12 +85,34 @@ describe('Message List', () => {
     expect(container).toBeInTheDocument();
   });
 
-  it('renders a message bubble for each message', () => {
+  it('renders a message bubble for each visible message', () => {
     const { queryAllByTestId, queryByText } = render(<MessageList />);
 
-    expect(queryAllByTestId(messageBubbleTestId)).toHaveLength(2);
-    expect(queryByText(message1.body)).toBeInTheDocument();
+    // message1 is at index 0 and belongs to the current user, so it is hidden as the auto trigger message
+    expect(queryAllByTestId(messageBubbleTestId)).toHaveLength(1);
+    expect(queryByText(message1.body)).not.toBeInTheDocument();
     expect(queryByText(message2.body)).toBeInTheDocument();
+  });
+
+  it('hides the first message (auto trigger) when it belongs to the current user at index 0', () => {
+    const { queryByText, queryAllByTestId } = render(<MessageList />);
+
+    expect(queryByText(message1.body)).not.toBeInTheDocument();
+    expect(queryAllByTestId(messageBubbleTestId)).toHaveLength(1);
+  });
+
+  it('does not hide the first message when it belongs to another user', () => {
+    resetMockRedux({
+      chat: {
+        ...defaultChatState,
+        messages: [{ ...message1, author: user2.identity }, message2],
+      },
+    });
+
+    const { queryByText, queryAllByTestId } = render(<MessageList />);
+
+    expect(queryByText(message1.body)).toBeInTheDocument();
+    expect(queryAllByTestId(messageBubbleTestId)).toHaveLength(2);
   });
 
   it('does not render any chat items if no messages object', () => {
@@ -114,9 +137,9 @@ describe('Message List', () => {
       },
     });
 
-    const { queryByText } = render(<MessageList />);
+    const { queryByTestId } = render(<MessageList />);
 
-    expect(queryByText(`${user2.friendlyName} is typing...`)).toBeInTheDocument();
+    expect(queryByTestId(`typer-0`)).toBeInTheDocument();
   });
 
   it('does not render client participant typing', () => {
@@ -127,9 +150,9 @@ describe('Message List', () => {
       },
     });
 
-    const { queryByText } = render(<MessageList />);
+    const { queryByTestId } = render(<MessageList />);
 
-    expect(queryByText(`${user1.friendlyName} is typing...`)).not.toBeInTheDocument();
+    expect(queryByTestId(`typer-0`)).not.toBeInTheDocument();
   });
 
   it('renders loading spinner when there are non-loaded messages', async () => {
@@ -156,6 +179,29 @@ describe('Message List', () => {
       expect(getMessagesCountSpy).toHaveBeenCalled();
       expect(queryByTitle('Spinner')).not.toBeInTheDocument();
     });
+  });
+
+  it('does not call getMessagesCount and does not render loading spinner when conversation is not joined', async () => {
+    const getMessagesCountMock = jest.fn().mockResolvedValue(4);
+    resetMockRedux({
+      chat: {
+        ...defaultChatState,
+        conversation: {
+          ...defaultChatState.conversation,
+          status: 'notParticipating',
+          getMessagesCount: getMessagesCountMock,
+        },
+      },
+    });
+
+    const { queryByTitle } = render(<MessageList />);
+    // Wait longer than the 200ms noop delay in checkIfAllMessagesLoaded to ensure effects ran
+    await act(async () => {
+      await new Promise(resolve => setTimeout(resolve, 300));
+    });
+
+    expect(getMessagesCountMock).not.toHaveBeenCalled();
+    expect(queryByTitle('Spinner')).not.toBeInTheDocument();
   });
 
   it('correctly loads more messages when scrolled to top', async () => {
@@ -436,7 +482,8 @@ describe('Message List', () => {
       const messageBubbles = queryAllByTestId(messageBubbleTestId);
       fireEvent.focus(messagesContainer);
 
-      expect(messageBubbles[1]).toHaveFocus();
+      // message1 (index 0, current user) is hidden; only message2 (index 1) is visible
+      expect(messageBubbles[0]).toHaveFocus();
     });
 
     it('message list container is focusable when there are no messages', () => {
@@ -463,13 +510,24 @@ describe('Message List', () => {
     it('starts with focus on the most recent message when rendering with messages already in the store', () => {
       const { queryAllByTestId } = render(<MessageList />);
 
-      const [, bottomBubble] = queryAllByTestId(messageBubbleTestId);
+      // message1 (index 0, current user) is hidden; only message2 (index 1) is visible
+      const [bottomBubble] = queryAllByTestId(messageBubbleTestId);
 
       expect(bottomBubble.tabIndex).toBe(0);
       expect(bottomBubble).toHaveFocus();
     });
 
     it('focuses previous message on up key press', () => {
+      // Use messages starting at index 1 to avoid the auto-trigger message hiding (index 0)
+      const msgA = { index: 1, author: user1.identity, dateCreated: new Date(), body: 'message A' };
+      const msgB = { index: 2, author: user2.identity, dateCreated: new Date(), body: 'message B' };
+      resetMockRedux({
+        chat: {
+          ...defaultChatState,
+          messages: [msgA, msgB],
+        },
+      });
+
       const { queryAllByTestId } = render(<MessageList />);
 
       const [topBubble, bottomBubble] = queryAllByTestId(messageBubbleTestId);
@@ -483,6 +541,16 @@ describe('Message List', () => {
     });
 
     it('focuses next message on down key press', () => {
+      // Use messages starting at index 1 to avoid the auto-trigger message hiding (index 0)
+      const msgA = { index: 1, author: user1.identity, dateCreated: new Date(), body: 'message A' };
+      const msgB = { index: 2, author: user2.identity, dateCreated: new Date(), body: 'message B' };
+      resetMockRedux({
+        chat: {
+          ...defaultChatState,
+          messages: [msgA, msgB],
+        },
+      });
+
       const { queryAllByTestId } = render(<MessageList />);
 
       const [topBubble, bottomBubble] = queryAllByTestId(messageBubbleTestId);
@@ -500,8 +568,11 @@ describe('Message List', () => {
     });
 
     it('does not focus if triggered by a click', async () => {
-      const message3 = { ...message2, index: 2 };
-      const messages = [message1, message2, message3];
+      // Use messages starting at index 1 to avoid the auto-trigger message hiding (index 0)
+      const msgA = { index: 1, author: user2.identity, dateCreated: new Date(), body: 'message A' };
+      const msgB = { index: 2, author: user2.identity, dateCreated: new Date(), body: 'message B' };
+      const msgC = { index: 3, author: user2.identity, dateCreated: new Date(), body: 'message C' };
+      const messages = [msgA, msgB, msgC];
       resetMockRedux({
         chat: {
           ...defaultChatState,

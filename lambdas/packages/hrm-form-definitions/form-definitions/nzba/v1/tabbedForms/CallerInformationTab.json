@@ -234,6 +234,78 @@
     "type": "input"
   },
   {
+    "name": "city",
+    "label": "City",
+    "type": "select",
+    "isPII": false,
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "Auckland",
+        "label": "Auckland"
+      },
+      {
+        "value": "Wellington",
+        "label": "Wellington"
+      },
+      {
+        "value": "Christchurch",
+        "label": "Christchurch"
+      },
+      {
+        "value": "Hamilton",
+        "label": "Hamilton"
+      },
+      {
+        "value": "Napier-Hastings",
+        "label": "Napier-Hastings"
+      },
+      {
+        "value": "Tauranga",
+        "label": "Tauranga"
+      },
+      {
+        "value": "Dunedin",
+        "label": "Dunedin"
+      },
+      {
+        "value": "Palmerston North",
+        "label": "Palmerston North"
+      },
+      {
+        "value": "Nelson",
+        "label": "Nelson"
+      },
+      {
+        "value": "Rotorua",
+        "label": "Rotorua"
+      },
+      {
+        "value": "New Plymouth",
+        "label": "New Plymouth"
+      },
+      {
+        "value": "Whangārei",
+        "label": "Whangārei"
+      },
+      {
+        "value": "Invercargill",
+        "label": "Invercargill"
+      },
+      {
+        "value": "Whanganui",
+        "label": "Whanganui"
+      },
+      {
+        "value": "Gisborne",
+        "label": "Gisborne"
+      }
+    ]
+  },
+  {
     "name": "district",
     "label": "District",
     "type": "select",
@@ -1041,10 +1113,6 @@
         "label": "New Zealand European"
       },
       {
-        "value": "New Zealand European",
-        "label": "New Zealand European"
-      },
-      {
         "value": "British and Irish",
         "label": "British and Irish"
       },
@@ -1245,10 +1313,6 @@
         "label": "New Zealand European"
       },
       {
-        "value": "New Zealand European",
-        "label": "New Zealand European"
-      },
-      {
         "value": "British and Irish",
         "label": "British and Irish"
       },
@@ -1429,10 +1493,6 @@
   {
     "name": "phone1",
     "label": "Phone",
-    "type": "input",
-    "required": {
-      "value": true,
-      "message": "RequiredFieldError"
-    }
+    "type": "input"
   }
 ]

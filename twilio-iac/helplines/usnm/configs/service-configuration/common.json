@@ -1,0 +1,11 @@
+{
+    "attributes": {
+        "contacts_waiting_channels": [
+            "sms",
+            "voice"
+        ],
+        "definitionVersion": "usnm-v1",
+        "helplineLanguage": "en-US",
+        "permissionConfig": "usnm"
+    }
+}

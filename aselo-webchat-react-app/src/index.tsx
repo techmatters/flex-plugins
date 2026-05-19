@@ -13,10 +13,16 @@ import { WebchatWidget } from './components/WebchatWidget';
 import { initConfigThunk } from './store/actions/initActions';
 import { ConfigState } from './store/definitions';
 import { initLogger, getLogger } from './logger';
+import { initChat } from './initChat';
 
-const initWebchat = async (configLocation?: URL, overrides: Partial<ConfigState> = {}) => {
+const initWebchat = async (
+  paramConfigLocation: string | null,
+  documentConfigLocation?: string,
+  overrides: Partial<ConfigState> = {},
+) => {
   const logger = window.Twilio.getLogger(`InitWebChat`);
-  const configUrl = configLocation || process.env.REACT_APP_CONFIG_URL || './config.json';
+  const configUrl =
+    paramConfigLocation || process.env.REACT_APP_CONFIG_URL || documentConfigLocation || './config.json';
 
   await store.dispatch(initConfigThunk({ configUrl, overrides }) as any);
 
@@ -39,6 +45,7 @@ declare global {
   interface Window {
     Twilio: {
       initWebchat: typeof initWebchat;
+      initChat: typeof initChat;
       initLogger: (level?: LogLevelDesc) => void;
       getLogger: (className: string) => Logger;
     };
@@ -47,10 +54,11 @@ declare global {
   }
 }
 
-// Expose `initWebchat` function to window object
+// Expose `initWebchat` and `initChat` functions to window object
 Object.assign(window, {
   Twilio: {
     initWebchat,
+    initChat,
     initLogger,
     getLogger,
   },

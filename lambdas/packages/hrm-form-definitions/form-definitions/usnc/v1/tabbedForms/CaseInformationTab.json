@@ -4,14 +4,7 @@
     "label": "Contact Summary",
     "type": "textarea",
     "isPII": false,
-    "rows": 10,
-    "width": 250
-  },
-  {
-    "name": "repeatCaller",
-    "label": "Repeat Caller?",
-    "type": "checkbox",
-    "isPII": false
+    "rows": 10
   },
   {
     "name": "actionTaken",
@@ -93,9 +86,89 @@
       "message": "RequiredFieldError"
     }
   },
+    {
+    "name": "referrals",
+    "label": "Type of Resource Provided",
+    "type": "listbox-multiselect",
+    "isPII": false,
+    "options": [
+      {
+        "value": "Hub",
+        "label": "Hub"
+      },
+      {
+        "value": "Peer Support Specialist",
+        "label": "Peer Support Specialist"
+      },
+      {
+        "value": "PRN",
+        "label": "PRN"
+      },
+      {
+        "value": "Respite",
+        "label": "Respite"
+      },
+      {
+        "value": "Behavioral Health",
+        "label": "Behavioral Health"
+      },
+      {
+        "value": "Dental",
+        "label": "Dental"
+      },
+      {
+        "value": "Employment",
+        "label": "Employment"
+      },
+      {
+        "value": "Food",
+        "label": "Food"
+      },
+      {
+        "value": "Medical",
+        "label": "Medical"
+      },
+      {
+        "value": "Shelter",
+        "label": "Shelter"
+      },
+      {
+        "value": "Vision",
+        "label": "Vision"
+      },
+      {
+        "value": "988",
+        "label": "988"
+      },
+      {
+        "value": "FindHelp",
+        "label": "FindHelp"
+      },
+      {
+        "value": "TeenLine",
+        "label": "TeenLine"
+      },
+      {
+        "value": "Some Other Phone Line",
+        "label": "Some Other Phone Line"
+      },
+      {
+        "value": "Some Other Website",
+        "label": "Some Other Website"
+      },
+      {
+        "value": "Warmline.org",
+        "label": "Warmline.org"
+      },
+      {
+        "value": "Other",
+        "label": "Other"
+      }
+    ]
+  },
   {
-    "name": "howDidYouHearAboutTheWarmLine",
-    "label": "How did you hear about the Warm Line?",
+    "name": "liveMonitoringConsent",
+    "label": "Do we have their permission to live monitor calls.",
     "type": "select",
     "isPII": false,
     "options": [
@@ -104,64 +177,24 @@
         "label": ""
       },
       {
-        "value": "Previously contacted",
-        "label": "Previously contacted"
+        "value": "Yes",
+        "label": "Yes"
       },
       {
-        "value": "Another Warm/Crisis Line",
-        "label": "Another Warm/Crisis Line"
-      },
-      {
-        "value": "Social Service Agency",
-        "label": "Social Service Agency"
-      },
-      {
-        "value": "Hospital/Health Practitioner",
-        "label": "Hospital/Health Practitioner"
-      },
-      {
-        "value": "Mental Health Provider",
-        "label": "Mental Health Provider"
-      },
-      {
-        "value": "Family/Friend",
-        "label": "Family/Friend"
-      },
-      {
-        "value": "Internet Search",
-        "label": "Internet Search"
-      },
-      {
-        "value": "Social Media",
-        "label": "Social Media"
-      },
-      {
-        "value": "Printed Materials",
-        "label": "Printed Materials"
-      },
-      {
-        "value": "Radio/TV/Billboard",
-        "label": "Radio/TV/Billboard"
-      },
-      {
-        "value": "Other",
-        "label": "Other"
-      },
-      {
-        "value": "Does Not Apply N/A",
-        "label": "Does Not Apply N/A"
+        "value": "No",
+        "label": "No"
       }
     ]
   },
   {
-    "name": "doWeHaveTheirPermissionToLiveMonitorCalls",
-    "label": "Do we have their permission to live monitor calls.",
+    "name": "doWeHaveTheirPermissionToCallBack",
+    "label": "Do we have their permission to call back?",
     "type": "checkbox",
     "isPII": false
   },
   {
-    "name": "doWeHaveTheirPermissionToCallBack",
-    "label": "Do we have their permission to call back?",
+    "name": "substanceUseLivedExperience",
+    "label": "Substance use lived experience identified",
     "type": "checkbox",
     "isPII": false
   },
@@ -186,6 +219,12 @@
   {
     "name": "isTheIndividualOutOfState",
     "label": "Is the individual out of state?",
+    "type": "checkbox",
+    "isPII": false
+  },
+  {
+    "name": "wasTheCallerSatisfiedWithTheSupportProvided",
+    "label": "Was the caller satisfied with the support provided?",
     "type": "checkbox",
     "isPII": false
   }

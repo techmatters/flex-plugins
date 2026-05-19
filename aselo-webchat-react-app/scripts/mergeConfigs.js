@@ -14,15 +14,80 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
+/**
+ * Copyright (C) 2021-2026 Technology Matters
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see https://www.gnu.org/licenses/.
+ */
+
 const fs = require('fs/promises');
 const merge = require('lodash.merge');
 const DEFAULT_LANGUAGE = 'en';
+
+const LOCAL_SECRETS_PATH = './configSrc/local-secrets.json';
+
+/**
+ * Load secrets used when merging configs.
+ *
+ * In CI the RECAPTCHA_SITE_KEY env var is set from the SSM parameter
+ * /global/google/recaptcha/site_key by the build workflow.
+ *
+ * For local development, create configSrc/local-secrets.json based on
+ * configSrc/local-secrets.example.json.
+ */
+const loadSecrets = async () => {
+  const secrets = {};
+
+  if (process.env.RECAPTCHA_SITE_KEY) {
+    secrets.recaptchaSiteKey = process.env.RECAPTCHA_SITE_KEY;
+    console.info('Using RECAPTCHA_SITE_KEY from environment variable');
+  }
+
+  if (process.env.IP_LOOKUP_SERVICE_API_KEY) {
+    secrets.ipLookupServiceApiKey = process.env.IP_LOOKUP_SERVICE_API_KEY;
+    console.info('Using IP_LOOKUP_SERVICE_API_KEY from environment variable');
+  }
+
+  if (secrets.recaptchaSiteKey && secrets.ipLookupServiceApiKey) {
+    return secrets;
+  }
+
+  try {
+    const localSecrets = JSON.parse(await fs.readFile(LOCAL_SECRETS_PATH, { encoding: 'utf8' }));
+    if (!secrets.recaptchaSiteKey && localSecrets.recaptchaSiteKey) {
+      secrets.recaptchaSiteKey = localSecrets.recaptchaSiteKey;
+      console.info(`Using recaptchaSiteKey from ${LOCAL_SECRETS_PATH}`);
+    }
+    if (!secrets.ipLookupServiceApiKey && localSecrets.ipLookupServiceApiKey) {
+      secrets.ipLookupServiceApiKey = localSecrets.ipLookupServiceApiKey;
+      console.info(`Using ipLookupServiceApiKey from ${LOCAL_SECRETS_PATH}`);
+    }
+  } catch (err) {
+    if (err.code !== 'ENOENT') {
+      console.warn(`Failed to read ${LOCAL_SECRETS_PATH}:`, err.message);
+    }
+  }
+
+  return secrets;
+};
 
 const generateMergedConfigs = async (environment, helplineCode) => {
   const defaults = JSON.parse(await fs.readFile('./configSrc/defaults.json', { encoding: 'utf8' }));
   const defaultTranslations = JSON.parse(
     await fs.readFile(`./translationsSrc/${DEFAULT_LANGUAGE}.json`, { encoding: 'utf8' }),
   );
+
+  const secrets = await loadSecrets();
 
   // Build an array of the target helplines. If not specified, use the fs structure, where a folder represents a helpline
   const helplineCodes = [];
@@ -33,6 +98,8 @@ const generateMergedConfigs = async (environment, helplineCode) => {
     const directories = contents.filter(ent => ent.isDirectory()).map(({ name }) => name);
     helplineCodes.push(...directories);
   }
+
+  console.debug(helplineCodes)
 
   for (const shortCode of helplineCodes) {
     const helplineCommon = JSON.parse(await fs.readFile(`./configSrc/${shortCode}/common.json`, { encoding: 'utf8' }));
@@ -94,6 +161,7 @@ const generateMergedConfigs = async (environment, helplineCode) => {
         }
       }
       mergedTranslations[translationFilename.split('.')[0]] = merge(
+        {},
         defaultTranslations,
         languageTranslations,
         localeTranslations,
@@ -102,11 +170,16 @@ const generateMergedConfigs = async (environment, helplineCode) => {
     }
 
     for (const env of environments) {
-      const environmentSpecific = JSON.parse(
-        await fs.readFile(`./configSrc/${shortCode}/${env}.json`, { encoding: 'utf8' }),
-      );
+      let environmentSpecific = {};
+      try {
+        environmentSpecific = JSON.parse(
+            await fs.readFile(`./configSrc/${shortCode}/${env}.json`, { encoding: 'utf8' }),
+        );
+      } catch (err) {
+        console.debug(`Failed to load & parse environment specific config json file for ./configSrc/${shortCode}/${env}.json`, err)
+      }
 
-      const mergedConfig = merge(defaults, helplineCommon, environmentSpecific, { translations: mergedTranslations });
+      const mergedConfig = merge({}, defaults, helplineCommon, environmentSpecific, { translations: mergedTranslations }, secrets);
       await fs.mkdir(`./mergedConfigs/${shortCode}`, { recursive: true });
       await fs.writeFile(`./mergedConfigs/${shortCode}/${env}.json`, JSON.stringify(mergedConfig, null, 2));
       console.info(`Merged configs generated for ${shortCode}/${env}`);

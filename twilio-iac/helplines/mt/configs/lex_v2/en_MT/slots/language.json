@@ -10,7 +10,7 @@
                 {
                     "message": {
                         "plainTextMessage": {
-                            "value": "Please select from the below supported languages: \n 1. English \n 2. Maltese \n 3. Ukrainian"
+                            "value": "What language do you speak?\nPlease reply with the number of your preferred language: \n 1. English \n 2. Maltese \n 3. Ukrainian"
                         }
                     }
                 }

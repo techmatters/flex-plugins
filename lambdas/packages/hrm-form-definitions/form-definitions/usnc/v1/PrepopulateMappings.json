@@ -1,0 +1,30 @@
+{
+  "formSelector": {
+    "selectorType": "staticSelector",
+    "callType": "Child calling about self",
+    "parameter": {
+      "availableTabs": ["ChildInformationTab", "CaseInformationTab"]
+    }
+  },
+  "survey": {
+    "friendlyName": [["ChildInformationTab.friendlyName"]],
+    "ageRange": [["ChildInformationTab.ageRange"]],
+    "gender": [["ChildInformationTab.gender"]],
+    "pronouns": [["ChildInformationTab.pronouns"]],
+    "ethnicity": [["ChildInformationTab.ethnicity"]],
+    "race": [["ChildInformationTab.race"]],
+    "militaryStatus": [["ChildInformationTab.militaryStatus"]],
+    "Referral988": [["ChildInformationTab.Referral988"]],
+    "liveMonitoringConsent": [["CaseInformationTab.liveMonitoringConsent"]]
+  },
+  "preEngagement": {
+    "friendlyName": [["ChildInformationTab.friendlyName"]],
+    "ageRange": [["ChildInformationTab.ageRange"]],
+    "gender": [["ChildInformationTab.gender"]],
+    "pronouns": [["ChildInformationTab.pronouns"]],
+    "ethnicity": [["ChildInformationTab.ethnicity"]],
+    "race": [["ChildInformationTab.race"]],
+    "militaryStatus": [["ChildInformationTab.militaryStatus"]],
+    "Referral988": [["ChildInformationTab.Referral988"]]
+  }
+}

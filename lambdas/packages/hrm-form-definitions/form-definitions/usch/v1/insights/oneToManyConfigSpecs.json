@@ -19,5 +19,11 @@
       "contactForm.childInformation.q6",
       "contactForm.childInformation.q7"
     ]
+  },
+  {
+    "attributeName": "content",
+    "insightsObject": "conversations",
+    "paths": ["savedContact.profileId"],
+    "saveForNonDataContacts": true
   }
 ]

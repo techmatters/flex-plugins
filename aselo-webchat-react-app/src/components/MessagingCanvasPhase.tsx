@@ -28,9 +28,14 @@ import { removeNotification } from '../store/actions/genericActions';
 import { notifications } from '../notifications';
 import { AttachFileDropArea } from './AttachFileDropArea';
 import CloseChatButtons from './endChat/CloseChatButtons';
+import { selectCurrentTranslations } from '../store/config.reducer';
+import { localizeKey } from '../localization/localizeKey';
+
+const DEFAULT_AUTO_FIRST_MESSAGE = 'Incoming webchat contact from';
+const DEFAULT_CUSTOMER_DEFAULT_NAME = 'Anonymous';
 
 const sendInitialUserQuery = async (conv?: Conversation, query?: string): Promise<void> => {
-  if (!query || !conv) return;
+  if (!query || !conv || conv.status !== 'joined') return;
 
   const totalMessagesCount = await conv.getMessagesCount();
 
@@ -42,6 +47,19 @@ const sendInitialUserQuery = async (conv?: Conversation, query?: string): Promis
 export const MessagingCanvasPhase = () => {
   const dispatch = useDispatch();
 
+  const { currentTranslations, ipAddress, contactIdentifier } = useSelector((state: AppState) => ({
+    currentTranslations: selectCurrentTranslations(state),
+    ipAddress: state.session.ipAddress,
+    contactIdentifier: state.session.contactIdentifier,
+  }));
+  const autoFirstMessage = localizeKey(currentTranslations)('AutoFirstMessage') || DEFAULT_AUTO_FIRST_MESSAGE;
+  const contactIdentifierWithDefaults =
+    contactIdentifier ||
+    ipAddress ||
+    localizeKey(currentTranslations)('Conversation-Participants-CustomerDefaultName') ||
+    DEFAULT_CUSTOMER_DEFAULT_NAME;
+  const message = `${autoFirstMessage} ${contactIdentifierWithDefaults}`;
+
   const { conversation, conversationState, preEngagmentData } = useSelector((state: AppState) => ({
     conversationState: state.chat.conversationState,
     conversation: state.chat?.conversation,
@@ -50,8 +68,8 @@ export const MessagingCanvasPhase = () => {
 
   useEffect(() => {
     dispatch(removeNotification(notifications.failedToInitSessionNotification('ds').id));
-    sendInitialUserQuery(conversation as Conversation, 'TODO: trigger message');
-  }, [dispatch, conversation, preEngagmentData]);
+    sendInitialUserQuery(conversation as Conversation, message);
+  }, [dispatch, conversation, preEngagmentData, message]);
 
   const Wrapper = conversationState === 'active' ? AttachFileDropArea : Fragment;
 
@@ -61,7 +79,7 @@ export const MessagingCanvasPhase = () => {
       <CloseChatButtons />
       <NotificationBar />
       <MessageList />
-      {conversationState === 'active' ? <MessageInput /> : <ConversationEnded />}
+      {conversationState === 'active' && conversation?.status === 'joined' ? <MessageInput /> : <ConversationEnded />}
     </Wrapper>
   );
 };

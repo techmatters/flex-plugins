@@ -99,7 +99,7 @@ describe('chatChannelJanitor', () => {
   });
 
   describe('when conversationSid is provided', () => {
-    test('active conversation without proxy session - closes conversation', async () => {
+    test('active conversation - closes conversation', async () => {
       mockFetchConversation.mockResolvedValue({
         state: 'active',
         attributes: JSON.stringify({}),
@@ -115,28 +115,6 @@ describe('chatChannelJanitor', () => {
         xTwilioWebhookEnabled: 'true',
       });
       expect(result.message).toContain(TEST_CONVERSATION_SID);
-    });
-
-    test('active conversation with proxy session - deletes proxy session then closes conversation', async () => {
-      mockFetchConversation.mockResolvedValue({
-        state: 'active',
-        attributes: JSON.stringify({ proxySession: TEST_PROXY_SESSION }),
-        update: mockUpdateConversation,
-      });
-      mockFetchProxySession.mockResolvedValue({
-        remove: mockRemoveProxySession,
-      });
-
-      await chatChannelJanitor(TEST_ACCOUNT_SID, {
-        conversationSid: TEST_CONVERSATION_SID,
-      });
-
-      expect(mockFetchProxySession).toHaveBeenCalled();
-      expect(mockRemoveProxySession).toHaveBeenCalled();
-      expect(mockUpdateConversation).toHaveBeenCalledWith({
-        state: 'closed',
-        xTwilioWebhookEnabled: 'true',
-      });
     });
 
     test('already closed conversation - skips update', async () => {

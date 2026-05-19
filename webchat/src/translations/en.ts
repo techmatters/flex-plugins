@@ -16,6 +16,7 @@
 
 // eslint-disable-next-line global-require
 export default {
+  NewChatMessageNotificationTitle: 'New message from counsellor',
   EndChatButtonLabel: 'End Chat',
   QuickExitButtonLabel: 'Quick Exit',
   QuickExitDescription: 'Need to leave immediately?',

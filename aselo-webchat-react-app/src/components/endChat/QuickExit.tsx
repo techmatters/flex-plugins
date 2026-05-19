@@ -26,7 +26,7 @@ import LocalizedTemplate from '../../localization/LocalizedTemplate';
 
 type Props =
   | {
-      channelSid: string;
+      conversationSid: string;
       token: string;
       language?: string;
       action: 'finishTask';
@@ -45,20 +45,21 @@ export default function QuickExit(props: Props) {
 
   const configuredBackend = contactBackend(config);
   const handleExit = async () => {
-    // Clear chat history and open a new location
-    sessionDataHandler.clear();
-    dispatch(updatePreEngagementData({}));
-    dispatch(changeEngagementPhase({ phase: EngagementPhase.PreEngagementForm }));
     if (props.action === 'finishTask') {
       // Only if we started a task
       try {
         // Fire and forget end chat request, don't delay blanking the page waiting for the response
-        configuredBackend('/endChat', props).then(() => null);
+        configuredBackend.deferredRequest('/endChat', props).then(() => null);
       } catch (error) {
         // Only errors synchronously making the request will be caught, not errors from the service
         console.error(error);
       }
     }
+    // Clear chat history and open a new location
+    sessionDataHandler.clear();
+    dispatch(updatePreEngagementData({}));
+    dispatch(changeEngagementPhase({ phase: EngagementPhase.PreEngagementForm }));
+
     window.location.replace(config.quickExitUrl);
   };
 

@@ -6,17 +6,23 @@ locals {
 
 
   local_config = {
-    helpline        = "Promise Resource Network"
-    task_language   = "en-US"
+    helpline      = "Promise Resource Network"
+    task_language = "en-US"
 
     workflows = {
       master : {
-        friendly_name = "Master Workflow"
-        templatefile  = "/app/twilio-iac/helplines/templates/workflows/master.tftpl"
+        friendly_name            = "Master Workflow"
+        templatefile             = "/app/twilio-iac/helplines/usnc/templates/workflows/master.tftpl"
+        task_reservation_timeout = 20
+      },
+      webchat_sms : {
+        friendly_name            = "Webchat SMS Workflow"
+        templatefile             = "/app/twilio-iac/helplines/usnc/templates/workflows/webchat-sms.tftpl"
+        task_reservation_timeout = 20
       },
       queue_transfers : {
         friendly_name = "Queue Transfers Workflow"
-        templatefile  = "/app/twilio-iac/helplines/templates/workflows/queue-transfers.tftpl"
+        templatefile  = "/app/twilio-iac/helplines/usnc/templates/workflows/queue-transfers.tftpl"
       },
       survey : {
         friendly_name = "Survey Workflow"
@@ -37,6 +43,24 @@ locals {
         "target_workers" = "email=='aselo-alerts+production@techmatters.org'",
         "friendly_name"  = "E2E Test Queue"
       },
+      switchboard : {
+        "target_workers" = "roles HAS 'supervisor'",
+        "friendly_name"  = "Switchboard Queue"
+      }
+    }
+    lex_v2_bot_languages = {
+      en_USNC : ["pre_survey", "post_survey"]
+    }
+
+    channel_attributes = {
+      webchat : "/app/twilio-iac/helplines/templates/channel-attributes/webchat.tftpl"
+      voice : "/app/twilio-iac/helplines/usnc/templates/channel-attributes/voice.tftpl"
+      default : "/app/twilio-iac/helplines/templates/channel-attributes/default.tftpl"
+      chat-conversations : "/app/twilio-iac/helplines/templates/channel-attributes/chat-conversations.tftpl"
+      default-conversations : "/app/twilio-iac/helplines/templates/channel-attributes/default-conversations.tftpl"
+      line-conversations : "/app/twilio-iac/helplines/templates/channel-attributes/custom-channel-conversations.tftpl"
+      telegram-conversations : "/app/twilio-iac/helplines/templates/channel-attributes/custom-channel-conversations.tftpl"
+      instagram-conversations : "/app/twilio-iac/helplines/templates/channel-attributes/custom-channel-conversations.tftpl"
     }
 
     task_channels = {
@@ -47,6 +71,40 @@ locals {
       video : "Video"
       email : "Email"
       survey : "Survey"
+    }
+    activities = {
+      scheduled_break : {
+        friendly_name = "Scheduled Break"
+        available     = false
+      },
+      unscheduled_break : {
+        friendly_name = "Unscheduled Break"
+        available     = false
+      },
+      meal_break : {
+        friendly_name = "Meal Break"
+        available     = false
+      },
+      meeting : {
+        friendly_name = "Meeting"
+        available     = false
+      },
+      documentation : {
+        friendly_name = "Documentation"
+        available     = false
+      },
+      training : {
+        friendly_name = "Training"
+        available     = false
+      },
+      leadership : {
+        friendly_name = "Leadership Admin Tasks"
+        available     = false
+      },
+      supervision : {
+        friendly_name = "Supervision"
+        available     = false
+      }
     }
 
   }

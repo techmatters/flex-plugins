@@ -1,1 +1,79 @@
-{}
+{
+  "contactForm": {
+    "callerInformation": [
+    ],
+    "childInformation": [
+     {
+        "name": "Referral988",
+        "insights": ["conversations", "initiated_by"]
+      },
+      {
+        "name": "state",
+        "insights": ["conversations", "conversation_attribute_4"]
+      },
+      {
+        "name": "ageRange",
+        "insights": ["conversations", "conversation_attribute_3"]
+      },
+       {
+        "name": "city",
+        "insights": ["conversations", "campaign"]
+      },
+      {
+        "name": "ethnicity",
+        "insights": ["conversations", "conversation_attribute_9"]
+      },
+      {
+        "name": "race",
+        "insights": ["conversations", "conversation_attribute_6"]
+      },
+        {
+        "name": "militaryStatus",
+        "insights": ["conversations", "in_business_hours"]
+      },
+      {
+        "name": "livingSituation",
+        "insights": ["conversations", "productive"]
+      },
+        {
+        "name": "vulnerableGroups",
+        "insights": ["conversations", "content"]
+      },
+      {
+        "name": "repeatCaller",
+         "insights": ["conversations", "followed_by"]
+      },
+        {
+        "name": "howDidYouHearAboutTheWarmLine",
+        "insights": ["conversations", "conversation_attribute_7"]
+      }
+    ],
+    "caseInformation": [
+      {
+        "name": "actionTaken",
+        "insights": ["conversations", "initiative"]
+      },
+      {
+        "name": "substanceUseLivedExperience",
+        "insights": ["conversations", "language"]
+      },
+      {
+        "name": "wasTheCallerSatisfiedWithTheSupportProvided",
+        "insights": ["conversations", "outcome"]
+      },
+      {
+        "name": "referrals",
+        "insights": ["conversations", "preceded_by"]
+      }
+    ]
+  },
+  "caseForm": {
+    "topLevel": [
+      {
+        "name": "id",
+        "insights": ["conversations", "case"]
+      }
+    
+    ]
+  }
+}

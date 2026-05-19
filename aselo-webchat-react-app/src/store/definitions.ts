@@ -19,7 +19,7 @@ import { GenericThemeShape } from '@twilio-paste/theme';
 import { AlertProps } from '@twilio-paste/core/alert';
 import { PreEngagementForm } from 'hrm-form-definitions';
 
-import { FileAttachmentConfig } from '../definitions';
+import { FileAttachmentConfig, EmojiPickerConfig } from '../definitions';
 import { TaskState } from '../task';
 
 // eslint-disable-next-line import/no-unused-modules
@@ -29,6 +29,7 @@ export enum EngagementPhase {
   PreEngagementForm = 'PreEngagementForm',
   MessagingCanvas = 'MessagingCanvas',
   Loading = 'Loading',
+  OperatingHours = 'OperatingHours',
 }
 
 export type ChatState = {
@@ -57,13 +58,18 @@ export type SessionState = {
   messages?: Message[];
   conversationState?: 'active' | 'inactive' | 'closed';
   preEngagementData: PreEngagementData;
+  recaptchaValid?: boolean;
+  operatingHoursMessage?: string;
+  ipAddress?: string;
+  contactIdentifier?: string;
 };
 
 export type ConfigState = {
   fileAttachment?: FileAttachmentConfig;
+  emojiPicker?: EmojiPickerConfig;
   deploymentKey: string;
   region?: string;
-  alwaysOpen?: boolean;
+  widgetAlwaysOpen?: boolean;
   theme?: {
     isLight?: boolean;
     overrides?: Partial<GenericThemeShape>;
@@ -77,6 +83,13 @@ export type ConfigState = {
   defaultLocale: LocaleString;
   currentLocale?: LocaleString;
   quickExitUrl: `https://${string}`;
+  enableRecaptcha?: boolean;
+  recaptchaSiteKey?: string;
+  captureIp?: boolean;
+  ipLookupServiceApiKey?: string;
+  contactIdentifierField?: string;
+  checkOpenHours?: boolean;
+  enableMobileOptimizations?: boolean;
 };
 
 export type Notification = {

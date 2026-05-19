@@ -16,6 +16,7 @@
 
 // eslint-disable-next-line global-require, import/no-unused-modules
 export default {
+  NewChatMessageNotificationTitle: 'Nouveau message du conseiller',
   EndChatButtonLabel: 'Terminer Chat',
   QuickExitButtonLabel: 'Sortie Rapide',
   QuickExitDescription: 'Besoin de Partir Rapidement?',
