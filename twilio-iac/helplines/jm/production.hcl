@@ -31,7 +31,7 @@ locals {
         templatefile           = "/app/twilio-iac/helplines/templates/studio-flows/messaging-lex-v2-blocking-lambda-sd.tftpl"
         channel_flow_vars      = {}
         chatbot_unique_names   = []
-        enable_datadog_monitor = true
+        enable_datadog_monitor = false
         custom_monitor = {
           query = "sum(last_1w):sum:<metric>{*}.as_count() == 0"
           custom_schedule = {
