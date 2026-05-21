@@ -16,7 +16,7 @@
         "insights": ["conversations", "conversation_attribute_3"]
       },
        {
-        "name": "city",
+        "name": "county",
         "insights": ["conversations", "campaign"]
       },
       {
