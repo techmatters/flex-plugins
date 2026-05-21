@@ -53,7 +53,7 @@ const parseBody = ({
 
 export const handler = async (event: ALBEvent): Promise<ALBResult> => {
   console.info('twilio/account-scoped: Triggered by path:', event.path);
-  console.debug('twilio/account-scoped event:', JSON.stringify(event));
+  console.debug('[SENSITIVE] twilio/account-scoped event:', JSON.stringify(event));
   try {
     const request = {
       method: event.httpMethod,

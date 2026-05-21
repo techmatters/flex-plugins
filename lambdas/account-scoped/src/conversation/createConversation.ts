@@ -86,7 +86,7 @@ export const createConversation = async (
       .update({ friendlyName: senderScreenName });
     const channelAttributes = JSON.parse((await conversationContext.fetch()).attributes);
 
-    console.debug('channelAttributes prior to update', channelAttributes);
+    console.debug('[SENSITIVE] channelAttributes prior to update', channelAttributes);
 
     await conversationContext.update({
       'timers.closed': CONVERSATION_CLOSE_TIMEOUT,

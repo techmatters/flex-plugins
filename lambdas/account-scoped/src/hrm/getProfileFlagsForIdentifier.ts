@@ -47,9 +47,10 @@ export const handleGetProfileFlagsForIdentifier: AccountScopedHandler = async (
     }
     const identifier = identifierResult.unwrap();
     const profileFlagsByIdentifierPath = `profiles/identifier/${identifier}/flags`;
-    console.info(
-      `[${accountSid}] Getting profile flags for identifier ${identifier} from ${profileFlagsByIdentifierPath}`,
+    console.debug(
+      `[${accountSid}] Getting profile flags from ${profileFlagsByIdentifierPath}`,
     );
+    console.debug(`[SENSITIVE] [${accountSid}] For identifier ${identifier}`);
     const responseResult = await getFromInternalHrmEndpoint<{ name: string }[]>(
       accountSid, // We use the accountSid rather than the hrmAccountId because we can't infer the hrmAccountSid based on worker at this point
       hrmApiVersion,
@@ -63,7 +64,10 @@ export const handleGetProfileFlagsForIdentifier: AccountScopedHandler = async (
     }
     const responseBody = responseResult.unwrap();
     console.info(
-      `[${accountSid}] Profile flags for identifier ${identifier} from ${profileFlagsByIdentifierPath}`,
+      `[${accountSid}] Profile flags for identifier loaded from ${profileFlagsByIdentifierPath}`,
+    );
+    console.debug(
+      `[SENSITIVE] [${accountSid}] Profile flags for identifier ${identifier} from ${profileFlagsByIdentifierPath}`,
       responseBody,
     );
     return newOk({ flags: responseBody.map(flag => flag.name) });

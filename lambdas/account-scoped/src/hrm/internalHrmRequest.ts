@@ -65,7 +65,7 @@ const requestFromInternalHrmEndpoint = async <TRequest, TResponse>(
       if (response.ok) {
         const hrmResponse = await response.json();
         console.info(`HRM responded ${response.status} to ${method} ${endpointUrl}`);
-        console.debug(`HRM response content:`, hrmResponse);
+        console.debug(`[SENSITIVE] HRM response content:`, hrmResponse);
         return newOk(hrmResponse as TResponse);
       }
       const bodyText = await response.text();

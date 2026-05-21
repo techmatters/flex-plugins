@@ -98,8 +98,8 @@ async function deleteSwitchboardStateDocument({
   client: Twilio;
   syncServiceSid: string;
 }) {
-  console.log(
-    `Deleting switchboard state document: ${JSON.stringify({ syncServiceSid }, null, 2)}`,
+  console.info(
+    `Deleting switchboard state document : ${syncServiceSid}/${SWITCHBOARD_STATE_DOCUMENT}`,
   );
 
   try {
@@ -129,7 +129,7 @@ async function deleteSwitchboardStateDocument({
     // If document doesn't exist, that's fine
     if (error.status === 404 || error.code === 20404) {
       const message = `Document may not exist, proceeding anyway: ${error instanceof Error ? error.message : String(error)}`;
-      console.log(message);
+      console.info(message);
       return newOk(false);
     }
 

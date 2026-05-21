@@ -258,7 +258,8 @@ export const handleEvent = async (
     timeOfContactMillis: savedTimeOfContactDate.getTime(),
   };
   await taskContext.update({ attributes: JSON.stringify(updatedAttributes) });
-  console.info(`Set task ${taskSid} attributes:`, updatedAttributes);
+  console.info(`Set task ${taskSid} attributes`);
+  console.debug(`[SENSITIVE] Updated ${taskSid} attributes:`, updatedAttributes);
 };
 
 registerTaskRouterEventHandler([RESERVATION_ACCEPTED], handleEvent);
