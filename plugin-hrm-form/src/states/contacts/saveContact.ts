@@ -271,7 +271,7 @@ export const newSubmitAndFinalizeContactFromOutsideTaskContextAsyncAction = crea
         try {
           await completeTaskAssignment(taskSid);
         } catch (completeTaskError) {
-          console.log(
+          console.error(
             `Error ${removeTask ? 'cancelling / removing' : 'completing'} task ${taskSid}`,
             completeTaskError,
           );

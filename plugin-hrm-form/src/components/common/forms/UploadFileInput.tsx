@@ -84,7 +84,7 @@ const UploadFileInput: React.FC<UploadFileInputProps> = ({
       updateCallback();
     } catch (err) {
       setLoading(false);
-      console.log({ err });
+      console.error(err);
     }
   };
 
@@ -98,7 +98,7 @@ const UploadFileInput: React.FC<UploadFileInputProps> = ({
       updateCallback();
     } catch (err) {
       setLoading(false);
-      console.log({ err });
+      console.error(err);
     }
   };
 

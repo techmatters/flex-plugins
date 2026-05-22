@@ -24,7 +24,6 @@ import HrmTheme, { overrides } from './styles/HrmTheme';
 import { defaultLocale, initLocalization } from './translations';
 import * as Providers from './utils/setUpProviders';
 import * as ActionFunctions from './utils/setUpActions';
-import { recordCallState } from './utils/setUpActions';
 import * as TaskRouterListeners from './utils/setUpTaskRouterListeners';
 import * as Components from './utils/setUpComponents';
 import * as Channels from './channels/setUpChannels';
@@ -162,15 +161,11 @@ const setUpActions = (
   Flex.Actions.addListener('afterNavigateToView', ActionFunctions.afterNavigateToView);
 
   Flex.Actions.addListener('beforeAcceptTask', ActionFunctions.beforeAcceptTask(setupObject, getMessage));
-  Flex.Actions.addListener('afterAcceptTask', ActionFunctions.afterAcceptTask(featureFlags, setupObject, getMessage));
+  Flex.Actions.addListener('afterAcceptTask', ActionFunctions.afterAcceptTask);
 
   setUpTransferActions(setupObject);
 
   Flex.Actions.replaceAction('HangupCall', ActionFunctions.hangupCall);
-  Flex.Manager.getInstance().workerClient.addListener('reservationCreated', reservation => {
-    reservation.addListener('wrapup', recordCallState);
-    reservation.addListener('completed', recordCallState);
-  });
 
   Flex.Actions.replaceAction('WrapupTask', wrapupOverride);
 
@@ -196,7 +191,7 @@ export default class HrmFormPlugin extends FlexPlugin {
 
     setUpFullStory(manager.workerClient, manager.serviceConfiguration);
 
-    console.log(`Welcome to ${PLUGIN_NAME}`);
+    console.info(`Welcome to ${PLUGIN_NAME}`);
     this.registerReducers(manager);
 
     Providers.setMUIProvider();
@@ -238,7 +233,7 @@ export default class HrmFormPlugin extends FlexPlugin {
 
     // TODO(nick): Eventually remove this log line or set to debug.  Should we fail hard here?
     const { hrmBaseUrl } = config;
-    console.log(`HRM URL: ${hrmBaseUrl}`);
+    console.info(`HRM URL: ${hrmBaseUrl}`);
     if (hrmBaseUrl === undefined) {
       console.error('HRM base URL not defined, you must provide this to save program data');
     }

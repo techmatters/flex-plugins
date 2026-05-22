@@ -66,7 +66,8 @@ export const getNumberFromTask = (task: CustomITask) => {
   }
 
   if (channelType === undefined) return null;
-  console.error(`Channel type ${channelType} is not supported`, typeof channelType, channelType, task);
+  console.error(`Channel type ${channelType} is not supported`, typeof channelType, channelType);
+  console.debug(task);
   return null;
 };
 

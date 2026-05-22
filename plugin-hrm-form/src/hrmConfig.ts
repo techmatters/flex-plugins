@@ -183,7 +183,7 @@ export const initializeConfig = () => {
   try {
     cachedConfig = readConfig();
   } catch (err) {
-    console.log(
+    console.info(
       'Failed to read config on page load, leaving undefined for now (it will be populated when the flex reducer runs)',
       err,
     );

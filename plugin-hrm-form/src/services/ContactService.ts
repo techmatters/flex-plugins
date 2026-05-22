@@ -125,7 +125,6 @@ export const determineConversationMedia = async (
         recordingError: externalRecordingInfo.error,
         isCallTask: isVoiceTask,
         isChatBasedTask: isChatTask,
-        attributes: JSON.stringify(task.attributes),
       });
       return returnData;
     }

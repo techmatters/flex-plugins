@@ -18,8 +18,7 @@
 /* eslint-disable react/no-multi-comp */
 import React from 'react';
 import * as Flex from '@twilio/flex-ui';
-import { CallCanvas, Notifications, NotificationType, Template } from '@twilio/flex-ui';
-import { ParticipantCanvasChildrenProps } from '@twilio/flex-ui/src/components/canvas/ParticipantCanvas/ParticipantCanvas.definitions';
+import { Notifications, NotificationType, Template } from '@twilio/flex-ui';
 
 import * as TransferHelpers from '../transfer/transferTaskState';
 import EmojiPicker from '../components/emojiPicker';
@@ -51,16 +50,12 @@ import { RootState } from '../states';
 import selectCurrentOfflineContact from '../states/contacts/selectCurrentOfflineContact';
 import { REFRESH_BROWSER_REQUIRED_FOR_LANGUAGE_CHANGE_NOTIFICATION_ID } from '../states/configuration/changeLanguage';
 import { FeatureFlags } from '../types/FeatureFlags';
-import QueueNameLabel from './QueueNameLabel';
-import HangUpByLabel from '../components/HangUpByLabel';
 
 type SetupObject = ReturnType<typeof getHrmConfig>;
 /**
  * Returns the UI for the "Contacts Waiting" section
  */
 const queuesStatusUI = (setupObject: SetupObject) => {
-  console.log('setupObject', setupObject);
-
   return (
     <QueuesStatus
       key="queue-status-task-list"

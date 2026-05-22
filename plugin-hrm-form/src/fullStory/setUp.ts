@@ -79,7 +79,7 @@ export function setUpFullStory(workerClient: Worker, serviceConfiguration: Servi
       orgId: fullStoryId,
       devMode: process.env.ENABLE_MONITORING !== 'true',
     });
-    console.log('Fullstory monitoring is enabled');
+    console.info('Fullstory monitoring is enabled');
     helplineIdentifierFullStory(
       workerClient,
       serviceConfiguration.ui_version,

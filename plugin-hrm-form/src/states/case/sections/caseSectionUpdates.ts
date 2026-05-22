@@ -131,7 +131,8 @@ const updateCaseSections = (
 ): HrmState => {
   const caseState = state.connectedCase.cases[caseId];
   if (!caseState) {
-    console.warn(`Tried to update case sections for missing case state (id: ${caseId})`, updatedCaseSections);
+    console.warn(`Tried to update case sections for missing case state (id: ${caseId})`);
+    console.debug(updatedCaseSections);
     return state;
   }
   caseState.sections = caseState.sections || {};
