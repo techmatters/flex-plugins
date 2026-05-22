@@ -140,8 +140,8 @@ ${
           "x": 420,
           "y": 1110
         },
-        "service": "{{trigger.message.InstanceSid}}",
-        "channel": "{{trigger.message.ChannelSid}}",
+        "service": "{{trigger.conversation.InstanceSid}}",
+        "channel": "{{trigger.conversation.ChannelSid}}",
         "from": "${channel_flow_vars.widget_from}",
         "to": "{{contact.channel.address}}",
         "body": "${channel_flow_vars.chat_greeting_message}"
@@ -164,8 +164,8 @@ ${
           "x": 990,
           "y": 1150
         },
-        "service": "{{trigger.message.InstanceSid}}",
-        "channel": "{{trigger.message.ChannelSid}}",
+        "service": "{{trigger.conversation.InstanceSid}}",
+        "channel": "{{trigger.conversation.ChannelSid}}",
         "from": "${channel_flow_vars.widget_from}",
         "to": "{{contact.channel.address}}",
         "body": "{{widgets.f_operatingHours.parsed.message}}"
@@ -235,8 +235,8 @@ ${
           "x": -420,
           "y": 770
         },
-        "service": "{{trigger.message.InstanceSid}}",
-        "channel": "{{trigger.message.ChannelSid}}",
+        "service": "{{trigger.conversation.InstanceSid}}",
+        "channel": "{{trigger.conversation.ChannelSid}}",
         "from": "${channel_flow_vars.widget_from}",
         "to": "{{contact.channel.address}}",
         "body": "${channel_flow_vars.chat_blocked_message}"
