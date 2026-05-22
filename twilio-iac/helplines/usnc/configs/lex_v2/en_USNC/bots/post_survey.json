@@ -24,25 +24,25 @@
           }
         ],
         "closing_response": {
-          "message": "Thank you for contacting the Warm Line.  Feel free to reach out again if you need additional support."
+          "message": "Thank you for contacting the Warmline. Feel free to reach out again if you need additional support."
         },
         "slot_priorities": {
           "1": {
-            "slot_name": "experience_rating",
-            "slot_type_name": "four_level_assessment",
-            "slot_question": "How was your experience today? \nReply with 1 = Excellent, 2 = Good, 3 = Fair, 4 = Poor",
+            "slot_name": "feel_supported",
+            "slot_type_name": "yes_no",
+            "slot_question": "Did you feel supported during the interaction with the Warmline? \nReply with: \n1 = Yes, 2 = No",
             "failure_response": "Thank you for reaching out. Please contact us again if you need more help."
           },
           "2":  {
-            "slot_name": "feel_supported",
-            "slot_type_name": "yes_no",
-            "slot_question": "Did you feel supported and respected by the counselor? \nReply with: \n1 = Yes, 2 = No",
+            "slot_name": "beginning_interaction",
+            "slot_type_name": "five_level_assessment",
+            "slot_question": "On a scale of 1-5, how did you feel at the beginning of the interaction?",
             "failure_response": "Thank you for reaching out. Please contact us again if you need more help."
           },
           "3":  {
-            "slot_name": "better_prepared",
-            "slot_type_name": "yes_no",
-            "slot_question": "Do you feel better prepared to deal with your situation after this conversation? \nReply with: \n1 = Yes, 2 = No",
+            "slot_name": "end_interaction",
+            "slot_type_name": "five_level_assessment",
+            "slot_question": "On a scale of 1-5, how did you feel at the end of the interaction?",
             "failure_response": "Thank you for reaching out. Please contact us again if you need more help."
           }
                 }
@@ -63,7 +63,7 @@
           }
         ],
         "closing_response": {
-          "message": "Thank you for contacting the Warm Line.  Feel free to reach out again if you need additional support."
+          "message": "Thank you for contacting the Warmline. Feel free to reach out again if you need additional support."
         },
         "slot_priorities": {}
     }
