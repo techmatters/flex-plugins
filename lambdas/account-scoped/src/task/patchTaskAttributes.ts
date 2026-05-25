@@ -15,29 +15,72 @@
  */
 
 import { AccountSID, TaskSID, WorkspaceSID } from '@tech-matters/twilio-types';
-import { Twilio } from 'twilio';
-import { getWorkspaceSid } from '@tech-matters/twilio-configuration';
+import { getTwilioClient, getWorkspaceSid } from '@tech-matters/twilio-configuration';
+import type RestException from 'twilio/lib/base/RestException';
+import { ErrorResult, newErr, newOk, Result } from '../Result';
 
-const logError = (
-  taskSid: TaskSID,
-  workspaceSid: WorkspaceSID,
-  step: 'fetch' | 'update',
-  errorInstance: Error,
-): void => {
-  const errorMessage = `Error at patchTaskAttributes: task with sid ${taskSid} does not exists in workspace ${workspaceSid} when trying to ${step} it.`;
-  console.error(errorMessage, errorInstance);
+const MAX_ATTEMPTS = 10;
+
+type ErrorResultPayload = {
+  accountSid: AccountSID;
+  taskSid: TaskSID;
+  errorInstance: Error;
+  step: 'fetch' | 'update';
+};
+
+type MissingTaskErrorResultPayload = ErrorResultPayload & {
+  workspaceSid: WorkspaceSID;
+};
+
+type PreconditionFailedErrorResultPayload = ErrorResultPayload & {
+  etag: string | null;
+  step: 'update';
+};
+
+const newErrorResult = <
+  T extends
+    | ErrorResultPayload
+    | MissingTaskErrorResultPayload
+    | PreconditionFailedErrorResultPayload,
+>(
+  payload: T,
+): ErrorResult<T> => {
+  const errorMessage = `[${payload.accountSid}/${payload.taskSid}] Error in patchTaskAttributes when trying to ${payload.step} it.`;
+  return newErr({
+    message: errorMessage,
+    error: payload,
+  });
+};
+
+const missingTaskError = (
+  payload: MissingTaskErrorResultPayload,
+): ErrorResult<MissingTaskErrorResultPayload> => {
+  const result = newErrorResult<MissingTaskErrorResultPayload>(payload);
+  const errorMessage = `[${payload.accountSid}/${payload.taskSid}] Error in patchTaskAttributes: task with sid does not exists in workspace ${payload.workspaceSid} when trying to ${payload.step} it.`;
+  console.error(errorMessage, payload.errorInstance);
+  result.message = errorMessage;
+  return result;
 };
 
 export const patchTaskAttributes = async (
-  client: Twilio,
   accountSid: AccountSID,
   taskSid: TaskSID,
   updatedAttributesGenerator: (
     originalTaskAttributes: Record<string, any>,
   ) => Record<string, any>,
-) => {
+  attemptsAlreadyMade = 0,
+): Promise<
+  Result<
+    | ErrorResultPayload
+    | MissingTaskErrorResultPayload
+    | PreconditionFailedErrorResultPayload,
+    undefined
+  >
+> => {
+  // Ensure we have a private Twilio client so the lastRequest check always returns the prior fetch request
+  const client = await getTwilioClient(accountSid);
   const workspaceSid: WorkspaceSID = await getWorkspaceSid(accountSid);
-  console.info('Adding external_id to task', taskSid);
+  console.info('Patching task', taskSid);
 
   if (!taskSid) throw new Error('TaskSid missing in event object');
 
@@ -45,10 +88,28 @@ export const patchTaskAttributes = async (
 
   try {
     task = await client.taskrouter.v1.workspaces(workspaceSid).tasks(taskSid).fetch();
-  } catch (err) {
-    logError(taskSid, workspaceSid, 'fetch', err as Error);
-    return;
+  } catch (error) {
+    const restError = error as RestException;
+    if (restError.status === 404) {
+      return missingTaskError({
+        accountSid,
+        taskSid,
+        workspaceSid,
+        step: 'fetch',
+        errorInstance: error as Error,
+      });
+    } else {
+      return newErrorResult({
+        accountSid,
+        taskSid,
+        step: 'fetch',
+        errorInstance: error as Error,
+      });
+    }
   }
+  // This is only safely the above fetch request if the client is private to this method
+  const { headers } = client.httpClient.lastRequest ?? {};
+  const version = typeof headers === 'object' ? headers.eTag : null;
 
   const taskAttributes = JSON.parse(task.attributes);
 
@@ -58,8 +119,48 @@ export const patchTaskAttributes = async (
     await client.taskrouter.v1
       .workspaces(workspaceSid)
       .tasks(taskSid)
-      .update({ attributes: JSON.stringify(newAttributes) });
-  } catch (err) {
-    logError(taskSid, workspaceSid, 'update', err as Error);
+      .update({
+        attributes: JSON.stringify(newAttributes),
+        ...(version ? { ifMatch: version } : {}),
+      });
+    return newOk(undefined);
+  } catch (error) {
+    const restError = error as RestException;
+    switch (restError.status) {
+      case 412:
+        if (attemptsAlreadyMade < MAX_ATTEMPTS) {
+          console.warn(
+            `Error 412 thrown, this usually indicates a mismatch in the ETag from the fetched task (${version}) and the one being updated, retry attempt ${attemptsAlreadyMade + 1} / ${MAX_ATTEMPTS}`,
+          );
+          return patchTaskAttributes(
+            accountSid,
+            taskSid,
+            updatedAttributesGenerator,
+            attemptsAlreadyMade + 1,
+          );
+        }
+        return newErrorResult({
+          accountSid,
+          taskSid,
+          etag: version,
+          step: 'update',
+          errorInstance: restError,
+        });
+      case 404:
+        return missingTaskError({
+          accountSid,
+          taskSid,
+          workspaceSid,
+          step: 'update',
+          errorInstance: restError,
+        });
+      default:
+        return newErrorResult({
+          accountSid,
+          taskSid,
+          step: 'update',
+          errorInstance: restError,
+        });
+    }
   }
 };
