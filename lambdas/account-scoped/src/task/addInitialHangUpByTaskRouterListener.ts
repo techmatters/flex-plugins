@@ -20,7 +20,7 @@ import { AccountSID, TaskSID } from '@tech-matters/twilio-types';
 import { TASK_CREATED } from '../taskrouter/eventTypes';
 import { EventFields } from '../taskrouter';
 import { patchTaskAttributes } from './patchTaskAttributes';
-import {isErr} from "../Result";
+import { isErr } from '../Result';
 
 const addInitialHangUpBy: TaskRouterEventHandler = async (
   event: EventFields,
