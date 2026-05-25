@@ -17,15 +17,23 @@
 import { patchTaskAttributes } from '../../../src/task/patchTaskAttributes';
 import { getTwilioClient, getWorkspaceSid } from '@tech-matters/twilio-configuration';
 import { isErr, isOk } from '../../../src/Result';
-import { TEST_ACCOUNT_SID, TEST_TASK_SID, TEST_WORKSPACE_SID } from '../../testTwilioValues';
+import {
+  TEST_ACCOUNT_SID,
+  TEST_TASK_SID,
+  TEST_WORKSPACE_SID,
+} from '../../testTwilioValues';
 
 jest.mock('@tech-matters/twilio-configuration', () => ({
   getTwilioClient: jest.fn(),
   getWorkspaceSid: jest.fn(),
 }));
 
-const mockGetTwilioClient = getTwilioClient as jest.MockedFunction<typeof getTwilioClient>;
-const mockGetWorkspaceSid = getWorkspaceSid as jest.MockedFunction<typeof getWorkspaceSid>;
+const mockGetTwilioClient = getTwilioClient as jest.MockedFunction<
+  typeof getTwilioClient
+>;
+const mockGetWorkspaceSid = getWorkspaceSid as jest.MockedFunction<
+  typeof getWorkspaceSid
+>;
 
 const TEST_ETAG = '"abc123"';
 const ORIGINAL_ATTRIBUTES = { existingKey: 'original', anotherKey: 42 };
@@ -109,7 +117,9 @@ describe('patchTaskAttributes', () => {
     });
 
     it('should update without ifMatch when lastRequest headers contain no eTag', async () => {
-      mockClient.httpClient.lastRequest = { headers: { 'Content-Type': 'application/json' } };
+      mockClient.httpClient.lastRequest = {
+        headers: { 'Content-Type': 'application/json' },
+      };
 
       await patchTaskAttributes(TEST_ACCOUNT_SID, TEST_TASK_SID, attributesGenerator);
 
@@ -119,7 +129,9 @@ describe('patchTaskAttributes', () => {
     });
 
     it('should log a warning when lastRequest headers contain no eTag', async () => {
-      mockClient.httpClient.lastRequest = { headers: { 'Content-Type': 'application/json' } };
+      mockClient.httpClient.lastRequest = {
+        headers: { 'Content-Type': 'application/json' },
+      };
       const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
 
       await patchTaskAttributes(TEST_ACCOUNT_SID, TEST_TASK_SID, attributesGenerator);
@@ -160,7 +172,9 @@ describe('patchTaskAttributes', () => {
     it('should fetch the task from the correct workspace', async () => {
       await patchTaskAttributes(TEST_ACCOUNT_SID, TEST_TASK_SID, attributesGenerator);
 
-      expect(mockClient.taskrouter.v1.workspaces).toHaveBeenCalledWith(TEST_WORKSPACE_SID);
+      expect(mockClient.taskrouter.v1.workspaces).toHaveBeenCalledWith(
+        TEST_WORKSPACE_SID,
+      );
       expect(
         mockClient.taskrouter.v1.workspaces(TEST_WORKSPACE_SID).tasks,
       ).toHaveBeenCalledWith(TEST_TASK_SID);
@@ -279,9 +293,7 @@ describe('patchTaskAttributes', () => {
 
   describe('optimistic locking - 412 retry mechanism', () => {
     it('should retry once when update returns 412 and succeed on second attempt', async () => {
-      mockUpdate
-        .mockRejectedValueOnce(makeRestException(412))
-        .mockResolvedValueOnce({});
+      mockUpdate.mockRejectedValueOnce(makeRestException(412)).mockResolvedValueOnce({});
 
       const result = await patchTaskAttributes(
         TEST_ACCOUNT_SID,
@@ -302,9 +314,7 @@ describe('patchTaskAttributes', () => {
         .mockResolvedValueOnce({ attributes: JSON.stringify(firstAttributes) })
         .mockResolvedValueOnce({ attributes: JSON.stringify(secondAttributes) });
 
-      mockUpdate
-        .mockRejectedValueOnce(makeRestException(412))
-        .mockResolvedValueOnce({});
+      mockUpdate.mockRejectedValueOnce(makeRestException(412)).mockResolvedValueOnce({});
 
       await patchTaskAttributes(TEST_ACCOUNT_SID, TEST_TASK_SID, attributesGenerator);
 
@@ -333,7 +343,9 @@ describe('patchTaskAttributes', () => {
       // MAX_ATTEMPTS is 10; with 1 initial attempt plus 10 retries, 11 total calls are made before giving up
       const totalAttempts = 11;
       for (let i = 0; i < totalAttempts; i++) {
-        mockFetch.mockResolvedValueOnce({ attributes: JSON.stringify(ORIGINAL_ATTRIBUTES) });
+        mockFetch.mockResolvedValueOnce({
+          attributes: JSON.stringify(ORIGINAL_ATTRIBUTES),
+        });
         mockUpdate.mockRejectedValueOnce(makeRestException(412));
       }
 
@@ -354,7 +366,9 @@ describe('patchTaskAttributes', () => {
     it('should include the ETag in the error payload when 412 retries are exhausted', async () => {
       const totalAttempts = 11;
       for (let i = 0; i < totalAttempts; i++) {
-        mockFetch.mockResolvedValueOnce({ attributes: JSON.stringify(ORIGINAL_ATTRIBUTES) });
+        mockFetch.mockResolvedValueOnce({
+          attributes: JSON.stringify(ORIGINAL_ATTRIBUTES),
+        });
         mockUpdate.mockRejectedValueOnce(makeRestException(412));
       }
 
@@ -373,7 +387,9 @@ describe('patchTaskAttributes', () => {
     it('should make exactly 11 fetch and update calls when all 10 retries are exhausted', async () => {
       const totalAttempts = 11;
       for (let i = 0; i < totalAttempts; i++) {
-        mockFetch.mockResolvedValueOnce({ attributes: JSON.stringify(ORIGINAL_ATTRIBUTES) });
+        mockFetch.mockResolvedValueOnce({
+          attributes: JSON.stringify(ORIGINAL_ATTRIBUTES),
+        });
         mockUpdate.mockRejectedValueOnce(makeRestException(412));
       }
 
@@ -384,9 +400,7 @@ describe('patchTaskAttributes', () => {
     });
 
     it('should use ifMatch on retry attempts', async () => {
-      mockUpdate
-        .mockRejectedValueOnce(makeRestException(412))
-        .mockResolvedValueOnce({});
+      mockUpdate.mockRejectedValueOnce(makeRestException(412)).mockResolvedValueOnce({});
 
       await patchTaskAttributes(TEST_ACCOUNT_SID, TEST_TASK_SID, attributesGenerator);
 
