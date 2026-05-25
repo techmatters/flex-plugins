@@ -56,7 +56,7 @@ const missingTaskError = (
   payload: MissingTaskErrorResultPayload,
 ): ErrorResult<MissingTaskErrorResultPayload> => {
   const result = newErrorResult<MissingTaskErrorResultPayload>(payload);
-  const errorMessage = `[${payload.accountSid}/${payload.taskSid}] Error in patchTaskAttributes: task with sid does not exists in workspace ${payload.workspaceSid} when trying to ${payload.step} it.`;
+  const errorMessage = `[${payload.accountSid}/${payload.taskSid}] Error in patchTaskAttributes: task with sid ${payload.taskSid} does not exist in workspace ${payload.workspaceSid} when trying to ${payload.step} it.`;
   console.error(errorMessage, payload.errorInstance);
   result.message = errorMessage;
   return result;
