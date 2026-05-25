@@ -47,7 +47,7 @@
           "3": {
             "slot_name": "gender",
             "slot_type_name": "gender",
-            "slot_question": "Please enter the number that corresponds to your gender:\n1 - Male\n2 - Female\n3 - Non-binary\n4 - Transmasculine\n5 - Transfeminine\n6 - Other",
+            "slot_question": "Please enter the number that corresponds to your gender:\n1 - Male\n2 - Female\n3 - Non-binary\n4 - Transgender\n5 - Other",
             "variations": [
               "What is your gender? Please enter the number that matches your answer.",
               "Enter the number that corresponds to your gender."
