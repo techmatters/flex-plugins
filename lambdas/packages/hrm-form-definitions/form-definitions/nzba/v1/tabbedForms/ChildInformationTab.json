@@ -662,13 +662,9 @@
     "label": "District",
     "type": "select",
     "isPII": false,
-    "defaultOption": {
-      "value": "Unknown",
-      "label": ""
-    },
     "options": [
       {
-        "value": "Unknown",
+        "value": "",
         "label": ""
       },
       {
@@ -988,7 +984,7 @@
     "isPII": false,
     "dependsOn": "district",
     "defaultOption": {
-      "value": "Unknown",
+      "value": "",
       "label": ""
     },
     "options": {
@@ -1455,7 +1451,7 @@
     }
   },
   {
-    "name": "personalEmail",
+    "name": "contactIdentifier",
     "label": "Personal Email",
     "type": "input",
     "isPII": false
@@ -1695,6 +1691,27 @@
     ]
   },
   {
+    "label": "In the past year, have you been on a waitlist for 1 month or longer for professional mental health services?",
+    "type": "select",
+    "name": "onWaitinglist",
+    "required": true,
+    "defaultValue": "",
+    "options": [
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "Yes",
+        "label": "Yes"
+      },
+      {
+        "value": "No",
+        "label": "No"
+      }
+    ]
+  },
+  {
     "name": "firstContact",
     "label": "First contact?",
     "type": "select",
@@ -1711,6 +1728,119 @@
       {
         "value": "No",
         "label": "No"
+      }
+    ]
+  },
+  {
+    "label": "What would you like to talk about?",
+    "type": "select",
+    "name": "topic",
+    "required": true,
+    "defaultValue": "",
+    "options": [
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "I just want to talk",
+        "label": "I just want to talk"
+      },
+      {
+        "value": "I'm angry",
+        "label": "I'm angry"
+      },
+      {
+        "value": "I'm ashamed",
+        "label": "I'm ashamed"
+      },
+      {
+        "value": "I'm happy",
+        "label": "I'm happy"
+      },
+      {
+        "value": "I'm lonely",
+        "label": "I'm lonely"
+      },
+      {
+        "value": "I'm sad",
+        "label": "I'm sad"
+      },
+      {
+        "value": "I'm scared",
+        "label": "I'm scared"
+      },
+      {
+        "value": "I'm thinking about suicide",
+        "label": "I'm thinking about suicide"
+      },
+      {
+        "value": "I'm unsafe",
+        "label": "I'm unsafe"
+      },
+      {
+        "value": "I'm worried",
+        "label": "I'm worried"
+      },
+      {
+        "value": "Something in the News",
+        "label": "Something in the News"
+      },
+      {
+        "value": "Unsure",
+        "label": "Unsure"
+      }
+    ]
+  },
+  {
+    "type": "select",
+    "name": "feelingRightNow",
+    "label": "How are you feeling right now? (0 = calm / okay → 10 = extremely upset or distressed)",
+    "required": true,
+    "options": [
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "01",
+        "label": "1"
+      },
+      {
+        "value": "02",
+        "label": "2"
+      },
+      {
+        "value": "03",
+        "label": "3"
+      },
+      {
+        "value": "04",
+        "label": "4"
+      },
+      {
+        "value": "05",
+        "label": "5"
+      },
+      {
+        "value": "06",
+        "label": "6"
+      },
+      {
+        "value": "07",
+        "label": "7"
+      },
+      {
+        "value": "08",
+        "label": "8"
+      },
+      {
+        "value": "09",
+        "label": "9"
+      },
+      {
+        "value": "10",
+        "label": "10"
       }
     ]
   },
@@ -1737,5 +1867,11 @@
     "label": "LGBTQI+ / SOGIESC client",
     "type": "checkbox",
     "isPII": false
+  },
+  {
+    "name": "ip",
+    "label": "IP Address",
+    "type": "input",
+    "isPII": true
   }
 ]

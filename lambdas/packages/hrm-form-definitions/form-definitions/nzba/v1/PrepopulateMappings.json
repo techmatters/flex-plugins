@@ -3,7 +3,12 @@
     "age": "ChildInformationTab.age",
     "firstName": "ChildInformationTab.firstName",
     "ethnicity1": "ChildInformationTab.ethnicity1",
-    "personalEmail": "ChildInformationTab.personalEmail"
+    "personalEmail": "ChildInformationTab.contactIdentifier",
+    "howHeardAboutWu": "ChildInformationTab.howHeardAboutWu",
+    "topic": "ChildInformationTab.topic",
+    "feelingRightNow": "ChildInformationTab.feelingRightNow",
+    "onWaitinglist": "ChildInformationTab.onWaitinglist",
+    "ip": "ChildInformationTab.ip"
   },
   "survey":{}
 }
