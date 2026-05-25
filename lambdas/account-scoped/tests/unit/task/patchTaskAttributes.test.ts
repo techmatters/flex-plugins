@@ -284,8 +284,8 @@ describe('patchTaskAttributes', () => {
     });
 
     it('should succeed after multiple 412 retries', async () => {
-      const retries = 5;
-      for (let i = 0; i < retries; i++) {
+      const failureCount = 5;
+      for (let i = 0; i < failureCount; i++) {
         mockUpdate.mockRejectedValueOnce(makeRestException(412));
       }
       mockUpdate.mockResolvedValueOnce({});
@@ -297,11 +297,11 @@ describe('patchTaskAttributes', () => {
       );
 
       expect(isOk(result)).toBe(true);
-      expect(mockUpdate).toHaveBeenCalledTimes(retries + 1);
+      expect(mockUpdate).toHaveBeenCalledTimes(failureCount + 1);
     });
 
     it('should return an error result after exhausting all retry attempts (412 on every attempt)', async () => {
-      // MAX_ATTEMPTS is 10, so there are 11 total attempts (initial + 10 retries)
+      // MAX_ATTEMPTS is 10; with 1 initial attempt plus 10 retries, 11 total calls are made before giving up
       const totalAttempts = 11;
       for (let i = 0; i < totalAttempts; i++) {
         mockFetch.mockResolvedValueOnce({ attributes: JSON.stringify(ORIGINAL_ATTRIBUTES) });
