@@ -24,16 +24,12 @@
           "label": "18-24"
         },
         {
-          "value": "25-34",
-          "label": "25-34"
+          "value": "25-40",
+          "label": "25-40"
         },
         {
-          "value": "35-44",
-          "label": "35-44"
-        },
-        {
-          "value": "45-54",
-          "label": "45-54"
+          "value": "41-54",
+          "label": "41-54"
         },
         {
           "value": "55+",
@@ -64,16 +60,8 @@
           "label": "Non-binary"
         },
         {
-          "value": "Two-Spirit",
-          "label": "Two-Spirit"
-        },
-        {
-          "value": "TransMasc",
-          "label": "TransMasc"
-        },
-        {
-          "value": "TransFemme",
-          "label": "TransFemme"
+          "value": "Transgender",
+          "label": "Transgender"
         },
         {
           "value": "Other",
@@ -213,7 +201,7 @@
       "label": "I was referred here by 988",
       "type": "select",
       "defaultValue": "Yes",
-      "name": "Referral988",
+      "name": "referral988",
       "required": true,
       "options": [
         {
