@@ -118,6 +118,16 @@ describe('patchTaskAttributes', () => {
       );
     });
 
+    it('should log a warning when lastRequest headers contain no eTag', async () => {
+      mockClient.httpClient.lastRequest = { headers: { 'Content-Type': 'application/json' } };
+      const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
+
+      await patchTaskAttributes(TEST_ACCOUNT_SID, TEST_TASK_SID, attributesGenerator);
+
+      expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining('no eTag header'));
+      warnSpy.mockRestore();
+    });
+
     it('should update without ifMatch when httpClient has no lastRequest', async () => {
       mockClient.httpClient.lastRequest = null;
 
@@ -126,6 +136,25 @@ describe('patchTaskAttributes', () => {
       expect(mockUpdate).toHaveBeenCalledWith(
         expect.not.objectContaining({ ifMatch: expect.anything() }),
       );
+    });
+
+    it('should log a warning when httpClient has no lastRequest', async () => {
+      mockClient.httpClient.lastRequest = null;
+      const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
+
+      await patchTaskAttributes(TEST_ACCOUNT_SID, TEST_TASK_SID, attributesGenerator);
+
+      expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining('no lastRequest'));
+      warnSpy.mockRestore();
+    });
+
+    it('should not log a warning when ETag is present', async () => {
+      const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
+
+      await patchTaskAttributes(TEST_ACCOUNT_SID, TEST_TASK_SID, attributesGenerator);
+
+      expect(warnSpy).not.toHaveBeenCalled();
+      warnSpy.mockRestore();
     });
 
     it('should fetch the task from the correct workspace', async () => {
