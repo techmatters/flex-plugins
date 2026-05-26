@@ -73,7 +73,7 @@ describe('patchTaskAttributes', () => {
         },
       },
       httpClient: {
-        lastRequest: {
+        lastResponse: {
           headers: { etag: TEST_ETAG },
         },
       },
@@ -116,8 +116,8 @@ describe('patchTaskAttributes', () => {
       );
     });
 
-    it('should update without ifMatch when lastRequest headers contain no etag', async () => {
-      mockClient.httpClient.lastRequest = {
+    it('should update without ifMatch when lastResponse headers contain no etag', async () => {
+      mockClient.httpClient.lastResponse = {
         headers: { 'Content-Type': 'application/json' },
       };
 
@@ -128,8 +128,8 @@ describe('patchTaskAttributes', () => {
       );
     });
 
-    it('should update without ifMatch when httpClient has no lastRequest', async () => {
-      mockClient.httpClient.lastRequest = null;
+    it('should update without ifMatch when httpClient has no lastResponse', async () => {
+      mockClient.httpClient.lastResponse = null;
 
       await patchTaskAttributes(TEST_ACCOUNT_SID, TEST_TASK_SID, attributesGenerator);
 
