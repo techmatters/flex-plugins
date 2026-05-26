@@ -36,7 +36,7 @@ locals {
           widget_from                 = "Youthline"
           allowed_shortcode_locations = "NZ"
         }
-        enable_datadog_monitor = true
+        enable_datadog_monitor = false
         custom_monitor = {
           query = "sum(last_24h):sum:<metric>{*}.as_count() == 0"
           custom_schedule = {
@@ -45,6 +45,26 @@ locals {
           }
         }
         chatbot_unique_names = []
+      },
+      chat : {
+        messaging_mode       = "conversations"
+        channel_type         = "chat"
+        contact_identity     = ""
+        templatefile         = "/app/twilio-iac/helplines/nz/templates/studio-flows/messaging-no-lex-op-hours-flags-routing-v2-lambda-sd-v2.tftpl"
+        channel_flow_vars    = {
+          chat_greeting_message       = "Kia ora, we'll connect you with someone soon. Your conversation is confidential, but if we feel that you or someone else is at serious risk of harm, we may have to link in with other services. We'll let you know if that becomes necessary."
+          widget_from                 = "Youthline"
+          allowed_shortcode_locations = "NZ"
+        }
+        chatbot_unique_names = []
+        enable_datadog_monitor = true
+        custom_monitor = {
+          query = "sum(last_24h):sum:<metric>{*}.as_count() == 0"
+          custom_schedule = {
+            rrule    = "FREQ=DAILY;INTERVAL=1;BYHOUR=4;BYMINUTE=0"
+            timezone = "Pacific/Auckland"
+          }
+        }
       },
       voice : {
         channel_type     = "voice"
