@@ -115,7 +115,7 @@ export const patchTaskAttributes = async (
       `[${accountSid}/${taskSid}] patchTaskAttributes: no lastRequest found on httpClient after fetch, optimistic locking will not be applied.`,
     );
   } else {
-    version = typeof lastRequest.headers === 'object' ? lastRequest.headers.eTag : null;
+    version = typeof lastRequest.headers === 'object' ? lastRequest.headers.etag : null;
     if (!version) {
       console.warn(
         `[${accountSid}/${taskSid}] patchTaskAttributes: no eTag header found on lastRequest after fetch, optimistic locking will not be applied.`,
