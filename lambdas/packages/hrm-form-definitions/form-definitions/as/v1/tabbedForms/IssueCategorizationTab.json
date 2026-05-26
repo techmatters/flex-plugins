@@ -31,22 +31,19 @@
             "label": "Child labour"
           },
           {
-            "label": "Commercial sexual exploitation (offline)"
+            "label": "Cyberbullying"
           },
           {
             "label": "Female Genital Mutilation (FGM)\r"
-          },
-          {
-            "label": "Gender-based harmful traditional practices (other than FGM)"
-          },
-          {
-            "label": "Harmful traditional practices other than child marriage and FGM"
           },
           {
             "label": "Neglect (or negligent treatment)"
           },
           {
             "label": "Online child sexual abuse and exploitation"
+          },
+          {
+            "label": "Other harmful traditional practices"
           },
           {
             "label": "Physical violence"

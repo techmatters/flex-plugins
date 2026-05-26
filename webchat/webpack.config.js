@@ -77,6 +77,9 @@ const webpackConfig = {
   },
   resolve: {
     extensions: ['.ts', '.js', '.tsx'],
+    alias: {
+      '@babel/runtime/helpers/builtin': path.dirname(require.resolve('@babel/runtime/helpers/interopRequireDefault')),
+    },
     fallback: {
       buffer: require.resolve('buffer'),
       fs: false,

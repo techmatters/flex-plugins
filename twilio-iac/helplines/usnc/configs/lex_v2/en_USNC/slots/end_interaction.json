@@ -1,8 +1,8 @@
 {
-    "slotName": "better_prepared",
-    "slotTypeName": "yes_no",
+    "slotName": "end_interaction",
+    "slotTypeName": "five_level_assessment",
     "intentName": "post_survey_yes",
-    "description": "Slot better_prepared for intent post_survey_yes",
+    "description": "Slot end_interaction for intent post_survey_yes",
     "valueElicitationSetting": {
         "slotConstraint": "Required",
         "promptSpecification": {
@@ -10,7 +10,7 @@
                 {
                     "message": {
                         "plainTextMessage": {
-                            "value": "Do you feel better prepared to deal with your situation after this conversation? \nReply with: \n1 = Yes, 2 = No"
+                            "value": "On a scale of 1-5, how did you feel at the end of the interaction?"
                         }
                     }
                 }

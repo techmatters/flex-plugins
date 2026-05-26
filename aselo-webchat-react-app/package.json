@@ -56,7 +56,7 @@
     "@types/validator": "^13.7.17",
     "@typescript-eslint/eslint-plugin": "^5.62.0",
     "@typescript-eslint/parser": "^5.4.0",
-    "axios": "^1.15.0",
+    "axios": "^1.16.1",
     "cors": "^2.8.5",
     "cross-env": "^10.1.0",
     "cypress": "15.10.0",
@@ -83,11 +83,15 @@
     "twilio": "^5.12.1",
     "typescript": "^4.4.2",
     "webpack-bundle-analyzer": "^4.5.0",
-    "whatwg-fetch": "^3.6.20"
+    "whatwg-fetch": "^3.6.20",
+    "yaml": "^2.9.0"
   },
   "resolutions": {
     "react-scripts/@svgr/webpack": "7.0.0",
     "recursive-readdir": "2.2.3"
+  },
+  "overrides": {
+    "handlebars": "4.7.9"
   },
   "scripts": {
     "preinstall": "cd ../lambdas/packages/hrm-form-definitions && npm ci && npm run build && cd ../hrm-types && npm ci && npm run build",
