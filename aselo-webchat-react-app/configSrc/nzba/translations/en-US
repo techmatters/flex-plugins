@@ -1,0 +1,9 @@
+{
+    "WelcomeMessage": "Welcome to Barnardos Aotearoa What's Up Chat Service!",
+    "MessageCanvasTrayContent": "",
+    "MessageInputDisabledReasonHold": "Thank you very much for this information. We'll transfer you now. Please hold for a counsellor.",
+    "AutoFirstMessage": "Incoming webchat contact from",
+    "PreEngagementDescription": "Let's get started",
+    "LetsChat": "Let's chat!",
+    "MessagePhase-MessageBubble-OtherParticipantMessageSenderName": "Counsellor"
+}
