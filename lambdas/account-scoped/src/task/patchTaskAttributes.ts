@@ -108,17 +108,28 @@ export const patchTaskAttributes = async (
     }
   }
   // This is only safely the above fetch request if the client is private to this method
-  const lastRequest = client.httpClient.lastRequest;
+  const { lastResponse } = client.httpClient;
   let version: string | null = null;
-  if (!lastRequest) {
+  if (!lastResponse) {
     console.warn(
       `[${accountSid}/${taskSid}] patchTaskAttributes: no lastRequest found on httpClient after fetch, optimistic locking will not be applied.`,
     );
   } else {
-    version = typeof lastRequest.headers === 'object' ? lastRequest.headers.etag : null;
+    console.info(`lastResponse`, lastResponse);
+    console.info(`lastRequest.url`, client.httpClient.lastRequest?.url);
+    console.info(`lastResponse.status`, lastResponse.statusCode);
+    console.info(`lastResponse.headers`, lastResponse.headers);
+    if (typeof lastResponse.headers === 'object') {
+      for (const header of Object.entries(lastResponse.headers).map(
+        ([key, value]) => `${key}=${value}`,
+      )) {
+        console.info(`lastResponse header:`, header);
+      }
+    }
+    version = typeof lastResponse.headers === 'object' ? lastResponse.headers.etag : null;
     if (!version) {
       console.warn(
-        `[${accountSid}/${taskSid}] patchTaskAttributes: no eTag header found on lastRequest after fetch, optimistic locking will not be applied.`,
+        `[${accountSid}/${taskSid}] patchTaskAttributes: no etag header found on lastRequest after fetch, optimistic locking will not be applied.`,
       );
     }
   }
