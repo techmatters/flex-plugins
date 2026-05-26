@@ -74,6 +74,25 @@ locals {
           childhelp_url     = "https://www.childhelp"
         }
         chatbot_unique_names   = []
+        enable_datadog_monitor = false
+        custom_monitor = {
+          query = "sum(last_24h):sum:<metric>{*}.as_count() == 0"
+          custom_schedule = {
+            rrule    = "FREQ=DAILY;INTERVAL=1;BYHOUR=6;BYMINUTE=0"
+            timezone = "America/Phoenix"
+          }
+        }
+      },
+      chat : {
+        messaging_mode   = "conversations"
+        channel_type     = "chat"
+        contact_identity = ""
+        templatefile     = "/app/twilio-iac/helplines/usch/templates/studio-flows/webchat-no-lex-conv-sd.tftpl"
+        channel_flow_vars = {
+          courage_first_url = "https://www.athletehelpline.org"
+          childhelp_url     = "https://www.childhelp"
+        }
+        chatbot_unique_names = []
         enable_datadog_monitor = true
         custom_monitor = {
           query = "sum(last_24h):sum:<metric>{*}.as_count() == 0"
