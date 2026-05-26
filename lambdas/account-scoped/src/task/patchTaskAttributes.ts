@@ -115,13 +115,6 @@ export const patchTaskAttributes = async (
       `[${accountSid}/${taskSid}] patchTaskAttributes: no lastRequest found on httpClient after fetch, optimistic locking will not be applied.`,
     );
   } else {
-    if (typeof lastResponse.headers === 'object') {
-      for (const header of Object.entries(lastResponse.headers).map(
-        ([key, value]) => `${key}=${value}`,
-      )) {
-        console.info(`lastResponse header:`, header);
-      }
-    }
     version = typeof lastResponse.headers === 'object' ? lastResponse.headers.etag : null;
     if (!version) {
       console.warn(
