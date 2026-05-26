@@ -33,6 +33,24 @@ locals {
           allowed_shortcode_locations = "MT"
         }
         chatbot_unique_names = []
+        enable_datadog_monitor = false
+        custom_monitor = {
+          query = "sum(last_1w):sum:<metric>{*}.as_count() == 0"
+          custom_schedule = {
+            rrule    = "FREQ=WEEKLY;INTERVAL=1;BYHOUR=10;BYMINUTE=0;BYDAY=MO"
+            timezone = "America/Santiago"
+          }
+        }
+      },
+      chat : {
+        messaging_mode       = "conversations"
+        channel_type         = "chat"
+        contact_identity     = ""
+        templatefile         = "/app/twilio-iac/helplines/mt/templates/studio-flows/messaging-lex-web-location-block-v2.tftpl"
+        channel_flow_vars    = {
+          allowed_shortcode_locations = "MT"
+        }
+        chatbot_unique_names = []
         enable_datadog_monitor = true
         custom_monitor = {
           query = "sum(last_1w):sum:<metric>{*}.as_count() == 0"
