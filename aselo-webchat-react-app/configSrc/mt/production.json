@@ -1,5 +1,5 @@
 {
 "environment": "production",
-"aseloBackendUrl": "https://hrm.tl.techmatters.org",
+"aseloBackendUrl": "https://hrm-production.tl.techmatters.org",
 "definitionVersion": "mt-v1"
 }
