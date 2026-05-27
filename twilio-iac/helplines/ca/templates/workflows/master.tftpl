@@ -36,16 +36,11 @@
           "expression": "(to IN [${join(", ", formatlist("'%s'", phone_numbers["988_camh"]))}] AND language CONTAINS \"en-CA\")",
           "targets": [
             {
-              "queue": "${task_queues["988_en"]}",
-              "priority": 7,
-              "expression": "((worker.waitingOfflineContact != true AND ((task.channelType == 'voice' AND worker.channel.chat.assigned_tasks == 0) OR (task.channelType != 'voice' AND worker.channel.voice.assigned_tasks == 0)) AND ((task.transferTargetType == 'worker' AND task.targetSid == worker.sid) OR (task.transferTargetType != 'worker' AND worker.sid != task.ignoreAgent))) OR (worker.waitingOfflineContact == true AND task.targetSid == worker.sid AND task.isContactlessTask == true)) AND ('Priority 988/Int' IN worker.routing.skills AND 'Hold for Transfers' NOT IN worker.routing.skills)",
-              "skip_if": "1==1"
-            },
-            {
             "queue": "${task_queues["988_en"]}",
             "priority": 7,
+            "order_by": "worker.routing.levels.988EN-Sk DESC",
             "expression": "((worker.waitingOfflineContact != true AND ((task.channelType == 'voice' AND worker.channel.chat.assigned_tasks == 0) OR (task.channelType != 'voice' AND worker.channel.voice.assigned_tasks == 0)) AND ((task.transferTargetType == 'worker' AND task.targetSid == worker.sid) OR (task.transferTargetType != 'worker' AND worker.sid != task.ignoreAgent))) OR (worker.waitingOfflineContact == true AND task.targetSid == worker.sid AND task.isContactlessTask == true)) AND ('Hold for Transfers' NOT IN worker.routing.skills)"
-          }
+            }
           ]
         },
         {
@@ -55,6 +50,7 @@
             {
               "expression": "((worker.waitingOfflineContact != true AND ((task.channelType == 'voice' AND worker.channel.chat.assigned_tasks == 0) OR (task.channelType != 'voice' AND worker.channel.voice.assigned_tasks == 0)) AND ((task.transferTargetType == 'worker' AND task.targetSid == worker.sid) OR (task.transferTargetType != 'worker' AND worker.sid != task.ignoreAgent))) OR (worker.waitingOfflineContact == true AND task.targetSid == worker.sid AND task.isContactlessTask == true)) AND ('Hold for Transfers' NOT IN worker.routing.skills)",
               "priority": 8,
+              "order_by": "worker.routing.levels.988FR-Sk DESC",
               "queue": "${task_queues["988_fr"]}"
             }
           ]
@@ -66,6 +62,7 @@
             {
               "expression": "((worker.waitingOfflineContact != true AND ((task.channelType == 'voice' AND worker.channel.chat.assigned_tasks == 0) OR (task.channelType != 'voice' AND worker.channel.voice.assigned_tasks == 0)) AND ((task.transferTargetType == 'worker' AND task.targetSid == worker.sid) OR (task.transferTargetType != 'worker' AND worker.sid != task.ignoreAgent))) OR (worker.waitingOfflineContact == true AND task.targetSid == worker.sid AND task.isContactlessTask == true)) AND ('Hold for Transfers' NOT IN worker.routing.skills)",
               "priority": 8,
+              "order_by": "worker.routing.levels.988NSFR-Sk DESC",
               "queue": "${task_queues["988_ns_fr"]}"
             }
           ]
