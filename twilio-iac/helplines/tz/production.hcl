@@ -26,6 +26,14 @@ locals {
         channel_flow_vars    = {}
         chatbot_unique_names = []
       },
+      chat : {
+        messaging_mode       = "conversations"
+        channel_type         = "chat"
+        contact_identity     = ""
+        templatefile         = "/app/twilio-iac/helplines/tz/templates/studio-flows/messaging-blocking-conv.tftpl"
+        channel_flow_vars    = {}
+        chatbot_unique_names = []
+      },
       facebook_mainland : {
         messaging_mode       = "conversations"
         channel_type         = "messenger"
