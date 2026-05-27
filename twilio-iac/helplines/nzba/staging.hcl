@@ -15,7 +15,7 @@ locals {
       bot_language                      = "en_NZBA"
       widget_from                       = "Barnardos"
       chat_blocked_message              = "Sorry, you're not able to contact Barnardos from this device or account"
-      error_message                     = "There has been an error with your message, please try writing us again."
+      error_message                     = "Something went wrong and your message didn’t send. Please try sending it again."
       send_message_janitor_function_sid = "ZH17d7db67fa6ab6c2a8d8df2bef8fc55e"
     }
 
@@ -27,7 +27,7 @@ locals {
         channel_flow_vars = {
           widget_from                   = "Barnardos"
           chat_blocked_message          = "Sorry, you're not able to contact Barnardos from this device or account"
-          send_message_webchat_prequeue = "Hello. Please hold on for a while and we will attend to you as soon as we can. Thank you for your patience!. If you are in immediate danger, please call the Police at 911."
+          send_message_webchat_prequeue = "Hi! Thanks for letting us know you’d like to talk. Please hang tight - someone will be with you as soon as they can. Thanks for waiting 💛 If you’re in danger right now, please call emergency services on 111."
         }
         chatbot_unique_names = []
       }
@@ -48,8 +48,8 @@ locals {
     enable_system_down       = true
     system_down_flow_vars = {
       is_system_down                   = "false"
-      message                          = "We're currently experiencing technical issues, and your message may not be delivered. We're working to resolve the problem and will be back online shortly. We apologize for the inconvenience."
-      voice_message                    = "We're currently experiencing technical issues, and your call may not reach us. We're working to resolve the problem and will be back online shortly. We apologize for the inconvenience."
+      message                          = "We’re having some technical problems at the moment, so messages might not go through. We’re working on it and will be back as soon as we can — thanks for your patience."
+      voice_message                    = "We’re having some technical problems at the moment, so calls might not go through. We’re working on it and will be back as soon as we can — thanks for your patience."
       send_studio_message_function_sid = "ZHbbf0fb1ec68a5aacc31e8c50415b97bb"
       call_action                      = "message"
       forward_number                   = "+123"
