@@ -1882,12 +1882,12 @@
           "label": ""
         },
         {
-          "value": "emergency",
-          "label": "Necesito ayuda urgente"
-        },
-        {
           "value": "helpAndOrientation",
           "label": "Quiero recibir orientación"
+        },
+        {
+          "value": "emergency",
+          "label": "Necesito ayuda urgente"
         },
         {
           "value": "Other",
