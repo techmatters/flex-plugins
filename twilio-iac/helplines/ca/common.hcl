@@ -39,19 +39,19 @@ locals {
         "friendly_name"  = "AB211 French"
       },
       g2t_ns_en : {
-        "target_workers" = "routing.skills HAS 'G2TNSEn'",
+        "target_workers" = "routing.skills HAS 'G2TNSEn' OR routing.skills HAS 'G2TNSEN-Sk'",
         "friendly_name"  = "Good2Talk NS English"
       },
       g2t_ns_fr : {
-        "target_workers" = "routing.skills HAS 'G2TNSFr'",
+        "target_workers" = "routing.skills HAS 'G2TNSFr' OR routing.skills HAS 'G2TNSFR-Sk'",
         "friendly_name"  = "Good2Talk NS French"
       },
       g2t_on_en : {
-        "target_workers" = "routing.skills HAS 'G2TONEn'",
+        "target_workers" = "routing.skills HAS 'G2TONEn' OR routing.skills HAS 'G2TONEN-Sk'",
         "friendly_name"  = "Good2Talk ON English"
       },
       g2t_on_fr : {
-        "target_workers" = "routing.skills HAS 'G2TONFr'",
+        "target_workers" = "routing.skills HAS 'G2TONFr' OR routing.skills HAS 'G2TONFR-Sk'",
         "friendly_name"  = "Good2Talk ON French"
       },
       g2t_int : {
@@ -87,15 +87,15 @@ locals {
         "friendly_name"  = "Indigenous/Interpreter"
       },
       "988_en" : {
-        "target_workers" = "routing.skills HAS '988En'",
+        "target_workers" = "routing.skills HAS '988En' OR routing.skills HAS '988EN-Sk'",
         "friendly_name"  = "988 English"
       },
       "988_fr" : {
-        "target_workers" = "routing.skills HAS '988Fr'",
+        "target_workers" = "routing.skills HAS '988Fr' OR routing.skills HAS '988FR-Sk'",
         "friendly_name"  = "988 French"
       },
       "988_ns_fr" : {
-        "target_workers" = "routing.skills HAS '988NSFr'",
+        "target_workers" = "routing.skills HAS '988NSFr' OR routing.skills HAS '988NSFR-Sk'",
         "friendly_name"  = "988 NS French"
       },
       "switchboard" : {
