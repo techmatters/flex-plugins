@@ -189,12 +189,13 @@
                 {
                 "queue": "${task_queues.g2t_on_en}",
                 "priority": 3,
-                "order_by": "worker.routing.levels.G2TONEN-Sk DESC",
-                "expression": "((worker.waitingOfflineContact != true AND ((task.channelType == 'voice' AND worker.channel.chat.assigned_tasks == 0) OR (task.channelType != 'voice' AND worker.channel.voice.assigned_tasks == 0)) AND ((task.transferTargetType == 'worker' AND task.targetSid == worker.sid) OR (task.transferTargetType != 'worker' AND worker.sid != task.ignoreAgent))) OR (worker.waitingOfflineContact == true AND task.targetSid == worker.sid AND task.isContactlessTask == true)) AND (worker.routing.levels.G2TONEN-Sk > 4) AND ('Hold for Transfers' NOT IN worker.routing.skills)",
-                "timeout": 900
+                "order_by": "worker.routing.levels.G2TONENsk DESC",
+                "timeout": 210,
+                "expression": "((worker.waitingOfflineContact != true AND ((task.channelType == 'voice' AND worker.channel.chat.assigned_tasks == 0) OR (task.channelType != 'voice' AND worker.channel.voice.assigned_tasks == 0)) AND ((task.transferTargetType == 'worker' AND task.targetSid == worker.sid) OR (task.transferTargetType != 'worker' AND worker.sid != task.ignoreAgent))) OR (worker.waitingOfflineContact == true AND task.targetSid == worker.sid AND task.isContactlessTask == true)) AND (worker.routing.levels.G2TONENsk > 4) AND ('Hold for Transfers' NOT IN worker.routing.skills)"
               },
               {
                 "queue": "${task_queues.g2t_on_en}",
+
                 "expression": "((worker.waitingOfflineContact != true AND ((task.channelType == 'voice' AND worker.channel.chat.assigned_tasks == 0) OR (task.channelType != 'voice' AND worker.channel.voice.assigned_tasks == 0)) AND ((task.transferTargetType == 'worker' AND task.targetSid == worker.sid) OR (task.transferTargetType != 'worker' AND worker.sid != task.ignoreAgent))) OR (worker.waitingOfflineContact == true AND task.targetSid == worker.sid AND task.isContactlessTask == true)) AND ('Hold for Transfers' NOT IN worker.routing.skills)",
                 "priority": 3
               }
@@ -236,12 +237,13 @@
             {
               "queue": "${task_queues.g2t_ns_en}",
               "priority": 3,
-              "timeout": 1500,
-              "expression": "((worker.waitingOfflineContact != true AND ((task.channelType == 'voice' AND worker.channel.chat.assigned_tasks == 0) OR (task.channelType != 'voice' AND worker.channel.voice.assigned_tasks == 0)) AND ((task.transferTargetType == 'worker' AND task.targetSid == worker.sid) OR (task.transferTargetType != 'worker' AND worker.sid != task.ignoreAgent))) OR (worker.waitingOfflineContact == true AND task.targetSid == worker.sid AND task.isContactlessTask == true)) AND ('Priority 988/Int' NOT IN worker.routing.skills AND 'Hold for Transfers' NOT IN worker.routing.skills)"
-            },
+              "timeout": 210,
+              "order_by": "worker.routing.levels.G2TNSENsk DESC",
+              "expression": "((worker.waitingOfflineContact != true AND ((task.channelType == 'voice' AND worker.channel.chat.assigned_tasks == 0) OR (task.channelType != 'voice' AND worker.channel.voice.assigned_tasks == 0)) AND ((task.transferTargetType == 'worker' AND task.targetSid == worker.sid) OR (task.transferTargetType != 'worker' AND worker.sid != task.ignoreAgent))) OR (worker.waitingOfflineContact == true AND task.targetSid == worker.sid AND task.isContactlessTask == true)) AND (worker.routing.levels.G2TNSENsk > 4) AND ('Hold for Transfers' NOT IN worker.routing.skills)"            },
            {
               "queue": "${task_queues.g2t_ns_en}",
               "priority": 3,
+              "order_by": "worker.routing.levels.G2TNSENsk DESC",
               "expression": "((worker.waitingOfflineContact != true AND ((task.channelType == 'voice' AND worker.channel.chat.assigned_tasks == 0) OR (task.channelType != 'voice' AND worker.channel.voice.assigned_tasks == 0)) AND ((task.transferTargetType == 'worker' AND task.targetSid == worker.sid) OR (task.transferTargetType != 'worker' AND worker.sid != task.ignoreAgent))) OR (worker.waitingOfflineContact == true AND task.targetSid == worker.sid AND task.isContactlessTask == true)) AND 'Hold for Transfers' NOT IN worker.routing.skills"
             }
           ]
