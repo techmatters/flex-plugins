@@ -12,6 +12,7 @@
   "MessageCanvasTrayButton": "Comenzar Nuevo Chat",
   "EntryPointTagline": "Chatea con Hora Segura",
   "EntryPoint-ClosedState-OpenWidgetButtonLabel": "Chatea con Hora Segura",
+  "Header-TitleBar-Title": "Chatea con Hora Segura",
   "InvalidPreEngagementMessage": "Los formularios previos al compromiso no se han establecido y son necesarios para iniciar el chat web. Por favor configúrelos ahora en la configuración.",
   "InvalidPreEngagementButton": "Aprende más",
   "PredefinedChatMessageAuthorName": "Bot",
