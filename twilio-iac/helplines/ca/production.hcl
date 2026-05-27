@@ -42,6 +42,14 @@ locals {
         channel_flow_vars    = {}
         chatbot_unique_names = []
       },
+      chat : {
+        messaging_mode       = "conversations"
+        channel_type         = "chat"
+        contact_identity     = ""
+        templatefile         = "/app/twilio-iac/helplines/ca/templates/studio-flows/webchat-v2.tftpl"
+        channel_flow_vars    = {}
+        chatbot_unique_names = []
+      },
       g2ton : {
         channel_type     = "voice"
         contact_identity = ""

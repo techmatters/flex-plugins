@@ -60,6 +60,17 @@ locals {
         }
         chatbot_unique_names = []
       },
+      chat : {
+        messaging_mode   = "conversations"
+        channel_type     = "chat"
+        contact_identity = ""
+        templatefile     = "/app/twilio-iac/helplines/usvc/templates/studio-flows/webchat-conv-sd.tftpl"
+        channel_flow_vars = {
+          vc_url   = "https://victimconnect.org"
+          dcvh_url = "https://dcvictim.org"
+        }
+        chatbot_unique_names = []
+      },
       voice_vc : {
         channel_type     = "voice"
         contact_identity = ""
