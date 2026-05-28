@@ -18,7 +18,7 @@
           }
         ],
         "initial_response": {
-          "message": "Welcome to Warm line. You'll be connected to a live peer supporter by SMS. We'll message only to support your conversation (no marketing). Message frequency may vary. Msg&Data rates may apply. Reply STOP to end or HELP for help. Privacy: promiseresourcenetwork.org/privacy-policy \nPlease answer the following questions. You can type “0” if you prefer not to answer.",
+          "message": "Thank you for contacting Promise Resource Network. You'll be connected to a live peer supporter by SMS. We'll message only to support your conversation (no marketing). Message frequency may vary. Msg&Data rates may apply. Reply STOP to end or HELP for help. Privacy: promiseresourcenetwork.org/privacy-policy \nPlease answer the following questions. You can type '0' if you prefer not to answer.",
           "slot_to_elicit": "friendlyName"
         },
         "closing_response": {
