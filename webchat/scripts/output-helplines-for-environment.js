@@ -30,7 +30,7 @@ const CONFIGURATIONS_PATH = path.join(__dirname, '../configurations');
  * is no intention to roll back to legacy Webchat 2.
  * This is a temporary measure while the migration is ongoing.
  */
-const PRODUCTION_MIGRATION_EXCLUSION_LIST = ['JM', 'USCR', 'SG', 'UKMH', 'MT', 'CA'];
+const PRODUCTION_MIGRATION_EXCLUSION_LIST = ['JM', 'USCR', 'SG', 'UKMH', 'MT', 'USCH'];
 
 const getEnvironment = () => {
   const ENVIRONMENTS = ['development', 'staging', 'production'];
