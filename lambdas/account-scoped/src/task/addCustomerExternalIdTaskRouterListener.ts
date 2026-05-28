@@ -17,7 +17,6 @@
 // eslint-disable-next-line prettier/prettier
 import {registerTaskRouterEventHandler, TaskRouterEventHandler} from '../taskrouter/taskrouterEventHandler';
 import { AccountSID, TaskSID } from '@tech-matters/twilio-types';
-import { Twilio } from 'twilio';
 import { TASK_CREATED, TASK_UPDATED } from '../taskrouter/eventTypes';
 import { EventFields } from '../taskrouter';
 import { patchTaskAttributes } from './patchTaskAttributes';
@@ -44,7 +43,6 @@ const isTaskRequiringExternalId = async (
 const addCustomerExternalId: TaskRouterEventHandler = async (
   event: EventFields,
   accountSid: AccountSID,
-  client: Twilio,
 ) => {
   const { TaskSid, TaskAttributes } = event;
   const taskSid = TaskSid as TaskSID;
@@ -53,13 +51,14 @@ const addCustomerExternalId: TaskRouterEventHandler = async (
     return;
   }
 
-  await patchTaskAttributes(client, accountSid, taskSid, originalAttributes => ({
+  const result = await patchTaskAttributes(accountSid, taskSid, originalAttributes => ({
     ...originalAttributes,
     customers: {
       ...originalAttributes.customers,
       external_id: taskSid,
     },
   }));
+  result.unwrap();
 };
 
 registerTaskRouterEventHandler([TASK_CREATED, TASK_UPDATED], addCustomerExternalId);
