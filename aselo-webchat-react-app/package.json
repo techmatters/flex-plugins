@@ -100,6 +100,7 @@
     "start:e2e_dev": "cross-env REACT_APP_CONFIG_URL='http://localhost:9090/e2e/development.json' REACT_APP_FORM_DEFINITIONS_BASE_URL='http://localhost:8091' run-p dev:merge-configs dev:local-config-server dev:local-form-definition-server start",
     "start:mt_stg": "cross-env REACT_APP_CONFIG_URL='http://localhost:9090/mt/staging.json' REACT_APP_FORM_DEFINITIONS_BASE_URL='http://localhost:8091' run-p staging:merge-configs dev:local-config-server dev:local-form-definition-server start",
     "start:jm_stg": "cross-env REACT_APP_CONFIG_URL='http://localhost:9090/jm/staging.json' REACT_APP_FORM_DEFINITIONS_BASE_URL='http://localhost:8091' run-p staging:merge-configs dev:local-config-server dev:local-form-definition-server start",
+    "start:zw_stg": "cross-env REACT_APP_CONFIG_URL='http://localhost:9090/zw/staging.json' REACT_APP_FORM_DEFINITIONS_BASE_URL='http://localhost:8091' run-p staging:merge-configs dev:local-config-server dev:local-form-definition-server start",
     "start:uscr_stg": "cross-env REACT_APP_CONFIG_URL='http://localhost:9090/uscr/staging.json' REACT_APP_FORM_DEFINITIONS_BASE_URL='http://localhost:8091' run-p staging:merge-configs dev:local-config-server dev:local-form-definition-server start",
     "start:ca_stg": "cross-env REACT_APP_CONFIG_URL='http://localhost:9090/ca/staging.json' REACT_APP_FORM_DEFINITIONS_BASE_URL='http://localhost:8091' run-p staging:merge-configs dev:local-config-server dev:local-form-definition-server start",
     "build": "react-app-rewired build",

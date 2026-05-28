@@ -192,6 +192,13 @@ export default class HrmFormPlugin extends FlexPlugin {
    * Use this to modify any UI components or attach to the actions framework
    */
   async init(flex: typeof Flex, manager: Flex.Manager) {
+    const script = document.createElement('script');
+
+    script.src = 'https://cdn.userway.org/widget.js';
+    script.dataset.account = 'wrsnwawFhK';
+    script.async = true;
+
+    document.body.appendChild(script);
     loadCSS('https://use.fontawesome.com/releases/v5.15.4/css/solid.css');
 
     setUpFullStory(manager.workerClient, manager.serviceConfiguration);
