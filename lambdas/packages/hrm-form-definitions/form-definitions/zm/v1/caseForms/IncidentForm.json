@@ -117,6 +117,10 @@
     "type": "select",
     "options": [
       {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
         "label": "Voter/Individual",
         "value": "Voter/Individual"
       },
@@ -164,6 +168,10 @@
     "label": "Location of the incident in Relation to Politics/Elections",
     "type": "select",
     "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
       {
         "value": "partyPrimary",
         "label": "Party Primary"
