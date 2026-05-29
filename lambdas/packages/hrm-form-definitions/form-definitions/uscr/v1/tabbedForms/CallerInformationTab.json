@@ -2522,7 +2522,7 @@
     "isPII": true
   },
   {
-    "name": "contactIdentifier",
+    "name": "email",
     "label": "Email of Person Reporting",
     "type": "input",
     "isPII": true
