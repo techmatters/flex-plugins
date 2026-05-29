@@ -99,7 +99,7 @@ async function deleteSwitchboardStateDocument({
   syncServiceSid: string;
 }) {
   console.info(
-    `Deleting switchboard state document : ${syncServiceSid}/${SWITCHBOARD_STATE_DOCUMENT}`,
+    `Deleting switchboard state document: ${syncServiceSid}/${SWITCHBOARD_STATE_DOCUMENT}`,
   );
 
   try {
