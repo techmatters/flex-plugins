@@ -60,7 +60,7 @@ locals {
         channel_flow_vars = {
         }
         chatbot_unique_names = []
-        enable_datadog_monitor = true
+        enable_datadog_monitor = false
         custom_monitor = {
           query = "sum(last_24h):sum:<metric>{*}.as_count() == 0"
           custom_schedule = {
