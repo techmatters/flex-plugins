@@ -9,6 +9,7 @@ locals {
 
   local_config = {
     custom_task_routing_filter_expression = "channelType IN ['web','voice']"
+    enable_datadog_monitoring             = true
     flow_vars = {
       widget_from          = "LA CIRCLE"
       chat_blocked_message = "Sorry, you're not able to contact CIRCLE from this device or account."
@@ -30,6 +31,14 @@ locals {
         templatefile         = "/app/twilio-iac/helplines/uscr/templates/studio-flows/webchat-v2-lambda-sd.tftpl"
         channel_flow_vars    = {}
         chatbot_unique_names = []
+        enable_datadog_monitor = true
+        custom_monitor = {
+          query = "sum(last_2d):sum:<metric>{*}.as_count() == 0"
+          custom_schedule = {
+            rrule    = "FREQ=WEEKLY;INTERVAL=1;BYHOUR=10;BYMINUTE=0;BYDAY=MO,TU,WE,TH,FR,SA,SU"
+            timezone = "America/Santiago"
+          }
+        }
       },
       voice : {
         channel_type     = "voice"
@@ -42,6 +51,14 @@ locals {
 
         }
         chatbot_unique_names = []
+        enable_datadog_monitor = true
+        custom_monitor = {
+          query = "sum(last_24h):sum:<metric>{*}.as_count() == 0"
+          custom_schedule = {
+            rrule    = "FREQ=DAILY;INTERVAL=1;BYHOUR=10;BYMINUTE=0"
+            timezone = "America/Santiago"
+          }
+        }
       },
       outbound_number : {
         channel_type     = "voice"
