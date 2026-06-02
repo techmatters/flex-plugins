@@ -1219,12 +1219,20 @@
         "value": "A general chat"
       },
       {
-        "label": "Learning disabilities (including autism and ADHD)",
-        "value": "Learning disabilities (including autism and ADHD)"
+        "label": "Learning disabilities",
+        "value": "Learning disabilities"
       },
       {
         "label": "Anger management",
         "value": "Anger management"
+      },
+      {
+        "label": "ADHD",
+        "value": "ADHD"
+      },
+      {
+        "label": "Autism",
+        "value": "Autism"
       },
       {
         "label": "Anxiety",
