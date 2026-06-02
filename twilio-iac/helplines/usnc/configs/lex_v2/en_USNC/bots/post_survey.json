@@ -36,13 +36,15 @@
           "2":  {
             "slot_name": "beginning_interaction",
             "slot_type_name": "five_level_assessment",
-            "slot_question": "On a scale of 1-5, how did you feel at the beginning of the interaction?",
+            "slot_question": "How did you feel at the beginning of the interaction?\n 1 = Really struggling\n  2 = Having a hard time\n  3 = Okay\n  4 = Better\n  5 = Much better",
+            "variations" : ["You can answer with a number like: 2. \nHow did you feel at the beginning of the interaction?\n 1 = Really struggling\n  2 = Having a hard time\n  3 = Okay\n  4 = Better\n  5 = Much better"],
             "failure_response": "Thank you for reaching out. Please contact us again if you need more help."
           },
           "3":  {
             "slot_name": "end_interaction",
             "slot_type_name": "five_level_assessment",
-            "slot_question": "On a scale of 1-5, how did you feel at the end of the interaction?",
+            "slot_question": "How did you feel at the end of the interaction?\n 1 = Really struggling\n  2 = Having a hard time\n  3 = Okay\n  4 = Better\n  5 = Much better",
+            "variations" : ["You can answer with a number like: 2. \nHow did you feel at the end of the interaction?\n 1 = Really struggling\n  2 = Having a hard time\n  3 = Okay\n  4 = Better\n  5 = Much better"],
             "failure_response": "Thank you for reaching out. Please contact us again if you need more help."
           }
                 }
