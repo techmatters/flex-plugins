@@ -5,6 +5,7 @@ locals {
 
   local_config = {
     custom_task_routing_filter_expression = "channelType IN ['web','voice','sms']  OR isContactlessTask == true"
+    enable_datadog_monitoring             = true
     permission_config                     = "usnc"
     ui_editable                           = true
 
@@ -30,6 +31,7 @@ locals {
         chatbot_unique_names = []
       },
       chat : {
+        messaging_mode   = "conversations"
         channel_type     = "chat"
         contact_identity = ""
         templatefile     = "/app/twilio-iac/helplines/usnc/templates/studio-flows/messaging-blocking-v2-preq-lambda-sd.tftpl"
@@ -51,6 +53,14 @@ locals {
           voice_ivr_language             = "en-US"
         }
         chatbot_unique_names = []
+        enable_datadog_monitor = true
+        custom_monitor = {
+          query = "sum(last_24h):sum:<metric>{*}.as_count() == 0"
+          custom_schedule = {
+            rrule    = "FREQ=DAILY;INTERVAL=1;BYHOUR=10;BYMINUTE=0"
+            timezone = "America/Santiago"
+          }
+        }
       }, 
       sms : {
         messaging_mode   = "conversations"

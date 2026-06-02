@@ -8,6 +8,7 @@ locals {
   config            = merge(local.common_config, local.local_config)
 
   local_config = {
+    enable_datadog_monitoring             = true
     flow_vars = {
 
       # Webchat
@@ -59,6 +60,14 @@ locals {
         channel_flow_vars = {
         }
         chatbot_unique_names = []
+        enable_datadog_monitor = false
+        custom_monitor = {
+          query = "sum(last_24h):sum:<metric>{*}.as_count() == 0"
+          custom_schedule = {
+            rrule    = "FREQ=DAILY;INTERVAL=1;BYHOUR=10;BYMINUTE=0"
+            timezone = "America/Santiago"
+          }
+        }
       },
       chat : {
         messaging_mode   = "conversations"
@@ -70,6 +79,14 @@ locals {
           dcvh_url = "https://dcvictim.org"
         }
         chatbot_unique_names = []
+        enable_datadog_monitor = true
+        custom_monitor = {
+          query = "sum(last_24h):sum:<metric>{*}.as_count() == 0"
+          custom_schedule = {
+            rrule    = "FREQ=DAILY;INTERVAL=1;BYHOUR=10;BYMINUTE=0"
+            timezone = "America/Santiago"
+          }
+        }
       },
       voice_vc : {
         channel_type     = "voice"
@@ -78,6 +95,14 @@ locals {
         channel_flow_vars = {
         }
         chatbot_unique_names = []
+        enable_datadog_monitor = true
+        custom_monitor = {
+          query = "sum(last_24h):sum:<metric>{*}.as_count() == 0"
+          custom_schedule = {
+            rrule    = "FREQ=DAILY;INTERVAL=1;BYHOUR=10;BYMINUTE=0"
+            timezone = "America/Santiago"
+          }
+        }
       },
       voice_dcvh : {
         channel_type     = "voice"
@@ -86,6 +111,14 @@ locals {
         channel_flow_vars = {
         }
         chatbot_unique_names = []
+        enable_datadog_monitor = true
+        custom_monitor = {
+          query = "sum(last_24h):sum:<metric>{*}.as_count() == 0"
+          custom_schedule = {
+            rrule    = "FREQ=DAILY;INTERVAL=1;BYHOUR=10;BYMINUTE=0"
+            timezone = "America/Santiago"
+          }
+        }
       },
       sms_dcvh_toll_free : {
         messaging_mode   = "conversations"
@@ -95,6 +128,14 @@ locals {
         channel_flow_vars = {
         }
         chatbot_unique_names = []
+        enable_datadog_monitor = true
+        custom_monitor = {
+          query = "sum(last_24h):sum:<metric>{*}.as_count() == 0"
+          custom_schedule = {
+            rrule    = "FREQ=DAILY;INTERVAL=1;BYHOUR=10;BYMINUTE=0"
+            timezone = "America/Santiago"
+          }
+        }
       },
       sms_vc_toll_free : {
         messaging_mode   = "conversations"
@@ -104,6 +145,14 @@ locals {
         channel_flow_vars = {
         }
         chatbot_unique_names = []
+        enable_datadog_monitor = true
+        custom_monitor = {
+          query = "sum(last_24h):sum:<metric>{*}.as_count() == 0"
+          custom_schedule = {
+            rrule    = "FREQ=DAILY;INTERVAL=1;BYHOUR=10;BYMINUTE=0"
+            timezone = "America/Santiago"
+          }
+        }
       }
     }
     get_profile_flags_for_identifier_base_url = "https://hrm-staging.tl.techmatters.org/lambda/twilio/account-scoped"
