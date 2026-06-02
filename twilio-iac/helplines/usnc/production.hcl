@@ -5,6 +5,7 @@ locals {
 
   local_config = {
     custom_task_routing_filter_expression = "channelType IN ['web','voice','sms']  OR isContactlessTask == true"
+    enable_datadog_monitoring             = true
     permission_config                     = "usnc"
     ui_editable                           = true
 
