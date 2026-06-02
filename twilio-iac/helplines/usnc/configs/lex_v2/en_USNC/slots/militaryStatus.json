@@ -83,7 +83,7 @@
             "captureNextStep": {
                 "dialogAction": {
                     "type": "ElicitSlot",
-                    "slotToElicit": "Referral988"
+                    "slotToElicit": "referral988"
                 },
                 "intent": {}
             },

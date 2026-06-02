@@ -18,7 +18,7 @@
           }
         ],
         "initial_response": {
-          "message": "Hello! Welcome to Warmline. Please answer the following questions. You can type '0' if you prefer not to answer.",
+          "message": "Thank you for contacting Promise Resource Network. You'll be connected to a live peer supporter by SMS. We'll message only to support your conversation (no marketing). Message frequency may vary. Msg&Data rates may apply. Reply STOP to end or HELP for help. Privacy: promiseresourcenetwork.org/privacy-policy \nPlease answer the following questions. You can type '0' if you prefer not to answer.",
           "slot_to_elicit": "friendlyName"
         },
         "closing_response": {
@@ -47,7 +47,7 @@
           "3": {
             "slot_name": "gender",
             "slot_type_name": "gender",
-            "slot_question": "Please enter the number that corresponds to your gender:\n1 - Male\n2 - Female\n3 - Non-binary\n4 - Transmasculine\n5 - Transfeminine\n6 - Other",
+            "slot_question": "Please enter the number that corresponds to your gender:\n1 - Male\n2 - Female\n3 - Non-binary\n4 - Transgender\n5 - Other",
             "variations": [
               "What is your gender? Please enter the number that matches your answer.",
               "Enter the number that corresponds to your gender."
@@ -95,7 +95,7 @@
             "failure_response": "We're having trouble understanding your response."
           },
           "8": {
-            "slot_name": "Referral988",
+            "slot_name": "referral988",
             "slot_type_name": "yes_no",
             "slot_question": "Were you referred or transferred from 988? Please enter the number:\n1 - Yes\n2 - No",
             "variations": [

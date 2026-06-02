@@ -11,7 +11,7 @@
   "MessagePhase-ConversationEnded-Detail": "Si tiene alguna otra pregunta, no dude en volver a contactarnos.",
   "MessagePhase-ConversationEnded-ButtonText": "Comenzar nuevo chat",
   "MessagePhase-MessageBubble-OwnMessageSenderName": "Usted",
-  "MessagePhase-MessageBubble-ReadIndicator": "Leer",
+  "MessagePhase-MessageBubble-ReadIndicator": "Leído",
   "MessagePhase-MessageInput-PlaceholderText": "Escribe tu mensaje",
   "MessagePhase-MessageInput-SendButtonTitle": "Enviar mensaje",
   "PreEngagementPhase-Form-Title": "",

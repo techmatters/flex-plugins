@@ -29,6 +29,17 @@ locals {
         }
         chatbot_unique_names = []
       },
+      chat : {
+        channel_type     = "chat"
+        contact_identity = ""
+        templatefile     = "/app/twilio-iac/helplines/usnc/templates/studio-flows/messaging-blocking-v2-preq-lambda-sd.tftpl"
+        channel_flow_vars = {
+          widget_from                   = "Warm Line"
+          chat_blocked_message          = "Due to repeated use of the service in ways that did not align with Warm Line participation guidelines, access to the Promise Resource Network NC Warm Line has been restricted for this number/account."
+          send_message_webchat_prequeue = "Welcome to the Promise Resource Network Warm Line. We offer compassionate peer support to residents of North Carolina.\nPlease stay in the chat while you wait so you don’t lose your place in line. A Peer Supporter will join you as soon as they are available."
+        }
+        chatbot_unique_names = []
+      },
       voice : {
         channel_type     = "voice"
         contact_identity = ""
@@ -40,18 +51,18 @@ locals {
           voice_ivr_language             = "en-US"
         }
         chatbot_unique_names = []
-      }/*, AFTER PORTING IS COMPLETE
+      }, 
       sms : {
         messaging_mode   = "conversations"
         channel_type     = "sms"
-        contact_identity = "<PENDING>"
+        contact_identity = "+18557337762"
         templatefile     = "/app/twilio-iac/helplines/usnc/templates/studio-flows/messaging-lex-v3-blocking-lambda-sd.tftpl"
         channel_flow_vars = {
           widget_from           = "Warm Line"
           send_message_prequeue = "Hello"
         }
         chatbot_unique_names = []
-      }*/
+      }
     }
     system_down_templatefile = "/app/twilio-iac/helplines/templates/studio-flows/system-down.tftpl"
     enable_system_down       = true
