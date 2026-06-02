@@ -110,15 +110,11 @@
       ]
     },
     {
-      "type": "input",
+      "type": "email",
       "name": "email",
       "label": "Email Address",
       "required": true,
-      "placeholder": "Email Address",
-      "pattern": {
-        "value": "EMAIL_PATTERN",
-        "message": "Please enter valid email address"
-      }
+      "placeholder": "Email Address"
     },
     {
       "type": "select",

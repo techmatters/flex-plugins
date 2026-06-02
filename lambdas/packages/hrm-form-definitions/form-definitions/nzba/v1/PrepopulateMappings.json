@@ -3,7 +3,7 @@
     "age": "ChildInformationTab.age",
     "firstName": "ChildInformationTab.firstName",
     "ethnicity1": "ChildInformationTab.ethnicity1",
-    "contactIdentifier": "ChildInformationTab.contactIdentifier",
+    "email": "ChildInformationTab.email",
     "howHeardAboutWu": "ChildInformationTab.howHeardAboutWu",
     "topic": "ChildInformationTab.topic",
     "feelingRightNow": "ChildInformationTab.feelingRightNow",
