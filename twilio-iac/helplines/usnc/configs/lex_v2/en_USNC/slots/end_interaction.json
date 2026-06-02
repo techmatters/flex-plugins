@@ -10,13 +10,13 @@
                 {
                     "message": {
                         "plainTextMessage": {
-                            "value": "How did you feel at the end of the interaction?\n 1 = Really struggling\n  2 = Having a hard time\n  3 = Okay\n  4 = Better\n  5 = Much better"
+                            "value": "How did you feel at the end of the interaction?\n  1 = Really struggling\n  2 = Having a hard time\n  3 = Okay\n  4 = Better\n  5 = Much better"
                         }
                     },
                     "variations": [
                         {
                             "plainTextMessage": {
-                                "value": "You can answer with a number like: 2. \nHow did you feel at the end of the interaction?\n 1 = Really struggling\n  2 = Having a hard time\n  3 = Okay\n  4 = Better\n  5 = Much better"
+                                "value": "You can answer with a number like: 2. \nHow did you feel at the end of the interaction?\n  1 = Really struggling\n  2 = Having a hard time\n  3 = Okay\n  4 = Better\n  5 = Much better"
                             }
                         }
                     ]
