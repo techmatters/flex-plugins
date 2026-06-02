@@ -1451,7 +1451,7 @@
     }
   },
   {
-    "name": "contactIdentifier",
+    "name": "email",
     "label": "Personal Email",
     "type": "input",
     "isPII": false

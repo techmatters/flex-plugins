@@ -12,5 +12,6 @@
   "helplineCode": "nzba",
   "captureIp": true,
   "defaultLocale": "en-US",
-  "contactIdentifierField": "email"
+  "contactIdentifierField": "email",
+  "definitionVersion": "nzba-v1"
 }

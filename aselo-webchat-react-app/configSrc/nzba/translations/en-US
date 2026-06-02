@@ -17,5 +17,8 @@
     "MessagePhase-ConversationEnded-Detail": "Feel free to reach out to us again if you need more support.",
     "MessagePhase-ConversationEnded-ButtonText": "Start new chat",
     "RequiredFieldError": "Please fill out required fields.",
-    "EntryPoint-ClosedState-OpenWidgetButtonLabel": "What's Up Chat Service"
+    "EntryPoint-ClosedState-OpenWidgetButtonLabel": "What's Up Chat Service",
+    "PreEngagementPhase-Form-Title": "Welcome to Barnardos Aotearoa What's Up Chat Service!",
+    "EntryPointTagLine": "The What's Up Chat Service",
+    "MessagePhase-MessageList-Typing": "Counsellor is typing..."
 }

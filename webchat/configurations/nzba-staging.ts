@@ -150,7 +150,7 @@ const preEngagementConfig: PreEngagementFormDefinition = {
     },
     {
       type: 'input-text',
-      name: 'personalEmail',
+      name: 'contactIdentifier',
       label: 'Email Address',
       required: true,
       placeholder: 'Email Address',
