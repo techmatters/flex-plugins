@@ -30,6 +30,7 @@ locals {
         chatbot_unique_names = []
       },
       chat : {
+        messaging_mode   = "conversations"
         channel_type     = "chat"
         contact_identity = ""
         templatefile     = "/app/twilio-iac/helplines/usnc/templates/studio-flows/messaging-blocking-v2-preq-lambda-sd.tftpl"
