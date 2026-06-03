@@ -241,20 +241,19 @@ export const handleEndChat: AccountScopedHandler = async (
       );
       const participantsList = await conversationContext.participants.list();
       await Promise.all(
-        participantsList.map(
-          async ({ attributes, identity, sid, remove }): Promise<boolean> => {
-            const participantAttributes = JSON.parse(attributes);
-            console.debug(
-              `Checking participant ${sid} (${identity}) attributes :`,
-              participantAttributes,
-            );
-            if (participantAttributes.member_type !== 'guest') {
-              console.debug(`Removing participant ${sid} (${identity})`);
-              return remove();
-            }
-            return false;
-          },
-        ),
+        participantsList.map(async (p): Promise<boolean> => {
+          const { attributes, identity, sid } = p;
+          const participantAttributes = JSON.parse(attributes);
+          console.debug(
+            `Checking participant ${sid} (${identity}) attributes :`,
+            participantAttributes,
+          );
+          if (participantAttributes.member_type !== 'guest') {
+            console.debug(`Removing participant ${sid} (${identity})`);
+            return p.remove();
+          }
+          return false;
+        }),
       );
     } else {
       const channelContext = client.chat.v2.services
