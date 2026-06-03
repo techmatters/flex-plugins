@@ -83,7 +83,7 @@ export const createConversation = async (
     await conversationContext.participants.create({
       identity: uniqueUserName,
       ...(additionalParticipantAttributes
-        ? { attributes: JSON.stringify(additionalConversationAttributes) }
+        ? { attributes: JSON.stringify(additionalParticipantAttributes) }
         : {}),
     });
     await client.conversations.v1.users
