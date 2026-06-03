@@ -245,7 +245,7 @@ export const handleEndChat: AccountScopedHandler = async (
           const { attributes, identity, sid } = p;
           const participantAttributes = JSON.parse(attributes);
           console.debug(
-            `Checking participant ${sid} (${identity}) attributes :`,
+            `[SENSITIVE] Checking participant ${sid} (${identity}) attributes :`,
             participantAttributes,
           );
           if (participantAttributes.member_type !== 'guest') {
