@@ -56,7 +56,7 @@ const contactWebchatOrchestrator = async ({
     },
     additionalParticipantAttributes: {
       member_type: 'guest',
-    }
+    },
   });
   if (isErr(result)) {
     const { conversationSid, cause } = result.error;
