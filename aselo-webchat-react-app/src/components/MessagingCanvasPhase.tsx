@@ -79,7 +79,7 @@ export const MessagingCanvasPhase = () => {
       <CloseChatButtons />
       <NotificationBar />
       <MessageList />
-      {conversationState === 'active' ? <MessageInput /> : <ConversationEnded />}
+      {conversationState === 'active' && conversation?.status === 'joined' ? <MessageInput /> : <ConversationEnded />}
     </Wrapper>
   );
 };
