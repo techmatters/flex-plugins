@@ -50,7 +50,7 @@ const rotateRoutingSkills = ({
   const prevLevels = Object.entries(from.levels || {});
 
   // update "to" WorkerRoutingSkills
-  const toSkills = new Set([...to.skills, ...prevSkills.filter(s => updatesHas(s))]);
+  const toSkills = new Set([...to.skills, ...Object.keys(updates)]);
   const toLevels = {
     ...to.levels,
     ...Object.fromEntries(prevLevels.filter(([s]) => updatesHas(s))), // keep levels that were in "from" before the update
