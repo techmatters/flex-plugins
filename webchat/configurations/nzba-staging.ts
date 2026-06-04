@@ -21,7 +21,7 @@ const accountSid = 'AC574591f522bc6e981aea7d34fb14fa5e';
 const flexFlowSid = 'FO72895d84c5d2136ef19d0afc50a59f39';
 const defaultLanguage = 'en-US';
 const captureIp = true;
-const contactType: ContactType = 'ip';
+const contactType: ContactType = 'email';
 
 const translations: Translations = {
   'en-US': {
@@ -150,7 +150,7 @@ const preEngagementConfig: PreEngagementFormDefinition = {
     },
     {
       type: 'input-text',
-      name: 'personalEmail',
+      name: 'contactIdentifier',
       label: 'Email Address',
       required: true,
       placeholder: 'Email Address',
@@ -163,6 +163,7 @@ const preEngagementConfig: PreEngagementFormDefinition = {
       type: 'input-text',
       name: 'howDidYouHearAboutWhatsUp',
       label: "How did you hear about What's Up?",
+      required: true
     },
     {
       label: 'What would you like to talk about?',
@@ -197,9 +198,56 @@ const preEngagementConfig: PreEngagementFormDefinition = {
       ],
     },
     {
-      type: 'input-text',
+      type: 'select',
       name: 'feelingRightNow',
       label: 'How are you feeling right now? (0 = calm / okay → 10 = extremely upset or distressed)',
+      required: true,
+      options: [
+        {
+          value: "",
+          label: ""
+        },
+        {
+          value: "01",
+          label: "1"
+        },
+        {
+          value: "02",
+          label: "2"
+        },
+        {
+          value: "03",
+          label: "3"
+        },
+        {
+          value: "04",
+          label: "4"
+        },
+        {
+          value: "05",
+          label: "5"
+        },
+        {
+          value: "06",
+          label: "6"
+        },
+        {
+          value: "07",
+          label: "7"
+        },
+        {
+          value: "08",
+          label: "8"
+        },
+        {
+          value: "09",
+          label: "9"
+        },
+        {
+          value: "10",
+          label: "10"
+        }
+      ],
     },
     {
       label: 'In the past year, have you been on a waitlist for 1 month or longer for professional mental health services?',

@@ -17,7 +17,7 @@
     },
     {
       "sampleValue": {
-        "value": "25-34"
+        "value": "25-40"
       },
       "synonyms": [
         { "value": "25" }, { "value": "twenty five" },
@@ -29,31 +29,24 @@
         { "value": "31" }, { "value": "thirty one" },
         { "value": "32" }, { "value": "thirty two" },
         { "value": "33" }, { "value": "thirty three" },
-        { "value": "34" }, { "value": "thirty four" }
-      ]
-    },
-    {
-      "sampleValue": {
-        "value": "35-44"
-      },
-      "synonyms": [
+        { "value": "34" }, { "value": "thirty four" },
         { "value": "35" }, { "value": "thirty five" },
         { "value": "36" }, { "value": "thirty six" },
         { "value": "37" }, { "value": "thirty seven" },
         { "value": "38" }, { "value": "thirty eight" },
         { "value": "39" }, { "value": "thirty nine" },
-        { "value": "40" }, { "value": "forty" },
-        { "value": "41" }, { "value": "forty one" },
-        { "value": "42" }, { "value": "forty two" },
-        { "value": "43" }, { "value": "forty three" },
-        { "value": "44" }, { "value": "forty four" }
+        { "value": "40" }, { "value": "forty" }
       ]
     },
     {
       "sampleValue": {
-        "value": "45-54"
+        "value": "41-54"
       },
       "synonyms": [
+        { "value": "41" }, { "value": "forty one" },
+        { "value": "42" }, { "value": "forty two" },
+        { "value": "43" }, { "value": "forty three" },
+        { "value": "44" }, { "value": "forty four" },
         { "value": "45" }, { "value": "forty five" },
         { "value": "46" }, { "value": "forty six" },
         { "value": "47" }, { "value": "forty seven" },

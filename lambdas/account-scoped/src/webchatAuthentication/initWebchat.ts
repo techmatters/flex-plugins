@@ -54,6 +54,9 @@ const contactWebchatOrchestrator = async ({
       pre_engagement_data: formData,
       from: customerFriendlyName,
     },
+    additionalParticipantAttributes: {
+      member_type: 'guest',
+    },
   });
   if (isErr(result)) {
     const { conversationSid, cause } = result.error;

@@ -1,8 +1,8 @@
 {
-    "slotName": "experience_rating",
-    "slotTypeName": "four_level_assessment",
+    "slotName": "beginning_interaction",
+    "slotTypeName": "five_level_assessment",
     "intentName": "post_survey_yes",
-    "description": "Slot experience_rating for intent post_survey_yes",
+    "description": "Slot beginning_interaction for intent post_survey_yes",
     "valueElicitationSetting": {
         "slotConstraint": "Required",
         "promptSpecification": {
@@ -10,9 +10,16 @@
                 {
                     "message": {
                         "plainTextMessage": {
-                            "value": "How was your experience today? \nReply with 1 = Excellent, 2 = Good, 3 = Fair, 4 = Poor"
+                            "value": "How did you feel at the beginning of the interaction?\n  1 = Really struggling\n  2 = Having a hard time\n  3 = Okay\n  4 = Better\n  5 = Much better"
                         }
-                    }
+                    },
+                    "variations": [
+                        {
+                            "plainTextMessage": {
+                                "value": "You can answer with a number like: 2. \nHow did you feel at the beginning of the interaction?\n  1 = Really struggling\n  2 = Having a hard time\n  3 = Okay\n  4 = Better\n  5 = Much better"
+                            }
+                        }
+                    ]
                 }
             ],
             "maxRetries": 1,
@@ -71,7 +78,7 @@
             "captureNextStep": {
                 "dialogAction": {
                     "type": "ElicitSlot",
-                    "slotToElicit": "feel_supported"
+                    "slotToElicit": "end_interaction"
                 },
                 "intent": {}
             },

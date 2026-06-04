@@ -1,6 +1,6 @@
 {
     "intentName": "post_survey_no",
-    "description": "Specific en_USCH/bots Post Survey bot",
+    "description": "Specific en_USNC/bots Post Survey bot",
     "sampleUtterances": [
         {
             "utterance": "No"
@@ -49,7 +49,7 @@
                 {
                     "message": {
                         "plainTextMessage": {
-                            "value": "Thank you for contacting the Warmline.  Feel free to reach out again if you need additional support."
+                            "value": "Thank you for contacting the Warmline. Feel free to reach out again if you need additional support."
                         }
                     }
                 }
