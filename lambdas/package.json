@@ -6,6 +6,7 @@
   "license": "AGPL",
   "workspaces": [
     "account-scoped",
+    "e2eTestRunner",
     "facebookCallback",
     "facebookSignin",
     "instagramWebhook",

@@ -75,7 +75,7 @@ jobs:
         uses: docker/build-push-action@v7
         with:
           context: ./
-          file: ./e2e-tests/Dockerfile
+          file: ./lambdas/e2eTestRunner/Dockerfile
           push: true
           tags: ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:live,${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:${{ github.sha }}
           provenance: false

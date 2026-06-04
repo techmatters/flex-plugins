@@ -11,6 +11,7 @@
     { "path": "packages/twilio-types" },
     { "path": "packages/twilio-configuration" },
     { "path": "account-scoped" },
+    { "path": "e2eTestRunner" },
     { "path": "facebookCallback" },
     { "path": "facebookSignin" },
     { "path": "instagramWebhook" },
