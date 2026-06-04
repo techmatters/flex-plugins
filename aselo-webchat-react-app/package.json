@@ -91,7 +91,8 @@
     "recursive-readdir": "2.2.3"
   },
   "overrides": {
-    "handlebars": "4.7.9"
+    "handlebars": "4.7.9",
+    "rollup": "2.80.0"
   },
   "scripts": {
     "preinstall": "cd ../lambdas/packages/hrm-form-definitions && npm ci && npm run build && cd ../hrm-types && npm ci && npm run build",
