@@ -8,12 +8,13 @@ locals {
   config            = merge(local.common_config, local.local_config)
 
   local_config = {
+    enable_datadog_monitoring             = true
     flow_vars = {
 
       # Webchat
       vc_url   = "https://victimconnect.org"
       dcvh_url = "https://dcvictim.org"
-
+      serverless_usvc_recordings_url = "https://usvc-recordings-6347.twil.io"
 
       #VC Webchat
       send_message_vc_webchat_prequeue = "Thank you for contacting the VictimConnect Resource Center. One of our Victim Assistance Specialists will be with you shortly. To receive services in a preferred language other than English, please call 1-855-4-VICTIM (1-855-484-2846). Gracias por contactar el Centro de Recursos VictimConnect. La línea de VictimConnect no ofrece servicios por chat en español en este momento. Para obtener servicios en español o para hablar con un intérprete, por favor llame al 1-855-4-VICTIM (1-855-484-2846)."
@@ -59,6 +60,33 @@ locals {
         channel_flow_vars = {
         }
         chatbot_unique_names = []
+        enable_datadog_monitor = false
+        custom_monitor = {
+          query = "sum(last_24h):sum:<metric>{*}.as_count() == 0"
+          custom_schedule = {
+            rrule    = "FREQ=DAILY;INTERVAL=1;BYHOUR=10;BYMINUTE=0"
+            timezone = "America/Santiago"
+          }
+        }
+      },
+      chat : {
+        messaging_mode   = "conversations"
+        channel_type     = "chat"
+        contact_identity = ""
+        templatefile     = "/app/twilio-iac/helplines/usvc/templates/studio-flows/webchat-conv-sd.tftpl"
+        channel_flow_vars = {
+          vc_url   = "https://victimconnect.org"
+          dcvh_url = "https://dcvictim.org"
+        }
+        chatbot_unique_names = []
+        enable_datadog_monitor = true
+        custom_monitor = {
+          query = "sum(last_24h):sum:<metric>{*}.as_count() == 0"
+          custom_schedule = {
+            rrule    = "FREQ=DAILY;INTERVAL=1;BYHOUR=10;BYMINUTE=0"
+            timezone = "America/Santiago"
+          }
+        }
       },
       voice_vc : {
         channel_type     = "voice"
@@ -67,6 +95,14 @@ locals {
         channel_flow_vars = {
         }
         chatbot_unique_names = []
+        enable_datadog_monitor = true
+        custom_monitor = {
+          query = "sum(last_24h):sum:<metric>{*}.as_count() == 0"
+          custom_schedule = {
+            rrule    = "FREQ=DAILY;INTERVAL=1;BYHOUR=10;BYMINUTE=0"
+            timezone = "America/Santiago"
+          }
+        }
       },
       voice_dcvh : {
         channel_type     = "voice"
@@ -75,6 +111,14 @@ locals {
         channel_flow_vars = {
         }
         chatbot_unique_names = []
+        enable_datadog_monitor = true
+        custom_monitor = {
+          query = "sum(last_24h):sum:<metric>{*}.as_count() == 0"
+          custom_schedule = {
+            rrule    = "FREQ=DAILY;INTERVAL=1;BYHOUR=10;BYMINUTE=0"
+            timezone = "America/Santiago"
+          }
+        }
       },
       sms_dcvh_toll_free : {
         messaging_mode   = "conversations"
@@ -84,6 +128,14 @@ locals {
         channel_flow_vars = {
         }
         chatbot_unique_names = []
+        enable_datadog_monitor = true
+        custom_monitor = {
+          query = "sum(last_24h):sum:<metric>{*}.as_count() == 0"
+          custom_schedule = {
+            rrule    = "FREQ=DAILY;INTERVAL=1;BYHOUR=10;BYMINUTE=0"
+            timezone = "America/Santiago"
+          }
+        }
       },
       sms_vc_toll_free : {
         messaging_mode   = "conversations"
@@ -93,6 +145,14 @@ locals {
         channel_flow_vars = {
         }
         chatbot_unique_names = []
+        enable_datadog_monitor = true
+        custom_monitor = {
+          query = "sum(last_24h):sum:<metric>{*}.as_count() == 0"
+          custom_schedule = {
+            rrule    = "FREQ=DAILY;INTERVAL=1;BYHOUR=10;BYMINUTE=0"
+            timezone = "America/Santiago"
+          }
+        }
       }
     }
     get_profile_flags_for_identifier_base_url = "https://hrm-staging.tl.techmatters.org/lambda/twilio/account-scoped"

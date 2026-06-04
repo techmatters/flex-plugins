@@ -668,7 +668,7 @@
     }
   },
   {
-    "name": "Referral988",
+    "name": "referral988",
     "label": "988 Referral/Transfer",
     "type": "select",
     "isPII": false,

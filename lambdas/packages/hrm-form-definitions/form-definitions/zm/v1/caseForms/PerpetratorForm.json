@@ -1017,27 +1017,43 @@
     "options": [
       {
         "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "partyPrimary",
+        "label": "Party Primary"
+      },
+      {
+        "value": "nominations",
+        "label": "Nominations"
+      },
+      {
+        "value": "campaignEvent",
+        "label": "Campaign event/Rally"
+      },
+      {
+        "value": "meeting",
+        "label": "Meeting (specify with who)"
+      },
+      {
+        "value": "online",
+        "label": "Online"
+      },
+      {
+        "value": "voting",
+        "label": "Voting"
+      },
+      {
+        "value": "votingCounting",
+        "label": "Voting Counting"
+      },
+      {
+        "value": "Unknown",
         "label": "Unknown"
       },
       {
-        "value": "Party Member",
-        "label": "Party Member"
-      },
-      {
-        "value": "Supporter",
-        "label": "Supporter"
-      },
-      {
-        "value": "Candidate",
-        "label": "Candidate"
-      },
-      {
-        "value": "Polling Agent",
-        "label": "Polling Agent"
-      },
-      {
         "value": "Other",
-        "label": "Others"
+        "label": "Other"
       }
     ],
     "isPII": false

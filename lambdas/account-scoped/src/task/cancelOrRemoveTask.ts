@@ -95,10 +95,10 @@ export const cancelOrRemoveTaskHandler: FlexValidatedHandler = async (
     await chatChannelJanitor(accountSid, taskAttributes);
   } catch (error) {
     console.error(
-      `Chat channel / conversation janitor failed completing task ${taskSid}, a stale channel / conversation is likely. Task attributes:`,
-      taskAttributes,
+      `Chat channel / conversation janitor failed completing task ${taskSid}, a stale channel / conversation is likely:`,
       error,
     );
+    console.error(`[SENSITIVE] Task attributes:`, taskAttributes);
   }
   return result;
 };

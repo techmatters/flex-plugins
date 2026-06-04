@@ -36,31 +36,13 @@
     },
     {
       "sampleValue": {
-        "value": "Two-Spirit"
+        "value": "Transgender"
       },
       "synonyms": [
         { "value": "4" },
-        { "value": "two spirit" },
-        { "value": "twospirit" }
-      ]
-    },
-    {
-      "sampleValue": {
-        "value": "TransMasc"
-      },
-      "synonyms": [
-        { "value": "5" },
         { "value": "trans masc" },
         { "value": "transmasc" },
-        { "value": "transmasculine" }
-      ]
-    },
-    {
-      "sampleValue": {
-        "value": "TransFemme"
-      },
-      "synonyms": [
-        { "value": "6" },
+        { "value": "transmasculine" },
         { "value": "trans femme" },
         { "value": "transfemme" },
         { "value": "transfeminine" }
@@ -71,7 +53,7 @@
         "value": "Other"
       },
       "synonyms": [
-        { "value": "7" },
+        { "value": "5" },
         { "value": "other" },
         { "value": "different" }
       ]
