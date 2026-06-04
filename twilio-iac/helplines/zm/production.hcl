@@ -21,6 +21,22 @@ locals {
           }
         }
       },
+      chat : {
+        channel_type         = "chat"
+        messaging_mode       = "conversations"
+        contact_identity     = ""
+        templatefile         = "/app/twilio-iac/helplines/zm/templates/studio-flows/messaging-webchat-conv-lambda-sd.tftpl"
+        channel_flow_vars    = {}
+        chatbot_unique_names = []
+        enable_datadog_monitor = true
+        custom_monitor = {
+          query = "sum(last_1w):sum:<metric>{*}.as_count() == 0"
+          custom_schedule = {
+            rrule    = "FREQ=WEEKLY;INTERVAL=1;BYHOUR=10;BYMINUTE=0;BYDAY=MO"
+            timezone = "America/Santiago"
+          }
+        }
+      },
       facebook : {
         messaging_mode         = "conversations"
         channel_type           = "messenger"

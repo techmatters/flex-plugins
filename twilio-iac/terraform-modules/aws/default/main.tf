@@ -136,7 +136,7 @@ resource "aws_s3_bucket_cors_configuration" "chat" {
   cors_rule {
     allowed_headers = ["*"]
     allowed_methods = ["GET", "POST", "PUT"]
-    allowed_origins = ["https://flex.twilio.com"]
+    allowed_origins = ["*"]
     expose_headers  = []
   }
 }

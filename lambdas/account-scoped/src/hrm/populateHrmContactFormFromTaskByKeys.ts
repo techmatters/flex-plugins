@@ -51,7 +51,10 @@ const CUSTOM_MAPPERS: Record<string, MapperFunction> = {
 
         if (ageInt > maxAgeInt) return maxAge;
       } else {
-        console.error('Pre populate form error: no maxAge option provided.');
+        console.error(
+          `Pre populate form error: no maxAge option provided for normalising age '${age}'. Age options: `,
+          ageOptions,
+        );
       }
 
       return 'Unknown';
@@ -253,14 +256,15 @@ const populateInitialValues = async (
     ['ChildInformationTab', contact.rawJson.childInformation],
     ['CallerInformationTab', contact.rawJson.callerInformation],
   ];
-
-  const definitionsAndJsons: [FormItemDefinition[], Record<string, FormValue>][] =
-    await Promise.all(
-      tabNamesAndRawJsonSections.map(async ([tabbedFormsSection, rawJsonSection]) => [
+  type DefinitionAndJson = [FormItemDefinition[], Record<string, FormValue>];
+  const definitionsAndJsons: DefinitionAndJson[] = await Promise.all(
+    tabNamesAndRawJsonSections.map(
+      async ([tabbedFormsSection, rawJsonSection]): Promise<DefinitionAndJson> => [
         tabbedForms[tabbedFormsSection] as FormItemDefinition[],
         rawJsonSection,
-      ]),
-    );
+      ],
+    ),
+  );
   for (const [tabFormDefinition, rawJson] of definitionsAndJsons) {
     for (const formItemDefinition of tabFormDefinition) {
       rawJson[formItemDefinition.name] = getInitialValue(formItemDefinition);
@@ -291,7 +295,7 @@ const populateContactSection = async (
   ) => Record<string, FormValue>,
 ) => {
   console.debug('Keys', Array.from(keys));
-  console.debug('Using Values', valuesToPopulate);
+  console.debug('[SENSITIVE] Using Values', valuesToPopulate);
 
   if (keys.size > 0) {
     const childInformationTabDefinition =
@@ -394,12 +398,8 @@ export const populateHrmContactFormFromTaskByKeys = async ({
     return newOk(contact);
   } catch (err) {
     const error = err as Error;
-    console.error(
-      `Error prepopulating contact ${contact.id}`,
-      error,
-      'task attributes:',
-      taskAttributes,
-    );
+    console.error(`Error prepopulating contact ${contact.id}`, error);
+    console.error('[SENSITIVE] task attributes:', taskAttributes);
     return newErr({ error, message: error.message });
   }
 };

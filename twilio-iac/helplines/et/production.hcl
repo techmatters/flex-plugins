@@ -16,6 +16,17 @@ locals {
 
     #Channels
     channels = {
+      chat : {
+        messaging_mode   = "conversations"
+        channel_type     = "chat"
+        contact_identity = ""
+        templatefile     = "/app/twilio-iac/helplines/et/templates/studio-flows/messaging-chatbot-operating-hours-v2.tftpl"
+        channel_flow_vars = {
+          widget_from = "Adama Child Helpline"
+          chat_blocked_message = "Sorry, you're not able to contact Adama Child Helpline from this device or account"
+        }
+        chatbot_unique_names = []
+      },
       webchat : {
         channel_type     = "web"
         contact_identity = ""

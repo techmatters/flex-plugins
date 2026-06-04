@@ -16,6 +16,6 @@
     "ts-node": "^10.9.1"
   },
   "dependencies": {
-    "@aws-sdk/client-s3": "^3.716.0"
+    "@aws-sdk/client-s3": "^3.1045.0"
   }
 }

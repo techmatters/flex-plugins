@@ -21,6 +21,14 @@ locals {
         templatefile         = "/app/twilio-iac/helplines/ukmh/templates/studio-flows/messaging-greeting-message-blocking.tftpl"
         channel_flow_vars    = {}
         chatbot_unique_names = []
+      },
+      chat : {
+        channel_type         = "chat"
+        messaging_mode = "conversations"
+        contact_identity     = ""
+        templatefile         = "/app/twilio-iac/helplines/ukmh/templates/studio-flows/messaging-greeting-message-blocking-conv.tftpl"
+        channel_flow_vars    = {}
+        chatbot_unique_names = []
       }
     }
     get_profile_flags_for_identifier_base_url = "https://hrm-production-eu.tl.techmatters.org/lambda/twilio/account-scoped"

@@ -37,7 +37,7 @@ const validateRequired = ({ value, definition }: { value: string | boolean; defi
   return REQUIRED_FIELD_ERROR;
 };
 
-const EMAIL_PATTERN_ERROR = 'RequiredFieldError';
+const EMAIL_PATTERN_ERROR = 'EmailFieldPatternError';
 const EMAIL_PATTERN = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i;
 const validateEmailPattern = ({
   value,

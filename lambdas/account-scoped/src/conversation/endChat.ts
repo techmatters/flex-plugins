@@ -216,10 +216,11 @@ export const handleEndChat: AccountScopedHandler = async (
       console.debug(
         `[endChat - ${accountSid} / ${conversationSid}] Identified as conversation.`,
       );
-      const { attributes, participants } = await client.conversations.v1.conversations
-        .get(conversationSid)
-        .fetch();
-      const conversationAttributes = JSON.parse(attributes);
+      const conversationContext =
+        client.conversations.v1.conversations.get(conversationSid);
+      const conversationAttributes = JSON.parse(
+        (await conversationContext.fetch()).attributes,
+      );
       console.debug(
         `[endChat - ${accountSid} / ${conversationSid}] Parsed conversation attributes summary:`,
         {
@@ -238,10 +239,17 @@ export const handleEndChat: AccountScopedHandler = async (
         `[endChat - ${accountSid} / ${conversationSid}] Conversation cleanup required:`,
         channelCleanupRequired,
       );
-      const participantsList = await participants().list();
+      const participantsList = await conversationContext.participants.list();
       await Promise.all(
         participantsList.map(async (p): Promise<boolean> => {
-          if (JSON.parse(p.attributes).member_type !== 'guest') {
+          const { attributes, identity, sid } = p;
+          const participantAttributes = JSON.parse(attributes);
+          console.debug(
+            `[SENSITIVE] Checking participant ${sid} (${identity}) attributes :`,
+            participantAttributes,
+          );
+          if (participantAttributes.member_type !== 'guest') {
+            console.debug(`Removing participant ${sid} (${identity})`);
             return p.remove();
           }
           return false;

@@ -7,7 +7,7 @@ locals {
 
   local_config = {
     helpline      = "Promise Resource Network"
-    task_language = "en-US"
+    task_language = "en-USNC"
 
     workflows = {
       master : {

@@ -600,6 +600,10 @@
         "label": "I want support to solve a conflict/problem"
       },
       {
+          "value": "I need help to be safer",
+          "label": "I need help to be safer"
+      },
+      {
         "value": "I want to know how to help someone else",
         "label": "I want to know how to help someone else"
       },

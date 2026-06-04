@@ -1,10 +1,9 @@
 {
   "en": {
-    "WelcomeMsg": "Hi, this is the counsellor. How can I help you?",
-    "GoodbyeMsg": "The counselor has left the chat. Thank you for reaching out. Please contact us again if you need more help.",
-    "EndChatMsg": "You ended the chat. Thank you for reaching out. Please contact us again if you need more help.",
+    "WelcomeMsg": "Kia ora!",
+    "GoodbyeMsg": "TThe counsellor has left the chat now. Thank you for reaching out - we look forward to chatting to again.",
+    "EndChatMsg": "You’ve ended the chat. Thanks for getting in touch today. If you ever need support again, we’re here for you.",
     "ClosedOutOfShift": "The helpline is out of shift, please reach us later.",
-    "ClosedHolidays": "The helpline is closed due to a holiday.",
-    "UnsupportedMediaErrorMsg": "Sorry, the message you just sent is unsupported and could not be delivered."
+    "UnsupportedMediaErrorMsg": "Oops — we couldn’t send that message. Try sending it again using text only."
   }
 }

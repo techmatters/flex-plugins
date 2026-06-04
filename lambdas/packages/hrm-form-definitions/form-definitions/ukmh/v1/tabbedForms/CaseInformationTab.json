@@ -16,7 +16,7 @@
     "isPII": false
   },
   {
-    "name": "contactIdentifier",
+    "name": "email",
     "label": "Email Address",
     "type": "input",
     "required": {

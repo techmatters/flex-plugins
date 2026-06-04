@@ -25,6 +25,7 @@
   "PreEngagementPhase-Form-Description": "",
   "PreEngagementPhase-Form-SubmitButtonLabel": "Start chat",
   "RequiredFieldError": "Please fill out required fields.",
+  "EmailFieldPatternError": "Please fill with a valid email.",
   "OperatingHours-Closed-Message": "We are currently closed. Please check back during our operating hours.",
   "OperatingHours-Holiday-Message": "We are currently closed for the holiday. Please check back during our operating hours.",
   "NewMessageNotification": "New Message"

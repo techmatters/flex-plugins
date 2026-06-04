@@ -72,8 +72,8 @@ ${
               "x": -640,
               "y": 210
             },
-            "service": "{{trigger.message.InstanceSid}}",
-            "channel": "{{trigger.message.ChannelSid}}",
+            "service": "{{trigger.conversation.InstanceSid}}",
+            "channel": "{{trigger.conversation.ChannelSid}}",
             "from": "The PeerChat Service",
             "to": "{{contact.channel.address}}",
             "body": flow_vars["chat_blocked_message"]
@@ -176,8 +176,8 @@ ${
               "x": 70,
               "y": 20
             },
-            "service": "{{trigger.message.InstanceSid}}",
-            "channel": "{{trigger.message.ChannelSid}}",
+            "service": "{{trigger.conversation.InstanceSid}}",
+            "channel": "{{trigger.conversation.ChannelSid}}",
             "from": "The PeerChat Service",
             "message_type": "custom",
             "to": "{{contact.channel.address}}",
