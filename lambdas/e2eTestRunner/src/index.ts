@@ -69,7 +69,9 @@ const uploadDir = async (
   const uploads = files.map(filePath =>
     s3.send(
       new PutObjectCommand({
-        Key: path.join(s3BasePath, path.relative(dirPath, filePath)).replace('\\', '/'),
+        Key: path
+          .join(s3BasePath, path.relative(dirPath, filePath))
+          .replaceAll('\\', '/'),
         Bucket: bucketName,
         Body: createReadStream(filePath),
       }),

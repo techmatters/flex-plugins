@@ -17,7 +17,7 @@
 # so that chromium can write to it.
 cp -r /ms-playwright/* /tmp/
 
-# Some chromeium startup writes to ~/some/directory. We need to set the home directory to /tmp so that it can write
+# Some chromium startup writes to ~/some/directory. We need to set the home directory to /tmp so that it can write
 export HOME=/tmp
 
 if [ -z "${AWS_LAMBDA_RUNTIME_API}" ]; then
