@@ -31,6 +31,7 @@ on:
         type: choice
         options:
           - account-scoped
+          - e2eTestRunner
           - facebookCallback
           - facebookSignin
           - instagramWebhook
