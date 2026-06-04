@@ -52,8 +52,10 @@
   {
     "name": "keyInformation",
     "label": "Key Information for working with this client",
-    "type": "input",
-    "isPII": false
+    "type": "textarea",
+    "isPII": false,
+    "rows": 8,
+    "width": 250
   },
   {
     "name": "contactedSince",

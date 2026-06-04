@@ -242,7 +242,14 @@ export const handleEndChat: AccountScopedHandler = async (
       const participantsList = await conversationContext.participants.list();
       await Promise.all(
         participantsList.map(async (p): Promise<boolean> => {
-          if (JSON.parse(p.attributes).member_type !== 'guest') {
+          const { attributes, identity, sid } = p;
+          const participantAttributes = JSON.parse(attributes);
+          console.debug(
+            `[SENSITIVE] Checking participant ${sid} (${identity}) attributes :`,
+            participantAttributes,
+          );
+          if (participantAttributes.member_type !== 'guest') {
+            console.debug(`Removing participant ${sid} (${identity})`);
             return p.remove();
           }
           return false;
