@@ -36,11 +36,12 @@ const getParameterValue = async (name: string): Promise<string> => {
     Name: name,
     WithDecryption: true,
   });
-  const {
-    Parameter: { Value },
-  } = await ssm.send(command);
-  console.debug(`SSM ${name} = ${Value}`);
-  return Value as string;
+  const { Parameter } = await ssm.send(command);
+  if (!Parameter?.Value) {
+    throw new Error(`SSM parameter not found: ${name}`);
+  }
+  console.debug(`SSM ${name} = ${Parameter.Value}`);
+  return Parameter.Value;
 };
 
 // https://stackoverflow.com/a/65862128/30481093
@@ -114,7 +115,7 @@ export const handler = async (event: E2ETestEvent): Promise<void> => {
 
   const cmd = spawn(
     /^win/.test(process.platform) ? 'npm.cmd' : 'npm',
-    ['-loglevel silent', 'run', npmScript || 'test'],
+    ['-loglevel', 'silent', 'run', npmScript || 'test'],
     {
       stdio: 'inherit',
       cwd: '/app/e2e-tests',
