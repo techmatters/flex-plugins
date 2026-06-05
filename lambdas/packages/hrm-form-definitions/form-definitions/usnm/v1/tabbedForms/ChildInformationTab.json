@@ -412,7 +412,21 @@
   {
     "name": "seekingHelpFor",
     "label": "Seeking Help For",
-    "type": "checkbox",
-    "isPII": false
+    "type": "select",
+    "isPII": false,
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "Self",
+        "label": "Self"
+      },
+      {
+        "value": "Other loved one",
+        "label": "Other loved one"
+      }
+    ]
   }
 ]
