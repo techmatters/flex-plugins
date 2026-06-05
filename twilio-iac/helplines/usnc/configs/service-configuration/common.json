@@ -8,7 +8,7 @@
         "enforceZeroTranscriptRetention": true,
         "enableConferencing": true,
         "enableUnmaskingCalls": false,
-        "hideAddToNewCaseButton": false,
+        "hideAddToNewCaseButton": true,
         "enableExternalRecordings": false, 
         "feature_flags": {
             "enable_assigned_skill_teams_view_filters": true,

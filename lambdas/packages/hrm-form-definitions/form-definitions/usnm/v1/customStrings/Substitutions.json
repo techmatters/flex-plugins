@@ -110,7 +110,9 @@
     "CaseMerging-CaseCreatedAndContactAdded": "Case #{{caseId}} created and connection added",
     "CaseMerging-ContactAddedToExistingCase": "Connection added to Case #{{caseId}}",
     "TeamsView-Counsellor": "specialist",
-    "TeamsView-Counsellors": "specialists"
+    "TeamsView-Counsellors": "specialists",
+    "BottomBar-AddContactToNewCase": "-Disabled-",
+    "TabbedForms-ExistingCase": "-Disabled-"
   },
   "es": {
     "HelplineSubstitution": "Substitución de la Línea de Ayuda",
