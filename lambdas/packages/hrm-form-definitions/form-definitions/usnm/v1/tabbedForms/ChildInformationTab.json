@@ -384,5 +384,35 @@
         "label": "Parents of children"
       }
     ]
+  },
+  {
+    "name": "relationshipToHelpSeeker",
+    "label": "Relationship to Help Seeker",
+    "type": "select",
+    "isPII": false,
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "Family member/caregiver/other supporter",
+        "label": "Family member/caregiver/other supporter"
+      },
+      {
+        "value": "Prefer not to say/Did not disclose",
+        "label": "Prefer not to say/Did not disclose"
+      },
+      {
+        "value": "Self",
+        "label": "Self"
+      }
+    ]
+  },
+  {
+    "name": "seekingHelpFor",
+    "label": "Seeking Help For",
+    "type": "checkbox",
+    "isPII": false
   }
 ]
