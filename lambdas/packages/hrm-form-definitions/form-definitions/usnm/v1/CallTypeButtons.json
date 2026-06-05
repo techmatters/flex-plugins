@@ -1,13 +1,7 @@
 [
   {
     "name": "child",
-    "label": "Help seeker calling about self",
-    "type": "button",
-    "category": "data"
-  },
-  {
-    "name": "caller",
-    "label": "Someone calling about a help seeker",
+    "label": "Connection Details",
     "type": "button",
     "category": "data"
   },
