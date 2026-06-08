@@ -125,10 +125,6 @@ test.describe.serial('Aselo web chat caller', () => {
         },
       },
     ]);
-    if (getConfigValue('skipDataUpdate') as boolean) {
-      console.log('Skipping saving form');
-      return;
-    }
 
     console.log('Saving form');
     await form.save();
