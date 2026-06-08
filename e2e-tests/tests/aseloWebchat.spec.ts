@@ -21,7 +21,6 @@ import { statusIndicator } from '../workerStatus';
 import { ChatStatement, ChatStatementOrigin } from '../chatModel';
 import { getWebchatScript } from '../chatScripts';
 import { flexChat } from '../flexChat';
-import { getConfigValue } from '../config';
 import { skipTestIfNotTargeted } from '../skipTest';
 import { tasks } from '../tasks';
 import { Categories, contactForm, ContactFormTab } from '../contactForm';
