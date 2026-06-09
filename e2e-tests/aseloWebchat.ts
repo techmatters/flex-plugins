@@ -59,7 +59,6 @@ export async function open(browser: Browser | BrowserContext): Promise<AseloWebC
         await selectors.nickNameInput.fill('Test');
         await selectors.nickNameInput.blur();
       }
-      if (await )
     },
 
     openChat: async () => {
