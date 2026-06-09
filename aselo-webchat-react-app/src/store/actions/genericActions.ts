@@ -220,7 +220,9 @@ export const submitAndInitChatThunk = (): ThunkAction<void, AppState, unknown, A
 
       preEngagementDataValues.location = preEngagementDataValues.location ?? window.location.href;
 
-      preEngagementDataValues.e2eTestMode = Boolean(state.config.e2eTestMode);
+      if (state.config.e2eTestMode) {
+        preEngagementDataValues.e2eTestMode = true;
+      }
 
       const sessionData = await sessionDataHandler.fetchAndStoreNewSession({
         formData: preEngagementDataValues,
