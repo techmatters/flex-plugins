@@ -177,7 +177,7 @@ const configOptions: ConfigOptions = {
   // The url of the aselo webchat react app is used to navigate to the new aselo webchat client
   aseloWebchatUrl: {
     envKey: 'ASELO_WEBCHAT_URL',
-    default: `https://assets-${localOverrideEnv}.tl.techmatters.org/aselo-webchat-react-app/${helplineShortCode}/`,
+    default: `https://assets-${localOverrideEnv}.tl.techmatters.org/aselo-webchat-react-app/${helplineShortCode}/?checkOpenHours=false`,
   },
 
   // inLambda is used to determine if we are running in a lambda or not and set other config values accordingly
