@@ -90,6 +90,7 @@ export type ConfigState = {
   contactIdentifierField?: string;
   checkOpenHours?: boolean;
   enableMobileOptimizations?: boolean;
+  e2eTestMode?: boolean;
 };
 
 export type Notification = {
