@@ -48,6 +48,7 @@ export const initChat = (scriptTagData: Record<string, string | undefined>) => {
     'enableMobileOptimizations',
     scriptTagData,
   );
+  const checkOpenHours = extractBooleanFromUrlParamOrScriptDataAttributeSet('checkOpenHours', scriptTagData);
   const backgroundColor = urlParams.get('backgroundColor') || scriptTagData.backgroundColor;
   const widgetAlwaysOpen = extractBooleanFromUrlParamOrScriptDataAttributeSet('widgetAlwaysOpen', scriptTagData);
   const defaultLocale =
@@ -82,10 +83,9 @@ export const initChat = (scriptTagData: Record<string, string | undefined>) => {
         textColors: { ...(color && { colorTextWeakest: color }) },
       },
     },
-    ...(widgetAlwaysOpen === undefined ? {} : { widgetAlwaysOpen: widgetAlwaysOpen as boolean }),
+    ...(widgetAlwaysOpen === undefined ? {} : { widgetAlwaysOpen }),
     ...(defaultLocale ? { defaultLocale: defaultLocale as LocaleString } : {}),
-    ...(enableMobileOptimizations === undefined
-      ? {}
-      : { enableMobileOptimizations: enableMobileOptimizations as boolean }),
+    ...(enableMobileOptimizations === undefined ? {} : { enableMobileOptimizations }),
+    ...(checkOpenHours === undefined ? {} : { checkOpenHours }),
   });
 };
