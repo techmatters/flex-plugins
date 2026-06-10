@@ -99,7 +99,7 @@ export function contactForm(page: Page) {
     save: async ({ saveAndAddToCase }: { saveAndAddToCase?: boolean } = {}) => {
       const tab = {
         id: 'caseInformation',
-        label: 'Summary',
+        label: 'TabbedForms-AddCaseInfoTab',
         fill: async () => {},
         items: {},
       };
