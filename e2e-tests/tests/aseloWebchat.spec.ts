@@ -63,7 +63,7 @@ test.describe.serial('Aselo web chat caller', () => {
     await deleteAllTasksInQueue();
   });
 
-  test('Chat ', async () => {
+  test('Chat', async () => {
     test.setTimeout(180000);
     await chatPage.openChat();
     await chatPage.fillPreEngagementForm();
@@ -78,7 +78,7 @@ test.describe.serial('Aselo web chat caller', () => {
     // And each time flexChatProgress.next(), the flex chat processes statements until it yields
     // Should be moved out to its own function in time, and a cleaner way of injecting actions to be taken partway through the chat should be implemented.
     for await (const expectedCounselorStatement of webchatProgress) {
-      console.log('Statement for flex chat to process', expectedCounselorStatement);
+      console.info('Statement for flex chat to process', expectedCounselorStatement);
       if (expectedCounselorStatement) {
         switch (expectedCounselorStatement.origin) {
           case ChatStatementOrigin.COUNSELOR_AUTO:
@@ -93,12 +93,12 @@ test.describe.serial('Aselo web chat caller', () => {
       }
     }
 
-    console.log('Starting filling form');
+    console.info('Starting filling form');
     const form = contactForm(pluginPage);
     await form.fill([
       <ContactFormTab>{
         id: 'childInformation',
-        label: 'Child',
+        label: 'TabbedForms-AddChildInfoTab',
         fill: form.fillStandardTab,
         items: {
           firstName: 'E2E',
@@ -110,14 +110,14 @@ test.describe.serial('Aselo web chat caller', () => {
       },
       <ContactFormTab<Categories>>{
         id: 'categories',
-        label: 'Categories',
+        label: 'TabbedForms-AddCategoriesTab',
         fill: form.fillCategoriesTab,
         items: {
           Accessibility: ['Education'],
         },
       },
       <ContactFormTab>{
-        id: 'caseInformation',
+        id: 'TabbedForms-AddCaseInfoTab',
         label: 'Summary',
         fill: form.fillStandardTab,
         items: {
@@ -126,7 +126,7 @@ test.describe.serial('Aselo web chat caller', () => {
       },
     ]);
 
-    console.log('Saving form');
+    console.info('Saving form');
     await form.save();
   });
 });

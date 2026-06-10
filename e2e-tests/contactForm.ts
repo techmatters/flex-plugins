@@ -30,8 +30,8 @@ export function contactForm(page: Page) {
   const formArea = page.locator('div.Twilio-CRMContainer');
   const selectors = {
     childCallTypeButton: () => page.locator(`//button[@data-testid='DataCallTypeButton-child']`),
-    tabButton: (tab: ContactFormTab<unknown>) =>
-      formArea.locator(`button :text-is("${tab.label}")`),
+    tabButton: ({ label }: ContactFormTab<unknown>) =>
+      formArea.locator(`//button[@data-testid='${label}']`),
     formInput: (tabId: string, itemId: string) => formArea.locator(`input#${tabId}\\.${itemId}`),
     formSelect: (tabId: string, itemId: string) => formArea.locator(`select#${tabId}\\.${itemId}`),
     formTextarea: (tabId: string, itemId: string) =>
