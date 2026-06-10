@@ -47,11 +47,13 @@ export function contactForm(page: Page) {
     addNewCaseButton: formArea.locator(`//button[@data-testid='TabbedForms-AddNewCase-Button']`),
   };
 
-  async function selectTab(tab: ContactFormTab<unknown>) {
+  async function selectTab(tab: ContactFormTab<unknown>, checkBackendCall = true) {
+    const responsePromise = checkBackendCall
+      ? page.waitForResponse('**/contacts/**')
+      : Promise.resolve();
     const button = selectors.tabButton(tab);
     await expect(button).toBeVisible();
     await expect(button).toBeEnabled();
-    const responsePromise = page.waitForResponse('**/contacts/**');
     if ((await button.getAttribute('aria-selected')) !== 'true') {
       await button.click();
     }
@@ -90,7 +92,7 @@ export function contactForm(page: Page) {
       const button = selectors.tabButton(tabs[0]);
       await expect(button).toBeVisible({ timeout: 15000 });
       for (const tab of tabs) {
-        await selectTab(tab);
+        await selectTab(tab, tab !== tabs[0]);
         await tab.fill(tab);
       }
     },
