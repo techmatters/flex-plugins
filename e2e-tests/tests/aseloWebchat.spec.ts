@@ -117,8 +117,8 @@ test.describe.serial('Aselo web chat caller', () => {
         },
       },
       <ContactFormTab>{
-        id: 'TabbedForms-AddCaseInfoTab',
-        label: 'Summary',
+        id: 'caseInformation',
+        label: 'TabbedForms-AddCaseInfoTab',
         fill: form.fillStandardTab,
         items: {
           callSummary: 'E2E TEST CALL',

@@ -62,7 +62,7 @@ test.describe.serial('Offline Contact (with Case)', () => {
     await form.fill([
       <ContactFormTab>{
         id: 'contactlessTask',
-        label: 'Contact',
+        label: 'TabbedForms-AddContactInfoTab',
         fill: form.fillStandardTab,
         items: {
           // Fill only the inputs that does not initializes with "current" initial values
@@ -72,7 +72,7 @@ test.describe.serial('Offline Contact (with Case)', () => {
       },
       <ContactFormTab>{
         id: 'childInformation',
-        label: 'Child',
+        label: 'TabbedForms-AddChildInfoTab',
         fill: form.fillStandardTab,
         items: {
           firstName: 'E2E',
@@ -86,7 +86,7 @@ test.describe.serial('Offline Contact (with Case)', () => {
       },
       <ContactFormTab<Categories>>{
         id: 'categories',
-        label: 'Categories',
+        label: 'TabbedForms-AddCategoriesTab',
         fill: form.fillCategoriesTab,
         items: {
           Accessibility: ['Education'],
@@ -94,7 +94,7 @@ test.describe.serial('Offline Contact (with Case)', () => {
       },
       <ContactFormTab>{
         id: 'caseInformation',
-        label: 'Summary',
+        label: 'TabbedForms-AddCaseInfoTab',
         fill: form.fillStandardTab,
         items: {
           callSummary: 'E2E OFFLINE CONTACT',

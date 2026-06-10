@@ -103,7 +103,7 @@ test.describe.serial('Web chat caller', () => {
     await form.fill([
       <ContactFormTab>{
         id: 'childInformation',
-        label: 'Child',
+        label: 'TabbedForms-AddChildInfoTab',
         fill: form.fillStandardTab,
         items: {
           firstName: 'E2E',
@@ -115,7 +115,7 @@ test.describe.serial('Web chat caller', () => {
       },
       <ContactFormTab<Categories>>{
         id: 'categories',
-        label: 'Categories',
+        label: 'TabbedForms-AddCategoriesTab',
         fill: form.fillCategoriesTab,
         items: {
           Accessibility: ['Education'],
@@ -123,7 +123,7 @@ test.describe.serial('Web chat caller', () => {
       },
       <ContactFormTab>{
         id: 'caseInformation',
-        label: 'Summary',
+        label: 'TabbedForms-AddCaseInfoTab',
         fill: form.fillStandardTab,
         items: {
           callSummary: 'E2E TEST CALL',
