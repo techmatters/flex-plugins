@@ -30,7 +30,7 @@ export const retrieveFeatureFlags = async (
   return (await retrieveServiceConfigurationAttributes(client)).feature_flags;
 };
 
-export type TaskRouterSKill =
+export type TaskRouterSkill =
   | {
       multivalue: false;
       name: string;
@@ -46,7 +46,7 @@ export type TaskRouterSKill =
 
 export const retrieveServiceConfigurationTaskRouterSkills = async (
   client: Twilio,
-): Promise<TaskRouterSKill[]> => {
+): Promise<TaskRouterSkill[]> => {
   const serviceConfig = await client.flexApi.v1.configuration.get().fetch();
   return serviceConfig.taskrouterSkills;
 };

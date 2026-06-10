@@ -16,7 +16,7 @@
 
 import { getTwilioClient, getWorkspaceSid } from '@tech-matters/twilio-configuration';
 import { retrieveServiceConfigurationTaskRouterSkills } from '../../../src/configuration/aseloConfiguration';
-import { handleUpdateWorkersSkills } from '../../../src/taskrouter/updateWorkersSkills';
+import { handleUpdateWorkersSkills } from '../../../src/worker/updateSkills';
 import { HttpRequest } from '../../../src/httpTypes';
 import { isErr, isOk } from '../../../src/Result';
 import {

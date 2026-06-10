@@ -24,7 +24,7 @@ import {
 } from '@tech-matters/twilio-configuration';
 import {
   retrieveServiceConfigurationTaskRouterSkills,
-  TaskRouterSKill,
+  TaskRouterSkill,
 } from '../configuration/aseloConfiguration';
 import { isObject } from 'lodash';
 
@@ -302,7 +302,7 @@ const validateSkills = async ({
 }): Promise<Result<'InvalidSkill' | 'InvalidLevel', undefined>[]> => {
   const taskrouterSkills = (
     await retrieveServiceConfigurationTaskRouterSkills(client)
-  ).reduce<Record<string, TaskRouterSKill>>(
+  ).reduce<Record<string, TaskRouterSkill>>(
     (accum, curr) => ({ ...accum, [curr.name]: curr }),
     {} as any,
   );
