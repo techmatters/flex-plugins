@@ -110,7 +110,7 @@ test.describe.serial('Aselo web chat caller', () => {
       },
       <ContactFormTab<Categories>>{
         id: 'categories',
-        label: 'TabbedForms-AddCategoriesTab',
+        label: 'TabbedForms-CategoriesTab',
         fill: form.fillCategoriesTab,
         items: {
           Accessibility: ['Education'],

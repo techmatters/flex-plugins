@@ -86,7 +86,7 @@ test.describe.serial('Offline Contact (with Case)', () => {
       },
       <ContactFormTab<Categories>>{
         id: 'categories',
-        label: 'TabbedForms-AddCategoriesTab',
+        label: 'TabbedForms-CategoriesTab',
         fill: form.fillCategoriesTab,
         items: {
           Accessibility: ['Education'],
