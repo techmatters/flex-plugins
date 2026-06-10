@@ -22,8 +22,14 @@ import type { SupervisorState } from '@twilio/flex-ui/src/state/Supervisor/Super
 
 import { skillsOptions } from './teamsViewFilters';
 import FormCheckbox from '../forms/components/FormCheckbox/FormCheckbox';
+import FormSelect from '../forms/components/FormSelect/FormSelect';
 import { Box, Column, Row } from '../../styles/layout';
-import { newTeamsViewSelectSkills, newUpdateWorkersSkillsAsyncAction, TeamsViewState } from '../../states/teamsView';
+import {
+  newTeamsViewSelectSkillLevel,
+  newTeamsViewSelectSkills,
+  newUpdateWorkersSkillsAsyncAction,
+  TeamsViewState,
+} from '../../states/teamsView';
 import { namespace } from '../../states/storeNamespaces';
 import { RootState } from '../../states';
 import { RouterTask } from '../../types/types';
@@ -33,11 +39,16 @@ import { getCurrentTopmostRouteForTask } from '../../states/routing/getRoute';
 import { FontOpenSans } from '../../styles';
 import asyncDispatch from '../../states/asyncDispatch';
 import { Modal, Props as ModalProps } from '../../design-system/modals/Modal';
+import type { TeamsViewRoute } from '../../states/routing/types';
 
 const TEAMS_VIEW_ROUTES: RouteConfig<Props> = [
   {
     shouldHandleRoute: routing => routing.route === 'teams' && routing.subroute === 'select-skills',
     renderComponent: (props: Props) => <SelectWorkersSkillsModal {...props} />,
+  },
+  {
+    shouldHandleRoute: routing => routing.route === 'teams' && routing.subroute === 'add-skill-level',
+    renderComponent: (props: Props) => <AddSkillsLevelsModal {...props} />,
   },
   {
     shouldHandleRoute: routing => routing.route === 'teams' && routing.subroute === 'confirm-update',
@@ -51,6 +62,8 @@ const TeamsViewRouter: React.FC<Props> = props => {
 
 type Props = {
   task: RouterTask;
+  setIsPrimaryButtonDisabled?: React.Dispatch<React.SetStateAction<boolean>>;
+  validateRef?: React.MutableRefObject<() => Promise<boolean>>;
 };
 
 const operationTemplateCodes: { [k in TeamsViewState['operation']]: string } = {
@@ -70,15 +83,29 @@ export const UpdateWorkersSkillsModal: React.FC<Props> = ({ task }) => {
   const routing = useSelector((state: RootState) => state[namespace].routing);
   const topmostRoute = getCurrentTopmostRouteForTask(routing, task.taskSid);
   const registerForceCloseRef = React.useRef(null);
+  const validateRef = React.useRef<() => Promise<boolean>>(null);
+  const [isPrimaryButtonDisabled, setIsPrimaryButtonDisabled] = React.useState(true);
 
-  const isDirty = Boolean(selectedSkills.size);
+  const operationRequiresLevel = ['enable', 'assign'].includes(operation);
+  const dirtySelectedSkills = Boolean(Object.entries(selectedSkills).length);
 
-  const modalPropsByRoute: { [subroute: string]: ModalProps } = {
+  const modalPropsByRoute: { [k in TeamsViewRoute['subroute']]: ModalProps } = {
     'select-skills': {
       taskSid: task.taskSid,
       onClickPrimaryButton: () => {
-        if (!isDirty) return;
-        dispatch(changeRoute({ route: 'teams', subroute: 'confirm-update' }, task.taskSid));
+        if (isPrimaryButtonDisabled) return;
+        dispatch(
+          changeRoute(
+            {
+              route: 'teams',
+              subroute:
+                operationRequiresLevel && skillsOptions.some(s => Object.hasOwn(selectedSkills, s.name) && s.multivalue)
+                  ? 'add-skill-level'
+                  : 'confirm-update',
+            },
+            task.taskSid,
+          ),
+        );
       },
       isOpen: true,
       templateCodes: {
@@ -95,8 +122,30 @@ export const UpdateWorkersSkillsModal: React.FC<Props> = ({ task }) => {
           content: 'TeamsView-CancelDialogContent',
         },
       },
-      isDirty,
-      isPrimaryButtonDisabled: !isDirty,
+      isDirty: dirtySelectedSkills,
+      isPrimaryButtonDisabled,
+      registerForceCloseRef,
+    },
+    'add-skill-level': {
+      taskSid: task.taskSid,
+      onClickPrimaryButton: async () => {
+        if (validateRef.current) {
+          const valid = await validateRef.current();
+          if (!valid) return;
+        }
+        dispatch(changeRoute({ route: 'teams', subroute: 'confirm-update' }, task.taskSid));
+      },
+      isOpen: true,
+      templateCodes: {
+        header: 'TeamsView-SelectSkillsLevelsHeader',
+        primaryButton: 'TeamsView-SelectSkillsLevelsPrimaryButton',
+        cancelDialog: {
+          header: 'TeamsView-CancelDialogHeader',
+          content: 'TeamsView-CancelDialogContent',
+        },
+      },
+      isDirty: dirtySelectedSkills,
+      isPrimaryButtonDisabled,
       registerForceCloseRef,
     },
     'confirm-update': {
@@ -111,7 +160,7 @@ export const UpdateWorkersSkillsModal: React.FC<Props> = ({ task }) => {
           await asyncDispatch(dispatch)(
             newUpdateWorkersSkillsAsyncAction({
               operation,
-              skills: Array.from(selectedSkills),
+              skills: selectedSkills,
               workers: Array.from(selectedWorkers),
             }),
           );
@@ -132,7 +181,7 @@ export const UpdateWorkersSkillsModal: React.FC<Props> = ({ task }) => {
           content: 'TeamsView-CancelDialogContent',
         },
       },
-      isDirty,
+      isDirty: dirtySelectedSkills,
       isLoading: loading,
       registerForceCloseRef,
     },
@@ -144,16 +193,20 @@ export const UpdateWorkersSkillsModal: React.FC<Props> = ({ task }) => {
 
   return (
     <Modal {...modalPropsByRoute[(topmostRoute as any).subroute]}>
-      <TeamsViewRouter task={task} />
+      <TeamsViewRouter task={task} validateRef={validateRef} setIsPrimaryButtonDisabled={setIsPrimaryButtonDisabled} />
     </Modal>
   );
 };
 
-const SelectWorkersSkillsModal: React.FC<Props> = () => {
+const SelectWorkersSkillsModal: React.FC<Props> = ({ setIsPrimaryButtonDisabled }) => {
   const { selectedSkills } = useSelector((state: RootState) => state[namespace].teamsView);
   const dispatch = useDispatch();
   const methods = useForm();
   const { getValues } = methods;
+
+  React.useEffect(() => {
+    setIsPrimaryButtonDisabled(!Boolean(Object.entries(selectedSkills).length));
+  }, [selectedSkills, setIsPrimaryButtonDisabled]);
 
   const renderSkillOptions = React.useMemo(() => {
     return skillsOptions.map(skill => (
@@ -161,7 +214,7 @@ const SelectWorkersSkillsModal: React.FC<Props> = () => {
         key={skill.value}
         label={skill.label}
         inputId={skill.value}
-        initialValue={selectedSkills.has(skill.value)}
+        initialValue={Object.hasOwn(selectedSkills, skill.value)}
         updateCallback={() => {
           dispatch(
             newTeamsViewSelectSkills(
@@ -190,6 +243,63 @@ const SelectWorkersSkillsModal: React.FC<Props> = () => {
   );
 };
 
+const AddSkillsLevelsModal: React.FC<Props> = ({ validateRef, setIsPrimaryButtonDisabled }) => {
+  const { selectedSkills } = useSelector((state: RootState) => state[namespace].teamsView);
+  const dispatch = useDispatch();
+  const methods = useForm({ mode: 'onChange' });
+  const { getValues } = methods;
+
+  React.useEffect(() => {
+    validateRef.current = methods.trigger;
+  }, [methods.trigger, validateRef]);
+
+  React.useEffect(() => {
+    setIsPrimaryButtonDisabled(!methods.formState.isValid);
+  }, [methods.formState.isValid, setIsPrimaryButtonDisabled]);
+
+  const renderSkillLevels = React.useMemo(() => {
+    const defaultOption = { value: '', label: '' };
+    return skillsOptions
+      .filter(s => Object.hasOwn(selectedSkills, s.value) && s.multivalue)
+      .map(skill => {
+        return (
+          <FormSelect
+            key={skill.value}
+            label={skill.label}
+            inputId={skill.value}
+            selectOptions={[defaultOption].concat(
+              [...Array(skill.maximum - skill.minimum + 1).keys()].map(n => {
+                const value = n + skill.minimum;
+                return { value: value.toString(), label: value.toString() };
+              }),
+            )}
+            initialValue={defaultOption.value}
+            updateCallback={() => {
+              dispatch(
+                newTeamsViewSelectSkillLevel({
+                  skill: skill.value,
+                  level: Number.parseInt(getValues(skill.value), 10),
+                }),
+              );
+            }}
+            isEnabled
+            htmlElRef={null}
+            registerOptions={{ required: true }}
+          />
+        );
+      });
+  }, [dispatch, getValues, selectedSkills]);
+
+  return (
+    <FormProvider {...methods}>
+      <Row style={{ justifyContent: 'space-evenly', alignItems: 'start', width: '100%' }}>
+        <Column style={{ width: '40%' }}>{renderSkillLevels.slice(0, Math.ceil(renderSkillLevels.length / 2))}</Column>
+        <Column style={{ width: '40%' }}>{renderSkillLevels.slice(Math.ceil(renderSkillLevels.length / 2))}</Column>
+      </Row>
+    </FormProvider>
+  );
+};
+
 const operationTemplateCodesFor: { [k in TeamsViewState['operation']]: string } = {
   enable: 'TeamsView-EnableFor',
   disable: 'TeamsView-DisableFor',
@@ -205,7 +315,7 @@ const ConfirmUpdatesModal: React.FC<Props> = () => {
 
   return (
     <Column style={{ justifyContent: 'center', width: '100%', height: '100%' }}>
-      {Array.from(selectedSkills).map(skill => {
+      {Object.entries(selectedSkills).map(([skill, entry]) => {
         const getWorkersForOperation = () => {
           if (operation === 'enable') {
             return selectedWorkersFlexState.filter(w => !w.worker.attributes.routing?.skills?.includes(skill)).length;
@@ -251,15 +361,18 @@ const ConfirmUpdatesModal: React.FC<Props> = () => {
               ) : (
                 <Template code="TeamsView-Counsellors" />
               )}
+              {entry.level && (
+                <>
+                  &nbsp;(
+                  <Template code="TeamsView-Level" />
+                  &nbsp;
+                  {entry.level})
+                </>
+              )}
             </OperationContentText>
           </Row>
         );
       })}
-      <Box marginTop="20px">
-        <OperationText>
-          <Template code="TeamsView-ModalContinueButton" />
-        </OperationText>
-      </Box>
     </Column>
   );
 };
