@@ -103,7 +103,7 @@ export function contactForm(page: Page) {
         fill: async () => {},
         items: {},
       };
-      await selectTab(tab);
+      await selectTab(tab, false);
 
       if (saveAndAddToCase) {
         const responsePromise = page.waitForResponse('**/connectToCase');
