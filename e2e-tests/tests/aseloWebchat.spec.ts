@@ -32,7 +32,6 @@ import { clearOfflineTask } from '../hrm/clearOfflineTask';
 import { apiHrmRequest } from '../hrm/hrmRequest';
 
 test.describe.serial('Aselo web chat caller', () => {
-
   skipTestIfNotTargeted();
 
   let chatPage: AseloWebChatPage, pluginPage: Page, context: BrowserContext;
