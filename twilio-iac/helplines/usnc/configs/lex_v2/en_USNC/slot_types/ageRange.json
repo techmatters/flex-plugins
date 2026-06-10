@@ -175,6 +175,6 @@
     }
   ],
   "valueSelectionSetting": {
-    "resolutionStrategy": "TopResolution"
+    "resolutionStrategy": "OriginalValue"
   }
 }
