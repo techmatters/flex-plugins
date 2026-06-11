@@ -56,7 +56,7 @@
     "@types/validator": "^13.7.17",
     "@typescript-eslint/eslint-plugin": "^5.62.0",
     "@typescript-eslint/parser": "^5.4.0",
-    "axios": "^1.16.1",
+    "axios": "^1.17.0",
     "cors": "^2.8.5",
     "cross-env": "^10.1.0",
     "cypress": "15.10.0",
@@ -91,7 +91,9 @@
     "recursive-readdir": "2.2.3"
   },
   "overrides": {
-    "handlebars": "4.7.9"
+    "handlebars": "4.7.9",
+    "rollup": "2.80.0",
+    "flatted": "3.4.2"
   },
   "scripts": {
     "preinstall": "cd ../lambdas/packages/hrm-form-definitions && npm ci && npm run build && cd ../hrm-types && npm ci && npm run build",
