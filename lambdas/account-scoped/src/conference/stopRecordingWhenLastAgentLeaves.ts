@@ -22,7 +22,7 @@ import {
 import type RestException from 'twilio/lib/base/RestException';
 import { hasTaskControl } from '../transfer/hasTaskControl';
 
-const isAgentInConference = ({
+export const isAgentInConference = ({
   callSid,
   customerCallSid,
   participant,

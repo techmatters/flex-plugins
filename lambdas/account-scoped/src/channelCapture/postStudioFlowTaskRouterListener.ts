@@ -29,10 +29,11 @@ import {
   isChatCaptureControlTask,
 } from './channelCaptureHandlers';
 import {
-    getChatServiceSid,
-    getHelplineCode,
-    getSurveyWorkflowSid,
-    getTwilioWorkspaceSid, getWorkspaceSid,
+  getChatServiceSid,
+  getHelplineCode,
+  getSurveyWorkflowSid,
+  getTwilioWorkspaceSid,
+  getWorkspaceSid,
 } from '@tech-matters/twilio-configuration';
 import { getTranslation } from '../translations/translationLookup';
 
@@ -65,74 +66,6 @@ const isTriggerPostStudioFlow = ({
   return !isChatCaptureControlTask(taskAttributes);
 };
 
-export const postSurveyInitHandler = async ({
-  accountSid,
-  channelType,
-  chatServiceSid,
-  client,
-  environment,
-  helplineCode,
-  surveyWorkflowSid,
-  taskLanguage,
-  taskSid,
-  workspaceSid,
-  webhookBaseUrl,
-  channelSid,
-  conversationSid,
-}: {
-  accountSid: AccountSID;
-  client: Twilio;
-  taskSid: string;
-  taskLanguage: string;
-  channelType: string;
-  environment: string;
-  webhookBaseUrl: string;
-  chatServiceSid: string;
-  helplineCode: string;
-  surveyWorkflowSid: string;
-  workspaceSid: string;
-} & (
-  | {
-      channelSid: string;
-      conversationSid?: string;
-    }
-  | {
-      channelSid?: string;
-      conversationSid: string;
-    }
-)) => {
-  const triggerMessage = await getTranslation(accountSid, taskLanguage, 'triggerMessage');
-
-  const params: HandleChannelCaptureParams = {
-    accountSid,
-    channelSid,
-    conversationSid: conversationSid || '',
-    message: triggerMessage,
-    language: taskLanguage,
-    botSuffix: 'post_survey',
-    triggerType: 'withNextMessage',
-    releaseType: 'postSurveyComplete',
-    memoryAttribute: 'postSurvey',
-    releaseFlag: 'postSuveyComplete',
-    additionControlTaskAttributes: JSON.stringify({
-      isSurveyTask: true,
-      contactTaskId: taskSid,
-      conversations: { conversation_id: taskSid },
-      language: taskLanguage, // if there's a task language, attach it to the post survey task
-    }),
-    controlTaskTTL: 3600,
-    channelType,
-    chatServiceSid,
-    environment,
-    helplineCode,
-    surveyWorkflowSid,
-    workspaceSid,
-    webhookBaseUrl,
-  };
-
-  return handleChannelCapture(client, params);
-};
-
 const triggerPostStudioFlowTaskRouterListener: TaskRouterEventHandler = async (
   event: EventFields,
   accountSid: AccountSID,
@@ -142,48 +75,40 @@ const triggerPostStudioFlowTaskRouterListener: TaskRouterEventHandler = async (
     const {
       EventType: eventType,
       TaskChannelUniqueName: taskChannelUniqueName,
-      TaskSid: taskSid,
       TaskAttributes: taskAttributesString,
     } = event;
 
     const taskAttributes = JSON.parse(taskAttributesString);
 
     if (isTriggerPostStudioFlow({ eventType, taskAttributes, taskChannelUniqueName })) {
-      console.info('Handling post survey trigger...');
+      console.info('Handling post studio flow trigger...');
       console.info('taskAttributes', taskAttributes);
 
       // This task is a candidate to trigger post survey. Check feature flags for the account.
       const serviceConfigAttributes =
         await retrieveServiceConfigurationAttributes(client);
-      const { helplineLanguage, postStudioFlows } = serviceConfigAttributes;
+      const { postStudioFlows } = serviceConfigAttributes;
       const studioFlowSid = postStudioFlows?.[taskChannelUniqueName];
 
       if (studioFlowSid) {
-        const { channelSid, conversationSid, channelType, customChannelType } =
-          taskAttributes;
-
-        const taskLanguage = getTaskLanguage(helplineLanguage)(taskAttributes);
-
-        const environment = process.env.NODE_ENV!;
-        const webhookBaseUrl = process.env.WEBHOOK_BASE_URL!;
-        const chatServiceSid = await getChatServiceSid(accountSid);
-        const helplineCode = await getHelplineCode(accountSid);
-        const workspaceSid = await getWorkspaceSid(accountSid);
-
-        await postSurveyInitHandler({
-          channelSid,
-          conversationSid,
-          taskSid,
-          taskLanguage,
-          channelType: customChannelType || channelType,
-          accountSid,
-          chatServiceSid,
-          client,
-          environment,
-          helplineCode,
-          workspaceSid,
-          webhookBaseUrl,
-        });
+        const studioWebhookUrl = `https://webhooks.twilio.com/v1/Accounts/${accountSid}/Flows/${studioFlowSid}`;
+        const { conferenceSid } = taskAttributes;
+        if (taskChannelUniqueName === 'voice') {
+          // 1. Fetch all active participants in the conference
+          const allParticipants = await client.conferences
+            .get(conferenceSid)
+            .participants.list();
+          const connectedParticipants = allParticipants.filter(
+            p => p.status === 'connected',
+          );
+          if (connectedParticipants.length === 1) {
+            const [participant] = connectedParticipants;
+            await client.calls.get(participant.callSid).update({
+              url: studioWebhookUrl,
+              method: 'POST',
+            });
+          }
+        }
 
         console.info('Finished handling post studio flow trigger.');
       } else {
