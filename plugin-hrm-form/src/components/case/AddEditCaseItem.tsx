@@ -158,7 +158,6 @@ const AddEditCaseItem: React.FC<AddEditCaseItemProps> = ({
     parentsPath: '',
     updateCallback: () => {
       const form = getValues();
-      console.log('Updated case form', form);
       dispatch(
         updateCaseSectionWorkingCopy(currentRoute.caseId, sectionTypeName, { ...workingCopy, ...form }, sectionId),
       );

@@ -56,9 +56,9 @@ const ConferenceMonitor: React.FC<Props> = ({ conference, task }) => {
       if (!participant.callSid) {
         console.error(
           'endConferenceOnExit: Participant missing callSid, abandoning attempt to update state',
-          participant,
-          conference,
+          conference?.source.conferenceSid,
         );
+        console.debug('endConferenceOnExit error: participant:', participant, 'conference:', conference);
         return;
       }
 
@@ -70,7 +70,7 @@ const ConferenceMonitor: React.FC<Props> = ({ conference, task }) => {
           conferenceSid,
           updates: { endConferenceOnExit, hold: false }, // if participant in on hold, endConferenceOnExit wont update
         });
-        console.warn(
+        console.debug(
           `Set participant endConferenceOnExit ${endConferenceOnExit} for call ${participant.callSid}, conference ${conferenceSid}`,
           participant,
         );
@@ -83,7 +83,8 @@ const ConferenceMonitor: React.FC<Props> = ({ conference, task }) => {
           });
         }
       } catch (err) {
-        console.error('Error setting participant endConferenceOnExit', participant, err);
+        console.error('Error setting participant endConferenceOnExit', err);
+        console.debug('Participant:', participant);
       }
     },
     // Exhaustive deps mandates that we include 'conference', but that's only used for logging
