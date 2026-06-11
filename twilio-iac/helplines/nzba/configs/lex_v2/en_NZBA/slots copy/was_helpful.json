@@ -1,8 +1,8 @@
 {
-    "slotName": "aboutSelf",
-    "slotTypeName": "yes_no",
-    "intentName": "pre_survey",
-    "description": "Slot aboutSelf for intent pre_survey",
+    "slotName": "was_helpful",
+    "slotTypeName": "helpful_rating",
+    "intentName": "post_survey_yes",
+    "description": "Slot was_helpful for intent post_survey_yes",
     "valueElicitationSetting": {
         "slotConstraint": "Required",
         "promptSpecification": {
@@ -10,21 +10,14 @@
                 {
                     "message": {
                         "plainTextMessage": {
-                            "value": "Are you calling about yourself? Please answer Yes or No."
+                            "value": "What did you find helpful in this chat?  \n1. I feel lighter/calmer,\n 2. I felt heard and understood,\n 3. I understand my situation better,\n 4. I have some information/options,\n 5. I have a plan/next steps,\n 6. Nothing"
                         }
-                    },
-                    "variations": [
-                        {
-                            "plainTextMessage": {
-                                "value": "You can answer 'Yes' or 'No'. Are you calling about yourself?"
-                            }
-                        }
-                    ]
+                    }
                 }
             ],
             "maxRetries": 1,
             "allowInterrupt": true,
-            "messageSelectionStrategy": "Ordered",
+            "messageSelectionStrategy": "Random",
             "promptAttemptsSpecification": {
                 "Initial": {
                     "allowInterrupt": true,
@@ -78,7 +71,7 @@
             "captureNextStep": {
                 "dialogAction": {
                     "type": "ElicitSlot",
-                    "slotToElicit": "age"
+                    "slotToElicit": "mood"
                 },
                 "intent": {}
             },

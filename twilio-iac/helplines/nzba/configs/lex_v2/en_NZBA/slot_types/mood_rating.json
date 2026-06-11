@@ -1,0 +1,108 @@
+{
+    "slotTypeName": "mood_rating",
+    "slotTypeValues": [
+        {
+            "sampleValue": {
+                "value": "1"
+            },
+            "synonyms": [
+                {
+                    "value": "one"
+                }
+            ]
+        },
+        {
+            "sampleValue": {
+                "value": "2"
+            },
+            "synonyms": [
+                {
+                    "value": "two"
+                }
+            ]
+        },
+        {
+            "sampleValue": {
+                "value": "3"
+            },
+            "synonyms": [
+                {
+                    "value": "three"
+                }
+            ]
+        },
+        {
+            "sampleValue": {
+                "value": "4"
+            },
+            "synonyms": [
+                {
+                    "value": "four"
+                }
+            ]
+        },
+        {
+            "sampleValue": {
+                "value": "5"
+            },
+            "synonyms": [
+                {
+                    "value": "five"
+                }
+            ]
+        },
+        {
+            "sampleValue": {
+                "value": "6"
+            },
+            "synonyms": [
+                {
+                    "value": "six"
+                }
+            ]
+        },
+        {
+            "sampleValue": {
+                "value": "7"
+            },
+            "synonyms": [
+                {
+                    "value": "seven"
+                }
+            ]
+        },
+        {
+            "sampleValue": {
+                "value": "8"
+            },
+            "synonyms": [
+                {
+                    "value": "eight"
+                }
+            ]
+        },
+        {
+            "sampleValue": {
+                "value": "9"
+            },
+            "synonyms": [
+                {
+                    "value": "nine"
+                }
+            ]
+        },
+        {
+            "sampleValue": {
+                "value": "10"
+            },
+            "synonyms": [
+                {
+                    "value": "ten"
+                }
+            ]
+        }
+    ],
+    "valueSelectionSetting": {
+        "resolutionStrategy": "TopResolution"
+    }
+}

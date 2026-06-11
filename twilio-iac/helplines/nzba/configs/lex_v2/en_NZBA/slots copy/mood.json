@@ -1,8 +1,8 @@
 {
-    "slotName": "was_helpful",
-    "description": "was_helpful",
-    "slotTypeName": "yes_no",
+    "slotName": "mood",
+    "slotTypeName": "mood_rating",
     "intentName": "post_survey_yes",
+    "description": "Slot mood for intent post_survey_yes",
     "valueElicitationSetting": {
         "slotConstraint": "Required",
         "promptSpecification": {
@@ -10,7 +10,7 @@
                 {
                     "message": {
                         "plainTextMessage": {
-                            "value": "Did you find this conversation helpful? Please answer Yes or No."
+                            "value": "How are you feeling right now?” (0 = calm / okay → 10 = extremely upset or distressed)"
                         }
                     }
                 }
@@ -71,7 +71,7 @@
             "captureNextStep": {
                 "dialogAction": {
                     "type": "ElicitSlot",
-                    "slotToElicit": "would_recommend"
+                    "slotToElicit": "experience"
                 },
                 "intent": {}
             },
@@ -80,7 +80,7 @@
                     {
                         "message": {
                             "plainTextMessage": {
-                                "value": "Sorry, I didn't understand that."
+                                "value": "We are having trouble understanding your response. But nothing to worry, we will transfer you to a counsellor."
                             }
                         }
                     }

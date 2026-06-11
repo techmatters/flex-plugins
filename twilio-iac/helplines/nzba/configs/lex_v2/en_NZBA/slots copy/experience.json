@@ -1,8 +1,8 @@
 {
-    "slotName": "age",
-    "slotTypeName": "age",
-    "intentName": "pre_survey",
-    "description": "Slot age for intent pre_survey",
+    "slotName": "experience",
+    "slotTypeName": "AMAZON.FreeFormInput",
+    "intentName": "post_survey_yes",
+    "description": "Slot experience for intent post_survey_yes",
     "valueElicitationSetting": {
         "slotConstraint": "Required",
         "promptSpecification": {
@@ -10,21 +10,14 @@
                 {
                     "message": {
                         "plainTextMessage": {
-                            "value": "How old are you?"
+                            "value": "What, if anything, could have improved your experience with us, today?"
                         }
-                    },
-                    "variations": [
-                        {
-                            "plainTextMessage": {
-                                "value": "You can answer with a number like: 12. How old are you?"
-                            }
-                        }
-                    ]
+                    }
                 }
             ],
             "maxRetries": 1,
             "allowInterrupt": true,
-            "messageSelectionStrategy": "Ordered",
+            "messageSelectionStrategy": "Random",
             "promptAttemptsSpecification": {
                 "Initial": {
                     "allowInterrupt": true,
@@ -77,8 +70,7 @@
         "slotCaptureSetting": {
             "captureNextStep": {
                 "dialogAction": {
-                    "type": "ElicitSlot",
-                    "slotToElicit": "gender"
+                    "type": "FulfillIntent"
                 },
                 "intent": {}
             },
