@@ -39,6 +39,8 @@ const extractBooleanFromUrlParamOrScriptDataAttributeSet = (
  * standard app.js bootstrap and the aselo-chat.min.js wrapper used for legacy URL
  * compatibility deploys.
  */
+
+// eslint-disable-next-line sonarjs/cognitive-complexity
 export const initChat = (scriptTagData: Record<string, string | undefined>) => {
   const urlParams = new URLSearchParams(window.location.search);
   const theme = urlParams.get('theme') ?? scriptTagData.theme;
@@ -48,6 +50,8 @@ export const initChat = (scriptTagData: Record<string, string | undefined>) => {
     'enableMobileOptimizations',
     scriptTagData,
   );
+  const checkOpenHours = extractBooleanFromUrlParamOrScriptDataAttributeSet('checkOpenHours', scriptTagData);
+  const e2eTestMode = extractBooleanFromUrlParamOrScriptDataAttributeSet('e2eTestMode', scriptTagData);
   const backgroundColor = urlParams.get('backgroundColor') || scriptTagData.backgroundColor;
   const widgetAlwaysOpen = extractBooleanFromUrlParamOrScriptDataAttributeSet('widgetAlwaysOpen', scriptTagData);
   const defaultLocale =
@@ -82,10 +86,16 @@ export const initChat = (scriptTagData: Record<string, string | undefined>) => {
         textColors: { ...(color && { colorTextWeakest: color }) },
       },
     },
-    ...(widgetAlwaysOpen === undefined ? {} : { widgetAlwaysOpen: widgetAlwaysOpen as boolean }),
+    ...(widgetAlwaysOpen === undefined ? {} : { widgetAlwaysOpen }),
     ...(defaultLocale ? { defaultLocale: defaultLocale as LocaleString } : {}),
-    ...(enableMobileOptimizations === undefined
-      ? {}
-      : { enableMobileOptimizations: enableMobileOptimizations as boolean }),
+    ...(enableMobileOptimizations === undefined ? {} : { enableMobileOptimizations }),
+    ...(checkOpenHours === undefined ? {} : { checkOpenHours }),
+    ...(e2eTestMode
+      ? {
+          e2eTestMode: true,
+          enableRecaptcha: false,
+          checkOpenHours: false,
+        }
+      : {}),
   });
 };

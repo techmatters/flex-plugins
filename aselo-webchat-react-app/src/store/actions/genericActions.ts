@@ -140,30 +140,6 @@ const updateDataItem = ({
   return { error, value, dirty: true };
 };
 
-export const updatePreEngagementDataField = ({
-  name,
-  value,
-}: {
-  name: string;
-  value: PreEngagementDataItem['value'];
-}): ThunkAction<void, AppState, unknown, AnyAction> => {
-  return (dispatch, getState) => {
-    const state = getState();
-    const definition = state.config.preEngagementFormDefinition?.fields?.find(fd => fd.name === name);
-    const updatedItem = updateDataItem({ definition: definition as PreEngagementFormItem, value });
-
-    const data = {
-      ...state.session.preEngagementData,
-      [name]: updatedItem,
-    };
-
-    dispatch({
-      type: ACTION_UPDATE_PRE_ENGAGEMENT_DATA,
-      payload: data,
-    });
-  };
-};
-
 export const updatePreEngagementDataFields = (
   fields: { name: string; value: PreEngagementDataItem['value'] }[],
 ): ThunkAction<void, AppState, unknown, AnyAction> => {
@@ -243,6 +219,10 @@ export const submitAndInitChatThunk = (): ThunkAction<void, AppState, unknown, A
       }
 
       preEngagementDataValues.location = preEngagementDataValues.location ?? window.location.href;
+
+      if (state.config.e2eTestMode) {
+        preEngagementDataValues.e2eTestMode = true;
+      }
 
       const sessionData = await sessionDataHandler.fetchAndStoreNewSession({
         formData: preEngagementDataValues,

@@ -104,6 +104,7 @@
     "start:jm_stg": "cross-env REACT_APP_CONFIG_URL='http://localhost:9090/jm/staging.json' REACT_APP_FORM_DEFINITIONS_BASE_URL='http://localhost:8091' run-p staging:merge-configs dev:local-config-server dev:local-form-definition-server start",
     "start:uscr_stg": "cross-env REACT_APP_CONFIG_URL='http://localhost:9090/uscr/staging.json' REACT_APP_FORM_DEFINITIONS_BASE_URL='http://localhost:8091' run-p staging:merge-configs dev:local-config-server dev:local-form-definition-server start",
     "start:ca_stg": "cross-env REACT_APP_CONFIG_URL='http://localhost:9090/ca/staging.json' REACT_APP_FORM_DEFINITIONS_BASE_URL='http://localhost:8091' run-p staging:merge-configs dev:local-config-server dev:local-form-definition-server start",
+    "start:ca_prod": "cross-env REACT_APP_CONFIG_URL='http://localhost:9090/ca/production.json' REACT_APP_FORM_DEFINITIONS_BASE_URL='http://localhost:8091' run-p production:merge-configs dev:local-config-server dev:local-form-definition-server start",
     "build": "react-app-rewired build",
     "lint": "eslint --ext js --ext jsx --ext ts --ext tsx src/",
     "lint:fix": "npm run lint -- --fix",
@@ -117,6 +118,7 @@
     "test:e2e": "cypress open",
     "dev:merge-configs": "npm run mergeConfigs development",
     "staging:merge-configs": "npm run mergeConfigs staging",
+    "production:merge-configs": "npm run mergeConfigs production",
     "dev:local-config-server": "npx http-server ./mergedConfigs -p 9090 --cors -c-1",
     "dev:local-form-definition-server": "npx http-server ../lambdas/packages/hrm-form-definitions/form-definitions -p 8091 --cors -c-1"
   },
