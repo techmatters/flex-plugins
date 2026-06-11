@@ -14,7 +14,7 @@ locals {
       widget_from                       = "Promise Resource Network"
       chat_blocked_message              = "Sorry, you're not able to contact Promise Resource Network from this device or account"
       error_message                     = "There has been an error with your message, please try writing us again."
-      send_message_janitor_function_sid = ""
+      send_message_janitor_function_sid = "ZH32e89389e042507522a3396bde4a4611"
       bot_language                      = "en-USNC"
     }
 
