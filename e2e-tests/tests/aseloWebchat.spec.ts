@@ -26,7 +26,7 @@ import { tasks } from '../tasks';
 import { Categories, contactForm, ContactFormTab } from '../contactForm';
 import { deleteAllTasksInQueue } from '../twilio/tasks';
 import { notificationBar } from '../notificationBar';
-import { navigateToAgentDesktop } from '../agent-desktop';
+import {clickThroughTwilioPasteModals, navigateToAgentDesktop} from '../agent-desktop';
 import { setupContextAndPage, closePage } from '../browser';
 import { clearOfflineTask } from '../hrm/clearOfflineTask';
 import { apiHrmRequest } from '../hrm/hrmRequest';
@@ -43,11 +43,11 @@ test.describe.serial('Aselo web chat caller', () => {
       apiHrmRequest(await request.newContext(), process.env.FLEX_TOKEN!),
       process.env.LOGGED_IN_WORKER_SID!,
     );
-
-    await navigateToAgentDesktop(pluginPage);
-    console.log('Plugin page visited.');
     chatPage = await aseloWebchat.open(context);
-    console.log('Aselo webchat browser session launched.');
+    console.info('Aselo webchat browser session launched.');
+
+    await clickThroughTwilioPasteModals(pluginPage);
+    console.info('Plugin page visited.');
   });
 
   test.afterAll(async () => {
