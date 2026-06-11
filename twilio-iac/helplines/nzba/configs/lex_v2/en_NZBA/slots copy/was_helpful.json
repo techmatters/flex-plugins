@@ -10,7 +10,7 @@
                 {
                     "message": {
                         "plainTextMessage": {
-                            "value": "What did you find helpful in this chat?  \n1. I feel lighter/calmer,\n 2. I felt heard and understood,\n 3. I understand my situation better,\n 4. I have some information/options,\n 5. I have a plan/next steps,\n 6. Nothing"
+                            "value": "What did you find helpful in this chat?  1. I feel lighter/calmer, 2. I felt heard and understood, 3. I understand my situation better, 4. I have some information/options, 5. I have a plan/next steps, 6. Nothing"
                         }
                     }
                 }
