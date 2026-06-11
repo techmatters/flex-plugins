@@ -96,10 +96,11 @@ test.describe.serial('Aselo web chat caller', () => {
     }
 
     console.info('Starting filling form');
-    const formContent =
-      formContentsByHelpline[
-        getConfigValue('helplineShortCode') as keyof typeof formContentsByHelpline
-      ];
+    const helpline = getConfigValue('helplineShortCode') as keyof typeof formContentsByHelpline;
+    const formContent = formContentsByHelpline[helpline];
+    if (!formContent) {
+      throw new Error(`No form contents configured for helplineShortCode="${String(helpline)}"`);
+    }
     const form = contactForm(pluginPage);
     await form.fill([
       <ContactFormTab>{
