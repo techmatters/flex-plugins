@@ -118,7 +118,7 @@
     "test:e2e": "cypress open",
     "dev:merge-configs": "npm run mergeConfigs development",
     "staging:merge-configs": "npm run mergeConfigs staging",
-    "production:merge-configs": "npm run mergeConfigs productiony",
+    "production:merge-configs": "npm run mergeConfigs production",
     "dev:local-config-server": "npx http-server ./mergedConfigs -p 9090 --cors -c-1",
     "dev:local-form-definition-server": "npx http-server ../lambdas/packages/hrm-form-definitions/form-definitions -p 8091 --cors -c-1"
   },
