@@ -26,7 +26,7 @@ import { tasks } from '../tasks';
 import { Categories, contactForm, ContactFormTab } from '../contactForm';
 import { deleteAllTasksInQueue } from '../twilio/tasks';
 import { notificationBar } from '../notificationBar';
-import { clickThroughTwilioPasteModals, navigateToAgentDesktop } from '../agent-desktop';
+import { clickThroughTwilioPasteModals } from '../agent-desktop';
 import { setupContextAndPage, closePage } from '../browser';
 import { clearOfflineTask } from '../hrm/clearOfflineTask';
 import { apiHrmRequest } from '../hrm/hrmRequest';
