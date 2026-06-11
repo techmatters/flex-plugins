@@ -76,7 +76,7 @@ test.describe.serial('Web chat caller', () => {
     // Currently this loop handles the handing back and forth of control between the caller & counselor sides of the chat.
     // Each time round the loop it allows the webchat to process statements until it yields control back to this loop
     // And each time flexChatProgress.next(), the flex chat processes statements until it yields
-    // Should be moved out to it's own function in time, and a cleaner was of injecting actions to be taken partway through the chat should be implemented.
+    // Should be moved out to its own function in time, and a cleaner way of injecting actions to be taken partway through the chat should be implemented.
     for await (const expectedCounselorStatement of webchatProgress) {
       console.debug('Statement for flex chat to process', expectedCounselorStatement);
       if (expectedCounselorStatement) {
@@ -103,7 +103,7 @@ test.describe.serial('Web chat caller', () => {
     await form.fill([
       <ContactFormTab>{
         id: 'childInformation',
-        label: 'Child',
+        label: 'TabbedForms-AddChildInfoTab',
         fill: form.fillStandardTab,
         items: {
           firstName: 'E2E',
@@ -115,7 +115,7 @@ test.describe.serial('Web chat caller', () => {
       },
       <ContactFormTab<Categories>>{
         id: 'categories',
-        label: 'Categories',
+        label: 'TabbedForms-CategoriesTab',
         fill: form.fillCategoriesTab,
         items: {
           Accessibility: ['Education'],
@@ -123,7 +123,7 @@ test.describe.serial('Web chat caller', () => {
       },
       <ContactFormTab>{
         id: 'caseInformation',
-        label: 'Summary',
+        label: 'TabbedForms-AddCaseInfoTab',
         fill: form.fillStandardTab,
         items: {
           callSummary: 'E2E TEST CALL',

@@ -14,7 +14,7 @@
     "ethnicity": [["ChildInformationTab.ethnicity"]],
     "race": [["ChildInformationTab.race"]],
     "militaryStatus": [["ChildInformationTab.militaryStatus"]],
-    "Referral988": [["ChildInformationTab.Referral988"]],
+    "referral988": [["ChildInformationTab.referral988"]],
     "liveMonitoringConsent": [["CaseInformationTab.liveMonitoringConsent"]]
   },
   "preEngagement": {
@@ -25,6 +25,6 @@
     "ethnicity": [["ChildInformationTab.ethnicity"]],
     "race": [["ChildInformationTab.race"]],
     "militaryStatus": [["ChildInformationTab.militaryStatus"]],
-    "Referral988": [["ChildInformationTab.Referral988"]]
+    "referral988": [["ChildInformationTab.referral988"]]
   }
 }

@@ -101,6 +101,9 @@ describe('initWebchatHandler', () => {
         pre_engagement_data: { friendlyName: 'Test Customer' },
         from: 'Test Customer',
       },
+      additionalParticipantAttributes: {
+        member_type: 'guest',
+      },
     });
   });
 

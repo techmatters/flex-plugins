@@ -1,6 +1,6 @@
 {
     "intentName": "post_survey_yes",
-    "description": "Specific en_USCH/bots Post Survey bot",
+    "description": "Specific en_USNC/bots Post Survey bot",
     "sampleUtterances": [
         {
             "utterance": "Yes"
@@ -45,15 +45,15 @@
     "slotPriorities": [
         {
             "priority": 1,
-            "slotName": "experience_rating"
-        },
-        {
-            "priority": 2,
             "slotName": "feel_supported"
         },
         {
+            "priority": 2,
+            "slotName": "beginning_interaction"
+        },
+        {
             "priority": 3,
-            "slotName": "better_prepared"
+            "slotName": "end_interaction"
         }
     ],
     "intentClosingSetting": {
@@ -62,7 +62,7 @@
                 {
                     "message": {
                         "plainTextMessage": {
-                            "value": "Thank you for contacting the Warmline.  Feel free to reach out again if you need additional support."
+                            "value": "Thank you for contacting the Warmline. Feel free to reach out again if you need additional support."
                         }
                     }
                 }

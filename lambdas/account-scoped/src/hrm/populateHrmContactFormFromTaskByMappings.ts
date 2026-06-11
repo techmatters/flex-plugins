@@ -255,13 +255,15 @@ const populateInitialValues = async (
     ['CallerInformationTab', contact.rawJson.callerInformation],
   ];
 
-  const definitionsAndJsons: [FormItemDefinition[], Record<string, FormValue>][] =
-    await Promise.all(
-      tabNamesAndRawJsonSections.map(async ([tabbedFormsSection, rawJsonSection]) => [
+  type DefinitionAndJson = [FormItemDefinition[], Record<string, FormValue>];
+  const definitionsAndJsons: DefinitionAndJson[] = await Promise.all(
+    tabNamesAndRawJsonSections.map(
+      async ([tabbedFormsSection, rawJsonSection]): Promise<DefinitionAndJson> => [
         tabbedForms[tabbedFormsSection] as FormItemDefinition[],
         rawJsonSection,
-      ]),
-    );
+      ],
+    ),
+  );
   for (const [tabFormDefinition, rawJson] of definitionsAndJsons) {
     for (const formItemDefinition of tabFormDefinition) {
       rawJson[formItemDefinition.name] = getInitialValue(formItemDefinition);
@@ -296,7 +298,7 @@ const populateContactSection = async (
   const targetFormName: ContactFormName = FORM_DEFINITION_MAP[targetFormDefinitionName];
   console.debug('Populating', targetFormName);
   console.debug('Mappings', mappings);
-  console.debug('Using Values', valuesToPopulate);
+  console.debug('[SENSITIVE] Using Values', valuesToPopulate);
   const target: HrmContactRawJson[ContactFormName] = contact.rawJson[targetFormName];
   const formMappings: Record<string, string[]> = {};
   // Convert mapping specification to a simple sourceKey -> formField of mappings that are valid for this form

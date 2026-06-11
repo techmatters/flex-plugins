@@ -1,6 +1,6 @@
 {
   "preEngagement":{
-    "contactIdentifier": "CaseInformationTab.contactIdentifier",
+    "email": "CaseInformationTab.email",
     "friendlyName": "ChildInformationTab.friendlyName",
     "lastName": "CaseInformationTab.lastName",
     "phone1": "CaseInformationTab.phone1",

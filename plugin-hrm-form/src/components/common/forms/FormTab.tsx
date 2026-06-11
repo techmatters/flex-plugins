@@ -36,6 +36,7 @@ const FormTab: React.FC<Props> = ({ label, error, searchTab, ...rest }) => {
     <StyledTab
       {...rest}
       key={label}
+      data-testid={label}
       label={
         <>
           {error && (

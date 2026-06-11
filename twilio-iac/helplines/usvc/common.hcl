@@ -17,7 +17,7 @@ locals {
     enable_lex_v2              = false
 
     channel_attributes = {
-      chat                   = "/app/twilio-iac/helplines/usvc/templates/channel-attributes/chat-conversations.tftpl",
+      chat-conversations     = "/app/twilio-iac/helplines/usvc/templates/channel-attributes/chat-conversations.tftpl",
       webchat                = "/app/twilio-iac/helplines/usvc/templates/channel-attributes/webchat.tftpl",
       voice_dcvh             = "/app/twilio-iac/helplines/usvc/templates/channel-attributes/voice_dcvh.tftpl",
       voice_vc               = "/app/twilio-iac/helplines/usvc/templates/channel-attributes/voice_vc.tftpl",

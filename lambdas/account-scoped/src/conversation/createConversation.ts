@@ -29,6 +29,7 @@ export type CreateFlexConversationParams = {
   conversationFriendlyName: string; // A name for the Flex conversation (typically same as uniqueUserName)
   twilioNumber: string; // The target Twilio number (usually have the shape <channel>:<id>, e.g. telegram:1234567)
   additionalConversationAttributes?: Record<string, any>; // Any additional conversation attributes
+  additionalParticipantAttributes?: Record<string, any>; // Any additional attributes for the initial participant
   testSessionId?: string; // A session identifier to identify the test run if this is part of an integration test.
 };
 /**
@@ -46,6 +47,7 @@ export const createConversation = async (
     onMessageAddedWebhookUrl,
     studioFlowSid,
     additionalConversationAttributes,
+    additionalParticipantAttributes,
     testSessionId,
   }: CreateFlexConversationParams,
 ): Promise<
@@ -80,13 +82,16 @@ export const createConversation = async (
       client.conversations.v1.conversations.get(conversationSid);
     await conversationContext.participants.create({
       identity: uniqueUserName,
+      ...(additionalParticipantAttributes
+        ? { attributes: JSON.stringify(additionalParticipantAttributes) }
+        : {}),
     });
     await client.conversations.v1.users
       .get(uniqueUserName)
       .update({ friendlyName: senderScreenName });
     const channelAttributes = JSON.parse((await conversationContext.fetch()).attributes);
 
-    console.debug('channelAttributes prior to update', channelAttributes);
+    console.debug('[SENSITIVE] channelAttributes prior to update', channelAttributes);
 
     await conversationContext.update({
       'timers.closed': CONVERSATION_CLOSE_TIMEOUT,

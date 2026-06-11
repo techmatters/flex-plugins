@@ -1,0 +1,88 @@
+{
+  "slotTypeName": "five_level_assessment",
+  "slotTypeValues": [
+    {
+      "sampleValue": {
+        "value": "Very overwhelmed"
+      },
+      "synonyms": [
+        {
+          "value": "1."
+        },
+        {
+          "value": "1!"
+        },
+        {
+          "value": "1"
+        }
+      ]
+    },
+    {
+      "sampleValue": {
+        "value": "Struggling"
+      },
+      "synonyms": [
+        {
+          "value": "2."
+        },
+        {
+          "value": "2!"
+        },
+        {
+          "value": "2"
+        }
+      ]
+    },
+    {
+      "sampleValue": {
+        "value": "Managing"
+      },
+      "synonyms": [
+        {
+          "value": "3."
+        },
+        {
+          "value": "3!"
+        },
+        {
+          "value": "3"
+        }
+      ]
+    },
+    {
+      "sampleValue": {
+        "value": "Doing well"
+      },
+      "synonyms": [
+        {
+          "value": "4"
+        },
+        {
+          "value": "4."
+        },
+        {
+          "value": "4!"
+        }
+      ]
+    },
+    {
+      "sampleValue": {
+        "value": "Thriving"
+      },
+      "synonyms": [
+        {
+          "value": "5"
+        },
+        {
+          "value": "5."
+        },
+        {
+          "value": "5!"
+        }
+      ]
+    }
+  ],
+  "valueSelectionSetting": {
+    "resolutionStrategy": "TopResolution"
+  }
+}

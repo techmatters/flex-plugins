@@ -6,8 +6,10 @@ locals {
 
 
   local_config = {
-    helpline      = "Promise Resource Network"
-    task_language = "en-US"
+    helpline           = "Promise Resource Network"
+    task_language      = "en-USNC"
+    enable_post_survey = true
+    enable_lex_v2      = true
 
     workflows = {
       master : {

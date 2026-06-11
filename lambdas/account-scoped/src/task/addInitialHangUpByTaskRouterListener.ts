@@ -15,9 +15,8 @@
  */
 
 // eslint-disable-next-line prettier/prettier
-import {registerTaskRouterEventHandler, TaskRouterEventHandler} from '../taskrouter/taskrouterEventHandler';
+import { registerTaskRouterEventHandler, TaskRouterEventHandler } from '../taskrouter/taskrouterEventHandler';
 import { AccountSID, TaskSID } from '@tech-matters/twilio-types';
-import { Twilio } from 'twilio';
 import { TASK_CREATED } from '../taskrouter/eventTypes';
 import { EventFields } from '../taskrouter';
 import { patchTaskAttributes } from './patchTaskAttributes';
@@ -25,18 +24,18 @@ import { patchTaskAttributes } from './patchTaskAttributes';
 const addInitialHangUpBy: TaskRouterEventHandler = async (
   event: EventFields,
   accountSid: AccountSID,
-  client: Twilio,
 ) => {
   const { TaskSid } = event;
   const taskSid = TaskSid as TaskSID;
   if (event.TaskChannelUniqueName === 'voice') {
-    await patchTaskAttributes(client, accountSid, taskSid, originalAttributes => ({
+    const result = await patchTaskAttributes(accountSid, taskSid, originalAttributes => ({
       ...originalAttributes,
       conversations: {
         ...originalAttributes.conversations,
         hang_up_by: 'Customer',
       },
     }));
+    result.unwrap();
   }
 };
 

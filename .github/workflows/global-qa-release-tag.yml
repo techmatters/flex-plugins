@@ -14,7 +14,7 @@
 
 # Workflow to create a new pre-release with qa suffix
 
-name: Create a QA candidate release
+name: Tag a QA candidate release
 
 # Controls when the action will run.
 on:
@@ -165,7 +165,9 @@ jobs:
           MANIFEST=$(aws ecr batch-get-image --repository-name $REPOSITORY_NAME --image-ids imageTag="${{ github.ref_type }}.$REF_NAME_FOR_DOCKER_TAG" --output text --query 'images[].imageManifest')
           aws ecr put-image --repository-name $REPOSITORY_NAME --image-tag tag.${{ needs.generate-pre-release.outputs.qa-version }} --image-manifest "$MANIFEST"
   send-slack-message:
-    needs: tag-images
+    needs:
+      - tag-images
+      - generate-pre-release
 
     runs-on: ubuntu-latest
 

@@ -1,4 +1,4 @@
 {
-  "triggerMessage": "Before you leave, would you be willing to answer a few questions about the service you received today? Please answer Yes or No.",
-  "postSurvetCompleteMessage": "Thank you for reaching out. Please contact us again if you need more help."
+  "triggerMessage": "Before you go, would you like to answer a few quick questions about your chat today? Just reply Yes or No.",
+  "postSurvetCompleteMessage": "Thanks for chatting with us today 💛 If you ever want to talk again, we’re here."
 }
