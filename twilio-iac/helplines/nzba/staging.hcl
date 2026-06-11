@@ -39,8 +39,7 @@ locals {
         channel_flow_vars = {
           widget_from                   = "Barnardos"
           chat_blocked_message          = "Sorry, you're not able to contact Barnardos from this device or account"
-          send_message_webchat_prequeue = "Hello. Please hold on for a while and we will attend to you as soon as we can. Thank you for your patience!. If you are in immediate danger, please call the Police at 911. “What you share with us is private, and we’ll keep it confidential. Sometimes, if we’re really
-worried about your safety or someone else’s, we may need to get extra help to keep people safe.If you want to learn more about how we keep your information safe and how it’s used, you can visit our website at www.whatsup.co.nz"
+          send_message_webchat_prequeue = "Hello. Please hold on for a while and we will attend to you as soon as we can. Thank you for your patience!. If you are in immediate danger, please call the Police at 911. \n\nWhat you share with us is private, and we’ll keep it confidential. Sometimes, if we’re really worried about your safety or someone else’s, we may need to get extra help to keep people safe.\nIf you want to learn more about how we keep your information safe and how it’s used, you can visit our website at www.whatsup.co.nz"
         }
         chatbot_unique_names = []
       }
