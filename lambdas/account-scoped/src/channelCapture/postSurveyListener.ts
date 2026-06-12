@@ -22,7 +22,7 @@ import { AccountSID } from '@tech-matters/twilio-types';
 import { Twilio } from 'twilio';
 import { EventType, TASK_WRAPUP } from '../taskrouter/eventTypes';
 import { EventFields } from '../taskrouter';
-import { retrieveServiceConfigurationAttributes } from '../configuration/aseloConfiguration';
+import { retrieveServiceConfiguration } from '../configuration/aseloConfiguration';
 import {
   handleChannelCapture,
   HandleChannelCaptureParams,
@@ -35,6 +35,7 @@ import {
   getTwilioWorkspaceSid,
 } from '@tech-matters/twilio-configuration';
 import { getTranslation } from '../translations/translationLookup';
+import { getCurrentDefinitionVersion } from '../hrm/formDefinitionsCache';
 
 const GLOBAL_DEFAULT_LANGUAGE = 'en-US';
 
@@ -72,7 +73,7 @@ const isTriggerPostSurvey = ({
   return !isChatCaptureControlTask(taskAttributes);
 };
 
-export const postSurveyInitHandler = async ({
+const postSurveyInitHandler = async ({
   accountSid,
   channelType,
   chatServiceSid,
@@ -160,12 +161,20 @@ const triggerPostSurvey: TaskRouterEventHandler = async (
       console.log('taskAttributes', taskAttributes);
 
       // This task is a candidate to trigger post survey. Check feature flags for the account.
-      const serviceConfigAttributes =
-        await retrieveServiceConfigurationAttributes(client);
+      const serviceConfig = await retrieveServiceConfiguration(client);
+      const { attributes: serviceConfigAttributes } = serviceConfig;
       const { feature_flags: featureFlags, helplineLanguage } = serviceConfigAttributes;
       const { enable_post_survey: enablePostSurvey } = featureFlags;
 
       if (enablePostSurvey) {
+        const definition = await getCurrentDefinitionVersion({ accountSid });
+        const postSurveyConfigSpecs = definition?.insights?.postSurveySpecs;
+
+        if (!postSurveyConfigSpecs?.length) {
+          const errorMEssage = `No defined or invalid postSurveyConfigJson found for account ${accountSid}.`;
+          throw new Error(errorMEssage);
+        }
+
         const { channelSid, conversationSid, channelType, customChannelType } =
           taskAttributes;
 
