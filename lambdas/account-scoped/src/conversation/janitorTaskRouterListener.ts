@@ -36,6 +36,7 @@ import { isChatCaptureControlTask } from '../channelCapture/channelCaptureHandle
 import { isAseloCustomChannel } from '../customChannels/aseloCustomChannels';
 import { getWorkspaceSid } from '@tech-matters/twilio-configuration';
 import { ChatChannelSID, ConversationSID } from '@tech-matters/twilio-types';
+import { getCurrentDefinitionVersion } from '../hrm/formDefinitionsCache';
 
 const isCleanupBotCapture = (
   eventType: EventType,
@@ -172,21 +173,28 @@ const janitorHandler: TaskRouterEventHandler = async (
     if (
       !(await isHandledByOtherListener(client, workspaceSid, taskSid, taskAttributes))
     ) {
-      if (!featureFlags.enable_post_survey) {
-        console.info(
-          `JanitorListener: deactivating conversation orchestration for account ${accountSid}, task ${taskSid}`,
-        );
-
-        await chatChannelJanitor(accountSid, {
-          channelSid: channelSid as ChatChannelSID,
-          conversationSid: conversationSid as ConversationSID,
-        });
-
-        console.info(
-          `JanitorListener: conversation orchestration deactivated for account ${accountSid}, task ${taskSid}`,
-        );
-        return;
+      if (featureFlags.enable_post_survey) {
+        const definition = await getCurrentDefinitionVersion({ accountSid });
+        const postSurveyConfigSpecs = definition?.insights?.postSurveySpecs;
+        // prevent janitor from cleanup if post survey is enabled and definition is valid
+        if (postSurveyConfigSpecs?.length) {
+          return;
+        }
       }
+
+      console.info(
+        `JanitorListener: deactivating conversation orchestration for account ${accountSid}, task ${taskSid}`,
+      );
+
+      await chatChannelJanitor(accountSid, {
+        channelSid: channelSid as ChatChannelSID,
+        conversationSid: conversationSid as ConversationSID,
+      });
+
+      console.info(
+        `JanitorListener: conversation orchestration deactivated for account ${accountSid}, task ${taskSid}`,
+      );
+      return;
     }
 
     console.info(
