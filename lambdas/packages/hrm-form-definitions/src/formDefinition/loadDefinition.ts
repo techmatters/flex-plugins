@@ -158,30 +158,128 @@ type IssueCategorizationTabModuleType = {
   [helpline: string]: CategoriesDefinition;
 };
 
+type DefinitionVersionFileToType = {
+  layoutVersion: LayoutVersion;
+  callerInformationTab: FormItemJsonDefinition[];
+  caseInformationTab: FormItemJsonDefinition[];
+  childInformationTab: FormItemJsonDefinition[];
+  issueCategorizationTab: IssueCategorizationTabModuleType;
+  contactlessTaskTab: DefinitionVersion['tabbedForms']['ContactlessTaskTab'];
+  callTypeButtons: CallTypeButtonsDefinitions;
+  helplineInformation: HelplineDefinitions;
+  caseSections: Record<string, CaseSectionTypeJsonEntry>;
+  cannedResponses: CannedResponsesDefinitions;
+  oneToOneConfigSpec: OneToOneConfigSpec;
+  oneToManyConfigSpecs: OneToManyConfigSpecs;
+  postSurveySpecs: LegacyOneToManyConfigSpec[];
+  caseFilters: DefinitionVersion['caseFilters'];
+  caseStatus: DefinitionVersion['caseStatus'];
+  caseOverview: DefinitionVersion['caseOverview'];
+  prepopulateKeys: DefinitionVersion['prepopulateKeys'];
+  prepopulateMappings: PrepopulateMappingJson;
+  referenceData: Record<string, any>;
+  blockedEmojis: string[];
+  profileSections: ProfileSectionDefinition[];
+  profileFlagDurations: ProfileFlagDurationDefinition[];
+  messages: LocalizedStringMap;
+  substitutions: LocalizedStringMap;
+  postSurveyMessages: Record<string, string>;
+  flexUiLocales: FlexUILocaleEntry[];
+  customLinks: DefinitionVersion['customLinks'];
+};
+
+// Placeholder for prepopulateKeys
+const prepopulateKeysEmpty: DefinitionVersion['prepopulateKeys'] = {
+  survey: { ChildInformationTab: [], CallerInformationTab: [] },
+  preEngagement: {
+    ChildInformationTab: [],
+    CallerInformationTab: [],
+    CaseInformationTab: [],
+  },
+};
+
+// Placeholder for prepopulateMappings
+const prepopulateMappingsEmpty: DefinitionVersion['prepopulateMappings'] = {
+  survey: {},
+  preEngagement: {},
+};
+
+const definitionVersionFileToLocation: {
+  [k in keyof DefinitionVersionFileToType]: {
+    location: string;
+    placeholder?: DefinitionVersionFileToType[k];
+  };
+} = {
+  layoutVersion: { location: 'LayoutDefinitions.json' },
+  callerInformationTab: { location: 'tabbedForms/CallerInformationTab.json' },
+  caseInformationTab: { location: 'tabbedForms/CaseInformationTab.json' },
+  childInformationTab: { location: 'tabbedForms/ChildInformationTab.json' },
+  issueCategorizationTab: { location: 'tabbedForms/IssueCategorizationTab.json' },
+  contactlessTaskTab: { location: 'tabbedForms/ContactlessTaskTab.json', placeholder: {} },
+  callTypeButtons: { location: 'CallTypeButtons.json' },
+  helplineInformation: { location: 'HelplineInformation.json' },
+  caseSections: { location: 'CaseSections.json' },
+  cannedResponses: { location: 'CannedResponses.json', placeholder: [] },
+  oneToOneConfigSpec: { location: 'insights/oneToOneConfigSpec.json' },
+  oneToManyConfigSpecs: { location: 'insights/oneToManyConfigSpecs.json' },
+  postSurveySpecs: { location: 'insights/postSurvey.json', placeholder: [] },
+  caseFilters: { location: 'CaseFilters.json' },
+  caseStatus: { location: 'CaseStatus.json' },
+  caseOverview: { location: 'caseForms/CaseOverview.json' },
+  prepopulateKeys: { location: 'PrepopulateKeys.json', placeholder: prepopulateKeysEmpty },
+  prepopulateMappings: {
+    location: 'PrepopulateMappings.json',
+    placeholder: prepopulateMappingsEmpty,
+  },
+  referenceData: { location: 'ReferenceData.json', placeholder: {} },
+  blockedEmojis: { location: 'BlockedEmojis.json', placeholder: [] },
+  profileSections: { location: 'profileForms/Sections.json', placeholder: [] },
+  profileFlagDurations: { location: 'profileForms/FlagDurations.json', placeholder: [] },
+  messages: { location: 'customStrings/Messages.json', placeholder: {} },
+  substitutions: { location: 'customStrings/Substitutions.json', placeholder: {} },
+  postSurveyMessages: { location: 'customStrings/postSurveyMessages.json', placeholder: {} },
+  flexUiLocales: { location: 'FlexUiLocales.json', placeholder: [] },
+  customLinks: { location: 'CustomLinks.json', placeholder: [] },
+};
+
+const definitionVersionFileKeys = Object.keys(
+  definitionVersionFileToLocation,
+) as (keyof DefinitionVersionFileToType)[];
+
+const loadDefinitionSingleFile =
+  (fetchDefinition: ReturnType<typeof buildFetchDefinition>['fetchDefinition']) =>
+  async <P extends keyof DefinitionVersionFileToType>({
+    file,
+  }: {
+    file: P;
+  }): Promise<DefinitionVersionFileToType[P]> => {
+    return fetchDefinition<DefinitionVersionFileToType[P]>(
+      definitionVersionFileToLocation[file].location,
+      definitionVersionFileToLocation[file].placeholder,
+    );
+  };
+
+const loadDefinitionAllFiles = async <K extends keyof DefinitionVersionFileToType>(
+  fetchDefinition: ReturnType<typeof buildFetchDefinition>['fetchDefinition'],
+): Promise<{ [P in K]: DefinitionVersionFileToType[P] }> => {
+  const entries = await Promise.all(
+    definitionVersionFileKeys.map(
+      async (file) => [file, await loadDefinitionSingleFile(fetchDefinition)({ file })] as const,
+    ),
+  );
+  // typecast is needed here because Object.fromEntries loses type info
+  return Object.fromEntries(entries) as { [P in K]: DefinitionVersionFileToType[P] };
+};
+
 export async function loadDefinition(baseUrl: string): Promise<DefinitionVersion> {
   const { fetchDefinition } = buildFetchDefinition(baseUrl);
-
-  // Placeholder for prepopulateKeys
-  const prepopulateKeysEmpty: DefinitionVersion['prepopulateKeys'] = {
-    survey: { ChildInformationTab: [], CallerInformationTab: [] },
-    preEngagement: {
-      ChildInformationTab: [],
-      CallerInformationTab: [],
-      CaseInformationTab: [],
-    },
-  };
-
-  // Placeholder for prepopulateMappings
-  const prepopulateMappingsEmpty: DefinitionVersion['prepopulateMappings'] = {
-    survey: {},
-    preEngagement: {},
-  };
 
   const expandPrepopulateMappings = ({
     formSelector,
     ...sourceSets
   }: PrepopulateMappingJson): DefinitionVersion['prepopulateMappings'] => {
-    const expandedMapping: DefinitionVersion['prepopulateMappings'] = prepopulateMappingsEmpty;
+    const expandedMapping: DefinitionVersion['prepopulateMappings'] =
+      structuredClone(prepopulateMappingsEmpty);
     for (const [sourceSetName, sourceSetFields] of Object.entries(sourceSets)) {
       const targetObj =
         expandedMapping[
@@ -201,15 +299,7 @@ export async function loadDefinition(baseUrl: string): Promise<DefinitionVersion
     return { ...expandedMapping, formSelector };
   };
 
-  /**
-   * Currently the following constants are order sensitive.
-   * It's very easy to make a human mistake and place one at the wrong order.
-   *
-   * TODO:
-   * We should come up with a function that resolves all promises concurrently and
-   * returns an object instead of an array.
-   */
-  const [
+  const {
     layoutVersion,
     callerInformationTab,
     caseInformationTab,
@@ -237,41 +327,8 @@ export async function loadDefinition(baseUrl: string): Promise<DefinitionVersion
     postSurveyMessages,
     flexUiLocales,
     customLinks,
-  ] = await Promise.all([
-    fetchDefinition<LayoutVersion>('LayoutDefinitions.json'),
-    fetchDefinition<FormItemJsonDefinition[]>('tabbedForms/CallerInformationTab.json'),
-    fetchDefinition<FormItemJsonDefinition[]>('tabbedForms/CaseInformationTab.json'),
-    fetchDefinition<FormItemJsonDefinition[]>('tabbedForms/ChildInformationTab.json'),
-    fetchDefinition<IssueCategorizationTabModuleType>('tabbedForms/IssueCategorizationTab.json'),
-    fetchDefinition<DefinitionVersion['tabbedForms']['ContactlessTaskTab']>(
-      'tabbedForms/ContactlessTaskTab.json',
-      {},
-    ),
-    fetchDefinition<CallTypeButtonsDefinitions>('CallTypeButtons.json'),
-    fetchDefinition<HelplineDefinitions>('HelplineInformation.json'),
-    fetchDefinition<Record<string, CaseSectionTypeJsonEntry>>('CaseSections.json'),
-    fetchDefinition<CannedResponsesDefinitions>('CannedResponses.json', []),
-    fetchDefinition<OneToOneConfigSpec>('insights/oneToOneConfigSpec.json'),
-    fetchDefinition<OneToManyConfigSpecs>('insights/oneToManyConfigSpecs.json'),
-    fetchDefinition<LegacyOneToManyConfigSpec[]>('insights/postSurvey.json', []),
-    fetchDefinition<DefinitionVersion['caseFilters']>('CaseFilters.json'),
-    fetchDefinition<DefinitionVersion['caseStatus']>('CaseStatus.json'),
-    fetchDefinition<DefinitionVersion['caseOverview']>('caseForms/CaseOverview.json'),
-    fetchDefinition<DefinitionVersion['prepopulateKeys']>(
-      'PrepopulateKeys.json',
-      prepopulateKeysEmpty,
-    ),
-    fetchDefinition<PrepopulateMappingJson>('PrepopulateMappings.json', prepopulateMappingsEmpty),
-    fetchDefinition<Record<string, any>>('ReferenceData.json', {}),
-    fetchDefinition<string[]>('BlockedEmojis.json', []),
-    fetchDefinition<ProfileSectionDefinition[]>('profileForms/Sections.json', []),
-    fetchDefinition<ProfileFlagDurationDefinition[]>('profileForms/FlagDurations.json', []),
-    fetchDefinition<LocalizedStringMap>('customStrings/Messages.json', {}),
-    fetchDefinition<LocalizedStringMap>('customStrings/Substitutions.json', {}),
-    fetchDefinition<Record<string, string>>('customStrings/postSurveyMessages.json', {}),
-    fetchDefinition<FlexUILocaleEntry[]>('FlexUiLocales.json', []),
-    fetchDefinition<DefinitionVersion['customLinks']>('CustomLinks.json', []),
-  ] as const);
+  } = await loadDefinitionAllFiles(fetchDefinition);
+
   const expandedCaseSections: CaseSectionTypeDefinitions = await loadAndExpandCaseSections(
     caseSections,
     referenceData,
@@ -281,6 +338,7 @@ export async function loadDefinition(baseUrl: string): Promise<DefinitionVersion
   const defaultHelpline =
     helplineInformation.helplines.find((helpline: HelplineEntry) => helpline.default)?.value ||
     helplines[0].value;
+
   return {
     caseSectionTypes: expandedCaseSections,
     tabbedForms: {
