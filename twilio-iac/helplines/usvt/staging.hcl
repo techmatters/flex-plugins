@@ -21,7 +21,11 @@ locals {
         messaging_mode = "conversations"
         contact_identity     = ""
         templatefile         = "/app/twilio-iac/helplines/templates/studio-flows/messaging-blocking-preq-conv-lambda-sd.tftpl"
-        channel_flow_vars    = {}
+        channel_flow_vars = {
+          widget_from                   = "PCAVT"
+          chat_blocked_message          = "Sorry, you're not able to contact Barnardos from this device or account"
+          send_message_webchat_prequeue = "Hello. Please hold on for a while and we will attend to you as soon as we can. Thank you for your patience!. If you are in immediate danger, please call the Police at 911."
+        }
         chatbot_unique_names = []
       }
     }
