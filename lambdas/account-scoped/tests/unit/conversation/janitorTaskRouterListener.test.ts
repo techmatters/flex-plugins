@@ -34,6 +34,7 @@ import {
   TASK_DELETED,
   TASK_WRAPUP,
 } from '../../../src/taskrouter/eventTypes';
+import { getCurrentDefinitionVersion } from '../../../src/hrm/formDefinitionsCache';
 
 jest.mock('../../../src/conversation/chatChannelJanitor', () => ({
   chatChannelJanitor: jest.fn(),
@@ -64,6 +65,13 @@ const mockIsAseloCustomChannel = isAseloCustomChannel as jest.MockedFunction<
 jest.mock('@tech-matters/twilio-configuration', () => ({
   getWorkspaceSid: jest.fn().mockResolvedValue('WSut'),
 }));
+
+jest.mock('../../../src/hrm/formDefinitionsCache', () => ({
+  getCurrentDefinitionVersion: jest.fn(),
+}));
+const mockGetCurrentDefinitionVersion = getCurrentDefinitionVersion as jest.MockedFunction<
+  typeof getCurrentDefinitionVersion
+>;
 
 const newEventFields = (
   taskChannelUniqueName: string,
@@ -98,6 +106,7 @@ describe('janitorTaskRouterListener', () => {
     mockHasTaskControl.mockResolvedValue(true);
     mockIsChatCaptureControlTask.mockReturnValue(false);
     mockIsAseloCustomChannel.mockReturnValue(false);
+    mockGetCurrentDefinitionVersion.mockResolvedValue({} as any);
   });
 
   test('use_twilio_lambda_janitor flag not set - skips without calling chatChannelJanitor', async () => {
@@ -189,17 +198,37 @@ describe('janitorTaskRouterListener', () => {
     });
   });
 
-  test('deactivate conversation orchestration on TASK_WRAPUP with enable_post_survey=true - skips chatChannelJanitor', async () => {
+  test('deactivate conversation orchestration on TASK_WRAPUP with enable_post_survey=true and valid postSurveySpecs - skips chatChannelJanitor', async () => {
     client = newMockTwilioClientWithConfigurationAttributes({
       feature_flags: { use_twilio_lambda_janitor: true, enable_post_survey: true },
     });
     mockIsChatCaptureControlTask.mockReturnValue(false);
     mockHasTaskControl.mockResolvedValue(true);
     mockIsAseloCustomChannel.mockReturnValue(false);
+    mockGetCurrentDefinitionVersion.mockResolvedValue({
+      insights: { postSurveySpecs: [{ taskChannelUniqueName: 'survey' }] },
+    } as any);
 
     await handleEvent(newEventFields('chat', TASK_WRAPUP), TEST_ACCOUNT_SID, client);
 
     expect(mockChatChannelJanitor).not.toHaveBeenCalled();
+  });
+
+  test('deactivate conversation orchestration on TASK_WRAPUP with enable_post_survey=true and invalid postSurveySpecs - calls chatChannelJanitor', async () => {
+    client = newMockTwilioClientWithConfigurationAttributes({
+      feature_flags: { use_twilio_lambda_janitor: true, enable_post_survey: true },
+    });
+    mockIsChatCaptureControlTask.mockReturnValue(false);
+    mockHasTaskControl.mockResolvedValue(true);
+    mockIsAseloCustomChannel.mockReturnValue(false);
+    mockGetCurrentDefinitionVersion.mockResolvedValue({} as any);
+
+    await handleEvent(newEventFields('chat', TASK_WRAPUP), TEST_ACCOUNT_SID, client);
+
+    expect(mockChatChannelJanitor).toHaveBeenCalledWith(TEST_ACCOUNT_SID, {
+      channelSid: TEST_CHANNEL_SID,
+      conversationSid: TEST_CONVERSATION_SID,
+    });
   });
 
   test('TASK_WRAPUP but not in task control - skips chatChannelJanitor', async () => {
