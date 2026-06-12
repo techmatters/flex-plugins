@@ -69,9 +69,8 @@ jest.mock('@tech-matters/twilio-configuration', () => ({
 jest.mock('../../../src/hrm/formDefinitionsCache', () => ({
   getCurrentDefinitionVersion: jest.fn(),
 }));
-const mockGetCurrentDefinitionVersion = getCurrentDefinitionVersion as jest.MockedFunction<
-  typeof getCurrentDefinitionVersion
->;
+const mockGetCurrentDefinitionVersion =
+  getCurrentDefinitionVersion as jest.MockedFunction<typeof getCurrentDefinitionVersion>;
 
 const newEventFields = (
   taskChannelUniqueName: string,
