@@ -41,6 +41,7 @@ import {
   OneToOneConfigSpec,
 } from './insightsConfig';
 import { LayoutVersion } from './layoutVersion';
+import cloneDeep from 'lodash/cloneDeep'
 
 // Type representing the JSON form where single fields don't need to be wrapped in arrays
 type PrepopulateMappingJson = {
@@ -279,7 +280,7 @@ export async function loadDefinition(baseUrl: string): Promise<DefinitionVersion
     ...sourceSets
   }: PrepopulateMappingJson): DefinitionVersion['prepopulateMappings'] => {
     const expandedMapping: DefinitionVersion['prepopulateMappings'] =
-      structuredClone(prepopulateMappingsEmpty);
+      cloneDeep(prepopulateMappingsEmpty);
     for (const [sourceSetName, sourceSetFields] of Object.entries(sourceSets)) {
       const targetObj =
         expandedMapping[
