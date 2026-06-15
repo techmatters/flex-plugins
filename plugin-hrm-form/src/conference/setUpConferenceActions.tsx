@@ -78,7 +78,8 @@ export const setUpConferenceActions = () => {
           getHrmConfig().accountScopedLambdaBaseUrl
         }/conference/conferenceStatusCallback`;
         conferenceOptions.conferenceStatusCallbackMethod = 'POST';
-        conferenceOptions.conferenceStatusCallbackEvent = 'leave';
+        conferenceOptions.endConferenceOnExit = !getHrmConfig().postStudioFlows.voice;
+        conferenceOptions.conferenceStatusCallbackEvent = ['leave', 'join'].toString();
       }
     }
   });

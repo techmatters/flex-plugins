@@ -23,28 +23,7 @@ import { Twilio } from 'twilio';
 import { EventType, TASK_WRAPUP } from '../taskrouter/eventTypes';
 import { EventFields } from '../taskrouter';
 import { retrieveServiceConfigurationAttributes } from '../configuration/aseloConfiguration';
-import {
-  handleChannelCapture,
-  HandleChannelCaptureParams,
-  isChatCaptureControlTask,
-} from './channelCaptureHandlers';
-import {
-  getChatServiceSid,
-  getHelplineCode,
-  getSurveyWorkflowSid,
-  getTwilioWorkspaceSid,
-  getWorkspaceSid,
-} from '@tech-matters/twilio-configuration';
-import { getTranslation } from '../translations/translationLookup';
-
-const GLOBAL_DEFAULT_LANGUAGE = 'en-US';
-
-// ================== //
-// TODO: unify this code with Flex codebase
-const getTaskLanguage =
-  (helplineLanguage: string) => (taskAttributes: { language?: string }) =>
-    taskAttributes.language || helplineLanguage || GLOBAL_DEFAULT_LANGUAGE;
-// ================== //
+import { isChatCaptureControlTask } from './channelCaptureHandlers';
 
 // TODO: factor out
 type TransferMeta = {

@@ -44,6 +44,7 @@ import { checkBlockListHandler } from './conversation/checkBlockList';
 import { transitionAgentParticipantsHandler } from './conversation/transitionAgentParticipants';
 import { conferenceStatusCallbackHandler } from './conference/conferenceStatusCallback';
 import './conference/stopRecordingWhenLastAgentLeaves';
+import './conference/setEndConferenceOnExit';
 import { instagramToFlexHandler } from './customChannels/instagram/instagramToFlex';
 import { flexToInstagramHandler } from './customChannels/instagram/flexToInstagram';
 import { telegramToFlexHandler } from './customChannels/telegram/telegramToFlex';

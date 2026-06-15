@@ -14,57 +14,13 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import type { ParticipantInstance } from 'twilio/lib/rest/api/v2010/account/conference/participant';
 import {
   ConferenceStatusEventHandler,
-  registerTaskRouterEventHandler,
+  registerConferenceStatusEventHandler,
 } from './conferenceStatusCallback';
 import type RestException from 'twilio/lib/base/RestException';
 import { hasTaskControl } from '../transfer/hasTaskControl';
-
-export const isAgentInConference = ({
-  callSid,
-  customerCallSid,
-  participant,
-}: {
-  callSid: string;
-  customerCallSid: string;
-  participant: ParticipantInstance;
-}): boolean => {
-  console.debug('Remaining participant', participant);
-
-  if (
-    participant.label?.startsWith('External party') ||
-    participant.label === 'external party'
-  ) {
-    // This was added via our addParticipant function
-    console.debug(
-      `Participant ${participant.label} (${participant.callSid}) identified as external party`,
-    );
-    return false;
-  }
-
-  if (participant.callSid === callSid) {
-    // This is the participant firing the event
-    console.warn(
-      `Participant ${participant.label} (${participant.callSid}) still in conference, despite leave event for them`,
-    );
-    return false;
-  }
-
-  // TODO: Detect caller vs agent
-  if (participant.callSid === customerCallSid) {
-    console.debug(
-      `Participant ${participant.label} (${participant.callSid}) identified as service user, because their call sid is the customer call sid`,
-    );
-    return false;
-  }
-
-  console.debug(
-    `Participant ${participant.label} (${participant.callSid}) not identified as the service user or an external party, so must be an agent, keep recording`,
-  );
-  return true;
-};
+import { isAgentInConference } from './isAgentInConference';
 
 const handler: ConferenceStatusEventHandler = async (event, _accountSid, client) => {
   if (event.StatusCallbackEvent !== 'participant-leave') {
@@ -146,4 +102,4 @@ const handler: ConferenceStatusEventHandler = async (event, _accountSid, client)
   );
 };
 
-registerTaskRouterEventHandler(['participant-leave'], handler);
+registerConferenceStatusEventHandler(['participant-leave'], handler);
