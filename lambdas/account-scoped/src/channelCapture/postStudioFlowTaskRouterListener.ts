@@ -81,9 +81,14 @@ const triggerPostStudioFlowTaskRouterListener: TaskRouterEventHandler = async (
             .participants.list();
           console.debug(
             `[Post Survey Studio Flow - ${accountSid}/${event.TaskSid}]: ${allParticipants.length} participants on conference: ${conference.sid} at ${eventType}.`,
+            allParticipants,
           );
           const connectedParticipants = allParticipants.filter(
             p => p.status === 'connected',
+          );
+          console.debug(
+            `[Post Survey Studio Flow - ${accountSid}/${event.TaskSid}]: ${connectedParticipants.length} participants on conference: ${conference.sid} at ${eventType}.`,
+            connectedParticipants,
           );
           if (connectedParticipants.length === 1) {
             const [participant] = connectedParticipants;
@@ -91,6 +96,9 @@ const triggerPostStudioFlowTaskRouterListener: TaskRouterEventHandler = async (
               url: studioWebhookUrl,
               method: 'POST',
             });
+            console.debug(
+              `[Post Survey Studio Flow - ${accountSid}/${event.TaskSid}]: Updated conference ${conference.sid} webhook to ${studioWebhookUrl}.`,
+            );
           }
         } else {
           console.warn(
