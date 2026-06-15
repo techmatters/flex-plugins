@@ -71,11 +71,11 @@ const triggerPostStudioFlowTaskRouterListener: TaskRouterEventHandler = async (
 
       if (studioFlowSid) {
         const studioWebhookUrl = `https://webhooks.twilio.com/v1/Accounts/${accountSid}/Flows/${studioFlowSid}`;
-        const { conferenceSid } = taskAttributes;
-        if (taskChannelUniqueName === 'voice') {
+        const { conference } = taskAttributes;
+        if (taskChannelUniqueName === 'voice' && conference) {
           // 1. Fetch all active participants in the conference
           const allParticipants = await client.conferences
-            .get(conferenceSid)
+            .get(conference.sid)
             .participants.list();
           const connectedParticipants = allParticipants.filter(
             p => p.status === 'connected',
@@ -87,6 +87,12 @@ const triggerPostStudioFlowTaskRouterListener: TaskRouterEventHandler = async (
               method: 'POST',
             });
           }
+        } else {
+          console.warn(
+            `Only tasks with a taskChannelUniqueName of 'voice' and a conference object in the attributes are supported for post task studio flows`,
+            `taskChannelUniqueName: ${taskChannelUniqueName}`,
+            `conference: ${conference}`,
+          );
         }
 
         console.info('Finished handling post studio flow trigger.');
