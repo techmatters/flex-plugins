@@ -60,8 +60,10 @@ const triggerPostStudioFlowTaskRouterListener: TaskRouterEventHandler = async (
     const taskAttributes = JSON.parse(taskAttributesString);
 
     if (isTriggerPostStudioFlow({ eventType, taskAttributes, taskChannelUniqueName })) {
-      console.info('Handling post studio flow trigger...');
-      console.info('taskAttributes', taskAttributes);
+      console.info(
+        `[Post Survey Studio Flow - ${accountSid}/${event.TaskSid}]: Handling post studio flow trigger...`,
+      );
+      console.debug('[SENSITIVE] taskAttributes', taskAttributes);
 
       // This task is a candidate to trigger post survey. Check feature flags for the account.
       const serviceConfigAttributes =
@@ -77,6 +79,9 @@ const triggerPostStudioFlowTaskRouterListener: TaskRouterEventHandler = async (
           const allParticipants = await client.conferences
             .get(conference.sid)
             .participants.list();
+          console.debug(
+            `[Post Survey Studio Flow - ${accountSid}/${event.TaskSid}]: ${allParticipants.length} participants on conference: ${conference.sid} at ${eventType}.`,
+          );
           const connectedParticipants = allParticipants.filter(
             p => p.status === 'connected',
           );
@@ -89,19 +94,24 @@ const triggerPostStudioFlowTaskRouterListener: TaskRouterEventHandler = async (
           }
         } else {
           console.warn(
-            `Only tasks with a taskChannelUniqueName of 'voice' and a conference object in the attributes are supported for post task studio flows`,
+            `[Post Survey Studio Flow - ${accountSid}/${event.TaskSid}]: Only tasks with a taskChannelUniqueName of 'voice' and a conference object in the attributes are supported for post task studio flows`,
             `taskChannelUniqueName: ${taskChannelUniqueName}`,
             `conference: ${conference}`,
           );
         }
 
-        console.info('Finished handling post studio flow trigger.');
+        console.info(
+          `[Post Survey Studio Flow - ${accountSid}/${event.TaskSid}]: Finished handling post studio flow trigger.`,
+        );
       } else {
         console.debug(`No post studio flow configured for ${taskChannelUniqueName}`);
       }
     }
   } catch (err) {
-    console.error('postSurveyListener failed', err);
+    console.error(
+      `[Post Survey Studio Flow - ${accountSid}/${event.TaskSid}]: triggerPostStudioFlowTaskRouterListener failed`,
+      err,
+    );
   }
 };
 
