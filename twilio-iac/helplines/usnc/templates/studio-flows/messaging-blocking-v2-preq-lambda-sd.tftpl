@@ -38,7 +38,7 @@ ${
           "event": "success"
         },
         {
-          "next": "send_to_queue",
+          "next": "send_message_webchat_prequeue",
           "event": "failed"
         }
       ],
@@ -116,7 +116,8 @@ ${
           "next": "send_to_queue"
         },
         {
-          "event": "failed"
+          "event": "failed",
+          "next": "send_to_queue"
         }
       ],
       "properties": {
