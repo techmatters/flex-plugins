@@ -41,7 +41,7 @@ import {
   OneToOneConfigSpec,
 } from './insightsConfig';
 import { LayoutVersion } from './layoutVersion';
-import cloneDeep from 'lodash/cloneDeep'
+import cloneDeep from 'lodash/cloneDeep';
 
 // Type representing the JSON form where single fields don't need to be wrapped in arrays
 type PrepopulateMappingJson = {
