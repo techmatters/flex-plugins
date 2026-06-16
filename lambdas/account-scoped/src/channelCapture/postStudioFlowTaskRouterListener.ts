@@ -55,13 +55,14 @@ const triggerPostStudioFlowTaskRouterListener: TaskRouterEventHandler = async (
       EventType: eventType,
       TaskChannelUniqueName: taskChannelUniqueName,
       TaskAttributes: taskAttributesString,
+      TaskSid: taskSid,
     } = event;
 
     const taskAttributes = JSON.parse(taskAttributesString);
 
     if (isTriggerPostStudioFlow({ eventType, taskAttributes, taskChannelUniqueName })) {
       console.info(
-        `[Post Survey Studio Flow - ${accountSid}/${event.TaskSid}]: Handling post studio flow trigger...`,
+        `[Post Survey Studio Flow - ${accountSid}/${taskSid}]: Handling post studio flow trigger...`,
       );
       console.debug('[SENSITIVE] taskAttributes', taskAttributes);
 
@@ -75,27 +76,27 @@ const triggerPostStudioFlowTaskRouterListener: TaskRouterEventHandler = async (
         const studioWebhookUrl = `https://webhooks.twilio.com/v1/Accounts/${accountSid}/Flows/${studioFlowSid}`;
         const { conference } = taskAttributes;
         if (taskChannelUniqueName === 'voice' && conference) {
+          const conferenceContext = client.conferences.get(conference.sid);
           // 1. Fetch all active participants in the conference
-          const allParticipants = await client.conferences
-            .get(conference.sid)
-            .participants.list();
+          const allParticipants = await conferenceContext.participants.list();
           console.debug(
-            `[Post Survey Studio Flow - ${accountSid}/${event.TaskSid}]: ${allParticipants.length} participants on conference: ${conference.sid} at ${eventType}.`,
+            `[Post Survey Studio Flow - ${accountSid}/${taskSid}]: ${allParticipants.length} participants on conference: ${conference.sid} at ${eventType}.`,
             allParticipants,
           );
           const connectedParticipants = allParticipants.filter(
             p => p.status === 'connected',
           );
           console.debug(
-            `[Post Survey Studio Flow - ${accountSid}/${event.TaskSid}]: ${connectedParticipants.length} participants on conference: ${conference.sid} at ${eventType}.`,
+            `[Post Survey Studio Flow - ${accountSid}/${taskSid}]: ${connectedParticipants.length} participants on conference: ${conference.sid} at ${eventType}.`,
             connectedParticipants,
           );
           if (connectedParticipants.length === 1) {
             const [participant] = connectedParticipants;
-            const call = await client.calls.get(participant.callSid).fetch();
+            await conferenceContext.update({
+              status: 'completed',
+            });
             console.debug(
-              `[Post Survey Studio Flow - ${accountSid}/${event.TaskSid}]: ${call.sid} on conference: ${conference.sid} at ${eventType}.`,
-              call,
+              `[Post Survey Studio Flow - ${accountSid}/${event.TaskSid}]: Completed conference: ${conference.sid} at ${eventType}.`,
             );
             await client.calls.get(participant.callSid).update({
               url: studioWebhookUrl,
