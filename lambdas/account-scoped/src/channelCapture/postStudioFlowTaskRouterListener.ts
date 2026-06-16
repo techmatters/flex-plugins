@@ -92,15 +92,8 @@ const triggerPostStudioFlowTaskRouterListener: TaskRouterEventHandler = async (
           );
           if (connectedParticipants.length === 1) {
             const [participant] = connectedParticipants;
-            await conferenceContext.update({
-              status: 'completed',
-            });
-            console.debug(
-              `[Post Survey Studio Flow - ${accountSid}/${event.TaskSid}]: Completed conference: ${conference.sid} at ${eventType}.`,
-            );
             await client.calls.get(participant.callSid).update({
-              url: studioWebhookUrl,
-              method: 'POST',
+              twiml: `<Response><Redirect method="POST">${studioWebhookUrl}</Redirect></Response>`,
             });
             console.debug(
               `[Post Survey Studio Flow - ${accountSid}/${event.TaskSid}]: Updated conference ${conference.sid} webhook to ${studioWebhookUrl}.`,
