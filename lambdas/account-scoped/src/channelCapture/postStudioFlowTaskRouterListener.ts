@@ -102,7 +102,7 @@ const triggerPostStudioFlowTaskRouterListener: TaskRouterEventHandler = async (
               twiml: `<Response><Redirect method="POST">${studioWebhookUrl}</Redirect></Response>`,
             });
             console.debug(
-              `[Post Survey Studio Flow - ${accountSid}/${event.TaskSid}]: Updated conference ${call.parentCallSid} webhook to ${studioWebhookUrl}.`,
+              `[Post Survey Studio Flow - ${accountSid}/${event.TaskSid}]: Updated call ${call.parentCallSid} webhook to ${studioWebhookUrl}.`,
             );
           }
         } else {
