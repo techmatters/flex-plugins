@@ -92,6 +92,11 @@ const triggerPostStudioFlowTaskRouterListener: TaskRouterEventHandler = async (
           );
           if (connectedParticipants.length === 1) {
             const [participant] = connectedParticipants;
+            const call = await client.calls.get(participant.callSid).fetch();
+            console.debug(
+              `[Post Survey Studio Flow - ${accountSid}/${event.TaskSid}]: ${call.sid} on conference: ${conference.sid} at ${eventType}.`,
+              call,
+            );
             await client.calls.get(participant.callSid).update({
               url: studioWebhookUrl,
               method: 'POST',
