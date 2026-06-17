@@ -110,7 +110,7 @@ const triggerPostStudioFlowTaskRouterListener: TaskRouterEventHandler = async (
             );
             await participant.remove();
             console.debug(
-                `[Post Survey Studio Flow - ${accountSid}/${event.TaskSid}]: Removed participant ${participant.callSid} from conference ${conference.sid}.`,
+              `[Post Survey Studio Flow - ${accountSid}/${event.TaskSid}]: Removed participant ${participant.callSid} from conference ${conference.sid}.`,
             );
           } else {
             console.debug(
