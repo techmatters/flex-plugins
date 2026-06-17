@@ -102,15 +102,15 @@ const triggerPostStudioFlowTaskRouterListener: TaskRouterEventHandler = async (
             console.debug(
               `[Post Survey Studio Flow - ${accountSid}/${event.TaskSid}]: Put participant ${participant.callSid} from conference ${conference.sid} on hold.`,
             );
-            await participant.remove();
-            console.debug(
-              `[Post Survey Studio Flow - ${accountSid}/${event.TaskSid}]: Removed participant ${participant.callSid} from conference ${conference.sid}.`,
-            );
             await client.calls.get(participant.callSid).update({
               twiml: `<Response><Redirect method="POST">${studioWebhookUrl}</Redirect></Response>`,
             });
             console.debug(
               `[Post Survey Studio Flow - ${accountSid}/${event.TaskSid}]: Updated conference ${conference.sid} webhook to ${studioWebhookUrl}.`,
+            );
+            await participant.remove();
+            console.debug(
+                `[Post Survey Studio Flow - ${accountSid}/${event.TaskSid}]: Removed participant ${participant.callSid} from conference ${conference.sid}.`,
             );
           } else {
             console.debug(
