@@ -24,6 +24,10 @@ import { EventType, TASK_WRAPUP } from '../taskrouter/eventTypes';
 import { EventFields } from '../taskrouter';
 import { retrieveServiceConfigurationAttributes } from '../configuration/aseloConfiguration';
 import { isChatCaptureControlTask } from './channelCaptureHandlers';
+import {
+  getSurveyWorkflowSid,
+  getWorkspaceSid,
+} from '@tech-matters/twilio-configuration';
 
 // TODO: factor out
 type TransferMeta = {
@@ -73,7 +77,7 @@ const triggerPostStudioFlowTaskRouterListener: TaskRouterEventHandler = async (
       const studioFlowSid = postStudioFlows?.[taskChannelUniqueName];
 
       if (studioFlowSid) {
-        // const studioWebhookUrl = `https://webhooks.twilio.com/v1/Accounts/${accountSid}/Flows/${studioFlowSid}`;
+        const studioWebhookUrl = `https://webhooks.twilio.com/v1/Accounts/${accountSid}/Flows/${studioFlowSid}`;
         const { conference } = taskAttributes;
         if (taskChannelUniqueName === 'voice' && conference) {
           const conferenceContext = client.conferences.get(conference.sid);
@@ -93,18 +97,27 @@ const triggerPostStudioFlowTaskRouterListener: TaskRouterEventHandler = async (
           if (connectedParticipants.length === 1) {
             const [participant] = connectedParticipants;
             await participant.update({
-              announceMethod: 'POST',
-              announceUrl: `https://handler.twilio.com/twiml/EH8e271fa47b075f55eb20893823b174d3`,
+              hold: true,
             });
             console.debug(
-              `[Post Survey Studio Flow - ${accountSid}/${taskSid}]: Participant ${participant.callSid} on conference: ${conference.sid} at ${eventType} updated with redirect announceUrl.`,
-              connectedParticipants,
+              `[Post Survey Studio Flow - ${accountSid}/${event.TaskSid}]: Put participant ${participant.callSid} from conference ${conference.sid} on hold.`,
+            );
+            await participant.remove();
+            console.debug(
+              `[Post Survey Studio Flow - ${accountSid}/${event.TaskSid}]: Removed participant ${participant.callSid} from conference ${conference.sid}.`,
+            );
+            await client.calls.get(participant.callSid).update({
+              url: studioWebhookUrl,
+              method: 'POST',
+            });
+            console.debug(
+              `[Post Survey Studio Flow - ${accountSid}/${event.TaskSid}]: Updated conference ${conference.sid} webhook to ${studioWebhookUrl}.`,
+            );
+          } else {
+            console.debug(
+              `[Post Survey Studio Flow - ${accountSid}/${event.TaskSid}]: Only valid for redirecting to studio flow if there is only one connected participant on the conference`,
             );
           }
-          console.debug(
-            `[Post Survey Studio Flow - ${accountSid}/${taskSid}]: Not redirecting because we only .`,
-            connectedParticipants,
-          );
         } else {
           console.warn(
             `[Post Survey Studio Flow - ${accountSid}/${event.TaskSid}]: Only tasks with a taskChannelUniqueName of 'voice' and a conference object in the attributes are supported for post task studio flows`,
