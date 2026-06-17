@@ -24,10 +24,6 @@ import { EventType, TASK_WRAPUP } from '../taskrouter/eventTypes';
 import { EventFields } from '../taskrouter';
 import { retrieveServiceConfigurationAttributes } from '../configuration/aseloConfiguration';
 import { isChatCaptureControlTask } from './channelCaptureHandlers';
-import {
-  getSurveyWorkflowSid,
-  getWorkspaceSid,
-} from '@tech-matters/twilio-configuration';
 
 // TODO: factor out
 type TransferMeta = {
@@ -103,7 +99,7 @@ const triggerPostStudioFlowTaskRouterListener: TaskRouterEventHandler = async (
               `[Post Survey Studio Flow - ${accountSid}/${event.TaskSid}]: Put participant ${participant.callSid} from conference ${conference.sid} on hold.`,
             );
             await client.calls.get(participant.callSid).update({
-              twiml: `<Response><Redirect method="POST">${studioWebhookUrl}</Redirect></Response>`,
+              url: 'https://handler.twilio.com/twiml/EH8e271fa47b075f55eb20893823b174d3',
             });
             console.debug(
               `[Post Survey Studio Flow - ${accountSid}/${event.TaskSid}]: Updated conference ${conference.sid} webhook to ${studioWebhookUrl}.`,
