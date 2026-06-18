@@ -100,13 +100,7 @@ const triggerPostStudioFlowTaskRouterListener: TaskRouterEventHandler = async (
               `[Post Survey Studio Flow - ${accountSid}/${event.TaskSid}]: Put participant ${participant.callSid} from conference ${conference.sid} on hold.`,
             );
             const twiml = new VoiceResponse();
-            twiml.dial(
-              {
-                action: studioWebhookUrl,
-                method: 'POST',
-              },
-              '+1 206 408 3885',
-            );
+            twiml.say(`Hello! Welcome ${contactId}`);
             await client.calls.get(participant.callSid).update({
               twiml,
             });
