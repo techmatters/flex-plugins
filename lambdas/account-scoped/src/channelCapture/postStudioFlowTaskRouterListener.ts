@@ -99,7 +99,7 @@ const triggerPostStudioFlowTaskRouterListener: TaskRouterEventHandler = async (
               `[Post Survey Studio Flow - ${accountSid}/${event.TaskSid}]: Put participant ${participant.callSid} from conference ${conference.sid} on hold.`,
             );
             await client.calls.get(participant.callSid).update({
-              twiml: `<Dial>+1 206 408 3885</Dial>`,
+              twiml: `<Response><Dial>+1 206 408 3885</Dial></Response>`,
             });
             console.debug(
               `[Post Survey Studio Flow - ${accountSid}/${event.TaskSid}]: Dialed +1 206 408 3885 to start post survey.`,
