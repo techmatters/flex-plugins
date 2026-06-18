@@ -25,6 +25,9 @@ import { EventFields } from '../taskrouter';
 import { retrieveServiceConfigurationAttributes } from '../configuration/aseloConfiguration';
 import { isChatCaptureControlTask } from './channelCaptureHandlers';
 import VoiceResponse = TwilioSDK.twiml.VoiceResponse;
+import { getSyncServiceSid } from '@tech-matters/twilio-configuration';
+import { getPostSurveySyncDocUniqueName } from '../hrm/savePostSurvey';
+import RestException from 'twilio/lib/base/RestException';
 
 // TODO: factor out
 type TransferMeta = {
@@ -75,7 +78,7 @@ const triggerPostStudioFlowTaskRouterListener: TaskRouterEventHandler = async (
 
       if (studioFlowSid) {
         const { conference, contactId } = taskAttributes;
-        const studioWebhookUrl = `https://webhooks.twilio.com/v1/Accounts/${accountSid}/Flows/${studioFlowSid}?contactId=${contactId}`;
+        const studioWebhookUrl = `https://webhooks.twilio.com/v1/Accounts/${accountSid}/Flows/${studioFlowSid}?`;
         if (taskChannelUniqueName === 'voice' && conference) {
           const conferenceContext = client.conferences.get(conference.sid);
           // 1. Fetch all active participants in the conference
@@ -99,8 +102,50 @@ const triggerPostStudioFlowTaskRouterListener: TaskRouterEventHandler = async (
             console.debug(
               `[Post Survey Studio Flow - ${accountSid}/${event.TaskSid}]: Put participant ${participant.callSid} from conference ${conference.sid} on hold.`,
             );
+            const { from } = await client.calls.get(participant.callSid).fetch();
+            console.debug(
+              `[Post Survey Studio Flow - ${accountSid}/${event.TaskSid}]: Retrieved call ${participant.callSid} from conference ${conference.sid}.`,
+            );
+            const uniqueName = getPostSurveySyncDocUniqueName(from);
+            const docList = client.sync.v1.services.get(
+              await getSyncServiceSid(accountSid),
+            ).documents;
+            try {
+              await docList.get(uniqueName).remove();
+              console.debug(
+                `[Post Survey Studio Flow - ${accountSid}/${event.TaskSid}]: Removed existing sync document ${uniqueName}.`,
+              );
+            } catch (err) {
+              if ((err as RestException).status === 404) {
+                console.debug(
+                  `[Post Survey Studio Flow - ${accountSid}/${event.TaskSid}]: No existing sync document ${uniqueName} to remove.`,
+                );
+              } else {
+                console.error(
+                  `[Post Survey Studio Flow - ${accountSid}/${event.TaskSid}]: Error removing sync document ${uniqueName}`,
+                  err,
+                );
+              }
+            }
+            await docList.create({
+              uniqueName,
+              data: {
+                taskSid,
+                contactId,
+              },
+              ttl: 24 * 60 * 60,
+            });
+            console.debug(
+              `[Post Survey Studio Flow - ${accountSid}/${event.TaskSid}]: Before dialing participant ${participant.callSid} from conference ${conference.sid} into a new call, contact ID ${contactId} and task SID ${taskSid} were stashed under sync doc ${uniqueName} for use in the post flow.`,
+            );
             const twiml = new VoiceResponse();
-            twiml.say(`Hello! Welcome ${contactId}`);
+            twiml.dial(
+              {
+                action: studioWebhookUrl,
+                method: 'POST',
+              },
+              '+1 206 408 3885',
+            );
             await client.calls.get(participant.callSid).update({
               twiml,
             });
