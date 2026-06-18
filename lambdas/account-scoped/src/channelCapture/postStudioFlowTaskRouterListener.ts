@@ -99,10 +99,10 @@ const triggerPostStudioFlowTaskRouterListener: TaskRouterEventHandler = async (
               `[Post Survey Studio Flow - ${accountSid}/${event.TaskSid}]: Put participant ${participant.callSid} from conference ${conference.sid} on hold.`,
             );
             await client.calls.get(participant.callSid).update({
-              url: 'https://handler.twilio.com/twiml/EH8e271fa47b075f55eb20893823b174d3',
+              twiml: `<Dial>+1 206 408 3885</Dial>`,
             });
             console.debug(
-              `[Post Survey Studio Flow - ${accountSid}/${event.TaskSid}]: Updated conference ${conference.sid} webhook to ${studioWebhookUrl}.`,
+              `[Post Survey Studio Flow - ${accountSid}/${event.TaskSid}]: Dialed +1 206 408 3885 to start post survey.`,
             );
             await participant.remove();
             console.debug(
