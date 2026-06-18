@@ -19,11 +19,12 @@ import {
   TaskRouterEventHandler,
 } from '../taskrouter/taskrouterEventHandler';
 import { AccountSID } from '@tech-matters/twilio-types';
-import { Twilio } from 'twilio';
+import TwilioSDK, { Twilio } from 'twilio';
 import { EventType, TASK_WRAPUP } from '../taskrouter/eventTypes';
 import { EventFields } from '../taskrouter';
 import { retrieveServiceConfigurationAttributes } from '../configuration/aseloConfiguration';
 import { isChatCaptureControlTask } from './channelCaptureHandlers';
+import VoiceResponse = TwilioSDK.twiml.VoiceResponse;
 
 // TODO: factor out
 type TransferMeta = {
@@ -73,8 +74,8 @@ const triggerPostStudioFlowTaskRouterListener: TaskRouterEventHandler = async (
       const studioFlowSid = postStudioFlows?.[taskChannelUniqueName];
 
       if (studioFlowSid) {
-        const studioWebhookUrl = `https://webhooks.twilio.com/v1/Accounts/${accountSid}/Flows/${studioFlowSid}`;
-        const { conference } = taskAttributes;
+        const { conference, contactId } = taskAttributes;
+        const studioWebhookUrl = `https://webhooks.twilio.com/v1/Accounts/${accountSid}/Flows/${studioFlowSid}?contactId=${contactId}`;
         if (taskChannelUniqueName === 'voice' && conference) {
           const conferenceContext = client.conferences.get(conference.sid);
           // 1. Fetch all active participants in the conference
@@ -98,8 +99,16 @@ const triggerPostStudioFlowTaskRouterListener: TaskRouterEventHandler = async (
             console.debug(
               `[Post Survey Studio Flow - ${accountSid}/${event.TaskSid}]: Put participant ${participant.callSid} from conference ${conference.sid} on hold.`,
             );
+            const twiml = new VoiceResponse();
+            twiml.dial(
+              {
+                action: studioWebhookUrl,
+                method: 'POST',
+              },
+              '+1 206 408 3885',
+            );
             await client.calls.get(participant.callSid).update({
-              twiml: `<Response><Dial>+1 206 408 3885</Dial></Response>`,
+              twiml,
             });
             console.debug(
               `[Post Survey Studio Flow - ${accountSid}/${event.TaskSid}]: Dialed +1 206 408 3885 to start post survey.`,
