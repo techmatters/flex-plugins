@@ -118,7 +118,7 @@ const janitorHandler: TaskRouterEventHandler = async (
 
     if (!['chat', 'survey'].includes(taskChannelUniqueName)) return;
 
-    console.info(
+    console.debug(
       `JanitorListener executing for account ${accountSid}, task ${taskSid}, event: ${eventType}`,
     );
 
@@ -141,7 +141,7 @@ const janitorHandler: TaskRouterEventHandler = async (
         conversationSid: conversationSid as ConversationSID,
       });
 
-      console.info(
+      console.debug(
         `JanitorListener: bot capture clean up finished for account ${accountSid}, task ${taskSid}`,
       );
       return;
@@ -156,7 +156,7 @@ const janitorHandler: TaskRouterEventHandler = async (
         taskAttributes,
       )
     ) {
-      console.info(
+      console.debug(
         `JanitorListener: handling custom channel clean up for account ${accountSid}, task ${taskSid}`,
       );
 
@@ -164,7 +164,7 @@ const janitorHandler: TaskRouterEventHandler = async (
         channelSid: taskAttributes.channelSid as ChatChannelSID,
       });
 
-      console.info(
+      console.debug(
         `JanitorListener: custom channel clean up finished for account ${accountSid}, task ${taskSid}`,
       );
       return;
@@ -182,7 +182,7 @@ const janitorHandler: TaskRouterEventHandler = async (
         }
       }
 
-      console.info(
+      console.debug(
         `JanitorListener: deactivating conversation orchestration for account ${accountSid}, task ${taskSid}`,
       );
 
@@ -191,13 +191,13 @@ const janitorHandler: TaskRouterEventHandler = async (
         conversationSid: conversationSid as ConversationSID,
       });
 
-      console.info(
+      console.debug(
         `JanitorListener: conversation orchestration deactivated for account ${accountSid}, task ${taskSid}`,
       );
       return;
     }
 
-    console.info(
+    console.debug(
       `JanitorListener finished successfully for account ${accountSid}, task ${taskSid}, event: ${eventType}`,
     );
   } catch (err) {

@@ -171,8 +171,8 @@ const triggerPostSurvey: TaskRouterEventHandler = async (
         const postSurveyConfigSpecs = definition?.insights?.postSurveySpecs;
 
         if (!postSurveyConfigSpecs?.length) {
-          const errorMEssage = `No defined or invalid postSurveyConfigJson found for account ${accountSid}.`;
-          throw new Error(errorMEssage);
+          const errorMessage = `No defined or invalid postSurveyConfigJson found for account ${accountSid}.`;
+          throw new Error(errorMessage);
         }
 
         const { channelSid, conversationSid, channelType, customChannelType } =
