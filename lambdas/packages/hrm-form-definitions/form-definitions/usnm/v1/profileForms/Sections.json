@@ -4,9 +4,9 @@
     "label": "Behavioural Plan",
     "editLabel": "Edit Summary",
     "type": "textarea",
-    "rows": 60,
-    "width": 500,
-    "placeholder": "Enter a behavioural plan of the help seeker",
+    "rows": 50,
+    "width": 550,
+    "placeholder": "Enter a behavioural plan for the help seeker",
     "isPII": true
   }
 ]
