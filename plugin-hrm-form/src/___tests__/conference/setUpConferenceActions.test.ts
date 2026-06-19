@@ -70,7 +70,10 @@ const captureListeners = () => {
 beforeEach(() => {
   jest.clearAllMocks();
   Object.keys(listeners).forEach(k => delete listeners[k]);
-  mockGetHrmConfig.mockReturnValue({ accountScopedLambdaBaseUrl: 'https://lambda.example.com', postStudioFlows: {} } as any);
+  mockGetHrmConfig.mockReturnValue({
+    accountScopedLambdaBaseUrl: 'https://lambda.example.com',
+    postStudioFlows: {},
+  } as any);
   captureListeners();
 });
 

@@ -627,8 +627,8 @@ export const handleChannelRelease = async ({
   try {
     // get the control task
     const controlTaskContext = twilioClient.taskrouter.v1
-        .workspaces(twilioWorkspaceSid)
-        .tasks(capturedChannelAttributes.controlTaskSid);
+      .workspaces(twilioWorkspaceSid)
+      .tasks(capturedChannelAttributes.controlTaskSid);
     // get the control task
     const controlTask = await controlTaskContext.fetch();
 
