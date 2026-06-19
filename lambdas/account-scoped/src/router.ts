@@ -76,6 +76,7 @@ import { issueSyncTokenHandler } from './issueSyncToken';
 import { getExternalRecordingS3LocationHandler } from './conversation/getExternalRecordingS3Location';
 import { getMediaUrlHandler } from './conversation/getMediaUrl';
 import { handleSavePostSurvey } from './hrm/savePostSurvey';
+import {startPostSurveyChatbotHandler} from "./channelCapture/postSurveyListener";
 
 /**
  * Super simple router sufficient for directly ported Twilio Serverless functions
@@ -116,6 +117,10 @@ const ACCOUNTSID_ROUTES: Record<
   'channelCapture/chatbotCallbackCleanup': {
     requestPipeline: [validateWebhookRequest],
     handler: handleChatbotCallbackCleanup,
+  },
+  'channelCapture/startPostSurveyChatbot': {
+    requestPipeline: [validateWebhookRequest],
+    handler: startPostSurveyChatbotHandler,
   },
   'conference/conferenceStatusCallback': {
     requestPipeline: [validateWebhookRequest],

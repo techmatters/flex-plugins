@@ -69,17 +69,18 @@ const triggerPostStudioFlowTaskRouterListener: TaskRouterEventHandler = async (
       console.info(`${logPrefix} Handling post studio flow trigger...`);
       console.debug('[SENSITIVE] taskAttributes', taskAttributes);
 
-      // This task is a candidate to trigger post survey. Check feature flags for the account.
-      const serviceConfigAttributes =
-        await retrieveServiceConfigurationAttributes(client);
-      const { postStudioFlows } = serviceConfigAttributes;
-      const studioFlowIdentifier: string = postStudioFlows?.[taskChannelUniqueName] ?? '';
+      // 1. Fetch all active participants in the conference
+      const { conference, contactId } = taskAttributes;
+      const conferenceContext = client.conferences.get(conference.sid);
+      if (taskChannelUniqueName === 'voice' && conference) {
+        // This task is a candidate to trigger post survey. Check feature flags for the account.
+        const serviceConfigAttributes =
+          await retrieveServiceConfigurationAttributes(client);
+        const { postStudioFlows } = serviceConfigAttributes;
+        const studioFlowIdentifier: string =
+          postStudioFlows?.[taskChannelUniqueName] ?? '';
 
-      if (studioFlowIdentifier.startsWith('+')) {
-        const { conference, contactId } = taskAttributes;
-        if (taskChannelUniqueName === 'voice' && conference) {
-          const conferenceContext = client.conferences.get(conference.sid);
-          // 1. Fetch all active participants in the conference
+        if (studioFlowIdentifier.startsWith('+')) {
           const allParticipants = await conferenceContext.participants.list();
           console.debug(
             `${logPrefix} ${allParticipants.length} participants on conference: ${conference.sid} at ${eventType}.`,
@@ -166,17 +167,27 @@ const triggerPostStudioFlowTaskRouterListener: TaskRouterEventHandler = async (
               `${logPrefix} Only valid for redirecting to studio flow if there is only one connected participant on the conference`,
             );
           }
+        } else if (studioFlowIdentifier.startsWith('FW')) {
+          await client.studio.v2.flows.get(studioFlowIdentifier).executions.create({
+            from: taskAttributes.to,
+            parameters: {
+              contactId,
+              contactTaskSid: taskSid,
+            },
+            to: taskAttributes.from,
+          });
+          conferenceContext.participants.each(p => p.remove());
         } else {
-          console.warn(
-            `${logPrefix} Only tasks with a taskChannelUniqueName of 'voice' and a conference object in the attributes are supported for post task studio flows`,
-            `taskChannelUniqueName: ${taskChannelUniqueName}`,
-            `conference: ${conference}`,
-          );
+          console.debug(`No post studio flow configured for ${taskChannelUniqueName}`);
         }
 
         console.info(`${logPrefix} Finished handling post studio flow trigger.`);
       } else {
-        console.debug(`No post studio flow configured for ${taskChannelUniqueName}`);
+        console.warn(
+          `${logPrefix} Only tasks with a taskChannelUniqueName of 'voice' and a conference object in the attributes are supported for post task studio flows`,
+          `taskChannelUniqueName: ${taskChannelUniqueName}`,
+          `conference: ${conference}`,
+        );
       }
     }
   } catch (err) {

@@ -164,25 +164,27 @@ export const handleSavePostSurvey: AccountScopedHandler = async (
   request,
   accountSid,
 ): Promise<Result<HttpError, any>> => {
-  const { postSurveyAnswers, clientIdentifier } = request.body;
+  let { postSurveyAnswers, clientIdentifier, contactId, contactTaskSid } = request.body;
   const twilioClient = await getTwilioClient(accountSid);
-  const docUniqueName = getPostSurveySyncDocUniqueName(clientIdentifier);
-  console.debug(
-    `[Post Survey Studio Flow - ${accountSid}/${clientIdentifier}]: Looking up sync doc ${docUniqueName}`,
-  );
-  const docContext = twilioClient.sync.v1.services
-    .get(await getSyncServiceSid(accountSid))
-    .documents.get(docUniqueName);
-  const doc = await docContext.fetch();
-  const { taskSid, contactId } = doc.data;
-  console.debug(
-    `[Post Survey Studio Flow - ${accountSid}/${taskSid}]: Retrieved contactId ${contactId} and taskSid ${taskSid} from sync doc ${docUniqueName}`,
-  );
+  if (!contactId || !contactTaskSid) {
+    const docUniqueName = getPostSurveySyncDocUniqueName(clientIdentifier);
+    console.debug(
+      `[Post Survey Studio Flow - ${accountSid}/${clientIdentifier}]: Looking up sync doc ${docUniqueName}`,
+    );
+    const docContext = twilioClient.sync.v1.services
+      .get(await getSyncServiceSid(accountSid))
+      .documents.get(docUniqueName);
+    const doc = await docContext.fetch();
+    ({ taskSid: contactTaskSid, contactId } = doc.data);
+    console.debug(
+      `[Post Survey Studio Flow - ${accountSid}/${contactTaskSid}]: Retrieved contactId ${contactId} and taskSid ${contactTaskSid} from sync doc ${docUniqueName}`,
+    );
+  }
   const controlTask = await twilioClient.taskrouter.v1
     .workspaces(await getWorkspaceSid(accountSid))
     .tasks.create({
       attributes: JSON.stringify({
-        contactTaskId: taskSid,
+        contactTaskId: contactTaskSid,
         contactId,
         isSurveyTask: true,
       }),
@@ -191,15 +193,16 @@ export const handleSavePostSurvey: AccountScopedHandler = async (
     });
 
   console.debug(
-    `[Post Survey Studio Flow - ${accountSid}/${taskSid}]: Created new post studio flow task ${controlTask.sid} for storing post survey data in insights`,
+    `[Post Survey Studio Flow - ${accountSid}/${contactTaskSid}]: Created new post studio flow task ${controlTask.sid} for storing post survey data in insights`,
   );
   await savePostSurvey({ twilioClient, accountSid, controlTask, postSurveyAnswers });
   // As survey tasks will never be assigned to a worker, they'll be kept in pending state. A pending can't transition to completed state, so we cancel them here to raise a task.canceled taskrouter event (see functions/taskrouterListeners/janitorListener.ts)
   // This needs to be the last step so the new task attributes from saveSurveyInInsights make it to insights
   console.debug(
-    `[Post Survey Studio Flow - ${accountSid}/${taskSid}]: Saved new post survey to HRM for contact ${contactId} and updated controlTask ${controlTask.sid} for insights.`,
+    `[Post Survey Studio Flow - ${accountSid}/${contactTaskSid}]: Saved new post survey to HRM for contact ${contactId} and updated controlTask ${controlTask.sid} for insights.`,
   );
   await controlTask.update({ assignmentStatus: 'canceled' });
-  await docContext.remove();
-  return newOk(undefined);
+  return newOk({
+    message: `[Post Survey Studio Flow - ${accountSid}/${contactTaskSid}]: Saved new post survey to HRM for contact ${contactId} and updated controlTask ${controlTask.sid} for insights.`,
+  });
 };
