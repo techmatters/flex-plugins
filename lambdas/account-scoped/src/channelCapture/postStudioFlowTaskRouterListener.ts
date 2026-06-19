@@ -111,14 +111,31 @@ const triggerPostStudioFlowTaskRouterListener: TaskRouterEventHandler = async (
               await getSyncServiceSid(accountSid),
             ).documents;
             try {
-              await docList.get(uniqueName).remove();
+              await docList.get(uniqueName).update({
+                data: {
+                  taskSid,
+                  contactId,
+                },
+                ttl: 24 * 60 * 60,
+              });
               console.debug(
-                `[Post Survey Studio Flow - ${accountSid}/${event.TaskSid}]: Removed existing sync document ${uniqueName}.`,
+                `[Post Survey Studio Flow - ${accountSid}/${event.TaskSid}]: Updated existing sync document ${uniqueName}.`,
               );
             } catch (err) {
               if ((err as RestException).status === 404) {
                 console.debug(
-                  `[Post Survey Studio Flow - ${accountSid}/${event.TaskSid}]: No existing sync document ${uniqueName} to remove.`,
+                  `[Post Survey Studio Flow - ${accountSid}/${event.TaskSid}]: No existing sync document ${uniqueName} to update.`,
+                );
+                await docList.create({
+                  uniqueName,
+                  data: {
+                    taskSid,
+                    contactId,
+                  },
+                  ttl: 24 * 60 * 60,
+                });
+                console.debug(
+                  `[Post Survey Studio Flow - ${accountSid}/${event.TaskSid}]: Before dialing participant ${participant.callSid} from conference ${conference.sid} into a new call, contact ID ${contactId} and task SID ${taskSid} were stashed under sync doc ${uniqueName} for use in the post flow.`,
                 );
               } else {
                 console.error(
@@ -127,17 +144,7 @@ const triggerPostStudioFlowTaskRouterListener: TaskRouterEventHandler = async (
                 );
               }
             }
-            await docList.create({
-              uniqueName,
-              data: {
-                taskSid,
-                contactId,
-              },
-              ttl: 24 * 60 * 60,
-            });
-            console.debug(
-              `[Post Survey Studio Flow - ${accountSid}/${event.TaskSid}]: Before dialing participant ${participant.callSid} from conference ${conference.sid} into a new call, contact ID ${contactId} and task SID ${taskSid} were stashed under sync doc ${uniqueName} for use in the post flow.`,
-            );
+
             const twiml = new VoiceResponse();
             twiml.dial(
               {
