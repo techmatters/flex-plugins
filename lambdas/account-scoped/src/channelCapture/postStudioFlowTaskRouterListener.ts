@@ -73,9 +73,9 @@ const triggerPostStudioFlowTaskRouterListener: TaskRouterEventHandler = async (
       const serviceConfigAttributes =
         await retrieveServiceConfigurationAttributes(client);
       const { postStudioFlows } = serviceConfigAttributes;
-      const studioFlowSid = postStudioFlows?.[taskChannelUniqueName];
+      const studioFlowIdentifier: string = postStudioFlows?.[taskChannelUniqueName] ?? '';
 
-      if (studioFlowSid) {
+      if (studioFlowIdentifier.startsWith('+')) {
         const { conference, contactId } = taskAttributes;
         if (taskChannelUniqueName === 'voice' && conference) {
           const conferenceContext = client.conferences.get(conference.sid);
@@ -144,11 +144,13 @@ const triggerPostStudioFlowTaskRouterListener: TaskRouterEventHandler = async (
                 }
               }
               const twiml = new VoiceResponse();
-              twiml.dial('+1 206 408 3885');
+              twiml.dial(studioFlowIdentifier);
               await client.calls.get(participant.callSid).update({
                 twiml,
               });
-              console.debug(`${logPrefix} Dialed +1 206 408 3885 to start post survey.`);
+              console.debug(
+                `${logPrefix} Dialed ${studioFlowIdentifier} to start post survey.`,
+              );
             } catch (err) {
               await participant.remove();
               console.debug(
