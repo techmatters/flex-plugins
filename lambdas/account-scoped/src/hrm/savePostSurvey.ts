@@ -167,6 +167,9 @@ export const handleSavePostSurvey: AccountScopedHandler = async (
   const { postSurveyAnswers, clientIdentifier } = request.body;
   const twilioClient = await getTwilioClient(accountSid);
   const docUniqueName = getPostSurveySyncDocUniqueName(clientIdentifier);
+  console.debug(
+    `[Post Survey Studio Flow - ${accountSid}/${clientIdentifier}]: Looking up sync doc ${docUniqueName}`,
+  );
   const docContext = twilioClient.sync.v1.services
     .get(await getSyncServiceSid(accountSid))
     .documents.get(docUniqueName);
@@ -193,6 +196,9 @@ export const handleSavePostSurvey: AccountScopedHandler = async (
   await savePostSurvey({ twilioClient, accountSid, controlTask, postSurveyAnswers });
   // As survey tasks will never be assigned to a worker, they'll be kept in pending state. A pending can't transition to completed state, so we cancel them here to raise a task.canceled taskrouter event (see functions/taskrouterListeners/janitorListener.ts)
   // This needs to be the last step so the new task attributes from saveSurveyInInsights make it to insights
+  console.debug(
+    `[Post Survey Studio Flow - ${accountSid}/${taskSid}]: Saved new post survey to HRM for contact ${contactId} and updated controlTask ${controlTask.sid} for insights.`,
+  );
   await controlTask.update({ assignmentStatus: 'canceled' });
   await docContext.remove();
   return newOk(undefined);
