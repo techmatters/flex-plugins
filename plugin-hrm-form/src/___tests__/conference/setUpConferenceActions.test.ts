@@ -70,7 +70,7 @@ const captureListeners = () => {
 beforeEach(() => {
   jest.clearAllMocks();
   Object.keys(listeners).forEach(k => delete listeners[k]);
-  mockGetHrmConfig.mockReturnValue({ accountScopedLambdaBaseUrl: 'https://lambda.example.com' } as any);
+  mockGetHrmConfig.mockReturnValue({ accountScopedLambdaBaseUrl: 'https://lambda.example.com', postStudioFlows: {} } as any);
   captureListeners();
 });
 
@@ -92,7 +92,7 @@ describe('setUpConferenceActions', () => {
         'https://lambda.example.com/conference/conferenceStatusCallback',
       );
       expect(conferenceOptions.conferenceStatusCallbackMethod).toBe('POST');
-      expect(conferenceOptions.conferenceStatusCallbackEvent).toBe('leave');
+      expect(conferenceOptions.conferenceStatusCallbackEvent).toBe(['leave', 'join'].toString());
     });
 
     test('does not throw and does nothing when feature flag is enabled but conferenceOptions is undefined (non-call task)', async () => {
