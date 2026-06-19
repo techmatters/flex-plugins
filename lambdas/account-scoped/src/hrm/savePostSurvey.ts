@@ -158,7 +158,7 @@ export const savePostSurvey = async ({
 };
 
 export const getPostSurveySyncDocUniqueName = (callerIdentifier: string) =>
-  `/post-surveys/pending/${callerIdentifier}`;
+  `post-surveys-pending-${callerIdentifier.replaceAll('+', '')}`;
 
 export const handleSavePostSurvey: AccountScopedHandler = async (
   request,
