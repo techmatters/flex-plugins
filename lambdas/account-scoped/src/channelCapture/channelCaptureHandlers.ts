@@ -18,15 +18,11 @@ import { ConversationInstance } from 'twilio/lib/rest/conversations/v1/conversat
 import type { TaskInstance } from 'twilio/lib/rest/taskrouter/v1/workspace/task';
 import type { MemberInstance } from 'twilio/lib/rest/ipMessaging/v2/service/channel/member';
 import { LexClient, LexMemory } from './lexClient';
-import { PostSurveyData, buildDataObject } from './hrmDataManipulation';
-import { buildSurveyInsightsData } from './insightsService';
 import { isErr, newErr, newOk, Result } from '../Result';
 import { Twilio } from 'twilio';
-import { postToInternalHrmEndpoint } from '../hrm/internalHrmRequest';
 import { ROUTE_PREFIX } from '../router';
 import { AccountSID } from '@tech-matters/twilio-types';
-import { getCurrentDefinitionVersion } from '../hrm/formDefinitionsCache';
-import { LegacyOneToManyConfigSpec } from '@tech-matters/hrm-form-definitions';
+import { savePostSurvey } from '../hrm/savePostSurvey';
 
 const triggerTypes = ['withUserMessage', 'withNextMessage'] as const;
 export type TriggerTypes = (typeof triggerTypes)[number];
@@ -613,100 +609,6 @@ const createStudioFlowTrigger = async (
   });
 };
 
-type PostSurveyBody = {
-  contactTaskId: string;
-  taskId: string;
-  data: PostSurveyData;
-};
-
-const saveSurveyInInsights = async (
-  postSurveyConfigJson: LegacyOneToManyConfigSpec[],
-  memory: LexMemory,
-  controlTask: TaskInstance,
-  controlTaskAttributes: any,
-) => {
-  const finalAttributes = buildSurveyInsightsData(
-    postSurveyConfigJson,
-    controlTaskAttributes,
-    memory,
-  );
-
-  await controlTask.update({ attributes: JSON.stringify(finalAttributes) });
-};
-
-const saveSurveyInHRM = async ({
-  accountSid,
-  controlTask,
-  controlTaskAttributes,
-  hrmApiVersion,
-  memory,
-  postSurveyConfigSpecs,
-}: {
-  postSurveyConfigSpecs: LegacyOneToManyConfigSpec[];
-  memory: LexMemory;
-  controlTask: TaskInstance;
-  controlTaskAttributes: any;
-  accountSid: AccountSID;
-  hrmApiVersion: string;
-}) => {
-  const data = buildDataObject(postSurveyConfigSpecs, memory);
-
-  const body: PostSurveyBody = {
-    contactTaskId: controlTaskAttributes.contactTaskId,
-    taskId: controlTask.sid,
-    data,
-  };
-
-  await postToInternalHrmEndpoint(accountSid, hrmApiVersion, 'postSurveys', body);
-};
-
-const handlePostSurveyComplete = async ({
-  accountSid,
-  controlTask,
-  memory,
-  twilioClient,
-}: {
-  accountSid: AccountSID;
-  twilioClient: Twilio;
-  memory: LexMemory;
-  controlTask: TaskInstance;
-}) => {
-  const serviceConfig = await twilioClient.flexApi.v1.configuration.get().fetch();
-
-  const { hrm_api_version: hrmApiVersion } = serviceConfig.attributes;
-  const definition = await getCurrentDefinitionVersion({ accountSid });
-  const postSurveyConfigSpecs = definition?.insights?.postSurveySpecs;
-
-  if (postSurveyConfigSpecs?.length) {
-    const controlTaskAttributes = JSON.parse(controlTask.attributes);
-
-    // parallel execution to save survey collected data in insights and hrm
-    await Promise.all([
-      saveSurveyInInsights(
-        postSurveyConfigSpecs,
-        memory,
-        controlTask,
-        controlTaskAttributes,
-      ),
-      saveSurveyInHRM({
-        postSurveyConfigSpecs,
-        memory,
-        controlTask,
-        controlTaskAttributes,
-        accountSid,
-        hrmApiVersion,
-      }),
-    ]);
-
-    // As survey tasks will never be assigned to a worker, they'll be kept in pending state. A pending can't transition to completed state, so we cancel them here to raise a task.canceled taskrouter event (see functions/taskrouterListeners/janitorListener.ts)
-    // This needs to be the last step so the new task attributes from saveSurveyInInsights make it to insights
-    await controlTask.update({ assignmentStatus: 'canceled' });
-  } else {
-    const errorMEssage = `No defined or invalid postSurveyConfigJson found for account ${accountSid}.`;
-    console.info(`Error accessing to the post survey form definitions: ${errorMEssage}`);
-  }
-};
-
 export const handleChannelRelease = async ({
   accountSid,
   capturedChannelAttributes,
@@ -724,10 +626,11 @@ export const handleChannelRelease = async ({
 }) => {
   try {
     // get the control task
-    const controlTask = await twilioClient.taskrouter.v1
+    const controlTaskContext = twilioClient.taskrouter.v1
       .workspaces(twilioWorkspaceSid)
-      .tasks(capturedChannelAttributes.controlTaskSid)
-      .fetch();
+      .tasks(capturedChannelAttributes.controlTaskSid);
+    // get the control task
+    const controlTask = await controlTaskContext.fetch();
 
     if (capturedChannelAttributes.releaseType === 'triggerStudioFlow') {
       await createStudioFlowTrigger(
@@ -738,7 +641,13 @@ export const handleChannelRelease = async ({
     }
 
     if (capturedChannelAttributes.releaseType === 'postSurveyComplete') {
-      await handlePostSurveyComplete({ memory, controlTask, accountSid, twilioClient });
+      await savePostSurvey({
+        postSurveyAnswers: memory,
+        controlTask,
+        accountSid,
+        twilioClient,
+      });
+      await controlTaskContext.update({ assignmentStatus: 'canceled' });
     }
 
     return newOk({});
