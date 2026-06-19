@@ -54,6 +54,7 @@ const triggerPostStudioFlowTaskRouterListener: TaskRouterEventHandler = async (
   accountSid: AccountSID,
   client: Twilio,
 ) => {
+  const logPrefix = `[Post Survey Studio Flow - ${accountSid}/${event.TaskSid}]:`;
   try {
     const {
       EventType: eventType,
@@ -65,9 +66,7 @@ const triggerPostStudioFlowTaskRouterListener: TaskRouterEventHandler = async (
     const taskAttributes = JSON.parse(taskAttributesString);
 
     if (isTriggerPostStudioFlow({ eventType, taskAttributes, taskChannelUniqueName })) {
-      console.info(
-        `[Post Survey Studio Flow - ${accountSid}/${taskSid}]: Handling post studio flow trigger...`,
-      );
+      console.info(`${logPrefix} Handling post studio flow trigger...`);
       console.debug('[SENSITIVE] taskAttributes', taskAttributes);
 
       // This task is a candidate to trigger post survey. Check feature flags for the account.
@@ -78,56 +77,40 @@ const triggerPostStudioFlowTaskRouterListener: TaskRouterEventHandler = async (
 
       if (studioFlowSid) {
         const { conference, contactId } = taskAttributes;
-        const studioWebhookUrl = `https://webhooks.twilio.com/v1/Accounts/${accountSid}/Flows/${studioFlowSid}?`;
         if (taskChannelUniqueName === 'voice' && conference) {
           const conferenceContext = client.conferences.get(conference.sid);
           // 1. Fetch all active participants in the conference
           const allParticipants = await conferenceContext.participants.list();
           console.debug(
-            `[Post Survey Studio Flow - ${accountSid}/${taskSid}]: ${allParticipants.length} participants on conference: ${conference.sid} at ${eventType}.`,
+            `${logPrefix} ${allParticipants.length} participants on conference: ${conference.sid} at ${eventType}.`,
             allParticipants,
           );
           const connectedParticipants = allParticipants.filter(
             p => p.status === 'connected',
           );
           console.debug(
-            `[Post Survey Studio Flow - ${accountSid}/${taskSid}]: ${connectedParticipants.length} participants on conference: ${conference.sid} at ${eventType}.`,
+            `${logPrefix} ${connectedParticipants.length} participants on conference: ${conference.sid} at ${eventType}.`,
             connectedParticipants,
           );
           if (connectedParticipants.length === 1) {
             const [participant] = connectedParticipants;
-            await participant.update({
-              hold: true,
-            });
-            console.debug(
-              `[Post Survey Studio Flow - ${accountSid}/${event.TaskSid}]: Put participant ${participant.callSid} from conference ${conference.sid} on hold.`,
-            );
-            const { from } = await client.calls.get(participant.callSid).fetch();
-            console.debug(
-              `[Post Survey Studio Flow - ${accountSid}/${event.TaskSid}]: Retrieved call ${participant.callSid} from conference ${conference.sid}.`,
-            );
-            const uniqueName = getPostSurveySyncDocUniqueName(from);
-            const docList = client.sync.v1.services.get(
-              await getSyncServiceSid(accountSid),
-            ).documents;
             try {
-              await docList.get(uniqueName).update({
-                data: {
-                  taskSid,
-                  contactId,
-                },
-                ttl: 24 * 60 * 60,
+              await participant.update({
+                hold: true,
               });
               console.debug(
-                `[Post Survey Studio Flow - ${accountSid}/${event.TaskSid}]: Updated existing sync document ${uniqueName}.`,
+                `${logPrefix} Put participant ${participant.callSid} from conference ${conference.sid} on hold.`,
               );
-            } catch (err) {
-              if ((err as RestException).status === 404) {
-                console.debug(
-                  `[Post Survey Studio Flow - ${accountSid}/${event.TaskSid}]: No existing sync document ${uniqueName} to update.`,
-                );
-                await docList.create({
-                  uniqueName,
+              const { from } = await client.calls.get(participant.callSid).fetch();
+              console.debug(
+                `${logPrefix} Retrieved call ${participant.callSid} from conference ${conference.sid}.`,
+              );
+              const uniqueName = getPostSurveySyncDocUniqueName(from);
+              const docList = client.sync.v1.services.get(
+                await getSyncServiceSid(accountSid),
+              ).documents;
+              try {
+                await docList.get(uniqueName).update({
                   data: {
                     taskSid,
                     contactId,
@@ -135,50 +118,61 @@ const triggerPostStudioFlowTaskRouterListener: TaskRouterEventHandler = async (
                   ttl: 24 * 60 * 60,
                 });
                 console.debug(
-                  `[Post Survey Studio Flow - ${accountSid}/${event.TaskSid}]: Before dialing participant ${participant.callSid} from conference ${conference.sid} into a new call, contact ID ${contactId} and task SID ${taskSid} were stashed under sync doc ${uniqueName} for use in the post flow.`,
+                  `${logPrefix} Updated existing sync document ${uniqueName}.`,
                 );
-              } else {
-                console.error(
-                  `[Post Survey Studio Flow - ${accountSid}/${event.TaskSid}]: Error removing sync document ${uniqueName}`,
-                  err,
-                );
+              } catch (err) {
+                if ((err as RestException).status === 404) {
+                  console.debug(
+                    `${logPrefix} No existing sync document ${uniqueName} to update.`,
+                  );
+                  await docList.create({
+                    uniqueName,
+                    data: {
+                      taskSid,
+                      contactId,
+                    },
+                    ttl: 24 * 60 * 60,
+                  });
+                  console.debug(
+                    `${logPrefix} Before dialing participant ${participant.callSid} from conference ${conference.sid} into a new call, contact ID ${contactId} and task SID ${taskSid} were stashed under sync doc ${uniqueName} for use in the post flow.`,
+                  );
+                } else {
+                  console.error(
+                    `${logPrefix} Error updating sync document ${uniqueName}`,
+                    err,
+                  );
+                }
               }
+              const twiml = new VoiceResponse();
+              twiml.dial('+1 206 408 3885');
+              await client.calls.get(participant.callSid).update({
+                twiml,
+              });
+              console.debug(`${logPrefix} Dialed +1 206 408 3885 to start post survey.`);
+            } catch (err) {
+              await participant.remove();
+              console.debug(
+                `${logPrefix} Removed participant ${participant.callSid} from conference ${conference.sid}.`,
+              );
+              console.error(
+                `${logPrefix} triggerPostStudioFlowTaskRouterListener for participant ${participant.callSid} failed`,
+                err,
+              );
             }
-
-            const twiml = new VoiceResponse();
-            twiml.dial(
-              {
-                action: studioWebhookUrl,
-                method: 'POST',
-              },
-              '+1 206 408 3885',
-            );
-            await client.calls.get(participant.callSid).update({
-              twiml,
-            });
-            console.debug(
-              `[Post Survey Studio Flow - ${accountSid}/${event.TaskSid}]: Dialed +1 206 408 3885 to start post survey.`,
-            );
-            await participant.remove();
-            console.debug(
-              `[Post Survey Studio Flow - ${accountSid}/${event.TaskSid}]: Removed participant ${participant.callSid} from conference ${conference.sid}.`,
-            );
           } else {
             console.debug(
-              `[Post Survey Studio Flow - ${accountSid}/${event.TaskSid}]: Only valid for redirecting to studio flow if there is only one connected participant on the conference`,
+              `${logPrefix} Only valid for redirecting to studio flow if there is only one connected participant on the conference`,
             );
           }
         } else {
           console.warn(
-            `[Post Survey Studio Flow - ${accountSid}/${event.TaskSid}]: Only tasks with a taskChannelUniqueName of 'voice' and a conference object in the attributes are supported for post task studio flows`,
+            `${logPrefix} Only tasks with a taskChannelUniqueName of 'voice' and a conference object in the attributes are supported for post task studio flows`,
             `taskChannelUniqueName: ${taskChannelUniqueName}`,
             `conference: ${conference}`,
           );
         }
 
-        console.info(
-          `[Post Survey Studio Flow - ${accountSid}/${event.TaskSid}]: Finished handling post studio flow trigger.`,
-        );
+        console.info(`${logPrefix} Finished handling post studio flow trigger.`);
       } else {
         console.debug(`No post studio flow configured for ${taskChannelUniqueName}`);
       }
