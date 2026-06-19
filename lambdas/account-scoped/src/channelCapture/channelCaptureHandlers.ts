@@ -677,7 +677,12 @@ const handlePostSurveyComplete = async ({
   const definition = await getCurrentDefinitionVersion({ accountSid });
   const postSurveyConfigSpecs = definition?.insights?.postSurveySpecs;
 
-  if (postSurveyConfigSpecs?.length) {
+  try {
+    if (!postSurveyConfigSpecs?.length) {
+      const errorMEssage = `No defined or invalid postSurveyConfigJson found for account ${accountSid}.`;
+      throw new Error(errorMEssage);
+    }
+
     const controlTaskAttributes = JSON.parse(controlTask.attributes);
 
     // parallel execution to save survey collected data in insights and hrm
@@ -697,13 +702,13 @@ const handlePostSurveyComplete = async ({
         hrmApiVersion,
       }),
     ]);
-
+  } catch (err) {
+    const message = err instanceof Error ? err.message : String(err);
+    console.error(`Error accessing to the post survey form definitions: ${message}`);
+  } finally {
     // As survey tasks will never be assigned to a worker, they'll be kept in pending state. A pending can't transition to completed state, so we cancel them here to raise a task.canceled taskrouter event (see functions/taskrouterListeners/janitorListener.ts)
     // This needs to be the last step so the new task attributes from saveSurveyInInsights make it to insights
     await controlTask.update({ assignmentStatus: 'canceled' });
-  } else {
-    const errorMEssage = `No defined or invalid postSurveyConfigJson found for account ${accountSid}.`;
-    console.info(`Error accessing to the post survey form definitions: ${errorMEssage}`);
   }
 };
 
