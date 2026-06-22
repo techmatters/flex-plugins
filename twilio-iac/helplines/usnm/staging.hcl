@@ -9,7 +9,11 @@ locals {
 
   local_config = {
     custom_task_routing_filter_expression = ""
-    flow_vars                             = {}
+    flow_vars = {
+      widget_from = "NAMI"
+      chat_blocked_message = "Hi, you've been blocked from accessing NAMI services and we are not able to read or receive further messages from you."
+      send_message_prequeue = "Welcome. Pleas wait for a specialist."
+    }
 
 
     #Channels
