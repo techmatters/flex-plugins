@@ -25,9 +25,6 @@ import { EventFields } from '../taskrouter';
 import { retrieveServiceConfigurationAttributes } from '../configuration/aseloConfiguration';
 import { isChatCaptureControlTask } from './channelCaptureHandlers';
 import VoiceResponse = TwilioSDK.twiml.VoiceResponse;
-import { getSyncServiceSid } from '@tech-matters/twilio-configuration';
-import { getPostSurveySyncDocUniqueName } from '../hrm/savePostSurvey';
-import RestException from 'twilio/lib/base/RestException';
 
 // TODO: factor out
 type TransferMeta = {
@@ -101,50 +98,16 @@ const triggerPostStudioFlowTaskRouterListener: TaskRouterEventHandler = async (
               console.debug(
                 `${logPrefix} Put participant ${participant.callSid} from conference ${conference.sid} on hold.`,
               );
-              const { from } = await client.calls.get(participant.callSid).fetch();
-              console.debug(
-                `${logPrefix} Retrieved call ${participant.callSid} from conference ${conference.sid}.`,
-              );
-              const uniqueName = getPostSurveySyncDocUniqueName(from);
-              const docList = client.sync.v1.services.get(
-                await getSyncServiceSid(accountSid),
-              ).documents;
-              try {
-                await docList.get(uniqueName).update({
-                  data: {
-                    taskSid,
-                    contactId,
-                  },
-                  ttl: 24 * 60 * 60,
-                });
-                console.debug(
-                  `${logPrefix} Updated existing sync document ${uniqueName}.`,
-                );
-              } catch (err) {
-                if ((err as RestException).status === 404) {
-                  console.debug(
-                    `${logPrefix} No existing sync document ${uniqueName} to update.`,
-                  );
-                  await docList.create({
-                    uniqueName,
-                    data: {
-                      taskSid,
-                      contactId,
-                    },
-                    ttl: 24 * 60 * 60,
-                  });
-                  console.debug(
-                    `${logPrefix} Before dialing participant ${participant.callSid} from conference ${conference.sid} into a new call, contact ID ${contactId} and task SID ${taskSid} were stashed under sync doc ${uniqueName} for use in the post flow.`,
-                  );
-                } else {
-                  console.error(
-                    `${logPrefix} Error updating sync document ${uniqueName}`,
-                    err,
-                  );
-                }
-              }
               const twiml = new VoiceResponse();
-              twiml.dial(studioFlowIdentifier);
+              const { hrm_base_url: hrmBaseUrl } =
+                await retrieveServiceConfigurationAttributes(client);
+              twiml.dial(
+                {
+                  action: `${hrmBaseUrl}/lambda/twilio/account-scoped/${accountSid}/hrm/voicePostSurveyAction?contactId=${contactId}&contactTaskId=${taskSid}`,
+                  method: 'GET',
+                },
+                studioFlowIdentifier,
+              );
               await client.calls.get(participant.callSid).update({
                 twiml,
               });

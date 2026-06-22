@@ -75,7 +75,10 @@ import { sendMessageAndRunJanitorHandler } from './conversation/sendMessageAndRu
 import { issueSyncTokenHandler } from './issueSyncToken';
 import { getExternalRecordingS3LocationHandler } from './conversation/getExternalRecordingS3Location';
 import { getMediaUrlHandler } from './conversation/getMediaUrl';
-import { handleSavePostSurvey } from './hrm/savePostSurvey';
+import {
+  savePostSurveyHandler,
+  voicePostSurveyActionHandler,
+} from './hrm/voicePostSurvey';
 
 /**
  * Super simple router sufficient for directly ported Twilio Serverless functions
@@ -87,221 +90,298 @@ import { handleSavePostSurvey } from './hrm/savePostSurvey';
 
 export const ROUTE_PREFIX = '/lambda/twilio/account-scoped/';
 
-const INITIAL_PIPELINE = [validateRequestMethod];
-
 const ACCOUNTSID_ROUTES: Record<
   string,
   FunctionRoute | FunctionRoute<FlexValidatedHttpRequest>
 > = {
   'webhooks/taskrouterCallback': {
-    requestPipeline: [validateWebhookRequest],
+    requestPipeline: [validateRequestMethod('POST'), validateWebhookRequest],
     handler: handleTaskRouterEvent,
   },
-  'hrm/savePostSurvey': {
-    requestPipeline: [validateWebhookRequest],
-    handler: handleSavePostSurvey,
-  },
   getProfileFlagsForIdentifier: {
-    requestPipeline: [validateWebhookRequest],
+    requestPipeline: [validateRequestMethod('POST'), validateWebhookRequest],
     handler: handleGetProfileFlagsForIdentifier,
   },
   'channelCapture/captureChannelWithBot': {
-    requestPipeline: [validateWebhookRequest],
+    requestPipeline: [validateRequestMethod('POST'), validateWebhookRequest],
     handler: handleCaptureChannelWithBot,
   },
   'channelCapture/chatbotCallback': {
-    requestPipeline: [validateWebhookRequest],
+    requestPipeline: [validateRequestMethod('POST'), validateWebhookRequest],
     handler: handleChatbotCallback,
   },
   'channelCapture/chatbotCallbackCleanup': {
-    requestPipeline: [validateWebhookRequest],
+    requestPipeline: [validateRequestMethod('POST'), validateWebhookRequest],
     handler: handleChatbotCallbackCleanup,
   },
+  'hrm/savePostSurvey': {
+    requestPipeline: [validateRequestMethod('POST'), validateWebhookRequest],
+    handler: savePostSurveyHandler,
+  },
+  'hrm/voicePostSurveyAction': {
+    requestPipeline: [validateRequestMethod('GET'), validateWebhookRequest],
+    handler: voicePostSurveyActionHandler,
+  },
   'conference/conferenceStatusCallback': {
-    requestPipeline: [validateWebhookRequest],
+    requestPipeline: [validateRequestMethod('POST'), validateWebhookRequest],
     handler: conferenceStatusCallbackHandler,
   },
   'conference/addParticipant': {
-    requestPipeline: [validateFlexTokenRequest({ tokenMode: 'agent' })],
+    requestPipeline: [
+      validateRequestMethod('POST'),
+      validateFlexTokenRequest({ tokenMode: 'agent' }),
+    ],
     handler: addParticipantHandler,
   },
   'conference/getParticipant': {
-    requestPipeline: [validateFlexTokenRequest({ tokenMode: 'agent' })],
+    requestPipeline: [
+      validateRequestMethod('POST'),
+      validateFlexTokenRequest({ tokenMode: 'agent' }),
+    ],
     handler: getParticipantHandler,
   },
   'conference/removeParticipant': {
-    requestPipeline: [validateFlexTokenRequest({ tokenMode: 'agent' })],
+    requestPipeline: [
+      validateRequestMethod('POST'),
+      validateFlexTokenRequest({ tokenMode: 'agent' }),
+    ],
     handler: removeParticipantHandler,
   },
   'conference/updateParticipant': {
-    requestPipeline: [validateFlexTokenRequest({ tokenMode: 'agent' })],
+    requestPipeline: [
+      validateRequestMethod('POST'),
+      validateFlexTokenRequest({ tokenMode: 'agent' }),
+    ],
     handler: updateParticipantHandler,
   },
   'conference/participantStatusCallback': {
-    requestPipeline: [validateWebhookRequest],
+    requestPipeline: [validateRequestMethod('POST'), validateWebhookRequest],
     handler: participantStatusCallbackHandler,
   },
   'conversations/serviceScopedConversationEventHandler': {
-    requestPipeline: [validateWebhookRequest],
+    requestPipeline: [validateRequestMethod('POST'), validateWebhookRequest],
     handler: handleConversationEvent,
   },
   'conversation/checkBlockList': {
-    requestPipeline: [validateWebhookRequest],
+    requestPipeline: [validateRequestMethod('POST'), validateWebhookRequest],
     handler: checkBlockListHandler,
   },
   'conversation/transitionAgentParticipants': {
-    requestPipeline: [validateFlexTokenRequest({ tokenMode: 'agent' })],
+    requestPipeline: [
+      validateRequestMethod('POST'),
+      validateFlexTokenRequest({ tokenMode: 'agent' }),
+    ],
     handler: transitionAgentParticipantsHandler,
   },
   'customChannels/instagram/instagramToFlex': {
-    requestPipeline: [],
+    requestPipeline: [validateRequestMethod('POST')],
     handler: instagramToFlexHandler,
   },
   'customChannels/instagram/flexToInstagram': {
-    requestPipeline: [validateWebhookRequest],
+    requestPipeline: [validateRequestMethod('POST'), validateWebhookRequest],
     handler: flexToInstagramHandler,
   },
   'customChannels/telegram/telegramToFlex': {
-    requestPipeline: [],
+    requestPipeline: [validateRequestMethod('POST')],
     handler: telegramToFlexHandler,
   },
   'customChannels/telegram/flexToTelegram': {
-    requestPipeline: [validateWebhookRequest],
+    requestPipeline: [validateRequestMethod('POST'), validateWebhookRequest],
     handler: flexToTelegramHandler,
   },
   'customChannels/modica/modicaToFlex': {
-    requestPipeline: [],
+    requestPipeline: [validateRequestMethod('POST')],
     handler: modicaToFlexHandler,
   },
   'customChannels/modica/flexToModica': {
-    requestPipeline: [validateWebhookRequest],
+    requestPipeline: [validateRequestMethod('POST'), validateWebhookRequest],
     handler: flexToModicaHandler,
   },
   'customChannels/line/lineToFlex': {
-    requestPipeline: [],
+    requestPipeline: [validateRequestMethod('POST')],
     handler: lineToFlexHandler,
   },
   'customChannels/line/flexToLine': {
-    requestPipeline: [validateWebhookRequest],
+    requestPipeline: [validateRequestMethod('POST'), validateWebhookRequest],
     handler: flexToLineHandler,
   },
   'webchatAuth/initWebchat': {
-    requestPipeline: [],
+    requestPipeline: [validateRequestMethod('POST')],
     handler: initWebchatHandler,
   },
   'webchatAuth/refreshToken': {
-    requestPipeline: [],
+    requestPipeline: [validateRequestMethod('POST')],
     handler: refreshTokenHandler,
   },
   toggleSwitchboardQueue: {
-    requestPipeline: [validateFlexTokenRequest({ tokenMode: 'supervisor' })],
+    requestPipeline: [
+      validateRequestMethod('POST'),
+      validateFlexTokenRequest({ tokenMode: 'supervisor' }),
+    ],
     handler: handleToggleSwitchboardQueue,
   },
   'task/assignOfflineContactInit': {
-    requestPipeline: [validateFlexTokenRequest({ tokenMode: 'agent' })],
+    requestPipeline: [
+      validateRequestMethod('POST'),
+      validateFlexTokenRequest({ tokenMode: 'agent' }),
+    ],
     handler: assignOfflineContactInitHandler,
   },
   'task/assignOfflineContactResolve': {
-    requestPipeline: [validateFlexTokenRequest({ tokenMode: 'agent' })],
+    requestPipeline: [
+      validateRequestMethod('POST'),
+      validateFlexTokenRequest({ tokenMode: 'agent' }),
+    ],
     handler: assignOfflineContactResolveHandler,
   },
   endChat: {
-    requestPipeline: [validateFlexTokenRequest({ tokenMode: 'guest' })],
+    requestPipeline: [
+      validateRequestMethod('POST'),
+      validateFlexTokenRequest({ tokenMode: 'guest' }),
+    ],
     handler: handleEndChat,
   },
   operatingHours: {
-    requestPipeline: [],
+    requestPipeline: [validateRequestMethod('POST')],
     handler: handleOperatingHours,
   },
   'task/checkTaskAssignment': {
-    requestPipeline: [validateFlexTokenRequest({ tokenMode: 'agent' })],
+    requestPipeline: [
+      validateRequestMethod('POST'),
+      validateFlexTokenRequest({ tokenMode: 'agent' }),
+    ],
     handler: checkTaskAssignmentHandler,
   },
   'task/completeTaskAssignment': {
-    requestPipeline: [validateFlexTokenRequest({ tokenMode: 'agent' })],
+    requestPipeline: [
+      validateRequestMethod('POST'),
+      validateFlexTokenRequest({ tokenMode: 'agent' }),
+    ],
     handler: completeTaskAssignmentHandler,
   },
   'task/cancelOrRemoveTask': {
-    requestPipeline: [validateFlexTokenRequest({ tokenMode: 'agent' })],
+    requestPipeline: [
+      validateRequestMethod('POST'),
+      validateFlexTokenRequest({ tokenMode: 'agent' }),
+    ],
     handler: cancelOrRemoveTaskHandler,
   },
   'task/getTaskAndReservations': {
-    requestPipeline: [validateFlexTokenRequest({ tokenMode: 'agent' })],
+    requestPipeline: [
+      validateRequestMethod('POST'),
+      validateFlexTokenRequest({ tokenMode: 'agent' }),
+    ],
     handler: getTaskAndReservationsHandler,
   },
   'transfer/transferStart': {
-    requestPipeline: [validateFlexTokenRequest({ tokenMode: 'agent' })],
+    requestPipeline: [
+      validateRequestMethod('POST'),
+      validateFlexTokenRequest({ tokenMode: 'agent' }),
+    ],
     handler: transferStartHandler,
   },
   updateWorkersSkills: {
-    requestPipeline: [validateFlexTokenRequest({ tokenMode: 'supervisor' })],
+    requestPipeline: [
+      validateRequestMethod('POST'),
+      validateFlexTokenRequest({ tokenMode: 'supervisor' }),
+    ],
     handler: handleUpdateWorkersSkills,
   },
   'integrations/iwf/reportToIWF': {
-    requestPipeline: [validateFlexTokenRequest({ tokenMode: 'agent' })],
+    requestPipeline: [
+      validateRequestMethod('POST'),
+      validateFlexTokenRequest({ tokenMode: 'agent' }),
+    ],
     handler: reportToIWFHandler,
   },
   'integrations/iwf/selfReportToIWF': {
-    requestPipeline: [validateFlexTokenRequest({ tokenMode: 'agent' })],
+    requestPipeline: [
+      validateRequestMethod('POST'),
+      validateFlexTokenRequest({ tokenMode: 'agent' }),
+    ],
     handler: selfReportToIWFHandler,
   },
   'conversation/getExternalRecordingS3Location': {
-    requestPipeline: [validateFlexTokenRequest({ tokenMode: 'agent' })],
+    requestPipeline: [
+      validateRequestMethod('POST'),
+      validateFlexTokenRequest({ tokenMode: 'agent' }),
+    ],
     handler: getExternalRecordingS3LocationHandler,
   },
   'conversation/getMediaUrl': {
-    requestPipeline: [validateFlexTokenRequest({ tokenMode: 'agent' })],
+    requestPipeline: [
+      validateRequestMethod('POST'),
+      validateFlexTokenRequest({ tokenMode: 'agent' }),
+    ],
     handler: getMediaUrlHandler,
   },
   'worker/populateCounselors': {
-    requestPipeline: [validateFlexTokenRequest({ tokenMode: 'agent' })],
+    requestPipeline: [
+      validateRequestMethod('POST'),
+      validateFlexTokenRequest({ tokenMode: 'agent' }),
+    ],
     handler: populateCounselorsHandler,
   },
   'worker/getWorkerAttributes': {
-    requestPipeline: [validateFlexTokenRequest({ tokenMode: 'agent' })],
+    requestPipeline: [
+      validateRequestMethod('POST'),
+      validateFlexTokenRequest({ tokenMode: 'agent' }),
+    ],
     handler: getWorkerAttributesHandler,
   },
   'worker/listWorkerQueues': {
-    requestPipeline: [validateFlexTokenRequest({ tokenMode: 'agent' })],
+    requestPipeline: [
+      validateRequestMethod('POST'),
+      validateFlexTokenRequest({ tokenMode: 'agent' }),
+    ],
     handler: listWorkerQueuesHandler,
   },
   'worker/pullTask': {
-    requestPipeline: [validateFlexTokenRequest({ tokenMode: 'agent' })],
+    requestPipeline: [
+      validateRequestMethod('POST'),
+      validateFlexTokenRequest({ tokenMode: 'agent' }),
+    ],
     handler: pullTaskHandler,
   },
   'conversation/sendSystemMessage': {
-    requestPipeline: [validateFlexTokenRequest({ tokenMode: 'agent' })],
+    requestPipeline: [
+      validateRequestMethod('POST'),
+      validateFlexTokenRequest({ tokenMode: 'agent' }),
+    ],
     handler: sendSystemMessageHandler,
   },
   'conversation/sendStudioMessage': {
-    requestPipeline: [validateWebhookRequest],
+    requestPipeline: [validateRequestMethod('POST'), validateWebhookRequest],
     handler: sendStudioMessageHandler,
   },
   'conversation/sendMessageAndRunJanitor': {
-    requestPipeline: [validateWebhookRequest],
+    requestPipeline: [validateRequestMethod('POST'), validateWebhookRequest],
     handler: sendMessageAndRunJanitorHandler,
   },
   issueSyncToken: {
-    requestPipeline: [validateFlexTokenRequest({ tokenMode: 'agent' })],
+    requestPipeline: [
+      validateRequestMethod('POST'),
+      validateFlexTokenRequest({ tokenMode: 'agent' }),
+    ],
     handler: issueSyncTokenHandler,
   },
 };
 
 const ENV_SHORTCODE_ROUTES: Record<string, FunctionRoute> = {
   'webchatAuthentication/initWebchat': {
-    requestPipeline: [],
+    requestPipeline: [validateRequestMethod('POST')],
     handler: initWebchatHandler,
   },
   'webchatAuthentication/refreshToken': {
-    requestPipeline: [validateRequestWithTwilioJwtToken],
+    requestPipeline: [validateRequestMethod('POST'), validateRequestWithTwilioJwtToken],
     handler: refreshTokenHandler,
   },
   endChat: {
-    requestPipeline: [validateRequestWithTwilioJwtToken],
+    requestPipeline: [validateRequestMethod('POST'), validateRequestWithTwilioJwtToken],
     handler: handleEndChat,
   },
   operatingHours: {
-    requestPipeline: [],
+    requestPipeline: [validateRequestMethod('POST')],
     handler: handleOperatingHours,
   },
 };
@@ -326,7 +406,7 @@ export const lookupRoute = async (
         return {
           accountSid: accountIdentifier,
           ...functionRoute,
-          requestPipeline: [...INITIAL_PIPELINE, ...functionRoute.requestPipeline],
+          requestPipeline: [...functionRoute.requestPipeline],
         };
       }
     } else {
@@ -342,7 +422,7 @@ export const lookupRoute = async (
         return {
           accountSid: await getAccountSid(accountIdentifier),
           ...functionRoute,
-          requestPipeline: [...INITIAL_PIPELINE, ...functionRoute.requestPipeline],
+          requestPipeline: [...functionRoute.requestPipeline],
         };
       }
     }
