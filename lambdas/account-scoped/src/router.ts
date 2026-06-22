@@ -78,6 +78,7 @@ import { getMediaUrlHandler } from './conversation/getMediaUrl';
 import {
   savePostSurveyHandler,
   voicePostSurveyActionHandler,
+  voicePostSurveyAnswerHandler,
 } from './hrm/voicePostSurvey';
 
 /**
@@ -89,300 +90,320 @@ import {
  */
 
 export const ROUTE_PREFIX = '/lambda/twilio/account-scoped/';
+type RouteParam = Omit<
+  FunctionRoute | FunctionRoute<FlexValidatedHttpRequest>,
+  'responseType'
+> & { responseType?: FunctionRoute['responseType'] };
+
+const newRoute = (
+  route: RouteParam,
+): FunctionRoute | FunctionRoute<FlexValidatedHttpRequest> => ({
+  responseType: 'json',
+  ...route,
+});
 
 const ACCOUNTSID_ROUTES: Record<
   string,
   FunctionRoute | FunctionRoute<FlexValidatedHttpRequest>
 > = {
-  'webhooks/taskrouterCallback': {
+  'webhooks/taskrouterCallback': newRoute({
     requestPipeline: [validateRequestMethod('POST'), validateWebhookRequest],
     handler: handleTaskRouterEvent,
-  },
-  getProfileFlagsForIdentifier: {
+  }),
+  getProfileFlagsForIdentifier: newRoute({
     requestPipeline: [validateRequestMethod('POST'), validateWebhookRequest],
     handler: handleGetProfileFlagsForIdentifier,
-  },
-  'channelCapture/captureChannelWithBot': {
+  }),
+  'channelCapture/captureChannelWithBot': newRoute({
     requestPipeline: [validateRequestMethod('POST'), validateWebhookRequest],
     handler: handleCaptureChannelWithBot,
-  },
-  'channelCapture/chatbotCallback': {
+  }),
+  'channelCapture/chatbotCallback': newRoute({
     requestPipeline: [validateRequestMethod('POST'), validateWebhookRequest],
     handler: handleChatbotCallback,
-  },
-  'channelCapture/chatbotCallbackCleanup': {
+  }),
+  'channelCapture/chatbotCallbackCleanup': newRoute({
     requestPipeline: [validateRequestMethod('POST'), validateWebhookRequest],
     handler: handleChatbotCallbackCleanup,
-  },
-  'hrm/savePostSurvey': {
+  }),
+  'hrm/savePostSurvey': newRoute({
     requestPipeline: [validateRequestMethod('POST'), validateWebhookRequest],
     handler: savePostSurveyHandler,
-  },
-  'hrm/voicePostSurveyAction': {
+  }),
+  'hrm/voicePostSurveyAction': newRoute({
     requestPipeline: [validateRequestMethod('POST'), validateWebhookRequest],
     handler: voicePostSurveyActionHandler,
-  },
-  'conference/conferenceStatusCallback': {
+  }),
+  'hrm/voicePostSurveyAnswer': newRoute({
+    requestPipeline: [validateRequestMethod('POST'), validateWebhookRequest],
+    handler: voicePostSurveyAnswerHandler,
+    responseType: 'xml',
+  }),
+  'conference/conferenceStatusCallback': newRoute({
     requestPipeline: [validateRequestMethod('POST'), validateWebhookRequest],
     handler: conferenceStatusCallbackHandler,
-  },
-  'conference/addParticipant': {
+  }),
+  'conference/addParticipant': newRoute({
     requestPipeline: [
       validateRequestMethod('POST'),
       validateFlexTokenRequest({ tokenMode: 'agent' }),
     ],
     handler: addParticipantHandler,
-  },
-  'conference/getParticipant': {
+  }),
+  'conference/getParticipant': newRoute({
     requestPipeline: [
       validateRequestMethod('POST'),
       validateFlexTokenRequest({ tokenMode: 'agent' }),
     ],
     handler: getParticipantHandler,
-  },
-  'conference/removeParticipant': {
+  }),
+  'conference/removeParticipant': newRoute({
     requestPipeline: [
       validateRequestMethod('POST'),
       validateFlexTokenRequest({ tokenMode: 'agent' }),
     ],
     handler: removeParticipantHandler,
-  },
-  'conference/updateParticipant': {
+  }),
+  'conference/updateParticipant': newRoute({
     requestPipeline: [
       validateRequestMethod('POST'),
       validateFlexTokenRequest({ tokenMode: 'agent' }),
     ],
     handler: updateParticipantHandler,
-  },
-  'conference/participantStatusCallback': {
+  }),
+  'conference/participantStatusCallback': newRoute({
     requestPipeline: [validateRequestMethod('POST'), validateWebhookRequest],
     handler: participantStatusCallbackHandler,
-  },
-  'conversations/serviceScopedConversationEventHandler': {
+  }),
+  'conversations/serviceScopedConversationEventHandler': newRoute({
     requestPipeline: [validateRequestMethod('POST'), validateWebhookRequest],
     handler: handleConversationEvent,
-  },
-  'conversation/checkBlockList': {
+  }),
+  'conversation/checkBlockList': newRoute({
     requestPipeline: [validateRequestMethod('POST'), validateWebhookRequest],
     handler: checkBlockListHandler,
-  },
-  'conversation/transitionAgentParticipants': {
+  }),
+  'conversation/transitionAgentParticipants': newRoute({
     requestPipeline: [
       validateRequestMethod('POST'),
       validateFlexTokenRequest({ tokenMode: 'agent' }),
     ],
     handler: transitionAgentParticipantsHandler,
-  },
-  'customChannels/instagram/instagramToFlex': {
+  }),
+  'customChannels/instagram/instagramToFlex': newRoute({
     requestPipeline: [validateRequestMethod('POST')],
     handler: instagramToFlexHandler,
-  },
-  'customChannels/instagram/flexToInstagram': {
+  }),
+  'customChannels/instagram/flexToInstagram': newRoute({
     requestPipeline: [validateRequestMethod('POST'), validateWebhookRequest],
     handler: flexToInstagramHandler,
-  },
-  'customChannels/telegram/telegramToFlex': {
+  }),
+  'customChannels/telegram/telegramToFlex': newRoute({
     requestPipeline: [validateRequestMethod('POST')],
     handler: telegramToFlexHandler,
-  },
-  'customChannels/telegram/flexToTelegram': {
+  }),
+  'customChannels/telegram/flexToTelegram': newRoute({
     requestPipeline: [validateRequestMethod('POST'), validateWebhookRequest],
     handler: flexToTelegramHandler,
-  },
-  'customChannels/modica/modicaToFlex': {
+  }),
+  'customChannels/modica/modicaToFlex': newRoute({
     requestPipeline: [validateRequestMethod('POST')],
     handler: modicaToFlexHandler,
-  },
-  'customChannels/modica/flexToModica': {
+  }),
+  'customChannels/modica/flexToModica': newRoute({
     requestPipeline: [validateRequestMethod('POST'), validateWebhookRequest],
     handler: flexToModicaHandler,
-  },
-  'customChannels/line/lineToFlex': {
+  }),
+  'customChannels/line/lineToFlex': newRoute({
     requestPipeline: [validateRequestMethod('POST')],
     handler: lineToFlexHandler,
-  },
-  'customChannels/line/flexToLine': {
+  }),
+  'customChannels/line/flexToLine': newRoute({
     requestPipeline: [validateRequestMethod('POST'), validateWebhookRequest],
     handler: flexToLineHandler,
-  },
-  'webchatAuth/initWebchat': {
+  }),
+  'webchatAuth/initWebchat': newRoute({
     requestPipeline: [validateRequestMethod('POST')],
     handler: initWebchatHandler,
-  },
-  'webchatAuth/refreshToken': {
+  }),
+  'webchatAuth/refreshToken': newRoute({
     requestPipeline: [validateRequestMethod('POST')],
     handler: refreshTokenHandler,
-  },
-  toggleSwitchboardQueue: {
+  }),
+  toggleSwitchboardQueue: newRoute({
     requestPipeline: [
       validateRequestMethod('POST'),
       validateFlexTokenRequest({ tokenMode: 'supervisor' }),
     ],
     handler: handleToggleSwitchboardQueue,
-  },
-  'task/assignOfflineContactInit': {
+  }),
+  'task/assignOfflineContactInit': newRoute({
     requestPipeline: [
       validateRequestMethod('POST'),
       validateFlexTokenRequest({ tokenMode: 'agent' }),
     ],
     handler: assignOfflineContactInitHandler,
-  },
-  'task/assignOfflineContactResolve': {
+  }),
+  'task/assignOfflineContactResolve': newRoute({
     requestPipeline: [
       validateRequestMethod('POST'),
       validateFlexTokenRequest({ tokenMode: 'agent' }),
     ],
     handler: assignOfflineContactResolveHandler,
-  },
-  endChat: {
+  }),
+  endChat: newRoute({
     requestPipeline: [
       validateRequestMethod('POST'),
       validateFlexTokenRequest({ tokenMode: 'guest' }),
     ],
     handler: handleEndChat,
-  },
-  operatingHours: {
+  }),
+  operatingHours: newRoute({
     requestPipeline: [validateRequestMethod('POST')],
     handler: handleOperatingHours,
-  },
-  'task/checkTaskAssignment': {
+  }),
+  'task/checkTaskAssignment': newRoute({
     requestPipeline: [
       validateRequestMethod('POST'),
       validateFlexTokenRequest({ tokenMode: 'agent' }),
     ],
     handler: checkTaskAssignmentHandler,
-  },
-  'task/completeTaskAssignment': {
+  }),
+  'task/completeTaskAssignment': newRoute({
     requestPipeline: [
       validateRequestMethod('POST'),
       validateFlexTokenRequest({ tokenMode: 'agent' }),
     ],
     handler: completeTaskAssignmentHandler,
-  },
-  'task/cancelOrRemoveTask': {
+  }),
+  'task/cancelOrRemoveTask': newRoute({
     requestPipeline: [
       validateRequestMethod('POST'),
       validateFlexTokenRequest({ tokenMode: 'agent' }),
     ],
     handler: cancelOrRemoveTaskHandler,
-  },
-  'task/getTaskAndReservations': {
+  }),
+  'task/getTaskAndReservations': newRoute({
     requestPipeline: [
       validateRequestMethod('POST'),
       validateFlexTokenRequest({ tokenMode: 'agent' }),
     ],
     handler: getTaskAndReservationsHandler,
-  },
-  'transfer/transferStart': {
+  }),
+  'transfer/transferStart': newRoute({
     requestPipeline: [
       validateRequestMethod('POST'),
       validateFlexTokenRequest({ tokenMode: 'agent' }),
     ],
     handler: transferStartHandler,
-  },
-  updateWorkersSkills: {
+  }),
+  updateWorkersSkills: newRoute({
     requestPipeline: [
       validateRequestMethod('POST'),
       validateFlexTokenRequest({ tokenMode: 'supervisor' }),
     ],
     handler: handleUpdateWorkersSkills,
-  },
-  'integrations/iwf/reportToIWF': {
+  }),
+  'integrations/iwf/reportToIWF': newRoute({
     requestPipeline: [
       validateRequestMethod('POST'),
       validateFlexTokenRequest({ tokenMode: 'agent' }),
     ],
     handler: reportToIWFHandler,
-  },
-  'integrations/iwf/selfReportToIWF': {
+  }),
+  'integrations/iwf/selfReportToIWF': newRoute({
     requestPipeline: [
       validateRequestMethod('POST'),
       validateFlexTokenRequest({ tokenMode: 'agent' }),
     ],
     handler: selfReportToIWFHandler,
-  },
-  'conversation/getExternalRecordingS3Location': {
+  }),
+  'conversation/getExternalRecordingS3Location': newRoute({
     requestPipeline: [
       validateRequestMethod('POST'),
       validateFlexTokenRequest({ tokenMode: 'agent' }),
     ],
     handler: getExternalRecordingS3LocationHandler,
-  },
-  'conversation/getMediaUrl': {
+  }),
+  'conversation/getMediaUrl': newRoute({
     requestPipeline: [
       validateRequestMethod('POST'),
       validateFlexTokenRequest({ tokenMode: 'agent' }),
     ],
     handler: getMediaUrlHandler,
-  },
-  'worker/populateCounselors': {
+  }),
+  'worker/populateCounselors': newRoute({
     requestPipeline: [
       validateRequestMethod('POST'),
       validateFlexTokenRequest({ tokenMode: 'agent' }),
     ],
     handler: populateCounselorsHandler,
-  },
-  'worker/getWorkerAttributes': {
+  }),
+  'worker/getWorkerAttributes': newRoute({
     requestPipeline: [
       validateRequestMethod('POST'),
       validateFlexTokenRequest({ tokenMode: 'agent' }),
     ],
     handler: getWorkerAttributesHandler,
-  },
-  'worker/listWorkerQueues': {
+  }),
+  'worker/listWorkerQueues': newRoute({
     requestPipeline: [
       validateRequestMethod('POST'),
       validateFlexTokenRequest({ tokenMode: 'agent' }),
     ],
     handler: listWorkerQueuesHandler,
-  },
-  'worker/pullTask': {
+  }),
+  'worker/pullTask': newRoute({
     requestPipeline: [
       validateRequestMethod('POST'),
       validateFlexTokenRequest({ tokenMode: 'agent' }),
     ],
     handler: pullTaskHandler,
-  },
-  'conversation/sendSystemMessage': {
+  }),
+  'conversation/sendSystemMessage': newRoute({
     requestPipeline: [
       validateRequestMethod('POST'),
       validateFlexTokenRequest({ tokenMode: 'agent' }),
     ],
     handler: sendSystemMessageHandler,
-  },
-  'conversation/sendStudioMessage': {
+  }),
+  'conversation/sendStudioMessage': newRoute({
     requestPipeline: [validateRequestMethod('POST'), validateWebhookRequest],
     handler: sendStudioMessageHandler,
-  },
-  'conversation/sendMessageAndRunJanitor': {
+  }),
+  'conversation/sendMessageAndRunJanitor': newRoute({
     requestPipeline: [validateRequestMethod('POST'), validateWebhookRequest],
     handler: sendMessageAndRunJanitorHandler,
-  },
-  issueSyncToken: {
+  }),
+  issueSyncToken: newRoute({
     requestPipeline: [
       validateRequestMethod('POST'),
       validateFlexTokenRequest({ tokenMode: 'agent' }),
     ],
     handler: issueSyncTokenHandler,
-  },
+  }),
 };
 
 const ENV_SHORTCODE_ROUTES: Record<string, FunctionRoute> = {
   'webchatAuthentication/initWebchat': {
     requestPipeline: [validateRequestMethod('POST')],
     handler: initWebchatHandler,
+    responseType: 'json',
   },
   'webchatAuthentication/refreshToken': {
     requestPipeline: [validateRequestMethod('POST'), validateRequestWithTwilioJwtToken],
     handler: refreshTokenHandler,
+    responseType: 'json',
   },
   endChat: {
     requestPipeline: [validateRequestMethod('POST'), validateRequestWithTwilioJwtToken],
     handler: handleEndChat,
+    responseType: 'json',
   },
   operatingHours: {
     requestPipeline: [validateRequestMethod('POST')],
     handler: handleOperatingHours,
+    responseType: 'json',
   },
 };
 

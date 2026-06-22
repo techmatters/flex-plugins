@@ -24,6 +24,9 @@ import {
 import { newOk, Result } from '../Result';
 import { savePostSurvey } from './savePostSurvey';
 import { newMissingParameterResult } from '../httpErrors';
+import TwilioSDK from 'twilio';
+import VoiceResponse = TwilioSDK.twiml.VoiceResponse;
+import { retrieveServiceConfigurationAttributes } from '../configuration/aseloConfiguration';
 
 const getPostSurveySyncDocUniqueName = (callerIdentifier: string) =>
   `post-studio-flow-call-data-${callerIdentifier}`;
@@ -109,4 +112,66 @@ export const voicePostSurveyActionHandler: AccountScopedHandler = async (
 
   const successMessage = `${logPrefix} Dial Action URL called for contact ID ${contactId} and contact task SID ${taskSid}, retrieved post survey data under sync doc ${uniqueName} and saved it with contact context.`;
   return newOk({ message: successMessage });
+};
+
+export const voicePostSurveyAnswerHandler: AccountScopedHandler = async (
+  { query, body },
+  accountSid,
+) => {
+  const twilioClient = await getTwilioClient(accountSid);
+  const { Digits: digits } = body;
+  const { hrm_base_url: hrmBaseUrl } =
+    await retrieveServiceConfigurationAttributes(twilioClient);
+  const { contactId, contactTaskSid: taskSid, answer1, answer2 } = query;
+  const response = new VoiceResponse();
+  if (!digits) {
+    response.say('Press 1 to continue');
+    response.gather({
+      method: 'POST',
+      numDigits: 1,
+      timeout: 10,
+      action: `${hrmBaseUrl}/lambda/twilio/account-scoped/${accountSid}/hrm/voicePostSurveyAction?contactId=${contactId}&contactTaskSid=${taskSid}`,
+    });
+  } else if (!answer1) {
+    response.say('Press 2 to continue');
+    response.gather({
+      method: 'POST',
+      numDigits: 1,
+      timeout: 10,
+      action: `${hrmBaseUrl}/lambda/twilio/account-scoped/${accountSid}/hrm/voicePostSurveyAction?contactId=${contactId}&contactTaskSid=${taskSid}&answer1=${digits}`,
+    });
+  } else if (!answer2) {
+    response.say('Press 3 to continue');
+    response.gather({
+      method: 'POST',
+      numDigits: 1,
+      timeout: 10,
+      action: `${hrmBaseUrl}/lambda/twilio/account-scoped/${accountSid}/hrm/voicePostSurveyAction?contactId=${contactId}&contactTaskSid=${taskSid}&answer1=${answer1}&answer2=${digits}`,
+    });
+  } else {
+    const controlTask = await twilioClient.taskrouter.v1
+      .workspaces(await getWorkspaceSid(accountSid))
+      .tasks.create({
+        attributes: JSON.stringify({
+          contactTaskId: taskSid,
+          contactId,
+          isSurveyTask: true,
+        }),
+        workflowSid: await getSurveyWorkflowSid(accountSid),
+        taskChannel: 'survey',
+      });
+
+    console.debug(
+      `[Post Survey Studio Flow - ${accountSid}/${taskSid}]: Created new post studio flow task ${controlTask.sid} for storing post survey data in insights`,
+    );
+    await savePostSurvey({
+      accountSid,
+      postSurveyAnswers: { answer1, answer2, answer3: digits },
+      twilioClient,
+      controlTask,
+    });
+
+    response.say('No go away');
+  }
+  return newOk(response);
 };
