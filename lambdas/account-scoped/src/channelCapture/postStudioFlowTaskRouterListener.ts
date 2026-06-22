@@ -101,7 +101,7 @@ const triggerPostStudioFlowTaskRouterListener: TaskRouterEventHandler = async (
               const { hrm_base_url: hrmBaseUrl } =
                 await retrieveServiceConfigurationAttributes(client);
               await client.calls.get(participant.callSid).update({
-                url: `${hrmBaseUrl}/lambda/twilio/account-scoped/${accountSid}/hrm/voicePostSurveyAction?contactId=${contactId}&contactTaskSid=${taskSid}`,
+                url: `${hrmBaseUrl}/lambda/twilio/account-scoped/${accountSid}/hrm/voicePostSurveyAnswer?contactId=${contactId}&contactTaskSid=${taskSid}`,
               });
               console.debug(`${logPrefix} Started custom twiml to start post survey.`);
             } catch (err) {

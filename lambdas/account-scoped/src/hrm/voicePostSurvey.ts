@@ -132,7 +132,7 @@ export const voicePostSurveyAnswerHandler: AccountScopedHandler = async (
       method: 'POST',
       numDigits: 1,
       timeout: 10,
-      action: `${hrmBaseUrl}/lambda/twilio/account-scoped/${accountSid}/hrm/voicePostSurveyAction?contactId=${contactId}&contactTaskSid=${taskSid}`,
+      action: `${hrmBaseUrl}/lambda/twilio/account-scoped/${accountSid}/hrm/voicePostSurveyAnswer?contactId=${contactId}&contactTaskSid=${taskSid}`,
     });
   } else if (!answer1) {
     console.debug(
@@ -143,7 +143,7 @@ export const voicePostSurveyAnswerHandler: AccountScopedHandler = async (
       method: 'POST',
       numDigits: 1,
       timeout: 10,
-      action: `${hrmBaseUrl}/lambda/twilio/account-scoped/${accountSid}/hrm/voicePostSurveyAction?contactId=${contactId}&contactTaskSid=${taskSid}&answer1=${digits}`,
+      action: `${hrmBaseUrl}/lambda/twilio/account-scoped/${accountSid}/hrm/voicePostSurveyAnswer?contactId=${contactId}&contactTaskSid=${taskSid}&answer1=${digits}`,
     });
   } else if (!answer2) {
     console.debug(
@@ -154,7 +154,7 @@ export const voicePostSurveyAnswerHandler: AccountScopedHandler = async (
       method: 'POST',
       numDigits: 1,
       timeout: 10,
-      action: `${hrmBaseUrl}/lambda/twilio/account-scoped/${accountSid}/hrm/voicePostSurveyAction?contactId=${contactId}&contactTaskSid=${taskSid}&answer1=${answer1}&answer2=${digits}`,
+      action: `${hrmBaseUrl}/lambda/twilio/account-scoped/${accountSid}/hrm/voicePostSurveyAnswer?contactId=${contactId}&contactTaskSid=${taskSid}&answer1=${answer1}&answer2=${digits}`,
     });
   } else {
     console.debug(
