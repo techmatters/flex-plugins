@@ -119,7 +119,7 @@ const ACCOUNTSID_ROUTES: Record<
     handler: savePostSurveyHandler,
   },
   'hrm/voicePostSurveyAction': {
-    requestPipeline: [validateRequestMethod('GET'), validateWebhookRequest],
+    requestPipeline: [validateRequestMethod('POST'), validateWebhookRequest],
     handler: voicePostSurveyActionHandler,
   },
   'conference/conferenceStatusCallback': {

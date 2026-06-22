@@ -61,6 +61,9 @@ export const voicePostSurveyActionHandler: AccountScopedHandler = async (
   if (!clientIdentifier) return newMissingParameterResult('DialCallSid');
   const logPrefix = `[Post Survey Studio Flow - ${accountSid}/${taskSid}]:`;
   const uniqueName = getPostSurveySyncDocUniqueName(clientIdentifier);
+  console.debug(
+    `${logPrefix} Dial Action URL called for contact ID ${contactId} and contact task SID ${taskSid}, retrieving post survey data under sync doc ${uniqueName} for use in the post flow.`,
+  );
   const docContext = twilioClient.sync.v1.services
     .get(await getSyncServiceSid(accountSid))
     .documents.get(uniqueName);
