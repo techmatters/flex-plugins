@@ -145,7 +145,7 @@ export const voicePostSurveyAnswerHandler: AccountScopedHandler = async (
       numDigits: 1,
       timeout: 10,
       // Query parameters must be alphabetical for webhook validation to work :-/
-      action: `${hrmBaseUrl}/lambda/twilio/account-scoped/${accountSid}/hrm/voicePostSurveyAnswer?contactId=${contactId}&contactTaskSid=${taskSid}&was_helpful=${digits}`,
+      action: `${hrmBaseUrl}/lambda/twilio/account-scoped/${accountSid}/hrm/voicePostSurveyAnswer?answer1=${digits}&contactId=${contactId}&contactTaskSid=${taskSid}`,
     });
   } else if (!answer2) {
     console.debug(
@@ -157,7 +157,7 @@ export const voicePostSurveyAnswerHandler: AccountScopedHandler = async (
       numDigits: 1,
       timeout: 10,
       // Query parameters must be alphabetical for webhook validation to work :-/
-      action: `${hrmBaseUrl}/lambda/twilio/account-scoped/${accountSid}/hrm/voicePostSurveyAnswer?contactId=${contactId}&contactTaskSid=${taskSid}&was_helpful=${answer1}&would_recommend=${digits}`,
+      action: `${hrmBaseUrl}/lambda/twilio/account-scoped/${accountSid}/hrm/voicePostSurveyAnswer?answer1=${answer1}&answer2=${digits}&contactId=${contactId}&contactTaskSid=${taskSid}`,
     });
   } else {
     console.debug(
@@ -189,7 +189,7 @@ export const voicePostSurveyAnswerHandler: AccountScopedHandler = async (
       controlTask,
     });
 
-    response.say('Now go away');
+    response.say('No go away');
   }
   return newOk(response);
 };
