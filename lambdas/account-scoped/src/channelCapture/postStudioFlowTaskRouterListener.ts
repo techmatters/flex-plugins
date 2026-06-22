@@ -104,7 +104,7 @@ const triggerPostStudioFlowTaskRouterListener: TaskRouterEventHandler = async (
               twiml.dial(
                 {
                   action: `${hrmBaseUrl}/lambda/twilio/account-scoped/${accountSid}/hrm/voicePostSurveyAction?contactId=${contactId}&contactTaskId=${taskSid}`,
-                  method: 'GET',
+                  method: 'POST',
                 },
                 studioFlowIdentifier,
               );

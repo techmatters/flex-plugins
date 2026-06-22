@@ -52,11 +52,12 @@ export const savePostSurveyHandler: AccountScopedHandler = async (
 };
 
 export const voicePostSurveyActionHandler: AccountScopedHandler = async (
-  { query },
+  { query, body },
   accountSid,
 ) => {
   const twilioClient = await getTwilioClient(accountSid);
-  const { DialCallSid: clientIdentifier, contactId, contactTaskSid: taskSid } = query;
+  const { contactId, contactTaskSid: taskSid } = query;
+  const { DialCallSid: clientIdentifier } = body;
   if (!clientIdentifier) return newMissingParameterResult('DialCallSid');
   const logPrefix = `[Post Survey Studio Flow - ${accountSid}/${taskSid}]:`;
   const uniqueName = getPostSurveySyncDocUniqueName(clientIdentifier);
