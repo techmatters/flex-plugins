@@ -126,7 +126,7 @@ export const voicePostSurveyAnswerHandler: AccountScopedHandler = async (
   const response = new VoiceResponse();
   const logPrefix = `[Post Survey Studio Flow - ${accountSid}]:`;
   if (!digits) {
-    console.debug(`${logPrefix} No digits, gathing for first answer`);
+    console.debug(`${logPrefix} No digits, gathering for first answer`);
     response.say('Press 1 to continue');
     response.gather({
       method: 'POST',
