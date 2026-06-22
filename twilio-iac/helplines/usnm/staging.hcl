@@ -33,7 +33,7 @@ locals {
         messaging_mode       = "conversations"
         channel_type         = "chat"
         contact_identity     = ""
-        templatefile         = "/app/twilio-iac/helplines/templates/studio-flows/webchat-v2-lambda-sd.tftpl"
+        templatefile         = "/app/twilio-iac/helplines/usnm/templates/studio-flows/messaging-blocking-conv-lambda-sd.tftpl"
         channel_flow_vars    = {}
         chatbot_unique_names = []
       }
