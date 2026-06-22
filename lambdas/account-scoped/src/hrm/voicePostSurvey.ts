@@ -124,7 +124,9 @@ export const voicePostSurveyAnswerHandler: AccountScopedHandler = async (
     await retrieveServiceConfigurationAttributes(twilioClient);
   const { contactId, contactTaskSid: taskSid, answer1, answer2 } = query;
   const response = new VoiceResponse();
+  const logPrefix = `[Post Survey Studio Flow - ${accountSid}]:`;
   if (!digits) {
+    console.debug(`${logPrefix} No digits, gathing for first answer`);
     response.say('Press 1 to continue');
     response.gather({
       method: 'POST',
@@ -133,6 +135,9 @@ export const voicePostSurveyAnswerHandler: AccountScopedHandler = async (
       action: `${hrmBaseUrl}/lambda/twilio/account-scoped/${accountSid}/hrm/voicePostSurveyAction?contactId=${contactId}&contactTaskSid=${taskSid}`,
     });
   } else if (!answer1) {
+    console.debug(
+      `${logPrefix} Digits supplied but no answers, saving answer1 and gathering for second answer`,
+    );
     response.say('Press 2 to continue');
     response.gather({
       method: 'POST',
@@ -141,6 +146,9 @@ export const voicePostSurveyAnswerHandler: AccountScopedHandler = async (
       action: `${hrmBaseUrl}/lambda/twilio/account-scoped/${accountSid}/hrm/voicePostSurveyAction?contactId=${contactId}&contactTaskSid=${taskSid}&answer1=${digits}`,
     });
   } else if (!answer2) {
+    console.debug(
+      `${logPrefix} Digits supplied and answer, saving answer2 and gathering for third answer`,
+    );
     response.say('Press 3 to continue');
     response.gather({
       method: 'POST',
@@ -149,6 +157,9 @@ export const voicePostSurveyAnswerHandler: AccountScopedHandler = async (
       action: `${hrmBaseUrl}/lambda/twilio/account-scoped/${accountSid}/hrm/voicePostSurveyAction?contactId=${contactId}&contactTaskSid=${taskSid}&answer1=${answer1}&answer2=${digits}`,
     });
   } else {
+    console.debug(
+      `${logPrefix} Digits supplied and two answers, saving all 3 anwsers to back end`,
+    );
     const controlTask = await twilioClient.taskrouter.v1
       .workspaces(await getWorkspaceSid(accountSid))
       .tasks.create({
