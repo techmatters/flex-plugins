@@ -34,6 +34,12 @@ export const savePostSurveyHandler: AccountScopedHandler = async (
 ): Promise<Result<HttpError, any>> => {
   const { postSurveyAnswers, clientIdentifier } = request.body;
   const twilioClient = await getTwilioClient(accountSid);
+  const logPrefix = `[Post Survey Studio Flow - ${accountSid}/${clientIdentifier}]:`;
+
+  console.debug(
+    `${logPrefix} DialCallSid call`,
+    await twilioClient.calls.get(clientIdentifier).fetch(),
+  );
   const docUniqueName = getPostSurveySyncDocUniqueName(clientIdentifier);
   console.debug(
     `[Post Survey Studio Flow - ${accountSid}/${clientIdentifier}]: Looking up sync doc ${docUniqueName}`,
@@ -60,6 +66,10 @@ export const voicePostSurveyActionHandler: AccountScopedHandler = async (
   const { DialCallSid: clientIdentifier } = body;
   if (!clientIdentifier) return newMissingParameterResult('DialCallSid');
   const logPrefix = `[Post Survey Studio Flow - ${accountSid}/${taskSid}]:`;
+  console.debug(
+    `${logPrefix} DialCallSid call`,
+    await twilioClient.calls.get(clientIdentifier).fetch(),
+  );
   const uniqueName = getPostSurveySyncDocUniqueName(clientIdentifier);
   console.debug(
     `${logPrefix} Dial Action URL called for contact ID ${contactId} and contact task SID ${taskSid}, retrieving post survey data under sync doc ${uniqueName} for use in the post flow.`,
