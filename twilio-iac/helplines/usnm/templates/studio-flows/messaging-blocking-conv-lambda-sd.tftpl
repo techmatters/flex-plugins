@@ -129,9 +129,9 @@ ${
         },
         "service": "{{trigger.message.InstanceSid}}",
         "channel": "{{trigger.message.ChannelSid}}",
-        "from": "${flow_wars.widget_from}",
+        "from": "${flow_vars.widget_from}",
         "to": "{{contact.channel.address}}",
-        "body": "${flow_wars.send_message_prequeue}"
+        "body": "${flow_vars.send_message_prequeue}"
       }
     },
     {
