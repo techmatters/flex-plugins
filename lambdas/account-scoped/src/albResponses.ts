@@ -40,7 +40,7 @@ export const okXmlResponse = (body: string = ''): ALBResult => ({
     'Content-Type': 'application/xml',
   },
   statusCode: 200,
-  body: JSON.stringify(body),
+  body,
 });
 
 export const notFoundResponse = (event: ALBEvent): ALBResult => ({
