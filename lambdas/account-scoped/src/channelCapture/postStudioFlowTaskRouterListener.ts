@@ -73,7 +73,7 @@ const triggerPostStudioFlowTaskRouterListener: TaskRouterEventHandler = async (
       const studioFlowIdentifier = postStudioFlows?.[taskChannelUniqueName] ?? '';
 
       if (typeof studioFlowIdentifier === 'object') {
-        const { sipDomain, sipUsername, sipPassword } = studioFlowIdentifier;
+        const { sipEndpoint, sipUsername, sipPassword } = studioFlowIdentifier;
         const { conference, contactId } = taskAttributes;
         if (taskChannelUniqueName === 'voice' && conference) {
           const conferenceContext = client.conferences.get(conference.sid);
@@ -106,7 +106,7 @@ const triggerPostStudioFlowTaskRouterListener: TaskRouterEventHandler = async (
                   username: sipUsername,
                   password: sipPassword,
                 },
-                `sip:post-survey@${sipDomain}?x-contactId=${contactId}&x-taskSid=${taskSid}`,
+                `${sipEndpoint}?x-contactId=${contactId}&x-taskSid=${taskSid}`,
               );
               await client.calls.get(participant.callSid).update({
                 twiml,
