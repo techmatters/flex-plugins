@@ -35,29 +35,34 @@ export const savePostSurveyHandler: AccountScopedHandler = async (
   request,
   accountSid,
 ): Promise<Result<HttpError, any>> => {
-  const { postSurveyAnswers, clientIdentifier } = request.body;
+  const { postSurveyAnswers, contactId, contactTaskSid } = request.body;
   const twilioClient = await getTwilioClient(accountSid);
-  const logPrefix = `[Post Survey Studio Flow - ${accountSid}/${clientIdentifier}]:`;
+  const logPrefix = `[Post Survey Studio Flow - ${accountSid}/${contactTaskSid}]:`;
+  const controlTask = await twilioClient.taskrouter.v1
+    .workspaces(await getWorkspaceSid(accountSid))
+    .tasks.create({
+      attributes: JSON.stringify({
+        contactTaskId: contactTaskSid,
+        contactId,
+        isSurveyTask: true,
+      }),
+      workflowSid: await getSurveyWorkflowSid(accountSid),
+      taskChannel: 'survey',
+    });
 
   console.debug(
-    `${logPrefix} Studio Flow call`,
-    await twilioClient.calls.get(clientIdentifier).fetch(),
+    `[Post Survey Studio Flow - ${accountSid}/${contactTaskSid}]: Created new post studio flow task ${controlTask.sid} for storing post survey data in insights`,
   );
-  const docUniqueName = getPostSurveySyncDocUniqueName(clientIdentifier);
+  await savePostSurvey({ twilioClient, accountSid, controlTask, postSurveyAnswers });
+  // As survey tasks will never be assigned to a worker, they'll be kept in pending state. A pending can't transition to completed state, so we cancel them here to raise a task.canceled taskrouter event (see functions/taskrouterListeners/janitorListener.ts)
+  // This needs to be the last step so the new task attributes from saveSurveyInInsights make it to insights
   console.debug(
-    `[Post Survey Studio Flow - ${accountSid}/${clientIdentifier}]: Looking up sync doc ${docUniqueName}`,
+    `[Post Survey Studio Flow - ${accountSid}/${contactTaskSid}]: Saved new post survey to HRM for contact ${contactId} and updated controlTask ${controlTask.sid} for insights.`,
   );
-  await twilioClient.sync.v1.services
-    .get(await getSyncServiceSid(accountSid))
-    .documents.create({
-      uniqueName: docUniqueName,
-      data: { postSurveyAnswers, clientIdentifier },
-      ttl: 120,
-    });
-  console.debug(
-    `[Post Survey Studio Flow - ${accountSid}/${clientIdentifier}]: Stored post survey answers in sync doc ${docUniqueName}`,
-  );
-  return newOk(undefined);
+  await controlTask.update({ assignmentStatus: 'canceled' });
+
+  const successMessage = `${logPrefix} Saved post survey to contact ${contactId} with contact task SID ${contactTaskSid}.`;
+  return newOk({ message: successMessage });
 };
 
 export const voicePostSurveyActionHandler: AccountScopedHandler = async (

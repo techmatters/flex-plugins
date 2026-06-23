@@ -106,7 +106,7 @@ const triggerPostStudioFlowTaskRouterListener: TaskRouterEventHandler = async (
                   username: sipUsername,
                   password: sipPassword,
                 },
-                `sip:${contactId}@${sipDomain}?x-contactId=${contactId}&x-taskSid=${taskSid}`,
+                `sip:post-survey@${sipDomain}?x-contactId=${contactId}&x-taskSid=${taskSid}`,
               );
               await client.calls.get(participant.callSid).update({
                 twiml,
