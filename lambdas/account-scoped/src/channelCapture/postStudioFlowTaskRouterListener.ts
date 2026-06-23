@@ -168,6 +168,9 @@ const triggerPostStudioFlowTaskRouterListener: TaskRouterEventHandler = async (
             );
           }
         } else if (studioFlowIdentifier.startsWith('FW')) {
+          console.debug(
+            `${logPrefix} Initiating post studio flow ${studioFlowIdentifier} configured for ${taskChannelUniqueName} via REST API - contact ${contactId}, task: ${taskSid}`,
+          );
           await client.studio.v2.flows.get(studioFlowIdentifier).executions.create({
             from: taskAttributes.to,
             parameters: {
@@ -176,9 +179,17 @@ const triggerPostStudioFlowTaskRouterListener: TaskRouterEventHandler = async (
             },
             to: taskAttributes.from,
           });
+          console.debug(
+            `${logPrefix} Initiated post studio flow ${studioFlowIdentifier} configured for ${taskChannelUniqueName} via REST API - contact ${contactId}, task: ${taskSid}, removing participants`,
+          );
           conferenceContext.participants.each(p => p.remove());
+          console.debug(
+            `${logPrefix} Removed participants from conference ${conference.sid}.`,
+          );
         } else {
-          console.debug(`No post studio flow configured for ${taskChannelUniqueName}`);
+          console.debug(
+            `${logPrefix} No post studio flow configured for ${taskChannelUniqueName}`,
+          );
         }
 
         console.info(`${logPrefix} Finished handling post studio flow trigger.`);
