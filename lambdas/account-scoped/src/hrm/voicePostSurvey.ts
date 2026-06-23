@@ -40,7 +40,7 @@ export const savePostSurveyHandler: AccountScopedHandler = async (
   const logPrefix = `[Post Survey Studio Flow - ${accountSid}/${clientIdentifier}]:`;
 
   console.debug(
-    `${logPrefix} DialCallSid call`,
+    `${logPrefix} Studio Flow call`,
     await twilioClient.calls.get(clientIdentifier).fetch(),
   );
   const docUniqueName = getPostSurveySyncDocUniqueName(clientIdentifier);
