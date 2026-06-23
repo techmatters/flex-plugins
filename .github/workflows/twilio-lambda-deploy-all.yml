@@ -54,6 +54,7 @@ jobs:
       matrix:
         lambda_path:
           - account-scoped
+          - e2eTestRunner
           - facebookCallback
           - facebookSignin
           - instagramWebhook

@@ -75,6 +75,7 @@ jobs:
       matrix:
         lambda_path:
           - account-scoped
+          - e2eTestRunner
           - facebookCallback
           - facebookSignin
           - instagramWebhook
@@ -122,6 +123,7 @@ jobs:
           echo "ref_name_for_docker=${ref_name//\//_-}" >> $GITHUB_ENV
         shell: bash
       - name: Build and Push Docker Image
+        if: ${{ matrix.lambda_path != 'e2eTestRunner' }}
         uses: docker/build-push-action@v7
         with:
           context: ./lambdas
@@ -129,6 +131,16 @@ jobs:
           build-args: |
             lambda_name=${{ env.build_lambda_name }}
             lambda_dir=${{ env.build_lambda_dir }}
+          push: true
+          # 'latest' is never used, but it keeps terraform happy
+          tags: ${{ env.ECR_URL }}:${{ github.ref_type }}.${{ env.ref_name_for_docker }},${{ env.ECR_URL }}:${{ github.sha }},${{ env.ECR_URL }}:latest
+          provenance: false
+      - name: Build and Push Docker Image (e2eTestRunner)
+        if: ${{ matrix.lambda_path == 'e2eTestRunner' }}
+        uses: docker/build-push-action@v7
+        with:
+          context: ./
+          file: ./lambdas/e2eTestRunner/Dockerfile
           push: true
           # 'latest' is never used, but it keeps terraform happy
           tags: ${{ env.ECR_URL }}:${{ github.ref_type }}.${{ env.ref_name_for_docker }},${{ env.ECR_URL }}:${{ github.sha }},${{ env.ECR_URL }}:latest
