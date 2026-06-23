@@ -70,9 +70,10 @@ const triggerPostStudioFlowTaskRouterListener: TaskRouterEventHandler = async (
       const serviceConfigAttributes =
         await retrieveServiceConfigurationAttributes(client);
       const { postStudioFlows } = serviceConfigAttributes;
-      const studioFlowIdentifier: string = postStudioFlows?.[taskChannelUniqueName] ?? '';
+      const studioFlowIdentifier = postStudioFlows?.[taskChannelUniqueName] ?? '';
 
-      if (studioFlowIdentifier.startsWith('+')) {
+      if (typeof studioFlowIdentifier === 'object') {
+        const { sipDomain, sipUsername, sipPassword } = studioFlowIdentifier;
         const { conference, contactId } = taskAttributes;
         if (taskChannelUniqueName === 'voice' && conference) {
           const conferenceContext = client.conferences.get(conference.sid);
@@ -98,12 +99,21 @@ const triggerPostStudioFlowTaskRouterListener: TaskRouterEventHandler = async (
               console.debug(
                 `${logPrefix} Put participant ${participant.callSid} from conference ${conference.sid} on hold.`,
               );
-              const { hrm_base_url: hrmBaseUrl } =
-                await retrieveServiceConfigurationAttributes(client);
+              const twiml = new VoiceResponse();
+              const dial = twiml.dial();
+              dial.sip(
+                {
+                  username: sipUsername,
+                  password: sipPassword,
+                },
+                `sip:${contactId}@${sipDomain}?x-contactId=${contactId}&x-taskSid=${taskSid}`,
+              );
               await client.calls.get(participant.callSid).update({
-                url: `${hrmBaseUrl}/lambda/twilio/account-scoped/${accountSid}/hrm/voicePostSurveyAnswer?contactId=${contactId}&contactTaskSid=${taskSid}`,
+                twiml,
               });
-              console.debug(`${logPrefix} Started custom twiml to start post survey.`);
+              console.debug(
+                `${logPrefix} Dialed ${studioFlowIdentifier} passing ${contactId} and ${taskSid} to start post survey.`,
+              );
             } catch (err) {
               await participant.remove();
               console.debug(
