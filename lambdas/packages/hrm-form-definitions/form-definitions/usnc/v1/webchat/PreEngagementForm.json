@@ -222,7 +222,7 @@
       "type": "input",
       "name": "phone1",
       "label": "If you have contacted us before via Phone or SMS please enter your phone number",
-      "placeholder": "Phone Number",
+      "placeholder": "+12345678912",
       "required": false
     },
     {
