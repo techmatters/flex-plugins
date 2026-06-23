@@ -22,7 +22,10 @@ import { AccountSID } from '@tech-matters/twilio-types';
 import { Twilio } from 'twilio';
 import { EventType, TASK_WRAPUP } from '../taskrouter/eventTypes';
 import { EventFields } from '../taskrouter';
-import { retrieveServiceConfiguration } from '../configuration/aseloConfiguration';
+import {
+  retrieveServiceConfiguration,
+  retrieveServiceConfigurationAttributes,
+} from '../configuration/aseloConfiguration';
 import {
   handleChannelCapture,
   HandleChannelCaptureParams,
@@ -37,6 +40,8 @@ import {
 } from '@tech-matters/twilio-configuration';
 import { getTranslation } from '../translations/translationLookup';
 import { getCurrentDefinitionVersion } from '../hrm/formDefinitionsCache';
+import { newOk } from '../Result';
+import { AccountScopedHandler } from '../httpTypes';
 
 const GLOBAL_DEFAULT_LANGUAGE = 'en-US';
 
