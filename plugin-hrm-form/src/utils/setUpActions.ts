@@ -25,7 +25,7 @@ import { populateCurrentDefinitionVersion, updateDefinitionVersion } from '../st
 import { clearCustomGoodbyeMessage } from '../states/dualWrite/actions';
 import * as GeneralActions from '../states/actions';
 import * as TransferHelpers from '../transfer/transferTaskState';
-import { CustomITask, isTwilioTask, standaloneTaskSid } from '../types/types';
+import { CustomITask, standaloneTaskSid } from '../types/types';
 import { getAseloFeatureFlags, getHrmConfig } from '../hrmConfig';
 import { subscribeAlertOnConversationJoined } from '../notifications/newMessage';
 import type { RootState } from '../states';
@@ -34,13 +34,11 @@ import selectContactByTaskSid from '../states/contacts/selectContactByTaskSid';
 import asyncDispatch from '../states/asyncDispatch';
 import { newFinalizeContactAsyncAction, newLoadContactFromHrmForTaskAsyncAction } from '../states/contacts/saveContact';
 import { handleTransferredTask } from '../transfer/setUpTransferActions';
-import { recordEvent } from '../fullStory';
 import { completeConversationTask, wrapupConversationTask } from '../services/twilioTaskService';
 import selectContactStateByContactId from '../states/contacts/selectContactStateByContactId';
 import { selectCurrentBaseRoute } from '../states/routing/getRoute';
 import { changeRoute } from '../states/routing/actions';
 import { AppRoutes, ChangeRouteMode } from '../states/routing/types';
-import { FeatureFlags } from '../types/FeatureFlags';
 
 type SetupObject = ReturnType<typeof getHrmConfig>;
 type GetMessage = (key: string) => (key: string) => Promise<string>;
@@ -74,7 +72,7 @@ const sendMessageOfKey = (messageKey: string) => (
   const taskLanguage = getTaskLanguage(setupObject)(payload.task);
   const message = await getMessage(messageKey)(taskLanguage);
   const res = await conversation.sendMessage(message);
-  console.log(
+  console.info(
     `Successfully sent message '${message}' from key ${messageKey} translated to ${taskLanguage}, added as index ${res}`,
   );
 };
@@ -165,9 +163,7 @@ export const beforeAcceptTask = (setupObject: SetupObject, getMessage: GetMessag
   }
 };
 
-export const afterAcceptTask = (featureFlags: FeatureFlags, setupObject: SetupObject, getMessage: GetMessage) => async (
-  payload: ActionPayload,
-) => {
+export const afterAcceptTask = async (payload: ActionPayload) => {
   const { task } = payload;
 
   task.source.addListener('updated', ({ attributes }) => {
@@ -216,25 +212,6 @@ export const completeTaskOverride = async (payload: ActionPayload, original: Act
     return completeConversationTask(payload.task.taskSid);
   }
   return original(payload);
-};
-
-export const recordCallState = ({ task }) => {
-  if (isTwilioTask(task) && TaskHelper.isCallTask(task)) {
-    recordEvent('[Temporary Debug Event] Call Task State', {
-      taskSid: task.taskSid,
-      taskStatus: task.status,
-      reservationSid: task.sid,
-      isCallTask: TaskHelper.isCallTask(task),
-      isChatBasedTask: TaskHelper.isChatBasedTask(task),
-      taskConferenceExists: Boolean(task.conference),
-      taskConferenceSid: task.conference?.conferenceSid,
-      taskConferenceLiveParticipantCount: task.conference?.liveParticipantCount,
-      taskConferenceLiveWorkerCount: task.conference?.liveWorkerCount,
-      taskConferenceAttributes: JSON.stringify(task.attributes.conference),
-      taskConversationAttributes: JSON.stringify(task.attributes.conversations),
-      taskAllAttributes: JSON.stringify(task.attributes),
-    });
-  }
 };
 
 /**

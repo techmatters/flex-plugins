@@ -30,10 +30,12 @@ export function contactForm(page: Page) {
   const formArea = page.locator('div.Twilio-CRMContainer');
   const selectors = {
     childCallTypeButton: () => page.locator(`//button[@data-testid='DataCallTypeButton-child']`),
-    tabButton: (tab: ContactFormTab<unknown>) =>
-      formArea.locator(`button :text-is("${tab.label}")`),
+    tabButton: ({ label }: ContactFormTab<unknown>) =>
+      formArea.locator(`//button[@data-testid='${label}']`),
     formInput: (tabId: string, itemId: string) => formArea.locator(`input#${tabId}\\.${itemId}`),
     formSelect: (tabId: string, itemId: string) => formArea.locator(`select#${tabId}\\.${itemId}`),
+    formMultiSelectCheckbox: (tabId: string, itemId: string, value: string) =>
+      formArea.locator(`input#${tabId}\\.${itemId}-${value}`),
     formTextarea: (tabId: string, itemId: string) =>
       formArea.locator(`textarea#${tabId}\\.${itemId}`),
     topCategorySelector: (category: string) =>
@@ -47,11 +49,13 @@ export function contactForm(page: Page) {
     addNewCaseButton: formArea.locator(`//button[@data-testid='TabbedForms-AddNewCase-Button']`),
   };
 
-  async function selectTab(tab: ContactFormTab<unknown>) {
+  async function selectTab(tab: ContactFormTab<unknown>, checkBackendCall = true) {
+    const responsePromise = checkBackendCall
+      ? page.waitForResponse('**/contacts/**')
+      : Promise.resolve();
     const button = selectors.tabButton(tab);
     await expect(button).toBeVisible();
     await expect(button).toBeEnabled();
-    const responsePromise = page.waitForResponse('**/contacts/**');
     if ((await button.getAttribute('aria-selected')) !== 'true') {
       await button.click();
     }
@@ -66,6 +70,8 @@ export function contactForm(page: Page) {
         await selectors.formSelect(id, itemId).selectOption(value);
       } else if (await selectors.formTextarea(id, itemId).count()) {
         await selectors.formTextarea(id, itemId).fill(value);
+      } else if (await selectors.formMultiSelectCheckbox(id, itemId, value).count()) {
+        await selectors.formMultiSelectCheckbox(id, itemId, value).check();
       } else throw new Error(`Control ${id}.${itemId} not found`);
     }
   }
@@ -90,18 +96,18 @@ export function contactForm(page: Page) {
       const button = selectors.tabButton(tabs[0]);
       await expect(button).toBeVisible({ timeout: 15000 });
       for (const tab of tabs) {
-        await selectTab(tab);
+        await selectTab(tab, tab !== tabs[0]);
         await tab.fill(tab);
       }
     },
     save: async ({ saveAndAddToCase }: { saveAndAddToCase?: boolean } = {}) => {
       const tab = {
         id: 'caseInformation',
-        label: 'Summary',
+        label: 'TabbedForms-AddCaseInfoTab',
         fill: async () => {},
         items: {},
       };
-      await selectTab(tab);
+      await selectTab(tab, false);
 
       if (saveAndAddToCase) {
         const responsePromise = page.waitForResponse('**/connectToCase');

@@ -1,12 +1,17 @@
 [
   {
     "flag": "blocked",
-    "label": "Short Term Block (24 Hours)",
+    "label": "24-hour Block",
     "durationInHours": "24"
   },
   {
     "flag": "blocked",
-    "label": "Long Term Block (5 Years)",
-    "durationInHours": "43848"
+    "label": "Acceptable Use Policy or LIO Behavior",
+    "durationInHours": "876000"
+  },
+  {
+    "flag": "blocked",
+    "label": "Access Policy",
+    "durationInHours": "876000"
   }
 ]
