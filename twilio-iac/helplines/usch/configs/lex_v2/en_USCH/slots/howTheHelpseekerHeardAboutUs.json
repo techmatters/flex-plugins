@@ -1,8 +1,8 @@
 {
-    "slotName": "stateInput",
-    "slotTypeName": "AMAZON.State",
+    "slotName": "howTheHelpseekerHeardAboutUs",
+    "slotTypeName": "howTheHelpseekerHeardAboutUs",
     "intentName": "pre_survey",
-    "description": "Slot stateInput for intent pre_survey",
+    "description": "Slot howTheHelpseekerHeardAboutUs for intent pre_survey",
     "valueElicitationSetting": {
         "slotConstraint": "Required",
         "promptSpecification": {
@@ -10,7 +10,7 @@
                 {
                     "message": {
                         "plainTextMessage": {
-                            "value": "What state are you texting from?"
+                            "value": "How did you hear about this hotline? \n1. Internet/Website\n2. Google\n3. Chat GPT/AI\n4. Other"
                         }
                     }
                 }
@@ -70,8 +70,7 @@
         "slotCaptureSetting": {
             "captureNextStep": {
                 "dialogAction": {
-                    "type": "ElicitSlot",
-                    "slotToElicit": "howTheHelpseekerHeardAboutUs"
+                    "type": "FulfillIntent"
                 },
                 "intent": {}
             },
