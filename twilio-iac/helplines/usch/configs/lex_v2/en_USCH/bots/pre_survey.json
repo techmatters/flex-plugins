@@ -5,7 +5,7 @@
     "child_directed": true,
     "idle_session_ttl_in_seconds": "350",
     "staging_bot_alias_id": "TSTALIASID",
-    "production_bot_alias_id": "YYZBXKI7QT",
+    "production_bot_alias_id": "CRWR96GYI5",
     "type": "Bot",
     "intents": {
       "pre_survey": {
@@ -48,6 +48,12 @@
             "slot_name": "stateInput",
             "slot_type_name": "AMAZON.State",
             "slot_question": "What state are you texting from?",
+            "failure_response": "We are having trouble understanding your response."
+          },
+          "5": {
+            "slot_name": "howTheHelpseekerHeardAboutUs",
+            "slot_type_name": "howTheHelpseekerHeardAboutUs",
+            "slot_question": "How did you hear about this hotline? \n1. Internet/Website\n2. Google\n3. Chat GPT/AI\n4. Other",
             "failure_response": "We are having trouble understanding your response."
           }
         }

@@ -9,7 +9,11 @@ locals {
 
   local_config = {
     custom_task_routing_filter_expression = ""
-    flow_vars                             = {}
+    flow_vars = {
+      widget_from = "NAMI"
+      chat_blocked_message = "Hi, you've been blocked from accessing NAMI services and we are not able to read or receive further messages from you."
+      send_message_prequeue = "Welcome. Pleas wait for a specialist."
+    }
 
 
     #Channels
@@ -23,6 +27,14 @@ locals {
           voice_ivr_blocked_message  = "I'm sorry your number has been blocked."
           voice_ivr_language         = "en-US"
         }
+        chatbot_unique_names = []
+      },
+      chat : {
+        messaging_mode       = "conversations"
+        channel_type         = "chat"
+        contact_identity     = ""
+        templatefile         = "/app/twilio-iac/helplines/usnm/templates/studio-flows/messaging-blocking-conv-lambda-sd.tftpl"
+        channel_flow_vars    = {}
         chatbot_unique_names = []
       }
     }
