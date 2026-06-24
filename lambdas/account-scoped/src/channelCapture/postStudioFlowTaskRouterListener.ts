@@ -172,7 +172,7 @@ const triggerPostStudioFlowTaskRouterListener: TaskRouterEventHandler = async (
             `${logPrefix} Initiating post studio flow ${studioFlowIdentifier} configured for ${taskChannelUniqueName} via REST API - contact ${contactId}, task: ${taskSid}`,
           );
           await client.studio.v2.flows.get(studioFlowIdentifier).executions.create({
-            from: '+12064083885',
+            from: taskAttributes.to,
             parameters: {
               contactId,
               contactTaskSid: taskSid,
