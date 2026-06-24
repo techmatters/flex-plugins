@@ -46,7 +46,7 @@ export const handleConversationEvent: AccountScopedHandler = async (
   accountSid: AccountSID,
 ) => {
   console.info(`===== Service Conversation Listener (event: ${event.EventType})=====`);
-  console.info(`===== Service Conversation Listener (event: ${event})=====`);
+  console.debug(`===== Service Conversation Listener (event: ${event})=====`);
 
   const handlers = eventHandlers[event.EventType] ?? [];
   console.info(
