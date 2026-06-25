@@ -1,8 +1,8 @@
 {
-    "slotName": "aboutSelf",
-    "slotTypeName": "yes_no",
-    "intentName": "pre_survey",
-    "description": "Slot aboutSelf for intent pre_survey",
+    "slotName": "mood",
+    "slotTypeName": "mood_rating",
+    "intentName": "post_survey_yes",
+    "description": "Slot mood for intent post_survey_yes",
     "valueElicitationSetting": {
         "slotConstraint": "Required",
         "promptSpecification": {
@@ -10,21 +10,14 @@
                 {
                     "message": {
                         "plainTextMessage": {
-                            "value": "Are you calling about yourself? Please answer Yes or No."
+                            "value": "How are you feeling right now?” (0 = calm / okay → 10 = extremely upset or distressed)"
                         }
-                    },
-                    "variations": [
-                        {
-                            "plainTextMessage": {
-                                "value": "You can answer 'Yes' or 'No'. Are you calling about yourself?"
-                            }
-                        }
-                    ]
+                    }
                 }
             ],
             "maxRetries": 1,
             "allowInterrupt": true,
-            "messageSelectionStrategy": "Ordered",
+            "messageSelectionStrategy": "Random",
             "promptAttemptsSpecification": {
                 "Initial": {
                     "allowInterrupt": true,
@@ -78,7 +71,7 @@
             "captureNextStep": {
                 "dialogAction": {
                     "type": "ElicitSlot",
-                    "slotToElicit": "age"
+                    "slotToElicit": "experience"
                 },
                 "intent": {}
             },

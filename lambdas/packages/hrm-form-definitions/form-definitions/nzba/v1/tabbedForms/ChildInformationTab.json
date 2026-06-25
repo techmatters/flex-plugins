@@ -1,6 +1,6 @@
 [
   {
-    "name": "firstName",
+    "name": "friendlyName",
     "label": "First Name",
     "type": "input",
     "isPII": true,
