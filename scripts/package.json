@@ -22,7 +22,6 @@
     "axios": "^1.6.0",
     "dotenv": "^10.0.0",
     "hrm-form-definitions": "file:../lambdas/packages/hrm-form-definitions",
-    "node-fetch": "^2.6.4",
     "prompt": "^1.2.0",
     "prompt-confirm": "^2.0.4",
     "twilio": "^4.10.0",

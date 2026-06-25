@@ -35,10 +35,6 @@ const initWebchat = async (
     </Provider>,
     rootElement,
   );
-
-  if (window.Cypress) {
-    window.store = store;
-  }
 };
 
 declare global {
@@ -49,7 +45,6 @@ declare global {
       initLogger: (level?: LogLevelDesc) => void;
       getLogger: (className: string) => Logger;
     };
-    Cypress: Cypress.Cypress;
     store: typeof store;
   }
 }

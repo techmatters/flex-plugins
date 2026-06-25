@@ -27,15 +27,15 @@ locals {
         "target_workers" = "routing.skills HAS 'KHP English' OR routing.skills HAS 'KHPEN'",
         "friendly_name"  = "KHP English"
       },
-      khp_fr : { "target_workers" = "routing.skills HAS 'KHP French'",
+      khp_fr : { "target_workers" = "routing.skills HAS 'KHP French' OR routing.skills HAS 'KHPFRsk'",
         "friendly_name"           = "KHP French"
       },
       ab211_en : {
-        "target_workers" = "routing.skills HAS 'AB211En'",
+        "target_workers" = "routing.skills HAS 'AB211En' OR routing.skills HAS 'AB211ENsk'",
         "friendly_name"  = "AB211 English"
       },
       ab211_fr : {
-        "target_workers" = "routing.skills HAS 'AB211Fr'",
+        "target_workers" = "routing.skills HAS 'AB211Fr' OR routing.skills HAS 'AB211FRsk'",
         "friendly_name"  = "AB211 French"
       },
       g2t_ns_en : {
@@ -55,15 +55,15 @@ locals {
         "friendly_name"  = "Good2Talk ON French"
       },
       g2t_int : {
-        "target_workers" = "routing.skills HAS 'G2TONTr'",
+        "target_workers" = "routing.skills HAS 'G2TONTr' OR routing.skills HAS 'G2TONTRsk'",
         "friendly_name"  = "Good2Talk Interpreter"
       },
       interpreter_en : {
-        "target_workers" = "routing.skills HAS 'KHP Interpreter' ",
+        "target_workers" = "routing.skills HAS 'KHP Interpreter' OR routing.skills HAS 'KHPINTsk'",
         "friendly_name"  = "KHP Interpreter"
       },
       interpreter_fr : {
-        "target_workers" = "routing.skills HAS 'French Interpreter' ",
+        "target_workers" = "routing.skills HAS 'French Interpreter' OR routing.skills HAS 'FRINTsk'",
         "friendly_name"  = "French Interpreter"
       },
       supervisor : {
@@ -75,15 +75,15 @@ locals {
         "friendly_name"  = "Training"
       },
       chat_en : {
-        "target_workers" = "routing.skills HAS 'Chat English'",
+        "target_workers" = "routing.skills HAS 'Chat English' OR routing.skills HAS 'CHATENsk'",
         "friendly_name"  = "Chat English"
       },
       chat_fr : {
-        "target_workers" = "routing.skills HAS 'Chat French'",
+        "target_workers" = "routing.skills HAS 'Chat French' OR routing.skills HAS 'CHATFRsk'",
         "friendly_name"  = "Chat French"
       },
       indigenous : {
-        "target_workers" = "routing.skills HAS 'Indigenous/Interpreter'",
+        "target_workers" = "routing.skills HAS 'Indigenous/Interpreter' OR routing.skills HAS 'INDINTsk'",
         "friendly_name"  = "Indigenous/Interpreter"
       },
       "988_en" : {
