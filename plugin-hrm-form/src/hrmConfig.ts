@@ -19,7 +19,7 @@ import { buildFormDefinitionsBaseUrlGetter } from 'hrm-form-definitions';
 
 import type { RootState } from './states';
 import { namespace } from './states/storeNamespaces';
-import { WorkerSID } from './types/twilio';
+import { StudioFlowSID, WorkerSID } from './types/twilio';
 import { FeatureFlags } from './types/FeatureFlags';
 
 const featureFlagEnvVarPrefix = 'REACT_APP_FF_';
@@ -101,6 +101,7 @@ const readConfig = () => {
     enableUnmaskingCalls,
     hideAddToNewCaseButton,
     enforceZeroTranscriptRetention,
+    postStudioFlows,
   } = {
     // Deprecated, remove when service configurations changes have applied 2025-09-30
     ...manager.serviceConfiguration.attributes.config_flags,
@@ -170,6 +171,7 @@ const readConfig = () => {
       enableClientProfiles,
       enableConferencing,
       hideAddToNewCaseButton,
+      postStudioFlows: (postStudioFlows ?? {}) as { [key in 'voice' | 'chat']?: StudioFlowSID },
     },
     referrableResources: {
       resourcesBaseUrl,
