@@ -77,7 +77,7 @@ jobs:
       matrix_json: ${{ steps.generate-output.outputs.matrix_json }}
     steps:
       - name: Checkout Branch
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           sparse-checkout-cone-mode: false
           sparse-checkout: |
@@ -110,7 +110,7 @@ jobs:
         include: ${{ fromJson(needs.determine_deployments.outputs.matrix_json) }}
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           sparse-checkout-cone-mode: false
           sparse-checkout: |

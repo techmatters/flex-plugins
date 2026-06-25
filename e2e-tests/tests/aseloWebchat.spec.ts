@@ -21,33 +21,35 @@ import { statusIndicator } from '../workerStatus';
 import { ChatStatement, ChatStatementOrigin } from '../chatModel';
 import { getWebchatScript } from '../chatScripts';
 import { flexChat } from '../flexChat';
-import { getConfigValue } from '../config';
 import { skipTestIfNotTargeted } from '../skipTest';
 import { tasks } from '../tasks';
 import { Categories, contactForm, ContactFormTab } from '../contactForm';
 import { deleteAllTasksInQueue } from '../twilio/tasks';
 import { notificationBar } from '../notificationBar';
-import { navigateToAgentDesktop } from '../agent-desktop';
+import { clickThroughTwilioPasteModals } from '../agent-desktop';
 import { setupContextAndPage, closePage } from '../browser';
 import { clearOfflineTask } from '../hrm/clearOfflineTask';
 import { apiHrmRequest } from '../hrm/hrmRequest';
+import { formContentsByHelpline } from '../formContentsByHelpline';
+import { getConfigValue } from '../config';
 
 test.describe.serial('Aselo web chat caller', () => {
   skipTestIfNotTargeted();
 
   let chatPage: AseloWebChatPage, pluginPage: Page, context: BrowserContext;
   test.beforeAll(async ({ browser }) => {
+    test.setTimeout(180000);
     ({ context, page: pluginPage } = await setupContextAndPage(browser));
 
     await clearOfflineTask(
       apiHrmRequest(await request.newContext(), process.env.FLEX_TOKEN!),
       process.env.LOGGED_IN_WORKER_SID!,
     );
-
-    await navigateToAgentDesktop(pluginPage);
-    console.log('Plugin page visited.');
     chatPage = await aseloWebchat.open(context);
-    console.log('Aselo webchat browser session launched.');
+    console.info('Aselo webchat browser session launched.');
+
+    await clickThroughTwilioPasteModals(pluginPage);
+    console.info('Plugin page visited.');
   });
 
   test.afterAll(async () => {
@@ -63,7 +65,7 @@ test.describe.serial('Aselo web chat caller', () => {
     await deleteAllTasksInQueue();
   });
 
-  test('Chat ', async () => {
+  test('Chat', async () => {
     test.setTimeout(180000);
     await chatPage.openChat();
     await chatPage.fillPreEngagementForm();
@@ -78,7 +80,7 @@ test.describe.serial('Aselo web chat caller', () => {
     // And each time flexChatProgress.next(), the flex chat processes statements until it yields
     // Should be moved out to its own function in time, and a cleaner way of injecting actions to be taken partway through the chat should be implemented.
     for await (const expectedCounselorStatement of webchatProgress) {
-      console.log('Statement for flex chat to process', expectedCounselorStatement);
+      console.info('Statement for flex chat to process', expectedCounselorStatement);
       if (expectedCounselorStatement) {
         switch (expectedCounselorStatement.origin) {
           case ChatStatementOrigin.COUNSELOR_AUTO:
@@ -93,44 +95,35 @@ test.describe.serial('Aselo web chat caller', () => {
       }
     }
 
-    console.log('Starting filling form');
+    console.info('Starting filling form');
+    const helpline = getConfigValue('helplineShortCode') as keyof typeof formContentsByHelpline;
+    const formContent = formContentsByHelpline[helpline];
+    if (!formContent) {
+      throw new Error(`No form contents configured for helplineShortCode="${String(helpline)}"`);
+    }
     const form = contactForm(pluginPage);
     await form.fill([
       <ContactFormTab>{
         id: 'childInformation',
-        label: 'Child',
+        label: 'TabbedForms-AddChildInfoTab',
         fill: form.fillStandardTab,
-        items: {
-          firstName: 'E2E',
-          lastName: 'TEST',
-          phone1: '1234512345',
-          province: 'Northern',
-          district: 'District A',
-        },
+        items: formContent.childInformation,
       },
       <ContactFormTab<Categories>>{
         id: 'categories',
-        label: 'Categories',
+        label: 'TabbedForms-CategoriesTab',
         fill: form.fillCategoriesTab,
-        items: {
-          Accessibility: ['Education'],
-        },
+        items: formContent.categories,
       },
       <ContactFormTab>{
         id: 'caseInformation',
-        label: 'Summary',
+        label: 'TabbedForms-AddCaseInfoTab',
         fill: form.fillStandardTab,
-        items: {
-          callSummary: 'E2E TEST CALL',
-        },
+        items: formContent.caseInformation,
       },
     ]);
-    if (getConfigValue('skipDataUpdate') as boolean) {
-      console.log('Skipping saving form');
-      return;
-    }
 
-    console.log('Saving form');
+    console.info('Saving form');
     await form.save();
   });
 });

@@ -14,13 +14,10 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { TaskHelper } from '@twilio/flex-ui';
-
 import fetchProtectedApi from './fetchProtectedApi';
 import { getAseloFeatureFlags, getHrmConfig } from '../hrmConfig';
 import { isVoiceChannel } from '../states/DomainConstants';
 import { CustomITask, InMyBehalfITask, isOfflineContactTask, isTwilioTask } from '../types/types';
-import { recordEvent } from '../fullStory';
 
 export type ExternalRecordingInfoSuccess = {
   status: 'success';
@@ -57,20 +54,6 @@ export const shouldGetExternalRecordingInfo = (task: CustomITask): task is InMyB
 };
 /* eslint-enable sonarjs/prefer-single-boolean-return */
 
-const recordDebugEvent = (task: InMyBehalfITask, message: string, recordingInfo: ExternalRecordingInfo | {} = {}) => {
-  recordEvent(`[Temporary Debug Event] Getting External Recording Info: ${message}`, {
-    ...recordingInfo,
-    taskSid: task.taskSid,
-    taskStatus: task.status,
-    reservationSid: task.sid,
-    isCallTask: TaskHelper.isCallTask(task),
-    isChatBasedTask: TaskHelper.isChatBasedTask(task),
-    conferenceAttributes: JSON.stringify(task.attributes.conference),
-    conversationAttributes: JSON.stringify(task.attributes.conversations),
-    taskAttributes: JSON.stringify(task.attributes),
-  });
-};
-
 const getExternalRecordingS3Location = async (callSid: string) => {
   const useTwilioLambda = getAseloFeatureFlags().use_twilio_lambda_for_recordings_lookup;
   const body = { callSid };
@@ -95,7 +78,6 @@ export const getExternalRecordingInfo = async (task: CustomITask): Promise<Exter
       error: 'Invalid task',
     };
   }
-  recordDebugEvent(task, 'Starting');
 
   // The call id related to the worker is always the one with the recording, as far as I can tell (rbd)
   const { conference, conversations } = isTwilioTask(task) && task.attributes;
@@ -103,55 +85,45 @@ export const getExternalRecordingInfo = async (task: CustomITask): Promise<Exter
     // The recording location is already added to the task, lets just use that, no need to go to the API
     const recordingUrl = new URL(conversations.segment_link);
     const recordingSid = recordingUrl.pathname.split('/').pop();
-    const successResult: ExternalRecordingInfo = {
+    return {
       status: 'success',
       recordingSid,
       bucket: getHrmConfig().docsBucket,
       key: recordingUrl.pathname.indexOf('/') === 0 ? recordingUrl.pathname.substring(1) : recordingUrl.pathname,
     };
-    recordDebugEvent(task, 'Success', { ...successResult, lookupMethod: 'conversation.segment_link' });
-    return successResult;
   }
   if (!conference) {
-    const result: ExternalRecordingInfo = {
+    return {
       status: 'failure',
       name: 'NoConference',
       error: `Could not find a conference attached to task attributes ${task.taskSid}`,
     };
-    recordDebugEvent(task, 'Error', result);
-    return result;
   }
 
   const { participants } = isTwilioTask(task) && conference;
   if (!participants) {
-    const result: ExternalRecordingInfo = {
+    return {
       status: 'failure',
       name: 'NoParticipants',
       error: `Could not find a participants attached to conference for task ${task.taskSid}`,
     };
-    recordDebugEvent(task, 'Error', result);
-    return result;
   }
 
   const callSid = participants.worker;
   if (!callSid) {
-    const result: ExternalRecordingInfo = {
+    return {
       status: 'failure',
       name: 'NoCallSid',
       error: 'Could not find call sid',
     };
-    recordDebugEvent(task, 'Error', result);
-    return result;
   }
 
   const { bucket, key, recordingSid } = await getExternalRecordingS3Location(callSid);
 
-  const successResult: ExternalRecordingInfo = {
+  return {
     status: 'success',
     recordingSid,
     bucket,
     key,
   };
-  recordDebugEvent(task, 'Success', { ...successResult, lookupMethod: 'conference worker callSid' });
-  return successResult;
 };

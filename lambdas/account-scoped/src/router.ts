@@ -19,7 +19,7 @@ import { AccountScopedRoute, FunctionRoute, HttpRequest } from './httpTypes';
 import { validateRequestMethod } from './validation/method';
 import { isAccountSID } from '@tech-matters/twilio-types';
 import { handleTaskRouterEvent } from './taskrouter';
-import { handleUpdateWorkersSkills } from './taskrouter/updateWorkersSkills';
+import { handleUpdateWorkersSkills } from './worker/updateSkills';
 import { handleGetProfileFlagsForIdentifier } from './hrm/getProfileFlagsForIdentifier';
 import { handleToggleSwitchboardQueue } from './hrm/toggleSwitchboardQueue';
 import { assignOfflineContactInitHandler } from './task/assignOfflineContactInit';

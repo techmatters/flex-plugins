@@ -93,14 +93,20 @@ export const setUpSkillsColumn = () => {
 };
 
 const SkillsCell = ({ item }) => {
-  const availableSkills = item?.worker?.attributes?.routing?.skills ?? [];
+  const enabledSkills = item?.worker?.attributes?.routing?.skills ?? [];
+  const enabledSkillsLevels = item?.worker?.attributes?.routing?.levels ?? {};
   const disabledSkills = item?.worker?.attributes?.disabled_skills?.skills ?? [];
+  const disabledSkillsLevels = item?.worker?.attributes?.disabled_skills?.levels ?? {};
   const workerName = item?.worker?.attributes?.full_name ?? '';
 
   const combinedSkills = [
-    ...availableSkills.map(skill => ({ skill, type: 'active' })),
+    ...enabledSkills.map(skill => ({ skill, type: 'active' })),
     ...disabledSkills.map(skill => ({ skill, type: 'disabled' })),
   ];
+  const combinedLevels = {
+    ...enabledSkillsLevels,
+    ...disabledSkillsLevels,
+  };
 
   return combinedSkills.length === 0 ? (
     <OpaqueText>
@@ -108,19 +114,20 @@ const SkillsCell = ({ item }) => {
     </OpaqueText>
   ) : (
     <SkillsList>
-      {combinedSkills.map(({ skill, type }) =>
-        skill.length > MAX_SKILL_LENGTH ? (
-          <Tooltip key={skill} title={skill}>
-            <StyledChip chipType={type} aria-label={skill}>
-              {skill.slice(0, MAX_SKILL_LENGTH)}...
+      {combinedSkills.map(({ skill, type }) => {
+        const fullText = `${skill}${combinedLevels[skill] ? ` (${combinedLevels[skill]})` : ''}`;
+        return fullText.length > MAX_SKILL_LENGTH ? (
+          <Tooltip key={fullText} title={fullText}>
+            <StyledChip chipType={type} aria-label={fullText}>
+              {fullText.slice(0, MAX_SKILL_LENGTH)}...
             </StyledChip>
           </Tooltip>
         ) : (
-          <StyledChip key={skill} chipType={type} aria-label={skill}>
-            {skill}
+          <StyledChip key={fullText} chipType={type} aria-label={fullText}>
+            {fullText}
           </StyledChip>
-        ),
-      )}
+        );
+      })}
     </SkillsList>
   );
 };
