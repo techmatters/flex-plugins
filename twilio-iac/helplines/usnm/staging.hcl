@@ -10,9 +10,15 @@ locals {
   local_config = {
     custom_task_routing_filter_expression = ""
     flow_vars = {
-      widget_from = "NAMI"
-      chat_blocked_message = "Hi, you've been blocked from accessing NAMI services and we are not able to read or receive further messages from you."
-      send_message_prequeue = "Welcome. Pleas wait for a specialist."
+      widget_from                              = "NAMI"
+      chat_blocked_message                     = "Hi, you've been blocked from accessing NAMI services and we are not able to read or receive further messages from you."
+      send_message_prequeue                    = "Welcome. Pleas wait for a specialist."
+      custom_functions_url                     = "https://custom-functions-4084.twil.io"
+      usnm_recordings_url                      = "https://usnm-recordings-6200.twil.io"
+      is_skilled_worker_available_function_sid = "ZH85007840bfdc6245a8ffb08d98aad0eb"
+      workspace_sid                            = "WSb9cb11d86ddcb7954dcdd20c391a7edc"
+      custom_functions_service_id              = "ZSa976031394bdc8b5e95dc8c81e95f1e0"
+      custom_functions_environment_id          = "ZE249accc6e2a97eb70428aba674cba636"
     }
 
 
@@ -21,7 +27,7 @@ locals {
       voice : {
         channel_type     = "voice"
         contact_identity = ""
-        templatefile     = "/app/twilio-iac/helplines/templates/studio-flows/voice-basic-sd.tftpl"
+        templatefile     = "/app/twilio-iac/helplines/usnm/templates/studio-flows/voice.tftpl"
         channel_flow_vars = {
           voice_ivr_greeting_message = "Hello, you are contacting NAMI. Please hold for a counsellor."
           voice_ivr_blocked_message  = "I'm sorry your number has been blocked."

@@ -1,0 +1,2544 @@
+${
+  jsonencode({
+  "initial_state": "Trigger",
+  "flags": {
+    "allow_concurrent_calls": true
+  },
+  "description": "${flow_description}",
+  "states": [
+    {
+      "name": "Trigger",
+      "type": "trigger",
+      "transitions": [
+        {
+          "event": "incomingMessage"
+        },
+        {
+          "next": "f_countryVoipFilter",
+          "event": "incomingCall"
+        },
+        {
+          "event": "incomingConversationMessage"
+        },
+        {
+          "event": "incomingRequest"
+        },
+        {
+          "event": "incomingParent"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": -154,
+          "y": -583
+        }
+      }
+    },
+    {
+      "name": "http_post_webhook_notify_failed_to_enqueue",
+      "type": "make-http-request",
+      "transitions": [
+        {
+          "event": "success"
+        },
+        {
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 2136,
+          "y": 5027
+        },
+        "method": "POST",
+        "content_type": "application/json;charset=utf-8",
+        "add_twilio_auth": false,
+        "body": "{ \"text\": \"Issue detected [Failed to Enqueue] on ${short_helpline} ${short_environment} Flow SID: {{flow.flow_sid}} Execution SID: {{flow.sid}}  \" }",
+        "url": "${webhook_url_studio_errors}"
+      }
+    },
+    {
+      "name": "run_subflow_system_down",
+      "type": "run-subflow",
+      "transitions": [
+        {
+          "next": "f_getProfileFlagsForIdentifier",
+          "event": "completed"
+        },
+        {
+          "next": "f_getProfileFlagsForIdentifier",
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "flow_sid": "${system_down_studio_subflow_sid}",
+        "flow_revision": "LatestPublished",
+        "offset": {
+          "x": -410,
+          "y": 149
+        },
+        "parameters": [
+          {
+            "type": "string",
+            "value": "true",
+            "key": "system_down"
+          }
+        ]
+      }
+    },
+    {
+      "name": "f_countryVoipFilter",
+      "type": "make-http-request",
+      "transitions": [
+        {
+          "next": "split_country_voip",
+          "event": "success"
+        },
+        {
+          "next": "split_country_voip",
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": -55,
+          "y": -320
+        },
+        "method": "POST",
+        "content_type": "application/json;charset=utf-8",
+        "add_twilio_auth": false,
+        "body": "{\"from\":\"{{trigger.call.From}}\"}",
+        "url": "${flow_vars.custom_functions_url}/countryVoipFilter"
+      }
+    },
+    {
+      "name": "split_country_voip",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "run_subflow_system_down",
+          "event": "noMatch"
+        },
+        {
+          "next": "play_message_voice_outside_us",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to non_us_country",
+              "arguments": [
+                "{{widgets.f_countryVoipFilter.parsed.body.reason}}"
+              ],
+              "type": "equal_to",
+              "value": "non_us_country"
+            }
+          ]
+        },
+        {
+          "next": "play_message_voice_voip_blocked",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to voip",
+              "arguments": [
+                "{{widgets.f_countryVoipFilter.parsed.body.reason}}"
+              ],
+              "type": "equal_to",
+              "value": "voip"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{widgets.f_countryVoipFilter.parsed.body.reason}}",
+        "offset": {
+          "x": 127,
+          "y": -58
+        }
+      }
+    },
+    {
+      "name": "play_message_voice_outside_us",
+      "type": "say-play",
+      "transitions": [
+        {
+          "event": "audioComplete"
+        }
+      ],
+      "properties": {
+        "play": "${flow_vars.usnm_recordings_url}/play_message_voice_outside_us.mp3",
+        "offset": {
+          "x": 386,
+          "y": 173
+        },
+        "loop": 1
+      }
+    },
+    {
+      "name": "play_message_voice_voip_blocked",
+      "type": "say-play",
+      "transitions": [
+        {
+          "event": "audioComplete"
+        }
+      ],
+      "properties": {
+        "play": "${flow_vars.usnm_recordings_url}/play_message_voice_voip_blocked.mp3",
+        "offset": {
+          "x": 802,
+          "y": 157
+        },
+        "loop": 1
+      }
+    },
+    {
+      "name": "f_getProfileFlagsForIdentifier",
+      "type": "make-http-request",
+      "transitions": [
+        {
+          "next": "split_contact_routing",
+          "event": "success"
+        },
+        {
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": -276,
+          "y": 443
+        },
+        "method": "POST",
+        "content_type": "application/json;charset=utf-8",
+        "add_twilio_auth": false,
+        "body": "{ \"trigger\": {{trigger | to_json}}, \"channelType\": \"voice\" }",
+        "url": "${lambda_twilio_account_scoped_url}/getProfileFlagsForIdentifier"
+      }
+    },
+    {
+      "name": "split_contact_routing",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "f_operatingHours",
+          "event": "noMatch"
+        },
+        {
+          "next": "play_message_voice_blocked_level_1_acceptable_use_policy",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to acceptable use policy or lio behavior",
+              "arguments": [
+                "{{widgets.f_getProfileFlagsForIdentifier.parsed.flags}}"
+              ],
+              "type": "equal_to",
+              "value": "Acceptable Use Policy or LIO Behavior"
+            }
+          ]
+        },
+        {
+          "next": "play_message_voice_blocked_level_2_access_policy",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to access policy",
+              "arguments": [
+                "{{widgets.f_getProfileFlagsForIdentifier.parsed.flags}}"
+              ],
+              "type": "equal_to",
+              "value": "Access Policy"
+            }
+          ]
+        },
+        {
+          "next": "play_message_voice_blocked_level_2_access_policy",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to 24-hr block acc pol",
+              "arguments": [
+                "{{widgets.f_getProfileFlagsForIdentifier.parsed.flags}}"
+              ],
+              "type": "equal_to",
+              "value": "Access Policy (24-hour Block)"
+            }
+          ]
+        },
+        {
+          "next": "play_message_voice_blocked_level_1_acceptable_use_policy",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to 24-hr block accept use pol",
+              "arguments": [
+                "{{widgets.f_getProfileFlagsForIdentifier.parsed.flags}}"
+              ],
+              "type": "equal_to",
+              "value": "Acceptable Use Policy (24-hour Block)"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{widgets.f_getProfileFlagsForIdentifier.parsed.flags}}",
+        "offset": {
+          "x": -338,
+          "y": 751
+        }
+      }
+    },
+    {
+      "name": "play_message_voice_blocked_level_1_acceptable_use_policy",
+      "type": "say-play",
+      "transitions": [
+        {
+          "event": "audioComplete"
+        }
+      ],
+      "properties": {
+        "play": "${flow_vars.usnm_recordings_url}/play_message_voice_blocked_level_1_acceptable_use_policy.mp3",
+        "offset": {
+          "x": -119,
+          "y": 1008
+        },
+        "loop": 1
+      }
+    },
+    {
+      "name": "play_message_voice_blocked_level_2_access_policy",
+      "type": "say-play",
+      "transitions": [
+        {
+          "event": "audioComplete"
+        }
+      ],
+      "properties": {
+        "play": "${flow_vars.usnm_recordings_url}/play_message_voice_blocked_level_2_access_policy.mp3",
+        "offset": {
+          "x": 355,
+          "y": 975
+        },
+        "loop": 1
+      }
+    },
+    {
+      "name": "f_operatingHours",
+      "type": "make-http-request",
+      "transitions": [
+        {
+          "next": "split_status",
+          "event": "success"
+        },
+        {
+          "next": "split_status",
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": -700,
+          "y": 1130
+        },
+        "method": "POST",
+        "content_type": "application/json;charset=utf-8",
+        "add_twilio_auth": false,
+        "body": "{\"channel\": \"sms\", \"includeMessageTextInResponse\": \"true\", \"language\": \"en-USNM\"}",
+        "url": "${lambda_twilio_account_scoped_url}/operatingHours"
+      }
+    },
+    {
+      "name": "split_status",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "gather_input_voice_language_voicemail",
+          "event": "noMatch"
+        },
+        {
+          "next": "gather_input_voice_language",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to open",
+              "arguments": [
+                "{{widgets.f_operatingHours.parsed.status}}"
+              ],
+              "type": "equal_to",
+              "value": "open"
+            }
+          ]
+        },
+        {
+          "next": "gather_input_voice_language_voicemail",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to closed",
+              "arguments": [
+                "{{widgets.f_operatingHours.parsed.status}}"
+              ],
+              "type": "equal_to",
+              "value": "closed"
+            }
+          ]
+        },
+        {
+          "next": "gather_input_voice_language_voicemail",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to holiday",
+              "arguments": [
+                "{{widgets.f_operatingHours.parsed.status}}"
+              ],
+              "type": "equal_to",
+              "value": "holiday"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{widgets.f_operatingHours.parsed.status}}",
+        "offset": {
+          "x": 195,
+          "y": 1440
+        }
+      }
+    },
+    {
+      "name": "gather_input_voice_language_voicemail",
+      "type": "gather-input-on-call",
+      "transitions": [
+        {
+          "next": "split_voice_language_voicemail",
+          "event": "keypress"
+        },
+        {
+          "event": "speech"
+        },
+        {
+          "next": "split_en_holiday",
+          "event": "timeout"
+        }
+      ],
+      "properties": {
+        "speech_timeout": "5",
+        "offset": {
+          "x": 3576,
+          "y": 1720
+        },
+        "loop": 1,
+        "finish_on_key": "#",
+        "language": "en-US",
+        "stop_gather": true,
+        "gather_language": "en",
+        "speech_model": "default",
+        "timeout": 5
+      }
+    },
+    {
+      "name": "gather_input_voice_language",
+      "type": "gather-input-on-call",
+      "transitions": [
+        {
+          "next": "split_voice_language",
+          "event": "keypress"
+        },
+        {
+          "event": "speech"
+        },
+        {
+          "next": "play_message_voice_en_welcome",
+          "event": "timeout"
+        }
+      ],
+      "properties": {
+        "play": "${flow_vars.usnm_recordings_url}/gather_input_voice_language.mp3",
+        "number_of_digits": 1,
+        "speech_timeout": "5",
+        "offset": {
+          "x": -995,
+          "y": 1669
+        },
+        "loop": 1,
+        "finish_on_key": "#",
+        "stop_gather": false,
+        "gather_language": "en",
+        "speech_model": "default",
+        "timeout": 7
+      }
+    },
+    {
+      "name": "play_message_voice_en_welcome",
+      "type": "say-play",
+      "transitions": [
+        {
+          "next": "gather_input_voice_en_service",
+          "event": "audioComplete"
+        }
+      ],
+      "properties": {
+        "play": "${flow_vars.usnm_recordings_url}/play_message_voice_en_welcome.mp3",
+        "offset": {
+          "x": -1071,
+          "y": 1945
+        },
+        "loop": 1
+      }
+    },
+    {
+      "name": "gather_input_voice_en_service",
+      "type": "gather-input-on-call",
+      "transitions": [
+        {
+          "next": "split_en_service",
+          "event": "keypress"
+        },
+        {
+          "event": "speech"
+        },
+        {
+          "next": "set_var_en_service_counter",
+          "event": "timeout"
+        }
+      ],
+      "properties": {
+        "play": "${flow_vars.usnm_recordings_url}/gather_input_voice_en_service.mp3",
+        "number_of_digits": 1,
+        "speech_timeout": "5",
+        "offset": {
+          "x": -1172,
+          "y": 2202
+        },
+        "loop": 1,
+        "finish_on_key": "#",
+        "stop_gather": false,
+        "gather_language": "en",
+        "speech_model": "default",
+        "timeout": 10
+      }
+    },
+    {
+      "name": "split_en_service",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "set_var_en_service_counter",
+          "event": "noMatch"
+        },
+        {
+          "next": "f_isSkilledWorkerAvailable_tya_calls",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to 3",
+              "arguments": [
+                "{{widgets.gather_input_voice_language.Digits}}"
+              ],
+              "type": "equal_to",
+              "value": "3"
+            }
+          ]
+        },
+        {
+          "next": "play_message_voice_en_prequeue_std",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to 1",
+              "arguments": [
+                "{{widgets.gather_input_voice_language.Digits}}"
+              ],
+              "type": "equal_to",
+              "value": "1"
+            }
+          ]
+        },
+        {
+          "next": "f_isSkilledWorkerAvailable_fcg_calls",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to 4",
+              "arguments": [
+                "{{widgets.gather_input_voice_language.Digits}}"
+              ],
+              "type": "equal_to",
+              "value": "4"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{widgets.gather_input_voice_language.Digits}}",
+        "offset": {
+          "x": -1366,
+          "y": 2493
+        }
+      }
+    },
+    {
+      "name": "f_isSkilledWorkerAvailable_tya_calls",
+      "type": "run-function",
+      "transitions": [
+        {
+          "next": "split_specialist_available_tya_calls",
+          "event": "success"
+        },
+        {
+          "next": "split_specialist_available_tya_calls",
+          "event": "fail"
+        }
+      ],
+      "properties": {
+        "service_sid": "${flow_vars.custom_functions_service_id}",
+        "environment_sid": "${flow_vars.custom_functions_environment_id}",
+        "offset": {
+          "x": -1990,
+          "y": 2720
+        },
+        "function_sid": "${flow_vars.is_skilled_worker_available_function_sid}",
+        "parameters": [
+          {
+            "value": "${flow_vars.workspace_sid}",
+            "key": "workspaceSid"
+          },
+          {
+            "value": "voice",
+            "key": "targetChannel"
+          },
+          {
+            "value": "TYA,Calls",
+            "key": "targetSkills"
+          }
+        ],
+        "url": "${flow_vars.custom_functions_url}/isSkilledWorkerAvailable"
+      }
+    },
+    {
+      "name": "split_specialist_available_tya_calls",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "play_message_voice_en_prequeue_tya",
+          "event": "noMatch"
+        },
+        {
+          "next": "play_message_voice_en_prequeue_tya",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value greater_than 0",
+              "arguments": [
+                "{{widgets.f_isSkilledWorkerAvailable.parsed.totalAvailableWorkers}}"
+              ],
+              "type": "greater_than",
+              "value": "0"
+            }
+          ]
+        },
+        {
+          "next": "gather_input_voice_en_no_tya_service",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to 0",
+              "arguments": [
+                "{{widgets.f_isSkilledWorkerAvailable.parsed.totalAvailableWorkers}}"
+              ],
+              "type": "equal_to",
+              "value": "0"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{widgets.f_isSkilledWorkerAvailable_tya_calls.parsed.totalAvailableWorkers}}",
+        "offset": {
+          "x": -2131,
+          "y": 2945
+        }
+      }
+    },
+    {
+      "name": "play_message_voice_en_prequeue_tya",
+      "type": "say-play",
+      "transitions": [
+        {
+          "next": "play_message_voice_en_post_survey_info_tya",
+          "event": "audioComplete"
+        }
+      ],
+      "properties": {
+        "play": "${flow_vars.usnm_recordings_url}/play_message_voice_en_prequeue_tya.mp3",
+        "offset": {
+          "x": -2381,
+          "y": 3621
+        },
+        "loop": 1
+      }
+    },
+    {
+      "name": "send_to_queue_en_tya",
+      "type": "send-to-flex",
+      "transitions": [
+        {
+          "event": "callComplete"
+        },
+        {
+          "next": "http_post_webhook_notify_failed_to_enqueue",
+          "event": "failedToEnqueue"
+        },
+        {
+          "event": "callFailure"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": -2452,
+          "y": 4165
+        },
+        "workflow": "${workflow_sids.master}",
+        "channel": "${task_channel_sids.voice}",
+        "attributes": "{\n  \"type\": \"inbound\",\n   \"name\": \"{{trigger.call.From}}\",\n  \"ignoreAgent\": \"\",\n  \"helpline\":\"${helpline}\",\n  \"transferTargetType\": \"\",\n   \"service\" :\"tya\",\n   \"serviceLanguage\": \"english\",\n  \"channelType\": \"voice\",\n  \"conversations\": {\n    \"hang_up_by\": \"Customer\"\n  }\n}\n",
+        "priority": "0",
+        "timeout": "3600"
+      }
+    },
+    {
+      "name": "gather_input_voice_en_no_tya_service",
+      "type": "gather-input-on-call",
+      "transitions": [
+        {
+          "next": "split_voice_en_no_tya_service",
+          "event": "keypress"
+        },
+        {
+          "event": "speech"
+        },
+        {
+          "next": "set_var_en_no_tya_service_counter",
+          "event": "timeout"
+        }
+      ],
+      "properties": {
+        "play": "${flow_vars.usnm_recordings_url}/gather_input_voice_en_no_tya_service.mp3",
+        "number_of_digits": 1,
+        "speech_timeout": "5",
+        "offset": {
+          "x": -1866,
+          "y": 3184
+        },
+        "loop": 1,
+        "finish_on_key": "#",
+        "stop_gather": false,
+        "gather_language": "en",
+        "speech_model": "default",
+        "timeout": 10
+      }
+    },
+    {
+      "name": "split_voice_en_no_tya_service",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "set_var_en_no_tya_service_counter",
+          "event": "noMatch"
+        },
+        {
+          "next": "record_voicemail_en_no_service_tya",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to 3",
+              "arguments": [
+                "{{widgets.gather_input_voice_en_no_tya_service.Digits}}"
+              ],
+              "type": "equal_to",
+              "value": "3"
+            }
+          ]
+        },
+        {
+          "next": "play_message_voice_en_prequeue_std",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to 1",
+              "arguments": [
+                "{{widgets.gather_input_voice_en_no_tya_service.Digits}}"
+              ],
+              "type": "equal_to",
+              "value": "1"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{widgets.gather_input_voice_en_no_tya_service.Digits}}",
+        "offset": {
+          "x": -1833,
+          "y": 3427
+        }
+      }
+    },
+    {
+      "name": "play_message_voice_en_prequeue_std",
+      "type": "say-play",
+      "transitions": [
+        {
+          "next": "play_message_voice_en_post_survey_info_std",
+          "event": "audioComplete"
+        }
+      ],
+      "properties": {
+        "play": "${flow_vars.usnm_recordings_url}/play_message_voice_en_prequeue_std.mp3",
+        "offset": {
+          "x": -1132,
+          "y": 3695
+        },
+        "loop": 1
+      }
+    },
+    {
+      "name": "send_to_queue_en_std",
+      "type": "send-to-flex",
+      "transitions": [
+        {
+          "event": "callComplete"
+        },
+        {
+          "next": "http_post_webhook_notify_failed_to_enqueue",
+          "event": "failedToEnqueue"
+        },
+        {
+          "event": "callFailure"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": -1312,
+          "y": 4192
+        },
+        "workflow": "${workflow_sids.master}",
+        "channel": "${task_channel_sids.voice}",
+        "attributes": "{\n  \"type\": \"inbound\",\n   \"name\": \"{{trigger.call.From}}\",\n  \"ignoreAgent\": \"\",\n  \"helpline\":\"${helpline}\",\n  \"transferTargetType\": \"\",\n   \"service\" :\"std\",\n   \"serviceLanguage\": \"english\",\n  \"channelType\": \"voice\",\n  \"conversations\": {\n    \"hang_up_by\": \"Customer\"\n  }\n}\n",
+        "priority": "0",
+        "timeout": "3600"
+      }
+    },
+    {
+      "name": "f_isSkilledWorkerAvailable_fcg_calls",
+      "type": "run-function",
+      "transitions": [
+        {
+          "next": "split_specialist_available_fcg_calls",
+          "event": "success"
+        },
+        {
+          "next": "split_specialist_available_fcg_calls",
+          "event": "fail"
+        }
+      ],
+      "properties": {
+        "service_sid": "${flow_vars.custom_functions_service_id}",
+        "environment_sid": "${flow_vars.custom_functions_environment_id}",
+        "offset": {
+          "x": -422,
+          "y": 2695
+        },
+        "function_sid": "${flow_vars.is_skilled_worker_available_function_sid}",
+        "parameters": [
+          {
+            "value": "${flow_vars.workspace_sid}",
+            "key": "workspaceSid"
+          },
+          {
+            "value": "voice",
+            "key": "targetChannel"
+          },
+          {
+            "value": "FCG,Calls",
+            "key": "targetSkills"
+          }
+        ],
+        "url": "${flow_vars.custom_functions_url}/isSkilledWorkerAvailable"
+      }
+    },
+    {
+      "name": "split_specialist_available_fcg_calls",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "play_message_voice_en_prequeue_fcg",
+          "event": "noMatch"
+        },
+        {
+          "next": "gather_input_voice_en_no_fcg_service",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to 0",
+              "arguments": [
+                "{{widgets.f_isSkilledWorkerAvailable_fcg_calls.parsed.totalAvailableWorkers}}"
+              ],
+              "type": "equal_to",
+              "value": "0"
+            }
+          ]
+        },
+        {
+          "next": "play_message_voice_en_prequeue_fcg",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value greater_than 0",
+              "arguments": [
+                "{{widgets.f_isSkilledWorkerAvailable_fcg_calls.parsed.totalAvailableWorkers}}"
+              ],
+              "type": "greater_than",
+              "value": "0"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{widgets.f_isSkilledWorkerAvailable_fcg_calls.parsed.totalAvailableWorkers}}",
+        "offset": {
+          "x": -350,
+          "y": 2910
+        }
+      }
+    },
+    {
+      "name": "gather_input_voice_en_no_fcg_service",
+      "type": "gather-input-on-call",
+      "transitions": [
+        {
+          "next": "split_voice_en_no_fcg_service",
+          "event": "keypress"
+        },
+        {
+          "event": "speech"
+        },
+        {
+          "next": "set_var_en_no_fcg_service_counter",
+          "event": "timeout"
+        }
+      ],
+      "properties": {
+        "play": "${flow_vars.usnm_recordings_url}/gather_input_voice_en_no_fcg_service.mp3",
+        "number_of_digits": 1,
+        "speech_timeout": "5",
+        "offset": {
+          "x": -446,
+          "y": 3164
+        },
+        "loop": 1,
+        "finish_on_key": "#",
+        "stop_gather": false,
+        "gather_language": "en",
+        "speech_model": "default",
+        "timeout": 10
+      }
+    },
+    {
+      "name": "split_voice_en_no_fcg_service",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "set_var_en_no_fcg_service_counter",
+          "event": "noMatch"
+        },
+        {
+          "next": "play_message_voice_en_prequeue_std",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to 1",
+              "arguments": [
+                "{{widgets.gather_input_voice_en_no_fcg_service.Digits}}"
+              ],
+              "type": "equal_to",
+              "value": "1"
+            }
+          ]
+        },
+        {
+          "next": "record_voicemail_en_no_service_fcg",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to 4",
+              "arguments": [
+                "{{widgets.gather_input_voice_en_no_fcg_service.Digits}}"
+              ],
+              "type": "equal_to",
+              "value": "4"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{widgets.gather_input_voice_en_no_fcg_service.Digits}}",
+        "offset": {
+          "x": -614,
+          "y": 3409
+        }
+      }
+    },
+    {
+      "name": "play_message_voice_en_prequeue_fcg",
+      "type": "say-play",
+      "transitions": [
+        {
+          "next": "play_message_voice_en_post_survey_info_fcg",
+          "event": "audioComplete"
+        }
+      ],
+      "properties": {
+        "play": "${flow_vars.usnm_recordings_url}/play_message_voice_en_prequeue_fcg.mp3",
+        "offset": {
+          "x": -86,
+          "y": 3652
+        },
+        "loop": 1
+      }
+    },
+    {
+      "name": "send_to_queue_en_fcg",
+      "type": "send-to-flex",
+      "transitions": [
+        {
+          "event": "callComplete"
+        },
+        {
+          "next": "http_post_webhook_notify_failed_to_enqueue",
+          "event": "failedToEnqueue"
+        },
+        {
+          "event": "callFailure"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": -342,
+          "y": 4176
+        },
+        "workflow": "${workflow_sids.master}",
+        "channel": "${task_channel_sids.voice}",
+        "attributes": "{\n  \"type\": \"inbound\",\n   \"name\": \"{{trigger.call.From}}\",\n  \"ignoreAgent\": \"\",\n  \"helpline\":\"${helpline}\",\n  \"transferTargetType\": \"\",\n   \"service\" :\"fcg\",\n   \"serviceLanguage\": \"english\",\n  \"channelType\": \"voice\",\n  \"conversations\": {\n    \"hang_up_by\": \"Customer\"\n  }\n}\n",
+        "priority": "0",
+        "timeout": "3600"
+      }
+    },
+    {
+      "name": "play_message_voice_es_welcome",
+      "type": "say-play",
+      "transitions": [
+        {
+          "next": "gather_input_voice_es_service",
+          "event": "audioComplete"
+        }
+      ],
+      "properties": {
+        "play": "${flow_vars.usnm_recordings_url}/play_message_voice_es_welcome.mp3",
+        "offset": {
+          "x": -172,
+          "y": 2053
+        },
+        "loop": 1
+      }
+    },
+    {
+      "name": "split_voice_language",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "play_message_voice_en_welcome",
+          "event": "noMatch"
+        },
+        {
+          "next": "play_message_voice_es_welcome",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to 2",
+              "arguments": [
+                "{{widgets.gather_input_voice_language.Digits}}"
+              ],
+              "type": "equal_to",
+              "value": "2"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{widgets.gather_input_voice_language.Digits}}",
+        "offset": {
+          "x": -590,
+          "y": 1861
+        }
+      }
+    },
+    {
+      "name": "play_message_voice_en_post_survey_info_tya",
+      "type": "say-play",
+      "transitions": [
+        {
+          "next": "send_to_queue_en_tya",
+          "event": "audioComplete"
+        }
+      ],
+      "properties": {
+        "play": "${flow_vars.usnm_recordings_url}/play_message_voice_en_post_survey_info_tya.mp3",
+        "offset": {
+          "x": -2431,
+          "y": 3887
+        },
+        "loop": 1
+      }
+    },
+    {
+      "name": "play_message_voice_en_post_survey_info_fcg",
+      "type": "say-play",
+      "transitions": [
+        {
+          "next": "send_to_queue_en_fcg",
+          "event": "audioComplete"
+        }
+      ],
+      "properties": {
+        "play": "${flow_vars.usnm_recordings_url}/play_message_voice_en_post_survey_info_fcg.mp3",
+        "offset": {
+          "x": -187,
+          "y": 3882
+        },
+        "loop": 1
+      }
+    },
+    {
+      "name": "play_message_voice_en_post_survey_info_std",
+      "type": "say-play",
+      "transitions": [
+        {
+          "next": "send_to_queue_en_std",
+          "event": "audioComplete"
+        }
+      ],
+      "properties": {
+        "play": "${flow_vars.usnm_recordings_url}/play_message_voice_en_post_survey_info_std.mp3",
+        "offset": {
+          "x": -1220,
+          "y": 3948
+        },
+        "loop": 1
+      }
+    },
+    {
+      "name": "gather_input_voice_es_service",
+      "type": "gather-input-on-call",
+      "transitions": [
+        {
+          "next": "split_es_service",
+          "event": "keypress"
+        },
+        {
+          "event": "speech"
+        },
+        {
+          "next": "set_var_es_service_counter",
+          "event": "timeout"
+        }
+      ],
+      "properties": {
+        "play": "${flow_vars.usnm_recordings_url}/gather_input_voice_es_service.mp3",
+        "number_of_digits": 1,
+        "speech_timeout": "5",
+        "offset": {
+          "x": 539,
+          "y": 2257
+        },
+        "loop": 1,
+        "finish_on_key": "#",
+        "stop_gather": true,
+        "gather_language": "en",
+        "speech_model": "default",
+        "timeout": 10
+      }
+    },
+    {
+      "name": "set_var_en_service_counter",
+      "type": "set-variables",
+      "transitions": [
+        {
+          "next": "split_end_cycle_en_service",
+          "event": "next"
+        }
+      ],
+      "properties": {
+        "variables": [
+          {
+            "type": "string",
+            "value": "{% if flow.variables.en_service_counter%} {{flow.variables.en_service_counter| plus: 1}} {% else %} 1 {% endif %}",
+            "key": "en_service_counter"
+          }
+        ],
+        "offset": {
+          "x": -1683,
+          "y": 2429
+        }
+      }
+    },
+    {
+      "name": "split_end_cycle_en_service",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "gather_input_voice_en_service",
+          "event": "noMatch"
+        },
+        {
+          "next": "play_message_voice_en_prequeue_std",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value greater_than 2",
+              "arguments": [
+                "{{flow.variables.en_service_counter}}"
+              ],
+              "type": "greater_than",
+              "value": "2"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{flow.variables.en_service_counter}}",
+        "offset": {
+          "x": -1833,
+          "y": 2181
+        }
+      }
+    },
+    {
+      "name": "split_es_service",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "set_var_es_service_counter",
+          "event": "noMatch"
+        },
+        {
+          "next": "play_message_voice_es_prequeue_std",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to 1",
+              "arguments": [
+                "{{widgets.gather_input_voice_es_service.Digits}}"
+              ],
+              "type": "equal_to",
+              "value": "1"
+            }
+          ]
+        },
+        {
+          "next": "f_isSkilledWorkerAvailable_es_tya_calls",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to 3",
+              "arguments": [
+                "{{widgets.gather_input_voice_es_service.Digits}}"
+              ],
+              "type": "equal_to",
+              "value": "3"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{widgets.gather_input_voice_es_service.Digits}}",
+        "offset": {
+          "x": 552,
+          "y": 2512
+        }
+      }
+    },
+    {
+      "name": "play_message_voice_es_prequeue_std",
+      "type": "say-play",
+      "transitions": [
+        {
+          "next": "play_message_voice_es_post_survey_info_std",
+          "event": "audioComplete"
+        }
+      ],
+      "properties": {
+        "play": "${flow_vars.usnm_recordings_url}/play_message_voice_es_prequeue_std.mp3",
+        "offset": {
+          "x": 847,
+          "y": 3598
+        },
+        "loop": 1
+      }
+    },
+    {
+      "name": "send_to_queue_es_std",
+      "type": "send-to-flex",
+      "transitions": [
+        {
+          "event": "callComplete"
+        },
+        {
+          "next": "http_post_webhook_notify_failed_to_enqueue",
+          "event": "failedToEnqueue"
+        },
+        {
+          "event": "callFailure"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 661,
+          "y": 4117
+        },
+        "workflow": "${workflow_sids.master}",
+        "channel": "${task_channel_sids.voice}",
+        "attributes": "{\n  \"type\": \"inbound\",\n   \"name\": \"{{trigger.call.From}}\",\n  \"ignoreAgent\": \"\",\n  \"helpline\":\"${helpline}\",\n  \"transferTargetType\": \"\",\n   \"service\" :\"std\",\n   \"serviceLanguage\": \"spanish\",\n  \"channelType\": \"voice\",\n  \"conversations\": {\n    \"hang_up_by\": \"Customer\"\n  }\n}\n",
+        "priority": "0",
+        "timeout": "3600"
+      }
+    },
+    {
+      "name": "play_message_voice_es_post_survey_info_std",
+      "type": "say-play",
+      "transitions": [
+        {
+          "next": "send_to_queue_es_std",
+          "event": "audioComplete"
+        }
+      ],
+      "properties": {
+        "play": "${flow_vars.usnm_recordings_url}/play_message_voice_es_post_survey_info_std.mp3",
+        "offset": {
+          "x": 762,
+          "y": 3853
+        },
+        "loop": 1
+      }
+    },
+    {
+      "name": "f_isSkilledWorkerAvailable_es_tya_calls",
+      "type": "run-function",
+      "transitions": [
+        {
+          "next": "split_specialist_available_es_tya_calls",
+          "event": "success"
+        },
+        {
+          "next": "split_specialist_available_es_tya_calls",
+          "event": "fail"
+        }
+      ],
+      "properties": {
+        "service_sid": "${flow_vars.custom_functions_service_id}",
+        "environment_sid": "${flow_vars.custom_functions_environment_id}",
+        "offset": {
+          "x": 997,
+          "y": 2722
+        },
+        "function_sid": "${flow_vars.is_skilled_worker_available_function_sid}",
+        "parameters": [
+          {
+            "value": "${flow_vars.workspace_sid}",
+            "key": "workspaceSid"
+          },
+          {
+            "value": "voice",
+            "key": "targetChannel"
+          },
+          {
+            "value": "TYA,Calls,Spanish",
+            "key": "targetSkills"
+          }
+        ],
+        "url": "${flow_vars.custom_functions_url}/isSkilledWorkerAvailable"
+      }
+    },
+    {
+      "name": "split_specialist_available_es_tya_calls",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "gather_input_voice_es_no_tya_service",
+          "event": "noMatch"
+        },
+        {
+          "next": "gather_input_voice_es_no_tya_service",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to 0",
+              "arguments": [
+                "{{widgets.f_isSkilledWorkerAvailable_es_tya_calls.parsed.totalAvailableWorkers}}"
+              ],
+              "type": "equal_to",
+              "value": "0"
+            }
+          ]
+        },
+        {
+          "next": "play_message_voice_es_prequeue_tya",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value greater_than 0",
+              "arguments": [
+                "{{widgets.f_isSkilledWorkerAvailable_es_tya_calls.parsed.totalAvailableWorkers}}"
+              ],
+              "type": "greater_than",
+              "value": "0"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{widgets.f_isSkilledWorkerAvailable_es_tya_calls.parsed.totalAvailableWorkers}}",
+        "offset": {
+          "x": 1328,
+          "y": 2912
+        }
+      }
+    },
+    {
+      "name": "gather_input_voice_es_no_tya_service",
+      "type": "gather-input-on-call",
+      "transitions": [
+        {
+          "next": "split_voice_es_no_tya_service",
+          "event": "keypress"
+        },
+        {
+          "event": "speech"
+        },
+        {
+          "next": "set_var_es_no_tya_service_counter",
+          "event": "timeout"
+        }
+      ],
+      "properties": {
+        "play": "${flow_vars.usnm_recordings_url}/gather_input_voice_es_no_tya_service.mp3",
+        "number_of_digits": 1,
+        "speech_timeout": "5",
+        "offset": {
+          "x": 1272,
+          "y": 3206
+        },
+        "loop": 1,
+        "finish_on_key": "#",
+        "stop_gather": true,
+        "gather_language": "en",
+        "speech_model": "default",
+        "timeout": 10
+      }
+    },
+    {
+      "name": "split_voice_es_no_tya_service",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "set_var_es_no_tya_service_counter",
+          "event": "noMatch"
+        },
+        {
+          "next": "play_message_voice_es_prequeue_std",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to 1",
+              "arguments": [
+                "{{widgets.gather_input_voice_es_no_tya_service.Digits}}"
+              ],
+              "type": "equal_to",
+              "value": "1"
+            }
+          ]
+        },
+        {
+          "next": "record_voicemail_es_no_service_tya",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to 3",
+              "arguments": [
+                "{{widgets.gather_input_voice_es_no_tya_service.Digits}}"
+              ],
+              "type": "equal_to",
+              "value": "3"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{widgets.gather_input_voice_es_no_tya_service.Digits}}",
+        "offset": {
+          "x": 1475,
+          "y": 3507
+        }
+      }
+    },
+    {
+      "name": "play_message_voice_es_prequeue_tya",
+      "type": "say-play",
+      "transitions": [
+        {
+          "next": "play_message_voice_es_post_survey_info_tya",
+          "event": "audioComplete"
+        }
+      ],
+      "properties": {
+        "play": "${flow_vars.usnm_recordings_url}/play_message_voice_es_prequeue_tya.mp3",
+        "offset": {
+          "x": 2175,
+          "y": 3604
+        },
+        "loop": 1
+      }
+    },
+    {
+      "name": "play_message_voice_es_post_survey_info_tya",
+      "type": "say-play",
+      "transitions": [
+        {
+          "next": "send_to_queue_es_tya",
+          "event": "audioComplete"
+        }
+      ],
+      "properties": {
+        "play": "${flow_vars.usnm_recordings_url}/play_message_voice_es_post_survey_info_tya.mp3",
+        "offset": {
+          "x": 2093,
+          "y": 3872
+        },
+        "loop": 1
+      }
+    },
+    {
+      "name": "send_to_queue_es_tya",
+      "type": "send-to-flex",
+      "transitions": [
+        {
+          "event": "callComplete"
+        },
+        {
+          "next": "http_post_webhook_notify_failed_to_enqueue",
+          "event": "failedToEnqueue"
+        },
+        {
+          "event": "callFailure"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 1964,
+          "y": 4160
+        },
+        "workflow": "${workflow_sids.master}",
+        "channel": "${task_channel_sids.voice}",
+        "attributes": "{\n  \"type\": \"inbound\",\n   \"name\": \"{{trigger.call.From}}\",\n  \"ignoreAgent\": \"\",\n  \"helpline\":\"${helpline}\",\n  \"transferTargetType\": \"\",\n   \"service\" :\"tya\",\n   \"serviceLanguage\": \"spanish\",\n  \"channelType\": \"voice\",\n  \"conversations\": {\n    \"hang_up_by\": \"Customer\"\n  }\n}\n",
+        "priority": "0",
+        "timeout": "3600"
+      }
+    },
+    {
+      "name": "play_message_voice_es_intro_voicemail",
+      "type": "say-play",
+      "transitions": [
+        {
+          "next": "gather_input_voice_es_service_voicemail",
+          "event": "audioComplete"
+        }
+      ],
+      "properties": {
+        "play": "${flow_vars.usnm_recordings_url}/play_message_voice_es_intro_voicemail.mp3",
+        "offset": {
+          "x": 3098,
+          "y": 2632
+        },
+        "loop": 1
+      }
+    },
+    {
+      "name": "split_voice_language_voicemail",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "split_en_holiday",
+          "event": "noMatch"
+        },
+        {
+          "next": "split_es_holiday",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to 2",
+              "arguments": [
+                "{{widgets.gather_input_voice_language_voicemail.Digits}}"
+              ],
+              "type": "equal_to",
+              "value": "2"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{widgets.gather_input_voice_language_voicemail.Digits}}",
+        "offset": {
+          "x": 3279,
+          "y": 1923
+        }
+      }
+    },
+    {
+      "name": "play_message_voice_en_intro_voicemail",
+      "type": "say-play",
+      "transitions": [
+        {
+          "next": "gather_input_voice_en_service_voicemail",
+          "event": "audioComplete"
+        }
+      ],
+      "properties": {
+        "play": "${flow_vars.usnm_recordings_url}/play_message_voice_en_intro_voicemail.mp3",
+        "offset": {
+          "x": 4038,
+          "y": 2653
+        },
+        "loop": 1
+      }
+    },
+    {
+      "name": "split_es_holiday",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "play_message_es_closed",
+          "event": "noMatch"
+        },
+        {
+          "next": "play_message_es_closed_holiday",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to holiday",
+              "arguments": [
+                "{{widgets.f_operatingHours.parsed.status}}"
+              ],
+              "type": "equal_to",
+              "value": "holiday"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{widgets.f_operatingHours.parsed.status}}",
+        "offset": {
+          "x": 3098,
+          "y": 2231
+        }
+      }
+    },
+    {
+      "name": "play_message_es_closed_holiday",
+      "type": "say-play",
+      "transitions": [
+        {
+          "next": "play_message_voice_es_intro_voicemail",
+          "event": "audioComplete"
+        }
+      ],
+      "properties": {
+        "play": "${flow_vars.usnm_recordings_url}/play_message_es_closed_holiday.mp3",
+        "offset": {
+          "x": 3364,
+          "y": 2428
+        },
+        "loop": 1
+      }
+    },
+    {
+      "name": "play_message_es_closed",
+      "type": "say-play",
+      "transitions": [
+        {
+          "next": "play_message_voice_es_intro_voicemail",
+          "event": "audioComplete"
+        }
+      ],
+      "properties": {
+        "play": "${flow_vars.usnm_recordings_url}/play_message_es_closed.mp3",
+        "offset": {
+          "x": 2978,
+          "y": 2430
+        },
+        "loop": 1
+      }
+    },
+    {
+      "name": "gather_input_voice_es_service_voicemail",
+      "type": "gather-input-on-call",
+      "transitions": [
+        {
+          "next": "split_es_service_voicemail",
+          "event": "keypress"
+        },
+        {
+          "event": "speech"
+        },
+        {
+          "event": "timeout"
+        }
+      ],
+      "properties": {
+        "play": "${flow_vars.usnm_recordings_url}/gather_input_voice_es_service_voicemail.mp3",
+        "speech_timeout": "5",
+        "offset": {
+          "x": 3084,
+          "y": 2888
+        },
+        "loop": 1,
+        "finish_on_key": "#",
+        "stop_gather": true,
+        "gather_language": "en",
+        "speech_model": "default",
+        "timeout": 5
+      }
+    },
+    {
+      "name": "split_es_service_voicemail",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "event": "noMatch"
+        },
+        {
+          "next": "record_voicemail_es_std",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to 1",
+              "arguments": [
+                "{{widgets.gather_input_voice_es_service_voicemail.Digits}}"
+              ],
+              "type": "equal_to",
+              "value": "1"
+            }
+          ]
+        },
+        {
+          "next": "record_voicemail_es_tya",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to 3",
+              "arguments": [
+                "{{widgets.gather_input_voice_es_service_voicemail.Digits}}"
+              ],
+              "type": "equal_to",
+              "value": "3"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{widgets.gather_input_voice_es_service_voicemail.Digits}}",
+        "offset": {
+          "x": 2901,
+          "y": 3144
+        }
+      }
+    },
+    {
+      "name": "record_voicemail_es_std",
+      "type": "record-voicemail",
+      "transitions": [
+        {
+          "next": "send_to_queue_es_std_voicemail",
+          "event": "recordingComplete"
+        },
+        {
+          "event": "noAudio"
+        },
+        {
+          "event": "hangup"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 2805,
+          "y": 3380
+        },
+        "timeout": 5,
+        "max_length": 3600
+      }
+    },
+    {
+      "name": "record_voicemail_es_tya",
+      "type": "record-voicemail",
+      "transitions": [
+        {
+          "next": "send_to_queue_es_tya_voicemail",
+          "event": "recordingComplete"
+        },
+        {
+          "event": "noAudio"
+        },
+        {
+          "event": "hangup"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 3259,
+          "y": 3393
+        },
+        "timeout": 5,
+        "max_length": 3600
+      }
+    },
+    {
+      "name": "send_to_queue_es_std_voicemail",
+      "type": "send-to-flex",
+      "transitions": [
+        {
+          "event": "callComplete"
+        },
+        {
+          "next": "http_post_webhook_notify_failed_to_enqueue",
+          "event": "failedToEnqueue"
+        },
+        {
+          "event": "callFailure"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 2761,
+          "y": 3672
+        },
+        "workflow": "${workflow_sids.master}",
+        "channel": "${task_channel_sids.voice}",
+        "attributes": "{\n  \"type\": \"inbound\",\n   \"name\": \"{{trigger.call.From}}\",\n  \"ignoreAgent\": \"\",\n  \"helpline\":\"${helpline}\",\n  \"transferTargetType\": \"\",\n   \"service\" :\"std\",\n   \"serviceLanguage\": \"spanish\",\n  \"channelType\": \"voice\",\n\"voicemail\": \"true\",\n  \"conversations\": {\n    \"hang_up_by\": \"Customer\"\n  }\n}\n",
+        "priority": "0",
+        "timeout": "3600"
+      }
+    },
+    {
+      "name": "send_to_queue_es_tya_voicemail",
+      "type": "send-to-flex",
+      "transitions": [
+        {
+          "event": "callComplete"
+        },
+        {
+          "next": "http_post_webhook_notify_failed_to_enqueue",
+          "event": "failedToEnqueue"
+        },
+        {
+          "event": "callFailure"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 3204,
+          "y": 3675
+        },
+        "workflow": "${workflow_sids.master}",
+        "channel": "${task_channel_sids.voice}",
+        "attributes": "{\n  \"type\": \"inbound\",\n   \"name\": \"{{trigger.call.From}}\",\n  \"ignoreAgent\": \"\",\n  \"helpline\":\"${helpline}\",\n  \"transferTargetType\": \"\",\n   \"service\" :\"tya\",\n   \"serviceLanguage\": \"spanish\",\n  \"channelType\": \"voice\",\n\"voicemail\": \"true\",\n  \"conversations\": {\n    \"hang_up_by\": \"Customer\"\n  }\n}\n",
+        "priority": "0",
+        "timeout": "3600"
+      }
+    },
+    {
+      "name": "split_en_holiday",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "play_message_en_closed",
+          "event": "noMatch"
+        },
+        {
+          "next": "play_message_en_closed_holiday",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to holiday",
+              "arguments": [
+                "{{widgets.f_operatingHours.parsed.status}}"
+              ],
+              "type": "equal_to",
+              "value": "holiday"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{widgets.f_operatingHours.parsed.status}}",
+        "offset": {
+          "x": 4046,
+          "y": 2250
+        }
+      }
+    },
+    {
+      "name": "play_message_en_closed_holiday",
+      "type": "say-play",
+      "transitions": [
+        {
+          "next": "play_message_voice_en_intro_voicemail",
+          "event": "audioComplete"
+        }
+      ],
+      "properties": {
+        "play": "${flow_vars.usnm_recordings_url}/play_message_en_closed_holiday.mp3",
+        "offset": {
+          "x": 4312,
+          "y": 2447
+        },
+        "loop": 1
+      }
+    },
+    {
+      "name": "play_message_en_closed",
+      "type": "say-play",
+      "transitions": [
+        {
+          "next": "play_message_voice_en_intro_voicemail",
+          "event": "audioComplete"
+        }
+      ],
+      "properties": {
+        "play": "${flow_vars.usnm_recordings_url}/play_message_en_closed.mp3",
+        "offset": {
+          "x": 3926,
+          "y": 2448
+        },
+        "loop": 1
+      }
+    },
+    {
+      "name": "gather_input_voice_en_service_voicemail",
+      "type": "gather-input-on-call",
+      "transitions": [
+        {
+          "next": "split_en_service_voicemail",
+          "event": "keypress"
+        },
+        {
+          "event": "speech"
+        },
+        {
+          "event": "timeout"
+        }
+      ],
+      "properties": {
+        "play": "${flow_vars.usnm_recordings_url}/gather_input_voice_en_service_voicemail.mp3",
+        "speech_timeout": "5",
+        "offset": {
+          "x": 4032,
+          "y": 2907
+        },
+        "loop": 1,
+        "finish_on_key": "#",
+        "stop_gather": true,
+        "gather_language": "en",
+        "speech_model": "default",
+        "timeout": 5
+      }
+    },
+    {
+      "name": "record_voicemail_en_std",
+      "type": "record-voicemail",
+      "transitions": [
+        {
+          "next": "send_to_queue_en_std_voicemail",
+          "event": "recordingComplete"
+        },
+        {
+          "event": "noAudio"
+        },
+        {
+          "event": "hangup"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 3753,
+          "y": 3399
+        },
+        "timeout": 5,
+        "max_length": 3600
+      }
+    },
+    {
+      "name": "record_voicemail_en_tya",
+      "type": "record-voicemail",
+      "transitions": [
+        {
+          "next": "send_to_queue_en_tya_voicemail",
+          "event": "recordingComplete"
+        },
+        {
+          "event": "noAudio"
+        },
+        {
+          "event": "hangup"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 4206,
+          "y": 3411
+        },
+        "timeout": 5,
+        "max_length": 3600
+      }
+    },
+    {
+      "name": "send_to_queue_en_std_voicemail",
+      "type": "send-to-flex",
+      "transitions": [
+        {
+          "event": "callComplete"
+        },
+        {
+          "next": "http_post_webhook_notify_failed_to_enqueue",
+          "event": "failedToEnqueue"
+        },
+        {
+          "event": "callFailure"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 3709,
+          "y": 3691
+        },
+        "workflow": "${workflow_sids.master}",
+        "channel": "${task_channel_sids.voice}",
+        "attributes": "{\n  \"type\": \"inbound\",\n   \"name\": \"{{trigger.call.From}}\",\n  \"ignoreAgent\": \"\",\n  \"helpline\":\"${helpline}\",\n  \"transferTargetType\": \"\",\n   \"service\" :\"std\",\n   \"serviceLanguage\": \"english\",\n  \"channelType\": \"voice\",\n\"voicemail\": \"true\",\n  \"conversations\": {\n    \"hang_up_by\": \"Customer\"\n  }\n}\n",
+        "priority": "0",
+        "timeout": "3600"
+      }
+    },
+    {
+      "name": "send_to_queue_en_tya_voicemail",
+      "type": "send-to-flex",
+      "transitions": [
+        {
+          "event": "callComplete"
+        },
+        {
+          "next": "http_post_webhook_notify_failed_to_enqueue",
+          "event": "failedToEnqueue"
+        },
+        {
+          "event": "callFailure"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 4151,
+          "y": 3695
+        },
+        "workflow": "${workflow_sids.master}",
+        "channel": "${task_channel_sids.voice}",
+        "attributes": "{\n  \"type\": \"inbound\",\n   \"name\": \"{{trigger.call.From}}\",\n  \"ignoreAgent\": \"\",\n  \"helpline\":\"${helpline}\",\n  \"transferTargetType\": \"\",\n   \"service\" :\"tya\",\n   \"serviceLanguage\": \"english\",\n  \"channelType\": \"voice\",\n\"voicemail\": \"true\",\n  \"conversations\": {\n    \"hang_up_by\": \"Customer\"\n  }\n}\n",
+        "priority": "0",
+        "timeout": "3600"
+      }
+    },
+    {
+      "name": "split_en_service_voicemail",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "event": "noMatch"
+        },
+        {
+          "next": "record_voicemail_en_std",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to 1",
+              "arguments": [
+                "{{widgets.gather_input_voice_en_service_voicemail.Digits}}"
+              ],
+              "type": "equal_to",
+              "value": "1"
+            }
+          ]
+        },
+        {
+          "next": "record_voicemail_en_tya",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to 2",
+              "arguments": [
+                "{{widgets.gather_input_voice_en_service_voicemail.Digits}}"
+              ],
+              "type": "equal_to",
+              "value": "2"
+            }
+          ]
+        },
+        {
+          "next": "record_voicemail_en_fcg",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to 3",
+              "arguments": [
+                "{{widgets.gather_input_voice_en_service_voicemail.Digits}}"
+              ],
+              "type": "equal_to",
+              "value": "3"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{widgets.gather_input_voice_en_service_voicemail.Digits}}",
+        "offset": {
+          "x": 3975,
+          "y": 3171
+        }
+      }
+    },
+    {
+      "name": "record_voicemail_en_fcg",
+      "type": "record-voicemail",
+      "transitions": [
+        {
+          "next": "send_to_queue_es_fcg_voicemail",
+          "event": "recordingComplete"
+        },
+        {
+          "event": "noAudio"
+        },
+        {
+          "event": "hangup"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 4635,
+          "y": 3417
+        },
+        "timeout": 5,
+        "max_length": 3600
+      }
+    },
+    {
+      "name": "send_to_queue_es_fcg_voicemail",
+      "type": "send-to-flex",
+      "transitions": [
+        {
+          "event": "callComplete"
+        },
+        {
+          "next": "http_post_webhook_notify_failed_to_enqueue",
+          "event": "failedToEnqueue"
+        },
+        {
+          "event": "callFailure"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 4580,
+          "y": 3699
+        },
+        "workflow": "${workflow_sids.master}",
+        "channel": "${task_channel_sids.voice}",
+        "attributes": "{\n  \"type\": \"inbound\",\n   \"name\": \"{{trigger.call.From}}\",\n  \"ignoreAgent\": \"\",\n  \"helpline\":\"${helpline}\",\n  \"transferTargetType\": \"\",\n   \"service\" :\"fcg\",\n   \"serviceLanguage\": \"english\",\n  \"channelType\": \"voice\",\n\"voicemail\": \"true\",\n  \"conversations\": {\n    \"hang_up_by\": \"Customer\"\n  }\n}\n",
+        "priority": "0",
+        "timeout": "3600"
+      }
+    },
+    {
+      "name": "set_var_en_no_tya_service_counter",
+      "type": "set-variables",
+      "transitions": [
+        {
+          "next": "split_end_cycle_en_no_tya_service",
+          "event": "next"
+        }
+      ],
+      "properties": {
+        "variables": [
+          {
+            "type": "string",
+            "value": "{% if flow.variables.en_no_tya_service_counter%} {{flow.variables.en_no_tya_service_counter| plus: 1}} {% else %} 1 {% endif %}",
+            "key": "en_no_tya_service_counter"
+          }
+        ],
+        "offset": {
+          "x": -1345,
+          "y": 3250
+        }
+      }
+    },
+    {
+      "name": "split_end_cycle_en_no_tya_service",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "gather_input_voice_en_no_tya_service",
+          "event": "noMatch"
+        },
+        {
+          "next": "play_message_voice_en_prequeue_std",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value greater_than 2",
+              "arguments": [
+                "{{flow.variables.en_no_tya_service_counter_counter}}"
+              ],
+              "type": "greater_than",
+              "value": "2"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{flow.variables.en_no_tya_service_counter}}",
+        "offset": {
+          "x": -1282,
+          "y": 3078
+        }
+      }
+    },
+    {
+      "name": "record_voicemail_en_no_service_tya",
+      "type": "record-voicemail",
+      "transitions": [
+        {
+          "next": "send_to_queue_en_no_service_tya_voicemail",
+          "event": "recordingComplete"
+        },
+        {
+          "event": "noAudio"
+        },
+        {
+          "event": "hangup"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": -2034,
+          "y": 3730
+        },
+        "timeout": 5,
+        "max_length": 3600
+      }
+    },
+    {
+      "name": "send_to_queue_en_no_service_tya_voicemail",
+      "type": "send-to-flex",
+      "transitions": [
+        {
+          "event": "callComplete"
+        },
+        {
+          "next": "http_post_webhook_notify_failed_to_enqueue",
+          "event": "failedToEnqueue"
+        },
+        {
+          "event": "callFailure"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": -1940,
+          "y": 4084
+        },
+        "workflow": "${workflow_sids.master}",
+        "channel": "${task_channel_sids.voice}",
+        "attributes": "{\n  \"type\": \"inbound\",\n   \"name\": \"{{trigger.call.From}}\",\n  \"ignoreAgent\": \"\",\n  \"helpline\":\"${helpline}\",\n  \"transferTargetType\": \"\",\n   \"service\" :\"tya\",\n   \"serviceLanguage\": \"english\",\n  \"channelType\": \"voice\",\n\"voicemail\": \"true\",\n  \"conversations\": {\n    \"hang_up_by\": \"Customer\"\n  }\n}\n",
+        "priority": "0",
+        "timeout": "3600"
+      }
+    },
+    {
+      "name": "set_var_en_no_fcg_service_counter",
+      "type": "set-variables",
+      "transitions": [
+        {
+          "next": "split_end_cycle_en_no_fcg_service",
+          "event": "next"
+        }
+      ],
+      "properties": {
+        "variables": [
+          {
+            "type": "string",
+            "value": "{% if flow.variables.en_no_fcg_service_counter%} {{flow.variables.en_no_fcg_service_counter| plus: 1}} {% else %} 1 {% endif %}",
+            "key": "en_no_fcg_service_counter"
+          }
+        ],
+        "offset": {
+          "x": -808,
+          "y": 3259
+        }
+      }
+    },
+    {
+      "name": "split_end_cycle_en_no_fcg_service",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "gather_input_voice_en_no_fcg_service",
+          "event": "noMatch"
+        },
+        {
+          "next": "play_message_voice_en_prequeue_std",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value greater_than 2",
+              "arguments": [
+                "{{flow.variables.no_fcg_service_counter}}"
+              ],
+              "type": "greater_than",
+              "value": "2"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{flow.variables.en_no_fcg_service_counter}}",
+        "offset": {
+          "x": -912,
+          "y": 3077
+        }
+      }
+    },
+    {
+      "name": "record_voicemail_en_no_service_fcg",
+      "type": "record-voicemail",
+      "transitions": [
+        {
+          "next": "send_to_queue_en_no_service_fcg_voicemail",
+          "event": "recordingComplete"
+        },
+        {
+          "event": "noAudio"
+        },
+        {
+          "event": "hangup"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": -720,
+          "y": 3732
+        },
+        "timeout": 5,
+        "max_length": 3600
+      }
+    },
+    {
+      "name": "send_to_queue_en_no_service_fcg_voicemail",
+      "type": "send-to-flex",
+      "transitions": [
+        {
+          "event": "callComplete"
+        },
+        {
+          "next": "http_post_webhook_notify_failed_to_enqueue",
+          "event": "failedToEnqueue"
+        },
+        {
+          "event": "callFailure"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": -827,
+          "y": 4097
+        },
+        "workflow": "${workflow_sids.master}",
+        "channel": "${task_channel_sids.voice}",
+        "attributes": "{\n  \"type\": \"inbound\",\n   \"name\": \"{{trigger.call.From}}\",\n  \"ignoreAgent\": \"\",\n  \"helpline\":\"${helpline}\",\n  \"transferTargetType\": \"\",\n   \"service\" :\"fcg\",\n   \"serviceLanguage\": \"english\",\n  \"channelType\": \"voice\",\n\"voicemail\": \"true\",\n  \"conversations\": {\n    \"hang_up_by\": \"Customer\"\n  }\n}\n",
+        "priority": "0",
+        "timeout": "3600"
+      }
+    },
+    {
+      "name": "set_var_es_service_counter",
+      "type": "set-variables",
+      "transitions": [
+        {
+          "next": "split_end_cycle_es_service",
+          "event": "next"
+        }
+      ],
+      "properties": {
+        "variables": [
+          {
+            "type": "string",
+            "value": "{% if flow.variables.es_service_counter%} {{flow.variables.es_service_counter| plus: 1}} {% else %} 1 {% endif %}",
+            "key": "es_service_counter"
+          }
+        ],
+        "offset": {
+          "x": 229,
+          "y": 2501
+        }
+      }
+    },
+    {
+      "name": "split_end_cycle_es_service",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "gather_input_voice_es_service",
+          "event": "noMatch"
+        },
+        {
+          "next": "play_message_voice_es_prequeue_std",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value greater_than 2",
+              "arguments": [
+                "{{flow.variables.es_service_counter}}"
+              ],
+              "type": "greater_than",
+              "value": "2"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{flow.variables.es_service_counter}}",
+        "offset": {
+          "x": -73,
+          "y": 2343
+        }
+      }
+    },
+    {
+      "name": "set_var_es_no_tya_service_counter",
+      "type": "set-variables",
+      "transitions": [
+        {
+          "next": "split_end_cycle_es_no_tya_service",
+          "event": "next"
+        }
+      ],
+      "properties": {
+        "variables": [
+          {
+            "type": "string",
+            "value": "{% if flow.variables.en_no_fcg_service_counter%} {{flow.variables.en_no_fcg_service_counter| plus: 1}} {% else %} 1 {% endif %}",
+            "key": "en_no_fcg_service_counter"
+          }
+        ],
+        "offset": {
+          "x": 685,
+          "y": 3295
+        }
+      }
+    },
+    {
+      "name": "split_end_cycle_es_no_tya_service",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "gather_input_voice_es_no_tya_service",
+          "event": "noMatch"
+        },
+        {
+          "next": "play_message_voice_es_prequeue_std",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value greater_than 2",
+              "arguments": [
+                "{{flow.variables.es_no_tya_service_counter}}"
+              ],
+              "type": "greater_than",
+              "value": "2"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{flow.variables.es_no_tya_service_counter}}",
+        "offset": {
+          "x": 468,
+          "y": 3126
+        }
+      }
+    },
+    {
+      "name": "record_voicemail_es_no_service_tya",
+      "type": "record-voicemail",
+      "transitions": [
+        {
+          "next": "send_to_queue_es_no_service_tya_voicemail",
+          "event": "recordingComplete"
+        },
+        {
+          "event": "noAudio"
+        },
+        {
+          "event": "hangup"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 1294,
+          "y": 3776
+        },
+        "timeout": 5,
+        "max_length": 3600
+      }
+    },
+    {
+      "name": "send_to_queue_es_no_service_tya_voicemail",
+      "type": "send-to-flex",
+      "transitions": [
+        {
+          "event": "callComplete"
+        },
+        {
+          "next": "http_post_webhook_notify_failed_to_enqueue",
+          "event": "failedToEnqueue"
+        },
+        {
+          "event": "callFailure"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 1356,
+          "y": 4063
+        },
+        "workflow": "${workflow_sids.master}",
+        "channel": "${task_channel_sids.voice}",
+        "attributes": "{\n  \"type\": \"inbound\",\n   \"name\": \"{{trigger.call.From}}\",\n  \"ignoreAgent\": \"\",\n  \"helpline\":\"${helpline}\",\n  \"transferTargetType\": \"\",\n   \"service\" :\"tya\",\n   \"serviceLanguage\": \"spanish\",\n  \"channelType\": \"voice\",\n\"voicemail\": \"true\",\n  \"conversations\": {\n    \"hang_up_by\": \"Customer\"\n  }\n}\n",
+        "priority": "0",
+        "timeout": "3600"
+      }
+    }
+  ]
+})
+}
