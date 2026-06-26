@@ -126,7 +126,7 @@ ${
             {
               "friendly_name": "If value equal_to non_us_country",
               "arguments": [
-                "{{widgets.f_countryVoipFilter.parsed.reason}}"
+                "{{widgets.f_countryVoipFilter.parsed.body.reason}}"
               ],
               "type": "equal_to",
               "value": "non_us_country"
@@ -140,7 +140,7 @@ ${
             {
               "friendly_name": "If value equal_to voip",
               "arguments": [
-                "{{widgets.f_countryVoipFilter.parsed.reason}}"
+                "{{widgets.f_countryVoipFilter.parsed.body.reason}}"
               ],
               "type": "equal_to",
               "value": "voip"
@@ -149,7 +149,7 @@ ${
         }
       ],
       "properties": {
-        "input": "{{widgets.f_countryVoipFilter.parsed.reason}}",
+        "input": "{{widgets.f_countryVoipFilter.parsed.body.reason}}",
         "offset": {
           "x": 127,
           "y": -58
