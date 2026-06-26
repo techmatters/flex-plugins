@@ -73,8 +73,10 @@ const triggerPostStudioFlowTaskRouterListener: TaskRouterEventHandler = async (
       const studioFlowIdentifier = postStudioFlows?.[taskChannelUniqueName] ?? '';
 
       if (typeof studioFlowIdentifier === 'object') {
-        const { sipEndpoint, sipUsername, sipPassword } = studioFlowIdentifier;
+        const { studioFlowSid } = studioFlowIdentifier;
         const { conference, contactId } = taskAttributes;
+        const studioWebhookUrl = `https://webhooks.twilio.com/v1/Accounts/${accountSid}/Flows/${studioFlowSid}`;
+
         if (taskChannelUniqueName === 'voice' && conference) {
           const conferenceContext = client.conferences.get(conference.sid);
           // 1. Fetch all active participants in the conference
@@ -100,13 +102,8 @@ const triggerPostStudioFlowTaskRouterListener: TaskRouterEventHandler = async (
                 `${logPrefix} Put participant ${participant.callSid} from conference ${conference.sid} on hold.`,
               );
               const twiml = new VoiceResponse();
-              const dial = twiml.dial();
-              dial.sip(
-                {
-                  username: sipUsername,
-                  password: sipPassword,
-                },
-                `${sipEndpoint}?x-contactId=${contactId}&x-taskSid=${taskSid}`,
+              twiml.redirect(
+                `${studioWebhookUrl}?Trigger=inProgressCall&contactId=${contactId}&taskSid=${taskSid}`,
               );
               await client.calls.get(participant.callSid).update({
                 twiml,
