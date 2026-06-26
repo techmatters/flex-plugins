@@ -67,7 +67,7 @@ const SkillsColumnHeader: React.FC = () => {
       </Row>
       <DropdownPortal
         anchorRef={buttonRef}
-        open={isOpen}
+        open={isOpen && Boolean(selectedWorkers.size)}
         onClickAction={operation => e => {
           e.stopPropagation();
           dispatch(newTeamsViewSelectOperation(operation));
