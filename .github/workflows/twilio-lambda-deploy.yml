@@ -154,9 +154,15 @@ jobs:
 
           LAMBDA_NAME=$(basename "./$SHORT_LAMBDA_NAME")
           LAMBDA="${{ inputs.environment }}-${{ matrix.region }}-$LAMBDA_NAME"
+
+          # Deploy and get new version
           OUTPUT=$(aws lambda update-function-code --function-name $LAMBDA --image-uri "$DOCKER_IMAGE" --publish)
           NEW_VERSION=$(echo "$OUTPUT" | jq -r '.Version')
 
+          # Wait until Lambda becomes available
+          aws lambda wait function-updated-v2 --function-name $LAMBDA --qualifier $NEW_VERSION
+
+          # Switch alias to redirect to new version
           ALIAS_EXISTS=$(aws lambda get-alias --function-name $LAMBDA --name live || echo "not_exists")
           if [ "$ALIAS_EXISTS" == "not_exists" ]; then
             aws lambda create-alias --function-name $LAMBDA --name live --function-version $NEW_VERSION
