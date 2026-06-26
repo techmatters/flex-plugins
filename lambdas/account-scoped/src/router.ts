@@ -78,7 +78,6 @@ import { getMediaUrlHandler } from './conversation/getMediaUrl';
 import {
   savePostSurveyHandler,
   voicePostSurveyActionHandler,
-  voicePostSurveyAnswerHandler,
 } from './hrm/voicePostSurvey';
 
 /**
@@ -133,11 +132,6 @@ const ACCOUNTSID_ROUTES: Record<
   'hrm/voicePostSurveyAction': newRoute({
     requestPipeline: [validateRequestMethod('POST'), validateWebhookRequest],
     handler: voicePostSurveyActionHandler,
-  }),
-  'hrm/voicePostSurveyAnswer': newRoute({
-    requestPipeline: [validateRequestMethod('POST'), validateWebhookRequest],
-    handler: voicePostSurveyAnswerHandler,
-    responseType: 'xml',
   }),
   'conference/conferenceStatusCallback': newRoute({
     requestPipeline: [validateRequestMethod('POST'), validateWebhookRequest],
