@@ -17,6 +17,8 @@ locals {
       usnm_recordings_url                      = "https://usnm-recordings-6200.twil.io"
       is_skilled_worker_available_function_sid = "ZH85007840bfdc6245a8ffb08d98aad0eb"
       workspace_sid                            = "WSb9cb11d86ddcb7954dcdd20c391a7edc"
+      custom_functions_service_id              = "ZSa976031394bdc8b5e95dc8c81e95f1e0"
+      custom_functions_environment_id          = "ZE249accc6e2a97eb70428aba674cba636"
     }
 
 
