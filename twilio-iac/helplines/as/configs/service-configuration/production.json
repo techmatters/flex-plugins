@@ -18,7 +18,8 @@
             "enable_lex_v2": true
         },
         "permissionConfig": "demo",
-        "resources_base_url": "https://hrm-production.tl.techmatters.org"
+        "resources_base_url": "https://hrm-production.tl.techmatters.org",
+        ""
     },
     "ui_attributes": {
         "colorTheme": {

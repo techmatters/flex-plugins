@@ -19,6 +19,7 @@ import { Conference } from '@twilio/flex-ui/src/state/Conferences';
 
 import { hasTaskControl, isOriginalReservation, isTransferring } from '../../../transfer/transferTaskState';
 import * as conferenceApi from '../../../services/conferenceService';
+import { getHrmConfig } from '../../../hrmConfig';
 
 const isJoinedWithEnd = (p: ConferenceParticipant) => p.status === 'joined' && p.mediaProperties.endConferenceOnExit;
 const isJoinedWithoutEnd = (p: ConferenceParticipant) =>
@@ -28,6 +29,7 @@ type Props = TaskContextProps;
 
 const ConferenceMonitor: React.FC<Props> = ({ conference, task }) => {
   const [updating, setUpdating] = React.useState(false);
+  const { postStudioFlows } = getHrmConfig();
 
   const conferenceSource: Partial<Conference> = conference?.source ?? {};
 
@@ -38,7 +40,7 @@ const ConferenceMonitor: React.FC<Props> = ({ conference, task }) => {
     thisInstanceShouldMonitor &&
     Boolean(participants && conferenceSid) &&
     status === 'active' &&
-    participants.filter(p => p.status === 'joined').length > 2 &&
+    (participants.filter(p => p.status === 'joined').length > 2 || postStudioFlows.voice) &&
     participants.some(isJoinedWithEnd);
 
   const shouldEnableEndConferenceOnExit = ({ participants, conferenceSid, status }: Partial<Conference>) =>
@@ -46,7 +48,8 @@ const ConferenceMonitor: React.FC<Props> = ({ conference, task }) => {
     Boolean(participants && conferenceSid) &&
     status === 'active' &&
     participants.filter(p => p.status === 'joined').length <= 2 &&
-    participants.some(isJoinedWithoutEnd);
+    participants.some(isJoinedWithoutEnd) &&
+    !postStudioFlows.voice;
 
   const updateEndConferenceOnExit = React.useCallback(
     (endConferenceOnExit: boolean) => async (participant: ConferenceParticipant) => {

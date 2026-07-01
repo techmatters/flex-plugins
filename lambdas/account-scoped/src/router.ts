@@ -44,6 +44,7 @@ import { checkBlockListHandler } from './conversation/checkBlockList';
 import { transitionAgentParticipantsHandler } from './conversation/transitionAgentParticipants';
 import { conferenceStatusCallbackHandler } from './conference/conferenceStatusCallback';
 import './conference/stopRecordingWhenLastAgentLeaves';
+import './conference/setEndConferenceOnExit';
 import { instagramToFlexHandler } from './customChannels/instagram/instagramToFlex';
 import { flexToInstagramHandler } from './customChannels/instagram/flexToInstagram';
 import { telegramToFlexHandler } from './customChannels/telegram/telegramToFlex';
@@ -74,6 +75,8 @@ import { sendMessageAndRunJanitorHandler } from './conversation/sendMessageAndRu
 import { issueSyncTokenHandler } from './issueSyncToken';
 import { getExternalRecordingS3LocationHandler } from './conversation/getExternalRecordingS3Location';
 import { getMediaUrlHandler } from './conversation/getMediaUrl';
+import { handleSavePostSurvey } from './hrm/savePostSurvey';
+import {startPostSurveyChatbotHandler} from "./channelCapture/postSurveyListener";
 
 /**
  * Super simple router sufficient for directly ported Twilio Serverless functions
@@ -95,6 +98,10 @@ const ACCOUNTSID_ROUTES: Record<
     requestPipeline: [validateWebhookRequest],
     handler: handleTaskRouterEvent,
   },
+  'hrm/savePostSurvey': {
+    requestPipeline: [validateWebhookRequest],
+    handler: handleSavePostSurvey,
+  },
   getProfileFlagsForIdentifier: {
     requestPipeline: [validateWebhookRequest],
     handler: handleGetProfileFlagsForIdentifier,
@@ -110,6 +117,10 @@ const ACCOUNTSID_ROUTES: Record<
   'channelCapture/chatbotCallbackCleanup': {
     requestPipeline: [validateWebhookRequest],
     handler: handleChatbotCallbackCleanup,
+  },
+  'channelCapture/startPostSurveyChatbot': {
+    requestPipeline: [validateWebhookRequest],
+    handler: startPostSurveyChatbotHandler,
   },
   'conference/conferenceStatusCallback': {
     requestPipeline: [validateWebhookRequest],

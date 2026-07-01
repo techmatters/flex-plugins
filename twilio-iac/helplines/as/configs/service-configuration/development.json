@@ -34,7 +34,10 @@
             "version": "2.2.0"
         },
         "resources_base_url": "https://hrm-development.tl.techmatters.org",
-        "enforceZeroTranscriptRetention": false
+        "enforceZeroTranscriptRetention": false,
+        "postStudioFlows": {
+            "voice": "+12064083885"
+        }
     },
     "ui_attributes": {
         "colorTheme": {
