@@ -1,0 +1,34 @@
+## List of customizations
+- IP address: call to a third party API to get IP address and save in webchat state.
+  - IP is retrieved [`getUserIp`](./src/aselo-webchat.tsx#L121).
+  - IP is then stored via `FlexWebChat.createWebChat` config object, using [`context`](./src/aselo-webchat.tsx#L134).
+- Default "reducer" extended with Aselo custom ones, via [`manager.store.replaceReducer`](./src/aselo-webchat.tsx#L156) API.
+- Customize language using different [`FlexWebChat.Manager`](./src/aselo-webchat.tsx#L159) APIs.
+  - The code that handles the translation can be found in [`getChangeLanguageWebChat`](./src/language.ts).
+- Customizations via "components API".
+  - [Disable greeting message](./src/aselo-webchat.tsx#L172) via `FlexWebChat.MessagingCanvas`.
+    - [`setChannelOnCreateWebChat`](./src/aselo-webchat.tsx#L167) "unlocks it" when the agent participant is added to the channel.
+  - [Customize member display props](./src/aselo-webchat.tsx#L175) via `FlexWebChat.MessagingCanvas`.
+  - [Customize the look of "chat bubble"](./src/messagebubble-component/renderCustomMessageBubble.tsx#L22) via `FlexWebChat.MessageListItem.Bubble`.
+  - [Disable input](./src/aselo-webchat.tsx#L186) via `FlexWebChat.MessageInput`.
+  - [Hide greeting message](./src/aselo-webchat.tsx#L191) via `FlexWebChat.MessageList`.
+  - Customize forms based on "helpline operating hours"
+    - [displayOperatingHours](./src/aselo-webchat.tsx#L159) is the entry point of this behavior.
+    - Based on the results of [`getOperatingHours`](./src/operating-hours.ts) function, the correct "form definition" is configured by setting Redux state via `manager.store.dispatch`.
+  - [Add "close" buttons](./src/aselo-webchat.tsx#L218) via `FlexWebChat.MessagingCanvas`. Both interact with `FlexWebChat.Actions` framework (`RestartEngagement` action) or external API calls.
+    - [End button](./src/end-chat/EndChat.tsx).
+    - [Quick exit button](./src/end-chat/QuickExit.tsx).
+  - [Add "emojis picker"](./src/emoji-picker/renderEmojis.tsx) via `FlexWebChat.MessagingCanvas`.
+  - [Replace pre-engagement form](./src/aselo-webchat.tsx#L228) via `FlexWebChat.PreEngagementCanvas`.
+      - This is one of the core customizations we do. The `FlexWebChat.PreEngagementCanvas` content is replaced with a custom React component, [`PreEngagementForm`](./src/pre-engagement-form/index.tsx#136).
+      - The component uses `FlexWebChat.Actions` API.
+      - The component interacts with state Redux.
+      - The form itself is dinamically generated depending on a JSON definition file, which is the passed to [`generateForm`](./src/pre-engagement-form/form-components/index.tsx#L69). Some notable custom form components used are:
+        - [`InputText`](./src/pre-engagement-form/form-components/input-text.tsx).
+        - [`Select`](./src/pre-engagement-form/form-components/select.tsx).
+        - [`DependentSelect`](./src/pre-engagement-form/form-components/dependent-select.tsx).
+        - [`Checkbox`](./src/pre-engagement-form/form-components/checkbox.tsx).
+        Since all of this components internally use `'react-hook-form'`, they have different options like being required, having custom validation rules, among others.
+      - Component internally makes use of a [`ReCaptcha`](./src/pre-engagement-form/ReCaptcha/index.tsx) component. 
+- [Apply customizations to make webchat more appealing in mobile devices](./src/mobile-optimization/index.ts#L35). This is mostly CSS overrides and use of `FlexWebChat.Actions`.
+- [Apply custom branding theme](./src/branding-overrides/index.ts#L18), via `injectGlobal` from `'react-emotion'`.
