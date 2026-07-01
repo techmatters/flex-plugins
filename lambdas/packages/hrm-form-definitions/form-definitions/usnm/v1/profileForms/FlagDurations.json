@@ -1,7 +1,12 @@
 [
   {
     "flag": "blocked",
-    "label": "24-hour Block",
+    "label": "Acceptable Use Policy (24-hour Block)",
+    "durationInHours": "24"
+  },
+  {
+    "flag": "blocked",
+    "label": "Access Policy (24-hour Block)",
     "durationInHours": "24"
   },
   {

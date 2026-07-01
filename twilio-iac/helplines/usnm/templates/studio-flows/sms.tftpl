@@ -1,0 +1,1619 @@
+${
+  jsonencode({
+  "initial_state": "Trigger",
+  "flags": {
+    "allow_concurrent_calls": true
+  },
+  "description": "${flow_description}",
+  "states": [
+    {
+      "name": "Trigger",
+      "type": "trigger",
+      "transitions": [
+        {
+          "event": "incomingMessage"
+        },
+        {
+          "event": "incomingCall"
+        },
+        {
+          "next": "f_countryVoipFilter",
+          "event": "incomingConversationMessage"
+        },
+        {
+          "event": "incomingRequest"
+        },
+        {
+          "event": "incomingParent"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 1155,
+          "y": -690
+        }
+      }
+    },
+    {
+      "name": "http_post_webhook_notify_failed_to_enqueue",
+      "type": "make-http-request",
+      "transitions": [
+        {
+          "event": "success"
+        },
+        {
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 929,
+          "y": 5299
+        },
+        "method": "POST",
+        "content_type": "application/json;charset=utf-8",
+        "add_twilio_auth": false,
+        "body": "{ \"text\": \"Issue detected [Failed to Enqueue] on ${short_helpline} ${short_environment} Flow SID: {{flow.flow_sid}} Execution SID: {{flow.sid}}  \" }",
+        "url": "${webhook_url_studio_errors}"
+      }
+    },
+    {
+      "name": "run_subflow_system_down",
+      "type": "run-subflow",
+      "transitions": [
+        {
+          "next": "f_getProfileFlagsForIdentifier",
+          "event": "completed"
+        },
+        {
+          "next": "f_getProfileFlagsForIdentifier",
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "flow_sid": "${system_down_studio_subflow_sid}",
+        "flow_revision": "LatestPublished",
+        "offset": {
+          "x": 899,
+          "y": 41
+        },
+        "parameters": [
+          {
+            "type": "string",
+            "value": "true",
+            "key": "system_down"
+          }
+        ]
+      }
+    },
+    {
+      "name": "f_countryVoipFilter",
+      "type": "make-http-request",
+      "transitions": [
+        {
+          "next": "split_country_voip",
+          "event": "success"
+        },
+        {
+          "next": "split_country_voip",
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 1254,
+          "y": -427
+        },
+        "method": "POST",
+        "content_type": "application/json;charset=utf-8",
+        "add_twilio_auth": false,
+        "body": "{\"from\":\"{{trigger.conversation.From}}\"}",
+        "url": "${flow_vars.custom_functions_url}/countryVoipFilter"
+      }
+    },
+    {
+      "name": "split_country_voip",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "run_subflow_system_down",
+          "event": "noMatch"
+        },
+        {
+          "next": "send_message_sms_outside_us",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to non_us_country",
+              "arguments": [
+                "{{widgets.f_countryVoipFilter.parsed.body.reason}}"
+              ],
+              "type": "equal_to",
+              "value": "non_us_country"
+            }
+          ]
+        },
+        {
+          "next": "send_message_sms_voip_blocked",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to voip",
+              "arguments": [
+                "{{widgets.f_countryVoipFilter.parsed.body.reason}}"
+              ],
+              "type": "equal_to",
+              "value": "voip"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{widgets.f_countryVoipFilter.parsed.body.reason}}",
+        "offset": {
+          "x": 1436,
+          "y": -165
+        }
+      }
+    },
+    {
+      "name": "f_getProfileFlagsForIdentifier",
+      "type": "make-http-request",
+      "transitions": [
+        {
+          "next": "split_contact_routing",
+          "event": "success"
+        },
+        {
+          "event": "failed",
+          "next": "split_contact_routing"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 1033,
+          "y": 335
+        },
+        "method": "POST",
+        "content_type": "application/json;charset=utf-8",
+        "add_twilio_auth": false,
+        "body": "{ \"trigger\": {{trigger | to_json}}, \"channelType\": \"sms\" }",
+        "url": "${lambda_twilio_account_scoped_url}/getProfileFlagsForIdentifier"
+      }
+    },
+    {
+      "name": "split_contact_routing",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "f_operatingHours",
+          "event": "noMatch"
+        },
+        {
+          "next": "send_message_sms_blocked_severity_level_1_acceptable_use_policy",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to acceptable use policy or lio behavior",
+              "arguments": [
+                "{{widgets.f_getProfileFlagsForIdentifier.parsed.flags}}"
+              ],
+              "type": "equal_to",
+              "value": "Acceptable Use Policy or LIO Behavior"
+            }
+          ]
+        },
+        {
+          "next": "send_message_sms_blocked__level_2_access_policy",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to access policy",
+              "arguments": [
+                "{{widgets.f_getProfileFlagsForIdentifier.parsed.flags}}"
+              ],
+              "type": "equal_to",
+              "value": "Access Policy"
+            }
+          ]
+        },
+        {
+          "next": "send_message_sms_blocked__level_2_access_policy",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to 24-hr block acc pol",
+              "arguments": [
+                "{{widgets.f_getProfileFlagsForIdentifier.parsed.flags}}"
+              ],
+              "type": "equal_to",
+              "value": "Access Policy (24-hour Block)"
+            }
+          ]
+        },
+        {
+          "next": "send_message_sms_blocked_severity_level_1_acceptable_use_policy",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to 24-hr block accept use pol",
+              "arguments": [
+                "{{widgets.f_getProfileFlagsForIdentifier.parsed.flags}}"
+              ],
+              "type": "equal_to",
+              "value": "Acceptable Use Policy (24-hour Block)"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{widgets.f_getProfileFlagsForIdentifier.parsed.flags}}",
+        "offset": {
+          "x": 971,
+          "y": 643
+        }
+      }
+    },
+    {
+      "name": "f_operatingHours",
+      "type": "make-http-request",
+      "transitions": [
+        {
+          "next": "split_status",
+          "event": "success"
+        },
+        {
+          "next": "split_status",
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 585,
+          "y": 910
+        },
+        "method": "POST",
+        "content_type": "application/json;charset=utf-8",
+        "add_twilio_auth": false,
+        "body": "{\"channel\": \"sms\", \"includeMessageTextInResponse\": \"true\", \"language\": \"en-USNM\"}",
+        "url": "${lambda_twilio_account_scoped_url}/operatingHours"
+      }
+    },
+    {
+      "name": "split_status",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "send_wait_sms_welcome",
+          "event": "noMatch"
+        },
+        {
+          "next": "send_wait_sms_welcome",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to open",
+              "arguments": [
+                "{{widgets.f_operatingHours.parsed.status}}"
+              ],
+              "type": "equal_to",
+              "value": "open"
+            }
+          ]
+        },
+        {
+          "next": "send_message_sms_closed",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to closed",
+              "arguments": [
+                "{{widgets.f_operatingHours.parsed.status}}"
+              ],
+              "type": "equal_to",
+              "value": "closed"
+            }
+          ]
+        },
+        {
+          "next": "send_message_sms_holiday",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to holiday",
+              "arguments": [
+                "{{widgets.f_operatingHours.parsed.status}}"
+              ],
+              "type": "equal_to",
+              "value": "holiday"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{widgets.f_operatingHours.parsed.status}}",
+        "offset": {
+          "x": 271,
+          "y": 1148
+        }
+      }
+    },
+    {
+      "name": "send_to_queue_sms_tya",
+      "type": "send-to-flex",
+      "transitions": [
+        {
+          "event": "callComplete"
+        },
+        {
+          "next": "http_post_webhook_notify_failed_to_enqueue",
+          "event": "failedToEnqueue"
+        },
+        {
+          "event": "callFailure"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 404,
+          "y": 4797
+        },
+        "workflow": "${workflow_sids.master}",
+        "channel": "${task_channel_sids.chat}",
+        "attributes": "{\n  \"type\": \"inbound\",\n   \"name\": \"{{trigger.conversation.From}}\",\n  \"ignoreAgent\": \"\",\n  \"helpline\":\"NAMI\",\n  \"transferTargetType\": \"\",\n   \"service\" :\"tya\",\n   \"serviceLanguage\": \"english\",\n  \"channelType\": \"sms\",\n  \"conversations\": {\n    \"hang_up_by\": \"Customer\"\n  }\n}\n",
+        "priority": "0",
+        "timeout": "3600"
+      }
+    },
+    {
+      "name": "send_message_sms_voip_blocked",
+      "type": "send-message",
+      "transitions": [
+        {
+          "event": "sent"
+        },
+        {
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 2005,
+          "y": 75
+        },
+        "service": "{{trigger.message.InstanceSid}}",
+        "channel": "{{trigger.message.ChannelSid}}",
+        "from": "NAMI",
+        "message_type": "custom",
+        "to": "{{contact.channel.address}}",
+        "body": "${flow_vars.send_message_sms_voip_blocked}"
+      }
+    },
+    {
+      "name": "send_message_sms_outside_us",
+      "type": "send-message",
+      "transitions": [
+        {
+          "event": "sent"
+        },
+        {
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 1688,
+          "y": 78
+        },
+        "service": "{{trigger.message.InstanceSid}}",
+        "channel": "{{trigger.message.ChannelSid}}",
+        "from": "NAMI",
+        "message_type": "custom",
+        "to": "{{contact.channel.address}}",
+        "body": "${flow_vars.send_message_sms_outside_us}"
+      }
+    },
+    {
+      "name": "send_message_sms_blocked_severity_level_1_acceptable_use_policy",
+      "type": "send-message",
+      "transitions": [
+        {
+          "event": "sent"
+        },
+        {
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 1275,
+          "y": 901
+        },
+        "service": "{{trigger.message.InstanceSid}}",
+        "channel": "{{trigger.message.ChannelSid}}",
+        "from": "NAMI",
+        "message_type": "custom",
+        "to": "{{contact.channel.address}}",
+        "body": "${flow_vars.send_message_sms_blocked_severity_level_1_acceptable_use_policy}"
+      }
+    },
+    {
+      "name": "send_message_sms_blocked__level_2_access_policy",
+      "type": "send-message",
+      "transitions": [
+        {
+          "event": "sent"
+        },
+        {
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 1663,
+          "y": 898
+        },
+        "service": "{{trigger.message.InstanceSid}}",
+        "channel": "{{trigger.message.ChannelSid}}",
+        "from": "NAMI",
+        "message_type": "custom",
+        "to": "{{contact.channel.address}}",
+        "body": "${flow_vars.send_message_sms_blocked__level_2_access_policy}"
+      }
+    },
+    {
+      "name": "send_message_sms_closed",
+      "type": "send-message",
+      "transitions": [
+        {
+          "event": "sent"
+        },
+        {
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 1668,
+          "y": 3524
+        },
+        "service": "{{trigger.message.InstanceSid}}",
+        "channel": "{{trigger.message.ChannelSid}}",
+        "from": "NAMI",
+        "message_type": "custom",
+        "to": "{{contact.channel.address}}",
+        "body": "${flow_vars.send_message_sms_closed}"
+      }
+    },
+    {
+      "name": "send_message_sms_holiday",
+      "type": "send-message",
+      "transitions": [
+        {
+          "event": "sent"
+        },
+        {
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 2062,
+          "y": 3403
+        },
+        "service": "{{trigger.message.InstanceSid}}",
+        "channel": "{{trigger.message.ChannelSid}}",
+        "from": "NAMI",
+        "message_type": "custom",
+        "to": "{{contact.channel.address}}",
+        "body": "${flow_vars.send_message_sms_holiday}"
+      }
+    },
+    {
+      "name": "send_wait_sms_welcome",
+      "type": "send-and-wait-for-reply",
+      "transitions": [
+        {
+          "next": "split_is_crisis",
+          "event": "incomingMessage"
+        },
+        {
+          "next": "set_var_welcome_counter",
+          "event": "timeout"
+        },
+        {
+          "next": "set_var_welcome_counter",
+          "event": "deliveryFailure"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": -63,
+          "y": 1393
+        },
+        "service": "{{trigger.message.InstanceSid}}",
+        "channel": "{{trigger.message.ChannelSid}}",
+        "from": "NAMI",
+        "message_type": "custom",
+        "body": "${flow_vars.send_wait_sms_welcome}",
+        "timeout": "180"
+      }
+    },
+    {
+      "name": "set_var_welcome_counter",
+      "type": "set-variables",
+      "transitions": [
+        {
+          "next": "end_cycle_welcome",
+          "event": "next"
+        }
+      ],
+      "properties": {
+        "variables": [
+          {
+            "type": "string",
+            "value": "{% if flow.variables.welcome_counter%} {{flow.variables.welcome_counter| plus: 1}} {% else %} 1 {% endif %}",
+            "key": "welcome_counter"
+          }
+        ],
+        "offset": {
+          "x": 485,
+          "y": 1598
+        }
+      }
+    },
+    {
+      "name": "end_cycle_welcome",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "send_wait_sms_welcome",
+          "event": "noMatch"
+        },
+        {
+          "next": "send_message_sms_max_retries",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value greater_than 2",
+              "arguments": [
+                "{{flow.variables.welcome_counter}}"
+              ],
+              "type": "greater_than",
+              "value": "2"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{flow.variables.welcome_counter}}",
+        "offset": {
+          "x": 269,
+          "y": 1371
+        }
+      }
+    },
+    {
+      "name": "send_message_sms_max_retries",
+      "type": "send-message",
+      "transitions": [
+        {
+          "event": "sent"
+        },
+        {
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 1110,
+          "y": 1616
+        },
+        "service": "{{trigger.message.InstanceSid}}",
+        "channel": "{{trigger.message.ChannelSid}}",
+        "from": "NAMI",
+        "message_type": "custom",
+        "to": "{{contact.channel.address}}",
+        "body": "${flow_vars.send_message_sms_max_retries}"
+      }
+    },
+    {
+      "name": "split_is_crisis",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "send_wait_sms_name_request",
+          "event": "noMatch"
+        },
+        {
+          "next": "send_message_sms_crisis",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value matches_any_of CRISIS,Crisis,crisis,crisis!",
+              "arguments": [
+                "{{widgets.send_wait_sms_welcome.inbound.Body}}"
+              ],
+              "type": "matches_any_of",
+              "value": "CRISIS,Crisis,crisis,crisis!"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{widgets.send_wait_sms_welcome.inbound.Body}}",
+        "offset": {
+          "x": -23,
+          "y": 1625
+        }
+      }
+    },
+    {
+      "name": "send_message_sms_crisis",
+      "type": "send-message",
+      "transitions": [
+        {
+          "event": "sent"
+        },
+        {
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 412,
+          "y": 1826
+        },
+        "service": "{{trigger.message.InstanceSid}}",
+        "channel": "{{trigger.message.ChannelSid}}",
+        "from": "NAMI",
+        "message_type": "custom",
+        "to": "{{contact.channel.address}}",
+        "body": "${flow_vars.send_message_sms_crisis}"
+      }
+    },
+    {
+      "name": "send_wait_sms_name_request",
+      "type": "send-and-wait-for-reply",
+      "transitions": [
+        {
+          "next": "send_message_sms_tya_info",
+          "event": "incomingMessage"
+        },
+        {
+          "next": "set_var_name_request_counter",
+          "event": "timeout"
+        },
+        {
+          "next": "set_var_name_request_counter",
+          "event": "deliveryFailure"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": -21,
+          "y": 2031
+        },
+        "service": "{{trigger.message.InstanceSid}}",
+        "channel": "{{trigger.message.ChannelSid}}",
+        "from": "NAMI",
+        "message_type": "custom",
+        "body": "${flow_vars.send_wait_sms_name_request}",
+        "timeout": "180"
+      }
+    },
+    {
+      "name": "set_var_name_request_counter",
+      "type": "set-variables",
+      "transitions": [
+        {
+          "next": "end_cycle_name_request",
+          "event": "next"
+        }
+      ],
+      "properties": {
+        "variables": [
+          {
+            "type": "string",
+            "value": "{% if flow.variables.name_request_counter%} {{flow.variables.name_request_counter| plus: 1}} {% else %} 1 {% endif %}",
+            "key": "name_request_counter"
+          }
+        ],
+        "offset": {
+          "x": 678,
+          "y": 2231
+        }
+      }
+    },
+    {
+      "name": "end_cycle_name_request",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "send_wait_sms_name_request",
+          "event": "noMatch"
+        },
+        {
+          "next": "send_message_sms_max_retries",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value greater_than 2",
+              "arguments": [
+                "{{flow.variables.name_request_counter}}"
+              ],
+              "type": "greater_than",
+              "value": "2"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{flow.variables.name_request_counter}}",
+        "offset": {
+          "x": 382,
+          "y": 2026
+        }
+      }
+    },
+    {
+      "name": "send_wait_sms_contact_reason",
+      "type": "send-and-wait-for-reply",
+      "transitions": [
+        {
+          "next": "f_operatingHours_prequeue",
+          "event": "incomingMessage"
+        },
+        {
+          "next": "set_var_contact_reason_counter",
+          "event": "timeout"
+        },
+        {
+          "next": "set_var_contact_reason_counter",
+          "event": "deliveryFailure"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 228,
+          "y": 3122
+        },
+        "service": "{{trigger.message.InstanceSid}}",
+        "channel": "{{trigger.message.ChannelSid}}",
+        "from": "NAMI",
+        "message_type": "custom",
+        "body": "${flow_vars.send_wait_sms_contact_reason}",
+        "timeout": "300"
+      }
+    },
+    {
+      "name": "set_var_contact_reason_counter",
+      "type": "set-variables",
+      "transitions": [
+        {
+          "next": "end_cycle_contact_reason",
+          "event": "next"
+        }
+      ],
+      "properties": {
+        "variables": [
+          {
+            "type": "string",
+            "value": "{% if flow.variables.contact_reason_counter%} {{flow.variables.contact_reason_counter| plus: 1}} {% else %} 1 {% endif %}",
+            "key": "contact_reason_counter"
+          }
+        ],
+        "offset": {
+          "x": 876,
+          "y": 3303
+        }
+      }
+    },
+    {
+      "name": "end_cycle_contact_reason",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "send_wait_sms_contact_reason",
+          "event": "noMatch"
+        },
+        {
+          "next": "send_message_sms_max_retries",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value greater_than 2",
+              "arguments": [
+                "{{flow.variables.contact_reason_counter}}"
+              ],
+              "type": "greater_than",
+              "value": "2"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{flow.variables.contact_reason_counter}}",
+        "offset": {
+          "x": 636,
+          "y": 3122
+        }
+      }
+    },
+    {
+      "name": "f_operatingHours_prequeue",
+      "type": "make-http-request",
+      "transitions": [
+        {
+          "next": "split_status_prequeue",
+          "event": "success"
+        },
+        {
+          "next": "split_status_prequeue",
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 253,
+          "y": 3354
+        },
+        "method": "POST",
+        "content_type": "application/json;charset=utf-8",
+        "add_twilio_auth": false,
+        "body": "{\"channel\": \"sms\", \"includeMessageTextInResponse\": \"true\", \"language\": \"en-USNM\"}",
+        "url": "${lambda_twilio_account_scoped_url}/operatingHours"
+      }
+    },
+    {
+      "name": "send_wait_sms_service",
+      "type": "send-and-wait-for-reply",
+      "transitions": [
+        {
+          "next": "send_wait_sms_contact_reason",
+          "event": "incomingMessage"
+        },
+        {
+          "next": "set_var_service_counter",
+          "event": "timeout"
+        },
+        {
+          "next": "set_var_service_counter",
+          "event": "deliveryFailure"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 148,
+          "y": 2773
+        },
+        "service": "{{trigger.message.InstanceSid}}",
+        "channel": "{{trigger.message.ChannelSid}}",
+        "from": "NAMI",
+        "message_type": "custom",
+        "body": "${flow_vars.send_wait_sms_service}",
+        "timeout": "180"
+      }
+    },
+    {
+      "name": "set_var_service_counter",
+      "type": "set-variables",
+      "transitions": [
+        {
+          "next": "end_cycle_service",
+          "event": "next"
+        }
+      ],
+      "properties": {
+        "variables": [
+          {
+            "type": "string",
+            "value": "{% if flow.variables.service_counter%} {{flow.variables.service_counter| plus: 1}} {% else %} 1 {% endif %}",
+            "key": "service_counter"
+          }
+        ],
+        "offset": {
+          "x": 800,
+          "y": 2962
+        }
+      }
+    },
+    {
+      "name": "end_cycle_service",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "send_wait_sms_service",
+          "event": "noMatch"
+        },
+        {
+          "next": "send_message_sms_max_retries",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value greater_than 2",
+              "arguments": [
+                "{{flow.variables.service_counter}}"
+              ],
+              "type": "greater_than",
+              "value": "2"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{flow.variables.service_counter}}",
+        "offset": {
+          "x": 517,
+          "y": 2782
+        }
+      }
+    },
+    {
+      "name": "split_status_prequeue",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "split_service",
+          "event": "noMatch"
+        },
+        {
+          "next": "split_service",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to open",
+              "arguments": [
+                "{{widgets.f_operatingHours.parsed.status}}"
+              ],
+              "type": "equal_to",
+              "value": "open"
+            }
+          ]
+        },
+        {
+          "next": "send_message_sms_closed",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to closed",
+              "arguments": [
+                "{{widgets.f_operatingHours.parsed.status}}"
+              ],
+              "type": "equal_to",
+              "value": "closed"
+            }
+          ]
+        },
+        {
+          "next": "send_message_sms_holiday",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to holiday",
+              "arguments": [
+                "{{widgets.f_operatingHours.parsed.status}}"
+              ],
+              "type": "equal_to",
+              "value": "holiday"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{widgets.f_operatingHours.parsed.status}}",
+        "offset": {
+          "x": 565,
+          "y": 3582
+        }
+      }
+    },
+    {
+      "name": "split_service",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "send_message_sms_prequeue_std",
+          "event": "noMatch"
+        },
+        {
+          "next": "f_isSkilledWorkerAvailable_tya_sms",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to 2",
+              "arguments": [
+                "{{widgets.send_wait_sms_service.inbound.Body}}"
+              ],
+              "type": "equal_to",
+              "value": "2"
+            }
+          ]
+        },
+        {
+          "next": "send_message_sms_prequeue_std",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to 1",
+              "arguments": [
+                "{{widgets.send_wait_sms_service.inbound.Body}}"
+              ],
+              "type": "equal_to",
+              "value": "1"
+            }
+          ]
+        },
+        {
+          "next": "f_isSkilledWorkerAvailable_fcg_sms",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to 3",
+              "arguments": [
+                "{{widgets.send_wait_sms_service.inbound.Body}}"
+              ],
+              "type": "equal_to",
+              "value": "3"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{widgets.send_wait_sms_service.inbound.Body}}",
+        "offset": {
+          "x": 592,
+          "y": 3843
+        }
+      }
+    },
+    {
+      "name": "f_isSkilledWorkerAvailable_tya_sms",
+      "type": "run-function",
+      "transitions": [
+        {
+          "next": "split_specialist_available_tya_sms",
+          "event": "success"
+        },
+        {
+          "next": "split_specialist_available_tya_sms",
+          "event": "fail"
+        }
+      ],
+      "properties": {
+        "service_sid": "${flow_vars.custom_functions_service_id}",
+        "environment_sid": "${flow_vars.custom_functions_environment_id}",
+        "offset": {
+          "x": 226,
+          "y": 4079
+        },
+        "function_sid": "${flow_vars.is_skilled_worker_available_function_sid}",
+        "parameters": [
+          {
+            "value": "${flow_vars.workspace_sid}",
+            "key": "workspaceSid"
+          },
+          {
+            "value": "sms",
+            "key": "targetChannel"
+          },
+          {
+            "value": "TYA,SMS",
+            "key": "targetSkills"
+          }
+        ],
+        "url": "${flow_vars.custom_functions_url}/isSkilledWorkerAvailable"
+      }
+    },
+    {
+      "name": "split_specialist_available_tya_sms",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "event": "noMatch"
+        },
+        {
+          "next": "send_message_sms_prequeue_tya",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value greater_than 0",
+              "arguments": [
+                "{{widgets.f_isSkilledWorkerAvailable_tya_sms.parsed.totalAvailableWorkers}}"
+              ],
+              "type": "greater_than",
+              "value": "0"
+            }
+          ]
+        },
+        {
+          "next": "send_wait_sms_no_tya_service",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to 0",
+              "arguments": [
+                "{{widgets.f_isSkilledWorkerAvailable_tya_sms.parsed.totalAvailableWorkers}}"
+              ],
+              "type": "equal_to",
+              "value": "0"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{widgets.f_isSkilledWorkerAvailable_tya_sms.parsed.totalAvailableWorkers}}",
+        "offset": {
+          "x": 390,
+          "y": 4253
+        }
+      }
+    },
+    {
+      "name": "send_message_sms_prequeue_tya",
+      "type": "send-message",
+      "transitions": [
+        {
+          "next": "send_to_queue_sms_tya",
+          "event": "sent"
+        },
+        {
+          "next": "send_to_queue_sms_tya",
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 336,
+          "y": 4466
+        },
+        "service": "{{trigger.message.InstanceSid}}",
+        "channel": "{{trigger.message.ChannelSid}}",
+        "from": "NAMI",
+        "message_type": "custom",
+        "to": "{{contact.channel.address}}",
+        "body": "${flow_vars.send_message_sms_prequeue_tya}"
+      }
+    },
+    {
+      "name": "send_wait_sms_no_tya_service",
+      "type": "send-and-wait-for-reply",
+      "transitions": [
+        {
+          "next": "split_service_tya_std",
+          "event": "incomingMessage"
+        },
+        {
+          "event": "timeout"
+        },
+        {
+          "event": "deliveryFailure"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 807,
+          "y": 4471
+        },
+        "service": "{{trigger.message.InstanceSid}}",
+        "channel": "{{trigger.message.ChannelSid}}",
+        "from": "NAMI",
+        "message_type": "custom",
+        "body": "${flow_vars.send_wait_sms_no_tya_service}",
+        "timeout": "180"
+      }
+    },
+    {
+      "name": "split_service_tya_std",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "event": "noMatch"
+        },
+        {
+          "next": "f_operatingHours_std",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to 1",
+              "arguments": [
+                "{{widgets.send_wait_sms_no_tya_service.inbound.Body}}"
+              ],
+              "type": "equal_to",
+              "value": "1"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{widgets.send_wait_sms_no_tya_service.inbound.Body}}",
+        "offset": {
+          "x": 913,
+          "y": 4854
+        }
+      }
+    },
+    {
+      "name": "send_message_sms_prequeue_std",
+      "type": "send-message",
+      "transitions": [
+        {
+          "next": "send_to_queue_sms_std",
+          "event": "sent"
+        },
+        {
+          "next": "send_to_queue_sms_std",
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 1321,
+          "y": 4174
+        },
+        "service": "{{trigger.message.InstanceSid}}",
+        "channel": "{{trigger.message.ChannelSid}}",
+        "from": "NAMI",
+        "message_type": "custom",
+        "to": "{{contact.channel.address}}",
+        "body": "${flow_vars.send_message_sms_prequeue_std}"
+      }
+    },
+    {
+      "name": "send_to_queue_sms_std",
+      "type": "send-to-flex",
+      "transitions": [
+        {
+          "event": "callComplete"
+        },
+        {
+          "next": "http_post_webhook_notify_failed_to_enqueue",
+          "event": "failedToEnqueue"
+        },
+        {
+          "event": "callFailure"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 1356,
+          "y": 4611
+        },
+        "workflow": "${workflow_sids.master}",
+        "channel": "${task_channel_sids.chat}",
+        "attributes": "{\n  \"type\": \"inbound\",\n   \"name\": \"{{trigger.conversation.From}}\",\n  \"ignoreAgent\": \"\",\n  \"helpline\":\"NAMI\",\n  \"transferTargetType\": \"\",\n   \"service\" :\"std\",\n   \"serviceLanguage\": \"english\",\n  \"channelType\": \"sms\",\n  \"conversations\": {\n    \"hang_up_by\": \"Customer\"\n  }\n}\n",
+        "priority": "0",
+        "timeout": "3600"
+      }
+    },
+    {
+      "name": "send_to_queue_sms_fcg",
+      "type": "send-to-flex",
+      "transitions": [
+        {
+          "event": "callComplete"
+        },
+        {
+          "next": "http_post_webhook_notify_failed_to_enqueue",
+          "event": "failedToEnqueue"
+        },
+        {
+          "event": "callFailure"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 2416,
+          "y": 4720
+        },
+        "workflow": "${workflow_sids.master}",
+        "channel": "${task_channel_sids.chat}",
+        "attributes": "{\n  \"type\": \"inbound\",\n   \"name\": \"{{trigger.conversation.From}}\",\n  \"ignoreAgent\": \"\",\n  \"helpline\":\"NAMI\",\n  \"transferTargetType\": \"\",\n   \"service\" :\"fcg\",\n   \"serviceLanguage\": \"english\",\n  \"channelType\": \"sms\",\n  \"conversations\": {\n    \"hang_up_by\": \"Customer\"\n  }\n}\n",
+        "priority": "0",
+        "timeout": "3600"
+      }
+    },
+    {
+      "name": "f_isSkilledWorkerAvailable_fcg_sms",
+      "type": "run-function",
+      "transitions": [
+        {
+          "next": "split_specialist_available_fcg_sms",
+          "event": "success"
+        },
+        {
+          "next": "split_specialist_available_fcg_sms",
+          "event": "fail"
+        }
+      ],
+      "properties": {
+        "service_sid": "${flow_vars.custom_functions_service_id}",
+        "environment_sid": "${flow_vars.custom_functions_environment_id}",
+        "offset": {
+          "x": 1848,
+          "y": 4015
+        },
+        "function_sid": "${flow_vars.is_skilled_worker_available_function_sid}",
+        "parameters": [
+          {
+            "value": "${flow_vars.workspace_sid}",
+            "key": "workspaceSid"
+          },
+          {
+            "value": "sms",
+            "key": "targetChannel"
+          },
+          {
+            "value": "FCG,SMS",
+            "key": "targetSkills"
+          }
+        ],
+        "url": "${flow_vars.custom_functions_url}/isSkilledWorkerAvailable"
+      }
+    },
+    {
+      "name": "split_specialist_available_fcg_sms",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "event": "noMatch"
+        },
+        {
+          "next": "send_message_sms_prequeue_fcg",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value greater_than 0",
+              "arguments": [
+                "{{widgets.f_isSkilledWorkerAvailable_fcg_sms.parsed.totalAvailableWorkers}}"
+              ],
+              "type": "greater_than",
+              "value": "0"
+            }
+          ]
+        },
+        {
+          "next": "send_wait_sms_no_fcg_service",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to 0",
+              "arguments": [
+                "{{widgets.f_isSkilledWorkerAvailable_fcg_sms.parsed.totalAvailableWorkers}}"
+              ],
+              "type": "equal_to",
+              "value": "0"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{widgets.f_isSkilledWorkerAvailable_fcg_sms.parsed.totalAvailableWorkers}}",
+        "offset": {
+          "x": 2003,
+          "y": 4226
+        }
+      }
+    },
+    {
+      "name": "send_message_sms_prequeue_fcg",
+      "type": "send-message",
+      "transitions": [
+        {
+          "next": "send_to_queue_sms_fcg",
+          "event": "sent"
+        },
+        {
+          "next": "send_to_queue_sms_fcg",
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 2288,
+          "y": 4446
+        },
+        "service": "{{trigger.message.InstanceSid}}",
+        "channel": "{{trigger.message.ChannelSid}}",
+        "from": "NAMI",
+        "message_type": "custom",
+        "to": "{{contact.channel.address}}",
+        "body": "${flow_vars.send_message_sms_prequeue_fcg}"
+      }
+    },
+    {
+      "name": "send_wait_sms_no_fcg_service",
+      "type": "send-and-wait-for-reply",
+      "transitions": [
+        {
+          "next": "split_service_fcg_std",
+          "event": "incomingMessage"
+        },
+        {
+          "event": "timeout"
+        },
+        {
+          "event": "deliveryFailure"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 1909,
+          "y": 4501
+        },
+        "service": "{{trigger.message.InstanceSid}}",
+        "channel": "{{trigger.message.ChannelSid}}",
+        "from": "NAMI",
+        "message_type": "custom",
+        "body": "${flow_vars.send_wait_sms_no_fcg_service}",
+        "timeout": "180"
+      }
+    },
+    {
+      "name": "split_service_fcg_std",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "event": "noMatch"
+        },
+        {
+          "next": "f_operatingHours_std",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to 1",
+              "arguments": [
+                "{{widgets.send_wait_sms_no_fcg_service.inbound.Body}}"
+              ],
+              "type": "equal_to",
+              "value": "1"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{widgets.send_wait_sms_no_fcg_service.inbound.Body}}",
+        "offset": {
+          "x": 1810,
+          "y": 4785
+        }
+      }
+    },
+    {
+      "name": "f_operatingHours_std",
+      "type": "make-http-request",
+      "transitions": [
+        {
+          "next": "split_status_std",
+          "event": "success"
+        },
+        {
+          "next": "split_status_std",
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 1460,
+          "y": 5065
+        },
+        "method": "POST",
+        "content_type": "application/json;charset=utf-8",
+        "add_twilio_auth": false,
+        "body": "{\"channel\": \"sms\", \"includeMessageTextInResponse\": \"true\", \"language\": \"en-USNM\"}",
+        "url": "${lambda_twilio_account_scoped_url}/operatingHours"
+      }
+    },
+    {
+      "name": "split_status_std",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "send_message_sms_prequeue_std",
+          "event": "noMatch"
+        },
+        {
+          "next": "send_message_sms_prequeue_std",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to open",
+              "arguments": [
+                "{{widgets.f_operatingHours.parsed.status}}"
+              ],
+              "type": "equal_to",
+              "value": "open"
+            }
+          ]
+        },
+        {
+          "next": "send_message_sms_closed",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to closed",
+              "arguments": [
+                "{{widgets.f_operatingHours.parsed.status}}"
+              ],
+              "type": "equal_to",
+              "value": "closed"
+            }
+          ]
+        },
+        {
+          "next": "send_message_sms_holiday",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to holiday",
+              "arguments": [
+                "{{widgets.f_operatingHours.parsed.status}}"
+              ],
+              "type": "equal_to",
+              "value": "holiday"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{widgets.f_operatingHours.parsed.status}}",
+        "offset": {
+          "x": 1279,
+          "y": 5286
+        }
+      }
+    },
+    {
+      "name": "send_message_sms_tya_info",
+      "type": "send-message",
+      "transitions": [
+        {
+          "next": "send_message_sms_fcg_info",
+          "event": "sent"
+        },
+        {
+          "next": "send_message_sms_fcg_info",
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 12,
+          "y": 2298
+        },
+        "service": "{{trigger.message.InstanceSid}}",
+        "channel": "{{trigger.message.ChannelSid}}",
+        "from": "NAMI",
+        "message_type": "custom",
+        "to": "{{contact.channel.address}}",
+        "body": "${flow_vars.send_message_sms_tya_info}"
+      }
+    },
+    {
+      "name": "send_message_sms_fcg_info",
+      "type": "send-message",
+      "transitions": [
+        {
+          "next": "send_wait_sms_service",
+          "event": "sent"
+        },
+        {
+          "next": "send_wait_sms_service",
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 88,
+          "y": 2514
+        },
+        "service": "{{trigger.message.InstanceSid}}",
+        "channel": "{{trigger.message.ChannelSid}}",
+        "from": "NAMI",
+        "message_type": "custom",
+        "to": "{{contact.channel.address}}",
+        "body": "${flow_vars.send_message_sms_fcg_info}"
+      }
+    }
+  ]
+})}

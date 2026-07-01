@@ -1,50 +1,334 @@
 [
-    {
-        "label": "Thank you for contacting.",
-        "text": "Thank you for contacting the helpline. We are here to support you. My name is XXX and I am a counselor at the helpline. "
-      },
-      {
-        "label": "Confidentiality / Privacy",
-        "text": "Before we continue, I would love for you to know that this is a safe space for you to just talk and share the challenges that you are having. Everything you say here will remain here except in cases where you indicate that you are being harmed by someone (meaning any form of abuse), that you want to harm yourself (meaning suicide) or you want to harm someone. In any of these cases, I would have to inform my supervisor and inform the relevant authorities. Do you understand this?"
-      },
-      {
-        "label": "Emergency Services Call",
-        "text": "I am going to call 911 and will ask you to provide as much information as you can about the situation. Do you know where the situation is taking place?"
-      },
-      {
-        "label": "What is the helpline?",
-        "text": "ChildLine is a 24/7 counseling helpline that provides free counselling and psychosocial support to children and teens under the age of 18 years."
-      },
-      {
-        "label": "How did you learn about the helpline?",
-        "text": "If you don't mind me asking, can you please share with me how you came to know about the helpline?"
-      },
-      {
-        "label": "How do I avoid COVID?",
-        "text": "It’s understandable that you are worried about getting the COVID19 Virus, however, here are some tips to help you stay safe: \n\n • Wash your hands regularly / use sanitizer \n • Avoid handshakes, hugs and kisses. \n • Don’t touch your face unnecessarily \n • Keep a 1.5-meter distance from people, especially if they are symptomatic \n • If you feel that you show symptoms or have come in touch with a COVID19 positive person, please also call the COVID19 Helpline \n • Stay calm and don't panic"
-      },
-      {
-        "label": "What is Physical abuse?",
-        "text": "Physical violence and abuse based on the fact that you are a man or a woman is an increasing problem. If you or anyone you know is being: Beaten, slapped, punched, kicked, bruised, cut, burnt or physically hurt in any way, they are being physically abused."
-      },
-      {
-        "label": "What is Verbal and Emotional abuse?",
-        "text": "Not all sexual and gender based violence is physical. Verbal abuse like screaming, shouting and name calling, and emotional abuse like threats and intimidation, are real problems, especially in families."
-      },
-      {
-        "label": "What is Sexual abuse and rape?",
-        "text": "People are sometimes forced to have sex with people when they don’t want to (rape), or to do sexual things against their will. This can happen once or more often. People may know the person or they may be a stranger. Sexual violence and abuse have immediate as well as long term physical and emotional consequences. Being sexually abused because you are a man or a woman is a growing problem."
-      },
-      {
-        "label": "Affirmations",
-        "text": "Thank you for sharing this with me. It is completely natural to feel the way you do."
-      },
-      {
-        "label": "Silent",
-        "text": "Unfortunately because there has been no response, we will have to end this conversation to speak with the next caller. When you are ready to chat with us you are welcome to reach out again."
-      },
-      {
-        "label": "Goodbye",
-        "text": "Thank you for reaching out to the helpline, we are here to support you. Please reach out to us again if you need to talk. "
-      }
+  {
+    "label": "Thank you",
+    "text": "Thank you for sharing your concerns."
+  },
+  {
+    "label": "Encouragement",
+    "text": "It takes a lot of courage to reach out and I'm glad you did."
+  },
+  {
+    "label": "How can I help?",
+    "text": "How can I best help you today?"
+  },
+  {
+    "label": "What should I know?",
+    "text": "What would you say is the most important thing I should know about you or your situation to help you today?"
+  },
+  {
+    "label": "Share more",
+    "text": "Would you like to share more about what has been going on?"
+  },
+  {
+    "label": "Share more",
+    "text": "Would you like to share more about what this has been like for you?"
+  },
+  {
+    "label": "Tell me More",
+    "text": "Could you tell me a bit more about how this has been affecting you?"
+  },
+  {
+    "label": "Background",
+    "text": "Is there anything you’d like to share about yourself such as your cultural, religious, or gender identity so\n that I can find the most helpful resource for you?"
+  },
+  {
+    "label": "Therapist",
+    "text": "Are you looking for therapists that offer care to any specific racial or ethnic group?"
+  },
+  {
+    "label": "Identity",
+    "text": "Sometimes people prefer to work with mental health professionals who share important identities or\n backgrounds with them. Would you like me to search for a treatment resource specific to any cultural,\n racial, or ethnic background?"
+  },
+  {
+    "label": "Community and Culture",
+    "text": "The NAMI HelpLine Knowledge Center has a section on community and culture with dozens of\n Knowledge Articles specific to certain cultural, ethnic, and racial identities. Would you like me to share\n the website link so you can check out the articles on your own time?"
+  },
+  {
+    "label": "Focus",
+    "text": "There's a lot going on. What do you think we should focus on?"
+  },
+  {
+    "label": "Talk or Resources",
+    "text": "Thank you for sharing. Sometimes it's hard to open up about difficult topics. We can chat awhile longer or I can give you some resources to check out."
+  },
+  {
+    "label": "Urgent Need",
+    "text": "It seems there is a lot going on. What would you say is your most urgent need?"
+  },
+  {
+    "label": "NAMI Programs",
+    "text": "NAMI offers free education programs and support groups that really help. I'd like to share some resources about NAMI programs and groups, would that be okay with you?"
+  },
+  {
+    "label": "Resource Share",
+    "text": "I have a couple resources that may be of help. Would you like me to share them?"
+  },
+  {
+    "label": "Resource Referrals",
+    "text": "We don't offer referrals to mental health or legal professionals, but I can provide you with referral resources that you can reach out to."
+  },
+  {
+    "label": "Goodbye for Now",
+    "text": "I appreciate the opportunity to hear your story and support you today. Goodbye for now. Thank you for reaching out to the NAMI HelpLine."
+  },
+  {
+    "label": "Contact Again",
+    "text": "Thank you for reaching out to the NAMI HelpLine. Please feel free to contact us again if you'd like more information and resources."
+  },
+  {
+    "label": "Busy End Text",
+    "text": "It looks like you may be busy. I will have to accept another connection in a moment. Please feel free to reach back out to us when it is a better time for you."
+  },
+  {
+    "label": "988 Chat",
+    "text": "Let’s contact a crisis help line together. Click on this link: https://988lifeline.org/chat/\n I’ll be here supporting you until a crisis counselor starts messaging. Please let me know when you are connected with a 988 crisis counselor."
+  },
+  {
+    "label": "988 Connected",
+    "text": "Were you able to click on the link to get connected to 988?"
+  },
+  {
+    "label": "988 Counselor",
+    "text": "Have you been connected with a 988 crisis counselor?"
+  },
+  {
+    "label": "988 Soon",
+    "text": "I’m so glad you reached out for help today. A crisis counselor should be connecting with you soon."
+  },
+  {
+    "label": "988 End w/ NAMI",
+    "text": "Thank you for contacting the NAMI HelpLine today. I’m glad I could connect you with crisis support. I will be ending this text now."
+  },
+  {
+    "label": "SL Thank you",
+    "text": "Gracias por compartir tus preocupaciones."
+  },
+  {
+    "label": "SL Reaching out",
+    "text": "Toma valor contactarnos y me alegra que lo hayas hecho."
+  },
+  {
+    "label": "SL How can I help?",
+    "text": "¿Cómo puedo ayudarte de la mejor manera hoy?"
+  },
+  {
+    "label": "SL What should I know?",
+    "text": "¿Qué es lo más importante sobre ti o tu situación que debería saber para poder ayudarte hoy?"
+  },
+  {
+    "label": "SL Share more",
+    "text": "¿Quisieras compartir más detalles de lo que esta pasando?"
+  },
+  {
+    "label": "SL Share more",
+    "text": "¿Quisieras compartir más de como ha sido esto para ti?"
+  },
+  {
+    "label": "SL Tell me More",
+    "text": "¿Me puedes decir más de cómo te ha afectado esto?"
+  },
+  {
+    "label": "SL Background",
+    "text": "¿Hay algo que debería saber de ti como tu cultura, religión o género para encontrar recursos que sean más útil?"
+  },
+  {
+    "label": "SL Looking for therapist?",
+    "text": "¿Estas buscando terapeutas que apoyan a comunidades de una raza o etnia específica?"
+  },
+  {
+    "label": "SL Identity",
+    "text": "Hay personas que prefieren trabajar con profesionales de salud mental que comparten identidades importantes similares a ellos. ¿Quisieras que buscara recursos de tratamiento específicos para comunidades de una cultura, raza o etnia?"
+  },
+  {
+    "label": "SL Community and Culture",
+    "text": "El Centro de Información de Línea de Ayuda de NAMI tiene una sección con docenas de artículos de información en español. ¿Quisieras que comparta esta página web para que puedas revisarlas tú mismo?"
+  },
+  {
+    "label": "SL Focus",
+    "text": "Estan sucediendo varias cosas. En que crees que deberíamos enfocarnos?"
+  },
+  {
+    "label": "SL Talk or Resources",
+    "text": "Gracias por compartir su situacion. A veces es dificil hablar sobre temas dificiles. Podemos charlar un rato mas o puedo darte algunos recursos que puedes revisar."
+  },
+  {
+    "label": "SL Urgent Need",
+    "text": "Parece que estan pasando muchas situaciones. Cual dirias que es tu necesidad mas urgente?"
+  },
+  {
+    "label": "SL NAMI Programs",
+    "text": "NAMI ofrece programas educativos gratuitos y grupos de apoyo que realmente ayudan. Me gustaria compartir algunos recursos sobre los programas y grupos de NAMI, le parece bien?"
+  },
+  {
+    "label": "SL Resource Share",
+    "text": "Tengo un par de recursos que pueden ser de ayuda. Quieres que los comparta contigo?"
+  },
+  {
+    "label": "SL Resource Referrals",
+    "text": "No ofrecemos referencias a profesionales legales o de salud mental, pero puedo brindarle recursos de referencias con los cuales se puede comunicar."
+  },
+  {
+    "label": "SL Goodbye for Now",
+    "text": "Agradezco la oportunidad de escuchar tu historia y apoyarte hoy. Por ahora le dire adios y le doy las gracias por comunicarse con la linea de ayuda de NAMI."
+  },
+  {
+    "label": "SL Contact Again",
+    "text": "Gracias por comunicarse con la linea de ayuda de NAMI. No dude en contactarnos nuevamente si desea obtener mos informacion y recursos."
+  },
+  {
+    "label": "SL Busy End Text",
+    "text": "Parece que en este momento no estas disponible. Tendre que aceptar otra conexion en un momento. No dude en volver a comunicarse con nosotros cuando sea un mejor momento para usted."
+  },
+  {
+    "label": "SL 988 Chat",
+    "text": "Vamos a contactar una linea de ayuda para crisis juntos. Haga clic en este enlace: https://988lifeline.org/chat/\n Estare aqui apoyandote hasta que un consejero de crisis le conteste. Aviseme cuando se conecte con un consejero de crisis del 988."
+  },
+  {
+    "label": "SL 988 Connected",
+    "text": "Pudiste hacer clic en el enlace para conectarte al 988?"
+  },
+  {
+    "label": "SL 988 Counselor",
+    "text": "Le han conectado con un consejero de crisis del 988?"
+  },
+  {
+    "label": "SL 988 Soon",
+    "text": "Me alegra mucho que hayas pedido ayuda hoy. Un consejero de crisis deberia comunicarse contigo pronto."
+  },
+  {
+    "label": "SL 988 End w/ NAMI",
+    "text": "Gracias por comunicarse con la linea de ayuda de NAMI hoy. Me alegra poder facilitarle apoyo para crisis. Ahora terminare este texto."
+  },
+  {
+    "label": "988 Website",
+    "text": "https://988lifeline.org/"
+  },
+  {
+    "label": "Text 988",
+    "text": "Text any word to 988"
+  },
+  {
+    "label": "Text CTL",
+    "text": "Text HOME to 741741"
+  },
+  {
+    "label": "Trevor Project",
+    "text": "https://www.thetrevorproject.org/"
+  },
+  {
+    "label": "SAMHSA Locator",
+    "text": "https://www.samhsa.gov/find-help/national-helpline"
+  },
+  {
+    "label": "Psych Today Locator",
+    "text": "https://www.psychologytoday.com/us/therapists"
+  },
+  {
+    "label": "SAMHSA ESMI Loactor",
+    "text": "https://www.samhsa.gov/esmi-treatment-locator"
+  },
+  {
+    "label": "Law Help",
+    "text": "https://www.lawhelp.org/"
+  },
+  {
+    "label": "HUD",
+    "text": "https://www.hud.gov/findshelter"
+  },
+  {
+    "label": "HelpWhenYouNeedIt",
+    "text": "http://helpwhenyouneedit.org/"
+  },
+  {
+    "label": 211,
+    "text": "https://www.211.org/"
+  },
+  {
+    "label": "LEAP Institute",
+    "text": "https://leapinstitute.org/"
+  },
+  {
+    "label": "DBSA",
+    "text": "https://www.dbsalliance.org/"
+  },
+  {
+    "label": "ADAA",
+    "text": "https://adaa.org/"
+  },
+  {
+    "label": "SPAA",
+    "text": "https://sczaction.org/"
+  },
+  {
+    "label": "About NAMI",
+    "text": "https://www.nami.org/About-NAMI/Who-We-Are"
+  },
+  {
+    "label": "NAMI HelpLine",
+    "text": "https://nami.org/help"
+  },
+  {
+    "label": "MH Warning Signs/Symptoms",
+    "text": "https://www.nami.org/About-Mental-Illness/Warning-Signs-and-Symptoms"
+  },
+  {
+    "label": "MH Conditions",
+    "text": "https://www.nami.org/About-Mental-Illness"
+  },
+  {
+    "label": "MH Treatments",
+    "text": "https://www.nami.org/About-Mental-Illness/Treatments"
+  },
+  {
+    "label": "Anosognosia",
+    "text": "https://www.nami.org/About-Mental-Illness/Common-with-Mental-Illness/Anosognosia"
+  },
+  {
+    "label": "Fam Mems & Caregivers",
+    "text": "https://www.nami.org/nami-helpline/#caregiver-help"
+  },
+  {
+    "label": "Teens & Young Adults",
+    "text": "https://www.nami.org/nami-helpline/#tya-help"
+  },
+  {
+    "label": "Find Your Local NAMI",
+    "text": "https://www.nami.org/findsupport"
+  },
+  {
+    "label": "NAMI Education Classes",
+    "text": "https://www.nami.org/Support-Education/Mental-Health-Education"
+  },
+  {
+    "label": "NAMI Support Groups",
+    "text": "https://www.nami.org/Support-Education/Support-Groups"
+  },
+  {
+    "label": "Navigating a MH Guide",
+    "text": "https://www.nami.org/research/publications-reports/guides/navigating-a-mental-health-crisis/"
+  },
+  {
+    "label": "HelpLine Warmline Directory",
+    "text": "https://helplinefaqs.nami.org/article/577-nami-national-warmline-directory"
+  },
+  {
+    "label": "HelpLine RD",
+    "text": "https://www.nami.org/wp-content/uploads/2026/05/NAMI-HelpLine-Resource-Directory-2026-4.10.26.pdf"
+  },
+  {
+    "label": "HelpLine TYA RD",
+    "text": "https://www.nami.org/wp-content/uploads/2023/11/NAMI-Teen-and-Young-Adult-HelpLine-Resource-Directory.pdf"
+  },
+  {
+    "label": "SL Knowledge Center",
+    "text": "https://helplinefaqs.nami.org/collection/623-nami-helpline-en-espanol"
+  },
+  {
+    "label": "Knowledge Center",
+    "text": "https://helplinefaqs.nami.org/"
+  },
+  {
+    "label": "Justice Library",
+    "text": "https://nami.org/Support-Education/Justice-Library"
+  }
 ]
