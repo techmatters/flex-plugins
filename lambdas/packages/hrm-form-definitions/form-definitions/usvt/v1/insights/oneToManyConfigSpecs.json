@@ -1,0 +1,18 @@
+[
+  {
+    "attributeName": "area",
+    "insightsObject": "customers",
+    "paths": [
+      "contactForm.childInformation.province",
+      "contactForm.childInformation.district"
+    ]
+  },
+  {
+    "attributeName": "conversation_attribute_10",
+    "insightsObject": "conversations",
+    "paths": [
+      "savedContact.id"
+    ],
+    "saveForNonDataContacts": true
+  }
+]

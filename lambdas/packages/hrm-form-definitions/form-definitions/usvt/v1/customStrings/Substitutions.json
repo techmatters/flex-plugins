@@ -1,0 +1,13 @@
+{
+  "en": {
+    "HelplineSubstitution": "Helpline-Substitution",
+    "Switchboard-NoQueuesSwitchboarded": "No queues are currently being switchboarded",
+    "Admin": "Translated Admin",
+    "Chat Queue Test": "Quat Teue Chest",
+    "CustomLink-Label-ResourceMap": "Resource Map"
+  },
+  "es": {
+    "HelplineSubstitution": "Substitución de la Línea de Ayuda",
+    "Switchboard-NoQueuesSwitchboarded": "No hay colas que estén actualmente en switchboard"
+  }
+}
