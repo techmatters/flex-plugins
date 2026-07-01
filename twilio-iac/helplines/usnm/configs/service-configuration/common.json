@@ -2,7 +2,8 @@
     "attributes": {
         "contacts_waiting_channels": [
             "sms",
-            "voice"
+            "voice",
+            "web"
         ],
         "definitionVersion": "usnm-v1",
         "helplineLanguage": "en-US",
