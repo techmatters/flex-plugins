@@ -74,6 +74,7 @@ import { sendMessageAndRunJanitorHandler } from './conversation/sendMessageAndRu
 import { issueSyncTokenHandler } from './issueSyncToken';
 import { getExternalRecordingS3LocationHandler } from './conversation/getExternalRecordingS3Location';
 import { getMediaUrlHandler } from './conversation/getMediaUrl';
+import { recordingCompleteCallback } from './voicemail/recordingCompleteCallback';
 
 /**
  * Super simple router sufficient for directly ported Twilio Serverless functions
@@ -274,6 +275,10 @@ const ACCOUNTSID_ROUTES: Record<
   'conversation/sendMessageAndRunJanitor': {
     requestPipeline: [validateWebhookRequest],
     handler: sendMessageAndRunJanitorHandler,
+  },
+  'voicemail/recordingCompleteCallback': {
+    requestPipeline: [validateWebhookRequest],
+    handler: recordingCompleteCallback,
   },
   issueSyncToken: {
     requestPipeline: [validateFlexTokenRequest({ tokenMode: 'agent' })],
