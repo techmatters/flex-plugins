@@ -1,5 +1,12 @@
 [
   {
+    "name": "regularCounsellor",
+    "label": "Regular Counsellor",
+    "type": "input",
+    "placeholder": "Enter the name of the client's regular counsellor",
+    "isPII": true
+  },
+  {
     "name": "summary",
     "label": "Summary",
     "editLabel": "Edit Summary",
