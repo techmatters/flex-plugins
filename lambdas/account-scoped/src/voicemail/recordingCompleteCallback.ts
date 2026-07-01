@@ -21,7 +21,7 @@ export type RecordingCompleteCallbackRequestBody = {
   callFrom: string;
 };
 
-export const checkBlockListHandler: AccountScopedHandler = async ({
+export const recordingCompleteCallback: AccountScopedHandler = async ({
   body,
 }): Promise<Result<HttpError, any>> => {
   console.debug('checkBlockListHandler body', JSON.stringify(body, null, 2));
