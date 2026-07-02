@@ -35,31 +35,43 @@ locals {
         "friendly_name"  = "Master"
       },
       eng_std : {
-        "target_workers" = "routing.skills HAS 'Calls",
+        "target_workers" = "(routing.skills HAS 'Calls' OR routing.skills HAS 'SMS')",
         "friendly_name"  = "English Standard"
       },
       eng_tya : {
-        "target_workers" = "routing.skills HAS 'Calls' AND routing.skills HAS 'TYA'",
+        "target_workers" = "(routing.skills HAS 'Calls' OR routing.skills HAS 'SMS') AND routing.skills HAS 'TYA'",
         "friendly_name"  = "English TYA"
       },
       eng_fcg : {
-        "target_workers" = "routing.skills HAS 'Calls' AND routing.skills HAS 'FCG'",
+        "target_workers" = "(routing.skills HAS 'Calls' OR routing.skills HAS 'SMS') AND routing.skills HAS 'FCG'",
         "friendly_name"  = "English FCG"
       },
       es_std : {
-        "target_workers" = "routing.skills HAS 'Calls' AND routing.skills HAS 'Spanish'",
+        "target_workers" = "(routing.skills HAS 'Calls' OR routing.skills HAS 'SMS') AND routing.skills HAS 'Spanish'",
         "friendly_name"  = "English FCG"
       },
       es_tya : {
-        "target_workers" = "routing.skills HAS 'Calls' AND routing.skills HAS 'TYA' AND routing.skills HAS 'Spanish'",
+        "target_workers" = "(routing.skills HAS 'Calls' OR routing.skills HAS 'SMS') AND routing.skills HAS 'TYA' AND routing.skills HAS 'Spanish'",
         "friendly_name"  = "English FCG"
       },
       en_std_voicemail : {
-        "target_workers" = "routing.skills HAS 'Calls' AND routing.skills HAS 'Voicemail'",
+        "target_workers" = "routing.skills HAS 'Voicemail'",
         "friendly_name"  = "English STD Voicemail"
       },
       en_tya_voicemail : {
-        "target_workers" = "routing.skills HAS 'Calls' AND routing.skills HAS 'TYA' AND routing.skills HAS 'Spanish'",
+        "target_workers" = "routing.skills HAS 'TYA' AND routing.skills HAS 'Voicemail'",
+        "friendly_name"  = "English FCG"
+      },
+      en_fcg_voicemail : {
+        "target_workers" = "routing.skills HAS 'FCG' AND routing.skills HAS 'Voicemail'",
+        "friendly_name"  = "English FCG"
+      },
+      es_tya_voicemail : {
+        "target_workers" = "routing.skills HAS 'FCG' AND routing.skills HAS 'Voicemail' AND routing.skills HAS 'Spanish'",
+        "friendly_name"  = "English FCG"
+      },
+      es_std_voicemail : {
+        "target_workers" = "routing.skills HAS 'Voicemail' AND routing.skills HAS 'Spanish'",
         "friendly_name"  = "English FCG"
       },
       survey : {
