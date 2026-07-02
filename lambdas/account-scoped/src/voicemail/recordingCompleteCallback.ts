@@ -14,6 +14,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
+import { getTwilioClient, getWorkspaceSid } from '@tech-matters/twilio-configuration';
 import { AccountScopedHandler, HttpError } from '../httpTypes';
 import { newOk, Result } from '../Result';
 
@@ -21,10 +22,11 @@ export type RecordingCompleteCallbackRequestBody = {
   callFrom: string;
 };
 
-export const recordingCompleteCallback: AccountScopedHandler = async ({
-  body,
-}): Promise<Result<HttpError, any>> => {
-  console.debug('checkBlockListHandler body', JSON.stringify(body, null, 2));
+export const recordingCompleteCallback: AccountScopedHandler = async (
+  { body },
+  accountSid,
+): Promise<Result<HttpError, any>> => {
+  console.debug('recordingCompleteCallback body', JSON.stringify(body, null, 2));
   // const { callFrom } = body as RecordingCompleteCallbackRequestBody;
 
   // if (!callFrom) {
@@ -34,5 +36,19 @@ export const recordingCompleteCallback: AccountScopedHandler = async ({
   //   });
   // }
 
-  return newOk({});
+  const twilioClient = await getTwilioClient(accountSid);
+
+  const workspaceSid = await getWorkspaceSid(accountSid);
+  const voicemailTask = await twilioClient.taskrouter.v1
+    .workspaces(workspaceSid)
+    .tasks.create({
+      timeout: 604800, // 7 days
+      attributes: { isVoicemail: true, ...(body.routingAttributes ?? {}) },
+      taskQueueSid: body.voicemailQueueSid,
+      workflowSid: body.voicemailWorkflowSid,
+      // TODO: factor out channel types into an enum
+      taskChannel: 'voice',
+    });
+
+  return newOk({ voicemailTask });
 };
