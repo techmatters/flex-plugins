@@ -44,7 +44,6 @@ export const recordingCompleteCallback: AccountScopedHandler = async (
     .tasks.create({
       timeout: 604800, // 7 days
       attributes: { isVoicemail: true, ...(body.routingAttributes ?? {}) },
-      taskQueueSid: body.voicemailQueueSid,
       workflowSid: body.voicemailWorkflowSid,
       // TODO: factor out channel types into an enum
       taskChannel: 'voicemail',
