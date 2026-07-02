@@ -17,7 +17,7 @@ locals {
     workflows = {
       master : {
         friendly_name = "Master Workflow"
-        templatefile  = "/app/twilio-iac/helplines/usnm/templates/workflows/master.tftpl"
+        templatefile  = "/app/twilio-iac/helplines/templates/workflows/master.tftpl"
       },
       //NOTE: MAKE SURE TO ADD THIS IF THE ACCOUNT USES A CONVERSATION CHANNEL
       queue_transfers : {
@@ -45,15 +45,15 @@ locals {
         "target_workers" = "1=0",
         "friendly_name"  = "Master"
       },
-      eng_std : {
+      en_std : {
         "target_workers" = "(routing.skills HAS 'Calls' OR routing.skills HAS 'SMS')",
         "friendly_name"  = "English Standard"
       },
-      eng_tya : {
+      en_tya : {
         "target_workers" = "(routing.skills HAS 'Calls' OR routing.skills HAS 'SMS') AND routing.skills HAS 'TYA'",
         "friendly_name"  = "English TYA"
       },
-      eng_fcg : {
+      en_fcg : {
         "target_workers" = "(routing.skills HAS 'Calls' OR routing.skills HAS 'SMS') AND routing.skills HAS 'FCG'",
         "friendly_name"  = "English FCG"
       },
