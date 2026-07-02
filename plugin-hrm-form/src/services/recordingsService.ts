@@ -16,7 +16,6 @@
 
 import fetchProtectedApi from './fetchProtectedApi';
 import { getAseloFeatureFlags, getHrmConfig } from '../hrmConfig';
-import { isVoiceChannel } from '../states/DomainConstants';
 import { CustomITask, InMyBehalfITask, isOfflineContactTask, isTwilioTask } from '../types/types';
 
 export type ExternalRecordingInfoSuccess = {
@@ -45,9 +44,7 @@ export type ExternalRecordingInfo = ExternalRecordingInfoSuccess | ExternalRecor
 /* eslint-disable sonarjs/prefer-single-boolean-return */
 export const shouldGetExternalRecordingInfo = (task: CustomITask): task is InMyBehalfITask => {
   if (isOfflineContactTask(task)) return false;
-
-  const { channelType } = task;
-  if (!isVoiceChannel(channelType)) return false;
+  if (task.taskChannelUniqueName !== 'voice') return false;
 
   const { externalRecordingsEnabled } = getHrmConfig();
   return Boolean(externalRecordingsEnabled);
