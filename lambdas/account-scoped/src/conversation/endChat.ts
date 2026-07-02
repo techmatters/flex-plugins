@@ -30,6 +30,7 @@ import {
 } from '@tech-matters/twilio-configuration';
 import { lookupCustomMessage } from '../hrm/formDefinitionsCache';
 import { chatChannelJanitor } from './chatChannelJanitor';
+import {transitionAgentParticipants} from "./interactionChannelParticipants";
 
 export type EndChatRequestBody = {
   channelSid?: ChatChannelSID;
@@ -136,7 +137,8 @@ const updateTaskAssignmentStatus = async (
         console.debug(
           `[endChat - ${accountSid} / ${conversationSid ?? channelSid}] wrapping up ${task.assignmentStatus} task ${taskSid} and returning a 'keep-alive' state`,
         );
-        await updateAssignmentStatus('wrapping');
+        const parsedAttributes = JSON.parse(task.attributes);
+        await transitionAgentParticipants(client, parsedAttributes, 'closed');
         return 'keep-alive'; // keep the channel alive for post survey
       }
       // If the task is wrapping / complete, we assume the user is trying to end the post survey
@@ -239,22 +241,6 @@ export const handleEndChat: AccountScopedHandler = async (
         `[endChat - ${accountSid} / ${conversationSid}] Conversation cleanup required:`,
         channelCleanupRequired,
       );
-      const participantsList = await conversationContext.participants.list();
-      await Promise.all(
-        participantsList.map(async (p): Promise<boolean> => {
-          const { attributes, identity, sid } = p;
-          const participantAttributes = JSON.parse(attributes);
-          console.debug(
-            `[SENSITIVE] Checking participant ${sid} (${identity}) attributes :`,
-            participantAttributes,
-          );
-          if (participantAttributes.member_type !== 'guest') {
-            console.debug(`Removing participant ${sid} (${identity})`);
-            return p.remove();
-          }
-          return false;
-        }),
-      );
     } else {
       const channelContext = client.chat.v2.services
         .get(await getChatServiceSid(accountSid))
@@ -267,17 +253,6 @@ export const handleEndChat: AccountScopedHandler = async (
         accountSid,
         channelAttributes,
         body,
-      );
-
-      const channelMembers = await channelContext.members.list();
-      await Promise.all(
-        channelMembers.map(async m => {
-          if (JSON.parse(m.attributes).member_type !== 'guest') {
-            return m.remove();
-          }
-
-          return false;
-        }),
       );
     }
 
