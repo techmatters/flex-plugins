@@ -429,7 +429,7 @@ ${
         },
         "loop": 1,
         "finish_on_key": "#",
-        "language": "en-US",
+        "play": "${flow_vars.usnm_recordings_url}/gather_input_voice_language.mp3",
         "stop_gather": true,
         "gather_language": "en",
         "speech_model": "default",
@@ -1624,11 +1624,11 @@ ${
       "type": "split-based-on",
       "transitions": [
         {
-          "next": "play_message_es_closed",
+          "next": "play_message_voice_es_closed",
           "event": "noMatch"
         },
         {
-          "next": "play_message_es_closed_holiday",
+          "next": "play_message_voice_es_closed_holiday",
           "event": "match",
           "conditions": [
             {
@@ -1651,7 +1651,7 @@ ${
       }
     },
     {
-      "name": "play_message_es_closed_holiday",
+      "name": "play_message_voice_es_closed_holiday",
       "type": "say-play",
       "transitions": [
         {
@@ -1660,7 +1660,7 @@ ${
         }
       ],
       "properties": {
-        "play": "${flow_vars.usnm_recordings_url}/play_message_es_closed_holiday.mp3",
+        "play": "${flow_vars.usnm_recordings_url}/play_message_voice_es_closed_holiday.mp3",
         "offset": {
           "x": 3364,
           "y": 2428
@@ -1669,7 +1669,7 @@ ${
       }
     },
     {
-      "name": "play_message_es_closed",
+      "name": "play_message_voice_es_closed",
       "type": "say-play",
       "transitions": [
         {
@@ -1678,7 +1678,7 @@ ${
         }
       ],
       "properties": {
-        "play": "${flow_vars.usnm_recordings_url}/play_message_es_closed.mp3",
+        "play": "${flow_vars.usnm_recordings_url}/play_message_voice_es_closed.mp3",
         "offset": {
           "x": 2978,
           "y": 2430
@@ -1867,11 +1867,11 @@ ${
       "type": "split-based-on",
       "transitions": [
         {
-          "next": "play_message_en_closed",
+          "next": "play_message_voice_en_closed",
           "event": "noMatch"
         },
         {
-          "next": "play_message_en_closed_holiday",
+          "next": "play_message_voice_en_closed_holiday",
           "event": "match",
           "conditions": [
             {
@@ -1894,7 +1894,7 @@ ${
       }
     },
     {
-      "name": "play_message_en_closed_holiday",
+      "name": "play_message_voice_en_closed_holiday",
       "type": "say-play",
       "transitions": [
         {
@@ -1903,7 +1903,7 @@ ${
         }
       ],
       "properties": {
-        "play": "${flow_vars.usnm_recordings_url}/play_message_en_closed_holiday.mp3",
+        "play": "${flow_vars.usnm_recordings_url}/play_message_voice_en_closed_holiday.mp3",
         "offset": {
           "x": 4312,
           "y": 2447
@@ -1912,7 +1912,7 @@ ${
       }
     },
     {
-      "name": "play_message_en_closed",
+      "name": "play_message_voice_en_closed",
       "type": "say-play",
       "transitions": [
         {
@@ -1921,7 +1921,7 @@ ${
         }
       ],
       "properties": {
-        "play": "${flow_vars.usnm_recordings_url}/play_message_en_closed.mp3",
+        "play": "${flow_vars.usnm_recordings_url}/play_message_voice_en_closed.mp3",
         "offset": {
           "x": 3926,
           "y": 2448
