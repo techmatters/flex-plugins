@@ -31,8 +31,36 @@ locals {
     }
     task_queues = {
       master : {
-        "target_workers" = "1==1",
-        "friendly_name"  = "NAMI"
+        "target_workers" = "1=0",
+        "friendly_name"  = "Master"
+      },
+      eng_std : {
+        "target_workers" = "routing.skills HAS 'Calls",
+        "friendly_name"  = "English Standard"
+      },
+      eng_tya : {
+        "target_workers" = "routing.skills HAS 'Calls' AND routing.skills HAS 'TYA'",
+        "friendly_name"  = "English TYA"
+      },
+      eng_fcg : {
+        "target_workers" = "routing.skills HAS 'Calls' AND routing.skills HAS 'FCG'",
+        "friendly_name"  = "English FCG"
+      },
+      es_std : {
+        "target_workers" = "routing.skills HAS 'Calls' AND routing.skills HAS 'Spanish'",
+        "friendly_name"  = "English FCG"
+      },
+      es_tya : {
+        "target_workers" = "routing.skills HAS 'Calls' AND routing.skills HAS 'TYA' AND routing.skills HAS 'Spanish'",
+        "friendly_name"  = "English FCG"
+      },
+      en_std_voicemail : {
+        "target_workers" = "routing.skills HAS 'Calls' AND routing.skills HAS 'Voicemail'",
+        "friendly_name"  = "English STD FCG"
+      },
+      en_tya_voicemail : {s
+        "target_workers" = "routing.skills HAS 'Calls' AND routing.skills HAS 'TYA' AND routing.skills HAS 'Spanish'",
+        "friendly_name"  = "English FCG"
       },
       survey : {
         "target_workers" = "1==0",
