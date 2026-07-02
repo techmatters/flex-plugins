@@ -47,7 +47,7 @@ export const recordingCompleteCallback: AccountScopedHandler = async (
       taskQueueSid: body.voicemailQueueSid,
       workflowSid: body.voicemailWorkflowSid,
       // TODO: factor out channel types into an enum
-      taskChannel: 'voice',
+      taskChannel: 'voicemail',
     });
 
   return newOk({ voicemailTask });
