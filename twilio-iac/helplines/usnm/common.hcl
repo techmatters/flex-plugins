@@ -29,6 +29,17 @@ locals {
         templatefile  = "/app/twilio-iac/helplines/templates/workflows/lex.tftpl"
       }
     }
+    task_channels = {
+      default : "Default"
+      chat : "Programmable Chat"
+      voice : "Voice"
+      sms : "SMS"
+      video : "Video"
+      email : "Email"
+      survey : "Survey",
+      voicemail : "Voicemail"
+    }
+
     task_queues = {
       master : {
         "target_workers" = "1=0",
