@@ -56,7 +56,7 @@ locals {
       },
       en_std_voicemail : {
         "target_workers" = "routing.skills HAS 'Calls' AND routing.skills HAS 'Voicemail'",
-        "friendly_name"  = "English STD FCG"
+        "friendly_name"  = "English STD Voicemail"
       },
       en_tya_voicemail : {s
         "target_workers" = "routing.skills HAS 'Calls' AND routing.skills HAS 'TYA' AND routing.skills HAS 'Spanish'",
