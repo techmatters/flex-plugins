@@ -15,8 +15,7 @@
  */
 
 import { Twilio } from 'twilio';
-import { InteractionChannelParticipantStatus } from 'twilio/lib/rest/flexApi/v1/interaction/interactionChannel/interactionChannelParticipant';
-
+import type { InteractionChannelParticipantStatus } from 'twilio/lib/rest/flexApi/v1/interaction/interactionChannel/interactionChannelParticipant';
 export const transitionAgentParticipants = async (
   client: Twilio,
   taskAttributes: { flexInteractionSid?: string; flexInteractionChannelSid?: string },
