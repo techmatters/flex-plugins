@@ -30,7 +30,7 @@ import {
 } from '@tech-matters/twilio-configuration';
 import { lookupCustomMessage } from '../hrm/formDefinitionsCache';
 import { chatChannelJanitor } from './chatChannelJanitor';
-import {transitionAgentParticipants} from "./interactionChannelParticipants";
+import { transitionAgentParticipants } from './interactionChannelParticipants';
 
 export type EndChatRequestBody = {
   channelSid?: ChatChannelSID;
