@@ -25,7 +25,7 @@
           },
           {
             "queue": "${task_queues.en_fcg}",
-            "expression": "(   worker.waitingOfflineContact != true   AND   (     (       task.channelType == 'voice'       AND       worker.channel.chat.assigned_tasks == 0     )     OR     (       task.channelType == 'chat'       AND       worker.channel.voice.assigned_tasks == 0     )   )   AND    (      'Calls' IN worker.routing.skills      AND      'FCG' IN worker.routing.skills   )    AND    (      worker.roles HAS 'agent'      AND     worker.roles HAS 'supervisor'   )    AND   (     (       task.transferTargetType == 'worker'       AND       task.targetSid == worker.sid     )     OR     (       task.transferTargetType != 'worker'       AND       worker.sid != task.ignoreAgent     )   ) )",
+            "expression": "(   worker.waitingOfflineContact != true   AND   (     (       task.channelType == 'voice'       AND       worker.channel.chat.assigned_tasks == 0     )     OR     (       task.channelType == 'chat'       AND       worker.channel.voice.assigned_tasks == 0     )   )   AND    (      'Calls' IN worker.routing.skills      AND      'FCG' IN worker.routing.skills   )    AND    (      worker.roles HAS 'agent'      OR     worker.roles HAS 'supervisor'   )    AND   (     (       task.transferTargetType == 'worker'       AND       task.targetSid == worker.sid     )     OR     (       task.transferTargetType != 'worker'       AND       worker.sid != task.ignoreAgent     )   ) )",
             "priority": 0
           }
         ]
@@ -42,7 +42,7 @@
           },
           {
             "queue": "${task_queues.en_tya}",
-            "expression": "(   worker.waitingOfflineContact != true   AND   (     (       task.channelType == 'voice'       AND       worker.channel.chat.assigned_tasks == 0     )     OR     (       task.channelType == 'chat'       AND       worker.channel.voice.assigned_tasks == 0     )   )   AND    (      'Calls' IN worker.routing.skills      AND      'TYA' IN worker.routing.skills   )    AND    (      worker.roles HAS 'agent'      AND     worker.roles HAS 'supervisor'   )    AND   (     (       task.transferTargetType == 'worker'       AND       task.targetSid == worker.sid     )     OR     (       task.transferTargetType != 'worker'       AND       worker.sid != task.ignoreAgent     )   ) )",
+            "expression": "(   worker.waitingOfflineContact != true   AND   (     (       task.channelType == 'voice'       AND       worker.channel.chat.assigned_tasks == 0     )     OR     (       task.channelType == 'chat'       AND       worker.channel.voice.assigned_tasks == 0     )   )   AND    (      'Calls' IN worker.routing.skills      AND      'TYA' IN worker.routing.skills   )    AND    (      worker.roles HAS 'agent'      OR     worker.roles HAS 'supervisor'   )    AND   (     (       task.transferTargetType == 'worker'       AND       task.targetSid == worker.sid     )     OR     (       task.transferTargetType != 'worker'       AND       worker.sid != task.ignoreAgent     )   ) )",
             "priority": 0
           }
         ]
@@ -59,7 +59,7 @@
           },
           {
             "queue": "${task_queues.en_std}",
-            "expression": "(   worker.waitingOfflineContact != true   AND   (     (       task.channelType == 'voice'       AND       worker.channel.chat.assigned_tasks == 0     )     OR     (       task.channelType == 'chat'       AND       worker.channel.voice.assigned_tasks == 0     )   )   AND    (      'Calls' IN worker.routing.skills    )    AND    (      worker.roles HAS 'agent'      AND     worker.roles HAS 'supervisor'   )    AND   (     (       task.transferTargetType == 'worker'       AND       task.targetSid == worker.sid     )     OR     (       task.transferTargetType != 'worker'       AND       worker.sid != task.ignoreAgent     )   ) )",
+            "expression": "(   worker.waitingOfflineContact != true   AND   (     (       task.channelType == 'voice'       AND       worker.channel.chat.assigned_tasks == 0     )     OR     (       task.channelType == 'chat'       AND       worker.channel.voice.assigned_tasks == 0     )   )   AND    (      'Calls' IN worker.routing.skills    )    AND    (      worker.roles HAS 'agent'      OR     worker.roles HAS 'supervisor'   )    AND   (     (       task.transferTargetType == 'worker'       AND       task.targetSid == worker.sid     )     OR     (       task.transferTargetType != 'worker'       AND       worker.sid != task.ignoreAgent     )   ) )",
             "priority": 0
           }
         ]
