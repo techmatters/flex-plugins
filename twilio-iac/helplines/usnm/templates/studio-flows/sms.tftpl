@@ -181,7 +181,7 @@ ${
         "url": "${lambda_twilio_account_scoped_url}/getProfileFlagsForIdentifier"
       }
     },
-    {
+       {
       "name": "split_contact_routing",
       "type": "split-based-on",
       "transitions": [
@@ -190,7 +190,7 @@ ${
           "event": "noMatch"
         },
         {
-          "next": "send_message_sms_blocked_severity_level_1_acceptable_use_policy",
+          "next": "play_message_voice_blocked_level_1_acceptable_use_policy",
           "event": "match",
           "conditions": [
             {
@@ -198,13 +198,13 @@ ${
               "arguments": [
                 "{{widgets.f_getProfileFlagsForIdentifier.parsed.flags}}"
               ],
-              "type": "equal_to",
-              "value": "Acceptable Use Policy or LIO Behavior"
+              "type": "regex",
+              "value": "^(?=.*blocked)(?=.*Acceptable Use Policy or LIO Behavior).*"
             }
           ]
         },
         {
-          "next": "send_message_sms_blocked__level_2_access_policy",
+          "next": "play_message_voice_blocked_level_2_access_policy",
           "event": "match",
           "conditions": [
             {
@@ -212,36 +212,8 @@ ${
               "arguments": [
                 "{{widgets.f_getProfileFlagsForIdentifier.parsed.flags}}"
               ],
-              "type": "equal_to",
-              "value": "Access Policy"
-            }
-          ]
-        },
-        {
-          "next": "send_message_sms_blocked__level_2_access_policy",
-          "event": "match",
-          "conditions": [
-            {
-              "friendly_name": "If value equal_to 24-hr block acc pol",
-              "arguments": [
-                "{{widgets.f_getProfileFlagsForIdentifier.parsed.flags}}"
-              ],
-              "type": "equal_to",
-              "value": "Access Policy (24-hour Block)"
-            }
-          ]
-        },
-        {
-          "next": "send_message_sms_blocked_severity_level_1_acceptable_use_policy",
-          "event": "match",
-          "conditions": [
-            {
-              "friendly_name": "If value equal_to 24-hr block accept use pol",
-              "arguments": [
-                "{{widgets.f_getProfileFlagsForIdentifier.parsed.flags}}"
-              ],
-              "type": "equal_to",
-              "value": "Acceptable Use Policy (24-hour Block)"
+              "type": "regex",
+              "value": "^(?=.*blocked)(?=.*Access Policy).*"
             }
           ]
         }
