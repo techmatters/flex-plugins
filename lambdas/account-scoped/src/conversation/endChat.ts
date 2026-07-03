@@ -147,7 +147,7 @@ const updateTaskAssignmentStatus = async (
           .channels.get(flexInteractionChannelSid)
           .update({
             routing: {
-              status: 'wrapping',
+              status: 'wrapup',
             },
             status: 'closed',
           });
