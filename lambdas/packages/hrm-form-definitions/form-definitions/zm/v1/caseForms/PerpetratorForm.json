@@ -1020,40 +1020,44 @@
         "label": ""
       },
       {
-        "value": "partyPrimary",
-        "label": "Party Primary"
+        "label": "Voter/Individual",
+        "value": "Voter/Individual"
       },
       {
-        "value": "nominations",
-        "label": "Nominations"
+        "label": "Candidate/Aspiring candidate",
+        "value": "Candidate/Aspiring candidate"
       },
       {
-        "value": "campaignEvent",
-        "label": "Campaign event/Rally"
+        "label": "Party activist/Member",
+        "value": "Party activist/Member"
       },
       {
-        "value": "meeting",
-        "label": "Meeting (specify with who)"
+        "label": "Party agent/Pollwatcher",
+        "value": "Party agent/Pollwatcher"
       },
       {
-        "value": "online",
-        "label": "Online"
+        "label": "Nonpartisan election observer",
+        "value": "Nonpartisan election observer"
       },
       {
-        "value": "voting",
-        "label": "Voting"
+        "label": "CSO Rep",
+        "value": "CSO Rep"
       },
       {
-        "value": "votingCounting",
-        "label": "Voting Counting"
+        "label": "Security Agent",
+        "value": "Security Agent"
       },
       {
-        "value": "Unknown",
-        "label": "Unknown"
+        "label": "Media",
+        "value": "Media"
       },
       {
-        "value": "Other",
-        "label": "Other"
+        "label": "Family/Community",
+        "value": "Family/Community"
+      },
+      {
+        "label": "Election worker/official",
+        "value": "Election worker/official"
       }
     ],
     "isPII": false
