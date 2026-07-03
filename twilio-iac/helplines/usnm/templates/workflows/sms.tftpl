@@ -15,7 +15,7 @@
       },
       {
         "filter_friendly_name": "EN FCG SMS",
-        "expression": "channelType =='chat' AND service=='fcg' AND serviceLanguage == 'english'",
+        "expression": "channelType =='sms' AND service=='fcg' AND serviceLanguage == 'english'",
         "targets": [
           {
             "queue": "${task_queues.en_fcg}",
@@ -32,7 +32,7 @@
       },
       {
         "filter_friendly_name": "EN TYA SMS",
-        "expression": "channelType =='chat' AND service=='tya' AND serviceLanguage == 'english'",
+        "expression": "channelType =='sms' AND service=='tya' AND serviceLanguage == 'english'",
         "targets": [
           {
             "queue": "${task_queues.en_tya}",
@@ -49,7 +49,7 @@
       },
       {
         "filter_friendly_name": "EN STD SMS",
-        "expression": "channelType =='chat' AND service=='std' AND serviceLanguage == 'english'",
+        "expression": "channelType =='sms' AND service=='std' AND serviceLanguage == 'english'",
         "targets": [
           {
             "queue": "${task_queues.en_std}",
