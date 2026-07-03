@@ -16,9 +16,14 @@ locals {
     permission_config          = "demo"
     workflows = {
       master : {
-        friendly_name            = "Master Workflow"
-        templatefile             = "/app/twilio-iac/helplines/usnm/templates/workflows/master-calls-voicemails.tftpl"
+        friendly_name            = "Calls Voicemail Workflow"
+        templatefile             = "/app/twilio-iac/helplines/usnm/templates/workflows/calls-voicemails.tftpl"
         task_reservation_timeout = 30
+      },
+       sms : {
+        friendly_name            = "SMS Workflow"
+        templatefile             = "/app/twilio-iac/helplines/usnm/templates/workflows/sms.tftpl"
+        task_reservation_timeout = 60
       },
       //NOTE: MAKE SURE TO ADD THIS IF THE ACCOUNT USES A CONVERSATION CHANNEL
       queue_transfers : {
