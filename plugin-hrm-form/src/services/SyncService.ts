@@ -119,8 +119,8 @@ export const savePendingContactToSharedState = async (task, payload, error) => {
     const document = { task: taskToSave, payload, error: errorToSave, retries: 0 };
     await list.push(document);
 
-    console.log('The following pending contact was saved at Shared State:');
-    console.log(document);
+    console.info('The following pending contact was saved at Shared State:');
+    console.info(document);
   } catch (err) {
     console.error('Error while saving pending contact to shared state', err);
   }

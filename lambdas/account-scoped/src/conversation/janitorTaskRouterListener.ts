@@ -36,6 +36,7 @@ import { isChatCaptureControlTask } from '../channelCapture/channelCaptureHandle
 import { isAseloCustomChannel } from '../customChannels/aseloCustomChannels';
 import { getWorkspaceSid } from '@tech-matters/twilio-configuration';
 import { ChatChannelSID, ConversationSID } from '@tech-matters/twilio-types';
+import { getCurrentDefinitionVersion } from '../hrm/formDefinitionsCache';
 
 const isCleanupBotCapture = (
   eventType: EventType,
@@ -117,7 +118,7 @@ const janitorHandler: TaskRouterEventHandler = async (
 
     if (!['chat', 'survey'].includes(taskChannelUniqueName)) return;
 
-    console.info(
+    console.debug(
       `JanitorListener executing for account ${accountSid}, task ${taskSid}, event: ${eventType}`,
     );
 
@@ -140,7 +141,7 @@ const janitorHandler: TaskRouterEventHandler = async (
         conversationSid: conversationSid as ConversationSID,
       });
 
-      console.info(
+      console.debug(
         `JanitorListener: bot capture clean up finished for account ${accountSid}, task ${taskSid}`,
       );
       return;
@@ -155,7 +156,7 @@ const janitorHandler: TaskRouterEventHandler = async (
         taskAttributes,
       )
     ) {
-      console.info(
+      console.debug(
         `JanitorListener: handling custom channel clean up for account ${accountSid}, task ${taskSid}`,
       );
 
@@ -163,7 +164,7 @@ const janitorHandler: TaskRouterEventHandler = async (
         channelSid: taskAttributes.channelSid as ChatChannelSID,
       });
 
-      console.info(
+      console.debug(
         `JanitorListener: custom channel clean up finished for account ${accountSid}, task ${taskSid}`,
       );
       return;
@@ -172,24 +173,31 @@ const janitorHandler: TaskRouterEventHandler = async (
     if (
       !(await isHandledByOtherListener(client, workspaceSid, taskSid, taskAttributes))
     ) {
-      if (!featureFlags.enable_post_survey) {
-        console.info(
-          `JanitorListener: deactivating conversation orchestration for account ${accountSid}, task ${taskSid}`,
-        );
-
-        await chatChannelJanitor(accountSid, {
-          channelSid: channelSid as ChatChannelSID,
-          conversationSid: conversationSid as ConversationSID,
-        });
-
-        console.info(
-          `JanitorListener: conversation orchestration deactivated for account ${accountSid}, task ${taskSid}`,
-        );
-        return;
+      if (featureFlags.enable_post_survey) {
+        const definition = await getCurrentDefinitionVersion({ accountSid });
+        const postSurveyConfigSpecs = definition?.insights?.postSurveySpecs;
+        // prevent janitor from cleanup if post survey is enabled and definition is valid
+        if (postSurveyConfigSpecs?.length) {
+          return;
+        }
       }
+
+      console.debug(
+        `JanitorListener: deactivating conversation orchestration for account ${accountSid}, task ${taskSid}`,
+      );
+
+      await chatChannelJanitor(accountSid, {
+        channelSid: channelSid as ChatChannelSID,
+        conversationSid: conversationSid as ConversationSID,
+      });
+
+      console.debug(
+        `JanitorListener: conversation orchestration deactivated for account ${accountSid}, task ${taskSid}`,
+      );
+      return;
     }
 
-    console.info(
+    console.debug(
       `JanitorListener finished successfully for account ${accountSid}, task ${taskSid}, event: ${eventType}`,
     );
   } catch (err) {

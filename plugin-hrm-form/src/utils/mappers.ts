@@ -13,21 +13,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
-
-import { callTypes } from 'hrm-types';
-
 import { channelTypes } from '../states/DomainConstants';
-
-export const mapCallType = (str: string) => {
-  switch (str) {
-    case callTypes.child:
-      return 'SELF';
-    case callTypes.caller:
-      return 'CALLER';
-    default:
-      return str.toUpperCase();
-  }
-};
 
 const isOtherContactChannel = (channel: string) => !(Object.values(channelTypes) as string[]).includes(channel); // Needed typecast here. For details see https://github.com/microsoft/TypeScript/issues/26255
 
@@ -71,24 +57,4 @@ export const mapChannelForInsights = (channel: string) => {
     default:
       return mapChannel(channel);
   }
-};
-
-export const mapAge = (ageOptions: string[]) => (age: string) => {
-  const ageInt = parseInt(age, 10);
-
-  const maxAge = ageOptions.find(e => e.includes('>'));
-
-  if (maxAge) {
-    const maxAgeInt = parseInt(maxAge.replace('>', ''), 10);
-
-    if (ageInt >= 0 && ageInt <= maxAgeInt) {
-      return ageOptions.find(o => parseInt(o, 10) === ageInt);
-    }
-
-    if (ageInt > maxAgeInt) return maxAge;
-  } else {
-    console.error('Pre populate form error: no maxAge option provided.');
-  }
-
-  return 'Unknown';
 };

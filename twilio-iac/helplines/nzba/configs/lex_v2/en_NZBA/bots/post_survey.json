@@ -22,20 +22,26 @@
           }
         ],
         "closing_response": {
-          "message": "Thank you for reaching out. Please contact us again if you need more help."
+          "message": "Really appreciate you taking a moment to share your thoughts😊  We hope to chat with you again soon."
         },
         "slot_priorities": {
           "1": {
             "slot_name": "was_helpful",
-            "slot_type_name": "yes_no",
-            "slot_question": "Did you find this conversation helpful? Please answer Yes or No.",
-            "failure_response": "Thank you for reaching out. Please contact us again if you need more help."
+            "slot_type_name": "helpful_rating",
+            "slot_question": "What did you find helpful in this chat? \n1. I feel lighter/calmer,\n2. I felt heard and understood,\n3. I understand my situation better,\n4. I have some information/options,\n5. I have a plan/next steps,\n6. Nothing",
+            "failure_response": "Really appreciate you taking a moment to share your thoughts😊  We hope to chat with you again soon."
           },
           "2":  {
-            "slot_name": "would_recommend",
-            "slot_type_name": "yes_no",
-            "slot_question": "Based on this conversation, would you recommend that someone in a similar situation contact us? Please answer Yes or No.",
-            "failure_response": "Thank you for reaching out. Please contact us again if you need more help."
+            "slot_name": "mood",
+            "slot_type_name": "mood_rating",
+            "slot_question": "How are you feeling right now?” (0 = calm / okay → 10 = extremely upset or distressed)",
+            "failure_response": "Really appreciate you taking a moment to share your thoughts😊  We hope to chat with you again soon."
+          },
+          "3":  {
+            "slot_name": "experience",
+            "slot_type_name": "AMAZON.FreeFormInput",
+            "slot_question": "What, if anything, could have improved your experience with us, today?",
+            "failure_response": "Really appreciate you taking a moment to share your thoughts😊  We hope to chat with you again soon."
           }
                 }
       },
@@ -55,7 +61,7 @@
           }
         ],
         "closing_response": {
-          "message": "Thank you for reaching out. Please contact us again if you need more help."
+          "message": "Really appreciate you taking a moment to share your thoughts😊  We hope to chat with you again soon."
         },
         "slot_priorities": {}
     }

@@ -1,7 +1,7 @@
 {
   "en": {
     "WelcomeMsg": "Kia ora!",
-    "GoodbyeMsg": "TThe counsellor has left the chat now. Thank you for reaching out - we look forward to chatting to again.",
+    "GoodbyeMsg": "The counsellor has left the chat now. Thank you for reaching out - we look forward to chatting to again.",
     "EndChatMsg": "You’ve ended the chat. Thanks for getting in touch today. If you ever need support again, we’re here for you.",
     "ClosedOutOfShift": "The helpline is out of shift, please reach us later.",
     "UnsupportedMediaErrorMsg": "Oops — we couldn’t send that message. Try sending it again using text only."

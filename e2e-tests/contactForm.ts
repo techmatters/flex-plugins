@@ -34,6 +34,8 @@ export function contactForm(page: Page) {
       formArea.locator(`//button[@data-testid='${label}']`),
     formInput: (tabId: string, itemId: string) => formArea.locator(`input#${tabId}\\.${itemId}`),
     formSelect: (tabId: string, itemId: string) => formArea.locator(`select#${tabId}\\.${itemId}`),
+    formMultiSelectCheckbox: (tabId: string, itemId: string, value: string) =>
+      formArea.locator(`input#${tabId}\\.${itemId}-${value}`),
     formTextarea: (tabId: string, itemId: string) =>
       formArea.locator(`textarea#${tabId}\\.${itemId}`),
     topCategorySelector: (category: string) =>
@@ -68,6 +70,8 @@ export function contactForm(page: Page) {
         await selectors.formSelect(id, itemId).selectOption(value);
       } else if (await selectors.formTextarea(id, itemId).count()) {
         await selectors.formTextarea(id, itemId).fill(value);
+      } else if (await selectors.formMultiSelectCheckbox(id, itemId, value).count()) {
+        await selectors.formMultiSelectCheckbox(id, itemId, value).check();
       } else throw new Error(`Control ${id}.${itemId} not found`);
     }
   }

@@ -1,7 +1,7 @@
 {
   "preEngagement":{
     "age": "ChildInformationTab.age",
-    "firstName": "ChildInformationTab.firstName",
+    "friendlyName": "ChildInformationTab.friendlyName",
     "ethnicity1": "ChildInformationTab.ethnicity1",
     "email": "ChildInformationTab.email",
     "howHeardAboutWu": "ChildInformationTab.howHeardAboutWu",

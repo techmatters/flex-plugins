@@ -84,7 +84,7 @@ const customTransferTask = (setupObject: SetupObject): ReplacedActionFunction =>
    * We shortcut the rest of the function to save extra time and unnecessary visual changes.
    */
   if (!TaskHelper.isCallTask(payload.task) && mode === transferModes.warm) {
-    recordEvent('Transfer Warm Chat Blocked', {});
+    recordEvent('Transfer Warm Chat Blocked', { taskSid: payload.task?.taskSid });
     window.alert(Manager.getInstance().strings['Transfer-ChatWarmNotAllowed']);
     return () => undefined; // Not calling original(payload) prevents the additional "Task cannot be transferred" notification
   }
@@ -110,9 +110,9 @@ const customTransferTask = (setupObject: SetupObject): ReplacedActionFunction =>
     const { conferenceSid } = payload.task.conference || {};
     const conferenceSidFromAttributes = payload.task.attributes?.conference?.sid;
     if (!conferenceSid && !conferenceSidFromAttributes) {
-      console.log('>> Could not find any conferenceSid');
+      console.warn('Could not find any conferenceSid', payload.task.taskSid);
     } else if (conferenceSid && !conferenceSidFromAttributes) {
-      console.log('>> Updating task attributes with conferenceSid');
+      console.warn('Updating task attributes with conferenceSid', payload.task.taskSid, conferenceSid);
       // const customer = payload.task.conference?.participants.find(p => p.participantType === 'customer').participantSid;
       await payload.task.setAttributes({
         ...payload.task.attributes,

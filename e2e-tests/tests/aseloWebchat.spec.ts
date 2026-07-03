@@ -30,6 +30,8 @@ import { clickThroughTwilioPasteModals } from '../agent-desktop';
 import { setupContextAndPage, closePage } from '../browser';
 import { clearOfflineTask } from '../hrm/clearOfflineTask';
 import { apiHrmRequest } from '../hrm/hrmRequest';
+import { formContentsByHelpline } from '../formContentsByHelpline';
+import { getConfigValue } from '../config';
 
 test.describe.serial('Aselo web chat caller', () => {
   skipTestIfNotTargeted();
@@ -94,35 +96,30 @@ test.describe.serial('Aselo web chat caller', () => {
     }
 
     console.info('Starting filling form');
+    const helpline = getConfigValue('helplineShortCode') as keyof typeof formContentsByHelpline;
+    const formContent = formContentsByHelpline[helpline];
+    if (!formContent) {
+      throw new Error(`No form contents configured for helplineShortCode="${String(helpline)}"`);
+    }
     const form = contactForm(pluginPage);
     await form.fill([
       <ContactFormTab>{
         id: 'childInformation',
         label: 'TabbedForms-AddChildInfoTab',
         fill: form.fillStandardTab,
-        items: {
-          firstName: 'E2E',
-          lastName: 'TEST',
-          phone1: '1234512345',
-          province: 'Northern',
-          district: 'District A',
-        },
+        items: formContent.childInformation,
       },
       <ContactFormTab<Categories>>{
         id: 'categories',
         label: 'TabbedForms-CategoriesTab',
         fill: form.fillCategoriesTab,
-        items: {
-          Accessibility: ['Education'],
-        },
+        items: formContent.categories,
       },
       <ContactFormTab>{
         id: 'caseInformation',
         label: 'TabbedForms-AddCaseInfoTab',
         fill: form.fillStandardTab,
-        items: {
-          callSummary: 'E2E TEST CALL',
-        },
+        items: formContent.caseInformation,
       },
     ]);
 

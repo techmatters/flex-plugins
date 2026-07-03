@@ -63,7 +63,7 @@ const CaseSection: React.FC<Props> = ({ taskSid, canAdd, sectionType }) => {
   useEffect(() => {
     if (caseId) {
       // eslint-disable-next-line no-console
-      console.log(`Fetching ${sectionType} sections for case ${caseId}`);
+      console.info(`Fetching ${sectionType} sections for case ${caseId}`);
       asyncDispatcher(
         newGetTimelineAsyncAction(
           caseId,

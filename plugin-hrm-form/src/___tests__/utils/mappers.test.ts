@@ -14,18 +14,8 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { mapAge, mapCallType, mapChannel } from '../../utils/mappers';
+import { mapChannel } from '../../utils/mappers';
 import { channelTypes } from '../../states/DomainConstants';
-
-test('Test contact call type mapper', () => {
-  const mapSelf = 'Child calling about self';
-  const mapCaller = 'Someone calling about a child';
-  const string = 'anything else';
-
-  expect(mapCallType(mapSelf)).toEqual('SELF');
-  expect(mapCallType(mapCaller)).toEqual('CALLER');
-  expect(mapCallType(string)).toEqual('ANYTHING ELSE');
-});
 
 test('Test contact channel mapper', () => {
   const ch1 = channelTypes.facebook;
@@ -68,15 +58,4 @@ test('Test contact channel mapper', () => {
   expect(fmtCh6).toEqual(expectCh6);
   expect(fmtCh7).toEqual(expectCh7);
   expect(fmtUndef).toEqual(expectUndef);
-});
-
-test('mapAge handles values correctly', () => {
-  const ageOptions = [...Array(26).keys(), '>25'].map(n => n.toString());
-
-  expect(mapAge(ageOptions)('Unknown')).toEqual('Unknown');
-  expect(mapAge(ageOptions)(undefined)).toEqual('Unknown');
-  expect(mapAge(ageOptions)('-1')).toEqual('Unknown');
-  expect(mapAge(ageOptions)('not number')).toEqual('Unknown');
-  [...Array(26).keys()].forEach(n => expect(mapAge(ageOptions)(`${n}`)).toEqual(`${n}`));
-  expect(mapAge(ageOptions)('29')).toEqual('>25');
 });

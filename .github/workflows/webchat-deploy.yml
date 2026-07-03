@@ -89,7 +89,7 @@ jobs:
         run: echo "SHORT_ENVIRONMENT_CODE=dev" >> $GITHUB_ENV
 
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
 
       # Setup credentials to access AWS for parameters
       - name: Configure AWS credentials

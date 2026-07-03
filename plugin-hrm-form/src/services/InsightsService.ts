@@ -242,7 +242,7 @@ const convertCaseFormForInsights = (caseForm: Case, sections: CaseStateEntry['se
       id: caseForm.id.toString(),
     };
 
-    console.warn(`[InsightsService] converting case form:`, logObject);
+    console.info(`[InsightsService] converting case form:`, logObject);
 
     return {
       ...Object.fromEntries(flattenedSectionEntries),
@@ -250,7 +250,8 @@ const convertCaseFormForInsights = (caseForm: Case, sections: CaseStateEntry['se
     };
   } catch (error) {
     logObject.message = error;
-    console.error(`[InsightsService] Error converting case form:`, logObject);
+    console.error(`[InsightsService] Error converting case form:`, logObject?.caseId);
+    console.debug(logObject);
     throw error;
   }
 };
@@ -301,12 +302,13 @@ const processHelplineConfig = (
       });
     });
 
-    console.warn(`[InsightsService] converting case form:`, logObject);
+    console.info(`[InsightsService] converting case form:`, logObject);
 
     return insightsAtts;
   } catch (error) {
     logObject.message = error;
-    console.error(`[InsightsService] Error converting case form:`, logObject);
+    console.error(`[InsightsService] Error converting case form:`, logObject?.caseId);
+    console.debug(logObject);
     throw error;
   }
 };
@@ -398,7 +400,8 @@ const generateUrlProviderBlock = (externalRecordingInfo: ExternalRecordingInfoSu
     ];
   } catch (error) {
     logObject.message = `Error generating mediaUrl, ${error}`;
-    console.error(`[InsightsService] Error converting contact:`, logObject);
+    console.error(`[InsightsService] Error converting contact:`, contact.taskId, contact.id);
+    console.debug(logObject);
     throw new Error('Error generating mediaUrl');
   }
 };
@@ -445,12 +448,13 @@ export const buildInsightsData = (
       };
     }
 
-    console.warn(`[InsightsService] converting savedContact:`, logObject);
+    console.info(`[InsightsService] converting savedContact:`, logObject);
 
     return finalAttributes;
   } catch (error) {
     logObject.message = error;
-    console.error(`[InsightsService] Error converting savedContact:`, logObject);
+    console.error(`[InsightsService] Error converting contact:`, contact.taskId, contact.id);
+    console.debug(logObject);
     throw error;
   }
 };

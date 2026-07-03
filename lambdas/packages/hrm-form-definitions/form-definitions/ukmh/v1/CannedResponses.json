@@ -58,5 +58,17 @@
   {
   "label": "PeerChatter DNA",
   "text": "Thank you for attending your PeerChat appointment with us today. Unfortunately, due to unforeseen circumstances, the person you have selected to have a PeerChat with will no longer be able to take your conversation. We sincerely apologise for this inconvenience and would ask that you rebook a further appointment with us. Alternatively you can find further support on our web page: https://www.themix.org.uk/.\n\nAgain, we apologise for this inconvenience but look forward to chatting to you soon.\nBest wishes\nThe PeerChat Team"
+  },
+  {
+  "label": "Silent - Ending Chat",
+  "text": "I think you may have gone, so I'll be ending this chat now. Thank you for connecting with the PeerChat service. Take care. "
+  },
+  {
+  "label": "More sessions?",
+  "text": "Unfortunately, we're currently only able to offer one PeerChat session per person each year. As we're still a growing service, this helps us give as many young people as possible the opportunity to connect with a Peer.\n\nWe'd love to be able to offer more sessions in the future, so if you'd like to see this happen, please feel free to mention it in your feedback."
+  },
+  {
+  "label": "Speak with you again?",
+  "text": "Whilst we can't guarantee that you'll be matched with the same PeerChatter if you use us again, all of our PeerChatters complete the same training and are equipped to provide the same level of support. We're confident that whoever you speak with will offer a safe, supportive, and understanding space to chat."
   }
 ]

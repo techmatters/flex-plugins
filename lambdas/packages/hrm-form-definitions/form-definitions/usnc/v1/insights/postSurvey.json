@@ -1,0 +1,17 @@
+[
+  {
+    "insightsObject": "customers",
+    "attributeName": "customer_attribute_1",
+    "questions": ["feel_supported"]
+  },
+  {
+    "insightsObject": "customers",
+    "attributeName": "customer_attribute_2",
+    "questions": ["beginning_interaction"]
+  },
+  {
+    "insightsObject": "customers",
+    "attributeName": "customer_attribute_3", 
+    "questions": ["end_interaction"]
+  }
+]
