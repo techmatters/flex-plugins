@@ -15,11 +15,12 @@
  */
 
 import { Twilio } from 'twilio';
+import { InteractionChannelParticipantStatus } from 'twilio/lib/rest/flexApi/v1/interaction/interactionChannel/interactionChannelParticipant';
 
 export const transitionAgentParticipants = async (
   client: Twilio,
   taskAttributes: { flexInteractionSid?: string; flexInteractionChannelSid?: string },
-  targetStatus: string,
+  status: InteractionChannelParticipantStatus,
   interactionChannelParticipantSid?: string,
 ) => {
   const { flexInteractionSid, flexInteractionChannelSid } = taskAttributes;
@@ -42,7 +43,5 @@ export const transitionAgentParticipants = async (
       (!interactionChannelParticipantSid || p.sid === interactionChannelParticipantSid),
   );
 
-  await Promise.allSettled(
-    agentParticipants.map(p => p.update({ status: targetStatus as any })),
-  );
+  await Promise.allSettled(agentParticipants.map(p => p.update({ status })));
 };

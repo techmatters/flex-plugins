@@ -31,7 +31,6 @@ import {
 import { lookupCustomMessage } from '../hrm/formDefinitionsCache';
 import { chatChannelJanitor } from './chatChannelJanitor';
 import { transitionAgentParticipants } from './interactionChannelParticipants';
-import type { InteractionChannelContextUpdateOptions } from 'twilio/lib/rest/flexApi/v1/interaction/interactionChannel';
 
 export type EndChatRequestBody = {
   channelSid?: ChatChannelSID;
@@ -135,22 +134,12 @@ const updateTaskAssignmentStatus = async (
         return 'cleanup'; // indicate that there's cleanup needed
       }
       case 'assigned': {
-        const { flexInteractionSid, flexInteractionChannelSid } = JSON.parse(
-          task.attributes,
-        );
         console.debug(
-          `[endChat - ${accountSid} / ${conversationSid ?? channelSid}] wrapping up ${task.assignmentStatus} task ${taskSid} and returning a 'keep-alive' state. Using interaction ${flexInteractionSid}, channel ${flexInteractionChannelSid} to orchestrate transition via the interactions API`,
+          `[endChat - ${accountSid} / ${conversationSid ?? channelSid}] wrapping up ${task.assignmentStatus} task ${taskSid} and returning a 'keep-alive' state`,
         );
+        const parsedAttributes = JSON.parse(task.attributes);
         // This will transition the task to 'wrapping' state but also fix the conversation on the Flex side so the agent can view the portion of the conversation they were involved in, but not any subsequent messages, like the post survey.
-        await client.flexApi.v1.interaction
-          .get(flexInteractionSid)
-          .channels.get(flexInteractionChannelSid)
-          .update({
-            routing: {
-              status: 'wrapup',
-            },
-            status: 'closed',
-          });
+        await transitionAgentParticipants(client, parsedAttributes, 'wrapup');
         return 'keep-alive'; // keep the channel alive for post survey
       }
       // If the task is wrapping / complete, we assume the user is trying to end the post survey
