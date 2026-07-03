@@ -41,15 +41,13 @@ export const isFailureExternalRecordingInfo = (r: any): r is ExternalRecordingIn
 
 export type ExternalRecordingInfo = ExternalRecordingInfoSuccess | ExternalRecordingInfoFailure;
 
-/* eslint-disable sonarjs/prefer-single-boolean-return */
-export const shouldGetExternalRecordingInfo = (task: CustomITask): task is InMyBehalfITask => {
+const shouldGetExternalRecordingInfo = (task: CustomITask): task is InMyBehalfITask => {
   if (isOfflineContactTask(task)) return false;
   if (task.taskChannelUniqueName !== 'voice') return false;
 
   const { externalRecordingsEnabled } = getHrmConfig();
   return Boolean(externalRecordingsEnabled);
 };
-/* eslint-enable sonarjs/prefer-single-boolean-return */
 
 const getExternalRecordingS3Location = async (callSid: string) => {
   const useTwilioLambda = getAseloFeatureFlags().use_twilio_lambda_for_recordings_lookup;
