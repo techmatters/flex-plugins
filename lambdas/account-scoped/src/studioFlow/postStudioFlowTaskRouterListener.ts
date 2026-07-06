@@ -20,10 +20,10 @@ import {
 } from '../taskrouter/taskrouterEventHandler';
 import { AccountSID } from '@tech-matters/twilio-types';
 import TwilioSDK, { Twilio } from 'twilio';
-import { EventType, TASK_WRAPUP } from '../taskrouter/eventTypes';
+import { EventType, TASK_COMPLETED, TASK_WRAPUP } from '../taskrouter/eventTypes';
 import { EventFields } from '../taskrouter';
 import { retrieveServiceConfigurationAttributes } from '../configuration/aseloConfiguration';
-import { isChatCaptureControlTask } from './channelCaptureHandlers';
+import { isChatCaptureControlTask } from '../channelCapture/channelCaptureHandlers';
 import VoiceResponse = TwilioSDK.twiml.VoiceResponse;
 
 // TODO: factor out
@@ -147,4 +147,7 @@ const triggerPostStudioFlowTaskRouterListener: TaskRouterEventHandler = async (
   }
 };
 
-registerTaskRouterEventHandler([TASK_WRAPUP], triggerPostStudioFlowTaskRouterListener);
+registerTaskRouterEventHandler(
+  [TASK_WRAPUP, TASK_COMPLETED],
+  triggerPostStudioFlowTaskRouterListener,
+);

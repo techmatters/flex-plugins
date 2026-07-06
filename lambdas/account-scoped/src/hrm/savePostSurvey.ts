@@ -15,7 +15,6 @@
  */
 
 import { LegacyOneToManyConfigSpec } from '@tech-matters/hrm-form-definitions';
-import { LexMemory } from '../channelCapture/lexClient';
 import type { TaskInstance } from 'twilio/lib/rest/taskrouter/v1/workspace/task';
 import { buildSurveyInsightsData } from '../channelCapture/insightsService';
 import { AccountSID } from '@tech-matters/twilio-types';
@@ -67,7 +66,7 @@ type PostSurveyBody = {
 
 const saveSurveyInInsights = async (
   postSurveyConfigJson: LegacyOneToManyConfigSpec[],
-  memory: LexMemory,
+  memory: PostSurveyData,
   controlTask: TaskInstance,
   controlTaskAttributes: any,
 ) => {
@@ -114,7 +113,7 @@ export const savePostSurvey = async ({
 }: {
   accountSid: AccountSID;
   twilioClient: Twilio;
-  postSurveyAnswers: LexMemory;
+  postSurveyAnswers: PostSurveyData;
   controlTask: TaskInstance;
 }) => {
   const serviceConfig = await twilioClient.flexApi.v1.configuration.get().fetch();
@@ -122,8 +121,14 @@ export const savePostSurvey = async ({
   const { hrm_api_version: hrmApiVersion } = serviceConfig.attributes;
   const definition = await getCurrentDefinitionVersion({ accountSid });
   const postSurveyConfigSpecs = definition?.insights?.postSurveySpecs;
+  try {
+    if (!postSurveyConfigSpecs?.length) {
+      console.error(
+        `Error accessing to the post survey form definitions: No defined or invalid postSurveyConfigJson found for account ${accountSid}.`,
+      );
+      return;
+    }
 
-  if (postSurveyConfigSpecs?.length) {
     const controlTaskAttributes = JSON.parse(controlTask.attributes);
 
     // parallel execution to save survey collected data in insights and hrm
@@ -143,8 +148,10 @@ export const savePostSurvey = async ({
         hrmApiVersion,
       }),
     ]);
-  } else {
-    const errorMessage = `No defined or invalid postSurveyConfigJson found for account ${accountSid}.`;
-    console.info(`Error accessing to the post survey form definitions: ${errorMessage}`);
+  } catch (err) {
+    console.error(
+      `[${accountSid}] Error saving post survey for control task ${controlTask?.sid}:`,
+      err,
+    );
   }
 };
