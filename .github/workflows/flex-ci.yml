@@ -18,7 +18,7 @@ on:
   workflow_call:
 
 jobs:
-  lint:
+  lint-flex:
     runs-on: ubuntu-latest
 
     steps:
@@ -27,7 +27,7 @@ jobs:
       - name: Use Node.js
         uses: actions/setup-node@v6
         with:
-          node-version: '20.x' # some twilio dev deps still complain about node 22 :-(
+          node-version: '22.x'
       - name: Create Temp Files
         run: |
           touch ./public/appConfig.js
@@ -38,13 +38,50 @@ jobs:
       - name: Run plugin-hrm-form code Lint
         run: npm run lint --if-present
         working-directory: ./plugin-hrm-form
+
+  lint-lambdas:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Branch
+        uses: actions/checkout@v7
+      - name: Use Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: '22.x'
       - name: Install Lambdas
         run: npm ci
         working-directory: ./lambdas
       - name: Run Lambdas Lint
         run: npm run lint
         working-directory: ./lambdas
-      - name: Install e2e-test Packages
+  lint-webchat:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Branch
+        uses: actions/checkout@v7
+      - name: Use Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: '22.x'
+      - name: Install webchat Packages
+        run: npm ci
+        working-directory: ./aselo-webchat-react-app
+      - name: Run aselo webchat code Lint
+        run: npm run lint
+        working-directory: ./aselo-webchat-react-app
+
+  lint-e2e:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Branch
+        uses: actions/checkout@v7
+      - name: Use Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: '22.x'
         run: npm ci
         working-directory: ./e2e-tests
       - name: Run e2e-test code Lint
@@ -59,7 +96,7 @@ jobs:
     - name: Use Node.js
       uses: actions/setup-node@v6
       with:
-        node-version: '20.x'
+        node-version: '22.x'
     - name: Install Flex Plugin
       uses: ./.github/actions/install-flex-plugin
     - name: Configure AWS credentials
@@ -107,7 +144,7 @@ jobs:
       - name: Use Node.js
         uses: actions/setup-node@v6
         with:
-          node-version: '20.x'
+          node-version: '22.x'
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v6
@@ -184,7 +221,7 @@ jobs:
       - name: Use Node.js
         uses: actions/setup-node@v6
         with:
-          node-version: '20.x'
+          node-version: '22.x'
       - name: Install Flex Plugin
         uses: ./.github/actions/install-flex-plugin
 
