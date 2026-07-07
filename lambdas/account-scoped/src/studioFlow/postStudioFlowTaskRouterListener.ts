@@ -71,14 +71,14 @@ const triggerPostStudioFlowTaskRouterListener: TaskRouterEventHandler = async (
         await retrieveServiceConfigurationAttributes(client);
       const { postStudioFlows } = serviceConfigAttributes;
       const { conference, contactId, routing } = taskAttributes;
-      const [firstQueueSid] = routing?.workflow?.history ?? [];
-      if (!firstQueueSid) {
+      const [lastQueueSid] = [...(routing?.workflow?.history ?? [])].reverse();
+      if (!lastQueueSid) {
         console.warn(
           `${logPrefix} Could not determine task's first queue from routing info for contact ${contactId}, conference: ${conference}, routing: `,
           routing,
         );
       }
-      const studioFlowIdentifier = postStudioFlows?.[firstQueueSid];
+      const studioFlowIdentifier = postStudioFlows?.[lastQueueSid];
 
       if (studioFlowIdentifier?.flowTrigger === 'inProgressCall') {
         const { studioFlowSid } = studioFlowIdentifier;
