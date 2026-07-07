@@ -112,7 +112,8 @@
     "TeamsView-Counsellor": "specialist",
     "TeamsView-Counsellors": "specialists",
     "BottomBar-AddContactToNewCase": "-Disabled-",
-    "TabbedForms-ExistingCase": "-Disabled-"
+    "TabbedForms-ExistingCase": "-Disabled-",
+    "abusive": "Familiar Help Seeker"
   },
   "es": {
     "HelplineSubstitution": "Substitución de la Línea de Ayuda",

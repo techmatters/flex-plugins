@@ -1,0 +1,208 @@
+{
+  "task_routing": {
+    "filters": [
+      {
+        "filter_friendly_name": "Direct Transfers",
+        "expression": "transferTargetType =='worker' AND isContactlessTask != true",
+        "targets": [
+          {
+            "queue": "${task_queues.en_std}",
+            "known_worker_sid": "task.targetSid",
+            "expression": "worker.waitingOfflineContact != true",
+            "priority": 150
+          }
+        ]
+      },
+      {
+        "filter_friendly_name": "ES TYA Voicemail",
+        "expression": "channelType =='voicemail' AND service=='tya' AND serviceLanguage == 'spanish'",
+        "targets": [
+          {
+            "expression": "(   worker.waitingOfflineContact != true   AND   (     task.channelType == 'voicemail'     AND     worker.channel.voicemail.assigned_tasks == 0   )   AND   (     'Voicemail' IN worker.routing.skills     AND     'TYA' IN worker.routing.skills     AND     'Spanish' IN worker.routing.skills   )   AND   (     worker.roles HAS 'agent'   )   AND   (     (       task.transferTargetType == 'worker'       AND       task.targetSid == worker.sid     )     OR     (       task.transferTargetType != 'worker'       AND       worker.sid != task.ignoreAgent     )   ) )",
+            "queue": "${task_queues.es_tya_voicemail}",
+            "skip_if": "1==1",
+            "priority": 80
+          },
+          {
+            "queue": "${task_queues.es_tya_voicemail}",
+            "expression": "(   worker.waitingOfflineContact != true   AND   (     task.channelType == 'voicemail'     AND     worker.channel.voicemail.assigned_tasks == 0   )   AND   (     'Voicemail' IN worker.routing.skills     AND     'TYA' IN worker.routing.skills     AND     'Spanish' IN worker.routing.skills   )   AND   (     worker.roles HAS 'agent'     OR     worker.roles HAS 'supervisor'   )   AND   (     (       task.transferTargetType == 'worker'       AND       task.targetSid == worker.sid     )     OR     (       task.transferTargetType != 'worker'       AND       worker.sid != task.ignoreAgent     )   ) )",
+            "priority": 80
+          }
+        ]
+      },
+      {
+        "filter_friendly_name": "ES STD Voicemail",
+        "expression": "channelType =='voicemail' AND service=='std' AND serviceLanguage == 'spanish'",
+        "targets": [
+          {
+            "queue": "${task_queues.es_std_voicemail}",
+            "expression": "( worker.waitingOfflineContact != true AND ( task.channelType == 'voicemail' AND worker.channel.voicemail.assigned_tasks == 0 ) AND ( 'Voicemail' IN worker.routing.skills AND 'Spanish' IN worker.routing.skills ) AND ( worker.roles HAS 'agent' ) AND ( ( task.transferTargetType == 'worker' AND task.targetSid == worker.sid ) OR ( task.transferTargetType != 'worker' AND worker.sid != task.ignoreAgent ) ) )",
+            "skip_if": "1==1",
+            "priority": 80
+          },
+          {
+            "queue": "${task_queues.es_std_voicemail}",
+            "expression": "(   worker.waitingOfflineContact != true   AND   (     task.channelType == 'voicemail'     AND     worker.channel.voicemail.assigned_tasks == 0   )   AND   (     'Voicemail' IN worker.routing.skills     AND     'Spanish' IN worker.routing.skills   )   AND   (     worker.roles HAS 'agent'     OR     worker.roles HAS 'supervisor'   )   AND   (     (       task.transferTargetType == 'worker'       AND       task.targetSid == worker.sid     )     OR     (       task.transferTargetType != 'worker'       AND       worker.sid != task.ignoreAgent     )   ) )",
+            "priority": 80
+          }
+        ]
+      },
+      {
+        "filter_friendly_name": "ES TYA Call",
+        "expression": "channelType =='voice' AND service=='tya' AND serviceLanguage == 'spanish'",
+        "targets": [
+          {
+            "queue": "${task_queues.es_tya}",
+            "expression": "(   worker.waitingOfflineContact != true   AND   (     (       task.channelType == 'voice'       AND       worker.channel.chat.assigned_tasks == 0     )     OR     (       task.channelType == 'chat'       AND       worker.channel.voice.assigned_tasks == 0     )   )   AND    (      'Calls' IN worker.routing.skills      AND      'Spanish' IN worker.routing.skills     AND     'TYA' IN worker.routing.skills   )    AND    (      worker.roles HAS 'agent'   )    AND   (     (       task.transferTargetType == 'worker'       AND       task.targetSid == worker.sid     )     OR     (       task.transferTargetType != 'worker'       AND       worker.sid != task.ignoreAgent     )   ) )",
+            "skip_if": "1==1",
+            "priority": 60
+          },
+          {
+            "queue": "${task_queues.es_tya}",
+            "expression": "(   worker.waitingOfflineContact != true   AND   (     (       task.channelType == 'voice'       AND       worker.channel.chat.assigned_tasks == 0     )     OR     (       task.channelType == 'chat'       AND       worker.channel.voice.assigned_tasks == 0     )   )   AND    (      'Calls' IN worker.routing.skills      AND      'Spanish' IN worker.routing.skills     AND     'TYA' IN worker.routing.skills   )    AND    (      worker.roles HAS 'agent'      OR     worker.roles HAS 'supervisor'   )    AND   (     (       task.transferTargetType == 'worker'       AND       task.targetSid == worker.sid     )     OR     (       task.transferTargetType != 'worker'       AND       worker.sid != task.ignoreAgent     )   ) )",
+            "priority": 60
+          }
+        ]
+      },
+      {
+        "filter_friendly_name": "ES STD Call",
+        "expression": "channelType =='voice' AND service=='std' AND serviceLanguage == 'spanish'",
+        "targets": [
+          {
+            "queue": "${task_queues.es_std}",
+            "expression": "(   worker.waitingOfflineContact != true   AND   (     (       task.channelType == 'voice'       AND       worker.channel.chat.assigned_tasks == 0     )     OR     (       task.channelType == 'chat'       AND       worker.channel.voice.assigned_tasks == 0     )   )   AND    (      'Calls' IN worker.routing.skills      AND      'Spanish' IN worker.routing.skills   )    AND    (      worker.roles HAS 'agent'      )    AND   (     (       task.transferTargetType == 'worker'       AND       task.targetSid == worker.sid     )     OR     (       task.transferTargetType != 'worker'       AND       worker.sid != task.ignoreAgent     )   ) )",
+            "skip_if": "1==1",
+            "priority": 60
+          },
+          {
+            "queue": "${task_queues.es_std}",
+            "expression": "(   worker.waitingOfflineContact != true   AND   (     (       task.channelType == 'voice'       AND       worker.channel.chat.assigned_tasks == 0     )     OR     (       task.channelType == 'chat'       AND       worker.channel.voice.assigned_tasks == 0     )   )   AND    (      'Calls' IN worker.routing.skills      AND      'Spanish' IN worker.routing.skills   )    AND    (      worker.roles HAS 'agent'      OR     worker.roles HAS 'supervisor'   )    AND   (     (       task.transferTargetType == 'worker'       AND       task.targetSid == worker.sid     )     OR     (       task.transferTargetType != 'worker'       AND       worker.sid != task.ignoreAgent     )   ) )",
+            "priority": 60
+          }
+        ]
+      },
+      {
+        "filter_friendly_name": "EN TYA Voicemail",
+        "expression": "channelType =='voicemail' AND service=='tya' AND serviceLanguage == 'english'",
+        "targets": [
+          {
+            "queue": "${task_queues.en_tya_voicemail}",
+            "expression": "(   worker.waitingOfflineContact != true   AND   (     task.channelType == 'voicemail'     AND     worker.channel.voicemail.assigned_tasks == 0   )   AND   (     'Voicemail' IN worker.routing.skills     AND     'TYA' IN worker.routing.skills   )   AND   (     worker.roles HAS 'agent'    )   AND   (     (       task.transferTargetType == 'worker'       AND       task.targetSid == worker.sid     )     OR     (       task.transferTargetType != 'worker'       AND       worker.sid != task.ignoreAgent     )   ) )",
+            "skip_if": "1==1",
+            "priority": 70
+          },
+          {
+            "queue": "${task_queues.en_tya_voicemail}",
+            "expression": "(   worker.waitingOfflineContact != true   AND   (     task.channelType == 'voicemail'     AND     worker.channel.voicemail.assigned_tasks == 0   )   AND   (     'Voicemail' IN worker.routing.skills     AND     'TYA' IN worker.routing.skills   )   AND   (     worker.roles HAS 'agent'     OR     worker.roles HAS 'supervisor'   )   AND   (     (       task.transferTargetType == 'worker'       AND       task.targetSid == worker.sid     )     OR     (       task.transferTargetType != 'worker'       AND       worker.sid != task.ignoreAgent     )   ) )",
+            "priority": 70
+          }
+        ]
+      },
+      {
+        "filter_friendly_name": "EN FCG Voicemail",
+        "expression": "channelType =='voicemail' AND service=='fcg' AND serviceLanguage == 'english'",
+        "targets": [
+          {
+            "queue": "${task_queues.en_fcg_voicemail}",
+            "expression": "(   worker.waitingOfflineContact != true   AND   (     task.channelType == 'voicemail'     AND     worker.channel.voicemail.assigned_tasks == 0   )   AND   (     'Voicemail' IN worker.routing.skills     AND     'FCG' IN worker.routing.skills   )   AND   (     worker.roles HAS 'agent'   )   AND   (     (       task.transferTargetType == 'worker'       AND       task.targetSid == worker.sid     )     OR     (       task.transferTargetType != 'worker'       AND       worker.sid != task.ignoreAgent     )   ) )",
+            "skip_if": "1==1",
+            "priority": 70
+          },
+          {
+            "queue": "${task_queues.en_fcg_voicemail}",
+            "expression": "(   worker.waitingOfflineContact != true   AND   (     task.channelType == 'voicemail'     AND     worker.channel.voicemail.assigned_tasks == 0   )   AND   (     'Voicemail' IN worker.routing.skills     AND     'FCG' IN worker.routing.skills   )   AND   (     worker.roles HAS 'agent'     OR     worker.roles HAS 'supervisor'   )   AND   (     (       task.transferTargetType == 'worker'       AND       task.targetSid == worker.sid     )     OR     (       task.transferTargetType != 'worker'       AND       worker.sid != task.ignoreAgent     )   ) )",
+            "priority": 70
+          }
+        ]
+      },
+      {
+        "filter_friendly_name": "EN STD Voicemail",
+        "expression": "channelType =='voicemail' AND service=='std' AND serviceLanguage == 'english'",
+        "targets": [
+          {
+            "queue": "${task_queues.en_std_voicemail}",
+            "expression": "(   worker.waitingOfflineContact != true mail.assigned_tasks   AND   (     task.channelType == 'voicemail'     AND     worker.channel.voice== 0   )   AND   (     'Voicemail' IN worker.routing.skills   )   AND   (     worker.roles HAS 'agent'   )   AND   (     (       task.transferTargetType == 'worker'       AND       task.targetSid == worker.sid     )     OR     (       task.transferTargetType != 'worker'       AND       worker.sid != task.ignoreAgent     )   ) )",
+            "skip_if": "1==1",
+            "priority": 70
+          },
+          {
+            "queue": "${task_queues.en_std_voicemail}",
+            "expression": "(   worker.waitingOfflineContact != true   AND   (     task.channelType == 'voicemail'     AND     worker.channel.voicemail.assigned_tasks == 0   )   AND   (     'Voicemail' IN worker.routing.skills   )   AND   (     worker.roles HAS 'agent'     OR     worker.roles HAS 'supervisor'   )   AND   (     (       task.transferTargetType == 'worker'       AND       task.targetSid == worker.sid     )     OR     (       task.transferTargetType != 'worker'       AND       worker.sid != task.ignoreAgent     )   ) )",
+            "priority": 70
+          }
+        ]
+      },
+      {
+        "filter_friendly_name": "EN FCG Call",
+        "expression": "channelType =='voice' AND service=='fcg' AND serviceLanguage == 'english'",
+        "targets": [
+          {
+            "queue": "${task_queues.en_fcg}",
+            "expression": "(   worker.waitingOfflineContact != true   AND   (     (       task.channelType == 'voice'       AND       worker.channel.chat.assigned_tasks == 0     )     OR     (       task.channelType == 'chat'       AND       worker.channel.voice.assigned_tasks == 0     )   )   AND    (      'Calls' IN worker.routing.skills      AND      'FCG' IN worker.routing.skills   )    AND    (      worker.roles HAS 'agent'  )    AND   (     (       task.transferTargetType == 'worker'       AND       task.targetSid == worker.sid     )     OR     (       task.transferTargetType != 'worker'       AND       worker.sid != task.ignoreAgent     )   ) )",
+            "skip_if": "1==1",
+            "priority": 50
+          },
+          {
+            "queue": "${task_queues.en_fcg}",
+            "expression": "(   worker.waitingOfflineContact != true   AND   (     (       task.channelType == 'voice'       AND       worker.channel.chat.assigned_tasks == 0     )     OR     (       task.channelType == 'chat'       AND       worker.channel.voice.assigned_tasks == 0     )   )   AND    (      'Calls' IN worker.routing.skills      AND      'FCG' IN worker.routing.skills   )    AND    (      worker.roles HAS 'agent'      OR     worker.roles HAS 'supervisor'   )    AND   (     (       task.transferTargetType == 'worker'       AND       task.targetSid == worker.sid     )     OR     (       task.transferTargetType != 'worker'       AND       worker.sid != task.ignoreAgent     )   ) )",
+            "priority": 50
+          }
+        ]
+      },
+      {
+        "filter_friendly_name": "EN TYA Call",
+        "expression": "channelType =='voice' AND service=='tya' AND serviceLanguage == 'english'",
+        "targets": [
+          {
+            "queue": "${task_queues.en_tya}",
+            "expression": "(   worker.waitingOfflineContact != true   AND   (     (       task.channelType == 'voice'       AND       worker.channel.chat.assigned_tasks == 0     )     OR     (       task.channelType == 'chat'       AND       worker.channel.voice.assigned_tasks == 0     )   )   AND    (      'Calls' IN worker.routing.skills      AND      'TYA' IN worker.routing.skills   )    AND    (      worker.roles HAS 'agent'   )    AND   (     (       task.transferTargetType == 'worker'       AND       task.targetSid == worker.sid     )     OR     (       task.transferTargetType != 'worker'       AND       worker.sid != task.ignoreAgent     )   ) )",
+            "skip_if": "1==1",
+            "priority": 40
+          },
+          {
+            "queue": "${task_queues.en_tya}",
+            "expression": "(   worker.waitingOfflineContact != true   AND   (     (       task.channelType == 'voice'       AND       worker.channel.chat.assigned_tasks == 0     )     OR     (       task.channelType == 'chat'       AND       worker.channel.voice.assigned_tasks == 0     )   )   AND    (      'Calls' IN worker.routing.skills      AND      'TYA' IN worker.routing.skills   )    AND    (      worker.roles HAS 'agent'      OR     worker.roles HAS 'supervisor'   )    AND   (     (       task.transferTargetType == 'worker'       AND       task.targetSid == worker.sid     )     OR     (       task.transferTargetType != 'worker'       AND       worker.sid != task.ignoreAgent     )   ) )",
+            "priority": 40
+          }
+        ]
+      },
+      {
+        "filter_friendly_name": "EN STD Call",
+        "expression": "channelType =='voice' AND service=='std' AND serviceLanguage == 'english'",
+        "targets": [
+          {
+            "queue": "${task_queues.en_std}",
+            "expression": "(   worker.waitingOfflineContact != true   AND   (     (       task.channelType == 'voice'       AND       worker.channel.chat.assigned_tasks == 0     )     OR     (       task.channelType == 'chat'       AND       worker.channel.voice.assigned_tasks == 0     )   )   AND    (      'Calls' IN worker.routing.skills    )    AND    (      worker.roles HAS 'agent'    )    AND   (     (       task.transferTargetType == 'worker'       AND       task.targetSid == worker.sid     )     OR     (       task.transferTargetType != 'worker'       AND       worker.sid != task.ignoreAgent     )   ) )",
+            "skip_if": "1==1",
+            "priority": 30
+          },
+          {
+            "queue": "${task_queues.en_std}",
+            "expression": "(   worker.waitingOfflineContact != true   AND   (     (       task.channelType == 'voice'       AND       worker.channel.chat.assigned_tasks == 0     )     OR     (       task.channelType == 'chat'       AND       worker.channel.voice.assigned_tasks == 0     )   )   AND    (      'Calls' IN worker.routing.skills    )    AND    (      worker.roles HAS 'agent'      OR     worker.roles HAS 'supervisor'   )    AND   (     (       task.transferTargetType == 'worker'       AND       task.targetSid == worker.sid     )     OR     (       task.transferTargetType != 'worker'       AND       worker.sid != task.ignoreAgent     )   ) )",
+            "priority": 30
+          }
+        ]
+      },
+      {
+        "filter_friendly_name": "Offline Contacts",
+        "expression": "isContactlessTask == true",
+        "targets": [
+          {
+            "expression": "(task.targetSid == worker.sid AND task.isContactlessTask == true)",
+            "queue": "${task_queues.en_std}"
+          }
+        ]
+      },
+      {
+        "filter_friendly_name": "E2E Test",
+        "expression": "channelType=='web' AND e2eTestMode=='true'",
+        "targets": [
+          {
+            "expression": "(worker.waitingOfflineContact != true AND ((task.channelType == 'voice' AND worker.channel.chat.assigned_tasks == 0) OR (task.channelType != 'voice' AND worker.channel.voice.assigned_tasks == 0)) AND ((task.transferTargetType == 'worker' AND task.targetSid == worker.sid) OR (task.transferTargetType != 'worker' AND worker.sid != task.ignoreAgent))) OR (worker.waitingOfflineContact == true AND task.targetSid == worker.sid AND task.isContactlessTask == true)",
+            "queue": "${task_queues.e2e_test}"
+          }
+        ]
+      }
+    ]
+  }
+}

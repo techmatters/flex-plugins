@@ -1,7 +1,7 @@
 {
   "en": {
-    "WelcomeMsg": "Hi, this is the counsellor. How can I help you?",
-    "GoodbyeMsg": "The counselor has left the chat. Thank you for reaching out. Please contact us again if you need more help.",
+    "WelcomeMsg": "Hello, you are now connected with a NAMI HelpLine Specialist. How can I best support you today?",
+    "GoodbyeMsg": "Your conversation is now closed. Click here to fill out a quick survey about your experience: https://naminational.typeform.com/helpline#source=sms. ",
     "EndChatMsg": "You ended the chat. Thank you for reaching out. Please contact us again if you need more help.",
     "ClosedOutOfShift": "The helpline is out of shift, please reach us later.",
     "ClosedHolidays": "The helpline is closed due to a holiday.",
