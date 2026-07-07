@@ -163,7 +163,7 @@ const triggerPostStudioFlowTaskRouterListener: TaskRouterEventHandler = async (
         console.info(`${logPrefix} Finished handling post studio flow trigger.`);
       } else {
         console.debug(
-          `Invalid post studio flow configured for ${firstQueueSid}: ${studioFlowIdentifier}`,
+          `Invalid post studio flow configured for ${lastQueueSid}: ${studioFlowIdentifier}`,
         );
       }
     }
