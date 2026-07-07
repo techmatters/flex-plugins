@@ -14,10 +14,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { AccountScopedHandler, HttpError } from '../httpTypes';
-import { newOk, Result } from '../Result';
 import { LegacyOneToManyConfigSpec } from '@tech-matters/hrm-form-definitions';
-import { LexMemory } from '../channelCapture/lexClient';
 import type { TaskInstance } from 'twilio/lib/rest/taskrouter/v1/workspace/task';
 import { buildSurveyInsightsData } from '../channelCapture/insightsService';
 import { AccountSID } from '@tech-matters/twilio-types';
@@ -25,12 +22,6 @@ import { Twilio } from 'twilio';
 import { getCurrentDefinitionVersion } from './formDefinitionsCache';
 import { postToInternalHrmEndpoint } from './internalHrmRequest';
 import { get } from 'lodash';
-import {
-  getSurveyWorkflowSid,
-  getSyncServiceSid,
-  getTwilioClient,
-  getWorkspaceSid,
-} from '@tech-matters/twilio-configuration';
 
 export type PostSurveyData = { [question: string]: string | number };
 /**
@@ -75,7 +66,7 @@ type PostSurveyBody = {
 
 const saveSurveyInInsights = async (
   postSurveyConfigJson: LegacyOneToManyConfigSpec[],
-  memory: LexMemory,
+  memory: PostSurveyData,
   controlTask: TaskInstance,
   controlTaskAttributes: any,
 ) => {
@@ -122,7 +113,7 @@ export const savePostSurvey = async ({
 }: {
   accountSid: AccountSID;
   twilioClient: Twilio;
-  postSurveyAnswers: LexMemory;
+  postSurveyAnswers: PostSurveyData;
   controlTask: TaskInstance;
 }) => {
   const serviceConfig = await twilioClient.flexApi.v1.configuration.get().fetch();
@@ -130,8 +121,14 @@ export const savePostSurvey = async ({
   const { hrm_api_version: hrmApiVersion } = serviceConfig.attributes;
   const definition = await getCurrentDefinitionVersion({ accountSid });
   const postSurveyConfigSpecs = definition?.insights?.postSurveySpecs;
+  try {
+    if (!postSurveyConfigSpecs?.length) {
+      console.error(
+        `Error accessing to the post survey form definitions: No defined or invalid postSurveyConfigJson found for account ${accountSid}.`,
+      );
+      return;
+    }
 
-  if (postSurveyConfigSpecs?.length) {
     const controlTaskAttributes = JSON.parse(controlTask.attributes);
 
     // parallel execution to save survey collected data in insights and hrm
@@ -151,58 +148,10 @@ export const savePostSurvey = async ({
         hrmApiVersion,
       }),
     ]);
-  } else {
-    const errorMessage = `No defined or invalid postSurveyConfigJson found for account ${accountSid}.`;
-    console.info(`Error accessing to the post survey form definitions: ${errorMessage}`);
-  }
-};
-
-export const getPostSurveySyncDocUniqueName = (callerIdentifier: string) =>
-  `post-surveys-pending-${callerIdentifier.replaceAll('+', '')}`;
-
-export const handleSavePostSurvey: AccountScopedHandler = async (
-  request,
-  accountSid,
-): Promise<Result<HttpError, any>> => {
-  let { postSurveyAnswers, clientIdentifier, contactId, contactTaskSid } = request.body;
-  const twilioClient = await getTwilioClient(accountSid);
-  if (!contactId || !contactTaskSid) {
-    const docUniqueName = getPostSurveySyncDocUniqueName(clientIdentifier);
-    console.debug(
-      `[Post Survey Studio Flow - ${accountSid}/${clientIdentifier}]: Looking up sync doc ${docUniqueName}`,
-    );
-    const docContext = twilioClient.sync.v1.services
-      .get(await getSyncServiceSid(accountSid))
-      .documents.get(docUniqueName);
-    const doc = await docContext.fetch();
-    ({ taskSid: contactTaskSid, contactId } = doc.data);
-    console.debug(
-      `[Post Survey Studio Flow - ${accountSid}/${contactTaskSid}]: Retrieved contactId ${contactId} and taskSid ${contactTaskSid} from sync doc ${docUniqueName}`,
+  } catch (err) {
+    console.error(
+      `[${accountSid}] Error saving post survey for control task ${controlTask?.sid}:`,
+      err,
     );
   }
-  const controlTask = await twilioClient.taskrouter.v1
-    .workspaces(await getWorkspaceSid(accountSid))
-    .tasks.create({
-      attributes: JSON.stringify({
-        contactTaskId: contactTaskSid,
-        contactId,
-        isSurveyTask: true,
-      }),
-      workflowSid: await getSurveyWorkflowSid(accountSid),
-      taskChannel: 'survey',
-    });
-
-  console.debug(
-    `[Post Survey Studio Flow - ${accountSid}/${contactTaskSid}]: Created new post studio flow task ${controlTask.sid} for storing post survey data in insights`,
-  );
-  await savePostSurvey({ twilioClient, accountSid, controlTask, postSurveyAnswers });
-  // As survey tasks will never be assigned to a worker, they'll be kept in pending state. A pending can't transition to completed state, so we cancel them here to raise a task.canceled taskrouter event (see functions/taskrouterListeners/janitorListener.ts)
-  // This needs to be the last step so the new task attributes from saveSurveyInInsights make it to insights
-  console.debug(
-    `[Post Survey Studio Flow - ${accountSid}/${contactTaskSid}]: Saved new post survey to HRM for contact ${contactId} and updated controlTask ${controlTask.sid} for insights.`,
-  );
-  await controlTask.update({ assignmentStatus: 'canceled' });
-  return newOk({
-    message: `[Post Survey Studio Flow - ${accountSid}/${contactTaskSid}]: Saved new post survey to HRM for contact ${contactId} and updated controlTask ${controlTask.sid} for insights.`,
-  });
 };

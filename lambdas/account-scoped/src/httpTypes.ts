@@ -49,6 +49,7 @@ export type HttpRequestPipelineStep = PipelineStep<
 export type FunctionRoute<T extends HttpRequest = HttpRequest> = {
   requestPipeline: HttpRequestPipelineStep[];
   handler: AccountScopedHandler<T>;
+  responseType: 'json' | 'text' | 'xml';
 };
 
 export type AccountScopedRoute<T extends HttpRequest = HttpRequest> = FunctionRoute<T> & {

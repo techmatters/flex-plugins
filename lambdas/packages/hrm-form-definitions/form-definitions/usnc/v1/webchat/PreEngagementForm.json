@@ -218,6 +218,13 @@
         }
       ]
     },
+     {
+      "type": "input",
+      "name": "phone1",
+      "label": "If you have contacted us before via Phone or SMS please enter your phone number",
+      "placeholder": "+12345678912",
+      "required": false
+    },
     {
       "type": "checkbox",
       "name": "termsAndConditions",

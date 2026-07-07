@@ -21,5 +21,5 @@ import { standaloneTaskSid } from './types';
 export type AccountSID =`AC${string}`;
 export type WorkerSID = `WK${string}`;
 export type TaskSID = typeof standaloneTaskSid | `${'WT'|'offline-contact-task'}${string}`;
-export type StudioFlowSID = `FW${string}`
+export type StudioFlowSID = `FW${string}`;
 
