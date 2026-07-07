@@ -70,11 +70,18 @@ const triggerPostStudioFlowTaskRouterListener: TaskRouterEventHandler = async (
       const serviceConfigAttributes =
         await retrieveServiceConfigurationAttributes(client);
       const { postStudioFlows } = serviceConfigAttributes;
-      const studioFlowIdentifier = postStudioFlows?.[taskChannelUniqueName] ?? '';
+      const { conference, contactId, routing } = taskAttributes;
+      const [lastQueueSid] = [...(routing?.workflow?.history ?? [])].reverse();
+      if (!lastQueueSid) {
+        console.warn(
+          `${logPrefix} Could not determine task's first queue from routing info for contact ${contactId}, conference: ${conference}, routing: `,
+          routing,
+        );
+      }
+      const studioFlowIdentifier = postStudioFlows?.[lastQueueSid];
 
-      if (typeof studioFlowIdentifier === 'object') {
+      if (studioFlowIdentifier?.flowTrigger === 'inProgressCall') {
         const { studioFlowSid } = studioFlowIdentifier;
-        const { conference, contactId } = taskAttributes;
         const studioWebhookUrl = `https://webhooks.twilio.com/v1/Accounts/${accountSid}/Flows/${studioFlowSid}`;
 
         if (taskChannelUniqueName === 'voice' && conference) {
