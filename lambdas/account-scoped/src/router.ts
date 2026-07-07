@@ -76,8 +76,7 @@ import { sendMessageAndRunJanitorHandler } from './conversation/sendMessageAndRu
 import { issueSyncTokenHandler } from './issueSyncToken';
 import { getExternalRecordingS3LocationHandler } from './conversation/getExternalRecordingS3Location';
 import { getMediaUrlHandler } from './conversation/getMediaUrl';
-import { handleSavePostSurvey } from './hrm/savePostSurvey';
-import {startPostSurveyChatbotHandler} from "./channelCapture/postSurveyListener";
+import { startPostSurveyChatbotHandler } from './channelCapture/postSurveyListener';
 import {
   savePostSurveyHandler,
   voicePostSurveyActionHandler,
@@ -131,9 +130,6 @@ const ACCOUNTSID_ROUTES: Record<
   'channelCapture/startPostSurveyChatbot': newRoute({
     requestPipeline: [validateWebhookRequest],
     handler: startPostSurveyChatbotHandler,
-  }),
-  'conference/conferenceStatusCallback': newRoute({
-    requestPipeline: [validateWebhookRequest],
   }),
   'hrm/savePostSurvey': newRoute({
     requestPipeline: [validateRequestMethod('POST'), validateWebhookRequest],

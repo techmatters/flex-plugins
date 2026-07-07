@@ -133,7 +133,7 @@ const triggerPostStudioFlowTaskRouterListener: TaskRouterEventHandler = async (
               `${logPrefix} Only valid for redirecting to studio flow if there is only one connected participant on the conference`,
             );
           }
-        } else if (studioFlowIdentifier.startsWith('FW')) {
+        } else if (studioFlowIdentifier.flowTrigger === 'rest') {
           console.debug(
             `${logPrefix} Initiating post studio flow ${studioFlowIdentifier} configured for ${taskChannelUniqueName} via REST API - contact ${contactId}, task: ${taskSid}`,
           );
@@ -148,7 +148,7 @@ const triggerPostStudioFlowTaskRouterListener: TaskRouterEventHandler = async (
           console.debug(
             `${logPrefix} Initiated post studio flow ${studioFlowIdentifier} configured for ${taskChannelUniqueName} via REST API - contact ${contactId}, task: ${taskSid}, removing participants`,
           );
-          conferenceContext.participants.each(p => p.remove());
+          client.conferences.get(conference.sid).participants.each(p => p.remove());
           console.debug(
             `${logPrefix} Removed participants from conference ${conference.sid}.`,
           );
