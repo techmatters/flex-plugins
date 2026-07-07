@@ -70,11 +70,18 @@ const triggerPostStudioFlowTaskRouterListener: TaskRouterEventHandler = async (
       const serviceConfigAttributes =
         await retrieveServiceConfigurationAttributes(client);
       const { postStudioFlows } = serviceConfigAttributes;
-      const studioFlowIdentifier = postStudioFlows?.[taskChannelUniqueName] ?? '';
+      const { conference, contactId, routing } = taskAttributes;
+      const [firstQueueSid] = routing?.workflow?.history ?? [];
+      if (!firstQueueSid) {
+        console.warn(
+          `${logPrefix} Could not determine task's first queue from routing info for contact ${contactId}, conference: ${conference}, routing: `,
+          routing,
+        );
+      }
+      const studioFlowIdentifier = postStudioFlows?.[firstQueueSid];
 
-      if (typeof studioFlowIdentifier === 'object') {
+      if (studioFlowIdentifier?.flowTrigger === 'inProgressCall') {
         const { studioFlowSid } = studioFlowIdentifier;
-        const { conference, contactId } = taskAttributes;
         const studioWebhookUrl = `https://webhooks.twilio.com/v1/Accounts/${accountSid}/Flows/${studioFlowSid}`;
 
         if (taskChannelUniqueName === 'voice' && conference) {
@@ -136,7 +143,9 @@ const triggerPostStudioFlowTaskRouterListener: TaskRouterEventHandler = async (
 
         console.info(`${logPrefix} Finished handling post studio flow trigger.`);
       } else {
-        console.debug(`No post studio flow configured for ${taskChannelUniqueName}`);
+        console.debug(
+          `Invalid post studio flow configured for ${firstQueueSid}: ${studioFlowIdentifier}`,
+        );
       }
     }
   } catch (err) {
