@@ -142,6 +142,7 @@ const triggerPostStudioFlowTaskRouterListener: TaskRouterEventHandler = async (
             parameters: {
               contactId,
               contactTaskSid: taskSid,
+              lastQueueSid,
             },
             to: taskAttributes.from,
           });
