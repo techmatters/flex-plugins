@@ -66,20 +66,22 @@ const triggerPostStudioFlowTaskRouterListener: TaskRouterEventHandler = async (
       console.info(`${logPrefix} Handling post studio flow trigger...`);
       console.debug('[SENSITIVE] taskAttributes', taskAttributes);
 
-      // 1. Fetch all active participants in the conference
-      const { conference, contactId } = taskAttributes;
-      const conferenceContext = client.conferences.get(conference.sid);
-      if (taskChannelUniqueName === 'voice' && conference) {
-        // This task is a candidate to trigger post survey. Check feature flags for the account.
-        const serviceConfigAttributes =
-          await retrieveServiceConfigurationAttributes(client);
-        const { postStudioFlows } = serviceConfigAttributes;
-        const studioFlowIdentifier: string =
-          postStudioFlows?.[taskChannelUniqueName] ?? '';
+      // This task is a candidate to trigger post survey. Check feature flags for the account.
+      const serviceConfigAttributes =
+        await retrieveServiceConfigurationAttributes(client);
+      const { postStudioFlows } = serviceConfigAttributes;
+      const { conference, contactId, routing } = taskAttributes;
+      const [firstQueueSid] = routing?.workflow?.history ?? [];
+      if (!firstQueueSid) {
+        console.warn(
+          `${logPrefix} Could not determine task's first queue from routing info for contact ${contactId}, conference: ${conference}, routing: `,
+          routing,
+        );
+      }
+      const studioFlowIdentifier = postStudioFlows?.[firstQueueSid];
 
-      if (typeof studioFlowIdentifier === 'object') {
+      if (studioFlowIdentifier?.flowTrigger === 'inProgressCall') {
         const { studioFlowSid } = studioFlowIdentifier;
-        const { conference, contactId } = taskAttributes;
         const studioWebhookUrl = `https://webhooks.twilio.com/v1/Accounts/${accountSid}/Flows/${studioFlowSid}`;
 
         if (taskChannelUniqueName === 'voice' && conference) {
@@ -151,17 +153,17 @@ const triggerPostStudioFlowTaskRouterListener: TaskRouterEventHandler = async (
             `${logPrefix} Removed participants from conference ${conference.sid}.`,
           );
         } else {
-          console.debug(
-            `${logPrefix} No post studio flow configured for ${taskChannelUniqueName}`,
+          console.warn(
+            `${logPrefix} Only tasks with a taskChannelUniqueName of 'voice' and a conference object in the attributes are supported for post task studio flows`,
+            `taskChannelUniqueName: ${taskChannelUniqueName}`,
+            `conference: ${conference}`,
           );
         }
 
         console.info(`${logPrefix} Finished handling post studio flow trigger.`);
       } else {
-        console.warn(
-          `${logPrefix} Only tasks with a taskChannelUniqueName of 'voice' and a conference object in the attributes are supported for post task studio flows`,
-          `taskChannelUniqueName: ${taskChannelUniqueName}`,
-          `conference: ${conference}`,
+        console.debug(
+          `Invalid post studio flow configured for ${firstQueueSid}: ${studioFlowIdentifier}`,
         );
       }
     }
