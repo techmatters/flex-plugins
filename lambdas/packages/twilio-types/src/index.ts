@@ -19,6 +19,7 @@ export type AccountSID = `AC${string}`;
 export type WorkspaceSID = `WS${string}`;
 export type WorkerSID = `WK${string}`;
 export type TaskSID = `WT${string}`;
+export type TaskQueueSID = `WQ${string}`;
 export type ChatServiceSID = `IS${string}`;
 export type WorkflowSID = `WW${string}`;
 
