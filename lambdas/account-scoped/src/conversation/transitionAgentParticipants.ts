@@ -65,7 +65,7 @@ export const transitionAgentParticipantsHandler: FlexValidatedHandler = async (
     await transitionAgentParticipants(
       client,
       taskAttributes,
-      targetStatus,
+      targetStatus as any,
       interactionChannelParticipantSid,
     );
     return newOk({ message: 'Participants transitioned successfully' });
