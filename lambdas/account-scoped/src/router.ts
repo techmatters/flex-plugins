@@ -45,7 +45,7 @@ import { transitionAgentParticipantsHandler } from './conversation/transitionAge
 import { conferenceStatusCallbackHandler } from './conference/conferenceStatusCallback';
 import './conference/stopRecordingWhenLastAgentLeaves';
 import './conference/setEndConferenceOnExit';
-import './studioFlow/endStudioFlowExecutionsOnHangup';
+import './studioFlow/endActiveStudioFlowExecutionsForCall';
 import { instagramToFlexHandler } from './customChannels/instagram/instagramToFlex';
 import { flexToInstagramHandler } from './customChannels/instagram/flexToInstagram';
 import { telegramToFlexHandler } from './customChannels/telegram/telegramToFlex';

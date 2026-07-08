@@ -70,7 +70,7 @@ const triggerPostStudioFlowTaskRouterListener: TaskRouterEventHandler = async (
       // This task is a candidate to trigger post survey. Check feature flags for the account.
       const serviceConfigAttributes =
         await retrieveServiceConfigurationAttributes(client);
-      const { postStudioFlows } = serviceConfigAttributes;
+      const { postStudioFlows, hrm_base_url: hrmBaseUrl } = serviceConfigAttributes;
       const { conference, contactId } = taskAttributes;
       const studioFlowIdentifier =
         postStudioFlows?.[taskQueueSid] ?? postStudioFlows?.[taskChannelUniqueName];
@@ -109,6 +109,7 @@ const triggerPostStudioFlowTaskRouterListener: TaskRouterEventHandler = async (
               );
               await client.calls.get(participant.callSid).update({
                 twiml,
+                statusCallback: `${hrmBaseUrl}/lambda/twilio/account-scoped/${accountSid}/conference/participantStatusCallback`
               });
               console.debug(
                 `${logPrefix} Dialed ${studioFlowIdentifier} passing ${contactId} and ${taskSid} to start post survey.`,
