@@ -50,11 +50,11 @@ const endStudioFlowExecutionsHandler: ConferenceStatusEventHandler = async (
         }
       }
     } catch (err) {
-      console.error(`${logPrefix} triggerPostStudioFlowTaskRouterListener failed`, err);
+      console.error(`${logPrefix} endStudioFlowExecutionsHandler failed`, err);
     }
   } else {
     console.warn(
-      `${logPrefix} triggerPostStudioFlowTaskRouterListener failed, only participant-leave events are supposed to be routed to this handler, got ${event.StatusCallbackEvent}`,
+      `${logPrefix} endStudioFlowExecutionsHandler failed, only participant-leave events are supposed to be routed to this handler, got ${event.StatusCallbackEvent}`,
     );
   }
 };
