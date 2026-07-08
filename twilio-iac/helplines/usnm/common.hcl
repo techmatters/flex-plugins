@@ -16,8 +16,14 @@ locals {
     permission_config          = "demo"
     workflows = {
       master : {
-        friendly_name = "Master Workflow"
-        templatefile  = "/app/twilio-iac/helplines/templates/workflows/master.tftpl"
+        friendly_name            = "Calls Voicemail Workflow"
+        templatefile             = "/app/twilio-iac/helplines/usnm/templates/workflows/calls-voicemails.tftpl"
+        task_reservation_timeout = 30
+      },
+       sms : {
+        friendly_name            = "SMS Workflow"
+        templatefile             = "/app/twilio-iac/helplines/usnm/templates/workflows/sms.tftpl"
+        task_reservation_timeout = 60
       },
       //NOTE: MAKE SURE TO ADD THIS IF THE ACCOUNT USES A CONVERSATION CHANNEL
       queue_transfers : {
@@ -29,10 +35,61 @@ locals {
         templatefile  = "/app/twilio-iac/helplines/templates/workflows/lex.tftpl"
       }
     }
+    task_channels = {
+      default : "Default"
+      chat : "Programmable Chat"
+      voice : "Voice"
+      sms : "SMS"
+      video : "Video"
+      email : "Email"
+      survey : "Survey",
+      voicemail : "Voicemail"
+    }
+
     task_queues = {
       master : {
-        "target_workers" = "1==1",
-        "friendly_name"  = "NAMI"
+        "target_workers" = "1=0",
+        "friendly_name"  = "Master"
+      },
+      en_std : {
+        "target_workers" = "(routing.skills HAS 'Calls' OR routing.skills HAS 'SMS')",
+        "friendly_name"  = "English Standard"
+      },
+      en_tya : {
+        "target_workers" = "(routing.skills HAS 'Calls' OR routing.skills HAS 'SMS') AND routing.skills HAS 'TYA'",
+        "friendly_name"  = "English TYA"
+      },
+      en_fcg : {
+        "target_workers" = "(routing.skills HAS 'Calls' OR routing.skills HAS 'SMS') AND routing.skills HAS 'FCG'",
+        "friendly_name"  = "English FCG"
+      },
+      es_std : {
+        "target_workers" = "(routing.skills HAS 'Calls' OR routing.skills HAS 'SMS') AND routing.skills HAS 'Spanish'",
+        "friendly_name"  = "Spanish Standard"
+      },
+      es_tya : {
+        "target_workers" = "(routing.skills HAS 'Calls' OR routing.skills HAS 'SMS') AND routing.skills HAS 'TYA' AND routing.skills HAS 'Spanish'",
+        "friendly_name"  = "Spanish TYA"
+      },
+      en_std_voicemail : {
+        "target_workers" = "routing.skills HAS 'Voicemail'",
+        "friendly_name"  = "English Standard Voicemail"
+      },
+      en_tya_voicemail : {
+        "target_workers" = "routing.skills HAS 'TYA' AND routing.skills HAS 'Voicemail'",
+        "friendly_name"  = "English TYA Voicemail"
+      },
+      en_fcg_voicemail : {
+        "target_workers" = "routing.skills HAS 'FCG' AND routing.skills HAS 'Voicemail'",
+        "friendly_name"  = "English FCG Voicemail"
+      },
+      es_tya_voicemail : {
+        "target_workers" = "routing.skills HAS 'FCG' AND routing.skills HAS 'Voicemail' AND routing.skills HAS 'Spanish'",
+        "friendly_name"  = "Spanish TYA Voicemail"
+      },
+      es_std_voicemail : {
+        "target_workers" = "routing.skills HAS 'Voicemail' AND routing.skills HAS 'Spanish'",
+        "friendly_name"  = "Spanish Standard Voicemail"
       },
       survey : {
         "target_workers" = "1==0",
