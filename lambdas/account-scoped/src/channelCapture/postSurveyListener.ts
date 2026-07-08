@@ -31,7 +31,8 @@ import {
 import {
   getChatServiceSid,
   getHelplineCode,
-  getSurveyWorkflowSid, getWorkspaceSid,
+  getSurveyWorkflowSid,
+  getWorkspaceSid,
 } from '@tech-matters/twilio-configuration';
 import { getTranslation } from '../translations/translationLookup';
 import { getCurrentDefinitionVersion } from '../hrm/formDefinitionsCache';
