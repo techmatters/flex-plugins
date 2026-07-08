@@ -24,9 +24,6 @@ import {
 import { newOk, Result } from '../Result';
 import { savePostSurvey } from './savePostSurvey';
 import { newMissingParameterResult } from '../httpErrors';
-import TwilioSDK from 'twilio';
-import VoiceResponse = TwilioSDK.twiml.VoiceResponse;
-import { retrieveServiceConfigurationAttributes } from '../configuration/aseloConfiguration';
 
 const getPostSurveySyncDocUniqueName = (callerIdentifier: string) =>
   `post-studio-flow-call-data-${callerIdentifier}`;
