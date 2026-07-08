@@ -78,7 +78,8 @@ const triggerPostStudioFlowTaskRouterListener: TaskRouterEventHandler = async (
           routing,
         );
       }
-      const studioFlowIdentifier = postStudioFlows?.[lastQueueSid];
+      const studioFlowIdentifier =
+        postStudioFlows?.[lastQueueSid] ?? postStudioFlows?.[taskChannelUniqueName];
 
       if (studioFlowIdentifier?.flowTrigger === 'inProgressCall') {
         const { studioFlowSid } = studioFlowIdentifier;
