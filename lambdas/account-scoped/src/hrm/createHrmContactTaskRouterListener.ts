@@ -222,6 +222,9 @@ export const handleEvent = async (
       accountSid,
       callSid: taskAttributes.callSid,
     });
+
+    console.log('>>>>>>', recordingResult);
+
     if (isOk(recordingResult)) {
       newContact.conversationMedia = [
         {
