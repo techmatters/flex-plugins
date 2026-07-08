@@ -171,7 +171,8 @@ const readConfig = () => {
       enableClientProfiles,
       enableConferencing,
       hideAddToNewCaseButton,
-      postStudioFlows: (postStudioFlows ?? {}) as { [key in 'voice' | 'chat']?: StudioFlowSID },
+      // eslint-disable-next-line prettier/prettier
+      postStudioFlows: (postStudioFlows ?? {}) as Record<`FW${string}` | 'voice' | 'chat' , any>,
     },
     referrableResources: {
       resourcesBaseUrl,
