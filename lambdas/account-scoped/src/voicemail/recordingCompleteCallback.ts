@@ -49,6 +49,7 @@ export const recordingCompleteCallback: AccountScopedHandler = async (
         callSid: body.callSid,
         from: body.from,
         name: body.from,
+        channelType: 'voicemail',
         customChannelType: 'voicemail',
       }),
       workflowSid: body.voicemailWorkflowSid,
