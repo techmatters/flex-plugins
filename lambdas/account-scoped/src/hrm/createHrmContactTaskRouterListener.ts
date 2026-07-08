@@ -34,6 +34,7 @@ import { HrmContact } from '@tech-matters/hrm-types';
 import { populateHrmContactFormFromTaskByMappings } from './populateHrmContactFormFromTaskByMappings';
 import { parseISO } from 'date-fns/parseISO';
 import { HttpClientError } from '../httpErrors';
+import { getExternalRecordingS3Location } from '../conversation/getExternalRecordingS3Location';
 
 // Temporarily copied to this repo, will share the flex types when we move them into the same repo
 
@@ -215,7 +216,30 @@ export const handleEvent = async (
     timeOfContact: timeOfContactDate.toISOString(),
     number: identifier,
   };
+
+  if (channel === ('voicemail' as any)) {
+    const recordingResult = await getExternalRecordingS3Location({
+      accountSid,
+      callSid: taskAttributes.callSid,
+    });
+    if (isOk(recordingResult)) {
+      newContact.conversationMedia = [
+        {
+          storeType: 'S3',
+          storeTypeSpecificData: {
+            type: 'recording',
+            location: {
+              bucket: recordingResult.data.bucket,
+              key: recordingResult.data.key,
+            },
+          },
+        },
+      ];
+    }
+  }
+
   console.debug('Creating HRM contact with timeOfContact:', newContact.timeOfContact);
+
   const prepopulate = usePrepopulateMappings
     ? populateHrmContactFormFromTaskByMappings
     : populateHrmContactFormFromTaskByKeys;

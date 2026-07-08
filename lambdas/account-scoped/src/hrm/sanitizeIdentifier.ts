@@ -30,6 +30,7 @@ const aseloConnectorNormalization = (s: string) => s.match(/sip:([^@]+)/)?.[1] |
 type TransformIdentifierFunction = (c: string) => string;
 const channelTransformations: { [k: string]: TransformIdentifierFunction[] } = {
   voice: [aseloConnectorNormalization, phoneNumberStandardization],
+  voicemail: [aseloConnectorNormalization, phoneNumberStandardization],
   sms: [phoneNumberStandardization],
   whatsapp: [s => s.replace('whatsapp:', ''), phoneNumberStandardization],
   modica: [s => s.replace('modica:', ''), phoneNumberStandardization],
