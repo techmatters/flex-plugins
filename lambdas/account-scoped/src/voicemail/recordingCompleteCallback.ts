@@ -48,6 +48,8 @@ export const recordingCompleteCallback: AccountScopedHandler = async (
         isVoicemail: true,
         callSid: body.callSid,
         from: body.from,
+        name: body.from,
+        customChannelType: 'voicemail',
       }),
       workflowSid: body.voicemailWorkflowSid,
       // TODO: factor out channel types into an enum
