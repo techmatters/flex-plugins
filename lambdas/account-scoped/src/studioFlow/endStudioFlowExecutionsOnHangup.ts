@@ -37,13 +37,24 @@ const endStudioFlowExecutionsHandler: ConferenceStatusEventHandler = async (
         const activeExecutions = await client.studio.v2.flows
           .get(studioFlowSid)
           .executions.list({ status: 'active', limit: 50 } as any);
-
+        (activeExecutions.length ? console.info : console.debug)(
+          `${logPrefix} ${activeExecutions.length} active executions detected for flow ${studioFlowSid}`,
+        );
         for (const execution of activeExecutions) {
           const { context } = await execution.executionContext().get().fetch();
           const { CallSid: flowCallSid } = context.trigger.call ?? {};
           if (flowCallSid === leavingCallSid) {
+            console.info(
+              `${logPrefix} ${activeExecutions.length} ending active execution ${execution.sid} for flow ${studioFlowSid} because call sid on execution ${flowCallSid} matches that of leaving participant.`,
+            );
             // If the execution is for a call that's leaving the conference, end the execution
-            await execution.remove();
+            await execution.update({
+              status: 'ended',
+            });
+          } else {
+            console.debug(
+              `${logPrefix} ${activeExecutions.length} leaving active execution ${execution.sid} for flow ${studioFlowSid} executing because call sid on execution ${flowCallSid} doesn't matches that of leaving participant ${leavingCallSid}`,
+            );
           }
         }
       }
