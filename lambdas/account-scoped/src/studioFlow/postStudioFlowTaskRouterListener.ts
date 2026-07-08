@@ -109,7 +109,7 @@ const triggerPostStudioFlowTaskRouterListener: TaskRouterEventHandler = async (
               );
               await client.calls.get(participant.callSid).update({
                 twiml,
-                statusCallback: `${hrmBaseUrl}/lambda/twilio/account-scoped/${accountSid}/conference/participantStatusCallback`
+                statusCallback: `${hrmBaseUrl}/lambda/twilio/account-scoped/${accountSid}/conference/postStudioFlowCallStatusCallback`,
               });
               console.debug(
                 `${logPrefix} Dialed ${studioFlowIdentifier} passing ${contactId} and ${taskSid} to start post survey.`,

@@ -18,14 +18,14 @@ import { AccountScopedHandler } from '../httpTypes';
 import { getTwilioClient } from '@tech-matters/twilio-configuration';
 import { newOk } from '../Result';
 import type { CallSid } from '@tech-matters/twilio-types';
-import { endActiveStudioFlowExecutionsForCall } from '../studioFlow/endActiveStudioFlowExecutionsForCall';
+import { endActiveStudioFlowExecutionsForCall } from './endActiveStudioFlowExecutionsForCall';
 
 type CallStatusCallbackEvent = {
   CallSid: CallSid;
   CallStatus: 'completed';
 };
 
-export const callStatusCallbackHandler: AccountScopedHandler = async (
+export const postStudioFlowCallStatusCallbackHandler: AccountScopedHandler = async (
   { body },
   accountSid,
 ) => {

@@ -80,6 +80,7 @@ import {
   savePostSurveyHandler,
   voicePostSurveyActionHandler,
 } from './hrm/voicePostSurvey';
+import { postStudioFlowCallStatusCallbackHandler } from './studioFlow/postStudioFlowCallStatusCallback';
 
 /**
  * Super simple router sufficient for directly ported Twilio Serverless functions
@@ -169,6 +170,10 @@ const ACCOUNTSID_ROUTES: Record<
   'conference/participantStatusCallback': newRoute({
     requestPipeline: [validateRequestMethod('POST'), validateWebhookRequest],
     handler: participantStatusCallbackHandler,
+  }),
+  'conference/postStudioFlowCallStatusCallback': newRoute({
+    requestPipeline: [validateRequestMethod('POST'), validateWebhookRequest],
+    handler: postStudioFlowCallStatusCallbackHandler,
   }),
   'conversations/serviceScopedConversationEventHandler': newRoute({
     requestPipeline: [validateRequestMethod('POST'), validateWebhookRequest],
