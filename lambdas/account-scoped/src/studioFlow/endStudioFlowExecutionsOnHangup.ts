@@ -31,21 +31,19 @@ const endStudioFlowExecutionsHandler: ConferenceStatusEventHandler = async (
       const serviceConfigAttributes =
         await retrieveServiceConfigurationAttributes(client);
       const { postStudioFlows } = serviceConfigAttributes;
-      for (const postStudioFlow of Object.values(postStudioFlows)) {
-        if (typeof postStudioFlow === 'object') {
-          const { studioFlowSid } = postStudioFlows;
-          const { CallSid: leavingCallSid } = event;
-          const activeExecutions = await client.studio.v2.flows
-            .get(studioFlowSid)
-            .executions.list({ status: 'active', limit: 50 } as any);
+      for (const postStudioFlow of Object.values(postStudioFlows ?? {})) {
+        const { studioFlowSid } = postStudioFlow;
+        const { CallSid: leavingCallSid } = event;
+        const activeExecutions = await client.studio.v2.flows
+          .get(studioFlowSid)
+          .executions.list({ status: 'active', limit: 50 } as any);
 
-          for (const execution of activeExecutions) {
-            const { context } = await execution.executionContext().get().fetch();
-            const { CallSid: flowCallSid } = context.trigger.call ?? {};
-            if (flowCallSid === leavingCallSid) {
-              // If the execution is for a call that's leaving the conference, end the execution
-              await execution.remove();
-            }
+        for (const execution of activeExecutions) {
+          const { context } = await execution.executionContext().get().fetch();
+          const { CallSid: flowCallSid } = context.trigger.call ?? {};
+          if (flowCallSid === leavingCallSid) {
+            // If the execution is for a call that's leaving the conference, end the execution
+            await execution.remove();
           }
         }
       }

@@ -16,6 +16,8 @@
 
 // Temporary duplication, these should be shared with the same types in the flex plugin
 export type AccountSID = `AC${string}`;
+
+// Task router SIDs
 export type WorkspaceSID = `WS${string}`;
 export type WorkerSID = `WK${string}`;
 export type TaskSID = `WT${string}`;
@@ -23,9 +25,14 @@ export type TaskQueueSID = `WQ${string}`;
 export type ChatServiceSID = `IS${string}`;
 export type WorkflowSID = `WW${string}`;
 
+// Studio SIDs
+export type StudioFlowSID = `FW${string}`;
+
+// Conversations SIDs
 export type ConversationSID = `CH${string}`;
 export type ChatChannelSID = ConversationSID;
 
+// Voice SIDs
 export type CallSid = `CA${string}`;
 export type ConferenceSid = `CF${string}`;
 
