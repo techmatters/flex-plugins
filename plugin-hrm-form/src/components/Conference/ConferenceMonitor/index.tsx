@@ -28,6 +28,12 @@ const isJoinedWithoutEnd = (p: ConferenceParticipant) =>
 type Props = TaskContextProps;
 
 const ConferenceMonitor: React.FC<Props> = ({ conference, task }) => {
+  const isAgentOnConferenceWithIvrPostSurvey = (participant: ConferenceParticipant) => {
+    return (
+      (postStudioFlows[task.queueSid] ?? postStudioFlows.voice)?.flowTrigger === 'inProgressCall' &&
+      ['agent', 'worker'].includes(participant.participantType)
+    );
+  };
   const [updating, setUpdating] = React.useState(false);
   const { postStudioFlows } = getHrmConfig();
 
@@ -48,8 +54,7 @@ const ConferenceMonitor: React.FC<Props> = ({ conference, task }) => {
     Boolean(participants && conferenceSid) &&
     status === 'active' &&
     participants.filter(p => p.status === 'joined').length <= 2 &&
-    participants.some(isJoinedWithoutEnd) &&
-    !postStudioFlows.voice;
+    participants.some(isJoinedWithoutEnd);
 
   const updateEndConferenceOnExit = React.useCallback(
     (endConferenceOnExit: boolean) => async (participant: ConferenceParticipant) => {
@@ -110,7 +115,11 @@ const ConferenceMonitor: React.FC<Props> = ({ conference, task }) => {
         } else if (shouldEnableEndConferenceOnExit(conferenceSource)) {
           setUpdating(true);
 
-          await Promise.all(participants.filter(isJoinedWithoutEnd).map(updateEndConferenceOnExit(true)));
+          await Promise.all(
+            participants
+              .filter(p => isJoinedWithoutEnd(p) && !isAgentOnConferenceWithIvrPostSurvey(p))
+              .map(updateEndConferenceOnExit(true)),
+          );
           setUpdating(false);
         }
       };

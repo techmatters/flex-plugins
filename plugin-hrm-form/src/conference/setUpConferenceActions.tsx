@@ -71,16 +71,13 @@ export const setUpConferenceActions = () => {
     }
   });
 
-  Flex.Actions.addListener('beforeAcceptTask', (payload: { conferenceOptions: any; task: ITask }) => {
+  Flex.Actions.addListener('beforeAcceptTask', (payload: { conferenceOptions: any }) => {
     if (getAseloFeatureFlags().enable_conference_status_event_handler) {
-      const { accountScopedLambdaBaseUrl, postStudioFlows } = getHrmConfig();
-      const { conferenceOptions, task } = payload;
+      const { accountScopedLambdaBaseUrl } = getHrmConfig();
+      const { conferenceOptions } = payload;
       if (conferenceOptions) {
         conferenceOptions.conferenceStatusCallback = `${accountScopedLambdaBaseUrl}/conference/conferenceStatusCallback`;
         conferenceOptions.conferenceStatusCallbackMethod = 'POST';
-        conferenceOptions.endConferenceOnExit =
-          !isTwilioTask(task) ||
-          (postStudioFlows?.[task.queueSid]?.flowTrigger ?? postStudioFlows?.voice?.flowTrigger) !== 'inProgressCall';
         conferenceOptions.conferenceStatusCallbackEvent = ['leave', 'join'].toString();
       }
     }
