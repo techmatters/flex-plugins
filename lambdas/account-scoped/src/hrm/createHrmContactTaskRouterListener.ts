@@ -277,7 +277,7 @@ export const handleEvent = async (
       >(
         hrmAccountId,
         hrmApiVersion,
-        `/contacts/${id}/conversationMedia`,
+        `contacts/${id}/conversationMedia`,
         conversationMedia,
       );
       console.debug(
