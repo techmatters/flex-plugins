@@ -280,7 +280,9 @@ export const handleEvent = async (
         `/contacts/${id}/conversationMedia`,
         conversationMedia,
       );
-      console.debug(`[SENSITIVE] Conversation media result ${conversationMediaResult}`);
+      console.debug(
+        `[SENSITIVE] Conversation media result ${conversationMediaResult.status} ${isOk(conversationMediaResult) ? JSON.stringify(conversationMediaResult.data) : JSON.stringify(conversationMediaResult.error)}`,
+      );
     }
   }
 
