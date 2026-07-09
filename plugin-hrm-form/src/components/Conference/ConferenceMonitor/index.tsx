@@ -16,6 +16,7 @@
 import React from 'react';
 import { ConferenceParticipant } from '@twilio/flex-ui';
 import { Conference } from '@twilio/flex-ui/src/state/Conferences';
+import { useSelector } from 'react-redux';
 
 import { hasTaskControl, isOriginalReservation, isTransferring } from '../../../transfer/transferTaskState';
 import * as conferenceApi from '../../../services/conferenceService';
@@ -25,11 +26,13 @@ const isJoinedWithEnd = (p: ConferenceParticipant) => p.status === 'joined' && p
 const isJoinedWithoutEnd = (p: ConferenceParticipant) =>
   p.status === 'joined' && !p.mediaProperties.endConferenceOnExit;
 
+const selectPostStudioFlows = () => getHrmConfig().postStudioFlows;
+
 type Props = TaskContextProps;
 
 const ConferenceMonitor: React.FC<Props> = ({ conference, task }) => {
   const [updating, setUpdating] = React.useState(false);
-  const { postStudioFlows } = getHrmConfig();
+  const postStudioFlows = useSelector(selectPostStudioFlows);
 
   const conferenceSource: Partial<Conference> = conference?.source ?? {};
 
