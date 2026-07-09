@@ -25,6 +25,7 @@ import { EventFields } from '../taskrouter';
 import { retrieveServiceConfigurationAttributes } from '../configuration/aseloConfiguration';
 import { isChatCaptureControlTask } from '../channelCapture/channelCaptureHandlers';
 import VoiceResponse = TwilioSDK.twiml.VoiceResponse;
+import { patchTaskAttributes } from '../task/patchTaskAttributes';
 
 // TODO: factor out
 type TransferMeta = {
@@ -41,10 +42,10 @@ const isTriggerPostStudioFlow = ({
   taskAttributes: {
     transferMeta?: TransferMeta;
     isChatCaptureControl?: boolean;
+    postStudioFlowTriggered?: boolean;
   };
-}) => {
-  return !isChatCaptureControlTask(taskAttributes);
-};
+}) =>
+  !isChatCaptureControlTask(taskAttributes) && !taskAttributes.postStudioFlowTriggered;
 
 const triggerPostStudioFlowTaskRouterListener: TaskRouterEventHandler = async (
   event: EventFields,
@@ -97,12 +98,6 @@ const triggerPostStudioFlowTaskRouterListener: TaskRouterEventHandler = async (
           if (connectedParticipants.length === 1) {
             const [participant] = connectedParticipants;
             try {
-              await participant.update({
-                hold: true,
-              });
-              console.debug(
-                `${logPrefix} Put participant ${participant.callSid} from conference ${conference.sid} on hold.`,
-              );
               const twiml = new VoiceResponse();
               twiml.redirect(
                 `${studioWebhookUrl}?Trigger=inProgressCall&contactId=${contactId}&taskSid=${taskSid}`,
@@ -164,6 +159,10 @@ const triggerPostStudioFlowTaskRouterListener: TaskRouterEventHandler = async (
         );
       }
       console.info(`${logPrefix} Finished handling post studio flow trigger.`);
+      await patchTaskAttributes(accountSid, taskSid, ta => ({
+        ...ta,
+        postStudioFlowTriggered: true,
+      }));
     }
   } catch (err) {
     console.error(
