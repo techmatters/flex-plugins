@@ -231,7 +231,10 @@ const ACCOUNTSID_ROUTES: Record<
   }),
 
   'studioFlow/triggerPostStudioFlow': newRoute({
-    requestPipeline: [validateRequestMethod('POST'), validateWebhookRequest],
+    requestPipeline: [
+      validateRequestMethod('POST'),
+      validateFlexTokenRequest({ tokenMode: 'agent' }),
+    ],
     handler: triggerPostStudioFlowHandler,
   }),
   toggleSwitchboardQueue: newRoute({
