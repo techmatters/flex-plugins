@@ -79,6 +79,7 @@ import {
   voicePostSurveyActionHandler,
 } from './hrm/voicePostSurvey';
 import { postStudioFlowCallStatusCallbackHandler } from './studioFlow/postStudioFlowCallStatusCallback';
+import {triggerPostStudioFlowHandler} from "./studioFlow/postStudioFlowTaskRouterListener";
 
 /**
  * Super simple router sufficient for directly ported Twilio Serverless functions
@@ -227,6 +228,11 @@ const ACCOUNTSID_ROUTES: Record<
   'webchatAuth/refreshToken': newRoute({
     requestPipeline: [validateRequestMethod('POST')],
     handler: refreshTokenHandler,
+  }),
+
+  'studioFlow/triggerPostStudioFlow': newRoute({
+    requestPipeline: [validateRequestMethod('POST'), validateWebhookRequest],
+    handler: triggerPostStudioFlowHandler,
   }),
   toggleSwitchboardQueue: newRoute({
     requestPipeline: [

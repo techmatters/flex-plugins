@@ -18,13 +18,16 @@ import {
   registerTaskRouterEventHandler,
   TaskRouterEventHandler,
 } from '../taskrouter/taskrouterEventHandler';
-import { AccountSID } from '@tech-matters/twilio-types';
-import TwilioSDK, { Twilio } from 'twilio';
-import { EventType, TASK_COMPLETED, TASK_WRAPUP } from '../taskrouter/eventTypes';
+import { AccountSID, TaskQueueSID, TaskSID } from '@tech-matters/twilio-types';
+import TwilioSDK from 'twilio';
+import { TASK_COMPLETED, TASK_WRAPUP } from '../taskrouter/eventTypes';
 import { EventFields } from '../taskrouter';
 import { retrieveServiceConfigurationAttributes } from '../configuration/aseloConfiguration';
 import { isChatCaptureControlTask } from '../channelCapture/channelCaptureHandlers';
 import VoiceResponse = TwilioSDK.twiml.VoiceResponse;
+import { getTwilioClient, getWorkspaceSid } from '@tech-matters/twilio-configuration';
+import { AccountScopedHandler } from '../httpTypes';
+import { newOk } from '../Result';
 
 // TODO: factor out
 type TransferMeta = {
@@ -36,8 +39,6 @@ type TransferMeta = {
 const isTriggerPostStudioFlow = ({
   taskAttributes,
 }: {
-  eventType: EventType;
-  taskChannelUniqueName: string;
   taskAttributes: {
     transferMeta?: TransferMeta;
     isChatCaptureControl?: boolean;
@@ -46,24 +47,23 @@ const isTriggerPostStudioFlow = ({
   return !isChatCaptureControlTask(taskAttributes);
 };
 
-const triggerPostStudioFlowTaskRouterListener: TaskRouterEventHandler = async (
-  event: EventFields,
-  accountSid: AccountSID,
-  client: Twilio,
-) => {
-  const logPrefix = `[Post Survey Studio Flow - ${accountSid}/${event.TaskSid}]:`;
+const triggerPostStudioFlow = async ({
+  accountSid,
+  taskSid,
+  taskQueueSid,
+  taskChannelUniqueName,
+  taskAttributes,
+}: {
+  accountSid: AccountSID;
+  taskSid: TaskSID;
+  taskChannelUniqueName: string;
+  taskQueueSid: TaskQueueSID;
+  taskAttributes: Record<string, any>;
+}) => {
+  const client = await getTwilioClient(accountSid);
+  const logPrefix = `[Post Survey Studio Flow - ${accountSid}/${taskSid}]:`;
   try {
-    const {
-      EventType: eventType,
-      TaskChannelUniqueName: taskChannelUniqueName,
-      TaskAttributes: taskAttributesString,
-      TaskSid: taskSid,
-      TaskQueueSid: taskQueueSid,
-    } = event;
-
-    const taskAttributes = JSON.parse(taskAttributesString);
-
-    if (isTriggerPostStudioFlow({ eventType, taskAttributes, taskChannelUniqueName })) {
+    if (isTriggerPostStudioFlow({ taskAttributes })) {
       console.info(`${logPrefix} Handling post studio flow trigger...`);
       console.debug('[SENSITIVE] taskAttributes', taskAttributes);
 
@@ -84,14 +84,14 @@ const triggerPostStudioFlowTaskRouterListener: TaskRouterEventHandler = async (
           // 1. Fetch all active participants in the conference
           const allParticipants = await conferenceContext.participants.list();
           console.debug(
-            `${logPrefix} ${allParticipants.length} participants on conference: ${conference.sid} at ${eventType}.`,
+            `${logPrefix} ${allParticipants.length} participants on conference: ${conference.sid}.`,
             allParticipants,
           );
           const connectedParticipants = allParticipants.filter(
             p => p.status === 'connected',
           );
           console.debug(
-            `${logPrefix} ${connectedParticipants.length} participants on conference: ${conference.sid} at ${eventType}.`,
+            `${logPrefix} ${connectedParticipants.length} participants on conference: ${conference.sid}.`,
             connectedParticipants,
           );
           if (connectedParticipants.length === 1) {
@@ -144,13 +144,61 @@ const triggerPostStudioFlowTaskRouterListener: TaskRouterEventHandler = async (
     }
   } catch (err) {
     console.error(
-      `[Post Survey Studio Flow - ${accountSid}/${event.TaskSid}]: triggerPostStudioFlowTaskRouterListener failed`,
+      `[Post Survey Studio Flow - ${accountSid}/${taskSid}]: triggerPostStudioFlowTaskRouterListener failed`,
       err,
     );
   }
+};
+
+const triggerPostStudioFlowTaskRouterListener: TaskRouterEventHandler = async (
+  event: EventFields,
+  accountSid: AccountSID,
+) => {
+  const {
+    EventType: eventType,
+    TaskChannelUniqueName: taskChannelUniqueName,
+    TaskAttributes: taskAttributesString,
+    TaskSid: taskSid,
+    TaskQueueSid: taskQueueSid,
+  } = event;
+
+  const taskAttributes = JSON.parse(taskAttributesString);
+
+  console.info(
+    `[Post Survey Studio Flow - ${accountSid}/${taskSid}]: Handling post studio flow trigger for task router event ${eventType}...`,
+  );
+  await triggerPostStudioFlow({
+    accountSid,
+    taskSid,
+    taskQueueSid,
+    taskChannelUniqueName,
+    taskAttributes,
+  });
 };
 
 registerTaskRouterEventHandler(
   [TASK_WRAPUP, TASK_COMPLETED],
   triggerPostStudioFlowTaskRouterListener,
 );
+
+export const triggerPostStudioFlowHandler: AccountScopedHandler = async (
+  event,
+  accountSid,
+) => {
+  const { taskSid } = event.body;
+  const client = await getTwilioClient(accountSid);
+  const { taskChannelUniqueName, taskQueueSid, attributes } =
+    await client.taskrouter.v1.workspaces
+      .get(await getWorkspaceSid(accountSid))
+      .tasks.get(taskSid)
+      .fetch();
+
+  await triggerPostStudioFlow({
+    accountSid,
+    taskSid,
+    taskAttributes: JSON.parse(attributes),
+    taskQueueSid: taskQueueSid as TaskQueueSID,
+    taskChannelUniqueName,
+  });
+  return newOk({ message: 'Post Studio Flow Triggered' });
+};
