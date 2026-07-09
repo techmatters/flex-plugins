@@ -29,7 +29,7 @@ import { newErr, newOk, Result } from '../Result';
 import {
   getAccountAuthToken,
   getChatServiceSid,
-  getTwilioWorkspaceSid,
+  getWorkspaceSid,
 } from '@tech-matters/twilio-configuration';
 import { AccountSID } from '@tech-matters/twilio-types';
 
@@ -161,7 +161,7 @@ export const handleChatbotCallbackCleanup: AccountScopedHandler = async (
       .fetch();
 
     const chatServiceSid = await getChatServiceSid(accountSid);
-    const twilioWorkspaceSid = await getTwilioWorkspaceSid(accountSid);
+    const twilioWorkspaceSid = await getWorkspaceSid(accountSid);
 
     if (!conversation) {
       channel = await twilioClient.chat.v2

@@ -21,6 +21,7 @@ import * as Flex from '@twilio/flex-ui';
 import { hasTaskControl, isTransferring } from '../transfer/transferTaskState';
 import { TransfersNotifications } from '../transfer/setUpTransferActions';
 import { getAseloFeatureFlags, getHrmConfig } from '../hrmConfig';
+import { isTwilioTask } from '../types/types';
 
 export const ConferenceNotifications = {
   UnholdParticipantsNotification: 'ConferenceNotifications_UnholdParticipantsNotification',
@@ -70,14 +71,16 @@ export const setUpConferenceActions = () => {
     }
   });
 
-  Flex.Actions.addListener('beforeAcceptTask', payload => {
+  Flex.Actions.addListener('beforeAcceptTask', (payload: { conferenceOptions: any; task: ITask }) => {
     if (getAseloFeatureFlags().enable_conference_status_event_handler) {
       const { accountScopedLambdaBaseUrl, postStudioFlows } = getHrmConfig();
-      const { conferenceOptions } = payload;
+      const { conferenceOptions, task } = payload;
       if (conferenceOptions) {
         conferenceOptions.conferenceStatusCallback = `${accountScopedLambdaBaseUrl}/conference/conferenceStatusCallback`;
         conferenceOptions.conferenceStatusCallbackMethod = 'POST';
-        conferenceOptions.endConferenceOnExit = !postStudioFlows.voice;
+        conferenceOptions.endConferenceOnExit =
+          !isTwilioTask(task) ||
+          (postStudioFlows?.[task.queueSid]?.flowTrigger ?? postStudioFlows?.voice?.flowTrigger) !== 'inProgressCall';
         conferenceOptions.conferenceStatusCallbackEvent = ['leave', 'join'].toString();
       }
     }
