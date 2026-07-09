@@ -217,30 +217,6 @@ export const handleEvent = async (
     number: identifier,
   };
 
-  if (channel === ('voicemail' as any)) {
-    const recordingResult = await getExternalRecordingS3Location({
-      accountSid,
-      callSid: taskAttributes.callSid,
-    });
-
-    console.log('>>>>>>', recordingResult);
-
-    if (isOk(recordingResult)) {
-      newContact.conversationMedia = [
-        {
-          storeType: 'S3',
-          storeTypeSpecificData: {
-            type: 'recording',
-            location: {
-              bucket: recordingResult.data.bucket,
-              key: recordingResult.data.key,
-            },
-          },
-        },
-      ];
-    }
-  }
-
   console.debug('Creating HRM contact with timeOfContact:', newContact.timeOfContact);
 
   const prepopulate = usePrepopulateMappings
@@ -271,6 +247,42 @@ export const handleEvent = async (
   const { id, timeOfContact: savedTimeOfContactString } = responseResult.data;
   const savedTimeOfContactDate = parseISO(savedTimeOfContactString);
   console.info(`Created HRM contact with id ${id} for task ${taskSid}`);
+
+  if (channel === ('voicemail' as any)) {
+    console.info(
+      `Channel type is ${channel}, adding conversation media with call sid ${taskAttributes.callSid}`,
+    );
+    const recordingResult = await getExternalRecordingS3Location({
+      accountSid,
+      callSid: taskAttributes.callSid,
+    });
+
+    if (isOk(recordingResult)) {
+      const conversationMedia = [
+        {
+          storeType: 'S3',
+          storeTypeSpecificData: {
+            type: 'recording',
+            location: {
+              bucket: recordingResult.data.bucket,
+              key: recordingResult.data.key,
+            },
+          },
+        },
+      ];
+
+      const conversationMediaResult = await postToInternalHrmEndpoint<
+        HrmContact['conversationMedia'],
+        HrmContact
+      >(
+        hrmAccountId,
+        hrmApiVersion,
+        `/contacts/${id}/conversationMedia`,
+        conversationMedia,
+      );
+      console.debug(`[SENSITIVE] Conversation media result ${conversationMediaResult}`);
+    }
+  }
 
   const taskContext = client.taskrouter.v1.workspaces
     .get(twilioWorkspaceSid)
