@@ -129,26 +129,6 @@ const triggerPostStudioFlowTaskRouterListener: TaskRouterEventHandler = async (
               `${logPrefix} Only valid for redirecting to studio flow if there is only one connected participant on the conference`,
             );
           }
-        } else if (studioFlowIdentifier.flowTrigger === 'rest') {
-          console.debug(
-            `${logPrefix} Initiating post studio flow ${studioFlowIdentifier} configured for ${taskChannelUniqueName} via REST API - contact ${contactId}, task: ${taskSid}`,
-          );
-          await client.studio.v2.flows.get(studioFlowIdentifier).executions.create({
-            from: taskAttributes.to,
-            parameters: {
-              contactId,
-              contactTaskSid: taskSid,
-              lastQueueSid,
-            },
-            to: taskAttributes.from,
-          });
-          console.debug(
-            `${logPrefix} Initiated post studio flow ${studioFlowIdentifier} configured for ${taskChannelUniqueName} via REST API - contact ${contactId}, task: ${taskSid}, removing participants`,
-          );
-          client.conferences.get(conference.sid).participants.each(p => p.remove());
-          console.debug(
-            `${logPrefix} Removed participants from conference ${conference.sid}.`,
-          );
         } else {
           console.warn(
             `${logPrefix} Only tasks with a taskChannelUniqueName of 'voice' and a conference object in the attributes are supported for post task studio flows`,
@@ -156,13 +136,34 @@ const triggerPostStudioFlowTaskRouterListener: TaskRouterEventHandler = async (
             `conference: ${conference}`,
           );
         }
-
-        console.info(`${logPrefix} Finished handling post studio flow trigger.`);
+      } else if (studioFlowIdentifier?.flowTrigger === 'rest') {
+        console.debug(
+          `${logPrefix} Initiating post studio flow ${studioFlowIdentifier} configured for ${taskChannelUniqueName} via REST API - contact ${contactId}, task: ${taskSid}`,
+        );
+        await client.studio.v2.flows
+          .get(studioFlowIdentifier.studioFlowSid)
+          .executions.create({
+            from: taskAttributes.to,
+            parameters: {
+              contactId,
+              contactTaskSid: taskSid,
+              taskQueueSid,
+            },
+            to: taskAttributes.from,
+          });
+        console.debug(
+          `${logPrefix} Initiated post studio flow ${studioFlowIdentifier} configured for ${taskChannelUniqueName} via REST API - contact ${contactId}, task: ${taskSid}, removing participants`,
+        );
+        client.conferences.get(conference.sid).participants.each(p => p.remove());
+        console.debug(
+          `${logPrefix} Removed participants from conference ${conference.sid}.`,
+        );
       } else {
         console.debug(
-          `Invalid post studio flow configured for ${lastQueueSid}: ${studioFlowIdentifier}`,
+          `No / Invalid post studio flow configured for ${taskQueueSid}: ${studioFlowIdentifier}`,
         );
       }
+      console.info(`${logPrefix} Finished handling post studio flow trigger.`);
     }
   } catch (err) {
     console.error(
