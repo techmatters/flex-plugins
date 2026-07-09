@@ -31,7 +31,7 @@ const ConferenceMonitor: React.FC<Props> = ({ conference, task }) => {
   const isAgentOnConferenceWithIvrPostSurvey = (participant: ConferenceParticipant) => {
     return (
       (postStudioFlows[task.queueSid] ?? postStudioFlows.voice)?.flowTrigger === 'inProgressCall' &&
-      ['agent', 'worker'].includes(participant.participantType)
+      ['agent', 'worker', 'supervisor'].includes(participant.participantType)
     );
   };
   const [updating, setUpdating] = React.useState(false);
@@ -99,6 +99,8 @@ const ConferenceMonitor: React.FC<Props> = ({ conference, task }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [conferenceSource?.conferenceSid, conferenceSource?.participants, conferenceSource],
   );
+
+  const participantStateForEffect = conferenceSource?.participants?.map(p => [p.callSid, p.status]);
 
   // eslint-disable-next-line sonarjs/cognitive-complexity
   React.useEffect(

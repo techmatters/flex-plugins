@@ -18,7 +18,7 @@ import {
   registerTaskRouterEventHandler,
   TaskRouterEventHandler,
 } from '../taskrouter/taskrouterEventHandler';
-import { AccountSID, TaskQueueSID, TaskSID } from '@tech-matters/twilio-types';
+import { AccountSID, CallSid, TaskQueueSID, TaskSID } from '@tech-matters/twilio-types';
 import TwilioSDK from 'twilio';
 import { TASK_COMPLETED, TASK_WRAPUP } from '../taskrouter/eventTypes';
 import { EventFields } from '../taskrouter';
@@ -53,12 +53,14 @@ const triggerPostStudioFlow = async ({
   taskQueueSid,
   taskChannelUniqueName,
   taskAttributes,
+  targetCallSid,
 }: {
   accountSid: AccountSID;
   taskSid: TaskSID;
   taskChannelUniqueName: string;
   taskQueueSid: TaskQueueSID;
   taskAttributes: Record<string, any>;
+  targetCallSid?: CallSid;
 }) => {
   const client = await getTwilioClient(accountSid);
   const logPrefix = `[Post Survey Studio Flow - ${accountSid}/${taskSid}]:`;
@@ -87,22 +89,17 @@ const triggerPostStudioFlow = async ({
             `${logPrefix} ${allParticipants.length} participants on conference: ${conference.sid}.`,
             allParticipants,
           );
-          const connectedParticipants = allParticipants.filter(
-            p => p.status === 'connected',
+          const targetParticipants = allParticipants.filter(
+            p =>
+              (!targetCallSid || p.callSid === targetCallSid) && p.status === 'connected',
           );
           console.debug(
-            `${logPrefix} ${connectedParticipants.length} participants on conference: ${conference.sid}.`,
-            connectedParticipants,
+            `${logPrefix} ${targetParticipants.length} participants on conference: ${conference.sid}.`,
+            targetParticipants,
           );
-          if (connectedParticipants.length === 1) {
-            const [participant] = connectedParticipants;
+          if (targetParticipants.length === 1) {
+            const [participant] = targetParticipants;
             try {
-              await participant.update({
-                hold: true,
-              });
-              console.debug(
-                `${logPrefix} Put participant ${participant.callSid} from conference ${conference.sid} on hold.`,
-              );
               const twiml = new VoiceResponse();
               twiml.redirect(
                 `${studioWebhookUrl}?Trigger=inProgressCall&contactId=${contactId}&taskSid=${taskSid}`,
@@ -126,7 +123,7 @@ const triggerPostStudioFlow = async ({
             }
           } else {
             console.debug(
-              `${logPrefix} Only valid for redirecting to studio flow if there is only one connected participant on the conference`,
+              `${logPrefix} Only valid for redirecting to studio flow if there is only one connected participant on the conference or a connected target specified`,
             );
           }
         } else {
@@ -185,7 +182,7 @@ export const triggerPostStudioFlowHandler: AccountScopedHandler = async (
   event,
   accountSid,
 ) => {
-  const { taskSid } = event.body;
+  const { taskSid, targetCallSid } = event.body;
   const client = await getTwilioClient(accountSid);
   const { taskChannelUniqueName, taskQueueSid, attributes } =
     await client.taskrouter.v1.workspaces
@@ -199,6 +196,7 @@ export const triggerPostStudioFlowHandler: AccountScopedHandler = async (
     taskAttributes: JSON.parse(attributes),
     taskQueueSid: taskQueueSid as TaskQueueSID,
     taskChannelUniqueName,
+    targetCallSid,
   });
   return newOk({ message: 'Post Studio Flow Triggered' });
 };

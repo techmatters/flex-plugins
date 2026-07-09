@@ -15,13 +15,12 @@
  */
 
 import fetchProtectedApi from './fetchProtectedApi';
-import { getAseloFeatureFlags } from '../hrmConfig';
-import { TaskSID } from '../types/twilio';
+import { CallSID, TaskSID } from '../types/twilio';
 
-export const triggerPostStudioFlow = async (taskSid: TaskSID) => {
+export const triggerPostStudioFlow = async (taskSid: TaskSID, targetCallSid?: CallSID) => {
   return fetchProtectedApi(
     '/studioFlow/triggerPostStudioFlow',
-    { taskSid },
+    { taskSid, targetCallSid },
     {
       useTwilioLambda: true,
     },

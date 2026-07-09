@@ -24,7 +24,7 @@ import * as conferenceApi from '../../../services/conferenceService';
 import { newHangUpByStateManager } from '../../../hangUpByState';
 import { triggerPostStudioFlow } from '../../../services/studioService';
 import { getHrmConfig } from '../../../hrmConfig';
-import { TaskSID } from '../../../types/twilio';
+import {CallSID, TaskSID} from '../../../types/twilio';
 
 type Props = Partial<ParticipantCanvasChildrenProps>;
 const REMOVE_PARTICIPANT_KEY = 'Conference-Participant-Remove';
@@ -43,13 +43,12 @@ const RemoveParticipantButton: React.FC<Props> = ({ participant, task }) => {
       try {
         const { postStudioFlows } = getHrmConfig();
         if (participant.participantType === 'customer' && (postStudioFlows.voice || postStudioFlows[task.queueSid])) {
-          await triggerPostStudioFlow(task.taskSid as TaskSID);
-        } else {
-          await conferenceApi.removeParticipant({
-            callSid: participant.callSid,
-            conferenceSid: task.conference.conferenceSid,
-          });
+          await triggerPostStudioFlow(task.taskSid as TaskSID, participant.callSid as CallSID);
         }
+        await conferenceApi.removeParticipant({
+          callSid: participant.callSid,
+          conferenceSid: task.conference.conferenceSid,
+        });
       } catch (err) {
         Notifications.showNotificationSingle(ConferenceNotifications.ErrorUpdatingParticipantNotification);
       } finally {

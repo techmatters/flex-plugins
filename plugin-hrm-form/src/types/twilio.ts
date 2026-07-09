@@ -23,3 +23,4 @@ export type WorkerSID = `WK${string}`;
 export type TaskSID = typeof standaloneTaskSid | `${'WT'|'offline-contact-task'}${string}`;
 export type StudioFlowSID = `FW${string}`;
 
+export type CallSID = `CA${string}`;
