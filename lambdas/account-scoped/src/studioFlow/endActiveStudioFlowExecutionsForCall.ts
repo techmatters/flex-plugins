@@ -36,7 +36,7 @@ export const endActiveStudioFlowExecutionsForCall = async (
       const { studioFlowSid } = postStudioFlow;
       const activeExecutions = await client.studio.v2.flows
         .get(studioFlowSid)
-        .executions.list({ status: 'active', limit: 50 } as any);
+        .executions.list({ status: 'active', limit: 50 });
       (activeExecutions.length ? console.info : console.debug)(
         `${logPrefix} ${activeExecutions.length} active executions detected for flow ${studioFlowSid}`,
       );
