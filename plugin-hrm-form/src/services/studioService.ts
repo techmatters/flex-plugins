@@ -1,5 +1,3 @@
-import { standaloneTaskSid } from './types';
-
 /**
  * Copyright (C) 2021-2023 Technology Matters
  * This program is free software: you can redistribute it and/or modify
@@ -15,13 +13,16 @@ import { standaloneTaskSid } from './types';
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
-// We should start using these types in preference to strings for the relevant SIDs to reduce scope for silly errors.
 
-// eslint-disable-next-line prettier/prettier
-export type AccountSID =`AC${string}`;
-export type WorkerSID = `WK${string}`;
-export type TaskQueueSID = `WQ${string}`;
-export type TaskSID = typeof standaloneTaskSid | `${'WT'|'offline-contact-task'}${string}`;
-export type StudioFlowSID = `FW${string}`;
+import fetchProtectedApi from './fetchProtectedApi';
+import { CallSID, TaskSID } from '../types/twilio';
 
-export type CallSID = `CA${string}`;
+export const triggerPostStudioFlow = async (taskSid: TaskSID, targetCallSid?: CallSID) => {
+  return fetchProtectedApi(
+    '/studioFlow/triggerPostStudioFlow',
+    { taskSid, targetCallSid },
+    {
+      useTwilioLambda: true,
+    },
+  );
+};
