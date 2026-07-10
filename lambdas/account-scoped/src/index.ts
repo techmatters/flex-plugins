@@ -21,7 +21,7 @@ import { isErr, newErr } from './Result';
 import {
   convertHttpErrorResultToALBResult,
   notFoundResponse,
-  okJsonResponse,
+  okJsonResponse, okTextResponse,
   okXmlResponse,
 } from './albResponses';
 
@@ -93,7 +93,7 @@ export const handler = async (event: ALBEvent): Promise<ALBResult> => {
         case 'json':
           return okJsonResponse(result.unwrap());
         case 'text':
-          return result.unwrap().toString();
+          return okTextResponse(result.unwrap());
         case 'xml':
           return okXmlResponse(result.unwrap().toString());
       }
