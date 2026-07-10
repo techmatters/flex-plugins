@@ -172,7 +172,7 @@ const readConfig = () => {
       enableConferencing,
       hideAddToNewCaseButton,
       // eslint-disable-next-line prettier/prettier
-      postStudioFlows: (postStudioFlows ?? {}) as Record<`FW${string}` | 'voice' | 'chat' , any>,
+      postStudioFlows: (postStudioFlows ?? {}) as Record<`FW${string}` | 'voice' | 'chat' , { flowTrigger: 'inProgressCall' | 'rest', studioFlowSid: StudioFlowSID }>,
     },
     referrableResources: {
       resourcesBaseUrl,

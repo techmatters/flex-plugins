@@ -20,6 +20,7 @@ import { standaloneTaskSid } from './types';
 // eslint-disable-next-line prettier/prettier
 export type AccountSID =`AC${string}`;
 export type WorkerSID = `WK${string}`;
+export type TaskQueueSID = `WQ${string}`;
 export type TaskSID = typeof standaloneTaskSid | `${'WT'|'offline-contact-task'}${string}`;
 export type StudioFlowSID = `FW${string}`;
 

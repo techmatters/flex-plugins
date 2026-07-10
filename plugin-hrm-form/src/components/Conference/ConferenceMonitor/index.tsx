@@ -20,6 +20,8 @@ import { Conference } from '@twilio/flex-ui/src/state/Conferences';
 import { hasTaskControl, isOriginalReservation, isTransferring } from '../../../transfer/transferTaskState';
 import * as conferenceApi from '../../../services/conferenceService';
 import { getHrmConfig } from '../../../hrmConfig';
+import { getVoicePostStudioFlowSettings } from '../../../postStudioFlow';
+import { TaskQueueSID } from '../../../types/twilio';
 
 const isJoinedWithEnd = (p: ConferenceParticipant) => p.status === 'joined' && p.mediaProperties.endConferenceOnExit;
 const isJoinedWithoutEnd = (p: ConferenceParticipant) =>
@@ -30,12 +32,11 @@ type Props = TaskContextProps;
 const ConferenceMonitor: React.FC<Props> = ({ conference, task }) => {
   const isAgentOnConferenceWithIvrPostSurvey = (participant: ConferenceParticipant) => {
     return (
-      (postStudioFlows[task.queueSid] ?? postStudioFlows.voice)?.flowTrigger === 'inProgressCall' &&
+      getVoicePostStudioFlowSettings(task.queueSid as TaskQueueSID).flowTrigger === 'inProgressCall' &&
       ['agent', 'worker', 'supervisor'].includes(participant.participantType)
     );
   };
   const [updating, setUpdating] = React.useState(false);
-  const { postStudioFlows } = getHrmConfig();
 
   const conferenceSource: Partial<Conference> = conference?.source ?? {};
 
@@ -46,15 +47,15 @@ const ConferenceMonitor: React.FC<Props> = ({ conference, task }) => {
     thisInstanceShouldMonitor &&
     Boolean(participants && conferenceSid) &&
     status === 'active' &&
-    (participants.filter(p => p.status === 'joined').length > 2 || postStudioFlows.voice) &&
-    participants.some(isJoinedWithEnd);
+    participants.filter(p => p.status === 'joined').length > 2 &&
+    participants.some(p => isJoinedWithEnd(p) || isAgentOnConferenceWithIvrPostSurvey(p));
 
   const shouldEnableEndConferenceOnExit = ({ participants, conferenceSid, status }: Partial<Conference>) =>
     thisInstanceShouldMonitor &&
     Boolean(participants && conferenceSid) &&
     status === 'active' &&
     participants.filter(p => p.status === 'joined').length <= 2 &&
-    participants.some(isJoinedWithoutEnd);
+    participants.some(p => isJoinedWithoutEnd(p) && !isAgentOnConferenceWithIvrPostSurvey(p));
 
   const updateEndConferenceOnExit = React.useCallback(
     (endConferenceOnExit: boolean) => async (participant: ConferenceParticipant) => {
@@ -99,8 +100,6 @@ const ConferenceMonitor: React.FC<Props> = ({ conference, task }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [conferenceSource?.conferenceSid, conferenceSource?.participants, conferenceSource],
   );
-
-  const participantStateForEffect = conferenceSource?.participants?.map(p => [p.callSid, p.status]);
 
   // eslint-disable-next-line sonarjs/cognitive-complexity
   React.useEffect(
