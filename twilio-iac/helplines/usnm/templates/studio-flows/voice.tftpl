@@ -314,7 +314,7 @@ ${
         "method": "POST",
         "content_type": "application/json;charset=utf-8",
         "add_twilio_auth": false,
-        "body": "{\"channel\": \"sms\", \"includeMessageTextInResponse\": \"true\", \"language\": \"en-USNM\"}",
+        "body": "{\"channel\": \"voice\", \"includeMessageTextInResponse\": \"true\", \"language\": \"en-USNM\"}",
         "url": "${lambda_twilio_account_scoped_url}/operatingHours"
       }
     },
@@ -655,6 +655,7 @@ ${
       "type": "send-to-flex",
       "transitions": [
         {
+          "next": "record_voicemail_en_no_service_tya",
           "event": "callComplete"
         },
         {
@@ -666,6 +667,7 @@ ${
         }
       ],
       "properties": {
+        "waitUrl": "${flow_vars.custom_functions_url}/postQueueMonitor?Language=english",
         "offset": {
           "x": -2452,
           "y": 4165
@@ -777,6 +779,7 @@ ${
       "type": "send-to-flex",
       "transitions": [
         {
+          "next": "record_voicemail_en_no_service_std",
           "event": "callComplete"
         },
         {
@@ -788,6 +791,7 @@ ${
         }
       ],
       "properties": {
+        "waitUrl": "${flow_vars.custom_functions_url}/postQueueMonitor?Language=english",
         "offset": {
           "x": -1312,
           "y": 4192
@@ -982,6 +986,7 @@ ${
       "type": "send-to-flex",
       "transitions": [
         {
+          "next": "record_voicemail_en_no_service_fcg",
           "event": "callComplete"
         },
         {
@@ -993,6 +998,7 @@ ${
         }
       ],
       "properties": {
+        "waitUrl": "${flow_vars.custom_functions_url}/postQueueMonitor?Language=english",
         "offset": {
           "x": -342,
           "y": 4176
@@ -1261,6 +1267,7 @@ ${
       "type": "send-to-flex",
       "transitions": [
         {
+          "next": "record_voicemail_es_no_service_std",
           "event": "callComplete"
         },
         {
@@ -1272,6 +1279,7 @@ ${
         }
       ],
       "properties": {
+        "waitUrl": "${flow_vars.custom_functions_url}/postQueueMonitor?Language=spanish",
         "offset": {
           "x": 661,
           "y": 4117
@@ -1502,6 +1510,7 @@ ${
       "type": "send-to-flex",
       "transitions": [
         {
+          "next": "record_voicemail_es_no_service_tya",
           "event": "callComplete"
         },
         {
@@ -1513,6 +1522,7 @@ ${
         }
       ],
       "properties": {
+        "waitUrl": "${flow_vars.custom_functions_url}/postQueueMonitor?Language=spanish",
         "offset": {
           "x": 1964,
           "y": 4160
@@ -2509,6 +2519,82 @@ ${
         "attributes": "{\n  \"type\": \"inbound\",\n   \"name\": \"{{trigger.call.From}}\",\n  \"ignoreAgent\": \"\",\n  \"helpline\":\"${helpline}\",\n  \"transferTargetType\": \"\",\n   \"service\" :\"tya\",\n   \"serviceLanguage\": \"spanish\",\n  \"channelType\": \"voicemail\",\n  \"conversations\": {\n    \"hang_up_by\": \"Customer\"\n  }\n}\n",
         "priority": "0",
         "timeout": "3600"
+      }
+    },
+    {
+      "name": "record_voicemail_en_no_service_std",
+      "type": "record-voicemail",
+      "transitions": [
+        {
+          "next": "send_to_queue_en_no_service_std_voicemail",
+          "event": "recordingComplete"
+        },
+        {
+          "event": "noAudio"
+        },
+        {
+          "event": "hangup"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": -1578,
+          "y": 3909
+        },
+        "play_beep": "true",
+        "timeout": 5,
+        "max_length": 3600
+      }
+    }, 
+    {
+      "name": "send_to_queue_en_no_service_std_voicemail",
+      "type": "send-to-flex",
+      "transitions": [
+        {
+          "event": "callComplete"
+        },
+        {
+          "event": "failedToEnqueue"
+        },
+        {
+          "event": "callFailure"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": -1658,
+          "y": 4279
+        },
+        "workflow": "WW5268eac36ea6b789c8a75fa683992f88",
+        "channel": "TC805b8e199a636538cbb8627ef8e68435",
+        "attributes": "{\n  \"type\": \"inbound\",\n   \"name\": \"{{trigger.call.From}}\",\n  \"ignoreAgent\": \"\",\n  \"helpline\":\"NAMI\",\n  \"transferTargetType\": \"\",\n   \"service\" :\"std\",\n   \"serviceLanguage\": \"english\",\n  \"channelType\": \"voicemail\",\n  \"conversations\": {\n    \"hang_up_by\": \"Customer\"\n  }\n}\n",
+        "priority": "0",
+        "timeout": "3600"
+      }
+    },
+    {
+      "name": "record_voicemail_es_no_service_std",
+      "type": "record-voicemail",
+      "transitions": [
+        {
+          "next": "send_to_queue_es_no_service_tya_voicemail",
+          "event": "recordingComplete"
+        },
+        {
+          "event": "noAudio"
+        },
+        {
+          "event": "hangup"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 997,
+          "y": 4021
+        },
+        "play_beep": "true",
+        "timeout": 5,
+        "max_length": 3600
       }
     }
   ]
