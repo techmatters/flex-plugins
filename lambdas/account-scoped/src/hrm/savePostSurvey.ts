@@ -47,7 +47,7 @@ const flattenOneToMany =
     return { ...accum, ...values };
   };
 /**
- * Given the config for the post survey and the bot's memory, returns the collected answers in the fomat it's stored in HRM.
+ * Given the config for the post survey and the bot's memory, returns the collected answers in the format it's stored in HRM.
  */
 export const buildDataObject = (
   oneToManyConfigSpecs: LegacyOneToManyConfigSpec[],

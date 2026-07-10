@@ -21,7 +21,6 @@ import * as Flex from '@twilio/flex-ui';
 import { hasTaskControl, isTransferring } from '../transfer/transferTaskState';
 import { TransfersNotifications } from '../transfer/setUpTransferActions';
 import { getAseloFeatureFlags, getHrmConfig } from '../hrmConfig';
-import { isTwilioTask } from '../types/types';
 
 export const ConferenceNotifications = {
   UnholdParticipantsNotification: 'ConferenceNotifications_UnholdParticipantsNotification',
