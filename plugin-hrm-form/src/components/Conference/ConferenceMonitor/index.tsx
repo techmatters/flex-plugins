@@ -19,7 +19,6 @@ import { Conference } from '@twilio/flex-ui/src/state/Conferences';
 
 import { hasTaskControl, isOriginalReservation, isTransferring } from '../../../transfer/transferTaskState';
 import * as conferenceApi from '../../../services/conferenceService';
-import { getHrmConfig } from '../../../hrmConfig';
 import { getVoicePostStudioFlowSettings } from '../../../postStudioFlow';
 import { TaskQueueSID } from '../../../types/twilio';
 
