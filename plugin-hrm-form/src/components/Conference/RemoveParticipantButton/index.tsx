@@ -57,6 +57,7 @@ const RemoveParticipantButton: React.FC<Props> = ({ participant, task }) => {
         }
       } catch (err) {
         Notifications.showNotificationSingle(ConferenceNotifications.ErrorUpdatingParticipantNotification);
+        console.error(err);
       } finally {
         setIsLoading(false);
       }
