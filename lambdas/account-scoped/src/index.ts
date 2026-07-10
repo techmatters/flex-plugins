@@ -21,7 +21,8 @@ import { isErr, newErr } from './Result';
 import {
   convertHttpErrorResultToALBResult,
   notFoundResponse,
-  okJsonResponse, okTextResponse,
+  okJsonResponse,
+  okTextResponse,
   okXmlResponse,
 } from './albResponses';
 
