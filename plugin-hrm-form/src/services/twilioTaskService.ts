@@ -113,8 +113,12 @@ export const getTaskAndReservations = async (taskSid: string): Promise<GetTaskAn
   };
   try {
     const res = await fetchProtectedApi(`/task/getTaskAndReservations`, body, { ...options, useTwilioLambda: true });
-    if (res?.task) {
-      res.task.status = res.task.status ?? res.task.assignmentStatus;
+    const { task } = res ?? {};
+    if (task) {
+      task.status = task.status ?? task.assignmentStatus;
+    }
+    if (typeof task.attributes === 'string') {
+      task.attributes = JSON.parse(task.attributes);
     }
     return res;
   } catch (error) {
