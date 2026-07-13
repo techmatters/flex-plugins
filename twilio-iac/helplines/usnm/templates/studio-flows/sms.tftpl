@@ -386,7 +386,7 @@ ${
       }
     },
     {
-      "name": "send_message_sms_blocked_severity_level_1_acceptable_use_policy",
+      "name": "send_message_sms_blocked_level_1_acceptable_use_policy",
       "type": "send-message",
       "transitions": [
         {
@@ -406,11 +406,11 @@ ${
         "from": "NAMI",
         "message_type": "custom",
         "to": "{{contact.channel.address}}",
-        "body": "${flow_vars.send_message_sms_blocked_severity_level_1_acceptable_use_policy}"
+        "body": "${flow_vars.send_message_sms_blocked_level_1_acceptable_use_policy}"
       }
     },
     {
-      "name": "send_message_sms_blocked__level_2_access_policy",
+      "name": "send_message_sms_blocked_level_2_access_policy",
       "type": "send-message",
       "transitions": [
         {
@@ -430,7 +430,7 @@ ${
         "from": "NAMI",
         "message_type": "custom",
         "to": "{{contact.channel.address}}",
-        "body": "${flow_vars.send_message_sms_blocked__level_2_access_policy}"
+        "body": "${flow_vars.send_message_sms_blocked_level_2_access_policy}"
       }
     },
     {
