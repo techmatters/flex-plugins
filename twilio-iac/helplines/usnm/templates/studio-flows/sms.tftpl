@@ -315,6 +315,7 @@ ${
       "type": "send-to-flex",
       "transitions": [
         {
+          "next": "f_conversationTimeDelay_initiliaze",
           "event": "callComplete"
         },
         {
@@ -1236,6 +1237,7 @@ ${
       "type": "send-to-flex",
       "transitions": [
         {
+          "next": "f_conversationTimeDelay_initiliaze",
           "event": "callComplete"
         },
         {
@@ -1263,6 +1265,7 @@ ${
       "type": "send-to-flex",
       "transitions": [
         {
+          "next": "f_conversationTimeDelay_initiliaze",
           "event": "callComplete"
         },
         {
@@ -1491,7 +1494,7 @@ ${
             {
               "friendly_name": "If value equal_to open",
               "arguments": [
-                "{{widgets.f_operatingHours.parsed.status}}"
+                "{{widgets.f_operatingHours_std.parsed.status}}"
               ],
               "type": "equal_to",
               "value": "open"
