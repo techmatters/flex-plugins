@@ -16,6 +16,9 @@ locals {
       custom_functions_url                                            = "https://custom-functions-4084.twil.io"
       usnm_recordings_url                                             = "https://usnm-recordings-5770.twil.io"
       is_skilled_worker_available_function_sid                        = "ZH85007840bfdc6245a8ffb08d98aad0eb"
+      conversation_time_delay_function_sid                            = "ZH45e11e1929796c69c440a52f9692c085"
+      is_task_in_queue_function_sid                                   = "ZH39ee1bcce2b12e22091c0a0249f3a50b"
+      cancel_pending_task_function_sid                                = "ZH373b00896c33f2d6343bfea6483de7eb"
       workspace_sid                                                   = "WSb9cb11d86ddcb7954dcdd20c391a7edc"
       custom_functions_service_id                                     = "ZSa976031394bdc8b5e95dc8c81e95f1e0"
       custom_functions_environment_id                                 = "ZE249accc6e2a97eb70428aba674cba636"
@@ -38,6 +41,8 @@ locals {
       send_wait_sms_no_tya_service                                    = "There are currently no Teen and Young Adult HelpLine Specialists available. Reply 1 to return to the standard SMS service or STOP to end your conversation. Info and resources are online at https://www.nami.org/nami-helpline/.  Email helpline@nami.org and we'll respond in 1-2 business days."
       send_wait_sms_no_fcg_service                                    = "There are currently no Family Caregiver HelpLine Specialists available. Reply 1 to return to the standard SMS service or STOP to end your conversation. Info and resources are online at https://www.nami.org/nami-helpline/.  Email helpline@nami.org and we'll respond in 1-2 business days."
       send_message_sms_max_retries                                    = "We haven't received a response, so we'll end this conversation for now. If you need support from the NAMI HelpLine, you can start a new conversation anytime."
+      send_message_sms_post_queue_closed                              = "We are sorry, the helpline has closed. Please, feel free to reach again later. Good bye."
+      send_message_sms_post_queue_keep_waiting                        = "Thank you for your patience, a specialist will be with you shortly."
     }
 
 

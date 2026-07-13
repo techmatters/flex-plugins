@@ -1586,6 +1586,434 @@ ${
         "to": "{{contact.channel.address}}",
         "body": "${flow_vars.send_message_sms_fcg_info}"
       }
+    },
+    {
+      "name": "f_conversationTimeDelay",
+      "type": "run-function",
+      "transitions": [
+        {
+          "next": "split_set_timeout_var",
+          "event": "success"
+        },
+        {
+          "next": "split_set_timeout_var",
+          "event": "fail"
+        }
+      ],
+      "properties": {
+        "service_sid": "${flow_vars.custom_functions_service_id}",
+        "environment_sid": "${flow_vars.custom_functions_environment_id}",
+        "offset": {
+          "x": -131,
+          "y": 5523
+        },
+        "function_sid": "${flow_vars.conversation_time_delay_function_sid}",
+        "parameters": [
+          {
+            "value": "60",
+            "key": "maxWaitSeconds"
+          },
+          {
+            "value": "5",
+            "key": "delaySeconds"
+          },
+          {
+            "value": "{{widgets.f_conversationTimeDelay_initiliaze.parsed.startTime}}",
+            "key": "startTime"
+          }
+        ],
+        "url": "${flow_vars.custom_functions_url}/conversationTimeDelay"
+      }
+    },
+    {
+      "name": "split_timeout",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "f_conversationTimeDelay",
+          "event": "noMatch"
+        },
+        {
+          "next": "f_conversationTimeDelay",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to false",
+              "arguments": [
+                "{{widgets.function_1.parsed.timedOut}}"
+              ],
+              "type": "equal_to",
+              "value": "false"
+            }
+          ]
+        },
+        {
+          "next": "f_isTaskInQueue",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to true",
+              "arguments": [
+                "{{widgets.function_1.parsed.timedOut}}"
+              ],
+              "type": "equal_to",
+              "value": "true"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{flow.variables.timeout}}",
+        "offset": {
+          "x": 263,
+          "y": 5415
+        }
+      }
+    },
+    {
+      "name": "f_conversationTimeDelay_initiliaze",
+      "type": "run-function",
+      "transitions": [
+        {
+          "next": "set_var_timeout_false",
+          "event": "success"
+        },
+        {
+          "next": "set_var_timeout_false",
+          "event": "fail"
+        }
+      ],
+      "properties": {
+        "service_sid": "${flow_vars.custom_functions_service_id}",
+        "environment_sid": "${flow_vars.custom_functions_environment_id}",
+        "offset": {
+          "x": -47,
+          "y": 5151
+        },
+        "function_sid": "${flow_vars.conversation_time_delay_function_sid}",
+        "parameters": [
+          {
+            "value": "60",
+            "key": "maxWaitSeconds"
+          },
+          {
+            "value": "5",
+            "key": "delaySeconds"
+          },
+          {
+            "value": "0",
+            "key": "startTime"
+          }
+        ],
+        "url": "${flow_vars.custom_functions_url}/conversationTimeDelay"
+      }
+    },
+    {
+      "name": "send_message_sms_post_queue_keep_waiting",
+      "type": "send-message",
+      "transitions": [
+        {
+          "next": "f_conversationTimeDelay_initiliaze",
+          "event": "sent"
+        },
+        {
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 362,
+          "y": 6709
+        },
+        "service": "{{trigger.message.InstanceSid}}",
+        "channel": "{{trigger.message.ChannelSid}}",
+        "from": "NAMI",
+        "message_type": "custom",
+        "to": "{{contact.channel.address}}",
+        "body": "${flow_vars.send_message_sms_post_queue_keep_waiting}"
+      }
+    },
+    {
+      "name": "set_var_timeout_false",
+      "type": "set-variables",
+      "transitions": [
+        {
+          "next": "split_timeout",
+          "event": "next"
+        }
+      ],
+      "properties": {
+        "variables": [
+          {
+            "type": "string",
+            "value": "false",
+            "key": "timeout"
+          }
+        ],
+        "offset": {
+          "x": 391,
+          "y": 5242
+        }
+      }
+    },
+    {
+      "name": "set_var_timeout_true",
+      "type": "set-variables",
+      "transitions": [
+        {
+          "next": "split_timeout",
+          "event": "next"
+        }
+      ],
+      "properties": {
+        "variables": [
+          {
+            "type": "string",
+            "value": "true",
+            "key": "timeout"
+          }
+        ],
+        "offset": {
+          "x": 280,
+          "y": 5809
+        }
+      }
+    },
+    {
+      "name": "split_set_timeout_var",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "split_timeout",
+          "event": "noMatch"
+        },
+        {
+          "next": "set_var_timeout_true",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to true",
+              "arguments": [
+                "{{widgets.f_conversationTimeDelay.parsed.timedOut}}"
+              ],
+              "type": "equal_to",
+              "value": "true"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{widgets.f_conversationTimeDelay.parsed.timedOut}}",
+        "offset": {
+          "x": -113,
+          "y": 5731
+        }
+      }
+    },
+    {
+      "name": "f_isTaskInQueue",
+      "type": "run-function",
+      "transitions": [
+        {
+          "next": "split_if_waiting_in_queue",
+          "event": "success"
+        },
+        {
+          "next": "f_conversationTimeDelay_initiliaze",
+          "event": "fail"
+        }
+      ],
+      "properties": {
+        "service_sid": "${flow_vars.custom_functions_service_id}",
+        "environment_sid": "${flow_vars.custom_functions_environment_id}",
+        "offset": {
+          "x": 682,
+          "y": 5662
+        },
+        "function_sid": "${flow_vars.is_task_in_queue_function_sid}",
+        "parameters": [
+          {
+            "value": "{{widgets.send_to_queue_sms_std.routing.properties.sid}}",
+            "key": "TaskSid"
+          },
+          {
+            "value": "{{widgets.send_to_queue_sms_std.routing.properties.workspace_sid}}",
+            "key": "WorkspaceSid"
+          }
+        ],
+        "url": "${flow_vars.custom_functions_url}/isTaskInQueue"
+      }
+    },
+    {
+      "name": "split_if_waiting_in_queue",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "event": "noMatch"
+        },
+        {
+          "next": "f_operatingHours_postqueue",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to true",
+              "arguments": [
+                "{{widgets.f_isTaskInQueue.parsed.isWaitingInQueue}}"
+              ],
+              "type": "equal_to",
+              "value": "true"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{widgets.f_isTaskInQueue.parsed.isWaitingInQueue}}",
+        "offset": {
+          "x": 716,
+          "y": 5896
+        }
+      }
+    },
+    {
+      "name": "f_operatingHours_postqueue",
+      "type": "make-http-request",
+      "transitions": [
+        {
+          "next": "split_status_postqueue",
+          "event": "success"
+        },
+        {
+          "next": "split_status_postqueue",
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 880,
+          "y": 6146
+        },
+        "method": "POST",
+        "content_type": "application/json;charset=utf-8",
+        "add_twilio_auth": false,
+        "body": "{\"channel\": \"sms\", \"includeMessageTextInResponse\": \"true\", \"language\": \"en-USNM\"}",
+        "url": "${lambda_twilio_account_scoped_url}/operatingHours"
+      }
+    },
+    {
+      "name": "split_status_postqueue",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "f_conversationTimeDelay_initiliaze",
+          "event": "noMatch"
+        },
+        {
+          "next": "send_message_sms_post_queue_keep_waiting",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to open",
+              "arguments": [
+                "{{widgets.f_operatingHours.parsed.status}}"
+              ],
+              "type": "equal_to",
+              "value": "open"
+            }
+          ]
+        },
+        {
+          "next": "send_message_sms_post_queue_closed",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to closed",
+              "arguments": [
+                "{{widgets.f_operatingHours.parsed.status}}"
+              ],
+              "type": "equal_to",
+              "value": "closed"
+            }
+          ]
+        },
+        {
+          "next": "send_message_sms_post_queue_closed",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to holiday",
+              "arguments": [
+                "{{widgets.f_operatingHours.parsed.status}}"
+              ],
+              "type": "equal_to",
+              "value": "holiday"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{widgets.f_operatingHours.parsed.status}}",
+        "offset": {
+          "x": 530,
+          "y": 6441
+        }
+      }
+    },
+    {
+      "name": "send_message_sms_post_queue_closed",
+      "type": "send-message",
+      "transitions": [
+        {
+          "next": "f_cancelPendingTask",
+          "event": "sent"
+        },
+        {
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 811,
+          "y": 6702
+        },
+        "service": "{{trigger.message.InstanceSid}}",
+        "channel": "{{trigger.message.ChannelSid}}",
+        "from": "NAMI",
+        "message_type": "custom",
+        "to": "{{contact.channel.address}}",
+        "body": ${flow_vars.send_message_sms_post_queue_closed}"
+      }
+    },
+    {
+      "name": "f_cancelPendingTask",
+      "type": "run-function",
+      "transitions": [
+        {
+          "event": "success"
+        },
+        {
+          "event": "fail"
+        }
+      ],
+      "properties": {
+        "service_sid": "${flow_vars.custom_functions_service_id}",
+        "environment_sid": "${flow_vars.custom_functions_environment_id}",
+        "offset": {
+          "x": 851,
+          "y": 7011
+        },
+        "function_sid": "${flow_vars.cancel_pending_task_function_sid}",
+        "parameters": [
+          {
+            "value": "{{widgets.send_to_queue_sms_std.routing.properties.sid}}",
+            "key": "TaskSid"
+          },
+          {
+            "value": "{{widgets.send_to_queue_sms_std.routing.properties.workspace_sid}}",
+            "key": "WorkspaceSid"
+          }
+        ],
+        "url": "${flow_vars.custom_functions_url}/cancelPendingTask"
+      }
     }
   ]
 })}
