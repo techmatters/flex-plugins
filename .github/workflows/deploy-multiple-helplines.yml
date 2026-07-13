@@ -66,21 +66,6 @@ jobs:
       send-slack-message: ${{ inputs.send_slack_message_per_deploy }}
       invalidate-cache: ${{ inputs.invalidate-cache }}
 
-  deploy-web-chat-helplines:
-    if: inputs.project == 'webchat'
-    strategy:
-      fail-fast: false
-      matrix:
-        short_helplines: ${{ fromJson(inputs.helplines) }}
-        environment: ${{ fromJson(inputs.environments) }}
-    uses: ./.github/workflows/webchat-deploy.yml
-    secrets: inherit
-    with:
-      helpline_code: ${{ matrix.short_helplines }}
-      environment: ${{ matrix.environment }}
-      recaptcha_verify_url: ${{ inputs.recaptcha_verify_url }}
-      send-slack-message: ${{ inputs.send_slack_message_per_deploy }}
-      invalidate-cache: ${{ inputs.invalidate-cache }}
 
   deploy-aselo-webchat-react-app-helplines:
     if: inputs.project == 'aselo-webchat-react-app'
