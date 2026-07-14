@@ -15,9 +15,6 @@
 # Auxiliary Github Action to deploy a flex or webchat to multiple helplines at once
 name: Deploy Multiple Helplines
 inputs:
-  project:
-    description: Project to deploy, e.g. flex, webchat
-    required: true
   helplines:
     description: List of helplines to deploy to (as a JSON array)
     type: string
@@ -55,21 +52,6 @@ jobs:
     with:
       helpline_code: ${{ matrix.short_helplines }}
       environment_code: ${{ matrix.environment }}
-      send-slack-message: ${{ inputs.send_slack_message_per_deploy }}
-
-  deploy-web-chat-helplines:
-    if: inputs.project == 'webchat'
-    strategy:
-      fail-fast: false
-      matrix:
-        short_helplines: ${{ fromJson(inputs.helplines) }}
-        environment: ${{ fromJson(inputs.environments) }}
-    uses: ./.github/workflows/webchat-deploy
-    secrets: inherit
-    with:
-      helpline_code: ${{ matrix.short_helplines }}
-      environment: ${{ matrix.environment }}
-      recaptcha_verify_url: ${{ inputs.recaptcha_verify_url }}
       send-slack-message: ${{ inputs.send_slack_message_per_deploy }}
 
   # Send Slack notifying success
