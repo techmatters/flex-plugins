@@ -74,6 +74,7 @@ import { sendMessageAndRunJanitorHandler } from './conversation/sendMessageAndRu
 import { issueSyncTokenHandler } from './issueSyncToken';
 import { getExternalRecordingS3LocationHandler } from './conversation/getExternalRecordingS3Location';
 import { getMediaUrlHandler } from './conversation/getMediaUrl';
+import { filterCountryOrVoIPHandler } from './voice/filterCountryOrVoIP';
 
 /**
  * Super simple router sufficient for directly ported Twilio Serverless functions
@@ -278,6 +279,10 @@ const ACCOUNTSID_ROUTES: Record<
   issueSyncToken: {
     requestPipeline: [validateFlexTokenRequest({ tokenMode: 'agent' })],
     handler: issueSyncTokenHandler,
+  },
+  'voice/filterCountryOrVoIP': {
+    requestPipeline: [validateWebhookRequest],
+    handler: filterCountryOrVoIPHandler,
   },
 };
 
