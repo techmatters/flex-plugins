@@ -66,9 +66,15 @@ export async function oktaSsoLoginViaApi(
   if (!authenticateResponse.ok()) {
     console.error(`Error calling initial authorize`, await authenticateResponse.text());
   }
-  expect(authenticateResponse.ok());
+  expect(authenticateResponse.ok()).toBe(true);
   // const content = await authenticateResponse.text();
-  const samlLocation = new URL(authenticateResponse.url()).searchParams.get('fromURI')!;
+  const fromUri = new URL(authenticateResponse.url()).searchParams.get('fromURI');
+  if (!fromUri) {
+    throw new Error(
+      `Could not get SAML location (fromURI) from authorize redirect URL: ${authenticateResponse.url()}`,
+    );
+  }
+  const samlLocation = fromUri;
 
   // Login via okta API
   const authnResponse = await apiRequest.post('https://techmatters.okta.com/api/v1/authn', {
@@ -94,6 +100,11 @@ export async function oktaSsoLoginViaApi(
       },
     },
   );
+  if (!redirectResponse.ok()) {
+    console.error(
+      `Cookie redirect failed with status ${redirectResponse.status()}: ${await redirectResponse.text()}`,
+    );
+  }
   expect(redirectResponse.ok()).toBe(true);
 
   // Scrape required SAML response values from the HTML response in the redirected page
@@ -175,8 +186,13 @@ export async function legacyOktaSsoLoginViaApi(
     `https://preview.twilio.com/iam/Accounts/${accountSid}/authenticate`,
     authenticateRequestOptions,
   );
-  expect(authenticateResponse.ok());
+  expect(authenticateResponse.ok()).toBe(true);
   const { location: samlLocation } = await authenticateResponse.json();
+  if (!samlLocation) {
+    throw new Error(
+      `Could not get SAML location from authenticate response: ${await authenticateResponse.text()}`,
+    );
+  }
 
   // Login via okta API
   const authnResponse = await apiRequest.post('https://techmatters.okta.com/api/v1/authn', {
@@ -202,6 +218,11 @@ export async function legacyOktaSsoLoginViaApi(
       },
     },
   );
+  if (!redirectResponse.ok()) {
+    console.error(
+      `Cookie redirect failed with status ${redirectResponse.status()}: ${await redirectResponse.text()}`,
+    );
+  }
   expect(redirectResponse.ok()).toBe(true);
 
   // Scrape required SAML response values from the HTML response in the redirected page
