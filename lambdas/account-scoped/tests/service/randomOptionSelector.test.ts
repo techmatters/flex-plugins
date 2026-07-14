@@ -14,24 +14,24 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { TEST_ACCOUNT_SID } from '../../testTwilioValues';
-import { lambdaAlbFetch } from '../lambdaAlbFetch';
+import { TEST_ACCOUNT_SID } from '../testTwilioValues';
+import { lambdaAlbFetch } from './lambdaAlbFetch';
 
 describe('randomOptionSelector endpoint', () => {
   const path = `/lambda/twilio/account-scoped/${TEST_ACCOUNT_SID}/randomOptionSelector`;
 
   describe('request validation', () => {
-    test('should return 400 if body is not a JSON object', async () => {
+    test('should return 400 if body is not a JSON object (string)', async () => {
       const response = await lambdaAlbFetch(path, {
         method: 'POST',
-        body: 'not a json object',
+        body: JSON.stringify('just a string'),
         headers: {
           'Content-Type': 'application/json',
         },
       });
 
       expect(response.status).toBe(400);
-      const json = await response.json();
+      const json = (await response.json()) as Record<string, any>;
       expect(json.message).toBe('Request body must be a JSON object');
     });
 
@@ -45,7 +45,7 @@ describe('randomOptionSelector endpoint', () => {
       });
 
       expect(response.status).toBe(400);
-      const json = await response.json();
+      const json = (await response.json()) as Record<string, any>;
       expect(json.message).toBe('At least one option must be provided');
     });
 
@@ -62,7 +62,7 @@ describe('randomOptionSelector endpoint', () => {
       });
 
       expect(response.status).toBe(400);
-      const json = await response.json();
+      const json = (await response.json()) as Record<string, any>;
       expect(json.message).toContain('Weight for option');
       expect(json.message).toContain('must be a number');
     });
@@ -80,7 +80,7 @@ describe('randomOptionSelector endpoint', () => {
       });
 
       expect(response.status).toBe(400);
-      const json = await response.json();
+      const json = (await response.json()) as Record<string, any>;
       expect(json.message).toContain('must be non-negative');
     });
   });
@@ -98,7 +98,7 @@ describe('randomOptionSelector endpoint', () => {
       });
 
       expect(response.status).toBe(200);
-      const json = await response.json();
+      const json = (await response.json()) as Record<string, any>;
       expect(json.value).toBe('only_option');
     });
 
@@ -115,7 +115,7 @@ describe('randomOptionSelector endpoint', () => {
       });
 
       expect(response.status).toBe(200);
-      const json = await response.json();
+      const json = (await response.json()) as Record<string, any>;
       expect(['option1', 'option2']).toContain(json.value);
     });
 
@@ -135,7 +135,7 @@ describe('randomOptionSelector endpoint', () => {
         });
 
         expect(response.status).toBe(200);
-        const json = await response.json();
+        const json = (await response.json()) as Record<string, any>;
         expect(['apple', 'banana', 'cherry']).toContain(json.value);
       }
     });
@@ -157,7 +157,7 @@ describe('randomOptionSelector endpoint', () => {
           },
         });
 
-        const json = await response.json();
+        const json = (await response.json()) as Record<string, any>;
         results[json.value] = (results[json.value] || 0) + 1;
       }
 
@@ -185,7 +185,7 @@ describe('randomOptionSelector endpoint', () => {
       });
 
       expect(response.status).toBe(200);
-      const json = await response.json();
+      const json = (await response.json()) as Record<string, any>;
       expect(json.value).toBe('selected');
     });
   });
@@ -203,7 +203,7 @@ describe('randomOptionSelector endpoint', () => {
       });
 
       expect(response.status).toBe(200);
-      const json = await response.json();
+      const json = (await response.json()) as Record<string, any>;
       expect(json).toHaveProperty('value');
       expect(typeof json.value).toBe('string');
     });
