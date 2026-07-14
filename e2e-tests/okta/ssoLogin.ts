@@ -25,6 +25,10 @@ export function delay(time: number) {
   });
 }
 
+/**
+ * Extracts SAML form values from Okta HTML responses.
+ * Throws when required SAML fields are missing.
+ */
 function extractSamlFormValues(samlResponseHtml: string) {
   const actionUrl = samlResponseHtml.match(/<form[^>]*action=["'](?<actionUrl>[^"']+)["'][^>]*>/i)
     ?.groups?.actionUrl;
