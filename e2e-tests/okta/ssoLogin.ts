@@ -70,9 +70,10 @@ export async function oktaSsoLoginViaApi(
   // const content = await authenticateResponse.text();
   const authorizeRedirectUrl = new URL(authenticateResponse.url());
   const fromUri = authorizeRedirectUrl.searchParams.get('fromURI');
-  const samlLocation =
-    fromUri ??
-    (authorizeRedirectUrl.pathname.endsWith('/sso/saml') ? authorizeRedirectUrl.toString() : null);
+  const isSamlEndpointRedirect =
+    authorizeRedirectUrl.pathname.endsWith('/sso/saml') &&
+    authorizeRedirectUrl.searchParams.has('SAMLRequest');
+  const samlLocation = fromUri ?? (isSamlEndpointRedirect ? authorizeRedirectUrl.toString() : null);
   if (!samlLocation) {
     throw new Error(
       `Could not get SAML location (fromURI) from authorize redirect URL: ${authenticateResponse.url()}`,
