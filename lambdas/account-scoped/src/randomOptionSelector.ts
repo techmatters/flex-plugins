@@ -90,7 +90,7 @@ export const randomOptionSelectorHandler: AccountScopedHandler = async (
     }
 
     // Check if at least one weight is positive
-    const hasPositiveWeight = Object.values(optionWeights).some((weight: any) => weight > 0);
+    const hasPositiveWeight = (Object.values(optionWeights) as number[]).some((weight) => weight > 0);
     if (!hasPositiveWeight) {
       return newErr({
         message: 'At least one option must have a positive weight',
@@ -100,10 +100,12 @@ export const randomOptionSelectorHandler: AccountScopedHandler = async (
 
     const selectedOption = selectRandomOption(optionWeights);
     return newOk({ value: selectedOption });
-  } catch (error: any) {
+  } catch (error: unknown) {
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+    const errorCause = error instanceof Error ? error : undefined;
     return newErr({
-      message: error.message,
-      error: { statusCode: 500, cause: error },
+      message: errorMessage,
+      error: { statusCode: 500, cause: errorCause },
     });
   }
 };
