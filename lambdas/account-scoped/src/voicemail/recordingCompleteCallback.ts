@@ -44,7 +44,7 @@ export const recordingCompleteCallback: AccountScopedHandler = async (
     .tasks.create({
       timeout: 604800, // 7 days
       attributes: JSON.stringify({
-        ...(body.routingAttributes ?? {}),
+        ...(body.routingAttributes ? JSON.parse(body.routingAttributes) : {}),
         isVoicemail: true,
         callSid: body.callSid,
         from: body.from,
