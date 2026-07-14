@@ -196,8 +196,8 @@ describe('randomOptionSelector endpoint', () => {
       const response = await lambdaAlbFetch(path, {
         method: 'POST',
         body: JSON.stringify({
-          heavy: 90,  // 0-90 (90% chance)
-          light: 10,  // 90-100 (10% chance)
+          heavy: 90, // 0-90 (90% chance)
+          light: 10, // 90-100 (10% chance)
         }),
         headers: {
           'Content-Type': 'application/json',

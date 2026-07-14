@@ -15,7 +15,6 @@
  */
 
 import type { AccountScopedHandler, HttpError } from './httpTypes';
-import type { AccountSID } from '@tech-matters/twilio-types';
 import { newErr, newOk } from './Result';
 import type { Result } from './Result';
 
@@ -54,7 +53,6 @@ const selectRandomOption = (optionWeights: Record<string, number>): string => {
 
 export const randomOptionSelectorHandler: AccountScopedHandler = async (
   { body },
-  _accountSid: AccountSID,
 ): Promise<Result<HttpError, any>> => {
   try {
     if (!body || typeof body !== 'object') {
@@ -91,7 +89,9 @@ export const randomOptionSelectorHandler: AccountScopedHandler = async (
     }
 
     // Check if at least one weight is positive
-    const hasPositiveWeight = (Object.values(optionWeights) as number[]).some((weight) => weight > 0);
+    const hasPositiveWeight = (Object.values(optionWeights) as number[]).some(
+      weight => weight > 0,
+    );
     if (!hasPositiveWeight) {
       return newErr({
         message: 'At least one option must have a positive weight',
