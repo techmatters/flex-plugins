@@ -68,13 +68,16 @@ export async function oktaSsoLoginViaApi(
   }
   expect(authenticateResponse.ok()).toBe(true);
   // const content = await authenticateResponse.text();
-  const fromUri = new URL(authenticateResponse.url()).searchParams.get('fromURI');
-  if (!fromUri) {
+  const authorizeRedirectUrl = new URL(authenticateResponse.url());
+  const fromUri = authorizeRedirectUrl.searchParams.get('fromURI');
+  const samlLocation =
+    fromUri ??
+    (authorizeRedirectUrl.pathname.includes('/sso/saml') ? authorizeRedirectUrl.toString() : null);
+  if (!samlLocation) {
     throw new Error(
       `Could not get SAML location (fromURI) from authorize redirect URL: ${authenticateResponse.url()}`,
     );
   }
-  const samlLocation = fromUri;
 
   // Login via okta API
   const authnResponse = await apiRequest.post('https://techmatters.okta.com/api/v1/authn', {
