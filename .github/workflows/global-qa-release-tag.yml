@@ -37,7 +37,7 @@ jobs:
       send-slack-message: 'false'
 
   deploy-webchat:
-    uses: ./.github/workflows/webchat-deploy.yml
+    uses: ./.github/workflows/aselo-webchat-react-app-deploy.yml
     secrets: inherit
     with:
       helpline_code: E2E
