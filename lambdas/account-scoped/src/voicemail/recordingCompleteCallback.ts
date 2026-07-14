@@ -51,6 +51,7 @@ export const recordingCompleteCallback: AccountScopedHandler = async (
         name: body.from,
         channelType: 'voicemail',
         customChannelType: 'voicemail',
+        ignoreAgent: '',
         transferTargetType: '',
       }),
       workflowSid: body.voicemailWorkflowSid,
