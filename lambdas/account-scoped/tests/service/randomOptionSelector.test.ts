@@ -188,6 +188,23 @@ describe('randomOptionSelector endpoint', () => {
       const json = (await response.json()) as Record<string, any>;
       expect(json.value).toBe('selected');
     });
+
+    test('should return 400 if all weights are zero', async () => {
+      const response = await lambdaAlbFetch(path, {
+        method: 'POST',
+        body: JSON.stringify({
+          option1: 0,
+          option2: 0,
+        }),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      expect(response.status).toBe(400);
+      const json = (await response.json()) as Record<string, any>;
+      expect(json.message).toBe('At least one option must have a positive weight');
+    });
   });
 
   describe('response format', () => {

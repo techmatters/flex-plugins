@@ -23,17 +23,17 @@ import { newErr, newOk, Result } from './Result';
  * Each option has an associated numeric weight that determines the probability
  * of it being selected relative to the other options.
  *
- * @param options Record of option names to their numeric weights
+ * @param optionWeights Record of option names to their numeric weights
  * @returns The selected option name
  */
-const selectRandomOption = (options: Record<string, number>): string => {
-  const optionEntries = Object.entries(options);
+const selectRandomOption = (optionWeights: Record<string, number>): string => {
+  const optionEntries = Object.entries(optionWeights);
 
   // Calculate total weight
   const totalWeight = optionEntries.reduce((sum, [, weight]) => sum + weight, 0);
 
   if (totalWeight <= 0) {
-    throw new Error('Total weight must be positive');
+    throw new Error('At least one option must have a positive weight');
   }
 
   // Generate random value between 0 and totalWeight
@@ -63,8 +63,8 @@ export const randomOptionSelectorHandler: AccountScopedHandler = async (
       });
     }
 
-    const options = body;
-    const optionNames = Object.keys(options);
+    const optionWeights = body;
+    const optionNames = Object.keys(optionWeights);
 
     if (optionNames.length === 0) {
       return newErr({
@@ -73,8 +73,8 @@ export const randomOptionSelectorHandler: AccountScopedHandler = async (
       });
     }
 
-    // Validate that all values are numbers
-    for (const [name, weight] of Object.entries(options)) {
+    // Validate that all values are numbers and non-negative
+    for (const [name, weight] of Object.entries(optionWeights)) {
       if (typeof weight !== 'number') {
         return newErr({
           message: `Weight for option '${name}' must be a number, got ${typeof weight}`,
@@ -89,7 +89,16 @@ export const randomOptionSelectorHandler: AccountScopedHandler = async (
       }
     }
 
-    const selectedOption = selectRandomOption(options);
+    // Check if at least one weight is positive
+    const hasPositiveWeight = Object.values(optionWeights).some((weight: any) => weight > 0);
+    if (!hasPositiveWeight) {
+      return newErr({
+        message: 'At least one option must have a positive weight',
+        error: { statusCode: 400 },
+      });
+    }
+
+    const selectedOption = selectRandomOption(optionWeights);
     return newOk({ value: selectedOption });
   } catch (error: any) {
     return newErr({
