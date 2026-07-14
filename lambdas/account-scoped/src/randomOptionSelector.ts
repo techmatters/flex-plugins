@@ -14,9 +14,10 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { AccountScopedHandler, HttpError } from './httpTypes';
-import { AccountSID } from '@tech-matters/twilio-types';
-import { newErr, newOk, Result } from './Result';
+import type { AccountScopedHandler, HttpError } from './httpTypes';
+import type { AccountSID } from '@tech-matters/twilio-types';
+import { newErr, newOk } from './Result';
+import type { Result } from './Result';
 
 /**
  * Selects a random option from the provided options based on their weights.

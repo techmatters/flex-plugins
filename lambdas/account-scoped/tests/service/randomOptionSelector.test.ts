@@ -140,36 +140,78 @@ describe('randomOptionSelector endpoint', () => {
       }
     });
 
-    test('should respect weighting probabilities', async () => {
-      // Run many times to verify weighting
-      const results: Record<string, number> = {};
-      const iterations = 1000;
+    test('should select option deterministically based on mocked random value', async () => {
+      // Mock Math.random to return 0.5 (middle of the range: 0-1)
+      const randomSpy = jest.spyOn(Math, 'random').mockReturnValue(0.5);
 
-      for (let i = 0; i < iterations; i++) {
-        const response = await lambdaAlbFetch(path, {
-          method: 'POST',
-          body: JSON.stringify({
-            heavy: 90,
-            light: 10,
-          }),
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        });
+      const response = await lambdaAlbFetch(path, {
+        method: 'POST',
+        body: JSON.stringify({
+          option1: 50, // 50% chance (0-50)
+          option2: 50, // 50% chance (50-100)
+        }),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
 
-        const json = (await response.json()) as Record<string, any>;
-        results[json.value] = (results[json.value] || 0) + 1;
-      }
+      expect(response.status).toBe(200);
+      const json = (await response.json()) as Record<string, any>;
+      // With random value of 0.5 and total weight of 100, randomValue starts at 50
+      // First iteration: 50 - 50 = 0, so option1 should be selected
+      expect(json.value).toBe('option1');
 
-      // Heavy should be selected ~90% of the time, Light ~10%
-      const heavyPercentage = (results['heavy'] || 0) / iterations;
-      const lightPercentage = (results['light'] || 0) / iterations;
+      randomSpy.mockRestore();
+    });
 
-      // Allow for statistical variance (±10%)
-      expect(heavyPercentage).toBeGreaterThan(0.8);
-      expect(heavyPercentage).toBeLessThan(1.0);
-      expect(lightPercentage).toBeGreaterThan(0.0);
-      expect(lightPercentage).toBeLessThan(0.2);
+    test('should select second option when random falls in its range', async () => {
+      // Mock Math.random to return 0.6 (60% of total range)
+      const randomSpy = jest.spyOn(Math, 'random').mockReturnValue(0.6);
+
+      const response = await lambdaAlbFetch(path, {
+        method: 'POST',
+        body: JSON.stringify({
+          option1: 50, // 0-50
+          option2: 50, // 50-100
+        }),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      expect(response.status).toBe(200);
+      const json = (await response.json()) as Record<string, any>;
+      // With random value of 0.6 and total weight of 100, randomValue starts at 60
+      // First iteration: 60 - 50 = 10, continue
+      // Second iteration: 10 - 50 < 0, so option2 should be selected
+      expect(json.value).toBe('option2');
+
+      randomSpy.mockRestore();
+    });
+
+    test('should respect unequal weights with mocked random', async () => {
+      // Mock Math.random to return 0.95 (95% of total range)
+      const randomSpy = jest.spyOn(Math, 'random').mockReturnValue(0.95);
+
+      const response = await lambdaAlbFetch(path, {
+        method: 'POST',
+        body: JSON.stringify({
+          heavy: 90,  // 0-90 (90% chance)
+          light: 10,  // 90-100 (10% chance)
+        }),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      expect(response.status).toBe(200);
+      const json = (await response.json()) as Record<string, any>;
+      // With random value of 0.95 and total weight of 100, randomValue starts at 95
+      // First iteration: 95 - 90 = 5, continue
+      // Second iteration: 5 - 10 < 0, so light should be selected
+      expect(json.value).toBe('light');
+
+      randomSpy.mockRestore();
     });
 
     test('should handle zero weights for some options', async () => {
