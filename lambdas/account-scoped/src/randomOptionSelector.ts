@@ -51,9 +51,9 @@ const selectRandomOption = (optionWeights: Record<string, number>): string => {
   return optionEntries[optionEntries.length - 1][0];
 };
 
-export const randomOptionSelectorHandler: AccountScopedHandler = async (
-  { body },
-): Promise<Result<HttpError, any>> => {
+export const randomOptionSelectorHandler: AccountScopedHandler = async ({
+  body,
+}): Promise<Result<HttpError, any>> => {
   try {
     if (!body || typeof body !== 'object') {
       return newErr({
