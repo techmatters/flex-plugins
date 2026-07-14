@@ -314,7 +314,7 @@ ${
         "method": "POST",
         "content_type": "application/json;charset=utf-8",
         "add_twilio_auth": false,
-        "body": "{\"channel\": \"voice\", \"includeMessageTextInResponse\": \"true\", \"language\": \"en-USNM\"}",
+        "body": "{\"channel\": \"voice\", \"includeMessageTextInResponse\": \"true\", \"language\": \"en-USNM\",\"office\": \"preClosing\"}",
         "url": "${lambda_twilio_account_scoped_url}/operatingHours"
       }
     },
@@ -394,7 +394,7 @@ ${
         }
       ],
       "properties": {
-        "speech_timeout": "5",
+        "speech_timeout": "4",
         "offset": {
           "x": 3576,
           "y": 1720
