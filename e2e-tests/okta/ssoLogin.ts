@@ -25,8 +25,22 @@ export function delay(time: number) {
   });
 }
 
-const formRegex =
-  /<form\s*id="appForm"\s*action="(?<actionUrl>[\w.;#&]+)"\s*method="POST"\s*>\s*<input\s*name="SAMLResponse"\s*type="hidden"\s*value="(?<samlResponse>[\w;#&-]+)"\s*\/>\s*<input\s*name="RelayState"\s*type="hidden"\s*value="(?<relayState>[\w;#&-]+)"\s*\/>/;
+function extractSamlFormValues(samlResponseHtml: string) {
+  const actionUrl = samlResponseHtml.match(/<form[^>]*action=["'](?<actionUrl>[^"']+)["'][^>]*>/i)
+    ?.groups?.actionUrl;
+  const samlResponse = samlResponseHtml.match(
+    /<input[^>]*name=["']SAMLResponse["'][^>]*value=["'](?<value>[^"']+)["'][^>]*>/i,
+  )?.groups?.value;
+  const relayState = samlResponseHtml.match(
+    /<input[^>]*name=["']RelayState["'][^>]*value=["'](?<value>[^"']+)["'][^>]*>/i,
+  )?.groups?.value;
+
+  if (!samlResponse || !relayState) {
+    throw new Error('Could not extract SAMLResponse and RelayState from Okta response form');
+  }
+
+  return { actionUrl, samlResponse, relayState };
+}
 
 // NOT GENERAL PURPOSE - Only works for those encoded as hex character codes, not named symbols like &amp; or decimal character codes
 // bodged from https://stackoverflow.com/a/7394814
@@ -116,7 +130,10 @@ export async function oktaSsoLoginViaApi(
   const samlResponseHtml = await redirectResponse.text();
   // commented debug lines are spammy, but handy debugging auth problems
   // console.debug('SAML response HTML:', samlResponseHtml);
-  const { samlResponse, relayState, actionUrl } = samlResponseHtml.match(formRegex)!.groups!;
+  const { samlResponse, relayState, actionUrl } = extractSamlFormValues(samlResponseHtml);
+  if (!actionUrl) {
+    throw new Error('Could not extract SAML action URL from Okta response form');
+  }
   // console.debug('Extracted SAML Response', samlResponse);
   // console.debug('Extracted SAML relayState', relayState);
   // console.debug('Extracted SAML actionURL', actionUrl);
@@ -232,7 +249,7 @@ export async function legacyOktaSsoLoginViaApi(
   // Scrape required SAML response values from the HTML response in the redirected page
   // this is kinda :vomit but I couldn't see an alternative API that provides this via JSON or another API friendly format
   const samlResponseHtml = await redirectResponse.text();
-  const { samlResponse, relayState } = samlResponseHtml.match(formRegex)!.groups!;
+  const { samlResponse, relayState } = extractSamlFormValues(samlResponseHtml);
 
   const flexTimeoutTime = Date.now() + 120000; // 2 minutes
   // Post the SAML response to twilio - if successful this redirects to the flex landing page, whose contents we drop on the floor, we just want to ensure the cookies get set
