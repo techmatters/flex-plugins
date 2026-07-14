@@ -30,17 +30,24 @@ export function delay(time: number) {
  * Throws when required SAML fields are missing.
  */
 function extractSamlFormValues(samlResponseHtml: string) {
+  const getHiddenInputValue = (name: 'SAMLResponse' | 'RelayState') => {
+    const inputTag = samlResponseHtml.match(
+      new RegExp(`<input\\b(?=[^>]*\\bname=["']${name}["'])[^>]*>`, 'i'),
+    )?.[0];
+    return inputTag?.match(/\bvalue=["']([^"']+)["']/i)?.[1];
+  };
+
   const actionUrl = samlResponseHtml.match(/<form[^>]*action=["'](?<actionUrl>[^"']+)["'][^>]*>/i)
     ?.groups?.actionUrl;
-  const samlResponse = samlResponseHtml.match(
-    /<input[^>]*name=["']SAMLResponse["'][^>]*value=["'](?<value>[^"']+)["'][^>]*>/i,
-  )?.groups?.value;
-  const relayState = samlResponseHtml.match(
-    /<input[^>]*name=["']RelayState["'][^>]*value=["'](?<value>[^"']+)["'][^>]*>/i,
-  )?.groups?.value;
+  const samlResponse = getHiddenInputValue('SAMLResponse');
+  const relayState = getHiddenInputValue('RelayState');
 
   if (!samlResponse || !relayState) {
-    throw new Error('Could not extract SAMLResponse and RelayState from Okta response form');
+    throw new Error(
+      `Could not extract SAML form values from Okta response (SAMLResponse: ${Boolean(
+        samlResponse,
+      )}, RelayState: ${Boolean(relayState)})`,
+    );
   }
 
   return { actionUrl, samlResponse, relayState };
