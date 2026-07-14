@@ -34,61 +34,56 @@ export const filterCountryOrVoIPHandler: AccountScopedHandler = async (
     });
   }
 
-  try {
-    console.debug('filterCountryOrVoIP: Performing lookup', { accountSid, from });
-    const client = await getTwilioClient(accountSid);
-    const data = await client.lookups.v2
-      .phoneNumbers(from)
-      .fetch({ fields: 'sms_pumping_risk,line_type_intelligence' });
+  console.debug('filterCountryOrVoIP: Performing lookup', { accountSid, from });
+  const client = await getTwilioClient(accountSid);
+  const data = await client.lookups.v2
+    .phoneNumbers(from)
+    .fetch({ fields: 'sms_pumping_risk,line_type_intelligence' });
 
-    console.debug('filterCountryOrVoIP: Country code', {
+  console.debug('filterCountryOrVoIP: Country code', {
+    accountSid,
+    from,
+    countryCode: data?.countryCode,
+  });
+
+  if (data?.countryCode !== 'US') {
+    console.info('filterCountryOrVoIP: Blocking call from non-US country', {
       accountSid,
       from,
       countryCode: data?.countryCode,
     });
+    return newOk({ blockIncoming: true });
+  }
 
-    if (data?.countryCode !== 'US') {
-      console.info('filterCountryOrVoIP: Blocking call from non-US country', {
+  console.debug('filterCountryOrVoIP: Line type intelligence', {
+    accountSid,
+    from,
+    lineTypeIntelligence: data?.lineTypeIntelligence,
+  });
+
+  if (data?.lineTypeIntelligence?.type) {
+    const lineType = (data.lineTypeIntelligence.type as string).toLowerCase();
+    const carrier = data.lineTypeIntelligence.carrier_name as string;
+
+    if (lineType.includes('voip')) {
+      console.info('filterCountryOrVoIP: Blocking VoIP call', {
         accountSid,
         from,
-        countryCode: data?.countryCode,
+        lineType,
       });
       return newOk({ blockIncoming: true });
     }
 
-    console.debug('filterCountryOrVoIP: Line type intelligence', {
-      accountSid,
-      from,
-      lineTypeIntelligence: data?.lineTypeIntelligence,
-    });
-
-    if (data?.lineTypeIntelligence?.type) {
-      const lineType = (data.lineTypeIntelligence.type as string).toLowerCase();
-      const carrier = data.lineTypeIntelligence.carrier_name as string;
-
-      if (lineType.includes('voip')) {
-        console.info('filterCountryOrVoIP: Blocking VoIP call', {
-          accountSid,
-          from,
-          lineType,
-        });
-        return newOk({ blockIncoming: true });
-      }
-
-      if (BLOCKED_CARRIERS.includes(carrier)) {
-        console.info('filterCountryOrVoIP: Blocking call from blocked carrier', {
-          accountSid,
-          from,
-          carrier,
-        });
-        return newOk({ blockIncoming: true });
-      }
+    if (BLOCKED_CARRIERS.includes(carrier)) {
+      console.info('filterCountryOrVoIP: Blocking call from blocked carrier', {
+        accountSid,
+        from,
+        carrier,
+      });
+      return newOk({ blockIncoming: true });
     }
-
-    console.debug('filterCountryOrVoIP: Allowing call', { accountSid, from });
-    return newOk({ blockIncoming: false });
-  } catch (err: any) {
-    console.error('filterCountryOrVoIP failed', { accountSid, from, err });
-    return newErr({ message: err.message, error: { statusCode: 500, cause: err } });
   }
+
+  console.debug('filterCountryOrVoIP: Allowing call', { accountSid, from });
+  return newOk({ blockIncoming: false });
 };

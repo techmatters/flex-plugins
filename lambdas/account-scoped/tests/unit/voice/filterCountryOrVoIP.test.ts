@@ -167,39 +167,4 @@ describe('filterCountryOrVoIPHandler', () => {
       expect(result.data.blockIncoming).toBe(false);
     }
   });
-
-  it('should return 500 when the Twilio client call fails', async () => {
-    mockGetTwilioClient.mockRejectedValue(new Error('Twilio API error'));
-
-    const request = createMockRequest({ from: TEST_US_NUMBER });
-    const result = await filterCountryOrVoIPHandler(request, TEST_ACCOUNT_SID);
-
-    expect(isErr(result)).toBe(true);
-    if (isErr(result)) {
-      expect(result.error.statusCode).toBe(500);
-      expect(result.message).toContain('Twilio API error');
-    }
-  });
-
-  it('should return 500 when the phone number fetch fails', async () => {
-    const mockClient = {
-      lookups: {
-        v2: {
-          phoneNumbers: jest.fn().mockReturnValue({
-            fetch: jest.fn().mockRejectedValue(new Error('Lookup failed')),
-          }),
-        },
-      },
-    };
-    mockGetTwilioClient.mockResolvedValue(mockClient as any);
-
-    const request = createMockRequest({ from: TEST_US_NUMBER });
-    const result = await filterCountryOrVoIPHandler(request, TEST_ACCOUNT_SID);
-
-    expect(isErr(result)).toBe(true);
-    if (isErr(result)) {
-      expect(result.error.statusCode).toBe(500);
-      expect(result.message).toContain('Lookup failed');
-    }
-  });
 });
