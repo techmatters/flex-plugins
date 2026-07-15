@@ -39,11 +39,11 @@ export const deleteChatChannels = async (): Promise<void> => {
   const client = twilio(accountSid, authToken);
 
   // List all chat services
-  const services = await client.chat.v2.services.list();
+  const services = await client.conversations.v1.services.list();
 
   for (const service of services) {
     // List all users in this chat service
-    const users = await client.chat.v2.services(service.sid).users.list();
+    const users = await client.conversations.v1.services(service.sid).users.list();
     console.log(`Found ${users.length} users in service ${service.sid}`);
     const matchingUser = users.find((user) => user.identity === encodedEmail);
 
@@ -65,7 +65,10 @@ export const deleteChatChannels = async (): Promise<void> => {
 
     for (const userChannel of userChannels) {
       console.log(`Removing chat channel ${userChannel.channelSid} from service ${service.sid}`);
-      await client.chat.v2.services(service.sid).channels(userChannel.channelSid).remove();
+      await client.conversations.v1.services
+        .get(service.sid)
+        .conversations.get(userChannel.channelSid)
+        .remove();
     }
   }
 };
