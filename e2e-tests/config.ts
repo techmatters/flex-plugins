@@ -42,7 +42,7 @@ export type Config = {
 
 const helplineShortCode = process.env.HL?.toLocaleLowerCase() || 'e2e';
 // Account to initiate calls into the helpline under test from, for testing voice & SMS
-const clientHelplineShortCode = process.env.HL?.toLocaleLowerCase() || helplineShortCode;
+const clientHelplineShortCode = process.env.CLIENT_HL?.toLocaleLowerCase() || helplineShortCode;
 const helplineEnv = process.env.HL_ENV?.toLocaleLowerCase() || 'local';
 const shouldLoadFromSsm = process.env.LOAD_SSM_CONFIG && process.env.LOAD_SSM_CONFIG !== 'false';
 
