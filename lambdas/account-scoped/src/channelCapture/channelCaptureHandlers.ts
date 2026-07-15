@@ -208,7 +208,7 @@ const triggerWithUserMessage = async (
     webhook = await (channelOrConversation as ConversationInstance).webhooks().create({
       target: 'webhook',
       'configuration.filters': ['onMessageAdded'],
-      'configuration.method': 'post',
+      'configuration.method': 'POST',
       'configuration.url': getChatBotCallbackURL({ accountSid, webhookBaseUrl }),
     });
   } else {
@@ -312,7 +312,7 @@ const triggerWithNextMessage = async (
     webhook = await (channelOrConversation as ConversationInstance).webhooks().create({
       target: 'webhook',
       'configuration.filters': ['onMessageAdded'],
-      'configuration.method': 'post',
+      'configuration.method': 'POST',
       'configuration.url': getChatBotCallbackURL({ accountSid, webhookBaseUrl }),
     });
   } else {

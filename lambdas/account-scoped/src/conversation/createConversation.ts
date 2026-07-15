@@ -115,7 +115,7 @@ export const createConversation = async (
     if (onMessageAddedWebhookUrl) {
       await conversationContext.webhooks.create({
         target: 'webhook',
-        'configuration.method': 'post',
+        'configuration.method': 'POST',
         'configuration.url': onMessageAddedWebhookUrl,
         'configuration.filters': ['onMessageAdded'],
       });
