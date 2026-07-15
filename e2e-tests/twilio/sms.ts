@@ -50,6 +50,7 @@ export const checkForMessageOnClient = async (messageText: string): Promise<bool
     if (messages.find((m) => m.body === messageText)) {
       return true;
     }
+    await new Promise((resolve) => setTimeout(resolve, 1000));
   }
   return false;
 };
