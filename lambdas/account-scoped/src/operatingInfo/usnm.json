@@ -20,5 +20,31 @@
       "6": [],
       "7": []
     }
+  },
+  "offices": {
+    "preClosing": {
+      "timezone": "America/New_York",
+      "holidays": {},
+      "operatingHours": {
+        "sms": {
+          "1": [{ "open": 1000, "close": 2145}],
+          "2": [{ "open": 1000, "close": 2145 }],
+          "3": [{ "open": 1000, "close": 2145 }],
+          "4": [{ "open": 1000, "close": 2145 }],
+          "5": [{ "open": 1000, "close": 2145 }],
+          "6": [],
+          "7": []
+        },
+        "voice": {
+          "1": [{ "open": 1000, "close": 2145 }],
+          "2": [{ "open": 1000, "close": 2145 }],
+          "3": [{ "open": 1000, "close": 2145 }],
+          "4": [{ "open": 1000, "close": 2145 }],
+          "5": [{ "open": 1000, "close": 2145 }],
+          "6": [],
+          "7": []
+        }
+      }
+    }
   }
 }
