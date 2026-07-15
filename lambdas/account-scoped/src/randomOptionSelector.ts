@@ -74,9 +74,9 @@ export const randomOptionSelectorHandler: AccountScopedHandler = async ({
 
     // Validate that all values are numbers and non-negative
     for (const [name, weight] of Object.entries(optionWeights)) {
-      if (typeof weight !== 'number') {
+      if (typeof weight !== 'number' || !Number.isFinite(weight)) {
         return newErr({
-          message: `Weight for option '${name}' must be a number, got ${typeof weight}`,
+          message: `Weight for option '${name}' must be a finite number, got ${String(weight)}`,
           error: { statusCode: 400 },
         });
       }
