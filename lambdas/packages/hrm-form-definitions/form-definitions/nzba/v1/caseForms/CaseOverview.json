@@ -18,6 +18,12 @@
       "isPII": false
     },
     {
+      "name": "docFollowUpDate",
+      "label": "DOC Follow Up Date",
+      "type": "date-input",
+      "isPII": false
+    },
+    {
       "name": "summary",
       "label": "Summary",
       "type": "textarea",

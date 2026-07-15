@@ -148,6 +148,12 @@
     "label": "Review date"
   },
   {
+    "name": "approvedBy",
+    "label": "Approved By",
+    "type": "input",
+    "isPII": false
+  },
+  {
     "name": "closedDate",
     "type": "date-input",
     "isPII": false,
