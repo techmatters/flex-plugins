@@ -64,7 +64,7 @@ describe('randomOptionSelector endpoint', () => {
       expect(response.status).toBe(400);
       const json = (await response.json()) as Record<string, any>;
       expect(json.message).toContain('Weight for option');
-      expect(json.message).toContain('must be a number');
+      expect(json.message).toContain('must be a finite number');
     });
 
     test('should return 400 if a weight is negative', async () => {

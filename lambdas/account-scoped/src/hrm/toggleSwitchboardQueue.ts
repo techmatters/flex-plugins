@@ -21,7 +21,7 @@ import {
   getSwitchboardQueueSid,
   getSyncServiceSid,
   getTwilioClient,
-  getTwilioWorkspaceSid,
+  getWorkspaceSid,
 } from '@tech-matters/twilio-configuration';
 import { Twilio } from 'twilio';
 import {
@@ -240,7 +240,7 @@ async function handleEnableOperation({
   supervisorWorkerSid: string;
 }) {
   try {
-    const workspaceSid = await getTwilioWorkspaceSid(accountSid);
+    const workspaceSid = await getWorkspaceSid(accountSid);
     if (!workspaceSid) {
       const message = 'TaskRouter workspace not found';
       const error = new Error(message);
@@ -351,7 +351,7 @@ async function handleDisableOperation({
   client: Twilio;
 }) {
   try {
-    const workspaceSid = await getTwilioWorkspaceSid(accountSid);
+    const workspaceSid = await getWorkspaceSid(accountSid);
     if (!workspaceSid) {
       const message = 'TaskRouter workspace not found';
       const error = new Error(message);
