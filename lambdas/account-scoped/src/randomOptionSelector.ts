@@ -55,7 +55,7 @@ export const randomOptionSelectorHandler: AccountScopedHandler = async ({
   body,
 }): Promise<Result<HttpError, any>> => {
   try {
-    if (!body || typeof body !== 'object') {
+    if (!body || typeof body !== 'object' || Array.isArray(body)) {
       return newErr({
         message: 'Request body must be a JSON object',
         error: { statusCode: 400 },
