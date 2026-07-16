@@ -54,8 +54,9 @@
       },
       "dutyOfCare": {
         "previewFields": [
-          "date",
-          "location"
+          "dutyOfCareDate",
+          "assessmentOfRisk",
+          "followUpRequired"
         ],
         "splitFormAt": 7,
         "printOrder": 3,
