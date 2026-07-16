@@ -70,8 +70,8 @@
     "isPII": false
   },
   {
-    "name": "presentationformulationSummary",
-    "label": "Presentation/Formulation Summary:",
+    "name": "presentBriefDetail",
+    "label": "Present - brief detail",
     "type": "textarea",
     "isPII": false,
     "rows": 8,
@@ -86,8 +86,8 @@
     "width": 250
   },
   {
-    "name": "presentBriefDetail",
-    "label": "Present - brief detail",
+    "name": "presentation",
+    "label": "Presentation",
     "type": "textarea",
     "isPII": false,
     "rows": 8,
@@ -96,14 +96,6 @@
   {
     "name": "history",
     "label": "History",
-    "type": "textarea",
-    "isPII": false,
-    "rows": 8,
-    "width": 250
-  },
-  {
-    "name": "presentation",
-    "label": "Presentation",
     "type": "textarea",
     "isPII": false,
     "rows": 8,
@@ -154,6 +146,12 @@
     "type": "date-input",
     "isPII": false,
     "label": "Review date"
+  },
+  {
+    "name": "approvedBy",
+    "label": "Approved By",
+    "type": "input",
+    "isPII": false
   },
   {
     "name": "closedDate",

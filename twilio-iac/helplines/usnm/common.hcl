@@ -84,7 +84,7 @@ locals {
         "friendly_name"  = "English FCG Voicemail"
       },
       es_tya_voicemail : {
-        "target_workers" = "routing.skills HAS 'FCG' AND routing.skills HAS 'Voicemail' AND routing.skills HAS 'Spanish'",
+        "target_workers" = "routing.skills HAS 'TYA' AND routing.skills HAS 'Voicemail' AND routing.skills HAS 'Spanish'",
         "friendly_name"  = "Spanish TYA Voicemail"
       },
       es_std_voicemail : {

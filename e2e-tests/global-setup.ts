@@ -17,7 +17,7 @@
 /* eslint-disable import/no-extraneous-dependencies */
 import { FullConfig, request } from '@playwright/test';
 import { differenceInMilliseconds } from 'date-fns';
-import { legacyOktaSsoLoginViaApi, oktaSsoLoginViaApi } from './okta/ssoLogin';
+import { delay, legacyOktaSsoLoginViaApi, oktaSsoLoginViaApi } from './okta/ssoLogin';
 import { getConfigValue, initConfig } from './config';
 import { getSidForWorker } from './twilio/worker';
 import { clearOfflineTask } from './hrm/clearOfflineTask';
@@ -34,12 +34,37 @@ async function globalSetup(config: FullConfig) {
 
   await initConfig();
   const login = getConfigValue('legacyOktaSso') ? legacyOktaSsoLoginViaApi : oktaSsoLoginViaApi;
-  process.env.FLEX_TOKEN = await login(
-    getConfigValue('baseURL') as string,
-    getConfigValue('oktaUsername') as string,
-    getConfigValue('oktaPassword') as string,
-    getConfigValue('twilioAccountSid') as string,
-  );
+  const MAX_LOGIN_RETRIES = 3;
+  let flexToken: string | undefined;
+  let lastLoginError: unknown;
+  for (let attempt = 1; attempt <= MAX_LOGIN_RETRIES; attempt++) {
+    try {
+      // eslint-disable-next-line no-await-in-loop
+      flexToken = await login(
+        getConfigValue('baseURL') as string,
+        getConfigValue('oktaUsername') as string,
+        getConfigValue('oktaPassword') as string,
+        getConfigValue('twilioAccountSid') as string,
+      );
+      lastLoginError = undefined;
+      break;
+    } catch (err) {
+      lastLoginError = err;
+      if (attempt < MAX_LOGIN_RETRIES) {
+        const retryDelayMs = attempt * 5000;
+        console.warn(
+          `Login attempt ${attempt} failed, retrying in ${retryDelayMs / 1000}s...`,
+          err,
+        );
+        // eslint-disable-next-line no-await-in-loop
+        await delay(retryDelayMs);
+      }
+    }
+  }
+  if (lastLoginError || !flexToken) {
+    throw lastLoginError ?? new Error('Login failed without an error');
+  }
+  process.env.FLEX_TOKEN = flexToken;
   process.env.LOGGED_IN_WORKER_SID = await getSidForWorker(
     getConfigValue('oktaUsername') as string,
   );

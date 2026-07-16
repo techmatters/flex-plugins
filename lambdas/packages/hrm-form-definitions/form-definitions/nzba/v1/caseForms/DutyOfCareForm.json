@@ -1,5 +1,11 @@
 [
   {
+    "name": "dutyOfCareDate",
+    "label": "Duty of Care Date",
+    "type": "date-input",
+    "isPII": false
+  },
+  {
     "name": "otherInformationAboutTheClient",
     "label": "Other Information about the Client",
     "type": "textarea",
@@ -85,28 +91,8 @@
   },
   {
     "name": "informedUnitManager",
-    "label": "Informed unit manager?",
-    "type": "select",
-    "isPII": false,
-    "options": [
-      {
-        "value": "Unknown",
-        "label": ""
-      },
-      {
-        "value": "Yes",
-        "label": "Yes"
-      },
-      {
-        "value": "No",
-        "label": "No"
-      }
-    ]
-  },
-  {
-    "name": "whyNot",
-    "label": "Why not?",
-    "type": "input",
+    "label": "Informed unit manager by email - mandatory",
+    "type": "checkbox",
     "isPII": false
   },
   {
@@ -134,16 +120,8 @@
     ]
   },
   {
-    "name": "furtherActionNeeded",
-    "label": "Further action needed",
-    "type": "textarea",
-    "isPII": false,
-    "rows": 5,
-    "width": 250
-  },
-  {
     "name": "followUpRequired",
-    "label": "This D.O.C requires further follow up",
+    "label": "This D.O.C requires further follow up?",
     "type": "select",
     "isPII": false,
     "options": [
@@ -160,6 +138,14 @@
         "label": "No"
       }
     ]
+  },
+  {
+    "name": "furtherActionNeeded",
+    "label": "Further action needed",
+    "type": "textarea",
+    "isPII": false,
+    "rows": 5,
+    "width": 250
   },
   {
     "name": "notesFromFollowupAction",
