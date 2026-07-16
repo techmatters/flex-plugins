@@ -22,7 +22,6 @@
             "enable_lambda_post_survey_processing": true,
             "enable_select_agents_teams_view": true,
             "use_twilio_lambda_adjust_capacity": true,
-            "use_twilio_lambda_for_conference_functions": true,
             "use_twilio_lambda_transfers": true,
             "use_twilio_lambda_janitor": true
 
