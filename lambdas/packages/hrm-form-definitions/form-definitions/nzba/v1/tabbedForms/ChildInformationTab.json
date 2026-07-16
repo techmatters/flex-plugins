@@ -1,6 +1,6 @@
 [
   {
-    "name": "friendlyName",
+    "name": "firstName",
     "label": "First Name",
     "type": "input",
     "isPII": true,
@@ -600,60 +600,60 @@
         "label": "Auckland"
       },
       {
-        "value": "Wellington",
-        "label": "Wellington"
-      },
-      {
         "value": "Christchurch",
         "label": "Christchurch"
-      },
-      {
-        "value": "Hamilton",
-        "label": "Hamilton"
-      },
-      {
-        "value": "Napier-Hastings",
-        "label": "Napier-Hastings"
-      },
-      {
-        "value": "Tauranga",
-        "label": "Tauranga"
       },
       {
         "value": "Dunedin",
         "label": "Dunedin"
       },
       {
-        "value": "Palmerston North",
-        "label": "Palmerston North"
+        "value": "Gisborne",
+        "label": "Gisborne"
       },
       {
-        "value": "Nelson",
-        "label": "Nelson"
-      },
-      {
-        "value": "Rotorua",
-        "label": "Rotorua"
-      },
-      {
-        "value": "New Plymouth",
-        "label": "New Plymouth"
-      },
-      {
-        "value": "Whangārei",
-        "label": "Whangārei"
+        "value": "Hamilton",
+        "label": "Hamilton"
       },
       {
         "value": "Invercargill",
         "label": "Invercargill"
       },
       {
+        "value": "Napier-Hastings",
+        "label": "Napier-Hastings"
+      },
+      {
+        "value": "Nelson",
+        "label": "Nelson"
+      },
+      {
+        "value": "New Plymouth",
+        "label": "New Plymouth"
+      },
+      {
+        "value": "Palmerston North",
+        "label": "Palmerston North"
+      },
+      {
+        "value": "Rotorua",
+        "label": "Rotorua"
+      },
+      {
+        "value": "Tauranga",
+        "label": "Tauranga"
+      },
+      {
+        "value": "Wellington",
+        "label": "Wellington"
+      },
+      {
         "value": "Whanganui",
         "label": "Whanganui"
       },
       {
-        "value": "Gisborne",
-        "label": "Gisborne"
+        "value": "Whangārei",
+        "label": "Whangārei"
       }
     ]
   },
@@ -668,84 +668,32 @@
         "label": ""
       },
       {
-        "value": "Auckland City",
-        "label": "Auckland City"
-      },
-      {
-        "value": "Franklin district",
-        "label": "Franklin district"
-      },
-      {
-        "value": "Manukau",
-        "label": "Manukau"
-      },
-      {
-        "value": "North Shore",
-        "label": "North Shore"
-      },
-      {
-        "value": "Papakura district",
-        "label": "Papakura district"
-      },
-      {
-        "value": "Rodney district",
-        "label": "Rodney district"
-      },
-      {
-        "value": "Waitakere",
-        "label": "Waitakere"
-      },
-      {
-        "value": "Kawerau district",
-        "label": "Kawerau district"
-      },
-      {
-        "value": "Opotiki district",
-        "label": "Opotiki district"
-      },
-      {
-        "value": "Tauranga district",
-        "label": "Tauranga district"
-      },
-      {
-        "value": "Western Bay of Plenty district",
-        "label": "Western Bay of Plenty district"
-      },
-      {
-        "value": "Whakatane district",
-        "label": "Whakatane district"
+        "value": "Unknown",
+        "label": "Unknown"
       },
       {
         "value": "Ashburton district",
         "label": "Ashburton district"
       },
       {
-        "value": "Hurunui district",
-        "label": "Hurunui district"
+        "value": "Auckland City",
+        "label": "Auckland City"
       },
       {
-        "value": "Kaikoura district",
-        "label": "Kaikoura district"
+        "value": "Banks Peninsula district",
+        "label": "Banks Peninsula district"
       },
       {
-        "value": "Mackenzie district",
-        "label": "Mackenzie district"
+        "value": "Buller district",
+        "label": "Buller district"
       },
       {
-        "value": "Selwyn district",
-        "label": "Selwyn district"
+        "value": "Carterton district",
+        "label": "Carterton district"
       },
       {
-        "value": "Timaru district",
-        "label": "Timaru district"
-      },
-      {
-        "value": "Waimakariri district",
-        "label": "Waimakariri district"
-      },
-      {
-        "value": "Waimate district",
-        "label": "Waimate district"
+        "value": "Central Hawke's Bay district",
+        "label": "Central Hawke's Bay district"
       },
       {
         "value": "Central Otago district",
@@ -756,10 +704,6 @@
         "label": "Chatham Islands district"
       },
       {
-        "value": "Banks Peninsula district",
-        "label": "Banks Peninsula district"
-      },
-      {
         "value": "Christchurch City",
         "label": "Christchurch City"
       },
@@ -768,84 +712,148 @@
         "label": "Clutha district"
       },
       {
-        "value": "Thames-Coromandel district",
-        "label": "Thames-Coromandel district"
-      },
-      {
         "value": "Dunedin City",
         "label": "Dunedin City"
-      },
-      {
-        "value": "Gisborne district",
-        "label": "Gisborne district"
-      },
-      {
-        "value": "Hamilton City",
-        "label": "Hamilton City"
-      },
-      {
-        "value": "Central Hawke's Bay district",
-        "label": "Central Hawke's Bay district"
-      },
-      {
-        "value": "Hastings district",
-        "label": "Hastings district"
-      },
-      {
-        "value": "Napier City",
-        "label": "Napier City"
-      },
-      {
-        "value": "Wairoa district",
-        "label": "Wairoa district"
-      },
-      {
-        "value": "International",
-        "label": "International"
-      },
-      {
-        "value": "Horowhenua district",
-        "label": "Horowhenua district"
-      },
-      {
-        "value": "Manawatu district",
-        "label": "Manawatu district"
-      },
-      {
-        "value": "Palmerston North City",
-        "label": "Palmerston North City"
-      },
-      {
-        "value": "Rangitikei district",
-        "label": "Rangitikei district"
-      },
-      {
-        "value": "Tararua district",
-        "label": "Tararua district"
-      },
-      {
-        "value": "Marlborough district",
-        "label": "Marlborough district"
-      },
-      {
-        "value": "Nelson City",
-        "label": "Nelson City"
       },
       {
         "value": "Far North district",
         "label": "Far North district"
       },
       {
+        "value": "Franklin district",
+        "label": "Franklin district"
+      },
+      {
+        "value": "Gisborne district",
+        "label": "Gisborne district"
+      },
+      {
+        "value": "Gore district",
+        "label": "Gore district"
+      },
+      {
+        "value": "Grey district",
+        "label": "Grey district"
+      },
+      {
+        "value": "Hamilton City",
+        "label": "Hamilton City"
+      },
+      {
+        "value": "Hastings district",
+        "label": "Hastings district"
+      },
+      {
+        "value": "Hauraki district",
+        "label": "Hauraki district"
+      },
+      {
+        "value": "Horowhenua district",
+        "label": "Horowhenua district"
+      },
+      {
+        "value": "Hurunui district",
+        "label": "Hurunui district"
+      },
+      {
+        "value": "International",
+        "label": "International"
+      },
+      {
+        "value": "Invercargill City",
+        "label": "Invercargill City"
+      },
+      {
+        "value": "Kaikoura district",
+        "label": "Kaikoura district"
+      },
+      {
         "value": "Kaipara district",
         "label": "Kaipara district"
       },
       {
-        "value": "Whangarei district",
-        "label": "Whangarei district"
+        "value": "Kapiti Coast district",
+        "label": "Kapiti Coast district"
+      },
+      {
+        "value": "Kawerau district",
+        "label": "Kawerau district"
+      },
+      {
+        "value": "Lower Hutt city",
+        "label": "Lower Hutt city"
+      },
+      {
+        "value": "Mackenzie district",
+        "label": "Mackenzie district"
+      },
+      {
+        "value": "Manawatu district",
+        "label": "Manawatu district"
+      },
+      {
+        "value": "Manukau",
+        "label": "Manukau"
+      },
+      {
+        "value": "Marlborough district",
+        "label": "Marlborough district"
+      },
+      {
+        "value": "Masterton district",
+        "label": "Masterton district"
+      },
+      {
+        "value": "Matamata-Piako district",
+        "label": "Matamata-Piako district"
+      },
+      {
+        "value": "Napier City",
+        "label": "Napier City"
+      },
+      {
+        "value": "Nelson City",
+        "label": "Nelson City"
+      },
+      {
+        "value": "New Plymouth district",
+        "label": "New Plymouth district"
+      },
+      {
+        "value": "North Shore",
+        "label": "North Shore"
+      },
+      {
+        "value": "Opotiki district",
+        "label": "Opotiki district"
+      },
+      {
+        "value": "Otorohanga district",
+        "label": "Otorohanga district"
+      },
+      {
+        "value": "Palmerston North City",
+        "label": "Palmerston North City"
+      },
+      {
+        "value": "Papakura district",
+        "label": "Papakura district"
+      },
+      {
+        "value": "Porirua City",
+        "label": "Porirua City"
       },
       {
         "value": "Queenstown-Lakes district",
         "label": "Queenstown-Lakes district"
+      },
+      {
+        "value": "Rangitikei district",
+        "label": "Rangitikei district"
+      },
+      {
+        "value": "Rodney district",
+        "label": "Rodney district"
       },
       {
         "value": "Rotorua district",
@@ -856,28 +864,32 @@
         "label": "Ruapehu district"
       },
       {
-        "value": "Gore district",
-        "label": "Gore district"
-      },
-      {
-        "value": "Invercargill City",
-        "label": "Invercargill City"
-      },
-      {
-        "value": "Southland district",
-        "label": "Southland district"
-      },
-      {
-        "value": "New Plymouth district",
-        "label": "New Plymouth district"
+        "value": "Selwyn district",
+        "label": "Selwyn district"
       },
       {
         "value": "South Taranaki district",
         "label": "South Taranaki district"
       },
       {
+        "value": "South Waikato district",
+        "label": "South Waikato district"
+      },
+      {
+        "value": "South Wairarapa district",
+        "label": "South Wairarapa district"
+      },
+      {
+        "value": "Southland district",
+        "label": "Southland district"
+      },
+      {
         "value": "Stratford district",
         "label": "Stratford district"
+      },
+      {
+        "value": "Tararua district",
+        "label": "Tararua district"
       },
       {
         "value": "Tasman district",
@@ -888,88 +900,76 @@
         "label": "Taupo district"
       },
       {
-        "value": "Hauraki district",
-        "label": "Hauraki district"
+        "value": "Tauranga district",
+        "label": "Tauranga district"
       },
       {
-        "value": "Matamata-Piako district",
-        "label": "Matamata-Piako district"
+        "value": "Thames-Coromandel district",
+        "label": "Thames-Coromandel district"
       },
       {
-        "value": "Otorohanga district",
-        "label": "Otorohanga district"
-      },
-      {
-        "value": "South Waikato district",
-        "label": "South Waikato district"
-      },
-      {
-        "value": "Waikato district",
-        "label": "Waikato district"
-      },
-      {
-        "value": "Waipa district",
-        "label": "Waipa district"
-      },
-      {
-        "value": "Waitomo district",
-        "label": "Waitomo district"
-      },
-      {
-        "value": "Carterton district",
-        "label": "Carterton district"
-      },
-      {
-        "value": "Masterton district",
-        "label": "Masterton district"
-      },
-      {
-        "value": "South Wairarapa district",
-        "label": "South Wairarapa district"
-      },
-      {
-        "value": "Waitaki district",
-        "label": "Waitaki district"
-      },
-      {
-        "value": "Kapiti Coast district",
-        "label": "Kapiti Coast district"
-      },
-      {
-        "value": "Lower Hutt city",
-        "label": "Lower Hutt city"
-      },
-      {
-        "value": "Porirua City",
-        "label": "Porirua City"
+        "value": "Timaru district",
+        "label": "Timaru district"
       },
       {
         "value": "Upper Hutt City",
         "label": "Upper Hutt City"
       },
       {
-        "value": "Wellington City",
-        "label": "Wellington City"
+        "value": "Waikato district",
+        "label": "Waikato district"
       },
       {
-        "value": "Buller district",
-        "label": "Buller district"
+        "value": "Waimakariri district",
+        "label": "Waimakariri district"
       },
       {
-        "value": "Grey district",
-        "label": "Grey district"
+        "value": "Waimate district",
+        "label": "Waimate district"
       },
       {
-        "value": "Westland district",
-        "label": "Westland district"
+        "value": "Waipa district",
+        "label": "Waipa district"
+      },
+      {
+        "value": "Wairoa district",
+        "label": "Wairoa district"
+      },
+      {
+        "value": "Waitakere",
+        "label": "Waitakere"
+      },
+      {
+        "value": "Waitaki district",
+        "label": "Waitaki district"
+      },
+      {
+        "value": "Waitomo district",
+        "label": "Waitomo district"
       },
       {
         "value": "Wanganui district",
         "label": "Wanganui district"
       },
       {
-        "value": "Unknown",
-        "label": "Unknown"
+        "value": "Wellington City",
+        "label": "Wellington City"
+      },
+      {
+        "value": "Western Bay of Plenty district",
+        "label": "Western Bay of Plenty district"
+      },
+      {
+        "value": "Westland district",
+        "label": "Westland district"
+      },
+      {
+        "value": "Whakatane district",
+        "label": "Whakatane district"
+      },
+      {
+        "value": "Whangarei district",
+        "label": "Whangarei district"
       }
     ],
     "required": {
@@ -1694,7 +1694,6 @@
     "label": "In the past year, have you been on a waitlist for 1 month or longer for professional mental health services?",
     "type": "select",
     "name": "onWaitinglist",
-    "required": true,
     "defaultValue": "",
     "options": [
       {
@@ -1735,7 +1734,6 @@
     "label": "What would you like to talk about?",
     "type": "select",
     "name": "topic",
-    "required": true,
     "defaultValue": "",
     "options": [
       {
@@ -1796,7 +1794,6 @@
     "type": "select",
     "name": "feelingRightNow",
     "label": "How are you feeling right now? (0 = calm / okay → 10 = extremely upset or distressed)",
-    "required": true,
     "options": [
       {
         "value": "",

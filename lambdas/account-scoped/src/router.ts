@@ -74,6 +74,7 @@ import { sendMessageAndRunJanitorHandler } from './conversation/sendMessageAndRu
 import { issueSyncTokenHandler } from './issueSyncToken';
 import { getExternalRecordingS3LocationHandler } from './conversation/getExternalRecordingS3Location';
 import { getMediaUrlHandler } from './conversation/getMediaUrl';
+import { randomOptionSelectorHandler } from './randomOptionSelector';
 import { filterCountryOrVoIPHandler } from './voice/filterCountryOrVoIP';
 
 /**
@@ -279,6 +280,10 @@ const ACCOUNTSID_ROUTES: Record<
   issueSyncToken: {
     requestPipeline: [validateFlexTokenRequest({ tokenMode: 'agent' })],
     handler: issueSyncTokenHandler,
+  },
+  randomOptionSelector: {
+    requestPipeline: [],
+    handler: randomOptionSelectorHandler,
   },
   'voice/filterCountryOrVoIP': {
     requestPipeline: [validateWebhookRequest],
