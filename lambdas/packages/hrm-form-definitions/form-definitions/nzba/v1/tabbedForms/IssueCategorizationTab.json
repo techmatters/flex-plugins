@@ -1,7 +1,7 @@
 {
   "Barnardos": {
     "categories": {
-      "Adult contact (20+)": {
+      "Adult contact (25+)": {
         "color": "#085f63",
         "subcategories": [
           {
@@ -31,7 +31,7 @@
             "label": "Gender"
           },
           {
-            "label": "Gender identity or expression and sexual orientation"
+            "label": "Gender identity and/or expression and sexual orientation"
           },
           {
             "label": "Health"
@@ -54,6 +54,9 @@
             "label": "Academic pressure"
           },
           {
+            "label": "Accessibility to Education"
+          },
+          {
             "label": "Change of education provider"
           },
           {
@@ -63,7 +66,7 @@
             "label": "Problems at work"
           },
           {
-            "label": "Teacher and school problems"
+            "label": "Teacher and/or school problems"
           },
           {
             "label": "Unspecified/Other - EO"
@@ -74,7 +77,7 @@
         "color": "#c99f7d",
         "subcategories": [
           {
-            "label": "Adoption, fostering, and extended family placement"
+            "label": "Adoption, fostering, and/or extended family placement"
           },
           {
             "label": "Family breakdown/separation/divorce"
@@ -95,7 +98,7 @@
             "label": "Relationship with sibling(s)"
           },
           {
-            "label": "Unspecified/Other - FR"
+            "label": "Unspecified/Other (excluding violence) - FR"
           }
         ]
       },
@@ -103,22 +106,25 @@
         "color": "#fac05e",
         "subcategories": [
           {
+            "label": "Accessibility to MH services"
+          },
+          {
             "label": "Addictive behaviours"
+          },
+          {
+            "label": "Anger"
           },
           {
             "label": "Behavioural issues"
           },
           {
+            "label": "Difficulties with diagnosed MH condition"
+          },
+          {
             "label": "Eating behaviours"
           },
           {
-            "label": "Emotional distress – anger problems"
-          },
-          {
-            "label": "Emotional distress – fear and anxiety problems"
-          },
-          {
-            "label": "Emotional distress – mood problems"
+            "label": "Fears/anxiety"
           },
           {
             "label": "Grief/loss"
@@ -127,10 +133,13 @@
             "label": "Loneliness / Isolation"
           },
           {
+            "label": "Low mood/sadness"
+          },
+          {
             "label": "Neurodevelopmental concerns"
           },
           {
-            "label": "Psychosis"
+            "label": "Psychosis or related concerns/presentation"
           },
           {
             "label": "Self-harming behaviour"
@@ -231,13 +240,13 @@
         "color": "#db7a34",
         "subcategories": [
           {
-            "label": "Classmates/colleagues relationships"
+            "label": "Classmates and colleagues relationships"
           },
           {
-            "label": "Friends and friendships"
+            "label": "Friendships"
           },
           {
-            "label": "Partner relationships"
+            "label": "Partner/romantic relationships"
           },
           {
             "label": "Unspecified/Other - PR"
@@ -248,13 +257,13 @@
         "color": "#f79d8f",
         "subcategories": [
           {
+            "label": "Accessibility to Healthcare Services"
+          },
+          {
             "label": "COVID-19"
           },
           {
             "label": "General medical concerns"
-          },
-          {
-            "label": "Medical or lifestyle information about HIV/AIDS"
           },
           {
             "label": "Nutrition"
@@ -288,7 +297,7 @@
             "label": "Sexual behaviours"
           },
           {
-            "label": "Sexual orientation and gender identity"
+            "label": "Sexual orientation and/or gender identity"
           },
           {
             "label": "Unspecified/Other - S"
