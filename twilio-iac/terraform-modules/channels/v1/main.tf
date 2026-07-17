@@ -107,7 +107,9 @@ resource "twilio_conversations_configuration_addresses_v1" "conversations_addres
       # Must be created manually in Twilio Console for now
       channel.channel_type != "chat" &&
       channel.channel_type != "custom" &&
-      channel.messaging_mode == "conversations"
+      channel.messaging_mode == "conversations" &&
+      # Channels with no contact_identity manage their own conversations address (e.g. via additional.tf)
+      channel.contact_identity != ""
     )
   }
   type                                   = each.value.channel_type
