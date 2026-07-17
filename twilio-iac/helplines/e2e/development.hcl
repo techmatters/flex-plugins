@@ -35,6 +35,17 @@ locals {
         channel_flow_vars    = {}
         chatbot_unique_names = []
       }
+      sms : {
+        channel_type         = "sms"
+        messaging_mode       = "conversations"
+        # contact_identity is intentionally empty here; the conversations address is created
+        # via additional.configure.tf using a data source that resolves the only phone number
+        # attached to this Twilio account at apply time.
+        contact_identity     = ""
+        templatefile         = "/app/twilio-iac/helplines/templates/studio-flows/messaging-lex-v3-blocking-lambda.tftpl"
+        channel_flow_vars    = {}
+        chatbot_unique_names = []
+      }
     }
     get_profile_flags_for_identifier_base_url = "https://hrm-development.tl.techmatters.org/lambda/twilio/account-scoped"
     #System Down Configuration
