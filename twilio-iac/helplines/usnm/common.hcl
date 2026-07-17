@@ -45,6 +45,12 @@ locals {
       survey : "Survey",
       voicemail : "Voicemail"
     }
+    activities = {
+      missed_connection : {
+        friendly_name = "Missed Connection"
+        available     = false
+      }
+    }
 
     task_queues = {
       master : {
@@ -100,5 +106,21 @@ locals {
         "friendly_name"  = "E2E Test Queue"
       }
     }
+
+    s3_lifecycle_rules = {
+      transcripts_expiry : {
+        id                 = "Transcripts Data Expiration Rule"
+        expiration_in_days = 60
+        prefix             = "transcripts/"
+      },
+      voice_recordings_expiry : {
+        id                 = "Voice Recordings Data Expiration Rule"
+        expiration_in_days = 60
+        prefix             = "voice-recordings/"
+      }
+    }
+
+    hrm_transcript_retention_days_override = 60
+    hrm_index_transcripts_for_search       = false
   }
 }
