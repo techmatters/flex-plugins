@@ -167,4 +167,32 @@ describe('filterCountryOrVoIPHandler', () => {
       expect(result.data.blockIncoming).toBe(false);
     }
   });
+
+  it('should throw when getTwilioClient fails', async () => {
+    mockGetTwilioClient.mockRejectedValue(new Error('Twilio client failure'));
+
+    const request = createMockRequest({ from: TEST_US_NUMBER });
+
+    await expect(filterCountryOrVoIPHandler(request, TEST_ACCOUNT_SID)).rejects.toThrow(
+      'Twilio client failure',
+    );
+  });
+
+  it('should throw when Twilio lookup fails', async () => {
+    mockGetTwilioClient.mockResolvedValue({
+      lookups: {
+        v2: {
+          phoneNumbers: jest.fn().mockReturnValue({
+            fetch: jest.fn().mockRejectedValue(new Error('Lookup failure')),
+          }),
+        },
+      },
+    } as any);
+
+    const request = createMockRequest({ from: TEST_US_NUMBER });
+
+    await expect(filterCountryOrVoIPHandler(request, TEST_ACCOUNT_SID)).rejects.toThrow(
+      'Lookup failure',
+    );
+  });
 });
