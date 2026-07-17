@@ -12,7 +12,7 @@ data "twilio_api_accounts_incoming_phone_numbers_v2010" "all" {}
 resource "twilio_conversations_configuration_addresses_v1" "sms" {
   type                                   = "sms"
   address                                = one(data.twilio_api_accounts_incoming_phone_numbers_v2010.all.incoming_phone_numbers).phone_number
-  friendly_name                          = "Sms Conversation Address"
+  friendly_name                          = "SMS Conversation Address"
   auto_creation_enabled                  = true
   auto_creation_type                     = "studio"
   auto_creation_conversation_service_sid = local.services_flex_chat_service_sid
