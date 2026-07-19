@@ -1,0 +1,49 @@
+{
+  "slotTypeName": "age_group",
+  "slotTypeValues": [
+    {
+      "sampleValue": {
+        "value": "Under 18"
+      },
+      "synonyms": [{ "value": "1" }]
+    },
+    {
+      "sampleValue": {
+        "value": "18-34 years old"
+      },
+      "synonyms": [{ "value": "2" }]
+    },
+    {
+      "sampleValue": {
+        "value": "35-54 years old"
+      },
+      "synonyms": [{ "value": "3" }]
+    },
+    {
+      "sampleValue": {
+        "value": "55-74 years old"
+      },
+      "synonyms": [{ "value": "4" }]
+    },
+    {
+      "sampleValue": {
+        "value": "75 years+"
+      },
+      "synonyms": [{ "value": "5" }]
+    },
+    {
+      "sampleValue": {
+        "value": "SKIPPED"
+      },
+      "synonyms": [
+        { "value": "SKIP" },
+        { "value": "skip" },
+        { "value": "X" },
+        { "value": "x" }
+      ]
+    }
+  ],
+  "valueSelectionSetting": {
+    "resolutionStrategy": "TopResolution"
+  }
+}

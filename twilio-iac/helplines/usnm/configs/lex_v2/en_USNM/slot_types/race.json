@@ -1,0 +1,99 @@
+{
+  "slotTypeName": "race",
+  "slotTypeValues": [
+    {
+      "sampleValue": {
+        "value": "American Indian or Alaska Native"
+      },
+      "synonyms": [
+        {
+          "value": "1"
+        }
+      ]
+    },
+    {
+      "sampleValue": {
+        "value": "Asian"
+      },
+      "synonyms": [
+        {
+          "value": "2"
+        }
+      ]
+    },
+    {
+      "sampleValue": {
+        "value": "Black or African American"
+      },
+      "synonyms": [
+        {
+          "value": "3"
+        }
+      ]
+    },
+    {
+      "sampleValue": {
+        "value": "Hispanic or Latino"
+      },
+      "synonyms": [
+        {
+          "value": "4"
+        }
+      ]
+    },
+    {
+      "sampleValue": {
+        "value": "Middle Eastern or North African"
+      },
+      "synonyms": [
+        {
+          "value": "5"
+        }
+      ]
+    },
+    {
+      "sampleValue": {
+        "value": "Native Hawaiian or Pacific Islander"
+      },
+      "synonyms": [
+        {
+          "value": "6"
+        }
+      ]
+    },
+    {
+      "sampleValue": {
+        "value": "White"
+      },
+      "synonyms": [
+        {
+          "value": "7"
+        }
+      ]
+    },
+    {
+      "sampleValue": {
+        "value": "Multiracial"
+      },
+      "synonyms": [
+        {
+          "value": "8"
+        }
+      ]
+    },
+    {
+      "sampleValue": {
+        "value": "SKIPPED"
+      },
+      "synonyms": [
+        { "value": "SKIP" },
+        { "value": "skip" },
+        { "value": "X" },
+        { "value": "x" }
+      ]
+    }
+  ],
+  "valueSelectionSetting": {
+    "resolutionStrategy": "TopResolution"
+  }
+}

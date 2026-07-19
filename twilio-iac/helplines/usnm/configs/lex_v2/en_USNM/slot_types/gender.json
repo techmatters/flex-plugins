@@ -1,0 +1,102 @@
+{
+  "slotTypeName": "gender",
+  "slotTypeValues": [
+    {
+      "sampleValue": {
+        "value": "Woman/female"
+      },
+      "synonyms": [
+        {
+          "value": "f"
+        },
+        {
+          "value": "female"
+        },
+        {
+          "value": "woman"
+        },
+        {
+          "value": "girl"
+        },
+        {
+          "value": "1"
+        }
+      ]
+    },
+    {
+      "sampleValue": {
+        "value": "Man/male"
+      },
+      "synonyms": [
+        {
+          "value": "m"
+        },
+        {
+          "value": "male"
+        },
+        {
+          "value": "man"
+        },
+        {
+          "value": "boy"
+        },
+        {
+          "value": "2"
+        }
+      ]
+    },
+    {
+      "sampleValue": {
+        "value": "Non-binary"
+      },
+      "synonyms": [
+        {
+          "value": "3"
+        },
+        {
+          "value": "non-binary"
+        }
+      ]
+    },
+    {
+      "sampleValue": {
+        "value": "Two-Spirit"
+      },
+      "synonyms": [
+        {
+          "value": "4"
+        },
+        {
+          "value": "two-spirit"
+        }
+      ]
+    },
+    {
+      "sampleValue": {
+        "value": "I use a different term"
+      },
+      "synonyms": [
+        {
+          "value": "5"
+        },
+        {
+          "value": "i use a different term"
+        }
+      ]
+    },
+    {
+      "sampleValue": {
+        "value": "SKIPPED"
+      },
+      "synonyms": [
+        { "value": "SKIP" },
+        { "value": "skip" },
+        { "value": "X" },
+        { "value": "x" }
+      ]
+    }
+  ],
+  "valueSelectionSetting": {
+    "resolutionStrategy": "TopResolution"
+  }
+}
