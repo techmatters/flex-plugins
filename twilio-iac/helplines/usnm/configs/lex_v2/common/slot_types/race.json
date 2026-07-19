@@ -1,17 +1,11 @@
 {
-  "slotTypeName": "five_level_assessment",
+  "slotTypeName": "race",
   "slotTypeValues": [
     {
       "sampleValue": {
-        "value": "1_NOT_AT_ALL"
+        "value": "American Indian or Alaska Native"
       },
       "synonyms": [
-        {
-          "value": "1."
-        },
-        {
-          "value": "1!"
-        },
         {
           "value": "1"
         }
@@ -19,15 +13,9 @@
     },
     {
       "sampleValue": {
-        "value": "2_A_LITTLE_BIT"
+        "value": "Asian"
       },
       "synonyms": [
-        {
-          "value": "2."
-        },
-        {
-          "value": "2!"
-        },
         {
           "value": "2"
         }
@@ -35,15 +23,9 @@
     },
     {
       "sampleValue": {
-        "value": "3_SOMEWHAT"
+        "value": "Black or African American"
       },
       "synonyms": [
-        {
-          "value": "3."
-        },
-        {
-          "value": "3!"
-        },
         {
           "value": "3"
         }
@@ -51,33 +33,51 @@
     },
     {
       "sampleValue": {
-        "value": "4_VERY"
+        "value": "Hispanic or Latino"
       },
       "synonyms": [
         {
           "value": "4"
-        },
-        {
-          "value": "4."
-        },
-        {
-          "value": "4!"
         }
       ]
     },
     {
       "sampleValue": {
-        "value": "5_EXTREMELY"
+        "value": "Middle Eastern or North African"
       },
       "synonyms": [
         {
           "value": "5"
-        },
+        }
+      ]
+    },
+    {
+      "sampleValue": {
+        "value": "Native Hawaiian or Pacific Islander"
+      },
+      "synonyms": [
         {
-          "value": "5."
-        },
+          "value": "6"
+        }
+      ]
+    },
+    {
+      "sampleValue": {
+        "value": "White"
+      },
+      "synonyms": [
         {
-          "value": "5!"
+          "value": "7"
+        }
+      ]
+    },
+    {
+      "sampleValue": {
+        "value": "Multiracial"
+      },
+      "synonyms": [
+        {
+          "value": "8"
         }
       ]
     },
@@ -88,8 +88,12 @@
       "synonyms": [
         { "value": "SKIP" },
         { "value": "skip" },
+        { "value": "Skip" },
         { "value": "X" },
-        { "value": "x" }
+        { "value": "x" },
+        { "value": "SALTAR" },
+        { "value": "saltar" },
+        { "value": "Saltar" }
       ]
     }
   ],

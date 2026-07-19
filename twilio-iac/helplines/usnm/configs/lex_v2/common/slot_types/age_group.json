@@ -38,8 +38,13 @@
       "synonyms": [
         { "value": "SKIP" },
         { "value": "skip" },
+        { "value": "Skip" },
         { "value": "X" },
-        { "value": "x" }
+        { "value": "x" },
+        { "value": "SALTAR" },
+        { "value": "saltar" },
+        { "value": "Saltar" }
+        
       ]
     }
   ],

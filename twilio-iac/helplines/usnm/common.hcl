@@ -106,6 +106,10 @@ locals {
         "friendly_name"  = "E2E Test Queue"
       }
     }
+    lex_v2_bot_languages = {
+      en_USNM : ["post_survey"],
+      es_USNM : ["post_survey"]
+    }
 
     s3_lifecycle_rules = {
       hrm_export_expiry : {
