@@ -12,14 +12,7 @@
                         "plainTextMessage": {
                             "value": "Is there anything you'd like to share about your experience with the NAMI Helpline?\n(Please note, only your first reply will be recorded)"
                         }
-                    },
-                    "variations": [
-                        {
-                            "plainTextMessage": {
-                                "value": ""
-                            }
-                        }
-                    ]
+                    }
                 }
             ],
             "maxRetries": 1,

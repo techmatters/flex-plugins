@@ -12,14 +12,7 @@
                         "plainTextMessage": {
                             "value": "¿Hay algo más que te gustaría compartir sobre tu experiencia con la Línea de Ayuda de NAMI?\n(Ten en cuenta que solo se registrará tu primera respuesta)."
                         }
-                    },
-                    "variations": [
-                        {
-                            "plainTextMessage": {
-                                "value": ""
-                            }
-                        }
-                    ]
+                    }
                 }
             ],
             "maxRetries": 1,
