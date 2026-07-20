@@ -5,7 +5,7 @@
   "valueSelectionSetting": {
     "resolutionStrategy": "TopResolution",
     "regexFilter": {
-      "pattern": "^(\\d{5}|SKIP|Skip|skip|SALTAR|Saltar|saltar)$"
+      "pattern": "^([0-9]{5}|SKIP|Skip|skip|SALTAR|Saltar|saltar)$"
     }
   }
 }
