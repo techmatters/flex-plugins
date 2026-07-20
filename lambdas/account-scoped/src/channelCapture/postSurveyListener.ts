@@ -32,7 +32,7 @@ import {
   getChatServiceSid,
   getHelplineCode,
   getSurveyWorkflowSid,
-  getTwilioWorkspaceSid,
+  getWorkspaceSid,
 } from '@tech-matters/twilio-configuration';
 import { getTranslation } from '../translations/translationLookup';
 import { getCurrentDefinitionVersion } from '../hrm/formDefinitionsCache';
@@ -185,7 +185,7 @@ const triggerPostSurvey: TaskRouterEventHandler = async (
         const chatServiceSid = await getChatServiceSid(accountSid);
         const helplineCode = await getHelplineCode(accountSid);
         const surveyWorkflowSid = await getSurveyWorkflowSid(accountSid);
-        const twilioWorkspaceSid = await getTwilioWorkspaceSid(accountSid);
+        const twilioWorkspaceSid = await getWorkspaceSid(accountSid);
 
         await postSurveyInitHandler({
           channelSid,
