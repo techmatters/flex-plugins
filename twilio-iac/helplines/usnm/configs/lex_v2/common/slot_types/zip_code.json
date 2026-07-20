@@ -1,11 +1,11 @@
 {
   "slotTypeName": "zip_code",
   "slotTypeValues": [],
-  "parentSlotTypeSignature": "AMAZON.FreeFormInput",
+  "parentSlotTypeSignature": "AMAZON.AlphaNumeric",
   "valueSelectionSetting": {
     "resolutionStrategy": "TopResolution",
     "regexFilter": {
-      "pattern": "^([0-9]{5}|SKIP|Skip|skip|SALTAR|Saltar|saltar)$"
+      "pattern": "[0-9]{5}"
     }
   }
 }
