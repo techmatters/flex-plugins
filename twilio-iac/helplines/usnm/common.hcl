@@ -108,8 +108,8 @@ locals {
       }
     }
     lex_v2_bot_languages = {
-      en_USNM : ["post_survey"],
-      es_USNM : ["post_survey"]
+      en : ["post_survey"],
+      es : ["post_survey"]
     }
 
     s3_lifecycle_rules = {
