@@ -38,10 +38,7 @@ locals {
       sms : {
         channel_type         = "sms"
         messaging_mode       = "conversations"
-        # contact_identity is intentionally empty here; the conversations address is created
-        # via additional.configure.tf using a data source that resolves the only phone number
-        # attached to this Twilio account at apply time.
-        contact_identity     = ""
+        contact_identity     = "+12607821891"
         templatefile         = "/app/twilio-iac/helplines/templates/studio-flows/messaging-lex-v3-blocking-lambda.tftpl"
         channel_flow_vars    = {}
         chatbot_unique_names = []
