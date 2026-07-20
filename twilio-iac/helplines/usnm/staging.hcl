@@ -42,8 +42,8 @@ locals {
       send_wait_sms_no_tya_service                           = "There are currently no Teen and Young Adult HelpLine Specialists available. Reply 1 to return to the standard SMS service or STOP to end your conversation. Info and resources are online at https://www.nami.org/nami-helpline/.  Email helpline@nami.org and we'll respond in 1-2 business days."
       send_wait_sms_no_fcg_service                           = "There are currently no Family Caregiver HelpLine Specialists available. Reply 1 to return to the standard SMS service or STOP to end your conversation. Info and resources are online at https://www.nami.org/nami-helpline/.  Email helpline@nami.org and we'll respond in 1-2 business days."
       send_message_sms_max_retries                           = "We haven't received a response, so we'll end this conversation for now. If you need support from the NAMI HelpLine, you can start a new conversation anytime."
-      send_message_sms_post_queue_closed                     = "We are sorry, the helpline has closed. Please, feel free to reach again later. Good bye."
-      send_message_sms_post_queue_keep_waiting               = "Thank you for your patience, a specialist will be with you shortly."
+      send_message_sms_post_queue_closed                     = "NAMI HelpLine is now closed. We're sorry we weren't able to connect you with a Specialist today. We encourage you to contact us again Monday - Friday, from 10am-10pm ET, excluding national holidays. This contact will now end. Thank you for contacting us."
+      send_message_sms_post_queue_keep_waiting               = "Thank you for your patience. NAMI HelpLine Specialists are currently assisting other Help Seekers. Someone will be with you as soon as possible. In the meantime, info and resources are online at https://www.nami.org/nami-helpline/ "
     }
 
 
