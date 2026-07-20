@@ -11,7 +11,8 @@ locals {
   local_config = {
     helpline                   = "NAMI"
     task_language              = "en-US"
-    enable_post_survey         = false
+    enable_lex_v2              = true
+    enable_post_survey         = true
     enable_external_recordings = true
     permission_config          = "demo"
     workflows = {
