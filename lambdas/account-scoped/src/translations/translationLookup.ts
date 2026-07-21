@@ -46,21 +46,20 @@ export const getTranslation = async (
     locale: string,
   ) => TranslationMessages | undefined = loadTranslationFile,
 ): Promise<string> => {
-
   const [language] = taskLanguage.split('-');
-  // Step 1: It checks for the key in the helpline's customStrings form definitions in the following order: 
+  // Step 1: It checks for the key in the helpline's customStrings form definitions in the following order:
   // taskLanguage (e.g. "en-US"), the base language (e.g. "en"), and finally the format without a language key.
   const definitionVersion = await getCurrentDefinitionVersion({ accountSid });
   const customMessage =
-  definitionVersion.customStrings?.postSurveyMessages?.[taskLanguage]?.[key] ??
-  definitionVersion.customStrings?.postSurveyMessages?.[language]?.[key] ??
-  definitionVersion.customStrings?.postSurveyMessages?.[key];
+    definitionVersion.customStrings?.postSurveyMessages?.[taskLanguage]?.[key] ??
+    definitionVersion.customStrings?.postSurveyMessages?.[language]?.[key] ??
+    definitionVersion.customStrings?.postSurveyMessages?.[key];
 
   if (customMessage) return customMessage;
 
   // Build ordered list of locales to try, avoiding duplicates
   const localeChain: string[] = [taskLanguage];
-  
+
   if (language !== taskLanguage) localeChain.push(language);
   if (!localeChain.includes(GLOBAL_DEFAULT_LANGUAGE))
     localeChain.push(GLOBAL_DEFAULT_LANGUAGE);
