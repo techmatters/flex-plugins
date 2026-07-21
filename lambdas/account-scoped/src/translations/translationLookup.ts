@@ -50,10 +50,13 @@ export const getTranslation = async (
   // Step 1: It checks for the key in the helpline's customStrings form definitions in the following order:
   // taskLanguage (e.g. "en-US"), the base language (e.g. "en"), and finally the format without a language key.
   const definitionVersion = await getCurrentDefinitionVersion({ accountSid });
+  // Fixes type issue
+  const postSurveyMessages = definitionVersion.customStrings?.postSurveyMessages as any;
+
   const customMessage =
-    definitionVersion.customStrings?.postSurveyMessages?.[taskLanguage]?.[key] ??
-    definitionVersion.customStrings?.postSurveyMessages?.[language]?.[key] ??
-    definitionVersion.customStrings?.postSurveyMessages?.[key];
+    postSurveyMessages?.[taskLanguage]?.[key] ??
+    postSurveyMessages?.[language]?.[key] ??
+    postSurveyMessages?.[key];
 
   if (customMessage) return customMessage;
 
