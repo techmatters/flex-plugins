@@ -15,7 +15,7 @@
  */
 
 import { expect, Page, request, test } from '@playwright/test';
-import { Categories, contactForm, ContactFormTab } from '../contactForm';
+import { contactForm, ContactFormTab } from '../contactForm';
 import { caseHome } from '../case';
 import { agentDesktop, navigateToAgentDesktop } from '../agent-desktop';
 import { skipTestIfDataUpdateDisabled, skipTestIfNotTargeted } from '../skipTest';
@@ -23,8 +23,11 @@ import { notificationBar } from '../notificationBar';
 import { closePage, setupContextAndPage } from '../browser';
 import { apiHrmRequest } from '../hrm/hrmRequest';
 import { clearOfflineTask } from '../hrm/clearOfflineTask';
-import {getConfigValue} from "../config";
-import {formContentsByHelpline, formContentsByHelplineForEmptyForm} from "../formContentsByHelpline";
+import { getConfigValue } from '../config';
+import {
+  formContentsByHelpline,
+  formContentsByHelplineForEmptyForm,
+} from '../formContentsByHelpline';
 
 test.describe.serial('Offline Contact (with Case)', () => {
   skipTestIfNotTargeted();
@@ -73,7 +76,8 @@ test.describe.serial('Offline Contact (with Case)', () => {
           channel: 'web',
           helpline: 'Childline',
         },
-      }]);
+      },
+    ]);
     await form.fillWithContent(formContent);
     const beforeDate = new Date(); // Capture date here since we'll create case inmediately after saving contact
 
