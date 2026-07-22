@@ -47,11 +47,6 @@ export const getMasterWorkflowSid = async (
 export const getAccountAuthToken = (accountSid: AccountSID): Promise<string> =>
   getSsmParameter(`/${process.env.NODE_ENV}/twilio/${accountSid}/auth_token`);
 
-/**
- * @deprecated - use getWorkspaceSid, these got duplicated somehow
- */
-export const getTwilioWorkspaceSid = getWorkspaceSid;
-
 export const getSurveyWorkflowSid = (accountSid: AccountSID): Promise<string> =>
   getSsmParameter(`/${process.env.NODE_ENV}/twilio/${accountSid}/survey_workflow_sid`);
 

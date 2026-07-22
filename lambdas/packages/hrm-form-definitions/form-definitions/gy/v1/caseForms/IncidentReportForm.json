@@ -1,0 +1,213 @@
+[
+  {
+    "name": "beaconIncidentId",
+    "type": "input",
+    "label": "Beacon Incident ID",
+    "isPII": true
+  },
+  {
+    "name": "incidentNumber",
+    "type": "input",
+    "label": "Beacon Incident Number",
+    "isPII": true
+  },
+  {
+    "name": "incidentCreationTimestamp",
+    "type": "time-input",
+    "label": "Incident Creation Timestamp",
+    "isPII": true
+  },
+  {
+    "name": "incidentType",
+    "label": "Incident Type",
+    "type": "select",
+    "unknownOption": "Unknown",
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "Follow Up",
+        "label": "Follow Up"
+      },
+      {
+        "value": "Indecent Exposure",
+        "label": "Indecent Exposure"
+      },
+      {
+        "value": "Loitering",
+        "label": "Loitering"
+      },
+      {
+        "value": "Syringe Disposal",
+        "label": "Syringe Disposal"
+      },
+      {
+        "value": "Well-being Check",
+        "label": "Well-being Check"
+      },
+      {
+        "value": "Intoxication",
+        "label": "Intoxication"
+      },
+      {
+        "value": "Disturbance",
+        "label": "Disturbance"
+      },
+      {
+        "value": "Mental Health Crisis",
+        "label": "Mental Health Crisis"
+      }
+    ],
+    "isPII": false
+  },
+  {
+    "name": "tags",
+    "label": "Incident Tags",
+    "type": "listbox-multiselect",
+    "options": [
+      {
+        "value": "Alcott",
+        "label": "Alcott"
+      },
+      {
+        "value": "Canopy Roots",
+        "label": "Canopy Roots"
+      },
+      {
+        "value": "East",
+        "label": "East"
+      },
+      {
+        "value": "Harbor",
+        "label": "Harbor"
+      },
+      {
+        "value": "Heluna",
+        "label": "Heluna"
+      },
+      {
+        "value": "Hollywood",
+        "label": "Hollywood"
+      },
+      {
+        "value": "Metro",
+        "label": "Metro"
+      },
+      {
+        "value": "MOCS",
+        "label": "MOCS"
+      },
+      {
+        "value": "Pacific",
+        "label": "Pacific"
+      },
+      {
+        "value": "Response Team",
+        "label": "Response Team"
+      },
+      {
+        "value": "South LA",
+        "label": "South LA"
+      },
+      {
+        "value": "Support Team",
+        "label": "Support Team"
+      },
+      {
+        "value": "Sycamores",
+        "label": "Sycamores"
+      },
+      {
+        "value": "UA",
+        "label": "UA"
+      },
+      {
+        "value": "Valley",
+        "label": "Valley"
+      }
+    ],
+    "isPII": false
+  },
+  {
+    "name": "comments",
+    "label": "Comments",
+    "type": "textarea",
+    "rows": 20,
+    "width": 289,
+    "isPII": true
+  },
+  {
+    "name": "latitude",
+    "type": "input",
+    "label": "Location: Latitude",
+    "isPII": true
+  },
+  {
+    "name": "longitude",
+    "type": "input",
+    "label": "Location: Longitude",
+    "isPII": true
+  },
+  {
+    "name": "locationAddress",
+    "type": "input",
+    "label": "Location: Physical Address",
+    "isPII": true
+  },
+  {
+    "name": "transportDestination",
+    "type": "input",
+    "label": "Transport Destination",
+    "isPII": true
+  },
+  {
+    "name": "numberOfClientsTransported",
+    "type": "numeric-input",
+    "label": "# of Clients Transported",
+    "isPII": false
+  },
+  {
+    "name": "incidentActivationInterval",
+    "type": "numeric-input",
+    "label": "Incident Activation Interval",
+    "isPII": false
+  },
+  {
+    "name": "enrouteInterval",
+    "type": "numeric-input",
+    "label": "En Route Interval",
+    "isPII": false
+  },
+  {
+    "name": "sceneArrivalInterval",
+    "type": "numeric-input",
+    "label": "Scene Arrival Interval",
+    "isPII": false
+  },
+  {
+    "name": "triageInterval",
+    "type": "numeric-input",
+    "label": "Triage Interval",
+    "isPII": false
+  },
+  {
+    "name": "totalSceneInterval",
+    "type": "numeric-input",
+    "label": "Total Scene Interval",
+    "isPII": false
+  },
+  {
+    "name": "transportInterval",
+    "type": "numeric-input",
+    "label": "Transport Interval",
+    "isPII": false
+  },
+  {
+    "name": "totalIncidentTime",
+    "type": "numeric-input",
+    "label": "Total Incident Time",
+    "isPII": false
+  }
+]
