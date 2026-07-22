@@ -70,7 +70,9 @@ describe('getTranslation', () => {
 
     it('returns customStrings.postSurveyMessages value keyed by full locale (e.g. en-US)', async () => {
       mockGetCurrentDefinitionVersion.mockResolvedValue(
-        makeDefinitionVersion({ 'en-US': { [TEST_TRIGGER_MESSAGE_KEY]: EN_US_TRIGGER_MESSAGE } }),
+        makeDefinitionVersion({
+          'en-US': { [TEST_TRIGGER_MESSAGE_KEY]: EN_US_TRIGGER_MESSAGE },
+        }),
       );
       const loader = makeTranslationLoader({});
 
