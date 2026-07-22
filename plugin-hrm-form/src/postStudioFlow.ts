@@ -14,13 +14,12 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { HttpRequestPipelineStep } from '../httpTypes';
-import { newErr, newOk } from '../Result';
+import { TaskQueueSID } from './types/twilio';
+import { getHrmConfig } from './hrmConfig';
 
-export const validateRequestMethod: (method: string) => HttpRequestPipelineStep =
-  method => async request => {
-    if (request.method.toUpperCase() !== method.toUpperCase()) {
-      return newErr({ message: 'Method not allowed', error: { statusCode: 405 } });
-    }
-    return newOk(request);
-  };
+export const getVoicePostStudioFlowSettings = (
+  queueSid: TaskQueueSID,
+): ReturnType<typeof getHrmConfig>['postStudioFlows']['voice'] => {
+  const { postStudioFlows } = getHrmConfig();
+  return postStudioFlows[queueSid] ?? postStudioFlows.voice;
+};

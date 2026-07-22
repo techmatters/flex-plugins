@@ -70,15 +70,14 @@ export const setUpConferenceActions = () => {
     }
   });
 
-  Flex.Actions.addListener('beforeAcceptTask', payload => {
+  Flex.Actions.addListener('beforeAcceptTask', (payload: { conferenceOptions: any }) => {
     if (getAseloFeatureFlags().enable_conference_status_event_handler) {
+      const { accountScopedLambdaBaseUrl } = getHrmConfig();
       const { conferenceOptions } = payload;
       if (conferenceOptions) {
-        conferenceOptions.conferenceStatusCallback = `${
-          getHrmConfig().accountScopedLambdaBaseUrl
-        }/conference/conferenceStatusCallback`;
+        conferenceOptions.conferenceStatusCallback = `${accountScopedLambdaBaseUrl}/conference/conferenceStatusCallback`;
         conferenceOptions.conferenceStatusCallbackMethod = 'POST';
-        conferenceOptions.conferenceStatusCallbackEvent = 'leave';
+        conferenceOptions.conferenceStatusCallbackEvent = ['leave', 'join'].toString();
       }
     }
   });

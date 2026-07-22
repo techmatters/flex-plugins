@@ -23,7 +23,7 @@
   ],
   "dependencies": {
     "dotenv": "^16.3.1",
-    "twilio": "^5.4.0"
+    "twilio": "^6.0.2"
   },
   "devDependencies": {
     "@tsconfig/node18": "^18.2.1",

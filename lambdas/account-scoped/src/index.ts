@@ -22,6 +22,8 @@ import {
   convertHttpErrorResultToALBResult,
   notFoundResponse,
   okJsonResponse,
+  okTextResponse,
+  okXmlResponse,
 } from './albResponses';
 
 const parseBody = ({
@@ -88,7 +90,14 @@ export const handler = async (event: ALBEvent): Promise<ALBResult> => {
         );
         return convertHttpErrorResultToALBResult(result);
       }
-      return okJsonResponse(result.unwrap());
+      switch (route.responseType) {
+        case 'json':
+          return okJsonResponse(result.unwrap());
+        case 'text':
+          return okTextResponse(result.unwrap());
+        case 'xml':
+          return okXmlResponse(result.unwrap().toString());
+      }
     }
     return notFoundResponse(event);
   } catch (err) {
