@@ -24,7 +24,7 @@ import { closePage, setupContextAndPage } from '../browser';
 import { apiHrmRequest } from '../hrm/hrmRequest';
 import { clearOfflineTask } from '../hrm/clearOfflineTask';
 import {getConfigValue} from "../config";
-import {formContentsByHelpline} from "../formContentsByHelpline";
+import {formContentsByHelpline, formContentsByHelplineForEmptyForm} from "../formContentsByHelpline";
 
 test.describe.serial('Offline Contact (with Case)', () => {
   skipTestIfNotTargeted();
@@ -59,7 +59,7 @@ test.describe.serial('Offline Contact (with Case)', () => {
 
     console.log('Starting filling form');
     const helpline = getConfigValue('helplineShortCode') as keyof typeof formContentsByHelpline;
-    const formContent = formContentsByHelpline[helpline];
+    const formContent = formContentsByHelplineForEmptyForm[helpline];
 
     const form = contactForm(pluginPage);
     await form.selectChildCallType();
