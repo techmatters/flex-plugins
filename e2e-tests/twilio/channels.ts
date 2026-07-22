@@ -15,7 +15,7 @@
  */
 
 // eslint-disable-next-line import/no-extraneous-dependencies
-import twilio, { Twilio } from 'twilio';
+import twilio from 'twilio';
 import { getConfigValue } from '../config';
 
 const encodeEmailToUnicode = (email: string) => {

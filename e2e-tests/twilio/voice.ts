@@ -15,6 +15,7 @@
  */
 
 import { getConfigValue } from '../config';
+// eslint-disable-next-line import/no-extraneous-dependencies
 import twilio from 'twilio';
 import VoiceResponse = twilio.twiml.VoiceResponse;
 

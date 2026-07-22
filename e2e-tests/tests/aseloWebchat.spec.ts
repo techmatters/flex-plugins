@@ -23,7 +23,7 @@ import { getWebchatScript } from '../chatScripts';
 import { flexChat } from '../flexChat';
 import { skipTestIfNotTargeted } from '../skipTest';
 import { tasks } from '../tasks';
-import { Categories, contactForm, ContactFormTab } from '../contactForm';
+import { contactForm } from '../contactForm';
 import { deleteAllTasksInQueue } from '../twilio/tasks';
 import { notificationBar } from '../notificationBar';
 import { clickThroughTwilioPasteModals } from '../agent-desktop';

@@ -17,14 +17,17 @@
 import { Page, request, test } from '@playwright/test';
 import { statusIndicator } from '../workerStatus';
 import { skipTestIfNotTargeted } from '../skipTest';
-import { Categories, contactForm, ContactFormTab } from '../contactForm';
+import { contactForm } from '../contactForm';
 import { deleteAllTasksInQueue } from '../twilio/tasks';
 import { notificationBar } from '../notificationBar';
 import { clickThroughTwilioPasteModals } from '../agent-desktop';
 import { setupContextAndPage, closePage } from '../browser';
 import { clearOfflineTask } from '../hrm/clearOfflineTask';
 import { apiHrmRequest } from '../hrm/hrmRequest';
-import {formContentsByHelpline, formContentsByHelplineForEmptyForm} from '../formContentsByHelpline';
+import {
+  formContentsByHelpline,
+  formContentsByHelplineForEmptyForm,
+} from '../formContentsByHelpline';
 import { getConfigValue } from '../config';
 import { makeCallToService } from '../twilio/voice';
 import { tasks } from '../tasks';
