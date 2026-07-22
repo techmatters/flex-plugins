@@ -15,14 +15,23 @@
  */
 import { Twilio } from 'twilio';
 import type { ConfigurationInstance } from 'twilio/lib/rest/flexApi/v1/configuration';
+import type { StudioFlowSID } from '@tech-matters/twilio-types';
+
+export type PostSurveyConfiguration = {
+  studioFlowSid: StudioFlowSID;
+  flowTrigger: 'rest' | 'inProgressCall';
+};
+
+type SurveyConfigurationAttributes = Record<string, any> & {
+  feature_flags: Record<string, boolean | undefined>;
+  postStudioFlows?: Record<string, PostSurveyConfiguration>;
+};
 
 export const retrieveServiceConfiguration = async (
   client: Twilio,
 ): Promise<
   Omit<ConfigurationInstance, 'attributes'> & {
-    attributes: Record<string, any> & {
-      feature_flags: Record<string, boolean | undefined>;
-    };
+    attributes: SurveyConfigurationAttributes;
   }
 > => {
   const serviceConfig = await client.flexApi.v1.configuration.get().fetch();
@@ -31,9 +40,7 @@ export const retrieveServiceConfiguration = async (
 
 export const retrieveServiceConfigurationAttributes = async (
   client: Twilio,
-): Promise<
-  Record<string, any> & { feature_flags: Record<string, boolean | undefined> }
-> => {
+): Promise<SurveyConfigurationAttributes> => {
   const serviceConfig = await retrieveServiceConfiguration(client);
   return serviceConfig.attributes;
 };
