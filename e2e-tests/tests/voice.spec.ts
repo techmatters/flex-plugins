@@ -31,7 +31,7 @@ import { apiHrmRequest } from '../hrm/hrmRequest';
 import { formContentsByHelpline } from '../formContentsByHelpline';
 import { getConfigValue } from '../config';
 import { smsChat } from '../twilio/sms';
-import { deleteSmsConversations } from '../twilio/channels';
+import { makeCallToService } from '../twilio/voice';
 
 test.describe.serial('SMS caller', () => {
   skipTestIfNotTargeted();
@@ -40,14 +40,13 @@ test.describe.serial('SMS caller', () => {
 
   test.beforeAll(async ({ browser }) => {
     test.setTimeout(180000);
-    await deleteSmsConversations();
     ({ page: pluginPage } = await setupContextAndPage(browser));
 
     await clearOfflineTask(
       apiHrmRequest(await request.newContext(), process.env.FLEX_TOKEN!),
       process.env.LOGGED_IN_WORKER_SID!,
     );
-    console.info('SMS E2E test - plugin page launched.');
+    console.info('Voice E2E test - plugin page launched.');
 
     await clickThroughTwilioPasteModals(pluginPage);
     console.info('Plugin page visited.');
@@ -76,24 +75,7 @@ test.describe.serial('SMS caller', () => {
     // Both iterate the same shared script, yielding control when they hit a
     // statement the other side needs to handle — the same pattern used by the
     // Aselo webchat test.
-    const smsChatProgress = smsChat(chatScript);
-    const flexChatProgress: AsyncIterator<ChatStatement> = flexChat(pluginPage).chat(chatScript);
-
-    for await (const expectedCounselorStatement of smsChatProgress) {
-      console.info('Statement for flex chat to process', expectedCounselorStatement);
-      if (expectedCounselorStatement) {
-        switch (expectedCounselorStatement.origin) {
-          case ChatStatementOrigin.COUNSELOR_AUTO:
-            await statusIndicator(pluginPage).setStatus('AVAILABLE');
-            await tasks(pluginPage).acceptNextTask();
-            await flexChatProgress.next();
-            break;
-          default:
-            await flexChatProgress.next();
-            break;
-        }
-      }
-    }
+    await makeCallToService();
 
     console.info('Starting filling form');
     const helpline = getConfigValue('helplineShortCode') as keyof typeof formContentsByHelpline;

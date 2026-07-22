@@ -15,7 +15,7 @@
  */
 
 // eslint-disable-next-line import/no-extraneous-dependencies
-import twilio from 'twilio';
+import twilio, { Twilio } from 'twilio';
 import { getConfigValue } from '../config';
 
 const encodeEmailToUnicode = (email: string) => {
@@ -30,7 +30,66 @@ const encodeEmailToUnicode = (email: string) => {
     .join('');
 };
 
-export const deleteChatChannels = async (): Promise<void> => {
+const deleteSmsConversationFromOneEnd = async (
+  accountSid: string,
+  authToken: string,
+  fromNumber: string,
+  toNumber: string,
+) => {
+  const client = twilio(accountSid, authToken);
+  const activeConversations = await client.conversations.v1.conversations.list({
+    state: 'active',
+  });
+  console.info(`${activeConversations.length} active conversations found.`);
+  await Promise.all(
+    activeConversations.map(async (conversation) => {
+      const participants = await conversation.participants().list();
+
+      if (
+        // eslint-disable-next-line @typescript-eslint/no-loop-func
+        participants.some((participant) => {
+          return (
+            participant.messagingBinding?.address === fromNumber &&
+            participant.messagingBinding?.proxy_address === toNumber
+          );
+        })
+      ) {
+        console.info(
+          `Found a participant with the from SMS number address (${fromNumber}) and to SMS number proxy address (${toNumber}), attempting to close conversation ${conversation.sid} from ${accountSid}`,
+        );
+        await conversation.update({ state: 'closed' });
+      }
+    }),
+  );
+};
+
+export const deleteSmsConversations = async (): Promise<void> => {
+  const serviceAccountSid = getConfigValue('twilioAccountSid') as string;
+  const serviceAuthToken = getConfigValue('twilioAuthToken') as string;
+  const serviceSmsNumber = getConfigValue('smsPhoneNumber') as string;
+
+  const senderAccountSid = getConfigValue('clientTwilioAccountSid') as string;
+  const senderAuthToken = getConfigValue('clientTwilioAuthToken') as string;
+  const senderSmsNumber = getConfigValue('clientSmsPhoneNumber') as string;
+
+  // Delete conversations from service Twilio account
+  await deleteSmsConversationFromOneEnd(
+    serviceAccountSid,
+    serviceAuthToken,
+    senderSmsNumber,
+    serviceSmsNumber,
+  );
+
+  // Delete conversations from sender Twilio account
+  await deleteSmsConversationFromOneEnd(
+    senderAccountSid,
+    senderAuthToken,
+    serviceSmsNumber,
+    senderSmsNumber,
+  );
+};
+
+export const deleteChatConversations = async (): Promise<void> => {
   const accountSid = getConfigValue('twilioAccountSid') as string;
   const authToken = getConfigValue('twilioAuthToken') as string;
   const email = getConfigValue('oktaUsername') as string;
@@ -38,45 +97,36 @@ export const deleteChatChannels = async (): Promise<void> => {
 
   const client = twilio(accountSid, authToken);
 
-  // List all chat services
-  const services = await client.chat.v2.services.list();
+  // List all users in this chat service
+  const users = await client.conversations.v1.users.list();
+  console.debug(`Found ${users.length} users in conversations`);
+  const matchingUser = users.find((user) => user.identity === encodedEmail);
 
-  for (const service of services) {
-    // List all users in this chat service
-    const users = await client.chat.v2.services(service.sid).users.list();
-    console.log(`Found ${users.length} users in service ${service.sid}`);
-    const matchingUser = users.find((user) => user.identity === encodedEmail);
+  if (!matchingUser) {
+    return;
+  }
 
-    if (!matchingUser) {
-      continue;
-    }
+  console.info(`Found user ${email} in conversations`);
 
-    console.log(`Found user ${email} in service ${service.sid}`);
+  // List all channels the matching user is a part of
+  const userConversations = await client.conversations.v1.users
+    .get(matchingUser.sid)
+    .userConversations.list();
 
-    // List all channels the matching user is a part of
-    const userChannels = await client.chat.v2
-      .services(service.sid)
-      .users(matchingUser.sid)
-      .userChannels.list();
+  console.debug(`Found ${userConversations.length} chat channels for user ${email}`);
 
-    console.log(
-      `Found ${userChannels.length} chat channels for user ${email} in service ${service.sid}`,
-    );
-
-    for (const userChannel of userChannels) {
-      console.log(`Removing chat channel ${userChannel.channelSid} from service ${service.sid}`);
-      await client.conversations.v1.services
-        .get(service.sid)
-        .conversations.get(userChannel.channelSid)
-        .remove();
-    }
+  for (const { conversationSid } of userConversations) {
+    console.debug(`Removing chat channel ${conversationSid}`);
+    await client.conversations.v1.conversations.get(conversationSid).remove();
   }
 };
 
 // Handle exit signals
 process.on('SIGINT', () => {
-  deleteChatChannels().catch((err) => console.error(err));
+  deleteChatConversations().catch((err) => console.error(err));
+  deleteSmsConversations().catch((err) => console.error(err));
 });
 process.on('SIGTERM', () => {
-  deleteChatChannels().catch((err) => console.error(err));
+  deleteChatConversations().catch((err) => console.error(err));
+  deleteSmsConversations().catch((err) => console.error(err));
 });
