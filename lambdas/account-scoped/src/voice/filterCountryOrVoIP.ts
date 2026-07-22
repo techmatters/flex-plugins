@@ -63,7 +63,7 @@ export const filterCountryOrVoIPHandler: AccountScopedHandler = async (
 
   if (data?.lineTypeIntelligence?.type) {
     const lineType = (data.lineTypeIntelligence.type as string).toLowerCase();
-    const carrier = data.lineTypeIntelligence.carrier_name as string;
+    const carrier = data.lineTypeIntelligence.carrierName as string;
 
     if (lineType.includes('voip')) {
       console.info('filterCountryOrVoIP: Blocking VoIP call', {
