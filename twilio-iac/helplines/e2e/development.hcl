@@ -43,6 +43,17 @@ locals {
         channel_flow_vars    = {}
         chatbot_unique_names = []
       }
+      voice : {
+        channel_type         = "voice"
+        contact_identity     = "+12607821891"
+        templatefile         = "/app/twilio-iac/helplines/templates/studio-flows/voice-no-chatbot-operating-hours-blocking-lambda.tftpl"
+        channel_flow_vars    = {
+          voice_ivr_greeting_message = "Thank you for contacting E2E. One of our counselors will be with you shortly."
+          voice_ivr_blocked_message  = "You have been blocked from contacting this service."
+          voice_ivr_language         = "en-US"
+        }
+        chatbot_unique_names = []
+      }
     }
     get_profile_flags_for_identifier_base_url = "https://hrm-development.tl.techmatters.org/lambda/twilio/account-scoped"
     #System Down Configuration
