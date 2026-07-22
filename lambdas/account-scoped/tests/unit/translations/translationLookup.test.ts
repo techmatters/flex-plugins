@@ -32,7 +32,7 @@ const EN_TRIGGER_MESSAGE = 'English trigger message';
 const ES_TRIGGER_MESSAGE = 'Spanish trigger message';
 const EN_US_TRIGGER_MESSAGE = 'US English trigger message';
 
-const makeDefinitionVersion = (postSurveyMessages?: Record<string, string>) =>
+const makeDefinitionVersion = (postSurveyMessages?: Record<string, any>) =>
   ({
     customStrings: {
       Messages: {},
@@ -66,6 +66,76 @@ describe('getTranslation', () => {
       );
 
       expect(result).toBe(CUSTOM_TRIGGER_MESSAGE);
+    });
+
+    it('returns customStrings.postSurveyMessages value keyed by full locale (e.g. en-US)', async () => {
+      mockGetCurrentDefinitionVersion.mockResolvedValue(
+        makeDefinitionVersion({ 'en-US': { [TEST_TRIGGER_MESSAGE_KEY]: EN_US_TRIGGER_MESSAGE } }),
+      );
+      const loader = makeTranslationLoader({});
+
+      const result = await getTranslation(
+        TEST_ACCOUNT_SID,
+        'en-US',
+        TEST_TRIGGER_MESSAGE_KEY,
+        loader,
+      );
+
+      expect(result).toBe(EN_US_TRIGGER_MESSAGE);
+    });
+
+    it('returns customStrings.postSurveyMessages value keyed by base language (e.g. en)', async () => {
+      mockGetCurrentDefinitionVersion.mockResolvedValue(
+        makeDefinitionVersion({ en: { [TEST_TRIGGER_MESSAGE_KEY]: EN_TRIGGER_MESSAGE } }),
+      );
+      const loader = makeTranslationLoader({});
+
+      const result = await getTranslation(
+        TEST_ACCOUNT_SID,
+        'en-US',
+        TEST_TRIGGER_MESSAGE_KEY,
+        loader,
+      );
+
+      expect(result).toBe(EN_TRIGGER_MESSAGE);
+    });
+
+    it('prefers full locale key over base language key in customStrings.postSurveyMessages', async () => {
+      mockGetCurrentDefinitionVersion.mockResolvedValue(
+        makeDefinitionVersion({
+          'en-US': { [TEST_TRIGGER_MESSAGE_KEY]: EN_US_TRIGGER_MESSAGE },
+          en: { [TEST_TRIGGER_MESSAGE_KEY]: EN_TRIGGER_MESSAGE },
+        }),
+      );
+      const loader = makeTranslationLoader({});
+
+      const result = await getTranslation(
+        TEST_ACCOUNT_SID,
+        'en-US',
+        TEST_TRIGGER_MESSAGE_KEY,
+        loader,
+      );
+
+      expect(result).toBe(EN_US_TRIGGER_MESSAGE);
+    });
+
+    it('prefers base language key over plain key in customStrings.postSurveyMessages', async () => {
+      mockGetCurrentDefinitionVersion.mockResolvedValue(
+        makeDefinitionVersion({
+          en: { [TEST_TRIGGER_MESSAGE_KEY]: EN_TRIGGER_MESSAGE },
+          [TEST_TRIGGER_MESSAGE_KEY]: CUSTOM_TRIGGER_MESSAGE,
+        }),
+      );
+      const loader = makeTranslationLoader({});
+
+      const result = await getTranslation(
+        TEST_ACCOUNT_SID,
+        'en-US',
+        TEST_TRIGGER_MESSAGE_KEY,
+        loader,
+      );
+
+      expect(result).toBe(EN_TRIGGER_MESSAGE);
     });
 
     it('does not use customStrings if the key is not present in postSurveyMessages', async () => {
