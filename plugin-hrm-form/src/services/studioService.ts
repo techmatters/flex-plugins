@@ -14,13 +14,15 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { HttpRequestPipelineStep } from '../httpTypes';
-import { newErr, newOk } from '../Result';
+import fetchProtectedApi from './fetchProtectedApi';
+import { CallSID, TaskSID } from '../types/twilio';
 
-export const validateRequestMethod: (method: string) => HttpRequestPipelineStep =
-  method => async request => {
-    if (request.method.toUpperCase() !== method.toUpperCase()) {
-      return newErr({ message: 'Method not allowed', error: { statusCode: 405 } });
-    }
-    return newOk(request);
-  };
+export const triggerPostStudioFlow = async (taskSid: TaskSID, targetCallSid?: CallSID) => {
+  return fetchProtectedApi(
+    '/studioFlow/triggerPostStudioFlow',
+    { taskSid, targetCallSid },
+    {
+      useTwilioLambda: true,
+    },
+  );
+};

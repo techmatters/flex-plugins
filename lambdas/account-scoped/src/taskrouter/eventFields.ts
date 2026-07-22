@@ -15,12 +15,18 @@
  */
 
 import type { EventType } from './eventTypes';
+import {
+  TaskQueueSID,
+  TaskSID,
+  WorkerSID,
+  WorkspaceSID,
+} from '@tech-matters/twilio-types';
 
 export type EventFields = {
   // Default fields
   EventType: EventType;
   AccountSid: string;
-  WorkspaceSid: string;
+  WorkspaceSid: WorkspaceSID;
   WorkspaceName: string;
   EventDescription: string;
   ResourceType: 'Task' | 'Reservation' | 'Worker' | 'Activity' | 'Workflow' | 'Workspace';
@@ -28,14 +34,14 @@ export type EventFields = {
   Timestamp: string;
 
   // Task
-  TaskSid: string;
+  TaskSid: TaskSID;
   TaskAttributes: string;
   TaskAge: number;
   TaskPriority: number;
   TaskAssignmentStatus: string;
   TaskCanceledReason: string;
   TaskCompletedReason: string;
-
+  TaskQueueSid: TaskQueueSID;
   // TaskChannel
   TaskChannelSid: string;
   TaskChannelName: string;
@@ -43,7 +49,7 @@ export type EventFields = {
   TaskChannelOptimizedRouting: boolean;
 
   // Worker
-  WorkerSid: string;
+  WorkerSid: WorkerSID;
   WorkerName: string;
   WorkerAttributes: string;
   WorkerActivitySid: string;
