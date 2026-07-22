@@ -400,7 +400,7 @@ const ACCOUNTSID_ROUTES: Record<
     requestPipeline: [validateRequestMethod('POST')],
     handler: randomOptionSelectorHandler,
   }),
-  'voice/filterCountryOrVoIP': newRoute({{
+  'voice/filterCountryOrVoIP': newRoute({
     requestPipeline: [validateRequestMethod('POST'), validateWebhookRequest],
     handler: filterCountryOrVoIPHandler,
   }),
