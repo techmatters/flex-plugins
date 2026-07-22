@@ -15,12 +15,6 @@
  */
 
 import { retrieveServiceConfigurationAttributes } from '../configuration/aseloConfiguration';
-/*
-import {
-  ConferenceStatusEventHandler,
-  registerConferenceStatusEventHandler,
-} from '../conference/conferenceStatusCallback';
- */
 import { Twilio } from 'twilio';
 import { AccountSID, CallSid } from '@tech-matters/twilio-types';
 
@@ -62,30 +56,3 @@ export const endActiveStudioFlowExecutionsForCall = async (
     console.error(`${logPrefix} endStudioFlowExecutionsHandler failed`, err);
   }
 };
-
-/*
-
-const endStudioFlowExecutionsHandler: ConferenceStatusEventHandler = async (
-  event,
-  accountSid,
-  client,
-) => {
-  if (event.StatusCallbackEvent === 'participant-leave') {
-    console.debug(
-      `[End Studio Flow Executions Handler - ${accountSid}/${event.ConferenceSid}]: starting for ${event.StatusCallbackEvent}`,
-    );
-    await endActiveStudioFlowExecutionsForCall(client, {
-      accountSid,
-      callSid: event.CallSid,
-    });
-  } else {
-    console.warn(
-      `[End Studio Flow Executions Handler - ${accountSid}/${event.ConferenceSid}]: endStudioFlowExecutionsHandler failed, only participant-leave events are supposed to be routed to this handler, got ${event.StatusCallbackEvent}`,
-    );
-  }
-};
-registerConferenceStatusEventHandler(
-  ['participant-leave'],
-  endStudioFlowExecutionsHandler,
-);
-*/

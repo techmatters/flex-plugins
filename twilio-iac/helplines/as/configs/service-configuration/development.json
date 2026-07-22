@@ -35,8 +35,14 @@
         },
         "resources_base_url": "https://hrm-development.tl.techmatters.org",
         "enforceZeroTranscriptRetention": false,
-        "postStudioFlows": {
-            "voice": "+12064083885"
+        "postStudioFlows": {            "WQb4a3a7e8808c61d11d344e5b28fa53ef": {
+            "flowTrigger": "inProgressCall",
+            "studioFlowSid": "FW7345ce250648845e9869f59df2c9c961"
+        },
+            "voice": {
+                "flowTrigger": "rest",
+                "studioFlowSid": "FWd1cb5650c06befc2f9ffc4c14b59465b"
+            }
         }
     },
     "ui_attributes": {
