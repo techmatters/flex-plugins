@@ -42,7 +42,7 @@ const createMockRequest = (body: any): HttpRequest => ({
 const createMockPhoneNumberFetch = (
   data: Partial<{
     countryCode: string;
-    lineTypeIntelligence: { type: string; carrier_name: string } | null;
+    lineTypeIntelligence: { type: string; carrierName: string } | null;
   }>,
 ) => jest.fn().mockResolvedValue(data);
 
@@ -104,7 +104,7 @@ describe('filterCountryOrVoIPHandler', () => {
     mockGetTwilioClient.mockResolvedValue(
       createMockClient({
         countryCode: 'US',
-        lineTypeIntelligence: { type: 'voip', carrier_name: 'Some VoIP Carrier' },
+        lineTypeIntelligence: { type: 'voip', carrierName: 'Some VoIP Carrier' },
       }) as any,
     );
 
@@ -121,7 +121,7 @@ describe('filterCountryOrVoIPHandler', () => {
     mockGetTwilioClient.mockResolvedValue(
       createMockClient({
         countryCode: 'US',
-        lineTypeIntelligence: { type: 'VoIP', carrier_name: 'Some VoIP Carrier' },
+        lineTypeIntelligence: { type: 'VoIP', carrierName: 'Some VoIP Carrier' },
       }) as any,
     );
 
@@ -138,7 +138,7 @@ describe('filterCountryOrVoIPHandler', () => {
     mockGetTwilioClient.mockResolvedValue(
       createMockClient({
         countryCode: 'US',
-        lineTypeIntelligence: { type: 'mobile', carrier_name: 'HD Carrier LLC' },
+        lineTypeIntelligence: { type: 'mobile', carrierName: 'HD Carrier LLC' },
       }) as any,
     );
 
@@ -155,7 +155,7 @@ describe('filterCountryOrVoIPHandler', () => {
     mockGetTwilioClient.mockResolvedValue(
       createMockClient({
         countryCode: 'US',
-        lineTypeIntelligence: { type: 'mobile', carrier_name: 'Verizon' },
+        lineTypeIntelligence: { type: 'mobile', carrierName: 'Verizon' },
       }) as any,
     );
 
