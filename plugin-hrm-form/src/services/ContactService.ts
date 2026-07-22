@@ -112,11 +112,11 @@ export const determineConversationMedia = async (
         },
       });
     }
-
-    if (!shouldGetExternalRecordingInfo(task)) return returnData;
-
     const externalRecordingInfo = await getExternalRecordingInfo(task);
     if (isFailureExternalRecordingInfo(externalRecordingInfo)) {
+      if (externalRecordingInfo.name === 'InvalidTask') {
+        return returnData;
+      }
       const error = `Failed to get external recording info: ${externalRecordingInfo.error}`;
       console.error(error, 'Task:', task);
       recordEvent('Backend Error: Get External Recording Info', {

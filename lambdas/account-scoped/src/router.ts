@@ -80,6 +80,7 @@ import {
 } from './hrm/voicePostSurvey';
 import { postStudioFlowCallStatusCallbackHandler } from './studioFlow/postStudioFlowCallStatusCallback';
 import { triggerPostStudioFlowHandler } from './studioFlow/postStudioFlowTaskRouterListener';
+import { randomOptionSelectorHandler } from './randomOptionSelector';
 
 /**
  * Super simple router sufficient for directly ported Twilio Serverless functions
@@ -388,6 +389,10 @@ const ACCOUNTSID_ROUTES: Record<
       validateFlexTokenRequest({ tokenMode: 'agent' }),
     ],
     handler: issueSyncTokenHandler,
+  }),
+  randomOptionSelector: newRoute({
+    requestPipeline: [validateRequestMethod('POST')],
+    handler: randomOptionSelectorHandler,
   }),
 };
 
