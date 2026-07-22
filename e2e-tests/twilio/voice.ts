@@ -13,7 +13,7 @@ export const makeCallToService = async () => {
   const to = getConfigValue('voicePhoneNumber') as string;
 
   const response = new VoiceResponse();
-  response.say("Hello, I'm and end to end test");
+  response.say({ loop: 100 }, "Hello, I'm an end to end test");
 
   const client = twilio(clientAccountSid, authToken);
   //const call =

@@ -16,11 +16,7 @@
 
 import { Page, request, test } from '@playwright/test';
 import { statusIndicator } from '../workerStatus';
-import { ChatStatement, ChatStatementOrigin } from '../chatModel';
-import { getSmsScript } from '../chatScripts';
-import { flexChat } from '../flexChat';
 import { skipTestIfNotTargeted } from '../skipTest';
-import { tasks } from '../tasks';
 import { Categories, contactForm, ContactFormTab } from '../contactForm';
 import { deleteAllTasksInQueue } from '../twilio/tasks';
 import { notificationBar } from '../notificationBar';
@@ -28,12 +24,12 @@ import { clickThroughTwilioPasteModals } from '../agent-desktop';
 import { setupContextAndPage, closePage } from '../browser';
 import { clearOfflineTask } from '../hrm/clearOfflineTask';
 import { apiHrmRequest } from '../hrm/hrmRequest';
-import { formContentsByHelpline } from '../formContentsByHelpline';
+import {formContentsByHelpline, formContentsByHelplineForEmptyForm} from '../formContentsByHelpline';
 import { getConfigValue } from '../config';
-import { smsChat } from '../twilio/sms';
 import { makeCallToService } from '../twilio/voice';
+import { tasks } from '../tasks';
 
-test.describe.serial('SMS caller', () => {
+test.describe.serial('Voice caller', () => {
   skipTestIfNotTargeted();
 
   let pluginPage: Page;
@@ -65,45 +61,22 @@ test.describe.serial('SMS caller', () => {
     await deleteAllTasksInQueue();
   });
 
-  test('Chat', async () => {
+  test('Call', async () => {
     test.setTimeout(180000);
-
-    const chatScript = getSmsScript();
-
-    // smsChat handles the client (caller) side via the Twilio Messages API.
-    // flexChat handles the counselor side via the Flex browser UI.
-    // Both iterate the same shared script, yielding control when they hit a
-    // statement the other side needs to handle — the same pattern used by the
-    // Aselo webchat test.
     await makeCallToService();
+    await statusIndicator(pluginPage).setStatus('AVAILABLE');
+    await tasks(pluginPage).acceptNextTask();
 
     console.info('Starting filling form');
     const helpline = getConfigValue('helplineShortCode') as keyof typeof formContentsByHelpline;
-    const formContent = formContentsByHelpline[helpline];
+    const formContent = formContentsByHelplineForEmptyForm[helpline];
     if (!formContent) {
       throw new Error(`No form contents configured for helplineShortCode="${String(helpline)}"`);
     }
     const form = contactForm(pluginPage);
-    await form.fill([
-      <ContactFormTab>{
-        id: 'childInformation',
-        label: 'TabbedForms-AddChildInfoTab',
-        fill: form.fillStandardTab,
-        items: formContent.childInformation,
-      },
-      <ContactFormTab<Categories>>{
-        id: 'categories',
-        label: 'TabbedForms-CategoriesTab',
-        fill: form.fillCategoriesTab,
-        items: formContent.categories,
-      },
-      <ContactFormTab>{
-        id: 'caseInformation',
-        label: 'TabbedForms-AddCaseInfoTab',
-        fill: form.fillStandardTab,
-        items: formContent.caseInformation,
-      },
-    ]);
+
+    await form.selectChildCallType();
+    await form.fillWithContent(formContent);
 
     console.info('Saving form');
     await form.save();

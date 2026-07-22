@@ -102,26 +102,7 @@ test.describe.serial('Aselo web chat caller', () => {
       throw new Error(`No form contents configured for helplineShortCode="${String(helpline)}"`);
     }
     const form = contactForm(pluginPage);
-    await form.fill([
-      <ContactFormTab>{
-        id: 'childInformation',
-        label: 'TabbedForms-AddChildInfoTab',
-        fill: form.fillStandardTab,
-        items: formContent.childInformation,
-      },
-      <ContactFormTab<Categories>>{
-        id: 'categories',
-        label: 'TabbedForms-CategoriesTab',
-        fill: form.fillCategoriesTab,
-        items: formContent.categories,
-      },
-      <ContactFormTab>{
-        id: 'caseInformation',
-        label: 'TabbedForms-AddCaseInfoTab',
-        fill: form.fillStandardTab,
-        items: formContent.caseInformation,
-      },
-    ]);
+    await form.fillWithContent(formContent);
 
     console.info('Saving form');
     await form.save();

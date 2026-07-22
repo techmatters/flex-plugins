@@ -60,6 +60,10 @@ locals {
     e2e_test : {
       "target_workers" = "email=='aselo-alerts+production@techmatters.org'",
       "friendly_name"  = "E2E Test Queue"
+    },
+    e2e_test_voice : {
+      "target_workers" = "email=='aselo-alerts+production@techmatters.org'",
+      "friendly_name"  = "E2E Test Queue (Voice)"
     }
     // survey : {
     //   friendly_name = "Survey"
