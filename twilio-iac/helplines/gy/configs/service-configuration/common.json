@@ -4,7 +4,7 @@
             "voice",
             "web"
         ],
-        "enableExternalRecordings": false,
+        "enableExternalRecordings": true,
         "enableConferencing": true,
         "hideAddToNewCaseButton": true,
         "feature_flags": {
