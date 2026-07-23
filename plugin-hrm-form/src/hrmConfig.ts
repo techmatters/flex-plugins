@@ -61,7 +61,7 @@ const readConfig = () => {
   }/lambda/twilio/account-scoped/${accountSid}`;
   const llmAssistantBaseUrl = `${
     process.env.REACT_APP_HRM_BASE_URL || manager.serviceConfiguration.attributes.hrm_base_url
-  }/lambda/ai/llm-service/${accountSid}`;
+  }/lambda/ai/llm-service/${accountSid}/${manager.serviceConfiguration.attributes.helpline_code}`;
   const resourcesConfiguredBaseUrl =
     process.env.REACT_APP_RESOURCES_BASE_URL || manager.serviceConfiguration.attributes.resources_base_url;
   const resourcesBaseUrl = resourcesConfiguredBaseUrl
