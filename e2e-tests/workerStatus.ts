@@ -15,7 +15,7 @@
  */
 
 // eslint-disable-next-line import/no-extraneous-dependencies
-import { Locator, Page } from '@playwright/test';
+import {expect, Locator, Page} from '@playwright/test';
 
 export const WORKER_STATUS = {
   AVAILABLE: ['Available', 'Ready'],
@@ -45,12 +45,13 @@ export function statusIndicator(page: Page) {
   return {
     setStatus: async function (status: WorkerStatus) {
       await selectors.userActivityDropdownButton.click();
-      console.log('Worker status dropdown should be open');
+      console.debug('Worker status dropdown should be open');
       await selectors.activityMenu.waitFor({ state: 'visible' });
       const statusSelector = await getFirstMatchingStatus(page, WORKER_STATUS[status]);
-      console.log('Worker status option spotted');
+      console.debug('Worker status option spotted');
       await statusSelector.click();
-      console.log('Worker status option clicked');
+      console.debug('Worker status option clicked');
+      await expect(statusSelector).toContainText(new RegExp(WORKER_STATUS[status].join('|')));
     },
   };
 }
