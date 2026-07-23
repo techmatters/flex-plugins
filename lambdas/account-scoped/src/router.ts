@@ -82,6 +82,7 @@ import {
 import { postStudioFlowCallStatusCallbackHandler } from './studioFlow/postStudioFlowCallStatusCallback';
 import { triggerPostStudioFlowHandler } from './studioFlow/postStudioFlowTaskRouterListener';
 import { randomOptionSelectorHandler } from './randomOptionSelector';
+import { filterCountryOrVoIPHandler } from './voice/filterCountryOrVoIP';
 
 /**
  * Super simple router sufficient for directly ported Twilio Serverless functions
@@ -398,6 +399,10 @@ const ACCOUNTSID_ROUTES: Record<
   randomOptionSelector: newRoute({
     requestPipeline: [validateRequestMethod('POST')],
     handler: randomOptionSelectorHandler,
+  }),
+  'voice/filterCountryOrVoIP': newRoute({
+    requestPipeline: [validateRequestMethod('POST'), validateWebhookRequest],
+    handler: filterCountryOrVoIPHandler,
   }),
 };
 
