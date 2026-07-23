@@ -15,7 +15,7 @@
  */
 
 // eslint-disable-next-line import/no-extraneous-dependencies
-import {expect, Locator, Page} from '@playwright/test';
+import { expect, Locator, Page } from '@playwright/test';
 
 export const WORKER_STATUS = {
   AVAILABLE: ['Available', 'Ready'],
