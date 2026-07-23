@@ -11,7 +11,8 @@ locals {
   local_config = {
     helpline                   = "NAMI"
     task_language              = "en-US"
-    enable_post_survey         = false
+    enable_lex_v2              = true
+    enable_post_survey         = true
     enable_external_recordings = true
     permission_config          = "demo"
     workflows = {
@@ -44,6 +45,12 @@ locals {
       email : "Email"
       survey : "Survey",
       voicemail : "Voicemail"
+    }
+    activities = {
+      missed_connection : {
+        friendly_name = "Missed Connection"
+        available     = false
+      }
     }
 
     task_queues = {
@@ -100,5 +107,30 @@ locals {
         "friendly_name"  = "E2E Test Queue"
       }
     }
+    lex_v2_bot_languages = {
+      en : ["post_survey"],
+      es : ["post_survey"]
+    }
+
+    s3_lifecycle_rules = {
+      hrm_export_expiry : {
+        id                 = "HRM Exported Data Expiration Rule"
+        expiration_in_days = 30
+        prefix             = "hrm-data/"
+      },
+      transcripts_expiry : {
+        id                 = "Transcripts Data Expiration Rule"
+        expiration_in_days = 60
+        prefix             = "transcripts/"
+      },
+      voice_recordings_expiry : {
+        id                 = "Voice Recordings Data Expiration Rule"
+        expiration_in_days = 60
+        prefix             = "voice-recordings/"
+      }
+    }
+
+    hrm_transcript_retention_days_override = 60
+    hrm_index_transcripts_for_search       = false
   }
 }
