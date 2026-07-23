@@ -20,35 +20,23 @@ import { newHttpErrorResult, newMissingParameterResult } from '../httpErrors';
 
 import { getTwilioClient, getWorkspaceSid } from '@tech-matters/twilio-configuration';
 
-interface WorkerAttributes {
+type WorkerAttributes = {
   routing?: {
     skills?: string[];
   };
   maxMessageCapacity?: number;
-}
+};
 
-interface WorkerChannelSummary {
+type WorkerChannelSummary = {
   taskChannelUniqueName: string;
   assignedTasks: number;
-}
+};
 
-interface AvailableWorkerSummary {
+type AvailableWorkerSummary = {
   sid: string;
   friendlyName: string;
   maxMessageCapacity: number;
   workerChannelTasks: WorkerChannelSummary[];
-}
-
-/**
- * Safely parse worker attributes.
- * Returns null if the JSON is malformed.
- */
-const parseWorkerAttributes = (attributes: string): WorkerAttributes | null => {
-  try {
-    return JSON.parse(attributes) as WorkerAttributes;
-  } catch {
-    return null;
-  }
 };
 
 /**
@@ -172,17 +160,7 @@ export const isSkilledWorkerAvailableHandler: AccountScopedHandler = async (
   }> = [];
 
   for (const worker of availableWorkers) {
-    const attributes = parseWorkerAttributes(worker.attributes);
-
-    if (!attributes) {
-      console.warn('Skipping worker due to invalid attributes', {
-        accountSid,
-        workerSid: worker.sid,
-        workerName: worker.friendlyName,
-      });
-      continue;
-    }
-
+    const attributes = JSON.parse(worker.attributes) as WorkerAttributes;
     const workerSkills = attributes.routing?.skills ?? [];
 
     if (!hasRequiredSkills(workerSkills, requiredSkills)) {
@@ -211,7 +189,7 @@ export const isSkilledWorkerAvailableHandler: AccountScopedHandler = async (
    * Promise.all() is much faster than waiting for each worker
    * sequentially.
    */
-  const availableSkilledWorkersData: AvailableWorkerSummary[] = await Promise.all(
+  const availableSkilledWorkers: AvailableWorkerSummary[] = await Promise.all(
     skilledWorkers.map(async ({ worker, attributes }) => {
       console.debug('Loading worker channels', {
         accountSid,
@@ -240,13 +218,13 @@ export const isSkilledWorkerAvailableHandler: AccountScopedHandler = async (
 
   console.info('Finished loading worker channel information', {
     accountSid,
-    workerCount: availableSkilledWorkersData.length,
+    workerCount: availableSkilledWorkers.length,
   });
 
   /**
    * Determine which workers can actually receive another task.
    */
-  const availableWorkersForChannel = availableSkilledWorkersData.filter(worker => {
+  const availableWorkersForChannel = availableSkilledWorkers.filter(worker => {
     const available = isWorkerAvailable(worker, targetChannel);
 
     if (available) {
@@ -279,6 +257,6 @@ export const isSkilledWorkerAvailableHandler: AccountScopedHandler = async (
   return newOk({
     totalAvailableWorkers: availableWorkersForChannel.length,
     availableWorkerSids,
-    availableSkilledWorkersData: availableWorkersForChannel,
+    availableSkilledWorkers: availableWorkersForChannel,
   });
 };
