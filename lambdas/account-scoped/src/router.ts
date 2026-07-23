@@ -81,7 +81,7 @@ import {
 import { postStudioFlowCallStatusCallbackHandler } from './studioFlow/postStudioFlowCallStatusCallback';
 import { triggerPostStudioFlowHandler } from './studioFlow/postStudioFlowTaskRouterListener';
 import { randomOptionSelectorHandler } from './randomOptionSelector';
-
+import { isSkilledWorkerAvailableHandler } from './worker/isSkilledWorkerAvailable';
 /**
  * Super simple router sufficient for directly ported Twilio Serverless functions
  * All endpoints are POSTS and have no variables in their paths or query strings, everything is in the request body
@@ -393,6 +393,10 @@ const ACCOUNTSID_ROUTES: Record<
   randomOptionSelector: newRoute({
     requestPipeline: [validateRequestMethod('POST')],
     handler: randomOptionSelectorHandler,
+  }),
+  'worker/isSkilledWorkerAvailable': newRoute({
+    requestPipeline: [validateRequestMethod('POST'), validateWebhookRequest],
+    handler: isSkilledWorkerAvailableHandler,
   }),
 };
 
