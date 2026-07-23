@@ -25,6 +25,7 @@ import { EventFields } from '../taskrouter';
 import { retrieveServiceConfigurationAttributes } from '../configuration/aseloConfiguration';
 import { isChatCaptureControlTask } from '../channelCapture/channelCaptureHandlers';
 import VoiceResponse = TwilioSDK.twiml.VoiceResponse;
+import { patchTaskAttributes } from '../task/patchTaskAttributes';
 import { getTwilioClient, getWorkspaceSid } from '@tech-matters/twilio-configuration';
 import { AccountScopedHandler } from '../httpTypes';
 import { newOk } from '../Result';
@@ -42,10 +43,10 @@ const isTriggerPostStudioFlow = ({
   taskAttributes: {
     transferMeta?: TransferMeta;
     isChatCaptureControl?: boolean;
+    postStudioFlowTriggered?: boolean;
   };
-}) => {
-  return !isChatCaptureControlTask(taskAttributes);
-};
+}) =>
+  !isChatCaptureControlTask(taskAttributes) && !taskAttributes.postStudioFlowTriggered;
 
 const triggerPostStudioFlow = async ({
   accountSid,
@@ -133,11 +134,38 @@ const triggerPostStudioFlow = async ({
             `conference: ${conference}`,
           );
         }
-
-        console.info(`${logPrefix} Finished handling post studio flow trigger.`);
+      } else if (studioFlowIdentifier?.flowTrigger === 'rest') {
+        console.debug(
+          `${logPrefix} Initiating post studio flow ${studioFlowIdentifier} configured for ${taskChannelUniqueName} via REST API - contact ${contactId}, task: ${taskSid}`,
+        );
+        await client.studio.v2.flows
+          .get(studioFlowIdentifier.studioFlowSid)
+          .executions.create({
+            from: taskAttributes.to,
+            parameters: {
+              contactId,
+              contactTaskSid: taskSid,
+              taskQueueSid,
+            },
+            to: taskAttributes.from,
+          });
+        console.debug(
+          `${logPrefix} Initiated post studio flow ${studioFlowIdentifier} configured for ${taskChannelUniqueName} via REST API - contact ${contactId}, task: ${taskSid}, removing participants`,
+        );
+        client.conferences.get(conference.sid).participants.each(p => p.remove());
+        console.debug(
+          `${logPrefix} Removed participants from conference ${conference.sid}.`,
+        );
       } else {
-        console.debug(`No post studio flow configured for ${taskChannelUniqueName}`);
+        console.debug(
+          `No / Invalid post studio flow configured for ${taskQueueSid}: ${studioFlowIdentifier}`,
+        );
       }
+      console.info(`${logPrefix} Finished handling post studio flow trigger.`);
+      await patchTaskAttributes(accountSid, taskSid, ta => ({
+        ...ta,
+        postStudioFlowTriggered: true,
+      }));
     }
   } catch (err) {
     console.error(

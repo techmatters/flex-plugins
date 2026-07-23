@@ -46,7 +46,9 @@ locals {
       send_message_sms_post_queue_keep_waiting               = "Thank you for your patience. NAMI HelpLine Specialists are currently assisting other Help Seekers. Someone will be with you as soon as possible. In the meantime, info and resources are online at https://www.nami.org/nami-helpline/ "
     }
 
-
+    //Serverless -- to allow enabling the operating hours check on this staging account.
+    ui_editable = true
+    
     #Channels
     channels = {
       voice : {

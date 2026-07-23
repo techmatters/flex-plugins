@@ -74,6 +74,7 @@ import { sendMessageAndRunJanitorHandler } from './conversation/sendMessageAndRu
 import { issueSyncTokenHandler } from './issueSyncToken';
 import { getExternalRecordingS3LocationHandler } from './conversation/getExternalRecordingS3Location';
 import { getMediaUrlHandler } from './conversation/getMediaUrl';
+import { startPostSurveyChatbotHandler } from './channelCapture/postSurveyListener';
 import {
   savePostSurveyHandler,
   voicePostSurveyActionHandler,
@@ -82,6 +83,8 @@ import { postStudioFlowCallStatusCallbackHandler } from './studioFlow/postStudio
 import { triggerPostStudioFlowHandler } from './studioFlow/postStudioFlowTaskRouterListener';
 import { randomOptionSelectorHandler } from './randomOptionSelector';
 import { isSkilledWorkerAvailableHandler } from './worker/isSkilledWorkerAvailable';
+import { filterCountryOrVoIPHandler } from './voice/filterCountryOrVoIP';
+
 /**
  * Super simple router sufficient for directly ported Twilio Serverless functions
  * All endpoints are POSTS and have no variables in their paths or query strings, everything is in the request body
@@ -126,6 +129,10 @@ const ACCOUNTSID_ROUTES: Record<
   'channelCapture/chatbotCallbackCleanup': newRoute({
     requestPipeline: [validateRequestMethod('POST'), validateWebhookRequest],
     handler: handleChatbotCallbackCleanup,
+  }),
+  'channelCapture/startPostSurveyChatbot': newRoute({
+    requestPipeline: [validateWebhookRequest],
+    handler: startPostSurveyChatbotHandler,
   }),
   'hrm/savePostSurvey': newRoute({
     requestPipeline: [validateRequestMethod('POST'), validateWebhookRequest],
@@ -397,6 +404,10 @@ const ACCOUNTSID_ROUTES: Record<
   'worker/isSkilledWorkerAvailable': newRoute({
     requestPipeline: [validateRequestMethod('POST'), validateWebhookRequest],
     handler: isSkilledWorkerAvailableHandler,
+  }),
+  'voice/filterCountryOrVoIP': newRoute({
+    requestPipeline: [validateRequestMethod('POST'), validateWebhookRequest],
+    handler: filterCountryOrVoIPHandler,
   }),
 };
 
