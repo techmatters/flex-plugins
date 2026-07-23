@@ -82,6 +82,7 @@ import {
 import { postStudioFlowCallStatusCallbackHandler } from './studioFlow/postStudioFlowCallStatusCallback';
 import { triggerPostStudioFlowHandler } from './studioFlow/postStudioFlowTaskRouterListener';
 import { randomOptionSelectorHandler } from './randomOptionSelector';
+import { isSkilledWorkerAvailableHandler } from './worker/isSkilledWorkerAvailable';
 import { filterCountryOrVoIPHandler } from './voice/filterCountryOrVoIP';
 
 /**
@@ -399,6 +400,10 @@ const ACCOUNTSID_ROUTES: Record<
   randomOptionSelector: newRoute({
     requestPipeline: [validateRequestMethod('POST')],
     handler: randomOptionSelectorHandler,
+  }),
+  'worker/isSkilledWorkerAvailable': newRoute({
+    requestPipeline: [validateRequestMethod('POST'), validateWebhookRequest],
+    handler: isSkilledWorkerAvailableHandler,
   }),
   'voice/filterCountryOrVoIP': newRoute({
     requestPipeline: [validateRequestMethod('POST'), validateWebhookRequest],
