@@ -153,7 +153,7 @@ export const isSkilledWorkerAvailableHandler: AccountScopedHandler = async (
     .workspaces(workspaceSid)
     .workers.list({
       activityName: 'Available',
-      available: true,
+      available: 'true',
     });
 
   console.info('Available workers retrieved', {
