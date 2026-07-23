@@ -25,7 +25,7 @@ export const filterCountryOrVoIPHandler: AccountScopedHandler = async (
   { body }: HttpRequest,
   accountSid: AccountSID,
 ) => {
-  const { from } = body;
+  const { from } = body ?? {};
 
   if (!from) {
     return newErr({
