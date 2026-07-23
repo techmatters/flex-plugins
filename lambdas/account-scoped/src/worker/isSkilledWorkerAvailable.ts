@@ -72,14 +72,14 @@ const isWorkerAvailable = (
   const chatChannel = worker.workerChannelTasks.find(
     c => c.taskChannelUniqueName === 'chat',
   );
-//This part has important logic, for voice we need both channels to have 0 assigned tasks
+  //This part has important logic, for voice we need both channels to have 0 assigned tasks
   if (targetChannel === 'voice') {
     return (
       (voiceChannel?.assignedTasks ?? -1) === 0 &&
       (chatChannel?.assignedTasks ?? -1) === 0
     );
   }
-//for chat we need voice to have 0 assigned tasks and chat to have less than maxMessageCapacity
+  //for chat we need voice to have 0 assigned tasks and chat to have less than maxMessageCapacity
   return (
     (voiceChannel?.assignedTasks ?? -1) === 0 &&
     (chatChannel?.assignedTasks ?? Number.MAX_SAFE_INTEGER) < worker.maxMessageCapacity
