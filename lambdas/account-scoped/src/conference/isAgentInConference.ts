@@ -21,7 +21,7 @@ export const isAgentInConference = ({
   customerCallSid,
   participant,
 }: {
-  callSid?: CallSid;
+  callSid: CallSid;
   customerCallSid: CallSid;
   participant: ParticipantInstance;
 }): boolean => {
@@ -38,7 +38,7 @@ export const isAgentInConference = ({
     return false;
   }
 
-  if (callSid && participant.callSid === callSid) {
+  if (participant.callSid === callSid) {
     // This is the participant firing the event
     console.warn(
       `Participant ${participant.label} (${participant.callSid}) still in conference, despite leave event for them`,
