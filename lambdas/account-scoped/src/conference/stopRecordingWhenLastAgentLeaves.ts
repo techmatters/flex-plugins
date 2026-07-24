@@ -27,7 +27,6 @@ import {
 } from '../taskrouter/taskrouterEventHandler';
 import {
   AccountSID,
-  CallSid,
   ConferenceSid,
   TaskSID,
   WorkspaceSID,
@@ -75,7 +74,9 @@ const stopRecordingIfNotTransferring = async (
     conferenceRecordings.map(async recording => {
       try {
         if (['in-progress', 'processing'].includes(recording.status)) {
-          console.info(`Pausing recording ${recording.sid} for call ${recording.callSid} on conference ${conferenceSid}` );
+          console.info(
+            `Pausing recording ${recording.sid} for call ${recording.callSid} on conference ${conferenceSid}`,
+          );
           console.debug(recording);
           return await recording.update({
             status: 'paused', // 'stopped' not supported for conferences
@@ -141,7 +142,6 @@ const conferenceStatusEventHandler: ConferenceStatusEventHandler = async (
 
   console.info(
     `[${accountSid}/${taskSid}] No participants identified as Aselo agents still in conference ${conferenceSid}, candidate to stop recordings`,
-
   );
   await stopRecordingIfNotTransferring(client, {
     conferenceSid,
@@ -183,6 +183,6 @@ const taskRouterEventHandler: TaskRouterEventHandler = async (
 };
 
 registerTaskRouterEventHandler(
-  [TASK_WRAPUP, TASK_CREATED, TASK_CANCELED, TASK_DELETED, TASK_SYSTEM_DELETED],
+  [TASK_WRAPUP, TASK_COMPLETED, TASK_CANCELED, TASK_DELETED, TASK_SYSTEM_DELETED],
   taskRouterEventHandler,
 );
