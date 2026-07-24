@@ -36,7 +36,7 @@ import { Twilio } from 'twilio';
 import { EventFields } from '../taskrouter';
 import {
   TASK_CANCELED,
-  TASK_CREATED,
+  TASK_COMPLETED,
   TASK_DELETED,
   TASK_SYSTEM_DELETED,
   TASK_WRAPUP,
