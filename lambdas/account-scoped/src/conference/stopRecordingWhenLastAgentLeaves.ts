@@ -41,6 +41,7 @@ import {
   TASK_SYSTEM_DELETED,
   TASK_WRAPUP,
 } from '../taskrouter/eventTypes';
+import { retrieveFeatureFlags } from '../configuration/aseloConfiguration';
 
 const stopRecordingIfNotTransferring = async (
   client: Twilio,
@@ -163,12 +164,14 @@ const taskRouterEventHandler: TaskRouterEventHandler = async (
   accountSid: AccountSID,
   client: Twilio,
 ) => {
+  const { stop_recording_on_task_end: stopRecordingOnTaskEnd } =
+    await retrieveFeatureFlags(client);
   console.debug(
-    `[${accountSid}/${taskSid} - stopRecordingWhenLastAgentLeaves]  handler fired on ${eventType}.`,
+    `[${accountSid}/${taskSid} - stopRecordingWhenLastAgentLeaves]  handler fired on ${eventType} - feature flag set to ${stopRecordingOnTaskEnd}.`,
   );
 
   const { conference } = JSON.parse(attributesJson);
-  if (TaskChannelUniqueName === 'voice' && conference?.sid) {
+  if (stopRecordingOnTaskEnd && TaskChannelUniqueName === 'voice' && conference?.sid) {
     console.info(
       `[${accountSid}/${taskSid} - stopRecordingWhenLastAgentLeaves] ${eventType} on voice task with conference sid ${conference.sid}. Checking if recording needs to be stopped`,
     );
