@@ -142,7 +142,8 @@ const conferenceStatusEventHandler: ConferenceStatusEventHandler = async (
   }
 
   console.info(
-    `[${taskSid} - ] No participants identified as Aselo agents still in conference ${conferenceSid}, candidate to stop recordings`,
+    `[${accountSid}/${taskSid}] No participants identified as Aselo agents still in conference ${conferenceSid}, candidate to stop recordings`,
+
   );
   await stopRecordingIfNotTransferring(client, {
     conferenceSid,
