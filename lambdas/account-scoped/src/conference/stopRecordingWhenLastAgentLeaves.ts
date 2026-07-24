@@ -75,10 +75,8 @@ const stopRecordingIfNotTransferring = async (
     conferenceRecordings.map(async recording => {
       try {
         if (['in-progress', 'processing'].includes(recording.status)) {
-          console.info(
-            `Pausing recording ${recording.sid} for call ${recording.callSid} on conference ${conferenceSid}`,
-            recording,
-          );
+          console.info(`Pausing recording ${recording.sid} for call ${recording.callSid} on conference ${conferenceSid}` );
+          console.debug(recording);
           return await recording.update({
             status: 'paused', // 'stopped' not supported for conferences
           });
