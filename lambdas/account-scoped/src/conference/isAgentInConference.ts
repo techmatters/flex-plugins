@@ -14,14 +14,15 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 import type { ParticipantInstance } from 'twilio/lib/rest/api/v2010/account/conference/participant';
+import { CallSid } from '@tech-matters/twilio-types';
 
 export const isAgentInConference = ({
   callSid,
   customerCallSid,
   participant,
 }: {
-  callSid: string;
-  customerCallSid: string;
+  callSid?: CallSid;
+  customerCallSid: CallSid;
   participant: ParticipantInstance;
 }): boolean => {
   console.debug('Checking if participant is an agent:', participant);
@@ -37,7 +38,7 @@ export const isAgentInConference = ({
     return false;
   }
 
-  if (participant.callSid === callSid) {
+  if (callSid && participant.callSid === callSid) {
     // This is the participant firing the event
     console.warn(
       `Participant ${participant.label} (${participant.callSid}) still in conference, despite leave event for them`,
