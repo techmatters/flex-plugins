@@ -36,7 +36,7 @@ import { Twilio } from 'twilio';
 import { EventFields } from '../taskrouter';
 import {
   TASK_CANCELED,
-  TASK_CREATED,
+  TASK_COMPLETED,
   TASK_DELETED,
   TASK_SYSTEM_DELETED,
   TASK_WRAPUP,
@@ -75,10 +75,8 @@ const stopRecordingIfNotTransferring = async (
     conferenceRecordings.map(async recording => {
       try {
         if (['in-progress', 'processing'].includes(recording.status)) {
-          console.info(
-            `Pausing recording ${recording.sid} for call ${recording.callSid} on conference ${conferenceSid}`,
-            recording,
-          );
+          console.info(`Pausing recording ${recording.sid} for call ${recording.callSid} on conference ${conferenceSid}` );
+          console.debug(recording);
           return await recording.update({
             status: 'paused', // 'stopped' not supported for conferences
           });
@@ -142,7 +140,8 @@ const conferenceStatusEventHandler: ConferenceStatusEventHandler = async (
   }
 
   console.info(
-    `[${taskSid} - ] No participants identified as Aselo agents still in conference ${conferenceSid}, candidate to stop recordings`,
+    `[${accountSid}/${taskSid}] No participants identified as Aselo agents still in conference ${conferenceSid}, candidate to stop recordings`,
+
   );
   await stopRecordingIfNotTransferring(client, {
     conferenceSid,
