@@ -46,14 +46,10 @@ const stopRecordingIfNotTransferring = async (
   client: Twilio,
   {
     conferenceSid,
-    callSid,
-    customerCallSid,
     taskSid,
     workspaceSid,
   }: {
     conferenceSid: ConferenceSid;
-    callSid?: CallSid;
-    customerCallSid: CallSid;
     taskSid: TaskSID;
     workspaceSid: WorkspaceSID;
   },
@@ -149,8 +145,6 @@ const conferenceStatusEventHandler: ConferenceStatusEventHandler = async (
   );
   await stopRecordingIfNotTransferring(client, {
     conferenceSid,
-    callSid,
-    customerCallSid,
     taskSid,
     workspaceSid,
   });
@@ -174,15 +168,13 @@ const taskRouterEventHandler: TaskRouterEventHandler = async (
   );
 
   const { conference } = JSON.parse(attributesJson);
-  const customerCallSid: CallSid = conference?.participants?.customer;
-  if (TaskChannelUniqueName === 'voice' && customerCallSid) {
+  if (TaskChannelUniqueName === 'voice' && conference?.sid) {
     console.info(
-      `[${accountSid}/${taskSid} - stopRecordingWhenLastAgentLeaves] ${eventType} on voice task with customer call sid ${customerCallSid}. Checking if recording needs to be stopped`,
+      `[${accountSid}/${taskSid} - stopRecordingWhenLastAgentLeaves] ${eventType} on voice task with conference sid ${conference.sid}. Checking if recording needs to be stopped`,
     );
     await stopRecordingIfNotTransferring(client, {
       taskSid,
       conferenceSid: conference.sid,
-      customerCallSid,
       workspaceSid,
     });
   }
