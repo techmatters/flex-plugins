@@ -15,7 +15,7 @@
     "mockttp": "^3.15.5",
     "ts-jest": "^29.4.11",
     "ts-node": "^10.9.1",
-    "undici": "^6.24.0"
+    "undici": "^6.27.0"
   },
   "scripts": {
     "docker:build": "docker build -t account-scoped --build-arg lambda_name=account-scoped --build-arg lambda_dir=. -f ../Dockerfile ../",
