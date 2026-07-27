@@ -25,7 +25,7 @@ export const generateSummary = (
   contactId: string,
   currentChatTranscript: TranscriptForLlmAssistant,
 ): Promise<LlmAssistantSummary> => {
-  const { assistantBaseUrl } = getLlmConfig();
+  const { assistantBaseUrl, helplineCode } = getLlmConfig();
   const token = getValidToken();
   if (token instanceof Error) throw new ApiError(`Aborting request due to token issue: ${token.message}`, {}, token);
 
@@ -34,6 +34,6 @@ export const generateSummary = (
       Authorization: `Bearer ${token}`,
     },
     method: 'POST',
-    body: JSON.stringify({ transcript: currentChatTranscript }),
+    body: JSON.stringify({ transcript: currentChatTranscript, helpline: helplineCode }),
   });
 };
