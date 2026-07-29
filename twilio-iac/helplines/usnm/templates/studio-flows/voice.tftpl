@@ -551,7 +551,7 @@ ${
     },
     {
       "name": "f_isSkilledWorkerAvailable_tya_calls",
-      "type": "run-function",
+      "type": "make-http-request",
       "transitions": [
         {
           "next": "split_specialist_available_tya_calls",
@@ -559,32 +559,19 @@ ${
         },
         {
           "next": "split_specialist_available_tya_calls",
-          "event": "fail"
+          "event": "failed"
         }
       ],
       "properties": {
-        "service_sid": "${flow_vars.custom_functions_service_id}",
-        "environment_sid": "${flow_vars.custom_functions_environment_id}",
         "offset": {
           "x": -1990,
           "y": 2720
         },
-        "function_sid": "${flow_vars.is_skilled_worker_available_function_sid}",
-        "parameters": [
-          {
-            "value": "${flow_vars.workspace_sid}",
-            "key": "workspaceSid"
-          },
-          {
-            "value": "voice",
-            "key": "targetChannel"
-          },
-          {
-            "value": "TYA,Calls",
-            "key": "targetSkills"
-          }
-        ],
-        "url": "${flow_vars.custom_functions_url}/isSkilledWorkerAvailable"
+        "method": "POST",
+        "content_type": "application/json;charset=utf-8",
+        "add_twilio_auth": false,
+        "body": "{\n  \"targetChannel\": \"voice\",\n  \"targetSkills\": \"TYA,Calls\"\n}",
+        "url": "${lambda_twilio_account_scoped_url}/worker/isSkilledWorkerAvailable"
       }
     },
     {
@@ -809,7 +796,7 @@ ${
     },
     {
       "name": "f_isSkilledWorkerAvailable_fcg_calls",
-      "type": "run-function",
+      "type": "make-http-request",
       "transitions": [
         {
           "next": "split_specialist_available_fcg_calls",
@@ -817,32 +804,19 @@ ${
         },
         {
           "next": "split_specialist_available_fcg_calls",
-          "event": "fail"
+          "event": "failed"
         }
       ],
       "properties": {
-        "service_sid": "${flow_vars.custom_functions_service_id}",
-        "environment_sid": "${flow_vars.custom_functions_environment_id}",
         "offset": {
           "x": -422,
           "y": 2695
         },
-        "function_sid": "${flow_vars.is_skilled_worker_available_function_sid}",
-        "parameters": [
-          {
-            "value": "${flow_vars.workspace_sid}",
-            "key": "workspaceSid"
-          },
-          {
-            "value": "voice",
-            "key": "targetChannel"
-          },
-          {
-            "value": "FCG,Calls",
-            "key": "targetSkills"
-          }
-        ],
-        "url": "${flow_vars.custom_functions_url}/isSkilledWorkerAvailable"
+        "method": "POST",
+        "content_type": "application/json;charset=utf-8",
+        "add_twilio_auth": false,
+        "body": "{\n  \"targetChannel\": \"voice\",\n  \"targetSkills\": \"FCG,Calls\"\n}",
+        "url": "${lambda_twilio_account_scoped_url}/worker/isSkilledWorkerAvailable"
       }
     },
     {
@@ -1319,7 +1293,7 @@ ${
     },
     {
       "name": "f_isSkilledWorkerAvailable_es_tya_calls",
-      "type": "run-function",
+      "type": "make-http-request",
       "transitions": [
         {
           "next": "split_specialist_available_es_tya_calls",
@@ -1327,32 +1301,19 @@ ${
         },
         {
           "next": "split_specialist_available_es_tya_calls",
-          "event": "fail"
+          "event": "failed"
         }
       ],
       "properties": {
-        "service_sid": "${flow_vars.custom_functions_service_id}",
-        "environment_sid": "${flow_vars.custom_functions_environment_id}",
         "offset": {
           "x": 997,
           "y": 2722
         },
-        "function_sid": "${flow_vars.is_skilled_worker_available_function_sid}",
-        "parameters": [
-          {
-            "value": "${flow_vars.workspace_sid}",
-            "key": "workspaceSid"
-          },
-          {
-            "value": "voice",
-            "key": "targetChannel"
-          },
-          {
-            "value": "TYA,Calls,Spanish",
-            "key": "targetSkills"
-          }
-        ],
-        "url": "${flow_vars.custom_functions_url}/isSkilledWorkerAvailable"
+        "method": "POST",
+        "content_type": "application/json;charset=utf-8",
+        "add_twilio_auth": false,
+        "body": "{\n  \"targetChannel\": \"voice\",\n  \"targetSkills\": \"TYA,Calls,Spanish\"\n}",
+        "url": "${lambda_twilio_account_scoped_url}/worker/isSkilledWorkerAvailable"
       }
     },
     {
