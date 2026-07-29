@@ -1,0 +1,108 @@
+{
+    "slotName": "feel_supported",
+    "slotTypeName": "five_level_assessment",
+    "intentName": "post_survey_yes",
+    "description": "Slot feel_supported for intent post_survey_yes",
+    "valueElicitationSetting": {
+        "slotConstraint": "Required",
+        "promptSpecification": {
+            "messageGroups": [
+                {
+                    "message": {
+                        "plainTextMessage": {
+                            "value": "¿Qué tan apoyado(a) te sentiste durante tu contacto con la Línea de Ayuda? Responde con el número correspondiente:\n\n1 = Nada apoyado(a)\n2 = Un poco apoyado(a)\n3 = Moderadamente apoyado(a)\n4 = Muy apoyado(a)\n5 = Extremadamente apoyado(a)"
+                        }
+                    },
+                    "variations": [
+                        {
+                            "plainTextMessage": {
+                                "value": "Por favor responde solo con el número correspondiente a tu respuesta (ej.: 1, 2, 3, 4 o 5)."
+                            }
+                        }
+                    ]
+                }
+            ],
+            "maxRetries": 1,
+            "allowInterrupt": true,
+            "messageSelectionStrategy": "Ordered",
+            "promptAttemptsSpecification": {
+                "Initial": {
+                    "allowInterrupt": true,
+                    "allowedInputTypes": {
+                        "allowAudioInput": true,
+                        "allowDTMFInput": true
+                    },
+                    "audioAndDTMFInputSpecification": {
+                        "startTimeoutMs": 4000,
+                        "audioSpecification": {
+                            "maxLengthMs": 15000,
+                            "endTimeoutMs": 640
+                        },
+                        "dtmfSpecification": {
+                            "maxLength": 513,
+                            "endTimeoutMs": 5000,
+                            "deletionCharacter": "*",
+                            "endCharacter": "#"
+                        }
+                    },
+                    "textInputSpecification": {
+                        "startTimeoutMs": 30000
+                    }
+                },
+                "Retry1": {
+                    "allowInterrupt": true,
+                    "allowedInputTypes": {
+                        "allowAudioInput": true,
+                        "allowDTMFInput": true
+                    },
+                    "audioAndDTMFInputSpecification": {
+                        "startTimeoutMs": 4000,
+                        "audioSpecification": {
+                            "maxLengthMs": 15000,
+                            "endTimeoutMs": 640
+                        },
+                        "dtmfSpecification": {
+                            "maxLength": 513,
+                            "endTimeoutMs": 5000,
+                            "deletionCharacter": "*",
+                            "endCharacter": "#"
+                        }
+                    },
+                    "textInputSpecification": {
+                        "startTimeoutMs": 30000
+                    }
+                }
+            }
+        },
+        "slotCaptureSetting": {
+            "captureNextStep": {
+                "dialogAction": {
+                    "type": "ElicitSlot",
+                    "slotToElicit": "next_step"
+                },
+                "intent": {}
+            },
+            "failureResponse": {
+                "messageGroups": [
+                    {
+                        "message": {
+                            "plainTextMessage": {
+                                "value": "Gracias por compartir tus comentarios. No dudes en comunicarte nuevamente si necesitas apoyo adicional."
+                            }
+                        }
+                    }
+                ],
+                "allowInterrupt": true
+            },
+            "failureNextStep": {
+                "dialogAction": {
+                    "type": "CloseIntent"
+                },
+                "intent": {}
+            },
+            "elicitationCodeHook": {
+                "enableCodeHookInvocation": true
+            }
+        }
+    }
+}
