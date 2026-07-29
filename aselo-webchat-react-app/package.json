@@ -94,6 +94,7 @@
     "rollup": "2.80.0",
     "flatted": "3.4.2",
     "systeminformation": "5.31.0",
+    "jsonpath": "1.3.0",
     "minimatch@^3.0.0": "3.1.3"
   },
   "scripts": {
