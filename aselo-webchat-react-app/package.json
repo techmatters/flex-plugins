@@ -93,7 +93,8 @@
     "handlebars": "4.7.9",
     "rollup": "2.80.0",
     "flatted": "3.4.2",
-    "systeminformation": "5.31.0"
+    "systeminformation": "5.31.0",
+    "nth-check": "2.0.1"
   },
   "scripts": {
     "preinstall": "cd ../lambdas/packages/hrm-form-definitions && npm ci && npm run build && cd ../hrm-types && npm ci && npm run build",
