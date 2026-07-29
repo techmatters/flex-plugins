@@ -1042,7 +1042,7 @@ ${
     },
     {
       "name": "f_isSkilledWorkerAvailable_tya_sms",
-      "type": "run-function",
+      "type": "make-http-request",
       "transitions": [
         {
           "next": "split_specialist_available_tya_sms",
@@ -1050,32 +1050,19 @@ ${
         },
         {
           "next": "split_specialist_available_tya_sms",
-          "event": "fail"
+          "event": "failed"
         }
       ],
       "properties": {
-        "service_sid": "${flow_vars.custom_functions_service_id}",
-        "environment_sid": "${flow_vars.custom_functions_environment_id}",
         "offset": {
           "x": 226,
           "y": 4079
-        },
-        "function_sid": "${flow_vars.is_skilled_worker_available_function_sid}",
-        "parameters": [
-          {
-            "value": "${flow_vars.workspace_sid}",
-            "key": "workspaceSid"
-          },
-          {
-            "value": "chat",
-            "key": "targetChannel"
-          },
-          {
-            "value": "TYA,SMS",
-            "key": "targetSkills"
-          }
-        ],
-        "url": "${flow_vars.custom_functions_url}/isSkilledWorkerAvailable"
+        },        
+        "method": "POST",
+        "content_type": "application/json;charset=utf-8",
+        "add_twilio_auth": false,
+        "body": "{\n  \"targetChannel\": \"chat\",\n  \"targetSkills\": \"TYA,SMS\"\n}",
+        "url": "${lambda_twilio_account_scoped_url}/worker/isSkilledWorkerAvailable"
       }
     },
     {
@@ -1290,7 +1277,7 @@ ${
     },
     {
       "name": "f_isSkilledWorkerAvailable_fcg_sms",
-      "type": "run-function",
+      "type": "make-http-request",
       "transitions": [
         {
           "next": "split_specialist_available_fcg_sms",
@@ -1298,32 +1285,19 @@ ${
         },
         {
           "next": "split_specialist_available_fcg_sms",
-          "event": "fail"
+          "event": "failed"
         }
       ],
       "properties": {
-        "service_sid": "${flow_vars.custom_functions_service_id}",
-        "environment_sid": "${flow_vars.custom_functions_environment_id}",
         "offset": {
           "x": 1848,
           "y": 4015
         },
-        "function_sid": "${flow_vars.is_skilled_worker_available_function_sid}",
-        "parameters": [
-          {
-            "value": "${flow_vars.workspace_sid}",
-            "key": "workspaceSid"
-          },
-          {
-            "value": "chat",
-            "key": "targetChannel"
-          },
-          {
-            "value": "FCG,SMS",
-            "key": "targetSkills"
-          }
-        ],
-        "url": "${flow_vars.custom_functions_url}/isSkilledWorkerAvailable"
+        "method": "POST",
+        "content_type": "application/json;charset=utf-8",
+        "add_twilio_auth": false,
+        "body": "{\n  \"targetChannel\": \"chat\",\n  \"targetSkills\": \"FCG,SMS\"\n}",
+        "url": "${lambda_twilio_account_scoped_url}/worker/isSkilledWorkerAvailable"
       }
     },
     {

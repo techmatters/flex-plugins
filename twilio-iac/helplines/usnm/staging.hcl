@@ -69,6 +69,14 @@ locals {
         templatefile         = "/app/twilio-iac/helplines/usnm/templates/studio-flows/sms.tftpl"
         channel_flow_vars    = {}
         chatbot_unique_names = []
+      },
+      sms : {
+        messaging_mode       = "conversations"
+        channel_type         = "sms"
+        contact_identity     = "+15712007241"
+        templatefile         = "/app/twilio-iac/helplines/usnm/templates/studio-flows/sms.tftpl"
+        channel_flow_vars    = {}
+        chatbot_unique_names = []
       }
     }
 
