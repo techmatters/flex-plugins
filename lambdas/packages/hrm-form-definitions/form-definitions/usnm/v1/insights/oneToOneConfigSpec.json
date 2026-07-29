@@ -6,7 +6,7 @@
     },
     {
       "name": "state",
-      "insights": ["conversations", "conversation_attribute_5"]
+      "insights": ["conversations", "followed_by"]
     },
     {
       "name": "raceEthnicity",
