@@ -1,0 +1,10 @@
+{
+  "en": {
+    "triggerMessage": "Before you go, will you provide feedback on your connection to help us improve our services? Your answers will be kept confidential and all questions are optional. Please reply 'Yes' or 'No'.",
+    "postSurveyCompleteMessage": "Thank you for contacting the hotline.  Feel free to reach out again if you need additional support."
+  },
+  "es": {
+    "triggerMessage": "Antes de irte, ¿podrías brindarnos tu opinión sobre tu contacto con la línea de ayuda para ayudarnos a mejorar nuestros servicios? Tus respuestas se mantendrán confidenciales y todas las preguntas son opcionales. Por favor responde 'Sí' o 'No'.",
+    "postSurveyCompleteMessage": "Gracias por comunicarte con la línea de ayuda. No dudes en volver a contactarnos si necesitas apoyo adicional."
+  }
+}
