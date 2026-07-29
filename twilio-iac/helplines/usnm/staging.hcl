@@ -46,7 +46,9 @@ locals {
       send_message_sms_post_queue_keep_waiting               = "Thank you for your patience. NAMI HelpLine Specialists are currently assisting other Help Seekers. Someone will be with you as soon as possible. In the meantime, info and resources are online at https://www.nami.org/nami-helpline/ "
     }
 
-
+    //Serverless -- to allow enabling the operating hours check on this staging account.
+    ui_editable = true
+    
     #Channels
     channels = {
       voice : {
@@ -64,6 +66,14 @@ locals {
         messaging_mode       = "conversations"
         channel_type         = "chat"
         contact_identity     = ""
+        templatefile         = "/app/twilio-iac/helplines/usnm/templates/studio-flows/sms.tftpl"
+        channel_flow_vars    = {}
+        chatbot_unique_names = []
+      },
+      sms : {
+        messaging_mode       = "conversations"
+        channel_type         = "sms"
+        contact_identity     = "+15712007241"
         templatefile         = "/app/twilio-iac/helplines/usnm/templates/studio-flows/sms.tftpl"
         channel_flow_vars    = {}
         chatbot_unique_names = []

@@ -12,9 +12,12 @@
           },
           {
             "label": "Exposure to criminal violence"
-          },
+          },  
           {
             "label": "Exposure to domestic violence"
+          },
+          {
+            "label": "Exposure to sexual acts (witnessing adults/others engaging in sexual activity)"
           },
           {
             "label": "Physical Abuse"
@@ -79,6 +82,14 @@
           },
           {
             "label": "Child involved in pornography"
+          }
+        ]
+      },
+        "Child Headed Household": {
+        "color": "#E86B6B",
+        "subcategories": [
+          {
+            "label": "Child headed household"
           }
         ]
       },
@@ -171,9 +182,6 @@
           },
           {
             "label": "Both parents deceased"
-          },
-          {
-            "label": "Child headed household"
           },
           {
             "label": "Child infected"
@@ -421,9 +429,6 @@
             "label": "Corporal punishment"
           },
           {
-            "label": " Homework"
-          },
-          {
             "label": "Lack of money for fees"
           },
           {
@@ -530,8 +535,17 @@
           {
             "label": "Abuse to counsellor"
           },
+            {
+            "label": "Childline Information"
+          },
           {
             "label": "Complaints about Childline services"
+          },
+          {
+            "label": "Homework"
+          },
+          {
+            "label": "Questions about other services"
           },
           {
             "label": "Request for information"
@@ -541,6 +555,9 @@
           },
           {
             "label": "SRHR services"
+          },
+          {
+            "label": "Want to talk"
           }
         ]
       },

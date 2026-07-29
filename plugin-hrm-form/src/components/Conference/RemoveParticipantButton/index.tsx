@@ -22,6 +22,9 @@ import '../../../types/types';
 import { ConferenceNotifications } from '../../../conference/setUpConferenceActions';
 import * as conferenceApi from '../../../services/conferenceService';
 import { newHangUpByStateManager } from '../../../hangUpByState';
+import { triggerPostStudioFlow } from '../../../services/studioService';
+import { CallSID, TaskQueueSID, TaskSID } from '../../../types/twilio';
+import { getVoicePostStudioFlowSettings } from '../../../postStudioFlow';
 
 type Props = Partial<ParticipantCanvasChildrenProps>;
 const REMOVE_PARTICIPANT_KEY = 'Conference-Participant-Remove';
@@ -38,12 +41,26 @@ const RemoveParticipantButton: React.FC<Props> = ({ participant, task }) => {
 
     try {
       try {
-        await conferenceApi.removeParticipant({
+        if (
+          participant.participantType === 'customer' &&
+          getVoicePostStudioFlowSettings(task.queueSid as TaskQueueSID)
+        ) {
+          await triggerPostStudioFlow(task.taskSid as TaskSID, participant.callSid as CallSID);
+        }
+        const params = {
           callSid: participant.callSid,
           conferenceSid: task.conference.conferenceSid,
-        });
+        };
+        const participantResult = await conferenceApi.getParticipant(params);
+        if (participantResult?.participant) {
+          await conferenceApi.removeParticipant(params);
+        }
       } catch (err) {
         Notifications.showNotificationSingle(ConferenceNotifications.ErrorUpdatingParticipantNotification);
+        console.error(
+          `Error checking / removing participant ${participant.callSid} (${participant.participantType} - ${participant.status})`,
+          err,
+        );
       } finally {
         setIsLoading(false);
       }

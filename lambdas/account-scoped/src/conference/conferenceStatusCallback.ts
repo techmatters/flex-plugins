@@ -86,7 +86,7 @@ export type ConferenceStatusEventHandler = (
 
 const eventHandlers: Record<string, ConferenceStatusEventHandler[]> = {};
 
-export const registerTaskRouterEventHandler = (
+export const registerConferenceStatusEventHandler = (
   eventTypes: EventType[],
   handler: ConferenceStatusEventHandler,
 ) => {
@@ -105,7 +105,7 @@ export const conferenceStatusCallbackHandler: AccountScopedHandler = async (
   const conferenceEvent = body as ConferenceEvent;
   const handlers = eventHandlers[conferenceEvent.StatusCallbackEvent] ?? [];
   console.info(
-    `Handling task router event: ${conferenceEvent.StatusCallbackEvent} for account: ${accountSid} - executing ${handlers.length} registered handlers.`,
+    `Handling conference event: ${conferenceEvent.StatusCallbackEvent} for account: ${accountSid}, conference: ${conferenceEvent.ConferenceSid} - executing ${handlers.length} registered handlers.`,
   );
   console.debug(`Event`, conferenceEvent);
 
