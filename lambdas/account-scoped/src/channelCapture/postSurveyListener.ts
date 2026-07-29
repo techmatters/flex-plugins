@@ -229,17 +229,26 @@ export const startPostSurveyChatbotHandler: AccountScopedHandler = async (
   accountSid,
 ) => {
   const { channelType, language, contactId, conversationSid, taskSid } = body;
+  const twilioWorkspaceSid = await getWorkspaceSid(accountSid);
   const client = await getTwilioClient(accountSid);
-
-  const { helplineLanguage } = await retrieveServiceConfigurationAttributes(client);
-  const taskLanguage = getTaskLanguage(helplineLanguage)({ language });
+  let taskLanguage = language;
+  if (!taskLanguage) {
+    const { attributes: taskAttributesJson } = await client.taskrouter.v1.workspaces
+      .get(twilioWorkspaceSid)
+      .tasks.get(taskSid)
+      .fetch();
+    taskLanguage = JSON.parse(taskAttributesJson ?? '{}').language;
+    if (!taskLanguage) {
+      const { helplineLanguage } = await retrieveServiceConfigurationAttributes(client);
+      taskLanguage = helplineLanguage;
+    }
+  }
 
   const environment = process.env.NODE_ENV!;
   const webhookBaseUrl = process.env.WEBHOOK_BASE_URL!;
   const chatServiceSid = await getChatServiceSid(accountSid);
   const helplineCode = await getHelplineCode(accountSid);
   const surveyWorkflowSid = await getSurveyWorkflowSid(accountSid);
-  const twilioWorkspaceSid = await getWorkspaceSid(accountSid);
 
   await postSurveyInitHandler({
     conversationSid,
