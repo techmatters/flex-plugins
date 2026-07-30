@@ -1,36 +1,41 @@
 {
-  "childInformation": [
-    {
-      "name": "zipCode",
-      "insights": ["conversations", "case"]
-    },
-    {
-      "name": "state",
-      "insights": ["conversations", "conversation_attribute_5"]
-    },
-    {
-      "name": "raceEthnicity",
-      "insights": ["conversations", "conversation_attribute_6"]
-    },
-    {
-      "name": "genderIdentity",
-      "insights": ["conversations", "conversation_attribute_7"]
-    },
-    {
-      "name": "ageGroup",
-      "insights": ["conversations", "productive"]
-    },
-    {
-      "name": "memberOfTheFollowingPopulations",
-      "insights": ["conversations", "in_business_hours"]
-    },
-    {
-      "name": "relationshipToHelpSeeker",
-      "insights": ["conversations", "conversation_attribute_9"]
-    },
-    {
-      "name": "seekingHelpFor",
-      "insights": ["conversations", "preceded_by"]
-    }
-  ]
+  "contactForm": {
+    "callerInformation": [],
+    "childInformation": [
+      {
+        "name": "zipCode",
+        "insights": ["conversations", "case"]
+      },
+      {
+        "name": "state",
+        "insights": ["conversations", "followed_by"]
+      },
+      {
+        "name": "raceEthnicity",
+        "insights": ["conversations", "conversation_attribute_6"]
+      },
+      {
+        "name": "genderIdentity",
+        "insights": ["conversations", "conversation_attribute_7"]
+      },
+      {
+        "name": "ageGroup",
+        "insights": ["conversations", "productive"]
+      },
+      {
+        "name": "memberOfTheFollowingPopulations",
+        "insights": ["conversations", "in_business_hours"]
+      },
+      {
+        "name": "relationshipToHelpSeeker",
+        "insights": ["conversations", "conversation_attribute_9"]
+      },
+      {
+        "name": "seekingHelpFor",
+        "insights": ["conversations", "preceded_by"]
+      }
+    ],
+    "caseInformation": []
+  },
+  "caseForm": {}
 }
