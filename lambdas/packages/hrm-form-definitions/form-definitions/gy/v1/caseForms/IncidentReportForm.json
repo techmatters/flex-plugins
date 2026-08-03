@@ -28,115 +28,52 @@
         "label": ""
       },
       {
-        "value": "Follow Up",
-        "label": "Follow Up"
+        "value": "Emergency",
+        "label": "Emergency"
       },
       {
-        "value": "Indecent Exposure",
-        "label": "Indecent Exposure"
+        "value": "Non-Emergency",
+        "label": "Non-Emergency"
       },
       {
-        "value": "Loitering",
-        "label": "Loitering"
+        "value": "Standby",
+        "label": "Standby"
       },
       {
-        "value": "Syringe Disposal",
-        "label": "Syringe Disposal"
-      },
-      {
-        "value": "Well-being Check",
-        "label": "Well-being Check"
-      },
-      {
-        "value": "Intoxication",
-        "label": "Intoxication"
-      },
-      {
-        "value": "Disturbance",
-        "label": "Disturbance"
-      },
-      {
-        "value": "Mental Health Crisis",
-        "label": "Mental Health Crisis"
+        "value": "Transfer",
+        "label": "Transfer"
       }
     ],
     "isPII": false
   },
   {
-    "name": "tags",
-    "label": "Incident Tags",
-    "type": "listbox-multiselect",
+    "name": "priority",
+    "label": "Priority / Response Code",
+    "type": "select",
+    "unknownOption": "Unknown",
     "options": [
       {
-        "value": "Alcott",
-        "label": "Alcott"
+        "value": "Unknown",
+        "label": ""
       },
       {
-        "value": "Canopy Roots",
-        "label": "Canopy Roots"
+        "value": "1",
+        "label": "1 (Lights & Siren)"
       },
       {
-        "value": "East",
-        "label": "East"
+        "value": "2",
+        "label": "2 (Routine)"
       },
       {
-        "value": "Harbor",
-        "label": "Harbor"
+        "value": "3",
+        "label": "3 (Non-Transport)"
       },
       {
-        "value": "Heluna",
-        "label": "Heluna"
-      },
-      {
-        "value": "Hollywood",
-        "label": "Hollywood"
-      },
-      {
-        "value": "Metro",
-        "label": "Metro"
-      },
-      {
-        "value": "MOCS",
-        "label": "MOCS"
-      },
-      {
-        "value": "Pacific",
-        "label": "Pacific"
-      },
-      {
-        "value": "Response Team",
-        "label": "Response Team"
-      },
-      {
-        "value": "South LA",
-        "label": "South LA"
-      },
-      {
-        "value": "Support Team",
-        "label": "Support Team"
-      },
-      {
-        "value": "Sycamores",
-        "label": "Sycamores"
-      },
-      {
-        "value": "UA",
-        "label": "UA"
-      },
-      {
-        "value": "Valley",
-        "label": "Valley"
+        "value": "Transfer",
+        "label": "Transfer"
       }
     ],
     "isPII": false
-  },
-  {
-    "name": "comments",
-    "label": "Comments",
-    "type": "textarea",
-    "rows": 20,
-    "width": 289,
-    "isPII": true
   },
   {
     "name": "latitude",
@@ -151,22 +88,64 @@
     "isPII": true
   },
   {
-    "name": "locationAddress",
+    "name": "geolocation",
     "type": "input",
-    "label": "Location: Physical Address",
+    "label": "Geolocation Address",
     "isPII": true
   },
   {
-    "name": "transportDestination",
+    "name": "street",
     "type": "input",
-    "label": "Transport Destination",
+    "label": "Street",
     "isPII": true
   },
   {
-    "name": "numberOfClientsTransported",
-    "type": "numeric-input",
-    "label": "# of Clients Transported",
-    "isPII": false
+    "name": "city",
+    "type": "input",
+    "label": "City",
+    "isPII": true
+  },
+    {
+    "name": "region",
+    "type": "input",
+    "label": "Region",
+    "isPII": true
+  },
+    {
+    "name": "postalCode",
+    "type": "input",
+    "label": "Postal Code",
+    "isPII": true
+  },
+    {
+    "name": "latitude",
+    "type": "input",
+    "label": "Latitude",
+    "isPII": true
+  },
+    {
+    "name": "longitude",
+    "type": "input",
+    "label": "Longitude",
+    "isPII": true
+  },
+  {
+    "name": "destination",
+    "type": "input",
+    "label": "Destination",
+    "isPII": true
+  },
+  {
+    "name": "destinationCityRegion",
+    "type": "input",
+    "label": "Destination City / Region",
+    "isPII": true
+  },
+  {
+    "name": "onDutyEMT",
+    "type": "input",
+    "label": "On Duth EMT",
+    "isPII": true
   },
   {
     "name": "incidentActivationInterval",
