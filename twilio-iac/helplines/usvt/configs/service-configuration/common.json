@@ -1,0 +1,14 @@
+{
+    "attributes": {
+        "contacts_waiting_channels": [
+            "voice",
+            "sms",
+            "web",
+            "whatsapp",
+            "facebook"
+        ],
+        "definitionVersion": "usvt-v1",
+        "helplineLanguage": "en-US",
+        "permissionConfig": "demo"
+    }
+}

@@ -101,7 +101,7 @@ jobs:
           env_variable_name: "ACCOUNT_SID"
 
       - name: Use Node.js
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@v7
         with:
           node-version: "22.x"
 
@@ -141,7 +141,7 @@ jobs:
       # Send Slack notifying success
       - name: Slack Aselo channel
         id: slack
-        uses: slackapi/slack-github-action@v3.0.3
+        uses: slackapi/slack-github-action@v4.0.0
         if: ${{ inputs.send-slack-message != 'false' }}
         with:
           method: chat.postMessage
@@ -149,17 +149,6 @@ jobs:
           payload: |
             channel: ${{ env.ASELO_DEPLOYS_CHANNEL_ID }}
             text: '`[WEBCHAT]` Deployment to `${{inputs.helpline_code}}-${{inputs.environment}}` of ${{ github.ref_type }} `${{ github.ref_name }}` requested by `${{ github.triggering_actor }}` completed using workflow `${{ github.workflow }}` with SHA ${{ github.sha }} :rocket:.'
-      # Update deployment matrix 
-      - name: Update deployment matrix
-        uses: ./.github/actions/deployment-matrix
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ secrets.AWS_DEFAULT_REGION }}
-          identifier: ${{ inputs.helpline_code }}
-          environment: ${{ inputs.environment}}
-          service_repo: 'aselo-webchat-react-app'
-          version_tag: ${{ github.ref_name }}
   deploy_form_definitions:
     uses: ./.github/workflows/deploy-form-definitions.yml
     needs: deploy

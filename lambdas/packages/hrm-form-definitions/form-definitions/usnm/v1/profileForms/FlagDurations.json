@@ -6,12 +6,7 @@
   },
   {
     "flag": "blocked",
-    "label": "Acceptable Use Policy or LIO Behavior",
-    "durationInHours": "876000"
-  },
-  {
-    "flag": "blocked",
-    "label": "Access Policy",
+    "label": "Permanent Block",
     "durationInHours": "876000"
   }
 ]

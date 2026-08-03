@@ -1,0 +1,112 @@
+{
+    "intentName": "post_survey_yes",
+    "description": "Specific es_USNM/bots Post Survey bot",
+    "sampleUtterances": [
+        {
+            "utterance": "Sí"
+        },
+        {
+            "utterance": "sí"
+        },
+        {
+            "utterance": "si"
+        },
+        {
+            "utterance": "1"
+        }
+    ],
+    "dialogCodeHook": {
+        "enabled": false
+    },
+    "fulfillmentCodeHook": {
+        "enabled": false,
+        "active": true,
+        "postFulfillmentStatusSpecification": {
+            "successNextStep": {
+                "dialogAction": {
+                    "type": "CloseIntent"
+                },
+                "intent": {}
+            },
+            "failureNextStep": {
+                "dialogAction": {
+                    "type": "CloseIntent"
+                },
+                "intent": {}
+            },
+            "timeoutNextStep": {
+                "dialogAction": {
+                    "type": "CloseIntent"
+                },
+                "intent": {}
+            }
+        }
+    },
+    "slotPriorities": [
+        {
+            "priority": 1,
+            "slotName": "first_contact"
+        },
+        {
+            "priority": 2,
+            "slotName": "needs_met"
+        },
+        {
+            "priority": 3,
+            "slotName": "feel_supported"
+        },
+        {
+            "priority": 4,
+            "slotName": "next_step"
+        },
+        {
+            "priority": 5,
+            "slotName": "nps_scale"
+        },
+        {
+            "priority": 6,
+            "slotName": "family_caregiver"
+        },
+        {
+            "priority": 7,
+            "slotName": "open_response"
+        },
+        {
+            "priority": 8,
+            "slotName": "demo_age"
+        },
+        {
+            "priority": 9,
+            "slotName": "demo_race"
+        },
+        {
+            "priority": 10,
+            "slotName": "demo_gender"
+        },
+        {
+            "priority": 11,
+            "slotName": "demo_zip"
+        }
+    ],
+    "intentClosingSetting": {
+        "closingResponse": {
+            "messageGroups": [
+                {
+                    "message": {
+                        "plainTextMessage": {
+                            "value": "Gracias por compartir tus comentarios. No dudes en comunicarte nuevamente si necesitas apoyo adicional."
+                        }
+                    }
+                }
+            ],
+            "allowInterrupt": true
+        },
+        "active": true,
+        "nextStep": {
+            "dialogAction": {
+                "type": "EndConversation"
+            },
+            "intent": {}
+        }
+    }
+}

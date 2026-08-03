@@ -21,7 +21,6 @@
             "enable_lambda_post_survey_processing": true,
             "enable_lex_v2": true,
             "enable_hang_up_by_hrm_saving": true,
-            "use_twilio_lambda_for_conference_functions": true,
             "use_twilio_lambda_for_conversation_duration": true,
             "enable_twilio_transcripts": true
         },
@@ -34,7 +33,16 @@
             "version": "2.2.0"
         },
         "resources_base_url": "https://hrm-development.tl.techmatters.org",
-        "enforceZeroTranscriptRetention": false
+        "enforceZeroTranscriptRetention": false,
+        "postStudioFlows": {            "WQb4a3a7e8808c61d11d344e5b28fa53ef": {
+            "flowTrigger": "inProgressCall",
+            "studioFlowSid": "FW7345ce250648845e9869f59df2c9c961"
+        },
+            "voice": {
+                "flowTrigger": "rest",
+                "studioFlowSid": "FWd1cb5650c06befc2f9ffc4c14b59465b"
+            }
+        }
     },
     "ui_attributes": {
         "colorTheme": {

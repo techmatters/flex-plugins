@@ -18,7 +18,8 @@
   "author": "",
   "license": "AGPL",
   "dependencies": {
-    "aws-sdk": "^2.947.0",
+    "@aws-sdk/client-ssm": "^3.1093.0",
+    "@aws-sdk/client-sts": "^3.1093.0",
     "axios": "^1.6.0",
     "dotenv": "^10.0.0",
     "hrm-form-definitions": "file:../lambdas/packages/hrm-form-definitions",
@@ -47,5 +48,8 @@
     "ts-node": "^10.1.0",
     "tsx": "^3.12.6",
     "typescript": "^4.3.5"
+  },
+  "overrides": {
+    "lodash": "4.18.0"
   }
 }

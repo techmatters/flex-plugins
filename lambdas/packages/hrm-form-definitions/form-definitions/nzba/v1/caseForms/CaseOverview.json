@@ -13,7 +13,13 @@
     },
     {
       "name": "followUpDate",
-      "label": "Follow Up Date",
+      "label": "Case Follow Up Date",
+      "type": "date-input",
+      "isPII": false
+    },
+    {
+      "name": "docFollowUpDate",
+      "label": "DOC Follow Up Date",
       "type": "date-input",
       "isPII": false
     },

@@ -34,6 +34,24 @@ export const okJsonResponse = (body: any = {}): ALBResult => ({
   body: JSON.stringify(body),
 });
 
+export const okTextResponse = (body: string = ''): ALBResult => ({
+  headers: {
+    ...CORS_HEADERS,
+    'Content-Type': 'text/plain',
+  },
+  statusCode: 200,
+  body,
+});
+
+export const okXmlResponse = (body: string = ''): ALBResult => ({
+  headers: {
+    ...CORS_HEADERS,
+    'Content-Type': 'application/xml',
+  },
+  statusCode: 200,
+  body,
+});
+
 export const notFoundResponse = (event: ALBEvent): ALBResult => ({
   statusCode: 404,
   headers: {

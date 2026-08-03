@@ -1,0 +1,151 @@
+{
+  "post_survey": {
+    "description": "Specific en_USNM/bots Post Survey bot",
+    "locale": "en_US",
+    "child_directed": true,
+    "idle_session_ttl_in_seconds": "300",
+    "staging_bot_alias_id": "TSTALIASID",
+    "production_bot_alias_id": "TSTALIASID",
+    "type": "Bot",
+    "intents": {
+      "post_survey_yes": {
+        "utterances": [
+          {
+            "utterance": "Yes"
+          },
+          {
+            "utterance": "yes"
+          },
+          {
+            "utterance": "yeah"
+          },
+          {
+            "utterance": "1"
+          }
+        ],
+        "closing_response": {
+          "message": "Thank you for sharing your feedback. Feel free to reach out again if you need additional support."
+        },
+        "slot_priorities": {
+          "1": {
+            "slot_name": "first_contact",
+            "slot_type_name": "yes_no",
+            "slot_question": "Was this your first time contacting the NAMI Helpline? Please reply 'Yes' or 'No'.\n\nReply 'SKIP' to skip over any question you don't want to answer.",
+            "failure_response": "Thank you for sharing your feedback. Feel free to reach out again if you need additional support.",
+            "variations": ["Please reply with 'Yes' or 'No'."]
+          },
+          "2": {
+            "slot_name": "needs_met",
+            "slot_type_name": "five_level_assessment",
+            "slot_question": "How well did the Helpline meet your needs? Reply with the number for your response:\n\n1 = Not at all well\n2 = A little bit \n3 = Somewhat well \n4 = Very well \n5 = Extremely well",
+            "failure_response": "Thank you for sharing your feedback. Feel free to reach out again if you need additional support.",
+            "variations": [
+              "Please reply with just the number that matches your response (ex: 1, 2, 3, 4, 5)."
+            ]
+          },
+          "3": {
+            "slot_name": "feel_supported",
+            "slot_type_name": "five_level_assessment",
+            "slot_question": "How supported did you feel during your contact with the Helpline? Reply with the number for your response:\n\n1 = Not at all supported\n2 = A little bit supported\n3 = Somewhat supported\n4 = Very supported\n5 = Extremely supported",
+            "failure_response": "Thank you for sharing your feedback. Feel free to reach out again if you need additional support.",
+            "variations": [
+              "Please reply with just the number that matches your response (ex: 1, 2, 3, 4, 5)."
+            ]
+          },
+          "4": {
+            "slot_name": "next_step",
+            "slot_type_name": "five_level_assessment",
+            "slot_question": "After contacting the NAMI Helpline, how ready are you to do something about your concerns? Reply with the number for your response:\n\n1 = Not at all ready\n2 = A little bit ready\n3 = Somewhat ready\n4 = Very ready\n5 = Extremely ready",
+            "failure_response": "Thank you for sharing your feedback. Feel free to reach out again if you need additional support.",
+            "variations": [
+              "Please reply with just the number that matches your response (ex: 1, 2, 3, 4, 5)."
+            ]
+          },
+          "5": {
+            "slot_name": "nps_scale",
+            "slot_type_name": "five_level_assessment",
+            "slot_question": "How likely are you to recommend the NAMI Helpline to someone else?\nPlease reply with a number from '1' (not likely) to '5' (extremely likely).",
+            "failure_response": "Thank you for sharing your feedback. Feel free to reach out again if you need additional support.",
+            "variations": [
+              "Please reply with just the number that matches your response (ex: 1, 2, 3, 4, 5)."
+            ]
+          },
+          "6": {
+            "slot_name": "family_caregiver",
+            "slot_type_name": "yes_no",
+            "slot_question": "Are you a family member and/or caregiver of a loved one with a mental health concern?\nPlease reply 'Yes' or 'No'.",
+            "failure_response": "Thank you for sharing your feedback. Feel free to reach out again if you need additional support.",
+            "variations": [
+              ""
+            ]          
+          },
+          "7": {
+            "slot_name": "open_response",
+            "slot_type_name": "AMAZON.FreeFormInput",
+            "slot_question": "Is there anything you'd like to share about your experience with the NAMI Helpline?\n(Please note, only your first reply will be recorded)",
+            "failure_response": "Thank you for sharing your feedback. Feel free to reach out again if you need additional support.",
+            "variations": [
+              ""
+            ]
+          },
+          "8": {
+            "slot_name": "demo_age",
+            "slot_type_name": "age_group",
+            "slot_question": "The following demographic questions help us better understand the communities we serve.\n\nWhat is your age? Reply with the number for your response:\n\n1 = Under 18 \n2 = 18-34 years old \n3 = 35-54 years old \n4 = 55-74 years old \n5 = 75 years",
+            "failure_response": "Thank you for sharing your feedback. Feel free to reach out again if you need additional support.",
+            "variations": [
+              "Please reply with just the number that matches your response (ex: 1, 2, 3, 4, 5)."
+            ]
+          },
+          "9": {
+            "slot_name": "demo_race",
+            "slot_type_name": "race",
+            "slot_question": "Which of the following best describes your race and/or ethnicity? Reply with the number for your response:\n\n1 = American Indian or Alaska Native  \n2 = Asian  \n3 = Black or African American  \n4 = Hispanic or Latino   \n5 = Middle Eastern or North African   \n6 = Native Hawaiian or Pacific Islander  \n7 = White \n8 = Multiracial",
+            "failure_response": "Thank you for sharing your feedback. Feel free to reach out again if you need additional support.",
+            "variations": [
+              "Please reply with just the number that matches your response (ex: 1, 2, 3, 4, 5)."
+            ]
+          },
+          "10": {
+            "slot_name": "demo_gender",
+            "slot_type_name": "gender",
+            "slot_question": "Which of the following best describes your gender? Reply with the number for your response:\n\n1 = Woman/female \n2 = Man/male \n3 = Non-binary \n4 = Two-Spirit \n5 = I use a different term",
+            "failure_response": "Thank you for sharing your feedback. Feel free to reach out again if you need additional support.",
+            "variations": [
+              "Please reply with just the number that matches your response (ex: 1, 2, 3, 4, 5)."
+            ]
+          },
+          "11": {
+            "slot_name": "demo_zip",
+            "slot_type_name": "zip_code",
+            "slot_question": "What is your 5-digit zip code?",
+            "failure_response": "Thank you for sharing your feedback. Feel free to reach out again if you need additional support.",
+            "variations": [
+              "Only numbers are allowed."
+            ]
+          }
+        }
+      },
+      "post_survey_no": {
+        "utterances": [
+          {
+            "utterance": "No"
+          },
+          {
+            "utterance": "no"
+          },
+          {
+            "utterance": "nope"
+          },
+          {
+            "utterance": "2"
+          }
+        ],
+        "closing_response": {
+          "message": "Thank you for contacting the NAMI Helpline.  Feel free to reach out again if you need additional support."
+        },
+        "slot_priorities": {}
+      }
+    }
+  }
+}

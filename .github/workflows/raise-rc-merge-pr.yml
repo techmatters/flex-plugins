@@ -32,7 +32,7 @@ jobs:
           sparse-checkout: |
             .github/actions
       - name: Use Node.js
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@v7
         with:
           node-version: '22.x'
       - name: Find later RC branches
@@ -112,7 +112,7 @@ jobs:
           env_variable_name: "ASELO_RELEASE_DEPLOY_CHANNEL_ID"
       - name: Slack Aselo channel
         id: slack
-        uses: slackapi/slack-github-action@v3.0.3
+        uses: slackapi/slack-github-action@v4.0.0
         with:
           method: chat.postMessage
           token: ${{ env.GITHUB_ACTIONS_SLACK_BOT_TOKEN }}

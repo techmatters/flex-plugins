@@ -2,8 +2,24 @@
     "attributes": {
         "contacts_waiting_channels": [
             "sms",
-            "voice"
+            "voice",
+            "web"
         ],
+        "external_recordings_enabled": true,
+        "enableExternalRecordings": true,
+        "enableConferencing": true,
+        "feature_flags": {
+            "enable_conferencing": true,
+            "enable_external_transcripts": true,
+            "enable_hierarchical_translations": true,
+            "enable_lex_v2": true,
+            "enable_configurable_max_categories": true,
+            "enable_post_survey": true,
+            "enable_voice_recordings": true,
+            "enable_lambda_post_survey_processing": true,
+            "use_prepopulate_mappings": true,
+            "enable_hang_up_by_hrm_saving": true
+        },
         "definitionVersion": "usnm-v1",
         "helplineLanguage": "en-US",
         "permissionConfig": "usnm"

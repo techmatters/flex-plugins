@@ -50,7 +50,7 @@ export const validateWebhookRequest: HttpRequestPipelineStep = async (
     authToken,
     twiloSignature,
     urlForValidation,
-    bodySHA256 ? [] : body, // Pass in the body to validate the signature if no SHA256 is provided
+    bodySHA256 ? {} : body, // Pass in the body to validate the signature if no SHA256 is provided
   );
   if (!isValid) {
     console.warn(
