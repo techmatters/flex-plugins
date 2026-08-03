@@ -40,4 +40,5 @@ export const isAccountSID = (value: string): value is AccountSID =>
   // This regex could be stricter if we only wanted to catch 'real' account SIDs, but our test account sids have non hexadecimal characters
   /^AC[0-9a-zA-Z_]+$/.test(value);
 
+export * from './channelType';
 export * from './instagram';

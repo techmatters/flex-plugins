@@ -16,6 +16,7 @@
 
 import { HrmContact } from '@tech-matters/hrm-types';
 import { newErr, newOk, Result } from '../Result';
+import { ChannelType } from '@tech-matters/twilio-types';
 
 /**
  * IMPORTANT: keep up to date with flex-plugins/plugin-hrm-form/src/utils/task
@@ -68,7 +69,7 @@ const isVoiceTrigger = (obj: any): obj is VoiceTrigger =>
 export type TriggerEvent = {
   trigger: ChatTrigger | VoiceTrigger | ConversationTrigger;
   request: { cookies: {}; headers: {} };
-  channelType?: string;
+  channelType?: ChannelType;
 };
 
 type ConversationTrigger = {

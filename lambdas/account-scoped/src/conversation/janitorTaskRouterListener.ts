@@ -33,10 +33,13 @@ import { retrieveFeatureFlags } from '../configuration/aseloConfiguration';
 import { chatChannelJanitor } from './chatChannelJanitor';
 import { hasTaskControl } from '../transfer/hasTaskControl';
 import { isChatCaptureControlTask } from '../channelCapture/channelCaptureHandlers';
-import { isAseloCustomChannel } from '../customChannels/aseloCustomChannels';
 import { getWorkspaceSid } from '@tech-matters/twilio-configuration';
 import { ChatChannelSID, ConversationSID } from '@tech-matters/twilio-types';
 import { getCurrentDefinitionVersion } from '../hrm/formDefinitionsCache';
+import {
+  ChannelType,
+  isAseloCustomChannelType,
+} from '@tech-matters/twilio-types/src/channelType';
 
 const isCleanupBotCapture = (
   eventType: EventType,
@@ -71,8 +74,8 @@ const isCleanupCustomChannel = async (
   workspaceSid: string,
   taskSid: string,
   taskAttributes: {
-    channelType?: string;
-    customChannelType?: string;
+    channelType?: ChannelType;
+    customChannelType?: ChannelType;
     isChatCaptureControl?: boolean;
   },
 ) => {
@@ -84,7 +87,7 @@ const isCleanupCustomChannel = async (
     return false;
   }
 
-  return isAseloCustomChannel(
+  return isAseloCustomChannelType(
     taskAttributes.customChannelType || taskAttributes.channelType,
   );
 };

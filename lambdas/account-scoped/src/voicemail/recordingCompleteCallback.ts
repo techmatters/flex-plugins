@@ -17,6 +17,7 @@
 import { getTwilioClient, getWorkspaceSid } from '@tech-matters/twilio-configuration';
 import { AccountScopedHandler, HttpError } from '../httpTypes';
 import { newOk, Result } from '../Result';
+import {channelTypes} from "@tech-matters/twilio-types/src/channelType";
 
 export type RecordingCompleteCallbackRequestBody = {
   callFrom: string;
@@ -26,15 +27,10 @@ export const recordingCompleteCallback: AccountScopedHandler = async (
   { body },
   accountSid,
 ): Promise<Result<HttpError, any>> => {
-  console.debug('recordingCompleteCallback body', JSON.stringify(body, null, 2));
-  // const { callFrom } = body as RecordingCompleteCallbackRequestBody;
-
-  // if (!callFrom) {
-  //   return newErr({
-  //     message: 'callFrom parameter is missing',
-  //     error: { statusCode: 400 },
-  //   });
-  // }
+  console.debug(
+    '[SENSITIVE] recordingCompleteCallback body',
+    JSON.stringify(body, null, 2),
+  );
 
   const twilioClient = await getTwilioClient(accountSid);
 
@@ -49,14 +45,14 @@ export const recordingCompleteCallback: AccountScopedHandler = async (
         callSid: body.callSid,
         from: body.from,
         name: body.from,
-        channelType: 'voicemail',
-        customChannelType: 'voicemail',
+        channelType: channelTypes.VOICEMAIL,
+        customChannelType: channelTypes.VOICEMAIL,
         ignoreAgent: '',
         transferTargetType: '',
       }),
       workflowSid: body.voicemailWorkflowSid,
       // TODO: factor out channel types into an enum
-      taskChannel: 'voicemail',
+      taskChannel: channelTypes.VOICEMAIL,
     });
 
   return newOk({ voicemailTask });
