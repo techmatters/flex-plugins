@@ -24,39 +24,63 @@
     "isPII": true
   },
   {
+    "name": "callReceivedTimestamp",
+    "type": "time-input",
+    "label": "Call Received Timestamp",
+    "isPII": true
+  },
+  {
+    "name": "dispatchedTimestamp",
+    "type": "time-input",
+    "label": "Dispatched Timestamp",
+    "isPII": true
+  },
+  {
     "name": "enrouteTimestamp",
     "type": "time-input",
     "label": "En Route Timestamp",
     "isPII": true
   },
   {
-    "name": "onSceneTimestamp",
+    "name": "arrivedTimestamp",
     "type": "time-input",
-    "label": "On-Scene Timestamp",
+    "label": "Arrived Timestamp",
     "isPII": true
   },
   {
-    "name": "additionalResourcesTimestamp",
+    "name": "patientContactTimestamp",
     "type": "time-input",
-    "label": "Additional Resources Timestamp",
+    "label": "Patient Contact Timestamp",
     "isPII": true
   },
   {
-    "name": "transportTimestamp",
+    "name": "departedSceneTimestamp",
     "type": "time-input",
-    "label": "Transport Timestamp",
+    "label": "Departed Scene Timestamp",
     "isPII": true
   },
   {
-    "name": "destinationArrivalTimestamp",
+    "name": "arrivedHospitalTimestamp",
     "type": "time-input",
-    "label": "Destination Arrival Timestamp",
+    "label": "Arrived Hospital Timestamp",
     "isPII": true
   },
   {
-    "name": "incidentCompleteTimestamp",
+    "name": "transferOfCareTimestamp",
     "type": "time-input",
-    "label": "Incident Complete Timestamp",
+    "label": "Transfer of Care Timestamp",
+    "isPII": true
+  },
+  {
+    "name": "departedHospitalTimestamp",
+    "type": "time-input",
+    "label": "Departed Hospital Timestamp",
+    "isPII": true
+  },
+  {
+    "name": "inServiceTimestamp",
+    "type": "time-input",
+    "label": "In Service Timestamp",
     "isPII": true
   }
 ]
