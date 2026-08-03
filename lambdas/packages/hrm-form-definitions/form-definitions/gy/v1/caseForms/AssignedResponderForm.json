@@ -1,8 +1,20 @@
 [
   {
-    "name": "responderName",
+    "name": "responderFirstName",
     "type": "input",
-    "label": "Responder",
+    "label": "Responder First Name",
+    "isPII": true
+  },
+  {
+    "name": "responderLastName",
+    "type": "input",
+    "label": "Responder Last Name",
+    "isPII": true
+  },
+  {
+    "name": "fleetNumber",
+    "type": "input",
+    "label": "Call Sign/Fleet Number/Unit ID",
     "isPII": true
   },
   {
