@@ -82,5 +82,59 @@
     "type": "time-input",
     "label": "In Service Timestamp",
     "isPII": true
+  },
+  {
+    "name": "assistanceRequested",
+    "label": "Assistance Requested",
+    "type": "listbox-multiselect",
+    "options": [
+      {
+        "value": "Police",
+        "label": "Police"
+      },
+      {
+        "value": "Fire",
+        "label": "Fire"
+      },
+      {
+        "value": "Other",
+        "label": "Other"
+      }
+    ],
+    "isPII": false
+  },
+  {
+    "name": "assistanceRequestedOther",
+    "type": "input",
+    "label": "If Other Assistance Requested",
+    "isPII": true
+  },
+ {
+    "name": "hospitalNotification",
+    "label": "Hospital Notification",
+    "type": "listbox-multiselect",
+    "options": [
+      {
+        "value": "None",
+        "label": "None"
+      },
+      {
+        "value": "Medical Channel",
+        "label": "Medical Channel"
+      },
+      {
+        "value": "Ambulance Dispatch",
+        "label": "Ambulance Dispatch"
+      },
+      {
+        "value": "Landline",
+        "label": "Landline"
+      },
+      {
+        "value": "Cell Phone",
+        "label": "Cell Phone"
+      }
+    ],
+    "isPII": false
   }
 ]
