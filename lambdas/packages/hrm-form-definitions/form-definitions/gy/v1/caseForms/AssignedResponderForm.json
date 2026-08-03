@@ -18,6 +18,12 @@
     "isPII": true
   },
   {
+    "name": "mileage",
+    "type": "input",
+    "label": "Mileage",
+    "isPII": true
+  },
+  {
     "name": "enrouteTimestamp",
     "type": "time-input",
     "label": "En Route Timestamp",
