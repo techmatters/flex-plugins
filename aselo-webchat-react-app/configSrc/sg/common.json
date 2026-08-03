@@ -2,7 +2,7 @@
   "fileAttachment": {
     "enabled": true,
     "maxFileSize": 16777216,
-    "acceptedExtensions": ["jpg", "jpeg", "png", "amr", "mp3", "mp4", "pdf", "txt"]
+    "acceptedExtensions": ["jpg", "jpeg", "png", "pdf", "txt"]
   },
   "emojiPicker": {
     "enabled": true,
