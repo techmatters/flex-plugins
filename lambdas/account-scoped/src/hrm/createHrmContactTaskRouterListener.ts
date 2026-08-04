@@ -35,6 +35,7 @@ import { populateHrmContactFormFromTaskByMappings } from './populateHrmContactFo
 import { parseISO } from 'date-fns/parseISO';
 import { HttpClientError } from '../httpErrors';
 import { getExternalRecordingS3Location } from '../conversation/getExternalRecordingS3Location';
+import { patchTaskAttributes } from '../task/patchTaskAttributes';
 
 // Temporarily copied to this repo, will share the flex types when we move them into the same repo
 
@@ -248,6 +249,15 @@ export const handleEvent = async (
   const savedTimeOfContactDate = parseISO(savedTimeOfContactString);
   console.info(`Created HRM contact with id ${id} for task ${taskSid}`);
 
+  await patchTaskAttributes(accountSid, taskSid, currentTaskAttributes => ({
+    ...currentTaskAttributes,
+    contactId: id.toString(),
+    outboundVoiceTaskStartMillis: isOutboundVoiceTask
+      ? timeOfContactDate.getTime()
+      : null,
+    timeOfContactMillis: savedTimeOfContactDate.getTime(),
+  }));
+
   if (channel === ('voicemail' as any)) {
     console.info(
       `Channel type is ${channel}, adding conversation media with call sid ${taskAttributes.callSid}`,
@@ -281,26 +291,10 @@ export const handleEvent = async (
         conversationMedia,
       );
       console.debug(
-        `[SENSITIVE] Conversation media result ${conversationMediaResult.status} ${isOk(conversationMediaResult) ? JSON.stringify(conversationMediaResult.data) : JSON.stringify(conversationMediaResult.error)}`,
+        `Conversation media result ${conversationMediaResult.status} ${isOk(conversationMediaResult) ? JSON.stringify(conversationMediaResult.data) : JSON.stringify(conversationMediaResult.error)}`,
       );
     }
   }
-
-  const taskContext = client.taskrouter.v1.workspaces
-    .get(twilioWorkspaceSid)
-    .tasks.get(taskSid);
-  const currentTaskAttributes = (await taskContext.fetch()).attributes; // Less chance of race conditions if we fetch the task attributes again, still not the best...
-  const updatedAttributes = {
-    ...JSON.parse(currentTaskAttributes),
-    contactId: id.toString(),
-    outboundVoiceTaskStartMillis: isOutboundVoiceTask
-      ? timeOfContactDate.getTime()
-      : null,
-    timeOfContactMillis: savedTimeOfContactDate.getTime(),
-  };
-  await taskContext.update({ attributes: JSON.stringify(updatedAttributes) });
-  console.info(`Set task ${taskSid} attributes`);
-  console.debug(`[SENSITIVE] Updated ${taskSid} attributes:`, updatedAttributes);
 };
 
 registerTaskRouterEventHandler([RESERVATION_ACCEPTED], handleEvent);
