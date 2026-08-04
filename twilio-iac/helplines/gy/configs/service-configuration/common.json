@@ -1,8 +1,7 @@
 {
     "attributes": {
         "contacts_waiting_channels": [
-            "voice",
-            "web"
+            "voice"
         ],
         "enableExternalRecordings": true,
         "enableConferencing": true,
@@ -15,7 +14,7 @@
             "enable_hang_up_by_hrm_saving": true
         },
         "definitionVersion": "gy-v1",
-        "external_recordings_enabled": false,
+        "external_recordings_enabled": true,
         "helplineLanguage": "en-US",
         "permissionConfig": "gy"
     }
