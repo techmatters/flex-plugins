@@ -38,8 +38,8 @@
         }
         
       },
-      "incidentReport": {
-        "splitFormAt": 6,
+      "callDispatch": {
+        "splitFormAt": 8,
         "printOrder": 1,
         "caseHomeOrder": 1,
         "caseHomeLocation": "timeline",
@@ -76,18 +76,18 @@
           }
         }
       },
-      "assignedResponder": {
-        "splitFormAt": 7,
+      "timesCoordination": {
+        "splitFormAt": 10,
         "printOrder": 1,
         "caseHomeOrder": 1,
         "caseHomeLocation": "timeline",
         "previewFields": [
-          "enrouteTimestamp", 
-          "responderName"
+          "callOutcome", 
+          "assistanceRequested"
         ],
         "layout": {
           "responderName": {
-            "includeLabel": true
+            "callOutcome": true
           },
           "enrouteTimestamp": {
             "format": "timestamp"
