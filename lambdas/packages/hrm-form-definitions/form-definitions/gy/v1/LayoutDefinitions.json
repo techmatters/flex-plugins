@@ -12,32 +12,6 @@
   },
   "case": {
     "sectionTypes": {
-      "personExperiencingHomelessness": {
-        "splitFormAt": 3,
-        "printOrder": 1,
-        "caseHomeOrder": 1,
-        "previewFields": [
-          "firstName",
-          "lastName",
-          "nickname",
-          "gender"
-        ],
-        "layout": {
-          "firstName": {
-            "includeLabel": true
-          },
-          "lastName": {
-            "includeLabel": true
-          },
-          "nickname": {
-            "includeLabel": true
-          },
-          "gender": {
-            "includeLabel": true
-          }
-        }
-        
-      },
       "callDispatch": {
         "splitFormAt": 8,
         "printOrder": 1,
@@ -52,7 +26,7 @@
           },
           "incidentCreationTimestamp": {
             "format": "timestamp"
-          },          
+          },
           "incidentActivationInterval": {
             "format": "duration-from-seconds"
           },
@@ -82,7 +56,7 @@
         "caseHomeOrder": 1,
         "caseHomeLocation": "timeline",
         "previewFields": [
-          "callOutcome", 
+          "callOutcome",
           "assistanceRequested"
         ],
         "layout": {
@@ -109,50 +83,195 @@
           }
         }
       },
-      "caseReport": {
-        "splitFormAt": 6,
-        "caseHomeLocation" : "timeline",
+      "patientInformation": {
+        "splitFormAt": 15,
+        "printOrder": 2,
+        "caseHomeOrder": 2,
         "previewFields": [
-          "primaryDisposition"
+          "firstName",
+          "lastName",
+          "sex",
+          "age"
         ],
         "layout": {
-          "date": {
-            "includeLabel": false,
-            "format": "date"
+          "firstName": {
+            "includeLabel": true
           },
-          "primaryDisposition": {
+          "lastName": {
+            "includeLabel": true
+          },
+          "sex": {
+            "includeLabel": true
+          },
+          "age": {
             "includeLabel": true
           }
         }
       },
-      "safetyPlan": {
+      "pastMedicalHistory": {
+        "splitFormAt": 3,
+        "printOrder": 3,
+        "caseHomeOrder": 3,
+        "previewFields": [
+          "medicalHistory",
+          "allergies"
+        ],
+        "layout": {
+          "medicalHistory": {
+            "includeLabel": true
+          },
+          "allergies": {
+            "includeLabel": true
+          }
+        }
+      },
+      "sceneCare": {
         "splitFormAt": 3,
         "printOrder": 4,
         "caseHomeOrder": 4,
         "previewFields": [
-          "warningSigns"
+          "chiefComplaint",
+          "primaryImpression"
         ],
         "layout": {
-          "warningSigns": {
-            "includeLabel": false
+          "chiefComplaint": {
+            "includeLabel": true
+          },
+          "primaryImpression": {
+            "includeLabel": true
           }
         }
       },
-      "sudSurvey": {
-        "splitFormAt": 4,
+      "vitalSigns": {
+        "splitFormAt": 20,
         "printOrder": 5,
         "caseHomeOrder": 5,
-          "previewFields": [
-          "substancesUsed"
+        "previewFields": [
+          "systolic",
+          "diastolic",
+          "pulseRate",
+          "spo2Percentage"
         ],
         "layout": {
-          "substancesUsed": {
-            "includeLabel": false
+          "systolic": {
+            "includeLabel": true
+          },
+          "diastolic": {
+            "includeLabel": true
+          },
+          "pulseRate": {
+            "includeLabel": true
+          },
+          "spo2Percentage": {
+            "includeLabel": true
+          },
+          "bloodPressureTime": {
+            "format": "timestamp"
+          },
+          "pulseTime": {
+            "format": "timestamp"
+          },
+          "respirationsTime": {
+            "format": "timestamp"
+          },
+          "spo2Time": {
+            "format": "timestamp"
+          },
+          "o2Time": {
+            "format": "timestamp"
+          },
+          "bloodGlucoseTime": {
+            "format": "timestamp"
+          },
+          "temperatureTime": {
+            "format": "timestamp"
+          },
+          "gcsTime": {
+            "format": "timestamp"
+          },
+          "pupilsTimeRight": {
+            "format": "timestamp"
+          },
+          "pupilsTimeLeft": {
+            "format": "timestamp"
+          },
+          "avpuTime": {
+            "format": "timestamp"
+          },
+          "skinTime": {
+            "format": "timestamp"
+          },
+          "locTime": {
+            "format": "timestamp"
+          },
+          "etco2Time": {
+            "format": "timestamp"
+          },
+          "strokeAssessmentTime": {
+            "format": "timestamp"
+          }
+        }
+      },
+      "treatmentProceduresMedication": {
+        "splitFormAt": 11,
+        "printOrder": 6,
+        "caseHomeOrder": 6,
+        "previewFields": [
+          "airwayBreathing",
+          "circulationCardiac",
+          "medicationName"
+        ],
+        "layout": {
+          "airwayBreathing": {
+            "includeLabel": true
+          },
+          "circulationCardiac": {
+            "includeLabel": true
+          },
+          "medicationName": {
+            "includeLabel": true
+          },
+          "cprTimeStarted": {
+            "format": "timestamp"
+          },
+          "tourniquetTime": {
+            "format": "timestamp"
+          },
+          "medicationTime": {
+            "format": "timestamp"
+          }
+        }
+      },
+      "dispositionSignOff": {
+        "splitFormAt": 25,
+        "printOrder": 7,
+        "caseHomeOrder": 7,
+        "previewFields": [
+          "selectDisposition"
+        ],
+        "layout": {
+          "selectDisposition": {
+            "includeLabel": true
+          },
+          "obstetricDeliveryTime": {
+            "format": "timestamp"
+          },
+          "certifyingEmtTime": {
+            "format": "timestamp"
+          },
+          "receivingNurseTime": {
+            "format": "timestamp"
+          },
+          "amaTime": {
+            "format": "timestamp"
+          },
+          "transportArrivalTime": {
+            "format": "timestamp"
           }
         }
       },
       "note": {
-        "printOrder": 7,
+        "printOrder": 8,
         "caseHomeLocation": "timeline",
         "printFormat": "list"
       }
