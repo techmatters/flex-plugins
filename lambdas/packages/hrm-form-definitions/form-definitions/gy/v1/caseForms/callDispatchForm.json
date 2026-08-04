@@ -141,18 +141,6 @@
     "label": "Postal Code",
     "isPII": true
   },
-    {
-    "name": "latitude",
-    "type": "input",
-    "label": "Latitude",
-    "isPII": true
-  },
-    {
-    "name": "longitude",
-    "type": "input",
-    "label": "Longitude",
-    "isPII": true
-  },
   {
     "name": "destination",
     "type": "input",
@@ -168,7 +156,7 @@
   {
     "name": "onDutyEMT",
     "type": "input",
-    "label": "On Duth EMT",
+    "label": "On Duty EMT",
     "isPII": true
   },
   {
