@@ -1,0 +1,819 @@
+${
+  jsonencode(
+    {
+  "initial_state": "Trigger",
+  "flags": {
+    "allow_concurrent_calls": true
+  },
+  "description": "USNC Post Call Survey",
+  "states": [
+    {
+      "name": "Trigger",
+      "type": "trigger",
+      "transitions": [
+        {
+          "event": "incomingMessage"
+        },
+        {
+          "next": "gather_input_voice_opt_in",
+          "event": "incomingCall"
+        },
+        {
+          "event": "incomingConversationMessage"
+        },
+        {
+          "event": "incomingRequest"
+        },
+        {
+          "event": "incomingParent"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 0,
+          "y": 0
+        }
+      }
+    },
+    {
+      "name": "gather_input_voice_opt_in",
+      "type": "gather-input-on-call",
+      "transitions": [
+        {
+          "next": "split_opt_in",
+          "event": "keypress"
+        },
+        {
+          "event": "speech"
+        },
+        {
+          "next": "split_opt_in",
+          "event": "timeout"
+        }
+      ],
+      "properties": {
+        "play": "https://usnc-assets-3228.twil.io/play_message_voice_opt_in.mp3",
+        "number_of_digits": 1,
+        "speech_timeout": "5",
+        "offset": {
+          "x": -18,
+          "y": 187
+        },
+        "loop": 1,
+        "finish_on_key": "#",
+        "stop_gather": true,
+        "gather_language": "en",
+        "speech_model": "default",
+        "timeout": 5
+      }
+    },
+    {
+      "name": "split_opt_in",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "event": "noMatch"
+        },
+        {
+          "next": "gather_input_voice_feel_supported",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to 1",
+              "arguments": [
+                "{{widgets.gather_input_voice_opt_in.Digits}}"
+              ],
+              "type": "equal_to",
+              "value": "1"
+            }
+          ]
+        },
+        {
+          "next": "play_message_voice_post_survey_complete",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to 2",
+              "arguments": [
+                "{{widgets.gather_input_voice_opt_in.Digits}}"
+              ],
+              "type": "equal_to",
+              "value": "2"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{widgets.gather_input_voice_opt_in.Digits}}",
+        "offset": {
+          "x": 73,
+          "y": 460
+        }
+      }
+    },
+    {
+      "name": "gather_input_voice_beginning_interaction",
+      "type": "gather-input-on-call",
+      "transitions": [
+        {
+          "next": "split_beginning_interaction_response",
+          "event": "keypress"
+        },
+        {
+          "event": "speech"
+        },
+        {
+          "next": "split_beginning_interaction_response",
+          "event": "timeout"
+        }
+      ],
+      "properties": {
+        "play": "https://usnc-assets-3228.twil.io/gather_input_voice_beginning_interaction.mp3",
+        "number_of_digits": 1,
+        "speech_timeout": "5",
+        "offset": {
+          "x": -329,
+          "y": 1367
+        },
+        "loop": 1,
+        "finish_on_key": "#",
+        "stop_gather": true,
+        "gather_language": "en",
+        "speech_model": "default",
+        "timeout": 5
+      }
+    },
+    {
+      "name": "gather_input_voice_end_interaction",
+      "type": "gather-input-on-call",
+      "transitions": [
+        {
+          "next": "split_end_interaction_response",
+          "event": "keypress"
+        },
+        {
+          "event": "speech"
+        },
+        {
+          "next": "split_end_interaction_response",
+          "event": "timeout"
+        }
+      ],
+      "properties": {
+        "play": "https://usnc-assets-3228.twil.io/gather_input_voice_end_interaction.mp3",
+        "number_of_digits": 1,
+        "speech_timeout": "5",
+        "offset": {
+          "x": -179,
+          "y": 2396
+        },
+        "loop": 1,
+        "finish_on_key": "#",
+        "stop_gather": true,
+        "gather_language": "en",
+        "speech_model": "default",
+        "timeout": 5
+      }
+    },
+    {
+      "name": "gather_input_voice_feel_supported",
+      "type": "gather-input-on-call",
+      "transitions": [
+        {
+          "next": "split_feel_supported_response",
+          "event": "keypress"
+        },
+        {
+          "event": "speech"
+        },
+        {
+          "next": "split_feel_supported_response",
+          "event": "timeout"
+        }
+      ],
+      "properties": {
+        "play": "https://usnc-assets-3228.twil.io/gather_input_voice_feel_supported.mp3",
+        "number_of_digits": 1,
+        "speech_timeout": "5",
+        "offset": {
+          "x": -95,
+          "y": 694
+        },
+        "loop": 1,
+        "finish_on_key": "#",
+        "stop_gather": true,
+        "gather_language": "en",
+        "speech_model": "default",
+        "timeout": 5
+      }
+    },
+    {
+      "name": "play_message_voice_post_survey_complete",
+      "type": "say-play",
+      "transitions": [
+        {
+          "event": "audioComplete"
+        }
+      ],
+      "properties": {
+        "play": "https://usnc-assets-3228.twil.io/play_message_voice_post_survey_complete.mp3",
+        "offset": {
+          "x": 2774,
+          "y": 3526
+        },
+        "loop": 1
+      }
+    },
+    {
+      "name": "f_savePostSurvey",
+      "type": "make-http-request",
+      "transitions": [
+        {
+          "next": "play_message_voice_post_survey_complete",
+          "event": "success"
+        },
+        {
+          "next": "play_message_voice_post_survey_complete",
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 432,
+          "y": 3473
+        },
+        "method": "POST",
+        "content_type": "application/json;charset=utf-8",
+        "add_twilio_auth": false,
+        "body": "{\n  \"contactId\": \"{{trigger.call.contactId}}\",\n  \"contactTaskSid\": \"{{trigger.call.taskSid}}\",\n  \"postSurveyAnswers\": {\n    \"feel_supported\": \"{{flow.variables.feel_supported}}\",\n    \"beginning_interaction\": \"{{flow.variables.beginning_interaction}}\",\n    \"end_interaction\": \"{{flow.variablesend_interaction}}\"\n  }\n}",
+        "url": "https://hrm-staging.tl.techmatters.org/lambda/twilio/account-scoped/ACaa9a5ca4395d1fdeb394c5c176bc5b40/hrm/savePostSurvey"
+      }
+    },
+    {
+      "name": "set_var_feel_supported_unrecognized",
+      "type": "set-variables",
+      "transitions": [
+        {
+          "next": "gather_input_voice_beginning_interaction",
+          "event": "next"
+        }
+      ],
+      "properties": {
+        "variables": [
+          {
+            "type": "string",
+            "value": "unrecognized or no input",
+            "key": "feel_supported"
+          }
+        ],
+        "offset": {
+          "x": -733,
+          "y": 1186
+        }
+      }
+    },
+    {
+      "name": "split_feel_supported_response",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "set_var_feel_supported_unrecognized",
+          "event": "noMatch"
+        },
+        {
+          "next": "set_var_feel_supported_yes",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to 1",
+              "arguments": [
+                "{{widgets.gather_input_voice_feel_supported.Digits}}"
+              ],
+              "type": "equal_to",
+              "value": "1"
+            }
+          ]
+        },
+        {
+          "next": "set_var_feel_supported_no",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to 2",
+              "arguments": [
+                "{{widgets.gather_input_voice_feel_supported.Digits}}"
+              ],
+              "type": "equal_to",
+              "value": "2"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{widgets.gather_input_voice_feel_supported.Digits}}",
+        "offset": {
+          "x": -375,
+          "y": 905
+        }
+      }
+    },
+    {
+      "name": "set_var_feel_supported_yes",
+      "type": "set-variables",
+      "transitions": [
+        {
+          "next": "gather_input_voice_beginning_interaction",
+          "event": "next"
+        }
+      ],
+      "properties": {
+        "variables": [
+          {
+            "type": "string",
+            "value": "Yes",
+            "key": "feel_supported"
+          }
+        ],
+        "offset": {
+          "x": -324,
+          "y": 1162
+        }
+      }
+    },
+    {
+      "name": "set_var_feel_supported_no",
+      "type": "set-variables",
+      "transitions": [
+        {
+          "next": "gather_input_voice_beginning_interaction",
+          "event": "next"
+        }
+      ],
+      "properties": {
+        "variables": [
+          {
+            "type": "string",
+            "value": "No",
+            "key": "feel_supported"
+          }
+        ],
+        "offset": {
+          "x": -3,
+          "y": 1159
+        }
+      }
+    },
+    {
+      "name": "split_beginning_interaction_response",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "set_var_beginning_interaction_unrecognized",
+          "event": "noMatch"
+        },
+        {
+          "next": "set_var_beginning_interaction_1",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to 1",
+              "arguments": [
+                "{{widgets.gather_input_voice_beginning_interaction.Digits}}"
+              ],
+              "type": "equal_to",
+              "value": "1"
+            }
+          ]
+        },
+        {
+          "next": "set_var_beginning_interaction_2",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to 2",
+              "arguments": [
+                "{{widgets.gather_input_voice_beginning_interaction.Digits}}"
+              ],
+              "type": "equal_to",
+              "value": "2"
+            }
+          ]
+        },
+        {
+          "next": "set_var_beginning_interaction_3",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to 3",
+              "arguments": [
+                "{{widgets.gather_input_voice_beginning_interaction.Digits}}"
+              ],
+              "type": "equal_to",
+              "value": "3"
+            }
+          ]
+        },
+        {
+          "next": "set_var_beginning_interaction_4",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to 4",
+              "arguments": [
+                "{{widgets.gather_input_voice_beginning_interaction.Digits}}"
+              ],
+              "type": "equal_to",
+              "value": "4"
+            }
+          ]
+        },
+        {
+          "next": "set_var_beginning_interaction_5",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to 5",
+              "arguments": [
+                "{{widgets.gather_input_voice_beginning_interaction.Digits}}"
+              ],
+              "type": "equal_to",
+              "value": "5"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{widgets.gather_input_voice_beginning_interaction.Digits}}",
+        "offset": {
+          "x": -326,
+          "y": 1653
+        }
+      }
+    },
+    {
+      "name": "set_var_beginning_interaction_unrecognized",
+      "type": "set-variables",
+      "transitions": [
+        {
+          "next": "gather_input_voice_end_interaction",
+          "event": "next"
+        }
+      ],
+      "properties": {
+        "variables": [
+          {
+            "type": "string",
+            "value": "Unrecognized or no input",
+            "key": "beginning_interaction"
+          }
+        ],
+        "offset": {
+          "x": -916,
+          "y": 1903
+        }
+      }
+    },
+    {
+      "name": "set_var_beginning_interaction_1",
+      "type": "set-variables",
+      "transitions": [
+        {
+          "next": "gather_input_voice_end_interaction",
+          "event": "next"
+        }
+      ],
+      "properties": {
+        "variables": [
+          {
+            "type": "string",
+            "value": "Really struggling",
+            "key": "beginning_interaction"
+          }
+        ],
+        "offset": {
+          "x": -534,
+          "y": 1922
+        }
+      }
+    },
+    {
+      "name": "set_var_beginning_interaction_2",
+      "type": "set-variables",
+      "transitions": [
+        {
+          "next": "gather_input_voice_end_interaction",
+          "event": "next"
+        }
+      ],
+      "properties": {
+        "variables": [
+          {
+            "type": "string",
+            "value": "Having a hard time",
+            "key": "beginning_interaction"
+          }
+        ],
+        "offset": {
+          "x": -218,
+          "y": 1918
+        }
+      }
+    },
+    {
+      "name": "set_var_beginning_interaction_3",
+      "type": "set-variables",
+      "transitions": [
+        {
+          "next": "gather_input_voice_end_interaction",
+          "event": "next"
+        }
+      ],
+      "properties": {
+        "variables": [
+          {
+            "type": "string",
+            "value": "Okay",
+            "key": "beginning_interaction"
+          }
+        ],
+        "offset": {
+          "x": 82,
+          "y": 1925
+        }
+      }
+    },
+    {
+      "name": "set_var_beginning_interaction_4",
+      "type": "set-variables",
+      "transitions": [
+        {
+          "next": "gather_input_voice_end_interaction",
+          "event": "next"
+        }
+      ],
+      "properties": {
+        "variables": [
+          {
+            "type": "string",
+            "value": "Better",
+            "key": "beginning_interaction"
+          }
+        ],
+        "offset": {
+          "x": 385,
+          "y": 1925
+        }
+      }
+    },
+    {
+      "name": "set_var_beginning_interaction_5",
+      "type": "set-variables",
+      "transitions": [
+        {
+          "next": "gather_input_voice_end_interaction",
+          "event": "next"
+        }
+      ],
+      "properties": {
+        "variables": [
+          {
+            "type": "string",
+            "value": "Much better",
+            "key": "beginning_interaction"
+          }
+        ],
+        "offset": {
+          "x": 690,
+          "y": 1926
+        }
+      }
+    },
+    {
+      "name": "split_end_interaction_response",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "set_var_end_interaction_unrecognized",
+          "event": "noMatch"
+        },
+        {
+          "next": "set_var_end_interaction_1",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to 1",
+              "arguments": [
+                "{{widgets.gather_input_voice_beginning_interaction.Digits}}"
+              ],
+              "type": "equal_to",
+              "value": "1"
+            }
+          ]
+        },
+        {
+          "next": "set_end_interaction_interaction_2",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to 2",
+              "arguments": [
+                "{{widgets.gather_input_voice_beginning_interaction.Digits}}"
+              ],
+              "type": "equal_to",
+              "value": "2"
+            }
+          ]
+        },
+        {
+          "next": "set_var_end_interaction_3",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to 3",
+              "arguments": [
+                "{{widgets.gather_input_voice_beginning_interaction.Digits}}"
+              ],
+              "type": "equal_to",
+              "value": "3"
+            }
+          ]
+        },
+        {
+          "next": "set_var_end_interaction_4",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to 4",
+              "arguments": [
+                "{{widgets.gather_input_voice_beginning_interaction.Digits}}"
+              ],
+              "type": "equal_to",
+              "value": "4"
+            }
+          ]
+        },
+        {
+          "next": "set_var_end_interaction_5",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to 5",
+              "arguments": [
+                "{{widgets.gather_input_voice_beginning_interaction.Digits}}"
+              ],
+              "type": "equal_to",
+              "value": "5"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{widgets.gather_input_voice_end_interaction.Digits}}",
+        "offset": {
+          "x": -319,
+          "y": 2777
+        }
+      }
+    },
+    {
+      "name": "set_var_end_interaction_unrecognized",
+      "type": "set-variables",
+      "transitions": [
+        {
+          "next": "f_savePostSurvey",
+          "event": "next"
+        }
+      ],
+      "properties": {
+        "variables": [
+          {
+            "type": "string",
+            "value": "Unrecognized or no input",
+            "key": "end_interaction"
+          }
+        ],
+        "offset": {
+          "x": -891,
+          "y": 3052
+        }
+      }
+    },
+    {
+      "name": "set_var_end_interaction_1",
+      "type": "set-variables",
+      "transitions": [
+        {
+          "next": "f_savePostSurvey",
+          "event": "next"
+        }
+      ],
+      "properties": {
+        "variables": [
+          {
+            "type": "string",
+            "value": "Really struggling",
+            "key": "end_interaction"
+          }
+        ],
+        "offset": {
+          "x": -527,
+          "y": 3046
+        }
+      }
+    },
+    {
+      "name": "set_end_interaction_interaction_2",
+      "type": "set-variables",
+      "transitions": [
+        {
+          "next": "f_savePostSurvey",
+          "event": "next"
+        }
+      ],
+      "properties": {
+        "variables": [
+          {
+            "type": "string",
+            "value": "Having a hard time",
+            "key": "end_interaction"
+          }
+        ],
+        "offset": {
+          "x": -211,
+          "y": 3043
+        }
+      }
+    },
+    {
+      "name": "set_var_end_interaction_3",
+      "type": "set-variables",
+      "transitions": [
+        {
+          "next": "f_savePostSurvey",
+          "event": "next"
+        }
+      ],
+      "properties": {
+        "variables": [
+          {
+            "type": "string",
+            "value": "Okay",
+            "key": "end_interaction"
+          }
+        ],
+        "offset": {
+          "x": 89,
+          "y": 3050
+        }
+      }
+    },
+    {
+      "name": "set_var_end_interaction_4",
+      "type": "set-variables",
+      "transitions": [
+        {
+          "next": "f_savePostSurvey",
+          "event": "next"
+        }
+      ],
+      "properties": {
+        "variables": [
+          {
+            "type": "string",
+            "value": "Better",
+            "key": "end_interaction"
+          }
+        ],
+        "offset": {
+          "x": 393,
+          "y": 3050
+        }
+      }
+    },
+    {
+      "name": "set_var_end_interaction_5",
+      "type": "set-variables",
+      "transitions": [
+        {
+          "next": "f_savePostSurvey",
+          "event": "next"
+        }
+      ],
+      "properties": {
+        "variables": [
+          {
+            "type": "string",
+            "value": "Much better",
+            "key": "end_interaction"
+          }
+        ],
+        "offset": {
+          "x": 698,
+          "y": 3050
+        }
+      }
+    }
+  ]
+}
+  )
+}
