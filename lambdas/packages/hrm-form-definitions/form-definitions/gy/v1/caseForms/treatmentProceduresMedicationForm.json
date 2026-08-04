@@ -1,0 +1,317 @@
+[
+  {
+    "name": "airwayBreathing",
+    "label": "Airway / Breathing",
+    "type": "listbox-multiselect",
+    "options": [
+      {
+        "value": "Airway Cleared",
+        "label": "Airway Cleared"
+      },
+      {
+        "value": "Oral / Nasal Airway (OPA / NPA)",
+        "label": "Oral / Nasal Airway (OPA / NPA)"
+      },
+      {
+        "value": "Supraglottic Airway",
+        "label": "Supraglottic Airway"
+      },
+      {
+        "value": "Endotracheal Tube (ETT)",
+        "label": "Endotracheal Tube (ETT)"
+      },
+      {
+        "value": "Suction",
+        "label": "Suction"
+      },
+      {
+        "value": "Oxygen",
+        "label": "Oxygen"
+      },
+      {
+        "value": "Bag-Valve-Mask Ventilation",
+        "label": "Bag-Valve-Mask Ventilation"
+      },
+      {
+        "value": "CPAP / BiPAP",
+        "label": "CPAP / BiPAP"
+      }
+    ],
+    "isPII": false
+  },
+  {
+    "name": "oxygenLpm",
+    "label": "If Oxygen, Enter LPM:",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "oxygenMethod",
+    "label": "If Oxygen, List Method:",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "circulationCardiac",
+    "label": "Circulation / Cardiac",
+    "type": "listbox-multiselect",
+    "options": [
+      {
+        "value": "CPR",
+        "label": "CPR"
+      },
+      {
+        "value": "AED / Defibrillation",
+        "label": "AED / Defibrillation"
+      },
+      {
+        "value": "Cardioversion",
+        "label": "Cardioversion"
+      },
+      {
+        "value": "Manual / Semi-Auto",
+        "label": "Manual / Semi-Auto"
+      },
+      {
+        "value": "ECG / Cardiac Monitor (attach strip in \"Attachments\" section)",
+        "label": "ECG / Cardiac Monitor (attach strip in \"Attachments\" section)"
+      },
+      {
+        "value": "IV / IO Established",
+        "label": "IV / IO Established"
+      },
+      {
+        "value": "IV Fluids",
+        "label": "IV Fluids"
+      },
+      {
+        "value": "Hemorrhage Control",
+        "label": "Hemorrhage Control"
+      },
+      {
+        "value": "Tourniquet",
+        "label": "Tourniquet"
+      }
+    ],
+    "isPII": false
+  },
+  {
+    "name": "cprTimeStarted",
+    "label": "If CPR, Select Time Started",
+    "type": "time-input",
+    "isPII": true
+  },
+  {
+    "name": "cprByWhom",
+    "label": "If CPR, Enter By Whom:",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "aedShocks",
+    "label": "If AED / Defibrillation, Enter # of Shocks",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "ivGauge",
+    "label": "If IV / IO, Enter Guage",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "ivSite",
+    "label": "If IV / IO, Enter Site",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "ivFluidsMl",
+    "label": "If IV Fluids, Enter mL",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "hemorrhageControlMethod",
+    "label": "If Hemorrhage Control, Enter Method",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "tourniquetTime",
+    "label": "If Tourniquet Applied, Select Time",
+    "type": "time-input",
+    "isPII": true
+  },
+  {
+    "name": "immobilizationMovement",
+    "label": "Immobilization / Movement",
+    "type": "listbox-multiselect",
+    "options": [
+      {
+        "value": "Cervical Collar (C-Collar)",
+        "label": "Cervical Collar (C-Collar)"
+      },
+      {
+        "value": "Long Spine Board / Backboard",
+        "label": "Long Spine Board / Backboard"
+      },
+      {
+        "value": "Limb Splint: Fixation",
+        "label": "Limb Splint: Fixation"
+      },
+      {
+        "value": "Limb Splint: Traction",
+        "label": "Limb Splint: Traction"
+      },
+      {
+        "value": "Extrication",
+        "label": "Extrication"
+      },
+      {
+        "value": "Moved by Stretcher",
+        "label": "Moved by Stretcher"
+      },
+      {
+        "value": "Moved by Stair-Chair",
+        "label": "Moved by Stair-Chair"
+      },
+      {
+        "value": "Walked to Ambulance",
+        "label": "Walked to Ambulance"
+      },
+      {
+        "value": "Heat Applied",
+        "label": "Heat Applied"
+      },
+      {
+        "value": "Cold Applied",
+        "label": "Cold Applied"
+      },
+      {
+        "value": "Restraints Applied",
+        "label": "Restraints Applied"
+      }
+    ],
+    "isPII": false
+  },
+  {
+    "name": "restraintsType",
+    "label": "If Restraints Applied, Enter Type",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "medicalOther",
+    "label": "Medical / Other",
+    "type": "listbox-multiselect",
+    "options": [
+      {
+        "value": "Blood Glucose Checked",
+        "label": "Blood Glucose Checked"
+      },
+      {
+        "value": "Wound Care / Dressing",
+        "label": "Wound Care / Dressing"
+      },
+      {
+        "value": "Childbirth / Delivery Assisted",
+        "label": "Childbirth / Delivery Assisted"
+      },
+      {
+        "value": "Position: Trendelenburg",
+        "label": "Position: Trendelenburg"
+      },
+      {
+        "value": "Left-Lateral",
+        "label": "Left-Lateral"
+      },
+      {
+        "value": "Head-Up",
+        "label": "Head-Up"
+      },
+      {
+        "value": "Other",
+        "label": "Other"
+      }
+    ],
+    "isPII": false
+  },
+  {
+    "name": "medicalOtherSpecify",
+    "label": "If Other, Enter Here",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "medicationTime",
+    "label": "Medication Time",
+    "type": "time-input",
+    "isPII": true
+  },
+  {
+    "name": "medicationName",
+    "label": "Medication",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "medicationDosage",
+    "label": "Dosage",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "medicationRoute",
+    "label": "Route",
+    "type": "select",
+    "unknownOption": "Unknown",
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "Intramuscular",
+        "label": "Intramuscular"
+      },
+      {
+        "value": "Intravenous",
+        "label": "Intravenous"
+      },
+      {
+        "value": "Intranasal",
+        "label": "Intranasal"
+      },
+      {
+        "value": "Oral",
+        "label": "Oral"
+      },
+      {
+        "value": "Rectal",
+        "label": "Rectal"
+      },
+      {
+        "value": "Dermal",
+        "label": "Dermal"
+      },
+      {
+        "value": "Other",
+        "label": "Other"
+      }
+    ],
+    "isPII": false
+  },
+  {
+    "name": "medicationResponseEffect",
+    "label": "Response Effect",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "medicationInitials",
+    "label": "Initials",
+    "type": "input",
+    "isPII": true
+  }
+]
