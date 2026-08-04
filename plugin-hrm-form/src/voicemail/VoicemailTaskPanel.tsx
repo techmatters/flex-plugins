@@ -18,7 +18,6 @@ import * as Flex from '@twilio/flex-ui';
 import React from 'react';
 import { useSelector } from 'react-redux';
 
-import { channelTypes } from '../states/DomainConstants';
 import { PrimaryButton } from '../styles/buttons';
 import { Flex as FlexBox } from '../styles';
 import { RecordingSection } from '../components/contact/MediaSection';

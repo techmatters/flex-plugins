@@ -39,7 +39,7 @@ import { getCurrentDefinitionVersion } from '../hrm/formDefinitionsCache';
 import {
   ChannelType,
   isAseloCustomChannelType,
-} from '@tech-matters/twilio-types/src/channelType';
+} from '@tech-matters/twilio-types';
 
 const isCleanupBotCapture = (
   eventType: EventType,

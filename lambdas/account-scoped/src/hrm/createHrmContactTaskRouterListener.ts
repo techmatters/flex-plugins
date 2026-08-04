@@ -21,7 +21,7 @@ import { registerTaskRouterEventHandler } from '../taskrouter/taskrouterEventHan
 import { RESERVATION_ACCEPTED } from '../taskrouter/eventTypes';
 import type { EventFields } from '../taskrouter';
 import twilio from 'twilio';
-import { AccountSID, TaskSID, WorkerSID } from '@tech-matters/twilio-types';
+import { AccountSID, TaskSID, WorkerSID, channelTypes } from '@tech-matters/twilio-types';
 import { getWorkspaceSid } from '@tech-matters/twilio-configuration';
 import {
   patchOnInternalHrmEndpoint,
@@ -258,7 +258,7 @@ export const handleEvent = async (
     timeOfContactMillis: savedTimeOfContactDate.getTime(),
   }));
 
-  if (channel === ('voicemail' as any)) {
+  if (channel === channelTypes.VOICEMAIL) {
     console.info(
       `Channel type is ${channel}, adding conversation media with call sid ${taskAttributes.callSid}`,
     );
