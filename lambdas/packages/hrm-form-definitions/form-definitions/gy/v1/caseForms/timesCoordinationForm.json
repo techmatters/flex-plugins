@@ -199,7 +199,7 @@
       }
     ],
     "isPII": false
-  }.
+  },
   {
     "name": "caseTransferred",
     "type": "input",
