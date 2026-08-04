@@ -29,7 +29,6 @@ resource "twilio_studio_flows_v2" "studio_flow" {
     {
       flow_description                           = "${title(replace(each.key, "_", " "))} Studio Flow",
       helpline                                   = var.helpline,
-      task_language                              = var.task_language,
       flow_vars                                  = each.value.flow_vars,
       lambda_twilio_account_scoped_url           = local.lambda_twilio_account_scoped_url,
       workflow_sids                              = var.workflow_sids,
