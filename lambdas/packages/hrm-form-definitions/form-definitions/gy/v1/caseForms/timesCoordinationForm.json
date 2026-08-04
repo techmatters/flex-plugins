@@ -1,29 +1,5 @@
 [
   {
-    "name": "responderFirstName",
-    "type": "input",
-    "label": "Responder First Name",
-    "isPII": true
-  },
-  {
-    "name": "responderLastName",
-    "type": "input",
-    "label": "Responder Last Name",
-    "isPII": true
-  },
-  {
-    "name": "fleetNumber",
-    "type": "input",
-    "label": "Call Sign/Fleet Number/Unit ID",
-    "isPII": true
-  },
-  {
-    "name": "mileage",
-    "type": "input",
-    "label": "Mileage",
-    "isPII": true
-  },
-  {
     "name": "callReceivedTimestamp",
     "type": "time-input",
     "label": "Call Received Timestamp",
@@ -133,6 +109,81 @@
       {
         "value": "Cell Phone",
         "label": "Cell Phone"
+      }
+    ],
+    "isPII": false
+  },
+ {
+    "name": "callOutcome",
+    "label": "Call Outcome",
+    "type": "listbox-multiselect",
+    "options": [
+      {
+        "value": "Transported to Hospital",
+        "label": "Transported to Hospital"
+      },
+      {
+        "value": "Treated - No Transport",
+        "label": "Treated - No Transport"
+      },
+      {
+        "value": "Patient Refusal (AMA)",
+        "label": "Patient Refusal (AMA)"
+      },
+      {
+        "value": "Standby Only (No Patient)",
+        "label": "Standby Only (No Patient)"
+      },
+      {
+        "value": "Cancelled",
+        "label": "Cancelled"
+      },
+      {
+        "value": "No Patient Found",
+        "label": "No Patient Found"
+      },
+      {
+        "value": "DOA / Obvious Death",
+        "label": "DOA / Obvious Death"
+      },
+      {
+        "value": "Treated by this Unit & Transferred Care to Another Unit",
+        "label": "Treated by this Unit & Transferred Care to Another Unit"
+      },
+      {
+        "value": "Assumed Primary Care from Another Unit",
+        "label": "Assumed Primary Care from Another Unit"
+      },
+      {
+        "value": "Other",
+        "label": "Other"
+      }
+    ],
+    "isPII": false
+  },
+  {
+    "name": "callOutcomeOther",
+    "type": "input",
+    "label": "If Other Call Outcome:",
+    "isPII": true
+  },
+  {
+    "name": "firstEMS",
+    "label": "First EMS Unit On Scene?",
+    "type": "select",
+    "unknownOption": "Unknown",
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "Yes",
+        "label": "Yes"
+      },
+      {
+        "value": "No",
+        "label": "No"
       }
     ],
     "isPII": false
