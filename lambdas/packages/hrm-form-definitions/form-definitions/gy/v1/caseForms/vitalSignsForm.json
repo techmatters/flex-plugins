@@ -9,13 +9,13 @@
   {
     "name": "systolic",
     "label": "Systolic",
-    "type": "numeric-input",
+    "type": "input",
     "isPII": true
   },
   {
     "name": "diastolic",
     "label": "Diastolic",
-    "type": "numeric-input",
+    "type": "input",
     "isPII": true
   },
   {
@@ -52,7 +52,7 @@
   {
     "name": "pulseRate",
     "label": "Pulse Rate",
-    "type": "numeric-input",
+    "type": "input",
     "isPII": true
   },
   {
@@ -70,7 +70,7 @@
   {
     "name": "respirationsRate",
     "label": "Respirations Rate",
-    "type": "numeric-input",
+    "type": "input",
     "isPII": true
   },
   {
@@ -107,7 +107,7 @@
   {
     "name": "spo2Percentage",
     "label": "SPO2 Percentage",
-    "type": "numeric-input",
+    "type": "input",
     "isPII": true
   },
   {
@@ -119,7 +119,7 @@
   {
     "name": "o2Lpm",
     "label": "O2 LPM",
-    "type": "numeric-input",
+    "type": "input",
     "isPII": true
   },
   {
@@ -131,7 +131,7 @@
   {
     "name": "bloodGlucoseLevel",
     "label": "Blood Glucose Level (mg/dL)",
-    "type": "numeric-input",
+    "type": "input",
     "isPII": true
   },
   {
@@ -159,7 +159,7 @@
   {
     "name": "bodyTemperature",
     "label": "Body Temperature",
-    "type": "numeric-input",
+    "type": "input",
     "isPII": true
   },
   {
@@ -171,7 +171,7 @@
   {
     "name": "gcsScore",
     "label": "Glasgow Coma Scale (GCS)",
-    "type": "numeric-input",
+    "type": "input",
     "isPII": true
   },
   {
@@ -492,7 +492,7 @@
   {
     "name": "etco2",
     "label": "ETco2 (mmHg)",
-    "type": "numeric-input",
+    "type": "input",
     "isPII": true
   },
   {
