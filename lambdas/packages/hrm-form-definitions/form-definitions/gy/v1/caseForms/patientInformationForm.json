@@ -35,7 +35,7 @@
   {
     "name": "age",
     "label": "Age",
-    "type": "numeric-input",
+    "type": "input",
     "isPII": true
   },
   {
@@ -139,7 +139,7 @@
   },
   {
     "name": "relationship",
-    "label": "Relationship",
+    "label": "Next of Kin Relationship",
     "type": "listbox-multiselect",
     "options": [
       {
@@ -240,7 +240,7 @@
   {
     "name": "weight",
     "label": "Weight",
-    "type": "numeric-input",
+    "type": "input",
     "isPII": true
   },
   {
@@ -274,7 +274,7 @@
   {
     "name": "income",
     "label": "Income",
-    "type": "numeric-input",
+    "type": "input",
     "isPII": true
   },
   {
