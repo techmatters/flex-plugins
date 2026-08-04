@@ -168,6 +168,18 @@
     "isPII": true
   },
   {
+    "name": "facilityName",
+    "type": "input",
+    "label": "Receiving Facility Name",
+    "isPII": true
+  },
+  {
+    "name": "facilityReport",
+    "type": "input",
+    "label": "Report Called to (name):",
+    "isPII": true
+  },
+  {
     "name": "firstEMS",
     "label": "First EMS Unit On Scene?",
     "type": "select",
