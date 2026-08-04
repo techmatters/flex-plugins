@@ -26,7 +26,9 @@ export type RecordingCompleteCallbackRequestBody = {
   from: string;
   callSid: CallSid;
   recordingSid: RecordingSid;
-  maxCallbackAttempts: number;
+  voicemailWorkflowSid: string;
+  routingAttributes?: string;
+  maxCallbackAttempts?: number;
 };
 
 export const recordingCompleteCallback: AccountScopedHandler = async (
