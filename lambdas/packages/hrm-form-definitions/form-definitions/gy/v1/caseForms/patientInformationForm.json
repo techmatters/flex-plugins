@@ -94,5 +94,203 @@
       }
     ],
     "isPII": false
+  },
+  {
+    "name": "telephone",
+    "label": "Telephone",
+    "type": "input",
+    "isPII": true
+  },
+{
+    "name": "street",
+    "label": "Street",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "city",
+    "label": "City",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "state",
+    "label": "State",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "postalCode",
+    "label": "Postal Code",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "nokFirstName",
+    "label": "Next of Kin First Name",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "nokLastName",
+    "label": "Next of Kin Last Name",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "relationship",
+    "label": "Relationship",
+    "type": "listbox-multiselect",
+    "options": [
+      {
+        "value": "Spouse",
+        "label": "Spouse"
+      },
+      {
+        "value": "Guardian",
+        "label": "Guardian"
+      },
+      {
+        "value": "Son",
+        "label": "Son"
+      },
+      {
+        "value": "Daughter",
+        "label": "Daughter"
+      },
+      {
+        "value": "Other",
+        "label": "Other"
+      }
+    ],
+    "isPII": false
+  },
+  {
+    "name": "relationshipOther",
+    "label": "Relationship (If Other)",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "nokTelephone",
+    "label": "NOK Telephone",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "workRelatedInjury",
+    "label": "Work-Related Injury?",
+    "type": "select",
+    "unknownOption": "Unknown",
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "Yes",
+        "label": "Yes"
+      },
+      {
+        "value": "No",
+        "label": "No"
+      }
+    ],
+    "isPII": false
+  },
+  {
+    "name": "employer",
+    "label": "Employer (Only If Work-Related)",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "employerTelephone",
+    "label": "Employer Telephone",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "gender",
+    "label": "Select Gender",
+    "type": "select",
+    "unknownOption": "Unknown",
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "Male",
+        "label": "Male"
+      },
+      {
+        "value": "Female",
+        "label": "Female"
+      }
+    ],
+    "isPII": false
+  },
+  {
+    "name": "genderOther",
+    "label": "For Other, Document Here",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "weight",
+    "label": "Weight",
+    "type": "numeric-input",
+    "isPII": true
+  },
+  {
+    "name": "weightUnit",
+    "label": "Weight Unit",
+    "type": "select",
+    "options": [
+      {
+        "value": "Kg",
+        "label": "Kg"
+      },
+      {
+        "value": "Lbs",
+        "label": "Lbs"
+      }
+    ],
+    "isPII": false
+  },
+  {
+    "name": "insuranceProvider",
+    "label": "Insurance Provider",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "insurancePolicyNumber",
+    "label": "Insurance Policy Number",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "income",
+    "label": "Income",
+    "type": "numeric-input",
+    "isPII": true
+  },
+  {
+    "name": "incomeFrequency",
+    "label": "Frequency",
+    "type": "select",
+    "options": [
+      {
+        "value": "Annual",
+        "label": "Annual"
+      },
+      {
+        "value": "Monthly",
+        "label": "Monthly"
+      }
+    ],
+    "isPII": false
   }
 ]
