@@ -296,25 +296,29 @@
 {
     "name": "medicalHistory",
     "label": "Medical History",
-    "type": "input",
+    "type": "textarea",
+    "rows": 4,
     "isPII": true
   },
   {
     "name": "surgicalHistory",
     "label": "Surgical History",
-    "type": "input",
+    "type": "textarea",
+    "rows": 4,
     "isPII": true
   },
   {
     "name": "currentMedicines",
     "label": "Current Medicines",
-    "type": "input",
+    "type": "textarea",
+    "rows": 4,
     "isPII": true
   },
   {
     "name": "allergies",
     "label": "Allergies",
-    "type": "input",
+    "type": "textarea",
+    "rows": 4,
     "isPII": true
   },
   {
