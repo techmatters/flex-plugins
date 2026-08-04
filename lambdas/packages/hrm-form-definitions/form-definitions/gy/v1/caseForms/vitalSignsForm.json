@@ -1,0 +1,564 @@
+
+[
+  {
+    "name": "bloodPressureTime",
+    "label": "Blood Pressure Time",
+    "type": "time-input",
+    "isPII": true
+  },
+  {
+    "name": "systolic",
+    "label": "Systolic",
+    "type": "numeric-input",
+    "isPII": true
+  },
+  {
+    "name": "diastolic",
+    "label": "Diastolic",
+    "type": "numeric-input",
+    "isPII": true
+  },
+  {
+    "name": "pulseTime",
+    "label": "Pulse Time",
+    "type": "time-input",
+    "isPII": true
+  },
+  {
+    "name": "pulseQuality",
+    "label": "Pulse - Select One",
+    "type": "select",
+    "unknownOption": "Unknown",
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "Regular",
+        "label": "Regular"
+      },
+      {
+        "value": "Irregular",
+        "label": "Irregular"
+      },
+      {
+        "value": "Absent",
+        "label": "Absent"
+      }
+    ],
+    "isPII": false
+  },
+  {
+    "name": "pulseRate",
+    "label": "Pulse Rate",
+    "type": "numeric-input",
+    "isPII": true
+  },
+  {
+    "name": "pulseWaveform",
+    "label": "Pulse Waveform",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "respirationsTime",
+    "label": "Respirations Time",
+    "type": "time-input",
+    "isPII": true
+  },
+  {
+    "name": "respirationsRate",
+    "label": "Respirations Rate",
+    "type": "numeric-input",
+    "isPII": true
+  },
+  {
+    "name": "respirationsQuality",
+    "label": "Respirations - Select One",
+    "type": "select",
+    "unknownOption": "Unknown",
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "Regular",
+        "label": "Regular"
+      },
+      {
+        "value": "Shallow",
+        "label": "Shallow"
+      },
+      {
+        "value": "Labored",
+        "label": "Labored"
+      }
+    ],
+    "isPII": false
+  },
+  {
+    "name": "spo2Time",
+    "label": "SPO2 % Time",
+    "type": "time-input",
+    "isPII": true
+  },
+  {
+    "name": "spo2Percentage",
+    "label": "SPO2 Percentage",
+    "type": "numeric-input",
+    "isPII": true
+  },
+  {
+    "name": "o2Time",
+    "label": "O2 LPM Time",
+    "type": "time-input",
+    "isPII": true
+  },
+  {
+    "name": "o2Lpm",
+    "label": "O2 LPM",
+    "type": "numeric-input",
+    "isPII": true
+  },
+  {
+    "name": "bloodGlucoseTime",
+    "label": "Blood Glucose Time",
+    "type": "time-input",
+    "isPII": true
+  },
+  {
+    "name": "bloodGlucoseLevel",
+    "label": "Blood Glucose Level (mg/dL)",
+    "type": "numeric-input",
+    "isPII": true
+  },
+  {
+    "name": "temperatureTime",
+    "label": "Temperature Time",
+    "type": "time-input",
+    "isPII": true
+  },
+  {
+    "name": "temperatureUnit",
+    "label": "Temperature Unit",
+    "type": "select",
+    "options": [
+      {
+        "value": "Celsius",
+        "label": "Celsius"
+      },
+      {
+        "value": "Farenheit",
+        "label": "Farenheit"
+      }
+    ],
+    "isPII": false
+  },
+  {
+    "name": "bodyTemperature",
+    "label": "Body Temperature",
+    "type": "numeric-input",
+    "isPII": true
+  },
+  {
+    "name": "gcsTime",
+    "label": "GCS (E/V/M) Time",
+    "type": "time-input",
+    "isPII": true
+  },
+  {
+    "name": "gcsScore",
+    "label": "Glasgow Coma Scale (GCS)",
+    "type": "numeric-input",
+    "isPII": true
+  },
+  {
+    "name": "gcsEyeResponse",
+    "label": "Eye Response",
+    "type": "select",
+    "unknownOption": "Unknown",
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "Spontaneously",
+        "label": "Spontaneously"
+      },
+      {
+        "value": "To Verbal Command",
+        "label": "To Verbal Command"
+      },
+      {
+        "value": "To Pain",
+        "label": "To Pain"
+      },
+      {
+        "value": "No Eye Opening",
+        "label": "No Eye Opening"
+      },
+      {
+        "value": "Not Testable",
+        "label": "Not Testable"
+      }
+    ],
+    "isPII": false
+  },
+  {
+    "name": "gcsVerbalResponse",
+    "label": "Verbal Command",
+    "type": "select",
+    "unknownOption": "Unknown",
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "Oriented",
+        "label": "Oriented"
+      },
+      {
+        "value": "Confused",
+        "label": "Confused"
+      },
+      {
+        "value": "Inappropriate Words",
+        "label": "Inappropriate Words"
+      },
+      {
+        "value": "Incomprehensible Sounds",
+        "label": "Incomprehensible Sounds"
+      },
+      {
+        "value": "No Verbal Response",
+        "label": "No Verbal Response"
+      },
+      {
+        "value": "Not testable (Intubated)",
+        "label": "Not testable (Intubated)"
+      }
+    ],
+    "isPII": false
+  },
+  {
+    "name": "gcsMotorResponse",
+    "label": "Motor Response",
+    "type": "select",
+    "unknownOption": "Unknown",
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "Obeys Commands",
+        "label": "Obeys Commands"
+      },
+      {
+        "value": "Localizes Pain",
+        "label": "Localizes Pain"
+      },
+      {
+        "value": "Withdrawal from Pain",
+        "label": "Withdrawal from Pain"
+      },
+      {
+        "value": "Flexion to Pain",
+        "label": "Flexion to Pain"
+      },
+      {
+        "value": "Extension to Pain",
+        "label": "Extension to Pain"
+      },
+      {
+        "value": "No Motor Response",
+        "label": "No Motor Response"
+      },
+      {
+        "value": "Not Testable",
+        "label": "Not Testable"
+      }
+    ],
+    "isPII": false
+  },
+  {
+    "name": "pupilsTimeRight",
+    "label": "Pupils Time (Right)",
+    "type": "time-input",
+    "isPII": true
+  },
+  {
+    "name": "pupilsRight",
+    "label": "Pupils - Select One (Right)",
+    "type": "select",
+    "unknownOption": "Unknown",
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "Normal",
+        "label": "Normal"
+      },
+      {
+        "value": "Dilated",
+        "label": "Dilated"
+      },
+      {
+        "value": "Constricted",
+        "label": "Constricted"
+      },
+      {
+        "value": "Sluggish",
+        "label": "Sluggish"
+      },
+      {
+        "value": "No Reaction",
+        "label": "No Reaction"
+      }
+    ],
+    "isPII": false
+  },
+  {
+    "name": "pupilsTimeLeft",
+    "label": "Pupils Time (Left)",
+    "type": "time-input",
+    "isPII": true
+  },
+  {
+    "name": "pupilsLeft",
+    "label": "Pupils - Select One (Left)",
+    "type": "select",
+    "unknownOption": "Unknown",
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "Normal",
+        "label": "Normal"
+      },
+      {
+        "value": "Dilated",
+        "label": "Dilated"
+      },
+      {
+        "value": "Constricted",
+        "label": "Constricted"
+      },
+      {
+        "value": "Sluggish",
+        "label": "Sluggish"
+      },
+      {
+        "value": "No Reaction",
+        "label": "No Reaction"
+      }
+    ],
+    "isPII": false
+  },
+  {
+    "name": "avpuTime",
+    "label": "AVPU Time",
+    "type": "time-input",
+    "isPII": true
+  },
+  {
+    "name": "avpu",
+    "label": "AVPU - Select One",
+    "type": "select",
+    "unknownOption": "Unknown",
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "Alert",
+        "label": "Alert"
+      },
+      {
+        "value": "Voice",
+        "label": "Voice"
+      },
+      {
+        "value": "Pain",
+        "label": "Pain"
+      },
+      {
+        "value": "Unresponsive",
+        "label": "Unresponsive"
+      }
+    ],
+    "isPII": false
+  },
+  {
+    "name": "skinTime",
+    "label": "Skin Time",
+    "type": "time-input",
+    "isPII": true
+  },
+  {
+    "name": "skin",
+    "label": "Skin",
+    "type": "listbox-multiselect",
+    "options": [
+      {
+        "value": "Unremarkable",
+        "label": "Unremarkable"
+      },
+      {
+        "value": "Cool",
+        "label": "Cool"
+      },
+      {
+        "value": "Pale",
+        "label": "Pale"
+      },
+      {
+        "value": "Diaphoretic",
+        "label": "Diaphoretic"
+      },
+      {
+        "value": "Cyanotic",
+        "label": "Cyanotic"
+      },
+      {
+        "value": "Moist",
+        "label": "Moist"
+      },
+      {
+        "value": "Flush",
+        "label": "Flush"
+      },
+      {
+        "value": "Dry",
+        "label": "Dry"
+      },
+      {
+        "value": "Jaundiced",
+        "label": "Jaundiced"
+      }
+    ],
+    "isPII": false
+  },
+  {
+    "name": "locTime",
+    "label": "Level of Consciousness Time",
+    "type": "time-input",
+    "isPII": true
+  },
+  {
+    "name": "levelOfConsciousness",
+    "label": "Level of Consciousness - Select One",
+    "type": "select",
+    "unknownOption": "Unknown",
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "Alert",
+        "label": "Alert"
+      },
+      {
+        "value": "Voice",
+        "label": "Voice"
+      },
+      {
+        "value": "Pain",
+        "label": "Pain"
+      },
+      {
+        "value": "Unresponsive",
+        "label": "Unresponsive"
+      }
+    ],
+    "isPII": false
+  },
+  {
+    "name": "etco2Time",
+    "label": "End Tidal CO2 Time",
+    "type": "time-input",
+    "isPII": true
+  },
+  {
+    "name": "etco2",
+    "label": "ETco2 (mmHg)",
+    "type": "numeric-input",
+    "isPII": true
+  },
+  {
+    "name": "strokeAssessmentTime",
+    "label": "Stroke Assessment Time",
+    "type": "time-input",
+    "isPII": true
+  },
+  {
+    "name": "strokeAssessment",
+    "label": "Stroke Assessment",
+    "type": "listbox-multiselect",
+    "options": [
+      {
+        "value": "Loss of Consciousness",
+        "label": "Loss of Consciousness"
+      },
+      {
+        "value": "Seizure Activity",
+        "label": "Seizure Activity"
+      },
+      {
+        "value": "Pale",
+        "label": "Pale"
+      },
+      {
+        "value": "Arm Drift",
+        "label": "Arm Drift"
+      },
+      {
+        "value": "Leg Weakness",
+        "label": "Leg Weakness"
+      },
+      {
+        "value": "Slurred Speech",
+        "label": "Slurred Speech"
+      },
+      {
+        "value": "Visual Disturbance",
+        "label": "Visual Disturbance"
+      }
+    ],
+    "isPII": false
+  },
+  {
+    "name": "psychologicalPresentation",
+    "label": "Psychological Presentation",
+    "type": "listbox-multiselect",
+    "options": [
+      {
+        "value": "Is Danger To Self Or Others",
+        "label": "Is Danger To Self Or Others"
+      },
+      {
+        "value": "Mental Or Physical Health At Serious Risk Of Deterioration",
+        "label": "Mental Or Physical Health At Serious Risk Of Deterioration"
+      },
+      {
+        "value": "Believes Their Mental Or Physical Health Is At Serious Risk Of Deterioration",
+        "label": "Believes Their Mental Or Physical Health Is At Serious Risk Of Deterioration"
+      },
+      {
+        "value": "Believes They Are A Danger To Self Or Others",
+        "label": "Believes They Are A Danger To Self Or Others"
+      }
+    ],
+    "isPII": false
+  }
+]
