@@ -13,7 +13,7 @@
   "case": {
     "sectionTypes": {
       "callDispatch": {
-        "splitFormAt": 8,
+        "splitFormAt": 16,
         "printOrder": 1,
         "caseHomeOrder": 1,
         "caseHomeLocation": "timeline",
@@ -51,7 +51,7 @@
         }
       },
       "timesCoordination": {
-        "splitFormAt": 10,
+        "splitFormAt": 12,
         "printOrder": 1,
         "caseHomeOrder": 1,
         "caseHomeLocation": "timeline",
@@ -84,15 +84,14 @@
         }
       },
       "patientInformation": {
-        "splitFormAt": 17,
+        "splitFormAt": 18,
         "printOrder": 2,
         "caseHomeOrder": 2,
         "previewFields": [
           "firstName",
           "lastName",
           "sex",
-          "age",
-          "allergies"
+          "age"
         ],
         "layout": {
           "firstName": {
@@ -116,7 +115,7 @@
         }
       },
       "sceneCare": {
-        "splitFormAt": 3,
+        "splitFormAt": 4,
         "printOrder": 3,
         "caseHomeOrder": 3,
         "previewFields": [
@@ -133,7 +132,7 @@
         }
       },
       "vitalSigns": {
-        "splitFormAt": 20,
+        "splitFormAt": 24,
         "printOrder": 4,
         "caseHomeOrder": 4,
         "previewFields": [
