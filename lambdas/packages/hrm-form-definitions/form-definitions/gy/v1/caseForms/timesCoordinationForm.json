@@ -199,5 +199,11 @@
       }
     ],
     "isPII": false
+  }.
+  {
+    "name": "caseTransferred",
+    "type": "input",
+    "label": "If Care Transferred To / Assumed From Another Unit, Specify Unit:",
+    "isPII": true
   }
 ]
