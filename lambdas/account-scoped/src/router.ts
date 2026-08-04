@@ -392,7 +392,7 @@ const ACCOUNTSID_ROUTES: Record<
     handler: sendMessageAndRunJanitorHandler,
   }),
   'voicemail/recordingCompleteCallback': newRoute({
-    requestPipeline: [validateWebhookRequest],
+    requestPipeline: [validateRequestMethod('POST'), validateWebhookRequest],
     handler: recordingCompleteCallback,
   }),
   issueSyncToken: newRoute({
