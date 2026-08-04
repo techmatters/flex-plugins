@@ -305,7 +305,8 @@
   {
     "name": "medicationResponseEffect",
     "label": "Response Effect",
-    "type": "input",
+    "type": "textarea",
+    "rows": 4,
     "isPII": true
   },
   {
