@@ -16,9 +16,7 @@
 
 import crypto from 'crypto';
 import { AccountSID, aseloCustomChannelTypes } from '@tech-matters/twilio-types';
-import {
-  sendConversationMessageToFlex,
-} from '../customChannelToFlex';
+import { sendConversationMessageToFlex } from '../customChannelToFlex';
 import { AccountScopedHandler, HttpRequest } from '../../httpTypes';
 import { newErr, newOk } from '../../Result';
 import { getChannelStudioFlowSid, getLineChannelSecret } from '../configuration';

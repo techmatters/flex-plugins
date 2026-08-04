@@ -17,22 +17,47 @@
 import { getTwilioClient, getWorkspaceSid } from '@tech-matters/twilio-configuration';
 import { AccountScopedHandler, HttpError } from '../httpTypes';
 import { newOk, Result } from '../Result';
-import {channelTypes} from "@tech-matters/twilio-types/src/channelType";
+import { channelTypes } from '@tech-matters/twilio-types/src/channelType';
+import type { CallSid, RecordingSid } from '@tech-matters/twilio-types';
+
+const DEFAULT_MAX_CALLBACK_ATTEMPTS = 3;
 
 export type RecordingCompleteCallbackRequestBody = {
-  callFrom: string;
+  from: string;
+  callSid: CallSid;
+  recordingSid: RecordingSid;
+  maxCallbackAttempts: number;
 };
 
 export const recordingCompleteCallback: AccountScopedHandler = async (
   { body },
   accountSid,
 ): Promise<Result<HttpError, any>> => {
-  console.debug(
-    '[SENSITIVE] recordingCompleteCallback body',
-    JSON.stringify(body, null, 2),
-  );
+  console.debug('recordingCompleteCallback body', JSON.stringify(body, null, 2));
+  const { from, callSid, recordingSid, maxCallbackAttempts } =
+    body as RecordingCompleteCallbackRequestBody;
 
   const twilioClient = await getTwilioClient(accountSid);
+  let receivedTime: Date;
+  try {
+    const recordingInstance = await twilioClient.recordings.get(recordingSid).fetch();
+    receivedTime = recordingInstance.startTime;
+  } catch (recordingError) {
+    try {
+      console.warn(
+        `[${accountSid}] Error finding start time for recordingSid: ${recordingSid}, callSid: ${callSid} to use as received time for voicemail - falling back to call start time`,
+        recordingError,
+      );
+      const callInstance = await twilioClient.calls.get(callSid).fetch();
+      receivedTime = callInstance.startTime;
+    } catch (callError) {
+      console.warn(
+        `[${accountSid}] Error finding fallback start time for callSid: ${callSid} to use as received time for voicemail - falling back to current time`,
+        recordingError,
+      );
+      receivedTime = new Date();
+    }
+  }
 
   const workspaceSid = await getWorkspaceSid(accountSid);
   const voicemailTask = await twilioClient.taskrouter.v1
@@ -41,10 +66,12 @@ export const recordingCompleteCallback: AccountScopedHandler = async (
       timeout: 604800, // 7 days
       attributes: JSON.stringify({
         ...(body.routingAttributes ? JSON.parse(body.routingAttributes) : {}),
-        isVoicemail: true,
-        callSid: body.callSid,
-        from: body.from,
-        name: body.from,
+        receivedTime: receivedTime.toISOString(),
+        callbackAttemptsMade: 0,
+        maxCallbackAttempts: maxCallbackAttempts ?? DEFAULT_MAX_CALLBACK_ATTEMPTS,
+        callSid,
+        from,
+        name: from,
         channelType: channelTypes.VOICEMAIL,
         customChannelType: channelTypes.VOICEMAIL,
         ignoreAgent: '',
