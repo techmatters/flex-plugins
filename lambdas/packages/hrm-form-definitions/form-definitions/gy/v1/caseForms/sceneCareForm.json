@@ -103,7 +103,8 @@
   {
     "name": "chiefComplaint",
     "label": "Chief Complaint (Patient's Words):",
-    "type": "input",
+    "type": "textarea",
+    "rows": 5,
     "isPII": true
   },
   {
