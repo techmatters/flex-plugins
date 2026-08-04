@@ -2,7 +2,8 @@
   {
     "name": "narrative",
     "label": "Enter Narrative Here:",
-    "type": "input",
+    "type": "textarea",
+    "rows": 4,
     "isPII": true
   },
   {
