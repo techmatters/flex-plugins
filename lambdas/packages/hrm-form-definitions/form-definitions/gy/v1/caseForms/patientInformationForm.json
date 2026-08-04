@@ -1,0 +1,98 @@
+[
+  {
+    "name": "firstName",
+    "label": "First Name",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "lastName",
+    "label": "Last Name",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "sex",
+    "label": "Sex",
+    "type": "select",
+    "unknownOption": "Unknown",
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "Male",
+        "label": "Male"
+      },
+      {
+        "value": "Female",
+        "label": "Female"
+      }
+    ],
+    "isPII": false
+  },
+  {
+    "name": "age",
+    "label": "Age",
+    "type": "numeric-input",
+    "isPII": true
+  },
+  {
+    "name": "ageUnit",
+    "label": "Age Unit",
+    "type": "select",
+    "options": [
+      {
+        "value": "Years",
+        "label": "Years"
+      },
+      {
+        "value": "Months",
+        "label": "Months"
+      }
+    ],
+    "isPII": false
+  },
+  {
+    "name": "dateOfBirth",
+    "label": "Date of Birth",
+    "type": "date-input",
+    "isPII": false
+  },
+  {
+    "name": "number",
+    "label": "National Identification Number",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "idType",
+    "label": "Identification Type ",
+    "type": "select",
+    "unknownOption": "Unknown",
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "Driver's License",
+        "label": "Driver's License"
+      },
+      {
+        "value": "Passport",
+        "label": "Passport"
+      },
+      {
+        "value": "Government ID",
+        "label": "Government ID"
+      },
+      {
+        "value": "Other",
+        "label": "Other"
+      }
+    ],
+    "isPII": false
+  }
+]
