@@ -19,6 +19,7 @@ import { AccountScopedHandler, HttpError } from '../httpTypes';
 import { newOk, Result } from '../Result';
 import { channelTypes } from '@tech-matters/twilio-types/src/channelType';
 import type { CallSid, RecordingSid } from '@tech-matters/twilio-types';
+import { newMissingParameterResult } from '../httpErrors';
 
 const DEFAULT_MAX_CALLBACK_ATTEMPTS = 3;
 
@@ -36,6 +37,18 @@ export const recordingCompleteCallback: AccountScopedHandler = async (
   console.debug('recordingCompleteCallback body', JSON.stringify(body, null, 2));
   const { from, callSid, recordingSid, maxCallbackAttempts } =
     body as RecordingCompleteCallbackRequestBody;
+
+  if (!callSid) {
+    return newMissingParameterResult('callSid');
+  }
+  if (!from) {
+    return newMissingParameterResult('from');
+  }
+  if (!recordingSid) {
+    console.warn(
+      `[${accountSid}] Recording SID not set in voicemail recording callback handler for call: ${callSid}, cannot set an accurate received time for the voicemail`,
+    );
+  }
 
   const twilioClient = await getTwilioClient(accountSid);
   let receivedTime: Date;
