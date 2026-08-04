@@ -11,7 +11,8 @@
             "enable_conferencing": true,
             "use_prepopulate_mappings": true,
             "enable_conference_status_event_handler": true,
-            "enable_hang_up_by_hrm_saving": true
+            "enable_hang_up_by_hrm_saving": true,
+            "enable_voice_recordings": true
         },
         "definitionVersion": "gy-v1",
         "external_recordings_enabled": true,
