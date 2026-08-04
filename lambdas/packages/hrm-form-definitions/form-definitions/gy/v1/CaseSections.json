@@ -12,7 +12,7 @@
     "formPath": "caseForms/patientInformationForm.json"
   },
   "sceneCare": {
-    "label": "Scene & Care On Arrival",
+    "label": "Scene, Injury & Care On Arrival",
     "formPath": "caseForms/sceneCareForm.json"
   },
   "vitalSigns": {
