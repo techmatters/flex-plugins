@@ -292,5 +292,87 @@
       }
     ],
     "isPII": false
+  },
+{
+    "name": "medicalHistory",
+    "label": "Medical History",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "surgicalHistory",
+    "label": "Surgical History",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "currentMedicines",
+    "label": "Current Medicines",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "allergies",
+    "label": "Allergies",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "commonConditions",
+    "label": "Common Conditions",
+    "type": "listbox-multiselect",
+    "options": [
+      {
+        "value": "None",
+        "label": "None"
+      },
+      {
+        "value": "Hypertension",
+        "label": "Hypertension"
+      },
+      {
+        "value": "Diabetes",
+        "label": "Diabetes"
+      },
+      {
+        "value": "Cardiac",
+        "label": "Cardiac"
+      },
+      {
+        "value": "COPD",
+        "label": "COPD"
+      },
+      {
+        "value": "Asthma",
+        "label": "Asthma"
+      },
+      {
+        "value": "Stroke",
+        "label": "Stroke"
+      },
+      {
+        "value": "Seizures",
+        "label": "Seizures"
+      },
+      {
+        "value": "Renal",
+        "label": "Renal"
+      },
+      {
+        "value": "Pregnancy",
+        "label": "Pregnancy"
+      },
+      {
+        "value": "Other",
+        "label": "Other"
+      }
+    ],
+    "isPII": false
+  },
+  {
+    "name": "commonConditionsOther",
+    "label": "If Other Common Conditions:",
+    "type": "input",
+    "isPII": true
   }
 ]
