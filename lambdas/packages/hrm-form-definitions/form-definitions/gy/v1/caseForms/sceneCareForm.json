@@ -1,0 +1,259 @@
+[
+  {
+    "name": "careInProgressOnArrival",
+    "label": "Care In Progress On Arrival",
+    "type": "select",
+    "unknownOption": "Unknown",
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "None",
+        "label": "None"
+      },
+      {
+        "value": "Citizen / Bystander",
+        "label": "Citizen / Bystander"
+      },
+      {
+        "value": "First Responder (PD / FD)",
+        "label": "First Responder (PD / FD)"
+      },
+      {
+        "value": "Other EMS",
+        "label": "Other EMS"
+      },
+      {
+        "value": "AED / PAD Used",
+        "label": "AED / PAD Used"
+      },
+      {
+        "value": "CPR in Progress",
+        "label": "CPR in Progress"
+      }
+    ],
+    "isPII": false
+  },
+  {
+    "name": "safetyMechanism",
+    "label": "Safety / Mechanism",
+    "type": "listbox-multiselect",
+    "options": [
+      {
+        "value": "None",
+        "label": "None"
+      },
+      {
+        "value": "Motor Vehicle Accident",
+        "label": "Motor Vehicle Accident"
+      },
+      {
+        "value": "Seatbelt Used",
+        "label": "Seatbelt Used"
+      },
+      {
+        "value": "Airbag Deployed",
+        "label": "Airbag Deployed"
+      },
+      {
+        "value": "Ejection",
+        "label": "Ejection"
+      },
+      {
+        "value": "Fall",
+        "label": "Fall"
+      },
+      {
+        "value": "GSW",
+        "label": "GSW"
+      },
+      {
+        "value": "Stabbing / Knife",
+        "label": "Stabbing / Knife"
+      },
+      {
+        "value": "Machinery",
+        "label": "Machinery"
+      },
+      {
+        "value": "Assault",
+        "label": "Assault"
+      },
+      {
+        "value": "Extrication",
+        "label": "Extrication"
+      }
+    ],
+    "isPII": false
+  },
+  {
+    "name": "fallHeight",
+    "label": "If Fall, Enter Height:",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "extricationMinutes",
+    "label": "If Extrication, Enter Minutes:",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "chiefComplaint",
+    "label": "Chief Complaint (Patient's Words):",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "primaryImpression",
+    "label": "Primary Impression",
+    "type": "listbox-multiselect",
+    "options": [
+      {
+        "value": "Cardiac Arrest",
+        "label": "Cardiac Arrest"
+      },
+      {
+        "value": "Cardiac / Chest Pain",
+        "label": "Cardiac / Chest Pain"
+      },
+      {
+        "value": "Respiratory Arrest",
+        "label": "Respiratory Arrest"
+      },
+      {
+        "value": "Respiratory Distress",
+        "label": "Respiratory Distress"
+      },
+      {
+        "value": "Airway Obstruction",
+        "label": "Airway Obstruction"
+      },
+      {
+        "value": "Stroke / CVA",
+        "label": "Stroke / CVA"
+      },
+      {
+        "value": "Syncope",
+        "label": "Syncope"
+      },
+      {
+        "value": "Seizure",
+        "label": "Seizure"
+      },
+      {
+        "value": "Unconscious / Unresponsive",
+        "label": "Unconscious / Unresponsive"
+      },
+      {
+        "value": "Diabetic (Potential)",
+        "label": "Diabetic (Potential)"
+      },
+      {
+        "value": "Allergic Reaction",
+        "label": "Allergic Reaction"
+      },
+      {
+        "value": "Shock",
+        "label": "Shock"
+      },
+      {
+        "value": "General Illness / Malaise",
+        "label": "General Illness / Malaise"
+      },
+      {
+        "value": "GI Distress",
+        "label": "GI Distress"
+      },
+      {
+        "value": "Substance Abuse",
+        "label": "Substance Abuse"
+      },
+      {
+        "value": "Poisoning",
+        "label": "Poisoning"
+      },
+      {
+        "value": "Behavioral / Psychiatric",
+        "label": "Behavioral / Psychiatric"
+      },
+      {
+        "value": "Head Injury",
+        "label": "Head Injury"
+      },
+      {
+        "value": "Spinal Injury",
+        "label": "Spinal Injury"
+      },
+      {
+        "value": "Major Trauma",
+        "label": "Major Trauma"
+      },
+      {
+        "value": "Trauma - Blunt",
+        "label": "Trauma - Blunt"
+      },
+      {
+        "value": "Trauma - Penetrating",
+        "label": "Trauma - Penetrating"
+      },
+      {
+        "value": "Fracture / Dislocation",
+        "label": "Fracture / Dislocation"
+      },
+      {
+        "value": "Soft Tissue Injury",
+        "label": "Soft Tissue Injury"
+      },
+      {
+        "value": "Amputation",
+        "label": "Amputation"
+      },
+      {
+        "value": "Bleeding / Hemorrhage",
+        "label": "Bleeding / Hemorrhage"
+      },
+      {
+        "value": "Burns",
+        "label": "Burns"
+      },
+      {
+        "value": "Environmental - Heat",
+        "label": "Environmental - Heat"
+      },
+      {
+        "value": "Environmental - Cold",
+        "label": "Environmental - Cold"
+      },
+      {
+        "value": "Hazardous Materials",
+        "label": "Hazardous Materials"
+      },
+      {
+        "value": "OB / GYN",
+        "label": "OB / GYN"
+      },
+      {
+        "value": "Pain",
+        "label": "Pain"
+      },
+      {
+        "value": "Obvious Death",
+        "label": "Obvious Death"
+      },
+      {
+        "value": "Other",
+        "label": "Other"
+      }
+    ],
+    "isPII": false
+  },
+  {
+    "name": "primaryImpressionOther",
+    "label": "If Other Primary Impression:",
+    "type": "input",
+    "isPII": true
+  }
+]
