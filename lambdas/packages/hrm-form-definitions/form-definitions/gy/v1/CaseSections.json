@@ -18,5 +18,13 @@
   "vitalSigns": {
     "label": "Vital Signs",
     "formPath": "caseForms/vitalSignsForm.json"
+  },
+  "treatmentProceduresMedication": {
+    "label": "Treatment, Procedures, and Medication",
+    "formPath": "caseForms/treatmentProceduresMedicationForm.json"
+  },
+  "disposition": {
+    "label": "Disposition & Sign Off",
+    "formPath": "caseForms/dispositionForm.json"
   }
 }
