@@ -84,14 +84,15 @@
         }
       },
       "patientInformation": {
-        "splitFormAt": 15,
+        "splitFormAt": 17,
         "printOrder": 2,
         "caseHomeOrder": 2,
         "previewFields": [
           "firstName",
           "lastName",
           "sex",
-          "age"
+          "age",
+          "allergies"
         ],
         "layout": {
           "firstName": {
@@ -105,18 +106,7 @@
           },
           "age": {
             "includeLabel": true
-          }
-        }
-      },
-      "pastMedicalHistory": {
-        "splitFormAt": 3,
-        "printOrder": 3,
-        "caseHomeOrder": 3,
-        "previewFields": [
-          "medicalHistory",
-          "allergies"
-        ],
-        "layout": {
+          },
           "medicalHistory": {
             "includeLabel": true
           },
@@ -127,8 +117,8 @@
       },
       "sceneCare": {
         "splitFormAt": 3,
-        "printOrder": 4,
-        "caseHomeOrder": 4,
+        "printOrder": 3,
+        "caseHomeOrder": 3,
         "previewFields": [
           "chiefComplaint",
           "primaryImpression"
@@ -144,8 +134,8 @@
       },
       "vitalSigns": {
         "splitFormAt": 20,
-        "printOrder": 5,
-        "caseHomeOrder": 5,
+        "printOrder": 4,
+        "caseHomeOrder": 4,
         "previewFields": [
           "systolic",
           "diastolic",
@@ -214,8 +204,8 @@
       },
       "treatmentProceduresMedication": {
         "splitFormAt": 11,
-        "printOrder": 6,
-        "caseHomeOrder": 6,
+        "printOrder": 5,
+        "caseHomeOrder": 5,
         "previewFields": [
           "airwayBreathing",
           "circulationCardiac",
@@ -242,10 +232,10 @@
           }
         }
       },
-      "dispositionSignOff": {
+      "disposition": {
         "splitFormAt": 25,
-        "printOrder": 7,
-        "caseHomeOrder": 7,
+        "printOrder": 6,
+        "caseHomeOrder": 6,
         "previewFields": [
           "selectDisposition"
         ],
@@ -271,7 +261,7 @@
         }
       },
       "note": {
-        "printOrder": 8,
+        "printOrder": 7,
         "caseHomeLocation": "timeline",
         "printFormat": "list"
       }
