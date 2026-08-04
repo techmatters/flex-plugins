@@ -15,10 +15,11 @@
  */
 
 import { getTwilioClient, getWorkspaceSid } from '@tech-matters/twilio-configuration';
+import type { CallSid, RecordingSid } from '@tech-matters/twilio-types';
+import { channelTypes } from '@tech-matters/twilio-types';
 import { AccountScopedHandler, HttpError } from '../httpTypes';
 import { newOk, Result } from '../Result';
-import { channelTypes } from '@tech-matters/twilio-types/src/channelType';
-import type { CallSid, RecordingSid } from '@tech-matters/twilio-types';
+import { newMissingParameterResult } from '../httpErrors';
 
 const DEFAULT_MAX_CALLBACK_ATTEMPTS = 3;
 
