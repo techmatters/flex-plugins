@@ -33,7 +33,7 @@ locals {
     }
 
     studio_flows = {
-      post_call_survey : {
+      khp_english_post_call_survey : {
         templatefile = "/app/twilio-iac/helplines/ca/templates/studio-flows/khp-english-post-call-survey.tftpl"
         flow_vars = {}
       }
