@@ -58,6 +58,7 @@
             "enable_dual_write": false,
             "enable_emoji_picker": true,
             "enable_external_transcripts": true,
+            "enable_message_file_attachments": true,
             "enable_fullstory_monitoring": true,
             "enable_generalized_search": true,
             "enable_last_case_status_update_info": true,

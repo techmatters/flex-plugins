@@ -359,6 +359,13 @@ export const setupEmojiPicker = () => {
   Flex.MessageInputActions.Content.add(<EmojiPicker key="emoji-picker" />);
 };
 
+/**
+ * Message File Attachments
+ */
+export const removeMessageFileAttachments = () => {
+  Flex.MessageInputActions.Content.remove("attach-file-button");
+};
+
 export const setupWorkerLanguageSelect = () => {
   Flex.MainHeader.Content.add(<Translator key="locale-selector" />, { align: 'end', sortOrder: 0 });
   const LanguageSelectedNotification: React.FC<{ notificationContext?: { localeSelection: string } }> = ({

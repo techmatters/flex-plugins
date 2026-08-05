@@ -26,6 +26,7 @@ export type FeatureFlags = {
   enable_dual_write: boolean; // Enables Saving Contacts on External Backends
   enable_emoji_picker: boolean; // Enables Emoji Picker
   enable_external_transcripts: boolean; // Enables Viewing Transcripts Stored Outside of Twilio
+  enable_message_file_attachments : boolean; // Enables Message File Attachments
   enable_fullstory_monitoring: boolean; // Enables Full Story
   // enable_hang_up_by_hrm_saving - only used in Twilio Lambda
   enable_language_selector: boolean; // Enables the language of the UI to be changed by the user via a dropdown menu
