@@ -17,7 +17,7 @@
 import type { EventFields } from '../taskrouter';
 import { AccountSID, channelTypes, ChannelType } from '@tech-matters/twilio-types';
 import { registerTaskRouterEventHandler } from '../taskrouter/taskrouterEventHandler';
-import { TASK_WRAPUP } from '../taskrouter/eventTypes';
+import { TASK_COMPLETED } from '../taskrouter/eventTypes';
 import { Twilio } from 'twilio';
 import { getWorkspaceSid } from '@tech-matters/twilio-configuration';
 import { retrieveServiceConfigurationAttributes } from '../configuration/aseloConfiguration';
@@ -68,8 +68,9 @@ const findReservationSidWithTaskControl = async (
       .tasks.get(taskSid)
       .reservations.list();
     const activeReservation =
-      reservations.find(r => ['wrapping', 'accepted'].includes(r.reservationStatus)) ??
-      reservations[0];
+      reservations.find(r =>
+        ['wrapping', 'accepted', 'completed'].includes(r.reservationStatus),
+      ) ?? reservations[0];
     return activeReservation?.sid;
   } catch (error) {
     console.error(
@@ -172,4 +173,4 @@ export const handleEvent = async (
   });
 };
 
-registerTaskRouterEventHandler([TASK_WRAPUP], handleEvent);
+registerTaskRouterEventHandler([TASK_COMPLETED], handleEvent);
