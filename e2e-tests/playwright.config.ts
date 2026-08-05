@@ -21,6 +21,8 @@ import { getConfigValue } from './config';
 
 const inLambda = getConfigValue('inLambda') as boolean;
 
+const browserArgs = ['--use-fake-ui-for-media-stream', '--use-fake-device-for-media-stream'];
+
 const playwrightConfig: PlaywrightTestConfig = {
   globalSetup: require.resolve('./global-setup'),
   use: {
@@ -40,6 +42,7 @@ const playwrightConfig: PlaywrightTestConfig = {
              * of chromium/Playwright. We use the `TEST_NAME` environment variable to set
              * a unique target for each test that runs in lambdas to avoid this issue.
              */
+            ...browserArgs,
             '--single-process',
             '--autoplay-policy=user-gesture-required',
             '--disable-background-networking',
@@ -81,11 +84,11 @@ const playwrightConfig: PlaywrightTestConfig = {
             '--disable-gpu',
             '--use-gl=swiftshader',
             '--autoplay-policy=no-user-gesture-required',
-            '--use-fake-ui-for-media-stream',
-            '--use-fake-device-for-media-stream',
           ],
         }
-      : {},
+      : {
+          args: browserArgs,
+        },
   },
   testDir: './tests',
   retries: inLambda ? 0 : 1,

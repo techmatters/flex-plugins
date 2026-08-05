@@ -41,7 +41,10 @@ export type Config = {
 };
 
 const helplineShortCode = process.env.HL?.toLocaleLowerCase() || 'e2e';
+// Account to initiate calls into the helpline under test from, for testing voice & SMS
 const helplineEnv = process.env.HL_ENV?.toLocaleLowerCase() || 'local';
+const clientHelplineShortCode = process.env.CLIENT_HL?.toLocaleLowerCase() || 'as';
+const clientHelplineEnv = process.env.CLIENT_HL_ENV?.toLocaleLowerCase() || 'development';
 const shouldLoadFromSsm = process.env.LOAD_SSM_CONFIG && process.env.LOAD_SSM_CONFIG !== 'false';
 
 // These are environments where we want to avoid tests or steps that update HRM data
@@ -135,6 +138,18 @@ const configOptions: ConfigOptions = {
     ssmPath: () => `/${localOverrideEnv}/twilio/${getConfigValue('twilioAccountSid')}/auth_token`,
   },
 
+  // The twilio account sid and auth token are used to target a flex account
+  clientTwilioAccountSid: {
+    envKey: 'CLIENT_TWILIO_ACCOUNT_SID',
+    ssmPath: `/${clientHelplineEnv}/twilio/${clientHelplineShortCode.toUpperCase()}/account_sid`,
+  },
+  clientTwilioAuthToken: {
+    envKey: 'CLIENT_TWILIO_AUTH_TOKEN',
+    // Order is important here. We use a function so that we can reference the clientTwilioAccountSid config value above.
+    ssmPath: () =>
+      `/${clientHelplineEnv}/twilio/${getConfigValue('clientTwilioAccountSid')}/auth_token`,
+  },
+
   // Turn on debug mode. Possibly unused.
   debug: {
     envKey: 'DEBUG',
@@ -178,6 +193,30 @@ const configOptions: ConfigOptions = {
   aseloWebchatUrl: {
     envKey: 'ASELO_WEBCHAT_URL',
     default: `https://assets-${localOverrideEnv}.tl.techmatters.org/aselo-webchat-react-app/${helplineShortCode}/?e2eTestMode=true`,
+  },
+
+  // This should match the number set up for the Voice studio flow on the helpline under test
+  voicePhoneNumber: {
+    envKey: 'VOICE_PHONE_NUMBER',
+    default: '+12607821891',
+  },
+
+  // This should match the number set up on the clientTwilioAccountSid that can make outgoing calls
+  clientVoicePhoneNumber: {
+    envKey: 'CLIENT_VOICE_PHONE_NUMBER',
+    default: '+12064083885',
+  },
+
+  // This should match the number set up for the SMS studio flow on the helpline under test
+  smsPhoneNumber: {
+    envKey: 'SMS_PHONE_NUMBER',
+    default: () => getConfigValue('voicePhoneNumber'),
+  },
+
+  // This should match the number set up on the clientTwilioAccountSid that can send outgoing SMS messages
+  clientSmsPhoneNumber: {
+    envKey: 'CLIENT_SMS_PHONE_NUMBER',
+    default: () => getConfigValue('clientVoicePhoneNumber'),
   },
 
   // inLambda is used to determine if we are running in a lambda or not and set other config values accordingly
@@ -256,7 +295,7 @@ const setConfigValueFromSsm = async (key: string) => {
       throw err;
     }
 
-    console.log(`Failed to load config value from SSM at ${option.ssmPath}. Using default value`);
+    console.warn(`Failed to load config value from SSM at ${option.ssmPath}. Using default value`);
 
     setConfigValue(key, typeof option.default === 'function' ? option.default() : option.default);
   }

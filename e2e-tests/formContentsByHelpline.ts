@@ -27,7 +27,7 @@ export const formContentsByHelpline = {
       Accessibility: ['Education'],
     },
     caseInformation: {
-      callSummary: 'E2E TEST CALL',
+      callSummary: 'E2E TEST PREPOPULATED FORM',
     },
   },
   ca: {
@@ -51,6 +51,22 @@ export const formContentsByHelpline = {
     },
     caseInformation: {
       contactType: 'Testing',
+    },
+  },
+};
+
+export const formContentsByHelplineForEmptyForm = {
+  ...formContentsByHelpline,
+  e2e: {
+    ...formContentsByHelpline.e2e,
+    childInformation: {
+      ...formContentsByHelpline.e2e.childInformation,
+
+      gender: 'Unknown',
+      age: 'Unknown',
+    },
+    caseInformation: {
+      callSummary: 'E2E TEST EMPTY FORM',
     },
   },
 };
