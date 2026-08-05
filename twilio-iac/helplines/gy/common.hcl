@@ -12,7 +12,7 @@ locals {
     helpline                   = "Guyana 913"
     task_language              = "en-US"
     enable_post_survey         = false
-    enable_external_recordings = false
+    enable_external_recordings = true
     enable_datadog_monitoring  = false
     permission_config          = "gy"
 

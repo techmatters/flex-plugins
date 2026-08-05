@@ -1,0 +1,442 @@
+[
+  {
+    "name": "narrative",
+    "label": "Enter Narrative Here:",
+    "type": "textarea",
+    "rows": 4,
+    "isPII": true
+  },
+  {
+    "name": "apgar1Min",
+    "label": "APGAR Score - 1 min",
+    "type": "numeric-input",
+    "isPII": true
+  },
+  {
+    "name": "apgar5Min",
+    "label": "APGAR Score - 5 min",
+    "type": "numeric-input",
+    "isPII": true
+  },
+  {
+    "name": "apgar10Min",
+    "label": "APGAR Score - 10 min",
+    "type": "numeric-input",
+    "isPII": true
+  },
+  {
+    "name": "obstetricDeliveryTime",
+    "label": "Delivery Time",
+    "type": "time-input",
+    "isPII": true
+  },
+  {
+    "name": "obstetricSex",
+    "label": "Obstetric Notes - Sex",
+    "type": "select",
+    "unknownOption": "Unknown",
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "Male",
+        "label": "Male"
+      },
+      {
+        "value": "Female",
+        "label": "Female"
+      }
+    ],
+    "isPII": false
+  },
+  {
+    "name": "obstetricOutcome",
+    "label": "Alive/Stillborn",
+    "type": "select",
+    "unknownOption": "Unknown",
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "Alive",
+        "label": "Alive"
+      },
+      {
+        "value": "Stillborn",
+        "label": "Stillborn"
+      }
+    ],
+    "isPII": false
+  },
+  {
+    "name": "selectDisposition",
+    "label": "Select Disposition",
+    "type": "select",
+    "unknownOption": "Unknown",
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "Placeholder Disposition 1",
+        "label": "Placeholder Disposition 1"
+      },
+      {
+        "value": "Placeholder Disposition 2",
+        "label": "Placeholder Disposition 2"
+      },
+      {
+        "value": "Placeholder Disposition 3",
+        "label": "Placeholder Disposition 3"
+      }
+    ],
+    "isPII": false
+  },
+  {
+    "name": "inChargeName",
+    "label": "In Charge - Name",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "inChargeEmtNumber",
+    "label": "In Charge - EMT #",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "inChargeCertificationLevel",
+    "label": "In Charge - Certification Level",
+    "type": "select",
+    "unknownOption": "Unknown",
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "EMR",
+        "label": "EMR"
+      },
+      {
+        "value": "EMT",
+        "label": "EMT"
+      },
+      {
+        "value": "AEMT",
+        "label": "AEMT"
+      },
+      {
+        "value": "Paramedic",
+        "label": "Paramedic"
+      }
+    ],
+    "isPII": false
+  },
+  {
+    "name": "inChargeSignaturePresent",
+    "label": "In Charge - Signature Present?",
+    "type": "checkbox",
+    "isPII": false
+  },
+  {
+    "name": "driverName",
+    "label": "Driver - Name",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "driverEmtNumber",
+    "label": "Driver - EMT #",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "driverCertificationLevel",
+    "label": "Driver - Certification Level",
+    "type": "select",
+    "unknownOption": "Unknown",
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "EMR",
+        "label": "EMR"
+      },
+      {
+        "value": "EMT",
+        "label": "EMT"
+      },
+      {
+        "value": "AEMT",
+        "label": "AEMT"
+      },
+      {
+        "value": "Paramedic",
+        "label": "Paramedic"
+      }
+    ],
+    "isPII": false
+  },
+  {
+    "name": "driverSignaturePresent",
+    "label": "Driver - Signature Present?",
+    "type": "checkbox",
+    "isPII": false
+  },
+  {
+    "name": "crewMember1Name",
+    "label": "Crew - Name",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "crewMember1EmtNumber",
+    "label": "Crew - EMT #",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "crewMember1CertificationLevel",
+    "label": "Crew - Certification Level",
+    "type": "select",
+    "unknownOption": "Unknown",
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "EMR",
+        "label": "EMR"
+      },
+      {
+        "value": "EMT",
+        "label": "EMT"
+      },
+      {
+        "value": "AEMT",
+        "label": "AEMT"
+      },
+      {
+        "value": "Paramedic",
+        "label": "Paramedic"
+      }
+    ],
+    "isPII": false
+  },
+  {
+    "name": "crewMember1SignaturePresent",
+    "label": "Crew - Signature Present?",
+    "type": "checkbox",
+    "isPII": false
+  },
+  {
+    "name": "crewMember2Name",
+    "label": "Crew - Name",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "crewMember2EmtNumber",
+    "label": "Crew - EMT #",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "crewMember2CertificationLevel",
+    "label": "Crew - Certification Level",
+    "type": "select",
+    "unknownOption": "Unknown",
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "EMR",
+        "label": "EMR"
+      },
+      {
+        "value": "EMT",
+        "label": "EMT"
+      },
+      {
+        "value": "AEMT",
+        "label": "AEMT"
+      },
+      {
+        "value": "Paramedic",
+        "label": "Paramedic"
+      }
+    ],
+    "isPII": false
+  },
+  {
+    "name": "crewMember2SignaturePresent",
+    "label": "Crew - Signature Present?",
+    "type": "checkbox",
+    "isPII": false
+  },
+  {
+    "name": "certifyingEmtName",
+    "label": "EMT Name",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "certifyingEmtNumber",
+    "label": "EMT #",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "certifyingEmtSignaturePresent",
+    "label": "EMT Signature Present?",
+    "type": "checkbox",
+    "isPII": false
+  },
+  {
+    "name": "certifyingEmtDate",
+    "label": "EMT Certification - Date",
+    "type": "date-input",
+    "isPII": false
+  },
+  {
+    "name": "certifyingEmtTime",
+    "label": "EMT Certification - Time",
+    "type": "time-input",
+    "isPII": true
+  },
+  {
+    "name": "receivingNurseName",
+    "label": "Receiving Nurse / Staff Name",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "receivingNurseTitle",
+    "label": "Title",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "receivingNurseSignaturePresent",
+    "label": "Receiving Nurse - Signature Present?",
+    "type": "checkbox",
+    "isPII": false
+  },
+  {
+    "name": "receivingNurseDate",
+    "label": "Receiving Facility - Date",
+    "type": "date-input",
+    "isPII": false
+  },
+  {
+    "name": "receivingNurseTime",
+    "label": "Receiving Facility - Time",
+    "type": "time-input",
+    "isPII": true
+  },
+  {
+    "name": "amaPatientName",
+    "label": "Patient Name",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "amaPatientSignaturePresent",
+    "label": "Patient Signature Present?",
+    "type": "checkbox",
+    "isPII": false
+  },
+  {
+    "name": "amaWitnessName",
+    "label": "Witness Name",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "amaWitnessSignaturePresent",
+    "label": "Witness Signature Present?",
+    "type": "checkbox",
+    "isPII": false
+  },
+  {
+    "name": "amaEmtWitnessingRefusal",
+    "label": "EMT Witnessing Refusal",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "amaDate",
+    "label": "Patient Refusal - Date",
+    "type": "date-input",
+    "isPII": false
+  },
+  {
+    "name": "amaTime",
+    "label": "Patient Refusal - Time",
+    "type": "time-input",
+    "isPII": true
+  },
+  {
+    "name": "transportDestination",
+    "label": "Transport Destination",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "transportArrivalTime",
+    "label": "Arrival Time",
+    "type": "time-input",
+    "isPII": true
+  },
+  {
+    "name": "odometerStart",
+    "label": "Odometer Start",
+    "type": "numeric-input",
+    "isPII": true
+  },
+  {
+    "name": "odometerEnd",
+    "label": "Odometer End",
+    "type": "numeric-input",
+    "isPII": true
+  },
+  {
+    "name": "mileageTotal",
+    "label": "Total Mileage",
+    "type": "numeric-input",
+    "isPII": true
+  },
+  {
+    "name": "kmOrMiles",
+    "label": "Km or Miles",
+    "type": "select",
+    "options": [
+      {
+        "value": "Miles",
+        "label": "Miles"
+      },
+      {
+        "value": "Kilometers",
+        "label": "Kilometers"
+      }
+    ],
+    "isPII": false
+  },
+  {
+    "name": "receivingStaff",
+    "label": "Receiving Staff",
+    "type": "input",
+    "isPII": true
+  }
+]

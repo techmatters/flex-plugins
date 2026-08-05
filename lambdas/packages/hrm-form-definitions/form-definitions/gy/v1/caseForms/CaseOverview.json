@@ -6,12 +6,6 @@
     "isPII": false
   },
   {
-    "name": "childIsAtRisk",
-    "label": "Child is at risk",
-    "type": "checkbox",
-    "isPII": false
-  },
-  {
     "name": "followUpDate",
     "label": "Follow Up Date",
     "type": "date-input",
@@ -24,45 +18,5 @@
     "rows": 5,
     "width": 300,
     "isPII": true
-  },
-  {
-    "name": "operatingArea",
-    "label": "Operating Area",
-    "type": "select",
-    "options": [
-      {
-        "value": "Unknown",
-        "label": ""
-      },
-      {
-        "value": "East",
-        "label": "East"
-      },
-      {
-        "value": "Harbor",
-        "label": "Harbor"
-      },
-      {
-        "value": "Hollywood",
-        "label": "Hollywood"
-      },
-      {
-        "value": "Metro",
-        "label": "Metro"
-      },
-      {
-        "value": "Pacific",
-        "label": "Pacific"
-      },
-      {
-        "value": "South LA",
-        "label": "South LA"
-      },
-      {
-        "value": "Valley",
-        "label": "Valley"
-      }
-    ],
-    "isPII": false
   }
 ]
