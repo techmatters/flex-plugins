@@ -363,7 +363,7 @@ export const setupEmojiPicker = () => {
  * Message File Attachments
  */
 export const removeMessageFileAttachments = () => {
-  Flex.MessageInputActions.Content.remove("attach-file-button");
+  Flex.MessageInputActions.Content.remove('attach-file-button');
 };
 
 export const setupWorkerLanguageSelect = () => {
