@@ -30,7 +30,7 @@ export const handleCreateScheduleJob: AccountScopedHandler = async (
 
     await createScheduledJob({
       scheduledJob,
-      scheduleName,
+      scheduleName: `${process.env.NODE_ENV}/${scheduleName}`,
       scheduleExpression,
     });
     console.debug(

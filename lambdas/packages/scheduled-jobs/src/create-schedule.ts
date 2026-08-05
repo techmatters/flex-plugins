@@ -41,8 +41,8 @@ export const createScheduledJob = async ({
       FlexibleTimeWindow: { Mode: FlexibleTimeWindowMode.OFF }, // exact-time firing
       ActionAfterCompletion: ActionAfterCompletion.DELETE, // self-cleans after it fires
       Target: {
-        Arn: process.env.JOB_PROCESSOR_LAMBDA_ARN,
-        RoleArn: process.env.SCHEDULER_EXECUTION_ROLE_ARN,
+        Arn: process.env.SCHEDULED_JOBS_PROCESSOR_LAMBDA_ARN,
+        RoleArn: process.env.SCHEDULED_JOBS_EXECUTION_ROLE_ARN,
         DeadLetterConfig: {
           Arn: process.env.DEAD_LETTER_QUEUE_ARN,
         },
