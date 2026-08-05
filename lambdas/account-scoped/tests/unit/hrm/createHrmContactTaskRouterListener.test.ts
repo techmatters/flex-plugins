@@ -23,6 +23,7 @@ import { EventFields } from '../../../src/taskrouter';
 import { getSsmParameter } from '@tech-matters/ssm-cache';
 import { handleEvent } from '../../../src/hrm/createHrmContactTaskRouterListener';
 import { populateHrmContactFormFromTaskByKeys } from '../../../src/hrm/populateHrmContactFormFromTaskByKeys';
+import { patchTaskAttributes } from '../../../src/task/patchTaskAttributes';
 import {
   TEST_ACCOUNT_SID,
   TEST_CONTACT_ID,
@@ -51,6 +52,13 @@ const mockPopulateHrmContactFormFromTask =
   populateHrmContactFormFromTaskByKeys as jest.MockedFunction<
     typeof populateHrmContactFormFromTaskByKeys
   >;
+
+jest.mock('../../../src/task/patchTaskAttributes', () => ({
+  patchTaskAttributes: jest.fn(),
+}));
+const mockPatchTaskAttributes = patchTaskAttributes as jest.MockedFunction<
+  typeof patchTaskAttributes
+>;
 
 const newEventFields = (
   attributes: Record<string, string | boolean | number> = {},
@@ -144,6 +152,7 @@ describe('handleEvent', () => {
         id: TEST_CONTACT_ID,
       }),
     );
+    mockPatchTaskAttributes.mockResolvedValue(newOk(undefined));
   });
 
   test('offline contact task - does nothing', async () => {
@@ -178,6 +187,17 @@ describe('handleEvent', () => {
     setTaskReturnedByFetch(eventFields);
     await handleEvent(eventFields, TEST_ACCOUNT_SID, twilioClient);
     expect(mockFetch).toHaveBeenCalled();
-    expect(mockUpdateTask).toHaveBeenCalled();
+    expect(mockPatchTaskAttributes).toHaveBeenCalledWith(
+      TEST_ACCOUNT_SID,
+      TEST_TASK_SID,
+      expect.any(Function),
+    );
+    const attributesGenerator = mockPatchTaskAttributes.mock.calls[0][2];
+    const originalAttributes = JSON.parse(eventFields.TaskAttributes);
+    const patchedAttributes = attributesGenerator(originalAttributes);
+    expect(patchedAttributes).toMatchObject({
+      ...originalAttributes,
+      contactId: TEST_CONTACT_ID.toString(),
+    });
   });
 });
