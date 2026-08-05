@@ -36,10 +36,7 @@ import { isChatCaptureControlTask } from '../channelCapture/channelCaptureHandle
 import { getWorkspaceSid } from '@tech-matters/twilio-configuration';
 import { ChatChannelSID, ConversationSID } from '@tech-matters/twilio-types';
 import { getCurrentDefinitionVersion } from '../hrm/formDefinitionsCache';
-import {
-  ChannelType,
-  isAseloCustomChannelType,
-} from '@tech-matters/twilio-types';
+import { ChannelType, isAseloCustomChannelType } from '@tech-matters/twilio-types';
 
 const isCleanupBotCapture = (
   eventType: EventType,
