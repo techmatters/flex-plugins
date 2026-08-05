@@ -26,8 +26,12 @@ jest.mock('@tech-matters/twilio-configuration', () => ({
   getWorkspaceSid: jest.fn(),
 }));
 
-const mockGetTwilioClient = getTwilioClient as jest.MockedFunction<typeof getTwilioClient>;
-const mockGetWorkspaceSid = getWorkspaceSid as jest.MockedFunction<typeof getWorkspaceSid>;
+const mockGetTwilioClient = getTwilioClient as jest.MockedFunction<
+  typeof getTwilioClient
+>;
+const mockGetWorkspaceSid = getWorkspaceSid as jest.MockedFunction<
+  typeof getWorkspaceSid
+>;
 
 const TEST_CALL_SID = 'CAtest123';
 const TEST_RECORDING_SID = 'REtest123';
@@ -87,7 +91,10 @@ describe('recordingCompleteCallback', () => {
   });
 
   test('returns missing parameter error when from is absent', async () => {
-    const request = createRequest({ callSid: TEST_CALL_SID, recordingSid: TEST_RECORDING_SID });
+    const request = createRequest({
+      callSid: TEST_CALL_SID,
+      recordingSid: TEST_RECORDING_SID,
+    });
     const result = await recordingCompleteCallback(request, TEST_ACCOUNT_SID);
     expect(isErr(result)).toBe(true);
     if (isErr(result)) {
