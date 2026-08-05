@@ -16,7 +16,7 @@
             "use_twilio_lambda_to_send_messages": true,
             "use_twilio_lambda_media_urls": true,
             "use_twilio_lambda_worker_info": true,
-            "use_twilio_lamda_issue_sync_token": true,
+            "use_twilio_lambda_to_issue_sync_token": true,
             "use_twilio_lambda_for_worker_endpoints": true
         }
     }

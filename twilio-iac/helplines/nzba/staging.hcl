@@ -20,17 +20,6 @@ locals {
     }
 
     channels = {
-      webchat : {
-        channel_type     = "web"
-        contact_identity = ""
-        templatefile     = "/app/twilio-iac/helplines/templates/studio-flows/messaging-blocking-preq-lambda-sd.tftpl"
-        channel_flow_vars = {
-          widget_from                   = "Barnardos"
-          chat_blocked_message          = "Sorry, you're not able to contact Barnardos from this device or account"
-          send_message_webchat_prequeue = "Hi! Thanks for letting us know you’d like to talk. Please hang tight - someone will be with you as soon as they can. Thanks for waiting 💛 If you’re in danger right now, please call emergency services on 111."
-        }
-        chatbot_unique_names = []
-      },
       chat : {
         messaging_mode   = "conversations"
         channel_type     = "chat"
