@@ -176,8 +176,6 @@ export const handleEvent = async (
     return;
   }
 
-  const twilioWorkspaceSid = await getWorkspaceSid(accountSid);
-
   console.debug('Creating HRM contact for task', taskSid, 'Hrm Account:', hrmAccountId);
 
   const isOutboundVoiceTask = direction === 'outbound' && Boolean(conference);
