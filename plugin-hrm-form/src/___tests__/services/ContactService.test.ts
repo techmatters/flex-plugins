@@ -27,12 +27,13 @@ import {
   updateContactInHrm,
 } from '../../services/ContactService';
 import { channelTypes } from '../../states/DomainConstants';
-import { getDefinitionVersions, getHrmConfig } from '../../hrmConfig';
+import { getAseloFeatureFlags, getDefinitionVersions, getHrmConfig } from '../../hrmConfig';
 import { VALID_EMPTY_CONTACT, VALID_EMPTY_METADATA } from '../testContacts';
 import { ContactState } from '../../states/contacts/existingContacts';
 
 const helpline = 'ChildLine';
 const mockGetHrmConfig = getHrmConfig as jest.Mock;
+const mockGetAseloFeatureFlags = getAseloFeatureFlags as jest.Mock;
 
 // eslint-disable-next-line no-empty-function
 global.fetch = global.fetch ? global.fetch : () => Promise.resolve(<any>{ ok: true });
@@ -323,6 +324,36 @@ describe('finalizeContact() (externalRecording)', () => {
         },
       },
     ]);
+  });
+
+  test('should not send conversationMedia when use_twilio_lambda_for_conversation_media is enabled', async () => {
+    mockGetAseloFeatureFlags.mockReturnValue({
+      ...mockBaseConfig.featureFlags,
+      // eslint-disable-next-line camelcase
+      use_twilio_lambda_for_conversation_media: true,
+    });
+    try {
+      const task = {
+        taskSid: 'taskSid',
+        channelType: channelTypes.voice,
+        attributes: {
+          conference: {
+            participants: {
+              worker: {
+                callSid: 'callSid',
+              },
+            },
+          },
+        },
+      };
+
+      const { savedContact } = createContactState({ callType: callTypes.child, childFirstName: 'Jill' });
+      await finalizeContact(task, savedContact);
+
+      expect(mockedFetch.mock.calls.filter(([url]) => url.toString().endsWith('conversationMedia'))).toHaveLength(0);
+    } finally {
+      mockGetAseloFeatureFlags.mockReturnValue(mockBaseConfig.featureFlags);
+    }
   });
 });
 
