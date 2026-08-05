@@ -17,7 +17,7 @@
   {
     "insightsObject": "conversations",
     "attributeName": "language",
-    "questions": ["age"],
+    "questions": ["age"]
   }
   {
     "insightsObject": "conversations",
