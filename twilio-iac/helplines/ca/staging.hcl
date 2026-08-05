@@ -32,6 +32,13 @@ locals {
       cancel_task_function_sid          = "ZHe8a3de19523fa7ce8a41692e744a7f45"
     }
 
+    studio_flows = {
+      khp_english_post_call_survey : {
+        templatefile = "/app/twilio-iac/helplines/ca/templates/studio-flows/khp-english-post-call-survey.tftpl"
+        flow_vars = {}
+      }
+    }
+
     #Channels
     channels = {
       webchat : {
