@@ -25,10 +25,12 @@ manage-ssm-secrets: verify-env ## Manage SSM secrets needed for the environment
   -v $(TF_PLUGIN_CACHE_HOST):$(TF_PLUGIN_CACHE_CONT) \
   $(DEFAULT_ARGS) $(TG_ENV) $(DOCKER_IMAGE):$(TF_VER) $(TF_ROOT_PATH)/scripts/python_tools/manageSecrets.py "$(HL_ENV)/$(HL)"
 
+# Accepts args via shell like
+# > make twilio-resources-import-account-defaults ARGS="--someFlag=value --anotherFlag=value2"
 twilio-resources-import-account-defaults: verify-env
 	docker run -it --rm \
   -v $(TF_PLUGIN_CACHE_HOST):$(TF_PLUGIN_CACHE_CONT) \
-  $(DEFAULT_ARGS) $(TG_ENV) $(DOCKER_IMAGE):$(TF_VER) $(TF_ROOT_PATH)/scripts/deploy-scripts/terragrunt/twilioResourceImportAccountDefaults.sh
+  $(DEFAULT_ARGS) $(TG_ENV) $(DOCKER_IMAGE):$(TF_VER) $(TF_ROOT_PATH)/scripts/deploy-scripts/terragrunt/twilioResourceImportAccountDefaults.sh $(ARGS)
 
 migrate-state: verify-env
 	docker run -it --rm \
