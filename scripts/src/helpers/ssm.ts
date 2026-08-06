@@ -37,7 +37,6 @@ export const setRoleToAssume = (role: string) => {
 };
 
 const getSsmConfig = async (): Promise<Partial<SSMClientConfig>> => {
-  console.log('>>>>>>>>>>> roleToAssume', roleToAssume);
   if (roleToAssume) {
     const sts = new STSClient();
     const timestamp = new Date().getTime();
@@ -49,13 +48,11 @@ const getSsmConfig = async (): Promise<Partial<SSMClientConfig>> => {
 
     if (!stsResponse.Credentials) {
       logDebug('No credentials found');
-      console.log('>>>>>>>>>>> return 1');
       return {
         region: 'us-east-1',
       };
     }
 
-    console.log('>>>>>>>>>>> return 2');
     return {
       credentials: {
         accessKeyId: stsResponse.Credentials.AccessKeyId!,
@@ -66,14 +63,12 @@ const getSsmConfig = async (): Promise<Partial<SSMClientConfig>> => {
     };
   }
 
-  console.log('>>>>>>>>>>> return 3');
   return {
     region: 'us-east-1',
   };
 };
 
 const getSsm = async () => {
-  console.log('>>>>>>>>>>> ssm?', Boolean(ssm));
   if (!ssm) {
     ssm = new SSMClient(await getSsmConfig());
   }
