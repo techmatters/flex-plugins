@@ -1,0 +1,24 @@
+{
+  "timezone": "Pacific/Auckland",
+  "holidays": {},
+  "operatingHours": {
+    "webchat": {
+      "1": [{ "open": 1100, "close": 2230 }],
+      "2": [{ "open": 1100, "close": 2230 }],
+      "3": [{ "open": 1100, "close": 2230 }],
+      "4": [{ "open": 1100, "close": 2230 }],
+      "5": [{ "open": 1100, "close": 2230 }],
+      "6": [{ "open": 1100, "close": 2230 }],
+      "7": [{ "open": 1100, "close": 2230 }]
+    },
+    "voice": {
+      "1": [{ "open": 1100, "close": 2300 }],
+      "2": [{ "open": 1100, "close": 2300 }],
+      "3": [{ "open": 1100, "close": 2300 }],
+      "4": [{ "open": 1100, "close": 2300 }],
+      "5": [{ "open": 1100, "close": 2300 }],
+      "6": [{ "open": 1100, "close": 2300 }],
+      "7": [{ "open": 1100, "close": 2300 }]
+    }
+  }
+}
