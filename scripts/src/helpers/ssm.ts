@@ -41,6 +41,10 @@ const getSsmConfig = async (): Promise<{
   sessionToken?: string;
   region: string;
 }> => {
+  console.log('>>>>>>>>>>> roleToAssume', roleToAssume)
+  console.log('>>>>>>>>>>> roleToAssume', roleToAssume)
+  console.log('>>>>>>>>>>> roleToAssume', roleToAssume)
+  console.log('>>>>>>>>>>> roleToAssume', roleToAssume)
   if (roleToAssume) {
     const sts = new STSClient();
     const timestamp = new Date().getTime();
