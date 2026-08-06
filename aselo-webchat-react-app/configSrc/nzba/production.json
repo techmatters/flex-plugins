@@ -1,0 +1,4 @@
+{
+  "environment": "staging",
+  "aseloBackendUrl": "https://hrm-production.tl.techmatters.org"
+}
