@@ -42,9 +42,6 @@ const getSsmConfig = async (): Promise<{
   region: string;
 }> => {
   console.log('>>>>>>>>>>> roleToAssume', roleToAssume)
-  console.log('>>>>>>>>>>> roleToAssume', roleToAssume)
-  console.log('>>>>>>>>>>> roleToAssume', roleToAssume)
-  console.log('>>>>>>>>>>> roleToAssume', roleToAssume)
   if (roleToAssume) {
     const sts = new STSClient();
     const timestamp = new Date().getTime();
@@ -56,11 +53,13 @@ const getSsmConfig = async (): Promise<{
 
     if (!stsResponse.Credentials) {
       logDebug('No credentials found');
+      console.log('>>>>>>>>>>> return 1')
       return {
         region: 'us-east-1',
       };
     }
 
+      console.log('>>>>>>>>>>> return 2')
     return {
       accessKeyId: stsResponse.Credentials.AccessKeyId,
       secretAccessKey: stsResponse.Credentials.SecretAccessKey,
@@ -69,12 +68,14 @@ const getSsmConfig = async (): Promise<{
     };
   }
 
+      console.log('>>>>>>>>>>> return 3')
   return {
     region: 'us-east-1',
   };
 };
 
 const getSsm = async () => {
+      console.log('>>>>>>>>>>> ssm?', Boolean(ssm))
   if (!ssm) {
     ssm = new SSMClient(await getSsmConfig());
   }
@@ -103,6 +104,7 @@ export const saveSSMParameter = async (
 
 export const getSSMParameter = async (name: string, usePrivilegedAccess = false) => {
   const ssmClient = await (usePrivilegedAccess ? getPrivilegedSsm() : getSsm());
+  console.log('>>>>>>>>>>> ssmClient', ssmClient.config)
   try {
     return await ssmClient.send(new GetParameterCommand({ Name: name, WithDecryption: true }));
   } catch (e) {
