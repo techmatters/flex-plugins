@@ -6,6 +6,7 @@ import {
   SSMClient,
   Tag,
   Parameter,
+  SSMClientConfig,
 } from '@aws-sdk/client-ssm';
 import { AssumeRoleCommand, STSClient } from '@aws-sdk/client-sts';
 import { logDebug, logWarning } from './log';
@@ -35,13 +36,8 @@ export const setRoleToAssume = (role: string) => {
   roleToAssume = role;
 };
 
-const getSsmConfig = async (): Promise<{
-  accessKeyId?: string;
-  secretAccessKey?: string;
-  sessionToken?: string;
-  region: string;
-}> => {
-  console.log('>>>>>>>>>>> roleToAssume', roleToAssume)
+const getSsmConfig = async (): Promise<Partial<SSMClientConfig>> => {
+  console.log('>>>>>>>>>>> roleToAssume', roleToAssume);
   if (roleToAssume) {
     const sts = new STSClient();
     const timestamp = new Date().getTime();
@@ -53,29 +49,31 @@ const getSsmConfig = async (): Promise<{
 
     if (!stsResponse.Credentials) {
       logDebug('No credentials found');
-      console.log('>>>>>>>>>>> return 1')
+      console.log('>>>>>>>>>>> return 1');
       return {
         region: 'us-east-1',
       };
     }
 
-      console.log('>>>>>>>>>>> return 2')
+    console.log('>>>>>>>>>>> return 2');
     return {
-      accessKeyId: stsResponse.Credentials.AccessKeyId,
-      secretAccessKey: stsResponse.Credentials.SecretAccessKey,
-      sessionToken: stsResponse.Credentials.SessionToken,
+      credentials: {
+        accessKeyId: stsResponse.Credentials.AccessKeyId!,
+        secretAccessKey: stsResponse.Credentials.SecretAccessKey!,
+        sessionToken: stsResponse.Credentials.SessionToken,
+      },
       region: 'us-east-1',
     };
   }
 
-      console.log('>>>>>>>>>>> return 3')
+  console.log('>>>>>>>>>>> return 3');
   return {
     region: 'us-east-1',
   };
 };
 
 const getSsm = async () => {
-      console.log('>>>>>>>>>>> ssm?', Boolean(ssm))
+  console.log('>>>>>>>>>>> ssm?', Boolean(ssm));
   if (!ssm) {
     ssm = new SSMClient(await getSsmConfig());
   }
@@ -104,7 +102,6 @@ export const saveSSMParameter = async (
 
 export const getSSMParameter = async (name: string, usePrivilegedAccess = false) => {
   const ssmClient = await (usePrivilegedAccess ? getPrivilegedSsm() : getSsm());
-  console.log('>>>>>>>>>>> ssmClient', ssmClient.config)
   try {
     return await ssmClient.send(new GetParameterCommand({ Name: name, WithDecryption: true }));
   } catch (e) {
