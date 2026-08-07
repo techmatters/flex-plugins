@@ -14,30 +14,95 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
+import { ScheduledJobType } from '@tech-matters/scheduled-jobs/dist/scheduled-job';
 import { AccountScopedHandler, HttpError } from '../httpTypes';
 import { newErr, newOk, Result } from '../Result';
-import { createScheduledJob } from '@tech-matters/scheduled-jobs';
+import { createScheduledJob, isValidVoicemailTask } from '@tech-matters/scheduled-jobs';
+import { addHours } from 'date-fns/addHours';
+
+const supportedJobType: ScheduledJobType['jobType'][] = ['create-voicemail-schedule'];
 
 export const handleCreateScheduleJob: AccountScopedHandler = async (
   request,
   accountSid,
-): Promise<Result<HttpError, undefined>> => {
+): Promise<Result<HttpError, string>> => {
   try {
-    // const authToken = await getAccountAuthToken(accountSid);
-    // const { hrm_api_version: hrmApiVersion } =
-    //   await retrieveServiceConfigurationAttributes(twilio(accountSid, authToken));
-    const { scheduledJob, scheduleName, scheduleExpression } = request.body;
+    const { jobType } = request.body as {
+      jobType: ScheduledJobType['jobType'];
+    };
 
-    await createScheduledJob({
-      scheduledJob,
-      scheduleName: `${process.env.NODE_ENV}/${scheduleName}`,
-      scheduleExpression,
+    if (!supportedJobType.includes(jobType)) {
+      return newErr({
+        message: 'Invalid job type, not supported by user facing handler',
+        error: { statusCode: 400 },
+      });
+    }
+
+    if (jobType === 'create-voicemail-schedule') {
+      const { voicemailTask } = request.body;
+
+      if (!isValidVoicemailTask(voicemailTask)) {
+        return newErr({
+          message: 'Invalid voicemailTask parameter',
+          error: { statusCode: 400 },
+        });
+      }
+
+      const scheduleName = `${process.env.NODE_ENV}/${voicemailTask.attributes.callSid}`;
+      const {
+        timeout,
+        taskChannel,
+        workflowSid,
+        attributes: {
+          callSid,
+          from,
+          name,
+          channelType,
+          ignoreAgent,
+          isVoicemail,
+          customChannelType,
+          routingAttributes,
+          transferTargetType,
+        },
+      } = voicemailTask;
+      const scheduledJob: ScheduledJobType = {
+        jobType,
+        voicemailTask: {
+          attributes: {
+            callSid,
+            from,
+            name,
+            channelType,
+            ignoreAgent,
+            isVoicemail,
+            customChannelType,
+            routingAttributes,
+            transferTargetType,
+          },
+
+          timeout,
+          taskChannel,
+          workflowSid,
+        },
+      };
+      const scheduleExpression = `at(${addHours(Date.now(), 24).toISOString().slice(0, 19)})`; // 24 hours later
+
+      await createScheduledJob({
+        scheduledJob,
+        scheduleName,
+        scheduleExpression,
+      });
+      console.debug(
+        `[${accountSid}] Scheduled job ${scheduleName}  ${scheduledJob.jobType} for account ${accountSid}`,
+      );
+
+      return newOk(scheduleName);
+    }
+
+    return newErr({
+      message: 'Invalid job type',
+      error: { statusCode: 400 },
     });
-    console.debug(
-      `[${accountSid}] Scheduled job ${scheduleName}  ${scheduledJob.jobType} for account ${accountSid}`,
-    );
-
-    return newOk(undefined);
   } catch (error: any) {
     return newErr({ message: error.message, error: { statusCode: 500, cause: error } });
   }

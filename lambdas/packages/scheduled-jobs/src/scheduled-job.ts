@@ -34,5 +34,11 @@ type CreateVoicemailSchedule = {
     taskChannel: 'voicemail';
   };
 };
+export const isValidVoicemailTask = (
+  task: any,
+): task is CreateVoicemailSchedule['voicemailTask'] => {
+  //TODO
+  return true;
+};
 
 export type ScheduledJobType = CreateVoicemailSchedule;

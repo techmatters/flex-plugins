@@ -15,3 +15,4 @@
  */
 
 export * from './create-schedule';
+export * from './scheduled-job';
