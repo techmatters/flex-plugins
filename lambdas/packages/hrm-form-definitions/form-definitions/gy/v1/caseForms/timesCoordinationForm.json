@@ -1,0 +1,209 @@
+[
+  {
+    "name": "callReceivedTimestamp",
+    "type": "time-input",
+    "label": "Call Received Timestamp",
+    "isPII": true
+  },
+  {
+    "name": "dispatchedTimestamp",
+    "type": "time-input",
+    "label": "Dispatched Timestamp",
+    "isPII": true
+  },
+  {
+    "name": "enrouteTimestamp",
+    "type": "time-input",
+    "label": "En Route Timestamp",
+    "isPII": true
+  },
+  {
+    "name": "arrivedTimestamp",
+    "type": "time-input",
+    "label": "Arrived Timestamp",
+    "isPII": true
+  },
+  {
+    "name": "patientContactTimestamp",
+    "type": "time-input",
+    "label": "Patient Contact Timestamp",
+    "isPII": true
+  },
+  {
+    "name": "departedSceneTimestamp",
+    "type": "time-input",
+    "label": "Departed Scene Timestamp",
+    "isPII": true
+  },
+  {
+    "name": "arrivedHospitalTimestamp",
+    "type": "time-input",
+    "label": "Arrived Hospital Timestamp",
+    "isPII": true
+  },
+  {
+    "name": "transferOfCareTimestamp",
+    "type": "time-input",
+    "label": "Transfer of Care Timestamp",
+    "isPII": true
+  },
+  {
+    "name": "departedHospitalTimestamp",
+    "type": "time-input",
+    "label": "Departed Hospital Timestamp",
+    "isPII": true
+  },
+  {
+    "name": "inServiceTimestamp",
+    "type": "time-input",
+    "label": "In Service Timestamp",
+    "isPII": true
+  },
+  {
+    "name": "assistanceRequested",
+    "label": "Assistance Requested",
+    "type": "listbox-multiselect",
+    "options": [
+      {
+        "value": "Police",
+        "label": "Police"
+      },
+      {
+        "value": "Fire",
+        "label": "Fire"
+      },
+      {
+        "value": "Other",
+        "label": "Other"
+      }
+    ],
+    "isPII": false
+  },
+  {
+    "name": "assistanceRequestedOther",
+    "type": "input",
+    "label": "If Other Assistance Requested",
+    "isPII": true
+  },
+ {
+    "name": "hospitalNotification",
+    "label": "Hospital Notification",
+    "type": "listbox-multiselect",
+    "options": [
+      {
+        "value": "None",
+        "label": "None"
+      },
+      {
+        "value": "Medical Channel",
+        "label": "Medical Channel"
+      },
+      {
+        "value": "Ambulance Dispatch",
+        "label": "Ambulance Dispatch"
+      },
+      {
+        "value": "Landline",
+        "label": "Landline"
+      },
+      {
+        "value": "Cell Phone",
+        "label": "Cell Phone"
+      }
+    ],
+    "isPII": false
+  },
+ {
+    "name": "callOutcome",
+    "label": "Call Outcome",
+    "type": "listbox-multiselect",
+    "options": [
+      {
+        "value": "Transported to Hospital",
+        "label": "Transported to Hospital"
+      },
+      {
+        "value": "Treated - No Transport",
+        "label": "Treated - No Transport"
+      },
+      {
+        "value": "Patient Refusal (AMA)",
+        "label": "Patient Refusal (AMA)"
+      },
+      {
+        "value": "Standby Only (No Patient)",
+        "label": "Standby Only (No Patient)"
+      },
+      {
+        "value": "Cancelled",
+        "label": "Cancelled"
+      },
+      {
+        "value": "No Patient Found",
+        "label": "No Patient Found"
+      },
+      {
+        "value": "DOA / Obvious Death",
+        "label": "DOA / Obvious Death"
+      },
+      {
+        "value": "Treated by this Unit & Transferred Care to Another Unit",
+        "label": "Treated by this Unit & Transferred Care to Another Unit"
+      },
+      {
+        "value": "Assumed Primary Care from Another Unit",
+        "label": "Assumed Primary Care from Another Unit"
+      },
+      {
+        "value": "Other",
+        "label": "Other"
+      }
+    ],
+    "isPII": false
+  },
+  {
+    "name": "callOutcomeOther",
+    "type": "input",
+    "label": "If Other Call Outcome:",
+    "isPII": true
+  },
+  {
+    "name": "facilityName",
+    "type": "input",
+    "label": "Receiving Facility Name",
+    "isPII": true
+  },
+  {
+    "name": "facilityReport",
+    "type": "input",
+    "label": "Report Called to (name):",
+    "isPII": true
+  },
+  {
+    "name": "firstEMS",
+    "label": "First EMS Unit On Scene?",
+    "type": "select",
+    "unknownOption": "Unknown",
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "Yes",
+        "label": "Yes"
+      },
+      {
+        "value": "No",
+        "label": "No"
+      }
+    ],
+    "isPII": false
+  },
+  {
+    "name": "caseTransferred",
+    "type": "input",
+    "label": "If Care Transferred To / Assumed From Another Unit, Specify Unit:",
+    "isPII": true
+  }
+]

@@ -120,6 +120,14 @@ variable "task_language" {
   description = "Override the default language by setting this"
 }
 
+variable "studio_flows" {
+  type = map(object({
+    templatefile = string,
+    flow_vars    = map(string)
+  }))
+  description = "Map of enabled studio flow objects with their variables"
+}
+
 variable "channels" {
   type = map(object({
     templatefile         = string,

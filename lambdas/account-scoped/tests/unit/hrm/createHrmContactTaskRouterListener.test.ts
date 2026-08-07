@@ -23,6 +23,8 @@ import { EventFields } from '../../../src/taskrouter';
 import { getSsmParameter } from '@tech-matters/ssm-cache';
 import { handleEvent } from '../../../src/hrm/createHrmContactTaskRouterListener';
 import { populateHrmContactFormFromTaskByKeys } from '../../../src/hrm/populateHrmContactFormFromTaskByKeys';
+import { patchTaskAttributes } from '../../../src/task/patchTaskAttributes';
+import { getExternalRecordingS3Location } from '../../../src/conversation/getExternalRecordingS3Location';
 import {
   TEST_ACCOUNT_SID,
   TEST_CONTACT_ID,
@@ -32,7 +34,7 @@ import {
   TEST_WORKSPACE_SID,
 } from '../../testTwilioValues';
 import { setConfigurationAttributes } from '../mockServiceConfiguration';
-import { newOk } from '../../../src/Result';
+import { newErr, newOk } from '../../../src/Result';
 
 const mockFetch: jest.MockedFunction<typeof fetch> = jest.fn();
 global.fetch = mockFetch;
@@ -50,6 +52,21 @@ jest.mock('../../../src/hrm/populateHrmContactFormFromTaskByKeys', () => ({
 const mockPopulateHrmContactFormFromTask =
   populateHrmContactFormFromTaskByKeys as jest.MockedFunction<
     typeof populateHrmContactFormFromTaskByKeys
+  >;
+
+jest.mock('../../../src/task/patchTaskAttributes', () => ({
+  patchTaskAttributes: jest.fn(),
+}));
+const mockPatchTaskAttributes = patchTaskAttributes as jest.MockedFunction<
+  typeof patchTaskAttributes
+>;
+
+jest.mock('../../../src/conversation/getExternalRecordingS3Location', () => ({
+  getExternalRecordingS3Location: jest.fn(),
+}));
+const mockGetExternalRecordingS3Location =
+  getExternalRecordingS3Location as jest.MockedFunction<
+    typeof getExternalRecordingS3Location
   >;
 
 const newEventFields = (
@@ -144,6 +161,10 @@ describe('handleEvent', () => {
         id: TEST_CONTACT_ID,
       }),
     );
+    mockPatchTaskAttributes.mockResolvedValue(newOk(undefined));
+    mockGetExternalRecordingS3Location.mockResolvedValue(
+      newOk({ recordingSid: 'REtest', key: 'voice-recordings/ACut/REtest', bucket: 'test-bucket' }),
+    );
   });
 
   test('offline contact task - does nothing', async () => {
@@ -178,6 +199,75 @@ describe('handleEvent', () => {
     setTaskReturnedByFetch(eventFields);
     await handleEvent(eventFields, TEST_ACCOUNT_SID, twilioClient);
     expect(mockFetch).toHaveBeenCalled();
-    expect(mockUpdateTask).toHaveBeenCalled();
+    expect(mockPatchTaskAttributes).toHaveBeenCalledWith(
+      TEST_ACCOUNT_SID,
+      TEST_TASK_SID,
+      expect.any(Function),
+    );
+    const attributesGenerator = mockPatchTaskAttributes.mock.calls[0][2];
+    const originalAttributes = JSON.parse(eventFields.TaskAttributes);
+    const patchedAttributes = attributesGenerator(originalAttributes);
+    expect(patchedAttributes).toMatchObject({
+      ...originalAttributes,
+      contactId: TEST_CONTACT_ID.toString(),
+    });
+  });
+
+  test('voicemail task - creates contact and posts conversationMedia with S3 recording location', async () => {
+    const eventFields: EventFields = {
+      ...newEventFields({ channelType: 'voicemail', customChannelType: 'voicemail', callSid: 'CAtest456' }),
+    } as EventFields;
+    setTaskReturnedByFetch(eventFields);
+
+    await handleEvent(eventFields, TEST_ACCOUNT_SID, twilioClient);
+
+    expect(mockGetExternalRecordingS3Location).toHaveBeenCalledWith({
+      accountSid: TEST_ACCOUNT_SID,
+      callSid: 'CAtest456',
+    });
+
+    // Should have called fetch twice: once for the contact creation, once for conversationMedia
+    expect(mockFetch).toHaveBeenCalledTimes(2);
+    const conversationMediaCall = mockFetch.mock.calls[1];
+    const conversationMediaBody = JSON.parse((conversationMediaCall[1] as RequestInit).body as string);
+    expect(conversationMediaBody).toEqual([
+      {
+        storeType: 'S3',
+        storeTypeSpecificData: {
+          type: 'recording',
+          location: {
+            bucket: 'test-bucket',
+            key: 'voice-recordings/ACut/REtest',
+          },
+        },
+      },
+    ]);
+  });
+
+  test('voicemail task - does not post conversationMedia when recording lookup fails', async () => {
+    mockGetExternalRecordingS3Location.mockResolvedValue(
+      newErr({ message: 'No recording found', error: { statusCode: 404 } }),
+    );
+
+    const eventFields: EventFields = {
+      ...newEventFields({ channelType: 'voicemail', customChannelType: 'voicemail', callSid: 'CAtest456' }),
+    } as EventFields;
+    setTaskReturnedByFetch(eventFields);
+
+    await handleEvent(eventFields, TEST_ACCOUNT_SID, twilioClient);
+
+    expect(mockGetExternalRecordingS3Location).toHaveBeenCalled();
+    // Only 1 fetch call for contact creation, no conversationMedia call
+    expect(mockFetch).toHaveBeenCalledTimes(1);
+  });
+
+  test('non-voicemail task - does not look up recording or post conversationMedia', async () => {
+    const eventFields = newEventFields({ channelType: 'voice', customChannelType: 'voice' });
+    setTaskReturnedByFetch(eventFields);
+
+    await handleEvent(eventFields, TEST_ACCOUNT_SID, twilioClient);
+
+    expect(mockGetExternalRecordingS3Location).not.toHaveBeenCalled();
+    expect(mockFetch).toHaveBeenCalledTimes(1);
   });
 });

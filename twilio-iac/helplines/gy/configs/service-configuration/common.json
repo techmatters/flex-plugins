@@ -1,22 +1,21 @@
 {
     "attributes": {
         "contacts_waiting_channels": [
-            "voice",
-            "web"
+            "voice"
         ],
-        "enableExternalRecordings": false,
+        "enableExternalRecordings": true,
         "enableConferencing": true,
-        "hideAddToNewCaseButton": true,
         "feature_flags": {
             "enable_voice_recordings": true,
             "enable_client_profiles":true,
             "enable_conferencing": true,
             "use_prepopulate_mappings": true,
             "enable_conference_status_event_handler": true,
-            "enable_hang_up_by_hrm_saving": true
+            "enable_hang_up_by_hrm_saving": true,
+            "enable_voice_recordings": true
         },
         "definitionVersion": "gy-v1",
-        "external_recordings_enabled": false,
+        "external_recordings_enabled": true,
         "helplineLanguage": "en-US",
         "permissionConfig": "gy"
     }

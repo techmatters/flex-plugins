@@ -135,6 +135,7 @@ const readConfig = () => {
     strings,
     llm: {
       assistantBaseUrl: llmAssistantBaseUrl,
+      helplineCode,
     },
     hrm: {
       accountSid,

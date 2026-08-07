@@ -49,6 +49,17 @@ locals {
     //Serverless -- to allow enabling the operating hours check on this staging account.
     ui_editable = true
     
+    studio_flows = {
+      post_call_survey : {
+        templatefile = "/app/twilio-iac/helplines/usnm/templates/studio-flows/post-call-survey.tftpl"
+        flow_vars = {
+          conversation_service_sid = "IS2c1c97d06ab84ab9b89e4a5d021884c1"
+          outbound_phone_number    = "+15712007241"
+        }
+      }
+
+    }
+    
     #Channels
     channels = {
       voice : {

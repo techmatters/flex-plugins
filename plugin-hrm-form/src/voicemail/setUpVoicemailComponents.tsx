@@ -14,12 +14,20 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-export enum AseloCustomChannel {
-  Instagram = 'instagram',
-  Line = 'line',
-  Modica = 'modica',
-  Telegram = 'telegram',
-}
+import * as Flex from '@twilio/flex-ui';
+import React from 'react';
 
-export const isAseloCustomChannel = (channelType?: string): boolean =>
-  Object.values(AseloCustomChannel).includes(channelType as AseloCustomChannel);
+import { channelTypes } from '../states/DomainConstants';
+import VoicemailTaskPanel from './VoicemailTaskPanel';
+
+export const setUpVoicemailComponents = () => {
+  // TODO: localize
+  // Flex.TaskCanvasTabs.Content.add(<Flex.Tab key="voicemail-info-tab" label="Voicemail" />, {
+  //   sortOrder: -1,
+  //   if: props => props.task.channelType === channelTypes.voicemail,
+  // });
+
+  Flex.TaskInfoPanel.Content.add(<VoicemailTaskPanel key="voicemail-task-panel" />, {
+    if: props => props.task.channelType === channelTypes.voicemail,
+  });
+};

@@ -13,7 +13,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Template } from '@twilio/flex-ui';
 import CircularProgress from '@material-ui/core/CircularProgress';
 
@@ -24,13 +24,19 @@ import { fetchHrmApi, generateSignedURLPath } from '../../../services/fetchHrmAp
 type OwnProps = {
   contactId: string;
   externalStoredRecording?: S3StoredRecording;
-  loadConversationIntoOverlay: () => Promise<void>;
+  loadConversationIntoOverlay?: () => Promise<void>;
+  autoLoad?: boolean;
 };
 
-const RecordingSection: React.FC<OwnProps> = ({ contactId, externalStoredRecording, loadConversationIntoOverlay }) => {
+const RecordingSection: React.FC<OwnProps> = ({
+  contactId,
+  externalStoredRecording,
+  loadConversationIntoOverlay,
+  autoLoad = false,
+}) => {
   const [voiceRecording, setVoiceRecording] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const [showButton, setShowButton] = useState(true);
+  const [loading, setLoading] = useState(autoLoad || false);
+  const [showButton, setShowButton] = useState(!autoLoad);
   const [errorMessage, setErrorMessage] = useState(null);
 
   const fetchAndLoadRecording = async () => {
@@ -71,6 +77,13 @@ const RecordingSection: React.FC<OwnProps> = ({ contactId, externalStoredRecordi
     setErrorMessage(errorMessage);
     setLoading(false);
   };
+
+  useEffect(() => {
+    if (autoLoad) {
+      fetchAndLoadRecording();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   if (errorMessage) {
     return (
