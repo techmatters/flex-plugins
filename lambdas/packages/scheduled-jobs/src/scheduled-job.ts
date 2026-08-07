@@ -14,12 +14,31 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-export enum AseloCustomChannel {
-  Instagram = 'instagram',
-  Line = 'line',
-  Modica = 'modica',
-  Telegram = 'telegram',
-}
+type CreateVoicemailSchedule = {
+  jobType: 'create-voicemail-schedule';
+  voicemailTask: {
+    timeout: number;
+    attributes: {
+      routingAttributes: any;
+      isVoicemail: true;
+      callSid: string;
+      from: string;
+      name: string;
+      channelType: 'voicemail';
+      customChannelType: 'voicemail';
+      ignoreAgent: '';
+      transferTargetType: '';
+    };
+    workflowSid: string;
+    // TODO: factor out channel types into an enum
+    taskChannel: 'voicemail';
+  };
+};
+export const isValidVoicemailTask = (
+  task: any,
+): task is CreateVoicemailSchedule['voicemailTask'] => {
+  //TODO
+  return true;
+};
 
-export const isAseloCustomChannel = (channelType?: string): boolean =>
-  Object.values(AseloCustomChannel).includes(channelType as AseloCustomChannel);
+export type ScheduledJobType = CreateVoicemailSchedule;

@@ -84,6 +84,8 @@ import { triggerPostStudioFlowHandler } from './studioFlow/postStudioFlowTaskRou
 import { randomOptionSelectorHandler } from './randomOptionSelector';
 import { isSkilledWorkerAvailableHandler } from './worker/isSkilledWorkerAvailable';
 import { filterCountryOrVoIPHandler } from './voice/filterCountryOrVoIP';
+import { handleCreateScheduleJob } from './scheduled-jobs/create-schedule';
+import { recordingCompleteCallback } from './voicemail/recordingCompleteCallback';
 
 /**
  * Super simple router sufficient for directly ported Twilio Serverless functions
@@ -390,6 +392,10 @@ const ACCOUNTSID_ROUTES: Record<
     requestPipeline: [validateRequestMethod('POST'), validateWebhookRequest],
     handler: sendMessageAndRunJanitorHandler,
   }),
+  'voicemail/recordingCompleteCallback': newRoute({
+    requestPipeline: [validateRequestMethod('POST'), validateWebhookRequest],
+    handler: recordingCompleteCallback,
+  }),
   issueSyncToken: newRoute({
     requestPipeline: [
       validateRequestMethod('POST'),
@@ -408,6 +414,13 @@ const ACCOUNTSID_ROUTES: Record<
   'voice/filterCountryOrVoIP': newRoute({
     requestPipeline: [validateRequestMethod('POST'), validateWebhookRequest],
     handler: filterCountryOrVoIPHandler,
+  }),
+  'scheduled-jobs/create': newRoute({
+    requestPipeline: [
+      validateRequestMethod('POST'),
+      validateFlexTokenRequest({ tokenMode: 'agent' }),
+    ],
+    handler: handleCreateScheduleJob,
   }),
 };
 
