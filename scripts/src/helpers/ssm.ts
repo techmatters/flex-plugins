@@ -6,6 +6,7 @@ import {
   SSMClient,
   Tag,
   Parameter,
+  SSMClientConfig,
 } from '@aws-sdk/client-ssm';
 import { AssumeRoleCommand, STSClient } from '@aws-sdk/client-sts';
 import { logDebug, logWarning } from './log';
@@ -35,12 +36,7 @@ export const setRoleToAssume = (role: string) => {
   roleToAssume = role;
 };
 
-const getSsmConfig = async (): Promise<{
-  accessKeyId?: string;
-  secretAccessKey?: string;
-  sessionToken?: string;
-  region: string;
-}> => {
+const getSsmConfig = async (): Promise<Partial<SSMClientConfig>> => {
   if (roleToAssume) {
     const sts = new STSClient();
     const timestamp = new Date().getTime();
@@ -58,9 +54,11 @@ const getSsmConfig = async (): Promise<{
     }
 
     return {
-      accessKeyId: stsResponse.Credentials.AccessKeyId,
-      secretAccessKey: stsResponse.Credentials.SecretAccessKey,
-      sessionToken: stsResponse.Credentials.SessionToken,
+      credentials: {
+        accessKeyId: stsResponse.Credentials.AccessKeyId!,
+        secretAccessKey: stsResponse.Credentials.SecretAccessKey!,
+        sessionToken: stsResponse.Credentials.SessionToken,
+      },
       region: 'us-east-1',
     };
   }

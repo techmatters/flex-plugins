@@ -31,7 +31,7 @@ type Props = TaskContextProps;
 const ConferenceMonitor: React.FC<Props> = ({ conference, task }) => {
   const isAgentOnConferenceWithOngoingCallPostStudioFlow = (participant: ConferenceParticipant) => {
     return (
-      getVoicePostStudioFlowSettings(task.queueSid as TaskQueueSID).flowTrigger === 'inProgressCall' &&
+      getVoicePostStudioFlowSettings(task.queueSid as TaskQueueSID)?.flowTrigger === 'inProgressCall' &&
       ['agent', 'worker', 'supervisor'].includes(participant.participantType)
     );
   };
