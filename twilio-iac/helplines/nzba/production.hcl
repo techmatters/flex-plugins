@@ -24,11 +24,11 @@ locals {
         messaging_mode   = "conversations"
         channel_type     = "chat"
         contact_identity = ""
-        templatefile     = "/app/twilio-iac/helplines/templates/studio-flows/messaging-blocking-preq-conv-lambda-sd.tftpl"
+        templatefile     = "/app/twilio-iac/helplines/templates/studio-flows/messaging-no-chatbot-operating-hours-blocking-lambda-conv-sd.tftpl"
         channel_flow_vars = {
           widget_from                   = "Barnardos"
           chat_blocked_message          = "Sorry, you're not able to contact Barnardos from this device or account"
-          send_message_webchat_prequeue = "Hello. Please hold on for a while and we will attend to you as soon as we can. Thank you for your patience!. If you are in immediate danger, please call the Police at 911. \n\nWhat you share with us is private, and we’ll keep it confidential. Sometimes, if we’re really worried about your safety or someone else’s, we may need to get extra help to keep people safe.\nIf you want to learn more about how we keep your information safe and how it’s used, you can visit our website at www.whatsup.co.nz"
+          send_message_webchat_prequeue = "Kia Ora! We are so pleased you have reached out to talk!  We'll get you connected with one of our counsellors!\nWhile you are waiting for a counsellor, no one can see or read the messages you type. Your conversation will only be visible once a counsellor joins the chat.\n\nWe aim to connect you as quickly as possible but if this is an emergency or you/someone else is in immediate danger, please end this chat and dial 111 immediately.\n\nWhat you share with us is private, and we’ll keep it confidential. Sometimes, if we’re really worried about your safety or someone else’s, we may need to get extra help to keep people safe.  If you want to learn more about how we keep your information safe and how it’s used, you can\nvisit our website at www.whatsup.co.nz"
         }
         chatbot_unique_names = []
       }
