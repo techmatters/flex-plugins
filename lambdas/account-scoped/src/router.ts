@@ -84,6 +84,7 @@ import { triggerPostStudioFlowHandler } from './studioFlow/postStudioFlowTaskRou
 import { randomOptionSelectorHandler } from './randomOptionSelector';
 import { isSkilledWorkerAvailableHandler } from './worker/isSkilledWorkerAvailable';
 import { filterCountryOrVoIPHandler } from './voice/filterCountryOrVoIP';
+import { getTwilioPrivateConfigurationHandler } from './configuration/getTwilioPrivateConfiguration';
 
 /**
  * Super simple router sufficient for directly ported Twilio Serverless functions
@@ -408,6 +409,10 @@ const ACCOUNTSID_ROUTES: Record<
   'voice/filterCountryOrVoIP': newRoute({
     requestPipeline: [validateRequestMethod('POST'), validateWebhookRequest],
     handler: filterCountryOrVoIPHandler,
+  }),
+  'configuration/twilioPrivate': newRoute({
+    requestPipeline: [validateRequestMethod('GET'), validateWebhookRequest],
+    handler: getTwilioPrivateConfigurationHandler,
   }),
 };
 
