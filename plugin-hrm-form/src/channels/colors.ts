@@ -43,6 +43,7 @@ const whatsappColor = mainChannelColor(DefaultTaskChannels.ChatWhatsApp);
 const telegramColor = '#1DA1F2';
 const instagramColor = '#833AB4';
 const lineColor = '#00C300';
+const voicemailColor = voiceColor;
 
 export const colors: ChannelColors = {
   voice: voiceColor,
@@ -53,4 +54,5 @@ export const colors: ChannelColors = {
   telegram: telegramColor,
   instagram: instagramColor,
   line: lineColor,
+  voicemail: voicemailColor,
 };

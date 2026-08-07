@@ -34,6 +34,7 @@ import { HrmContact } from '@tech-matters/hrm-types';
 import { populateHrmContactFormFromTaskByMappings } from './populateHrmContactFormFromTaskByMappings';
 import { parseISO } from 'date-fns/parseISO';
 import { HttpClientError } from '../httpErrors';
+import { getExternalRecordingS3Location } from '../conversation/getExternalRecordingS3Location';
 
 // Temporarily copied to this repo, will share the flex types when we move them into the same repo
 
@@ -215,7 +216,9 @@ export const handleEvent = async (
     timeOfContact: timeOfContactDate.toISOString(),
     number: identifier,
   };
+
   console.debug('Creating HRM contact with timeOfContact:', newContact.timeOfContact);
+
   const prepopulate = usePrepopulateMappings
     ? populateHrmContactFormFromTaskByMappings
     : populateHrmContactFormFromTaskByKeys;
@@ -244,6 +247,44 @@ export const handleEvent = async (
   const { id, timeOfContact: savedTimeOfContactString } = responseResult.data;
   const savedTimeOfContactDate = parseISO(savedTimeOfContactString);
   console.info(`Created HRM contact with id ${id} for task ${taskSid}`);
+
+  if (channel === ('voicemail' as any)) {
+    console.info(
+      `Channel type is ${channel}, adding conversation media with call sid ${taskAttributes.callSid}`,
+    );
+    const recordingResult = await getExternalRecordingS3Location({
+      accountSid,
+      callSid: taskAttributes.callSid,
+    });
+
+    if (isOk(recordingResult)) {
+      const conversationMedia = [
+        {
+          storeType: 'S3',
+          storeTypeSpecificData: {
+            type: 'recording',
+            location: {
+              bucket: recordingResult.data.bucket,
+              key: recordingResult.data.key,
+            },
+          },
+        },
+      ];
+
+      const conversationMediaResult = await postToInternalHrmEndpoint<
+        HrmContact['conversationMedia'],
+        HrmContact
+      >(
+        hrmAccountId,
+        hrmApiVersion,
+        `contacts/${id}/conversationMedia`,
+        conversationMedia,
+      );
+      console.debug(
+        `[SENSITIVE] Conversation media result ${conversationMediaResult.status} ${isOk(conversationMediaResult) ? JSON.stringify(conversationMediaResult.data) : JSON.stringify(conversationMediaResult.error)}`,
+      );
+    }
+  }
 
   const taskContext = client.taskrouter.v1.workspaces
     .get(twilioWorkspaceSid)
