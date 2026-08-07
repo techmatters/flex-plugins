@@ -11,7 +11,7 @@ locals {
     helpline_region = "eu-west-1"
 
     lex_v2_bot_languages = {
-      en_NZBA : ["pre_survey", "post_survey"]
+      en_NZBA : ["post_survey"]
     }
 
     workflows = {

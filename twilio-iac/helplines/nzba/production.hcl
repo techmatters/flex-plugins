@@ -14,7 +14,7 @@ locals {
     flow_vars = {
       bot_language                      = "en_NZBA"
       widget_from                       = "Barnardos"
-      chat_blocked_message              = "Sorry, you're not able to contact Barnardos from this device or account right now"
+      chat_blocked_message              = "Sorry, you're not able to contact Barnardos from this device or account"
       error_message                     = "Something went wrong and your message didn’t send. Please try sending it again."
       send_message_janitor_function_sid = "ZH17d7db67fa6ab6c2a8d8df2bef8fc55e"
     }
@@ -24,11 +24,11 @@ locals {
         messaging_mode   = "conversations"
         channel_type     = "chat"
         contact_identity = ""
-        templatefile     = "/app/twilio-iac/helplines/templates/studio-flows/messaging-no-chatbot-operating-hours-blocking-lambda-conv-sd.tftpl"
+        templatefile     = "/app/twilio-iac/helplines/nzba/templates/studio-flows/messaging-no-chatbot-operating-hours-blocking-lambda-conv-sd.tftpl"
         channel_flow_vars = {
           widget_from                   = "Barnardos"
-          chat_blocked_message          = "Sorry, you're not able to contact Barnardos from this device or account right now"
-          send_message_webchat_prequeue = "Kia Ora! We are so pleased you have reached out to talk!  We'll get you connected with one of our counsellors! While you are waiting for a counsellor, no one can see or read the messages you type. Your conversation will only be visible once a counsellor joins the chat. \n\nWe aim to connect you as quickly as possible but if this is an emergency or you/someone else is in immediate danger, please end this chat and dial 111 immediately. \n\nWhat you share with us is private, and we’ll keep it confidential. Sometimes, if we’re really worried about your safety or someone else’s, we may need to get extra help to keep people safe.  If you want to learn more about how we keep your information safe and how it’s used, you can visit our website at www.whatsup.co.nz"
+          chat_blocked_message          = "Sorry, you're not able to contact Barnardos from this device or account"
+          send_message_webchat_prequeue = "Kia Ora! We are so pleased you have reached out to talk!  We'll get you connected with one of our counsellors!\nWhile you are waiting for a counsellor, no one can see or read the messages you type. Your conversation will only be visible once a counsellor joins the chat.\n\nWe aim to connect you as quickly as possible but if this is an emergency or you/someone else is in immediate danger, please end this chat and dial 111 immediately.\n\nWhat you share with us is private, and we’ll keep it confidential. Sometimes, if we’re really worried about your safety or someone else’s, we may need to get extra help to keep people safe.  If you want to learn more about how we keep your information safe and how it’s used, you can\nvisit our website at www.whatsup.co.nz"
         }
         chatbot_unique_names = []
       }
@@ -39,7 +39,7 @@ locals {
         channel_flow_vars = {
           play_message_voice_prequeue = "Hello. Please hold on for a while and we will attend to you as soon as we can. Thank you for your patience!."
           play_message_voice_blocked  = "Sorry, you're not able to contact Barnardos from this number"
-          voice_ivr_language          = "en-US"
+          voice_ivr_language         = "en-US"
         }
         chatbot_unique_names = []
       },
