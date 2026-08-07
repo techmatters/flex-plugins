@@ -24,7 +24,7 @@ locals {
         messaging_mode   = "conversations"
         channel_type     = "chat"
         contact_identity = ""
-        templatefile     = "/app/twilio-iac/helplines/templates/studio-flows/messaging-no-chatbot-operating-hours-blocking-lambda-conv-sd.tftpl"
+        templatefile     = "/app/twilio-iac/helplines/nzba/templates/studio-flows/messaging-no-chatbot-operating-hours-blocking-lambda-conv-sd.tftpl"
         channel_flow_vars = {
           widget_from                   = "Barnardos"
           chat_blocked_message          = "Sorry, you're not able to contact Barnardos from this device or account"
