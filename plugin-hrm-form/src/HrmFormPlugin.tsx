@@ -85,7 +85,7 @@ const setUpLocalization = (config: ReturnType<typeof getHrmConfig>) => {
 };
 
 const setUpComponents = (featureFlags: FeatureFlags, setupObject: ReturnType<typeof getHrmConfig>) => {
-  const { enableClientProfiles, enableConferencing, enableMessageFileAttachments } = getHrmConfig();
+  const { enableClientProfiles, enableConferencing, preventSendingAttachmentsFromFlex } = getHrmConfig();
   // setUp (add) dynamic components
   Components.setUpQueuesStatusWriter(setupObject);
   Components.setUpQueuesStatus(setupObject);
@@ -117,7 +117,7 @@ const setUpComponents = (featureFlags: FeatureFlags, setupObject: ReturnType<typ
   setUpReferrableResources();
 
   if (featureFlags.enable_emoji_picker) Components.setupEmojiPicker();
-  if (!enableMessageFileAttachments) Components.removeMessageFileAttachments();
+  if (preventSendingAttachmentsFromFlex) Components.disableFlexMessageAttachments ();
   if (featureFlags.enable_canned_responses) Components.setupCannedResponses();
 
   TeamsView.setUpSelectAgentColumn();

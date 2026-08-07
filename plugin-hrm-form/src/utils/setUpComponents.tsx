@@ -362,7 +362,7 @@ export const setupEmojiPicker = () => {
 /**
  * Message File Attachments
  */
-export const removeMessageFileAttachments = () => {
+export const disableFlexMessageAttachments  = () => {
   Flex.MessageInputActions.Content.remove('attach-file-button');
 };
 
