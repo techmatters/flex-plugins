@@ -233,7 +233,7 @@ ${
         "type": "set-variables",
         "transitions": [
           {
-            "next": "f_operatingHours",
+            "next": "send_message_webchat_prequeue",
             "event": "next"
           }
         ],
@@ -256,7 +256,7 @@ ${
         "type": "set-variables",
         "transitions": [
           {
-            "next": "f_operatingHours",
+            "next": "send_message_webchat_prequeue",
             "event": "next"
           }
         ],
@@ -338,7 +338,7 @@ ${
         "type": "set-variables",
         "transitions": [
           {
-            "next": "f_operatingHours",
+            "next": "send_message_webchat_prequeue",
             "event": "next"
           }
         ],
@@ -354,100 +354,6 @@ ${
             "x": 341,
             "y": 960
           }
-        }
-      },
-      {
-        "name": "f_operatingHours",
-        "type": "make-http-request",
-        "transitions": [
-          {
-            "next": "split_operatingHours",
-            "event": "success"
-          },
-          {
-            "next": "send_message_webchat_prequeue",
-            "event": "failed"
-          }
-        ],
-        "properties": {
-          "offset": {
-            "x": 720,
-            "y": 1210
-          },
-          "method": "POST",
-          "content_type": "application/json;charset=utf-8",
-          "add_twilio_auth": false,
-          "body": "{\"channel\": \"webchat\", \"includeMessageTextInResponse\":\"true\",\"language\": \"en-NZ\"}",
-          "url": "${get_profile_flags_for_identifier_base_url}/operatingHours"
-        }
-      },
-      {
-        "name": "split_operatingHours",
-        "type": "split-based-on",
-        "transitions": [
-          {
-            "next": "send_message_webchat_prequeue",
-            "event": "noMatch"
-          },
-          {
-            "next": "send_message_webchat_prequeue",
-            "event": "match",
-            "conditions": [
-              {
-                "friendly_name": "If value equal_to open",
-                "arguments": [
-                  "{{widgets.f_operatingHours.parsed.status}}"
-                ],
-                "type": "equal_to",
-                "value": "open"
-              }
-            ]
-          },
-          {
-            "next": "send_message_closed",
-            "event": "match",
-            "conditions": [
-              {
-                "friendly_name": "If value equal_to closed",
-                "arguments": [
-                  "{{widgets.f_operatingHours.parsed.status}}"
-                ],
-                "type": "equal_to",
-                "value": "closed"
-              }
-            ]
-          }
-        ],
-        "properties": {
-          "input": "{{widgets.f_operatingHours.parsed.status}}",
-          "offset": {
-            "x": 730,
-            "y": 1420
-          }
-        }
-      },
-      {
-        "name": "send_message_closed",
-        "type": "send-message",
-        "transitions": [
-          {
-            "event": "sent"
-          },
-          {
-            "next": "http_post_webhook_notify_error",
-            "event": "failed"
-          }
-        ],
-        "properties": {
-          "offset": {
-            "x": 1190,
-            "y": 1640
-          },
-          "service": "{{trigger.message.InstanceSid}}",
-          "channel": "{{trigger.message.ChannelSid}}",
-          "from": "{{flow.channel.address}}",
-          "to": "{{contact.channel.address}}",
-          "body": "{{widgets.f_operatingHours.parsed.message}}"
         }
       }
     ],

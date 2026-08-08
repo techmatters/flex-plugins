@@ -24,7 +24,7 @@ locals {
         messaging_mode   = "conversations"
         channel_type     = "chat"
         contact_identity = ""
-        templatefile     = "/app/twilio-iac/helplines/nzba/templates/studio-flows/messaging-no-chatbot-operating-hours-blocking-lambda-conv-sd.tftpl"
+        templatefile     = "/app/twilio-iac/helplines/nzba/templates/studio-flows/messaging-blocking-preq-conv-lambda-sd.tftpl"
         channel_flow_vars = {
           widget_from                   = "Barnardos"
           chat_blocked_message          = "Sorry, you're not able to contact Barnardos from this device or account"
@@ -35,11 +35,16 @@ locals {
       voice : {
         channel_type     = "voice"
         contact_identity = ""
-        templatefile     = "/app/twilio-iac/helplines/templates/studio-flows/voice-blocking-no-op-hours-sd.tftpl"
+        templatefile     = "/app/twilio-iac/helplines/nzba/templates/studio-flows/voice-no-chatbot-operating-hours-blocking-lambda-sd.tftpl"
         channel_flow_vars = {
           play_message_voice_prequeue = "Hello. Please hold on for a while and we will attend to you as soon as we can. Thank you for your patience!."
           play_message_voice_blocked  = "Sorry, you're not able to contact Barnardos from this number"
           voice_ivr_language         = "en-US"
+          voice_closed_message_url = "https://nzba-assets-7259.twil.io/After-hours-message.mp3"
+          voice_blocked_message_url = "https://nzba-assets-7259.twil.io/Generic-block-message.mp3"
+          voice_welcome_message_url = "https://nzba-assets-7259.twil.io/Welcome-Message.mp3"
+          voice_risk_question_url = "https://nzba-assets-7259.twil.io/Risk-Check-Question.mp3"
+          voice_prequeue_message_url = "https://nzba-assets-7259.twil.io/Queue-waiting-message.mp3"
         }
         chatbot_unique_names = []
       },
@@ -57,7 +62,7 @@ locals {
       recording_url                    = "https://<place_holder>.mp3"
     }
 
-    get_profile_flags_for_identifier_base_url = "https://hrm-staging-eu.tl.techmatters.org/lambda/twilio/account-scoped"
+    get_profile_flags_for_identifier_base_url = "https://hrm-production-eu.tl.techmatters.org/lambda/twilio/account-scoped"
 
   }
 }
