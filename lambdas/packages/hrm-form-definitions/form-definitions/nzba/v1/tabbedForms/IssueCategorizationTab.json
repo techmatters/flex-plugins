@@ -89,6 +89,9 @@
             "label": "General family issues"
           },
           {
+            "label": "Parenting (client under 25)"
+          },
+          {
             "label": "Relationship to caregiver"
           },
           {
@@ -213,6 +216,9 @@
       "Other": {
         "color": "#db7a34",
         "subcategories": [
+          {
+            "label": "Difficulties with diagnosed MH condition"
+          },
           {
             "label": "Leaving home/homelessness"
           },

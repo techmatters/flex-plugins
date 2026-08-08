@@ -13,7 +13,13 @@
     },
     "form_definitions_base_url": "https://assets-staging.tl.techmatters.org/form-definitions/",
     "resources_base_url": "https://hrm-staging.tl.techmatters.org",
-    "logo_url": "https://aselo-logo.s3.amazonaws.com/200+transparent+background+no+TM+staging.png"
+    "logo_url": "https://aselo-logo.s3.amazonaws.com/200+transparent+background+no+TM+staging.png",
+    "postStudioFlows": {            
+      "WQc92043986a3a474a991125031a0acb55": {
+            "flowTrigger": "inProgressCall",
+            "studioFlowSid": "FW9a3dac89f05082939e2e9efdbc90ebc2"
+        }
+    }
   },
   "ui_attributes": {
     "theme": null,
