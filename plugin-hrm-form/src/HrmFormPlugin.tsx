@@ -117,7 +117,7 @@ const setUpComponents = (featureFlags: FeatureFlags, setupObject: ReturnType<typ
   setUpReferrableResources();
 
   if (featureFlags.enable_emoji_picker) Components.setupEmojiPicker();
-  if (preventSendingAttachmentsFromFlex) Components.disableFlexMessageAttachments ();
+  if (preventSendingAttachmentsFromFlex) Components.disableFlexMessageAttachments();
   if (featureFlags.enable_canned_responses) Components.setupCannedResponses();
 
   TeamsView.setUpSelectAgentColumn();
