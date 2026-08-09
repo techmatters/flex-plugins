@@ -8,7 +8,7 @@
         "external_recordings_enabled": true,
         "enableExternalRecordings": true,
         "enableConferencing": true,
-        "preventSendingAttachmentsFromFlex": false,
+        "preventSendingAttachmentsFromFlex": true,
         "feature_flags": {
             "enable_conferencing": true,
             "enable_external_transcripts": true,
