@@ -7,7 +7,7 @@ locals {
 
   local_config = {
     helpline        = "Barnardos"
-    task_language   = "en-NZ"
+    task_language   = "en-NZBA"
     helpline_region = "eu-west-1"
 
     lex_v2_bot_languages = {
