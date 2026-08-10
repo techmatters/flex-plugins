@@ -27,6 +27,7 @@ export const handleCreateScheduleJob: AccountScopedHandler = async (
   accountSid,
 ): Promise<Result<HttpError, string>> => {
   try {
+    console.log('>>>>>>> request.body', request.body);
     const { jobType } = request.body as {
       jobType: ScheduledJobType['jobType'];
     };
