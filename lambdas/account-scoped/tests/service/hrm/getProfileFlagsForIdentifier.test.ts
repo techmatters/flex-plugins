@@ -49,7 +49,6 @@ describe('getProfileFlagsForIdentifier endpoint', () => {
   const MOCK_IDENTIFIER = '123456789';
 
   const MOCK_VOICE_EVENT: Omit<TriggerEvent, 'request'> = {
-    channelType: '',
     trigger: {
       call: {
         From: '1234-56 789',
