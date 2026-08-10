@@ -257,8 +257,10 @@ export const finalizeContact = async (
   reservationSid?: string | undefined,
 ): Promise<Contact> => {
   try {
-    const twilioTaskResult = await determineConversationMedia(task, contact, reservationSid);
-    await saveConversationMedia(contact.id, twilioTaskResult.conversationMedia);
+    if (!getAseloFeatureFlags().use_twilio_lambda_for_conversation_media) {
+      const twilioTaskResult = await determineConversationMedia(task, contact, reservationSid);
+      await saveConversationMedia(contact.id, twilioTaskResult.conversationMedia);
+    }
     return await updateContactInHrm(contact.id, {}, true);
   } catch (error) {
     console.error('Error finalizing contact:', error);

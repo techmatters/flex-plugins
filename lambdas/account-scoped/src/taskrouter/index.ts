@@ -17,6 +17,7 @@
 import '../hrm/createHrmContactTaskRouterListener';
 import '../hrm/addHangupByTaskRouterListener';
 import '../hrm/conversationDurationTaskRouterListener';
+import '../hrm/conversationMediaTaskRouterListener';
 import '../task/addCustomerExternalIdTaskRouterListener';
 import '../task/addInitialHangUpByTaskRouterListener';
 import '../conversation/addTaskSidToChannelAttributesTaskRouterListener';
