@@ -33,28 +33,30 @@ export const createScheduledJob = async ({
 }) => {
   const schedulerClient = new SchedulerClient({});
 
-  const createdSchedule = await schedulerClient.send(
-    new CreateScheduleCommand({
-      Name: scheduleName,
-      GroupName: process.env.SCHEDULER_GROUP_NAME,
-      ScheduleExpression: scheduleExpression,
-      ScheduleExpressionTimezone: 'UTC',
-      FlexibleTimeWindow: { Mode: FlexibleTimeWindowMode.OFF }, // exact-time firing
-      ActionAfterCompletion: ActionAfterCompletion.DELETE, // self-cleans after it fires
-      Target: {
-        Arn: process.env.SCHEDULED_JOBS_PROCESSOR_LAMBDA_ARN,
-        RoleArn: process.env.SCHEDULED_JOBS_EXECUTION_ROLE_ARN,
-        Input: JSON.stringify(scheduledJob),
-        // DeadLetterConfig: {
-        //   Arn: process.env.DEAD_LETTER_QUEUE_ARN,
-        // },
-        // RetryPolicy: {
-        //   MaximumRetryAttempts: 3,
-        //   MaximumEventAgeInSeconds: 3600,
-        // },
-      },
-    }),
-  );
+  const createScheduleCommand = new CreateScheduleCommand({
+    Name: scheduleName,
+    GroupName: process.env.SCHEDULER_GROUP_NAME,
+    ScheduleExpression: scheduleExpression,
+    ScheduleExpressionTimezone: 'UTC',
+    FlexibleTimeWindow: { Mode: FlexibleTimeWindowMode.OFF }, // exact-time firing
+    ActionAfterCompletion: ActionAfterCompletion.DELETE, // self-cleans after it fires
+    Target: {
+      Arn: process.env.SCHEDULED_JOBS_PROCESSOR_LAMBDA_ARN,
+      RoleArn: process.env.SCHEDULED_JOBS_EXECUTION_ROLE_ARN,
+      Input: JSON.stringify(scheduledJob),
+      // DeadLetterConfig: {
+      //   Arn: process.env.DEAD_LETTER_QUEUE_ARN,
+      // },
+      // RetryPolicy: {
+      //   MaximumRetryAttempts: 3,
+      //   MaximumEventAgeInSeconds: 3600,
+      // },
+    },
+  });
+
+  console.log('>>>>>>>> createScheduleCommand', createScheduleCommand);
+
+  const createdSchedule = await schedulerClient.send(createScheduleCommand);
 
   return createdSchedule;
 };
