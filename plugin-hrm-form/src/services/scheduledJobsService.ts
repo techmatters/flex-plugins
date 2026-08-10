@@ -30,7 +30,41 @@ type CreateVoicemailScheduleParams = {
 };
 
 export const createVoicemailSchedule = async (payload: CreateVoicemailScheduleParams): Promise<string> => {
-  const body = { payload: JSON.stringify({ ...payload, jobType: 'create-voicemail-schedule' }) };
-  const scheduleName = await fetchProtectedApi('/scheduled-jobs/create', body, { useTwilioLambda: true });
+  const {
+    timeout,
+    workflowSid,
+    attributes: {
+      callSid,
+      from,
+      name,
+      channelType,
+      ignoreAgent,
+      isVoicemail,
+      customChannelType,
+      routingAttributes,
+      transferTargetType,
+    },
+  } = payload.voicemailTask;
+
+  const voicemailTask = {
+    timeout,
+    workflowSid,
+    attributes: {
+      callSid,
+      from,
+      name,
+      channelType,
+      ignoreAgent,
+      isVoicemail,
+      customChannelType,
+      routingAttributes,
+      transferTargetType,
+    },
+  };
+  const body = { voicemailTask, jobType: 'create-voicemail-schedule' };
+  const scheduleName = await fetchProtectedApi('/scheduled-jobs/create', body, {
+    useTwilioLambda: true,
+    useJsonEncode: true,
+  });
   return scheduleName;
 };

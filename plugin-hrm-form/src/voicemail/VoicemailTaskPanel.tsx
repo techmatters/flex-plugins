@@ -43,8 +43,12 @@ const VoicemailTaskPanel: React.FC<Props> = ({ task }) => {
   };
 
   const onClickRetryLater = async () => {
-    const createdSchedule = await createVoicemailSchedule({ voicemailTask: task });
-    window.alert(`Schedule created with name ${createdSchedule}`);
+    try {
+      const createdSchedule = await createVoicemailSchedule({ voicemailTask: task });
+      window.alert(`Schedule created with name ${createdSchedule}`);
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   const externalStoredRecording = contact.savedContact.conversationMedia?.find(isS3StoredRecording);
