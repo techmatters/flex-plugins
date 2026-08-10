@@ -27,6 +27,8 @@ locals {
   contacts_waiting_channels = ["voice", "web", "whatsapp", "facebook", "twitter", "instagram", "line"]
 
   enable_voice_channel = false
+  
+  studio_flows = {}
 
   channels = {}
 

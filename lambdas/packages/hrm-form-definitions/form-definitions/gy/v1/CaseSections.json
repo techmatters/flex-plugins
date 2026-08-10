@@ -1,31 +1,30 @@
 {
-  "personExperiencingHomelessness": {
-    "label": "Person Experiencing Homelessness",
-    "formPath": "caseForms/PersonExperiencingHomelessnessForm.json"
+  "timesCoordination": {
+    "label": "Times & Coordination",
+    "formPath": "caseForms/timesCoordinationForm.json"
   },
-  "incidentReport": {
-    "label": "Incident Report",
-    "formPath": "caseForms/IncidentReportForm.json"
+  "callDispatch": {
+    "label": "Call / Dispatch Info",
+    "formPath": "caseForms/callDispatchForm.json"
   },
-  "assignedResponder": {
-    "label": "Assigned Responder",
-    "formPath": "caseForms/AssignedResponderForm.json"
+  "patientInformation": {
+    "label": "Patient Information & Medical History",
+    "formPath": "caseForms/patientInformationForm.json"
   },
-  "caseReport": {
-    "label": "Case Report",
-    "formPath": "caseForms/CaseReportForm.json"
+  "sceneCare": {
+    "label": "Scene, Injury & Care On Arrival",
+    "formPath": "caseForms/sceneCareForm.json"
   },
-  "safetyPlan": {
-    "label": "Safety Plan",
-    "formPath": "caseForms/SafetyPlanForm.json"
+  "vitalSigns": {
+    "label": "Vital Signs",
+    "formPath": "caseForms/vitalSignsForm.json"
   },
-  "sudSurvey": {
-    "label": "Collaborative SUD Survey",
-    "formPath": "caseForms/SudSurveyForm.json"
+  "treatmentProceduresMedication": {
+    "label": "Treatment, Procedures, and Medication",
+    "formPath": "caseForms/treatmentProceduresMedicationForm.json"
   },
-  "note": {
-    "label": "Note",
-    "formPath": "caseForms/NoteForm.json"
+  "disposition": {
+    "label": "Disposition & Sign Off",
+    "formPath": "caseForms/dispositionForm.json"
   }
-
 }
