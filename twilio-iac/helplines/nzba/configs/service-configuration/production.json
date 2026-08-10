@@ -1,6 +1,6 @@
 {
     "attributes": {
-        "form_definitions_base_url": "https://assets-staging.tl.techmatters.org/form-definitions/",
+        "form_definitions_base_url": "https://assets-production.tl.techmatters.org/form-definitions/",
         "feature_flags": {
             "enable_lambda_post_survey_processing": true,
             "enable_post_survey": true,
