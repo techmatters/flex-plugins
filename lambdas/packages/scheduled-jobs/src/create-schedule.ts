@@ -43,10 +43,10 @@ export const createScheduledJob = async ({
       Target: {
         Arn: process.env.SCHEDULED_JOBS_PROCESSOR_LAMBDA_ARN,
         RoleArn: process.env.SCHEDULED_JOBS_EXECUTION_ROLE_ARN,
-        DeadLetterConfig: {
-          Arn: process.env.DEAD_LETTER_QUEUE_ARN,
-        },
         Input: JSON.stringify(scheduledJob),
+        // DeadLetterConfig: {
+        //   Arn: process.env.DEAD_LETTER_QUEUE_ARN,
+        // },
         // RetryPolicy: {
         //   MaximumRetryAttempts: 3,
         //   MaximumEventAgeInSeconds: 3600,
