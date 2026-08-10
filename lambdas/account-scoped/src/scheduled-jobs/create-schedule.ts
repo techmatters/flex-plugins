@@ -27,8 +27,6 @@ export const handleCreateScheduleJob: AccountScopedHandler = async (
   accountSid,
 ): Promise<Result<HttpError, string>> => {
   try {
-    console.log('>>>>>>> request.body', request.body);
-    console.log('>>>>>>> ', {
       Arn: process.env.SCHEDULED_JOBS_PROCESSOR_LAMBDA_ARN,
       RoleArn: process.env.SCHEDULED_JOBS_EXECUTION_ROLE_ARN,
     });

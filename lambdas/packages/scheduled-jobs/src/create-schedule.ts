@@ -54,8 +54,6 @@ export const createScheduledJob = async ({
     },
   });
 
-  console.log('>>>>>>>> createScheduleCommand', createScheduleCommand);
-
   const createdSchedule = await schedulerClient.send(createScheduleCommand);
 
   return createdSchedule;
