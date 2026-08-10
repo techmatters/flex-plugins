@@ -163,7 +163,11 @@ describe('handleEvent', () => {
     );
     mockPatchTaskAttributes.mockResolvedValue(newOk(undefined));
     mockGetExternalRecordingS3Location.mockResolvedValue(
-      newOk({ recordingSid: 'REtest', key: 'voice-recordings/ACut/REtest', bucket: 'test-bucket' }),
+      newOk({
+        recordingSid: 'REtest',
+        key: 'voice-recordings/ACut/REtest',
+        bucket: 'test-bucket',
+      }),
     );
   });
 
@@ -215,7 +219,11 @@ describe('handleEvent', () => {
 
   test('voicemail task - creates contact and posts conversationMedia with S3 recording location', async () => {
     const eventFields: EventFields = {
-      ...newEventFields({ channelType: 'voicemail', customChannelType: 'voicemail', callSid: 'CAtest456' }),
+      ...newEventFields({
+        channelType: 'voicemail',
+        customChannelType: 'voicemail',
+        callSid: 'CAtest456',
+      }),
     } as EventFields;
     setTaskReturnedByFetch(eventFields);
 
@@ -229,7 +237,9 @@ describe('handleEvent', () => {
     // Should have called fetch twice: once for the contact creation, once for conversationMedia
     expect(mockFetch).toHaveBeenCalledTimes(2);
     const conversationMediaCall = mockFetch.mock.calls[1];
-    const conversationMediaBody = JSON.parse((conversationMediaCall[1] as RequestInit).body as string);
+    const conversationMediaBody = JSON.parse(
+      (conversationMediaCall[1] as RequestInit).body as string,
+    );
     expect(conversationMediaBody).toEqual([
       {
         storeType: 'S3',
@@ -250,7 +260,11 @@ describe('handleEvent', () => {
     );
 
     const eventFields: EventFields = {
-      ...newEventFields({ channelType: 'voicemail', customChannelType: 'voicemail', callSid: 'CAtest456' }),
+      ...newEventFields({
+        channelType: 'voicemail',
+        customChannelType: 'voicemail',
+        callSid: 'CAtest456',
+      }),
     } as EventFields;
     setTaskReturnedByFetch(eventFields);
 
@@ -262,7 +276,10 @@ describe('handleEvent', () => {
   });
 
   test('non-voicemail task - does not look up recording or post conversationMedia', async () => {
-    const eventFields = newEventFields({ channelType: 'voice', customChannelType: 'voice' });
+    const eventFields = newEventFields({
+      channelType: 'voice',
+      customChannelType: 'voice',
+    });
     setTaskReturnedByFetch(eventFields);
 
     await handleEvent(eventFields, TEST_ACCOUNT_SID, twilioClient);
