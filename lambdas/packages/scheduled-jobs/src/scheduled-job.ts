@@ -30,8 +30,6 @@ type CreateVoicemailSchedule = {
       transferTargetType: '';
     };
     workflowSid: string;
-    // TODO: factor out channel types into an enum
-    taskChannel: 'voicemail';
   };
 };
 export const isValidVoicemailTask = (

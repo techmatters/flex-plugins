@@ -24,7 +24,7 @@ import { RecordingSection } from '../components/contact/MediaSection';
 import { RootState } from '../states';
 import selectContactByTaskSid from '../states/contacts/selectContactByTaskSid';
 import { isS3StoredRecording } from '../types/types';
-import { createVoicemailSchedule } from 'services/scheduledJobsService';
+import { createVoicemailSchedule } from '../services/scheduledJobsService';
 
 type Props = {} & Flex.TaskContextProps;
 
