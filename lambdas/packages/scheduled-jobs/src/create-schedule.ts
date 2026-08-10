@@ -36,6 +36,7 @@ export const createScheduledJob = async ({
   const createdSchedule = await schedulerClient.send(
     new CreateScheduleCommand({
       Name: scheduleName,
+      GroupName: process.env.SCHEDULER_GROUP_NAME,
       ScheduleExpression: scheduleExpression,
       ScheduleExpressionTimezone: 'UTC',
       FlexibleTimeWindow: { Mode: FlexibleTimeWindowMode.OFF }, // exact-time firing
