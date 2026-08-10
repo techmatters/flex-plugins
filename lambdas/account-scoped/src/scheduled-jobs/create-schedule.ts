@@ -53,7 +53,7 @@ export const handleCreateScheduleJob: AccountScopedHandler = async (
         });
       }
 
-      const scheduleName = `${process.env.NODE_ENV}/${voicemailTask.attributes.callSid}`;
+      const scheduleName = `${process.env.NODE_ENV}-${voicemailTask.attributes.callSid}`;
       const {
         timeout,
         workflowSid,
