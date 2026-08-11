@@ -1,5 +1,6 @@
 {
   "Guyana 913": {
+    "maxSelections": 1,
     "categories": {
       "Emergency": {
         "color": "#085f63",
