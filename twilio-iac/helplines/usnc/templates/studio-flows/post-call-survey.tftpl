@@ -5,7 +5,7 @@ ${
   "flags": {
     "allow_concurrent_calls": true
   },
-  "description": "USNC Post Call Survey",
+  "description": "${flow_description}",
   "states": [
     {
       "name": "Trigger",
@@ -52,7 +52,7 @@ ${
         }
       ],
       "properties": {
-        "play": "https://usnc-assets-3228.twil.io/play_message_voice_opt_in.mp3",
+        "play": "${flow_vars.usnc_assets_url}/play_message_voice_opt_in.mp3",
         "number_of_digits": 1,
         "speech_timeout": "5",
         "offset": {
@@ -128,7 +128,7 @@ ${
         }
       ],
       "properties": {
-        "play": "https://usnc-assets-3228.twil.io/gather_input_voice_beginning_interaction.mp3",
+        "play": "${flow_vars.usnc_assets_url}/gather_input_voice_beginning_interaction.mp3",
         "number_of_digits": 1,
         "speech_timeout": "5",
         "offset": {
@@ -160,7 +160,7 @@ ${
         }
       ],
       "properties": {
-        "play": "https://usnc-assets-3228.twil.io/gather_input_voice_end_interaction.mp3",
+        "play": "${flow_vars.usnc_assets_url}/gather_input_voice_end_interaction.mp3",
         "number_of_digits": 1,
         "speech_timeout": "5",
         "offset": {
@@ -192,7 +192,7 @@ ${
         }
       ],
       "properties": {
-        "play": "https://usnc-assets-3228.twil.io/gather_input_voice_feel_supported.mp3",
+        "play": "${flow_vars.usnc_assets_url}/gather_input_voice_feel_supported.mp3",
         "number_of_digits": 1,
         "speech_timeout": "5",
         "offset": {
@@ -216,7 +216,7 @@ ${
         }
       ],
       "properties": {
-        "play": "https://usnc-assets-3228.twil.io/play_message_voice_post_survey_complete.mp3",
+        "play": "${flow_vars.usnc_assets_url}/play_message_voice_post_survey_complete.mp3",
         "offset": {
           "x": 2774,
           "y": 3526
@@ -246,7 +246,7 @@ ${
         "content_type": "application/json;charset=utf-8",
         "add_twilio_auth": false,
         "body": "{\n  \"contactId\": \"{{trigger.call.contactId}}\",\n  \"contactTaskSid\": \"{{trigger.call.taskSid}}\",\n  \"postSurveyAnswers\": {\n    \"feel_supported\": \"{{flow.variables.feel_supported}}\",\n    \"beginning_interaction\": \"{{flow.variables.beginning_interaction}}\",\n    \"end_interaction\": \"{{flow.variables.end_interaction}}\"\n  }\n}",
-        "url": "https://hrm-staging.tl.techmatters.org/lambda/twilio/account-scoped/ACaa9a5ca4395d1fdeb394c5c176bc5b40/hrm/savePostSurvey"
+        "url": "${lambda_twilio_account_scoped_url}/hrm/savePostSurvey"
       }
     },
     {
