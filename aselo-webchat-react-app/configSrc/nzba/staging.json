@@ -1,4 +1,5 @@
 {
   "environment": "staging",
-  "aseloBackendUrl": "https://hrm-staging.tl.techmatters.org"
+  "aseloBackendUrl": "https://hrm-staging.tl.techmatters.org",
+  "checkOpenHours": true
 }

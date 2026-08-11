@@ -7,11 +7,11 @@ locals {
 
   local_config = {
     helpline        = "Barnardos"
-    task_language   = "en-NZ"
+    task_language   = "en-NZBA"
     helpline_region = "eu-west-1"
 
     lex_v2_bot_languages = {
-      en_NZBA : ["pre_survey", "post_survey"]
+      en_NZBA : ["post_survey"]
     }
 
     workflows = {
@@ -32,19 +32,19 @@ locals {
     task_queues = {
       master : {
         "target_workers" = "1==1",
-        "friendly_name"  = "Aselo"
+        "friendly_name"  = "General Client"
       },
-      returning_client : {
+      regular_client : {
         "target_workers" = "1==1",
-        "friendly_name"  = "Returning Client"
+        "friendly_name"  = "Regular Client"
       },
-      first_time_client : {
+      high_risk_client : {
         "target_workers" = "1==1",
-        "friendly_name"  = "First-Time Client"
+        "friendly_name"  = "High Risk Client"
       },
       survey : {
         "target_workers" = "1==0",
-        "friendly_name"  = "Survey"
+        "friendly_name"  = "Survey - DO NOT TRANSFER"
       },
       e2e_test : {
         "target_workers" = "email=='aselo-alerts+production@techmatters.org'",
