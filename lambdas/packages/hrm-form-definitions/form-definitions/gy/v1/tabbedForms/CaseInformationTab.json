@@ -1,22 +1,5 @@
 [
   {
-    "name": "priority",
-    "label": "Priority",
-    "type": "select",
-    "unknownOption": "Unknown",
-    "options": [
-      {
-        "value": "Normal",
-        "label": "Normal"
-      },
-      {
-        "value": "High",
-        "label": "High"
-      }
-    ],
-    "isPII": false
-  },
-  {
     "name": "dispatchIncident",
     "label": "Dispatch Incident",
     "type": "custom-contact-component",

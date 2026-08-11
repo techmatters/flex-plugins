@@ -1,67 +1,36 @@
 {
   "Guyana 913": {
+    "maxSelections": 1,
     "categories": {
-      "Indecent Exposure": {
+      "Emergency": {
         "color": "#085f63",
         "subcategories": [
           {
-            "label": "Indecent Exposure"
+            "label": "Emergency"
           }
         ]
       },
-      "Loitering": {
+      "Non-Emergency": {
         "color": "#14919b",
         "subcategories": [
           {
-            "label": "Loitering"
+            "label": "Non-Emergency"
           }
         ]
       },
-      "Syringe Disposal ": {
+      "Standby": {
         "color": "#fac05e",
         "subcategories": [
           {
-            "label": "Syringe Disposal"
+            "label": "Standby"
           }
         ]
       },
-      "Well-being Check": {
+      "Transfer": {
         "color": "#f79d8f",
         "subcategories": [
           {
-            "label": "Well-being Check"
-          }
-        ]
-      },
-      "Intoxication": {
-        "color": "#f0817c",
-        "subcategories": [
-          {
-            "label": "Intoxication"
-          }
-        ]
-      },
-      "Disturbance": {
-        "color": "#506BA5",
-        "subcategories": [
-          {
-            "label": "Disturbance"
-          }
-        ]
-      },
-      "Mental Health Crisis": {
-        "color": "#55AFAF",
-        "subcategories": [
-          {
-            "label": "Mental Health Crisis"
-          }
-        ]
-      },
-      "Follow Up": {
-        "color": "#8055BA",
-        "subcategories": [
-          {
-            "label": "Follow Up"
+            "label": "Transfer"
           }
         ]
       },
@@ -72,10 +41,7 @@
             "label": "Declined Incident - Out of Scope"
           },
           {
-            "label": "Declined Incident - Out of Area"
-          },
-          {
-            "label": "Cancelled by 911"
+            "label": "Cancelled"
           }
         ]
       },
