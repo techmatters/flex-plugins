@@ -2,6 +2,36 @@
   "task_routing": {
     "filters": [
       {
+        "filter_friendly_name": "High Risk Clients",
+        "expression": "(channelType IN ['web', 'voice'] OR isContactlessTask == true) AND clientType == 'high risk'",
+        "targets": [
+          {
+            "queue": "${task_queues.high_risk_client}",
+            "expression": "worker.waitingOfflineContact != true AND ((task.channelType == 'voice' AND worker.routing.skills HAS 'Call' AND worker.routing.skills HAS 'High Risk' AND worker.channel.chat.assigned_tasks == 0) OR (task.channelType != 'voice' AND worker.routing.skills HAS 'Chat' AND worker.routing.skills HAS 'High Risk' AND worker.channel.voice.assigned_tasks == 0)) AND ((task.transferTargetType == 'worker' AND task.targetSid == worker.sid) OR (task.transferTargetType != 'worker' AND worker.sid != task.ignoreAgent))"
+          }
+        ]
+      },
+      {
+        "filter_friendly_name": "General Client",
+        "expression": "(channelType IN ['web', 'voice'] OR isContactlessTask == true) AND clientType != 'regular' AND clientType != 'high_risk'",
+        "targets": [
+          {
+            "expression": "worker.waitingOfflineContact != true AND ((task.channelType == 'voice' AND worker.routing.skills HAS 'Call' AND worker.channel.chat.assigned_tasks == 0) OR (task.channelType != 'voice' AND worker.routing.skills HAS 'Chat' AND worker.channel.voice.assigned_tasks == 0)) AND ((task.transferTargetType == 'worker' AND task.targetSid == worker.sid) OR (task.transferTargetType != 'worker' AND worker.sid != task.ignoreAgent))",
+            "queue": "${task_queues.master}"
+          }
+        ]
+      },
+      {
+        "filter_friendly_name": "Regular Client",
+        "expression": "(channelType IN ['web', 'voice'] OR isContactlessTask == true) AND clientType == 'regular'",
+        "targets": [
+          {
+            "expression": "worker.waitingOfflineContact != true AND ((task.channelType == 'voice' AND worker.routing.skills HAS 'Call' AND worker.channel.chat.assigned_tasks == 0) OR (task.channelType != 'voice' AND worker.routing.skills HAS 'Chat' AND worker.channel.voice.assigned_tasks == 0)) AND ((task.transferTargetType == 'worker' AND task.targetSid == worker.sid) OR (task.transferTargetType != 'worker' AND worker.sid != task.ignoreAgent))",
+            "queue": "${task_queues.regular_client}"
+          }
+        ]
+      },
+      {
         "filter_friendly_name": "Direct Transfers",
         "expression": "transferTargetType == 'worker' AND isContactlessTask != true",
         "targets": [
@@ -20,26 +50,6 @@
           {
             "expression": "(worker.waitingOfflineContact != true AND ((task.channelType == 'voice' AND worker.channel.chat.assigned_tasks == 0) OR (task.channelType != 'voice' AND worker.channel.voice.assigned_tasks == 0)) AND ((task.transferTargetType == 'worker' AND task.targetSid == worker.sid) OR (task.transferTargetType != 'worker' AND worker.sid != task.ignoreAgent)))",
             "queue": "${task_queues.e2e_test}"
-          }
-        ]
-      },
-      {
-        "filter_friendly_name": "Returning Client",
-        "expression": "preEngagementData.firstTime == 'No'",
-        "targets": [
-          {
-            "expression": "worker.waitingOfflineContact != true AND ((task.channelType == 'voice' AND worker.routing.skills HAS 'Call' AND worker.channel.chat.assigned_tasks == 0) OR (task.channelType != 'voice' AND worker.routing.skills HAS 'Chat' AND worker.channel.voice.assigned_tasks == 0)) AND ((task.transferTargetType == 'worker' AND task.targetSid == worker.sid) OR (task.transferTargetType != 'worker' AND worker.sid != task.ignoreAgent))",
-            "queue": "${task_queues.returning_client}"
-          }
-        ]
-      },
-      {
-        "filter_friendly_name": "First-Time Client",
-        "expression": "preEngagementData.firstTime == 'Yes'",
-        "targets": [
-          {
-            "expression": "worker.waitingOfflineContact != true AND ((task.channelType == 'voice' AND worker.routing.skills HAS 'Call' AND worker.channel.chat.assigned_tasks == 0) OR (task.channelType != 'voice' AND worker.routing.skills HAS 'Chat' AND worker.channel.voice.assigned_tasks == 0)) AND ((task.transferTargetType == 'worker' AND task.targetSid == worker.sid) OR (task.transferTargetType != 'worker' AND worker.sid != task.ignoreAgent))",
-            "queue": "${task_queues.first_time_client}"
           }
         ]
       }

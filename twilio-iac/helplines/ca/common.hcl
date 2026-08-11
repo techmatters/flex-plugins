@@ -15,6 +15,10 @@ locals {
       master : {
         friendly_name = "Master Workflow"
         templatefile  = "/app/twilio-iac/helplines/ca/templates/workflows/master.tftpl"
+      },
+      survey : {
+        friendly_name = "Survey Workflow"
+        templatefile  = "/app/twilio-iac/helplines/templates/workflows/survey.tftpl"
       }
     }
 
@@ -101,6 +105,10 @@ locals {
       "switchboard" : {
         "target_workers" = "routing.skills HAS 'Supervisor'",
         "friendly_name"  = "Switchboard Queue"
+      },
+      survey : {
+        "target_workers" = "1==0",
+        "friendly_name"  = "Survey"
       },
       e2e_test : {
         "target_workers" = "email=='aselo-alerts+production@techmatters.org'",

@@ -19,7 +19,7 @@ import { getHrmConfig } from './hrmConfig';
 
 export const getVoicePostStudioFlowSettings = (
   queueSid: TaskQueueSID,
-): ReturnType<typeof getHrmConfig>['postStudioFlows']['voice'] => {
+): ReturnType<typeof getHrmConfig>['postStudioFlows']['voice'] | undefined => {
   const { postStudioFlows } = getHrmConfig();
-  return postStudioFlows[queueSid] ?? postStudioFlows.voice;
+  return postStudioFlows?.[queueSid] ?? postStudioFlows?.voice;
 };
