@@ -245,7 +245,7 @@ ${
         "method": "POST",
         "content_type": "application/json;charset=utf-8",
         "add_twilio_auth": false,
-        "body": "{\n  \"contactId\": \"{{trigger.call.contactId}}\",\n  \"contactTaskSid\": \"{{trigger.call.taskSid}}\",\n  \"postSurveyAnswers\": {\n    \"feel_supported\": \"{{flow.variables.feel_supported}}\",\n    \"beginning_interaction\": \"{{flow.variables.beginning_interaction}}\",\n    \"end_interaction\": \"{{flow.variablesend_interaction}}\"\n  }\n}",
+        "body": "{\n  \"contactId\": \"{{trigger.call.contactId}}\",\n  \"contactTaskSid\": \"{{trigger.call.taskSid}}\",\n  \"postSurveyAnswers\": {\n    \"feel_supported\": \"{{flow.variables.feel_supported}}\",\n    \"beginning_interaction\": \"{{flow.variables.beginning_interaction}}\",\n    \"end_interaction\": \"{{flow.variables.end_interaction}}\"\n  }\n}",
         "url": "https://hrm-staging.tl.techmatters.org/lambda/twilio/account-scoped/ACaa9a5ca4395d1fdeb394c5c176bc5b40/hrm/savePostSurvey"
       }
     },
