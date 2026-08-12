@@ -5,8 +5,8 @@
             "voice"
         ],
         "definitionVersion": "nzba-v1",
-        "external_recordings_enabled": false,
-        "enableExternalRecordings": false,
+        "external_recordings_enabled": true,
+        "enableExternalRecordings": true,
         "enableConferencing": true,
         "feature_flags": {
             "use_prepopulate_mappings": true,

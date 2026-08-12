@@ -62,5 +62,12 @@ locals {
       survey : "Survey"
     }
 
+    s3_lifecycle_rules = {
+      voice_recordings_expiry : {
+        id                 = "Voice Recordings Data Expiration Rule"
+        expiration_in_days = 365
+        prefix             = "voice-recordings/"
+      }
+    }
   }
 }
