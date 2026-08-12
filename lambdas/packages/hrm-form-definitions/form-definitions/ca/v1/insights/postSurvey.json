@@ -16,6 +16,11 @@
   },
   {
     "insightsObject": "conversations",
+    "attributeName": "conversation_measure_4",
+    "questions": ["wasRespected"]
+  },
+  {
+    "insightsObject": "conversations",
     "attributeName": "language",
     "questions": ["age"]
   },
