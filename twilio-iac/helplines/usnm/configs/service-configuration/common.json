@@ -10,6 +10,7 @@
         "enableConferencing": true,
         "preventSendingAttachmentsFromFlex": true,
         "feature_flags": {
+            "enable_canned_responses": false,
             "enable_conferencing": true,
             "enable_external_transcripts": true,
             "enable_hierarchical_translations": true,
