@@ -22,6 +22,7 @@
             "enable_voice_recordings": true,
             "enable_lambda_post_survey_processing": true,
             "use_prepopulate_mappings": true,
+            "use_twilio_lambda_to_transition_participants": false,
             "enable_hang_up_by_hrm_saving": true
         },
         "definitionVersion": "usnm-v1",
