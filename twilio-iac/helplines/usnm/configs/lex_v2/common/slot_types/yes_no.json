@@ -23,7 +23,20 @@
         },
         {
           "value": "One"
+        },
+        {
+          "value": "Si"
+        },
+        {
+          "value": "si"
+        },
+        {
+          "value": "sí"
+        },
+        {
+          "value": "Si"
         }
+        
       ]
     },
     {
@@ -48,6 +61,9 @@
         },
         {
           "value": "Two"
+        },
+        {
+          "value": "no"
         }
       ]
     },
