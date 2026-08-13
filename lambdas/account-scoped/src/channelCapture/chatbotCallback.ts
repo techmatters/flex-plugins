@@ -172,7 +172,7 @@ export const handleChatbotCallback: AccountScopedHandler = async (
           });
         }
       }
-      
+
       // If the session ended, we should unlock the channel to continue the Studio Flow
       if (LexClient.isEndOfDialog(lexResponse)) {
         await chatbotCallbackCleanup({
