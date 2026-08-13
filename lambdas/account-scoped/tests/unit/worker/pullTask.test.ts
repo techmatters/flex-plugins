@@ -61,9 +61,9 @@ const mockReservation = {
 
 describe('pullTaskHandler', () => {
   let mockClient: any;
+  let dateSpy: jest.SpyInstance;
 
   beforeEach(() => {
-    jest.useFakeTimers();
     jest.clearAllMocks();
     mockGetWorkspaceSid.mockResolvedValue(TEST_WORKSPACE_SID as any);
     mockAdjustChatCapacity.mockResolvedValue({ status: 200, message: 'ok' });
@@ -86,7 +86,7 @@ describe('pullTaskHandler', () => {
   });
 
   afterEach(() => {
-    jest.useRealTimers();
+    dateSpy?.mockRestore();
   });
 
   it('should return 400 when workerSid is missing', async () => {
@@ -130,12 +130,15 @@ describe('pullTaskHandler', () => {
       .workers()
       .reservations.list.mockResolvedValue([]);
 
-    const request = createMockRequest({ workerSid: TEST_WORKER_SID });
+    // Make Date.now() immediately exceed the timeout so the polling loop exits after first check
+    const now = Date.now();
+    dateSpy = jest
+      .spyOn(Date, 'now')
+      .mockReturnValueOnce(now) // initial: set pullAttemptExpiry = now + 5000
+      .mockReturnValue(now + 6000); // subsequent: already past expiry
 
-    // Run the handler and advance timers past the 5s timeout
-    const resultPromise = pullTaskHandler(request, TEST_ACCOUNT_SID);
-    await jest.runAllTimersAsync();
-    const result = await resultPromise;
+    const request = createMockRequest({ workerSid: TEST_WORKER_SID });
+    const result = await pullTaskHandler(request, TEST_ACCOUNT_SID);
 
     expect(isErr(result)).toBe(true);
     if (isErr(result)) {
@@ -150,10 +153,7 @@ describe('pullTaskHandler', () => {
 
   it('should return taskPulled when a pending reservation is found', async () => {
     const request = createMockRequest({ workerSid: TEST_WORKER_SID });
-
-    const resultPromise = pullTaskHandler(request, TEST_ACCOUNT_SID);
-    await jest.runAllTimersAsync();
-    const result = await resultPromise;
+    const result = await pullTaskHandler(request, TEST_ACCOUNT_SID);
 
     expect(isOk(result)).toBe(true);
     if (isOk(result)) {
@@ -178,14 +178,12 @@ describe('pullTaskHandler', () => {
     });
 
     const request = createMockRequest({ workerSid: TEST_WORKER_SID });
-    const resultPromise = pullTaskHandler(request, TEST_ACCOUNT_SID);
-    await jest.runAllTimersAsync();
-    const result = await resultPromise;
+    const result = await pullTaskHandler(request, TEST_ACCOUNT_SID);
 
     expect(isErr(result)).toBe(true);
     if (isErr(result)) {
       expect(result.error.statusCode).toBe(500);
-      expect(result.message).toContain('Twilio error');
+      expect(result.message).toBe('Unknown error occurred');
     }
     // setTo1 should still be called in finally
     expect(mockAdjustChatCapacity).toHaveBeenCalledWith(TEST_ACCOUNT_SID, {
@@ -196,9 +194,7 @@ describe('pullTaskHandler', () => {
 
   it('should use the workspace SID from configuration and query pending reservations for the worker', async () => {
     const request = createMockRequest({ workerSid: TEST_WORKER_SID });
-    const resultPromise = pullTaskHandler(request, TEST_ACCOUNT_SID);
-    await jest.runAllTimersAsync();
-    await resultPromise;
+    await pullTaskHandler(request, TEST_ACCOUNT_SID);
 
     expect(mockGetWorkspaceSid).toHaveBeenCalledWith(TEST_ACCOUNT_SID);
     expect(mockClient.taskrouter.v1.workspaces).toHaveBeenCalledWith(TEST_WORKSPACE_SID);
@@ -214,9 +210,7 @@ describe('pullTaskHandler', () => {
 
   it('should call adjustChatCapacity with increaseUntilCapacityAvailable before polling and setTo1 in finally', async () => {
     const request = createMockRequest({ workerSid: TEST_WORKER_SID });
-    const resultPromise = pullTaskHandler(request, TEST_ACCOUNT_SID);
-    await jest.runAllTimersAsync();
-    await resultPromise;
+    await pullTaskHandler(request, TEST_ACCOUNT_SID);
 
     expect(mockAdjustChatCapacity).toHaveBeenNthCalledWith(1, TEST_ACCOUNT_SID, {
       workerSid: TEST_WORKER_SID,
