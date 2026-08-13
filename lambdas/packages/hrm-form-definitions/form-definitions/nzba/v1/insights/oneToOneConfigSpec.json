@@ -3,43 +3,43 @@
       "childInformation": [
         {
           "name": "ethnicity1",
-          "insights": ["customers", "customer_attribute_1"]
+          "insights": ["conversations", "campaign"]
         },
         {
           "name": "ethnicity2",
-          "insights": ["customers", "customer_attribute_2"]
+          "insights": ["conversations", "language"]
         },
         {
           "name": "district",
-          "insights": ["customers", "area"]
+          "insights": ["conversations", "conversation_attribute_4"]
         },
         {
           "name": "howHeardAboutWu",
-          "insights": ["customers", "zip"]
+          "insights": ["conversations", "outcome"]
         },
         {
           "name": "schoolStatus",
-          "insights": ["customers", "category"]
+          "insights": ["conversations", "conversation_attribute_3"]
         },
         {
           "name": "isClientInOtOrFc",
-          "insights": ["customers", "acquisition_date"]
+          "insights": ["conversations", "preceded_by"]
         },
         {
           "name": "contactedFrom",
-          "insights": ["customers", "email"]
+          "insights": ["conversations", "initiated_by"]
         },
         {
           "name": "onWaitinglist",
-          "insights": ["customers", "customer_manager"]
+          "insights": ["conversations", "service_level"]
         },
         {
           "name": "firstContact",
-          "insights": ["customers", "organization"]
+          "insights": ["conversations", "source"]
         },
         {
           "name": "topic",
-          "insights": ["customers", "market_segment"]
+          "insights": ["conversations", "sentiment"]
         },
         {
           "name": "feelingRightNow",
@@ -92,7 +92,7 @@
         },
         {
           "name": "assessmentOfRisk",
-          "insights": ["customers", "region"]
+          "insights": ["conversations", "ivr_path"]
         },
         {
           "name": "planOfAction",
@@ -100,7 +100,7 @@
         },
         {
           "name": "informedUnitManager",
-          "insights": ["conversations", "preceded_by"]
+          "insights": ["conversations", "conversation_measure_1"]
         },
         {
           "name": "followUpRequired",
