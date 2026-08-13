@@ -23,6 +23,7 @@ import { Twilio } from 'twilio';
 import { ROUTE_PREFIX } from '../router';
 import { AccountSID } from '@tech-matters/twilio-types';
 import { savePostSurvey } from '../hrm/savePostSurvey';
+import { ChannelType } from '@tech-matters/twilio-types';
 
 const triggerTypes = ['withUserMessage', 'withNextMessage'] as const;
 export type TriggerTypes = (typeof triggerTypes)[number];
@@ -43,7 +44,7 @@ export type CapturedChannelAttributes = {
   releaseFlag?: string;
   chatbotCallbackWebhookSid: string;
   isConversation: boolean;
-  channelType: string;
+  channelType: ChannelType;
 };
 
 export const isChatCaptureControlTask = (taskAttributes: {
@@ -154,7 +155,7 @@ type CaptureChannelOptions = {
   memoryAttribute?: string; // where in the task attributes we want to save the bot's memory (allows compatibility for multiple bots)
   releaseFlag?: string; // the flag we want to set true when the channel is released
   isConversation: boolean;
-  channelType: string;
+  channelType: ChannelType;
   webhookBaseUrl: string;
 };
 
@@ -357,7 +358,7 @@ export type HandleChannelCaptureParams = (
   releaseFlag?: string; // The flag we want to set true in the channel attributes when the channel is released
   additionControlTaskAttributes?: string; // Optional attributes to include in the control task, in the string representation of a JSON
   controlTaskTTL?: number;
-  channelType: string;
+  channelType: ChannelType;
   twilioWorkspaceSid: string;
   chatServiceSid: string;
   surveyWorkflowSid: string;

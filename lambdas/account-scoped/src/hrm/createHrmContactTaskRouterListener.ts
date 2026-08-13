@@ -21,7 +21,7 @@ import { registerTaskRouterEventHandler } from '../taskrouter/taskrouterEventHan
 import { RESERVATION_ACCEPTED } from '../taskrouter/eventTypes';
 import type { EventFields } from '../taskrouter';
 import twilio from 'twilio';
-import { AccountSID, TaskSID, WorkerSID } from '@tech-matters/twilio-types';
+import { AccountSID, TaskSID, WorkerSID, channelTypes } from '@tech-matters/twilio-types';
 import { getWorkspaceSid } from '@tech-matters/twilio-configuration';
 import {
   patchOnInternalHrmEndpoint,
@@ -34,6 +34,8 @@ import { HrmContact } from '@tech-matters/hrm-types';
 import { populateHrmContactFormFromTaskByMappings } from './populateHrmContactFormFromTaskByMappings';
 import { parseISO } from 'date-fns/parseISO';
 import { HttpClientError } from '../httpErrors';
+import { getExternalRecordingS3Location } from '../conversation/getExternalRecordingS3Location';
+import { patchTaskAttributes } from '../task/patchTaskAttributes';
 
 // Temporarily copied to this repo, will share the flex types when we move them into the same repo
 
@@ -174,8 +176,6 @@ export const handleEvent = async (
     return;
   }
 
-  const twilioWorkspaceSid = await getWorkspaceSid(accountSid);
-
   console.debug('Creating HRM contact for task', taskSid, 'Hrm Account:', hrmAccountId);
 
   const isOutboundVoiceTask = direction === 'outbound' && Boolean(conference);
@@ -215,7 +215,9 @@ export const handleEvent = async (
     timeOfContact: timeOfContactDate.toISOString(),
     number: identifier,
   };
+
   console.debug('Creating HRM contact with timeOfContact:', newContact.timeOfContact);
+
   const prepopulate = usePrepopulateMappings
     ? populateHrmContactFormFromTaskByMappings
     : populateHrmContactFormFromTaskByKeys;
@@ -245,21 +247,52 @@ export const handleEvent = async (
   const savedTimeOfContactDate = parseISO(savedTimeOfContactString);
   console.info(`Created HRM contact with id ${id} for task ${taskSid}`);
 
-  const taskContext = client.taskrouter.v1.workspaces
-    .get(twilioWorkspaceSid)
-    .tasks.get(taskSid);
-  const currentTaskAttributes = (await taskContext.fetch()).attributes; // Less chance of race conditions if we fetch the task attributes again, still not the best...
-  const updatedAttributes = {
-    ...JSON.parse(currentTaskAttributes),
+  await patchTaskAttributes(accountSid, taskSid, currentTaskAttributes => ({
+    ...currentTaskAttributes,
     contactId: id.toString(),
     outboundVoiceTaskStartMillis: isOutboundVoiceTask
       ? timeOfContactDate.getTime()
       : null,
     timeOfContactMillis: savedTimeOfContactDate.getTime(),
-  };
-  await taskContext.update({ attributes: JSON.stringify(updatedAttributes) });
-  console.info(`Set task ${taskSid} attributes`);
-  console.debug(`[SENSITIVE] Updated ${taskSid} attributes:`, updatedAttributes);
+  }));
+
+  if (channel === channelTypes.VOICEMAIL) {
+    console.info(
+      `Channel type is ${channel}, adding conversation media with call sid ${taskAttributes.callSid}`,
+    );
+    const recordingResult = await getExternalRecordingS3Location({
+      accountSid,
+      callSid: taskAttributes.callSid,
+    });
+
+    if (isOk(recordingResult)) {
+      const conversationMedia = [
+        {
+          storeType: 'S3',
+          storeTypeSpecificData: {
+            type: 'recording',
+            location: {
+              bucket: recordingResult.data.bucket,
+              key: recordingResult.data.key,
+            },
+          },
+        },
+      ];
+
+      const conversationMediaResult = await postToInternalHrmEndpoint<
+        HrmContact['conversationMedia'],
+        HrmContact
+      >(
+        hrmAccountId,
+        hrmApiVersion,
+        `contacts/${id}/conversationMedia`,
+        conversationMedia,
+      );
+      console.debug(
+        `Conversation media result ${conversationMediaResult.status} ${isOk(conversationMediaResult) ? JSON.stringify(conversationMediaResult.data) : JSON.stringify(conversationMediaResult.error)}`,
+      );
+    }
+  }
 };
 
 registerTaskRouterEventHandler([RESERVATION_ACCEPTED], handleEvent);

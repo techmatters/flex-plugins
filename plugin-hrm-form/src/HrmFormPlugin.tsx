@@ -48,6 +48,7 @@ import { FeatureFlags } from './types/FeatureFlags';
 import { setUpFullStory } from './fullStory/setUp';
 import { getPathFromUrl } from './states/routing/reducer';
 import { setUpCustomSideLinks } from './components/customSideLinks/setUpCustomSideLinks';
+import { setUpVoicemailComponents } from './voicemail/setUpVoicemailComponents';
 
 const PLUGIN_NAME = 'HrmFormPlugin';
 
@@ -146,6 +147,8 @@ const setUpComponents = (featureFlags: FeatureFlags, setupObject: ReturnType<typ
   if (featureFlags.enable_language_selector) Components.setupWorkerLanguageSelect();
 
   setUpCustomSideLinks();
+
+  setUpVoicemailComponents();
 };
 
 const setUpActions = (

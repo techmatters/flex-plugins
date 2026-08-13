@@ -35,9 +35,11 @@ export type ChatChannelSID = ConversationSID;
 // Voice SIDs
 export type CallSid = `CA${string}`;
 export type ConferenceSid = `CF${string}`;
+export type RecordingSid = `RE${string}`;
 
 export const isAccountSID = (value: string): value is AccountSID =>
   // This regex could be stricter if we only wanted to catch 'real' account SIDs, but our test account sids have non hexadecimal characters
   /^AC[0-9a-zA-Z_]+$/.test(value);
 
+export * from './channelType';
 export * from './instagram';
