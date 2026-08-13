@@ -1,1 +1,115 @@
-{}
+{
+    "contactForm": {
+      "childInformation": [
+        {
+          "name": "ethnicity1",
+          "insights": ["customers", "customer_attribute_1"]
+        },
+        {
+          "name": "ethnicity2",
+          "insights": ["customers", "customer_attribute_2"]
+        },
+        {
+          "name": "district",
+          "insights": ["customers", "area"]
+        },
+        {
+          "name": "howHeardAboutWu",
+          "insights": ["customers", "zip"]
+        },
+        {
+          "name": "schoolStatus",
+          "insights": ["customers", "category"]
+        },
+        {
+          "name": "isClientInOtOrFc",
+          "insights": ["customers", "acquisition_date"]
+        },
+        {
+          "name": "contactedFrom",
+          "insights": ["customers", "email"]
+        },
+        {
+          "name": "onWaitinglist",
+          "insights": ["customers", "customer_manager"]
+        },
+        {
+          "name": "firstContact",
+          "insights": ["customers", "organization"]
+        },
+        {
+          "name": "topic",
+          "insights": ["customers", "market_segment"]
+        },
+        {
+          "name": "feelingRightNow",
+          "insights": ["conversations", "conversation_attribute_5"]
+        }
+      ],
+      "caseInformation": [
+        {
+          "name": "safetyIssueRaised",
+          "insights": ["conversations", "productive"]
+        },
+        {
+          "name": "wasSafetyRiskReduced",
+          "insights": ["conversations", "conversation_attribute_6"]
+        },
+        {
+          "name": "didContactInvolveDutyOfCare",
+          "insights": ["conversations", "conversation_attribute_7"]
+        },
+        {
+          "name": "otherActions",
+          "insights": ["conversations", "in_business_hours"]
+        },
+        {
+          "name": "servicesReferredTo",
+          "insights": ["conversations", "conversation_attribute_9"]
+        },
+        {
+          "name": "overallOutcome",
+          "insights": ["conversations", "conversation_attribute_10"]
+        },
+        {
+          "name": "markedForReview",
+          "insights": ["conversations", "conversation_measure_6"],
+          "type": "mixed-checkbox"
+        }
+      ]
+    },
+    "caseForm": {
+      "topLevel": [
+        {
+          "name": "id",
+          "insights": ["conversations", "case"]
+        }
+      ],
+      "dutyOfCare": [
+        {
+          "name": "dutyOfCareDate",
+          "insights": ["customers", "city"]
+        },
+        {
+          "name": "assessmentOfRisk",
+          "insights": ["customers", "region"]
+        },
+        {
+          "name": "planOfAction",
+          "insights": ["conversations", "followed_by"]
+        },
+        {
+          "name": "informedUnitManager",
+          "insights": ["conversations", "preceded_by"]
+        },
+        {
+          "name": "followUpRequired",
+          "insights": ["conversations", "initiated_by"]
+        },
+        {
+          "name": "furtherActionNeeded",
+          "insights": ["conversations", "initiative"]
+        }
+      ]
+    }
+  }

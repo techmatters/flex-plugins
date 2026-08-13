@@ -1,1 +1,16 @@
-[]
+[
+    {
+        "attributeName": "customer_attribute_3",
+        "insightsObject": "customers",
+        "paths": [
+          "savedContact.id"
+        ],
+        "saveForNonDataContacts": true
+      },
+      {
+        "attributeName": "content",
+        "insightsObject": "conversations",
+        "paths": ["savedContact.profileId"],
+        "saveForNonDataContacts": true
+      }
+]
