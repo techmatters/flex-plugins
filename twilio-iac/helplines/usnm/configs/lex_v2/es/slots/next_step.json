@@ -10,13 +10,13 @@
                 {
                     "message": {
                         "plainTextMessage": {
-                            "value": "Después de contactar a la Línea de Ayuda de NAMI, ¿qué tan preparado(a) te sientes para hacer algo respecto a tus inquietudes? Responde con el número correspondiente:\n\n1 = Nada preparado(a)\n2 = Un poco preparado(a)\n3 = Moderadamente preparado(a)\n4 = Muy preparado(a)\n5 = Extremadamente preparado(a)"
+                            "value": "Después de comunicarte con la Línea de Ayuda de NAMI, ¿qué tan preparado te sientes para hacer algo sobre tus inquietudes? Responde indicando el número correspondiente a tu respuesta:\n\n1 = Para nada preparado\n2 = Un poco preparado\n3 = Moderadamente preparado\n4 = Muy preparado\n5 = Completamente preparado"
                         }
                     },
                     "variations": [
                         {
                             "plainTextMessage": {
-                                "value": "Por favor responde solo con el número correspondiente a tu respuesta (ej.: 1, 2, 3, 4 o 5)."
+                                "value": "Responde solo con el número que corresponda a tu respuesta (por ejemplo: 1, 2, 3, 4 o 5)."
                             }
                         }
                     ]

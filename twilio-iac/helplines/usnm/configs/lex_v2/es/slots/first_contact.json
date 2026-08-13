@@ -10,13 +10,13 @@
                 {
                     "message": {
                         "plainTextMessage": {
-                            "value": "¿Fue esta la primera vez que contactaste a la Línea de Ayuda de NAMI? Por favor responde 'Sí' o 'No'.\n\nResponde 'SALTAR' para omitir cualquier pregunta que no desees responder."
+                            "value": "¿Esta fue la primera vez que te conectaste a la Línea de Ayuda de NAMI? Responde con 'sí' o con 'no'.\n\nResponde OMITIR' para saltar cualquier pregunta que no desees responder."
                         }
                     },
                     "variations": [
                         {
                             "plainTextMessage": {
-                                "value": "Por favor responde con 'Sí' o 'No'."
+                                "value": "Responde con 'sí' o con 'no'."
                             }
                         }
                     ]

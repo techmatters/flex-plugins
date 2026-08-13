@@ -10,7 +10,7 @@
                 {
                     "message": {
                         "plainTextMessage": {
-                            "value": "¿Cuál es tu código postal de 5 dígitos?"
+                            "value": "¿Cuáles son los 5 dígitos de tu código postal? "
                         }
                     },
                     "variations": [

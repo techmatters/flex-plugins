@@ -76,7 +76,7 @@
             "slot_question": "Are you a family member and/or caregiver of a loved one with a mental health concern?\nPlease reply 'Yes' or 'No'.",
             "failure_response": "Thank you for sharing your feedback. Feel free to reach out again if you need additional support.",
             "variations": [
-              ""
+              "Please reply with 'Yes' or 'No'."
             ]          
           },
           "7": {

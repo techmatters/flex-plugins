@@ -10,13 +10,13 @@
                 {
                     "message": {
                         "plainTextMessage": {
-                            "value": "¿Qué tan probable es que recomiendes la Línea de Ayuda de NAMI a otra persona?\nPor favor responde con un número del '1' (nada probable) al '5' (extremadamente probable)."
+                            "value": "¿Qué probabilidad hay de que recomiendes la Línea de Ayuda de NAMI a otra persona?\nResponde con un número del '1' (poco probable) al '5' (muy probable)."
                         }
                     },
                     "variations": [
                         {
                             "plainTextMessage": {
-                                "value": "Por favor responde solo con el número correspondiente a tu respuesta (ej.: 1, 2, 3, 4 o 5)."
+                                "value": "Por favor solo responda con el numero que corresponde a su respuesta (ej.: 1, 2, 3, 4, 5)."
                             }
                         }
                     ]

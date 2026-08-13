@@ -10,13 +10,13 @@
                 {
                     "message": {
                         "plainTextMessage": {
-                            "value": "¿Cuál de las siguientes opciones describe mejor tu género? Responde con el número correspondiente:\n\n1 = Mujer\n2 = Hombre\n3 = No binario\n4 = Dos Espíritus\n5 = Utilizo un término diferente"
+                            "value": "¿Cuál de las siguientes opciones describe mejor tu género? Responde con el número correspondiente a tu respuesta:\n\n1 = Mujer\n2 = Hombre\n3 = No binario\n4 = Dos espíritus\n5 = Me identifico con otro término"
                         }
                     },
                     "variations": [
                         {
                             "plainTextMessage": {
-                                "value": "Por favor responde solo con el número correspondiente a tu respuesta."
+                                "value": "Responde solo con el número que corresponda a tu respuesta (por ejemplo: 1, 2, 3, 4 o 5)."
                             }
                         }
                     ]

@@ -10,13 +10,13 @@
                 {
                     "message": {
                         "plainTextMessage": {
-                            "value": "Las siguientes preguntas demográficas nos ayudan a comprender mejor a las comunidades a las que servimos.\n\n¿Cuál es tu edad? Responde con el número correspondiente:\n\n1 = Menor de 18 años\n2 = 18-34 años\n3 = 35-54 años\n4 = 55-74 años\n5 = 75 años o más"
+                            "value": "Las siguientes preguntas demográficas nos ayudan a comprender mejor a las comunidades que apoyamos.\n\n¿Qué edad tienes? Responde indicando el número correspondiente a tu respuesta:\n\n1 = Menor de 18 años\n2 = Entre 18 y 34 años\n3 = Entre 35 y 54 años\n4 = Entre 55 y 74 años\n5 = 75 años"
                         }
                     },
                     "variations": [
                         {
                             "plainTextMessage": {
-                                "value": "Por favor responde solo con el número correspondiente a tu respuesta (ej.: 1, 2, 3, 4 o 5)."
+                                "value": "Responde solo con el número que corresponda a tu respuesta (por ejemplo: 1, 2, 3, 4 o 5)."
                             }
                         }
                     ]

@@ -10,13 +10,13 @@
                 {
                     "message": {
                         "plainTextMessage": {
-                            "value": "¿Qué tan apoyado(a) te sentiste durante tu contacto con la Línea de Ayuda? Responde con el número correspondiente:\n\n1 = Nada apoyado(a)\n2 = Un poco apoyado(a)\n3 = Moderadamente apoyado(a)\n4 = Muy apoyado(a)\n5 = Extremadamente apoyado(a)"
+                            "value": "¿Qué tan apoyado te sentiste durante tu contacto con la Línea de Ayuda de NAMI? Responde indicando el número correspondiente a tu respuesta:\n\n1 = No me sentí apoyado en absoluto\n2 = Me sentí un poco apoyado\n3 = Me sentí moderadamente apoyado\n4 = Me sentí muy apoyado\n5 = Me sentí completamente apoyado"
                         }
                     },
                     "variations": [
                         {
                             "plainTextMessage": {
-                                "value": "Por favor responde solo con el número correspondiente a tu respuesta (ej.: 1, 2, 3, 4 o 5)."
+                                "value": "Responde solo con el número que corresponda a tu respuesta (por ejemplo: 1, 2, 3, 4 o 5)."
                             }
                         }
                     ]

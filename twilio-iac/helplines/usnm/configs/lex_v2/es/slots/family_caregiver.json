@@ -10,13 +10,13 @@
                 {
                     "message": {
                         "plainTextMessage": {
-                            "value": "¿Eres un familiar y/o cuidador de un ser querido con una condición de salud mental?\nPor favor responde 'Sí' o 'No'."
+                            "value": "¿Eres familiar o cuidador de un ser querido con una problema relacionado con su salud mental?\nResponde 'sí' o 'no'. "
                         }
                     },
                     "variations": [
                         {
                             "plainTextMessage": {
-                                "value": "Por favor responde con 'Sí' o 'No'."
+                                "value": "Responda con 'sí' o con 'no'."
                             }
                         }
                     ]

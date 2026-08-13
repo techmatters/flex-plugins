@@ -10,13 +10,13 @@
                 {
                     "message": {
                         "plainTextMessage": {
-                            "value": "¿Qué tan bien satisfizo la Línea de Ayuda tus necesidades? Responde con el número correspondiente:\n\n1 = Nada bien\n2 = Un poco\n3 = Moderadamente bien\n4 = Muy bien\n5 = Extremadamente bien"
+                            "value": "¿En qué medida respondió a tus necesidades la Línea de Ayuda? Responde indicando el número correspondiente a tu respuesta:\n\n1 = Para nada\n2 = Un poco\n3 = Bastante\n4 = Muy bien\n5 = Extremadamente bien"
                         }
                     },
                     "variations": [
                         {
                             "plainTextMessage": {
-                                "value": "Por favor responde solo con el número correspondiente a tu respuesta (ej.: 1, 2, 3, 4 o 5)."
+                                "value": "Responde solo con el número que corresponda a tu respuesta (por ejemplo: 1, 2, 3, 4 o 5)."
                             }
                         }
                     ]
