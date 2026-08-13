@@ -146,7 +146,7 @@ const triggerPostStudioFlow = async ({
               contactId,
               contactTaskSid: taskSid,
               taskQueueSid,
-              taskAttributes,
+              taskLanguage: taskAttributes.language ?? '',
             },
             to: taskAttributes.from,
           });
