@@ -41,6 +41,9 @@ module "services" {
 module "taskRouter" {
   source                                = "../../taskRouter/v1"
   helpline                              = var.helpline
+  helpline_region                       = var.helpline_region
+  environment                           = var.environment
+  twilio_account_sid                    = local.secrets.twilio_account_sid
   serverless_url                        = module.serverless.serverless_environment_production_url
   custom_task_routing_filter_expression = var.custom_task_routing_filter_expression
   events_filter                         = var.events_filter
@@ -50,6 +53,7 @@ module "taskRouter" {
   task_channels                         = var.task_channels
   phone_numbers                         = var.phone_numbers
   workflow_vars                         = var.workflow_vars
+  enable_lambda_event_callback_url      = var.enable_lambda_event_callback_url
 }
 
 module "survey" {
