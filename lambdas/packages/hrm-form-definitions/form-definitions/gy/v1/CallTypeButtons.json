@@ -1,12 +1,6 @@
 [
     {
         "name": "child",
-        "label": "RESPONDERS: Incident in the Field",
-        "type": "button",
-        "category": "data"
-    },
-    {
-        "name": "caller",
         "label": "OPERATORS: Incident Requested",
         "type": "button",
         "category": "data"
@@ -14,6 +8,18 @@
     {
         "name": "followUp",
         "label": "Follow Up (Case ID Provided)",
+        "type": "button",
+        "category": "non-data"
+    },
+    {
+        "name": "hangUp",
+        "label": "Hang Up",
+        "type": "button",
+        "category": "non-data"
+    },
+    {
+        "name": "prank",
+        "label": "Prank",
         "type": "button",
         "category": "non-data"
     },
