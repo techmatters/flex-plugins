@@ -22,7 +22,7 @@
                     ]
                 }
             ],
-            "maxRetries": 1,
+            "maxRetries": 2,
             "allowInterrupt": true,
             "messageSelectionStrategy": "Ordered",
             "promptAttemptsSpecification": {
@@ -49,7 +49,30 @@
                         "startTimeoutMs": 30000
                     }
                 },
-                "Retry1": {
+                 "Retry1": {
+                    "allowInterrupt": true,
+                    "allowedInputTypes": {
+                        "allowAudioInput": true,
+                        "allowDTMFInput": true
+                    },
+                    "audioAndDTMFInputSpecification": {
+                        "startTimeoutMs": 4000,
+                        "audioSpecification": {
+                            "maxLengthMs": 15000,
+                            "endTimeoutMs": 640
+                        },
+                        "dtmfSpecification": {
+                            "maxLength": 513,
+                            "endTimeoutMs": 5000,
+                            "deletionCharacter": "*",
+                            "endCharacter": "#"
+                        }
+                    },
+                    "textInputSpecification": {
+                        "startTimeoutMs": 30000
+                    }
+                },
+                "Retry2": {
                     "allowInterrupt": true,
                     "allowedInputTypes": {
                         "allowAudioInput": true,
@@ -86,7 +109,7 @@
                     {
                         "message": {
                             "plainTextMessage": {
-                                "value": "Thank you for sharing your feedback. Feel free to reach out again if you need additional support."
+                                "value": "We're sorry, but we weren't able to understand your response."
                             }
                         }
                     }
