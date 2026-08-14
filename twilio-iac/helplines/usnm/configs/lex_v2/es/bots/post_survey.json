@@ -6,6 +6,7 @@
     "idle_session_ttl_in_seconds": "300",
     "staging_bot_alias_id": "TSTALIASID",
     "production_bot_alias_id": "TSTALIASID",
+    "fallback_intent_closing_response": "Gracias por contactarte con la línea de ayuda. No dudes en comunicarte nuevamente si necesitas apoyo adicional.",
     "type": "Bot",
     "intents": {
       "post_survey_yes": {

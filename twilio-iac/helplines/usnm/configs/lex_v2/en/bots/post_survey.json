@@ -6,6 +6,7 @@
     "idle_session_ttl_in_seconds": "300",
     "staging_bot_alias_id": "TSTALIASID",
     "production_bot_alias_id": "TSTALIASID",
+    "fallback_intent_closing_response": "Thank you for contacting NAMI Helplines. If you need additional support, please reach out to us again.",
     "type": "Bot",
     "intents": {
       "post_survey_yes": {
