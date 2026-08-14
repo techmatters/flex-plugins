@@ -15,11 +15,8 @@
  */
 
 import crypto from 'crypto';
-import { AccountSID } from '@tech-matters/twilio-types';
-import {
-  AseloCustomChannel,
-  sendConversationMessageToFlex,
-} from '../customChannelToFlex';
+import { AccountSID, aseloCustomChannelTypes } from '@tech-matters/twilio-types';
+import { sendConversationMessageToFlex } from '../customChannelToFlex';
 import { AccountScopedHandler, HttpRequest } from '../../httpTypes';
 import { newErr, newOk } from '../../Result';
 import { getChannelStudioFlowSid, getLineChannelSecret } from '../configuration';
@@ -125,13 +122,13 @@ export const lineToFlexHandler: AccountScopedHandler = async (
 
   const studioFlowSid = await getChannelStudioFlowSid(
     accountSid,
-    AseloCustomChannel.Line,
+    aseloCustomChannelTypes.LINE,
   );
   const responses: any[] = [];
 
   for (const messageEvent of messageEvents) {
     const messageText = messageEvent.message.text;
-    const channelType = AseloCustomChannel.Line;
+    const channelType = aseloCustomChannelTypes.LINE;
     const subscribedExternalId = destination; // AseloChat ID on Line
     const senderExternalId = messageEvent.source.userId; // The child ID on Line
     const chatFriendlyName = `${channelType}:${senderExternalId}`;

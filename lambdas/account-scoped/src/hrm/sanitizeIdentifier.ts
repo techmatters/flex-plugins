@@ -16,6 +16,7 @@
 
 import { HrmContact } from '@tech-matters/hrm-types';
 import { newErr, newOk, Result } from '../Result';
+import { ChannelType } from '@tech-matters/twilio-types';
 
 /**
  * IMPORTANT: keep up to date with flex-plugins/plugin-hrm-form/src/utils/task
@@ -30,6 +31,7 @@ const aseloConnectorNormalization = (s: string) => s.match(/sip:([^@]+)/)?.[1] |
 type TransformIdentifierFunction = (c: string) => string;
 const channelTransformations: { [k: string]: TransformIdentifierFunction[] } = {
   voice: [aseloConnectorNormalization, phoneNumberStandardization],
+  voicemail: [aseloConnectorNormalization, phoneNumberStandardization],
   sms: [phoneNumberStandardization],
   whatsapp: [s => s.replace('whatsapp:', ''), phoneNumberStandardization],
   modica: [s => s.replace('modica:', ''), phoneNumberStandardization],
@@ -67,7 +69,7 @@ const isVoiceTrigger = (obj: any): obj is VoiceTrigger =>
 export type TriggerEvent = {
   trigger: ChatTrigger | VoiceTrigger | ConversationTrigger;
   request: { cookies: {}; headers: {} };
-  channelType?: string;
+  channelType?: ChannelType;
 };
 
 type ConversationTrigger = {
