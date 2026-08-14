@@ -473,7 +473,6 @@ resource "null_resource" "update_fallback_intent" {
       --bot-version ${aws_lexv2models_bot_locale.this[each.key].bot_version} \
       --locale-id ${aws_lexv2models_bot_locale.this[each.key].locale_id} \
       --intent-id FALLBCKINT \
-      --intent-name FallbackIntent \
       --intent-closing-setting '${replace(jsonencode({
         closingResponse = {
           messageGroups = [
