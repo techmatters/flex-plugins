@@ -150,6 +150,18 @@ export const handleChatbotCallback: AccountScopedHandler = async (
       const twilioWorkspaceSid = await getWorkspaceSid(accountSid);
 
       const { lexResponse } = lexResult.data;
+      // If the session ended, we should unlock the channel to continue the Studio Flow
+      if (LexClient.isEndOfDialog(lexResponse)) {
+        await chatbotCallbackCleanup({
+          accountSid,
+          twilioClient,
+          conversation,
+          channel,
+          channelAttributes,
+          memory: LexClient.getBotMemory({ lexResponse }),
+          twilioWorkspaceSid,
+        });
+      }
 
       // TODO: unify with functions/channelCapture/channelCaptureHandlers.ts
       const messages = (lexResponse.messages || []).map(m => m.content || '');
@@ -171,19 +183,6 @@ export const handleChatbotCallback: AccountScopedHandler = async (
             xTwilioWebhookEnabled: 'true',
           });
         }
-      }
-
-      // If the session ended, we should unlock the channel to continue the Studio Flow
-      if (LexClient.isEndOfDialog(lexResponse)) {
-        await chatbotCallbackCleanup({
-          accountSid,
-          twilioClient,
-          conversation,
-          channel,
-          channelAttributes,
-          memory: LexClient.getBotMemory({ lexResponse }),
-          twilioWorkspaceSid,
-        });
       }
 
       return newOk({});
