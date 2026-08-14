@@ -12,6 +12,7 @@
     { "path": "packages/twilio-configuration" },
     { "path": "packages/scheduled-jobs" },
     { "path": "account-scoped" },
+    { "path": "scheduled-jobs-processor" },
     { "path": "facebookCallback" },
     { "path": "facebookSignin" },
     { "path": "instagramWebhook" },

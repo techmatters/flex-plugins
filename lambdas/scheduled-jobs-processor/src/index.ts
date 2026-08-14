@@ -14,22 +14,13 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import type { ALBEvent, ALBResult } from 'aws-lambda';
+import type { Context } from 'aws-lambda';
 // import { SSMClient, GetParameterCommand } from '@aws-sdk/client-ssm';
 
-// const ssmClient = new SSMClient({ region: 'us-east-1' });
-
-// export const getSsmParameter = async (Name: string) => {
-//   const command = new GetParameterCommand({ Name, WithDecryption: true });
-//   const response = await ssmClient.send(command);
-//   return response.Parameter?.Value;
-// };
-
-export const handler = async (event: ALBEvent): Promise<ALBResult> => {
-  console.debug(event);
-  return {
-    statusCode: 200,
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ message: 'Ok' }),
-  };
+export const handler = async (event: any, context: Context): Promise<void> => {
+  console.log('Received scheduled event', {
+    requestId: context.awsRequestId,
+    event,
+  });
+  return;
 };
