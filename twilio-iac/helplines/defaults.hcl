@@ -3,16 +3,16 @@
  * are the top level so never need to be merged together with other locals
  **/
 locals {
-  region                = "us-east-1"
-  helpline_region       = "us-east-1"
-  aws_monitoring_region = "us-east-1"
-  enable_post_survey    = false
-  enable_system_down    = false
-  target_task_name      = "greeting"
-  twilio_numbers        = []
-  channel               = ""
-
-  enable_external_recordings = false
+  region                           = "us-east-1"
+  helpline_region                  = "us-east-1"
+  aws_monitoring_region            = "us-east-1"
+  enable_post_survey               = false
+  enable_system_down               = false
+  target_task_name                 = "greeting"
+  twilio_numbers                   = []
+  channel                          = ""
+  enable_lambda_event_callback_url = false
+  enable_external_recordings       = false
 
   channel_attributes = {
     webchat : "/app/twilio-iac/helplines/templates/channel-attributes/webchat.tftpl"
@@ -27,7 +27,7 @@ locals {
   contacts_waiting_channels = ["voice", "web", "whatsapp", "facebook", "twitter", "instagram", "line"]
 
   enable_voice_channel = false
-  
+
   studio_flows = {}
 
   channels = {}
@@ -51,7 +51,7 @@ locals {
     "reservation.timeout",
     "reservation.wrapup",
   ]
- 
+
   activities = {}
   task_queues = {
     master : {
@@ -80,7 +80,7 @@ locals {
     //   templatefile  = "/app/twilio-iac/helplines/templates/workflows/survey.tftpl"
     // },
   }
-  
+
 
   /*
   CAREFUL: OUR CODE BASE ONLY SUPPORTS CONVERSATIONS FOR THE CHAT TASK CHANNEL. 
@@ -114,16 +114,16 @@ locals {
     },
     task_router : {
       events = [
-        {type:"com.twilio.taskrouter.reservation.created"},
+        { type : "com.twilio.taskrouter.reservation.created" },
         { type : "com.twilio.taskrouter.reservation.accepted" },
         { type : "com.twilio.taskrouter.reservation.rejected" },
         { type : "com.twilio.taskrouter.reservation.timeout" },
         { type : "com.twilio.taskrouter.reservation.canceled" },
         { type : "com.twilio.taskrouter.reservation.rescinded" },
-        {type:"com.twilio.taskrouter.reservation.wrapup"},
-        {type:"com.twilio.taskrouter.reservation.completed"},
+        { type : "com.twilio.taskrouter.reservation.wrapup" },
+        { type : "com.twilio.taskrouter.reservation.completed" },
         { type : "com.twilio.taskrouter.reservation.failed" },
-        {type:"com.twilio.taskrouter.workflow.entered"},
+        { type : "com.twilio.taskrouter.workflow.entered" },
         { type : "com.twilio.taskrouter.workflow.timeout" },
         //{type:"com.twilio.taskrouter.workflow.skipped"},
         //{type:"com.twilio.taskrouter.workflow.target-matched"},
@@ -138,7 +138,7 @@ locals {
         { type : "com.twilio.taskrouter.task.canceled" },
         { type : "com.twilio.taskrouter.task.updated" },
         { type : "com.twilio.taskrouter.task.deleted" },
-        {type:"com.twilio.taskrouter.task.completed"},
+        { type : "com.twilio.taskrouter.task.completed" },
         //{type:"com.twilio.taskrouter.task.wrapup"},
         { type : "com.twilio.taskrouter.task.transfer-initiated" },
         { type : "com.twilio.taskrouter.task.transfer-failed" },
