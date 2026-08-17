@@ -34,13 +34,10 @@ export class ProtectedApiError extends ApiError {
 /**
  * Factored out function that handles a protected api call hosted in serverless toolkit.
  * Will throw Error if server responses with and http error code.
- * @param {string} endPoint endpoint to fetch from (withouth the host part of url, e.g. "/cases/contacts").
- * @param {{ [k: string]: any }} body Same options object that will be passed to the fetch function (here you can include the BODY of the request)
- * @param {FetchOptions & { useTwilioLambda?: boolean }} allOptions
- * @returns {Promise<any>} the api response (if not error)
+
  */
 const fetchProtectedApi = async (
-  endPoint,
+  endpoint: string,
   body: Record<string, any> = {},
   allOptions?: FetchOptions & { useTwilioLambda?: boolean; useJsonEncode?: boolean },
 ) => {
@@ -65,7 +62,33 @@ const fetchProtectedApi = async (
     ...fetchOptions,
   };
   try {
-    return await fetchApi(new URL(useTwilioLambda ? accountScopedLambdaBaseUrl : serverlessBaseUrl), endPoint, options);
+    return await fetchApi(new URL(useTwilioLambda ? accountScopedLambdaBaseUrl : serverlessBaseUrl), endpoint, options);
+  } catch (error) {
+    if (error instanceof ApiError) {
+      const message = error.response?.status === 403 ? 'Server responded with 403 status (Forbidden)' : error.message;
+      throw new ProtectedApiError(message, { response: error.response, body: error.body }, error);
+    } else throw error;
+  }
+};
+
+// eslint-disable-next-line import/no-unused-modules
+export const postToAccountScopedLambda = async (
+  endpoint: string,
+  body: Record<string, any> = {},
+  allOptions?: FetchOptions & { useJsonEncode?: boolean },
+) => fetchProtectedApi(endpoint, body, { ...(allOptions ?? {}), useTwilioLambda: true });
+
+export const getFromAccountScopedLambda = async (endpoint: string, fetchOptions?: FetchOptions) => {
+  const { accountScopedLambdaBaseUrl } = getHrmConfig();
+  const token = getValidToken();
+  if (token instanceof Error) throw new ApiError(`Aborting request due to token issue: ${token.message}`, {}, token);
+
+  const options: RequestInit = {
+    method: 'GET',
+    ...(fetchOptions ?? {}),
+  };
+  try {
+    return await fetchApi(new URL(accountScopedLambdaBaseUrl), endpoint, options);
   } catch (error) {
     if (error instanceof ApiError) {
       const message = error.response?.status === 403 ? 'Server responded with 403 status (Forbidden)' : error.message;

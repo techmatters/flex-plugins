@@ -411,7 +411,10 @@ const ACCOUNTSID_ROUTES: Record<
     handler: filterCountryOrVoIPHandler,
   }),
   'configuration/twilioPrivate': newRoute({
-    requestPipeline: [validateRequestMethod('GET'), validateWebhookRequest],
+    requestPipeline: [
+      validateRequestMethod('GET'),
+      validateFlexTokenRequest({ tokenMode: 'agent' }),
+    ],
     handler: getTwilioPrivateConfigurationHandler,
   }),
 };
