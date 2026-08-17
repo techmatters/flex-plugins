@@ -3,12 +3,13 @@
   "extends": "./tsconfig.base.json",
   "files": [],
   "references": [
+    { "path": "packages/s3" },
     { "path": "packages/ssm-cache" },
     { "path": "packages/configuration" },
     { "path": "packages/hrm-types" },
     { "path": "packages/hrm-form-definitions" },
     { "path": "packages/twilio-types" },
     { "path": "packages/twilio-configuration" },
-    { "path": "account-scoped" },
+    { "path": "account-scoped" }
   ]
 }
