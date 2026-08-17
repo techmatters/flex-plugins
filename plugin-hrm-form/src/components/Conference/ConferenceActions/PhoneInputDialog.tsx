@@ -38,8 +38,8 @@ type QuickDialItem = {
 };
 
 const TEMPORARY_HARDCODED_QUICKDIAL: QuickDialItem[] = [
-  { labelKey: 'ConferencingPanel-PhoneInputDialog-QuickDialItem/988-English', phoneNumber: '+353873447272' },
-  { labelKey: 'ConferencingPanel-PhoneInputDialog-QuickDialItem/988-Spanish', phoneNumber: '+353873447272' },
+  { labelKey: 'Conference-PhoneInputDialog-QuickDialItem/988-English', phoneNumber: '+35314482861' },
+  { labelKey: 'Conference-PhoneInputDialog-QuickDialItem/988-Spanish', phoneNumber: '+35317712424 ' },
 ];
 
 const ALLOW_MANUAL_DIAL: boolean = true;
@@ -81,7 +81,7 @@ const PhoneInputDialog: React.FC<PhoneDialogProps> = ({
       </Row>
       {TEMPORARY_HARDCODED_QUICKDIAL.length && (
         <Row>
-          <Template code="ConferencePanel-PhoneInputDialog-QuickDialTitle" />
+          <Template code="Conference-PhoneInputDialog-QuickDialTitle" />
         </Row>
       )}
       {TEMPORARY_HARDCODED_QUICKDIAL.map(({ phoneNumber, labelKey }) => (
@@ -89,9 +89,11 @@ const PhoneInputDialog: React.FC<PhoneDialogProps> = ({
           <Template code={labelKey} /> {dialButton(() => handleQuickDialClick(phoneNumber))}
         </Row>
       ))}
-      {TEMPORARY_HARDCODED_QUICKDIAL.length && ALLOW_MANUAL_DIAL && (
-        <Template code="ConferencePanel-PhoneInputDialog-Or" />
-      )}
+      <Row key="or">
+        {TEMPORARY_HARDCODED_QUICKDIAL.length && ALLOW_MANUAL_DIAL && (
+          <Template code="Conference-PhoneInputDialog-Or" />
+        )}
+      </Row>
       {ALLOW_MANUAL_DIAL && (
         <>
           <Template code={ENTER_NUMBER_KEY} />

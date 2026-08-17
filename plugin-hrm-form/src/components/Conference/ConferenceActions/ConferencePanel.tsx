@@ -118,7 +118,7 @@ const ConferencePanel: React.FC<Props> = ({ task, conference }) => {
           targetNumber={phoneNumber}
           setTargetNumber={setPhoneNumber}
           handleManualDialClick={handleClick(() => phoneNumber)}
-          handleQuickDialClick={(numberToDial: string) => handleClick(() => numberToDial)}
+          handleQuickDialClick={(numberToDial: string) => handleClick(() => numberToDial)()}
           setIsDialogOpen={setIsDialogOpen}
           isLoading={isCallStatusLoading(callStatus)}
         />
