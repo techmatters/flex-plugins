@@ -57,7 +57,9 @@ const fetchProtectedApi = async (
     method: 'POST',
     body: encodedBody,
     headers: {
+      Authorization: `Bearer ${token}`,
       'Content-Type': contentType,
+      ...fetchOptions.headers,
     },
     ...fetchOptions,
   };
@@ -86,6 +88,10 @@ export const getFromAccountScopedLambda = async (endpoint: string, fetchOptions?
   const options: RequestInit = {
     method: 'GET',
     ...(fetchOptions ?? {}),
+    headers: {
+      Authorization: `Bearer ${token}`,
+      ...fetchOptions.headers,
+    },
   };
   try {
     return await fetchApi(new URL(accountScopedLambdaBaseUrl), endpoint, options);
