@@ -46,6 +46,8 @@ const fetchProtectedApi = async (
   const token = getValidToken();
   if (token instanceof Error) throw new ApiError(`Aborting request due to token issue: ${token.message}`, {}, token);
 
+  // Adding the token to the body is for backwards compatibility only
+  // Once serverless is fully deprecated and all account scoped lambdas are past v2.65.x it can be removed
   const { contentType, encodedBody } = useJsonEncode
     ? { contentType: 'application/json', encodedBody: JSON.stringify({ ...body, Token: token }) }
     : {
