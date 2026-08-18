@@ -44,7 +44,7 @@ const createMockRequest = (): HttpRequest => ({
   body: {},
 });
 
-describe('getTwilioPrivateConfigurationHandler', () => {
+describe('getAseloTwilioConfigurationHandler', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockGetDocsBucketName.mockResolvedValue(TEST_BUCKET);
@@ -66,7 +66,7 @@ describe('getTwilioPrivateConfigurationHandler', () => {
     expect(mockGetDocsBucketName).toHaveBeenCalledWith(TEST_ACCOUNT_SID);
     expect(mockGetS3Object).toHaveBeenCalledWith(
       TEST_BUCKET,
-      'configuration/twilio-private.json',
+      'configuration/twilio.json',
     );
   });
 
