@@ -13,8 +13,8 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
-import { getFromAccountScopedLambda } from './fetchProtectedApi';
 import type { ConfigurationState } from '../states/configuration/reducer';
+import {getFromAccountScopedLambda} from "./fetchAccountScopedLambdaApi";
 
 /**
  * Sends a new message to the channel bounded to the provided taskSid. Optionally you can change the "from" value (default is "system").
