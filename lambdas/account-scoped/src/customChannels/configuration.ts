@@ -14,12 +14,9 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import {
-  AccountSID,
-  AseloCustomChannelType,
-  ChannelType,
-} from '@tech-matters/twilio-types';
+import { AccountSID } from '@tech-matters/twilio-types';
 import { getSsmParameter, SsmParameterNotFound } from '@tech-matters/ssm-cache';
+import { AseloCustomChannel } from './customChannelToFlex';
 import { retrieveServiceConfigurationAttributes } from '../configuration/aseloConfiguration';
 import { getTwilioClient } from '@tech-matters/twilio-configuration';
 
@@ -92,7 +89,7 @@ export const getFacebookAppSecret = (): Promise<string> =>
 
 export const getChannelStudioFlowSid = (
   accountSid: AccountSID,
-  channelName: ChannelType & (AseloCustomChannelType | 'chat'),
+  channelName: AseloCustomChannel | 'chat',
 ): Promise<string> =>
   getSsmParameter(
     `/${process.env.NODE_ENV}/twilio/${accountSid}/${channelName}_studio_flow_sid`,

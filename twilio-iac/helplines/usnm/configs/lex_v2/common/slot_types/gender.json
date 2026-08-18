@@ -96,10 +96,7 @@
         { "value": "x" },
         { "value": "SALTAR" },
         { "value": "saltar" },
-        { "value": "Saltar" },
-        {"value": "Omitir"},
-        {"value": "omitir"},
-        {"value": "OMITIR"}
+        { "value": "Saltar" }
       ]
     }
   ],

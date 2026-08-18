@@ -183,7 +183,8 @@ export const closeCallSelf = async (task: ITask): Promise<void> => {
 };
 
 export const canTransferConference = (task: ITask) => {
-  if (!TaskHelper.isVoiceTask(task)) {
+  const isChatTask = TaskHelper.isChatBasedTask(task);
+  if (isChatTask) {
     return true;
   }
 

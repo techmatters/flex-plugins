@@ -69,8 +69,6 @@ const renderChannel = ({
       return getChannelUI('IG', channelColor, contactsWaiting, true);
     case coreChannelTypes.line:
       return getChannelUI('LN', channelColor, contactsWaiting, true);
-    case coreChannelTypes.voicemail:
-      return getChannelUI('VM', channelColor, contactsWaiting, true);
     default:
       return null;
   }

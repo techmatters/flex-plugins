@@ -20,11 +20,22 @@ locals {
     }
 
     channels = {
+      webchat : {
+        channel_type     = "web"
+        contact_identity = ""
+        templatefile     = "/app/twilio-iac/helplines/templates/studio-flows/messaging-blocking-preq-lambda-sd.tftpl"
+        channel_flow_vars = {
+          widget_from                   = "Barnardos"
+          chat_blocked_message          = "Sorry, you're not able to contact Barnardos from this device or account right now"
+          send_message_webchat_prequeue = "Kia Ora! We are so pleased you have reached out to talk!  We'll get you connected with one of our counsellors! While you are waiting for a counsellor, no one can see or read the messages you type. Your conversation will only be visible once a counsellor joins the chat. \n\nWe aim to connect you as quickly as possible but if this is an emergency or you/someone else is in immediate danger, please end this chat and dial 111 immediately. \n\nWhat you share with us is private, and we’ll keep it confidential. Sometimes, if we’re really worried about your safety or someone else’s, we may need to get extra help to keep people safe.  If you want to learn more about how we keep your information safe and how it’s used, you can visit our website at www.whatsup.co.nz"
+        }
+        chatbot_unique_names = []
+      },
       chat : {
         messaging_mode   = "conversations"
         channel_type     = "chat"
         contact_identity = ""
-        templatefile     = "/app/twilio-iac/helplines/nzba/templates/studio-flows/messaging-blocking-preq-conv-lambda-sd.tftpl"
+        templatefile     = "/app/twilio-iac/helplines/templates/studio-flows/messaging-blocking-preq-conv-lambda-sd.tftpl"
         channel_flow_vars = {
           widget_from                   = "Barnardos"
           chat_blocked_message          = "Sorry, you're not able to contact Barnardos from this device or account right now"
@@ -35,16 +46,11 @@ locals {
       voice : {
         channel_type     = "voice"
         contact_identity = ""
-        templatefile     = "/app/twilio-iac/helplines/nzba/templates/studio-flows/voice-no-chatbot-operating-hours-blocking-lambda-sd.tftpl"
+        templatefile     = "/app/twilio-iac/helplines/templates/studio-flows/voice-blocking-no-op-hours-sd.tftpl"
         channel_flow_vars = {
           play_message_voice_prequeue = "Hello. Please hold on for a while and we will attend to you as soon as we can. Thank you for your patience!."
           play_message_voice_blocked  = "Sorry, you're not able to contact Barnardos from this number"
           voice_ivr_language          = "en-US"
-          voice_closed_message_url = "https://nzba-functions-6625.twil.io/After-hours-message.mp3"
-          voice_blocked_message_url = "https://nzba-functions-6625.twil.io/Generic-block-message.mp3"
-          voice_welcome_message_url = "https://nzba-functions-6625.twil.io/Welcome-Message.mp3"
-          voice_risk_question_url = "https://nzba-functions-6625.twil.io/Risk-Check-Question.mp3"
-          voice_prequeue_message_url = "https://nzba-functions-6625.twil.io/Queue-waiting-message.mp3"
         }
         chatbot_unique_names = []
       },

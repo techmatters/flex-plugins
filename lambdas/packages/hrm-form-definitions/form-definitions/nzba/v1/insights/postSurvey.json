@@ -1,17 +1,12 @@
 [
   {
-    "insightsObject": "customers",
-    "attributeName": "customer_attribute_1",
-    "questions": ["experience"]
-  },
-  {
-    "insightsObject": "customers",
-    "attributeName": "customer_attribute_2",
-    "questions": ["mood"]
-  },
-  {
-    "insightsObject": "customers",
-    "attributeName": "customer_attribute_3", 
+    "insightsObject": "conversations",
+    "attributeName": "conversation_measure_6",
     "questions": ["was_helpful"]
+  },
+  {
+    "insightsObject": "conversations",
+    "attributeName": "conversation_measure_7",
+    "questions": ["would_recommend"]
   }
 ]

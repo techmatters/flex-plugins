@@ -44,7 +44,6 @@
         "enableExternalRecordings": false,
         "enableUnmaskingCalls": false,
         "enableClientProfiles": true,
-        "preventSendingAttachmentsFromFlex": false,
         "enableConferencing": false,
         "feature_flags": {
             "enable_active_contact_header": true,

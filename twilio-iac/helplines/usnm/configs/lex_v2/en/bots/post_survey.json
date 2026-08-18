@@ -6,7 +6,6 @@
     "idle_session_ttl_in_seconds": "300",
     "staging_bot_alias_id": "TSTALIASID",
     "production_bot_alias_id": "TSTALIASID",
-    "fallback_intent_closing_response": "Thank you for contacting the NAMI Helpline. If you need additional support, please reach out to us again.",
     "type": "Bot",
     "intents": {
       "post_survey_yes": {
@@ -77,7 +76,7 @@
             "slot_question": "Are you a family member and/or caregiver of a loved one with a mental health concern?\nPlease reply 'Yes' or 'No'.",
             "failure_response": "Thank you for sharing your feedback. Feel free to reach out again if you need additional support.",
             "variations": [
-              "Please reply with 'Yes' or 'No'."
+              ""
             ]          
           },
           "7": {

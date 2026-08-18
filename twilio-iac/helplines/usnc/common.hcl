@@ -28,7 +28,7 @@ locals {
       },
       survey : {
         friendly_name = "Survey Workflow"
-        templatefile  = "/app/twilio-iac/helplines/templates/workflows/survey.tftpl"
+        templatefile  = "/app/twilio-iac/helplines/templates/workflows/lex.tftpl"
       }
     }
 

@@ -15,18 +15,14 @@
  */
 
 import { Twilio } from 'twilio';
-import {
-  AseloCustomChannelType,
-  ChannelType,
-  channelTypes,
-  ConversationSID,
-} from '@tech-matters/twilio-types';
+import { ConversationSID } from '@tech-matters/twilio-types';
+import { AseloCustomChannel } from '../customChannels/aseloCustomChannels';
 import { newErr, newOk, Result } from '../Result';
 
 const CONVERSATION_CLOSE_TIMEOUT = 'P3D'; // ISO 8601 duration format https://en.wikipedia.org/wiki/ISO_8601
 export type CreateFlexConversationParams = {
   studioFlowSid: string;
-  channelType: ChannelType & (AseloCustomChannelType | typeof channelTypes.WEB); // The chat channel being used
+  channelType: AseloCustomChannel | 'web'; // The chat channel being used
   uniqueUserName: string; // Unique identifier for this user
   senderScreenName: string; // Friendly info to show in the Flex UI (like Telegram handle)
   onMessageAddedWebhookUrl?: string; // The url that must be used as the onMessageSent event webhook.

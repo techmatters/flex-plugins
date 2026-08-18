@@ -23,18 +23,6 @@
         },
         {
           "value": "One"
-        },
-        {
-          "value": "Si"
-        },
-        {
-          "value": "si"
-        },
-        {
-          "value": "sí"
-        },
-        {
-          "value": "Si"
         }
       ]
     },
@@ -60,9 +48,6 @@
         },
         {
           "value": "Two"
-        },
-        {
-          "value": "no"
         }
       ]
     },
@@ -78,10 +63,7 @@
         { "value": "x" },
         { "value": "SALTAR" },
         { "value": "saltar" },
-        { "value": "Saltar" },
-        {"value": "Omitir"},
-        {"value": "omitir"},
-        {"value": "OMITIR"}
+        { "value": "Saltar" }
       ]
     }
   ],

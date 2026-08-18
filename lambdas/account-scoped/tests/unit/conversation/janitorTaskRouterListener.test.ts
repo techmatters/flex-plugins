@@ -19,6 +19,7 @@ import { handleEvent } from '../../../src/conversation/janitorTaskRouterListener
 import { chatChannelJanitor } from '../../../src/conversation/chatChannelJanitor';
 import { hasTaskControl } from '../../../src/transfer/hasTaskControl';
 import { isChatCaptureControlTask } from '../../../src/channelCapture/channelCaptureHandlers';
+import { isAseloCustomChannel } from '../../../src/customChannels/aseloCustomChannels';
 import { EventFields } from '../../../src/taskrouter';
 import {
   TEST_ACCOUNT_SID,
@@ -34,7 +35,6 @@ import {
   TASK_WRAPUP,
 } from '../../../src/taskrouter/eventTypes';
 import { getCurrentDefinitionVersion } from '../../../src/hrm/formDefinitionsCache';
-import { isAseloCustomChannelType } from '@tech-matters/twilio-types';
 
 jest.mock('../../../src/conversation/chatChannelJanitor', () => ({
   chatChannelJanitor: jest.fn(),
@@ -55,11 +55,11 @@ const mockIsChatCaptureControlTask = isChatCaptureControlTask as jest.MockedFunc
   typeof isChatCaptureControlTask
 >;
 
-jest.mock('@tech-matters/twilio-types', () => ({
-  isAseloCustomChannelType: jest.fn(),
+jest.mock('../../../src/customChannels/aseloCustomChannels', () => ({
+  isAseloCustomChannel: jest.fn(),
 }));
-const mockIsAseloCustomChannelType = isAseloCustomChannelType as jest.MockedFunction<
-  typeof isAseloCustomChannelType
+const mockIsAseloCustomChannel = isAseloCustomChannel as jest.MockedFunction<
+  typeof isAseloCustomChannel
 >;
 
 jest.mock('@tech-matters/twilio-configuration', () => ({
@@ -104,7 +104,7 @@ describe('janitorTaskRouterListener', () => {
     });
     mockHasTaskControl.mockResolvedValue(true);
     mockIsChatCaptureControlTask.mockReturnValue(false);
-    mockIsAseloCustomChannelType.mockReturnValue(false);
+    mockIsAseloCustomChannel.mockReturnValue(false);
     mockGetCurrentDefinitionVersion.mockResolvedValue({} as any);
   });
 
@@ -154,7 +154,7 @@ describe('janitorTaskRouterListener', () => {
   test('custom channel task on TASK_DELETED - calls chatChannelJanitor for channelSid', async () => {
     mockIsChatCaptureControlTask.mockReturnValue(false);
     mockHasTaskControl.mockResolvedValue(true);
-    mockIsAseloCustomChannelType.mockReturnValue(true);
+    mockIsAseloCustomChannel.mockReturnValue(true);
 
     await handleEvent(
       newEventFields('chat', TASK_DELETED, { channelType: 'instagram' }),
@@ -170,7 +170,7 @@ describe('janitorTaskRouterListener', () => {
   test('custom channel task but not in task control - skips chatChannelJanitor', async () => {
     mockIsChatCaptureControlTask.mockReturnValue(false);
     mockHasTaskControl.mockResolvedValue(false);
-    mockIsAseloCustomChannelType.mockReturnValue(true);
+    mockIsAseloCustomChannel.mockReturnValue(true);
 
     await handleEvent(
       newEventFields('chat', TASK_DELETED, { channelType: 'instagram' }),
@@ -187,7 +187,7 @@ describe('janitorTaskRouterListener', () => {
     });
     mockIsChatCaptureControlTask.mockReturnValue(false);
     mockHasTaskControl.mockResolvedValue(true);
-    mockIsAseloCustomChannelType.mockReturnValue(false);
+    mockIsAseloCustomChannel.mockReturnValue(false);
 
     await handleEvent(newEventFields('chat', TASK_WRAPUP), TEST_ACCOUNT_SID, client);
 
@@ -203,7 +203,7 @@ describe('janitorTaskRouterListener', () => {
     });
     mockIsChatCaptureControlTask.mockReturnValue(false);
     mockHasTaskControl.mockResolvedValue(true);
-    mockIsAseloCustomChannelType.mockReturnValue(false);
+    mockIsAseloCustomChannel.mockReturnValue(false);
     mockGetCurrentDefinitionVersion.mockResolvedValue({
       insights: { postSurveySpecs: [{ taskChannelUniqueName: 'survey' }] },
     } as any);
@@ -219,7 +219,7 @@ describe('janitorTaskRouterListener', () => {
     });
     mockIsChatCaptureControlTask.mockReturnValue(false);
     mockHasTaskControl.mockResolvedValue(true);
-    mockIsAseloCustomChannelType.mockReturnValue(false);
+    mockIsAseloCustomChannel.mockReturnValue(false);
     mockGetCurrentDefinitionVersion.mockResolvedValue({} as any);
 
     await handleEvent(newEventFields('chat', TASK_WRAPUP), TEST_ACCOUNT_SID, client);

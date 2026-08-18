@@ -1,16 +1,1 @@
-[
-    {
-        "attributeName": "initiative",
-        "insightsObject": "conversations",
-        "paths": [
-          "savedContact.id"
-        ],
-        "saveForNonDataContacts": true
-      },
-      {
-        "attributeName": "content",
-        "insightsObject": "conversations",
-        "paths": ["savedContact.profileId"],
-        "saveForNonDataContacts": true
-      }
-]
+[]

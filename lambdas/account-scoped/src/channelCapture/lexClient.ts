@@ -172,10 +172,7 @@ const getBotMemory = ({ lexResponse }: { lexResponse: RecognizeTextResponse }) =
   }
 
   return Object.entries(slots).reduce(
-    (accum, [q, slot]) => ({
-      ...accum,
-      [q]: slot?.value?.interpretedValue || '',
-    }),
+    (accum, [q, { value }]) => ({ ...accum, [q]: value?.interpretedValue || '' }),
     {} as LexMemory,
   );
 };

@@ -31,7 +31,6 @@ import WhatsappIcon from '../../common/icons/WhatsappIcon';
 import FacebookIcon from '../../common/icons/FacebookIcon';
 import SmsIcon from '../../common/icons/SmsIcon';
 import CallIcon from '../../common/icons/CallIcon';
-import VoicemailIcon from '../../common/icons/VoicemailIcon';
 import { colors } from '../../../channels/colors';
 
 export type IconType = ChannelTypes | 'note' | 'referral';
@@ -56,8 +55,6 @@ export const getIcon = (type: IconType, size: string = '24px') => {
       return <InstagramIcon width={size} height={size} color={colors.instagram} />;
     case channelTypes.line:
       return <LineIcon width={size} height={size} color={colors.line} />;
-    case channelTypes.voicemail:
-      return <VoicemailIcon width={size} height={size} color={colors.voicemail} />;
     case 'note':
       return <NoteIcon style={{ opacity: 0.62, fontSize: size }} />;
     case 'referral':

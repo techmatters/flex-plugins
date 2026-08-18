@@ -14,15 +14,14 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 import type { ParticipantInstance } from 'twilio/lib/rest/api/v2010/account/conference/participant';
-import { CallSid } from '@tech-matters/twilio-types';
 
 export const isAgentInConference = ({
   callSid,
   customerCallSid,
   participant,
 }: {
-  callSid: CallSid;
-  customerCallSid: CallSid;
+  callSid: string;
+  customerCallSid: string;
   participant: ParticipantInstance;
 }): boolean => {
   console.debug('Checking if participant is an agent:', participant);

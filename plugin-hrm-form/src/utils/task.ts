@@ -35,7 +35,6 @@ const phoneNumberStandardization = (s: string) => [trimSpaces, trimHyphens].redu
 type TransformIdentifierFunction = (c: string) => string;
 const channelTransformations: { [k in ChannelTypes]: TransformIdentifierFunction[] } = {
   voice: [phoneNumberStandardization],
-  voicemail: [phoneNumberStandardization],
   sms: [phoneNumberStandardization],
   whatsapp: [s => s.replace('whatsapp:', ''), phoneNumberStandardization],
   modica: [s => s.replace('modica:', ''), phoneNumberStandardization],

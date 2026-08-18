@@ -78,6 +78,8 @@ export const removeConversation = async (
   },
 ) => client.conversations.v1.conversations.get(conversationSid).remove();
 
+export { AseloCustomChannel, isAseloCustomChannel } from './aseloCustomChannels';
+
 type SendConversationMessageToFlexParams = Omit<
   CreateFlexConversationParams,
   'twilioNumber'

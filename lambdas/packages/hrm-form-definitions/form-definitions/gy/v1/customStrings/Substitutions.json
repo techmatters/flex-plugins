@@ -62,21 +62,6 @@
     "CaseSection-Add/disposition": "Add Disposition & Sign Off",
     "Case-SectionList-NoItems/disposition": "No Disposition & Sign Off Listed",
     "CaseSection-View-Title/disposition": "View Disposition & Sign Off",
-    "CaseSection-Edit/disposition": "Edit Disposition & Sign Off",
-    "ConnectDialog-Child": "Copy information from this record to new event?",
-    "CaseHeader-CopyChildInfo": "Copy Information into Current Event",
-    "CaseList-THChildName": "Person ",
-    "Contact-EditChild": "Edit Information",
-    "TabbedForms-AddChildInfoTab": "Incident",
-    "TabbedForms-CategoriesTab": "Incident Type",
-    "TabbedForms-AddCaseInfoTab": "Dispatch",
-    "SectionName-ChildInformation": "Incident Description {{sectionNo}} of {{sectionCount}}",
-    "CasePrint-TabularSection-Header/timesCoordination": "Times & Coordination",
-    "CasePrint-TabularSection-Header/callDispatch": "Call & Dispatch Info",
-    "CasePrint-TabularSection-Header/patientInformation": "Patient Information & Medical History",
-    "CasePrint-TabularSection-Header/sceneCare": "Scene, Injury & Care On Arrival",
-    "CasePrint-TabularSection-Header/treatmentProceduresMedication": "Treatment, Procedures, and Medication",
-    "CasePrint-TabularSection-Header/vitalSigns": "Vital Signs",
-    "CasePrint-TabularSection-Header/disposition": "Disposition & Sign Off"
+    "CaseSection-Edit/disposition": "Edit Disposition & Sign Off"
   }
 }

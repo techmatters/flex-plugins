@@ -20,13 +20,16 @@ import { newErr, newOk } from '../Result';
 import { getTwilioClient, getDocsBucketName } from '@tech-matters/twilio-configuration';
 import { newMissingParameterResult } from '../httpErrors';
 
-export const getExternalRecordingS3Location = async ({
-  callSid,
-  accountSid,
-}: {
-  callSid: string;
-  accountSid: AccountSID;
-}) => {
+export const getExternalRecordingS3LocationHandler: FlexValidatedHandler = async (
+  { body: event },
+  accountSid: AccountSID,
+) => {
+  const { callSid } = event as { callSid?: string };
+
+  if (!callSid) {
+    return newMissingParameterResult('callSid');
+  }
+
   try {
     const client = await getTwilioClient(accountSid);
     const bucket = await getDocsBucketName(accountSid);
@@ -52,17 +55,4 @@ export const getExternalRecordingS3Location = async ({
   } catch (err: any) {
     return newErr({ message: err.message, error: { statusCode: 500, cause: err } });
   }
-};
-
-export const getExternalRecordingS3LocationHandler: FlexValidatedHandler = async (
-  { body: event },
-  accountSid: AccountSID,
-) => {
-  const { callSid } = event as { callSid?: string };
-
-  if (!callSid) {
-    return newMissingParameterResult('callSid');
-  }
-
-  return getExternalRecordingS3Location({ accountSid, callSid });
 };

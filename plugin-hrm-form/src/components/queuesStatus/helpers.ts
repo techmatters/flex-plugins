@@ -29,7 +29,6 @@ export const newQueueEntry: QueueEntry = {
   telegram: 0,
   instagram: 0,
   line: 0,
-  voicemail: 0,
   longestWaitingDate: null,
   isChatPending: false,
 };

@@ -14,8 +14,11 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { AccountSID, aseloCustomChannelTypes } from '@tech-matters/twilio-types';
-import { sendConversationMessageToFlex } from '../customChannelToFlex';
+import { AccountSID } from '@tech-matters/twilio-types';
+import {
+  AseloCustomChannel,
+  sendConversationMessageToFlex,
+} from '../customChannelToFlex';
 import { AccountScopedHandler, HttpRequest } from '../../httpTypes';
 import { newErr, newOk } from '../../Result';
 import { getChannelStudioFlowSid, getTelegramBotApiSecretToken } from '../configuration';
@@ -58,14 +61,14 @@ export const telegramToFlexHandler: AccountScopedHandler = async (
     chat: { id: senderExternalId, username, first_name: firstName },
   } = event.message;
 
-  const channelType = aseloCustomChannelTypes.TELEGRAM;
+  const channelType = AseloCustomChannel.Telegram;
   const chatFriendlyName = username || `${channelType}:${senderExternalId}`;
   const uniqueUserName = `${channelType}:${senderExternalId}`;
   const senderScreenName = firstName || username || 'child';
   const onMessageAddedWebhookUrl = `${process.env.WEBHOOK_BASE_URL}/lambda/twilio/account-scoped/${accountSid}/customChannels/telegram/flexToTelegram?recipientId=${senderExternalId}`;
   const studioFlowSid = await getChannelStudioFlowSid(
     accountSid,
-    aseloCustomChannelTypes.TELEGRAM,
+    AseloCustomChannel.Telegram,
   );
   console.debug(
     'TelegramToFlex: sending message from',

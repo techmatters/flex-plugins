@@ -11,10 +11,7 @@ locals {
   helplines                      = var.helplines == null ? [var.helpline] : var.helplines
   helplines_filter               = var.helplines == null ? "1==1" : "helpline IN [${join(", ", formatlist("'%s'", local.helplines))}]"
   task_routing_filter_expression = var.custom_task_routing_filter_expression != "" ? var.custom_task_routing_filter_expression : "${local.helplines_filter} OR channelType =='web' OR isContactlessTask == true"
-  event_callback_url = var.enable_lambda_event_callback_url ? nonsensitive(
-    "https://hrm-${var.environment}${var.helpline_region == "eu-west-1" ? "-eu" : ""}.tl.techmatters.org/lambda/twilio/account-scoped/${var.twilio_account_sid}/webhooks/taskrouterCallback"
-  ) : "${var.serverless_url}/webhooks/taskrouterCallback"
-
+  event_callback_url             = "${var.serverless_url}/webhooks/taskrouterCallback"
 }
 
 // This module assumes that we only work with one Workspace

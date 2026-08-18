@@ -14,8 +14,11 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { AccountSID, aseloCustomChannelTypes } from '@tech-matters/twilio-types';
-import { sendConversationMessageToFlex } from '../customChannelToFlex';
+import { AccountSID } from '@tech-matters/twilio-types';
+import {
+  AseloCustomChannel,
+  sendConversationMessageToFlex,
+} from '../customChannelToFlex';
 import { AccountScopedHandler, HttpRequest } from '../../httpTypes';
 import { newErr, newOk } from '../../Result';
 import { getChannelStudioFlowSid } from '../configuration';
@@ -38,7 +41,7 @@ export const modicaToFlexHandler: AccountScopedHandler = async (
   const { source, destination, content } = event;
 
   const messageText = content;
-  const channelType = aseloCustomChannelTypes.MODICA;
+  const channelType = AseloCustomChannel.Modica;
   const subscribedExternalId = destination; // The helpline short code
   const senderExternalId = source; // The child phone number
   const chatFriendlyName = senderExternalId;
@@ -47,7 +50,7 @@ export const modicaToFlexHandler: AccountScopedHandler = async (
   const onMessageSentWebhookUrl = `${process.env.WEBHOOK_BASE_URL}/lambda/twilio/account-scoped/${accountSid}/customChannels/modica/flexToModica?recipientId=${senderExternalId}`;
   const studioFlowSid = await getChannelStudioFlowSid(
     accountSid,
-    aseloCustomChannelTypes.MODICA,
+    AseloCustomChannel.Modica,
   );
   console.debug(
     'ModicaToFlex: sending message from',

@@ -71,19 +71,18 @@
   "SearchResultsIndex-SearchAgainForContact": "Search again for a contact",
   "SearchResultsIndex-SaveToNewCase": "save this contact to a new case",
   "SearchResultsIndex-Or": "or",
-  "SearchResults-CounselorName":"Counselor Name:",
-  "SearchResults-FirstName":"First Name:",
-  "SearchResults-LastName":"Last Name:",
-  "SearchResults-PhoneNumber":"Phone Number:",
-  "SearchResults-DateFrom":"Date From:",
-  "SearchResults-DateTo":"Date To:",
+  "SearchResults-CounselorName": "Counselor Name:",
+  "SearchResults-FirstName": "First Name:",
+  "SearchResults-LastName": "Last Name:",
+  "SearchResults-PhoneNumber": "Phone Number:",
+  "SearchResults-DateFrom": "Date From:",
+  "SearchResults-DateTo": "Date To:",
   "SearchResults-Contact": "1 Contact",
   "SearchResults-Contacts": " Contacts",
   "SearchResults-Case": "1 Case",
   "SearchResults-Cases": " Cases",
   "SearchResults-For": " for",
 
-  
   "StandaloneSearch-SideNav": "Search",
   "CaseHeader-Opened": "Opened",
   "CaseHeader-Updated": "Updated",
@@ -512,12 +511,12 @@
   "BottomBar-Save": "Yes, Save",
   "Toolkit-ConfirmTextOne": "You will be redirected to an external knowledge management system.",
   "Toolkit-ConfirmTextTwo": "Are you sure you want to continue?",
-  
+
   "MaskIdentifiers": "XXXXXX",
   "UnmaskPhoneNumber": "Phone Number Revealed",
 
   "RecordingSection-Error": "Something went wrong on our end. Please contact your support team or supervisor.",
-  
+
   "ReferrableResource-SideNav": "Resources",
   "Resources-LoadResourceError": "Something went wrong trying to load this resource.",
   "Resources-Search-FormTitle": "Resources",
@@ -557,7 +556,7 @@
   "Resources-View-Details": "Details",
   "Resources-View-Notes": "Notes",
   "Resources-View-RecordType": "Record Type",
-  "Resources-View-Taxonomies":  "Taxonomy Names",
+  "Resources-View-Taxonomies": "Taxonomy Names",
   "Resources-View-Sites": " ",
   "Resources-View-PrivateInformationWarning": "This information is private. Do not share with child.",
   "Resources-View-PrimaryAddress": "Primary Address",
@@ -591,6 +590,8 @@
   "Conference-Actions-Dial": "Dial",
   "Conference-Participant-Remove": "Remove Participant",
   "Conference-Participant-Hold": "Hold Participant",
+  "Conference-PhoneInputDialog-QuickDialTitle": "Quick Dial",
+  "Conference-PhoneInputDialog-Or": "Or",
 
   "Conference-Wrapping-HangupBy/Customer": "Call Ended by Service User",
   "Conference-Wrapping-HangupBy/Agent": "Call Ended by Counselor",
@@ -669,9 +670,5 @@
   "BrowserNotification-ChatMessage-MaskedTitle": "New message",
 
   "AsV1-ChildInformationTab-FirstName-Title": "First Name description",
-  "AsV1-ChildInformationTab-FirstName-Content": "Lorem \n ipsum dolor \n sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-
-  "VoicemailTaskPanel-CallBack": "Call Back",
-  "VoicemailTaskPanel-RetryLater": "Retry Later"
-  
+  "AsV1-ChildInformationTab-FirstName-Content": "Lorem \n ipsum dolor \n sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
 }

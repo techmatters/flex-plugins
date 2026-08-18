@@ -88,20 +88,6 @@ ${
               "value": "widget_failures"
             }
           ]
-        },
-        {
-          "next": "http_post_debug_data",
-          "event": "match",
-          "conditions": [
-            {
-              "friendly_name": "If value equal_to debug_data",
-              "arguments": [
-                "{{flow.variables.debug_mode}}"
-              ],
-              "type": "equal_to",
-              "value": "debug_data"
-            }
-          ]
         }
       ],
       "properties": {
@@ -131,7 +117,7 @@ ${
         "method": "POST",
         "content_type": "application/json;charset=utf-8",
         "add_twilio_auth": false,
-        "body": "{\n  \"blocks\": [\n    {\n      \"text\": {\n        \"emoji\": true,\n        \"text\": \"Issue detected  on ${short_helpline} ${short_environment} \\n Flow SID: {{trigger.parent.parameters.flow_sid}} \\n Execution SID: {{trigger.parent.parameters.execution_sid}}\",\n        \"type\": \"plain_text\"\n      },\n      \"type\": \"section\"\n    },\n    {\n      \"text\": {\n        \"emoji\": true,\n        \"text\": \"Flow data:\",\n        \"type\": \"plain_text\"\n      },\n      \"type\": \"section\"\n    },\n    {\n      \"text\": {\n        \"text\": \" ``` {{trigger.parent.parameters.flow}} ``` \",\n        \"type\": \"mrkdwn\"\n      },\n      \"type\": \"section\"\n    },\n    {\n      \"text\": {\n        \"emoji\": true,\n        \"text\": \"Trigger data:\",\n        \"type\": \"plain_text\"\n      },\n      \"type\": \"section\"\n    },\n    {\n      \"text\": {\n        \"text\": \" ``` {{trigger.parent.parameters.trigger | replace: '1','X' | replace: '2','X' | replace: '3','X' | replace: '4','X' | replace: '5','X' | replace: '6','X' | replace: '7','X' | replace: '8','X' | replace: '9','X' | replace: '0','X'   }} ``` \",\n        \"type\": \"mrkdwn\"\n      },\n      \"type\": \"section\"\n    },\n    {\n      \"text\": {\n        \"emoji\": true,\n        \"text\": \"Widgets data:\",\n        \"type\": \"plain_text\"\n      },\n      \"type\": \"section\"\n    },\n    {\n      \"text\": {\n        \"text\": \" ``` {{trigger.parent.parameters.widgets  | replace: '\"',''   | replace: '1','X' | replace: '2','X' | replace: '3','X' | replace: '4','X' | replace: '5','X' | replace: '6','X' | replace: '7','X' | replace: '8','X' | replace: '9','X' | replace: '0','X'  }} ``` \",\n        \"type\": \"mrkdwn\"\n      },\n      \"type\": \"section\"\n    }\n  ]\n}",
+        "body": "{\n  \"blocks\": [\n    {\n      \"text\": {\n        \"emoji\": true,\n        \"text\": \"Issue detected  on usvc STG \\n Flow SID: {{trigger.parent.parameters.flow_sid}} \\n Execution SID: {{trigger.parent.parameters.execution_sid}}\",\n        \"type\": \"plain_text\"\n      },\n      \"type\": \"section\"\n    },\n    {\n      \"text\": {\n        \"emoji\": true,\n        \"text\": \"Flow data:\",\n        \"type\": \"plain_text\"\n      },\n      \"type\": \"section\"\n    },\n    {\n      \"text\": {\n        \"text\": \" ``` {{trigger.parent.parameters.flow}} ``` \",\n        \"type\": \"mrkdwn\"\n      },\n      \"type\": \"section\"\n    },\n    {\n      \"text\": {\n        \"emoji\": true,\n        \"text\": \"Trigger data:\",\n        \"type\": \"plain_text\"\n      },\n      \"type\": \"section\"\n    },\n    {\n      \"text\": {\n        \"text\": \" ``` {{trigger.parent.parameters.trigger | replace: '1','X' | replace: '2','X' | replace: '3','X' | replace: '4','X' | replace: '5','X' | replace: '6','X' | replace: '7','X' | replace: '8','X' | replace: '9','X' | replace: '0','X'   }} ``` \",\n        \"type\": \"mrkdwn\"\n      },\n      \"type\": \"section\"\n    },\n    {\n      \"text\": {\n        \"emoji\": true,\n        \"text\": \"Widgets data:\",\n        \"type\": \"plain_text\"\n      },\n      \"type\": \"section\"\n    },\n    {\n      \"text\": {\n        \"text\": \" ``` {{trigger.parent.parameters.widgets  | replace: '\"',''   | replace: '1','X' | replace: '2','X' | replace: '3','X' | replace: '4','X' | replace: '5','X' | replace: '6','X' | replace: '7','X' | replace: '8','X' | replace: '9','X' | replace: '0','X'  }} ``` \",\n        \"type\": \"mrkdwn\"\n      },\n      \"type\": \"section\"\n    }\n  ]\n}",
         "url": "${webhook_url_studio_errors}"
       }
     },
@@ -156,29 +142,6 @@ ${
           "x": 650,
           "y": 130
         }
-      }
-    },
-    {
-      "name": "http_post_debug_data",
-      "type": "make-http-request",
-      "transitions": [
-        {
-          "event": "success"
-        },
-        {
-          "event": "failed"
-        }
-      ],
-      "properties": {
-        "offset": {
-          "x": 747,
-          "y": 614
-        },
-        "method": "POST",
-        "content_type": "application/json;charset=utf-8",
-        "add_twilio_auth": false,
-        "body": "{\n  \"blocks\": [\n    {\n      \"text\": {\n        \"emoji\": true,\n        \"text\": \"Task created in ${short_helpline} ${short_environment} \\n Flow SID: {{trigger.parent.parameters.flow_sid}} \\n Execution SID: {{trigger.parent.parameters.execution_sid}}\",\n        \"type\": \"plain_text\"\n      },\n      \"type\": \"section\"\n    },\n    {\n      \"type\": \"divider\"\n    },\n    {\n      \"text\": {\n        \"emoji\": true,\n        \"text\": \"Debug data:\",\n        \"type\": \"plain_text\"\n      },\n      \"type\": \"section\"\n    },\n    {\n      \"text\": {\n        \"text\": {{ trigger.parent.parameters.debug_data | to_json }},\n        \"type\": \"mrkdwn\"\n      },\n      \"type\": \"section\"\n    },\n    {\n      \"type\": \"divider\"\n    },\n    {\n      \"accessory\": {\n        \"action_id\": \"button-action\",\n        \"text\": {\n          \"emoji\": true,\n          \"text\": \"Open log\",\n          \"type\": \"plain_text\"\n        },\n        \"type\": \"button\",\n        \"url\": \"https://console.twilio.com/us1/service/studio/{{trigger.parent.parameters.flow_sid}}/studio-flow-instance-executions?frameUrl=%2Fconsole%2Fstudio%2Fflows%2F{{trigger.parent.parameters.flow_sid}}%2Fexecutions%2F{{trigger.parent.parameters.execution_sid}}%3F__override_layout__%3Dembed%26bifrost%3Dtrue%26x-target-region%3Dus1\",\n        \"value\": \"click_me_123\"\n      },\n      \"text\": {\n        \"text\": \"More details in the log (make sure you are logged in with the appropriate Twilio account).\",\n        \"type\": \"mrkdwn\"\n      },\n      \"type\": \"section\"\n    }\n  ]\n}\n",
-        "url": "${webhook_url_studio_errors}"
       }
     }
   ],

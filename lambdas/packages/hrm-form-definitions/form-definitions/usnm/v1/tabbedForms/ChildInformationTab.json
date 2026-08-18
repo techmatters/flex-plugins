@@ -344,44 +344,44 @@
     "isPII": false,
     "options": [
       {
-        "value": "Family members and Caregivers of a loved one with mental illness",
-        "label": "Family members and Caregivers of a loved one with mental illness"
-      },
-      {
-        "value": "Uninsured or underinsured",
-        "label": "Uninsured or underinsured"
-      },
-      {
-        "value": "Lower or limited income",
-        "label": "Lower or limited income"
-      },
-      {
-        "value": "Incarcerated or detained persons",
-        "label": "Incarcerated or detained persons"
-      },
-      {
         "value": "LGBTQIA+ Community",
         "label": "LGBTQIA+ Community"
-      },
-      {
-        "value": "People experiencing homelessness",
-        "label": "People experiencing homelessness"
       },
       {
         "value": "People with disabilities/a disability",
         "label": "People with disabilities/a disability"
       },
       {
-        "value": "Parents of children",
-        "label": "Parents of children"
+        "value": "Immigrant/Refugee/Undocumented Individuals",
+        "label": "Immigrant/Refugee/Undocumented Individuals"
       },
       {
         "value": "Military-affiliation/Veteran/Active Duty Military",
         "label": "Military-affiliation/Veteran/Active Duty Military"
       },
       {
-        "value": "Immigrant/Refugee/Undocumented Individuals",
-        "label": "Immigrant/Refugee/Undocumented Individuals"
+        "value": "Incarcerated or detained persons",
+        "label": "Incarcerated or detained persons"
+      },
+      {
+        "value": "Lower or limited income",
+        "label": "Lower or limited income"
+      },
+      {
+        "value": "Uninsured or underinsured",
+        "label": "Uninsured or underinsured"
+      },
+      {
+        "value": "People experiencing homelessness",
+        "label": "People experiencing homelessness"
+      },
+      {
+        "value": "Family members and Caregivers of a loved one with mental illness",
+        "label": "Family members and Caregivers of a loved one with mental illness"
+      },
+      {
+        "value": "Parents of children",
+        "label": "Parents of children"
       }
     ]
   },

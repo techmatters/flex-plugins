@@ -28,7 +28,6 @@ const customChannelTypes = {
   telegram: 'telegram',
   instagram: 'instagram',
   line: 'line',
-  voicemail: 'voicemail',
 } as const;
 
 /**

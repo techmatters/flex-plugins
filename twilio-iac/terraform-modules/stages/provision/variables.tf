@@ -119,9 +119,3 @@ variable "enable_integration_tests" {
   type        = bool
   default     = false
 }
-
-variable "enable_lambda_event_callback_url" {
-  description = "Enables lambda event callback url"
-  type        = bool
-  default     = false
-}

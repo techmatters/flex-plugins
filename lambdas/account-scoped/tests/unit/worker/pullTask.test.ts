@@ -16,7 +16,6 @@
 
 import { pullTaskHandler } from '../../../src/worker/pullTask';
 import { getTwilioClient, getWorkspaceSid } from '@tech-matters/twilio-configuration';
-import { adjustChatCapacity } from '../../../src/conversation/adjustChatCapacity';
 import { isErr, isOk } from '../../../src/Result';
 import { FlexValidatedHttpRequest } from '../../../src/validation/flexToken';
 import {
@@ -31,18 +30,11 @@ jest.mock('@tech-matters/twilio-configuration', () => ({
   getWorkspaceSid: jest.fn(),
 }));
 
-jest.mock('../../../src/conversation/adjustChatCapacity', () => ({
-  adjustChatCapacity: jest.fn(),
-}));
-
 const mockGetTwilioClient = getTwilioClient as jest.MockedFunction<
   typeof getTwilioClient
 >;
 const mockGetWorkspaceSid = getWorkspaceSid as jest.MockedFunction<
   typeof getWorkspaceSid
->;
-const mockAdjustChatCapacity = adjustChatCapacity as jest.MockedFunction<
-  typeof adjustChatCapacity
 >;
 
 const createMockRequest = (body: any): FlexValidatedHttpRequest => ({
@@ -61,12 +53,10 @@ const mockReservation = {
 
 describe('pullTaskHandler', () => {
   let mockClient: any;
-  let dateSpy: jest.SpyInstance;
 
   beforeEach(() => {
     jest.clearAllMocks();
     mockGetWorkspaceSid.mockResolvedValue(TEST_WORKSPACE_SID as any);
-    mockAdjustChatCapacity.mockResolvedValue({ status: 200, message: 'ok' });
 
     mockClient = {
       taskrouter: {
@@ -85,10 +75,6 @@ describe('pullTaskHandler', () => {
     mockGetTwilioClient.mockResolvedValue(mockClient as any);
   });
 
-  afterEach(() => {
-    dateSpy?.mockRestore();
-  });
-
   it('should return 400 when workerSid is missing', async () => {
     const request = createMockRequest({});
     const result = await pullTaskHandler(request, TEST_ACCOUNT_SID);
@@ -100,42 +86,11 @@ describe('pullTaskHandler', () => {
     }
   });
 
-  it('should return 400 when adjustChatCapacity fails to provide capacity', async () => {
-    mockAdjustChatCapacity.mockResolvedValue({
-      status: 412,
-      message: 'Reached the max capacity with no available capacity.',
-    });
-
-    const request = createMockRequest({ workerSid: TEST_WORKER_SID });
-    const result = await pullTaskHandler(request, TEST_ACCOUNT_SID);
-
-    expect(isErr(result)).toBe(true);
-    if (isErr(result)) {
-      expect(result.error.statusCode).toBe(400);
-    }
-    expect(mockAdjustChatCapacity).toHaveBeenCalledWith(TEST_ACCOUNT_SID, {
-      workerSid: TEST_WORKER_SID,
-      adjustment: 'increaseUntilCapacityAvailable',
-    });
-    // setTo1 should still be called in finally
-    expect(mockAdjustChatCapacity).toHaveBeenCalledWith(TEST_ACCOUNT_SID, {
-      workerSid: TEST_WORKER_SID,
-      adjustment: 'setTo1',
-    });
-  });
-
-  it('should return 404 when no pending reservations are found within the timeout', async () => {
+  it('should return 404 when no pending reservations are found', async () => {
     mockClient.taskrouter.v1
       .workspaces()
       .workers()
       .reservations.list.mockResolvedValue([]);
-
-    // Make Date.now() immediately exceed the timeout so the polling loop exits after first check
-    const now = Date.now();
-    dateSpy = jest
-      .spyOn(Date, 'now')
-      .mockReturnValueOnce(now) // initial: set pullAttemptExpiry = now + 5000
-      .mockReturnValue(now + 6000); // subsequent: already past expiry
 
     const request = createMockRequest({ workerSid: TEST_WORKER_SID });
     const result = await pullTaskHandler(request, TEST_ACCOUNT_SID);
@@ -144,14 +99,9 @@ describe('pullTaskHandler', () => {
     if (isErr(result)) {
       expect(result.error.statusCode).toBe(404);
     }
-    // setTo1 should be called in finally even on 404
-    expect(mockAdjustChatCapacity).toHaveBeenCalledWith(TEST_ACCOUNT_SID, {
-      workerSid: TEST_WORKER_SID,
-      adjustment: 'setTo1',
-    });
   });
 
-  it('should return taskPulled when a pending reservation is found', async () => {
+  it('should accept the first pending reservation and return taskPulled on success', async () => {
     const request = createMockRequest({ workerSid: TEST_WORKER_SID });
     const result = await pullTaskHandler(request, TEST_ACCOUNT_SID);
 
@@ -159,16 +109,12 @@ describe('pullTaskHandler', () => {
     if (isOk(result)) {
       expect(result.data.taskPulled).toBe(TEST_TASK_SID);
     }
-    // reservation.update is commented out in the implementation
-    expect(mockReservation.update).not.toHaveBeenCalled();
-    // setTo1 should be called in finally
-    expect(mockAdjustChatCapacity).toHaveBeenCalledWith(TEST_ACCOUNT_SID, {
-      workerSid: TEST_WORKER_SID,
-      adjustment: 'setTo1',
+    expect(mockReservation.update).toHaveBeenCalledWith({
+      reservationStatus: 'accepted',
     });
   });
 
-  it('should return 500 when Twilio client throws an error', async () => {
+  it('should throw when Twilio client throws an error', async () => {
     mockClient.taskrouter.v1.workspaces.mockReturnValue({
       workers: jest.fn().mockReturnValue({
         reservations: {
@@ -178,18 +124,9 @@ describe('pullTaskHandler', () => {
     });
 
     const request = createMockRequest({ workerSid: TEST_WORKER_SID });
-    const result = await pullTaskHandler(request, TEST_ACCOUNT_SID);
-
-    expect(isErr(result)).toBe(true);
-    if (isErr(result)) {
-      expect(result.error.statusCode).toBe(500);
-      expect(result.message).toBe('Unknown error occurred');
-    }
-    // setTo1 should still be called in finally
-    expect(mockAdjustChatCapacity).toHaveBeenCalledWith(TEST_ACCOUNT_SID, {
-      workerSid: TEST_WORKER_SID,
-      adjustment: 'setTo1',
-    });
+    await expect(pullTaskHandler(request, TEST_ACCOUNT_SID)).rejects.toThrow(
+      'Twilio error',
+    );
   });
 
   it('should use the workspace SID from configuration and query pending reservations for the worker', async () => {
@@ -205,20 +142,6 @@ describe('pullTaskHandler', () => {
       mockClient.taskrouter.v1.workspaces().workers().reservations.list,
     ).toHaveBeenCalledWith({
       reservationStatus: 'pending',
-    });
-  });
-
-  it('should call adjustChatCapacity with increaseUntilCapacityAvailable before polling and setTo1 in finally', async () => {
-    const request = createMockRequest({ workerSid: TEST_WORKER_SID });
-    await pullTaskHandler(request, TEST_ACCOUNT_SID);
-
-    expect(mockAdjustChatCapacity).toHaveBeenNthCalledWith(1, TEST_ACCOUNT_SID, {
-      workerSid: TEST_WORKER_SID,
-      adjustment: 'increaseUntilCapacityAvailable',
-    });
-    expect(mockAdjustChatCapacity).toHaveBeenLastCalledWith(TEST_ACCOUNT_SID, {
-      workerSid: TEST_WORKER_SID,
-      adjustment: 'setTo1',
     });
   });
 });

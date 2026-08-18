@@ -18,16 +18,6 @@ locals {
       bot_language                      = "en-USNC"
     }
 
-    studio_flows = {
-      post_call_survey : {
-        templatefile = "/app/twilio-iac/helplines/usnc/templates/studio-flows/post-call-survey.tftpl"
-        flow_vars = {
-          usnc_assets_url    = "https://usnc-assets-3228.twil.io"
-        }
-      }
-    }
-    
-    
     channels = {
       webchat : {
         channel_type     = "web"

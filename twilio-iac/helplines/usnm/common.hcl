@@ -33,7 +33,7 @@ locals {
       },
       survey : {
         friendly_name = "Survey Workflow"
-        templatefile  = "/app/twilio-iac/helplines/templates/workflows/survey.tftpl"
+        templatefile  = "/app/twilio-iac/helplines/templates/workflows/lex.tftpl"
       }
     }
     task_channels = {
@@ -49,10 +49,6 @@ locals {
     activities = {
       missed_connection : {
         friendly_name = "Missed Connection"
-        available     = false
-      },
-      local_connectivity_issues : {
-        friendly_name = "Local Connectivity Issues"
         available     = false
       }
     }

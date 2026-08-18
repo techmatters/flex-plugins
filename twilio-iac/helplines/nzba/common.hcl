@@ -7,11 +7,11 @@ locals {
 
   local_config = {
     helpline        = "Barnardos"
-    task_language   = "en-NZBA"
+    task_language   = "en-NZ"
     helpline_region = "eu-west-1"
 
     lex_v2_bot_languages = {
-      en_NZBA : ["post_survey"]
+      en_NZBA : ["pre_survey", "post_survey"]
     }
 
     workflows = {
@@ -32,19 +32,19 @@ locals {
     task_queues = {
       master : {
         "target_workers" = "1==1",
-        "friendly_name"  = "General Client"
+        "friendly_name"  = "Aselo"
       },
-      regular_client : {
+      returning_client : {
         "target_workers" = "1==1",
-        "friendly_name"  = "Regular Client"
+        "friendly_name"  = "Returning Client"
       },
-      high_risk_client : {
+      first_time_client : {
         "target_workers" = "1==1",
-        "friendly_name"  = "High Risk Client"
+        "friendly_name"  = "First-Time Client"
       },
       survey : {
         "target_workers" = "1==0",
-        "friendly_name"  = "Survey - DO NOT TRANSFER"
+        "friendly_name"  = "Survey"
       },
       e2e_test : {
         "target_workers" = "email=='aselo-alerts+production@techmatters.org'",
@@ -62,12 +62,5 @@ locals {
       survey : "Survey"
     }
 
-    s3_lifecycle_rules = {
-      voice_recordings_expiry : {
-        id                 = "Voice Recordings Data Expiration Rule"
-        expiration_in_days = 365
-        prefix             = "voice-recordings/"
-      }
-    }
   }
 }

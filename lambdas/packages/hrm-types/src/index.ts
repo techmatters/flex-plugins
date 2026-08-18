@@ -31,7 +31,6 @@ export type HangUpBy =
 
 export type ChannelTypes =
   | 'voice'
-  | 'voicemail'
   | 'sms'
   | 'facebook'
   | 'messenger'

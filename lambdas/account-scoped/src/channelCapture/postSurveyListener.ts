@@ -18,7 +18,7 @@ import {
   registerTaskRouterEventHandler,
   TaskRouterEventHandler,
 } from '../taskrouter/taskrouterEventHandler';
-import { AccountSID, ChannelType } from '@tech-matters/twilio-types';
+import { AccountSID } from '@tech-matters/twilio-types';
 import { Twilio } from 'twilio';
 import { EventType, TASK_WRAPUP } from '../taskrouter/eventTypes';
 import { EventFields } from '../taskrouter';
@@ -96,7 +96,7 @@ const postSurveyInitHandler = async ({
   client: Twilio;
   taskSid: string;
   taskLanguage: string;
-  channelType: ChannelType;
+  channelType: string;
   environment: string;
   webhookBaseUrl: string;
   chatServiceSid: string;

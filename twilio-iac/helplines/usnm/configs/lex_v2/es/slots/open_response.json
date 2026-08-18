@@ -10,12 +10,12 @@
                 {
                     "message": {
                         "plainTextMessage": {
-                            "value": "¿Hay algo que te gustaría compartir sobre tu experiencia con la Línea de Ayuda de NAMI?\n(Ten en cuenta que solo se registrará tu primera respuesta)."
+                            "value": "¿Hay algo más que te gustaría compartir sobre tu experiencia con la Línea de Ayuda de NAMI?\n(Ten en cuenta que solo se registrará tu primera respuesta)."
                         }
                     }
                 }
             ],
-            "maxRetries": 2,
+            "maxRetries": 1,
             "allowInterrupt": true,
             "messageSelectionStrategy": "Ordered",
             "promptAttemptsSpecification": {
@@ -64,29 +64,6 @@
                     "textInputSpecification": {
                         "startTimeoutMs": 30000
                     }
-                },
-                "Retry2": {
-                    "allowInterrupt": true,
-                    "allowedInputTypes": {
-                        "allowAudioInput": true,
-                        "allowDTMFInput": true
-                    },
-                    "audioAndDTMFInputSpecification": {
-                        "startTimeoutMs": 4000,
-                        "audioSpecification": {
-                            "maxLengthMs": 15000,
-                            "endTimeoutMs": 640
-                        },
-                        "dtmfSpecification": {
-                            "maxLength": 513,
-                            "endTimeoutMs": 5000,
-                            "deletionCharacter": "*",
-                            "endCharacter": "#"
-                        }
-                    },
-                    "textInputSpecification": {
-                        "startTimeoutMs": 30000
-                    }
                 }
             }
         },
@@ -103,7 +80,7 @@
                     {
                         "message": {
                             "plainTextMessage": {
-                                "value": "Lo sentimos, pero no pudimos entender su respuesta."
+                                "value": "Gracias por compartir tus comentarios. No dudes en comunicarte nuevamente si necesitas apoyo adicional."
                             }
                         }
                     }

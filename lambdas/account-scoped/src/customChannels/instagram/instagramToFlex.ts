@@ -19,13 +19,13 @@
 import '@twilio-labs/serverless-runtime-types';
 import crypto from 'crypto';
 import {
+  AseloCustomChannel,
   findExistingConversation,
   sendConversationMessageToFlex,
 } from '../customChannelToFlex';
 import { AccountScopedHandler, HttpRequest } from '../../httpTypes';
 import {
   AccountSID,
-  aseloCustomChannelTypes,
   ConversationSID,
   InstagramMessageEvent,
   InstagramMessageObject,
@@ -117,7 +117,7 @@ export const instagramToFlexHandler: AccountScopedHandler = async (
   const senderExternalId = sender.id;
   const messageExternalId = message.mid;
   const subscribedExternalId = event.entry[0].id;
-  const channelType = aseloCustomChannelTypes.INSTAGRAM;
+  const channelType = AseloCustomChannel.Instagram;
   const chatFriendlyName = `${channelType}:${senderExternalId}`;
   const uniqueUserName = `${channelType}:${senderExternalId}`;
   const senderScreenName = senderExternalId; // TODO: see if we can use ig handle somehow
@@ -125,7 +125,7 @@ export const instagramToFlexHandler: AccountScopedHandler = async (
   const onMessageSentWebhookUrl = `${process.env.WEBHOOK_BASE_URL}/lambda/twilio/account-scoped/${accountSid}/customChannels/instagram/flexToInstagram?recipientId=${senderExternalId}`;
   const studioFlowSid = await getChannelStudioFlowSid(
     accountSid,
-    aseloCustomChannelTypes.INSTAGRAM,
+    AseloCustomChannel.Instagram,
   );
   let result;
   if (isInstagramStoryReply(message)) {

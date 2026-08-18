@@ -48,7 +48,8 @@ import { FeatureFlags } from './types/FeatureFlags';
 import { setUpFullStory } from './fullStory/setUp';
 import { getPathFromUrl } from './states/routing/reducer';
 import { setUpCustomSideLinks } from './components/customSideLinks/setUpCustomSideLinks';
-import { setUpVoicemailComponents } from './voicemail/setUpVoicemailComponents';
+import { newLoadAseloTwilioConfigurationAsyncAction } from './states/configuration/loadAseloTwilioConfiguration';
+import asyncDispatch from './states/asyncDispatch';
 
 const PLUGIN_NAME = 'HrmFormPlugin';
 
@@ -86,7 +87,7 @@ const setUpLocalization = (config: ReturnType<typeof getHrmConfig>) => {
 };
 
 const setUpComponents = (featureFlags: FeatureFlags, setupObject: ReturnType<typeof getHrmConfig>) => {
-  const { enableClientProfiles, enableConferencing, preventSendingAttachmentsFromFlex } = getHrmConfig();
+  const { enableClientProfiles, enableConferencing } = getHrmConfig();
   // setUp (add) dynamic components
   Components.setUpQueuesStatusWriter(setupObject);
   Components.setUpQueuesStatus(setupObject);
@@ -118,7 +119,6 @@ const setUpComponents = (featureFlags: FeatureFlags, setupObject: ReturnType<typ
   setUpReferrableResources();
 
   if (featureFlags.enable_emoji_picker) Components.setupEmojiPicker();
-  if (preventSendingAttachmentsFromFlex) Components.disableFlexMessageAttachments();
   if (featureFlags.enable_canned_responses) Components.setupCannedResponses();
 
   TeamsView.setUpSelectAgentColumn();
@@ -147,8 +147,6 @@ const setUpComponents = (featureFlags: FeatureFlags, setupObject: ReturnType<typ
   if (featureFlags.enable_language_selector) Components.setupWorkerLanguageSelect();
 
   setUpCustomSideLinks();
-
-  setUpVoicemailComponents();
 };
 
 const setUpActions = (
@@ -234,7 +232,12 @@ export default class HrmFormPlugin extends FlexPlugin {
       },
     };
     manager.updateConfig(managerConfiguration);
-
+    // The 'private' configuration is ok to store in plain text in memory on the client, it doesn't need to be treated as sensitive for security purposes so can be kept in redux
+    try {
+      await asyncDispatch(manager.store.dispatch)(newLoadAseloTwilioConfigurationAsyncAction());
+    } catch (error) {
+      console.warn('Failed to load private configuration, using default', error);
+    }
     // TODO(nick): Eventually remove this log line or set to debug.  Should we fail hard here?
     const { hrmBaseUrl } = config;
     console.info(`HRM URL: ${hrmBaseUrl}`);
