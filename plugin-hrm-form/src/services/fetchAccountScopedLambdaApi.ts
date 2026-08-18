@@ -20,6 +20,7 @@ import { getHrmConfig } from '../hrmConfig';
 import { getValidToken } from '../authentication';
 import fetchProtectedApi, { ProtectedApiError } from './fetchProtectedApi';
 
+// eslint-disable-next-line import/no-unused-modules
 export const postToAccountScopedLambda = async (
   endpoint: string,
   body: Record<string, any> = {},

@@ -37,7 +37,7 @@ export class ProtectedApiError extends ApiError {
  * TODO: Once serverless is fully deprecated, move all account scoped lambda calls to go via fetchAccountScopedLambdaApi.ts methods
  * TODO: Then refactor this to be a generic base method that fetchHrmApi, fetchResourcesApi and fetchAccountScopedApi all call to add the token to the request
  */
-export const fetchProtectedApi = async (
+const fetchProtectedApi = async (
   endpoint: string,
   body: Record<string, any> = {},
   allOptions?: FetchOptions & { useTwilioLambda?: boolean; useJsonEncode?: boolean },

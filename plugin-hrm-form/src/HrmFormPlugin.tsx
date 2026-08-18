@@ -49,7 +49,7 @@ import { setUpFullStory } from './fullStory/setUp';
 import { getPathFromUrl } from './states/routing/reducer';
 import { setUpCustomSideLinks } from './components/customSideLinks/setUpCustomSideLinks';
 import { newLoadAseloTwilioConfigurationAsyncAction } from './states/configuration/loadAseloTwilioConfiguration';
-import asyncDispatch from "./states/asyncDispatch";
+import asyncDispatch from './states/asyncDispatch';
 
 const PLUGIN_NAME = 'HrmFormPlugin';
 
