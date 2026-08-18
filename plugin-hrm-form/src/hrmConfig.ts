@@ -102,6 +102,7 @@ const readConfig = () => {
     hideAddToNewCaseButton,
     enforceZeroTranscriptRetention,
     postStudioFlows,
+    allowManualDialOutForConferencing
   } = {
     // Deprecated, remove when service configurations changes have applied 2025-09-30
     ...manager.serviceConfiguration.attributes.config_flags,
@@ -174,6 +175,7 @@ const readConfig = () => {
       hideAddToNewCaseButton,
       // eslint-disable-next-line prettier/prettier
       postStudioFlows: (postStudioFlows ?? {}) as Record<`FW${string}` | 'voice' | 'chat' , { flowTrigger: 'inProgressCall' | 'rest', studioFlowSid: StudioFlowSID }>,
+      allowManualDialOutForConferencing: allowManualDialOutForConferencing !== false, // True by default
     },
     referrableResources: {
       resourcesBaseUrl,

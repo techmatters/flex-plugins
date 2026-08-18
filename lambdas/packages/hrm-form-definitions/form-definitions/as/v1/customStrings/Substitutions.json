@@ -4,7 +4,9 @@
     "Switchboard-NoQueuesSwitchboarded": "No queues are currently being switchboarded",
     "Admin": "Translated Admin",
     "Chat Queue Test": "Quat Teue Chest",
-    "CustomLink-Label-ResourceMap": "Resource Map"
+    "CustomLink-Label-ResourceMap": "Resource Map",
+    "Conference-PhoneInputDialog-QuickDialItem/988-English": "988 (English)",
+    "Conference-PhoneInputDialog-QuickDialItem/988-Spanish": "988 (Spanish)"
   },
   "es": {
     "HelplineSubstitution": "Substitución de la Línea de Ayuda",

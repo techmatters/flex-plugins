@@ -17,7 +17,7 @@ import type { ConfigurationState } from '../states/configuration/reducer';
 import { getFromAccountScopedLambda } from './fetchAccountScopedLambdaApi';
 
 /**
- * Sends a new message to the channel bounded to the provided taskSid. Optionally you can change the "from" value (default is "system").
+ * Retrieves the aselo 'twilio' configuration
  */
 export const getAseloTwilioConfiguration = async (): Promise<ConfigurationState['aseloTwilioConfiguration']> =>
   getFromAccountScopedLambda(`configuration/twilio`);

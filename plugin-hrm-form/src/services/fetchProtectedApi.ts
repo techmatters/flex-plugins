@@ -63,7 +63,7 @@ const fetchProtectedApi = async (
     headers: {
       Authorization: `Bearer ${token}`,
       'Content-Type': contentType,
-      ...fetchOptions.headers,
+      ...fetchOptions?.headers,
     },
     ...fetchOptions,
   };

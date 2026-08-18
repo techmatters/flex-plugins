@@ -26,6 +26,7 @@ export const postToAccountScopedLambda = async (
   body: Record<string, any> = {},
   allOptions?: FetchOptions & { useJsonEncode?: boolean },
 ) => fetchProtectedApi(endpoint, body, { ...(allOptions ?? {}), useTwilioLambda: true });
+
 export const getFromAccountScopedLambda = async (endpoint: string, fetchOptions?: FetchOptions) => {
   const { accountScopedLambdaBaseUrl } = getHrmConfig();
   const token = getValidToken();
@@ -36,7 +37,7 @@ export const getFromAccountScopedLambda = async (endpoint: string, fetchOptions?
     ...(fetchOptions ?? {}),
     headers: {
       Authorization: `Bearer ${token}`,
-      ...fetchOptions.headers,
+      ...fetchOptions?.headers,
     },
   };
   try {
