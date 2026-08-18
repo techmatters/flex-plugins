@@ -84,6 +84,7 @@ import { triggerPostStudioFlowHandler } from './studioFlow/postStudioFlowTaskRou
 import { randomOptionSelectorHandler } from './randomOptionSelector';
 import { isSkilledWorkerAvailableHandler } from './worker/isSkilledWorkerAvailable';
 import { filterCountryOrVoIPHandler } from './voice/filterCountryOrVoIP';
+import { recordingCompleteCallback } from './voicemail/recordingCompleteCallback';
 import { getAseloTwilioConfigurationHandler } from './configuration/getAseloTwilioConfiguration';
 
 /**
@@ -390,6 +391,10 @@ const ACCOUNTSID_ROUTES: Record<
   'conversation/sendMessageAndRunJanitor': newRoute({
     requestPipeline: [validateRequestMethod('POST'), validateWebhookRequest],
     handler: sendMessageAndRunJanitorHandler,
+  }),
+  'voicemail/recordingCompleteCallback': newRoute({
+    requestPipeline: [validateRequestMethod('POST'), validateWebhookRequest],
+    handler: recordingCompleteCallback,
   }),
   issueSyncToken: newRoute({
     requestPipeline: [

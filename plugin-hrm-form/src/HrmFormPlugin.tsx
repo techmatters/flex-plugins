@@ -48,6 +48,7 @@ import { FeatureFlags } from './types/FeatureFlags';
 import { setUpFullStory } from './fullStory/setUp';
 import { getPathFromUrl } from './states/routing/reducer';
 import { setUpCustomSideLinks } from './components/customSideLinks/setUpCustomSideLinks';
+import { setUpVoicemailComponents } from './voicemail/setUpVoicemailComponents';
 import { newLoadAseloTwilioConfigurationAsyncAction } from './states/configuration/loadAseloTwilioConfiguration';
 import asyncDispatch from './states/asyncDispatch';
 
@@ -87,7 +88,7 @@ const setUpLocalization = (config: ReturnType<typeof getHrmConfig>) => {
 };
 
 const setUpComponents = (featureFlags: FeatureFlags, setupObject: ReturnType<typeof getHrmConfig>) => {
-  const { enableClientProfiles, enableConferencing } = getHrmConfig();
+  const { enableClientProfiles, enableConferencing, preventSendingAttachmentsFromFlex } = getHrmConfig();
   // setUp (add) dynamic components
   Components.setUpQueuesStatusWriter(setupObject);
   Components.setUpQueuesStatus(setupObject);
@@ -119,6 +120,7 @@ const setUpComponents = (featureFlags: FeatureFlags, setupObject: ReturnType<typ
   setUpReferrableResources();
 
   if (featureFlags.enable_emoji_picker) Components.setupEmojiPicker();
+  if (preventSendingAttachmentsFromFlex) Components.disableFlexMessageAttachments();
   if (featureFlags.enable_canned_responses) Components.setupCannedResponses();
 
   TeamsView.setUpSelectAgentColumn();
@@ -147,6 +149,8 @@ const setUpComponents = (featureFlags: FeatureFlags, setupObject: ReturnType<typ
   if (featureFlags.enable_language_selector) Components.setupWorkerLanguageSelect();
 
   setUpCustomSideLinks();
+
+  setUpVoicemailComponents();
 };
 
 const setUpActions = (

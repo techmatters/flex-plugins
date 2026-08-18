@@ -99,6 +99,7 @@ const readConfig = () => {
     permissionConfig,
     enableExternalRecordings,
     enableUnmaskingCalls,
+    preventSendingAttachmentsFromFlex,
     hideAddToNewCaseButton,
     enforceZeroTranscriptRetention,
     postStudioFlows,
@@ -171,6 +172,7 @@ const readConfig = () => {
       enableExternalRecordings,
       enableUnmaskingCalls,
       enableClientProfiles,
+      preventSendingAttachmentsFromFlex,
       enableConferencing,
       hideAddToNewCaseButton,
       // eslint-disable-next-line prettier/prettier

@@ -33,6 +33,19 @@ locals {
       ])
     }
   }
+   fallback_intent_closing_setting = {
+    closingResponse = {
+      messageGroups = [
+        {
+          message = {
+            plainTextMessage = {
+              value = "Thank you for contacting the hotline. Feel free to reach out again if you need additional support."
+            }
+          }
+        }
+      ]
+    }
+  }
 }
 
 data "aws_iam_role" "role-lex-v2-bot" {
@@ -441,6 +454,49 @@ resource "null_resource" "update_intent_settings" {
     time_sleep.wait_10_seconds
   ]
 }
+
+resource "null_resource" "update_fallback_intent" {
+  for_each = var.lex_v2_bots
+
+  triggers = {
+    always_run = timestamp()
+  }
+
+  provisioner "local-exec" {
+    environment = {
+      AWS_REGION = var.helpline_region
+    }
+
+    command = <<EOT
+    aws lexv2-models update-intent \
+      --bot-id ${aws_lexv2models_bot.this[each.key].id} \
+      --bot-version ${aws_lexv2models_bot_locale.this[each.key].bot_version} \
+      --locale-id ${aws_lexv2models_bot_locale.this[each.key].locale_id} \
+      --intent-id FALLBCKINT \
+      --intent-name FallbackIntent \
+      --parent-intent-signature AMAZON.FallbackIntent \
+      --intent-closing-setting '${replace(jsonencode({
+        closingResponse = {
+          messageGroups = [
+            {
+              message = {
+                plainTextMessage = {
+                  value = each.value.fallback_intent_closing_response
+                }
+              }
+            }
+          ]
+        }
+      }), "'", "'\\''")}'
+    EOT
+  }
+
+  depends_on = [
+    time_sleep.wait_10_seconds
+  ]
+}
+
+
 
 
 resource "aws_ssm_parameter" "bot_config" {

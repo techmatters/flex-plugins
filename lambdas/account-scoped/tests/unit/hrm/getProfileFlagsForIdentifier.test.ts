@@ -28,6 +28,7 @@ import { isErr, isOk, newErr, newOk } from '../../../src/Result';
 import { HttpRequest } from '../../../src/httpTypes';
 import { AssertionError } from 'node:assert';
 import each from 'jest-each';
+import { ChannelType, channelTypes } from '@tech-matters/twilio-types';
 
 jest.mock('twilio', () => () => ({}));
 
@@ -75,7 +76,7 @@ const newWebchatEvent = (from: string): TriggerEvent => ({
   request: { cookies: {}, headers: {} },
 });
 
-const newConversationEvent = (channelType: string, from: string): TriggerEvent => ({
+const newConversationEvent = (channelType: ChannelType, from: string): TriggerEvent => ({
   trigger: {
     conversation: {
       Author: from,
@@ -238,12 +239,14 @@ describe('handleGetProfileFlagsForIdentifier', () => {
               },
             },
           },
-          channelType: 'web',
+          channelType: channelTypes.WEB,
           request: { cookies: {}, headers: {} },
         },
         expectedIdentifier: '',
       },
-      ...['telegram', 'instagram', 'messenger'].flatMap(channelType => [
+      ...(
+        [channelTypes.TELEGRAM, channelTypes.INSTAGRAM, channelTypes.MESSENGER] as const
+      ).flatMap((channelType: ChannelType) => [
         {
           description: `Conversation with ${channelType} prefixed channel identifier '${channelType}:lornas-address'`,
           inputEvent: newConversationEvent(channelType, `${channelType}:lornas-address`),
@@ -255,25 +258,27 @@ describe('handleGetProfileFlagsForIdentifier', () => {
           expectedIdentifier: `lornas-address`,
         },
       ]),
-      ...['whatsapp', 'modica'].flatMap(channelType => [
-        {
-          description: `Conversation with ${channelType} prefixed channel identifier '${channelType}:123456789'`,
-          inputEvent: newConversationEvent(channelType, `${channelType}:123456789`),
-          expectedIdentifier: `123456789`,
-        },
-        {
-          description: `Conversation with ${channelType} non prefixed channel identifier '123456789'`,
-          inputEvent: newConversationEvent(channelType, `123456789`),
-          expectedIdentifier: `123456789`,
-        },
-        {
-          description: `Conversation with ${channelType} prefixed channel identifier with spaces and dashes '${channelType}:+123 456-789'`,
-          inputEvent: newConversationEvent(channelType, `${channelType}:+123456789`),
-          expectedIdentifier: `+123456789`,
-        },
-      ]),
+      ...([channelTypes.WHATSAPP, channelTypes.MODICA] as const).flatMap(
+        (channelType: ChannelType) => [
+          {
+            description: `Conversation with ${channelType} prefixed channel identifier '${channelType}:123456789'`,
+            inputEvent: newConversationEvent(channelType, `${channelType}:123456789`),
+            expectedIdentifier: `123456789`,
+          },
+          {
+            description: `Conversation with ${channelType} non prefixed channel identifier '123456789'`,
+            inputEvent: newConversationEvent(channelType, `123456789`),
+            expectedIdentifier: `123456789`,
+          },
+          {
+            description: `Conversation with ${channelType} prefixed channel identifier with spaces and dashes '${channelType}:+123 456-789'`,
+            inputEvent: newConversationEvent(channelType, `${channelType}:+123456789`),
+            expectedIdentifier: `+123456789`,
+          },
+        ],
+      ),
       // ...['line', 'web'].flatMap(channelType => [
-      ...['line'].flatMap(channelType => [
+      ...([channelTypes.LINE] as const).flatMap((channelType: ChannelType) => [
         {
           description: `Conversation with ${channelType} prefixed channel identifier '${channelType}:lornas-address'`,
           inputEvent: newConversationEvent(channelType, `${channelType}:lornas-address`),
@@ -323,7 +328,7 @@ describe('handleGetProfileFlagsForIdentifier', () => {
       // Act
       const result = await handleGetProfileFlagsForIdentifier(
         newProfileFlagsForIdentifierRequest(
-          newConversationEvent('carrier pigeon', 'speedy geraldine'),
+          newConversationEvent('carrier pigeon' as ChannelType, 'speedy geraldine'),
         ),
         TEST_ACCOUNT_SID,
       );
