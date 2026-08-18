@@ -19,4 +19,4 @@ import { namespace } from '../storeNamespaces';
 
 // eslint-disable-next-line import/no-unused-modules
 export const selectQuickDialOptions = (state: RootState) =>
-  state[namespace].configuration.twilioPrivateConfiguration.quickDialOptions ?? [];
+  state[namespace].configuration.aseloTwilioConfiguration.quickDialOptions ?? [];

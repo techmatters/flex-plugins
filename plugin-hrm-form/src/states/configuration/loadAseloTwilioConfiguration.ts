@@ -17,28 +17,35 @@
 import { createAsyncAction, createReducer } from 'redux-promise-middleware-actions';
 
 import { ConfigurationState } from './reducer';
-import { getPrivateTwilioConfiguration } from '../../services/configurationService';
+import { getAseloTwilioConfiguration } from '../../services/configurationService';
 
 const LOAD_PRIVATE_TWILIO_CONFIGURATION: string = 'configuration-action/load-private-twilio-configuration';
 
-type TwilioPrivateConfigurationState = ConfigurationState['twilioPrivateConfiguration'];
+type AseloTwilioConfigurationState = ConfigurationState['aseloTwilioConfiguration'];
 
-export const newLoadPrivateTwilioConfigurationAsyncAction = createAsyncAction(
+export const newLoadAseloTwilioConfigurationAsyncAction = createAsyncAction(
   LOAD_PRIVATE_TWILIO_CONFIGURATION,
-  async (): Promise<TwilioPrivateConfigurationState> => {
-    return getPrivateTwilioConfiguration();
+  async (): Promise<AseloTwilioConfigurationState> => {
+    return getAseloTwilioConfiguration();
   },
 );
 
-export const loadPrivateTwilioConfigurationReducer = (initialState: ConfigurationState) =>
+export const loadAseloTwilioConfigurationReducer = (initialState: ConfigurationState) =>
   createReducer(initialState, handleAction => [
     handleAction(
-      newLoadPrivateTwilioConfigurationAsyncAction.fulfilled,
+      newLoadAseloTwilioConfigurationAsyncAction.fulfilled,
       (state, { payload }): ConfigurationState => {
         return {
           ...state,
-          twilioPrivateConfiguration: payload,
+          aseloTwilioConfiguration: payload,
         };
+      },
+    ),
+    handleAction(
+      newLoadAseloTwilioConfigurationAsyncAction.rejected,
+      (state, { payload }): ConfigurationState => {
+        console.warn(`Failed to load aselo twilio configuration`, payload);
+        return state;
       },
     ),
   ]);

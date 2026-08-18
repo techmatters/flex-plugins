@@ -14,7 +14,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { getTwilioPrivateConfigurationHandler } from '../../../src/configuration/getTwilioPrivateConfiguration';
+import { getAseloTwilioConfigurationHandler } from '../../../src/configuration/getAseloTwilioConfiguration';
 import { getDocsBucketName } from '@tech-matters/twilio-configuration';
 import { getS3Object } from '@tech-matters/s3';
 import { isErr, isOk } from '../../../src/Result';
@@ -54,7 +54,7 @@ describe('getTwilioPrivateConfigurationHandler', () => {
     const config = { someKey: 'someValue', nested: { flag: true } };
     mockGetS3Object.mockResolvedValue(JSON.stringify(config));
 
-    const result = await getTwilioPrivateConfigurationHandler(
+    const result = await getAseloTwilioConfigurationHandler(
       createMockRequest(),
       TEST_ACCOUNT_SID,
     );
@@ -76,7 +76,7 @@ describe('getTwilioPrivateConfigurationHandler', () => {
     });
     mockGetS3Object.mockRejectedValue(noSuchKeyError);
 
-    const result = await getTwilioPrivateConfigurationHandler(
+    const result = await getAseloTwilioConfigurationHandler(
       createMockRequest(),
       TEST_ACCOUNT_SID,
     );
@@ -90,7 +90,7 @@ describe('getTwilioPrivateConfigurationHandler', () => {
   it('should return 500 on unexpected S3 error', async () => {
     mockGetS3Object.mockRejectedValue(new Error('S3 service unavailable'));
 
-    const result = await getTwilioPrivateConfigurationHandler(
+    const result = await getAseloTwilioConfigurationHandler(
       createMockRequest(),
       TEST_ACCOUNT_SID,
     );
@@ -105,7 +105,7 @@ describe('getTwilioPrivateConfigurationHandler', () => {
   it('should return 500 when getDocsBucketName fails', async () => {
     mockGetDocsBucketName.mockRejectedValue(new Error('SSM parameter not found'));
 
-    const result = await getTwilioPrivateConfigurationHandler(
+    const result = await getAseloTwilioConfigurationHandler(
       createMockRequest(),
       TEST_ACCOUNT_SID,
     );

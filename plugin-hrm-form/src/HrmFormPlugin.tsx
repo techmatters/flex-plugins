@@ -48,7 +48,7 @@ import { FeatureFlags } from './types/FeatureFlags';
 import { setUpFullStory } from './fullStory/setUp';
 import { getPathFromUrl } from './states/routing/reducer';
 import { setUpCustomSideLinks } from './components/customSideLinks/setUpCustomSideLinks';
-import { newLoadPrivateTwilioConfigurationAsyncAction } from './states/configuration/loadPrivateTwilioConfig';
+import { newLoadAseloTwilioConfigurationAsyncAction } from './states/configuration/loadAseloTwilioConfiguration';
 import asyncDispatch from "./states/asyncDispatch";
 
 const PLUGIN_NAME = 'HrmFormPlugin';
@@ -234,9 +234,9 @@ export default class HrmFormPlugin extends FlexPlugin {
     manager.updateConfig(managerConfiguration);
     // The 'private' configuration is ok to store in plain text in memory on the client, it doesn't need to be treated as sensitive for security purposes so can be kept in redux
     try {
-      await asyncDispatch(manager.store.dispatch)(newLoadPrivateTwilioConfigurationAsyncAction());
+      await asyncDispatch(manager.store.dispatch)(newLoadAseloTwilioConfigurationAsyncAction());
     } catch (error) {
-      console.warn('Failed to load private configuration', error);
+      console.warn('Failed to load private configuration, using default', error);
     }
     // TODO(nick): Eventually remove this log line or set to debug.  Should we fail hard here?
     const { hrmBaseUrl } = config;

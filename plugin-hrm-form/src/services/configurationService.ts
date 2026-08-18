@@ -14,10 +14,10 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 import type { ConfigurationState } from '../states/configuration/reducer';
-import {getFromAccountScopedLambda} from "./fetchAccountScopedLambdaApi";
+import { getFromAccountScopedLambda } from './fetchAccountScopedLambdaApi';
 
 /**
  * Sends a new message to the channel bounded to the provided taskSid. Optionally you can change the "from" value (default is "system").
  */
-export const getPrivateTwilioConfiguration = async (): Promise<ConfigurationState['twilioPrivateConfiguration']> =>
-  getFromAccountScopedLambda(`configuration/twilioPrivate`);
+export const getAseloTwilioConfiguration = async (): Promise<ConfigurationState['aseloTwilioConfiguration']> =>
+  getFromAccountScopedLambda(`configuration/twilio`);

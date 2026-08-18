@@ -20,15 +20,15 @@ import { getS3Object } from '@tech-matters/s3';
 import { newErr, newOk } from '../Result';
 import { AccountScopedHandler } from '../httpTypes';
 
-const TWILIO_PRIVATE_CONFIGURATION_KEY = 'configuration/twilio-private.json';
+const ASELO_TWILIO_CONFIGURATION_KEY = 'configuration/twilio.json';
 
-export const getTwilioPrivateConfigurationHandler: AccountScopedHandler = async (
+export const getAseloTwilioConfigurationHandler: AccountScopedHandler = async (
   _event,
   accountSid: AccountSID,
 ) => {
   try {
     const bucket = await getDocsBucketName(accountSid);
-    const content = await getS3Object(bucket, TWILIO_PRIVATE_CONFIGURATION_KEY);
+    const content = await getS3Object(bucket, ASELO_TWILIO_CONFIGURATION_KEY);
     return newOk(JSON.parse(content));
   } catch (err: any) {
     if (err?.name === 'NoSuchKey') {

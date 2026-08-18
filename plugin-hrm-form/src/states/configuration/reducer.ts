@@ -27,7 +27,7 @@ import {
   SearchContactsSuccessAction,
   SearchCasesSuccessAction,
 } from '../search/results';
-import { loadPrivateTwilioConfigurationReducer } from './loadPrivateTwilioConfig';
+import { loadAseloTwilioConfigurationReducer } from './loadAseloTwilioConfiguration';
 
 export type ConfigurationState = {
   locale: {
@@ -41,7 +41,7 @@ export type ConfigurationState = {
   workerInfo: { chatChannelCapacity: number };
   definitionVersions: { [version: string]: DefinitionVersion | undefined };
   currentDefinitionVersion?: DefinitionVersion;
-  twilioPrivateConfiguration: {
+  aseloTwilioConfiguration: {
     quickDialOptions?: { labelKey: string; phoneNumber: string }[];
   };
 };
@@ -59,11 +59,11 @@ export const initialState: ConfigurationState = {
   },
   workerInfo: { chatChannelCapacity: 0 },
   definitionVersions: {},
-  twilioPrivateConfiguration: {},
+  aseloTwilioConfiguration: {},
 };
 
 const boundChangeLanguageReducer = changeLanguageReducer(initialState);
-const boundLoadPrivateTwilioConfiguration = loadPrivateTwilioConfigurationReducer(initialState);
+const boundLoadAseloTwilioConfiguration = loadAseloTwilioConfigurationReducer(initialState);
 
 // eslint-disable-next-line import/no-unused-modules
 export function reduce(
@@ -74,7 +74,7 @@ export function reduce(
     | SearchCasesSuccessAction
     | SearchContactsSuccessAction,
 ): ConfigurationState {
-  inputState = boundLoadPrivateTwilioConfiguration(inputState, action as any);
+  inputState = boundLoadAseloTwilioConfiguration(inputState, action as any);
   const state = boundChangeLanguageReducer(inputState, action as any);
 
   switch (action.type) {
