@@ -20,5 +20,6 @@
     "EntryPoint-ClosedState-OpenWidgetButtonLabel": "What's Up Chat Service",
     "PreEngagementPhase-Form-Title": "Welcome to Barnardos Aotearoa What's Up Chat Service!",
     "EntryPointTagLine": "The What's Up Chat Service",
-    "MessagePhase-MessageList-Typing": "Counsellor is typing..."
+    "MessagePhase-MessageList-Typing": "Counsellor is typing...",
+    "PreEngagementPhase-Form-Description": "Not seeing a reply? Try refreshing your browser. Don't worry, your chat will still be active and your messages won't be lost."
 }
