@@ -35,6 +35,7 @@
     "@tech-matters/twilio-configuration": "^1.0.0",
     "@tech-matters/twilio-types": "^1.0.0",
     "@tech-matters/types": "^1.0.0",
+    "@tech-matters/voicemail": "^1.0.0",
     "@twilio-labs/serverless-runtime-types": "^4.0.1",
     "date-fns": "^4.1.0",
     "jsonwebtoken": "^9.0.3",

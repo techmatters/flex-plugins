@@ -11,6 +11,7 @@
     { "path": "packages/hrm-form-definitions" },
     { "path": "packages/twilio-types" },
     { "path": "packages/twilio-configuration" },
+    { "path": "packages/voicemail" },
     { "path": "packages/scheduled-jobs" },
     { "path": "account-scoped" },
     { "path": "scheduled-jobs-processor" },

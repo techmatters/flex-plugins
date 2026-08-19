@@ -6,7 +6,6 @@
   "dependencies": {
     "@tech-matters/ssm-cache": "^1.0.0",
     "@tech-matters/twilio-types": "^1.0.0",
-    "@tech-matters/types": "^1.0.0",
     "twilio": "^6.0.2"
   },
   "devDependencies": {

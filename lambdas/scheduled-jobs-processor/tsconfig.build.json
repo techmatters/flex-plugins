@@ -8,6 +8,7 @@
     { "path": "packages/ssm-cache" },
     { "path": "packages/twilio-types" },
     { "path": "packages/twilio-configuration" },
+    { "path": "packages/voicemail" },
     { "path": "packages/scheduled-jobs" },
     { "path": "scheduled-jobs-processor" }
   ]

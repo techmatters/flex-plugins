@@ -14,7 +14,8 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { getTwilioClient, createVoicemailTask } from '@tech-matters/twilio-configuration';
+import { getTwilioClient } from '@tech-matters/twilio-configuration';
+import { createVoicemailTask } from '@tech-matters/voicemail';
 import type { CallSid, RecordingSid } from '@tech-matters/twilio-types';
 import { AccountScopedHandler, HttpError } from '../httpTypes';
 import { isErr, Result } from '@tech-matters/types';

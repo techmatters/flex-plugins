@@ -1,0 +1,20 @@
+{
+  "name": "@tech-matters/voicemail",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dist/index.js",
+  "devDependencies": {
+    "@tsconfig/node22": "^22.0.0",
+    "ts-node": "^10.1.0",
+    "typescript": "^5.9.2"
+  },
+  "scripts": {
+    "build": "npx tsc",
+    "lint": "eslint --max-warnings 5 --ext ts src"
+  },
+  "dependencies": {
+    "@tech-matters/twilio-configuration": "^1.0.0",
+    "@tech-matters/twilio-types": "^1.0.0",
+    "@tech-matters/types": "^1.0.0"
+  }
+}

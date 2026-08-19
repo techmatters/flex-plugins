@@ -16,7 +16,7 @@
 
 import type { Context } from 'aws-lambda';
 import { CreateVoicemailSchedule, ScheduledJobType } from '@tech-matters/scheduled-jobs';
-import { createVoicemailTask } from '@tech-matters/twilio-configuration';
+import { createVoicemailTask } from '@tech-matters/voicemail';
 
 const handleCreateVoicemailJob = async ({
   accountSid,

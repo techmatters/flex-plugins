@@ -15,7 +15,7 @@
  */
 
 import { AccountSID, channelTypes } from '@tech-matters/twilio-types';
-import { getTwilioClient, getWorkspaceSid } from './twilioConfiguration';
+import { getTwilioClient, getWorkspaceSid } from '@tech-matters/twilio-configuration';
 import { newErr, newOk } from '@tech-matters/types';
 
 export const DEFAULT_MAX_CALLBACK_ATTEMPTS = 3;
