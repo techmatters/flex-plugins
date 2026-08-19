@@ -18,7 +18,6 @@
   "dependencies": {
     "@tech-matters/scheduled-jobs": "^1.0.0",
     "@tech-matters/twilio-configuration": "^1.0.0",
-    "@tech-matters/twilio-types": "^1.0.0",
-    "@tech-matters/types": "^1.0.0"
+    "@tech-matters/twilio-types": "^1.0.0"
   }
 }

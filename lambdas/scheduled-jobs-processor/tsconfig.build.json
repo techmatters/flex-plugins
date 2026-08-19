@@ -3,6 +3,8 @@
   "extends": "./tsconfig.base.json",
   "files": [],
   "references": [
+    { "path": "packages/types" },
+    { "path": "packages/ssm-cache" },
     { "path": "packages/ssm-cache" },
     { "path": "packages/twilio-types" },
     { "path": "packages/twilio-configuration" },
