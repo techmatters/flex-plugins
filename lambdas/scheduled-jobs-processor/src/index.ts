@@ -38,10 +38,7 @@ const handleCreateVoicemailJob = async ({
   return result;
 };
 
-export const handler = async (
-  event: ScheduledJobType,
-  context: Context,
-): Promise<void> => {
+export const handler = async (event: ScheduledJobType, context: Context) => {
   console.log('Received scheduled event', {
     requestId: context.awsRequestId,
     event,
@@ -51,7 +48,7 @@ export const handler = async (
     switch (event.jobType) {
       case 'create-voicemail-schedule': {
         const result = await handleCreateVoicemailJob(event.voicemailTask);
-        result.unwrap();
+        return result.unwrap();
       }
       default: {
         console.warn(`Job type ${event.jobType} not supported`);
