@@ -15,12 +15,55 @@
  */
 
 import type { Context } from 'aws-lambda';
-// import { SSMClient, GetParameterCommand } from '@aws-sdk/client-ssm';
+import { CreateVoicemailSchedule, ScheduledJobType } from '@tech-matters/scheduled-jobs';
+import { createVoicemailTask } from '@tech-matters/twilio-configuration';
 
-export const handler = async (event: any, context: Context): Promise<void> => {
+const handleCreateVoicemailJob = async ({
+  accountSid,
+  workflowSid,
+  attributes,
+}: CreateVoicemailSchedule['voicemailTask']) => {
+  const result = await createVoicemailTask({
+    accountSid,
+    name: attributes.name,
+    routingAttributes: attributes.routingAttributes,
+    maxCallbackAttempts: attributes.maxCallbackAttempts,
+    callSid: attributes.callSid,
+    from: attributes.from,
+    receivedTime: new Date().toISOString(),
+    callbackAttemptsMade: attributes.callbackAttemptsMade + 1,
+    workflowSid,
+  });
+
+  return result;
+};
+
+export const handler = async (
+  event: ScheduledJobType,
+  context: Context,
+): Promise<void> => {
   console.log('Received scheduled event', {
     requestId: context.awsRequestId,
     event,
   });
-  return;
+
+  try {
+    switch (event.jobType) {
+      case 'create-voicemail-schedule': {
+        const result = await handleCreateVoicemailJob(event.voicemailTask);
+        result.unwrap();
+      }
+      default: {
+        console.warn(`Job type ${event.jobType} not supported`);
+      }
+    }
+
+    return;
+  } catch (err) {
+    console.error(
+      'Error processing job',
+      JSON.stringify(event),
+      err instanceof Error ? err.message : String(err),
+    );
+  }
 };
