@@ -16,7 +16,7 @@
 
 import { getMediaUrlHandler } from '../../../src/conversation/getMediaUrl';
 import { getAccountAuthToken } from '@tech-matters/twilio-configuration';
-import { isErr, isOk } from '../../../src/Result';
+import { isErr, isOk } from '@tech-matters/types';
 import { FlexValidatedHttpRequest } from '../../../src/validation/flexToken';
 import { TEST_ACCOUNT_SID, TEST_AUTH_TOKEN } from '../../testTwilioValues';
 

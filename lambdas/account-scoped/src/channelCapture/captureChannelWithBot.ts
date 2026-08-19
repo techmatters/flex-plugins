@@ -18,7 +18,7 @@
 import twilio from 'twilio';
 import { handleChannelCapture } from './channelCaptureHandlers';
 import { AccountScopedHandler, HttpError } from '../httpTypes';
-import { isErr, newErr, newOk, Result } from '../Result';
+import { isErr, newErr, newOk, Result } from '@tech-matters/types';
 import {
   getAccountAuthToken,
   getChatServiceSid,

@@ -14,7 +14,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { newErr, newOk, Result } from '../Result';
+import { newErr, newOk, Result } from '@tech-matters/types';
 import { ReservationInstance } from 'twilio/lib/rest/taskrouter/v1/workspace/task/reservation';
 
 type UpdateReservationStatusesResult = Result<

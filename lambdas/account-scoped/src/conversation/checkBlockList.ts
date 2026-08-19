@@ -15,7 +15,7 @@
  */
 
 import { AccountScopedHandler, HttpError } from '../httpTypes';
-import { newErr, newOk, Result } from '../Result';
+import { newErr, newOk, Result } from '@tech-matters/types';
 
 export type CheckBlockListRequestBody = {
   callFrom: string;

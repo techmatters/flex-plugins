@@ -14,21 +14,4 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { AccountScopedHandler } from '../httpTypes';
-import { createToken, TOKEN_TTL_IN_SECONDS } from './createToken';
-import { newOk } from '@tech-matters/types';
-
-export const refreshTokenHandler: AccountScopedHandler = async ({ body }, accountSid) => {
-  console.info('Refreshing token', accountSid);
-
-  const providedIdentity = body.validationResult?.grants?.identity;
-
-  const refreshedToken = await createToken(accountSid, providedIdentity);
-
-  console.info('Token refreshed', providedIdentity, accountSid);
-
-  return newOk({
-    token: refreshedToken,
-    expiration: Date.now() + TOKEN_TTL_IN_SECONDS * 1000,
-  });
-};
+export * from './Result';

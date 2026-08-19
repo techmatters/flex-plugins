@@ -17,7 +17,7 @@
 import { AccountScopedHandler } from '../httpTypes';
 import { getSyncServiceSid, getTwilioClient } from '@tech-matters/twilio-configuration';
 import { newMissingParameterResult } from '../httpErrors';
-import { newOk } from '../Result';
+import { newOk } from '@tech-matters/types';
 
 export const participantStatusCallbackHandler: AccountScopedHandler = async (
   { body, query },

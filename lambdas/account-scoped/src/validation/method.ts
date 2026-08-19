@@ -15,7 +15,7 @@
  */
 
 import { HttpRequestPipelineStep } from '../httpTypes';
-import { newErr, newOk } from '../Result';
+import { newErr, newOk } from '@tech-matters/types';
 
 export const validateRequestMethod: (method: string) => HttpRequestPipelineStep =
   method => async request => {

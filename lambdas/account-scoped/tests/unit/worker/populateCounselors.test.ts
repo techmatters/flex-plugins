@@ -16,7 +16,7 @@
 
 import { populateCounselorsHandler } from '../../../src/worker/populateCounselors';
 import { getTwilioClient, getWorkspaceSid } from '@tech-matters/twilio-configuration';
-import { isOk } from '../../../src/Result';
+import { isOk } from '@tech-matters/types';
 import { FlexValidatedHttpRequest } from '../../../src/validation/flexToken';
 import {
   TEST_ACCOUNT_SID,

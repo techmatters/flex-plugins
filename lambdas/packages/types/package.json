@@ -1,5 +1,5 @@
 {
-  "name": "@tech-matters/scheduled-jobs",
+  "name": "@tech-matters/types",
   "version": "1.0.0",
   "description": "",
   "main": "dist/index.js",
@@ -12,8 +12,5 @@
     "build": "npx tsc",
     "lint": "eslint --max-warnings 5 --ext ts src"
   },
-  "dependencies": {
-    "@aws-sdk/client-scheduler": "^3.1100.0",
-    "@tech-matters/twilio-types": "^1.0.0"
-  }
+  "dependencies": {}
 }

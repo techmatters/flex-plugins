@@ -15,7 +15,7 @@
  */
 
 import { AccountScopedHandler } from '../httpTypes';
-import { isErr, newErr, newOk, Result } from '../Result';
+import { isErr, newErr, newOk, Result } from '@tech-matters/types';
 import { newHttpErrorResult, newMissingParameterResult } from '../httpErrors';
 import {
   Twilio,

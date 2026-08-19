@@ -17,7 +17,7 @@
 import { AccountSID } from '@tech-matters/twilio-types';
 import { getTwilioClient, getWorkspaceSid } from '@tech-matters/twilio-configuration';
 import { FlexValidatedHandler } from '../validation/flexToken';
-import { newOk } from '../Result';
+import { newOk } from '@tech-matters/types';
 import { newHttpErrorResult, newMissingParameterResult } from '../httpErrors';
 
 export const pullTaskHandler: FlexValidatedHandler = async (

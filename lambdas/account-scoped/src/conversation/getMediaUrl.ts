@@ -16,7 +16,7 @@
 
 import { FlexValidatedHandler } from '../validation/flexToken';
 import type { AccountSID } from '@tech-matters/twilio-types';
-import { newErr, newOk } from '../Result';
+import { newErr, newOk } from '@tech-matters/types';
 import { getAccountAuthToken } from '@tech-matters/twilio-configuration';
 import { newMissingParameterResult } from '../httpErrors';
 

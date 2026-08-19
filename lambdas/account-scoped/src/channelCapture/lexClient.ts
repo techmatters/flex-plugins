@@ -19,7 +19,7 @@ import {
   DeleteSessionCommand as DeleteSessionCommandV2,
   RecognizeTextResponse,
 } from '@aws-sdk/client-lex-runtime-v2';
-import { isErr, newErr, newOk } from '../Result';
+import { isErr, newErr, newOk } from '@tech-matters/types';
 import { getSsmParameter } from '@tech-matters/ssm-cache';
 
 export type LexMemory = { [q: string]: string | number };

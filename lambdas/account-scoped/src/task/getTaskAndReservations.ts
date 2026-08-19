@@ -20,7 +20,7 @@ import {
   TokenValidatorResponse,
 } from '../validation/flexToken';
 import type { AccountSID, TaskSID } from '@tech-matters/twilio-types';
-import { ErrorResult, isErr, newErr, newOk, Result } from '../Result';
+import { ErrorResult, isErr, newErr, newOk, Result } from '@tech-matters/types';
 import type { HttpError } from '../httpTypes';
 import { getTwilioClient, getWorkspaceSid } from '@tech-matters/twilio-configuration';
 import { newMissingParameterResult } from '../httpErrors';

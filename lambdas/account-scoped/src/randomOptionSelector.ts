@@ -15,8 +15,8 @@
  */
 
 import type { AccountScopedHandler, HttpError } from './httpTypes';
-import { newErr, newOk } from './Result';
-import type { Result } from './Result';
+import { newErr, newOk } from '@tech-matters/types';
+import type { Result } from '@tech-matters/types';
 
 /**
  * Selects a random option from the provided options based on their weights.

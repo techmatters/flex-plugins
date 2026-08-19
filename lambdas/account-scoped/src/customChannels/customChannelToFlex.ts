@@ -21,7 +21,7 @@ import {
   createConversation,
   CreateFlexConversationParams,
 } from '../conversation/createConversation';
-import { isErr } from '../Result';
+import { isErr } from '@tech-matters/types';
 
 export const findExistingConversation = async (
   client: Twilio,

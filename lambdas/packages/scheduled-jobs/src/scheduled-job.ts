@@ -13,21 +13,19 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
+import { AccountSID } from '@tech-matters/twilio-types';
 
-type CreateVoicemailSchedule = {
+export type CreateVoicemailSchedule = {
   jobType: 'create-voicemail-schedule';
   voicemailTask: {
-    timeout: number;
+    accountSid: AccountSID;
     attributes: {
       routingAttributes: any;
-      isVoicemail: true;
       callSid: string;
       from: string;
       name: string;
-      channelType: 'voicemail';
-      customChannelType: 'voicemail';
-      ignoreAgent: '';
-      transferTargetType: '';
+      callbackAttemptsMade: number;
+      maxCallbackAttempts?: number;
     };
     workflowSid: string;
   };

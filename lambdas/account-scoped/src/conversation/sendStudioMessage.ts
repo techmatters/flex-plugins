@@ -16,7 +16,7 @@
 
 import type { AccountSID, ChatChannelSID } from '@tech-matters/twilio-types';
 import { getChatServiceSid, getTwilioClient } from '@tech-matters/twilio-configuration';
-import { newErr } from '../Result';
+import { newErr } from '@tech-matters/types';
 import type { AccountScopedHandler, HttpRequest } from '../httpTypes';
 import { sendSystemMessage } from './sendSystemMessage';
 

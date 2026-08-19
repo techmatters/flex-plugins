@@ -17,7 +17,7 @@
 import { AccountSID, aseloCustomChannelTypes } from '@tech-matters/twilio-types';
 import { sendConversationMessageToFlex } from '../customChannelToFlex';
 import { AccountScopedHandler, HttpRequest } from '../../httpTypes';
-import { newErr, newOk } from '../../Result';
+import { newErr, newOk } from '@tech-matters/types';
 import { getChannelStudioFlowSid, getTelegramBotApiSecretToken } from '../configuration';
 
 export const TELEGRAM_BOT_API_SECRET_TOKEN_HEADER = 'x-telegram-bot-api-secret-token';

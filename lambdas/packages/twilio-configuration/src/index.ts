@@ -15,3 +15,4 @@
  */
 
 export * from './twilioConfiguration';
+export * from './createVoicemailTask';

@@ -22,7 +22,7 @@ import type { TaskInstance } from 'twilio/lib/rest/taskrouter/v1/workspace/task'
 import { ChatChannelSID, ConversationSID } from '@tech-matters/twilio-types';
 import { AccountScopedHandler, HttpError } from '../httpTypes';
 import { AccountSID } from '@tech-matters/twilio-types';
-import { newErr, newOk, Result } from '../Result';
+import { newErr, newOk, Result } from '@tech-matters/types';
 import {
   getChatServiceSid,
   getTwilioClient,

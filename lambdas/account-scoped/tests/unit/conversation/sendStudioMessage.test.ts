@@ -16,7 +16,7 @@
 
 import { sendStudioMessageHandler } from '../../../src/conversation/sendStudioMessage';
 import { getChatServiceSid, getTwilioClient } from '@tech-matters/twilio-configuration';
-import { isErr, isOk } from '../../../src/Result';
+import { isErr, isOk } from '@tech-matters/types';
 import type { HttpRequest } from '../../../src/httpTypes';
 import {
   TEST_ACCOUNT_SID,

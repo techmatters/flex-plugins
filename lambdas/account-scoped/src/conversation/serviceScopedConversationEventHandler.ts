@@ -18,7 +18,7 @@ import { AccountScopedHandler, HttpRequest } from '../httpTypes';
 import { AccountSID } from '@tech-matters/twilio-types';
 import twilio from 'twilio';
 import { getTwilioClient } from '@tech-matters/twilio-configuration';
-import { newOk } from '../Result';
+import { newOk } from '@tech-matters/types';
 import { ConversationEvent, ProgrammableChatEvent } from './eventTypes';
 
 export type ServiceScopedConversationEventHandler = (

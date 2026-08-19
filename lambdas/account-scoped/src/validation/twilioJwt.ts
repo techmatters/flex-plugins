@@ -16,7 +16,7 @@
 
 import { HttpRequestPipelineStep } from '../httpTypes';
 import jwt, { VerifyErrors } from 'jsonwebtoken';
-import { isErr, newErr, newJsErrorResult, newOk, Result } from '../Result';
+import { isErr, newErr, newJsErrorResult, newOk, Result } from '@tech-matters/types';
 import { getApiSecret } from '../webchatAuthentication/createToken';
 
 export const validateRequestWithTwilioJwtToken: HttpRequestPipelineStep = async (

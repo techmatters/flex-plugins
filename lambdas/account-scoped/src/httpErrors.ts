@@ -13,7 +13,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
-import { ErrorResult, newErr } from './Result';
+import { ErrorResult, newErr } from '@tech-matters/types';
 import { HttpError } from './httpTypes';
 
 export class HttpClientError extends Error {
