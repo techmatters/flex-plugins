@@ -8,5 +8,8 @@
   "helpline":"${helpline}",
   "language":"${task_language}",
   "transferTargetType": "",
-  "memory": {{trigger.conversation.ChannelAttributes.memory | to_json}}
+  "memory": {{trigger.conversation.ChannelAttributes.memory | to_json}},
+  "conversations": {
+    "hang_up_by": "Customer"
+  }
 }
