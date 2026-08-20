@@ -26,7 +26,7 @@ const handleCreateVoicemailJob = async ({
   const result = await createVoicemailTask({
     accountSid,
     name: attributes.name,
-    routingAttributes: attributes.routingAttributes,
+    routingAttributes: attributes.routingAttributes ?? {},
     maxCallbackAttempts: attributes.maxCallbackAttempts,
     callSid: attributes.callSid,
     from: attributes.from,

@@ -39,7 +39,7 @@ export const createVoicemailTask = async ({
   from: string;
   name: string;
   workflowSid: string;
-  routingAttributes?: string;
+  routingAttributes?: Record<string, any>;
 }) => {
   try {
     const workspaceSid = await getWorkspaceSid(accountSid);
