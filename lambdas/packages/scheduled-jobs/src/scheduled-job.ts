@@ -20,12 +20,12 @@ export type CreateVoicemailSchedule = {
   voicemailTask: {
     accountSid: AccountSID;
     attributes: {
-      routingAttributes: any;
       callSid: string;
       from: string;
       name: string;
       callbackAttemptsMade: number;
       maxCallbackAttempts?: number;
+      routingAttributes?: Record<string, any>;
     };
     workflowSid: string;
   };
@@ -33,7 +33,31 @@ export type CreateVoicemailSchedule = {
 export const isValidVoicemailTask = (
   task: any,
 ): task is CreateVoicemailSchedule['voicemailTask'] => {
-  //TODO
+  if (!task || typeof task !== 'object') return false;
+  if (!task.accountSid || typeof task.accountSid !== 'string') return false;
+  if (!task.workflowSid || typeof task.workflowSid !== 'string') return false;
+  if (!task.attributes || typeof task.attributes !== 'object') return false;
+  if (!task.attributes || typeof task.attributes !== 'object') return false;
+  if (!task.attributes.callSid || typeof task.attributes.callSid !== 'string')
+    return false;
+  if (!task.attributes.from || typeof task.attributes.from !== 'string') return false;
+  if (!task.attributes.name || typeof task.attributes.name !== 'string') return false;
+  if (
+    !task.attributes.callbackAttemptsMade ||
+    typeof task.attributes.callbackAttemptsMade !== 'number'
+  )
+    return false;
+  if (
+    task.attributes.maxCallbackAttempts &&
+    typeof task.attributes.maxCallbackAttempts !== 'number'
+  )
+    return false;
+  if (
+    task.attributes.routingAttributes ||
+    typeof task.attributes.routingAttributes !== 'object'
+  )
+    return false;
+
   return true;
 };
 
