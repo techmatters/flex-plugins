@@ -128,5 +128,5 @@ export const lookupTranslation = (code: string | string[], parameters: Record<st
       return Handlebars.compile(strings[code])(parameters);
     }
   }
-  return code[0];
+  return codes[0];
 };
