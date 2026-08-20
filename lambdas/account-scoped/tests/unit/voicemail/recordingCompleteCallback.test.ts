@@ -189,8 +189,10 @@ describe('recordingCompleteCallback', () => {
 
     const createdAttributes = JSON.parse(mockTasksCreate.mock.calls[0][0].attributes);
     expect(createdAttributes).toMatchObject({
-      queueName: 'voicemail-queue',
-      priority: 10,
+      routingAttributes: {
+        queueName: 'voicemail-queue',
+        priority: 10,
+      },
       from: TEST_FROM,
       channelType: channelTypes.VOICEMAIL,
     });
@@ -242,7 +244,7 @@ describe('recordingCompleteCallback', () => {
 
     expect(isOk(result)).toBe(true);
     if (isOk(result)) {
-      expect(result.data.voicemailTask).toBe(createdTask);
+      expect(result.data.createdVoicemailTask).toBe(createdTask);
     }
   });
 });
