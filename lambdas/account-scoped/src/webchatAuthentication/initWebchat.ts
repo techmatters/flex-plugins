@@ -17,7 +17,7 @@
 import { getTwilioClient } from '@tech-matters/twilio-configuration';
 import type { AccountScopedHandler, HttpError } from '../httpTypes';
 import type { AccountSID, ConversationSID } from '@tech-matters/twilio-types';
-import { isErr, newErr, newOk, Result } from '@tech-matters/types';
+import { isErr, newErr, newOk, Result } from '@tech-matters/result-type';
 
 import { createToken, TOKEN_TTL_IN_SECONDS } from './createToken';
 import { createConversation } from '../conversation/createConversation';

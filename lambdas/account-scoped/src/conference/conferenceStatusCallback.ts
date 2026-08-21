@@ -22,7 +22,7 @@ import {
   TaskSID,
   WorkspaceSID,
 } from '@tech-matters/twilio-types';
-import { newOk } from '@tech-matters/types';
+import { newOk } from '@tech-matters/result-type';
 import twilio from 'twilio';
 import { getTwilioClient } from '@tech-matters/twilio-configuration';
 

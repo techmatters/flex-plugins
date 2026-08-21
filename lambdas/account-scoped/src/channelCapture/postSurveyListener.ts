@@ -40,7 +40,7 @@ import {
 } from '@tech-matters/twilio-configuration';
 import { getTranslation } from '../translations/translationLookup';
 import { getCurrentDefinitionVersion } from '../hrm/formDefinitionsCache';
-import { newOk } from '@tech-matters/types';
+import { newOk } from '@tech-matters/result-type';
 import { AccountScopedHandler } from '../httpTypes';
 
 const GLOBAL_DEFAULT_LANGUAGE = 'en-US';

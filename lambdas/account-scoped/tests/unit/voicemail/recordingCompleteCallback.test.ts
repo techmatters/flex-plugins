@@ -17,7 +17,7 @@
 import { getTwilioClient, getWorkspaceSid } from '@tech-matters/twilio-configuration';
 import { channelTypes } from '@tech-matters/twilio-types';
 import { recordingCompleteCallback } from '../../../src/voicemail/recordingCompleteCallback';
-import { isErr, isOk } from '@tech-matters/types';
+import { isErr, isOk } from '@tech-matters/result-type';
 import type { HttpRequest } from '../../../src/httpTypes';
 import { TEST_ACCOUNT_SID, TEST_WORKSPACE_SID } from '../../testTwilioValues';
 

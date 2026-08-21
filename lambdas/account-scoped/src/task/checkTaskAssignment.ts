@@ -16,7 +16,7 @@
 import type { AccountScopedHandler, HttpRequest } from '../httpTypes';
 import type { AccountSID, TaskSID } from '@tech-matters/twilio-types';
 import { newMissingParameterResult } from '../httpErrors';
-import { newOk } from '@tech-matters/types';
+import { newOk } from '@tech-matters/result-type';
 import { getTwilioClient, getWorkspaceSid } from '@tech-matters/twilio-configuration';
 
 export type Body = {

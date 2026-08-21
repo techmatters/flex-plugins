@@ -21,7 +21,7 @@ import {
   TriggerEvent,
 } from '../../../src/hrm/sanitizeIdentifier';
 import 'jest';
-import { isErr } from '@tech-matters/types';
+import { isErr } from '@tech-matters/result-type';
 
 describe('sanitizeIdentifierFromTask', () => {
   const testCases: {

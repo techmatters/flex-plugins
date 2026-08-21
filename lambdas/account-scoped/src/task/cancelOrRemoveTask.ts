@@ -17,7 +17,7 @@
 import { AccountSID, TaskSID } from '@tech-matters/twilio-types';
 import { newHttpErrorResult, newMissingParameterResult } from '../httpErrors';
 import { FlexValidatedHandler, isSupervisor } from '../validation/flexToken';
-import { isErr, isOk } from '@tech-matters/types';
+import { isErr, isOk } from '@tech-matters/result-type';
 import { getTwilioClient } from '@tech-matters/twilio-configuration';
 import {
   getTaskAndReservations,

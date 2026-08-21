@@ -14,7 +14,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 import { getSsmParameter, SsmParameterNotFound } from '@tech-matters/ssm-cache';
-import { ErrorResult, newErr, newOk, Result } from '@tech-matters/types';
+import { ErrorResult, newErr, newOk, Result } from '@tech-matters/result-type';
 import { HttpClientError } from '../httpErrors';
 
 import { HrmAccountId, inferAccountSidFromHrmAccountId } from './hrmAccountId';

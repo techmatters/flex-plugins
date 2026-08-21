@@ -16,7 +16,7 @@
 
 import type { AccountSID } from '@tech-matters/twilio-types';
 import { getTwilioClient } from '@tech-matters/twilio-configuration';
-import { newErr, newOk } from '@tech-matters/types';
+import { newErr, newOk } from '@tech-matters/result-type';
 import type { AccountScopedHandler, HttpRequest } from '../httpTypes';
 
 const BLOCKED_CARRIERS = ['HD Carrier LLC'];

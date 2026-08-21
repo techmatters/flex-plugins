@@ -3,7 +3,7 @@
   "extends": "./tsconfig.base.json",
   "files": [],
   "references": [
-    { "path": "packages/types" },
+    { "path": "packages/result-type" },
     { "path": "packages/ssm-cache" },
     { "path": "packages/ssm-cache" },
     { "path": "packages/twilio-types" },

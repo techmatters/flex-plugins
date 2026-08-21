@@ -22,7 +22,7 @@ import {
 } from '../../../../src/customChannels/telegram/telegramToFlex';
 import { HttpRequest } from '../../../../src/httpTypes';
 import { AccountSID } from '@tech-matters/twilio-types';
-import { isOk } from '@tech-matters/types';
+import { isOk } from '@tech-matters/result-type';
 import { getTwilioClient } from '@tech-matters/twilio-configuration';
 
 const MOCK_BOT_API_SECRET_TOKEN = 'test-bot-api-secret-token';

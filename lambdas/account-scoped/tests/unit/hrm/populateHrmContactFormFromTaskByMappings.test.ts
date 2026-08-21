@@ -19,7 +19,7 @@ import { callTypes, HrmContact } from '@tech-matters/hrm-types';
 import each from 'jest-each';
 import { BASE_FORM_DEFINITION } from '../../testHrmValues';
 import { populateHrmContactFormFromTaskByMappings } from '../../../src/hrm/populateHrmContactFormFromTaskByMappings';
-import { isErr } from '@tech-matters/types';
+import { isErr } from '@tech-matters/result-type';
 import { AssertionError } from 'node:assert';
 import { getCurrentDefinitionVersion } from '../../../src/hrm/formDefinitionsCache';
 import { RecursivePartial } from '../RecursivePartial';

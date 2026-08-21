@@ -18,7 +18,7 @@ import { FlexValidatedHandler } from '../validation/flexToken';
 import type { AccountSID, TaskSID } from '@tech-matters/twilio-types';
 import { getTwilioClient, getWorkspaceSid } from '@tech-matters/twilio-configuration';
 import { newMissingParameterResult } from '../httpErrors';
-import { newOk } from '@tech-matters/types';
+import { newOk } from '@tech-matters/result-type';
 import type { TaskInstance } from 'twilio/lib/rest/taskrouter/v1/workspace/task';
 
 type OfflineContactComplete = {

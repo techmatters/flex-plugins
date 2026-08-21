@@ -18,7 +18,7 @@ import '@twilio-labs/serverless-runtime-types';
 import moment from 'moment-timezone';
 import { AccountScopedHandler, HttpError } from './httpTypes';
 import { AccountSID } from '@tech-matters/twilio-types';
-import { newErr, newOk, Result } from '@tech-matters/types';
+import { newErr, newOk, Result } from '@tech-matters/result-type';
 import { lookupCustomMessage } from './hrm/formDefinitionsCache';
 import {
   areOperatingHoursEnforced,

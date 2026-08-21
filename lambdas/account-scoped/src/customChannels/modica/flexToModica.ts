@@ -22,7 +22,7 @@ import {
   TEST_SEND_URL,
 } from '../flexToCustomChannel';
 import { AccountScopedHandler, HttpError, HttpRequest } from '../../httpTypes';
-import { isErr, newOk, Result } from '@tech-matters/types';
+import { isErr, newOk, Result } from '@tech-matters/result-type';
 import { newMissingParameterResult } from '../../httpErrors';
 import { getTwilioClient } from '@tech-matters/twilio-configuration';
 import { getModicaAppName, getModicaAppPassword } from '../configuration';

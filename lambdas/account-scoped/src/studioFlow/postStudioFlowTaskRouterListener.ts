@@ -28,7 +28,7 @@ import VoiceResponse = TwilioSDK.twiml.VoiceResponse;
 import { patchTaskAttributes } from '../task/patchTaskAttributes';
 import { getTwilioClient, getWorkspaceSid } from '@tech-matters/twilio-configuration';
 import { AccountScopedHandler } from '../httpTypes';
-import { newOk } from '@tech-matters/types';
+import { newOk } from '@tech-matters/result-type';
 
 // TODO: factor out
 type TransferMeta = {

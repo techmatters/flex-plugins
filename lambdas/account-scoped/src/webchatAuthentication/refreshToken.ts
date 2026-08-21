@@ -16,7 +16,7 @@
 
 import { AccountScopedHandler } from '../httpTypes';
 import { createToken, TOKEN_TTL_IN_SECONDS } from './createToken';
-import { newOk } from '@tech-matters/types';
+import { newOk } from '@tech-matters/result-type';
 
 export const refreshTokenHandler: AccountScopedHandler = async ({ body }, accountSid) => {
   console.info('Refreshing token', accountSid);

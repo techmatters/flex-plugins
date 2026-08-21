@@ -14,7 +14,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { Result } from '@tech-matters/types';
+import { Result } from '@tech-matters/result-type';
 import { AccountSID } from '@tech-matters/twilio-types';
 import { FlexValidatedHttpRequest } from './validation/flexToken';
 

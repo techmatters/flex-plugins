@@ -23,7 +23,7 @@ import {
   getWorkspaceSid,
 } from '@tech-matters/twilio-configuration';
 import { newMissingParameterResult } from '../httpErrors';
-import { isErr, newErr, newOk, Result } from '@tech-matters/types';
+import { isErr, newErr, newOk, Result } from '@tech-matters/result-type';
 import { WorkerInstance } from 'twilio/lib/rest/taskrouter/v1/workspace/worker';
 
 export type Body = {

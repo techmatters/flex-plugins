@@ -22,7 +22,7 @@ import {
   getWorkspaceSid,
 } from '@tech-matters/twilio-configuration';
 import { newMissingParameterResult } from '../httpErrors';
-import { newErr, newOk } from '@tech-matters/types';
+import { newErr, newOk } from '@tech-matters/result-type';
 import type { WorkerInstance } from 'twilio/lib/rest/taskrouter/v1/workspace/worker';
 import type { TaskInstance } from 'twilio/lib/rest/taskrouter/v1/workspace/task';
 

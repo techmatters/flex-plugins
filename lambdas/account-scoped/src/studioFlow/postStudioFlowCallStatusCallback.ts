@@ -16,7 +16,7 @@
 
 import { AccountScopedHandler } from '../httpTypes';
 import { getTwilioClient } from '@tech-matters/twilio-configuration';
-import { newOk } from '@tech-matters/types';
+import { newOk } from '@tech-matters/result-type';
 import type { CallSid } from '@tech-matters/twilio-types';
 import { endActiveStudioFlowExecutionsForCall } from './endActiveStudioFlowExecutionsForCall';
 

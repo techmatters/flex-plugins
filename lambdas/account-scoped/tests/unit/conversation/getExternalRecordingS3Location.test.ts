@@ -16,7 +16,7 @@
 
 import { getExternalRecordingS3LocationHandler } from '../../../src/conversation/getExternalRecordingS3Location';
 import { getTwilioClient, getDocsBucketName } from '@tech-matters/twilio-configuration';
-import { isErr, isOk } from '@tech-matters/types';
+import { isErr, isOk } from '@tech-matters/result-type';
 import { FlexValidatedHttpRequest } from '../../../src/validation/flexToken';
 import { TEST_ACCOUNT_SID } from '../../testTwilioValues';
 

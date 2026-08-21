@@ -16,7 +16,7 @@
 
 import { ScheduledJobType } from '@tech-matters/scheduled-jobs/dist/scheduled-job';
 import { AccountScopedHandler, HttpError } from '../httpTypes';
-import { newErr, newOk, Result } from '@tech-matters/types';
+import { newErr, newOk, Result } from '@tech-matters/result-type';
 import { createScheduledJob, isValidVoicemailTask } from '@tech-matters/scheduled-jobs';
 import { addHours } from 'date-fns/addHours';
 

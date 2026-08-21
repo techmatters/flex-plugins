@@ -19,7 +19,7 @@ import { ChannelInstance } from 'twilio/lib/rest/chat/v2/service/channel';
 import { ConversationInstance } from 'twilio/lib/rest/conversations/v1/conversation';
 import type { CapturedChannelAttributes } from './channelCaptureHandlers';
 import { AccountScopedHandler, HttpError } from '../httpTypes';
-import { isErr, newErr, newOk, Result } from '@tech-matters/types';
+import { isErr, newErr, newOk, Result } from '@tech-matters/result-type';
 import {
   getAccountAuthToken,
   getChatServiceSid,

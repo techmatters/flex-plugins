@@ -15,7 +15,7 @@
  */
 
 import { HrmContact } from '@tech-matters/hrm-types';
-import { newErr, newOk, Result } from '@tech-matters/types';
+import { newErr, newOk, Result } from '@tech-matters/result-type';
 import { ChannelType } from '@tech-matters/twilio-types';
 
 /**

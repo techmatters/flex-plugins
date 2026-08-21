@@ -16,7 +16,7 @@
 
 import { Twilio } from 'twilio';
 import type { TaskInstance } from 'twilio/lib/rest/taskrouter/v1/workspace/task';
-import { newErr, newOk, Result } from '@tech-matters/types';
+import { newErr, newOk, Result } from '@tech-matters/result-type';
 import type { CallInstance } from 'twilio/lib/rest/api/v2010/account/call';
 import { CallSid, TaskSID } from '@tech-matters/twilio-types';
 

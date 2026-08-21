@@ -21,7 +21,7 @@ import {
   channelTypes,
   ConversationSID,
 } from '@tech-matters/twilio-types';
-import { newErr, newOk, Result } from '@tech-matters/types';
+import { newErr, newOk, Result } from '@tech-matters/result-type';
 
 const CONVERSATION_CLOSE_TIMEOUT = 'P3D'; // ISO 8601 duration format https://en.wikipedia.org/wiki/ISO_8601
 export type CreateFlexConversationParams = {

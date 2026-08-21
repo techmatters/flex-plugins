@@ -18,7 +18,7 @@ import { getTwilioClient } from '@tech-matters/twilio-configuration';
 import { createVoicemailTask } from '@tech-matters/voicemail';
 import type { CallSid, RecordingSid } from '@tech-matters/twilio-types';
 import { AccountScopedHandler, HttpError } from '../httpTypes';
-import { isErr, Result } from '@tech-matters/types';
+import { isErr, Result } from '@tech-matters/result-type';
 import { newHttpErrorResult, newMissingParameterResult } from '../httpErrors';
 import { TaskInstance } from 'twilio/lib/rest/taskrouter/v1/workspace/task';
 

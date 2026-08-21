@@ -18,7 +18,7 @@ import { ConversationInstance } from 'twilio/lib/rest/conversations/v1/conversat
 import type { TaskInstance } from 'twilio/lib/rest/taskrouter/v1/workspace/task';
 import type { MemberInstance } from 'twilio/lib/rest/ipMessaging/v2/service/channel/member';
 import { LexClient, LexMemory } from './lexClient';
-import { isErr, newErr, newOk, Result } from '@tech-matters/types';
+import { isErr, newErr, newOk, Result } from '@tech-matters/result-type';
 import { Twilio } from 'twilio';
 import { ROUTE_PREFIX } from '../router';
 import { AccountSID } from '@tech-matters/twilio-types';

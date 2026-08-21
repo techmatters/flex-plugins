@@ -17,7 +17,7 @@
 import qs from 'querystring';
 import type { ALBEvent, ALBResult } from 'aws-lambda';
 import { lookupRoute } from './router';
-import { isErr, newErr } from '@tech-matters/types';
+import { isErr, newErr } from '@tech-matters/result-type';
 import {
   convertHttpErrorResultToALBResult,
   notFoundResponse,

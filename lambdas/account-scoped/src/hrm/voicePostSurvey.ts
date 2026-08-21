@@ -21,7 +21,7 @@ import {
   getTwilioClient,
   getWorkspaceSid,
 } from '@tech-matters/twilio-configuration';
-import { newOk, Result } from '@tech-matters/types';
+import { newOk, Result } from '@tech-matters/result-type';
 import { savePostSurvey } from './savePostSurvey';
 import { newMissingParameterResult } from '../httpErrors';
 

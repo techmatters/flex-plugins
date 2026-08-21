@@ -19,7 +19,7 @@ import { AccountSID } from '@tech-matters/twilio-types';
 import { registerTaskRouterEventHandler } from '../taskrouter/taskrouterEventHandler';
 import { patchOnInternalHrmEndpoint } from './internalHrmRequest';
 import { HrmContact } from '@tech-matters/hrm-types';
-import { isErr } from '@tech-matters/types';
+import { isErr } from '@tech-matters/result-type';
 import { inferHrmAccountId } from './hrmAccountId';
 import { Twilio } from 'twilio';
 import { retrieveServiceConfigurationAttributes } from '../configuration/aseloConfiguration';

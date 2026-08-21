@@ -13,8 +13,8 @@
     "lint": "eslint --max-warnings 5 --ext ts src"
   },
   "dependencies": {
+    "@tech-matters/result-type": "^1.0.0",
     "@tech-matters/twilio-configuration": "^1.0.0",
-    "@tech-matters/twilio-types": "^1.0.0",
-    "@tech-matters/types": "^1.0.0"
+    "@tech-matters/twilio-types": "^1.0.0"
   }
 }

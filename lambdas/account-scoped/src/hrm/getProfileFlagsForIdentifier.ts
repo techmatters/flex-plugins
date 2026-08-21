@@ -17,7 +17,7 @@
 import { AccountScopedHandler, HttpError } from '../httpTypes';
 import { getAccountAuthToken } from '@tech-matters/twilio-configuration';
 import twilio from 'twilio';
-import { isErr, newErr, newOk, Result } from '@tech-matters/types';
+import { isErr, newErr, newOk, Result } from '@tech-matters/result-type';
 import { getFromInternalHrmEndpoint } from './internalHrmRequest';
 import { retrieveServiceConfigurationAttributes } from '../configuration/aseloConfiguration';
 import { sanitizeIdentifierFromTrigger } from './sanitizeIdentifier';

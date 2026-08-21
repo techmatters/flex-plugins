@@ -34,7 +34,7 @@ import {
   TEST_WORKSPACE_SID,
 } from '../../testTwilioValues';
 import { setConfigurationAttributes } from '../mockServiceConfiguration';
-import { newErr, newOk } from '@tech-matters/types';
+import { newErr, newOk } from '@tech-matters/result-type';
 
 const mockFetch: jest.MockedFunction<typeof fetch> = jest.fn();
 global.fetch = mockFetch;

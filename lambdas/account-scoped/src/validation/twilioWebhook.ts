@@ -15,7 +15,7 @@
  */
 
 import twilio from 'twilio';
-import { newErr, newOk } from '@tech-matters/types';
+import { newErr, newOk } from '@tech-matters/result-type';
 import { HttpRequestPipelineStep } from '../httpTypes';
 import { getAccountAuthToken } from '@tech-matters/twilio-configuration';
 

@@ -26,7 +26,7 @@ import {
   ContactFormName,
 } from '@tech-matters/hrm-form-definitions';
 import { FormValue, HrmContact, HrmContactRawJson } from '@tech-matters/hrm-types';
-import { newErr, newOk, Result } from '@tech-matters/types';
+import { newErr, newOk, Result } from '@tech-matters/result-type';
 import { getCurrentDefinitionVersion } from './formDefinitionsCache';
 import { AccountSID } from '@tech-matters/twilio-types';
 
