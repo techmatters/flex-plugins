@@ -33,7 +33,7 @@ export const createVoicemailTask = async ({
 }: {
   accountSid: AccountSID;
   receivedTime: string;
-  callbackAttempts: string[];
+  callbackAttempts: [string, string][];
   maxCallbackAttempts?: number;
   callSid: string;
   from: string;
