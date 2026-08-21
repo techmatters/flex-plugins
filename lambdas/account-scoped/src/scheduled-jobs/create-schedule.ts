@@ -39,7 +39,7 @@ export const handleCreateScheduleJob: AccountScopedHandler = async (
     }
 
     if (jobType === 'create-voicemail-schedule') {
-      const { voicemailTask } = request.body;
+      const voicemailTask = { ...(request.body.voicemailTask ?? {}), accountSid };
 
       if (!isValidVoicemailTask(voicemailTask)) {
         return newErr({
