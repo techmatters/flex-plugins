@@ -23,20 +23,20 @@ export type CreateVoicemailSchedule = {
       callSid: string;
       from: string;
       name: string;
-      callbackAttempts: string[];
+      callbackAttempts: [string, string][];
       maxCallbackAttempts?: number;
       routingAttributes?: Record<string, any>;
     };
     workflowSid: string;
   };
 };
+
 export const isValidVoicemailTask = (
   task: any,
 ): task is CreateVoicemailSchedule['voicemailTask'] => {
   if (!task || typeof task !== 'object') return false;
   if (!task.accountSid || typeof task.accountSid !== 'string') return false;
   if (!task.workflowSid || typeof task.workflowSid !== 'string') return false;
-  if (!task.attributes || typeof task.attributes !== 'object') return false;
   if (!task.attributes || typeof task.attributes !== 'object') return false;
   if (!task.attributes.callSid || typeof task.attributes.callSid !== 'string')
     return false;
@@ -53,7 +53,7 @@ export const isValidVoicemailTask = (
   )
     return false;
   if (
-    task.attributes.routingAttributes ||
+    task.attributes.routingAttributes &&
     typeof task.attributes.routingAttributes !== 'object'
   )
     return false;
