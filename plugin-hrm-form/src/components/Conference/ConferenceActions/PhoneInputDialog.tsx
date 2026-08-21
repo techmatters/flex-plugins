@@ -24,20 +24,49 @@ import { PhoneDialogWrapper, DialogArrow } from './styles';
 type PhoneDialogProps = {
   targetNumber: string;
   setTargetNumber: (targetNumber: string) => void;
-  handleClick: () => void;
+  handleManualDialClick: () => void;
+  handleQuickDialClick: (phoneNumber: string) => void;
   setIsDialogOpen: (isDialogOpen: boolean) => void;
   isLoading: boolean;
 };
 
 const ENTER_NUMBER_KEY = 'Conference-EnterPhoneNumber';
 
+type QuickDialItem = {
+  labelKey: string;
+  phoneNumber: string;
+};
+
+const TEMPORARY_HARDCODED_QUICKDIAL: QuickDialItem[] = [
+  { labelKey: 'Conference-PhoneInputDialog-QuickDialItem/988-English', phoneNumber: '+35314482861' },
+  { labelKey: 'Conference-PhoneInputDialog-QuickDialItem/988-Spanish', phoneNumber: '+35317712424 ' },
+];
+
+const ALLOW_MANUAL_DIAL: boolean = true;
+
 const PhoneInputDialog: React.FC<PhoneDialogProps> = ({
   targetNumber,
   setTargetNumber,
-  handleClick,
+  handleQuickDialClick,
+  handleManualDialClick,
   setIsDialogOpen,
   isLoading,
 }) => {
+  const dialButton = (handleClick: () => void) => {
+    return (
+      <SecondaryButton autoFocus onClick={handleClick} disabled={isLoading}>
+        {isLoading ? (
+          <CircularProgress size={30} style={{ color: '#fff' }} />
+        ) : (
+          <>
+            <CallEndIcon fontSize="medium" /> &nbsp; &nbsp;
+            <Template code="Conference-DialButton" />
+          </>
+        )}
+      </SecondaryButton>
+    );
+  };
+
   const handleNumberChange: React.ChangeEventHandler<HTMLInputElement> = e => {
     setTargetNumber(e.target.value);
   };
@@ -50,29 +79,39 @@ const PhoneInputDialog: React.FC<PhoneDialogProps> = ({
         </Bold>
         <CloseButton onClick={() => setIsDialogOpen(false)} aria-label="CloseButton" style={{ marginLeft: 'auto' }} />
       </Row>
-      <Template code={ENTER_NUMBER_KEY} />
-      <Row>
-        <input
-          type="text"
-          id="number-input"
-          placeholder="+1 234-567-8910"
-          value={targetNumber}
-          onChange={handleNumberChange}
-          style={{ width: '60%', padding: '5px' }}
-          disabled={isLoading}
-          aria-label={Manager.getInstance().strings[ENTER_NUMBER_KEY]}
-        />
-        <SecondaryButton autoFocus onClick={handleClick} disabled={isLoading}>
-          {isLoading ? (
-            <CircularProgress size={30} style={{ color: '#fff' }} />
-          ) : (
-            <>
-              <CallEndIcon fontSize="medium" /> &nbsp; &nbsp;
-              <Template code="Conference-DialButton" />
-            </>
-          )}
-        </SecondaryButton>
+      {TEMPORARY_HARDCODED_QUICKDIAL.length && (
+        <Row>
+          <Template code="Conference-PhoneInputDialog-QuickDialTitle" />
+        </Row>
+      )}
+      {TEMPORARY_HARDCODED_QUICKDIAL.map(({ phoneNumber, labelKey }) => (
+        <Row key={labelKey}>
+          <Template code={labelKey} /> {dialButton(() => handleQuickDialClick(phoneNumber))}
+        </Row>
+      ))}
+      <Row key="or">
+        {TEMPORARY_HARDCODED_QUICKDIAL.length && ALLOW_MANUAL_DIAL && (
+          <Template code="Conference-PhoneInputDialog-Or" />
+        )}
       </Row>
+      {ALLOW_MANUAL_DIAL && (
+        <>
+          <Template code={ENTER_NUMBER_KEY} />
+          <Row>
+            <input
+              type="text"
+              id="number-input"
+              placeholder="+1 234-567-8910"
+              value={targetNumber}
+              onChange={handleNumberChange}
+              style={{ width: '60%', padding: '5px' }}
+              disabled={isLoading}
+              aria-label={Manager.getInstance().strings[ENTER_NUMBER_KEY]}
+            />
+            {dialButton(handleManualDialClick)}
+          </Row>
+        </>
+      )}
     </PhoneDialogWrapper>
   );
 };
