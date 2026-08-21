@@ -14,12 +14,10 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { BrowserContext, Page, request, test } from '@playwright/test';
-import * as aseloWebchat from '../aseloWebchat';
-import { AseloWebChatPage } from '../aseloWebchat';
+import { Page, request, test } from '@playwright/test';
 import { statusIndicator } from '../workerStatus';
 import { ChatStatement, ChatStatementOrigin } from '../chatModel';
-import { getWebchatScript } from '../chatScripts';
+import { getSmsScript } from '../chatScripts';
 import { flexChat } from '../flexChat';
 import { skipTestIfNotTargeted } from '../skipTest';
 import { tasks } from '../tasks';
@@ -32,21 +30,24 @@ import { clearOfflineTask } from '../hrm/clearOfflineTask';
 import { apiHrmRequest } from '../hrm/hrmRequest';
 import { formContentsByHelpline } from '../formContentsByHelpline';
 import { getConfigValue } from '../config';
+import { smsChat } from '../twilio/sms';
+import { deleteSmsConversations } from '../twilio/channels';
 
-test.describe.serial('Aselo web chat caller', () => {
+test.describe.serial('SMS caller', () => {
   skipTestIfNotTargeted();
 
-  let chatPage: AseloWebChatPage, pluginPage: Page, context: BrowserContext;
+  let pluginPage: Page;
+
   test.beforeAll(async ({ browser }) => {
     test.setTimeout(180000);
-    ({ context, page: pluginPage } = await setupContextAndPage(browser));
+    await deleteSmsConversations();
+    ({ page: pluginPage } = await setupContextAndPage(browser));
 
     await clearOfflineTask(
       apiHrmRequest(await request.newContext(), process.env.FLEX_TOKEN!),
       process.env.LOGGED_IN_WORKER_SID!,
     );
-    chatPage = await aseloWebchat.open(context);
-    console.info('Aselo webchat browser session launched.');
+    console.info('SMS E2E test - plugin page launched.');
 
     await clickThroughTwilioPasteModals(pluginPage);
     console.info('Plugin page visited.');
@@ -67,19 +68,18 @@ test.describe.serial('Aselo web chat caller', () => {
 
   test('Chat', async () => {
     test.setTimeout(180000);
-    await chatPage.openChat();
-    await chatPage.fillPreEngagementForm();
 
-    const chatScript = getWebchatScript();
+    const chatScript = getSmsScript();
 
-    const webchatProgress = chatPage.chat(chatScript);
+    // smsChat handles the client (caller) side via the Twilio Messages API.
+    // flexChat handles the counselor side via the Flex browser UI.
+    // Both iterate the same shared script, yielding control when they hit a
+    // statement the other side needs to handle — the same pattern used by the
+    // Aselo webchat test.
+    const smsChatProgress = smsChat(chatScript);
     const flexChatProgress: AsyncIterator<ChatStatement> = flexChat(pluginPage).chat(chatScript);
 
-    // Currently this loop handles the handing back and forth of control between the caller & counselor sides of the chat.
-    // Each time round the loop it allows the webchat to process statements until it yields control back to this loop
-    // And each time flexChatProgress.next(), the flex chat processes statements until it yields
-    // Should be moved out to its own function in time, and a cleaner way of injecting actions to be taken partway through the chat should be implemented.
-    for await (const expectedCounselorStatement of webchatProgress) {
+    for await (const expectedCounselorStatement of smsChatProgress) {
       console.info('Statement for flex chat to process', expectedCounselorStatement);
       if (expectedCounselorStatement) {
         switch (expectedCounselorStatement.origin) {
