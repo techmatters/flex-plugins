@@ -14,7 +14,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { ErrorResult } from './Result';
+import { ErrorResult } from '@tech-matters/result-type';
 import { HttpError } from './httpTypes';
 import type { ALBEvent, ALBResult } from 'aws-lambda';
 

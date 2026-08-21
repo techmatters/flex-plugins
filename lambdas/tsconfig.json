@@ -3,6 +3,7 @@
   "files": [],
   // The references must be in order. If package A is a dependency for package B, then A must be referenced before B. For more details see https://www.typescriptlang.org/docs/handbook/project-references.html
   "references": [
+    { "path": "packages/result-type" },
     { "path": "packages/configuration" },
     { "path": "packages/ssm-cache" },
     { "path": "packages/s3" },
@@ -10,8 +11,10 @@
     { "path": "packages/hrm-form-definitions" },
     { "path": "packages/twilio-types" },
     { "path": "packages/twilio-configuration" },
+    { "path": "packages/voicemail" },
     { "path": "packages/scheduled-jobs" },
     { "path": "account-scoped" },
+    { "path": "scheduled-jobs-processor" },
     { "path": "facebookCallback" },
     { "path": "facebookSignin" },
     { "path": "instagramWebhook" },

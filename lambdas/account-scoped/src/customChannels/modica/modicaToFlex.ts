@@ -17,7 +17,7 @@
 import { AccountSID, aseloCustomChannelTypes } from '@tech-matters/twilio-types';
 import { sendConversationMessageToFlex } from '../customChannelToFlex';
 import { AccountScopedHandler, HttpRequest } from '../../httpTypes';
-import { newErr, newOk } from '../../Result';
+import { newErr, newOk } from '@tech-matters/result-type';
 import { getChannelStudioFlowSid } from '../configuration';
 
 export type Body = {

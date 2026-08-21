@@ -15,7 +15,7 @@
  */
 
 import { AccountScopedHandler, HttpError } from '../httpTypes';
-import { isErr, newErr, newOk, Result } from '../Result';
+import { isErr, newErr, newOk, Result } from '@tech-matters/result-type';
 import {
   getMasterWorkflowSid,
   getSwitchboardQueueSid,

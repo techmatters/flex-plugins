@@ -31,34 +31,19 @@ type CreateVoicemailScheduleParams = {
 
 export const createVoicemailSchedule = async (payload: CreateVoicemailScheduleParams): Promise<string> => {
   const {
-    timeout,
     workflowSid,
-    attributes: {
-      callSid,
-      from,
-      name,
-      channelType,
-      ignoreAgent,
-      isVoicemail,
-      customChannelType,
-      routingAttributes,
-      transferTargetType,
-    },
+    attributes: { callSid, from, name, routingAttributes, callbackAttemptsMade, maxCallbackAttempts },
   } = payload.voicemailTask;
 
   const voicemailTask = {
-    timeout,
     workflowSid,
     attributes: {
       callSid,
       from,
       name,
-      channelType,
-      ignoreAgent,
-      isVoicemail,
-      customChannelType,
       routingAttributes,
-      transferTargetType,
+      callbackAttemptsMade,
+      maxCallbackAttempts,
     },
   };
   const body = { voicemailTask, jobType: 'create-voicemail-schedule' };

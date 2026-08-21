@@ -16,7 +16,7 @@
 
 import { ScheduledJobType } from '@tech-matters/scheduled-jobs/dist/scheduled-job';
 import { AccountScopedHandler, HttpError } from '../httpTypes';
-import { newErr, newOk, Result } from '../Result';
+import { newErr, newOk, Result } from '@tech-matters/result-type';
 import { createScheduledJob, isValidVoicemailTask } from '@tech-matters/scheduled-jobs';
 import { addHours } from 'date-fns/addHours';
 
@@ -50,35 +50,28 @@ export const handleCreateScheduleJob: AccountScopedHandler = async (
 
       const scheduleName = `${jobType}-${voicemailTask.attributes.callSid}`;
       const {
-        timeout,
         workflowSid,
         attributes: {
           callSid,
           from,
           name,
-          channelType,
-          ignoreAgent,
-          isVoicemail,
-          customChannelType,
           routingAttributes,
-          transferTargetType,
+          callbackAttemptsMade,
+          maxCallbackAttempts,
         },
       } = voicemailTask;
       const scheduledJob: ScheduledJobType = {
         jobType,
         voicemailTask: {
+          accountSid,
           attributes: {
-            callSid,
+            callbackAttemptsMade,
             from,
-            name,
-            channelType,
-            ignoreAgent,
-            isVoicemail,
-            customChannelType,
+            callSid,
             routingAttributes,
-            transferTargetType,
+            name,
+            maxCallbackAttempts,
           },
-          timeout,
           workflowSid,
         },
       };

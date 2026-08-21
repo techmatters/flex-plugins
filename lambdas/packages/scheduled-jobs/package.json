@@ -13,6 +13,7 @@
     "lint": "eslint --max-warnings 5 --ext ts src"
   },
   "dependencies": {
-    "@aws-sdk/client-scheduler": "^3.1100.0"
+    "@aws-sdk/client-scheduler": "^3.1100.0",
+    "@tech-matters/twilio-types": "^1.0.0"
   }
 }

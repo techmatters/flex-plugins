@@ -22,7 +22,7 @@ import {
 } from '../../../../src/customChannels/instagram/instagramToFlex';
 import { HttpRequest } from '../../../../src/httpTypes';
 import { AccountSID } from '@tech-matters/twilio-types';
-import { isOk } from '../../../../src/Result';
+import { isOk } from '@tech-matters/result-type';
 import { getTwilioClient } from '@tech-matters/twilio-configuration';
 
 jest.mock('../../../../src/customChannels/configuration', () => ({

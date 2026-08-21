@@ -13,21 +13,19 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
+import { AccountSID } from '@tech-matters/twilio-types';
 
-type CreateVoicemailSchedule = {
+export type CreateVoicemailSchedule = {
   jobType: 'create-voicemail-schedule';
   voicemailTask: {
-    timeout: number;
+    accountSid: AccountSID;
     attributes: {
-      routingAttributes: any;
-      isVoicemail: true;
       callSid: string;
       from: string;
       name: string;
-      channelType: 'voicemail';
-      customChannelType: 'voicemail';
-      ignoreAgent: '';
-      transferTargetType: '';
+      callbackAttemptsMade: number;
+      maxCallbackAttempts?: number;
+      routingAttributes?: Record<string, any>;
     };
     workflowSid: string;
   };
@@ -35,7 +33,31 @@ type CreateVoicemailSchedule = {
 export const isValidVoicemailTask = (
   task: any,
 ): task is CreateVoicemailSchedule['voicemailTask'] => {
-  //TODO
+  if (!task || typeof task !== 'object') return false;
+  if (!task.accountSid || typeof task.accountSid !== 'string') return false;
+  if (!task.workflowSid || typeof task.workflowSid !== 'string') return false;
+  if (!task.attributes || typeof task.attributes !== 'object') return false;
+  if (!task.attributes || typeof task.attributes !== 'object') return false;
+  if (!task.attributes.callSid || typeof task.attributes.callSid !== 'string')
+    return false;
+  if (!task.attributes.from || typeof task.attributes.from !== 'string') return false;
+  if (!task.attributes.name || typeof task.attributes.name !== 'string') return false;
+  if (
+    !task.attributes.callbackAttemptsMade ||
+    typeof task.attributes.callbackAttemptsMade !== 'number'
+  )
+    return false;
+  if (
+    task.attributes.maxCallbackAttempts &&
+    typeof task.attributes.maxCallbackAttempts !== 'number'
+  )
+    return false;
+  if (
+    task.attributes.routingAttributes ||
+    typeof task.attributes.routingAttributes !== 'object'
+  )
+    return false;
+
   return true;
 };
 

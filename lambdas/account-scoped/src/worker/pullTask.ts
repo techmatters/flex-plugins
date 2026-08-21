@@ -17,7 +17,7 @@
 import { AccountSID, WorkerSID } from '@tech-matters/twilio-types';
 import { getTwilioClient, getWorkspaceSid } from '@tech-matters/twilio-configuration';
 import { FlexValidatedHandler } from '../validation/flexToken';
-import { newOk } from '../Result';
+import { newOk } from '@tech-matters/result-type';
 import { newHttpErrorResult, newMissingParameterResult } from '../httpErrors';
 import { adjustChatCapacity } from '../conversation/adjustChatCapacity';
 

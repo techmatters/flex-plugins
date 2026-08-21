@@ -57,7 +57,9 @@ const RecordingSection: React.FC<OwnProps> = ({
 
         setVoiceRecording(recordingPreSignedUrl);
       } else {
-        await loadConversationIntoOverlay();
+        if (loadConversationIntoOverlay) {
+          await loadConversationIntoOverlay();
+        }
         setShowButton(true);
       }
 
