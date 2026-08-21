@@ -15,7 +15,7 @@
  */
 
 import { expect, Page, request, test } from '@playwright/test';
-import { Categories, contactForm, ContactFormTab } from '../contactForm';
+import { contactForm, ContactFormTab } from '../contactForm';
 import { caseHome } from '../case';
 import { agentDesktop, navigateToAgentDesktop } from '../agent-desktop';
 import { skipTestIfDataUpdateDisabled, skipTestIfNotTargeted } from '../skipTest';
@@ -23,6 +23,11 @@ import { notificationBar } from '../notificationBar';
 import { closePage, setupContextAndPage } from '../browser';
 import { apiHrmRequest } from '../hrm/hrmRequest';
 import { clearOfflineTask } from '../hrm/clearOfflineTask';
+import { getConfigValue } from '../config';
+import {
+  formContentsByHelpline,
+  formContentsByHelplineForEmptyForm,
+} from '../formContentsByHelpline';
 
 test.describe.serial('Offline Contact (with Case)', () => {
   skipTestIfNotTargeted();
@@ -56,6 +61,8 @@ test.describe.serial('Offline Contact (with Case)', () => {
     await agentDesktopPage.addOfflineContact();
 
     console.log('Starting filling form');
+    const helpline = getConfigValue('helplineShortCode') as keyof typeof formContentsByHelpline;
+    const formContent = formContentsByHelplineForEmptyForm[helpline];
 
     const form = contactForm(pluginPage);
     await form.selectChildCallType();
@@ -70,38 +77,8 @@ test.describe.serial('Offline Contact (with Case)', () => {
           helpline: 'Childline',
         },
       },
-      <ContactFormTab>{
-        id: 'childInformation',
-        label: 'TabbedForms-AddChildInfoTab',
-        fill: form.fillStandardTab,
-        items: {
-          firstName: 'E2E',
-          lastName: 'OFFLINE CONTACT',
-          gender: 'Unknown',
-          age: 'Unknown',
-          phone1: '1234512345',
-          province: 'Northern',
-          district: 'District A',
-        },
-      },
-      <ContactFormTab<Categories>>{
-        id: 'categories',
-        label: 'TabbedForms-CategoriesTab',
-        fill: form.fillCategoriesTab,
-        items: {
-          Accessibility: ['Education'],
-        },
-      },
-      <ContactFormTab>{
-        id: 'caseInformation',
-        label: 'TabbedForms-AddCaseInfoTab',
-        fill: form.fillStandardTab,
-        items: {
-          callSummary: 'E2E OFFLINE CONTACT',
-        },
-      },
     ]);
-
+    await form.fillWithContent(formContent);
     const beforeDate = new Date(); // Capture date here since we'll create case inmediately after saving contact
 
     // if (getConfigValue('skipDataUpdate') as boolean) {

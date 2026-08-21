@@ -17,9 +17,12 @@ import React from 'react';
 import { Template, Manager } from '@twilio/flex-ui';
 import { CallEnd as CallEndIcon } from '@material-ui/icons';
 import { CircularProgress } from '@material-ui/core';
+import { useSelector } from 'react-redux';
 
 import { Row, Bold, CloseButton, SecondaryButton } from '../../../styles';
 import { PhoneDialogWrapper, DialogArrow } from './styles';
+import { selectQuickDialOptions } from '../../../states/configuration/selectQuickDialOptions';
+import { getHrmConfig } from '../../../hrmConfig';
 
 type PhoneDialogProps = {
   targetNumber: string;
@@ -32,18 +35,6 @@ type PhoneDialogProps = {
 
 const ENTER_NUMBER_KEY = 'Conference-EnterPhoneNumber';
 
-type QuickDialItem = {
-  labelKey: string;
-  phoneNumber: string;
-};
-
-const TEMPORARY_HARDCODED_QUICKDIAL: QuickDialItem[] = [
-  { labelKey: 'Conference-PhoneInputDialog-QuickDialItem/988-English', phoneNumber: '+35314482861' },
-  { labelKey: 'Conference-PhoneInputDialog-QuickDialItem/988-Spanish', phoneNumber: '+35317712424 ' },
-];
-
-const ALLOW_MANUAL_DIAL: boolean = true;
-
 const PhoneInputDialog: React.FC<PhoneDialogProps> = ({
   targetNumber,
   setTargetNumber,
@@ -52,6 +43,9 @@ const PhoneInputDialog: React.FC<PhoneDialogProps> = ({
   setIsDialogOpen,
   isLoading,
 }) => {
+  const quickDialOptions = useSelector(selectQuickDialOptions);
+  const { allowManualDialOutForConferencing } = getHrmConfig();
+
   const dialButton = (handleClick: () => void) => {
     return (
       <SecondaryButton autoFocus onClick={handleClick} disabled={isLoading}>
@@ -79,22 +73,22 @@ const PhoneInputDialog: React.FC<PhoneDialogProps> = ({
         </Bold>
         <CloseButton onClick={() => setIsDialogOpen(false)} aria-label="CloseButton" style={{ marginLeft: 'auto' }} />
       </Row>
-      {TEMPORARY_HARDCODED_QUICKDIAL.length && (
+      {Boolean(quickDialOptions.length) && (
         <Row>
           <Template code="Conference-PhoneInputDialog-QuickDialTitle" />
         </Row>
       )}
-      {TEMPORARY_HARDCODED_QUICKDIAL.map(({ phoneNumber, labelKey }) => (
+      {quickDialOptions.map(({ phoneNumber, labelKey }) => (
         <Row key={labelKey}>
           <Template code={labelKey} /> {dialButton(() => handleQuickDialClick(phoneNumber))}
         </Row>
       ))}
       <Row key="or">
-        {TEMPORARY_HARDCODED_QUICKDIAL.length && ALLOW_MANUAL_DIAL && (
+        {Boolean(quickDialOptions.length) && allowManualDialOutForConferencing && (
           <Template code="Conference-PhoneInputDialog-Or" />
         )}
       </Row>
-      {ALLOW_MANUAL_DIAL && (
+      {allowManualDialOutForConferencing && (
         <>
           <Template code={ENTER_NUMBER_KEY} />
           <Row>

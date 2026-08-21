@@ -75,7 +75,12 @@ describe('fetchProtectedApi', () => {
       expect(response).toStrictEqual(responseBody);
       const { body, headers }: { body: URLSearchParams; headers: Record<string, string> } = mockFetch.mock.calls[0][1];
       expect(body.toString()).toBe(new URLSearchParams({ ...requestBody, Token: 'of my appreciation' }).toString());
-      expect(headers).toStrictEqual({ 'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8' });
+      expect(headers).toEqual(
+        expect.objectContaining({
+          Authorization: expect.stringContaining('of my appreciation'),
+          'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
+        }),
+      );
     });
   });
   test('403 error response - throws ProtectedApiError with specific error message', async () => {

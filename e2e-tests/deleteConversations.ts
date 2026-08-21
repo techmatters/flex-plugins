@@ -23,12 +23,13 @@
  * send new messages from the e2e test user.
  */
 
-import { deleteChatChannels } from './twilio/channels';
+import { deleteChatConversations, deleteSmsConversations } from './twilio/channels';
 import { initConfig } from './config';
 
 const main = async () => {
   await initConfig();
-  await deleteChatChannels();
+  await deleteChatConversations();
+  await deleteSmsConversations();
 };
 
 main();

@@ -590,8 +590,6 @@
   "Conference-Actions-Dial": "Dial",
   "Conference-Participant-Remove": "Remove Participant",
   "Conference-Participant-Hold": "Hold Participant",
-  "Conference-PhoneInputDialog-QuickDialItem/988-English": "988 (English)",
-  "Conference-PhoneInputDialog-QuickDialItem/988-Spanish": "988 (Spanish)",
   "Conference-PhoneInputDialog-QuickDialTitle": "Quick Dial",
   "Conference-PhoneInputDialog-Or": "Or",
 
