@@ -84,6 +84,7 @@ import { triggerPostStudioFlowHandler } from './studioFlow/postStudioFlowTaskRou
 import { randomOptionSelectorHandler } from './randomOptionSelector';
 import { isSkilledWorkerAvailableHandler } from './worker/isSkilledWorkerAvailable';
 import { filterCountryOrVoIPHandler } from './voice/filterCountryOrVoIP';
+import { handleCreateScheduleJob } from './scheduled-jobs/create-schedule';
 import { recordingCompleteCallback } from './voicemail/recordingCompleteCallback';
 
 /**
@@ -413,6 +414,13 @@ const ACCOUNTSID_ROUTES: Record<
   'voice/filterCountryOrVoIP': newRoute({
     requestPipeline: [validateRequestMethod('POST'), validateWebhookRequest],
     handler: filterCountryOrVoIPHandler,
+  }),
+  'scheduled-jobs/create': newRoute({
+    requestPipeline: [
+      validateRequestMethod('POST'),
+      validateFlexTokenRequest({ tokenMode: 'agent' }),
+    ],
+    handler: handleCreateScheduleJob,
   }),
 };
 
