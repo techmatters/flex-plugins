@@ -9,6 +9,7 @@ locals {
     enable_datadog_monitoring             = false
     custom_task_routing_filter_expression = "channelType IN ['instagram','messenger','web','whatsapp','telegram','line','voice', 'modica'] OR  twilioNumber == 'messenger:131329426738030' "
     permission_config                     = "demo"
+    enable_lambda_event_callback_url      = true
 
     #Studio flow
     flow_vars = {

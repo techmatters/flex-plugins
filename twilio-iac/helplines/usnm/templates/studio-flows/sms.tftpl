@@ -108,7 +108,7 @@ ${
         "content_type": "application/json;charset=utf-8",
         "add_twilio_auth": false,
         "body": "{\"from\":\"{{trigger.conversation.From}}\"}",
-        "url": "${flow_vars.custom_functions_url}/countryVoipFilter"
+        "url": "${lambda_twilio_account_scoped_url}/voice/filterCountryOrVoIP"
       }
     },
     {
@@ -126,7 +126,7 @@ ${
             {
               "friendly_name": "If value equal_to non_us_country",
               "arguments": [
-                "{{widgets.f_countryVoipFilter.parsed.body.reason}}"
+                "{{widgets.f_countryVoipFilter.parsed.body.blockReason}}"
               ],
               "type": "equal_to",
               "value": "non_us_country"
@@ -140,16 +140,30 @@ ${
             {
               "friendly_name": "If value equal_to voip",
               "arguments": [
-                "{{widgets.f_countryVoipFilter.parsed.body.reason}}"
+                "{{widgets.f_countryVoipFilter.parsed.body.blockReason}}"
               ],
               "type": "equal_to",
               "value": "voip"
             }
           ]
+        },
+        {
+          "next": "send_message_sms_voip_blocked",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to blocked_carrier",
+              "arguments": [
+                "{{widgets.f_countryVoipFilter.parsed.body.blockReason}}"
+              ],
+              "type": "equal_to",
+              "value": "blocked_carrier"
+            }
+          ]
         }
       ],
       "properties": {
-        "input": "{{widgets.f_countryVoipFilter.parsed.body.reason}}",
+        "input": "{{widgets.f_countryVoipFilter.parsed.body.blockReason}}",
         "offset": {
           "x": 1436,
           "y": -165

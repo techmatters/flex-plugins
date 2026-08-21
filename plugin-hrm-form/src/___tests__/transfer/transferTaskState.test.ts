@@ -432,7 +432,7 @@ describe('Conference Transfer', () => {
     ...jest.requireActual('@twilio/flex-ui'),
     TaskHelper: {
       isLiveCall: jest.fn(),
-      isChatBasedTask: jest.fn(),
+      isVoiceTask: jest.fn(),
     },
     Manager: { getInstance: jest.fn() },
   }));
@@ -446,7 +446,7 @@ describe('Conference Transfer', () => {
     },
   };
 
-  const mockIsChatBasedTask = (value: boolean) => jest.spyOn(Flex.TaskHelper, 'isChatBasedTask').mockReturnValue(value);
+  const mockIsVoiceTask = (value: boolean) => jest.spyOn(Flex.TaskHelper, 'isVoiceTask').mockReturnValue(value);
   const mockIsLiveCall = (value: boolean) => jest.spyOn(Flex.TaskHelper, 'isLiveCall').mockReturnValue(value);
   const mockInstance = (task: Required<{ taskSid: string }>) => {
     const instance = {
@@ -469,7 +469,7 @@ describe('Conference Transfer', () => {
     jest.spyOn(callStatus, 'isCallStatusLoading').mockReturnValue(value);
 
   test('Cannot transfer if is not live call', () => {
-    mockIsChatBasedTask(false);
+    mockIsVoiceTask(true);
     mockIsLiveCall(false);
     mockInstance(task);
     mockIsCallStatusLoading(task, false);
@@ -478,7 +478,7 @@ describe('Conference Transfer', () => {
   });
 
   test('Cannot transfer while isLoading', () => {
-    mockIsChatBasedTask(false);
+    mockIsVoiceTask(true);
     mockIsLiveCall(true);
     mockInstance(task);
     mockIsCallStatusLoading(task, true);
@@ -490,7 +490,7 @@ describe('Conference Transfer', () => {
     const threeParticipantsTask = { ...task, conference: { ...task.conference } };
     threeParticipantsTask.conference.liveParticipantCount = 3;
 
-    mockIsChatBasedTask(false);
+    mockIsVoiceTask(true);
     mockIsLiveCall(true);
     mockInstance(task);
     mockIsCallStatusLoading(threeParticipantsTask, false);
@@ -499,7 +499,7 @@ describe('Conference Transfer', () => {
   });
 
   test('Should be able to transfer', () => {
-    mockIsChatBasedTask(false);
+    mockIsVoiceTask(true);
     mockIsLiveCall(true);
     mockInstance(task);
     mockIsCallStatusLoading(task, false);
@@ -508,7 +508,7 @@ describe('Conference Transfer', () => {
   });
 
   test('Should be able to transfer when chat task', () => {
-    mockIsChatBasedTask(true);
+    mockIsVoiceTask(false);
     mockIsLiveCall(false);
     mockInstance(task);
     mockIsCallStatusLoading(task, false);
