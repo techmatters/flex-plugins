@@ -21,6 +21,10 @@ import { channelTypes } from '../states/DomainConstants';
 import VoicemailTaskPanel from './VoicemailTaskPanel';
 import { lookupTranslation } from '../translations';
 
+export const VoicemailActionsNotifications = {
+  ActionErrorNotification: 'TaskPanel-ActiveVoicemail-ActionErrorNotification',
+};
+
 export const setUpVoicemailComponents = () => {
   Flex.TaskCanvasTabs.Content.add(
     <Flex.Tab key="voicemail-info-tab" label={lookupTranslation('TaskPanel-Tabs-Voicemail')}>
@@ -34,5 +38,12 @@ export const setUpVoicemailComponents = () => {
 
   Flex.TaskCanvasHeader.Content.remove('actions', {
     if: props => props.task.channelType === channelTypes.voicemail,
+  });
+
+  Flex.Notifications.registerNotification({
+    id: VoicemailActionsNotifications.ActionErrorNotification,
+    content: <Flex.Template code={VoicemailActionsNotifications.ActionErrorNotification} />,
+    timeout: 5000,
+    type: Flex.NotificationType.error,
   });
 };

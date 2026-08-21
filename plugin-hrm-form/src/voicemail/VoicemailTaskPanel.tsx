@@ -30,6 +30,7 @@ import VoicemailIcon from '../components/common/icons/VoicemailIcon';
 import CallIcon from '../components/common/icons/CallIcon';
 import HrmTheme from '../styles/HrmTheme';
 import { createVoicemailSchedule } from '../services/scheduledJobsService';
+import { VoicemailActionsNotifications } from './setUpVoicemailComponents';
 
 type Props = {} & Flex.TaskContextProps;
 
@@ -46,10 +47,19 @@ const VoicemailTaskPanel: React.FC<Props> = ({ task }) => {
   const { receivedTime, from, maxCallbackAttempts } = task.attributes;
   const callbackAttempts = task.attributes.callbackAttempts ?? [];
 
-  const onClickCallBack = () => {
-    Flex.Actions.invokeAction('StartOutboundCall', {
-      destination: task.attributes.from,
-    });
+  const onClickCallBack = async () => {
+    try {
+      await task.setAttributes({
+        ...task.attributes,
+        callbackAttempts: Array.from(new Set(callbackAttempts).add(task.sid)),
+      });
+      Flex.Actions.invokeAction('StartOutboundCall', {
+        destination: task.attributes.from,
+      });
+    } catch (err) {
+      console.error(err);
+      Flex.Notifications.showNotification(VoicemailActionsNotifications.ActionErrorNotification);
+    }
   };
 
   const onClickRetryLater = async () => {
@@ -58,6 +68,7 @@ const VoicemailTaskPanel: React.FC<Props> = ({ task }) => {
       await Flex.Actions.invokeAction('CompleteTask', { task });
     } catch (err) {
       console.error(err);
+      Flex.Notifications.showNotification(VoicemailActionsNotifications.ActionErrorNotification);
     }
   };
 

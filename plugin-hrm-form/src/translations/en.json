@@ -680,6 +680,7 @@
   "TaskPanel-ActiveVoicemail-CallbackAttemptListLabel": "Callback Attempts",
   "TaskPanel-ActiveVoicemail-CallbackAttemptListPlaceholder": "None",
   "TaskPanel-ActiveVoicemail-CallbackAttemptListItem": "{{attemptTime}} ({{attemptNo}} of {{maxAttempts}} attempts)",
+  "TaskPanel-ActiveVoicemail-ActionErrorNotification": "Something went wrong. Please retry in a moment.",
   "TaskListItem-Voicemail-SecondLine": "Voicemail from queue {{queue}} (status)",
   "TaskListItem-Voicemail-SecondLine/pending": "Incoming voicemail from queue {{queue}}",
   "IncomingTaskCanvas-Voicemail-SecondLine": "Queue {{queue}}"

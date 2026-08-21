@@ -23,7 +23,7 @@ export type CreateVoicemailSchedule = {
       callSid: string;
       from: string;
       name: string;
-      callbackAttemptsMade: number;
+      callbackAttempts: string[];
       maxCallbackAttempts?: number;
       routingAttributes?: Record<string, any>;
     };
@@ -43,8 +43,8 @@ export const isValidVoicemailTask = (
   if (!task.attributes.from || typeof task.attributes.from !== 'string') return false;
   if (!task.attributes.name || typeof task.attributes.name !== 'string') return false;
   if (
-    !task.attributes.callbackAttemptsMade ||
-    typeof task.attributes.callbackAttemptsMade !== 'number'
+    !task.attributes.callbackAttempts ||
+    !Array.isArray(task.attributes.callbackAttempts)
   )
     return false;
   if (
