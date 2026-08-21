@@ -14,36 +14,68 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { AccountSID } from '@tech-matters/twilio-types';
+import { AccountSID, WorkerSID } from '@tech-matters/twilio-types';
 import { getTwilioClient, getWorkspaceSid } from '@tech-matters/twilio-configuration';
 import { FlexValidatedHandler } from '../validation/flexToken';
 import { newOk } from '@tech-matters/result-type';
 import { newHttpErrorResult, newMissingParameterResult } from '../httpErrors';
+import { adjustChatCapacity } from '../conversation/adjustChatCapacity';
+
+const PULL_ATTEMPT_TIMEOUT_MS = 5000;
+
+const delay = (ms: number) =>
+  new Promise(resolve => {
+    setTimeout(resolve, ms);
+  });
 
 export const pullTaskHandler: FlexValidatedHandler = async (
   { body: event },
   accountSid: AccountSID,
 ) => {
-  const { workerSid } = event as { workerSid?: string };
+  const { workerSid } = event as { workerSid?: WorkerSID };
 
   if (workerSid === undefined) {
     return newMissingParameterResult('workerSid');
   }
 
-  const client = await getTwilioClient(accountSid);
-  const workspaceSid = await getWorkspaceSid(accountSid);
+  try {
+    const client = await getTwilioClient(accountSid);
+    const workspaceSid = await getWorkspaceSid(accountSid);
 
-  const reservations = await client.taskrouter.v1
-    .workspaces(workspaceSid)
-    .workers(workerSid)
-    .reservations.list({ reservationStatus: 'pending' });
+    const { status } = await adjustChatCapacity(accountSid, {
+      workerSid,
+      adjustment: 'increaseUntilCapacityAvailable',
+    });
+    if (status !== 200) {
+      return newHttpErrorResult('Failed to provide available chat capacity', 400);
+    }
 
-  if (reservations.length === 0) {
+    const pullAttemptExpiry = Date.now() + PULL_ATTEMPT_TIMEOUT_MS;
+
+    while (Date.now() < pullAttemptExpiry) {
+      await delay(500);
+
+      const reservations = await client.taskrouter.v1
+        .workspaces(workspaceSid)
+        .workers(workerSid)
+        .reservations.list({ reservationStatus: 'pending' });
+
+      if (reservations.length > 0) {
+        const reservation = reservations[0];
+        console.debug('New task reserved for worker pulled:', reservation.taskSid);
+        // await reservation.update({ reservationStatus: 'accepted' });
+        return newOk({ taskPulled: reservation.taskSid });
+      }
+    }
+
     return newHttpErrorResult('No eligible queued task found to pull', 404);
+  } catch (err) {
+    return newHttpErrorResult(
+      err instanceof Error ? err.message : String(err),
+      500,
+      'Unknown error occurred',
+    );
+  } finally {
+    await adjustChatCapacity(accountSid, { workerSid, adjustment: 'setTo1' });
   }
-
-  const reservation = reservations[0];
-  await reservation.update({ reservationStatus: 'accepted' });
-
-  return newOk({ taskPulled: reservation.taskSid });
 };

@@ -7,7 +7,7 @@ locals {
   local_config = {
     enable_external_recordings            = true
     permission_config = "e2e"
-    custom_task_routing_filter_expression = "*(helpline IN ['Childline', ''] OR channelType =='web') AND isContactlessTask != true"
+    custom_task_routing_filter_expression = "*(helpline IN ['Childline', ''] OR channelType =='web' OR channelType == 'voice' OR channelType == 'sms') AND isContactlessTask != true"
     flow_vars = {
       service_sid                           = "ZS43ea9fdb2e1901c2fc23b4654b285202"
       environment_sid                       = "ZE0241494e654e208f715b4d9612171dc0"
@@ -33,6 +33,25 @@ locals {
         contact_identity     = ""
         templatefile         = "/app/twilio-iac/helplines/templates/studio-flows/messaging-lex-v2-blocking-lambda.tftpl"
         channel_flow_vars    = {}
+        chatbot_unique_names = []
+      }
+      sms : {
+        channel_type         = "sms"
+        messaging_mode       = "conversations"
+        contact_identity     = "+12607821891"
+        templatefile         = "/app/twilio-iac/helplines/templates/studio-flows/messaging-lex-v3-blocking-lambda.tftpl"
+        channel_flow_vars    = {}
+        chatbot_unique_names = []
+      }
+      voice : {
+        channel_type         = "voice"
+        contact_identity     = "+12607821891"
+        templatefile         = "/app/twilio-iac/helplines/templates/studio-flows/voice-no-chatbot-operating-hours-blocking-lambda.tftpl"
+        channel_flow_vars    = {
+          voice_ivr_greeting_message = "Thank you for contacting E2E. One of our counselors will be with you shortly."
+          voice_ivr_blocked_message  = "You have been blocked from contacting this service."
+          voice_ivr_language         = "en-US"
+        }
         chatbot_unique_names = []
       }
     }

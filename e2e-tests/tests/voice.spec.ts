@@ -14,15 +14,9 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { BrowserContext, Page, request, test } from '@playwright/test';
-import * as aseloWebchat from '../aseloWebchat';
-import { AseloWebChatPage } from '../aseloWebchat';
+import { Page, request, test } from '@playwright/test';
 import { statusIndicator } from '../workerStatus';
-import { ChatStatement, ChatStatementOrigin } from '../chatModel';
-import { getWebchatScript } from '../chatScripts';
-import { flexChat } from '../flexChat';
 import { skipTestIfNotTargeted } from '../skipTest';
-import { tasks } from '../tasks';
 import { contactForm } from '../contactForm';
 import { deleteAllTasksInQueue } from '../twilio/tasks';
 import { notificationBar } from '../notificationBar';
@@ -30,23 +24,28 @@ import { clickThroughTwilioPasteModals } from '../agent-desktop';
 import { setupContextAndPage, closePage } from '../browser';
 import { clearOfflineTask } from '../hrm/clearOfflineTask';
 import { apiHrmRequest } from '../hrm/hrmRequest';
-import { formContentsByHelpline } from '../formContentsByHelpline';
+import {
+  formContentsByHelpline,
+  formContentsByHelplineForEmptyForm,
+} from '../formContentsByHelpline';
 import { getConfigValue } from '../config';
+import { makeCallToService } from '../twilio/voice';
+import { tasks } from '../tasks';
 
-test.describe.serial('Aselo web chat caller', () => {
+test.describe.serial('Voice caller', () => {
   skipTestIfNotTargeted();
 
-  let chatPage: AseloWebChatPage, pluginPage: Page, context: BrowserContext;
+  let pluginPage: Page;
+
   test.beforeAll(async ({ browser }) => {
     test.setTimeout(180000);
-    ({ context, page: pluginPage } = await setupContextAndPage(browser));
+    ({ page: pluginPage } = await setupContextAndPage(browser));
 
     await clearOfflineTask(
       apiHrmRequest(await request.newContext(), process.env.FLEX_TOKEN!),
       process.env.LOGGED_IN_WORKER_SID!,
     );
-    chatPage = await aseloWebchat.open(context);
-    console.info('Aselo webchat browser session launched.');
+    console.info('Voice E2E test - plugin page launched.');
 
     await clickThroughTwilioPasteModals(pluginPage);
     console.info('Plugin page visited.');
@@ -65,43 +64,21 @@ test.describe.serial('Aselo web chat caller', () => {
     await deleteAllTasksInQueue();
   });
 
-  test('Chat', async () => {
+  test('Call', async () => {
     test.setTimeout(180000);
-    await chatPage.openChat();
-    await chatPage.fillPreEngagementForm();
-
-    const chatScript = getWebchatScript();
-
-    const webchatProgress = chatPage.chat(chatScript);
-    const flexChatProgress: AsyncIterator<ChatStatement> = flexChat(pluginPage).chat(chatScript);
-
-    // Currently this loop handles the handing back and forth of control between the caller & counselor sides of the chat.
-    // Each time round the loop it allows the webchat to process statements until it yields control back to this loop
-    // And each time flexChatProgress.next(), the flex chat processes statements until it yields
-    // Should be moved out to its own function in time, and a cleaner way of injecting actions to be taken partway through the chat should be implemented.
-    for await (const expectedCounselorStatement of webchatProgress) {
-      console.info('Statement for flex chat to process', expectedCounselorStatement);
-      if (expectedCounselorStatement) {
-        switch (expectedCounselorStatement.origin) {
-          case ChatStatementOrigin.COUNSELOR_AUTO:
-            await statusIndicator(pluginPage).setStatus('AVAILABLE');
-            await tasks(pluginPage).acceptNextTask();
-            await flexChatProgress.next();
-            break;
-          default:
-            await flexChatProgress.next();
-            break;
-        }
-      }
-    }
+    await makeCallToService();
+    await statusIndicator(pluginPage).setStatus('AVAILABLE');
+    await tasks(pluginPage).acceptNextTask();
 
     console.info('Starting filling form');
     const helpline = getConfigValue('helplineShortCode') as keyof typeof formContentsByHelpline;
-    const formContent = formContentsByHelpline[helpline];
+    const formContent = formContentsByHelplineForEmptyForm[helpline];
     if (!formContent) {
       throw new Error(`No form contents configured for helplineShortCode="${String(helpline)}"`);
     }
     const form = contactForm(pluginPage);
+
+    await form.selectChildCallType();
     await form.fillWithContent(formContent);
 
     console.info('Saving form');

@@ -5,10 +5,25 @@ variable "helpline" {
   default     = null
 }
 
+variable "environment" {
+  description = "Environment identifier, typically 'production', 'staging' or 'development'"
+  type        = string
+}
+
 variable "helplines" {
   description = "List of helplines to route via helpline queue"
   type        = list(string)
   default     = null
+}
+
+variable "helpline_region" {
+  description = "AWS region to create the resources"
+  type        = string
+}
+
+variable "twilio_account_sid" {
+  description = "Twilio Account SID (ACxxxx)"
+  type        = string
 }
 
 variable "serverless_url" {
@@ -67,4 +82,10 @@ variable "phone_numbers" {
 variable "workflow_vars" {
   type    = map(string)
   default = {}
+}
+/* remove this after lambda migration has been completed */
+variable "enable_lambda_event_callback_url" {
+  description = "Enables lambda event callback url"
+  type        = bool
+  default     = false
 }

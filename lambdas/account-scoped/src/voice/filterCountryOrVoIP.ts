@@ -19,7 +19,13 @@ import { getTwilioClient } from '@tech-matters/twilio-configuration';
 import { newErr, newOk } from '@tech-matters/result-type';
 import type { AccountScopedHandler, HttpRequest } from '../httpTypes';
 
-const BLOCKED_CARRIERS = ['HD Carrier LLC'];
+const BLOCKED_CARRIERS = ['HD Carrier LLC', 'Onvoy Spectrum', 'Onvoy Spectrum, LLC'];
+
+const BLOCK_REASONS = {
+  NON_US_COUNTRY: 'non_us_country',
+  VOIP: 'voip',
+  BLOCKED_CARRIER: 'blocked_carrier',
+} as const;
 
 export const filterCountryOrVoIPHandler: AccountScopedHandler = async (
   { body }: HttpRequest,
@@ -52,7 +58,7 @@ export const filterCountryOrVoIPHandler: AccountScopedHandler = async (
       from,
       countryCode: data?.countryCode,
     });
-    return newOk({ blockIncoming: true });
+    return newOk({ blockIncoming: true, blockReason: BLOCK_REASONS.NON_US_COUNTRY });
   }
 
   console.debug('filterCountryOrVoIP: Line type intelligence', {
@@ -71,7 +77,7 @@ export const filterCountryOrVoIPHandler: AccountScopedHandler = async (
         from,
         lineType,
       });
-      return newOk({ blockIncoming: true });
+      return newOk({ blockIncoming: true, blockReason: BLOCK_REASONS.VOIP });
     }
 
     if (BLOCKED_CARRIERS.includes(carrier)) {
@@ -80,7 +86,7 @@ export const filterCountryOrVoIPHandler: AccountScopedHandler = async (
         from,
         carrier,
       });
-      return newOk({ blockIncoming: true });
+      return newOk({ blockIncoming: true, blockReason: BLOCK_REASONS.BLOCKED_CARRIER });
     }
   }
 
