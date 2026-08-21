@@ -28,6 +28,7 @@ import { setCallStatusAction, setIsDialogOpenAction, setPhoneNumberAction } from
 import { CallStatus, isCallStatusLoading } from '../../../states/conferencing/callStatus';
 import { conferencingBase, namespace } from '../../../states/storeNamespaces';
 import * as conferenceApi from '../../../services/conferenceService';
+import { getHrmConfig } from '../../../hrmConfig';
 
 type Props = TaskContextProps;
 const ADD_TO_CONFERENCE_KEY = 'Conference-Actions-Add';
@@ -42,6 +43,8 @@ const ConferencePanel: React.FC<Props> = ({ task, conference }) => {
   const setCallStatus = (callStatus: CallStatus) => dispatch(setCallStatusAction(task.taskSid, callStatus));
   const setPhoneNumber = (number: string) => dispatch(setPhoneNumberAction(task.taskSid, number));
 
+  const { conferencingQuickDialOptions, conferencingEnableManualDial } = getHrmConfig();
+
   const toggleDialog = () => {
     setIsDialogOpen(!isDialogOpen);
   };
@@ -50,6 +53,10 @@ const ConferencePanel: React.FC<Props> = ({ task, conference }) => {
     if (callStatus === 'busy' || callStatus === 'failed') {
       Notifications.showNotificationSingle(ConferenceNotifications.ErrorAddingParticipantNotification);
     }
+    if (callStatus === 'in-progress') {
+      setIsDialogOpen(false);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [callStatus]);
 
   const conferenceSid = conference?.source?.conferenceSid;
@@ -120,6 +127,8 @@ const ConferencePanel: React.FC<Props> = ({ task, conference }) => {
           handleClick={handleClick}
           setIsDialogOpen={setIsDialogOpen}
           isLoading={isCallStatusLoading(callStatus)}
+          quickDialOptions={conferencingQuickDialOptions}
+          enableManualDial={conferencingEnableManualDial}
         />
       )}
 
