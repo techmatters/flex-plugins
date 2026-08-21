@@ -77,7 +77,7 @@ export const recordingCompleteCallback: AccountScopedHandler = async (
     accountSid,
     routingAttributes: body.routingAttributes ? JSON.parse(body.routingAttributes) : {},
     receivedTime: receivedTime.toISOString(),
-    callbackAttemptsMade: 0,
+    callbackAttempts: [],
     maxCallbackAttempts: maxCallbackAttempts,
     callSid,
     from,

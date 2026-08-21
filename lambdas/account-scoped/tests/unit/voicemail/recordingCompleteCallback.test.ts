@@ -130,7 +130,7 @@ describe('recordingCompleteCallback', () => {
       callSid: TEST_CALL_SID,
       channelType: channelTypes.VOICEMAIL,
       customChannelType: channelTypes.VOICEMAIL,
-      callbackAttemptsMade: 0,
+      callbackAttempts: [],
       maxCallbackAttempts: 3,
       receivedTime: RECORDING_START_TIME.toISOString(),
     });

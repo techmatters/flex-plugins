@@ -53,7 +53,7 @@
   "SearchResultsIndex-ViewContacts": "View Interactions",
   "SearchResultsIndex-NonDataContacts": "Non-Data Interactions",
   "SearchForm-Counselor": "Tinkle Friend",
-  "CallType-CloseContact": "Close Interaction",
+  "CallType-SaveDialog-CloseContact": "Close Interaction",
   "CallTypeButtons-Categorize": "categorize this interaction",
   "CallTypeButtons-Or": "Or was this interaction…",
   "ConnectDialog-Child": "Copy client information from this record to new interaction?",

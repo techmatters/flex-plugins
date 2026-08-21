@@ -39,7 +39,7 @@ export const handleCreateScheduleJob: AccountScopedHandler = async (
     }
 
     if (jobType === 'create-voicemail-schedule') {
-      const { voicemailTask } = request.body;
+      const voicemailTask = { ...(request.body.voicemailTask ?? {}), accountSid };
 
       if (!isValidVoicemailTask(voicemailTask)) {
         return newErr({
@@ -56,7 +56,7 @@ export const handleCreateScheduleJob: AccountScopedHandler = async (
           from,
           name,
           routingAttributes,
-          callbackAttemptsMade,
+          callbackAttempts,
           maxCallbackAttempts,
         },
       } = voicemailTask;
@@ -65,7 +65,7 @@ export const handleCreateScheduleJob: AccountScopedHandler = async (
         voicemailTask: {
           accountSid,
           attributes: {
-            callbackAttemptsMade,
+            callbackAttempts,
             from,
             callSid,
             routingAttributes,
