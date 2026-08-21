@@ -66,7 +66,7 @@ const ConferencePanel: React.FC<Props> = ({ task, conference }) => {
     return null;
   }
 
-  const handleClick = async () => {
+  const handleClick = (phoneNumberGetter: () => string) => async () => {
     try {
       const { status, callStatusSyncDocument } = await createCallStatusSyncDocument(({ data }) => {
         setCallStatus(data.CallStatus);
@@ -77,7 +77,7 @@ const ConferencePanel: React.FC<Props> = ({ task, conference }) => {
       }
 
       const from = Manager.getInstance().serviceConfiguration.outbound_call_flows.default.caller_id;
-      const to = phoneNumber;
+      const to = phoneNumberGetter();
       const label = `External party ${to}`;
 
       await Promise.all(
@@ -124,7 +124,8 @@ const ConferencePanel: React.FC<Props> = ({ task, conference }) => {
         <PhoneInputDialog
           targetNumber={phoneNumber}
           setTargetNumber={setPhoneNumber}
-          handleClick={handleClick}
+          handleManualDialClick={handleClick(() => phoneNumber)}
+          handleQuickDialClick={(numberToDial: string) => handleClick(() => numberToDial)()}
           setIsDialogOpen={setIsDialogOpen}
           isLoading={isCallStatusLoading(callStatus)}
           quickDialOptions={conferencingQuickDialOptions}

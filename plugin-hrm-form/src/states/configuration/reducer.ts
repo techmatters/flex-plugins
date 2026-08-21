@@ -27,6 +27,7 @@ import {
   SearchContactsSuccessAction,
   SearchCasesSuccessAction,
 } from '../search/results';
+import { loadAseloTwilioConfigurationReducer } from './loadAseloTwilioConfiguration';
 
 export type ConfigurationState = {
   locale: {
@@ -40,6 +41,9 @@ export type ConfigurationState = {
   workerInfo: { chatChannelCapacity: number };
   definitionVersions: { [version: string]: DefinitionVersion | undefined };
   currentDefinitionVersion?: DefinitionVersion;
+  aseloTwilioConfiguration: {
+    quickDialOptions?: { labelKey: string; phoneNumber: string }[];
+  };
 };
 
 export const initialState: ConfigurationState = {
@@ -55,9 +59,11 @@ export const initialState: ConfigurationState = {
   },
   workerInfo: { chatChannelCapacity: 0 },
   definitionVersions: {},
+  aseloTwilioConfiguration: {},
 };
 
 const boundChangeLanguageReducer = changeLanguageReducer(initialState);
+const boundLoadAseloTwilioConfiguration = loadAseloTwilioConfigurationReducer(initialState);
 
 // eslint-disable-next-line import/no-unused-modules
 export function reduce(
@@ -68,6 +74,7 @@ export function reduce(
     | SearchCasesSuccessAction
     | SearchContactsSuccessAction,
 ): ConfigurationState {
+  inputState = boundLoadAseloTwilioConfiguration(inputState, action as any);
   const state = boundChangeLanguageReducer(inputState, action as any);
 
   switch (action.type) {

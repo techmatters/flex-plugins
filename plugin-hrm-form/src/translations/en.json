@@ -71,19 +71,18 @@
   "SearchResultsIndex-SearchAgainForContact": "Search again for a contact",
   "SearchResultsIndex-SaveToNewCase": "save this contact to a new case",
   "SearchResultsIndex-Or": "or",
-  "SearchResults-CounselorName":"Counselor Name:",
-  "SearchResults-FirstName":"First Name:",
-  "SearchResults-LastName":"Last Name:",
-  "SearchResults-PhoneNumber":"Phone Number:",
-  "SearchResults-DateFrom":"Date From:",
-  "SearchResults-DateTo":"Date To:",
+  "SearchResults-CounselorName": "Counselor Name:",
+  "SearchResults-FirstName": "First Name:",
+  "SearchResults-LastName": "Last Name:",
+  "SearchResults-PhoneNumber": "Phone Number:",
+  "SearchResults-DateFrom": "Date From:",
+  "SearchResults-DateTo": "Date To:",
   "SearchResults-Contact": "1 Contact",
   "SearchResults-Contacts": " Contacts",
   "SearchResults-Case": "1 Case",
   "SearchResults-Cases": " Cases",
   "SearchResults-For": " for",
 
-  
   "StandaloneSearch-SideNav": "Search",
   "CaseHeader-Opened": "Opened",
   "CaseHeader-Updated": "Updated",
@@ -512,12 +511,12 @@
   "BottomBar-Save": "Yes, Save",
   "Toolkit-ConfirmTextOne": "You will be redirected to an external knowledge management system.",
   "Toolkit-ConfirmTextTwo": "Are you sure you want to continue?",
-  
+
   "MaskIdentifiers": "XXXXXX",
   "UnmaskPhoneNumber": "Phone Number Revealed",
 
   "RecordingSection-Error": "Something went wrong on our end. Please contact your support team or supervisor.",
-  
+
   "ReferrableResource-SideNav": "Resources",
   "Resources-LoadResourceError": "Something went wrong trying to load this resource.",
   "Resources-Search-FormTitle": "Resources",
@@ -557,7 +556,7 @@
   "Resources-View-Details": "Details",
   "Resources-View-Notes": "Notes",
   "Resources-View-RecordType": "Record Type",
-  "Resources-View-Taxonomies":  "Taxonomy Names",
+  "Resources-View-Taxonomies": "Taxonomy Names",
   "Resources-View-Sites": " ",
   "Resources-View-PrivateInformationWarning": "This information is private. Do not share with child.",
   "Resources-View-PrimaryAddress": "Primary Address",
@@ -595,6 +594,8 @@
   "Conference-Actions-Dial": "Dial",
   "Conference-Participant-Remove": "Remove Participant",
   "Conference-Participant-Hold": "Hold Participant",
+  "Conference-PhoneInputDialog-QuickDialTitle": "Quick Dial",
+  "Conference-PhoneInputDialog-Or": "Or",
 
   "Conference-Wrapping-HangupBy/Customer": "Call Ended by Service User",
   "Conference-Wrapping-HangupBy/Agent": "Call Ended by Counselor",
