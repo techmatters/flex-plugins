@@ -80,3 +80,65 @@ export const getWebchatScript = (): ChatStatement[] => {
 
   return defaultScript;
 };
+
+/**
+ * SMS scripts are structurally the same as webchat scripts (using the same ChatStatement format),
+ * but must start with a CALLER statement since the client must initiate an SMS conversation.
+ * BOT messages are expected to arrive after the client sends its first message.
+ */
+export const defaultSmsScript: ChatStatement[] = [
+  callerStatement('hi'),
+  botStatement('Welcome to the helpline. Please answer the following questions.'),
+  callerStatement('yes'),
+  botStatement('How old are you?'),
+  callerStatement('10'),
+  botStatement('What is your gender?'),
+  callerStatement('girl'),
+  botStatement('We will transfer you now. Please hold for a counsellor.'),
+  counselorAutoStatement('Hi, this is the counsellor. How can I help you?'),
+  callerStatement('CALLER TEST SMS MESSAGE'),
+  counselorStatement('COUNSELLOR TEST SMS MESSAGE'),
+];
+
+export const smsCommonScripts: Record<string, ChatStatement[]> = {
+  ca: [
+    callerStatement('CALLER TEST SMS MESSAGE'),
+    counselorAutoStatement("Hi, you've reached a counsellor. What would you like to talk about?"),
+    counselorStatement('COUNSELLOR TEST SMS MESSAGE'),
+  ],
+};
+
+export const smsEnvScripts: Record<string, Record<string, ChatStatement[]>> = {
+  development: {
+    as: [
+      callerStatement('hi'),
+      botStatement("Sorry, I didn't understand that. Please try again."),
+      callerStatement('hi'),
+      botStatement('Are you calling about yourself? Please answer Yes or No.'),
+      callerStatement('yes'),
+      botStatement('How old are you?'),
+      callerStatement('10'),
+      botStatement('What is your gender?'),
+      callerStatement('girl'),
+      botStatement("We'll transfer you now. Please hold for a counsellor."),
+      counselorAutoStatement('Hi, this is the counsellor. How can I help you?'),
+      callerStatement('CALLER TEST SMS MESSAGE'),
+      counselorStatement('COUNSELLOR TEST SMS MESSAGE'),
+    ],
+  },
+};
+
+export const getSmsScript = (): ChatStatement[] => {
+  const helplineShortCode = getConfigValue('helplineShortCode') as string;
+  const helplineEnv = getConfigValue('helplineEnv') as string;
+
+  if (smsEnvScripts[helplineEnv]?.[helplineShortCode]) {
+    return smsEnvScripts[helplineEnv][helplineShortCode];
+  }
+
+  if (smsCommonScripts[helplineShortCode]) {
+    return smsCommonScripts[helplineShortCode];
+  }
+
+  return defaultSmsScript;
+};
