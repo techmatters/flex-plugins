@@ -16,7 +16,7 @@
 
 import { initWebchatHandler } from '../../../src/webchatAuthentication/initWebchat';
 import { TEST_ACCOUNT_SID, TEST_CONVERSATION_SID } from '../../testTwilioValues';
-import { isErr, isOk, newErr, newOk } from '../../../src/Result';
+import { isErr, isOk, newErr, newOk } from '@tech-matters/result-type';
 
 jest.mock('@tech-matters/twilio-configuration', () => ({
   getTwilioClient: jest.fn(),

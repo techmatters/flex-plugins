@@ -16,8 +16,8 @@
 
 import { pullTaskHandler } from '../../../src/worker/pullTask';
 import { getTwilioClient, getWorkspaceSid } from '@tech-matters/twilio-configuration';
+import { isErr, isOk } from '@tech-matters/result-type';
 import { adjustChatCapacity } from '../../../src/conversation/adjustChatCapacity';
-import { isErr, isOk } from '../../../src/Result';
 import { FlexValidatedHttpRequest } from '../../../src/validation/flexToken';
 import {
   TEST_ACCOUNT_SID,

@@ -14,21 +14,4 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-/**
- * This script is used to delete all chat channels for a given user. It is very slow because there
- * are so many anonymous users in the system. We run it on a schedule instead of as part of the
- * normal test suite to avoid slowing down the test suite.
- *
- * If we don't cleanup chat channels, we will eventually hit the 1000 channel limit and be unable
- * send new messages from the e2e test user.
- */
-
-import { deleteChatChannels } from './twilio/channels';
-import { initConfig } from './config';
-
-const main = async () => {
-  await initConfig();
-  await deleteChatChannels();
-};
-
-main();
+export * from './createVoicemailTask';

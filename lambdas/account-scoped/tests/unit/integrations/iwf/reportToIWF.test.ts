@@ -16,7 +16,7 @@
 
 import { reportToIWFHandler } from '../../../../src/integrations/iwf/reportToIWF';
 import { getSsmParameter } from '@tech-matters/ssm-cache';
-import { isErr, isOk } from '../../../../src/Result';
+import { isErr, isOk } from '@tech-matters/result-type';
 import { FlexValidatedHttpRequest } from '../../../../src/validation/flexToken';
 
 jest.mock('@tech-matters/ssm-cache');

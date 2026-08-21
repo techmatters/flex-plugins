@@ -29,6 +29,7 @@ import { PanelContainer, Section, SectionHeader } from '../styles/twilioTaskPane
 import VoicemailIcon from '../components/common/icons/VoicemailIcon';
 import CallIcon from '../components/common/icons/CallIcon';
 import HrmTheme from '../styles/HrmTheme';
+import { createVoicemailSchedule } from '../services/scheduledJobsService';
 
 type Props = {} & Flex.TaskContextProps;
 
@@ -51,9 +52,13 @@ const VoicemailTaskPanel: React.FC<Props> = ({ task }) => {
     });
   };
 
-  const onClickRetryLater = () => {
-    window.alert('Not implemented :P');
-    Flex.Actions.invokeAction('CompleteTask', { task });
+  const onClickRetryLater = async () => {
+    try {
+      await createVoicemailSchedule({ voicemailTask: task });
+      await Flex.Actions.invokeAction('CompleteTask', { task });
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   const receivedDate = receivedTime
