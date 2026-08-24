@@ -18,9 +18,13 @@ import { ScheduledJobType } from '@tech-matters/scheduled-jobs/dist/scheduled-jo
 import { AccountScopedHandler, HttpError } from '../httpTypes';
 import { newErr, newOk, Result } from '@tech-matters/result-type';
 import { createScheduledJob, isValidVoicemailTask } from '@tech-matters/scheduled-jobs';
-import { addHours } from 'date-fns/addHours';
+import { addMinutes } from 'date-fns/addMinutes';
+import { retrieveServiceConfigurationAttributes } from '../configuration/aseloConfiguration';
+import { getTwilioClient } from '@tech-matters/twilio-configuration';
 
 const supportedJobType: ScheduledJobType['jobType'][] = ['create-voicemail-schedule'];
+
+const DEFAULT_MINUTES_VOICEMAIL_SCHEDULE = 1440; // 24 hours
 
 export const handleCreateScheduleJob: AccountScopedHandler = async (
   request,
@@ -47,6 +51,10 @@ export const handleCreateScheduleJob: AccountScopedHandler = async (
           error: { statusCode: 400 },
         });
       }
+
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      const { voicemail_schedule_retry_later_minutes } =
+        await retrieveServiceConfigurationAttributes(await getTwilioClient(accountSid));
 
       const scheduleName = `${jobType}-${voicemailTask.attributes.callSid}`;
       const {
@@ -75,7 +83,12 @@ export const handleCreateScheduleJob: AccountScopedHandler = async (
           workflowSid,
         },
       };
-      const scheduleExpression = `at(${addHours(Date.now(), 24).toISOString().slice(0, 19)})`; // 24 hours later
+      const scheduleExpression = `at(${addMinutes(
+        Date.now(),
+        voicemail_schedule_retry_later_minutes ?? DEFAULT_MINUTES_VOICEMAIL_SCHEDULE,
+      )
+        .toISOString()
+        .slice(0, 19)})`;
 
       await createScheduledJob({
         scheduledJob,
