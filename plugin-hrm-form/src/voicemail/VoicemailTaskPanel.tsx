@@ -51,9 +51,9 @@ const VoicemailTaskPanel: React.FC<Props> = ({ task }) => {
     try {
       await task.setAttributes({
         ...task.attributes,
-        callbackAttempts: Array.from(new Set(callbackAttempts).add(task.sid)),
+        callbackAttempts: Array.from(new Map(callbackAttempts).set(task.sid, new Date().toISOString())),
       });
-      Flex.Actions.invokeAction('StartOutboundCall', {
+      await Flex.Actions.invokeAction('StartOutboundCall', {
         destination: task.attributes.from,
       });
     } catch (err) {
@@ -133,7 +133,7 @@ const VoicemailTaskPanel: React.FC<Props> = ({ task }) => {
               <p key={`attempt-${idx}`}>
                 <Flex.Template
                   code="TaskPanel-ActiveVoicemail-CallbackAttemptListItem"
-                  attemptTime={format(parseISO(attempt.timestamp), DATE_DISPLAY_FORMAT)}
+                  attemptTime={format(parseISO(attempt[1]), DATE_DISPLAY_FORMAT)}
                   attemptNo={idx + 1}
                   maxAttempts={maxCallbackAttempts}
                 />

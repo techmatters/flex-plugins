@@ -32,7 +32,7 @@ type CreateVoicemailScheduleParams = {
 export const createVoicemailSchedule = async (payload: CreateVoicemailScheduleParams): Promise<string> => {
   const {
     workflowSid,
-    attributes: { callSid, from, name, routingAttributes, callbackAttemptsMade, maxCallbackAttempts },
+    attributes: { callSid, from, name, routingAttributes, callbackAttempts, maxCallbackAttempts },
   } = payload.voicemailTask;
 
   const voicemailTask = {
@@ -42,7 +42,7 @@ export const createVoicemailSchedule = async (payload: CreateVoicemailSchedulePa
       from,
       name,
       routingAttributes,
-      callbackAttemptsMade,
+      callbackAttempts,
       maxCallbackAttempts,
     },
   };
