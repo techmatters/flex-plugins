@@ -20,7 +20,7 @@ import {
   getWorkspaceSid,
   getMasterWorkflowSid,
 } from '@tech-matters/twilio-configuration';
-import { isErr, isOk } from '../../../src/Result';
+import { isErr, isOk } from '@tech-matters/result-type';
 import { FlexValidatedHttpRequest } from '../../../src/validation/flexToken';
 import {
   TEST_ACCOUNT_SID,

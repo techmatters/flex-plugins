@@ -17,7 +17,7 @@
 import { AccountSID, TaskSID, WorkspaceSID } from '@tech-matters/twilio-types';
 import { getTwilioClient, getWorkspaceSid } from '@tech-matters/twilio-configuration';
 import type RestException from 'twilio/lib/base/RestException';
-import { ErrorResult, newErr, newOk, Result } from '../Result';
+import { ErrorResult, newErr, newOk, Result } from '@tech-matters/result-type';
 
 const MAX_ATTEMPTS = 10;
 

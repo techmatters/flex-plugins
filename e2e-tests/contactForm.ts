@@ -85,7 +85,7 @@ export function contactForm(page: Page) {
     }
   }
 
-  return {
+  const formApi = {
     selectChildCallType: async () => {
       const childCallTypeButton = selectors.childCallTypeButton();
       const responsePromise = page.waitForResponse('**/contacts/**');
@@ -99,6 +99,28 @@ export function contactForm(page: Page) {
         await selectTab(tab, tab !== tabs[0]);
         await tab.fill(tab);
       }
+    },
+    fillWithContent: async (formContent: any) => {
+      await formApi.fill([
+        <ContactFormTab>{
+          id: 'childInformation',
+          label: 'TabbedForms-AddChildInfoTab',
+          fill: formApi.fillStandardTab,
+          items: formContent.childInformation,
+        },
+        <ContactFormTab<Categories>>{
+          id: 'categories',
+          label: 'TabbedForms-CategoriesTab',
+          fill: formApi.fillCategoriesTab,
+          items: formContent.categories,
+        },
+        <ContactFormTab>{
+          id: 'caseInformation',
+          label: 'TabbedForms-AddCaseInfoTab',
+          fill: formApi.fillStandardTab,
+          items: formContent.caseInformation,
+        },
+      ]);
     },
     save: async ({ saveAndAddToCase }: { saveAndAddToCase?: boolean } = {}) => {
       const tab = {
@@ -124,5 +146,6 @@ export function contactForm(page: Page) {
     },
     fillCategoriesTab,
     fillStandardTab,
-  };
+  } as const;
+  return formApi;
 }

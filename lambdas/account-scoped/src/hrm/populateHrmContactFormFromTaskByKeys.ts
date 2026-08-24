@@ -22,7 +22,7 @@ import {
   FormItemDefinition,
 } from '@tech-matters/hrm-form-definitions';
 import { FormValue, HrmContact, callTypes } from '@tech-matters/hrm-types';
-import { newErr, newOk, Result } from '../Result';
+import { newErr, newOk, Result } from '@tech-matters/result-type';
 import { getCurrentDefinitionVersion } from './formDefinitionsCache';
 import { AccountSID } from '@tech-matters/twilio-types';
 

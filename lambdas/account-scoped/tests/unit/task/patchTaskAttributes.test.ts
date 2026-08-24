@@ -16,7 +16,7 @@
 
 import { patchTaskAttributes } from '../../../src/task/patchTaskAttributes';
 import { getTwilioClient, getWorkspaceSid } from '@tech-matters/twilio-configuration';
-import { isErr, isOk } from '../../../src/Result';
+import { isErr, isOk } from '@tech-matters/result-type';
 import {
   TEST_ACCOUNT_SID,
   TEST_TASK_SID,
