@@ -17,7 +17,7 @@
 import { getAseloTwilioConfigurationHandler } from '../../../src/configuration/getAseloTwilioConfiguration';
 import { getDocsBucketName } from '@tech-matters/twilio-configuration';
 import { getS3Object } from '@tech-matters/s3';
-import { isErr, isOk } from '../../../src/Result';
+import { isErr, isOk } from '@tech-matters/result-type';
 import { HttpRequest } from '../../../src/httpTypes';
 import { TEST_ACCOUNT_SID } from '../../testTwilioValues';
 

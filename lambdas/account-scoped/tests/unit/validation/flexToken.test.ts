@@ -16,7 +16,7 @@
 
 import { validator } from 'twilio-flex-token-validator';
 import { getAccountAuthToken } from '@tech-matters/twilio-configuration';
-import { isErr, isOk } from '../../../src/Result';
+import { isErr, isOk } from '@tech-matters/result-type';
 import { AccountScopedRoute, HttpRequest } from '../../../src/httpTypes';
 import { validateFlexTokenRequest } from '../../../src/validation/flexToken';
 import { TEST_ACCOUNT_SID } from '../../testTwilioValues';
