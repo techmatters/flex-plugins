@@ -34,29 +34,55 @@ export type CreateVoicemailSchedule = {
 export const isValidVoicemailTask = (
   task: any,
 ): task is CreateVoicemailSchedule['voicemailTask'] => {
-  if (!task || typeof task !== 'object') return false;
-  if (!task.accountSid || typeof task.accountSid !== 'string') return false;
-  if (!task.workflowSid || typeof task.workflowSid !== 'string') return false;
-  if (!task.attributes || typeof task.attributes !== 'object') return false;
-  if (!task.attributes.callSid || typeof task.attributes.callSid !== 'string')
+  if (!task || typeof task !== 'object') {
+    console.debug('isValidVoicemailTask: invalid task');
     return false;
-  if (!task.attributes.from || typeof task.attributes.from !== 'string') return false;
-  if (!task.attributes.name || typeof task.attributes.name !== 'string') return false;
+  }
+  if (!task.accountSid || typeof task.accountSid !== 'string') {
+    console.debug('isValidVoicemailTask: invalid task.accountSid');
+    return false;
+  }
+  if (!task.workflowSid || typeof task.workflowSid !== 'string') {
+    console.debug('isValidVoicemailTask: invalid task.workflowSid');
+    return false;
+  }
+  if (!task.attributes || typeof task.attributes !== 'object') {
+    console.debug('isValidVoicemailTask: invalid task.attributes');
+    return false;
+  }
+  if (!task.attributes.callSid || typeof task.attributes.callSid !== 'string') {
+    console.debug('isValidVoicemailTask: invalid task.attributes.callSid');
+    return false;
+  }
+  if (!task.attributes.from || typeof task.attributes.from !== 'string') {
+    console.debug('isValidVoicemailTask: invalid task.attributes.from');
+    return false;
+  }
+  if (!task.attributes.name || typeof task.attributes.name !== 'string') {
+    console.debug('isValidVoicemailTask: invalid task.attributes.name');
+    return false;
+  }
   if (
     !task.attributes.callbackAttempts ||
     !Array.isArray(task.attributes.callbackAttempts)
-  )
+  ) {
+    console.debug('isValidVoicemailTask: invalid task.attributes.callbackAttempts');
     return false;
+  }
   if (
     task.attributes.maxCallbackAttempts &&
     typeof task.attributes.maxCallbackAttempts !== 'number'
-  )
+  ) {
+    console.debug('isValidVoicemailTask: invalid task.attributes.maxCallbackAttempts');
     return false;
+  }
   if (
     task.attributes.routingAttributes &&
     typeof task.attributes.routingAttributes !== 'object'
-  )
+  ) {
+    console.debug('isValidVoicemailTask: invalid task.attributes.routingAttributes');
     return false;
+  }
 
   return true;
 };
