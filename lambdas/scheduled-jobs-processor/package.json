@@ -1,0 +1,24 @@
+{
+  "name": "@tech-matters/twilio-scheduled-jobs-processor",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test:e2e": "jest tests/e2e",
+    "docker:build": "docker build -t scheduled-jobs-processor --build-arg lambda_name=scheduled-jobs-processor --build-arg lambda_dir=. -f ../Dockerfile ../"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@tsconfig/node22": "^22.0.0",
+    "@types/aws-lambda": "^8.10.108",
+    "@types/node": "^22.13.11",
+    "ts-node": "^10.9.1"
+  },
+  "dependencies": {
+    "@tech-matters/scheduled-jobs": "^1.0.0",
+    "@tech-matters/twilio-configuration": "^1.0.0",
+    "@tech-matters/twilio-types": "^1.0.0",
+    "@tech-matters/voicemail": "^1.0.0"
+  }
+}

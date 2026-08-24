@@ -14,14 +14,13 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { getTwilioClient, getWorkspaceSid } from '@tech-matters/twilio-configuration';
+import { getTwilioClient } from '@tech-matters/twilio-configuration';
+import { createVoicemailTask } from '@tech-matters/voicemail';
 import type { CallSid, RecordingSid } from '@tech-matters/twilio-types';
-import { channelTypes } from '@tech-matters/twilio-types';
 import { AccountScopedHandler, HttpError } from '../httpTypes';
-import { newOk, Result } from '../Result';
-import { newMissingParameterResult } from '../httpErrors';
-
-const DEFAULT_MAX_CALLBACK_ATTEMPTS = 3;
+import { isErr, Result } from '@tech-matters/result-type';
+import { newHttpErrorResult, newMissingParameterResult } from '../httpErrors';
+import { TaskInstance } from 'twilio/lib/rest/taskrouter/v1/workspace/task';
 
 export type RecordingCompleteCallbackRequestBody = {
   from: string;
@@ -35,7 +34,7 @@ export type RecordingCompleteCallbackRequestBody = {
 export const recordingCompleteCallback: AccountScopedHandler = async (
   { body },
   accountSid,
-): Promise<Result<HttpError, any>> => {
+): Promise<Result<HttpError, { createdVoicemailTask: TaskInstance }>> => {
   console.debug('recordingCompleteCallback body', JSON.stringify(body, null, 2));
   const { from, callSid, recordingSid, maxCallbackAttempts } =
     body as RecordingCompleteCallbackRequestBody;
@@ -74,28 +73,21 @@ export const recordingCompleteCallback: AccountScopedHandler = async (
     }
   }
 
-  const workspaceSid = await getWorkspaceSid(accountSid);
-  const voicemailTask = await twilioClient.taskrouter.v1
-    .workspaces(workspaceSid)
-    .tasks.create({
-      timeout: 604800, // 7 days
-      attributes: JSON.stringify({
-        ...(body.routingAttributes ? JSON.parse(body.routingAttributes) : {}),
-        receivedTime: receivedTime.toISOString(),
-        callbackAttemptsMade: 0,
-        maxCallbackAttempts: maxCallbackAttempts ?? DEFAULT_MAX_CALLBACK_ATTEMPTS,
-        callSid,
-        from,
-        name: from,
-        channelType: channelTypes.VOICEMAIL,
-        customChannelType: channelTypes.VOICEMAIL,
-        ignoreAgent: '',
-        transferTargetType: '',
-      }),
-      workflowSid: body.voicemailWorkflowSid,
-      // TODO: factor out channel types into an enum
-      taskChannel: channelTypes.VOICEMAIL,
-    });
+  const result = await createVoicemailTask({
+    accountSid,
+    routingAttributes: body.routingAttributes ? JSON.parse(body.routingAttributes) : {},
+    receivedTime: receivedTime.toISOString(),
+    callbackAttemptsMade: 0,
+    maxCallbackAttempts: maxCallbackAttempts,
+    callSid,
+    from,
+    name: from,
+    workflowSid: body.voicemailWorkflowSid,
+  });
 
-  return newOk({ voicemailTask });
+  if (isErr(result)) {
+    return newHttpErrorResult(result.message, 500);
+  }
+
+  return result;
 };

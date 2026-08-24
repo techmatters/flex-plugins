@@ -27,7 +27,7 @@ import {
   patchOnInternalHrmEndpoint,
   postToInternalHrmEndpoint,
 } from './internalHrmRequest';
-import { isErr, isOk } from '../Result';
+import { isErr, isOk } from '@tech-matters/result-type';
 import { inferHrmAccountId } from './hrmAccountId';
 import { sanitizeIdentifierFromTask } from './sanitizeIdentifier';
 import { HrmContact } from '@tech-matters/hrm-types';

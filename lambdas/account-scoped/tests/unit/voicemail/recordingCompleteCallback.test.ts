@@ -17,7 +17,7 @@
 import { getTwilioClient, getWorkspaceSid } from '@tech-matters/twilio-configuration';
 import { channelTypes } from '@tech-matters/twilio-types';
 import { recordingCompleteCallback } from '../../../src/voicemail/recordingCompleteCallback';
-import { isErr, isOk } from '../../../src/Result';
+import { isErr, isOk } from '@tech-matters/result-type';
 import type { HttpRequest } from '../../../src/httpTypes';
 import { TEST_ACCOUNT_SID, TEST_WORKSPACE_SID } from '../../testTwilioValues';
 
@@ -189,8 +189,10 @@ describe('recordingCompleteCallback', () => {
 
     const createdAttributes = JSON.parse(mockTasksCreate.mock.calls[0][0].attributes);
     expect(createdAttributes).toMatchObject({
-      queueName: 'voicemail-queue',
-      priority: 10,
+      routingAttributes: {
+        queueName: 'voicemail-queue',
+        priority: 10,
+      },
       from: TEST_FROM,
       channelType: channelTypes.VOICEMAIL,
     });
@@ -242,7 +244,7 @@ describe('recordingCompleteCallback', () => {
 
     expect(isOk(result)).toBe(true);
     if (isOk(result)) {
-      expect(result.data.voicemailTask).toBe(createdTask);
+      expect(result.data.createdVoicemailTask).toBe(createdTask);
     }
   });
 });

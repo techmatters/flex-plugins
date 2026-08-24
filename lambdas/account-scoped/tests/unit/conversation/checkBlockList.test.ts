@@ -14,7 +14,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { isErr, isOk } from '../../../src/Result';
+import { isErr, isOk } from '@tech-matters/result-type';
 import { TEST_ACCOUNT_SID } from '../../testTwilioValues';
 import { HttpRequest } from '../../../src/httpTypes';
 

@@ -31,7 +31,7 @@ import {
   InstagramMessageObject,
   InstagramStoryReply,
 } from '@tech-matters/twilio-types';
-import { newErr, newOk } from '../../Result';
+import { newErr, newOk } from '@tech-matters/result-type';
 import { getTwilioClient } from '@tech-matters/twilio-configuration';
 import { getChannelStudioFlowSid, getFacebookAppSecret } from '../configuration';
 import { Twilio } from 'twilio';
