@@ -9,6 +9,7 @@ locals {
 
   local_config = {
     operating_hours_enforced_override     = false
+    enable_lambda_event_callback_url      = true
     custom_task_routing_filter_expression = "channelType =='voice' OR channelType =='web'"
     flow_vars = {
       service_sid                   = "ZS8a0d3bbfb230721c2609641ca8e17ce1"
