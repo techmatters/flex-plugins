@@ -16,7 +16,7 @@
 
 import { AccountScopedHandler, HttpRequest, HttpRequestPipelineStep } from '../httpTypes';
 import { validator } from 'twilio-flex-token-validator';
-import { newErr, newOk } from '../Result';
+import { newErr, newOk } from '@tech-matters/result-type';
 import { newMissingParameterResult } from '../httpErrors';
 import { getAccountAuthToken } from '@tech-matters/twilio-configuration';
 

@@ -16,7 +16,7 @@
 
 import { AccountScopedHandler } from '../httpTypes';
 import { getTwilioClient } from '@tech-matters/twilio-configuration';
-import { newErr, newOk } from '../Result';
+import { newErr, newOk } from '@tech-matters/result-type';
 import { newMissingParameterResult } from '../httpErrors';
 import type RestException from 'twilio/lib/base/RestException';
 

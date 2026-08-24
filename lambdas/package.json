@@ -6,6 +6,7 @@
   "license": "AGPL",
   "workspaces": [
     "account-scoped",
+    "scheduled-jobs-processor",
     "facebookCallback",
     "facebookSignin",
     "instagramWebhook",

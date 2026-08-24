@@ -4,9 +4,9 @@
   "description": "Module to hold helper functions for reading configuration related to twilio, providing access to twilio APIs, and twilio specific data types",
   "main": "dist/index.js",
   "dependencies": {
-    "twilio": "^6.0.2",
     "@tech-matters/ssm-cache": "^1.0.0",
-    "@tech-matters/twilio-types": "^1.0.0"
+    "@tech-matters/twilio-types": "^1.0.0",
+    "twilio": "^6.0.2"
   },
   "devDependencies": {
     "@tsconfig/node22": "^22.0.0",
