@@ -17,7 +17,7 @@
 import type { AccountSID } from '@tech-matters/twilio-types';
 import { getDocsBucketName } from '@tech-matters/twilio-configuration';
 import { getS3Object } from '@tech-matters/s3';
-import { newErr, newOk } from '../Result';
+import { newErr, newOk } from '@tech-matters/result-type';
 import { AccountScopedHandler } from '../httpTypes';
 
 const ASELO_TWILIO_CONFIGURATION_KEY = 'configuration/twilio.json';
