@@ -9,6 +9,7 @@ locals {
 
   local_config = {
     operating_hours_enforced_override     = false
+    enable_lambda_event_callback_url      = true
     custom_task_routing_filter_expression = ""
     flow_vars = {
       widget_from                               = "Bot"
