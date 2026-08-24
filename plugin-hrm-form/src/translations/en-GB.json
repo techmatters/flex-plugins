@@ -22,7 +22,7 @@
   "CallType-hangup": "Hang up",
   "CallType-wrongnumber": "Wrong Number",
   "CallType-abusive": "Abusive",
-  "CallType-CloseContact": "Close Contact",
+  "CallType-SaveDialog-CloseContact": "Close Contact",
   "CallTypeButtons-Categorize": "categorise this contact",
   "CallTypeButtons-Or": "Or was this contact…",
   "ConnectDialog-Child": "Copy child information from this record to new contact?",

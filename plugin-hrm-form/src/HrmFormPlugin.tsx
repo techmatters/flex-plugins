@@ -99,6 +99,7 @@ const setUpComponents = (featureFlags: FeatureFlags, setupObject: ReturnType<typ
   Channels.setupTelegramChatChannel();
   Channels.setupInstagramChatChannel();
   Channels.setupLineChatChannel();
+  Channels.setupVoicemailChannel();
 
   setUpViewMaskedVoiceNumber();
 

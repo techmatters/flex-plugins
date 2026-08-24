@@ -40,6 +40,8 @@ export const mapChannel = (channel: string) => {
       return 'Instagram';
     case channelTypes.line:
       return 'Line';
+    case channelTypes.voicemail:
+      return 'Voicemail';
     default:
       return 'Undefined';
   }

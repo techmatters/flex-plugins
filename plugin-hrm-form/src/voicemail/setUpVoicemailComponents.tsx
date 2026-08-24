@@ -19,15 +19,31 @@ import React from 'react';
 
 import { channelTypes } from '../states/DomainConstants';
 import VoicemailTaskPanel from './VoicemailTaskPanel';
+import { lookupTranslation } from '../translations';
+
+export const VoicemailActionsNotifications = {
+  ActionErrorNotification: 'TaskPanel-ActiveVoicemail-ActionErrorNotification',
+};
 
 export const setUpVoicemailComponents = () => {
-  // TODO: localize
-  // Flex.TaskCanvasTabs.Content.add(<Flex.Tab key="voicemail-info-tab" label="Voicemail" />, {
-  //   sortOrder: -1,
-  //   if: props => props.task.channelType === channelTypes.voicemail,
-  // });
+  Flex.TaskCanvasTabs.Content.add(
+    <Flex.Tab key="voicemail-info-tab" label={lookupTranslation('TaskPanel-Tabs-Voicemail')}>
+      <VoicemailTaskPanel key="voicemail-task-panel" />
+    </Flex.Tab>,
+    {
+      sortOrder: -1,
+      if: props => props.task.channelType === channelTypes.voicemail && !Flex.TaskHelper.isPending(props.task),
+    },
+  );
 
-  Flex.TaskInfoPanel.Content.add(<VoicemailTaskPanel key="voicemail-task-panel" />, {
+  Flex.TaskCanvasHeader.Content.remove('actions', {
     if: props => props.task.channelType === channelTypes.voicemail,
+  });
+
+  Flex.Notifications.registerNotification({
+    id: VoicemailActionsNotifications.ActionErrorNotification,
+    content: <Flex.Template code={VoicemailActionsNotifications.ActionErrorNotification} />,
+    timeout: 5000,
+    type: Flex.NotificationType.error,
   });
 };

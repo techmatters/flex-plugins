@@ -7,7 +7,7 @@
     "CallSummary-Counselor": "Specialist: ",
     "CallType-child": "Help Seeker calling about self",
     "CallType-caller": "Someone calling about a help seeker",
-    "CallType-CloseContact": "Close Connection",
+    "CallType-SaveDialog-CloseContact": "Close Connection",
     "CallTypeButtons-Categorize": "categorize this connection",
     "CallTypeButtons-Or": "Or was this connection…",
     "ConnectDialog-Child": "Copy help seeker information from this record to new connection?",

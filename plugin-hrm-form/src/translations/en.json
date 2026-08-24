@@ -21,7 +21,7 @@
   "CallType-hangup": "Hang up",
   "CallType-wrongnumber": "Wrong Number",
   "CallType-abusive": "Abusive",
-  "CallType-CloseContact": "Close Contact",
+  "CallType-SaveDialog-CloseContact": "Close Contact",
   "CallTypeButtons-Categorize": "categorize this contact",
   "CallTypeButtons-Or": "Or was this contact…",
   "ConnectDialog-Child": "Copy child information from this record to new contact?",
@@ -670,8 +670,18 @@
 
   "AsV1-ChildInformationTab-FirstName-Title": "First Name description",
   "AsV1-ChildInformationTab-FirstName-Content": "Lorem \n ipsum dolor \n sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-
-  "VoicemailTaskPanel-CallBack": "Call Back",
-  "VoicemailTaskPanel-RetryLater": "Retry Later"
-  
+  "TaskPanel-Tabs-Voicemail": "Voicemail",
+  "TaskPanel-ActiveVoicemail-CallerPhoneNumberLabel": "Contact Phone",
+  "TaskPanel-ActiveVoicemail-RecordingLabel": "Voice Recording",
+  "TaskPanel-ActiveVoicemail-ReceivedTimeLabel": "Call Reception Time",
+  "TaskPanel-ActiveVoicemail-ReceivedTimePlaceholder": "Call Reception Time",
+  "TaskPanel-ActiveVoicemail-CallBack": "Call {{phoneNumber}}",
+  "TaskPanel-ActiveVoicemail-RetryLater": "Retry Later",
+  "TaskPanel-ActiveVoicemail-CallbackAttemptListLabel": "Callback Attempts",
+  "TaskPanel-ActiveVoicemail-CallbackAttemptListPlaceholder": "None",
+  "TaskPanel-ActiveVoicemail-CallbackAttemptListItem": "{{attemptTime}} ({{attemptNo}} of {{maxAttempts}} attempts)",
+  "TaskPanel-ActiveVoicemail-ActionErrorNotification": "Something went wrong. Please retry in a moment.",
+  "TaskListItem-Voicemail-SecondLine": "Voicemail from queue {{queue}} (status)",
+  "TaskListItem-Voicemail-SecondLine/pending": "Incoming voicemail from queue {{queue}}",
+  "IncomingTaskCanvas-Voicemail-SecondLine": "Queue {{queue}}"
 }
