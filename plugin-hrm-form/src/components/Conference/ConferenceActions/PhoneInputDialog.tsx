@@ -14,11 +14,11 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 import React from 'react';
-import { Template, Manager } from '@twilio/flex-ui';
+import { Template, Manager, Tab as TwilioTab } from '@twilio/flex-ui';
 import { Phone as PhoneIcon } from '@material-ui/icons';
 import { CircularProgress } from '@material-ui/core';
 
-import { Row, Bold, CloseButton, StyledTab, StyledTabs, PrimaryButton } from '../../../styles';
+import { Row, Bold, CloseButton, StyledTabs, PrimaryButton } from '../../../styles';
 import {
   PhoneDialogWrapper,
   PhoneDialogFooter,
@@ -27,7 +27,8 @@ import {
   QuickDialSelect,
   HelpText,
 } from './styles';
-import type { QuickDialOption } from '../../../hrmConfig';
+import type { QuickDialOption } from '../../../states/configuration/reducer';
+import { lookupTranslation } from '../../../translations';
 
 type PhoneDialogProps = {
   targetNumber: string;
@@ -64,7 +65,7 @@ const PhoneInputDialog: React.FC<PhoneDialogProps> = ({
 
   React.useEffect(() => {
     if (hasQuickDial) {
-      setTargetNumber(quickDialOptions[0].number);
+      setTargetNumber(quickDialOptions[0].phoneNumber);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -72,7 +73,7 @@ const PhoneInputDialog: React.FC<PhoneDialogProps> = ({
   const handleTabChange = (_: React.ChangeEvent<{}>, value: TabValue) => {
     setActiveTab(value);
     if (value === 'quickDial' && quickDialOptions.length > 0) {
-      setTargetNumber(quickDialOptions[0].number);
+      setTargetNumber(quickDialOptions[0].phoneNumber);
     } else if (value === 'enterNumber') {
       setTargetNumber('');
     }
@@ -86,7 +87,7 @@ const PhoneInputDialog: React.FC<PhoneDialogProps> = ({
     setTargetNumber(e.target.value);
   };
 
-  const isDialButtonDisabled = isLoading || (activeTab === 'enterNumber' && !targetNumber.trim());
+  const isDialButtonDisabled = isLoading || (activeTab === 'enterNumber' && !targetNumber?.trim());
 
   return (
     <PhoneDialogWrapper>
@@ -98,8 +99,8 @@ const PhoneInputDialog: React.FC<PhoneDialogProps> = ({
       </Row>
       {showTabs && (
         <StyledTabs value={activeTab} onChange={handleTabChange}>
-          <StyledTab value="quickDial" label={<Template code={QUICK_DIAL_TAB_KEY} />} />
-          <StyledTab value="enterNumber" label={<Template code={ENTER_NUMBER_TAB_KEY} />} />
+          <TwilioTab uniqueName="quickDial" label={<Template code={QUICK_DIAL_TAB_KEY} />} />
+          <TwilioTab uniqueName="enterNumber" label={<Template code={ENTER_NUMBER_TAB_KEY} />} />
         </StyledTabs>
       )}
       <PhoneDialogContent>
@@ -111,8 +112,8 @@ const PhoneInputDialog: React.FC<PhoneDialogProps> = ({
             aria-label={Manager.getInstance().strings[QUICK_DIAL_SELECT_LABEL_KEY]}
           >
             {quickDialOptions.map(option => (
-              <option key={option.number} value={option.number}>
-                {option.label ? `${option.number} | ${option.label}` : option.number}
+              <option key={option.phoneNumber} value={option.phoneNumber}>
+                {lookupTranslation(option.labelKey)}
               </option>
             ))}
           </QuickDialSelect>

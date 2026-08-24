@@ -25,11 +25,6 @@ import { FeatureFlags } from './types/FeatureFlags';
 const featureFlagEnvVarPrefix = 'REACT_APP_FF_';
 type ContactSaveFrequency = 'onTabChange' | 'onFinalSaveAndTransfer';
 
-export type QuickDialOption = {
-  number: string;
-  label: string;
-};
-
 const getEnvironmentFromHrmBaseUrl = (manager: Flex.Manager) => {
   const hrmBaseUrl = `${process.env.REACT_APP_HRM_BASE_URL || manager.serviceConfiguration.attributes.hrm_base_url}`;
   const prefix = 'https://hrm-';
@@ -133,8 +128,6 @@ const readConfig = () => {
   // Compatibility, remove feature flag check when service configurations changes have applied 2025-09-30
   const enableConferencing =
     manager.serviceConfiguration.attributes.enableConferencing ?? featureFlags.enable_conferencing ?? false;
-  const conferencingQuickDialOptions: QuickDialOption[] =
-    manager.serviceConfiguration.attributes.conferencing_quick_dial_options ?? [];
   const conferencingEnableManualDial: boolean =
     manager.serviceConfiguration.attributes.conferencing_enable_manual_dial ?? true;
   const { strings } = (manager as unknown) as {
@@ -183,7 +176,6 @@ const readConfig = () => {
       enableClientProfiles,
       preventSendingAttachmentsFromFlex,
       enableConferencing,
-      conferencingQuickDialOptions,
       conferencingEnableManualDial,
       hideAddToNewCaseButton,
       // eslint-disable-next-line prettier/prettier
