@@ -31,7 +31,7 @@ const handleCreateVoicemailJob = async ({
     callSid: attributes.callSid,
     from: attributes.from,
     receivedTime: new Date().toISOString(),
-    callbackAttemptsMade: attributes.callbackAttemptsMade,
+    callbackAttempts: attributes.callbackAttempts,
     workflowSid,
   });
 

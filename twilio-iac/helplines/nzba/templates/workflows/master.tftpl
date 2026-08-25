@@ -2,6 +2,16 @@
   "task_routing": {
     "filters": [
       {
+        "filter_friendly_name": "Offline Contacts",
+        "expression": "isContactlessTask == true",
+        "targets": [
+          {
+            "expression": "(task.targetSid == worker.sid AND task.isContactlessTask == true)",
+            "queue": "${task_queues.master}"
+          }
+        ]
+      },
+      {
         "filter_friendly_name": "High Risk Clients",
         "expression": "(channelType IN ['web', 'voice'] OR isContactlessTask == true) AND clientType == 'high risk'",
         "targets": [

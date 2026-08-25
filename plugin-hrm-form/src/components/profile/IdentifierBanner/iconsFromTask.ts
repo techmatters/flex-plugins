@@ -38,5 +38,6 @@ export const iconsFromTask: { [channelType in ExtendedChannelTypes]: JSX.Element
   },
   [customSmsChannelTypes.modica]: getIcon(customSmsChannelTypes.modica, iconSize),
   [customFacebookChannelTypes.messenger]: getIcon(customFacebookChannelTypes.messenger, iconSize),
-  [channelTypes.voicemail]: getIcon(channelTypes.voicemail, iconSize),
+  // Use voice icon for voicemails here since it describes previous contacts from that number, not specifically voicemails
+  [channelTypes.voicemail]: getIcon(channelTypes.voice, iconSize),
 };

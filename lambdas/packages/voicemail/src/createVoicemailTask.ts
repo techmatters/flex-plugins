@@ -23,7 +23,7 @@ export const DEFAULT_MAX_CALLBACK_ATTEMPTS = 3;
 export const createVoicemailTask = async ({
   accountSid,
   workflowSid,
-  callbackAttemptsMade,
+  callbackAttempts,
   receivedTime,
   from,
   name,
@@ -33,7 +33,7 @@ export const createVoicemailTask = async ({
 }: {
   accountSid: AccountSID;
   receivedTime: string;
-  callbackAttemptsMade: number;
+  callbackAttempts: [string, string][];
   maxCallbackAttempts?: number;
   callSid: string;
   from: string;
@@ -52,7 +52,7 @@ export const createVoicemailTask = async ({
           isVoicemail: true,
           routingAttributes: routingAttributes ?? {},
           receivedTime,
-          callbackAttemptsMade,
+          callbackAttempts,
           maxCallbackAttempts: maxCallbackAttempts ?? DEFAULT_MAX_CALLBACK_ATTEMPTS,
           callSid,
           from,

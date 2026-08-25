@@ -21,7 +21,7 @@
         "CallType-hangup": "Hang up",
         "CallType-wrongnumber": "Wrong Number",
         "CallType-abusive": "Abusive",
-        "CallType-CloseContact": "Close Event",
+        "CallType-SaveDialog-CloseContact": "Close Event",
         "CallTypeButtons-Categorize": "categorize this event",
         "CallTypeButtons-Or": "Or was this event…",
         "ConnectDialog-Child": "Copy person information from this record to new event?",

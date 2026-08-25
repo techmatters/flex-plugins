@@ -30,6 +30,8 @@ import { getTemplateStrings } from '../hrmConfig';
 import { isFacebookChannelType, isSmsChannelType } from '../utils/groupedChannels';
 import { setCallTaskCardString, setChatTaskCardString } from '../components/teamsView/taskCardEnhancement';
 import { maskChannelStringsWithIdentifiers } from '../maskIdentifiers';
+import VoicemailIcon from '../components/common/icons/VoicemailIcon';
+import { lookupTranslation } from '../translations';
 
 const isIncomingTransfer = task => TransferHelpers.hasTransferStarted(task) && task.status === 'pending';
 
@@ -198,4 +200,40 @@ export const setupLineChatChannel = () => {
   };
 
   TaskChannels.register(LineChatChannel);
+};
+
+export const setupVoicemailChannel = () => {
+  const VoicemailChannel = DefaultTaskChannels.createDefaultTaskChannel(
+    'voicemail',
+    task => task.channelType === 'voicemail' || task.attributes.customChannelType === 'voicemail',
+  );
+
+  const icon = <VoicemailIcon width="24px" height="24px" color={colors.voicemail} />;
+  VoicemailChannel.icons = generateIcons(icon);
+  VoicemailChannel.templates.TaskListItem.secondLine = task => {
+    return lookupTranslation(
+      [`TaskListItem-Voicemail-SecondLine/${task.status}`, 'TaskListItem-Voicemail-SecondLine'],
+      { queue: task.queueName, status: task.status },
+    );
+  };
+  VoicemailChannel.templates.IncomingTaskCanvas.secondLine = task => {
+    return lookupTranslation(['IncomingTaskCanvas-Voicemail-SecondLine'], {
+      queue: task.queueName,
+      status: task.status,
+    });
+  };
+
+  maskChannelStringsWithIdentifiers(VoicemailChannel);
+
+  VoicemailChannel.colors.main = {
+    Accepted: colors.voicemail,
+    Assigned: colors.voicemail,
+    Pending: colors.voicemail,
+    Reserved: colors.voicemail,
+    Wrapping: mainChannelColor(DefaultTaskChannels.Default, ReservationStatuses.Wrapping),
+    Completed: mainChannelColor(DefaultTaskChannels.Default, ReservationStatuses.Completed),
+    Canceled: mainChannelColor(DefaultTaskChannels.Default, ReservationStatuses.Canceled),
+  };
+
+  TaskChannels.register(VoicemailChannel);
 };
