@@ -230,7 +230,7 @@
   "CallType-hangup": "Hang up",
   "CallType-wrongnumber": "Wrong Number",
   "CallType-abusive": "Abusive",
-  "CallType-CloseContact": "Close Contact",
+  "CallType-SaveDialog-CloseContact": "Close Contact",
   "ConnectDialog-Child": "Copy client information from this record to new contact?",
   "ConnectDialog-Caller": "Copy caller information from this record to new contact?",
   "CaseHeader-ViewCase": "View Case",

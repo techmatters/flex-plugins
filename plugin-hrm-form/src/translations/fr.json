@@ -18,7 +18,7 @@
 "CallSummary-Counselor": "Intervenant·e :",
 "CallType-wrongnumber": "Mauvais numéro",
 "CallType-abusive": "Abus",
-"CallType-CloseContact": "Contact proche",
+"CallType-SaveDialog-CloseContact": "Contact proche",
 "CallTypeButtons-Categorize": "Catégoriser ce contact",
 "CallTypeButtons-Or": "Ou ce contact était-il…",
 "ConnectDialog-Child": "Copier les informations sur l'enfant de cet enregistrement vers un nouveau contact ?",

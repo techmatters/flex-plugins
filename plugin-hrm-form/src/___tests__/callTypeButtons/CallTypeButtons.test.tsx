@@ -27,7 +27,6 @@ import { callTypes } from 'hrm-types';
 
 import '../../states/conferencing';
 import { DataCallTypeButton, NonDataCallTypeButton } from '../../components/callTypeButtons/styles';
-import { ConfirmButton } from '../../styles';
 import LocalizationContext from '../../contexts/LocalizationContext';
 import { changeRoute } from '../../states/routing/actions';
 import { updateDraft } from '../../states/contacts/existingContacts';
@@ -54,7 +53,7 @@ jest.mock('../../services/formSubmissionHelpers', () => ({
 
 const mockStore = configureMockStore([]);
 
-const task = {
+let task = {
   sid: 'reservation-task-sid',
   taskSid: 'task-sid',
   attributes: {},
@@ -71,6 +70,14 @@ const themeConf = {
 
 const withEndCall = <Template code="TaskHeaderEndCall" />;
 const withEndChat = <Template code="TaskHeaderEndChat" />;
+
+beforeEach(() => {
+  task = {
+    sid: 'reservation-task-sid',
+    taskSid: 'task-sid',
+    attributes: {},
+  };
+});
 
 afterEach(() => {
   jest.clearAllMocks();
@@ -241,6 +248,8 @@ test('<CallTypeButtons> renders dialog with END CHAT button', () => {
   const store = mockStore(initialState);
 
   const isCallTask = () => false;
+  // eslint-disable-next-line dot-notation
+  task.attributes['customChannelType'] = 'sms';
 
   const component = renderer.create(
     <StorelessThemeProvider themeConf={themeConf}>
@@ -412,6 +421,8 @@ test('<CallTypeButtons> click on END CHAT button', async () => {
   store.dispatch = jest.fn();
 
   const isCallTask = () => false;
+  // eslint-disable-next-line dot-notation
+  task.attributes['customChannelType'] = 'sms';
 
   render(
     <StorelessThemeProvider themeConf={themeConf}>

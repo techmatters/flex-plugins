@@ -242,7 +242,7 @@
   "CallType-blank": "ว่างเปล่า",
   "CallType-caller": "ผู้ติดต่ออื่น",
   "CallType-child": "เด็ก",
-  "CallType-CloseContact": "สัมผัสใกล้ชิด",
+  "CallType-SaveDialog-CloseContact": "สัมผัสใกล้ชิด",
   "CallType-hangup": "สายหลุด",
   "CallType-joke": "ก่อกวน",
   "CallType-silent": "สายเงียบ",

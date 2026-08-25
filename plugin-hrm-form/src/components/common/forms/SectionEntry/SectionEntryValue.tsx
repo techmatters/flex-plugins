@@ -54,7 +54,9 @@ const SectionEntryValue: React.FC<Props> = ({ value, definition, layout, notBold
       ),
       codes => (
         <Flex flexDirection="column">
-          <SectionValueText notBold={notBold}>{codes}</SectionValueText>
+          <SectionValueText notBold={notBold}>
+            {codes.map((code, idx) => (typeof code === 'string' ? <Template key={idx} code={code} /> : code))}
+          </SectionValueText>
         </Flex>
       ),
     )(formattedValue)(definition);
