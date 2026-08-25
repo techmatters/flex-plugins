@@ -18,7 +18,7 @@ import { Template, Manager, Tab as TwilioTab } from '@twilio/flex-ui';
 import { Phone as PhoneIcon } from '@material-ui/icons';
 import { CircularProgress } from '@material-ui/core';
 
-import { Row, Bold, CloseButton, StyledTabs, PrimaryButton } from '../../../styles';
+import { Row, Bold, CloseButton, PrimaryButton } from '../../../styles';
 import {
   PhoneDialogWrapper,
   PhoneDialogFooter,
@@ -29,6 +29,7 @@ import {
 } from './styles';
 import type { QuickDialOption } from '../../../states/configuration/reducer';
 import { lookupTranslation } from '../../../translations';
+import { StyledTabs } from '../../search/styles';
 
 type PhoneDialogProps = {
   targetNumber: string;
@@ -70,7 +71,7 @@ const PhoneInputDialog: React.FC<PhoneDialogProps> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const handleTabChange = (_: React.ChangeEvent<{}>, value: TabValue) => {
+  const handleTabChange = (value: TabValue) => {
     setActiveTab(value);
     if (value === 'quickDial' && quickDialOptions.length > 0) {
       setTargetNumber(quickDialOptions[0].phoneNumber);
@@ -88,7 +89,35 @@ const PhoneInputDialog: React.FC<PhoneDialogProps> = ({
   };
 
   const isDialButtonDisabled = isLoading || (activeTab === 'enterNumber' && !targetNumber?.trim());
-
+  const renderQuickDial = () => (
+    <PhoneDialogContent>
+      <QuickDialSelect
+        value={targetNumber}
+        onChange={handleQuickDialChange}
+        disabled={isLoading}
+        aria-label={Manager.getInstance().strings[QUICK_DIAL_SELECT_LABEL_KEY]}
+      >
+        {quickDialOptions.map(option => (
+          <option key={option.phoneNumber} value={option.phoneNumber}>
+            {lookupTranslation(option.labelKey)}
+          </option>
+        ))}
+      </QuickDialSelect>
+    </PhoneDialogContent>
+  );
+  const renderManualDial = () => (
+    <PhoneDialogContent>
+      <PhoneNumberInput
+        type="text"
+        id="number-input"
+        value={targetNumber}
+        onChange={handleNumberChange}
+        disabled={isLoading}
+        aria-label={Manager.getInstance().strings[ENTER_NUMBER_KEY]}
+      />
+      <HelpText>{lookupTranslation(PHONE_NUMBER_EXAMPLE_KEY)}</HelpText>
+    </PhoneDialogContent>
+  );
   return (
     <PhoneDialogWrapper>
       <Row>
@@ -97,45 +126,28 @@ const PhoneInputDialog: React.FC<PhoneDialogProps> = ({
         </Bold>
         <CloseButton onClick={() => setIsDialogOpen(false)} aria-label="CloseButton" style={{ marginLeft: 'auto' }} />
       </Row>
-      {showTabs && (
-        <StyledTabs value={activeTab} onChange={handleTabChange}>
-          <TwilioTab uniqueName="quickDial" label={<Template code={QUICK_DIAL_TAB_KEY} />} />
-          <TwilioTab uniqueName="enterNumber" label={<Template code={ENTER_NUMBER_TAB_KEY} />} />
+      {showTabs ? (
+        <StyledTabs
+          selectedTabName={activeTab}
+          onTabSelected={handleTabChange}
+          alignment="center"
+          keepTabsMounted={false}
+        >
+          <TwilioTab uniqueName="quickDial" label={<Template code={QUICK_DIAL_TAB_KEY} />} key="quickDial">
+            {hasQuickDial && renderQuickDial()}
+          </TwilioTab>
+          <TwilioTab uniqueName="enterNumber" label={<Template code={ENTER_NUMBER_TAB_KEY} key="enterNumber" />}>
+            {enableManualDial && renderManualDial()}
+          </TwilioTab>
         </StyledTabs>
+      ) : (
+        <>
+          {hasQuickDial && renderQuickDial()}
+          {enableManualDial && renderManualDial()}
+        </>
       )}
-      <PhoneDialogContent>
-        {(!showTabs || activeTab === 'quickDial') && hasQuickDial && (
-          <QuickDialSelect
-            value={targetNumber}
-            onChange={handleQuickDialChange}
-            disabled={isLoading}
-            aria-label={Manager.getInstance().strings[QUICK_DIAL_SELECT_LABEL_KEY]}
-          >
-            {quickDialOptions.map(option => (
-              <option key={option.phoneNumber} value={option.phoneNumber}>
-                {lookupTranslation(option.labelKey)}
-              </option>
-            ))}
-          </QuickDialSelect>
-        )}
-        {(!showTabs || activeTab === 'enterNumber') && enableManualDial && (
-          <>
-            <PhoneNumberInput
-              type="text"
-              id="number-input"
-              value={targetNumber}
-              onChange={handleNumberChange}
-              disabled={isLoading}
-              aria-label={Manager.getInstance().strings[ENTER_NUMBER_KEY]}
-            />
-            <HelpText>
-              <Template code={PHONE_NUMBER_EXAMPLE_KEY} />
-            </HelpText>
-          </>
-        )}
-      </PhoneDialogContent>
       <PhoneDialogFooter>
-        <PrimaryButton buttonSize="small" autoFocus onClick={handleClick} disabled={isDialButtonDisabled}>
+        <PrimaryButton autoFocus onClick={handleClick} disabled={isDialButtonDisabled}>
           {isLoading ? (
             <CircularProgress size={16} style={{ color: '#fff' }} />
           ) : (

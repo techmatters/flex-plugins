@@ -91,9 +91,12 @@ export const QuickDialSelect = styled('select')`
 QuickDialSelect.displayName = 'QuickDialSelect';
 
 export const HelpText = styled('p')`
-  margin: 6px 0 0;
-  font-size: 13px;
-  color: #606b85;
+  && {
+    margin: 6px 0 0;
+    font-size: 13px;
+    font-weight: normal;
+    color: #606b85;
+  }
 `;
 HelpText.displayName = 'HelpText';
 
