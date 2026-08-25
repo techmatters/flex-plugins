@@ -135,7 +135,7 @@
     "BottomBar-CancelNewCaseAndClose": "Sí, Cancelar el Nueva ECUPHS y Cierre",
     "BottomBar-AddThisContactToExistingCase": "Agregar esta Conversación a ECUPHS existente",
     "ResumeContactButtonText": "Reanudar la Conversación Fuera de Línea",
-    "CallType-CloseContact": "Cerrar Conversación",
+    "CallType-SaveDialog-CloseContact": "Cerrar Conversación",
     "ConnectDialog-Caller": "¿Copiar información del llamante de este registro a un nueva conversación?",
     "ContactDetails-GeneralDetails-ContactSummary": "Resumen de Conversación",
     "ContactDetails-UnsavedContact": "Conversación no guardada",
