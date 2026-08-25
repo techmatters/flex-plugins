@@ -2,7 +2,8 @@
     "attributes": {
         "contacts_waiting_channels": [
             "sms",
-            "voice"
+            "voice",
+            "voicemail"
         ],
         "external_recordings_enabled": true,
         "enableExternalRecordings": true,
