@@ -28,7 +28,7 @@ import {
   postToInternalHrmEndpoint,
 } from './internalHrmRequest';
 import { isErr, isOk } from '@tech-matters/result-type';
-import { inferHrmAccountId } from './hrmAccountId';
+import { inferHrmAccountId, HrmAccountId } from './hrmAccountId';
 import { sanitizeIdentifierFromTask } from './sanitizeIdentifier';
 import { HrmContact } from '@tech-matters/hrm-types';
 import { populateHrmContactFormFromTaskByMappings } from './populateHrmContactFormFromTaskByMappings';
@@ -71,6 +71,62 @@ const BLANK_CONTACT: HrmContact = {
   conversationDuration: 0,
   csamReports: [],
   conversationMedia: [],
+};
+
+const addConversationMedia = async ({
+  accountSid,
+  channel,
+  callSid,
+  contactId,
+  hrmApiVersion,
+  hrmAccountId,
+}: {
+  accountSid: AccountSID;
+  channel: HrmContact['channel'];
+  contactId: HrmContact['id'];
+  callSid: string;
+  hrmAccountId: HrmAccountId;
+  hrmApiVersion: string;
+}) => {
+  console.info(
+    `Channel type is ${channel}, adding conversation media with call sid ${callSid}`,
+  );
+  const recordingResult = await getExternalRecordingS3Location({
+    accountSid,
+    callSid,
+  });
+
+  if (isErr(recordingResult)) {
+    return recordingResult;
+  }
+
+  const conversationMedia = [
+    {
+      storeType: 'S3',
+      storeTypeSpecificData: {
+        type: 'recording',
+        location: {
+          bucket: recordingResult.data.bucket,
+          key: recordingResult.data.key,
+        },
+      },
+    },
+  ];
+
+  const conversationMediaResult = await postToInternalHrmEndpoint<
+    HrmContact['conversationMedia'],
+    HrmContact
+  >(
+    hrmAccountId,
+    hrmApiVersion,
+    `contacts/${contactId}/conversationMedia`,
+    conversationMedia,
+  );
+  console.debug(
+    `Conversation media result ${conversationMediaResult.status} ${isOk(conversationMediaResult) ? JSON.stringify(conversationMediaResult.data) : JSON.stringify(conversationMediaResult.error)}`,
+  );
+
+  return conversationMediaResult;
 };
 
 export const handleEvent = async (
@@ -247,6 +303,17 @@ export const handleEvent = async (
   const savedTimeOfContactDate = parseISO(savedTimeOfContactString);
   console.info(`Created HRM contact with id ${id} for task ${taskSid}`);
 
+  if (channel === channelTypes.VOICEMAIL) {
+    await addConversationMedia({
+      accountSid,
+      callSid: taskAttributes.callSid,
+      channel,
+      contactId: id,
+      hrmAccountId,
+      hrmApiVersion,
+    });
+  }
+
   await patchTaskAttributes(accountSid, taskSid, currentTaskAttributes => ({
     ...currentTaskAttributes,
     contactId: id.toString(),
@@ -255,44 +322,6 @@ export const handleEvent = async (
       : null,
     timeOfContactMillis: savedTimeOfContactDate.getTime(),
   }));
-
-  if (channel === channelTypes.VOICEMAIL) {
-    console.info(
-      `Channel type is ${channel}, adding conversation media with call sid ${taskAttributes.callSid}`,
-    );
-    const recordingResult = await getExternalRecordingS3Location({
-      accountSid,
-      callSid: taskAttributes.callSid,
-    });
-
-    if (isOk(recordingResult)) {
-      const conversationMedia = [
-        {
-          storeType: 'S3',
-          storeTypeSpecificData: {
-            type: 'recording',
-            location: {
-              bucket: recordingResult.data.bucket,
-              key: recordingResult.data.key,
-            },
-          },
-        },
-      ];
-
-      const conversationMediaResult = await postToInternalHrmEndpoint<
-        HrmContact['conversationMedia'],
-        HrmContact
-      >(
-        hrmAccountId,
-        hrmApiVersion,
-        `contacts/${id}/conversationMedia`,
-        conversationMedia,
-      );
-      console.debug(
-        `Conversation media result ${conversationMediaResult.status} ${isOk(conversationMediaResult) ? JSON.stringify(conversationMediaResult.data) : JSON.stringify(conversationMediaResult.error)}`,
-      );
-    }
-  }
 };
 
 registerTaskRouterEventHandler([RESERVATION_ACCEPTED], handleEvent);
