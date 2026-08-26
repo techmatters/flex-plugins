@@ -3,28 +3,12 @@
     "label": "Times & Coordination",
     "formPath": "caseForms/timesCoordinationForm.json"
   },
-  "callDispatch": {
-    "label": "Call / Dispatch Info",
-    "formPath": "caseForms/callDispatchForm.json"
+  "incidentReport": {
+    "label": "Incident Report",
+    "formPath": "caseForms/incidentReportForm.json"
   },
-  "patientInformation": {
-    "label": "Patient Information & Medical History",
-    "formPath": "caseForms/patientInformationForm.json"
-  },
-  "sceneCare": {
-    "label": "Scene, Injury & Care On Arrival",
-    "formPath": "caseForms/sceneCareForm.json"
-  },
-  "vitalSigns": {
-    "label": "Vital Signs",
-    "formPath": "caseForms/vitalSignsForm.json"
-  },
-  "treatmentProceduresMedication": {
-    "label": "Treatment, Procedures, and Medication",
-    "formPath": "caseForms/treatmentProceduresMedicationForm.json"
-  },
-  "disposition": {
-    "label": "Disposition & Sign Off",
-    "formPath": "caseForms/dispositionForm.json"
+  "patientCareReport": {
+    "label": "Patient Care Report",
+    "formPath": "caseForms/patientCareReportForm.json"
   }
 }
