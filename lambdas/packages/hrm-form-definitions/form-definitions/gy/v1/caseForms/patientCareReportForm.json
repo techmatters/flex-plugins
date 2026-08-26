@@ -1,0 +1,1958 @@
+ · JSON
+[
+  {
+    "name": "firstName",
+    "label": "First Name",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "lastName",
+    "label": "Last Name",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "sex",
+    "label": "Sex",
+    "type": "select",
+    "unknownOption": "Unknown",
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "Male",
+        "label": "Male"
+      },
+      {
+        "value": "Female",
+        "label": "Female"
+      }
+    ],
+    "isPII": false
+  },
+  {
+    "name": "age",
+    "label": "Age",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "ageUnit",
+    "label": "Age Unit",
+    "type": "select",
+    "options": [
+      {
+        "value": "Years",
+        "label": "Years"
+      },
+      {
+        "value": "Months",
+        "label": "Months"
+      }
+    ],
+    "isPII": false
+  },
+  {
+    "name": "dateOfBirth",
+    "label": "Date of Birth",
+    "type": "date-input",
+    "isPII": false
+  },
+  {
+    "name": "number",
+    "label": "National Identification Number",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "idType",
+    "label": "Identification Type ",
+    "type": "select",
+    "unknownOption": "Unknown",
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "Driver's License",
+        "label": "Driver's License"
+      },
+      {
+        "value": "Passport",
+        "label": "Passport"
+      },
+      {
+        "value": "Government ID",
+        "label": "Government ID"
+      },
+      {
+        "value": "Other",
+        "label": "Other"
+      }
+    ],
+    "isPII": false
+  },
+  {
+    "name": "telephone",
+    "label": "Telephone",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "street",
+    "label": "Street",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "city",
+    "label": "City",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "state",
+    "label": "State",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "postalCode",
+    "label": "Postal Code",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "nokFirstName",
+    "label": "Next of Kin First Name",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "nokLastName",
+    "label": "Next of Kin Last Name",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "relationship",
+    "label": "Next of Kin Relationship",
+    "type": "listbox-multiselect",
+    "options": [
+      {
+        "value": "Spouse",
+        "label": "Spouse"
+      },
+      {
+        "value": "Guardian",
+        "label": "Guardian"
+      },
+      {
+        "value": "Son",
+        "label": "Son"
+      },
+      {
+        "value": "Daughter",
+        "label": "Daughter"
+      },
+      {
+        "value": "Other",
+        "label": "Other"
+      }
+    ],
+    "isPII": false
+  },
+  {
+    "name": "relationshipOther",
+    "label": "Relationship (If Other)",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "nokTelephone",
+    "label": "NOK Telephone",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "workRelatedInjury",
+    "label": "Work-Related Injury?",
+    "type": "select",
+    "unknownOption": "Unknown",
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "Yes",
+        "label": "Yes"
+      },
+      {
+        "value": "No",
+        "label": "No"
+      }
+    ],
+    "isPII": false
+  },
+  {
+    "name": "employer",
+    "label": "Employer (Only If Work-Related)",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "employerTelephone",
+    "label": "Employer Telephone",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "gender",
+    "label": "Select Gender",
+    "type": "select",
+    "unknownOption": "Unknown",
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "Male",
+        "label": "Male"
+      },
+      {
+        "value": "Female",
+        "label": "Female"
+      }
+    ],
+    "isPII": false
+  },
+  {
+    "name": "genderOther",
+    "label": "For Other, Document Here",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "weight",
+    "label": "Weight",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "weightUnit",
+    "label": "Weight Unit",
+    "type": "select",
+    "options": [
+      {
+        "value": "Kg",
+        "label": "Kg"
+      },
+      {
+        "value": "Lbs",
+        "label": "Lbs"
+      }
+    ],
+    "isPII": false
+  },
+  {
+    "name": "insuranceProvider",
+    "label": "Insurance Provider",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "insurancePolicyNumber",
+    "label": "Insurance Policy Number",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "income",
+    "label": "Income",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "incomeFrequency",
+    "label": "Frequency",
+    "type": "select",
+    "options": [
+      {
+        "value": "Annual",
+        "label": "Annual"
+      },
+      {
+        "value": "Monthly",
+        "label": "Monthly"
+      }
+    ],
+    "isPII": false
+  },
+  {
+    "name": "medicalHistory",
+    "label": "Medical History",
+    "type": "textarea",
+    "rows": 4,
+    "isPII": true
+  },
+  {
+    "name": "surgicalHistory",
+    "label": "Surgical History",
+    "type": "textarea",
+    "rows": 4,
+    "isPII": true
+  },
+  {
+    "name": "currentMedicines",
+    "label": "Current Medicines",
+    "type": "textarea",
+    "rows": 4,
+    "isPII": true
+  },
+  {
+    "name": "allergies",
+    "label": "Allergies",
+    "type": "textarea",
+    "rows": 4,
+    "isPII": true
+  },
+  {
+    "name": "commonConditions",
+    "label": "Common Conditions",
+    "type": "listbox-multiselect",
+    "options": [
+      {
+        "value": "None",
+        "label": "None"
+      },
+      {
+        "value": "Hypertension",
+        "label": "Hypertension"
+      },
+      {
+        "value": "Diabetes",
+        "label": "Diabetes"
+      },
+      {
+        "value": "Cardiac",
+        "label": "Cardiac"
+      },
+      {
+        "value": "COPD",
+        "label": "COPD"
+      },
+      {
+        "value": "Asthma",
+        "label": "Asthma"
+      },
+      {
+        "value": "Stroke",
+        "label": "Stroke"
+      },
+      {
+        "value": "Seizures",
+        "label": "Seizures"
+      },
+      {
+        "value": "Renal",
+        "label": "Renal"
+      },
+      {
+        "value": "Pregnancy",
+        "label": "Pregnancy"
+      },
+      {
+        "value": "Other",
+        "label": "Other"
+      }
+    ],
+    "isPII": false
+  },
+  {
+    "name": "commonConditionsOther",
+    "label": "If Other Common Conditions:",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "careInProgressOnArrival",
+    "label": "Care In Progress On Arrival",
+    "type": "select",
+    "unknownOption": "Unknown",
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "None",
+        "label": "None"
+      },
+      {
+        "value": "Citizen / Bystander",
+        "label": "Citizen / Bystander"
+      },
+      {
+        "value": "First Responder (PD / FD)",
+        "label": "First Responder (PD / FD)"
+      },
+      {
+        "value": "Other EMS",
+        "label": "Other EMS"
+      },
+      {
+        "value": "AED / PAD Used",
+        "label": "AED / PAD Used"
+      },
+      {
+        "value": "CPR in Progress",
+        "label": "CPR in Progress"
+      }
+    ],
+    "isPII": false
+  },
+  {
+    "name": "safetyMechanism",
+    "label": "Safety / Mechanism",
+    "type": "listbox-multiselect",
+    "options": [
+      {
+        "value": "None",
+        "label": "None"
+      },
+      {
+        "value": "Motor Vehicle Accident",
+        "label": "Motor Vehicle Accident"
+      },
+      {
+        "value": "Seatbelt Used",
+        "label": "Seatbelt Used"
+      },
+      {
+        "value": "Airbag Deployed",
+        "label": "Airbag Deployed"
+      },
+      {
+        "value": "Ejection",
+        "label": "Ejection"
+      },
+      {
+        "value": "Fall",
+        "label": "Fall"
+      },
+      {
+        "value": "GSW",
+        "label": "GSW"
+      },
+      {
+        "value": "Stabbing / Knife",
+        "label": "Stabbing / Knife"
+      },
+      {
+        "value": "Machinery",
+        "label": "Machinery"
+      },
+      {
+        "value": "Assault",
+        "label": "Assault"
+      },
+      {
+        "value": "Extrication",
+        "label": "Extrication"
+      }
+    ],
+    "isPII": false
+  },
+  {
+    "name": "fallHeight",
+    "label": "If Fall, Enter Height:",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "extricationMinutes",
+    "label": "If Extrication, Enter Minutes:",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "chiefComplaint",
+    "label": "Chief Complaint (Patient's Words):",
+    "type": "textarea",
+    "rows": 5,
+    "isPII": true
+  },
+  {
+    "name": "primaryImpression",
+    "label": "Primary Impression",
+    "type": "listbox-multiselect",
+    "options": [
+      {
+        "value": "Cardiac Arrest",
+        "label": "Cardiac Arrest"
+      },
+      {
+        "value": "Cardiac / Chest Pain",
+        "label": "Cardiac / Chest Pain"
+      },
+      {
+        "value": "Respiratory Arrest",
+        "label": "Respiratory Arrest"
+      },
+      {
+        "value": "Respiratory Distress",
+        "label": "Respiratory Distress"
+      },
+      {
+        "value": "Airway Obstruction",
+        "label": "Airway Obstruction"
+      },
+      {
+        "value": "Stroke / CVA",
+        "label": "Stroke / CVA"
+      },
+      {
+        "value": "Syncope",
+        "label": "Syncope"
+      },
+      {
+        "value": "Seizure",
+        "label": "Seizure"
+      },
+      {
+        "value": "Unconscious / Unresponsive",
+        "label": "Unconscious / Unresponsive"
+      },
+      {
+        "value": "Diabetic (Potential)",
+        "label": "Diabetic (Potential)"
+      },
+      {
+        "value": "Allergic Reaction",
+        "label": "Allergic Reaction"
+      },
+      {
+        "value": "Shock",
+        "label": "Shock"
+      },
+      {
+        "value": "General Illness / Malaise",
+        "label": "General Illness / Malaise"
+      },
+      {
+        "value": "GI Distress",
+        "label": "GI Distress"
+      },
+      {
+        "value": "Substance Abuse",
+        "label": "Substance Abuse"
+      },
+      {
+        "value": "Poisoning",
+        "label": "Poisoning"
+      },
+      {
+        "value": "Behavioral / Psychiatric",
+        "label": "Behavioral / Psychiatric"
+      },
+      {
+        "value": "Head Injury",
+        "label": "Head Injury"
+      },
+      {
+        "value": "Spinal Injury",
+        "label": "Spinal Injury"
+      },
+      {
+        "value": "Major Trauma",
+        "label": "Major Trauma"
+      },
+      {
+        "value": "Trauma - Blunt",
+        "label": "Trauma - Blunt"
+      },
+      {
+        "value": "Trauma - Penetrating",
+        "label": "Trauma - Penetrating"
+      },
+      {
+        "value": "Fracture / Dislocation",
+        "label": "Fracture / Dislocation"
+      },
+      {
+        "value": "Soft Tissue Injury",
+        "label": "Soft Tissue Injury"
+      },
+      {
+        "value": "Amputation",
+        "label": "Amputation"
+      },
+      {
+        "value": "Bleeding / Hemorrhage",
+        "label": "Bleeding / Hemorrhage"
+      },
+      {
+        "value": "Burns",
+        "label": "Burns"
+      },
+      {
+        "value": "Environmental - Heat",
+        "label": "Environmental - Heat"
+      },
+      {
+        "value": "Environmental - Cold",
+        "label": "Environmental - Cold"
+      },
+      {
+        "value": "Hazardous Materials",
+        "label": "Hazardous Materials"
+      },
+      {
+        "value": "OB / GYN",
+        "label": "OB / GYN"
+      },
+      {
+        "value": "Pain",
+        "label": "Pain"
+      },
+      {
+        "value": "Obvious Death",
+        "label": "Obvious Death"
+      },
+      {
+        "value": "Other",
+        "label": "Other"
+      }
+    ],
+    "isPII": false
+  },
+  {
+    "name": "primaryImpressionOther",
+    "label": "If Other Primary Impression:",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "airwayBreathing",
+    "label": "Airway / Breathing",
+    "type": "listbox-multiselect",
+    "options": [
+      {
+        "value": "Airway Cleared",
+        "label": "Airway Cleared"
+      },
+      {
+        "value": "Oral / Nasal Airway (OPA / NPA)",
+        "label": "Oral / Nasal Airway (OPA / NPA)"
+      },
+      {
+        "value": "Supraglottic Airway",
+        "label": "Supraglottic Airway"
+      },
+      {
+        "value": "Endotracheal Tube (ETT)",
+        "label": "Endotracheal Tube (ETT)"
+      },
+      {
+        "value": "Suction",
+        "label": "Suction"
+      },
+      {
+        "value": "Oxygen",
+        "label": "Oxygen"
+      },
+      {
+        "value": "Bag-Valve-Mask Ventilation",
+        "label": "Bag-Valve-Mask Ventilation"
+      },
+      {
+        "value": "CPAP / BiPAP",
+        "label": "CPAP / BiPAP"
+      }
+    ],
+    "isPII": false
+  },
+  {
+    "name": "oxygenLpm",
+    "label": "If Oxygen, Enter LPM:",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "oxygenMethod",
+    "label": "If Oxygen, List Method:",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "circulationCardiac",
+    "label": "Circulation / Cardiac",
+    "type": "listbox-multiselect",
+    "options": [
+      {
+        "value": "CPR",
+        "label": "CPR"
+      },
+      {
+        "value": "AED / Defibrillation",
+        "label": "AED / Defibrillation"
+      },
+      {
+        "value": "Cardioversion",
+        "label": "Cardioversion"
+      },
+      {
+        "value": "Manual / Semi-Auto",
+        "label": "Manual / Semi-Auto"
+      },
+      {
+        "value": "ECG / Cardiac Monitor (attach strip in \"Attachments\" section)",
+        "label": "ECG / Cardiac Monitor (attach strip in \"Attachments\" section)"
+      },
+      {
+        "value": "IV / IO Established",
+        "label": "IV / IO Established"
+      },
+      {
+        "value": "IV Fluids",
+        "label": "IV Fluids"
+      },
+      {
+        "value": "Hemorrhage Control",
+        "label": "Hemorrhage Control"
+      },
+      {
+        "value": "Tourniquet",
+        "label": "Tourniquet"
+      }
+    ],
+    "isPII": false
+  },
+  {
+    "name": "cprTimeStarted",
+    "label": "If CPR, Select Time Started",
+    "type": "time-input",
+    "isPII": true
+  },
+  {
+    "name": "cprByWhom",
+    "label": "If CPR, Enter By Whom:",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "aedShocks",
+    "label": "If AED / Defibrillation, Enter # of Shocks",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "ivGauge",
+    "label": "If IV / IO, Enter Guage",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "ivSite",
+    "label": "If IV / IO, Enter Site",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "ivFluidsMl",
+    "label": "If IV Fluids, Enter mL",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "hemorrhageControlMethod",
+    "label": "If Hemorrhage Control, Enter Method",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "tourniquetTime",
+    "label": "If Tourniquet Applied, Select Time",
+    "type": "time-input",
+    "isPII": true
+  },
+  {
+    "name": "immobilizationMovement",
+    "label": "Immobilization / Movement",
+    "type": "listbox-multiselect",
+    "options": [
+      {
+        "value": "Cervical Collar (C-Collar)",
+        "label": "Cervical Collar (C-Collar)"
+      },
+      {
+        "value": "Long Spine Board / Backboard",
+        "label": "Long Spine Board / Backboard"
+      },
+      {
+        "value": "Limb Splint: Fixation",
+        "label": "Limb Splint: Fixation"
+      },
+      {
+        "value": "Limb Splint: Traction",
+        "label": "Limb Splint: Traction"
+      },
+      {
+        "value": "Extrication",
+        "label": "Extrication"
+      },
+      {
+        "value": "Moved by Stretcher",
+        "label": "Moved by Stretcher"
+      },
+      {
+        "value": "Moved by Stair-Chair",
+        "label": "Moved by Stair-Chair"
+      },
+      {
+        "value": "Walked to Ambulance",
+        "label": "Walked to Ambulance"
+      },
+      {
+        "value": "Heat Applied",
+        "label": "Heat Applied"
+      },
+      {
+        "value": "Cold Applied",
+        "label": "Cold Applied"
+      },
+      {
+        "value": "Restraints Applied",
+        "label": "Restraints Applied"
+      }
+    ],
+    "isPII": false
+  },
+  {
+    "name": "restraintsType",
+    "label": "If Restraints Applied, Enter Type",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "medicalOther",
+    "label": "Medical / Other",
+    "type": "listbox-multiselect",
+    "options": [
+      {
+        "value": "Blood Glucose Checked",
+        "label": "Blood Glucose Checked"
+      },
+      {
+        "value": "Wound Care / Dressing",
+        "label": "Wound Care / Dressing"
+      },
+      {
+        "value": "Childbirth / Delivery Assisted",
+        "label": "Childbirth / Delivery Assisted"
+      },
+      {
+        "value": "Position: Trendelenburg",
+        "label": "Position: Trendelenburg"
+      },
+      {
+        "value": "Left-Lateral",
+        "label": "Left-Lateral"
+      },
+      {
+        "value": "Head-Up",
+        "label": "Head-Up"
+      },
+      {
+        "value": "Other",
+        "label": "Other"
+      }
+    ],
+    "isPII": false
+  },
+  {
+    "name": "medicalOtherSpecify",
+    "label": "If Other, Enter Here",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "medicationTime",
+    "label": "Medication Time",
+    "type": "time-input",
+    "isPII": true
+  },
+  {
+    "name": "medicationName",
+    "label": "Medication",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "medicationDosage",
+    "label": "Dosage",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "medicationRoute",
+    "label": "Route",
+    "type": "select",
+    "unknownOption": "Unknown",
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "Intramuscular",
+        "label": "Intramuscular"
+      },
+      {
+        "value": "Intravenous",
+        "label": "Intravenous"
+      },
+      {
+        "value": "Intranasal",
+        "label": "Intranasal"
+      },
+      {
+        "value": "Oral",
+        "label": "Oral"
+      },
+      {
+        "value": "Rectal",
+        "label": "Rectal"
+      },
+      {
+        "value": "Dermal",
+        "label": "Dermal"
+      },
+      {
+        "value": "Other",
+        "label": "Other"
+      }
+    ],
+    "isPII": false
+  },
+  {
+    "name": "medicationResponseEffect",
+    "label": "Response Effect",
+    "type": "textarea",
+    "rows": 4,
+    "isPII": true
+  },
+  {
+    "name": "medicationInitials",
+    "label": "Initials",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "bloodPressureTime",
+    "label": "Blood Pressure Time",
+    "type": "time-input",
+    "isPII": true
+  },
+  {
+    "name": "systolic",
+    "label": "Systolic",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "diastolic",
+    "label": "Diastolic",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "pulseTime",
+    "label": "Pulse Time",
+    "type": "time-input",
+    "isPII": true
+  },
+  {
+    "name": "pulseQuality",
+    "label": "Pulse - Select One",
+    "type": "select",
+    "unknownOption": "Unknown",
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "Regular",
+        "label": "Regular"
+      },
+      {
+        "value": "Irregular",
+        "label": "Irregular"
+      },
+      {
+        "value": "Absent",
+        "label": "Absent"
+      }
+    ],
+    "isPII": false
+  },
+  {
+    "name": "pulseRate",
+    "label": "Pulse Rate",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "pulseWaveform",
+    "label": "Pulse Waveform",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "respirationsTime",
+    "label": "Respirations Time",
+    "type": "time-input",
+    "isPII": true
+  },
+  {
+    "name": "respirationsRate",
+    "label": "Respirations Rate",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "respirationsQuality",
+    "label": "Respirations - Select One",
+    "type": "select",
+    "unknownOption": "Unknown",
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "Regular",
+        "label": "Regular"
+      },
+      {
+        "value": "Shallow",
+        "label": "Shallow"
+      },
+      {
+        "value": "Labored",
+        "label": "Labored"
+      }
+    ],
+    "isPII": false
+  },
+  {
+    "name": "spo2Time",
+    "label": "SPO2 % Time",
+    "type": "time-input",
+    "isPII": true
+  },
+  {
+    "name": "spo2Percentage",
+    "label": "SPO2 Percentage",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "o2Time",
+    "label": "O2 LPM Time",
+    "type": "time-input",
+    "isPII": true
+  },
+  {
+    "name": "o2Lpm",
+    "label": "O2 LPM",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "bloodGlucoseTime",
+    "label": "Blood Glucose Time",
+    "type": "time-input",
+    "isPII": true
+  },
+  {
+    "name": "bloodGlucoseLevel",
+    "label": "Blood Glucose Level (mg/dL)",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "temperatureTime",
+    "label": "Temperature Time",
+    "type": "time-input",
+    "isPII": true
+  },
+  {
+    "name": "temperatureUnit",
+    "label": "Temperature Unit",
+    "type": "select",
+    "options": [
+      {
+        "value": "Celsius",
+        "label": "Celsius"
+      },
+      {
+        "value": "Farenheit",
+        "label": "Farenheit"
+      }
+    ],
+    "isPII": false
+  },
+  {
+    "name": "bodyTemperature",
+    "label": "Body Temperature",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "gcsTime",
+    "label": "GCS (E/V/M) Time",
+    "type": "time-input",
+    "isPII": true
+  },
+  {
+    "name": "gcsScore",
+    "label": "Glasgow Coma Scale (GCS)",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "gcsEyeResponse",
+    "label": "Eye Response",
+    "type": "select",
+    "unknownOption": "Unknown",
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "Spontaneously",
+        "label": "Spontaneously"
+      },
+      {
+        "value": "To Verbal Command",
+        "label": "To Verbal Command"
+      },
+      {
+        "value": "To Pain",
+        "label": "To Pain"
+      },
+      {
+        "value": "No Eye Opening",
+        "label": "No Eye Opening"
+      },
+      {
+        "value": "Not Testable",
+        "label": "Not Testable"
+      }
+    ],
+    "isPII": false
+  },
+  {
+    "name": "gcsVerbalResponse",
+    "label": "Verbal Command",
+    "type": "select",
+    "unknownOption": "Unknown",
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "Oriented",
+        "label": "Oriented"
+      },
+      {
+        "value": "Confused",
+        "label": "Confused"
+      },
+      {
+        "value": "Inappropriate Words",
+        "label": "Inappropriate Words"
+      },
+      {
+        "value": "Incomprehensible Sounds",
+        "label": "Incomprehensible Sounds"
+      },
+      {
+        "value": "No Verbal Response",
+        "label": "No Verbal Response"
+      },
+      {
+        "value": "Not testable (Intubated)",
+        "label": "Not testable (Intubated)"
+      }
+    ],
+    "isPII": false
+  },
+  {
+    "name": "gcsMotorResponse",
+    "label": "Motor Response",
+    "type": "select",
+    "unknownOption": "Unknown",
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "Obeys Commands",
+        "label": "Obeys Commands"
+      },
+      {
+        "value": "Localizes Pain",
+        "label": "Localizes Pain"
+      },
+      {
+        "value": "Withdrawal from Pain",
+        "label": "Withdrawal from Pain"
+      },
+      {
+        "value": "Flexion to Pain",
+        "label": "Flexion to Pain"
+      },
+      {
+        "value": "Extension to Pain",
+        "label": "Extension to Pain"
+      },
+      {
+        "value": "No Motor Response",
+        "label": "No Motor Response"
+      },
+      {
+        "value": "Not Testable",
+        "label": "Not Testable"
+      }
+    ],
+    "isPII": false
+  },
+  {
+    "name": "pupilsTimeRight",
+    "label": "Pupils Time (Right)",
+    "type": "time-input",
+    "isPII": true
+  },
+  {
+    "name": "pupilsRight",
+    "label": "Pupils - Select One (Right)",
+    "type": "select",
+    "unknownOption": "Unknown",
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "Normal",
+        "label": "Normal"
+      },
+      {
+        "value": "Dilated",
+        "label": "Dilated"
+      },
+      {
+        "value": "Constricted",
+        "label": "Constricted"
+      },
+      {
+        "value": "Sluggish",
+        "label": "Sluggish"
+      },
+      {
+        "value": "No Reaction",
+        "label": "No Reaction"
+      }
+    ],
+    "isPII": false
+  },
+  {
+    "name": "pupilsTimeLeft",
+    "label": "Pupils Time (Left)",
+    "type": "time-input",
+    "isPII": true
+  },
+  {
+    "name": "pupilsLeft",
+    "label": "Pupils - Select One (Left)",
+    "type": "select",
+    "unknownOption": "Unknown",
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "Normal",
+        "label": "Normal"
+      },
+      {
+        "value": "Dilated",
+        "label": "Dilated"
+      },
+      {
+        "value": "Constricted",
+        "label": "Constricted"
+      },
+      {
+        "value": "Sluggish",
+        "label": "Sluggish"
+      },
+      {
+        "value": "No Reaction",
+        "label": "No Reaction"
+      }
+    ],
+    "isPII": false
+  },
+  {
+    "name": "avpuTime",
+    "label": "AVPU Time",
+    "type": "time-input",
+    "isPII": true
+  },
+  {
+    "name": "avpu",
+    "label": "AVPU - Select One",
+    "type": "select",
+    "unknownOption": "Unknown",
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "Alert",
+        "label": "Alert"
+      },
+      {
+        "value": "Voice",
+        "label": "Voice"
+      },
+      {
+        "value": "Pain",
+        "label": "Pain"
+      },
+      {
+        "value": "Unresponsive",
+        "label": "Unresponsive"
+      }
+    ],
+    "isPII": false
+  },
+  {
+    "name": "skinTime",
+    "label": "Skin Time",
+    "type": "time-input",
+    "isPII": true
+  },
+  {
+    "name": "skin",
+    "label": "Skin",
+    "type": "listbox-multiselect",
+    "options": [
+      {
+        "value": "Unremarkable",
+        "label": "Unremarkable"
+      },
+      {
+        "value": "Cool",
+        "label": "Cool"
+      },
+      {
+        "value": "Pale",
+        "label": "Pale"
+      },
+      {
+        "value": "Diaphoretic",
+        "label": "Diaphoretic"
+      },
+      {
+        "value": "Cyanotic",
+        "label": "Cyanotic"
+      },
+      {
+        "value": "Moist",
+        "label": "Moist"
+      },
+      {
+        "value": "Flush",
+        "label": "Flush"
+      },
+      {
+        "value": "Dry",
+        "label": "Dry"
+      },
+      {
+        "value": "Jaundiced",
+        "label": "Jaundiced"
+      }
+    ],
+    "isPII": false
+  },
+  {
+    "name": "locTime",
+    "label": "Level of Consciousness Time",
+    "type": "time-input",
+    "isPII": true
+  },
+  {
+    "name": "levelOfConsciousness",
+    "label": "Level of Consciousness - Select One",
+    "type": "select",
+    "unknownOption": "Unknown",
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "Alert",
+        "label": "Alert"
+      },
+      {
+        "value": "Voice",
+        "label": "Voice"
+      },
+      {
+        "value": "Pain",
+        "label": "Pain"
+      },
+      {
+        "value": "Unresponsive",
+        "label": "Unresponsive"
+      }
+    ],
+    "isPII": false
+  },
+  {
+    "name": "etco2Time",
+    "label": "End Tidal CO2 Time",
+    "type": "time-input",
+    "isPII": true
+  },
+  {
+    "name": "etco2",
+    "label": "ETco2 (mmHg)",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "strokeAssessmentTime",
+    "label": "Stroke Assessment Time",
+    "type": "time-input",
+    "isPII": true
+  },
+  {
+    "name": "strokeAssessment",
+    "label": "Stroke Assessment",
+    "type": "listbox-multiselect",
+    "options": [
+      {
+        "value": "Loss of Consciousness",
+        "label": "Loss of Consciousness"
+      },
+      {
+        "value": "Seizure Activity",
+        "label": "Seizure Activity"
+      },
+      {
+        "value": "Pale",
+        "label": "Pale"
+      },
+      {
+        "value": "Arm Drift",
+        "label": "Arm Drift"
+      },
+      {
+        "value": "Leg Weakness",
+        "label": "Leg Weakness"
+      },
+      {
+        "value": "Slurred Speech",
+        "label": "Slurred Speech"
+      },
+      {
+        "value": "Visual Disturbance",
+        "label": "Visual Disturbance"
+      }
+    ],
+    "isPII": false
+  },
+  {
+    "name": "psychologicalPresentation",
+    "label": "Psychological Presentation",
+    "type": "listbox-multiselect",
+    "options": [
+      {
+        "value": "Is Danger To Self Or Others",
+        "label": "Is Danger To Self Or Others"
+      },
+      {
+        "value": "Mental Or Physical Health At Serious Risk Of Deterioration",
+        "label": "Mental Or Physical Health At Serious Risk Of Deterioration"
+      },
+      {
+        "value": "Believes Their Mental Or Physical Health Is At Serious Risk Of Deterioration",
+        "label": "Believes Their Mental Or Physical Health Is At Serious Risk Of Deterioration"
+      },
+      {
+        "value": "Believes They Are A Danger To Self Or Others",
+        "label": "Believes They Are A Danger To Self Or Others"
+      }
+    ],
+    "isPII": false
+  },
+  {
+    "name": "narrative",
+    "label": "Enter Narrative Here:",
+    "type": "textarea",
+    "rows": 4,
+    "isPII": true
+  },
+  {
+    "name": "apgar1Min",
+    "label": "APGAR Score - 1 min",
+    "type": "numeric-input",
+    "isPII": true
+  },
+  {
+    "name": "apgar5Min",
+    "label": "APGAR Score - 5 min",
+    "type": "numeric-input",
+    "isPII": true
+  },
+  {
+    "name": "apgar10Min",
+    "label": "APGAR Score - 10 min",
+    "type": "numeric-input",
+    "isPII": true
+  },
+  {
+    "name": "obstetricDeliveryTime",
+    "label": "Delivery Time",
+    "type": "time-input",
+    "isPII": true
+  },
+  {
+    "name": "obstetricSex",
+    "label": "Obstetric Notes - Sex",
+    "type": "select",
+    "unknownOption": "Unknown",
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "Male",
+        "label": "Male"
+      },
+      {
+        "value": "Female",
+        "label": "Female"
+      }
+    ],
+    "isPII": false
+  },
+  {
+    "name": "obstetricOutcome",
+    "label": "Alive/Stillborn",
+    "type": "select",
+    "unknownOption": "Unknown",
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "Alive",
+        "label": "Alive"
+      },
+      {
+        "value": "Stillborn",
+        "label": "Stillborn"
+      }
+    ],
+    "isPII": false
+  },
+  {
+    "name": "selectDisposition",
+    "label": "Select Disposition",
+    "type": "select",
+    "unknownOption": "Unknown",
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "Placeholder Disposition 1",
+        "label": "Placeholder Disposition 1"
+      },
+      {
+        "value": "Placeholder Disposition 2",
+        "label": "Placeholder Disposition 2"
+      },
+      {
+        "value": "Placeholder Disposition 3",
+        "label": "Placeholder Disposition 3"
+      }
+    ],
+    "isPII": false
+  },
+  {
+    "name": "inChargeName",
+    "label": "In Charge - Name",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "inChargeEmtNumber",
+    "label": "In Charge - EMT #",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "inChargeCertificationLevel",
+    "label": "In Charge - Certification Level",
+    "type": "select",
+    "unknownOption": "Unknown",
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "EMR",
+        "label": "EMR"
+      },
+      {
+        "value": "EMT",
+        "label": "EMT"
+      },
+      {
+        "value": "AEMT",
+        "label": "AEMT"
+      },
+      {
+        "value": "Paramedic",
+        "label": "Paramedic"
+      }
+    ],
+    "isPII": false
+  },
+  {
+    "name": "inChargeSignaturePresent",
+    "label": "In Charge - Signature Present?",
+    "type": "checkbox",
+    "isPII": false
+  },
+  {
+    "name": "driverName",
+    "label": "Driver - Name",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "driverEmtNumber",
+    "label": "Driver - EMT #",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "driverCertificationLevel",
+    "label": "Driver - Certification Level",
+    "type": "select",
+    "unknownOption": "Unknown",
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "EMR",
+        "label": "EMR"
+      },
+      {
+        "value": "EMT",
+        "label": "EMT"
+      },
+      {
+        "value": "AEMT",
+        "label": "AEMT"
+      },
+      {
+        "value": "Paramedic",
+        "label": "Paramedic"
+      }
+    ],
+    "isPII": false
+  },
+  {
+    "name": "driverSignaturePresent",
+    "label": "Driver - Signature Present?",
+    "type": "checkbox",
+    "isPII": false
+  },
+  {
+    "name": "crewMember1Name",
+    "label": "Crew - Name",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "crewMember1EmtNumber",
+    "label": "Crew - EMT #",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "crewMember1CertificationLevel",
+    "label": "Crew - Certification Level",
+    "type": "select",
+    "unknownOption": "Unknown",
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "EMR",
+        "label": "EMR"
+      },
+      {
+        "value": "EMT",
+        "label": "EMT"
+      },
+      {
+        "value": "AEMT",
+        "label": "AEMT"
+      },
+      {
+        "value": "Paramedic",
+        "label": "Paramedic"
+      }
+    ],
+    "isPII": false
+  },
+  {
+    "name": "crewMember1SignaturePresent",
+    "label": "Crew - Signature Present?",
+    "type": "checkbox",
+    "isPII": false
+  },
+  {
+    "name": "crewMember2Name",
+    "label": "Crew - Name",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "crewMember2EmtNumber",
+    "label": "Crew - EMT #",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "crewMember2CertificationLevel",
+    "label": "Crew - Certification Level",
+    "type": "select",
+    "unknownOption": "Unknown",
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "EMR",
+        "label": "EMR"
+      },
+      {
+        "value": "EMT",
+        "label": "EMT"
+      },
+      {
+        "value": "AEMT",
+        "label": "AEMT"
+      },
+      {
+        "value": "Paramedic",
+        "label": "Paramedic"
+      }
+    ],
+    "isPII": false
+  },
+  {
+    "name": "crewMember2SignaturePresent",
+    "label": "Crew - Signature Present?",
+    "type": "checkbox",
+    "isPII": false
+  },
+  {
+    "name": "certifyingEmtName",
+    "label": "EMT Name",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "certifyingEmtNumber",
+    "label": "EMT #",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "certifyingEmtSignaturePresent",
+    "label": "EMT Signature Present?",
+    "type": "checkbox",
+    "isPII": false
+  },
+  {
+    "name": "certifyingEmtDate",
+    "label": "EMT Certification - Date",
+    "type": "date-input",
+    "isPII": false
+  },
+  {
+    "name": "certifyingEmtTime",
+    "label": "EMT Certification - Time",
+    "type": "time-input",
+    "isPII": true
+  },
+  {
+    "name": "receivingNurseName",
+    "label": "Receiving Nurse / Staff Name",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "receivingNurseTitle",
+    "label": "Title",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "receivingNurseSignaturePresent",
+    "label": "Receiving Nurse - Signature Present?",
+    "type": "checkbox",
+    "isPII": false
+  },
+  {
+    "name": "receivingNurseDate",
+    "label": "Receiving Facility - Date",
+    "type": "date-input",
+    "isPII": false
+  },
+  {
+    "name": "receivingNurseTime",
+    "label": "Receiving Facility - Time",
+    "type": "time-input",
+    "isPII": true
+  },
+  {
+    "name": "amaPatientName",
+    "label": "Patient Name",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "amaPatientSignaturePresent",
+    "label": "Patient Signature Present?",
+    "type": "checkbox",
+    "isPII": false
+  },
+  {
+    "name": "amaWitnessName",
+    "label": "Witness Name",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "amaWitnessSignaturePresent",
+    "label": "Witness Signature Present?",
+    "type": "checkbox",
+    "isPII": false
+  },
+  {
+    "name": "amaEmtWitnessingRefusal",
+    "label": "EMT Witnessing Refusal",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "amaDate",
+    "label": "Patient Refusal - Date",
+    "type": "date-input",
+    "isPII": false
+  },
+  {
+    "name": "amaTime",
+    "label": "Patient Refusal - Time",
+    "type": "time-input",
+    "isPII": true
+  },
+  {
+    "name": "transportDestination",
+    "label": "Transport Destination",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "transportArrivalTime",
+    "label": "Arrival Time",
+    "type": "time-input",
+    "isPII": true
+  },
+  {
+    "name": "odometerStart",
+    "label": "Odometer Start",
+    "type": "numeric-input",
+    "isPII": true
+  },
+  {
+    "name": "odometerEnd",
+    "label": "Odometer End",
+    "type": "numeric-input",
+    "isPII": true
+  },
+  {
+    "name": "mileageTotal",
+    "label": "Total Mileage",
+    "type": "numeric-input",
+    "isPII": true
+  },
+  {
+    "name": "kmOrMiles",
+    "label": "Km or Miles",
+    "type": "select",
+    "options": [
+      {
+        "value": "Miles",
+        "label": "Miles"
+      },
+      {
+        "value": "Kilometers",
+        "label": "Kilometers"
+      }
+    ],
+    "isPII": false
+  },
+  {
+    "name": "receivingStaff",
+    "label": "Receiving Staff",
+    "type": "input",
+    "isPII": true
+  }
+]
