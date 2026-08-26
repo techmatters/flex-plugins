@@ -83,10 +83,44 @@
           }
         }
       },
-      "patientInformation": {
-        "splitFormAt": 18,
+      "incidentReport": {
+        "splitFormAt": 10,
         "printOrder": 2,
         "caseHomeOrder": 2,
+        "previewFields": [
+          "incidentNumber"
+        ],
+        "layout": {
+          "incidentCreationTimestamp": {
+            "format": "timestamp"
+          },          
+          "incidentActivationInterval": {
+            "format": "duration-from-seconds"
+          },
+          "enrouteInterval": {
+            "format": "duration-from-seconds"
+          },
+          "sceneArrivalInterval": {
+            "format": "duration-from-seconds"
+          },
+          "triageInterval": {
+            "format": "duration-from-seconds"
+          },
+          "totalSceneInterval": {
+            "format": "duration-from-seconds"
+          },
+          "transportInterval": {
+            "format": "duration-from-seconds"
+          },
+          "totalIncidentTime": {
+            "format": "duration-from-seconds"
+          }
+        }
+      },
+      "patientCareReport": {
+        "splitFormAt": 60,
+        "printOrder": 3,
+        "caseHomeOrder": 3,
         "previewFields": [
           "firstName",
           "lastName",
@@ -111,151 +145,6 @@
           },
           "allergies": {
             "includeLabel": true
-          }
-        }
-      },
-      "sceneCare": {
-        "splitFormAt": 4,
-        "printOrder": 3,
-        "caseHomeOrder": 3,
-        "previewFields": [
-          "chiefComplaint",
-          "primaryImpression"
-        ],
-        "layout": {
-          "chiefComplaint": {
-            "includeLabel": true
-          },
-          "primaryImpression": {
-            "includeLabel": true
-          }
-        }
-      },
-      "vitalSigns": {
-        "splitFormAt": 24,
-        "printOrder": 4,
-        "caseHomeOrder": 4,
-        "previewFields": [
-          "systolic",
-          "diastolic",
-          "pulseRate",
-          "spo2Percentage"
-        ],
-        "layout": {
-          "systolic": {
-            "includeLabel": true
-          },
-          "diastolic": {
-            "includeLabel": true
-          },
-          "pulseRate": {
-            "includeLabel": true
-          },
-          "spo2Percentage": {
-            "includeLabel": true
-          },
-          "bloodPressureTime": {
-            "format": "timestamp"
-          },
-          "pulseTime": {
-            "format": "timestamp"
-          },
-          "respirationsTime": {
-            "format": "timestamp"
-          },
-          "spo2Time": {
-            "format": "timestamp"
-          },
-          "o2Time": {
-            "format": "timestamp"
-          },
-          "bloodGlucoseTime": {
-            "format": "timestamp"
-          },
-          "temperatureTime": {
-            "format": "timestamp"
-          },
-          "gcsTime": {
-            "format": "timestamp"
-          },
-          "pupilsTimeRight": {
-            "format": "timestamp"
-          },
-          "pupilsTimeLeft": {
-            "format": "timestamp"
-          },
-          "avpuTime": {
-            "format": "timestamp"
-          },
-          "skinTime": {
-            "format": "timestamp"
-          },
-          "locTime": {
-            "format": "timestamp"
-          },
-          "etco2Time": {
-            "format": "timestamp"
-          },
-          "strokeAssessmentTime": {
-            "format": "timestamp"
-          }
-        }
-      },
-      "treatmentProceduresMedication": {
-        "splitFormAt": 11,
-        "printOrder": 5,
-        "caseHomeOrder": 5,
-        "previewFields": [
-          "airwayBreathing",
-          "circulationCardiac",
-          "medicationName"
-        ],
-        "layout": {
-          "airwayBreathing": {
-            "includeLabel": true
-          },
-          "circulationCardiac": {
-            "includeLabel": true
-          },
-          "medicationName": {
-            "includeLabel": true
-          },
-          "cprTimeStarted": {
-            "format": "timestamp"
-          },
-          "tourniquetTime": {
-            "format": "timestamp"
-          },
-          "medicationTime": {
-            "format": "timestamp"
-          }
-        }
-      },
-      "disposition": {
-        "splitFormAt": 25,
-        "printOrder": 6,
-        "caseHomeOrder": 6,
-        "previewFields": [
-          "selectDisposition"
-        ],
-        "layout": {
-          "selectDisposition": {
-            "includeLabel": true
-          },
-          "obstetricDeliveryTime": {
-            "format": "timestamp"
-          },
-          "certifyingEmtTime": {
-            "format": "timestamp"
-          },
-          "receivingNurseTime": {
-            "format": "timestamp"
-          },
-          "amaTime": {
-            "format": "timestamp"
-          },
-          "transportArrivalTime": {
-            "format": "timestamp"
           }
         }
       },
