@@ -40,5 +40,11 @@
     "label": "Test",
     "type": "button",
     "category": "non-data"
+  },
+   {
+    "name": "voicemail",
+    "label": "Complete Voicemail",
+    "type": "button",
+    "category": "non-data"
   }
 ]
