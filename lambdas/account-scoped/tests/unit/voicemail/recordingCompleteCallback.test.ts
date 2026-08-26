@@ -182,7 +182,7 @@ describe('recordingCompleteCallback', () => {
       callSid: TEST_CALL_SID,
       recordingSid: TEST_RECORDING_SID,
       voicemailWorkflowSid: TEST_WORKFLOW_SID,
-      routingAttributes: JSON.stringify(routingAttributes),
+      routingAttributes,
     });
 
     await recordingCompleteCallback(request, TEST_ACCOUNT_SID);

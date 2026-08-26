@@ -27,7 +27,7 @@ export type RecordingCompleteCallbackRequestBody = {
   callSid: CallSid;
   recordingSid: RecordingSid;
   voicemailWorkflowSid: string;
-  routingAttributes?: string;
+  routingAttributes?: Record<string, string>;
   maxCallbackAttempts?: number;
 };
 
@@ -75,7 +75,7 @@ export const recordingCompleteCallback: AccountScopedHandler = async (
 
   const result = await createVoicemailTask({
     accountSid,
-    routingAttributes: body.routingAttributes ? JSON.parse(body.routingAttributes) : {},
+    routingAttributes: body.routingAttributes ?? {},
     receivedTime: receivedTime.toISOString(),
     callbackAttempts: [],
     maxCallbackAttempts: maxCallbackAttempts,
