@@ -4,6 +4,7 @@
   "files": [],
   "references": [
     { "path": "packages/result-type" },
+    { "path": "packages/s3" },
     { "path": "packages/ssm-cache" },
     { "path": "packages/configuration" },
     { "path": "packages/hrm-types" },

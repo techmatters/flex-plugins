@@ -86,6 +86,7 @@ import { isSkilledWorkerAvailableHandler } from './worker/isSkilledWorkerAvailab
 import { filterCountryOrVoIPHandler } from './voice/filterCountryOrVoIP';
 import { handleCreateScheduleJob } from './scheduled-jobs/create-schedule';
 import { recordingCompleteCallback } from './voicemail/recordingCompleteCallback';
+import { getAseloTwilioConfigurationHandler } from './configuration/getAseloTwilioConfiguration';
 
 /**
  * Super simple router sufficient for directly ported Twilio Serverless functions
@@ -421,6 +422,13 @@ const ACCOUNTSID_ROUTES: Record<
       validateFlexTokenRequest({ tokenMode: 'agent' }),
     ],
     handler: handleCreateScheduleJob,
+  }),
+  'configuration/twilio': newRoute({
+    requestPipeline: [
+      validateRequestMethod('GET'),
+      validateFlexTokenRequest({ tokenMode: 'agent' }),
+    ],
+    handler: getAseloTwilioConfigurationHandler,
   }),
 };
 
