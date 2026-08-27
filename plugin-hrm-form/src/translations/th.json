@@ -688,5 +688,13 @@
   "Forms-ResourceReferralsList-Add": "เพิ่ม",
   "Forms-ResourceReferralsList-Delete": "ลบ",
   "Forms-FileUpload-InvalidFileTypeError": "ประเภทไฟล์ไม่ถูกต้อง อนุญาตเฉพาะไฟล์ PNG, JPG, JPEG, PDF, DOC และ DOCX เท่านั้น",
-  "Forms-FileUpload-FileSizeError": "ไฟล์มีขนาดเกินขนาดสูงสุด"
+  "Forms-FileUpload-FileSizeError": "ไฟล์มีขนาดเกินขนาดสูงสุด",
+  "ContactForms-TextArea-GenerateSummary": "สร้างสรุป",
+  "ContactForms-TextArea-LoadingSummary": "กำลังโหลด",
+  "LlmAssistant-Notifications-SummaryGenerationError": "เกิดข้อผิดพลาดในการสร้างสรุป: {{errorMessage}}",
+  "[For AI Summary only] How accurate was the summary written by AI?": "[สำหรับสรุปโดยปัญญาประดิษฐ์ (AI) เท่านั้น] สรุปที่สร้างโดย AI มีความแม่นยำเพียงใด?",
+  "Very accurate": "แม่นยำมาก",
+  "Somewhat accurate": "แม่นยำพอสมควร",
+  "Not accurate": "ไม่แม่นยำ",
+  "[For AI Summary only] Tell us more about your answer above.": "[สำหรับสรุปโดยปัญญาประดิษฐ์ (AI) เท่านั้น] กรุณาระบุรายละเอียดเพิ่มเติมเกี่ยวกับคำตอบข้างต้น"
 }
