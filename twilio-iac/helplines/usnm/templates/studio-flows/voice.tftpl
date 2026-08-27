@@ -1732,7 +1732,7 @@ ${
       "type": "record-voicemail",
       "transitions": [
         {
-          "next": "send_to_queue_es_std_voicemail",
+          "next": "f_recordingCompleteCallback_es_std",
           "event": "recordingComplete"
         },
         {
@@ -1752,11 +1752,35 @@ ${
       }
     },
     {
+      "name": "f_recordingCompleteCallback_es_std",
+      "type": "make-http-request",
+      "transitions": [
+        {
+          "event": "success"
+        },
+        {
+          "next": "http_post_webhook_notify_failed_to_enqueue",
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 2761,
+          "y": 3672
+        },
+        "method": "POST",
+        "content_type": "application/json;charset=utf-8",
+        "add_twilio_auth": false,
+        "body": "{\n  \"accountSid\": \"{{widgets.record_voicemail_es_std.AccountSid}}\",\n  \"callSid\": \"{{widgets.record_voicemail_es_std.CallSid}}\",\n  \"callStatus\": \"{{widgets.record_voicemail_es_std.CallStatus}}\",\n  \"voicemailWorkflowSid\": \"${workflow_sids.master}\",\n  \"from\": \"{{trigger.call.From}}\",\n  \"routingAttributes\": {\"service\": \"std\",\"serviceLanguage\": \"spanish\",\"language\": \"es\"}\n}",
+        "url": "${lambda_twilio_account_scoped_url}/voicemail/recordingCompleteCallback"
+      }
+    },
+    {
       "name": "record_voicemail_es_tya",
       "type": "record-voicemail",
       "transitions": [
         {
-          "next": "send_to_queue_es_tya_voicemail",
+          "next": "f_recordingCompleteCallback_es_tya",
           "event": "recordingComplete"
         },
         {
@@ -1776,45 +1800,15 @@ ${
       }
     },
     {
-      "name": "send_to_queue_es_std_voicemail",
-      "type": "send-to-flex",
+      "name": "f_recordingCompleteCallback_es_tya",
+      "type": "make-http-request",
       "transitions": [
         {
-          "event": "callComplete"
+          "event": "success"
         },
         {
           "next": "http_post_webhook_notify_failed_to_enqueue",
-          "event": "failedToEnqueue"
-        },
-        {
-          "event": "callFailure"
-        }
-      ],
-      "properties": {
-        "offset": {
-          "x": 2761,
-          "y": 3672
-        },
-        "workflow": "${workflow_sids.master}",
-        "channel": "${task_channel_sids.voice}",
-        "attributes": "{\n  \"type\": \"inbound\",\n   \"name\": \"{{trigger.call.From}}\",\n  \"ignoreAgent\": \"\",\n  \"helpline\":\"${helpline}\",\n  \"transferTargetType\": \"\",\n   \"service\" :\"std\",\n   \"serviceLanguage\": \"spanish\",\n   \"language\": \"es\",\n  \"channelType\": \"voicemail\",\n  \"conversations\": {\n    \"hang_up_by\": \"Customer\"\n  }\n}\n",
-        "priority": "0",
-        "timeout": "3600"
-      }
-    },
-    {
-      "name": "send_to_queue_es_tya_voicemail",
-      "type": "send-to-flex",
-      "transitions": [
-        {
-          "event": "callComplete"
-        },
-        {
-          "next": "http_post_webhook_notify_failed_to_enqueue",
-          "event": "failedToEnqueue"
-        },
-        {
-          "event": "callFailure"
+          "event": "failed"
         }
       ],
       "properties": {
@@ -1822,11 +1816,11 @@ ${
           "x": 3204,
           "y": 3675
         },
-        "workflow": "${workflow_sids.master}",
-        "channel": "${task_channel_sids.voice}",
-        "attributes": "{\n  \"type\": \"inbound\",\n   \"name\": \"{{trigger.call.From}}\",\n  \"ignoreAgent\": \"\",\n  \"helpline\":\"${helpline}\",\n  \"transferTargetType\": \"\",\n   \"service\" :\"tya\",\n   \"serviceLanguage\": \"spanish\",\n   \"language\": \"es\",\n  \"channelType\": \"voicemail\",\n  \"conversations\": {\n    \"hang_up_by\": \"Customer\"\n  }\n}\n",
-        "priority": "0",
-        "timeout": "3600"
+        "method": "POST",
+        "content_type": "application/json;charset=utf-8",
+        "add_twilio_auth": false,
+        "body": "{\n  \"accountSid\": \"{{widgets.record_voicemail_es_tya.AccountSid}}\",\n  \"callSid\": \"{{widgets.record_voicemail_es_tya.CallSid}}\",\n  \"callStatus\": \"{{widgets.record_voicemail_es_tya.CallStatus}}\",\n  \"voicemailWorkflowSid\": \"${workflow_sids.master}\",\n  \"from\": \"{{trigger.call.From}}\",\n  \"routingAttributes\": {\"service\": \"tya\",\"serviceLanguage\": \"spanish\",\"language\": \"es\"}\n}",
+        "url": "${lambda_twilio_account_scoped_url}/voicemail/recordingCompleteCallback"
       }
     },
     {
@@ -1931,7 +1925,7 @@ ${
       "type": "record-voicemail",
       "transitions": [
         {
-          "next": "send_to_queue_en_std_voicemail",
+          "next": "f_recordingCompleteCallback_en_std",
           "event": "recordingComplete"
         },
         {
@@ -1951,11 +1945,35 @@ ${
       }
     },
     {
+      "name": "f_recordingCompleteCallback_en_std",
+      "type": "make-http-request",
+      "transitions": [
+        {
+          "event": "success"
+        },
+        {
+          "next": "http_post_webhook_notify_failed_to_enqueue",
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 3709,
+          "y": 3691
+        },
+        "method": "POST",
+        "content_type": "application/json;charset=utf-8",
+        "add_twilio_auth": false,
+        "body": "{\n  \"accountSid\": \"{{widgets.record_voicemail_en_std.AccountSid}}\",\n  \"callSid\": \"{{widgets.record_voicemail_en_std.CallSid}}\",\n  \"callStatus\": \"{{widgets.record_voicemail_en_std.CallStatus}}\",\n  \"voicemailWorkflowSid\": \"${workflow_sids.master}\",\n  \"from\": \"{{trigger.call.From}}\",\n  \"routingAttributes\": {\"service\": \"std\",\"serviceLanguage\": \"english\",\"language\": \"en\"}\n}",
+        "url": "${lambda_twilio_account_scoped_url}/voicemail/recordingCompleteCallback"
+      }
+    },
+    {
       "name": "record_voicemail_en_tya",
       "type": "record-voicemail",
       "transitions": [
         {
-          "next": "send_to_queue_en_tya_voicemail",
+          "next": "f_recordingCompleteCallback_en_tya",
           "event": "recordingComplete"
         },
         {
@@ -1975,45 +1993,15 @@ ${
       }
     },
     {
-      "name": "send_to_queue_en_std_voicemail",
-      "type": "send-to-flex",
+      "name": "f_recordingCompleteCallback_en_tya",
+      "type": "make-http-request",
       "transitions": [
         {
-          "event": "callComplete"
+          "event": "success"
         },
         {
           "next": "http_post_webhook_notify_failed_to_enqueue",
-          "event": "failedToEnqueue"
-        },
-        {
-          "event": "callFailure"
-        }
-      ],
-      "properties": {
-        "offset": {
-          "x": 3709,
-          "y": 3691
-        },
-        "workflow": "${workflow_sids.master}",
-        "channel": "${task_channel_sids.voice}",
-        "attributes": "{\n  \"type\": \"inbound\",\n   \"name\": \"{{trigger.call.From}}\",\n  \"ignoreAgent\": \"\",\n  \"helpline\":\"${helpline}\",\n  \"transferTargetType\": \"\",\n   \"service\" :\"std\",\n   \"serviceLanguage\": \"english\",\n   \"language\": \"en\",\n  \"channelType\": \"voicemail\",\n  \"conversations\": {\n    \"hang_up_by\": \"Customer\"\n  }\n}\n",
-        "priority": "0",
-        "timeout": "3600"
-      }
-    },
-    {
-      "name": "send_to_queue_en_tya_voicemail",
-      "type": "send-to-flex",
-      "transitions": [
-        {
-          "event": "callComplete"
-        },
-        {
-          "next": "http_post_webhook_notify_failed_to_enqueue",
-          "event": "failedToEnqueue"
-        },
-        {
-          "event": "callFailure"
+          "event": "failed"
         }
       ],
       "properties": {
@@ -2021,11 +2009,11 @@ ${
           "x": 4151,
           "y": 3695
         },
-        "workflow": "${workflow_sids.master}",
-        "channel": "${task_channel_sids.voice}",
-        "attributes": "{\n  \"type\": \"inbound\",\n   \"name\": \"{{trigger.call.From}}\",\n  \"ignoreAgent\": \"\",\n  \"helpline\":\"${helpline}\",\n  \"transferTargetType\": \"\",\n   \"service\" :\"tya\",\n   \"serviceLanguage\": \"english\",\n   \"language\": \"en\",\n  \"channelType\": \"voicemail\",\n  \"conversations\": {\n    \"hang_up_by\": \"Customer\"\n  }\n}\n",
-        "priority": "0",
-        "timeout": "3600"
+        "method": "POST",
+        "content_type": "application/json;charset=utf-8",
+        "add_twilio_auth": false,
+        "body": "{\n  \"accountSid\": \"{{widgets.record_voicemail_en_tya.AccountSid}}\",\n  \"callSid\": \"{{widgets.record_voicemail_en_tya.CallSid}}\",\n  \"callStatus\": \"{{widgets.record_voicemail_en_tya.CallStatus}}\",\n  \"voicemailWorkflowSid\": \"${workflow_sids.master}\",\n  \"from\": \"{{trigger.call.From}}\",\n  \"routingAttributes\": {\"service\": \"tya\",\"serviceLanguage\": \"english\",\"language\": \"en\"}\n}",
+        "url": "${lambda_twilio_account_scoped_url}/voicemail/recordingCompleteCallback"
       }
     },
     {
@@ -2091,7 +2079,7 @@ ${
       "type": "record-voicemail",
       "transitions": [
         {
-          "next": "send_to_queue_es_fcg_voicemail",
+          "next": "f_recordingCompleteCallback_en_fcg",
           "event": "recordingComplete"
         },
         {
@@ -2111,18 +2099,15 @@ ${
       }
     },
     {
-      "name": "send_to_queue_es_fcg_voicemail",
-      "type": "send-to-flex",
+      "name": "f_recordingCompleteCallback_en_fcg",
+      "type": "make-http-request",
       "transitions": [
         {
-          "event": "callComplete"
+          "event": "success"
         },
         {
           "next": "http_post_webhook_notify_failed_to_enqueue",
-          "event": "failedToEnqueue"
-        },
-        {
-          "event": "callFailure"
+          "event": "failed"
         }
       ],
       "properties": {
@@ -2130,11 +2115,11 @@ ${
           "x": 4580,
           "y": 3699
         },
-        "workflow": "${workflow_sids.master}",
-        "channel": "${task_channel_sids.voice}",
-        "attributes": "{\n  \"type\": \"inbound\",\n   \"name\": \"{{trigger.call.From}}\",\n  \"ignoreAgent\": \"\",\n  \"helpline\":\"${helpline}\",\n  \"transferTargetType\": \"\",\n   \"service\" :\"fcg\",\n   \"serviceLanguage\": \"english\",\n   \"language\": \"en\",\n  \"channelType\": \"voicemail\",\n  \"conversations\": {\n    \"hang_up_by\": \"Customer\"\n  }\n}\n",
-        "priority": "0",
-        "timeout": "3600"
+        "method": "POST",
+        "content_type": "application/json;charset=utf-8",
+        "add_twilio_auth": false,
+        "body": "{\n  \"accountSid\": \"{{widgets.record_voicemail_en_fcg.AccountSid}}\",\n  \"callSid\": \"{{widgets.record_voicemail_en_fcg.CallSid}}\",\n  \"callStatus\": \"{{widgets.record_voicemail_en_fcg.CallStatus}}\",\n  \"voicemailWorkflowSid\": \"${workflow_sids.master}\",\n  \"from\": \"{{trigger.call.From}}\",\n  \"routingAttributes\": {\"service\": \"fcg\",\"serviceLanguage\": \"english\",\"language\": \"en\"}\n}",
+        "url": "${lambda_twilio_account_scoped_url}/voicemail/recordingCompleteCallback"
       }
     },
     {
@@ -2196,7 +2181,7 @@ ${
       "type": "record-voicemail",
       "transitions": [
         {
-          "next": "send_to_queue_en_no_service_tya_voicemail",
+          "next": "f_recordingCompleteCallback_en_no_service_tya",
           "event": "recordingComplete"
         },
         {
@@ -2216,18 +2201,15 @@ ${
       }
     },
     {
-      "name": "send_to_queue_en_no_service_tya_voicemail",
-      "type": "send-to-flex",
+      "name": "f_recordingCompleteCallback_en_no_service_tya",
+      "type": "make-http-request",
       "transitions": [
         {
-          "event": "callComplete"
+          "event": "success"
         },
         {
           "next": "http_post_webhook_notify_failed_to_enqueue",
-          "event": "failedToEnqueue"
-        },
-        {
-          "event": "callFailure"
+          "event": "failed"
         }
       ],
       "properties": {
@@ -2235,11 +2217,11 @@ ${
           "x": -1940,
           "y": 4084
         },
-        "workflow": "${workflow_sids.master}",
-        "channel": "${task_channel_sids.voice}",
-        "attributes": "{\n  \"type\": \"inbound\",\n   \"name\": \"{{trigger.call.From}}\",\n  \"ignoreAgent\": \"\",\n  \"helpline\":\"${helpline}\",\n  \"transferTargetType\": \"\",\n   \"service\" :\"tya\",\n   \"serviceLanguage\": \"english\",\n   \"language\": \"en\",\n  \"channelType\": \"voicemail\",\n  \"conversations\": {\n    \"hang_up_by\": \"Customer\"\n  }\n}\n",
-        "priority": "0",
-        "timeout": "3600"
+        "method": "POST",
+        "content_type": "application/json;charset=utf-8",
+        "add_twilio_auth": false,
+        "body": "{\n  \"accountSid\": \"{{widgets.record_voicemail_en_no_service_tya.AccountSid}}\",\n  \"callSid\": \"{{widgets.record_voicemail_en_no_service_tya.CallSid}}\",\n  \"callStatus\": \"{{widgets.record_voicemail_en_no_service_tya.CallStatus}}\",\n  \"voicemailWorkflowSid\": \"${workflow_sids.master}\",\n  \"from\": \"{{trigger.call.From}}\",\n  \"routingAttributes\": {\"service\": \"tya\",\"serviceLanguage\": \"english\",\"language\": \"en\"}\n}",
+        "url": "${lambda_twilio_account_scoped_url}/voicemail/recordingCompleteCallback"
       }
     },
     {
@@ -2301,7 +2283,7 @@ ${
       "type": "record-voicemail",
       "transitions": [
         {
-          "next": "send_to_queue_en_no_service_fcg_voicemail",
+          "next": "f_recordingCompleteCallback_en_no_service_fcg",
           "event": "recordingComplete"
         },
         {
@@ -2321,18 +2303,15 @@ ${
       }
     },
     {
-      "name": "send_to_queue_en_no_service_fcg_voicemail",
-      "type": "send-to-flex",
+      "name": "f_recordingCompleteCallback_en_no_service_fcg",
+      "type": "make-http-request",
       "transitions": [
         {
-          "event": "callComplete"
+          "event": "success"
         },
         {
           "next": "http_post_webhook_notify_failed_to_enqueue",
-          "event": "failedToEnqueue"
-        },
-        {
-          "event": "callFailure"
+          "event": "failed"
         }
       ],
       "properties": {
@@ -2340,11 +2319,11 @@ ${
           "x": -827,
           "y": 4097
         },
-        "workflow": "${workflow_sids.master}",
-        "channel": "${task_channel_sids.voice}",
-        "attributes": "{\n  \"type\": \"inbound\",\n   \"name\": \"{{trigger.call.From}}\",\n  \"ignoreAgent\": \"\",\n  \"helpline\":\"${helpline}\",\n  \"transferTargetType\": \"\",\n   \"service\" :\"fcg\",\n   \"serviceLanguage\": \"english\",\n   \"language\": \"en\",\n  \"channelType\": \"voicemail\",\n  \"conversations\": {\n    \"hang_up_by\": \"Customer\"\n  }\n}\n",
-        "priority": "0",
-        "timeout": "3600"
+        "method": "POST",
+        "content_type": "application/json;charset=utf-8",
+        "add_twilio_auth": false,
+        "body": "{\n  \"accountSid\": \"{{widgets.record_voicemail_en_no_service_fcg.AccountSid}}\",\n  \"callSid\": \"{{widgets.record_voicemail_en_no_service_fcg.CallSid}}\",\n  \"callStatus\": \"{{widgets.record_voicemail_en_no_service_fcg.CallStatus}}\",\n  \"voicemailWorkflowSid\": \"${workflow_sids.master}\",\n  \"from\": \"{{trigger.call.From}}\",\n  \"routingAttributes\": {\"service\": \"fcg\",\"serviceLanguage\": \"english\",\"language\": \"en\"}\n}",
+        "url": "${lambda_twilio_account_scoped_url}/voicemail/recordingCompleteCallback"
       }
     },
     {
@@ -2460,7 +2439,7 @@ ${
       "type": "record-voicemail",
       "transitions": [
         {
-          "next": "send_to_queue_es_no_service_tya_voicemail",
+          "next": "f_recordingCompleteCallback_es_no_service_tya",
           "event": "recordingComplete"
         },
         {
@@ -2480,18 +2459,15 @@ ${
       }
     },
     {
-      "name": "send_to_queue_es_no_service_tya_voicemail",
-      "type": "send-to-flex",
+      "name": "f_recordingCompleteCallback_es_no_service_tya",
+      "type": "make-http-request",
       "transitions": [
         {
-          "event": "callComplete"
+          "event": "success"
         },
         {
           "next": "http_post_webhook_notify_failed_to_enqueue",
-          "event": "failedToEnqueue"
-        },
-        {
-          "event": "callFailure"
+          "event": "failed"
         }
       ],
       "properties": {
@@ -2499,11 +2475,11 @@ ${
           "x": 1356,
           "y": 4063
         },
-        "workflow": "${workflow_sids.master}",
-        "channel": "${task_channel_sids.voice}",
-        "attributes": "{\n  \"type\": \"inbound\",\n   \"name\": \"{{trigger.call.From}}\",\n  \"ignoreAgent\": \"\",\n  \"helpline\":\"${helpline}\",\n  \"transferTargetType\": \"\",\n   \"service\" :\"tya\",\n   \"serviceLanguage\": \"spanish\",\n   \"language\": \"es\",\n  \"channelType\": \"voicemail\",\n  \"conversations\": {\n    \"hang_up_by\": \"Customer\"\n  }\n}\n",
-        "priority": "0",
-        "timeout": "3600"
+        "method": "POST",
+        "content_type": "application/json;charset=utf-8",
+        "add_twilio_auth": false,
+        "body": "{\n  \"accountSid\": \"{{widgets.record_voicemail_es_no_service_tya.AccountSid}}\",\n  \"callSid\": \"{{widgets.record_voicemail_es_no_service_tya.CallSid}}\",\n  \"callStatus\": \"{{widgets.record_voicemail_es_no_service_tya.CallStatus}}\",\n  \"voicemailWorkflowSid\": \"${workflow_sids.master}\",\n  \"from\": \"{{trigger.call.From}}\",\n  \"routingAttributes\": {\"service\": \"tya\",\"serviceLanguage\": \"spanish\",\"language\": \"es\"}\n}",
+        "url": "${lambda_twilio_account_scoped_url}/voicemail/recordingCompleteCallback"
       }
     },
     {
@@ -2511,7 +2487,7 @@ ${
       "type": "record-voicemail",
       "transitions": [
         {
-          "next": "send_to_queue_en_no_service_std_voicemail",
+          "next": "f_recordingCompleteCallback_en_no_service_std",
           "event": "recordingComplete"
         },
         {
@@ -2530,19 +2506,17 @@ ${
         "timeout": 5,
         "max_length": 3600
       }
-    }, 
+    },
     {
-      "name": "send_to_queue_en_no_service_std_voicemail",
-      "type": "send-to-flex",
+      "name": "f_recordingCompleteCallback_en_no_service_std",
+      "type": "make-http-request",
       "transitions": [
         {
-          "event": "callComplete"
+          "event": "success"
         },
         {
-          "event": "failedToEnqueue"
-        },
-        {
-          "event": "callFailure"
+          "next": "http_post_webhook_notify_failed_to_enqueue",
+          "event": "failed"
         }
       ],
       "properties": {
@@ -2550,11 +2524,11 @@ ${
           "x": -1658,
           "y": 4279
         },
-        "workflow": "WW5268eac36ea6b789c8a75fa683992f88",
-        "channel": "TC805b8e199a636538cbb8627ef8e68435",
-        "attributes": "{\n  \"type\": \"inbound\",\n   \"name\": \"{{trigger.call.From}}\",\n  \"ignoreAgent\": \"\",\n  \"helpline\":\"NAMI\",\n  \"transferTargetType\": \"\",\n   \"service\" :\"std\",\n   \"serviceLanguage\": \"english\",\n   \"language\": \"en\",\n  \"channelType\": \"voicemail\",\n  \"conversations\": {\n    \"hang_up_by\": \"Customer\"\n  }\n}\n",
-        "priority": "0",
-        "timeout": "3600"
+        "method": "POST",
+        "content_type": "application/json;charset=utf-8",
+        "add_twilio_auth": false,
+        "body": "{\n  \"accountSid\": \"{{widgets.record_voicemail_en_no_service_std.AccountSid}}\",\n  \"callSid\": \"{{widgets.record_voicemail_en_no_service_std.CallSid}}\",\n  \"callStatus\": \"{{widgets.record_voicemail_en_no_service_std.CallStatus}}\",\n  \"voicemailWorkflowSid\": \"${workflow_sids.master}\",\n  \"from\": \"{{trigger.call.From}}\",\n  \"routingAttributes\": {\"service\": \"std\",\"serviceLanguage\": \"english\",\"language\": \"en\"}\n}",
+        "url": "${lambda_twilio_account_scoped_url}/voicemail/recordingCompleteCallback"
       }
     },
     {
@@ -2562,7 +2536,7 @@ ${
       "type": "record-voicemail",
       "transitions": [
         {
-          "next": "send_to_queue_es_no_service_tya_voicemail",
+          "next": "f_recordingCompleteCallback_es_no_service_std",
           "event": "recordingComplete"
         },
         {
@@ -2580,6 +2554,30 @@ ${
         "play_beep": "true",
         "timeout": 5,
         "max_length": 3600
+      }
+    },
+    {
+      "name": "f_recordingCompleteCallback_es_no_service_std",
+      "type": "make-http-request",
+      "transitions": [
+        {
+          "event": "success"
+        },
+        {
+          "next": "http_post_webhook_notify_failed_to_enqueue",
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": -1658,
+          "y": 4279
+        },
+        "method": "POST",
+        "content_type": "application/json;charset=utf-8",
+        "add_twilio_auth": false,
+        "body": "{\n  \"accountSid\": \"{{widgets.record_voicemail_es_no_service_std.AccountSid}}\",\n  \"callSid\": \"{{widgets.record_voicemail_es_no_service_std.CallSid}}\",\n  \"callStatus\": \"{{widgets.record_voicemail_es_no_service_std.CallStatus}}\",\n  \"voicemailWorkflowSid\": \"${workflow_sids.master}\",\n  \"from\": \"{{trigger.call.From}}\",\n  \"routingAttributes\": {\"service\": \"std\",\"serviceLanguage\": \"spanish\",\"language\": \"es\"}\n}",
+        "url": "${lambda_twilio_account_scoped_url}/voicemail/recordingCompleteCallback"
       }
     }
   ]
