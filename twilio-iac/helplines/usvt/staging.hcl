@@ -20,7 +20,7 @@ locals {
         channel_type         = "chat"
         messaging_mode = "conversations"
         contact_identity     = ""
-        templatefile         = "/app/twilio-iac/helplines/templates/studio-flows/messaging-blocking-preq-conv-lambda-sd.tftpl"
+        templatefile         = "/app/twilio-iac/helplines/templates/studio-flows/messaging-lex-v3-blocking-lambda-sd.tftpl"
         channel_flow_vars = {
           widget_from                   = "PCAVT"
           chat_blocked_message          = "Sorry, you're not able to contact Barnardos from this device or account"
