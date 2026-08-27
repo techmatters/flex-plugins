@@ -54,6 +54,7 @@ const VoicemailTaskPanel: React.FC<Props> = ({ task }) => {
         callbackAttempts: Array.from(new Map(callbackAttempts).set(task.sid, new Date().toISOString())),
       });
       await Flex.Actions.invokeAction('StartOutboundCall', {
+        queueSid: task.queueSid,
         destination: task.attributes.from,
       });
     } catch (err) {
