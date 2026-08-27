@@ -1,0 +1,120 @@
+{
+  "intentName": "pre_survey",
+  "description": "Main intake intent: collects role, town, and referral source, then presents the routing menu",
+  "sampleUtterances": [
+    {
+      "utterance": "trigger_pre_survey"
+    },
+    {
+      "utterance": "Incoming webchat contact"
+    }
+  ],
+  "dialogCodeHook": {
+    "enabled": false
+  },
+  "fulfillmentCodeHook": {
+    "enabled": false,
+    "active": true,
+    "postFulfillmentStatusSpecification": {
+      "successNextStep": {
+        "dialogAction": {
+          "type": "CloseIntent"
+        },
+        "intent": {}
+      },
+      "failureNextStep": {
+        "dialogAction": {
+          "type": "CloseIntent"
+        },
+        "intent": {}
+      },
+      "timeoutNextStep": {
+        "dialogAction": {
+          "type": "CloseIntent"
+        },
+        "intent": {}
+      }
+    }
+  },
+  "slotPriorities": [
+    {
+      "priority": 1,
+      "slotName": "role"
+    },
+    {
+      "priority": 2,
+      "slotName": "town"
+    },
+    {
+      "priority": 3,
+      "slotName": "howHeardAboutUs"
+    }
+  ],
+  "intentClosingSetting": {
+    "closingResponse": {
+      "messageGroups": [
+        {
+          "message": {
+            "plainTextMessage": {
+              "value": "How can we help you today?\n1. Report child abuse and neglect\n2. Talk with someone about something that is happening\n3. Learn how to enroll in parent education programs\n4. Child Sexual Abuse Prevention: school-based programs, adult-focused programs and training of trainers\n5. Healthy Relationships Project\u00ae school-based curriculum\n6. Adult Responsibility Project trainings\n7. Apply to be a volunteer"
+            }
+          }
+        }
+      ],
+      "allowInterrupt": true
+    },
+    "active": true,
+    "nextStep": {
+      "dialogAction": {
+        "type": "EndConversation"
+      },
+      "intent": {}
+    }
+  },
+  "initialResponseSetting": {
+    "initialResponse": {
+      "messageGroups": [
+        {
+          "message": {
+            "plainTextMessage": {
+              "value": "If this is a life-threatening emergency, please contact 911. To help us connect you with the right support, please answer a few short questions."
+            }
+          }
+        }
+      ],
+      "allowInterrupt": true
+    },
+    "active": true,
+    "nextStep": {
+      "dialogAction": {
+        "type": "InvokeDialogCodeHook"
+      },
+      "intent": {}
+    },
+    "codeHook": {
+      "enableCodeHookInvocation": true,
+      "active": true,
+      "postCodeHookSpecification": {
+        "successNextStep": {
+          "dialogAction": {
+            "type": "ElicitSlot",
+            "slotToElicit": "role"
+          },
+          "intent": {}
+        },
+        "failureNextStep": {
+          "dialogAction": {
+            "type": "EndConversation"
+          },
+          "intent": {}
+        },
+        "timeoutNextStep": {
+          "dialogAction": {
+            "type": "EndConversation"
+          },
+          "intent": {}
+        }
+      }
+    }
+  }
+}

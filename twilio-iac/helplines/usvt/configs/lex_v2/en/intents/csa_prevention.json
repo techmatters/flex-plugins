@@ -1,0 +1,67 @@
+{
+  "intentName": "csa_prevention",
+  "description": "Routing intent for 'How can we help you today?' option: csa_prevention",
+  "sampleUtterances": [
+    {
+      "utterance": "4"
+    },
+    {
+      "utterance": "child sexual abuse prevention"
+    },
+    {
+      "utterance": "school based programs"
+    },
+    {
+      "utterance": "training of trainers"
+    }
+  ],
+  "dialogCodeHook": {
+    "enabled": false
+  },
+  "fulfillmentCodeHook": {
+    "enabled": false,
+    "active": true,
+    "postFulfillmentStatusSpecification": {
+      "successNextStep": {
+        "dialogAction": {
+          "type": "CloseIntent"
+        },
+        "intent": {}
+      },
+      "failureNextStep": {
+        "dialogAction": {
+          "type": "CloseIntent"
+        },
+        "intent": {}
+      },
+      "timeoutNextStep": {
+        "dialogAction": {
+          "type": "CloseIntent"
+        },
+        "intent": {}
+      }
+    }
+  },
+  "slotPriorities": [],
+  "intentClosingSetting": {
+    "closingResponse": {
+      "messageGroups": [
+        {
+          "message": {
+            "plainTextMessage": {
+              "value": "Interested in learning more about Train the Trainer opportunities? You can click here to view upcoming events and find additional information."
+            }
+          }
+        }
+      ],
+      "allowInterrupt": true
+    },
+    "active": true,
+    "nextStep": {
+      "dialogAction": {
+        "type": "EndConversation"
+      },
+      "intent": {}
+    }
+  }
+}
