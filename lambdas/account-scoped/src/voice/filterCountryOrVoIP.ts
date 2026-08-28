@@ -41,8 +41,10 @@ export const filterCountryOrVoIPHandler: AccountScopedHandler = async (
     });
   }
 
-  if (from === 'Anonymous') {
-    console.info('filterCountryOrVoIP: Blocking anonymous call', {
+  const isE164PhoneNumber = /^\+[1-9]\d{1,14}$/.test(from);
+
+  if (!isE164PhoneNumber) {
+    console.info('filterCountryOrVoIP: Blocking call with non E164 number', {
       accountSid,
       from,
     });
