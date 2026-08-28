@@ -25,6 +25,7 @@ const BLOCK_REASONS = {
   NON_US_COUNTRY: 'non_us_country',
   VOIP: 'voip',
   BLOCKED_CARRIER: 'blocked_carrier',
+  HIDDEN_CALLER_ID: 'hidden_caller_id',
 } as const;
 
 export const filterCountryOrVoIPHandler: AccountScopedHandler = async (
@@ -37,6 +38,19 @@ export const filterCountryOrVoIPHandler: AccountScopedHandler = async (
     return newErr({
       message: 'from parameter is missing',
       error: { statusCode: 400 },
+    });
+  }
+
+  const isE164PhoneNumber = /^\+[1-9]\d{1,14}$/.test(from);
+
+  if (!isE164PhoneNumber) {
+    console.info('filterCountryOrVoIP: Blocking call with non E164 number', {
+      accountSid,
+      from,
+    });
+    return newOk({
+      blockIncoming: true,
+      blockReason: BLOCK_REASONS.HIDDEN_CALLER_ID,
     });
   }
 
