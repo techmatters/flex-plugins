@@ -25,6 +25,7 @@ const BLOCK_REASONS = {
   NON_US_COUNTRY: 'non_us_country',
   VOIP: 'voip',
   BLOCKED_CARRIER: 'blocked_carrier',
+  HIDDEN_CALLER_ID: 'hidden_caller_id',
 } as const;
 
 export const filterCountryOrVoIPHandler: AccountScopedHandler = async (
@@ -37,6 +38,17 @@ export const filterCountryOrVoIPHandler: AccountScopedHandler = async (
     return newErr({
       message: 'from parameter is missing',
       error: { statusCode: 400 },
+    });
+  }
+
+  if (from === 'Anonymous') {
+    console.info('filterCountryOrVoIP: Blocking anonymous call', {
+      accountSid,
+      from,
+    });
+    return newOk({
+      blockIncoming: true,
+      blockReason: BLOCK_REASONS.HIDDEN_CALLER_ID,
     });
   }
 
