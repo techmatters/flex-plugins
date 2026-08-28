@@ -7,21 +7,23 @@ locals {
   common_config     = local.common_config_hcl.locals.config
   config            = merge(local.common_config, local.local_config)
 
-  local_config = {    custom_task_routing_filter_expression = "channelType IN ['web'] OR isContactlessTask == true"
+  local_config = { custom_task_routing_filter_expression = "channelType IN ['web'] OR isContactlessTask == true"
 
     #Studio flow
     flow_vars = {
-      widget_from          = "PCAVT"
-      chat_blocked_message = "Hi, you've been blocked from accessing our services and we are not able to read or receive further messages from you."
-      bot_language = "en"
+      widget_from                       = "PCAVT"
+      chat_blocked_message              = "Hi, you've been blocked from accessing our services and we are not able to read or receive further messages from you."
+      bot_language                      = "en"
+      send_message_janitor_function_sid = "ZH10171c61b82a492f4cf008622e1d9f34"
+      error_message                     = "There has been an error with your message, please try writing us again."
     }
 
     channels = {
       chat : {
-        channel_type         = "chat"
-        messaging_mode = "conversations"
-        contact_identity     = ""
-        templatefile         = "/app/twilio-iac/helplines/templates/studio-flows/messaging-lex-v3-blocking-lambda-sd.tftpl"
+        channel_type     = "chat"
+        messaging_mode   = "conversations"
+        contact_identity = ""
+        templatefile     = "/app/twilio-iac/helplines/templates/studio-flows/messaging-lex-v3-blocking-lambda-sd.tftpl"
         channel_flow_vars = {
           widget_from                   = "PCAVT"
           chat_blocked_message          = "Sorry, you're not able to contact Barnardos from this device or account"
