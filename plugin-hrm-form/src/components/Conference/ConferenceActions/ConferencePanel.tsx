@@ -28,19 +28,23 @@ import { setCallStatusAction, setIsDialogOpenAction, setPhoneNumberAction } from
 import { CallStatus, isCallStatusLoading } from '../../../states/conferencing/callStatus';
 import { conferencingBase, namespace } from '../../../states/storeNamespaces';
 import * as conferenceApi from '../../../services/conferenceService';
+import { getHrmConfig } from '../../../hrmConfig';
+import { selectQuickDialOptions } from '../../../states/configuration/selectQuickDialOptions';
 
 type Props = TaskContextProps;
 const ADD_TO_CONFERENCE_KEY = 'Conference-Actions-Add';
 
 const ConferencePanel: React.FC<Props> = ({ task, conference }) => {
   const taskFromRedux = useSelector((state: RootState) => state[namespace][conferencingBase].tasks[task.taskSid]);
-
+  const conferencingQuickDialOptions = useSelector(selectQuickDialOptions);
   const { isDialogOpen, callStatus, phoneNumber } = taskFromRedux ?? {};
   const dispatch = useDispatch();
 
   const setIsDialogOpen = (isOpen: boolean) => dispatch(setIsDialogOpenAction(task.taskSid, isOpen));
   const setCallStatus = (callStatus: CallStatus) => dispatch(setCallStatusAction(task.taskSid, callStatus));
   const setPhoneNumber = (number: string) => dispatch(setPhoneNumberAction(task.taskSid, number));
+
+  const { conferencingEnableManualDial } = getHrmConfig();
 
   const toggleDialog = () => {
     setIsDialogOpen(!isDialogOpen);
@@ -50,6 +54,10 @@ const ConferencePanel: React.FC<Props> = ({ task, conference }) => {
     if (callStatus === 'busy' || callStatus === 'failed') {
       Notifications.showNotificationSingle(ConferenceNotifications.ErrorAddingParticipantNotification);
     }
+    if (callStatus === 'in-progress') {
+      setIsDialogOpen(false);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [callStatus]);
 
   const conferenceSid = conference?.source?.conferenceSid;
@@ -59,7 +67,7 @@ const ConferencePanel: React.FC<Props> = ({ task, conference }) => {
     return null;
   }
 
-  const handleClick = (phoneNumberGetter: () => string) => async () => {
+  const handleClick = async () => {
     try {
       const { status, callStatusSyncDocument } = await createCallStatusSyncDocument(({ data }) => {
         setCallStatus(data.CallStatus);
@@ -70,7 +78,7 @@ const ConferencePanel: React.FC<Props> = ({ task, conference }) => {
       }
 
       const from = Manager.getInstance().serviceConfiguration.outbound_call_flows.default.caller_id;
-      const to = phoneNumberGetter();
+      const to = phoneNumber;
       const label = `External party ${to}`;
 
       await Promise.all(
@@ -117,10 +125,11 @@ const ConferencePanel: React.FC<Props> = ({ task, conference }) => {
         <PhoneInputDialog
           targetNumber={phoneNumber}
           setTargetNumber={setPhoneNumber}
-          handleManualDialClick={handleClick(() => phoneNumber)}
-          handleQuickDialClick={(numberToDial: string) => handleClick(() => numberToDial)()}
+          handleClick={handleClick}
           setIsDialogOpen={setIsDialogOpen}
           isLoading={isCallStatusLoading(callStatus)}
+          quickDialOptions={conferencingQuickDialOptions}
+          enableManualDial={conferencingEnableManualDial}
         />
       )}
 

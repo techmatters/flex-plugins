@@ -42,7 +42,7 @@ const getEnvironmentFromHrmBaseUrl = (manager: Flex.Manager) => {
   return environment;
 };
 
-// eslint-disable-next-line sonarjs/cognitive-complexity
+// eslint-disable-next-line sonarjs/cognitive-complexity, complexity
 const readConfig = () => {
   const manager = Flex.Manager.getInstance();
   const { identity } = manager.user;
@@ -128,6 +128,8 @@ const readConfig = () => {
   // Compatibility, remove feature flag check when service configurations changes have applied 2025-09-30
   const enableConferencing =
     manager.serviceConfiguration.attributes.enableConferencing ?? featureFlags.enable_conferencing ?? false;
+  const conferencingEnableManualDial: boolean =
+    manager.serviceConfiguration.attributes.conferencing_enable_manual_dial ?? true;
   const { strings } = (manager as unknown) as {
     strings: { [key: string]: string };
   };
@@ -174,6 +176,7 @@ const readConfig = () => {
       enableClientProfiles,
       preventSendingAttachmentsFromFlex,
       enableConferencing,
+      conferencingEnableManualDial,
       hideAddToNewCaseButton,
       // eslint-disable-next-line prettier/prettier
       postStudioFlows: (postStudioFlows ?? {}) as Record<`FW${string}` | 'voice' | 'chat' , { flowTrigger: 'inProgressCall' | 'rest', studioFlowSid: StudioFlowSID }>,

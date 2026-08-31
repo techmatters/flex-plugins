@@ -536,9 +536,12 @@
   "Resources-CopyId": "Copy ID",
   "Resources-IdCopied": "Copied!",
 
-  "Conference-AddConferenceCallParticipant": "Add Conference Call Participant",
   "Conference-EnterPhoneNumber": "Enter phone number",
   "Conference-DialButton": "Dial",
+  "Conference-QuickDialTab": "Quick Dial",
+  "Conference-QuickDialSelectLabel": "Select quick dial number",
+  "Conference-EnterNumberTab": "Enter Number",
+  "Conference-PhoneNumberExample": "Example: +1 123-456-7890",
   "HangupCallLeaveTooltip": "Leave Call",
   "NavigableContainer-BackButton": "Back",
   "NavigableContainer-CloseButton": "Close",
