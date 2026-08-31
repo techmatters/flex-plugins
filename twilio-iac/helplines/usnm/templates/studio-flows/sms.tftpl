@@ -160,6 +160,20 @@ ${
               "value": "blocked_carrier"
             }
           ]
+        },
+        {
+          "next": "play_message_voice_voip_blocked",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to hidden_caller_id",
+              "arguments": [
+                "{{widgets.f_countryVoipFilter.parsed.blockReason}}"
+              ],
+              "type": "equal_to",
+              "value": "hidden_caller_id"
+            }
+          ]
         }
       ],
       "properties": {
