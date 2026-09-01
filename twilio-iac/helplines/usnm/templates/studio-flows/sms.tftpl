@@ -162,7 +162,7 @@ ${
           ]
         },
         {
-          "next": "play_message_voice_voip_blocked",
+          "next": "send_message_sms_voip_blocked",
           "event": "match",
           "conditions": [
             {
@@ -361,7 +361,7 @@ ${
         },
         "workflow": "${workflow_sids.sms}",
         "channel": "${task_channel_sids.chat}",
-        "attributes": "{\n  \"type\": \"inbound\",\n   \"name\": \"{{trigger.conversation.From}}\",\n  \"ignoreAgent\": \"\",\n  \"helpline\":\"NAMI\",\n  \"transferTargetType\": \"\",\n   \"service\" :\"tya\",\n   \"serviceLanguage\": \"english\",\n   \"language\": \"en\",\n  \"channelType\": \"sms\",\n  \"conversations\": {\n    \"hang_up_by\": \"Customer\"\n  }\n}\n",
+        "attributes": "{\n  \"name\": \"{{trigger.conversation.From}}\",\n  \"ignoreAgent\": \"\",\n  \"helpline\":\"NAMI\",\n  \"transferTargetType\": \"\",\n   \"service\" :\"tya\",\n   \"serviceLanguage\": \"english\",\n   \"language\": \"en\",\n  \"channelType\": \"sms\",\n  \"e2eTestMode\": \"{{trigger.conversation.ChannelAttributes.pre_engagement_data.e2eTestMode}}\", \n    \"channelSid\": \"{{trigger.conversation.ChannelSid}}\", \n  \"memory\": {{trigger.conversation.ChannelAttributes.memory | to_json}}\n}\n",
         "priority": "0",
         "timeout": "3600"
       }
@@ -1270,7 +1270,7 @@ ${
         },
         "workflow": "${workflow_sids.sms}",
         "channel": "${task_channel_sids.chat}",
-        "attributes": "{\n  \"type\": \"inbound\",\n   \"name\": \"{{trigger.conversation.From}}\",\n  \"ignoreAgent\": \"\",\n  \"helpline\":\"NAMI\",\n  \"transferTargetType\": \"\",\n   \"service\" :\"std\",\n   \"serviceLanguage\": \"english\",\n   \"language\": \"en\",\n  \"channelType\": \"sms\",\n  \"conversations\": {\n    \"hang_up_by\": \"Customer\"\n  }\n}\n",
+        "attributes": "{\n  \"name\": \"{{trigger.conversation.From}}\",\n  \"ignoreAgent\": \"\",\n  \"helpline\":\"NAMI\",\n  \"transferTargetType\": \"\",\n   \"service\" :\"std\",\n   \"serviceLanguage\": \"english\",\n   \"language\": \"en\",\n  \"channelType\": \"sms\",\n  \"e2eTestMode\": \"{{trigger.conversation.ChannelAttributes.pre_engagement_data.e2eTestMode}}\", \n    \"channelSid\": \"{{trigger.conversation.ChannelSid}}\", \n  \"memory\": {{trigger.conversation.ChannelAttributes.memory | to_json}}\n}\n",
         "priority": "0",
         "timeout": "3600"
       }
@@ -1298,7 +1298,7 @@ ${
         },
         "workflow": "${workflow_sids.sms}",
         "channel": "${task_channel_sids.chat}",
-        "attributes": "{\n  \"type\": \"inbound\",\n   \"name\": \"{{trigger.conversation.From}}\",\n  \"ignoreAgent\": \"\",\n  \"helpline\":\"NAMI\",\n  \"transferTargetType\": \"\",\n   \"service\" :\"fcg\",\n   \"serviceLanguage\": \"english\",\n   \"language\": \"en\",\n  \"channelType\": \"sms\",\n  \"conversations\": {\n    \"hang_up_by\": \"Customer\"\n  }\n}\n",
+        "attributes": "{\n  \"name\": \"{{trigger.conversation.From}}\",\n  \"ignoreAgent\": \"\",\n  \"helpline\":\"NAMI\",\n  \"transferTargetType\": \"\",\n   \"service\" :\"fcg\",\n   \"serviceLanguage\": \"english\",\n   \"language\": \"en\",\n  \"channelType\": \"sms\",\n  \"e2eTestMode\": \"{{trigger.conversation.ChannelAttributes.pre_engagement_data.e2eTestMode}}\", \n    \"channelSid\": \"{{trigger.conversation.ChannelSid}}\", \n  \"memory\": {{trigger.conversation.ChannelAttributes.memory | to_json}}\n}\n",
         "priority": "0",
         "timeout": "3600"
       }
