@@ -54,6 +54,7 @@
             "enable_confirm_on_browser_close": true,
             "enable_contact_editing": true,
             "enable_counselor_toolkits": true,
+            "enable_custom_links" : true,
             "enable_csam_clc_report": false,
             "enable_csam_report": false,
             "enable_dual_write": false,
