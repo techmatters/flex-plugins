@@ -96,16 +96,10 @@ export const authenticateWithExternalApiKey = async ({
     const requestSecret = authorization.replace('Basic ', '');
     const externalTaskApiKey = await getSsmParameter(externalTaskApiKeyParam);
 
-    // TODO: delete!!!
-    console.debug(
-      `requestSecret ${requestSecret}`,
-      `externalTaskApiKey ${externalTaskApiKey}`,
-    );
-
     const isStaticSecretValid =
       externalTaskApiKey &&
       requestSecret &&
-      timingSafeEqual(Buffer.from(requestSecret), Buffer.from(externalTaskApiKeyParam));
+      timingSafeEqual(Buffer.from(requestSecret), Buffer.from(externalTaskApiKey));
 
     if (isStaticSecretValid) {
       console.debug(
