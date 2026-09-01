@@ -2,7 +2,7 @@
   "attributes": {
     "contacts_waiting_channels": ["sms", "voice", "voicemail"],
     "external_recordings_enabled": true,
-    "conferencing_enable_manual_dial": true,
+    "conferencing_enable_manual_dial": false,
     "enableExternalRecordings": true,
     "enableConferencing": true,
     "preventSendingAttachmentsFromFlex": true,
