@@ -34,7 +34,6 @@ const getAccountSidFromPath = async (event: ALBEvent) => {
 
       if (!accountShortCode) {
         const message = 'Missing account short code';
-        console.warn(message);
         return newErr<HttpError>({
           message,
           error: { statusCode: 400 },
@@ -46,14 +45,12 @@ const getAccountSidFromPath = async (event: ALBEvent) => {
     }
 
     const message = 'Invalid route prefix';
-    console.warn(message);
     return newErr<HttpError>({
       message,
       error: { statusCode: 400 },
     });
   } catch (err) {
     const message = err instanceof Error ? err.message : String(err);
-    console.error(message, err);
     return newErr<HttpError>({
       message,
       error: { statusCode: 500 },
@@ -68,7 +65,6 @@ export const authenticateWithExternalApiKey = async ({
 }): Promise<Result<HttpError, { accountSid: AccountSID; accountShortCode: string }>> => {
   if (!event.headers) {
     const message = 'Missing headers in request';
-    console.warn(message);
     return newErr({ message, error: { statusCode: 400 } });
   }
 
@@ -78,7 +74,6 @@ export const authenticateWithExternalApiKey = async ({
 
   if (!authorization || !authorization.startsWith('Basic')) {
     const message = 'Invalid authorization header';
-    console.warn(message);
     return newErr({ message, error: { statusCode: 400 } });
   }
 
@@ -110,11 +105,9 @@ export const authenticateWithExternalApiKey = async ({
     }
   } catch (err) {
     const message = `Static key authentication failed for ${externalTaskApiKeyParam}`;
-    console.warn(message, err);
     return newErr({ message, error: { statusCode: 403 } });
   }
 
   const message = 'Invalid state reached';
-  console.warn('authenticateWithExternalApiKey', message);
   return newErr({ message, error: { statusCode: 500 } });
 };

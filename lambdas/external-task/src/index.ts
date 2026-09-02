@@ -15,6 +15,7 @@
  */
 
 import type { ALBEvent, ALBResult } from 'aws-lambda';
+import type { DocumentInstance } from 'twilio/lib/rest/sync/v1/service/document';
 import { isErr } from '@tech-matters/result-type';
 import {
   getMasterWorkflowSid,
@@ -23,7 +24,6 @@ import {
   getWorkspaceSid,
 } from '@tech-matters/twilio-configuration';
 import { channelTypes } from '@tech-matters/twilio-types';
-import type { DocumentInstance } from 'twilio/lib/rest/sync/v1/service/document';
 import { authenticateWithExternalApiKey } from './requestValidator';
 
 const headers = {
@@ -114,7 +114,6 @@ export const handler = async (event: ALBEvent): Promise<ALBResult> => {
       const externalId = body.externalId;
       if (!externalId) {
         const message = 'No externalId property found on payload';
-        console.warn(message);
         return handleError(message, undefined, 400);
       }
 
@@ -154,18 +153,16 @@ export const handler = async (event: ALBEvent): Promise<ALBResult> => {
         body: JSON.stringify({ taskSid: createdTask.sid }),
       };
     } catch (error) {
-      const message = 'Error handling the POST request';
-      console.error(message, error);
-
       if (dedupDocument) {
         try {
-          console.debug(`Removing dedupDocument ${dedupDocument}`);
-          await dedupDocument.remove();
+          console.debug(`Removing dedupDocument ${JSON.stringify(dedupDocument)}`);
+          await (await dedupDocument.fetch()).remove();
         } catch (err) {
           console.error(`Failed removing dedupDocument`);
         }
       }
 
+      const message = 'Error handling the POST request';
       return handleError(message, error as Error);
     }
   } else if (event.httpMethod === 'OPTIONS') {
