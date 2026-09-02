@@ -65,6 +65,7 @@ const triggerPostStudioFlow = async ({
 }) => {
   const client = await getTwilioClient(accountSid);
   const logPrefix = `[Post Survey Studio Flow - ${accountSid}/${taskSid}]:`;
+  const isOutbound = taskAttributes.direction === 'outbound';
   try {
     if (isTriggerPostStudioFlow({ taskAttributes })) {
       console.info(`${logPrefix} Handling post studio flow trigger...`);
@@ -141,14 +142,14 @@ const triggerPostStudioFlow = async ({
         await client.studio.v2.flows
           .get(studioFlowIdentifier.studioFlowSid)
           .executions.create({
-            from: taskAttributes.to,
+            from: isOutbound ? taskAttributes.from : taskAttributes.to,
             parameters: {
               contactId,
               contactTaskSid: taskSid,
               taskQueueSid,
               taskLanguage: taskAttributes.language ?? '',
             },
-            to: taskAttributes.from,
+            to: isOutbound ? taskAttributes.outbound_to : taskAttributes.from,
           });
         console.debug(
           `${logPrefix} Initiated post studio flow ${studioFlowIdentifier} configured for ${taskChannelUniqueName} via REST API - contact ${contactId}, task: ${taskSid}, removing participants`,
