@@ -47,6 +47,39 @@ const handleError = (message: string, error?: Error, statusCode = 500): ALBResul
   };
 };
 
+// TODO: factor out to share with account-scoped lambda?
+const parseBody = ({
+  body,
+  contentTypeHeader,
+  isBase64Encoded,
+}: {
+  contentTypeHeader: string | null;
+  body: string | null;
+  isBase64Encoded: boolean;
+}) => {
+  if (!body || !contentTypeHeader) {
+    return body;
+  }
+
+  // if (contentTypeHeader.includes('application/x-www-form-urlencoded')) {
+  //   if (isBase64Encoded) {
+  //     const data = Buffer.from(body, 'base64').toString();
+  //     return qs.parse(data);
+  //   }
+
+  //   return qs.parse(body);
+  // }
+
+  if (contentTypeHeader === 'application/json') {
+    if (isBase64Encoded) {
+      const data = Buffer.from(body, 'base64').toString();
+      return JSON.parse(data);
+    }
+
+    return JSON.parse(body || 'null');
+  }
+};
+
 export const handler = async (event: ALBEvent): Promise<ALBResult> => {
   console.debug('[SENSITIVE] triggered with event', event);
 
@@ -73,10 +106,14 @@ export const handler = async (event: ALBEvent): Promise<ALBResult> => {
     try {
       const twilioClient = await getTwilioClient(accountSid);
 
-      const body = JSON.parse(event.body);
+      const body = parseBody({
+        body: event.body,
+        contentTypeHeader: event.headers?.['content-type'] || null,
+        isBase64Encoded: event.isBase64Encoded,
+      });
       const externalId = body.externalId;
       if (!externalId) {
-        const message = 'No externalId property found on trigger payload';
+        const message = 'No externalId property found on payload';
         console.warn(message);
         return handleError(message, undefined, 400);
       }
@@ -121,7 +158,12 @@ export const handler = async (event: ALBEvent): Promise<ALBResult> => {
       console.error(message, error);
 
       if (dedupDocument) {
-        await dedupDocument.remove();
+        try {
+          console.debug(`Removing dedupDocument ${dedupDocument}`);
+          await dedupDocument.remove();
+        } catch (err) {
+          console.error(`Failed removing dedupDocument`);
+        }
       }
 
       return handleError(message, error as Error);
