@@ -81,104 +81,113 @@ const parseBody = ({
 };
 
 export const handler = async (event: ALBEvent): Promise<ALBResult> => {
-  console.debug('[SENSITIVE] triggered with event', event);
+  try {
+    console.debug('[SENSITIVE] triggered with event', event);
 
-  // TODO: validate API key
-  const validationResult = await authenticateWithExternalApiKey({ event });
+    // TODO: validate API key
+    const validationResult = await authenticateWithExternalApiKey({ event });
 
-  if (isErr(validationResult)) {
-    return handleError(
-      validationResult.message,
-      validationResult.error.cause,
-      validationResult.error.statusCode,
-    );
-  }
-
-  const { accountSid } = validationResult.data;
-
-  if (event.httpMethod === 'POST') {
-    if (!event.body) {
-      return handleError('Event body is null or undefined', undefined, 400);
+    if (isErr(validationResult)) {
+      return handleError(
+        validationResult.message,
+        validationResult.error.cause,
+        validationResult.error.statusCode,
+      );
     }
 
-    let dedupDocument: DocumentInstance | null = null;
-    const twilioClient = await getTwilioClient(accountSid);
-    const syncService = await getSyncServiceSid(accountSid);
+    const { accountSid } = validationResult.data;
 
-    try {
-      const body = parseBody({
-        body: event.body,
-        contentTypeHeader: event.headers?.['content-type'] || null,
-        isBase64Encoded: event.isBase64Encoded,
-      });
-      const externalId = body.externalId;
-      if (!externalId) {
-        const message = 'No externalId property found on payload';
-        return handleError(message, undefined, 400);
+    if (event.httpMethod === 'POST') {
+      if (!event.body) {
+        return handleError('Event body is null or undefined', undefined, 400);
       }
 
-      const dedupDocumentName = `external-task-${externalId}`;
+      let dedupDocument: DocumentInstance | null = null;
+      const twilioClient = await getTwilioClient(accountSid);
+      const syncService = await getSyncServiceSid(accountSid);
 
-      console.debug(`Creating dedupDocument with name ${dedupDocumentName}`);
-      dedupDocument = await twilioClient.sync.v1.services(syncService).documents.create({
-        ttl: 86400, // one day
-        uniqueName: dedupDocumentName,
-      });
-
-      const workspaceSid = await getWorkspaceSid(accountSid);
-      const workflowSid = await getMasterWorkflowSid(accountSid);
-      const createdTask = await twilioClient.taskrouter.v1
-        .workspaces(workspaceSid)
-        .tasks.create({
-          taskChannel: channelTypes.EXTERNAL_TASK,
-          workflowSid,
-          attributes: JSON.stringify({
-            external_task_attributes: { externalId },
-            from: 'Placeholder',
-            name: 'Placeholder',
-            channelType: channelTypes.EXTERNAL_TASK,
-            customChannelType: channelTypes.EXTERNAL_TASK,
-            ignoreAgent: '',
-            transferTargetType: '',
-          }),
+      try {
+        const body = parseBody({
+          body: event.body,
+          contentTypeHeader: event.headers?.['content-type'] || null,
+          isBase64Encoded: event.isBase64Encoded,
         });
+        const externalId = body.externalId;
+        if (!externalId) {
+          const message = 'No externalId property found on payload';
+          return handleError(message, undefined, 400);
+        }
 
-      console.debug('[SENSITIVE] Created external task', createdTask);
+        const dedupDocumentName = `external-task-${externalId}`;
 
+        console.debug(`Creating dedupDocument with name ${dedupDocumentName}`);
+        dedupDocument = await twilioClient.sync.v1
+          .services(syncService)
+          .documents.create({
+            ttl: 86400, // one day
+            uniqueName: dedupDocumentName,
+          });
+
+        const workspaceSid = await getWorkspaceSid(accountSid);
+        const workflowSid = await getMasterWorkflowSid(accountSid);
+        const createdTask = await twilioClient.taskrouter.v1
+          .workspaces(workspaceSid)
+          .tasks.create({
+            taskChannel: channelTypes.EXTERNAL_TASK,
+            workflowSid,
+            attributes: JSON.stringify({
+              external_task_attributes: { externalId },
+              from: 'Placeholder',
+              name: 'Placeholder',
+              channelType: channelTypes.EXTERNAL_TASK,
+              customChannelType: channelTypes.EXTERNAL_TASK,
+              ignoreAgent: '',
+              transferTargetType: '',
+            }),
+          });
+
+        console.debug('[SENSITIVE] Created external task', createdTask);
+
+        return {
+          statusCode: 200,
+          headers,
+          body: JSON.stringify({ taskSid: createdTask.sid }),
+        };
+      } catch (error) {
+        if (dedupDocument) {
+          try {
+            console.debug(`Removing dedupDocument ${JSON.stringify(dedupDocument)}`);
+            await twilioClient.sync.v1
+              .services(syncService)
+              .documents(dedupDocument.sid)
+              .remove();
+          } catch (err) {
+            console.error(`Failed removing dedupDocument`);
+          }
+        }
+
+        // bubble up
+        throw error;
+      }
+    }
+
+    if (event.httpMethod === 'OPTIONS') {
+      // Handle preflight CORS requests
       return {
         statusCode: 200,
         headers,
-        body: JSON.stringify({ taskSid: createdTask.sid }),
+        body: '',
       };
-    } catch (error) {
-      if (dedupDocument) {
-        try {
-          console.debug(`Removing dedupDocument ${JSON.stringify(dedupDocument)}`);
-          await twilioClient.sync.v1
-            .services(syncService)
-            .documents(dedupDocument.sid)
-            .remove();
-        } catch (err) {
-          console.error(`Failed removing dedupDocument`);
-        }
-      }
-
-      const message = 'Error handling the POST request';
-      return handleError(message, error as Error);
     }
-  } else if (event.httpMethod === 'OPTIONS') {
-    // Handle preflight CORS requests
-    return {
-      statusCode: 200,
-      headers,
-      body: '',
-    };
-  }
 
-  // Handle unsupported HTTP methods
-  return {
-    statusCode: 405,
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ message: 'Error: Method Not Allowed' }),
-  };
+    // Handle unsupported HTTP methods
+    return {
+      statusCode: 405,
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message: 'Error: Method Not Allowed' }),
+    };
+  } catch (error) {
+    const message = 'Error handling request';
+    return handleError(message, error as Error);
+  }
 };
