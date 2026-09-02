@@ -102,10 +102,10 @@ export const handler = async (event: ALBEvent): Promise<ALBResult> => {
     }
 
     let dedupDocument: DocumentInstance | null = null;
+    const twilioClient = await getTwilioClient(accountSid);
+    const syncService = await getSyncServiceSid(accountSid);
 
     try {
-      const twilioClient = await getTwilioClient(accountSid);
-
       const body = parseBody({
         body: event.body,
         contentTypeHeader: event.headers?.['content-type'] || null,
@@ -120,7 +120,6 @@ export const handler = async (event: ALBEvent): Promise<ALBResult> => {
       const dedupDocumentName = `external-task-${externalId}`;
 
       console.debug(`Creating dedupDocument with name ${dedupDocumentName}`);
-      const syncService = await getSyncServiceSid(accountSid);
       dedupDocument = await twilioClient.sync.v1.services(syncService).documents.create({
         ttl: 86400, // one day
         uniqueName: dedupDocumentName,
@@ -128,7 +127,6 @@ export const handler = async (event: ALBEvent): Promise<ALBResult> => {
 
       const workspaceSid = await getWorkspaceSid(accountSid);
       const workflowSid = await getMasterWorkflowSid(accountSid);
-
       const createdTask = await twilioClient.taskrouter.v1
         .workspaces(workspaceSid)
         .tasks.create({
@@ -156,7 +154,10 @@ export const handler = async (event: ALBEvent): Promise<ALBResult> => {
       if (dedupDocument) {
         try {
           console.debug(`Removing dedupDocument ${JSON.stringify(dedupDocument)}`);
-          await (await dedupDocument.fetch()).remove();
+          await twilioClient.sync.v1
+            .services(syncService)
+            .documents(dedupDocument.sid)
+            .remove();
         } catch (err) {
           console.error(`Failed removing dedupDocument`);
         }
