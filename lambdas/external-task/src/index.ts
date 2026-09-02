@@ -25,6 +25,7 @@ import {
 } from '@tech-matters/twilio-configuration';
 import { channelTypes } from '@tech-matters/twilio-types';
 import { authenticateWithExternalApiKey } from './requestValidator';
+import { getExternalTaskMapping } from './mappings';
 
 const headers = {
   'Content-Type': 'application/json',
@@ -84,7 +85,6 @@ export const handler = async (event: ALBEvent): Promise<ALBResult> => {
   try {
     console.debug('[SENSITIVE] triggered with event', event);
 
-    // TODO: validate API key
     const validationResult = await authenticateWithExternalApiKey({ event });
 
     if (isErr(validationResult)) {
@@ -95,7 +95,7 @@ export const handler = async (event: ALBEvent): Promise<ALBResult> => {
       );
     }
 
-    const { accountSid } = validationResult.data;
+    const { accountSid, accountShortCode } = validationResult.data;
 
     if (event.httpMethod === 'POST') {
       if (!event.body) {
@@ -112,11 +112,13 @@ export const handler = async (event: ALBEvent): Promise<ALBResult> => {
           contentTypeHeader: event.headers?.['content-type'] || null,
           isBase64Encoded: event.isBase64Encoded,
         });
-        const externalId = body.externalId;
-        if (!externalId) {
-          const message = 'No externalId property found on payload';
-          return handleError(message, undefined, 400);
+
+        const mappingResult = getExternalTaskMapping({ accountShortCode })(body);
+        if (isErr(mappingResult)) {
+          return handleError(mappingResult.message, mappingResult.error, 400);
         }
+
+        const { externalId, externalTaskAttributes } = mappingResult.unwrap();
 
         const dedupDocumentName = `external-task-${externalId}`;
 
@@ -133,14 +135,15 @@ export const handler = async (event: ALBEvent): Promise<ALBResult> => {
         const createdTask = await twilioClient.taskrouter.v1
           .workspaces(workspaceSid)
           .tasks.create({
-            taskChannel: channelTypes.EXTERNAL_TASK,
+            taskChannel: channelTypes.EXTERNAL,
             workflowSid,
             attributes: JSON.stringify({
-              external_task_attributes: { externalId },
+              externalId,
+              externalTaskAttributes,
               from: 'Placeholder',
               name: 'Placeholder',
-              channelType: channelTypes.EXTERNAL_TASK,
-              customChannelType: channelTypes.EXTERNAL_TASK,
+              channelType: channelTypes.EXTERNAL,
+              customChannelType: channelTypes.EXTERNAL,
               ignoreAgent: '',
               transferTargetType: '',
             }),

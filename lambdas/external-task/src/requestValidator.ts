@@ -84,13 +84,17 @@ export const authenticateWithExternalApiKey = async ({
   }
 
   const { accountSid } = result.data;
+
   const externalTaskApiKeyParam = `/${process.env.NODE_ENV}/twilio/${accountSid}/external_task_api_key`;
+  const requestSecret = authorization.replace('Basic ', '');
+  const externalTaskApiKey = await getSsmParameter(externalTaskApiKeyParam);
+  if (!externalTaskApiKey) {
+    const message = `Missing parameter ${externalTaskApiKeyParam}`;
+    return newErr({ message, error: { statusCode: 500 } });
+  }
 
   try {
     console.debug(`Authenticating against key ${externalTaskApiKeyParam} `);
-    const requestSecret = authorization.replace('Basic ', '');
-    const externalTaskApiKey = await getSsmParameter(externalTaskApiKeyParam);
-
     const isStaticSecretValid =
       externalTaskApiKey &&
       requestSecret &&
