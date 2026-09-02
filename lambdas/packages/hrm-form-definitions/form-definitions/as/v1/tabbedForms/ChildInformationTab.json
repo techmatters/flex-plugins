@@ -79,7 +79,7 @@
     "isPII": false
   },
   {
-    "name": "streetAddress",
+    "name": "specificLocation",
     "label": "Street Address",
     "type": "input",
     "isPII": true
