@@ -23,7 +23,7 @@
       "enable_hang_up_by_hrm_saving": true
     },
     "definitionVersion": "usnm-v1",
-    "helplineLanguage": "en-US",
+    "helplineLanguage": "en",
     "permissionConfig": "usnm"
   }
 }

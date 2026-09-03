@@ -3,28 +3,48 @@
     "voicemail_schedule_retry_later_minutes": 1,
     "system_down": false,
     "form_definitions_base_url": "https://assets-staging.tl.techmatters.org/form-definitions/",
-    "resources_base_url": "https://hrm-staging.tl.techmatters.org",
+    "resources_base_url": "",
     "logo_url": "https://aselo-logo.s3.amazonaws.com/200+transparent+background+no+TM+staging.png",
     "postStudioFlows": {
       "WQaf9bb6fb743be2569b1f34943a46149b": {
         "flowTrigger": "rest",
-        "studioFlowSid": "FW562ff39f4237b1342be6dfe0231a5aef"
+        "studioFlowSid": "FW09492cb9ab4ea2a96104945a3d26fe4f"
       },
       "WQ21de6838b29409d93e9bf6f99312a24a": {
         "flowTrigger": "rest",
-        "studioFlowSid": "FW562ff39f4237b1342be6dfe0231a5aef"
+        "studioFlowSid": "FWfa22e20b497e3d486dbb421b98efd068"
       },
       "WQffe293ba9b25da442655ba638b17e017": {
         "flowTrigger": "rest",
-        "studioFlowSid": "FW562ff39f4237b1342be6dfe0231a5aef"
+        "studioFlowSid": "FWfa22e20b497e3d486dbb421b98efd068"
       },
       "WQ3bddfcaffcb08c8fd14c460f5e437967": {
         "flowTrigger": "rest",
-        "studioFlowSid": "FW562ff39f4237b1342be6dfe0231a5aef"
+        "studioFlowSid": "FW09492cb9ab4ea2a96104945a3d26fe4f"
       },
       "WQa43096dc909e7bfc3dce4edebbb273d5": {
         "flowTrigger": "rest",
-        "studioFlowSid": "FW562ff39f4237b1342be6dfe0231a5aef"
+        "studioFlowSid": "FW09492cb9ab4ea2a96104945a3d26fe4f"
+      },
+      "WQ52683dec38717995d897f4dff0265c51": {
+        "flowTrigger": "rest",
+        "studioFlowSid": "FWfa22e20b497e3d486dbb421b98efd068"
+      },
+      "WQb799d238882ffbf25ebe4bf5866f48d0": {
+        "flowTrigger": "rest",
+        "studioFlowSid": "FWfa22e20b497e3d486dbb421b98efd068"
+      },
+      "WQ458a2d94be709f5ebe29ac48e3319e85": {
+        "flowTrigger": "rest",
+        "studioFlowSid": "FW09492cb9ab4ea2a96104945a3d26fe4f"
+      },
+      "WQ42d7a23790451418512786125b7af6bf": {
+        "flowTrigger": "rest",
+        "studioFlowSid": "FW09492cb9ab4ea2a96104945a3d26fe4f"
+      },
+      "WQd5dd499e77c36ce721cb8cb9a8e6191e": {
+        "flowTrigger": "rest",
+        "studioFlowSid": "FW09492cb9ab4ea2a96104945a3d26fe4f"
       }
     }
   }
