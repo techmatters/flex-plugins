@@ -62,6 +62,7 @@ locals {
       video : "Video"
       email : "Email"
       survey : "Survey"
+      external: "External"
     }
 
   }
