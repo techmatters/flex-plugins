@@ -10,5 +10,9 @@
   "patientCareReport": {
     "label": "Patient Care Report",
     "formPath": "caseForms/patientCareReportForm.json"
+  },
+  "note": {
+    "label": "Note",
+    "formPath": "caseForms/NoteForm.json"
   }
 }
