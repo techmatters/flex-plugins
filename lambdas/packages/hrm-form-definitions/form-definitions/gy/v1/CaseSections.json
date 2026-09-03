@@ -4,7 +4,7 @@
     "formPath": "caseForms/timesCoordinationForm.json"
   },
   "callDispatch": {
-    "label": "Call / Dispatch Info",
+    "label": "Call & Dispatch Info",
     "formPath": "caseForms/callDispatchForm.json"
   },
   "patientInformation": {
@@ -26,5 +26,9 @@
   "disposition": {
     "label": "Disposition & Sign Off",
     "formPath": "caseForms/dispositionForm.json"
+  },
+  "note": {
+    "label": "Note",
+    "formPath": "caseForms/NoteForm.json"
   }
 }
