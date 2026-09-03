@@ -15,6 +15,7 @@
     { "path": "packages/scheduled-jobs" },
     { "path": "account-scoped" },
     { "path": "scheduled-jobs-processor" },
+    { "path": "external-task" },
     { "path": "facebookCallback" },
     { "path": "facebookSignin" },
     { "path": "instagramWebhook" },

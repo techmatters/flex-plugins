@@ -27,6 +27,7 @@ export const isAseloCustomChannelType = (channelType?: string): boolean =>
   Object.values(aseloCustomChannelTypes).includes(channelType as AseloCustomChannelType);
 
 export const channelTypes = {
+  EXTERNAL: 'external',
   VOICEMAIL: 'voicemail',
   SMS: 'sms',
   VOICE: 'voice',
