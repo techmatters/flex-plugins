@@ -1,5 +1,5 @@
 /**
- * This file overrides the config output by `common.hcl` that are specific to the staging environment.
+ * This file overrides the config output by `common.hcl` that are specific to the production environment.
  **/
 
 locals {
@@ -14,7 +14,7 @@ locals {
  
     }
 
-    //Serverless -- to allow enabling the operating hours check on this staging account.
+    //Serverless -- to allow enabling the operating hours check on this production account.
     ui_editable = true
     
     studio_flows = {
@@ -52,6 +52,6 @@ locals {
       recording_url                    = "https://<place_holder>.mp3"
     }
 
-    get_profile_flags_for_identifier_base_url = "https://hrm-staging-us.tl.techmatters.org/lambda/twilio/account-scoped"
+    get_profile_flags_for_identifier_base_url = "https://hrm-production-us.tl.techmatters.org/lambda/twilio/account-scoped"
   }
 }
