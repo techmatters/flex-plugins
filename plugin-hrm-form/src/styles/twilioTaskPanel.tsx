@@ -24,6 +24,12 @@ export const PanelContainer = styled('div')`
 `;
 PanelContainer.displayName = 'PanelContainer';
 
+export const SectionGroup = styled('div')`
+  margin-bottom: 8px;
+`;
+
+SectionGroup.displayName = 'SectionGroup';
+
 export const Section = styled('div')`
   margin-bottom: 1rem;
 `;
