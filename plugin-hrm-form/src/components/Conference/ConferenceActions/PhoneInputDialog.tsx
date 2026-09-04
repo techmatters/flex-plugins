@@ -137,7 +137,8 @@ const PhoneInputDialog: React.FC<PhoneDialogProps> = ({
       {showTabs ? (
         <div
           style={{
-            height: '108px',
+            // Explicit height is required to prevent the Twilio Tabs content from collapsing in this dialog.
+            height: 108,
           }}
         >
           <StyledTabs
