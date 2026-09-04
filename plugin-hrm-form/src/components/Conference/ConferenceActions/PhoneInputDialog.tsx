@@ -30,6 +30,7 @@ import {
 import type { QuickDialOption } from '../../../states/configuration/reducer';
 import { lookupTranslation } from '../../../translations';
 import { StyledTabs } from '../../search/styles';
+import useFocus from '../../../utils/useFocus';
 
 type PhoneDialogProps = {
   targetNumber: string;
@@ -70,6 +71,8 @@ const PhoneInputDialog: React.FC<PhoneDialogProps> = ({
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const focusRef = useFocus();
 
   const handleTabChange = (value: TabValue) => {
     setActiveTab(value);
@@ -124,22 +127,33 @@ const PhoneInputDialog: React.FC<PhoneDialogProps> = ({
         <Bold>
           <Template code="Conference-AddConferenceCallParticipant" />
         </Bold>
-        <CloseButton onClick={() => setIsDialogOpen(false)} aria-label="CloseButton" style={{ marginLeft: 'auto' }} />
+        <CloseButton
+          buttonRef={focusRef}
+          onClick={() => setIsDialogOpen(false)}
+          style={{ marginLeft: 'auto', marginRight: 0, paddingRight: 0 }}
+        />
       </Row>
       {showTabs ? (
-        <StyledTabs
-          selectedTabName={activeTab}
-          onTabSelected={handleTabChange}
-          alignment="center"
-          keepTabsMounted={false}
+        <div
+          style={{
+            // Explicit height is required to prevent the Twilio Tabs content from collapsing in this dialog.
+            height: 108,
+          }}
         >
-          <TwilioTab uniqueName="quickDial" label={<Template code={QUICK_DIAL_TAB_KEY} />} key="quickDial">
-            {hasQuickDial && renderQuickDial()}
-          </TwilioTab>
-          <TwilioTab uniqueName="enterNumber" label={<Template code={ENTER_NUMBER_TAB_KEY} key="enterNumber" />}>
-            {enableManualDial && renderManualDial()}
-          </TwilioTab>
-        </StyledTabs>
+          <StyledTabs
+            selectedTabName={activeTab}
+            onTabSelected={handleTabChange}
+            alignment="center"
+            keepTabsMounted={false}
+          >
+            <TwilioTab uniqueName="quickDial" label={<Template code={QUICK_DIAL_TAB_KEY} />} key="quickDial">
+              {hasQuickDial && renderQuickDial()}
+            </TwilioTab>
+            <TwilioTab uniqueName="enterNumber" label={<Template code={ENTER_NUMBER_TAB_KEY} key="enterNumber" />}>
+              {enableManualDial && renderManualDial()}
+            </TwilioTab>
+          </StyledTabs>
+        </div>
       ) : (
         <>
           {hasQuickDial && renderQuickDial()}
