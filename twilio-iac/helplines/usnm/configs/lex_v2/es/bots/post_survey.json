@@ -118,7 +118,7 @@
           "11": {
             "slot_name": "demo_zip",
             "slot_type_name": "zip_code",
-            "slot_question": "¿Cuáles son los 5 dígitos de tu código postal? ",
+            "slot_question": "¿Cuáles son los 5 dígitos de tu código postal?\nSi no desea compartir su código postal, responda con 00000",
             "failure_response": "Gracias por compartir tus comentarios. No dudes en comunicarte nuevamente si necesitas apoyo adicional.",
             "variations": [
               "Solo se permiten números."

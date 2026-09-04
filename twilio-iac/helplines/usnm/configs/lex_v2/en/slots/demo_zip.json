@@ -10,7 +10,7 @@
                 {
                     "message": {
                         "plainTextMessage": {
-                            "value": "What is your 5-digit zip code?"
+                            "value": "What is your 5-digit zip code? \nIf you do not want to share your 5-digit zip code, reply with 00000"
                         }
                     },
                     "variations": [

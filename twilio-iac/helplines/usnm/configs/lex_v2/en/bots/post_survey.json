@@ -119,7 +119,7 @@
           "11": {
             "slot_name": "demo_zip",
             "slot_type_name": "zip_code",
-            "slot_question": "What is your 5-digit zip code?",
+            "slot_question": "What is your 5-digit zip code?\nIf you do not want to share your 5-digit zip code, reply with 00000",
             "failure_response": "Thank you for sharing your feedback. Feel free to reach out again if you need additional support.",
             "variations": [
               "Only numbers are allowed."
