@@ -124,22 +124,32 @@ const PhoneInputDialog: React.FC<PhoneDialogProps> = ({
         <Bold>
           <Template code="Conference-AddConferenceCallParticipant" />
         </Bold>
-        <CloseButton onClick={() => setIsDialogOpen(false)} aria-label="CloseButton" style={{ marginLeft: 'auto' }} />
+        <CloseButton
+          onClick={() => setIsDialogOpen(false)}
+          aria-label="CloseButton"
+          style={{ marginLeft: 'auto', marginRight: 0, paddingRight: 0 }}
+        />
       </Row>
       {showTabs ? (
-        <StyledTabs
-          selectedTabName={activeTab}
-          onTabSelected={handleTabChange}
-          alignment="center"
-          keepTabsMounted={false}
+        <div
+          style={{
+            height: '108px',
+          }}
         >
-          <TwilioTab uniqueName="quickDial" label={<Template code={QUICK_DIAL_TAB_KEY} />} key="quickDial">
-            {hasQuickDial && renderQuickDial()}
-          </TwilioTab>
-          <TwilioTab uniqueName="enterNumber" label={<Template code={ENTER_NUMBER_TAB_KEY} key="enterNumber" />}>
-            {enableManualDial && renderManualDial()}
-          </TwilioTab>
-        </StyledTabs>
+          <StyledTabs
+            selectedTabName={activeTab}
+            onTabSelected={handleTabChange}
+            alignment="center"
+            keepTabsMounted={false}
+          >
+            <TwilioTab uniqueName="quickDial" label={<Template code={QUICK_DIAL_TAB_KEY} />} key="quickDial">
+              {hasQuickDial && renderQuickDial()}
+            </TwilioTab>
+            <TwilioTab uniqueName="enterNumber" label={<Template code={ENTER_NUMBER_TAB_KEY} key="enterNumber" />}>
+              {enableManualDial && renderManualDial()}
+            </TwilioTab>
+          </StyledTabs>
+        </div>
       ) : (
         <>
           {hasQuickDial && renderQuickDial()}
