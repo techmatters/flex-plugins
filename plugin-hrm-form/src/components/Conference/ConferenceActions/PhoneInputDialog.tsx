@@ -30,6 +30,7 @@ import {
 import type { QuickDialOption } from '../../../states/configuration/reducer';
 import { lookupTranslation } from '../../../translations';
 import { StyledTabs } from '../../search/styles';
+import useFocus from '../../../utils/useFocus';
 
 type PhoneDialogProps = {
   targetNumber: string;
@@ -70,6 +71,8 @@ const PhoneInputDialog: React.FC<PhoneDialogProps> = ({
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const focusRef = useFocus();
 
   const handleTabChange = (value: TabValue) => {
     setActiveTab(value);
@@ -125,6 +128,7 @@ const PhoneInputDialog: React.FC<PhoneDialogProps> = ({
           <Template code="Conference-AddConferenceCallParticipant" />
         </Bold>
         <CloseButton
+          buttonRef={focusRef}
           onClick={() => setIsDialogOpen(false)}
           aria-label="CloseButton"
           style={{ marginLeft: 'auto', marginRight: 0, paddingRight: 0 }}
