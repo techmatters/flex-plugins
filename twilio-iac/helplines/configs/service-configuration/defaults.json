@@ -1,90 +1,90 @@
 {
-    "ui_attributes": {
-        "version_compatibility": "yes",
-        "colorTheme": {
-            "light": true,
-            "baseName": "FlexLight",
-            "preset": {
-                "id": "light-blue",
-                "name": "Light Blue"
-            },
-            "overrides": {
-                "MainHeader": {
-                    "Container": {
-                        "background": "#233659"
-                    }
-                },
-                "SideNav": {
-                    "Button": {
-                        "background": "#4F5E7A"
-                    },
-                    "Container": {
-                        "background": "#4F5E7A"
-                    }
-                }
-            }
+  "ui_attributes": {
+    "version_compatibility": "yes",
+    "colorTheme": {
+      "light": true,
+      "baseName": "FlexLight",
+      "preset": {
+        "id": "light-blue",
+        "name": "Light Blue"
+      },
+      "overrides": {
+        "MainHeader": {
+          "Container": {
+            "background": "#233659"
+          }
         },
-        "notifications": {
-            "browser": true
-        },
-        "theme": {
-            "isLight": true
-        },
-        "warmTransfers": {
-            "enabled": true
-        },
-        "version_message": ""
+        "SideNav": {
+          "Button": {
+            "background": "#4F5E7A"
+          },
+          "Container": {
+            "background": "#4F5E7A"
+          }
+        }
+      }
     },
-    "attributes": {
-        "seenOnboarding" : true,
-        "hrm_api_version" : "v0",
-        "monitoringEnv" : "production",
-        "pdfImagesSource" : "https://tl-public-chat.s3.amazonaws.com",
-        "logo_url" : "https://aselo-logo.s3.amazonaws.com/145+transparent+background+no+TM.png",
-        "enableExternalRecordings": false,
-        "enableUnmaskingCalls": false,
-        "enableClientProfiles": true,
-        "preventSendingAttachmentsFromFlex": false,
-        "enableConferencing": false,
-        "feature_flags": {
-            "enable_active_contact_header": true,
-            "enable_canned_responses": true,
-            "enable_client_profiles": true,
-            "enable_conferencing": false,
-            "enable_confirm_on_browser_close": true,
-            "enable_contact_editing": true,
-            "enable_counselor_toolkits": true,
-            "enable_custom_links" : true,
-            "enable_csam_clc_report": false,
-            "enable_csam_report": false,
-            "enable_dual_write": false,
-            "enable_emoji_picker": true,
-            "enable_external_transcripts": true,
-            "enable_fullstory_monitoring": true,
-            "enable_generalized_search": true,
-            "enable_last_case_status_update_info": true,
-            "enable_lex": false,
-            "enable_llm_summary": false,
-            "enable_manual_pulling": true,
-            "enable_offline_contact": true,
-            "enable_permissions_from_backend": true,
-            "enable_post_survey": false,
-            "enable_previous_contacts": true,
-            "enable_save_in_progress_contacts": true,
-            "enable_save_insights": true,
-            "enable_teams_view_enhancements2": true,
-            "enable_transfers": true,
-            "enable_twilio_transcripts": false,
-            "enable_upload_documents": true,
-            "enable_voice_recordings": false,
-            "use_twilio_lambda_for_conference_functions": true,
-            "use_twilio_lambda_for_conversation_duration": true,
-            "use_twilio_lambda_for_iwf_reporting": true,
-            "use_twilio_lambda_for_offline_contact_tasks": true,
-            "use_twilio_lambda_for_task_assignment": true
-
-        },
-        "multipleOfficeSupport": false,
-        "WARNING": "These attributes are set using a tool in the twilio-iac repo. If you are seeing this message anywhere else, please stop and use the process described here: https://github.com/techmatters/flex-plugins/blob/master/twilio-iac/docs/service_configuration.md"
-    }
+    "notifications": {
+      "browser": true
+    },
+    "theme": {
+      "isLight": true
+    },
+    "warmTransfers": {
+      "enabled": true
+    },
+    "version_message": ""
+  },
+  "attributes": {
+    "system_down": true,
+    "seenOnboarding": true,
+    "hrm_api_version": "v0",
+    "monitoringEnv": "production",
+    "pdfImagesSource": "https://tl-public-chat.s3.amazonaws.com",
+    "logo_url": "https://aselo-logo.s3.amazonaws.com/145+transparent+background+no+TM.png",
+    "enableExternalRecordings": false,
+    "enableUnmaskingCalls": false,
+    "enableClientProfiles": true,
+    "preventSendingAttachmentsFromFlex": false,
+    "enableConferencing": false,
+    "feature_flags": {
+      "enable_active_contact_header": true,
+      "enable_canned_responses": true,
+      "enable_client_profiles": true,
+      "enable_conferencing": false,
+      "enable_confirm_on_browser_close": true,
+      "enable_contact_editing": true,
+      "enable_counselor_toolkits": true,
+      "enable_custom_links": true,
+      "enable_csam_clc_report": false,
+      "enable_csam_report": false,
+      "enable_dual_write": false,
+      "enable_emoji_picker": true,
+      "enable_external_transcripts": true,
+      "enable_fullstory_monitoring": true,
+      "enable_generalized_search": true,
+      "enable_last_case_status_update_info": true,
+      "enable_lex": false,
+      "enable_llm_summary": false,
+      "enable_manual_pulling": true,
+      "enable_offline_contact": true,
+      "enable_permissions_from_backend": true,
+      "enable_post_survey": false,
+      "enable_previous_contacts": true,
+      "enable_save_in_progress_contacts": true,
+      "enable_save_insights": true,
+      "enable_teams_view_enhancements2": true,
+      "enable_transfers": true,
+      "enable_twilio_transcripts": false,
+      "enable_upload_documents": true,
+      "enable_voice_recordings": false,
+      "use_twilio_lambda_for_conference_functions": true,
+      "use_twilio_lambda_for_conversation_duration": true,
+      "use_twilio_lambda_for_iwf_reporting": true,
+      "use_twilio_lambda_for_offline_contact_tasks": true,
+      "use_twilio_lambda_for_task_assignment": true
+    },
+    "multipleOfficeSupport": false,
+    "WARNING": "These attributes are set using a tool in the twilio-iac repo. If you are seeing this message anywhere else, please stop and use the process described here: https://github.com/techmatters/flex-plugins/blob/master/twilio-iac/docs/service_configuration.md"
+  }
 }
