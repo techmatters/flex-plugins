@@ -1,5 +1,5 @@
 /**
- * This file overrides the config output by `common.hcl` that are specific to the production environment.
+ * This file overrides the config output by `common.hcl` that are specific to the staging environment.
  **/
 
 locals {
@@ -14,24 +14,29 @@ locals {
  
     }
 
-    //Serverless -- to allow enabling the operating hours check on this production account.
+    //Serverless -- to allow enabling the operating hours check on this staging account.
     ui_editable = true
     
     studio_flows = {
       post_call_survey : {
         templatefile = "/app/twilio-iac/helplines/usnm/templates/studio-flows/post-call-survey.tftpl"
         flow_vars = {
+          conversation_service_sid = ""
+          outbound_phone_number    = ""
         }
       },
       post_call_survey_es : {
         templatefile = "/app/twilio-iac/helplines/usnm/templates/studio-flows/post-call-survey-es.tftpl"
         flow_vars = {
+          conversation_service_sid = ""
+          outbound_phone_number    = ""
         }
       },
       post_call_survey_en : {
         templatefile = "/app/twilio-iac/helplines/usnm/templates/studio-flows/post-call-survey-en.tftpl"
         flow_vars = {
-
+          conversation_service_sid = ""
+          outbound_phone_number    = ""
         }
       }
     }
@@ -52,6 +57,6 @@ locals {
       recording_url                    = "https://<place_holder>.mp3"
     }
 
-    get_profile_flags_for_identifier_base_url = "https://hrm-production-us.tl.techmatters.org/lambda/twilio/account-scoped"
+    get_profile_flags_for_identifier_base_url = "https://hrm-staging-us.tl.techmatters.org/lambda/twilio/account-scoped"
   }
 }
