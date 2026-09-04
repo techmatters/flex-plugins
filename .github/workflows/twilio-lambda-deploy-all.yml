@@ -55,6 +55,7 @@ jobs:
         lambda_path:
           - account-scoped
           - scheduled-jobs-processor
+          - external-task
           - facebookCallback
           - facebookSignin
           - instagramWebhook

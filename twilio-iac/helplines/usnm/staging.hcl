@@ -56,8 +56,21 @@ locals {
           conversation_service_sid = "IS2c1c97d06ab84ab9b89e4a5d021884c1"
           outbound_phone_number    = "+15712007241"
         }
+      },
+      post_call_survey_es : {
+        templatefile = "/app/twilio-iac/helplines/usnm/templates/studio-flows/post-call-survey-es.tftpl"
+        flow_vars = {
+          conversation_service_sid = "IS2c1c97d06ab84ab9b89e4a5d021884c1"
+          outbound_phone_number    = "+15712007241"
+        }
+      },
+      post_call_survey_en : {
+        templatefile = "/app/twilio-iac/helplines/usnm/templates/studio-flows/post-call-survey-en.tftpl"
+        flow_vars = {
+          conversation_service_sid = "IS2c1c97d06ab84ab9b89e4a5d021884c1"
+          outbound_phone_number    = "+15712007241"
+        }
       }
-
     }
     
     #Channels

@@ -57,4 +57,5 @@ export type FeatureFlags = {
   use_twilio_lambda_transfers: boolean; // Use the twilio account scoped lambda for transferChatStart
   // use_twilio_lambda_adjust_capacity: boolean; // Use the twilio account scoped lambda for handling adjusting capacity on task router events
   // use_twilio_lambda_janitor: boolean; // Use the twilio account scoped lambda for handling channel janitor jobs on task router events
+  use_new_dispatcher_path: boolean;
 };
