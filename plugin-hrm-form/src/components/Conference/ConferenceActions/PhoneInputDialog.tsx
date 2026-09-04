@@ -130,7 +130,6 @@ const PhoneInputDialog: React.FC<PhoneDialogProps> = ({
         <CloseButton
           buttonRef={focusRef}
           onClick={() => setIsDialogOpen(false)}
-          aria-label="CloseButton"
           style={{ marginLeft: 'auto', marginRight: 0, paddingRight: 0 }}
         />
       </Row>
