@@ -109,13 +109,11 @@ const VoicemailTaskPanel: React.FC<Props> = ({ task }) => {
             <>
               <Section>
                 <PrimaryButton fullWidth={true} onClick={onClickCallBack}>
-                  <span style={{ width: '10px' }} />
                   <Flex.Template code="TaskPanel-ActiveVoicemail-CallBack" phoneNumber={from} />
                 </PrimaryButton>
               </Section>
               <Section>
                 <SecondaryButton fullWidth={true} onClick={onClickRetryLater}>
-                  <span style={{ width: '10px' }} />
                   <Flex.Template code="TaskPanel-ActiveVoicemail-RetryLater" />
                 </SecondaryButton>
               </Section>
