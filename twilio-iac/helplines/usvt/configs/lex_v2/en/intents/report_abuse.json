@@ -1,0 +1,70 @@
+{
+  "intentName": "report_abuse",
+  "description": "Routing intent for 'How can we help you today?' option: report_abuse",
+  "sampleUtterances": [
+    {
+      "utterance": "1"
+    },
+    {
+      "utterance": "Report"
+    },
+    {
+      "utterance": "Reporting child abuse and neglect"
+    },
+    {
+      "utterance": "report abuse"
+    },
+    {
+      "utterance": "report child abuse"
+    }
+  ],
+  "dialogCodeHook": {
+    "enabled": false
+  },
+  "fulfillmentCodeHook": {
+    "enabled": false,
+    "active": true,
+    "postFulfillmentStatusSpecification": {
+      "successNextStep": {
+        "dialogAction": {
+          "type": "CloseIntent"
+        },
+        "intent": {}
+      },
+      "failureNextStep": {
+        "dialogAction": {
+          "type": "CloseIntent"
+        },
+        "intent": {}
+      },
+      "timeoutNextStep": {
+        "dialogAction": {
+          "type": "CloseIntent"
+        },
+        "intent": {}
+      }
+    }
+  },
+  "slotPriorities": [],
+  "intentClosingSetting": {
+    "closingResponse": {
+      "messageGroups": [
+        {
+          "message": {
+            "plainTextMessage": {
+              "value": "If you or someone else is in immediate danger, please call 911. If you are concerned about the safety or well-being of a child and would like to make a report of child abuse or neglect, you can call 1-800-649-5285. The line is available 24 hours a day, 7 days a week."
+            }
+          }
+        }
+      ],
+      "allowInterrupt": true
+    },
+    "active": true,
+    "nextStep": {
+      "dialogAction": {
+        "type": "EndConversation"
+      },
+      "intent": {}
+    }
+  }
+}

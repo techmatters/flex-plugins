@@ -1,0 +1,189 @@
+{
+  "pre_survey": {
+    "description": "usvt/configs/lex_v2/en/bots Pre Survey bot",
+    "locale": "en_US",
+    "child_directed": true,
+    "idle_session_ttl_in_seconds": "350",
+    "staging_bot_alias_id": "TSTALIASID",
+    "type": "Bot",
+    "intents": {
+      "pre_survey": {
+        "utterances": [
+          {
+            "utterance": "trigger_pre_survey"
+          },
+          {
+            "utterance": "Incoming webchat contact"
+          }
+        ],
+        "closing_response": {
+          "message": "How can we help you today?\n1. Report child abuse and neglect\n2. Talk with someone about something that is happening\n3. Learn how to enroll in parent education programs\n4. Child Sexual Abuse Prevention: school-based programs, adult-focused programs and training of trainers\n5. Healthy Relationships Project\u00ae school-based curriculum\n6. Adult Responsibility Project trainings\n7. Apply to be a volunteer"
+        },
+        "initial_response": {
+          "message": "If this is a life-threatening emergency, please contact 911. To help us connect you with the right support, please answer a few short questions.",
+          "slot_to_elicit": "role"
+        },
+        "slot_priorities": {
+          "1": {
+            "slot_name": "role",
+            "slot_type_name": "role",
+            "slot_question": "Which best describes your role today?\n1. Parent\n2. Caregiver\n3. Pregnant or expecting parent\n4. Family member\n5. Professional/Service Provider\n6. Community Member\n7. Volunteer\n8. Other",
+            "failure_response": "We are having trouble understanding your response."
+          },
+          "2": {
+            "slot_name": "town",
+            "slot_type_name": "AMAZON.FreeFormInput",
+            "slot_question": "What town are you reaching out from?",
+            "failure_response": "We are having trouble understanding your response."
+          },
+          "3": {
+            "slot_name": "howHeardAboutUs",
+            "slot_type_name": "howHeardAboutUs",
+            "slot_question": "How did you hear about us?\n1. Google Search\n2. Social media\n3. Healthcare provider\n4. DCF\n5. School\n6. Friend/family\n7. Community organization\n8. Other",
+            "failure_response": "We are having trouble understanding your response."
+          }
+        }
+      },
+      "report_abuse": {
+        "utterances": [
+          {
+            "utterance": "1"
+          },
+          {
+            "utterance": "Report"
+          },
+          {
+            "utterance": "Reporting child abuse and neglect"
+          },
+          {
+            "utterance": "report abuse"
+          },
+          {
+            "utterance": "report child abuse"
+          }
+        ],
+        "closing_response": {
+          "message": "If you or someone else is in immediate danger, please call 911. If you are concerned about the safety or well-being of a child and would like to make a report of child abuse or neglect, you can call 1-800-649-5285. The line is available 24 hours a day, 7 days a week."
+        },
+        "slot_priorities": {}
+      },
+      "talk_to_someone": {
+        "utterances": [
+          {
+            "utterance": "2"
+          },
+          {
+            "utterance": "Talk with someone"
+          },
+          {
+            "utterance": "talk to someone"
+          },
+          {
+            "utterance": "I need to talk"
+          }
+        ],
+        "closing_response": {
+          "message": "If you would like to talk with someone you can text this number XXX-XXX-XXXX or call XXX-XXX-XXXX."
+        },
+        "slot_priorities": {}
+      },
+      "parent_education": {
+        "utterances": [
+          {
+            "utterance": "3"
+          },
+          {
+            "utterance": "parent education"
+          },
+          {
+            "utterance": "enroll in parent education programs"
+          },
+          {
+            "utterance": "parenting classes"
+          }
+        ],
+        "closing_response": {
+          "message": "We are glad you are interested in learning more about our programs. You can choose the option that feels most helpful to you: to view upcoming programs, click here. To enroll in a program, click here. To refer a family, click here. If you have a specific question or would prefer to speak with someone, please email familysupport@pcavt.org. We are happy to help you find the information or support that is right for you."
+        },
+        "slot_priorities": {}
+      },
+      "csa_prevention": {
+        "utterances": [
+          {
+            "utterance": "4"
+          },
+          {
+            "utterance": "child sexual abuse prevention"
+          },
+          {
+            "utterance": "school based programs"
+          },
+          {
+            "utterance": "training of trainers"
+          }
+        ],
+        "closing_response": {
+          "message": "Interested in learning more about Train the Trainer opportunities? You can click here to view upcoming events and find additional information."
+        },
+        "slot_priorities": {}
+      },
+      "healthy_relationships": {
+        "utterances": [
+          {
+            "utterance": "5"
+          },
+          {
+            "utterance": "healthy relationships project"
+          },
+          {
+            "utterance": "HRP"
+          },
+          {
+            "utterance": "school based curriculum"
+          }
+        ],
+        "closing_response": {
+          "message": "Looking for Healthy Relationships Project resources or curriculum? To purchase curriculum, click on the link here. To contact the HRP team, please email hrpteam@pcavt.org."
+        },
+        "slot_priorities": {}
+      },
+      "adult_responsibility": {
+        "utterances": [
+          {
+            "utterance": "6"
+          },
+          {
+            "utterance": "adult responsibility project"
+          },
+          {
+            "utterance": "ART trainings"
+          }
+        ],
+        "closing_response": {
+          "message": "You can explore the Adult Responsibilities Training Calendar and choose the training opportunity that works best for you here: click here."
+        },
+        "slot_priorities": {}
+      },
+      "volunteer_apply": {
+        "utterances": [
+          {
+            "utterance": "7"
+          },
+          {
+            "utterance": "volunteer"
+          },
+          {
+            "utterance": "apply to be a volunteer"
+          },
+          {
+            "utterance": "I want to volunteer"
+          }
+        ],
+        "closing_response": {
+          "message": "Thank you for your interest in volunteering with us. We welcome you to learn more and apply when you are ready, click here. If you have questions about volunteering or would like more information before applying, please reach out to our team at pcavt@pcavt.org."
+        },
+        "slot_priorities": {}
+      }
+    }
+  }
+}

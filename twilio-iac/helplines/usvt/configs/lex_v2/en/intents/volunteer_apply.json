@@ -1,0 +1,67 @@
+{
+  "intentName": "volunteer_apply",
+  "description": "Routing intent for 'How can we help you today?' option: volunteer_apply",
+  "sampleUtterances": [
+    {
+      "utterance": "7"
+    },
+    {
+      "utterance": "volunteer"
+    },
+    {
+      "utterance": "apply to be a volunteer"
+    },
+    {
+      "utterance": "I want to volunteer"
+    }
+  ],
+  "dialogCodeHook": {
+    "enabled": false
+  },
+  "fulfillmentCodeHook": {
+    "enabled": false,
+    "active": true,
+    "postFulfillmentStatusSpecification": {
+      "successNextStep": {
+        "dialogAction": {
+          "type": "CloseIntent"
+        },
+        "intent": {}
+      },
+      "failureNextStep": {
+        "dialogAction": {
+          "type": "CloseIntent"
+        },
+        "intent": {}
+      },
+      "timeoutNextStep": {
+        "dialogAction": {
+          "type": "CloseIntent"
+        },
+        "intent": {}
+      }
+    }
+  },
+  "slotPriorities": [],
+  "intentClosingSetting": {
+    "closingResponse": {
+      "messageGroups": [
+        {
+          "message": {
+            "plainTextMessage": {
+              "value": "Thank you for your interest in volunteering with us. We welcome you to learn more and apply when you are ready, click here. If you have questions about volunteering or would like more information before applying, please reach out to our team at pcavt@pcavt.org."
+            }
+          }
+        }
+      ],
+      "allowInterrupt": true
+    },
+    "active": true,
+    "nextStep": {
+      "dialogAction": {
+        "type": "EndConversation"
+      },
+      "intent": {}
+    }
+  }
+}

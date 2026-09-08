@@ -14,6 +14,12 @@ locals {
     enable_post_survey         = false
     enable_external_recordings = true
     permission_config          = "demo"
+    enable_lex_v2              = true
+
+    lex_v2_bot_languages = {
+      en : ["pre_survey"]
+    }
+
     workflows = {
       master : {
         friendly_name = "Master Workflow"

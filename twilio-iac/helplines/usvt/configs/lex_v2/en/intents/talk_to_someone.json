@@ -1,0 +1,67 @@
+{
+  "intentName": "talk_to_someone",
+  "description": "Routing intent for 'How can we help you today?' option: talk_to_someone",
+  "sampleUtterances": [
+    {
+      "utterance": "2"
+    },
+    {
+      "utterance": "Talk with someone"
+    },
+    {
+      "utterance": "talk to someone"
+    },
+    {
+      "utterance": "I need to talk"
+    }
+  ],
+  "dialogCodeHook": {
+    "enabled": false
+  },
+  "fulfillmentCodeHook": {
+    "enabled": false,
+    "active": true,
+    "postFulfillmentStatusSpecification": {
+      "successNextStep": {
+        "dialogAction": {
+          "type": "CloseIntent"
+        },
+        "intent": {}
+      },
+      "failureNextStep": {
+        "dialogAction": {
+          "type": "CloseIntent"
+        },
+        "intent": {}
+      },
+      "timeoutNextStep": {
+        "dialogAction": {
+          "type": "CloseIntent"
+        },
+        "intent": {}
+      }
+    }
+  },
+  "slotPriorities": [],
+  "intentClosingSetting": {
+    "closingResponse": {
+      "messageGroups": [
+        {
+          "message": {
+            "plainTextMessage": {
+              "value": "If you would like to talk with someone you can text this number XXX-XXX-XXXX or call XXX-XXX-XXXX."
+            }
+          }
+        }
+      ],
+      "allowInterrupt": true
+    },
+    "active": true,
+    "nextStep": {
+      "dialogAction": {
+        "type": "EndConversation"
+      },
+      "intent": {}
+    }
+  }
+}
