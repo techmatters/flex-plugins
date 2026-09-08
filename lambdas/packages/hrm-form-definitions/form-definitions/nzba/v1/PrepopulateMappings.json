@@ -3,6 +3,7 @@
     "age": "ChildInformationTab.age",
     "friendlyName": "ChildInformationTab.friendlyName",
     "ethnicity1": "ChildInformationTab.ethnicity1",
+    "district": "ChildInformationTab.district",
     "email": "ChildInformationTab.email",
     "howHeardAboutWu": "ChildInformationTab.howHeardAboutWu",
     "topic": "ChildInformationTab.topic",
