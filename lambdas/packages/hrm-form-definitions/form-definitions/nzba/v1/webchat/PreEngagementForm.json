@@ -123,12 +123,8 @@
       "isPII": false,
       "options": [
         {
-          "value": "",
-          "label": ""
-        },
-        {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "Ashburton district",
