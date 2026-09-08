@@ -118,7 +118,7 @@
     },
     {
       "name": "district",
-      "label": "District",
+      "label": "Which District do you live in?",
       "type": "select",
       "isPII": false,
       "options": [
