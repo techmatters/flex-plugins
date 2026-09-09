@@ -115,7 +115,9 @@
     "TabbedForms-ExistingCase": "-Disabled-",
     "abusive": "Familiar Help Seeker",
     "TabbedForms-NewCase": "-Disabled-",
-    "Error-CategoryRequired": "Select all that apply. At least one must be selected."
+    "Error-CategoryRequired": "Select all that apply. At least one must be selected.",
+    "Conference-PhoneInputDialog-QuickDialItem/988-English": "988 (English)",
+    "Conference-PhoneInputDialog-QuickDialItem/988-Spanish": "988 (Spanish)"
   },
   "es": {
     "HelplineSubstitution": "Substitución de la Línea de Ayuda",

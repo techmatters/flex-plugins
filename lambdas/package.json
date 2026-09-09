@@ -7,6 +7,7 @@
   "workspaces": [
     "account-scoped",
     "scheduled-jobs-processor",
+    "external-task",
     "facebookCallback",
     "facebookSignin",
     "instagramWebhook",
@@ -23,8 +24,7 @@
     "packages/*"
   ],
   "dependencies": {
-    "dotenv": "^16.3.1",
-    "twilio": "^6.0.2"
+    "dotenv": "^16.3.1"
   },
   "devDependencies": {
     "@tsconfig/node18": "^18.2.1",

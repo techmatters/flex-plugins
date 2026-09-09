@@ -77,6 +77,27 @@
     "CasePrint-TabularSection-Header/sceneCare": "Scene, Injury & Care On Arrival",
     "CasePrint-TabularSection-Header/treatmentProceduresMedication": "Treatment, Procedures, and Medication",
     "CasePrint-TabularSection-Header/vitalSigns": "Vital Signs",
-    "CasePrint-TabularSection-Header/disposition": "Disposition & Sign Off"
+    "CasePrint-TabularSection-Header/disposition": "Disposition & Sign Off",
+    "Case-SectionList-Title/incidentReport": "Incident Report",
+    "Case-NoSections/incidentReport": "No incident report listed",
+    "Case-SectionList-Add/incidentReport": "Add Incident Report",
+    "CaseSection-BottomBar-SaveAndAddAnother/incidentReport": "Save and add another",
+    "CaseSection-BottomBar-Save/incidentReport": "Save",
+    "CaseSection-Add/incidentReport": "Add Incident Report",
+    "Case-SectionList-NoItems/incidentReport": "No Incident Report Listed",
+    "CaseSection-View-Title/incidentReport": "View Incident Report",
+    "CaseSection-Edit/incidentReport": "Edit Incident Report",
+    "CasePrint-TabularSection-Header/incidentReport": "Incident Report",
+  
+    "Case-SectionList-Title/patientCareReport": "Patient Care Report",
+    "Case-NoSections/patientCareReport": "No patient care report listed",
+    "Case-SectionList-Add/patientCareReport": "Add Patient Care Report",
+    "CaseSection-BottomBar-SaveAndAddAnother/patientCareReport": "Save and add another",
+    "CaseSection-BottomBar-Save/patientCareReport": "Save",
+    "CaseSection-Add/patientCareReport": "Add Patient Care Report",
+    "Case-SectionList-NoItems/patientCareReport": "No Patient Care Report Listed",
+    "CaseSection-View-Title/patientCareReport": "View Patient Care Report",
+    "CaseSection-Edit/patientCareReport": "Edit Patient Care Report",
+    "CasePrint-TabularSection-Header/patientCareReport": "Patient Care Report"
   }
 }
