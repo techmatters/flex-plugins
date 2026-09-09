@@ -44,7 +44,9 @@ export const AseloBaseButton = styled(Button)<AseloBaseButtonProps>`
   cursor: ${({ disabled }) => (disabled ? 'not-allowed' : 'pointer')};
   transition: background-color 0.2s ease;
   opacity: 1 !important;
-
+  && {
+    height: initial;
+  }
   &:focus {
     outline: 2px solid #22a3fa;
   }
@@ -207,7 +209,7 @@ const CloseDialogButton = styled(Button)`
 
 export const ConfirmButton = styled(CloseDialogButton)<ConfirmButtonProps>`
   text-transform: uppercase;
-  color: ${props => HrmTheme.colors.declineTextColor};
+  color: ${_props => HrmTheme.colors.declineTextColor};
   background: linear-gradient(to top, ${HrmTheme.colors.declineColor}, ${HrmTheme.colors.declineColor});
 
   &:hover {

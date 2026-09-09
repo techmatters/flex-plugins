@@ -29,6 +29,8 @@ import {
 } from '../search/results';
 import { loadAseloTwilioConfigurationReducer } from './loadAseloTwilioConfiguration';
 
+export type QuickDialOption = { labelKey: string; phoneNumber: string };
+
 export type ConfigurationState = {
   locale: {
     selected: string;
@@ -42,7 +44,7 @@ export type ConfigurationState = {
   definitionVersions: { [version: string]: DefinitionVersion | undefined };
   currentDefinitionVersion?: DefinitionVersion;
   aseloTwilioConfiguration: {
-    quickDialOptions?: { labelKey: string; phoneNumber: string }[];
+    quickDialOptions?: QuickDialOption[];
   };
 };
 

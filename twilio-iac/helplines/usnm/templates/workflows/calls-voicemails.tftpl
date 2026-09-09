@@ -15,7 +15,7 @@
       },
       {
         "filter_friendly_name": "ES TYA Voicemail",
-        "expression": "channelType =='voicemail' AND service=='tya' AND serviceLanguage == 'spanish'",
+        "expression": "channelType =='voicemail' AND routingAttributes.service=='tya' AND routingAttributes.serviceLanguage == 'spanish'",
         "targets": [
           {
             "expression": "(   worker.waitingOfflineContact != true   AND   (     task.channelType == 'voicemail'     AND     worker.channel.voicemail.assigned_tasks == 0   )   AND   (     'Voicemail' IN worker.routing.skills     AND     'TYA' IN worker.routing.skills     AND     'Spanish' IN worker.routing.skills   )   AND   (     worker.roles HAS 'agent'   )   AND   (     (       task.transferTargetType == 'worker'       AND       task.targetSid == worker.sid     )     OR     (       task.transferTargetType != 'worker'       AND       worker.sid != task.ignoreAgent     )   ) )",
@@ -32,7 +32,7 @@
       },
       {
         "filter_friendly_name": "ES STD Voicemail",
-        "expression": "channelType =='voicemail' AND service=='std' AND serviceLanguage == 'spanish'",
+        "expression": "channelType =='voicemail' AND routingAttributes.service=='std' AND routingAttributes.serviceLanguage == 'spanish'",
         "targets": [
           {
             "queue": "${task_queues.es_std_voicemail}",
@@ -83,7 +83,7 @@
       },
       {
         "filter_friendly_name": "EN TYA Voicemail",
-        "expression": "channelType =='voicemail' AND service=='tya' AND serviceLanguage == 'english'",
+        "expression": "channelType =='voicemail' AND routingAttributes.service=='tya' AND routingAttributes.serviceLanguage == 'english'",
         "targets": [
           {
             "queue": "${task_queues.en_tya_voicemail}",
@@ -100,7 +100,7 @@
       },
       {
         "filter_friendly_name": "EN FCG Voicemail",
-        "expression": "channelType =='voicemail' AND service=='fcg' AND serviceLanguage == 'english'",
+        "expression": "channelType =='voicemail' AND routingAttributes.service=='fcg' AND routingAttributes.serviceLanguage == 'english'",
         "targets": [
           {
             "queue": "${task_queues.en_fcg_voicemail}",
@@ -117,7 +117,7 @@
       },
       {
         "filter_friendly_name": "EN STD Voicemail",
-        "expression": "channelType =='voicemail' AND service=='std' AND serviceLanguage == 'english'",
+        "expression": "channelType =='voicemail' AND routingAttributes.service=='std' AND routingAttributes.serviceLanguage == 'english'",
         "targets": [
           {
             "queue": "${task_queues.en_std_voicemail}",

@@ -1,9 +1,8 @@
 {
   "contact": {
-    "callerInformation": {
-    },
+    "callerInformation": {},
     "childInformation": {
-      "splitFormAt": 5
+      "splitFormAt": 3
     },
     "caseInformation": {
       "splitFormAt": 11
@@ -15,12 +14,7 @@
         "splitFormAt": 7,
         "caseHomeOrder": 1,
         "printOrder": 1,
-        "previewFields": [
-          "name",
-          "gender",
-          "age",
-          "relationshipToChild"
-        ],
+        "previewFields": ["name", "gender", "age", "relationshipToChild"],
         "layout": {
           "name": {
             "widthRatio": 1.5,
@@ -42,12 +36,7 @@
         "splitFormAt": 7,
         "caseHomeOrder": 2,
         "printOrder": 2,
-        "previewFields": [
-          "name",
-          "gender",
-          "age",
-          "relationshipToChild"
-        ],
+        "previewFields": ["name", "gender", "age", "relationshipToChild"],
         "layout": {
           "name": {
             "labelTemplateCode": "Case-PerpetratorName",
@@ -65,11 +54,7 @@
         }
       },
       "incident": {
-        "previewFields": [
-          "date",
-          "duration",
-          "location"
-        ],
+        "previewFields": ["date", "duration", "location"],
         "layout": {
           "date": {
             "includeLabel": false,
@@ -87,11 +72,9 @@
         "splitFormAt": 3
       },
       "referral": {
-        "previewFields": [
-          "referredTo"
-        ],
+        "previewFields": ["referredTo"],
         "layout": {
-            "referredTo": {}
+          "referredTo": {}
         },
         "splitFormAt": 2,
         "printOrder": 4,
@@ -101,11 +84,7 @@
         "splitFormAt": 1,
         "caseHomeOrder": 5,
         "printFormat": "hidden",
-        "previewFields": [
-          "createdAt",
-          "fileName",
-          "comments"
-        ],
+        "previewFields": ["createdAt", "fileName", "comments"],
         "layout": {
           "createdAt": {
             "labelTemplateCode": "Case-DocumentFileName",

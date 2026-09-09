@@ -1,9 +1,171 @@
 [
   {
-    "name": "zipCode",
-    "label": "Zip Code",
-    "type": "input",
-    "isPII": false
+    "name": "seekingHelpFor",
+    "label": "Seeking Help For",
+    "type": "select",
+    "isPII": false,
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "Self",
+        "label": "Self"
+      },
+      {
+        "value": "Someone Else",
+        "label": "Someone Else"
+      },
+      {
+        "value": "Both",
+        "label": "Both"
+      }
+    ]
+  },
+  {
+    "name": "memberOfTheFollowingPopulations",
+    "label": "Member of the Following Populations",
+    "type": "listbox-multiselect",
+    "isPII": false,
+    "options": [
+      {
+        "value": "Family members or caregivers of a loved one with mental illness",
+        "label": "Family members or caregivers of a loved one with mental illness"
+      },
+      {
+        "value": "Uninsured or underinsured",
+        "label": "Uninsured or underinsured"
+      },
+      {
+        "value": "Lower or limited income",
+        "label": "Lower or limited income"
+      },
+      {
+        "value": "Incarcerated or detained persons",
+        "label": "Incarcerated or detained persons"
+      },
+      {
+        "value": "LGBTQIA+ Community",
+        "label": "LGBTQIA+ Community"
+      },
+      {
+        "value": "People experiencing homelessness",
+        "label": "People experiencing homelessness"
+      },
+      {
+        "value": "People with disabilities or a disability",
+        "label": "People with disabilities or a disability"
+      },
+      {
+        "value": "Parents of children",
+        "label": "Parents of children"
+      },
+      {
+        "value": "Military-Affiliation, Veteran, or Active Duty Military",
+        "label": "Military-Affiliation, Veteran, or Active Duty Military"
+      },
+      {
+        "value": "Immigrant, Refugee, or Undocumented Individuals",
+        "label": "Immigrant, Refugee, or Undocumented Individuals"
+      }
+    ]
+  },
+  {
+    "name": "ageGroup",
+    "label": "Age Group",
+    "type": "select",
+    "isPII": false,
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "Teen",
+        "label": "Teen"
+      },
+      {
+        "value": "Young adult",
+        "label": "Young adult"
+      },
+      {
+        "value": "Adult",
+        "label": "Adult"
+      },
+      {
+        "value": "Older adult",
+        "label": "Older adult"
+      }
+    ]
+  },
+  {
+    "name": "genderIdentity",
+    "label": "Gender Identity",
+    "type": "select",
+    "isPII": false,
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "Man/boy",
+        "label": "Man/boy"
+      },
+      {
+        "value": "Woman/girl",
+        "label": "Woman/girl"
+      },
+      {
+        "value": "Nonbinary, gender fluid, nonconforming",
+        "label": "Nonbinary, gender fluid, nonconforming"
+      }
+    ]
+  },
+  {
+    "name": "raceEthnicity",
+    "label": "Race/Ethnicity",
+    "type": "select",
+    "isPII": false,
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "American Indian or Alaska Native",
+        "label": "American Indian or Alaska Native"
+      },
+      {
+        "value": "Asian",
+        "label": "Asian"
+      },
+      {
+        "value": "Black or African American",
+        "label": "Black or African American"
+      },
+      {
+        "value": "Hispanic or Latino",
+        "label": "Hispanic or Latino"
+      },
+      {
+        "value": "Middle Eastern or North African",
+        "label": "Middle Eastern or North African"
+      },
+      {
+        "value": "Native Hawaiian or Pacific Islander",
+        "label": "Native Hawaiian or Pacific Islander"
+      },
+      {
+        "value": "White",
+        "label": "White"
+      },
+      {
+        "value": "Multiracial/multiethnic",
+        "label": "Multiracial/multiethnic"
+      }
+    ]
   },
   {
     "name": "state",
@@ -242,191 +404,9 @@
     ]
   },
   {
-    "name": "raceEthnicity",
-    "label": "Race/Ethnicity",
-    "type": "select",
-    "isPII": false,
-    "options": [
-      {
-        "value": "Unknown",
-        "label": ""
-      },
-      {
-        "value": "American Indian or Alaska Native",
-        "label": "American Indian or Alaska Native"
-      },
-      {
-        "value": "Asian",
-        "label": "Asian"
-      },
-      {
-        "value": "Black or African American",
-        "label": "Black or African American"
-      },
-      {
-        "value": "Hispanic or Latino",
-        "label": "Hispanic or Latino"
-      },
-      {
-        "value": "Middle Eastern or North African",
-        "label": "Middle Eastern or North African"
-      },
-      {
-        "value": "Native Hawaiian or Pacific Islander",
-        "label": "Native Hawaiian or Pacific Islander"
-      },
-      {
-        "value": "White",
-        "label": "White"
-      },
-      {
-        "value": "Multiracial/multiethnic",
-        "label": "Multiracial/multiethnic"
-      }
-    ]
-  },
-  {
-    "name": "genderIdentity",
-    "label": "Gender identity",
-    "type": "select",
-    "isPII": false,
-    "options": [
-      {
-        "value": "Unknown",
-        "label": ""
-      },
-      {
-        "value": "Man/boy",
-        "label": "Man/boy"
-      },
-      {
-        "value": "Woman/girl",
-        "label": "Woman/girl"
-      },
-      {
-        "value": "Nonbinary, gender fluid, nonconforming",
-        "label": "Nonbinary, gender fluid, nonconforming"
-      }
-    ]
-  },
-  {
-    "name": "ageGroup",
-    "label": "Age group ",
-    "type": "select",
-    "isPII": false,
-    "options": [
-      {
-        "value": "Unknown",
-        "label": ""
-      },
-      {
-        "value": "Teen",
-        "label": "Teen"
-      },
-      {
-        "value": "Young adult",
-        "label": "Young adult"
-      },
-      {
-        "value": "Adult",
-        "label": "Adult"
-      },
-      {
-        "value": "Older adult",
-        "label": "Older adult"
-      }
-    ]
-  },
-  {
-    "name": "memberOfTheFollowingPopulations",
-    "label": "Member of the following populations",
-    "type": "listbox-multiselect",
-    "isPII": false,
-    "options": [
-      {
-        "value": "Family members and Caregivers of a loved one with mental illness",
-        "label": "Family members and Caregivers of a loved one with mental illness"
-      },
-      {
-        "value": "Uninsured or underinsured",
-        "label": "Uninsured or underinsured"
-      },
-      {
-        "value": "Lower or limited income",
-        "label": "Lower or limited income"
-      },
-      {
-        "value": "Incarcerated or detained persons",
-        "label": "Incarcerated or detained persons"
-      },
-      {
-        "value": "LGBTQIA+ Community",
-        "label": "LGBTQIA+ Community"
-      },
-      {
-        "value": "People experiencing homelessness",
-        "label": "People experiencing homelessness"
-      },
-      {
-        "value": "People with disabilities/a disability",
-        "label": "People with disabilities/a disability"
-      },
-      {
-        "value": "Parents of children",
-        "label": "Parents of children"
-      },
-      {
-        "value": "Military-affiliation/Veteran/Active Duty Military",
-        "label": "Military-affiliation/Veteran/Active Duty Military"
-      },
-      {
-        "value": "Immigrant/Refugee/Undocumented Individuals",
-        "label": "Immigrant/Refugee/Undocumented Individuals"
-      }
-    ]
-  },
-  {
-    "name": "relationshipToHelpSeeker",
-    "label": "Relationship to Help Seeker",
-    "type": "select",
-    "isPII": false,
-    "options": [
-      {
-        "value": "Unknown",
-        "label": ""
-      },
-      {
-        "value": "Family member/caregiver/other supporter",
-        "label": "Family member/caregiver/other supporter"
-      },
-      {
-        "value": "Prefer not to say/Did not disclose",
-        "label": "Prefer not to say/Did not disclose"
-      },
-      {
-        "value": "Self",
-        "label": "Self"
-      }
-    ]
-  },
-  {
-    "name": "seekingHelpFor",
-    "label": "Seeking Help For",
-    "type": "select",
-    "isPII": false,
-    "options": [
-      {
-        "value": "Unknown",
-        "label": ""
-      },
-      {
-        "value": "Self",
-        "label": "Self"
-      },
-      {
-        "value": "Other loved one",
-        "label": "Other loved one"
-      }
-    ]
+    "name": "zipCode",
+    "label": "Zip Code",
+    "type": "input",
+    "isPII": false
   }
 ]

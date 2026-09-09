@@ -16,8 +16,6 @@
 
 import { styled } from '@twilio/flex-ui';
 
-import { Flex } from '../../../styles';
-
 export const ConferenceButtonWrapper = styled('div')`
   margin-left: 8px;
   margin-right: 8px;
@@ -46,44 +44,61 @@ export const PhoneDialogWrapper = styled('div')<PhoneDialogWrapperProps>`
 `;
 PhoneDialogWrapper.displayName = 'PhoneDialogWrapper';
 
-type DialogArrowProps = {
-  left?: string;
-};
+export const PhoneDialogContent = styled('div')`
+  margin: 12px 0;
+`;
+PhoneDialogContent.displayName = 'PhoneDialogContent';
 
-export const DialogArrow = styled(Flex)<DialogArrowProps>`
-  position: absolute;
-  bottom: 0;
-  left: 125px;
-  background: #ffffff;
-  border: 0px solid #d3d3d3;
+export const PhoneDialogFooter = styled('div')`
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 8px;
+`;
+PhoneDialogFooter.displayName = 'PhoneDialogFooter';
 
-  &:after,
-  &:before {
-    top: 100%;
-    left: 50%;
-    border: solid transparent;
-    content: '';
-    height: 0;
-    width: 0;
-    position: absolute;
-    pointer-events: none;
-  }
+export const PhoneNumberInput = styled('input')`
+  width: 100%;
+  padding: 8px;
+  box-sizing: border-box;
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+  font-size: 14px;
+  background-color: #f3f4f6;
 
-  &:after {
-    border-color: rgba(255, 255, 255, 0);
-    border-top-color: #ffffff;
-    border-width: 10px;
-    margin-left: -10px;
-  }
-
-  &:before {
-    border-color: rgba(211, 211, 211, 0);
-    border-top-color: rgba(211, 211, 211, 0.7);
-    border-width: 13px;
-    margin-left: -13px;
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
   }
 `;
-DialogArrow.displayName = 'DialogArrow';
+PhoneNumberInput.displayName = 'PhoneNumberInput';
+
+export const QuickDialSelect = styled('select')`
+  width: 100%;
+  padding: 8px;
+  box-sizing: border-box;
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+  font-size: 14px;
+  background-color: #f3f4f6;
+  cursor: pointer;
+  appearance: auto;
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+`;
+QuickDialSelect.displayName = 'QuickDialSelect';
+
+export const HelpText = styled('p')`
+  && {
+    margin: 6px 0 0;
+    font-size: 13px;
+    font-weight: normal;
+    color: #606b85;
+  }
+`;
+HelpText.displayName = 'HelpText';
 
 export const ConferenceButton = styled('button')`
   border-style: none;
