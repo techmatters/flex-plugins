@@ -77,6 +77,14 @@
           "insights": ["conversations", "content"]  
         },
         {
+          "name": "mealsProvided",
+          "insights": ["customers", "customer_attribute_3"]  
+        },
+        {
+          "name": "survivalBags",
+          "insights": ["customers", "customer_attribute_4"]  
+        },
+        {
           "name": "basicServices",
           "insights": ["conversations", "conversation_attribute_4"]  
         },
