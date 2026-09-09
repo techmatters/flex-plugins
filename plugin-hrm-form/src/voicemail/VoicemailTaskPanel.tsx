@@ -25,10 +25,7 @@ import { RecordingSection } from '../components/contact/MediaSection';
 import { RootState } from '../states';
 import selectContactByTaskSid from '../states/contacts/selectContactByTaskSid';
 import { isS3StoredRecording } from '../types/types';
-import { PanelContainer, Section, SectionHeader } from '../styles/twilioTaskPanel';
-import VoicemailIcon from '../components/common/icons/VoicemailIcon';
-import CallIcon from '../components/common/icons/CallIcon';
-import HrmTheme from '../styles/HrmTheme';
+import { PanelContainer, Section, SectionGroup, SectionHeader } from '../styles/twilioTaskPanel';
 import { createVoicemailSchedule } from '../services/scheduledJobsService';
 import { VoicemailActionsNotifications } from './setUpVoicemailComponents';
 
@@ -81,71 +78,71 @@ const VoicemailTaskPanel: React.FC<Props> = ({ task }) => {
   return (
     <PanelContainer key="voicemail-actions">
       <FlexBox justifyContent="center" flexDirection="column" paddingTop="20px">
-        <Section>
-          <SectionHeader>
-            <Flex.Template code="TaskPanel-ActiveVoicemail-RecordingLabel" />
-          </SectionHeader>
-          <div>
-            <RecordingSection
-              contactId={contact.savedContact.id}
-              externalStoredRecording={externalStoredRecording}
-              autoLoad
-            />
-          </div>
-        </Section>
-        <Section>
-          <SectionHeader>
-            <Flex.Template code="TaskPanel-ActiveVoicemail-CallerPhoneNumberLabel" />
-          </SectionHeader>
-          <p>{from}</p>
-        </Section>
-        <Section>
-          <SectionHeader>
-            <Flex.Template code="TaskPanel-ActiveVoicemail-ReceivedTimeLabel" />
-          </SectionHeader>
-          <p>
-            <Flex.Template code={receivedDate} />
-          </p>
-        </Section>
-        {callbackAttempts.length < maxCallbackAttempts && !Flex.TaskHelper.isInWrapupMode(task) && (
-          <>
-            <Section>
-              <PrimaryButton fullWidth={true} onClick={onClickCallBack}>
-                <CallIcon width="16px" height="16px" color={HrmTheme.buttonColors.primary.textColor} />
-                <span style={{ width: '10px' }} />
-                <Flex.Template code="TaskPanel-ActiveVoicemail-CallBack" phoneNumber={from} />
-              </PrimaryButton>
-            </Section>
-            <Section>
-              <SecondaryButton fullWidth={true} onClick={onClickRetryLater}>
-                <VoicemailIcon width="16px" height="16px" color={HrmTheme.buttonColors.secondary.textColor} />
-                <span style={{ width: '10px' }} />
-                <Flex.Template code="TaskPanel-ActiveVoicemail-RetryLater" />
-              </SecondaryButton>
-            </Section>
-          </>
-        )}
-        <Section>
-          <SectionHeader>
-            <Flex.Template code="TaskPanel-ActiveVoicemail-CallbackAttemptListLabel" />
-          </SectionHeader>
-          {callbackAttempts.length ? (
-            callbackAttempts.map((attempt, idx) => (
-              <p key={`attempt-${idx}`}>
-                <Flex.Template
-                  code="TaskPanel-ActiveVoicemail-CallbackAttemptListItem"
-                  attemptTime={format(parseISO(attempt[1]), DATE_DISPLAY_FORMAT)}
-                  attemptNo={idx + 1}
-                  maxAttempts={maxCallbackAttempts}
-                />
-              </p>
-            ))
-          ) : (
+        <SectionGroup>
+          <Section>
+            <SectionHeader>
+              <Flex.Template code="TaskPanel-ActiveVoicemail-RecordingLabel" />
+            </SectionHeader>
+            <div>
+              <RecordingSection
+                contactId={contact.savedContact.id}
+                externalStoredRecording={externalStoredRecording}
+                autoLoad
+              />
+            </div>
+          </Section>
+          <Section>
+            <SectionHeader>
+              <Flex.Template code="TaskPanel-ActiveVoicemail-CallerPhoneNumberLabel" />
+            </SectionHeader>
+            <p>{from}</p>
+          </Section>
+          <Section>
+            <SectionHeader>
+              <Flex.Template code="TaskPanel-ActiveVoicemail-ReceivedTimeLabel" />
+            </SectionHeader>
             <p>
-              <Flex.Template code="TaskPanel-ActiveVoicemail-CallbackAttemptListPlaceholder" />
+              <Flex.Template code={receivedDate} />
             </p>
+          </Section>
+          {callbackAttempts.length < maxCallbackAttempts && !Flex.TaskHelper.isInWrapupMode(task) && (
+            <>
+              <Section>
+                <PrimaryButton fullWidth={true} onClick={onClickCallBack}>
+                  <Flex.Template code="TaskPanel-ActiveVoicemail-CallBack" phoneNumber={from} />
+                </PrimaryButton>
+              </Section>
+              <Section>
+                <SecondaryButton fullWidth={true} onClick={onClickRetryLater}>
+                  <Flex.Template code="TaskPanel-ActiveVoicemail-RetryLater" />
+                </SecondaryButton>
+              </Section>
+            </>
           )}
-        </Section>
+        </SectionGroup>
+        <SectionGroup>
+          <Section>
+            <SectionHeader>
+              <Flex.Template code="TaskPanel-ActiveVoicemail-CallbackAttemptListLabel" />
+            </SectionHeader>
+            {callbackAttempts.length ? (
+              callbackAttempts.map((attempt, idx) => (
+                <p key={`attempt-${idx}`}>
+                  <Flex.Template
+                    code="TaskPanel-ActiveVoicemail-CallbackAttemptListItem"
+                    attemptTime={format(parseISO(attempt[1]), DATE_DISPLAY_FORMAT)}
+                    attemptNo={idx + 1}
+                    maxAttempts={maxCallbackAttempts}
+                  />
+                </p>
+              ))
+            ) : (
+              <p>
+                <Flex.Template code="TaskPanel-ActiveVoicemail-CallbackAttemptListPlaceholder" />
+              </p>
+            )}
+          </Section>
+        </SectionGroup>
       </FlexBox>
     </PanelContainer>
   );

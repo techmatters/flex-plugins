@@ -17,14 +17,15 @@
 import type { Contact } from '../../../types/types';
 import { fetchBaseApi } from '../../../services/fetchHrmApi';
 import { getCasePayload } from '../../../services/CaseService';
-import { getHrmConfig } from '../../../hrmConfig';
+import { getAseloFeatureFlags, getHrmConfig } from '../../../hrmConfig';
 
 export async function dispatchIncident({ contact }: { contact: Contact }) {
-  const { workerSid, definitionVersion, accountSid } = getHrmConfig();
+  const { workerSid, definitionVersion, accountSid, helplineCode } = getHrmConfig();
+  const { use_new_dispatcher_path: useNewDispatcherPath } = getAseloFeatureFlags();
 
   const casePayload = getCasePayload(contact, workerSid, definitionVersion);
   const payload = {
-    accountSid,
+    ...(useNewDispatcherPath ? {} : { accountSid }),
     casePayload,
     contactId: contact.id,
   };
@@ -34,5 +35,10 @@ export async function dispatchIncident({ contact }: { contact: Contact }) {
     body: JSON.stringify(payload),
   };
 
-  return fetchBaseApi('/custom-integrations/uscr/dispatcher', options);
+  return fetchBaseApi(
+    useNewDispatcherPath
+      ? `/custom-integrations/beacon/dispatcher/${helplineCode}`
+      : '/custom-integrations/uscr/dispatcher',
+    options,
+  );
 }

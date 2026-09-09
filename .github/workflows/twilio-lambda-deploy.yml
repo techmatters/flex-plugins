@@ -32,6 +32,7 @@ on:
         options:
           - account-scoped
           - scheduled-jobs-processor
+          - external-task
           - facebookCallback
           - facebookSignin
           - instagramWebhook
