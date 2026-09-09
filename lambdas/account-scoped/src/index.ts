@@ -17,7 +17,7 @@
 import qs from 'querystring';
 import type { ALBEvent, ALBResult } from 'aws-lambda';
 import { lookupRoute } from './router';
-import { isErr, newErr } from '@tech-matters/result-type';
+import { isErr, newErr, ResultError } from '@tech-matters/result-type';
 import {
   convertHttpErrorResultToALBResult,
   notFoundResponse,
@@ -103,6 +103,10 @@ export const handler = async (event: ALBEvent): Promise<ALBResult> => {
   } catch (err) {
     const error = err as Error;
     console.error('Unhandled Exception', error);
+    // If the Error was a ResultError, i.e. wrapping an error Result type, log the wrapped result
+    if (error instanceof ResultError) {
+      console.error(`ResultError cause:`, error.errorResult);
+    }
     return convertHttpErrorResultToALBResult(
       newErr({ error: { statusCode: 500, cause: error }, message: error.message }),
     );

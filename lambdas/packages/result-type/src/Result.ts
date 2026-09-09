@@ -31,7 +31,7 @@ export type ErrorResult<TError> = ResultBase & {
   readonly unwrap: () => never;
 };
 
-class ResultError<T extends ErrorResult<any>> extends Error {
+export class ResultError<T extends ErrorResult<any>> extends Error {
   errorResult: T;
 
   constructor(public result: T) {
