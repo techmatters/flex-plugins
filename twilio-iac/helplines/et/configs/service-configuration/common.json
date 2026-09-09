@@ -1,5 +1,9 @@
 {
     "attributes": {
+        "contacts_waiting_channels": [
+            "web",
+            "facebook"
+        ],
         "definitionVersion": "et-v1",
         "feature_flags": {
             "enable_lex": true
