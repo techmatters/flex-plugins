@@ -17,7 +17,7 @@
 import qs from 'querystring';
 import type { ALBEvent, ALBResult } from 'aws-lambda';
 import { lookupRoute } from './router';
-import { isErr, newErr } from '@tech-matters/result-type';
+import { isErr, newErr, ResultError } from '@tech-matters/result-type';
 import {
   convertHttpErrorResultToALBResult,
   notFoundResponse,
@@ -25,7 +25,6 @@ import {
   okTextResponse,
   okXmlResponse,
 } from './albResponses';
-import { ResultError } from '@tech-matters/result-type/src/Result';
 
 const parseBody = ({
   body,
