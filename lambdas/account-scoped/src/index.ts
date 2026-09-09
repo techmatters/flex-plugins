@@ -25,6 +25,7 @@ import {
   okTextResponse,
   okXmlResponse,
 } from './albResponses';
+import { ResultError } from '@tech-matters/result-type/src/Result';
 
 const parseBody = ({
   body,
@@ -103,6 +104,10 @@ export const handler = async (event: ALBEvent): Promise<ALBResult> => {
   } catch (err) {
     const error = err as Error;
     console.error('Unhandled Exception', error);
+    // If the Error was a ResultError, i.e. wrapping an error Result type, log the wrapped result
+    if (error instanceof ResultError) {
+      console.error(`ResultError cause:`, error.errorResult);
+    }
     return convertHttpErrorResultToALBResult(
       newErr({ error: { statusCode: 500, cause: error }, message: error.message }),
     );
