@@ -72,24 +72,6 @@ export const PhoneNumberInput = styled('input')`
 `;
 PhoneNumberInput.displayName = 'PhoneNumberInput';
 
-export const QuickDialSelect = styled('select')`
-  width: 100%;
-  padding: 8px;
-  box-sizing: border-box;
-  border: 1px solid #d1d5db;
-  border-radius: 4px;
-  font-size: 14px;
-  background-color: #f3f4f6;
-  cursor: pointer;
-  appearance: auto;
-
-  &:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-  }
-`;
-QuickDialSelect.displayName = 'QuickDialSelect';
-
 export const HelpText = styled('p')`
   && {
     margin: 6px 0 0;

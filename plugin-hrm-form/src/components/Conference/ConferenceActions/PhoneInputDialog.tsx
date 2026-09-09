@@ -15,18 +15,20 @@
  */
 import React from 'react';
 import { Template, Manager, Tab as TwilioTab } from '@twilio/flex-ui';
-import { Phone as PhoneIcon } from '@material-ui/icons';
+import { Close, Phone as PhoneIcon } from '@material-ui/icons';
 import { CircularProgress } from '@material-ui/core';
 
-import { Row, Bold, CloseButton, PrimaryButton } from '../../../styles';
 import {
-  PhoneDialogWrapper,
-  PhoneDialogFooter,
-  PhoneDialogContent,
-  PhoneNumberInput,
-  QuickDialSelect,
-  HelpText,
-} from './styles';
+  Row,
+  Bold,
+  PrimaryButton,
+  HeaderCloseButton,
+  HiddenText,
+  FormSelect,
+  FormOption,
+  FormSelectWrapper,
+} from '../../../styles';
+import { PhoneDialogWrapper, PhoneDialogFooter, PhoneDialogContent, PhoneNumberInput, HelpText } from './styles';
 import type { QuickDialOption } from '../../../states/configuration/reducer';
 import { lookupTranslation } from '../../../translations';
 import { StyledTabs } from '../../search/styles';
@@ -94,18 +96,21 @@ const PhoneInputDialog: React.FC<PhoneDialogProps> = ({
   const isDialButtonDisabled = isLoading || (activeTab === 'enterNumber' && !targetNumber?.trim());
   const renderQuickDial = () => (
     <PhoneDialogContent>
-      <QuickDialSelect
-        value={targetNumber}
-        onChange={handleQuickDialChange}
-        disabled={isLoading}
-        aria-label={Manager.getInstance().strings[QUICK_DIAL_SELECT_LABEL_KEY]}
-      >
-        {quickDialOptions.map(option => (
-          <option key={option.phoneNumber} value={option.phoneNumber}>
-            {lookupTranslation(option.labelKey)}
-          </option>
-        ))}
-      </QuickDialSelect>
+      <FormSelectWrapper fullWidth={true}>
+        <FormSelect
+          value={targetNumber}
+          onChange={handleQuickDialChange}
+          disabled={isLoading}
+          aria-label={Manager.getInstance().strings[QUICK_DIAL_SELECT_LABEL_KEY]}
+          fullWidth={true}
+        >
+          {quickDialOptions.map(option => (
+            <FormOption key={option.phoneNumber} value={option.phoneNumber}>
+              {lookupTranslation(option.labelKey)}
+            </FormOption>
+          ))}
+        </FormSelect>
+      </FormSelectWrapper>
     </PhoneDialogContent>
   );
   const renderManualDial = () => (
@@ -127,11 +132,17 @@ const PhoneInputDialog: React.FC<PhoneDialogProps> = ({
         <Bold>
           <Template code="Conference-AddConferenceCallParticipant" />
         </Bold>
-        <CloseButton
+        <HeaderCloseButton
           buttonRef={focusRef}
           onClick={() => setIsDialogOpen(false)}
-          style={{ marginLeft: 'auto', marginRight: 0, paddingRight: 0 }}
-        />
+          aria-label="CloseButton"
+          style={{ marginLeft: 'auto', marginRight: -16, marginBottom: 4, paddingRight: 0 }}
+        >
+          <HiddenText>
+            <Template code="NavigableContainer-CloseButton" />
+          </HiddenText>
+          <Close />
+        </HeaderCloseButton>
       </Row>
       {showTabs ? (
         <div
@@ -166,7 +177,7 @@ const PhoneInputDialog: React.FC<PhoneDialogProps> = ({
             <CircularProgress size={16} style={{ color: '#fff' }} />
           ) : (
             <>
-              <PhoneIcon fontSize="small" style={{ marginRight: '6px' }} />
+              <PhoneIcon fontSize="small" style={{ marginRight: '5px', height: '16px', width: '16px' }} />
               <Template code="Conference-DialButton" />
             </>
           )}
