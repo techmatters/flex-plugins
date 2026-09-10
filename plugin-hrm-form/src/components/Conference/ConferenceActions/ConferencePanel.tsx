@@ -44,7 +44,7 @@ const ConferencePanel: React.FC<Props> = ({ task, conference }) => {
   const setCallStatus = (callStatus: CallStatus) => dispatch(setCallStatusAction(task.taskSid, callStatus));
   const setPhoneNumber = (number: string) => dispatch(setPhoneNumberAction(task.taskSid, number));
 
-  const { conferencingEnableManualDial } = getHrmConfig();
+  const { conferencingEnableManualDial, conferencingHoldOnDial } = getHrmConfig();
 
   const toggleDialog = () => {
     setIsDialogOpen(!isDialogOpen);
@@ -80,18 +80,19 @@ const ConferencePanel: React.FC<Props> = ({ task, conference }) => {
       const from = Manager.getInstance().serviceConfiguration.outbound_call_flows.default.caller_id;
       const to = phoneNumber;
       const label = `External party ${to}`;
-
-      await Promise.all(
-        conference.source.participants
-          .filter(p => p.status === 'joined' && !['worker', 'agent', 'supervisor'].includes(p.participantType))
-          .map(p =>
-            conferenceApi.updateParticipant({
-              callSid: p.callSid,
-              conferenceSid: task.conference.conferenceSid,
-              updates: { hold: true },
-            }),
-          ),
-      );
+      if (conferencingHoldOnDial) {
+        await Promise.all(
+          conference.source.participants
+            .filter(p => p.status === 'joined' && !['worker', 'agent', 'supervisor'].includes(p.participantType))
+            .map(p =>
+              conferenceApi.updateParticipant({
+                callSid: p.callSid,
+                conferenceSid: task.conference.conferenceSid,
+                updates: { hold: true },
+              }),
+            ),
+        );
+      }
 
       await conferenceApi.addParticipant({
         from,
