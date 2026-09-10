@@ -104,7 +104,6 @@ const readConfig = () => {
     hideAddToNewCaseButton,
     enforceZeroTranscriptRetention,
     postStudioFlows,
-    allowManualDialOutForConferencing
   } = configAttributes;
   const contactsWaitingChannels = configAttributes.contacts_waiting_channels || null;
   const featureFlagsFromEnvEntries = Object.entries(process.env)
