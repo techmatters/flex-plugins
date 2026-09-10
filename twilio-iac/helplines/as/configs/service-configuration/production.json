@@ -15,7 +15,8 @@
             "enable_voice_recordings": true,
             "enable_csam_report": true,
             "enable_post_survey": false,
-            "enable_lex_v2": true
+            "enable_lex_v2": true,
+            "use_twilio_lambda_for_conference_functions": true
         },
         "permissionConfig": "demo",
         "resources_base_url": "https://hrm-production.tl.techmatters.org"
