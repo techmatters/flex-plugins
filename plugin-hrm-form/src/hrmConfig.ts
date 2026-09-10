@@ -46,45 +46,46 @@ const getEnvironmentFromHrmBaseUrl = (manager: Flex.Manager) => {
 const readConfig = () => {
   const manager = Flex.Manager.getInstance();
   const { identity } = manager.user;
+  const { attributes: configAttributes } = manager.serviceConfiguration;
   // This is a really hacky test, need a better way to determine if the user is one of our bots
   const userIsAseloBot = /aselo.+(?:@|_40)techmatters(?:\.|_2E)org/.test(identity);
   const accountSid = manager.serviceConfiguration.account_sid;
-  const baseUrl = process.env.REACT_APP_HRM_BASE_URL || manager.serviceConfiguration.attributes.hrm_base_url;
-  const hrmBaseUrl = `${process.env.REACT_APP_HRM_BASE_URL || manager.serviceConfiguration.attributes.hrm_base_url}/${
-    manager.serviceConfiguration.attributes.hrm_api_version
+  const baseUrl = process.env.REACT_APP_HRM_BASE_URL || configAttributes.hrm_base_url;
+  const hrmBaseUrl = `${process.env.REACT_APP_HRM_BASE_URL || configAttributes.hrm_base_url}/${
+    configAttributes.hrm_api_version
   }/accounts/${accountSid}${userIsAseloBot ? '-aselo_test' : ''}`;
   const hrmMicroserviceBaseUrl = process.env.REACT_APP_HRM_MICROSERVICE_BASE_URL
-    ? `${process.env.REACT_APP_HRM_MICROSERVICE_BASE_URL}${manager.serviceConfiguration.attributes.hrm_api_version}/accounts/${accountSid}`
+    ? `${process.env.REACT_APP_HRM_MICROSERVICE_BASE_URL}${configAttributes.hrm_api_version}/accounts/${accountSid}`
     : hrmBaseUrl;
   const accountScopedLambdaBaseUrl = `${
-    process.env.REACT_APP_HRM_BASE_URL || manager.serviceConfiguration.attributes.hrm_base_url
+    process.env.REACT_APP_HRM_BASE_URL || configAttributes.hrm_base_url
   }/lambda/twilio/account-scoped/${accountSid}`;
   const llmAssistantBaseUrl = `${
-    process.env.REACT_APP_HRM_BASE_URL || manager.serviceConfiguration.attributes.hrm_base_url
+    process.env.REACT_APP_HRM_BASE_URL || configAttributes.hrm_base_url
   }/lambda/ai/llm-service/${accountSid}`;
   const resourcesConfiguredBaseUrl =
-    process.env.REACT_APP_RESOURCES_BASE_URL || manager.serviceConfiguration.attributes.resources_base_url;
+    process.env.REACT_APP_RESOURCES_BASE_URL || configAttributes.resources_base_url;
   const resourcesBaseUrl = resourcesConfiguredBaseUrl
-    ? `${resourcesConfiguredBaseUrl}/${manager.serviceConfiguration.attributes.hrm_api_version}/accounts/${accountSid}`
+    ? `${resourcesConfiguredBaseUrl}/${configAttributes.hrm_api_version}/accounts/${accountSid}`
     : undefined;
   const serverlessBaseUrl =
-    process.env.REACT_APP_SERVERLESS_BASE_URL || manager.serviceConfiguration.attributes.serverless_base_url;
-  const logoUrl = manager.serviceConfiguration.attributes.logo_url;
-  const assetsBucketUrl = manager.serviceConfiguration.attributes.assets_bucket_url;
+    process.env.REACT_APP_SERVERLESS_BASE_URL || configAttributes.serverless_base_url;
+  const logoUrl = configAttributes.logo_url;
+  const assetsBucketUrl = configAttributes.assets_bucket_url;
 
-  const { helpline_code: helplineCode, environment } = manager.serviceConfiguration.attributes;
+  const { helpline_code: helplineCode, environment } = configAttributes;
   const docsBucket = `tl-aselo-docs-${helplineCode}-${environment}`;
   const configuredFormDefinitionsBaseUrl =
     process.env.REACT_APP_FORM_DEFINITIONS_BASE_URL ||
-    manager.serviceConfiguration.attributes.form_definitions_base_url;
+    configAttributes.form_definitions_base_url;
   const getFormDefinitionsBaseUrl = buildFormDefinitionsBaseUrlGetter({
     environment: getEnvironmentFromHrmBaseUrl(manager),
     configuredFormDefinitionsBaseUrl,
   });
 
-  const externalRecordingsEnabled = manager.serviceConfiguration.attributes.external_recordings_enabled || false;
+  const externalRecordingsEnabled = configAttributes.external_recordings_enabled || false;
   const contactSaveFrequency: ContactSaveFrequency =
-    manager.serviceConfiguration.attributes.contact_save_frequency || 'onTabChange';
+    configAttributes.contact_save_frequency || 'onTabChange';
 
   const chatServiceSid = manager.serviceConfiguration.chat_service_instance_sid;
   const workerSid = manager.workerClient.sid as WorkerSID;
@@ -104,12 +105,8 @@ const readConfig = () => {
     enforceZeroTranscriptRetention,
     postStudioFlows,
     allowManualDialOutForConferencing
-  } = {
-    // Deprecated, remove when service configurations changes have applied 2025-09-30
-    ...manager.serviceConfiguration.attributes.config_flags,
-    ...manager.serviceConfiguration.attributes,
-  } as any;
-  const contactsWaitingChannels = manager.serviceConfiguration.attributes.contacts_waiting_channels || null;
+  } = configAttributes;
+  const contactsWaitingChannels = configAttributes.contacts_waiting_channels || null;
   const featureFlagsFromEnvEntries = Object.entries(process.env)
     .filter(([varName]) => varName.startsWith(featureFlagEnvVarPrefix))
     .map(([name, value]) => [
@@ -117,19 +114,19 @@ const readConfig = () => {
       (value ?? 'false').toLowerCase() === 'true',
     ]);
   const featureFlagsFromEnv = Object.fromEntries(featureFlagsFromEnvEntries);
-  const featureFlagsFromServiceConfig: FeatureFlags = manager.serviceConfiguration.attributes.feature_flags || {};
+  const featureFlagsFromServiceConfig: FeatureFlags = configAttributes.feature_flags || {};
   const featureFlags = {
     ...featureFlagsFromServiceConfig,
     ...featureFlagsFromEnv,
   };
-  // Compatibility, remove feature flag check when service configurations changes have applied 2025-09-30
   const enableClientProfiles =
-    manager.serviceConfiguration.attributes.enableClientProfiles ?? featureFlags.enable_client_profiles ?? true;
-  // Compatibility, remove feature flag check when service configurations changes have applied 2025-09-30
+    configAttributes.enableClientProfiles ?? true;
   const enableConferencing =
-    manager.serviceConfiguration.attributes.enableConferencing ?? featureFlags.enable_conferencing ?? false;
+    configAttributes.enableConferencing ?? false;
   const conferencingEnableManualDial: boolean =
-    manager.serviceConfiguration.attributes.conferencing_enable_manual_dial ?? true;
+    configAttributes.conferencing_enable_manual_dial ?? true;
+  const conferencingHoldOnDial: boolean =
+    configAttributes.conferencingHoldOnDial ?? true;
   const { strings } = (manager as unknown) as {
     strings: { [key: string]: string };
   };
@@ -177,10 +174,11 @@ const readConfig = () => {
       preventSendingAttachmentsFromFlex,
       enableConferencing,
       conferencingEnableManualDial,
+      conferencingHoldOnDial,
       hideAddToNewCaseButton,
       // eslint-disable-next-line prettier/prettier
       postStudioFlows: (postStudioFlows ?? {}) as Record<`FW${string}` | 'voice' | 'chat' , { flowTrigger: 'inProgressCall' | 'rest', studioFlowSid: StudioFlowSID }>,
-      allowManualDialOutForConferencing: allowManualDialOutForConferencing !== false, // True by default
+
     },
     referrableResources: {
       resourcesBaseUrl,
