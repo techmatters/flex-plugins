@@ -374,7 +374,7 @@
   },
   {
     "name": "mealsProvided",
-    "label": "จำนวนมื้ออาหาร",
+    "label": "บริการมื้ออาหาร",
     "type": "select",
     "options": [
       {
@@ -406,7 +406,7 @@
   },
   {
     "name": "survivalBags",
-    "label": "จำนวนถุงยังชีพ",
+    "label": "บริการมอบถุงยังชีพ",
     "type": "select",
     "options": [
       {
