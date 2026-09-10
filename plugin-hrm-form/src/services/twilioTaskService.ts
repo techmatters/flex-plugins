@@ -117,7 +117,7 @@ export const getTaskAndReservations = async (taskSid: string): Promise<GetTaskAn
     if (task) {
       task.status = task.status ?? task.assignmentStatus;
     }
-    if (typeof task.attributes === 'string') {
+    if (typeof task?.attributes === 'string') {
       task.attributes = JSON.parse(task.attributes);
     }
     return res;
