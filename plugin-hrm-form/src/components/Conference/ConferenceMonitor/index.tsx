@@ -13,7 +13,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
-import React from 'react';
+import React, { useCallback } from 'react';
 import { ConferenceParticipant } from '@twilio/flex-ui';
 import { Conference } from '@twilio/flex-ui/src/state/Conferences';
 
@@ -21,6 +21,7 @@ import { hasTaskControl, isOriginalReservation, isTransferring } from '../../../
 import * as conferenceApi from '../../../services/conferenceService';
 import { getVoicePostStudioFlowSettings } from '../../../postStudioFlow';
 import { TaskQueueSID } from '../../../types/twilio';
+import { ApiError } from '../../../services/fetchApi';
 
 const isJoinedWithEnd = (p: ConferenceParticipant) => p.status === 'joined' && p.mediaProperties.endConferenceOnExit;
 const isJoinedWithoutEnd = (p: ConferenceParticipant) =>
@@ -28,13 +29,18 @@ const isJoinedWithoutEnd = (p: ConferenceParticipant) =>
 
 type Props = TaskContextProps;
 
+const PARTICIPANT_LEFT_STATES: ConferenceParticipant['status'][] = ['left', 'recently_left'];
+
 const ConferenceMonitor: React.FC<Props> = ({ conference, task }) => {
-  const isAgentOnConferenceWithOngoingCallPostStudioFlow = (participant: ConferenceParticipant) => {
-    return (
-      getVoicePostStudioFlowSettings(task.queueSid as TaskQueueSID)?.flowTrigger === 'inProgressCall' &&
-      ['agent', 'worker', 'supervisor'].includes(participant.participantType)
-    );
-  };
+  const isAgentOnConferenceWithOngoingCallPostStudioFlow = useCallback(
+    (participant: ConferenceParticipant) => {
+      return (
+        getVoicePostStudioFlowSettings(task.queueSid as TaskQueueSID)?.flowTrigger === 'inProgressCall' &&
+        ['agent', 'worker', 'supervisor'].includes(participant.participantType)
+      );
+    },
+    [task.queueSid],
+  );
   const [updating, setUpdating] = React.useState(false);
 
   const conferenceSource: Partial<Conference> = conference?.source ?? {};
@@ -42,25 +48,31 @@ const ConferenceMonitor: React.FC<Props> = ({ conference, task }) => {
   const thisInstanceShouldMonitor =
     Boolean(task) && (hasTaskControl(task) || (isOriginalReservation(task) && isTransferring(task)));
 
-  const shouldDisableEndConferenceOnExit = ({ participants, conferenceSid, status }: Partial<Conference>) =>
-    thisInstanceShouldMonitor &&
-    Boolean(participants && conferenceSid) &&
-    status === 'active' &&
-    // Either there are 3+ people on the call and some are set to end on exit, or the agent is set to end on exit but there's a post flow to run on the ongoing call
-    ((participants.filter(p => p.status === 'joined').length > 2 && participants.some(isJoinedWithEnd)) ||
-      participants.some(p => isJoinedWithEnd(p) && isAgentOnConferenceWithOngoingCallPostStudioFlow(p)));
+  const shouldDisableEndConferenceOnExit = useCallback(
+    ({ participants, conferenceSid, status }: Partial<Conference>) =>
+      thisInstanceShouldMonitor &&
+      Boolean(participants && conferenceSid) &&
+      status === 'active' &&
+      // Either there are 3+ people on the call and some are set to end on exit, or the agent is set to end on exit but there's a post flow to run on the ongoing call
+      ((participants.filter(p => p.status === 'joined').length > 2 && participants.some(isJoinedWithEnd)) ||
+        participants.some(p => isJoinedWithEnd(p) && isAgentOnConferenceWithOngoingCallPostStudioFlow(p))),
+    [isAgentOnConferenceWithOngoingCallPostStudioFlow, thisInstanceShouldMonitor],
+  );
 
-  const shouldEnableEndConferenceOnExit = ({ participants, conferenceSid, status }: Partial<Conference>) =>
-    thisInstanceShouldMonitor &&
-    Boolean(participants && conferenceSid) &&
-    status === 'active' &&
-    participants.filter(p => p.status === 'joined').length <= 2 &&
-    participants.some(p => isJoinedWithoutEnd(p) && !isAgentOnConferenceWithOngoingCallPostStudioFlow(p));
+  const shouldEnableEndConferenceOnExit = useCallback(
+    ({ participants, conferenceSid, status }: Partial<Conference>) =>
+      thisInstanceShouldMonitor &&
+      Boolean(participants && conferenceSid) &&
+      status === 'active' &&
+      participants.filter(p => p.status === 'joined').length <= 2 &&
+      participants.some(p => isJoinedWithoutEnd(p) && !isAgentOnConferenceWithOngoingCallPostStudioFlow(p)),
+    [isAgentOnConferenceWithOngoingCallPostStudioFlow, thisInstanceShouldMonitor],
+  );
 
   const updateEndConferenceOnExit = React.useCallback(
     (endConferenceOnExit: boolean) => async (participant: ConferenceParticipant) => {
       const { conferenceSid } = conferenceSource;
-      if (participant.connecting) return;
+      if (participant.connecting || PARTICIPANT_LEFT_STATES.includes(participant.status)) return;
       // A participant should always have a callSid, but we are seeing some that don't, and we can't update them
       if (!participant.callSid) {
         console.error(
@@ -92,7 +104,14 @@ const ConferenceMonitor: React.FC<Props> = ({ conference, task }) => {
           });
         }
       } catch (err) {
-        console.error('Error setting participant endConferenceOnExit', err);
+        if (err instanceof ApiError && err.response.status === 404) {
+          console.error(
+            `Participant with call sid ${participant.callSid} no longer part of conference ${conferenceSid}`,
+            err,
+          );
+        } else {
+          console.error('Error setting participant endConferenceOnExit', err);
+        }
         console.debug('Participant:', participant);
       }
     },
