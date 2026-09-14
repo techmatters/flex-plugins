@@ -1,0 +1,13 @@
+[
+  {
+    "name": "incidentSummary",
+    "label": "Incident Description",
+    "type": "textarea",
+    "rows": 30,
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    },
+    "isPII": true
+  }
+]

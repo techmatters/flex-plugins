@@ -1,0 +1,11 @@
+{
+  "slotTypeName": "zip_code",
+  "slotTypeValues": [],
+  "parentSlotTypeSignature": "AMAZON.AlphaNumeric",
+  "valueSelectionSetting": {
+    "resolutionStrategy": "TopResolution",
+    "regexFilter": {
+      "pattern": "[0-9]{5}"
+    }
+  }
+}

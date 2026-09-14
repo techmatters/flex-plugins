@@ -63,6 +63,7 @@ export const getParticipant = async ({
 
   return fetchProtectedApi('/conference/getParticipant', body, {
     useTwilioLambda: getAseloFeatureFlags().use_twilio_lambda_for_conference_functions,
+    returnNullFor404: true,
   });
 };
 

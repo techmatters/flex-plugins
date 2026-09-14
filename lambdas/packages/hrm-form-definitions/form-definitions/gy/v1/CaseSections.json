@@ -1,0 +1,18 @@
+{
+  "timesCoordination": {
+    "label": "Times & Coordination",
+    "formPath": "caseForms/timesCoordinationForm.json"
+  },
+  "incidentReport": {
+    "label": "Incident Report",
+    "formPath": "caseForms/incidentReportForm.json"
+  },
+  "patientCareReport": {
+    "label": "Patient Care Report",
+    "formPath": "caseForms/patientCareReportForm.json"
+  },
+  "note": {
+    "label": "Note",
+    "formPath": "caseForms/NoteForm.json"
+  }
+}

@@ -91,7 +91,7 @@ const Timeline: React.FC<OwnProps> = ({
   const caseId = connectedCase.id;
   useEffect(() => {
     if (caseId) {
-      console.log(`Fetching main timeline sections for case ${caseId}`);
+      console.info(`Fetching main timeline sections for case ${caseId}`);
       asyncDispatch(dispatch)(
         newGetTimelineAsyncAction(
           caseId,

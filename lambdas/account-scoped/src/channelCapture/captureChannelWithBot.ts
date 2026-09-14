@@ -18,13 +18,13 @@
 import twilio from 'twilio';
 import { handleChannelCapture } from './channelCaptureHandlers';
 import { AccountScopedHandler, HttpError } from '../httpTypes';
-import { isErr, newErr, newOk, Result } from '../Result';
+import { isErr, newErr, newOk, Result } from '@tech-matters/result-type';
 import {
   getAccountAuthToken,
   getChatServiceSid,
   getHelplineCode,
   getSurveyWorkflowSid,
-  getTwilioWorkspaceSid,
+  getWorkspaceSid,
 } from '@tech-matters/twilio-configuration';
 
 export const handleCaptureChannelWithBot: AccountScopedHandler = async (
@@ -61,7 +61,7 @@ export const handleCaptureChannelWithBot: AccountScopedHandler = async (
     const chatServiceSid = await getChatServiceSid(accountSid);
     const helplineCode = await getHelplineCode(accountSid);
     const surveyWorkflowSid = await getSurveyWorkflowSid(accountSid);
-    const twilioWorkspaceSid = await getTwilioWorkspaceSid(accountSid);
+    const twilioWorkspaceSid = await getWorkspaceSid(accountSid);
 
     const result = await handleChannelCapture(twilioClient, {
       accountSid,

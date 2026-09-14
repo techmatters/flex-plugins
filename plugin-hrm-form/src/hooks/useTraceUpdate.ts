@@ -32,7 +32,7 @@ export default function useTraceUpdate(props, name: string) {
       return ps;
     }, {});
     if (Object.keys(changedProps).length > 0) {
-      console.log(`[${name}]`, 'Changed props:', changedProps);
+      console.debug(`[${name}]`, 'Changed props:', changedProps);
     }
     prev.current = props;
   });

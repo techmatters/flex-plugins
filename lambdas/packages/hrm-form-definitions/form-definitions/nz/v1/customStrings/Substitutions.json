@@ -246,7 +246,7 @@
   "CallType-blank": "Blank",
   "CallType-caller": "Someone contacting about a person of concern ",
   "CallType-child": "Person contacting about self",
-  "CallType-CloseContact": "Close Contact",
+  "CallType-SaveDialog-CloseContact": "Close Contact",
   "CallType-hangup": "Hang up",
   "CallType-joke": "Joke",
   "CallType-silent": "Silent",

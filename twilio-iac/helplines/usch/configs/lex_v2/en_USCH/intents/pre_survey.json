@@ -52,6 +52,10 @@
         {
             "priority": 4,
             "slotName": "stateInput"
+        },
+        {
+            "priority": 5,
+            "slotName": "howTheHelpseekerHeardAboutUs"
         }
     ],
     "intentClosingSetting": {
@@ -81,7 +85,7 @@
                 {
                     "message": {
                         "plainTextMessage": {
-                            "value": "If this is a life-threatening emergency, please contact 911. To help us better serve you, please answer the next five short questions. You will then be connected to a counselor. You can type X if you prefer not to answer any question."
+                            "value": "If this is a life-threatening emergency, please contact 911. To help us better serve you, please answer the next four short questions. You will then be connected to a counselor. You can type X if you prefer not to answer any question."
                         }
                     }
                 }

@@ -15,7 +15,7 @@
  */
 
 import { getIcon } from '../../case/timeline/TimelineIcon';
-import { CoreChannelTypes, coreChannelTypes } from '../../../states/DomainConstants';
+import { channelTypes, CoreChannelTypes, coreChannelTypes } from '../../../states/DomainConstants';
 import { customSmsChannelTypes, customFacebookChannelTypes } from '../../../utils/groupedChannels';
 
 type ExtendedChannelTypes =
@@ -38,4 +38,6 @@ export const iconsFromTask: { [channelType in ExtendedChannelTypes]: JSX.Element
   },
   [customSmsChannelTypes.modica]: getIcon(customSmsChannelTypes.modica, iconSize),
   [customFacebookChannelTypes.messenger]: getIcon(customFacebookChannelTypes.messenger, iconSize),
+  // Use voice icon for voicemails here since it describes previous contacts from that number, not specifically voicemails
+  [channelTypes.voicemail]: getIcon(channelTypes.voice, iconSize),
 };

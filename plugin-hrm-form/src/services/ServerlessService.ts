@@ -20,7 +20,6 @@
 
 /* eslint-disable sonarjs/prefer-immediate-return */
 /* eslint-disable camelcase */
-import { ITask, Notifications } from '@twilio/flex-ui';
 import { DefinitionVersion, loadDefinition } from 'hrm-form-definitions';
 
 import fetchProtectedApi from './fetchProtectedApi';

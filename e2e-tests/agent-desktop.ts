@@ -49,7 +49,7 @@ export const agentDesktop = (page: Page) => {
   };
 };
 
-const clickThroughTwilioPasteModals = async (page: Page) => {
+export const clickThroughTwilioPasteModals = async (page: Page) => {
   const MAX_ATTEMPTS = 100;
   let attempts = 0;
   try {

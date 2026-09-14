@@ -34,7 +34,52 @@
       "value": true,
       "message": "RequiredFieldError"
     },
-    "isPII": true
+    "isPII": true,
+    "rows": "40",
+    "additionalActions": [
+      {
+        "name": "generateSummary",
+        "label": "Generate Summary",
+        "type": "custom-contact-component",
+        "component": "generate-summary-button",
+        "saveable": false,
+        "props": {
+          "form": "caseInformation",
+          "item": "callSummary"
+        }
+      }
+    ]
+  },
+  {
+    "name": "summaryAccuracy",
+    "label": "[For AI Summary only] How accurate was the summary written by AI?",
+    "type": "select",
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "Very accurate",
+        "label": "Very accurate"
+      },
+      {
+        "value": "Somewhat accurate",
+        "label": "Somewhat accurate"
+      },
+      {
+        "value": "Not accurate",
+        "label": "Not accurate"
+      }
+    ],
+    "isPII": false
+  },
+  {
+    "name": "summaryFeedback",
+    "label": "[For AI Summary only] Tell us more about your answer above.",
+    "type": "textarea",
+    "isPII": true,
+    "rows": "4"
   },
   {
     "name": "actionTaken",
@@ -298,6 +343,70 @@
   {
     "name": "nightHubEmergency",
     "label": "ไนท์ฮับ - การช่วยเหลือฉุกเฉิน",
+    "type": "select",
+    "options": [
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "1",
+        "label": "1"
+      },
+      {
+        "value": "2",
+        "label": "2"
+      },
+      {
+        "value": "3",
+        "label": "3"
+      },
+      {
+        "value": "4",
+        "label": "4"
+      },
+      {
+        "value": "5",
+        "label": "5"
+      }
+    ],
+    "isPII": false
+  },
+  {
+    "name": "mealsProvided",
+    "label": "บริการมื้ออาหาร",
+    "type": "select",
+    "options": [
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "1",
+        "label": "1"
+      },
+      {
+        "value": "2",
+        "label": "2"
+      },
+      {
+        "value": "3",
+        "label": "3"
+      },
+      {
+        "value": "4",
+        "label": "4"
+      },
+      {
+        "value": "5",
+        "label": "5"
+      }
+    ],
+    "isPII": false
+  },
+  {
+    "name": "survivalBags",
+    "label": "บริการมอบถุงยังชีพ",
     "type": "select",
     "options": [
       {

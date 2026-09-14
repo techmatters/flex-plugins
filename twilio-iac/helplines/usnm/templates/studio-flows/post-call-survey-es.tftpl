@@ -1,0 +1,90 @@
+{
+  "initial_state": "Trigger",
+  "flags": {
+    "allow_concurrent_calls": true
+  },
+  "description": "${flow_description}",
+  "states": [
+    {
+      "name": "Trigger",
+      "type": "trigger",
+      "transitions": [
+        {
+          "event": "incomingMessage"
+        },
+        {
+          "event": "incomingCall"
+        },
+        {
+          "event": "incomingConversationMessage"
+        },
+        {
+          "next": "start_conversation_post_survey",
+          "event": "incomingRequest"
+        },
+        {
+          "event": "incomingParent"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 0,
+          "y": 0
+        }
+      }
+    },
+    {
+      "name": "start_conversation_post_survey",
+      "type": "start-conversation",
+      "transitions": [
+        {
+          "next": "f_startPostSurveyChatbot",
+          "event": "created"
+        },
+        {
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 229,
+          "y": 187
+        },
+        "timers_closed": "PT10M",
+        "close_conversation_on_execution_end": false,
+        "conversation_service_sid": "${flow_vars.conversation_service_sid}",
+        "timers_inactive": "PT10M",
+        "participants": [
+          {
+            "messaging_binding_address": "{{trigger.request.to}}",
+            "type": "messaging",
+            "messaging_binding_proxy_address": "${flow_vars.outbound_phone_number}"
+          }
+        ]
+      }
+    },
+    {
+      "name": "f_startPostSurveyChatbot",
+      "type": "make-http-request",
+      "transitions": [
+        {
+          "event": "success"
+        },
+        {
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 372,
+          "y": 508
+        },
+        "method": "POST",
+        "content_type": "application/json;charset=utf-8",
+        "add_twilio_auth": false,
+        "body": "{\n  \"conversationSid\": \"{{flow.channel.sid}}\",\n  \"contactId\": \"{{flow.data.contactId}}\",\n  \"taskSid\": \"{{flow.data.contactTaskSid}}\",\n  \"channelType\": \"sms\",\n  \"language\": \"es\"\n\n}",
+        "url": "${lambda_twilio_account_scoped_url}/channelCapture/startPostSurveyChatbot"
+      }
+    }
+  ]
+}

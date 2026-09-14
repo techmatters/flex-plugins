@@ -18,11 +18,14 @@ import {
   registerTaskRouterEventHandler,
   TaskRouterEventHandler,
 } from '../taskrouter/taskrouterEventHandler';
-import { AccountSID } from '@tech-matters/twilio-types';
+import { AccountSID, ChannelType } from '@tech-matters/twilio-types';
 import { Twilio } from 'twilio';
 import { EventType, TASK_WRAPUP } from '../taskrouter/eventTypes';
 import { EventFields } from '../taskrouter';
-import { retrieveServiceConfigurationAttributes } from '../configuration/aseloConfiguration';
+import {
+  retrieveServiceConfiguration,
+  retrieveServiceConfigurationAttributes,
+} from '../configuration/aseloConfiguration';
 import {
   handleChannelCapture,
   HandleChannelCaptureParams,
@@ -32,9 +35,13 @@ import {
   getChatServiceSid,
   getHelplineCode,
   getSurveyWorkflowSid,
-  getTwilioWorkspaceSid,
+  getTwilioClient,
+  getWorkspaceSid,
 } from '@tech-matters/twilio-configuration';
 import { getTranslation } from '../translations/translationLookup';
+import { getCurrentDefinitionVersion } from '../hrm/formDefinitionsCache';
+import { newOk } from '@tech-matters/result-type';
+import { AccountScopedHandler } from '../httpTypes';
 
 const GLOBAL_DEFAULT_LANGUAGE = 'en-US';
 
@@ -53,7 +60,6 @@ type TransferMeta = {
 };
 
 const isTriggerPostSurvey = ({
-  eventType,
   taskAttributes,
   taskChannelUniqueName,
 }: {
@@ -64,15 +70,13 @@ const isTriggerPostSurvey = ({
     isChatCaptureControl?: boolean;
   };
 }) => {
-  if (eventType !== TASK_WRAPUP) return false;
-
   // Post survey is for chat tasks only. This will change when we introduce voice based post surveys
   if (taskChannelUniqueName !== 'chat') return false;
 
   return !isChatCaptureControlTask(taskAttributes);
 };
 
-export const postSurveyInitHandler = async ({
+const postSurveyInitHandler = async ({
   accountSid,
   channelType,
   chatServiceSid,
@@ -86,18 +90,20 @@ export const postSurveyInitHandler = async ({
   webhookBaseUrl,
   channelSid,
   conversationSid,
+  contactId,
 }: {
   accountSid: AccountSID;
   client: Twilio;
   taskSid: string;
   taskLanguage: string;
-  channelType: string;
+  channelType: ChannelType;
   environment: string;
   webhookBaseUrl: string;
   chatServiceSid: string;
   helplineCode: string;
   surveyWorkflowSid: string;
   twilioWorkspaceSid: string;
+  contactId: string;
 } & (
   | {
       channelSid: string;
@@ -126,6 +132,7 @@ export const postSurveyInitHandler = async ({
       contactTaskId: taskSid,
       conversations: { conversation_id: taskSid },
       language: taskLanguage, // if there's a task language, attach it to the post survey task
+      contactId,
     }),
     controlTaskTTL: 3600,
     channelType,
@@ -156,17 +163,25 @@ const triggerPostSurvey: TaskRouterEventHandler = async (
     const taskAttributes = JSON.parse(taskAttributesString);
 
     if (isTriggerPostSurvey({ eventType, taskAttributes, taskChannelUniqueName })) {
-      console.log('Handling post survey trigger...');
-      console.log('taskAttributes', taskAttributes);
+      console.info('Handling post survey trigger...');
+      console.debug('[SENSITIVE] taskAttributes', taskAttributes);
 
       // This task is a candidate to trigger post survey. Check feature flags for the account.
-      const serviceConfigAttributes =
-        await retrieveServiceConfigurationAttributes(client);
+      const serviceConfig = await retrieveServiceConfiguration(client);
+      const { attributes: serviceConfigAttributes } = serviceConfig;
       const { feature_flags: featureFlags, helplineLanguage } = serviceConfigAttributes;
       const { enable_post_survey: enablePostSurvey } = featureFlags;
 
       if (enablePostSurvey) {
-        const { channelSid, conversationSid, channelType, customChannelType } =
+        const definition = await getCurrentDefinitionVersion({ accountSid });
+        const postSurveyConfigSpecs = definition?.insights?.postSurveySpecs;
+
+        if (!postSurveyConfigSpecs?.length) {
+          const errorMessage = `No defined or invalid postSurveyConfigJson found for account ${accountSid}.`;
+          throw new Error(errorMessage);
+        }
+
+        const { channelSid, conversationSid, channelType, customChannelType, contactId } =
           taskAttributes;
 
         const taskLanguage = getTaskLanguage(helplineLanguage)(taskAttributes);
@@ -176,10 +191,11 @@ const triggerPostSurvey: TaskRouterEventHandler = async (
         const chatServiceSid = await getChatServiceSid(accountSid);
         const helplineCode = await getHelplineCode(accountSid);
         const surveyWorkflowSid = await getSurveyWorkflowSid(accountSid);
-        const twilioWorkspaceSid = await getTwilioWorkspaceSid(accountSid);
+        const twilioWorkspaceSid = await getWorkspaceSid(accountSid);
 
         await postSurveyInitHandler({
           channelSid,
+          contactId,
           conversationSid,
           taskSid,
           taskLanguage,
@@ -194,9 +210,11 @@ const triggerPostSurvey: TaskRouterEventHandler = async (
           webhookBaseUrl,
         });
 
-        console.log('Finished handling post survey trigger.');
+        console.info(`Finished handling post survey trigger for task ${taskSid}.`);
       } else {
-        console.log('Bypassing post survey trigger - they are disabled');
+        console.debug(
+          `Bypassing post survey trigger for task ${taskSid} - they are disabled`,
+        );
       }
     }
   } catch (err) {
@@ -205,3 +223,51 @@ const triggerPostSurvey: TaskRouterEventHandler = async (
 };
 
 registerTaskRouterEventHandler([TASK_WRAPUP], triggerPostSurvey);
+
+export const startPostSurveyChatbotHandler: AccountScopedHandler = async (
+  { body },
+  accountSid,
+) => {
+  const { channelType, language, contactId, conversationSid, taskSid } = body;
+  const twilioWorkspaceSid = await getWorkspaceSid(accountSid);
+  const client = await getTwilioClient(accountSid);
+  let taskLanguage = language;
+  if (!taskLanguage) {
+    const { attributes: taskAttributesJson } = await client.taskrouter.v1.workspaces
+      .get(twilioWorkspaceSid)
+      .tasks.get(taskSid)
+      .fetch();
+    taskLanguage = JSON.parse(taskAttributesJson ?? '{}').language;
+    if (!taskLanguage) {
+      const { helplineLanguage } = await retrieveServiceConfigurationAttributes(client);
+      taskLanguage = helplineLanguage;
+    }
+  }
+
+  const environment = process.env.NODE_ENV!;
+  const webhookBaseUrl = process.env.WEBHOOK_BASE_URL!;
+  const chatServiceSid = await getChatServiceSid(accountSid);
+  const helplineCode = await getHelplineCode(accountSid);
+  const surveyWorkflowSid = await getSurveyWorkflowSid(accountSid);
+
+  await postSurveyInitHandler({
+    conversationSid,
+    contactId,
+    taskSid,
+    taskLanguage,
+    channelType,
+    accountSid,
+    chatServiceSid,
+    client,
+    environment,
+    helplineCode,
+    surveyWorkflowSid,
+    twilioWorkspaceSid,
+    webhookBaseUrl,
+  });
+
+  console.info(
+    `[Post Survey Studio Flow - ${accountSid}/${taskSid}]: Finished handling post survey request for task ${taskSid}, contact ${contactId}.`,
+  );
+  return newOk({});
+};

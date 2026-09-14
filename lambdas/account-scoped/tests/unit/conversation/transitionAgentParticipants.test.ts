@@ -16,7 +16,7 @@
 
 import { transitionAgentParticipantsHandler } from '../../../src/conversation/transitionAgentParticipants';
 import { getTwilioClient } from '@tech-matters/twilio-configuration';
-import { isErr, isOk, newErr, newOk } from '../../../src/Result';
+import { isErr, isOk, newErr, newOk } from '@tech-matters/result-type';
 import { FlexValidatedHttpRequest } from '../../../src/validation/flexToken';
 import { TEST_ACCOUNT_SID, TEST_TASK_SID, TEST_WORKER_SID } from '../../testTwilioValues';
 

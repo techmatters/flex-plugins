@@ -120,7 +120,13 @@ export const initLocalization = (localizationConfig: LocalizationConfig, helplin
   return { translateUI, getMessage };
 };
 
-export const lookupTranslation = (code: string, parameters: Record<string, string> = {}): string => {
+export const lookupTranslation = (code: string | string[], parameters: Record<string, string> = {}): string => {
   const strings = getTemplateStrings();
-  return Handlebars.compile(strings[code] ?? code)(parameters);
+  const codes = typeof code === 'string' ? [code] : code;
+  for (const code of codes) {
+    if (strings[code]) {
+      return Handlebars.compile(strings[code])(parameters);
+    }
+  }
+  return codes[0];
 };

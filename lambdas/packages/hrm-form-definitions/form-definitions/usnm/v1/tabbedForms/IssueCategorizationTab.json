@@ -1,257 +1,429 @@
 {
-  "NAMI":{
+  "NAMI": {
     "categories": {
-      "Missing children": {
+      "Mission Priorities": {
         "color": "#085f63",
         "subcategories": [
           {
-            "label": "Child abduction"
+            "label": "Affordability"
           },
           {
-            "label": "Lost, unaccounted for or otherwise missing child"
+            "label": "Accessibility"
           },
           {
-            "label": "Runaway"
+            "label": "Post-Hospitalization or Post-Crisis Continuity of Care"
           },
           {
-            "label": "Unspecified/Other - MS"
+            "label": "Unmet Need for Crisis Treatment"
+          },
+          {
+            "label": "Medicaid or Public Benefits Coverage Loss or Interruption"
+          },
+          {
+            "label": "Criminalization of Mental Illness"
+          },
+          {
+            "label": "Family Caregiver Burden"
+          },
+          {
+            "label": "Stigma and Social Isolation"
+          },
+          {
+            "label": "Hope and Reassurance"
+          },
+          {
+            "label": "Support in the Moment"
+          },
+          {
+            "label": "Culturally Responsive and Equitable Care"
+          },
+          {
+            "label": "Use of AI in the Mental Health Space"
+          },
+          {
+            "label": "Impact of Social Media on Mental Health"
+          },
+          {
+            "label": "Major Community Incident"
           }
         ]
       },
-      "Violence": {
+      "Advocacy": {
         "color": "#14919b",
         "subcategories": [
           {
-            "label": "Bullying"
+            "label": "Advocating for change"
           },
           {
-            "label": "Child/Early/Forced marriage"
-          },
-          {
-            "label": "Child labour"
-          },
-          {
-            "label": "Commercial sexual exploitation (offline)"
-          },
-          {
-            "label": "Female Genital Mutilation (FGM)\r"
-          },
-          {
-            "label": "Gender-based harmful traditional practices (other than FGM)"
-          },
-          {
-            "label": "Harmful traditional practices other than child marriage and FGM"
-          },
-          {
-            "label": "Neglect (or negligent treatment)"
-          },
-          {
-            "label": "Online child sexual abuse and exploitation"
-          },
-          {
-            "label": "Physical violence"
-          },
-          {
-            "label": "Psychological / Emotional violence"
-          },
-          {
-            "label": "Sexual violence"
-          },
-          {
-            "label": "Unspecified/Other - V"
+            "label": "Advocating for yourself or someone else"
           }
         ]
       },
-      "Mental Health": {
+      "Disaster Services": {
         "color": "#fac05e",
         "subcategories": [
           {
-            "label": "Addictive behaviours and substance use"
+            "label": "Disaster resources"
           },
           {
-            "label": "Behavioural problems"
-          },
-          {
-            "label": "Concerns about the self"
-          },
-          {
-            "label": "Emotional distress – anger problems"
-          },
-          {
-            "label": "Emotional distress – fear and anxiety problems"
-          },
-          {
-            "label": "Emotional distress – mood problems"
-          },
-          {
-            "label": "Neurodevelopmental concerns"
-          },
-          {
-            "label": "Problems with eating behaviour"
-          },
-          {
-            "label": "Self-harming behaviour"
-          },
-          {
-            "label": "Suicidal thoughts and suicide attempts"
-          },
-          {
-            "label": "Traumatic distress"
-          },
-          {
-            "label": "Unspecified/Other - MH"
+            "label": "Preparing for/navigating disaster events"
           }
         ]
       },
-      "Physical Health": {
+      "Education": {
         "color": "#f79d8f",
         "subcategories": [
           {
-            "label": "COVID-19"
+            "label": "Disability Rights for Education"
           },
           {
-            "label": "General medical concerns"
+            "label": "Scholarships/Grants"
           },
           {
-            "label": "Medical or lifestyle information about HIV/AIDS"
+            "label": "Therapeutic schools"
           },
           {
-            "label": "Nutrition"
+            "label": "Education Accommodations"
           },
           {
-            "label": "Pregnancy and maternal care"
-          },
-          {
-            "label": "Sexual and reproductive health"
-          },
-          {
-            "label": "Unspecified/Other - PH"
+            "label": "Student Success"
           }
         ]
       },
-      "Access to Services": {
+      "Employment": {
         "color": "#f0817c",
         "subcategories": [
           {
-            "label": "Education"
+            "label": "Supported Employment"
           },
           {
-            "label": "Essential needs"
+            "label": "Employment Accommodations"
           },
           {
-            "label": "General healthcare services"
+            "label": "Employment Discrimination"
           },
           {
-            "label": "Legal services and advice"
+            "label": "Finding a Job"
           },
           {
-            "label": "Mental health services"
-          },
-          {
-            "label": "Sexual health services"
-          },
-          {
-            "label": "Socio-economical services"
-          },
-          {
-            "label": "Unspecified/Other - A"
+            "label": "Workplace Mental Health"
           }
         ]
       },
-      "Discrimination and Exclusion": {
+      "Food/Meals": {
         "color": "#4d92c2",
         "subcategories": [
           {
-            "label": "Ethnicity/nationality"
+            "label": "Food bank finders"
           },
           {
-            "label": "Financial situation"
-          },
-          {
-            "label": "Gender"
-          },
-          {
-            "label": "Gender identity or expression and sexual orientation"
-          },
-          {
-            "label": "Health"
-          },
-          {
-            "label": "Philosophical or religious beliefs"
-          },
-          {
-            "label": "Unspecified/Other - DE"
+            "label": "Supplemental Nutrition Assistance Program (SNAP)"
           }
         ]
       },
-      "Family Relationships": {
+      "Medical Care": {
         "color": "#c99f7d",
         "subcategories": [
           {
-            "label": "Adoption, fostering, and extended family placement"
+            "label": "Low Cost/No Cost Medical Care"
           },
           {
-            "label": "Family health and wellbeing"
+            "label": "Medical treatment finders"
           },
           {
-            "label": "General family issues"
-          },
-          {
-            "label": "Relationship to caregiver"
-          },
-          {
-            "label": "Relationship with sibling(s)"
-          },
-          {
-            "label": "Unspecified/Other - FR"
+            "label": "Telemedicine"
           }
         ]
       },
-      "Peer Relationships": {
+      "Housing": {
         "color": "#db7a34",
         "subcategories": [
           {
-            "label": "Classmates/colleagues relationships"
+            "label": "Housing Discrimination/Complaints"
           },
           {
-            "label": "Friends and friendships"
+            "label": "Eviction"
           },
           {
-            "label": "Partner relationships"
+            "label": "Housing Organizations/Supportive Housing"
           },
           {
-            "label": "Unspecified/Other - PR"
+            "label": "Homeless Shelter Finders"
+          },
+          {
+            "label": "Public Housing/Housing Vouchers"
           }
         ]
       },
-      "Education and Occupation": {
+      "Individual, Family and Community Support": {
         "color": "#e7c582",
         "subcategories": [
           {
-            "label": "Academic issues"
+            "label": "Support Group Finders"
           },
           {
-            "label": "Problems at work"
+            "label": "Family Dynamics"
           },
           {
-            "label": "Teacher and school problems"
+            "label": "Caring for oneself as a caregiver"
           },
           {
-            "label": "Unspecified/Other - EO"
+            "label": "Warmlines"
+          },
+          {
+            "label": "Service/Emotional Support Animals"
+          },
+          {
+            "label": "Emotional Wellness"
+          },
+          {
+            "label": "Mental Health Awareness Organizations "
+          },
+          {
+            "label": "Loneliness/Isolation"
+          },
+          {
+            "label": "End-of-life"
+          },
+          {
+            "label": "Personal stories"
+          },
+          {
+            "label": "Relationships/Friendships"
+          },
+          {
+            "label": "NAMI State Organization or Affiliate"
+          },
+          {
+            "label": "NAMI Mental Health Education Programs"
           }
         ]
       },
-      "Sexuality": {
+      "Legal, Consumer and Public Safety": {
         "color": "#037971",
         "subcategories": [
           {
-            "label": "Sexual behaviours"
+            "label": "Abuse, Neglect, Financial Exploitation"
           },
           {
-            "label": "Sexual orientation and gender identity"
+            "label": "Crisis Response"
           },
           {
-            "label": "Unspecified/Other - S"
+            "label": "Disability Rights/Civil Rights"
+          },
+          {
+            "label": "Domestic Violence and Sexual Assault"
+          },
+          {
+            "label": "Online Abuse"
+          },
+          {
+            "label": "Guardianship/Conservatorship"
+          },
+          {
+            "label": "Grievances, Complaints"
+          },
+          {
+            "label": "HIPAA, Privacy Rights"
+          },
+          {
+            "label": "Involuntary and Civil Commitment"
+          },
+          {
+            "label": "LGBTQI Legal Resources"
+          },
+          {
+            "label": "Long-Term Care Planning"
+          },
+          {
+            "label": "Low Cost/ No Cost/Paid Legal Assistance"
+          },
+          {
+            "label": "Mental Health Parity"
+          },
+          {
+            "label": "Missing Persons"
+          },
+          {
+            "label": "Navigating Criminal Justice System"
+          },
+          {
+            "label": "Health Insurance Issues"
+          },
+          {
+            "label": "Psychiatric Advance Directives"
+          },
+          {
+            "label": "Re-entry after incarceration"
+          },
+          {
+            "label": "Violence prevention"
+          }
+        ]
+      },
+      "Mental Health & Substance Use Concerns": {
+        "color": "#f8b595",
+        "subcategories": [
+          {
+            "label": "Adverse Childhood Experiences"
+          },
+          {
+            "label": "Attention Deficit - Hyperactivity Disorder (ADHD)"
+          },
+          {
+            "label": "Alzheimer's/Dementia"
+          },
+          {
+            "label": "Anosognosia"
+          },
+          {
+            "label": "Anxiety Disorders"
+          },
+          {
+            "label": "Bipolar and Related Disorders"
+          },
+          {
+            "label": "Co-Occurring Non-Psychiatric Conditions"
+          },
+          {
+            "label": "Depressive Disorders"
+          },
+          {
+            "label": "Disruptive, Impulse Control and Conduct Disorders"
+          },
+          {
+            "label": "Dissociative Disorders"
+          },
+          {
+            "label": "Eating Disorders"
+          },
+          {
+            "label": "First Episode Psychosis/Early Psychosis"
+          },
+          {
+            "label": "Grief Disorder"
+          },
+          {
+            "label": "Hoarding Disorder"
+          },
+          {
+            "label": "Long-COVID Related Mental Health Concerns"
+          },
+          {
+            "label": "MH Crisis/988 Suicide and Crisis Lifeline"
+          },
+          {
+            "label": "Obsessive Compulsive (OCD) and Related Disorders"
+          },
+          {
+            "label": "Panic Attacks"
+          },
+          {
+            "label": "Personality Disorders"
+          },
+          {
+            "label": "PTSD, trauma- and Stressor-Related Disorders"
+          },
+          {
+            "label": "Reproductive Health-Related Mental Health"
+          },
+          {
+            "label": "Schizophrenia Spectrum and Other Psychotic Disorders"
+          },
+          {
+            "label": "Self-injury"
+          },
+          {
+            "label": "Sleep Disorders"
+          },
+          {
+            "label": "Substance Use Disorders/Addictive Behaviors"
+          },
+          {
+            "label": "Suicidal Ideation"
+          },
+          {
+            "label": "Tardive Dyskinesia"
+          }
+        ]
+      },
+      "Treatment and Services": {
+        "color": "#f67280",
+        "subcategories": [
+          {
+            "label": "Mental health screeners"
+          },
+          {
+            "label": "Mental Health Treatment/Medication Information"
+          },
+          {
+            "label": "Research organizations and trials"
+          },
+          {
+            "label": "Low cost/No cost MH treatment"
+          },
+          {
+            "label": "Telehealth/online treatment"
+          },
+          {
+            "label": "Treatment provider finders"
+          },
+          {
+            "label": "Treatment program finders"
+          },
+          {
+            "label": "Urgent medication needs"
+          },
+          {
+            "label": "Psychiatric hospitalization"
+          },
+          {
+            "label": "Culturally Considerate Care"
+          },
+          {
+            "label": "Complementary and Alternative Treatment"
+          }
+        ]
+      },
+      "Public Benefits/Income Support": {
+        "color": "#c06c84",
+        "subcategories": [
+          {
+            "label": "Medicaid/Medicare"
+          },
+          {
+            "label": "Social Security Disability Income/Supplemental Security Income"
+          },
+          {
+            "label": "Financial Assistance"
+          },
+          {
+            "label": "Medical Expense Assistance"
+          },
+          {
+            "label": "Medication Expense Assistance"
+          },
+          {
+            "label": "Problem with Medicaid Benefits"
+          }
+        ]
+      },
+      "Transportation": {
+        "color": "#6c5b7b",
+        "subcategories": [
+          {
+            "label": "Transportation Fact Sheets"
+          },
+          {
+            "label": "Transportation Service Finders"
+          }
+        ]
+      },
+      "Utilities ": {
+        "color": "#355c7d",
+        "subcategories": [
+          {
+            "label": "Bills Assistance"
           }
         ]
       }

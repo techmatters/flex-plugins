@@ -1,15 +1,25 @@
-import { SSM, STS } from 'aws-sdk';
+import {
+  GetParameterCommand,
+  GetParametersByPathCommand,
+  PutParameterCommand,
+  PutParameterRequest,
+  SSMClient,
+  Tag,
+  Parameter,
+  SSMClientConfig,
+} from '@aws-sdk/client-ssm';
+import { AssumeRoleCommand, STSClient } from '@aws-sdk/client-sts';
 import { logDebug, logWarning } from './log';
 
 require('dotenv').config();
 
-let ssm: AWS.SSM;
-let privilegedSsm: AWS.SSM;
+let ssm: SSMClient;
+let privilegedSsm: SSMClient;
 let roleToAssume: string = 'arn:aws:iam::712893914485:role/tf-twilio-iac-ssm-read-only';
 
-const getPrivilegedSsm = async (): Promise<AWS.SSM> => {
+const getPrivilegedSsm = async (): Promise<SSMClient> => {
   if (!privilegedSsm) {
-    privilegedSsm = new SSM({
+    privilegedSsm = new SSMClient({
       credentials: {
         accessKeyId: process.env.AWS_ACCESS_KEY_ID!,
         secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY!,
@@ -26,20 +36,15 @@ export const setRoleToAssume = (role: string) => {
   roleToAssume = role;
 };
 
-const getSsmConfig = async (): Promise<{
-  accessKeyId?: string;
-  secretAccessKey?: string;
-  sessionToken?: string;
-  region: string;
-}> => {
+const getSsmConfig = async (): Promise<Partial<SSMClientConfig>> => {
   if (roleToAssume) {
-    const sts = new STS();
+    const sts = new STSClient();
     const timestamp = new Date().getTime();
     const params = {
       RoleArn: roleToAssume,
       RoleSessionName: `tf-supplemental-${timestamp}`,
     };
-    const stsResponse = await sts.assumeRole(params).promise();
+    const stsResponse = await sts.send(new AssumeRoleCommand(params));
 
     if (!stsResponse.Credentials) {
       logDebug('No credentials found');
@@ -49,9 +54,11 @@ const getSsmConfig = async (): Promise<{
     }
 
     return {
-      accessKeyId: stsResponse.Credentials.AccessKeyId,
-      secretAccessKey: stsResponse.Credentials.SecretAccessKey,
-      sessionToken: stsResponse.Credentials.SessionToken,
+      credentials: {
+        accessKeyId: stsResponse.Credentials.AccessKeyId!,
+        secretAccessKey: stsResponse.Credentials.SecretAccessKey!,
+        sessionToken: stsResponse.Credentials.SessionToken,
+      },
       region: 'us-east-1',
     };
   }
@@ -63,7 +70,7 @@ const getSsmConfig = async (): Promise<{
 
 const getSsm = async () => {
   if (!ssm) {
-    ssm = new SSM(await getSsmConfig());
+    ssm = new SSMClient(await getSsmConfig());
   }
 
   return ssm;
@@ -73,9 +80,9 @@ export const saveSSMParameter = async (
   Name: string,
   Value: string,
   Description: string,
-  Tags: SSM.TagList,
+  Tags: Tag[],
 ) => {
-  const config: SSM.PutParameterRequest = {
+  const config: PutParameterRequest = {
     Name,
     Value,
     Description,
@@ -85,13 +92,13 @@ export const saveSSMParameter = async (
   };
 
   const ssmClient = await getSsm();
-  return ssmClient.putParameter(config).promise();
+  return ssmClient.send(new PutParameterCommand(config));
 };
 
 export const getSSMParameter = async (name: string, usePrivilegedAccess = false) => {
   const ssmClient = await (usePrivilegedAccess ? getPrivilegedSsm() : getSsm());
   try {
-    return await ssmClient.getParameter({ Name: name, WithDecryption: true }).promise();
+    return await ssmClient.send(new GetParameterCommand({ Name: name, WithDecryption: true }));
   } catch (e) {
     logWarning('getSSMParameter error: ', e);
     return null;
@@ -100,13 +107,18 @@ export const getSSMParameter = async (name: string, usePrivilegedAccess = false)
 
 const getSSMParametersChunkByPath = async (path: string, token: string | undefined) => {
   const ssmClient = await getPrivilegedSsm();
-  return ssmClient
-    .getParametersByPath({ Path: path, Recursive: true, NextToken: token, WithDecryption: true })
-    .promise();
+  return ssmClient.send(
+    new GetParametersByPathCommand({
+      Path: path,
+      Recursive: true,
+      NextToken: token,
+      WithDecryption: true,
+    }),
+  );
 };
 
 export const getSSMParametersByPath = async (path: string) => {
-  const parameters: AWS.SSM.ParameterList = [];
+  const parameters: Parameter[] = [];
   let nextToken: string | undefined;
 
   do {

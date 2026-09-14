@@ -23,6 +23,7 @@ import '../conversation/addTaskSidToChannelAttributesTaskRouterListener';
 import '../conversation/adjustCapacityTaskRouterListener';
 import '../conversation/janitorTaskRouterListener';
 import '../channelCapture/postSurveyListener';
+import '../studioFlow/postStudioFlowTaskRouterListener';
 import '../transfer/transfersTaskRouterListener';
 
 export { handleTaskRouterEvent } from './taskrouterEventHandler';

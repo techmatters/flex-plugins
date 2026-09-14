@@ -67,7 +67,7 @@ export const CaseLink = styled('button')<ButtonProps>`
   font-size: 14px;
   background: none;
   border: none;
-  cursor: ${({ permission }) => (permission ? 'default' : 'pointer')};
+  cursor: ${({ permission }) => (permission === 'permitted' ? 'pointer' : 'default')};
   font-family: Open Sans;
 `;
 

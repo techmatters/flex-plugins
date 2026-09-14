@@ -2,11 +2,19 @@
   "task_routing": {
     "filters": [
       {
-        "filter_friendly_name": "Survey Filter",
+        "filter_friendly_name": "Post Survey Filter",
         "expression": "isSurveyTask==true",
         "targets": [
           {
-            "expression": "isSurveyTask==true",
+            "queue": "${task_queues.survey}"
+          }
+        ]
+      },
+       {
+        "filter_friendly_name": "Pre Survey Filter",
+        "expression": "isChatCaptureControl==true",
+        "targets": [
+          {
             "queue": "${task_queues.survey}"
           }
         ]

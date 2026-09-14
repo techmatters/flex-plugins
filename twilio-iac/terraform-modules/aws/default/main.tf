@@ -54,6 +54,22 @@ resource "aws_s3_bucket_lifecycle_configuration" "docs" {
       days_after_initiation = 7
     }
   }
+  dynamic "rule" {
+    for_each = var.s3_lifecycle_rules
+    content {
+      id     = rule.value.id
+      status = "Enabled"
+      
+      filter {
+        prefix = rule.value.prefix
+      }
+
+      expiration {
+        days = rule.value.expiration_in_days
+      }
+    }
+  }
+
 }
 resource "aws_s3_bucket_public_access_block" "docs" {
   bucket                  = aws_s3_bucket.docs.id
@@ -93,7 +109,7 @@ resource "aws_s3_bucket_ownership_controls" "docs" {
     object_ownership = "ObjectWriter"
   }
 }
-
+/*
 resource "aws_s3_bucket_lifecycle_configuration" "s3_lifecycle_rules" {
   bucket = aws_s3_bucket.docs.bucket
   provider = aws.bucket
@@ -114,7 +130,7 @@ resource "aws_s3_bucket_lifecycle_configuration" "s3_lifecycle_rules" {
     }
   }
 }
-
+*/
 
 resource "aws_s3_bucket" "chat" {
   bucket   = local.chat_s3_location

@@ -22,7 +22,9 @@
             "enable_switchboarding": true,
             "enable_switchboarding_move_tasks": true,
             "enable_upload_documents": false,
-            "use_prepopulate_mappings": true  
+            "use_prepopulate_mappings": true,
+            "enable_post_survey": true,
+            "enable_lambda_post_survey_processing": true  
         },
         "definitionVersion": "usnc-v1",
         "external_recordings_enabled": false,

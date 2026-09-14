@@ -16,7 +16,7 @@
 
 import { AccountScopedHandler, HttpRequest, HttpRequestPipelineStep } from '../httpTypes';
 import { validator } from 'twilio-flex-token-validator';
-import { newErr, newOk } from '../Result';
+import { newErr, newOk } from '@tech-matters/result-type';
 import { newMissingParameterResult } from '../httpErrors';
 import { getAccountAuthToken } from '@tech-matters/twilio-configuration';
 
@@ -46,9 +46,16 @@ export const validateFlexTokenRequest: ({
 }) => HttpRequestPipelineStep =
   ({ tokenMode }: { tokenMode: 'supervisor' | 'agent' | 'guest' }) =>
   async (request, { accountSid }) => {
-    const { Token: token } = request.body;
+    let token: string;
+    if (request.headers?.authorization?.startsWith('Bearer ')) {
+      token = request.headers?.authorization.slice('Bearer '.length);
+    } else {
+      token = request.body?.Token;
+    }
     if (!token) {
-      return newMissingParameterResult('Token');
+      return newMissingParameterResult(
+        'Bearer authorization header or Token body parameter',
+      );
     }
     try {
       const tokenResult: TokenValidatorResponse = (await validator(

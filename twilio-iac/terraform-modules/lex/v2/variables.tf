@@ -32,6 +32,7 @@ variable "lex_v2_bots" {
     type                        = optional(string, "Bot")
     production_bot_alias_id     = optional(string, "TSTALIASID")
     staging_bot_alias_id        = optional(string, "TSTALIASID")
+    fallback_intent_closing_response = optional(string, "Thank you for contacting the hotline.  Feel free to reach out again if you need additional support.")
   }))
   default = null
   }

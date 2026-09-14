@@ -113,6 +113,7 @@ test('Test <QueuesStatus> after update', () => {
         telegram: 0,
         instagram: 0,
         line: 0,
+        voicemail: 0,
         longestWaitingDate: secondsAgo.toISOString(),
       },
       Q2: {
@@ -124,6 +125,7 @@ test('Test <QueuesStatus> after update', () => {
         telegram: 0,
         instagram: 0,
         line: 0,
+        voicemail: 0,
         longestWaitingDate: oneMinuteAgo.toISOString(),
       },
       Q3: {
@@ -135,6 +137,7 @@ test('Test <QueuesStatus> after update', () => {
         telegram: 0,
         instagram: 0,
         line: 0,
+        voicemail: 0,
         longestWaitingDate: twoMinutesAgo.toISOString(),
       },
       Q4: {
@@ -146,6 +149,7 @@ test('Test <QueuesStatus> after update', () => {
         telegram: 0,
         instagram: 0,
         line: 0,
+        voicemail: 0,
         longestWaitingDate: null,
       },
       Admin: {
@@ -157,6 +161,7 @@ test('Test <QueuesStatus> after update', () => {
         telegram: 0,
         instagram: 0,
         line: 0,
+        voicemail: 0,
         longestWaitingDate: null,
       },
     },
@@ -177,7 +182,7 @@ test('Test <QueuesStatus> after update', () => {
 
   expect(screen.getAllByText('QueueCard-Name')).toHaveLength(5);
 
-  const expectAllChannelsRendersInQ = ([qName, qStatus]) =>
+  const expectAllChannelsRendersInQ = ([qName, _qStatus]) =>
     Object.values(coreChannelTypes).forEach(c => {
       // Check that the UI renders for this channel
       const channelInQ = screen.getByTestId(`${qName}-${c}`);
@@ -227,6 +232,7 @@ each([
           telegram: 0,
           instagram: 0,
           line: 0,
+          voicemail: 0,
           longestWaitingDate: secondsAgo.toISOString(),
         },
       },
@@ -248,7 +254,7 @@ each([
     expect(screen.getAllByText('QueueCard-Name')).toHaveLength(1);
     expect(screen.getAllByTestId('channel-box-inner-value')).toHaveLength(expectedChannelsCount);
 
-    const expectAllChannelsRendersInQ = ([qName, qStatus]) =>
+    const expectAllChannelsRendersInQ = ([qName, _qStatus]) =>
       Object.values(coreChannelTypes).forEach(c => {
         if (ownProps.contactsWaitingChannels.includes(c as any)) {
           // Check that the UI renders for this channel (if it's defined in contactsWaitingChannels)
@@ -320,8 +326,6 @@ test('Test <QueuesStatus> after error', () => {
 
 test('a11y', async () => {
   const secondsAgo = new Date();
-  const oneMinuteAgo = new Date(secondsAgo.getTime() - 60 * 1000);
-  const twoMinutesAgo = new Date(oneMinuteAgo.getTime() - 60 * 1000);
 
   const ownProps = {
     colors,

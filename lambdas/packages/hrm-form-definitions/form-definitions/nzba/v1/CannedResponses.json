@@ -1,50 +1,182 @@
 [
-    {
-        "label": "Thank you for contacting.",
-        "text": "Thank you for contacting the helpline. We are here to support you. My name is XXX and I am a counselor at the helpline. "
-      },
-      {
-        "label": "Confidentiality / Privacy",
-        "text": "Before we continue, I would love for you to know that this is a safe space for you to just talk and share the challenges that you are having. Everything you say here will remain here except in cases where you indicate that you are being harmed by someone (meaning any form of abuse), that you want to harm yourself (meaning suicide) or you want to harm someone. In any of these cases, I would have to inform my supervisor and inform the relevant authorities. Do you understand this?"
-      },
-      {
-        "label": "Emergency Services Call",
-        "text": "I am going to call 911 and will ask you to provide as much information as you can about the situation. Do you know where the situation is taking place?"
-      },
-      {
-        "label": "What is the helpline?",
-        "text": "ChildLine is a 24/7 counseling helpline that provides free counselling and psychosocial support to children and teens under the age of 18 years."
-      },
-      {
-        "label": "How did you learn about the helpline?",
-        "text": "If you don't mind me asking, can you please share with me how you came to know about the helpline?"
-      },
-      {
-        "label": "How do I avoid COVID?",
-        "text": "It’s understandable that you are worried about getting the COVID19 Virus, however, here are some tips to help you stay safe: \n\n • Wash your hands regularly / use sanitizer \n • Avoid handshakes, hugs and kisses. \n • Don’t touch your face unnecessarily \n • Keep a 1.5-meter distance from people, especially if they are symptomatic \n • If you feel that you show symptoms or have come in touch with a COVID19 positive person, please also call the COVID19 Helpline \n • Stay calm and don't panic"
-      },
-      {
-        "label": "What is Physical abuse?",
-        "text": "Physical violence and abuse based on the fact that you are a man or a woman is an increasing problem. If you or anyone you know is being: Beaten, slapped, punched, kicked, bruised, cut, burnt or physically hurt in any way, they are being physically abused."
-      },
-      {
-        "label": "What is Verbal and Emotional abuse?",
-        "text": "Not all sexual and gender based violence is physical. Verbal abuse like screaming, shouting and name calling, and emotional abuse like threats and intimidation, are real problems, especially in families."
-      },
-      {
-        "label": "What is Sexual abuse and rape?",
-        "text": "People are sometimes forced to have sex with people when they don’t want to (rape), or to do sexual things against their will. This can happen once or more often. People may know the person or they may be a stranger. Sexual violence and abuse have immediate as well as long term physical and emotional consequences. Being sexually abused because you are a man or a woman is a growing problem."
-      },
-      {
-        "label": "Affirmations",
-        "text": "Thank you for sharing this with me. It is completely natural to feel the way you do."
-      },
-      {
-        "label": "Silent",
-        "text": "Unfortunately because there has been no response, we will have to end this conversation to speak with the next caller. When you are ready to chat with us you are welcome to reach out again."
-      },
-      {
-        "label": "Goodbye",
-        "text": "Thank you for reaching out to the helpline, we are here to support you. Please reach out to us again if you need to talk. "
-      }
+  {
+    "label": "TriageTransfer",
+    "text": "I will transfer you now. If you get disconnected for any reason, just connect again straight away :-)"
+  },
+  {
+    "label": "TriageOverseas",
+    "text": "Thank you for reaching out for support today. We believe you may be contacting from overseas, and we can only offer services to young people in New Zealand. Please refer to https://www.childhelplineinternational.org/child-helplines/child-helpline-network/ or https://www.helpguide.org/find-help if you are seeking similar services in your region. We hope you find the help you need, and wish you all the best."
+  },
+  {
+    "label": "TicketStandard",
+    "text": "Kia ora [client’s name],\n\nI’m sorry we missed your chat as our services were closed when you tried to contact us, but I’m glad you reached out for support about [issue]. We'd love to chat more and explore [the issue/options] a bit more. Our services are completely free and we are open again at 11am until 10:30pm for chats and until 11pm on the phone - 0800 942 8787. We are open everyday including weekends and public holidays.\n\nWe hope you try to reach out again as you deserve to get some support, we’ll be happy to hear from you. [Optional - based on need] - If you need support outside of our hours, you can try reaching out to one of the services listed below. \n\nOther services:\nYouthline: Free call 0800 37 66 33, or free text 234, 24/7, for Kiwis aged between 12-24 years.\n1737: Free call or text on 1737, 24/7\nAnxiety NZ: Free call 0800 269 4389 (0800 ANXIETY), 24/7 \n\nWe hope to hear from you soon, take care for now.\n\nThanks,\n0800 What's Up"
+  },
+  {
+    "label": "AssessSuicideGuide",
+    "text": "Suicide Risk Assessment Suicidal thoughts and Feelings only\nALERT THE SUPERVISOR \n\nDo they have a plan? If so what is the plan and do they have a time frame to act on this plan? \n\nDo they have the means to act on this plan?\n\nLet them know we cannot send help unless they tell us where they are.\n\nIs this the first time they have had these thoughts?\n\nHave they made an attempt to complete suicide before? if yes what happened? what prevented them from succeeding.\n\nWhat will prevent them from killing themselves?\n\nWho else is with them? have they told anyone else?\n\nDoes it help talking about their feelings?\n\nInvite them to call us back. \n\n\n\n\n"
+  },
+  {
+    "label": "AssessDepressionGuide",
+    "text": "Assessment for Depression\n\nConsidering the last couple of weeks, how would you describe your mood?\n\nDo you find yourself crying more than usual these days?\n\nWhen you think about your future, what do you see?\n\nHave you noticed any change in your sleep routine since the time you say you have been feeling low?\n\nHave you noticed any change in your appetite since the time you have been feeling low? Have you noticed any change in your weight?\n\nHow would you describe your energy throughout the day? Do you find the energy to undertake your routine activities?\n\nAre you able to draw satisfaction out of the things as you used to?\n\nIt is not uncommon for people who have been feeling low to have thoughts of harming themselves and ending their lives? Have you had these thoughts recently?\n\n\n\n"
+  },
+  {
+    "label": "AssessAnxietyGuide",
+    "text": "Assessment for Anxiety\n\nDo you have find yourself worrying excessively about a variety of things, topics or events?\n\nHave you noticed an increase in your irritability? (observed by you or others)\n\nDo you feel that you tire easily?\n\nDo you find it hard to relax? or feel as if you are on the edge?\n\nDo you find it hard to concentrate or feel as if your mind goes blank?\n\nHow would you describe your sleep quality? \n- Are you able to fall asleep easily? \n- Do you have trouble maintaining sleep?\n- Do you feel unrested even after sleeping?\n\nHave you noticed increased muscle aches and soreness?"
+  },
+  {
+    "label": "AssessTraumaGuide",
+    "text": "Being Trauma Aware\nWhen a person experiences Trauma they may not be able to remember what happened in a chronological order\nThis may mean that their story appears not to make sense\nThe may forget large parts of what happened.\nfocus on what they can remember, not what is missing.\nfocus on sensory memories\nyoung children's brains may stop developing when there has been trauma. "
+  },
+  {
+    "label": "Tool54321",
+    "text": "5: Acknowledge FIVE things you see around you. It could be a pen, a spot on the ceiling, anything in your surroundings.\n4: Acknowledge FOUR things you can touch around you. ...\n3: Acknowledge THREE things you hear. ...\n2: Acknowledge TWO things you can smell. ...\n1: Acknowledge ONE thing you can taste."
+  },
+  {
+    "label": "MiscDonation",
+    "text": "Thank you so much for getting in touch, and for your interest in supporting 0800What's Up by way of donation.\nI cannot give out donation information over this channel, but can direct you to our donations webpage (on the Barnardos website, as 0800What's Up is a Barnardos service).\nHere is the link: https://www.barnardos.org.nz/what-we-do/child-and-family-services/0800-whats-up/\n\nAlternatively, you could call the fundraising & donations line on: 0800 005 437\nOr email the fundraising & donations line on: fundraising@barnardos.org.nz\n\nKind regards,\nThe 0800What's Up Team"
+  },
+  {
+    "label": "TriageBusyBrief",
+    "text": "Thanks for reaching out. All of our counsellors are busy at the moment, but we should be able to offer you a chat later at (time). How would you feel about coming back then? Otherwise, I can recommend other services."
+  },
+  {
+    "label": "TriageBusyThorough",
+    "text": "Thanks so much for your patience. We’re sorry, but all of our counsellors are busy right now and we can’t pick up your chat at the moment.\n\nPlease try us again soon. We’re open every day from 11:00am to 10:30pm.\n\nIf you need support now, you can contact these free services:\n • Call or text 1737 for free \n • Text Lifeline on 4357, or call 0800 543 354 for free \n • Text Youthline on 234, or call 0800 376 633 for free \n\nIf this is an emergency, or someone is in immediate danger, call 111 now.\n\nBest wishes, \nThe 0800 What’s Up Team"
+  },
+  {
+    "label": "suicidal thoughts",
+    "text": "It looks like you're having a hard time at the moment with thinking about suicide, is that right?"
+  },
+  {
+    "label": "MiscSignoff",
+    "text": "Ngā mihi,\nThe What's Up Team"
+  },
+  {
+    "label": "TriageDailyChatUsed",
+    "text": "Welcome. 0800 WU can only offer 1 chat a day, and we believe you have already had a chat with us today, so we will not be able to offer another one until tomorrow. We'd really love to keep supporting you, so please reach out tomorrow if you would like to have another chat.\n\nIf you need support now, you can contact these free services:\n • Call or text 1737 for free \n • Text Lifeline on 4357, or call 0800 543 354 for free \n • Text Youthline on 234, or call 0800 376 633 for free \n\nIf this is an emergency, or someone is in immediate danger, call 111 now.\n\nBest wishes, \nThe 0800 What’s Up Team"
+  },
+  {
+    "label": "protective interruption",
+    "text": "I'm worried about your safety tonight Katana, and I may need to get the police there to help you so that you can stay safe, do you understand what I'm saying?"
+  },
+  {
+    "label": "MiscPlacementConsent",
+    "text": "Thanks again for reaching out, I’m glad you were able to connect with us today. Before you go, I’d just like to ask you a question. While I am a fully-trained What’s Up counsellor, I am also doing a professional counselling degree at university. Part of my degree involves talking about some of my conversations with chatters in a group supervision with other counselling students and my teachers. This is to help me reflect on my work and get feedback, and everything that is shared with my supervision group is confidential. Would it be ok with you if I shared a little bit around our conversation today in my supervision group? I would make sure to leave out any personal information about you. If you’re not comfortable with me taking our conversation to supervision, that’s fine too. What are your thoughts about that?"
+  },
+  {
+    "label": "TriageTransferSoon",
+    "text": "Welcome to What’s Up! All our counsellors are busy at the moment, but one will be available soon. How would you feel about waiting with me, and I can transfer you soon?"
+  },
+  {
+    "label": "AssessChatSatisfaction",
+    "text": "We are doing a survey at the moment and I was curious: was this chat helpful? If yes, why? If not, what could I have done better? Feel free to be as honest as you want, it really helps us out!"
+  },
+  {
+    "label": "MiscMatariki",
+    "text": "Mānawatia a Matariki"
+  },
+  {
+    "label": "AssessRegularReview",
+    "text": "Generally when you have a regular counsellor, we try to review things to ensure they are still set up in the most beneficial way for you. Sometimes people change their frequency of contact, or change counsellor, etc. It's a chance for us to check in on what's working well, what could be improved. Really what matters is that things are going in the way that is right for you. How are you finding your regular service?"
+  },
+  {
+    "label": "Luce",
+    "text": "Sounds like you are unsure about your safety or are safe at the moment.  We encourage you to try these distractions: music (indie acoustic), watching TV, making art, reading, writing.  You can also check out some ideas on here: https://whatsup.co.nz/teens or try Youthline or Lifeline.  If you become unsafe, please contact the suicide crisis helpline 0508 828 865, your local mental health emergency services, 0800 46 78 46 or 111.   I’ll let you go for today and you can come back on for your regular counsellor. Bye for now"
+  },
+  {
+    "label": "TriageRegular",
+    "text": "Welcome! We are aware you have a regular counsellor at 0800What's Up, and they are not on at the moment. Do you have your regulars upcoming shifts? If not, I can offer them. If so, I will let you go and your regular will look forward to hearing from you soon."
+  },
+  {
+    "label": "AssessSuicideScale",
+    "text": "On a scale of 1 to 10, where 1 means you’re definitely not going to end your life today and 10 means you’re definitely going to end your life today, where would you place yourself on the scale?"
+  },
+  {
+    "label": "ToolMindfulnessLeaves",
+    "text": "\"Leaves on a Stream” Exercise\n(1) Sit in a comfortable position and either close your eyes or rest them gently on a fixed spot in the room.\n\n(2) Visualize yourself sitting beside a gently flowing stream with leaves floating along the surface of the water. Pause 10 seconds.\n\n(3) For the next few minutes, take each thought that enters your mind and place it on a leaf… let it float by. Do this with each thought – pleasurable, painful, or neutral. Even if you have joyous or enthusiastic thoughts, place them on a leaf and let them float by.\n\n(4) If your thoughts momentarily stop, continue to watch the stream. Sooner or later, your thoughts will start up again. Pause 20 seconds.\n\n(5) Allow the stream to flow at its own pace. Don’t try to speed it up and rush your thoughts along. You’re not trying to rush the leaves along or “get rid” of your thoughts. You are allowing them to come and go at their own pace.\n\n(6) If your mind says “This is dumb,” “I’m bored,” or “I’m not doing this right” place those thoughts on leaves, too, and let them pass. Pause 20 seconds.\n\n(7) If a leaf gets stuck, allow it to hang around until it’s ready to float by. If the thought comes up again, watch it float by another time. Pause 20 seconds.\n\n(8) If a difficult or painful feeling arises, simply acknowledge it. Say to yourself, “I notice myself having a feeling of boredom/impatience/frustration.” Place those thoughts on leaves and allow them float along.\n\n(9) From time to time, your thoughts may hook you and distract you from being fully present in this exercise. This is normal. As soon as you realize that you have become sidetracked, gently bring your attention back to the visualization exercise."
+  },
+  {
+    "label": "TriageAdult",
+    "text": "Hi there. I see you have let us know you are an adult. You deserve support and we are glad you have reached out to someone. We are a service that provides counselling for children and teens between the ages of 5 and 19. May I ask what support you are looking for today? I'll do my best to refer you to the most appropriate services."
+  },
+  {
+    "label": "AssessProtectiveInterruption",
+    "text": "I just need to let you know that what you have said is very concerning, and we are concerned for your safety. Although what you say is confidential to What’s Up, if we believe you or someone else is at risk we might have to let someone else know what is going on for you so you can get the right support."
+  },
+  {
+    "label": "TriageRepeatRisk",
+    "text": "0800What's Up is a counselling helpline, and we are not equipped for high risk in the same way as a crisis line. So, when you present with (insert presentation) in chats, we are limited in what kind of support we can give you. \n\nIf you are at immediate risk, please call 111, the suicide helpline at 0508 828 865, or your local crisis team at (insert crisis team number if known). We trust you are able to keep yourself safe because you have shown us that you can tell when you are at risk and that you are able to reach out for support when needed. \n\nAlternatively, if you would like a counselling chat, we are more than happy to chat with you.\n"
+  },
+  {
+    "label": "ToolGrounding",
+    "text": "Can you identify five things you can see, four things you can hear, three things you can smell, two things you can touch, and one thing you can taste. "
+  },
+  {
+    "label": "AssessPrivacy",
+    "text": "If you continue to use this device, our may not be fully private / someone else could have access to your chats. Are you okay with this?"
+  },
+  {
+    "label": "AssessClientBackground",
+    "text": "Before we start talking about… can you tell me a bit more about yourself? Like your age, ethnicity, cultural background, family or whatever you feel comfortable sharing?"
+  },
+  {
+    "label": "MiscInviteBack",
+    "text": "You could come back and keep talking about this with us. All the counsellors here are really great. If you want to speak with me again I’m here on __(day)____ but you’re welcome to chat any day with any counsellor."
+  },
+  {
+    "label": "Suicide scale",
+    "text": "Just wanted to check on how you're feeling, on a scale from 1 to 10 where would you rate yourself being? \"1\" means you're definitely not going to commit suicide tonight, and \"10\" means you are definitely going to commit suicide tonight."
+  },
+  {
+    "label": "AssessSelfHarm",
+    "text": "Where do you think you would put yourself a scale of 1-10, where 1 means you're definitely not going to self-harm tonight, and 10 means you are definitely going to self-harm tonight?"
+  },
+  {
+    "label": "TicketRISK",
+    "text": "Kia ora [client’s name],\n\nI’m glad you decided to reach out to us. I'm sorry we were closed when you contacted us. It can definitely be overwhelming going through this on your own and you deserve support. \n\nWe would love to chat and learn more about what is going on for you. Our services are free. Our helpline (0800 942 8787) is open from 11am-11pm and our chat service from 11am-10:30pm. We are open everyday including weekends and public holidays.\n\nIn the mean time, if this is an emergency/you are feeling unsafe, please call 111 or Suicide Helpline: 0508 828 865 (0508 TAUTOKO). If you are needing to talk to someone when we are not open, you might find the following services useful:\n\nYouthline: Free call 0800 37 66 33, or free text 234, 24/7, for Kiwis aged between 12-24 years.\n1737: Free call or text on 1737, 24/7\nAnxiety NZ: Free call 0800 269 4389 (0800 ANXIETY), 24/7\nLifeline: Free call 0800 543 354 (0800 LIFELINE), free text 4357 (HELP), 24/7\nDepression Helpline: Free Call 0800 111 757, free text 4202, 24/7\n\nWe hope to be able to support you soon.\n\nThanks,\n0800 WhatsUp"
+  },
+  {
+    "label": "TriageServicesList",
+    "text": "You can call or text 1737 any time for free, contact Youthline for free on 0800 376 633 or text 234, contact Lifeline for free on 0800 543 354 or text 4357, or call Healthline for free on 0800 611 116 for health advice.\n\nIf you or someone you know may be thinking about suicide, call the Suicide Crisis Helpline for free on 0508 828 865.\n\nIf you or someone else is in immediate danger, call 111 now."
+  },
+  {
+    "label": "alicia safety plan",
+    "text": "safety plan:\n-Writing poetry (on her notes app)\n-Watching comfort shows like The Rookie, The Meg, Fuller House, Disney movies such as Stitch\n-Finding one of her cats to cuddle\n-Getting one of her fluffy blankets\n-Doing the 5-4-3-2-1 grounding technique (has previously been successful)\n-Googling random info as a distraction\n-Listening to her Spotify list titled \"Why Hello\"\nContacting WU or Lifeline"
+  },
+  {
+    "label": "ToolCognitiveShuffle",
+    "text": "The Cognitive Shuffle strategy\n1. Lie in bed, think of a random, emotionally neutral word with at least 5 letters. Perhaps use the word BEDTIME.\n\n2. Starting with the first letter, “B,” think of a word that begins with B, and visualize that item. Like imagine a Bear. And then a Banana. And then Bacon. And then Bread. And then Butter. \n\n3. If you can’t think of another word starting with B, or just get kind of bored with it, feel free to move on to the next letter in your “seed” word BEDTIME – in this case, the letter E. So you’d imagine an Elephant. An Egg. An Escalator. And so on.\n\n4. If you get to the end of your word and are still awake, just pick a new seed word, and repeat the process."
+  },
+  {
+    "label": "ToolFoodAffirmation",
+    "text": "If I eat I will have more energy\nI will be able to think more clearly\nI am facing my fears head-on and challenging any untrue beliefs I hold\nI will be able to socialise more easily\nI am getting closer to a life of freedom that I truly deserve\n\nI am worthy of food\nI deserve to live a full life\nI need to nourish myself in order to thrive\nFood is not the enemy\nI can do this"
+  },
+  {
+    "label": "Lily Huang",
+    "text": "Thank you for sharing how you’re feeling — it’s really brave of you to reach out. We want you to know that we’re here to listen and really want to help as a counselling helpline. We’ve noticed that there is a pattern of you feeling unsafe / focusing on ways you might hurt yourself. While we can get you help when you’re unsafe, it also seems that this has not helped you in the past. Because we aren’t a crisis service, we’re limited as to what we can and can’t do when you’re feeling unsafe or thinking about suicide. If you ever feel like you might be in danger right now, please call 111 or you can talk to the Gisborne Crisis Team on 0800 243 500 — they are there to help keep you safe straight away. We trust you to know when you need this kind of help because you’ve shown us you can tell when things feel too big to cope with alone and you reach out, which is great. If you’d like to keep chatting with us about what’s on your mind, we’re here to listen and support you. What would you like to do?"
+  },
+  {
+    "label": "tickets",
+    "text": "Kia ora (client name), \n\nI’m (counsellor Name), I’m sorry we missed your chat as our services were closed when you tried to contact us, but I’m glad you reached out for support tonight regarding (issue/s). (Explore issue more). Our services are completely free and we are open again at 11am until 10:30pm for chats. \n\nYou could also try calling on us on 0800 9428787, our phone lines are open between 11am to 11pm. I hope you try to reach out again as you deserve to get some support, we’ll be happy to hear from you. In the meantime try reaching out to one of the services listed below. \n\nWe hope to hear from you soon, take care for now.\n\nOther services:\nYouthline: Free call 0800 37 66 33, or free text 234, 24/7, for Kiwis aged between 12-24years.\n1737: Free call or text on 1737, 24/7\nAnxiety NZ: Free call 0800 269 4389 (0800ANXIETY), 24/7"
+  },
+  {
+    "label": "Riskticket",
+    "text": "Kia ora __client’s name__,\n\nI’m __counsellor name__, I’m glad you decided to reach out to us concerning your unsafe thoughts last night but unfortunately our services was closed so you couldn’t reach us. It can definitely be overwhelming going through this on your own and you do deserve to be supported. I wonder if you would like to get back to us to get some support with what you’re going through right now, it would be great to explore this with you. \n\nOur helpline (0800 942 8787) is open from 11am-11pm and our chat service from 11am-10:30pm. If this is an emergency, please call 111. We hope you find the support you need tonight, and feel free to contact us back any day. In the mean time you may also find support from other services listed below.\n\nWe hope to hear from you soon, take care for now.\n\nOther services:\nYouthline: Free call 0800 37 66 33, or free text 234, 24/7, for Kiwis aged between 12-24 years.\n1737: Free call or text on 1737, 24/7\nAnxiety NZ: Free call 0800 269 4389 (0800 ANXIETY), 24/7\nLifeline: Free call 0800 543 354 (0800 LIFELINE), free text 4357 (HELP), 24/7\nDepression Helpline: Free Call 0800 111 757, free text 4202, 24/7"
+  },
+  {
+    "label": "selfharm",
+    "text": "Just wanted to check on how you're feeling, on a scale from 1 to 10 where would you rate yourself being? “1\" means you’re definitely not going to harm yourself tonight, and \"10\" means you’re definitely going to harm yourself tonight."
+  },
+  {
+    "label": "Welcome to come back",
+    "text": "ok, I like that plan, I'm one of the supervisors and not always on shift, but all of our counsellors are amazing. So yes please, anytime you feel like chatting you are welcome to come back. Does that feel like an ok place to leave it today?"
+  },
+  {
+    "label": "Chloe list",
+    "text": "1. What type of urges are you having tonight?\n2. How strong are they on a scale of 1-10?\n3. Which steps of your safety plan have you tried and how effective were they?"
+  },
+  {
+    "label": "Busy",
+    "text": "Thanks so much for your patience. We’re sorry, but all of our counsellors are busy right now and we can’t pick up your chat at the moment.\n\nPlease try us again soon. We’re open every day from 11:00am to 10:30pm.\n\nIf you need support now, you can contact these free services:\n\nCall or text 1737 for free\nText Lifeline on 4357, or call 0800 543 354 for free\nText Youthline on 234, or call 0800 376 633 for free\nIf this is an emergency, or someone is in immediate danger, call 111 now.\n\nBest wishes,\n\nThe 0800 What’s Up Team"
+  }
 ]

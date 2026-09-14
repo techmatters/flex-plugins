@@ -48,9 +48,9 @@ export async function open(browser: Browser | BrowserContext): Promise<AseloWebC
   };
 
   await page.goto(E2E_ASELO_CHAT_URL);
-  console.log('Waiting for entry point button to render.');
+  console.debug('Waiting for entry point button to render.');
   await selectors.entryPointButton.waitFor();
-  console.log('Found entry point button.');
+  console.debug('Found entry point button.');
 
   return {
     fillPreEngagementForm: async () => {

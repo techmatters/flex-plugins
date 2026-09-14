@@ -35,6 +35,7 @@ const phoneNumberStandardization = (s: string) => [trimSpaces, trimHyphens].redu
 type TransformIdentifierFunction = (c: string) => string;
 const channelTransformations: { [k in ChannelTypes]: TransformIdentifierFunction[] } = {
   voice: [phoneNumberStandardization],
+  voicemail: [phoneNumberStandardization],
   sms: [phoneNumberStandardization],
   whatsapp: [s => s.replace('whatsapp:', ''), phoneNumberStandardization],
   modica: [s => s.replace('modica:', ''), phoneNumberStandardization],
@@ -66,7 +67,8 @@ export const getNumberFromTask = (task: CustomITask) => {
   }
 
   if (channelType === undefined) return null;
-  console.error(`Channel type ${channelType} is not supported`, typeof channelType, channelType, task);
+  console.error(`Channel type ${channelType} is not supported`, typeof channelType, channelType);
+  console.debug(task);
   return null;
 };
 

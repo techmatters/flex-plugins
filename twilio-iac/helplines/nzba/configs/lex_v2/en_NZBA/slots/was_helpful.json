@@ -1,8 +1,8 @@
 {
     "slotName": "was_helpful",
-    "description": "was_helpful",
-    "slotTypeName": "yes_no",
+    "slotTypeName": "helpful_rating",
     "intentName": "post_survey_yes",
+    "description": "Slot was_helpful for intent post_survey_yes",
     "valueElicitationSetting": {
         "slotConstraint": "Required",
         "promptSpecification": {
@@ -10,7 +10,7 @@
                 {
                     "message": {
                         "plainTextMessage": {
-                            "value": "Did you find this conversation helpful? Please answer Yes or No."
+                            "value": "What did you find helpful in this chat? \n1. I feel lighter/calmer,\n2. I felt heard and understood,\n3. I understand my situation better,\n4. I have some information/options,\n5. I have a plan/next steps,\n6. Nothing"
                         }
                     }
                 }
@@ -71,7 +71,7 @@
             "captureNextStep": {
                 "dialogAction": {
                     "type": "ElicitSlot",
-                    "slotToElicit": "would_recommend"
+                    "slotToElicit": "mood"
                 },
                 "intent": {}
             },
@@ -80,7 +80,7 @@
                     {
                         "message": {
                             "plainTextMessage": {
-                                "value": "Sorry, I didn't understand that."
+                                "value": "We are having trouble understanding your response. But nothing to worry, we will transfer you to a counsellor."
                             }
                         }
                     }

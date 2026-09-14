@@ -93,8 +93,8 @@ const ContactAddedToCaseBanner: React.FC<Props> = ({ taskId, contactId }) => {
       </BannerText>
       <CaseLink
         type="button"
-        color={!canViewcase && '#000'}
-        permission={!canViewcase && 'none'}
+        color={canViewcase ? null : '#000'}
+        permission={canViewcase ? 'permitted' : 'denied'}
         onClick={() => canViewcase && viewCaseDetails(connectedCase)}
         data-fs-id="LinkedCase-Button"
       >

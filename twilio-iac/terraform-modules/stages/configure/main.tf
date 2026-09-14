@@ -70,6 +70,20 @@ provider "twilio" {
   password = local.secrets.twilio_auth_token
 }
 
+module "studio_flow" {
+  source              = "../../studio-flows/v1"
+  helpline            = var.helpline
+  twilio_account_sid  = local.secrets.twilio_account_sid
+  environment         = var.environment
+  short_environment   = var.short_environment
+  short_helpline      = var.short_helpline
+  region              = var.helpline_region
+  studio_flows        = var.studio_flows
+  workflow_sids       = local.task_router_workflow_sids
+  task_channel_sids   = local.task_router_task_channel_sids
+
+}
+
 module "channel" {
   source                     = "../../channels/v1"
   flex_chat_service_sid      = local.services_flex_chat_service_sid

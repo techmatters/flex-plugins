@@ -1,0 +1,42 @@
+{
+  "contactForm": {
+    "callerInformation": [
+      {
+        "name": "reportingDistrict",
+        "insights": ["conversations", "conversation_attribute_5"]
+      },
+      {
+        "name": "officeDepartmentBid",
+        "insights": ["conversations", "conversation_attribute_6"]
+      },      
+      {
+        "name": "officerRequest",
+        "insights": ["conversations", "conversation_attribute_4"]
+      },
+      {
+        "name": "officerStandby",
+        "insights": ["conversations", "conversation_attribute_3"]
+      }
+    ],
+    "childInformation": [
+      {
+        "name": "race",
+        "insights": ["customers", "customer_attribute_2"]
+      }
+    ],
+    "caseInformation": [
+      {
+        "name": "priority",
+        "insights": ["conversations", "conversation_attribute_7"]
+      }
+    ]
+  },
+  "caseForm": {
+    "topLevel": [
+      {
+        "name": "id",
+        "insights": ["conversations", "case"]
+      }
+    ]
+  }
+}

@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2021-2023 Technology Matters
+ * Copyright (C) 2021-2026 Technology Matters
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
  * by the Free Software Foundation, either version 3 of the License, or
@@ -34,13 +34,11 @@ export class ProtectedApiError extends ApiError {
 /**
  * Factored out function that handles a protected api call hosted in serverless toolkit.
  * Will throw Error if server responses with and http error code.
- * @param {string} endPoint endpoint to fetch from (withouth the host part of url, e.g. "/cases/contacts").
- * @param {{ [k: string]: any }} body Same options object that will be passed to the fetch function (here you can include the BODY of the request)
- * @param {FetchOptions & { useTwilioLambda?: boolean }} allOptions
- * @returns {Promise<any>} the api response (if not error)
+ * TODO: Once serverless is fully deprecated, move all account scoped lambda calls to go via fetchAccountScopedLambdaApi.ts methods
+ * TODO: Then refactor this to be a generic base method that fetchHrmApi, fetchResourcesApi and fetchAccountScopedApi all call to add the token to the request
  */
 const fetchProtectedApi = async (
-  endPoint,
+  endpoint: string,
   body: Record<string, any> = {},
   allOptions?: FetchOptions & { useTwilioLambda?: boolean; useJsonEncode?: boolean },
 ) => {
@@ -49,6 +47,9 @@ const fetchProtectedApi = async (
   const token = getValidToken();
   if (token instanceof Error) throw new ApiError(`Aborting request due to token issue: ${token.message}`, {}, token);
 
+  // Adding the token to the body is for backwards compatibility only
+  // Once serverless is fully deprecated and all account scoped lambdas are past v2.65.x it can be removed
+  // Also, support for form encoded payloads can probably be removed once serverless is deprecated too, since account-scoped lambda supports JSON request bodies on all endpoints
   const { contentType, encodedBody } = useJsonEncode
     ? { contentType: 'application/json', encodedBody: JSON.stringify({ ...body, Token: token }) }
     : {
@@ -60,12 +61,14 @@ const fetchProtectedApi = async (
     method: 'POST',
     body: encodedBody,
     headers: {
+      Authorization: `Bearer ${token}`,
       'Content-Type': contentType,
+      ...fetchOptions?.headers,
     },
     ...fetchOptions,
   };
   try {
-    return await fetchApi(new URL(useTwilioLambda ? accountScopedLambdaBaseUrl : serverlessBaseUrl), endPoint, options);
+    return await fetchApi(new URL(useTwilioLambda ? accountScopedLambdaBaseUrl : serverlessBaseUrl), endpoint, options);
   } catch (error) {
     if (error instanceof ApiError) {
       const message = error.response?.status === 403 ? 'Server responded with 403 status (Forbidden)' : error.message;

@@ -47,6 +47,7 @@ describe('test reducer', () => {
         chatChannelCapacity: 0,
       },
       definitionVersions: {},
+      aseloTwilioConfiguration: {},
     };
 
     const result = reduce(state, {} as ConfigurationActionType);

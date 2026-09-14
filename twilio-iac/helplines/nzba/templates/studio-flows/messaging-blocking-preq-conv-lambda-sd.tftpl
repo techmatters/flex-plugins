@@ -1,0 +1,365 @@
+${
+  jsonencode({
+  "description": "${flow_description}",
+  
+    "states": [
+      {
+        "name": "Trigger",
+        "type": "trigger",
+        "transitions": [
+          {
+            "event": "incomingMessage"
+          },
+          {
+            "event": "incomingCall"
+          },
+          {
+            "next": "run_subflow_system_down",
+            "event": "incomingConversationMessage"
+          },
+          {
+            "event": "incomingRequest"
+          },
+          {
+            "event": "incomingParent"
+          }
+        ],
+        "properties": {
+          "offset": {
+            "x": 473,
+            "y": 16
+          }
+        }
+      },
+      {
+        "name": "f_getProfileFlagsForIdentifier",
+        "type": "make-http-request",
+        "transitions": [
+          {
+            "next": "split_based_on_client_flag",
+            "event": "success"
+          },
+          {
+            "next": "split_based_on_topic",
+            "event": "failed"
+          }
+        ],
+        "properties": {
+          "offset": {
+            "x": 599,
+            "y": 376
+          },
+          "method": "POST",
+          "content_type": "application/json;charset=utf-8",
+          "add_twilio_auth": false,
+          "body": "{ \"trigger\": {{trigger | to_json}}, \"channelType\": \"{% if trigger.conversation.ChannelAttributes.channel_type %}{{trigger.conversation.ChannelAttributes.channel_type}}{% else %}{{trigger.conversation.Source | downcase}}{% endif %}\"}",
+          "url": "${get_profile_flags_for_identifier_base_url}/getProfileFlagsForIdentifier"
+        }
+      },
+      {
+        "name": "split_based_on_client_flag",
+        "type": "split-based-on",
+        "transitions": [
+          {
+            "next": "split_based_on_topic",
+            "event": "noMatch"
+          },
+          {
+            "next": "send_message_webchat_blocked",
+            "event": "match",
+            "conditions": [
+              {
+                "friendly_name": "If value contains blocked",
+                "arguments": [
+                  "{{widgets.f_getProfileFlagsForIdentifier.parsed.flags}}"
+                ],
+                "type": "contains",
+                "value": "blocked"
+              }
+            ]
+          },
+          {
+            "next": "set_var_regular",
+            "event": "match",
+            "conditions": [
+              {
+                "friendly_name": "If value contains Regular",
+                "arguments": [
+                  "{{widgets.f_getProfileFlagsForIdentifier.parsed.flags}}"
+                ],
+                "type": "contains",
+                "value": "Regular"
+              }
+            ]
+          }
+        ],
+        "properties": {
+          "input": "{{widgets.f_getProfileFlagsForIdentifier.parsed.flags}}",
+          "offset": {
+            "x": 196,
+            "y": 574
+          }
+        }
+      },
+      {
+        "name": "send_message_webchat_prequeue",
+        "type": "send-message",
+        "transitions": [
+          {
+            "next": "send_to_queue",
+            "event": "sent"
+          },
+          {
+            "next": "http_post_webhook_notify_error",
+            "event": "failed"
+          }
+        ],
+        "properties": {
+          "offset": {
+            "x": 750,
+            "y": 1650
+          },
+          "service": "{{trigger.conversation.InstanceSid}}",
+          "channel": "{{trigger.conversation.ChannelSid}}",
+          "from": "${channel_flow_vars.widget_from}",
+          "to": "{{contact.channel.address}}",
+          "body": "${channel_flow_vars.send_message_webchat_prequeue}"
+        }
+      },
+      {
+        "name": "send_to_queue",
+        "type": "send-to-flex",
+        "transitions": [
+          {
+            "event": "callComplete"
+          },
+          {
+            "next": "http_post_webhook_notify_error",
+            "event": "failedToEnqueue"
+          },
+          {
+            "event": "callFailure"
+          }
+        ],
+        "properties": {
+          "offset": {
+            "x": 930,
+            "y": 1870
+          },
+          "workflow": "${workflow_sids.master}",
+          "channel": "${task_channel_sids.chat}",
+          "attributes": "${channel_attributes.default}",
+          "priority": "0",
+          "timeout": "3600"
+        }
+      },
+      {
+        "name": "http_post_webhook_notify_error",
+        "type": "make-http-request",
+        "transitions": [
+          {
+            "event": "success"
+          },
+          {
+            "event": "failed"
+          }
+        ],
+        "properties": {
+          "offset": {
+            "x": 1030,
+            "y": 2180
+          },
+          "method": "POST",
+          "content_type": "application/json;charset=utf-8",
+          "add_twilio_auth": false,
+          "body": "{ \"text\": \"Issue detected on ${short_helpline} ${short_environment} Flow SID: {{flow.flow_sid}} Execution SID: {{flow.sid}}  \" }",
+          "url": "${webhook_url_studio_errors}"
+        }
+      },
+      {
+        "name": "run_subflow_system_down",
+        "type": "run-subflow",
+        "transitions": [
+          {
+            "next": "f_getProfileFlagsForIdentifier",
+            "event": "completed"
+          },
+          {
+            "next": "f_getProfileFlagsForIdentifier",
+            "event": "failed"
+          }
+        ],
+        "properties": {
+          "flow_sid": "${system_down_studio_subflow_sid}",
+          "flow_revision": "LatestPublished",
+          "offset": {
+            "x": 599,
+            "y": 178
+          },
+          "parameters": [
+            {
+              "type": "string",
+              "value": "true",
+              "key": "system_down"
+            }
+          ]
+        }
+      },
+      {
+        "name": "send_message_webchat_blocked",
+        "type": "send-message",
+        "transitions": [
+          {
+            "event": "sent"
+          },
+          {
+            "event": "failed"
+          }
+        ],
+        "properties": {
+          "offset": {
+            "x": 0,
+            "y": 752
+          },
+          "service": "{{trigger.conversation.InstanceSid}}",
+          "channel": "{{trigger.conversation.ChannelSid}}",
+          "from": "${channel_flow_vars.widget_from}",
+          "to": "{{contact.channel.address}}",
+          "body": "${channel_flow_vars.chat_blocked_message}"
+        }
+      },
+      {
+        "name": "set_var_regular",
+        "type": "set-variables",
+        "transitions": [
+          {
+            "next": "send_message_webchat_prequeue",
+            "event": "next"
+          }
+        ],
+        "properties": {
+          "variables": [
+            {
+              "type": "string",
+              "value": "regular",
+              "key": "clientType"
+            }
+          ],
+          "offset": {
+            "x": 1060,
+            "y": 950
+          }
+        }
+      },
+      {
+        "name": "set_var_high_risk",
+        "type": "set-variables",
+        "transitions": [
+          {
+            "next": "send_message_webchat_prequeue",
+            "event": "next"
+          }
+        ],
+        "properties": {
+          "variables": [
+            {
+              "type": "string",
+              "value": "high risk",
+              "key": "clientType"
+            }
+          ],
+          "offset": {
+            "x": 711,
+            "y": 963
+          }
+        }
+      },
+      {
+        "name": "split_based_on_topic",
+        "type": "split-based-on",
+        "transitions": [
+          {
+            "next": "set_var_normal",
+            "event": "noMatch"
+          },
+          {
+            "next": "set_var_high_risk",
+            "event": "match",
+            "conditions": [
+              {
+                "friendly_name": "If value equal_to I'm thinking about suicide",
+                "arguments": [
+                  "{{trigger.conversation.ChannelAttributes.pre_engagement_data.topic}}"
+                ],
+                "type": "equal_to",
+                "value": "I'm thinking about suicide"
+              }
+            ]
+          },
+          {
+            "next": "set_var_high_risk",
+            "event": "match",
+            "conditions": [
+              {
+                "friendly_name": "If value equal_to I'm scared",
+                "arguments": [
+                  "{{trigger.conversation.ChannelAttributes.pre_engagement_data.topic}}"
+                ],
+                "type": "equal_to",
+                "value": "I'm scared"
+              }
+            ]
+          },
+          {
+            "next": "set_var_high_risk",
+            "event": "match",
+            "conditions": [
+              {
+                "friendly_name": "If value equal_to I'm unsafe",
+                "arguments": [
+                  "{{trigger.conversation.ChannelAttributes.pre_engagement_data.topic}}"
+                ],
+                "type": "equal_to",
+                "value": "I'm unsafe"
+              }
+            ]
+          }
+        ],
+        "properties": {
+          "input": "{{trigger.conversation.ChannelAttributes.pre_engagement_data.topic}}",
+          "offset": {
+            "x": 342,
+            "y": 762
+          }
+        }
+      },
+      {
+        "name": "set_var_normal",
+        "type": "set-variables",
+        "transitions": [
+          {
+            "next": "send_message_webchat_prequeue",
+            "event": "next"
+          }
+        ],
+        "properties": {
+          "variables": [
+            {
+              "type": "string",
+              "value": "normal",
+              "key": "clientType"
+            }
+          ],
+          "offset": {
+            "x": 341,
+            "y": 960
+          }
+        }
+      }
+    ],
+  "initial_state": "Trigger",
+  "flags": {
+    "allow_concurrent_calls": true
+  }
+})
+  }

@@ -44,6 +44,16 @@ locals {
         "friendly_name"  = "E2E Test Queue"
       }
     }
+    task_channels = {
+      default : "Default"
+      chat : "Programmable Chat"
+      voice : "Voice"
+      sms : "SMS"
+      video : "Video"
+      email : "Email"
+      survey : "Survey"
+      external: "External"
+    }
    
   }
 }

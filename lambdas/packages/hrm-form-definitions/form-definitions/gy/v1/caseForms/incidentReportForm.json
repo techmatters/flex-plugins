@@ -1,0 +1,62 @@
+[
+  {
+    "name": "beaconIncidentId",
+    "type": "input",
+    "label": "Beacon Incident ID",
+    "isPII": true
+  },
+  {
+    "name": "incidentNumber",
+    "type": "input",
+    "label": "Beacon Incident Number",
+    "isPII": true
+  },
+  {
+    "name": "incidentCreationTimestamp",
+    "type": "time-input",
+    "label": "Incident Creation Timestamp",
+    "isPII": true
+  },
+  {
+    "name": "incidentActivationInterval",
+    "type": "numeric-input",
+    "label": "Incident Activation Interval",
+    "isPII": false
+  },
+  {
+    "name": "enrouteInterval",
+    "type": "numeric-input",
+    "label": "En Route Interval",
+    "isPII": false
+  },
+  {
+    "name": "sceneArrivalInterval",
+    "type": "numeric-input",
+    "label": "Scene Arrival Interval",
+    "isPII": false
+  },
+  {
+    "name": "triageInterval",
+    "type": "numeric-input",
+    "label": "Triage Interval",
+    "isPII": false
+  },
+  {
+    "name": "totalSceneInterval",
+    "type": "numeric-input",
+    "label": "Total Scene Interval",
+    "isPII": false
+  },
+  {
+    "name": "transportInterval",
+    "type": "numeric-input",
+    "label": "Transport Interval",
+    "isPII": false
+  },
+  {
+    "name": "totalIncidentTime",
+    "type": "numeric-input",
+    "label": "Total Incident Time",
+    "isPII": false
+  }
+]

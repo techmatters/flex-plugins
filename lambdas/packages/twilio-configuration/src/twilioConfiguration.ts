@@ -23,6 +23,8 @@ import {
 import { getSsmParameter, SsmParameterNotFound } from '@tech-matters/ssm-cache';
 import twilio, { Twilio } from 'twilio';
 
+export type { Twilio };
+
 export const getWorkspaceSid = async (accountSid: AccountSID): Promise<WorkspaceSID> =>
   (await getSsmParameter(
     `/${process.env.NODE_ENV}/twilio/${accountSid}/workspace_sid`,
@@ -44,11 +46,6 @@ export const getMasterWorkflowSid = async (
 
 export const getAccountAuthToken = (accountSid: AccountSID): Promise<string> =>
   getSsmParameter(`/${process.env.NODE_ENV}/twilio/${accountSid}/auth_token`);
-
-/**
- * @deprecated - use getWorkspaceSid, these got duplicated somehow
- */
-export const getTwilioWorkspaceSid = getWorkspaceSid;
 
 export const getSurveyWorkflowSid = (accountSid: AccountSID): Promise<string> =>
   getSsmParameter(`/${process.env.NODE_ENV}/twilio/${accountSid}/survey_workflow_sid`);

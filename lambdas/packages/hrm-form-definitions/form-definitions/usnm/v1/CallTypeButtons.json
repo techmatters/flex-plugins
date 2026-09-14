@@ -1,31 +1,13 @@
 [
   {
     "name": "child",
-    "label": "Child calling about self",
+    "label": "Connection Details",
     "type": "button",
     "category": "data"
   },
   {
-    "name": "caller",
-    "label": "Someone calling about a child",
-    "type": "button",
-    "category": "data"
-  },
-  {
-    "name": "silent",
-    "label": "Silent",
-    "type": "button",
-    "category": "non-data"
-  },
-  {
-    "name": "blank",
-    "label": "Blank",
-    "type": "button",
-    "category": "non-data"
-  },
-  {
-    "name": "joke",
-    "label": "Joke",
+    "name": "silence",
+    "label": "Silence",
     "type": "button",
     "category": "non-data"
   },
@@ -42,8 +24,26 @@
     "category": "non-data"
   },
   {
-    "name": "abusive",
-    "label": "Abusive",
+    "name": "prank",
+    "label": "Prank",
+    "type": "button",
+    "category": "non-data"
+  },
+  {
+    "name": "lioBehavior",
+    "label": "LIO Behavior",
+    "type": "button",
+    "category": "non-data"
+  },
+   {
+    "name": "test",
+    "label": "Test",
+    "type": "button",
+    "category": "non-data"
+  },
+   {
+    "name": "voicemail",
+    "label": "Complete Voicemail",
     "type": "button",
     "category": "non-data"
   }

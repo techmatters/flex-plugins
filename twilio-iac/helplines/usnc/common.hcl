@@ -6,8 +6,10 @@ locals {
 
 
   local_config = {
-    helpline      = "Promise Resource Network"
-    task_language = "en-USNC"
+    helpline           = "Promise Resource Network"
+    task_language      = "en-USNC"
+    enable_post_survey = true
+    enable_lex_v2      = true
 
     workflows = {
       master : {
@@ -26,7 +28,7 @@ locals {
       },
       survey : {
         friendly_name = "Survey Workflow"
-        templatefile  = "/app/twilio-iac/helplines/templates/workflows/lex.tftpl"
+        templatefile  = "/app/twilio-iac/helplines/templates/workflows/survey.tftpl"
       }
     }
 

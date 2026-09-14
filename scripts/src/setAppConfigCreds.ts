@@ -1,6 +1,5 @@
 import { config } from 'dotenv';
 import yargs from 'yargs';
-import fetch from 'node-fetch';
 import * as fs from 'node:fs/promises';
 import { getSSMParameter, setRoleToAssume } from './helpers/ssm';
 

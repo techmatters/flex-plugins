@@ -20,7 +20,7 @@ import { updateWorkersSkills } from '../../services/twilioWorkerService';
 
 export type TeamsViewState = {
   selectedWorkers: Set<string>;
-  selectedSkills: Set<string>;
+  selectedSkills: { [skill: string]: { level?: number | null } };
   operation?: 'enable' | 'disable' | 'assign' | 'unassign';
   status: {
     loading: boolean;
@@ -30,7 +30,7 @@ export type TeamsViewState = {
 
 const initialState: TeamsViewState = {
   selectedWorkers: new Set(),
-  selectedSkills: new Set(),
+  selectedSkills: {},
   status: {
     loading: false,
     error: null,
@@ -65,6 +65,18 @@ type TeamsViewSelectSkillsAction = {
 export const newTeamsViewSelectSkills = (skills: string[]): TeamsViewSelectSkillsAction => ({
   type: TEAMSVIEW_SELECT_SKILLS,
   payload: skills,
+});
+
+const TEAMSVIEW_SELECT_SKILL_LEVEL = 'teamsview/select-skill-level';
+type TeamsViewSelectSkillLevelAction = {
+  type: typeof TEAMSVIEW_SELECT_SKILL_LEVEL;
+  payload: { skill: string; level: number };
+};
+export const newTeamsViewSelectSkillLevel = (
+  skill: TeamsViewSelectSkillLevelAction['payload'],
+): TeamsViewSelectSkillLevelAction => ({
+  type: TEAMSVIEW_SELECT_SKILL_LEVEL,
+  payload: skill,
 });
 
 const TEAMSVIEW_SELECT_OPERATION = 'teamsview/select-operation';
@@ -103,7 +115,7 @@ export const newUpdateWorkersSkillsAsyncAction = createAsyncAction(
     skills,
   }: {
     workers: string[];
-    skills: string[];
+    skills: TeamsViewState['selectedSkills'];
     operation: Required<TeamsViewState['operation']>;
   }): Promise<void> => {
     return updateWorkersSkills({
@@ -142,6 +154,7 @@ type TeamsViewActionTypes =
   | TeamsViewSelectWorkersAction
   | TeamsViewUnselectWorkersAction
   | TeamsViewSelectSkillsAction
+  | TeamsViewSelectSkillLevelAction
   | TeamsViewSelectOperationAction
   | TeamsviewUpdateWorkersSkillsAsyncActionPending
   | TeamsviewUpdateWorkersSkillsAsyncActionFulfilled
@@ -167,7 +180,19 @@ export const reduce = (state = initialState, action: TeamsViewActionTypes): Team
     case TEAMSVIEW_SELECT_SKILLS: {
       return {
         ...state,
-        selectedSkills: new Set(action.payload),
+        selectedSkills: action.payload.reduce((accum, curr) => ({ ...accum, [curr]: {} }), {}),
+      };
+    }
+    case TEAMSVIEW_SELECT_SKILL_LEVEL: {
+      return {
+        ...state,
+        selectedSkills: {
+          ...state.selectedSkills,
+          [action.payload.skill]: {
+            ...state.selectedSkills[action.payload.skill],
+            level: action.payload.level,
+          },
+        },
       };
     }
     case TEAMSVIEW_SELECT_OPERATION: {

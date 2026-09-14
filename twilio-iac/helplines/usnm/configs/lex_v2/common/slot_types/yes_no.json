@@ -1,0 +1,91 @@
+{
+  "slotTypeName": "yes_no",
+  "slotTypeValues": [
+    {
+      "sampleValue": {
+        "value": "Yes"
+      },
+      "synonyms": [
+        {
+          "value": "Yah"
+        },
+        {
+          "value": "Y"
+        },
+        {
+          "value": "Yeah"
+        },
+        {
+          "value": "Ya"
+        },
+        {
+          "value": "1"
+        },
+        {
+          "value": "One"
+        },
+        {
+          "value": "Si"
+        },
+        {
+          "value": "si"
+        },
+        {
+          "value": "sí"
+        },
+        {
+          "value": "Si"
+        }
+      ]
+    },
+    {
+      "sampleValue": {
+        "value": "No"
+      },
+      "synonyms": [
+        {
+          "value": "Na"
+        },
+        {
+          "value": "Nah"
+        },
+        {
+          "value": "Noo"
+        },
+        {
+          "value": "N"
+        },
+        {
+          "value": "2"
+        },
+        {
+          "value": "Two"
+        },
+        {
+          "value": "no"
+        }
+      ]
+    },
+    {
+      "sampleValue": {
+        "value": "SKIPPED"
+      },
+      "synonyms": [
+        { "value": "SKIP" },
+        { "value": "skip" },
+        { "value": "Skip" },
+        { "value": "X" },
+        { "value": "x" },
+        { "value": "SALTAR" },
+        { "value": "saltar" },
+        { "value": "Saltar" },
+        {"value": "Omitir"},
+        {"value": "omitir"},
+        {"value": "OMITIR"}
+      ]
+    }
+  ],
+  "valueSelectionSetting": {
+    "resolutionStrategy": "TopResolution"
+  }
+}

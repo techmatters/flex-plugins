@@ -1,0 +1,26 @@
+{
+  "label": "Helpline",
+  "helplines": [
+    {
+      "label": "Childline",
+      "value": "Childline",
+      "default": true,
+      "kmsUrl": "http://kms2013.kidshelp.ca/Pages/Home.asp",
+      "manager": {
+        "name": "Helpline Manager",
+        "phone": "+123 45 678",
+        "email": "supervisor@helpline.org"
+      }
+    },
+    {
+      "label": "Lifeline",
+      "value": "Lifeline",
+      "default": false,
+      "manager": {
+        "name": "Helpline Manager",
+        "phone": "+123 45 678",
+        "email": "supervisor@helpline.org"
+      }
+    }
+  ]
+}

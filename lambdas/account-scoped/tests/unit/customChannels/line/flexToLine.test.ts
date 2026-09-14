@@ -19,7 +19,7 @@ import { flexToLineHandler } from '../../../../src/customChannels/line/flexToLin
 import { AccountSID } from '@tech-matters/twilio-types';
 import { getTwilioClient } from '@tech-matters/twilio-configuration';
 import { HttpRequest } from '../../../../src/httpTypes';
-import { isErr, isOk } from '../../../../src/Result';
+import { isErr, isOk } from '@tech-matters/result-type';
 import { AssertionError } from 'node:assert';
 
 global.fetch = jest.fn();

@@ -53,7 +53,7 @@ const makeVoiceTask = () =>
     taskSid: 'WTtest',
     sid: 'WRtest',
     status: 'assigned',
-    channelType: 'voice',
+    taskChannelUniqueName: 'voice',
     attributes: {
       conference: { participants: { worker: TEST_CALL_SID } },
     },

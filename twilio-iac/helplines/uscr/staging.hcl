@@ -8,7 +8,7 @@ locals {
   config            = merge(local.common_config, local.local_config)
 
   local_config = {
-    custom_task_routing_filter_expression = "channelType IN ['web','voice']"
+    custom_task_routing_filter_expression = "channelType IN ['web','voice','external']"
     flow_vars = {
       widget_from          = "LA CIRCLE"
       chat_blocked_message = "Sorry, you're not able to contact LA CIRCLE from this device or account"

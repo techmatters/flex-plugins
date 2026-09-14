@@ -21,9 +21,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Branch
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
       - name: Use Node.js
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@v7
         with:
           node-version: '22.x'
       - name: Install dependencies
@@ -40,9 +40,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout Branch
-      uses: actions/checkout@v6
+      uses: actions/checkout@v7
     - name: Use Node.js
-      uses: actions/setup-node@v6
+      uses: actions/setup-node@v7
       with:
         node-version: '22.x'
     - name: Install dependencies
@@ -62,9 +62,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout Branch
-      uses: actions/checkout@v6
+      uses: actions/checkout@v7
     - name: Use Node.js
-      uses: actions/setup-node@v6
+      uses: actions/setup-node@v7
       with:
         node-version: '22.x'
     - name: Install dependencies

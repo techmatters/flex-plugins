@@ -15,11 +15,12 @@
  */
 
 import { HttpRequestPipelineStep } from '../httpTypes';
-import { newErr, newOk } from '../Result';
+import { newErr, newOk } from '@tech-matters/result-type';
 
-export const validateRequestMethod: HttpRequestPipelineStep = async request => {
-  if (request.method.toUpperCase() !== 'POST') {
-    return newErr({ message: 'Method not allowed', error: { statusCode: 405 } });
-  }
-  return newOk(request);
-};
+export const validateRequestMethod: (method: string) => HttpRequestPipelineStep =
+  method => async request => {
+    if (request.method.toUpperCase() !== method.toUpperCase()) {
+      return newErr({ message: 'Method not allowed', error: { statusCode: 405 } });
+    }
+    return newOk(request);
+  };

@@ -15,7 +15,7 @@
  */
 
 import twilio from 'twilio';
-import { newErr, newOk } from '../Result';
+import { newErr, newOk } from '@tech-matters/result-type';
 import { HttpRequestPipelineStep } from '../httpTypes';
 import { getAccountAuthToken } from '@tech-matters/twilio-configuration';
 
@@ -50,7 +50,7 @@ export const validateWebhookRequest: HttpRequestPipelineStep = async (
     authToken,
     twiloSignature,
     urlForValidation,
-    bodySHA256 ? [] : body, // Pass in the body to validate the signature if no SHA256 is provided
+    bodySHA256 ? {} : body, // Pass in the body to validate the signature if no SHA256 is provided
   );
   if (!isValid) {
     console.warn(

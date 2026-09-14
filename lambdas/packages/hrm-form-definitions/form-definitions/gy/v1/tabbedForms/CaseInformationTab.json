@@ -1,0 +1,10 @@
+[
+  {
+    "name": "dispatchIncident",
+    "label": "Dispatch Incident",
+    "type": "custom-contact-component",
+    "component": "uscr-dispatch-incident-button",
+    "saveable": false,
+    "isPII": false
+  }
+]

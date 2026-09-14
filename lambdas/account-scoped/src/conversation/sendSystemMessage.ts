@@ -24,8 +24,8 @@ import {
   getTwilioClient,
   getWorkspaceSid,
 } from '@tech-matters/twilio-configuration';
-import { newErr, newOk } from '../Result';
-import type { Result } from '../Result';
+import { newErr, newOk } from '@tech-matters/result-type';
+import type { Result } from '@tech-matters/result-type';
 import type { HttpError } from '../httpTypes';
 import type { FlexValidatedHandler } from '../validation/flexToken';
 

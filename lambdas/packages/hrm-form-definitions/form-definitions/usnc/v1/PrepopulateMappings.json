@@ -25,6 +25,7 @@
     "ethnicity": [["ChildInformationTab.ethnicity"]],
     "race": [["ChildInformationTab.race"]],
     "militaryStatus": [["ChildInformationTab.militaryStatus"]],
-    "referral988": [["ChildInformationTab.referral988"]]
+    "referral988": [["ChildInformationTab.referral988"]],
+    "phone1": [["ChildInformationTab.phone1"]]
   }
 }

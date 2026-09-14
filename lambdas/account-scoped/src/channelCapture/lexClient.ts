@@ -19,7 +19,7 @@ import {
   DeleteSessionCommand as DeleteSessionCommandV2,
   RecognizeTextResponse,
 } from '@aws-sdk/client-lex-runtime-v2';
-import { isErr, newErr, newOk } from '../Result';
+import { isErr, newErr, newOk } from '@tech-matters/result-type';
 import { getSsmParameter } from '@tech-matters/ssm-cache';
 
 export type LexMemory = { [q: string]: string | number };
@@ -172,7 +172,10 @@ const getBotMemory = ({ lexResponse }: { lexResponse: RecognizeTextResponse }) =
   }
 
   return Object.entries(slots).reduce(
-    (accum, [q, { value }]) => ({ ...accum, [q]: value?.interpretedValue || '' }),
+    (accum, [q, slot]) => ({
+      ...accum,
+      [q]: slot?.value?.interpretedValue || '',
+    }),
     {} as LexMemory,
   );
 };

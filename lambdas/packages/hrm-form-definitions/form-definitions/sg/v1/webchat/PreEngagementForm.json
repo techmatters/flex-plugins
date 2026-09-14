@@ -155,6 +155,10 @@
           "label": "Feelings of Being Unsafe"
         },
         {
+          "value": "onlineHarms",
+          "label": "Online Harms"
+        },
+        {
           "value": "nothing",
           "label": "Nothing"
         },

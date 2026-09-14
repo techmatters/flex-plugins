@@ -166,9 +166,6 @@
           },
           {
             "label": "Wellbeing support"
-          },
-          {
-            "label": "Unspecified/Other"
           }
         ]
       },
@@ -177,6 +174,9 @@
         "subcategories": [
           {
             "label": "COVID-19"
+          },
+          {
+            "label": "Diagnosed Chronic Illness"
           },
           {
             "label": "General medical or lifestyle concerns"

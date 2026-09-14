@@ -186,4 +186,36 @@ describe('lookupTranslation', () => {
     mockGetTemplateStrings.mockReturnValue({ SimpleMsg: 'No params here' } as any);
     expect(lookupTranslation('SimpleMsg')).toBe('No params here');
   });
+
+  describe('multiple keys', () => {
+    test('returns compiled string for the first key that exists in template strings', () => {
+      mockGetTemplateStrings.mockReturnValue({ SecondKey: 'Found Second', ThirdKey: 'Found Third' } as any);
+      expect(lookupTranslation(['FirstKey', 'SecondKey', 'ThirdKey'])).toBe('Found Second');
+    });
+
+    test('falls back to subsequent keys when the first key is not found', () => {
+      mockGetTemplateStrings.mockReturnValue({ FallbackKey: 'Fallback Value' } as any);
+      expect(lookupTranslation(['MissingKey', 'FallbackKey'])).toBe('Fallback Value');
+    });
+
+    test('returns the first key when none of the keys exist in template strings', () => {
+      mockGetTemplateStrings.mockReturnValue({} as any);
+      expect(lookupTranslation(['MissingKey1', 'MissingKey2'])).toBe('MissingKey1');
+    });
+
+    test('passes parameters to the Handlebars template when multiple keys are specified', () => {
+      mockGetTemplateStrings.mockReturnValue({ GreetingKey: 'Hello {{name}}!' } as any);
+      expect(lookupTranslation(['MissingKey', 'GreetingKey'], { name: 'World' })).toBe('Hello World!');
+    });
+
+    test('returns compiled string for a single-element array', () => {
+      mockGetTemplateStrings.mockReturnValue({ OnlyKey: 'Only Value' } as any);
+      expect(lookupTranslation(['OnlyKey'])).toBe('Only Value');
+    });
+
+    test('falls back to first element of array when no keys are found', () => {
+      mockGetTemplateStrings.mockReturnValue({} as any);
+      expect(lookupTranslation(['FirstMissing', 'SecondMissing', 'ThirdMissing'])).toBe('FirstMissing');
+    });
+  });
 });

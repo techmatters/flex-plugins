@@ -14,12 +14,25 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 import React from 'react';
-import { Template, Manager } from '@twilio/flex-ui';
-import { CallEnd as CallEndIcon } from '@material-ui/icons';
+import { Template, Manager, Tab as TwilioTab } from '@twilio/flex-ui';
+import { Close, Phone as PhoneIcon } from '@material-ui/icons';
 import { CircularProgress } from '@material-ui/core';
 
-import { Row, Bold, CloseButton, SecondaryButton } from '../../../styles';
-import { PhoneDialogWrapper, DialogArrow } from './styles';
+import {
+  Row,
+  Bold,
+  PrimaryButton,
+  HeaderCloseButton,
+  HiddenText,
+  FormSelect,
+  FormOption,
+  FormSelectWrapper,
+} from '../../../styles';
+import { PhoneDialogWrapper, PhoneDialogFooter, PhoneDialogContent, PhoneNumberInput, HelpText } from './styles';
+import type { QuickDialOption } from '../../../states/configuration/reducer';
+import { lookupTranslation } from '../../../translations';
+import { StyledTabs } from '../../search/styles';
+import useFocus from '../../../utils/useFocus';
 
 type PhoneDialogProps = {
   targetNumber: string;
@@ -27,9 +40,17 @@ type PhoneDialogProps = {
   handleClick: () => void;
   setIsDialogOpen: (isDialogOpen: boolean) => void;
   isLoading: boolean;
+  quickDialOptions: QuickDialOption[];
+  enableManualDial: boolean;
 };
 
+type TabValue = 'quickDial' | 'enterNumber';
+
 const ENTER_NUMBER_KEY = 'Conference-EnterPhoneNumber';
+const QUICK_DIAL_TAB_KEY = 'Conference-QuickDialTab';
+const ENTER_NUMBER_TAB_KEY = 'Conference-EnterNumberTab';
+const PHONE_NUMBER_EXAMPLE_KEY = 'Conference-PhoneNumberExample';
+const QUICK_DIAL_SELECT_LABEL_KEY = 'Conference-QuickDialSelectLabel';
 
 const PhoneInputDialog: React.FC<PhoneDialogProps> = ({
   targetNumber,
@@ -37,42 +58,131 @@ const PhoneInputDialog: React.FC<PhoneDialogProps> = ({
   handleClick,
   setIsDialogOpen,
   isLoading,
+  quickDialOptions,
+  enableManualDial,
 }) => {
+  const hasQuickDial = quickDialOptions && quickDialOptions.length > 0;
+  const showTabs = hasQuickDial && enableManualDial;
+
+  const defaultTab: TabValue = hasQuickDial ? 'quickDial' : 'enterNumber';
+  const [activeTab, setActiveTab] = React.useState<TabValue>(defaultTab);
+
+  React.useEffect(() => {
+    if (hasQuickDial) {
+      setTargetNumber(quickDialOptions[0].phoneNumber);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const focusRef = useFocus();
+
+  const handleTabChange = (value: TabValue) => {
+    setActiveTab(value);
+    if (value === 'quickDial' && quickDialOptions.length > 0) {
+      setTargetNumber(quickDialOptions[0].phoneNumber);
+    } else if (value === 'enterNumber') {
+      setTargetNumber('');
+    }
+  };
+
   const handleNumberChange: React.ChangeEventHandler<HTMLInputElement> = e => {
     setTargetNumber(e.target.value);
   };
+
+  const handleQuickDialChange: React.ChangeEventHandler<HTMLSelectElement> = e => {
+    setTargetNumber(e.target.value);
+  };
+
+  const isDialButtonDisabled = isLoading || (activeTab === 'enterNumber' && !targetNumber?.trim());
+  const renderQuickDial = () => (
+    <PhoneDialogContent>
+      <FormSelectWrapper fullWidth={true}>
+        <FormSelect
+          value={targetNumber}
+          onChange={handleQuickDialChange}
+          disabled={isLoading}
+          aria-label={Manager.getInstance().strings[QUICK_DIAL_SELECT_LABEL_KEY]}
+          fullWidth={true}
+        >
+          {quickDialOptions.map(option => (
+            <FormOption key={option.phoneNumber} value={option.phoneNumber}>
+              {lookupTranslation(option.labelKey)}
+            </FormOption>
+          ))}
+        </FormSelect>
+      </FormSelectWrapper>
+    </PhoneDialogContent>
+  );
+  const renderManualDial = () => (
+    <PhoneDialogContent>
+      <PhoneNumberInput
+        type="text"
+        id="number-input"
+        value={targetNumber}
+        onChange={handleNumberChange}
+        disabled={isLoading}
+        aria-label={Manager.getInstance().strings[ENTER_NUMBER_KEY]}
+      />
+      <HelpText>{lookupTranslation(PHONE_NUMBER_EXAMPLE_KEY)}</HelpText>
+    </PhoneDialogContent>
+  );
   return (
     <PhoneDialogWrapper>
-      <DialogArrow />
       <Row>
         <Bold>
           <Template code="Conference-AddConferenceCallParticipant" />
         </Bold>
-        <CloseButton onClick={() => setIsDialogOpen(false)} aria-label="CloseButton" style={{ marginLeft: 'auto' }} />
+        <HeaderCloseButton
+          buttonRef={focusRef}
+          onClick={() => setIsDialogOpen(false)}
+          aria-label="CloseButton"
+          style={{ marginLeft: 'auto', marginRight: -16, marginBottom: 4, paddingRight: 0 }}
+        >
+          <HiddenText>
+            <Template code="NavigableContainer-CloseButton" />
+          </HiddenText>
+          <Close />
+        </HeaderCloseButton>
       </Row>
-      <Template code={ENTER_NUMBER_KEY} />
-      <Row>
-        <input
-          type="text"
-          id="number-input"
-          placeholder="+1 234-567-8910"
-          value={targetNumber}
-          onChange={handleNumberChange}
-          style={{ width: '60%', padding: '5px' }}
-          disabled={isLoading}
-          aria-label={Manager.getInstance().strings[ENTER_NUMBER_KEY]}
-        />
-        <SecondaryButton autoFocus onClick={handleClick} disabled={isLoading}>
+      {showTabs ? (
+        <div
+          style={{
+            // Explicit height is required to prevent the Twilio Tabs content from collapsing in this dialog.
+            height: 108,
+          }}
+        >
+          <StyledTabs
+            selectedTabName={activeTab}
+            onTabSelected={handleTabChange}
+            alignment="center"
+            keepTabsMounted={false}
+          >
+            <TwilioTab uniqueName="quickDial" label={<Template code={QUICK_DIAL_TAB_KEY} />} key="quickDial">
+              {hasQuickDial && renderQuickDial()}
+            </TwilioTab>
+            <TwilioTab uniqueName="enterNumber" label={<Template code={ENTER_NUMBER_TAB_KEY} key="enterNumber" />}>
+              {enableManualDial && renderManualDial()}
+            </TwilioTab>
+          </StyledTabs>
+        </div>
+      ) : (
+        <>
+          {hasQuickDial && renderQuickDial()}
+          {enableManualDial && renderManualDial()}
+        </>
+      )}
+      <PhoneDialogFooter>
+        <PrimaryButton autoFocus onClick={handleClick} disabled={isDialButtonDisabled}>
           {isLoading ? (
-            <CircularProgress size={30} style={{ color: '#fff' }} />
+            <CircularProgress size={16} style={{ color: '#fff' }} />
           ) : (
             <>
-              <CallEndIcon fontSize="medium" /> &nbsp; &nbsp;
+              <PhoneIcon fontSize="small" style={{ marginRight: '5px', height: '16px', width: '16px' }} />
               <Template code="Conference-DialButton" />
             </>
           )}
-        </SecondaryButton>
-      </Row>
+        </PrimaryButton>
+      </PhoneDialogFooter>
     </PhoneDialogWrapper>
   );
 };

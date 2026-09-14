@@ -3,5 +3,6 @@
   "counselor": { "component": "generate-counselor-filter", "position": "left" },
   "createdDate": { "component": "generate-created-date-filter", "position": "right" },
   "updatedDate": { "component": "generate-updated-date-filter", "position": "right" },
-  "followUpDate": { "type": "date-input", "allowFutureDates": true, "position": "right" }
+  "followUpDate": { "type": "date-input", "allowFutureDates": true, "position": "right" },
+  "docFollowUpDate": { "type": "date-input", "allowFutureDates": true, "position": "right" }
 }

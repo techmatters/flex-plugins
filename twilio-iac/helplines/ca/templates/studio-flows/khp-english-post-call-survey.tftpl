@@ -1,0 +1,1021 @@
+${
+  jsonencode(
+{
+  "initial_state": "Trigger",
+  "flags": {
+    "allow_concurrent_calls": true
+  },
+  "description": "KHP English Post-Call Interaction Survey",
+  "states": [
+    {
+      "name": "Trigger",
+      "type": "trigger",
+      "transitions": [
+        {
+          "event": "incomingMessage"
+        },
+        {
+          "next": "say_play_1",
+          "event": "incomingCall"
+        },
+        {
+          "event": "incomingConversationMessage"
+        },
+        {
+          "event": "incomingRequest"
+        },
+        {
+          "event": "incomingParent"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": -23,
+          "y": 2
+        }
+      }
+    },
+    {
+      "name": "say_play_1",
+      "type": "say-play",
+      "transitions": [
+        {
+          "next": "gather_1",
+          "event": "audioComplete"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 132,
+          "y": 172
+        },
+        "loop": 1,
+        "say": "Thank you for reaching out to Kids Help Phone. Please stay on the line to complete an anonymous feedback survey. ",
+        "language": "en-CA"
+      }
+    },
+    {
+      "name": "gather_1",
+      "type": "gather-input-on-call",
+      "transitions": [
+        {
+          "next": "split_1",
+          "event": "keypress"
+        },
+        {
+          "event": "speech"
+        },
+        {
+          "next": "invalid_response_1",
+          "event": "timeout"
+        }
+      ],
+      "properties": {
+        "speech_timeout": "5",
+        "offset": {
+          "x": -53,
+          "y": 365
+        },
+        "loop": 1,
+        "finish_on_key": "#",
+        "say": "How helpful was the conversation with your counsellor today? \nPress 1 for Not at all helpful \nPress 2 for A little helpful \nPress 3 for Somewhat helpful \nPress 4 for Very helpful \nPress 0 to hear the options again",
+        "language": "en-CA",
+        "stop_gather": true,
+        "gather_language": "en",
+        "speech_model": "default",
+        "timeout": 5
+      }
+    },
+    {
+      "name": "gather_2",
+      "type": "gather-input-on-call",
+      "transitions": [
+        {
+          "next": "split_2",
+          "event": "keypress"
+        },
+        {
+          "event": "speech"
+        },
+        {
+          "next": "invalid_response_2",
+          "event": "timeout"
+        }
+      ],
+      "properties": {
+        "speech_timeout": "5",
+        "offset": {
+          "x": 84,
+          "y": 612
+        },
+        "loop": 1,
+        "finish_on_key": "#",
+        "say": "After this conversation, do you feel better able to manage what you called in to talk with a counsellor about? \nPress 1 for Not at all \nPress 2 for A little \nPress 3 for Somewhat \nPress 4 for A lot \nPress 0 to hear the options again",
+        "language": "en-CA",
+        "stop_gather": true,
+        "gather_language": "en",
+        "speech_model": "default",
+        "timeout": 5
+      }
+    },
+    {
+      "name": "gather_3",
+      "type": "gather-input-on-call",
+      "transitions": [
+        {
+          "next": "split_3",
+          "event": "keypress"
+        },
+        {
+          "event": "speech"
+        },
+        {
+          "next": "invalid_response_3",
+          "event": "timeout"
+        }
+      ],
+      "properties": {
+        "speech_timeout": "5",
+        "offset": {
+          "x": 68,
+          "y": 835
+        },
+        "loop": 1,
+        "finish_on_key": "#",
+        "say": "If you needed support in the future, how likely would you be to contact Kids Help Phone again? \n\nPress 1 for Very unlikely \nPress 2 for Unlikely \nPress 3 for Likely \nPress 4 for Very likely \nPress 0 to hear the options again",
+        "language": "en-CA",
+        "stop_gather": true,
+        "gather_language": "en",
+        "speech_model": "default",
+        "timeout": 5
+      }
+    },
+    {
+      "name": "gather_4",
+      "type": "gather-input-on-call",
+      "transitions": [
+        {
+          "next": "split_4",
+          "event": "keypress"
+        },
+        {
+          "event": "speech"
+        },
+        {
+          "next": "invalid_response_4",
+          "event": "timeout"
+        }
+      ],
+      "properties": {
+        "speech_timeout": "5",
+        "offset": {
+          "x": 177,
+          "y": 1051
+        },
+        "loop": 1,
+        "finish_on_key": "#",
+        "say": "During your conversation today, to what extent did you feel respected and understood? \n\nPress 1 for Not at all \nPress 2 for A little \nPress 3 for Mostly \nPress 4 for Completely \nPress 0 to hear the options again",
+        "language": "en-CA",
+        "stop_gather": true,
+        "gather_language": "en",
+        "speech_model": "default",
+        "timeout": 5
+      }
+    },
+    {
+      "name": "gather_5",
+      "type": "gather-input-on-call",
+      "transitions": [
+        {
+          "next": "split_5",
+          "event": "keypress"
+        },
+        {
+          "event": "speech"
+        },
+        {
+          "next": "invalid_response_5",
+          "event": "timeout"
+        }
+      ],
+      "properties": {
+        "speech_timeout": "5",
+        "offset": {
+          "x": -291,
+          "y": 1350
+        },
+        "loop": 1,
+        "finish_on_key": "#",
+        "say": "What age best describes you? \n\nPress 1 for Age 13 or younger \nPress 2 for Age 14–17 \nPress 3 for Age 18–24 \nPress 4 for Age 25+ \nPress 5 for Prefer not to say \nPress 0 to hear the options again",
+        "language": "en-CA",
+        "stop_gather": true,
+        "gather_language": "en",
+        "speech_model": "default",
+        "timeout": 5
+      }
+    },
+    {
+      "name": "gather_6",
+      "type": "gather-input-on-call",
+      "transitions": [
+        {
+          "next": "split_6",
+          "event": "keypress"
+        },
+        {
+          "event": "speech"
+        },
+        {
+          "next": "invalid_response_6",
+          "event": "timeout"
+        }
+      ],
+      "properties": {
+        "speech_timeout": "5",
+        "offset": {
+          "x": -322,
+          "y": 1822
+        },
+        "loop": 1,
+        "finish_on_key": "#",
+        "say": "To help us understand whether people from different communities are having equitable experiences with Kids Help Phone, do you identify with any of the following groups \n\nPress 1 for First Nations, Inuit, or Métis \nPress 2 for Black \nPress 3 for Newcomer to Canada \nPress 4 for None of these apply to me (or Born in Canada) \nPress 5 for Prefer not to answer (or none of these apply to me) \nPress 0 to hear the options again",
+        "language": "en-CA",
+        "stop_gather": true,
+        "gather_language": "en",
+        "speech_model": "default",
+        "timeout": 5
+      }
+    },
+    {
+      "name": "say_play_2",
+      "type": "say-play",
+      "transitions": [
+        {
+          "event": "audioComplete"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": -245,
+          "y": 2306
+        },
+        "loop": 1,
+        "say": "Thank you for providing your feedback. Call us back if you need any additional support. ",
+        "language": "en-CA"
+      }
+    },
+    {
+      "name": "save_post_survey",
+      "type": "make-http-request",
+      "transitions": [
+        {
+          "next": "say_play_2",
+          "event": "success"
+        },
+        {
+          "next": "say_play_3",
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 587,
+          "y": 2144
+        },
+        "method": "POST",
+        "content_type": "application/json;charset=utf-8",
+        "add_twilio_auth": false,
+        "body": "{  \"contactId\": \"{{trigger.call.contactId}}\",   \"contactTaskSid\": \"{{trigger.call.taskSid}}\",  \"postSurveyAnswers\": {     \"wasHelpful\": \"{{widgets.gather_1.Digits}}\",     \"feelBetter\": \"{{widgets.gather_2.Digits}}\",     \"contactAgain\": \"{{widgets.gather_3.Digits}}\" , \"wasRespected\": \"{{widgets.gather_4.Digits}}\",     \"age\": \"{{widgets.gather_5.Digits}}\",     \"identity\": \"{{widgets.gather_6.Digits}}\"   }}",
+        "url": "https://hrm-staging.tl.techmatters.org/lambda/twilio/account-scoped/ACeb335f4685aa874fddf00cdd7c2946bd/hrm/savePostSurvey"
+      }
+    },
+    {
+      "name": "say_play_3",
+      "type": "say-play",
+      "transitions": [
+        {
+          "event": "audioComplete"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 2055,
+          "y": 2291
+        },
+        "loop": 1,
+        "say": "We were unable to process your feedback. Thank you for your time and please call us back if you need further support. ",
+        "language": "en-CA"
+      }
+    },
+    {
+      "name": "split_1",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "invalid_response_1",
+          "event": "noMatch"
+        },
+        {
+          "next": "gather_2",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value less_than 5",
+              "arguments": [
+                "{{widgets.gather_1.Digits}}"
+              ],
+              "type": "less_than",
+              "value": "5"
+            }
+          ]
+        },
+        {
+          "next": "gather_1",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to 0",
+              "arguments": [
+                "{{widgets.gather_1.Digits}}"
+              ],
+              "type": "equal_to",
+              "value": "0"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{widgets.gather_1.Digits}}",
+        "offset": {
+          "x": 386,
+          "y": 377
+        }
+      }
+    },
+    {
+      "name": "invalid_response_1",
+      "type": "say-play",
+      "transitions": [
+        {
+          "next": "retry_counter_1",
+          "event": "audioComplete"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 848,
+          "y": 373
+        },
+        "loop": 1,
+        "say": "Please provide a valid response. ",
+        "language": "en-CA"
+      }
+    },
+    {
+      "name": "invalid_response_2",
+      "type": "say-play",
+      "transitions": [
+        {
+          "next": "retry_counter_2",
+          "event": "audioComplete"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 1103,
+          "y": 632
+        },
+        "loop": 1,
+        "say": "Please provide a valid response. ",
+        "language": "en-CA"
+      }
+    },
+    {
+      "name": "split_2",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "invalid_response_2",
+          "event": "noMatch"
+        },
+        {
+          "next": "gather_3",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value less_than 5",
+              "arguments": [
+                "{{widgets.gather_1.Digits}}"
+              ],
+              "type": "less_than",
+              "value": "5"
+            }
+          ]
+        },
+        {
+          "next": "gather_2",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to *",
+              "arguments": [
+                "{{widgets.gather_1.Digits}}"
+              ],
+              "type": "equal_to",
+              "value": "*"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{widgets.gather_2.Digits}}",
+        "offset": {
+          "x": 597,
+          "y": 616
+        }
+      }
+    },
+    {
+      "name": "split_3",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "invalid_response_3",
+          "event": "noMatch"
+        },
+        {
+          "next": "gather_4",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value less_than 5",
+              "arguments": [
+                "{{widgets.gather_1.Digits}}"
+              ],
+              "type": "less_than",
+              "value": "5"
+            }
+          ]
+        },
+        {
+          "next": "gather_3",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to 0",
+              "arguments": [
+                "{{widgets.gather_3.Digits}}"
+              ],
+              "type": "equal_to",
+              "value": "0"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{widgets.gather_3.Digits}}",
+        "offset": {
+          "x": 565,
+          "y": 859
+        }
+      }
+    },
+    {
+      "name": "invalid_response_3",
+      "type": "say-play",
+      "transitions": [
+        {
+          "next": "retry_counter_3",
+          "event": "audioComplete"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 1071,
+          "y": 861
+        },
+        "loop": 1,
+        "say": "Please provide a valid response. ",
+        "language": "en-CA"
+      }
+    },
+    {
+      "name": "split_4",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "invalid_response_4",
+          "event": "noMatch"
+        },
+        {
+          "next": "gather_5",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value less_than 5",
+              "arguments": [
+                "{{widgets.gather_1.Digits}}"
+              ],
+              "type": "less_than",
+              "value": "5"
+            }
+          ]
+        },
+        {
+          "next": "gather_4",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to 0",
+              "arguments": [
+                "{{widgets.gather_4.Digits}}"
+              ],
+              "type": "equal_to",
+              "value": "0"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{widgets.gather_4.Digits}}",
+        "offset": {
+          "x": 681,
+          "y": 1069
+        }
+      }
+    },
+    {
+      "name": "invalid_response_4",
+      "type": "say-play",
+      "transitions": [
+        {
+          "next": "retry_counter_4",
+          "event": "audioComplete"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 1171,
+          "y": 1087
+        },
+        "loop": 1,
+        "say": "Please provide a valid response. ",
+        "language": "en-CA"
+      }
+    },
+    {
+      "name": "split_5",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "invalid_response_5",
+          "event": "noMatch"
+        },
+        {
+          "next": "gather_6",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value less_than 6",
+              "arguments": [
+                "{{widgets.gather_4.Digits}}"
+              ],
+              "type": "less_than",
+              "value": "6"
+            }
+          ]
+        },
+        {
+          "next": "gather_5",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to 0",
+              "arguments": [
+                "{{widgets.gather_5.Digits}}"
+              ],
+              "type": "equal_to",
+              "value": "0"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{widgets.gather_5.Digits}}",
+        "offset": {
+          "x": 303,
+          "y": 1374
+        }
+      }
+    },
+    {
+      "name": "invalid_response_5",
+      "type": "say-play",
+      "transitions": [
+        {
+          "next": "retry_counter_5",
+          "event": "audioComplete"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 845,
+          "y": 1341
+        },
+        "loop": 1,
+        "say": "Please provide a valid response. ",
+        "language": "en-CA"
+      }
+    },
+    {
+      "name": "split_6",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "invalid_response_6",
+          "event": "noMatch"
+        },
+        {
+          "next": "save_post_survey",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value less_than 6",
+              "arguments": [
+                "{{widgets.gather_4.Digits}}"
+              ],
+              "type": "less_than",
+              "value": "6"
+            }
+          ]
+        },
+        {
+          "next": "gather_6",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to 0",
+              "arguments": [
+                "{{widgets.gather_6.Digits}}"
+              ],
+              "type": "equal_to",
+              "value": "0"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{widgets.gather_6.Digits}}",
+        "offset": {
+          "x": 97,
+          "y": 1723
+        }
+      }
+    },
+    {
+      "name": "invalid_response_6",
+      "type": "say-play",
+      "transitions": [
+        {
+          "next": "retry_counter_6",
+          "event": "audioComplete"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 812,
+          "y": 1735
+        },
+        "loop": 1,
+        "say": "Please provide a valid response. ",
+        "language": "en-CA"
+      }
+    },
+    {
+      "name": "retry_counter_1",
+      "type": "set-variables",
+      "transitions": [
+        {
+          "next": "split_retry_1",
+          "event": "next"
+        }
+      ],
+      "properties": {
+        "variables": [
+          {
+            "type": "string",
+            "value": "{% if flow.variables.retry_counter%} {{flow.variables.retry_counter_1| plus: 1}} {% else %} 1 {% endif %}",
+            "key": "retry_counter_1"
+          }
+        ],
+        "offset": {
+          "x": 1184,
+          "y": 360
+        }
+      }
+    },
+    {
+      "name": "split_retry_1",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "say_play_3",
+          "event": "noMatch"
+        },
+        {
+          "next": "gather_1",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value less_than 2",
+              "arguments": [
+                "{{flow.variables.retry_counter_1}}"
+              ],
+              "type": "less_than",
+              "value": "2"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{flow.variables.retry_counter_1}}",
+        "offset": {
+          "x": 2354,
+          "y": 363
+        }
+      }
+    },
+    {
+      "name": "retry_counter_2",
+      "type": "set-variables",
+      "transitions": [
+        {
+          "next": "split_retry_2",
+          "event": "next"
+        }
+      ],
+      "properties": {
+        "variables": [
+          {
+            "type": "string",
+            "value": "{% if flow.variables.retry_counter%} {{flow.variables.retry_counter_2| plus: 1}} {% else %} 1 {% endif %}",
+            "key": "retry_counter_2"
+          }
+        ],
+        "offset": {
+          "x": 1438,
+          "y": 610
+        }
+      }
+    },
+    {
+      "name": "split_retry_2",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "save_post_survey",
+          "event": "noMatch"
+        },
+        {
+          "next": "gather_2",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value less_than 2",
+              "arguments": [
+                "{{flow.variables.retry_counter_2}}"
+              ],
+              "type": "less_than",
+              "value": "2"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{flow.variables.retry_counter_2}}",
+        "offset": {
+          "x": 2136,
+          "y": 585
+        }
+      }
+    },
+    {
+      "name": "retry_counter_3",
+      "type": "set-variables",
+      "transitions": [
+        {
+          "next": "split_retry_3",
+          "event": "next"
+        }
+      ],
+      "properties": {
+        "variables": [
+          {
+            "type": "string",
+            "value": "{% if flow.variables.retry_counter%} {{flow.variables.retry_counter_3| plus: 1}} {% else %} 1 {% endif %}",
+            "key": "retry_counter_3"
+          }
+        ],
+        "offset": {
+          "x": 1453,
+          "y": 831
+        }
+      }
+    },
+    {
+      "name": "split_retry_3",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "save_post_survey",
+          "event": "noMatch"
+        },
+        {
+          "next": "gather_3",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value less_than 2",
+              "arguments": [
+                "{{flow.variables.retry_counter_2}}"
+              ],
+              "type": "less_than",
+              "value": "2"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{flow.variables.retry_counter_3}}",
+        "offset": {
+          "x": 1836,
+          "y": 826
+        }
+      }
+    },
+    {
+      "name": "retry_counter_4",
+      "type": "set-variables",
+      "transitions": [
+        {
+          "next": "split_retry_4",
+          "event": "next"
+        }
+      ],
+      "properties": {
+        "variables": [
+          {
+            "type": "string",
+            "value": "{% if flow.variables.retry_counter%} {{flow.variables.retry_counter_4| plus: 1}} {% else %} 1 {% endif %}",
+            "key": "retry_counter_4"
+          }
+        ],
+        "offset": {
+          "x": 1504,
+          "y": 1061
+        }
+      }
+    },
+    {
+      "name": "split_retry_4",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "save_post_survey",
+          "event": "noMatch"
+        },
+        {
+          "next": "gather_4",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value less_than 2",
+              "arguments": [
+                "{{flow.variables.retry_counter_2}}"
+              ],
+              "type": "less_than",
+              "value": "2"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{flow.variables.retry_counter_4}}",
+        "offset": {
+          "x": 1921,
+          "y": 1058
+        }
+      }
+    },
+    {
+      "name": "retry_counter_5",
+      "type": "set-variables",
+      "transitions": [
+        {
+          "next": "split_retry_5",
+          "event": "next"
+        }
+      ],
+      "properties": {
+        "variables": [
+          {
+            "type": "string",
+            "value": "{% if flow.variables.retry_counter%} {{flow.variables.retry_counter_5| plus: 1}} {% else %} 1 {% endif %}",
+            "key": "retry_counter_5"
+          }
+        ],
+        "offset": {
+          "x": 1252,
+          "y": 1335
+        }
+      }
+    },
+    {
+      "name": "split_retry_5",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "save_post_survey",
+          "event": "noMatch"
+        },
+        {
+          "next": "gather_5",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value less_than 2",
+              "arguments": [
+                "{{flow.variables.retry_counter_2}}"
+              ],
+              "type": "less_than",
+              "value": "2"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{flow.variables.retry_counter_5}}",
+        "offset": {
+          "x": 1467,
+          "y": 1345
+        }
+      }
+    },
+    {
+      "name": "retry_counter_6",
+      "type": "set-variables",
+      "transitions": [
+        {
+          "next": "split_retry_6",
+          "event": "next"
+        }
+      ],
+      "properties": {
+        "variables": [
+          {
+            "type": "string",
+            "value": "{% if flow.variables.retry_counter%} {{flow.variables.retry_counter_6| plus: 1}} {% else %} 1 {% endif %}",
+            "key": "retry_counter_6"
+          }
+        ],
+        "offset": {
+          "x": 1161,
+          "y": 1686
+        }
+      }
+    },
+    {
+      "name": "split_retry_6",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "save_post_survey",
+          "event": "noMatch"
+        },
+        {
+          "next": "gather_6",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value less_than 2",
+              "arguments": [
+                "{{flow.variables.retry_counter_2}}"
+              ],
+              "type": "less_than",
+              "value": "2"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{flow.variables.retry_counter_6}}",
+        "offset": {
+          "x": 1630,
+          "y": 1749
+        }
+      }
+    }
+  ]
+}
+)
+}

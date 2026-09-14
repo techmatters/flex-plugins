@@ -14,7 +14,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { Result } from './Result';
+import { Result } from '@tech-matters/result-type';
 import { AccountSID } from '@tech-matters/twilio-types';
 import { FlexValidatedHttpRequest } from './validation/flexToken';
 
@@ -49,6 +49,7 @@ export type HttpRequestPipelineStep = PipelineStep<
 export type FunctionRoute<T extends HttpRequest = HttpRequest> = {
   requestPipeline: HttpRequestPipelineStep[];
   handler: AccountScopedHandler<T>;
+  responseType: 'json' | 'text' | 'xml';
 };
 
 export type AccountScopedRoute<T extends HttpRequest = HttpRequest> = FunctionRoute<T> & {

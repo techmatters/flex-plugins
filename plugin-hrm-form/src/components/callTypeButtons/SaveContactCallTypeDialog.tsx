@@ -24,7 +24,7 @@ import TabPressWrapper from '../TabPressWrapper';
 
 type OwnProps = {
   isOpen: boolean;
-  isCallTask?: boolean;
+  taskType: 'chat' | 'call' | 'default';
   isEnabled: boolean;
   isInWrapupMode?: boolean;
   handleConfirm: () => Promise<any>;
@@ -35,50 +35,59 @@ type Props = OwnProps;
 
 const SaveContactCallTypeDialog: React.FC<Props> = ({
   isOpen,
-  isCallTask,
+  taskType,
   isEnabled,
   isInWrapupMode,
   handleConfirm,
   handleCancel,
-}) => (
-  <CloseTaskDialog onClose={handleCancel} open={isOpen}>
-    <TabPressWrapper>
-      <NonDataCallTypeDialogContainer>
-        <Box marginLeft="auto">
-          <HiddenText id="CloseButton">
-            <Template code="CloseButton" />
-          </HiddenText>
-          <CloseButton tabIndex={3} aria-label="CloseButton" onClick={handleCancel} />
-        </Box>
-        <CloseTaskDialogText>
-          <Template code="NonDataCallTypeDialog-CloseConfirm" />
-        </CloseTaskDialogText>
-        <Box marginBottom="32px">
-          <Row>
-            <ConfirmButton
-              id="Task-EndCallOrChat-Button"
-              disabled={!isEnabled}
-              data-fs-id="Task-EndCallOrChat-Button"
-              autoFocus
-              tabIndex={1}
-              onClick={handleConfirm}
-            >
-              {/* eslint-disable react/jsx-max-depth,no-nested-ternary */}
-              <Template
-                code={isInWrapupMode ? 'CallType-CloseContact' : isCallTask ? 'TaskHeaderEndCall' : 'TaskHeaderEndChat'}
-              />
-              {/* eslint-enable react/jsx-max-depth,no-nested-ternary */}
-            </ConfirmButton>
-            <CancelButton tabIndex={2} onClick={handleCancel} disabled={!isEnabled}>
-              {/* eslint-disable-next-line react/jsx-max-depth */}
-              <Template code="CancelButton" />
-            </CancelButton>
-          </Row>
-        </Box>
-      </NonDataCallTypeDialogContainer>
-    </TabPressWrapper>
-  </CloseTaskDialog>
-);
+}) => {
+  let confirmButtonLabelKey = 'CallType-SaveDialog-CloseContact';
+  if (!isInWrapupMode) {
+    if (taskType === 'call') {
+      confirmButtonLabelKey = 'TaskHeaderEndCall';
+    } else if (taskType === 'chat') {
+      confirmButtonLabelKey = 'TaskHeaderEndChat';
+    }
+  }
+
+  return (
+    <CloseTaskDialog onClose={handleCancel} open={isOpen}>
+      <TabPressWrapper>
+        <NonDataCallTypeDialogContainer>
+          <Box marginLeft="auto">
+            <HiddenText id="CloseButton">
+              <Template code="CloseButton" />
+            </HiddenText>
+            <CloseButton tabIndex={3} aria-label="CloseButton" onClick={handleCancel} />
+          </Box>
+          <CloseTaskDialogText>
+            <Template code="NonDataCallTypeDialog-CloseConfirm" />
+          </CloseTaskDialogText>
+          <Box marginBottom="32px">
+            <Row>
+              <ConfirmButton
+                id="Task-EndCallOrChat-Button"
+                disabled={!isEnabled}
+                data-fs-id="Task-EndCallOrChat-Button"
+                autoFocus
+                tabIndex={1}
+                onClick={handleConfirm}
+              >
+                {/* eslint-disable react/jsx-max-depth,no-nested-ternary */}
+                <Template code={confirmButtonLabelKey} />
+                {/* eslint-enable react/jsx-max-depth,no-nested-ternary */}
+              </ConfirmButton>
+              <CancelButton tabIndex={2} onClick={handleCancel} disabled={!isEnabled}>
+                {/* eslint-disable-next-line react/jsx-max-depth */}
+                <Template code="CancelButton" />
+              </CancelButton>
+            </Row>
+          </Box>
+        </NonDataCallTypeDialogContainer>
+      </TabPressWrapper>
+    </CloseTaskDialog>
+  );
+};
 
 SaveContactCallTypeDialog.displayName = 'SaveContactCallTypeDialog';
 

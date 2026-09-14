@@ -30,7 +30,13 @@ import {
   TASK_CANCELED,
 } from '../../../src/taskrouter/eventTypes';
 
-jest.mock('twilio', () => jest.fn());
+jest.mock('twilio', () => {
+  const mockFn = jest.fn() as jest.Mock & { twiml: { VoiceResponse: jest.Mock } };
+  mockFn.twiml = {
+    VoiceResponse: jest.fn(),
+  };
+  return mockFn;
+});
 const mockTwilio: jest.MockedFunction<(account: string, auth: string) => twilio.Twilio> =
   twilio as unknown as jest.MockedFunction<
     (account: string, auth: string) => twilio.Twilio

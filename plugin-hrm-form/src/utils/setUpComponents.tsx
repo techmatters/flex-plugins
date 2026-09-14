@@ -18,8 +18,7 @@
 /* eslint-disable react/no-multi-comp */
 import React from 'react';
 import * as Flex from '@twilio/flex-ui';
-import { CallCanvas, Notifications, NotificationType, Template } from '@twilio/flex-ui';
-import { ParticipantCanvasChildrenProps } from '@twilio/flex-ui/src/components/canvas/ParticipantCanvas/ParticipantCanvas.definitions';
+import { Notifications, NotificationType, Template } from '@twilio/flex-ui';
 
 import * as TransferHelpers from '../transfer/transferTaskState';
 import EmojiPicker from '../components/emojiPicker';
@@ -51,16 +50,12 @@ import { RootState } from '../states';
 import selectCurrentOfflineContact from '../states/contacts/selectCurrentOfflineContact';
 import { REFRESH_BROWSER_REQUIRED_FOR_LANGUAGE_CHANGE_NOTIFICATION_ID } from '../states/configuration/changeLanguage';
 import { FeatureFlags } from '../types/FeatureFlags';
-import QueueNameLabel from './QueueNameLabel';
-import HangUpByLabel from '../components/HangUpByLabel';
 
 type SetupObject = ReturnType<typeof getHrmConfig>;
 /**
  * Returns the UI for the "Contacts Waiting" section
  */
 const queuesStatusUI = (setupObject: SetupObject) => {
-  console.log('setupObject', setupObject);
-
   return (
     <QueuesStatus
       key="queue-status-task-list"
@@ -128,7 +123,7 @@ export const setUpQueuesStatus = (setupObject: SetupObject) => {
 const setUpManualPulling = () => {
   const manager = Flex.Manager.getInstance();
 
-  const [, chatChannel] = Array.from(manager.workerClient.channels).find(c => c[1].taskChannelUniqueName === 'chat');
+  const [, chatChannel] = Array.from(manager.workerClient.channels).find(c => c[1]?.taskChannelUniqueName === 'chat');
 
   manager.store.dispatch(chatCapacityUpdated(chatChannel.capacity));
   (chatChannel as any).on('capacityUpdated', channel => {
@@ -362,6 +357,13 @@ export const setupCannedResponses = () => {
  */
 export const setupEmojiPicker = () => {
   Flex.MessageInputActions.Content.add(<EmojiPicker key="emoji-picker" />);
+};
+
+/**
+ * Message File Attachments
+ */
+export const disableFlexMessageAttachments = () => {
+  Flex.MessageInputActions.Content.remove('attach-file-button');
 };
 
 export const setupWorkerLanguageSelect = () => {

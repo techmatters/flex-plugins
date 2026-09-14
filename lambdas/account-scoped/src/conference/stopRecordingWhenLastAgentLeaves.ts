@@ -14,86 +14,46 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import type { ParticipantInstance } from 'twilio/lib/rest/api/v2010/account/conference/participant';
 import {
   ConferenceStatusEventHandler,
-  registerTaskRouterEventHandler,
+  registerConferenceStatusEventHandler,
 } from './conferenceStatusCallback';
 import type RestException from 'twilio/lib/base/RestException';
 import { hasTaskControl } from '../transfer/hasTaskControl';
+import { isAgentInConference } from './isAgentInConference';
+import {
+  registerTaskRouterEventHandler,
+  TaskRouterEventHandler,
+} from '../taskrouter/taskrouterEventHandler';
+import {
+  AccountSID,
+  ConferenceSid,
+  TaskSID,
+  WorkspaceSID,
+} from '@tech-matters/twilio-types';
+import { Twilio } from 'twilio';
+import { EventFields } from '../taskrouter';
+import {
+  TASK_CANCELED,
+  TASK_COMPLETED,
+  TASK_DELETED,
+  TASK_SYSTEM_DELETED,
+  TASK_WRAPUP,
+} from '../taskrouter/eventTypes';
+import { retrieveFeatureFlags } from '../configuration/aseloConfiguration';
 
-const isAgentInConference = ({
-  callSid,
-  customerCallSid,
-  participant,
-}: {
-  callSid: string;
-  customerCallSid: string;
-  participant: ParticipantInstance;
-}): boolean => {
-  console.debug('Remaining participant', participant);
-
-  if (
-    participant.label?.startsWith('External party') ||
-    participant.label === 'external party'
-  ) {
-    // This was added via our addParticipant function
-    console.debug(
-      `Participant ${participant.label} (${participant.callSid}) identified as external party`,
-    );
-    return false;
-  }
-
-  if (participant.callSid === callSid) {
-    // This is the participant firing the event
-    console.warn(
-      `Participant ${participant.label} (${participant.callSid}) still in conference, despite leave event for them`,
-    );
-    return false;
-  }
-
-  // TODO: Detect caller vs agent
-  if (participant.callSid === customerCallSid) {
-    console.debug(
-      `Participant ${participant.label} (${participant.callSid}) identified as service user, because their call sid is the customer call sid`,
-    );
-    return false;
-  }
-
-  console.debug(
-    `Participant ${participant.label} (${participant.callSid}) not identified as the service user or an external party, so must be an agent, keep recording`,
-  );
-  return true;
-};
-
-const handler: ConferenceStatusEventHandler = async (event, _accountSid, client) => {
-  if (event.StatusCallbackEvent !== 'participant-leave') {
-    console.warn(
-      `stopRecordingWhenLastAgentLeave called for ${event.StatusCallbackEvent} on ${event.ConferenceSid}, should only be called for 'participant-leave'`,
-    );
-    return;
-  }
-  const {
-    ConferenceSid: conferenceSid,
-    CallSid: callSid,
-    CustomerCallSid: customerCallSid,
-    TaskSid: taskSid,
-    WorkspaceSid: workspaceSid,
-  } = event;
-  const remainingParticipants = await client.conferences
-    .get(conferenceSid)
-    .participants.list();
-  const agentStillInConference = remainingParticipants.some(participant =>
-    isAgentInConference({ callSid, customerCallSid, participant }),
-  );
-
-  if (agentStillInConference) {
-    return;
-  }
-
-  console.info(
-    `No participants identified as Aselo agents still in conference ${conferenceSid}, candidate to stop recordings`,
-  );
+const stopRecordingIfNotTransferring = async (
+  client: Twilio,
+  {
+    conferenceSid,
+    taskSid,
+    workspaceSid,
+  }: {
+    conferenceSid: ConferenceSid;
+    taskSid: TaskSID;
+    workspaceSid: WorkspaceSID;
+  },
+) => {
   const isTaskInControl = await hasTaskControl({
     client,
     taskSid,
@@ -114,10 +74,10 @@ const handler: ConferenceStatusEventHandler = async (event, _accountSid, client)
     conferenceRecordings.map(async recording => {
       try {
         if (['in-progress', 'processing'].includes(recording.status)) {
-          console.debug(
+          console.info(
             `Pausing recording ${recording.sid} for call ${recording.callSid} on conference ${conferenceSid}`,
-            recording,
           );
+          console.debug(recording);
           return await recording.update({
             status: 'paused', // 'stopped' not supported for conferences
           });
@@ -146,4 +106,83 @@ const handler: ConferenceStatusEventHandler = async (event, _accountSid, client)
   );
 };
 
-registerTaskRouterEventHandler(['participant-leave'], handler);
+const conferenceStatusEventHandler: ConferenceStatusEventHandler = async (
+  event,
+  accountSid,
+  client,
+) => {
+  if (event.StatusCallbackEvent !== 'participant-leave') {
+    console.warn(
+      `stopRecordingWhenLastAgentLeave called for ${event.StatusCallbackEvent} on ${event.ConferenceSid}, should only be called for 'participant-leave'`,
+    );
+    return;
+  }
+  const {
+    ConferenceSid: conferenceSid,
+    CallSid: callSid,
+    CustomerCallSid: customerCallSid,
+    StatusCallbackEvent: statusCallbackEvent,
+    TaskSid: taskSid,
+    WorkspaceSid: workspaceSid,
+  } = event;
+
+  console.info(
+    `[${accountSid}/${taskSid}] ${statusCallbackEvent} on conference ${conferenceSid} for participant ${callSid} where customer is ${customerCallSid}. Checking if recording needs to be stopped`,
+  );
+  const remainingParticipants = await client.conferences
+    .get(conferenceSid)
+    .participants.list();
+  const agentStillInConference = remainingParticipants.some(participant =>
+    isAgentInConference({ callSid, customerCallSid, participant }),
+  );
+
+  if (agentStillInConference) {
+    return;
+  }
+
+  console.info(
+    `[${accountSid}/${taskSid}] No participants identified as Aselo agents still in conference ${conferenceSid}, candidate to stop recordings`,
+  );
+  await stopRecordingIfNotTransferring(client, {
+    conferenceSid,
+    taskSid,
+    workspaceSid,
+  });
+};
+
+registerConferenceStatusEventHandler(['participant-leave'], conferenceStatusEventHandler);
+
+const taskRouterEventHandler: TaskRouterEventHandler = async (
+  {
+    TaskSid: taskSid,
+    TaskAttributes: attributesJson,
+    WorkspaceSid: workspaceSid,
+    TaskChannelUniqueName,
+    EventType: eventType,
+  }: EventFields,
+  accountSid: AccountSID,
+  client: Twilio,
+) => {
+  const { stop_recording_on_task_end: stopRecordingOnTaskEnd } =
+    await retrieveFeatureFlags(client);
+  console.debug(
+    `[${accountSid}/${taskSid} - stopRecordingWhenLastAgentLeaves]  handler fired on ${eventType} - feature flag set to ${stopRecordingOnTaskEnd}.`,
+  );
+
+  const { conference } = JSON.parse(attributesJson);
+  if (stopRecordingOnTaskEnd && TaskChannelUniqueName === 'voice' && conference?.sid) {
+    console.info(
+      `[${accountSid}/${taskSid} - stopRecordingWhenLastAgentLeaves] ${eventType} on voice task with conference sid ${conference.sid}. Checking if recording needs to be stopped`,
+    );
+    await stopRecordingIfNotTransferring(client, {
+      taskSid,
+      conferenceSid: conference.sid,
+      workspaceSid,
+    });
+  }
+};
+
+registerTaskRouterEventHandler(
+  [TASK_WRAPUP, TASK_COMPLETED, TASK_CANCELED, TASK_DELETED, TASK_SYSTEM_DELETED],
+  taskRouterEventHandler,
+);

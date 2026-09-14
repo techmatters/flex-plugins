@@ -42,6 +42,7 @@ import { submitContactFormAsyncAction, updateContactInHrmAsyncAction } from '../
 import { ContactMetadata, LoadingStatus } from '../../states/contacts/types';
 import { getUnsavedContact } from '../../states/contacts/getUnsavedContact';
 import { selectCurrentDefinitionVersion } from '../../states/configuration/selectDefinitions';
+import { isChatChannel } from '../../states/DomainConstants';
 
 const isDialogOpen = (task: CustomITask, contact: ContactDraftChanges) => {
   if (isOfflineContactTask(task)) return false;
@@ -50,7 +51,10 @@ const isDialogOpen = (task: CustomITask, contact: ContactDraftChanges) => {
 
 type Props = {
   task: CustomITask;
-  localization: { manager: { status: any }; isCallTask: (task: ITask) => boolean };
+  localization: {
+    manager: { status: any };
+    isCallTask: (task: ITask) => boolean;
+  };
 };
 
 const CallTypeButtons: React.FC<Props> = ({ task, localization }) => {
@@ -135,6 +139,16 @@ const CallTypeButtons: React.FC<Props> = ({ task, localization }) => {
     return undefined;
   };
 
+  let taskType: 'default' | 'call' | 'chat' = 'default';
+
+  if (!isOfflineContactTask(task)) {
+    if (isCallTask(task)) {
+      taskType = 'call';
+    } else if (isChatChannel(task.attributes.customChannelType || task.attributes.channelType || task.channelType)) {
+      taskType = 'chat';
+    }
+  }
+
   return (
     <>
       <Container>
@@ -184,7 +198,7 @@ const CallTypeButtons: React.FC<Props> = ({ task, localization }) => {
       <SaveContactCallTypeDialog
         isOpen={isDialogOpen(task, draftContact)}
         isEnabled={loadingStatus === LoadingStatus.LOADED}
-        isCallTask={!isOfflineContactTask(task) && isCallTask(task)}
+        taskType={taskType}
         isInWrapupMode={!isOfflineContactTask(task) && TaskHelper.isInWrapupMode(task)}
         handleConfirm={handleConfirmNonDataCallType}
         handleCancel={() => clearCallType(savedContact?.id)}

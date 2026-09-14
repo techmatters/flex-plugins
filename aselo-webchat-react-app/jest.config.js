@@ -30,6 +30,7 @@ module.exports = config => {
       },
       reporters: ['default', 'jest-junit'],
       testEnvironment: 'jsdom',
+      modulePaths: ['<rootDir>/node_modules'],
       transformIgnorePatterns: ['node_modules/(?!(@twilio-paste|@twilio/conversations))/'],
       collectCoverage: true,
       collectCoverageFrom: [

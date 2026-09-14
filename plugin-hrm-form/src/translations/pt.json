@@ -363,7 +363,7 @@
   "CallType-hangup": "Hang up",
   "CallType-wrongnumber": "Wrong Number",
   "CallType-abusive": "Abusivo",
-  "CallType-CloseContact": "Contato próximo",
+  "CallType-SaveDialog-CloseContact": "Contato próximo",
 
   "ConnectDialog-Child": "Copiar as informações da criança deste registro para o novo contato?",
   "ConnectDialog-Caller": "Copiar as informações do chamador deste registro para o novo contato?",

@@ -140,6 +140,46 @@
     ]
   },
   {
+    "name": "familyRelationSeverity",
+    "label": "Family Relationships Severity",
+    "type": "select",
+    "isPII": false,
+    "options": [
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "1. Concern for other’s family or worried about own family members",
+        "label": "1. Concern for other’s family or worried about own family members"
+      },
+      {
+        "value": "2. Seeking information",
+        "label": "2. Seeking information"
+      },
+      {
+        "value": "3. Historic",
+        "label": "3. Historic"
+      },
+      {
+        "value": "4. Occasional/one-off problem",
+        "label": "4. Occasional/one-off problem"
+      },
+      {
+        "value": "5. Frequent conflict",
+        "label": "5. Frequent conflict"
+      },
+      {
+        "value": "6. Major family conflict/disruption",
+        "label": "6. Major family conflict/disruption"
+      },
+      {
+        "value": "7. Other",
+        "label": "7. Other"
+      }
+    ]
+  },
+  {
     "name": "safetyIssueRaised",
     "label": "Was a safety issue raised in the call?",
     "type": "select",

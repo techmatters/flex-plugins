@@ -99,7 +99,7 @@ const filterTranscript = ({
     const maskIdentifiers = !can(PermissionActions.VIEW_IDENTIFIERS);
     // first message is filtered in webchat, following the logic from maskManagerStringsWithIdentifiers (plugin-hrm-form/src/maskIdentifiers/index.ts)
     if (maskIdentifiers) {
-      filteredMessages = filteredMessages.splice(1);
+      [, ...filteredMessages] = filteredMessages;
     }
   }
 

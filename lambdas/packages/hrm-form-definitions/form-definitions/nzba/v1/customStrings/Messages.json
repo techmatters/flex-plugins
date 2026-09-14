@@ -1,9 +1,9 @@
 {
   "en": {
-    "WelcomeMsg": "Kia ora!",
-    "GoodbyeMsg": "TThe counsellor has left the chat now. Thank you for reaching out - we look forward to chatting to again.",
-    "EndChatMsg": "You’ve ended the chat. Thanks for getting in touch today. If you ever need support again, we’re here for you.",
-    "ClosedOutOfShift": "The helpline is out of shift, please reach us later.",
-    "UnsupportedMediaErrorMsg": "Oops — we couldn’t send that message. Try sending it again using text only."
+    "WelcomeMsg": "Kia ora, Welcome to the 0800 What’s Up Chat service :)",
+    "GoodbyeMsg": "The counsellor has ended the chat. Thank you for reaching out. \nIf you or anyone you know becomes unsafe following our chat today, please call 111 or your local mental health crisis team - https://www.healthnz.govt.nz/health-topics/mental-health/crisis-assessment-teams . \nWe’re glad you connected.",
+    "EndChatMsg": "You’ve ended the chat. Thanks for getting in touch. \nIf you or anyone you know becomes unsafe following our chat today, please call 111 or your local mental health crisis team - https://www.healthnz.govt.nz/health-topics/mental-health/crisis-assessment-teams. \n If you need support again, we’re here for you. ",
+    "ClosedOutOfShift": "Kia ora! Sorry we missed you. We’re open every day for chat from 11am–10:30pm, and by phone on 0800 942 8787 from 11am–11pm. \nVisit whatsup.co.nz to find out more and connect with us when we’re open.  If you’re unsafe or in immediate danger, please call 111. We hope to hear from you soon.",
+    "UnsupportedMediaErrorMsg": "Oops — the message you just sent is unsupported. Please try sending it again, using only text."
   }
 }

@@ -19,7 +19,7 @@ import type { AccountSID } from '@tech-matters/twilio-types';
 import { jwt as TwilioJwt } from 'twilio';
 import { getSyncServiceSid } from '@tech-matters/twilio-configuration';
 import { getApiKey, getApiSecret } from './webchatAuthentication/createToken';
-import { newErr, newOk } from './Result';
+import { newErr, newOk } from '@tech-matters/result-type';
 
 export const issueSyncToken = async (
   accountSid: AccountSID,

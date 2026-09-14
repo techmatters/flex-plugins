@@ -1,0 +1,120 @@
+{
+  "contact": {
+    "callerInformation": {
+      "splitFormAt": 7
+    },
+    "childInformation": {
+      "splitFormAt": 2
+    },
+    "caseInformation": {
+      "splitFormAt": 2
+    }
+  },
+  "case": {
+    "sectionTypes": {
+      "timesCoordination": {
+        "splitFormAt": 12,
+        "printOrder": 1,
+        "caseHomeOrder": 1,
+        "caseHomeLocation": "timeline",
+        "previewFields": [
+          "callOutcome",
+          "assistanceRequested"
+        ],
+        "layout": {
+          "responderName": {
+            "callOutcome": true
+          },
+          "enrouteTimestamp": {
+            "format": "timestamp"
+          },
+          "onSceneTimestamp": {
+            "format": "timestamp"
+          },
+          "additionalResourcesTimestamp": {
+            "format": "timestamp"
+          },
+          "transportTimestamp": {
+            "format": "timestamp"
+          },
+          "destinationArrivalTimestamp": {
+            "format": "timestamp"
+          },
+          "incidentCompleteTimestamp": {
+            "format": "timestamp"
+          }
+        }
+      },
+      "incidentReport": {
+        "splitFormAt": 10,
+        "printOrder": 2,
+        "caseHomeOrder": 2,
+        "previewFields": [
+          "incidentNumber"
+        ],
+        "layout": {
+          "incidentCreationTimestamp": {
+            "format": "timestamp"
+          },          
+          "incidentActivationInterval": {
+            "format": "duration-from-seconds"
+          },
+          "enrouteInterval": {
+            "format": "duration-from-seconds"
+          },
+          "sceneArrivalInterval": {
+            "format": "duration-from-seconds"
+          },
+          "triageInterval": {
+            "format": "duration-from-seconds"
+          },
+          "totalSceneInterval": {
+            "format": "duration-from-seconds"
+          },
+          "transportInterval": {
+            "format": "duration-from-seconds"
+          },
+          "totalIncidentTime": {
+            "format": "duration-from-seconds"
+          }
+        }
+      },
+      "patientCareReport": {
+        "splitFormAt": 60,
+        "printOrder": 3,
+        "caseHomeOrder": 3,
+        "previewFields": [
+          "firstName",
+          "lastName",
+          "sex",
+          "age"
+        ],
+        "layout": {
+          "firstName": {
+            "includeLabel": true
+          },
+          "lastName": {
+            "includeLabel": true
+          },
+          "sex": {
+            "includeLabel": true
+          },
+          "age": {
+            "includeLabel": true
+          },
+          "medicalHistory": {
+            "includeLabel": true
+          },
+          "allergies": {
+            "includeLabel": true
+          }
+        }
+      },
+      "note": {
+        "printOrder": 7,
+        "caseHomeLocation": "timeline",
+        "printFormat": "list"
+      }
+    }
+  }
+}

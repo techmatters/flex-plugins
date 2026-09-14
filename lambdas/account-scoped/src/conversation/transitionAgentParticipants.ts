@@ -17,7 +17,7 @@
 import { AccountSID, TaskSID } from '@tech-matters/twilio-types';
 import { getTwilioClient } from '@tech-matters/twilio-configuration';
 import { newHttpErrorResult, newMissingParameterResult } from '../httpErrors';
-import { newErr, newOk, isErr } from '../Result';
+import { newErr, newOk, isErr } from '@tech-matters/result-type';
 import { FlexValidatedHandler, isSupervisor } from '../validation/flexToken';
 import {
   getTaskAndReservations,
@@ -65,7 +65,7 @@ export const transitionAgentParticipantsHandler: FlexValidatedHandler = async (
     await transitionAgentParticipants(
       client,
       taskAttributes,
-      targetStatus,
+      targetStatus as any,
       interactionChannelParticipantSid,
     );
     return newOk({ message: 'Participants transitioned successfully' });

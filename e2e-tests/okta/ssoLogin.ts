@@ -25,8 +25,33 @@ export function delay(time: number) {
   });
 }
 
-const formRegex =
-  /<form\s*id="appForm"\s*action="(?<actionUrl>[\w.;#&]+)"\s*method="POST"\s*>\s*<input\s*name="SAMLResponse"\s*type="hidden"\s*value="(?<samlResponse>[\w;#&-]+)"\s*\/>\s*<input\s*name="RelayState"\s*type="hidden"\s*value="(?<relayState>[\w;#&-]+)"\s*\/>/;
+/**
+ * Extracts SAML form values from Okta HTML responses.
+ * Throws when required SAML fields are missing.
+ */
+function extractSamlFormValues(samlResponseHtml: string) {
+  const getHiddenInputValue = (name: 'SAMLResponse' | 'RelayState') => {
+    const inputTag = samlResponseHtml.match(
+      new RegExp(`<input\\b(?=[^>]*\\bname=["']${name}["'])[^>]*>`, 'i'),
+    )?.[0];
+    return inputTag?.match(/\bvalue=["']([^"']+)["']/i)?.[1];
+  };
+
+  const actionUrl = samlResponseHtml.match(/<form[^>]*action=["'](?<actionUrl>[^"']+)["'][^>]*>/i)
+    ?.groups?.actionUrl;
+  const samlResponse = getHiddenInputValue('SAMLResponse');
+  const relayState = getHiddenInputValue('RelayState');
+
+  if (!samlResponse || !relayState) {
+    throw new Error(
+      `Could not extract SAML form values from Okta response (SAMLResponse: ${Boolean(
+        samlResponse,
+      )}, RelayState: ${Boolean(relayState)})`,
+    );
+  }
+
+  return { actionUrl, samlResponse, relayState };
+}
 
 // NOT GENERAL PURPOSE - Only works for those encoded as hex character codes, not named symbols like &amp; or decimal character codes
 // bodged from https://stackoverflow.com/a/7394814
@@ -66,9 +91,19 @@ export async function oktaSsoLoginViaApi(
   if (!authenticateResponse.ok()) {
     console.error(`Error calling initial authorize`, await authenticateResponse.text());
   }
-  expect(authenticateResponse.ok());
+  expect(authenticateResponse.ok()).toBe(true);
   // const content = await authenticateResponse.text();
-  const samlLocation = new URL(authenticateResponse.url()).searchParams.get('fromURI')!;
+  const authorizeRedirectUrl = new URL(authenticateResponse.url());
+  const fromUri = authorizeRedirectUrl.searchParams.get('fromURI');
+  const isSamlEndpointRedirect =
+    authorizeRedirectUrl.pathname.endsWith('/sso/saml') &&
+    authorizeRedirectUrl.searchParams.has('SAMLRequest');
+  const samlLocation = fromUri ?? (isSamlEndpointRedirect ? authorizeRedirectUrl.toString() : null);
+  if (!samlLocation) {
+    throw new Error(
+      `Could not get SAML location (fromURI) from authorize redirect URL: ${authenticateResponse.url()}`,
+    );
+  }
 
   // Login via okta API
   const authnResponse = await apiRequest.post('https://techmatters.okta.com/api/v1/authn', {
@@ -94,6 +129,11 @@ export async function oktaSsoLoginViaApi(
       },
     },
   );
+  if (!redirectResponse.ok()) {
+    console.error(
+      `Cookie redirect failed with status ${redirectResponse.status()}: ${await redirectResponse.text()}`,
+    );
+  }
   expect(redirectResponse.ok()).toBe(true);
 
   // Scrape required SAML response values from the HTML response in the redirected page
@@ -101,7 +141,10 @@ export async function oktaSsoLoginViaApi(
   const samlResponseHtml = await redirectResponse.text();
   // commented debug lines are spammy, but handy debugging auth problems
   // console.debug('SAML response HTML:', samlResponseHtml);
-  const { samlResponse, relayState, actionUrl } = samlResponseHtml.match(formRegex)!.groups!;
+  const { samlResponse, relayState, actionUrl } = extractSamlFormValues(samlResponseHtml);
+  if (!actionUrl) {
+    throw new Error('Could not extract SAML action URL from Okta response form');
+  }
   // console.debug('Extracted SAML Response', samlResponse);
   // console.debug('Extracted SAML relayState', relayState);
   // console.debug('Extracted SAML actionURL', actionUrl);
@@ -175,8 +218,13 @@ export async function legacyOktaSsoLoginViaApi(
     `https://preview.twilio.com/iam/Accounts/${accountSid}/authenticate`,
     authenticateRequestOptions,
   );
-  expect(authenticateResponse.ok());
+  expect(authenticateResponse.ok()).toBe(true);
   const { location: samlLocation } = await authenticateResponse.json();
+  if (!samlLocation) {
+    throw new Error(
+      `Could not get SAML location from authenticate response: ${await authenticateResponse.text()}`,
+    );
+  }
 
   // Login via okta API
   const authnResponse = await apiRequest.post('https://techmatters.okta.com/api/v1/authn', {
@@ -202,12 +250,17 @@ export async function legacyOktaSsoLoginViaApi(
       },
     },
   );
+  if (!redirectResponse.ok()) {
+    console.error(
+      `Cookie redirect failed with status ${redirectResponse.status()}: ${await redirectResponse.text()}`,
+    );
+  }
   expect(redirectResponse.ok()).toBe(true);
 
   // Scrape required SAML response values from the HTML response in the redirected page
   // this is kinda :vomit but I couldn't see an alternative API that provides this via JSON or another API friendly format
   const samlResponseHtml = await redirectResponse.text();
-  const { samlResponse, relayState } = samlResponseHtml.match(formRegex)!.groups!;
+  const { samlResponse, relayState } = extractSamlFormValues(samlResponseHtml);
 
   const flexTimeoutTime = Date.now() + 120000; // 2 minutes
   // Post the SAML response to twilio - if successful this redirects to the flex landing page, whose contents we drop on the floor, we just want to ensure the cookies get set

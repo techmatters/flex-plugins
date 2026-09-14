@@ -1,0 +1,100 @@
+{
+  "timezone": "America/New_York",
+  "holidays": {
+    "01/01/2026": "New Year's Day",
+    "01/19/2026": "Martin Luther King Jr. Day",
+    "02/16/2026": "President's Day",
+    "05/25/2026": "Memorial Day",
+    "06/19/2026": "Juneteenth",
+    "07/03/2026": "Independence Day (Observed)",
+    "09/07/2026": "Labor Day",
+    "10/12/2026": "Indigenous People's Day",
+    "11/11/2026": "Veterans Day",
+    "11/26/2026": "Thanksgiving Day",
+    "11/27/2026": "Day After Thanksgiving",
+    "12/25/2026": "Christmas Day",
+    "01/01/2027": "New Year's Day",
+    "01/18/2027": "Martin Luther King Jr. Day",
+    "01/15/2027": "President's Day",
+    "05/31/2027": "Memorial Day",
+    "06/18/2027": "Juneteenth (Observed)",
+    "07/02/2027": "Independence Day (Observed)",
+    "09/06/2027": "Labor Day",
+    "10/11/2027": "Indigenous People's Day",
+    "11/11/2027": "Veterans Day",
+    "11/25/2027": "Thanksgiving Day",
+    "11/26/2027": "Day After Thanksgiving",
+    "12/24/2027": "Christmas Day (Observed)"
+  },
+  "operatingHours": {
+    "sms": {
+      "1": [{ "open": 1000, "close": 2200 }],
+      "2": [{ "open": 1000, "close": 2200 }],
+      "3": [{ "open": 1000, "close": 2200 }],
+      "4": [{ "open": 1000, "close": 2200 }],
+      "5": [{ "open": 1000, "close": 2200 }],
+      "6": [],
+      "7": []
+    },
+    "voice": {
+      "1": [{ "open": 1000, "close": 2200 }],
+      "2": [{ "open": 1000, "close": 2200 }],
+      "3": [{ "open": 1000, "close": 2200 }],
+      "4": [{ "open": 1000, "close": 2200 }],
+      "5": [{ "open": 1000, "close": 2200 }],
+      "6": [],
+      "7": []
+    }
+  },
+  "offices": {
+    "preClosing": {
+      "timezone": "America/New_York",
+      "holidays": {
+        "01/01/2026": "New Year's Day",
+        "01/19/2026": "Martin Luther King Jr. Day",
+        "02/16/2026": "President's Day",
+        "05/25/2026": "Memorial Day",
+        "06/19/2026": "Juneteenth",
+        "07/03/2026": "Independence Day (Observed)",
+        "09/07/2026": "Labor Day",
+        "10/12/2026": "Indigenous People's Day",
+        "11/11/2026": "Veterans Day",
+        "11/26/2026": "Thanksgiving Day",
+        "11/27/2026": "Day After Thanksgiving",
+        "12/25/2026": "Christmas Day",
+        "01/01/2027": "New Year's Day",
+        "01/18/2027": "Martin Luther King Jr. Day",
+        "01/15/2027": "President's Day",
+        "05/31/2027": "Memorial Day",
+        "06/18/2027": "Juneteenth (Observed)",
+        "07/02/2027": "Independence Day (Observed)",
+        "09/06/2027": "Labor Day",
+        "10/11/2027": "Indigenous People's Day",
+        "11/11/2027": "Veterans Day",
+        "11/25/2027": "Thanksgiving Day",
+        "11/26/2027": "Day After Thanksgiving",
+        "12/24/2027": "Christmas Day (Observed)"
+      },
+      "operatingHours": {
+        "sms": {
+          "1": [{ "open": 1000, "close": 2145 }],
+          "2": [{ "open": 1000, "close": 2145 }],
+          "3": [{ "open": 1000, "close": 2145 }],
+          "4": [{ "open": 1000, "close": 2145 }],
+          "5": [{ "open": 1000, "close": 2145 }],
+          "6": [],
+          "7": []
+        },
+        "voice": {
+          "1": [{ "open": 1000, "close": 2145 }],
+          "2": [{ "open": 1000, "close": 2145 }],
+          "3": [{ "open": 1000, "close": 2145 }],
+          "4": [{ "open": 1000, "close": 2145 }],
+          "5": [{ "open": 1000, "close": 2145 }],
+          "6": [],
+          "7": []
+        }
+      }
+    }
+  }
+}

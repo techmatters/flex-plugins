@@ -21,7 +21,7 @@ import {
   createConversation,
   CreateFlexConversationParams,
 } from '../conversation/createConversation';
-import { isErr } from '../Result';
+import { isErr } from '@tech-matters/result-type';
 
 export const findExistingConversation = async (
   client: Twilio,
@@ -77,8 +77,6 @@ export const removeConversation = async (
     conversationSid: ConversationSID;
   },
 ) => client.conversations.v1.conversations.get(conversationSid).remove();
-
-export { AseloCustomChannel, isAseloCustomChannel } from './aseloCustomChannels';
 
 type SendConversationMessageToFlexParams = Omit<
   CreateFlexConversationParams,
