@@ -66,6 +66,14 @@
         "insights": ["conversations", "customer_email"]
       },
       {
+        "name": "actionPlanDeveloped",
+        "insights": ["conversations", "initiated_by"]
+      },
+      {
+        "name": "wasASafetyPlanCreated",
+        "insights": ["conversations", "language"]
+      },
+      {
         "name": "howTheHelpseekerHeardAboutUs",
         "insights": ["conversations", "followed_by"]
       }
