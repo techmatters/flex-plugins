@@ -74,6 +74,10 @@
         "insights": ["conversations", "language"]
       },
       {
+        "name": "levelOfIntervention",
+        "insights": ["conversations", "outcome"]
+      },
+      {
         "name": "howTheHelpseekerHeardAboutUs",
         "insights": ["conversations", "followed_by"]
       }
