@@ -39,7 +39,7 @@ const ConferenceMonitor: React.FC<Props> = ({ conference, task }) => {
         ['agent', 'worker', 'supervisor'].includes(participant.participantType)
       );
     },
-    [task.queueSid],
+[task?.queueSid],
   );
   const [updating, setUpdating] = React.useState(false);
 
