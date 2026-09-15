@@ -1,0 +1,67 @@
+{
+  "intentName": "parent_education",
+  "description": "Routing intent for 'How can we help you today?' option: parent_education",
+  "sampleUtterances": [
+    {
+      "utterance": "3"
+    },
+    {
+      "utterance": "parent education"
+    },
+    {
+      "utterance": "enroll in parent education programs"
+    },
+    {
+      "utterance": "parenting classes"
+    }
+  ],
+  "dialogCodeHook": {
+    "enabled": false
+  },
+  "fulfillmentCodeHook": {
+    "enabled": false,
+    "active": true,
+    "postFulfillmentStatusSpecification": {
+      "successNextStep": {
+        "dialogAction": {
+          "type": "CloseIntent"
+        },
+        "intent": {}
+      },
+      "failureNextStep": {
+        "dialogAction": {
+          "type": "CloseIntent"
+        },
+        "intent": {}
+      },
+      "timeoutNextStep": {
+        "dialogAction": {
+          "type": "CloseIntent"
+        },
+        "intent": {}
+      }
+    }
+  },
+  "slotPriorities": [],
+  "intentClosingSetting": {
+    "closingResponse": {
+      "messageGroups": [
+        {
+          "message": {
+            "plainTextMessage": {
+              "value": "We are glad you are interested in learning more about our programs. You can choose the option that feels most helpful to you: to view upcoming programs, click here. To enroll in a program, click here. To refer a family, click here. If you have a specific question or would prefer to speak with someone, please email familysupport@pcavt.org. We are happy to help you find the information or support that is right for you."
+            }
+          }
+        }
+      ],
+      "allowInterrupt": true
+    },
+    "active": true,
+    "nextStep": {
+      "dialogAction": {
+        "type": "EndConversation"
+      },
+      "intent": {}
+    }
+  }
+}
