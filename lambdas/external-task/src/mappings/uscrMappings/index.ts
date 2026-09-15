@@ -15,13 +15,13 @@
  */
 
 import { newErr, newOk } from '@tech-matters/result-type';
-import type { ExternalTaskMappingFunction } from '..';
+import type { ExternalTaskAttributesFunction } from '..';
 
-export const mappingFunction: ExternalTaskMappingFunction = payload => {
+export const getAttributesFunction: ExternalTaskAttributesFunction = payload => {
   if (!payload.key) {
     const message = 'Missing key property in payload';
     return newErr({ message, error: new Error(message) });
   }
 
-  return newOk({ externalId: payload.key, externalTaskAttributes: {} });
+  return newOk({ externalId: payload.key, externalTaskAttributes: payload });
 };

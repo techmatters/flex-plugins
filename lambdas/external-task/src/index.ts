@@ -25,7 +25,7 @@ import {
 } from '@tech-matters/twilio-configuration';
 import { channelTypes } from '@tech-matters/twilio-types';
 import { authenticateWithExternalApiKey } from './requestValidator';
-import { getExternalTaskMapping } from './mappings';
+import { getExternalTaskAttributes } from './mappings';
 
 const headers = {
   'Content-Type': 'application/json',
@@ -113,7 +113,7 @@ export const handler = async (event: ALBEvent): Promise<ALBResult> => {
           isBase64Encoded: event.isBase64Encoded,
         });
 
-        const mappingResult = getExternalTaskMapping({ accountShortCode })(body);
+        const mappingResult = getExternalTaskAttributes({ accountShortCode })(body);
         if (isErr(mappingResult)) {
           return handleError(mappingResult.message, mappingResult.error, 400);
         }
