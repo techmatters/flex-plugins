@@ -60,7 +60,7 @@ COPY lambdas/e2eTestRunner/tsconfig.json /app/lambdas/e2eTestRunner/
 RUN cd /app/lambdas && npm ci -w e2eTestRunner -w packages/* --verbose
 
 COPY lambdas/e2eTestRunner/src /app/lambdas/e2eTestRunner/src/
-COPY lambdas/e2eTestRunner/tsconfig.build.json /app/lambdas/
+COPY lambdas/e2eTestRunner/tsconfig.build.json /app/lambdas/e2eTestRunner/
 
 RUN cd /app/lambdas && npx tsc -b e2eTestRunner/tsconfig.build.json --verbose
 
