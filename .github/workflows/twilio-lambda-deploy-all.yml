@@ -54,6 +54,7 @@ jobs:
       matrix:
         lambda_path:
           - account-scoped
+          - e2eTestRunner
           - scheduled-jobs-processor
           - external-task
           - facebookCallback
