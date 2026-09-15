@@ -31,9 +31,7 @@ RUN curl -fsSL https://deb.nodesource.com/setup_22.x | bash - && \
         xz-utils \
         ca-certificates \
         libcurl4-openssl-dev && \
-    # aws-lambda-ric provides the scaffolding to run the lambda in a container
     npm install aws-lambda-ric -g && \
-    #aws-lambda-rie provides emulation of the aws runtime interface for local development
     if [ "$TARGETARCH" = "arm64" ]; then export REI_FILE="aws-lambda-rie-arm64"; else export REI_FILE="aws-lambda-rie"; fi && \
     curl -Lo /usr/local/bin/aws-lambda-rie https://github.com/aws/aws-lambda-runtime-interface-emulator/releases/latest/download/${REI_FILE} && \
     chmod +x /usr/local/bin/aws-lambda-rie
@@ -46,7 +44,6 @@ RUN cd hrm-form-definitions && \
     npm ci && \
     cd ../e2e-tests && \
     npm ci && \
-    # We clean the base image browsers and only install the one we need to reduce the final image size
     rm -rf /ms-playwright/* && \
     npm run postinstall
 
@@ -60,9 +57,9 @@ COPY lambdas/e2eTestRunner/tsconfig.json /app/lambdas/e2eTestRunner/
 RUN cd /app/lambdas && npm ci -w e2eTestRunner -w packages/* --verbose
 
 COPY lambdas/e2eTestRunner/src /app/lambdas/e2eTestRunner/src/
-COPY lambdas/e2eTestRunner/tsconfig.build.json /app/lambdas/e2eTestRunner/
+COPY lambdas/e2eTestRunner/tsconfig.build.json /app/lambdas/tsconfig.build.json
 
-RUN cd /app/lambdas && npx tsc -b e2eTestRunner/tsconfig.build.json --verbose
+RUN cd /app/lambdas && npx tsc -b ./tsconfig.build.json --verbose
 
 # After initial build, we switch to a smaller base image and only copy the necessary files to reduce the final image size.
 FROM ubuntu:jammy
@@ -73,12 +70,10 @@ RUN apt-get update && \
     apt-get install -y curl wget gpg && \
     curl -fsSL https://deb.nodesource.com/setup_22.x | bash - && \
     apt-get install -y nodejs && \
-    # move npm cache to /tmp for use in lambda
     npm config set cache /tmp --global && \
     rm -rf /root/.npm/* && \
     apt-get install -y --no-install-recommends git openssh-client && \
     npm install -g yarn && \
-    # clean apt cache
     rm -rf /var/lib/apt/lists/*
 
 COPY --from=build /usr/local/bin/aws-lambda-rie /usr/local/bin/aws-lambda-rie
