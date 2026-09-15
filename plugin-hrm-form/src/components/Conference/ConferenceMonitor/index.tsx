@@ -39,7 +39,7 @@ const ConferenceMonitor: React.FC<Props> = ({ conference, task }) => {
         ['agent', 'worker', 'supervisor'].includes(participant.participantType)
       );
     },
-[task?.queueSid],
+    [task?.queueSid],
   );
   const [updating, setUpdating] = React.useState(false);
 
@@ -104,7 +104,7 @@ const ConferenceMonitor: React.FC<Props> = ({ conference, task }) => {
           });
         }
       } catch (err) {
-if (err instanceof ApiError && err.response?.status === 404) {
+        if (err instanceof ApiError && err.response?.status === 404) {
           console.error(
             `Participant with call sid ${participant.callSid} no longer part of conference ${conferenceSid}`,
             err,
