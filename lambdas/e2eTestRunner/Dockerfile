@@ -51,6 +51,7 @@ RUN cd hrm-form-definitions && \
     npm run postinstall
 
 # Install and build the lambda handler from the lambdas workspace
+COPY lambdas/package*.json /app/lambdas/
 COPY lambdas/e2eTestRunner/package*.json /app/lambdas/e2eTestRunner/
 COPY lambdas/packages /app/lambdas/packages/
 COPY lambdas/tsconfig.base.json /app/lambdas/
