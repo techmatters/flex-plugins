@@ -54,7 +54,9 @@ COPY lambdas/packages /app/lambdas/packages/
 COPY lambdas/tsconfig.base.json /app/lambdas/
 COPY lambdas/e2eTestRunner/tsconfig.json /app/lambdas/e2eTestRunner/
 
-RUN cd /app/lambdas && npm ci -w e2eTestRunner -w packages/* --verbose
+RUN cd /app/lambdas && \
+    npm ci -w e2eTestRunner -w packages/* --verbose && \
+    npm run build --workspace packages/ssm-cache
 
 COPY lambdas/e2eTestRunner/src /app/lambdas/e2eTestRunner/src/
 COPY lambdas/e2eTestRunner/tsconfig.build.json /app/lambdas/tsconfig.build.json
