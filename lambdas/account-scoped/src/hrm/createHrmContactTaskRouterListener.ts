@@ -136,7 +136,7 @@ export const handleEvent = async (
     TaskSid: taskSid,
     WorkerSid: workerSid,
     WorkerName: workerName,
-    TaskChannelName: taskChannel,
+    TaskChannelUniqueName: taskChannel,
   }: EventFields,
   accountSid: AccountSID,
   client: twilio.Twilio,
