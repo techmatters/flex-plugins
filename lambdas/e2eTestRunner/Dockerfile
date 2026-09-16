@@ -18,9 +18,12 @@ FROM mcr.microsoft.com/playwright:v1.30.0-jammy AS build
 WORKDIR /app
 
 ARG TARGETARCH
+ENV lambda_dir lambdas
+ENV lambda_name e2eTestRunner
 
 RUN curl -fsSL https://deb.nodesource.com/setup_22.x | bash - && \
     apt-get install -y \
+        rsync \
         nodejs \
         autoconf \
         g++ \
@@ -32,9 +35,31 @@ RUN curl -fsSL https://deb.nodesource.com/setup_22.x | bash - && \
         ca-certificates \
         libcurl4-openssl-dev && \
     npm install aws-lambda-ric -g && \
+    npm install typescript -g && \
     if [ "$TARGETARCH" = "arm64" ]; then export REI_FILE="aws-lambda-rie-arm64"; else export REI_FILE="aws-lambda-rie"; fi && \
     curl -Lo /usr/local/bin/aws-lambda-rie https://github.com/aws/aws-lambda-runtime-interface-emulator/releases/latest/download/${REI_FILE} && \
     chmod +x /usr/local/bin/aws-lambda-rie
+
+# This is a bit complicated by the need for access to the packages.
+# We must have the full repo context for our docker build so we can
+# copy the hrm-lib package and labmdas folders so that the file: based
+# dependency in package.json can be resolved
+COPY ${lambda_dir}/${lambda_name} /tmp/build/${lambda_name}
+COPY ${lambda_dir}/packages /tmp/build/packages
+COPY ${lambda_dir}/package.json ${lambda_dir}/package-lock.json ${lambda_dir}/tsconfig.json ${lambda_dir}/tsconfig.base.json ${lambda_dir}/${lambda_name}/tsconfig.build.json /tmp/build/
+
+RUN cd /tmp/build && npm ci --verbose \
+
+RUN cd /tmp/build  \
+    && mkdir -p /var/task \
+    && npx tsc -b tsconfig.build.json --verbose \
+    && cp -r ${lambda_name}/dist/. /var/task/ \
+    && cp ${lambda_name}/package.json /var/task/ \
+    && cp -r packages /var/task/ \
+    && cp -r node_modules /var/task/
+
+# Ignore errors if node_modules is not present
+RUN rsync -a ${lambda_name}/node_modules/ /var/task/node_modules; exit 0
 
 # Install e2e-tests dependencies (includes Playwright and all test dependencies)
 COPY lambdas/packages/hrm-form-definitions/package*.json /app/hrm-form-definitions/
@@ -46,22 +71,6 @@ RUN cd hrm-form-definitions && \
     npm ci && \
     rm -rf /ms-playwright/* && \
     npm run postinstall
-
-# Install and build the lambda handler from the lambdas workspace
-COPY lambdas/package*.json /app/lambdas/
-COPY lambdas/e2eTestRunner/package*.json /app/lambdas/e2eTestRunner/
-COPY lambdas/packages /app/lambdas/packages/
-COPY lambdas/tsconfig.base.json /app/lambdas/
-COPY lambdas/e2eTestRunner/tsconfig.json /app/lambdas/e2eTestRunner/
-
-RUN cd /app/lambdas && \
-    npm ci -w e2eTestRunner -w packages/* --verbose && \
-    npm run build --workspace packages/ssm-cache
-
-COPY lambdas/e2eTestRunner/src /app/lambdas/e2eTestRunner/src/
-COPY lambdas/e2eTestRunner/tsconfig.build.json /app/lambdas/tsconfig.build.json
-
-RUN cd /app/lambdas && npx tsc -b ./tsconfig.build.json --verbose
 
 # After initial build, we switch to a smaller base image and only copy the necessary files to reduce the final image size.
 FROM ubuntu:jammy
@@ -93,14 +102,9 @@ COPY lambdas/packages/hrm-form-definitions /app/hrm-form-definitions
 COPY e2e-tests /app/e2e-tests
 
 # Copy the compiled lambda handler and its dependencies
-COPY --from=build /app/lambdas/e2eTestRunner/dist /app/e2eTestRunner
-COPY --from=build /app/lambdas/node_modules /app/e2eTestRunner/node_modules
+COPY --from=build /var/task /var/task
 
 COPY --chmod=0755 lambdas/e2eTestRunner/docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
-
-# AWS Lambda always sets LAMBDA_TASK_ROOT=/var/task at runtime, overriding any Dockerfile ENV.
-# Symlinking /var/task -> /app/e2eTestRunner ensures aws-lambda-ric finds index.js at the expected path.
-RUN ln -sf /app/e2eTestRunner /var/task
 
 ENV TEST_IN_LAMBDA=true
 ENV XDG_CONFIG_HOME=/tmp/.config
