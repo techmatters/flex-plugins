@@ -29,6 +29,7 @@ export const mappingFunction: ExternalTaskMappingFunction = async ({
   taskAttributes,
 }) => {
   try {
+    console.log('[mappingFunction] filling contact with USCR mapping');
     const definitionVersion = await getCurrentDefinitionVersion({ accountSid });
     await populateInitialValues(contact, definitionVersion);
 
@@ -98,6 +99,11 @@ export const mappingFunction: ExternalTaskMappingFunction = async ({
     contact.rawJson.callerInformation.identifier911 = customerId;
     contact.rawJson.childInformation.specificLocation = specificLocation;
     contact.rawJson.childInformation.incidentSummary = incidentSummary;
+
+    console.log(
+      '[mappingFunction] Success filling contact',
+      JSON.stringify(contact, null, 2),
+    );
 
     return newOk(contact);
   } catch (err) {
