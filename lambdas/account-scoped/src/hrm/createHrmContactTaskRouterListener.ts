@@ -278,13 +278,16 @@ export const handleEvent = async (
 
   const getPopulateFunction = async () => {
     if (taskChannel === channelTypes.EXTERNAL) {
+      console.log('[getPopulateFunction] using getExternalTaskMappingFunction');
       return getExternalTaskMappingFunction({ accountSid });
     }
 
     if (usePrepopulateMappings) {
+      console.log('[getPopulateFunction] using populateHrmContactFormFromTaskByMappings');
       return populateHrmContactFormFromTaskByMappings;
     }
 
+    console.log('[getPopulateFunction] using populateHrmContactFormFromTaskByKeys');
     return populateHrmContactFormFromTaskByKeys;
   };
   const prepopulate = await getPopulateFunction();
