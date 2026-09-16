@@ -18,7 +18,7 @@ import { spawn } from 'child_process';
 import path from 'path';
 import { promises as fs, createReadStream } from 'fs';
 import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
-import { SSMClient, GetParameterCommand } from '@aws-sdk/client-ssm';
+import { getSsmParameter } from '@tech-matters/ssm-cache';
 import { format } from 'date-fns';
 
 const SSM_REGION = 'us-east-1'; // All our parameters are in this region, regardless of where the actual helpline is deployed to
@@ -31,17 +31,10 @@ type E2ETestEvent = {
 };
 
 const getParameterValue = async (name: string): Promise<string> => {
-  const ssm = new SSMClient({ region: SSM_REGION });
-  const command = new GetParameterCommand({
-    Name: name,
-    WithDecryption: true,
-  });
-  const { Parameter } = await ssm.send(command);
-  if (!Parameter?.Value) {
-    throw new Error(`SSM parameter not found: ${name}`);
-  }
-  console.debug(`SSM ${name} = ${Parameter.Value}`);
-  return Parameter.Value;
+  process.env.SSM_REGION = SSM_REGION;
+  const value = await getSsmParameter(name);
+  console.debug(`SSM ${name} = ${value}`);
+  return value;
 };
 
 // https://stackoverflow.com/a/65862128/30481093
