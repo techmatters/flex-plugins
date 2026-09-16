@@ -2,7 +2,5 @@
 {
   "extends": "./tsconfig.base.json",
   "files": [],
-  "references": [
-    { "path": "e2eTestRunner" }
-  ]
+  "references": [{ "path": "packages/ssm-cache" }, { "path": "e2eTestRunner" }]
 }
