@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test:unit": "npm exec jest tests/unit",
+    "test:unit": "jest tests/unit",
     "test:e2e": "jest tests/e2e",
     "docker:build": "docker build -t scheduled-jobs-processor --build-arg lambda_name=scheduled-jobs-processor --build-arg lambda_dir=. -f ../Dockerfile ../"
   },
