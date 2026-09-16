@@ -24,10 +24,30 @@ import { format } from 'date-fns';
 const SSM_REGION = 'us-east-1'; // All our parameters are in this region, regardless of where the actual helpline is deployed to
 
 type HandlerEnv = Record<string, string | undefined>;
+type EnvOverrideValue = string | number | boolean | null | undefined;
 
 type E2ETestEvent = {
   testName?: string;
   npmScript?: string;
+  envOverrides?: Record<string, EnvOverrideValue>;
+};
+
+const applyEnvOverrides = (
+  env: HandlerEnv,
+  envOverrides: E2ETestEvent['envOverrides'],
+): void => {
+  if (!envOverrides || Array.isArray(envOverrides)) {
+    return;
+  }
+
+  Object.entries(envOverrides).forEach(([key, value]) => {
+    if (value === null || value === undefined) {
+      delete env[key];
+      return;
+    }
+
+    env[key] = String(value);
+  });
 };
 
 const getParameterValue = async (name: string): Promise<string> => {
@@ -100,6 +120,7 @@ const uploadTestArtifactsToS3 = async (env: HandlerEnv): Promise<void> => {
 
 export const handler = async (event: E2ETestEvent): Promise<void> => {
   const env: HandlerEnv = { ...process.env };
+  applyEnvOverrides(env, event.envOverrides);
 
   const { testName, npmScript } = event;
   if (testName) {

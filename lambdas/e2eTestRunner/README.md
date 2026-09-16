@@ -9,10 +9,11 @@ inside the container, then uploads the test artifacts (screenshots, videos, juni
 
 ## Event Parameters
 
-| Parameter   | Type   | Required | Description                                                    |
-|-------------|--------|----------|----------------------------------------------------------------|
-| `testName`  | string | No       | Name of a specific test to run (sets `TEST_NAME` env var)      |
-| `npmScript` | string | No       | npm script to run (defaults to `test`)                         |
+| Parameter      | Type                            | Required | Description                                                                                  |
+|----------------|---------------------------------|----------|----------------------------------------------------------------------------------------------|
+| `testName`     | string                          | No       | Name of a specific test to run (sets `TEST_NAME` env var)                                   |
+| `npmScript`    | string                          | No       | npm script to run (defaults to `test`)                                                       |
+| `envOverrides` | Record<string, string\|number\|boolean\|null> | No       | Environment variable overrides applied before running tests. Set a key to `null` to unset it. |
 
 ## Docker
 
