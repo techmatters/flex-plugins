@@ -5,9 +5,7 @@
             "web",
             "whatsapp",
             "facebook",
-            "twitter",
-            "instagram",
-            "line"
+            "instagram"
         ],
         "definitionVersion": "mt-v1",
         "feature_flags": {

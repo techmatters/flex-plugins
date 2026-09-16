@@ -1,6 +1,9 @@
 {
     "attributes": {
         "configuredLanguage": "pt-BR",
+        "contacts_waiting_channels": [
+            "facebook"
+        ],
         "definitionVersion": "br-v1",
         "feature_flags": {
             "enable_dual_write": true,
