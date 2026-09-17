@@ -1,7 +1,7 @@
 {
-  "timesCoordination": {
-    "label": "Times & Coordination",
-    "formPath": "caseForms/timesCoordinationForm.json"
+  "assignedResponder": {
+    "label": "Assigned Responder",
+    "formPath": "caseForms/assignedResponderForm.json"
   },
   "incidentReport": {
     "label": "Incident Report",

@@ -13,76 +13,97 @@
   "case": {
     "sectionTypes": {
       "timesCoordination": {
-        "splitFormAt": 12,
-        "printOrder": 1,
-        "caseHomeOrder": 1,
-        "caseHomeLocation": "timeline",
+        "splitFormAt": 5,
+        "printOrder": 3,
+        "caseHomeOrder": 3,
         "previewFields": [
           "callOutcome",
           "assistanceRequested"
         ],
         "layout": {
-          "responderName": {
-            "callOutcome": true
+          "callOutcome": {
+            "includeLabel": true
+          },    
+          "assistanceRequested": {
+            "includeLabel": true
+          }
+        }
+      },
+      "assignedResponder": {
+        "splitFormAt": 3,
+        "printOrder": 2,
+        "caseHomeOrder": 2,
+        "previewFields": [
+          "unitID",
+          "unitFirstName",
+          "unitLastName"
+        ],
+        "layout": {
+          "unitID": {
+            "includeLabel": true
           },
+          "unitFirstName": {
+            "includeLabel": true
+          },          
+          "unitLastName": {
+            "includeLabel": true
+          },
+          "callReceivedTimestamp": {
+            "format": "timestamp"
+          },
+          "dispatchedTimestamp": {
+            "format": "timestamp"
+          }, 
           "enrouteTimestamp": {
             "format": "timestamp"
-          },
-          "onSceneTimestamp": {
+          }, 
+          "arrivedSceneTimestamp": {
             "format": "timestamp"
-          },
-          "additionalResourcesTimestamp": {
+          },         
+          "patientContactTimestamp": {
             "format": "timestamp"
-          },
-          "transportTimestamp": {
+          },         
+          "departedSceneTimestamp": {
             "format": "timestamp"
-          },
-          "destinationArrivalTimestamp": {
+          },         
+          "arrivedHospitalTimestamp": {
             "format": "timestamp"
-          },
-          "incidentCompleteTimestamp": {
+          },         
+          "transferOfCareTimestamp": {
             "format": "timestamp"
-          }
+          },         
+          "departedHospitalTimestamp": {
+            "format": "timestamp"
+          },         
+          "inServiceTimestamp": {
+            "format": "timestamp"
+          }        
         }
       },
       "incidentReport": {
         "splitFormAt": 10,
-        "printOrder": 2,
-        "caseHomeOrder": 2,
+        "printOrder": 1,
+        "caseHomeOrder": 1,
         "previewFields": [
-          "incidentNumber"
+          "incidentNumber",
+          "incidentType"
         ],
         "layout": {
           "incidentCreationTimestamp": {
             "format": "timestamp"
-          },          
-          "incidentActivationInterval": {
-            "format": "duration-from-seconds"
+          },  
+          "incidentNumber": {
+            "includeLabel": true
           },
-          "enrouteInterval": {
-            "format": "duration-from-seconds"
-          },
-          "sceneArrivalInterval": {
-            "format": "duration-from-seconds"
-          },
-          "triageInterval": {
-            "format": "duration-from-seconds"
-          },
-          "totalSceneInterval": {
-            "format": "duration-from-seconds"
-          },
-          "transportInterval": {
-            "format": "duration-from-seconds"
-          },
-          "totalIncidentTime": {
-            "format": "duration-from-seconds"
+          "incidentType": {
+            "includeLabel": true
           }
         }
       },
       "patientCareReport": {
         "splitFormAt": 60,
-        "printOrder": 3,
-        "caseHomeOrder": 3,
+        "printOrder": 4,
+        "caseHomeOrder": 4,
         "previewFields": [
           "firstName",
           "lastName",
@@ -111,7 +132,7 @@
         }
       },
       "note": {
-        "printOrder": 7,
+        "printOrder": 5,
         "caseHomeLocation": "timeline",
         "printFormat": "list"
       }
