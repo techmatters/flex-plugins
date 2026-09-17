@@ -1,11 +1,5 @@
 [
   {
-    "name": "unitID",
-    "type": "input",
-    "label": "Unit Number - ID",
-    "isPII": true
-  }, 
-  {
     "name": "unitFirstName",
     "type": "input",
     "label": "Unit Number - First Name",
