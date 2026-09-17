@@ -1,5 +1,75 @@
 [
   {
+    "name": "unitID",
+    "type": "input",
+    "label": "Call Sign / Fleet Number / Unit ID",
+    "isPII": true
+  }, 
+  {
+    "name": "odometerStart",
+    "label": "Odometer Start",
+    "type": "numeric-input",
+    "isPII": true
+  },
+  {
+    "name": "odometerEnd",
+    "label": "Odometer End",
+    "type": "numeric-input",
+    "isPII": true
+  },
+  {
+    "name": "mileageTotal",
+    "label": "Total Mileage",
+    "type": "numeric-input",
+    "isPII": true
+  },
+  {
+    "name": "kmOrMiles",
+    "label": "Km or Miles",
+    "type": "select",
+    "options": [
+      {
+        "value": "Miles",
+        "label": "Miles"
+      },
+      {
+        "value": "Kilometers",
+        "label": "Kilometers"
+      }
+    ],
+    "isPII": false
+  },
+  {
+    "name": "facilityName",
+    "type": "input",
+    "label": "Destination Facility Name",
+    "isPII": true
+  },
+  {
+    "name": "destinationCityRegion",
+    "type": "input",
+    "label": "Destination City/Region",
+    "isPII": true
+  },
+  {
+    "name": "emtCompletingReport",
+    "type": "input",
+    "label": "EMT Completing Report",
+    "isPII": true
+  },
+  {
+    "name": "firstEMS",
+    "type": "checkbox",
+    "label": "First EMS Unit On Scene?",
+    "isPII": false
+  },
+  {
+    "name": "careTransferUnit",
+    "type": "input",
+    "label": "If Care Transferred To / Assumed From Another Unit, Specify Unit:",
+    "isPII": true
+  },
+  {
     "name": "firstName",
     "label": "First Name",
     "type": "input",
@@ -1298,39 +1368,5 @@
     "label": "Patient Refusal - Time",
     "type": "time-input",
     "isPII": true
-  },
-  {
-    "name": "odometerStart",
-    "label": "Odometer Start",
-    "type": "numeric-input",
-    "isPII": true
-  },
-  {
-    "name": "odometerEnd",
-    "label": "Odometer End",
-    "type": "numeric-input",
-    "isPII": true
-  },
-  {
-    "name": "mileageTotal",
-    "label": "Total Mileage",
-    "type": "numeric-input",
-    "isPII": true
-  },
-  {
-    "name": "kmOrMiles",
-    "label": "Km or Miles",
-    "type": "select",
-    "options": [
-      {
-        "value": "Miles",
-        "label": "Miles"
-      },
-      {
-        "value": "Kilometers",
-        "label": "Kilometers"
-      }
-    ],
-    "isPII": false
   }
 ]
