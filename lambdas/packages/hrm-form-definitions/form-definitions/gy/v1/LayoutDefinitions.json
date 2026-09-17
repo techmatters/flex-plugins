@@ -16,7 +16,6 @@
         "splitFormAt": 5,
         "printOrder": 3,
         "caseHomeOrder": 3,
-        "caseHomeLocation": "timeline",
         "previewFields": [
           "callOutcome",
           "assistanceRequested"
@@ -34,7 +33,6 @@
         "splitFormAt": 3,
         "printOrder": 2,
         "caseHomeOrder": 2,
-        "caseHomeLocation": "timeline",
         "previewFields": [
           "unitID",
           "unitFirstName",
