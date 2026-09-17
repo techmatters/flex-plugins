@@ -1,20 +1,20 @@
 [
   {
-    "name": "Unit Number - ID",
+    "name": "unitID",
     "type": "input",
-    "label": "unitID",
+    "label": "Unit Number - ID",
     "isPII": true
   }, 
   {
-    "name": "Unit Number - First Name",
+    "name": "unitFirstName",
     "type": "input",
-    "label": "unitFirstName",
+    "label": "Unit Number - First Name",
     "isPII": true
   },
  {
-    "name": "Unit Number - Last Name",
+    "name": "unitLastName",
     "type": "input",
-    "label": "unitLastName",
+    "label": "Unit Number - Last Name",
     "isPII": true
   },
 {
