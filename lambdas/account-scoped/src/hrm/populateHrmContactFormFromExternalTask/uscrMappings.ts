@@ -29,11 +29,12 @@ export const mappingFunction: ExternalTaskMappingFunction = async ({
   taskAttributes,
 }) => {
   try {
-    console.log('[mappingFunction] filling contact with USCR mapping');
+    console.debug(`Using USCR mapping for accountSid ${accountSid}`);
     const definitionVersion = await getCurrentDefinitionVersion({ accountSid });
     await populateInitialValues(contact, definitionVersion);
 
     const { externalTaskAttributes } = taskAttributes;
+    console.debug('[SENSITIVE] Using Values', externalTaskAttributes);
 
     const {
       customerId,
@@ -99,11 +100,6 @@ export const mappingFunction: ExternalTaskMappingFunction = async ({
     contact.rawJson.callerInformation.identifier911 = customerId;
     contact.rawJson.childInformation.specificLocation = specificLocation;
     contact.rawJson.childInformation.incidentSummary = incidentSummary;
-
-    console.log(
-      '[mappingFunction] Success filling contact',
-      JSON.stringify(contact, null, 2),
-    );
 
     return newOk(contact);
   } catch (err) {

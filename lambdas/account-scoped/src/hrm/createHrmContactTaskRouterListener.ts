@@ -278,16 +278,22 @@ export const handleEvent = async (
 
   const getPopulateFunction = async () => {
     if (taskChannel === channelTypes.EXTERNAL) {
-      console.log('[getPopulateFunction] using getExternalTaskMappingFunction');
+      console.debug(
+        `Using external task to populate for taskSid ${taskSid} accountSid ${accountSid}`,
+      );
       return getExternalTaskMappingFunction({ accountSid });
     }
 
     if (usePrepopulateMappings) {
-      console.log('[getPopulateFunction] using populateHrmContactFormFromTaskByMappings');
+      console.debug(
+        `Using mappings on task to populate for taskSid ${taskSid} accountSid ${accountSid}`,
+      );
       return populateHrmContactFormFromTaskByMappings;
     }
 
-    console.log('[getPopulateFunction] using populateHrmContactFormFromTaskByKeys');
+    console.debug(
+      `Using keys on task to populate for taskSid ${taskSid} accountSid ${accountSid}`,
+    );
     return populateHrmContactFormFromTaskByKeys;
   };
   const prepopulate = await getPopulateFunction();
