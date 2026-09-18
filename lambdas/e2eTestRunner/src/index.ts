@@ -43,10 +43,14 @@ const applyEnvOverrides = (
   Object.entries(envOverrides).forEach(([key, value]) => {
     if (value === null || value === undefined) {
       delete env[key];
+      console.debug(
+        `Deleting ${key}, based on the value: ${value} being set from invocation`,
+      );
       return;
     }
 
     env[key] = String(value);
+    console.debug(`Overriding ${key} with value: ${value} set from invocation`);
   });
 };
 
@@ -166,7 +170,8 @@ export const handler = async (event: E2ETestEvent): Promise<void> => {
   }
 
   if (isError) {
+    console.error(`[${env.HL_ENV}/${env.HL}/${env.TEST_NAME}] Test run failed: `, result);
     throw result;
   }
-  console.info(`Test run (${env.TEST_NAME}) result: `, result);
+  console.info(`[${env.HL_ENV}/${env.HL}/${env.TEST_NAME}] Test run result: `, result);
 };
