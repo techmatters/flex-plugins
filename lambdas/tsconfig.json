@@ -14,6 +14,7 @@
     { "path": "packages/voicemail" },
     { "path": "packages/scheduled-jobs" },
     { "path": "account-scoped" },
+    { "path": "e2eTestRunner" },
     { "path": "scheduled-jobs-processor" },
     { "path": "external-task" },
     { "path": "facebookCallback" },
