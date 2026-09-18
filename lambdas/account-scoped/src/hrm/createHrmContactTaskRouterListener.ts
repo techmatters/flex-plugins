@@ -36,6 +36,7 @@ import { parseISO } from 'date-fns/parseISO';
 import { HttpClientError } from '../httpErrors';
 import { getExternalRecordingS3Location } from '../conversation/getExternalRecordingS3Location';
 import { patchTaskAttributes } from '../task/patchTaskAttributes';
+import { getExternalTaskMappingFunction } from './populateHrmContactFormFromExternalTask';
 
 // Temporarily copied to this repo, will share the flex types when we move them into the same repo
 
@@ -135,6 +136,7 @@ export const handleEvent = async (
     TaskSid: taskSid,
     WorkerSid: workerSid,
     WorkerName: workerName,
+    TaskChannelUniqueName: taskChannel,
   }: EventFields,
   accountSid: AccountSID,
   client: twilio.Twilio,
@@ -274,9 +276,28 @@ export const handleEvent = async (
 
   console.debug('Creating HRM contact with timeOfContact:', newContact.timeOfContact);
 
-  const prepopulate = usePrepopulateMappings
-    ? populateHrmContactFormFromTaskByMappings
-    : populateHrmContactFormFromTaskByKeys;
+  const getPopulateFunction = async () => {
+    if (taskChannel === channelTypes.EXTERNAL) {
+      console.debug(
+        `Using external task to populate for taskSid ${taskSid} accountSid ${accountSid}`,
+      );
+      return getExternalTaskMappingFunction({ accountSid });
+    }
+
+    if (usePrepopulateMappings) {
+      console.debug(
+        `Using mappings on task to populate for taskSid ${taskSid} accountSid ${accountSid}`,
+      );
+      return populateHrmContactFormFromTaskByMappings;
+    }
+
+    console.debug(
+      `Using keys on task to populate for taskSid ${taskSid} accountSid ${accountSid}`,
+    );
+    return populateHrmContactFormFromTaskByKeys;
+  };
+  const prepopulate = await getPopulateFunction();
+
   const populatedContactResult = await prepopulate({
     taskAttributes,
     contact: newContact,
