@@ -43,10 +43,14 @@ const applyEnvOverrides = (
   Object.entries(envOverrides).forEach(([key, value]) => {
     if (value === null || value === undefined) {
       delete env[key];
+      console.debug(
+        `Deleting ${key}, based on the value: ${value} being set from invocation`,
+      );
       return;
     }
 
     env[key] = String(value);
+    console.debug(`Overriding ${key} with value: ${value} set from invocation`);
   });
 };
 
