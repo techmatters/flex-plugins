@@ -42,8 +42,8 @@ const notifyReservedTask = reservation => {
 const playNotificationIfPending = () => {
   const pendingReservations = Manager.getInstance()
     .workerClient.reservations.values()
-    .filter(({ status }) => status === 'pending')
-    .toArray();
+    .toArray()
+    .filter(({ status }) => status === 'pending');
   if (pendingReservations.length > 0) {
     playNotification(NOTIFICATION_TONE);
     repeatingNotificationPlaying = true;
