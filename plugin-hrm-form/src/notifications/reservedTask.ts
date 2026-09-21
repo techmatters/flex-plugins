@@ -40,17 +40,13 @@ const notifyReservedTask = reservation => {
 };
 
 const playNotificationIfPending = () => {
-  const pendingReservations = Array.from(Manager.getInstance().workerClient.reservations.values()).filter(
-    ({ status }) => status === 'pending',
-  );
-  if (pendingReservations.length > 0) {
-    playNotification(NOTIFICATION_TONE);
-    repeatingNotificationPlaying = true;
-    if (pendingReservations.length > 1) {
-      // Play a double notification if there are multiple reservations pending
+  const reservations = Manager.getInstance().workerClient.reservations.values();
+  for (const { status } of reservations) {
+    if (status === 'pending') {
       playNotification(NOTIFICATION_TONE);
+      repeatingNotificationPlaying = true;
+      return;
     }
-  } else {
-    repeatingNotificationPlaying = false;
   }
+  repeatingNotificationPlaying = false;
 };

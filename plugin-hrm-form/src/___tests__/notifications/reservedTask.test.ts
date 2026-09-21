@@ -103,7 +103,7 @@ describe('Notification for a reserved task ', () => {
     expect(mockPlay).toHaveBeenCalledTimes(1);
   });
 
-  test('audio notification should play twice while there are multiple pending reservations for the worker', () => {
+  test('audio notification should play once while there are multiple pending reservations for the worker', () => {
     mockFlexManager.workerClient.reservations = new Map([
       [
         'reservation-one',
@@ -123,7 +123,7 @@ describe('Notification for a reserved task ', () => {
 
     jest.advanceTimersByTime(3000);
 
-    expect(mockPlay).toHaveBeenCalledTimes(2);
+    expect(mockPlay).toHaveBeenCalledTimes(1);
   });
 
   test('reservation created should not trigger an extra notification while repeating notifications are already playing', () => {
