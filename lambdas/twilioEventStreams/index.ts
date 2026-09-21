@@ -115,7 +115,7 @@ export const handler = async (event: ALBEvent): Promise<ALBResult> => {
       const validRequest = isValidTwilioRequest(authToken, event);
       if (validRequest) {
         await Promise.all([
-          async () => {
+          (async () => {
             const params = {
               body: [
                 {
@@ -133,8 +133,8 @@ export const handler = async (event: ALBEvent): Promise<ALBResult> => {
             } catch (error) {
               console.error('Error posting to Datadog', error);
             }
-          },
-          async () => {
+          })(),
+          (async () => {
             if (process.env.TWILIO_EVENTS_TOPIC_ARN) {
               try {
                 await publishSns({
@@ -147,7 +147,7 @@ export const handler = async (event: ALBEvent): Promise<ALBResult> => {
             } else {
               console.warn('TWILIO_EVENTS_TOPIC_ARN not set, cannot publish to SNS');
             }
-          },
+          })(),
         ]);
 
         return {
