@@ -14,7 +14,7 @@ locals {
     enable_lex_v2              = true
     enable_post_survey         = true
     enable_external_recordings = true
-    permission_config          = "demo"
+    permission_config          = "usnm"
     workflows = {
       master : {
         friendly_name            = "Calls Voicemail Workflow"
