@@ -71,13 +71,14 @@ const getApi = async () => {
 };
 
 export const handler = async (event: ALBEvent): Promise<ALBResult> => {
-  if (event.httpMethod === 'POST') {
-    if (!event.body) {
+  const { httpMethod, body: bodyJson } = event;
+  if (httpMethod === 'POST') {
+    if (!bodyJson) {
       return handleError('Event body is null or undefined');
     }
 
     try {
-      let body = JSON.parse(event.body);
+      let body = JSON.parse(bodyJson);
       const attributesToRemove = ['customers', 'memory', 'preEngagementData'];
       const nestedAttributesToKeep = { customers: ['external_id'] };
       // List of attributes to redact
@@ -138,7 +139,7 @@ export const handler = async (event: ALBEvent): Promise<ALBResult> => {
               try {
                 await publishSns({
                   topicArn: process.env.TWILIO_EVENTS_TOPIC_ARN,
-                  message: event.body,
+                  message: bodyJson,
                 });
               } catch (error) {
                 console.error('Error posting to SNS topic', error);
@@ -164,7 +165,7 @@ export const handler = async (event: ALBEvent): Promise<ALBResult> => {
     } catch (error) {
       return handleError('Error handling the POST request', error as Error);
     }
-  } else if (event.httpMethod === 'OPTIONS') {
+  } else if (httpMethod === 'OPTIONS') {
     return {
       statusCode: 200,
       headers,
