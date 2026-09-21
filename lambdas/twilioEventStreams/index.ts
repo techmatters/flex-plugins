@@ -44,6 +44,32 @@ const handleError = (message: string, error?: Error, statusCode = 500): ALBResul
   };
 };
 
+let apiInstance: v2.LogsApi;
+
+const getApi = async () => {
+  if (!apiInstance) {
+    const datadogApiKey: string = await getSsmParameter(
+      '/infrastructure-config/twilio-event-streams/datadog/api_key',
+    );
+    const datadogAppKey: string = await getSsmParameter(
+      '/infrastructure-config/twilio-event-streams/datadog/app_key',
+    );
+    const datadogSite = 'datadoghq.com';
+    const configurationOpts = {
+      authMethods: {
+        apiKeyAuth: datadogApiKey,
+        appKeyAuth: datadogAppKey,
+      },
+    };
+    const configuration = client.createConfiguration(configurationOpts);
+    configuration.setServerVariables({
+      site: datadogSite,
+    });
+    apiInstance = new v2.LogsApi(configuration);
+  }
+  return apiInstance;
+};
+
 export const handler = async (event: ALBEvent): Promise<ALBResult> => {
   if (event.httpMethod === 'POST') {
     if (!event.body) {
@@ -87,53 +113,41 @@ export const handler = async (event: ALBEvent): Promise<ALBResult> => {
       // Validate Twilio request
       const validRequest = isValidTwilioRequest(authToken, event);
       if (validRequest) {
-        const datadogApiKey = await getSsmParameter(
-          '/infrastructure-config/twilio-event-streams/datadog/api_key',
-        );
-        const datadogAppKey = await getSsmParameter(
-          '/infrastructure-config/twilio-event-streams/datadog/app_key',
-        );
-        const datadogSite = 'datadoghq.com';
-        const configurationOpts = {
-          authMethods: {
-            apiKeyAuth: datadogApiKey,
-            appKeyAuth: datadogAppKey,
+        await Promise.all([
+          async () => {
+            const params = {
+              body: [
+                {
+                  ddsource: 'twilio',
+                  ddtags: '',
+                  hostname: '',
+                  message: JSON.stringify(body[0]),
+                  service: 'twilio-event-stream',
+                },
+              ],
+            };
+            const api = await getApi();
+            try {
+              await api.submitLog(params);
+            } catch (error) {
+              console.error('Error posting to Datadog', error);
+            }
           },
-        };
-        const configuration = client.createConfiguration(configurationOpts);
-        configuration.setServerVariables({
-          site: datadogSite,
-        });
-        const apiInstance = new v2.LogsApi(configuration);
-        const params = {
-          body: [
-            {
-              ddsource: 'twilio',
-              ddtags: '',
-              hostname: '',
-              message: JSON.stringify(body[0]),
-              service: 'twilio-event-stream',
-            },
-          ],
-        };
-        try {
-          await apiInstance.submitLog(params);
-        } catch (error) {
-          console.error('Error posting to Datadog', error);
-        }
-
-        if (process.env.TWILIO_EVENTS_TOPIC_ARN) {
-          try {
-            await publishSns({
-              topicArn: process.env.TWILIO_EVENTS_TOPIC_ARN,
-              message: event.body,
-            });
-          } catch (error) {
-            console.error('Error posting to SNS topic', error);
-          }
-        } else {
-          console.warn('TWILIO_EVENTS_TOPIC_ARN not set, cannot publish to SNS');
-        }
+          async () => {
+            if (process.env.TWILIO_EVENTS_TOPIC_ARN) {
+              try {
+                await publishSns({
+                  topicArn: process.env.TWILIO_EVENTS_TOPIC_ARN,
+                  message: event.body,
+                });
+              } catch (error) {
+                console.error('Error posting to SNS topic', error);
+              }
+            } else {
+              console.warn('TWILIO_EVENTS_TOPIC_ARN not set, cannot publish to SNS');
+            }
+          },
+        ]);
 
         return {
           statusCode: 200,
