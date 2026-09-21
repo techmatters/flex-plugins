@@ -41,7 +41,7 @@ const notifyReservedTask = reservation => {
 
 const playNotificationIfPending = () => {
   const pendingReservations = Array.from(Manager.getInstance().workerClient.reservations.values()).filter(
-    ({ status }) => status === 'pending',
+    ({ status, task }) => status === 'pending' && isTwilioTask(task),
   );
   if (pendingReservations.length > 0) {
     playNotification(NOTIFICATION_TONE);
