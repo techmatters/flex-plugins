@@ -113,42 +113,43 @@ export const handler = async (event: ALBEvent): Promise<ALBResult> => {
 
       // Validate Twilio request
       const validRequest = isValidTwilioRequest(authToken, event);
+      const sentToDatadog = async () => {
+        const params = {
+          body: [
+            {
+              ddsource: 'twilio',
+              ddtags: '',
+              hostname: '',
+              message: JSON.stringify(body[0]),
+              service: 'twilio-event-stream',
+            },
+          ],
+        };
+        const api = await getApi();
+        try {
+          await api.submitLog(params);
+        } catch (error) {
+          console.error('Error posting to Datadog', error);
+        }
+      };
+
+      const publishToSns = async () => {
+        if (process.env.TWILIO_EVENTS_TOPIC_ARN) {
+          try {
+            await publishSns({
+              topicArn: process.env.TWILIO_EVENTS_TOPIC_ARN,
+              message: bodyJson,
+            });
+          } catch (error) {
+            console.error('Error posting to SNS topic', error);
+          }
+        } else {
+          console.warn('TWILIO_EVENTS_TOPIC_ARN not set, cannot publish to SNS');
+        }
+      };
+
       if (validRequest) {
-        await Promise.all([
-          (async () => {
-            const params = {
-              body: [
-                {
-                  ddsource: 'twilio',
-                  ddtags: '',
-                  hostname: '',
-                  message: JSON.stringify(body[0]),
-                  service: 'twilio-event-stream',
-                },
-              ],
-            };
-            const api = await getApi();
-            try {
-              await api.submitLog(params);
-            } catch (error) {
-              console.error('Error posting to Datadog', error);
-            }
-          })(),
-          (async () => {
-            if (process.env.TWILIO_EVENTS_TOPIC_ARN) {
-              try {
-                await publishSns({
-                  topicArn: process.env.TWILIO_EVENTS_TOPIC_ARN,
-                  message: bodyJson,
-                });
-              } catch (error) {
-                console.error('Error posting to SNS topic', error);
-              }
-            } else {
-              console.warn('TWILIO_EVENTS_TOPIC_ARN not set, cannot publish to SNS');
-            }
-          })(),
-        ]);
+        await Promise.all([sentToDatadog(), publishToSns()]);
 
         return {
           statusCode: 200,
