@@ -29,7 +29,9 @@ const phoneNumberStandardization = (s: string) =>
 // 'sip:+2601234567@41.52.63.73'. This regexp should normalize the string.
 const aseloConnectorNormalization = (s: string) => s.match(/sip:([^@]+)/)?.[1] || s;
 type TransformIdentifierFunction = (c: string) => string;
-const channelTransformations: { [k: string]: TransformIdentifierFunction[] } = {
+const channelTransformations: {
+  [k: string]: TransformIdentifierFunction[];
+} = {
   voice: [aseloConnectorNormalization, phoneNumberStandardization],
   voicemail: [aseloConnectorNormalization, phoneNumberStandardization],
   sms: [phoneNumberStandardization],
@@ -40,6 +42,7 @@ const channelTransformations: { [k: string]: TransformIdentifierFunction[] } = {
   line: [],
   telegram: [s => s.replace('telegram:', '')],
   web: [],
+  external: [],
 };
 
 type ChannelAttributes = {

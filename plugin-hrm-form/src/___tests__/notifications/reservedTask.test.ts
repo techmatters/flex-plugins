@@ -14,66 +14,75 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { AudioPlayerManager } from '@twilio/flex-ui';
-
 import '../mockGetConfig';
-import { subscribeReservedTaskAlert } from '../../notifications/reservedTask';
 
+const mockPlay = jest.fn();
+const mockIsPlaying = jest.fn().mockReturnValue(false);
+const mockIsTwilioTask = jest.fn().mockReturnValue(true);
 const mockFlexManager = {
   workerClient: {
     on: jest.fn(),
+    reservations: new Map(),
   },
 };
+
 jest.mock('../../types/types', () => ({
-  isTwilioTask: jest.fn().mockReturnValue(true),
+  isTwilioTask: (...args) => mockIsTwilioTask(...args),
 }));
 
 jest.mock('@twilio/flex-ui', () => ({
-  ...(jest.requireActual('@twilio/flex-ui') as any),
   Manager: {
     getInstance: () => mockFlexManager,
   },
   AudioPlayerManager: {
-    play: jest.fn(),
+    play: (...args) => mockPlay(...args),
+    isPlaying: (...args) => mockIsPlaying(...args),
   },
 }));
 
 describe('Notification for a reserved task ', () => {
+  let subscribeReservedTaskAlert;
   let notifyReservedTask;
 
-  beforeEach(() => {
+  beforeEach(async () => {
+    jest.useFakeTimers();
+    mockPlay.mockClear();
+    mockIsPlaying.mockReset();
+    mockIsPlaying.mockReturnValue(false);
+    mockIsTwilioTask.mockReset();
+    mockIsTwilioTask.mockReturnValue(true);
+    mockFlexManager.workerClient = {
+      on: jest.fn(),
+      reservations: new Map(),
+    };
+
+    jest.resetModules();
+    ({ subscribeReservedTaskAlert } = await import('../../notifications/reservedTask'));
+
     subscribeReservedTaskAlert();
     notifyReservedTask = mockFlexManager.workerClient.on.mock.calls[0][1];
   });
 
   afterEach(() => {
-    jest.clearAllMocks();
+    jest.clearAllTimers();
+    jest.useRealTimers();
   });
 
   test('subscribeReservedTaskAlert subscribes to the "reservationCreated" event on the worker client', () => {
     expect(mockFlexManager.workerClient.on).toHaveBeenCalledWith('reservationCreated', notifyReservedTask);
   });
 
-  test('audio notification should play when a reservation is pending state for an online task reservation', () => {
-    const mockReservation = {
-      sid: 'reservation-sid',
-      status: 'pending',
+  test('audio notification should play immediately for a Twilio task reservation', () => {
+    notifyReservedTask({
       task: {
         taskSid: 'twilio-task-sid',
         attributes: {
           isContactlessTask: false,
         },
       },
-    };
-    const isTwilioTask = jest.fn().mockReturnValue(true);
-    isTwilioTask(mockReservation.task);
-    notifyReservedTask(mockReservation);
-    const notificationUrl = 'http://assets.fake.com/notifications/ringtone.mp3';
+    });
 
-    const playWhilePendingMock = jest.fn();
-    playWhilePendingMock(mockReservation, notificationUrl);
-
-    expect(AudioPlayerManager.play).toHaveBeenCalledWith(
+    expect(mockPlay).toHaveBeenCalledWith(
       {
         url: 'http://assets.fake.com/notifications/ringtone.mp3',
         repeatable: false,
@@ -81,31 +90,113 @@ describe('Notification for a reserved task ', () => {
       expect.any(Function),
     );
   });
-  test('audio notification should not play when reservation status changes to accepted', () => {
-    const mockReservation = {
-      sid: 'reservation-sid',
-      status: 'accepted',
-    };
-    notifyReservedTask(mockReservation);
-    const notificationUrl = 'http://assets.fake.com/notifications/ringtone.mp3';
 
-    const playWhilePendingMock = jest.fn();
-    playWhilePendingMock(mockReservation, notificationUrl);
+  test('audio notification should not play when something else is already playing', () => {
+    mockIsPlaying.mockReturnValue(true);
 
-    expect(AudioPlayerManager.play).not.toHaveBeenCalled();
+    notifyReservedTask({
+      task: {
+        taskSid: 'twilio-task-sid',
+        attributes: {
+          isContactlessTask: false,
+        },
+      },
+    });
+
+    expect(mockIsPlaying).toHaveBeenCalledTimes(1);
+    expect(mockPlay).not.toHaveBeenCalled();
   });
-  test('audio notification should not play when the reservation is rejected', () => {
-    const mockReservation = {
-      sid: 'reservation-sid',
-      status: 'rejected',
-    };
-    notifyReservedTask(mockReservation);
 
-    const notificationUrl = 'http://assets.fake.com/notifications/ringtone.mp3';
+  test('audio notification should repeat while there is one pending reservation for the worker', () => {
+    mockFlexManager.workerClient.reservations = new Map([
+      [
+        'reservation-sid',
+        {
+          sid: 'reservation-sid',
+          status: 'pending',
+        },
+      ],
+    ]);
 
-    const playWhilePendingMock = jest.fn();
-    playWhilePendingMock(mockReservation, notificationUrl);
+    jest.advanceTimersByTime(3000);
 
-    expect(AudioPlayerManager.play).not.toHaveBeenCalled();
+    expect(mockPlay).toHaveBeenCalledTimes(1);
+  });
+
+  test('audio notification should play once while there are multiple pending reservations for the worker', () => {
+    mockFlexManager.workerClient.reservations = new Map([
+      [
+        'reservation-one',
+        {
+          sid: 'reservation-one',
+          status: 'pending',
+        },
+      ],
+      [
+        'reservation-two',
+        {
+          sid: 'reservation-two',
+          status: 'pending',
+        },
+      ],
+    ]);
+
+    jest.advanceTimersByTime(3000);
+
+    expect(mockPlay).toHaveBeenCalledTimes(1);
+  });
+
+  test('reservation created should not trigger an extra notification while repeating notifications are already playing', () => {
+    mockFlexManager.workerClient.reservations = new Map([
+      [
+        'reservation-sid',
+        {
+          sid: 'reservation-sid',
+          status: 'pending',
+        },
+      ],
+    ]);
+
+    jest.advanceTimersByTime(3000);
+    mockPlay.mockClear();
+
+    notifyReservedTask({
+      task: {
+        taskSid: 'twilio-task-sid',
+        attributes: {
+          isContactlessTask: false,
+        },
+      },
+    });
+
+    expect(mockPlay).not.toHaveBeenCalled();
+  });
+
+  test('reservation created should play again after pending reservations are cleared', () => {
+    mockFlexManager.workerClient.reservations = new Map([
+      [
+        'reservation-sid',
+        {
+          sid: 'reservation-sid',
+          status: 'pending',
+        },
+      ],
+    ]);
+
+    jest.advanceTimersByTime(3000);
+    mockFlexManager.workerClient.reservations = new Map();
+    jest.advanceTimersByTime(3000);
+    mockPlay.mockClear();
+
+    notifyReservedTask({
+      task: {
+        taskSid: 'twilio-task-sid',
+        attributes: {
+          isContactlessTask: false,
+        },
+      },
+    });
+
+    expect(mockPlay).toHaveBeenCalledTimes(1);
   });
 });

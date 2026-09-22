@@ -25,7 +25,7 @@ export const PanelContainer = styled('div')`
 PanelContainer.displayName = 'PanelContainer';
 
 export const SectionGroup = styled('div')`
-  margin-bottom: 8px;
+  margin-bottom: 16px;
 `;
 
 SectionGroup.displayName = 'SectionGroup';

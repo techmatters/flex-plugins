@@ -22,14 +22,19 @@ export const playNotification = (notificationTone: string) => {
   const { assetsBucketUrl } = getHrmConfig();
 
   const notificationUrl = `${assetsBucketUrl}/notifications/${notificationTone}.mp3`;
-
+  // While AudioPlayerManager purports to have a queue, it seems to be 'full' if anything is playing and rejects any further play requests for the duration logging an error
+  // Checking first prevents the console log and our observability systems being spammed with spurious errors
+  if (AudioPlayerManager.isPlaying()) {
+    console.info(`Couldn't play ${notificationUrl} because something was already playing`);
+    return null;
+  }
   return AudioPlayerManager.play(
     {
       url: notificationUrl,
       repeatable: false,
     },
     (error: AudioPlayerError) => {
-      console.log('AudioPlayerError:', error);
+      console.warn('AudioPlayerError:', error);
     },
   );
 };
