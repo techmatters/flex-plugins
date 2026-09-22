@@ -17,6 +17,7 @@
 import '../mockGetConfig';
 
 const mockPlay = jest.fn();
+const mockIsPlaying = jest.fn().mockReturnValue(false);
 const mockIsTwilioTask = jest.fn().mockReturnValue(true);
 const mockFlexManager = {
   workerClient: {
@@ -35,6 +36,7 @@ jest.mock('@twilio/flex-ui', () => ({
   },
   AudioPlayerManager: {
     play: (...args) => mockPlay(...args),
+    isPlaying: (...args) => mockIsPlaying(...args),
   },
 }));
 
@@ -45,6 +47,8 @@ describe('Notification for a reserved task ', () => {
   beforeEach(async () => {
     jest.useFakeTimers();
     mockPlay.mockClear();
+    mockIsPlaying.mockReset();
+    mockIsPlaying.mockReturnValue(false);
     mockIsTwilioTask.mockReset();
     mockIsTwilioTask.mockReturnValue(true);
     mockFlexManager.workerClient = {
@@ -85,6 +89,21 @@ describe('Notification for a reserved task ', () => {
       },
       expect.any(Function),
     );
+  });
+
+  test('audio notification should not play when something else is already playing', () => {
+    mockIsPlaying.mockReturnValue(true);
+
+    notifyReservedTask({
+      task: {
+        taskSid: 'twilio-task-sid',
+        attributes: {
+          isContactlessTask: false,
+        },
+      },
+    });
+
+    expect(mockPlay).not.toHaveBeenCalled();
   });
 
   test('audio notification should repeat while there is one pending reservation for the worker', () => {

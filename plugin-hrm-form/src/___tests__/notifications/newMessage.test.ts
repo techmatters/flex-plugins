@@ -22,6 +22,8 @@ import {
   subscribeNewMessageAlertOnPluginInit,
 } from '../../notifications/newMessage';
 
+const mockAudioPlayerIsPlaying = jest.fn().mockReturnValue(false);
+
 const mockConversationState = {
   isLoadingConversation: false,
   source: { on: jest.fn() },
@@ -52,6 +54,7 @@ jest.mock('@twilio/flex-ui', () => ({
   },
   AudioPlayerManager: {
     play: jest.fn().mockReturnValue({}),
+    isPlaying: (...args) => mockAudioPlayerIsPlaying(...args),
   },
   StateHelper: {
     getConversationStateForTask: jest.fn(() => mockConversationState),
@@ -66,6 +69,8 @@ describe('Notification for a new message ', () => {
 
   afterEach(() => {
     jest.clearAllMocks();
+    mockAudioPlayerIsPlaying.mockReset();
+    mockAudioPlayerIsPlaying.mockReturnValue(false);
   });
 
   describe('subscribeAlertOnConversationJoined', () => {
@@ -122,6 +127,21 @@ describe('Notification for a new message ', () => {
 
       const notifyNewMessage = mockConversationState.source.on.mock.calls[0][1];
       const mockMessageInstance = { author: 'imacounsellor@testing.org' };
+
+      notifyNewMessage(mockMessageInstance);
+
+      expect(AudioPlayerManager.play).not.toHaveBeenCalled();
+    });
+
+    test('should not play the audio alert when something else is already playing', () => {
+      Object.defineProperty(document, 'visibilityState', { value: 'hidden', writable: true });
+      mockAudioPlayerIsPlaying.mockReturnValue(true);
+
+      trySubscribeAudioAlerts(task, 0, 0);
+      jest.advanceTimersByTime(10);
+
+      const notifyNewMessage = mockConversationState.source.on.mock.calls[0][1];
+      const mockMessageInstance = { author: 'imaclient@test.org' };
 
       notifyNewMessage(mockMessageInstance);
 
