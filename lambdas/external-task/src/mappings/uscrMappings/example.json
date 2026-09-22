@@ -1,0 +1,117 @@
+{
+  "additionalEventDetails": {
+    "msiEventId": "msiEventId"
+  },
+  "customerId": "customerId",
+  "key": "key",
+  "alias": "alias",
+  "dispatch": {
+    "disciplineKey": "disciplineKey",
+    "agencyKey": "agencyKey",
+    "agencyAlias": "agencyAlias",
+    "nature": {
+      "natureKey": "natureKey",
+      "description": "description"
+    },
+    "priority": 69,
+    "statusKey": "statusKey",
+    "statusDescription": "statusDescription",
+    "whenStatusDeclared": "whenStatusDeclared",
+    "location": {
+      "key": "key",
+      "address": {
+        "key": "key",
+        "fullText": "fullText",
+        "crossStreet": "crossStreet",
+        "building": "building",
+        "apartment": "apartment",
+        "city": "city",
+        "state": "state",
+        "zip": "zip",
+        "latitude": 34,
+        "longitude": 80,
+        "jurisdiction": {
+          "areaKey": "areaKey",
+          "areaCode": "areaCode",
+          "areaDescription": "areaDescription"
+        }
+      }
+    },
+    "isScheduled": 39,
+    "assignedUnits": [
+      {
+        "key": "key",
+        "disciplineKey": "disciplineKey",
+        "agencyKey": "agencyKey",
+        "callSign": "callSign",
+        "statusKey": "statusKey",
+        "statusDescription": "statusDescription",
+        "whenStatusDeclared": "whenStatusDeclared",
+        "whenDispatched": "whenDispatched",
+        "whenCleared": "whenCleared",
+        "assignedPersonnel": [
+          {
+            "key": "key",
+            "alias": "alias",
+            "agencyKey": "agencyKey",
+            "firstName": "firstName",
+            "lastName": "lastName",
+            "email": "email"
+          }
+        ]
+      },
+      {
+        "key": "key",
+        "disciplineKey": "disciplineKey",
+        "agencyKey": "agencyKey",
+        "callSign": "callSign",
+        "statusKey": "statusKey",
+        "statusDescription": "statusDescription",
+        "whenStatusDeclared": "whenStatusDeclared",
+        "whenDispatched": "whenDispatched",
+        "whenCleared": "whenCleared",
+        "assignedPersonnel": [
+          {
+            "key": "key",
+            "alias": "alias",
+            "agencyKey": "agencyKey",
+            "firstName": "firstName",
+            "lastName": "lastName",
+            "email": "email"
+          }
+        ]
+      }
+    ]
+  },
+  "whenCreated": "whenCreated",
+  "whenUpdated": "whenUpdated",
+  "whenStarted": "whenStarted",
+  "comments": [
+    {
+      "text": "text",
+      "whenEntered": "whenEntered",
+      "author": "author"
+    },
+    {
+      "text": "text",
+      "whenEntered": "whenEntered",
+      "author": "author"
+    }
+  ],
+  "subjects": [
+    {
+      "key": "key",
+      "firstName": "firstName",
+      "lastName": "lastName",
+      "phone": "phone",
+      "roleKey": "roleKey"
+    },
+    {
+      "key": "key",
+      "firstName": "firstName",
+      "lastName": "lastName",
+      "phone": "phone",
+      "roleKey": "roleKey"
+    }
+  ]
+}

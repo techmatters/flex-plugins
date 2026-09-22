@@ -14,14 +14,16 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { newErr, newOk } from '@tech-matters/result-type';
-import type { ExternalTaskAttributesFunction } from '..';
-
-export const getAttributesFunction: ExternalTaskAttributesFunction = payload => {
-  if (!payload.key) {
-    const message = 'Missing key property in payload';
-    return newErr({ message, error: new Error(message) });
-  }
-
-  return newOk({ externalId: payload.key, externalTaskAttributes: payload });
+module.exports = {
+  testTimeout: 30000,
+  preset: 'ts-jest',
+  rootDir: './',
+  maxWorkers: 1,
+  globals: {
+    'ts-jest': {
+      isolatedModules: true,
+      diagnostics: false,
+    },
+  },
+  reporters: ['default', 'jest-junit'],
 };

@@ -15,7 +15,6 @@
  */
 
 import { capitalize } from 'lodash';
-import { format, startOfDay } from 'date-fns';
 import {
   DefinitionVersion,
   FormInputType,
@@ -29,6 +28,7 @@ import { FormValue, HrmContact, HrmContactRawJson } from '@tech-matters/hrm-type
 import { newErr, newOk, Result } from '@tech-matters/result-type';
 import { getCurrentDefinitionVersion } from './formDefinitionsCache';
 import { AccountSID } from '@tech-matters/twilio-types';
+import { populateInitialValues } from './populateInitialValues';
 
 type MapperFunction = (options: string[]) => (value: string) => string;
 
@@ -57,50 +57,6 @@ const CUSTOM_MAPPERS: Record<string, MapperFunction> = {
 
       return 'Unknown';
     },
-};
-
-/**
- * Utility functions to create initial state from definition
- * @param {FormItemDefinition} def Definition for a single input of a Form
- */
-const getInitialValue = (def: FormItemDefinition): FormValue => {
-  switch (def.type) {
-    case FormInputType.Input:
-    case FormInputType.NumericInput:
-    case FormInputType.Email:
-    case FormInputType.Textarea:
-    case FormInputType.FileUpload:
-      return '';
-    case FormInputType.DateInput: {
-      if (def.initializeWithCurrent) {
-        return format(startOfDay(new Date()), 'yyyy-MM-dd');
-      }
-      return '';
-    }
-    case FormInputType.TimeInput: {
-      if (def.initializeWithCurrent) {
-        return format(new Date(), 'HH:mm');
-      }
-
-      return '';
-    }
-    case FormInputType.RadioInput:
-      return def.defaultOption?.value ?? '';
-    case FormInputType.ListboxMultiselect:
-      return [];
-    case FormInputType.Select:
-      if (def.defaultOption) return def.defaultOption.value;
-      return def.options && def.options[0] ? def.options[0].value : null;
-    case FormInputType.DependentSelect:
-      return def.defaultOption?.value ?? '';
-    case FormInputType.CopyTo:
-    case FormInputType.Checkbox:
-      return Boolean(def.initialChecked);
-    case 'mixed-checkbox':
-      return def.initialChecked === undefined ? 'mixed' : def.initialChecked;
-    default:
-      return null;
-  }
 };
 
 const mapGenericOption = (options: string[]) => (value: string) => {
@@ -240,43 +196,6 @@ const getValuesFromPreEngagementData = (
       values[field.name] = preEngagementData[field.name] || '';
     });
   return values;
-};
-
-const populateInitialValues = async (
-  contact: HrmContact,
-  { tabbedForms, helplineInformation }: DefinitionVersion,
-) => {
-  const tabNamesAndRawJsonSections: [
-    keyof DefinitionVersion['tabbedForms'],
-    Record<string, FormValue>,
-  ][] = [
-    ['CaseInformationTab', contact.rawJson.caseInformation],
-    ['ChildInformationTab', contact.rawJson.childInformation],
-    ['CallerInformationTab', contact.rawJson.callerInformation],
-  ];
-
-  type DefinitionAndJson = [FormItemDefinition[], Record<string, FormValue>];
-  const definitionsAndJsons: DefinitionAndJson[] = await Promise.all(
-    tabNamesAndRawJsonSections.map(
-      async ([tabbedFormsSection, rawJsonSection]): Promise<DefinitionAndJson> => [
-        tabbedForms[tabbedFormsSection] as FormItemDefinition[],
-        rawJsonSection,
-      ],
-    ),
-  );
-  for (const [tabFormDefinition, rawJson] of definitionsAndJsons) {
-    for (const formItemDefinition of tabFormDefinition) {
-      rawJson[formItemDefinition.name] = getInitialValue(formItemDefinition);
-    }
-  }
-
-  const defaultHelplineOption = (
-    helplineInformation.helplines.find((helpline: any) => helpline.default) ||
-    helplineInformation.helplines[0]
-  ).value;
-  Object.assign(contact.rawJson.contactlessTask, {
-    helpline: defaultHelplineOption,
-  });
 };
 
 const populateContactSection = async (

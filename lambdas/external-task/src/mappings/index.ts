@@ -15,26 +15,26 @@
  */
 
 import { newErr, Result } from '@tech-matters/result-type';
-import { mappingFunction as uscrMapping } from './uscrMappings';
+import { getAttributesFunction as getUscrAttributes } from './uscrMappings';
 
-type ExternalTaskMapping = {
+type ExternalTaskAttributes = {
   externalId: string;
   externalTaskAttributes: Record<string, any>;
 };
-export type ExternalTaskMappingFunction = (
+export type ExternalTaskAttributesFunction = (
   payload: any,
-) => Result<Error, ExternalTaskMapping>;
+) => Result<Error, ExternalTaskAttributes>;
 
-export const getExternalTaskMapping = ({
+export const getExternalTaskAttributes = ({
   accountShortCode,
 }: {
   accountShortCode: string;
-}): ExternalTaskMappingFunction => {
+}): ExternalTaskAttributesFunction => {
   switch (accountShortCode.toUpperCase()) {
     case 'E2E':
     case 'AS':
     case 'USCR': {
-      return uscrMapping;
+      return getUscrAttributes;
     }
     default: {
       const message = `Mapping not defined for account short code ${accountShortCode}`;
