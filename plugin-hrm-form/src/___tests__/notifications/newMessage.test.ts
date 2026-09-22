@@ -145,6 +145,7 @@ describe('Notification for a new message ', () => {
 
       notifyNewMessage(mockMessageInstance);
 
+      expect(mockAudioPlayerIsPlaying).toHaveBeenCalledTimes(1);
       expect(AudioPlayerManager.play).not.toHaveBeenCalled();
     });
 

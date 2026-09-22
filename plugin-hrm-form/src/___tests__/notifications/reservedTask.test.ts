@@ -103,6 +103,7 @@ describe('Notification for a reserved task ', () => {
       },
     });
 
+    expect(mockIsPlaying).toHaveBeenCalledTimes(1);
     expect(mockPlay).not.toHaveBeenCalled();
   });
 
