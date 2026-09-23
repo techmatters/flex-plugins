@@ -146,6 +146,17 @@ describe('Notification for a reserved task ', () => {
     expect(mockPlay).toHaveBeenCalledTimes(1);
   });
 
+  test('audio notification should not play or throw when worker session expires', () => {
+    const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation(() => undefined);
+    mockFlexManager.workerClient = null;
+
+    jest.advanceTimersByTime(3000);
+
+    expect(mockPlay).not.toHaveBeenCalled();
+    expect(consoleErrorSpy).not.toHaveBeenCalled();
+    consoleErrorSpy.mockRestore();
+  });
+
   test('reservation created should not trigger an extra notification while repeating notifications are already playing', () => {
     mockFlexManager.workerClient.reservations = new Map([
       [
