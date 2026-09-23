@@ -40,7 +40,7 @@ const notifyReservedTask = reservation => {
 };
 
 const playNotificationIfPending = () => {
-  const reservations = Manager.getInstance().workerClient.reservations.values();
+  const reservations = Manager.getInstance().workerClient?.reservations?.values() ?? [];
   for (const { status } of reservations) {
     if (status === 'pending') {
       playNotification(NOTIFICATION_TONE);
