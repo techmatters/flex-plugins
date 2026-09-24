@@ -47,8 +47,9 @@ export const filterCountryOrVoIPHandler: AccountScopedHandler = async (
 
   if (BYPASS_NUMBERS.includes(from)) {
     console.info(
-      `Allowing call from ${from} because this number is one we explicitly bypass VOIP and region checks for.`,
+      `Allowing call from ${accountSid}/${from} because this number is one we explicitly bypass VOIP and region checks for.`,
     );
+    return newOk({ blockIncoming: false });
   }
 
   const isE164PhoneNumber = /^\+[1-9]\d{1,14}$/.test(from);
