@@ -504,7 +504,78 @@ ${
             "key": "system_down"
           }
         ]
+      },
+    {
+      "name": "split_check_for_integration",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "is_bot",
+          "event": "noMatch"
+        },
+        {
+          "next": "f_end_integration_test",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "{{trigger.conversation.ChannelAttributes.testSessionId}}",
+              "arguments": [
+                "{{trigger.conversation.ChannelAttributes.testSessionId}}"
+              ],
+              "type": "is_not_blank",
+              "value": "Is Not Blank"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{trigger.conversation.ChannelAttributes.testSessionId}}",
+        "offset": {
+          "x": 950,
+          "y": 1010
+        }
       }
+    },
+    {
+      "name": "f_end_integration_test",
+      "type": "run-function",
+      "transitions": [
+        {
+          "event": "success"
+        },
+        {
+          "event": "fail"
+        }
+      ],
+      "properties": {
+        "service_sid": "${serverless_service_sid}",
+        "environment_sid": "${serverless_environment_sid}",
+        "offset": {
+          "x": 1200,
+          "y": 1210
+        },
+        "function_sid": "${flow_vars.send_message_janitor_function_sid}",
+        "parameters": [
+          {
+            "value": "{{flow.channel.address}}",
+            "key": "channelSid"
+          },
+          {
+            "value": "{{flow.channel.address}}",
+            "key": "conversationSid"
+          },
+          {
+            "value": "Integration test run completed successfully. 🚀",
+            "key": "message"
+          },
+          {
+            "value": "${channel_flow_vars.widget_from}",
+            "key": "from"
+          }
+        ],
+        "url": "${serverless_url}/sendMessageAndRunJanitor"
+      }
+    }
     }
   ],
   "initial_state": "Trigger",
