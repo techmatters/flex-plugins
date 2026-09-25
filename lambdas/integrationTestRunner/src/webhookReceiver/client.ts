@@ -15,8 +15,7 @@
  */
 
 import { WebhookRecord } from './types';
-import { addMilliseconds } from 'date-fns/addMilliseconds';
-import { isAfter } from 'date-fns/isAfter';
+import { addMilliseconds, isAfter } from 'date-fns';
 import { AssertionError } from 'node:assert';
 import { retrieveWebhooks } from './dynamoDbClient';
 

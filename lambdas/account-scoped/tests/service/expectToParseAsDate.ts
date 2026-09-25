@@ -13,7 +13,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
-import { parseISO } from 'date-fns/parseISO';
+import { parseISO } from 'date-fns';
 // Declares this module as an 'external module' so augmentations can be added to global scope.
 export {};
 

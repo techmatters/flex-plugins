@@ -25,7 +25,7 @@ import { apiHrmRequest } from './hrm/hrmRequest';
 
 async function globalSetup(config: FullConfig) {
   const start = new Date();
-  console.log('Global setup started');
+  console.info('Global setup started');
   if (config.projects.length > 1) {
     console.warn(
       `Tests have ${config.projects.length} set up, only running global configuration against the first one - consider revising the global setup code.`,
@@ -93,8 +93,8 @@ async function globalSetup(config: FullConfig) {
   process.env.TWILIO_RUNTIME_DOMAIN = getConfigValue('baseURL')?.toString().includes('localhost')
     ? ''
     : runtimeDomain.split('.')[0];
-  console.info('TWILIO_RUNTIME_DOMAIN', process.env.TWILIO_RUNTIME_DOMAIN);
-  console.log(
+  console.debug('TWILIO_RUNTIME_DOMAIN', process.env.TWILIO_RUNTIME_DOMAIN);
+  console.info(
     'Global setup completed',
     `Took ${differenceInMilliseconds(new Date(), start) / 1000} seconds`,
   );

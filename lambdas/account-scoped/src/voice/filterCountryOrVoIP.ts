@@ -28,6 +28,10 @@ const BLOCK_REASONS = {
   HIDDEN_CALLER_ID: 'hidden_caller_id',
 } as const;
 
+const BYPASS_NUMBERS = [
+  '+12064083885', // Aselo Development Number, used to dial in for voice E2E tests
+];
+
 export const filterCountryOrVoIPHandler: AccountScopedHandler = async (
   { body }: HttpRequest,
   accountSid: AccountSID,
@@ -39,6 +43,13 @@ export const filterCountryOrVoIPHandler: AccountScopedHandler = async (
       message: 'from parameter is missing',
       error: { statusCode: 400 },
     });
+  }
+
+  if (BYPASS_NUMBERS.includes(from)) {
+    console.info(
+      `Allowing call from ${accountSid}/${from} because this number is one we explicitly bypass VOIP and region checks for.`,
+    );
+    return newOk({ blockIncoming: false });
   }
 
   const isE164PhoneNumber = /^\+[1-9]\d{1,14}$/.test(from);

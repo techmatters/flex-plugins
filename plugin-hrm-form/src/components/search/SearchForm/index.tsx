@@ -21,8 +21,7 @@ import { useSelector } from 'react-redux';
 import type { FormDefinition } from 'hrm-form-definitions';
 import { pick } from 'lodash';
 import { Template } from '@twilio/flex-ui';
-import isFuture from 'date-fns/isFuture';
-import { parse } from 'date-fns';
+import { parse, isFuture } from 'date-fns';
 
 import { SearchFormClearButton } from '../../resources/styles';
 import type { RootState } from '../../../states';

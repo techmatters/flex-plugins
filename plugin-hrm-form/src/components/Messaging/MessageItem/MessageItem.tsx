@@ -17,7 +17,7 @@
 
 import React from 'react';
 import { Icon } from '@twilio/flex-ui';
-import format from 'date-fns/format';
+import { format } from 'date-fns';
 
 import {
   MessageItemContainer,

@@ -16,7 +16,7 @@
 
 import React from 'react';
 import { ViewportList } from 'react-viewport-list';
-import format from 'date-fns/format';
+import { format } from 'date-fns';
 
 import { GroupedMessage, MessageItem } from '../MessageItem';
 import { DateRulerContainer, DateRulerDateText, DateRulerHr, MessageListContainer } from './styles';
