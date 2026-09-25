@@ -18,7 +18,7 @@ import { ScheduledJobType } from '@tech-matters/scheduled-jobs/dist/scheduled-jo
 import { AccountScopedHandler, HttpError } from '../httpTypes';
 import { newErr, newOk, Result } from '@tech-matters/result-type';
 import { createScheduledJob, isValidVoicemailTask } from '@tech-matters/scheduled-jobs';
-import { addMinutes } from 'date-fns/addMinutes';
+import { addMinutes } from 'date-fns';
 import { retrieveServiceConfigurationAttributes } from '../configuration/aseloConfiguration';
 import { getTwilioClient } from '@tech-matters/twilio-configuration';
 

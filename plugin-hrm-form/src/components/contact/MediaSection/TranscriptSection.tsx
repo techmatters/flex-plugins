@@ -18,7 +18,7 @@ import { Template } from '@twilio/flex-ui';
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import format from 'date-fns/format';
+import { format } from 'date-fns';
 
 import type { TwilioStoredMedia, S3StoredTranscript, Contact } from '../../../types/types';
 import type { RootState } from '../../../states';
