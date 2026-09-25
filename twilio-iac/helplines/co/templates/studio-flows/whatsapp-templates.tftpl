@@ -238,7 +238,7 @@ ${
           "event": "noMatch"
         },
         {
-          "next": "send_wait_welcome_and_reason",
+          "next": "send_message_welcome",
           "event": "match",
           "conditions": [
             {
@@ -2003,6 +2003,31 @@ ${
         "body": "{\"channel\" : \"whatsapp\" }",
         "url": "${lambda_twilio_account_scoped_url}/operatingHours"
       }
+    },
+    {
+      "name": "send_message_welcome",
+      "properties": {
+        "channel": "{{trigger.message.ChannelSid}}",
+        "content_sid": "${channel_flow_vars.send_message_welcome}",
+        "from": "Bot",
+        "message_type": "content_template",
+        "offset": {
+          "x": -1677,
+          "y": 1306
+        },
+        "service": "{{trigger.message.InstanceSid}}",
+        "to": "{{contact.channel.address}}"
+      },
+      "transitions": [
+        {
+          "event": "sent",
+          "next": "send_message_wait"
+        },
+        {
+          "event": "failed"
+        }
+      ],
+      "type": "send-message"
     }
   ],
   "initial_state": "Trigger",
