@@ -348,28 +348,29 @@ ${
       }
     },
     {
-      "name": "send_message_final",
-      "type": "send-message",
+      "name": "send_message_welcome",
+      "properties": {
+        "channel": "{{trigger.message.ChannelSid}}",
+        "content_sid": "${channel_flow_vars.send_message_welcome}",
+        "from": "Bot",
+        "message_type": "content_template",
+        "offset": {
+          "x": -1677,
+          "y": 1306
+        },
+        "service": "{{trigger.message.InstanceSid}}",
+        "to": "{{contact.channel.address}}"
+      },
       "transitions": [
         {
-          "event": "sent"
+          "event": "sent",
+          "next": "send_message_wait"
         },
         {
           "event": "failed"
         }
       ],
-      "properties": {
-        "offset": {
-          "x": -1770,
-          "y": 1860
-        },
-        "service": "{{trigger.message.InstanceSid}}",
-        "channel": "{{trigger.message.ChannelSid}}",
-        "from": "Bot",
-        "message_type": "content_template",
-        "to": "{{contact.channel.address}}",
-        "content_sid": "${channel_flow_vars.send_final_message}"
-      }
+      "type": "send-message"
     },
     {
       "name": "set_var_terms_conditions_attempt",
@@ -2003,31 +2004,6 @@ ${
         "body": "{\"channel\" : \"whatsapp\" }",
         "url": "${lambda_twilio_account_scoped_url}/operatingHours"
       }
-    },
-    {
-      "name": "send_message_welcome",
-      "properties": {
-        "channel": "{{trigger.message.ChannelSid}}",
-        "content_sid": "${channel_flow_vars.send_message_welcome}",
-        "from": "Bot",
-        "message_type": "content_template",
-        "offset": {
-          "x": -1677,
-          "y": 1306
-        },
-        "service": "{{trigger.message.InstanceSid}}",
-        "to": "{{contact.channel.address}}"
-      },
-      "transitions": [
-        {
-          "event": "sent",
-          "next": "send_message_wait"
-        },
-        {
-          "event": "failed"
-        }
-      ],
-      "type": "send-message"
     }
   ],
   "initial_state": "Trigger",
