@@ -30,6 +30,6 @@
     "@tech-matters/s3": "^1.00",
     "@tech-matters/twilio-types": "^1.0.0",
     "@tech-matters/twilio-configuration": "^1.0.0",
-    "date-fns": "^4.1.0"
+    "date-fns": "^4.4.0"
   }
 }
