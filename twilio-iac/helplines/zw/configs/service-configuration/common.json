@@ -1,5 +1,10 @@
 {
     "attributes": {
+        "contacts_waiting_channels": [
+            "voice",
+            "web",
+            "facebook"
+        ],
         "definitionVersion": "zw-v1",
         "feature_flags": {
         },

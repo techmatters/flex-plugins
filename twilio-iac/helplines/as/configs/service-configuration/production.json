@@ -1,15 +1,5 @@
 {
     "attributes": {
-        "contacts_waiting_channels": [
-            "voice",
-            "sms",
-            "web",
-            "whatsapp",
-            "facebook",
-            "instagram",
-            "line",
-            "telegram"
-        ],
         "feature_flags": {
             "enable_lex": true,
             "enable_voice_recordings": true,

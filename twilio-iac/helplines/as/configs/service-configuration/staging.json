@@ -1,16 +1,6 @@
 {
     "attributes": {
         "system_down" : false,
-        "contacts_waiting_channels": [
-            "voice",
-            "sms",
-            "web",
-            "whatsapp",
-            "facebook",
-            "instagram",
-            "line",
-            "telegram"
-        ],
         "feature_flags": {
             "enable_active_contact_header": true,
             "enable_assigned_skill_teams_view_filters": true,

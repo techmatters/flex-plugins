@@ -5,6 +5,7 @@
     "conferencing_enable_manual_dial": false,
     "enableExternalRecordings": true,
     "enableConferencing": true,
+    "conferencingHoldOnDial": false,
     "preventSendingAttachmentsFromFlex": true,
     "feature_flags": {
       "enable_canned_responses": false,

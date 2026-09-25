@@ -117,6 +117,319 @@
       "placeholder": "Email Address"
     },
     {
+      "name": "district",
+      "label": "Which District do you live in?",
+      "type": "select",
+      "isPII": false,
+      "options": [
+        {
+          "value": "Unknown",
+          "label": ""
+        },
+        {
+          "value": "Ashburton district",
+          "label": "Ashburton district"
+        },
+        {
+          "value": "Auckland City",
+          "label": "Auckland City"
+        },
+        {
+          "value": "Banks Peninsula district",
+          "label": "Banks Peninsula district"
+        },
+        {
+          "value": "Buller district",
+          "label": "Buller district"
+        },
+        {
+          "value": "Carterton district",
+          "label": "Carterton district"
+        },
+        {
+          "value": "Central Hawke's Bay district",
+          "label": "Central Hawke's Bay district"
+        },
+        {
+          "value": "Central Otago district",
+          "label": "Central Otago district"
+        },
+        {
+          "value": "Chatham Islands district",
+          "label": "Chatham Islands district"
+        },
+        {
+          "value": "Christchurch City",
+          "label": "Christchurch City"
+        },
+        {
+          "value": "Clutha district",
+          "label": "Clutha district"
+        },
+        {
+          "value": "Dunedin City",
+          "label": "Dunedin City"
+        },
+        {
+          "value": "Far North district",
+          "label": "Far North district"
+        },
+        {
+          "value": "Franklin district",
+          "label": "Franklin district"
+        },
+        {
+          "value": "Gisborne district",
+          "label": "Gisborne district"
+        },
+        {
+          "value": "Gore district",
+          "label": "Gore district"
+        },
+        {
+          "value": "Grey district",
+          "label": "Grey district"
+        },
+        {
+          "value": "Hamilton City",
+          "label": "Hamilton City"
+        },
+        {
+          "value": "Hastings district",
+          "label": "Hastings district"
+        },
+        {
+          "value": "Hauraki district",
+          "label": "Hauraki district"
+        },
+        {
+          "value": "Horowhenua district",
+          "label": "Horowhenua district"
+        },
+        {
+          "value": "Hurunui district",
+          "label": "Hurunui district"
+        },
+        {
+          "value": "International",
+          "label": "International"
+        },
+        {
+          "value": "Invercargill City",
+          "label": "Invercargill City"
+        },
+        {
+          "value": "Kaikoura district",
+          "label": "Kaikoura district"
+        },
+        {
+          "value": "Kaipara district",
+          "label": "Kaipara district"
+        },
+        {
+          "value": "Kapiti Coast district",
+          "label": "Kapiti Coast district"
+        },
+        {
+          "value": "Kawerau district",
+          "label": "Kawerau district"
+        },
+        {
+          "value": "Lower Hutt city",
+          "label": "Lower Hutt city"
+        },
+        {
+          "value": "Mackenzie district",
+          "label": "Mackenzie district"
+        },
+        {
+          "value": "Manawatu district",
+          "label": "Manawatu district"
+        },
+        {
+          "value": "Manukau",
+          "label": "Manukau"
+        },
+        {
+          "value": "Marlborough district",
+          "label": "Marlborough district"
+        },
+        {
+          "value": "Masterton district",
+          "label": "Masterton district"
+        },
+        {
+          "value": "Matamata-Piako district",
+          "label": "Matamata-Piako district"
+        },
+        {
+          "value": "Napier City",
+          "label": "Napier City"
+        },
+        {
+          "value": "Nelson City",
+          "label": "Nelson City"
+        },
+        {
+          "value": "New Plymouth district",
+          "label": "New Plymouth district"
+        },
+        {
+          "value": "North Shore",
+          "label": "North Shore"
+        },
+        {
+          "value": "Opotiki district",
+          "label": "Opotiki district"
+        },
+        {
+          "value": "Otorohanga district",
+          "label": "Otorohanga district"
+        },
+        {
+          "value": "Palmerston North City",
+          "label": "Palmerston North City"
+        },
+        {
+          "value": "Papakura district",
+          "label": "Papakura district"
+        },
+        {
+          "value": "Porirua City",
+          "label": "Porirua City"
+        },
+        {
+          "value": "Queenstown-Lakes district",
+          "label": "Queenstown-Lakes district"
+        },
+        {
+          "value": "Rangitikei district",
+          "label": "Rangitikei district"
+        },
+        {
+          "value": "Rodney district",
+          "label": "Rodney district"
+        },
+        {
+          "value": "Rotorua district",
+          "label": "Rotorua district"
+        },
+        {
+          "value": "Ruapehu district",
+          "label": "Ruapehu district"
+        },
+        {
+          "value": "Selwyn district",
+          "label": "Selwyn district"
+        },
+        {
+          "value": "South Taranaki district",
+          "label": "South Taranaki district"
+        },
+        {
+          "value": "South Waikato district",
+          "label": "South Waikato district"
+        },
+        {
+          "value": "South Wairarapa district",
+          "label": "South Wairarapa district"
+        },
+        {
+          "value": "Southland district",
+          "label": "Southland district"
+        },
+        {
+          "value": "Stratford district",
+          "label": "Stratford district"
+        },
+        {
+          "value": "Tararua district",
+          "label": "Tararua district"
+        },
+        {
+          "value": "Tasman district",
+          "label": "Tasman district"
+        },
+        {
+          "value": "Taupo district",
+          "label": "Taupo district"
+        },
+        {
+          "value": "Tauranga district",
+          "label": "Tauranga district"
+        },
+        {
+          "value": "Thames-Coromandel district",
+          "label": "Thames-Coromandel district"
+        },
+        {
+          "value": "Timaru district",
+          "label": "Timaru district"
+        },
+        {
+          "value": "Upper Hutt City",
+          "label": "Upper Hutt City"
+        },
+        {
+          "value": "Waikato district",
+          "label": "Waikato district"
+        },
+        {
+          "value": "Waimakariri district",
+          "label": "Waimakariri district"
+        },
+        {
+          "value": "Waimate district",
+          "label": "Waimate district"
+        },
+        {
+          "value": "Waipa district",
+          "label": "Waipa district"
+        },
+        {
+          "value": "Wairoa district",
+          "label": "Wairoa district"
+        },
+        {
+          "value": "Waitakere",
+          "label": "Waitakere"
+        },
+        {
+          "value": "Waitaki district",
+          "label": "Waitaki district"
+        },
+        {
+          "value": "Waitomo district",
+          "label": "Waitomo district"
+        },
+        {
+          "value": "Wanganui district",
+          "label": "Wanganui district"
+        },
+        {
+          "value": "Wellington City",
+          "label": "Wellington City"
+        },
+        {
+          "value": "Western Bay of Plenty district",
+          "label": "Western Bay of Plenty district"
+        },
+        {
+          "value": "Westland district",
+          "label": "Westland district"
+        },
+        {
+          "value": "Whakatane district",
+          "label": "Whakatane district"
+        },
+        {
+          "value": "Whangarei district",
+          "label": "Whangarei district"
+        }
+      ],
+      "required": false
+    },
+    {
       "type": "select",
       "name": "howHeardAboutWu",
       "label": "How did you hear about What's Up?",

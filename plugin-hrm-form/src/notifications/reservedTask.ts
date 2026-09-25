@@ -19,34 +19,34 @@ import { Manager } from '@twilio/flex-ui';
 import { isTwilioTask } from '../types/types';
 import { playNotification } from './playNotification';
 
-const reservedTaskMedias: { [reservationSid: string]: string } = {};
+const NOTIFICATION_TONE = 'ringtone';
 
 export const subscribeReservedTaskAlert = () => {
   const manager = Manager.getInstance();
   manager.workerClient.on('reservationCreated', notifyReservedTask);
+  setInterval(playNotificationIfPending, 3000);
 };
+
+let repeatingNotificationPlaying = false;
 
 const notifyReservedTask = reservation => {
   try {
-    if (isTwilioTask(reservation.task)) {
-      playWhilePending(reservation);
+    if (isTwilioTask(reservation.task) && !repeatingNotificationPlaying) {
+      playNotification(NOTIFICATION_TONE);
     }
   } catch (error) {
     console.error('Error in notifyReservedTask:', error);
   }
 };
 
-const playWhilePending = (reservation: { sid: string; status: string }) => {
-  const playNotificationIfPending = () => {
-    if (reservation.status === 'pending') {
-      const notificationTone = 'ringtone';
-
-      const mediaId = playNotification(notificationTone);
-
-      reservedTaskMedias[reservation.sid] = mediaId;
-      setTimeout(playNotificationIfPending, 3000);
+const playNotificationIfPending = () => {
+  const reservations = Manager.getInstance().workerClient?.reservations?.values() ?? [];
+  for (const { status } of reservations) {
+    if (status === 'pending') {
+      playNotification(NOTIFICATION_TONE);
+      repeatingNotificationPlaying = true;
+      return;
     }
-  };
-
-  playNotificationIfPending();
+  }
+  repeatingNotificationPlaying = false;
 };

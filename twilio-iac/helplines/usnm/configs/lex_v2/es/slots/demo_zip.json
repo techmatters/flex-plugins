@@ -10,7 +10,7 @@
                 {
                     "message": {
                         "plainTextMessage": {
-                            "value": "¿Cuáles son los 5 dígitos de tu código postal? "
+                            "value": "¿Cuáles son los 5 dígitos de tu código postal?\nSi no desea compartir su código postal, responda con 00000"
                         }
                     },
                     "variations": [

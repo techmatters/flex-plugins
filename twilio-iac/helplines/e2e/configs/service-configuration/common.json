@@ -1,5 +1,16 @@
 {
     "attributes": {
+        "contacts_waiting_channels": [
+            "voice",
+            "sms",
+            "web",
+            "whatsapp",
+            "facebook",
+            "instagram",
+            "line",
+            "telegram",
+            "voicemail"
+        ],
         "attributeUpdates": {
             "assets_bucket_url": "https://assets-development.tl.techmatters.org"
         },
