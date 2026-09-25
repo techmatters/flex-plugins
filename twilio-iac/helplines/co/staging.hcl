@@ -54,7 +54,7 @@ locals {
           chat_greeting_message           = "¡Hola, te damos la bienvenida a Te Guío! Esta es la línea de ayuda dedicada a adolescentes como tú, donde escuchamos y orientamos  las inquietudes que puedes tener para lograr vivir una sexualidad saludable. Qué gusto que te contactes con nosotros. Por favor espéranos mientras te contactamos con un Guía."
           chat_blocked_message            = "Lamentablemente no puedes utilizar nuestros servicios."
           message_closing                 = "Lo siento, no he logrado entender tu respuesta.\nPor favor, intenta comunicarte de nuevo con nosotros.\nAdiós!"
-          message_wait                    = "¡Muchas gracias! En un momento uno de nuestros guías te atenderá. Por favor, espéranos.."
+          message_wait                    = "En un momento uno de nuestros guías te atenderá. Por favor, espéranos.."
           message_no_terms                = "Entendemos tu decisión. Para garantizar la privacidad y seguridad de todos los usuarios, es necesario aceptar nuestra política de privacidad para acceder a Te Guío.\n\nSi en otro momento decides continuar, estaremos aquí para apoyarte. 💙\n\nEn Te Guío está bien preguntar."
           final_goodbye                   = "HXa7301c08423546cbbba2b6e420ed86f1"
           option_1_urgent_contact         = "HX2f5a7f48d0b0b0eec4a20ee5f59f5b85"
@@ -86,7 +86,8 @@ locals {
           playback_previous_menu          = "HX515fc59959ba6c8e20c81be376af3fb3"
           send_final_message              = "HX1e5d6c2a6092c40c6059c9056e0b7646"
           send_welcome_and_request_reason = "HX076f06e367c967998f42ab0fd63d6a07"
-          terms_and_conditions            = "HX8cddbe4f1dddcd6b137ac70bfaeb5698"
+          send_message_welcome            = "HX4af852dca66003b8f66ae9c76a7b392b"
+          terms_and_conditions            = "HX665e833e655b97fae4b8d7b824efeae1"
           welcome_menu                    = "HX3a03e3c706ab704ca6c4303d3629901a"
         }
         chatbot_unique_names = []
