@@ -375,6 +375,9 @@
             "label": "Child custody and access"
           },
           {
+            "label": "Couple Relationships"
+          },
+          {
             "label": "Divorced / Separated parents / Parents in conflict"
           },
           {
@@ -765,6 +768,9 @@
         "color": "#d8c732",
         "subcategories": [
           {
+            "label": "Anger"
+          },
+          {
             "label": "Depression"
           },
           {
@@ -775,6 +781,9 @@
           },
           {
             "label": "Feelings of Sadness"
+          },
+          {
+            "label": "Grief"
           },
           {
             "label": "Identity and purpose of life"
@@ -817,6 +826,9 @@
           },
           {
             "label": "Suicide"
+          },
+          {
+            "label": "Suicidal Ideation"
           },
           {
             "label": "(PS&MH) Unspecified / Other"
