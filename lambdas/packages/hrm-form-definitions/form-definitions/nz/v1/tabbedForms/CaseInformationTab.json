@@ -255,8 +255,8 @@
     "isPII": false
   },
   {
-    "name": "howDidYouKnowAboutOurLine",
-    "label": "How did the client hear about the Helpline?",
+    "name": "projects",
+    "label": "Projects",
     "type": "select",
     "unknownOption": "Unknown",
     "options": [
@@ -265,64 +265,8 @@
         "label": ""
       },
       {
-        "value": "Family",
-        "label": "Family"
-      },
-      {
-        "value": "Friends",
-        "label": "Friends"
-      },
-      {
-        "value": "Youthline Service",
-        "label": "Youthline Service, e.g. Helpline/Youth Worker/Counselling"
-      },
-      {
-        "value": "Social Media Post",
-        "label": "Social Media Post, e.g., Instagram/Facebook"
-      },
-      {
-        "value": "Social Media Influencer",
-        "label": "Social Media Influencer"
-      },
-      {
-        "value": "Online Advertising",
-        "label": "Online Advertising, e.g., Google"
-      },
-      {
-        "value": "Youthline Website",
-        "label": "Youthline Website"
-      },
-      {
-        "value": "Social Worker or Youth Worker",
-        "label": "Social Worker or Youth Worker"
-      },
-      {
-        "value": "Mental Health Professional",
-        "label": "Mental Health Professional"
-      },
-      {
-        "value": "Doctor/GP",
-        "label": "Doctor/GP"
-      },
-      {
-        "value": "School or University Program",
-        "label": "School or University Program"
-      },
-      {
-        "value": "Community Event",
-        "label": "Community Event"
-      },
-      {
-        "value": "Physical Advertisements",
-        "label": "Physical Advertisements, e.g., Billboard"
-      },
-      {
-        "value": "Other",
-        "label": "Other"
-      },
-      {
-        "value": "Unknown",
-        "label": "Unknown"
+        "value": "Ipsos Survey",
+        "label": "Ipsos Survey"
       }
     ],
     "isPII": false
