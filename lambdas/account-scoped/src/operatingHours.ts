@@ -52,6 +52,7 @@ type OperatingInfo = OfficeOperatingInfo & {
 
 export type Body = {
   channel?: string;
+  from?: string;
   office?: string;
   includeMessageTextInResponse?: string;
   language?: string;

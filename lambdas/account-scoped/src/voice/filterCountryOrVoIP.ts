@@ -14,10 +14,10 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import type { AccountSID } from '@tech-matters/twilio-types';
-import { getTwilioClient } from '@tech-matters/twilio-configuration';
-import { newErr, newOk } from '@tech-matters/result-type';
-import type { AccountScopedHandler, HttpRequest } from '../httpTypes';
+import type {AccountSID} from '@tech-matters/twilio-types';
+import {getTwilioClient, BYPASS_NUMBERS } from '@tech-matters/twilio-configuration';
+import {newErr, newOk} from '@tech-matters/result-type';
+import type {AccountScopedHandler, HttpRequest} from '../httpTypes';
 
 const BLOCKED_CARRIERS = ['HD Carrier LLC', 'Onvoy Spectrum', 'Onvoy Spectrum, LLC'];
 
@@ -27,10 +27,6 @@ const BLOCK_REASONS = {
   BLOCKED_CARRIER: 'blocked_carrier',
   HIDDEN_CALLER_ID: 'hidden_caller_id',
 } as const;
-
-const BYPASS_NUMBERS = [
-  '+12064083885', // Aselo Development Number, used to dial in for voice E2E tests
-];
 
 export const filterCountryOrVoIPHandler: AccountScopedHandler = async (
   { body }: HttpRequest,

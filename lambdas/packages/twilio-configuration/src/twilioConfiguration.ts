@@ -14,14 +14,9 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import {
-  AccountSID,
-  ChatServiceSID,
-  WorkflowSID,
-  WorkspaceSID,
-} from '@tech-matters/twilio-types';
-import { getSsmParameter, SsmParameterNotFound } from '@tech-matters/ssm-cache';
-import twilio, { Twilio } from 'twilio';
+import {AccountSID, ChatServiceSID, WorkflowSID, WorkspaceSID,} from '@tech-matters/twilio-types';
+import {getSsmParameter, SsmParameterNotFound} from '@tech-matters/ssm-cache';
+import twilio, {Twilio} from 'twilio';
 
 export type { Twilio };
 
@@ -69,7 +64,11 @@ export const getOperatingInfoKey = (accountSid: AccountSID): Promise<string> =>
 
 export const areOperatingHoursEnforced = async (
   accountSid: AccountSID,
+  from?: string,
 ): Promise<boolean> => {
+  if (from && BYPASS_NUMBERS.includes(from)) {
+    return false;
+  }
   try {
     const overrideText = await getSsmParameter(
       `/${process.env.NODE_ENV}/twilio/${accountSid}/operating_hours_enforced_override`,
@@ -109,3 +108,7 @@ export const getTwilioClient = async (accountSid: AccountSID): Promise<Twilio> =
   const authToken = await getAccountAuthToken(accountSid);
   return twilio(accountSid, authToken);
 };
+
+export const BYPASS_NUMBERS = [
+  '+12064083885', // Aselo Development Number, used to dial in for voice E2E tests
+];
