@@ -12,6 +12,7 @@
             "use_prepopulate_mappings": true,
             "enable_conference_status_event_handler": true,
             "enable_hang_up_by_hrm_saving": true,
+            "use_new_dispatcher_path": true,
             "enable_voice_recordings": true
         },
         "definitionVersion": "gy-v1",
