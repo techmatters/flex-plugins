@@ -15,12 +15,13 @@
  */
 
 import { filterCountryOrVoIPHandler } from '../../../src/voice/filterCountryOrVoIP';
-import { getTwilioClient } from '@tech-matters/twilio-configuration';
+import { BYPASS_NUMBERS, getTwilioClient } from '@tech-matters/twilio-configuration';
 import { isErr, isOk } from '@tech-matters/result-type';
 import type { HttpRequest } from '../../../src/httpTypes';
 import { TEST_ACCOUNT_SID } from '../../testTwilioValues';
 
 jest.mock('@tech-matters/twilio-configuration', () => ({
+  BYPASS_NUMBERS: ['+12064083885'],
   getTwilioClient: jest.fn(),
 }));
 
@@ -83,6 +84,17 @@ describe('filterCountryOrVoIPHandler', () => {
     expect(isOk(result)).toBe(true);
     if (isOk(result)) {
       expect(result.data.blockIncoming).toBe(true);
+    }
+  });
+
+  it('should allow bypass numbers without performing a lookup', async () => {
+    const request = createMockRequest({ from: BYPASS_NUMBERS[0] });
+    const result = await filterCountryOrVoIPHandler(request, TEST_ACCOUNT_SID);
+
+    expect(isOk(result)).toBe(true);
+    expect(mockGetTwilioClient).not.toHaveBeenCalled();
+    if (isOk(result)) {
+      expect(result.data.blockIncoming).toBe(false);
     }
   });
 

@@ -14,11 +14,20 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import {AccountSID, ChatServiceSID, WorkflowSID, WorkspaceSID,} from '@tech-matters/twilio-types';
-import {getSsmParameter, SsmParameterNotFound} from '@tech-matters/ssm-cache';
-import twilio, {Twilio} from 'twilio';
+import {
+  AccountSID,
+  ChatServiceSID,
+  WorkflowSID,
+  WorkspaceSID,
+} from '@tech-matters/twilio-types';
+import { getSsmParameter, SsmParameterNotFound } from '@tech-matters/ssm-cache';
+import twilio, { Twilio } from 'twilio';
 
 export type { Twilio };
+
+export const BYPASS_NUMBERS = [
+  '+12064083885', // Aselo Development Number, used to dial in for voice E2E tests
+];
 
 export const getWorkspaceSid = async (accountSid: AccountSID): Promise<WorkspaceSID> =>
   (await getSsmParameter(
@@ -108,7 +117,3 @@ export const getTwilioClient = async (accountSid: AccountSID): Promise<Twilio> =
   const authToken = await getAccountAuthToken(accountSid);
   return twilio(accountSid, authToken);
 };
-
-export const BYPASS_NUMBERS = [
-  '+12064083885', // Aselo Development Number, used to dial in for voice E2E tests
-];
