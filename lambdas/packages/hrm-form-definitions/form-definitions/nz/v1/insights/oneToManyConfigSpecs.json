@@ -32,7 +32,7 @@
     "attributeName": "conversation_attribute_6",
     "insightsObject": "conversations",
     "paths": [
-      "contactForm.caseInformation.howDidYouKnowAboutOurLine"
+      "contactForm.caseInformation.projects"
     ]
   },
   {
