@@ -73,9 +73,11 @@ export const getOperatingInfoKey = (accountSid: AccountSID): Promise<string> =>
 
 export const areOperatingHoursEnforced = async (
   accountSid: AccountSID,
-  from?: string,
+  from: string | undefined,
 ): Promise<boolean> => {
+  console.debug(`[SENSITIVE] Checking if number bypasses operating hours. Checking ${from} against these bypass numbers: ${BYPASS_NUMBERS}`);
   if (from && BYPASS_NUMBERS.includes(from)) {
+    console.info(`Bypassing number for operation hours check`);
     return false;
   }
   try {

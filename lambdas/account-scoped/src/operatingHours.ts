@@ -167,9 +167,9 @@ export const handleOperatingHours: AccountScopedHandler = async (
   try {
     const operatingInfoKey = await getOperatingInfoKey(accountSid);
 
-    const { channel, office, language } = body;
+    const { channel, office, language, from } = body;
 
-    const enforced = await areOperatingHoursEnforced(accountSid);
+    const enforced = await areOperatingHoursEnforced(accountSid, from);
     if (!enforced) {
       return newOpenResult();
     }
