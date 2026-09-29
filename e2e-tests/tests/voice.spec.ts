@@ -20,7 +20,7 @@ import { skipTestIfNotTargeted } from '../skipTest';
 import { contactForm } from '../contactForm';
 import { deleteAllTasksInQueue } from '../twilio/tasks';
 import { notificationBar } from '../notificationBar';
-import { clickThroughTwilioPasteModals } from '../agent-desktop';
+import { agentDesktop, clickThroughTwilioPasteModals } from '../agent-desktop';
 import { setupContextAndPage, closePage } from '../browser';
 import { clearOfflineTask } from '../hrm/clearOfflineTask';
 import { apiHrmRequest } from '../hrm/hrmRequest';
@@ -65,8 +65,9 @@ test.describe.serial('Voice caller', () => {
   });
 
   test('Call', async () => {
-    test.setTimeout(180000);
+    test.setTimeout(900000);
     await makeCallToService();
+    await agentDesktop(pluginPage).waitForTaskInQueue('E2E Test Queue', 'voice', 600000);
     await statusIndicator(pluginPage).setStatus('AVAILABLE');
     await tasks(pluginPage).acceptNextTask();
 
