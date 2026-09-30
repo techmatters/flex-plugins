@@ -39,6 +39,7 @@ export const deleteAllTasksInQueue = async (): Promise<void> => {
         const attributes = JSON.parse(task.attributes);
 
         // For e2e account we ALWAYS want to cleanup. For others, we only want to cleanup tasks with e2eTestMode=true
+        // OR if the call / texts originate from one of the E2E test numbers (these are numbers owned by our dev Twilio accounts so will never be real calls)
         if (
           helplineShortCode !== 'e2e' &&
           attributes.e2eTestMode !== 'true' &&
@@ -46,7 +47,7 @@ export const deleteAllTasksInQueue = async (): Promise<void> => {
         ) {
           return Promise.resolve();
         }
-        console.log(`Removing task ${task.sid}`);
+        console.info(`Removing task ${task.sid}`);
         return task.remove();
       }),
     );
