@@ -43,7 +43,7 @@ export const deleteAllTasksInQueue = async (): Promise<void> => {
         if (
           helplineShortCode !== 'e2e' &&
           attributes.e2eTestMode !== 'true' &&
-          [clientSmsNumber, clientVoicePhoneNumber].includes(attributes.from)
+          ![clientSmsNumber, clientVoicePhoneNumber].includes(attributes.from)
         ) {
           return Promise.resolve();
         }
