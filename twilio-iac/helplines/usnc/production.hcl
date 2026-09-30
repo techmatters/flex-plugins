@@ -54,9 +54,9 @@ locals {
         contact_identity = ""
         templatefile     = "/app/twilio-iac/helplines/usnc/templates/studio-flows/voice-blocking-no-op-hours-rec-sd.tftpl"
         channel_flow_vars = {
-          play_message_voice_prequeue    = "https://usnc-assets-7869.twil.io/play_message_voice_prequeue.mp3"
-          gather_live_monitoring_consent = "https://usnc-assets-7869.twil.io/gather_live_monitoring_consent.mp3"
-          play_message_voice_blocked     = "https://usnc-assets-7869.twil.io/play_message_voice_blocked.mp3"
+          play_message_voice_prequeue    = "https://usnc-assets-v2-7993.twil.io/play_message_voice_prequeue.mp3"
+          gather_live_monitoring_consent = "https://usnc-assets-v2-7993.twil.io/gather_live_monitoring_consent.mp3"
+          play_message_voice_blocked     = "https://usnc-assets-v2-7993.twil.io/play_message_voice_blocked.mp3"
           voice_ivr_language             = "en-US"
         }
         chatbot_unique_names = []
