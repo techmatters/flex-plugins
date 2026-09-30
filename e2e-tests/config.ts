@@ -251,14 +251,7 @@ const configOptions = {
 
 type ConfigMap = typeof configOptions
 
-export const getConfigValue = (key: keyof ConfigMap) => {
-  // We assume all config values are required for now
-  if (config[key] == null) {
-    throw new Error(`Config value ${key} is not set`);
-  }
-
-  return config[key];
-};
+export const getConfigValue = (key: keyof ConfigMap) => getAnyConfigValue(key);
 
 export const setConfigValue = (key: keyof ConfigMap, value: ConfigValue) => {
   let typedValue: ConfigValue = value;
