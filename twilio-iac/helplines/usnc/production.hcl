@@ -17,7 +17,14 @@ locals {
       send_message_janitor_function_sid = "ZH32e89389e042507522a3396bde4a4611"
       bot_language                      = "en-USNC"
     }
-
+    studio_flows = {
+      post_call_survey : {
+        templatefile = "/app/twilio-iac/helplines/usnc/templates/studio-flows/post-call-survey.tftpl"
+        flow_vars = {
+          usnc_assets_url    = "https://usnc-assets-v2-7993.twil.io"
+        }
+      }
+    }
     channels = {
       webchat : {
         channel_type     = "web"
