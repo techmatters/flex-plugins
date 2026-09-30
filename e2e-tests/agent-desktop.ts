@@ -50,12 +50,13 @@ export const agentDesktop = (page: Page) => {
 
   const waitForTaskInQueue = async (
     queueName: string,
-    channel: string,
+    channelType: string,
     timeoutInMs?: number,
   ): Promise<void> => {
-    await expect(selectors.waitingTaskCounterLabel(queueName, channel)).toContainText('1', {
+    await expect(selectors.waitingTaskCounterLabel(queueName, channelType)).toContainText('1', {
       timeout: timeoutInMs,
     });
+    console.debug(`Task of channel type ${channelType} seen in queue '${queueName}'`);
   };
 
   return {
