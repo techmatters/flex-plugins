@@ -75,7 +75,9 @@ export const areOperatingHoursEnforced = async (
   accountSid: AccountSID,
   from: string | undefined,
 ): Promise<boolean> => {
-  console.debug(`[SENSITIVE] Checking if number bypasses operating hours. Checking ${from} against these bypass numbers: ${BYPASS_NUMBERS}`);
+  console.debug(
+    `[SENSITIVE] Checking if number bypasses operating hours. Checking ${from} against these bypass numbers: ${BYPASS_NUMBERS}`,
+  );
   if (from && BYPASS_NUMBERS.includes(from)) {
     console.info(`Bypassing number for operation hours check`);
     return false;
