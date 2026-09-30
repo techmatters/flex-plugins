@@ -58,7 +58,7 @@ export const localOverrideEnv = helplineEnv === 'local' ? 'development' : helpli
 
 export const config: Config = {};
 
-export const getConfigValue = (key: string) => {
+export const getAnyConfigValue = (key: string) => {
   // We assume all config values are required for now
   if (config[key] == null) {
     throw new Error(`Config value ${key} is not set`);
@@ -79,7 +79,7 @@ export const getConfigValue = (key: string) => {
  * used in the config itself. We use the vars we set earlier as the default to keep
  * the default dry instead of duplicating the values here.
  */
-const configOptions: ConfigOptions = {
+const configOptions = {
   // The helpline short code is used to generate the ssm param paths for the other config options
   helplineShortCode: {
     envKey: 'HL',
@@ -135,7 +135,7 @@ const configOptions: ConfigOptions = {
   twilioAuthToken: {
     envKey: 'TWILIO_AUTH_TOKEN',
     // Order is important here. We use a function so that we can reference the twilioAccountSid config value above.
-    ssmPath: () => `/${localOverrideEnv}/twilio/${getConfigValue('twilioAccountSid')}/auth_token`,
+    ssmPath: () => `/${localOverrideEnv}/twilio/${getAnyConfigValue('twilioAccountSid')}/auth_token`,
   },
 
   // The twilio account sid and auth token are used to target a flex account
@@ -147,7 +147,7 @@ const configOptions: ConfigOptions = {
     envKey: 'CLIENT_TWILIO_AUTH_TOKEN',
     // Order is important here. We use a function so that we can reference the clientTwilioAccountSid config value above.
     ssmPath: () =>
-      `/${clientHelplineEnv}/twilio/${getConfigValue('clientTwilioAccountSid')}/auth_token`,
+      `/${clientHelplineEnv}/twilio/${getAnyConfigValue('clientTwilioAccountSid')}/auth_token`,
   },
 
   // Turn on debug mode. Possibly unused.
@@ -210,13 +210,13 @@ const configOptions: ConfigOptions = {
   // This should match the number set up for the SMS studio flow on the helpline under test
   smsPhoneNumber: {
     envKey: 'SMS_PHONE_NUMBER',
-    default: () => getConfigValue('voicePhoneNumber'),
+    default: () => getAnyConfigValue('voicePhoneNumber'),
   },
 
   // This should match the number set up on the clientTwilioAccountSid that can send outgoing SMS messages
   clientSmsPhoneNumber: {
     envKey: 'CLIENT_SMS_PHONE_NUMBER',
-    default: () => getConfigValue('clientVoicePhoneNumber'),
+    default: () => getAnyConfigValue('clientVoicePhoneNumber'),
   },
 
   // inLambda is used to determine if we are running in a lambda or not and set other config values accordingly
@@ -228,13 +228,13 @@ const configOptions: ConfigOptions = {
   // The storage state path is used to store the state of the browser between tests
   storageStatePath: {
     envKey: 'STORAGE_STATE_PATH',
-    default: () => (getConfigValue('inLambda') ? '/tmp/storage/state.json' : 'temp/state.json'),
+    default: () => (getAnyConfigValue('inLambda') ? '/tmp/storage/state.json' : 'temp/state.json'),
   },
 
   // Specifying a test name will cause only the matching test file to be run.
   testName: {
     envKey: 'TEST_NAME',
-    default: () => (getConfigValue('inLambda') ? 'login' : ''),
+    default: () => (getAnyConfigValue('inLambda') ? 'login' : ''),
   },
 
   hrmRoot: {
@@ -244,12 +244,23 @@ const configOptions: ConfigOptions = {
 
   legacyOktaSso: {
     envKey: 'LEGACY_OKTA_SSO',
-    ssmPath: () => `/${localOverrideEnv}/twilio/${getConfigValue('twilioAccountSid')}/legacy_sso`,
+    ssmPath: () => `/${localOverrideEnv}/twilio/${getAnyConfigValue('twilioAccountSid')}/legacy_sso`,
     default: 'false',
   },
+} satisfies Record<string, ConfigOption>;
+
+type ConfigMap = typeof configOptions
+
+export const getConfigValue = (key: keyof ConfigMap) => {
+  // We assume all config values are required for now
+  if (config[key] == null) {
+    throw new Error(`Config value ${key} is not set`);
+  }
+
+  return config[key];
 };
 
-export const setConfigValue = (key: string, value: ConfigValue) => {
+export const setConfigValue = (key: keyof ConfigMap, value: ConfigValue) => {
   let typedValue: ConfigValue = value;
 
   // Handle correctly converting boolean values from environment variable strings
@@ -272,8 +283,8 @@ export const setConfigValue = (key: string, value: ConfigValue) => {
   process.env[configOptions[key].envKey] = value as string;
 };
 
-const setConfigValueFromSsm = async (key: string) => {
-  const option = configOptions[key];
+const setConfigValueFromSsm = async (key: keyof ConfigMap) => {
+  const option: ConfigOption = configOptions[key];
   if (!option.ssmPath) return;
 
   const envValue = process.env[option.envKey];
@@ -311,7 +322,7 @@ const initSsmConfigValues = async () => {
   }
   console.info('Setting config values from AWS SSM', Object.keys(configOptions));
   // This must be done in series because some config options depend on others
-  for (const key of Object.keys(configOptions)) {
+  for (const key of Object.keys(configOptions) as (keyof ConfigMap)[]) {
     console.info('Setting config value from AWS SSM', key);
     await setConfigValueFromSsm(key);
   }
@@ -328,8 +339,8 @@ export const initConfig = async () => {
   await initSsmConfigValues();
 };
 
-const initStaticConfigValue = (key: string) => {
-  const option = configOptions[key];
+const initStaticConfigValue = (key: keyof ConfigMap) => {
+  const option = configOptions[key] as ConfigOption;
 
   // If we have a value in the environment, use that since it is the source of truth
   if (process.env[option.envKey]) {
@@ -346,7 +357,7 @@ const initStaticConfigValue = (key: string) => {
 const initStaticConfigValues = () => {
   dotenv.config();
   Object.keys(configOptions).forEach((key) => {
-    initStaticConfigValue(key);
+    initStaticConfigValue(key as keyof ConfigMap);
   });
 };
 
