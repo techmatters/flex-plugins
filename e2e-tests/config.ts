@@ -14,6 +14,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
+// eslint-disable
 import dotenv from 'dotenv';
 import { getSsmParameter } from './ssmClient';
 
@@ -135,7 +136,8 @@ const configOptions = {
   twilioAuthToken: {
     envKey: 'TWILIO_AUTH_TOKEN',
     // Order is important here. We use a function so that we can reference the twilioAccountSid config value above.
-    ssmPath: () => `/${localOverrideEnv}/twilio/${getAnyConfigValue('twilioAccountSid')}/auth_token`,
+    ssmPath: () =>
+      `/${localOverrideEnv}/twilio/${getAnyConfigValue('twilioAccountSid')}/auth_token`,
   },
 
   // The twilio account sid and auth token are used to target a flex account
@@ -210,7 +212,10 @@ const configOptions = {
   // This should match the queue reserved for E2E test calls on the account under test
   voiceQueue: {
     envKey: 'VOICE_QUEUE',
-    default: () => getAnyConfigValue('helplineShortCode').toString().toUpperCase() === 'E2E' ? 'Childline' : 'E2E Test Queue',
+    default: () =>
+      getAnyConfigValue('helplineShortCode').toString().toUpperCase() === 'E2E'
+        ? 'Childline'
+        : 'E2E Test Queue',
   },
 
   // This should match the number set up for the SMS studio flow on the helpline under test
@@ -227,7 +232,10 @@ const configOptions = {
   // This should match the queue reserved for E2E test sms conversations on the account under test
   smsQueue: {
     envKey: 'SMS_QUEUE',
-    default: () => getAnyConfigValue('helplineShortCode').toString().toUpperCase() === 'E2E' ? 'Childline' : 'E2E Test Queue',
+    default: () =>
+      getAnyConfigValue('helplineShortCode').toString().toUpperCase() === 'E2E'
+        ? 'Childline'
+        : 'E2E Test Queue',
   },
 
   // inLambda is used to determine if we are running in a lambda or not and set other config values accordingly
@@ -252,10 +260,9 @@ const configOptions = {
     envKey: 'HRM_ROOT',
     default: '', // Default cannot be set up front due to the account sid might not calculated.
   },
-// eslint-disable-next-line prettier/prettier
-} satisfies Record<string, ConfigOption>;
+}; // satisfies Record<string, ConfigOption>; // eslint needs upgrading to stop barfing on this
 
-type ConfigMap = typeof configOptions
+type ConfigMap = typeof configOptions;
 
 export const getConfigValue = (key: keyof ConfigMap) => getAnyConfigValue(key);
 
