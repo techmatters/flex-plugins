@@ -15,8 +15,7 @@
  */
 
 import each from 'jest-each';
-import subHours from 'date-fns/subHours';
-import { subDays } from 'date-fns';
+import { subDays, subHours } from 'date-fns';
 
 import { mockPartialConfiguration } from '../mockGetConfig';
 import { cleanupInitializedCan, getInitializedCan, validateAndSetPermissionRules } from '../../permissions/rules';

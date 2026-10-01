@@ -54,7 +54,8 @@ jobs:
       matrix:
         lambda_path:
           - account-scoped
-          - e2eTestRunner
+          # include when terraform infra is created in all envs
+          # - e2eTestRunner
           - scheduled-jobs-processor
           - external-task
           - facebookCallback
