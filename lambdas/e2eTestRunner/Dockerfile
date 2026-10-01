@@ -68,7 +68,7 @@ COPY e2e-tests/package*.json /app/e2e-tests/
 RUN cd hrm-form-definitions && \
     npm ci && \
     cd ../e2e-tests && \
-    npm ci && \
+    npm ci --legacy-peer-deps && \
     rm -rf /ms-playwright/* && \
     npm run postinstall
 
