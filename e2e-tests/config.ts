@@ -252,6 +252,7 @@ const configOptions = {
     envKey: 'HRM_ROOT',
     default: '', // Default cannot be set up front due to the account sid might not calculated.
   },
+// eslint-disable-next-line prettier/prettier
 } satisfies Record<string, ConfigOption>;
 
 type ConfigMap = typeof configOptions
