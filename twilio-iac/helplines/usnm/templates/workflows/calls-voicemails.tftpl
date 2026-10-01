@@ -14,6 +14,16 @@
         ]
       },
       {
+       "filter_friendly_name": "E2E Test",
+       "expression": "channelType=='voice' AND name=='+12064083885'",
+       "targets": [
+         {
+           "expression": "(worker.waitingOfflineContact != true AND ((task.channelType == 'voice' AND worker.channel.chat.assigned_tasks == 0) OR (task.channelType != 'voice' AND worker.channel.voice.assigned_tasks == 0)) AND ((task.transferTargetType == 'worker' AND task.targetSid == worker.sid) OR (task.transferTargetType != 'worker' AND worker.sid != task.ignoreAgent))) OR (worker.waitingOfflineContact == true AND task.targetSid == worker.sid AND task.isContactlessTask == true)",
+           "queue": "${task_queues.e2e_test}"
+         }
+       ]
+      },
+      {
         "filter_friendly_name": "ES TYA Voicemail",
         "expression": "channelType =='voicemail' AND routingAttributes.service=='tya' AND routingAttributes.serviceLanguage == 'spanish'",
         "targets": [
@@ -190,16 +200,6 @@
           {
             "expression": "(task.targetSid == worker.sid AND task.isContactlessTask == true)",
             "queue": "${task_queues.en_std}"
-          }
-        ]
-      },
-      {
-        "filter_friendly_name": "E2E Test",
-        "expression": "channelType=='web' AND e2eTestMode=='true'",
-        "targets": [
-          {
-            "expression": "(worker.waitingOfflineContact != true AND ((task.channelType == 'voice' AND worker.channel.chat.assigned_tasks == 0) OR (task.channelType != 'voice' AND worker.channel.voice.assigned_tasks == 0)) AND ((task.transferTargetType == 'worker' AND task.targetSid == worker.sid) OR (task.transferTargetType != 'worker' AND worker.sid != task.ignoreAgent))) OR (worker.waitingOfflineContact == true AND task.targetSid == worker.sid AND task.isContactlessTask == true)",
-            "queue": "${task_queues.e2e_test}"
           }
         ]
       }

@@ -22,6 +22,10 @@ export const agentDesktop = (page: Page) => {
   const selectors = {
     addOfflineContactButton: () =>
       page.locator(`//button[@data-fs-id='Task-AddOfflineContact-Button']`),
+    waitingTaskCounterLabel: (queueName: string, channel: string) =>
+      page.locator(
+        `div.Twilio-AgentDesktopView-default div[data-testid='${queueName}-${channel}'] div[data-testid='channel-box-inner-value']`,
+      ),
   };
 
   const addOfflineContact = async () => {
@@ -44,8 +48,20 @@ export const agentDesktop = (page: Page) => {
     }
   };
 
+  const waitForTaskInQueue = async (
+    queueName: string,
+    channelType: string,
+    timeoutInMs?: number,
+  ): Promise<void> => {
+    await expect(selectors.waitingTaskCounterLabel(queueName, channelType)).toContainText('1', {
+      timeout: timeoutInMs,
+    });
+    console.debug(`Task of channel type ${channelType} seen in queue '${queueName}'`);
+  };
+
   return {
     addOfflineContact,
+    waitForTaskInQueue,
   };
 };
 

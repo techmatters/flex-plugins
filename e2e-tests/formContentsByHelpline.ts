@@ -53,6 +53,15 @@ export const formContentsByHelpline = {
       contactType: 'Testing',
     },
   },
+  usnm: {
+    childInformation: {
+      zipCode: '1234',
+    },
+    categories: {
+      Education: ['Disability Rights for Education'],
+    },
+    caseInformation: {},
+  },
 };
 
 export const formContentsByHelplineForEmptyForm = {

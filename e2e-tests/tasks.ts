@@ -26,8 +26,11 @@ export function tasks(page: Page) {
   };
 
   return {
-    acceptNextTask: async function (): Promise<void> {
-      await selectors.taskListFirstAcceptButton.waitFor({ state: 'visible' });
+    acceptNextTask: async function (waitForTaskAvailableMs?: number): Promise<void> {
+      await selectors.taskListFirstAcceptButton.waitFor({
+        state: 'visible',
+        ...(waitForTaskAvailableMs ? { timeout: waitForTaskAvailableMs } : {}),
+      });
       await selectors.taskListFirstAcceptButton.click();
       await selectors.taskListFirstAcceptButton.waitFor({ state: 'hidden' });
     },

@@ -25,6 +25,10 @@ import twilio, { Twilio } from 'twilio';
 
 export type { Twilio };
 
+export const BYPASS_NUMBERS = [
+  '+12064083885', // Aselo Development Number, used to dial in for voice E2E tests
+];
+
 export const getWorkspaceSid = async (accountSid: AccountSID): Promise<WorkspaceSID> =>
   (await getSsmParameter(
     `/${process.env.NODE_ENV}/twilio/${accountSid}/workspace_sid`,
@@ -69,7 +73,15 @@ export const getOperatingInfoKey = (accountSid: AccountSID): Promise<string> =>
 
 export const areOperatingHoursEnforced = async (
   accountSid: AccountSID,
+  from: string | undefined,
 ): Promise<boolean> => {
+  console.debug(
+    `[SENSITIVE] Checking if number bypasses operating hours. Checking ${from} against these bypass numbers: ${BYPASS_NUMBERS}`,
+  );
+  if (from && BYPASS_NUMBERS.includes(from)) {
+    console.info(`Bypassing number for operation hours check`);
+    return false;
+  }
   try {
     const overrideText = await getSsmParameter(
       `/${process.env.NODE_ENV}/twilio/${accountSid}/operating_hours_enforced_override`,

@@ -32,7 +32,7 @@ import { inferHrmAccountId, HrmAccountId } from './hrmAccountId';
 import { sanitizeIdentifierFromTask } from './sanitizeIdentifier';
 import { HrmContact } from '@tech-matters/hrm-types';
 import { populateHrmContactFormFromTaskByMappings } from './populateHrmContactFormFromTaskByMappings';
-import { parseISO } from 'date-fns/parseISO';
+import { parseISO } from 'date-fns';
 import { HttpClientError } from '../httpErrors';
 import { getExternalRecordingS3Location } from '../conversation/getExternalRecordingS3Location';
 import { patchTaskAttributes } from '../task/patchTaskAttributes';

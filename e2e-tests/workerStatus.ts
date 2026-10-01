@@ -45,13 +45,14 @@ export function statusIndicator(page: Page) {
   return {
     setStatus: async function (status: WorkerStatus) {
       await selectors.userActivityDropdownButton.click();
-      console.debug('Worker status dropdown should be open');
+      console.debug(`Worker status dropdown should be open (attempting to set to ${status})`);
       await selectors.activityMenu.waitFor({ state: 'visible' });
       const statusSelector = await getFirstMatchingStatus(page, WORKER_STATUS[status]);
-      console.debug('Worker status option spotted');
+      console.debug(`Worker status option ${status} spotted`);
       await statusSelector.click();
-      console.debug('Worker status option clicked');
+      console.debug(`Worker status option ${status} clicked`);
       await expect(statusSelector).toContainText(new RegExp(WORKER_STATUS[status].join('|')));
+      console.debug(`Worker status option verified set to ${status}`);
     },
   };
 }

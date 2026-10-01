@@ -52,6 +52,7 @@ type OperatingInfo = OfficeOperatingInfo & {
 
 export type Body = {
   channel?: string;
+  from?: string;
   office?: string;
   includeMessageTextInResponse?: string;
   language?: string;
@@ -166,12 +167,20 @@ export const handleOperatingHours: AccountScopedHandler = async (
   try {
     const operatingInfoKey = await getOperatingInfoKey(accountSid);
 
-    const { channel, office, language } = body;
-
-    const enforced = await areOperatingHoursEnforced(accountSid);
+    const { channel, office, language, from } = body;
+    console.debug(
+      `[${accountSid}/${operatingInfoKey}] Checking against operating hours for ${channel}`,
+    );
+    const enforced = await areOperatingHoursEnforced(accountSid, from);
     if (!enforced) {
+      console.debug(
+        `[${accountSid}/${operatingInfoKey}] Operating hours for ${channel} not enforced in this case`,
+      );
       return newOpenResult();
     }
+    console.debug(
+      `[${accountSid}/${operatingInfoKey}] Operating hours for ${channel} are enforced - checking schedules`,
+    );
 
     if (channel === undefined) {
       return newErr({
@@ -185,9 +194,15 @@ export const handleOperatingHours: AccountScopedHandler = async (
     } catch (err) {
       return newOpenResult();
     }
+    console.debug(
+      `[${accountSid}/${operatingInfoKey}] Operating hours schedule loaded - checking schedules`,
+    );
 
     const status = getOperatingStatus({ operatingInfo, channel, office });
 
+    console.debug(
+      `[${accountSid}/${operatingInfoKey}] Operating hours schedule check result: '${status}'`,
+    );
     // Return the status and, if closed, the appropriate message
     const response = {
       status,

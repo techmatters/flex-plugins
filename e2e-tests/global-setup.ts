@@ -17,7 +17,7 @@
 /* eslint-disable import/no-extraneous-dependencies */
 import { FullConfig, request } from '@playwright/test';
 import { differenceInMilliseconds } from 'date-fns';
-import { delay, legacyOktaSsoLoginViaApi, oktaSsoLoginViaApi } from './okta/ssoLogin';
+import { delay, oktaSsoLoginViaApi } from './okta/ssoLogin';
 import { getConfigValue, initConfig } from './config';
 import { getSidForWorker } from './twilio/worker';
 import { clearOfflineTask } from './hrm/clearOfflineTask';
@@ -25,7 +25,7 @@ import { apiHrmRequest } from './hrm/hrmRequest';
 
 async function globalSetup(config: FullConfig) {
   const start = new Date();
-  console.log('Global setup started');
+  console.info('Global setup started');
   if (config.projects.length > 1) {
     console.warn(
       `Tests have ${config.projects.length} set up, only running global configuration against the first one - consider revising the global setup code.`,
@@ -33,14 +33,13 @@ async function globalSetup(config: FullConfig) {
   }
 
   await initConfig();
-  const login = getConfigValue('legacyOktaSso') ? legacyOktaSsoLoginViaApi : oktaSsoLoginViaApi;
   const MAX_LOGIN_RETRIES = 3;
   let flexToken: string | undefined;
   let lastLoginError: unknown;
   for (let attempt = 1; attempt <= MAX_LOGIN_RETRIES; attempt++) {
     try {
       // eslint-disable-next-line no-await-in-loop
-      flexToken = await login(
+      flexToken = await oktaSsoLoginViaApi(
         getConfigValue('baseURL') as string,
         getConfigValue('oktaUsername') as string,
         getConfigValue('oktaPassword') as string,
@@ -93,8 +92,8 @@ async function globalSetup(config: FullConfig) {
   process.env.TWILIO_RUNTIME_DOMAIN = getConfigValue('baseURL')?.toString().includes('localhost')
     ? ''
     : runtimeDomain.split('.')[0];
-  console.info('TWILIO_RUNTIME_DOMAIN', process.env.TWILIO_RUNTIME_DOMAIN);
-  console.log(
+  console.debug('TWILIO_RUNTIME_DOMAIN', process.env.TWILIO_RUNTIME_DOMAIN);
+  console.info(
     'Global setup completed',
     `Took ${differenceInMilliseconds(new Date(), start) / 1000} seconds`,
   );

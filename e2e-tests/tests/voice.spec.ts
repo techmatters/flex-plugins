@@ -20,7 +20,7 @@ import { skipTestIfNotTargeted } from '../skipTest';
 import { contactForm } from '../contactForm';
 import { deleteAllTasksInQueue } from '../twilio/tasks';
 import { notificationBar } from '../notificationBar';
-import { clickThroughTwilioPasteModals } from '../agent-desktop';
+import { agentDesktop, clickThroughTwilioPasteModals } from '../agent-desktop';
 import { setupContextAndPage, closePage } from '../browser';
 import { clearOfflineTask } from '../hrm/clearOfflineTask';
 import { apiHrmRequest } from '../hrm/hrmRequest';
@@ -65,11 +65,18 @@ test.describe.serial('Voice caller', () => {
   });
 
   test('Call', async () => {
-    test.setTimeout(180000);
+    test.setTimeout(900000);
+    console.info(`Placing call`);
     await makeCallToService();
+    console.info(`Waiting for call to be placed in queue`);
+    await agentDesktop(pluginPage).waitForTaskInQueue(
+      getConfigValue('voiceQueue').toString(),
+      'voice',
+      600000,
+    );
     await statusIndicator(pluginPage).setStatus('AVAILABLE');
+    console.info(`Call seen in E2E queue`);
     await tasks(pluginPage).acceptNextTask();
-
     console.info('Starting filling form');
     const helpline = getConfigValue('helplineShortCode') as keyof typeof formContentsByHelpline;
     const formContent = formContentsByHelplineForEmptyForm[helpline];

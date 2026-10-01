@@ -22,6 +22,8 @@ export const deleteAllTasksInQueue = async (): Promise<void> => {
   const accountSid = getConfigValue('twilioAccountSid') as string;
   const authToken = getConfigValue('twilioAuthToken') as string;
   const helplineShortCode = getConfigValue('helplineShortCode') as string;
+  const clientVoicePhoneNumber = getConfigValue('clientVoicePhoneNumber') as string;
+  const clientSmsNumber = getConfigValue('clientSmsPhoneNumber') as string;
   const twilioClient = twilio(accountSid, authToken);
 
   const workspaces = await twilioClient.taskrouter.v1.workspaces.list();
@@ -29,22 +31,31 @@ export const deleteAllTasksInQueue = async (): Promise<void> => {
     throw new Error(`Workspaces not found.`);
   }
 
-  workspaces.forEach(async (workspace) => {
+  for (const workspace of workspaces) {
     const tasksInQueue = await workspace.tasks().list();
 
     await Promise.all(
-      tasksInQueue.map((task) => {
+      // eslint-disable-next-line @typescript-eslint/no-loop-func
+      tasksInQueue.map(async (task) => {
         const attributes = JSON.parse(task.attributes);
 
         // For e2e account we ALWAYS want to cleanup. For others, we only want to cleanup tasks with e2eTestMode=true
-        if (helplineShortCode !== 'e2e' && attributes.e2eTestMode !== 'true') {
-          return Promise.resolve();
+        // OR if the call / texts originate from one of the E2E test numbers (these are numbers owned by our dev Twilio accounts so will never be real calls)
+        if (
+          helplineShortCode !== 'e2e' &&
+          attributes.e2eTestMode !== 'true' &&
+          ![clientSmsNumber, clientVoicePhoneNumber].includes(attributes.from) &&
+          ![clientSmsNumber, clientVoicePhoneNumber].includes(attributes.name)
+        ) {
+          console.debug(`[SENSITIVE] Keeping task: ${task.sid}`, attributes);
+          return false;
         }
-        console.log(`Removing task ${task.sid}`);
+        console.info(`Removing task ${task.sid}`);
+        console.debug(`[SENSITIVE] attributes:`, attributes);
         return task.remove();
       }),
     );
-  });
+  }
 };
 
 process.on('SIGINT', deleteAllTasksInQueue);

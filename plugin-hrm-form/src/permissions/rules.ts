@@ -14,8 +14,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import parseISO from 'date-fns/parseISO';
-import { differenceInDays, differenceInHours } from 'date-fns';
+import { differenceInDays, differenceInHours, parseISO } from 'date-fns';
 
 import { getHrmConfig } from '../hrmConfig';
 import {ContactRawJson, ProfileSection} from '../types/types';
