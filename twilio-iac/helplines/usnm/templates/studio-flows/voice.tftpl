@@ -57,30 +57,6 @@ ${
         "url": "${webhook_url_studio_errors}"
       }
     },
-
-    {
-      "name": "set_is_e2e_test",
-      "type": "make-http-request",
-      "transitions": [
-        {
-          "event": "success"
-        },
-        {
-          "event": "failed"
-        }
-      ],
-      "properties": {
-        "offset": {
-          "x": 2136,
-          "y": 5027
-        },
-        "method": "POST",
-        "content_type": "application/json;charset=utf-8",
-        "add_twilio_auth": false,
-        "body": "{ \"text\": \"Issue detected [Failed to Enqueue] on ${short_helpline} ${short_environment} Flow SID: {{flow.flow_sid}} Execution SID: {{flow.sid}}  \" }",
-        "url": "${webhook_url_studio_errors}"
-      }
-    },
     {
       "name": "run_subflow_system_down",
       "type": "run-subflow",
