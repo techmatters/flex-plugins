@@ -17,7 +17,7 @@
 /* eslint-disable import/no-extraneous-dependencies */
 import { FullConfig, request } from '@playwright/test';
 import { differenceInMilliseconds } from 'date-fns';
-import { delay, legacyOktaSsoLoginViaApi, oktaSsoLoginViaApi } from './okta/ssoLogin';
+import { delay, oktaSsoLoginViaApi } from './okta/ssoLogin';
 import { getConfigValue, initConfig } from './config';
 import { getSidForWorker } from './twilio/worker';
 import { clearOfflineTask } from './hrm/clearOfflineTask';
@@ -33,14 +33,13 @@ async function globalSetup(config: FullConfig) {
   }
 
   await initConfig();
-  const login = getConfigValue('legacyOktaSso') ? legacyOktaSsoLoginViaApi : oktaSsoLoginViaApi;
   const MAX_LOGIN_RETRIES = 3;
   let flexToken: string | undefined;
   let lastLoginError: unknown;
   for (let attempt = 1; attempt <= MAX_LOGIN_RETRIES; attempt++) {
     try {
       // eslint-disable-next-line no-await-in-loop
-      flexToken = await login(
+      flexToken = await oktaSsoLoginViaApi(
         getConfigValue('baseURL') as string,
         getConfigValue('oktaUsername') as string,
         getConfigValue('oktaPassword') as string,

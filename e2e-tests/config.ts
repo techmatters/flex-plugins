@@ -207,6 +207,12 @@ const configOptions = {
     default: '+12064083885',
   },
 
+  // This should match the queue reserved for E2E test calls on the account under test
+  voiceQueue: {
+    envKey: 'VOICE_QUEUE',
+    default: () => getAnyConfigValue('helplineShortCode').toString().toUpperCase() === 'E2E' ? 'Childline' : 'E2E Test Queue',
+  },
+
   // This should match the number set up for the SMS studio flow on the helpline under test
   smsPhoneNumber: {
     envKey: 'SMS_PHONE_NUMBER',
@@ -217,6 +223,11 @@ const configOptions = {
   clientSmsPhoneNumber: {
     envKey: 'CLIENT_SMS_PHONE_NUMBER',
     default: () => getAnyConfigValue('clientVoicePhoneNumber'),
+  },
+  // This should match the queue reserved for E2E test sms conversations on the account under test
+  smsQueue: {
+    envKey: 'SMS_QUEUE',
+    default: () => getAnyConfigValue('helplineShortCode').toString().toUpperCase() === 'E2E' ? 'Childline' : 'E2E Test Queue',
   },
 
   // inLambda is used to determine if we are running in a lambda or not and set other config values accordingly
@@ -240,12 +251,6 @@ const configOptions = {
   hrmRoot: {
     envKey: 'HRM_ROOT',
     default: '', // Default cannot be set up front due to the account sid might not calculated.
-  },
-
-  legacyOktaSso: {
-    envKey: 'LEGACY_OKTA_SSO',
-    ssmPath: () => `/${localOverrideEnv}/twilio/${getAnyConfigValue('twilioAccountSid')}/legacy_sso`,
-    default: 'false',
   },
 } satisfies Record<string, ConfigOption>;
 

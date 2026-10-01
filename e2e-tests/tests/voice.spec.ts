@@ -69,7 +69,11 @@ test.describe.serial('Voice caller', () => {
     console.info(`Placing call`);
     await makeCallToService();
     console.info(`Waiting for call to be placed in queue`);
-    await agentDesktop(pluginPage).waitForTaskInQueue('E2E Test Queue', 'voice', 600000);
+    await agentDesktop(pluginPage).waitForTaskInQueue(
+      getConfigValue('voiceQueue').toString(),
+      'voice',
+      600000,
+    );
     await statusIndicator(pluginPage).setStatus('AVAILABLE');
     console.info(`Call seen in E2E queue`);
     await tasks(pluginPage).acceptNextTask();
