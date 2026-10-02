@@ -10,6 +10,7 @@
     "feature_flags": {
       "enable_canned_responses": false,
       "enable_conferencing": true,
+      "enable_conference_status_event_handler": true,
       "enable_external_transcripts": true,
       "enable_hierarchical_translations": true,
       "enable_lex_v2": true,
