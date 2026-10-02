@@ -1,12 +1,18 @@
 {
     "attributes": {
-        "system_down" : false,
+        "system_down": false,
         "form_definitions_base_url": "https://assets-production.tl.techmatters.org/form-definitions/",
         "resources_base_url": "",
         "feature_flags": {
             "use_twilio_lambda_adjust_capacity": false,
             "use_twilio_lambda_janitor": false,
             "use_twilio_lambda_transfers": false
+        },
+        "postStudioFlows": {
+            "WQ786294d1cfa50be47210db6f27fdcc67": {
+                "flowTrigger": "inProgressCall",
+                "studioFlowSid": "FW0927ae1b3a1b63a3ea18ce2c41496d10"
+            }
         }
     }
 }
