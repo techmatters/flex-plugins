@@ -85,7 +85,9 @@ test.describe.serial('SMS caller', () => {
         switch (expectedCounselorStatement.origin) {
           case ChatStatementOrigin.COUNSELOR_AUTO:
             await statusIndicator(pluginPage).setStatus('AVAILABLE');
-            await tasks(pluginPage).acceptNextTask();
+            if (!getConfigValue('autoAcceptTask')) {
+              await tasks(pluginPage).acceptNextTask();
+            }
             await flexChatProgress.next();
             break;
           default:
