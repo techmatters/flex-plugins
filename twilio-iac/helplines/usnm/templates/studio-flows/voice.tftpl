@@ -1761,7 +1761,7 @@ ${
           "x": 2805,
           "y": 3380
         },
-        "timeout": 5,
+        "timeout": 1,
         "max_length": 3600
       }
     },
@@ -1770,6 +1770,7 @@ ${
       "type": "make-http-request",
       "transitions": [
         {
+          "next": "play_message_voice_es_voicemail_saved",
           "event": "success"
         },
         {
@@ -1809,7 +1810,7 @@ ${
           "x": 3259,
           "y": 3393
         },
-        "timeout": 5,
+        "timeout": 1,
         "max_length": 3600
       }
     },
@@ -1818,6 +1819,7 @@ ${
       "type": "make-http-request",
       "transitions": [
         {
+          "next": "play_message_voice_es_voicemail_saved",
           "event": "success"
         },
         {
@@ -1954,7 +1956,7 @@ ${
           "x": 3753,
           "y": 3399
         },
-        "timeout": 5,
+        "timeout": 1,
         "max_length": 3600
       }
     },
@@ -1963,6 +1965,7 @@ ${
       "type": "make-http-request",
       "transitions": [
         {
+          "next": "play_message_voice_en_voicemail_saved",
           "event": "success"
         },
         {
@@ -2002,7 +2005,7 @@ ${
           "x": 4206,
           "y": 3411
         },
-        "timeout": 5,
+        "timeout": 1,
         "max_length": 3600
       }
     },
@@ -2011,6 +2014,7 @@ ${
       "type": "make-http-request",
       "transitions": [
         {
+          "next": "play_message_voice_en_voicemail_saved",
           "event": "success"
         },
         {
@@ -2108,7 +2112,7 @@ ${
           "x": 4635,
           "y": 3417
         },
-        "timeout": 5,
+        "timeout": 1,
         "max_length": 3600
       }
     },
@@ -2117,6 +2121,7 @@ ${
       "type": "make-http-request",
       "transitions": [
         {
+          "next": "play_message_voice_en_voicemail_saved",
           "event": "success"
         },
         {
@@ -2210,7 +2215,7 @@ ${
           "x": -2034,
           "y": 3730
         },
-        "timeout": 5,
+        "timeout": 1,
         "max_length": 3600
       }
     },
@@ -2219,6 +2224,7 @@ ${
       "type": "make-http-request",
       "transitions": [
         {
+          "next": "play_message_voice_en_voicemail_saved",
           "event": "success"
         },
         {
@@ -2312,7 +2318,7 @@ ${
           "x": -720,
           "y": 3732
         },
-        "timeout": 5,
+        "timeout": 1,
         "max_length": 3600
       }
     },
@@ -2321,6 +2327,7 @@ ${
       "type": "make-http-request",
       "transitions": [
         {
+          "next": "play_message_voice_en_voicemail_saved",
           "event": "success"
         },
         {
@@ -2468,7 +2475,7 @@ ${
           "x": 1294,
           "y": 3776
         },
-        "timeout": 5,
+        "timeout": 1,
         "max_length": 3600
       }
     },
@@ -2477,6 +2484,7 @@ ${
       "type": "make-http-request",
       "transitions": [
         {
+          "next": "play_message_voice_es_voicemail_saved",
           "event": "success"
         },
         {
@@ -2517,7 +2525,7 @@ ${
           "y": 3909
         },
         "play_beep": "true",
-        "timeout": 5,
+        "timeout": 1,
         "max_length": 3600
       }
     },
@@ -2526,6 +2534,7 @@ ${
       "type": "make-http-request",
       "transitions": [
         {
+          "next": "play_message_voice_en_voicemail_saved",
           "event": "success"
         },
         {
@@ -2566,7 +2575,7 @@ ${
           "y": 4021
         },
         "play_beep": "true",
-        "timeout": 5,
+        "timeout": 1,
         "max_length": 3600
       }
     },
@@ -2575,6 +2584,7 @@ ${
       "type": "make-http-request",
       "transitions": [
         {
+          "next": "play_message_voice_es_voicemail_saved",
           "event": "success"
         },
         {
@@ -2592,6 +2602,40 @@ ${
         "add_twilio_auth": false,
         "body": "{\n  \"accountSid\": \"{{widgets.record_voicemail_es_no_service_std.AccountSid}}\",\n  \"callSid\": \"{{widgets.record_voicemail_es_no_service_std.CallSid}}\",\n  \"callStatus\": \"{{widgets.record_voicemail_es_no_service_std.CallStatus}}\",\n  \"voicemailWorkflowSid\": \"${workflow_sids.master}\",\n  \"from\": \"{{trigger.call.From}}\",\n  \"maxCallbackAttempts\": 2,\n  \"routingAttributes\": {\"service\": \"std\",\"serviceLanguage\": \"spanish\",\"language\": \"es\"}\n}",
         "url": "${lambda_twilio_account_scoped_url}/voicemail/recordingCompleteCallback"
+      }
+    },
+    {
+      "name": "play_message_voice_en_voicemail_saved",
+      "type": "say-play",
+      "transitions": [
+        {
+          "event": "audioComplete"
+        }
+      ],
+      "properties": {
+        "play": "${flow_vars.usnm_recordings_url}/play_message_voice_en_voicemail_saved.mp3",
+        "offset": {
+          "x": 2659,
+          "y": 4621
+        },
+        "loop": 1
+      }
+    },
+    {
+      "name": "play_message_voice_es_voicemail_saved",
+      "type": "say-play",
+      "transitions": [
+        {
+          "event": "audioComplete"
+        }
+      ],
+      "properties": {
+        "play": "${flow_vars.usnm_recordings_url}/play_message_voice_es_voicemail_saved.mp3",
+        "offset": {
+          "x": 3021,
+          "y": 4621
+        },
+        "loop": 1
       }
     }
   ]
