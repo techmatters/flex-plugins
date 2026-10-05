@@ -14,3 +14,6 @@
 
 # Root level package-lock (use workspace-specific ones)
 /package-lock.json
+
+# Claude Code personal settings
+.claude/settings.local.json
