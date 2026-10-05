@@ -8,6 +8,7 @@
             "enable_lex_v2": true
         },
         "permissionConfig": "demo",
+        "definitionVersion": "as-v3",
         "resources_base_url": "https://hrm-production.tl.techmatters.org"
     },
     "ui_attributes": {
