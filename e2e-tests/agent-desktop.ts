@@ -68,24 +68,28 @@ export const agentDesktop = (page: Page) => {
 export const clickThroughTwilioPasteModals = async (page: Page, initialTimeout: number = 5000) => {
   const MAX_ATTEMPTS = 100;
   let attempts = 0;
-  console.debug(`Starting dismissing Twilio Paste modals`);
+  console.debug(`[${new Date().toISOString()}] Starting dismissing Twilio Paste modals`);
   try {
     // noinspection InfiniteLoopJS
     for (; attempts < MAX_ATTEMPTS; attempts++) {
       await page
         .locator('button[data-paste-element="MODAL_HEADER_CLOSE_BUTTON"]')
         .click({ timeout: attempts === 0 ? initialTimeout : 2000 });
-      console.info('Twilio Paste modal detected and dismissed');
+      console.info('[${new Date().toISOString()}] Twilio Paste modal detected and dismissed');
     }
   } catch (err) {
     if (err instanceof TimeoutError) {
-      console.debug(`Dismissed ${attempts} Twilio Paste modals, no more detected. Continuing`);
+      console.debug(
+        `[${new Date().toISOString()}] Dismissed ${attempts} Twilio Paste modals, no more detected. Continuing`,
+      );
       return;
     } else {
       throw err;
     }
   }
-  throw new Error(`Still attempting dismiss modals after ${attempts} attempts. Giving up.`);
+  throw new Error(
+    `[${new Date().toISOString()}] Still attempting dismiss modals after ${attempts} attempts. Giving up.`,
+  );
 };
 
 export const navigateToAgentDesktop = async (page: Page) => {
