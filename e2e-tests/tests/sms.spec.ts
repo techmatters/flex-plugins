@@ -42,7 +42,7 @@ test.describe.serial('SMS caller', () => {
     test.setTimeout(180000);
     await deleteSmsConversations();
     ({ page: pluginPage } = await setupContextAndPage(browser));
-
+    await deleteAllTasksInQueue();
     await clearOfflineTask(
       apiHrmRequest(await request.newContext(), process.env.FLEX_TOKEN!),
       process.env.LOGGED_IN_WORKER_SID!,

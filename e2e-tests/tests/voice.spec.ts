@@ -39,6 +39,7 @@ test.describe.serial('Voice caller', () => {
 
   test.beforeAll(async ({ browser }) => {
     test.setTimeout(180000);
+    await deleteAllTasksInQueue();
     ({ page: pluginPage } = await setupContextAndPage(browser));
 
     await clearOfflineTask(
