@@ -73,7 +73,7 @@ export const clickThroughTwilioPasteModals = async (page: Page) => {
     for (; attempts < MAX_ATTEMPTS; attempts++) {
       await page
         .locator('button[data-paste-element="MODAL_HEADER_CLOSE_BUTTON"]')
-        .click({ timeout: 2000 });
+        .click({ timeout: attempts === 0 ? 5000 : 2000 });
       console.info('Twilio Paste modal detected and dismissed');
     }
   } catch (err) {
