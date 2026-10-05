@@ -70,11 +70,16 @@ export const clickThroughTwilioPasteModals = async (page: Page, initialTimeout: 
   let attempts = 0;
   console.debug(`[${new Date().toISOString()}] Starting dismissing Twilio Paste modals`);
   try {
+    await page.waitForSelector('button[data-paste-element="MODAL_HEADER_CLOSE_BUTTON"]', {
+      timeout: initialTimeout,
+      state: 'visible',
+    });
+    console.debug(`[${new Date().toISOString()}] First Twilio Paste modal detected`);
     // noinspection InfiniteLoopJS
     for (; attempts < MAX_ATTEMPTS; attempts++) {
       await page
         .locator('button[data-paste-element="MODAL_HEADER_CLOSE_BUTTON"]')
-        .click({ timeout: attempts === 0 ? initialTimeout : 2000 });
+        .click({ timeout: 2000 });
       console.info(`[${new Date().toISOString()}] Twilio Paste modal detected and dismissed`);
     }
   } catch (err) {
