@@ -17,6 +17,7 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { errors, expect, Page } from '@playwright/test';
 import TimeoutError = errors.TimeoutError;
+import { getConfigValue } from './config';
 
 export const agentDesktop = (page: Page) => {
   const selectors = {
@@ -65,9 +66,10 @@ export const agentDesktop = (page: Page) => {
   };
 };
 
-export const clickThroughTwilioPasteModals = async (page: Page, initialTimeout: number = 5000) => {
+export const clickThroughTwilioPasteModals = async (page: Page, initialTimeoutMs?: number) => {
   const MAX_ATTEMPTS = 100;
   let attempts = 0;
+  const initialTimeout = initialTimeoutMs ?? (getConfigValue('inLambda') ? 15000 : 2000);
   console.debug(`[${new Date().toISOString()}] Starting dismissing Twilio Paste modals`);
   try {
     await page.waitForSelector('button[data-paste-element="MODAL_HEADER_CLOSE_BUTTON"]', {
