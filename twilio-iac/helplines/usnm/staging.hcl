@@ -15,7 +15,7 @@ locals {
       chat_blocked_message                                   = "Hi, you've been blocked from accessing NAMI services and we are not able to read or receive further messages from you."
       send_message_prequeue                                  = "Welcome. Pleas wait for a specialist."
       custom_functions_url                                   = "https://custom-functions-4084.twil.io"
-      usnm_recordings_url                                    = "https://usnm-recordings-5770.twil.io"
+      usnm_recordings_url                                    = "https://usnm-recordings-v2-1724.twil.io"
       is_skilled_worker_available_function_sid               = "ZH85007840bfdc6245a8ffb08d98aad0eb"
       conversation_time_delay_function_sid                   = "ZH45e11e1929796c69c440a52f9692c085"
       is_task_in_queue_function_sid                          = "ZH39ee1bcce2b12e22091c0a0249f3a50b"
