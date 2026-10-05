@@ -120,7 +120,7 @@ ${
       "properties": {
         "add_twilio_auth": false,
         "body": "{\"accountSid\":\"{\n  \"accountSid\": \"{{widgets.recordVoicemail.AccountSid}}\",\n  \"callSid\": \"{{widgets.recordVoicemail.CallSid}}\",\n  \"callStatus\": \"{{widgets.recordVoicemail.CallStatus}}\",\n  \"voicemailWorkflowSid\": \"${workflow_sids.master}\",\n  \"from\": \"{{trigger.call.From}}\",\n  \"maxCallbackAttempts\": 2,\n  \"routingAttributes\": \"{}\"}",
-        "content_type": "application/x-www-form-urlencoded;charset=utf-8",
+        "content_type": "application/json;charset=utf-8",
         "method": "POST",
         "offset": {
           "x": -269,
