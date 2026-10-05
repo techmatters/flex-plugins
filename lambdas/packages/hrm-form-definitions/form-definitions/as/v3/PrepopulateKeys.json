@@ -1,0 +1,11 @@
+{
+  "survey":{
+    "ChildInformationTab":["ageRange", "genderInput", "stateInput"],
+    "CallerInformationTab":["ageRange", "genderInput", "stateInput"]
+  },
+  "preEngagement":{
+    "ChildInformationTab":["ageRange", "genderInput", "state"],
+    "CallerInformationTab":["ageRange", "genderInput","state"],
+    "CaseInformationTab":["howTheHelpseekerHeardAboutUs"]
+  }
+}
