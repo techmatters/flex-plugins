@@ -65,20 +65,21 @@ export const agentDesktop = (page: Page) => {
   };
 };
 
-export const clickThroughTwilioPasteModals = async (page: Page) => {
+export const clickThroughTwilioPasteModals = async (page: Page, initialTimeout: number = 5000) => {
   const MAX_ATTEMPTS = 100;
   let attempts = 0;
+  console.debug(`Starting dismissing Twilio Paste modals`);
   try {
     // noinspection InfiniteLoopJS
     for (; attempts < MAX_ATTEMPTS; attempts++) {
       await page
         .locator('button[data-paste-element="MODAL_HEADER_CLOSE_BUTTON"]')
-        .click({ timeout: attempts === 0 ? 5000 : 2000 });
+        .click({ timeout: attempts === 0 ? initialTimeout : 2000 });
       console.info('Twilio Paste modal detected and dismissed');
     }
   } catch (err) {
     if (err instanceof TimeoutError) {
-      console.debug(`Dismissed ${attempts} Twilio modals, no more detected. Continuing`);
+      console.debug(`Dismissed ${attempts} Twilio Paste modals, no more detected. Continuing`);
       return;
     } else {
       throw err;
