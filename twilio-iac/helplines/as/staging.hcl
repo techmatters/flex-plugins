@@ -89,7 +89,7 @@ locals {
         contact_identity = ""
         templatefile     = "/app/twilio-iac/helplines/templates/studio-flows/voice-voicemail-sd.tftpl"
         channel_flow_vars = {
-          voice_ivr_greeting_message = "Hello, you are contacting Aselo. Please hold for a counsellor."
+          voice_ivr_greeting_message = "Hello, you are contacting Aselo. If you would like to leave a voicemail for callback, please press 1. Otherwise, please hold for a counsellor."
           voice_ivr_blocked_message  = "I'm sorry your number has been blocked."
           voice_ivr_language         = "en-US"
         }
