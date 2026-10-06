@@ -29,7 +29,8 @@ export type ContactFormTab<T = Record<string, string>> = {
 export function contactForm(page: Page) {
   const formArea = page.locator('div.Twilio-CRMContainer');
   const selectors = {
-    childCallTypeButton: () => page.locator(`//button[@data-testid='DataCallTypeButton-child']`),
+    callTypeButton: (callType: string) =>
+      page.locator(`//button[@data-testid='DataCallTypeButton-${callType}']`),
     tabButton: ({ label }: ContactFormTab<unknown>) =>
       formArea.locator(`//button[@data-testid='${label}']`),
     formInput: (tabId: string, itemId: string) => formArea.locator(`input#${tabId}\\.${itemId}`),
@@ -85,13 +86,15 @@ export function contactForm(page: Page) {
     }
   }
 
+  async function selectCallType(callType: string) {
+    const childCallTypeButton = selectors.callTypeButton(callType);
+    const responsePromise = page.waitForResponse('**/contacts/**');
+    await childCallTypeButton.click();
+    await responsePromise;
+  }
+
   const formApi = {
-    selectChildCallType: async () => {
-      const childCallTypeButton = selectors.childCallTypeButton();
-      const responsePromise = page.waitForResponse('**/contacts/**');
-      await childCallTypeButton.click();
-      await responsePromise;
-    },
+    selectChildCallType: async () => selectCallType('child'),
     fill: async (tabs: ContactFormTab<any>[]) => {
       const button = selectors.tabButton(tabs[0]);
       await expect(button).toBeVisible({ timeout: 15000 });
@@ -101,6 +104,9 @@ export function contactForm(page: Page) {
       }
     },
     fillWithContent: async (formContent: any) => {
+      if (formContent.callType) {
+        await selectCallType(formContent.callType);
+      }
       await formApi.fill([
         <ContactFormTab>{
           id: 'childInformation',

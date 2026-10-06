@@ -106,6 +106,40 @@ export const smsCommonScripts: Record<string, ChatStatement[]> = {
     counselorAutoStatement("Hi, you've reached a counsellor. What would you like to talk about?"),
     counselorStatement('COUNSELLOR TEST SMS MESSAGE'),
   ],
+  usnm: [
+    callerStatement('hi'),
+    botStatement(
+      "Welcome to the NAMI HelpLine. We are here to help with your mental health concerns, offer resources, and share support. If you are in crisis, reply CRISIS. Review NAMI HelpLine's Terms of Use: https://www.nami.org/terms-of-use/nami-helpline-terms-of-service/.\n" +
+        '\n' +
+        'If you understand and agree to the terms of use, reply GO.',
+    ),
+    callerStatement('GO'),
+    botStatement(
+      "We're glad you connected with the NAMI HelpLine. Would you mind sharing your name? If you want to remain anonymous, text NONE.",
+    ),
+    callerStatement('E2E test user'),
+    botStatement(
+      'NAMI is now offering a Teen and Young Adult HelpLine service. It brings together young people with shared experiences and equips specially trained HelpLine Specialists with knowledge and insights into what helps.',
+    ),
+    botStatement(
+      'NAMI is now offering a Family Caregiver HelpLine service. It brings together family caregivers with shared experiences and equips HelpLine Specialists with knowledge and insights into what helps.',
+    ),
+    botStatement(
+      'Please choose an option:\n' +
+        'Reply 1 to connect with a HelpLine Specialist.\n' +
+        'Reply 2 if you are a teen or young adult and would like to chat with a Teen and Young Adult HelpLine Specialist.\n' +
+        'Reply 3 if you are a family caregiver and would like to chat with a Family Caregiver HelpLine Specialist.',
+    ),
+    callerStatement('1'),
+    botStatement('To better help you, please share your reason for contacting the NAMI HelpLine.'),
+    callerStatement('SMS E2E test'),
+    counselorAutoStatement(
+      'You will be connected with the next available NAMI HelpLine Specialist.',
+    ),
+    botStatement('You are now connected with a NAMI HelpLine Specialist.'),
+    callerStatement('CALLER TEST SMS MESSAGE'),
+    counselorStatement('COUNSELLOR TEST SMS MESSAGE'),
+  ],
 };
 
 export const smsEnvScripts: Record<string, Record<string, ChatStatement[]>> = {
