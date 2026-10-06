@@ -152,7 +152,7 @@ const triggerPostStudioFlow = async ({
             to: isOutbound ? taskAttributes.outbound_to : taskAttributes.from,
           });
         console.debug(
-          `${logPrefix} Initiated post studio flow ${studioFlowIdentifier} configured for ${taskChannelUniqueName} via REST API - contact ${contactId}, task: ${taskSid}, removing participants`,
+          `${logPrefix} Initiated post studio flow ${studioFlowIdentifier} configured for ${taskChannelUniqueName} via REST API - contact ${contactId}, task: ${taskSid}`,
         );
         if (conference?.sid) {
           const remainingParticipants = await client.conferences
