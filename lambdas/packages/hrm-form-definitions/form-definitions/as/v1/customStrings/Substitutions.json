@@ -6,7 +6,10 @@
     "Chat Queue Test": "Quat Teue Chest",
     "CustomLink-Label-ResourceMap": "Resource Map",
     "Conference-PhoneInputDialog-QuickDialItem/988-English": "988 (English)",
-    "Conference-PhoneInputDialog-QuickDialItem/988-Spanish": "988 (Spanish)"
+    "Conference-PhoneInputDialog-QuickDialItem/988-Spanish": "988 (Spanish)",
+    "Conference-PhoneInputDialog-QuickDialItem/Aselo-Development": "Aselo Development",
+    "Conference-PhoneInputDialog-QuickDialItem/Aselo-Production": "Aselo Production",
+    "Conference-PhoneInputDialog-QuickDialItem/Dee": "Dee"
   },
   "es": {
     "HelplineSubstitution": "Substitución de la Línea de Ayuda",
