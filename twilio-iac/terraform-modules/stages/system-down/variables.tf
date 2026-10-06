@@ -1,3 +1,8 @@
+variable "twilio_account_sid" {
+  description = "Twilio Account SID (ACxxxx)"
+  type        = string
+}
+
 variable "environment" {
   description = "The environment for the helpline."
   type        = string
