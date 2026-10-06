@@ -48,7 +48,7 @@ const deleteSmsConversationFromOneEnd = async (
       console.debug(`[SENSITIVE][${conversation.sid}] participants:`, participants.length);
       participants.map((participant, idx) =>
         console.debug(
-          `[SENSITIVE][${conversation.sid}] participant index ${idx}: ${participant.messagingBinding?.address} -> ${participant.messagingBinding?.poxy_address}`,
+          `[SENSITIVE][${conversation.sid}] participant index ${idx}: ${participant.messagingBinding?.address} -> ${participant.messagingBinding?.proxy_address}`,
         ),
       );
 
