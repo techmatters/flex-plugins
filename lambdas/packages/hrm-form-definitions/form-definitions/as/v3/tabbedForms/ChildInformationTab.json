@@ -118,12 +118,6 @@
     }
   },
   {
-    "name": "stateInput",
-    "label": "Help Seeker State (Input from SMS Chatbot)",
-    "type": "input",
-    "isPII": false
-  },
-  {
     "name": "state",
     "label": "Help Seeker State",
     "type": "select",
