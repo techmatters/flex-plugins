@@ -83,7 +83,6 @@ locals {
       is_system_down                   = "false"
       message                          = "We're sorry, NAMI HelpLine is experiencing technical difficulties and may not be able to respond right now. Your message is important to us and we hope to reconnect soon. If you or your loved one are experiencing a mental health crisis and need urgent support, you can call, chat or text 988 Suicide & Crisis Lifeline. If you are in immediate life threatening danger, call 911. Info and resources are online at https://www.nami.org/nami-helpline/ or you can email helpline@nami.org and we'll respond in 1-2 business days.Thank you for your patience."
       voice_message                    = "We're sorry, NAMI HelpLine is currently experiencing technical difficulties and may not be able to respond right now. Your message is important to us and we hope to reconnect soon. If you or your loved one are experiencing a mental health crisis and need urgent support, please hang up and can call, chat or text 988 Suicide & Crisis Lifeline. If you are in immediate life threatening danger, please hang up and call 911. Info and resources are online at https://www.nami.org/nami-helpline/  or you can email helpline@nami.org and we'll respond in 1-2 business days.Thank you for your patience."
-      send_studio_message_function_sid = "ZHbbf0fb1ec68a5aacc31e8c50415b97bb"
       call_action                      = "message"
       forward_number                   = "+123"
       recording_url                    = "https://<place_holder>.mp3"
