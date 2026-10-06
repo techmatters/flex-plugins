@@ -275,25 +275,41 @@ ${
     },
     {
       "name": "f_sendStudioMessage_technical_issues",
-      "type": "make-http-request",
+      "type": "run-function",
       "transitions": [
         {
           "event": "success"
         },
         {
-          "event": "failed"
+          "event": "fail"
         }
       ],
       "properties": {
+        "service_sid": "${serverless_service_sid}",
+        "environment_sid": "${serverless_environment_sid}",
         "offset": {
           "x": 1420,
           "y": 1470
         },
-        "method": "POST",
-        "content_type": "application/json;charset=utf-8",
-        "add_twilio_auth": false,
-        "body": "{\n  \"conversationSid\": \"{{flow.channel.address}}\",\n  \"channelSid\": \"{{flow.channel.address}}\",\n  \"message\": \"${system_down_flow_vars.message}\",\n  \"from\": \"${helpline}\"\n}",
-        "url": "${lambda_twilio_account_scoped_url}/conversation/sendStudioMessage"
+        "function_sid": "${system_down_flow_vars.send_studio_message_function_sid}",
+        "parameters": [
+          {
+            "value": "{{flow.channel.address}}",
+            "key": "conversationSid"
+          },{
+            "value": "{{flow.channel.address}}",
+            "key": "channelSid"
+          },
+          {
+            "value": "${system_down_flow_vars.message}",
+            "key": "message"
+          },
+          {
+            "value": "${helpline}",
+            "key": "from"
+          }
+        ],
+        "url": "${serverless_url}/sendStudioMessage"
       }
     },
     {
