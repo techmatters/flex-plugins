@@ -154,6 +154,17 @@ const triggerPostStudioFlow = async ({
         console.debug(
           `${logPrefix} Initiated post studio flow ${studioFlowIdentifier} configured for ${taskChannelUniqueName} via REST API - contact ${contactId}, task: ${taskSid}, removing participants`,
         );
+        if (conference?.sid) {
+          const remainingParticipants = await client.conferences
+            .get(conference.sid)
+            .participants.list();
+          if (remainingParticipants.length === 1) {
+            console.debug(
+              `${logPrefix} Only one participant (${remainingParticipants[0].callSid}) remaining in conference ${conference.sid}. Removing`,
+            );
+            await remainingParticipants[0].remove();
+          }
+        }
       } else {
         console.debug(
           `No / Invalid post studio flow configured for ${taskQueueSid}: ${studioFlowIdentifier}`,
