@@ -1,7 +1,7 @@
 [
   {
-    "name": "helpseekerIs",
-    "label": "Helpseeker is",
+    "name": "callerIs",
+    "label": "Caller is",
     "type": "select",
     "isPII": false,
     "options": [
@@ -121,13 +121,13 @@
   },
   {
     "name": "genderInput",
-    "label": "Helpseeker Gender (Input from Webchat Form)",
+    "label": "Caller Gender (Input from Webchat Form)",
     "type": "input",
     "isPII": false
   },
   {
     "name": "gender",
-    "label": "Helpseeker Gender",
+    "label": "Caller Gender",
     "type": "select",
     "isPII": false,
     "options": [
@@ -159,7 +159,7 @@
   },
   {
     "name": "ageRange",
-    "label": "Helpseeker Age",
+    "label": "Caller Age",
     "type": "select",
     "isPII": false,
     "options": [
@@ -203,13 +203,13 @@
   },
   {
     "name": "stateInput",
-    "label": "Helpseeker State (Input from SMS Chatbot)",
+    "label": "Caller State (Input from SMS Chatbot)",
     "type": "input",
     "isPII": false
   },
   {
     "name": "state",
-    "label": "Helpseeker State",
+    "label": "Caller State",
     "type": "select",
     "isPII": false,
     "defaultOption": {
@@ -445,7 +445,7 @@
   },
   {
     "name": "country",
-    "label": "Helpseeker Country",
+    "label": "Caller Country",
     "type": "dependent-select",
     "isPII": false,
     "dependsOn": "state",

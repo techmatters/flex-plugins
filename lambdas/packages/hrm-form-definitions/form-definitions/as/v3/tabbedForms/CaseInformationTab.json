@@ -6,12 +6,12 @@
     "isPII": false,
     "options": [
       {
-        "value": "Childhelp Hotline",
-        "label": "Childhelp Hotline"
+        "value": "988",
+        "label": "988"
       },
       {
-        "value": "Courage First",
-        "label": "Courage First"
+        "value": "County Lifeline",
+        "label": "County Lifeline"
       }
     ],
     "required": {
@@ -74,8 +74,8 @@
         "label": ""
       },
        {
-        "value": "Childhelp Promotions/Marketing",
-        "label": "Childhelp Promotions/Marketing"
+        "value": "Promotions/Marketing",
+        "label": "Promotions/Marketing"
       },
       {
         "value": "Google",
@@ -164,10 +164,6 @@
       {
         "value": "Social Media: Other",
         "label": "Social Media: Other"
-      },
-      {
-        "value": "SUBS - Childhelp Speak Up Be Safe Program",
-        "label": "SUBS - Childhelp Speak Up Be Safe Program"
       },
       {
         "value": "Television/Streaming Services",

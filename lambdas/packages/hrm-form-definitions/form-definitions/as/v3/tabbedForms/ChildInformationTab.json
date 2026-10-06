@@ -125,7 +125,7 @@
   },
   {
     "name": "state",
-    "label": "Child State",
+    "label": "Help Seeker State",
     "type": "select",
     "isPII": false,
     "defaultOption": {
@@ -357,7 +357,7 @@
   },
   {
     "name": "country",
-    "label": "Child Country",
+    "label": "Help Seeker Country",
     "type": "dependent-select",
     "isPII": false,
     "dependsOn": "state",
