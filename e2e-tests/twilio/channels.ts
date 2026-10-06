@@ -43,7 +43,14 @@ const deleteSmsConversationFromOneEnd = async (
   console.info(`${activeConversations.length} active conversations found.`);
   await Promise.all(
     activeConversations.map(async (conversation) => {
+      console.debug(`Checking conversation ${conversation.sid}`);
       const participants = await conversation.participants().list();
+      console.debug(`[SENSITIVE][${conversation.sid}] participants:`, participants.length);
+      participants.map((participant, idx) =>
+        console.debug(
+          `[SENSITIVE][${conversation.sid}] participant index ${idx}: ${participant.messagingBinding?.address} -> ${participant.messagingBinding?.proxy_address}`,
+        ),
+      );
 
       if (
         // eslint-disable-next-line @typescript-eslint/no-loop-func

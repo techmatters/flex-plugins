@@ -236,6 +236,11 @@ const configOptions = {
         ? 'Childline'
         : 'E2E Test Queue',
   },
+  // This should match the queue reserved for E2E test sms conversations on the account under test
+  autoAcceptTask: {
+    envKey: 'AUTO_ACCEPT_TASK',
+    default: false,
+  },
 
   // inLambda is used to determine if we are running in a lambda or not and set other config values accordingly
   inLambda: {

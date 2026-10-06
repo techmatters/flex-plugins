@@ -61,6 +61,7 @@ export const formContentsByHelpline = {
       Education: ['Disability Rights for Education'],
     },
     caseInformation: {},
+    callType: 'child',
   },
 };
 
