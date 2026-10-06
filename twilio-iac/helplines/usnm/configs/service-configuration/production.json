@@ -4,7 +4,48 @@
     "system_down": false,
     "form_definitions_base_url": "https://assets-production.tl.techmatters.org/form-definitions/",
     "resources_base_url": "",
-    "postStudioFlows": {},
+     "postStudioFlows": {
+      "WQ3d4e6eef10939a31e8a6f5ad45ea5bbe": {
+        "flowTrigger": "rest",
+        "studioFlowSid": "FWbc1e6fcbca02eb2196181a6ba6b19fe3"
+      },
+      "WQdb5d7dec049cb7508469387324a425d9": {
+        "flowTrigger": "rest",
+        "studioFlowSid": "FWbc1e6fcbca02eb2196181a6ba6b19fe3"
+      },
+      "WQe415860e68497f1b89443815ef68fdf3": {
+        "flowTrigger": "rest",
+        "studioFlowSid": "FWbc1e6fcbca02eb2196181a6ba6b19fe3"
+      },
+      "WQd7c3e31eb09724a39a4407116d2e24f6": {
+        "flowTrigger": "rest",
+        "studioFlowSid": "FWbc1e6fcbca02eb2196181a6ba6b19fe3"
+      },
+      "WQ826d83acc9162c5a85b91d5afa2d6dbe": {
+        "flowTrigger": "rest",
+        "studioFlowSid": "FW1bb7c574278a1384be10127608186084"
+      },
+      "WQ1f45ac2149d04eea096aab918ca15d87": {
+        "flowTrigger": "rest",
+        "studioFlowSid": "FW1bb7c574278a1384be10127608186084"
+      },
+      "WQbd8285f3677cb7512c3bab9e177fd01e": {
+        "flowTrigger": "rest",
+        "studioFlowSid": "FW1bb7c574278a1384be10127608186084"
+      },
+      "WQedad2f7250957017a79f4d7f09667df3": {
+        "flowTrigger": "rest",
+        "studioFlowSid": "FW1bb7c574278a1384be10127608186084"
+      },
+      "WQ9936576a08fc92ddc95b06e181393d69": {
+        "flowTrigger": "rest",
+        "studioFlowSid": "FW1bb7c574278a1384be10127608186084"
+      },
+      "WQ6745b2f84c86771622694007efc187e0": {
+        "flowTrigger": "rest",
+        "studioFlowSid": "FW1bb7c574278a1384be10127608186084"
+      }
+    },
     "feature_flags": {
       "use_twilio_lambda_adjust_capacity": true,
       "use_twilio_lambda_for_conference_functions": true,
