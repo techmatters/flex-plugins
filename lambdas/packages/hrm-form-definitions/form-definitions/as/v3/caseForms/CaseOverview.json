@@ -7,7 +7,7 @@
   },
   {
     "name": "childIsAtRisk",
-    "label": "Child is at risk",
+    "label": "Help Seeker is at risk",
     "type": "checkbox",
     "isPII": false
   },
