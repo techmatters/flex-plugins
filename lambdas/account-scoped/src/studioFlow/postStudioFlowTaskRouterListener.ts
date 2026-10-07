@@ -166,7 +166,10 @@ const triggerPostStudioFlow = async ({
               await remainingParticipants[0].remove();
             }
           } catch (err) {
-            console.error(`${logPrefix} Failed to clean up conference ${conference.sid}`, err);
+            console.error(
+              `${logPrefix} Failed to clean up conference ${conference.sid}`,
+              err,
+            );
           }
         }
       } else {
