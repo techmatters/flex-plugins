@@ -66,7 +66,7 @@
     "active": true,
     "nextStep": {
       "dialogAction": {
-        "type": "EndConversation"
+        "type": "ElicitIntent"
       },
       "intent": {}
     }
@@ -87,34 +87,10 @@
     "active": true,
     "nextStep": {
       "dialogAction": {
-        "type": "InvokeDialogCodeHook"
+        "type": "ElicitSlot",
+        "slotToElicit": "role"
       },
       "intent": {}
-    },
-    "codeHook": {
-      "enableCodeHookInvocation": true,
-      "active": true,
-      "postCodeHookSpecification": {
-        "successNextStep": {
-          "dialogAction": {
-            "type": "ElicitSlot",
-            "slotToElicit": "role"
-          },
-          "intent": {}
-        },
-        "failureNextStep": {
-          "dialogAction": {
-            "type": "EndConversation"
-          },
-          "intent": {}
-        },
-        "timeoutNextStep": {
-          "dialogAction": {
-            "type": "EndConversation"
-          },
-          "intent": {}
-        }
-      }
     }
   }
 }
