@@ -152,12 +152,26 @@ const triggerPostStudioFlow = async ({
             to: isOutbound ? taskAttributes.outbound_to : taskAttributes.from,
           });
         console.debug(
-          `${logPrefix} Initiated post studio flow ${studioFlowIdentifier} configured for ${taskChannelUniqueName} via REST API - contact ${contactId}, task: ${taskSid}, removing participants`,
+          `${logPrefix} Initiated post studio flow ${studioFlowIdentifier} configured for ${taskChannelUniqueName} via REST API - contact ${contactId}, task: ${taskSid}`,
         );
-        client.conferences.get(conference.sid).participants.each(p => p.remove());
-        console.debug(
-          `${logPrefix} Removed participants from conference ${conference.sid}.`,
-        );
+        if (conference?.sid) {
+          try {
+            const remainingParticipants = await client.conferences
+              .get(conference.sid)
+              .participants.list();
+            if (remainingParticipants.length === 1) {
+              console.debug(
+                `${logPrefix} Only one participant (${remainingParticipants[0].callSid}) remaining in conference ${conference.sid}. Removing`,
+              );
+              await remainingParticipants[0].remove();
+            }
+          } catch (err) {
+            console.error(
+              `${logPrefix} Failed to clean up conference ${conference.sid}`,
+              err,
+            );
+          }
+        }
       } else {
         console.debug(
           `No / Invalid post studio flow configured for ${taskQueueSid}: ${studioFlowIdentifier}`,
