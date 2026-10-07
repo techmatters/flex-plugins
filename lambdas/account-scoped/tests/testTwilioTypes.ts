@@ -15,6 +15,7 @@
  */
 
 import { TaskPage } from 'twilio/lib/rest/taskrouter/v1/workspace/task';
+import { PostSurveyConfiguration } from '../src/configuration/aseloConfiguration';
 
 const CONFIG_FIELDS = [
   'definitionVersion',
@@ -28,6 +29,7 @@ export type AseloServiceConfigurationAttributes = Record<
   string
 > & {
   feature_flags: Record<string, boolean | undefined>;
+  postStudioFlows?: Record<string, PostSurveyConfiguration>;
 };
 
 export type TaskResource = TaskPage['_payload']['tasks'][number];
