@@ -91,6 +91,31 @@
         "slotToElicit": "role"
       },
       "intent": {}
+    },
+    "codeHook": {
+      "enableCodeHookInvocation": false,
+      "active": false,
+      "postCodeHookSpecification": {
+        "successNextStep": {
+          "dialogAction": {
+            "type": "ElicitSlot",
+            "slotToElicit": "role"
+          },
+          "intent": {}
+        },
+        "failureNextStep": {
+          "dialogAction": {
+            "type": "EndConversation"
+          },
+          "intent": {}
+        },
+        "timeoutNextStep": {
+          "dialogAction": {
+            "type": "EndConversation"
+          },
+          "intent": {}
+        }
+      }
     }
   }
 }
