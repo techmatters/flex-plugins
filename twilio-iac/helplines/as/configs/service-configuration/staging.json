@@ -1,5 +1,6 @@
 {
     "attributes": {
+        "voicemail_schedule_retry_later_minutes": 5,
         "system_down" : false,
         "feature_flags": {
             "enable_active_contact_header": true,

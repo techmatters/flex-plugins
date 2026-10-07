@@ -49,6 +49,10 @@ locals {
         "target_workers" = "email=='aselo-alerts+production@techmatters.org'",
         "friendly_name"  = "E2E Test Queue"
       },
+      voicemail : {
+        "target_workers" = "routing.skills HAS 'Voicemail'",
+        "friendly_name"  = "Voicemail"
+      },
       switchboard : {
         "target_workers" = "1==1",
         "friendly_name"  = "Switchboard Queue"
@@ -62,8 +66,8 @@ locals {
       video : "Video"
       email : "Email"
       survey : "Survey"
+      voicemail : "Voicemail"
       external: "External"
     }
-
   }
 }
