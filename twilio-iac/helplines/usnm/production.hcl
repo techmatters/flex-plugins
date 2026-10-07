@@ -53,28 +53,47 @@ locals {
       post_call_survey : {
         templatefile = "/app/twilio-iac/helplines/usnm/templates/studio-flows/post-call-survey.tftpl"
         flow_vars = {
-          conversation_service_sid = ""
-          outbound_phone_number    = ""
+          conversation_service_sid = "IS459056d42cc944f295525b836610852c"
+          outbound_phone_number    = "+18773594183"
         }
       },
       post_call_survey_es : {
         templatefile = "/app/twilio-iac/helplines/usnm/templates/studio-flows/post-call-survey-es.tftpl"
         flow_vars = {
-          conversation_service_sid = ""
-          outbound_phone_number    = ""
+          conversation_service_sid = "IS459056d42cc944f295525b836610852c"
+          outbound_phone_number    = "+18773594183"
         }
       },
       post_call_survey_en : {
         templatefile = "/app/twilio-iac/helplines/usnm/templates/studio-flows/post-call-survey-en.tftpl"
         flow_vars = {
-          conversation_service_sid = ""
-          outbound_phone_number    = ""
+          conversation_service_sid = "IS459056d42cc944f295525b836610852c"
+          outbound_phone_number    = "+18773594183"
         }
       }
     }
     
     #Channels
     channels = {
+      voice : {
+        channel_type     = "voice"
+        contact_identity = ""
+        templatefile     = "/app/twilio-iac/helplines/usnm/templates/studio-flows/voice.tftpl"
+        channel_flow_vars = {
+          voice_ivr_greeting_message = "Hello, you are contacting NAMI. Please hold for a counsellor."
+          voice_ivr_blocked_message  = "I'm sorry your number has been blocked."
+          voice_ivr_language         = "en-US"
+        }
+        chatbot_unique_names = []
+      },
+      sms : {
+        messaging_mode       = "conversations"
+        channel_type         = "sms"
+        contact_identity     = "+18773594183"
+        templatefile         = "/app/twilio-iac/helplines/usnm/templates/studio-flows/sms.tftpl"
+        channel_flow_vars    = {}
+        chatbot_unique_names = []
+      }
     }
 
     system_down_templatefile = "/app/twilio-iac/helplines/templates/studio-flows/system-down.tftpl"
