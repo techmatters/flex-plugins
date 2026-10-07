@@ -671,7 +671,7 @@ ${
       "type": "send-to-flex",
       "transitions": [
         {
-          "next": "record_voicemail_en_no_service_tya",
+          "next": "split_leave_en_tya",
           "event": "callComplete"
         },
         {
@@ -797,7 +797,7 @@ ${
       "type": "send-to-flex",
       "transitions": [
         {
-          "next": "record_voicemail_en_no_service_std",
+          "next": "split_leave_en_std",
           "event": "callComplete"
         },
         {
@@ -993,7 +993,7 @@ ${
       "type": "send-to-flex",
       "transitions": [
         {
-          "next": "record_voicemail_en_no_service_fcg",
+          "next": "split_leave_en_fcg",
           "event": "callComplete"
         },
         {
@@ -1276,7 +1276,7 @@ ${
       "type": "send-to-flex",
       "transitions": [
         {
-          "next": "record_voicemail_es_no_service_std",
+          "next": "split_leave_es_std",
           "event": "callComplete"
         },
         {
@@ -1508,7 +1508,7 @@ ${
       "type": "send-to-flex",
       "transitions": [
         {
-          "next": "record_voicemail_es_no_service_tya",
+          "next": "split_leave_es_tya",
           "event": "callComplete"
         },
         {
@@ -2651,6 +2651,156 @@ ${
           "y": 4621
         },
         "loop": 1
+      }
+    },
+    {
+      "name": "split_leave_en_tya",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "event": "noMatch"
+        },
+        {
+          "next": "record_voicemail_en_no_service_tya",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to leave",
+              "arguments": [
+                "{{widgets.send_to_queue_en_tya.QueueResult}}"
+              ],
+              "type": "equal_to",
+              "value": "leave"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{widgets.send_to_queue_en_tya.QueueResult}}",
+        "offset": {
+          "x": -2469,
+          "y": 4396
+        }
+      }
+    },
+    {
+      "name": "split_leave_en_std",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "event": "noMatch"
+        },
+        {
+          "next": "record_voicemail_en_no_service_std",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to leave",
+              "arguments": [
+                "{{widgets.send_to_queue_en_std.QueueResult}}"
+              ],
+              "type": "equal_to",
+              "value": "leave"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{widgets.send_to_queue_en_std.QueueResult}}",
+        "offset": {
+          "x": -1329,
+          "y": 4423
+        }
+      }
+    },
+    {
+      "name": "split_leave_en_fcg",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "event": "noMatch"
+        },
+        {
+          "next": "record_voicemail_en_no_service_fcg",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to leave",
+              "arguments": [
+                "{{widgets.send_to_queue_en_fcg.QueueResult}}"
+              ],
+              "type": "equal_to",
+              "value": "leave"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{widgets.send_to_queue_en_fcg.QueueResult}}",
+        "offset": {
+          "x": -359,
+          "y": 4407
+        }
+      }
+    },
+    {
+      "name": "split_leave_es_std",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "event": "noMatch"
+        },
+        {
+          "next": "record_voicemail_es_no_service_std",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to leave",
+              "arguments": [
+                "{{widgets.send_to_queue_es_std.QueueResult}}"
+              ],
+              "type": "equal_to",
+              "value": "leave"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{widgets.send_to_queue_es_std.QueueResult}}",
+        "offset": {
+          "x": 644,
+          "y": 4348
+        }
+      }
+    },
+    {
+      "name": "split_leave_es_tya",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "event": "noMatch"
+        },
+        {
+          "next": "record_voicemail_es_no_service_tya",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to leave",
+              "arguments": [
+                "{{widgets.send_to_queue_es_tya.QueueResult}}"
+              ],
+              "type": "equal_to",
+              "value": "leave"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{widgets.send_to_queue_es_tya.QueueResult}}",
+        "offset": {
+          "x": 1947,
+          "y": 4391
+        }
       }
     }
   ]
