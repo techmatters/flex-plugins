@@ -64,3 +64,28 @@ The order of precedence for configuration file override relative to the `twilio-
 `configs/<helpline_short_code>/configs/service-configuration/<environment>.json` - the environment specific configuration for a specific helpline
 
 The `defaults.json`, `common.json` and `<environment>.json` files are merged together to create the final configuration for a helpline in a given environment.
+
+### Referencing Terraform-created task queue and workflow SIDs
+
+Instead of hardcoding SIDs, the JSON config files can reference the task queues and workflows created by Terraform, using the same names as the studio flow / workflow `.tftpl` interpolations:
+
+- `${task_queues.<key>}` - a task queue SID, where `<key>` is the key in the helpline's `task_queues` block (e.g. `en_std`)
+- `${workflow_sids.<key>}` - a workflow SID, where `<key>` is the key in the helpline's `workflows` block (e.g. `master`)
+
+Placeholders work in both keys and values, for example:
+
+```json
+"outbound_call_flows": {
+  "default": {
+    "caller_id": "+18005551234",
+    "enabled": true,
+    "location": "US",
+    "queue_sid": "${task_queues.en_std}",
+    "workflow_sid": "${workflow_sids.master}"
+  }
+}
+```
+
+The configure stage writes the SID maps to SSM (`/<environment>/twilio/<account_sid>/task_queue_sids` and `/<environment>/twilio/<account_sid>/workflow_sids`), and the tool resolves the placeholders when building the new state. The configure stage must have been applied for the helpline before placeholders can be used. If a placeholder can't be resolved, the tool fails rather than sending it to Twilio.
+
+Note: syncing the remote configuration back to the local files will write the resolved SIDs into the files, replacing the placeholders.
