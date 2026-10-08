@@ -218,7 +218,8 @@ resource "aws_ssm_parameter" "twilio_switchboard_queue_sid" {
 
 # Maps of Terraform-created SIDs, keyed by the names used in the helpline .hcl files.
 # Read by the service configuration tool (scripts/python_tools) to resolve
-# ${task_queues.<key>} / ${workflow_sids.<key>} placeholders in configs/service-configuration/*.json
+# ${task_queues.<key>} / ${workflow_sids.<key>} / ${studio_flow_sids.<key>} placeholders
+# in configs/service-configuration/*.json
 resource "aws_ssm_parameter" "twilio_task_queue_sids" {
   name        = "/${lower(var.environment)}/twilio/${nonsensitive(local.secrets.twilio_account_sid)}/task_queue_sids"
   type        = "SecureString"
@@ -241,6 +242,19 @@ resource "aws_ssm_parameter" "twilio_workflow_sids" {
   tags = {
     Environment = lower(var.environment)
     Name        = "/${lower(var.environment)}/twilio/${nonsensitive(local.secrets.twilio_account_sid)}/workflow_sids"
+    Terraform   = true
+  }
+}
+
+resource "aws_ssm_parameter" "twilio_studio_flow_sids" {
+  name        = "/${lower(var.environment)}/twilio/${nonsensitive(local.secrets.twilio_account_sid)}/studio_flow_sids"
+  type        = "SecureString"
+  value       = jsonencode(module.studio_flow.studio_flows_sids)
+  description = "Twilio account - Studio Flow SIDs (studio_flows block) by key (JSON)"
+
+  tags = {
+    Environment = lower(var.environment)
+    Name        = "/${lower(var.environment)}/twilio/${nonsensitive(local.secrets.twilio_account_sid)}/studio_flow_sids"
     Terraform   = true
   }
 }

@@ -32,12 +32,14 @@ SSM_FIELDS = {
 }
 
 # Placeholders that can be used anywhere (keys or values) in the service
-# configuration JSON files, e.g. "${task_queues.en_std}" or "${workflow_sids.master}".
+# configuration JSON files, e.g. "${task_queues.en_std}", "${workflow_sids.master}"
+# or "${studio_flow_sids.post_call_survey_en}".
 # Same names as the studio flow / workflow .tftpl interpolations. The SID maps
 # are written to SSM by the configure stage (terraform-modules/stages/configure).
 SID_PLACEHOLDER_SSM_KEYS = {
     "task_queues": "/{environment}/twilio/{account_sid}/task_queue_sids",
     "workflow_sids": "/{environment}/twilio/{account_sid}/workflow_sids",
+    "studio_flow_sids": "/{environment}/twilio/{account_sid}/studio_flow_sids",
 }
 SID_PLACEHOLDER_PATTERN = re.compile(
     r"\$\{(" + "|".join(SID_PLACEHOLDER_SSM_KEYS.keys()) + r")\.([A-Za-z0-9_]+)\}"
@@ -232,7 +234,7 @@ class ServiceConfiguration():
 
     def resolve_sid_placeholders(self, data):
         """
-        Replace ${task_queues.<key>} / ${workflow_sids.<key>} placeholders
+        Replace ${task_queues.<key>} / ${workflow_sids.<key>} / ${studio_flow_sids.<key>} placeholders
         (in keys or values) with the SIDs Terraform created for this account.
         The SID maps are only read from SSM if a placeholder is present.
         """

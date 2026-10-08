@@ -71,6 +71,7 @@ Instead of hardcoding SIDs, the JSON config files can reference the task queues 
 
 - `${task_queues.<key>}` - a task queue SID, where `<key>` is the key in the helpline's `task_queues` block (e.g. `en_std`)
 - `${workflow_sids.<key>}` - a workflow SID, where `<key>` is the key in the helpline's `workflows` block (e.g. `master`)
+- `${studio_flow_sids.<key>}` - a studio flow SID, where `<key>` is the key in the helpline's `studio_flows` block (e.g. `post_call_survey_en`). Channel flows are not included.
 
 Placeholders work in both keys and values, for example:
 
@@ -86,6 +87,6 @@ Placeholders work in both keys and values, for example:
 }
 ```
 
-The configure stage writes the SID maps to SSM (`/<environment>/twilio/<account_sid>/task_queue_sids` and `/<environment>/twilio/<account_sid>/workflow_sids`), and the tool resolves the placeholders when building the new state. The configure stage must have been applied for the helpline before placeholders can be used. If a placeholder can't be resolved, the tool fails rather than sending it to Twilio.
+The configure stage writes the SID maps to SSM (`/<environment>/twilio/<account_sid>/task_queue_sids`, `.../workflow_sids` and `.../studio_flow_sids`), and the tool resolves the placeholders when building the new state. The configure stage must have been applied for the helpline before placeholders can be used. If a placeholder can't be resolved, the tool fails rather than sending it to Twilio.
 
 Note: syncing the remote configuration back to the local files will write the resolved SIDs into the files, replacing the placeholders.
