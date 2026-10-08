@@ -182,10 +182,17 @@ class ServiceConfiguration():
         self.remote_state: dict[str, object] = self._twilio_client.get_flex_configuration()
         self.feature_flags = get_nested_key(self.remote_state, "attributes.feature_flags")
         self.init_version()
-        self.init_region()
-        self.init_local_state()
-        self.init_new_state()
-        self.init_plan()
+        try:
+            self.init_region()
+            self.init_local_state()
+            self.init_new_state()
+            self.init_plan()
+        except Exception:
+            # This runs while config is being built, outside manager.main()'s
+            # cleanup, so release the lock taken by init_version ourselves
+            # (e.g. an unresolvable SID placeholder)
+            self.cleanup()
+            raise
 
     def get_ssm_client(self):
         return SSMClient(self.aws_role_arn)
