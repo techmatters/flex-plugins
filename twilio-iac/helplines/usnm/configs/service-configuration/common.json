@@ -1,4 +1,5 @@
 {
+  "call_recording_enabled": true,
   "attributes": {
     "contacts_waiting_channels": ["sms", "voice", "voicemail"],
     "external_recordings_enabled": true,
