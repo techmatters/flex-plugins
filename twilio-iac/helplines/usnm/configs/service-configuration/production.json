@@ -1,4 +1,13 @@
 {
+  "outbound_call_flows": {
+    "default": {
+      "caller_id": "+18773594183",
+      "enabled": true,
+      "location": "US",
+      "queue_sid": "WQ9936576a08fc92ddc95b06e181393d69",
+      "workflow_sid": "WW4b173964dbf30d5608043b1fb5c28e42"
+    }
+  },
   "attributes": {
     "voicemail_schedule_retry_later_minutes": 1440,
     "system_down": false,
