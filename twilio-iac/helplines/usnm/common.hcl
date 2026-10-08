@@ -9,19 +9,20 @@ locals {
 
 
   local_config = {
-    helpline                   = "NAMI"
-    task_language              = "en-US"
-    enable_lex_v2              = true
-    enable_post_survey         = true
-    enable_external_recordings = true
-    permission_config          = "usnm"
+    helpline                         = "NAMI"
+    task_language                    = "en-US"
+    enable_lex_v2                    = true
+    enable_post_survey               = true
+    enable_external_recordings       = true
+    permission_config                = "usnm"
+    enable_lambda_event_callback_url = true
     workflows = {
       master : {
         friendly_name            = "Calls Voicemail Workflow"
         templatefile             = "/app/twilio-iac/helplines/usnm/templates/workflows/calls-voicemails.tftpl"
         task_reservation_timeout = 30
       },
-       sms : {
+      sms : {
         friendly_name            = "SMS Workflow"
         templatefile             = "/app/twilio-iac/helplines/usnm/templates/workflows/sms.tftpl"
         task_reservation_timeout = 60
