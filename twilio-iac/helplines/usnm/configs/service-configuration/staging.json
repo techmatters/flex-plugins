@@ -8,11 +8,11 @@
     "postStudioFlows": {
       "${task_queues.en_std}": {
         "flowTrigger": "rest",
-        "studioFlowSid": "${studio_flow_sids.post_call_survey_en}"
+        "studioFlowSid": "${studio_flow_sids.post_call_survey_es}"
       },
       "${task_queues.es_std}": {
         "flowTrigger": "rest",
-        "studioFlowSid": "${studio_flow_sids.post_call_survey_es}"
+        "studioFlowSid": "${studio_flow_sids.post_call_survey}"
       },
       "${task_queues.es_tya}": {
         "flowTrigger": "rest",
