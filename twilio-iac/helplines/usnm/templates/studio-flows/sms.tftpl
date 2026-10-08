@@ -120,7 +120,7 @@ ${
           "event": "noMatch"
         },
         {
-          "next": "send_message_sms_outside_us",
+          "next": "f_sendMessageAndRunJanitor_outside_us",
           "event": "match",
           "conditions": [
             {
@@ -134,7 +134,7 @@ ${
           ]
         },
         {
-          "next": "send_message_sms_voip_blocked",
+          "next": "f_sendMessageAndRunJanitor_voip_blocked",
           "event": "match",
           "conditions": [
             {
@@ -148,7 +148,7 @@ ${
           ]
         },
         {
-          "next": "send_message_sms_voip_blocked",
+          "next": "f_sendMessageAndRunJanitor_voip_blocked",
           "event": "match",
           "conditions": [
             {
@@ -162,7 +162,7 @@ ${
           ]
         },
         {
-          "next": "send_message_sms_voip_blocked",
+          "next": "f_sendMessageAndRunJanitor_voip_blocked",
           "event": "match",
           "conditions": [
             {
@@ -218,7 +218,7 @@ ${
           "event": "noMatch"
         },
         {
-          "next": "send_message_sms_blocked_level_1_acceptable_use_policy",
+          "next": "f_sendMessageAndRunJanitor_blocked_level_1_acceptable_use_policy",
           "event": "match",
           "conditions": [
             {
@@ -232,7 +232,7 @@ ${
           ]
         },
         {
-          "next": "send_message_sms_blocked_level_2_access_policy",
+          "next": "f_sendMessageAndRunJanitor_blocked_level_2_access_policy",
           "event": "match",
           "conditions": [
             {
@@ -302,7 +302,7 @@ ${
           ]
         },
         {
-          "next": "send_message_sms_closed",
+          "next": "f_sendMessageAndRunJanitor_closed",
           "event": "match",
           "conditions": [
             {
@@ -316,7 +316,7 @@ ${
           ]
         },
         {
-          "next": "send_message_sms_holiday",
+          "next": "f_sendMessageAndRunJanitor_holiday",
           "event": "match",
           "conditions": [
             {
@@ -367,11 +367,11 @@ ${
       }
     },
     {
-      "name": "send_message_sms_voip_blocked",
-      "type": "send-message",
+      "name": "f_sendMessageAndRunJanitor_voip_blocked",
+      "type": "make-http-request",
       "transitions": [
         {
-          "event": "sent"
+          "event": "success"
         },
         {
           "event": "failed"
@@ -382,20 +382,32 @@ ${
           "x": 2005,
           "y": 75
         },
-        "service": "{{trigger.message.InstanceSid}}",
-        "channel": "{{trigger.message.ChannelSid}}",
-        "from": "NAMI",
-        "message_type": "custom",
-        "to": "{{contact.channel.address}}",
-        "body": "${flow_vars.send_message_sms_voip_blocked}"
+        "method": "POST",
+        "content_type": "application/x-www-form-urlencoded;charset=utf-8",
+        "add_twilio_auth": false,
+        "parameters": [
+          {
+            "value": "{{flow.channel.address}}",
+            "key": "conversationSid"
+          },
+          {
+            "value": "${flow_vars.send_message_sms_voip_blocked}",
+            "key": "message"
+          },
+          {
+            "value": "NAMI",
+            "key": "from"
+          }
+        ],
+        "url": "${lambda_twilio_account_scoped_url}/conversation/sendMessageAndRunJanitor"
       }
     },
     {
-      "name": "send_message_sms_outside_us",
-      "type": "send-message",
+      "name": "f_sendMessageAndRunJanitor_outside_us",
+      "type": "make-http-request",
       "transitions": [
         {
-          "event": "sent"
+          "event": "success"
         },
         {
           "event": "failed"
@@ -406,20 +418,32 @@ ${
           "x": 1688,
           "y": 78
         },
-        "service": "{{trigger.message.InstanceSid}}",
-        "channel": "{{trigger.message.ChannelSid}}",
-        "from": "NAMI",
-        "message_type": "custom",
-        "to": "{{contact.channel.address}}",
-        "body": "${flow_vars.send_message_sms_outside_us}"
+        "method": "POST",
+        "content_type": "application/x-www-form-urlencoded;charset=utf-8",
+        "add_twilio_auth": false,
+        "parameters": [
+          {
+            "value": "{{flow.channel.address}}",
+            "key": "conversationSid"
+          },
+          {
+            "value": "${flow_vars.send_message_sms_outside_us}",
+            "key": "message"
+          },
+          {
+            "value": "NAMI",
+            "key": "from"
+          }
+        ],
+        "url": "${lambda_twilio_account_scoped_url}/conversation/sendMessageAndRunJanitor"
       }
     },
     {
-      "name": "send_message_sms_blocked_level_1_acceptable_use_policy",
-      "type": "send-message",
+      "name": "f_sendMessageAndRunJanitor_blocked_level_1_acceptable_use_policy",
+      "type": "make-http-request",
       "transitions": [
         {
-          "event": "sent"
+          "event": "success"
         },
         {
           "event": "failed"
@@ -430,20 +454,32 @@ ${
           "x": 1275,
           "y": 901
         },
-        "service": "{{trigger.message.InstanceSid}}",
-        "channel": "{{trigger.message.ChannelSid}}",
-        "from": "NAMI",
-        "message_type": "custom",
-        "to": "{{contact.channel.address}}",
-        "body": "${flow_vars.send_message_sms_blocked_level_1_acceptable_use_policy}"
+        "method": "POST",
+        "content_type": "application/x-www-form-urlencoded;charset=utf-8",
+        "add_twilio_auth": false,
+        "parameters": [
+          {
+            "value": "{{flow.channel.address}}",
+            "key": "conversationSid"
+          },
+          {
+            "value": "${flow_vars.send_message_sms_blocked_level_1_acceptable_use_policy}",
+            "key": "message"
+          },
+          {
+            "value": "NAMI",
+            "key": "from"
+          }
+        ],
+        "url": "${lambda_twilio_account_scoped_url}/conversation/sendMessageAndRunJanitor"
       }
     },
     {
-      "name": "send_message_sms_blocked_level_2_access_policy",
-      "type": "send-message",
+      "name": "f_sendMessageAndRunJanitor_blocked_level_2_access_policy",
+      "type": "make-http-request",
       "transitions": [
         {
-          "event": "sent"
+          "event": "success"
         },
         {
           "event": "failed"
@@ -454,20 +490,32 @@ ${
           "x": 1663,
           "y": 898
         },
-        "service": "{{trigger.message.InstanceSid}}",
-        "channel": "{{trigger.message.ChannelSid}}",
-        "from": "NAMI",
-        "message_type": "custom",
-        "to": "{{contact.channel.address}}",
-        "body": "${flow_vars.send_message_sms_blocked_level_2_access_policy}"
+        "method": "POST",
+        "content_type": "application/x-www-form-urlencoded;charset=utf-8",
+        "add_twilio_auth": false,
+        "parameters": [
+          {
+            "value": "{{flow.channel.address}}",
+            "key": "conversationSid"
+          },
+          {
+            "value": "${flow_vars.send_message_sms_blocked_level_2_access_policy}",
+            "key": "message"
+          },
+          {
+            "value": "NAMI",
+            "key": "from"
+          }
+        ],
+        "url": "${lambda_twilio_account_scoped_url}/conversation/sendMessageAndRunJanitor"
       }
     },
     {
-      "name": "send_message_sms_closed",
-      "type": "send-message",
+      "name": "f_sendMessageAndRunJanitor_closed",
+      "type": "make-http-request",
       "transitions": [
         {
-          "event": "sent"
+          "event": "success"
         },
         {
           "event": "failed"
@@ -478,20 +526,32 @@ ${
           "x": 1668,
           "y": 3524
         },
-        "service": "{{trigger.message.InstanceSid}}",
-        "channel": "{{trigger.message.ChannelSid}}",
-        "from": "NAMI",
-        "message_type": "custom",
-        "to": "{{contact.channel.address}}",
-        "body": "${flow_vars.send_message_sms_closed}"
+        "method": "POST",
+        "content_type": "application/x-www-form-urlencoded;charset=utf-8",
+        "add_twilio_auth": false,
+        "parameters": [
+          {
+            "value": "{{flow.channel.address}}",
+            "key": "conversationSid"
+          },
+          {
+            "value": "${flow_vars.send_message_sms_closed}",
+            "key": "message"
+          },
+          {
+            "value": "NAMI",
+            "key": "from"
+          }
+        ],
+        "url": "${lambda_twilio_account_scoped_url}/conversation/sendMessageAndRunJanitor"
       }
     },
     {
-      "name": "send_message_sms_holiday",
-      "type": "send-message",
+      "name": "f_sendMessageAndRunJanitor_holiday",
+      "type": "make-http-request",
       "transitions": [
         {
-          "event": "sent"
+          "event": "success"
         },
         {
           "event": "failed"
@@ -502,12 +562,24 @@ ${
           "x": 2062,
           "y": 3403
         },
-        "service": "{{trigger.message.InstanceSid}}",
-        "channel": "{{trigger.message.ChannelSid}}",
-        "from": "NAMI",
-        "message_type": "custom",
-        "to": "{{contact.channel.address}}",
-        "body": "${flow_vars.send_message_sms_holiday}"
+        "method": "POST",
+        "content_type": "application/x-www-form-urlencoded;charset=utf-8",
+        "add_twilio_auth": false,
+        "parameters": [
+          {
+            "value": "{{flow.channel.address}}",
+            "key": "conversationSid"
+          },
+          {
+            "value": "${flow_vars.send_message_sms_holiday}",
+            "key": "message"
+          },
+          {
+            "value": "NAMI",
+            "key": "from"
+          }
+        ],
+        "url": "${lambda_twilio_account_scoped_url}/conversation/sendMessageAndRunJanitor"
       }
     },
     {
@@ -572,7 +644,7 @@ ${
           "event": "noMatch"
         },
         {
-          "next": "send_message_sms_max_retries",
+          "next": "f_sendMessageAndRunJanitor_max_retries",
           "event": "match",
           "conditions": [
             {
@@ -595,11 +667,11 @@ ${
       }
     },
     {
-      "name": "send_message_sms_max_retries",
-      "type": "send-message",
+      "name": "f_sendMessageAndRunJanitor_max_retries",
+      "type": "make-http-request",
       "transitions": [
         {
-          "event": "sent"
+          "event": "success"
         },
         {
           "event": "failed"
@@ -610,12 +682,24 @@ ${
           "x": 1110,
           "y": 1616
         },
-        "service": "{{trigger.message.InstanceSid}}",
-        "channel": "{{trigger.message.ChannelSid}}",
-        "from": "NAMI",
-        "message_type": "custom",
-        "to": "{{contact.channel.address}}",
-        "body": "${flow_vars.send_message_sms_max_retries}"
+        "method": "POST",
+        "content_type": "application/x-www-form-urlencoded;charset=utf-8",
+        "add_twilio_auth": false,
+        "parameters": [
+          {
+            "value": "{{flow.channel.address}}",
+            "key": "conversationSid"
+          },
+          {
+            "value": "${flow_vars.send_message_sms_max_retries}",
+            "key": "message"
+          },
+          {
+            "value": "NAMI",
+            "key": "from"
+          }
+        ],
+        "url": "${lambda_twilio_account_scoped_url}/conversation/sendMessageAndRunJanitor"
       }
     },
     {
@@ -627,7 +711,7 @@ ${
           "event": "noMatch"
         },
         {
-          "next": "send_message_sms_crisis",
+          "next": "f_sendMessageAndRunJanitor_crisis",
           "event": "match",
           "conditions": [
             {
@@ -650,11 +734,11 @@ ${
       }
     },
     {
-      "name": "send_message_sms_crisis",
-      "type": "send-message",
+      "name": "f_sendMessageAndRunJanitor_crisis",
+      "type": "make-http-request",
       "transitions": [
         {
-          "event": "sent"
+          "event": "success"
         },
         {
           "event": "failed"
@@ -665,12 +749,24 @@ ${
           "x": 412,
           "y": 1826
         },
-        "service": "{{trigger.message.InstanceSid}}",
-        "channel": "{{trigger.message.ChannelSid}}",
-        "from": "NAMI",
-        "message_type": "custom",
-        "to": "{{contact.channel.address}}",
-        "body": "${flow_vars.send_message_sms_crisis}"
+        "method": "POST",
+        "content_type": "application/x-www-form-urlencoded;charset=utf-8",
+        "add_twilio_auth": false,
+        "parameters": [
+          {
+            "value": "{{flow.channel.address}}",
+            "key": "conversationSid"
+          },
+          {
+            "value": "${flow_vars.send_message_sms_crisis}",
+            "key": "message"
+          },
+          {
+            "value": "NAMI",
+            "key": "from"
+          }
+        ],
+        "url": "${lambda_twilio_account_scoped_url}/conversation/sendMessageAndRunJanitor"
       }
     },
     {
@@ -735,7 +831,7 @@ ${
           "event": "noMatch"
         },
         {
-          "next": "send_message_sms_max_retries",
+          "next": "f_sendMessageAndRunJanitor_max_retries",
           "event": "match",
           "conditions": [
             {
@@ -819,7 +915,7 @@ ${
           "event": "noMatch"
         },
         {
-          "next": "send_message_sms_max_retries",
+          "next": "f_sendMessageAndRunJanitor_max_retries",
           "event": "match",
           "conditions": [
             {
@@ -928,7 +1024,7 @@ ${
           "event": "noMatch"
         },
         {
-          "next": "send_message_sms_max_retries",
+          "next": "f_sendMessageAndRunJanitor_max_retries",
           "event": "match",
           "conditions": [
             {
@@ -973,7 +1069,7 @@ ${
           ]
         },
         {
-          "next": "send_message_sms_closed",
+          "next": "f_sendMessageAndRunJanitor_closed",
           "event": "match",
           "conditions": [
             {
@@ -987,7 +1083,7 @@ ${
           ]
         },
         {
-          "next": "send_message_sms_holiday",
+          "next": "f_sendMessageAndRunJanitor_holiday",
           "event": "match",
           "conditions": [
             {
@@ -1172,9 +1268,11 @@ ${
           "event": "incomingMessage"
         },
         {
+          "next": "f_sendMessageAndRunJanitor_conversation_closed",
           "event": "timeout"
         },
         {
+          "next": "f_sendMessageAndRunJanitor_conversation_closed",
           "event": "deliveryFailure"
         }
       ],
@@ -1407,9 +1505,11 @@ ${
           "event": "incomingMessage"
         },
         {
+          "next": "f_sendMessageAndRunJanitor_conversation_closed",
           "event": "timeout"
         },
         {
+          "next": "f_sendMessageAndRunJanitor_conversation_closed",
           "event": "deliveryFailure"
         }
       ],
@@ -1504,7 +1604,7 @@ ${
           ]
         },
         {
-          "next": "send_message_sms_closed",
+          "next": "f_sendMessageAndRunJanitor_closed",
           "event": "match",
           "conditions": [
             {
@@ -1518,7 +1618,7 @@ ${
           ]
         },
         {
-          "next": "send_message_sms_holiday",
+          "next": "f_sendMessageAndRunJanitor_holiday",
           "event": "match",
           "conditions": [
             {
@@ -2018,6 +2118,42 @@ ${
           }
         ],
         "url": "${flow_vars.custom_functions_url}/cancelPendingTask"
+      }
+    },
+    {
+      "name": "f_sendMessageAndRunJanitor_conversation_closed",
+      "type": "make-http-request",
+      "transitions": [
+        {
+          "event": "success"
+        },
+        {
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 807,
+          "y": 4771
+        },
+        "method": "POST",
+        "content_type": "application/x-www-form-urlencoded;charset=utf-8",
+        "add_twilio_auth": false,
+        "parameters": [
+          {
+            "value": "{{flow.channel.address}}",
+            "key": "conversationSid"
+          },
+          {
+            "value": "${flow_vars.send_message_sms_conversation_closed}",
+            "key": "message"
+          },
+          {
+            "value": "NAMI",
+            "key": "from"
+          }
+        ],
+        "url": "${lambda_twilio_account_scoped_url}/conversation/sendMessageAndRunJanitor"
       }
     }
   ]
