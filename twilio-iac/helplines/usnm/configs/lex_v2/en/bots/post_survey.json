@@ -5,7 +5,7 @@
     "child_directed": true,
     "idle_session_ttl_in_seconds": "300",
     "staging_bot_alias_id": "TSTALIASID",
-    "production_bot_alias_id": "TSTALIASID",
+    "production_bot_alias_id": "YQ3ARFIUDC",
     "fallback_intent_closing_response": "Thank you for contacting the NAMI Helpline. If you need additional support, please reach out to us again.",
     "type": "Bot",
     "intents": {

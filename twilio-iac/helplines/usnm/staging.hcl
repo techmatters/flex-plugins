@@ -15,7 +15,7 @@ locals {
       chat_blocked_message                                   = "Hi, you've been blocked from accessing NAMI services and we are not able to read or receive further messages from you."
       send_message_prequeue                                  = "Welcome. Pleas wait for a specialist."
       custom_functions_url                                   = "https://custom-functions-4084.twil.io"
-      usnm_recordings_url                                    = "https://usnm-recordings-5770.twil.io"
+      usnm_recordings_url                                    = "https://usnm-recordings-v2-1724.twil.io"
       is_skilled_worker_available_function_sid               = "ZH85007840bfdc6245a8ffb08d98aad0eb"
       conversation_time_delay_function_sid                   = "ZH45e11e1929796c69c440a52f9692c085"
       is_task_in_queue_function_sid                          = "ZH39ee1bcce2b12e22091c0a0249f3a50b"
@@ -42,6 +42,7 @@ locals {
       send_wait_sms_no_tya_service                           = "There are currently no Teen and Young Adult HelpLine Specialists available. Reply 1 to return to the standard SMS service or STOP to end your conversation. Info and resources are online at https://www.nami.org/nami-helpline/.  Email helpline@nami.org and we'll respond in 1-2 business days."
       send_wait_sms_no_fcg_service                           = "There are currently no Family Caregiver HelpLine Specialists available. Reply 1 to return to the standard SMS service or STOP to end your conversation. Info and resources are online at https://www.nami.org/nami-helpline/.  Email helpline@nami.org and we'll respond in 1-2 business days."
       send_message_sms_max_retries                           = "We haven't received a response, so we'll end this conversation for now. If you need support from the NAMI HelpLine, you can start a new conversation anytime."
+      send_message_sms_conversation_closed                   = "This conversation is now closed. If you need support from the NAMI HelpLine, you can start a new conversation anytime."
       send_message_sms_post_queue_closed                     = "NAMI HelpLine is now closed. We're sorry we weren't able to connect you with a Specialist today. We encourage you to contact us again Monday - Friday, from 10am-10pm ET, excluding national holidays. This contact will now end. Thank you for contacting us."
       send_message_sms_post_queue_keep_waiting               = "Thank you for your patience. NAMI HelpLine Specialists are currently assisting other Help Seekers. Someone will be with you as soon as possible. In the meantime, info and resources are online at https://www.nami.org/nami-helpline/ "
     }
