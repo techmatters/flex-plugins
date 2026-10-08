@@ -17,6 +17,7 @@
 import {
   AccountSID,
   ChatServiceSID,
+  TaskQueueSID,
   WorkflowSID,
   WorkspaceSID,
 } from '@tech-matters/twilio-types';
@@ -101,8 +102,12 @@ export const areOperatingHoursEnforced = async (
   return process.env.NODE_ENV === 'production';
 };
 
-export const getSwitchboardQueueSid = (accountSid: AccountSID): Promise<string> =>
-  getSsmParameter(`/${process.env.NODE_ENV}/twilio/${accountSid}/switchboard_queue_sid`);
+export const getSwitchboardQueueSid = async (
+  accountSid: AccountSID,
+): Promise<TaskQueueSID> =>
+  (await getSsmParameter(
+    `/${process.env.NODE_ENV}/twilio/${accountSid}/switchboard_queue_sid`,
+  )) as TaskQueueSID;
 
 export const getConversationsTransferWorkflow = (
   accountSid: AccountSID,

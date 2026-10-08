@@ -30,8 +30,9 @@ import {
   SWITCHBOARD_NOTIFY_DOCUMENT,
   SWITCHBOARD_WORKFLOW_FILTER_PREFIX,
 } from '@tech-matters/hrm-types';
-import { AccountSID } from '@tech-matters/twilio-types';
-import { retrieveServiceConfigurationAttributes } from '../configuration/aseloConfiguration';
+import { AccountSID, TaskQueueSID, WorkspaceSID } from '@tech-matters/twilio-types';
+
+const MAX_REQUEUE_ATTEMPTS = 3;
 
 export type OperationType = 'enable' | 'disable';
 
@@ -41,8 +42,6 @@ export type SwitchboardRequest = {
   supervisorWorkerSid: string;
   Token: string;
 };
-
-export type TokenResponse = { identity: string; roles?: string[]; worker_sid?: string };
 
 /**
  * Create the switchboard document in Twilio Sync
@@ -225,6 +224,46 @@ function removeSwitchboardingFilter({ config }: { config: WorkflowConfig }) {
   return updatedConfig;
 }
 
+async function updateReevaluateAndVerifyWorkflow(
+  client: Twilio,
+  workspaceSid: WorkspaceSID,
+  workflowSid: string,
+  updatedConfig: WorkflowConfig,
+  queueToVerifyEmptySid: TaskQueueSID,
+) {
+  const verifyQueue = await client.taskrouter.v1
+    .workspaces(workspaceSid)
+    .taskQueues.get(queueToVerifyEmptySid)
+    .fetch();
+
+  for (let i = 0; i < MAX_REQUEUE_ATTEMPTS; i++) {
+    // try to update taskrouter settings to stop switchboard
+    await client.taskrouter.v1
+      .workspaces(workspaceSid)
+      .workflows(workflowSid)
+      .update({
+        configuration: JSON.stringify(updatedConfig),
+        reEvaluateTasks: 'true',
+      });
+    const stats = await verifyQueue.realTimeStatistics().get().fetch();
+    const requeueAttempt = i + 1;
+    if (!stats.tasksByStatus.pending) {
+      console.info(
+        `Queue ${verifyQueue.friendlyName} (${queueToVerifyEmptySid}) empty (attempt ${requeueAttempt}/${MAX_REQUEUE_ATTEMPTS})`,
+      );
+      break;
+    } else if (requeueAttempt < MAX_REQUEUE_ATTEMPTS) {
+      console.warn(
+        `Queue ${verifyQueue.friendlyName} (${queueToVerifyEmptySid}) still has ${stats.tasksByStatus.pending} pending tasks (attempt ${requeueAttempt}/${MAX_REQUEUE_ATTEMPTS})`,
+      );
+    } else {
+      console.error(
+        `Failed to empty queue ${verifyQueue.friendlyName} (${queueToVerifyEmptySid}), it still has ${stats.tasksByStatus.pending} pending tasks after ${requeueAttempt} attempts, giving up now`,
+      );
+    }
+  }
+}
+
 /**
  * Handles the 'enable' operation - turns on switchboarding for a queue
  */
@@ -307,20 +346,13 @@ async function handleEnableOperation({
         switchboardQueueSid: switchboardQueueSid,
       });
 
-      const {
-        feature_flags: {
-          enable_switchboarding_move_tasks: enableSwitchboardingMoveTasks,
-        },
-      } = await retrieveServiceConfigurationAttributes(client);
-
-      await client.taskrouter.v1
-        .workspaces(workspaceSid)
-        .workflows(masterWorkflowSid)
-        .update({
-          configuration: JSON.stringify(updatedConfig),
-          reEvaluateTasks: enableSwitchboardingMoveTasks ? 'true' : undefined,
-        });
-
+      await updateReevaluateAndVerifyWorkflow(
+        client,
+        workspaceSid,
+        masterWorkflowSid,
+        updatedConfig,
+        originalQueue.sid as TaskQueueSID,
+      );
       return newOk({});
     } catch (error) {
       // remove switchboard-state document as switchboarding failed
@@ -369,6 +401,7 @@ async function handleDisableOperation({
       const error = new Error(message);
       return newErr({ error, message });
     }
+    const switchboardQueueSid = await getSwitchboardQueueSid(accountSid);
 
     const configResp = await client.taskrouter.v1
       .workspaces(workspaceSid)
@@ -379,18 +412,13 @@ async function handleDisableOperation({
 
     const updatedConfig = removeSwitchboardingFilter({ config: currentConfig });
 
-    const {
-      feature_flags: { enable_switchboarding_move_tasks: enableSwitchboardingMoveTasks },
-    } = await retrieveServiceConfigurationAttributes(client);
-
-    // try to update taskrouter settings to stop switchboard
-    await client.taskrouter.v1
-      .workspaces(workspaceSid)
-      .workflows(masterWorkflowSid)
-      .update({
-        configuration: JSON.stringify(updatedConfig),
-        reEvaluateTasks: enableSwitchboardingMoveTasks ? 'true' : undefined,
-      });
+    await updateReevaluateAndVerifyWorkflow(
+      client,
+      workspaceSid,
+      masterWorkflowSid,
+      updatedConfig,
+      switchboardQueueSid,
+    );
 
     // remove switchboard-state document once the taskrouter config is back to normal
     const deleteResult = await deleteSwitchboardStateDocument({ client, syncServiceSid });
