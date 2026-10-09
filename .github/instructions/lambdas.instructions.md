@@ -1,5 +1,5 @@
 ---
-applyTo: "lambda/**"
+applyTo: "lambdas/**"
 excludeAgent: "code-review"
 ---
 
