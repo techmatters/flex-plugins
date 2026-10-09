@@ -10,7 +10,7 @@
   },
   "widgetAlwaysOpen": false,
   "helplineCode": "usvt",
-  "enableRecaptcha": true,
+  "enableRecaptcha": false,
   "captureIp": true,
   "contactIdentifierField": "ip",
   "checkOpenHours": false

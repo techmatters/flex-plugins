@@ -1,0 +1,106 @@
+{
+  "slotTypeName": "howHeardAboutUs",
+  "slotTypeValues": [
+    {
+      "sampleValue": {
+        "value": "Google Search"
+      },
+      "synonyms": [
+        {
+          "value": "1"
+        },
+        {
+          "value": "Google"
+        }
+      ]
+    },
+    {
+      "sampleValue": {
+        "value": "Social media"
+      },
+      "synonyms": [
+        {
+          "value": "2"
+        },
+        {
+          "value": "Social Media"
+        }
+      ]
+    },
+    {
+      "sampleValue": {
+        "value": "Healthcare provider"
+      },
+      "synonyms": [
+        {
+          "value": "3"
+        },
+        {
+          "value": "Healthcare Provider"
+        }
+      ]
+    },
+    {
+      "sampleValue": {
+        "value": "DCF"
+      },
+      "synonyms": [
+        {
+          "value": "4"
+        }
+      ]
+    },
+    {
+      "sampleValue": {
+        "value": "School"
+      },
+      "synonyms": [
+        {
+          "value": "5"
+        }
+      ]
+    },
+    {
+      "sampleValue": {
+        "value": "Friend/family"
+      },
+      "synonyms": [
+        {
+          "value": "6"
+        },
+        {
+          "value": "Friend"
+        },
+        {
+          "value": "Family"
+        }
+      ]
+    },
+    {
+      "sampleValue": {
+        "value": "Community organization"
+      },
+      "synonyms": [
+        {
+          "value": "7"
+        },
+        {
+          "value": "Community Organization"
+        }
+      ]
+    },
+    {
+      "sampleValue": {
+        "value": "Other"
+      },
+      "synonyms": [
+        {
+          "value": "8"
+        }
+      ]
+    }
+  ],
+  "valueSelectionSetting": {
+    "resolutionStrategy": "TopResolution"
+  }
+}

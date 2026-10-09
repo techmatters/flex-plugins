@@ -1,0 +1,101 @@
+{
+  "slotName": "role",
+  "slotTypeName": "role",
+  "intentName": "pre_survey",
+  "description": "Slot role for intent pre_survey",
+  "valueElicitationSetting": {
+    "slotConstraint": "Required",
+    "promptSpecification": {
+      "messageGroups": [
+        {
+          "message": {
+            "plainTextMessage": {
+              "value": "Which best describes your role today?\n1. Parent\n2. Caregiver\n3. Pregnant or expecting parent\n4. Family member\n5. Professional/Service Provider\n6. Community Member\n7. Volunteer\n8. Other"
+            }
+          }
+        }
+      ],
+      "maxRetries": 1,
+      "allowInterrupt": true,
+      "messageSelectionStrategy": "Ordered",
+      "promptAttemptsSpecification": {
+        "Initial": {
+          "allowInterrupt": true,
+          "allowedInputTypes": {
+            "allowAudioInput": true,
+            "allowDTMFInput": true
+          },
+          "audioAndDTMFInputSpecification": {
+            "startTimeoutMs": 4000,
+            "audioSpecification": {
+              "maxLengthMs": 15000,
+              "endTimeoutMs": 640
+            },
+            "dtmfSpecification": {
+              "maxLength": 513,
+              "endTimeoutMs": 5000,
+              "deletionCharacter": "*",
+              "endCharacter": "#"
+            }
+          },
+          "textInputSpecification": {
+            "startTimeoutMs": 30000
+          }
+        },
+        "Retry1": {
+          "allowInterrupt": true,
+          "allowedInputTypes": {
+            "allowAudioInput": true,
+            "allowDTMFInput": true
+          },
+          "audioAndDTMFInputSpecification": {
+            "startTimeoutMs": 4000,
+            "audioSpecification": {
+              "maxLengthMs": 15000,
+              "endTimeoutMs": 640
+            },
+            "dtmfSpecification": {
+              "maxLength": 513,
+              "endTimeoutMs": 5000,
+              "deletionCharacter": "*",
+              "endCharacter": "#"
+            }
+          },
+          "textInputSpecification": {
+            "startTimeoutMs": 30000
+          }
+        }
+      }
+    },
+    "slotCaptureSetting": {
+      "captureNextStep": {
+        "dialogAction": {
+          "type": "ElicitSlot",
+          "slotToElicit": "town"
+        },
+        "intent": {}
+      },
+      "failureResponse": {
+        "messageGroups": [
+          {
+            "message": {
+              "plainTextMessage": {
+                "value": "We are having trouble understanding your response."
+              }
+            }
+          }
+        ],
+        "allowInterrupt": true
+      },
+      "failureNextStep": {
+        "dialogAction": {
+          "type": "CloseIntent"
+        },
+        "intent": {}
+      },
+      "elicitationCodeHook": {
+        "enableCodeHookInvocation": true
+      }
+    }
+  }
+}

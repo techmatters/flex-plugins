@@ -1,0 +1,65 @@
+{
+  "pre_survey": {
+    "description": "Pre-survey intake bot generated from Flow and Routing Map. Collects role, town, referral source, and routing menu choice as a single slot chain; the downstream Studio Flow/Lambda reads the menuOption slot value to pick the final routing message.",
+    "locale": "en_US",
+    "child_directed": true,
+    "idle_session_ttl_in_seconds": "350",
+    "staging_bot_alias_id": "TSTALIASID",
+    "type": "Bot",
+    "intents": {
+      "pre_survey": {
+        "utterances": [
+          {
+            "utterance": "trigger_pre_survey"
+          },
+          {
+            "utterance": "Incoming webchat contact"
+          }
+        ],
+        "closing_response": {
+          "message": "Thanks connecting you now."
+        },
+        "initial_response": {
+          "message": "If this is a life-threatening emergency, please contact 911. To help us connect you with the right support, please answer a few short questions.",
+          "slot_to_elicit": "role"
+        },
+        "slot_priorities": {
+          "1": {
+            "slot_name": "role",
+            "slot_type_name": "role",
+            "slot_question": "Which best describes your role today?\n1. Parent\n2. Caregiver\n3. Pregnant or expecting parent\n4. Family member\n5. Professional/Service Provider\n6. Community Member\n7. Volunteer\n8. Other",
+            "failure_response": "We are having trouble understanding your response."
+          },
+          "2": {
+            "slot_name": "town",
+            "slot_type_name": "AMAZON.FreeFormInput",
+            "slot_question": "What town are you reaching out from?",
+            "failure_response": "We are having trouble understanding your response."
+          },
+          "3": {
+            "slot_name": "howHeardAboutUs",
+            "slot_type_name": "howHeardAboutUs",
+            "slot_question": "How did you hear about us?\n1. Google Search\n2. Social media\n3. Healthcare provider\n4. DCF\n5. School\n6. Friend/family\n7. Community organization\n8. Other",
+            "failure_response": "We are having trouble understanding your response."
+          },
+          "4": {
+            "slot_name": "menuOption",
+            "slot_type_name": "menuOption",
+            "slot_question": "How can we help you today?\n1. Report child abuse and neglect\n2. Talk with someone about something that is happening\n3. Learn how to enroll in parent education programs\n4. Child Sexual Abuse Prevention: school-based programs, adult-focused programs and training of trainers\n5. Healthy Relationships Project school-based curriculum\n6. Adult Responsibility Project trainings\n7. Apply to be a volunteer",
+            "failure_response": "We are having trouble understanding your response.",
+            "routing_messages_by_value": {
+              "report_abuse": "If you or someone else is in immediate danger, please call 911. If you are concerned about the safety or well-being of a child and would like to make a report of child abuse or neglect, you can call 1-800-649-5285. The line is available 24 hours a day, 7 days a week.",
+              "talk_to_someone": "If you would like to talk with someone you can text this number XXX-XXX-XXXX or call XXX-XXX-XXXX.",
+              "parent_education": "We are glad you are interested in learning more about our programs. You can choose the option that feels most helpful to you: to view upcoming programs, click here. To enroll in a program, click here. To refer a family, click here. If you have a specific question or would prefer to speak with someone, please email familysupport@pcavt.org. We are happy to help you find the information or support that is right for you.",
+              "csa_prevention": "Interested in learning more about Train the Trainer opportunities? You can click here to view upcoming events and find additional information.",
+              "healthy_relationships": "Looking for Healthy Relationships Project resources or curriculum? To purchase curriculum, click on the link here. To contact the HRP team, please email hrpteam@pcavt.org.",
+              "adult_responsibility": "You can explore the Adult Responsibilities Training Calendar and choose the training opportunity that works best for you here: click here.",
+              "volunteer_apply": "Thank you for your interest in volunteering with us. We welcome you to learn more and apply when you are ready, click here. If you have questions about volunteering or would like more information before applying, please reach out to our team at pcavt@pcavt.org."
+            },
+            "_note": "routing_messages_by_value is NOT sent by Lex (its own closing_response is the generic 'Thanks — connecting you now.' line above). Lex V2 conditional branching caps out at 4 branches + 1 default, which can't cover 7 distinct outcomes, so the Studio Flow/Lambda must read the resolved menuOption slot value from session state after EndConversation and send the matching message from this table itself."
+          }
+        }
+      }
+    }
+  }
+}
