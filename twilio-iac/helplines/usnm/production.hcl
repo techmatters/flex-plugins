@@ -44,36 +44,34 @@ locals {
       send_message_sms_conversation_closed                   = "This conversation is now closed. If you need support from the NAMI HelpLine, you can start a new conversation anytime."
       send_message_sms_post_queue_closed                     = "NAMI HelpLine is now closed. We're sorry we weren't able to connect you with a Specialist today. We encourage you to contact us again Monday - Friday, from 10am-10pm ET, excluding national holidays. This contact will now end. Thank you for contacting us."
       send_message_sms_post_queue_keep_waiting               = "Thank you for your patience. NAMI HelpLine Specialists are currently assisting other Help Seekers. Someone will be with you as soon as possible. In the meantime, info and resources are online at https://www.nami.org/nami-helpline/ "
+      send_message_sms_redirect                              = "This number is for calls to the NAMI HelpLine. To text a HelpLine Specialist, text HELPLINE to 62640. Message and data rates may apply."
     }
 
 
-    //Serverless -- to allow enabling the operating hours check on this staging account.
-    ui_editable = true
-    
     studio_flows = {
       post_call_survey : {
         templatefile = "/app/twilio-iac/helplines/usnm/templates/studio-flows/post-call-survey.tftpl"
         flow_vars = {
           conversation_service_sid = "IS459056d42cc944f295525b836610852c"
-          outbound_phone_number    = "+18773594183"
+          outbound_phone_number    = "62640"
         }
       },
       post_call_survey_es : {
         templatefile = "/app/twilio-iac/helplines/usnm/templates/studio-flows/post-call-survey-es.tftpl"
         flow_vars = {
           conversation_service_sid = "IS459056d42cc944f295525b836610852c"
-          outbound_phone_number    = "+18773594183"
+          outbound_phone_number    = "62640"
         }
       },
       post_call_survey_en : {
         templatefile = "/app/twilio-iac/helplines/usnm/templates/studio-flows/post-call-survey-en.tftpl"
         flow_vars = {
           conversation_service_sid = "IS459056d42cc944f295525b836610852c"
-          outbound_phone_number    = "+18773594183"
+          outbound_phone_number    = "62640"
         }
       }
     }
-    
+
     #Channels
     channels = {
       voice : {
@@ -94,18 +92,42 @@ locals {
         templatefile         = "/app/twilio-iac/helplines/usnm/templates/studio-flows/sms.tftpl"
         channel_flow_vars    = {}
         chatbot_unique_names = []
+      },
+      sms_shortcode : {
+        messaging_mode       = "conversations"
+        channel_type         = "sms"
+        contact_identity     = "62640"
+        templatefile         = "/app/twilio-iac/helplines/usnm/templates/studio-flows/sms.tftpl"
+        channel_flow_vars    = {}
+        chatbot_unique_names = []
+      },
+      sms_longcode : {
+        messaging_mode       = "conversations"
+        channel_type         = "sms"
+        contact_identity     = "+18009506264"
+        templatefile         = "/app/twilio-iac/helplines/usnm/templates/studio-flows/sms.tftpl"
+        channel_flow_vars    = {}
+        chatbot_unique_names = []
+      },
+      sms_state_longcode : {
+        messaging_mode       = "conversations"
+        channel_type         = "sms"
+        contact_identity     = "+12075158398"
+        templatefile         = "/app/twilio-iac/helplines/usnm/templates/studio-flows/sms.tftpl"
+        channel_flow_vars    = {}
+        chatbot_unique_names = []
       }
     }
 
     system_down_templatefile = "/app/twilio-iac/helplines/templates/studio-flows/system-down.tftpl"
     enable_system_down       = true
     system_down_flow_vars = {
-      is_system_down                   = "false"
-      message                          = "We're sorry, NAMI HelpLine is experiencing technical difficulties and may not be able to respond right now. Your message is important to us and we hope to reconnect soon. If you or your loved one are experiencing a mental health crisis and need urgent support, you can call, chat or text 988 Suicide & Crisis Lifeline. If you are in immediate life threatening danger, call 911. Info and resources are online at https://www.nami.org/nami-helpline/ or you can email helpline@nami.org and we'll respond in 1-2 business days.Thank you for your patience."
-      voice_message                    = "We're sorry, NAMI HelpLine is currently experiencing technical difficulties and may not be able to respond right now. Your message is important to us and we hope to reconnect soon. If you or your loved one are experiencing a mental health crisis and need urgent support, please hang up and can call, chat or text 988 Suicide & Crisis Lifeline. If you are in immediate life threatening danger, please hang up and call 911. Info and resources are online at https://www.nami.org/nami-helpline/  or you can email helpline@nami.org and we'll respond in 1-2 business days.Thank you for your patience."
-      call_action                      = "message"
-      forward_number                   = "+123"
-      recording_url                    = "https://<place_holder>.mp3"
+      is_system_down = "false"
+      message        = "We're sorry, NAMI HelpLine is experiencing technical difficulties and may not be able to respond right now. Your message is important to us and we hope to reconnect soon. If you or your loved one are experiencing a mental health crisis and need urgent support, you can call, chat or text 988 Suicide & Crisis Lifeline. If you are in immediate life threatening danger, call 911. Info and resources are online at https://www.nami.org/nami-helpline/ or you can email helpline@nami.org and we'll respond in 1-2 business days.Thank you for your patience."
+      voice_message  = "We're sorry, NAMI HelpLine is currently experiencing technical difficulties and may not be able to respond right now. Your message is important to us and we hope to reconnect soon. If you or your loved one are experiencing a mental health crisis and need urgent support, please hang up and can call, chat or text 988 Suicide & Crisis Lifeline. If you are in immediate life threatening danger, please hang up and call 911. Info and resources are online at https://www.nami.org/nami-helpline/  or you can email helpline@nami.org and we'll respond in 1-2 business days.Thank you for your patience."
+      call_action    = "message"
+      forward_number = "+123"
+      recording_url  = "https://<place_holder>.mp3"
     }
 
     get_profile_flags_for_identifier_base_url = "https://hrm-production.tl.techmatters.org/lambda/twilio/account-scoped"
