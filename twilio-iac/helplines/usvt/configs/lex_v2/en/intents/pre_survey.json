@@ -1,6 +1,6 @@
 {
   "intentName": "pre_survey",
-  "description": "Main intake intent: collects role, town, and referral source, then presents the routing menu",
+  "description": "Main intake intent: collects role, town, referral source, and routing menu choice (menuOption) as a single slot chain, then ends deterministically. The downstream Studio Flow/Lambda reads the menuOption slot value to select the final routing message.",
   "sampleUtterances": [
     {
       "utterance": "trigger_pre_survey"
@@ -48,6 +48,10 @@
     {
       "priority": 3,
       "slotName": "howHeardAboutUs"
+    },
+    {
+      "priority": 4,
+      "slotName": "menuOption"
     }
   ],
   "intentClosingSetting": {
@@ -56,7 +60,7 @@
         {
           "message": {
             "plainTextMessage": {
-              "value": "How can we help you today?\n1. Report child abuse and neglect\n2. Talk with someone about something that is happening\n3. Learn how to enroll in parent education programs\n4. Child Sexual Abuse Prevention: school-based programs, adult-focused programs and training of trainers\n5. Healthy Relationships Project\u00ae school-based curriculum\n6. Adult Responsibility Project trainings\n7. Apply to be a volunteer"
+              "value": "Thanks connecting you now."
             }
           }
         }
@@ -66,7 +70,7 @@
     "active": true,
     "nextStep": {
       "dialogAction": {
-        "type": "ElicitIntent"
+        "type": "EndConversation"
       },
       "intent": {}
     }
