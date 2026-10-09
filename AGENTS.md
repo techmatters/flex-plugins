@@ -42,3 +42,9 @@ are git-ignored — keep it that way.
 Follow [`PRGuidelines.md`](PRGuidelines.md): keep PRs reviewable in size, use a clear title
 and a description that explains the why, add unit tests, keep UI changes accessible, make
 new UI strings localisable, and remove commented-out code before asking for review.
+
+Write PR descriptions using the template in
+[`.github/pull_request_template.md`](.github/pull_request_template.md): keep all its
+sections (Description, Checklist, Other Related Issues, Verification steps, AFTER YOU
+MERGE), tick only the checklist items that actually apply, and put the primary issue key
+(e.g. `CHI-1234`) in the PR title.
