@@ -18,7 +18,7 @@ import {
   ConferenceStatusEventHandler,
   registerConferenceStatusEventHandler,
 } from './conferenceStatusCallback';
-import RestException from 'twilio/lib/base/RestException';
+import type RestException from 'twilio/lib/base/RestException';
 import { hasTaskControl } from '../transfer/hasTaskControl';
 import { isAgentInConference } from './isAgentInConference';
 import {
@@ -138,7 +138,7 @@ const conferenceStatusEventHandler: ConferenceStatusEventHandler = async (
       .participants.list();
   } catch (err) {
     // If conversation is shut down, participants.list results in a 404 error
-    if (err instanceof RestException && err.code === 404) {
+    if (err instanceof Error && (err as RestException)?.code === 404) {
       console.warn(
         `stopRecordingWhenLastAgentLeave called with conference ${event.ConferenceSid}, but it has been removed`,
       );
