@@ -91,8 +91,7 @@
     "active": true,
     "nextStep": {
       "dialogAction": {
-        "type": "ElicitSlot",
-        "slotToElicit": "role"
+        "type": "EndConversation"
       },
       "intent": {}
     },
