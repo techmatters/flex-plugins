@@ -91,13 +91,13 @@
     "active": true,
     "nextStep": {
       "dialogAction": {
-        "type": "EndConversation"
+        "type": "InvokeDialogCodeHook"
       },
       "intent": {}
     },
     "codeHook": {
-      "enableCodeHookInvocation": false,
-      "active": false,
+      "enableCodeHookInvocation": true  ,
+      "active": true,
       "postCodeHookSpecification": {
         "successNextStep": {
           "dialogAction": {
