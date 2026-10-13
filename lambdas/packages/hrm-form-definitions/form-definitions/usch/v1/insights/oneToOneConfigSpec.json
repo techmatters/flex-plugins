@@ -59,11 +59,11 @@
     "caseInformation": [
       {
         "name": "campaign",
-        "insights": ["customers", "campaign"]
+        "insights": ["conversations", "campaign"]
       },
       {
         "name": "languageLineUsed",
-        "insights": ["conversations", "customer_email"]
+        "insights": ["customers", "customer_email"]
       },
       {
         "name": "actionPlanDeveloped",
@@ -71,7 +71,7 @@
       },
       {
         "name": "wasASafetyPlanCreated",
-        "insights": ["conversations", "market_segment"]
+        "insights": ["customers", "market_segment"]
       },
       {
         "name": "levelOfIntervention",
