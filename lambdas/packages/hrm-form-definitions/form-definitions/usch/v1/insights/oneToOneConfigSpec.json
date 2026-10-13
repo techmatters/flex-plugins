@@ -67,7 +67,7 @@
       },
       {
         "name": "actionPlanDeveloped",
-        "insights": ["conversations", "initiated_by"]
+        "insights": ["conversations", "source"]
       },
       {
         "name": "wasASafetyPlanCreated",
@@ -75,7 +75,7 @@
       },
       {
         "name": "levelOfIntervention",
-        "insights": ["conversations", "outcome"]
+        "insights": ["conversations", "service_level"]
       },
       {
         "name": "howTheHelpseekerHeardAboutUs",
