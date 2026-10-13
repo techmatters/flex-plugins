@@ -1,44 +1,31 @@
 {
     "slotTypeName": "how_did_you_hear_about_us",
     "slotTypeValues": [
-         {
-            "sampleValue": {
-                "value": "Traditional Media"
-            },
-            "synonyms": [
-                {
-                    "value": "5"
-                },
-                {
-                    "value": "from the news"
-                },
-                {
-                    "value": "news"
-                },
-                {
-                    "value": "5."
-                },
-                {
-                    "value": "media"
-                }
-            ]
-        },
         {
             "sampleValue": {
-                "value": "Unknown"
+                "value": "Advertisement"
             },
             "synonyms": [
                 {
-                    "value": "i dont know"
+                    "value": "ad"
                 },
                 {
-                    "value": "dont know"
+                    "value": "from ads"
                 },
                 {
-                    "value": "x"
+                    "value": "ads"
                 },
                 {
-                    "value": "no"
+                    "value": "adverts"
+                },
+                {
+                    "value": "advert"
+                },
+                {
+                    "value": "1"
+                },
+                {
+                    "value": "1."
                 }
             ]
         },
@@ -63,9 +50,6 @@
                     "value": "instagram"
                 },
                 {
-                    "value": "3."
-                },
-                {
                     "value": "from fb"
                 },
                 {
@@ -87,9 +71,6 @@
                     "value": "from ig"
                 },
                 {
-                    "value": "3"
-                },
-                {
                     "value": "online"
                 },
                 {
@@ -97,6 +78,96 @@
                 },
                 {
                     "value": "from whatsapp"
+                },
+                {
+                    "value": "2"
+                },
+                {
+                    "value": "2."
+                }
+            ]
+        },
+        {
+            "sampleValue": {
+                "value": "SMS/Text Message"
+            },
+            "synonyms": [
+                {
+                    "value": "text"
+                },
+                {
+                    "value": "from text"
+                },
+                {
+                    "value": "sms"
+                },
+                {
+                    "value": "i got a text"
+                },
+                {
+                    "value": "3"
+                },
+                {
+                    "value": "3."
+                }
+            ]
+        },
+        {
+            "sampleValue": {
+                "value": "Traditional Media"
+            },
+            "synonyms": [
+                {
+                    "value": "from the news"
+                },
+                {
+                    "value": "news"
+                },
+                {
+                    "value": "media"
+                },
+                {
+                    "value": "4"
+                },
+                {
+                    "value": "4."
+                }
+            ]
+        },
+        {
+            "sampleValue": {
+                "value": "Word of Mouth"
+            },
+            "synonyms": [
+                {
+                    "value": "from friends"
+                },
+                {
+                    "value": "school"
+                },
+                {
+                    "value": "friend"
+                },
+                {
+                    "value": "my friend"
+                },
+                {
+                    "value": "i heard"
+                },
+                {
+                    "value": "someone told me"
+                },
+                {
+                    "value": "from school"
+                },
+                {
+                    "value": "from my friend"
+                },
+                {
+                    "value": "5"
+                },
+                {
+                    "value": "5."
                 }
             ]
         },
@@ -115,110 +186,75 @@
                     "value": "yahoo"
                 },
                 {
-                    "value": "2."
-                },
-                {
                     "value": "seach online"
                 },
                 {
                     "value": "web"
                 },
                 {
-                    "value": "2"
-                }
-            ]
-        },
-        {
-            "sampleValue": {
-                "value": "SMS/Text Message"
-            },
-            "synonyms": [
-                {
-                    "value": "4."
-                },
-                {
-                    "value": "text"
-                },
-                {
-                    "value": "from text"
-                },
-                {
-                    "value": "sms"
-                },
-                {
-                    "value": "i got a text"
-                },
-                {
-                    "value": "4"
-                }
-            ]
-        },
-        {
-            "sampleValue": {
-                "value": "Advertisement"
-            },
-            "synonyms": [
-                {
-                    "value": "ad"
-                },
-                {
-                    "value": "from ads"
-                },
-                {
-                    "value": "ads"
-                },
-                {
-                    "value": "1."
-                },
-                {
-                    "value": "adverts"
-                },
-                {
-                    "value": "advert"
-                },
-                {
-                    "value": "1"
-                }
-            ]
-        },
-        {
-            "sampleValue": {
-                "value": "Word of Mouth"
-            },
-            "synonyms": [
-                {
-                    "value": "from friends"
-                },
-                {
-                    "value": "school"
-                },
-                {
                     "value": "6"
                 },
                 {
-                    "value": "friend"
-                },
-                {
                     "value": "6."
+                }
+            ]
+        },
+        {
+            "sampleValue": {
+                "value": "AI"
+            },
+            "synonyms": [
+                {
+                    "value": "ai"
                 },
                 {
-                    "value": "my friend"
+                    "value": "a.i."
                 },
                 {
-                    "value": "i heard"
+                    "value": "artificial intelligence"
                 },
                 {
-                    "value": "someone told me"
+                    "value": "chatgpt"
                 },
                 {
-                    "value": "from school"
+                    "value": "chat gpt"
                 },
                 {
-                    "value": "from my friend"
+                    "value": "gemini"
+                },
+                {
+                    "value": "copilot"
+                },
+                {
+                    "value": "claude"
+                },
+                {
+                    "value": "7"
+                },
+                {
+                    "value": "7."
+                }
+            ]
+        },
+        {
+            "sampleValue": {
+                "value": "Unknown"
+            },
+            "synonyms": [
+                {
+                    "value": "i dont know"
+                },
+                {
+                    "value": "dont know"
+                },
+                {
+                    "value": "x"
+                },
+                {
+                    "value": "no"
                 }
             ]
         }
-
     ],
     "valueSelectionSetting": {
         "resolutionStrategy": "TopResolution"
