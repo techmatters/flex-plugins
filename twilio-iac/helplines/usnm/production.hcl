@@ -122,12 +122,13 @@ locals {
     system_down_templatefile = "/app/twilio-iac/helplines/templates/studio-flows/system-down.tftpl"
     enable_system_down       = true
     system_down_flow_vars = {
-      is_system_down = "false"
-      message        = "We're sorry, NAMI HelpLine is experiencing technical difficulties and may not be able to respond right now. Your message is important to us and we hope to reconnect soon. If you or your loved one are experiencing a mental health crisis and need urgent support, you can call, chat or text 988 Suicide & Crisis Lifeline. If you are in immediate life threatening danger, call 911. Info and resources are online at https://www.nami.org/nami-helpline/ or you can email helpline@nami.org and we'll respond in 1-2 business days.Thank you for your patience."
-      voice_message  = "We're sorry, NAMI HelpLine is currently experiencing technical difficulties and may not be able to respond right now. Your message is important to us and we hope to reconnect soon. If you or your loved one are experiencing a mental health crisis and need urgent support, please hang up and can call, chat or text 988 Suicide & Crisis Lifeline. If you are in immediate life threatening danger, please hang up and call 911. Info and resources are online at https://www.nami.org/nami-helpline/  or you can email helpline@nami.org and we'll respond in 1-2 business days.Thank you for your patience."
-      call_action    = "message"
-      forward_number = "+123"
-      recording_url  = "https://<place_holder>.mp3"
+      is_system_down   = "false"
+      message          = "You've reached the NAMI HelpLine. We're upgrading our technology platform and are temporarily unable to respond. We expect to be back by 12 p.m. Eastern on Tuesday, October 20.\nIf you're in immediate danger, hang up and call 911. If you or a loved one is having a mental health crisis, call, text or chat 988, the Suicide & Crisis Lifeline.\nFor information and resources, visit nami.org/help, or email helpline@nami.org and we'll reply within 1–2 business days. Thank you for your patience."
+      message_original = "We're sorry, NAMI HelpLine is experiencing technical difficulties and may not be able to respond right now. Your message is important to us and we hope to reconnect soon. If you or your loved one are experiencing a mental health crisis and need urgent support, you can call, chat or text 988 Suicide & Crisis Lifeline. If you are in immediate life threatening danger, call 911. Info and resources are online at https://www.nami.org/nami-helpline/ or you can email helpline@nami.org and we'll respond in 1-2 business days.Thank you for your patience."
+      voice_message    = "We're sorry, NAMI HelpLine is currently experiencing technical difficulties and may not be able to respond right now. Your message is important to us and we hope to reconnect soon. If you or your loved one are experiencing a mental health crisis and need urgent support, please hang up and can call, chat or text 988 Suicide & Crisis Lifeline. If you are in immediate life threatening danger, please hang up and call 911. Info and resources are online at https://www.nami.org/nami-helpline/  or you can email helpline@nami.org and we'll respond in 1-2 business days.Thank you for your patience."
+      call_action      = "recording"
+      forward_number   = "+123"
+      recording_url    = "https://usnm-recordings-5659.twil.io/play_message_voice_launch_technical_upgrade.mp3"
     }
 
     get_profile_flags_for_identifier_base_url = "https://hrm-production.tl.techmatters.org/lambda/twilio/account-scoped"
