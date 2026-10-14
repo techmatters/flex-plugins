@@ -6,6 +6,6 @@
     "type": "textarea",
     "required": { "value": true, "message": "RequiredFieldError" },
     "isPII": true,
-    "rows": "40"
+    "rows": "20"
   }
 ]
