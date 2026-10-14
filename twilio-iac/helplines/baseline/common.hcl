@@ -13,6 +13,7 @@ locals {
     task_language              = "en-US"
     enable_post_survey         = false
     enable_external_recordings = true
+    enable_lambda_event_callback_url = true
     permission_config          = "demo"
     workflows = {
       master : {
