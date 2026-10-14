@@ -13,5 +13,5 @@
   "enableRecaptcha": true,
   "captureIp": true,
   "contactIdentifierField": "ip",
-  "checkOpenHours": true
+  "checkOpenHours": false
 }
