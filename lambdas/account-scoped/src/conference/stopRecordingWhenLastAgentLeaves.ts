@@ -41,6 +41,7 @@ import {
   TASK_WRAPUP,
 } from '../taskrouter/eventTypes';
 import { retrieveFeatureFlags } from '../configuration/aseloConfiguration';
+import type { ParticipantInstance } from 'twilio/lib/rest/api/v2010/account/conference/participant';
 
 const stopRecordingIfNotTransferring = async (
   client: Twilio,
@@ -129,9 +130,27 @@ const conferenceStatusEventHandler: ConferenceStatusEventHandler = async (
   console.info(
     `[${accountSid}/${taskSid}] ${statusCallbackEvent} on conference ${conferenceSid} for participant ${callSid} where customer is ${customerCallSid}. Checking if recording needs to be stopped`,
   );
-  const remainingParticipants = await client.conferences
-    .get(conferenceSid)
-    .participants.list();
+
+  let remainingParticipants: ParticipantInstance[] = [];
+  try {
+    remainingParticipants = await client.conferences
+      .get(conferenceSid)
+      .participants.list();
+  } catch (err) {
+    // If conversation is shut down, participants.list results in a 404 error
+    if ((err as RestException)?.status === 404) {
+      console.warn(
+        `stopRecordingWhenLastAgentLeave called with conference ${event.ConferenceSid}, but it has been removed`,
+      );
+      return;
+    }
+
+    console.warn(
+      `stopRecordingWhenLastAgentLeave unhandled error ${JSON.stringify(err)}`,
+    );
+    throw err;
+  }
+
   const agentStillInConference = remainingParticipants.some(participant =>
     isAgentInConference({ callSid, customerCallSid, participant }),
   );
