@@ -32,7 +32,6 @@ import { getAseloFeatureFlags, getHrmConfig, initializeConfig, subscribeToConfig
 import { setUpSyncClient } from './services/SyncService';
 import { setUpReferrableResources } from './components/resources/setUpReferrableResources';
 import QueuesView from './components/queuesView';
-import TeamsView from './components/teamsView';
 import { setUpTransferComponents } from './components/transfer/setUpTransferComponents';
 import { subscribeNewMessageAlertOnPluginInit } from './notifications/newMessage';
 import { subscribeReservedTaskAlert } from './notifications/reservedTask';
@@ -51,6 +50,7 @@ import { setUpCustomSideLinks } from './components/customSideLinks/setUpCustomSi
 import { setUpVoicemailComponents } from './voicemail/setUpVoicemailComponents';
 import { newLoadAseloTwilioConfigurationAsyncAction } from './states/configuration/loadAseloTwilioConfiguration';
 import asyncDispatch from './states/asyncDispatch';
+import { setUpTeamsView } from './setupTeamsView';
 
 const PLUGIN_NAME = 'HrmFormPlugin';
 
@@ -123,14 +123,7 @@ const setUpComponents = (featureFlags: FeatureFlags, setupObject: ReturnType<typ
   if (featureFlags.enable_emoji_picker) Components.setupEmojiPicker();
   if (preventSendingAttachmentsFromFlex) Components.disableFlexMessageAttachments();
   if (featureFlags.enable_canned_responses) Components.setupCannedResponses();
-
-  TeamsView.setUpSelectAgentColumn();
-  TeamsView.setUpAgentColumn();
-  TeamsView.setUpStatusColumn();
-  TeamsView.setUpSkillsColumn();
-  TeamsView.setUpTeamsViewSorting();
-  TeamsView.setUpTeamsViewFilters();
-  TeamsView.setUpWorkerDirectoryFilters();
+  setUpTeamsView();
 
   if (featureFlags.enable_switchboarding) {
     QueuesView.setUpSwitchboard();
