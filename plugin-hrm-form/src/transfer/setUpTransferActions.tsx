@@ -91,6 +91,7 @@ const customTransferTask = (setupObject: SetupObject): ReplacedActionFunction =>
 
   const { workerSid, counselorName } = setupObject;
 
+  // TODO: Ensure contact is preloaded into the state for takeovers that might not have loaded it, unlike task owner initiated transfers
   // save current form state (if there is a form)
   const contact = getStateContactForms(payload.task.taskSid);
   if (!contact) return original(payload);
