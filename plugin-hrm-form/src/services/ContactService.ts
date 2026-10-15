@@ -161,9 +161,10 @@ export const createOfflineContact = async (
 
   const number = getNumberFromTask(task);
 
-  const { definitionVersion } = getHrmConfig();
+  const { definitionVersion, helpline } = getHrmConfig();
   const contactForApi: Contact = {
     ...contact,
+    helpline: contact.helpline || contact.rawJson.contactlessTask.helpline || helpline || '',
     number,
     definitionVersion,
     channel: ((task.attributes as any)?.customChannelType || task.channelType) as Contact['channel'],
