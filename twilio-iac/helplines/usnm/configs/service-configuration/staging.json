@@ -5,47 +5,6 @@
     "form_definitions_base_url": "https://assets-staging.tl.techmatters.org/form-definitions/",
     "resources_base_url": "",
     "logo_url": "https://aselo-logo.s3.amazonaws.com/200+transparent+background+no+TM+staging.png",
-    "postStudioFlows": {
-      "${task_queues.en_std}": {
-        "flowTrigger": "rest",
-        "studioFlowSid": "${studio_flow_sids.post_call_survey_en}"
-      },
-      "${task_queues.es_std}": {
-        "flowTrigger": "rest",
-        "studioFlowSid": "${studio_flow_sids.post_call_survey_es}"
-      },
-      "${task_queues.es_tya}": {
-        "flowTrigger": "rest",
-        "studioFlowSid": "${studio_flow_sids.post_call_survey_es}"
-      },
-      "${task_queues.en_tya}": {
-        "flowTrigger": "rest",
-        "studioFlowSid": "${studio_flow_sids.post_call_survey_en}"
-      },
-      "${task_queues.en_fcg}": {
-        "flowTrigger": "rest",
-        "studioFlowSid": "${studio_flow_sids.post_call_survey_en}"
-      },
-      "${task_queues.es_tya_voicemail}": {
-        "flowTrigger": "rest",
-        "studioFlowSid": "${studio_flow_sids.post_call_survey_es}"
-      },
-      "${task_queues.es_std_voicemail}": {
-        "flowTrigger": "rest",
-        "studioFlowSid": "${studio_flow_sids.post_call_survey_es}"
-      },
-      "${task_queues.en_std_voicemail}": {
-        "flowTrigger": "rest",
-        "studioFlowSid": "${studio_flow_sids.post_call_survey_en}"
-      },
-      "${task_queues.en_tya_voicemail}": {
-        "flowTrigger": "rest",
-        "studioFlowSid": "${studio_flow_sids.post_call_survey_en}"
-      },
-      "${task_queues.en_fcg_voicemail}": {
-        "flowTrigger": "rest",
-        "studioFlowSid": "${studio_flow_sids.post_call_survey_en}"
-      }
-    }
+   
   }
 }
