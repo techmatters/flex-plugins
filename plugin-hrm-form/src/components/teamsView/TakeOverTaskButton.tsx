@@ -14,17 +14,31 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Actions, Template, withTaskContext, Manager } from '@twilio/flex-ui';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { canTransferConference } from '../../transfer/transferTaskState';
 import { TransferButton as TransferButtonStyled } from '../../styles/buttons';
 import { getHrmConfig } from '../../hrmConfig';
+import selectContactByTaskSid from '../../states/contacts/selectContactByTaskSid';
+import type { RootState } from '../../states';
+import asyncDispatch from '../../states/asyncDispatch';
+import { newLoadContactFromHrmForTaskAsyncAction } from '../../states/contacts/saveContact';
 
 const TakeOverTaskButton: React.FC<TaskContextProps> = ({ task }) => {
   const workerSid = Manager.getInstance().workerClient?.workerSid;
   const { isSupervisor } = getHrmConfig();
-  if (!task || !workerSid || !isSupervisor) {
+  const asyncDispatcher = asyncDispatch(useDispatch());
+  const contactState = useSelector((state: RootState) => selectContactByTaskSid(state, task.taskSid));
+
+  useEffect(() => {
+    if (!contactState) {
+      asyncDispatcher(newLoadContactFromHrmForTaskAsyncAction(task));
+    }
+  }, [asyncDispatcher, contactState, task]);
+
+  if (!task || !workerSid || !isSupervisor || !contactState) {
     return null;
   }
   const disabled = !canTransferConference(task);
