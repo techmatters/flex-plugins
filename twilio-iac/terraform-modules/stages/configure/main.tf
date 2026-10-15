@@ -216,6 +216,24 @@ resource "aws_ssm_parameter" "twilio_switchboard_queue_sid" {
   }
 }
 
+# Map of Terraform-created Studio Flow SIDs, keyed by the names used in the helpline .hcl files.
+# Read by the service configuration tool (scripts/python_tools) to resolve
+# ${studio_flow_sids.<key>} placeholders in configs/service-configuration/*.json.
+# Lives here because the studio flows are created in this stage; the task queue and
+# workflow SID maps are written by the provision stage, which creates those resources.
+resource "aws_ssm_parameter" "twilio_studio_flow_sids" {
+  name        = "/${lower(var.environment)}/twilio/${nonsensitive(local.secrets.twilio_account_sid)}/studio_flow_sids"
+  type        = "SecureString"
+  value       = jsonencode(module.studio_flow.studio_flows_sids)
+  description = "Twilio account - Studio Flow SIDs (studio_flows block) by key (JSON)"
+
+  tags = {
+    Environment = lower(var.environment)
+    Name        = "/${lower(var.environment)}/twilio/${nonsensitive(local.secrets.twilio_account_sid)}/studio_flow_sids"
+    Terraform   = true
+  }
+}
+
 
 module event {
   source              = "../../events/v1"
