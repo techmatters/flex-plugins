@@ -15,12 +15,11 @@
  */
 
 import React, { useEffect } from 'react';
-import { Actions, Template, withTaskContext, Manager } from '@twilio/flex-ui';
+import { Actions, Template, withTaskContext, Manager, TaskHelper } from '@twilio/flex-ui';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { canTransferConference } from '../../transfer/transferTaskState';
 import { TransferButton as TransferButtonStyled } from '../../styles/buttons';
-import { getHrmConfig } from '../../hrmConfig';
+import { getAseloFeatureFlags, getHrmConfig } from '../../hrmConfig';
 import selectContactByTaskSid from '../../states/contacts/selectContactByTaskSid';
 import type { RootState } from '../../states';
 import asyncDispatch from '../../states/asyncDispatch';
@@ -30,23 +29,23 @@ const TakeOverTaskButton: React.FC<TaskContextProps> = ({ task }) => {
   const workerSid = Manager.getInstance().workerClient?.workerSid;
   const { isSupervisor } = getHrmConfig();
   const asyncDispatcher = asyncDispatch(useDispatch());
-  const contactState = useSelector((state: RootState) => selectContactByTaskSid(state, task.taskSid));
+  const contactState = useSelector((state: RootState) => selectContactByTaskSid(state, task?.taskSid));
 
   useEffect(() => {
-    if (!contactState) {
+    if (task && !contactState) {
       asyncDispatcher(newLoadContactFromHrmForTaskAsyncAction(task));
     }
   }, [asyncDispatcher, contactState, task]);
 
-  if (!task || !workerSid || !isSupervisor || !contactState) {
+  // Take overs are only supported for chat tasks via the lambda transferStart endpoint, which sets the transfer metadata server side
+  const { use_twilio_lambda_transfers: useLambdaTransfers } = getAseloFeatureFlags();
+  if (!task || !workerSid || !isSupervisor || !contactState || !useLambdaTransfers || TaskHelper.isCallTask(task)) {
     return null;
   }
-  const disabled = !canTransferConference(task);
 
   return (
     <TransferButtonStyled
       onClick={() => Actions.invokeAction('TransferTask', { task, targetSid: workerSid, options: { mode: 'COLD' } })}
-      disabled={disabled}
       data-fs-id="Task-TakeOver-Button"
     >
       <Template code="MonitorTaskCanvas-Header-TransferButtonLabel" />

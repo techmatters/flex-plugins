@@ -31,7 +31,7 @@ import * as TransferHelpers from './transferTaskState';
 import { transferModes } from '../states/DomainConstants';
 import { recordEvent } from '../fullStory';
 import { transferChatStart } from '../services/twilioTaskService';
-import { getHrmConfig } from '../hrmConfig';
+import { getAseloFeatureFlags, getHrmConfig } from '../hrmConfig';
 import { RootState } from '../states';
 import { reactivateAseloListeners } from '../conversationListeners';
 import selectContactByTaskSid from '../states/contacts/selectContactByTaskSid';
@@ -71,6 +71,33 @@ const getStateContactForms = (taskSid: string): ContactState => {
 };
 
 /**
+ * Temporary Fix:
+ * - Sometimes a call task comes without the conference object set in its attributes.
+ * - The code below updates the task attributes to include the conference information
+ *   if it is missing.
+ */
+const ensureConferenceAttributes = async (task: ITask): Promise<void> => {
+  const { conferenceSid } = task.conference || {};
+  const conferenceSidFromAttributes = task.attributes?.conference?.sid;
+  if (!conferenceSid && !conferenceSidFromAttributes) {
+    console.warn('Could not find any conferenceSid', task.taskSid);
+  } else if (conferenceSid && !conferenceSidFromAttributes) {
+    console.warn('Updating task attributes with conferenceSid', task.taskSid, conferenceSid);
+    // const customer = task.conference?.participants.find(p => p.participantType === 'customer').participantSid;
+    await task.setAttributes({
+      ...task.attributes,
+      conference: {
+        sid: conferenceSid,
+        // TODO: Do we need to set any participants as well?
+        // participants: {
+        //   customer,
+        // },
+      },
+    });
+  }
+};
+
+/**
  * Custom override for TransferTask action. Saves the form to share with another counselor (if possible) and then starts the transfer
  */
 const customTransferTask = (setupObject: SetupObject): ReplacedActionFunction => async (
@@ -89,9 +116,7 @@ const customTransferTask = (setupObject: SetupObject): ReplacedActionFunction =>
     return () => undefined; // Not calling original(payload) prevents the additional "Task cannot be transferred" notification
   }
 
-  const { workerSid, counselorName } = setupObject;
-
-  // TODO: Ensure contact is preloaded into the state for takeovers that might not have loaded it, unlike task owner initiated transfers
+  const { counselorName, workerSid } = setupObject;
 
   // save current form state (if there is a form)
   const contact = getStateContactForms(payload.task.taskSid);
@@ -99,34 +124,20 @@ const customTransferTask = (setupObject: SetupObject): ReplacedActionFunction =>
 
   await saveFormSharedState(contact, payload.task);
 
-  // set metadata for the transfer
-  await TransferHelpers.setTransferMeta(payload, counselorName);
+  const useLambdaTransfers = Boolean(getAseloFeatureFlags().use_twilio_lambda_transfers);
+
+  /*
+   * The lambda transferStart endpoint sets the transfer metadata on the original task server side,
+   * which supports supervisors 'taking over' tasks assigned to other workers (task.setAttributes only works on the current worker's own tasks).
+   * Call transfers and the legacy serverless transferChatStart endpoint still require the metadata to be set from the client.
+   */
+  if (TaskHelper.isCallTask(payload.task) || !useLambdaTransfers) {
+    // set metadata for the transfer
+    await TransferHelpers.setTransferMeta(payload, counselorName);
+  }
 
   if (TaskHelper.isCallTask(payload.task)) {
-    /**
-     * Temporary Fix:
-     * - Sometimes a call task comes without the conference object set in its attributes.
-     * - The code below updates the task attributes to include the conference information
-     *   if it is missing.
-     */
-    const { conferenceSid } = payload.task.conference || {};
-    const conferenceSidFromAttributes = payload.task.attributes?.conference?.sid;
-    if (!conferenceSid && !conferenceSidFromAttributes) {
-      console.warn('Could not find any conferenceSid', payload.task.taskSid);
-    } else if (conferenceSid && !conferenceSidFromAttributes) {
-      console.warn('Updating task attributes with conferenceSid', payload.task.taskSid, conferenceSid);
-      // const customer = payload.task.conference?.participants.find(p => p.participantType === 'customer').participantSid;
-      await payload.task.setAttributes({
-        ...payload.task.attributes,
-        conference: {
-          sid: conferenceSid,
-          // TODO: Do we need to set any participants as well?
-          // participants: {
-          //   customer,
-          // },
-        },
-      });
-    }
+    await ensureConferenceAttributes(payload.task);
 
     const disableTransfer = !TransferHelpers.canTransferConference(payload.task);
 
@@ -141,8 +152,17 @@ const customTransferTask = (setupObject: SetupObject): ReplacedActionFunction =>
     mode,
     taskSid: payload.task.taskSid,
     targetSid: payload.targetSid,
+    // The lambda endpoint derives the agent to ignore from the task's accepted reservation, so this is only used by the legacy serverless endpoint
     ignoreAgent: workerSid,
   };
+
+  if (useLambdaTransfers) {
+    /*
+     * The lambda endpoint rolls back the transfer metadata itself if the transfer fails,
+     * and a supervisor taking over a task cannot clear attributes on a task they don't own.
+     */
+    return transferChatStart(body);
+  }
 
   return safeTransfer(() => transferChatStart(body), payload.task);
 };
