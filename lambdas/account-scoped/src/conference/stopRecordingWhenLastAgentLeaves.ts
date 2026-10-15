@@ -138,13 +138,16 @@ const conferenceStatusEventHandler: ConferenceStatusEventHandler = async (
       .participants.list();
   } catch (err) {
     // If conversation is shut down, participants.list results in a 404 error
-    if (err instanceof Error && (err as RestException)?.code === 404) {
+    if ((err as RestException)?.status === 404) {
       console.warn(
         `stopRecordingWhenLastAgentLeave called with conference ${event.ConferenceSid}, but it has been removed`,
       );
       return;
     }
 
+    console.warn(
+      `stopRecordingWhenLastAgentLeave unhandled error ${JSON.stringify(err)}`,
+    );
     throw err;
   }
 
