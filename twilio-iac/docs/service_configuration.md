@@ -87,6 +87,6 @@ Placeholders work in both keys and values, for example:
 }
 ```
 
-The configure stage writes the SID maps to SSM (`/<environment>/twilio/<account_sid>/task_queue_sids`, `.../workflow_sids` and `.../studio_flow_sids`), and the tool resolves the placeholders when building the new state. The configure stage must have been applied for the helpline before placeholders can be used. If a placeholder can't be resolved, the tool fails rather than sending it to Twilio.
+Terraform writes the SID maps to SSM, each from the stage that creates the resources: the provision stage writes `/<environment>/twilio/<account_sid>/task_queue_sids` and `.../workflow_sids`, and the configure stage writes `.../studio_flow_sids`. The tool resolves the placeholders when building the new state. The relevant stage must have been applied for the helpline before its placeholders can be used. If a placeholder can't be resolved, the tool fails rather than sending it to Twilio.
 
 Note: syncing the remote configuration back to the local files will write the resolved SIDs into the files, replacing the placeholders.
