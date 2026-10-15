@@ -105,7 +105,7 @@ locals {
         messaging_mode       = "conversations"
         channel_type         = "sms"
         contact_identity     = "+18009506264"
-        templatefile         = "/app/twilio-iac/helplines/usnm/templates/studio-flows/sms.tftpl"
+        templatefile         = "/app/twilio-iac/helplines/usnm/templates/studio-flows/sms-redirect.tftpl"
         channel_flow_vars    = {}
         chatbot_unique_names = []
       },
@@ -113,7 +113,7 @@ locals {
         messaging_mode       = "conversations"
         channel_type         = "sms"
         contact_identity     = "+12075158398"
-        templatefile         = "/app/twilio-iac/helplines/usnm/templates/studio-flows/sms.tftpl"
+        templatefile         = "/app/twilio-iac/helplines/usnm/templates/studio-flows/sms-redirect.tftpl"
         channel_flow_vars    = {}
         chatbot_unique_names = []
       }
