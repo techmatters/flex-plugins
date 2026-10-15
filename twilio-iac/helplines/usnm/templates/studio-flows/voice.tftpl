@@ -422,7 +422,8 @@ ${
         }
       ],
       "properties": {
-        "speech_timeout": "4",
+        "number_of_digits": 1,
+        "speech_timeout": "3",
         "offset": {
           "x": 3576,
           "y": 1720
@@ -430,10 +431,10 @@ ${
         "loop": 1,
         "finish_on_key": "#",
         "play": "${flow_vars.usnm_recordings_url}/gather_input_voice_language_voicemail.mp3",
-        "stop_gather": true,
+        "stop_gather": false,
         "gather_language": "en",
         "speech_model": "default",
-        "timeout": 5
+        "timeout": 3
       }
     },
     {
@@ -670,7 +671,7 @@ ${
       "type": "send-to-flex",
       "transitions": [
         {
-          "next": "record_voicemail_en_no_service_tya",
+          "next": "split_leave_en_tya",
           "event": "callComplete"
         },
         {
@@ -725,7 +726,7 @@ ${
         "stop_gather": false,
         "gather_language": "en",
         "speech_model": "default",
-        "timeout": 10
+        "timeout": 5
       }
     },
     {
@@ -796,7 +797,7 @@ ${
       "type": "send-to-flex",
       "transitions": [
         {
-          "next": "record_voicemail_en_no_service_std",
+          "next": "split_leave_en_std",
           "event": "callComplete"
         },
         {
@@ -921,7 +922,7 @@ ${
         "stop_gather": false,
         "gather_language": "en",
         "speech_model": "default",
-        "timeout": 10
+        "timeout": 5
       }
     },
     {
@@ -992,7 +993,7 @@ ${
       "type": "send-to-flex",
       "transitions": [
         {
-          "next": "record_voicemail_en_no_service_fcg",
+          "next": "split_leave_en_fcg",
           "event": "callComplete"
         },
         {
@@ -1275,7 +1276,7 @@ ${
       "type": "send-to-flex",
       "transitions": [
         {
-          "next": "record_voicemail_es_no_service_std",
+          "next": "split_leave_es_std",
           "event": "callComplete"
         },
         {
@@ -1415,10 +1416,10 @@ ${
         },
         "loop": 1,
         "finish_on_key": "#",
-        "stop_gather": true,
+        "stop_gather": false,
         "gather_language": "en",
         "speech_model": "default",
-        "timeout": 10
+        "timeout": 5
       }
     },
     {
@@ -1507,7 +1508,7 @@ ${
       "type": "send-to-flex",
       "transitions": [
         {
-          "next": "record_voicemail_es_no_service_tya",
+          "next": "split_leave_es_tya",
           "event": "callComplete"
         },
         {
@@ -1683,6 +1684,7 @@ ${
         }
       ],
       "properties": {
+        "number_of_digits": 1,
         "play": "${flow_vars.usnm_recordings_url}/gather_input_voice_es_service_voicemail.mp3",
         "speech_timeout": "5",
         "offset": {
@@ -1691,7 +1693,7 @@ ${
         },
         "loop": 1,
         "finish_on_key": "#",
-        "stop_gather": true,
+        "stop_gather": false,
         "gather_language": "en",
         "speech_model": "default",
         "timeout": 5
@@ -1702,7 +1704,8 @@ ${
       "type": "split-based-on",
       "transitions": [
         {
-          "event": "noMatch"
+          "event": "noMatch",
+          "next": "gather_input_voice_es_service_voicemail"
         },
         {
           "next": "record_voicemail_es_std",
@@ -1753,6 +1756,7 @@ ${
           "event": "noAudio"
         },
         {
+          "next": "f_recordingCompleteCallback_es_std",
           "event": "hangup"
         }
       ],
@@ -1770,6 +1774,7 @@ ${
       "type": "make-http-request",
       "transitions": [
         {
+          "next": "play_message_voice_es_voicemail_saved",
           "event": "success"
         },
         {
@@ -1801,6 +1806,7 @@ ${
           "event": "noAudio"
         },
         {
+          "next": "f_recordingCompleteCallback_es_tya",
           "event": "hangup"
         }
       ],
@@ -1818,6 +1824,7 @@ ${
       "type": "make-http-request",
       "transitions": [
         {
+          "next": "play_message_voice_es_voicemail_saved",
           "event": "success"
         },
         {
@@ -1920,6 +1927,7 @@ ${
         }
       ],
       "properties": {
+        "number_of_digits": 1,
         "play": "${flow_vars.usnm_recordings_url}/gather_input_voice_en_service_voicemail.mp3",
         "speech_timeout": "5",
         "offset": {
@@ -1928,7 +1936,7 @@ ${
         },
         "loop": 1,
         "finish_on_key": "#",
-        "stop_gather": true,
+        "stop_gather": false,
         "gather_language": "en",
         "speech_model": "default",
         "timeout": 5
@@ -1946,6 +1954,7 @@ ${
           "event": "noAudio"
         },
         {
+          "next": "f_recordingCompleteCallback_en_std",
           "event": "hangup"
         }
       ],
@@ -1963,6 +1972,7 @@ ${
       "type": "make-http-request",
       "transitions": [
         {
+          "next": "play_message_voice_en_voicemail_saved",
           "event": "success"
         },
         {
@@ -1994,6 +2004,7 @@ ${
           "event": "noAudio"
         },
         {
+          "next": "f_recordingCompleteCallback_en_tya",
           "event": "hangup"
         }
       ],
@@ -2011,6 +2022,7 @@ ${
       "type": "make-http-request",
       "transitions": [
         {
+          "next": "play_message_voice_en_voicemail_saved",
           "event": "success"
         },
         {
@@ -2035,7 +2047,8 @@ ${
       "type": "split-based-on",
       "transitions": [
         {
-          "event": "noMatch"
+          "event": "noMatch",
+          "next": "gather_input_voice_en_service_voicemail"
         },
         {
           "next": "record_voicemail_en_std",
@@ -2100,6 +2113,7 @@ ${
           "event": "noAudio"
         },
         {
+          "next": "f_recordingCompleteCallback_en_fcg",
           "event": "hangup"
         }
       ],
@@ -2117,6 +2131,7 @@ ${
       "type": "make-http-request",
       "transitions": [
         {
+          "next": "play_message_voice_en_voicemail_saved",
           "event": "success"
         },
         {
@@ -2202,6 +2217,7 @@ ${
           "event": "noAudio"
         },
         {
+          "next": "f_recordingCompleteCallback_en_no_service_tya",
           "event": "hangup"
         }
       ],
@@ -2219,6 +2235,7 @@ ${
       "type": "make-http-request",
       "transitions": [
         {
+          "next": "play_message_voice_en_voicemail_saved",
           "event": "success"
         },
         {
@@ -2304,6 +2321,7 @@ ${
           "event": "noAudio"
         },
         {
+          "next": "f_recordingCompleteCallback_en_no_service_fcg",
           "event": "hangup"
         }
       ],
@@ -2321,6 +2339,7 @@ ${
       "type": "make-http-request",
       "transitions": [
         {
+          "next": "play_message_voice_en_voicemail_saved",
           "event": "success"
         },
         {
@@ -2460,6 +2479,7 @@ ${
           "event": "noAudio"
         },
         {
+          "next": "f_recordingCompleteCallback_es_no_service_tya",
           "event": "hangup"
         }
       ],
@@ -2477,6 +2497,7 @@ ${
       "type": "make-http-request",
       "transitions": [
         {
+          "next": "play_message_voice_es_voicemail_saved",
           "event": "success"
         },
         {
@@ -2508,6 +2529,7 @@ ${
           "event": "noAudio"
         },
         {
+          "next": "f_recordingCompleteCallback_en_no_service_std",
           "event": "hangup"
         }
       ],
@@ -2526,6 +2548,7 @@ ${
       "type": "make-http-request",
       "transitions": [
         {
+          "next": "play_message_voice_en_voicemail_saved",
           "event": "success"
         },
         {
@@ -2557,6 +2580,7 @@ ${
           "event": "noAudio"
         },
         {
+          "next": "f_recordingCompleteCallback_es_no_service_std",
           "event": "hangup"
         }
       ],
@@ -2575,6 +2599,7 @@ ${
       "type": "make-http-request",
       "transitions": [
         {
+          "next": "play_message_voice_es_voicemail_saved",
           "event": "success"
         },
         {
@@ -2592,6 +2617,190 @@ ${
         "add_twilio_auth": false,
         "body": "{\n  \"accountSid\": \"{{widgets.record_voicemail_es_no_service_std.AccountSid}}\",\n  \"callSid\": \"{{widgets.record_voicemail_es_no_service_std.CallSid}}\",\n  \"callStatus\": \"{{widgets.record_voicemail_es_no_service_std.CallStatus}}\",\n  \"voicemailWorkflowSid\": \"${workflow_sids.master}\",\n  \"from\": \"{{trigger.call.From}}\",\n  \"maxCallbackAttempts\": 2,\n  \"routingAttributes\": {\"service\": \"std\",\"serviceLanguage\": \"spanish\",\"language\": \"es\"}\n}",
         "url": "${lambda_twilio_account_scoped_url}/voicemail/recordingCompleteCallback"
+      }
+    },
+    {
+      "name": "play_message_voice_en_voicemail_saved",
+      "type": "say-play",
+      "transitions": [
+        {
+          "event": "audioComplete"
+        }
+      ],
+      "properties": {
+        "play": "${flow_vars.usnm_recordings_url}/play_message_voice_en_voicemail_saved.mp3",
+        "offset": {
+          "x": 2659,
+          "y": 4621
+        },
+        "loop": 1
+      }
+    },
+    {
+      "name": "play_message_voice_es_voicemail_saved",
+      "type": "say-play",
+      "transitions": [
+        {
+          "event": "audioComplete"
+        }
+      ],
+      "properties": {
+        "play": "${flow_vars.usnm_recordings_url}/play_message_voice_es_voicemail_saved.mp3",
+        "offset": {
+          "x": 3021,
+          "y": 4621
+        },
+        "loop": 1
+      }
+    },
+    {
+      "name": "split_leave_en_tya",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "event": "noMatch"
+        },
+        {
+          "next": "record_voicemail_en_no_service_tya",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to leave",
+              "arguments": [
+                "{{widgets.send_to_queue_en_tya.QueueResult}}"
+              ],
+              "type": "equal_to",
+              "value": "leave"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{widgets.send_to_queue_en_tya.QueueResult}}",
+        "offset": {
+          "x": -2469,
+          "y": 4396
+        }
+      }
+    },
+    {
+      "name": "split_leave_en_std",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "event": "noMatch"
+        },
+        {
+          "next": "record_voicemail_en_no_service_std",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to leave",
+              "arguments": [
+                "{{widgets.send_to_queue_en_std.QueueResult}}"
+              ],
+              "type": "equal_to",
+              "value": "leave"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{widgets.send_to_queue_en_std.QueueResult}}",
+        "offset": {
+          "x": -1329,
+          "y": 4423
+        }
+      }
+    },
+    {
+      "name": "split_leave_en_fcg",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "event": "noMatch"
+        },
+        {
+          "next": "record_voicemail_en_no_service_fcg",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to leave",
+              "arguments": [
+                "{{widgets.send_to_queue_en_fcg.QueueResult}}"
+              ],
+              "type": "equal_to",
+              "value": "leave"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{widgets.send_to_queue_en_fcg.QueueResult}}",
+        "offset": {
+          "x": -359,
+          "y": 4407
+        }
+      }
+    },
+    {
+      "name": "split_leave_es_std",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "event": "noMatch"
+        },
+        {
+          "next": "record_voicemail_es_no_service_std",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to leave",
+              "arguments": [
+                "{{widgets.send_to_queue_es_std.QueueResult}}"
+              ],
+              "type": "equal_to",
+              "value": "leave"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{widgets.send_to_queue_es_std.QueueResult}}",
+        "offset": {
+          "x": 644,
+          "y": 4348
+        }
+      }
+    },
+    {
+      "name": "split_leave_es_tya",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "event": "noMatch"
+        },
+        {
+          "next": "record_voicemail_es_no_service_tya",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to leave",
+              "arguments": [
+                "{{widgets.send_to_queue_es_tya.QueueResult}}"
+              ],
+              "type": "equal_to",
+              "value": "leave"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{widgets.send_to_queue_es_tya.QueueResult}}",
+        "offset": {
+          "x": 1947,
+          "y": 4391
+        }
       }
     }
   ]
