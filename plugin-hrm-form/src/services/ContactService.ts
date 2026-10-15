@@ -36,6 +36,7 @@ import { newContact } from '../states/contacts/contactState';
 import { ApiError, FetchOptions } from './fetchApi';
 import { TaskSID, WorkerSID } from '../types/twilio';
 import { recordEvent } from '../fullStory';
+import { getHelplineToSave } from './HelplineService';
 
 /**
  * Strips the contact attributes out that should be set automatically on task router event handlers outside of Flex
@@ -161,10 +162,17 @@ export const createOfflineContact = async (
 
   const number = getNumberFromTask(task);
 
-  const { definitionVersion, helpline } = getHrmConfig();
+  const { definitionVersion } = getHrmConfig();
+  const { contactlessTask } = contact.rawJson;
+  const helpline =
+    contact.helpline ||
+    (await getHelplineToSave(task, {
+      ...contactlessTask,
+      createdOnBehalfOf: contactlessTask.createdOnBehalfOf || twilioWorkerId,
+    }));
   const contactForApi: Contact = {
     ...contact,
-    helpline: contact.helpline || contact.rawJson.contactlessTask.helpline || helpline || '',
+    helpline,
     number,
     definitionVersion,
     channel: ((task.attributes as any)?.customChannelType || task.channelType) as Contact['channel'],
