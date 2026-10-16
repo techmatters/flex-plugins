@@ -236,22 +236,23 @@ describe('transferStartHandler', () => {
     expect(mockCreateTask).toHaveBeenCalled();
   });
 
-  test('leaves existing transfer meta set by older clients untouched', async () => {
-    const existingTransferMeta = {
+  test('rebuilds stale transfer meta left by a previously rejected transfer', async () => {
+    const staleTransferMeta = {
       originalTask: TASK_SID,
-      originalReservation: ORIGINAL_RESERVATION_SID,
+      originalReservation: 'WRstale',
       originalCounselor: ORIGINAL_WORKER_SID,
-      originalCounselorName: 'Set By Client',
+      originalCounselorName: 'Original Counselor',
       originalConversationSid: CHANNEL_SID,
-      sidWithTaskControl: DUMMY_RESERVATION_SID,
-      transferStatus: 'accepted',
+      // A rejected transfer hands control back to the original reservation
+      sidWithTaskControl: 'WRstale',
+      transferStatus: 'rejected',
       mode: 'COLD',
       targetType: 'worker',
     };
     setUpMockClient({
       ...ORIGINAL_TASK_ATTRIBUTES,
       transferStarted: true,
-      transferMeta: existingTransferMeta,
+      transferMeta: staleTransferMeta,
     });
 
     const result = await transferStartHandler(
@@ -263,10 +264,35 @@ describe('transferStartHandler', () => {
     );
 
     expect(isOk(result)).toBe(true);
-    // Only the dummy channel update should have happened, no transfer meta update
-    expect(mockUpdateTask).toHaveBeenCalledTimes(1);
+    // The stale meta is replaced with fresh meta derived from the accepted reservation
+    const firstUpdateAttributes = JSON.parse(mockUpdateTask.mock.calls[0][0].attributes);
+    expect(firstUpdateAttributes.transferMeta).toEqual({
+      ...staleTransferMeta,
+      originalReservation: ORIGINAL_RESERVATION_SID,
+      sidWithTaskControl: DUMMY_RESERVATION_SID,
+      transferStatus: 'accepted',
+    });
     const createdAttributes = JSON.parse(mockCreateTask.mock.calls[0][0].attributes);
-    expect(createdAttributes.transferMeta).toEqual(existingTransferMeta);
+    expect(createdAttributes.transferMeta).toEqual(firstUpdateAttributes.transferMeta);
+  });
+
+  test('returns 400 if the task has no accepted reservation', async () => {
+    mockListReservations.mockResolvedValue([]);
+
+    const result = await transferStartHandler(
+      newRequest(
+        { taskSid: TASK_SID, targetSid: SUPERVISOR_WORKER_SID, mode: 'COLD' },
+        { worker_sid: SUPERVISOR_WORKER_SID, roles: ['supervisor'] },
+      ),
+      TEST_ACCOUNT_SID,
+    );
+
+    expect(isErr(result)).toBe(true);
+    if (isErr(result)) {
+      expect((result.error as HttpError).statusCode).toBe(400);
+    }
+    expect(mockUpdateTask).not.toHaveBeenCalled();
+    expect(mockCreateTask).not.toHaveBeenCalled();
   });
 
   test('rolls back transfer meta on the original task if creating the new task fails', async () => {

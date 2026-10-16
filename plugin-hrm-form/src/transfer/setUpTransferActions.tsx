@@ -31,7 +31,7 @@ import * as TransferHelpers from './transferTaskState';
 import { transferModes } from '../states/DomainConstants';
 import { recordEvent } from '../fullStory';
 import { transferChatStart } from '../services/twilioTaskService';
-import { getAseloFeatureFlags, getHrmConfig } from '../hrmConfig';
+import { getHrmConfig } from '../hrmConfig';
 import { RootState } from '../states';
 import { reactivateAseloListeners } from '../conversationListeners';
 import selectContactByTaskSid from '../states/contacts/selectContactByTaskSid';
@@ -116,7 +116,7 @@ const customTransferTask = (setupObject: SetupObject): ReplacedActionFunction =>
     return () => undefined; // Not calling original(payload) prevents the additional "Task cannot be transferred" notification
   }
 
-  const { counselorName, workerSid } = setupObject;
+  const { workerSid } = setupObject;
 
   // save current form state (if there is a form)
   const contact = getStateContactForms(payload.task.taskSid);
@@ -124,28 +124,19 @@ const customTransferTask = (setupObject: SetupObject): ReplacedActionFunction =>
 
   await saveFormSharedState(contact, payload.task);
 
-  const useLambdaTransfers = Boolean(getAseloFeatureFlags().use_twilio_lambda_transfers);
-
-  /*
-   * The lambda transferStart endpoint sets the transfer metadata on the original task server side,
-   * which supports supervisors 'taking over' tasks assigned to other workers (task.setAttributes only works on the current worker's own tasks).
-   * Call transfers and the legacy serverless transferChatStart endpoint still require the metadata to be set from the client.
-   */
-  if (TaskHelper.isCallTask(payload.task) || !useLambdaTransfers) {
-    // set metadata for the transfer
-    await TransferHelpers.setTransferMeta(payload, counselorName);
-  }
-
   if (TaskHelper.isCallTask(payload.task)) {
+    // set metadata for the transfer - chat transfers have it set server side by the lambda transferStart endpoint,
+    // which supports supervisors 'taking over' tasks assigned to other workers (task.setAttributes only works on the current worker's own tasks)
+    await TransferHelpers.setTransferMeta(payload, setupObject.counselorName);
     await ensureConferenceAttributes(payload.task);
 
     const disableTransfer = !TransferHelpers.canTransferConference(payload.task);
 
     if (disableTransfer) {
       window.alert(Manager.getInstance().strings['Transfer-CannotTransferTooManyParticipants']);
-    } else {
-      return safeTransfer(() => original(payload), payload.task);
+      return undefined;
     }
+    return safeTransfer(() => original(payload), payload.task);
   }
 
   const body = {
@@ -156,15 +147,11 @@ const customTransferTask = (setupObject: SetupObject): ReplacedActionFunction =>
     ignoreAgent: workerSid,
   };
 
-  if (useLambdaTransfers) {
-    /*
-     * The lambda endpoint rolls back the transfer metadata itself if the transfer fails,
-     * and a supervisor taking over a task cannot clear attributes on a task they don't own.
-     */
-    return transferChatStart(body);
-  }
-
-  return safeTransfer(() => transferChatStart(body), payload.task);
+  /*
+   * The lambda transferStart endpoint manages the transfer metadata on the original task server side,
+   * rolling it back itself if the transfer fails - a supervisor taking over a task couldn't clear attributes on a task they don't own anyway.
+   */
+  return transferChatStart(body);
 };
 
 const afterCancelTransfer = (payload: ActionPayload) => TransferHelpers.clearTransferMeta(payload.task);

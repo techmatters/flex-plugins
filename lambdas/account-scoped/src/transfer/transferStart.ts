@@ -29,6 +29,7 @@ import { FlexValidatedHandler, isSupervisor } from '../validation/flexToken';
 export type Body = {
   taskSid: TaskSID;
   targetSid: string;
+  // Sent by older clients - the lambda derives the agent to ignore from the task's accepted reservation instead
   ignoreAgent?: WorkerSID;
   mode: 'COLD' | 'WARM';
 };
@@ -193,11 +194,15 @@ export const transferStartHandler: FlexValidatedHandler = async (
     );
   }
 
-  // The agent the task is being transferred away from - derived server side so takeovers started by a supervisor don't ignore the supervisor
-  const ignoreAgent = acceptedReservation?.workerSid ?? (event as Body).ignoreAgent;
-  if (ignoreAgent === undefined) {
-    return newMissingParameterResult('ignoreAgent');
+  if (!acceptedReservation) {
+    return newHttpErrorResult(
+      `Cannot start a transfer for task ${taskSid}: no accepted reservation found`,
+      400,
+    );
   }
+
+  // The agent the task is being transferred away from - derived server side so takeovers started by a supervisor don't ignore the supervisor
+  const ignoreAgent = acceptedReservation.workerSid;
 
   const transferTargetType = targetSid.startsWith('WK') ? 'worker' : 'queue';
 
@@ -220,47 +225,38 @@ export const transferStartHandler: FlexValidatedHandler = async (
    * Replicates TransferHelpers.setTransferMeta from the Flex plugin.
    * Setting the transfer metadata server side (rather than via task.setAttributes in Flex)
    * allows a supervisor to start a transfer of a task assigned to another worker ('take over').
-   * If the metadata was already set by an older client, it is left untouched.
+   * It is always rebuilt from the task's accepted reservation, so stale metadata left by a
+   * previously rejected transfer can't leave the original worker in control of the task.
+   * Updating the original task's attributes here is also what locks the form for the
+   * original worker while the reservation is offered to the transfer target.
    */
-  let { transferMeta } = originalAttributes;
-  let attributesWithTransferMeta = originalAttributes;
-  let transferMetaSetHere = false;
-  if (!transferMeta) {
-    if (!acceptedReservation) {
-      return newHttpErrorResult(
-        `Cannot start a transfer for task ${taskSid}: no accepted reservation found`,
-        400,
-      );
-    }
-    const originalWorker = await workspace.workers
-      .get(acceptedReservation.workerSid)
-      .fetch();
-    const originalWorkerAttributes = JSON.parse(originalWorker.attributes);
-    transferMeta = {
-      originalTask: taskSid,
-      originalReservation: acceptedReservation.sid,
-      originalCounselor: acceptedReservation.workerSid,
-      originalCounselorName:
-        originalWorkerAttributes.full_name ?? originalWorker.friendlyName,
-      // save the original conversation sid, so we can cleanup the listeners if transferred successfully
-      originalConversationSid:
-        originalAttributes.conversationSid || originalAttributes.channelSid,
-      // if cold, set control to dummy value so Task Janitor completes this one
-      sidWithTaskControl: mode === 'WARM' ? '' : DUMMY_RESERVATION_SID,
-      transferStatus: mode === 'WARM' ? 'transferring' : 'accepted',
-      mode,
-      targetType: transferTargetType,
-    };
-    attributesWithTransferMeta = {
-      ...originalAttributes,
-      transferStarted: true,
-      transferMeta,
-    };
-    await workspace.tasks
-      .get(taskSid)
-      .update({ attributes: JSON.stringify(attributesWithTransferMeta) });
-    transferMetaSetHere = true;
-  }
+  const originalWorker = await workspace.workers
+    .get(acceptedReservation.workerSid)
+    .fetch();
+  const originalWorkerAttributes = JSON.parse(originalWorker.attributes);
+  const transferMeta = {
+    originalTask: taskSid,
+    originalReservation: acceptedReservation.sid,
+    originalCounselor: acceptedReservation.workerSid,
+    originalCounselorName:
+      originalWorkerAttributes.full_name ?? originalWorker.friendlyName,
+    // save the original conversation sid, so we can cleanup the listeners if transferred successfully
+    originalConversationSid:
+      originalAttributes.conversationSid || originalAttributes.channelSid,
+    // if cold, set control to dummy value so Task Janitor completes this one
+    sidWithTaskControl: mode === 'WARM' ? '' : DUMMY_RESERVATION_SID,
+    transferStatus: mode === 'WARM' ? 'transferring' : 'accepted',
+    mode,
+    targetType: transferTargetType,
+  };
+  const attributesWithTransferMeta = {
+    ...originalAttributes,
+    transferStarted: true,
+    transferMeta,
+  };
+  await workspace.tasks
+    .get(taskSid)
+    .update({ attributes: JSON.stringify(attributesWithTransferMeta) });
 
   /**
    * Conversations comes with attributes.conversations filled in.
@@ -418,18 +414,16 @@ export const transferStartHandler: FlexValidatedHandler = async (
       await increaseChatCapacity(accountSid, validationResult.data);
     }
   } catch (err) {
-    if (transferMetaSetHere) {
-      // Roll back the transfer metadata set on the original task above so it isn't left looking 'mid transfer'
-      try {
-        await workspace.tasks
-          .get(taskSid)
-          .update({ attributes: JSON.stringify(originalAttributes) });
-      } catch (rollbackErr) {
-        console.error(
-          `Failed to roll back transfer metadata on task ${taskSid} after a failed transfer`,
-          rollbackErr,
-        );
-      }
+    // Roll back the transfer metadata set on the original task above so it isn't left looking 'mid transfer'
+    try {
+      await workspace.tasks
+        .get(taskSid)
+        .update({ attributes: JSON.stringify(originalAttributes) });
+    } catch (rollbackErr) {
+      console.error(
+        `Failed to roll back transfer metadata on task ${taskSid} after a failed transfer`,
+        rollbackErr,
+      );
     }
     return newHttpErrorResult(err as Error, 500);
   }

@@ -19,7 +19,7 @@ import { Actions, Template, withTaskContext, Manager, TaskHelper } from '@twilio
 import { useDispatch, useSelector } from 'react-redux';
 
 import { TransferButton as TransferButtonStyled } from '../../styles/buttons';
-import { getAseloFeatureFlags, getHrmConfig } from '../../hrmConfig';
+import { getHrmConfig } from '../../hrmConfig';
 import selectContactByTaskSid from '../../states/contacts/selectContactByTaskSid';
 import type { RootState } from '../../states';
 import asyncDispatch from '../../states/asyncDispatch';
@@ -38,8 +38,7 @@ const TakeOverTaskButton: React.FC<TaskContextProps> = ({ task }) => {
   }, [asyncDispatcher, contactState, task]);
 
   // Take overs are only supported for chat tasks via the lambda transferStart endpoint, which sets the transfer metadata server side
-  const { use_twilio_lambda_transfers: useLambdaTransfers } = getAseloFeatureFlags();
-  if (!task || !workerSid || !isSupervisor || !contactState || !useLambdaTransfers || TaskHelper.isCallTask(task)) {
+  if (!task || !workerSid || !isSupervisor || !contactState || TaskHelper.isCallTask(task)) {
     return null;
   }
 
