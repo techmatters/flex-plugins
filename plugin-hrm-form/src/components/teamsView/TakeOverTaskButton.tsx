@@ -15,7 +15,7 @@
  */
 
 import React, { useEffect } from 'react';
-import { Actions, Template, withTaskContext, Manager, TaskHelper } from '@twilio/flex-ui';
+import { Actions, Template, withTaskContext, TaskHelper } from '@twilio/flex-ui';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { TransferButton as TransferButtonStyled } from '../../styles/buttons';
@@ -26,8 +26,7 @@ import asyncDispatch from '../../states/asyncDispatch';
 import { newLoadContactFromHrmForTaskAsyncAction } from '../../states/contacts/saveContact';
 
 const TakeOverTaskButton: React.FC<TaskContextProps> = ({ task }) => {
-  const workerSid = Manager.getInstance().workerClient?.workerSid;
-  const { isSupervisor } = getHrmConfig();
+  const { isSupervisor, workerSid } = getHrmConfig();
   const asyncDispatcher = asyncDispatch(useDispatch());
   const contactState = useSelector((state: RootState) => selectContactByTaskSid(state, task?.taskSid));
 
