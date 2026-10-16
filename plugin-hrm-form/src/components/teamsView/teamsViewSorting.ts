@@ -189,45 +189,6 @@ export const convertDurationToSeconds = (duration: string): number => {
   return seconds;
 };
 
-/**
- * Sort by Status/Activity column
- *
- * Sort available workers first, offline workers last, then by helpline's activity index,
- * then within each activity by duration, with longest to shortest
- */
-export const sortStatusColumn = (a: SupervisorWorkerState, b: SupervisorWorkerState) => {
-  // Handle undefined values
-  if (!a || !b) return 0;
-
-  // Place available workers at the top
-  if (a.worker.isAvailable !== b.worker.isAvailable) {
-    return a.worker.isAvailable ? 1 : -1;
-  }
-
-  const aActivityValue = WORKER_ACTIVITIES[a.worker.activityName] || 0;
-  const bActivityValue = WORKER_ACTIVITIES[b.worker.activityName] || 0;
-
-  const aUpdatedAt = convertDurationToSeconds(a?.worker?.activityDuration || '');
-  const bUpdatedAt = convertDurationToSeconds(b?.worker?.activityDuration || '');
-
-  // Place workers with "Offline" activity at the end
-  if (aActivityValue === 0 && bActivityValue === 0) {
-    // If both are offline, sort by duration
-    return aUpdatedAt - bUpdatedAt;
-  } else if (aActivityValue === 0) {
-    return -1;
-  } else if (bActivityValue === 0) {
-    return 1;
-  }
-
-  // Sort alphabetically by activity name
-  if (a.worker.activityName !== b.worker.activityName) {
-    return a.worker.activityName.localeCompare(b.worker.activityName);
-  }
-  // Sort by duration within the same activity
-  return aUpdatedAt - bUpdatedAt;
-};
-
 // Set up the sorting for default Teams View columns (Workers, Calls, Tasks)
 export const setUpTeamsViewSorting = () => {
   AgentsDataTable.defaultProps.sortCalls = sortWorkersByCallDuration;
