@@ -14,7 +14,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { isSkilledWorkerOnlineHandler } from '../../../src/worker/isSkilledWorkerOnline';
+import { isSkilledWorkerLoggedInHandler } from '../../../src/worker/isSkilledWorkerLoggedIn';
 import { getTwilioClient, getWorkspaceSid } from '@tech-matters/twilio-configuration';
 import { isErr, isOk } from '@tech-matters/result-type';
 import { HttpRequest } from '../../../src/httpTypes';
@@ -47,7 +47,7 @@ const mockWorker = (sid: string, skills: string[], activityName = 'Available') =
   attributes: JSON.stringify({ routing: { skills } }),
 });
 
-describe('isSkilledWorkerOnlineHandler', () => {
+describe('isSkilledWorkerLoggedInHandler', () => {
   let mockWorkersList: jest.Mock;
 
   beforeEach(() => {
@@ -71,7 +71,7 @@ describe('isSkilledWorkerOnlineHandler', () => {
   });
 
   it('should return 400 when targetSkills is missing', async () => {
-    const result = await isSkilledWorkerOnlineHandler(
+    const result = await isSkilledWorkerLoggedInHandler(
       createMockRequest({}),
       TEST_ACCOUNT_SID,
     );
@@ -84,7 +84,7 @@ describe('isSkilledWorkerOnlineHandler', () => {
   });
 
   it('should return 400 when targetSkills has no valid skills', async () => {
-    const result = await isSkilledWorkerOnlineHandler(
+    const result = await isSkilledWorkerLoggedInHandler(
       createMockRequest({ targetSkills: ' , ' }),
       TEST_ACCOUNT_SID,
     );
@@ -95,8 +95,8 @@ describe('isSkilledWorkerOnlineHandler', () => {
     }
   });
 
-  it('should count non-Offline workers that have every required skill', async () => {
-    const result = await isSkilledWorkerOnlineHandler(
+  it('should count logged-in (non-Offline) workers that have every required skill', async () => {
+    const result = await isSkilledWorkerLoggedInHandler(
       createMockRequest({ targetSkills: 'Spanish' }),
       TEST_ACCOUNT_SID,
     );
@@ -104,27 +104,27 @@ describe('isSkilledWorkerOnlineHandler', () => {
     expect(isOk(result)).toBe(true);
     if (isOk(result)) {
       expect(result.data).toEqual({
-        totalOnlineWorkers: 2,
-        onlineWorkerSids: ['WK1', 'WK3'],
+        totalLoggedInWorkers: 2,
+        loggedInWorkerSids: ['WK1', 'WK3'],
       });
     }
     expect(mockWorkersList).toHaveBeenCalledWith();
   });
 
   it('should require all skills when several are supplied', async () => {
-    const result = await isSkilledWorkerOnlineHandler(
+    const result = await isSkilledWorkerLoggedInHandler(
       createMockRequest({ targetSkills: 'Spanish, Chat' }),
       TEST_ACCOUNT_SID,
     );
 
     expect(isOk(result)).toBe(true);
     if (isOk(result)) {
-      expect(result.data.onlineWorkerSids).toEqual(['WK1']);
+      expect(result.data.loggedInWorkerSids).toEqual(['WK1']);
     }
   });
 
   it('should also exclude activities passed in excludedActivities, case-insensitively', async () => {
-    const result = await isSkilledWorkerOnlineHandler(
+    const result = await isSkilledWorkerLoggedInHandler(
       createMockRequest({
         targetSkills: 'Spanish',
         excludedActivities: 'break, Unavailable',
@@ -134,19 +134,19 @@ describe('isSkilledWorkerOnlineHandler', () => {
 
     expect(isOk(result)).toBe(true);
     if (isOk(result)) {
-      expect(result.data.onlineWorkerSids).toEqual(['WK1']);
+      expect(result.data.loggedInWorkerSids).toEqual(['WK1']);
     }
   });
 
   it('should still exclude Offline when excludedActivities does not list it', async () => {
-    const result = await isSkilledWorkerOnlineHandler(
+    const result = await isSkilledWorkerLoggedInHandler(
       createMockRequest({ targetSkills: 'Spanish,Chat', excludedActivities: 'Break' }),
       TEST_ACCOUNT_SID,
     );
 
     expect(isOk(result)).toBe(true);
     if (isOk(result)) {
-      expect(result.data.onlineWorkerSids).toEqual(['WK1']);
+      expect(result.data.loggedInWorkerSids).toEqual(['WK1']);
     }
   });
 });

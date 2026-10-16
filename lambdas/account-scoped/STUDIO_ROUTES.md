@@ -13,7 +13,7 @@ custom-channel callbacks) are intentionally not listed here.
 | [`operatingHours`](#operatinghours) | Is the helpline open, closed or on holiday right now? |
 | [`voice/filterCountryOrVoIP`](#voicefiltercountryorvoip) | Should this number be blocked (non-US, VoIP, hidden, carrier)? |
 | [`worker/isSkilledWorkerAvailable`](#workerisskilledworkeravailable) | Can a worker with these skills take this contact **right now**? |
-| [`worker/isSkilledWorkerOnline`](#workerisskilledworkeronline) | Is a worker with these skills **logged in**, busy or not? |
+| [`worker/isSkilledWorkerLoggedIn`](#workerisskilledworkerloggedin) | Is a worker with these skills **logged in**, busy or not? |
 | [`channelCapture/captureChannelWithBot`](#channelcapturecapturechannelwithbot) | Hand the conversation to a Lex bot |
 | [`channelCapture/chatbotCallbackCleanup`](#channelcapturechatbotcallbackcleanup) | Force-release a conversation captured by a bot |
 | [`channelCapture/startPostSurveyChatbot`](#channelcapturestartpostsurveychatbot) | Start the post-survey Lex bot on a conversation |
@@ -273,19 +273,19 @@ In the `.tftpl`:
 `{{widgets.f_isSkilledWorkerAvailable_tya_calls.parsed.totalAvailableWorkers}}`, using
 `greater_than` `0` for the specialist path and `equal_to` `0` for the fallback.
 
-**See also:** [`worker/isSkilledWorkerOnline`](#workerisskilledworkeronline) when you only need
+**See also:** [`worker/isSkilledWorkerLoggedIn`](#workerisskilledworkerloggedin) when you only need
 to know whether someone is logged in, not whether they are free.
 
 ---
 
-## worker/isSkilledWorkerOnline
+## worker/isSkilledWorkerLoggedIn
 
 Counts workers who are **logged in**, meaning any activity except `Offline` (Available, Break,
 Unavailable, ...), and have **all** the requested skills, **regardless of how busy they are**.
 Use it to answer "is anyone with this skill on shift?", for example to decide whether to queue
 for a specialist or offer a callback. **Read-only.**
 
-**URL:** `${lambda_twilio_account_scoped_url}/worker/isSkilledWorkerOnline`
+**URL:** `${lambda_twilio_account_scoped_url}/worker/isSkilledWorkerLoggedIn`
 
 | Param | Required | Example | Notes |
 |---|---|---|---|
@@ -313,18 +313,18 @@ In the `.tftpl`:
 
 ```json
 {
-  "name": "f_isSkilledWorkerOnline_es_sms",
+  "name": "f_isSkilledWorkerLoggedIn_es_sms",
   "type": "make-http-request",
   "transitions": [
-    { "next": "split_specialist_online_es_sms", "event": "success" },
-    { "next": "split_specialist_online_es_sms", "event": "failed" }
+    { "next": "split_specialist_logged_in_es_sms", "event": "success" },
+    { "next": "split_specialist_logged_in_es_sms", "event": "failed" }
   ],
   "properties": {
     "method": "POST",
     "content_type": "application/json;charset=utf-8",
     "add_twilio_auth": false,
     "body": "{\n  \"targetSkills\": \"Spanish,SMS\",\n  \"excludedActivities\": \"Break,Unavailable\"\n}",
-    "url": "${lambda_twilio_account_scoped_url}/worker/isSkilledWorkerOnline"
+    "url": "${lambda_twilio_account_scoped_url}/worker/isSkilledWorkerLoggedIn"
   }
 }
 ```
@@ -333,13 +333,13 @@ In the `.tftpl`:
 
 ```json
 {
-  "totalOnlineWorkers": 2,
-  "onlineWorkerSids": ["WKxxxxxxxx", "WKyyyyyyyy"]
+  "totalLoggedInWorkers": 2,
+  "loggedInWorkerSids": ["WKxxxxxxxx", "WKyyyyyyyy"]
 }
 ```
 
 **Use the result:** split on
-`{{widgets.f_isSkilledWorkerOnline_es_sms.parsed.totalOnlineWorkers}}`, using `greater_than`
+`{{widgets.f_isSkilledWorkerLoggedIn_es_sms.parsed.totalLoggedInWorkers}}`, using `greater_than`
 `0` for "someone is on shift". When `failed` also goes to the split, the value is empty and
 falls to `noMatch`, so point `noMatch` at the path you want on failure.
 

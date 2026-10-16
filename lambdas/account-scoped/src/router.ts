@@ -83,7 +83,7 @@ import { postStudioFlowCallStatusCallbackHandler } from './studioFlow/postStudio
 import { triggerPostStudioFlowHandler } from './studioFlow/postStudioFlowTaskRouterListener';
 import { randomOptionSelectorHandler } from './randomOptionSelector';
 import { isSkilledWorkerAvailableHandler } from './worker/isSkilledWorkerAvailable';
-import { isSkilledWorkerOnlineHandler } from './worker/isSkilledWorkerOnline';
+import { isSkilledWorkerLoggedInHandler } from './worker/isSkilledWorkerLoggedIn';
 import { filterCountryOrVoIPHandler } from './voice/filterCountryOrVoIP';
 import { handleCreateScheduleJob } from './scheduled-jobs/create-schedule';
 import { recordingCompleteCallback } from './voicemail/recordingCompleteCallback';
@@ -413,9 +413,9 @@ const ACCOUNTSID_ROUTES: Record<
     requestPipeline: [validateRequestMethod('POST'), validateWebhookRequest],
     handler: isSkilledWorkerAvailableHandler,
   }),
-  'worker/isSkilledWorkerOnline': newRoute({
+  'worker/isSkilledWorkerLoggedIn': newRoute({
     requestPipeline: [validateRequestMethod('POST'), validateWebhookRequest],
-    handler: isSkilledWorkerOnlineHandler,
+    handler: isSkilledWorkerLoggedInHandler,
   }),
   'voice/filterCountryOrVoIP': newRoute({
     requestPipeline: [validateRequestMethod('POST'), validateWebhookRequest],

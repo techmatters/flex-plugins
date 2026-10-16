@@ -52,7 +52,7 @@ const parseList = (value: string): string[] =>
  * Use it to answer "is anyone with these skills logged in?" rather than
  * "can someone take this contact right now?".
  */
-export const isSkilledWorkerOnlineHandler: AccountScopedHandler = async (
+export const isSkilledWorkerLoggedInHandler: AccountScopedHandler = async (
   { body },
   accountSid,
 ) => {
@@ -81,7 +81,7 @@ export const isSkilledWorkerOnlineHandler: AccountScopedHandler = async (
     ...parseList(excludedActivities ?? ''),
   ].map(activity => activity.toLowerCase());
 
-  console.info('Checking online workers', {
+  console.info('Checking logged-in workers', {
     accountSid,
     requiredSkills,
     excludedActivityNames,
@@ -97,7 +97,7 @@ export const isSkilledWorkerOnlineHandler: AccountScopedHandler = async (
    */
   const allWorkers = await client.taskrouter.v1.workspaces(workspaceSid).workers.list();
 
-  const onlineWorkerSids = allWorkers
+  const loggedInWorkerSids = allWorkers
     .filter(worker => {
       if (excludedActivityNames.includes((worker.activityName ?? '').toLowerCase())) {
         return false;
@@ -107,16 +107,16 @@ export const isSkilledWorkerOnlineHandler: AccountScopedHandler = async (
     })
     .map(worker => worker.sid);
 
-  console.info('Online check completed', {
+  console.info('Logged-in check completed', {
     accountSid,
     requiredSkills,
     excludedActivityNames,
-    totalOnlineWorkers: onlineWorkerSids.length,
-    onlineWorkerSids,
+    totalLoggedInWorkers: loggedInWorkerSids.length,
+    loggedInWorkerSids,
   });
 
   return newOk({
-    totalOnlineWorkers: onlineWorkerSids.length,
-    onlineWorkerSids,
+    totalLoggedInWorkers: loggedInWorkerSids.length,
+    loggedInWorkerSids,
   });
 };
