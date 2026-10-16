@@ -148,10 +148,9 @@ type TransferChatStartBody = {
 type TransferChatStartReturn = { closed: string; kept: string };
 
 export const transferChatStart = async (body: TransferChatStartBody): Promise<TransferChatStartReturn> => {
-  const { use_twilio_lambda_transfers: useTwilioLambda } = getAseloFeatureFlags();
-  const path = useTwilioLambda ? '/transfer/transferStart' : '/transferChatStart';
   try {
-    return await fetchProtectedApi(path, body, useTwilioLambda ? { useTwilioLambda: true } : undefined);
+    // The lambda endpoint manages the transfer metadata on the original task server side, which is required for supervisor take overs
+    return await fetchProtectedApi('/transfer/transferStart', body, { useTwilioLambda: true });
   } catch (err) {
     Notifications.showNotification('TransferFailed', {
       reason: `Worker ${body.targetSid} is not available.`,
