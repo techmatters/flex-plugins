@@ -8,7 +8,7 @@
     "formPath": "caseForms/ReferralForm.json"
   },
   "household": {
-    "label": "Household Member",
+    "label": "Family Support Program",
     "formPath": "caseForms/HouseholdForm.json"
   },
   "perpetrator": {
@@ -22,9 +22,5 @@
   "document": {
     "label": "Document",
     "formPath": "caseForms/DocumentForm.json"
-  },
-  "chicken": {
-    "label": "Chicken",
-    "formPath": "caseForms/ChickenForm.json"
   }
 }
