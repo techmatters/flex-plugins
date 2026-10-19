@@ -136,6 +136,7 @@ export const handleEvent = async (
     TaskSid: taskSid,
     WorkerSid: workerSid,
     WorkerName: workerName,
+    WorkerAttributes: workerAttributesString,
     TaskChannelUniqueName: taskChannel,
   }: EventFields,
   accountSid: AccountSID,
@@ -254,9 +255,13 @@ export const handleEvent = async (
   const identifier = isOk(identifierResult) ? identifierResult.data : '';
 
   const timeOfContactDate = new Date();
+  const workerAttributes = workerAttributesString
+    ? JSON.parse(workerAttributesString)
+    : {};
 
   const newContact: HrmContact = {
     ...BLANK_CONTACT,
+    helpline: taskAttributes.helpline || workerAttributes.helpline || '',
     definitionVersion,
     channel,
     rawJson: {

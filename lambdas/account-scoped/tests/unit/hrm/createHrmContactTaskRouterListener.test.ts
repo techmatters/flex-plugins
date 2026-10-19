@@ -217,6 +217,50 @@ describe('handleEvent', () => {
     });
   });
 
+  describe.each([true, false])(
+    'helpline with prepopulation successful=%s',
+    successful => {
+      test.each([
+        ['task helpline', 'worker helpline', 'task helpline'],
+        ['', 'worker helpline', 'worker helpline'],
+        [undefined, 'worker helpline', 'worker helpline'],
+        [undefined, undefined, ''],
+      ])(
+        'creates contact with helpline from task=%s, worker=%s',
+        async (taskHelpline, workerHelpline, expectedHelpline) => {
+          const eventFields = {
+            ...newEventFields(
+              taskHelpline === undefined ? {} : { helpline: taskHelpline },
+            ),
+            ...(workerHelpline
+              ? { WorkerAttributes: JSON.stringify({ helpline: workerHelpline }) }
+              : {}),
+          };
+          mockPopulateHrmContactFormFromTask.mockImplementation(async ({ contact }) =>
+            successful
+              ? newOk(contact)
+              : newErr({
+                  message: 'Prepopulation failed',
+                  error: new Error('Test error'),
+                }),
+          );
+
+          await handleEvent(eventFields, TEST_ACCOUNT_SID, twilioClient);
+
+          expect(mockPopulateHrmContactFormFromTask).toHaveBeenCalledWith(
+            expect.objectContaining({
+              contact: expect.objectContaining({ helpline: expectedHelpline }),
+            }),
+          );
+          expect(mockFetch).toHaveBeenCalledTimes(1);
+          expect(JSON.parse(mockFetch.mock.calls[0][1]?.body as string).helpline).toBe(
+            expectedHelpline,
+          );
+        },
+      );
+    },
+  );
+
   test('voicemail task - creates contact and posts conversationMedia with S3 recording location', async () => {
     const eventFields: EventFields = {
       ...newEventFields({
