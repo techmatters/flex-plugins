@@ -23,7 +23,7 @@ import { getHrmConfig } from '../../hrmConfig';
 import selectContactByTaskSid from '../../states/contacts/selectContactByTaskSid';
 import type { RootState } from '../../states';
 import asyncDispatch from '../../states/asyncDispatch';
-import { newLoadContactFromHrmForTaskAsyncAction } from '../../states/contacts/saveContact';
+import { newLoadContactFromHrmByIdAsyncAction } from '../../states/contacts/saveContact';
 
 const TakeOverTaskButton: React.FC<TaskContextProps> = ({ task }) => {
   const { isSupervisor, workerSid } = getHrmConfig();
@@ -31,8 +31,9 @@ const TakeOverTaskButton: React.FC<TaskContextProps> = ({ task }) => {
   const contactState = useSelector((state: RootState) => selectContactByTaskSid(state, task?.taskSid));
 
   useEffect(() => {
-    if (task && !contactState) {
-      asyncDispatcher(newLoadContactFromHrmForTaskAsyncAction(task));
+    const { contactId } = task?.attributes ?? {};
+    if (contactId && !contactState) {
+      asyncDispatcher(newLoadContactFromHrmByIdAsyncAction(contactId));
     }
   }, [asyncDispatcher, contactState, task]);
 

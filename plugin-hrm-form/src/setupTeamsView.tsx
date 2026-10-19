@@ -29,5 +29,5 @@ export const setUpTeamsView = () => {
   TeamsView.setUpTeamsViewFilters();
   TeamsView.setUpWorkerDirectoryFilters();
 
-  Flex.Supervisor.TaskCanvas.Header.Content.add(<TakeOverTaskButton key="take-over-button" />);
+  Flex.Supervisor.TaskCanvasHeader.Content.add(<TakeOverTaskButton key="take-over-button" />);
 };
