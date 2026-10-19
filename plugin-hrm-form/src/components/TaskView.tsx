@@ -33,7 +33,7 @@ import { getAseloFeatureFlags, getHrmConfig } from '../hrmConfig';
 import { ContactState, updateDraft } from '../states/contacts/existingContacts';
 import {
   createOfflineContactAsyncAction,
-  newLoadContactFromHrmForTaskAsyncAction,
+  newLoadContactFromHrmForIncomingTaskAsyncAction,
 } from '../states/contacts/saveContact';
 import { isRouteModal } from '../states/routing/types';
 import { selectCurrentBaseRoute } from '../states/routing/getRoute';
@@ -88,7 +88,7 @@ const TaskView: React.FC<Props> = ({ task }) => {
   const sidWithTaskControl = transferMeta?.sidWithTaskControl;
   React.useEffect(() => {
     if (shouldRecreateState && !isOfflineContactTask(task) && taskContactId) {
-      asyncDispatcher(newLoadContactFromHrmForTaskAsyncAction(task, `${task.taskSid}-active`));
+      asyncDispatcher(newLoadContactFromHrmForIncomingTaskAsyncAction(task, `${task.taskSid}-active`));
     }
   }, [
     createContact,
@@ -149,7 +149,7 @@ const TaskView: React.FC<Props> = ({ task }) => {
     return (
       <ContactNotLoaded
         onReload={async () => {
-          await asyncDispatcher(newLoadContactFromHrmForTaskAsyncAction(task, `${task.taskSid}-active`));
+          await asyncDispatcher(newLoadContactFromHrmForIncomingTaskAsyncAction(task, `${task.taskSid}-active`));
         }}
         onFinish={async () => {
           await completeTask(task, unsavedContact);
