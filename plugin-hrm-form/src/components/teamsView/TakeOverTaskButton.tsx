@@ -39,7 +39,7 @@ const TakeOverTaskButton: React.FC<TaskContextProps> = ({ task }) => {
   }, [asyncDispatcher, contactState, task]);
 
   // Takeovers are only supported for chat tasks via the lambda transferStart endpoint, which sets the transfer metadata server side
-  if (!task || !workerSid || !isSupervisor || !contactState || TaskHelper.isCallTask(task) || isTransferring(task)) {
+  if (!task || !workerSid || !isSupervisor || !contactState || TaskHelper.isCallTask(task)) {
     return null;
   }
 
@@ -47,6 +47,7 @@ const TakeOverTaskButton: React.FC<TaskContextProps> = ({ task }) => {
     <TransferButtonStyled
       onClick={() => Actions.invokeAction('TransferTask', { task, targetSid: workerSid, options: { mode: 'COLD' } })}
       data-fs-id="Task-TakeOver-Button"
+      disabled={isTransferring(task)}
     >
       <Template code="MonitorTaskCanvas-Header-TransferButtonLabel" />
     </TransferButtonStyled>
