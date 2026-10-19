@@ -24,6 +24,7 @@ import selectContactByTaskSid from '../../states/contacts/selectContactByTaskSid
 import type { RootState } from '../../states';
 import asyncDispatch from '../../states/asyncDispatch';
 import { newLoadContactFromHrmByIdAsyncAction } from '../../states/contacts/saveContact';
+import { isTransferring } from '../../transfer/transferTaskState';
 
 const TakeOverTaskButton: React.FC<TaskContextProps> = ({ task }) => {
   const { isSupervisor, workerSid } = getHrmConfig();
@@ -37,8 +38,8 @@ const TakeOverTaskButton: React.FC<TaskContextProps> = ({ task }) => {
     }
   }, [asyncDispatcher, contactState, task]);
 
-  // Take overs are only supported for chat tasks via the lambda transferStart endpoint, which sets the transfer metadata server side
-  if (!task || !workerSid || !isSupervisor || !contactState || TaskHelper.isCallTask(task)) {
+  // Takeovers are only supported for chat tasks via the lambda transferStart endpoint, which sets the transfer metadata server side
+  if (!task || !workerSid || !isSupervisor || !contactState || TaskHelper.isCallTask(task) || isTransferring(task)) {
     return null;
   }
 
