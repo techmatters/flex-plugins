@@ -5,7 +5,6 @@ locals {
 
   local_config = {
     helpline                          = "ECPAT"
-    definition_version                = "ph-v1"
     default_autopilot_chatbot_enabled = false
     task_language                     = "en-PH"
     helpline_language                 = "en-US"

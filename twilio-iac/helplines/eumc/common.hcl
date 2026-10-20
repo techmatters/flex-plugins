@@ -5,7 +5,6 @@ locals {
 
   local_config = {
     helpline                          = "Missing Children EU"
-    definition_version                = "eumc-v1"
     default_autopilot_chatbot_enabled = false
     task_language                     = "en-EUMC"
     helpline_language                 = "en-EUMC"

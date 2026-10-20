@@ -5,7 +5,6 @@ locals {
 
   local_config = {
     helpline                          = "Meri Trustline"
-    definition_version                = "in-v1"
     default_autopilot_chatbot_enabled = false
     task_language                     = "en-IN"
     helpline_language                 = "en-IN"

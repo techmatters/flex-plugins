@@ -6,7 +6,6 @@ locals {
 
   local_config = {
     helpline                          = "Kék Vonal"
-    definition_version                = "hu-v1"
     default_autopilot_chatbot_enabled = false
     task_language                     = "{{trigger.message.ChannelAttributes.pre_engagement_data.language}}"
     helpline_language                 = "hu-HU"

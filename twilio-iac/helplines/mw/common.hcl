@@ -6,7 +6,6 @@ locals {
 
   local_config = {
     helpline                          = "Tithandizane"
-    definition_version                = "mw-v1"
     default_autopilot_chatbot_enabled = false
     task_language                     = "en"
     helpline_language                 = "en"

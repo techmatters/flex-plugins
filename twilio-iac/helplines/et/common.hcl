@@ -6,7 +6,6 @@ locals {
 
   local_config = {
     helpline                          = "Adama Child Helpline"
-    definition_version                = "et-v1"
     default_autopilot_chatbot_enabled = false
     task_language                     = "en-US"
     helpline_language                 = "en"

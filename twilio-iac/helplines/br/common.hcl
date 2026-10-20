@@ -6,7 +6,6 @@ locals {
 
   local_config = {
     helpline                          = "SaferNet"
-    definition_version                = "br-v1"
     default_autopilot_chatbot_enabled = false
     task_language                     = "pt-BR"
     helpline_language                 = "pt-BR"
