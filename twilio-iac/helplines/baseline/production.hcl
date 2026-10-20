@@ -9,6 +9,9 @@ locals {
 
   local_config = {
     custom_task_routing_filter_expression = ""
-    flow_vars                             = {}
+    flow_vars = {
+      widget_from          = "<helpline name>"
+      chat_blocked_message = "Sorry, you're not able to contact <helpline name> from this device or account"
+    }
   }
 }
