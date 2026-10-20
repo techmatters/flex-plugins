@@ -14,7 +14,6 @@ locals {
    **/
   local_config = {
     helpline       = "Te Guío"
-    default_autopilot_chatbot_enabled = false
     task_language                     = "es-CO"
     voice_ivr_language                = "es-MX"
     enable_post_survey                = false

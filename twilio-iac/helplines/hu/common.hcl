@@ -6,7 +6,6 @@ locals {
 
   local_config = {
     helpline                          = "Kék Vonal"
-    default_autopilot_chatbot_enabled = false
     task_language                     = "{{trigger.message.ChannelAttributes.pre_engagement_data.language}}"
     contacts_waiting_channels         = ["web", "voice"]
     enable_post_survey                = false

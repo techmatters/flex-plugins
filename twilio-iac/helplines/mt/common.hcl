@@ -5,7 +5,6 @@ locals {
 
   local_config = {
     helpline                          = "Kellimni"
-    default_autopilot_chatbot_enabled = false
     task_language                     = "en-MT"
     voice_ivr_language                = ""
     contacts_waiting_channels         = ["web", "whatsapp", "facebook", "instagram"]

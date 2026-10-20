@@ -5,7 +5,6 @@ locals {
 
   local_config = {
     helpline                          = "Childline Zimbabwe"
-    default_autopilot_chatbot_enabled = false
     task_language                     = "en-US"
     voice_ivr_language                = ""
     contacts_waiting_channels         = ["web", "whatsapp", "facebook", "instagram", "voice"]

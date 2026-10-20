@@ -5,7 +5,6 @@ locals {
 
   local_config = {
     helpline                          = "ECPAT"
-    default_autopilot_chatbot_enabled = false
     task_language                     = "en-PH"
     voice_ivr_language                = ""
     enable_post_survey                = false

@@ -7,7 +7,6 @@ locals {
 
   local_config = {
     helpline                          = "Aselo"
-    default_autopilot_chatbot_enabled = false
     task_language                     = "en-US"
     voice_ivr_language                = ""
     enable_post_survey                = false

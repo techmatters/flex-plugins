@@ -5,7 +5,6 @@ locals {
 
   local_config = {
     helpline                          = "Linea Libre"
-    default_autopilot_chatbot_enabled = false
     task_language                     = "es-CL"
     voice_ivr_language                = "es-MX"
     enable_post_survey                = true
