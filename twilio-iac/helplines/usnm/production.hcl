@@ -92,7 +92,7 @@ locals {
         templatefile         = "/app/twilio-iac/helplines/usnm/templates/studio-flows/sms.tftpl"
         channel_flow_vars    = {}
         chatbot_unique_names = []
-      },
+      }/*,
       sms_shortcode : {
         messaging_mode       = "conversations"
         channel_type         = "sms"
@@ -116,7 +116,7 @@ locals {
         templatefile         = "/app/twilio-iac/helplines/usnm/templates/studio-flows/sms-redirect.tftpl"
         channel_flow_vars    = {}
         chatbot_unique_names = []
-      }
+      }*/
     }
 
     system_down_templatefile = "/app/twilio-iac/helplines/templates/studio-flows/system-down.tftpl"
