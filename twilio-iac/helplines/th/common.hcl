@@ -5,7 +5,6 @@ locals {
 
   local_config = {
     helpline                          = "Childline Thailand"
-    old_dir_prefix                    = "thailand"
     definition_version                = "th-v1"
     default_autopilot_chatbot_enabled = false
     task_language                     = "th-TH"

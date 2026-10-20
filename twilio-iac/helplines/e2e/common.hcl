@@ -6,7 +6,6 @@ locals {
 
   local_config = {
     helpline                          = "End to End Testing"
-    old_dir_prefix                    = "e2e"
     definition_version                = "e2e-v1"
     default_autopilot_chatbot_enabled = false
     task_language                     = "en-US"

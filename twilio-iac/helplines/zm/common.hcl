@@ -5,7 +5,6 @@ locals {
 
   local_config = {
     helpline                          = "ChildLine Zambia"
-    old_dir_prefix                    = ""
     default_autopilot_chatbot_enabled = false
     task_language                     = "en-US"
     voice_ivr_language                = ""

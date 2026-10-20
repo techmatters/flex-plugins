@@ -14,7 +14,6 @@ locals {
    **/
   local_config = {
     helpline       = "Te Guío"
-    old_dir_prefix = "teguio"   
     default_autopilot_chatbot_enabled = false
     task_language                     = "es-CO"
     voice_ivr_language                = "es-MX"

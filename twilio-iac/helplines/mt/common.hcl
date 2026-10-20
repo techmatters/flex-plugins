@@ -5,7 +5,6 @@ locals {
 
   local_config = {
     helpline                          = "Kellimni"
-    old_dir_prefix                    = "mt-kellimni"
     definition_version                = "mt-v1"
     default_autopilot_chatbot_enabled = false
     task_language                     = "en-MT"

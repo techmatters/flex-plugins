@@ -5,7 +5,6 @@ locals {
 
   local_config = {
     helpline                          = "Childline Zimbabwe"
-    old_dir_prefix                    = "zimbabwe"
     definition_version                = "zw-v1"
     default_autopilot_chatbot_enabled = false
     task_language                     = "en-US"
