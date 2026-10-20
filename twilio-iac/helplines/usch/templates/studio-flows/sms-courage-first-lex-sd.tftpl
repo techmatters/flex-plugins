@@ -104,11 +104,11 @@ ${
       }
     },
     {
-      "name": "send_message_sms_blocked_client",
-      "type": "send-message",
+      "name": "f_sendMessageAndRunJanitor_blocked_client",
+      "type": "make-http-request",
       "transitions": [
         {
-          "event": "sent"
+          "event": "success"
         },
         {
           "event": "failed"
@@ -119,12 +119,24 @@ ${
           "x": 660,
           "y": 730
         },
-        "service": "{{trigger.message.InstanceSid}}",
-        "channel": "{{trigger.message.ChannelSid}}",
-        "from": "Bot",
-        "message_type": "custom",
-        "to": "{{contact.channel.address}}",
-        "body": "${flow_vars.sms_blocked_client_message}"
+        "method": "POST",
+        "content_type": "application/x-www-form-urlencoded;charset=utf-8",
+        "add_twilio_auth": false,
+        "parameters": [
+          {
+            "value": "{{flow.channel.address}}",
+            "key": "conversationSid"
+          },
+          {
+            "value": "${flow_vars.sms_blocked_client_message}",
+            "key": "message"
+          },
+          {
+            "value": "Bot",
+            "key": "from"
+          }
+        ],
+        "url": "${lambda_twilio_account_scoped_url}/conversation/sendMessageAndRunJanitor"
       }
     },
     {
@@ -136,7 +148,7 @@ ${
           "event": "noMatch"
         },
         {
-          "next": "send_message_sms_blocked_client",
+          "next": "f_sendMessageAndRunJanitor_blocked_client",
           "event": "match",
           "conditions": [
             {
@@ -247,7 +259,7 @@ ${
           "event": "success"
         },
         {
-          "next": "send_message_courage_first_sms_failure",
+          "next": "f_sendMessageAndRunJanitor_failure",
           "event": "failed"
         }
       ],
@@ -289,11 +301,11 @@ ${
       }
     },
     {
-      "name": "send_message_courage_first_sms_failure",
-      "type": "send-message",
+      "name": "f_sendMessageAndRunJanitor_failure",
+      "type": "make-http-request",
       "transitions": [
         {
-          "event": "sent"
+          "event": "success"
         },
         {
           "event": "failed"
@@ -304,12 +316,24 @@ ${
           "x": 930,
           "y": 2440
         },
-        "service": "{{trigger.message.InstanceSid}}",
-        "channel": "{{trigger.message.ChannelSid}}",
-        "from": "Bot",
-        "message_type": "custom",
-        "to": "{{contact.channel.address}}",
-        "body": "${flow_vars.courage_first_sms_failure_message}"
+        "method": "POST",
+        "content_type": "application/x-www-form-urlencoded;charset=utf-8",
+        "add_twilio_auth": false,
+        "parameters": [
+          {
+            "value": "{{flow.channel.address}}",
+            "key": "conversationSid"
+          },
+          {
+            "value": "${flow_vars.courage_first_sms_failure_message}",
+            "key": "message"
+          },
+          {
+            "value": "Bot",
+            "key": "from"
+          }
+        ],
+        "url": "${lambda_twilio_account_scoped_url}/conversation/sendMessageAndRunJanitor"
       }
     },
     {

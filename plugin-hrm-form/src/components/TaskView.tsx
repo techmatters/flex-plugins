@@ -107,6 +107,7 @@ const TaskView: React.FC<Props> = ({ task }) => {
   const contactlessTask = unsavedContact?.rawJson?.contactlessTask;
 
   // Set contactForm.helpline for all contacts on the first run. React to helpline changes for offline contacts only
+  // TODO: Remove this legacy helpline lookup in the next but one Flex version (N+2); new contacts set it on creation.
   React.useEffect(() => {
     const setHelpline = async () => {
       if (unsavedContact && task && !isStandaloneITask(task)) {
