@@ -62,9 +62,6 @@ locals {
       }
     }
 
-    lex_bot_languages = {
-      en_NZ : ["pre_survey", "pre_survey_ig", "counsel_check"]
-    }
     lex_v2_bot_languages = {
        en_NZ : ["pre_survey", "pre_survey_ig","counsel_check"]
     }

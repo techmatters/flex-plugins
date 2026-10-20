@@ -13,9 +13,6 @@ locals {
     enable_lex_v2      = true
 
 
-    lex_bot_languages = {
-      en_JM : []
-    }
     lex_v2_bot_languages = {
       en_JM : ["pre_survey"]
     }

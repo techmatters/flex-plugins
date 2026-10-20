@@ -16,9 +16,6 @@ locals {
     permission_config                 = "mw"
 
 
-    lex_bot_languages = {
-      en_MW : ["pre_survey", "youth_testing"]
-    }
 
 
     workflows = {

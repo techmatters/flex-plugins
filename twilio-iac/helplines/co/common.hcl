@@ -62,8 +62,5 @@ locals {
       survey : "Survey"
     }
 
-     lex_bot_languages = {
-      es_CO : ["post_survey"]
-    }
   }
 }

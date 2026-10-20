@@ -16,10 +16,6 @@ locals {
     enable_lex_v2                     = true
 
 
-    lex_bot_languages = {
-      en_PH : ["pre_survey"],
-      fil_PH : ["pre_survey"]
-    }
      lex_v2_bot_languages = {
       en_PH : ["pre_survey"],
       fil_PH : ["pre_survey"]

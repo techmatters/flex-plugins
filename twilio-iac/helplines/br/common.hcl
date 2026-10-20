@@ -17,9 +17,6 @@ locals {
     permission_config                 = "br"
     enable_lex_v2                     = true
 
-    lex_bot_languages = {
-      pt_br : ["pre_survey", "contact_reason"]
-    }
     lex_v2_bot_languages = {
       pt_br : ["contact_reason", "pre_survey"]
     }

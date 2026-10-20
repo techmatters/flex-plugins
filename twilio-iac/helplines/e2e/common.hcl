@@ -16,9 +16,6 @@ locals {
     task_language                     = "en-US"
 
 
-    lex_bot_languages = {
-
-    }
 
     lex_v2_bot_languages = {
       en_US : ["pre_survey"]

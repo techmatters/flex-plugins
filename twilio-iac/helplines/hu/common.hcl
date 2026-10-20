@@ -16,10 +16,6 @@ locals {
     helpline_region                   = "eu-west-1"
     permission_config                 = "hu"
 
-    lex_bot_languages = {
-      uk : ["pre_survey"],
-      ru : ["pre_survey"]
-    }
 
     
 

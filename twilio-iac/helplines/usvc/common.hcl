@@ -106,8 +106,6 @@ locals {
       }
     }
 
-    lex_bot_languages = {
-    }
     lex_v2_bot_languages = {
 
     }
