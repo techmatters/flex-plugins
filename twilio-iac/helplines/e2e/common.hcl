@@ -8,7 +8,6 @@ locals {
     helpline                          = "End to End Testing"
     default_autopilot_chatbot_enabled = false
     task_language                     = "en-US"
-    helpline_language                 = "en"
     voice_ivr_language                = ""
     enable_post_survey                = false
     task_language                     = "en-US"

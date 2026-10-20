@@ -7,7 +7,6 @@ locals {
     helpline                          = "Childline Thailand"
     default_autopilot_chatbot_enabled = false
     task_language                     = "th-TH"
-    helpline_language                 = "th-TH"
     contacts_waiting_channels         = ["facebook", "instagram", "line"]
     enable_post_survey                = false
     permission_config                 = "th"

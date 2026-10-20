@@ -7,7 +7,6 @@ locals {
     helpline                          = "Missing Children EU"
     default_autopilot_chatbot_enabled = false
     task_language                     = "en-EUMC"
-    helpline_language                 = "en-EUMC"
     voice_ivr_language                = ""
     enable_post_survey                = false
     helpline_region                   = "eu-west-1"

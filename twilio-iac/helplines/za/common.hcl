@@ -8,7 +8,6 @@ locals {
     helpline                          = "Childline South Africa"
     default_autopilot_chatbot_enabled = false
     task_language                     = "en-ZA"
-    helpline_language                 = "en-US"
     voice_ivr_language                = ""
     enable_post_survey                = false
     permission_config                 = "za"

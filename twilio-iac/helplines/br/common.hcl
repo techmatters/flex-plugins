@@ -8,7 +8,6 @@ locals {
     helpline                          = "SaferNet"
     default_autopilot_chatbot_enabled = false
     task_language                     = "pt-BR"
-    helpline_language                 = "pt-BR"
     voice_ivr_language                = ""
     contacts_waiting_channels         = ["facebook", "instagram"]
     enable_post_survey                = false
