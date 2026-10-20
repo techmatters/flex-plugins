@@ -11,7 +11,6 @@ locals {
     contacts_waiting_channels         = ["facebook", "instagram"]
     enable_post_survey                = false
     permission_config                 = "br"
-    enable_lex_v2                     = true
 
     lex_v2_bot_languages = {
       pt_br : ["contact_reason", "pre_survey"]

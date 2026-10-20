@@ -14,7 +14,6 @@ locals {
     enable_post_survey         = false
     enable_external_recordings = false
     permission_config          = "usvc"
-    enable_lex_v2              = false
 
     channel_attributes = {
       chat-conversations     = "/app/twilio-iac/helplines/usvc/templates/channel-attributes/chat-conversations.tftpl",

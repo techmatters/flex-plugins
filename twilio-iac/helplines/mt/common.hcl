@@ -11,7 +11,6 @@ locals {
     enable_post_survey                = false
     helpline_region                   = "eu-west-1"
     permission_config                 = "mt"
-    enable_lex_v2                     = true
 
 
 

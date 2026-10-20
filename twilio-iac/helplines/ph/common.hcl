@@ -9,7 +9,6 @@ locals {
     voice_ivr_language                = ""
     enable_post_survey                = false
     permission_config                 = "ph"
-    enable_lex_v2                     = true
 
 
      lex_v2_bot_languages = {
