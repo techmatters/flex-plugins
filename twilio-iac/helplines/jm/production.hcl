@@ -75,7 +75,6 @@ locals {
 
     #System Down Configuration
     system_down_templatefile = "/app/twilio-iac/helplines/templates/studio-flows/system-down.tftpl"
-    enable_system_down       = true
     system_down_flow_vars = {
       is_system_down                   = "false"
       message                          = "Thank you for reaching out to SafeSpotJa. We're sorry, the helpline is experiencing technical difficulties with our chat system. If this is an emergency, please call 119 or reach out to the Intake Desk of the Office of the Children's Advocate at 876 275-956. Once we are up and running, a counsellor will get back to you. We apologize for the inconvenience and appreciate your patience"

@@ -4,7 +4,6 @@ locals {
   config            = merge(local.common_config, local.local_config)
 
   local_config = {
-    enable_post_survey                    = true
     enable_datadog_monitoring                = false
     custom_task_routing_filter_expression = "channelType IN ['web']"
 
