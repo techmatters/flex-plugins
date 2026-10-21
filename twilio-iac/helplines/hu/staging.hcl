@@ -34,7 +34,6 @@ locals {
           test_service_environment_sid = "ZE96e60d55af1b2e503a2b37e2cffb1230"
           test_service_url             = "https://test-service-1476.twil.io"
           voice_ivr_blocked_message    = "Зараз ми не можемо підключити вас до послуги."
-          voice_ivr_language           = "uk-UA"
 
         }
         chatbot_unique_names = []

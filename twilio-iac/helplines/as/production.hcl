@@ -76,7 +76,6 @@ locals {
         templatefile     = "/app/twilio-iac/helplines/templates/studio-flows/voice-basic.tftpl"
         channel_flow_vars = {
           voice_ivr_greeting_message = "Hello, you are contacting Aselo. Please hold for a counsellor."
-          voice_ivr_blocked_message  = "I'm sorry your number has been blocked."
           voice_ivr_language         = "en-US"
         }
         chatbot_unique_names = []

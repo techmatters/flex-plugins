@@ -32,8 +32,6 @@ locals {
         contact_identity = ""
         templatefile     = "/app/twilio-iac/helplines/nzba/templates/studio-flows/voice-no-chatbot-operating-hours-blocking-lambda-sd.tftpl"
         channel_flow_vars = {
-          play_message_voice_prequeue = "Hello. Please hold on for a while and we will attend to you as soon as we can. Thank you for your patience!."
-          play_message_voice_blocked  = "Sorry, you're not able to contact Barnardos from this number"
           voice_ivr_language          = "en-US"
           voice_closed_message_url = "https://nzba-functions-6625.twil.io/After-hours-message.mp3"
           voice_blocked_message_url = "https://nzba-functions-6625.twil.io/Generic-block-message.mp3"

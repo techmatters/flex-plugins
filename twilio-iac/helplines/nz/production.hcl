@@ -67,8 +67,6 @@ locals {
         contact_identity = ""
         templatefile     = "/app/twilio-iac/helplines/nz/templates/studio-flows/voice-lambda-sd.tftpl"
         channel_flow_vars = {
-          voice_ivr_greeting_message = "Kia ora, thank you for contacting Youthline. One of our counsellors will get back to you as soon as we can. If you or someone else are in immediate danger, please call 111 immediately."
-          voice_ivr_language         = "en-US"
           wait_url                   = "https://nz-assets-6577.twil.io/busyLine"
           blocked_url                = "https://nz-assets-6577.twil.io/blocked_number.mp3"
           initial_message_url        = "https://nz-assets-6577.twil.io/initial_message.mp3"

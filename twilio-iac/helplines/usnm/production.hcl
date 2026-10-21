@@ -77,9 +77,6 @@ locals {
         contact_identity = ""
         templatefile     = "/app/twilio-iac/helplines/usnm/templates/studio-flows/voice.tftpl"
         channel_flow_vars = {
-          voice_ivr_greeting_message = "Hello, you are contacting NAMI. Please hold for a counsellor."
-          voice_ivr_blocked_message  = "I'm sorry your number has been blocked."
-          voice_ivr_language         = "en-US"
         }
         chatbot_unique_names = []
       },

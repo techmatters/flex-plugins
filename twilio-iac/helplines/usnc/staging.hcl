@@ -60,7 +60,6 @@ locals {
           play_message_voice_prequeue    = "https://usnc-assets-3228.twil.io/play_message_voice_prequeue.mp3"
           gather_live_monitoring_consent = "https://usnc-assets-3228.twil.io/gather_live_monitoring_consent.mp3"
           play_message_voice_blocked     = "https://usnc-assets-3228.twil.io/play_message_voice_blocked.mp3"
-          voice_ivr_language             = "en-US"
         }
         chatbot_unique_names = []
       },
@@ -70,8 +69,6 @@ locals {
         contact_identity = "+16082004843"
         templatefile     = "/app/twilio-iac/helplines/usnc/templates/studio-flows/messaging-lex-v3-blocking-lambda-sd.tftpl"
         channel_flow_vars = {
-          widget_from           = "Warm Line"
-          send_message_prequeue = "Hello"
         }
         chatbot_unique_names = []
       }

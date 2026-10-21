@@ -26,9 +26,6 @@ locals {
         contact_identity = "messenger:103574689075106"
         templatefile     = "/app/twilio-iac/helplines/templates/studio-flows/messaging-custom-channel-blocking-conv-lambda.tftpl"
         channel_flow_vars = {
-          widget_from           = "Te Guío",
-          chat_greeting_message = "¡Hola, te damos la bienvenida a Te Guío! Esta es la línea de ayuda dedicada a adolescentes como tú, donde escuchamos y orientamos  las inquietudes que puedes tener para lograr vivir una sexualidad saludable. Qué gusto que te contactes con nosotros. Por favor espéranos mientras te contactamos con un Guía."
-          chat_blocked_message  = "Lamentablemente no puedes utilizar nuestros servicios."
         }
         chatbot_unique_names = []
       },
@@ -38,9 +35,6 @@ locals {
         contact_identity = "instagram"
         templatefile     = "/app/twilio-iac/helplines/templates/studio-flows/messaging-custom-channel-blocking-conv-lambda.tftpl"
         channel_flow_vars = {
-          widget_from           = "Te Guío"
-          chat_greeting_message = "¡Hola, te damos la bienvenida a Te Guío! Esta es la línea de ayuda dedicada a adolescentes como tú, donde escuchamos y orientamos  las inquietudes que puedes tener para lograr vivir una sexualidad saludable. Qué gusto que te contactes con nosotros. Por favor espéranos mientras te contactamos con un Guía."
-          chat_blocked_message  = "Lamentablemente no puedes utilizar nuestros servicios."
         }
         chatbot_unique_names = []
       },
@@ -50,16 +44,12 @@ locals {
         contact_identity = "whatsapp:+12135834846"
         templatefile     = "/app/twilio-iac/helplines/co/templates/studio-flows/whatsapp-templates.tftpl"
         channel_flow_vars = {
-          widget_from                     = "Te Guío"
-          chat_greeting_message           = "¡Hola, te damos la bienvenida a Te Guío! Esta es la línea de ayuda dedicada a adolescentes como tú, donde escuchamos y orientamos  las inquietudes que puedes tener para lograr vivir una sexualidad saludable. Qué gusto que te contactes con nosotros. Por favor espéranos mientras te contactamos con un Guía."
-          chat_blocked_message            = "Lamentablemente no puedes utilizar nuestros servicios."
           message_closing                 = "Lo siento, no he logrado entender tu respuesta.\nPor favor, intenta comunicarte de nuevo con nosotros.\nAdiós!"
           message_wait                    = "En un momento uno de nuestros guías te atenderá. Por favor, espéranos.."
           message_no_terms                = "Entendemos tu decisión. Para garantizar la privacidad y seguridad de todos los usuarios, es necesario aceptar nuestra política de privacidad para acceder a Te Guío.\n\nSi en otro momento decides continuar, estaremos aquí para apoyarte. 💙\n\nEn Te Guío está bien preguntar."
           final_goodbye                   = "HXa7301c08423546cbbba2b6e420ed86f1"
           option_1_urgent_contact         = "HX2f5a7f48d0b0b0eec4a20ee5f59f5b85"
           option_2_closure                = "HXb935060a75ed82ac4de9b2b7b848c833"
-          option_2_goodbye                = "HXcc68b3866c1e92fa2da51715928e4d28"
           option_2_resources              = "HXfb6ef0985b9386d70c806df4e1a0c0b4"
           option_3_closure                = "HX67cc3515d008058dc256eb784b2dfadc"
           option_3_ideas                  = "HXb7b192ab9812830a166bfec5040fa0c1"
@@ -84,7 +74,6 @@ locals {
           option_5_report                 = "HX90118370badfb40de34e0256e59fc14d"
           playback_menu                   = "HXc41534084761dd0ffc98cf3bcaffeee1"
           playback_previous_menu          = "HX515fc59959ba6c8e20c81be376af3fb3"
-          send_final_message              = "HX1e5d6c2a6092c40c6059c9056e0b7646"
           send_welcome_and_request_reason = "HX076f06e367c967998f42ab0fd63d6a07"
           send_message_welcome            = "HX4af852dca66003b8f66ae9c76a7b392b"
           terms_and_conditions            = "HX665e833e655b97fae4b8d7b824efeae1"
