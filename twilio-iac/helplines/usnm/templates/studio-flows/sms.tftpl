@@ -343,7 +343,7 @@ ${
       "type": "send-to-flex",
       "transitions": [
         {
-          "next": "f_conversationTimeDelay_initiliaze",
+          "next": "postqueue_set_var_task_tya",
           "event": "callComplete"
         },
         {
@@ -1061,7 +1061,7 @@ ${
             {
               "friendly_name": "If value equal_to open",
               "arguments": [
-                "{{widgets.f_operatingHours.parsed.status}}"
+                "{{widgets.f_operatingHours_prequeue.parsed.status}}"
               ],
               "type": "equal_to",
               "value": "open"
@@ -1075,7 +1075,7 @@ ${
             {
               "friendly_name": "If value equal_to closed",
               "arguments": [
-                "{{widgets.f_operatingHours.parsed.status}}"
+                "{{widgets.f_operatingHours_prequeue.parsed.status}}"
               ],
               "type": "equal_to",
               "value": "closed"
@@ -1089,7 +1089,7 @@ ${
             {
               "friendly_name": "If value equal_to holiday",
               "arguments": [
-                "{{widgets.f_operatingHours.parsed.status}}"
+                "{{widgets.f_operatingHours_prequeue.parsed.status}}"
               ],
               "type": "equal_to",
               "value": "holiday"
@@ -1098,7 +1098,7 @@ ${
         }
       ],
       "properties": {
-        "input": "{{widgets.f_operatingHours.parsed.status}}",
+        "input": "{{widgets.f_operatingHours_prequeue.parsed.status}}",
         "offset": {
           "x": 565,
           "y": 3582
@@ -1350,7 +1350,7 @@ ${
       "type": "send-to-flex",
       "transitions": [
         {
-          "next": "f_conversationTimeDelay_initiliaze",
+          "next": "postqueue_set_var_task_std",
           "event": "callComplete"
         },
         {
@@ -1378,7 +1378,7 @@ ${
       "type": "send-to-flex",
       "transitions": [
         {
-          "next": "f_conversationTimeDelay_initiliaze",
+          "next": "postqueue_set_var_task_fcg",
           "event": "callComplete"
         },
         {
@@ -1610,7 +1610,7 @@ ${
             {
               "friendly_name": "If value equal_to closed",
               "arguments": [
-                "{{widgets.f_operatingHours.parsed.status}}"
+                "{{widgets.f_operatingHours_std.parsed.status}}"
               ],
               "type": "equal_to",
               "value": "closed"
@@ -1624,7 +1624,7 @@ ${
             {
               "friendly_name": "If value equal_to holiday",
               "arguments": [
-                "{{widgets.f_operatingHours.parsed.status}}"
+                "{{widgets.f_operatingHours_std.parsed.status}}"
               ],
               "type": "equal_to",
               "value": "holiday"
@@ -1633,7 +1633,7 @@ ${
         }
       ],
       "properties": {
-        "input": "{{widgets.f_operatingHours.parsed.status}}",
+        "input": "{{widgets.f_operatingHours_std.parsed.status}}",
         "offset": {
           "x": 1279,
           "y": 5286
@@ -1938,11 +1938,11 @@ ${
         "function_sid": "${flow_vars.is_task_in_queue_function_sid}",
         "parameters": [
           {
-            "value": "{{widgets.send_to_queue_sms_std.routing.properties.sid}}",
+            "value": "{{flow.variables.task_sid}}",
             "key": "TaskSid"
           },
           {
-            "value": "{{widgets.send_to_queue_sms_std.routing.properties.workspace_sid}}",
+            "value": "{{flow.variables.workspace_sid}}",
             "key": "WorkspaceSid"
           }
         ],
@@ -2019,7 +2019,7 @@ ${
             {
               "friendly_name": "If value equal_to open",
               "arguments": [
-                "{{widgets.f_operatingHours.parsed.status}}"
+                "{{widgets.f_operatingHours_postqueue.parsed.status}}"
               ],
               "type": "equal_to",
               "value": "open"
@@ -2033,7 +2033,7 @@ ${
             {
               "friendly_name": "If value equal_to closed",
               "arguments": [
-                "{{widgets.f_operatingHours.parsed.status}}"
+                "{{widgets.f_operatingHours_postqueue.parsed.status}}"
               ],
               "type": "equal_to",
               "value": "closed"
@@ -2047,7 +2047,7 @@ ${
             {
               "friendly_name": "If value equal_to holiday",
               "arguments": [
-                "{{widgets.f_operatingHours.parsed.status}}"
+                "{{widgets.f_operatingHours_postqueue.parsed.status}}"
               ],
               "type": "equal_to",
               "value": "holiday"
@@ -2056,7 +2056,7 @@ ${
         }
       ],
       "properties": {
-        "input": "{{widgets.f_operatingHours.parsed.status}}",
+        "input": "{{widgets.f_operatingHours_postqueue.parsed.status}}",
         "offset": {
           "x": 530,
           "y": 6441
@@ -2109,11 +2109,11 @@ ${
         "function_sid": "${flow_vars.cancel_pending_task_function_sid}",
         "parameters": [
           {
-            "value": "{{widgets.send_to_queue_sms_std.routing.properties.sid}}",
+            "value": "{{flow.variables.task_sid}}",
             "key": "TaskSid"
           },
           {
-            "value": "{{widgets.send_to_queue_sms_std.routing.properties.workspace_sid}}",
+            "value": "{{flow.variables.workspace_sid}}",
             "key": "WorkspaceSid"
           }
         ],
@@ -2154,6 +2154,90 @@ ${
           }
         ],
         "url": "${lambda_twilio_account_scoped_url}/conversation/sendMessageAndRunJanitor"
+      }
+    },
+    {
+      "name": "postqueue_set_var_task_tya",
+      "type": "set-variables",
+      "transitions": [
+        {
+          "next": "f_conversationTimeDelay_initiliaze",
+          "event": "next"
+        }
+      ],
+      "properties": {
+        "variables": [
+          {
+            "type": "string",
+            "value": "{{widgets.send_to_queue_sms_tya.routing.properties.sid}}",
+            "key": "task_sid"
+          },
+          {
+            "type": "string",
+            "value": "{{widgets.send_to_queue_sms_tya.routing.properties.workspace_sid}}",
+            "key": "workspace_sid"
+          }
+        ],
+        "offset": {
+          "x": 404,
+          "y": 5017
+        }
+      }
+    },
+    {
+      "name": "postqueue_set_var_task_std",
+      "type": "set-variables",
+      "transitions": [
+        {
+          "next": "f_conversationTimeDelay_initiliaze",
+          "event": "next"
+        }
+      ],
+      "properties": {
+        "variables": [
+          {
+            "type": "string",
+            "value": "{{widgets.send_to_queue_sms_std.routing.properties.sid}}",
+            "key": "task_sid"
+          },
+          {
+            "type": "string",
+            "value": "{{widgets.send_to_queue_sms_std.routing.properties.workspace_sid}}",
+            "key": "workspace_sid"
+          }
+        ],
+        "offset": {
+          "x": 1356,
+          "y": 4831
+        }
+      }
+    },
+    {
+      "name": "postqueue_set_var_task_fcg",
+      "type": "set-variables",
+      "transitions": [
+        {
+          "next": "f_conversationTimeDelay_initiliaze",
+          "event": "next"
+        }
+      ],
+      "properties": {
+        "variables": [
+          {
+            "type": "string",
+            "value": "{{widgets.send_to_queue_sms_fcg.routing.properties.sid}}",
+            "key": "task_sid"
+          },
+          {
+            "type": "string",
+            "value": "{{widgets.send_to_queue_sms_fcg.routing.properties.workspace_sid}}",
+            "key": "workspace_sid"
+          }
+        ],
+        "offset": {
+          "x": 2416,
+          "y": 4940
+        }
       }
     }
   ]
