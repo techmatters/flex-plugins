@@ -1,0 +1,100 @@
+{
+  "slotName": "menuOption",
+  "slotTypeName": "menuOption",
+  "intentName": "pre_survey",
+  "description": "Slot menuOption for intent pre_survey",
+  "valueElicitationSetting": {
+    "slotConstraint": "Required",
+    "promptSpecification": {
+      "messageGroups": [
+        {
+          "message": {
+            "plainTextMessage": {
+              "value": "How can we help you today?\n1. Report child abuse and neglect\n2. Talk with someone about something that is happening\n3. Learn how to enroll in parent education programs\n4. Child Sexual Abuse Prevention: school-based programs, adult-focused programs and training of trainers\n5. Healthy Relationships Project\u00ae school-based curriculum\n6. Adult Responsibility Project trainings\n7. Apply to be a volunteer"
+            }
+          }
+        }
+      ],
+      "maxRetries": 1,
+      "allowInterrupt": true,
+      "messageSelectionStrategy": "Ordered",
+      "promptAttemptsSpecification": {
+        "Initial": {
+          "allowInterrupt": true,
+          "allowedInputTypes": {
+            "allowAudioInput": true,
+            "allowDTMFInput": true
+          },
+          "audioAndDTMFInputSpecification": {
+            "startTimeoutMs": 4000,
+            "audioSpecification": {
+              "maxLengthMs": 15000,
+              "endTimeoutMs": 640
+            },
+            "dtmfSpecification": {
+              "maxLength": 513,
+              "endTimeoutMs": 5000,
+              "deletionCharacter": "*",
+              "endCharacter": "#"
+            }
+          },
+          "textInputSpecification": {
+            "startTimeoutMs": 30000
+          }
+        },
+        "Retry1": {
+          "allowInterrupt": true,
+          "allowedInputTypes": {
+            "allowAudioInput": true,
+            "allowDTMFInput": true
+          },
+          "audioAndDTMFInputSpecification": {
+            "startTimeoutMs": 4000,
+            "audioSpecification": {
+              "maxLengthMs": 15000,
+              "endTimeoutMs": 640
+            },
+            "dtmfSpecification": {
+              "maxLength": 513,
+              "endTimeoutMs": 5000,
+              "deletionCharacter": "*",
+              "endCharacter": "#"
+            }
+          },
+          "textInputSpecification": {
+            "startTimeoutMs": 30000
+          }
+        }
+      }
+    },
+    "slotCaptureSetting": {
+      "captureNextStep": {
+        "dialogAction": {
+          "type": "FulfillIntent"
+        },
+        "intent": {}
+      },
+      "failureResponse": {
+        "messageGroups": [
+          {
+            "message": {
+              "plainTextMessage": {
+                "value": "We are having trouble understanding your response."
+              }
+            }
+          }
+        ],
+        "allowInterrupt": true
+      },
+      "failureNextStep": {
+        "dialogAction": {
+          "type": "CloseIntent"
+        },
+        "intent": {}
+      },
+      "elicitationCodeHook": {
+        "enableCodeHookInvocation": true
+      }
+    }
+  }
+}

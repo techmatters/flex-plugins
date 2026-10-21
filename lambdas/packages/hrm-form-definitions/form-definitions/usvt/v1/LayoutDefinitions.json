@@ -3,7 +3,7 @@
     "callerInformation": {
     },
     "childInformation": {
-      "splitFormAt": 12
+      "splitFormAt": 6
     },
     "caseInformation": {
       "splitFormAt": 11
@@ -12,29 +12,24 @@
   "case": {
     "sectionTypes": {
       "household": {
-        "splitFormAt": 7,
+        "splitFormAt": 6,
         "caseHomeOrder": 1,
         "printOrder": 1,
         "previewFields": [
-          "name",
-          "gender",
-          "age",
-          "relationshipToChild"
+          "numberOfChildren",
+          "childrenLiveWithYou",
+          "housingSituation"
         ],
         "layout": {
-          "name": {
-            "widthRatio": 1.5,
-            "labelTemplateCode": "Case-PerpetratorName",
-            "valueTemplateCode": "Case-SectionList-PreviewNameValue"
+          "numberOfChildren": {
+            "includeLabel": true
           },
-          "age": {
-            "labelTemplateCode": "Case-PerpetratorAge"
+          "childrenLiveWithYou": {
+            "includeLabel": true
           },
-          "gender": {
-            "labelTemplateCode": "Case-PerpetratorGender"
-          },
-          "relationshipToChild": {
-            "labelTemplateCode": "Case-PerpetratorRelationship"
+          "housingSituation": {
+            "includeLabel": true,
+            "widthRatio": 2
           }
         }
       },
