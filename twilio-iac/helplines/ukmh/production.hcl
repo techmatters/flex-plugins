@@ -9,7 +9,6 @@ locals {
 
     #Studio flow
     flow_vars = {
-      widget_from          = "MHI"
       chat_blocked_message = "Hi, you've been blocked from accessing our services and we are not able to read or receive further messages from you."
     }
 

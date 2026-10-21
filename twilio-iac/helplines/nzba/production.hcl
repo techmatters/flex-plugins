@@ -12,9 +12,6 @@ locals {
 
     #Studio flow
     flow_vars = {
-      widget_from                       = "Barnardos"
-      chat_blocked_message              = "Sorry, you're not able to contact Barnardos from this device or account"
-      error_message                     = "Something went wrong and your message didn’t send. Please try sending it again."
     }
 
     channels = {

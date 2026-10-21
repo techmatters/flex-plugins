@@ -11,7 +11,6 @@ locals {
     custom_task_routing_filter_expression = ""
     enable_datadog_monitoring             = true
     flow_vars = {
-      widget_from                               = "Bot"
       usch_functions_serverless_service_id      = "ZS7ee8b822119953064bc0a47decd20176"
       usch_functions_serverless_environement_id = "ZE763b2058992f785cb2127cc3dca85c05"
       is_skilled_worker_available_function_sid  = "ZH714d91b1f853f0c2404dcbff37c7cb70"
@@ -24,14 +23,11 @@ locals {
       childhelp_webchat_welcome_message        = "Thank you for reaching out to our hotline! We will be with you shortly.\nPlease note: A false report is a crime governed by federal and state laws, involving a person who, with intent to deceive, knowingly makes a false statement to a mandated reporter or law enforcement official that results in unwarranted government action. Childhelp's National Child Abuse Hotline is comprised of mandated reporters who will refer malicious or false reports to law enforcement for prosecution.  If this is a life-threatening emergency please contact 911."
       # Courage First -  Webchat
       courage_first_webchat_other_language_message = "Currently, our chat platform only works in English. For assistance in other languages, please call our hotline at 1-888-279-1026."
-      courage_first_webchat_closed_message         = "Thank you for contacting the Courage First Athlete Helpline. If this is a life-threatening emergency, please contact 911. You have reached us outside of our normal operating hours of Monday through Friday, 12pm to 8pm, PST.   If you would like to chat right now with a Crisis Counselor at the Childhelp National Child Abuse Hotline who can provide immediate emotional support and resources, please call or text 800-422-4453 or visit www.childhelphotline.org "
       courage_first_webchat_welcome_message        = "Please go to the following link for the full terms of service: Terms of Service - The Courage First Athlete Helpline https://www.athletehelpline.org/terms/ We will be with you shortly.\nPlease note: A false report is a crime governed by federal and state laws, involving a person who, with intent to deceive, knowingly makes a false statement to a mandated reporter or law enforcement official that results in unwarranted government action. The Courage First Athlete Helpline is comprised of mandated reporters who will refer malicious or false reports to law enforcement for prosecution.  If this is a life-threatening emergency please contact 911."
 
       #Common - SMS
       sms_blocked_client_message = "We are unable to take your contact at this time. If this is an emergency please contact 911 or 988."
       # Courage First -  SMS
-      courage_first_sms_closed_message   = "Thank you for contacting the Courage First Athlete Helpline. If this is a life-threatening emergency, please contact 911."
-      courage_first_sms_redirect_message = "You have reached us outside of our normal operating hours of Monday through Friday, 12pm to 8pm, PST. If you would like to text right now with a Crisis Counselor who can provide immediate emotional support and resources, please text 800-422-4453 to reach the Childhelp National Child Abuse Hotline"
       courage_first_sms_welcome_message  = "Thank you for texting the Courage First Athlete Helpline. You'll be connected to a live counselor by SMS. We'll message only to support your conversation (no marketing). Message frequency may vary. Msg&Data rates may apply. Reply STOP to end, HELP for help. Privacy: https://www.athletehelpline.org/terms/. By continuing, you agree to our terms of service."
       courage_first_sms_failure_message  = "We are sorry, we had a technical issue. Please trying texting again or call 1-888-279-1026"
       courage_first_sms_prequeue_message = "Para hablar con un consejero en Español, llame al 800-422-4453. Please note: A false report is a crime governed by federal and state laws, involving a person who, with intent to deceive, knowingly makes a false statement to a mandated reporter or law enforcement official that results in unwarranted government action.  Courage First Athlete Helpline is comprised of mandated reporters who will refer malicious or false reports to law enforcement for prosecution."
