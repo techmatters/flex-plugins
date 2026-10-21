@@ -12,7 +12,6 @@ locals {
     enable_datadog_monitoring             = true
     flow_vars = {
       widget_from                               = "Bot"
-      operating_hours_function_sid              = "ZH456453b1f869a64ca46e55093189cebd"
       usch_functions_serverless_service_id      = "ZS7ee8b822119953064bc0a47decd20176"
       usch_functions_serverless_environement_id = "ZE763b2058992f785cb2127cc3dca85c05"
       is_skilled_worker_available_function_sid  = "ZH714d91b1f853f0c2404dcbff37c7cb70"

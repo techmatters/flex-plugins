@@ -7,11 +7,7 @@ locals {
     enable_datadog_monitoring = true
     #Studio flow
     flow_vars = {
-      operating_hours_function_sid          = "ZHe0432d55b31c8e575d7630694502dd4b"
-      capture_channel_with_bot_function_sid = "ZHe7354fbb19c8bb5b62ad78ddea99eade"
-      chatbot_callback_cleanup_function_sid = "ZH94205e92c6cd6e7f6bb5858ebdbdbb9c"
       send_message_run_janitor_sid          = "ZH5e37c056ae0dfea42f8febd19d7bbd52"
-      bot_language                          = "en-NZ"
       blocked_message                       = "Kia ora, you've been blocked from accessing Youthline's helpline and we are not able to read or receive further messages from you. If you think this is a mistake, please email complaints@youthline.co.nz with your name and contact details for this to be reviewed. If you are unsafe or require urgent support, please call 111 now."
       outside_country_message               = "Kia ora, only numbers or contacts from NZ can reach Youthline's helpline. We are not able to read or receive further messages from you. If you this is an error, please email complaints@youthline.co.nz with your name and contact details. If you are in NZ and feel unsafe or require urgent support, please call 111 now.  Outside of NZ please refer to www.findahelpline.com."
       ip_location_finder_url                = "https://hrm-production.tl.techmatters.org/lambda/ipLocationFinder"

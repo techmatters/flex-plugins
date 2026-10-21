@@ -12,7 +12,6 @@ locals {
     custom_task_routing_filter_expression = ""
     flow_vars = {
       widget_from                               = "Bot"
-      operating_hours_function_sid              = "ZHdf153e322af3839adf83b303cb465846"
       usch_functions_serverless_service_id      = "ZSa6dafc8e097453d9b5041e4a3123525c"
       usch_functions_serverless_environement_id = "ZEbcc21f22160cba1e3fdb1bff6ae24295"
       is_skilled_worker_available_function_sid  = "ZHa1e94f59f90924f9e2ab41714d848471"

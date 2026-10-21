@@ -12,11 +12,9 @@ locals {
 
     #Studio flow
     flow_vars = {
-      bot_language                      = "en_NZBA"
       widget_from                       = "Barnardos"
       chat_blocked_message              = "Sorry, you're not able to contact Barnardos from this device or account right now"
       error_message                     = "Something went wrong and your message didn’t send. Please try sending it again."
-      send_message_janitor_function_sid = "ZH17d7db67fa6ab6c2a8d8df2bef8fc55e"
     }
 
     channels = {
