@@ -44,7 +44,8 @@ import {
   CREATE_CONTACT_ACTION,
   FINALIZE_CONTACT,
   LOAD_CONTACT_FROM_HRM_BY_ID_ACTION,
-  LOAD_CONTACT_FROM_HRM_FOR_TASK_ACTION,
+  LOAD_CONTACT_FROM_HRM_BY_TASKSID_ACTION,
+  LOAD_CONTACT_FROM_HRM_FOR_INCOMING_TASK_ACTION,
   REMOVE_FROM_CASE,
   SET_SAVED_CONTACT,
   SUBMIT_AND_FINALIZE_CONTACT_FROM_OUTSIDE_TASK_CONTEXT,
@@ -293,7 +294,7 @@ export const newSubmitAndFinalizeContactFromOutsideTaskContextAsyncAction = crea
 );
 
 export const newLoadContactFromHrmForIncomingTaskAsyncAction = createAsyncAction(
-  LOAD_CONTACT_FROM_HRM_FOR_TASK_ACTION,
+  LOAD_CONTACT_FROM_HRM_FOR_INCOMING_TASK_ACTION,
   async (task: CustomITask, reference: string = task.taskSid) => {
     const contactId = isTwilioTask(task) ? task.attributes?.contactId : undefined;
     let contact: Contact;
@@ -334,6 +335,19 @@ export const newLoadContactFromHrmByIdAsyncAction = createAsyncAction(
   (contactId: string, reference: string = contactId) => ({
     contactId,
     reference,
+  }),
+);
+
+export const newLoadContactFromHrmByTaskSidAsyncAction = createAsyncAction(
+  LOAD_CONTACT_FROM_HRM_BY_TASKSID_ACTION,
+  async (taskSid: TaskSID) => {
+    const contact = await getContactByTaskSid(taskSid);
+    return {
+      contact,
+    };
+  },
+  (taskSid: TaskSID) => ({
+    taskSid,
   }),
 );
 
@@ -438,6 +452,19 @@ export const saveContactReducer = (initialState: ContactsState) =>
     ),
     handleAction(
       newLoadContactFromHrmByIdAsyncAction.fulfilled,
+      (state, { payload: { contact } }): ContactsState => {
+        if (!contact) return state;
+        return loadContactIntoRedux(state, contact, newContactMetaData({ createdAt: contact?.createdAt }));
+      },
+    ),
+    handleAction(
+      newLoadContactFromHrmByTaskSidAsyncAction.pending as typeof newLoadContactFromHrmByTaskSidAsyncAction,
+      (state, { meta: { taskSid } }): ContactsState => {
+        return markContactAsCreatingInRedux(state, taskSid);
+      },
+    ),
+    handleAction(
+      newLoadContactFromHrmByTaskSidAsyncAction.fulfilled,
       (state, { payload: { contact } }): ContactsState => {
         if (!contact) return state;
         return loadContactIntoRedux(state, contact, newContactMetaData({ createdAt: contact?.createdAt }));

@@ -23,20 +23,21 @@ import { getHrmConfig } from '../../hrmConfig';
 import selectContactByTaskSid from '../../states/contacts/selectContactByTaskSid';
 import type { RootState } from '../../states';
 import asyncDispatch from '../../states/asyncDispatch';
-import { newLoadContactFromHrmByIdAsyncAction } from '../../states/contacts/saveContact';
-import { isTransferring } from '../../transfer/transferTaskState';
+import { newLoadContactFromHrmByTaskSidAsyncAction } from '../../states/contacts/saveContact';
+import { hasTransferStarted } from '../../transfer/transferTaskState';
+import { selectIsContactCreating } from '../../states/contacts/selectContactSaveStatus';
 
 const TakeOverTaskButton: React.FC<TaskContextProps> = ({ task }) => {
   const { isSupervisor, workerSid } = getHrmConfig();
   const asyncDispatcher = asyncDispatch(useDispatch());
   const contactState = useSelector((state: RootState) => selectContactByTaskSid(state, task?.taskSid));
+  const isCreating = useSelector((state: RootState) => selectIsContactCreating(state, task?.taskSid));
 
   useEffect(() => {
-    const { contactId } = task?.attributes ?? {};
-    if (contactId && !contactState) {
-      asyncDispatcher(newLoadContactFromHrmByIdAsyncAction(contactId));
+    if (!contactState && !isCreating) {
+      asyncDispatcher(newLoadContactFromHrmByTaskSidAsyncAction(task.taskSid));
     }
-  }, [asyncDispatcher, contactState, task]);
+  }, [asyncDispatcher, contactState, isCreating, task]);
 
   // Takeovers are only supported for chat tasks via the lambda transferStart endpoint, which sets the transfer metadata server side
   if (!task || !workerSid || !isSupervisor || !contactState || TaskHelper.isCallTask(task)) {
@@ -47,7 +48,7 @@ const TakeOverTaskButton: React.FC<TaskContextProps> = ({ task }) => {
     <TransferButtonStyled
       onClick={() => Actions.invokeAction('TransferTask', { task, targetSid: workerSid, options: { mode: 'COLD' } })}
       data-fs-id="Task-TakeOver-Button"
-      disabled={isTransferring(task)}
+      disabled={hasTransferStarted(task)}
     >
       <Template code="MonitorTaskCanvas-Header-TransferButtonLabel" />
     </TransferButtonStyled>
