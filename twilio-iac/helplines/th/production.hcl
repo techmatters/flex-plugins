@@ -9,9 +9,6 @@ locals {
 
 
     flow_vars = {
-      service_sid                       = "ZS6afa8bf5e4d982ddeab17b7e0dba9977"
-      environment_sid                   = "ZE9c5728dc8ad714c6c26ba90fddf41bc1"
-      operating_hours_function_sid      = "ZH5147ef61e945cf01b85804663b481a58"
       send_message_janitor_function_sid = "ZHaecc65b08bab5873b10946e336f7098c"
       widget_from                       = "Childline Thailand"
       chat_blocked_message              = "Sorry, you're not able to contact Childline Thailand from this device or account"

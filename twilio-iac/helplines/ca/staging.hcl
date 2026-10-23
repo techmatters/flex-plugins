@@ -10,7 +10,6 @@ locals {
       service_sid                       = "ZSb631f562c8306085ceb8329349fdd60b"
       environment_sid                   = "ZEd72a0800eb472d514e48977ffab9b642"
       serverless_service_sid            = "ZS978c59a0e335c77ed1fc77715a806d42"
-      servleress_environment_sid        = "ZE1480176353cd0c0ea1825614e9806ed6"
       send_message_run_janitor_sid      = "ZH25c10efaa9a9eeac2bcb6a551d2f8224"
       send_message_run_janitor_url      = "https://serverless-8126-production.twil.io/sendMessageAndRunJanitor"
       time_cycle_function_sid           = "ZH3ee5654cb3c8cda06c2aaf84593b11a6"
@@ -24,8 +23,6 @@ locals {
       french_queue_sid                  = "WQ0ff276ab319c71ee66d1a5cc9a40d834"
       serverless_service_sid            = "ZS978c59a0e335c77ed1fc77715a806d42"
       serverless_environment_sid        = "ZE1480176353cd0c0ea1825614e9806ed6"
-      operating_hours_function_sid      = "ZHc3676ca6ff87edc2b4b4c9d2a4b22c82"
-      operating_hours_function_url      = "https://serverless-8126-production.twil.io/operatingHours"
       check_counsellors_function_sid    = "ZHa0218fd2a7b2e3aa800ab78e0367acf7"
       check_counsellors_function_url    = "https://test-service-dee-4583.twil.io/check_counsellors"
       cancel_task_function_url          = "https://test-service-dee-4583.twil.io/cancel_tasks"
@@ -68,7 +65,6 @@ locals {
           #Twilio things
           check_counsellors_function_sid : "ZHa0218fd2a7b2e3aa800ab78e0367acf7"
           check_counsellors_function_url : "https://test-service-dee-4583.twil.io/check_counsellors"
-          g2tonen_queue_sid : ""
           g2tonfr_queue_sid : "WQf14ba3410c3614abd554652d7531f4d0"
           g2ttr_queue_sid : "WQe668c7c05bfb1a0748635e7ef0a2b30e"
 
@@ -103,21 +99,16 @@ locals {
         contact_identity = ""
         templatefile     = "/app/twilio-iac/helplines/ca/templates/studio-flows/g2tns.tftpl"
         channel_flow_vars = {
-          en_number : "5814810744"
-          fr_number : "5812215204"
 
           #Twilio things
           check_counsellors_function_sid : "ZHa0218fd2a7b2e3aa800ab78e0367acf7"
           check_counsellors_function_url : "https://test-service-dee-4583.twil.io/check_counsellors"
-          g2tnsen_queue_sid : "WQ08c18a81b8a8fbc12a1e143c47dea7e1"
           g2tnsfr_queue_sid : "WQea1bcc502ff7d4ec64deddada25f1467"
-          g2ttr_queue_sid : "WQe668c7c05bfb1a0748635e7ef0a2b30e"
 
           #Recording URLs
           intro_url : "https://test-service-dee-4583.twil.io/G2TNS_Intro.mp3"
           en_function_url : "https://test-service-dee-4583.twil.io/6015_g2tns_english"
           fr_function_url : "https://test-service-dee-4583.twil.io/6016_g2tns_french"
-          tr_function_url : "https://test-service-dee-4583.twil.io/6019_g2t_interpreter"
           en_tos_url : "https://test-service-dee-4583.twil.io/G2TENToS.mp3"
           fr_tos_url : "https://test-service-dee-4583.twil.io/G2TFRToS.mp3"
           en_privacy_url : "https://test-service-dee-4583.twil.io/G2TEnPrivacy.mp3"
@@ -131,8 +122,6 @@ locals {
           en_inflight_url : "https://test-service-dee-4583.twil.io/Msg60011E.mp3"
           fr_inflight_url : "https://test-service-dee-4583.twil.io/Msg60021.mp3"
           fr_nocounsellors_url : "https://test-service-dee-4583.twil.io/Msg60025.mp3"
-          fr_issues_url : "https://test-service-dee-4583.twil.io/FrTechIssuesmp3"
-          fr_switch_english_url : "https://test-service-dee-4583.twil.io/FrSwitchEnglish.mp3"
           fr_switch_url : "https://test-service-dee-4583.twil.io/FrSwitchInterpreter.mp3"
           frtr_function_url : "https://test-service-dee-4583.twil.io/6004_khp_french_int"
 
@@ -148,11 +137,8 @@ locals {
           #Twilio things
           check_counsellors_function_sid : "ZHa0218fd2a7b2e3aa800ab78e0367acf7"
           check_counsellors_function_url : "https://test-service-dee-4583.twil.io/check_counsellors"
-          khpen_queue_sid : "WQc92043986a3a474a991125031a0acb55"
           khpfr_queue_sid : "WQ35e4fceff9d82cc1d9ce2a49a1c93330"
-          khptr_queue_sid : "WQ8351ee438539d776c083c4286f51bad9"
           khpfrtr_queue_sid : "WQc628604231d70284771389da92867ae9"
-          khpind_queue_sid : "WQ332b547dac5e90660af40138ab002f05"
 
           #Recording URLs
           menu_url : "https://test-service-dee-4583.twil.io/KHP_Main.mp3"
@@ -211,9 +197,7 @@ locals {
           fr_intro_url : "https://test-service-dee-4583.twil.io/MSG10006F.mp3"
           en_inflight_url : "https://test-service-dee-4583.twil.io/Msg60011E.mp3"
           fr_inflight_url : "https://test-service-dee-4583.twil.io/Msg60021.mp3"
-          fr_issues_url : "https://test-service-dee-4583.twil.io/FrTechIssues.mp3"
           fr_nocounsellors_url : "https://test-service-dee-4583.twil.io/Msg60025.mp3"
-          fr_switch_english_url : "https://test-service-dee-4583.twil.io/FrSwitchEnglish.mp3"
           fr_switch_url : "https://test-service-dee-4583.twil.io/FrSwitchInterpreter.mp3"
           frtr_function_url : "https://test-service-dee-4583.twil.io/6004_khp_french_int"
         }
