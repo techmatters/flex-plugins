@@ -14,6 +14,7 @@ locals {
     enable_post_survey         = false
     enable_external_recordings = true
     permission_config          = "demo"
+    enable_lambda_event_callback_url = true
     workflows = {
       master : {
         friendly_name = "Master Workflow"
