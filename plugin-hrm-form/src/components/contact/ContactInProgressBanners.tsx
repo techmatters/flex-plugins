@@ -109,8 +109,8 @@ const ContactInProgressBanners: React.FC<ContactBannersProps> = ({ contactId }) 
       },
     };
     try {
-      await asyncDispatcher(newSubmitAndFinalizeContactFromOutsideTaskContextAsyncAction(updatedContact, removeTask));
       setFinalizeRequested(true);
+      await asyncDispatcher(newSubmitAndFinalizeContactFromOutsideTaskContextAsyncAction(updatedContact, removeTask));
     } catch (error) {
       console.error('Failed to save and finalize contact:', error);
     }
@@ -122,7 +122,8 @@ const ContactInProgressBanners: React.FC<ContactBannersProps> = ({ contactId }) 
     if (isAssigned === true) {
       setIsFinalizeContactDialogOpen(true);
     } else {
-      await updateTaskAndFinalizeContact();
+      // If the task isn't in an assigned state, trying to complete it is futile
+      setIsRemoveTaskDialogOpen(true);
     }
   };
 
@@ -139,6 +140,7 @@ const ContactInProgressBanners: React.FC<ContactBannersProps> = ({ contactId }) 
   const handleCancel = () => {
     setIsFinalizeContactDialogOpen(false);
     setIsRemoveTaskDialogOpen(false);
+    setFinalizeRequested(false);
   };
 
   return (
