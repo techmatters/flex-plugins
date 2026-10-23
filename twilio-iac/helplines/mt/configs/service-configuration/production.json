@@ -1,6 +1,7 @@
 {
     "attributes": {
         "feature_flags": {
+            "use_twilio_lambda_for_worker_endpoints": false
         },
         "form_definitions_base_url": "https://assets-production.tl.techmatters.org/form-definitions/",
         "helplineLanguage": "en-MT"
