@@ -10,6 +10,7 @@ locals {
     task_language      = "en-USNC"
     enable_post_survey = true
     enable_lex_v2      = true
+    enable_lambda_event_callback_url = true
 
     workflows = {
       master : {
