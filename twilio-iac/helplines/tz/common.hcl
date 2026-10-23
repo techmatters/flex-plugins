@@ -10,6 +10,7 @@ locals {
     task_language      = "en-US"
     enable_post_survey = false
     permission_config  = "tz"
+    enable_lambda_event_callback_url = true
 
     channel_attributes = {
       webchat : "/app/twilio-iac/helplines/templates/channel-attributes/webchat.tftpl"
