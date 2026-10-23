@@ -1,3 +1,4 @@
+
 locals {
   defaults_config_hcl = read_terragrunt_config(find_in_parent_folders("defaults.hcl"))
   defaults_config     = local.defaults_config_hcl.locals
@@ -9,6 +10,7 @@ locals {
     helpline        = "Barnardos"
     task_language   = "en-NZBA"
     helpline_region = "eu-west-1"
+    enable_lambda_event_callback_url = true
 
     lex_v2_bot_languages = {
       en_NZBA : ["post_survey"]
