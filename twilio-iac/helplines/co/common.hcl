@@ -20,6 +20,7 @@ locals {
     voice_ivr_language                = "es-MX"
     enable_post_survey                = false
     permission_config                 = "co"
+    enable_lambda_event_callback_url = true
     
     workflows = {
       master : {
