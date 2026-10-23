@@ -55,7 +55,7 @@ runs:
         aws-region: us-east-1
 
     - name: Install e2e-tests dependencies
-      run: npm ci
+      run: npm ci --legacy-peer-deps
       working-directory: ${{ inputs.path }}/e2e-tests
       shell: bash
 
