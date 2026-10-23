@@ -41,6 +41,7 @@ import { checkTaskAssignment } from '../../services/twilioTaskService';
 import { isOfflineContact } from '../../types/types';
 import { ConfirmDialog } from '../../design-system/modals/ConfirmDialog';
 import asyncDispatch from '../../states/asyncDispatch';
+import { CircularProgress } from '@material-ui/core';
 
 type ContactBannersProps = {
   contactId: string;
@@ -55,6 +56,7 @@ const ContactInProgressBanners: React.FC<ContactBannersProps> = ({ contactId }) 
   const [isFinalizeContactDialogOpen, setIsFinalizeContactDialogOpen] = useState(false);
   const [isRemoveTaskDialogOpen, setIsRemoveTaskDialogOpen] = useState(false);
   const [finalizeRequested, setFinalizeRequested] = useState(false);
+  const [disableSaveAndEnd, setDisableSaveAndEnd] = useState(false);
   const asyncDispatcher = asyncDispatch(useDispatch());
   const workerRoles = Manager.getInstance().workerClient.attributes.roles;
   const isDraftContact = savedContact.finalizedAt;
@@ -117,12 +119,25 @@ const ContactInProgressBanners: React.FC<ContactBannersProps> = ({ contactId }) 
   };
 
   const handleSaveAndEnd = async () => {
-    const { isAssigned } = await checkTaskAssignment(savedContact.taskId);
+    console.log('>>>>>>>> handleSaveAndEnd');
+    setDisableSaveAndEnd(true);
+    try {
+      if (disableSaveAndEnd) {
+        return;
+      }
 
-    if (isAssigned === true) {
-      setIsFinalizeContactDialogOpen(true);
-    } else {
-      await updateTaskAndFinalizeContact();
+      console.log('>>>>>>>> running code');
+      const { isAssigned } = await checkTaskAssignment(savedContact.taskId);
+
+      if (isAssigned === true) {
+        setIsFinalizeContactDialogOpen(true);
+      } else {
+        await updateTaskAndFinalizeContact();
+      }
+    } catch (error) {
+      console.error('Failed handleSaveAndEnd:', error);
+    } finally {
+      setDisableSaveAndEnd(false);
     }
   };
 
@@ -152,8 +167,10 @@ const ContactInProgressBanners: React.FC<ContactBannersProps> = ({ contactId }) 
             </BannerText>
             {canEditContact() && (
               <BannerAction alignRight={true} onClick={handleSaveAndEnd}>
-                <DestructiveButton>
+                {/* <DestructiveButton disabled={true}> */}
+                <DestructiveButton disabled={disableSaveAndEnd}>
                   <Template code="BottomBar-SaveAndEnd" />
+                  {disableSaveAndEnd ? <CircularProgress size={12} /> : null}
                 </DestructiveButton>
               </BannerAction>
             )}
