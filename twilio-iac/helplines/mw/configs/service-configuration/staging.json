@@ -1,11 +1,6 @@
 {
     "attributes": {
         "feature_flags": {
-            "enable_external_transcripts": false,
-            "use_twilio_lambda_adjust_capacity": false,
-            "use_twilio_lambda_janitor": false,
-            "use_twilio_lambda_to_transition_participants": false,
-            "use_twilio_lambda_transfers": false
         },
         "pdfImagesSource": "https://tl-public-chat-mw-stg.s3.amazonaws.com",
         "previous_ui_version": {
