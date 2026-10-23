@@ -12,6 +12,7 @@ locals {
     enable_post_survey                = false
     permission_config                 = "zm"
     enable_lex_v2                     = true
+    enable_lambda_event_callback_url = true
 
     workflows = {
       master : {
