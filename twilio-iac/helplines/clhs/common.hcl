@@ -16,6 +16,7 @@ locals {
     permission_config          = "clhs"
     helpline_region            = "us-east-1"
     enable_lex_v2              = true
+    enable_lambda_event_callback_url = true
     workflows = {
       master : {
         friendly_name            = "Master Workflow"
