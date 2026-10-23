@@ -16,6 +16,7 @@ locals {
     enable_post_survey                = false
     permission_config                 = "br"
     enable_lex_v2                     = true
+    enable_lambda_event_callback_url = true
 
     lex_bot_languages = {
       pt_br : ["pre_survey", "contact_reason"]
