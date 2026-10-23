@@ -12,6 +12,7 @@ locals {
     enable_lex_v2      = true
     permission_config  = "ukmh"
     helpline_region    = "eu-west-1"
+    enable_lambda_event_callback_url = true
 
 
     workflows = {
