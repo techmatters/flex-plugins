@@ -13,6 +13,7 @@ locals {
     contacts_waiting_channels         = ["facebook", "instagram", "line"]
     enable_post_survey                = false
     permission_config                 = "th"
+    enable_lambda_event_callback_url = true
     
 
 
