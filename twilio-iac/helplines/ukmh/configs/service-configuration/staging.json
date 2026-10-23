@@ -11,11 +11,7 @@
             "enable_lex_v2": true,
             "enable_post_survey": true,
             "enable_lambda_post_survey_processing": true,
-            "use_prepopulate_mappings": true,
-            "use_twilio_lambda_adjust_capacity": false,
-            "use_twilio_lambda_janitor": false,
-            "use_twilio_lambda_to_transition_participants": false,
-            "use_twilio_lambda_transfers": false
+            "use_prepopulate_mappings": true
         }
     }
 }
