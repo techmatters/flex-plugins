@@ -14,6 +14,7 @@ locals {
     contacts_waiting_channels         = ["web", "whatsapp", "facebook", "instagram", "voice"]
     enable_post_survey                = false
     permission_config                 = "zw"
+    enable_lambda_event_callback_url = true
 
     workflows = {
       master : {
