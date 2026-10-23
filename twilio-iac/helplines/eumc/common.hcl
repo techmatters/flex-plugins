@@ -14,6 +14,7 @@ locals {
     helpline_region                   = "eu-west-1"
     permission_config                 = "eumc"
     enable_lex_v2                     = false
+    enable_lambda_event_callback_url = true
 
     workflows = {
       master : {

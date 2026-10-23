@@ -15,6 +15,7 @@ locals {
     enable_post_survey                    = false
     enable_external_recordings            = true
     permission_config                     = "sg"
+    enable_lambda_event_callback_url = true
     custom_task_routing_filter_expression = "channelType =='voice' OR channelType =='web'"
     workflows = {
       master : {

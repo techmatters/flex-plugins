@@ -14,7 +14,8 @@ locals {
     enable_post_survey         = true
     enable_external_recordings = true
     permission_config          = "usch"
-    enable_lex_v2              = true
+    enable_lex_v2              = true 
+    enable_lambda_event_callback_url = true
 
     channel_attributes = {
       webchat                            = "/app/twilio-iac/helplines/usch/templates/channel-attributes/webchat.tftpl",

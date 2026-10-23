@@ -15,6 +15,7 @@ locals {
     enable_external_recordings = false
     enable_datadog_monitoring  = false
     permission_config          = "uscr"
+    enable_lambda_event_callback_url = true
 
     workflows = {
       master : {

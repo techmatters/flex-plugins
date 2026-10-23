@@ -13,6 +13,7 @@ locals {
     enable_external_recordings        = true
     permission_config                 = "cl"
     enable_lex_v2                     = true
+    enable_lambda_event_callback_url = true
     workflows = {
       master : {
         friendly_name : "Master Workflow"

@@ -14,6 +14,7 @@ locals {
     enable_post_survey                = false
     helpline_region                   = "us-east-1"
     permission_config                 = "in"
+    enable_lambda_event_callback_url = true
 
      
 

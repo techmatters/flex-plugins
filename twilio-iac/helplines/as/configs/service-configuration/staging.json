@@ -14,11 +14,7 @@
             "enable_post_survey": true,
             "enable_voice_recordings": true,
             "enable_lex_v2": true,
-            "enable_select_agents_teams_view": true,
-            "use_twilio_lambda_adjust_capacity": false,
-            "use_twilio_lambda_janitor": false,
-            "use_twilio_lambda_to_transition_participants": false,
-            "use_twilio_lambda_transfers": false
+            "enable_select_agents_teams_view": true
         },
         "multipleOfficeSupport": true,
         "pdfImagesSource": "https://tl-public-chat-as-stg.s3.amazonaws.com",

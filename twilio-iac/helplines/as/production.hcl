@@ -4,6 +4,7 @@ locals {
   config            = merge(local.common_config, local.local_config)
 
   local_config = {
+    operating_hours_enforced_override     = false
     enable_external_recordings            = true
     enable_post_survey                    = true
     permission_config                     = "demo"

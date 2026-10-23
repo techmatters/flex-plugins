@@ -85,7 +85,12 @@
             "use_twilio_lambda_media_urls": true,
             "use_twilio_lambda_for_recordings_lookup": true,
             "use_twilio_lambda_worker_info": true,
-            "use_twilio_lambda_for_worker_endpoints": true
+            "use_twilio_lambda_for_worker_endpoints": true,
+            "use_twilio_lambda_adjust_capacity": true,
+            "use_twilio_lambda_janitor": true,
+            "use_twilio_lambda_to_transition_participants": true,
+            "use_twilio_lambda_transfers": true,
+            "use_twilio_lambda_to_issue_sync_token": true
         },
         "multipleOfficeSupport": false,
         "WARNING": "These attributes are set using a tool in the twilio-iac repo. If you are seeing this message anywhere else, please stop and use the process described here: https://github.com/techmatters/flex-plugins/blob/master/twilio-iac/docs/service_configuration.md"
