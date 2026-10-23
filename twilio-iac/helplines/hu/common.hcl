@@ -15,6 +15,7 @@ locals {
     enable_post_survey                = false
     helpline_region                   = "eu-west-1"
     permission_config                 = "hu"
+    enable_lambda_event_callback_url = true
 
     lex_bot_languages = {
       uk : ["pre_survey"],
