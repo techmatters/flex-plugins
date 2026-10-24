@@ -4,7 +4,7 @@
   "description": "Module to hold configuration shared across modules",
   "main": "dist/index.js",
   "devDependencies": {
-    "@tsconfig/node22": "^22.0.0",
+    "@tsconfig/node24": "^24.0.0",
     "ts-node": "^10.1.0",
     "typescript": "^5.9.2"
   },

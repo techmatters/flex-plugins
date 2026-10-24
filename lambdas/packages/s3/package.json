@@ -4,8 +4,8 @@
   "description": "Module to handle AWS S3 operations",
   "main": "dist/index.js",
   "devDependencies": {
-    "@tsconfig/node22": "^22.0.0",
-    "@types/node": "^22.18.0",
+    "@tsconfig/node24": "^24.0.0",
+    "@types/node": "^24.19.2",
     "ts-node": "^10.1.0",
     "typescript": "^5.9.2"
   },
