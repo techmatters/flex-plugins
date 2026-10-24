@@ -17,7 +17,7 @@ type TerraformEnvironment = {
   AWS_DEFAULT_REGION?: string;
   AWS_REGION?: string;
   TERRAGRUNT_DOWNLOAD?: string;
-  PROVISION_SKIP_MIGRATION?: boolean;
+  PROVISION_SKIP_MIGRATION?: 'true' | 'false';
 };
 
 enum TerraformCommand {
@@ -34,7 +34,7 @@ let env: TerraformEnvironment = {
   AWS_DEFAULT_REGION: process.env.AWS_DEFAULT_REGION || '',
   AWS_REGION: process.env.AWS_REGION || '',
   TERRAGRUNT_DOWNLOAD: process.env.TERRAGRUNT_DOWNLOAD || '',
-  PROVISION_SKIP_MIGRATION: true,
+  PROVISION_SKIP_MIGRATION: 'true',
 };
 let cwd: string;
 let terraformVarFile: string;

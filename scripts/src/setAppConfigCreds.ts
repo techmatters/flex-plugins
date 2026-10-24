@@ -97,7 +97,9 @@ async function main() {
     }
     const {
       config_list: [{ connection_name: connectionName, client_id: clientId }],
-    } = await resp.json();
+    } = (await resp.json()) as {
+      config_list: { connection_name: string; client_id: string }[];
+    };
 
     console.debug('Setting account SID to:', accountSid);
     console.debug('Setting connection to:', connectionName);
