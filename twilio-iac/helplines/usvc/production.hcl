@@ -156,5 +156,11 @@ locals {
       recording_url                    = "https://<place_holder>.mp3"
     }
     debug_mode = "widget_failures"
+
+    # Okta SAML app for this environment (okta-app stage). See twilio-iac/docs/okta.md
+    okta_app = {
+      import_existing         = true
+      optional_attribute_sets = ["labels", "team"]
+    }
   }
 }

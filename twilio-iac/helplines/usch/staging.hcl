@@ -110,5 +110,12 @@ locals {
     }
 
     hrm_transcript_retention_days_override = 7
+
+    # Okta SAML app for this environment (okta-app stage). See twilio-iac/docs/okta.md
+    okta_app = {
+      import_existing         = true
+      label                   = "STG_Childhelp (USCH)"
+      optional_attribute_sets = ["labels", "team"]
+    }
  }
 }

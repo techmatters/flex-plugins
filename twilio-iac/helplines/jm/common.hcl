@@ -61,5 +61,11 @@ locals {
     phone_numbers = {}
     enable_system_down    = true
 
+    # Okta: helpline-level, shared by staging and production apps (okta-org stage). See twilio-iac/docs/okta.md
+    okta = {
+      group_name            = "SafeSpot (JM)"
+      group_rule_expression = "user.organization==\"SafeSpot\""
+      import_existing       = true
+    }
   }
 }
