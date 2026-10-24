@@ -1,5 +1,7 @@
 {
   "compilerOptions": {
+    "target": "es2022",
+    "module": "commonjs",
     "types": [
       // ... your other types
       "node"
