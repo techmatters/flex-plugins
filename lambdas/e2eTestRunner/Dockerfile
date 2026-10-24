@@ -21,7 +21,7 @@ ARG TARGETARCH
 ENV lambda_dir lambdas
 ENV lambda_name e2eTestRunner
 
-RUN curl -fsSL https://deb.nodesource.com/setup_22.x | bash - && \
+RUN curl -fsSL https://deb.nodesource.com/setup_24.x | bash - && \
     apt-get install -y \
         rsync \
         nodejs \
@@ -79,7 +79,7 @@ WORKDIR /app
 
 RUN apt-get update && \
     apt-get install -y curl wget gpg && \
-    curl -fsSL https://deb.nodesource.com/setup_22.x | bash - && \
+    curl -fsSL https://deb.nodesource.com/setup_24.x | bash - && \
     apt-get install -y nodejs && \
     npm config set cache /tmp --global && \
     rm -rf /root/.npm/* && \
