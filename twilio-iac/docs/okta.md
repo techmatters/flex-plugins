@@ -221,10 +221,12 @@ The `okta-app` plan refuses to create a second app when one with the same label 
    `/terraform/okta/terraform_service_app/private_key` (SecureString, the PEM exactly as Okta shows
    it). Keep the private key only in SSM.
 3. **IAM**: `tf-twilio-iac-staging` and `tf-twilio-iac-production` need `ssm:GetParameter` on
-   `/terraform/okta/*`.
-4. **Where okta-org state lives.** Proposed: the production state bucket, key `okta/org/terraform.tfstate`,
-   using the production role, because the Okta org is shared by both environments. Alternative: a
-   dedicated bucket.
+   `/terraform/okta/*`. Prepared in infrastructure-config, branch
+   `alejandro-c/okta_terraform_ssm_read` (needs its own review, plan and apply).
+4. **Where okta-org state lives.** Proposed: the production state bucket, key
+   `twilio/okta-org/terraform.tfstate`, using the production role, because the Okta org is shared by
+   both environments. It sits under `twilio/` because that is where `tf-twilio-iac-production` can
+   already write state. Alternative: a dedicated bucket or key prefix (needs an IAM change).
 5. **Provider pin**: `okta/okta 7.0.0`, `hashicorp/http 3.6.3`, in `stages/okta-backend.tftpl`.
    The Okta stages generate their own backend file, because a root module can have only one
    `required_providers` block and the shared template declares twilio and datadog.

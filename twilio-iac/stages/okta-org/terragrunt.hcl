@@ -21,7 +21,7 @@ locals {
   }
 
   # Okta is a single org shared by staging and production; its state lives in the production
-  # state bucket under okta/ (decision pending review, see docs/okta.md).
+  # state bucket under twilio/ (where tf-twilio-iac-production can write), see docs/okta.md.
   aws_account_id  = get_aws_account_id()
   state_role_arn  = "arn:aws:iam::${local.aws_account_id}:role/tf-twilio-iac-production"
   use_local_state = get_env("USE_LOCAL_STATE", "") != ""
@@ -34,7 +34,7 @@ generate "backend" {
     use_local_state  = local.use_local_state
     local_state_path = "${get_terragrunt_dir()}/okta-org.tfstate"
     state_bucket     = "tl-terraform-state-production"
-    state_key        = "okta/org/terraform.tfstate"
+    state_key        = "twilio/okta-org/terraform.tfstate"
     state_role_arn   = local.state_role_arn
   })
 }
