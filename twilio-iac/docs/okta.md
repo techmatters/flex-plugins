@@ -215,8 +215,11 @@ The `okta-app` plan refuses to create a second app when one with the same label 
    with private-key JWT and DPoP. Scopes: `okta.apps.read`, `okta.apps.manage`, `okta.groups.read`,
    `okta.groups.manage`, `okta.policies.read`. Admin roles: App Admin + Group Admin, or a custom
    role. Keep it separate from any read-only app used by the scripts.
-2. **SSM parameter** `/terraform/okta/terraform_service_app` (SecureString), holding
-   `{"client_id": "...", "private_key_id": "...", "private_key": "<PEM>"}`.
+2. **SSM parameters** (us-east-1), one per value so they can be entered in the AWS console:
+   `/terraform/okta/terraform_service_app/client_id` (String),
+   `/terraform/okta/terraform_service_app/private_key_id` (String, the key's KID) and
+   `/terraform/okta/terraform_service_app/private_key` (SecureString, the PEM exactly as Okta shows
+   it). Keep the private key only in SSM.
 3. **IAM**: `tf-twilio-iac-staging` and `tf-twilio-iac-production` need `ssm:GetParameter` on
    `/terraform/okta/*`.
 4. **Where okta-org state lives.** Proposed: the production state bucket, key `okta/org/terraform.tfstate`,

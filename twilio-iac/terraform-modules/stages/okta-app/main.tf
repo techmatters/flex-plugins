@@ -14,14 +14,17 @@ data "aws_ssm_parameter" "secrets" {
   name = "/terraform/twilio-iac/${var.environment}/${var.short_helpline}/secrets.json"
 }
 
-# Okta API Services app used by Terraform: { "client_id": "...", "private_key_id": "...", "private_key": "<PEM>" }
+# Okta API Services app used by Terraform, one SSM parameter per value (easy to enter in the AWS console):
+#   /terraform/okta/terraform_service_app/client_id       (String)
+#   /terraform/okta/terraform_service_app/private_key_id  (String, the key's KID in Okta)
+#   /terraform/okta/terraform_service_app/private_key     (SecureString, PEM exactly as Okta shows it)
 data "aws_ssm_parameter" "okta_terraform_app" {
-  name = "/terraform/okta/terraform_service_app"
+  for_each = toset(["client_id", "private_key_id", "private_key"])
+  name     = "/terraform/okta/terraform_service_app/${each.key}"
 }
 
 locals {
   twilio_account_sid = jsondecode(data.aws_ssm_parameter.secrets.value).twilio_account_sid
-  okta_credentials   = jsondecode(data.aws_ssm_parameter.okta_terraform_app.value)
 
   app_name = coalesce(var.okta.app_name, var.helpline)
   code     = upper(var.short_helpline)
@@ -47,9 +50,9 @@ locals {
 provider "okta" {
   org_name       = "techmatters"
   base_url       = "okta.com"
-  client_id      = local.okta_credentials.client_id
-  private_key    = local.okta_credentials.private_key
-  private_key_id = local.okta_credentials.private_key_id
+  client_id      = data.aws_ssm_parameter.okta_terraform_app["client_id"].value
+  private_key    = data.aws_ssm_parameter.okta_terraform_app["private_key"].value
+  private_key_id = data.aws_ssm_parameter.okta_terraform_app["private_key_id"].value
   scopes         = ["okta.apps.read", "okta.apps.manage", "okta.groups.read", "okta.policies.read"]
 }
 
