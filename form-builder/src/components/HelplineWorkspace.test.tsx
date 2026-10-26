@@ -214,3 +214,54 @@ describe('HelplineWorkspace', () => {
     expect(screen.queryByRole('button', { name: /^Relationship to Help Seeker\./ })).toBeNull();
   });
 });
+
+describe('help boxes (field descriptions)', () => {
+  const childTab = 'tabbedForms/ChildInformationTab.json';
+  const openChildField = async (label: string) => {
+    const harness = createHarness();
+    harness.renderWorkspace(demo);
+    fireEvent.click(await screen.findByRole('button', { name: 'Child information' }));
+    fireEvent.click(await findFieldCard(label));
+    return harness;
+  };
+
+  test('a help box written in the form is edited in the form, and removed when emptied', async () => {
+    const { savedFile } = await openChildField('Last Name');
+    expect(await screen.findByDisplayValue('Last Name description title in two lines')).toBeTruthy();
+    await waitFor(() =>
+      expect((screen.getByRole('textbox', { name: 'Help box text' }) as HTMLTextAreaElement).disabled).toBe(false),
+    );
+    fireEvent.change(screen.getByRole('textbox', { name: 'Help box text' }), {
+      target: { value: 'Ask only if they want to share it.' },
+    });
+    await screen.findByText(/All changes saved/);
+    const lastName = (await savedFile(demo, childTab)).find((item: { name: string }) => item.name === 'lastName');
+    expect(lastName.description).toEqual({
+      title: 'Last Name description title in two lines',
+      content: 'Ask only if they want to share it.',
+    });
+
+    fireEvent.change(screen.getByRole('textbox', { name: 'Help box title' }), { target: { value: '' } });
+    fireEvent.change(screen.getByRole('textbox', { name: 'Help box text' }), { target: { value: '' } });
+    await screen.findByText(/All changes saved/);
+    await waitFor(async () => {
+      const saved = (await savedFile(demo, childTab)).find((item: { name: string }) => item.name === 'lastName');
+      expect('description' in saved).toBe(false);
+    });
+  });
+
+  test('a translated help box is shown in the helpline’s language and edited in its own wording', async () => {
+    const { savedFile } = await openChildField('First Name');
+    // AS uses translation keys here; the text comes from the plugin's translations
+    expect(await screen.findByDisplayValue('First Name description')).toBeTruthy();
+    fireEvent.change(screen.getByRole('textbox', { name: 'Help box title' }), {
+      target: { value: 'About first names' },
+    });
+    await screen.findByText(/All changes saved/);
+    expect((await savedFile(demo, 'customStrings/Substitutions.json')).en['AsV1-ChildInformationTab-FirstName-Title']).toBe(
+      'About first names',
+    );
+    // The form keeps its key
+    expect(await savedFile(demo, childTab)).toBeUndefined();
+  });
+});

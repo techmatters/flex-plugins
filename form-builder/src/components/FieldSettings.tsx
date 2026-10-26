@@ -37,9 +37,13 @@ import {
 import { isProtectedField } from '../specification';
 import type { ValidationIssue } from '../validation';
 import { OptionsEditor } from './OptionsEditor';
+import { translate, useStrings } from '../aselo/translations';
 
 type Props = {
   tab: FormTarget;
+  helplineLanguage?: string;
+  // Sets the helpline's own wording for a translation key (customStrings/Substitutions.json)
+  onChangeTranslation: (key: string, text: string) => void;
   item: FormItemJsonDefinition;
   // The field as it was loaded; undefined for a field added in this draft
   originalItem?: FormItemJsonDefinition;
@@ -61,6 +65,8 @@ const SPECIAL_TYPES = ['file-upload', 'button', 'copy-to', 'custom-contact-compo
 
 export const FieldSettings = ({
   tab,
+  helplineLanguage,
+  onChangeTranslation,
   item,
   originalItem,
   otherNames,
@@ -99,6 +105,32 @@ export const FieldSettings = ({
     onChange(updateField(item, nameFollowsLabel ? { label, name: autoName(label) } : { label }));
 
   const changeName = (name: string) => onChange(updateField(item, { name: name.trim() }));
+
+  /**
+   * The help box (description) shows under the field. Its parts can be translation keys (as in
+   * AS); those are shown in the helpline's language and edited in its own wording, the rest is
+   * text in the form. Emptying both parts of a box written in the form removes it.
+   */
+  const strings = useStrings(helplineLanguage ?? 'en-US', draftFiles);
+  const description = item.description as { title?: string; content?: string } | undefined;
+  // Until the translations load, a key can't be told from text, so editing waits for them
+  const stringsLoaded = Object.keys(strings).length > 0;
+  const isKey = (text?: string) => Boolean(text) && text! in strings;
+  const shownDescription = {
+    title: translate(strings, description?.title ?? ''),
+    content: translate(strings, description?.content ?? ''),
+  };
+  const changeDescription = (part: 'title' | 'content', text: string) => {
+    const stored = description?.[part];
+    if (isKey(stored)) {
+      onChangeTranslation(stored!, text);
+      return;
+    }
+    const next = { title: description?.title ?? '', content: description?.content ?? '', [part]: text };
+    onChange(
+      updateField(item, { description: next.title.trim() || next.content.trim() ? next : undefined }),
+    );
+  };
 
   const confirmRemove = () => {
     if (isNew) {
@@ -144,6 +176,30 @@ export const FieldSettings = ({
           onChange={(e) => changeLabel(e.target.value)}
         />
       </label>
+
+      <div className="field">
+        <span className="field-label">Help box under the field (optional)</span>
+        <input
+          type="text"
+          aria-label="Help box title"
+          placeholder="Title, e.g. How to ask"
+          value={shownDescription.title}
+          disabled={!stringsLoaded}
+          onChange={(e) => changeDescription('title', e.target.value)}
+        />
+        <textarea
+          rows={3}
+          aria-label="Help box text"
+          placeholder="Guidance for counselors about this question"
+          value={shownDescription.content}
+          disabled={!stringsLoaded}
+          onChange={(e) => changeDescription('content', e.target.value)}
+        />
+        <span className="field-hint">
+          Counselors see it in a yellow box under the field; long text shows two lines with “see
+          more”.
+        </span>
+      </div>
 
       <label className="field">
         <span className="field-label">Kind of answer</span>

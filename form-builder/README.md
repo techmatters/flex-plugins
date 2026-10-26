@@ -24,6 +24,9 @@ It reads and writes the same files the Flex plugin uses:
 - **Review** lists the changes in plain language. Helpline staff submit them for review;
   Aselo staff apply them, or download a zip of the changed files laid out like the repo,
   plus a `CHANGES.md` for the reviewer.
+- **Help boxes**: a field's description (the yellow box under it, with “see more”) is edited
+  in its settings. Help boxes that use translation keys are shown in the helpline's language
+  and edited as its own wording (`customStrings/Substitutions.json`); the rest stay in the form.
 - **Linked dropdowns** (e.g. Province → Municipality → District, or a follow-up like
   "Experiencing abuse?" → "Risk level"), 2 to 5 levels: add them with a wizard, edit answers
   in a column browser, import from pasted spreadsheet cells, CSV or Excel, and download as
@@ -118,7 +121,7 @@ grouped by the value chosen above (`options: { "<value above>": [...] }`).
 
 Planned next:
 
-1. Deployment in the management account: Okta login, S3 drafts, Apply through a GitHub App
+1. Deployment at form-builder.aselo.org, in the management account: Okta login, S3 drafts, Apply through a GitHub App
    (branch + PR), Slack and email notifications, Terraform
 
 Pending (found while building, in the definitions themselves):

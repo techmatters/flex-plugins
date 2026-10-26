@@ -198,6 +198,7 @@ export const HelplineWorkspace = ({
           draftFiles={files}
           originalFiles={originalFiles}
           staffMode={staffMode}
+          helplineLanguage={definitions.helplineLanguage}
           issues={issuesByTab[tab.key] ?? []}
           onChangeFiles={draft.updateFiles}
         />
@@ -344,6 +345,7 @@ export const HelplineWorkspace = ({
           draftFiles={files}
           originalFiles={originalFiles}
           staffMode={staffMode}
+          helplineLanguage={definitions.helplineLanguage}
           issues={issuesByTab[`case:${target.key}`] ?? []}
           onChangeFiles={draft.updateFiles}
         />

@@ -1599,3 +1599,9 @@ body {
   background: #f6f6f6;
   color: var(--color-muted);
 }
+
+.badge-help {
+  background: #fffeef;
+  color: #6b5a00;
+  border: 1px solid #e8e2a8;
+}

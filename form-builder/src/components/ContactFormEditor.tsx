@@ -76,6 +76,7 @@ import { isSameJson } from '../changes';
 import type { ValidationIssue } from '../validation';
 import { FieldPreview } from './FieldPreview';
 import { FieldSettings } from './FieldSettings';
+import { baseLanguageOf, setSubstitution } from '../caseSections';
 import { AddFieldMenu } from './AddFieldMenu';
 import { LinkedAnswersEditor } from './LinkedAnswersEditor';
 import { LinkedDropdownsWizard } from './LinkedDropdownsWizard';
@@ -92,6 +93,8 @@ type Props = {
   draftFiles: DefinitionFileMap;
   originalFiles: DefinitionFileMap;
   staffMode: boolean;
+  // e.g. 'en-US': texts that are translation keys are shown and edited in this language
+  helplineLanguage?: string;
   issues: ValidationIssue[];
   onChangeFiles: (updater: (current: DefinitionFileMap) => DefinitionFileMap) => void;
 };
@@ -120,6 +123,7 @@ const FieldCard = ({
       {hasError && <span className="badge badge-error">Needs attention</span>}
       {status === 'new' && <span className="badge badge-new">New</span>}
       {status === 'edited' && <span className="badge badge-edited">Edited</span>}
+      {entry.item.description && <span className="badge badge-help">Help box</span>}
     </div>
     {/* The preview is just a picture of the field; clicks go to the card */}
     <div className="field-card-preview" aria-hidden="true">
@@ -179,6 +183,7 @@ export const ContactFormEditor = ({
   draftFiles,
   originalFiles,
   staffMode,
+  helplineLanguage,
   issues,
   onChangeFiles,
 }: Props) => {
@@ -534,6 +539,10 @@ export const ContactFormEditor = ({
             // Remount per field (and type) so local state like option ids starts fresh
             key={`${selectedEntry.id}-${selectedEntry.item.type}`}
             tab={tab}
+            helplineLanguage={helplineLanguage}
+            onChangeTranslation={(key, text) =>
+              onChangeFiles((files) => setSubstitution(files, baseLanguageOf(helplineLanguage), key, text))
+            }
             item={selectedEntry.item}
             originalItem={originalByName.get(selectedEntry.item.name)}
             otherNames={allEntries
