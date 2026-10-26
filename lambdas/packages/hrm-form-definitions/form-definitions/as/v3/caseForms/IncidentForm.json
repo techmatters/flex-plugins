@@ -10,14 +10,16 @@
     "isPII": false
   },
   {
+    "name": "time",
+    "label": "Time of Incident",
+    "type": "time-input",
+    "isPII": false
+  },
+  {
     "name": "duration",
     "label": "Duration",
-    "type": "select",
+    "type": "radio-input",
     "options": [
-      {
-        "value": "",
-        "label": ""
-      },
       {
         "value": "Once",
         "label": "Once"
@@ -31,10 +33,6 @@
         "label": "Unknown"
       }
     ],
-    "required": {
-      "value": true,
-      "message": "RequiredFieldError"
-    },
     "isPII": false
   },
   {
@@ -93,6 +91,7 @@
     "name": "whereElseBeenReported",
     "label": "Where else has it been reported?",
     "type": "input",
+    "placeholder": "e.g. police, school, Child Protective Services",
     "isPII": false
   }
 ]

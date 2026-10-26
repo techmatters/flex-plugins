@@ -20,7 +20,8 @@
             "label": "Stress"
           },
           {
-            "label": "Suicidal thoughts"
+            "label": "Suicidal thoughts",
+            "toolkitUrl": "https://988lifeline.org/professionals/"
           },
           {
             "label": "Unspecified/Other - Mental Health"
@@ -98,6 +99,9 @@
           },
           {
             "label": "Housing"
+          },
+          {
+            "label": "Health insurance"
           },
           {
             "label": "Unspecified/Other - Basic Needs"

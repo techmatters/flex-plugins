@@ -143,7 +143,7 @@ Twilio Console › Account › **Manage users**: invite the engineers and soluti
    script copies `as/v3` to `form-definitions/<code>/v1` and registers `<code>-v1` in the tests.
 2. 🤖 Set `definitionVersion` to `<code>-v1` in the helpline's `service-configuration/common.json`
    (the baseline already has it as `<helpline shortcode>-v1`), fill in the manager details in
-   `HelplineInformation.json`, replace the placeholder regions/areas, and adapt fields and
+   `HelplineInformation.json`, replace the example states/counties, and adapt fields and
    categories to what the helpline asked for.
 3. 🤖 `cd lambdas/packages/hrm-form-definitions && npm test -- validateDefinitions`: must pass.
    Include the files in the helpline's PR.

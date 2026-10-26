@@ -1,3 +1,9 @@
 {
-  "offlineChannels": ["Bulletin board", "Post", "In person", "Website forum", "Other"]
+  "offlineChannels": [
+    "Email",
+    "Letter",
+    "In person",
+    "Social media",
+    "Other"
+  ]
 }

@@ -3,6 +3,7 @@
     "name": "firstName",
     "label": "First Name",
     "type": "input",
+    "placeholder": "First name or nickname",
     "isPII": true
   },
   {
@@ -25,8 +26,8 @@
         "label": "Parent or caregiver"
       },
       {
-        "value": "Partner",
-        "label": "Partner"
+        "value": "Partner or spouse",
+        "label": "Partner or spouse"
       },
       {
         "value": "Other family member",
@@ -133,7 +134,7 @@
   },
   {
     "name": "language",
-    "label": "Language",
+    "label": "Preferred Language",
     "type": "select",
     "options": [
       {
@@ -149,6 +150,10 @@
         "label": "Spanish"
       },
       {
+        "value": "ASL",
+        "label": "ASL"
+      },
+      {
         "value": "Other",
         "label": "Other"
       }
@@ -159,6 +164,11 @@
     "name": "phone1",
     "label": "Phone",
     "type": "input",
+    "placeholder": "(555) 555-0100",
+    "maxLength": {
+      "value": 20,
+      "message": "Use 20 characters or fewer"
+    },
     "isPII": true
   },
   {
@@ -169,7 +179,7 @@
   },
   {
     "name": "province",
-    "label": "Region",
+    "label": "State",
     "type": "select",
     "options": [
       {
@@ -177,19 +187,31 @@
         "label": ""
       },
       {
-        "value": "Region A",
-        "label": "Region A"
+        "value": "California",
+        "label": "California"
       },
       {
-        "value": "Region B",
-        "label": "Region B"
+        "value": "New Mexico",
+        "label": "New Mexico"
+      },
+      {
+        "value": "New York",
+        "label": "New York"
+      },
+      {
+        "value": "Texas",
+        "label": "Texas"
+      },
+      {
+        "value": "Outside the US",
+        "label": "Outside the US"
       }
     ],
     "isPII": false
   },
   {
     "name": "district",
-    "label": "Area",
+    "label": "County",
     "type": "dependent-select",
     "dependsOn": "province",
     "defaultOption": {
@@ -197,29 +219,79 @@
       "label": ""
     },
     "options": {
-      "Region A": [
+      "California": [
         {
-          "value": "Area A1",
-          "label": "Area A1"
+          "value": "Los Angeles County",
+          "label": "Los Angeles County"
         },
         {
-          "value": "Area A2",
-          "label": "Area A2"
+          "value": "Sacramento County",
+          "label": "Sacramento County"
+        },
+        {
+          "value": "San Diego County",
+          "label": "San Diego County"
         },
         {
           "value": "Unknown",
           "label": "Unknown"
         }
       ],
-      "Region B": [
+      "New Mexico": [
         {
-          "value": "Area B1",
-          "label": "Area B1"
+          "value": "Bernalillo County",
+          "label": "Bernalillo County"
         },
         {
-          "value": "Area B2",
-          "label": "Area B2"
+          "value": "Doña Ana County",
+          "label": "Doña Ana County"
         },
+        {
+          "value": "Santa Fe County",
+          "label": "Santa Fe County"
+        },
+        {
+          "value": "Unknown",
+          "label": "Unknown"
+        }
+      ],
+      "New York": [
+        {
+          "value": "Albany County",
+          "label": "Albany County"
+        },
+        {
+          "value": "Erie County",
+          "label": "Erie County"
+        },
+        {
+          "value": "Kings County",
+          "label": "Kings County"
+        },
+        {
+          "value": "Unknown",
+          "label": "Unknown"
+        }
+      ],
+      "Texas": [
+        {
+          "value": "Bexar County",
+          "label": "Bexar County"
+        },
+        {
+          "value": "Harris County",
+          "label": "Harris County"
+        },
+        {
+          "value": "Travis County",
+          "label": "Travis County"
+        },
+        {
+          "value": "Unknown",
+          "label": "Unknown"
+        }
+      ],
+      "Outside the US": [
         {
           "value": "Unknown",
           "label": "Unknown"
@@ -231,6 +303,10 @@
           "label": "Unknown"
         }
       ]
+    },
+    "description": {
+      "title": "Depends on State",
+      "content": "The counties listed change with the state selected above."
     },
     "isPII": false
   }

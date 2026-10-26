@@ -3,6 +3,7 @@
     "name": "firstName",
     "label": "First Name",
     "type": "input",
+    "placeholder": "First name or nickname",
     "isPII": true,
     "required": {
       "value": true,
@@ -29,8 +30,8 @@
         "label": "Parent or caregiver"
       },
       {
-        "value": "Partner",
-        "label": "Partner"
+        "value": "Partner or spouse",
+        "label": "Partner or spouse"
       },
       {
         "value": "Other family member",
@@ -139,18 +140,49 @@
     "name": "phone1",
     "label": "Phone",
     "type": "input",
+    "placeholder": "(555) 555-0100",
+    "maxLength": {
+      "value": 20,
+      "message": "Use 20 characters or fewer"
+    },
     "isPII": true
   },
   {
-    "name": "email",
-    "label": "Email",
-    "type": "email",
-    "isPII": true
+    "name": "province",
+    "label": "State",
+    "type": "select",
+    "defaultOption": {
+      "value": "",
+      "label": ""
+    },
+    "optionsReferenceKey": "usStates",
+    "isPII": false
+  },
+  {
+    "name": "district",
+    "label": "County",
+    "type": "dependent-select",
+    "dependsOn": "province",
+    "defaultOption": {
+      "value": "",
+      "label": ""
+    },
+    "optionsReferenceKey": "usCountiesByState",
+    "isPII": false
   },
   {
     "name": "notes",
     "label": "Notes",
     "type": "textarea",
+    "rows": 4,
     "isPII": true
+  },
+  {
+    "name": "copyToPerpetrator",
+    "label": "This person is also a person causing harm",
+    "type": "copy-to",
+    "initialChecked": false,
+    "target": "perpetrator",
+    "isPII": false
   }
 ]
