@@ -2,6 +2,7 @@
   "attributes": {
     "system_down" : false,
     "feature_flags": {
+      "use_twilio_lambda_for_worker_endpoints": false
     },
     "form_definitions_base_url": "https://assets-production.tl.techmatters.org/form-definitions/",
     "resources_base_url": "https://hrm-production-ca.tl.techmatters.org",
