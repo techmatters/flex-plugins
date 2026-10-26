@@ -213,8 +213,12 @@ The `okta-app` plan refuses to create a second app when one with the same label 
 
 1. **A Terraform service app in Okta.** Create a separate API Services app, e.g. `aselo-terraform`,
    with private-key JWT and DPoP. Scopes: `okta.apps.read`, `okta.apps.manage`, `okta.groups.read`,
-   `okta.groups.manage`, `okta.policies.read`. Admin roles: App Admin + Group Admin, or a custom
-   role. Keep it separate from any read-only app used by the scripts.
+   `okta.groups.manage`, `okta.policies.read`. Keep it separate from any read-only app used by the
+   scripts. Admin roles: **Application Administrator** plus a **custom role** (Security ›
+   Administrators › Roles) that can create, manage and view groups, scoped to a resource set
+   (Security › Administrators › Resources) with all groups and all applications. The standard
+   **Group Administrator role is not enough**: creating a group failed with "You do not have
+   permission" (tested 2026-10-26). Group rules are not tested yet.
 2. **SSM parameters** (us-east-1), one per value so they can be entered in the AWS console:
    `/terraform/okta/terraform_service_app/client_id` (String),
    `/terraform/okta/terraform_service_app/private_key_id` (String, the key's KID) and
