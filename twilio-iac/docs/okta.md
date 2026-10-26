@@ -147,7 +147,7 @@ okta = {
 
 # helplines/<code>/staging.hcl or production.hcl, inside local_config
 okta_app = {
-  import_existing            = true          # adopt the existing app (default false = create)
+  import_existing            = true          # assert the app already exists (existing apps are always adopted)
   label                      = "STG_..."     # optional label override
   include_helpline_group     = true          # false = keep counsellors out of this environment
   tech_matters_groups        = [...]         # optional override of the Tech Matters groups
@@ -170,10 +170,12 @@ All `make` targets run on the devops node as for any other stage.
 
 1. Add `okta = { group_name = ... }` to `common.hcl` and `okta_app = {}` to `staging.hcl`.
 2. `cd twilio-iac/stages/okta-org && make plan`, review it (it should only add the new group and
-   rule), then `make apply`.
+   rule), then `make apply`. This stage uses the production role, so the apply needs someone in the
+   `twilio-iac-production` IAM group.
 3. Open **Twilio Console › Flex › Users and access › Single sign-on (SSO)** for the staging account
-   once, so the Flex SSO connection exists. *(Unverified: whether this is needed. The plan fails
-   with a clear message if the connection is missing.)*
+   once. A new account has no Flex SSO connection until this page is opened (confirmed with ASOP:
+   `config_list` was empty before, a `JQ...` connection existed after). The plan fails with a clear
+   message if the connection is missing.
 4. `cd ../okta-app && make plan HL=<code> HL_ENV=staging`, review, then `make apply ...`.
 5. `node twilio-iac/scripts/okta/flexSsoHandoff.mjs --hl <code> --env staging`, then paste the 4
    values into the Flex SSO page and save. **Friendly name** = the Okta app label (e.g.
@@ -192,8 +194,10 @@ All `make` targets run on the devops node as for any other stage.
    or accept the change.
 3. Apply. The import blocks are no-ops from then on.
 
-The `okta-app` plan refuses to create a second app when one with the same label already exists and
-`import_existing` is false.
+The `okta-app` stage never creates a second app with the same label: if an active SAML app with
+that label exists, the plan imports it (shown as "will be imported"), otherwise it creates one.
+`import_existing = true` additionally asserts that the app exists, so a mistyped label fails the
+plan instead of creating a new app.
 
 ### C. Check for drift
 
