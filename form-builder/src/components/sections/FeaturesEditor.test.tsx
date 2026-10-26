@@ -47,9 +47,14 @@ describe('helpline features', () => {
     expect(within(dialog).getByText(/apply the service configuration/)).toBeTruthy();
   });
 
-  test('helpline staff see what is on but cannot change it', async () => {
-    await openFeatures(createHarness(), false);
-    expect((screen.getByRole('switch', { name: /Client profiles/ }) as HTMLInputElement).disabled).toBe(true);
+  test('Aselo staff see which permission rules decide what counselors can do with cases', async () => {
+    await openFeatures(createHarness(), true);
     expect(screen.getByText(/permission rules \(“usnm”\)/)).toBeTruthy();
+  });
+
+  test('helpline staff don’t see helpline features at all', async () => {
+    createHarness().renderWorkspace(usnm);
+    await waitFor(() => expect(screen.queryByText('Loading the draft…')).toBeNull());
+    expect(screen.queryByRole('button', { name: 'Features' })).toBeNull();
   });
 });

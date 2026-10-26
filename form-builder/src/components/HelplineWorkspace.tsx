@@ -290,7 +290,7 @@ export const HelplineWorkspace = ({
         />
       );
     }
-    if (view.kind === 'features') {
+    if (view.kind === 'features' && canApply) {
       return (
         <FeaturesEditor
           key={editorKey}
@@ -328,6 +328,8 @@ export const HelplineWorkspace = ({
         />
       );
     }
+    // e.g. Features after switching to "View as helpline staff"
+    if (view.kind !== 'caseSection') return renderContactTab(CONTACT_TABS[0].key);
     const target = caseTargets.find((caseTarget) => caseTarget.key === view.sectionKey);
     const form = target && getForm(files, target.filePath);
     if (!target || !form) return <p className="muted">This case section has no form.</p>;
@@ -438,10 +440,15 @@ export const HelplineWorkspace = ({
 
       <div className="workspace">
         <nav className="sidebar">
-          <h3>Helpline</h3>
-          <ul>
-            <NavItem current={view} onSelect={setView} target={{ kind: 'features' }} label="Features" />
-          </ul>
+          {/* Helpline features are for Aselo staff only (not when viewing as helpline staff) */}
+          {canApply && (
+            <>
+              <h3>Helpline</h3>
+              <ul>
+                <NavItem current={view} onSelect={setView} target={{ kind: 'features' }} label="Features" />
+              </ul>
+            </>
+          )}
           <h3>Contact forms</h3>
           <ul>
             {CONTACT_TABS.filter((tab) => files[tab.filePath]).map((tab) => (

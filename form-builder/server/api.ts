@@ -130,15 +130,17 @@ export const handleApiRequest = async (
     if (definitionsMatch) {
       const [, code, version] = definitionsMatch;
       if (!canOpenHelpline(user, code)) return fail(403, `You don't have access to ${code}.`);
-      return ok(
-        await loadDefinitionFiles(
-          context.formDefinitionsDir,
-          code,
-          version,
-          context.helplinesConfigDir,
-          context.webchatConfigDir,
-        ),
+      const definitions = await loadDefinitionFiles(
+        context.formDefinitionsDir,
+        code,
+        version,
+        context.helplinesConfigDir,
+        context.webchatConfigDir,
       );
+      if (user.role === 'aselo-staff') return ok(definitions);
+      // Helpline features and permission rules are Aselo staff business
+      const { [FEATURES_FILE]: _features, ...files } = definitions.files;
+      return ok({ ...definitions, files, permissionConfig: undefined });
     }
 
     const draftMatch = route.match(/^(GET|PUT|DELETE|POST) \/api\/drafts\/([^/]+)\/([^/]+)(\/submit|\/apply)?$/);

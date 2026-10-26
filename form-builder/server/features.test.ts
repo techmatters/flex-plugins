@@ -96,4 +96,26 @@ describe('helpline features', () => {
     expect((await save('helpline-staff')).status).toBe(403);
     expect((await save('aselo-staff')).status).toBe(200);
   });
+
+  test('are only sent to Aselo staff', async () => {
+    const context = {
+      formDefinitionsDir: path.join(repoRoot, 'lambdas/packages/hrm-form-definitions/form-definitions'),
+      helplinesConfigDir,
+      drafts: new MemoryDraftStore(),
+      applier: { apply: vi.fn() },
+      notifier: { draftSubmitted: vi.fn() },
+    };
+    const load = async (role: 'aselo-staff' | 'helpline-staff') =>
+      (
+        await handleApiRequest(context, {
+          method: 'GET',
+          path: '/api/definitions/usnm/v1',
+          user: { name: 'someone', role, helplines: 'all' },
+        })
+      ).body as { files: Record<string, unknown>; permissionConfig?: string };
+    const helplineView = await load('helpline-staff');
+    expect('aselo-features.json' in helplineView.files).toBe(false);
+    expect(helplineView.permissionConfig).toBeUndefined();
+    expect('aselo-features.json' in (await load('aselo-staff')).files).toBe(true);
+  });
 });
