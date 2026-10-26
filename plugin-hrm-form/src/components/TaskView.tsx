@@ -113,8 +113,7 @@ const TaskView: React.FC<Props> = ({ task }) => {
   React.useEffect(() => {
     const setHelpline = async () => {
       if (unsavedContact && task && !isStandaloneITask(task)) {
-        setHelplineAttempted.add(task.taskSid);
-        setSetHelplineAttempted(new Set<TaskSID>(setHelplineAttempted)); // We only want to try this once per component load
+        setSetHelplineAttempted(prev => new Set<TaskSID>(prev).add(task.taskSid)); // We only want to try this once per component load
         const helplineToSave = await getHelplineToSave(task, contactlessTask);
         if (helpline !== helplineToSave) {
           updateHelpline(unsavedContact.id, helplineToSave);
