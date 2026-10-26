@@ -126,7 +126,7 @@ const setUpComponents = (featureFlags: FeatureFlags, setupObject: ReturnType<typ
 
   TeamsView.setUpSelectAgentColumn();
   TeamsView.setUpAgentColumn();
-  TeamsView.setUpStatusColumn();
+  if (!featureFlags.remove_custom_status_column) TeamsView.setUpStatusColumn();
   TeamsView.setUpSkillsColumn();
   TeamsView.setUpTeamsViewSorting();
   TeamsView.setUpTeamsViewFilters();
