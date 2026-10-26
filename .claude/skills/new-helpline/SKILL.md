@@ -92,9 +92,10 @@ when `okta.group_rule` is set. Finish with `verifySso.mjs` all ✅ and the perso
   states/counties, adapt fields and categories to the intake (rules in `as/v3/README.md`), then run
   `npm test -- validateDefinitions` in `lambdas/packages/hrm-form-definitions`. 🧑 The person runs
   the "Deploy form-definitions to S3" workflow.
-- 2.3 Webchat config in `aselo-webchat-react-app/configSrc/<code>/` (ask for the values you need).
-- 2.4 HRM permissions in the hrm repo, if the person has it checked out.
-- 🧑 2.2 Flex, 2.3 webchat deploys, 2.5 FullStory, 2.6 CloudTrail: tell the person
+- 2.4 Webchat config in `aselo-webchat-react-app/configSrc/<code>/` (ask for the values you need).
+- 2.5 HRM permissions in the hrm repo, if the person has it checked out.
+- 🧑 2.2 Twilio lambdas (*Deploy All Twilio Lambdas*), 2.3 Flex, 2.4 webchat (*Deploy webchat
+  configuration to S3*, then *Deploy Aselo Webchat React App - single helpline*), 2.6 FullStory, 2.7 CloudTrail: tell the person
   what to run or ask for, and wait.
 
 ### 8. Verification (Phase 3)
