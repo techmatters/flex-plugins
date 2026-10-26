@@ -193,6 +193,12 @@ counsellors in production only, set `include_helpline_group = false` in `staging
 
 ## Tracking checklist
 
+**Automatic status:** `node twilio-iac/scripts/onboarding/onboardingStatus.mjs --hl <code> --env <env>`
+checks the real systems (repo, SSM, Twilio, Okta) and marks each step ✅ done, ❌ missing, 🧑 to
+confirm by hand or ❔ not checked (options: `--account-sid`, `--accounts-file`, `--hrm-repo`, `--json`).
+Read-only; agents and people can run it at any time. The Asana project template mirrors the steps below.
+
+
 Copy into the helpline's tracking issue / task and tick as you go.
 
 ```markdown
