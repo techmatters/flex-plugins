@@ -39,7 +39,7 @@ from the first step that is not done; confirm the 🧑 items with the person bef
 If the Asana tools are available: look for this helpline's onboarding project
 (`<Name> (<CODE>) <environment>` onboarding). If there is none, offer to create it from the
 **"New helpline onboarding"** project template (search `project_template`). After each step, tick the
-matching task (task names start with the guide's step number) and add a short comment with what was
+matching task (task names are `<icon> <step number> …`: 🤖 agent, 🧑 person, 🤝 both) and add a short comment with what was
 done. Never assign or reassign tasks without asking.
 
 ### 3. Intake (step 0)
