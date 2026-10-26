@@ -11,6 +11,8 @@ locals {
     # Okta SAML app for this environment (okta-app stage). See twilio-iac/docs/okta.md
     okta_app = {
       optional_attribute_sets = ["labels", "team"]
+      # Testing the new attribute statements (federated claims) before making them the default
+      attribute_statements_mode = "federated"
     }
   }
 }
