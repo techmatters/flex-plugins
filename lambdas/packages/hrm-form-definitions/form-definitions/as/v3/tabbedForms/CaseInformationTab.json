@@ -1,0 +1,131 @@
+[
+  {
+    "name": "repeatCaller",
+    "label": "Repeat Contact?",
+    "type": "checkbox",
+    "isPII": false
+  },
+  {
+    "name": "urgencyLevel",
+    "label": "Urgency Level",
+    "type": "select",
+    "options": [
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "High",
+        "label": "High"
+      },
+      {
+        "value": "Medium",
+        "label": "Medium"
+      },
+      {
+        "value": "Low",
+        "label": "Low"
+      }
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    },
+    "isPII": false
+  },
+  {
+    "name": "actionTaken",
+    "label": "Action Taken",
+    "type": "listbox-multiselect",
+    "options": [
+      {
+        "value": "Emotional support",
+        "label": "Emotional support"
+      },
+      {
+        "value": "Information provided",
+        "label": "Information provided"
+      },
+      {
+        "value": "Safety planning",
+        "label": "Safety planning"
+      },
+      {
+        "value": "Referral to another service",
+        "label": "Referral to another service"
+      },
+      {
+        "value": "Emergency services contacted",
+        "label": "Emergency services contacted"
+      },
+      {
+        "value": "Follow-up arranged",
+        "label": "Follow-up arranged"
+      },
+      {
+        "value": "Other",
+        "label": "Other"
+      }
+    ],
+    "isPII": false
+  },
+  {
+    "name": "howDidYouKnowAboutOurLine",
+    "label": "How did they hear about us?",
+    "type": "select",
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "Internet search",
+        "label": "Internet search"
+      },
+      {
+        "value": "Social media",
+        "label": "Social media"
+      },
+      {
+        "value": "Friend or family",
+        "label": "Friend or family"
+      },
+      {
+        "value": "Professional referral",
+        "label": "Professional referral"
+      },
+      {
+        "value": "News or media",
+        "label": "News or media"
+      },
+      {
+        "value": "Other",
+        "label": "Other"
+      }
+    ],
+    "isPII": false
+  },
+  {
+    "name": "okForCaseWorkerToCall",
+    "label": "Okay to contact them back?",
+    "type": "mixed-checkbox",
+    "isPII": false
+  },
+  {
+    "name": "feltHelped",
+    "label": "Did the help seeker feel helped?",
+    "type": "mixed-checkbox",
+    "isPII": false
+  },
+  {
+    "name": "callSummary",
+    "label": "Contact Summary",
+    "type": "textarea",
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    },
+    "isPII": true,
+    "rows": 10
+  }
+]

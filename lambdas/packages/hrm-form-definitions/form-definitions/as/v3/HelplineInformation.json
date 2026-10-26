@@ -1,0 +1,15 @@
+{
+  "label": "Helpline",
+  "helplines": [
+    {
+      "label": "Baseline Helpline",
+      "value": "Baseline Helpline",
+      "default": true,
+      "manager": {
+        "name": "Helpline Manager",
+        "phone": "+1 555 0100",
+        "email": "manager@example.org"
+      }
+    }
+  ]
+}

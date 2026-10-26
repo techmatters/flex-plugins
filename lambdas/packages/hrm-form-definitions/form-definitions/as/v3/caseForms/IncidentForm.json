@@ -1,0 +1,98 @@
+[
+  {
+    "name": "date",
+    "label": "Date of Incident",
+    "type": "date-input",
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    },
+    "isPII": false
+  },
+  {
+    "name": "duration",
+    "label": "Duration",
+    "type": "select",
+    "options": [
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "Once",
+        "label": "Once"
+      },
+      {
+        "value": "Ongoing",
+        "label": "Ongoing"
+      },
+      {
+        "value": "Unknown",
+        "label": "Unknown"
+      }
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    },
+    "isPII": false
+  },
+  {
+    "name": "location",
+    "label": "Location",
+    "type": "select",
+    "options": [
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "Home",
+        "label": "Home"
+      },
+      {
+        "value": "School or workplace",
+        "label": "School or workplace"
+      },
+      {
+        "value": "Online",
+        "label": "Online"
+      },
+      {
+        "value": "Public place",
+        "label": "Public place"
+      },
+      {
+        "value": "Other",
+        "label": "Other"
+      },
+      {
+        "value": "Unknown",
+        "label": "Unknown"
+      }
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    },
+    "isPII": false
+  },
+  {
+    "name": "incidentWitnessed",
+    "label": "Was the incident witnessed by anyone?",
+    "type": "mixed-checkbox",
+    "isPII": false
+  },
+  {
+    "name": "abuseReportedElsewhere",
+    "label": "Has it been reported elsewhere?",
+    "type": "mixed-checkbox",
+    "isPII": false
+  },
+  {
+    "name": "whereElseBeenReported",
+    "label": "Where else has it been reported?",
+    "type": "input",
+    "isPII": false
+  }
+]

@@ -53,6 +53,8 @@ Collect, asking only for what is missing:
 - Okta group name (`<Name> (<CODE>)`), group rule (organization / email domain with `@` / none),
   optional SAML attributes (`labels`, `team`)
 - webchat needed? greeting text for voice? blocked-contact message?
+- forms: who contacts the helpline (wording instead of "help seeker"), locations (regions/areas),
+  categories, anything to add or remove from the baseline forms (`as/v3`)
 
 Later on this information may come from a tool that collects it from meetings; use it if provided.
 
@@ -84,8 +86,12 @@ when `okta.group_rule` is set. Finish with `verifySso.mjs` all ✅ and the perso
 
 ### 7. Deployment (Phase 2)
 
-- 2.1 Generate the form definitions (`npm run generateNewHelplineFormDefinitions <code>-v1` in
-  `scripts/`), fill `HelplineInformation.json`, set `definitionVersion`.
+- 2.1 Create the forms from the baseline with
+  `node twilio-iac/scripts/onboarding/newHelplineForms.mjs --hl <code> --helpline "<helpline from common.hcl>"`,
+  set `definitionVersion` to `<code>-v1`, fill the manager details, replace the placeholder
+  regions/areas, adapt fields and categories to the intake (rules in `as/v3/README.md`), then run
+  `npm test -- validateDefinitions` in `lambdas/packages/hrm-form-definitions`. 🧑 The person runs
+  the "Deploy form-definitions to S3" workflow.
 - 2.4 Webchat config in `aselo-webchat-react-app/configSrc/<code>/` (ask for the values you need).
 - 2.5 HRM permissions in the hrm repo, if the person has it checked out.
 - 🧑 2.2 serverless, 2.3 Flex, 2.4 webchat deploys, 2.6 FullStory, 2.7 CloudTrail: tell the person

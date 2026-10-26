@@ -1,0 +1,237 @@
+[
+  {
+    "name": "firstName",
+    "label": "First Name",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "lastName",
+    "label": "Last Name",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "relationshipToChild",
+    "label": "Relationship to Help Seeker",
+    "type": "select",
+    "options": [
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "Parent or caregiver",
+        "label": "Parent or caregiver"
+      },
+      {
+        "value": "Partner",
+        "label": "Partner"
+      },
+      {
+        "value": "Other family member",
+        "label": "Other family member"
+      },
+      {
+        "value": "Friend",
+        "label": "Friend"
+      },
+      {
+        "value": "Professional",
+        "label": "Professional"
+      },
+      {
+        "value": "Other",
+        "label": "Other"
+      },
+      {
+        "value": "Unknown",
+        "label": "Unknown"
+      }
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    },
+    "isPII": false
+  },
+  {
+    "name": "age",
+    "label": "Age",
+    "type": "select",
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "Under 13",
+        "label": "Under 13"
+      },
+      {
+        "value": "13-17",
+        "label": "13-17"
+      },
+      {
+        "value": "18-24",
+        "label": "18-24"
+      },
+      {
+        "value": "25-34",
+        "label": "25-34"
+      },
+      {
+        "value": "35-44",
+        "label": "35-44"
+      },
+      {
+        "value": "45-54",
+        "label": "45-54"
+      },
+      {
+        "value": "55-64",
+        "label": "55-64"
+      },
+      {
+        "value": "65+",
+        "label": "65+"
+      }
+    ],
+    "isPII": false
+  },
+  {
+    "name": "gender",
+    "label": "Gender",
+    "type": "select",
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "Woman",
+        "label": "Woman"
+      },
+      {
+        "value": "Man",
+        "label": "Man"
+      },
+      {
+        "value": "Non-binary",
+        "label": "Non-binary"
+      },
+      {
+        "value": "Another gender",
+        "label": "Another gender"
+      },
+      {
+        "value": "Prefer not to say",
+        "label": "Prefer not to say"
+      }
+    ],
+    "isPII": false
+  },
+  {
+    "name": "language",
+    "label": "Language",
+    "type": "select",
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "English",
+        "label": "English"
+      },
+      {
+        "value": "Spanish",
+        "label": "Spanish"
+      },
+      {
+        "value": "Other",
+        "label": "Other"
+      }
+    ],
+    "isPII": false
+  },
+  {
+    "name": "phone1",
+    "label": "Phone",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "email",
+    "label": "Email",
+    "type": "email",
+    "isPII": true
+  },
+  {
+    "name": "province",
+    "label": "Region",
+    "type": "select",
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "Region A",
+        "label": "Region A"
+      },
+      {
+        "value": "Region B",
+        "label": "Region B"
+      }
+    ],
+    "isPII": false
+  },
+  {
+    "name": "district",
+    "label": "Area",
+    "type": "dependent-select",
+    "dependsOn": "province",
+    "defaultOption": {
+      "value": "",
+      "label": ""
+    },
+    "options": {
+      "Region A": [
+        {
+          "value": "Area A1",
+          "label": "Area A1"
+        },
+        {
+          "value": "Area A2",
+          "label": "Area A2"
+        },
+        {
+          "value": "Unknown",
+          "label": "Unknown"
+        }
+      ],
+      "Region B": [
+        {
+          "value": "Area B1",
+          "label": "Area B1"
+        },
+        {
+          "value": "Area B2",
+          "label": "Area B2"
+        },
+        {
+          "value": "Unknown",
+          "label": "Unknown"
+        }
+      ],
+      "Unknown": [
+        {
+          "value": "Unknown",
+          "label": "Unknown"
+        }
+      ]
+    },
+    "isPII": false
+  }
+]

@@ -1,0 +1,18 @@
+[
+  {
+    "label": "Welcome",
+    "text": "Thank you for contacting the helpline. My name is XXX and I am here to support you. What would you like to talk about today?"
+  },
+  {
+    "label": "Confidentiality",
+    "text": "Everything you share here is confidential, except if you tell us that you or someone else is in danger. In that case we may need to involve other services to keep you safe. Is that okay?"
+  },
+  {
+    "label": "Are you still there?",
+    "text": "I have not heard from you in a while. Are you still there?"
+  },
+  {
+    "label": "Goodbye",
+    "text": "Thank you for reaching out today. Please contact us again whenever you need to talk."
+  }
+]

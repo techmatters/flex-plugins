@@ -17,6 +17,7 @@
 export enum DefinitionVersionId {
   demoV1 = 'demo-v1', // Demo v1
   asV1 = 'as-v1', // Demo v1
+  asV3 = 'as-v3', // New helpline baseline (see as/v3/README.md)
   v1 = 'v1', // Zambia V1
   zmv1 = 'zm-v1', // Zambia V1
   brV1 = 'br-v1', // Safernet Brasil v1
