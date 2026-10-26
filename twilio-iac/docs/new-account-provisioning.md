@@ -129,16 +129,25 @@ Twilio Console › Account › **Manage users**: invite the engineers and soluti
 
 ## Phase 2: Deployment
 
-### 2.1 Form definitions 🤖
+### 2.1 Form definitions 🤝
 
-```bash
-cd scripts && npm install
-npm run generateNewHelplineFormDefinitions <code>-v1
-```
+1. 🤖 Create the helpline's forms from the baseline
+   ([`as/v3`](../../lambdas/packages/hrm-form-definitions/form-definitions/as/v3/README.md), a
+   general "help seeker" set of contact and case forms):
 
-Then make sure `HelplineInformation.json` in the new folder has values (copy from `as/v1` and
-adapt). Point `definitionVersion` in the helpline's service configuration at `<code>-v1`. Include
-the files in the helpline's PR. See [scripts README](../../scripts/README.md#generateNewHelplineFormDefinitions).
+   ```bash
+   node twilio-iac/scripts/onboarding/newHelplineForms.mjs --hl <code> --helpline "<display name>"
+   ```
+
+   `--helpline` must equal `helpline` in `common.hcl` (the categories are looked up by it). The
+   script copies `as/v3` to `form-definitions/<code>/v1` and registers `<code>-v1` in the tests.
+2. 🤖 Set `definitionVersion` to `<code>-v1` in the helpline's `service-configuration/common.json`
+   (the baseline already has it as `<helpline shortcode>-v1`), fill in the manager details in
+   `HelplineInformation.json`, replace the placeholder regions/areas, and adapt fields and
+   categories to what the helpline asked for.
+3. 🤖 `cd lambdas/packages/hrm-form-definitions && npm test -- validateDefinitions`: must pass.
+   Include the files in the helpline's PR.
+4. 🧑 GitHub Actions › **Deploy form-definitions to S3** with `helpline_code=<code>` and the environment.
 
 ### 2.2 Serverless 🧑
 

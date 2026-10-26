@@ -105,6 +105,10 @@ add('1.6', 'Engineers invited to the Twilio console', 'manual');
 // Phase 2
 const formsDir = `lambdas/packages/hrm-form-definitions/form-definitions/${code}/v1`;
 add('2.1', 'Form definitions', exists(formsDir) ? 'done' : 'missing', exists(formsDir) ? '' : formsDir);
+const serviceConfigFile = path.join(helplineDir, 'configs/service-configuration/common.json');
+const definitionVersion = fs.existsSync(serviceConfigFile) ? JSON.parse(fs.readFileSync(serviceConfigFile, 'utf8')).attributes?.definitionVersion : undefined;
+add('2.1', `definitionVersion is ${code}-v1 in service-configuration/common.json`, definitionVersion === `${code}-v1` ? 'done' : 'missing', definitionVersion && definitionVersion !== `${code}-v1` ? `currently "${definitionVersion}"` : '');
+add('2.1', 'Form definitions deployed to S3', 'manual', 'GitHub Actions › Deploy form-definitions to S3');
 add('2.2', 'Serverless deployed', 'manual', 'GitHub Actions in techmatters/serverless');
 add('2.3', 'Flex plugin deployed', 'manual', 'Flex Deploy workflow');
 const webchatConfig = `aselo-webchat-react-app/configSrc/${code}`;

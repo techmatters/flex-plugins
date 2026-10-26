@@ -1,0 +1,124 @@
+{
+  "description": "PreEngagementDescription",
+  "submitLabel": "LetsChat",
+  "fields": [
+    {
+      "type": "input",
+      "name": "friendlyName",
+      "label": "Nickname",
+      "placeholder": "GuestName",
+      "required": true
+    },
+    {
+      "type": "select",
+      "name": "age",
+      "label": "Age",
+      "required": true,
+      "defaultValue": "",
+      "options": [
+        {
+          "value": "",
+          "label": ""
+        },
+        {
+          "value": "Under 13",
+          "label": "Under 13"
+        },
+        {
+          "value": "13-17",
+          "label": "13-17"
+        },
+        {
+          "value": "18-24",
+          "label": "18-24"
+        },
+        {
+          "value": "25-34",
+          "label": "25-34"
+        },
+        {
+          "value": "35-44",
+          "label": "35-44"
+        },
+        {
+          "value": "45-54",
+          "label": "45-54"
+        },
+        {
+          "value": "55-64",
+          "label": "55-64"
+        },
+        {
+          "value": "65+",
+          "label": "65+"
+        },
+        {
+          "value": "Unknown",
+          "label": "Unknown"
+        }
+      ]
+    },
+    {
+      "type": "select",
+      "name": "gender",
+      "label": "Gender",
+      "required": true,
+      "defaultValue": "",
+      "options": [
+        {
+          "value": "",
+          "label": ""
+        },
+        {
+          "value": "Woman",
+          "label": "Woman"
+        },
+        {
+          "value": "Man",
+          "label": "Man"
+        },
+        {
+          "value": "Non-binary",
+          "label": "Non-binary"
+        },
+        {
+          "value": "Another gender",
+          "label": "Another gender"
+        },
+        {
+          "value": "Prefer not to say",
+          "label": "Prefer not to say"
+        },
+        {
+          "value": "Unknown",
+          "label": "Unknown"
+        }
+      ]
+    },
+    {
+      "type": "select",
+      "name": "urgencyLevel",
+      "label": "How urgent is your situation?",
+      "required": false,
+      "defaultValue": "",
+      "options": [
+        {
+          "value": "",
+          "label": ""
+        },
+        {
+          "value": "High",
+          "label": "High"
+        },
+        {
+          "value": "Medium",
+          "label": "Medium"
+        },
+        {
+          "value": "Low",
+          "label": "Low"
+        }
+      ]
+    }
+  ]
+}

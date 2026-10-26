@@ -1,0 +1,66 @@
+[
+  {
+    "name": "date",
+    "label": "Date",
+    "type": "date-input",
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    },
+    "isPII": false
+  },
+  {
+    "name": "referredTo",
+    "label": "Referred To",
+    "type": "select",
+    "options": [
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "Emergency services",
+        "label": "Emergency services"
+      },
+      {
+        "value": "Mental health service",
+        "label": "Mental health service"
+      },
+      {
+        "value": "Health clinic or hospital",
+        "label": "Health clinic or hospital"
+      },
+      {
+        "value": "Social services",
+        "label": "Social services"
+      },
+      {
+        "value": "Legal services",
+        "label": "Legal services"
+      },
+      {
+        "value": "Housing or shelter",
+        "label": "Housing or shelter"
+      },
+      {
+        "value": "Police",
+        "label": "Police"
+      },
+      {
+        "value": "Other",
+        "label": "Other"
+      }
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    },
+    "isPII": false
+  },
+  {
+    "name": "comments",
+    "label": "Comments",
+    "type": "textarea",
+    "isPII": true
+  }
+]
