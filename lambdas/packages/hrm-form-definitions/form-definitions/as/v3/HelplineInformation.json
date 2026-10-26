@@ -7,7 +7,7 @@
       "default": true,
       "manager": {
         "name": "Helpline Manager",
-        "phone": "+1 555 0100",
+        "phone": "+1 555 555 0100",
         "email": "manager@example.org"
       }
     }

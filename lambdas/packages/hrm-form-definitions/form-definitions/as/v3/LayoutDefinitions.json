@@ -4,7 +4,7 @@
       "splitFormAt": 6
     },
     "childInformation": {
-      "splitFormAt": 7
+      "splitFormAt": 9
     },
     "caseInformation": {
       "splitFormAt": 4
@@ -13,7 +13,7 @@
   "case": {
     "sectionTypes": {
       "household": {
-        "splitFormAt": 4,
+        "splitFormAt": 5,
         "caseHomeOrder": 1,
         "printOrder": 1,
         "previewFields": [
@@ -25,6 +25,32 @@
         "layout": {
           "name": {
             "widthRatio": 1.5,
+            "labelTemplateCode": "Case-PerpetratorName",
+            "valueTemplateCode": "Case-SectionList-PreviewNameValue"
+          },
+          "age": {
+            "labelTemplateCode": "Case-PerpetratorAge"
+          },
+          "gender": {
+            "labelTemplateCode": "Case-PerpetratorGender"
+          },
+          "relationshipToChild": {
+            "labelTemplateCode": "Case-PerpetratorRelationship"
+          }
+        }
+      },
+      "perpetrator": {
+        "splitFormAt": 5,
+        "caseHomeOrder": 2,
+        "printOrder": 2,
+        "previewFields": [
+          "name",
+          "gender",
+          "age",
+          "relationshipToChild"
+        ],
+        "layout": {
+          "name": {
             "labelTemplateCode": "Case-PerpetratorName",
             "valueTemplateCode": "Case-SectionList-PreviewNameValue"
           },
@@ -57,9 +83,9 @@
             "includeLabel": true
           }
         },
-        "caseHomeOrder": 2,
-        "printOrder": 2,
-        "splitFormAt": 3
+        "caseHomeOrder": 3,
+        "printOrder": 3,
+        "splitFormAt": 4
       },
       "referral": {
         "previewFields": [
@@ -69,12 +95,12 @@
           "referredTo": {}
         },
         "splitFormAt": 2,
-        "printOrder": 3,
+        "printOrder": 4,
         "caseHomeLocation": "timeline"
       },
       "document": {
         "splitFormAt": 1,
-        "caseHomeOrder": 4,
+        "caseHomeOrder": 5,
         "printFormat": "hidden",
         "previewFields": [
           "createdAt",
@@ -98,7 +124,7 @@
         }
       },
       "note": {
-        "printOrder": 5,
+        "printOrder": 6,
         "caseHomeLocation": "timeline",
         "printFormat": "list",
         "previewFields": [

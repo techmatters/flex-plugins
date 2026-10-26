@@ -3,6 +3,7 @@
     "name": "repeatCaller",
     "label": "Repeat Contact?",
     "type": "checkbox",
+    "initialChecked": false,
     "isPII": false
   },
   {
@@ -31,6 +32,10 @@
       "value": true,
       "message": "RequiredFieldError"
     },
+    "description": {
+      "title": "How to choose",
+      "content": "High: immediate risk to safety. Medium: needs help today but is safe right now. Low: information or support, no current risk."
+    },
     "isPII": false
   },
   {
@@ -55,8 +60,12 @@
         "label": "Referral to another service"
       },
       {
-        "value": "Emergency services contacted",
-        "label": "Emergency services contacted"
+        "value": "911 or emergency services contacted",
+        "label": "911 or emergency services contacted"
+      },
+      {
+        "value": "Mobile crisis team dispatched",
+        "label": "Mobile crisis team dispatched"
       },
       {
         "value": "Follow-up arranged",
@@ -121,11 +130,29 @@
     "name": "callSummary",
     "label": "Contact Summary",
     "type": "textarea",
+    "placeholder": "What the contact was about, what was done and any next steps",
     "required": {
       "value": true,
       "message": "RequiredFieldError"
     },
+    "rows": 10,
+    "maxLength": {
+      "value": 5000,
+      "message": "Use 5000 characters or fewer"
+    },
     "isPII": true,
-    "rows": 10
+    "additionalActions": [
+      {
+        "name": "generateSummary",
+        "label": "Generate Summary",
+        "type": "custom-contact-component",
+        "component": "generate-summary-button",
+        "saveable": false,
+        "props": {
+          "form": "caseInformation",
+          "item": "callSummary"
+        }
+      }
+    ]
   }
 ]

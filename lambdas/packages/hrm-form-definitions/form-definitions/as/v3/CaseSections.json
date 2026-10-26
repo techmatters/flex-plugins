@@ -11,6 +11,10 @@
     "label": "Related Person",
     "formPath": "caseForms/HouseholdForm.json"
   },
+  "perpetrator": {
+    "label": "Person Causing Harm",
+    "formPath": "caseForms/PerpetratorForm.json"
+  },
   "incident": {
     "label": "Incident",
     "formPath": "caseForms/IncidentForm.json"

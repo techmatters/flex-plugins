@@ -14,6 +14,13 @@
           "conversations",
           "conversation_attribute_4"
         ]
+      },
+      {
+        "name": "postalCode",
+        "insights": [
+          "customers",
+          "zip"
+        ]
       }
     ],
     "callerInformation": [

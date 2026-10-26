@@ -3,6 +3,7 @@
     "name": "firstName",
     "label": "First Name",
     "type": "input",
+    "placeholder": "First name or nickname",
     "isPII": true
   },
   {
@@ -10,6 +11,38 @@
     "label": "Last Name",
     "type": "input",
     "isPII": true
+  },
+  {
+    "name": "pronouns",
+    "label": "Pronouns",
+    "type": "radio-input",
+    "options": [
+      {
+        "value": "She/her",
+        "label": "She/her"
+      },
+      {
+        "value": "He/him",
+        "label": "He/him"
+      },
+      {
+        "value": "They/them",
+        "label": "They/them"
+      },
+      {
+        "value": "Other",
+        "label": "Other"
+      },
+      {
+        "value": "Not asked",
+        "label": "Not asked"
+      }
+    ],
+    "defaultOption": {
+      "value": "Not asked",
+      "label": "Not asked"
+    },
+    "isPII": false
   },
   {
     "name": "age",
@@ -105,7 +138,7 @@
   },
   {
     "name": "language",
-    "label": "Language",
+    "label": "Preferred Language",
     "type": "select",
     "options": [
       {
@@ -121,6 +154,10 @@
         "label": "Spanish"
       },
       {
+        "value": "ASL",
+        "label": "ASL"
+      },
+      {
         "value": "Other",
         "label": "Other"
       }
@@ -131,6 +168,11 @@
     "name": "phone1",
     "label": "Phone",
     "type": "input",
+    "placeholder": "(555) 555-0100",
+    "maxLength": {
+      "value": 20,
+      "message": "Use 20 characters or fewer"
+    },
     "isPII": true
   },
   {
@@ -141,7 +183,7 @@
   },
   {
     "name": "province",
-    "label": "Region",
+    "label": "State",
     "type": "select",
     "options": [
       {
@@ -149,19 +191,31 @@
         "label": ""
       },
       {
-        "value": "Region A",
-        "label": "Region A"
+        "value": "California",
+        "label": "California"
       },
       {
-        "value": "Region B",
-        "label": "Region B"
+        "value": "New Mexico",
+        "label": "New Mexico"
+      },
+      {
+        "value": "New York",
+        "label": "New York"
+      },
+      {
+        "value": "Texas",
+        "label": "Texas"
+      },
+      {
+        "value": "Outside the US",
+        "label": "Outside the US"
       }
     ],
     "isPII": false
   },
   {
     "name": "district",
-    "label": "Area",
+    "label": "County",
     "type": "dependent-select",
     "dependsOn": "province",
     "defaultOption": {
@@ -169,29 +223,79 @@
       "label": ""
     },
     "options": {
-      "Region A": [
+      "California": [
         {
-          "value": "Area A1",
-          "label": "Area A1"
+          "value": "Los Angeles County",
+          "label": "Los Angeles County"
         },
         {
-          "value": "Area A2",
-          "label": "Area A2"
+          "value": "Sacramento County",
+          "label": "Sacramento County"
+        },
+        {
+          "value": "San Diego County",
+          "label": "San Diego County"
         },
         {
           "value": "Unknown",
           "label": "Unknown"
         }
       ],
-      "Region B": [
+      "New Mexico": [
         {
-          "value": "Area B1",
-          "label": "Area B1"
+          "value": "Bernalillo County",
+          "label": "Bernalillo County"
         },
         {
-          "value": "Area B2",
-          "label": "Area B2"
+          "value": "Doña Ana County",
+          "label": "Doña Ana County"
         },
+        {
+          "value": "Santa Fe County",
+          "label": "Santa Fe County"
+        },
+        {
+          "value": "Unknown",
+          "label": "Unknown"
+        }
+      ],
+      "New York": [
+        {
+          "value": "Albany County",
+          "label": "Albany County"
+        },
+        {
+          "value": "Erie County",
+          "label": "Erie County"
+        },
+        {
+          "value": "Kings County",
+          "label": "Kings County"
+        },
+        {
+          "value": "Unknown",
+          "label": "Unknown"
+        }
+      ],
+      "Texas": [
+        {
+          "value": "Bexar County",
+          "label": "Bexar County"
+        },
+        {
+          "value": "Harris County",
+          "label": "Harris County"
+        },
+        {
+          "value": "Travis County",
+          "label": "Travis County"
+        },
+        {
+          "value": "Unknown",
+          "label": "Unknown"
+        }
+      ],
+      "Outside the US": [
         {
           "value": "Unknown",
           "label": "Unknown"
@@ -204,6 +308,10 @@
         }
       ]
     },
+    "description": {
+      "title": "Depends on State",
+      "content": "The counties listed change with the state selected above."
+    },
     "isPII": false
   },
   {
@@ -214,9 +322,36 @@
   },
   {
     "name": "postalCode",
-    "label": "Postal Code",
+    "label": "ZIP Code",
     "type": "input",
+    "placeholder": "12345",
+    "minLength": {
+      "value": 5,
+      "message": "A ZIP code has at least 5 digits"
+    },
+    "maxLength": {
+      "value": 10,
+      "message": "A ZIP code has at most 10 characters (ZIP+4)"
+    },
     "isPII": true
+  },
+  {
+    "name": "householdSize",
+    "label": "People in Household",
+    "type": "numeric-input",
+    "min": {
+      "value": 1,
+      "message": "At least 1"
+    },
+    "max": {
+      "value": 30,
+      "message": "At most 30"
+    },
+    "description": {
+      "title": "Including the help seeker",
+      "content": "Count everyone who lives with the help seeker, including them."
+    },
+    "isPII": false
   },
   {
     "name": "livingSituation",
@@ -272,16 +407,16 @@
         "label": "LGBTQIA+"
       },
       {
-        "value": "Migrant or refugee",
-        "label": "Migrant or refugee"
+        "value": "Immigrant or refugee",
+        "label": "Immigrant or refugee"
       },
       {
         "value": "Student",
         "label": "Student"
       },
       {
-        "value": "Veteran",
-        "label": "Veteran"
+        "value": "Veteran or military family",
+        "label": "Veteran or military family"
       },
       {
         "value": "Unhoused",
@@ -292,6 +427,22 @@
         "label": "Other"
       }
     ],
+    "height": 200,
+    "description": {
+      "title": "Select all that apply",
+      "content": "Hold Ctrl (Cmd on a Mac) to select more than one option."
+    },
+    "isPII": false
+  },
+  {
+    "name": "consentToFollowUp",
+    "label": "Consents to a follow-up contact?",
+    "type": "mixed-checkbox",
+    "initialChecked": "mixed",
+    "description": {
+      "title": "Three states",
+      "content": "Click to cycle between yes, no and not asked. \"Not asked\" is the starting value, so you can tell it apart from a \"no\"."
+    },
     "isPII": false
   }
 ]

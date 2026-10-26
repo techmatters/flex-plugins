@@ -97,6 +97,43 @@
     },
     {
       "type": "select",
+      "name": "province",
+      "label": "State",
+      "required": false,
+      "defaultValue": "",
+      "options": [
+        {
+          "value": "",
+          "label": ""
+        },
+        {
+          "value": "California",
+          "label": "California"
+        },
+        {
+          "value": "New Mexico",
+          "label": "New Mexico"
+        },
+        {
+          "value": "New York",
+          "label": "New York"
+        },
+        {
+          "value": "Texas",
+          "label": "Texas"
+        },
+        {
+          "value": "Outside the US",
+          "label": "Outside the US"
+        },
+        {
+          "value": "Unknown",
+          "label": "Unknown"
+        }
+      ]
+    },
+    {
+      "type": "select",
       "name": "urgencyLevel",
       "label": "How urgent is your situation?",
       "required": false,

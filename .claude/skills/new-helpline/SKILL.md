@@ -53,7 +53,7 @@ Collect, asking only for what is missing:
 - Okta group name (`<Name> (<CODE>)`), group rule (organization / email domain with `@` / none),
   optional SAML attributes (`labels`, `team`)
 - webchat needed? greeting text for voice? blocked-contact message?
-- forms: who contacts the helpline (wording instead of "help seeker"), locations (regions/areas),
+- forms: who contacts the helpline (wording instead of "help seeker"), service area (states/counties),
   categories, anything to add or remove from the baseline forms (`as/v3`)
 
 Later on this information may come from a tool that collects it from meetings; use it if provided.
@@ -88,8 +88,8 @@ when `okta.group_rule` is set. Finish with `verifySso.mjs` all ✅ and the perso
 
 - 2.1 Create the forms from the baseline with
   `node twilio-iac/scripts/onboarding/newHelplineForms.mjs --hl <code> --helpline "<helpline from common.hcl>"`,
-  set `definitionVersion` to `<code>-v1`, fill the manager details, replace the placeholder
-  regions/areas, adapt fields and categories to the intake (rules in `as/v3/README.md`), then run
+  set `definitionVersion` to `<code>-v1`, fill the manager details, replace the example
+  states/counties, adapt fields and categories to the intake (rules in `as/v3/README.md`), then run
   `npm test -- validateDefinitions` in `lambdas/packages/hrm-form-definitions`. 🧑 The person runs
   the "Deploy form-definitions to S3" workflow.
 - 2.4 Webchat config in `aselo-webchat-react-app/configSrc/<code>/` (ask for the values you need).
