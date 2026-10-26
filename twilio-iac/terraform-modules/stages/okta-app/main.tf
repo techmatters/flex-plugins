@@ -74,41 +74,47 @@ data "okta_group" "assigned" {
   name     = each.key
 }
 
-# Guard: never create a second app with a label that already exists. Set okta_app.import_existing = true to adopt it.
-# (The provider's exact `label` filter returns 400 from Okta, so search by prefix and match exactly here.)
+# Find the active SAML app with this label, if any. The provider's exact `label` filter returns 400
+# from Okta, so search by prefix and match exactly here. self.apps is null when nothing matches.
 data "okta_apps" "label_search" {
   q = local.label
 
   lifecycle {
     postcondition {
-      # self.apps is null (not an empty list) when nothing matches, e.g. for a new helpline
-      condition     = var.okta_app.import_existing || length([for app in coalesce(self.apps, []) : app.id if app.label == local.label]) == 0
-      error_message = "An Okta app labelled '${local.label}' already exists. Set okta_app.import_existing = true to adopt it, or choose another label."
+      condition     = length([for app in coalesce(self.apps, []) : app.id if app.label == local.label && app.status == "ACTIVE" && app.sign_on_mode == "SAML_2_0"]) <= 1
+      error_message = "More than one active SAML app is labelled '${local.label}'. Deactivate or rename the extra one first."
+    }
+    postcondition {
+      condition     = !var.okta_app.import_existing || length([for app in coalesce(self.apps, []) : app.id if app.label == local.label && app.status == "ACTIVE" && app.sign_on_mode == "SAML_2_0"]) == 1
+      error_message = "okta_app.import_existing = true, but no active SAML app is labelled '${local.label}'. Check the label."
     }
   }
 }
 
-# Adopting an existing app (okta_app.import_existing = true). Import blocks are no-ops once the app is in state.
-data "okta_app_saml" "existing" {
-  for_each    = var.okta_app.import_existing ? toset([local.label]) : toset([])
-  label       = each.key
-  active_only = true # some helplines have an inactive duplicate with the same label
+locals {
+  # Inactive duplicates with the same label (some helplines have one) are ignored
+  existing_app_ids = [
+    for app in coalesce(data.okta_apps.label_search.apps, []) : app.id
+    if app.label == local.label && app.status == "ACTIVE" && app.sign_on_mode == "SAML_2_0"
+  ]
+  existing_app_id = one(local.existing_app_ids) # null until the app exists
 }
 
+# An app that already exists with this label is always adopted (imported), never duplicated.
+# Import blocks are no-ops once the app is in state.
 import {
-  for_each = data.okta_app_saml.existing
+  for_each = toset(local.existing_app_ids)
   to       = module.flex_saml_app.okta_app_saml.this
-  id       = each.value.id
+  id       = each.value
 }
 
 # Only assignments that already exist can be imported; missing ones are created by the plan.
 data "okta_app_group_assignments" "existing" {
-  for_each = data.okta_app_saml.existing
-  id       = each.value.id
+  for_each = toset(local.existing_app_ids)
+  id       = each.value
 }
 
 locals {
-  existing_app_id    = try(one(values(data.okta_app_saml.existing)).id, null)
   existing_group_ids = try(one(values(data.okta_app_group_assignments.existing)).groups, [])
 }
 
@@ -127,8 +133,6 @@ module "flex_saml_app" {
   attribute_statements_mode  = var.okta_app.attribute_statements_mode
   optional_attribute_sets    = var.okta_app.optional_attribute_sets
   extra_attribute_statements = var.okta_app.extra_attribute_statements
-
-  depends_on = [data.okta_apps.label_search]
 }
 
 # Terraform only tracks the groups it assigns. Warn (without blocking) when someone has assigned
