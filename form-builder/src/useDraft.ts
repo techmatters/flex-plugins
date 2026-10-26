@@ -73,11 +73,11 @@ const saveDraft = (
   original: DefinitionFileMap,
   files: DefinitionFileMap,
   changedPaths: string[],
-) => {
+): boolean => {
   try {
     if (changedPaths.length === 0) {
       window.localStorage.removeItem(storageKey(code, version));
-      return;
+      return true;
     }
     const draft: StoredDraft = {
       savedAt: new Date().toISOString(),
@@ -89,8 +89,16 @@ const saveDraft = (
       ),
     };
     window.localStorage.setItem(storageKey(code, version), JSON.stringify(draft));
+    return true;
   } catch {
-    // Storage can be full or blocked (private browsing); the draft still works in memory
+    // Storage can be full (browsers allow ~5 MB, and big shared lists like PH's are ~3 MB)
+    // or blocked (private browsing). The draft still works in memory; the user is warned.
+    try {
+      window.localStorage.removeItem(storageKey(code, version));
+    } catch {
+      // Nothing more to do
+    }
+    return false;
   }
 };
 
@@ -104,9 +112,10 @@ export const useDraft = (code: string, version: string, original: DefinitionFile
   const [notice, setNotice] = useState(initial.notice);
 
   const changedPaths = useMemo(() => getChangedFilePaths(original, files), [original, files]);
+  const [savedInBrowser, setSavedInBrowser] = useState(true);
 
   useEffect(() => {
-    saveDraft(code, version, original, files, changedPaths);
+    setSavedInBrowser(saveDraft(code, version, original, files, changedPaths));
   }, [code, version, original, files, changedPaths]);
 
   const updateFiles = (updater: (current: DefinitionFileMap) => DefinitionFileMap) =>
@@ -120,6 +129,8 @@ export const useDraft = (code: string, version: string, original: DefinitionFile
   return {
     files,
     changedPaths,
+    // False when the draft couldn't be kept in this browser and would be lost on closing it
+    savedInBrowser,
     notice,
     dismissNotice: () => setNotice(undefined),
     updateFiles,

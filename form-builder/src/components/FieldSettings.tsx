@@ -21,6 +21,7 @@
 import type { FormItemJsonDefinition, SelectOption } from '@hrm-form-definitions/formDefinition/types';
 import type { ContactTab, DefinitionFileMap } from '../definitions';
 import { findFieldReferences } from '../fieldReferences';
+import { findChainsThroughField } from '../linkedDropdowns';
 import {
   changeFieldType,
   FIELD_TYPE_INFO,
@@ -32,7 +33,6 @@ import {
   toFieldName,
   uniqueFieldName,
   updateField,
-  usesPlaceholder,
 } from '../formEditing';
 import { isProtectedField } from '../specification';
 import type { ValidationIssue } from '../validation';
@@ -45,10 +45,13 @@ type Props = {
   originalItem?: FormItemJsonDefinition;
   otherNames: string[];
   draftFiles: DefinitionFileMap;
+  // Every field in this form, to find the linked dropdowns this field belongs to
+  formItems: FormItemJsonDefinition[];
   staffMode: boolean;
   blankOptionValue: string;
   issues: ValidationIssue[];
   onChange: (item: FormItemJsonDefinition) => void;
+  onEditLinked: (chain: string[]) => void;
   onRemove: () => void;
   onClose: () => void;
 };
@@ -62,10 +65,12 @@ export const FieldSettings = ({
   originalItem,
   otherNames,
   draftFiles,
+  formItems,
   staffMode,
   blankOptionValue,
   issues,
   onChange,
+  onEditLinked,
   onRemove,
   onClose,
 }: Props) => {
@@ -74,7 +79,16 @@ export const FieldSettings = ({
   const isProtected = isProtectedField(tab.key, item.name);
   const isSpecial = SPECIAL_TYPES.includes(type);
   const usesSharedOptions = 'optionsReferenceKey' in item;
-  const allowedTypes = getAllowedTypeSwitches(item, { isNew, staffMode });
+  const linkedChains = findChainsThroughField(formItems, item.name);
+  const isLinked = linkedChains.length > 0;
+  // The top dropdown of a linked set has its answers edited together with the levels below
+  const isLinkedTop = isLinked && linkedChains[0][0] === item.name;
+  const labelOf = (name: string) => {
+    const field = formItems.find((other) => other.name === name);
+    return field?.label || name;
+  };
+  // Switching a linked dropdown to another kind would break the link
+  const allowedTypes = isLinked ? [type] : getAllowedTypeSwitches(item, { isNew, staffMode });
   const references = isNew ? [] : findFieldReferences(draftFiles, tab, item.name);
 
   // A new field's saved name follows its label, until someone sets the name by hand
@@ -149,12 +163,30 @@ export const FieldSettings = ({
         ) : (
           <span className="read-only-value">{FIELD_TYPE_INFO[type]?.label ?? type}</span>
         )}
-        {allowedTypes.length === 1 && !isNew && !isSpecial && (
+        {allowedTypes.length === 1 && !isNew && !isSpecial && !isLinked && (
           <span className="field-hint">
             This field already has saved answers, so its kind can only be changed by Aselo staff.
           </span>
         )}
       </label>
+
+      {isLinked && (
+        <div className="linked-section">
+          <span className="field-label">Linked dropdowns</span>
+          {linkedChains.map((chain) => (
+            <div key={chain.join('>')} className="linked-chain">
+              <span>{chain.map(labelOf).join(' → ')}</span>
+              <button
+                type="button"
+                className="secondary-button"
+                onClick={() => onEditLinked(chain)}
+              >
+                Edit answers
+              </button>
+            </div>
+          ))}
+        </div>
+      )}
 
       {isSpecial ? (
         <p className="field-hint">
@@ -171,20 +203,8 @@ export const FieldSettings = ({
             <span>Counselors must answer this</span>
           </label>
 
-          {usesPlaceholder(type) && (
-            <label className="field">
-              <span className="field-label">Hint inside the empty box (optional)</span>
-              <input
-                type="text"
-                value={item.placeholder ?? ''}
-                onChange={(e) =>
-                  onChange(updateField(item, { placeholder: e.target.value || undefined }))
-                }
-              />
-            </label>
-          )}
 
-          {isChoiceType(type) && !usesSharedOptions && 'options' in item && (
+          {isChoiceType(type) && !usesSharedOptions && !isLinkedTop && 'options' in item && (
             <div className="field">
               <span className="field-label">Answers</span>
               <OptionsEditor
@@ -202,17 +222,10 @@ export const FieldSettings = ({
             </div>
           )}
 
-          {usesSharedOptions && (
+          {usesSharedOptions && !isLinked && (
             <p className="field-hint">
               This field's answers come from a list shared with other fields. Ask Aselo staff to
               change them.
-            </p>
-          )}
-
-          {type === 'dependent-select' && (
-            <p className="field-hint">
-              The answers of linked dropdowns can't be edited here yet. Ask Aselo staff to change
-              them.
             </p>
           )}
         </>

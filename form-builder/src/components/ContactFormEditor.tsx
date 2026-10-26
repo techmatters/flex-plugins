@@ -47,10 +47,12 @@ import { CSS } from '@dnd-kit/utilities';
 import type { FormItemJsonDefinition } from '@hrm-form-definitions/formDefinition/types';
 import type { ContactTab, DefinitionFileMap } from '../definitions';
 import {
+  describeDefinitionFile,
   getContactSplitFormAt,
   getForm,
   getReferenceData,
   LAYOUT_FILE,
+  REFERENCE_DATA_FILE,
   splitIntoColumns,
 } from '../definitions';
 import {
@@ -59,11 +61,23 @@ import {
   detectBlankOptionValue,
   FieldType,
 } from '../formEditing';
+import {
+  AnswerNode,
+  applyChainOptions,
+  chainToTree,
+  ChainTree,
+  createChainFields,
+  findReferenceKeyUsers,
+  makeKeyValuesUnique,
+  treeToChainOptions,
+} from '../linkedDropdowns';
 import { isSameJson } from '../changes';
 import type { ValidationIssue } from '../validation';
 import { FieldPreview } from './FieldPreview';
 import { FieldSettings } from './FieldSettings';
 import { AddFieldMenu } from './AddFieldMenu';
+import { LinkedAnswersEditor } from './LinkedAnswersEditor';
+import { LinkedDropdownsWizard } from './LinkedDropdownsWizard';
 
 type ColumnKey = 'left' | 'right';
 const COLUMN_KEYS: ColumnKey[] = ['left', 'right'];
@@ -191,6 +205,15 @@ export const ContactFormEditor = ({
   const [selectedId, setSelectedId] = useState<string>();
   const [activeId, setActiveId] = useState<UniqueIdentifier>();
   const [addingTo, setAddingTo] = useState<ColumnKey>();
+  // Column where the "Add linked dropdowns" wizard will put the new fields
+  const [linkedWizardColumn, setLinkedWizardColumn] = useState<ColumnKey>();
+  // Linked dropdowns whose answers are being edited
+  const [editingChain, setEditingChain] = useState<{
+    names: string[];
+    fields: FormItemJsonDefinition[];
+    tree: ChainTree;
+    notes: string[];
+  }>();
   const columnsBeforeDrag = useRef<Columns>();
 
   const allEntries = [...columns.left, ...columns.right];
@@ -206,11 +229,12 @@ export const ContactFormEditor = ({
     return isSameJson(original, entry.item) ? undefined : 'edited';
   };
 
-  // Writes the columns back to the draft files
-  const commit = (next: Columns) => {
+  // Writes the columns back to the draft files, plus any other files that changed with them
+  const commit = (next: Columns, otherFiles: DefinitionFileMap = {}) => {
     setColumns(next);
     const items = [...next.left, ...next.right].map((entry) => entry.item);
-    onChangeFiles((files) => {
+    onChangeFiles((current) => {
+      const files = { ...current, ...otherFiles };
       const currentLayout = (files[LAYOUT_FILE] ?? {}) as Record<string, unknown>;
       const layout = applyColumnSplit(
         currentLayout,
@@ -301,6 +325,125 @@ export const ContactFormEditor = ({
     setSelectedId(entry.id);
   };
 
+  /**
+   * Linked dropdowns
+   */
+
+  const formItems = allEntries.map((entry) => entry.item);
+
+  // Turns edited answers into the chain's field options (and ReferenceData.json if needed)
+  const buildChain = (
+    fields: FormItemJsonDefinition[],
+    roots: AnswerNode[],
+    tree: Pick<ChainTree, 'rootBlankOption' | 'unusedLists'>,
+    replacedByImport: boolean,
+  ) => {
+    const unique = makeKeyValuesUnique(roots, fields.length, { fixExisting: replacedByImport });
+    const options = treeToChainOptions(
+      unique.roots,
+      fields.length,
+      tree.rootBlankOption,
+      // An import replaces everything, including lists that could never show
+      replacedByImport ? [] : tree.unusedLists,
+    );
+    const result = applyChainOptions(fields, options, draftFiles);
+    return {
+      fields: result.fields,
+      otherFiles: result.referenceData ? { [REFERENCE_DATA_FILE]: result.referenceData } : {},
+    };
+  };
+
+  const openChainEditor = (names: string[]) => {
+    const fields = names.map((name) => formItems.find((item) => item.name === name)!);
+    const tree = chainToTree(fields, referenceData);
+    const notes: string[] = [];
+    fields.forEach((field) => {
+      const key = (field as { optionsReferenceKey?: string }).optionsReferenceKey;
+      if (!key) return;
+      const others = findReferenceKeyUsers(draftFiles, key, (filePath) =>
+        describeDefinitionFile(draftFiles, filePath),
+      ).filter((user) => !(user.filePath === tab.filePath && user.fieldName === field.name));
+      if (others.length > 0) {
+        notes.push(
+          `The “${field.label}” answers are shared with ${others
+            .map((other) => other.description)
+            .join(', ')}. Changes here change them there too.`,
+        );
+      }
+    });
+    if (tree.sharedValues.length > 0) {
+      notes.push(
+        `${tree.sharedValues.length} answer(s) share a name with another answer at the same level (e.g. “${tree.sharedValues[0]}”), so they show the same answers below them. To give each its own list, download as Excel and import it again.`,
+      );
+    }
+    if (tree.unusedLists.length > 0) {
+      notes.push(
+        `${tree.unusedLists.length} list(s) of answers are filed under an answer that doesn't exist (e.g. “${tree.unusedLists[0].key}”), so counselors never see them. They're kept as they are unless you import from a spreadsheet.`,
+      );
+    }
+    setEditingChain({ names, fields, tree, notes });
+  };
+
+  const saveChainAnswers = (roots: AnswerNode[], replacedByImport: boolean) => {
+    if (!editingChain) return;
+    const { fields, otherFiles } = buildChain(
+      editingChain.fields,
+      roots,
+      editingChain.tree,
+      replacedByImport,
+    );
+    const byName = new Map(fields.map((field) => [field.name, field]));
+    const updateEntries = (entries: Entry[]) =>
+      entries.map((entry) => {
+        const updated = byName.get(entry.item.name);
+        return updated ? { ...entry, item: updated } : entry;
+      });
+    commit({ left: updateEntries(columns.left), right: updateEntries(columns.right) }, otherFiles);
+    setEditingChain(undefined);
+  };
+
+  const createChain = (
+    column: ColumnKey,
+    levelLabels: string[],
+    roots: AnswerNode[],
+    existingTop?: FormItemJsonDefinition,
+  ) => {
+    const newFields = createChainFields(
+      levelLabels,
+      formItems.map((item) => item.name),
+      blankOptionValue,
+      existingTop,
+    );
+    const rootBlankOption = existingTop
+      ? chainToTree([existingTop], referenceData).rootBlankOption
+      : { value: blankOptionValue, label: '' };
+    const { fields, otherFiles } = buildChain(
+      newFields,
+      roots,
+      { rootBlankOption, unusedLists: [] },
+      false,
+    );
+    const [top, ...dependents] = fields.map(toEntry);
+
+    let next: Columns;
+    if (existingTop) {
+      // Follow-up dropdowns go straight under the question they depend on
+      const topColumn = COLUMN_KEYS.find((key) =>
+        columns[key].some((entry) => entry.item.name === existingTop.name),
+      )!;
+      const index = columns[topColumn].findIndex((entry) => entry.item.name === existingTop.name);
+      const updated = [...columns[topColumn]];
+      updated.splice(index, 1, { ...updated[index], item: top.item }, ...dependents);
+      next = { ...columns, [topColumn]: updated };
+      setSelectedId(dependents[0]?.id);
+    } else {
+      next = { ...columns, [column]: [...columns[column], top, ...dependents] };
+      setSelectedId(top.id);
+    }
+    commit(next, otherFiles);
+    setLinkedWizardColumn(undefined);
+  };
+
   const formIsEmpty = allEntries.length === 0;
 
   return (
@@ -350,6 +493,10 @@ export const ContactFormEditor = ({
                   {addingTo === columnKey ? (
                     <AddFieldMenu
                       onAdd={(type) => addField(columnKey, type)}
+                      onAddLinked={() => {
+                        setAddingTo(undefined);
+                        setLinkedWizardColumn(columnKey);
+                      }}
                       onCancel={() => setAddingTo(undefined)}
                     />
                   ) : (
@@ -392,10 +539,12 @@ export const ContactFormEditor = ({
               .filter((entry) => entry.id !== selectedEntry.id)
               .map((entry) => entry.item.name)}
             draftFiles={draftFiles}
+            formItems={formItems}
             staffMode={staffMode}
             blankOptionValue={blankOptionValue}
             issues={issues.filter((issue) => issue.fieldName === selectedEntry.item.name)}
             onChange={(item) => commit(mapEntry(selectedEntry.id, (entry) => ({ ...entry, item })))}
+            onEditLinked={openChainEditor}
             onRemove={() => {
               commit(mapEntry(selectedEntry.id, () => undefined));
               setSelectedId(undefined);
@@ -414,6 +563,30 @@ export const ContactFormEditor = ({
           </div>
         )}
       </aside>
+
+      {linkedWizardColumn && (
+        <LinkedDropdownsWizard
+          formItems={formItems}
+          referenceData={referenceData}
+          onCreate={(levelLabels, roots, existingTop) =>
+            createChain(linkedWizardColumn, levelLabels, roots, existingTop)
+          }
+          onCancel={() => setLinkedWizardColumn(undefined)}
+        />
+      )}
+
+      {editingChain && (
+        <LinkedAnswersEditor
+          title={`Answers for ${editingChain.fields.map((field) => field.label || field.name).join(' → ')}`}
+          levelLabels={editingChain.fields.map((field) => field.label || field.name)}
+          initialRoots={editingChain.tree.roots}
+          notes={editingChain.notes}
+          saveLabel="Save answers"
+          downloadName={`${tab.layoutKey}-${editingChain.names.join('-')}.xlsx`}
+          onSave={(roots, { replacedByImport }) => saveChainAnswers(roots, replacedByImport)}
+          onCancel={() => setEditingChain(undefined)}
+        />
+      )}
     </div>
   );
 };

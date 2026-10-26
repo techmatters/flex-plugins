@@ -23,24 +23,32 @@ import { hrmFormDefinitionsResolver } from './build-tools/hrmFormDefinitionsReso
 
 const appDir = path.dirname(fileURLToPath(import.meta.url));
 const hrmFormDefinitionsSrc = path.resolve(appDir, '../lambdas/packages/hrm-form-definitions/src');
+// The Flex plugin's UI text, so the "Try it out" preview uses the same wording as Aselo
+const pluginTranslationsDir = path.resolve(appDir, '../plugin-hrm-form/src/translations');
 
 // Defaults to this repo's form definitions; override to point at another checkout
 const formDefinitionsDir =
   process.env.FORM_DEFINITIONS_DIR ??
   path.resolve(appDir, '../lambdas/packages/hrm-form-definitions/form-definitions');
+// Each helpline's Flex service configuration, for its language
+const helplinesConfigDir =
+  process.env.HELPLINES_CONFIG_DIR ?? path.resolve(appDir, '../twilio-iac/helplines');
 
 export default defineConfig({
   plugins: [
     hrmFormDefinitionsResolver(hrmFormDefinitionsSrc),
     react(),
-    definitionsDevApi(formDefinitionsDir),
+    definitionsDevApi(formDefinitionsDir, helplinesConfigDir),
   ],
   resolve: {
-    alias: { '@hrm-form-definitions': hrmFormDefinitionsSrc },
+    alias: {
+      '@hrm-form-definitions': hrmFormDefinitionsSrc,
+      '@plugin-translations': pluginTranslationsDir,
+    },
   },
   server: {
     port: 5180,
-    // The specification and validator are imported from the hrm-form-definitions package
-    fs: { allow: [appDir, hrmFormDefinitionsSrc] },
+    // The specification, validator and translations are imported from elsewhere in the repo
+    fs: { allow: [appDir, hrmFormDefinitionsSrc, pluginTranslationsDir] },
   },
 });

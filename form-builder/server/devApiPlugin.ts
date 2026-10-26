@@ -32,7 +32,7 @@ const sendJson = (res: ServerResponse, statusCode: number, body: unknown) => {
 };
 
 const handleApiRequest =
-  (formDefinitionsDir: string) =>
+  (formDefinitionsDir: string, helplinesConfigDir?: string) =>
   async (req: IncomingMessage, res: ServerResponse, next: () => void) => {
     const { pathname } = new URL(req.url ?? '/', 'http://localhost');
     try {
@@ -42,7 +42,7 @@ const handleApiRequest =
       }
       const match = pathname.match(/^\/api\/definitions\/([^/]+)\/([^/]+)$/);
       if (match) {
-        sendJson(res, 200, await loadDefinitionFiles(formDefinitionsDir, match[1], match[2]));
+        sendJson(res, 200, await loadDefinitionFiles(formDefinitionsDir, match[1], match[2], helplinesConfigDir));
         return;
       }
       next();
@@ -53,12 +53,12 @@ const handleApiRequest =
   };
 
 // Served by both `npm run dev` and `npm run preview` (the local production build)
-export const definitionsDevApi = (formDefinitionsDir: string): Plugin => ({
+export const definitionsDevApi = (formDefinitionsDir: string, helplinesConfigDir?: string): Plugin => ({
   name: 'form-definitions-dev-api',
   configureServer(server) {
-    server.middlewares.use(handleApiRequest(formDefinitionsDir));
+    server.middlewares.use(handleApiRequest(formDefinitionsDir, helplinesConfigDir));
   },
   configurePreviewServer(server) {
-    server.middlewares.use(handleApiRequest(formDefinitionsDir));
+    server.middlewares.use(handleApiRequest(formDefinitionsDir, helplinesConfigDir));
   },
 });

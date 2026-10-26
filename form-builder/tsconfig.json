@@ -13,7 +13,7 @@
     "skipLibCheck": true,
     "esModuleInterop": true,
     "resolveJsonModule": true,
-    "types": ["node"],
+    "types": ["node", "vite/client"],
     "baseUrl": ".",
     "paths": {
       "@hrm-form-definitions/*": ["../lambdas/packages/hrm-form-definitions/src/*"],

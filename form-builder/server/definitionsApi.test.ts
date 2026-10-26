@@ -17,7 +17,7 @@
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { describe, expect, test } from 'vitest';
-import { listHelplines, loadDefinitionFiles } from './definitionsApi';
+import { listHelplines, loadDefinitionFiles, readHelplineLanguage } from './definitionsApi';
 
 const formDefinitionsDir = path.resolve(
   path.dirname(fileURLToPath(import.meta.url)),
@@ -55,6 +55,20 @@ describe('definitionsApi', () => {
     await expect(loadDefinitionFiles(formDefinitionsDir, code, version)).rejects.toMatchObject({
       statusCode: 400,
     });
+  });
+
+  test('reads the helpline language from its Flex service configuration', async () => {
+    const helplinesConfigDir = path.resolve(formDefinitionsDir, '../../../../twilio-iac/helplines');
+    expect(await readHelplineLanguage(helplinesConfigDir, 'ca')).toBe('en-CA');
+    expect(await readHelplineLanguage(helplinesConfigDir, 'cl')).toMatch(/^es/);
+    expect(await readHelplineLanguage(helplinesConfigDir, 'nosuchhelpline')).toBeUndefined();
+    const { helplineLanguage } = await loadDefinitionFiles(
+      formDefinitionsDir,
+      'ca',
+      'v1',
+      helplinesConfigDir,
+    );
+    expect(helplineLanguage).toBe('en-CA');
   });
 
   test('returns 404 for an unknown helpline', async () => {

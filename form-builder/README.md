@@ -13,10 +13,20 @@ It reads and writes the same files the Flex plugin uses:
 - The three contact form tabs (Caller, Child and Case information) can be edited:
   drag fields to reorder them or move them between columns, add fields, change questions,
   answers, required, hint text and PII.
-- **Try it out** shows the edited form working as counselors would use it.
+- **Try it out** shows the edited contact form as counselors see it in Aselo: the same tabs
+  (with the helpline's own tab names), two 217px columns, field styles, "Next" / "Save and
+  End", and the same checks when saving. See `src/aselo/` — its styles are copied from
+  `plugin-hrm-form` and name the plugin file each one comes from, so they can be kept in step.
+  Text comes from the plugin's translation files plus the helpline's
+  `customStrings/Substitutions.json`, in the helpline's language (`helplineLanguage` in its
+  twilio-iac service configuration).
 - Changes are kept as a draft in the browser (local storage) and checked as you go.
 - **Review & export** lists the changes in plain language and downloads a zip of the
   changed files, laid out like the repo, plus a `CHANGES.md` for the reviewer.
+- **Linked dropdowns** (e.g. Province → Municipality → District, or a follow-up like
+  "Experiencing abuse?" → "Risk level"), 2 to 5 levels: add them with a wizard, edit answers
+  in a column browser, import from pasted spreadsheet cells, CSV or Excel, and download as
+  Excel to edit offline. See "Linked dropdowns" below.
 - Issue categories and cases are still preview only.
 
 **Aselo staff mode** (top right) shows settings that affect saved data: field names, PII on
@@ -34,6 +44,26 @@ sign-in decides who is staff.
   pre-survey/pre-engagement prepopulation, linked dropdowns).
 - Problems that already existed before the user's edits are reported as warnings for the
   reviewer, so they don't block export of unrelated changes.
+
+### Linked dropdowns
+
+Each level is its own field: a `select`, then `dependent-select` fields whose options are
+grouped by the value chosen above (`options: { "<value above>": [...] }`).
+`src/linkedDropdowns.ts` converts between that and a tree of answers.
+
+- Lists are grouped by *value*, so two answers with the same value at a level with a level
+  below would share one list (this happens in PH today: 112 municipality names repeat across
+  provinces). New or imported answers that clash get a unique saved value such as
+  "San Jose (Batangas)"; counselors still see "San Jose". Existing values are only changed
+  by a spreadsheet import, which replaces the whole list.
+- Lists already in `ReferenceData.json` stay there and stay shared with the other forms that
+  use them (the editor says which). An inline list moves there when it grows past 200
+  answers; lists that were already big inline are left alone.
+- Saving unchanged answers leaves the files byte-for-byte identical (tested against every
+  linked dropdown in the repo), and lists filed under values that no longer exist are kept
+  unless an import replaces everything.
+- Excel support uses SheetJS (installed from cdn.sheetjs.com, as the npm copy is outdated),
+  loaded only when a spreadsheet is imported or downloaded.
 
 Planned next:
 

@@ -60,7 +60,7 @@ export const CATEGORIES_FILE = 'tabbedForms/IssueCategorizationTab.json';
 const CASE_SECTIONS_FILE = 'CaseSections.json';
 const CASE_STATUS_FILE = 'CaseStatus.json';
 export const LAYOUT_FILE = 'LayoutDefinitions.json';
-const REFERENCE_DATA_FILE = 'ReferenceData.json';
+export const REFERENCE_DATA_FILE = 'ReferenceData.json';
 
 export type CaseSection = {
   key: string;
@@ -103,7 +103,15 @@ export const getCaseSections = (files: DefinitionFileMap): CaseSection[] => {
   return Object.entries(sections).map(([key, { label, formPath }]) => ({ key, label, formPath }));
 };
 
-export const getCaseStatuses = (files: DefinitionFileMap): StatusInfo[] =>
+// A readable name for a form file, e.g. "Child information" or "Household Member (case)"
+export const describeDefinitionFile = (files: DefinitionFileMap, filePath: string): string => {
+  const tab = CONTACT_TABS.find((contactTab) => contactTab.filePath === filePath);
+  if (tab) return tab.title;
+  const section = getCaseSections(files).find((caseSection) => caseSection.formPath === filePath);
+  return section ? `${section.label} (case)` : filePath;
+};
+
+export const getCaseStatuses =(files: DefinitionFileMap): StatusInfo[] =>
   Object.values((files[CASE_STATUS_FILE] ?? {}) as Record<string, StatusInfo>);
 
 // IssueCategorizationTab is keyed by the helpline display name (e.g. "NAMI"), not the short code

@@ -77,7 +77,6 @@ export const FieldPreview = ({ item, referenceData, value, dependeeValue, onChan
           <Label item={item} />
           <input
             type={inputType}
-            placeholder={item.placeholder}
             value={value}
             onChange={(e) => onChange(e.target.value)}
           />
@@ -91,7 +90,6 @@ export const FieldPreview = ({ item, referenceData, value, dependeeValue, onChan
           <Label item={item} />
           <textarea
             rows={'rows' in item && item.rows ? item.rows : 4}
-            placeholder={item.placeholder}
             value={value}
             onChange={(e) => onChange(e.target.value)}
           />

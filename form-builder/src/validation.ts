@@ -22,6 +22,7 @@
  * helpline with an old quirk can still export unrelated edits.
  */
 import type {
+  DependentOptions,
   FormDefinition,
   FormItemJsonDefinition,
   SelectOption,
@@ -62,6 +63,83 @@ const checkOptions = (item: FormItemJsonDefinition, options: SelectOption[]): st
   return problems;
 };
 
+// Every value a field can have: its answers, or for a linked dropdown, all of its lists
+const allValuesOf = (item: FormItemJsonDefinition, referenceData: Record<string, unknown>) => {
+  const options = resolveOptions<SelectOption[] | DependentOptions>(item, referenceData);
+  if (!options) return [];
+  const lists = Array.isArray(options) ? [options] : Object.values(options);
+  return lists.flat().map((option) => String(option.value));
+};
+
+const checkLinkedDropdown = (
+  item: Extract<FormItemJsonDefinition, { dependsOn: string }>,
+  form: FormItemJsonDefinition[],
+  referenceData: Record<string, unknown>,
+): ValidationIssue[] => {
+  const issues: ValidationIssue[] = [];
+  const lists = resolveOptions<DependentOptions>(item, referenceData);
+  if (!lists) {
+    return [
+      {
+        severity: 'error',
+        message: `The answers for ${describeField(item)} could not be found.`,
+        fieldName: item.name,
+      },
+    ];
+  }
+  if (Object.keys(lists).length === 0) {
+    return [
+      {
+        severity: 'error',
+        message: `${describeField(item)} has no answers yet.`,
+        fieldName: item.name,
+      },
+    ];
+  }
+
+  Object.entries(lists).forEach(([key, options]) => {
+    const values = options.map((option) => String(option.value));
+    if (new Set(values).size !== values.length) {
+      issues.push({
+        severity: 'error',
+        message: `${describeField(item)} has the same answer more than once under “${key}”.`,
+        fieldName: item.name,
+      });
+    }
+    if (options.some((option) => !String(option.label ?? '').trim())) {
+      issues.push({
+        severity: 'error',
+        message: `${describeField(item)} has an answer with no text under “${key}”.`,
+        fieldName: item.name,
+      });
+    }
+  });
+
+  const parent = form.find((other) => other.name === item.dependsOn);
+  if (!parent) return issues;
+  const parentValues = allValuesOf(parent, referenceData);
+  const parentValueCounts = new Map<string, number>();
+  parentValues.forEach((value) => parentValueCounts.set(value, (parentValueCounts.get(value) ?? 0) + 1));
+
+  const unused = Object.keys(lists).filter((key) => !parentValueCounts.has(key));
+  if (unused.length > 0) {
+    issues.push({
+      severity: 'warning',
+      message: `${describeField(item)} has answers filed under ${unused.length} value(s) that aren't answers of ${describeField(parent)} (e.g. “${unused[0]}”), so counselors never see them.`,
+      fieldName: item.name,
+    });
+  }
+  const shared = Object.keys(lists).filter((key) => (parentValueCounts.get(key) ?? 0) > 1);
+  if (shared.length > 0) {
+    issues.push({
+      severity: 'warning',
+      message: `${shared.length} answer(s) of ${describeField(parent)} share a name with another (e.g. “${shared[0]}”), so they all show the same ${describeField(item)} answers. Re-importing the list from a spreadsheet fixes this.`,
+      fieldName: item.name,
+    });
+  }
+  return issues;
+};
+
 const checkForm = (
   form: FormItemJsonDefinition[],
   tab: ContactTab,
@@ -93,11 +171,14 @@ const checkForm = (
         checkOptions(item, options).forEach((message) => error(message, item.name));
       }
     }
-    if (item.type === 'dependent-select' && !names.includes(item.dependsOn)) {
-      error(
-        `${describeField(item)} depends on “${item.dependsOn}”, which isn't in this form.`,
-        item.name,
-      );
+    if (item.type === 'dependent-select') {
+      if (!names.includes(item.dependsOn)) {
+        error(
+          `${describeField(item)} depends on “${item.dependsOn}”, which isn't in this form.`,
+          item.name,
+        );
+      }
+      checkLinkedDropdown(item, form, referenceData).forEach((issue) => issues.push(issue));
     }
   });
 

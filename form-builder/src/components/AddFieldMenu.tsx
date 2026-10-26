@@ -18,10 +18,11 @@ import { ADDABLE_FIELD_TYPES, FIELD_TYPE_INFO, FieldType } from '../formEditing'
 
 type Props = {
   onAdd: (type: FieldType) => void;
+  onAddLinked: () => void;
   onCancel: () => void;
 };
 
-export const AddFieldMenu = ({ onAdd, onCancel }: Props) => (
+export const AddFieldMenu = ({ onAdd, onAddLinked, onCancel }: Props) => (
   <div className="add-field-menu" role="dialog" aria-label="Choose the kind of field to add">
     <div className="add-field-menu-header">
       <strong>What kind of answer?</strong>
@@ -38,6 +39,15 @@ export const AddFieldMenu = ({ onAdd, onCancel }: Props) => (
           </button>
         </li>
       ))}
+      <li className="field-type-wide">
+        <button type="button" className="field-type-option" onClick={onAddLinked}>
+          <span className="field-type-name">Linked dropdowns</span>
+          <span className="muted">
+            Two or more dropdowns where each one's answers depend on the one above, like
+            province → district
+          </span>
+        </button>
+      </li>
     </ul>
   </div>
 );

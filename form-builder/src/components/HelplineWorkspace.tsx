@@ -33,8 +33,9 @@ import {
 } from '../definitions';
 import { useDraft } from '../useDraft';
 import { validateContactTab, ValidationIssue } from '../validation';
-import { FormPreview } from './FormPreview';
 import { CategoriesPreview } from './CategoriesPreview';
+import { FlexDesktopPreview } from '../aselo/FlexDesktopPreview';
+import { AseloSectionPreview } from '../aselo/AseloSectionPreview';
 import { CaseStatusPreview } from './CaseStatusPreview';
 import { ContactFormEditor } from './ContactFormEditor';
 import { ReviewChanges } from './ReviewChanges';
@@ -105,43 +106,27 @@ export const HelplineWorkspace = ({ definitions, staffMode }: Props) => {
     if (!form) return <p className="muted">This helpline has no {tab.title} form.</p>;
     return (
       <>
-        <div className="mode-switch" role="tablist" aria-label="Mode">
-          <button
-            type="button"
-            role="tab"
-            aria-selected={!tryItOut}
-            className={!tryItOut ? 'active' : ''}
-            onClick={() => setTryItOut(false)}
-          >
-            Edit
+        <div className="try-it-out-row">
+          <button type="button" className="secondary-button" onClick={() => setTryItOut(true)}>
+            Try it out in Aselo
           </button>
-          <button
-            type="button"
-            role="tab"
-            aria-selected={tryItOut}
-            className={tryItOut ? 'active' : ''}
-            onClick={() => setTryItOut(true)}
-          >
-            Try it out
-          </button>
+          <span className="muted">See the draft form in the counselor's screen and fill it in.</span>
         </div>
-        {tryItOut ? (
-          <FormPreview
-            key={`${tab.key}-${editorRevision}`}
-            title={tab.title}
-            form={form}
-            referenceData={referenceData}
-            splitFormAt={getContactSplitFormAt(files, tab)}
-          />
-        ) : (
-          <ContactFormEditor
-            key={`${tab.key}-${editorRevision}`}
-            tab={tab}
-            draftFiles={files}
-            originalFiles={originalFiles}
-            staffMode={staffMode}
-            issues={issuesByTab[tab.key] ?? []}
-            onChangeFiles={draft.updateFiles}
+        <ContactFormEditor
+          key={`${tab.key}-${editorRevision}`}
+          tab={tab}
+          draftFiles={files}
+          originalFiles={originalFiles}
+          staffMode={staffMode}
+          issues={issuesByTab[tab.key] ?? []}
+          onChangeFiles={draft.updateFiles}
+        />
+        {tryItOut && (
+          <FlexDesktopPreview
+            definitions={definitions}
+            files={files}
+            initialTab={tab.key}
+            onClose={() => setTryItOut(false)}
           />
         )}
       </>
@@ -160,11 +145,12 @@ export const HelplineWorkspace = ({ definitions, staffMode }: Props) => {
     const form = section && getForm(files, section.formPath);
     if (!section || !form) return <p className="muted">This case section has no form.</p>;
     return (
-      <FormPreview
+      <AseloSectionPreview
         key={section.key}
         title={section.label}
         form={form}
-        referenceData={referenceData}
+        files={files}
+        helplineLanguage={definitions.helplineLanguage}
         splitFormAt={getCaseSectionSplitFormAt(files, section.key)}
       />
     );
@@ -175,7 +161,7 @@ export const HelplineWorkspace = ({ definitions, staffMode }: Props) => {
       <div className="action-bar">
         <span className={changeCount ? 'change-count has-changes' : 'change-count'}>
           {changeCount
-            ? `Draft: ${changeCount} file${changeCount === 1 ? '' : 's'} changed, saved in this browser`
+            ? `Draft: ${changeCount} file${changeCount === 1 ? '' : 's'} changed${draft.savedInBrowser ? ', saved in this browser' : ''}`
             : 'No changes yet'}
         </span>
         {changeCount > 0 && (
@@ -192,6 +178,13 @@ export const HelplineWorkspace = ({ definitions, staffMode }: Props) => {
           Review &amp; export
         </button>
       </div>
+
+      {changeCount > 0 && !draft.savedInBrowser && (
+        <div className="alert alert-error">
+          Your changes are too big to keep in this browser, so they'll be lost if you close or
+          reload this page. Use “Review &amp; export” to download them before you leave.
+        </div>
+      )}
 
       {draft.notice && (
         <div className="alert alert-info">

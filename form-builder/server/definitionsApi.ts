@@ -41,6 +41,10 @@ export type DefinitionFiles = {
   // e.g. { 'tabbedForms/CallerInformationTab.json': [...] }
   files: Record<string, unknown>;
   errors: DefinitionFileError[];
+  // From the helpline's Flex service configuration, e.g. 'en-US' (decides the UI wording)
+  helplineLanguage?: string;
+  // Logo for Flex's header, if the helpline's production config sets one
+  logoUrl?: string;
 };
 
 export class DefinitionsApiError extends Error {
@@ -91,10 +95,53 @@ const listJsonFiles = async (dir: string): Promise<string[]> => {
   return nested.flat();
 };
 
+/**
+ * A value from the helpline's Flex service configuration in
+ * twilio-iac/helplines/<code>/configs/service-configuration.
+ * production.json overrides common.json (as in Terraform), so it's checked first.
+ */
+const readServiceConfigValue = async (
+  helplinesConfigDir: string,
+  code: string,
+  pick: (config: Record<string, any>) => unknown,
+  fileNames = ['production.json', 'common.json', 'staging.json'],
+): Promise<string | undefined> => {
+  if (!HELPLINE_CODE_PATTERN.test(code)) return undefined;
+  for (const fileName of fileNames) {
+    const filePath = path.join(helplinesConfigDir, code, 'configs', 'service-configuration', fileName);
+    try {
+      const config = JSON.parse((await fs.readFile(filePath, 'utf8')).replace(/^﻿/, ''));
+      const value = pick(config ?? {});
+      if (typeof value === 'string') return value;
+    } catch {
+      // Missing or unreadable file: try the next one
+    }
+  }
+  return undefined;
+};
+
+export const readHelplineLanguage = (helplinesConfigDir: string, code: string) =>
+  readServiceConfigValue(
+    helplinesConfigDir,
+    code,
+    (config) => config.attributes?.helplineLanguage ?? config.helplineLanguage,
+  );
+
+// The logo in Flex's header (attributes.logo_url). Staging logos are labelled "STAGING", so
+// only production and common settings are used; without one the preview shows a wordmark.
+export const readLogoUrl = (helplinesConfigDir: string, code: string) =>
+  readServiceConfigValue(
+    helplinesConfigDir,
+    code,
+    (config) => config.attributes?.logo_url ?? config.logo_url,
+    ['production.json', 'common.json'],
+  );
+
 export const loadDefinitionFiles = async (
   rootDir: string,
   code: string,
   version: string,
+  helplinesConfigDir?: string,
 ): Promise<DefinitionFiles> => {
   if (!HELPLINE_CODE_PATTERN.test(code) || !VERSION_PATTERN.test(version)) {
     throw new DefinitionsApiError(`Invalid helpline code or version: ${code}/${version}`, 400);
@@ -126,5 +173,9 @@ export const loadDefinitionFiles = async (
     }),
   );
 
-  return { code, version, files, errors };
+  const helplineLanguage = helplinesConfigDir
+    ? await readHelplineLanguage(helplinesConfigDir, code)
+    : undefined;
+  const logoUrl = helplinesConfigDir ? await readLogoUrl(helplinesConfigDir, code) : undefined;
+  return { code, version, files, errors, helplineLanguage, logoUrl };
 };

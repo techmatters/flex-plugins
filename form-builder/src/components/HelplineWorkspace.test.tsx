@@ -118,6 +118,19 @@ describe('HelplineWorkspace', () => {
     expect(fieldCard('Relationship')).toBeTruthy();
   });
 
+  test('warns when the draft is too big to keep in this browser', () => {
+    vi.spyOn(Storage.prototype, 'setItem').mockImplementation(() => {
+      throw new DOMException('Quota exceeded', 'QuotaExceededError');
+    });
+    render(<HelplineWorkspace definitions={usnm} staffMode={false} />);
+    fireEvent.click(fieldCard('Relationship to Help Seeker'));
+    fireEvent.change(screen.getByDisplayValue('Relationship to Help Seeker'), {
+      target: { value: 'Relationship' },
+    });
+    expect(screen.getByText(/too big to keep in this browser/)).toBeTruthy();
+    expect(screen.getByText('Draft: 1 file changed')).toBeTruthy();
+  });
+
   test('discarding brings back the original form', () => {
     vi.spyOn(window, 'confirm').mockReturnValue(true);
     render(<HelplineWorkspace definitions={usnm} staffMode={false} />);

@@ -1,0 +1,663 @@
+/*
+ * The look of Aselo's contact form, copied from plugin-hrm-form:
+ *   styles/HrmTheme.ts, styles/HrmStyles.tsx, styles/layout.tsx, styles/buttons.tsx,
+ *   components/forms/components/** /styles.tsx, components/tabbedForms/styles.tsx
+ * Everything is scoped under .aselo so it can't leak into the builder's own UI.
+ * When the plugin's styles change, update the matching rule here.
+ */
+
+.aselo-preview {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.aselo-preview-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.aselo-preview-controls label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+}
+
+.aselo-preview-controls select {
+  font: inherit;
+  padding: 4px 6px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+}
+
+.aselo-preview-invalid {
+  color: #cb3232;
+  margin: 0;
+}
+
+.aselo {
+  /* Flex's CRM area behind the tabs (HrmTheme colors.base2) */
+  background: #f6f6f6;
+  font-family: 'Open Sans', sans-serif;
+  color: #222222;
+  max-width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+}
+
+.aselo *,
+.aselo *::before,
+.aselo *::after {
+  box-sizing: border-box;
+}
+
+/* TabbedFormsTabs header: back button and contact number */
+.aselo-contact-header {
+  padding: 14px 7% 10px;
+  flex-shrink: 0;
+}
+
+.aselo-back-button {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 0;
+  border: none;
+  background: none;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  color: #192b33;
+  cursor: default;
+}
+
+.aselo-contact-id {
+  padding: 6px 0 0 6px;
+  font-size: 15px;
+  font-weight: 700;
+}
+
+/* StyledTabs / StyledTab / StyledSearchTab */
+.aselo-tabs {
+  display: flex;
+  height: 35px;
+  padding: 0 7%;
+  overflow-x: auto;
+  flex-shrink: 0;
+}
+
+.aselo-tab {
+  height: 35px;
+  min-width: 120px;
+  width: 120px;
+  margin: 0 5px 0 0;
+  padding: 0;
+  border: none;
+  border-top-left-radius: 4px;
+  border-top-right-radius: 4px;
+  background-color: #ecedf1;
+  font-family: inherit;
+  font-size: 12px;
+  color: rgba(0, 0, 0, 0.87);
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.aselo-tab:hover {
+  background-color: #c9c9c9;
+}
+
+.aselo-tab.selected {
+  background-color: #ffffff;
+  font-weight: 600;
+}
+
+.aselo-search-tab {
+  min-width: 40px;
+  width: 40px;
+  background-color: transparent;
+  color: #606471;
+}
+
+/* FormTab: the Material error icon in red above the label */
+.aselo-tab-error {
+  display: inline-flex;
+  height: 10px;
+  color: red;
+}
+
+/* TabbedFormTabContainer */
+.aselo-tab-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 32px 20px 12px 20px;
+  background-color: #ffffff;
+  min-height: 300px;
+}
+
+/* TwoColumnLayout / ColumnarBlock / ColumnarContent */
+.aselo-two-columns {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.aselo-columnar-block {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  flex-basis: 0;
+  gap: 10px;
+}
+
+.aselo-columnar-content {
+  width: 217px;
+}
+
+/* createInput wraps every field in a Column with 8px above and below */
+.aselo-field {
+  display: flex;
+  flex-direction: column;
+  margin: 8px 0;
+}
+
+/* FormLabel */
+.aselo-form-label {
+  display: flex;
+  flex-direction: column;
+  font-size: 14px;
+  letter-spacing: 0;
+  min-height: 18px;
+  color: #000000;
+}
+
+.aselo-label-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.aselo-required {
+  color: red;
+}
+
+/* FormInputBase (inputs, dates, times) */
+.aselo-input {
+  display: flex;
+  font-family: 'Open Sans', sans-serif;
+  font-size: 12px;
+  line-height: 1.33;
+  width: 217px;
+  height: 36px;
+  border-radius: 4px;
+  background-color: rgba(236, 237, 241, 0.37);
+  color: #222222;
+  border: none;
+  box-shadow: none;
+  padding: 0 8px;
+}
+
+.aselo-input:focus,
+.aselo-select:focus {
+  outline: none;
+  border: 1px solid rgba(0, 59, 129, 0.37);
+}
+
+.aselo-input.has-error,
+.aselo-select.has-error,
+.aselo-textarea.has-error {
+  border: 1px solid #cb3232;
+  box-shadow: 0px 0px 0px 2px rgba(234, 16, 16, 0.2);
+}
+
+/* FormError */
+.aselo-error {
+  text-transform: none;
+  color: #cb3232;
+  font-size: 10px;
+  line-height: 1.5;
+}
+
+/* FormSelectWrapper / FormSelect / FormOption */
+.aselo-select-wrapper {
+  position: relative;
+  display: block;
+  width: 217px;
+  height: 36px;
+}
+
+.aselo-select-wrapper::after {
+  content: '';
+  width: 0;
+  height: 0;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-top: 6px solid #666;
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  pointer-events: none;
+}
+
+.aselo-select {
+  font-family: 'Open Sans', sans-serif;
+  font-size: 12px;
+  width: 217px;
+  height: 36px;
+  line-height: 22px;
+  background-color: rgba(236, 237, 241, 0.37);
+  color: #222222;
+  border: none;
+  border-radius: 4px;
+  padding: 0 7px;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.aselo-option-empty {
+  color: #616161;
+}
+
+/* FormTextArea */
+.aselo-textarea {
+  display: flex;
+  font-family: 'Open Sans', sans-serif;
+  font-size: 12px;
+  line-height: 15px;
+  width: 217px;
+  border-radius: 4px;
+  background-color: #f6f6f6;
+  color: #222222;
+  border: none;
+  padding: 5px;
+  resize: vertical;
+}
+
+.aselo-textarea:focus {
+  outline: none;
+  background-color: rgba(236, 237, 241, 0.37);
+  border: 1px solid rgba(0, 59, 129, 0.37);
+}
+
+/* FormCheckBoxWrapper / CheckboxBase / FormCheckbox / FormMixedCheckbox */
+.aselo-checkbox-wrapper {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  min-height: 36px;
+  border-radius: 4px;
+  font-size: 14px;
+  color: #000000;
+  cursor: default;
+}
+
+.aselo-checkbox-wrapper.has-error {
+  border: 1px solid #cb3232;
+  box-shadow: 0px 0px 0px 2px rgba(234, 16, 16, 0.2);
+}
+
+.aselo-checkbox-box {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 13px;
+  height: 13px;
+  margin: 3px 10px 0 2px;
+  border: 1px solid hsl(0, 0%, 66%);
+  border-radius: 0.2em;
+  background-image: linear-gradient(to bottom, hsl(300, 3%, 93%), #fff 30%);
+  color: #ffffff;
+  font-size: 9px;
+  font-weight: 900;
+  line-height: 1;
+}
+
+.aselo-checkbox-box.is-yes {
+  border-color: #1976d2;
+  background: #1976d2;
+}
+
+.aselo-checkbox-box.is-no {
+  border-color: #d13821;
+  background: #d13821;
+}
+
+.aselo-mixed-button {
+  padding: 0;
+  border: none;
+  background: none;
+  cursor: default;
+  display: inline-flex;
+}
+
+.aselo-visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+/* FormListboxMultiselect */
+.aselo-listbox {
+  display: flex;
+  flex-direction: column;
+  border-radius: 4px;
+}
+
+.aselo-listbox.has-error .aselo-listbox-options {
+  border-color: #cb3232;
+}
+
+.aselo-listbox .aselo-label-row {
+  font-size: 14px;
+  color: #000000;
+}
+
+.aselo-listbox-options {
+  display: flex;
+  flex-direction: column;
+  padding-left: 10px;
+  padding-top: 10px;
+  overflow-y: scroll;
+  border: 1px solid #e6e6e6;
+  border-radius: 4px;
+  flex: 1;
+}
+
+.aselo-listbox-option {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  font-size: 14px;
+  color: #000000;
+  margin-bottom: 5px;
+}
+
+/* FormFieldset / FormRadioInput */
+.aselo-fieldset {
+  display: flex;
+  flex-direction: column;
+  border: none;
+  border-radius: 4px;
+  padding: 0;
+  margin: 0;
+  font-size: 14px;
+  color: #000000;
+}
+
+.aselo-fieldset.has-error {
+  border: 1px solid #cb3232;
+}
+
+.aselo-radio-option {
+  display: flex;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.aselo-radio {
+  -webkit-appearance: none;
+  appearance: none;
+  box-sizing: content-box !important;
+  padding: 0;
+  margin: 0 7px 0 0;
+  width: 12px;
+  height: 12px;
+  border: 2px solid #080808;
+  background-color: rgba(236, 237, 241, 0.37);
+  border-radius: 50%;
+  display: grid;
+  place-content: center;
+}
+
+.aselo-radio:checked::after {
+  display: block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  content: '';
+  background-color: #080808;
+}
+
+/* SearchInput */
+.aselo-search {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 20px;
+}
+
+/* FormInputDescription */
+.aselo-description {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  background-color: #fffeef;
+  width: 217px;
+  padding: 16px;
+  margin: 24px 0 8px 0;
+  color: #192b33;
+  font-size: 13px;
+}
+
+.aselo-description-collapsed {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.aselo-link {
+  align-self: flex-start;
+  padding: 0;
+  border: none;
+  background: none;
+  color: #1874e1;
+  font: inherit;
+  cursor: pointer;
+}
+
+.aselo-custom-component {
+  font-size: 12px;
+  color: #606471;
+  border: 1px dashed #c6cad7;
+  border-radius: 4px;
+  padding: 8px;
+  width: 217px;
+}
+
+/* Buttons (AseloBaseButton) and BottomButtonBar */
+.aselo-bottom-bar {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  height: 55px;
+  flex-shrink: 0;
+  padding: 5px 20px;
+  /* A divider line inset from the panel edges, as in Aselo */
+  background: linear-gradient(#e1e3ea, #e1e3ea) 20px 0 / calc(100% - 40px) 1px no-repeat,
+    #ffffff;
+}
+
+.aselo-button {
+  display: inline-flex;
+  align-items: center;
+  font-family: 'Open Sans', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.25rem;
+  /* Flex's MuiButton-contained padding wins over the plugin's 4px 10px */
+  padding: 0.5rem 0.75rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.aselo-button-primary {
+  background-color: #192b33;
+  color: #ffffff;
+}
+
+.aselo-button-primary:hover {
+  background-color: #2a4551;
+}
+
+.aselo-button-secondary {
+  background-color: #ecedf1;
+  color: #111111;
+}
+
+.aselo-button-destructive {
+  background-color: #d61f1f;
+  color: #ffffff;
+}
+
+.aselo-button-destructive:hover {
+  background-color: #b41c1c;
+}
+
+.aselo-file-button {
+  align-self: flex-start;
+  cursor: default;
+}
+
+.aselo-search-placeholder {
+  color: #606471;
+  font-size: 13px;
+}
+
+/* Issue categorization (IssueCategorizationSectionForm, Section, CategoryCheckboxes) */
+.aselo-categories {
+  padding-bottom: 55px;
+}
+
+.aselo-category-title {
+  margin: 0 0 0 10px;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.aselo-category-subtitle {
+  display: flex;
+  align-items: center;
+  margin: 6px 0;
+  gap: 4px;
+}
+
+.aselo-category-required {
+  font-size: 12px;
+  margin-right: auto;
+  margin-left: 10px;
+}
+
+.aselo-category-required.has-error {
+  color: #cb3232;
+}
+
+.aselo-toggle-view {
+  display: inline-flex;
+  width: 37px;
+  height: 37px;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: 1px;
+  font-size: 18px;
+  background-color: #a0a8bdcc;
+  opacity: 0.2;
+  cursor: pointer;
+}
+
+.aselo-toggle-view.active {
+  border: 1px solid #a0a8bd33;
+  color: #000000cc;
+  background-color: initial;
+  opacity: 1;
+}
+
+.aselo-category {
+  margin-bottom: 6px;
+}
+
+.aselo-section-title {
+  background-color: #ecedf1;
+  padding: 8px 25px 8px;
+  margin: 2px 0;
+}
+
+.aselo-section-button {
+  align-items: center;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  padding: 0;
+  border: none;
+  background: none;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 13px;
+  color: #192b33;
+  cursor: pointer;
+}
+
+.aselo-subcategories {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  padding: 10px 0 10px 6px;
+}
+
+.aselo-subcategories.grid {
+  flex-direction: row;
+}
+
+.aselo-category-chip {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin: 4px 4px 4px 0;
+  width: fit-content;
+  height: 34px;
+  border: 1px solid;
+  border-radius: 2px;
+  padding-right: 15px;
+  font-size: 12px;
+  color: #192b33;
+  cursor: pointer;
+}
+
+.aselo-category-chip.disabled {
+  border-color: #a0a8bd14;
+  background-color: #a0a8bd14;
+  color: #192b3333;
+  cursor: initial;
+}
+
+.aselo-chip-check {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 13px;
+  height: 13px;
+  margin: 0 10px;
+  border: 1px solid hsl(0, 0%, 66%);
+  border-radius: 0.2em;
+  background-image: linear-gradient(to bottom, hsl(300, 3%, 93%), #fff 30%);
+  color: #000000;
+  font-size: 9px;
+  font-weight: 900;
+}
