@@ -44,6 +44,7 @@ export type FeatureFlags = {
   enable_switchboarding_move_tasks: boolean; // Enables Switchboarding moving tasks from original queue to switchboard ^ne
   enable_twilio_transcripts: boolean; // Enables Viewing Transcripts Stored at Twilio
   enable_voice_recordings: boolean; // Enables Loading Voice Recordings
+  remove_custom_status_column: boolean; // Removes the custom status column that was added to Aselo, so that the standard version subsequently added by Twilio can be used in preference
   use_prepopulate_mappings: boolean; // Use PrepopulateMappings.json instead of PrepopulateKeys.json
   use_twilio_lambda_for_conference_functions: boolean; // Use the twilio account scoped lambda for conferencing functions
   use_twilio_lambda_for_conversation_duration: boolean; // Use the twilio account scoped lambda to calculate conversationDuration

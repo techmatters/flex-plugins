@@ -16,7 +16,7 @@
 
 import { styled } from '@twilio/flex-ui';
 
-import { ChipBase } from '../../styles';
+import { ChipBase, FontOpenSans } from '../../styles';
 
 /**
  * Agent Column
@@ -30,6 +30,14 @@ export const AgentFullName = styled('div')`
   text-align: left;
 `;
 AgentFullName.displayName = 'AgentFullName';
+
+/**
+ * Status Column
+ */
+export const StatusActivityName = styled(FontOpenSans)`
+  font-size: 12px;
+`;
+StatusActivityName.displayName = 'StatusActivityName';
 
 export const SkillsList = styled('div')`
   padding: 0 0 4px 0;
