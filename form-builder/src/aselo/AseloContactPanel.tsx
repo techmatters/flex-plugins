@@ -67,7 +67,7 @@ type Props = {
   startOnCallTypes?: boolean;
   initialCallType?: CallType;
   // The tab to open first (the one being edited)
-  initialTab?: ContactTab['key'];
+  initialTab?: ContactTab['key'] | 'categories';
   onSaveResult?: (result: SaveResult | undefined) => void;
 };
 

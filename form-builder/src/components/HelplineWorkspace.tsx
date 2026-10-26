@@ -26,7 +26,6 @@ import {
   getCaseSections,
   getCaseSectionSplitFormAt,
   getCaseStatuses,
-  getCategoriesByHelpline,
   getContactSplitFormAt,
   getForm,
   getHelplineName,
@@ -36,13 +35,13 @@ import { validateSections } from '../sections';
 import { SaveState, useDraft } from '../useDraft';
 import type { DraftClient } from '../draftClient';
 import { validateContactTab, ValidationIssue } from '../validation';
-import { CategoriesPreview } from './CategoriesPreview';
 import { FlexDesktopPreview, PreviewFocus } from '../aselo/FlexDesktopPreview';
 import { AseloSectionPreview } from '../aselo/AseloSectionPreview';
 import { CaseStatusPreview } from './CaseStatusPreview';
 import { ContactFormEditor } from './ContactFormEditor';
 import { ReviewChanges } from './ReviewChanges';
 import { CallTypesEditor } from './sections/CallTypesEditor';
+import { CategoriesEditor } from './sections/CategoriesEditor';
 import { CannedResponsesEditor } from './sections/CannedResponsesEditor';
 import { MessagesEditor } from './sections/MessagesEditor';
 import { WebchatFormEditor } from './webchat/WebchatFormEditor';
@@ -238,7 +237,18 @@ export const HelplineWorkspace = ({
       );
     }
     if (view.kind === 'categories') {
-      return <CategoriesPreview categoriesByHelpline={getCategoriesByHelpline(files)} />;
+      return (
+        <CategoriesEditor
+          key={editorKey}
+          draftFiles={files}
+          originalFiles={originalFiles}
+          staffMode={staffMode}
+          helplineLanguage={definitions.helplineLanguage}
+          issues={sectionIssues.filter((issue) => issue.message.startsWith('Issue categories'))}
+          onChangeFiles={draft.updateFiles}
+          onTryItOut={() => setTryItOut({ focus: 'form', tab: 'categories' })}
+        />
+      );
     }
     if (view.kind === 'caseStatus') {
       return <CaseStatusPreview statuses={getCaseStatuses(files)} />;
@@ -329,7 +339,11 @@ export const HelplineWorkspace = ({
               />
             ))}
             {files[CATEGORIES_FILE] !== undefined && (
-              <NavItem current={view} onSelect={setView} target={{ kind: 'categories' }} label="Issue categories" />
+              <NavItem current={view} onSelect={setView}
+                target={{ kind: 'categories' }}
+                label="Issue categories"
+                errors={sectionErrorCount('Issue categories')}
+              />
             )}
           </ul>
           <h3>Chats and calls</h3>

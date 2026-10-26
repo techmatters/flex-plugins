@@ -1322,3 +1322,56 @@ body {
   flex-basis: 100%;
   color: var(--color-pii-text);
 }
+
+/* Issue categories */
+.category-row {
+  padding: 6px 8px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  background: var(--color-surface);
+}
+
+.category-row.selected {
+  border-color: var(--color-accent);
+}
+
+.category-row input[type='color'] {
+  width: 32px;
+  height: 28px;
+  padding: 0;
+  border: none;
+  background: none;
+  flex-shrink: 0;
+}
+
+.category-row .row-inline input[type='text'] {
+  flex: 1;
+  min-width: 0;
+}
+
+.subcategories-editor {
+  margin: 8px 0 4px 36px;
+}
+
+.subcategory-row {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.subcategory-row .row-inline input {
+  flex: 1;
+  min-width: 0;
+}
+
+.toolkit-url {
+  font-size: 12px;
+}
+
+.narrow-input {
+  width: 80px;
+}
+
+.issue-error-text {
+  color: var(--color-error-text);
+}

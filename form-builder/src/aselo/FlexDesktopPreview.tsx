@@ -62,7 +62,7 @@ type Props = {
   definitions: DefinitionFiles;
   // The draft files (what's being edited), rather than the files as loaded
   files: DefinitionFileMap;
-  initialTab?: ContactTab['key'];
+  initialTab?: ContactTab['key'] | 'categories';
   focus?: PreviewFocus;
   onClose: () => void;
 };

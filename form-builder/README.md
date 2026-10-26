@@ -45,7 +45,11 @@ It reads and writes the same files the Flex plugin uses:
   can also fill in contact form fields, written to `PrepopulateMappings.json` (never the older
   `PrepopulateKeys.json`); helplines without `use_prepopulate_mappings` are told it only takes
   effect once that flag is on.
-- Issue categories and cases are still preview only.
+- **Issue categories** (`tabbedForms/IssueCategorizationTab.json`) next to the Aselo categories
+  tab: add, reorder and colour categories and subcategories (one at a time or pasted one per
+  line), help links for counselors, and how many can be chosen. Contacts and reports store the
+  names, so existing names are renamed by Aselo staff only; removing asks first.
+- Cases are still preview only.
 
 ### Drafts, roles and applying
 
@@ -96,7 +100,7 @@ grouped by the value chosen above (`options: { "<value above>": [...] }`).
 
 Planned next:
 
-1. Issue categories, cases and client profiles
+1. Cases and client profiles
 2. Deployment in the management account: Okta login, S3 drafts, Apply through a GitHub App
    (branch + PR), Slack and email notifications, Terraform
 
