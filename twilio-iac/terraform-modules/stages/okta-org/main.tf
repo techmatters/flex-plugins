@@ -57,16 +57,6 @@ import {
   id       = each.value.id
 }
 
-# Group rules used to be managed here (JM and MT were imported). Drop them from state WITHOUT
-# deleting them in Okta. Can be deleted once every environment's state no longer has them.
-removed {
-  from = module.helpline_groups.okta_group_rule.helpline
-
-  lifecycle {
-    destroy = false
-  }
-}
-
 module "helpline_groups" {
   source = "../../okta/helpline-groups"
 
