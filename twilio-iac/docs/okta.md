@@ -230,6 +230,17 @@ The `okta-app` plan refuses to create a second app when one with the same label 
 5. **Provider pin**: `okta/okta 7.0.0`, `hashicorp/http 3.6.3`, in `stages/okta-backend.tftpl`.
    The Okta stages generate their own backend file, because a root module can have only one
    `required_providers` block and the shared template declares twilio and datadog.
+6. **Which repo owns which Okta config.** flex-plugins is public and infrastructure-config is private. Proposed:
+
+   | What | Repo | Why |
+   |---|---|---|
+   | Flex SAML apps (`okta-app`) | flex-plugins | 1:1 with a Twilio Flex account, configured in the same `helplines/<code>/*.hcl`, same `HL`/`HL_ENV` workflow and SSM secrets as the rest of a helpline |
+   | Helpline groups and group rules (`okta-org`) | flex-plugins | Helpline-scoped and kept next to `common.hcl`. Not secret, though group rules do show customers' email domains and organization names |
+   | Org-level security config: sign-in/access policies, external IdPs, network zones, admin roles | infrastructure-config | The org's security posture (who signs in, from where, when, through which IdP) should not be public. infrastructure-config already holds shared identity and access (IAM, Okta-backed Client VPN) |
+
+   Moving a layer later is cheap. Everything is adopted by name with import blocks, so: add the
+   config in the other repo with `import_existing = true` and apply (imports only), then drop it
+   from the old state with `removed` blocks. Nothing is recreated in Okta.
 
 ## What has been verified
 
