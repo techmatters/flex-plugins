@@ -118,6 +118,16 @@ Planned next:
 2. Deployment in the management account: Okta login, S3 drafts, Apply through a GitHub App
    (branch + PR), Slack and email notifications, Terraform
 
+Pending (found while building, in the definitions themselves):
+
+- Duplicate field names. The plugin keeps one answer per name, so one of each pair is lost:
+  `eumc/v1/caseForms/IncidentForm.json` (`specify`), `eumc/v1/caseForms/PerpetratorForm.json`
+  (`specify`), `eumc/v1/caseForms/ReferralForm.json` (`otherorganisation`, `specify`),
+  `zm/v1/caseForms/IncidentForm.json` (`incidentWitnessed`) and `nzba/v1/CallTypeButtons.json`
+  (`hard`). Renaming needs Aselo staff, and a check of saved data and reporting.
+- The builder shows these as warnings. Its case status warning for CA, MT and TZ (“closed”
+  can move to “ongoing”) can be ignored: those helplines, like USNM, don't use cases.
+
 ## Running locally
 
 ```bash
