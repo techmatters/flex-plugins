@@ -39,10 +39,12 @@ const parseString = (raw) => JSON.parse(`"${raw}"`);
 
 function parseFlatObject(body) {
   const result = {};
-  const assignment = /(\w+)\s*=\s*("(?:[^"\\]|\\.)*"|true|false|\[[\s\S]*?\](?=\s*(\n|$)))/g;
+  // values: "string", true/false, [list] or { inline object } (e.g. group_rule = { organizations = ["X"] })
+  const assignment = /(\w+)\s*=\s*("(?:[^"\\]|\\.)*"|true|false|\{[^{}]*\}|\[[\s\S]*?\](?=\s*(\n|$)))/g;
   for (const [, key, value] of body.matchAll(assignment)) {
     if (value === 'true' || value === 'false') result[key] = value === 'true';
     else if (value.startsWith('"')) result[key] = parseString(value.slice(1, -1));
+    else if (value.startsWith('{')) result[key] = parseFlatObject(value.slice(1, -1));
     else if (value.includes('{')) result[key] = [...value.matchAll(/\{([^{}]*)\}/g)].map(([, inner]) => parseFlatObject(inner));
     else result[key] = [...value.matchAll(STRING)].map(([, s]) => parseString(s));
   }
@@ -101,6 +103,12 @@ export function getExpectedApp(code, environment) {
     optionalAttributeSets: oktaApp.optional_attribute_sets || [],
     extraAttributeStatements: (oktaApp.extra_attribute_statements || []).map((a) => ({ namespace: 'basic', ...a })),
   };
+}
+
+/** The helpline-level `okta` block from common.hcl ({ group_name, group_rule, ... }), or null. */
+export function getHelplineOkta(code) {
+  const commonFile = path.join(helplinesDir, code, 'common.hcl');
+  return fs.existsSync(commonFile) ? readBlock(commonFile, 'okta') : null;
 }
 
 /** Defaults for helplines not yet configured in Terraform: label parsed from the Okta app itself. */

@@ -26,8 +26,12 @@ helpline groups) and `twilio-iac/stages/okta-app` (Layer 2, one app per helpline
 
 1. Add `okta = { group_name = "<Name> (<CODE>)" }` to `helplines/<code>/common.hcl` (copy from
    `helplines/baseline/`) and `okta_app = {}` to `staging.hcl`. Ask whether the helpline wants a
-   group rule and which optional attributes (`labels`, `team`) it needs.
-2. `cd twilio-iac/stages/okta-org && make plan`. Show it; it must only add this helpline's group and rule.
+   group rule (`group_rule = { organizations = [...] }`, `{ email_domains = ["@..."] }` or
+   `{ expression = "..." }`) and which optional attributes (`labels`, `team`) it needs.
+2. `cd twilio-iac/stages/okta-org && make plan`. Show it; it must only add this helpline's group.
+   **If there is a group rule, remind the person**: Terraform does not create rules (only Super/Org
+   Admins can). Give them the name, group and expression from the `group_rules` output and the steps
+   in docs/okta.md "Group rules"; `verifySso` fails until the rule exists.
 3. After the person applies: `cd ../okta-app && make plan HL=<code> HL_ENV=staging`. Show it.
 4. After the person applies: run `node twilio-iac/scripts/okta/flexSsoHandoff.mjs --hl <code> --env staging`
    and give the person the 4 values (friendly name = Okta app label, issuer, SSO URL, certificate). **Stop and wait**: they enter them in Twilio Console › Flex ›
@@ -51,6 +55,8 @@ helpline groups) and `twilio-iac/stages/okta-app` (Layer 2, one app per helpline
 - One app: `verifySso.mjs --hl <code> --env <env>`. Exit code 1 means errors.
 - Whole org: `auditSsoDrift.mjs --out <file>.md`. Summarize errors first (wrong values, trailing
   spaces in names, groups, wrong Flex connection), then warnings.
+- Group rules: `auditGroupRules.mjs [--hl <codes>] [--out <file>.md]`. Missing/different/inactive
+  configured rules are errors; rules in Okta that are not in config are listed for adoption.
 
 ### Move to the new attribute statements (federated claims)
 

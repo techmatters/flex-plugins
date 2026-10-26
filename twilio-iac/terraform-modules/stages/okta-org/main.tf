@@ -2,6 +2,10 @@
  * okta-org stage (Layer 1): Okta objects that belong to a helpline but not to an environment.
  * One run covers every helpline that has an `okta` block in its common.hcl.
  * Provider versions and backend are generated from stages/okta-backend.tftpl.
+ *
+ * Manages the helpline groups. Group rules are only DESCRIBED here (output `group_rules`): Okta lets
+ * only Super Admins and Org Admins edit rules, so a person creates them in the Okta console.
+ * twilio-iac/scripts/okta/verifySso.mjs and auditGroupRules.mjs check they exist and match.
  */
 
 # Okta API Services app used by Terraform, one SSM parameter per value (easy to enter in the AWS console):
@@ -14,8 +18,8 @@ data "aws_ssm_parameter" "okta_terraform_app" {
 }
 
 locals {
-  # Build each rule's Okta expression from its structured form. The format matches the rules that
-  # already exist in Okta, so adopting them is a no-op.
+  # Each rule's Okta expression, built from its structured form. Keep in sync with
+  # twilio-iac/scripts/okta/lib/groupRules.mjs, which the checks use.
   group_rule_expressions = {
     for code, okta in var.helpline_okta : code => (
       okta.group_rule.expression != null ? okta.group_rule.expression :
@@ -26,13 +30,7 @@ locals {
   }
 
   helpline_groups = {
-    for code, okta in var.helpline_okta : code => {
-      group_name = okta.group_name
-      group_rule = okta.group_rule == null ? null : {
-        name       = coalesce(okta.group_rule.name, okta.group_name)
-        expression = local.group_rule_expressions[code]
-      }
-    }
+    for code, okta in var.helpline_okta : code => { group_name = okta.group_name }
   }
 
   importing = { for code, okta in var.helpline_okta : code => okta if okta.import_existing }
@@ -47,15 +45,10 @@ provider "okta" {
   scopes         = ["okta.groups.read", "okta.groups.manage"]
 }
 
-# Adopting existing groups/rules (import_existing = true). Import blocks are no-ops once in state.
+# Adopting existing groups (import_existing = true). Import blocks are no-ops once in state.
 data "okta_group" "existing" {
   for_each = local.importing
   name     = each.value.group_name
-}
-
-data "okta_group_rule" "existing" {
-  for_each = { for code, okta in local.importing : code => okta if okta.group_rule != null }
-  name     = coalesce(each.value.group_rule.name, each.value.group_name)
 }
 
 import {
@@ -64,10 +57,14 @@ import {
   id       = each.value.id
 }
 
-import {
-  for_each = data.okta_group_rule.existing
-  to       = module.helpline_groups.okta_group_rule.helpline[each.key]
-  id       = each.value.id
+# Group rules used to be managed here (JM and MT were imported). Drop them from state WITHOUT
+# deleting them in Okta. Can be deleted once every environment's state no longer has them.
+removed {
+  from = module.helpline_groups.okta_group_rule.helpline
+
+  lifecycle {
+    destroy = false
+  }
 }
 
 module "helpline_groups" {

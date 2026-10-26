@@ -1,6 +1,10 @@
 /**
  * Helpline-level Okta objects: not tied to an environment, shared by the staging and production apps.
  * Deleting a group removes its members' access to every app, so groups are protected from destroy.
+ *
+ * Group rules are NOT managed here: Okta only lets Super Admins and Org Admins edit group rules, and
+ * the Terraform service app deliberately has neither role. Rules are created by a person; see the
+ * okta-org stage output and twilio-iac/docs/okta.md.
  */
 
 resource "okta_group" "helpline" {
@@ -12,14 +16,4 @@ resource "okta_group" "helpline" {
   lifecycle {
     prevent_destroy = true
   }
-}
-
-resource "okta_group_rule" "helpline" {
-  for_each = { for code, hl in var.helpline_groups : code => hl if hl.group_rule != null }
-
-  name              = substr(coalesce(each.value.group_rule.name, each.value.group_name), 0, 50)
-  status            = each.value.group_rule.status
-  expression_type   = "urn:okta:expression:1.0"
-  expression_value  = each.value.group_rule.expression
-  group_assignments = [okta_group.helpline[each.key].id]
 }

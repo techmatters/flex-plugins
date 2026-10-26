@@ -7,6 +7,7 @@ import { parseArgs, requireArgs, normalizeEnvironment } from './lib/args.mjs';
 import { loadAppContext, printResults } from './lib/appContext.mjs';
 import { checkApp, expectedAttributes } from './lib/standard.mjs';
 import { captureSamlAssertion } from './lib/samlLogin.mjs';
+import { getExpectedGroupRule, fetchGroupRules, checkGroupRule } from './lib/groupRules.mjs';
 
 const args = parseArgs();
 requireArgs(args, ['hl', 'env'], `
@@ -41,6 +42,10 @@ if (!ctx.app) {
     results.push({ check: 'Helpline has okta/okta_app config in twilio-iac', ok: false, detail: 'groups not checked', severity: 'warning' });
   }
 }
+
+// Group rules are created by hand (only Super/Org Admins can), so this is the reminder that it was done
+const expectedRule = getExpectedGroupRule(args.hl);
+if (expectedRule) results.push(...checkGroupRule(expectedRule, await fetchGroupRules()));
 
 let assertion = null;
 if (args.login && ctx.app) {
