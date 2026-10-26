@@ -148,6 +148,8 @@ Twilio Console › Account › **Manage users**: invite the engineers and soluti
 3. 🤖 `cd lambdas/packages/hrm-form-definitions && npm test -- validateDefinitions`: must pass.
    Include the files in the helpline's PR.
 4. 🧑 GitHub Actions › **Deploy form-definitions to S3** with `helpline_code=<code>` and the environment.
+   (The webchat deploy in 2.4 also deploys the forms; this step is still needed without webchat or
+   when only the forms change.)
 
 ### 2.2 Twilio lambdas 🧑
 
@@ -165,13 +167,14 @@ Run *Flex Deploy* in this repo's GitHub Actions for the new account.
 1. 🤖 Add `aselo-webchat-react-app/configSrc/<code>/` (`common.json`, `staging.json`, and later
    `production.json`) by following an existing helpline; production files reuse staging values.
    Needs the account SID and the web Flex Flow / conversations address from Twilio (ask the person).
-2. 🧑 Run *Deploy webchat configuration to S3*
-   ([aselo-webchat-deploy-config.yml](../../.github/workflows/aselo-webchat-deploy-config.yml)) for
-   `<code>` / `staging`: it merges and uploads the configuration.
-3. 🧑 Then run *Deploy Aselo Webchat React App - single helpline*
+2. 🧑 Run *Deploy Aselo Webchat React App - single helpline*
    ([aselo-webchat-react-app-deploy.yml](../../.github/workflows/aselo-webchat-react-app-deploy.yml))
-   with `helpline_code=<CODE>` and the environment: it deploys the webchat app for the new helpline
-   with that configuration.
+   with `helpline_code=<CODE>` and the environment. It deploys the app together with the helpline's
+   `config.json` and then the helpline's form definitions.
+   - Run it **on a branch or tag that contains `configSrc/<code>/` and that CI has already built**:
+     the workflow uses that build, where the configuration was merged at build time.
+   - *Deploy webchat configuration to S3* is not needed: it writes to the old webchat location
+     (`webchat/<code>/`), which the React webchat doesn't read.
 
 ### 2.5 HRM permissions (hrm repo) 🤝
 
