@@ -81,7 +81,8 @@ data "okta_apps" "label_search" {
 
   lifecycle {
     postcondition {
-      condition     = var.okta_app.import_existing || length([for app in self.apps : app.id if app.label == local.label]) == 0
+      # self.apps is null (not an empty list) when nothing matches, e.g. for a new helpline
+      condition     = var.okta_app.import_existing || length([for app in coalesce(self.apps, []) : app.id if app.label == local.label]) == 0
       error_message = "An Okta app labelled '${local.label}' already exists. Set okta_app.import_existing = true to adopt it, or choose another label."
     }
   }
