@@ -27,6 +27,9 @@ import { isSameJson } from './changes';
 import type { ValidationIssue } from './validation';
 import { summarizeWebchatChanges, validateWebchat } from './webchat';
 import { summarizeCategoryChanges, validateCategories } from './categories';
+import { summarizeCaseStatusChanges, validateCaseStatuses } from './caseStatuses';
+import { summarizeCaseSectionChanges, validateCaseSections } from './caseSections';
+import { featuresNote, summarizeFeatureChanges } from './helplineFeatures';
 
 export const CALL_TYPE_BUTTONS_FILE = 'CallTypeButtons.json';
 export const CANNED_RESPONSES_FILE = 'CannedResponses.json';
@@ -185,6 +188,9 @@ export const validateSections = (
   return [
     ...sectionIssues,
     ...validateCategories(draftFiles, originalFiles),
+    ...validateCaseStatuses(draftFiles, originalFiles),
+    ...validateCaseSections(draftFiles, originalFiles),
+    ...featuresNote(originalFiles, draftFiles),
     ...validateWebchat(draftFiles, originalFiles),
   ];
 };
@@ -248,7 +254,12 @@ export const summarizeSectionChanges = (
   draftFiles: DefinitionFileMap,
   webchatDefaultLocale?: string,
 ): SectionChangeSummary[] => {
-  const summaries: SectionChangeSummary[] = [...summarizeCategoryChanges(originalFiles, draftFiles)];
+  const summaries: SectionChangeSummary[] = [
+    ...summarizeFeatureChanges(originalFiles, draftFiles),
+    ...summarizeCategoryChanges(originalFiles, draftFiles),
+    ...summarizeCaseStatusChanges(originalFiles, draftFiles),
+    ...summarizeCaseSectionChanges(originalFiles, draftFiles),
+  ];
   const changed = (filePath: string) => !isSameJson(originalFiles[filePath], draftFiles[filePath]);
 
   if (changed(CALL_TYPE_BUTTONS_FILE)) {

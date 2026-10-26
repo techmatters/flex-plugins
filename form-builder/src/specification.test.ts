@@ -16,12 +16,15 @@
 
 import { describe, expect, test } from 'vitest';
 import { isProtectedField } from './specification';
+import { CONTACT_TABS, ContactTab } from './definitions';
+
+const tab = (key: ContactTab['key']) => CONTACT_TABS.find((candidate) => candidate.key === key)!;
 
 describe('specification', () => {
   test('marks fields the Aselo specification requires as protected', () => {
-    expect(isProtectedField('CaseInformationTab', 'callSummary')).toBe(true);
-    expect(isProtectedField('ChildInformationTab', 'age')).toBe(true);
-    expect(isProtectedField('ChildInformationTab', 'firstName')).toBe(false);
-    expect(isProtectedField('CallerInformationTab', 'someCustomField')).toBe(false);
+    expect(isProtectedField(tab('CaseInformationTab'), 'callSummary')).toBe(true);
+    expect(isProtectedField(tab('ChildInformationTab'), 'age')).toBe(true);
+    expect(isProtectedField(tab('ChildInformationTab'), 'firstName')).toBe(false);
+    expect(isProtectedField(tab('CallerInformationTab'), 'someCustomField')).toBe(false);
   });
 });

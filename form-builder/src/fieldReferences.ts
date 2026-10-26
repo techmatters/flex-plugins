@@ -19,8 +19,8 @@
  * name, so staff are warned before removing a field that reporting or automation relies on.
  */
 import type { OneToManyConfigSpecs, OneToOneConfigSpec } from '@hrm-form-definitions/formDefinition/insightsConfig';
-import type { ContactTab, DefinitionFileMap } from './definitions';
-import { getForm } from './definitions';
+import type { DefinitionFileMap, FormTarget } from './definitions';
+import { getForm, isContactTab } from './definitions';
 
 const ONE_TO_ONE_FILE = 'insights/oneToOneConfigSpec.json';
 const ONE_TO_MANY_FILE = 'insights/oneToManyConfigSpecs.json';
@@ -39,13 +39,15 @@ const flattenStrings = (value: unknown): string[] => {
 
 export const findFieldReferences = (
   files: DefinitionFileMap,
-  tab: ContactTab,
+  tab: FormTarget,
   fieldName: string,
 ): string[] => {
   const references: string[] = [];
 
   const oneToOne = files[ONE_TO_ONE_FILE] as OneToOneConfigSpec | undefined;
-  (oneToOne?.contactForm?.[tab.layoutKey] ?? [])
+  ((oneToOne?.[tab.insights.group] as Record<string, { name: string; insights: string[] }[]> | undefined)?.[
+    tab.insights.key
+  ] ?? [])
     .filter((spec) => spec.name === fieldName)
     .forEach((spec) =>
       references.push(`Reporting: saved to the Insights column “${spec.insights[1]}”`),
@@ -53,12 +55,13 @@ export const findFieldReferences = (
 
   const oneToMany = files[ONE_TO_MANY_FILE] as OneToManyConfigSpecs | undefined;
   (Array.isArray(oneToMany) ? oneToMany : [])
-    .filter((spec) => spec.paths?.some((p) => p.endsWith(`${tab.layoutKey}.${fieldName}`)))
+    .filter((spec) => spec.paths?.some((p) => p.endsWith(`${tab.insights.key}.${fieldName}`)))
     .forEach((spec) =>
       references.push(`Reporting: part of the Insights column “${spec.attributeName}”`),
     );
 
-  const mappings = (files[PREPOPULATE_MAPPINGS_FILE] ?? {}) as Record<string, unknown>;
+  // Only contact forms are filled in from surveys and the webchat
+  const mappings = (isContactTab(tab) ? (files[PREPOPULATE_MAPPINGS_FILE] ?? {}) : {}) as Record<string, unknown>;
   const target = `${tab.key}.${fieldName}`;
   Object.entries(PREPOPULATE_SOURCE_NAMES).forEach(([sourceSet, sourceName]) => {
     const sourceFields = (mappings[sourceSet] ?? {}) as Record<string, unknown>;
@@ -75,7 +78,7 @@ export const findFieldReferences = (
     Record<string, string[]>
   >;
   Object.entries(PREPOPULATE_SOURCE_NAMES).forEach(([sourceSet, sourceName]) => {
-    if (legacyKeys[sourceSet]?.[tab.key]?.includes(fieldName)) {
+    if (isContactTab(tab) && legacyKeys[sourceSet]?.[tab.key]?.includes(fieldName)) {
       references.push(`Filled in automatically from ${sourceName}`);
     }
   });

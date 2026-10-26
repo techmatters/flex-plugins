@@ -90,7 +90,7 @@ export const definitionsDevApi = ({
     helplinesConfigDir,
     webchatConfigDir,
     drafts: new LocalDraftStore(draftsDir),
-    applier: new LocalApplier(formDefinitionsDir, repoRoot, webchatConfigDir),
+    applier: new LocalApplier(formDefinitionsDir, repoRoot, webchatConfigDir, helplinesConfigDir),
     notifier: localNotifier,
   };
   return {

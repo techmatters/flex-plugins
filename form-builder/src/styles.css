@@ -1375,3 +1375,164 @@ body {
 .issue-error-text {
   color: var(--color-error-text);
 }
+
+/* Case statuses */
+.status-row {
+  padding: 6px 8px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  background: var(--color-surface);
+}
+
+.status-row .row-inline input[type='text'] {
+  flex: 1;
+  min-width: 0;
+}
+
+.status-row .status-pill:empty {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  padding: 0;
+  border-radius: 50%;
+}
+
+.status-transitions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 14px;
+  margin: 6px 0 0;
+  padding: 0;
+  border: none;
+}
+
+.status-transitions legend {
+  float: left;
+  margin-right: 8px;
+  color: var(--color-muted);
+}
+
+.missing-status span {
+  color: var(--color-error-text);
+}
+
+.case-status-preview {
+  padding: 16px;
+}
+
+.case-status-options {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+/* Case sections */
+.case-section-row {
+  padding: 8px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  background: var(--color-surface);
+}
+
+.case-section-row .row-inline > input[type='text'] {
+  flex: 1;
+  min-width: 0;
+  font-weight: 600;
+}
+
+.case-section-settings {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 0 12px;
+  margin-top: 6px;
+}
+
+.case-page-preview {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.case-page-timeline,
+.case-page-section {
+  padding: 10px 12px;
+  border-radius: 4px;
+  background: #f6f6f6;
+}
+
+.case-page-section {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.case-page-section-title {
+  flex: 1;
+  font-weight: 700;
+}
+
+.case-page-add {
+  border: none;
+  background: none;
+  color: var(--color-accent);
+  font: inherit;
+  font-weight: 600;
+  cursor: default;
+}
+
+.case-page-preview-row {
+  flex-basis: 100%;
+  display: flex;
+  gap: 12px;
+  font-size: 12px;
+  color: var(--color-muted);
+}
+
+/* Helpline features */
+.features-panel {
+  max-width: 760px;
+}
+
+.feature-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.feature-switch {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 10px 12px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  background: var(--color-surface);
+}
+
+.feature-switch input {
+  margin-top: 3px;
+  width: 18px;
+  height: 18px;
+}
+
+.feature-switch .badge {
+  margin-left: 8px;
+}
+
+.feature-switch .field-hint {
+  display: block;
+}
+
+.feature-fixed {
+  width: 18px;
+  text-align: center;
+  color: var(--color-muted);
+}

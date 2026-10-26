@@ -1,0 +1,55 @@
+/**
+ * Copyright (C) 2021-2026 Technology Matters
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see https://www.gnu.org/licenses/.
+ */
+
+// @vitest-environment jsdom
+
+import { afterEach, beforeAll, describe, expect, test } from 'vitest';
+import { cleanup, fireEvent, screen, waitFor, within } from '@testing-library/react';
+import { DefinitionFiles, loadDefinitionFiles } from '../../../server/definitionsApi';
+import { aseloStaff, createHarness, formDefinitionsDir, helplinesConfigDir } from '../../testing/workspaceHarness';
+
+let usnm: DefinitionFiles;
+beforeAll(async () => {
+  usnm = await loadDefinitionFiles(formDefinitionsDir, 'usnm', 'v1', helplinesConfigDir);
+});
+afterEach(cleanup);
+
+const openFeatures = async (harness: ReturnType<typeof createHarness>, staff: boolean) => {
+  harness.renderWorkspace(usnm, staff ? { user: aseloStaff } : {});
+  await waitFor(() => expect(screen.queryByText('Loading the draft…')).toBeNull());
+  fireEvent.click(screen.getByRole('button', { name: 'Features' }));
+};
+
+describe('helpline features', () => {
+  test('Aselo staff switch a feature off, and the review says to apply the service configuration', async () => {
+    const harness = createHarness();
+    await openFeatures(harness, true);
+    fireEvent.click(screen.getByRole('switch', { name: /Client profiles/ }));
+    await screen.findByText(/All changes saved/);
+    expect((await harness.savedFile(usnm, 'aselo-features.json')).enableClientProfiles).toBe(false);
+
+    fireEvent.click(screen.getByRole('button', { name: 'Review & apply' }));
+    const dialog = screen.getByRole('dialog', { name: 'Review your changes' });
+    expect(within(dialog).getByText('Client profiles: switched off')).toBeTruthy();
+    expect(within(dialog).getByText(/apply the service configuration/)).toBeTruthy();
+  });
+
+  test('helpline staff see what is on but cannot change it', async () => {
+    await openFeatures(createHarness(), false);
+    expect((screen.getByRole('switch', { name: /Client profiles/ }) as HTMLInputElement).disabled).toBe(true);
+    expect(screen.getByText(/permission rules \(“usnm”\)/)).toBeTruthy();
+  });
+});

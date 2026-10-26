@@ -20,13 +20,22 @@
  */
 import { aseloFormTemplates } from '@hrm-form-definitions/aseloForms';
 import { validateFormDefinition } from '@hrm-form-definitions/specification/validate';
-import type { ContactTab } from './definitions';
+import type { FormTarget } from './definitions';
+import { isContactTab } from './definitions';
 
 export { validateFormDefinition };
 
-export const getContactTabSpecification = (tabKey: ContactTab['key']) =>
-  aseloFormTemplates.tabbedForms[tabKey];
+/**
+ * The specification for a form: its contact tab, or for a case section the standard case
+ * form with the same file name (e.g. caseForms/HouseholdForm.json). Sections a helpline added
+ * itself have none.
+ */
+export const getFormSpecification = (target: FormTarget) => {
+  if (isContactTab(target)) return aseloFormTemplates.tabbedForms[target.key];
+  const formName = target.filePath.split('/').pop()!.replace(/\.json$/, '');
+  return (aseloFormTemplates.caseForms as Record<string, (typeof aseloFormTemplates.caseForms)[keyof typeof aseloFormTemplates.caseForms]>)[formName];
+};
 
 // Fields the specification requires - the plugin relies on them, so they can't be removed
-export const isProtectedField = (tabKey: ContactTab['key'], fieldName: string) =>
-  Boolean(getContactTabSpecification(tabKey).items[fieldName]?.required);
+export const isProtectedField = (target: FormTarget, fieldName: string) =>
+  Boolean(getFormSpecification(target)?.items[fieldName]?.required);

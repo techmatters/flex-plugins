@@ -28,10 +28,10 @@ import type {
   SelectOption,
 } from '@hrm-form-definitions/formDefinition/types';
 import type { OneToOneConfigSpec } from '@hrm-form-definitions/formDefinition/insightsConfig';
-import type { ContactTab, DefinitionFileMap } from './definitions';
+import type { DefinitionFileMap, FormTarget } from './definitions';
 import { getForm, getReferenceData, resolveOptions } from './definitions';
 import { isBlankOption, isChoiceType } from './formEditing';
-import { getContactTabSpecification, validateFormDefinition } from './specification';
+import { getFormSpecification, validateFormDefinition } from './specification';
 
 export type ValidationIssue = {
   severity: 'error' | 'warning';
@@ -142,7 +142,7 @@ const checkLinkedDropdown = (
 
 const checkForm = (
   form: FormItemJsonDefinition[],
-  tab: ContactTab,
+  tab: FormTarget,
   files: DefinitionFileMap,
 ): ValidationIssue[] => {
   const referenceData = getReferenceData(files);
@@ -187,7 +187,10 @@ const checkForm = (
     const options = resolveOptions(item, referenceData);
     return (options ? { ...item, options } : item) as FormDefinition[number];
   });
-  const report = validateFormDefinition(getContactTabSpecification(tab.key), expandedForm);
+  const specification = getFormSpecification(tab);
+  const report = specification
+    ? validateFormDefinition(specification, expandedForm)
+    : { issues: [], itemReports: {} };
   report.issues.forEach((message) => error(message));
   Object.entries(report.itemReports).forEach(([fieldName, itemReport]) =>
     itemReport.issues.forEach((message) =>
@@ -203,7 +206,9 @@ const checkForm = (
   // Reporting config pointing at fields that no longer exist. Only Aselo staff can fix this,
   // so it doesn't block export - reviewers update the Insights mapping in the same PR.
   const oneToOne = files[ONE_TO_ONE_FILE] as OneToOneConfigSpec | undefined;
-  (oneToOne?.contactForm?.[tab.layoutKey] ?? [])
+  ((oneToOne?.[tab.insights.group] as Record<string, { name: string; insights: string[] }[]> | undefined)?.[
+    tab.insights.key
+  ] ?? [])
     .filter((spec) => !names.includes(spec.name))
     .forEach((spec) =>
       issues.push({
@@ -222,7 +227,7 @@ const checkForm = (
 export const validateContactTab = (
   draftFiles: DefinitionFileMap,
   originalFiles: DefinitionFileMap,
-  tab: ContactTab,
+  tab: FormTarget,
 ): ValidationIssue[] => {
   const draftForm = getForm(draftFiles, tab.filePath);
   if (!draftForm) return [];

@@ -19,11 +19,11 @@
  * reviewer can read ("added field X") as well as the list of files to export.
  */
 import type { FormItemJsonDefinition } from '@hrm-form-definitions/formDefinition/types';
-import type { ContactTab, DefinitionFileMap } from './definitions';
-import { CONTACT_TABS, getForm } from './definitions';
+import type { DefinitionFileMap, FormTarget } from './definitions';
+import { caseSectionTarget, CONTACT_TABS, getCaseSections, getForm } from './definitions';
 
 export type FormChangeSummary = {
-  tab: ContactTab;
+  tab: FormTarget;
   added: string[];
   removed: string[];
   edited: string[];
@@ -44,7 +44,7 @@ export const getChangedFilePaths = (
     .sort();
 
 export const summarizeFormChanges = (
-  tab: ContactTab,
+  tab: FormTarget,
   originalForm: FormItemJsonDefinition[],
   draftForm: FormItemJsonDefinition[],
 ): FormChangeSummary => {
@@ -72,7 +72,13 @@ export const summarizeContactFormChanges = (
   originalFiles: DefinitionFileMap,
   draftFiles: DefinitionFileMap,
 ): FormChangeSummary[] =>
-  CONTACT_TABS.flatMap((tab) => {
+  [
+    ...CONTACT_TABS,
+    // Case sections, including any added or removed in the draft
+    ...[...getCaseSections(originalFiles), ...getCaseSections(draftFiles)]
+      .filter((section, index, all) => all.findIndex((other) => other.formPath === section.formPath) === index)
+      .map(caseSectionTarget),
+  ].flatMap((tab) => {
     const originalForm = getForm(originalFiles, tab.filePath) ?? [];
     const draftForm = getForm(draftFiles, tab.filePath) ?? [];
     if (isSameJson(originalForm, draftForm)) return [];

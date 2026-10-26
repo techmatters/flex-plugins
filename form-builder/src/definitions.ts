@@ -27,34 +27,46 @@ import type {
 
 export type DefinitionFileMap = Record<string, unknown>;
 
-export type ContactTab = {
-  key: 'CallerInformationTab' | 'ChildInformationTab' | 'CaseInformationTab';
+/**
+ * A form edited with the form editor: a contact form tab, or the form of a case section
+ * (Note, Referral, Household...). Both are arrays of fields shown in two columns.
+ */
+export type FormTarget = {
+  kind: 'contact' | 'case';
+  // The contact tab (e.g. 'ChildInformationTab') or the case section (e.g. 'household')
+  key: string;
   title: string;
   filePath: string;
+  // Where its column split (splitFormAt) lives in LayoutDefinitions.json
+  layoutPath: string[];
+  // Where its reporting lives in insights/oneToOneConfigSpec.json, e.g. contactForm.childInformation
+  insights: { group: 'contactForm' | 'caseForm'; key: string };
+};
+
+export type ContactTab = FormTarget & {
+  kind: 'contact';
+  key: 'CallerInformationTab' | 'ChildInformationTab' | 'CaseInformationTab';
   // Key used for this tab in LayoutDefinitions.json -> contact
   layoutKey: string;
 };
 
+const contactTab = (key: ContactTab['key'], title: string, layoutKey: string): ContactTab => ({
+  kind: 'contact',
+  key,
+  title,
+  filePath: `tabbedForms/${key}.json`,
+  layoutKey,
+  layoutPath: ['contact', layoutKey],
+  insights: { group: 'contactForm', key: layoutKey },
+});
+
 export const CONTACT_TABS: ContactTab[] = [
-  {
-    key: 'CallerInformationTab',
-    title: 'Caller information',
-    filePath: 'tabbedForms/CallerInformationTab.json',
-    layoutKey: 'callerInformation',
-  },
-  {
-    key: 'ChildInformationTab',
-    title: 'Child information',
-    filePath: 'tabbedForms/ChildInformationTab.json',
-    layoutKey: 'childInformation',
-  },
-  {
-    key: 'CaseInformationTab',
-    title: 'Case information',
-    filePath: 'tabbedForms/CaseInformationTab.json',
-    layoutKey: 'caseInformation',
-  },
+  contactTab('CallerInformationTab', 'Caller information', 'callerInformation'),
+  contactTab('ChildInformationTab', 'Child information', 'childInformation'),
+  contactTab('CaseInformationTab', 'Case information', 'caseInformation'),
 ];
+
+export const isContactTab = (target: FormTarget): target is ContactTab => target.kind === 'contact';
 
 export const CATEGORIES_FILE = 'tabbedForms/IssueCategorizationTab.json';
 const CASE_SECTIONS_FILE = 'CaseSections.json';
@@ -92,6 +104,14 @@ const getLayout = (files: DefinitionFileMap): LayoutDefinitions =>
 export const getContactSplitFormAt = (files: DefinitionFileMap, tab: ContactTab) =>
   getLayout(files).contact?.[tab.layoutKey]?.splitFormAt;
 
+export const getSplitFormAt = (files: DefinitionFileMap, target: FormTarget): number | undefined => {
+  const entry = target.layoutPath.reduce<unknown>(
+    (node, key) => (node as Record<string, unknown> | undefined)?.[key],
+    getLayout(files),
+  );
+  return (entry as LayoutEntry | undefined)?.splitFormAt;
+};
+
 export const getCaseSectionSplitFormAt = (files: DefinitionFileMap, sectionKey: string) =>
   getLayout(files).case?.sectionTypes?.[sectionKey]?.splitFormAt;
 
@@ -102,6 +122,15 @@ export const getCaseSections = (files: DefinitionFileMap): CaseSection[] => {
   >;
   return Object.entries(sections).map(([key, { label, formPath }]) => ({ key, label, formPath }));
 };
+
+export const caseSectionTarget = (section: CaseSection): FormTarget => ({
+  kind: 'case',
+  key: section.key,
+  title: section.label,
+  filePath: section.formPath,
+  layoutPath: ['case', 'sectionTypes', section.key],
+  insights: { group: 'caseForm', key: section.key },
+});
 
 // A readable name for a form file, e.g. "Child information" or "Household Member (case)"
 export const describeDefinitionFile = (files: DefinitionFileMap, filePath: string): string => {

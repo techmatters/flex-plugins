@@ -19,7 +19,7 @@
  * saved name, and changes that affect data already collected, need Aselo staff mode.
  */
 import type { FormItemJsonDefinition, SelectOption } from '@hrm-form-definitions/formDefinition/types';
-import type { ContactTab, DefinitionFileMap } from '../definitions';
+import type { DefinitionFileMap, FormTarget } from '../definitions';
 import { findFieldReferences } from '../fieldReferences';
 import { findChainsThroughField } from '../linkedDropdowns';
 import {
@@ -39,7 +39,7 @@ import type { ValidationIssue } from '../validation';
 import { OptionsEditor } from './OptionsEditor';
 
 type Props = {
-  tab: ContactTab;
+  tab: FormTarget;
   item: FormItemJsonDefinition;
   // The field as it was loaded; undefined for a field added in this draft
   originalItem?: FormItemJsonDefinition;
@@ -76,7 +76,7 @@ export const FieldSettings = ({
 }: Props) => {
   const isNew = !originalItem;
   const type = item.type as FieldType;
-  const isProtected = isProtectedField(tab.key, item.name);
+  const isProtected = isProtectedField(tab, item.name);
   const isSpecial = SPECIAL_TYPES.includes(type);
   const usesSharedOptions = 'optionsReferenceKey' in item;
   const linkedChains = findChainsThroughField(formItems, item.name);

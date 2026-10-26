@@ -28,6 +28,10 @@ import path from 'path';
 import type { ApiUser, ApplyResult, DraftApplier, Notifier } from './api';
 import type { Draft } from './drafts';
 import { isWebchatTranslationsPath, WEBCHAT_TRANSLATIONS_PREFIX } from './filePaths';
+import { applyHelplineFeatures, FEATURES_FILE, HelplineFeatures } from './features';
+import { serializeLike } from './serializeLike';
+
+export { serializeLike };
 
 export const localUser = (env: Record<string, string | undefined> = process.env): ApiUser => {
   const role = env.FORM_BUILDER_ROLE === 'helpline-staff' ? 'helpline-staff' : 'aselo-staff';
@@ -45,23 +49,13 @@ export const localUser = (env: Record<string, string | undefined> = process.env)
   };
 };
 
-/**
- * JSON in the same style as the file it replaces (indentation, line endings and final
- * newline), so the diff only shows real changes. New files get 2-space JSON, which most
- * files use.
- */
-export const serializeLike = (value: unknown, existingText?: string) => {
-  const indent = existingText?.match(/^﻿?[{[]\r?\n([ \t]+)/)?.[1] ?? '  ';
-  const finalNewline = existingText === undefined || existingText.endsWith('\n');
-  const text = `${JSON.stringify(value, null, indent)}${finalNewline ? '\n' : ''}`;
-  return existingText?.includes('\r\n') ? text.replace(/\n/g, '\r\n') : text;
-};
-
 export class LocalApplier implements DraftApplier {
   constructor(
     private readonly formDefinitionsDir: string,
     private readonly repoRoot: string,
     private readonly webchatConfigDir?: string,
+    // twilio-iac/helplines, where helpline features (FEATURES_FILE) are applied
+    private readonly helplinesConfigDir?: string,
   ) {}
 
   private targetOf(draft: Draft, filePath: string) {
@@ -76,6 +70,12 @@ export class LocalApplier implements DraftApplier {
   async apply(draft: Draft): Promise<ApplyResult> {
     const written: string[] = [];
     for (const [filePath, value] of Object.entries(draft.files)) {
+      if (filePath === FEATURES_FILE) {
+        if (!this.helplinesConfigDir) throw new Error('No helplines config directory to apply features to');
+        const files = await applyHelplineFeatures(this.helplinesConfigDir, draft.code, value as HelplineFeatures);
+        written.push(...files.map((file) => path.relative(this.repoRoot, file).split(path.sep).join('/')));
+        continue;
+      }
       const target = this.targetOf(draft, filePath);
       const existingText = await fs.readFile(target, 'utf8').catch(() => undefined);
       await fs.mkdir(path.dirname(target), { recursive: true });

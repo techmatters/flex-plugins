@@ -24,7 +24,8 @@
  */
 import { promises as fs } from 'fs';
 import path from 'path';
-import { WEBCHAT_TRANSLATIONS_PREFIX } from './filePaths';
+import { FEATURES_FILE, WEBCHAT_TRANSLATIONS_PREFIX } from './filePaths';
+import { readHelplineFeatures } from './features';
 
 export type HelplineSummary = {
   code: string;
@@ -50,6 +51,8 @@ export type DefinitionFiles = {
   featureFlags?: Record<string, boolean>;
   // The helpline's webchat settings, when it has a webchat (aselo-webchat-react-app/configSrc)
   webchat?: WebchatSettings;
+  // The HRM permission rules the helpline uses (they decide what counselors can do with cases)
+  permissionConfig?: string;
 };
 
 export type WebchatSettings = {
@@ -276,10 +279,13 @@ export const loadDefinitionFiles = async (
     ? await readFeatureFlags(helplinesConfigDir, code)
     : undefined;
   const webchat = webchatConfigDir ? await loadWebchatFiles(webchatConfigDir, code) : undefined;
+  // The feature switches, as a file the draft can change (Aselo staff only)
+  const features = helplinesConfigDir ? await readHelplineFeatures(helplinesConfigDir, code) : undefined;
   return {
     code,
     version,
-    files: { ...files, ...webchat?.files },
+    files: { ...files, ...webchat?.files, ...(features ? { [FEATURES_FILE]: features.features } : {}) },
+    permissionConfig: features?.permissionConfig,
     errors: [...errors, ...(webchat?.errors ?? [])],
     helplineLanguage,
     logoUrl,

@@ -22,10 +22,11 @@ import { useMemo, useState } from 'react';
 import type { DefinitionFiles } from '../../server/definitionsApi';
 import {
   CATEGORIES_FILE,
+  caseSectionTarget,
   CONTACT_TABS,
+  isContactTab,
   getCaseSections,
   getCaseSectionSplitFormAt,
-  getCaseStatuses,
   getContactSplitFormAt,
   getForm,
   getHelplineName,
@@ -37,11 +38,14 @@ import type { DraftClient } from '../draftClient';
 import { validateContactTab, ValidationIssue } from '../validation';
 import { FlexDesktopPreview, PreviewFocus } from '../aselo/FlexDesktopPreview';
 import { AseloSectionPreview } from '../aselo/AseloSectionPreview';
-import { CaseStatusPreview } from './CaseStatusPreview';
 import { ContactFormEditor } from './ContactFormEditor';
 import { ReviewChanges } from './ReviewChanges';
 import { CallTypesEditor } from './sections/CallTypesEditor';
 import { CategoriesEditor } from './sections/CategoriesEditor';
+import { CaseStatusEditor } from './sections/CaseStatusEditor';
+import { CaseSectionsEditor } from './sections/CaseSectionsEditor';
+import { FeaturesEditor } from './sections/FeaturesEditor';
+import { getFeatures } from '../helplineFeatures';
 import { CannedResponsesEditor } from './sections/CannedResponsesEditor';
 import { MessagesEditor } from './sections/MessagesEditor';
 import { WebchatFormEditor } from './webchat/WebchatFormEditor';
@@ -56,6 +60,8 @@ type View =
   | { kind: 'messages' }
   | { kind: 'webchat' }
   | { kind: 'caseStatus' }
+  | { kind: 'caseSections' }
+  | { kind: 'features' }
   | { kind: 'caseSection'; sectionKey: string };
 
 const sameView = (a: View, b: View) => JSON.stringify(a) === JSON.stringify(b);
@@ -123,18 +129,32 @@ export const HelplineWorkspace = ({
   // What the full-screen "Try it out" preview opens on, when it's open
   const [tryItOut, setTryItOut] = useState<{ focus: PreviewFocus; tab?: string }>();
   const [reviewing, setReviewing] = useState(false);
+  // The case section whose Aselo preview is open
+  const [previewingSection, setPreviewingSection] = useState<string>();
   // Bumped on discard so the editor rebuilds from the restored files
   const [editorRevision, setEditorRevision] = useState(0);
 
+  const caseTargets = useMemo(() => getCaseSections(files).map(caseSectionTarget), [files]);
+  // Contact tabs by tab key, case section forms by `case:<section key>`
   const issuesByTab = useMemo(
     () =>
-      Object.fromEntries(
-        CONTACT_TABS.map((tab) => [tab.key, validateContactTab(files, originalFiles, tab)]),
-      ) as Record<string, ValidationIssue[]>,
-    [files, originalFiles],
+      Object.fromEntries([
+        ...CONTACT_TABS.map((tab) => [tab.key, validateContactTab(files, originalFiles, tab)]),
+        ...caseTargets.map((target) => [`case:${target.key}`, validateContactTab(files, originalFiles, target)]),
+      ]) as Record<string, ValidationIssue[]>,
+    [files, originalFiles, caseTargets],
   );
   const sectionIssues = useMemo(() => validateSections(files, originalFiles), [files, originalFiles]);
-  const allIssues = [...Object.values(issuesByTab).flat(), ...sectionIssues];
+  // For the review: problems in forms the draft changes (anything blocking always counts), so
+  // reviewers aren't shown old notes about forms nobody touched
+  const changedFilePaths = new Set(draft.changedPaths);
+  const reviewIssues = [
+    ...[...CONTACT_TABS, ...caseTargets].flatMap((target) => {
+      const issues = issuesByTab[isContactTab(target) ? target.key : `case:${target.key}`] ?? [];
+      return changedFilePaths.has(target.filePath) ? issues : issues.filter((issue) => issue.severity === 'error');
+    }),
+    ...sectionIssues,
+  ];
   const sectionErrorCount = (prefix: string) =>
     sectionIssues.filter((issue) => issue.severity === 'error' && issue.message.startsWith(prefix))
       .length;
@@ -206,7 +226,7 @@ export const HelplineWorkspace = ({
           key={editorKey}
           draftFiles={files}
           helplineLanguage={definitions.helplineLanguage}
-          enabled={definitions.featureFlags?.enable_canned_responses !== false}
+          enabled={getFeatures(files)?.enableCannedResponses ?? definitions.featureFlags?.enable_canned_responses !== false}
           onChangeFiles={draft.updateFiles}
           onTryItOut={() => setTryItOut({ focus: 'cannedResponses' })}
         />
@@ -230,7 +250,10 @@ export const HelplineWorkspace = ({
           originalFiles={originalFiles}
           staffMode={staffMode}
           settings={definitions.webchat}
-          featureFlags={definitions.featureFlags}
+          featureFlags={{
+            ...definitions.featureFlags,
+            ...(getFeatures(files) ? { use_prepopulate_mappings: getFeatures(files)!.usePrepopulateMappings } : {}),
+          }}
           issues={sectionIssues.filter((issue) => issue.message.startsWith('Webchat form'))}
           onChangeFiles={draft.updateFiles}
         />
@@ -250,21 +273,90 @@ export const HelplineWorkspace = ({
         />
       );
     }
-    if (view.kind === 'caseStatus') {
-      return <CaseStatusPreview statuses={getCaseStatuses(files)} />;
+    if (view.kind === 'features') {
+      return (
+        <FeaturesEditor
+          key={editorKey}
+          draftFiles={files}
+          originalFiles={originalFiles}
+          canChange={canApply}
+          permissionConfig={definitions.permissionConfig}
+          onChangeFiles={draft.updateFiles}
+        />
+      );
     }
-    const section = caseSections.find((caseSection) => caseSection.key === view.sectionKey);
-    const form = section && getForm(files, section.formPath);
-    if (!section || !form) return <p className="muted">This case section has no form.</p>;
+    if (view.kind === 'caseSections') {
+      return (
+        <CaseSectionsEditor
+          key={editorKey}
+          draftFiles={files}
+          originalFiles={originalFiles}
+          staffMode={staffMode}
+          helplineLanguage={definitions.helplineLanguage}
+          issues={sectionIssues.filter((issue) => issue.message.startsWith('Case sections'))}
+          onChangeFiles={draft.updateFiles}
+          onOpenForm={(sectionKey) => setView({ kind: 'caseSection', sectionKey })}
+        />
+      );
+    }
+    if (view.kind === 'caseStatus') {
+      return (
+        <CaseStatusEditor
+          key={editorKey}
+          draftFiles={files}
+          originalFiles={originalFiles}
+          staffMode={staffMode}
+          issues={sectionIssues.filter((issue) => issue.message.startsWith('Case statuses'))}
+          onChangeFiles={draft.updateFiles}
+        />
+      );
+    }
+    const target = caseTargets.find((caseTarget) => caseTarget.key === view.sectionKey);
+    const form = target && getForm(files, target.filePath);
+    if (!target || !form) return <p className="muted">This case section has no form.</p>;
     return (
-      <AseloSectionPreview
-        key={section.key}
-        title={section.label}
-        form={form}
-        files={files}
-        helplineLanguage={definitions.helplineLanguage}
-        splitFormAt={getCaseSectionSplitFormAt(files, section.key)}
-      />
+      <>
+        <div className="try-it-out-row">
+          <button type="button" className="secondary-button" onClick={() => setPreviewingSection(target.key)}>
+            Preview in Aselo
+          </button>
+          <span className="muted">See the draft form as counselors see it when they add a {target.title} to a case.</span>
+        </div>
+        <ContactFormEditor
+          key={`case-${target.key}-${editorRevision}`}
+          tab={target}
+          draftFiles={files}
+          originalFiles={originalFiles}
+          staffMode={staffMode}
+          issues={issuesByTab[`case:${target.key}`] ?? []}
+          onChangeFiles={draft.updateFiles}
+        />
+        {previewingSection === target.key && (
+          <div className="modal-backdrop" role="presentation" onClick={() => setPreviewingSection(undefined)}>
+            <div
+              className="modal modal-wide"
+              role="dialog"
+              aria-modal="true"
+              aria-label={`${target.title} in Aselo`}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="modal-header">
+                <h2>{target.title} in Aselo</h2>
+                <button type="button" className="link-button" onClick={() => setPreviewingSection(undefined)}>
+                  Close
+                </button>
+              </div>
+              <AseloSectionPreview
+                title={target.title}
+                form={form}
+                files={files}
+                helplineLanguage={definitions.helplineLanguage}
+                splitFormAt={getCaseSectionSplitFormAt(files, target.key)}
+              />
+            </div>
+          </div>
+        )}
+      </>
     );
   };
 
@@ -328,6 +420,10 @@ export const HelplineWorkspace = ({
 
       <div className="workspace">
         <nav className="sidebar">
+          <h3>Helpline</h3>
+          <ul>
+            <NavItem current={view} onSelect={setView} target={{ kind: 'features' }} label="Features" />
+          </ul>
           <h3>Contact forms</h3>
           <ul>
             {CONTACT_TABS.filter((tab) => files[tab.filePath]).map((tab) => (
@@ -367,14 +463,24 @@ export const HelplineWorkspace = ({
               />
             )}
           </ul>
-          <h3>Cases (preview only)</h3>
+          <h3>Cases</h3>
           <ul>
-            <NavItem current={view} onSelect={setView} target={{ kind: 'caseStatus' }} label="Case statuses" />
+            <NavItem current={view} onSelect={setView}
+              target={{ kind: 'caseSections' }}
+              label="Sections"
+              errors={sectionErrorCount('Case sections')}
+            />
+            <NavItem current={view} onSelect={setView}
+              target={{ kind: 'caseStatus' }}
+              label="Case statuses"
+              errors={sectionErrorCount('Case statuses')}
+            />
             {caseSections.map((section) => (
               <NavItem current={view} onSelect={setView}
                 key={section.key}
                 target={{ kind: 'caseSection', sectionKey: section.key }}
                 label={section.label}
+                errors={issuesByTab[`case:${section.key}`]?.filter((issue) => issue.severity === 'error').length}
               />
             ))}
           </ul>
@@ -417,7 +523,7 @@ export const HelplineWorkspace = ({
           alreadySubmitted={draft.meta?.status === 'submitted'}
           onSubmit={draft.submit}
           onApply={draft.apply}
-          issues={allIssues}
+          issues={reviewIssues}
           webchatDefaultLocale={definitions.webchat?.defaultLocale}
           onClose={() => setReviewing(false)}
         />

@@ -35,7 +35,23 @@ export const isWebchatTranslationsPath = (filePath: string) =>
 export const webchatLocaleOf = (filePath: string) =>
   filePath.slice(WEBCHAT_TRANSLATIONS_PREFIX.length).replace(/\.json$/, '');
 
-export const repoPathOf = (code: string, version: string, filePath: string) =>
-  isWebchatTranslationsPath(filePath)
+/**
+ * Helpline features (client profiles, canned responses...) live in the helpline's Flex service
+ * configuration. Drafts only carry the switches, in this file; applying writes them there.
+ */
+export const FEATURES_FILE = 'aselo-features.json';
+
+export type HelplineFeatures = {
+  enableClientProfiles: boolean;
+  enableCannedResponses: boolean;
+  usePrepopulateMappings: boolean;
+};
+
+export const repoServiceConfigDir = (code: string) => `twilio-iac/helplines/${code}/configs/service-configuration`;
+
+export const repoPathOf = (code: string, version: string, filePath: string) => {
+  if (filePath === FEATURES_FILE) return `${repoServiceConfigDir(code)}/ (helpline features)`;
+  return isWebchatTranslationsPath(filePath)
     ? `${REPO_WEBCHAT_CONFIG_DIR}/${code}/translations/${filePath.slice(WEBCHAT_TRANSLATIONS_PREFIX.length)}`
     : `${REPO_FORM_DEFINITIONS_DIR}/${code}/${version}/${filePath}`;
+};

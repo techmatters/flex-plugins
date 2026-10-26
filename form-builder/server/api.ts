@@ -33,6 +33,7 @@
  */
 import { DefinitionsApiError, listHelplines, loadDefinitionFiles } from './definitionsApi';
 import { Draft, DraftStore, isValidDraftFilePath, isValidDraftKey } from './drafts';
+import { FEATURES_FILE } from './filePaths';
 
 export type ApiUser = {
   name: string;
@@ -155,6 +156,10 @@ export const handleApiRequest = async (
     if (method === 'PUT' && !action) {
       if (!isSaveDraftBody(request.body)) return fail(400, 'Invalid draft');
       const { expectedRevision, files, baseHashes } = request.body;
+      // Switching helpline features on or off is for Aselo staff only
+      if (user.role !== 'aselo-staff' && FEATURES_FILE in files) {
+        return fail(403, 'Only Aselo staff can change helpline features');
+      }
       const invalidPath = Object.keys(files).find((filePath) => !isValidDraftFilePath(filePath));
       if (invalidPath) return fail(400, `Invalid file path ${invalidPath}`);
 

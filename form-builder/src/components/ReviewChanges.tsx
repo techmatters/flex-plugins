@@ -134,8 +134,10 @@ export const ReviewChanges = ({
         ) : (
           <>
             {summaries.map((summary) => (
-              <section key={summary.tab.key} className="review-section">
-                <h3>{summary.tab.title}</h3>
+              <section key={summary.tab.filePath} className="review-section">
+                <h3>
+                  {summary.tab.kind === 'case' ? `Case section: ${summary.tab.title}` : summary.tab.title}
+                </h3>
                 <ul>
                   {summary.added.map((field) => (
                     <li key={`added-${field}`}>

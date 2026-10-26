@@ -15,10 +15,11 @@
  */
 
 /**
- * Drag-and-drop editor for one contact form tab. The form is shown in its two Aselo columns;
- * fields can be dragged within and between columns, and clicking one opens its settings.
+ * Drag-and-drop editor for one form: a contact form tab or a case section's form. The form
+ * is shown in its two Aselo columns; fields can be dragged within and between columns, and
+ * clicking one opens its settings.
  *
- * Every change is written straight back to the draft: the tab's JSON file, plus
+ * Every change is written straight back to the draft: the form's JSON file, plus
  * LayoutDefinitions.json when the column split moves.
  */
 import { useMemo, useRef, useState } from 'react';
@@ -45,14 +46,14 @@ import {
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import type { FormItemJsonDefinition } from '@hrm-form-definitions/formDefinition/types';
-import type { ContactTab, DefinitionFileMap } from '../definitions';
+import type { DefinitionFileMap, FormTarget } from '../definitions';
 import {
   describeDefinitionFile,
-  getContactSplitFormAt,
   getForm,
   getReferenceData,
   LAYOUT_FILE,
   REFERENCE_DATA_FILE,
+  getSplitFormAt,
   splitIntoColumns,
 } from '../definitions';
 import {
@@ -87,7 +88,7 @@ type Entry = { id: string; item: FormItemJsonDefinition };
 type Columns = Record<ColumnKey, Entry[]>;
 
 type Props = {
-  tab: ContactTab;
+  tab: FormTarget;
   draftFiles: DefinitionFileMap;
   originalFiles: DefinitionFileMap;
   staffMode: boolean;
@@ -189,7 +190,7 @@ export const ContactFormEditor = ({
     () => new Map(originalForm.map((item) => [item.name, item])),
     [originalForm],
   );
-  const hadExplicitSplit = getContactSplitFormAt(originalFiles, tab) !== undefined;
+  const hadExplicitSplit = getSplitFormAt(originalFiles, tab) !== undefined;
   const referenceData = getReferenceData(draftFiles);
   const blankOptionValue = useMemo(
     () => detectBlankOptionValue([originalForm]),
@@ -199,7 +200,7 @@ export const ContactFormEditor = ({
   // The editor owns the column layout while it's open; it's built once from the draft
   const [columns, setColumns] = useState<Columns>(() => {
     const form = getForm(draftFiles, tab.filePath) ?? [];
-    const [left, right] = splitIntoColumns(form, getContactSplitFormAt(draftFiles, tab));
+    const [left, right] = splitIntoColumns(form, getSplitFormAt(draftFiles, tab));
     return { left: left.map(toEntry), right: right.map(toEntry) };
   });
   const [selectedId, setSelectedId] = useState<string>();
@@ -238,7 +239,7 @@ export const ContactFormEditor = ({
       const currentLayout = (files[LAYOUT_FILE] ?? {}) as Record<string, unknown>;
       const layout = applyColumnSplit(
         currentLayout,
-        ['contact', tab.layoutKey],
+        tab.layoutPath,
         next.left.length,
         items.length,
         hadExplicitSplit,
@@ -582,7 +583,7 @@ export const ContactFormEditor = ({
           initialRoots={editingChain.tree.roots}
           notes={editingChain.notes}
           saveLabel="Save answers"
-          downloadName={`${tab.layoutKey}-${editingChain.names.join('-')}.xlsx`}
+          downloadName={`${tab.key}-${editingChain.names.join('-')}.xlsx`}
           onSave={(roots, { replacedByImport }) => saveChainAnswers(roots, replacedByImport)}
           onCancel={() => setEditingChain(undefined)}
         />

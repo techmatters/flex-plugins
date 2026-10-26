@@ -25,7 +25,7 @@ import { getChangedFilePaths, summarizeContactFormChanges } from './changes';
 import { summarizeSectionChanges } from './sections';
 import type { ValidationIssue } from './validation';
 import { changedWebchatTranslationFiles } from './webchat';
-import { repoPathOf } from '../server/filePaths';
+import { FEATURES_FILE, repoPathOf } from '../server/filePaths';
 
 // Most definition files in the repo are 2-space JSON, so this keeps diffs small
 export const serializeDefinitionFile = (value: unknown) => `${JSON.stringify(value, null, 2)}\n`;
@@ -56,7 +56,7 @@ export const buildChangeLog = ({
   ];
 
   summarizeContactFormChanges(originalFiles, draftFiles).forEach((summary) => {
-    lines.push(`## ${summary.tab.title}`, '');
+    lines.push(`## ${summary.tab.kind === 'case' ? `Case section: ${summary.tab.title}` : summary.tab.title}`, '');
     summary.added.forEach((field) => lines.push(`- Added: ${field}`));
     summary.removed.forEach((field) => lines.push(`- Removed: ${field}`));
     summary.edited.forEach((field) => lines.push(`- Edited: ${field}`));
@@ -97,9 +97,12 @@ export const buildChangeLog = ({
 export const buildExportZip = (input: ExportInput): JSZip => {
   const { code, version, originalFiles, draftFiles } = input;
   const zip = new JSZip();
-  getChangedFilePaths(originalFiles, draftFiles).forEach((filePath) => {
-    zip.file(repoPathOf(code, version, filePath), serializeDefinitionFile(draftFiles[filePath]));
-  });
+  getChangedFilePaths(originalFiles, draftFiles)
+    // Feature switches go into the service configuration by hand (see CHANGES.md)
+    .filter((filePath) => filePath !== FEATURES_FILE)
+    .forEach((filePath) => {
+      zip.file(repoPathOf(code, version, filePath), serializeDefinitionFile(draftFiles[filePath]));
+    });
   zip.file('CHANGES.md', buildChangeLog(input));
   return zip;
 };

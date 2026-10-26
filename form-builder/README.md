@@ -49,7 +49,21 @@ It reads and writes the same files the Flex plugin uses:
   tab: add, reorder and colour categories and subcategories (one at a time or pasted one per
   line), help links for counselors, and how many can be chosen. Contacts and reports store the
   names, so existing names are renamed by Aselo staff only; removing asks first.
-- Cases are still preview only.
+- **Cases**: each case section's form is edited with the same editor as the contact forms
+  (with a preview of the section in Aselo); **Sections** adds, renames, orders and places them
+  on the case (list or timeline), sets their heading and add button texts
+  (`customStrings/Substitutions.json`) and the fields shown in their list; **Case statuses**
+  edits names, colours, order and which status a case can move to, next to the status dropdown
+  counselors get. Section keys and status values are what cases save, so they never change;
+  existing sections are removed by Aselo staff only.
+- **Features** (Aselo staff): switch client profiles, canned responses and
+  `use_prepopulate_mappings` on or off. They live in the helpline's Flex service configuration
+  (`twilio-iac/helplines/<code>/configs/service-configuration`), so drafts carry only the
+  switches, the API refuses them from helpline staff, Apply writes them where the
+  configuration sets them, and the review reminds the reviewer to apply the service
+  configuration. What counselors can do with cases is set by HRM permission rules, which the
+  page names but doesn't change.
+- Client profile forms are still to come.
 
 ### Drafts, roles and applying
 
@@ -100,7 +114,7 @@ grouped by the value chosen above (`options: { "<value above>": [...] }`).
 
 Planned next:
 
-1. Cases and client profiles
+1. Client profile forms (profileForms/)
 2. Deployment in the management account: Okta login, S3 drafts, Apply through a GitHub App
    (branch + PR), Slack and email notifications, Terraform
 
