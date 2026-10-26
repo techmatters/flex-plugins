@@ -10,6 +10,7 @@ prints `--help`.
 | `flexSsoHandoff.mjs` | 3 | Prints the 4 values (friendly name = Okta app label, issuer, SSO URL, certificate) to paste into **Twilio Console › Flex › Single sign-on (SSO)** (the only manual step) |
 | `verifySso.mjs` | 4–6 | Checks the Okta app against the standard and the helpline config, checks it points at the right Flex connection, optionally logs in a test user and checks the real SAML assertion |
 | `auditSsoDrift.mjs` | — | Runs the same checks for every Flex app in Okta and writes a Markdown report |
+| `auditGroupRules.mjs` | — | Checks the group rules configured in `okta.group_rule` exist in Okta and match (they are created by hand: only Super/Org Admins can edit rules), and lists rules in Okta that are not in config |
 
 Step 2 (creating/adopting the Okta app) is Terraform: the `okta-org` and `okta-app` stages.
 

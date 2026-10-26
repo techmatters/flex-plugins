@@ -26,8 +26,8 @@ Twilio account). Each kind is managed at its own level:
 ```text
 Layer 1: okta-org stage            one run for the whole Okta org (no HL / HL_ENV)
   helpline groups, e.g. "SafeSpot (JM)"     ← helplines/<code>/common.hcl  okta = { ... }
-  optional group rules (auto-membership)
   protected with prevent_destroy
+  group rules (auto-membership): configured here, created by hand (see "Group rules" below)
 
 Layer 2: okta-app stage            per helpline + environment (HL + HL_ENV, like every other stage)
   the Flex SAML app ("STG_SafeSpot (JM)")   ← helplines/<code>/<env>.hcl    okta_app = { ... }
@@ -173,11 +173,26 @@ okta_app = {
 }
 ```
 
-Group rules: several `organizations` or `email_domains` are joined with `OR`. Include the `@` in
-email domains (`"@example.org"`), otherwise `"example.org"` also matches addresses like
-`x@example.org.fake.net`. The generated expressions use the same format as the rules that already
-exist, so adopting them is a no-op. Okta keeps users in a rule-based group only while they match:
-changing a user's organization or email removes them.
+### Group rules
+
+A group rule adds users to the helpline group automatically from their Okta profile. **Terraform
+does not create rules**: Okta only lets Super Admins and Org Admins edit them, and the Terraform
+service app deliberately has neither role (tested 2026-10-26: a custom role with full group
+permissions still got "You do not have permission"). Instead:
+
+- `okta.group_rule` in `common.hcl` is the source of truth. The okta-org stage prints each rule as
+  the output `group_rules` (name, group, exact expression) on plan/apply, so whoever adds a helpline
+  sees what to create.
+- A person with Super/Org Admin creates it: **Okta Admin › Directory › Groups › Rules › Add rule** ›
+  name, **Use Okta Expression Language**, paste the expression, assign to the group, **Save**, then
+  **Activate**.
+- `verifySso.mjs` fails (❌) when the configured rule is missing, different or inactive, and
+  `auditGroupRules.mjs` checks every helpline and lists rules in Okta that are not in config.
+
+Several `organizations` or `email_domains` are joined with `OR`. Include the `@` in email domains
+(`"@example.org"`), otherwise `"example.org"` also matches addresses like `x@example.org.fake.net`.
+Okta keeps users in a rule-based group only while they match: changing a user's organization or
+email removes them.
 
 Pilot config is in place for **jm, mt, usch, usvc** (all with `import_existing = true`), and
 `baseline/` has blocks to copy for new helplines.
@@ -189,9 +204,11 @@ All `make` targets run on the devops node as for any other stage.
 ### A. New helpline
 
 1. Add `okta = { group_name = ... }` to `common.hcl` and `okta_app = {}` to `staging.hcl`.
-2. `cd twilio-iac/stages/okta-org && make plan`, review it (it should only add the new group and
-   rule), then `make apply`. This stage uses the production role, so the apply needs someone in the
+2. `cd twilio-iac/stages/okta-org && make plan`, review it (it should only add the new group), then
+   `make apply`. This stage uses the production role, so the apply needs someone in the
    `twilio-iac-production` IAM group.
+   **If the helpline has `okta.group_rule`:** create the rule by hand in Okta from the `group_rules`
+   output (see [Group rules](#group-rules)); it needs a Super/Org Admin. Step 6 fails until it exists.
 3. Open **Twilio Console › Flex › Users and access › Single sign-on (SSO)** for the staging account
    once. A new account has no Flex SSO connection until this page is opened (confirmed with ASOP:
    `config_list` was empty before, a `JQ...` connection existed after). The plan fails with a clear
@@ -243,7 +260,8 @@ plan instead of creating a new app.
    Administrators › Roles) that can create, manage and view groups, scoped to a resource set
    (Security › Administrators › Resources) with all groups and all applications. The standard
    **Group Administrator role is not enough**: creating a group failed with "You do not have
-   permission" (tested 2026-10-26). Group rules are not tested yet.
+   permission" (tested 2026-10-26). No role short of Super/Org Admin can edit group rules, so rules
+   are created by hand (see [Group rules](#group-rules)).
 2. **SSM parameters** (us-east-1), one per value so they can be entered in the AWS console:
    `/terraform/okta/terraform_service_app/client_id` (String),
    `/terraform/okta/terraform_service_app/private_key_id` (String, the key's KID) and
@@ -282,7 +300,8 @@ replaced by test values because there are no AWS credentials locally:
 | Flex connection lookup inside Terraform (`http` data source) returns the same `JQ...` the apps use | ✅ |
 | Import IDs from data sources (nothing hard-coded) | ✅ |
 | `okta-app` stage on all 8 pilot apps | 6 × `0 to change`. USCH stg: attribute reorder only. USVC stg: adds the missing *Staff* group, and the check block flags *Production* + *VPN* |
-| `okta-org` stage on the 4 pilot groups + 2 rules | ✅ `6 to import, 0 to change` |
+| `okta-org` stage on the 4 pilot groups + 2 rules | ✅ `6 to import, 0 to change` (rules later moved out of Terraform) |
+| Group rules: structured config renders the exact existing expressions; `auditGroupRules.mjs` | ✅ |
 | Federated mode on ASOP stg (applied, real Flex logins) | ✅ Same worker attributes as legacy; profile changes propagate |
 | New helpline end to end (ASOP stg: group, app, Flex SSO, login) | ✅ |
 | Terragrunt collection of `okta` blocks across all 32 `common.hcl` | ✅ |
