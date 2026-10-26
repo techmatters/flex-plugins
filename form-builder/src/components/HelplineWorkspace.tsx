@@ -45,6 +45,8 @@ import { CategoriesEditor } from './sections/CategoriesEditor';
 import { CaseStatusEditor } from './sections/CaseStatusEditor';
 import { CaseSectionsEditor } from './sections/CaseSectionsEditor';
 import { FeaturesEditor } from './sections/FeaturesEditor';
+import { ProfilesEditor } from './sections/ProfilesEditor';
+import { hasProfiles } from '../profiles';
 import { getFeatures } from '../helplineFeatures';
 import { CannedResponsesEditor } from './sections/CannedResponsesEditor';
 import { MessagesEditor } from './sections/MessagesEditor';
@@ -62,6 +64,7 @@ type View =
   | { kind: 'caseStatus' }
   | { kind: 'caseSections' }
   | { kind: 'features' }
+  | { kind: 'profiles' }
   | { kind: 'caseSection'; sectionKey: string };
 
 const sameView = (a: View, b: View) => JSON.stringify(a) === JSON.stringify(b);
@@ -270,6 +273,19 @@ export const HelplineWorkspace = ({
           issues={sectionIssues.filter((issue) => issue.message.startsWith('Issue categories'))}
           onChangeFiles={draft.updateFiles}
           onTryItOut={() => setTryItOut({ focus: 'form', tab: 'categories' })}
+        />
+      );
+    }
+    if (view.kind === 'profiles') {
+      return (
+        <ProfilesEditor
+          key={editorKey}
+          draftFiles={files}
+          originalFiles={originalFiles}
+          staffMode={staffMode}
+          profilesEnabled={getFeatures(files)?.enableClientProfiles !== false}
+          issues={sectionIssues.filter((issue) => issue.message.startsWith('Client profiles'))}
+          onChangeFiles={draft.updateFiles}
         />
       );
     }
@@ -484,6 +500,18 @@ export const HelplineWorkspace = ({
               />
             ))}
           </ul>
+          {hasProfiles(originalFiles) && (
+            <>
+              <h3>Client profiles</h3>
+              <ul>
+                <NavItem current={view} onSelect={setView}
+                  target={{ kind: 'profiles' }}
+                  label="Profiles"
+                  errors={sectionErrorCount('Client profiles')}
+                />
+              </ul>
+            </>
+          )}
         </nav>
         <main className="main">
           {definitions.errors.length > 0 && (

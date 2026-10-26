@@ -58,6 +58,16 @@ export default defineConfig({
       '@plugin-translations': pluginTranslationsDir,
     },
   },
+  build: {
+    rollupOptions: {
+      output: {
+        // Libraries change less often than the app, so they're cached separately
+        manualChunks: {
+          vendor: ['react', 'react-dom', '@dnd-kit/core', '@dnd-kit/sortable', '@dnd-kit/utilities', 'jszip'],
+        },
+      },
+    },
+  },
   server: {
     port: 5180,
     // The specification, validator and translations are imported from elsewhere in the repo

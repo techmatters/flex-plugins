@@ -30,6 +30,7 @@ import { summarizeCategoryChanges, validateCategories } from './categories';
 import { summarizeCaseStatusChanges, validateCaseStatuses } from './caseStatuses';
 import { summarizeCaseSectionChanges, validateCaseSections } from './caseSections';
 import { featuresNote, summarizeFeatureChanges } from './helplineFeatures';
+import { summarizeProfileChanges, validateProfiles } from './profiles';
 
 export const CALL_TYPE_BUTTONS_FILE = 'CallTypeButtons.json';
 export const CANNED_RESPONSES_FILE = 'CannedResponses.json';
@@ -191,6 +192,7 @@ export const validateSections = (
     ...validateCaseStatuses(draftFiles, originalFiles),
     ...validateCaseSections(draftFiles, originalFiles),
     ...featuresNote(originalFiles, draftFiles),
+    ...validateProfiles(draftFiles, originalFiles),
     ...validateWebchat(draftFiles, originalFiles),
   ];
 };
@@ -259,6 +261,7 @@ export const summarizeSectionChanges = (
     ...summarizeCategoryChanges(originalFiles, draftFiles),
     ...summarizeCaseStatusChanges(originalFiles, draftFiles),
     ...summarizeCaseSectionChanges(originalFiles, draftFiles),
+    ...summarizeProfileChanges(originalFiles, draftFiles),
   ];
   const changed = (filePath: string) => !isSameJson(originalFiles[filePath], draftFiles[filePath]);
 

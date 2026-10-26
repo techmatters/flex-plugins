@@ -1536,3 +1536,66 @@ body {
   text-align: center;
   color: var(--color-muted);
 }
+
+/* Client profiles */
+.profile-section-row {
+  padding: 8px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  background: var(--color-surface);
+}
+
+.profile-section-row .row-inline > input[type='text'],
+.flag-duration-row > input[type='text'] {
+  flex: 1;
+  min-width: 0;
+}
+
+.profile-section-row .row-inline > input[type='text'] {
+  font-weight: 600;
+}
+
+.duration-input {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.duration-input input {
+  width: 70px;
+}
+
+.profile-preview {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.profile-preview-flags ul {
+  margin: 4px 0 0;
+  padding: 4px 0;
+  list-style: none;
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  background: #fff;
+}
+
+.profile-preview-flags li {
+  padding: 4px 12px;
+}
+
+.profile-preview-section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.profile-preview-box {
+  min-height: 60px;
+  margin-top: 4px;
+  padding: 8px;
+  border-radius: 4px;
+  background: #f6f6f6;
+  color: var(--color-muted);
+}

@@ -63,7 +63,11 @@ It reads and writes the same files the Flex plugin uses:
   configuration sets them, and the review reminds the reviewer to apply the service
   configuration. What counselors can do with cases is set by HRM permission rules, which the
   page names but doesn't change.
-- Client profile forms are still to come.
+- **Client profiles** (`profileForms/`): profile sections (title, edit button, hint, height,
+  personal data; names lock once they exist, existing ones are removed by Aselo staff only),
+  the blocking options counselors choose from (name and length, in hours, days or weeks; each
+  needs a different length because the plugin tells them apart by it), and, for Aselo staff,
+  which profile details are personal data. Next to a sketch of the profile page.
 
 ### Drafts, roles and applying
 
@@ -114,8 +118,7 @@ grouped by the value chosen above (`options: { "<value above>": [...] }`).
 
 Planned next:
 
-1. Client profile forms (profileForms/)
-2. Deployment in the management account: Okta login, S3 drafts, Apply through a GitHub App
+1. Deployment in the management account: Okta login, S3 drafts, Apply through a GitHub App
    (branch + PR), Slack and email notifications, Terraform
 
 Pending (found while building, in the definitions themselves):
