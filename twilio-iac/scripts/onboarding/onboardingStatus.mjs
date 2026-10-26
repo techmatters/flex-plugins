@@ -113,7 +113,7 @@ add('2.2', 'Twilio lambdas deployed', 'manual', 'GitHub Actions › Deploy All T
 add('2.3', 'Flex plugin deployed', 'manual', 'Flex Deploy workflow');
 const webchatConfig = `aselo-webchat-react-app/configSrc/${code}`;
 add('2.4', 'Webchat config (if the helpline uses webchat)', exists(webchatConfig) ? 'done' : 'missing', exists(webchatConfig) ? '' : webchatConfig);
-add('2.4', 'Webchat config + app deployed (if the helpline uses webchat)', 'manual', 'Deploy webchat configuration to S3, then Deploy Aselo Webchat React App - single helpline');
+add('2.4', 'Webchat config + app deployed (if the helpline uses webchat)', 'manual', 'Deploy Aselo Webchat React App - single helpline (also deploys the forms)');
 if (args.hrmRepo) {
   const rules = path.join(path.resolve(String(args.hrmRepo)), 'hrm-domain/hrm-core/permission-rules', `${code}.json`);
   add('2.5', 'HRM permissions file', fs.existsSync(rules) ? 'done' : 'missing', fs.existsSync(rules) ? '' : rules);
