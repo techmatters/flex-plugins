@@ -11,7 +11,8 @@ Each step is marked with who does it:
 | 🤖 | **Agent**: can be done by a coding agent (edit files, run `make plan`, run read-only scripts) |
 | 🤝 | **Agent prepares, person executes**: the agent writes the change / prints the values, a person applies, deploys or pastes them |
 
-A person can do every 🤖 step too.
+A person can do every 🤖 step too. Claude Code agents run this guide through the **`new-helpline`**
+skill (`.claude/skills/new-helpline/`), which uses the **`okta-flex-sso`** skill for step 1.5.
 
 > **Rules for agents.** Never run `apply`, `destroy`, `import` or state commands; never trigger
 > deploy workflows; never print or commit secrets. This repo is **public**: no account SIDs, tokens,

@@ -9,6 +9,7 @@ Start here:
 - [docs/terragrunt.md](docs/terragrunt.md): how stages, generate blocks and state work in this repo
 - [docs/okta.md](docs/okta.md): Okta ⇄ Flex SSO (okta-org / okta-app stages, scripts)
 - [helplines/README.md](helplines/README.md): the configuration hierarchy
+- Claude Code skills: `new-helpline` (provision a helpline end to end) and `okta-flex-sso` (Okta part)
 
 ## Operating rules for agents
 
