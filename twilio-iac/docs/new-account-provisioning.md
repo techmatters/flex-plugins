@@ -149,16 +149,11 @@ Twilio Console › Account › **Manage users**: invite the engineers and soluti
    Include the files in the helpline's PR.
 4. 🧑 GitHub Actions › **Deploy form-definitions to S3** with `helpline_code=<code>` and the environment.
 
-### 2.2 Serverless 🧑
-
-Run *Deploy Serverless to a single helpline/environment* in the `techmatters/serverless` repo's
-GitHub Actions for the new account (use the latest deployed version).
-
-### 2.3 Flex plugin 🧑
+### 2.2 Flex plugin 🧑
 
 Run *Flex Deploy* in this repo's GitHub Actions for the new account.
 
-### 2.4 Webchat (only if the helpline uses it) 🤝
+### 2.3 Webchat (only if the helpline uses it) 🤝
 
 1. 🤖 Add `aselo-webchat-react-app/configSrc/<code>/` (`common.json`, `staging.json`, and later
    `production.json`) by following an existing helpline; production files reuse staging values.
@@ -166,7 +161,7 @@ Run *Flex Deploy* in this repo's GitHub Actions for the new account.
 2. 🧑 Run *Deploy webchat configuration to S3* (and the webchat deploy workflow if the app itself
    needs deploying) for `<code>` / `staging`.
 
-### 2.5 HRM permissions (hrm repo) 🤝
+### 2.4 HRM permissions (hrm repo) 🤝
 
 1. 🤖 In `techmatters/hrm`: add `permission-rules/<code>.json` (one file per helpline; actions and
    targets as in the existing files), a `process.env.PERMISSIONS_AC<code> = '<code>';` line in
@@ -174,12 +169,12 @@ Run *Flex Deploy* in this repo's GitHub Actions for the new account.
    plus `<code>: <code>Rules,` in `rulesMapDef`.
 2. 🧑 PR, review and HRM deploy by an engineer.
 
-### 2.6 FullStory 🧑
+### 2.5 FullStory 🧑
 
 FullStory › Create › Segment: name `<code> <HL_ENV> (<Helpline name>)`, filter `accountSid` = the
 account. Add the account SID to the **All Staging** (or **All Production**) segment filter.
 
-### 2.7 CloudTrail (production only) 🧑
+### 2.6 CloudTrail (production only) 🧑
 
 Ask an AWS admin to add the `tl-aselo-docs-<code>-production` bucket to CloudTrail access logging.
 
@@ -195,7 +190,7 @@ Ask an AWS admin to add the `tl-aselo-docs-<code>-production` bucket to CloudTra
 ## Production (near launch)
 
 Repeat with `HL_ENV=production`: 1.1 (`production.hcl`), 1.2, 1.3, 1.4, 1.5 steps 4–11 (the Okta
-group already exists), 1.6, 2.2–2.4, 2.6, 2.7, Phase 3. After launch, if the helpline wants
+group already exists), 1.6, 2.2, 2.3, 2.5, 2.6, Phase 3. After launch, if the helpline wants
 counsellors in production only, set `include_helpline_group = false` in `staging.hcl` and apply
 `okta-app` for staging ([okta.md](okta.md#group-assignments)).
 
@@ -221,11 +216,10 @@ Copy into the helpline's tracking issue / task and tick as you go.
 - [ ] 1.5 Okta: group (okta-org) · group rule (manual, if any) · Flex SSO page opened · app (okta-app) · Flex SSO values pasted · verifySso ✅ · SSO login ✅
 - [ ] 1.6 Twilio console users invited
 - [ ] 2.1 Form definitions
-- [ ] 2.2 Serverless deployed
-- [ ] 2.3 Flex plugin deployed
-- [ ] 2.4 Webchat (if needed)
-- [ ] 2.5 HRM permissions merged + deployed
-- [ ] 2.6 FullStory segment
-- [ ] 2.7 CloudTrail (production)
+- [ ] 2.2 Flex plugin deployed
+- [ ] 2.3 Webchat (if needed)
+- [ ] 2.4 HRM permissions merged + deployed
+- [ ] 2.5 FullStory segment
+- [ ] 2.6 CloudTrail (production)
 - [ ] 3 Verification
 ```

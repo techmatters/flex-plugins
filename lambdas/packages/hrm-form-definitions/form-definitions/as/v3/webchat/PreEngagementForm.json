@@ -97,7 +97,7 @@
     },
     {
       "type": "select",
-      "name": "province",
+      "name": "state",
       "label": "State",
       "required": false,
       "defaultValue": "",

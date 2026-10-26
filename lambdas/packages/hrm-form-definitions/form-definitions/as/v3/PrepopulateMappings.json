@@ -16,7 +16,7 @@
     "friendlyName": "ChildInformationTab.firstName",
     "age": "ChildInformationTab.age",
     "gender": "ChildInformationTab.gender",
-    "province": "ChildInformationTab.province",
+    "state": "ChildInformationTab.state",
     "urgencyLevel": "CaseInformationTab.urgencyLevel"
   }
 }

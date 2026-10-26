@@ -178,7 +178,7 @@
     "isPII": true
   },
   {
-    "name": "province",
+    "name": "state",
     "label": "State",
     "type": "select",
     "options": [
@@ -210,10 +210,10 @@
     "isPII": false
   },
   {
-    "name": "district",
+    "name": "county",
     "label": "County",
     "type": "dependent-select",
-    "dependsOn": "province",
+    "dependsOn": "state",
     "defaultOption": {
       "value": "",
       "label": ""
