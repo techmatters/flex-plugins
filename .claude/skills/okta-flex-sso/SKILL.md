@@ -30,7 +30,7 @@ helpline groups) and `twilio-iac/stages/okta-app` (Layer 2, one app per helpline
 2. `cd twilio-iac/stages/okta-org && make plan`. Show it; it must only add this helpline's group and rule.
 3. After the person applies: `cd ../okta-app && make plan HL=<code> HL_ENV=staging`. Show it.
 4. After the person applies: run `node twilio-iac/scripts/okta/flexSsoHandoff.mjs --hl <code> --env staging`
-   and give the person the 3 values. **Stop and wait**: they enter them in Twilio Console › Flex ›
+   and give the person the 4 values (friendly name = Okta app label, issuer, SSO URL, certificate). **Stop and wait**: they enter them in Twilio Console › Flex ›
    Users and access › Single sign-on (SSO). There is no API for this step.
 5. When they confirm: `node twilio-iac/scripts/okta/verifySso.mjs --hl <code> --env staging --login`
    (needs `OKTA_TEST_USERNAME`/`OKTA_TEST_PASSWORD`; without them, run it without `--login`).
