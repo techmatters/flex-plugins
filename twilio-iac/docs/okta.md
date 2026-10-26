@@ -44,7 +44,7 @@ group that production uses.
 |---|---|---|---|
 | 1 | Find the account's Flex SSO connection (`JQ...`) | Automatic during `plan` (public Flex endpoint) · `scripts/okta/flexSsoConnection.mjs` | Terraform / script |
 | 2 | Create or adopt the Okta app and its groups | `okta-org` and `okta-app` stages | Terraform |
-| 3 | Enter Okta's issuer, SSO URL and certificate in **Twilio Console › Flex › Users and access › Single sign-on (SSO)** | `scripts/okta/flexSsoHandoff.mjs` prints the 3 values | **Person**: Twilio has no documented API for this page |
+| 3 | Enter the friendly name and Okta's issuer, SSO URL and certificate in **Twilio Console › Flex › Users and access › Single sign-on (SSO)** | `scripts/okta/flexSsoHandoff.mjs` prints the 4 values | **Person**: Twilio has no documented API for this page |
 | 4 | Check the app against the standard and config | `scripts/okta/verifySso.mjs` | Script |
 | 5 | Check Okta and Flex point at each other | `verifySso.mjs` (Flex connection check) | Script |
 | 6 | Log a test user in and inspect the real SAML assertion | `verifySso.mjs --login` | Script |
@@ -175,8 +175,9 @@ All `make` targets run on the devops node as for any other stage.
    once, so the Flex SSO connection exists. *(Unverified: whether this is needed. The plan fails
    with a clear message if the connection is missing.)*
 4. `cd ../okta-app && make plan HL=<code> HL_ENV=staging`, review, then `make apply ...`.
-5. `node twilio-iac/scripts/okta/flexSsoHandoff.mjs --hl <code> --env staging`, then paste the 3
-   values into the Flex SSO page and save.
+5. `node twilio-iac/scripts/okta/flexSsoHandoff.mjs --hl <code> --env staging`, then paste the 4
+   values into the Flex SSO page and save. **Friendly name** = the Okta app label (e.g.
+   `STG_<app_name> (<CODE>)`), which also matches the Twilio account name.
 6. `node twilio-iac/scripts/okta/verifySso.mjs --hl <code> --env staging --login`
 7. Near launch, repeat steps 3–6 with `okta_app = {}` in `production.hcl` and `HL_ENV=production`.
 8. After launch, if the helpline chooses production only, set `include_helpline_group = false` in

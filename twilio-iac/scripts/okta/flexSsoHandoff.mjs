@@ -10,8 +10,9 @@ const args = parseArgs();
 requireArgs(args, ['hl', 'env'], `
 Usage: node flexSsoHandoff.mjs --hl <short code> --env <staging|production> [--label "<Okta app label>"] [--account-sid AC...]
 
-Prints the Identity Provider Issuer, Single Sign-on URL and X.509 certificate of the helpline's Okta app,
-ready to paste into the Flex SSO page, plus the Flex connection check.
+Prints the Friendly name, Identity Provider Issuer, Single Sign-on URL and X.509 certificate of the
+helpline's Okta app, ready to paste into the Flex SSO page, plus the Flex connection check.
+Friendly name standard: the Okta app label (e.g. "STG_SafeSpot (JM)"), which also matches the Twilio account name.
 `);
 
 const environment = normalizeEnvironment(args.env);
@@ -32,6 +33,9 @@ Okta app: ${ctx.app.label}
 Twilio account: ${ctx.accountSid ?? '(unknown: pass --account-sid)'}
 
 In Twilio Console for that account: Flex > Users and access > Single sign-on (SSO), enter:
+
+  Friendly name:
+    ${ctx.app.label}
 
   Identity Provider Issuer:
     ${issuer}

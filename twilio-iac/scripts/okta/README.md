@@ -7,7 +7,7 @@ prints `--help`.
 | Script | Step | What it does |
 |---|---|---|
 | `flexSsoConnection.mjs` | 1 | Shows the Flex SSO connection (`JQ...`) of a helpline's Twilio account and the URLs the Okta app must use |
-| `flexSsoHandoff.mjs` | 3 | Prints the 3 values to paste into **Twilio Console › Flex › Single sign-on (SSO)** (the only manual step) |
+| `flexSsoHandoff.mjs` | 3 | Prints the 4 values (friendly name = Okta app label, issuer, SSO URL, certificate) to paste into **Twilio Console › Flex › Single sign-on (SSO)** (the only manual step) |
 | `verifySso.mjs` | 4–6 | Checks the Okta app against the standard and the helpline config, checks it points at the right Flex connection, optionally logs in a test user and checks the real SAML assertion |
 | `auditSsoDrift.mjs` | — | Runs the same checks for every Flex app in Okta and writes a Markdown report |
 
