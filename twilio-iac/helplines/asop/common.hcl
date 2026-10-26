@@ -14,6 +14,8 @@ locals {
     # Okta: helpline-level, shared by staging and production apps (okta-org stage). See twilio-iac/docs/okta.md
     okta = {
       group_name = "Aselo Okta Pilot (ASOP)"
+      # Test of a Terraform-managed group rule: users whose Okta organization is "Aselo Okta Pilot"
+      group_rule = { organizations = ["Aselo Okta Pilot"] }
     }
   }
 }
