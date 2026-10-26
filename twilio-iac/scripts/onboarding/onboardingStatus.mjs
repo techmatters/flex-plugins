@@ -109,17 +109,19 @@ const serviceConfigFile = path.join(helplineDir, 'configs/service-configuration/
 const definitionVersion = fs.existsSync(serviceConfigFile) ? JSON.parse(fs.readFileSync(serviceConfigFile, 'utf8')).attributes?.definitionVersion : undefined;
 add('2.1', `definitionVersion is ${code}-v1 in service-configuration/common.json`, definitionVersion === `${code}-v1` ? 'done' : 'missing', definitionVersion && definitionVersion !== `${code}-v1` ? `currently "${definitionVersion}"` : '');
 add('2.1', 'Form definitions deployed to S3', 'manual', 'GitHub Actions › Deploy form-definitions to S3');
-add('2.2', 'Flex plugin deployed', 'manual', 'Flex Deploy workflow');
+add('2.2', 'Twilio lambdas deployed', 'manual', 'GitHub Actions › Deploy All Twilio Lambdas (environment)');
+add('2.3', 'Flex plugin deployed', 'manual', 'Flex Deploy workflow');
 const webchatConfig = `aselo-webchat-react-app/configSrc/${code}`;
-add('2.3', 'Webchat config (if the helpline uses webchat)', exists(webchatConfig) ? 'done' : 'missing', exists(webchatConfig) ? '' : webchatConfig);
+add('2.4', 'Webchat config (if the helpline uses webchat)', exists(webchatConfig) ? 'done' : 'missing', exists(webchatConfig) ? '' : webchatConfig);
+add('2.4', 'Webchat config + app deployed (if the helpline uses webchat)', 'manual', 'Deploy webchat configuration to S3, then Deploy Aselo Webchat React App - single helpline');
 if (args.hrmRepo) {
   const rules = path.join(path.resolve(String(args.hrmRepo)), 'hrm-domain/hrm-core/permission-rules', `${code}.json`);
-  add('2.4', 'HRM permissions file', fs.existsSync(rules) ? 'done' : 'missing', fs.existsSync(rules) ? '' : rules);
+  add('2.5', 'HRM permissions file', fs.existsSync(rules) ? 'done' : 'missing', fs.existsSync(rules) ? '' : rules);
 } else {
-  add('2.4', 'HRM permissions file', 'unknown', 'pass --hrm-repo <path to hrm checkout>');
+  add('2.5', 'HRM permissions file', 'unknown', 'pass --hrm-repo <path to hrm checkout>');
 }
-add('2.5', 'FullStory segment', 'manual');
-if (environment === 'production') add('2.6', 'docs bucket in CloudTrail access logging', 'manual');
+add('2.6', 'FullStory segment', 'manual');
+if (environment === 'production') add('2.7', 'docs bucket in CloudTrail access logging', 'manual');
 
 // Output
 if (args.json) {
