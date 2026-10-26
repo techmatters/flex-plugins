@@ -15,7 +15,7 @@
  */
 
 /* eslint-disable react/prop-types */
-import React, { useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { TaskHelper } from '@twilio/flex-ui';
 import { DefinitionVersion } from 'hrm-form-definitions';
@@ -48,6 +48,7 @@ import { selectCurrentDefinitionVersion } from '../states/configuration/selectDe
 import { LoadingStatus } from '../states/contacts/types';
 import selectContactStateByContactId from '../states/contacts/selectContactStateByContactId';
 import { rerenderAgentDesktop } from '../rerenderView';
+import { TaskSID } from '../types/twilio';
 
 type Props = {
   task: CustomITask;
@@ -76,6 +77,7 @@ const TaskView: React.FC<Props> = ({ task }) => {
     !(metadata?.loadingStatus === LoadingStatus.LOADING) &&
     !contactIsLoading;
 
+  const [setHelplineAttempted, setSetHelplineAttempted] = useState(new Set<TaskSID>());
   const dispatch = useDispatch();
   const asyncDispatcher = asyncDispatch(dispatch);
   const createContact = useCallback(
@@ -111,6 +113,7 @@ const TaskView: React.FC<Props> = ({ task }) => {
   React.useEffect(() => {
     const setHelpline = async () => {
       if (unsavedContact && task && !isStandaloneITask(task)) {
+        setSetHelplineAttempted(prev => new Set<TaskSID>(prev).add(task.taskSid)); // We only want to try this once per component load
         const helplineToSave = await getHelplineToSave(task, contactlessTask);
         if (helpline !== helplineToSave) {
           updateHelpline(unsavedContact.id, helplineToSave);
@@ -120,7 +123,11 @@ const TaskView: React.FC<Props> = ({ task }) => {
 
     // Only run setHelpline if a) contactForm.helpline is not set or b) if the task is an offline contact and contactlessTask.helpline has changed
     const shouldSetHelpline =
-      contactInitialized && (!isOfflineContactTask(task) || contactlessTask?.createdOnBehalfOf) && !helpline;
+      contactInitialized &&
+      (!isOfflineContactTask(task) || contactlessTask?.createdOnBehalfOf) &&
+      helpline !== undefined &&
+      helpline !== null &&
+      !setHelplineAttempted.has(task.taskSid);
 
     if (shouldSetHelpline) {
       setHelpline();
