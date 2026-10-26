@@ -17,31 +17,30 @@
 // @vitest-environment jsdom
 
 /**
- * Renders the editor with real helpline definitions and drives it like a user would.
+ * Renders the editor with real helpline definitions and drives it like a user would, with
+ * drafts saved through the real API code (kept in memory).
  * Drag and drop isn't simulated here (jsdom has no layout); the column logic it relies on is
  * covered by applyColumnSplit's unit tests.
  */
-import path from 'path';
-import { fileURLToPath } from 'url';
-import { afterEach, beforeAll, beforeEach, describe, expect, test, vi } from 'vitest';
-import { cleanup, fireEvent, render, screen, within } from '@testing-library/react';
+import { afterEach, beforeAll, describe, expect, test, vi } from 'vitest';
+import { cleanup, fireEvent, screen, waitFor, within } from '@testing-library/react';
 import { DefinitionFiles, loadDefinitionFiles } from '../../server/definitionsApi';
-import { HelplineWorkspace } from './HelplineWorkspace';
-
-const formDefinitionsDir = path.resolve(
-  path.dirname(fileURLToPath(import.meta.url)),
-  '../../../lambdas/packages/hrm-form-definitions/form-definitions',
-);
+import {
+  aseloStaff,
+  createHarness,
+  formDefinitionsDir,
+  helplinesConfigDir,
+} from '../testing/workspaceHarness';
 
 let usnm: DefinitionFiles;
 let demo: DefinitionFiles;
+const CALLER_TAB = 'tabbedForms/CallerInformationTab.json';
 
 beforeAll(async () => {
-  usnm = await loadDefinitionFiles(formDefinitionsDir, 'usnm', 'v1');
-  demo = await loadDefinitionFiles(formDefinitionsDir, 'as', 'v1');
+  usnm = await loadDefinitionFiles(formDefinitionsDir, 'usnm', 'v1', helplinesConfigDir);
+  demo = await loadDefinitionFiles(formDefinitionsDir, 'as', 'v1', helplinesConfigDir);
 });
 
-beforeEach(() => window.localStorage.clear());
 afterEach(() => {
   cleanup();
   vi.restoreAllMocks();
@@ -50,18 +49,24 @@ afterEach(() => {
 const fieldCard = (label: string) =>
   screen.getByRole('button', { name: `${label}. Click to edit, or drag to move.` });
 
-describe('HelplineWorkspace', () => {
-  test('editing a question, adding a field and reviewing the changes', () => {
-    render(<HelplineWorkspace definitions={usnm} staffMode={false} />);
-    expect(screen.getByText('No changes yet')).toBeTruthy();
+const findFieldCard = (label: string) =>
+  screen.findByRole('button', { name: `${label}. Click to edit, or drag to move.` });
 
-    // Edit an existing question
-    fireEvent.click(fieldCard('Relationship to Help Seeker'));
-    fireEvent.change(screen.getByDisplayValue('Relationship to Help Seeker'), {
-      target: { value: 'Relationship to the person seeking help' },
-    });
+const renameRelationship = async (newLabel: string) => {
+  fireEvent.click(await findFieldCard('Relationship to Help Seeker'));
+  fireEvent.change(screen.getByDisplayValue('Relationship to Help Seeker'), {
+    target: { value: newLabel },
+  });
+};
+
+describe('HelplineWorkspace', () => {
+  test('editing a question, adding a field, saving and reviewing the changes', async () => {
+    const { renderWorkspace, savedFile } = createHarness();
+    renderWorkspace(usnm);
+    expect(await screen.findByText('No changes yet')).toBeTruthy();
+
+    await renameRelationship('Relationship to the person seeking help');
     expect(within(fieldCard('Relationship to the person seeking help')).getByText('Edited')).toBeTruthy();
-    expect(screen.getByText('Draft: 1 file changed, saved in this browser')).toBeTruthy();
 
     // Add a new short text field and name it
     fireEvent.click(screen.getAllByRole('button', { name: '+ Add a field' })[0]);
@@ -72,93 +77,134 @@ describe('HelplineWorkspace', () => {
     });
     expect(within(fieldCard('Preferred language')).getByText('New')).toBeTruthy();
 
-    // The draft is kept in this browser
-    expect(window.localStorage.getItem('form-builder:draft:usnm:v1')).toContain('preferredLanguage');
+    // The draft is saved on the server
+    await waitFor(async () => {
+      const saved = await savedFile(usnm, CALLER_TAB);
+      expect(saved?.map((item: { name: string }) => item.name)).toContain('preferredLanguage');
+    });
+    // (adding a field also moves the column split in LayoutDefinitions.json)
+    expect(await screen.findByText(/Draft: 2 files changed · All changes saved/)).toBeTruthy();
 
     // Review lists both changes in plain language
-    fireEvent.click(screen.getByRole('button', { name: 'Review & export' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Review & submit' }));
     const dialog = screen.getByRole('dialog', { name: 'Review your changes' });
     expect(within(dialog).getByText('Preferred language (preferredLanguage)')).toBeTruthy();
     expect(
       within(dialog).getByText('Relationship to the person seeking help (relationshipToHelpSeeker)'),
     ).toBeTruthy();
-    expect(
-      (within(dialog).getByRole('button', { name: 'Download changes' }) as HTMLButtonElement)
-        .disabled,
-    ).toBe(false);
   });
 
-  test('a field with no question blocks export until it is fixed', () => {
-    render(<HelplineWorkspace definitions={usnm} staffMode={false} />);
-    fireEvent.click(fieldCard('Relationship to Help Seeker'));
-    fireEvent.change(screen.getByDisplayValue('Relationship to Help Seeker'), {
-      target: { value: '' },
-    });
+  test('a field with no question blocks submitting until it is fixed', async () => {
+    const { renderWorkspace } = createHarness();
+    renderWorkspace(usnm);
+    await renameRelationship('');
     expect(screen.getAllByText(/has no label/).length).toBeGreaterThan(0);
 
-    fireEvent.click(screen.getByRole('button', { name: 'Review & export' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Review & submit' }));
     const dialog = screen.getByRole('dialog', { name: 'Review your changes' });
-    expect(within(dialog).getByText('Fix these before exporting')).toBeTruthy();
+    expect(within(dialog).getByText('Fix these first')).toBeTruthy();
     expect(
-      (within(dialog).getByRole('button', { name: 'Download changes' }) as HTMLButtonElement)
+      (within(dialog).getByRole('button', { name: 'Submit for review' }) as HTMLButtonElement)
         .disabled,
     ).toBe(true);
   });
 
-  test('restores a saved draft when the helpline is opened again', () => {
-    const { unmount } = render(<HelplineWorkspace definitions={usnm} staffMode={false} />);
-    fireEvent.click(fieldCard('Relationship to Help Seeker'));
-    fireEvent.change(screen.getByDisplayValue('Relationship to Help Seeker'), {
-      target: { value: 'Relationship' },
-    });
+  test('helpline staff submit for review, and Aselo is notified', async () => {
+    const { renderWorkspace, context } = createHarness();
+    renderWorkspace(usnm);
+    await renameRelationship('Relationship');
+    await screen.findByText(/All changes saved/);
+
+    fireEvent.click(screen.getByRole('button', { name: 'Review & submit' }));
+    const dialog = screen.getByRole('dialog', { name: 'Review your changes' });
+    expect(within(dialog).queryByRole('button', { name: 'Apply' })).toBeNull();
+    fireEvent.click(within(dialog).getByRole('button', { name: 'Submit for review' }));
+
+    expect(await within(dialog).findByText(/Submitted\. The Aselo team has been told/)).toBeTruthy();
+    expect(context.notifier.draftSubmitted).toHaveBeenCalledTimes(1);
+    expect(screen.getByText(/Submitted for review by Helpline person/)).toBeTruthy();
+  });
+
+  test('Aselo staff apply, which uses up the draft', async () => {
+    const { renderWorkspace, context, store } = createHarness();
+    renderWorkspace(usnm, { user: aseloStaff });
+    await renameRelationship('Relationship');
+    await screen.findByText(/All changes saved/);
+
+    fireEvent.click(screen.getByRole('button', { name: 'Review & apply' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Apply' }));
+
+    const result = await screen.findByRole('dialog', { name: 'Changes applied' });
+    expect(within(result).getByText(`form-definitions/usnm/v1/${CALLER_TAB}`)).toBeTruthy();
+    expect(context.applier.apply).toHaveBeenCalledTimes(1);
+    expect(await store.get('usnm', 'v1')).toBeUndefined();
+  });
+
+  test('restores the saved draft when the helpline is opened again', async () => {
+    const { renderWorkspace } = createHarness();
+    const { unmount } = renderWorkspace(usnm);
+    await renameRelationship('Relationship');
+    await screen.findByText(/All changes saved/);
     unmount();
 
-    render(<HelplineWorkspace definitions={usnm} staffMode={false} />);
-    expect(screen.getByText(/Your unsaved changes from .* were restored\./)).toBeTruthy();
-    expect(fieldCard('Relationship')).toBeTruthy();
+    renderWorkspace(usnm);
+    expect(await findFieldCard('Relationship')).toBeTruthy();
+    expect(screen.getByText(/Last change by Helpline person/)).toBeTruthy();
   });
 
-  test('warns when the draft is too big to keep in this browser', () => {
-    vi.spyOn(Storage.prototype, 'setItem').mockImplementation(() => {
-      throw new DOMException('Quota exceeded', 'QuotaExceededError');
+  test('stops saving, and asks to reload, when someone else changed the draft', async () => {
+    const { renderWorkspace } = createHarness();
+    const onReload = vi.fn();
+    renderWorkspace(usnm, { onReload });
+    await screen.findByText('No changes yet');
+
+    // Someone else saves the same helpline's draft first
+    const other = renderWorkspace(usnm, { user: aseloStaff });
+    fireEvent.click(
+      (await within(other.container).findAllByRole('button', { name: /^Relationship to Help Seeker\./ }))[0],
+    );
+    fireEvent.change(within(other.container).getByDisplayValue('Relationship to Help Seeker'), {
+      target: { value: 'Changed by Aselo' },
     });
-    render(<HelplineWorkspace definitions={usnm} staffMode={false} />);
-    fireEvent.click(fieldCard('Relationship to Help Seeker'));
-    fireEvent.change(screen.getByDisplayValue('Relationship to Help Seeker'), {
-      target: { value: 'Relationship' },
-    });
-    expect(screen.getByText(/too big to keep in this browser/)).toBeTruthy();
-    expect(screen.getByText('Draft: 1 file changed')).toBeTruthy();
+    await within(other.container).findByText(/All changes saved/);
+    other.unmount();
+
+    await renameRelationship('Changed by helpline');
+    expect(await screen.findByText(/Aselo person changed this draft/)).toBeTruthy();
+    fireEvent.click(screen.getByRole('button', { name: 'Reload' }));
+    expect(onReload).toHaveBeenCalled();
   });
 
-  test('discarding brings back the original form', () => {
+  test('discarding brings back the original form and deletes the draft', async () => {
     vi.spyOn(window, 'confirm').mockReturnValue(true);
-    render(<HelplineWorkspace definitions={usnm} staffMode={false} />);
-    fireEvent.click(fieldCard('Relationship to Help Seeker'));
-    fireEvent.change(screen.getByDisplayValue('Relationship to Help Seeker'), {
-      target: { value: 'Relationship' },
-    });
-    fireEvent.click(screen.getByRole('button', { name: 'Discard all changes' }));
-    expect(fieldCard('Relationship to Help Seeker')).toBeTruthy();
-    expect(screen.getByText('No changes yet')).toBeTruthy();
-    expect(window.localStorage.getItem('form-builder:draft:usnm:v1')).toBeNull();
+    const { renderWorkspace, store } = createHarness();
+    renderWorkspace(usnm);
+    await renameRelationship('Relationship');
+    await screen.findByText(/All changes saved/);
+
+    fireEvent.click(screen.getByRole('button', { name: 'Discard draft' }));
+    expect(await findFieldCard('Relationship to Help Seeker')).toBeTruthy();
+    expect(await screen.findByText('No changes yet')).toBeTruthy();
+    expect(await store.get('usnm', 'v1')).toBeUndefined();
   });
 
-  test('fields Aselo relies on cannot be removed', () => {
-    render(<HelplineWorkspace definitions={demo} staffMode={false} />);
-    fireEvent.click(screen.getByRole('button', { name: 'Case information' }));
+  test('fields Aselo relies on cannot be removed', async () => {
+    const { renderWorkspace } = createHarness();
+    renderWorkspace(demo);
+    fireEvent.click(await screen.findByRole('button', { name: 'Case information' }));
     const summaryLabel = (demo.files['tabbedForms/CaseInformationTab.json'] as { name: string; label: string }[])
       .find((item) => item.name === 'callSummary')!.label;
-    fireEvent.click(fieldCard(summaryLabel));
+    fireEvent.click(await findFieldCard(summaryLabel));
     expect(
       (screen.getByRole('button', { name: 'Remove this field' }) as HTMLButtonElement).disabled,
     ).toBe(true);
   });
 
-  test('removing an existing field asks for confirmation first', () => {
+  test('removing an existing field asks for confirmation first', async () => {
     const confirm = vi.spyOn(window, 'confirm').mockReturnValue(false);
-    render(<HelplineWorkspace definitions={usnm} staffMode={false} />);
-    fireEvent.click(fieldCard('Relationship to Help Seeker'));
+    const { renderWorkspace } = createHarness();
+    renderWorkspace(usnm);
+    fireEvent.click(await findFieldCard('Relationship to Help Seeker'));
     fireEvent.click(screen.getByRole('button', { name: 'Remove this field' }));
     expect(confirm).toHaveBeenCalled();
     expect(fieldCard('Relationship to Help Seeker')).toBeTruthy();

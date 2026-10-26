@@ -15,15 +15,22 @@
  */
 
 /**
- * Serves the definitions API from the Vite dev server, reading straight from the local
- * repo checkout. In deployed environments the same routes are served by the backend.
- *
- *   GET /api/helplines                     -> HelplineSummary[]
- *   GET /api/definitions/:code/:version    -> DefinitionFiles
+ * Serves the form builder API (api.ts) from the Vite dev server, using the local repo
+ * checkout: definitions are read from it, drafts are kept in form-builder/drafts (gitignored)
+ * and "Apply" writes into it. Deployed, the same API runs in a Lambda instead.
  */
 import type { IncomingMessage, ServerResponse } from 'http';
 import type { Plugin } from 'vite';
-import { DefinitionsApiError, listHelplines, loadDefinitionFiles } from './definitionsApi';
+import { ApiContext, handleApiRequest } from './api';
+import { LocalDraftStore } from './drafts';
+import { LocalApplier, localNotifier, localUser } from './localServices';
+
+type Options = {
+  formDefinitionsDir: string;
+  helplinesConfigDir?: string;
+  draftsDir: string;
+  repoRoot: string;
+};
 
 const sendJson = (res: ServerResponse, statusCode: number, body: unknown) => {
   res.statusCode = statusCode;
@@ -31,34 +38,65 @@ const sendJson = (res: ServerResponse, statusCode: number, body: unknown) => {
   res.end(JSON.stringify(body));
 };
 
-const handleApiRequest =
-  (formDefinitionsDir: string, helplinesConfigDir?: string) =>
+const readBody = (req: IncomingMessage): Promise<unknown> =>
+  new Promise((resolve, reject) => {
+    let text = '';
+    req.on('data', (chunk) => {
+      text += chunk;
+    });
+    req.on('end', () => {
+      try {
+        resolve(text ? JSON.parse(text) : undefined);
+      } catch (err) {
+        reject(err);
+      }
+    });
+    req.on('error', reject);
+  });
+
+const middleware =
+  (context: ApiContext) =>
   async (req: IncomingMessage, res: ServerResponse, next: () => void) => {
     const { pathname } = new URL(req.url ?? '/', 'http://localhost');
-    try {
-      if (pathname === '/api/helplines') {
-        sendJson(res, 200, await listHelplines(formDefinitionsDir));
-        return;
-      }
-      const match = pathname.match(/^\/api\/definitions\/([^/]+)\/([^/]+)$/);
-      if (match) {
-        sendJson(res, 200, await loadDefinitionFiles(formDefinitionsDir, match[1], match[2], helplinesConfigDir));
-        return;
-      }
+    if (!pathname.startsWith('/api/')) {
       next();
+      return;
+    }
+    try {
+      const body = req.method === 'GET' ? undefined : await readBody(req);
+      const response = await handleApiRequest(context, {
+        method: req.method ?? 'GET',
+        path: pathname,
+        body,
+        user: localUser(),
+      });
+      sendJson(res, response.status, response.body);
     } catch (err) {
-      const statusCode = err instanceof DefinitionsApiError ? err.statusCode : 500;
-      sendJson(res, statusCode, { message: (err as Error).message });
+      sendJson(res, 400, { message: (err as Error).message });
     }
   };
 
 // Served by both `npm run dev` and `npm run preview` (the local production build)
-export const definitionsDevApi = (formDefinitionsDir: string, helplinesConfigDir?: string): Plugin => ({
-  name: 'form-definitions-dev-api',
-  configureServer(server) {
-    server.middlewares.use(handleApiRequest(formDefinitionsDir, helplinesConfigDir));
-  },
-  configurePreviewServer(server) {
-    server.middlewares.use(handleApiRequest(formDefinitionsDir, helplinesConfigDir));
-  },
-});
+export const definitionsDevApi = ({
+  formDefinitionsDir,
+  helplinesConfigDir,
+  draftsDir,
+  repoRoot,
+}: Options): Plugin => {
+  const context: ApiContext = {
+    formDefinitionsDir,
+    helplinesConfigDir,
+    drafts: new LocalDraftStore(draftsDir),
+    applier: new LocalApplier(formDefinitionsDir, repoRoot),
+    notifier: localNotifier,
+  };
+  return {
+    name: 'form-builder-dev-api',
+    configureServer(server) {
+      server.middlewares.use(middleware(context));
+    },
+    configurePreviewServer(server) {
+      server.middlewares.use(middleware(context));
+    },
+  };
+};

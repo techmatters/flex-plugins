@@ -1235,3 +1235,27 @@ body {
 .language-add input {
   width: 190px;
 }
+
+.top-bar-user {
+  margin-left: auto;
+  font-size: 13px;
+  opacity: 0.85;
+}
+
+.top-bar .staff-toggle {
+  margin-left: 0;
+}
+
+.draft-status {
+  margin-left: 0;
+}
+
+.draft-updated {
+  font-size: 12px;
+}
+
+.drafts-list {
+  max-width: 900px;
+  margin: 24px auto 0;
+  text-align: left;
+}

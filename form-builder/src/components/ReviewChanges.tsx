@@ -20,6 +20,7 @@ import { summarizeContactFormChanges } from '../changes';
 import { summarizeSectionChanges } from '../sections';
 import { downloadExportZip, REPO_FORM_DEFINITIONS_DIR } from '../exportZip';
 import type { ValidationIssue } from '../validation';
+import type { ApplyResult } from '../../server/api';
 
 type Props = {
   code: string;
@@ -28,6 +29,11 @@ type Props = {
   draftFiles: DefinitionFileMap;
   changedPaths: string[];
   issues: ValidationIssue[];
+  // Aselo staff apply the changes; helpline staff submit them for review
+  mode: 'apply' | 'submit';
+  alreadySubmitted: boolean;
+  onSubmit: () => Promise<void>;
+  onApply: () => Promise<ApplyResult>;
   onClose: () => void;
 };
 
@@ -38,9 +44,17 @@ export const ReviewChanges = ({
   draftFiles,
   changedPaths,
   issues,
+  mode,
+  alreadySubmitted,
+  onSubmit,
+  onApply,
   onClose,
 }: Props) => {
   const [exported, setExported] = useState(false);
+  const [busy, setBusy] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
+  const [applied, setApplied] = useState<ApplyResult>();
+  const [failure, setFailure] = useState<string>();
   const errors = issues.filter((issue) => issue.severity === 'error');
   const warnings = issues.filter((issue) => issue.severity === 'warning');
   const summaries = summarizeContactFormChanges(originalFiles, draftFiles);
@@ -50,6 +64,51 @@ export const ReviewChanges = ({
     await downloadExportZip({ code, version, originalFiles, draftFiles, warnings });
     setExported(true);
   };
+
+  const run = async (action: () => Promise<void>) => {
+    setBusy(true);
+    setFailure(undefined);
+    try {
+      await action();
+    } catch (err) {
+      setFailure((err as Error).message);
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  if (applied) {
+    return (
+      <div className="modal-backdrop" role="presentation">
+        <div className="modal" role="dialog" aria-modal="true" aria-labelledby="review-title">
+          <div className="modal-header">
+            <h2 id="review-title">Changes applied</h2>
+          </div>
+          <p>{applied.description}</p>
+          <ul>
+            {applied.written.map((filePath) => (
+              <li key={filePath}>
+                <code>{filePath}</code>
+              </li>
+            ))}
+          </ul>
+          {applied.link && (
+            <p>
+              <a href={applied.link} target="_blank" rel="noreferrer">
+                Open the pull request
+              </a>
+            </p>
+          )}
+          <div className="modal-footer">
+            <p className="muted">The draft is cleared now that it's been applied.</p>
+            <button type="button" className="primary-button" onClick={onClose}>
+              Done
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="modal-backdrop" role="presentation" onClick={onClose}>
@@ -108,7 +167,7 @@ export const ReviewChanges = ({
 
             {errors.length > 0 && (
               <section className="review-section">
-                <h3>Fix these before exporting</h3>
+                <h3>Fix these first</h3>
                 <ul className="issue-list">
                   {errors.map((issue) => (
                     <li key={issue.message} className="issue issue-error">
@@ -122,8 +181,8 @@ export const ReviewChanges = ({
             {warnings.length > 0 && (
               <section className="review-section">
                 <h3>Notes for the Aselo team</h3>
-                <p className="muted">These don't stop you exporting; they're passed on to the
-                  reviewer.</p>
+                <p className="muted">These don't stop the changes going ahead; they're passed on
+                  to the reviewer.</p>
                 <ul className="issue-list">
                   {warnings.map((issue) => (
                     <li key={issue.message} className="issue issue-warning">
@@ -147,27 +206,64 @@ export const ReviewChanges = ({
               </ul>
             </details>
 
-            <div className="modal-footer">
-              {exported ? (
-                <p className="success-text">
-                  Downloaded. Send the zip file to the Aselo team. Your draft stays here until
-                  you discard it.
-                </p>
-              ) : (
+            {failure && <p className="issue issue-error">{failure}</p>}
+
+            {mode === 'submit' ? (
+              <div className="modal-footer">
+                {submitted || alreadySubmitted ? (
+                  <p className="success-text">
+                    Submitted. The Aselo team has been told and will review and apply your
+                    changes. If you change anything else, submit again.
+                  </p>
+                ) : (
+                  <p className="muted">
+                    Submitting sends your changes to the Aselo team to review. Nothing changes in
+                    Aselo until they apply them.
+                  </p>
+                )}
+                <button
+                  type="button"
+                  className="primary-button"
+                  disabled={errors.length > 0 || busy || submitted || alreadySubmitted}
+                  onClick={() =>
+                    run(async () => {
+                      await onSubmit();
+                      setSubmitted(true);
+                    })
+                  }
+                >
+                  Submit for review
+                </button>
+              </div>
+            ) : (
+              <div className="modal-footer">
                 <p className="muted">
-                  Exporting downloads your changes as a zip file for the Aselo team to review and
-                  apply. It doesn't change anything in Aselo by itself.
+                  {exported
+                    ? 'Downloaded. The draft stays here until it is applied or discarded.'
+                    : 'Applying writes these changes into the repository for a pull request. Counselors see them once the PR is merged and deployed.'}
                 </p>
-              )}
-              <button
-                type="button"
-                className="primary-button"
-                disabled={errors.length > 0}
-                onClick={exportChanges}
-              >
-                Download changes
-              </button>
-            </div>
+                <button
+                  type="button"
+                  className="secondary-button"
+                  disabled={errors.length > 0 || busy}
+                  onClick={exportChanges}
+                >
+                  Download as zip
+                </button>
+                <button
+                  type="button"
+                  className="primary-button"
+                  disabled={errors.length > 0 || busy}
+                  onClick={() =>
+                    run(async () => {
+                      setApplied(await onApply());
+                    })
+                  }
+                >
+                  Apply
+                </button>
+              </div>
+            )}
           </>
         )}
       </div>

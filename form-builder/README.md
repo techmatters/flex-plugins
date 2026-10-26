@@ -20,9 +20,10 @@ It reads and writes the same files the Flex plugin uses:
   Text comes from the plugin's translation files plus the helpline's
   `customStrings/Substitutions.json`, in the helpline's language (`helplineLanguage` in its
   twilio-iac service configuration).
-- Changes are kept as a draft in the browser (local storage) and checked as you go.
-- **Review & export** lists the changes in plain language and downloads a zip of the
-  changed files, laid out like the repo, plus a `CHANGES.md` for the reviewer.
+- Changes are saved as a draft on the server (see below) and checked as you go.
+- **Review** lists the changes in plain language. Helpline staff submit them for review;
+  Aselo staff apply them, or download a zip of the changed files laid out like the repo,
+  plus a `CHANGES.md` for the reviewer.
 - **Linked dropdowns** (e.g. Province → Municipality → District, or a follow-up like
   "Experiencing abuse?" → "Risk level"), 2 to 5 levels: add them with a wizard, edit answers
   in a column browser, import from pasted spreadsheet cells, CSV or Excel, and download as
@@ -35,9 +36,20 @@ It reads and writes the same files the Flex plugin uses:
   locked to Aselo staff, because contacts are saved with the button's text.
 - Issue categories and cases are still preview only.
 
-**Aselo staff mode** (top right) shows settings that affect saved data: field names, PII on
-existing fields, and switching an existing field's kind. It's a plain switch until Okta
-sign-in decides who is staff.
+### Drafts, roles and applying
+
+- **Drafts** are saved on the server a moment after each edit: locally in
+  `form-builder/drafts/<code>/<version>/` (gitignored); deployed, in a private versioned S3
+  bucket. If someone else saved the same draft in between, saving stops and asks to reload.
+- **Helpline staff** edit their own helplines' drafts and **submit them for review**, which
+  notifies Aselo (deployed: Slack and support@aselo.org).
+- **Aselo staff** also see settings that affect saved data (field names, PII on existing
+  fields, switching an existing field's kind, renaming existing call types) and **apply**
+  drafts. Locally, Apply writes the draft into this checkout for you to review with `git diff`
+  and commit; deployed, it will open a PR through a GitHub App. Staff can tick "View as
+  helpline staff" to see what helpline staff see.
+- Roles are checked by the API (`server/api.ts`), not just hidden in the page. Deployed, they
+  come from Okta groups (`form-builder-<code>`, `form-builder-aselo-staff`).
 
 ### Rules that protect saved data
 
@@ -73,9 +85,10 @@ grouped by the value chosen above (`options: { "<value above>": [...] }`).
 
 Planned next:
 
-1. Issue categories, cases and client profiles
-2. Shared drafts, Okta login, and "Apply" (writes the JSON to a new branch for review)
-3. Terraform deployment
+1. Webchat pre-engagement form and its translations
+2. Issue categories, cases and client profiles
+3. Deployment in the management account: Okta login, S3 drafts, Apply through a GitHub App
+   (branch + PR), Slack and email notifications, Terraform
 
 ## Running locally
 
@@ -89,6 +102,12 @@ Open http://localhost:5180.
 
 In development the app reads form definitions straight from this repo checkout. To
 point it at a different checkout, set `FORM_DEFINITIONS_DIR` before `npm run dev`.
+
+Locally you're Aselo staff. To try it as helpline staff:
+
+```bash
+FORM_BUILDER_ROLE=helpline-staff FORM_BUILDER_HELPLINES=usnm npm run dev
+```
 
 ## Checks
 

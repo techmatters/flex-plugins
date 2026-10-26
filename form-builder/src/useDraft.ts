@@ -15,125 +15,189 @@
  */
 
 /**
- * Holds the user's draft of a helpline's definition files and keeps it in this browser's
- * local storage, so closing the tab doesn't lose work.
+ * The user's draft of a helpline's definition files, kept on the server (server/api.ts):
+ * locally in form-builder/drafts, deployed in a private S3 bucket. Changes are saved a moment
+ * after each edit, one save at a time.
  *
- * This is a stopgap: drafts move to the backend (shared, survives a new browser) in Phase 4.
- * A saved change is only restored if the file it was based on hasn't changed since; otherwise
- * it's dropped and the user is told, rather than silently overwriting newer forms.
+ * - A saved change is only restored if the file it was based on hasn't changed since (e.g. a
+ *   PR was merged meanwhile); otherwise it's dropped and the user is told.
+ * - If someone else saved the draft in between, saving stops and the user is asked to reload,
+ *   rather than either person silently overwriting the other.
  */
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import type { ApplyResult } from '../server/api';
+import type { DraftMeta } from '../server/drafts';
 import type { DefinitionFileMap } from './definitions';
 import { getChangedFilePaths } from './changes';
+import type { DraftClient } from './draftClient';
 
-type StoredDraft = {
-  savedAt: string;
-  files: Record<string, { baseHash: string; value: unknown }>;
-};
-
-type RestoreResult = {
-  files: DefinitionFileMap;
-  notice?: string;
-};
+export type SaveState = 'loading' | 'saved' | 'pending' | 'saving' | 'conflict' | 'error';
 
 // Small non-cryptographic hash, only used to tell whether a file changed underneath a draft
-const hashJson = (value: unknown) => {
+export const hashJson = (value: unknown) => {
   const text = JSON.stringify(value) ?? '';
   let hash = 5381;
   for (let i = 0; i < text.length; i += 1) hash = (hash * 33) ^ text.charCodeAt(i);
   return (hash >>> 0).toString(16);
 };
 
-const storageKey = (code: string, version: string) => `form-builder:draft:${code}:${version}`;
+const changedFiles = (original: DefinitionFileMap, files: DefinitionFileMap) =>
+  Object.fromEntries(getChangedFilePaths(original, files).map((filePath) => [filePath, files[filePath]]));
 
-const restoreDraft = (code: string, version: string, original: DefinitionFileMap): RestoreResult => {
-  try {
-    const stored = window.localStorage.getItem(storageKey(code, version));
-    if (!stored) return { files: original };
-    const draft = JSON.parse(stored) as StoredDraft;
-    const files = { ...original };
-    const outdated: string[] = [];
-    Object.entries(draft.files).forEach(([filePath, { baseHash, value }]) => {
-      if (hashJson(original[filePath]) === baseHash) files[filePath] = value;
-      else outdated.push(filePath);
-    });
-    const savedAt = new Date(draft.savedAt).toLocaleString();
-    const notice = outdated.length
-      ? `Your unsaved changes from ${savedAt} were restored, except for ${outdated.join(', ')}, which changed in the meantime.`
-      : `Your unsaved changes from ${savedAt} were restored.`;
-    return { files, notice };
-  } catch {
-    return { files: original };
-  }
-};
-
-const saveDraft = (
-  code: string,
-  version: string,
-  original: DefinitionFileMap,
-  files: DefinitionFileMap,
-  changedPaths: string[],
-): boolean => {
-  try {
-    if (changedPaths.length === 0) {
-      window.localStorage.removeItem(storageKey(code, version));
-      return true;
-    }
-    const draft: StoredDraft = {
-      savedAt: new Date().toISOString(),
-      files: Object.fromEntries(
-        changedPaths.map((filePath) => [
-          filePath,
-          { baseHash: hashJson(original[filePath]), value: files[filePath] },
-        ]),
-      ),
-    };
-    window.localStorage.setItem(storageKey(code, version), JSON.stringify(draft));
-    return true;
-  } catch {
-    // Storage can be full (browsers allow ~5 MB, and big shared lists like PH's are ~3 MB)
-    // or blocked (private browsing). The draft still works in memory; the user is warned.
-    try {
-      window.localStorage.removeItem(storageKey(code, version));
-    } catch {
-      // Nothing more to do
-    }
-    return false;
-  }
-};
+type Options = { saveDelayMs?: number };
 
 /**
  * Use with a `key` of code/version on the owning component, so switching helpline starts
  * a fresh draft.
  */
-export const useDraft = (code: string, version: string, original: DefinitionFileMap) => {
-  const [initial] = useState(() => restoreDraft(code, version, original));
-  const [files, setFiles] = useState<DefinitionFileMap>(initial.files);
-  const [notice, setNotice] = useState(initial.notice);
+export const useDraft = (
+  code: string,
+  version: string,
+  original: DefinitionFileMap,
+  client: DraftClient,
+  { saveDelayMs = 800 }: Options = {},
+) => {
+  const [files, setFiles] = useState<DefinitionFileMap>(original);
+  const [saveState, setSaveState] = useState<SaveState>('loading');
+  const [meta, setMeta] = useState<Partial<DraftMeta>>();
+  const [notice, setNotice] = useState<string>();
+  const [conflict, setConflict] = useState<{ updatedBy?: string; updatedAt?: string }>();
+
+  const filesRef = useRef(files);
+  filesRef.current = files;
+  const revision = useRef(0);
+  // What was last saved, so unchanged drafts aren't saved again
+  const lastSavedJson = useRef('{}');
+  const saveChain = useRef<Promise<void>>(Promise.resolve());
 
   const changedPaths = useMemo(() => getChangedFilePaths(original, files), [original, files]);
-  const [savedInBrowser, setSavedInBrowser] = useState(true);
+  const changedJson = useMemo(
+    () => JSON.stringify(changedFiles(original, files)),
+    [original, files],
+  );
 
+  // Load the saved draft, if there is one
   useEffect(() => {
-    setSavedInBrowser(saveDraft(code, version, original, files, changedPaths));
-  }, [code, version, original, files, changedPaths]);
+    let current = true;
+    client
+      .load(code, version)
+      .then((draft) => {
+        if (!current) return;
+        if (draft) {
+          const restored = { ...original };
+          const outdated: string[] = [];
+          Object.entries(draft.files).forEach(([filePath, value]) => {
+            const baseHash = draft.meta.baseHashes[filePath];
+            if (!baseHash || baseHash === hashJson(original[filePath])) restored[filePath] = value;
+            else outdated.push(filePath);
+          });
+          revision.current = draft.meta.revision;
+          lastSavedJson.current = JSON.stringify(changedFiles(original, restored));
+          setMeta(draft.meta);
+          setFiles(restored);
+          if (outdated.length > 0) {
+            setNotice(
+              `Some saved changes were dropped because these files changed since the draft was started: ${outdated.join(', ')}.`,
+            );
+          }
+        }
+        setSaveState('saved');
+      })
+      .catch((err: Error) => {
+        if (!current) return;
+        setSaveState('error');
+        setNotice(`Couldn't load the saved draft: ${err.message}`);
+      });
+    return () => {
+      current = false;
+    };
+    // Loaded once per helpline; the owning component is keyed by code/version
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const saveNow = async () => {
+    const changed = changedFiles(original, filesRef.current);
+    const json = JSON.stringify(changed);
+    if (json === lastSavedJson.current) {
+      setSaveState('saved');
+      return;
+    }
+    setSaveState('saving');
+    try {
+      const outcome = await client.save(code, version, {
+        expectedRevision: revision.current,
+        files: changed,
+        baseHashes: Object.fromEntries(
+          Object.keys(changed).map((filePath) => [filePath, hashJson(original[filePath])]),
+        ),
+      });
+      if (!outcome.ok) {
+        setConflict(outcome.conflict);
+        setSaveState('conflict');
+        return;
+      }
+      revision.current = outcome.meta.revision;
+      lastSavedJson.current = json;
+      setMeta(outcome.meta.revision === 0 ? undefined : (previous) => ({ ...previous, ...outcome.meta }));
+      setSaveState(JSON.stringify(changedFiles(original, filesRef.current)) === json ? 'saved' : 'pending');
+    } catch (err) {
+      setSaveState('error');
+      setNotice(`Couldn't save the draft: ${(err as Error).message}`);
+    }
+  };
+
+  // Saves run one after another, so each uses the revision the previous one returned
+  const flush = () => {
+    saveChain.current = saveChain.current.then(saveNow);
+    return saveChain.current;
+  };
+
+  // Save a moment after the last edit
+  useEffect(() => {
+    if (saveState === 'loading' || conflict) return undefined;
+    if (changedJson === lastSavedJson.current) return undefined;
+    setSaveState('pending');
+    const timer = setTimeout(flush, saveDelayMs);
+    return () => clearTimeout(timer);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [changedJson, conflict]);
 
   const updateFiles = (updater: (current: DefinitionFileMap) => DefinitionFileMap) =>
     setFiles(updater);
 
-  const discardChanges = () => {
-    setFiles(original);
+  const discardChanges = async () => {
+    await saveChain.current;
+    await client.discard(code, version);
+    revision.current = 0;
+    lastSavedJson.current = '{}';
+    setMeta(undefined);
     setNotice(undefined);
+    setFiles(original);
+    setSaveState('saved');
+  };
+
+  const submit = async () => {
+    await flush();
+    const submitted = await client.submit(code, version);
+    setMeta(submitted);
+  };
+
+  const apply = async (): Promise<ApplyResult> => {
+    await flush();
+    return client.apply(code, version);
   };
 
   return {
     files,
     changedPaths,
-    // False when the draft couldn't be kept in this browser and would be lost on closing it
-    savedInBrowser,
+    saveState,
+    meta,
+    conflict,
     notice,
     dismissNotice: () => setNotice(undefined),
     updateFiles,
     discardChanges,
+    submit,
+    apply,
   };
 };

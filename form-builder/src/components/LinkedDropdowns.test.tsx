@@ -22,10 +22,10 @@
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { afterEach, beforeAll, beforeEach, describe, expect, test, vi } from 'vitest';
-import { cleanup, fireEvent, render, screen, within } from '@testing-library/react';
+import { cleanup, fireEvent, screen, waitFor, within } from '@testing-library/react';
 import type { FormItemJsonDefinition } from '@hrm-form-definitions/formDefinition/types';
 import { DefinitionFiles, loadDefinitionFiles } from '../../server/definitionsApi';
-import { HelplineWorkspace } from './HelplineWorkspace';
+import { createHarness } from '../testing/workspaceHarness';
 
 const formDefinitionsDir = path.resolve(
   path.dirname(fileURLToPath(import.meta.url)),
@@ -42,7 +42,23 @@ beforeAll(async () => {
   ph = await loadDefinitionFiles(formDefinitionsDir, 'ph', 'v1');
 });
 
-beforeEach(() => window.localStorage.clear());
+
+let harness: ReturnType<typeof createHarness>;
+beforeEach(() => {
+  harness = createHarness();
+});
+
+// Renders the workspace and waits for the (empty) draft to load
+const renderLoaded = async (definitions: DefinitionFiles) => {
+  harness.renderWorkspace(definitions);
+  await waitFor(() => expect(screen.queryByText('Loading the draft…')).toBeNull());
+};
+
+// A file as saved in the draft, once the latest change has been saved
+const savedDraftFile = async (definitions: DefinitionFiles, filePath: string) => {
+  await screen.findByText(/All changes saved/);
+  return harness.savedFile(definitions, filePath);
+};
 afterEach(() => {
   cleanup();
   vi.restoreAllMocks();
@@ -52,10 +68,8 @@ const fieldCard = (label: string) =>
   screen.getByRole('button', { name: `${label}. Click to edit, or drag to move.` });
 
 // The draft as saved in this browser, for checking what will be exported
-const savedDraftForm = (code: string, filePath: string) => {
-  const draft = JSON.parse(window.localStorage.getItem(`form-builder:draft:${code}:v1`)!);
-  return draft.files[filePath].value as (FormItemJsonDefinition & Record<string, unknown>)[];
-};
+const savedDraftForm = async (definitions: DefinitionFiles, filePath: string) =>
+  (await savedDraftFile(definitions, filePath)) as (FormItemJsonDefinition & Record<string, unknown>)[];
 
 const labelOf = (definitions: DefinitionFiles, filePath: string, name: string) =>
   (definitions.files[filePath] as FormItemJsonDefinition[]).find((item) => item.name === name)!
@@ -78,8 +92,8 @@ const addAnswer = (column: HTMLElement, label: string) => {
 };
 
 describe('linked dropdowns', () => {
-  test('creating them from cells pasted from a spreadsheet', () => {
-    render(<HelplineWorkspace definitions={usnm} staffMode={false} />);
+  test('creating them from cells pasted from a spreadsheet', async () => {
+    await renderLoaded(usnm);
     const editor = startWizard(['Province', 'District']);
 
     fireEvent.click(within(editor).getByRole('button', { name: 'Import from a spreadsheet' }));
@@ -105,7 +119,7 @@ describe('linked dropdowns', () => {
     expect(fieldCard('Province')).toBeTruthy();
     expect(fieldCard('District')).toBeTruthy();
 
-    const form = savedDraftForm('usnm', 'tabbedForms/CallerInformationTab.json');
+    const form = await savedDraftForm(usnm, 'tabbedForms/CallerInformationTab.json');
     const province = form.find((item) => item.name === 'province')!;
     const district = form.find((item) => item.name === 'district')!;
     expect(province).toMatchObject({ type: 'select' });
@@ -127,8 +141,8 @@ describe('linked dropdowns', () => {
     });
   });
 
-  test('typing answers by hand, and going back a step keeps them', () => {
-    render(<HelplineWorkspace definitions={usnm} staffMode={false} />);
+  test('typing answers by hand, and going back a step keeps them', async () => {
+    await renderLoaded(usnm);
     let editor = startWizard(['Experiencing abuse?', 'Risk level']);
 
     const firstColumn = () => within(editor).getByRole('region', { name: 'Experiencing abuse?' });
@@ -150,7 +164,7 @@ describe('linked dropdowns', () => {
     expect(within(firstColumn()).getByText('Yes')).toBeTruthy();
     fireEvent.click(within(editor).getByRole('button', { name: 'Add these dropdowns' }));
 
-    const form = savedDraftForm('usnm', 'tabbedForms/CallerInformationTab.json');
+    const form = await savedDraftForm(usnm, 'tabbedForms/CallerInformationTab.json');
     expect(form.find((item) => item.name === 'riskLevel')).toMatchObject({
       dependsOn: 'experiencingAbuse',
       options: {
@@ -162,9 +176,9 @@ describe('linked dropdowns', () => {
     });
   });
 
-  test('editing the answers of existing linked dropdowns', () => {
+  test('editing the answers of existing linked dropdowns', async () => {
     const childTab = 'tabbedForms/ChildInformationTab.json';
-    render(<HelplineWorkspace definitions={demo} staffMode={false} />);
+    await renderLoaded(demo);
     fireEvent.click(screen.getByRole('button', { name: 'Child information' }));
     fireEvent.click(fieldCard(labelOf(demo, childTab, 'district')));
     fireEvent.click(screen.getByRole('button', { name: 'Edit answers' }));
@@ -181,15 +195,15 @@ describe('linked dropdowns', () => {
     fireEvent.click(within(editor).getByRole('button', { name: 'Save answers' }));
 
     expect(within(fieldCard(districtLabel)).getByText('Edited')).toBeTruthy();
-    const district = savedDraftForm('as', childTab).find((item) => item.name === 'district')!;
+    const district = (await savedDraftForm(demo, childTab)).find((item) => item.name === 'district')!;
     const lists = district.options as Record<string, { value: string }[]>;
     // In this data each province's saved value is its name
     expect(lists[provinceName].map((option) => option.value)).toContain('New District');
   });
 
-  test('PH’s tens of thousands of barangays open, with a note about names shared between provinces', () => {
+  test('PH’s tens of thousands of barangays open, with a note about names shared between provinces', async () => {
     const childTab = 'tabbedForms/ChildInformationTab.json';
-    render(<HelplineWorkspace definitions={ph} staffMode={false} />);
+    await renderLoaded(ph);
     fireEvent.click(screen.getByRole('button', { name: 'Child information' }));
     fireEvent.click(fieldCard(labelOf(ph, childTab, 'district')));
     fireEvent.click(screen.getByRole('button', { name: 'Edit answers' }));

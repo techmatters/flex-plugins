@@ -16,32 +16,42 @@
 
 import { useEffect, useState } from 'react';
 import type { DefinitionFiles, HelplineSummary } from '../server/definitionsApi';
+import type { ApiUser } from '../server/api';
 import { fetchDefinitionFiles, fetchHelplines } from './api';
+import { DraftClient, httpDraftClient } from './draftClient';
 import { HelplineWorkspace } from './components/HelplineWorkspace';
+import { DraftsList } from './components/DraftsList';
 
-const STAFF_MODE_KEY = 'form-builder:staff-mode';
-
-const readStaffMode = () => {
-  try {
-    return window.localStorage.getItem(STAFF_MODE_KEY) === 'true';
-  } catch {
-    return false;
-  }
+type Props = {
+  draftClient?: DraftClient;
 };
 
-export const App = () => {
+export const App = ({ draftClient = httpDraftClient }: Props) => {
+  const [user, setUser] = useState<ApiUser>();
   const [helplines, setHelplines] = useState<HelplineSummary[]>([]);
   const [code, setCode] = useState('');
   const [version, setVersion] = useState('');
   const [definitions, setDefinitions] = useState<DefinitionFiles>();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string>();
-  // Temporary switch until Okta sign-in decides who is Aselo staff (Phase 4)
-  const [staffMode, setStaffMode] = useState(readStaffMode);
+  // Bumped to load the helpline again (after applying, or when someone else changed the draft)
+  const [reloadCount, setReloadCount] = useState(0);
+  // Aselo staff can see the app as helpline staff do
+  const [viewAsHelplineStaff, setViewAsHelplineStaff] = useState(false);
+
+  const isAseloStaff = user?.role === 'aselo-staff';
+  const actingAsStaff = isAseloStaff && !viewAsHelplineStaff;
+
+  const selectHelpline = (newCode: string, newVersion?: string) => {
+    setCode(newCode);
+    const versions = helplines.find((helpline) => helpline.code === newCode)?.versions ?? [];
+    setVersion(newVersion ?? versions[0] ?? '');
+  };
 
   useEffect(() => {
-    fetchHelplines()
-      .then((loadedHelplines) => {
+    Promise.all([draftClient.me(), fetchHelplines()])
+      .then(([me, loadedHelplines]) => {
+        setUser(me);
         setHelplines(loadedHelplines);
         // Allow linking straight to a helpline, e.g. ?helpline=usnm
         const linkedCode = new URLSearchParams(window.location.search).get('helpline');
@@ -52,7 +62,7 @@ export const App = () => {
         }
       })
       .catch((err: Error) => setError(err.message));
-  }, []);
+  }, [draftClient]);
 
   useEffect(() => {
     if (!code || !version) return;
@@ -63,22 +73,7 @@ export const App = () => {
       .then(setDefinitions)
       .catch((err: Error) => setError(err.message))
       .finally(() => setLoading(false));
-  }, [code, version]);
-
-  const selectHelpline = (newCode: string) => {
-    setCode(newCode);
-    const versions = helplines.find((helpline) => helpline.code === newCode)?.versions ?? [];
-    setVersion(versions[0] ?? '');
-  };
-
-  const toggleStaffMode = (enabled: boolean) => {
-    setStaffMode(enabled);
-    try {
-      window.localStorage.setItem(STAFF_MODE_KEY, String(enabled));
-    } catch {
-      // Not remembered if storage is unavailable
-    }
-  };
+  }, [code, version, reloadCount]);
 
   const versions = helplines.find((helpline) => helpline.code === code)?.versions ?? [];
 
@@ -109,14 +104,23 @@ export const App = () => {
             </select>
           </label>
         )}
-        <label className="staff-toggle" title="Shows settings that affect saved data and reporting">
-          <input
-            type="checkbox"
-            checked={staffMode}
-            onChange={(e) => toggleStaffMode(e.target.checked)}
-          />
-          Aselo staff mode
-        </label>
+        <span className="top-bar-user">
+          {user && (
+            <>
+              {user.name} · {isAseloStaff ? 'Aselo staff' : 'Helpline staff'}
+            </>
+          )}
+        </span>
+        {isAseloStaff && (
+          <label className="staff-toggle" title="See and use the app as helpline staff do">
+            <input
+              type="checkbox"
+              checked={viewAsHelplineStaff}
+              onChange={(e) => setViewAsHelplineStaff(e.target.checked)}
+            />
+            View as helpline staff
+          </label>
+        )}
       </header>
 
       {error && <div className="alert alert-error">{error}</div>}
@@ -124,16 +128,26 @@ export const App = () => {
       {!code && !error && (
         <main className="empty-state">
           <p>Choose a helpline to see and edit its forms.</p>
+          {user && (
+            <DraftsList
+              draftClient={draftClient}
+              isAseloStaff={isAseloStaff}
+              onOpen={(draftCode, draftVersion) => selectHelpline(draftCode, draftVersion)}
+            />
+          )}
         </main>
       )}
 
       {loading && <main className="empty-state">Loading forms…</main>}
 
-      {definitions && (
+      {definitions && user && (
         <HelplineWorkspace
-          key={`${definitions.code}/${definitions.version}`}
+          key={`${definitions.code}/${definitions.version}/${reloadCount}`}
           definitions={definitions}
-          staffMode={staffMode}
+          staffMode={actingAsStaff}
+          canApply={actingAsStaff}
+          draftClient={draftClient}
+          onReload={() => setReloadCount((count) => count + 1)}
         />
       )}
     </div>

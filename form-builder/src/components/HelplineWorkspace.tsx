@@ -33,7 +33,8 @@ import {
   getReferenceData,
 } from '../definitions';
 import { validateSections } from '../sections';
-import { useDraft } from '../useDraft';
+import { SaveState, useDraft } from '../useDraft';
+import type { DraftClient } from '../draftClient';
 import { validateContactTab, ValidationIssue } from '../validation';
 import { CategoriesPreview } from './CategoriesPreview';
 import { FlexDesktopPreview, PreviewFocus } from '../aselo/FlexDesktopPreview';
@@ -57,14 +58,63 @@ type View =
 
 const sameView = (a: View, b: View) => JSON.stringify(a) === JSON.stringify(b);
 
+// Defined outside the workspace so its buttons survive re-renders (e.g. when the draft loads)
+const NavItem = ({
+  current,
+  onSelect,
+  target,
+  label,
+  errors,
+}: {
+  current: View;
+  onSelect: (view: View) => void;
+  target: View;
+  label: string;
+  errors?: number;
+}) => (
+  <li>
+    <button
+      type="button"
+      className={sameView(current, target) ? 'nav-item active' : 'nav-item'}
+      onClick={() => onSelect(target)}
+    >
+      {label}
+      {Boolean(errors) && <span className="nav-error-count">{errors}</span>}
+    </button>
+  </li>
+);
+
 type Props = {
   definitions: DefinitionFiles;
+  // Show the settings only Aselo staff may change
   staffMode: boolean;
+  // Aselo staff apply changes; helpline staff submit them for review
+  canApply: boolean;
+  draftClient: DraftClient;
+  // Reload the helpline from the server (after applying, or when someone else changed the draft)
+  onReload: () => void;
+  saveDelayMs?: number;
 };
 
-export const HelplineWorkspace = ({ definitions, staffMode }: Props) => {
+const SAVE_STATE_TEXT: Record<SaveState, string> = {
+  loading: 'Loading the draft…',
+  saved: 'All changes saved',
+  pending: 'Unsaved changes…',
+  saving: 'Saving…',
+  conflict: 'Not saved',
+  error: "Couldn't save",
+};
+
+export const HelplineWorkspace = ({
+  definitions,
+  staffMode,
+  canApply,
+  draftClient,
+  onReload,
+  saveDelayMs,
+}: Props) => {
   const { code, version, files: originalFiles } = definitions;
-  const draft = useDraft(code, version, originalFiles);
+  const draft = useDraft(code, version, originalFiles, draftClient, { saveDelayMs });
   const files = draft.files;
 
   const [view, setView] = useState<View>({ kind: 'contactTab', tabKey: CONTACT_TABS[0].key });
@@ -93,25 +143,13 @@ export const HelplineWorkspace = ({ definitions, staffMode }: Props) => {
   const caseSections = getCaseSections(files);
   const changeCount = draft.changedPaths.length;
 
-  const discard = () => {
-    if (window.confirm('Discard all your changes for this helpline? This can’t be undone.')) {
-      draft.discardChanges();
+  const discard = async () => {
+    if (window.confirm('Discard all the draft changes for this helpline? This can’t be undone.')) {
+      await draft.discardChanges();
       setEditorRevision((revision) => revision + 1);
     }
   };
 
-  const NavItem = ({ target, label, errors }: { target: View; label: string; errors?: number }) => (
-    <li>
-      <button
-        type="button"
-        className={sameView(view, target) ? 'nav-item active' : 'nav-item'}
-        onClick={() => setView(target)}
-      >
-        {label}
-        {Boolean(errors) && <span className="nav-error-count">{errors}</span>}
-      </button>
-    </li>
-  );
 
   const renderContactTab = (tabKey: string) => {
     const tab = CONTACT_TABS.find((contactTab) => contactTab.key === tabKey)!;
@@ -143,6 +181,8 @@ export const HelplineWorkspace = ({ definitions, staffMode }: Props) => {
   };
 
   const renderMain = () => {
+    // Editors build their state from the files when they open, so wait for the saved draft
+    if (draft.saveState === 'loading') return <p className="muted">Loading the draft…</p>;
     if (view.kind === 'contactTab') return renderContactTab(view.tabKey);
     const editorKey = `${view.kind}-${editorRevision}`;
     if (view.kind === 'callTypes') {
@@ -206,28 +246,47 @@ export const HelplineWorkspace = ({ definitions, staffMode }: Props) => {
       <div className="action-bar">
         <span className={changeCount ? 'change-count has-changes' : 'change-count'}>
           {changeCount
-            ? `Draft: ${changeCount} file${changeCount === 1 ? '' : 's'} changed${draft.savedInBrowser ? ', saved in this browser' : ''}`
-            : 'No changes yet'}
+            ? `Draft: ${changeCount} file${changeCount === 1 ? '' : 's'} changed · ${SAVE_STATE_TEXT[draft.saveState]}`
+            : draft.saveState === 'loading'
+              ? SAVE_STATE_TEXT.loading
+              : 'No changes yet'}
         </span>
+        {draft.meta?.status === 'submitted' && changeCount > 0 && (
+          <span className="badge badge-new draft-status">
+            Submitted for review
+            {draft.meta.submittedBy ? ` by ${draft.meta.submittedBy}` : ''}
+          </span>
+        )}
+        {draft.meta?.updatedBy && changeCount > 0 && (
+          <span className="muted draft-updated">
+            Last change by {draft.meta.updatedBy}
+            {draft.meta.updatedAt ? `, ${new Date(draft.meta.updatedAt).toLocaleString()}` : ''}
+          </span>
+        )}
         {changeCount > 0 && (
           <button type="button" className="link-button" onClick={discard}>
-            Discard all changes
+            Discard draft
           </button>
         )}
         <button
           type="button"
           className="primary-button"
-          disabled={changeCount === 0}
+          disabled={changeCount === 0 || draft.saveState === 'conflict'}
           onClick={() => setReviewing(true)}
         >
-          Review &amp; export
+          {canApply ? 'Review & apply' : 'Review & submit'}
         </button>
       </div>
 
-      {changeCount > 0 && !draft.savedInBrowser && (
+      {draft.conflict && (
         <div className="alert alert-error">
-          Your changes are too big to keep in this browser, so they'll be lost if you close or
-          reload this page. Use “Review &amp; export” to download them before you leave.
+          {draft.conflict.updatedBy ?? 'Someone else'} changed this draft
+          {draft.conflict.updatedAt ? ` at ${new Date(draft.conflict.updatedAt).toLocaleString()}` : ''}{' '}
+          while you were editing, so your latest changes weren't saved. Reload to see their
+          version, then make your changes again.
+          <button type="button" className="link-button" onClick={onReload}>
+            Reload
+          </button>
         </div>
       )}
 
@@ -245,7 +304,7 @@ export const HelplineWorkspace = ({ definitions, staffMode }: Props) => {
           <h3>Contact forms</h3>
           <ul>
             {CONTACT_TABS.filter((tab) => files[tab.filePath]).map((tab) => (
-              <NavItem
+              <NavItem current={view} onSelect={setView}
                 key={tab.key}
                 target={{ kind: 'contactTab', tabKey: tab.key }}
                 label={tab.title}
@@ -253,28 +312,28 @@ export const HelplineWorkspace = ({ definitions, staffMode }: Props) => {
               />
             ))}
             {files[CATEGORIES_FILE] !== undefined && (
-              <NavItem target={{ kind: 'categories' }} label="Issue categories" />
+              <NavItem current={view} onSelect={setView} target={{ kind: 'categories' }} label="Issue categories" />
             )}
           </ul>
           <h3>Chats and calls</h3>
           <ul>
-            <NavItem
+            <NavItem current={view} onSelect={setView}
               target={{ kind: 'callTypes' }}
               label="Call types"
               errors={sectionErrorCount('Call types')}
             />
-            <NavItem
+            <NavItem current={view} onSelect={setView}
               target={{ kind: 'cannedResponses' }}
               label="Canned responses"
               errors={sectionErrorCount('Canned responses')}
             />
-            <NavItem target={{ kind: 'messages' }} label="Automatic messages" />
+            <NavItem current={view} onSelect={setView} target={{ kind: 'messages' }} label="Automatic messages" />
           </ul>
           <h3>Cases (preview only)</h3>
           <ul>
-            <NavItem target={{ kind: 'caseStatus' }} label="Case statuses" />
+            <NavItem current={view} onSelect={setView} target={{ kind: 'caseStatus' }} label="Case statuses" />
             {caseSections.map((section) => (
-              <NavItem
+              <NavItem current={view} onSelect={setView}
                 key={section.key}
                 target={{ kind: 'caseSection', sectionKey: section.key }}
                 label={section.label}
@@ -316,6 +375,10 @@ export const HelplineWorkspace = ({ definitions, staffMode }: Props) => {
           originalFiles={originalFiles}
           draftFiles={files}
           changedPaths={draft.changedPaths}
+          mode={canApply ? 'apply' : 'submit'}
+          alreadySubmitted={draft.meta?.status === 'submitted'}
+          onSubmit={draft.submit}
+          onApply={draft.apply}
           issues={allIssues}
           onClose={() => setReviewing(false)}
         />

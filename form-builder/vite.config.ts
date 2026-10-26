@@ -38,7 +38,13 @@ export default defineConfig({
   plugins: [
     hrmFormDefinitionsResolver(hrmFormDefinitionsSrc),
     react(),
-    definitionsDevApi(formDefinitionsDir, helplinesConfigDir),
+    definitionsDevApi({
+      formDefinitionsDir,
+      helplinesConfigDir,
+      // Work in progress, kept out of git; deployed, drafts live in a private S3 bucket
+      draftsDir: process.env.FORM_BUILDER_DRAFTS_DIR ?? path.resolve(appDir, 'drafts'),
+      repoRoot: path.resolve(appDir, '..'),
+    }),
   ],
   resolve: {
     alias: {
