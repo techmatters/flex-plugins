@@ -66,9 +66,8 @@ Not included: `search-input` (used by search forms) and helpline-specific custom
 ## Rules when customizing
 
 - Field `name`s are the saved keys: rename them only before the helpline goes live. Some are used by
-  the Flex plugin directly (`firstName`, `lastName`, `age`, `gender`, `language`, `province`,
-  `callSummary`, `repeatCaller`, `relationshipToChild`, `childIsAtRisk`, `followUpDate`); keep
-  those. `province` / `district` hold State / County.
+  the Flex plugin directly (`firstName`, `lastName`, `age`, `gender`, `language`, `callSummary`,
+  `repeatCaller`, `relationshipToChild`, `childIsAtRisk`, `followUpDate`); keep those.
 - The tab file names (`ChildInformationTab`, `CallerInformationTab`…) are fixed; change what users
   see through `Substitutions.json` and the field labels.
 - Set `isPII` on anything that identifies a person.
