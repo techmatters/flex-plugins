@@ -48,6 +48,7 @@ import { selectCurrentDefinitionVersion } from '../states/configuration/selectDe
 import { LoadingStatus } from '../states/contacts/types';
 import selectContactStateByContactId from '../states/contacts/selectContactStateByContactId';
 import { rerenderAgentDesktop } from '../rerenderView';
+import { TaskSID } from '../types/twilio';
 
 type Props = {
   task: CustomITask;
@@ -76,7 +77,7 @@ const TaskView: React.FC<Props> = ({ task }) => {
     !(metadata?.loadingStatus === LoadingStatus.LOADING) &&
     !contactIsLoading;
 
-  const [setHelplineAttempted, setSetHelplineAttempted] = useState(false);
+  const [setHelplineAttempted, setSetHelplineAttempted] = useState(new Set<TaskSID>());
   const dispatch = useDispatch();
   const asyncDispatcher = asyncDispatch(dispatch);
   const createContact = useCallback(
@@ -112,7 +113,8 @@ const TaskView: React.FC<Props> = ({ task }) => {
   React.useEffect(() => {
     const setHelpline = async () => {
       if (unsavedContact && task && !isStandaloneITask(task)) {
-        setSetHelplineAttempted(true); // We only want to try this once per component load
+        setHelplineAttempted.add(task.taskSid);
+        setSetHelplineAttempted(new Set<TaskSID>(setHelplineAttempted)); // We only want to try this once per component load
         const helplineToSave = await getHelplineToSave(task, contactlessTask);
         if (helpline !== helplineToSave) {
           updateHelpline(unsavedContact.id, helplineToSave);
@@ -126,7 +128,7 @@ const TaskView: React.FC<Props> = ({ task }) => {
       (!isOfflineContactTask(task) || contactlessTask?.createdOnBehalfOf) &&
       helpline !== undefined &&
       helpline !== null &&
-      !setHelplineAttempted;
+      !setHelplineAttempted.has(task.taskSid);
 
     if (shouldSetHelpline) {
       setHelpline();
