@@ -45,6 +45,8 @@ export type DefinitionFiles = {
   helplineLanguage?: string;
   // Logo for Flex's header, if the helpline's production config sets one
   logoUrl?: string;
+  // Production feature flags, e.g. enable_canned_responses
+  featureFlags?: Record<string, boolean>;
 };
 
 export class DefinitionsApiError extends Error {
@@ -127,6 +129,32 @@ export const readHelplineLanguage = (helplinesConfigDir: string, code: string) =
     (config) => config.attributes?.helplineLanguage ?? config.helplineLanguage,
   );
 
+/**
+ * The helpline's production feature flags, merged the way Terraform merges the service
+ * configuration: shared defaults.json, then the helpline's common.json, then production.json.
+ */
+export const readFeatureFlags = async (
+  helplinesConfigDir: string,
+  code: string,
+): Promise<Record<string, boolean>> => {
+  if (!HELPLINE_CODE_PATTERN.test(code)) return {};
+  const serviceConfigFiles = [
+    path.join(helplinesConfigDir, 'configs', 'service-configuration', 'defaults.json'),
+    path.join(helplinesConfigDir, code, 'configs', 'service-configuration', 'common.json'),
+    path.join(helplinesConfigDir, code, 'configs', 'service-configuration', 'production.json'),
+  ];
+  let flags: Record<string, boolean> = {};
+  for (const filePath of serviceConfigFiles) {
+    try {
+      const config = JSON.parse((await fs.readFile(filePath, 'utf8')).replace(/^﻿/, ''));
+      flags = { ...flags, ...(config?.attributes?.feature_flags ?? {}) };
+    } catch {
+      // Missing or unreadable file: keep what we have
+    }
+  }
+  return flags;
+};
+
 // The logo in Flex's header (attributes.logo_url). Staging logos are labelled "STAGING", so
 // only production and common settings are used; without one the preview shows a wordmark.
 export const readLogoUrl = (helplinesConfigDir: string, code: string) =>
@@ -177,5 +205,8 @@ export const loadDefinitionFiles = async (
     ? await readHelplineLanguage(helplinesConfigDir, code)
     : undefined;
   const logoUrl = helplinesConfigDir ? await readLogoUrl(helplinesConfigDir, code) : undefined;
-  return { code, version, files, errors, helplineLanguage, logoUrl };
+  const featureFlags = helplinesConfigDir
+    ? await readFeatureFlags(helplinesConfigDir, code)
+    : undefined;
+  return { code, version, files, errors, helplineLanguage, logoUrl, featureFlags };
 };

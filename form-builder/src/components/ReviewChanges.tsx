@@ -17,6 +17,7 @@
 import { useState } from 'react';
 import type { DefinitionFileMap } from '../definitions';
 import { summarizeContactFormChanges } from '../changes';
+import { summarizeSectionChanges } from '../sections';
 import { downloadExportZip, REPO_FORM_DEFINITIONS_DIR } from '../exportZip';
 import type { ValidationIssue } from '../validation';
 
@@ -43,6 +44,7 @@ export const ReviewChanges = ({
   const errors = issues.filter((issue) => issue.severity === 'error');
   const warnings = issues.filter((issue) => issue.severity === 'warning');
   const summaries = summarizeContactFormChanges(originalFiles, draftFiles);
+  const sectionSummaries = summarizeSectionChanges(originalFiles, draftFiles);
 
   const exportChanges = async () => {
     await downloadExportZip({ code, version, originalFiles, draftFiles, warnings });
@@ -89,6 +91,17 @@ export const ReviewChanges = ({
                     </li>
                   ))}
                   {summary.reordered && <li>Fields were moved around</li>}
+                </ul>
+              </section>
+            ))}
+
+            {sectionSummaries.map((summary) => (
+              <section key={summary.title} className="review-section">
+                <h3>{summary.title}</h3>
+                <ul>
+                  {summary.lines.map((line) => (
+                    <li key={line}>{line}</li>
+                  ))}
                 </ul>
               </section>
             ))}

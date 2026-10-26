@@ -1086,3 +1086,152 @@ body {
   opacity: 0;
   cursor: pointer;
 }
+
+/* Section editors (call types, canned responses, messages): editor + live preview */
+.section-editor {
+  display: flex;
+  gap: 24px;
+  align-items: flex-start;
+}
+
+.section-editor-main {
+  flex: 1;
+  min-width: 0;
+}
+
+.section-preview {
+  width: 440px;
+  flex-shrink: 0;
+  position: sticky;
+  top: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+@media (max-width: 1200px) {
+  .section-editor {
+    flex-direction: column;
+  }
+  .section-preview {
+    width: 100%;
+    position: static;
+  }
+}
+
+.section-preview-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.section-preview-frame {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  background: #ffffff;
+  max-height: calc(100vh - 200px);
+  overflow: auto;
+}
+
+.section-preview-frame .aselo-tab-content {
+  min-height: 0;
+  padding-bottom: 32px;
+}
+
+.section-preview-frame .aselo-call-types {
+  margin-top: 16px;
+}
+
+.section-preview-hint {
+  padding: 0 16px 12px;
+}
+
+.section-heading {
+  font-size: 14px;
+  margin: 24px 0 8px;
+}
+
+.sortable-rows {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.sortable-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 4px;
+  background: var(--color-surface);
+}
+
+.sortable-row-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.row-inline {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.row-inline input,
+.canned-response-row textarea,
+.message-card textarea,
+.language-add input {
+  font: inherit;
+  padding: 6px 8px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  width: 100%;
+}
+
+.row-inline input:disabled {
+  background: var(--color-bg);
+  color: var(--color-muted);
+}
+
+.canned-response-row {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.message-card {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 16px;
+}
+
+.language-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+
+.language-tabs button {
+  font: inherit;
+  padding: 4px 12px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  background: var(--color-surface);
+  cursor: pointer;
+}
+
+.language-tabs button.active {
+  background: var(--color-accent);
+  border-color: var(--color-accent);
+  color: #ffffff;
+}
+
+.language-add input {
+  width: 190px;
+}

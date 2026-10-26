@@ -477,3 +477,12 @@
   background: rgb(214, 31, 31);
   color: #ffffff;
 }
+
+.flex-canned-responses {
+  margin: 8px 16px 0;
+}
+
+.flex-message-draft {
+  flex: 1;
+  font-size: 14px;
+}

@@ -22,6 +22,7 @@
 import JSZip from 'jszip';
 import type { DefinitionFileMap } from './definitions';
 import { getChangedFilePaths, summarizeContactFormChanges } from './changes';
+import { summarizeSectionChanges } from './sections';
 import type { ValidationIssue } from './validation';
 
 export const REPO_FORM_DEFINITIONS_DIR = 'lambdas/packages/hrm-form-definitions/form-definitions';
@@ -58,6 +59,12 @@ export const buildChangeLog = ({
     summary.removed.forEach((field) => lines.push(`- Removed: ${field}`));
     summary.edited.forEach((field) => lines.push(`- Edited: ${field}`));
     if (summary.reordered) lines.push('- Fields were reordered');
+    lines.push('');
+  });
+
+  summarizeSectionChanges(originalFiles, draftFiles).forEach((summary) => {
+    lines.push(`## ${summary.title}`, '');
+    summary.lines.forEach((line) => lines.push(`- ${line}`));
     lines.push('');
   });
 

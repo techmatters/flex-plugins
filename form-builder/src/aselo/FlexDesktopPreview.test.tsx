@@ -26,7 +26,7 @@ import { cleanup, fireEvent, render, screen, within } from '@testing-library/rea
 import type { FormItemJsonDefinition } from '@hrm-form-definitions/formDefinition/types';
 import { DefinitionFiles, loadDefinitionFiles } from '../../server/definitionsApi';
 import type { ContactTab } from '../definitions';
-import { FlexDesktopPreview } from './FlexDesktopPreview';
+import { FlexDesktopPreview, PreviewFocus } from './FlexDesktopPreview';
 
 const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../..');
 const formDefinitionsDir = path.join(repoRoot, 'lambdas/packages/hrm-form-definitions/form-definitions');
@@ -49,12 +49,14 @@ const renderDesktop = (
   definitions: DefinitionFiles,
   initialTab?: ContactTab['key'],
   onClose = () => {},
+  focus?: PreviewFocus,
 ) =>
   render(
     <FlexDesktopPreview
       definitions={definitions}
       files={definitions.files}
       initialTab={initialTab}
+      focus={focus}
       onClose={onClose}
     />,
   );
@@ -93,18 +95,46 @@ describe('FlexDesktopPreview', () => {
     expect(screen.getByRole('tab', { name: 'Demographics' })).toBeTruthy();
     expect(screen.getByRole('tab', { name: 'Need/Problem' })).toBeTruthy();
     expect(screen.getByRole('tab', { name: 'Resources Shared' })).toBeTruthy();
-    expect(screen.getByRole('option', { name: 'Someone calling about a help seeker' })).toBeTruthy();
     expect(screen.getByText('Categorize Connection Type')).toBeTruthy();
   });
 
-  test('the Caller tab only shows when someone calls about another person', async () => {
-    renderDesktop(usnm);
-    await screen.findByRole('tab', { name: 'Demographics' });
-    expect(screen.queryByRole('tab', { name: 'Help Seeker' })).toBeNull();
-    fireEvent.change(screen.getByRole('combobox', { name: 'Kind of contact' }), {
-      target: { value: 'caller' },
+  test('starts on the call type screen; its buttons decide whether there is a Caller tab', async () => {
+    renderDesktop(demo, undefined, () => {}, 'callTypes');
+    const buttons = demo.files['CallTypeButtons.json'] as { name: string; label: string; category: string }[];
+    const caller = buttons.find((button) => button.name === 'caller')!;
+    const child = buttons.find((button) => button.name === 'child')!;
+
+    fireEvent.click(await screen.findByRole('button', { name: new RegExp(caller.label) }));
+    const tabNames = screen.getAllByRole('tab').map((tab) => tab.textContent);
+    expect(tabNames.length).toBe(5); // search, caller, child, categories, summary
+
+    // The back button returns to the call type screen
+    // (its wording differs per helpline)
+    fireEvent.click(document.querySelector('.aselo-back-button')!);
+    fireEvent.click(screen.getByRole('button', { name: new RegExp(child.label) }));
+    expect(screen.getAllByRole('tab').length).toBe(4);
+  });
+
+  test('a button that closes the contact asks for confirmation first', async () => {
+    renderDesktop(demo, undefined, () => {}, 'callTypes');
+    const buttons = demo.files['CallTypeButtons.json'] as { name: string; label: string; category: string }[];
+    const nonData = buttons.find((button) => button.category === 'non-data')!;
+    // Wait for the translations, which the dialog's wording comes from
+    await screen.findByText(/categorize/i);
+    fireEvent.click(await screen.findByRole('button', { name: nonData.label }));
+    const dialog = await screen.findByRole('dialog', { name: 'Are you sure?' });
+    fireEvent.click(within(dialog).getByRole('button', { name: 'End Chat' }));
+    expect(screen.getByText('Aselo would save this contact.')).toBeTruthy();
+  });
+
+  test('canned responses fill the message box, and show while editing them even if switched off', async () => {
+    renderDesktop(usnm, undefined, () => {}, 'cannedResponses');
+    expect(await screen.findByText(/Canned responses are switched off for this helpline/)).toBeTruthy();
+    const responses = usnm.files['CannedResponses.json'] as { label: string; text: string }[];
+    fireEvent.change(screen.getByRole('combobox', { name: 'Canned Responses' }), {
+      target: { value: responses[0].text },
     });
-    expect(screen.getByRole('tab', { name: 'Help Seeker' })).toBeTruthy();
+    expect(screen.getByText(responses[0].text)).toBeTruthy();
   });
 
   test('Save and End checks required answers and marks the tabs that need attention', async () => {

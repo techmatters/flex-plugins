@@ -43,6 +43,8 @@ import {
 } from './AseloCategories';
 import { FieldValue, FormValues, initialValueFor, validateField } from './aseloFields';
 import { BackIcon, ErrorIcon, SearchIcon } from './flexIcons';
+import { AseloCallTypeScreen } from './AseloCallTypeScreen';
+import { getCallTypeButtons } from '../sections';
 import { Strings, translate } from './translations';
 import './aselo.css';
 
@@ -60,7 +62,10 @@ const TAB_LABELS: Record<Exclude<TabId, 'search'>, string> = {
 type Props = {
   files: DefinitionFileMap;
   strings: Strings;
-  callType: CallType;
+  taskType: 'chat' | 'call';
+  // Start on the "categorize this contact" screen instead of the form
+  startOnCallTypes?: boolean;
+  initialCallType?: CallType;
   // The tab to open first (the one being edited)
   initialTab?: ContactTab['key'];
   onSaveResult?: (result: SaveResult | undefined) => void;
@@ -77,7 +82,17 @@ const categoriesForDefaultHelpline = (files: DefinitionFileMap): CategoriesDefin
   return (defaultHelpline && byHelpline[defaultHelpline]) || Object.values(byHelpline)[0];
 };
 
-export const AseloContactPanel = ({ files, strings, callType, initialTab, onSaveResult }: Props) => {
+export const AseloContactPanel = ({
+  files,
+  strings,
+  taskType,
+  startOnCallTypes = false,
+  initialCallType = 'child',
+  initialTab,
+  onSaveResult,
+}: Props) => {
+  const [screen, setScreen] = useState<'callTypes' | 'form'>(startOnCallTypes ? 'callTypes' : 'form');
+  const [callType, setCallType] = useState<CallType>(initialCallType);
   const referenceData = getReferenceData(files);
   const forms = useMemo(
     () =>
@@ -169,6 +184,33 @@ export const AseloContactPanel = ({ files, strings, callType, initialTab, onSave
 
   const isLastTab = tabIndex === tabs.length - 1;
 
+  const chooseDataCallType = (name: string) => {
+    const chosen: CallType = name === 'caller' ? 'caller' : 'child';
+    setCallType(chosen);
+    setTabIndex(1);
+    setScreen('form');
+    onSaveResult?.(undefined);
+  };
+
+  if (screen === 'callTypes') {
+    return (
+      <div className="aselo" role="form">
+        <div className="aselo-contact-header">
+          <div className="aselo-contact-id">#205810</div>
+        </div>
+        <div className="aselo-tab-content">
+          <AseloCallTypeScreen
+            buttons={getCallTypeButtons(files)}
+            strings={strings}
+            taskType={taskType}
+            onDataCallType={chooseDataCallType}
+            onNonDataCallType={() => onSaveResult?.('saved')}
+          />
+        </div>
+      </div>
+    );
+  }
+
   const renderTabContent = () => {
     if (currentTab === 'search') {
       return (
@@ -209,7 +251,7 @@ export const AseloContactPanel = ({ files, strings, callType, initialTab, onSave
   return (
     <div className="aselo" role="form">
       <div className="aselo-contact-header">
-        <button type="button" className="aselo-back-button" tabIndex={-1}>
+        <button type="button" className="aselo-back-button" onClick={() => setScreen('callTypes')}>
           <BackIcon size={20} />
           <span>{translate(strings, 'TabbedForms-BackButton')}</span>
         </button>

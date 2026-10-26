@@ -27,6 +27,12 @@ It reads and writes the same files the Flex plugin uses:
   "Experiencing abuse?" → "Risk level"), 2 to 5 levels: add them with a wizard, edit answers
   in a column browser, import from pasted spreadsheet cells, CSV or Excel, and download as
   Excel to edit offline. See "Linked dropdowns" below.
+- **Chats and calls** sections, each with an Aselo preview next to the editor and in "Try it
+  out": call type buttons (`CallTypeButtons.json`), canned responses
+  (`CannedResponses.json`, shown only when `enable_canned_responses` is on) and the automatic
+  chat and post-survey messages (`customStrings/Messages.json`,
+  `customStrings/postSurveyMessages.json`). Existing "close without a form" call types are
+  locked to Aselo staff, because contacts are saved with the button's text.
 - Issue categories and cases are still preview only.
 
 **Aselo staff mode** (top right) shows settings that affect saved data: field names, PII on

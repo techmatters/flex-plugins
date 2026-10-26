@@ -29,21 +29,29 @@ import {
   getCategoriesByHelpline,
   getContactSplitFormAt,
   getForm,
+  getHelplineName,
   getReferenceData,
 } from '../definitions';
+import { validateSections } from '../sections';
 import { useDraft } from '../useDraft';
 import { validateContactTab, ValidationIssue } from '../validation';
 import { CategoriesPreview } from './CategoriesPreview';
-import { FlexDesktopPreview } from '../aselo/FlexDesktopPreview';
+import { FlexDesktopPreview, PreviewFocus } from '../aselo/FlexDesktopPreview';
 import { AseloSectionPreview } from '../aselo/AseloSectionPreview';
 import { CaseStatusPreview } from './CaseStatusPreview';
 import { ContactFormEditor } from './ContactFormEditor';
 import { ReviewChanges } from './ReviewChanges';
+import { CallTypesEditor } from './sections/CallTypesEditor';
+import { CannedResponsesEditor } from './sections/CannedResponsesEditor';
+import { MessagesEditor } from './sections/MessagesEditor';
 
 // Which screen is showing in the main area
 type View =
   | { kind: 'contactTab'; tabKey: string }
   | { kind: 'categories' }
+  | { kind: 'callTypes' }
+  | { kind: 'cannedResponses' }
+  | { kind: 'messages' }
   | { kind: 'caseStatus' }
   | { kind: 'caseSection'; sectionKey: string };
 
@@ -60,7 +68,8 @@ export const HelplineWorkspace = ({ definitions, staffMode }: Props) => {
   const files = draft.files;
 
   const [view, setView] = useState<View>({ kind: 'contactTab', tabKey: CONTACT_TABS[0].key });
-  const [tryItOut, setTryItOut] = useState(false);
+  // What the full-screen "Try it out" preview opens on, when it's open
+  const [tryItOut, setTryItOut] = useState<{ focus: PreviewFocus; tab?: string }>();
   const [reviewing, setReviewing] = useState(false);
   // Bumped on discard so the editor rebuilds from the restored files
   const [editorRevision, setEditorRevision] = useState(0);
@@ -72,7 +81,11 @@ export const HelplineWorkspace = ({ definitions, staffMode }: Props) => {
       ) as Record<string, ValidationIssue[]>,
     [files, originalFiles],
   );
-  const allIssues = Object.values(issuesByTab).flat();
+  const sectionIssues = useMemo(() => validateSections(files, originalFiles), [files, originalFiles]);
+  const allIssues = [...Object.values(issuesByTab).flat(), ...sectionIssues];
+  const sectionErrorCount = (prefix: string) =>
+    sectionIssues.filter((issue) => issue.severity === 'error' && issue.message.startsWith(prefix))
+      .length;
   const errorCount = (tabKey: string) =>
     issuesByTab[tabKey]?.filter((issue) => issue.severity === 'error').length ?? 0;
 
@@ -107,7 +120,11 @@ export const HelplineWorkspace = ({ definitions, staffMode }: Props) => {
     return (
       <>
         <div className="try-it-out-row">
-          <button type="button" className="secondary-button" onClick={() => setTryItOut(true)}>
+          <button
+            type="button"
+            className="secondary-button"
+            onClick={() => setTryItOut({ focus: 'form', tab: tab.key })}
+          >
             Try it out in Aselo
           </button>
           <span className="muted">See the draft form in the counselor's screen and fill it in.</span>
@@ -121,20 +138,48 @@ export const HelplineWorkspace = ({ definitions, staffMode }: Props) => {
           issues={issuesByTab[tab.key] ?? []}
           onChangeFiles={draft.updateFiles}
         />
-        {tryItOut && (
-          <FlexDesktopPreview
-            definitions={definitions}
-            files={files}
-            initialTab={tab.key}
-            onClose={() => setTryItOut(false)}
-          />
-        )}
       </>
     );
   };
 
   const renderMain = () => {
     if (view.kind === 'contactTab') return renderContactTab(view.tabKey);
+    const editorKey = `${view.kind}-${editorRevision}`;
+    if (view.kind === 'callTypes') {
+      return (
+        <CallTypesEditor
+          key={editorKey}
+          draftFiles={files}
+          originalFiles={originalFiles}
+          staffMode={staffMode}
+          helplineLanguage={definitions.helplineLanguage}
+          onChangeFiles={draft.updateFiles}
+          onTryItOut={() => setTryItOut({ focus: 'callTypes' })}
+        />
+      );
+    }
+    if (view.kind === 'cannedResponses') {
+      return (
+        <CannedResponsesEditor
+          key={editorKey}
+          draftFiles={files}
+          helplineLanguage={definitions.helplineLanguage}
+          enabled={definitions.featureFlags?.enable_canned_responses !== false}
+          onChangeFiles={draft.updateFiles}
+          onTryItOut={() => setTryItOut({ focus: 'cannedResponses' })}
+        />
+      );
+    }
+    if (view.kind === 'messages') {
+      return (
+        <MessagesEditor
+          key={editorKey}
+          draftFiles={files}
+          helplineName={getHelplineName(files, code)}
+          onChangeFiles={draft.updateFiles}
+        />
+      );
+    }
     if (view.kind === 'categories') {
       return <CategoriesPreview categoriesByHelpline={getCategoriesByHelpline(files)} />;
     }
@@ -211,6 +256,20 @@ export const HelplineWorkspace = ({ definitions, staffMode }: Props) => {
               <NavItem target={{ kind: 'categories' }} label="Issue categories" />
             )}
           </ul>
+          <h3>Chats and calls</h3>
+          <ul>
+            <NavItem
+              target={{ kind: 'callTypes' }}
+              label="Call types"
+              errors={sectionErrorCount('Call types')}
+            />
+            <NavItem
+              target={{ kind: 'cannedResponses' }}
+              label="Canned responses"
+              errors={sectionErrorCount('Canned responses')}
+            />
+            <NavItem target={{ kind: 'messages' }} label="Automatic messages" />
+          </ul>
           <h3>Cases (preview only)</h3>
           <ul>
             <NavItem target={{ kind: 'caseStatus' }} label="Case statuses" />
@@ -239,6 +298,16 @@ export const HelplineWorkspace = ({ definitions, staffMode }: Props) => {
           {renderMain()}
         </main>
       </div>
+
+      {tryItOut && (
+        <FlexDesktopPreview
+          definitions={definitions}
+          files={files}
+          focus={tryItOut.focus}
+          initialTab={tryItOut.tab as never}
+          onClose={() => setTryItOut(undefined)}
+        />
+      )}
 
       {reviewing && (
         <ReviewChanges

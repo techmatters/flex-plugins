@@ -17,7 +17,12 @@
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { describe, expect, test } from 'vitest';
-import { listHelplines, loadDefinitionFiles, readHelplineLanguage } from './definitionsApi';
+import {
+  listHelplines,
+  loadDefinitionFiles,
+  readFeatureFlags,
+  readHelplineLanguage,
+} from './definitionsApi';
 
 const formDefinitionsDir = path.resolve(
   path.dirname(fileURLToPath(import.meta.url)),
@@ -69,6 +74,13 @@ describe('definitionsApi', () => {
       helplinesConfigDir,
     );
     expect(helplineLanguage).toBe('en-CA');
+  });
+
+  test('merges feature flags from shared defaults, common and production settings', async () => {
+    const helplinesConfigDir = path.resolve(formDefinitionsDir, '../../../../twilio-iac/helplines');
+    // On by default for every helpline, switched off in USNM's common.json
+    expect((await readFeatureFlags(helplinesConfigDir, 'usnm')).enable_canned_responses).toBe(false);
+    expect((await readFeatureFlags(helplinesConfigDir, 'as')).enable_canned_responses).toBe(true);
   });
 
   test('returns 404 for an unknown helpline', async () => {

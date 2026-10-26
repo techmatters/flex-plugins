@@ -111,7 +111,17 @@ export const describeDefinitionFile = (files: DefinitionFileMap, filePath: strin
   return section ? `${section.label} (case)` : filePath;
 };
 
-export const getCaseStatuses =(files: DefinitionFileMap): StatusInfo[] =>
+// The default helpline's name from HelplineInformation.json (e.g. "NAMI"), else the code
+export const getHelplineName = (files: DefinitionFileMap, code: string): string => {
+  const info = files['HelplineInformation.json'] as
+    | { helplines?: { label?: string; value: string; default?: boolean }[] }
+    | undefined;
+  const helplines = info?.helplines ?? [];
+  const helpline = helplines.find((h) => h.default) ?? helplines[0];
+  return helpline?.label || helpline?.value || code.toUpperCase();
+};
+
+export const getCaseStatuses = (files: DefinitionFileMap): StatusInfo[] =>
   Object.values((files[CASE_STATUS_FILE] ?? {}) as Record<string, StatusInfo>);
 
 // IssueCategorizationTab is keyed by the helpline display name (e.g. "NAMI"), not the short code

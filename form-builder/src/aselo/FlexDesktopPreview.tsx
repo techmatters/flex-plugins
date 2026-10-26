@@ -25,7 +25,7 @@
 import { useRef, useState } from 'react';
 import type { DefinitionFiles } from '../../server/definitionsApi';
 import type { ContactTab } from '../definitions';
-import { CONTACT_TABS, DefinitionFileMap, getForm } from '../definitions';
+import { CONTACT_TABS, DefinitionFileMap, getForm, getHelplineName } from '../definitions';
 import { AseloContactPanel, CallType, SaveResult } from './AseloContactPanel';
 import {
   AddIcon,
@@ -49,27 +49,22 @@ import {
   TeamsIcon,
 } from './flexIcons';
 import { AVAILABLE_LANGUAGES, Strings, translate, useStrings } from './translations';
+import { getCannedResponses } from '../sections';
 import './aselo.css';
 import './flexDesktop.css';
 
 type Channel = 'chat' | 'call';
+
+// What the preview opens on, depending on what's being edited
+export type PreviewFocus = 'form' | 'callTypes' | 'cannedResponses' | 'messages';
 
 type Props = {
   definitions: DefinitionFiles;
   // The draft files (what's being edited), rather than the files as loaded
   files: DefinitionFileMap;
   initialTab?: ContactTab['key'];
+  focus?: PreviewFocus;
   onClose: () => void;
-};
-
-// The "Contacts waiting" panel shows one sample queue, named after the default helpline
-const helplineName = (definitions: DefinitionFiles, files: DefinitionFileMap) => {
-  const info = files['HelplineInformation.json'] as
-    | { helplines?: { label?: string; value: string; default?: boolean }[] }
-    | undefined;
-  const helplines = info?.helplines ?? [];
-  const helpline = helplines.find((h) => h.default) ?? helplines[0];
-  return helpline?.label || helpline?.value || definitions.code.toUpperCase();
 };
 
 const SIDE_NAV = [
@@ -98,8 +93,20 @@ const welcomeMessage = (files: DefinitionFileMap, language: string) => {
   return (messages[baseLanguage] ?? messages.en)?.WelcomeMsg;
 };
 
-const ChatCanvas = ({ files, language }: { files: DefinitionFileMap; language: string }) => {
+const ChatCanvas = ({
+  files,
+  language,
+  strings,
+  showCannedResponses,
+}: {
+  files: DefinitionFileMap;
+  language: string;
+  strings: Strings;
+  showCannedResponses: boolean;
+}) => {
   const welcome = welcomeMessage(files, language);
+  const cannedResponses = getCannedResponses(files);
+  const [draftMessage, setDraftMessage] = useState('');
   const messages: { from: 'contact' | 'counselor'; author: string; text: string; time: string }[] = [
     { from: 'contact', author: 'Anonymous', text: 'Hi, I would like to talk to someone.', time: '10:02 AM' },
     ...(welcome
@@ -136,8 +143,34 @@ const ChatCanvas = ({ files, language }: { files: DefinitionFileMap; language: s
           </div>
         ))}
       </div>
+      {showCannedResponses && (
+        // CannedResponses in plugin-hrm-form, added above the message box
+        <div className="flex-canned-responses">
+          <span className="aselo-select-wrapper aselo-select-full">
+            <select
+              className="aselo-select aselo-select-full"
+              aria-label={translate(strings, 'CannedResponses')}
+              value=""
+              onChange={(e) => setDraftMessage(e.target.value)}
+            >
+              <option value="" disabled>
+                {translate(strings, 'CannedResponses')}
+              </option>
+              {cannedResponses.map((response, index) => (
+                <option key={index} value={response.text}>
+                  {response.label}
+                </option>
+              ))}
+            </select>
+          </span>
+        </div>
+      )}
       <div className="flex-message-input">
-        <span className="flex-message-placeholder">Type message</span>
+        {draftMessage ? (
+          <span className="flex-message-draft">{draftMessage}</span>
+        ) : (
+          <span className="flex-message-placeholder">Type message</span>
+        )}
         <span className="flex-send-button">Send</span>
       </div>
     </>
@@ -210,12 +243,20 @@ const ContactsWaiting = ({ channel, queueName }: { channel: Channel; queueName: 
   </aside>
 );
 
-export const FlexDesktopPreview = ({ definitions, files, initialTab, onClose }: Props) => {
+export const FlexDesktopPreview = ({
+  definitions,
+  files,
+  initialTab,
+  focus = 'form',
+  onClose,
+}: Props) => {
   const hasCallerForm = (getForm(files, CONTACT_TABS[0].filePath) ?? []).length > 0;
-  const [callType, setCallType] = useState<CallType>(
-    initialTab === 'CallerInformationTab' && hasCallerForm ? 'caller' : 'child',
-  );
+  const initialCallType: CallType =
+    initialTab === 'CallerInformationTab' && hasCallerForm ? 'caller' : 'child';
   const [channel, setChannel] = useState<Channel>('chat');
+  // Shown when the helpline's enable_canned_responses flag is on, or while editing them
+  const cannedResponsesEnabled = definitions.featureFlags?.enable_canned_responses !== false;
+  const showCannedResponses = cannedResponsesEnabled || focus === 'cannedResponses';
   const [language, setLanguage] = useState(definitions.helplineLanguage ?? 'en-US');
   const [saveResult, setSaveResult] = useState<SaveResult>();
   const strings: Strings = useStrings(language, files);
@@ -251,21 +292,6 @@ export const FlexDesktopPreview = ({ definitions, files, initialTab, onClose }: 
           The form on the right is your draft. Everything else is a sample.
         </span>
         <label>
-          Kind of contact
-          <select
-            value={callType}
-            onChange={(e) => {
-              setCallType(e.target.value as CallType);
-              setSaveResult(undefined);
-            }}
-          >
-            <option value="child">{translate(strings, 'CallType-child')}</option>
-            <option value="caller" disabled={!hasCallerForm}>
-              {translate(strings, 'CallType-caller')}
-            </option>
-          </select>
-        </label>
-        <label>
           Task
           <select value={channel} onChange={(e) => setChannel(e.target.value as Channel)}>
             <option value="chat">Chat</option>
@@ -283,6 +309,12 @@ export const FlexDesktopPreview = ({ definitions, files, initialTab, onClose }: 
             ))}
           </select>
         </label>
+        {focus === 'cannedResponses' && !cannedResponsesEnabled && (
+          <span className="flex-preview-invalid">
+            Canned responses are switched off for this helpline (enable_canned_responses), so
+            counselors don't see them yet.
+          </span>
+        )}
         {saveResult === 'saved' && <span className="flex-preview-ok">Aselo would save this contact.</span>}
         {saveResult === 'invalid' && (
           <span className="flex-preview-invalid">
@@ -332,7 +364,7 @@ export const FlexDesktopPreview = ({ definitions, files, initialTab, onClose }: 
             ))}
           </nav>
 
-          <ContactsWaiting channel={channel} queueName={helplineName(definitions, files)} />
+          <ContactsWaiting channel={channel} queueName={getHelplineName(files, definitions.code)} />
 
           <div className="flex-splitter" ref={splitterArea}>
             <section
@@ -350,7 +382,16 @@ export const FlexDesktopPreview = ({ definitions, files, initialTab, onClose }: 
                 </span>
                 <span className="flex-end-button">{channel === 'chat' ? 'End Chat' : 'Hang Up'}</span>
               </div>
-              {channel === 'chat' ? <ChatCanvas files={files} language={language} /> : <CallCanvas />}
+              {channel === 'chat' ? (
+                <ChatCanvas
+                  files={files}
+                  language={language}
+                  strings={strings}
+                  showCannedResponses={showCannedResponses}
+                />
+              ) : (
+                <CallCanvas />
+              )}
             </section>
 
             <div
@@ -363,10 +404,11 @@ export const FlexDesktopPreview = ({ definitions, files, initialTab, onClose }: 
 
             <section className="flex-panel flex-crm" aria-label="Contact form">
               <AseloContactPanel
-                key={callType}
                 files={files}
                 strings={strings}
-                callType={callType}
+                taskType={channel}
+                startOnCallTypes={focus !== 'form'}
+                initialCallType={initialCallType}
                 initialTab={initialTab}
                 onSaveResult={setSaveResult}
               />
